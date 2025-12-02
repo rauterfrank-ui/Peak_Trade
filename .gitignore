@@ -1,0 +1,59 @@
+# ============================================================================
+# Peak_Trade .gitignore
+# ============================================================================
+# KRITISCH: API-Keys, Secrets, und sensible Daten NIEMALS committen!
+# ============================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Data & Results (NIEMALS ins Repo!)
+data/
+results/
+*.csv
+*.parquet
+*.h5
+*.db
+
+# Secrets (KRITISCH!)
+.env
+secrets.toml
+*.key
+*.pem
+*_secret*
+*_key*
+
+# Logs
+*.log
+logs/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Backups
+*.bak
+*.backup
+*~

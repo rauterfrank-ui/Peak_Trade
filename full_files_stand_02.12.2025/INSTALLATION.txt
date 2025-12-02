@@ -1,0 +1,82 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                    PEAK_TRADE INSTALLATION                     ║
+║                  Phase 1 + Phase 2 (Complete)                  ║
+╚═══════════════════════════════════════════════════════════════╝
+
+📦 DOWNLOAD & EXTRAKTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Datei herunterladen:
+   peak_trade_phase1_phase2.tar.gz
+
+2. In dein Projektverzeichnis extrahieren:
+   
+   cd ~/Peak_Trade
+   tar -xzf ~/Downloads/peak_trade_phase1_phase2.tar.gz
+   mv peak_trade_export/* .
+   rm -rf peak_trade_export
+
+🔧 SETUP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. Virtuelle Umgebung aktivieren:
+   
+   source .venv/bin/activate
+
+4. Dependencies installieren:
+   
+   pip install -r requirements.txt
+
+📊 TESTEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5. Demo-Scripts ausführen:
+   
+   # Basic Portfolio-Backtest
+   python demo_basic.py
+   
+   # Risk-Management Demo
+   python demo_risk.py
+
+✅ VERIFIKATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6. Teste Import:
+   
+   python -c "from src.backtest.engine import BacktestEngine; print('✓ Import erfolgreich')"
+
+7. Teste Strategy-Registry:
+   
+   python -c "from src.strategies.registry import get_strategy; print('✓ Strategien verfügbar:', list(get_strategy.__globals__['_REGISTRY'].keys()))"
+
+📁 PROJEKTSTRUKTUR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Peak_Trade/
+├── src/
+│   ├── backtest/       # Engine, Results
+│   ├── strategies/     # 3 Strategien (MA, RSI, BB)
+│   ├── portfolio/      # PortfolioManager
+│   └── risk/           # Position-Sizing, Guards
+├── demo_basic.py       # Demo: Portfolio
+├── demo_risk.py        # Demo: Risk-Management
+├── README.md           # Dokumentation
+└── requirements.txt    # Dependencies
+
+🎯 NÄCHSTE SCHRITTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Echte Daten laden (Kraken-API oder CSV)
+2. Backtests mit verschiedenen Strategien
+3. Risk-Module kombinieren und optimieren
+4. Bereit für Phase 3 (El-Karoui-Quant-Layer)
+
+📝 HINWEISE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Alle Dateien sind produktionsreif und getestet
+- Type-Hints und Docstrings sind vollständig
+- Code folgt PEP8-Standard
+- Modulare Architektur: einfach erweiterbar
+
+Bei Problemen: Überprüfe Python-Version (3.10+)

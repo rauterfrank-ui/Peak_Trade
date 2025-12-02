@@ -1,0 +1,159 @@
+# ============================================================================
+# Peak_Trade Konfiguration
+# ============================================================================
+# Stand: Dezember 2024
+# WICHTIG: Keine Secrets hier! API-Keys gehören in .env oder Umgebungsvariablen
+# ============================================================================
+
+[backtest]
+# Startkapital für Backtests
+initial_cash = 10000.0
+
+# Verzeichnis für Backtest-Ergebnisse
+results_dir = "results"
+
+[risk]
+# ===== Position Sizing =====
+# Methode: "fixed_fractional" oder "kelly"
+position_sizing_method = "fixed_fractional"
+
+# Maximales Risiko pro Trade (1% = 0.01)
+# KRITISCH: Niemals über 2% gehen!
+risk_per_trade = 0.01
+
+# Maximale Positionsgröße (% des Kontos)
+# NIEMALS über 50% einer einzelnen Position!
+max_position_size = 0.25
+
+# Minimaler Positionswert in USD
+# Verhindert zu kleine Positionen (Gebühren!)
+min_position_value = 50.0
+
+# Minimale Stop-Distanz (%)
+# Zu enge Stops = Noise-Trading
+min_stop_distance = 0.005
+
+# Kelly-Criterion Scaling (nur wenn method="kelly")
+# Typisch: 0.25 - 0.5 (konservativ)
+kelly_scaling = 0.5
+
+# ===== Portfolio Risk Limits =====
+# Maximaler Tagesverlust (Kill-Switch)
+# Bei Erreichen: Alle Positionen schließen, Trading stoppen
+max_daily_loss = 0.03
+
+# Maximaler Portfolio-Drawdown
+# Überschreitung führt zu Trading-Stop
+max_drawdown = 0.20
+
+# Maximale Anzahl paralleler Positionen
+max_positions = 2
+
+# Maximales Gesamt-Exposure (Summe aller Positionswerte / Equity)
+max_total_exposure = 0.75
+
+[data]
+# Standard-Timeframe für OHLCV-Daten
+default_timeframe = "1h"
+
+# Daten-Verzeichnis (nicht ins Repo!)
+data_dir = "data"
+
+# Cache-Settings
+use_cache = true
+cache_format = "parquet"
+
+[strategy.ma_crossover]
+# Moving Average Crossover Parameter
+fast_period = 10
+slow_period = 30
+
+# Stop-Loss in Prozent
+stop_pct = 0.02
+
+# Optional: Take-Profit
+# take_profit_pct = 0.05
+
+[live]
+# WARNUNG: Nur für Paper-Trading verwenden!
+# Live-Trading NIEMALS ohne min. 6 Monate erfolgreiche Backtests!
+enabled = false
+mode = "paper"  # "paper" oder "live" (GEFÄHRLICH!)
+
+# Kraken API (Keys NICHT hier speichern!)
+# Verwende Umgebungsvariablen: KRAKEN_API_KEY, KRAKEN_API_SECRET
+exchange = "kraken"
+default_pair = "BTC/USD"
+
+[validation]
+# Mindestanforderungen für Live-Trading-Freigabe
+min_sharpe = 1.5
+max_drawdown = -0.15
+min_trades = 50
+min_profit_factor = 1.3
+min_backtest_months = 6
+
+[strategy.momentum_1h]
+# Momentum-Strategie basierend auf Kursänderung über N Perioden
+lookback_period = 20      # Lookback-Fenster für Momentum
+entry_threshold = 0.02    # Min. 2% Momentum für Entry
+exit_threshold = -0.01    # Exit bei -1% Momentum
+stop_pct = 0.025          # 2.5% Stop-Loss
+
+
+[portfolio]
+# Multi-Strategy-Portfolio-Einstellungen
+enabled = true
+max_strategies_active = 3     # Max. gleichzeitig aktive Strategien
+min_correlation = -0.3        # Min. Korrelation zwischen Strategien
+rebalance_frequency = 24      # Rebalancing alle N Bars
+
+# Capital Allocation
+allocation_method = "equal"   # "equal", "risk_parity", "sharpe_weighted"
+total_capital = 10000.0       # Gesamtkapital für Portfolio
+
+# Portfolio-Level Risk
+portfolio_max_dd = -0.20      # Max. Portfolio-Drawdown (20%)
+portfolio_stop_loss = -0.05   # Daily Portfolio Stop-Loss (5%)
+
+# Strategy Weights (bei manueller Allocation)
+[portfolio.weights]
+ma_crossover = 0.33
+momentum_1h = 0.33
+rsi_strategy = 0.34
+
+[strategy.rsi_strategy]
+# RSI Mean-Reversion-Strategie
+rsi_period = 14          # RSI-Berechnungsperiode
+oversold = 30            # Oversold-Level (Entry)
+overbought = 70          # Overbought-Level (Exit)
+stop_pct = 0.02          # 2% Stop-Loss
+
+[strategy.bollinger_bands]
+# Bollinger Bands Mean-Reversion
+bb_period = 20           # Periode für Moving Average
+bb_std = 2.0             # Standard-Abweichungen (2 = 95%)
+entry_threshold = 0.95   # Entry bei 95% der unteren Band
+exit_threshold = 0.50    # Exit bei Mittel-Band
+stop_pct = 0.03          # 3% Stop-Loss
+
+[strategy.macd]
+# MACD Trend-Following
+fast_ema = 12            # Schnelle EMA
+slow_ema = 26            # Langsame EMA
+signal_ema = 9           # Signal-Linie
+entry_threshold = 0.0    # Entry bei MACD > Signal
+exit_threshold = 0.0     # Exit bei MACD < Signal
+stop_pct = 0.025         # 2.5% Stop-Loss
+
+[strategy.ecm_cycle]
+# ECM (Economic Confidence Model) - Armstrong's 8.6 Year Cycle
+ecm_cycle_days = 3141        # Pi * 1000 Tage (8.6 Jahre)
+ecm_confidence_threshold = 0.6  # Confidence-Level für Entry
+lookback_bars = 100          # Lookback für Trend-Bestimmung
+use_pi_harmonics = true      # Pi-Harmonics verwenden (1/4, 1/2, 3/4)
+stop_pct = 0.03              # 3% Stop-Loss
+
+# ECM-Turning-Points (beispielhaft - später aus docs/armstrong_notes.md)
+# Format: YYYY-MM-DD
+ecm_reference_date = "2020-01-18"  # Letzter bekannter ECM-Peak

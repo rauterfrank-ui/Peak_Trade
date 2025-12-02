@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Peak_Trade Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body style="font-family: Arial; margin:40px;">
+<h1>Peak_Trade – Trading Dashboard</h1>
+
+<div id="equity" style="width:100%;height:400px;"></div>
+<div id="drawdown" style="width:100%;height:400px;"></div>
+<div id="signals" style="width:100%;height:400px;"></div>
+
+<script>
+// Dummy example – user will insert real data
+var equity = {
+    x: [1,2,3,4,5],
+    y: [10000,10200,10100,10500,11000],
+    type: 'scatter'
+};
+Plotly.newPlot('equity', [equity], {title: 'Equity Curve'});
+
+var dd = {
+    x: [1,2,3,4,5],
+    y: [0, -0.02, -0.01, -0.03, -0.005],
+    type: 'bar'
+};
+Plotly.newPlot('drawdown', [dd], {title: 'Drawdown'});
+
+var sig = {
+    x: [1,2,3,4,5],
+    y: [0,1,1,0,1],
+    type: 'scatter'
+};
+Plotly.newPlot('signals', [sig], {title: 'Signals'});
+</script>
+
+</body>
+</html>

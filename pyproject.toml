@@ -1,0 +1,17 @@
+
+[project]
+name = "PeakTrade"
+version = "0.1.0"
+description = "Automatisches Backtesting-Framework"
+authors = [{name="User"}]
+
+[project.dependencies]
+pandas = "*"
+numpy = "*"
+plotly = "*"
+reportlab = "*"
+pytest = "*"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
