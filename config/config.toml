@@ -63,6 +63,89 @@ data_dir = "data"
 use_cache = true
 cache_format = "parquet"
 
+# ============================================================================
+# STRATEGIEN-REGISTRY (Zentrale Verwaltung aller Strategien)
+# ============================================================================
+[strategies]
+# Liste aller aktuell AKTIVEN Strategien für Backtests/Portfolio
+# Reihenfolge = Priorität im Portfolio-Allokations-Algorithmus
+active = ["ma_crossover", "momentum_1h", "rsi_strategy"]
+
+# Alle verfügbaren Strategien (Dokumentation / Discovery)
+# Strategien in dieser Liste müssen einen [strategy.NAME]-Block haben
+available = [
+    "ma_crossover",
+    "momentum_1h", 
+    "rsi_strategy",
+    "bollinger_bands",
+    "macd",
+    "ecm_cycle"
+]
+
+# Default-Parameter für ALLE Strategien (sofern nicht überschrieben)
+[strategies.defaults]
+# Risk Management Defaults
+stop_pct = 0.02              # Standard Stop-Loss: 2%
+take_profit_pct = 0.05       # Standard Take-Profit: 5%
+use_trailing_stop = false    # Trailing-Stop aktivieren?
+trailing_stop_pct = 0.015    # Trailing-Stop-Distanz: 1.5%
+
+# Position Sizing Defaults
+position_fraction = 0.25     # 25% des Kapitals pro Trade
+min_position_value = 50.0    # Min. Tradegröße in USD (überschreibt [risk])
+
+# Lifecycle / Timing Defaults
+min_hold_bars = 3            # Min. Haltedauer in Bars (verhindert Over-Trading)
+max_hold_bars = 100          # Max. Haltedauer (Timeout-Exit nach N Bars)
+warmup_bars = 200            # Min. Bars für Indikator-Initialisierung
+
+# Circuit Breakers
+max_consecutive_losses = 3   # Kill-Switch nach N Verlusten in Folge
+cooldown_after_stop = 5      # Bars Pause nach Stop-Loss-Trigger
+
+# Strategien-Metadaten (für Analyse/Reporting)
+[strategies.metadata]
+# Strategie-Typ-Kategorisierung
+[strategies.metadata.ma_crossover]
+type = "trend_following"
+risk_level = "medium"
+best_market_regime = "trending"
+recommended_timeframes = ["1h", "4h", "1d"]
+
+[strategies.metadata.momentum_1h]
+type = "trend_following"
+risk_level = "medium_high"
+best_market_regime = "trending"
+recommended_timeframes = ["1h", "4h"]
+
+[strategies.metadata.rsi_strategy]
+type = "mean_reversion"
+risk_level = "medium"
+best_market_regime = "ranging"
+recommended_timeframes = ["15m", "1h", "4h"]
+
+[strategies.metadata.bollinger_bands]
+type = "mean_reversion"
+risk_level = "medium"
+best_market_regime = "ranging"
+recommended_timeframes = ["1h", "4h", "1d"]
+
+[strategies.metadata.macd]
+type = "trend_following"
+risk_level = "medium"
+best_market_regime = "trending"
+recommended_timeframes = ["4h", "1d"]
+
+[strategies.metadata.ecm_cycle]
+type = "macro_cycle"
+risk_level = "low"
+best_market_regime = "any"
+recommended_timeframes = ["1d", "1w"]
+
+# ============================================================================
+# STRATEGIE-SPEZIFISCHE PARAMETER (bestehende Blöcke - UNVERÄNDERT)
+# ============================================================================
+
 [strategy.ma_crossover]
 # Moving Average Crossover Parameter
 fast_period = 10
