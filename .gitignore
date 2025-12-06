@@ -57,3 +57,4 @@ htmlcov/
 *.bak
 *.backup
 *~
+test_runs/
