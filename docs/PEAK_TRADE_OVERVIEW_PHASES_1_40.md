@@ -361,7 +361,13 @@ Peak_Trade/
 
 ---
 
-## 8. Nächste sinnvolle Schritte (Meta)
+## 8. Deep-Research-Track (Phasen 60–90)
+
+> **Hinweis:** Der Inhalt für diesen Abschnitt wird vom Nutzer eingefügt.
+
+---
+
+## 9. Nächste sinnvolle Schritte (Meta)
 
 1. **Bei Umsetzung von Phase 38–40:**
    * Entsprechende Abschnitte hier von „📝 geplant" auf „✅ done" stellen.

@@ -567,9 +567,86 @@ python scripts/promote_sweep_topn.py \
 
 ---
 
+## Phase 43 – Visualisierung & Sweep-Dashboards
+
+Phase 43 erweitert Phase 41/42 um **automatische Visualisierungen** für Sweep-Ergebnisse:
+
+- 1D-Plots: Parameter vs. Kennzahl (z.B. `rsi_period` vs. `total_return`)
+- 2D-Heatmaps: Zwei Parameter vs. Kennzahl (z.B. `fast_period` × `slow_period` vs. `sharpe_ratio`)
+- Integration in Sweep-Reports (Markdown/HTML)
+
+### Visualisierungs-Workflow
+
+**1. Sweep ausführen**
+
+```bash
+python scripts/run_strategy_sweep.py \
+  --sweep-name rsi_reversion_basic \
+  --config config/config.toml \
+  --max-runs 20
+```
+
+**2. Report mit Visualisierungen generieren**
+
+```bash
+python scripts/generate_strategy_sweep_report.py \
+  --sweep-name rsi_reversion_basic \
+  --format both \
+  --with-plots \
+  --plot-metric metric_total_return
+```
+
+**Output:**
+- Markdown/HTML-Report mit eingebetteten Bildern
+- PNG-Dateien unter `reports/sweeps/images/`
+
+### Plot-Typen
+
+**1D-Plots (Parameter vs. Metrik):**
+- Scatter-Plot mit Trendlinie
+- Automatisch für die ersten 3 Parameter erzeugt
+- Dateiname: `{sweep_name}_{param}_vs_{metric}.png`
+
+**2D-Heatmaps:**
+- Heatmap über zwei Parameter
+- Automatisch erzeugt wenn mindestens 2 Parameter vorhanden
+- Dateiname: `{sweep_name}_heatmap_{param_x}_x_{param_y}_{metric}.png`
+
+### CLI-Optionen
+
+```bash
+python scripts/generate_strategy_sweep_report.py \
+  --sweep-name rsi_reversion_basic \
+  --format both \
+  --with-plots \                    # Aktiviert Visualisierungen
+  --plot-metric metric_sharpe_ratio \  # Metrik für Plots (default: metric_sharpe_ratio)
+  --sort-metric metric_total_return     # Metrik für Sortierung
+```
+
+### Verzeichnisstruktur
+
+```
+reports/sweeps/
+├── {sweep_name}_report_{timestamp}.md
+├── {sweep_name}_report_{timestamp}.html
+└── images/
+    ├── {sweep_name}_{param1}_vs_{metric}.png
+    ├── {sweep_name}_{param2}_vs_{metric}.png
+    └── {sweep_name}_heatmap_{param_x}_x_{param_y}_{metric}.png
+```
+
+### Hinweise
+
+- **Matplotlib erforderlich**: Plots werden nur erzeugt wenn Matplotlib verfügbar ist
+- **Automatische Parameter-Erkennung**: Die ersten 3 Parameter werden automatisch für Plots verwendet
+- **NaN-Filterung**: Ungültige Werte werden automatisch gefiltert
+- **Fehlerbehandlung**: Bei fehlenden Parametern/Metriken wird eine Warnung ausgegeben, der Report wird trotzdem erzeugt
+
+---
+
 ## Nächste Schritte
 
-Nach Phase 42:
+Nach Phase 43:
 
 1. **Walk-Forward-Analyse**: Out-of-Sample-Validierung der besten Parameter
 2. **Monte-Carlo-Simulation**: Robustness-Testing
@@ -579,4 +656,5 @@ Nach Phase 42:
 
 *Phase 41 – Strategy-Sweeps & Research-Playground*
 *Phase 42 – Top-N Promotion*
+*Phase 43 – Visualisierung & Sweep-Dashboards*
 *Peak_Trade Framework*

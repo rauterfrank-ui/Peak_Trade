@@ -32,6 +32,11 @@ results/
 *.h5
 *.db
 
+# Reports & Visualizations (generierte Artefakte)
+reports/sweeps/
+reports/experiments/
+reports/sweeps/images/
+
 # Secrets (KRITISCH!)
 .env
 secrets.toml

@@ -49,6 +49,7 @@ from src.reporting.experiment_report import (
     find_best_params,
 )
 from src.reporting.base import Report, ReportSection
+from src.reporting.sweep_visualization import generate_default_sweep_plots
 
 
 def setup_logging(verbose: bool = False) -> None:
@@ -115,6 +116,17 @@ def parse_args() -> argparse.Namespace:
         type=str,
         nargs=2,
         help="Zwei Parameter für Heatmap (z.B. param_fast_period param_slow_period)",
+    )
+    parser.add_argument(
+        "--with-plots",
+        action="store_true",
+        help="Erzeugt Visualisierungen (Parameter vs. Metrik, Heatmaps)",
+    )
+    parser.add_argument(
+        "--plot-metric",
+        type=str,
+        default="metric_sharpe_ratio",
+        help="Metrik für Plots (default: metric_sharpe_ratio)",
     )
 
     # Logging
@@ -440,6 +452,82 @@ def main() -> int:
 
     recommendations = build_recommendations_section(df, sort_metric)
     report.sections.append(recommendations)
+
+    # Visualisierungen erzeugen (falls gewünscht)
+    if args.with_plots:
+        logger.info("Erstelle Visualisierungen...")
+        try:
+            # Extrahiere Parameter-Spalten
+            param_cols = [c.replace("param_", "") for c in df.columns if c.startswith("param_")]
+            
+            # Erzeuge Plots
+            plots = generate_default_sweep_plots(
+                df=df,
+                sweep_name=sweep_name,
+                output_dir=images_dir,
+                param_candidates=param_cols[:3] if param_cols else None,  # Erste 3 Parameter
+                metric_primary=args.plot_metric,
+                metric_fallback=args.sort_metric,
+            )
+
+            # Füge Visualisierungen zum Report hinzu
+            if plots:
+                plots_content = []
+                
+                # 1D-Plots
+                for plot_name, plot_path in plots.items():
+                    if plot_name.startswith("param_") and plot_name.endswith("_vs_metric"):
+                        # Relativer Pfad vom Report-Verzeichnis
+                        rel_path = plot_path.relative_to(output_dir)
+                        param_display = plot_name.replace("param_", "").replace("_vs_metric", "").replace("_", " ").title()
+                        plots_content.append(f"### {param_display} vs Metrik")
+                        plots_content.append(f"![{param_display} vs Metrik]({rel_path})")
+                        plots_content.append("")
+
+                # 2D-Heatmap
+                if "heatmap_2d" in plots:
+                    rel_path = plots["heatmap_2d"].relative_to(output_dir)
+                    plots_content.append("### Parameter Heatmap (2D)")
+                    plots_content.append(f"![Parameter Heatmap]({rel_path})")
+                    plots_content.append("")
+
+                if plots_content:
+                    # Prüfe ob bereits eine Visualizations-Section existiert
+                    existing_viz_idx = None
+                    for idx, section in enumerate(report.sections):
+                        if section.title.lower() in ["visualizations", "visualisierungen"]:
+                            existing_viz_idx = idx
+                            break
+
+                    if existing_viz_idx is not None:
+                        # Erweitere bestehende Section
+                        existing_content = report.sections[existing_viz_idx].content_markdown
+                        report.sections[existing_viz_idx].content_markdown = (
+                            existing_content + "\n\n" + "\n".join(plots_content)
+                        )
+                        logger.info(f"{len(plots)} Visualisierungen zur bestehenden Section hinzugefügt")
+                    else:
+                        # Neue Section hinzufügen
+                        visualization_section = ReportSection(
+                            title="Visualizations",
+                            content_markdown="\n".join(plots_content),
+                        )
+                        # Füge vor Recommendations ein
+                        report.sections.insert(-1, visualization_section)
+                        logger.info(f"{len(plots)} Visualisierungen zum Report hinzugefügt")
+                else:
+                    logger.warning("Keine Plots erzeugt")
+            else:
+                logger.warning("Keine Plots erzeugt (möglicherweise fehlende Parameter/Metriken)")
+
+        except Exception as e:
+            logger.warning(f"Fehler beim Erstellen der Visualisierungen: {e}")
+            # Füge trotzdem eine Notiz hinzu
+            error_section = ReportSection(
+                title="Visualisierungen",
+                content_markdown="Visualisierungen konnten nicht erzeugt werden. Bitte prüfe die Logs.",
+            )
+            report.sections.append(error_section)
 
     # Report speichern
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
