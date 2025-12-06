@@ -323,6 +323,96 @@ def get_rsi_reversion_sweeps(
 
 
 # ============================================================================
+# BREAKOUT SWEEPS (Phase 41)
+# ============================================================================
+
+def get_breakout_sweeps(
+    granularity: Granularity = "medium",
+    include_sl_tp: bool = True,
+    include_trailing: bool = False,
+) -> List[ParamSweep]:
+    """
+    Gibt Parameter-Sweeps für Breakout Strategie zurück.
+
+    Args:
+        granularity: Sweep-Granularität
+        include_sl_tp: Ob Stop-Loss/Take-Profit Parameter inkludiert werden
+        include_trailing: Ob Trailing-Stop Parameter inkludiert werden
+
+    Returns:
+        Liste von ParamSweep-Objekten
+    """
+    sweeps = []
+
+    if granularity == "coarse":
+        sweeps.append(ParamSweep("lookback_breakout", [20, 50, 100], "Breakout Lookback"))
+        if include_sl_tp:
+            sweeps.append(ParamSweep("stop_loss_pct", [0.02, 0.03, 0.05], "Stop-Loss %"))
+    elif granularity == "medium":
+        sweeps.append(ParamSweep("lookback_breakout", [15, 20, 30, 50, 75], "Breakout Lookback"))
+        if include_sl_tp:
+            sweeps.append(ParamSweep("stop_loss_pct", [0.02, 0.03, 0.04, 0.05], "Stop-Loss %"))
+            sweeps.append(ParamSweep("take_profit_pct", [0.04, 0.06, 0.08, 0.10], "Take-Profit %"))
+    else:  # fine
+        sweeps.append(ParamSweep.from_range("lookback_breakout", 10, 100, 10, "Breakout Lookback"))
+        if include_sl_tp:
+            sweeps.append(ParamSweep("stop_loss_pct", [0.01, 0.02, 0.03, 0.04, 0.05], "Stop-Loss %"))
+            sweeps.append(ParamSweep("take_profit_pct", [0.03, 0.05, 0.08, 0.10, 0.15], "Take-Profit %"))
+
+    if include_trailing:
+        if granularity == "coarse":
+            sweeps.append(ParamSweep("trailing_stop_pct", [0.02, 0.05], "Trailing-Stop %"))
+        elif granularity == "medium":
+            sweeps.append(ParamSweep("trailing_stop_pct", [0.02, 0.03, 0.05, 0.08], "Trailing-Stop %"))
+        else:  # fine
+            sweeps.append(ParamSweep("trailing_stop_pct", [0.01, 0.02, 0.03, 0.05, 0.08, 0.10], "Trailing-Stop %"))
+
+    return sweeps
+
+
+# ============================================================================
+# VOL REGIME FILTER SWEEPS (Phase 41)
+# ============================================================================
+
+def get_vol_regime_filter_sweeps(
+    granularity: Granularity = "medium",
+    include_percentile: bool = True,
+) -> List[ParamSweep]:
+    """
+    Gibt Parameter-Sweeps für Vol Regime Filter zurück.
+
+    Args:
+        granularity: Sweep-Granularität
+        include_percentile: Ob Perzentil-basierte Parameter inkludiert werden
+
+    Returns:
+        Liste von ParamSweep-Objekten
+    """
+    sweeps = []
+
+    if granularity == "coarse":
+        sweeps.append(ParamSweep("vol_window", [10, 14, 20], "Vol Window"))
+        if include_percentile:
+            sweeps.append(ParamSweep("vol_percentile_low", [20, 30], "Vol Percentile Low"))
+            sweeps.append(ParamSweep("vol_percentile_high", [70, 80], "Vol Percentile High"))
+    elif granularity == "medium":
+        sweeps.append(ParamSweep("vol_window", [10, 14, 20, 30], "Vol Window"))
+        sweeps.append(ParamSweep("vol_method", ["atr", "std"], "Vol Method"))
+        if include_percentile:
+            sweeps.append(ParamSweep("vol_percentile_low", [10, 20, 30], "Vol Percentile Low"))
+            sweeps.append(ParamSweep("vol_percentile_high", [70, 80, 90], "Vol Percentile High"))
+    else:  # fine
+        sweeps.append(ParamSweep.from_range("vol_window", 8, 30, 4, "Vol Window"))
+        sweeps.append(ParamSweep("vol_method", ["atr", "std", "realized"], "Vol Method"))
+        if include_percentile:
+            sweeps.append(ParamSweep("vol_percentile_low", [5, 10, 15, 20, 25, 30], "Vol Percentile Low"))
+            sweeps.append(ParamSweep("vol_percentile_high", [70, 75, 80, 85, 90, 95], "Vol Percentile High"))
+        sweeps.append(ParamSweep("lookback_percentile", [50, 100, 200], "Lookback Percentile"))
+
+    return sweeps
+
+
+# ============================================================================
 # DONCHIAN CHANNEL SWEEPS
 # ============================================================================
 
@@ -369,6 +459,9 @@ STRATEGY_SWEEP_REGISTRY: Dict[str, Callable[[Granularity], List[ParamSweep]]] = 
     "mean_reversion_channel": lambda g: get_mean_reversion_sweeps(g),
     "rsi_reversion": lambda g: get_rsi_reversion_sweeps(g),
     "breakout_donchian": lambda g: get_donchian_sweeps(g),
+    # Phase 41 Additions
+    "breakout": lambda g: get_breakout_sweeps(g),
+    "vol_regime_filter": lambda g: get_vol_regime_filter_sweeps(g),
 }
 
 

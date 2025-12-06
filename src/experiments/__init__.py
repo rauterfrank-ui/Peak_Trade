@@ -53,9 +53,25 @@ from .strategy_sweeps import (
     get_vol_breakout_sweeps,
     get_mean_reversion_sweeps,
     get_rsi_reversion_sweeps,
+    get_breakout_sweeps,
+    get_vol_regime_filter_sweeps,
+    get_donchian_sweeps,
     get_strategy_sweeps,
     list_available_strategies,
     STRATEGY_SWEEP_REGISTRY,
+)
+
+from .research_playground import (
+    StrategySweepConfig,
+    ParamConstraint,
+    get_predefined_sweep,
+    list_predefined_sweeps,
+    get_all_predefined_sweeps,
+    get_sweeps_for_strategy,
+    get_sweeps_by_tag,
+    run_sweep_batch,
+    create_custom_sweep,
+    print_sweep_catalog,
 )
 
 from .regime_sweeps import (
@@ -83,6 +99,9 @@ __all__ = [
     "get_vol_breakout_sweeps",
     "get_mean_reversion_sweeps",
     "get_rsi_reversion_sweeps",
+    "get_breakout_sweeps",
+    "get_vol_regime_filter_sweeps",
+    "get_donchian_sweeps",
     "get_strategy_sweeps",
     "list_available_strategies",
     "STRATEGY_SWEEP_REGISTRY",
@@ -93,4 +112,15 @@ __all__ = [
     "get_strategy_switching_sweeps",
     "get_combined_regime_strategy_sweeps",
     "REGIME_SWEEP_REGISTRY",
+    # Research Playground (Phase 41)
+    "StrategySweepConfig",
+    "ParamConstraint",
+    "get_predefined_sweep",
+    "list_predefined_sweeps",
+    "get_all_predefined_sweeps",
+    "get_sweeps_for_strategy",
+    "get_sweeps_by_tag",
+    "run_sweep_batch",
+    "create_custom_sweep",
+    "print_sweep_catalog",
 ]
