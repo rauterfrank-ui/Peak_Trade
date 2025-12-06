@@ -1,0 +1,18 @@
+# Peak_Trade – Parameter-Grid für RSI-Reversion-Strategie
+# =======================================================
+#
+# Grid für die RSI-Reversion-Strategie.
+# Verwendet mit: python scripts/run_sweep.py --strategy rsi_reversion --grid config/sweeps/rsi_reversion.toml
+
+[grid]
+# RSI-Periode
+rsi_period = [7, 14, 21]
+
+# Entry-Threshold (überverkauft / überkauft)
+entry_threshold = [20, 25, 30, 35]
+
+# Exit-Threshold
+exit_threshold = [45, 50, 55]
+
+# Beispiel-Berechnung:
+# 3 × 4 × 3 = 36 Kombinationen

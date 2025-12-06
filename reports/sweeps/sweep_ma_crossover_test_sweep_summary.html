@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Peak_Trade Sweep Summary – sweep_ma_crossover_test_sweep.csv</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 2rem;
+            background-color: #111;
+            color: #eee;
+        }
+        h1, h2, h3 {
+            color: #fff;
+        }
+        a {
+            color: #4ea1ff;
+        }
+        .meta {
+            margin-bottom: 1.5rem;
+        }
+        .meta p {
+            margin: 0.2rem 0;
+        }
+        table.sweep-table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 1400px;
+            font-size: 0.85rem;
+        }
+        table.sweep-table th, table.sweep-table td {
+            border: 1px solid #444;
+            padding: 0.35rem 0.5rem;
+        }
+        table.sweep-table th {
+            background-color: #222;
+            position: sticky;
+            top: 0;
+        }
+        table.sweep-table tbody tr:hover {
+            background-color: #1a1a1a;
+        }
+        .note {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        code {
+            background-color: #222;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Peak_Trade – Sweep Summary</h1>
+    <div class="meta">
+        <p><strong>CSV:</strong> <code>sweep_ma_crossover_test_sweep.csv</code></p>
+        <p><strong>Strategie:</strong> ma_crossover</p>
+        <p><strong>Symbol (erste Zeile):</strong> BTC/EUR</p>
+        <p><strong>Anzahl getesteter Konfigurationen:</strong> 2</p>
+        <p><strong>Angezeigte Zeilen:</strong> 2</p>
+        <p><strong>Sortierung:</strong> total_return (absteigend)</p>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="dataframe sweep-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>symbol</th>
+      <th>strategy_key</th>
+      <th>fast_window</th>
+      <th>slow_window</th>
+      <th>total_return</th>
+      <th>max_drawdown</th>
+      <th>cagr</th>
+      <th>sharpe</th>
+      <th>total_trades</th>
+      <th>win_rate</th>
+      <th>profit_factor</th>
+      <th>blocked_trades</th>
+      <th>regime_range_low_vol</th>
+      <th>regime_trend_up_low_vol</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>BTC/EUR</td>
+      <td>ma_crossover</td>
+      <td>10</td>
+      <td>100</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.79</td>
+      <td>0.21</td>
+    </tr>
+    <tr>
+      <td>BTC/EUR</td>
+      <td>ma_crossover</td>
+      <td>10</td>
+      <td>50</td>
+      <td>-0.003996</td>
+      <td>-0.003996</td>
+      <td>-0.0144942</td>
+      <td>-2.7156</td>
+      <td>3</td>
+      <td>0.333333</td>
+      <td>1.51232</td>
+      <td>0</td>
+      <td>0.79</td>
+      <td>0.21</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="note">
+        <p>
+            Hinweis: Alle Werte stammen direkt aus der Sweep-CSV.
+            Zusätzliche Reports (Equity/Drawdown/Plots) für Top-Konfigurationen
+            liegen ggf. im gleichen Ordner (<code>reports/sweeps/</code>).
+        </p>
+    </div>
+</body>
+</html>

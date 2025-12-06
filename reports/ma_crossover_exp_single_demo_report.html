@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Peak_Trade Report – ma_crossover_exp_single_demo</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 2rem;
+            background-color: #111;
+            color: #eee;
+        }
+        h1, h2, h3 {
+            color: #fff;
+        }
+        a {
+            color: #4ea1ff;
+        }
+        table {
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            max-width: 900px;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.9rem;
+        }
+        th {
+            background-color: #222;
+            text-align: left;
+        }
+        .section {
+            margin-bottom: 2rem;
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.5rem 1.5rem;
+            max-width: 900px;
+            margin-bottom: 1rem;
+        }
+        .meta-item span.label {
+            font-size: 0.8rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .meta-item div.value {
+            font-size: 1rem;
+        }
+        img {
+            max-width: 900px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #000;
+        }
+        .img-row {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 900px;
+        }
+        code {
+            background-color: #222;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Peak_Trade Backtest Report</h1>
+    <div class="section">
+        <div class="meta-grid">
+            <div class="meta-item">
+                <span class="label">Name</span>
+                <div class="value">ma_crossover_exp_single_demo</div>
+            </div>
+            <div class="meta-item">
+                <span class="label">Strategie</span>
+                <div class="value">n/a</div>
+            </div>
+            <div class="meta-item">
+                <span class="label">Symbol</span>
+                <div class="value">n/a</div>
+            </div>
+            <div class="meta-item">
+                <span class="label">Run-Name</span>
+                <div class="value">ma_crossover_exp_single_demo</div>
+            </div>
+            <div class="meta-item">
+                <span class="label">Generiert</span>
+                <div class="value">2025-12-04 00:25:46 UTC</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>1. Kennzahlen (Stats)</h2>
+        <table>
+            <thead>
+                <tr><th>Metric</th><th>Wert</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>total_return</td><td>-0.005988008000000082</td></tr><tr><td>max_drawdown</td><td>-0.005988008000000082</td></tr><tr><td>cagr</td><td>-0.021662578827511103</td></tr><tr><td>sharpe</td><td>-3.34301857546085</td></tr><tr><td>total_trades</td><td>4</td></tr><tr><td>win_rate</td><td>0.25</td></tr><tr><td>profit_factor</td><td>0.6651849908034299</td></tr><tr><td>blocked_trades</td><td>1</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>2. Strategie-Parameter</h2>
+        <table>
+            <thead>
+                <tr><th>Parameter</th><th>Wert</th></tr>
+            </thead>
+            <tbody>
+                <tr><td colspan='2'><em>Keine expliziten Strategy-Parameter in metadata['params'] hinterlegt.</em></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>3. Regime-Analyse</h2>
+        <h3>3.1 Regime-Verteilung</h3>
+        <table>
+            <thead>
+                <tr><th>Regime</th><th>Anteil</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>RANGE_LOW_VOL</td><td>83.00%</td></tr><tr><td>TREND_UP_LOW_VOL</td><td>17.00%</td></tr>
+            </tbody>
+        </table>
+
+        <h3>3.2 Regime-Konfiguration</h3>
+        <table>
+            <thead>
+                <tr><th>Parameter</th><th>Wert</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>price_col</td><td>close</td></tr><tr><td>trend_window</td><td>50</td></tr><tr><td>trend_threshold</td><td>0.002</td></tr><tr><td>vol_window</td><td>50</td></tr><tr><td>vol_threshold</td><td>0.02</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>4. Equity & Drawdown</h2>
+        <div class="img-row">
+            <div>
+                <h3>4.1 Equity Curve</h3>
+                <img src="ma_crossover_exp_single_demo_equity.png" alt="Equity Curve" />
+            </div>
+            <div>
+                <h3>4.2 Drawdown</h3>
+                <img src="ma_crossover_exp_single_demo_drawdown.png" alt="Drawdown" />
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>5. Rohdaten & Artefakte</h2>
+        <ul>
+            <li>Equity (CSV): <code>ma_crossover_exp_single_demo_equity.csv</code></li>
+            <li>Drawdown (CSV): <code>ma_crossover_exp_single_demo_drawdown.csv</code></li>
+            <li>Trades (CSV): <code>ma_crossover_exp_single_demo_trades.csv</code> (falls vorhanden)</li>
+            <li>Stats (JSON): <code>ma_crossover_exp_single_demo_stats.json</code></li>
+            <li>Equity-Plot (PNG): <code>ma_crossover_exp_single_demo_equity.png</code></li>
+            <li>Drawdown-Plot (PNG): <code>ma_crossover_exp_single_demo_drawdown.png</code></li>
+        </ul>
+        <p>
+            Hinweis: Diese Dateinamen sind relativ zu diesem HTML-Report und liegen im selben Verzeichnis.
+        </p>
+    </div>
+</body>
+</html>

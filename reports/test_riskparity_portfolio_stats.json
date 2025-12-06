@@ -1,0 +1,52 @@
+{
+  "portfolio_stats": {
+    "total_return": -0.0065901598625117686,
+    "cagr": -0.23401651109851618,
+    "sharpe": -20.73590229051494,
+    "max_drawdown": -0.006590159862511791,
+    "final_equity": 9934.098401374882,
+    "initial_capital": 10000.0
+  },
+  "weights": {
+    "BTC/EUR": 0.34855518158788096,
+    "ETH/EUR": 0.34855518158788096,
+    "LTC/EUR": 0.30288963682423803
+  },
+  "asset_stats": {
+    "BTC/EUR": {
+      "total_return": -0.0059880079999999,
+      "max_drawdown": -0.0059880079999999,
+      "cagr": -0.014494224577048853,
+      "sharpe": -2.7201690623729906,
+      "total_trades": 4,
+      "win_rate": 0.25,
+      "profit_factor": 0.5442093990030604,
+      "blocked_trades": 3
+    },
+    "ETH/EUR": {
+      "total_return": -0.0059880079999999,
+      "max_drawdown": -0.0059880079999999,
+      "cagr": -0.014494224577048853,
+      "sharpe": -2.7201690623729906,
+      "total_trades": 4,
+      "win_rate": 0.25,
+      "profit_factor": 0.7915848451358241,
+      "blocked_trades": 12
+    },
+    "LTC/EUR": {
+      "total_return": -0.00797603198400011,
+      "max_drawdown": -0.00797603198400011,
+      "cagr": -0.01927892375810869,
+      "sharpe": -3.151719107619416,
+      "total_trades": 5,
+      "win_rate": 0.2,
+      "profit_factor": 1.0123932879019841,
+      "blocked_trades": 13
+    }
+  },
+  "regime_distribution": {
+    "TREND_UP_LOW_VOL": 0.11302889636824237,
+    "RANGE_LOW_VOL": 0.8104317047578998,
+    "TREND_DOWN_LOW_VOL": 0.07653939887385776
+  }
+}

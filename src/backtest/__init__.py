@@ -9,6 +9,7 @@ from .stats import (
     compute_basic_stats,
     compute_sharpe_ratio,
     compute_trade_stats,
+    compute_backtest_stats,
     validate_for_live_trading,
 )
 
@@ -18,5 +19,6 @@ __all__ = [
     "compute_basic_stats",
     "compute_sharpe_ratio",
     "compute_trade_stats",
+    "compute_backtest_stats",
     "validate_for_live_trading",
 ]

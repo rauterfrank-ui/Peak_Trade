@@ -240,3 +240,483 @@ stop_pct = 0.03              # 3% Stop-Loss
 # ECM-Turning-Points (beispielhaft - später aus docs/armstrong_notes.md)
 # Format: YYYY-MM-DD
 ecm_reference_date = "2020-01-18"  # Letzter bekannter ECM-Peak
+
+# ============================================================================
+# PHASE 40: STRATEGY LIBRARY ERWEITERUNGEN
+# ============================================================================
+
+[strategy.breakout]
+# Breakout/Momentum Strategy mit Stop-Loss und Take-Profit
+lookback_breakout = 20       # Lookback-Fenster für Hoch/Tief
+stop_loss_pct = 0.03         # Stop-Loss: 3%
+take_profit_pct = 0.06       # Take-Profit: 6%
+# trailing_stop_pct = 0.02   # Optional: Trailing-Stop (2%)
+side = "both"                # "long", "short" oder "both"
+price_col = "close"
+
+[strategy.vol_regime_filter]
+# Volatilitäts-Regime-Filter
+# Erlaubt Trades nur wenn Volatilität im definierten Bereich liegt
+vol_window = 14              # ATR/Volatility-Berechnung Fenster
+vol_method = "atr"           # "atr", "std" oder "realized"
+vol_percentile_low = 25      # Trading nur wenn Vol > 25. Perzentil
+vol_percentile_high = 75     # Trading nur wenn Vol < 75. Perzentil
+lookback_percentile = 100    # Lookback für Perzentil-Berechnung
+# min_vol = 50.0             # Optional: Absoluter Min-Vol-Schwellwert
+# max_vol = 500.0            # Optional: Absoluter Max-Vol-Schwellwert
+# atr_threshold = 100.0      # Optional: ATR muss > Threshold sein
+invert = false               # Invertiert die Filterlogik
+
+[strategy.rsi_reversion_v1]
+# RSI Mean-Reversion (erweitertes Beispiel)
+rsi_window = 14
+lower = 30.0                 # Oversold-Level für Long
+upper = 70.0                 # Overbought-Level für Short
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false     # Optional: MA-Trendfilter
+trend_ma_window = 50
+use_wilder = true            # Wilder-Smoothing (stabiler)
+price_col = "close"
+
+[strategy.breakout_v1]
+# Breakout-Strategie Beispiel-Config
+lookback_breakout = 15
+stop_loss_pct = 0.025        # 2.5% Stop-Loss
+take_profit_pct = 0.05       # 5% Take-Profit
+trailing_stop_pct = 0.02     # 2% Trailing-Stop
+side = "long"                # Nur Long-Trades
+price_col = "close"
+
+[strategy.composite]
+# Multi-Strategy Composite (Kombiniert mehrere Strategien)
+components = ["rsi_reversion", "breakout"]
+weights = [0.5, 0.5]
+aggregation = "weighted"     # "weighted", "voting", "unanimous", "any_long", "any_short"
+signal_threshold = 0.3       # Long wenn > 0.3, Short wenn < -0.3
+require_all_valid = false
+# filter = "vol_regime_filter"  # Optional: Filter-Strategie
+
+[strategy.portfolio_phase40_example]
+# Beispiel-Portfolio für Phase 40
+components = ["rsi_reversion", "breakout", "ma_crossover"]
+weights = [0.4, 0.3, 0.3]
+aggregation = "weighted"
+signal_threshold = 0.25
+
+# ============================================================================
+# PHASE 31: SHADOW/PAPER LIVE-SESSION CONFIGURATION
+# ============================================================================
+# Konfiguration für Shadow-/Paper-Trading mit echten Exchange-Marktdaten.
+# WICHTIG: Es werden KEINE echten Orders an die Exchange gesendet!
+#          Nur public market data wird verwendet.
+# ============================================================================
+
+[shadow_paper]
+# Shadow-/Paper-Session aktivieren
+enabled = true
+
+# Modus: "shadow" oder "paper"
+# - shadow: Strategie läuft parallel, Orders werden nur geloggt
+# - paper: Vollständige Paper-Trading-Simulation
+mode = "paper"
+
+# Trading-Symbol (Kraken-Format)
+symbol = "BTC/EUR"
+
+# Timeframe für Candles ("1m", "5m", "15m", "1h", "4h", "1d")
+timeframe = "1m"
+
+# Polling-Intervall in Sekunden (wie oft neue Daten geholt werden)
+poll_interval_seconds = 60.0
+
+# Anzahl Warmup-Candles für Indikator-Initialisierung
+warmup_candles = 200
+
+# Start-Balance für Paper-Trading in EUR
+start_balance = 10000.0
+
+# Position-Sizing: Anteil des Kapitals pro Trade (0.0 - 1.0)
+position_fraction = 0.1
+
+# Fee-Rate für Simulation (z.B. 0.0026 = 26 bps = 0.26%)
+fee_rate = 0.0026
+
+# Slippage in Basispunkten für Simulation
+slippage_bps = 5.0
+
+[live_exchange]
+# Exchange-Konfiguration für Live-Marktdaten
+# WICHTIG: Nur public market data! Keine Order-APIs!
+name = "kraken"
+
+# Sandbox/Public-Only Modus (MUSS true sein für Phase 31)
+use_sandbox = true
+
+# Basis-URL für Kraken Public API
+base_url = "https://api.kraken.com"
+
+# Rate-Limit-Einstellungen
+rate_limit_ms = 1000
+
+# Retry-Einstellungen bei Netzwerkfehlern
+max_retries = 3
+retry_delay_seconds = 5.0
+
+# ============================================================================
+# LIVE RISK LIMITS (Phase 31 - Shadow/Paper spezifisch)
+# ============================================================================
+
+[live_risk]
+# Live-Risk-Limits aktivieren
+enabled = true
+
+# Basis-Währung für Limits
+base_currency = "EUR"
+
+# Maximales Notional pro einzelner Order (EUR)
+max_order_notional = 1000.0
+
+# Max. aggregiertes Notional pro Symbol (EUR)
+max_symbol_exposure_notional = 2000.0
+
+# Max. Gesamt-Notional aller Orders (EUR)
+max_total_exposure_notional = 5000.0
+
+# Max. Anzahl verschiedener Symbole/Positionen
+max_open_positions = 5
+
+# Absoluter max. Tagesverlust (EUR)
+max_daily_loss_abs = 500.0
+
+# Prozentualer max. Tagesverlust (bezogen auf start_balance)
+max_daily_loss_pct = 5.0
+
+# Bei Limit-Verletzung Orders blockieren
+block_on_violation = true
+
+# Tages-PnL aus Experiments-Registry verwenden
+use_experiments_for_daily_pnl = true
+
+# ============================================================================
+# ENVIRONMENT CONFIGURATION (Safety Layer)
+# ============================================================================
+
+[environment]
+# Trading-Umgebung: "paper", "testnet", "live"
+# WICHTIG: Für Phase 31 NUR "paper" verwenden!
+mode = "paper"
+
+# Live-Trading explizit deaktivieren (Safety)
+enable_live_trading = false
+
+# Bestätigungs-Token für Live-Trading erforderlich
+require_confirm_token = true
+
+# Testnet Dry-Run Modus (Safety)
+testnet_dry_run = true
+
+# Alle Orders loggen
+log_all_orders = true
+
+# ============================================================================
+# PHASE 32: SHADOW/PAPER RUN LOGGING CONFIGURATION
+# ============================================================================
+# Konfiguration für das Logging von Shadow-/Paper-Runs.
+# Erzeugt strukturierte Logs für jeden Run, die für Reporting verwendet werden.
+# ============================================================================
+
+[shadow_paper_logging]
+# Run-Logging aktivieren
+enabled = true
+
+# Basis-Verzeichnis für Run-Logs
+base_dir = "live_runs"
+
+# Flush-Intervall (alle N Steps werden Events persistiert)
+flush_interval_steps = 50
+
+# Format für Events-Datei ("parquet" oder "csv")
+format = "parquet"
+
+# Automatisch Markdown-Report beim Beenden generieren
+write_markdown_report_on_finish = false
+
+# Detailliertes Event-Logging (inkl. OHLC pro Step)
+log_ohlc_details = true
+
+# Order-Details loggen (Side, Size, Price, etc.)
+log_order_details = true
+
+# Risk-Check-Details loggen (Reasons, Metrics)
+log_risk_details = true
+
+# ============================================================================
+# PHASE 33: LIVE MONITORING CONFIGURATION
+# ============================================================================
+# Konfiguration für das CLI-Monitoring von Shadow-/Paper-Runs.
+# Erlaubt Echtzeit-Beobachtung laufender Sessions.
+# ============================================================================
+
+[live_monitoring]
+# Standard-Refresh-Intervall in Sekunden
+default_interval_seconds = 2.0
+
+# Anzahl der Tail-Zeilen (letzte Events)
+default_tail_rows = 15
+
+# ANSI-Farben im Terminal verwenden
+use_colors = true
+
+# ============================================================================
+# PHASE 34: ALERTS CONFIGURATION
+# ============================================================================
+# Alert-System für Shadow-/Paper-Runs.
+# Generiert Warnungen bei Risk-Verletzungen, großen Verlusten etc.
+# ============================================================================
+
+[alerts]
+# Alerts aktivieren
+enabled = true
+
+# Minimale Severity für Alerts ("info", "warning", "critical")
+min_severity = "warning"
+
+# Sekunden zwischen gleichen Alerts (Debouncing)
+debounce_seconds = 60
+
+[alerts.rules]
+# Risk-Blocked-Regel (orders durch Risk-Limits blockiert)
+enable_risk_blocked = true
+
+# Absolute Verlust-Regel
+enable_large_loss_abs = true
+large_loss_abs_threshold = -500.0
+
+# Prozentuale Verlust-Regel
+enable_large_loss_pct = true
+large_loss_pct_threshold = -10.0
+
+# Drawdown-Regel (aktuell deaktiviert, da nicht im Snapshot)
+enable_drawdown = false
+drawdown_threshold = -15.0
+
+# ============================================================================
+# PHASE 34: WEB UI CONFIGURATION
+# ============================================================================
+# Einfache Web-UI für Run-Monitoring (lokal).
+# ============================================================================
+
+[web_ui]
+# Web-UI aktivieren
+enabled = true
+
+# Host für den Web-Server
+host = "127.0.0.1"
+
+# Port für den Web-Server
+port = 8000
+
+# Auto-Refresh-Intervall im Browser (Sekunden)
+auto_refresh_seconds = 5
+
+# ============================================================================
+# PHASE 38: EXCHANGE CLIENT CONFIGURATION
+# ============================================================================
+# Konfiguration für den Exchange-Client-Layer.
+# default_type bestimmt, welcher Client für Trading verwendet wird.
+#
+# Verfügbare Typen:
+# - "dummy": In-Memory-Client für Tests (keine echten API-Calls)
+# - "kraken_testnet": Kraken Testnet/Demo-API
+# - (später) "kraken_live": Echte Kraken-API
+# ============================================================================
+
+[exchange]
+# Standard-Client-Typ für Trading
+default_type = "dummy"
+
+# Dummy-Client Einstellungen (nur wenn default_type = "dummy")
+[exchange.dummy]
+btc_eur_price = 50000.0
+eth_eur_price = 3000.0
+btc_usd_price = 55000.0
+fee_bps = 10.0
+slippage_bps = 5.0
+
+# ============================================================================
+# PHASE 35: TESTNET EXCHANGE INTEGRATION
+# ============================================================================
+# Konfiguration fuer die Testnet-/Demo-Exchange-Integration.
+# WICHTIG: Dies ist KEIN echtes Live-Trading! Nur Testnet/Demo-Modus.
+#
+# Sicherheitshinweise:
+# - API-Keys werden NUR aus Environment-Variablen gelesen
+# - Default: validate_only=true (Orders werden nur validiert, nicht ausgefuehrt)
+# - Echtes Live-Trading erfordert weitere Phasen (40+)
+# ============================================================================
+
+[exchange.kraken_testnet]
+# Testnet-Integration aktivieren
+enabled = true
+
+# Kraken API Base-URL
+# Hinweis: Kraken hat kein echtes Testnet, daher nutzen wir validate_only=true
+base_url = "https://api.kraken.com"
+
+# Environment-Variable fuer den API-Key (NICHT der Key selbst!)
+api_key_env_var = "KRAKEN_TESTNET_API_KEY"
+
+# Environment-Variable fuer das API-Secret (NICHT das Secret selbst!)
+api_secret_env_var = "KRAKEN_TESTNET_API_SECRET"
+
+# WICHTIG: validate_only=true bedeutet:
+# - Orders werden an die API geschickt und validiert
+# - Orders werden NICHT tatsaechlich ausgefuehrt
+# - Ideal fuer Tests ohne echtes Kapitalrisiko
+# Setze auf false NUR wenn du echte Testnet-Orders willst!
+validate_only = true
+
+# HTTP-Request Timeout in Sekunden
+timeout_seconds = 30.0
+
+# Max. Retries bei Netzwerkfehlern
+max_retries = 3
+
+# Rate-Limit: Mindestabstand zwischen Requests in Millisekunden
+rate_limit_ms = 1000
+
+# ============================================================================
+# TESTNET SESSION CONFIGURATION (Phase 35)
+# ============================================================================
+# Konfiguration fuer Testnet-Trading-Sessions.
+# Analog zu shadow_paper, aber mit echten (Testnet-)Orders.
+# ============================================================================
+
+[testnet_session]
+# Testnet-Sessions aktivieren
+enabled = true
+
+# Default-Exchange fuer Testnet
+default_exchange = "kraken_testnet"
+
+# Trading-Symbol (muss vom Exchange unterstuetzt werden)
+symbol = "BTC/EUR"
+
+# Timeframe fuer Candles
+timeframe = "1m"
+
+# Polling-Intervall in Sekunden
+poll_interval_seconds = 60.0
+
+# Anzahl Warmup-Candles
+warmup_candles = 200
+
+# Start-Balance fuer Tracking (informativ, wird nicht von Exchange gelesen)
+start_balance = 10000.0
+
+# Position-Sizing: Anteil des Kapitals pro Trade
+position_fraction = 0.1
+
+# Simulierte Fee-Rate fuer PnL-Tracking (tatsaechliche Fees kommen vom Exchange)
+fee_rate = 0.0026
+
+# Simulierte Slippage in bps (fuer Vergleich mit realem Fill)
+slippage_bps = 5.0
+
+# ============================================================================
+# PHASE 37: TESTNET LIMITS & BUDGETS
+# ============================================================================
+# Kontrollierte Testnet-Limits fuer planbare, reproduzierbare Testlaeufe.
+# Diese Limits ergaenzen die LiveRiskLimits um eine zusaetzliche Schicht.
+#
+# WICHTIG: Diese Limits gelten nur fuer Testnet-Trading, nicht fuer Live!
+# ============================================================================
+
+[testnet_limits.run]
+# Limits pro einzelnem Testnet-Run
+max_notional_per_run = 1000.0    # Max. Handelsvolumen pro Run (EUR)
+max_trades_per_run = 50         # Max. Anzahl Trades pro Run
+max_duration_minutes = 240      # Max. Laufzeit pro Run (4 Stunden)
+
+[testnet_limits.daily]
+# Tages-Limits fuer Testnet-Trading
+max_notional_per_day = 5000.0   # Max. Gesamt-Notional pro Tag (EUR)
+max_trades_per_day = 200        # Max. Anzahl Trades pro Tag
+
+[testnet_limits.symbols]
+# Symbol-Whitelist fuer Testnet-Trading
+# Nur diese Symbole sind im Testnet erlaubt
+allowed = ["BTC/EUR", "ETH/EUR"]
+
+# ============================================================================
+# PHASE 37: TESTNET-SESSION-PROFILE
+# ============================================================================
+# Vordefinierte Profile fuer standardisierte Testnet-Sessions.
+# Jedes Profil beschreibt eine spezifische Test-Konfiguration.
+#
+# Verwendung: python -m scripts.orchestrate_testnet_runs --profile <name>
+# ============================================================================
+
+[testnet_profiles.ma_crossover_small]
+# Kleiner Intraday-Test mit MA-Crossover
+strategy = "ma_crossover"
+symbol = "BTC/EUR"
+timeframe = "1m"
+duration_minutes = 60
+max_notional = 500.0
+max_trades = 20
+description = "Kleiner BTC/EUR Intraday-Test (1h)"
+
+[testnet_profiles.eth_swing]
+# ETH Swing-Test mit laengerer Laufzeit
+strategy = "ma_crossover"
+symbol = "ETH/EUR"
+timeframe = "15m"
+duration_minutes = 180
+max_notional = 2000.0
+max_trades = 40
+description = "ETH Swing-Test (3h)"
+
+[testnet_profiles.btc_momentum]
+# BTC Momentum-Test mit Momentum-Strategie
+strategy = "momentum_1h"
+symbol = "BTC/EUR"
+timeframe = "5m"
+duration_minutes = 120
+max_notional = 1000.0
+max_trades = 30
+description = "BTC Momentum-Test (2h)"
+
+[testnet_profiles.quick_smoke]
+# Schneller Smoke-Test (5 Minuten)
+strategy = "ma_crossover"
+symbol = "BTC/EUR"
+timeframe = "1m"
+duration_minutes = 5
+max_notional = 100.0
+max_trades = 5
+description = "Schneller Smoke-Test (5min)"
+
+# ============================================================================
+# PHASE 37: TESTNET-ORCHESTRATION
+# ============================================================================
+# Konfiguration fuer den Testnet-Orchestrator (CLI).
+# Steuert Pfade, Auto-Reports und weitere Orchestrierungs-Optionen.
+# ============================================================================
+
+[testnet_orchestration]
+# Basisverzeichnis fuer Testnet-Runs
+runs_base_dir = "test_runs/"
+
+# Verzeichnis fuer generierte Reports
+reports_dir = "test_results/reports/"
+
+# Automatisch Report nach Run-Ende generieren
+auto_generate_report = true
+
+# Report-Format ("markdown", "html", "both")
+report_format = "markdown"
+
+# Altes Usage-Daten behalten (Tage)
+usage_retention_days = 30

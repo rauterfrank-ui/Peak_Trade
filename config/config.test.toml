@@ -1,0 +1,367 @@
+# ============================================================================
+# Peak_Trade TEST CONFIGURATION (Phase 36)
+# ============================================================================
+# Diese Config wird NUR fuer Tests verwendet.
+# NICHT fuer Development oder Production verwenden!
+#
+# Eigenschaften:
+# - Keine echten API-Keys (nur Platzhalter-ENV-Variablen)
+# - Testfreundliche Pfade (test_runs statt live_runs)
+# - Konservative, sichere Werte
+# - Minimale aber vollstaendige Konfiguration
+# ============================================================================
+
+[backtest]
+initial_cash = 10000.0
+results_dir = "test_results"
+
+[risk]
+position_sizing_method = "fixed_fractional"
+risk_per_trade = 0.01
+max_position_size = 0.25
+min_position_value = 50.0
+min_stop_distance = 0.005
+kelly_scaling = 0.5
+max_daily_loss = 0.03
+max_drawdown = 0.20
+max_positions = 2
+max_total_exposure = 0.75
+
+[data]
+default_timeframe = "1h"
+data_dir = "test_data"
+use_cache = false
+cache_format = "parquet"
+
+[live]
+enabled = false
+mode = "paper"
+exchange = "kraken"
+default_pair = "BTC/USD"
+
+[validation]
+min_sharpe = 1.5
+max_drawdown = -0.15
+min_trades = 50
+min_profit_factor = 1.3
+min_backtest_months = 6
+
+# ============================================================================
+# STRATEGIEN (minimal fuer Tests)
+# ============================================================================
+
+[strategies]
+active = ["ma_crossover", "momentum_1h", "rsi_strategy"]
+available = ["ma_crossover", "momentum_1h", "rsi_strategy", "bollinger_bands", "macd"]
+
+[strategies.defaults]
+stop_pct = 0.02
+take_profit_pct = 0.05
+use_trailing_stop = false
+trailing_stop_pct = 0.015
+position_fraction = 0.25
+min_position_value = 50.0
+min_hold_bars = 3
+max_hold_bars = 100
+warmup_bars = 200
+max_consecutive_losses = 3
+cooldown_after_stop = 5
+
+[strategy.ma_crossover]
+fast_period = 10
+slow_period = 30
+stop_pct = 0.02
+fast_window = 20
+slow_window = 50
+price_col = "close"
+position_size = 0.1
+
+[strategy.momentum_1h]
+lookback_period = 20
+entry_threshold = 0.02
+exit_threshold = -0.01
+stop_pct = 0.025
+
+[strategy.rsi_strategy]
+rsi_period = 14
+oversold = 30
+overbought = 70
+stop_pct = 0.02
+
+[strategy.rsi_reversion]
+rsi_window = 14
+lower = 30.0
+upper = 70.0
+price_col = "close"
+position_size = 0.1
+stop_pct = 0.02
+
+[strategy.breakout_donchian]
+lookback = 20
+price_col = "close"
+position_size = 0.1
+stop_pct = 0.02
+
+[strategy.bollinger_bands]
+bb_period = 20
+bb_std = 2.0
+entry_threshold = 0.95
+exit_threshold = 0.50
+stop_pct = 0.03
+
+[strategy.macd]
+fast_ema = 12
+slow_ema = 26
+signal_ema = 9
+entry_threshold = 0.0
+exit_threshold = 0.0
+stop_pct = 0.025
+
+[strategy.ecm_cycle]
+ecm_cycle_days = 3141
+ecm_confidence_threshold = 0.6
+lookback_bars = 100
+use_pi_harmonics = true
+stop_pct = 0.03
+ecm_reference_date = "2020-01-18"
+
+[strategy.trend_following]
+adx_period = 14
+adx_threshold = 25.0
+exit_threshold = 20.0
+ma_period = 50
+use_ma_filter = true
+stop_pct = 0.025
+
+[strategy.mean_reversion]
+lookback = 20
+entry_threshold = -2.0
+exit_threshold = 0.0
+use_vol_filter = false
+vol_window = 20
+max_vol_percentile = 70
+stop_pct = 0.02
+
+[strategy.vol_breakout]
+lookback_breakout = 20
+vol_window = 14
+vol_percentile = 50.0
+atr_multiple = 1.5
+side = "both"
+
+[strategy.mean_reversion_channel]
+window = 20
+num_std = 2.0
+exit_at_mean = true
+max_holding_bars = 50
+price_col = "close"
+
+[strategy.my_strategy]
+lookback_window = 20
+entry_multiplier = 1.5
+exit_multiplier = 0.5
+use_close_only = false
+stop_pct = 0.02
+
+[portfolio]
+enabled = true
+max_strategies_active = 3
+min_correlation = -0.3
+rebalance_frequency = 24
+allocation_method = "equal"
+total_capital = 10000.0
+portfolio_max_dd = -0.20
+portfolio_stop_loss = -0.05
+
+[portfolio.weights]
+ma_crossover = 0.33
+momentum_1h = 0.33
+rsi_strategy = 0.34
+
+# ============================================================================
+# SHADOW/PAPER CONFIGURATION (fuer Tests)
+# ============================================================================
+
+[shadow_paper]
+enabled = true
+mode = "paper"
+symbol = "BTC/EUR"
+timeframe = "1m"
+poll_interval_seconds = 60.0
+warmup_candles = 200
+start_balance = 10000.0
+position_fraction = 0.1
+fee_rate = 0.0026
+slippage_bps = 5.0
+
+[live_exchange]
+name = "kraken"
+use_sandbox = true
+base_url = "https://api.kraken.com"
+rate_limit_ms = 1000
+max_retries = 3
+retry_delay_seconds = 5.0
+
+[live_risk]
+enabled = true
+base_currency = "EUR"
+max_order_notional = 1000.0
+max_symbol_exposure_notional = 2000.0
+max_total_exposure_notional = 5000.0
+max_open_positions = 5
+max_daily_loss_abs = 500.0
+max_daily_loss_pct = 5.0
+block_on_violation = true
+use_experiments_for_daily_pnl = false
+
+[environment]
+mode = "paper"
+enable_live_trading = false
+require_confirm_token = true
+testnet_dry_run = true
+log_all_orders = true
+
+[shadow_paper_logging]
+enabled = true
+base_dir = "test_runs"
+flush_interval_steps = 50
+format = "parquet"
+write_markdown_report_on_finish = false
+log_ohlc_details = true
+log_order_details = true
+log_risk_details = true
+
+[live_monitoring]
+default_interval_seconds = 2.0
+default_tail_rows = 15
+use_colors = false
+
+[alerts]
+enabled = true
+min_severity = "warning"
+debounce_seconds = 60
+
+[alerts.rules]
+enable_risk_blocked = true
+enable_large_loss_abs = true
+large_loss_abs_threshold = -500.0
+enable_large_loss_pct = true
+large_loss_pct_threshold = -10.0
+enable_drawdown = false
+drawdown_threshold = -15.0
+
+[web_ui]
+enabled = false
+host = "127.0.0.1"
+port = 8001
+auto_refresh_seconds = 5
+
+# ============================================================================
+# PHASE 38: EXCHANGE CLIENT CONFIGURATION (fuer Tests)
+# ============================================================================
+
+[exchange]
+# Default-Client-Typ für Trading (Tests nutzen immer dummy)
+default_type = "dummy"
+
+# Dummy-Client Einstellungen für Tests
+[exchange.dummy]
+btc_eur_price = 50000.0
+eth_eur_price = 3000.0
+btc_usd_price = 55000.0
+fee_bps = 10.0
+slippage_bps = 5.0
+
+# ============================================================================
+# TESTNET EXCHANGE INTEGRATION (Phase 35 - fuer Tests)
+# ============================================================================
+
+[exchange.kraken_testnet]
+enabled = true
+base_url = "https://api.kraken.com"
+api_key_env_var = "KRAKEN_TESTNET_API_KEY"
+api_secret_env_var = "KRAKEN_TESTNET_API_SECRET"
+validate_only = true
+timeout_seconds = 30.0
+max_retries = 3
+rate_limit_ms = 1000
+
+[testnet_session]
+enabled = true
+default_exchange = "kraken_testnet"
+symbol = "BTC/EUR"
+timeframe = "1m"
+poll_interval_seconds = 60.0
+warmup_candles = 200
+start_balance = 10000.0
+position_fraction = 0.1
+fee_rate = 0.0026
+slippage_bps = 5.0
+
+# ============================================================================
+# SHADOW / DRY-RUN EXECUTION (fuer Legacy-Kompatibilitaet)
+# ============================================================================
+
+[shadow]
+enabled = true
+run_type = "shadow_run"
+fee_rate = 0.0005
+slippage_bps = 0.0
+base_currency = "EUR"
+log_all_orders = true
+
+[general]
+base_currency = "EUR"
+starting_capital = 10000.0
+
+# Global aktive Strategie
+active_strategy = "ma_crossover"
+
+# ============================================================================
+# PHASE 37: TESTNET LIMITS & BUDGETS (fuer Tests)
+# ============================================================================
+
+[testnet_limits.run]
+max_notional_per_run = 500.0
+max_trades_per_run = 25
+max_duration_minutes = 60
+
+[testnet_limits.daily]
+max_notional_per_day = 2000.0
+max_trades_per_day = 100
+
+[testnet_limits.symbols]
+allowed = ["BTC/EUR", "ETH/EUR", "LTC/EUR"]
+
+# ============================================================================
+# PHASE 37: TESTNET-SESSION-PROFILE (fuer Tests)
+# ============================================================================
+
+[testnet_profiles.test_profile]
+strategy = "ma_crossover"
+symbol = "BTC/EUR"
+timeframe = "1m"
+duration_minutes = 5
+max_notional = 100.0
+max_trades = 5
+description = "Test-Profil fuer Unit-Tests"
+
+[testnet_profiles.test_profile_eth]
+strategy = "ma_crossover"
+symbol = "ETH/EUR"
+timeframe = "5m"
+duration_minutes = 10
+max_notional = 200.0
+max_trades = 10
+description = "ETH Test-Profil fuer Unit-Tests"
+
+# ============================================================================
+# PHASE 37: TESTNET-ORCHESTRATION (fuer Tests)
+# ============================================================================
+
+[testnet_orchestration]
+runs_base_dir = "test_runs/"
+reports_dir = "test_results/reports/"
+auto_generate_report = false
+report_format = "markdown"
+usage_retention_days = 7

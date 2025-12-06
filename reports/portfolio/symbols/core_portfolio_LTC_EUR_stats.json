@@ -1,0 +1,31 @@
+{
+  "stats": {
+    "total_return": 0.0,
+    "max_drawdown": 0.0,
+    "cagr": 0.0,
+    "sharpe": 0.0,
+    "total_trades": 1,
+    "win_rate": 1.0,
+    "profit_factor": 0.0,
+    "blocked_trades": 0
+  },
+  "metadata": {
+    "mode": "realistic_with_risk_management",
+    "strategy_name": "",
+    "blocked_trades": 0,
+    "regime_distribution": {
+      "RANGE_LOW_VOL": 0.82,
+      "TREND_UP_LOW_VOL": 0.18
+    },
+    "regime_config": {
+      "price_col": "close",
+      "trend_window": 50,
+      "trend_threshold": 0.002,
+      "vol_window": 50,
+      "vol_threshold": 0.02
+    },
+    "symbol": "LTC/EUR",
+    "strategy_key": "ma_crossover",
+    "name": "LTC/EUR – ma_crossover"
+  }
+}

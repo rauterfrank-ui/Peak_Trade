@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Peak_Trade Leaderboards – Best Performer</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 2rem;
+            background-color: #111;
+            color: #eee;
+        }
+        h1, h2, h3 {
+            color: #fff;
+        }
+        a {
+            color: #4ea1ff;
+        }
+        .meta {
+            margin-bottom: 1.5rem;
+        }
+        .meta p {
+            margin: 0.2rem 0;
+        }
+        table.lb-table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 1200px;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+        table.lb-table th, table.lb-table td {
+            border: 1px solid #444;
+            padding: 0.35rem 0.5rem;
+        }
+        table.lb-table th {
+            background-color: #222;
+        }
+        table.lb-table tbody tr:hover {
+            background-color: #1a1a1a;
+        }
+        .section {
+            margin-bottom: 2.5rem;
+        }
+        .note {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        code {
+            background-color: #222;
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Peak_Trade – Strategy Leaderboards</h1>
+
+    <div class="meta">
+        <p><strong>Experiment-Registry:</strong> <code>reports/experiments/experiments.csv</code></p>
+        <p><strong>Ranking-Metrik:</strong> <code>total_return (desc)</code></p>
+        <p><strong>Anzahl Experimente gesamt:</strong> 14</p>
+    </div>
+
+    <div class="section">
+        <h2>1. Globales Leaderboard (Top 20)</h2>
+        <p>Alle Runs, sortiert nach <code>total_return (desc)</code>.</p>
+        <table class="dataframe lb-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>run_id</th>
+      <th>run_type</th>
+      <th>run_name</th>
+      <th>timestamp</th>
+      <th>strategy_key</th>
+      <th>symbol</th>
+      <th>portfolio_name</th>
+      <th>sweep_name</th>
+      <th>scan_name</th>
+      <th>total_return</th>
+      <th>cagr</th>
+      <th>max_drawdown</th>
+      <th>sharpe</th>
+      <th>report_dir</th>
+      <th>report_prefix</th>
+      <th>params_json</th>
+      <th>stats_json</th>
+      <th>metadata_json</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>21baef11-e89c-421a-b36e-38257bad224e</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:26:50Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>exp_sweep_demo</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.91, "TREND_UP_LOW_VOL": 0.09}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>73bc5599-1d79-40d1-b3f2-e5f38f89d0d4</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>ce2e0f98-915e-4fda-9bee-eefb2cb2fff9</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>{"fast_window": 20, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 20, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>42158ff5-1304-4ff3-a02a-4d3d838416d3</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>{"fast_window": 30, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 30, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>4d743043-f11b-4f02-b005-36fba50818c6</td>
+      <td>market_scan</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.003996</td>
+      <td>-0.0144942</td>
+      <td>-0.003996</td>
+      <td>-2.7156</td>
+      <td>reports</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.003995999999999913, "max_drawdown": -0.003995999999999913, "cagr": -0.014494224577048853, "sharpe": -2.7156011849898656, "total_trades": 3, "win_rate": 0.3333333333333333, "profit_factor": 1.6415196483167829, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+    <tr>
+      <td>ddce0e72-e882-4f94-a364-dcb2a77c7b88</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window50</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window50</td>
+      <td>{"fast_window": 30, "slow_window": 50}</td>
+      <td>{"total_return": -0.0059880079999999, "max_drawdown": -0.0059880079999999, "cagr": -0.021662578827511103, "sharpe": -3.3430185754608495, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6360930574370253, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 30, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>03d9ab4c-329c-4c81-bba3-e531f14d2a1b</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window40_slow_window50</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window40_slow_window50</td>
+      <td>{"fast_window": 40, "slow_window": 50}</td>
+      <td>{"total_return": -0.0059880079999999, "max_drawdown": -0.0059880079999999, "cagr": -0.021662578827511103, "sharpe": -3.3430185754608495, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6360930574370259, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 40, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>351c4193-40db-4afc-871e-4ce7bf9339fe</td>
+      <td>single_backtest</td>
+      <td>ma_crossover_exp_single_demo</td>
+      <td>2025-12-04T00:25:46Z</td>
+      <td>ma_crossover</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports</td>
+      <td>ma_crossover_exp_single_demo</td>
+      <td>{}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6651849908034299, "blocked_trades": 1}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 1, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "run_strategy_from_config.py"}</td>
+    </tr>
+    <tr>
+      <td>757f7d08-b583-4789-9c24-212341928eb3</td>
+      <td>single_backtest</td>
+      <td>ma_crossover_lb_demo_single</td>
+      <td>2025-12-04T00:35:37Z</td>
+      <td>ma_crossover</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports</td>
+      <td>ma_crossover_lb_demo_single</td>
+      <td>{}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6651849908034299, "blocked_trades": 1}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 1, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "run_strategy_from_config.py"}</td>
+    </tr>
+    <tr>
+      <td>fb281cd6-878f-4f0c-9cfe-fcf219409f46</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window50</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window50</td>
+      <td>{"fast_window": 10, "slow_window": 50}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 10}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 10, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>9fd0efd5-c281-41d9-9f25-1609ecd5d367</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window50</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window50</td>
+      <td>{"fast_window": 20, "slow_window": 50}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 10}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 10, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 20, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>87134c7a-0990-47ba-9d3c-789d5504ed57</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window50</td>
+      <td>2025-12-04T00:26:50Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>exp_sweep_demo</td>
+      <td>NaN</td>
+      <td>-0.00797603</td>
+      <td>-0.0287789</td>
+      <td>-0.00797603</td>
+      <td>-3.88024</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window50</td>
+      <td>{"fast_window": 10, "slow_window": 50}</td>
+      <td>{"total_return": -0.007976031983999928, "max_drawdown": -0.007976031983999928, "cagr": -0.02877893384661545, "sharpe": -3.880238394738137, "total_trades": 5, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 14}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 14, "regime_distribution": {"RANGE_LOW_VOL": 0.91, "TREND_UP_LOW_VOL": 0.09}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>67735c0f-430e-4a6c-bc69-35d41c6e50ec</td>
+      <td>market_scan</td>
+      <td>ma_crossover_LTC_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>LTC/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.00797603</td>
+      <td>-0.0287789</td>
+      <td>-0.00797603</td>
+      <td>-3.88024</td>
+      <td>reports</td>
+      <td>ma_crossover_LTC_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.00797603198400011, "max_drawdown": -0.00797603198400011, "cagr": -0.02877893384661545, "sharpe": -3.880238394738137, "total_trades": 5, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 10}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 10, "regime_distribution": {"RANGE_LOW_VOL": 0.78, "TREND_UP_LOW_VOL": 0.22}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+    <tr>
+      <td>6c65b941-5169-4d14-b767-3fa6764f25aa</td>
+      <td>market_scan</td>
+      <td>ma_crossover_ETH_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>ETH/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.00996008</td>
+      <td>-0.0358437</td>
+      <td>-0.00996008</td>
+      <td>-4.36101</td>
+      <td>reports</td>
+      <td>ma_crossover_ETH_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.009960079920031967, "max_drawdown": -0.009960079920031967, "cagr": -0.035843665807902325, "sharpe": -4.361011471279522, "total_trades": 6, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 17}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 17, "regime_distribution": {"RANGE_LOW_VOL": 0.87, "TREND_UP_LOW_VOL": 0.13}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+        <h2>2. Top-Runs pro Symbol (Top 5 je Symbol)</h2>
+        <p>Beste Runs pro Symbol, basierend auf <code>total_return (desc)</code>.</p>
+        <table class="dataframe lb-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>run_id</th>
+      <th>run_type</th>
+      <th>run_name</th>
+      <th>timestamp</th>
+      <th>strategy_key</th>
+      <th>symbol</th>
+      <th>portfolio_name</th>
+      <th>sweep_name</th>
+      <th>scan_name</th>
+      <th>total_return</th>
+      <th>cagr</th>
+      <th>max_drawdown</th>
+      <th>sharpe</th>
+      <th>report_dir</th>
+      <th>report_prefix</th>
+      <th>params_json</th>
+      <th>stats_json</th>
+      <th>metadata_json</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>21baef11-e89c-421a-b36e-38257bad224e</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:26:50Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>exp_sweep_demo</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.91, "TREND_UP_LOW_VOL": 0.09}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>73bc5599-1d79-40d1-b3f2-e5f38f89d0d4</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>ce2e0f98-915e-4fda-9bee-eefb2cb2fff9</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>{"fast_window": 20, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 20, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>42158ff5-1304-4ff3-a02a-4d3d838416d3</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>{"fast_window": 30, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 30, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>4d743043-f11b-4f02-b005-36fba50818c6</td>
+      <td>market_scan</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.003996</td>
+      <td>-0.0144942</td>
+      <td>-0.003996</td>
+      <td>-2.7156</td>
+      <td>reports</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.003995999999999913, "max_drawdown": -0.003995999999999913, "cagr": -0.014494224577048853, "sharpe": -2.7156011849898656, "total_trades": 3, "win_rate": 0.3333333333333333, "profit_factor": 1.6415196483167829, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+    <tr>
+      <td>67735c0f-430e-4a6c-bc69-35d41c6e50ec</td>
+      <td>market_scan</td>
+      <td>ma_crossover_LTC_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>LTC/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.00797603</td>
+      <td>-0.0287789</td>
+      <td>-0.00797603</td>
+      <td>-3.88024</td>
+      <td>reports</td>
+      <td>ma_crossover_LTC_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.00797603198400011, "max_drawdown": -0.00797603198400011, "cagr": -0.02877893384661545, "sharpe": -3.880238394738137, "total_trades": 5, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 10}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 10, "regime_distribution": {"RANGE_LOW_VOL": 0.78, "TREND_UP_LOW_VOL": 0.22}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+    <tr>
+      <td>6c65b941-5169-4d14-b767-3fa6764f25aa</td>
+      <td>market_scan</td>
+      <td>ma_crossover_ETH_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>ETH/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.00996008</td>
+      <td>-0.0358437</td>
+      <td>-0.00996008</td>
+      <td>-4.36101</td>
+      <td>reports</td>
+      <td>ma_crossover_ETH_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.009960079920031967, "max_drawdown": -0.009960079920031967, "cagr": -0.035843665807902325, "sharpe": -4.361011471279522, "total_trades": 6, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 17}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 17, "regime_distribution": {"RANGE_LOW_VOL": 0.87, "TREND_UP_LOW_VOL": 0.13}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+        <h2>3. Top-Runs pro Strategie (Top 5 je Strategie)</h2>
+        <p>Beste Runs pro Strategy-Key, basierend auf <code>total_return (desc)</code>.</p>
+        <table class="dataframe lb-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>run_id</th>
+      <th>run_type</th>
+      <th>run_name</th>
+      <th>timestamp</th>
+      <th>strategy_key</th>
+      <th>symbol</th>
+      <th>portfolio_name</th>
+      <th>sweep_name</th>
+      <th>scan_name</th>
+      <th>total_return</th>
+      <th>cagr</th>
+      <th>max_drawdown</th>
+      <th>sharpe</th>
+      <th>report_dir</th>
+      <th>report_prefix</th>
+      <th>params_json</th>
+      <th>stats_json</th>
+      <th>metadata_json</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>21baef11-e89c-421a-b36e-38257bad224e</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:26:50Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>exp_sweep_demo</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.91, "TREND_UP_LOW_VOL": 0.09}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>73bc5599-1d79-40d1-b3f2-e5f38f89d0d4</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>ce2e0f98-915e-4fda-9bee-eefb2cb2fff9</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>{"fast_window": 20, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 20, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>42158ff5-1304-4ff3-a02a-4d3d838416d3</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>{"fast_window": 30, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 30, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>4d743043-f11b-4f02-b005-36fba50818c6</td>
+      <td>market_scan</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.003996</td>
+      <td>-0.0144942</td>
+      <td>-0.003996</td>
+      <td>-2.7156</td>
+      <td>reports</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.003995999999999913, "max_drawdown": -0.003995999999999913, "cagr": -0.014494224577048853, "sharpe": -2.7156011849898656, "total_trades": 3, "win_rate": 0.3333333333333333, "profit_factor": 1.6415196483167829, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+        <h2>4. Top-Runs pro Run-Typ (Top 5 je Typ)</h2>
+        <p>z.B. <code>single_backtest</code>, <code>sweep</code>, <code>portfolio</code>, <code>market_scan</code>.</p>
+        <table class="dataframe lb-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>run_id</th>
+      <th>run_type</th>
+      <th>run_name</th>
+      <th>timestamp</th>
+      <th>strategy_key</th>
+      <th>symbol</th>
+      <th>portfolio_name</th>
+      <th>sweep_name</th>
+      <th>scan_name</th>
+      <th>total_return</th>
+      <th>cagr</th>
+      <th>max_drawdown</th>
+      <th>sharpe</th>
+      <th>report_dir</th>
+      <th>report_prefix</th>
+      <th>params_json</th>
+      <th>stats_json</th>
+      <th>metadata_json</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>21baef11-e89c-421a-b36e-38257bad224e</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:26:50Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>exp_sweep_demo</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.91, "TREND_UP_LOW_VOL": 0.09}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>73bc5599-1d79-40d1-b3f2-e5f38f89d0d4</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>ce2e0f98-915e-4fda-9bee-eefb2cb2fff9</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>{"fast_window": 20, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 20, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>42158ff5-1304-4ff3-a02a-4d3d838416d3</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>{"fast_window": 30, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 30, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>4d743043-f11b-4f02-b005-36fba50818c6</td>
+      <td>market_scan</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.003996</td>
+      <td>-0.0144942</td>
+      <td>-0.003996</td>
+      <td>-2.7156</td>
+      <td>reports</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.003995999999999913, "max_drawdown": -0.003995999999999913, "cagr": -0.014494224577048853, "sharpe": -2.7156011849898656, "total_trades": 3, "win_rate": 0.3333333333333333, "profit_factor": 1.6415196483167829, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+    <tr>
+      <td>ddce0e72-e882-4f94-a364-dcb2a77c7b88</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window50</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window50</td>
+      <td>{"fast_window": 30, "slow_window": 50}</td>
+      <td>{"total_return": -0.0059880079999999, "max_drawdown": -0.0059880079999999, "cagr": -0.021662578827511103, "sharpe": -3.3430185754608495, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6360930574370253, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 30, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>351c4193-40db-4afc-871e-4ce7bf9339fe</td>
+      <td>single_backtest</td>
+      <td>ma_crossover_exp_single_demo</td>
+      <td>2025-12-04T00:25:46Z</td>
+      <td>ma_crossover</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports</td>
+      <td>ma_crossover_exp_single_demo</td>
+      <td>{}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6651849908034299, "blocked_trades": 1}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 1, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "run_strategy_from_config.py"}</td>
+    </tr>
+    <tr>
+      <td>757f7d08-b583-4789-9c24-212341928eb3</td>
+      <td>single_backtest</td>
+      <td>ma_crossover_lb_demo_single</td>
+      <td>2025-12-04T00:35:37Z</td>
+      <td>ma_crossover</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports</td>
+      <td>ma_crossover_lb_demo_single</td>
+      <td>{}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6651849908034299, "blocked_trades": 1}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 1, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "run_strategy_from_config.py"}</td>
+    </tr>
+    <tr>
+      <td>67735c0f-430e-4a6c-bc69-35d41c6e50ec</td>
+      <td>market_scan</td>
+      <td>ma_crossover_LTC_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>LTC/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.00797603</td>
+      <td>-0.0287789</td>
+      <td>-0.00797603</td>
+      <td>-3.88024</td>
+      <td>reports</td>
+      <td>ma_crossover_LTC_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.00797603198400011, "max_drawdown": -0.00797603198400011, "cagr": -0.02877893384661545, "sharpe": -3.880238394738137, "total_trades": 5, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 10}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 10, "regime_distribution": {"RANGE_LOW_VOL": 0.78, "TREND_UP_LOW_VOL": 0.22}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+    <tr>
+      <td>6c65b941-5169-4d14-b767-3fa6764f25aa</td>
+      <td>market_scan</td>
+      <td>ma_crossover_ETH_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>ETH/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.00996008</td>
+      <td>-0.0358437</td>
+      <td>-0.00996008</td>
+      <td>-4.36101</td>
+      <td>reports</td>
+      <td>ma_crossover_ETH_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.009960079920031967, "max_drawdown": -0.009960079920031967, "cagr": -0.035843665807902325, "sharpe": -4.361011471279522, "total_trades": 6, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 17}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 17, "regime_distribution": {"RANGE_LOW_VOL": 0.87, "TREND_UP_LOW_VOL": 0.13}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+        <h2>5. Vollstaendige Registry (Auszug)</h2>
+        <p>Die vollstaendige Experiment-Registry (ggf. gekuerzt auf die ersten Zeilen).</p>
+        <table class="dataframe lb-table lb-table-all">
+  <thead>
+    <tr style="text-align: right;">
+      <th>run_id</th>
+      <th>run_type</th>
+      <th>run_name</th>
+      <th>timestamp</th>
+      <th>strategy_key</th>
+      <th>symbol</th>
+      <th>portfolio_name</th>
+      <th>sweep_name</th>
+      <th>scan_name</th>
+      <th>total_return</th>
+      <th>cagr</th>
+      <th>max_drawdown</th>
+      <th>sharpe</th>
+      <th>report_dir</th>
+      <th>report_prefix</th>
+      <th>params_json</th>
+      <th>stats_json</th>
+      <th>metadata_json</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>351c4193-40db-4afc-871e-4ce7bf9339fe</td>
+      <td>single_backtest</td>
+      <td>ma_crossover_exp_single_demo</td>
+      <td>2025-12-04T00:25:46Z</td>
+      <td>ma_crossover</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports</td>
+      <td>ma_crossover_exp_single_demo</td>
+      <td>{}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6651849908034299, "blocked_trades": 1}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 1, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "run_strategy_from_config.py"}</td>
+    </tr>
+    <tr>
+      <td>4d743043-f11b-4f02-b005-36fba50818c6</td>
+      <td>market_scan</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.003996</td>
+      <td>-0.0144942</td>
+      <td>-0.003996</td>
+      <td>-2.7156</td>
+      <td>reports</td>
+      <td>ma_crossover_BTC_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.003995999999999913, "max_drawdown": -0.003995999999999913, "cagr": -0.014494224577048853, "sharpe": -2.7156011849898656, "total_trades": 3, "win_rate": 0.3333333333333333, "profit_factor": 1.6415196483167829, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+    <tr>
+      <td>6c65b941-5169-4d14-b767-3fa6764f25aa</td>
+      <td>market_scan</td>
+      <td>ma_crossover_ETH_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>ETH/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.00996008</td>
+      <td>-0.0358437</td>
+      <td>-0.00996008</td>
+      <td>-4.36101</td>
+      <td>reports</td>
+      <td>ma_crossover_ETH_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.009960079920031967, "max_drawdown": -0.009960079920031967, "cagr": -0.035843665807902325, "sharpe": -4.361011471279522, "total_trades": 6, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 17}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 17, "regime_distribution": {"RANGE_LOW_VOL": 0.87, "TREND_UP_LOW_VOL": 0.13}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+    <tr>
+      <td>67735c0f-430e-4a6c-bc69-35d41c6e50ec</td>
+      <td>market_scan</td>
+      <td>ma_crossover_LTC_EUR_default_universe</td>
+      <td>2025-12-04T00:26:40Z</td>
+      <td>ma_crossover</td>
+      <td>LTC/EUR</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>default_universe</td>
+      <td>-0.00797603</td>
+      <td>-0.0287789</td>
+      <td>-0.00797603</td>
+      <td>-3.88024</td>
+      <td>reports</td>
+      <td>ma_crossover_LTC_EUR_default_universe</td>
+      <td>{}</td>
+      <td>{"total_return": -0.00797603198400011, "max_drawdown": -0.00797603198400011, "cagr": -0.02877893384661545, "sharpe": -3.880238394738137, "total_trades": 5, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 10}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 10, "regime_distribution": {"RANGE_LOW_VOL": 0.78, "TREND_UP_LOW_VOL": 0.22}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "scan_markets.py", "universe": ["BTC/EUR", "ETH/EUR", "LTC/EUR"]}</td>
+    </tr>
+    <tr>
+      <td>87134c7a-0990-47ba-9d3c-789d5504ed57</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window50</td>
+      <td>2025-12-04T00:26:50Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>exp_sweep_demo</td>
+      <td>NaN</td>
+      <td>-0.00797603</td>
+      <td>-0.0287789</td>
+      <td>-0.00797603</td>
+      <td>-3.88024</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window50</td>
+      <td>{"fast_window": 10, "slow_window": 50}</td>
+      <td>{"total_return": -0.007976031983999928, "max_drawdown": -0.007976031983999928, "cagr": -0.02877893384661545, "sharpe": -3.880238394738137, "total_trades": 5, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 14}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 14, "regime_distribution": {"RANGE_LOW_VOL": 0.91, "TREND_UP_LOW_VOL": 0.09}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>21baef11-e89c-421a-b36e-38257bad224e</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:26:50Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>exp_sweep_demo</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_exp_sweep_demo_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.91, "TREND_UP_LOW_VOL": 0.09}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>757f7d08-b583-4789-9c24-212341928eb3</td>
+      <td>single_backtest</td>
+      <td>ma_crossover_lb_demo_single</td>
+      <td>2025-12-04T00:35:37Z</td>
+      <td>ma_crossover</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports</td>
+      <td>ma_crossover_lb_demo_single</td>
+      <td>{}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6651849908034299, "blocked_trades": 1}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 1, "regime_distribution": {"RANGE_LOW_VOL": 0.83, "TREND_UP_LOW_VOL": 0.17}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "runner": "run_strategy_from_config.py"}</td>
+    </tr>
+    <tr>
+      <td>fb281cd6-878f-4f0c-9cfe-fcf219409f46</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window50</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window50</td>
+      <td>{"fast_window": 10, "slow_window": 50}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 10}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 10, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>73bc5599-1d79-40d1-b3f2-e5f38f89d0d4</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window10_slow_window100</td>
+      <td>{"fast_window": 10, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 10, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>9fd0efd5-c281-41d9-9f25-1609ecd5d367</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window50</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window50</td>
+      <td>{"fast_window": 20, "slow_window": 50}</td>
+      <td>{"total_return": -0.005988008000000082, "max_drawdown": -0.005988008000000082, "cagr": -0.021662578827511103, "sharpe": -3.34301857546085, "total_trades": 4, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 10}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 10, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 20, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>ce2e0f98-915e-4fda-9bee-eefb2cb2fff9</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window20_slow_window100</td>
+      <td>{"fast_window": 20, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 20, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>ddce0e72-e882-4f94-a364-dcb2a77c7b88</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window50</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window50</td>
+      <td>{"fast_window": 30, "slow_window": 50}</td>
+      <td>{"total_return": -0.0059880079999999, "max_drawdown": -0.0059880079999999, "cagr": -0.021662578827511103, "sharpe": -3.3430185754608495, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6360930574370253, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 30, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>42158ff5-1304-4ff3-a02a-4d3d838416d3</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window30_slow_window100</td>
+      <td>{"fast_window": 30, "slow_window": 100}</td>
+      <td>{"total_return": 0.0, "max_drawdown": 0.0, "cagr": 0.0, "sharpe": 0.0, "total_trades": 0, "win_rate": 0.0, "profit_factor": 0.0, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 30, "slow_window": 100}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+    <tr>
+      <td>03d9ab4c-329c-4c81-bba3-e531f14d2a1b</td>
+      <td>sweep</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window40_slow_window50</td>
+      <td>2025-12-04T00:35:42Z</td>
+      <td>ma_crossover</td>
+      <td>BTC/EUR</td>
+      <td>NaN</td>
+      <td>lb_demo_sweep</td>
+      <td>NaN</td>
+      <td>-0.00598801</td>
+      <td>-0.0216626</td>
+      <td>-0.00598801</td>
+      <td>-3.34302</td>
+      <td>reports/sweeps</td>
+      <td>ma_crossover_BTC_EUR_lb_demo_sweep_fast_window40_slow_window50</td>
+      <td>{"fast_window": 40, "slow_window": 50}</td>
+      <td>{"total_return": -0.0059880079999999, "max_drawdown": -0.0059880079999999, "cagr": -0.021662578827511103, "sharpe": -3.3430185754608495, "total_trades": 4, "win_rate": 0.25, "profit_factor": 0.6360930574370259, "blocked_trades": 0}</td>
+      <td>{"mode": "realistic_with_risk_management", "strategy_name": "", "blocked_trades": 0, "regime_distribution": {"RANGE_LOW_VOL": 0.86, "TREND_UP_LOW_VOL": 0.14}, "regime_config": {"price_col": "close", "trend_window": 50, "trend_threshold": 0.002, "vol_window": 50, "vol_threshold": 0.02}, "symbol": "BTC/EUR", "strategy_key": "ma_crossover", "params": {"fast_window": 40, "slow_window": 50}, "runner": "sweep_parameters.py", "sweep_name": "ma_crossover_window_sweep"}</td>
+    </tr>
+  </tbody>
+</table>
+        <div class="note">
+            <p>Hinweis: Die vollstaendige Registry liegt als CSV unter <code>reports/experiments/experiments.csv</code> und kann in Pandas, Excel etc. geladen werden.</p>
+        </div>
+    </div>
+</body>
+</html>

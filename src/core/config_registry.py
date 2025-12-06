@@ -29,8 +29,8 @@ except ImportError:
         )
 
 
-# Default Config-Pfad
-DEFAULT_CONFIG_PATH = Path("config/config.toml")
+# Default Config-Pfad (relativ zum Projekt-Root)
+DEFAULT_CONFIG_PATH = Path("config.toml")
 
 
 @dataclass

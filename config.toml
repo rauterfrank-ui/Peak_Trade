@@ -1,0 +1,733 @@
+# ============================================================================
+# Peak_Trade Konfiguration (Simplified for OOP Strategy API)
+# ============================================================================
+# Stand: Dezember 2024
+# WICHTIG: Keine Secrets hier! API-Keys gehören in .env oder Umgebungsvariablen
+# ============================================================================
+
+# ============================================================================
+# ENVIRONMENT & SAFETY (Phase 17)
+# ============================================================================
+# Steuert die Trading-Umgebung und Safety-Mechanismen.
+# WICHTIG: Live-Trading ist in dieser Phase NICHT implementiert!
+#
+# mode:
+#   - "paper"   = Simulation / Backtest (Default, sicher)
+#   - "testnet" = Testnet-Orders (aktuell nur Dry-Run)
+#   - "live"    = Echte Orders (NICHT implementiert!)
+#
+# Safety-Layer:
+#   - enable_live_trading: Zusätzlicher Schalter (muss true sein für Live)
+#   - require_confirm_token: Erfordert Bestätigungs-Token
+#   - confirm_token: Muss "I_KNOW_WHAT_I_AM_DOING" sein für Live
+#   - testnet_dry_run: Wenn true, werden Testnet-Orders nur geloggt
+# ============================================================================
+[environment]
+mode = "paper"
+enable_live_trading = false
+require_confirm_token = true
+confirm_token = ""
+testnet_dry_run = true
+log_all_orders = true
+
+# ============================================================================
+# SHADOW / DRY-RUN EXECUTION (Phase 24)
+# ============================================================================
+# Shadow-/Dry-Run-Modus für quasi-realistische Execution-Simulation.
+# WICHTIG: Shadow-Modus sendet KEINE echten Orders an Exchanges!
+#
+# Anwendungsfälle:
+#   - Strategien mit realistischer Execution simulieren
+#   - "Shadow-Live": Strategien parallel zum Markt simulieren
+#   - Dry-Run vor echtem Testnet/Live-Einsatz
+#
+# fee_rate: Fee als Dezimalzahl (0.0005 = 5 bps = 0.05%)
+# slippage_bps: Slippage in Basispunkten (5 = 0.05%)
+# ============================================================================
+[shadow]
+enabled = true
+run_type = "shadow_run"
+fee_rate = 0.0005              # 5 bps = 0.05%
+slippage_bps = 0.0             # 0 bps (konservativ)
+base_currency = "EUR"
+log_all_orders = true
+
+[general]
+base_currency = "EUR"
+starting_capital = 10_000.0
+
+# ============================================================================
+# ACTIVE STRATEGY
+# ============================================================================
+# Global aktive Strategie (kann per CLI überschrieben werden)
+# Verfügbare Strategien: "ma_crossover", "rsi_reversion", "breakout_donchian"
+active_strategy = "ma_crossover"
+
+[backtest]
+# Startkapital für Backtests
+initial_cash = 10_000.0
+
+# Verzeichnis für Backtest-Ergebnisse
+results_dir = "results"
+
+# ============================================================================
+# VALIDATION (Mindestanforderungen für Live-Trading)
+# ============================================================================
+[validation]
+min_sharpe = 1.5
+max_drawdown = -0.15
+min_trades = 50
+min_profit_factor = 1.3
+min_backtest_months = 6
+
+[risk]
+# ===== Position Sizing =====
+# Methode: "fixed_fractional" oder "kelly"
+position_sizing_method = "fixed_fractional"
+
+# Maximales Risiko pro Trade (1% = 0.01)
+# KRITISCH: Niemals über 2% gehen!
+risk_per_trade = 0.01
+
+# Maximale Positionsgröße (% des Kontos)
+# NIEMALS über 50% einer einzelnen Position!
+max_position_size = 0.25
+
+# Minimaler Positionswert in USD
+# Verhindert zu kleine Positionen (Gebühren!)
+min_position_value = 50.0
+
+# Minimale Stop-Distanz (%)
+# Zu enge Stops = Noise-Trading
+min_stop_distance = 0.005
+
+# Kelly-Criterion Scaling (nur wenn method="kelly")
+# Typisch: 0.25 - 0.5 (konservativ)
+kelly_scaling = 0.5
+
+# ===== Portfolio Risk Limits =====
+# Maximaler Tagesverlust (Kill-Switch)
+# Bei Erreichen: Alle Positionen schließen, Trading stoppen
+max_daily_loss = 0.03
+
+# Maximaler Portfolio-Drawdown
+# Überschreitung führt zu Trading-Stop
+max_drawdown = 0.20
+
+# Maximale Anzahl paralleler Positionen
+max_positions = 2
+
+# Maximales Gesamt-Exposure (Summe aller Positionswerte / Equity)
+max_total_exposure = 0.75
+
+[data]
+# Standard-Timeframe für OHLCV-Daten
+default_timeframe = "1h"
+
+# Daten-Verzeichnis (nicht ins Repo!)
+data_dir = "data"
+
+# Cache-Settings
+use_cache = true
+cache_format = "parquet"
+
+# ============================================================================
+# POSITION SIZING
+# ============================================================================
+[position_sizing]
+# Position-Sizing-Methode
+# Optionen:
+#   "noop"            - Signal direkt als Units (1, -1, 0)
+#   "fixed_size"      - Feste Anzahl Units pro Trade
+#   "fixed_fraction"  - Prozentsatz der Equity pro Trade
+type = "fixed_fraction"
+
+# Parameter für type="fixed_size"
+# Anzahl Units (z.B. BTC, ETH) pro vollem Signal
+units = 1.0
+
+# Parameter für type="fixed_fraction"
+# Anteil der Equity, der pro Trade investiert wird
+# 0.1 = 10% der verfügbaren Equity
+fraction = 0.1
+
+# ============================================================================
+# RISK MANAGEMENT
+# ============================================================================
+[risk_management]
+# Risk-Management-Strategie
+# Optionen:
+#   "noop"            - Kein Risk-Management (Default)
+#   "max_drawdown"    - Stoppt Trading bei maximalen Drawdown
+#   "equity_floor"    - Stoppt Trading bei Unterschreiten eines Equity-Floors
+type = "max_drawdown"
+
+# Parameter für type="max_drawdown"
+# Maximaler Drawdown vom Peak (0.25 = 25%)
+# Trading wird gestoppt wenn Drawdown >= max_drawdown
+max_drawdown = 0.25
+
+# Parameter für type="equity_floor"
+# Absoluter Equity-Floor (z.B. 5000.0 €)
+# Trading wird gestoppt wenn Equity <= equity_floor
+equity_floor = 5000.0
+
+# ============================================================================
+# STRATEGIE-KONFIGURATIONEN
+# ============================================================================
+
+[strategy.ma_crossover]
+# Moving Average Crossover Parameter
+fast_window = 20
+slow_window = 50
+price_col = "close"
+
+# Position Sizing
+position_size = 0.1   # 10% vom Kapital pro Trade
+
+# Stop-Loss in Prozent
+stop_pct = 0.02
+
+# Optional: Take-Profit
+# take_profit_pct = 0.05
+
+[strategy.rsi_reversion]
+# RSI Mean-Reversion Strategie (neue OOP-Version)
+rsi_window = 14
+lower = 30.0          # Oversold-Level (Long Entry)
+upper = 70.0          # Overbought-Level (Short Entry)
+price_col = "close"
+position_size = 0.1
+stop_pct = 0.02
+
+[strategy.breakout_donchian]
+# Donchian Channel Breakout Strategie
+lookback = 20         # Donchian-Channel-Periode
+price_col = "close"
+position_size = 0.1
+stop_pct = 0.02
+
+[strategy.momentum_1h]
+# Momentum-Strategie basierend auf Kursänderung über N Perioden
+lookback_period = 20      # Lookback-Fenster für Momentum
+entry_threshold = 0.02    # Min. 2% Momentum für Entry
+exit_threshold = -0.01    # Exit bei -1% Momentum
+stop_pct = 0.025          # 2.5% Stop-Loss
+
+[strategy.rsi_strategy]
+# RSI Mean-Reversion-Strategie
+rsi_period = 14          # RSI-Berechnungsperiode
+oversold = 30            # Oversold-Level (Entry)
+overbought = 70          # Overbought-Level (Exit)
+stop_pct = 0.02          # 2% Stop-Loss
+
+[strategy.bollinger_bands]
+# Bollinger Bands Mean-Reversion
+bb_period = 20           # Periode für Moving Average
+bb_std = 2.0             # Standard-Abweichungen (2 = 95%)
+entry_threshold = 0.95   # Entry bei 95% der unteren Band
+exit_threshold = 0.50    # Exit bei Mittel-Band
+stop_pct = 0.03          # 3% Stop-Loss
+
+[strategy.macd]
+# MACD Trend-Following
+fast_ema = 12            # Schnelle EMA
+slow_ema = 26            # Langsame EMA
+signal_ema = 9           # Signal-Linie
+entry_threshold = 0.0    # Entry bei MACD > Signal
+exit_threshold = 0.0     # Exit bei MACD < Signal
+stop_pct = 0.025         # 2.5% Stop-Loss
+
+[strategy.ecm_cycle]
+# ECM (Economic Confidence Model) basierte Strategie
+# Armstrong's Pi-Zyklus: 8.6 Jahre = 3141 Tage
+ecm_cycle_days = 3141           # Pi * 1000 Tage
+ecm_confidence_threshold = 0.6  # Min. Confidence für Entry
+ecm_reference_date = "2020-01-18"  # Bekannter ECM-Turning-Point
+lookback_bars = 100             # Lookback für Trend-MA
+stop_pct = 0.03                 # 3% Stop-Loss
+
+# ============================================================================
+# PHASE 18: RESEARCH PLAYGROUND BASELINE STRATEGIEN
+# ============================================================================
+
+[strategy.trend_following]
+# ADX-basierte Trend-Following-Strategie
+# Geeignet für: Trending Märkte
+adx_period = 14          # Periode für ADX-Indikator
+adx_threshold = 25.0     # ADX über diesem Wert = starker Trend
+exit_threshold = 20.0    # ADX unter diesem Wert = Exit
+ma_period = 50           # Periode für MA-Trendfilter
+use_ma_filter = true     # Wenn true, muss Preis über MA sein
+stop_pct = 0.025         # 2.5% Stop-Loss
+
+[strategy.mean_reversion]
+# Z-Score Mean-Reversion-Strategie
+# Geeignet für: Seitwärtsmärkte (Ranging)
+lookback = 20            # Periode für MA und Std
+entry_threshold = -2.0   # Entry bei Z-Score < -2.0 (überverkauft)
+exit_threshold = 0.0     # Exit bei Z-Score > 0.0 (zurück zum Mittel)
+use_vol_filter = false   # Wenn true, nur bei niedriger Vol handeln
+vol_window = 20          # Fenster für Volatilitätsberechnung
+max_vol_percentile = 70  # Max. Vol-Perzentile für Entry
+stop_pct = 0.02          # 2% Stop-Loss
+
+# ============================================================================
+# PHASE 27: STRATEGY RESEARCH TRACK - NEUE STRATEGIEN
+# ============================================================================
+
+[strategy.vol_breakout]
+# Volatility Breakout Strategy (ATR-basiert)
+# Geeignet für: Märkte mit Breakouts nach Volatilitätskontraktion
+lookback_breakout = 20   # Lookback für n-Bar Hoch/Tief
+vol_window = 14          # Fenster für ATR-Berechnung
+vol_percentile = 50.0    # Volatilitäts-Perzentil für Filter (0-100)
+atr_multiple = 1.5       # ATR-Multiple für Breakout-Bestätigung
+side = "both"            # Trading-Richtung: "long", "short", oder "both"
+
+[strategy.mean_reversion_channel]
+# Mean Reversion Channel Strategy (Bollinger-ähnlich)
+# Geeignet für: Seitwärtsmärkte (Ranging)
+window = 20              # Lookback für MA und Std-Berechnung
+num_std = 2.0            # Anzahl Standardabweichungen für Bänder
+exit_at_mean = true      # Exit bei Rückkehr zum Mean (sonst: zum Band)
+max_holding_bars = 50    # Max. Haltedauer in Bars (null = unbegrenzt)
+price_col = "close"      # Spalte für Preisdaten
+
+[strategy.rsi_reversion_advanced]
+# RSI Mean-Reversion Strategie (Phase 27 erweitert)
+# Geeignet für: Seitwärtsmärkte mit Übertreibungen
+# HINWEIS: Umbenannt von rsi_reversion um Duplikat zu vermeiden
+rsi_window = 14          # RSI-Berechnungsperiode
+lower = 30.0             # Oversold-Level (Long Entry)
+upper = 70.0             # Overbought-Level (Short Entry)
+exit_lower = 50.0        # RSI-Level für Long-Exit (Rückkehr zur Mitte)
+exit_upper = 50.0        # RSI-Level für Short-Exit (Rückkehr zur Mitte)
+use_trend_filter = false # Aktiviert MA-Trendfilter
+trend_ma_window = 50     # MA-Periode für Trendfilter
+use_wilder = true        # Verwendet Wilder-Smoothing (stabiler)
+price_col = "close"      # Preis-Spalte
+
+[strategy.my_strategy]
+# ATR-basierte Volatility-Breakout-Strategie
+# Geeignet für: Märkte mit klaren Breakouts nach Konsolidierung
+lookback_window = 20     # Periode für MA und ATR-Berechnung
+entry_multiplier = 1.5   # ATR-Multiplikator für Entry-Band
+exit_multiplier = 0.5    # ATR-Multiplikator für Exit-Band
+use_close_only = false   # Wenn true, vereinfachte Volatilität nur aus Close
+stop_pct = 0.02          # 2% Stop-Loss
+
+# ============================================================================
+# STRATEGIEN-REGISTRY
+# ============================================================================
+[strategies]
+# Liste aller aktuell AKTIVEN Strategien für Backtests/Portfolio
+active = ["ma_crossover", "momentum_1h", "rsi_strategy"]
+
+# Alle verfügbaren Strategien
+available = [
+    "ma_crossover",
+    "momentum_1h",
+    "rsi_strategy",
+    "bollinger_bands",
+    "macd",
+    "ecm_cycle",
+    "trend_following",
+    "mean_reversion",
+    "my_strategy",
+    # Phase 27: Strategy Research Track
+    "vol_breakout",
+    "mean_reversion_channel",
+    "rsi_reversion",
+]
+
+# Default-Parameter für ALLE Strategien (sofern nicht überschrieben)
+[strategies.defaults]
+# Risk Management Defaults
+stop_pct = 0.02              # Standard Stop-Loss: 2%
+take_profit_pct = 0.05       # Standard Take-Profit: 5%
+use_trailing_stop = false    # Trailing-Stop aktivieren?
+trailing_stop_pct = 0.015    # Trailing-Stop-Distanz: 1.5%
+
+# Position Sizing Defaults
+position_fraction = 0.25     # 25% des Kapitals pro Trade
+min_position_value = 50.0    # Min. Tradegröße in USD
+
+# Lifecycle / Timing Defaults
+min_hold_bars = 3            # Min. Haltedauer in Bars
+max_hold_bars = 100          # Max. Haltedauer (Timeout-Exit)
+warmup_bars = 200            # Min. Bars für Indikator-Initialisierung
+
+# Circuit Breakers
+max_consecutive_losses = 3   # Kill-Switch nach N Verlusten
+cooldown_after_stop = 5      # Bars Pause nach Stop-Loss
+
+# ============================================================================
+# MARKET SCANNER / SCREENER
+# ============================================================================
+[scan]
+# Name des Scan-Universums
+name = "default_universe"
+
+# Liste der zu scannenden Märkte/Symbole
+universe = ["BTC/EUR", "ETH/EUR", "LTC/EUR"]
+
+# Sortierung der Ergebnisse
+# Optionen: "total_return", "sharpe", "max_drawdown", "profit_factor", "total_trades"
+sort_by = "total_return"
+
+# Absteigende Sortierung (beste zuerst)
+sort_desc = true
+
+# Anzahl der Bars für jeden Scan-Backtest
+scan_bars = 200
+
+# ============================================================================
+# PORTFOLIO (Multi-Asset & Multi-Strategy)
+# ============================================================================
+[portfolio]
+# Name dieses Portfolios (für Reports etc.)
+name = "core_portfolio"
+
+# Multi-Strategy-Portfolio-Einstellungen
+enabled = true
+max_strategies_active = 3     # Max. gleichzeitig aktive Strategien
+min_correlation = -0.3        # Min. Korrelation zwischen Strategien
+rebalance_frequency = 24      # Rebalancing alle N Bars
+
+# Capital Allocation
+allocation_method = "equal"   # "equal", "risk_parity", "sharpe_weighted", "manual"
+total_capital = 10_000.0      # Gesamtkapital für Portfolio
+
+# Portfolio-Level Risk
+portfolio_max_dd = -0.20      # Max. Portfolio-Drawdown (20%)
+portfolio_stop_loss = -0.05   # Daily Portfolio Stop-Loss (5%)
+
+# ============================================================================
+# PORTFOLIO STRATEGY LAYER (Phase 26)
+# ============================================================================
+# Steuert die Portfolio-Gewichtungs-Strategie.
+# Dies ist ein separater Layer, der bestimmt, wie Kapital auf Symbole verteilt wird.
+#
+# strategy_name:
+#   - "equal_weight"   = Gleichverteilung auf alle Symbole (1/n)
+#   - "fixed_weights"  = Feste Gewichte aus [portfolio.fixed_weights]
+#   - "vol_target"     = Inverse-Volatilität-Gewichtung (Risk-Parity)
+#
+# WICHTIG: Dieser Layer ist nur für Research/Backtest/Shadow, NICHT für Live-Trading!
+# ============================================================================
+strategy_name = "equal_weight"    # Portfolio-Strategie für Gewichtung
+
+# Vol-Target-Parameter (nur für strategy_name = "vol_target")
+vol_lookback = 20                 # Lookback für Volatilitätsberechnung
+vol_target = 0.15                 # Ziel-Volatilität (15% annualisiert)
+
+# Constraints für alle Portfolio-Strategien
+max_single_weight = 0.50          # Max. Gewicht für ein einzelnes Symbol (50%)
+min_weight = 0.01                 # Min. Gewicht (Symbole darunter werden ignoriert)
+normalize_weights = true          # Gewichte auf Summe 1.0 normalisieren
+
+# ============================================================================
+# MULTI-ASSET PORTFOLIO (für run_portfolio_backtest.py)
+# ============================================================================
+# Anfangskapital des Portfolios (kontoübergreifend)
+initial_equity = 10_000.0
+
+# Liste von Symbolen/Märkten, die im Portfolio enthalten sind.
+symbols = [
+    "BTC/EUR",
+    "ETH/EUR",
+    "LTC/EUR",
+]
+
+# Portfolio-Gewichte in derselben Reihenfolge wie 'symbols'.
+# Sie müssen nicht 1.0 sumieren – das Script normalisiert sie.
+asset_weights = [
+    0.50,
+    0.30,
+    0.20,
+]
+
+# Fallback-Strategie-Key für alle Symbole im Portfolio.
+# Fällt zurück auf [strategy].key, wenn nicht gesetzt.
+strategy_key = "ma_crossover"
+
+# ============================================================================
+# Strategy Weights (bei manueller Allocation für Multi-Strategy)
+# ============================================================================
+[portfolio.weights]
+ma_crossover = 0.33
+momentum_1h = 0.33
+rsi_strategy = 0.34
+
+# ============================================================================
+# Fixed Weights für Portfolio-Strategie (Phase 26)
+# ============================================================================
+# Nur verwendet wenn strategy_name = "fixed_weights"
+[portfolio.fixed_weights]
+"BTC/EUR" = 0.50
+"ETH/EUR" = 0.30
+"LTC/EUR" = 0.20
+
+# ============================================================================
+# Optionale symbol-spezifische Strategien (für Multi-Asset)
+# ============================================================================
+[portfolio.strategies]
+# Wenn ein Symbol hier nicht auftaucht, wird portfolio.strategy_key verwendet.
+# Beispiele (auskommentiert):
+# "BTC/EUR" = "ma_crossover"
+# "ETH/EUR" = "rsi_reversion"
+# "LTC/EUR" = "breakout_donchian"
+
+# ============================================================================
+# REGIME DETECTION (Phase 28)
+# ============================================================================
+# Erkennt Marktphasen (breakout, ranging, trending) für Strategy Switching.
+#
+# Regime-Labels:
+#   - breakout: Hohe Volatilität, Range-Ausbrüche
+#   - ranging: Seitwärts, geringe Volatilität, Mean-Reversion-tauglich
+#   - trending: Starke Trendphasen (positiv oder negativ)
+#   - unknown: Zu wenig Historie
+#
+# WICHTIG: Nur für Research/Backtest/Shadow, NICHT für Live-Trading!
+# ============================================================================
+[regime]
+# Master-Schalter: Regime Detection aktivieren
+enabled = false
+
+# Detector-Typ: "volatility_breakout" oder "range_compression"
+detector_name = "volatility_breakout"
+
+# Allgemeine Parameter
+lookback_window = 50       # Lookback für Regime-Berechnung
+min_history_bars = 100     # Minimum Bars bevor Regime berechnet wird
+
+# Volatility Detector Parameter
+vol_window = 20                 # Fenster für ATR-Berechnung
+vol_percentile_breakout = 0.75  # Perzentil-Schwelle für Breakout (0.0-1.0)
+vol_percentile_ranging = 0.30   # Perzentil-Schwelle für Ranging (0.0-1.0)
+
+# Range Compression Detector Parameter
+range_compression_window = 20   # Fenster für Range-Kompression
+compression_threshold = 0.3     # Schwelle für Kompression (0.0-1.0)
+
+# Trending Detection
+trending_ma_window = 50         # MA-Fenster für Trend-Erkennung
+trending_slope_threshold = 0.0002  # Slope-Schwelle für Trending
+
+# Legacy-Parameter (für Kompatibilität mit src/core/regime.py)
+price_col = "close"
+trend_window = 50
+trend_threshold = 0.002
+vol_threshold = 0.02
+
+# ============================================================================
+# STRATEGY SWITCHING (Phase 28)
+# ============================================================================
+# Mappt Regime-Labels auf Strategien.
+# Bei aktiviertem Switching werden Strategien je nach Marktphase gewechselt.
+#
+# WICHTIG: Nur für Research/Backtest/Shadow, NICHT für Live-Trading!
+# ============================================================================
+[strategy_switching]
+# Master-Schalter: Strategy Switching aktivieren
+enabled = false
+
+# Policy-Typ: "simple_regime_mapping"
+policy_name = "simple_regime_mapping"
+
+# Fallback-Strategien wenn Regime nicht gemappt
+default_strategies = ["ma_crossover"]
+
+# Mapping: Regime -> Liste von Strategien
+[strategy_switching.regime_to_strategies]
+breakout = ["vol_breakout"]
+ranging = ["mean_reversion_channel", "rsi_reversion"]
+trending = ["trend_following", "ma_crossover"]
+unknown = ["ma_crossover"]
+
+# Optionale Gewichte bei mehreren Strategien pro Regime
+# Wenn nicht angegeben, wird Gleichverteilung verwendet.
+[strategy_switching.regime_to_weights.ranging]
+mean_reversion_channel = 0.6
+rsi_reversion = 0.4
+
+[strategy_switching.regime_to_weights.trending]
+trend_following = 0.7
+ma_crossover = 0.3
+
+# ============================================================================
+# HYPERPARAMETER SWEEPS
+# ============================================================================
+[sweep]
+# Name dieses Sweeps (für Dateinamen etc.)
+name = "ma_crossover_window_sweep"
+
+# Standard-Strategie für Sweeps
+strategy_key = "ma_crossover"
+
+# Standard-Symbol (kann per CLI überschrieben werden)
+symbol = "BTC/EUR"
+
+# Standard-Sortierfeld für die Sweep-Ergebnisse
+# Mögliche Felder: "total_return", "cagr", "max_drawdown", "sharpe", "profit_factor"
+sort_by = "total_return"
+sort_desc = true
+
+# ============================================================================
+# SWEEP PARAMETER-BEREICHE
+# ============================================================================
+[sweep.parameters]
+# Parameter-Kombinationen für MA Crossover
+# Die Namen hier werden automatisch auf strategy.<strategy_key>.<param_name> gemappt
+fast_window = [10, 20, 30, 40]
+slow_window = [50, 100, 150]
+
+# Beispiele für andere Strategien (auskommentiert):
+# Für RSI:
+# rsi_window = [10, 14, 20]
+# lower = [20, 25, 30]
+# upper = [70, 75, 80]
+
+# Für Donchian Breakout:
+# lookback = [10, 20, 30, 40, 50]
+
+# ============================================================================
+# RISK MONITOR & POLICY
+# ============================================================================
+[risk_monitor]
+# Zeithorizont für Risiko-Analysen in Tagen (bezogen auf timestamp in experiments.csv)
+lookback_days = 365
+
+# Minimale Anzahl von Runs, damit eine Strategie / ein Portfolio überhaupt bewertet wird
+min_runs_per_strategy = 5
+min_runs_per_portfolio = 3
+
+# Drawdown-Grenzwerte (Beträge als positive Zahlen, intern als -X interpretiert)
+max_drawdown_warn = 0.30   # ab 30% MaxDD → WATCH
+max_drawdown_block = 0.50  # ab 50% MaxDD → BLOCKED
+
+# Sharpe-Grenzwerte
+min_sharpe_ok = 0.5        # darunter → WATCH (falls andere Kriterien nicht blocken)
+min_sharpe_good = 1.0      # darüber → GOOD (informative Stufe)
+
+# Optional: Minimaler Total-Return über alle Runs (z.B. -1.0 = -100%)
+min_total_return = -1.0
+
+# ============================================================================
+# FILTER-FLOW / LIVE-CANDIDATES
+# ============================================================================
+[filter_flow]
+# Welche Risk-Status dürfen grundsätzlich als "Live-Kandidat" durchgehen?
+# Typischerweise nur "OK", du kannst aber auch z.B. ["OK", "WATCH"] wählen.
+allowed_risk_statuses = ["OK"]
+
+# Minimale Anzahl von Runs insgesamt (alle run_types zusammen),
+# damit eine Strategie überhaupt bewertet wird.
+min_total_runs = 10
+
+# Minimale Anzahl von Forward-Evaluations-Runs (run_type = "forward_eval"),
+# damit die Forward-Statistik als aussagekräftig gilt.
+min_forward_eval_runs = 3
+
+# Anforderungen an die durchschnittlichen Forward-Eval-Kennzahlen
+# (über alle forward_eval-Runs gemittelt).
+min_forward_sharpe = 0.0            # Sharpe darf im Schnitt nicht negativ sein
+min_forward_total_return = -0.5     # durchschnittlicher total_return >= -50%
+
+# ============================================================================
+# LIVE-ADAPTER / PAPER-TRADING
+# ============================================================================
+[live]
+# Betriebsmodus des Live-Layers:
+# - "dry_run"  = nur Logs / keine echten Orders
+# - "paper"    = späterer Paper-Broker (Platzhalter)
+# - "real"     = für echte Broker-Adapter (in diesem Skeleton NOCH NICHT implementiert)
+mode = "dry_run"
+
+# Basiswährung für Notional-Berechnungen (informativ, aktuell nur in der Doku genutzt)
+base_currency = "EUR"
+
+# Grobe Schutzlimits (werden vorerst nur in Scripts verwendet):
+max_notional_per_order = 1000.0
+max_open_positions = 10
+
+# Standard-Startkapital für Paper-Trading (kann per CLI überschrieben werden)
+starting_cash_default = 10000.0
+
+# Gebührenmodell (Basis-Punkte: 1 bp = 0,01%)
+# Beispiel: 10 bp = 0,10% vom gehandelten Notional
+fee_bps = 10.0            # variable Fee in bp (z.B. 10 bp = 0,10%)
+fee_min_per_order = 0.0   # Mindestgebühr pro Order (in base_currency)
+
+# Slippage-Modell (bps relativ zum Referenzpreis)
+# BUY:  fill_price = last_price * (1 + slippage_bps/10000)
+# SELL: fill_price = last_price * (1 - slippage_bps/10000)
+slippage_bps = 5.0        # z.B. 5 bp = 0,05%
+
+# ============================================================================
+# LIVE-RISK-LIMITS
+# ============================================================================
+[live_risk]
+# Master-Schalter: wenn false, werden Live-Risk-Limits nicht ausgewertet
+enabled = true
+
+# Maximaler Tagesverlust in absoluter Höhe (Base Currency, z.B. EUR).
+# Wird über Experiments-Registry abgeschätzt (Run-Types: live_dry_run, paper_trade).
+max_daily_loss_abs = 500.0
+
+# Optional: Maximaler Tagesverlust in % des Startkapitals
+# (nur wirksam, wenn starting_cash bekannt ist).
+max_daily_loss_pct = 5.0
+
+# Maximale zusätzliche Gesamt-Exposure (Notional) durch die aktuellen Orders
+# (nur die Batch, NICHT all-time).
+max_total_exposure_notional = 5000.0
+
+# Maximale Exposure pro Symbol (Notional) in der aktuellen Order-Batch.
+max_symbol_exposure_notional = 2500.0
+
+# Maximale Anzahl unterschiedlicher Symbole in der Order-Batch
+# (grob als Approximation für max_open_positions).
+max_open_positions = 10
+
+# Maximaler Notional pro Order
+max_order_notional = 1000.0
+
+# Wenn true und eine Verletzung vorliegt, DÜRFEN Scripts bei aktivierter Enforcement-Flag abbrechen.
+block_on_violation = true
+
+# Ob für max_daily_loss_* die Experiments-Registry ausgewertet werden soll.
+use_experiments_for_daily_pnl = true
+
+# ============================================================================
+# EXCHANGE (Read-Only Market Data)
+# ============================================================================
+# Konfiguration für den Exchange-Layer (ccxt-basiert).
+# Dieser Layer ist ausschließlich für Lesezugriffe (Marktdaten, Balances).
+# Für Order-Execution siehe [live]-Sektion.
+
+[exchange]
+# Exchange-ID (ccxt-kompatibel)
+# Verfügbare: kraken, binance, coinbasepro, bitstamp, etc.
+id = "kraken"
+
+# Sandbox/Testnet-Modus (falls vom Exchange unterstützt)
+# EMPFOHLEN: true für Entwicklung!
+sandbox = true
+
+# Rate-Limiting aktivieren (IMMER empfohlen!)
+enable_rate_limit = true
+
+[exchange.credentials]
+# API-Credentials für authentifizierte Requests (Balance, Orders lesen)
+# WICHTIG: Keine Secrets hier! Nutze Umgebungsvariablen oder .env!
+# Beispiel: api_key = "${KRAKEN_API_KEY}"
+api_key = ""
+secret = ""
+
+[exchange.options]
+# Optionale ccxt-spezifische Einstellungen
+# timeout = 30000        # Request-Timeout in ms
+# verbose = false        # Debug-Logging

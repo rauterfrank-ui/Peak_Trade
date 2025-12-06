@@ -28,35 +28,80 @@ class TradeStats:
     profit_factor: float
 
 
-def compute_basic_stats(equity: pd.Series) -> Dict[str, float]:
+def compute_drawdown(equity: pd.Series) -> pd.Series:
     """
-    Berechnet grundlegende Performance-Metriken.
-    
+    Berechnet den prozentualen Drawdown basierend auf der Equity-Curve.
+
     Args:
         equity: Equity-Kurve (Series mit DatetimeIndex)
-        
+
     Returns:
-        Dict mit 'total_return' und 'max_drawdown'
-        
+        pd.Series im Bereich [-1, 0], wobei 0 = kein Drawdown.
+
+    Example:
+        >>> equity = pd.Series([10000, 10100, 9500, 10200])
+        >>> dd = compute_drawdown(equity)
+        >>> print(f"Max DD: {dd.min():.2%}")
+    """
+    equity = equity.astype(float)
+    running_max = equity.cummax()
+    dd = (equity - running_max) / running_max.replace(0.0, np.nan)
+    return dd.fillna(0.0)
+
+
+def compute_basic_stats(equity: pd.Series) -> Dict[str, float]:
+    """
+    Berechnet grundlegende Performance-Metriken inkl. CAGR.
+
+    Args:
+        equity: Equity-Kurve (Series mit DatetimeIndex)
+
+    Returns:
+        Dict mit 'total_return', 'max_drawdown', 'cagr', 'sharpe'
+
     Example:
         >>> equity = pd.Series([10000, 10100, 10050, 10200])
         >>> stats = compute_basic_stats(equity)
         >>> print(f"Return: {stats['total_return']:.2%}")
     """
     if len(equity) < 2:
-        return {"total_return": 0.0, "max_drawdown": 0.0}
-    
+        return {
+            "total_return": 0.0,
+            "max_drawdown": 0.0,
+            "cagr": 0.0,
+            "sharpe": 0.0,
+        }
+
+    equity = equity.astype(float)
+
     # Total Return
-    total_return = (equity.iloc[-1] / equity.iloc[0]) - 1
-    
+    start = float(equity.iloc[0])
+    end = float(equity.iloc[-1])
+    total_return = (end - start) / start if start != 0 else 0.0
+
     # Max Drawdown
-    running_max = equity.cummax()
-    drawdown = (equity / running_max) - 1
-    max_drawdown = drawdown.min()
-    
+    dd = compute_drawdown(equity)
+    max_drawdown = float(dd.min()) if not dd.empty else 0.0
+
+    # CAGR & Sharpe (wenn DatetimeIndex vorhanden)
+    if isinstance(equity.index, pd.DatetimeIndex) and len(equity) > 1:
+        returns = equity.pct_change().dropna()
+        mean_ret = returns.mean()
+        std_ret = returns.std(ddof=1)
+
+        # Einfache Annualisierung (365 Tage)
+        annual_factor = 365.0
+        cagr = (1.0 + mean_ret) ** annual_factor - 1.0 if mean_ret is not None else 0.0
+        sharpe = (mean_ret * np.sqrt(annual_factor) / std_ret) if std_ret not in (0, None) else 0.0
+    else:
+        cagr = 0.0
+        sharpe = 0.0
+
     return {
         "total_return": float(total_return),
-        "max_drawdown": float(max_drawdown)
+        "max_drawdown": float(max_drawdown),
+        "cagr": float(cagr),
+        "sharpe": float(sharpe),
     }
 
 
@@ -173,6 +218,151 @@ def compute_trade_stats(trades: List[Dict]) -> TradeStats:
         avg_loss=avg_loss,
         profit_factor=profit_factor
     )
+
+
+def compute_backtest_stats(
+    trades: List[Dict],
+    equity_curve: pd.Series,
+    *,
+    periods_per_year: int = 8760,
+    risk_free_rate: float = 0.0,
+) -> Dict[str, float]:
+    """
+    Zentrale Funktion zur Berechnung aller Backtest-Metriken.
+
+    Kombiniert Equity-basierte Stats und Trade-Stats in einem einzigen Dict.
+    Dies ist die Haupt-API für Stats-Berechnung im gesamten Framework.
+
+    Args:
+        trades: Liste von Trade-Dicts mit mindestens 'pnl' Key
+        equity_curve: Equity-Series mit DatetimeIndex
+        periods_per_year: Anzahl Perioden pro Jahr für Annualisierung
+            - 8760 für stündliche Daten (365 * 24)
+            - 252 für tägliche Daten
+            - 52 für wöchentliche Daten
+        risk_free_rate: Risikofreier Zinssatz (annualisiert, default: 0)
+
+    Returns:
+        Dict mit allen Standard-Metriken:
+        {
+            "total_return": float,      # Gesamt-Return (z.B. 0.15 = 15%)
+            "cagr": float,              # Compound Annual Growth Rate
+            "max_drawdown": float,      # Max Drawdown (z.B. -0.10 = -10%)
+            "sharpe": float,            # Sharpe Ratio (annualisiert)
+            "sortino": float,           # Sortino Ratio (annualisiert)
+            "calmar": float,            # Calmar Ratio (Return / MaxDD)
+            "total_trades": int,        # Anzahl Trades
+            "winning_trades": int,      # Anzahl Gewinn-Trades
+            "losing_trades": int,       # Anzahl Verlust-Trades
+            "win_rate": float,          # Win-Rate (z.B. 0.55 = 55%)
+            "profit_factor": float,     # Gross Profits / Gross Losses
+            "avg_win": float,           # Durchschnittlicher Gewinn pro Trade
+            "avg_loss": float,          # Durchschnittlicher Verlust pro Trade
+            "expectancy": float,        # Erwartungswert pro Trade
+        }
+
+    Example:
+        >>> from src.backtest.stats import compute_backtest_stats
+        >>>
+        >>> trades = [{'pnl': 100}, {'pnl': -50}, {'pnl': 75}]
+        >>> equity = pd.Series([10000, 10100, 10050, 10125])
+        >>>
+        >>> stats = compute_backtest_stats(trades, equity)
+        >>> print(f"Return: {stats['total_return']:.2%}")
+        >>> print(f"Sharpe: {stats['sharpe']:.2f}")
+    """
+    # 1. Basic Equity Stats
+    basic = compute_basic_stats(equity_curve)
+
+    # 2. Trade Stats
+    trade_stats = compute_trade_stats(trades)
+
+    # 3. Sharpe mit korrekten Parametern
+    sharpe = compute_sharpe_ratio(
+        equity_curve,
+        periods_per_year=periods_per_year,
+        risk_free_rate=risk_free_rate
+    )
+
+    # 4. Sortino Ratio (nur Downside-Volatilität)
+    sortino = _compute_sortino_ratio(
+        equity_curve,
+        periods_per_year=periods_per_year,
+        risk_free_rate=risk_free_rate
+    )
+
+    # 5. Calmar Ratio
+    calmar = compute_calmar_ratio(equity_curve, periods_per_year=periods_per_year)
+
+    # 6. Expectancy (durchschnittlicher Gewinn pro Trade)
+    if trade_stats.total_trades > 0:
+        total_pnl = sum(t.get('pnl', 0) for t in trades)
+        expectancy = total_pnl / trade_stats.total_trades
+    else:
+        expectancy = 0.0
+
+    return {
+        # Equity-basierte Metriken
+        "total_return": basic["total_return"],
+        "cagr": basic["cagr"],
+        "max_drawdown": basic["max_drawdown"],
+        "sharpe": sharpe,
+        "sortino": sortino,
+        "calmar": calmar,
+        # Trade-basierte Metriken
+        "total_trades": trade_stats.total_trades,
+        "winning_trades": trade_stats.winning_trades,
+        "losing_trades": trade_stats.losing_trades,
+        "win_rate": trade_stats.win_rate,
+        "profit_factor": trade_stats.profit_factor,
+        "avg_win": trade_stats.avg_win,
+        "avg_loss": trade_stats.avg_loss,
+        "expectancy": expectancy,
+    }
+
+
+def _compute_sortino_ratio(
+    equity: pd.Series,
+    periods_per_year: int = 252,
+    risk_free_rate: float = 0.0,
+) -> float:
+    """
+    Berechnet Sortino Ratio (nur Downside-Volatilität).
+
+    Args:
+        equity: Equity-Kurve
+        periods_per_year: Anzahl Perioden pro Jahr
+        risk_free_rate: Risikofreier Zinssatz (annualisiert)
+
+    Returns:
+        Sortino Ratio (annualisiert)
+    """
+    if len(equity) < 2:
+        return 0.0
+
+    returns = equity.pct_change().dropna()
+
+    if len(returns) == 0:
+        return 0.0
+
+    # Nur negative Returns für Downside-Volatilität
+    downside_returns = returns[returns < 0]
+
+    if len(downside_returns) == 0:
+        # Keine negativen Returns = perfekte Strategie
+        return float('inf') if returns.mean() > 0 else 0.0
+
+    downside_std = downside_returns.std()
+
+    if downside_std == 0:
+        return 0.0
+
+    # Annualisierte Metriken
+    mean_return = returns.mean() * periods_per_year
+    downside_std_annual = downside_std * np.sqrt(periods_per_year)
+
+    sortino = (mean_return - risk_free_rate) / downside_std_annual
+    return float(sortino)
 
 
 def validate_for_live_trading(stats: Dict) -> Tuple[bool, List[str]]:

@@ -4,13 +4,26 @@ Alle Strategien werden hier registriert.
 """
 
 # Mapping: Strategie-Name → Modulpfad
+# WICHTIG: Namen müssen mit [strategy.*] in config.toml übereinstimmen
 STRATEGY_REGISTRY = {
     "ma_crossover": "ma_crossover",
-    "momentum": "momentum",
-    "rsi": "rsi",
-    "bollinger": "bollinger",
+    "momentum_1h": "momentum",  # Strategie-Name != Modul-Name
+    "rsi_strategy": "rsi",      # Strategie-Name != Modul-Name
+    "bollinger_bands": "bollinger",  # Strategie-Name != Modul-Name
     "macd": "macd",
-    "ecm": "ecm",
+    "ecm_cycle": "ecm",         # Strategie-Name != Modul-Name
+    # Phase 18: Research Playground Baselines
+    "trend_following": "trend_following",
+    "mean_reversion": "mean_reversion",
+    "my_strategy": "my_strategy",
+    # Phase 27: Strategy Research Track
+    "vol_breakout": "vol_breakout",
+    "mean_reversion_channel": "mean_reversion_channel",
+    "rsi_reversion": "rsi_reversion",
+    # Phase 40: Strategy Library & Portfolio-Track v1
+    "breakout": "breakout",
+    "vol_regime_filter": "vol_regime_filter",
+    "composite": "composite",
 }
 
 def load_strategy(strategy_name: str):

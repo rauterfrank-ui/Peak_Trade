@@ -1,0 +1,21 @@
+# Peak_Trade – Parameter-Grid für MA-Crossover-Strategie
+# =====================================================
+#
+# Dieses Grid definiert die Parameterkombinationen für einen Strategy-Sweep.
+# Verwendet mit: python scripts/run_sweep.py --grid config/sweeps/ma_crossover.toml
+#
+# Jeder Parameter muss als Liste definiert werden.
+# Das kartesische Produkt aller Kombinationen wird getestet.
+
+[grid]
+# Kurzfristiger Moving Average (Tage/Bars)
+short_window = [5, 10, 20, 30]
+
+# Langfristiger Moving Average (Tage/Bars)
+long_window = [50, 100, 150, 200]
+
+# Beispiel-Berechnung:
+# 4 × 4 = 16 Kombinationen
+#
+# Hinweis: Die Strategie ignoriert Kombinationen wo short_window >= long_window
+# In der Praxis werden also nur sinnvolle Kombinationen getestet.

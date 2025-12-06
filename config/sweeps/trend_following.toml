@@ -1,0 +1,30 @@
+# Peak_Trade – Parameter-Grid für Trend-Following-Strategie (Phase 18)
+# =====================================================================
+#
+# Dieses Grid definiert die Parameterkombinationen für einen Strategy-Sweep.
+# Verwendet mit: python scripts/run_sweep_strategy.py --strategy trend_following --grid config/sweeps/trend_following.toml
+#
+# Die Trend-Following-Strategie nutzt ADX (Average Directional Index) zur
+# Trend-Stärke-Messung und einen optionalen MA-Filter.
+
+[grid]
+# ADX-Periode (typisch: 14)
+adx_period = [10, 14, 20]
+
+# ADX-Schwelle für Entry (typisch: 25)
+# Höhere Werte = konservativer, nur starke Trends
+adx_threshold = [20.0, 25.0, 30.0]
+
+# ADX-Schwelle für Exit (muss < adx_threshold sein)
+exit_threshold = [15.0, 20.0]
+
+# MA-Periode für Trend-Filter (typisch: 50)
+ma_period = [20, 50, 100]
+
+# MA-Filter verwenden?
+use_ma_filter = [true, false]
+
+# Beispiel-Berechnung:
+# 3 × 3 × 2 × 3 × 2 = 108 Kombinationen
+# Hinweis: Manche Kombinationen (exit_threshold >= adx_threshold) werden
+# während der Validierung übersprungen.

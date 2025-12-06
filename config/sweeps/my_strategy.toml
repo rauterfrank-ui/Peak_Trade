@@ -1,0 +1,29 @@
+# Peak_Trade – Parameter-Grid für MyStrategy (Volatility Breakout)
+# =================================================================
+#
+# Dieses Grid definiert die Parameterkombinationen für einen Strategy-Sweep.
+# Verwendet mit: python scripts/run_sweep_strategy.py --strategy my_strategy --grid config/sweeps/my_strategy.toml
+#
+# MyStrategy ist eine ATR-basierte Volatility-Breakout-Strategie.
+# Entry: Preis durchbricht oberes Volatilitätsband (Close > MA + ATR * multiplier)
+# Exit: Preis fällt unter unteres Band (Close < MA - ATR * exit_multiplier)
+
+[grid]
+# Lookback-Window für MA und ATR-Berechnung
+lookback_window = [10, 15, 20, 25, 30]
+
+# ATR-Multiplikator für Entry-Band
+# Höher = konservativer, nur stärkere Breakouts
+entry_multiplier = [1.0, 1.5, 2.0, 2.5]
+
+# ATR-Multiplikator für Exit-Band (muss < entry_multiplier sein)
+exit_multiplier = [0.25, 0.5, 0.75]
+
+# Nur Close für Volatilitätsberechnung verwenden?
+# false = echte ATR (braucht high/low), true = nur Std von Close
+use_close_only = [false]
+
+# Beispiel-Berechnung:
+# 5 × 4 × 3 × 1 = 60 Kombinationen
+# Hinweis: Kombinationen wo exit_multiplier >= entry_multiplier werden
+# automatisch aussortiert (Validierungsfehler).

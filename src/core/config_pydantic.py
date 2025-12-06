@@ -1,20 +1,25 @@
 """
-Peak_Trade Config System
-=========================
+Peak_Trade Config System (Phase 36 refactored)
+===============================================
 Pydantic-basierte Konfigurationsverwaltung mit Validierung.
 
 Verwendung:
     from src.core import get_config
-    
+
     cfg = get_config()
     print(cfg.risk.risk_per_trade)
-    
+
 Environment Variables:
-    PEAK_TRADE_CONFIG: Pfad zu alternativer config.toml
-    
+    PEAK_TRADE_CONFIG_PATH: Pfad zu alternativer config.toml
+
     Beispiel:
-        export PEAK_TRADE_CONFIG=/path/to/custom_config.toml
+        export PEAK_TRADE_CONFIG_PATH=/path/to/custom_config.toml
         python scripts/run_backtest.py
+
+Config-Pfad-Prioritaet:
+    1. Explizit uebergebener path-Parameter
+    2. Environment Variable PEAK_TRADE_CONFIG_PATH
+    3. Default: config/config.toml relativ zum Projekt-Root
 """
 
 import os
@@ -24,9 +29,14 @@ from pydantic import BaseModel, Field, ConfigDict
 import toml
 
 
-# Environment Variable für Config-Pfad
-DEFAULT_CONFIG_ENV_VAR = "PEAK_TRADE_CONFIG"
-DEFAULT_CONFIG_PATH = Path("config.toml")
+# Environment Variable fuer Config-Pfad (Phase 36: vereinheitlicht)
+DEFAULT_CONFIG_ENV_VAR = "PEAK_TRADE_CONFIG_PATH"
+
+# Projekt-Root ermitteln (relativ zu dieser Datei)
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+# Default Config-Pfad: config/config.toml im Projekt-Root
+DEFAULT_CONFIG_PATH = _PROJECT_ROOT / "config" / "config.toml"
 
 
 class BacktestConfig(BaseModel):
@@ -85,11 +95,40 @@ class DataConfig(BaseModel):
 
 class LiveConfig(BaseModel):
     """Live-Trading-Parameter (VORSICHT!)."""
-    
+
     enabled: bool = Field(default=False)
-    mode: str = Field(default="paper", pattern="^(paper|live)$")
+    mode: str = Field(default="paper", pattern="^(paper|dry_run|live)$")
     exchange: str = Field(default="kraken")
     default_pair: str = Field(default="BTC/USD")
+
+
+class ExchangeDummyConfig(BaseModel):
+    """Konfiguration für den DummyExchangeClient (Phase 38)."""
+
+    btc_eur_price: float = Field(default=50000.0, gt=0)
+    eth_eur_price: float = Field(default=3000.0, gt=0)
+    btc_usd_price: float = Field(default=55000.0, gt=0)
+    fee_bps: float = Field(default=10.0, ge=0)
+    slippage_bps: float = Field(default=5.0, ge=0)
+
+
+class ExchangeConfig(BaseModel):
+    """
+    Exchange-Client-Konfiguration (Phase 38).
+
+    Bestimmt, welcher Exchange-Client für Trading verwendet wird.
+
+    Attributes:
+        default_type: Client-Typ ("dummy", "kraken_testnet", später "kraken_live")
+        dummy: Einstellungen für DummyExchangeClient
+    """
+
+    default_type: str = Field(
+        default="dummy",
+        pattern="^(dummy|kraken_testnet|kraken_live)$",
+        description="Exchange-Client-Typ"
+    )
+    dummy: ExchangeDummyConfig = Field(default_factory=ExchangeDummyConfig)
 
 
 class ValidationConfig(BaseModel):
@@ -128,14 +167,57 @@ class StrategyConfig(BaseModel):
 
 
 class Settings(BaseModel):
-    """Hauptkonfiguration."""
-    
+    """
+    Hauptkonfiguration.
+
+    Unterstützt sowohl Attribut-Zugriff (settings.backtest.initial_cash)
+    als auch Dict-Zugriff (settings["backtest"]["initial_cash"]) für
+    Rückwärtskompatibilität.
+    """
+
     backtest: BacktestConfig
     risk: RiskConfig
     data: DataConfig
     live: LiveConfig
     validation: ValidationConfig
+    exchange: ExchangeConfig = Field(default_factory=ExchangeConfig)
     strategy: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
+
+    def __getitem__(self, key: str) -> Any:
+        """
+        Ermöglicht Dict-ähnlichen Zugriff auf Settings.
+
+        Args:
+            key: Attributname (z.B. "backtest", "risk")
+
+        Returns:
+            Attributwert oder nested dict für Sub-Configs
+
+        Example:
+            >>> settings["backtest"]["initial_cash"]
+            10000.0
+        """
+        value = getattr(self, key)
+        # Wenn value ein Pydantic-Model ist, wandle es in dict um für nested access
+        if isinstance(value, BaseModel):
+            return value.model_dump()
+        return value
+
+    def get(self, key: str, default: Any = None) -> Any:
+        """
+        Dict-ähnlicher get()-Zugriff mit Default-Wert.
+
+        Args:
+            key: Attributname
+            default: Rückgabewert wenn key nicht existiert
+
+        Returns:
+            Attributwert oder default
+        """
+        try:
+            return self[key]
+        except AttributeError:
+            return default
 
 
 # Singleton-Pattern für globale Config

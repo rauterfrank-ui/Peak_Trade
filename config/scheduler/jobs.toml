@@ -1,0 +1,135 @@
+# =============================================================================
+# Peak_Trade Scheduler – Job-Konfiguration
+# =============================================================================
+# Diese Datei definiert automatisierte Jobs für den Scheduler.
+#
+# Schedule-Typen:
+#   - "once": Einmalige Ausführung
+#   - "interval": Wiederholung alle N Sekunden
+#   - "daily": Täglich zu einer festen Uhrzeit
+#
+# Wichtige Felder:
+#   - name: Eindeutiger Job-Name
+#   - command: Auszuführendes Kommando (Default: "python")
+#   - args: Argumente als Key-Value-Paare (script, strategy, etc.)
+#   - schedule_type: "once", "interval", oder "daily"
+#   - enabled: true/false (deaktivierte Jobs werden übersprungen)
+#   - tags: Tags für Filterung (--include-tags, --exclude-tags)
+# =============================================================================
+
+
+# =============================================================================
+# DAILY JOBS – Tägliche Routine
+# =============================================================================
+
+[[job]]
+name = "daily_forward_signals_btc"
+description = "Generiert tägliches Forward-Signal für BTC/EUR"
+command = "python"
+args = { script = "scripts/run_forward_signals.py", strategy = "ma_crossover", symbol = "BTC/EUR", timeframe = "1h", bars = 200, tag = "daily-forward" }
+schedule_type = "daily"
+daily_time = "07:30"
+enabled = true
+tags = ["forward", "daily", "prod"]
+timeout_seconds = 120
+
+[[job]]
+name = "daily_forward_signals_eth"
+description = "Generiert tägliches Forward-Signal für ETH/EUR"
+command = "python"
+args = { script = "scripts/run_forward_signals.py", strategy = "ma_crossover", symbol = "ETH/EUR", timeframe = "1h", bars = 200, tag = "daily-forward" }
+schedule_type = "daily"
+daily_time = "07:31"
+enabled = true
+tags = ["forward", "daily", "prod"]
+timeout_seconds = 120
+
+
+# =============================================================================
+# MORNING SCAN – Market-Scan am Morgen
+# =============================================================================
+
+[[job]]
+name = "morning_market_scan"
+description = "Scannt alle Symbole nach aktuellen Signalen"
+command = "python"
+args = { script = "scripts/run_market_scan.py", strategy = "ma_crossover", symbols = "BTC/EUR,ETH/EUR,LTC/EUR", timeframe = "1h", bars = 200, mode = "forward", tag = "morning-scan" }
+schedule_type = "daily"
+daily_time = "07:45"
+enabled = true
+tags = ["scan", "daily", "research"]
+timeout_seconds = 180
+
+
+# =============================================================================
+# PERIODIC RESEARCH – Regelmäßige Analysen
+# =============================================================================
+
+[[job]]
+name = "hourly_backtest_check"
+description = "Stündlicher Mini-Backtest für Monitoring"
+command = "python"
+args = { script = "scripts/run_backtest.py", strategy = "ma_crossover", symbol = "BTC/EUR", bars = 100, tag = "hourly-monitor" }
+schedule_type = "interval"
+interval_seconds = 3600  # 1 Stunde
+enabled = false  # Standardmäßig deaktiviert
+tags = ["backtest", "monitoring", "research"]
+timeout_seconds = 120
+
+
+# =============================================================================
+# WEEKLY OPTIMIZATION – Wöchentliche Parameter-Sweeps
+# =============================================================================
+
+[[job]]
+name = "weekly_sweep_ma"
+description = "Wöchentlicher Parameter-Sweep für MA-Crossover"
+command = "python"
+args = { script = "scripts/run_sweep.py", strategy = "ma_crossover", symbol = "BTC/EUR", grid = "config/sweeps/ma_crossover.toml", tag = "weekly-opt" }
+schedule_type = "interval"
+interval_seconds = 604800  # 7 Tage
+enabled = false  # Manuell aktivieren bei Bedarf
+tags = ["sweep", "optimization", "heavy"]
+timeout_seconds = 600
+
+[[job]]
+name = "weekly_auto_portfolio"
+description = "Generiert wöchentlich neue Auto-Portfolios"
+command = "python"
+args = { script = "scripts/build_auto_portfolios.py", metric = "sharpe", min_sharpe = 0.3, max_components = 3, output_dir = "config/portfolios", prefix = "auto_weekly" }
+schedule_type = "interval"
+interval_seconds = 604800  # 7 Tage
+enabled = false
+tags = ["portfolio", "optimization", "heavy"]
+timeout_seconds = 300
+
+
+# =============================================================================
+# ONE-SHOT JOBS – Einmalige Ausführung
+# =============================================================================
+
+[[job]]
+name = "initial_portfolio_backtest"
+description = "Einmaliger Portfolio-Backtest beim Start"
+command = "python"
+args = { script = "scripts/run_portfolio_backtest.py", tag = "scheduler-init" }
+schedule_type = "once"
+enabled = false
+tags = ["backtest", "init"]
+timeout_seconds = 180
+
+
+# =============================================================================
+# RISK & MONITORING
+# =============================================================================
+
+[[job]]
+name = "daily_risk_check"
+description = "Täglicher Risk-Check für aktive Positionen"
+command = "python"
+args = { script = "scripts/check_live_risk_limits.py", orders = "reports/live/latest_orders.csv", starting_cash = 10000 }
+schedule_type = "daily"
+daily_time = "08:00"
+enabled = false  # Aktivieren wenn Orders vorhanden
+tags = ["risk", "daily", "prod"]
+timeout_seconds = 60
