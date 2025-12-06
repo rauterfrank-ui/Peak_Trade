@@ -142,7 +142,7 @@ def find_sweep_results(sweep_name: str, experiments_dir: str = "reports/experime
     if not exp_dir.exists():
         return None
 
-    # Suche nach passenden CSV-Dateien
+    # Suche nach passenden CSV-Dateien (mit sweep_name im Dateinamen)
     pattern = f"*{sweep_name}*.csv"
     matches = sorted(exp_dir.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
 
@@ -155,6 +155,17 @@ def find_sweep_results(sweep_name: str, experiments_dir: str = "reports/experime
 
     if matches:
         return matches[0]
+
+    # Fallback: Versuche strategy_name zu extrahieren (z.B. "rsi_reversion" aus "rsi_reversion_basic")
+    # Dies hilft bei alten Dateien oder wenn der Name leicht anders ist
+    parts = sweep_name.split("_")
+    if len(parts) >= 2:
+        # Versuche mit strategy_name (z.B. "rsi_reversion" aus "rsi_reversion_basic")
+        strategy_name = "_".join(parts[:-1])  # Alles außer dem letzten Teil
+        pattern = f"*{strategy_name}*.csv"
+        matches = sorted(exp_dir.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
+        if matches:
+            return matches[0]
 
     return None
 

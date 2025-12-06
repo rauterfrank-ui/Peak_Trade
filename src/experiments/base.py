@@ -657,20 +657,64 @@ class ExperimentRunner:
             Dict mit Metriken
         """
         try:
-            from src.backtest.engine import BacktestEngine
+            from src.backtest.engine import run_single_strategy_from_registry
+            from src.data.kraken import fetch_ohlcv_df
+            from src.core.config_registry import get_config
+            import pandas as pd
 
-            engine = BacktestEngine()
+            # Setze initial_capital in der Config
+            cfg = get_config()
+            original_initial_cash = cfg["backtest"]["initial_cash"]
+            cfg["backtest"]["initial_cash"] = initial_capital
 
-            # Versuche run_single_strategy_from_registry
-            result = engine.run_single_strategy_from_registry(
-                strategy_name=strategy_name,
-                symbol=symbol,
-                timeframe=timeframe,
-                params=params,
-                start_date=start_date,
-                end_date=end_date,
-                initial_capital=initial_capital,
-            )
+            try:
+                # Lade OHLCV-Daten
+                # Konvertiere Symbol-Format falls nötig (z.B. "BTC/EUR" -> "BTC/EUR")
+                # Kraken verwendet "/" als Separator
+                kraken_symbol = symbol.replace("-", "/")
+                
+                # Berechne limit basierend auf start_date/end_date oder verwende Default
+                limit = 720  # Default für Kraken API
+                
+                # Wenn start_date gegeben, berechne since_ms
+                since_ms = None
+                if start_date:
+                    try:
+                        start_dt = pd.to_datetime(start_date)
+                        since_ms = int(start_dt.timestamp() * 1000)
+                    except Exception:
+                        logger.warning(f"Konnte start_date nicht parsen: {start_date}, verwende Default")
+                
+                # Lade Daten
+                df = fetch_ohlcv_df(
+                    symbol=kraken_symbol,
+                    timeframe=timeframe,
+                    limit=limit,
+                    since_ms=since_ms,
+                    use_cache=True,
+                )
+                
+                # Filtere nach end_date falls gegeben
+                if end_date:
+                    try:
+                        end_dt = pd.to_datetime(end_date)
+                        df = df[df.index <= end_dt]
+                    except Exception:
+                        logger.warning(f"Konnte end_date nicht parsen: {end_date}, ignoriere Filter")
+                
+                if df.empty:
+                    raise ValueError(f"Keine Daten für {symbol} {timeframe} gefunden")
+                
+                # Führe Backtest aus
+                # run_single_strategy_from_registry ist eine Standalone-Funktion, keine Methode
+                result = run_single_strategy_from_registry(
+                    df=df,
+                    strategy_name=strategy_name,
+                    custom_params=params,
+                )
+            finally:
+                # Stelle original initial_cash wieder her
+                cfg["backtest"]["initial_cash"] = original_initial_cash
 
             # Extrahiere Metriken aus dem Result
             if result and hasattr(result, "stats"):
@@ -872,7 +916,8 @@ class ExperimentRunner:
         os.makedirs(config.output_dir, exist_ok=True)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        base_name = f"{config.strategy_name}_{result.experiment_id}_{timestamp}"
+        # Verwende config.name (Sweep-Name) statt nur strategy_name für bessere Auffindbarkeit
+        base_name = f"{config.name}_{result.experiment_id}_{timestamp}"
 
         # CSV
         csv_path = os.path.join(config.output_dir, f"{base_name}.csv")

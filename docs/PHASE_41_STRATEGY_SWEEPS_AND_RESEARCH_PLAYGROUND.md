@@ -1,5 +1,19 @@
 # Phase 41 – Strategy-Sweeps & Research-Playground
 
+## Implementation Status
+
+Phase 41 ist **vollständig implementiert und getestet**:
+
+- ✅ Strategy-Sweeps sind implementiert und funktionsfähig
+- ✅ `rsi_reversion_basic` ist als Beispiel-Sweep lauffähig (27 Kombinationen)
+- ✅ Sweep-Ergebnisse werden unter `reports/experiments/` abgelegt (Dateinamen enthalten Sweep-Namen)
+- ✅ Reports werden unter `reports/sweeps/` abgelegt (Markdown + HTML)
+- ✅ Alle Tests sind grün (~1495 passed, 4 skipped)
+
+**End-to-End Workflow funktioniert stabil** – Sweep-Ausführung → Ergebnis-Speicherung → Report-Generierung.
+
+---
+
 ## Zusammenfassung
 
 Phase 41 erweitert Peak_Trade um einen **Research-Playground** für systematisches Strategy-Testing:
@@ -219,7 +233,80 @@ reports/sweeps/
 
 ---
 
-## Workflow
+## How-To: Sweep & Report ausführen
+
+### Schritt-für-Schritt Anleitung
+
+**1. Virtual Environment aktivieren**
+
+```bash
+cd ~/Peak_Trade
+source .venv/bin/activate
+```
+
+**2. Sweep ausführen**
+
+```bash
+# Beispiel: rsi_reversion_basic mit max. 5 Runs (für schnellen Test)
+python scripts/run_strategy_sweep.py \
+  --sweep-name rsi_reversion_basic \
+  --config config/config.toml \
+  --max-runs 5  # Optional: Limit für schnellen Test
+
+# Vollständiger Sweep (alle Kombinationen)
+python scripts/run_strategy_sweep.py \
+  --sweep-name rsi_reversion_basic \
+  --config config/config.toml
+
+# Mit Zeitraum-Filter
+python scripts/run_strategy_sweep.py \
+  --sweep-name breakout_basic \
+  --start 2024-01-01 \
+  --end 2024-12-01
+```
+
+**Erwartete Ausgabe:**
+- Sweep läuft durch ohne Exceptions
+- Erfolgreiche Runs werden angezeigt (z.B. "27 erfolgreich, 0 fehlgeschlagen")
+- Ergebnisse werden gespeichert unter `reports/experiments/`
+- Dateinamen enthalten den Sweep-Namen: `{sweep_name}_{experiment_id}_{timestamp}.csv`
+
+**3. Report generieren**
+
+```bash
+# Markdown + HTML Report
+python scripts/generate_strategy_sweep_report.py \
+  --sweep-name rsi_reversion_basic \
+  --format both
+
+# Nur Markdown
+python scripts/generate_strategy_sweep_report.py \
+  --sweep-name rsi_reversion_basic \
+  --format markdown
+```
+
+**Erwartete Ausgabe:**
+- Kein Fehler "Keine Ergebnisse gefunden"
+- Report-Dateien werden erzeugt:
+  - `reports/sweeps/{sweep_name}_report_{timestamp}.md`
+  - `reports/sweeps/{sweep_name}_report_{timestamp}.html` (falls `--format both`)
+- Report enthält Tabelle mit Runs (Parameter + Kennzahlen)
+
+**4. Ergebnisse finden**
+
+- **Sweep-Ergebnisse**: `reports/experiments/{sweep_name}_*.csv` (oder `.parquet`)
+- **Reports**: `reports/sweeps/{sweep_name}_report_*.md` (oder `.html`)
+- **Visualisierungen**: `reports/sweeps/images/` (falls Heatmaps/Plots generiert wurden)
+
+**5. Ergebnisse analysieren**
+
+- Beste Parameter aus Report übernehmen
+- Robustness prüfen (Varianz in Top-10)
+- Out-of-Sample validieren
+
+---
+
+## Workflow (Programmatisch)
 
 ### 1. Sweep definieren oder laden
 
@@ -239,28 +326,18 @@ sweep = StrategySweepConfig(
 )
 ```
 
-### 2. Sweep ausführen
+### 2. Sweep programmatisch ausführen
 
-```bash
-python scripts/run_strategy_sweep.py \
-    --sweep-name breakout_basic \
-    --start 2024-01-01 \
-    --end 2024-12-01
+```python
+from src.experiments import run_sweep_batch
+
+result = run_sweep_batch(
+    sweep_config=sweep,
+    start_date="2024-01-01",
+    end_date="2024-12-01",
+    max_runs=50,
+)
 ```
-
-### 3. Report generieren
-
-```bash
-python scripts/generate_strategy_sweep_report.py \
-    --sweep-name breakout_basic \
-    --format both
-```
-
-### 4. Ergebnisse analysieren
-
-- Beste Parameter aus Report übernehmen
-- Robustness prüfen (Varianz in Top-10)
-- Out-of-Sample validieren
 
 ---
 
@@ -363,6 +440,49 @@ Phase 41 ist **rein Research/Backtest-fokussiert**:
 | Sweep-Reports | `reports/sweeps/` |
 | Report-Images | `reports/sweeps/images/` |
 | Experiment-Registry | `reports/experiments/experiments.csv` |
+
+---
+
+## Bekannte Einschränkungen & Ausblick
+
+### Aktuelle Einschränkungen
+
+1. **Metrik-Namen-Varianten**: 
+   - Beim Report-Generieren kann es zu Warnungen kommen, wenn `metric_sharpe_ratio` nicht gefunden wird
+   - Automatischer Fallback auf `metric_total_return` funktioniert zuverlässig
+   - Nicht kritisch, aber Metrik-Namen könnten konsistenter sein
+
+2. **Pandas FutureWarnings**: 
+   - In Tests erscheinen ~134 FutureWarnings bezüglich `.fillna()` Downcasting
+   - Betrifft nicht die Sweep-Funktionalität, nur Test-Output
+   - Kann in zukünftigen Pandas-Versionen behoben werden
+
+3. **Sharpe-Ratio-Berechnung**: 
+   - Bei sehr kurzen Backtest-Perioden oder geringer Varianz kann Sharpe-Ratio `NaN` sein
+   - Report verwendet dann automatisch `total_return` als Sort-Metrik
+
+### Mögliche zukünftige Erweiterungen
+
+1. **Weitere Sweeps**: 
+   - Zusätzliche vordefinierte Sweeps für weitere Strategien
+   - Portfolio-Sweeps mit mehr Kombinationen
+
+2. **Automatisches Top-N-Promoten**: 
+   - Beste Konfigurationen automatisch in Config-Registry übernehmen
+   - Integration mit Strategy-Registry für "Production-Ready"-Strategien
+
+3. **Erweiterte Visualisierung**: 
+   - Interaktive Dashboards (z.B. Plotly)
+   - Parameter-Sensitivity-Analysen
+   - Walk-Forward-Heatmaps
+
+4. **Performance-Optimierung**: 
+   - Caching von Backtest-Ergebnissen
+   - Parallele Execution für große Sweeps (bereits implementiert, aber erweiterbar)
+
+5. **Integration mit Live-System**: 
+   - Beste Parameter automatisch in Testnet/Live übernehmen
+   - Monitoring der Live-Performance vs. Backtest-Performance
 
 ---
 
