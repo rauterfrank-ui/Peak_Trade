@@ -486,9 +486,90 @@ Phase 41 ist **rein Research/Backtest-fokussiert**:
 
 ---
 
+## Phase 42 – Top-N Promotion
+
+Phase 42 erweitert Phase 41 um eine **Top-N Promotion Pipeline**:
+
+- Automatische Auswahl der besten Konfigurationen aus Sweep-Ergebnissen
+- Export in maschinenlesbares TOML-Format
+- Integration in den Sweep-Workflow
+
+### Top-N Promotion Workflow
+
+**1. Sweep ausführen**
+
+```bash
+python scripts/run_strategy_sweep.py \
+  --sweep-name rsi_reversion_basic \
+  --config config/config.toml \
+  --max-runs 20
+```
+
+**2. Report generieren (optional)**
+
+```bash
+python scripts/generate_strategy_sweep_report.py \
+  --sweep-name rsi_reversion_basic \
+  --format both
+```
+
+**3. Top-N Kandidaten exportieren**
+
+```bash
+python scripts/promote_sweep_topn.py \
+  --sweep-name rsi_reversion_basic \
+  --metric metric_sharpe_ratio \
+  --top-n 5
+```
+
+**Output:** `reports/sweeps/{sweep_name}_top_candidates.toml`
+
+### TOML-Format
+
+Die generierte TOML-Datei enthält:
+
+```toml
+[meta]
+sweep_name = "rsi_reversion_basic"
+metric_used = "metric_sharpe_ratio"
+top_n = 5
+generated_at = "2025-12-06T23:59:00"
+
+[[candidates]]
+rank = 1
+sharpe_ratio = 2.0
+total_return = 0.2
+[candidates.params]
+rsi_period = 14
+oversold_level = 30
+overbought_level = 70
+```
+
+### Verwendung der Top-Kandidaten
+
+Die TOML-Datei kann verwendet werden für:
+
+- **Neue Backtests**: Parameter direkt aus TOML übernehmen
+- **Testnet-Profile**: Beste Konfigurationen als Basis für Testnet-Tests
+- **Dokumentation**: Automatische Generierung von "Best Practices"
+- **Weitere Analysen**: Maschinenlesbare Format für Scripts/Tools
+
+### CLI-Optionen
+
+```bash
+python scripts/promote_sweep_topn.py \
+  --sweep-name rsi_reversion_basic \
+  --metric metric_sharpe_ratio \        # Primäre Metrik
+  --fallback-metric metric_total_return \ # Fallback falls primary fehlt
+  --top-n 5 \                             # Anzahl Top-Kandidaten
+  --output reports/sweeps                 # Ausgabe-Verzeichnis
+```
+
+---
+
 ## Nächste Schritte
 
-Nach Phase 41:
+Nach Phase 42:
 
 1. **Walk-Forward-Analyse**: Out-of-Sample-Validierung der besten Parameter
 2. **Monte-Carlo-Simulation**: Robustness-Testing
@@ -497,4 +578,5 @@ Nach Phase 41:
 ---
 
 *Phase 41 – Strategy-Sweeps & Research-Playground*
+*Phase 42 – Top-N Promotion*
 *Peak_Trade Framework*
