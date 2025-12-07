@@ -1066,6 +1066,157 @@ Das Monitoring-System arbeitet nahtlos mit dem Testnet-Orchestrator zusammen:
 
 ---
 
+## 10c. Alerts & Incident Notifications v1 (Phase 66)
+
+### 10c.1 Übersicht
+
+Das **Alerting & Incident-Notification-System** ermöglicht es Operatoren, automatisch auf kritische Situationen in Shadow- und Testnet-Runs aufmerksam gemacht zu werden.
+
+**Zweck:**
+- Automatische Erkennung von Anomalien (PnL-Drops, Data-Gaps, Fehler-Spikes)
+- Sofortige Benachrichtigung bei kritischen Ereignissen
+- Vorbereitung für externe Integrationen (E-Mail, Telegram)
+
+**Features:**
+- Regel-Engine mit konfigurierbaren Schwellenwerten
+- Multi-Notifier-Support (Logging, Console, E-Mail-Stub, Telegram-Stub)
+- Robuste Fehlerbehandlung (ein Notifier-Fehler crasht nicht die anderen)
+
+### 10c.2 Verfügbare Regeln
+
+**1. PnL-Drop-Rule**
+- **Zweck:** Erkennt starke Intraday-PnL-Drops
+- **Parameter:**
+  - `threshold_pct`: Schwellenwert in Prozent (z.B. 5.0 für 5%)
+  - `window`: Zeitfenster (z.B. 1 Stunde)
+- **Alert-Level:** CRITICAL
+
+**2. No-Events-Rule**
+- **Zweck:** Erkennt ausbleibende Events (Data-Gaps)
+- **Parameter:**
+  - `max_silence`: Maximale Stille-Zeit (z.B. 10 Minuten)
+- **Alert-Level:** WARNING (bei Überschreitung), CRITICAL (bei doppelter Überschreitung)
+
+**3. Error-Spike-Rule**
+- **Zweck:** Erkennt gehäufte Fehler/Order-Rejects
+- **Parameter:**
+  - `max_errors`: Maximale Anzahl Fehler im Zeitfenster
+  - `window`: Zeitfenster (z.B. 10 Minuten)
+- **Alert-Level:** WARNING (bei Überschreitung), CRITICAL (bei doppelter Überschreitung)
+
+### 10c.3 CLI-Verwendung
+
+**Kommando:**
+
+```bash
+python scripts/live_alerts_cli.py run-rules \
+  --run-id shadow_20251207_120000_abc123 \
+  --config config/config.toml \
+  --pnl-drop-threshold-pct 5.0 \
+  --pnl-drop-window-hours 1 \
+  --no-events-max-minutes 10 \
+  --error-spike-max-errors 5 \
+  --error-spike-window-minutes 10
+```
+
+**Optionen:**
+- `--run-id`: Run-ID (erforderlich)
+- `--pnl-drop-threshold-pct`: PnL-Drop-Schwellenwert in Prozent (optional)
+- `--pnl-drop-window-hours`: Zeitfenster für PnL-Drop-Check in Stunden (Default: 1.0)
+- `--no-events-max-minutes`: Maximale Stille-Zeit in Minuten (optional)
+- `--error-spike-max-errors`: Maximale Anzahl Fehler im Zeitfenster (optional)
+- `--error-spike-window-minutes`: Zeitfenster für Error-Spike-Check in Minuten (Default: 10.0)
+
+**Exit-Codes:**
+- `0`: Keine kritischen Alerts
+- `1`: Mindestens ein CRITICAL-Alert wurde ausgelöst
+
+**Beispiele:**
+
+```bash
+# Nur PnL-Drop-Check
+python scripts/live_alerts_cli.py run-rules \
+  --run-id shadow_20251207_120000_abc123 \
+  --pnl-drop-threshold-pct 5.0
+
+# Nur No-Events-Check
+python scripts/live_alerts_cli.py run-rules \
+  --run-id shadow_20251207_120000_abc123 \
+  --no-events-max-minutes 10
+
+# Alle Checks
+python scripts/live_alerts_cli.py run-rules \
+  --run-id shadow_20251207_120000_abc123 \
+  --pnl-drop-threshold-pct 5.0 \
+  --no-events-max-minutes 10 \
+  --error-spike-max-errors 5
+```
+
+### 10c.4 Integration mit Cron / Scheduler
+
+Das CLI ist so designed, dass es per Cron / Systemd / Scheduler regelmäßig laufen kann:
+
+```bash
+# Cron-Beispiel (alle 5 Minuten)
+*/5 * * * * cd /path/to/Peak_Trade && python scripts/live_alerts_cli.py run-rules \
+  --run-id shadow_20251207_120000_abc123 \
+  --pnl-drop-threshold-pct 5.0 \
+  --no-events-max-minutes 10 \
+  >> /var/log/peak_trade_alerts.log 2>&1
+```
+
+**Exit-Code-Interpretation:**
+- Exit-Code `0` = keine kritischen Alerts → keine Aktion nötig
+- Exit-Code `1` = kritischer Alert → kann an externe Tools weitergeleitet werden (z.B. Alertmanager, PagerDuty)
+
+### 10c.5 Notifier & Integrationen
+
+**Aktuell verfügbar:**
+- **LoggingAlertSink**: Alerts werden über Python-Logging ausgegeben
+- **ConsoleAlertNotifier**: Alerts werden auf stdout/stderr ausgegeben
+- **EmailAlertNotifier**: Stub für E-Mail-Integration (Phase 66)
+- **TelegramAlertNotifier**: Stub für Telegram-Integration (Phase 66)
+
+**Hinweis:**
+- E-Mail- und Telegram-Notifier sind in Phase 66 als **Stubs** implementiert
+- Das Interface ist bewusst so gestaltet, dass später echte Integrationen einfach nachgeschoben werden können
+- Stubs loggen aktuell nur, dass sie einen Alert erhalten hätten
+
+**Zukünftige Integrationen (spätere Phasen):**
+- Echte SMTP-Integration für E-Mail
+- Echte Telegram-Bot-API-Integration
+- Weitere Notifier (Slack, Discord, etc.)
+
+### 10c.6 Integration mit Monitoring & Orchestrator
+
+Das Alerting-System arbeitet nahtlos mit Monitoring und Orchestrator zusammen:
+
+1. **Run starten** (via Orchestrator):
+   ```bash
+   python scripts/testnet_orchestrator_cli.py start-shadow \
+     --strategy ma_crossover --symbol BTC/EUR --timeframe 1m
+   ```
+
+2. **Run überwachen** (via Monitor):
+   ```bash
+   python scripts/live_monitor_cli.py follow --run-id <run_id>
+   ```
+
+3. **Alerts prüfen** (via Alerts CLI):
+   ```bash
+   python scripts/live_alerts_cli.py run-rules \
+     --run-id <run_id> \
+     --pnl-drop-threshold-pct 5.0 \
+     --no-events-max-minutes 10
+   ```
+
+**Vorteil:**
+- Orchestrator verwaltet den Lifecycle
+- Monitor bietet Sichtbarkeit
+- Alerts warnen bei Anomalien
+
+---
+
 ## 11. Kommunikation & Verantwortung
 
 ### 11.1 Rollen und Entscheidungswege
