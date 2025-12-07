@@ -122,5 +122,37 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ---
 
+## Kategorie E – Performance & Scale
+
+### Data-Layer Caching
+
+- [ ] Data-Layer Caching für große Research-Sweeps verbessern
+  - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
+  - Idee: Caching-Layer weiter ausbauen / mehr Reuse zwischen Runs
+  - Vorschlag: Parquet-Format für persistierte Daten nutzen (falls noch nicht geschehen)
+
+### Plot-Generation
+
+- [ ] Plot-Generation optional machen für Performance-Benchmarks
+  - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
+  - Idee: `--no-plots` Flag für reine Performance-Benchmarks
+  - Vorschlag: Asynchrone Plot-Generierung (später)
+
+### Logging
+
+- [ ] Logging in großen Research-Runs weiter drosseln oder Batch-weisen Output einführen
+  - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
+  - Idee: „Benchmark-/Silent"-Mode für Logs
+  - Vorschlag: Batch-weiser Output statt einzelner Log-Zeilen
+
+### pandas-Optimierungen
+
+- [ ] pandas-Operationen optimieren (Vektorization, Reduzierung von Zwischenkopien)
+  - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
+  - Idee: Vektorization & Reduzierung von Zwischenkopien prüfen
+  - Vorschlag: Nutzung von `numba` oder `cython` für kritische Loops (später)
+
+---
+
 **Hinweis:** Diese Items werden bei Bedarf in zukünftigen Phasen angegangen. Priorisierung erfolgt basierend auf Nutzer-Feedback und Projekt-Roadmap.
 
