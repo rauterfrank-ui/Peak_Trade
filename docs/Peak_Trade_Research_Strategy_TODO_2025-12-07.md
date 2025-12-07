@@ -1,7 +1,7 @@
 # Peak_Trade  Research-/Strategy-Track ToDo-Liste
 **Stand: 07.12.2025**
 
-Diese Liste fokussiert sich auf den Research-/Strategy-Track, basierend auf den Phasen 29, 30, 41, 42 und 43 sowie dem Gesamtstatus-Snapshot.
+Diese Liste fokussiert sich auf den Research-/Strategy-Track, basierend auf den Phasen 29, 30, 41, 42, 43 und 44 sowie dem Gesamtstatus-Snapshot.
 
 ---
 
@@ -9,14 +9,14 @@ Diese Liste fokussiert sich auf den Research-/Strategy-Track, basierend auf den 
 
 - [ ] **RSI-Varianten-Sweep**
       Stochastic RSI und Multi-Timeframe-RSI als neue Sweeps aufsetzen.
-- [ ] **Walk-Forward-Test implementieren**
-      Einfache In-Sample/Out-of-Sample-Validierung für Top-3-Konfigurationen aufbauen.
-- [ ] **Sortino-Ratio ergänzen**
-      Sortino als zusätzliche Metrik in allen Sweep-Ergebnissen berechnen und in Reports aufnehmen.
+- [x] **Walk-Forward-Test implementieren** âœ… (Phase 44)
+      Einfache In-Sample/Out-of-Sample-Validierung fÃ¼r Top-N-Konfigurationen aufbauen. Basis implementiert: Walk-Forward-Engine, Reporting, CLI. Erweiterungen: Parameter-Optimierung auf Train-Daten, erweiterte Metriken.
+- [ ] **Sortino-Ratio ergï¿½nzen**
+      Sortino als zusï¿½tzliche Metrik in allen Sweep-Ergebnissen berechnen und in Reports aufnehmen.
 - [ ] **Standard-Heatmap-Template**
-      Automatisches Template: 2 Parameter × 2 Metriken (Sharpe + Max Drawdown) je Strategie erzeugen.
+      Automatisches Template: 2 Parameter ï¿½ 2 Metriken (Sharpe + Max Drawdown) je Strategie erzeugen.
 - [ ] **Unified Pipeline-CLI**
-      `run_sweep_pipeline.py` mit Flags wie `--run`, `--report`, `--promote` für den gesamten Sweep-Workflow.
+      `run_sweep_pipeline.py` mit Flags wie `--run`, `--report`, `--promote` fï¿½r den gesamten Sweep-Workflow.
 - [ ] **Drawdown-Heatmap**
       Neuer Plot-Typ: Parameter vs. Max-Drawdown als Heatmap in den Sweep-Reports.
 
@@ -25,36 +25,37 @@ Diese Liste fokussiert sich auf den Research-/Strategy-Track, basierend auf den 
 ## Mittelfristig (48 Sessions)
 
 - [ ] **Vol-Regime-Filter als Wrapper**
-      Alle Strategien optional mit Volatilitäts-Filter versehen (z.B. high/low-vol-Cluster).
+      Alle Strategien optional mit Volatilitï¿½ts-Filter versehen (z.B. high/low-vol-Cluster).
 - [ ] **Monte-Carlo-Robustness**
-      Bootstrapped Sharpe-Ratio-Konfidenzintervalle für Top-N-Konfigurationen berechnen.
+      Bootstrapped Sharpe-Ratio-Konfidenzintervalle fï¿½r Top-N-Konfigurationen berechnen.
 - [ ] **Korrelations-Matrix-Plot**
       Parameter-zu-Metrik-Korrelationen als Heatmap im Report darstellen.
-- [ ] **Rolling-Window-Stabilität**
-      Visualisieren, wie stabil Top-Parameter über rollierende 6-Monats-Fenster bleiben.
+- [ ] **Rolling-Window-Stabilitï¿½t**
+      Visualisieren, wie stabil Top-Parameter ï¿½ber rollierende 6-Monats-Fenster bleiben.
 - [ ] **Sweep-Comparison-Tool**
       Zwei Sweeps direkt miteinander vergleichen (z.B. vor/nach Parameter-Tuning, andere Marktphasen).
 - [ ] **Mehr Metriken im Research-Track**
-      Calmar-Ratio, Ulcer-Index, Recovery-Factor als zusätzliche Kennzahlen integrieren.
+      Calmar-Ratio, Ulcer-Index, Recovery-Factor als zusï¿½tzliche Kennzahlen integrieren.
 
 ---
 
 ## Langfristig (Research-Track Phase 50+)
 
 - [ ] **Regime-adaptive Strategien**
-      Parameter-Switching basierend auf erkannten Regimen (z.B. Volatilität, Trend, Liquidität).
+      Parameter-Switching basierend auf erkannten Regimen (z.B. Volatilitï¿½t, Trend, Liquiditï¿½t).
 - [ ] **Auto-Portfolio-Builder**
       Nicht-korrelierte Top-Strategien automatisch zu Portfolios kombinieren.
 - [ ] **Nightly-Sweep-Automation**
       Cron-/Scheduler-basierte Nightly-Sweeps mit Slack/E-Mail-Alerts bei neuen Top-Kandidaten.
 - [ ] **Interaktive Dashboards**
-      Plotly-/Web-UI für interaktive Exploration von Sweep-Ergebnissen und Strategien.
+      Plotly-/Web-UI fï¿½r interaktive Exploration von Sweep-Ergebnissen und Strategien.
 - [ ] **Feature-Importance-Analyse**
-      Analysen, welche Parameter die Performance am stärksten treiben (z.B. Feature-Importance, Sensitivität).
+      Analysen, welche Parameter die Performance am stï¿½rksten treiben (z.B. Feature-Importance, Sensitivitï¿½t).
 - [ ] **Risk-Parity-Integration**
-      Automatische Gewichtung im Portfolio nach Risikobeitrag (Risk-Parity-Ansätze).
+      Automatische Gewichtung im Portfolio nach Risikobeitrag (Risk-Parity-Ansï¿½tze).
 
 ---
 
-**Erstellt am:** 2025-12-07
-**Basierend auf:** Phasen 29, 30, 41, 42, 43 sowie dem Gesamtstatus-Snapshot `docs/Peak_Trade_Gesamtstatus_2025-12-07.md`.
+**Erstellt am:** 2025-12-07  
+**Aktualisiert:** 2025-12-07 (nach Phase 44)  
+**Basierend auf:** Phasen 29, 30, 41, 42, 43, 44 sowie dem Gesamtstatus-Snapshot `docs/Peak_Trade_Gesamtstatus_2025-12-07.md`.
