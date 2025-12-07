@@ -17,6 +17,12 @@ import logging
 import sys
 from pathlib import Path
 
+# Projekt-Root zum Python-Path hinzufügen
+CURRENT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = CURRENT_DIR.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 try:
     import uvicorn
 except ImportError:
@@ -35,7 +41,9 @@ logger = logging.getLogger(__name__)
 def main():
     """Main-Funktion."""
     parser = argparse.ArgumentParser(
-        description="Start Peak_Trade Live Web Dashboard",
+        description="Start Peak_Trade Live Web Dashboard\n\n"
+                    "WICHTIG: Read-only Web-Dashboard für Shadow/Testnet-Runs.\n"
+                    "Keine Order-Erzeugung, kein Start/Stop aus dem Web UI.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(

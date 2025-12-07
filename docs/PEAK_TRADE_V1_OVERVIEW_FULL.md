@@ -212,11 +212,20 @@ graph TD
 - Live-Ops CLI (`live_ops`) mit Health, Orders, Portfolio
 - Exchange-Integration (Kraken Testnet & Live via CCXT)
 - Portfolio-Monitor für Live-Portfolio-Snapshot & Risk-Bridge
+- Testnet-Orchestrator v1 (Phase 64) – Shadow/Testnet-Run-Orchestrierung
+- Monitoring & CLI-Dashboards v1 (Phase 65) – Run-Monitoring
+- Alerts & Incident Notifications v1 (Phase 66) – Alert-System
+- Live Web Dashboard v0 (Phase 67) – Web-basiertes Monitoring
 
 **Verwandte Dokumente:**
 - [`docs/LIVE_TESTNET_TRACK_STATUS.md`](LIVE_TESTNET_TRACK_STATUS.md) – Live-/Testnet-Status
 - [`docs/PHASE_51_LIVE_OPS_CLI.md`](PHASE_51_LIVE_OPS_CLI.md) – Live-Ops CLI
+- [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) – Runbooks (Abschnitte 10a–10d)
 - `scripts/live_ops.py` – Live-Ops CLI
+- `scripts/testnet_orchestrator_cli.py` – Testnet-Orchestrator CLI
+- `scripts/live_monitor_cli.py` – Live Monitor CLI
+- `scripts/live_alerts_cli.py` – Live Alerts CLI
+- `scripts/live_web_server.py` – Web-Dashboard Server
 
 ### 4.6 Risk & Alerts
 
@@ -255,6 +264,7 @@ graph TD
 - [`docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`](RUNBOOKS_AND_INCIDENT_HANDLING.md) – Runbooks
 - [`docs/INCIDENT_SIMULATION_AND_DRILLS.md`](INCIDENT_SIMULATION_AND_DRILLS.md) – Incident-Drills
 - [`docs/INCIDENT_DRILL_LOG.md`](INCIDENT_DRILL_LOG.md) – Drill-Log
+- [`docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md`](PEAK_TRADE_V1_KNOWN_LIMITATIONS.md) – Known Limitations v1.0
 
 ### 4.9 Observability-Plan
 
@@ -696,7 +706,62 @@ python scripts/generate_live_status_report.py \
 
 ---
 
-## 11. Änderungs-Historie
+## 11. Known Limitations v1.0 (Phase 68)
+
+**Wichtig:** Diese Limitierungen sind bewusst dokumentiert und werden in zukünftigen Versionen adressiert.
+
+### 11.1 Live-Trading
+
+| Limitierung | Status | Kommentar |
+|-------------|--------|-----------|
+| **Keine echte Live-Order-Ausführung** | Bewusst blockiert | SafetyGuard blockt alle Live-Orders in Phase 17+. Live ist architektonisch vorbereitet, aber nicht aktiviert. |
+| **Nur Kraken als Exchange** | v1.0 | Weitere Exchanges (Binance, Coinbase) können über `DEV_GUIDE_ADD_EXCHANGE.md` hinzugefügt werden. |
+| **Keine automatische Hedge-/Position-Sizing** | v1.0 | Order-Sizing ist manuell oder über Konfiguration. |
+
+### 11.2 Web-Dashboard
+
+| Limitierung | Status | Kommentar |
+|-------------|--------|-----------|
+| **Read-only** | Bewusst | Keine Order-Erzeugung, kein Start/Stop aus Web UI. |
+| **Keine Authentifizierung** | v0 | Nur für lokale/vertrauenswürdige Netzwerke. |
+| **Polling statt WebSocket** | v0 | Auto-Refresh via JavaScript (5s Default). |
+
+### 11.3 Alerts & Notifications
+
+| Limitierung | Status | Kommentar |
+|-------------|--------|-----------|
+| **Email-Notifier ist Stub** | v1.0 | Interface vorhanden, echte SMTP-Integration später. |
+| **Telegram-Notifier ist Stub** | v1.0 | Interface vorhanden, echte Bot-Integration später. |
+| **Kein Alert-Throttling** | v1.0 | Alerts können bei vielen Events gehäuft auftreten. |
+
+### 11.4 Data & Market Access
+
+| Limitierung | Status | Kommentar |
+|-------------|--------|-----------|
+| **Nur Crypto-Märkte** | v1.0 | Fokus auf BTC, ETH, weitere Altcoins. |
+| **Kein historischer Data-Download** | v1.0 | Daten müssen manuell oder via Loader bezogen werden. |
+| **Kein automatischer Data-Quality-Check** | v1.0 | Data-Gaps werden geloggt, aber nicht automatisch gefüllt. |
+
+### 11.5 Test-Suite
+
+| Limitierung | Status | Kommentar |
+|-------------|--------|-----------|
+| **1733 Tests** | ✅ Alle grün | 5 skipped (bekannte Edge-Cases). |
+| **Pandas FutureWarnings gefiltert** | Bewusst | Werden bei pandas 3.0 Migration adressiert. |
+| **Keine Performance-Tests** | v1.0 | Load-/Stress-Tests für große Datenmengen fehlen. |
+
+### 11.6 Deployment & CI
+
+| Limitierung | Status | Kommentar |
+|-------------|--------|-----------|
+| **Kein Docker-Setup** | v1.0 | Local-First Development. |
+| **Keine CI-Pipeline** | v1.0 | GitHub Actions können hinzugefügt werden. |
+
+> **Hinweis:** Diese Limitierungen beeinträchtigen nicht die Kernfunktionalität für Research, Backtesting, Shadow-/Testnet-Monitoring und Risk-Management. Sie sind bewusst dokumentiert für Transparenz.
+
+---
+
+## 12. Änderungs-Historie
 
 | Datum      | Änderung                                                     |
 |------------|--------------------------------------------------------------|

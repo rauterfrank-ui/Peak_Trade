@@ -46,10 +46,11 @@ warnings.filterwarnings(
 # Diese Warning tritt auf bei `.shift(1).fillna(False)` Patterns in Strategies.
 # Der Code funktioniert korrekt, das Verhalten ändert sich erst in pandas 3.0.
 # Fix: Sobald pandas 3.0 Standard ist, Code auf `.astype(bool)` umstellen.
+# Tracked in TECH_DEBT_BACKLOG.md - Phase 68 v1.0 Hardening
 warnings.filterwarnings(
     "ignore",
     category=FutureWarning,
-    message=".*Downcasting object dtype arrays on .fillna.*",
+    message=r"Downcasting object dtype arrays.*",
 )
 
 # Weitere bekannte, harmlose Warnings können hier hinzugefügt werden
@@ -76,6 +77,8 @@ def pytest_configure(config):
 
     Setzt ENV-Variable und resettet Config-Caches, um sicherzustellen,
     dass alle Tests die Test-Config verwenden.
+
+    Fügt auch Warning-Filter für bekannte, harmlose Warnungen hinzu.
     """
     # ENV-Variable erneut setzen (fuer den Fall, dass sie ueberschrieben wurde)
     os.environ["PEAK_TRADE_CONFIG_PATH"] = str(_TEST_CONFIG_PATH)
@@ -86,6 +89,22 @@ def pytest_configure(config):
         reset_config()
     except ImportError:
         pass
+
+    # Warning-Filter für pytest hinzufügen (Phase 68 v1.0 Hardening)
+    # Diese werden zur filterwarnings-Liste von pytest hinzugefügt
+    config.addinivalue_line(
+        "filterwarnings",
+        "ignore:Downcasting object dtype arrays:FutureWarning"
+    )
+    config.addinivalue_line(
+        "filterwarnings",
+        "ignore:cannot collect test class:pytest.PytestCollectionWarning"
+    )
+    # urllib3 LibreSSL Warning (macOS system Python with LibreSSL)
+    config.addinivalue_line(
+        "filterwarnings",
+        "ignore:urllib3 v2 only supports OpenSSL"
+    )
 
 
 @pytest.fixture(autouse=True, scope="session")

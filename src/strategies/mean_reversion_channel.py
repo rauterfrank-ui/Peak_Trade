@@ -226,12 +226,12 @@ class MeanReversionChannelStrategy(BaseStrategy):
 
         # Signale setzen
         # Entry Long: Neu unter lower
-        prev_long = long_entry.shift(1).infer_objects(copy=False).fillna(False)
+        prev_long = long_entry.shift(1).fillna(False).astype(bool)
         long_trigger = long_entry & ~prev_long
         signals[long_trigger] = 1
 
         # Entry Short: Neu über upper
-        prev_short = short_entry.shift(1).infer_objects(copy=False).fillna(False)
+        prev_short = short_entry.shift(1).fillna(False).astype(bool)
         short_trigger = short_entry & ~prev_short
         signals[short_trigger] = -1
 

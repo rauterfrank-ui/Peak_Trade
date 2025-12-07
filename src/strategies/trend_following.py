@@ -257,11 +257,11 @@ class TrendFollowingStrategy(BaseStrategy):
         exit_condition = adx_weak | downtrend
 
         # Entry: Vorherige Bar kein Entry, aktuelle Bar Entry
-        entry_trigger = entry_condition & ~entry_condition.shift(1).fillna(False)
+        entry_trigger = entry_condition & ~entry_condition.shift(1).fillna(False).astype(bool)
         signals[entry_trigger] = 1
 
         # Exit: Vorherige Bar kein Exit, aktuelle Bar Exit
-        exit_trigger = exit_condition & ~exit_condition.shift(1).fillna(False)
+        exit_trigger = exit_condition & ~exit_condition.shift(1).fillna(False).astype(bool)
         signals[exit_trigger] = -1
 
         return signals

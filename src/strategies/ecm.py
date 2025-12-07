@@ -114,14 +114,14 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     
     # Entry: Hohe ECM-Confidence + Bullish Trend
     entry_condition = (ecm_confidence > confidence_threshold) & bullish_trend
-    
+
     # Entry nur bei Crossover (nicht permanent)
-    entry_crossover = entry_condition & (~entry_condition.shift(1).fillna(False))
+    entry_crossover = entry_condition & (~entry_condition.shift(1).fillna(False).astype(bool))
     signals[entry_crossover] = 1
-    
+
     # Exit: Confidence fällt ODER Trend dreht
     exit_condition = (ecm_confidence < confidence_threshold * 0.5) | (~bullish_trend)
-    exit_crossover = exit_condition & (~exit_condition.shift(1).fillna(False))
+    exit_crossover = exit_condition & (~exit_condition.shift(1).fillna(False).astype(bool))
     signals[exit_crossover] = -1
     
     return signals
