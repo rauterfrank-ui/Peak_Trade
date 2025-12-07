@@ -28,6 +28,7 @@ Dieses Dokument richtet sich an:
 - [`docs/GETTING_STARTED.md`](GETTING_STARTED.md) – Onboarding (erste Stunde)
 - [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](PEAK_TRADE_FIRST_7_DAYS.md) – First 7 Days Onboarding (erste Woche)
 - [`docs/PEAK_TRADE_V1_RELEASE_NOTES.md`](PEAK_TRADE_V1_RELEASE_NOTES.md) – Release Notes
+- [`docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md`](PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md) – End-to-End Research Workflows (Phase 81)
 
 ---
 
@@ -185,13 +186,18 @@ graph TD
 ### 4.3 Strategy- & Portfolio-Layer
 
 **Was kann das?**
-- OOP-Strategien (MA Crossover, RSI, Trend-Following), einfach erweiterbar
+- OOP-Strategien (MA Crossover, RSI, Trend-Following, Breakout, Vol-Regime-Filter), einfach erweiterbar
 - Multi-Strategy-Portfolio-Support mit Gewichtung
 - Portfolio-Recipes & Presets mit Risk-Profilen (conservative/moderate/aggressive)
+- **Breakout-Strategie:** Donchian-/High-Low-Breakout mit optionalem ATR-Filter
+- **Vol-Regime-Filter:** Meta-Strategie für Regime-Klassifikation (Low-Vol/High-Vol/Neutral)
+- **Regime-Aware Portfolios:** Kombiniert Sub-Strategien mit dynamischer Regime-Skalierung (Risk-On/Neutral/Risk-Off)
 
 **Verwandte Dokumente:**
 - [`docs/PORTFOLIO_RECIPES_AND_PRESETS.md`](PORTFOLIO_RECIPES_AND_PRESETS.md) – Portfolio-Presets
 - [`docs/STRATEGY_DEV_GUIDE.md`](STRATEGY_DEV_GUIDE.md) – Neue Strategie hinzufügen
+- [`docs/PHASE_STRATEGY_EXPANSION_BREAKOUT_VOL_REGIME.md`](PHASE_STRATEGY_EXPANSION_BREAKOUT_VOL_REGIME.md) – Breakout & Vol-Regime Doku
+- [`docs/PHASE_REGIME_AWARE_PORTFOLIOS.md`](PHASE_REGIME_AWARE_PORTFOLIOS.md) – Regime-Aware Portfolios
 - `src/strategies/` – Implementierung
 
 ### 4.4 Research-Pipeline v2 & Portfolio-Robustness
@@ -204,6 +210,7 @@ graph TD
 **Verwandte Dokumente:**
 - [`docs/PHASE_43_VISUALIZATION_AND_SWEEP_DASHBOARDS.md`](PHASE_43_VISUALIZATION_AND_SWEEP_DASHBOARDS.md) – Research-Pipeline
 - [`docs/PHASE_47_PORTFOLIO_ROBUSTNESS_AND_STRESS_TESTING.md`](PHASE_47_PORTFOLIO_ROBUSTNESS_AND_STRESS_TESTING.md) – Portfolio-Robustness
+- [`docs/PHASE_REGIME_AWARE_SWEEPS_AND_PRESETS.md`](PHASE_REGIME_AWARE_SWEEPS_AND_PRESETS.md) – Regime-Aware Sweep-Presets
 - `scripts/research_cli.py` – Research-CLI
 
 ### 4.5 Live-/Testnet-Stack
@@ -721,6 +728,36 @@ python scripts/generate_live_status_report.py \
 **WICHTIG:** Phase 72 ist **reiner Status & Transparenz** – keine Config-Änderungen, keine State-Änderungen, keine echten Orders.
 
 **Details:** Siehe [`docs/PHASE_72_LIVE_OPERATOR_CONSOLE.md`](PHASE_72_LIVE_OPERATOR_CONSOLE.md)
+
+### 10.4 Live-Dry-Run Drills & Safety-Validation (Phase 73)
+
+**Status:** Read-Only Simulation (keine echten Orders)
+
+**Was Phase 73 getan hat:**
+- ✅ Drill-System implementiert (`src/live/drills.py`)
+- ✅ Standard-Drills definiert (A-G: Voll gebremst, Gate 1/2, Dry-Run, Token, Risk-Limits, Nicht-Live)
+- ✅ CLI für Drill-Ausführung (`scripts/run_live_dry_run_drills.py`)
+- ✅ Tests für Drill-Logik hinzugefügt
+- ✅ Dokumentation erstellt
+
+**WICHTIG:** Phase 73 ist **reine Simulation & Validierung** – keine Config-Änderungen, keine State-Änderungen, keine echten Orders.
+
+**Details:** Siehe [`docs/PHASE_73_LIVE_DRY_RUN_DRILLS.md`](PHASE_73_LIVE_DRY_RUN_DRILLS.md)
+
+### 10.5 Live-Config Audit & Export (Phase 74)
+
+**Status:** Read-Only Audit-Export (keine Config-Änderungen)
+
+**Was Phase 74 getan hat:**
+- ✅ Audit-Modul implementiert (`src/live/audit.py`)
+- ✅ CLI für Audit-Export (`scripts/export_live_audit_snapshot.py`)
+- ✅ JSON- und Markdown-Export
+- ✅ Tests für Audit-Logik hinzugefügt
+- ✅ Dokumentation erstellt
+
+**WICHTIG:** Phase 74 ist **reiner Audit-Export** – keine Config-Änderungen, keine State-Änderungen, keine Token-Werte exportiert.
+
+**Details:** Siehe [`docs/PHASE_74_LIVE_AUDIT_EXPORT.md`](PHASE_74_LIVE_AUDIT_EXPORT.md)
 
 **Status:** Design & Dry-Wiring (keine echte Live-Aktivierung)
 

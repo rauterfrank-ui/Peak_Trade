@@ -188,6 +188,7 @@ Die **Research-Pipeline v2** einmal komplett durchlaufen, um einen vollwertigen 
 
 * `docs/PHASE_30_REPORTING_AND_VISUALIZATION.md`
 * ggf. Doku zur **Research-Pipeline v2** (Verweis in `PEAK_TRADE_STATUS_OVERVIEW.md`).
+* **NEU:** [`docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md`](PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md) – vollständige End-to-End-Workflows für typische Research-Aufgaben.
 
 2. **Pipeline-Beispiel ausführen**
 
