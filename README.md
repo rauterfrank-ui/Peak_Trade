@@ -120,6 +120,9 @@ python scripts/generate_live_status_report.py \
 
 ## Dokumentation – Einstiegspunkte
 
+- **Vollständige v1.0-Übersicht**  
+  [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](docs/PEAK_TRADE_V1_OVERVIEW_FULL.md)
+
 - **Projekt-Status & Phasen-Übersicht**  
   [`docs/PEAK_TRADE_STATUS_OVERVIEW.md`](docs/PEAK_TRADE_STATUS_OVERVIEW.md)
 

@@ -264,6 +264,13 @@ Der Report enthält vier Hauptsektionen:
   Ein vollständiger Golden Path vom Research über Portfolio-Robustheit bis zum Live-/Testnet-Status und einem Incident-Drill findest du in  
   [`docs/REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md`](REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md).
 
+### 6.7 Weiterführende Gesamtübersicht
+
+- **Vollständige v1.0-Übersicht**  
+  Wenn du die wichtigsten CLI-Flows ausprobiert hast, bietet  
+  [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md)  
+  eine vertiefte v1.0-Übersicht mit Rollen- und Flow-Perspektive.
+
 ---
 
 ## 7. Häufige Fragen

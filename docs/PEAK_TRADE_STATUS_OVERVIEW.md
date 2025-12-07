@@ -608,6 +608,16 @@ Dieses Scenario demonstriert den **aktuellen v1.0-Stack** am konkreten Beispiel 
 
 ---
 
+## 13a. v1.0 Gesamtübersicht
+
+Für eine zusammenhängende, narrative Beschreibung von Architektur, Flows, Rollen und Governance siehe:
+
+- [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md)
+
+Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-Perspektive und verknüpft alle wichtigen Dokumente des Projekts.
+
+---
+
 ## 14. Änderungshistorie dieses Dokuments
 
 | Datum      | Commit    | Änderung                                                        |
