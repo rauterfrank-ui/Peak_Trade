@@ -1,0 +1,54 @@
+# config/portfolio_presets/core_balanced.toml
+# =============================================================================
+# Peak_Trade Tiered Portfolio Preset: Core Balanced (Phase 80)
+# =============================================================================
+#
+# Dieses Preset verwendet ausschließlich Core-Strategien (tier = "core")
+# mit ausgewogener Gewichtung für ein stabiles, risikoarmes Portfolio.
+#
+# Core-Strategien (Stand Phase 80):
+# - rsi_reversion: Mean-Reversion, robust über Regime
+# - ma_crossover: Trend-Follower, stabil
+# - bollinger_bands: Volatilitäts-basierte Mean-Reversion
+#
+# Eigenschaften:
+# - Nur Core-Tier: Maximale Robustheit und Stabilität
+# - Ausgewogene Gewichtung: Diversifikation über Styles
+# - Moderates Risikoprofil
+#
+
+[portfolio_recipes.core_balanced]
+id = "core_balanced"
+portfolio_name = "Core Balanced Portfolio"
+description = "Ausgewogenes Portfolio mit nur Core-Strategien (tier=core). Maximale Robustheit und Stabilität."
+
+# Nur Core-Strategien - keine Legacy, keine Aux
+strategies = [
+    "rsi_reversion",
+    "ma_crossover",
+    "bollinger_bands",
+]
+
+# Ausgewogene Gewichtung
+weights = [0.34, 0.33, 0.33]
+
+# Monte-Carlo für Robustness-Check
+run_montecarlo = true
+mc_num_runs = 100
+
+# Stress-Tests
+run_stress_tests = true
+stress_scenarios = ["flash_crash", "high_volatility"]
+stress_severity = 0.5
+
+format = "both"
+risk_profile = "moderate"
+tags = ["core", "balanced", "tiered", "phase80", "v1"]
+
+# =============================================================================
+# TIERING COMPLIANCE
+# =============================================================================
+# Dieses Preset erfüllt die Tiering-Anforderungen für "core-only":
+# - Alle Strategien sind tier = "core" in config/strategy_tiering.toml
+# - Keine Legacy-Strategien enthalten
+# - Keine Aux-Strategien enthalten (bewusste Einschränkung für Stabilität)

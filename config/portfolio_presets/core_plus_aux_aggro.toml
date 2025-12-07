@@ -1,0 +1,79 @@
+# config/portfolio_presets/core_plus_aux_aggro.toml
+# =============================================================================
+# Peak_Trade Tiered Portfolio Preset: Core + Aux Aggressive (Phase 80)
+# =============================================================================
+#
+# Dieses Preset kombiniert Core- und Aux-Strategien für ein aggressiveres
+# Risiko-/Renditeprofil. Legacy-Strategien sind weiterhin ausgeschlossen.
+#
+# Strategien:
+# - CORE (55% Gesamt): rsi_reversion, ma_crossover, bollinger_bands
+# - AUX (45% Gesamt): breakout, macd, momentum_1h
+#
+# Eigenschaften:
+# - Core + Aux: Höheres Renditepotenzial durch Aux-Strategien
+# - Kein Legacy: Qualitätsfilter bleibt aktiv
+# - Aggressives Risikoprofil: Für risikotolerante Portfolios
+#
+
+[portfolio_recipes.core_plus_aux_aggro]
+id = "core_plus_aux_aggro"
+portfolio_name = "Core + Aux Aggressive Portfolio"
+description = "Aggressives Portfolio mit Core- und Aux-Strategien. Höheres Renditepotenzial, aber auch höheres Risiko. Keine Legacy-Strategien."
+
+# Core-Strategien (55%)
+# + Aux-Strategien (45%)
+strategies = [
+    # Core
+    "rsi_reversion",
+    "ma_crossover",
+    "bollinger_bands",
+    # Aux
+    "breakout",
+    "macd",
+    "momentum_1h",
+]
+
+# Gewichtung: Core 55% (je ~18.3%), Aux 45% (je 15%)
+weights = [0.183, 0.184, 0.183, 0.15, 0.15, 0.15]
+
+# Monte-Carlo für Robustness-Check
+run_montecarlo = true
+mc_num_runs = 200
+
+# Erweiterte Stress-Tests für aggressives Profil
+run_stress_tests = true
+stress_scenarios = ["flash_crash", "high_volatility", "trend_reversal", "liquidity_crisis"]
+stress_severity = 0.7
+
+format = "both"
+risk_profile = "aggressive"
+tags = ["core", "aux", "aggressive", "high_return", "tiered", "phase80", "v1"]
+
+# =============================================================================
+# STRATEGIE-DETAILS
+# =============================================================================
+#
+# CORE-STRATEGIEN (tier = "core"):
+# - rsi_reversion: Mean-Reversion, Sharpe >= 1.5, MaxDD >= -15%
+# - ma_crossover: Trend-Following, stabil und vorhersagbar
+# - bollinger_bands: Vol-basierte Mean-Reversion
+#
+# AUX-STRATEGIEN (tier = "aux"):
+# - breakout: Trend-folgend mit SL/TP, höhere Tail-Risiken
+# - macd: Momentum-basiert, gut in Trending-Phasen
+# - momentum_1h: Kurzfristiges Momentum, Timing-Filter
+#
+# AUSGESCHLOSSEN (tier = "legacy"):
+# - breakout_donchian: Ersetzt durch breakout
+# - my_strategy: Demo, nicht für Produktion
+# - vol_breakout: Ersetzt durch vol_regime_filter + breakout
+#
+# =============================================================================
+# RISIKO-HINWEISE
+# =============================================================================
+# Dieses Portfolio hat ein aggressives Risikoprofil:
+# - Höhere erwartete Volatilität durch Aux-Strategien
+# - Größere potenzielle Drawdowns in Stress-Szenarien
+# - Geeignet für: Risikotolerante Anleger, kürzere Zeithorizonte
+# - Nicht geeignet für: Konservative Anleger, Kapitalerhalt-Fokus

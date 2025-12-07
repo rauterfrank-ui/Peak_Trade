@@ -1,0 +1,62 @@
+# config/portfolio_presets/core_trend_meanreversion.toml
+# =============================================================================
+# Peak_Trade Tiered Portfolio Preset: Core Trend + Mean-Reversion (Phase 80)
+# =============================================================================
+#
+# Dieses Preset verwendet ausschließlich Core-Strategien (tier = "core")
+# mit bewusster Aufteilung zwischen Trend-Following und Mean-Reversion.
+#
+# Strategie-Klassifizierung:
+# - Trend: ma_crossover (40%)
+# - Mean-Reversion: rsi_reversion (30%), bollinger_bands (30%)
+#
+# Eigenschaften:
+# - Nur Core-Tier: Maximale Robustheit
+# - Style-Split: Explizite Diversifikation über Strategietypen
+# - Regime-Awareness: Trend-Strategien für Trending, MR für Range
+#
+
+[portfolio_recipes.core_trend_meanreversion]
+id = "core_trend_meanreversion"
+portfolio_name = "Core Trend + Mean-Reversion Portfolio"
+description = "Core-Portfolio mit bewusstem Trend/Mean-Reversion-Split. Trend-Fokus: ma_crossover (40%), MR-Fokus: rsi_reversion + bollinger_bands (60%)."
+
+# Nur Core-Strategien - strategisch aufgeteilt
+strategies = [
+    "ma_crossover",      # Trend-Following
+    "rsi_reversion",     # Mean-Reversion
+    "bollinger_bands",   # Mean-Reversion (Vol-basiert)
+]
+
+# Gewichtung: 40% Trend, 60% Mean-Reversion
+weights = [0.40, 0.30, 0.30]
+
+# Monte-Carlo für Robustness-Check
+run_montecarlo = true
+mc_num_runs = 100
+
+# Stress-Tests
+run_stress_tests = true
+stress_scenarios = ["flash_crash", "sideways_market", "trend_reversal"]
+stress_severity = 0.5
+
+format = "both"
+risk_profile = "moderate"
+tags = ["core", "trend", "mean_reversion", "style_split", "tiered", "phase80", "v1"]
+
+# =============================================================================
+# STYLE-ANALYSE
+# =============================================================================
+# Strategie-Typen (aus StrategyProfile/Registry):
+#
+# TREND-FOLLOWING:
+# - ma_crossover: Klassischer Moving-Average-Crossover, folgt Trends
+#
+# MEAN-REVERSION:
+# - rsi_reversion: RSI-basiert, kauft Überverkauft, verkauft Überkauft
+# - bollinger_bands: Volatilitätsbänder, Mean-Reversion bei Band-Touch
+#
+# Diese Aufteilung sorgt für:
+# - Gute Performance in Trending-Märkten (ma_crossover)
+# - Gute Performance in Range-Märkten (rsi_reversion, bollinger_bands)
+# - Reduzierte Korrelation zwischen den Komponenten
