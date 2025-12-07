@@ -36,6 +36,8 @@ results/
 reports/sweeps/
 reports/experiments/
 reports/sweeps/images/
+reports/walkforward/
+reports/monte_carlo/
 
 # Secrets (KRITISCH!)
 .env
