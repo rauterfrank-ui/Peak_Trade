@@ -8,6 +8,7 @@ Gebündelte CLI für den gesamten Research-Workflow:
 - Sweep-Reports inkl. Plots & Drawdown-Heatmaps (Phase 43)
 - Top-N Promotion (Phase 42)
 - Walk-Forward-Testing (Phase 44)
+- Monte-Carlo-Robustness (Phase 45)
 
 Verwendung:
     # Strategy-Sweep ausführen
@@ -21,6 +22,9 @@ Verwendung:
 
     # Walk-Forward-Testing
     python scripts/research_cli.py walkforward --sweep-name rsi_reversion_basic --top-n 3 --train-window 90d --test-window 30d --use-dummy-data
+
+    # Monte-Carlo-Robustness
+    python scripts/research_cli.py montecarlo --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --num-runs 1000
 
     # End-to-End-Pipeline
     python scripts/research_cli.py pipeline \\
@@ -61,6 +65,7 @@ _sweep_module = _import_module_from_path("run_strategy_sweep", project_root / "s
 _report_module = _import_module_from_path("generate_strategy_sweep_report", project_root / "scripts" / "generate_strategy_sweep_report.py")
 _promote_module = _import_module_from_path("promote_sweep_topn", project_root / "scripts" / "promote_sweep_topn.py")
 _walkforward_module = _import_module_from_path("run_walkforward_backtest", project_root / "scripts" / "run_walkforward_backtest.py")
+_montecarlo_module = _import_module_from_path("run_monte_carlo_robustness", project_root / "scripts" / "run_monte_carlo_robustness.py")
 
 # Extrahiere die Funktionen
 run_sweep_from_args = _sweep_module.run_from_args
@@ -71,6 +76,8 @@ run_promote_from_args = _promote_module.run_from_args
 build_promote_parser = _promote_module.build_parser
 run_walkforward_from_args = _walkforward_module.run_from_args
 build_walkforward_parser = _walkforward_module.build_parser
+run_montecarlo_from_args = _montecarlo_module.run_from_args
+build_montecarlo_parser = _montecarlo_module.build_parser
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -114,6 +121,14 @@ def build_parser() -> argparse.ArgumentParser:
         "walkforward",
         help="Walk-Forward-Backtests aus Sweep-/Top-N-Ergebnissen (Phase 44).",
         parents=[build_walkforward_parser()],
+        add_help=False,
+    )
+
+    # Subparser: montecarlo
+    mc_parser = subparsers.add_parser(
+        "montecarlo",
+        help="Monte-Carlo-Robustness-Analyse für Top-N-Konfigurationen (Phase 45).",
+        parents=[build_montecarlo_parser()],
         add_help=False,
     )
 
@@ -359,6 +374,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return run_promote_from_args(args)
     elif args.command == "walkforward":
         return run_walkforward_from_args(args)
+    elif args.command == "montecarlo":
+        return run_montecarlo_from_args(args)
     elif args.command == "pipeline":
         return run_pipeline(args)
     else:

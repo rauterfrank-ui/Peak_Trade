@@ -46,6 +46,7 @@ class TestBuildParser:
         assert "report" in subparsers_action.choices
         assert "promote" in subparsers_action.choices
         assert "walkforward" in subparsers_action.choices
+        assert "montecarlo" in subparsers_action.choices
         assert "pipeline" in subparsers_action.choices
 
     def test_sweep_subparser_has_required_args(self):
@@ -90,6 +91,23 @@ class TestBuildParser:
         assert args.train_window == "90d"
         assert args.test_window == "30d"
         assert args.use_dummy_data is True
+
+    def test_montecarlo_subparser_has_required_args(self):
+        """Monte-Carlo-Subparser hat erwartete Argumente."""
+        parser = research_cli.build_parser()
+        args = parser.parse_args([
+            "montecarlo",
+            "--sweep-name", "test",
+            "--config", "config/config.toml",
+            "--top-n", "3",
+            "--num-runs", "1000",
+        ])
+        
+        assert args.command == "montecarlo"
+        assert args.sweep_name == "test"
+        assert args.config == "config/config.toml"
+        assert args.top_n == 3
+        assert args.num_runs == 1000
 
     def test_pipeline_subparser_has_required_args(self):
         """Pipeline-Subparser hat erwartete Argumente."""
@@ -169,6 +187,24 @@ class TestMain:
         assert mock_run_walkforward.called
         call_args = mock_run_walkforward.call_args[0][0]
         assert call_args.command == "walkforward"
+        assert call_args.sweep_name == "dummy"
+
+    @patch("scripts.research_cli.run_montecarlo_from_args")
+    def test_main_montecarlo_calls_montecarlo_runner(self, mock_run_montecarlo):
+        """Monte-Carlo-Command ruft run_montecarlo_from_args auf."""
+        mock_run_montecarlo.return_value = 0
+        
+        exit_code = research_cli.main([
+            "montecarlo",
+            "--sweep-name", "dummy",
+            "--config", "config/config.toml",
+            "--top-n", "3",
+        ])
+        
+        assert exit_code == 0
+        assert mock_run_montecarlo.called
+        call_args = mock_run_montecarlo.call_args[0][0]
+        assert call_args.command == "montecarlo"
         assert call_args.sweep_name == "dummy"
 
     @patch("scripts.research_cli.run_pipeline")
