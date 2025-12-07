@@ -303,3 +303,200 @@ def export_top_n(
     logger.info(f"Top-N Kandidaten exportiert: {output_file}")
     return output_file
 
+
+# =============================================================================
+# LOAD TOP N CONFIGS FOR WALK-FORWARD
+# =============================================================================
+
+
+def load_top_n_configs_for_sweep(
+    sweep_name: str,
+    n: int,
+    *,
+    metric_primary: str = "metric_sharpe_ratio",
+    metric_fallback: str = "metric_total_return",
+    experiments_dir: Optional[Path] = None,
+    output_path: Optional[Path] = None,
+) -> List[Dict[str, Any]]:
+    """
+    Lädt die Top-N-Strategiekonfigurationen für einen gegebenen Sweep.
+
+    Diese Funktion kann entweder:
+    1. Top-N direkt aus Sweep-Ergebnissen auswählen (wenn TOML nicht existiert)
+    2. Top-N aus bereits exportierter TOML-Datei laden (falls vorhanden)
+
+    Args:
+        sweep_name: Name des Sweeps (z.B. "rsi_reversion_basic")
+        n: Anzahl der Top-Konfigurationen
+        metric_primary: Primäre Metrik für Sortierung (default: "metric_sharpe_ratio")
+        metric_fallback: Fallback-Metrik falls primary fehlt (default: "metric_total_return")
+        experiments_dir: Verzeichnis mit Experiment-Ergebnissen (default: "reports/experiments")
+        output_path: Verzeichnis für Top-N-TOML (default: "reports/sweeps")
+
+    Returns:
+        Liste von Dicts, jeder enthält:
+        - "config_id": Eindeutige ID (z.B. "config_1" oder experiment_id)
+        - "strategy_name": Name der Strategie (aus sweep_name abgeleitet)
+        - "params": Parameter-Dict (ohne "param_" Prefix)
+        - "metrics": Metriken-Dict (ohne "metric_" Prefix)
+        - "rank": Rang (1-basiert)
+
+    Raises:
+        FileNotFoundError: Wenn keine Sweep-Ergebnisse gefunden werden
+        ValueError: Bei ungültigen Daten oder fehlenden Metriken
+
+    Example:
+        >>> configs = load_top_n_configs_for_sweep("rsi_reversion_basic", top_n=3)
+        >>> for config in configs:
+        ...     print(f"Rank {config['rank']}: {config['config_id']}")
+        ...     print(f"  Params: {config['params']}")
+    """
+    if experiments_dir is None:
+        experiments_dir = Path("reports/experiments")
+    if output_path is None:
+        output_path = Path("reports/sweeps")
+
+    # Versuche zuerst, aus TOML zu laden (falls bereits exportiert)
+    toml_file = output_path / f"{sweep_name}_top_candidates.toml"
+    if toml_file.exists():
+        logger.info(f"Lade Top-N-Konfigurationen aus TOML: {toml_file}")
+        return _load_configs_from_toml(toml_file, n)
+
+    # Fallback: Lade direkt aus Sweep-Ergebnissen
+    logger.info(f"TOML nicht gefunden, lade Top-N direkt aus Sweep-Ergebnissen")
+    config = TopNPromotionConfig(
+        sweep_name=sweep_name,
+        metric_primary=metric_primary,
+        metric_fallback=metric_fallback,
+        top_n=n,
+        experiments_dir=experiments_dir,
+        output_path=output_path,
+    )
+
+    # Lade Sweep-Ergebnisse
+    df = load_sweep_results(config)
+
+    # Wähle Top-N
+    df_top, metric_used = select_top_n(df, config)
+
+    # Konvertiere zu Config-Dicts
+    configs = _dataframe_to_config_dicts(df_top, sweep_name, metric_used)
+
+    return configs
+
+
+def _load_configs_from_toml(toml_file: Path, n: int) -> List[Dict[str, Any]]:
+    """
+    Lädt Top-N-Konfigurationen aus TOML-Datei.
+
+    Args:
+        toml_file: Pfad zur TOML-Datei
+        n: Anzahl der Konfigurationen (maximal)
+
+    Returns:
+        Liste von Config-Dicts
+    """
+    import toml
+
+    with open(toml_file, "r") as f:
+        toml_data = toml.load(f)
+
+    candidates = toml_data.get("candidates", [])
+    meta = toml_data.get("meta", {})
+
+    # Extrahiere Strategiename aus sweep_name (z.B. "rsi_reversion_basic" -> "rsi_reversion")
+    sweep_name = meta.get("sweep_name", "")
+    strategy_name = _extract_strategy_name(sweep_name)
+
+    configs = []
+    for i, candidate in enumerate(candidates[:n], 1):
+        config_id = candidate.get("experiment_id", f"config_{i}")
+        config = {
+            "config_id": config_id,
+            "strategy_name": strategy_name,
+            "params": candidate.get("params", {}),
+            "metrics": {k: v for k, v in candidate.items() if k not in ["rank", "experiment_id", "params"]},
+            "rank": candidate.get("rank", i),
+        }
+        configs.append(config)
+
+    logger.info(f"{len(configs)} Konfigurationen aus TOML geladen")
+    return configs
+
+
+def _dataframe_to_config_dicts(
+    df_top: pd.DataFrame, sweep_name: str, metric_used: str
+) -> List[Dict[str, Any]]:
+    """
+    Konvertiert DataFrame mit Top-N Runs zu Config-Dicts.
+
+    Args:
+        df_top: DataFrame mit Top-N Runs (muss "rank" Spalte enthalten)
+        sweep_name: Name des Sweeps
+        metric_used: Verwendete Metrik
+
+    Returns:
+        Liste von Config-Dicts
+    """
+    strategy_name = _extract_strategy_name(sweep_name)
+
+    # Extrahiere Spalten
+    param_cols = [c for c in df_top.columns if c.startswith("param_")]
+    metric_cols = [c for c in df_top.columns if c.startswith("metric_")]
+
+    configs = []
+    for _, row in df_top.iterrows():
+        # Config-ID (experiment_id falls vorhanden, sonst rank-basiert)
+        config_id = str(row.get("experiment_id", f"config_{int(row['rank'])}"))
+
+        # Parameter (ohne "param_" Prefix)
+        params = {}
+        for col in param_cols:
+            val = row[col]
+            if pd.notna(val):
+                key = col.replace("param_", "")
+                # Konvertiere zu Python-Typen
+                if isinstance(val, (int, float)):
+                    params[key] = float(val) if isinstance(val, float) else int(val)
+                elif isinstance(val, bool):
+                    params[key] = bool(val)
+                else:
+                    params[key] = str(val)
+
+        # Metriken (ohne "metric_" Prefix)
+        metrics = {}
+        for col in metric_cols:
+            val = row[col]
+            if pd.notna(val):
+                key = col.replace("metric_", "")
+                metrics[key] = float(val)
+
+        config = {
+            "config_id": config_id,
+            "strategy_name": strategy_name,
+            "params": params,
+            "metrics": metrics,
+            "rank": int(row["rank"]),
+        }
+        configs.append(config)
+
+    return configs
+
+
+def _extract_strategy_name(sweep_name: str) -> str:
+    """
+    Extrahiert Strategiename aus Sweep-Namen.
+
+    Beispiel:
+        "rsi_reversion_basic" -> "rsi_reversion"
+        "ma_crossover_medium" -> "ma_crossover"
+    """
+    # Entferne typische Suffixe (_basic, _medium, _large, etc.)
+    parts = sweep_name.split("_")
+    if len(parts) >= 2:
+        # Versuche, Suffix zu erkennen
+        known_suffixes = ["basic", "medium", "large", "small", "full"]
+        if parts[-1] in known_suffixes:
+            return "_".join(parts[:-1])
+    return sweep_name
+
