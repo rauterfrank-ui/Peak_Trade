@@ -104,7 +104,7 @@ python scripts/research_cli.py promote --sweep-name rsi_reversion_basic --top-n 
 python scripts/research_cli.py walkforward --sweep-name rsi_reversion_basic --top-n 3 --train-window 90d --test-window 30d --use-dummy-data
 ```
 
-Für komplette Pipelines kann das `pipeline`-Subcommand genutzt werden:
+Für komplette End-to-End-Pipelines kann das `pipeline`-Subcommand (v2) genutzt werden:
 
 ```bash
 python scripts/research_cli.py pipeline \
@@ -114,9 +114,13 @@ python scripts/research_cli.py pipeline \
   --with-plots \
   --top-n 5 \
   --run-walkforward \
-  --train-window 90d \
-  --test-window 30d \
-  --use-dummy-data
+  --walkforward-train-window 90d \
+  --walkforward-test-window 30d \
+  --run-montecarlo \
+  --mc-num-runs 1000 \
+  --run-stress-tests \
+  --stress-scenarios single_crash_bar vol_spike \
+  --stress-severity 0.2
 ```
 
 **Dies ist der empfohlene Zugang für Research-Workflows**, da alle Schritte in einem einheitlichen Interface verfügbar sind.

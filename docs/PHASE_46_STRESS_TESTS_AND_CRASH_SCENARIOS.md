@@ -305,20 +305,21 @@ python scripts/research_cli.py stress \
     [--format {md|html|both}]
 ```
 
-### 7.2 Pipeline-Integration (Zukünftig)
+### 7.2 Pipeline-Integration ✅
 
-Die Pipeline könnte optional Stress-Tests ausführen:
+Stress-Tests sind vollständig in die **Research-Pipeline v2** integriert:
 
 ```bash
 python scripts/research_cli.py pipeline \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 5 \
-    --run-walkforward \
-    --run-stress-tests  # (noch nicht implementiert)
+    --run-stress-tests \
+    --stress-scenarios single_crash_bar vol_spike \
+    --stress-severity 0.2
 ```
 
-**Status:** Pipeline-Integration ist vorbereitet, aber aktuell nicht aktiv. Kann in späteren Phasen ergänzt werden.
+Die Pipeline führt automatisch Sweep → Report → Promotion → Stress-Tests aus. Siehe `docs/PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md` für Details zur vollständigen Pipeline.
 
 ---
 

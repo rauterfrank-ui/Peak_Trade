@@ -527,6 +527,22 @@ python scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic
 - **Automatische Report-Generierung** mit aggregierten Metriken
 - **Integration** in bestehenden Research-Workflow (Sweep → Top-N → Walk-Forward)
 
+### Integration in Research-Pipeline
+
+Walk-Forward-Testing ist vollständig in die **Research-Pipeline v2** integriert:
+
+```bash
+python scripts/research_cli.py pipeline \
+    --sweep-name rsi_reversion_basic \
+    --config config/config.toml \
+    --top-n 5 \
+    --run-walkforward \
+    --walkforward-train-window 90d \
+    --walkforward-test-window 30d
+```
+
+Die Pipeline führt automatisch Sweep → Report → Promotion → Walk-Forward aus. Siehe `docs/PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md` für Details zur vollständigen Pipeline.
+
 ### Nächste Schritte
 
 Phase 44 ist die Basis für weitere Robustness-Analysen:

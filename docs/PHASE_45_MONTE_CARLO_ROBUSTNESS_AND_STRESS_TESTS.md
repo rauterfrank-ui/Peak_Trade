@@ -307,20 +307,21 @@ python scripts/research_cli.py montecarlo \
     [--format {md|html|both}]
 ```
 
-### 8.2 Pipeline-Integration (Zukünftig)
+### 8.2 Pipeline-Integration ✅
 
-Die Pipeline könnte optional Monte-Carlo ausführen:
+Monte-Carlo ist vollständig in die **Research-Pipeline v2** integriert:
 
 ```bash
 python scripts/research_cli.py pipeline \
     --sweep-name rsi_reversion_basic \
     --config config/config.toml \
     --top-n 5 \
-    --run-walkforward \
-    --run-montecarlo  # (noch nicht implementiert)
+    --run-montecarlo \
+    --mc-num-runs 1000 \
+    --mc-method simple
 ```
 
-**Status:** Pipeline-Integration ist vorbereitet, aber aktuell nicht aktiv. Kann in späteren Phasen ergänzt werden.
+Die Pipeline führt automatisch Sweep → Report → Promotion → Monte-Carlo aus. Siehe `docs/PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md` für Details zur vollständigen Pipeline.
 
 ---
 
