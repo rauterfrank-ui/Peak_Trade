@@ -129,8 +129,11 @@ python scripts/generate_live_status_report.py \
 - **Architektur**  
   [`docs/ARCHITECTURE_OVERVIEW.md`](docs/ARCHITECTURE_OVERVIEW.md)
 
-- **Getting Started (erste Stunde)**  
+- **Getting Started (erste Stunde)**
   [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md)
+
+- **First 7 Days Onboarding (erste Woche)**
+  [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](docs/PEAK_TRADE_FIRST_7_DAYS.md)
 
 - **Research → Live Portfolios (Playbook)**  
   [`docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md)

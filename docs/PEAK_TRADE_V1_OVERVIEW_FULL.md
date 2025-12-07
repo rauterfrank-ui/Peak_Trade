@@ -25,7 +25,8 @@ Dieses Dokument richtet sich an:
 **Verwandte Dokumente:**
 
 - [`README.md`](../README.md) – Landing Page
-- [`docs/GETTING_STARTED.md`](GETTING_STARTED.md) – Onboarding
+- [`docs/GETTING_STARTED.md`](GETTING_STARTED.md) – Onboarding (erste Stunde)
+- [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](PEAK_TRADE_FIRST_7_DAYS.md) – First 7 Days Onboarding (erste Woche)
 - [`docs/PEAK_TRADE_V1_RELEASE_NOTES.md`](PEAK_TRADE_V1_RELEASE_NOTES.md) – Release Notes
 
 ---
@@ -660,6 +661,7 @@ python scripts/generate_live_status_report.py \
 |---------|----------|--------------|
 | **Onboarding & Overview** | [`README.md`](../README.md) | Landing Page |
 | | [`docs/GETTING_STARTED.md`](GETTING_STARTED.md) | Onboarding (erste Stunde) |
+| | [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](PEAK_TRADE_FIRST_7_DAYS.md) | First 7 Days Onboarding (erste Woche) |
 | | [`docs/PEAK_TRADE_V1_RELEASE_NOTES.md`](PEAK_TRADE_V1_RELEASE_NOTES.md) | v1.0 Release Notes |
 | | [`docs/PEAK_TRADE_STATUS_OVERVIEW.md`](PEAK_TRADE_STATUS_OVERVIEW.md) | Projekt-Status (Prozent-Übersicht) |
 | **Architektur** | [`docs/ARCHITECTURE_OVERVIEW.md`](ARCHITECTURE_OVERVIEW.md) | High-Level-Architektur & Layer |
