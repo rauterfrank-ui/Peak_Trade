@@ -54,7 +54,8 @@ Phase 43 nutzt die bestehenden Reporting- und Plot-Funktionen aus Phase 30 und e
 |----------|--------------|
 | `plot_metric_vs_single_param()` | 1D-Plot: Parameter vs. Metrik (Scatter + Trend) |
 | `plot_metric_heatmap_two_params()` | 2D-Heatmap: Zwei Parameter vs. Metrik |
-| `generate_default_sweep_plots()` | Automatische Standard-Plot-Kollektion |
+| `create_drawdown_heatmap()` | 2D-Heatmap speziell für Drawdown-Metriken (z. B. Max-Drawdown) |
+| `generate_default_sweep_plots()` | Automatische Standard-Plot-Kollektion (inkl. Drawdown-Heatmaps) |
 
 ### Tests
 
@@ -118,7 +119,7 @@ python scripts/run_strategy_sweep.py \
 #### Schritt 3: Report mit Visualisierungen generieren
 
 ```bash
-# Markdown + HTML Report mit Plots
+# Markdown + HTML Report mit Plots (inkl. Drawdown-Heatmaps)
 python scripts/generate_strategy_sweep_report.py \
   --sweep-name rsi_reversion_basic \
   --format both \
@@ -131,6 +132,8 @@ python scripts/generate_strategy_sweep_report.py \
   --format markdown \
   --with-plots
 ```
+
+**Hinweis:** Drawdown-Heatmaps werden automatisch erzeugt und im Report verlinkt, wenn im Sweep-Ergebnis eine entsprechende Drawdown-Metrik (z. B. `metric_max_drawdown`) vorhanden ist. Falls keine Drawdown-Metrik vorhanden ist, wird der Report trotzdem erstellt (nur ohne Drawdown-Heatmaps).
 
 **Erwartete Ausgabe:**
 - Kein Fehler "Keine Ergebnisse gefunden"
@@ -164,6 +167,15 @@ python scripts/generate_strategy_sweep_report.py \
 - Automatische Annotation bei kleinen Heatmaps (≤100 Zellen)
 - **Dateiname:** `{sweep_name}_heatmap_{param_x}_x_{param_y}_{metric}.png`
 
+#### Drawdown-Heatmaps (Max-Drawdown über Parameter-Raum)
+- **Spezielle 2D-Heatmap für Drawdown-Metriken**
+- Neben Performance-Metriken wie Sharpe-Ratio ist der maximale Drawdown ein zentrales Robustness-Kriterium
+- Zeigt zwei Parameterachsen (z. B. Lookback-Periode und Threshold) gegen den Max-Drawdown
+- Verwendet eine invertierte Colormap (Reds) für bessere Visualisierung negativer Drawdown-Werte
+- **Automatische Erzeugung:** Wird automatisch erzeugt, wenn im Sweep-Ergebnis eine Drawdown-Metrik (z. B. `metric_max_drawdown`) vorhanden ist
+- **Dateiname:** `heatmap_drawdown_{param_x}_vs_{param_y}.png`
+- **Besonders nützlich:** Hilft, stabile Parameterregionen mit moderaten Drawdowns zu identifizieren, besonders für aggressivere Strategien
+
 #### Histogramme (Metrik-Verteilung)
 - **Verteilungs-Histogramm** einer Metrik
 - Zeigt Mittelwert und Median
@@ -180,7 +192,8 @@ reports/sweeps/
     ├── {sweep_name}_{param1}_vs_{metric}.png
     ├── {sweep_name}_{param2}_vs_{metric}.png
     ├── {sweep_name}_{param3}_vs_{metric}.png
-    └── {sweep_name}_heatmap_{param_x}_x_{param_y}_{metric}.png
+    ├── {sweep_name}_heatmap_{param_x}_x_{param_y}_{metric}.png
+    └── heatmap_drawdown_{param_x}_vs_{param_y}.png  # Falls max_drawdown vorhanden
 ```
 
 **Beispiel:**
@@ -213,6 +226,11 @@ Die generierten Reports enthalten eine **Visualizations-Section** mit Markdown-B
 
 ### Parameter Heatmap (2D)
 ![Parameter Heatmap](images/rsi_reversion_basic_heatmap_rsi_period_x_oversold_level_total_return.png)
+
+### Drawdown-Heatmaps (Max-Drawdown über Parameter-Raum)
+
+#### Drawdown-Heatmap: Rsi Period × Oversold Level
+![Drawdown-Heatmap: Rsi Period × Oversold Level](images/heatmap_drawdown_rsi_period_vs_oversold_level.png)
 ```
 
 HTML-Reports enthalten die Plots als `<img>`-Tags mit relativen Pfaden.
@@ -277,7 +295,17 @@ plot_metric_heatmap_two_params(
     output_dir=Path("reports/sweeps/images"),
 )
 
-# Automatische Standard-Plots (empfohlen)
+# Drawdown-Heatmap: Max-Drawdown über zwei Parameter
+create_drawdown_heatmap(
+    df=sweep_results,
+    param_x="rsi_period",
+    param_y="oversold_level",
+    metric_col="max_drawdown",
+    sweep_name="rsi_reversion_basic",
+    output_dir=Path("reports/sweeps/images"),
+)
+
+# Automatische Standard-Plots (empfohlen, inkl. Drawdown-Heatmaps)
 plots = generate_default_sweep_plots(
     df=sweep_results,
     sweep_name="rsi_reversion_basic",
@@ -352,6 +380,7 @@ plots = generate_default_sweep_plots(
 |----------|-----------|
 | 1D Parameter-Plot | `{sweep_name}_{param}_vs_{metric}.png` |
 | 2D Heatmap | `{sweep_name}_heatmap_{param_x}_x_{param_y}_{metric}.png` |
+| Drawdown-Heatmap | `heatmap_drawdown_{param_x}_vs_{param_y}.png` |
 
 ---
 
