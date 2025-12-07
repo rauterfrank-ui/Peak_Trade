@@ -1,7 +1,9 @@
-# Peak_Trade – Projekt-Status Overview (Phasen 1–71)
+# Peak_Trade – Projekt-Status Overview (Phasen 1–86)
 
 Dieses Dokument beschreibt den aktuellen Gesamtstatus von **Peak_Trade**
-(Phasen **1–71**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
+(Phasen **1–86**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
+
+> **Research v1.0 Freeze:** Phase 86 markiert den Scope-Freeze für Research v1.0 und die Freigabe des Live-Track für Beta-Testing. Siehe [`PHASE_86_RESEARCH_V1_FREEZE.md`](PHASE_86_RESEARCH_V1_FREEZE.md).
 
 > **Peak_Trade v1.0 Release-Paket:** siehe [`PEAK_TRADE_V1_RELEASE_NOTES.md`](PEAK_TRADE_V1_RELEASE_NOTES.md) und das aktualisierte Projekt-[`README.md`](../README.md).
 
@@ -29,11 +31,11 @@ Ziel:
 | Strategy & Portfolio Layer      | 92%       | Einzel-Strategien, Portfolio-Layer, Portfolio-Robustness, Recipes, Risk-Profiled Presets (Phase 53), Research→Live Playbook (Phase 54) |
 | Risk & Safety (Research + Live) | 90%       | Risk-Metriken, Limits, LiveRiskLimits, Safety-Concept                                    |
 | Research & Experiments          | 91%       | Registry, Sweeps, Research-CLI, Pipeline v2, Portfolio-Level-Robustness, Research→Live Playbook (Phase 54) |
-| Live-/Testnet & Operations      | 98%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Testnet-Orchestrator v1 (Phase 64), Research→Live Playbook (Phase 54), Live-Execution-Design & Gating (Phase 71), Live-Operator-Status-CLI (Phase 72) |
+| Live-/Testnet & Operations      | 98%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Testnet-Orchestrator v1 (Phase 64), Research→Live Playbook (Phase 54), Live-Execution-Design & Gating (Phase 71), Live-Operator-Status-CLI (Phase 72), Live-Dry-Run Drills (Phase 73), Live-Config Audit & Export (Phase 74) |
 | Reporting, Monitoring & CLI     | 97%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI, Live-Ops CLI (Phase 51), Monitoring & CLI-Dashboards v1 (Phase 65), Alerts & Incident Notifications v1 (Phase 66), Live Web Dashboard v0 (Phase 67) |
 | Documentation & Governance      | 90%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs, Research→Live Playbook (Phase 54), v1.0 Known Limitations dokumentiert |
 | Developer-Experience & Tooling  | 93%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides, AI-Guide (Phase 55), Warning-free Test-Suite (Phase 68) |
-| **Gesamtprojekt (Phasen 1–72)** | **≈ 96%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides, Strategy & Portfolio Library, Research→Live Playbook, Live-Status-Reports, Incident-Drills, Testnet-Orchestrator, Monitoring & Alerts, Web-Dashboard v0, v1.0 Hardening & Polishing (Phase 68), Live-Execution-Design & Gating (Phase 71), Live-Operator-Status-CLI (Phase 72), 1733+ Tests (alle grün) |
+| **Gesamtprojekt (Phasen 1–86)** | **≈ 98%** | Research v1.0 Freeze erreicht. Tiered Portfolio Presets (Phase 80), Research Golden Paths (Phase 81), Research QA & Scenarios (Phase 82), Live-Gating & Risk Policies (Phase 83), Operator Dashboard (Phase 84), Live-Beta Drill (Phase 85), Research v1.0 Freeze (Phase 86). 1890+ Tests (alle grün). Live-Track: Beta-ready. |
 
 ---
 
@@ -126,7 +128,7 @@ Ziel:
 
 * Single-Strategie-Layer:
 
-  * `src/strategies/*.py` (z.B. MA-Crossover, Trend-Following, RSI-Reversion)
+  * `src/strategies/*.py` (z.B. MA-Crossover, Trend-Following, RSI-Reversion, Breakout, Vol-Regime-Filter)
 * **Portfolio-Layer (Research/Backtest):**
 
   * Kombination mehrerer Strategien in Portfolios
@@ -149,6 +151,43 @@ Ziel:
 * Strategien sind nicht nur isoliert, sondern **portfolio-fähig**.
 * Portfolio-Robustheit (Monte-Carlo + Stress) ist auf Portfolio-Level angehoben.
 * Recipes & Presets ermöglichen reproduzierbare, benannte Portfolio-Konfigurationen.
+
+**Phase Strategy-Expansion (Breakout & Vol-Regime):**
+
+* **Breakout-Strategie** (`src/strategies/breakout.py`):
+  * Klassischer Donchian-/High-Low-Breakout auf Basis von N-Bars
+  * Optionaler ATR-Filter zur Vermeidung von „Noise-Breakouts"
+  * Separate Lookbacks für Long/Short, Exit bei gegenteiligem Breakout
+  * Drei Risk-Modes: symmetric, long_only, short_only
+* **Vol-Regime-Filter** (`src/strategies/vol_regime_filter.py`):
+  * Meta-Strategie/Signalquelle für Regime-Klassifikation (Low-Vol/High-Vol/Neutral)
+  * Threshold-basierte Regime-Erkennung
+  * Als Filter für andere Strategien verwendbar
+* **Dokumentation:** `docs/PHASE_STRATEGY_EXPANSION_BREAKOUT_VOL_REGIME.md`
+
+**Phase Regime-Aware Portfolios:**
+
+* **RegimeAwarePortfolioStrategy** (`src/strategies/regime_aware_portfolio.py`):
+  * Kombiniert mehrere Sub-Strategien (z.B. Breakout + RSI)
+  * Nutzt Vol-Regime-Signale für dynamische Gewichtung
+  * Risk-On/Neutral/Risk-Off-Skalierung (1.0/0.5/0.0)
+  * Modi: "scale" (kontinuierliche Skalierung) und "filter" (binäres An/Aus)
+* **Config-Varianten:**
+  * `portfolio.regime_aware_breakout_rsi` - Standard-Portfolio
+  * `portfolio.regime_aware_conservative` - Konservative Variante
+* **Dokumentation:** `docs/PHASE_REGIME_AWARE_PORTFOLIOS.md`
+
+**Phase Regime-Aware Portfolio Sweeps & Presets:**
+
+* **Vordefinierte Sweep-Presets:**
+  * `regime_aware_portfolio_aggressive` - Aggressiv: Breakout + RSI, hohe Aktivität in Risk-On
+  * `regime_aware_portfolio_conservative` - Konservativ: Breakout + MA, Filter-Mode
+  * `regime_aware_portfolio_volmetric` - Vol-Metrik-Vergleich (ATR/STD/REALIZED/RANGE)
+* **Sweep-Funktionen** (`src/experiments/regime_aware_portfolio_sweeps.py`):
+  * Parametrisierbare Granularität (coarse/medium/fine)
+  * Integration mit Research-CLI
+* **TOML-Configs** (`config/sweeps/regime_aware_portfolio_*.toml`)
+* **Dokumentation:** `docs/PHASE_REGIME_AWARE_SWEEPS_AND_PRESETS.md`
 
 **Offene Themen:**
 
@@ -254,6 +293,29 @@ Ziel:
 
 > **Reifegrad:** **ca. 91%** – Research-Track ist auf sehr hohem Niveau. Phase 54 fügt ein umfassendes Research→Live Playbook hinzu, das den kompletten Prozess von Portfolio-Presets bis zur Live-/Testnet-Aktivierung dokumentiert. Siehe [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md).
 
+### Phase 41B – Strategy Robustness & Tiering (Experiments)
+
+**Status:** ✅ abgeschlossen
+
+**Kernpunkte:**
+
+- Neues Modul `src/experiments/strategy_profiles.py` mit:
+  - `StrategyProfile`-Datenmodell (Metadata, Performance, Robustness, Regimes, Tiering)
+  - Builder-Pattern und Export (JSON + Markdown)
+- Tiering-Konfiguration in `config/strategy_tiering.toml`:
+  - 14 Strategien als `core` / `aux` / `legacy` klassifiziert
+  - Empfohlene Config-IDs + Live-/Trading-Flags
+- CLI-Erweiterung `scripts/research_cli.py`:
+  - Subcommand `strategy-profile` mit MC-/Stress-/Regime-Integration
+  - Beispiel:
+    `python scripts/research_cli.py strategy-profile --strategy-id rsi_reversion --use-dummy-data --with-montecarlo --with-stress --with-regime --output-format both`
+- Reports:
+  - JSON in `reports/strategy_profiles/`
+  - Markdown in `docs/strategy_profiles/`
+- Tests:
+  - 34 neue Tests (StrategyProfiles + CLI) grün
+  - 60 bestehende Tests weiterhin grün
+
 ---
 
 ## 7. Live-/Testnet & Operations (~91%)
@@ -332,6 +394,8 @@ Ziel:
 * **Phase 30 – Reporting & Visualization**
   → `docs/PHASE_30_REPORTING_AND_VISUALIZATION.md`
 * **Research-/Portfolio-Reports (inkl. Phase 47)** – Backtest-/Experiment-/Portfolio-Reporting
+* **Regime-Aware Reporting & Heatmaps** – Regime-spezifische Kennzahlen und Visualisierungen
+  → `docs/PHASE_REGIME_AWARE_REPORTING.md`
 * **Phase 48 & 49 – Live Monitoring & Alerts**
   → `docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md`
   → `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md`
@@ -343,11 +407,12 @@ Ziel:
 * Reporting:
 
   * `src/reporting/base.py`, `backtest_report.py`, `experiment_report.py`, `portfolio_robustness_report.py`
-  * Plots mit `src/reporting/plots.py`
+  * `src/reporting/regime_reporting.py` – Regime-Aware Reporting
+  * Plots mit `src/reporting/plots.py` (inkl. Regime-Overlay)
   * Reports für:
 
-    * Einzel-Backtests
-    * Sweeps / Experiments
+    * Einzel-Backtests (mit Regime-Analyse)
+    * Sweeps / Experiments (mit Regime-Heatmaps)
     * Portfolio-Robustness
 * Live-/Monitoring-CLI:
 
@@ -574,6 +639,40 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 
     **Details:** Siehe [`docs/PHASE_72_LIVE_OPERATOR_CONSOLE.md`](PHASE_72_LIVE_OPERATOR_CONSOLE.md)
 
+11. **Phase 73 – Live-Dry-Run Drills & Safety-Validation**
+
+    **Status:** ✅ Abgeschlossen (100%)
+
+    **Ziel:** Systematische Sicherheitsübungen im Dry-Run zur Validierung von Gating & Safety-Mechanismen
+
+    **Was implementiert wurde:**
+    * Drill-System (`src/live/drills.py`) mit `LiveDrillScenario`, `LiveDrillResult`, `LiveDrillRunner`
+    * Standard-Drills definiert (A-G: Voll gebremst, Gate 1/2, Dry-Run, Token, Risk-Limits, Nicht-Live)
+    * CLI für Drill-Ausführung (`scripts/run_live_dry_run_drills.py`)
+    * Tests für Drill-Logik
+    * Dokumentation
+
+    **WICHTIG:** Phase 73 ist **reine Simulation & Validierung** – keine Config-Änderungen, keine State-Änderungen, keine echten Orders.
+
+    **Details:** Siehe [`docs/PHASE_73_LIVE_DRY_RUN_DRILLS.md`](PHASE_73_LIVE_DRY_RUN_DRILLS.md)
+
+12. **Phase 74 – Live-Config Audit & Export (Read-Only)**
+
+    **Status:** ✅ Abgeschlossen (100%)
+
+    **Ziel:** Audit-Snapshot für Governance, Audits und "Proof of Safety"
+
+    **Was implementiert wurde:**
+    * Audit-Modul (`src/live/audit.py`) mit `LiveAuditSnapshot`, `LiveAuditGatingState`, etc.
+    * CLI für Audit-Export (`scripts/export_live_audit_snapshot.py`)
+    * JSON- und Markdown-Export
+    * Tests für Audit-Logik
+    * Dokumentation
+
+    **WICHTIG:** Phase 74 ist **reiner Audit-Export** – keine Config-Änderungen, keine State-Änderungen, keine Token-Werte exportiert.
+
+    **Details:** Siehe [`docs/PHASE_74_LIVE_AUDIT_EXPORT.md`](PHASE_74_LIVE_AUDIT_EXPORT.md)
+
    * Live-Execution-Path als Design modelliert (Dry-Run)
    * `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
    * Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
@@ -666,6 +765,8 @@ Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-P
 | 2025-12-07 | (aktuell) | Phase 60 – Reference Scenario `multi_style_moderate`             |
 | 2025-12-07 | (aktuell) | Phase 71 – Live-Execution-Design & Gating                        |
 | 2025-12-07 | (aktuell) | Phase 72 – Live-Operator-Konsole & Status-CLI (Read-Only)        |
+| 2025-12-07 | (aktuell) | Phase 73 – Live-Dry-Run Drills & Safety-Validation               |
+| 2025-12-07 | (aktuell) | Phase 74 – Live-Config Audit & Export (Read-Only)                |
 
 ---
 
