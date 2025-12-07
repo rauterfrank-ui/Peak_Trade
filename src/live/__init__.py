@@ -31,6 +31,18 @@ from .portfolio_monitor import (
     LivePortfolioSnapshot,
     LivePortfolioMonitor,
 )
+from .alerts import (
+    AlertLevel,
+    AlertEvent,
+    AlertSink,
+    LoggingAlertSink,
+    StderrAlertSink,
+    WebhookAlertSink,
+    SlackWebhookAlertSink,
+    MultiAlertSink,
+    LiveAlertsConfig,
+    build_alert_sink_from_config,
+)
 
 # Safety- und Shadow-Session-Module werden lazy importiert, um zirkuläre
 # Abhängigkeiten zu vermeiden. Direkter Import:
@@ -57,6 +69,17 @@ __all__ = [
     "LivePositionSnapshot",
     "LivePortfolioSnapshot",
     "LivePortfolioMonitor",
+    # Alerts & Notifications (Phase 49 + 50)
+    "AlertLevel",
+    "AlertEvent",
+    "AlertSink",
+    "LoggingAlertSink",
+    "StderrAlertSink",
+    "WebhookAlertSink",
+    "SlackWebhookAlertSink",
+    "MultiAlertSink",
+    "LiveAlertsConfig",
+    "build_alert_sink_from_config",
     # Safety (Phase 17) - lazy loaded
     "SafetyGuard",
     "SafetyAuditEntry",

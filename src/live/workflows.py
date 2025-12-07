@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Optional, Sequence
 
 from src.core.peak_config import PeakConfig
 from src.core.experiments import log_live_risk_check, RUN_TYPE_LIVE_RISK_CHECK
+from src.live.alerts import LiveAlertsConfig, build_alert_sink_from_config
 from src.live.orders import LiveOrderRequest
 from src.live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
 from src.notifications.base import Alert, Notifier, AlertLevel
@@ -115,8 +116,19 @@ def run_live_risk_check(
         print("\n⚠️  Live-Risk-Check übersprungen (--skip-live-risk)")
         return None
 
-    # LiveRiskLimits instanziieren
-    live_limits = LiveRiskLimits.from_config(ctx.config, starting_cash=ctx.starting_cash)
+    # Alert-Sink laden (Phase 49)
+    alert_sink = None
+    live_alerts_raw = ctx.config.get("live_alerts", {})
+    if isinstance(live_alerts_raw, dict):
+        alerts_cfg = LiveAlertsConfig.from_dict(live_alerts_raw)
+        alert_sink = build_alert_sink_from_config(alerts_cfg)
+
+    # LiveRiskLimits instanziieren (mit Alert-Sink)
+    live_limits = LiveRiskLimits.from_config(
+        ctx.config,
+        starting_cash=ctx.starting_cash,
+        alert_sink=alert_sink,
+    )
 
     # Check durchführen
     result = live_limits.check_orders(orders)

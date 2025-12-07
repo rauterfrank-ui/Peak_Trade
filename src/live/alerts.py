@@ -1,14 +1,14 @@
 # src/live/alerts.py
 """
-Peak_Trade: Live Alerts & Notifications (Phase 49)
-===================================================
+Peak_Trade: Live Alerts & Notifications (Phase 49 + 50)
+========================================================
 
 Leichtgewichtiges, erweiterbares Alert-System für Live-Trading.
 
 Features:
 - Alert-Level (INFO, WARNING, CRITICAL)
 - Alert-Events mit Source, Code, Message, Context
-- Alert-Sinks (Logging, Stderr, Multi)
+- Alert-Sinks (Logging, Stderr, Webhook, Slack, Multi)
 - Config-basierte Konfiguration
 
 Usage:
@@ -33,8 +33,11 @@ Usage:
 """
 from __future__ import annotations
 
+import json
 import logging
 import sys
+import urllib.error
+import urllib.request
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import IntEnum
@@ -174,6 +177,168 @@ class StderrAlertSink:
         print(msg, file=sys.stderr)
 
 
+class WebhookAlertSink:
+    """
+    Generischer HTTP-Webhook-Sink.
+
+    Sendet AlertEvents als JSON-POST an eine oder mehrere URLs.
+    Fehler (Timeouts, HTTP-Errors) werden geloggt, aber nicht weitergereicht.
+
+    Attributes:
+        _urls: Liste von Webhook-URLs
+        _timeout_seconds: Timeout für HTTP-Requests
+        _min_level: Minimaler Alert-Level
+        _logger: Logger-Instanz
+    """
+
+    def __init__(
+        self,
+        urls: Sequence[str],
+        timeout_seconds: float = 3.0,
+        min_level: AlertLevel = AlertLevel.WARNING,
+        logger: logging.Logger | None = None,
+    ) -> None:
+        """
+        Initialisiert WebhookAlertSink.
+
+        Args:
+            urls: Liste von Webhook-URLs
+            timeout_seconds: Timeout für HTTP-Requests (Default: 3.0)
+            min_level: Minimaler Alert-Level (Default: WARNING)
+            logger: Logger-Instanz (Default: peak_trade.live.alerts)
+        """
+        self._urls = [u for u in urls if u]
+        self._timeout_seconds = float(timeout_seconds)
+        self._min_level = min_level
+        self._logger = logger or logging.getLogger("peak_trade.live.alerts")
+
+    def send(self, alert: AlertEvent) -> None:
+        """
+        Sendet Alert als JSON-POST an alle konfigurierten URLs.
+
+        Args:
+            alert: Alert-Event
+        """
+        if alert.level < self._min_level:
+            return
+        if not self._urls:
+            return
+
+        payload = self._build_payload(alert)
+        data = json.dumps(payload).encode("utf-8")
+        headers = {"Content-Type": "application/json"}
+
+        for url in self._urls:
+            req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+            try:
+                # Response wird verworfen, wir interessieren uns nur für "best effort"
+                with urllib.request.urlopen(req, timeout=self._timeout_seconds):
+                    pass
+            except Exception as exc:
+                # Keine Exception nach außen – nur loggen
+                self._logger.exception(
+                    "Failed to send alert to webhook %r: %s", url, exc
+                )
+
+    def _build_payload(self, alert: AlertEvent) -> dict[str, Any]:
+        """
+        Baut JSON-Payload für Webhook.
+
+        Args:
+            alert: Alert-Event
+
+        Returns:
+            Dict mit strukturierten Alert-Daten
+        """
+        ctx = dict(alert.context) if alert.context else {}
+        return {
+            "ts": alert.ts.isoformat(),
+            "level": alert.level.name,
+            "source": alert.source,
+            "code": alert.code,
+            "message": alert.message,
+            "context": ctx,
+        }
+
+
+class SlackWebhookAlertSink:
+    """
+    Slack-spezifischer Webhook-Sink.
+
+    Nutzt das einfache Slack-Webhook-Format mit einem "text"-Feld.
+
+    Attributes:
+        _urls: Liste von Slack-Webhook-URLs
+        _timeout_seconds: Timeout für HTTP-Requests
+        _min_level: Minimaler Alert-Level
+        _logger: Logger-Instanz
+    """
+
+    def __init__(
+        self,
+        urls: Sequence[str],
+        timeout_seconds: float = 3.0,
+        min_level: AlertLevel = AlertLevel.WARNING,
+        logger: logging.Logger | None = None,
+    ) -> None:
+        """
+        Initialisiert SlackWebhookAlertSink.
+
+        Args:
+            urls: Liste von Slack-Webhook-URLs
+            timeout_seconds: Timeout für HTTP-Requests (Default: 3.0)
+            min_level: Minimaler Alert-Level (Default: WARNING)
+            logger: Logger-Instanz (Default: peak_trade.live.alerts)
+        """
+        self._urls = [u for u in urls if u]
+        self._timeout_seconds = float(timeout_seconds)
+        self._min_level = min_level
+        self._logger = logger or logging.getLogger("peak_trade.live.alerts")
+
+    def send(self, alert: AlertEvent) -> None:
+        """
+        Sendet Alert als Slack-Webhook ({"text": "..."}).
+
+        Args:
+            alert: Alert-Event
+        """
+        if alert.level < self._min_level:
+            return
+        if not self._urls:
+            return
+
+        text = self._build_text(alert)
+        payload = {"text": text}
+        data = json.dumps(payload).encode("utf-8")
+        headers = {"Content-Type": "application/json"}
+
+        for url in self._urls:
+            req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+            try:
+                with urllib.request.urlopen(req, timeout=self._timeout_seconds):
+                    pass
+            except Exception as exc:
+                self._logger.exception(
+                    "Failed to send alert to Slack webhook %r: %s", url, exc
+                )
+
+    def _build_text(self, alert: AlertEvent) -> str:
+        """
+        Baut Text für Slack-Webhook.
+
+        Args:
+            alert: Alert-Event
+
+        Returns:
+            Formatierter Text-String
+        """
+        base = f"[{alert.level.name}] {alert.source} - {alert.code}: {alert.message}"
+        if alert.context:
+            # Kontext kompakt anhängen – Slack kann das später auch als Codeblock formatiert bekommen
+            return f"{base}\ncontext: {alert.context}"
+        return base
+
+
 class MultiAlertSink:
     """
     Alert-Sink, der Alerts an mehrere Sinks weiterleitet.
@@ -216,14 +381,22 @@ class LiveAlertsConfig:
     Attributes:
         enabled: Ob Alerts aktiviert sind
         min_level: Minimaler Alert-Level (INFO, WARNING, CRITICAL)
-        sinks: Liste der aktiven Sink-Namen (z.B. ["log", "stderr"])
+        sinks: Liste der aktiven Sink-Namen (z.B. ["log", "stderr", "webhook", "slack_webhook"])
         log_logger_name: Logger-Name für Logging-Sink
+        webhook_urls: Liste von generischen Webhook-URLs
+        slack_webhook_urls: Liste von Slack-Webhook-URLs
+        webhook_timeout_seconds: Timeout für HTTP-Requests (Default: 3.0)
     """
 
     enabled: bool = True
     min_level: AlertLevel = AlertLevel.WARNING
     sinks: list[str] = field(default_factory=lambda: ["log"])
     log_logger_name: str = "peak_trade.live.alerts"
+
+    # Phase 50: Webhook & Slack
+    webhook_urls: list[str] = field(default_factory=list)
+    slack_webhook_urls: list[str] = field(default_factory=list)
+    webhook_timeout_seconds: float = 3.0
 
     @classmethod
     def from_dict(cls, raw: Mapping[str, Any]) -> LiveAlertsConfig:
@@ -254,11 +427,29 @@ class LiveAlertsConfig:
 
         log_logger_name = str(raw.get("log_logger_name", "peak_trade.live.alerts"))
 
+        # Phase 50: Webhook & Slack URLs
+        webhook_urls_raw = raw.get("webhook_urls", [])
+        if isinstance(webhook_urls_raw, str):
+            webhook_urls = [webhook_urls_raw]
+        else:
+            webhook_urls = list(webhook_urls_raw)
+
+        slack_urls_raw = raw.get("slack_webhook_urls", [])
+        if isinstance(slack_urls_raw, str):
+            slack_webhook_urls = [slack_urls_raw]
+        else:
+            slack_webhook_urls = list(slack_urls_raw)
+
+        timeout = float(raw.get("webhook_timeout_seconds", 3.0))
+
         return cls(
             enabled=enabled,
             min_level=min_level,
             sinks=sinks,
             log_logger_name=log_logger_name,
+            webhook_urls=webhook_urls,
+            slack_webhook_urls=slack_webhook_urls,
+            webhook_timeout_seconds=timeout,
         )
 
 
@@ -276,16 +467,43 @@ def build_alert_sink_from_config(cfg: LiveAlertsConfig) -> AlertSink | None:
         return None
 
     built_sinks: list[AlertSink] = []
+    base_logger = logging.getLogger(cfg.log_logger_name)
 
     for sink_name in cfg.sinks:
         if sink_name == "log":
-            logger = logging.getLogger(cfg.log_logger_name)
-            built_sinks.append(LoggingAlertSink(logger, cfg.min_level))
+            built_sinks.append(LoggingAlertSink(base_logger, cfg.min_level))
         elif sink_name == "stderr":
             built_sinks.append(StderrAlertSink(cfg.min_level))
+        elif sink_name == "webhook":
+            if cfg.webhook_urls:
+                built_sinks.append(
+                    WebhookAlertSink(
+                        urls=cfg.webhook_urls,
+                        timeout_seconds=cfg.webhook_timeout_seconds,
+                        min_level=cfg.min_level,
+                        logger=base_logger,
+                    )
+                )
+            else:
+                base_logger.warning(
+                    "live_alerts.sinks includes 'webhook' but no webhook_urls are configured"
+                )
+        elif sink_name == "slack_webhook":
+            if cfg.slack_webhook_urls:
+                built_sinks.append(
+                    SlackWebhookAlertSink(
+                        urls=cfg.slack_webhook_urls,
+                        timeout_seconds=cfg.webhook_timeout_seconds,
+                        min_level=cfg.min_level,
+                        logger=base_logger,
+                    )
+                )
+            else:
+                base_logger.warning(
+                    "live_alerts.sinks includes 'slack_webhook' but no slack_webhook_urls are configured"
+                )
         else:
-            # Unbekannte Sink-Namen ignorieren oder loggen
-            logging.getLogger(cfg.log_logger_name).warning(
+            base_logger.warning(
                 "Unknown alert sink name %r in live_alerts.sinks", sink_name
             )
 

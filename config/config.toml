@@ -367,6 +367,28 @@ retry_delay_seconds = 5.0
 # LIVE RISK LIMITS (Phase 31 - Shadow/Paper spezifisch)
 # ============================================================================
 
+[live_alerts]
+# Live Alerts & Notifications (Phase 49 + 50)
+# ============================================
+# Konfiguration für Alert-System bei Risk-Violations und kritischen Zuständen.
+#
+# enabled: Ob Alerts aktiviert sind
+# min_level: Minimaler Alert-Level ("info", "warning", "critical")
+# sinks: Liste der aktiven Sink-Namen (z.B. ["log", "stderr", "webhook", "slack_webhook"])
+# log_logger_name: Logger-Name für Logging-Sink
+# webhook_urls: Liste von generischen HTTP-Webhook-URLs (Phase 50)
+# slack_webhook_urls: Liste von Slack-Webhook-URLs (Phase 50)
+# webhook_timeout_seconds: Timeout für HTTP-Requests in Sekunden (Phase 50)
+enabled = true
+min_level = "warning"
+sinks = ["log"]
+log_logger_name = "peak_trade.live.alerts"
+
+# Phase 50: Webhook & Slack
+webhook_urls = []
+slack_webhook_urls = []
+webhook_timeout_seconds = 3.0
+
 [live_risk]
 # Live-Risk-Limits aktivieren
 enabled = true

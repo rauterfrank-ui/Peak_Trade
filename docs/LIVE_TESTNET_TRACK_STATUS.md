@@ -3,7 +3,7 @@
 Dieses Dokument fasst den aktuellen Status des **Live-/Shadow-/Testnet-Tracks** von Peak_Trade zusammen.
 Ziel ist eine schnelle Einschätzung der **technischen Reife**, der **operativen Readiness** und der noch offenen Themen.
 
-Stand: 2025-12-07 (nach Phase 49)
+Stand: 2025-12-07 (nach Phase 50)
 
 ---
 
@@ -17,10 +17,10 @@ Stand: 2025-12-07 (nach Phase 49)
 | Shadow-/Paper-/Testnet-Orchestrierung       | 85%      |
 | Run-Logging & Live-Reporting                | 90%      |
 | Live-/Portfolio-Monitoring & Risk Bridge    | 95%      |
-| Live Alerts & Notifications                 | 90%      |
+| Live Alerts & Notifications                 | 95%      |
 | Governance, Runbooks & Checklisten          | 90%      |
 | CLI-Tooling für Live-/Testnet-Operationen   | 90%      |
-| **Gesamt Live-/Testnet-Track**              | **~91%** |
+| **Gesamt Live-/Testnet-Track**              | **~93%** |
 
 Interpretation:
 
@@ -236,9 +236,9 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~91%** –
 
 ---
 
-## 7a. Live Alerts & Notifications (≈ 90%)
+## 7a. Live Alerts & Notifications (≈ 95%)
 
-**Kernkomponenten (Phase 49):**
+**Kernkomponenten (Phase 49 + 50):**
 
 * `src/live/alerts.py`:
 
@@ -247,6 +247,8 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~91%** –
   * `AlertSink` Protocol mit Standard-Implementierungen:
     * `LoggingAlertSink` (Python-Logging)
     * `StderrAlertSink` (stderr)
+    * `WebhookAlertSink` (generische HTTP-Webhooks, Phase 50)
+    * `SlackWebhookAlertSink` (Slack-Webhooks, Phase 50)
     * `MultiAlertSink` (Weiterleitung an mehrere Sinks)
   * `LiveAlertsConfig` für Konfiguration
   * `build_alert_sink_from_config()` Factory
@@ -262,17 +264,21 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~91%** –
   [live_alerts]
   enabled = true
   min_level = "warning"
-  sinks = ["log"]
+  sinks = ["log", "slack_webhook"]
+  webhook_urls = []
+  slack_webhook_urls = ["https://hooks.slack.com/services/..."]
+  webhook_timeout_seconds = 3.0
   ```
 
 * Tests:
 
-  * `tests/test_live_alerts.py` (27 Tests)
-  * `tests/test_live_risk_alert_integration.py` (7 Tests)
+  * `tests/test_live_alerts.py` (erweitert um Webhook/Slack-Tests, Phase 50)
+  * `tests/test_live_risk_alert_integration.py` (erweitert um Webhook-Integration, Phase 50)
 
 * Doku:
 
   * `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md`
+  * `docs/PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md` (Phase 50)
 
 **Stärken:**
 
@@ -280,12 +286,14 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~91%** –
 * Protocol-basiertes Sink-Interface für einfache Erweiterung.
 * Automatische Alert-Emission bei Risk-Violations.
 * Nicht-blockierend: Alerts dürfen den Live-Betrieb nicht stören.
+* **Phase 50**: Externe Webhook- und Slack-Integration für sofortige Benachrichtigungen.
 
 **Offen / später sinnvoll:**
 
-* Externe Notification-Sinks (Slack, E-Mail, Discord, PagerDuty).
 * Alert-Deduplizierung und Throttling.
 * Persistente Alert-Historie.
+* Erweiterte Slack-Formatierung (Rich Text, Buttons).
+* Weitere Sinks (E-Mail, Discord, PagerDuty).
 
 ---
 
@@ -371,6 +379,7 @@ Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈
 
 | Datum      | Änderung                                                    |
 |------------|-------------------------------------------------------------|
+| 2025-12-07 | Update nach Abschluss Phase 50 (Webhook & Slack-Sinks für Alerts)|
 | 2025-12-07 | Update nach Abschluss Phase 49 (Live Alerts & Notifications)|
 | 2025-12-07 | Initiale Version nach Abschluss Phase 48                    |
 

@@ -27,6 +27,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from src.core.peak_config import PeakConfig, load_config
+from src.live.alerts import LiveAlertsConfig, build_alert_sink_from_config
 from src.live.broker_base import BaseBrokerClient, PaperBroker
 from src.live.portfolio_monitor import LivePortfolioMonitor, LivePortfolioSnapshot
 from src.live.risk_limits import LiveRiskLimits
@@ -280,7 +281,15 @@ def main(argv: list[str] | None = None) -> int:
         # 2. Exchange-Client erstellen
         exchange_client = create_exchange_client(cfg)
 
-        # 3. Risk-Limits laden (falls nicht --no-risk)
+        # 3. Alert-Sink laden (falls nicht --no-risk)
+        alert_sink = None
+        if not args.no_risk:
+            live_alerts_raw = cfg.get("live_alerts", {})
+            if isinstance(live_alerts_raw, dict):
+                alerts_cfg = LiveAlertsConfig.from_dict(live_alerts_raw)
+                alert_sink = build_alert_sink_from_config(alerts_cfg)
+
+        # 4. Risk-Limits laden (falls nicht --no-risk)
         risk_limits = None
         if not args.no_risk:
             starting_cash = args.starting_cash
@@ -289,20 +298,25 @@ def main(argv: list[str] | None = None) -> int:
                 if starting_cash is not None:
                     starting_cash = float(starting_cash)
 
-            risk_limits = LiveRiskLimits.from_config(cfg, starting_cash=starting_cash)
+            risk_limits = LiveRiskLimits.from_config(
+                cfg,
+                starting_cash=starting_cash,
+                alert_sink=alert_sink,
+            )
 
-        # 4. Portfolio-Monitor erstellen
+        # 5. Portfolio-Monitor erstellen
         monitor = LivePortfolioMonitor(exchange_client, risk_limits=risk_limits)
 
-        # 5. Snapshot erstellen
+        # 6. Snapshot erstellen
         snapshot = monitor.snapshot()
 
-        # 6. Risk-Check (falls nicht --no-risk)
+        # 7. Risk-Check (falls nicht --no-risk)
+        # Alerts werden automatisch via alert_sink erzeugt, wenn Violations auftreten
         risk_result = None
         if risk_limits is not None:
             risk_result = risk_limits.evaluate_portfolio(snapshot)
 
-        # 7. Ausgabe
+        # 8. Ausgabe
         if args.json:
             output = format_json_output(snapshot, risk_result)
             print(output)

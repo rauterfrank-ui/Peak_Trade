@@ -370,9 +370,20 @@ pytest tests/test_live_alerts*.py -v
 ## Siehe auch
 
 - `docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md` - Portfolio-Monitoring
+- `docs/PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md` - Webhook & Slack-Sinks (Phase 50)
 - `src/live/risk_limits.py` - Live-Risk-Limits-Dokumentation
 - `src/live/alerts.py` - Alert-System-Implementierung
 - `config/config.toml` - Alert-Konfiguration
+
+---
+
+## Phase 50: Webhook & Slack-Sinks
+
+Phase 50 erweitert das Alert-System um externe Notification-Sinks:
+- **Generische HTTP-Webhooks** für beliebige Endpunkte
+- **Slack-Webhooks** für direkte Benachrichtigungen in Slack-Kanäle
+
+Siehe [PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md](PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md) für Details.
 
 ---
 

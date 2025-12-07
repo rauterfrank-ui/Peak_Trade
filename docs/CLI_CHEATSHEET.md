@@ -270,7 +270,8 @@ python scripts/preview_live_orders.py \
   --notional 500 \
   --tag preview-only
 
-# Hinweis: Risk-Violations erzeugen automatisch Alerts (siehe [live_alerts] in config.toml)
+# Hinweis: Risk-Violations erzeugen automatisch Alerts (siehe [live_alerts] in config.toml).
+# Bei konfigurierten Webhook/Slack-URLs werden Alerts auch an externe Systeme gesendet.
 ```
 
 ---
@@ -295,7 +296,7 @@ python scripts/preview_live_portfolio.py \
 
 **Siehe:** [PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md](PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md) für Details.
 
-**Hinweis:** Risk-Violations erzeugen automatisch Alerts (siehe [live_alerts] in config.toml und [PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md](PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md)).
+**Hinweis:** Risk-Violations erzeugen automatisch Alerts (siehe [live_alerts] in config.toml). Bei konfigurierten Webhook/Slack-URLs werden Alerts auch an externe Systeme gesendet (siehe [PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md](PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md) und [PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md](PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md)).
 
 ---
 

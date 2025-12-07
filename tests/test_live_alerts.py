@@ -1,20 +1,24 @@
 # tests/test_live_alerts.py
 """
-Tests für Live Alerts & Notifications (Phase 49)
-================================================
+Tests für Live Alerts & Notifications (Phase 49 + 50)
+=====================================================
 
 Tests für:
 - AlertLevel
 - AlertEvent
 - LoggingAlertSink
 - StderrAlertSink
+- WebhookAlertSink (Phase 50)
+- SlackWebhookAlertSink (Phase 50)
 - MultiAlertSink
 - LiveAlertsConfig
 - build_alert_sink_from_config
 """
 from __future__ import annotations
 
+import json
 import logging
+import urllib.request
 from datetime import datetime, timezone
 
 import pytest
@@ -25,7 +29,9 @@ from src.live.alerts import (
     LiveAlertsConfig,
     LoggingAlertSink,
     MultiAlertSink,
+    SlackWebhookAlertSink,
     StderrAlertSink,
+    WebhookAlertSink,
     build_alert_sink_from_config,
 )
 
@@ -369,3 +375,428 @@ def test_build_alert_sink_from_config_empty_sinks():
     sink = build_alert_sink_from_config(config)
 
     assert sink is None
+
+
+# =============================================================================
+# WEBHOOKALERTSINK TESTS (Phase 50)
+# =============================================================================
+
+
+def test_webhook_alert_sink_respects_min_level(monkeypatch):
+    """Testet dass WebhookAlertSink min_level respektiert."""
+    called = []
+
+    def fake_urlopen(req, timeout=0):
+        called.append((req.full_url, timeout, req.data))
+        class DummyResp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        return DummyResp()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    sink = WebhookAlertSink(
+        urls=["https://example.com/hook"],
+        timeout_seconds=1.5,
+        min_level=AlertLevel.WARNING,
+    )
+
+    low_alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.INFO,
+        source="test",
+        code="TEST",
+        message="info level",
+        context={},
+    )
+
+    high_alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.CRITICAL,
+        source="test",
+        code="TEST",
+        message="critical",
+        context={"foo": "bar"},
+    )
+
+    sink.send(low_alert)
+    sink.send(high_alert)
+
+    assert len(called) == 1
+    url, timeout, data = called[0]
+    assert url == "https://example.com/hook"
+    assert timeout == 1.5
+    payload = json.loads(data.decode("utf-8"))
+    assert payload["level"] == "CRITICAL"
+    assert payload["code"] == "TEST"
+    assert payload["context"] == {"foo": "bar"}
+
+
+def test_webhook_alert_sink_empty_urls():
+    """Testet dass WebhookAlertSink mit leeren URLs nichts tut."""
+    sink = WebhookAlertSink(urls=[], min_level=AlertLevel.INFO)
+
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="test",
+    )
+
+    # Sollte nicht crashen
+    sink.send(alert)
+
+
+def test_webhook_alert_sink_multiple_urls(monkeypatch):
+    """Testet dass WebhookAlertSink mehrere URLs ansteuert."""
+    called_urls = []
+
+    def fake_urlopen(req, timeout=0):
+        called_urls.append(req.full_url)
+        class DummyResp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        return DummyResp()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    sink = WebhookAlertSink(
+        urls=["https://example.com/hook1", "https://example.com/hook2"],
+        min_level=AlertLevel.INFO,
+    )
+
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="test",
+    )
+
+    sink.send(alert)
+
+    assert len(called_urls) == 2
+    assert "https://example.com/hook1" in called_urls
+    assert "https://example.com/hook2" in called_urls
+
+
+def test_webhook_alert_sink_exception_handling(monkeypatch, caplog):
+    """Testet dass WebhookAlertSink Exceptions abfängt und loggt."""
+    def fake_urlopen(req, timeout=0):
+        raise Exception("Network error")
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    sink = WebhookAlertSink(
+        urls=["https://example.com/hook"],
+        min_level=AlertLevel.INFO,
+    )
+
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="test",
+    )
+
+    # Sollte nicht crashen
+    sink.send(alert)
+
+    # Exception sollte geloggt worden sein
+    assert any("Failed to send alert to webhook" in record.message for record in caplog.records)
+
+
+# =============================================================================
+# SLACKWEBHOOKALERTSINK TESTS (Phase 50)
+# =============================================================================
+
+
+def test_slack_webhook_alert_sink_builds_text(monkeypatch):
+    """Testet dass SlackWebhookAlertSink korrekten Text baut."""
+    called = []
+
+    def fake_urlopen(req, timeout=0):
+        called.append(json.loads(req.data.decode("utf-8")))
+        class DummyResp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        return DummyResp()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    sink = SlackWebhookAlertSink(
+        urls=["https://hooks.slack.com/services/AAA/BBB/CCC"],
+        timeout_seconds=2.0,
+        min_level=AlertLevel.INFO,
+    )
+
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="live_risk.portfolio",
+        code="RISK_LIMIT_VIOLATION_PORTFOLIO",
+        message="Limit breached",
+        context={"total_notional": 12345.0},
+    )
+
+    sink.send(alert)
+
+    assert len(called) == 1
+    payload = called[0]
+    assert "text" in payload
+    assert "RISK_LIMIT_VIOLATION_PORTFOLIO" in payload["text"]
+    assert "total_notional" in payload["text"]
+
+
+def test_slack_webhook_alert_sink_respects_min_level(monkeypatch):
+    """Testet dass SlackWebhookAlertSink min_level respektiert."""
+    called = []
+
+    def fake_urlopen(req, timeout=0):
+        called.append(req.data)
+        class DummyResp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        return DummyResp()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    sink = SlackWebhookAlertSink(
+        urls=["https://hooks.slack.com/services/AAA/BBB/CCC"],
+        min_level=AlertLevel.WARNING,
+    )
+
+    info_alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.INFO,
+        source="test",
+        code="TEST",
+        message="info",
+    )
+
+    warning_alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="warning",
+    )
+
+    sink.send(info_alert)
+    sink.send(warning_alert)
+
+    assert len(called) == 1
+
+
+def test_slack_webhook_alert_sink_empty_urls():
+    """Testet dass SlackWebhookAlertSink mit leeren URLs nichts tut."""
+    sink = SlackWebhookAlertSink(urls=[], min_level=AlertLevel.INFO)
+
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="test",
+    )
+
+    # Sollte nicht crashen
+    sink.send(alert)
+
+
+# =============================================================================
+# BUILD_ALERT_SINK_FROM_CONFIG - WEBHOOK/SLACK TESTS (Phase 50)
+# =============================================================================
+
+
+def test_build_alert_sink_from_config_webhook(monkeypatch):
+    """Testet build_alert_sink_from_config mit 'webhook' Sink."""
+    called = []
+
+    def fake_urlopen(req, timeout=0):
+        called.append(req.full_url)
+        class DummyResp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        return DummyResp()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    config = LiveAlertsConfig(
+        enabled=True,
+        sinks=["webhook"],
+        webhook_urls=["https://example.com/hook"],
+    )
+    sink = build_alert_sink_from_config(config)
+
+    assert sink is not None
+    assert isinstance(sink, WebhookAlertSink)
+
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="test",
+    )
+
+    sink.send(alert)
+
+    assert len(called) == 1
+
+
+def test_build_alert_sink_from_config_slack_webhook(monkeypatch):
+    """Testet build_alert_sink_from_config mit 'slack_webhook' Sink."""
+    called = []
+
+    def fake_urlopen(req, timeout=0):
+        called.append(req.full_url)
+        class DummyResp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        return DummyResp()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    config = LiveAlertsConfig(
+        enabled=True,
+        sinks=["slack_webhook"],
+        slack_webhook_urls=["https://hooks.slack.com/services/AAA/BBB/CCC"],
+    )
+    sink = build_alert_sink_from_config(config)
+
+    assert sink is not None
+    assert isinstance(sink, SlackWebhookAlertSink)
+
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="test",
+    )
+
+    sink.send(alert)
+
+    assert len(called) == 1
+
+
+def test_build_alert_sink_from_config_webhook_no_urls(caplog):
+    """Testet build_alert_sink_from_config mit 'webhook' aber ohne URLs."""
+    config = LiveAlertsConfig(
+        enabled=True,
+        sinks=["webhook"],
+        webhook_urls=[],
+    )
+    sink = build_alert_sink_from_config(config)
+
+    # Sollte None zurückgeben, da keine URLs konfiguriert
+    assert sink is None
+
+    # Warnung sollte geloggt worden sein
+    assert any("no webhook_urls are configured" in record.message for record in caplog.records)
+
+
+def test_build_alert_sink_from_config_slack_webhook_no_urls(caplog):
+    """Testet build_alert_sink_from_config mit 'slack_webhook' aber ohne URLs."""
+    config = LiveAlertsConfig(
+        enabled=True,
+        sinks=["slack_webhook"],
+        slack_webhook_urls=[],
+    )
+    sink = build_alert_sink_from_config(config)
+
+    # Sollte None zurückgeben, da keine URLs konfiguriert
+    assert sink is None
+
+    # Warnung sollte geloggt worden sein
+    assert any("no slack_webhook_urls are configured" in record.message for record in caplog.records)
+
+
+def test_build_alert_sink_from_config_multi_with_webhook(monkeypatch):
+    """Testet build_alert_sink_from_config mit mehreren Sinks inkl. Webhook."""
+    called = []
+
+    def fake_urlopen(req, timeout=0):
+        called.append(req.full_url)
+        class DummyResp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        return DummyResp()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    config = LiveAlertsConfig(
+        enabled=True,
+        sinks=["log", "webhook"],
+        webhook_urls=["https://example.com/hook"],
+    )
+    sink = build_alert_sink_from_config(config)
+
+    assert sink is not None
+    assert isinstance(sink, MultiAlertSink)
+
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="test",
+    )
+
+    sink.send(alert)
+
+    # Webhook sollte aufgerufen worden sein
+    assert len(called) == 1
+
+
+def test_live_alerts_config_from_dict_webhook_fields():
+    """Testet LiveAlertsConfig.from_dict mit Webhook-Feldern."""
+    config = LiveAlertsConfig.from_dict({
+        "webhook_urls": ["https://example.com/hook"],
+        "slack_webhook_urls": ["https://hooks.slack.com/services/AAA/BBB/CCC"],
+        "webhook_timeout_seconds": 5.0,
+    })
+
+    assert config.webhook_urls == ["https://example.com/hook"]
+    assert config.slack_webhook_urls == ["https://hooks.slack.com/services/AAA/BBB/CCC"]
+    assert config.webhook_timeout_seconds == 5.0
+
+
+def test_live_alerts_config_from_dict_webhook_urls_string():
+    """Testet LiveAlertsConfig.from_dict mit webhook_urls als String."""
+    config = LiveAlertsConfig.from_dict({
+        "webhook_urls": "https://example.com/hook",
+    })
+
+    assert config.webhook_urls == ["https://example.com/hook"]
