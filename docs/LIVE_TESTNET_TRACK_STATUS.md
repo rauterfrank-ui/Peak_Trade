@@ -1,0 +1,319 @@
+# Peak_Trade – Live-/Testnet-Track Status Overview
+
+Dieses Dokument fasst den aktuellen Status des **Live-/Shadow-/Testnet-Tracks** von Peak_Trade zusammen.
+Ziel ist eine schnelle Einschätzung der **technischen Reife**, der **operativen Readiness** und der noch offenen Themen.
+
+Stand: 2025-12-07
+
+---
+
+## 1. Zusammenfassung in Prozent
+
+| Bereich                                     | Status   |
+| ------------------------------------------- | -------- |
+| Environment & Safety                        | 95%      |
+| Live Risk Limits                            | 95%      |
+| Order-/Execution-Layer & Exchange-Anbindung | 85%      |
+| Shadow-/Paper-/Testnet-Orchestrierung       | 85%      |
+| Run-Logging & Live-Reporting                | 90%      |
+| Live-/Portfolio-Monitoring & Risk Bridge    | 90%      |
+| Governance, Runbooks & Checklisten          | 90%      |
+| CLI-Tooling für Live-/Testnet-Operationen   | 85%      |
+| **Gesamt Live-/Testnet-Track**              | **~89%** |
+
+Interpretation:
+
+* Unter ~80%: noch experimentell / nicht live-reif
+* 80–90%: solide, einsatzbereit mit bewussten Limitierungen
+* > 90%: stabiler Kern, nur noch Feintuning / Komfort / Edge-Cases offen
+
+Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~89%** –
+**funktional einsatzbereit**, aber bewusst konservativ gehalten bei Automatisierung, Alerts und Operator-Komfort.
+
+---
+
+## 2. Environment & Safety (≈ 95%)
+
+**Kernkomponenten:**
+
+* `src/core/environment.py` – Environment-/Mode-Handling (z.B. Shadow, Testnet, Live)
+* `src/live/safety.py` – Safety-Layer (Kill-Switch, Safety-Guards)
+* `src/orders/exchange.py` – technische Anbindungsperspektive
+* `docs/LIVE_TESTNET_PREPARATION.md` – Vorbereitung & Checklisten
+* Umfangreiche Tests (Environment & Safety)
+
+**Stärken:**
+
+* Klare Trennung der Modi (kein „versehentlich Live").
+* Safety-Layer schützt vor Fehlkonfigurationen und unsicheren Setups.
+* Dokumentierter Ablauf für das Hochfahren von Testnet-/Live-Umgebungen.
+
+**Offen / später sinnvoll:**
+
+* Vordefinierte Environment-Profile (z.B. „Tiny Live", „Standard Live").
+* Feiner granulierte Safety-Presets pro Exchange/Instrument.
+
+---
+
+## 3. Live Risk Limits (≈ 95%)
+
+**Kernkomponenten:**
+
+* `[live_risk]` Block in `config/config.toml` mit u.a.:
+
+  * `max_daily_loss_abs`, `max_daily_loss_pct`
+  * `max_total_exposure_notional`, `max_symbol_exposure_notional`
+  * `max_open_positions`, `max_order_notional`
+  * `block_on_violation`, `use_experiments_for_daily_pnl`
+
+* `src/live/risk_limits.py`:
+
+  * `LiveRiskConfig`
+  * `LiveRiskCheckResult`
+  * `LiveRiskLimits.check_orders(...)`
+  * `LiveRiskLimits.evaluate_portfolio(...)` (Portfolio-Level, Phase 48)
+
+* Integration in `scripts/preview_live_orders.py` und Live-Flows
+
+**Stärken:**
+
+* Klare, zentral konfigurierte Limits.
+* Sowohl **Order-Batch-Level** als auch **Portfolio-Level** Checks.
+* Tests decken typische Szenarien und Violations ab.
+
+**Offen / später sinnvoll:**
+
+* Risk-Profile (Conservative / Moderate / Aggressive) als Preset-Schicht über den Roh-Limits.
+* Historisierung von Limit-Verletzungen (z.B. für Audits und Post-Mortems).
+
+---
+
+## 4. Order-/Execution-Layer & Exchange-Anbindung (≈ 85%)
+
+**Kernkomponenten:**
+
+* Phase 15 – Order-Layer:
+
+  * `src/orders/base.py`, `src/orders/paper.py`, `src/orders/mappers.py`
+  * `docs/ORDER_LAYER_SANDBOX.md`
+  * Smoke-Tests für Order-Flows
+
+* Exchange-/Testnet-Anbindung (Phase 38):
+
+  * Trading-/Exchange-Client mit Smoke-Tests
+  * Testnet-Integration ins Live-Setup
+
+* Execution-/Pipeline-Logik (Phase 16/16A):
+
+  * Anbindung an Orders, Environment & Safety
+
+**Stärken:**
+
+* Sauber gekapselter Order-Layer (paper vs. exchange).
+* Testnet-Setup und Smoke-Tests vorhanden.
+* Gute Basis für weitere Exchanges und Order-Typen.
+
+**Offen / später sinnvoll:**
+
+* Erweiterung um weitere Exchanges / Instrumente.
+* Erweiterte Order-Typen (z.B. OCO, Bracket-Orders).
+* Performance-/Latenz-Tuning für echten 24/7-Live-Betrieb.
+
+---
+
+## 5. Shadow-/Paper-/Testnet-Orchestrierung (≈ 85%)
+
+**Kernkomponenten:**
+
+* Shadow-/Paper-Run-Flow mit Logging.
+* Environment-/Config-Pfade für Testnet/Live.
+* Governance-Doku mit Stufenmodell (0 → Shadow → Testnet → Live).
+
+**Stärken:**
+
+* Klare Trennung der Stufen.
+* Shadow-/Paper-Runs nutzen weitgehend denselben Codepfad wie Testnet/Live.
+* Dokumentierte Go-/No-Go-Entscheidungspunkte.
+
+**Offen / später sinnvoll:**
+
+* Komfort-CLI zum Starten/Stoppen und Degradieren/Promoten von Runs.
+* Automatisierte „Promotion-Checks" (z.B. basierend auf Research-/Robustness-Ergebnissen).
+
+---
+
+## 6. Run-Logging & Live-Reporting (≈ 90%)
+
+**Kernkomponenten:**
+
+* `src/live/run_logging.py`:
+
+  * `LiveRunLogger`, `LiveRunEvent`, `LiveRunMetadata`
+  * Logging von Shadow-/Paper-/Live-Events
+* Integration in Shadow-/Live-Sessions
+* Nutzung als Grundlage für Run-Analysen und Incident-Handling
+
+**Stärken:**
+
+* Strukturierte Events statt reiner Log-Textwüste.
+* Einfache Filterbarkeit und spätere Auswertbarkeit.
+* Guter Hook für Dashboards und Monitoring-Tools.
+
+**Offen / später sinnvoll:**
+
+* Standard-Views (z.B. fertige Notebooks oder HTML-Berichte auf Run-Basis).
+* Bessere Verzahnung mit Runbooks („Welche Logs bei welchem Incident zuerst prüfen?").
+
+---
+
+## 7. Live-/Portfolio-Monitoring & Risk Bridge (≈ 90%)
+
+**Kernkomponenten (Phase 48):**
+
+* `src/live/portfolio_monitor.py`:
+
+  * `LivePositionSnapshot`
+  * `LivePortfolioSnapshot`
+  * `LivePortfolioMonitor`
+  * Korrekte Side-Erkennung (negative size → `short`)
+
+* `src/live/risk_limits.py`:
+
+  * `evaluate_portfolio(snapshot: LivePortfolioSnapshot)` mit:
+
+    * Total-Exposure-Checks
+    * Symbol-Exposure-Checks
+    * Open-Position-Checks
+    * Einbindung von PnL-Metriken, sofern verfügbar
+
+* `scripts/preview_live_portfolio.py`:
+
+  * Standard-Run mit Risk-Check:
+
+    ```bash
+    python scripts/preview_live_portfolio.py --config config/config.toml
+    ```
+
+  * Ohne Risk-Check:
+
+    ```bash
+    python scripts/preview_live_portfolio.py --config config/config.toml --no-risk
+    ```
+
+  * JSON-Ausgabe:
+
+    ```bash
+    python scripts/preview_live_portfolio.py --config config/config.toml --json
+    ```
+
+  * Mit Custom Starting-Cash:
+
+    ```bash
+    python scripts/preview_live_portfolio.py --config config/config.toml --starting-cash 20000.0
+    ```
+
+* Tests:
+
+  * `tests/test_live_portfolio_monitor.py` (9 Tests)
+  * `tests/test_live_risk_limits_portfolio_bridge.py` (7 Tests)
+  * `tests/test_preview_live_portfolio.py` (9 Tests)
+
+* Doku:
+
+  * `docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md`
+  * `docs/CLI_CHEATSHEET.md` – Abschnitt 11.1 „Portfolio Monitoring"
+
+**Stärken:**
+
+* Konsistente Portfolio-Sicht auf Live-/Shadow-Level.
+* Direkte Kopplung an LiveRiskLimits, ohne Orders erzeugen zu müssen.
+* Text- & JSON-Ausgabe erleichtern sowohl manuelle Kontrolle als auch Tool-Integration.
+
+**Offen / später sinnvoll:**
+
+* Alerts/Notifications (z.B. Slack/Webhook/Email) bei Limit-Verletzungen.
+* Persistente Historie von Portfolio-Snapshots (z.B. für Zeitreihen-Analysen).
+
+---
+
+## 8. Governance, Runbooks & Checklisten (≈ 90%)
+
+**Kernkomponenten (Phase 25 ff.):**
+
+* `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
+* `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`
+* `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
+* `docs/LIVE_READINESS_CHECKLISTS.md`
+* Deployment-/Stufenmodelle, Incident-Runbooks (PnL-Divergenzen, Data-Gaps, System-Pause, etc.)
+
+**Stärken:**
+
+* Klar definierte Rollen & Entscheidungen.
+* Verfahrensanweisungen für typische Incidents.
+* Checklisten für Stufenübergänge (0 → Shadow → Testnet → Live).
+
+**Offen / später sinnvoll:**
+
+* Ergänzungen basierend auf echten Incidents & Learnings.
+* Engere Verknüpfung mit Monitoring-Outputs (Konkrete Aufrufe von CLI-Scripts in Runbooks).
+
+---
+
+## 9. CLI-Tooling für Live-/Testnet-Operationen (≈ 85%)
+
+**Kernkomponenten:**
+
+* `scripts/preview_live_orders.py` – Order-Preview & Risk-Check.
+* `scripts/preview_live_portfolio.py` – Portfolio-Monitoring & Risk-Bridge.
+* Diverse Demo-/Support-Scripts (Registry, Research, Backtests).
+* `docs/CLI_CHEATSHEET.md` mit eigenem Abschnitt für Live-/Portfolio-Operations.
+
+**Stärken:**
+
+* Klare, fokussierte Tools für kritische Operator-Fragen („Was wird gehandelt?", „Wie sieht das Portfolio aus?").
+* Einheitliches Config-Modell über `config/config.toml`.
+
+**Offen / später sinnvoll:**
+
+* Konsolidiertes Operator-Tool (z.B. `live_ops` mit Subcommands wie `orders`, `portfolio`, `health`).
+* Presets/Profiles für Standard-Workflows (z.B. „Pre-Open-Check", „End-of-Day-Check").
+
+---
+
+## 10. Gesamtbewertung & nächste Schritte
+
+Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈ 89%**:
+
+* Technisch weitgehend komplett.
+* Safety- und Governance-Schicht etabliert.
+* Monitoring & Risk-Bridge bis auf Alerts fertig.
+
+**Naheliegende nächste Schritte:**
+
+1. Alerts & Notifications (Phase X):
+
+   * Integration von `LiveRiskCheckResult` und Portfolio-Snapshots in ein Alerting-Interface.
+   * Konfigurierbare Sinks (Log, Email, Slack/Webhook).
+
+2. Operator-UX:
+
+   * Zusammenführung der wichtigsten Live-Scripts in ein konsistentes Command-Line-Interface.
+   * Standardisierte „Operator-Flows" mit klar dokumentierten Kommando-Folgen.
+
+3. Erweiterung der Exchange-/Order-Funktionalität:
+
+   * Zusätzliche Börsen / Märkte.
+   * Komplexere Order-Typen.
+   * Performance-/Resilienz-Optimierungen.
+
+---
+
+## Änderungshistorie
+
+| Datum      | Änderung                                                    |
+|------------|-------------------------------------------------------------|
+| 2025-12-07 | Initiale Version nach Abschluss Phase 48                    |
+
+---
+
+Dieses Dokument sollte regelmäßig aktualisiert werden, sobald neue Live-Phasen abgeschlossen sind oder größere Änderungen im Live-/Testnet-Setup erfolgen.
