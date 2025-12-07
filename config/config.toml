@@ -554,9 +554,9 @@ signal_threshold = 0.25
 [portfolio.regime_aware_breakout_rsi]
 # Regime-Aware Portfolio: Breakout + RSI mit Vol-Regime-Filter
 type = "regime_aware_portfolio"
-components = ["breakout_basic", "rsi_reversion"]
-base_weights = { breakout_basic = 0.6, rsi_reversion = 0.4 }
-regime_strategy = "vol_regime_basic"
+components = ["breakout", "rsi_reversion"]
+base_weights = { breakout = 0.6, rsi_reversion = 0.4 }
+regime_strategy = "vol_regime_filter"
 mode = "scale"              # "scale" oder "filter"
 risk_on_scale = 1.0         # Volle Gewichte bei Risk-On
 neutral_scale = 0.5         # Halbe Gewichte bei Neutral
@@ -566,9 +566,9 @@ signal_threshold = 0.3      # Schwelle für Long/Short-Entscheidung
 [portfolio.regime_aware_conservative]
 # Konservatives Regime-Aware Portfolio (nur Risk-On)
 type = "regime_aware_portfolio"
-components = ["breakout_basic", "ma_crossover"]
-base_weights = { breakout_basic = 0.5, ma_crossover = 0.5 }
-regime_strategy = "vol_regime_basic"
+components = ["breakout", "ma_crossover"]
+base_weights = { breakout = 0.5, ma_crossover = 0.5 }
+regime_strategy = "vol_regime_filter"
 mode = "filter"             # Filter-Mode: Risk-Off → Flat
 risk_on_scale = 1.0
 neutral_scale = 0.3         # Sehr reduzierte Gewichte bei Neutral

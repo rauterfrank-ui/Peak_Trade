@@ -163,6 +163,37 @@ exit_multiplier = 0.5
 use_close_only = false
 stop_pct = 0.02
 
+# Phase 40: Breakout Strategy
+[strategy.breakout]
+lookback_breakout = 20
+atr_lookback = 14
+use_atr_filter = false
+exit_on_opposite_breakout = true
+risk_mode = "symmetric"
+side = "both"
+stop_loss_pct = 0.03
+take_profit_pct = 0.06
+price_col = "close"
+
+# Phase 40: Vol-Regime-Filter
+[strategy.vol_regime_filter]
+vol_window = 14
+vol_method = "atr"
+min_bars = 30
+regime_mode = true
+vol_percentile_low = 25
+vol_percentile_high = 75
+lookback_percentile = 100
+invert = false
+
+# Phase 40: Composite Strategy (fuer Tests)
+[strategy.composite]
+components = ["rsi_reversion", "breakout"]
+weights = [0.5, 0.5]
+aggregation = "weighted"
+signal_threshold = 0.3
+require_all_valid = false
+
 [portfolio]
 enabled = true
 max_strategies_active = 3
@@ -177,6 +208,18 @@ portfolio_stop_loss = -0.05
 ma_crossover = 0.33
 momentum_1h = 0.33
 rsi_strategy = 0.34
+
+# Regime-Aware Portfolio: Breakout + RSI mit Vol-Regime-Filter
+[portfolio.regime_aware_breakout_rsi]
+type = "regime_aware_portfolio"
+components = ["breakout", "rsi_reversion"]
+base_weights = { breakout = 0.6, rsi_reversion = 0.4 }
+regime_strategy = "vol_regime_filter"
+mode = "scale"
+risk_on_scale = 1.0
+neutral_scale = 0.5
+risk_off_scale = 0.0
+signal_threshold = 0.3
 
 # ============================================================================
 # SHADOW/PAPER CONFIGURATION (fuer Tests)
