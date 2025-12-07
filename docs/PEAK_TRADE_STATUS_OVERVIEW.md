@@ -35,7 +35,10 @@ Ziel:
 
 ## 2. Data & Market Access (~95%)
 
-**Relevante Phasen:** frühe Basis-Phasen (1–5), Data-Layer-Ausbau
+**Relevante Phasen (konzeptionell):**
+
+* **Frühe Phasen 1–5** – Data-Layer-Aufbau, Loader/Normalizer/Cache
+* **Data-/Market-Access-Feinschliff** – sukzessive in späteren Phasen integriert
 
 **Kernkomponenten:**
 
@@ -66,7 +69,12 @@ Ziel:
 
 ## 3. Backtest & Simulation (~92%)
 
-**Relevante Phasen:** Backtest-Engine, Stats, Registry-Integration, Reporting-Phasen (z.B. 26, 30, 43)
+**Relevante Phasen & Doku:**
+
+* **Backtest-Grundlagen** – frühe Backtest-Phasen (Engine & Stats)
+* **Phase 30 – Reporting & Visualization**
+  → `docs/PHASE_30_REPORTING_AND_VISUALIZATION.md`
+* **Registry-/Experiment-Integration** – Dokumentation im Research-/Registry-Kontext
 
 **Kernkomponenten:**
 
@@ -101,7 +109,14 @@ Ziel:
 
 ## 4. Strategy & Portfolio Layer (~88%)
 
-**Relevante Phasen:** Strategie-Basis, Portfolio-Layer (Phase 26), Portfolio-Robustheit (Phase 47), Recipes & Presets
+**Relevante Phasen & Doku:**
+
+* **Phase 26 – Portfolio-Strategie-Bibliothek**
+  → Portfolio-Layer & Multi-Strategie-Kombination
+* **Phase 47 – Portfolio-Level Robustness**
+  → Portfolio-Robustheitslogik & Reporting
+* **Portfolio Recipes & Presets**
+  → `docs/PORTFOLIO_RECIPES_AND_PRESETS.md`
 
 **Kernkomponenten:**
 
@@ -143,7 +158,15 @@ Ziel:
 
 ## 5. Risk & Safety (Research + Live) (~90%)
 
-**Relevante Phasen:** verschiedene Risk-/Governance-Phasen, LiveRiskLimits, Phase 25, Phase 49
+**Relevante Phasen & Doku:**
+
+* **Phase 25 – Governance & Safety**
+  → `docs/PHASE_25_GOVERNANCE_SAFETY_IMPLEMENTATION.md`
+* **Live-Risk-Limits**
+  → Konfiguration & Implementierung im Live-Layer
+* **Safety & Policies**
+  → `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
+  → `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`
 
 **Kernkomponenten:**
 
@@ -187,7 +210,13 @@ Ziel:
 
 ## 6. Research & Experiments (~90%)
 
-**Relevante Phasen:** Registry-/Experiment-Phasen, Research-CLI, Pipeline v2, Portfolio-Robustness (47), Recipes
+**Relevante Phasen & Doku:**
+
+* **Registry- & Experiment-Integration** – Backtest-/Registry-Phasen (Registry-Demo & Doku)
+* **Research-Pipeline v2 (Phase 43)** – Sweep → Promote → Walk-Forward → MC → Stress
+  → Doku zur Research-Pipeline v2 in `docs/` (Phase 43)
+* **Portfolio-Robustness & Recipes**
+  → Phase 47 + `docs/PORTFOLIO_RECIPES_AND_PRESETS.md`
 
 **Kernkomponenten:**
 
@@ -227,7 +256,18 @@ Ziel:
 
 ## 7. Live-/Testnet & Operations (~91%)
 
-**Relevante Phasen:** Environment & Safety (17), Order-/Exchange-Layer (15, 38), Live-Monitoring (48), Alerts (49), Governance (25), Live-Status-Doku
+**Relevante Phasen & Doku:**
+
+* **Phase 17 – Environment & Safety**
+  → `docs/LIVE_TESTNET_PREPARATION.md`
+* **Phase 15 – Order-Layer (Sandbox & Routing)**
+  → `docs/ORDER_LAYER_SANDBOX.md`
+* **Phase 48 – Live Portfolio Monitoring & Risk Bridge**
+  → `docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md`
+* **Phase 49 – Live Alerts & Notifications**
+  → `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md`
+* **Live-/Testnet-Track-Status**
+  → `docs/LIVE_TESTNET_TRACK_STATUS.md`
 
 **Kernkomponenten:**
 
@@ -285,7 +325,16 @@ Ziel:
 
 ## 8. Reporting, Monitoring & CLI (~88%)
 
-**Relevante Phasen:** Reporting-Phasen (30, 43, 47), Monitoring-Phasen (32, 48, 49), CLI-Cheatsheets
+**Relevante Phasen & Doku:**
+
+* **Phase 30 – Reporting & Visualization**
+  → `docs/PHASE_30_REPORTING_AND_VISUALIZATION.md`
+* **Research-/Portfolio-Reports (inkl. Phase 47)** – Backtest-/Experiment-/Portfolio-Reporting
+* **Phase 48 & 49 – Live Monitoring & Alerts**
+  → `docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md`
+  → `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md`
+* **CLI-Referenz**
+  → `docs/CLI_CHEATSHEET.md`
 
 **Kernkomponenten:**
 
@@ -328,7 +377,14 @@ Ziel:
 
 ## 9. Documentation & Governance (~86%)
 
-**Relevante Phasen:** Governance & Safety (Phase 25), Live-Doku, Phasen-Reports, Status-Dokus
+**Relevante Doku-Dateien:**
+
+* `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
+* `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md`
+* `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
+* `docs/LIVE_READINESS_CHECKLISTS.md`
+* `docs/LIVE_TESTNET_TRACK_STATUS.md`
+* Diverse Phasen-Dokumente (`docs/PHASE_XX_*.md`)
 
 **Kernkomponenten (Auszug):**
 
@@ -373,6 +429,16 @@ Ziel:
 
 ## 10. Developer Experience & Tooling (~80%)
 
+**Relevante Doku & Artefakte:**
+
+* Projektstruktur & CLI-Cheatsheet:
+
+  * `docs/CLI_CHEATSHEET.md`
+* AI-/Prompt-Setup:
+
+  * `docs/ai/CLAUDE_GUIDE.md` (ehem. `CLAUDE_WORKFLOW.md`)
+  * weitere AI-/Tooling-Doku in `docs/ai/`
+
 **Relevante Bausteine:**
 
 * Python-Projektstruktur (`src/`, `tests/`, `docs/`, `scripts/`, `config/`).
@@ -402,6 +468,19 @@ Ziel:
 ---
 
 ## 11. Highlights der letzten Phasen (47–49)
+
+**Relevante Phasen & Doku:**
+
+* **Phase 47 – Portfolio-Level Robustness**
+  → Portfolio-Robustness-Logik & Reports (Dokument in `docs/PHASE_47_*.md`, Code in `src/experiments/portfolio_robustness.py`)
+* **Portfolio Recipes & Presets**
+  → `docs/PORTFOLIO_RECIPES_AND_PRESETS.md`
+* **Phase 48 – Live Portfolio Monitoring & Risk Bridge**
+  → `docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md`
+* **Phase 49 – Live Alerts & Notifications**
+  → `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md`
+* **Live-/Testnet-Track-Status**
+  → `docs/LIVE_TESTNET_TRACK_STATUS.md`
 
 Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 
@@ -470,7 +549,8 @@ Basierend auf dem aktuellen Stand (≈ 88% Gesamt-Reifegrad) bieten sich folgend
 |------------|-----------|-----------------------------------------------------------------|
 | 2025-12-07 | f015c8a   | Erste Version Live-/Testnet-Status (`LIVE_TESTNET_TRACK_STATUS.md`) |
 | 2025-12-07 | c63ea36   | Abschluss Phase 49 – Live Alerts & Notifications                |
-| 2025-12-07 | (aktuell) | Erstellung `PEAK_TRADE_STATUS_OVERVIEW.md` (Phasen 1–49)        |
+| 2025-12-07 | 226dfac   | Erstellung `PEAK_TRADE_STATUS_OVERVIEW.md` (Phasen 1–49)        |
+| 2025-12-07 | (aktuell) | Update mit konkreten Phasen-Referenzen                          |
 
 ---
 
