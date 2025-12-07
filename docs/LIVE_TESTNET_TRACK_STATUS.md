@@ -19,8 +19,8 @@ Stand: 2025-12-07 (nach Phase 50)
 | Live-/Portfolio-Monitoring & Risk Bridge    | 95%      |
 | Live Alerts & Notifications                 | 95%      |
 | Governance, Runbooks & Checklisten          | 90%      |
-| CLI-Tooling für Live-/Testnet-Operationen   | 90%      |
-| **Gesamt Live-/Testnet-Track**              | **~93%** |
+| CLI-Tooling für Live-/Testnet-Operationen   | 95%      |
+| **Gesamt Live-/Testnet-Track**              | **~94%** |
 
 Interpretation:
 
@@ -28,8 +28,8 @@ Interpretation:
 * 80–90%: solide, einsatzbereit mit bewussten Limitierungen
 * > 90%: stabiler Kern, nur noch Feintuning / Komfort / Edge-Cases offen
 
-Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~91%** –
-**funktional einsatzbereit** mit integriertem Alert-System für Risk-Violations.
+Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~94%** –
+**funktional einsatzbereit** mit integriertem Alert-System für Risk-Violations und zentralem Live-Ops CLI.
 
 ---
 
@@ -320,24 +320,33 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~91%** –
 
 ---
 
-## 9. CLI-Tooling für Live-/Testnet-Operationen (≈ 85%)
+## 9. CLI-Tooling für Live-/Testnet-Operationen (≈ 95%)
 
 **Kernkomponenten:**
 
-* `scripts/preview_live_orders.py` – Order-Preview & Risk-Check.
-* `scripts/preview_live_portfolio.py` – Portfolio-Monitoring & Risk-Bridge.
+* `scripts/live_ops.py` – Zentrales Live-Ops CLI (Phase 51):
+  * `live_ops orders` – Order-Preview & Risk-Check (Wrapper um `preview_live_orders.py`)
+  * `live_ops portfolio` – Portfolio-Monitoring & Risk-Bridge (Wrapper um `preview_live_portfolio.py`)
+  * `live_ops health` – Health-Check für Live-/Testnet-Setup (Config, Exchange, Alerts, Live-Risk)
+* `scripts/preview_live_orders.py` – Order-Preview & Risk-Check (bleibt funktionsfähig).
+* `scripts/preview_live_portfolio.py` – Portfolio-Monitoring & Risk-Bridge (bleibt funktionsfähig).
 * Diverse Demo-/Support-Scripts (Registry, Research, Backtests).
-* `docs/CLI_CHEATSHEET.md` mit eigenem Abschnitt für Live-/Portfolio-Operations.
+* `docs/CLI_CHEATSHEET.md` mit eigenem Abschnitt für Live-Ops CLI.
 
 **Stärken:**
 
+* **Phase 51**: Zentrales Operator-Cockpit (`live_ops.py`) bündelt wichtigste Kommandos.
 * Klare, fokussierte Tools für kritische Operator-Fragen („Was wird gehandelt?", „Wie sieht das Portfolio aus?").
 * Einheitliches Config-Modell über `config/config.toml`.
+* Health-Check für schnelle Konsistenzprüfung vor Live-Sessions.
 
 **Offen / später sinnvoll:**
 
-* Konsolidiertes Operator-Tool (z.B. `live_ops` mit Subcommands wie `orders`, `portfolio`, `health`).
 * Presets/Profiles für Standard-Workflows (z.B. „Pre-Open-Check", „End-of-Day-Check").
+* Erweiterte Health-Checks (z.B. Exchange-Connectivity-Tests, Alert-Delivery-Tests).
+* Health-Check-Scheduling (automatische Checks via Cron/Scheduler).
+
+**Siehe:** [PHASE_51_LIVE_OPS_CLI.md](PHASE_51_LIVE_OPS_CLI.md) für Details.
 
 ---
 
@@ -379,6 +388,7 @@ Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈
 
 | Datum      | Änderung                                                    |
 |------------|-------------------------------------------------------------|
+| 2025-12-07 | Update nach Abschluss Phase 51 (Live-Ops CLI)              |
 | 2025-12-07 | Update nach Abschluss Phase 50 (Webhook & Slack-Sinks für Alerts)|
 | 2025-12-07 | Update nach Abschluss Phase 49 (Live Alerts & Notifications)|
 | 2025-12-07 | Initiale Version nach Abschluss Phase 48                    |

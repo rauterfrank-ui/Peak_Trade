@@ -300,7 +300,65 @@ python scripts/preview_live_portfolio.py \
 
 ---
 
-## 12. Scheduler & Job Runner
+## 12. Live-Ops CLI (Phase 51)
+
+Zentrales Operator-Cockpit für Live-/Testnet-Operationen.
+
+| Command                                             | Beschreibung                         |
+| --------------------------------------------------- | ------------------------------------ |
+| `python scripts/live_ops.py orders --signals ...`   | Live-Orders-Preview + Risk-Check     |
+| `python scripts/live_ops.py portfolio --config ...` | Live-Portfolio-Snapshot + Risk-Check |
+| `python scripts/live_ops.py health --config ...`    | Health-Check für Live-/Testnet-Setup |
+
+### Orders-Preview
+
+```bash
+# Standard-Ansicht
+python scripts/live_ops.py orders \
+  --signals reports/forward/forward_*_signals.csv \
+  --config config/config.toml
+
+# JSON-Output
+python scripts/live_ops.py orders \
+  --signals reports/forward/forward_*_signals.csv \
+  --config config/config.toml \
+  --json
+```
+
+**Siehe:** [PHASE_51_LIVE_OPS_CLI.md](PHASE_51_LIVE_OPS_CLI.md) für Details.
+
+### Portfolio-Monitoring
+
+```bash
+# Standard-Ansicht
+python scripts/live_ops.py portfolio --config config/config.toml
+
+# JSON-Output
+python scripts/live_ops.py portfolio --config config/config.toml --json
+
+# Ohne Risk-Check
+python scripts/live_ops.py portfolio --config config/config.toml --no-risk
+```
+
+**Siehe:** [PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md](PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md) für Details.
+
+### Health-Check
+
+```bash
+# Text-Output
+python scripts/live_ops.py health --config config/config.toml
+
+# JSON-Output
+python scripts/live_ops.py health --config config/config.toml --json
+```
+
+**Hinweis:** Health-Check prüft Config, Exchange, Alerts und Live-Risk-Limits. Exit-Code 0 = OK/DEGRADED, 1 = FAIL.
+
+**Siehe:** [PHASE_51_LIVE_OPS_CLI.md](PHASE_51_LIVE_OPS_CLI.md) für Details.
+
+---
+
+## 13. Scheduler & Job Runner
 
 ```bash
 # Scheduler Dry-Run (nur anzeigen)
