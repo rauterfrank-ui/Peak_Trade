@@ -15,6 +15,7 @@ import numpy as np
 from src.reporting.sweep_visualization import (
     plot_metric_vs_single_param,
     plot_metric_heatmap_two_params,
+    create_drawdown_heatmap,
     generate_default_sweep_plots,
 )
 
@@ -287,4 +288,200 @@ class TestGenerateDefaultSweepPlots:
             # Sollte Heatmap enthalten
             assert "heatmap_2d" in plots
             assert plots["heatmap_2d"].exists()
+
+
+# =============================================================================
+# CREATE DRAWDOWN HEATMAP TESTS
+# =============================================================================
+
+
+class TestCreateDrawdownHeatmap:
+    """Tests für create_drawdown_heatmap()."""
+
+    def test_create_drawdown_heatmap_creates_file(self):
+        """Drawdown-Heatmap wird erstellt."""
+        df = pd.DataFrame({
+            "param_fast_period": [5, 5, 10, 10, 20, 20],
+            "param_slow_period": [50, 100, 50, 100, 50, 100],
+            "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.12, -0.06, -0.09],
+        })
+
+        with TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            result = create_drawdown_heatmap(
+                df=df,
+                param_x="fast_period",
+                param_y="slow_period",
+                metric_col="max_drawdown",
+                sweep_name="test_sweep",
+                output_dir=output_dir,
+            )
+
+            assert result is not None
+            assert result.exists()
+            assert result.suffix == ".png"
+            assert "drawdown" in result.name.lower()
+            assert "fast_period" in result.name or "fast" in result.name
+            assert "slow_period" in result.name or "slow" in result.name
+
+    def test_create_drawdown_heatmap_with_prefix(self):
+        """Funktioniert auch mit param_/metric_ Prefix."""
+        df = pd.DataFrame({
+            "param_rsi_period": [7, 14, 21, 7, 14, 21],
+            "param_oversold_level": [20, 20, 20, 30, 30, 30],
+            "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.06, -0.12, -0.09],
+        })
+
+        with TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            result = create_drawdown_heatmap(
+                df=df,
+                param_x="param_rsi_period",
+                param_y="param_oversold_level",
+                metric_col="metric_max_drawdown",
+                sweep_name="test",
+                output_dir=output_dir,
+            )
+
+            assert result is not None
+            assert result.exists()
+
+    def test_create_drawdown_heatmap_missing_param_raises(self):
+        """Fehler wenn Parameter fehlt."""
+        df = pd.DataFrame({
+            "param_fast_period": [5, 10],
+            "metric_max_drawdown": [-0.05, -0.10],
+        })
+
+        with TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            with pytest.raises(ValueError, match=".*nicht im DataFrame gefunden"):
+                create_drawdown_heatmap(
+                    df=df,
+                    param_x="fast_period",
+                    param_y="nonexistent",
+                    metric_col="max_drawdown",
+                    sweep_name="test",
+                    output_dir=output_dir,
+                )
+
+    def test_create_drawdown_heatmap_missing_metric_raises(self):
+        """Fehler wenn Drawdown-Metrik fehlt."""
+        df = pd.DataFrame({
+            "param_fast_period": [5, 5, 10, 10],
+            "param_slow_period": [50, 100, 50, 100],
+        })
+
+        with TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            with pytest.raises(ValueError, match=".*nicht im DataFrame gefunden"):
+                create_drawdown_heatmap(
+                    df=df,
+                    param_x="fast_period",
+                    param_y="slow_period",
+                    metric_col="max_drawdown",
+                    sweep_name="test",
+                    output_dir=output_dir,
+                )
+
+    def test_create_drawdown_heatmap_filters_nan(self):
+        """NaN-Werte werden gefiltert."""
+        df = pd.DataFrame({
+            "param_fast_period": [5, 5, 10],
+            "param_slow_period": [50, 100, 50],
+            "metric_max_drawdown": [-0.05, float("nan"), -0.08],
+        })
+
+        with TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            result = create_drawdown_heatmap(
+                df=df,
+                param_x="fast_period",
+                param_y="slow_period",
+                metric_col="max_drawdown",
+                sweep_name="test",
+                output_dir=output_dir,
+            )
+
+            # Sollte trotzdem funktionieren
+            assert result is not None
+
+    def test_create_drawdown_heatmap_with_custom_title(self):
+        """Funktioniert mit benutzerdefiniertem Titel."""
+        df = pd.DataFrame({
+            "param_fast_period": [5, 5, 10, 10],
+            "param_slow_period": [50, 100, 50, 100],
+            "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.12],
+        })
+
+        with TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            result = create_drawdown_heatmap(
+                df=df,
+                param_x="fast_period",
+                param_y="slow_period",
+                metric_col="max_drawdown",
+                title="Custom Drawdown Heatmap",
+                sweep_name="test",
+                output_dir=output_dir,
+            )
+
+            assert result is not None
+            assert result.exists()
+
+
+# =============================================================================
+# INTEGRATION TESTS: DRAWDOWN HEATMAP IN DEFAULT PLOTS
+# =============================================================================
+
+
+class TestDrawdownHeatmapIntegration:
+    """Integrationstests für Drawdown-Heatmaps in generate_default_sweep_plots()."""
+
+    def test_generate_default_sweep_plots_creates_drawdown_heatmap(self):
+        """Drawdown-Heatmap wird automatisch erstellt wenn max_drawdown vorhanden."""
+        df = pd.DataFrame({
+            "param_fast_period": [5, 5, 10, 10],
+            "param_slow_period": [50, 100, 50, 100],
+            "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
+            "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.12],
+        })
+
+        with TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            plots = generate_default_sweep_plots(
+                df=df,
+                sweep_name="test",
+                output_dir=output_dir,
+            )
+
+            # Sollte Drawdown-Heatmap enthalten
+            drawdown_heatmaps = [k for k in plots.keys() if "drawdown" in k.lower()]
+            assert len(drawdown_heatmaps) > 0, "Drawdown-Heatmap sollte erstellt werden"
+            
+            # Prüfe dass alle Drawdown-Heatmaps existieren
+            for key in drawdown_heatmaps:
+                assert plots[key].exists()
+                assert plots[key].suffix == ".png"
+
+    def test_generate_default_sweep_plots_no_drawdown_metric_no_heatmap(self):
+        """Keine Drawdown-Heatmap wenn max_drawdown fehlt."""
+        df = pd.DataFrame({
+            "param_fast_period": [5, 5, 10, 10],
+            "param_slow_period": [50, 100, 50, 100],
+            "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
+            # Keine max_drawdown Spalte
+        })
+
+        with TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir)
+            plots = generate_default_sweep_plots(
+                df=df,
+                sweep_name="test",
+                output_dir=output_dir,
+            )
+
+            # Sollte keine Drawdown-Heatmap enthalten
+            drawdown_heatmaps = [k for k in plots.keys() if "drawdown" in k.lower()]
+            assert len(drawdown_heatmaps) == 0, "Keine Drawdown-Heatmap sollte erstellt werden wenn max_drawdown fehlt"
 

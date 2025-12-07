@@ -8,6 +8,7 @@ Visualisierungsfunktionen für Strategy-Sweep-Ergebnisse.
 Komponenten:
 - plot_metric_vs_single_param: 1D-Plot (Parameter vs. Metrik)
 - plot_metric_heatmap_two_params: 2D-Heatmap (zwei Parameter vs. Metrik)
+- create_drawdown_heatmap: 2D-Heatmap speziell für Drawdown-Metriken
 - generate_default_sweep_plots: Standardkollektion von Plots
 
 Usage:
@@ -214,6 +215,123 @@ def plot_metric_heatmap_two_params(
 
 
 # =============================================================================
+# DRAWDOWN HEATMAP
+# =============================================================================
+
+
+def create_drawdown_heatmap(
+    df: pd.DataFrame,
+    param_x: str,
+    param_y: str,
+    metric_col: str = "metric_max_drawdown",
+    *,
+    title: Optional[str] = None,
+    output_path: Optional[Path] = None,
+    sweep_name: Optional[str] = None,
+    output_dir: Optional[Path] = None,
+) -> Optional[Path]:
+    """
+    Erzeugt eine 2D-Heatmap für eine Drawdown-Metrik (z. B. Max-Drawdown) über zwei Parameterachsen.
+
+    Args:
+        df: DataFrame mit Sweep-Ergebnissen. Muss Spalten für param_x, param_y
+            und die Metrikspalte (default: 'metric_max_drawdown') enthalten.
+        param_x: Name der Spalte für die X-Parameterachse (mit oder ohne "param_" Prefix).
+        param_y: Name der Spalte für die Y-Parameterachse (mit oder ohne "param_" Prefix).
+        metric_col: Name der Spalte mit der Drawdown-Metrik (default: 'metric_max_drawdown').
+        title: Optionaler Plot-Titel. Falls None, wird automatisch generiert.
+        output_path: Optionaler Pfad für die Ausgabe. Falls None, wird der Pfad
+            anhand von param_x, param_y und metric_col konstruiert.
+        sweep_name: Name des Sweeps (für Dateinamen, falls output_path None ist).
+        output_dir: Ausgabe-Verzeichnis (für Dateinamen, falls output_path None ist).
+
+    Returns:
+        Pfad zur erzeugten Plot-Datei oder None bei Fehler.
+
+    Raises:
+        ValueError: Wenn Parameter oder Metrik nicht im DataFrame gefunden werden
+    """
+    if not MATPLOTLIB_AVAILABLE:
+        logger.warning("Matplotlib nicht verfügbar, überspringe Drawdown-Heatmap")
+        return None
+
+    # Normalisiere Spaltennamen
+    param_x_col = param_x if param_x.startswith("param_") else f"param_{param_x}"
+    param_y_col = param_y if param_y.startswith("param_") else f"param_{param_y}"
+    metric_col_normalized = metric_col if metric_col.startswith("metric_") else f"metric_{metric_col}"
+
+    # Validierung
+    if param_x_col not in df.columns:
+        raise ValueError(f"Parameter '{param_x}' nicht im DataFrame gefunden")
+    if param_y_col not in df.columns:
+        raise ValueError(f"Parameter '{param_y}' nicht im DataFrame gefunden")
+    if metric_col_normalized not in df.columns:
+        raise ValueError(f"Drawdown-Metrik '{metric_col}' nicht im DataFrame gefunden")
+
+    # Filtere NaN-Werte
+    df_valid = df[[param_x_col, param_y_col, metric_col_normalized]].dropna()
+    if len(df_valid) == 0:
+        logger.warning(f"Keine gültigen Daten für Drawdown-Heatmap {param_x} x {param_y}")
+        return None
+
+    # Bestimme Output-Pfad
+    if output_path is None:
+        if output_dir is None or sweep_name is None:
+            raise ValueError("output_path oder (output_dir + sweep_name) muss angegeben werden")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        param_x_clean = param_x.replace("param_", "")
+        param_y_clean = param_y.replace("param_", "")
+        filename = f"heatmap_drawdown_{param_x_clean}_vs_{param_y_clean}.png"
+        output_path = output_dir / filename
+    else:
+        output_path = Path(output_path)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        # Erstelle Pivot-Table
+        pivot = df_valid.pivot_table(
+            values=metric_col_normalized,
+            index=param_y_col,
+            columns=param_x_col,
+            aggfunc="mean",
+        )
+
+        # Sortiere Index und Spalten für bessere Darstellung
+        pivot = pivot.sort_index(axis=0).sort_index(axis=1)
+
+        # Titel generieren falls nicht angegeben
+        if title is None:
+            param_x_display = param_x.replace("param_", "").replace("_", " ").title()
+            param_y_display = param_y.replace("param_", "").replace("_", " ").title()
+            metric_display = metric_col_normalized.replace("metric_", "").replace("_", " ").title()
+            title = f"Drawdown-Heatmap: {param_x_display} × {param_y_display} ({metric_display})"
+
+        # Heatmap erstellen (für Drawdown verwenden wir eine invertierte Colormap)
+        # Drawdown ist negativ, daher sollte "Reds" oder "YlOrRd" verwendet werden
+        param_x_display = param_x.replace("param_", "").replace("_", " ").title()
+        param_y_display = param_y.replace("param_", "").replace("_", " ").title()
+        metric_display = metric_col_normalized.replace("metric_", "").replace("_", " ").title()
+
+        save_heatmap(
+            pivot_df=pivot,
+            output_path=output_path,
+            title=title,
+            xlabel=param_x_display,
+            ylabel=param_y_display,
+            cbar_label=metric_display,
+            annotate=pivot.size <= 100,  # Nur bei kleinen Heatmaps
+            cmap="Reds",  # Rot für Drawdown (höhere Werte = schlechter)
+        )
+
+        logger.info(f"Drawdown-Heatmap erstellt: {output_path}")
+        return output_path
+
+    except Exception as e:
+        logger.error(f"Fehler beim Erstellen der Drawdown-Heatmap: {e}")
+        return None
+
+
+# =============================================================================
 # DEFAULT PLOT COLLECTION
 # =============================================================================
 
@@ -311,6 +429,37 @@ def generate_default_sweep_plots(
             )
             if heatmap_path:
                 plots["heatmap_2d"] = heatmap_path
+
+    # Drawdown-Heatmaps: Automatisch erzeugen wenn max_drawdown vorhanden
+    drawdown_metric_cols = [c for c in metric_cols if "drawdown" in c.lower()]
+    if drawdown_metric_cols and len(param_candidates) >= 2:
+        # Verwende erste gefundene Drawdown-Metrik
+        drawdown_metric = drawdown_metric_cols[0]
+        param_x = param_candidates[0]
+        param_y = param_candidates[1]
+
+        # Normalisiere
+        if not param_x.startswith("param_"):
+            param_x = f"param_{param_x}"
+        if not param_y.startswith("param_"):
+            param_y = f"param_{param_y}"
+
+        if param_x in df.columns and param_y in df.columns:
+            try:
+                drawdown_heatmap_path = create_drawdown_heatmap(
+                    df=df,
+                    param_x=param_x,
+                    param_y=param_y,
+                    metric_col=drawdown_metric,
+                    sweep_name=sweep_name,
+                    output_dir=output_dir,
+                )
+                if drawdown_heatmap_path:
+                    param_x_clean = param_x.replace("param_", "")
+                    param_y_clean = param_y.replace("param_", "")
+                    plots[f"drawdown_heatmap_{param_x_clean}_vs_{param_y_clean}"] = drawdown_heatmap_path
+            except Exception as e:
+                logger.warning(f"Fehler beim Erstellen der Drawdown-Heatmap: {e}")
 
     logger.info(f"Erstellt: {len(plots)} Plots für Sweep '{sweep_name}'")
     return plots

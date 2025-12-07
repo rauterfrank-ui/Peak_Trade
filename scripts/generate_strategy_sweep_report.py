@@ -491,6 +491,24 @@ def main() -> int:
                     plots_content.append(f"![Parameter Heatmap]({rel_path})")
                     plots_content.append("")
 
+                # Drawdown-Heatmaps
+                drawdown_heatmaps = {k: v for k, v in plots.items() if "drawdown" in k.lower() and "heatmap" in k.lower()}
+                if drawdown_heatmaps:
+                    plots_content.append("### Drawdown-Heatmaps (Max-Drawdown über Parameter-Raum)")
+                    plots_content.append("")
+                    for plot_name, plot_path in drawdown_heatmaps.items():
+                        rel_path = plot_path.relative_to(output_dir)
+                        # Extrahiere Parameter-Namen aus dem Plot-Namen
+                        # Format: drawdown_heatmap_{param_x}_vs_{param_y}
+                        if "drawdown_heatmap_" in plot_name:
+                            param_part = plot_name.replace("drawdown_heatmap_", "").replace("_vs_", " × ")
+                            title = f"Drawdown-Heatmap: {param_part.replace('_', ' ').title()}"
+                        else:
+                            title = "Drawdown-Heatmap"
+                        plots_content.append(f"#### {title}")
+                        plots_content.append(f"![{title}]({rel_path})")
+                        plots_content.append("")
+
                 if plots_content:
                     # Prüfe ob bereits eine Visualizations-Section existiert
                     existing_viz_idx = None
