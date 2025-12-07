@@ -1,0 +1,36 @@
+# Peak_Trade – Parameter-Grid für Vol-Regime-Filter (Phase 75 v1.1)
+# ==================================================================
+#
+# Grid für den Volatilitäts-Regime-Filter.
+# Verwendet mit: python scripts/run_strategy_sweep.py --strategy vol_regime_filter --sweep-config config/sweeps/vol_regime_filter.toml
+#
+# Der Vol-Regime-Filter kann als Overlay für andere Strategien dienen.
+# Er erlaubt Trades nur wenn die Volatilität im definierten Bereich liegt.
+
+[sweep]
+strategy = "vol_regime_filter"
+symbol = "BTC/EUR"
+timeframe = "1h"
+
+[sweep.parameters]
+# Fenster für Volatilitäts-Berechnung
+vol_window = [10, 14, 20]
+
+# Volatilitäts-Methode
+vol_method = ["atr", "std"]
+
+# Unteres Perzentil (Trading nur wenn Vol > X. Perzentil)
+vol_percentile_low = [20, 25, 30]
+
+# Oberes Perzentil (Trading nur wenn Vol < X. Perzentil)
+vol_percentile_high = [70, 75, 80]
+
+[sweep.metrics]
+primary = "filter_pass_rate"
+secondary = ["vol_stability", "regime_changes"]
+
+[sweep.filters]
+# Keine Mindest-Trades hier, da Filter-Strategie
+
+# Beispiel-Berechnung:
+# 3 × 2 × 3 × 3 = 54 Kombinationen

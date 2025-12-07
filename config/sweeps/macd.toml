@@ -1,0 +1,36 @@
+# Peak_Trade – Parameter-Grid für MACD-Strategie (Phase 75 v1.1)
+# ================================================================
+#
+# Grid für die MACD Trend-Following-Strategie.
+# Verwendet mit: python scripts/run_strategy_sweep.py --strategy macd --sweep-config config/sweeps/macd.toml
+#
+# MACD = EMA(fast) - EMA(slow), Signal = EMA(MACD)
+# Entry: MACD kreuzt Signal von unten (bullish)
+# Exit: MACD kreuzt Signal von oben (bearish)
+
+[sweep]
+strategy = "macd"
+symbol = "BTC/EUR"
+timeframe = "4h"
+
+[sweep.parameters]
+# Schnelle EMA-Periode
+fast_ema = [8, 12, 16]
+
+# Langsame EMA-Periode
+slow_ema = [20, 26, 32]
+
+# Signal-Linie EMA-Periode
+signal_ema = [7, 9, 11]
+
+[sweep.metrics]
+primary = "sharpe_ratio"
+secondary = ["total_return", "max_drawdown", "win_rate"]
+
+[sweep.filters]
+min_trades = 10
+min_sharpe = 0.3
+
+# Beispiel-Berechnung:
+# 3 × 3 × 3 = 27 Kombinationen
+# Hinweis: Kombinationen mit fast_ema >= slow_ema werden übersprungen

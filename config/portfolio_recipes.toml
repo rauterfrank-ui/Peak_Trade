@@ -154,3 +154,127 @@ format = "both"
 risk_profile = "aggressive"
 tags = ["multi-style", "trend", "reversion", "aggressive", "btc", "eth"]
 
+# ============================================================================
+# PHASE 75: v1.1 CURATED PORTFOLIO PRESETS
+# ============================================================================
+# Offizielle v1.1 Portfolio-Presets mit kuratierten Strategien.
+# Verwenden NUR v1.1-offizielle Strategien aus src/strategies/.
+# ============================================================================
+
+# --- v1.1 Conservative Portfolio ---
+
+[portfolio_recipes.conservative_v11]
+id = "conservative_v11"
+portfolio_name = "Conservative Portfolio v1.1"
+description = "Konservatives v1.1 Portfolio mit Fokus auf Stabilitaet und niedriger Volatilitaet. Nutzt bewaehrte Trend- und Mean-Reversion-Strategien mit konservativen Parametern."
+
+[[portfolio_recipes.conservative_v11.strategies]]
+name = "ma_crossover"
+weight = 0.30
+params = { fast_window = 20, slow_window = 60 }
+
+[[portfolio_recipes.conservative_v11.strategies]]
+name = "mean_reversion"
+weight = 0.25
+params = { lookback = 25, entry_threshold = -2.5 }
+
+[[portfolio_recipes.conservative_v11.strategies]]
+name = "bollinger_bands"
+weight = 0.25
+params = { bb_period = 25, bb_std = 2.0 }
+
+[[portfolio_recipes.conservative_v11.strategies]]
+name = "trend_following"
+weight = 0.20
+params = { adx_period = 14, adx_threshold = 30.0 }
+
+run_montecarlo = true
+mc_num_runs = 2000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike", "liquidity_gap"]
+stress_severity = 0.2
+
+format = "both"
+risk_profile = "conservative"
+max_drawdown_target = 0.10
+tags = ["v1.1", "conservative", "stable", "low-risk"]
+
+# --- v1.1 Moderate Portfolio ---
+
+[portfolio_recipes.moderate_v11]
+id = "moderate_v11"
+portfolio_name = "Moderate Portfolio v1.1"
+description = "Balanciertes v1.1 Portfolio mit ausgewogenem Risiko/Return-Profil. Kombiniert Trend-Following und Mean-Reversion fuer verschiedene Marktphasen."
+
+[[portfolio_recipes.moderate_v11.strategies]]
+name = "rsi_reversion"
+weight = 0.25
+params = { rsi_window = 14, lower = 30.0, upper = 70.0 }
+
+[[portfolio_recipes.moderate_v11.strategies]]
+name = "breakout"
+weight = 0.25
+params = { lookback_breakout = 20, stop_loss_pct = 0.03 }
+
+[[portfolio_recipes.moderate_v11.strategies]]
+name = "trend_following"
+weight = 0.25
+params = { adx_period = 14, adx_threshold = 25.0 }
+
+[[portfolio_recipes.moderate_v11.strategies]]
+name = "macd"
+weight = 0.25
+params = { fast_ema = 12, slow_ema = 26, signal_ema = 9 }
+
+run_montecarlo = true
+mc_num_runs = 3000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike", "trend_reversal"]
+stress_severity = 0.25
+
+format = "both"
+risk_profile = "moderate"
+max_drawdown_target = 0.15
+tags = ["v1.1", "moderate", "balanced", "diversified"]
+
+# --- v1.1 Aggressive Portfolio ---
+
+[portfolio_recipes.aggressive_v11]
+id = "aggressive_v11"
+portfolio_name = "Aggressive Portfolio v1.1"
+description = "Aggressives v1.1 Portfolio mit hoeherem Risiko fuer potentiell hoehere Returns. Staerkere Gewichtung von Breakout und Momentum."
+
+[[portfolio_recipes.aggressive_v11.strategies]]
+name = "breakout"
+weight = 0.35
+params = { lookback_breakout = 15, stop_loss_pct = 0.04, take_profit_pct = 0.10 }
+
+[[portfolio_recipes.aggressive_v11.strategies]]
+name = "momentum_1h"
+weight = 0.30
+params = { lookback_period = 15, entry_threshold = 0.03 }
+
+[[portfolio_recipes.aggressive_v11.strategies]]
+name = "rsi_reversion"
+weight = 0.20
+params = { rsi_window = 10, lower = 25.0, upper = 75.0 }
+
+[[portfolio_recipes.aggressive_v11.strategies]]
+name = "macd"
+weight = 0.15
+params = { fast_ema = 8, slow_ema = 21, signal_ema = 7 }
+
+run_montecarlo = true
+mc_num_runs = 5000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike", "flash_crash", "trend_reversal"]
+stress_severity = 0.30
+
+format = "both"
+risk_profile = "aggressive"
+max_drawdown_target = 0.25
+tags = ["v1.1", "aggressive", "high-risk", "high-return"]
+

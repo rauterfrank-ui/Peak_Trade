@@ -1,0 +1,37 @@
+# Peak_Trade – Parameter-Grid für Breakout-Strategie (Phase 75 v1.1)
+# ====================================================================
+#
+# Grid für die Breakout-Strategie mit SL/TP.
+# Verwendet mit: python scripts/run_strategy_sweep.py --strategy breakout --sweep-config config/sweeps/breakout.toml
+#
+# Die Breakout-Strategie nutzt N-Bar Highs/Lows für Entry-Signale
+# und integriert Risk-Management (Stop-Loss, Take-Profit, Trailing-Stop).
+
+[sweep]
+strategy = "breakout"
+symbol = "BTC/EUR"
+timeframe = "1h"
+
+[sweep.parameters]
+# Lookback-Fenster für Breakout-Levels
+lookback_breakout = [10, 15, 20, 30]
+
+# Stop-Loss in % vom Entry (0.02 = 2%)
+stop_loss_pct = [0.02, 0.03, 0.04]
+
+# Take-Profit in % vom Entry (0.04 = 4%)
+take_profit_pct = [0.04, 0.06, 0.08, 0.10]
+
+# Trading-Mode
+risk_mode = ["symmetric", "long_only"]
+
+[sweep.metrics]
+primary = "sharpe_ratio"
+secondary = ["total_return", "max_drawdown", "profit_factor"]
+
+[sweep.filters]
+min_trades = 15
+min_sharpe = 0.3
+
+# Beispiel-Berechnung:
+# 4 × 3 × 4 × 2 = 96 Kombinationen

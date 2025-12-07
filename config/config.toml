@@ -75,12 +75,186 @@ active = ["ma_crossover", "momentum_1h", "rsi_strategy"]
 # Strategien in dieser Liste müssen einen [strategy.NAME]-Block haben
 available = [
     "ma_crossover",
-    "momentum_1h", 
+    "momentum_1h",
     "rsi_strategy",
     "bollinger_bands",
     "macd",
     "ecm_cycle"
 ]
+
+# ============================================================================
+# PHASE 75: v1.1 CURATED STRATEGIES
+# ============================================================================
+# Kuratierte Strategien für v1.1 mit einheitlicher Config-Struktur.
+# Diese ersetzen die Legacy-Configs für Production-Use.
+# ============================================================================
+
+# --- v1.1 TREND-FOLLOWING STRATEGIES ---
+
+[strategies.ma_crossover]
+enabled = true
+category = "trend"
+timeframes = ["1h", "4h", "1d"]
+risk_level = "medium"
+description = "Moving Average Crossover Strategy (Fast/Slow MA)"
+v11_official = true
+
+[strategies.ma_crossover.defaults]
+fast_window = 20
+slow_window = 50
+price_col = "close"
+
+[strategies.trend_following]
+enabled = true
+category = "trend"
+timeframes = ["1h", "4h", "1d"]
+risk_level = "medium"
+description = "ADX-basierte Trend-Following-Strategie mit optionalem MA-Filter"
+v11_official = true
+
+[strategies.trend_following.defaults]
+adx_period = 14
+adx_threshold = 25.0
+exit_threshold = 20.0
+ma_period = 50
+use_ma_filter = true
+
+[strategies.macd]
+enabled = true
+category = "trend"
+timeframes = ["4h", "1d"]
+risk_level = "medium"
+description = "MACD Trend-Following (EMA-Crossover)"
+v11_official = true
+
+[strategies.macd.defaults]
+fast_ema = 12
+slow_ema = 26
+signal_ema = 9
+
+# --- v1.1 MEAN-REVERSION STRATEGIES ---
+
+[strategies.rsi_reversion]
+enabled = true
+category = "mean_reversion"
+timeframes = ["15m", "1h", "4h"]
+risk_level = "medium"
+description = "RSI Mean-Reversion mit optionalem Trendfilter"
+v11_official = true
+
+[strategies.rsi_reversion.defaults]
+rsi_window = 14
+lower = 30.0
+upper = 70.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+
+[strategies.mean_reversion]
+enabled = true
+category = "mean_reversion"
+timeframes = ["1h", "4h"]
+risk_level = "medium"
+description = "Z-Score Mean-Reversion mit optionalem Volatilitaetsfilter"
+v11_official = true
+
+[strategies.mean_reversion.defaults]
+lookback = 20
+entry_threshold = -2.0
+exit_threshold = 0.0
+use_vol_filter = false
+vol_window = 20
+max_vol_percentile = 70.0
+
+[strategies.bollinger_bands]
+enabled = true
+category = "mean_reversion"
+timeframes = ["1h", "4h", "1d"]
+risk_level = "medium"
+description = "Bollinger Bands Mean-Reversion"
+v11_official = true
+
+[strategies.bollinger_bands.defaults]
+bb_period = 20
+bb_std = 2.0
+entry_threshold = 0.95
+exit_threshold = 0.50
+
+# --- v1.1 MOMENTUM STRATEGIES ---
+
+[strategies.momentum_1h]
+enabled = true
+category = "momentum"
+timeframes = ["1h", "4h"]
+risk_level = "medium_high"
+description = "Momentum-basierte Trend-Following-Strategie"
+v11_official = true
+
+[strategies.momentum_1h.defaults]
+lookback_period = 20
+entry_threshold = 0.02
+exit_threshold = -0.01
+
+# --- v1.1 BREAKOUT STRATEGIES ---
+
+[strategies.breakout]
+enabled = true
+category = "breakout"
+timeframes = ["1h", "4h"]
+risk_level = "medium_high"
+description = "N-Bar Breakout mit SL/TP, Trailing-Stop und ATR-Filter"
+v11_official = true
+
+[strategies.breakout.defaults]
+lookback_breakout = 20
+atr_lookback = 14
+use_atr_filter = false
+exit_on_opposite_breakout = true
+risk_mode = "symmetric"
+stop_loss_pct = 0.03
+take_profit_pct = 0.06
+price_col = "close"
+
+# --- v1.1 META/FILTER STRATEGIES ---
+
+[strategies.vol_regime_filter]
+enabled = true
+category = "meta"
+timeframes = ["1h", "4h"]
+risk_level = "-"
+description = "Volatilitaets-Regime-Filter (Overlay fuer andere Strategien)"
+v11_official = true
+
+[strategies.vol_regime_filter.defaults]
+vol_window = 14
+vol_method = "atr"
+vol_percentile_low = 25
+vol_percentile_high = 75
+lookback_percentile = 100
+min_bars = 30
+regime_mode = false
+invert = false
+
+# --- EXPERIMENTAL (nicht v1.1-offiziell) ---
+
+[strategies.composite]
+enabled = false
+category = "meta"
+timeframes = []
+risk_level = "varies"
+description = "Multi-Strategy Composite (experimental)"
+v11_official = false
+
+[strategies.regime_aware_portfolio]
+enabled = false
+category = "meta"
+timeframes = []
+risk_level = "varies"
+description = "Regime-Aware Portfolio Strategy (experimental)"
+v11_official = false
 
 # Default-Parameter für ALLE Strategien (sofern nicht überschrieben)
 [strategies.defaults]
@@ -242,26 +416,69 @@ stop_pct = 0.03              # 3% Stop-Loss
 ecm_reference_date = "2020-01-18"  # Letzter bekannter ECM-Peak
 
 # ============================================================================
-# PHASE 40: STRATEGY LIBRARY ERWEITERUNGEN
+# PHASE 40+: STRATEGY LIBRARY ERWEITERUNGEN (Breakout & Vol-Regime)
+# ============================================================================
+
+# Neue Breakout-Variante mit erweiterten Features
+[strategy.breakout_basic]
+type = "breakout"
+lookback_high = 20
+lookback_low = 20
+atr_lookback = 14
+atr_multiplier = 1.0
+use_atr_filter = true
+exit_on_opposite_breakout = true
+risk_mode = "symmetric"
+price_col = "close"
+
+# Vol-Regime-Filter mit Threshold-basierter Klassifikation
+[strategy.vol_regime_basic]
+type = "vol_regime_filter"
+vol_lookback = 20            # Alias für vol_window
+vol_metric = "atr"           # Alias für vol_method
+low_vol_threshold = 0.5      # Vol < threshold → Regime = 1 (Risk-On)
+high_vol_threshold = 2.0     # Vol > threshold → Regime = -1 (Risk-Off)
+min_bars = 30                # Minimum an Bars vor Klassifikation
+regime_mode = true           # Aktiviert Regime-Modus (1/-1/0 statt 1/0)
+
+# ============================================================================
+# PHASE 40: STRATEGY LIBRARY ERWEITERUNGEN (Legacy)
 # ============================================================================
 
 [strategy.breakout]
 # Breakout/Momentum Strategy mit Stop-Loss und Take-Profit
-lookback_breakout = 20       # Lookback-Fenster für Hoch/Tief
+lookback_breakout = 20       # Standard-Lookback-Fenster für Hoch/Tief
+# lookback_high = 20        # Optional: Separates Lookback für Long-Breakout
+# lookback_low = 20         # Optional: Separates Lookback für Short-Breakout
+# ATR-Filter Optionen
+atr_lookback = 14            # ATR-Fenster für Filter
+# atr_multiplier = 1.0      # Optional: Mindest-ATR-Level (ATR > multiplier * Baseline)
+use_atr_filter = false       # ATR-Filter aktivieren/deaktivieren
+exit_on_opposite_breakout = true  # Exit bei gegenteiligem Breakout
+risk_mode = "symmetric"      # "symmetric", "long_only", "short_only"
+# Legacy: side (wird zu risk_mode gemappt)
+side = "both"                # "long", "short" oder "both" (Legacy, bevorzugt risk_mode)
 stop_loss_pct = 0.03         # Stop-Loss: 3%
 take_profit_pct = 0.06       # Take-Profit: 6%
 # trailing_stop_pct = 0.02   # Optional: Trailing-Stop (2%)
-side = "both"                # "long", "short" oder "both"
 price_col = "close"
 
 [strategy.vol_regime_filter]
 # Volatilitäts-Regime-Filter
 # Erlaubt Trades nur wenn Volatilität im definierten Bereich liegt
+# ODER gibt Regime-Signale zurück (Low-Vol/High-Vol/Neutral)
 vol_window = 14              # ATR/Volatility-Berechnung Fenster
-vol_method = "atr"           # "atr", "std" oder "realized"
+vol_method = "atr"           # "atr", "std", "realized" oder "range"
+# Threshold-basierte Regime-Klassifikation
+# low_vol_threshold = 0.5    # Optional: Vol < threshold → Regime = 1 (Risk-On)
+# high_vol_threshold = 2.0   # Optional: Vol > threshold → Regime = -1 (Risk-Off)
+min_bars = 30                # Minimum an Bars vor Klassifikation
+regime_mode = false          # Wenn true: gibt Regime-Signale (1/-1/0) statt Filter (1/0)
+# Perzentil-basierter Filter (alternativ)
 vol_percentile_low = 25      # Trading nur wenn Vol > 25. Perzentil
 vol_percentile_high = 75     # Trading nur wenn Vol < 75. Perzentil
 lookback_percentile = 100    # Lookback für Perzentil-Berechnung
+# Absolute Thresholds (alternativ)
 # min_vol = 50.0             # Optional: Absoluter Min-Vol-Schwellwert
 # max_vol = 500.0            # Optional: Absoluter Max-Vol-Schwellwert
 # atr_threshold = 100.0      # Optional: ATR muss > Threshold sein
@@ -302,6 +519,34 @@ require_all_valid = false
 components = ["rsi_reversion", "breakout", "ma_crossover"]
 weights = [0.4, 0.3, 0.3]
 aggregation = "weighted"
+signal_threshold = 0.25
+
+# ============================================================================
+# REGIME-AWARE PORTFOLIO STRATEGIES (Phase XX)
+# ============================================================================
+
+[portfolio.regime_aware_breakout_rsi]
+# Regime-Aware Portfolio: Breakout + RSI mit Vol-Regime-Filter
+type = "regime_aware_portfolio"
+components = ["breakout_basic", "rsi_reversion"]
+base_weights = { breakout_basic = 0.6, rsi_reversion = 0.4 }
+regime_strategy = "vol_regime_basic"
+mode = "scale"              # "scale" oder "filter"
+risk_on_scale = 1.0         # Volle Gewichte bei Risk-On
+neutral_scale = 0.5         # Halbe Gewichte bei Neutral
+risk_off_scale = 0.0        # Keine Gewichte bei Risk-Off
+signal_threshold = 0.3      # Schwelle für Long/Short-Entscheidung
+
+[portfolio.regime_aware_conservative]
+# Konservatives Regime-Aware Portfolio (nur Risk-On)
+type = "regime_aware_portfolio"
+components = ["breakout_basic", "ma_crossover"]
+base_weights = { breakout_basic = 0.5, ma_crossover = 0.5 }
+regime_strategy = "vol_regime_basic"
+mode = "filter"             # Filter-Mode: Risk-Off → Flat
+risk_on_scale = 1.0
+neutral_scale = 0.3         # Sehr reduzierte Gewichte bei Neutral
+risk_off_scale = 0.0
 signal_threshold = 0.25
 
 # ============================================================================
