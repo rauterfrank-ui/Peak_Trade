@@ -222,7 +222,7 @@ def test_get_run_snapshot_aggregation(temp_run_dir: Path, sample_run_with_events
 
 def test_get_run_snapshot_not_found(temp_run_dir: Path) -> None:
     """Test: get_run_snapshot mit nicht existierender Run-ID."""
-    with pytest.raises(RunNotFoundError, match="Run nicht gefunden"):
+    with pytest.raises(RunNotFoundError, match="Run.*nicht gefunden"):
         get_run_snapshot("nonexistent_run_id", base_dir=temp_run_dir)
 
 
@@ -281,7 +281,7 @@ def test_get_run_timeseries_limit(temp_run_dir: Path, sample_run_with_events: st
 
 def test_get_run_timeseries_not_found(temp_run_dir: Path) -> None:
     """Test: get_run_timeseries mit nicht existierender Run-ID."""
-    with pytest.raises(RunNotFoundError, match="Run nicht gefunden"):
+    with pytest.raises(RunNotFoundError, match="Run.*nicht gefunden"):
         get_run_timeseries("nonexistent_run_id", base_dir=temp_run_dir)
 
 
@@ -307,7 +307,7 @@ def test_tail_events_all(temp_run_dir: Path, sample_run_with_events: str) -> Non
 
 def test_tail_events_not_found(temp_run_dir: Path) -> None:
     """Test: tail_events mit nicht existierender Run-ID."""
-    with pytest.raises(RunNotFoundError, match="Run nicht gefunden"):
+    with pytest.raises(RunNotFoundError, match="Run.*nicht gefunden"):
         tail_events("nonexistent_run_id", base_dir=temp_run_dir)
 
 
