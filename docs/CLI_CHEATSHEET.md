@@ -269,6 +269,8 @@ python scripts/preview_live_orders.py \
   --signals reports/forward/forward_*.csv \
   --notional 500 \
   --tag preview-only
+
+# Hinweis: Risk-Violations erzeugen automatisch Alerts (siehe [live_alerts] in config.toml)
 ```
 
 ---
@@ -292,6 +294,8 @@ python scripts/preview_live_portfolio.py \
 ```
 
 **Siehe:** [PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md](PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md) für Details.
+
+**Hinweis:** Risk-Violations erzeugen automatisch Alerts (siehe [live_alerts] in config.toml und [PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md](PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md)).
 
 ---
 

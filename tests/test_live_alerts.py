@@ -1,652 +1,371 @@
 # tests/test_live_alerts.py
 """
-Tests für src/live/alerts.py (Phase 34)
+Tests für Live Alerts & Notifications (Phase 49)
+================================================
 
-Testet das Alert-System:
-- AlertRule und AlertEvent Dataclasses
-- AlertEngine mit verschiedenen Regeln
-- Debouncing
-- Alert-Logging in Dateien
+Tests für:
+- AlertLevel
+- AlertEvent
+- LoggingAlertSink
+- StderrAlertSink
+- MultiAlertSink
+- LiveAlertsConfig
+- build_alert_sink_from_config
 """
 from __future__ import annotations
 
-import json
-import tempfile
-from datetime import datetime, timezone, timedelta
-from pathlib import Path
-from typing import Any, Dict, Optional
+import logging
+from datetime import datetime, timezone
 
 import pytest
 
-from src.live.monitoring import LiveRunSnapshot
 from src.live.alerts import (
-    Severity,
-    AlertsConfig,
-    AlertRule,
     AlertEvent,
-    AlertEngine,
-    load_alerts_config,
-    create_risk_blocked_rule,
-    create_large_loss_abs_rule,
-    create_large_loss_pct_rule,
-    create_no_events_rule,
-    create_alert_engine_from_config,
-    append_alerts_to_file,
-    load_alerts_from_file,
-    render_alerts,
+    AlertLevel,
+    LiveAlertsConfig,
+    LoggingAlertSink,
+    MultiAlertSink,
+    StderrAlertSink,
+    build_alert_sink_from_config,
 )
 
-
 # =============================================================================
-# Fixtures
+# FIXTURES
 # =============================================================================
 
 
 @pytest.fixture
-def sample_snapshot() -> LiveRunSnapshot:
-    """Erstellt einen Sample-Snapshot."""
-    return LiveRunSnapshot(
-        run_id="test_run_001",
-        mode="paper",
-        strategy_name="ma_crossover",
-        symbol="BTC/EUR",
-        timeframe="1m",
-        started_at=datetime.now(timezone.utc) - timedelta(hours=1),
-        ended_at=None,
-        last_bar_time=datetime.now(timezone.utc) - timedelta(minutes=1),
-        last_price=40000.0,
-        position_size=0.1,
-        cash=9000.0,
-        equity=10000.0,
-        realized_pnl=100.0,
-        unrealized_pnl=50.0,
-        total_steps=100,
-        total_orders=10,
-        total_blocked_orders=0,
+def sample_alert_info() -> AlertEvent:
+    """Erstellt Sample-INFO-Alert."""
+    return AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.INFO,
+        source="test.source",
+        code="TEST_INFO",
+        message="Test info message",
+        context={"key": "value"},
     )
 
 
 @pytest.fixture
-def blocked_snapshot() -> LiveRunSnapshot:
-    """Erstellt einen Snapshot mit blockierten Orders."""
-    return LiveRunSnapshot(
-        run_id="test_run_002",
-        mode="paper",
-        strategy_name="ma_crossover",
-        symbol="BTC/EUR",
-        timeframe="1m",
-        started_at=datetime.now(timezone.utc) - timedelta(hours=1),
-        ended_at=None,
-        last_bar_time=datetime.now(timezone.utc) - timedelta(minutes=1),
-        last_price=40000.0,
-        position_size=0.1,
-        cash=9000.0,
-        equity=10000.0,
-        realized_pnl=-100.0,
-        unrealized_pnl=-50.0,
-        total_steps=100,
-        total_orders=10,
-        total_blocked_orders=3,  # Blockierte Orders!
+def sample_alert_warning() -> AlertEvent:
+    """Erstellt Sample-WARNING-Alert."""
+    return AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test.source",
+        code="TEST_WARNING",
+        message="Test warning message",
+        context={"key": "value"},
     )
 
 
 @pytest.fixture
-def loss_snapshot() -> LiveRunSnapshot:
-    """Erstellt einen Snapshot mit großen Verlusten."""
-    return LiveRunSnapshot(
-        run_id="test_run_003",
-        mode="paper",
-        strategy_name="ma_crossover",
-        symbol="BTC/EUR",
-        timeframe="1m",
-        started_at=datetime.now(timezone.utc) - timedelta(hours=1),
-        ended_at=None,
-        last_bar_time=datetime.now(timezone.utc) - timedelta(minutes=1),
-        last_price=40000.0,
-        position_size=0.1,
-        cash=8000.0,
-        equity=8500.0,
-        realized_pnl=-600.0,  # Großer Verlust!
-        unrealized_pnl=-100.0,
-        total_steps=100,
-        total_orders=10,
-        total_blocked_orders=0,
+def sample_alert_critical() -> AlertEvent:
+    """Erstellt Sample-CRITICAL-Alert."""
+    return AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.CRITICAL,
+        source="test.source",
+        code="TEST_CRITICAL",
+        message="Test critical message",
+        context={"key": "value"},
     )
 
 
-@pytest.fixture
-def temp_run_dir() -> Path:
-    """Erstellt ein temporäres Run-Verzeichnis."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        run_dir = Path(tmpdir) / "test_run"
-        run_dir.mkdir(parents=True)
-        yield run_dir
-
-
 # =============================================================================
-# Severity Tests
+# ALERTLEVEL TESTS
 # =============================================================================
 
 
-class TestSeverity:
-    """Tests für Severity-Klasse."""
+def test_alert_level_ordering():
+    """Testet dass AlertLevel-Ordering korrekt ist."""
+    assert AlertLevel.INFO < AlertLevel.WARNING
+    assert AlertLevel.WARNING < AlertLevel.CRITICAL
+    assert AlertLevel.INFO < AlertLevel.CRITICAL
 
-    def test_rank_info(self) -> None:
-        """Test Rank für info."""
-        assert Severity.rank("info") == 0
 
-    def test_rank_warning(self) -> None:
-        """Test Rank für warning."""
-        assert Severity.rank("warning") == 1
-
-    def test_rank_critical(self) -> None:
-        """Test Rank für critical."""
-        assert Severity.rank("critical") == 2
-
-    def test_is_at_least_same(self) -> None:
-        """Test is_at_least mit gleicher Severity."""
-        assert Severity.is_at_least("warning", "warning") is True
-
-    def test_is_at_least_higher(self) -> None:
-        """Test is_at_least mit höherer Severity."""
-        assert Severity.is_at_least("critical", "warning") is True
-
-    def test_is_at_least_lower(self) -> None:
-        """Test is_at_least mit niedrigerer Severity."""
-        assert Severity.is_at_least("info", "warning") is False
+def test_alert_level_comparison():
+    """Testet AlertLevel-Vergleiche."""
+    assert AlertLevel.WARNING >= AlertLevel.INFO
+    assert AlertLevel.CRITICAL >= AlertLevel.WARNING
+    assert AlertLevel.CRITICAL > AlertLevel.INFO
 
 
 # =============================================================================
-# Config Tests
+# ALERTEVENT TESTS
 # =============================================================================
 
 
-class TestAlertsConfig:
-    """Tests für AlertsConfig."""
-
-    def test_default_values(self) -> None:
-        """Test Default-Werte."""
-        cfg = AlertsConfig()
-        assert cfg.enabled is True
-        assert cfg.min_severity == "warning"
-        assert cfg.debounce_seconds == 60
-        assert cfg.enable_risk_blocked is True
-        assert cfg.enable_large_loss_abs is True
-        assert cfg.large_loss_abs_threshold == -500.0
-
-    def test_load_from_config(self) -> None:
-        """Test Laden aus Mock-Config."""
-        class MockConfig:
-            def get(self, path: str, default: Any = None) -> Any:
-                values = {
-                    "alerts.enabled": True,
-                    "alerts.min_severity": "critical",
-                    "alerts.debounce_seconds": 120,
-                    "alerts.rules.enable_risk_blocked": False,
-                    "alerts.rules.large_loss_abs_threshold": -1000.0,
-                }
-                return values.get(path, default)
-
-        cfg = load_alerts_config(MockConfig())
-        assert cfg.min_severity == "critical"
-        assert cfg.debounce_seconds == 120
-        assert cfg.enable_risk_blocked is False
-        assert cfg.large_loss_abs_threshold == -1000.0
+def test_alert_event_creation(sample_alert_warning: AlertEvent):
+    """Testet Erstellung eines AlertEvents."""
+    assert sample_alert_warning.level == AlertLevel.WARNING
+    assert sample_alert_warning.source == "test.source"
+    assert sample_alert_warning.code == "TEST_WARNING"
+    assert sample_alert_warning.message == "Test warning message"
+    assert sample_alert_warning.context == {"key": "value"}
 
 
 # =============================================================================
-# AlertRule Tests
+# LOGGINGALERTSINK TESTS
 # =============================================================================
 
 
-class TestAlertRule:
-    """Tests für AlertRule."""
+def test_logging_alert_sink_warning(caplog, sample_alert_warning: AlertEvent):
+    """Testet LoggingAlertSink mit WARNING-Level."""
+    logger = logging.getLogger("test_logger")
+    sink = LoggingAlertSink(logger, min_level=AlertLevel.WARNING)
 
-    def test_rule_creation(self) -> None:
-        """Test Regel-Erstellung."""
-        rule = AlertRule(
-            id="test_rule",
-            description="Test rule",
-            severity=Severity.WARNING,
-        )
-        assert rule.id == "test_rule"
-        assert rule.severity == "warning"
-        assert rule.enabled is True
+    with caplog.at_level(logging.WARNING):
+        sink.send(sample_alert_warning)
 
-    def test_rule_check_returns_none_when_no_fn(
-        self, sample_snapshot: LiveRunSnapshot
-    ) -> None:
-        """Test check() ohne check_fn."""
-        rule = AlertRule(
-            id="test_rule",
-            description="Test rule",
-            severity=Severity.WARNING,
-        )
-        assert rule.check(sample_snapshot) is None
-
-    def test_rule_check_disabled(self, sample_snapshot: LiveRunSnapshot) -> None:
-        """Test check() bei deaktivierter Regel."""
-        rule = AlertRule(
-            id="test_rule",
-            description="Test rule",
-            severity=Severity.WARNING,
-            enabled=False,
-            check_fn=lambda s: "Alert!",
-        )
-        assert rule.check(sample_snapshot) is None
+    assert len(caplog.records) == 1
+    assert caplog.records[0].levelno == logging.WARNING
+    assert "TEST_WARNING" in caplog.records[0].message
+    assert "Test warning message" in caplog.records[0].message
 
 
-# =============================================================================
-# Built-in Rules Tests
-# =============================================================================
+def test_logging_alert_sink_critical(caplog, sample_alert_critical: AlertEvent):
+    """Testet LoggingAlertSink mit CRITICAL-Level."""
+    logger = logging.getLogger("test_logger")
+    sink = LoggingAlertSink(logger, min_level=AlertLevel.WARNING)
+
+    with caplog.at_level(logging.ERROR):
+        sink.send(sample_alert_critical)
+
+    assert len(caplog.records) == 1
+    assert caplog.records[0].levelno == logging.ERROR
+    assert "TEST_CRITICAL" in caplog.records[0].message
 
 
-class TestRiskBlockedRule:
-    """Tests für risk_blocked_rule."""
+def test_logging_alert_sink_info_filtered(caplog, sample_alert_info: AlertEvent):
+    """Testet dass INFO-Alerts unterhalb min_level gefiltert werden."""
+    logger = logging.getLogger("test_logger")
+    sink = LoggingAlertSink(logger, min_level=AlertLevel.WARNING)
 
-    def test_no_alert_when_not_blocked(self, sample_snapshot: LiveRunSnapshot) -> None:
-        """Kein Alert wenn keine Orders blockiert."""
-        rule = create_risk_blocked_rule()
-        assert rule.check(sample_snapshot) is None
+    with caplog.at_level(logging.INFO):
+        sink.send(sample_alert_info)
 
-    def test_alert_when_blocked(self, blocked_snapshot: LiveRunSnapshot) -> None:
-        """Alert wenn Orders blockiert."""
-        rule = create_risk_blocked_rule()
-        message = rule.check(blocked_snapshot)
-        assert message is not None
-        assert "3" in message  # 3 blockierte Orders
-        assert "risk-blocked" in message.lower()
-
-    def test_disabled_rule(self, blocked_snapshot: LiveRunSnapshot) -> None:
-        """Deaktivierte Regel löst nicht aus."""
-        rule = create_risk_blocked_rule(enabled=False)
-        assert rule.check(blocked_snapshot) is None
+    assert len(caplog.records) == 0
 
 
-class TestLargeLossAbsRule:
-    """Tests für large_loss_abs_rule."""
+def test_logging_alert_sink_with_context(caplog, sample_alert_warning: AlertEvent):
+    """Testet LoggingAlertSink mit Context."""
+    logger = logging.getLogger("test_logger")
+    sink = LoggingAlertSink(logger, min_level=AlertLevel.WARNING)
 
-    def test_no_alert_when_profit(self, sample_snapshot: LiveRunSnapshot) -> None:
-        """Kein Alert bei Profit."""
-        rule = create_large_loss_abs_rule(threshold=-500.0)
-        assert rule.check(sample_snapshot) is None
+    with caplog.at_level(logging.WARNING):
+        sink.send(sample_alert_warning)
 
-    def test_alert_when_large_loss(self, loss_snapshot: LiveRunSnapshot) -> None:
-        """Alert bei großem Verlust."""
-        rule = create_large_loss_abs_rule(threshold=-500.0)
-        message = rule.check(loss_snapshot)
-        assert message is not None
-        assert "-600" in message or "600" in message
-
-    def test_custom_threshold(self, loss_snapshot: LiveRunSnapshot) -> None:
-        """Test mit Custom-Threshold."""
-        rule = create_large_loss_abs_rule(threshold=-1000.0)
-        # -600 ist > -1000, also kein Alert
-        assert rule.check(loss_snapshot) is None
-
-
-class TestLargeLossPctRule:
-    """Tests für large_loss_pct_rule."""
-
-    def test_no_alert_when_profit(self, sample_snapshot: LiveRunSnapshot) -> None:
-        """Kein Alert bei Profit."""
-        rule = create_large_loss_pct_rule(threshold=-10.0)
-        assert rule.check(sample_snapshot) is None
-
-    def test_no_alert_when_small_loss(self, sample_snapshot: LiveRunSnapshot) -> None:
-        """Kein Alert bei kleinem Verlust."""
-        # Snapshot mit kleinem Verlust
-        snapshot = LiveRunSnapshot(
-            run_id="test",
-            mode="paper",
-            strategy_name="test",
-            symbol="BTC/EUR",
-            timeframe="1m",
-            started_at=None,
-            ended_at=None,
-            last_bar_time=None,
-            last_price=40000.0,
-            position_size=0.1,
-            cash=9500.0,
-            equity=9800.0,  # Equity
-            realized_pnl=-50.0,  # -50 von (9800+50)=9850 = -0.5%
-            unrealized_pnl=0.0,
-            total_steps=100,
-            total_orders=10,
-            total_blocked_orders=0,
-        )
-        rule = create_large_loss_pct_rule(threshold=-10.0)
-        assert rule.check(snapshot) is None
+    assert len(caplog.records) == 1
+    assert "context=" in caplog.records[0].message
 
 
 # =============================================================================
-# AlertEngine Tests
+# STDERRALERTSINK TESTS
 # =============================================================================
 
 
-class TestAlertEngine:
-    """Tests für AlertEngine."""
+def test_stderr_alert_sink_warning(capfd, sample_alert_warning: AlertEvent):
+    """Testet StderrAlertSink mit WARNING-Level."""
+    sink = StderrAlertSink(min_level=AlertLevel.WARNING)
 
-    def test_engine_creation(self) -> None:
-        """Test Engine-Erstellung."""
-        rules = [
-            create_risk_blocked_rule(),
-            create_large_loss_abs_rule(),
-        ]
-        engine = AlertEngine(rules, min_severity="warning", debounce_seconds=60)
-        assert len(engine.rules) == 2
+    sink.send(sample_alert_warning)
 
-    def test_evaluate_no_alerts(self, sample_snapshot: LiveRunSnapshot) -> None:
-        """Test Evaluation ohne Alerts."""
-        rules = [
-            create_risk_blocked_rule(),
-            create_large_loss_abs_rule(),
-        ]
-        engine = AlertEngine(rules, min_severity="warning", debounce_seconds=60)
-        alerts = engine.evaluate_snapshot(sample_snapshot)
-        assert len(alerts) == 0
+    captured = capfd.readouterr()
+    assert "TEST_WARNING" in captured.err
+    assert "Test warning message" in captured.err
 
-    def test_evaluate_with_alert(self, blocked_snapshot: LiveRunSnapshot) -> None:
-        """Test Evaluation mit Alert."""
-        rules = [
-            create_risk_blocked_rule(),
-            create_large_loss_abs_rule(),
-        ]
-        engine = AlertEngine(rules, min_severity="warning", debounce_seconds=60)
-        alerts = engine.evaluate_snapshot(blocked_snapshot)
-        assert len(alerts) == 1
-        assert alerts[0].rule_id == "risk_blocked"
-        assert alerts[0].severity == Severity.CRITICAL
 
-    def test_evaluate_multiple_alerts(self) -> None:
-        """Test Evaluation mit mehreren Alerts."""
-        # Snapshot mit blocked UND loss
-        snapshot = LiveRunSnapshot(
-            run_id="test",
-            mode="paper",
-            strategy_name="test",
-            symbol="BTC/EUR",
-            timeframe="1m",
-            started_at=datetime.now(timezone.utc) - timedelta(hours=1),
-            ended_at=None,
-            last_bar_time=datetime.now(timezone.utc) - timedelta(minutes=1),
-            last_price=40000.0,
-            position_size=0.1,
-            cash=8000.0,
-            equity=8500.0,
-            realized_pnl=-600.0,
-            unrealized_pnl=0.0,
-            total_steps=100,
-            total_orders=10,
-            total_blocked_orders=2,
-        )
-        rules = [
-            create_risk_blocked_rule(),
-            create_large_loss_abs_rule(threshold=-500.0),
-        ]
-        engine = AlertEngine(rules, min_severity="warning", debounce_seconds=60)
-        alerts = engine.evaluate_snapshot(snapshot)
-        assert len(alerts) == 2
+def test_stderr_alert_sink_critical(capfd, sample_alert_critical: AlertEvent):
+    """Testet StderrAlertSink mit CRITICAL-Level."""
+    sink = StderrAlertSink(min_level=AlertLevel.WARNING)
 
-    def test_severity_filter(self, blocked_snapshot: LiveRunSnapshot) -> None:
-        """Test Severity-Filter."""
-        rules = [
-            create_risk_blocked_rule(),  # critical
-        ]
-        # Min-Severity auf critical -> Alert sollte durchkommen
-        engine = AlertEngine(rules, min_severity="critical", debounce_seconds=60)
-        alerts = engine.evaluate_snapshot(blocked_snapshot)
-        assert len(alerts) == 1
+    sink.send(sample_alert_critical)
 
-    def test_debouncing(self, blocked_snapshot: LiveRunSnapshot) -> None:
-        """Test Debouncing."""
-        rules = [create_risk_blocked_rule()]
-        engine = AlertEngine(rules, min_severity="warning", debounce_seconds=60)
+    captured = capfd.readouterr()
+    assert "CRITICAL" in captured.err
+    assert "TEST_CRITICAL" in captured.err
 
-        # Erster Aufruf -> Alert
-        alerts1 = engine.evaluate_snapshot(blocked_snapshot)
-        assert len(alerts1) == 1
 
-        # Zweiter Aufruf (gleicher Run) -> kein Alert (debounced)
-        alerts2 = engine.evaluate_snapshot(blocked_snapshot)
-        assert len(alerts2) == 0
+def test_stderr_alert_sink_info_filtered(capfd, sample_alert_info: AlertEvent):
+    """Testet dass INFO-Alerts unterhalb min_level gefiltert werden."""
+    sink = StderrAlertSink(min_level=AlertLevel.WARNING)
 
-    def test_debouncing_different_runs(
-        self, blocked_snapshot: LiveRunSnapshot
-    ) -> None:
-        """Test Debouncing für verschiedene Runs."""
-        rules = [create_risk_blocked_rule()]
-        engine = AlertEngine(rules, min_severity="warning", debounce_seconds=60)
+    sink.send(sample_alert_info)
 
-        # Erster Run -> Alert
-        alerts1 = engine.evaluate_snapshot(blocked_snapshot)
-        assert len(alerts1) == 1
-
-        # Anderer Run -> auch Alert (unterschiedliche run_id)
-        other_snapshot = LiveRunSnapshot(
-            run_id="other_run",  # Andere Run-ID
-            mode="paper",
-            strategy_name="test",
-            symbol="BTC/EUR",
-            timeframe="1m",
-            started_at=None,
-            ended_at=None,
-            last_bar_time=datetime.now(timezone.utc),
-            last_price=40000.0,
-            position_size=0.1,
-            cash=9000.0,
-            equity=10000.0,
-            realized_pnl=0.0,
-            unrealized_pnl=0.0,
-            total_steps=100,
-            total_orders=10,
-            total_blocked_orders=5,
-        )
-        alerts2 = engine.evaluate_snapshot(other_snapshot)
-        assert len(alerts2) == 1
-
-    def test_reset_debounce(self, blocked_snapshot: LiveRunSnapshot) -> None:
-        """Test Debounce-Reset."""
-        rules = [create_risk_blocked_rule()]
-        engine = AlertEngine(rules, min_severity="warning", debounce_seconds=60)
-
-        # Erster Aufruf -> Alert
-        alerts1 = engine.evaluate_snapshot(blocked_snapshot)
-        assert len(alerts1) == 1
-
-        # Reset Debounce
-        engine.reset_debounce()
-
-        # Nochmal -> wieder Alert
-        alerts2 = engine.evaluate_snapshot(blocked_snapshot)
-        assert len(alerts2) == 1
+    captured = capfd.readouterr()
+    assert "TEST_INFO" not in captured.err
 
 
 # =============================================================================
-# Alert Logging Tests
+# MULTIALERTSINK TESTS
 # =============================================================================
 
 
-class TestAlertLogging:
-    """Tests für Alert-Logging."""
+def test_multi_alert_sink_forwards_to_all():
+    """Testet dass MultiAlertSink an alle Sinks weiterleitet."""
+    class CollectingSink:
+        def __init__(self) -> None:
+            self.events: list[AlertEvent] = []
 
-    def test_append_alerts_to_file(self, temp_run_dir: Path) -> None:
-        """Test Alerts in Datei schreiben."""
-        alerts = [
-            AlertEvent(
-                rule_id="test_rule",
-                severity="warning",
-                message="Test alert",
-                run_id="test_run",
-                timestamp=datetime.now(timezone.utc),
-            )
-        ]
-        append_alerts_to_file(temp_run_dir, alerts)
+        def send(self, alert: AlertEvent) -> None:
+            self.events.append(alert)
 
-        alerts_file = temp_run_dir / "alerts.jsonl"
-        assert alerts_file.exists()
+    sink1 = CollectingSink()
+    sink2 = CollectingSink()
+    multi = MultiAlertSink([sink1, sink2])
 
-        with open(alerts_file, "r") as f:
-            lines = f.readlines()
-        assert len(lines) == 1
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="Test",
+    )
 
-        data = json.loads(lines[0])
-        assert data["rule_id"] == "test_rule"
+    multi.send(alert)
 
-    def test_append_multiple_alerts(self, temp_run_dir: Path) -> None:
-        """Test mehrere Alerts anhängen."""
-        for i in range(3):
-            alerts = [
-                AlertEvent(
-                    rule_id=f"rule_{i}",
-                    severity="warning",
-                    message=f"Alert {i}",
-                    run_id="test_run",
-                    timestamp=datetime.now(timezone.utc),
-                )
-            ]
-            append_alerts_to_file(temp_run_dir, alerts)
+    assert len(sink1.events) == 1
+    assert len(sink2.events) == 1
+    assert sink1.events[0] == alert
+    assert sink2.events[0] == alert
 
-        alerts_file = temp_run_dir / "alerts.jsonl"
-        with open(alerts_file, "r") as f:
-            lines = f.readlines()
-        assert len(lines) == 3
 
-    def test_load_alerts_from_file(self, temp_run_dir: Path) -> None:
-        """Test Alerts aus Datei laden."""
-        # Alerts schreiben
-        original_alerts = [
-            AlertEvent(
-                rule_id="test_rule",
-                severity="warning",
-                message="Test alert",
-                run_id="test_run",
-                timestamp=datetime.now(timezone.utc),
-            )
-        ]
-        append_alerts_to_file(temp_run_dir, original_alerts)
+def test_multi_alert_sink_exception_handling(caplog):
+    """Testet dass MultiAlertSink Exceptions in Sinks abfängt."""
+    class FailingSink:
+        def send(self, alert: AlertEvent) -> None:
+            raise Exception("Test exception")
 
-        # Alerts laden
-        loaded = load_alerts_from_file(temp_run_dir)
-        assert len(loaded) == 1
-        assert loaded[0].rule_id == "test_rule"
-        assert loaded[0].message == "Test alert"
+    class WorkingSink:
+        def __init__(self) -> None:
+            self.events: list[AlertEvent] = []
 
-    def test_load_alerts_with_limit(self, temp_run_dir: Path) -> None:
-        """Test Alerts laden mit Limit."""
-        # 5 Alerts schreiben
-        for i in range(5):
-            alerts = [
-                AlertEvent(
-                    rule_id=f"rule_{i}",
-                    severity="warning",
-                    message=f"Alert {i}",
-                    run_id="test_run",
-                    timestamp=datetime.now(timezone.utc),
-                )
-            ]
-            append_alerts_to_file(temp_run_dir, alerts)
+        def send(self, alert: AlertEvent) -> None:
+            self.events.append(alert)
 
-        # Nur letzte 3 laden
-        loaded = load_alerts_from_file(temp_run_dir, limit=3)
-        assert len(loaded) == 3
+    failing = FailingSink()
+    working = WorkingSink()
+    multi = MultiAlertSink([failing, working])
 
-    def test_load_alerts_empty_file(self, temp_run_dir: Path) -> None:
-        """Test Laden aus nicht existierender Datei."""
-        loaded = load_alerts_from_file(temp_run_dir)
-        assert len(loaded) == 0
+    alert = AlertEvent(
+        ts=datetime.now(timezone.utc),
+        level=AlertLevel.WARNING,
+        source="test",
+        code="TEST",
+        message="Test",
+    )
+
+    # Sollte nicht crashen
+    multi.send(alert)
+
+    # Working-Sink sollte trotzdem aufgerufen worden sein
+    assert len(working.events) == 1
+
+    # Exception sollte geloggt worden sein
+    assert any("Failed to send alert" in record.message for record in caplog.records)
 
 
 # =============================================================================
-# Factory Tests
+# LIVEALERTSCONFIG TESTS
 # =============================================================================
 
 
-class TestAlertEngineFactory:
-    """Tests für create_alert_engine_from_config."""
+def test_live_alerts_config_from_dict_defaults():
+    """Testet LiveAlertsConfig.from_dict mit Defaults."""
+    config = LiveAlertsConfig.from_dict({})
 
-    def test_create_from_config_enabled(self) -> None:
-        """Test Factory mit aktivierten Alerts."""
-        class MockConfig:
-            def get(self, path: str, default: Any = None) -> Any:
-                values = {
-                    "alerts.enabled": True,
-                    "alerts.min_severity": "warning",
-                    "alerts.debounce_seconds": 60,
-                    "alerts.rules.enable_risk_blocked": True,
-                    "alerts.rules.enable_large_loss_abs": True,
-                    "alerts.rules.large_loss_abs_threshold": -500.0,
-                    "alerts.rules.enable_large_loss_pct": True,
-                    "alerts.rules.large_loss_pct_threshold": -10.0,
-                    "alerts.rules.enable_drawdown": False,
-                    "alerts.rules.drawdown_threshold": -15.0,
-                }
-                return values.get(path, default)
+    assert config.enabled is True
+    assert config.min_level == AlertLevel.WARNING
+    assert config.sinks == ["log"]
+    assert config.log_logger_name == "peak_trade.live.alerts"
 
-        engine = create_alert_engine_from_config(MockConfig())
-        assert engine is not None
-        assert len(engine.rules) >= 3  # risk_blocked, loss_abs, loss_pct, no_events
 
-    def test_create_from_config_disabled(self) -> None:
-        """Test Factory mit deaktivierten Alerts."""
-        class MockConfig:
-            def get(self, path: str, default: Any = None) -> Any:
-                if path == "alerts.enabled":
-                    return False
-                return default
+def test_live_alerts_config_from_dict_custom():
+    """Testet LiveAlertsConfig.from_dict mit Custom-Werten."""
+    config = LiveAlertsConfig.from_dict({
+        "enabled": False,
+        "min_level": "critical",
+        "sinks": ["log", "stderr"],
+        "log_logger_name": "custom.logger",
+    })
 
-        engine = create_alert_engine_from_config(MockConfig())
-        assert engine is None
+    assert config.enabled is False
+    assert config.min_level == AlertLevel.CRITICAL
+    assert config.sinks == ["log", "stderr"]
+    assert config.log_logger_name == "custom.logger"
+
+
+def test_live_alerts_config_from_dict_level_info():
+    """Testet LiveAlertsConfig.from_dict mit level='info'."""
+    config = LiveAlertsConfig.from_dict({"min_level": "info"})
+
+    assert config.min_level == AlertLevel.INFO
+
+
+def test_live_alerts_config_from_dict_sinks_string():
+    """Testet LiveAlertsConfig.from_dict mit sinks als String."""
+    config = LiveAlertsConfig.from_dict({"sinks": "stderr"})
+
+    assert config.sinks == ["stderr"]
 
 
 # =============================================================================
-# Render Tests
+# BUILD_ALERT_SINK_FROM_CONFIG TESTS
 # =============================================================================
 
 
-class TestRenderAlerts:
-    """Tests für render_alerts."""
+def test_build_alert_sink_from_config_disabled():
+    """Testet build_alert_sink_from_config mit enabled=False."""
+    config = LiveAlertsConfig(enabled=False)
+    sink = build_alert_sink_from_config(config)
 
-    def test_render_empty(self) -> None:
-        """Test Render ohne Alerts."""
-        output = render_alerts([])
-        assert output == ""
+    assert sink is None
 
-    def test_render_single_alert(self) -> None:
-        """Test Render mit einem Alert."""
-        alerts = [
-            AlertEvent(
-                rule_id="test_rule",
-                severity="warning",
-                message="Test alert message",
-                run_id="test_run",
-                timestamp=datetime.now(timezone.utc),
-            )
-        ]
-        output = render_alerts(alerts, use_colors=False)
-        assert "ALERTS" in output
-        assert "test_rule" in output
-        assert "Test alert message" in output
 
-    def test_render_multiple_alerts(self) -> None:
-        """Test Render mit mehreren Alerts."""
-        alerts = [
-            AlertEvent(
-                rule_id="rule_1",
-                severity="warning",
-                message="Warning message",
-                run_id="test_run",
-                timestamp=datetime.now(timezone.utc),
-            ),
-            AlertEvent(
-                rule_id="rule_2",
-                severity="critical",
-                message="Critical message",
-                run_id="test_run",
-                timestamp=datetime.now(timezone.utc),
-            ),
-        ]
-        output = render_alerts(alerts, use_colors=False)
-        assert "rule_1" in output
-        assert "rule_2" in output
-        assert "(2)" in output  # Anzahl
+def test_build_alert_sink_from_config_log_sink():
+    """Testet build_alert_sink_from_config mit 'log' Sink."""
+    config = LiveAlertsConfig(enabled=True, sinks=["log"])
+    sink = build_alert_sink_from_config(config)
+
+    assert sink is not None
+    assert isinstance(sink, LoggingAlertSink)
+
+
+def test_build_alert_sink_from_config_stderr_sink():
+    """Testet build_alert_sink_from_config mit 'stderr' Sink."""
+    config = LiveAlertsConfig(enabled=True, sinks=["stderr"])
+    sink = build_alert_sink_from_config(config)
+
+    assert sink is not None
+    assert isinstance(sink, StderrAlertSink)
+
+
+def test_build_alert_sink_from_config_multi_sink():
+    """Testet build_alert_sink_from_config mit mehreren Sinks."""
+    config = LiveAlertsConfig(enabled=True, sinks=["log", "stderr"])
+    sink = build_alert_sink_from_config(config)
+
+    assert sink is not None
+    assert isinstance(sink, MultiAlertSink)
+
+
+def test_build_alert_sink_from_config_unknown_sink(caplog):
+    """Testet build_alert_sink_from_config mit unbekanntem Sink."""
+    config = LiveAlertsConfig(enabled=True, sinks=["unknown_sink"])
+    sink = build_alert_sink_from_config(config)
+
+    # Sollte None zurückgeben, da keine gültigen Sinks
+    assert sink is None
+
+    # Warnung sollte geloggt worden sein
+    assert any("Unknown alert sink name" in record.message for record in caplog.records)
+
+
+def test_build_alert_sink_from_config_empty_sinks():
+    """Testet build_alert_sink_from_config mit leerer Sinks-Liste."""
+    config = LiveAlertsConfig(enabled=True, sinks=[])
+    sink = build_alert_sink_from_config(config)
+
+    assert sink is None

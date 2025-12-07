@@ -49,8 +49,8 @@ Config-Beispiel (config.toml):
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence
+from datetime import date, datetime, timezone
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Sequence
 
 import pandas as pd
 
@@ -59,6 +59,7 @@ from src.core.peak_config import PeakConfig
 from src.live.orders import LiveOrderRequest
 
 if TYPE_CHECKING:
+    from src.live.alerts import AlertLevel, AlertSink
     from src.live.portfolio_monitor import LivePortfolioSnapshot
 
 
@@ -104,9 +105,14 @@ class LiveRiskLimits:
       - nur Einträge vom heutigen Tag (UTC-Datum) werden berücksichtigt.
     """
 
-    def __init__(self, config: LiveRiskConfig) -> None:
+    def __init__(
+        self,
+        config: LiveRiskConfig,
+        alert_sink: Optional["AlertSink"] = None,
+    ) -> None:
         self.config = config
         self._starting_cash: Optional[float] = None
+        self._alert_sink = alert_sink
 
     # ---------- Konstruktor aus PeakConfig ----------
 
@@ -115,6 +121,7 @@ class LiveRiskLimits:
         cls,
         cfg: PeakConfig,
         starting_cash: Optional[float] = None,
+        alert_sink: Optional["AlertSink"] = None,
     ) -> "LiveRiskLimits":
         base_currency = str(cfg.get("live.base_currency", "EUR"))
 
@@ -172,7 +179,7 @@ class LiveRiskLimits:
             block_on_violation=block_on_violation,
             use_experiments_for_daily_pnl=use_experiments_for_daily_pnl,
         )
-        obj = cls(cfg_obj)
+        obj = cls(cfg_obj, alert_sink=alert_sink)
         obj._starting_cash = starting_cash
         return obj
 
@@ -390,11 +397,78 @@ class LiveRiskLimits:
             "live_risk_enabled": True,
         }
 
-        return LiveRiskCheckResult(
+        result = LiveRiskCheckResult(
             allowed=allowed,
             reasons=reasons,
             metrics=metrics,
         )
+
+        # Alert bei Violation
+        if not result.allowed:
+            self._emit_risk_alert(
+                result,
+                source="live_risk.orders",
+                code="RISK_LIMIT_VIOLATION_ORDERS",
+                message="Live risk limit violation for proposed order batch.",
+                extra_context={
+                    "num_orders": n_orders,
+                    "num_symbols": n_symbols,
+                },
+            )
+
+        return result
+
+    # ---------- Alert-Helper (Phase 49) ----------
+
+    def _emit_risk_alert(
+        self,
+        result: LiveRiskCheckResult,
+        source: str,
+        code: str,
+        message: str,
+        extra_context: Mapping[str, Any] | None = None,
+        level: Optional["AlertLevel"] = None,
+    ) -> None:
+        """
+        Sendet einen Risk-Alert (falls Alert-Sink konfiguriert).
+
+        Args:
+            result: LiveRiskCheckResult
+            source: Alert-Source (z.B. "live_risk.orders", "live_risk.portfolio")
+            code: Alert-Code (z.B. "RISK_LIMIT_VIOLATION_ORDERS")
+            message: Alert-Message
+            extra_context: Zusätzliche Context-Daten
+            level: Alert-Level (None = Auto-basiert auf block_on_violation)
+        """
+        if self._alert_sink is None:
+            return
+
+        # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
+        from src.live.alerts import AlertEvent, AlertLevel
+
+        if level is None:
+            # Standard-Regel:
+            # - BLOCK-on-violation + not allowed → CRITICAL
+            # - sonst: WARNING
+            if not result.allowed and self.config.block_on_violation:
+                level = AlertLevel.CRITICAL
+            else:
+                level = AlertLevel.WARNING
+
+        context: dict[str, Any] = {}
+        context.update(result.metrics or {})
+        if extra_context:
+            context.update(extra_context)
+
+        alert = AlertEvent(
+            ts=datetime.now(timezone.utc),
+            level=level,
+            source=source,
+            code=code,
+            message=message,
+            context=context,
+        )
+        self._alert_sink.send(alert)
 
     # ---------- Portfolio-Level Risk-Checks (Phase 48) ----------
 
@@ -526,8 +600,24 @@ class LiveRiskLimits:
         if snapshot.margin_used is not None:
             metrics["portfolio_margin_used"] = snapshot.margin_used
 
-        return LiveRiskCheckResult(
+        result = LiveRiskCheckResult(
             allowed=allowed,
             reasons=reasons,
             metrics=metrics,
         )
+
+        # Alert bei Violation
+        if not result.allowed:
+            self._emit_risk_alert(
+                result,
+                source="live_risk.portfolio",
+                code="RISK_LIMIT_VIOLATION_PORTFOLIO",
+                message="Live risk limit violation for current portfolio snapshot.",
+                extra_context={
+                    "as_of": snapshot.as_of.isoformat(),
+                    "total_notional": snapshot.total_notional,
+                    "num_open_positions": snapshot.num_open_positions,
+                },
+            )
+
+        return result

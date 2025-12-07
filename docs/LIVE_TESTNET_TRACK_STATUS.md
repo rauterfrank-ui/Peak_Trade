@@ -3,7 +3,7 @@
 Dieses Dokument fasst den aktuellen Status des **Live-/Shadow-/Testnet-Tracks** von Peak_Trade zusammen.
 Ziel ist eine schnelle Einschätzung der **technischen Reife**, der **operativen Readiness** und der noch offenen Themen.
 
-Stand: 2025-12-07
+Stand: 2025-12-07 (nach Phase 49)
 
 ---
 
@@ -16,10 +16,11 @@ Stand: 2025-12-07
 | Order-/Execution-Layer & Exchange-Anbindung | 85%      |
 | Shadow-/Paper-/Testnet-Orchestrierung       | 85%      |
 | Run-Logging & Live-Reporting                | 90%      |
-| Live-/Portfolio-Monitoring & Risk Bridge    | 90%      |
+| Live-/Portfolio-Monitoring & Risk Bridge    | 95%      |
+| Live Alerts & Notifications                 | 90%      |
 | Governance, Runbooks & Checklisten          | 90%      |
-| CLI-Tooling für Live-/Testnet-Operationen   | 85%      |
-| **Gesamt Live-/Testnet-Track**              | **~89%** |
+| CLI-Tooling für Live-/Testnet-Operationen   | 90%      |
+| **Gesamt Live-/Testnet-Track**              | **~91%** |
 
 Interpretation:
 
@@ -27,8 +28,8 @@ Interpretation:
 * 80–90%: solide, einsatzbereit mit bewussten Limitierungen
 * > 90%: stabiler Kern, nur noch Feintuning / Komfort / Edge-Cases offen
 
-Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~89%** –
-**funktional einsatzbereit**, aber bewusst konservativ gehalten bei Automatisierung, Alerts und Operator-Komfort.
+Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~91%** –
+**funktional einsatzbereit** mit integriertem Alert-System für Risk-Violations.
 
 ---
 
@@ -166,7 +167,7 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~89%** –
 
 ---
 
-## 7. Live-/Portfolio-Monitoring & Risk Bridge (≈ 90%)
+## 7. Live-/Portfolio-Monitoring & Risk Bridge (≈ 95%)
 
 **Kernkomponenten (Phase 48):**
 
@@ -231,8 +232,60 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~89%** –
 
 **Offen / später sinnvoll:**
 
-* Alerts/Notifications (z.B. Slack/Webhook/Email) bei Limit-Verletzungen.
 * Persistente Historie von Portfolio-Snapshots (z.B. für Zeitreihen-Analysen).
+
+---
+
+## 7a. Live Alerts & Notifications (≈ 90%)
+
+**Kernkomponenten (Phase 49):**
+
+* `src/live/alerts.py`:
+
+  * `AlertLevel` (INFO, WARNING, CRITICAL)
+  * `AlertEvent` Dataclass
+  * `AlertSink` Protocol mit Standard-Implementierungen:
+    * `LoggingAlertSink` (Python-Logging)
+    * `StderrAlertSink` (stderr)
+    * `MultiAlertSink` (Weiterleitung an mehrere Sinks)
+  * `LiveAlertsConfig` für Konfiguration
+  * `build_alert_sink_from_config()` Factory
+
+* `src/live/risk_limits.py`:
+
+  * `_emit_risk_alert()` Helper-Methode
+  * Integration in `check_orders()` und `evaluate_portfolio()`
+
+* Konfiguration in `config/config.toml`:
+
+  ```toml
+  [live_alerts]
+  enabled = true
+  min_level = "warning"
+  sinks = ["log"]
+  ```
+
+* Tests:
+
+  * `tests/test_live_alerts.py` (27 Tests)
+  * `tests/test_live_risk_alert_integration.py` (7 Tests)
+
+* Doku:
+
+  * `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md`
+
+**Stärken:**
+
+* Leichtgewichtiges, erweiterbares Alert-System.
+* Protocol-basiertes Sink-Interface für einfache Erweiterung.
+* Automatische Alert-Emission bei Risk-Violations.
+* Nicht-blockierend: Alerts dürfen den Live-Betrieb nicht stören.
+
+**Offen / später sinnvoll:**
+
+* Externe Notification-Sinks (Slack, E-Mail, Discord, PagerDuty).
+* Alert-Deduplizierung und Throttling.
+* Persistente Alert-Historie.
 
 ---
 
@@ -282,18 +335,19 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~89%** –
 
 ## 10. Gesamtbewertung & nächste Schritte
 
-Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈ 89%**:
+Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈ 91%**:
 
 * Technisch weitgehend komplett.
 * Safety- und Governance-Schicht etabliert.
-* Monitoring & Risk-Bridge bis auf Alerts fertig.
+* Monitoring, Risk-Bridge und Alert-System fertig.
 
 **Naheliegende nächste Schritte:**
 
-1. Alerts & Notifications (Phase X):
+1. Externe Alert-Sinks (Phase X):
 
-   * Integration von `LiveRiskCheckResult` und Portfolio-Snapshots in ein Alerting-Interface.
-   * Konfigurierbare Sinks (Log, Email, Slack/Webhook).
+   * Slack-Webhook-Integration.
+   * E-Mail-Sink (SMTP).
+   * PagerDuty/Discord-Integration.
 
 2. Operator-UX:
 
@@ -306,12 +360,18 @@ Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈
    * Komplexere Order-Typen.
    * Performance-/Resilienz-Optimierungen.
 
+4. Alert-Enhancements:
+
+   * Alert-Deduplizierung und Throttling.
+   * Persistente Alert-Historie für Audits.
+
 ---
 
 ## Änderungshistorie
 
 | Datum      | Änderung                                                    |
 |------------|-------------------------------------------------------------|
+| 2025-12-07 | Update nach Abschluss Phase 49 (Live Alerts & Notifications)|
 | 2025-12-07 | Initiale Version nach Abschluss Phase 48                    |
 
 ---
