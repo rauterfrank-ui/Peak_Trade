@@ -25,8 +25,9 @@ ENV/
 .DS_Store
 
 # Data & Results (NIEMALS ins Repo!)
-data/
-results/
+# Nur Root-Level data/ ignorieren, nicht src/data/ (Code-Module)
+/data/
+/results/
 *.csv
 *.parquet
 *.h5
