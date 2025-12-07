@@ -272,18 +272,23 @@ Ein Monte-Carlo-Report enthält:
 
 ---
 
-## 7. Stress-Tests (Optional)
+## 7. Stress-Tests
 
-### 7.1 Platzhalter für zukünftige Erweiterungen
+### 7.1 Status
 
-Phase 45 fokussiert auf Bootstrap-basierte Robustheit. Erweiterte Stress-Tests könnten in späteren Phasen hinzugefügt werden:
+**Monte-Carlo** (Phase 45) fokussiert auf Bootstrap-basierte Robustheit durch statistisches Resampling.
 
-- **Volatilitäts-Shocks:** Erhöhe Volatilität um X% in allen Runs
-- **Crash-Szenarien:** Füge extreme negative Returns hinzu
-- **Regime-Wechsel:** Simuliere abrupte Marktregime-Änderungen
-- **Correlation-Breakdown:** Ändere Korrelationen zwischen Assets
+**Stress-Tests** (Phase 46) sind in einer separaten Phase implementiert und fokussieren auf deterministische Szenario-Transformationen (Crash-Szenarien, Vol-Spikes, etc.).
 
-**Hinweis:** Diese Features sind aktuell nicht implementiert, aber die Architektur ist erweiterbar.
+Siehe: [PHASE_46_STRESS_TESTS_AND_CRASH_SCENARIOS.md](PHASE_46_STRESS_TESTS_AND_CRASH_SCENARIOS.md) für Details.
+
+### 7.2 Unterschied
+
+| Aspekt | Monte-Carlo (Phase 45) | Stress-Tests (Phase 46) |
+|--------|------------------------|------------------------|
+| **Methode** | Bootstrap-Resampling | Deterministische Transformationen |
+| **Frage** | "Wie unsicher sind die Kennzahlen?" | "Was passiert bei einem Crash?" |
+| **Output** | Verteilungen & Quantilen | Baseline vs. Szenario-Vergleiche |
 
 ---
 

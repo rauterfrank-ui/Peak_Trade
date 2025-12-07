@@ -534,7 +534,9 @@ Phase 44 ist die Basis für weitere Robustness-Analysen:
 - **Monte-Carlo-Simulationen** ✅ (Phase 45): Bootstrapped Sharpe-Ratio-Konfidenzintervalle, statistische Unsicherheitsquantifizierung
   - **Siehe:** `docs/PHASE_45_MONTE_CARLO_ROBUSTNESS_AND_STRESS_TESTS.md` für Details
   - **Abgrenzung:** Walk-Forward testet zeitliche Robustheit, Monte-Carlo testet statistische Robustheit
-- **Erweiterte Stress-Tests**: Vol-Spikes, Flash-Crashes, Liquidity-Dry-ups (zukünftig)
+- **Stress-Tests & Crash-Szenarien** ✅ (Phase 46): Deterministische Szenario-Transformationen, Baseline vs. Szenario-Vergleiche
+  - **Siehe:** `docs/PHASE_46_STRESS_TESTS_AND_CRASH_SCENARIOS.md` für Details
+  - **Abgrenzung:** Walk-Forward (zeitlich), Monte-Carlo (statistisch), Stress-Tests (Szenario-Shocks)
 - **Regime-basierte Analyse**: Walk-Forward getrennt nach Marktregimen (zukünftig)
 
 Siehe `docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md` für Details zur Research-Roadmap.
@@ -547,6 +549,7 @@ Siehe `docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md` für Details zur
 - **Phase 42**: `docs/PHASE_42_TOPN_PROMOTION.md`
 - **Phase 43**: `docs/PHASE_43_VISUALIZATION_AND_SWEEP_DASHBOARDS.md`
 - **Phase 45**: `docs/PHASE_45_MONTE_CARLO_ROBUSTNESS_AND_STRESS_TESTS.md` (Monte-Carlo-Robustness)
+- **Phase 46**: `docs/PHASE_46_STRESS_TESTS_AND_CRASH_SCENARIOS.md` (Stress-Tests & Crash-Szenarien)
 - **Research Roadmap**: `docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md`
 - **Research ToDo**: `docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md`
 

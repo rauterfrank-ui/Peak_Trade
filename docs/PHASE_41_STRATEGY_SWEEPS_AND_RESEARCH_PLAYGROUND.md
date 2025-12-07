@@ -689,6 +689,8 @@ Nach Phase 43:
    - **Siehe:** `docs/PHASE_44_WALKFORWARD_TESTING.md` für Details zum Walk-Forward-Workflow
 2. **Monte-Carlo-Simulation**: Robustness-Testing
    - **Siehe:** `docs/PHASE_45_MONTE_CARLO_ROBUSTNESS_AND_STRESS_TESTS.md` für Details zur Monte-Carlo-Robustness-Analyse ✅ (Phase 45 implementiert)
+3. **Stress-Tests & Crash-Szenarien**: Szenario-basierte Robustness-Tests
+   - **Siehe:** `docs/PHASE_46_STRESS_TESTS_AND_CRASH_SCENARIOS.md` für Details zu Stress-Tests ✅ (Phase 46 implementiert)
 3. **Live-Deployment**: Beste Strategien in Testnet/Live übernehmen
 
 ---
