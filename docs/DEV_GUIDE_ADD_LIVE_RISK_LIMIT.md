@@ -398,3 +398,4 @@ Füge einen Satz in `ARCHITECTURE_OVERVIEW.md` im Risk-Teil hinzu:
 - `docs/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md` – Alert-System
 - `docs/SAFETY_POLICY_TESTNET_AND_LIVE.md` – Safety-Policy
 
+

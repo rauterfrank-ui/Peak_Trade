@@ -358,3 +358,4 @@ def build_stress_test_report(
         paths["html"] = html_path
 
     return paths
+

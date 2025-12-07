@@ -129,6 +129,21 @@ class LiveRiskConfig:
 - Blockiert echte Orders technisch
 - Selbst wenn alle Flags gesetzt sind, blockiert `live_dry_run_mode=True` echte Orders
 
+**Zentrale Helper-Funktion: `is_live_execution_allowed()`**
+
+Die Funktion `is_live_execution_allowed(env_config)` in `src/live/safety.py` definiert
+die **vollständigen Kriterien** für echte Live-Execution:
+
+```python
+from src.live.safety import is_live_execution_allowed
+
+allowed, reason = is_live_execution_allowed(env_config)
+# In Phase 71: allowed wird immer False sein wegen live_dry_run_mode=True
+```
+
+Diese Funktion dient der **Dokumentation des Designs** und macht die Gating-Logik
+explizit und testbar.
+
 ### 3.2 SafetyGuard-Integration
 
 `SafetyGuard.ensure_may_place_order()` prüft:
@@ -264,6 +279,8 @@ Bevor echte Live-Orders denkbar wären, müssen folgende Bedingungen erfüllt se
 - ✅ `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
 - ✅ Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
 - ✅ Zweistufiges Gating (`enable_live_trading` + `live_mode_armed`)
+- ✅ Zentrale Helper-Funktion `is_live_execution_allowed()` für klare Gating-Logik
+- ✅ Explizites Logging mit "[LIVE-DRY-RUN]" und "[SAFETY]" Tags
 - ✅ Live-spezifische Limits in Config modelliert
 - ✅ Tests für Design & Gating hinzugefügt
 - ✅ Dokumentation aktualisiert

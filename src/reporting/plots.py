@@ -580,3 +580,231 @@ def save_equity_with_regimes(
     plt.close(fig)
 
     return str(output_path)
+
+
+def save_equity_with_regime_overlay(
+    equity_curve: pd.Series,
+    regime_series: pd.Series,
+    output_path: Union[str, Path],
+    title: Optional[str] = "Equity Curve with Regime Overlay",
+    dpi: int = DEFAULT_DPI,
+) -> str:
+    """
+    Speichert Equity-Curve mit farbigen Hintergrund-Bändern für Regime-Perioden.
+
+    Optimiert für numerische Regime-Werte:
+    - 1 = Risk-On (grün)
+    - 0 = Neutral (grau)
+    - -1 = Risk-Off (rot)
+
+    Args:
+        equity_curve: Equity-Series
+        regime_series: Series mit numerischen Regime-Werten (1/0/-1)
+        output_path: Pfad für die PNG-Datei
+        title: Plot-Titel
+        dpi: Auflösung
+
+    Returns:
+        Pfad zur gespeicherten PNG-Datei
+
+    Example:
+        >>> equity = pd.Series([10000, 10100, 10050, 10200])
+        >>> regimes = pd.Series([1, 1, 0, -1])  # Risk-On, Risk-On, Neutral, Risk-Off
+        >>> path = save_equity_with_regime_overlay(equity, regimes, "reports/equity_regime.png")
+    """
+    if not MATPLOTLIB_AVAILABLE:
+        raise ImportError("Matplotlib is required for plotting")
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Regime-Farben für numerische Werte
+    regime_colors = {
+        1: "#c8e6c9",   # light green (Risk-On)
+        0: "#e0e0e0",   # light gray (Neutral)
+        -1: "#ffcdd2",  # light red (Risk-Off)
+    }
+    regime_labels = {
+        1: "Risk-On",
+        0: "Neutral",
+        -1: "Risk-Off",
+    }
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Equity-Kurve
+    ax.plot(
+        equity_curve.index,
+        equity_curve.values,
+        color=COLORS["primary"],
+        linewidth=1.5,
+        zorder=10,
+        label="Equity",
+    )
+
+    # Aligniere Regime-Series mit Equity-Index
+    regime_aligned = regime_series.reindex(equity_curve.index, method="ffill").fillna(0).astype(int)
+
+    # Regime-Bänder im Hintergrund
+    unique_regimes = sorted(regime_aligned.unique())
+    legend_handles = []
+
+    for regime_val in unique_regimes:
+        mask = regime_aligned == regime_val
+        if not mask.any():
+            continue
+
+        # Finde Regime-Perioden (Start/Ende)
+        regime_changes = mask.astype(int).diff().fillna(0)
+        starts = equity_curve.index[regime_changes == 1].tolist()
+        ends = equity_curve.index[regime_changes == -1].tolist()
+
+        # Falls am Anfang aktiv, füge Start hinzu
+        if mask.iloc[0]:
+            starts = [equity_curve.index[0]] + starts
+        # Falls am Ende aktiv, füge Ende hinzu
+        if mask.iloc[-1]:
+            ends = ends + [equity_curve.index[-1]]
+
+        # Zeichne Bänder
+        color = regime_colors.get(regime_val, "#e0e0e0")
+        label = regime_labels.get(regime_val, f"Regime {regime_val}")
+
+        # Paare Start/Ende
+        for i, start in enumerate(starts):
+            if i < len(ends):
+                end = ends[i]
+            else:
+                end = equity_curve.index[-1]
+
+            # Nur zeichnen wenn Start < End
+            if start <= end:
+                ax.axvspan(start, end, alpha=0.2, color=color, zorder=0)
+
+        # Legend-Eintrag (nur einmal)
+        if starts:
+            legend_handles.append(plt.Rectangle((0, 0), 1, 1, alpha=0.2, color=color, label=label))
+
+    # Legend
+    if legend_handles:
+        ax.legend(handles=legend_handles, loc="upper left")
+
+    if title:
+        ax.set_title(title)
+    ax.set_ylabel("Equity")
+    ax.grid(True, alpha=0.3)
+
+    if isinstance(equity_curve.index, pd.DatetimeIndex):
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+        plt.xticks(rotation=45)
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
+def save_regime_contribution_bars(
+    regime_stats: Any,
+    output_path: Union[str, Path],
+    title: Optional[str] = "Return Contribution by Regime",
+    dpi: int = DEFAULT_DPI,
+) -> str:
+    """
+    Speichert einen Balken-Plot der Return-Contribution pro Regime.
+
+    Args:
+        regime_stats: RegimeStatsSummary mit Buckets (aus regime_reporting)
+        output_path: Pfad für die PNG-Datei
+        title: Plot-Titel
+        dpi: Auflösung
+
+    Returns:
+        Pfad zur gespeicherten PNG-Datei
+
+    Example:
+        >>> from src.reporting.regime_reporting import RegimeStatsSummary, RegimeBucketMetrics
+        >>> stats = RegimeStatsSummary(
+        ...     buckets=[
+        ...         RegimeBucketMetrics(..., return_contribution_pct=60.0, name="Risk-On"),
+        ...         RegimeBucketMetrics(..., return_contribution_pct=30.0, name="Neutral"),
+        ...         RegimeBucketMetrics(..., return_contribution_pct=10.0, name="Risk-Off"),
+        ...     ],
+        ...     overall_return=0.15,
+        ...     overall_sharpe=1.5,
+        ... )
+        >>> path = save_regime_contribution_bars(stats, "reports/contribution.png")
+    """
+    if not MATPLOTLIB_AVAILABLE:
+        raise ImportError("Matplotlib is required for plotting")
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Extrahiere Labels und Werte
+    labels: List[str] = []
+    values: List[float] = []
+
+    for bucket in regime_stats.buckets:
+        contrib = bucket.return_contribution_pct
+        if contrib is None:
+            continue
+        labels.append(bucket.name)
+        values.append(float(contrib))
+
+    if not labels:
+        # Wenn nichts sinnvoll geplottet werden kann, erstelle leeren Plot mit Hinweis
+        fig, ax = plt.subplots(figsize=(8, 4))
+        ax.text(0.5, 0.5, "No contribution data available", ha="center", va="center", transform=ax.transAxes)
+        ax.set_title(title or "Return Contribution by Regime")
+        plt.tight_layout()
+        plt.savefig(output_path, dpi=dpi, bbox_inches="tight")
+        plt.close(fig)
+        return str(output_path)
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    # Farben basierend auf Regime-Namen
+    colors = []
+    for label in labels:
+        if "Risk-On" in label or "risk_on" in label.lower():
+            colors.append(COLORS["success"])  # Grün
+        elif "Risk-Off" in label or "risk_off" in label.lower():
+            colors.append(COLORS["danger"])  # Rot
+        elif "Neutral" in label or "neutral" in label.lower():
+            colors.append(COLORS["secondary"])  # Grau
+        else:
+            colors.append(COLORS["primary"])  # Blau
+
+    bars = ax.bar(labels, values, color=colors, alpha=0.7, edgecolor="black", linewidth=1)
+
+    # Werte auf Balken anzeigen
+    for bar, value in zip(bars, values):
+        height = bar.get_height()
+        ax.text(
+            bar.get_x() + bar.get_width() / 2.0,
+            height + (1 if height >= 0 else -3),
+            f"{value:.1f}%",
+            ha="center",
+            va="bottom" if height >= 0 else "top",
+            fontsize=10,
+            fontweight="bold",
+        )
+
+    ax.set_ylabel("Return Contribution [%]")
+    ax.set_xlabel("Regime")
+    if title:
+        ax.set_title(title)
+
+    # Nulllinie
+    ax.axhline(0.0, color="black", linestyle="--", linewidth=0.8, alpha=0.5)
+
+    ax.grid(True, alpha=0.3, axis="y")
+    ax.set_axisbelow(True)
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)

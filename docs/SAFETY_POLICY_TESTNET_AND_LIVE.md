@@ -284,6 +284,7 @@ Diese Policy gilt für alle Nutzer und Entwickler von Peak_Trade, die an der Ent
    - Erfüllt das `OrderExecutor`-Interface
    - Macht nur Logging und legt Events ab
    - Sendet **keine echten Orders** an Exchange-APIs
+   - Explizites Logging mit "[LIVE-DRY-RUN]" und "[SAFETY]" Tags
 
 2. **Execution-Pfade klar getrennt:**
    - `PaperExecutionPath` → `PaperOrderExecutor`
@@ -295,6 +296,7 @@ Diese Policy gilt für alle Nutzer und Entwickler von Peak_Trade, die an der Ent
    - Gate 1: `enable_live_trading = True`
    - Gate 2: `live_mode_armed = True` (Phase 71: zusätzliches Gate)
    - `live_dry_run_mode = True` blockt echte Orders (Phase 71: immer True)
+   - Zentrale Helper-Funktion `is_live_execution_allowed()` definiert alle Kriterien
 
 4. **Live-spezifische Limits modelliert:**
    - `max_live_notional_per_order`

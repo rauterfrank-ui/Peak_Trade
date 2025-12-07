@@ -42,14 +42,18 @@ class VolRegimeFilter(BaseStrategy):
 
     Args:
         vol_window: Fenster für Volatilitäts-Berechnung (default: 20)
-        vol_method: Methode ("atr", "std", "realized") (default: "atr")
+        vol_method: Methode ("atr", "std", "realized", "range") (default: "atr")
         min_vol: Minimale Volatilität für Trading (default: None)
         max_vol: Maximale Volatilität für Trading (default: None)
+        low_vol_threshold: Low-Vol-Schwellwert für Regime = 1 (Risk-On) (default: None)
+        high_vol_threshold: High-Vol-Schwellwert für Regime = -1 (Risk-Off) (default: None)
+        min_bars: Minimum an Bars vor Klassifikation (default: 30)
         atr_threshold: Alternative: ATR muss > Threshold sein (default: None)
         vol_percentile_low: Trading bei Vol > X. Perzentil (default: None)
         vol_percentile_high: Trading bei Vol < X. Perzentil (default: None)
         lookback_percentile: Lookback für Perzentil-Berechnung (default: 100)
         invert: Wenn True, invertiert die Logik (default: False)
+        regime_mode: Wenn True, gibt Regime-Signale zurück (1/-1/0) statt Filter (1/0) (default: False)
         config: Optional Config-Dict
         metadata: Optional StrategyMetadata
 
@@ -75,11 +79,15 @@ class VolRegimeFilter(BaseStrategy):
         vol_method: str = "atr",
         min_vol: Optional[float] = None,
         max_vol: Optional[float] = None,
+        low_vol_threshold: Optional[float] = None,
+        high_vol_threshold: Optional[float] = None,
+        min_bars: int = 30,
         atr_threshold: Optional[float] = None,
         vol_percentile_low: Optional[float] = None,
         vol_percentile_high: Optional[float] = None,
         lookback_percentile: int = 100,
         invert: bool = False,
+        regime_mode: bool = False,
         config: Optional[Dict[str, Any]] = None,
         metadata: Optional[StrategyMetadata] = None,
     ) -> None:
@@ -105,11 +113,15 @@ class VolRegimeFilter(BaseStrategy):
             "vol_method": vol_method,
             "min_vol": min_vol,
             "max_vol": max_vol,
+            "low_vol_threshold": low_vol_threshold,
+            "high_vol_threshold": high_vol_threshold,
+            "min_bars": min_bars,
             "atr_threshold": atr_threshold,
             "vol_percentile_low": vol_percentile_low,
             "vol_percentile_high": vol_percentile_high,
             "lookback_percentile": lookback_percentile,
             "invert": invert,
+            "regime_mode": regime_mode,
         }
         if config:
             base_cfg.update(config)
@@ -130,17 +142,25 @@ class VolRegimeFilter(BaseStrategy):
         self.vol_method = str(self.config["vol_method"]).lower()
         self.min_vol = self.config.get("min_vol")
         self.max_vol = self.config.get("max_vol")
+        self.low_vol_threshold = self.config.get("low_vol_threshold")
+        self.high_vol_threshold = self.config.get("high_vol_threshold")
+        self.min_bars = int(self.config.get("min_bars", 30))
         self.atr_threshold = self.config.get("atr_threshold")
         self.vol_percentile_low = self.config.get("vol_percentile_low")
         self.vol_percentile_high = self.config.get("vol_percentile_high")
         self.lookback_percentile = int(self.config.get("lookback_percentile", 100))
         self.invert = bool(self.config.get("invert", False))
+        self.regime_mode = bool(self.config.get("regime_mode", False))
 
         # Als float konvertieren wenn nicht None
         if self.min_vol is not None:
             self.min_vol = float(self.min_vol)
         if self.max_vol is not None:
             self.max_vol = float(self.max_vol)
+        if self.low_vol_threshold is not None:
+            self.low_vol_threshold = float(self.low_vol_threshold)
+        if self.high_vol_threshold is not None:
+            self.high_vol_threshold = float(self.high_vol_threshold)
         if self.atr_threshold is not None:
             self.atr_threshold = float(self.atr_threshold)
         if self.vol_percentile_low is not None:
@@ -156,10 +176,21 @@ class VolRegimeFilter(BaseStrategy):
         if self.vol_window < 2:
             raise ValueError(f"vol_window ({self.vol_window}) muss >= 2 sein")
 
-        if self.vol_method not in ("atr", "std", "realized"):
+        if self.vol_method not in ("atr", "std", "realized", "range"):
             raise ValueError(
-                f"vol_method ({self.vol_method}) muss 'atr', 'std' oder 'realized' sein"
+                f"vol_method ({self.vol_method}) muss 'atr', 'std', 'realized' oder 'range' sein"
             )
+        
+        if self.min_bars < 1:
+            raise ValueError(
+                f"min_bars ({self.min_bars}) muss >= 1 sein"
+            )
+        
+        if self.low_vol_threshold is not None and self.high_vol_threshold is not None:
+            if self.low_vol_threshold >= self.high_vol_threshold:
+                raise ValueError(
+                    f"low_vol_threshold ({self.low_vol_threshold}) muss < high_vol_threshold ({self.high_vol_threshold}) sein"
+                )
 
         if self.lookback_percentile < self.vol_window:
             raise ValueError(
@@ -202,25 +233,37 @@ class VolRegimeFilter(BaseStrategy):
             VolRegimeFilter-Instanz
         """
         vol_window = cfg.get(f"{section}.vol_window", 20)
-        vol_method = cfg.get(f"{section}.vol_method", "atr")
+        vol_method = cfg.get(f"{section}.vol_metric", cfg.get(f"{section}.vol_method", "atr"))
         min_vol = cfg.get(f"{section}.min_vol", None)
         max_vol = cfg.get(f"{section}.max_vol", None)
+        low_vol_threshold = cfg.get(f"{section}.low_vol_threshold", None)
+        high_vol_threshold = cfg.get(f"{section}.high_vol_threshold", None)
+        min_bars = cfg.get(f"{section}.min_bars", 30)
         atr_threshold = cfg.get(f"{section}.atr_threshold", None)
         vol_percentile_low = cfg.get(f"{section}.vol_percentile_low", None)
         vol_percentile_high = cfg.get(f"{section}.vol_percentile_high", None)
         lookback_percentile = cfg.get(f"{section}.lookback_percentile", 100)
         invert = cfg.get(f"{section}.invert", False)
+        regime_mode = cfg.get(f"{section}.regime_mode", False)
+        
+        # Auto-detect regime_mode wenn Thresholds gesetzt sind
+        if regime_mode is False and (low_vol_threshold is not None or high_vol_threshold is not None):
+            regime_mode = True
 
         return cls(
             vol_window=vol_window,
             vol_method=vol_method,
             min_vol=min_vol,
             max_vol=max_vol,
+            low_vol_threshold=low_vol_threshold,
+            high_vol_threshold=high_vol_threshold,
+            min_bars=min_bars,
             atr_threshold=atr_threshold,
             vol_percentile_low=vol_percentile_low,
             vol_percentile_high=vol_percentile_high,
             lookback_percentile=lookback_percentile,
             invert=invert,
+            regime_mode=regime_mode,
         )
 
     def _compute_atr(self, data: pd.DataFrame) -> pd.Series:
@@ -275,6 +318,28 @@ class VolRegimeFilter(BaseStrategy):
         realized_vol = np.sqrt(variance * 252)
         return realized_vol
 
+    def _compute_range(self, data: pd.DataFrame) -> pd.Series:
+        """
+        Berechnet Range (High-Low) als Volatilitäts-Maß.
+
+        Args:
+            data: DataFrame mit high, low
+
+        Returns:
+            Rolling Range als pd.Series
+        """
+        if "high" not in data.columns or "low" not in data.columns:
+            # Fallback zu Close-Range
+            close = data["close"]
+            return (close.rolling(window=self.vol_window).max() - 
+                    close.rolling(window=self.vol_window).min())
+        
+        high = data["high"]
+        low = data["low"]
+        range_vol = (high.rolling(window=self.vol_window, min_periods=self.vol_window).max() - 
+                     low.rolling(window=self.vol_window, min_periods=self.vol_window).min())
+        return range_vol
+
     def _compute_volatility(self, data: pd.DataFrame) -> pd.Series:
         """
         Berechnet Volatilität basierend auf vol_method.
@@ -294,18 +359,22 @@ class VolRegimeFilter(BaseStrategy):
             return self._compute_std(data)
         elif self.vol_method == "realized":
             return self._compute_realized_vol(data)
+        elif self.vol_method == "range":
+            return self._compute_range(data)
         else:
             raise ValueError(f"Unbekannte vol_method: {self.vol_method}")
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
-        Generiert Filter-Signale basierend auf Volatilität.
+        Generiert Filter- oder Regime-Signale basierend auf Volatilität.
 
         Args:
             data: DataFrame mit OHLCV-Daten
 
         Returns:
-            Series mit Filter (1=Trading erlaubt, 0=blockiert)
+            Series mit Signalen:
+            - Im Filter-Mode: 1=Trading erlaubt, 0=blockiert
+            - Im Regime-Mode: 1=Low-Vol/Risk-On, -1=High-Vol/Risk-Off, 0=Neutral
 
         Raises:
             ValueError: Wenn zu wenig Daten oder Spalte fehlt
@@ -316,7 +385,7 @@ class VolRegimeFilter(BaseStrategy):
                 f"Verfügbar: {list(data.columns)}"
             )
 
-        min_bars = max(self.vol_window, self.lookback_percentile) + 5
+        min_bars = max(self.vol_window, self.lookback_percentile, self.min_bars) + 5
         if len(data) < min_bars:
             raise ValueError(
                 f"Brauche mind. {min_bars} Bars, habe nur {len(data)}"
@@ -325,6 +394,36 @@ class VolRegimeFilter(BaseStrategy):
         # Volatilität berechnen
         vol = self._compute_volatility(data)
 
+        # Threshold-basierte Regime-Klassifikation
+        if self.regime_mode and (self.low_vol_threshold is not None or self.high_vol_threshold is not None):
+            # Regime-Mode: 1=Low-Vol, -1=High-Vol, 0=Neutral
+            regime_signal = pd.Series(0, index=data.index, dtype=int)
+            
+            # Vor min_bars: Neutral (0)
+            for i in range(len(data)):
+                if i < self.min_bars:
+                    regime_signal.iloc[i] = 0
+                    continue
+                
+                current_vol = vol.iloc[i]
+                if pd.isna(current_vol):
+                    regime_signal.iloc[i] = 0
+                    continue
+                
+                # Low-Vol: Risk-On (1)
+                if self.low_vol_threshold is not None and current_vol < self.low_vol_threshold:
+                    regime_signal.iloc[i] = 1
+                # High-Vol: Risk-Off (-1)
+                elif self.high_vol_threshold is not None and current_vol > self.high_vol_threshold:
+                    regime_signal.iloc[i] = -1
+                # Neutral (0) - zwischen den Thresholds oder außerhalb
+                else:
+                    regime_signal.iloc[i] = 0
+            
+            regime_signal.name = "vol_regime"
+            return regime_signal
+
+        # Filter-Mode (bestehende Logik)
         # Filter initialisieren (default: Trading erlaubt)
         filter_signal = pd.Series(1, index=data.index, dtype=int)
 
@@ -373,6 +472,10 @@ class VolRegimeFilter(BaseStrategy):
             filter_signal = 1 - filter_signal
 
         # NaN am Anfang auf 0 setzen (während Warmup kein Trading)
+        # Vor min_bars: Blockieren
+        for i in range(min(self.min_bars, len(data))):
+            filter_signal.iloc[i] = 0
+        
         filter_signal = filter_signal.fillna(0).astype(int)
 
         filter_signal.name = "vol_filter"

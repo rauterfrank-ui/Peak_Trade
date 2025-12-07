@@ -505,3 +505,4 @@ def run_portfolio_robustness(
         stress_results=stress_results,
     )
 
+

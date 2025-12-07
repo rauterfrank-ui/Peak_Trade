@@ -354,7 +354,8 @@ class LiveOrderExecutor:
 
         logger.info(
             "[LIVE EXECUTOR] LiveOrderExecutor initialisiert im Dry-Run-Modus. "
-            "Phase 71: Nur Design/Logging, keine echten Orders."
+            "Phase 71: Nur Design/Logging, keine echten Orders. "
+            "[SAFETY] Live execution blocked – system is Phase 71 (design only, no real orders)."
         )
 
     def set_simulated_price(self, symbol: str, price: float) -> None:
@@ -414,11 +415,11 @@ class LiveOrderExecutor:
                 "Führe Dry-Run aus."
             )
 
-        # Log-Info
+        # Log-Info - explizit als Dry-Run kennzeichnen
         logger.info(
-            f"[LIVE DRY-RUN] Order #{self._execution_count}: "
+            f"[LIVE-DRY-RUN] Would send LIVE order #{self._execution_count}: "
             f"{order.side.upper()} {order.quantity} {order.symbol} @ {order.order_type} "
-            f"(Phase 71: Nur Design/Logging, keine echte Order)"
+            f"(Phase 71 – no real exchange call, design only)"
         )
 
         # Prüfe ob wir einen Preis für das Symbol haben
@@ -437,7 +438,7 @@ class LiveOrderExecutor:
                     "environment": "live",
                     "dry_run": True,
                     "phase": "71",
-                    "note": "Phase 71: Live-Execution-Design - nur Dry-Run. "
+                    "note": "Phase 71: Live-Execution-Design - nur Dry-Run, keine echten Orders. "
                     "Setze einen simulierten Preis mit set_simulated_price()",
                 },
             )
@@ -474,7 +475,7 @@ class LiveOrderExecutor:
                     "slippage_bps": self._slippage_bps,
                     "note": "Phase 71: KEIN echter API-Call - nur Dry-Run-Simulation. "
                     "Live-Execution-Path existiert als Design, aber ist technisch "
-                    "auf Dry-Run verdrahtet.",
+                    "auf Dry-Run verdrahtet. Keine echten Orders werden gesendet.",
                 },
             )
 

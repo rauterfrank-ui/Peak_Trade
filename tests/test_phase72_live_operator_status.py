@@ -237,3 +237,4 @@ class TestLiveOperatorStatus:
         assert "Phase 71/72" in report
         # Report sollte nur Status zeigen, keine Schreiboperationen vorschlagen
 
+

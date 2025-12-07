@@ -49,7 +49,9 @@ def build_parser() -> argparse.ArgumentParser:
     """Baut den Argument-Parser für Testnet-Orchestrator CLI."""
     parser = argparse.ArgumentParser(
         prog="testnet_orchestrator",
-        description="Peak_Trade Testnet-Orchestrator CLI",
+        description="Peak_Trade Testnet-Orchestrator CLI\n\n"
+                    "WICHTIG: Dieses Script ist für Shadow/Testnet-Runs gedacht.\n"
+                    "Keine echten Live-Orders werden gesendet.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Beispiele:

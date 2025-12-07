@@ -276,3 +276,4 @@ def test_live_portfolio_monitor_parse_position_variants():
     pos4 = monitor._parse_position({})
     assert pos4 is None
 
+

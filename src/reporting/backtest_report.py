@@ -31,7 +31,8 @@ from typing import Any, Dict, List, Optional, Union
 import pandas as pd
 
 from .base import Report, ReportSection, dict_to_markdown_table, df_to_markdown, format_metric
-from .plots import save_equity_plot, save_drawdown_plot, save_equity_with_regimes
+from .plots import save_equity_plot, save_drawdown_plot, save_equity_with_regimes, save_equity_with_regime_overlay, save_regime_contribution_bars
+from .regime_reporting import compute_regime_stats, build_regime_report_section
 
 
 # =============================================================================
@@ -285,9 +286,19 @@ def build_backtest_report(
 
     if equity_curve is not None and len(equity_curve) > 0:
         if regimes is not None and len(regimes) > 0:
-            # Equity mit Regime-Bändern
+            # Equity mit Regime-Bändern (numerische Regime-Werte)
             equity_path = output_dir / "equity_with_regimes.png"
-            save_equity_with_regimes(equity_curve, regimes, equity_path)
+            try:
+                # Versuche numerische Regime-Werte (1/0/-1)
+                regime_numeric = regimes.astype(float)
+                if regime_numeric.isin([1.0, 0.0, -1.0]).all() or regime_numeric.isin([1, 0, -1]).all():
+                    save_equity_with_regime_overlay(equity_curve, regimes, equity_path)
+                else:
+                    # Fallback zu String-Labels
+                    save_equity_with_regimes(equity_curve, regimes, equity_path)
+            except (ValueError, TypeError):
+                # Fallback zu String-Labels
+                save_equity_with_regimes(equity_curve, regimes, equity_path)
             rel_path = os.path.relpath(equity_path, output_dir.parent)
             charts_content.append(f"### Equity Curve with Regimes\n\n![Equity with Regimes]({rel_path})")
         else:
@@ -311,7 +322,50 @@ def build_backtest_report(
             )
         )
 
-    # 5. Extra Tables
+    # 5. Regime-Analyse (wenn Regime-Daten vorhanden)
+    regime_stats = None
+    if regimes is not None and len(regimes) > 0 and equity_curve is not None and len(equity_curve) > 0:
+        try:
+            # Berechne Returns aus Equity
+            returns_series = equity_curve.pct_change().fillna(0)
+
+            # Prüfe ob Regime-Series numerische Werte hat (1/0/-1)
+            regime_numeric = regimes.astype(float)
+            if regime_numeric.isin([1.0, 0.0, -1.0]).all() or regime_numeric.isin([1, 0, -1]).all():
+                # Berechne Regime-Stats
+                regime_stats = compute_regime_stats(
+                    equity_series=equity_curve,
+                    returns_series=returns_series,
+                    regime_series=regimes,
+                    trades=trades if trades else None,
+                )
+                
+                # Erstelle Contribution-Plot
+                contribution_plot_path = output_dir / "regime_contribution.png"
+                try:
+                    save_regime_contribution_bars(
+                        regime_stats=regime_stats,
+                        output_path=contribution_plot_path,
+                        title="Return Contribution by Regime",
+                    )
+                    rel_contribution_path = os.path.relpath(contribution_plot_path, output_dir.parent)
+                    charts_content.append(f"### Return Contribution by Regime\n\n![Regime Contribution]({rel_contribution_path})")
+                except Exception as plot_error:
+                    # Plot-Fehler nicht kritisch, nur loggen
+                    pass
+                
+                # Füge Regime-Section hinzu
+                report.add_section(build_regime_report_section(regime_stats))
+        except Exception as e:
+            # Bei Fehler: füge Hinweis hinzu, aber breche nicht ab
+            report.add_section(
+                ReportSection(
+                    title="Regime-Analyse",
+                    content_markdown=f"*Regime-Analyse konnte nicht erstellt werden: {e}*",
+                )
+            )
+
+    # 6. Extra Tables
     if extra_tables:
         for table_name, df in extra_tables.items():
             table_content = df_to_markdown(df, max_rows=50)

@@ -24,6 +24,7 @@ from src.live.safety import (
     LiveTradingDisabledError,
     LiveNotImplementedError,
     ConfirmTokenInvalidError,
+    is_live_execution_allowed,
 )
 from src.orders.base import OrderRequest
 from src.orders.exchange import (
@@ -272,4 +273,70 @@ class TestLiveExecutionDesign:
         assert log[1].request.side == "sell"
 
         assert executor.get_execution_count() == 2
+
+    def test_is_live_execution_allowed_helper_function(self):
+        """Test: is_live_execution_allowed() Helper-Funktion."""
+        # Test 1: Paper-Modus -> nicht erlaubt
+        env = EnvironmentConfig(environment=TradingEnvironment.PAPER)
+        allowed, reason = is_live_execution_allowed(env)
+        assert allowed is False
+        assert "nicht LIVE" in reason
+
+        # Test 2: Live, aber enable_live_trading=False -> nicht erlaubt
+        env = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            enable_live_trading=False,
+        )
+        allowed, reason = is_live_execution_allowed(env)
+        assert allowed is False
+        assert "enable_live_trading=False" in reason
+
+        # Test 3: Live, enable_live_trading=True, aber live_mode_armed=False -> nicht erlaubt
+        env = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            enable_live_trading=True,
+            live_mode_armed=False,
+        )
+        allowed, reason = is_live_execution_allowed(env)
+        assert allowed is False
+        assert "live_mode_armed=False" in reason
+
+        # Test 4: Live, alle Gates, aber live_dry_run_mode=True -> nicht erlaubt (Phase 71)
+        env = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            enable_live_trading=True,
+            live_mode_armed=True,
+            live_dry_run_mode=True,  # Phase 71: Blockiert
+            confirm_token=LIVE_CONFIRM_TOKEN,
+        )
+        allowed, reason = is_live_execution_allowed(env)
+        assert allowed is False
+        assert "live_dry_run_mode=True" in reason
+
+        # Test 5: Live, alle Gates, aber falscher Token -> nicht erlaubt
+        env = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            enable_live_trading=True,
+            live_mode_armed=True,
+            live_dry_run_mode=False,  # Theoretisch möglich (Phase 71: sollte nicht vorkommen)
+            require_confirm_token=True,
+            confirm_token="WRONG_TOKEN",
+        )
+        allowed, reason = is_live_execution_allowed(env)
+        assert allowed is False
+        assert "confirm_token" in reason
+
+        # Test 6: Theoretisch alle Kriterien erfüllt (Phase 71: sollte nicht vorkommen)
+        env = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            enable_live_trading=True,
+            live_mode_armed=True,
+            live_dry_run_mode=False,  # Phase 71: Sollte nicht vorkommen
+            require_confirm_token=True,
+            confirm_token=LIVE_CONFIRM_TOKEN,
+        )
+        allowed, reason = is_live_execution_allowed(env)
+        # In Phase 71 sollte dies theoretisch True sein, aber praktisch blockiert
+        # durch andere Mechanismen
+        assert "theoretisch" in reason.lower() or "phase 71" in reason.lower()
 

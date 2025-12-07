@@ -23,6 +23,7 @@ from .my_strategy import MyStrategy
 from .breakout import BreakoutStrategy
 from .vol_regime_filter import VolRegimeFilter
 from .composite import CompositeStrategy
+from .regime_aware_portfolio import RegimeAwarePortfolioStrategy
 
 
 @dataclass(frozen=True)
@@ -117,6 +118,12 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         cls=CompositeStrategy,
         config_section="strategy.composite",
         description="Multi-Strategy Composite (Phase 40)",
+    ),
+    "regime_aware_portfolio": StrategySpec(
+        key="regime_aware_portfolio",
+        cls=RegimeAwarePortfolioStrategy,
+        config_section="portfolio.regime_aware_breakout_rsi",
+        description="Regime-Aware Portfolio Strategy (Breakout + RSI + Vol-Regime)",
     ),
 }
 

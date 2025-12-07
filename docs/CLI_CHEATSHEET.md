@@ -522,9 +522,129 @@ Die Developer-Guides erklären typische Erweiterungen Schritt für Schritt, inkl
 
 ---
 
+## 15. Testnet-Orchestrator CLI (Phase 64)
+
+**WICHTIG: Für Shadow/Testnet-Runs. Keine echten Live-Orders.**
+
+```bash
+# Shadow-Run starten
+python scripts/testnet_orchestrator_cli.py start-shadow \
+  --strategy ma_crossover \
+  --symbol BTC/EUR \
+  --timeframe 1m \
+  --config config/config.toml
+
+# Testnet-Run starten
+python scripts/testnet_orchestrator_cli.py start-testnet \
+  --strategy ma_crossover \
+  --symbol BTC/EUR \
+  --timeframe 1m
+
+# Status aller Runs
+python scripts/testnet_orchestrator_cli.py status
+
+# Status eines Runs
+python scripts/testnet_orchestrator_cli.py status --run-id shadow_20251207_120000_abc123
+
+# Run stoppen
+python scripts/testnet_orchestrator_cli.py stop --run-id shadow_20251207_120000_abc123
+
+# Events tailen
+python scripts/testnet_orchestrator_cli.py tail --run-id shadow_20251207_120000_abc123 --limit 50
+```
+
+**Siehe:** [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10a für Details.
+
+---
+
+## 16. Live Monitor CLI (Phase 65)
+
+**WICHTIG: Read-only Monitoring-Tool. Keine Order-Erzeugung.**
+
+```bash
+# Übersicht aller aktiven Runs
+python scripts/live_monitor_cli.py overview --only-active
+
+# Übersicht aller Runs (inkl. inaktive)
+python scripts/live_monitor_cli.py overview --include-inactive
+
+# Übersicht der letzten 24 Stunden
+python scripts/live_monitor_cli.py overview --max-age-hours 24
+
+# Run-Details
+python scripts/live_monitor_cli.py run --run-id shadow_20251207_120000_abc123
+
+# Live-Tailing
+python scripts/live_monitor_cli.py follow --run-id shadow_20251207_120000_abc123 --refresh-interval 2.0
+```
+
+**Siehe:** [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10b für Details.
+
+---
+
+## 17. Live Alerts CLI (Phase 66)
+
+**WICHTIG: Sendet nur Notifications, keine Trading-Operationen.**
+
+```bash
+# PnL-Drop-Check (5% Drop in 1 Stunde)
+python scripts/live_alerts_cli.py run-rules \
+  --run-id shadow_20251207_120000_abc123 \
+  --pnl-drop-threshold-pct 5.0 \
+  --pnl-drop-window-hours 1
+
+# No-Events-Check (10 Minuten Stille)
+python scripts/live_alerts_cli.py run-rules \
+  --run-id shadow_20251207_120000_abc123 \
+  --no-events-max-minutes 10
+
+# Alle Checks
+python scripts/live_alerts_cli.py run-rules \
+  --run-id shadow_20251207_120000_abc123 \
+  --pnl-drop-threshold-pct 5.0 \
+  --no-events-max-minutes 10 \
+  --error-spike-max-errors 5 \
+  --error-spike-window-minutes 10
+```
+
+**Siehe:** [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10c für Details.
+
+---
+
+## 18. Live Web Dashboard (Phase 67)
+
+**WICHTIG: Read-only Web-Dashboard. Keine Order-Erzeugung, kein Start/Stop.**
+
+```bash
+# Web-Server starten (Standard: http://127.0.0.1:8000)
+python scripts/live_web_server.py
+
+# Mit Custom-Parametern
+python scripts/live_web_server.py \
+  --host 0.0.0.0 \
+  --port 9000 \
+  --base-runs-dir /path/to/live_runs \
+  --auto-refresh-seconds 10
+
+# Mit Auto-Reload (Development)
+python scripts/live_web_server.py --reload
+```
+
+**Wichtige URLs:**
+- Dashboard: `http://localhost:8000/` oder `http://localhost:8000/dashboard`
+- Health-Check: `http://localhost:8000/health`
+- Runs-Liste (JSON): `http://localhost:8000/runs`
+- Run-Snapshot (JSON): `http://localhost:8000/runs/{run_id}/snapshot`
+- Run-Events (JSON): `http://localhost:8000/runs/{run_id}/tail?limit=100`
+- Run-Alerts (JSON): `http://localhost:8000/runs/{run_id}/alerts?limit=20`
+
+**Siehe:** [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) Abschnitt 10d für Details.
+
+---
+
 ## Live-Ops Quick Commands (Operator-Favoriten)
 
-**Die 3 wichtigsten Commands für Live-/Testnet-Operationen:**
+**Die wichtigsten Commands für Live-/Testnet-Operationen:**
 
 ```bash
 # 1. Health-Check Live-/Testnet-Setup
@@ -535,13 +655,24 @@ python scripts/live_ops.py portfolio --config config/config.toml
 
 # 3. Portfolio-Snapshot (JSON für Tools)
 python scripts/live_ops.py portfolio --config config/config.toml --json
+
+# 4. Testnet-Orchestrator: Status
+python scripts/testnet_orchestrator_cli.py status
+
+# 5. Live Monitor: Übersicht
+python scripts/live_monitor_cli.py overview --only-active
+
+# 6. Web-Dashboard starten
+python scripts/live_web_server.py
 ```
 
-**Mit diesen 3 Commands weißt du sofort:**
+**Mit diesen Commands weißt du sofort:**
 - ✅ Ob das Live-/Testnet-Setup gesund ist
 - ✅ Welche Positionen aktuell offen sind
 - ✅ Wie das Portfolio-Risk-Profil aussieht
 - ✅ Ob Risk-Limits eingehalten werden
+- ✅ Status aller Shadow/Testnet-Runs
+- ✅ Live-Monitoring via Web-Dashboard
 
 **Weitere nützliche Varianten:**
 

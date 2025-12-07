@@ -104,6 +104,12 @@ def parse_args() -> argparse.Namespace:
         help="Directory for plot images (default: <output_dir>/images)",
     )
 
+    parser.add_argument(
+        "--with-regime",
+        action="store_true",
+        help="Include regime-aware analysis if regime data is available",
+    )
+
     return parser.parse_args()
 
 
@@ -238,6 +244,7 @@ def main() -> int:
     # Lade Equity (optional)
     equity = None
     drawdown = None
+    regimes = None
 
     if args.equity_file:
         equity_path = Path(args.equity_file)
@@ -247,6 +254,48 @@ def main() -> int:
             if equity is not None:
                 drawdown = compute_drawdown(equity)
                 print(f"  Equity curve: {len(equity)} points")
+
+    # Lade Regime-Daten (optional, wenn --with-regime gesetzt)
+    if args.with_regime:
+        # Versuche Regime-Daten aus Results-Datei zu extrahieren
+        regime_cols = [c for c in df.columns if "regime" in c.lower() and c not in ["regime_strategy"]]
+        if regime_cols:
+            # Nehme erste Regime-Spalte
+            regime_col = regime_cols[0]
+            if len(df) == 1:
+                # Wenn nur eine Zeile: versuche Regime-Serie aus separater Datei
+                # (für jetzt: skip, da wir keine Standard-Struktur haben)
+                pass
+            else:
+                # Wenn mehrere Zeilen: versuche Regime-Serie zu rekonstruieren
+                # (für jetzt: skip, da wir keine Standard-Struktur haben)
+                pass
+        # Alternative: Suche nach Regime-Datei im gleichen Verzeichnis
+        regime_file = results_path.parent / f"{results_path.stem}_regime.parquet"
+        if not regime_file.exists():
+            regime_file = results_path.parent / f"{results_path.stem}_regime.csv"
+        if regime_file.exists():
+            print(f"Loading regime data from {regime_file}...")
+            try:
+                if regime_file.suffix == ".parquet":
+                    regime_df = pd.read_parquet(regime_file)
+                else:
+                    regime_df = pd.read_csv(regime_file)
+                # Suche nach Regime-Spalte
+                for col in ["regime", "regime_signal", "vol_regime"]:
+                    if col in regime_df.columns:
+                        if "timestamp" in regime_df.columns:
+                            regime_df["timestamp"] = pd.to_datetime(regime_df["timestamp"])
+                            regimes = pd.Series(regime_df[col].values, index=regime_df["timestamp"])
+                        elif "date" in regime_df.columns:
+                            regime_df["date"] = pd.to_datetime(regime_df["date"])
+                            regimes = pd.Series(regime_df[col].values, index=regime_df["date"])
+                        else:
+                            regimes = regime_df[col]
+                        print(f"  Regime data: {len(regimes)} points")
+                        break
+            except Exception as e:
+                print(f"  Warning: Could not load regime data: {e}")
 
     # Title
     title = args.title
@@ -269,7 +318,9 @@ def main() -> int:
         metrics=metrics,
         equity_curve=equity,
         drawdown_series=drawdown,
+        trades=None,  # Trades werden aus Results extrahiert, falls vorhanden
         params=params if params else None,
+        regimes=regimes if args.with_regime else None,
         output_dir=images_dir,
         metadata={
             "source_file": str(results_path),

@@ -135,3 +135,4 @@ def test_profile_script_output_format(mock_run: MagicMock, capsys):
     assert "| Scenario |" in output_md
     assert "scenario_1" in output_md
 
+

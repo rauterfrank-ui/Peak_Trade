@@ -492,6 +492,119 @@ register_predefined_sweep(
 
 # -----------------------------------------------------------------------------
 # Vol Regime Filter Sweeps
+
+# -----------------------------------------------------------------------------
+# Regime-Aware Portfolio Sweeps
+# -----------------------------------------------------------------------------
+
+from .regime_aware_portfolio_sweeps import (
+    get_regime_aware_aggressive_sweeps,
+    get_regime_aware_conservative_sweeps,
+    get_regime_aware_volmetric_sweeps,
+)
+
+# Aggressives Preset
+aggressive_sweeps = get_regime_aware_aggressive_sweeps("medium")
+aggressive_param_grid = {s.name: s.values for s in aggressive_sweeps}
+register_predefined_sweep(
+    StrategySweepConfig(
+        name="regime_aware_portfolio_aggressive",
+        strategy_name="regime_aware_portfolio",
+        param_grid=aggressive_param_grid,
+        base_params={
+            "components": ["breakout", "rsi_reversion"],
+            "base_weights": {"breakout": 0.6, "rsi_reversion": 0.4},
+            "regime_strategy": "vol_regime_filter",
+        },
+        description="Aggressives Regime-Aware Portfolio: Breakout + RSI mit starkem Risk-On-Fokus",
+        tags=["regime_aware", "portfolio", "aggressive", "breakout", "rsi"],
+    )
+)
+
+# Konservatives Preset
+conservative_sweeps = get_regime_aware_conservative_sweeps("medium")
+conservative_param_grid = {s.name: s.values for s in conservative_sweeps}
+register_predefined_sweep(
+    StrategySweepConfig(
+        name="regime_aware_portfolio_conservative",
+        strategy_name="regime_aware_portfolio",
+        param_grid=conservative_param_grid,
+        base_params={
+            "components": ["breakout", "ma_crossover"],
+            "base_weights": {"breakout": 0.5, "ma_crossover": 0.5},
+            "regime_strategy": "vol_regime_filter",
+        },
+        description="Konservatives Regime-Aware Portfolio: Breakout + MA mit Kapitalerhalt-Fokus",
+        tags=["regime_aware", "portfolio", "conservative", "breakout", "ma"],
+    )
+)
+
+# Vol-Metrik-Vergleich Preset
+volmetric_sweeps = get_regime_aware_volmetric_sweeps("medium")
+volmetric_param_grid = {s.name: s.values for s in volmetric_sweeps}
+register_predefined_sweep(
+    StrategySweepConfig(
+        name="regime_aware_portfolio_volmetric",
+        strategy_name="regime_aware_portfolio",
+        param_grid=volmetric_param_grid,
+        base_params={
+            "components": ["breakout", "rsi_reversion"],
+            "base_weights": {"breakout": 0.5, "rsi_reversion": 0.5},
+            "regime_strategy": "vol_regime_filter",
+            "risk_on_scale": 1.0,
+            "neutral_scale": 0.5,
+            "risk_off_scale": 0.0,
+            "mode": "scale",
+            "signal_threshold": 0.3,
+        },
+        description="Vol-Metrik-Vergleich: Fixes Portfolio, variierende Vol-Metriken (ATR/STD/REALIZED/RANGE)",
+        tags=["regime_aware", "portfolio", "volmetric", "comparison"],
+    )
+)
+
+# Neutral-Scale Sensitivity Sweep (aus TOML config/sweeps/regime_neutral_scale_sweep.toml)
+register_predefined_sweep(
+    StrategySweepConfig(
+        name="regime_neutral_scale_sweep",
+        strategy_name="regime_aware_portfolio",
+        param_grid={
+            "risk_on_scale": [1.0],
+            "neutral_scale": [0.50, 0.60, 0.70, 0.80, 0.90, 1.00],
+            "risk_off_scale": [0.0],
+            "mode": ["filter"],
+        },
+        base_params={
+            "components": ["breakout", "rsi_reversion"],
+            "base_weights": {"breakout": 0.6, "rsi_reversion": 0.4},
+            "regime_strategy": "vol_regime_filter",
+        },
+        description="Neutral-Scale Sensitivity Sweep bei risk_off_scale = 0.0",
+        tags=["regime_aware", "portfolio", "neutral_scale", "sensitivity"],
+    )
+)
+
+# Regime-Threshold Robustness Sweep (aus TOML config/sweeps/regime_threshold_robustness.toml)
+register_predefined_sweep(
+    StrategySweepConfig(
+        name="regime_threshold_robustness",
+        strategy_name="regime_aware_portfolio",
+        param_grid={
+            "vol_metric": ["atr", "std"],
+            "low_vol_threshold": [0.15, 0.18, 0.20, 0.22, 0.25],
+            "high_vol_threshold": [0.30, 0.35, 0.40, 0.45],
+            "risk_on_scale": [1.0],
+            "neutral_scale": [0.70],
+            "risk_off_scale": [0.0],
+        },
+        base_params={
+            "components": ["breakout", "rsi_reversion"],
+            "base_weights": {"breakout": 0.6, "rsi_reversion": 0.4},
+            "regime_strategy": "vol_regime_filter",
+        },
+        description="Regime-Threshold Robustness Sweep",
+        tags=["regime_aware", "portfolio", "threshold", "robustness"],
+    )
+)
 # -----------------------------------------------------------------------------
 
 register_predefined_sweep(

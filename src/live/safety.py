@@ -227,29 +227,48 @@ class SafetyGuard:
 
         # --- LIVE Mode ---
         if env == TradingEnvironment.LIVE:
-            # Phase 71: Zweistufiges Gating
-            # Gate 1: enable_live_trading
-            if not self.env_config.enable_live_trading:
-                reason = "enable_live_trading = False (Gate 1)"
-                self._log_audit(action, False, reason)
-                raise LiveTradingDisabledError(
-                    f"Live-Trading ist deaktiviert (enable_live_trading=False). "
-                    f"Setze enable_live_trading=True in der Config, um fortzufahren."
-                )
+            # Phase 71: Nutze zentrale Helper-Funktion für klare Gating-Logik
+            allowed, reason_detail = is_live_execution_allowed(self.env_config)
 
-            # Phase 71: Gate 2: live_mode_armed
-            if not self.env_config.live_mode_armed:
-                reason = "live_mode_armed = False (Gate 2 - Phase 71)"
-                self._log_audit(action, False, reason)
-                raise LiveTradingDisabledError(
-                    f"Live-Modus ist nicht 'armed' (live_mode_armed=False). "
-                    f"Phase 71: Zweistufiges Gating - zusätzliche Freigabe erforderlich. "
-                    f"Setze live_mode_armed=True in der Config (nur für Design-Tests)."
-                )
+            if not allowed:
+                # Detaillierte Reason-Logik für verschiedene Blockierungen
+                if "enable_live_trading=False" in reason_detail:
+                    reason = "enable_live_trading = False (Gate 1)"
+                    self._log_audit(action, False, reason)
+                    raise LiveTradingDisabledError(
+                        f"Live-Trading ist deaktiviert (enable_live_trading=False). "
+                        f"Setze enable_live_trading=True in der Config, um fortzufahren."
+                    )
 
-            # Prüfe Confirm-Token
-            if self.env_config.require_confirm_token:
-                if self.env_config.confirm_token != LIVE_CONFIRM_TOKEN:
+                if "live_mode_armed=False" in reason_detail:
+                    reason = "live_mode_armed = False (Gate 2 - Phase 71)"
+                    self._log_audit(action, False, reason)
+                    raise LiveTradingDisabledError(
+                        f"Live-Modus ist nicht 'armed' (live_mode_armed=False). "
+                        f"Phase 71: Zweistufiges Gating - zusätzliche Freigabe erforderlich. "
+                        f"Setze live_mode_armed=True in der Config (nur für Design-Tests)."
+                    )
+
+                if "live_dry_run_mode=True" in reason_detail:
+                    # Phase 71: Live-Path existiert als Design, aber nur Dry-Run
+                    # Diese Methode wird normalerweise nicht aufgerufen, wenn live_dry_run_mode=True,
+                    # da LiveOrderExecutor direkt simuliert. Aber für Safety-Checks:
+                    reason = "Live-Dry-Run-Modus aktiv (Phase 71)"
+                    self._log_audit(
+                        action,
+                        False,
+                        reason,
+                        "Phase 71: Live-Execution-Design - nur Dry-Run, keine echten Orders",
+                    )
+                    # In Phase 71 erlauben wir Dry-Run, aber blockieren echte Orders
+                    # Diese Exception wird nur geworfen, wenn jemand versucht, echte Orders zu senden
+                    raise LiveNotImplementedError(
+                        f"Live-Trading ist in Phase 71 nur als Design/Dry-Run implementiert. "
+                        f"live_dry_run_mode=True blockt echte Orders. "
+                        f"Verwende LiveOrderExecutor für Dry-Run-Simulationen."
+                    )
+
+                if "confirm_token" in reason_detail:
                     reason = "Confirm-Token ungültig oder fehlt"
                     self._log_audit(action, False, reason)
                     raise ConfirmTokenInvalidError(
@@ -257,27 +276,17 @@ class SafetyGuard:
                         f"Setze confirm_token='{LIVE_CONFIRM_TOKEN}' in der Config."
                     )
 
-            # Phase 71: Live-Dry-Run-Modus prüfen
-            if self.env_config.live_dry_run_mode:
-                # Phase 71: Live-Path existiert als Design, aber nur Dry-Run
-                # Diese Methode wird normalerweise nicht aufgerufen, wenn live_dry_run_mode=True,
-                # da LiveOrderExecutor direkt simuliert. Aber für Safety-Checks:
-                reason = "Live-Dry-Run-Modus aktiv (Phase 71)"
-                self._log_audit(
-                    action,
-                    False,
-                    reason,
-                    "Phase 71: Live-Execution-Design - nur Dry-Run, keine echten Orders",
-                )
-                # In Phase 71 erlauben wir Dry-Run, aber blockieren echte Orders
-                # Diese Exception wird nur geworfen, wenn jemand versucht, echte Orders zu senden
+                # Fallback für unbekannte Blockierung
+                reason = f"Live-Execution blockiert: {reason_detail}"
+                self._log_audit(action, False, reason)
                 raise LiveNotImplementedError(
-                    f"Live-Trading ist in Phase 71 nur als Design/Dry-Run implementiert. "
-                    f"live_dry_run_mode=True blockt echte Orders. "
-                    f"Verwende LiveOrderExecutor für Dry-Run-Simulationen."
+                    f"Live-Trading ist in Phase 71 nicht implementiert. "
+                    f"Grund: {reason_detail}"
                 )
 
-            # Falls live_dry_run_mode=False (sollte in Phase 71 nicht vorkommen):
+            # Falls alle Kriterien erfüllt wären (sollte in Phase 71 nicht vorkommen):
+            # In Phase 71 ist dies theoretisch nicht erreichbar, da live_dry_run_mode=True
+            # immer blockiert. Aber für zukünftige Phasen:
             reason = "Live-Trading nicht implementiert (Phase 71)"
             self._log_audit(
                 action,
@@ -384,6 +393,83 @@ class SafetyGuard:
     def clear_audit_log(self) -> None:
         """Löscht das Audit-Log."""
         self.audit_log.clear()
+
+
+# =============================================================================
+# Helper-Funktion: is_live_execution_allowed (Phase 71)
+# =============================================================================
+
+
+def is_live_execution_allowed(env_config: EnvironmentConfig) -> tuple[bool, str]:
+    """
+    Prüft ob echte Live-Execution erlaubt wäre (Phase 71: Design-Kriterium).
+
+    Diese Funktion definiert die **vollständigen Kriterien** für echte Live-Orders.
+    In Phase 71 ist diese Funktion nur zur Dokumentation des Designs gedacht.
+
+    Kriterien (alle müssen erfüllt sein):
+        1. environment == TradingEnvironment.LIVE
+        2. enable_live_trading == True (Gate 1)
+        3. live_mode_armed == True (Gate 2 - Phase 71)
+        4. live_dry_run_mode == False (technisches Gate - Phase 71)
+        5. confirm_token == LIVE_CONFIRM_TOKEN (wenn require_confirm_token == True)
+
+    Args:
+        env_config: EnvironmentConfig-Instanz
+
+    Returns:
+        Tuple (allowed: bool, reason: str)
+        - allowed: True wenn alle Kriterien erfüllt wären
+        - reason: Beschreibung warum erlaubt/blockiert
+
+    Note:
+        In Phase 71 wird diese Funktion IMMER (False, reason) zurückgeben,
+        da live_dry_run_mode=True in Phase 71 immer gesetzt ist.
+        Diese Funktion dient der Dokumentation des zukünftigen Designs.
+
+    Example:
+        >>> env = EnvironmentConfig(
+        ...     environment=TradingEnvironment.LIVE,
+        ...     enable_live_trading=True,
+        ...     live_mode_armed=True,
+        ...     live_dry_run_mode=False,  # Phase 71: Sollte nicht vorkommen
+        ...     confirm_token=LIVE_CONFIRM_TOKEN,
+        ... )
+        >>> allowed, reason = is_live_execution_allowed(env)
+        >>> # In Phase 71: allowed wird False sein wegen live_dry_run_mode
+    """
+    # Kriterium 1: Mode muss LIVE sein
+    if env_config.environment != TradingEnvironment.LIVE:
+        return (
+            False,
+            f"Environment ist nicht LIVE (aktuell: {env_config.environment.value})",
+        )
+
+    # Kriterium 2: Gate 1 - enable_live_trading
+    if not env_config.enable_live_trading:
+        return (False, "enable_live_trading=False (Gate 1 blockiert)")
+
+    # Kriterium 3: Gate 2 - live_mode_armed (Phase 71)
+    if not env_config.live_mode_armed:
+        return (False, "live_mode_armed=False (Gate 2 blockiert - Phase 71)")
+
+    # Kriterium 4: Technisches Gate - live_dry_run_mode (Phase 71)
+    if env_config.live_dry_run_mode:
+        return (
+            False,
+            "live_dry_run_mode=True (Phase 71: Technisches Gate blockiert echte Orders)",
+        )
+
+    # Kriterium 5: Confirm-Token (wenn erforderlich)
+    if env_config.require_confirm_token:
+        if env_config.confirm_token != LIVE_CONFIRM_TOKEN:
+            return (False, "confirm_token ungültig oder fehlt")
+
+    # Alle Kriterien erfüllt (theoretisch - in Phase 71 nicht erreichbar)
+    return (
+        True,
+        "Alle Kriterien erfüllt (theoretisch - Phase 71: live_dry_run_mode blockiert)",
+    )
 
 
 # =============================================================================

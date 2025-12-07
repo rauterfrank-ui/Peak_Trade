@@ -424,6 +424,59 @@ def _load_configs_from_toml(toml_file: Path, n: int) -> List[Dict[str, Any]]:
     return configs
 
 
+def _parse_string_value(val: Any) -> Any:
+    """
+    Konvertiert String-Repräsentationen von Listen/Dicts zurück zu Python-Objekten.
+
+    CSV-Dateien speichern komplexe Typen als Strings. Diese Funktion erkennt
+    solche Strings und konvertiert sie zurück.
+
+    Args:
+        val: Wert aus DataFrame (kann String, int, float, etc. sein)
+
+    Returns:
+        Konvertierter Wert oder Original
+
+    Examples:
+        >>> _parse_string_value("['a', 'b']")
+        ['a', 'b']
+        >>> _parse_string_value("{'x': 1}")
+        {'x': 1}
+        >>> _parse_string_value("hello")
+        'hello'
+    """
+    if not isinstance(val, str):
+        return val
+
+    val_stripped = val.strip()
+
+    # Prüfe auf Liste (beginnt mit [ und endet mit ])
+    if val_stripped.startswith("[") and val_stripped.endswith("]"):
+        try:
+            import ast
+            return ast.literal_eval(val_stripped)
+        except (ValueError, SyntaxError):
+            return val
+
+    # Prüfe auf Dict (beginnt mit { und endet mit })
+    if val_stripped.startswith("{") and val_stripped.endswith("}"):
+        try:
+            import ast
+            return ast.literal_eval(val_stripped)
+        except (ValueError, SyntaxError):
+            return val
+
+    # Prüfe auf Tuple (beginnt mit ( und endet mit ))
+    if val_stripped.startswith("(") and val_stripped.endswith(")"):
+        try:
+            import ast
+            return ast.literal_eval(val_stripped)
+        except (ValueError, SyntaxError):
+            return val
+
+    return val
+
+
 def _dataframe_to_config_dicts(
     df_top: pd.DataFrame, sweep_name: str, metric_used: str
 ) -> List[Dict[str, Any]]:
@@ -456,7 +509,11 @@ def _dataframe_to_config_dicts(
             if pd.notna(val):
                 key = col.replace("param_", "")
                 # Konvertiere zu Python-Typen
-                if isinstance(val, (int, float)):
+                # Zuerst: Prüfe ob String-Repräsentation von Liste/Dict
+                parsed_val = _parse_string_value(val)
+                if isinstance(parsed_val, (list, dict, tuple)):
+                    params[key] = parsed_val
+                elif isinstance(val, (int, float)):
                     params[key] = float(val) if isinstance(val, float) else int(val)
                 elif isinstance(val, bool):
                     params[key] = bool(val)
@@ -495,7 +552,7 @@ def _extract_strategy_name(sweep_name: str) -> str:
     parts = sweep_name.split("_")
     if len(parts) >= 2:
         # Versuche, Suffix zu erkennen
-        known_suffixes = ["basic", "medium", "large", "small", "full"]
+        known_suffixes = ["basic", "medium", "large", "small", "full", "conservative", "aggressive", "fine", "coarse"]
         if parts[-1] in known_suffixes:
             return "_".join(parts[:-1])
     return sweep_name

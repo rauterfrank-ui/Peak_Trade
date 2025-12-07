@@ -307,6 +307,7 @@ def build_experiment_report(
     heatmap_params: Optional[Tuple[str, str]] = None,
     output_dir: Optional[Union[str, Path]] = None,
     metadata: Optional[Dict[str, Any]] = None,
+    with_regime_heatmaps: bool = False,
 ) -> Report:
     """
     Erstellt einen kompletten Experiment/Sweep-Report.
@@ -391,7 +392,44 @@ def build_experiment_report(
     # 6. Charts Section
     charts_content: List[str] = []
 
-    # Heatmap
+    # Regime-Aware Heatmaps (automatisch für regime_aware_* Sweeps)
+    is_regime_aware = with_regime_heatmaps or "regime_aware" in title.lower()
+    
+    if is_regime_aware:
+        # Automatische Heatmap-Parameter für Regime-Aware Sweeps
+        regime_param_candidates = [
+            ("param_neutral_scale", "param_risk_off_scale"),
+            ("param_risk_on_scale", "param_neutral_scale"),
+            ("param_neutral_scale", "param_risk_on_scale"),
+        ]
+        
+        for x_param, y_param in regime_param_candidates:
+            if x_param in df.columns and y_param in df.columns and sort_metric in df.columns:
+                try:
+                    pivot = df.pivot_table(
+                        values=sort_metric,
+                        index=y_param,
+                        columns=x_param,
+                        aggfunc="mean",
+                    )
+                    heatmap_path = output_dir / f"regime_heatmap_{x_param}_{y_param}.png"
+                    save_heatmap(
+                        pivot,
+                        heatmap_path,
+                        title=f"{sort_metric.replace('metric_', '')} Heatmap: {x_param.replace('param_', '')} vs {y_param.replace('param_', '')}",
+                        xlabel=x_param.replace("param_", ""),
+                        ylabel=y_param.replace("param_", ""),
+                        cbar_label=sort_metric.replace("metric_", ""),
+                    )
+                    rel_path = os.path.relpath(heatmap_path, output_dir.parent)
+                    charts_content.append(
+                        f"### Regime Parameter Heatmap: {x_param.replace('param_', '')} vs {y_param.replace('param_', '')}\n\n![Heatmap]({rel_path})"
+                    )
+                    break  # Nur erste passende Kombination
+                except Exception:
+                    pass  # Pivot nicht möglich
+
+    # Standard Heatmap
     if heatmap_params and len(heatmap_params) == 2:
         x_param, y_param = heatmap_params
         if x_param in df.columns and y_param in df.columns and sort_metric in df.columns:

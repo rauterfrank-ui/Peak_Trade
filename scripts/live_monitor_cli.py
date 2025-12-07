@@ -49,7 +49,9 @@ def build_parser() -> argparse.ArgumentParser:
     """Baut den Argument-Parser für Live-Monitor CLI."""
     parser = argparse.ArgumentParser(
         prog="live_monitor",
-        description="Peak_Trade Live Monitor CLI",
+        description="Peak_Trade Live Monitor CLI\n\n"
+                    "WICHTIG: Read-only Monitoring-Tool für Shadow/Testnet-Runs.\n"
+                    "Keine Order-Erzeugung oder Run-Steuerung.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Beispiele:

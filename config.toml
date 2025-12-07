@@ -248,6 +248,36 @@ lookback_bars = 100             # Lookback für Trend-MA
 stop_pct = 0.03                 # 3% Stop-Loss
 
 # ============================================================================
+# PHASE 40+: REGIME-AWARE PORTFOLIO STRATEGY
+# ============================================================================
+
+[strategy.regime_aware_portfolio]
+# Regime-Aware Portfolio kombiniert mehrere Sub-Strategien mit Vol-Regime-Skalierung
+# Fokus: Kapitalerhalt in volatilen Phasen, volle Exposure in ruhigen Märkten
+#
+# components: Liste von Sub-Strategie-Keys (müssen in config.toml existieren)
+# base_weights: Basisgewichte pro Komponente (werden je nach Regime skaliert)
+# mode: "scale" (Gewichte skalieren) oder "filter" (Risk-Off = Flat)
+#
+# Regime-Skalierung:
+#   - risk_on_scale:  Faktor für Risk-On-Regime (hohe Vol) 
+#   - neutral_scale:  Faktor für Neutral-Regime
+#   - risk_off_scale: Faktor für Risk-Off-Regime (niedrige Vol) → 0.0 = komplett Flat
+components = ["breakout_donchian", "ma_crossover"]
+base_weights.breakout_donchian = 0.5
+base_weights.ma_crossover = 0.5
+regime_strategy = "vol_regime_basic"
+mode = "scale"
+risk_on_scale = 1.0
+neutral_scale = 0.5
+risk_off_scale = 0.0
+signal_threshold = 0.3
+# Vol-Regime-Filter Parameter
+vol_metric = "atr"
+low_vol_threshold = 0.5
+high_vol_threshold = 2.0
+
+# ============================================================================
 # PHASE 18: RESEARCH PLAYGROUND BASELINE STRATEGIEN
 # ============================================================================
 

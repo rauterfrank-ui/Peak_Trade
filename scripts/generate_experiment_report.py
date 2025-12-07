@@ -139,6 +139,12 @@ def parse_args() -> argparse.Namespace:
         help="Directory for plot images (default: <output_dir>/images)",
     )
 
+    parser.add_argument(
+        "--with-regime-heatmaps",
+        action="store_true",
+        help="Include regime-aware heatmaps for regime_aware_* sweeps",
+    )
+
     return parser.parse_args()
 
 
@@ -249,6 +255,7 @@ def main() -> int:
         metadata={
             "source_file": str(input_path),
         },
+        with_regime_heatmaps=args.with_regime_heatmaps,
     )
 
     # Speichere Report

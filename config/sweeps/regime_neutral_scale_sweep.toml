@@ -1,0 +1,13 @@
+# Neutral-Scale Sensitivity Sweep bei risk_off_scale = 0.0
+
+[grid]
+risk_on_scale   = [1.0]
+neutral_scale   = [0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
+risk_off_scale  = [0.0]
+mode            = ["filter"]
+
+[base_config]
+strategy_type   = "regime_aware_portfolio"
+components      = ["breakout", "rsi_reversion"]
+base_weights    = { breakout = 0.6, rsi_reversion = 0.4 }
+regime_strategy = "vol_regime_filter"

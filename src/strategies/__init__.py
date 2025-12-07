@@ -24,6 +24,7 @@ STRATEGY_REGISTRY = {
     "breakout": "breakout",
     "vol_regime_filter": "vol_regime_filter",
     "composite": "composite",
+    "regime_aware_portfolio": "regime_aware_portfolio",
 }
 
 def load_strategy(strategy_name: str):

@@ -289,3 +289,4 @@ class TestLiveDrillSafety:
             if not result.is_live_execution_allowed:
                 assert len(result.reason) > 10  # Mindestens eine Erklärung
 
+

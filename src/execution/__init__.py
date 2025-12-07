@@ -20,6 +20,16 @@ WICHTIG: Es werden KEINE echten Orders an Boersen gesendet.
 """
 from __future__ import annotations
 
-from .pipeline import ExecutionPipeline, ExecutionPipelineConfig, SignalEvent
+from .pipeline import (
+    ExecutionPipeline,
+    ExecutionPipelineConfig,
+    SignalEvent,
+    ExecutionResult,
+)
 
-__all__ = ["ExecutionPipeline", "ExecutionPipelineConfig", "SignalEvent"]
+__all__ = [
+    "ExecutionPipeline",
+    "ExecutionPipelineConfig",
+    "SignalEvent",
+    "ExecutionResult",
+]

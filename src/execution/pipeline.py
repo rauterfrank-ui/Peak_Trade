@@ -14,6 +14,12 @@ Die Pipeline ist bewusst leichtgewichtig gehalten und konzentriert sich auf:
 - Differenz zur aktuellen Position → OrderRequest(s)
 - OrderExecutor (Paper) fuehrt aus → Fills/Results
 
+Phase 16A Erweiterung:
+- Environment- und Safety-Checks vor Order-Ausfuehrung
+- Integration mit SafetyGuard und LiveRiskLimits
+- Optionales Run-Logging ueber LiveRunLogger
+- LIVE-Mode wird hart blockiert (Phase 16A)
+
 WICHTIG: Es werden KEINE echten Orders an Boersen gesendet.
          Alles bleibt auf Paper-/Sandbox-Level.
 """
@@ -23,7 +29,7 @@ import logging
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Dict, Iterable, List, Optional, Sequence, TYPE_CHECKING
 
 import pandas as pd
 
@@ -37,10 +43,37 @@ from ..orders.base import (
 from ..orders.paper import PaperOrderExecutor, PaperMarketContext
 from ..orders.shadow import ShadowOrderExecutor, ShadowMarketContext
 
+if TYPE_CHECKING:
+    from ..core.environment import EnvironmentConfig
+    from ..live.safety import SafetyGuard
+    from ..live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
+    from ..live.run_logging import LiveRunLogger, LiveRunEvent
+
 logger = logging.getLogger(__name__)
 
 # Typ-Alias fuer Signal-Serien
 SignalSeries = pd.Series
+
+
+@dataclass
+class ExecutionResult:
+    """
+    Ergebnis einer Order-Ausfuehrung durch die ExecutionPipeline mit Safety-Checks.
+
+    Phase 16A: Wird von execute_with_safety() zurueckgegeben.
+
+    Attributes:
+        risk_check: Ergebnis des Risk-Checks (falls durchgefuehrt)
+        executed_orders: Liste der ausgeführten Orders (kann leer sein bei Blockierung)
+        rejected: True wenn die Ausfuehrung durch Environment oder Safety blockiert wurde
+        reason: Grund fuer Blockierung (falls rejected=True)
+        execution_results: Liste der OrderExecutionResults vom Executor
+    """
+    risk_check: Optional["LiveRiskCheckResult"] = None
+    executed_orders: List[OrderExecutionResult] = field(default_factory=list)
+    rejected: bool = False
+    reason: Optional[str] = None
+    execution_results: List[OrderExecutionResult] = field(default_factory=list)
 
 
 @dataclass
@@ -172,6 +205,10 @@ class ExecutionPipeline:
         self,
         executor: OrderExecutor,
         config: Optional[ExecutionPipelineConfig] = None,
+        env_config: Optional["EnvironmentConfig"] = None,
+        safety_guard: Optional["SafetyGuard"] = None,
+        risk_limits: Optional["LiveRiskLimits"] = None,
+        run_logger: Optional["LiveRunLogger"] = None,
     ) -> None:
         """
         Initialisiert die ExecutionPipeline.
@@ -180,11 +217,21 @@ class ExecutionPipeline:
             executor: OrderExecutor-Instanz (z.B. PaperOrderExecutor).
                       WICHTIG: In dieser Phase nur PaperOrderExecutor verwenden.
             config: Optionale Konfiguration. Falls None, wird Default-Config verwendet.
+            env_config: Optional EnvironmentConfig fuer Safety-Checks (Phase 16A)
+            safety_guard: Optional SafetyGuard fuer Safety-Checks (Phase 16A)
+            risk_limits: Optional LiveRiskLimits fuer Risk-Checks (Phase 16A)
+            run_logger: Optional LiveRunLogger fuer Run-Logging (Phase 16A)
         """
         self._executor = executor
         self._config = config if config is not None else ExecutionPipelineConfig()
         self._execution_history: List[OrderExecutionResult] = []
         self._order_counter = 0
+        
+        # Phase 16A: Safety-Komponenten
+        self._env_config = env_config
+        self._safety_guard = safety_guard
+        self._risk_limits = risk_limits
+        self._run_logger = run_logger
 
     @property
     def config(self) -> ExecutionPipelineConfig:
@@ -643,3 +690,282 @@ class ExecutionPipeline:
         """Setzt die Pipeline zurueck (loescht Historie und Counter)."""
         self._execution_history.clear()
         self._order_counter = 0
+
+    # =============================================================================
+    # Phase 16A: execute_with_safety() - Safety-Check-Wrapper
+    # =============================================================================
+
+    def execute_with_safety(
+        self,
+        orders: Sequence[OrderRequest],
+        context: Optional[Dict[str, Any]] = None,
+    ) -> ExecutionResult:
+        """
+        Fuehrt Orders mit vollstaendigen Safety- und Risk-Checks aus (Phase 16A).
+
+        Workflow:
+        1. Environment-Check: LIVE-Mode wird hart blockiert
+        2. SafetyGuard-Check: Prueft ob Order-Platzierung erlaubt ist
+        3. Risk-Check: Optional LiveRiskLimits-Check (wenn konfiguriert)
+        4. Executor: Fuehrt Orders aus (wenn alle Checks passiert)
+        5. Run-Logging: Loggt Events (wenn run_logger konfiguriert)
+
+        Args:
+            orders: Liste von OrderRequests
+            context: Optionaler Kontext-Dict (z.B. {"current_price": 50000.0})
+
+        Returns:
+            ExecutionResult mit Risk-Check-Ergebnis, executed_orders, rejected-Flag
+
+        Raises:
+            RuntimeError: Wenn LIVE-Mode erkannt wird (Phase 16A: hart blockiert)
+
+        Example:
+            >>> from src.core.environment import EnvironmentConfig, TradingEnvironment
+            >>> from src.live.safety import SafetyGuard
+            >>> from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+            >>>
+            >>> env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
+            >>> safety_guard = SafetyGuard(env_config=env_config)
+            >>> executor = PaperOrderExecutor(PaperMarketContext(prices={"BTC/EUR": 50000}))
+            >>>
+            >>> pipeline = ExecutionPipeline(
+            ...     executor=executor,
+            ...     env_config=env_config,
+            ...     safety_guard=safety_guard,
+            ... )
+            >>>
+            >>> order = OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.01)
+            >>> result = pipeline.execute_with_safety([order])
+            >>> print(f"Rejected: {result.rejected}, Executed: {len(result.executed_orders)}")
+        """
+        if not orders:
+            return ExecutionResult(
+                rejected=False,
+                executed_orders=[],
+                execution_results=[],
+                reason=None,
+            )
+
+        orders_list = list(orders)
+
+        # 1. Environment-Check: LIVE-Mode hart blockieren (Phase 16A)
+        if self._env_config is not None:
+            if self._env_config.is_live:
+                reason = "live_mode_not_supported_in_phase_16a"
+                logger.error(
+                    f"[EXECUTION PIPELINE] LIVE-Mode blockiert in Phase 16A. "
+                    f"Keine Orders werden ausgefuehrt."
+                )
+                return ExecutionResult(
+                    rejected=True,
+                    executed_orders=[],
+                    execution_results=[],
+                    reason=reason,
+                )
+
+        # 2. SafetyGuard-Check
+        if self._safety_guard is not None:
+            try:
+                # SafetyGuard.ensure_may_place_order() wirft Exception bei Blockierung
+                # Wir pruefen nur, ob wir im Testnet sind (fuer is_testnet Flag)
+                is_testnet = (
+                    self._env_config.is_testnet
+                    if self._env_config is not None
+                    else False
+                )
+                self._safety_guard.ensure_may_place_order(is_testnet=is_testnet)
+            except Exception as e:
+                reason = f"safety_guard_blocked: {str(e)}"
+                logger.warning(
+                    f"[EXECUTION PIPELINE] SafetyGuard blockiert Orders: {reason}"
+                )
+                return ExecutionResult(
+                    rejected=True,
+                    executed_orders=[],
+                    execution_results=[],
+                    reason=reason,
+                )
+
+        # 3. Risk-Check (optional, wenn LiveRiskLimits konfiguriert)
+        risk_result: Optional["LiveRiskCheckResult"] = None
+        if self._risk_limits is not None:
+            # Konvertiere OrderRequest zu LiveOrderRequest fuer Risk-Check
+            live_orders = self._convert_to_live_orders(orders_list, context)
+            risk_result = self._risk_limits.check_orders(live_orders)
+
+            if not risk_result.allowed:
+                reason = f"risk_limits_violated: {', '.join(risk_result.reasons)}"
+                logger.warning(
+                    f"[EXECUTION PIPELINE] Risk-Limits blockieren Orders: {reason}"
+                )
+                # Optional: Run-Logger Event mit abgelehnter Ausfuehrung
+                if self._run_logger is not None:
+                    self._log_rejected_execution(orders_list, reason, risk_result)
+                return ExecutionResult(
+                    rejected=True,
+                    executed_orders=[],
+                    execution_results=[],
+                    risk_check=risk_result,
+                    reason=reason,
+                )
+
+        # 4. Executor: Fuehre Orders aus
+        execution_results = self._executor.execute_orders(orders_list)
+        self._execution_history.extend(execution_results)
+
+        # 5. Run-Logging (optional)
+        if self._run_logger is not None:
+            self._log_execution_results(execution_results, risk_result)
+
+        # Erfolgreiche Ausfuehrung
+        return ExecutionResult(
+            rejected=False,
+            executed_orders=execution_results,
+            execution_results=execution_results,
+            risk_check=risk_result,
+            reason=None,
+        )
+
+    def _convert_to_live_orders(
+        self,
+        orders: List[OrderRequest],
+        context: Optional[Dict[str, Any]] = None,
+    ) -> List[Any]:
+        """
+        Konvertiert OrderRequests zu LiveOrderRequests fuer Risk-Check.
+
+        Args:
+            orders: Liste von OrderRequests
+            context: Optionaler Kontext (z.B. {"current_price": 50000.0})
+
+        Returns:
+            Liste von LiveOrderRequests
+        """
+        # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
+        from ..live.orders import LiveOrderRequest
+
+        live_orders: List[LiveOrderRequest] = []
+        current_price = (
+            context.get("current_price") if context else None
+        ) or 0.0  # Fallback
+
+        for i, order in enumerate(orders):
+            # Notional berechnen
+            notional = order.quantity * current_price if current_price > 0 else None
+
+            # Side konvertieren: "buy"/"sell" -> "BUY"/"SELL"
+            side: "Side" = "BUY" if order.side == "buy" else "SELL"
+
+            live_order = LiveOrderRequest(
+                client_order_id=order.client_id
+                or f"exec_{i}_{uuid.uuid4().hex[:8]}",
+                symbol=order.symbol,
+                side=side,
+                order_type="MARKET" if order.order_type == "market" else "LIMIT",
+                quantity=order.quantity,
+                notional=notional,
+                strategy_key=order.metadata.get("strategy_key"),
+                extra=order.metadata,
+            )
+            live_orders.append(live_order)
+
+        return live_orders
+
+    def _log_execution_results(
+        self,
+        execution_results: List[OrderExecutionResult],
+        risk_result: Optional["LiveRiskCheckResult"],
+    ) -> None:
+        """
+        Loggt Execution-Results ueber den Run-Logger (Phase 16A).
+
+        Args:
+            execution_results: Liste von OrderExecutionResults
+            risk_result: Optionales Risk-Check-Ergebnis
+        """
+        if self._run_logger is None:
+            return
+
+        try:
+            # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
+            from ..live.run_logging import LiveRunEvent
+            from datetime import timezone
+
+            now = datetime.now(timezone.utc)
+
+            for result in execution_results:
+                # Erstelle Event fuer jede ausgeführte Order
+                event = LiveRunEvent(
+                    step=self._order_counter,
+                    ts_event=now,
+                    orders_generated=1,
+                    orders_filled=1 if result.is_filled else 0,
+                    orders_rejected=1 if result.is_rejected else 0,
+                    risk_allowed=risk_result.allowed if risk_result else True,
+                    risk_reasons="; ".join(risk_result.reasons) if risk_result and risk_result.reasons else "",
+                    extra={
+                        "order_symbol": result.request.symbol,
+                        "order_side": result.request.side,
+                        "order_quantity": result.request.quantity,
+                        "execution_status": result.status,
+                    },
+                )
+
+                if result.fill:
+                    event.price = result.fill.price
+                    event.extra["fill_price"] = result.fill.price
+                    event.extra["fill_quantity"] = result.fill.quantity
+                    if result.fill.fee:
+                        event.extra["fill_fee"] = result.fill.fee
+
+                self._run_logger.log_event(event)
+
+        except Exception as e:
+            logger.warning(
+                f"[EXECUTION PIPELINE] Run-Logging fehlgeschlagen: {e}"
+            )
+
+    def _log_rejected_execution(
+        self,
+        orders: List[OrderRequest],
+        reason: str,
+        risk_result: Optional["LiveRiskCheckResult"],
+    ) -> None:
+        """
+        Loggt abgelehnte Ausfuehrung ueber den Run-Logger (Phase 16A).
+
+        Args:
+            orders: Liste von abgelehnten Orders
+            reason: Grund fuer Ablehnung
+            risk_result: Optionales Risk-Check-Ergebnis
+        """
+        if self._run_logger is None:
+            return
+
+        try:
+            # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
+            from ..live.run_logging import LiveRunEvent
+            from datetime import timezone
+
+            now = datetime.now(timezone.utc)
+
+            event = LiveRunEvent(
+                step=self._order_counter,
+                ts_event=now,
+                orders_generated=len(orders),
+                orders_blocked=len(orders),
+                risk_allowed=False,
+                risk_reasons=reason,
+                extra={
+                    "rejection_reason": reason,
+                    "n_orders": len(orders),
+                },
+            )
+
+            self._run_logger.log_event(event)
+
+        except Exception as e:
+            logger.warning(
+                f"[EXECUTION PIPELINE] Run-Logging (rejected) fehlgeschlagen: {e}"
+            )

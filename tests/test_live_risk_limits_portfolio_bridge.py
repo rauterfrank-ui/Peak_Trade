@@ -316,3 +316,4 @@ def test_evaluate_portfolio_empty_portfolio():
     assert result.metrics["portfolio_num_open_positions"] == 0
     assert result.metrics["portfolio_total_notional"] == 0.0
 
+

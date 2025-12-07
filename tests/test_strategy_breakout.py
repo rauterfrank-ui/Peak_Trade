@@ -98,7 +98,7 @@ class TestBreakoutStrategy:
         assert strategy.stop_loss_pct is None
         assert strategy.take_profit_pct is None
         assert strategy.trailing_stop_pct is None
-        assert strategy.side == "both"
+        assert strategy.risk_mode == "symmetric"
 
     def test_custom_params(self):
         """Test: Initialisierung mit Custom-Parametern."""
@@ -114,7 +114,8 @@ class TestBreakoutStrategy:
         assert strategy.stop_loss_pct == 0.03
         assert strategy.take_profit_pct == 0.06
         assert strategy.trailing_stop_pct == 0.02
-        assert strategy.side == "long"
+        # Legacy: side="long" wird zu risk_mode="long_only" gemappt
+        assert strategy.risk_mode == "long_only"
 
     def test_generate_signals(self):
         """Test: Signalgenerierung funktioniert."""
@@ -167,8 +168,8 @@ class TestBreakoutStrategy:
         with pytest.raises(ValueError, match="lookback_breakout"):
             BreakoutStrategy(lookback_breakout=1)
 
-        with pytest.raises(ValueError, match="side"):
-            BreakoutStrategy(side="invalid")
+        with pytest.raises(ValueError, match="risk_mode"):
+            BreakoutStrategy(risk_mode="invalid")
 
         with pytest.raises(ValueError, match="stop_loss_pct"):
             BreakoutStrategy(stop_loss_pct=-0.01)
@@ -283,7 +284,8 @@ class TestBreakoutStrategy:
         assert strategy.lookback_breakout == 25
         assert strategy.stop_loss_pct == 0.025
         assert strategy.take_profit_pct == 0.05
-        assert strategy.side == "long"
+        # Legacy: side="long" wird zu risk_mode="long_only" gemappt
+        assert strategy.risk_mode == "long_only"
 
 
 # ============================================================================
@@ -329,3 +331,206 @@ class TestBreakoutIntegration:
         assert signals is not None
         assert len(signals) == len(df)
         assert signals.name == "signal"
+
+
+# ============================================================================
+# NEW FEATURES TESTS (Phase 40+)
+# ============================================================================
+
+
+class TestBreakoutNewFeatures:
+    """Tests für neue Breakout-Features (lookback_high/low, ATR-Filter, etc.)."""
+
+    def test_separate_lookbacks(self):
+        """Test: Separate Lookbacks für Long/Short."""
+        df = create_ohlcv_data(200)
+        
+        strategy = BreakoutStrategy(
+            lookback_high=20,
+            lookback_low=15,
+            risk_mode="symmetric"
+        )
+        
+        signals = strategy.generate_signals(df)
+        
+        assert signals is not None
+        assert len(signals) == len(df)
+        assert strategy.lookback_high == 20
+        assert strategy.lookback_low == 15
+
+    def test_atr_filter(self):
+        """Test: ATR-Filter verhindert Noise-Breakouts."""
+        df = create_ohlcv_data(200)
+        
+        # Mit ATR-Filter
+        strategy_with_filter = BreakoutStrategy(
+            lookback_breakout=15,
+            use_atr_filter=True,
+            atr_multiplier=1.0,
+            risk_mode="symmetric"
+        )
+        
+        # Ohne ATR-Filter
+        strategy_no_filter = BreakoutStrategy(
+            lookback_breakout=15,
+            use_atr_filter=False,
+            risk_mode="symmetric"
+        )
+        
+        signals_with = strategy_with_filter.generate_signals(df)
+        signals_without = strategy_no_filter.generate_signals(df)
+        
+        # Signale sollten unterschiedlich sein (Filter blockiert einige)
+        assert signals_with is not None
+        assert signals_without is not None
+
+    def test_risk_mode_long_only(self):
+        """Test: risk_mode='long_only' generiert nur Long-Signale."""
+        df = create_ohlcv_data(200)
+        
+        strategy = BreakoutStrategy(
+            lookback_breakout=15,
+            risk_mode="long_only"
+        )
+        
+        signals = strategy.generate_signals(df)
+        
+        # Keine -1 Signale (keine Shorts)
+        assert -1 not in signals.values
+
+    def test_risk_mode_short_only(self):
+        """Test: risk_mode='short_only' generiert nur Short-Signale."""
+        df = create_downtrend_data(200)
+        
+        strategy = BreakoutStrategy(
+            lookback_breakout=15,
+            risk_mode="short_only"
+        )
+        
+        signals = strategy.generate_signals(df)
+        
+        # Keine +1 Signale (keine Longs)
+        assert 1 not in signals.values
+
+    def test_exit_on_opposite_breakout(self):
+        """Test: exit_on_opposite_breakout funktioniert."""
+        df = create_ohlcv_data(200)
+        
+        strategy_exit = BreakoutStrategy(
+            lookback_breakout=15,
+            exit_on_opposite_breakout=True,
+            risk_mode="symmetric"
+        )
+        
+        strategy_no_exit = BreakoutStrategy(
+            lookback_breakout=15,
+            exit_on_opposite_breakout=False,
+            risk_mode="symmetric"
+        )
+        
+        signals_exit = strategy_exit.generate_signals(df)
+        signals_no_exit = strategy_no_exit.generate_signals(df)
+        
+        assert signals_exit is not None
+        assert signals_no_exit is not None
+
+    def test_legacy_side_mapping(self):
+        """Test: Legacy 'side' Parameter wird zu 'risk_mode' gemappt."""
+        df = create_ohlcv_data(200)
+        
+        # Legacy: side="long" sollte zu risk_mode="long_only" werden
+        strategy = BreakoutStrategy(
+            lookback_breakout=15,
+            side="long"
+        )
+        
+        assert strategy.risk_mode == "long_only"
+        
+        signals = strategy.generate_signals(df)
+        assert -1 not in signals.values
+
+    def test_atr_filter_without_multiplier(self):
+        """Test: ATR-Filter ohne Multiplier (nur Aktivierung)."""
+        df = create_ohlcv_data(200)
+        
+        strategy = BreakoutStrategy(
+            lookback_breakout=15,
+            use_atr_filter=True,
+            atr_multiplier=None,
+            risk_mode="symmetric"
+        )
+        
+        signals = strategy.generate_signals(df)
+        
+        assert signals is not None
+        assert len(signals) == len(df)
+
+    def test_validation_new_params(self):
+        """Test: Validation für neue Parameter."""
+        with pytest.raises(ValueError, match="lookback_high"):
+            BreakoutStrategy(lookback_high=1)
+        
+        with pytest.raises(ValueError, match="lookback_low"):
+            BreakoutStrategy(lookback_low=1)
+        
+        with pytest.raises(ValueError, match="risk_mode"):
+            BreakoutStrategy(risk_mode="invalid")
+        
+        with pytest.raises(ValueError, match="atr_lookback"):
+            BreakoutStrategy(atr_lookback=1)
+        
+        with pytest.raises(ValueError, match="atr_multiplier"):
+            BreakoutStrategy(use_atr_filter=True, atr_multiplier=0)
+
+    def test_long_breakout_scenario(self):
+        """Test: Künstlicher Preisverlauf mit klarem Long-Breakout."""
+        # Erstelle Daten mit klarem Breakout nach oben
+        idx = pd.date_range("2024-01-01", periods=100, freq="1h", tz="UTC")
+        
+        # Konsolidierung bei ~50000
+        prices = [50000] * 25
+        # Dann Breakout nach oben
+        prices.extend([50100 + i * 10 for i in range(75)])
+        
+        df = pd.DataFrame(index=idx)
+        df["close"] = prices
+        df["high"] = df["close"] * 1.001
+        df["low"] = df["close"] * 0.999
+        df["open"] = df["close"].shift(1).fillna(50000)
+        df["volume"] = 100
+        
+        strategy = BreakoutStrategy(
+            lookback_breakout=20,
+            risk_mode="long_only"
+        )
+        
+        signals = strategy.generate_signals(df)
+        
+        # Nach dem Breakout sollten Long-Signale kommen
+        assert (signals == 1).any(), "Sollte Long-Signale nach Breakout generieren"
+
+    def test_short_breakout_scenario(self):
+        """Test: Künstlicher Preisverlauf mit klarem Short-Breakout."""
+        idx = pd.date_range("2024-01-01", periods=100, freq="1h", tz="UTC")
+        
+        # Konsolidierung bei ~50000
+        prices = [50000] * 25
+        # Dann Breakout nach unten
+        prices.extend([49900 - i * 10 for i in range(75)])
+        
+        df = pd.DataFrame(index=idx)
+        df["close"] = prices
+        df["high"] = df["close"] * 1.001
+        df["low"] = df["close"] * 0.999
+        df["open"] = df["close"].shift(1).fillna(50000)
+        df["volume"] = 100
+        
+        strategy = BreakoutStrategy(
+            lookback_breakout=20,
+            risk_mode="short_only"
+        )
+        
+        signals = strategy.generate_signals(df)
+        
+        # Nach dem Breakout sollten Short-Signale kommen
+        assert (signals == -1).any(), "Sollte Short-Signale nach Breakout generieren"

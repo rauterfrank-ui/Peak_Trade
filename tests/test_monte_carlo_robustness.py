@@ -256,3 +256,4 @@ def test_run_monte_carlo_different_seeds(sample_returns):
     tr2 = summary2.metric_distributions["total_return"]
     assert not tr1.equals(tr2)
 
+

@@ -306,3 +306,4 @@ def test_load_returns_for_top_config_dummy():
     assert len(returns) == 100
     assert isinstance(returns.index, pd.DatetimeIndex)
 
+

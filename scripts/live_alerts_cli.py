@@ -45,7 +45,9 @@ def build_parser() -> argparse.ArgumentParser:
     """Baut den Argument-Parser für Live-Alerts CLI."""
     parser = argparse.ArgumentParser(
         prog="live_alerts",
-        description="Peak_Trade Live Alerts CLI",
+        description="Peak_Trade Live Alerts CLI\n\n"
+                    "WICHTIG: Alert-System für Shadow/Testnet-Runs.\n"
+                    "Sendet nur Notifications, keine Trading-Operationen.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Beispiele:
