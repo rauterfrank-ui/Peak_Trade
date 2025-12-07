@@ -706,6 +706,22 @@ python scripts/generate_live_status_report.py \
 
 ### 10.2 Live-Readiness v1.1 – Execution Design & Gating (Phase 71)
 
+### 10.3 Live-Operator-Konsole & Status-CLI (Phase 72)
+
+**Status:** Read-Only Status-CLI (keine State-Änderungen)
+
+**Was Phase 72 getan hat:**
+- ✅ Read-Only Status-CLI implementiert (`scripts/live_operator_status.py`)
+- ✅ Status-Report-Generierung mit allen relevanten Informationen
+- ✅ Integration von `is_live_execution_allowed()` für klare Gating-Erklärungen
+- ✅ LiveRiskLimits-Anzeige (Phase 71: Design)
+- ✅ Phase-71/72-Hinweise für Operatoren
+- ✅ Tests für Status-Logik hinzugefügt
+
+**WICHTIG:** Phase 72 ist **reiner Status & Transparenz** – keine Config-Änderungen, keine State-Änderungen, keine echten Orders.
+
+**Details:** Siehe [`docs/PHASE_72_LIVE_OPERATOR_CONSOLE.md`](PHASE_72_LIVE_OPERATOR_CONSOLE.md)
+
 **Status:** Design & Dry-Wiring (keine echte Live-Aktivierung)
 
 **Was Phase 71 getan hat:**
