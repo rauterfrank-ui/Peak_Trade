@@ -1,0 +1,63 @@
+# config/scenarios/sideways_low_vol.toml
+# =============================================================================
+# Peak_Trade Research Scenario: Sideways Low Volatility (Phase 82)
+# =============================================================================
+#
+# Simuliert einen langen Seitwärtsmarkt mit niedriger Volatilität.
+# Typisch: Range-gebundener Markt ohne klare Richtung.
+#
+# Verwendung:
+# - E2E-Tests für Mean-Reversion-Strategien
+# - Stress-Test für Trend-Following-Strategien
+# - Baseline-Expectations für Regression-Detection
+#
+
+[scenario]
+name = "sideways_low_vol"
+description = "Langer Seitwärtsmarkt mit niedriger Volatilität"
+category = "regime"
+severity = 0.4
+
+[scenario.market_conditions]
+# Marktbedingungen während des Szenarios
+volatility = "low"              # low, medium, high, extreme
+trend = "sideways"              # up, down, sideways, sharp_decline, sharp_rise
+duration_bars = 200             # Anzahl der Bars für das Szenario (länger = schwieriger für Trend)
+range_percent = 5.0             # Prozentuale Range (Hoch-Tief)
+
+[scenario.price_impact]
+# Preisbewegungen
+max_range_high = 2.5            # % über dem Mittel
+max_range_low = -2.5            # % unter dem Mittel
+mean_reversion_strength = 0.8   # Wie stark Preise zum Mittel zurückkehren (0-1)
+
+[scenario.test_expectations]
+# Erwartete Strategie-Performance unter diesem Szenario
+baseline_max_portfolio_drawdown = -10.0  # % - erwarteter Portfolio-Drawdown
+baseline_min_sharpe = 0.0                # Sharpe während des Szenarios
+allow_negative_returns = true            # Negative Returns sind akzeptabel
+max_acceptable_drawdown = -20.0          # % - absolutes Limit
+
+# Mean-Reversion sollte besser performen als Trend-Following
+expected_winners = ["rsi_reversion", "bollinger_bands", "mean_reversion"]
+expected_losers = ["trend_following", "breakout", "momentum_1h"]
+
+[scenario.applicable_strategies]
+# Strategien, für die dieses Szenario besonders relevant ist
+primary = ["rsi_reversion", "bollinger_bands", "mean_reversion"]
+secondary = ["macd", "vol_regime_filter"]
+not_applicable = []
+
+[scenario.notes]
+description = """
+Sideways Low-Vol Szenario basiert auf typischen Konsolidierungsphasen:
+- Crypto-Märkte nach großen Moves (oft wochenlange Ranges)
+- Forex-Majors bei niedriger Volatilität
+- Equity-Indizes zwischen Earnings-Seasons
+
+Testet:
+- Overtrading-Risiko bei Trend-Following
+- False-Breakout-Anfälligkeit
+- Mean-Reversion-Effizienz in Ranges
+- Trading-Kosten-Sensitivität (viele kleine Trades)
+"""

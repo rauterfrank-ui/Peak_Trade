@@ -1,0 +1,69 @@
+# config/scenarios/trend_regime.toml
+# =============================================================================
+# Peak_Trade Research Scenario: Strong Trend Regime (Phase 82)
+# =============================================================================
+#
+# Simuliert einen sauberen, starken Trend (Auf- oder Abwärtstrend).
+# Typisch: Klare Richtung mit moderater Volatilität.
+#
+# Verwendung:
+# - E2E-Tests für Trend-Following-Strategien
+# - Stress-Test für Mean-Reversion-Strategien
+# - Baseline-Expectations für Regression-Detection
+#
+
+[scenario]
+name = "trend_regime"
+description = "Sauberer, starker Aufwärtstrend mit moderater Volatilität"
+category = "regime"
+severity = 0.3
+
+[scenario.market_conditions]
+# Marktbedingungen während des Szenarios
+volatility = "medium"           # low, medium, high, extreme
+trend = "up"                    # up, down, sideways, sharp_decline, sharp_rise
+duration_bars = 150             # Anzahl der Bars für das Szenario
+trend_strength = 0.7            # Trendstärke (0-1)
+
+[scenario.price_impact]
+# Preisbewegungen
+total_move_percent = 40.0       # Gesamtbewegung über das Szenario
+pullback_depth_percent = 5.0    # Typische Pullback-Tiefe
+pullback_frequency = 0.2        # Wie oft Pullbacks auftreten (0-1)
+
+[scenario.test_expectations]
+# Erwartete Strategie-Performance unter diesem Szenario
+baseline_max_portfolio_drawdown = -15.0  # % - erwarteter Portfolio-Drawdown
+baseline_min_sharpe = 1.0                # Sharpe während des Szenarios
+allow_negative_returns = false           # Negative Returns NICHT akzeptabel in starkem Trend
+max_acceptable_drawdown = -25.0          # % - absolutes Limit
+
+# Trend-Following sollte besser performen als Mean-Reversion
+expected_winners = ["trend_following", "ma_crossover", "breakout", "momentum_1h"]
+expected_losers = ["rsi_reversion"]  # MR kann gegen den Trend verlieren
+
+[scenario.applicable_strategies]
+# Strategien, für die dieses Szenario besonders relevant ist
+primary = ["trend_following", "ma_crossover", "breakout", "macd"]
+secondary = ["momentum_1h", "vol_regime_filter"]
+not_applicable = []
+
+[scenario.notes]
+description = """
+Strong Trend Regime basiert auf typischen Bull/Bear-Runs:
+- Bitcoin Bull-Runs (2017, 2020-2021)
+- Equity-Rallies nach Crashes
+- Währungs-Trends bei Zentralbank-Divergenz
+
+Testet:
+- Trend-Following-Effizienz
+- Pyramiding/Position-Building-Strategien
+- Mean-Reversion-Risiko gegen den Trend
+- Exit-Timing bei Trend-Erschöpfung
+"""
+
+[scenario.variants]
+# Varianten dieses Szenarios
+downtrend = { trend = "down", total_move_percent = -40.0 }
+weak_trend = { trend_strength = 0.4, total_move_percent = 20.0 }
+volatile_trend = { volatility = "high", pullback_depth_percent = 10.0 }
