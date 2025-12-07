@@ -212,7 +212,18 @@ Neben formaler Governance (Freigaben, Checklisten) werden regelmäßig **Inciden
 - Alle Drills werden in [`INCIDENT_DRILL_LOG.md`](INCIDENT_DRILL_LOG.md) protokolliert
 - Erkenntnisse werden in Runbooks & Governance-Doku eingearbeitet
 
-### 4.5 Notfall-Entscheidungen
+### 4.5 Live Status Reports
+
+Regelmäßige Status-Reports (z.B. daily/weekly) sind Teil der operativen Governance und Monitoring-Strategie. Reports werden mit [`generate_live_status_report.py`](../scripts/generate_live_status_report.py) generiert und dokumentieren den aktuellen Systemzustand (Health, Portfolio, Risk).
+
+**Empfohlene Frequenz:**
+- **Daily**: Schneller Health-Check (Markdown)
+- **Weekly**: Detaillierter Review (Markdown + HTML)
+- **Incident**: Vor/Nach Incident-Dokumentation
+
+**Siehe:** [`LIVE_STATUS_REPORTS.md`](LIVE_STATUS_REPORTS.md) für Details.
+
+### 4.6 Notfall-Entscheidungen
 
 **Bei kritischen Incidents:**
 

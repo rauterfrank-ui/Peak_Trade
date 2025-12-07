@@ -326,6 +326,10 @@ Portfolio-basierte Promotions von Research → Testnet/Live folgen dem in [`PLAY
 
 Incident-Drills sind etabliert und werden regelmäßig durchgeführt, um Runbooks, Tooling und Alerts praktisch zu validieren. Die Drill-Szenarien sind in [`INCIDENT_SIMULATION_AND_DRILLS.md`](INCIDENT_SIMULATION_AND_DRILLS.md) dokumentiert, alle durchgeführten Drills werden in [`INCIDENT_DRILL_LOG.md`](INCIDENT_DRILL_LOG.md) protokolliert.
 
+**Live Status Reports (Phase 57):**
+
+Live-Status-Reports ermöglichen tägliche/wöchentliche Snapshots des Systemzustands (Health, Portfolio, Risk). Reports werden mit [`generate_live_status_report.py`](../scripts/generate_live_status_report.py) generiert und in `reports/live_status/` gespeichert. Siehe [`LIVE_STATUS_REPORTS.md`](LIVE_STATUS_REPORTS.md) für Details.
+
 ---
 
 ## 9. CLI-Tooling für Live-/Testnet-Operationen (≈ 95%)

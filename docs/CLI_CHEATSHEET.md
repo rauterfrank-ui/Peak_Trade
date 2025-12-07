@@ -358,7 +358,46 @@ python scripts/live_ops.py health --config config/config.toml --json
 
 ---
 
-## 13. Scheduler & Job Runner
+## 13. Live Status Reports (Phase 57)
+
+Generiert Daily/Weekly Live-Status-Reports (Markdown/HTML) basierend auf `live_ops` health und portfolio Commands.
+
+| Command | Beschreibung |
+|---------|--------------|
+| `python scripts/generate_live_status_report.py --config ... --format markdown --tag daily` | Daily-Report (Markdown) |
+| `python scripts/generate_live_status_report.py --config ... --format both --tag weekly` | Weekly-Report (Markdown + HTML) |
+
+### Basic Usage
+
+```bash
+# Daily-Report (Markdown only)
+python scripts/generate_live_status_report.py \
+  --config config/config.toml \
+  --output-dir reports/live_status \
+  --format markdown \
+  --tag daily
+
+# Weekly-Report (Markdown + HTML)
+python scripts/generate_live_status_report.py \
+  --config config/config.toml \
+  --output-dir reports/live_status \
+  --format both \
+  --tag weekly
+
+# Report mit Operator-Notizen
+python scripts/generate_live_status_report.py \
+  --config config/config.toml \
+  --output-dir reports/live_status \
+  --format markdown \
+  --tag daily \
+  --notes-file docs/live_status_notes.md
+```
+
+**Siehe:** [LIVE_STATUS_REPORTS.md](LIVE_STATUS_REPORTS.md) für Details.
+
+---
+
+## 14. Scheduler & Job Runner
 
 ```bash
 # Scheduler Dry-Run (nur anzeigen)
