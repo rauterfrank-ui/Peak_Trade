@@ -34,8 +34,8 @@ Dieses Dokument ist ein **konkretes Referenz-Szenario** für das Portfolio-Prese
 
 `multi_style_moderate` ist ein Portfolio-Rezept aus `config/portfolio_recipes.toml`. Es kombiniert mehrere Strategien (RSI-Reversion, MA-Trend, Trend-Following) in einem moderaten Risk-Profil.
 
-**Datei:** `config/portfolio_recipes.toml`  
-**Abschnitt:** `[recipes.multi_style_moderate]`
+**Datei:** `config/portfolio_recipes.toml`
+**Abschnitt:** `[portfolio_recipes.multi_style_moderate]`
 
 ### 2.2 Portfolio-Zusammensetzung
 
