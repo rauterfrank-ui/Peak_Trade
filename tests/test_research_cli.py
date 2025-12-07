@@ -47,6 +47,7 @@ class TestBuildParser:
         assert "promote" in subparsers_action.choices
         assert "walkforward" in subparsers_action.choices
         assert "montecarlo" in subparsers_action.choices
+        assert "stress" in subparsers_action.choices
         assert "pipeline" in subparsers_action.choices
 
     def test_sweep_subparser_has_required_args(self):
@@ -108,6 +109,24 @@ class TestBuildParser:
         assert args.config == "config/config.toml"
         assert args.top_n == 3
         assert args.num_runs == 1000
+
+    def test_stress_subparser_has_required_args(self):
+        """Stress-Test-Subparser hat erwartete Argumente."""
+        parser = research_cli.build_parser()
+        args = parser.parse_args([
+            "stress",
+            "--sweep-name", "test",
+            "--config", "config/config.toml",
+            "--top-n", "3",
+            "--scenarios", "single_crash_bar", "vol_spike",
+        ])
+        
+        assert args.command == "stress"
+        assert args.sweep_name == "test"
+        assert args.config == "config/config.toml"
+        assert args.top_n == 3
+        assert "single_crash_bar" in args.scenarios
+        assert "vol_spike" in args.scenarios
 
     def test_pipeline_subparser_has_required_args(self):
         """Pipeline-Subparser hat erwartete Argumente."""
@@ -205,6 +224,24 @@ class TestMain:
         assert mock_run_montecarlo.called
         call_args = mock_run_montecarlo.call_args[0][0]
         assert call_args.command == "montecarlo"
+        assert call_args.sweep_name == "dummy"
+
+    @patch("scripts.research_cli.run_stress_from_args")
+    def test_main_stress_calls_stress_runner(self, mock_run_stress):
+        """Stress-Test-Command ruft run_stress_from_args auf."""
+        mock_run_stress.return_value = 0
+        
+        exit_code = research_cli.main([
+            "stress",
+            "--sweep-name", "dummy",
+            "--config", "config/config.toml",
+            "--top-n", "3",
+        ])
+        
+        assert exit_code == 0
+        assert mock_run_stress.called
+        call_args = mock_run_stress.call_args[0][0]
+        assert call_args.command == "stress"
         assert call_args.sweep_name == "dummy"
 
     @patch("scripts.research_cli.run_pipeline")

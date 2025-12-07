@@ -92,6 +92,11 @@ from .monte_carlo_report import (
     build_monte_carlo_report,
 )
 
+# Phase 46: Stress-Test Reports
+from .stress_test_report import (
+    build_stress_test_report,
+)
+
 __all__ = [
     # Execution Reports (Phase 16D)
     "ExecutionStats",
@@ -149,4 +154,6 @@ __all__ = [
     "save_report",
     # Phase 45: Monte-Carlo Reports
     "build_monte_carlo_report",
+    # Phase 46: Stress-Test Reports
+    "build_stress_test_report",
 ]
