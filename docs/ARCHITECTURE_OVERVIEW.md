@@ -10,6 +10,8 @@ Das Framework ermöglicht:
 - **Live-Trading**: Sichere Live-/Testnet-Umgebung mit Risk-Limits und Alerts
 - **Governance & Safety**: Klare Trennung zwischen Research und Live, umfassende Safety-Mechanismen
 
+> **Für einen schnellen Einstieg siehe:** [`GETTING_STARTED.md`](GETTING_STARTED.md) und das Haupt-[`README.md`](../README.md).
+
 > **Für Developer-Guides zu typischen Erweiterungen siehe:**
 > - `DEV_GUIDE_ADD_STRATEGY.md` – Neue Strategie hinzufügen
 > - `DEV_GUIDE_ADD_EXCHANGE.md` – Neuen Exchange-Adapter hinzufügen

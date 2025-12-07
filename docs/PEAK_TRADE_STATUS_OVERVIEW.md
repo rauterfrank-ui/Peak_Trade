@@ -1,13 +1,15 @@
-# Peak_Trade – Projekt-Status Overview (Phasen 1–54)
+# Peak_Trade – Projekt-Status Overview (Phasen 1–58)
 
 Dieses Dokument beschreibt den aktuellen Gesamtstatus von **Peak_Trade**
-(Phasen **1–54**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
+(Phasen **1–58**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
+
+> **Peak_Trade v1.0 Release-Paket:** siehe [`PEAK_TRADE_V1_RELEASE_NOTES.md`](PEAK_TRADE_V1_RELEASE_NOTES.md) und das aktualisierte Projekt-[`README.md`](../README.md).
 
 Ziel:
 
 * Eine **prozentuale Einschätzung** je Bereich
 * Klarheit, **was schon stabil ist** und **was noch fehlt**
-* Grundlage für zukünftige Roadmaps (Phase 55+)
+* Grundlage für zukünftige Roadmaps (Phase 59+)
 
 > **Hinweis:** Prozentwerte sind bewusst als **qualitative Reifegrade** zu verstehen
 > (Architektur, Codequalität, Tests, Doku, Operational Readiness), nicht als „fertig/nie-ändern".
@@ -31,7 +33,7 @@ Ziel:
 | Reporting, Monitoring & CLI     | 89%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI, Live-Ops CLI (Phase 51) |
 | Documentation & Governance      | 88%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs, Research→Live Playbook (Phase 54) |
 | Developer-Experience & Tooling  | 91%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides, AI-Guide (Phase 55) |
-| **Gesamtprojekt (Phasen 1–54)** | **≈ 92%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides, Strategy & Portfolio Library, Research→Live Playbook |
+| **Gesamtprojekt (Phasen 1–58)** | **≈ 92%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides, Strategy & Portfolio Library, Research→Live Playbook, Live-Status-Reports, Incident-Drills, v1.0 Release & Onboarding Package |
 
 ---
 

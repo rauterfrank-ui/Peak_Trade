@@ -2,6 +2,10 @@
 
 Schnellreferenz für alle CLI-Tools im Peak_Trade Framework.
 
+> **Neu bei Peak_Trade?**
+> - Lies zuerst: [`docs/GETTING_STARTED.md`](GETTING_STARTED.md)
+> - Sieh dir danach dieses Cheatsheet für eine Übersicht der wichtigsten Kommandos an.
+
 ---
 
 ## 1. Einzelne Backtests
