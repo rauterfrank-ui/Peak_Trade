@@ -229,18 +229,19 @@ def test_check_pnl_drop_alert(alert_manager: AlertManager, fake_sink: FakeAlertS
     run_id = "test_run"
 
     # Mock Zeitreihe mit Drop
+    # Verwende größere Zeitabstände um Race-Conditions zu vermeiden
     timeseries = [
         RunMetricPoint(
-            timestamp=datetime.now(timezone.utc) - timedelta(hours=2),
+            timestamp=datetime.now(timezone.utc) - timedelta(hours=3),
             equity=10000.0,
         ),
         RunMetricPoint(
-            timestamp=datetime.now(timezone.utc) - timedelta(hours=1),
-            equity=9500.0,  # 5% Drop
+            timestamp=datetime.now(timezone.utc) - timedelta(minutes=30),
+            equity=9500.0,  # Innerhalb des Fensters
         ),
         RunMetricPoint(
-            timestamp=datetime.now(timezone.utc),
-            equity=9000.0,  # 10% Drop insgesamt
+            timestamp=datetime.now(timezone.utc) - timedelta(seconds=1),
+            equity=8500.0,  # 15% Drop insgesamt, >10% vom window_start
         ),
     ]
 
