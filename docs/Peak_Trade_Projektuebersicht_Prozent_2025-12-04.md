@@ -5,16 +5,17 @@ _Stand: 2025-12-04_
 
 Peak_Trade ist inzwischen ein **recht weit fortgeschrittenes Trading-Framework** mit stabiler Research-/Backtest-Basis, umfangreicher Risk- & Governance-Schicht und einem strukturiert abgesicherten Weg in Richtung **Testnet & Live**.
 
-- Gesamtstand (gefühlte Reife der Codebasis & Doku für „v1 Research + Testnet-ready“): **≈ 70 %**
-- Testabdeckung: **1376 passed, 4 skipped, 0 failed** (Stand Phase 39)
+- Gesamtstand (gefühlte Reife der Codebasis & Doku für „v1 Research + Testnet-ready"): **≈ 72 %**
+- Testabdeckung: **~1500+ passed, 4 skipped, 0 failed** (Stand Phase 43)
 - Starke Schwerpunkte:
   - Solider **Data- & Backtest-Layer**
   - Durchdachtes **Risk- & Governance-Konzept**
   - Ausgearbeiteter **Live- & Ops-Flow** (Readiness, Runbooks, Deployment-Playbook)
+  - **Research-Playground** mit Strategy-Sweeps & Visualisierung (Phasen 41–43)
 - Offene Baustellen:
   - Breitere **Strategie-Bibliothek** & Portfolio-Research
   - Tiefere **Monitoring-/Alerting-Integration**
-  - Letzte Meter hin zu „wirklich produktionsreifem“ Live-Stack mit harten SLOs
+  - Letzte Meter hin zu „wirklich produktionsreifem" Live-Stack mit harten SLOs
 
 ---
 
@@ -22,23 +23,23 @@ Peak_Trade ist inzwischen ein **recht weit fortgeschrittenes Trading-Framework**
 
 | Bereich                                   | Status | Kommentar |
 |-------------------------------------------|:------:|-----------|
-| Data-Layer (Loader, Normalizer, Kraken)   | **85 %** | Funktionsfähig, mit Caching & Tests; Erweiterungen (weitere Feeds, Edge-Cases) möglich |
-| Backtest-Engine & Stats                   | **80 %** | Realistische Engine, Portfolio-Support, Metriken; komplexere Szenarien & Performance-Tuning offen |
-| Strategie-Layer (Single & Portfolio)      | **55 %** | Kern-Strategien + Portfolio-Layer vorhanden, aber Library noch schlank |
-| Risk-Layer & Limits (Research + Live)     | **75 %** | Klare Limits, Live-Risk-Layer, Configs; noch Raum für feinere Modelle & mehr Szenarien |
-| Registry & Experimente                    | **80 %** | Experiment-Registry, Config-Handling, Demo-Scripts; mehr „Qualität des Lebens“-Funktionen möglich |
-| Reporting & Visualisierung                | **70 %** | Backtest- & Experiment-Reports, Plots, CLI; mehr Layouts/Interaktive Reports möglich |
-| Live/Testnet-Infrastruktur (Tech)         | **60 %** | Environment, Order-Layer, Exchange-Testnet, Safety; echter Live-Prod-Betrieb noch bewusst nicht voll aktiviert |
-| Governance & Safety-Dokumentation         | **90 %** | Sehr ausführliche Policies, Checklisten, Runbooks, Playbooks |
-| Monitoring, Run-Logging & Ops-Workflows   | **65 %** | Run-Logger, Shadow-Logging, CLI-Monitoring, Ops-Runbooks; Alerts & Metrik-Pipeline noch ausbaufähig |
+| Data-Layer (Loader, Normalizer, Kraken)   | **85 %** | Funktionsfähig, mit Caching & Tests; Erweiterungen (weitere Feeds, Edge-Cases) möglich |
+| Backtest-Engine & Stats                   | **80 %** | Realistische Engine, Portfolio-Support, Metriken; komplexere Szenarien & Performance-Tuning offen |
+| Strategie-Layer (Single & Portfolio)      | **58 %** | Kern-Strategien + Portfolio-Layer + Research-Playground (Phase 41); Library noch schlank |
+| Risk-Layer & Limits (Research + Live)     | **75 %** | Klare Limits, Live-Risk-Layer, Configs; noch Raum für feinere Modelle & mehr Szenarien |
+| Registry & Experimente                    | **83 %** | Experiment-Registry, Strategy-Sweeps (Phase 41), Top-N Promotion (Phase 42), Visualisierung (Phase 43); mehr „Qualität des Lebens"-Funktionen möglich |
+| Reporting & Visualisierung                | **77 %** | Backtest- & Experiment-Reports, Plots, Sweep-Visualisierungen (Phase 43); mehr Layouts/Interaktive Reports möglich |
+| Live/Testnet-Infrastruktur (Tech)         | **60 %** | Environment, Order-Layer, Exchange-Testnet, Safety; echter Live-Prod-Betrieb noch bewusst nicht voll aktiviert |
+| Governance & Safety-Dokumentation         | **90 %** | Sehr ausführliche Policies, Checklisten, Runbooks, Playbooks |
+| Monitoring, Run-Logging & Ops-Workflows   | **65 %** | Run-Logger, Shadow-Logging, CLI-Monitoring, Ops-Runbooks; Alerts & Metrik-Pipeline noch ausbaufähig |
 
-Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metrik – sie dienen zur Orientierung, wo der Fokus bereits hoch ist und wo noch viel „Hebel“ liegt.
+Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metrik – sie dienen zur Orientierung, wo der Fokus bereits hoch ist und wo noch viel „Hebel" liegt.
 
 ---
 
 ## 3. Bereichsweise Detailübersicht
 
-### 3.1 Data-Layer (≈ 85 %)
+### 3.1 Data-Layer (≈ 85 %)
 
 **Was existiert:**
 - Modulares Data-Paket `src/data/`:
@@ -55,7 +56,7 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
 
 ---
 
-### 3.2 Backtest-Engine & Stats (≈ 80 %)
+### 3.2 Backtest-Engine & Stats (≈ 80 %)
 
 **Was existiert:**
 - `src/backtest/engine.py` mit realistischer Backtest-Engine
@@ -72,7 +73,7 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
 
 ---
 
-### 3.3 Strategie- & Portfolio-Layer (≈ 55 %)
+### 3.3 Strategie- & Portfolio-Layer (≈ 58 %)
 
 **Was existiert:**
 - Beispielstrategien (`ma_crossover`, weitere Kernstrategien)
@@ -80,6 +81,10 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
   - Kombination mehrerer Strategien
   - Gewichtung & Aggregation
   - Integration mit Backtest/Experiment-Infrastruktur
+- **Research-Playground** (Phase 41):
+  - Strategy-Sweeps mit Constraint-Filterung
+  - Vordefinierte Sweep-Definitionen für alle Strategien
+  - Portfolio-Sweeps für Composite-Strategien
 
 **Offen / Potenzial:**
 - Deutlich breitere Strategie-Bibliothek (Trend, Mean Reversion, Volatility, Regime-Switching …)
@@ -88,7 +93,7 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
 
 ---
 
-### 3.4 Risk-Layer & Limits (≈ 75 %)
+### 3.4 Risk-Layer & Limits (≈ 75 %)
 
 **Was existiert:**
 - Risk-Limits im Backtest & Live-Kontext
@@ -104,13 +109,13 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
 - Integration in Preview-/Order-CLI (`scripts/preview_live_orders.py`)
 
 **Offen / Potenzial:**
-- Erweiterte Risiko-Modelle (Value-at-Risk, Expected Shortfall, Tail-Risiko)
+- Erweiterte Risiko-Modelle (Value-at-Risk, Expected Shortfall, Tail-Risko)
 - Mehrstufige Risk-Profiles (Conservative/Moderate/Aggressive) mit Templates
 - Noch engere Verzahnung mit Portfolio-Strategien & Reporting
 
 ---
 
-### 3.5 Registry & Experimente (≈ 80 %)
+### 3.5 Registry & Experimente (≈ 83 %)
 
 **Was existiert:**
 - Experiment-Registry mit:
@@ -120,15 +125,25 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
   - Wie Experimente gefahren und gespeichert werden
   - Wie Reports daraus gebaut werden
 - Tests, die sicherstellen, dass Registry-Flow konsistent ist
+- **Strategy-Sweeps & Research-Playground** (Phase 41):
+  - Parameter-Sweeps mit Constraint-Filterung
+  - Vordefinierte Sweep-Definitionen für alle Strategien
+  - CLI-Scripts für Batch-Execution (`run_strategy_sweep.py`)
+- **Top-N Promotion** (Phase 42):
+  - Automatische Auswahl der besten Konfigurationen
+  - Export in maschinenlesbares TOML-Format
+- **Sweep-Visualisierung** (Phase 43):
+  - Automatische Plot-Generierung für Sweep-Ergebnisse
+  - Integration in Reports (Markdown/HTML)
 
 **Offen / Potenzial:**
 - Mehr Komfort um Sweeps & Grids zu definieren
 - Bessere Integration mit externem Tracking (z.B. Weights & Biases, MLflow – falls gewünscht)
-- Automatische „Best-of“-Reports über viele Runs hinweg
+- Automatische „Best-of"-Reports über viele Runs hinweg
 
 ---
 
-### 3.6 Reporting & Visualisierung (≈ 70 %)
+### 3.6 Reporting & Visualisierung (≈ 77 %)
 
 **Was existiert (Phase 30):**
 - Modul `src/reporting/` mit:
@@ -141,14 +156,23 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
   - `scripts/generate_experiment_report.py`
 - Doku: `PHASE_30_REPORTING_AND_VISUALIZATION.md`
 
+**Erweitert (Phase 43):**
+- **Sweep-Visualisierung** (`src/reporting/sweep_visualization.py`):
+  - 1D-Plots: Parameter vs. Metrik (Scatter mit Trendlinie)
+  - 2D-Heatmaps: Zwei Parameter vs. Metrik
+  - Automatische Plot-Generierung für Sweep-Ergebnisse
+  - Integration in Sweep-Reports (`generate_strategy_sweep_report.py` mit `--with-plots`)
+- Vollständige Test-Abdeckung (12 Tests, alle grün)
+
 **Offen / Potenzial:**
 - Mehr Visualisierungen (z.B. Factor-Exposures, Regime-Timelines)
-- Optionale HTML-/Dashboard-Ausgabe
-- Templates für „Management-Reports“ vs. „Research-Deep-Dives“
+- Optionale HTML-/Dashboard-Ausgabe (bereits vorhanden, aber erweiterbar)
+- Templates für „Management-Reports" vs. „Research-Deep-Dives"
+- Interaktive Dashboards (Plotly, Web-basiert)
 
 ---
 
-### 3.7 Live/Testnet-Infrastruktur (≈ 60 %)
+### 3.7 Live/Testnet-Infrastruktur (≈ 60 %)
 
 **Was existiert (Auszug aus Phasen 15–17, 23, 32, 33, 36, 37–39):**
 - Order-Layer (Sandbox & Paper):
@@ -156,7 +180,7 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
   - Smoke-Tests (`tests/test_orders_smoke.py`)
 - Environment & Safety:
   - `src/core/environment.py` mit klaren Modi (Research, Shadow, Testnet, Live)
-  - Safety-Checks und „Guardrails“ gegen versehentliches Live-Trading
+  - Safety-Checks und „Guardrails" gegen versehentliches Live-Trading
 - Exchange-/Testnet-Anbindung (Phase 38):
   - `TradingExchangeClient` & Testnet-Schnittstelle
   - Smoke-Tests, die reinen Code-Path prüfen (ohne echte Keys)
@@ -166,7 +190,7 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
   - `scripts/smoke_test_testnet_stack.py`
 
 **Offen / Potenzial:**
-- Finaler Schritt zu „echtem“ Live-Betrieb mit:
+- Finaler Schritt zu „echtem" Live-Betrieb mit:
   - Harten SLOs (Latenz, Fehlerraten)
   - Geprüften Runbooks für reale Incidents
 - Echte End-to-End-Tests gegen Sandbox-/Testnet-APIs mit kontrollierten Keys
@@ -174,7 +198,7 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
 
 ---
 
-### 3.8 Governance, Safety & Policies (≈ 90 %)
+### 3.8 Governance, Safety & Policies (≈ 90 %)
 
 **Was existiert (Phase 25 u.a.):**
 - `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
@@ -189,14 +213,14 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
 - Risk-Verbote & Hard-Stops
 - Incident-Handling & Runbooks
 
-**Warum so hoch bewertet (90 %):**
+**Warum so hoch bewertet (90 %):**
 - Konzeptuell sehr weit
 - Praktische Verankerung in Scripts & Readiness-Flows
-- Nur noch Feinschliff & „gelebene Praxis“ im echten Betrieb fehlt
+- Nur noch Feinschliff & „gelebene Praxis" im echten Betrieb fehlt
 
 ---
 
-### 3.9 Monitoring, Run-Logging & Ops-Workflows (≈ 65 %)
+### 3.9 Monitoring, Run-Logging & Ops-Workflows (≈ 65 %)
 
 **Was existiert (u.a. Phasen 32, 33, 39):**
 - Run-Logging (`src/live/run_logging.py`):
@@ -217,7 +241,7 @@ Die Prozentwerte sind **bewusste grobe Schätzungen**, keine mathematische Metri
 
 ---
 
-## 4. Phasen-Cluster 1–39 (High-Level)
+## 4. Phasen-Cluster 1–43 (High-Level)
 
 Statt jede Phase einzeln komplett auszuschreiben, hier eine grobe Clusterung:
 
@@ -233,8 +257,11 @@ Statt jede Phase einzeln komplett auszuschreiben, hier eine grobe Clusterung:
 - **Phasen 31–39:**  
   Shadow-/Paper-Run-Logging, Monitoring & Live-CLI-Flows, Konfig-Refactorings, Testnet-Exchange-Anbindung, Live-Deployment-Playbook & Ops-Runbooks, Readiness- und Smoke-Test-Scripts.
 
+- **Phasen 40–43:**  
+  Strategy-Sweeps & Research-Playground (Phase 41), Top-N Promotion (Phase 42), Sweep-Visualisierung & Dashboards (Phase 43). Vollständiger Research-Workflow von Sweep-Definition über Ausführung bis hin zu visueller Auswertung und Top-Kandidaten-Export.
+
 Unterm Strich:  
-Du hast kein „Script-Haufen“, sondern einen **ernstzunehmenden Framework-Kern** mit klaren Phasen, Tests und Dokus.
+Du hast kein „Script-Haufen", sondern einen **ernstzunehmenden Framework-Kern** mit klaren Phasen, Tests und Dokus – inklusive eines **vollständigen Research-Playgrounds** für systematisches Strategy-Testing.
 
 ---
 
@@ -247,32 +274,45 @@ Einige sinnvolle Richtungen für die nächsten Sessions – ohne Priorisierung:
    - Gemeinsame Bausteine (Signal-Builder, Filters, Regime-Detektoren)
 
 2. **Reporting & Monitoring vertiefen**
-   - HTML-/Dashboard-Variante der Reports
+   - HTML-/Dashboard-Variante der Reports (bereits vorhanden, aber erweiterbar)
    - Integration von Run-Logging in ein einfaches Monitoring-Setup
    - Alerts bei Risk-/Data-Problemen
+   - Interaktive Dashboards (Plotly, Web-basiert)
 
-3. **Testnet-Flow „End-to-End“ durchdeklinieren**
+3. **Testnet-Flow „End-to-End" durchdeklinieren**
    - Einen vollständigen, realistisch parametrierten Testnet-Run mit Dummy-Keys & Mocking-Schicht
-   - Dokumentierte „Happy Path“-Story von Config → Strategy → Backtest → Shadow → Testnet
+   - Dokumentierte „Happy Path"-Story von Config → Strategy → Backtest → Shadow → Testnet
 
 4. **Quality-of-Life & Dev-Experience**
    - Bessere CLI-Ergonomie (Command-Gruppen, gemeinsame Flags)
    - Noch mehr klare Prompt-Dokus für AI-Tools (Claude, Cursor, GPT)
-   - Kleine Tools zum schnellen „Sanity-Check“ eines neuen Setups
+   - Kleine Tools zum schnellen „Sanity-Check" eines neuen Setups
+
+5. **Research-Playground erweitern**
+   - Walk-Forward-Analysen für Out-of-Sample-Validierung
+   - Monte-Carlo-Simulationen für Robustness-Testing
+   - Automatische Nightly-Sweeps mit E-Mail-Benachrichtigungen
 
 ---
 
-## 6. Fazit
+## 6. Deep-Research-Track (A–H)
 
-- Das Projekt liegt grob bei **~70 %** auf dem Weg zu einem **soliden Research- & Testnet-fähigen Trading-Framework**.
+> **Hinweis:** Der Status-Block für Deep-Research-Track wird vom Nutzer eingefügt.
+
+---
+
+## 7. Fazit
+
+- Das Projekt liegt grob bei **~72 %** auf dem Weg zu einem **soliden Research- & Testnet-fähigen Trading-Framework**.
 - Besonders stark sind:
   - **Risk & Governance**
   - **Testabdeckung & Struktur**
   - **Klarheit über Stufen (Research/Shadow/Testnet/Live)**
+  - **Research-Playground** mit vollständigem Workflow (Sweeps → Visualisierung → Top-N Promotion)
 - Die nächsten großen Hebel liegen bei:
   - **Mehr Strategien & Portfolio-Intelligenz**
   - **Mehr Monitoring/Alerting & automatisierte Auswertung**
-  - **Den letzten 20–30 % Richtung „Production-Live“**, sobald du es wirklich willst.
+  - **Den letzten 20–30 % Richtung „Production-Live"**, sobald du es wirklich willst.
 
 Kurz:  
-Du hast schon ein kleines **Quant-Trading-„Betriebssystem“** gebaut – wir feilen jetzt „nur noch“ an Komfort, Tiefe und den letzten Safety-/Ops-Schichten.  
+Du hast schon ein kleines **Quant-Trading-„Betriebssystem"** gebaut – wir feilen jetzt „nur noch" an Komfort, Tiefe und den letzten Safety-/Ops-Schichten. Der **Research-Playground** (Phasen 41–43) bietet jetzt einen vollständigen Workflow von der Sweep-Definition bis zur visuellen Auswertung und Top-Kandidaten-Identifikation.
