@@ -87,6 +87,11 @@ from .live_run_report import (
     save_report,
 )
 
+# Phase 45: Monte-Carlo Reports
+from .monte_carlo_report import (
+    build_monte_carlo_report,
+)
+
 __all__ = [
     # Execution Reports (Phase 16D)
     "ExecutionStats",
@@ -142,4 +147,6 @@ __all__ = [
     "build_live_run_report",
     "load_and_build_report",
     "save_report",
+    # Phase 45: Monte-Carlo Reports
+    "build_monte_carlo_report",
 ]
