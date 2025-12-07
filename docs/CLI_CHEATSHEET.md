@@ -273,6 +273,28 @@ python scripts/preview_live_orders.py \
 
 ---
 
+## 11.1. Live Portfolio Monitoring (Phase 48)
+
+```bash
+# Portfolio-Status anzeigen (mit Risk-Check)
+python scripts/preview_live_portfolio.py --config config/config.toml
+
+# Portfolio-Status ohne Risk-Check
+python scripts/preview_live_portfolio.py --config config/config.toml --no-risk
+
+# JSON-Ausgabe
+python scripts/preview_live_portfolio.py --config config/config.toml --json
+
+# Mit Custom Starting-Cash für prozentuale Limits
+python scripts/preview_live_portfolio.py \
+  --config config/config.toml \
+  --starting-cash 20000.0
+```
+
+**Siehe:** [PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md](PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md) für Details.
+
+---
+
 ## 12. Scheduler & Job Runner
 
 ```bash

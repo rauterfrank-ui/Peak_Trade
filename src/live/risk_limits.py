@@ -49,14 +49,17 @@ Config-Beispiel (config.toml):
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, date
-from typing import Dict, List, Sequence, Any, Optional
+from datetime import date, datetime
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence
 
 import pandas as pd
 
-from src.core.peak_config import PeakConfig
 from src.core.experiments import EXPERIMENTS_CSV
+from src.core.peak_config import PeakConfig
 from src.live.orders import LiveOrderRequest
+
+if TYPE_CHECKING:
+    from src.live.portfolio_monitor import LivePortfolioSnapshot
 
 
 @dataclass
@@ -386,6 +389,142 @@ class LiveRiskLimits:
             "base_currency": cfg.base_currency,
             "live_risk_enabled": True,
         }
+
+        return LiveRiskCheckResult(
+            allowed=allowed,
+            reasons=reasons,
+            metrics=metrics,
+        )
+
+    # ---------- Portfolio-Level Risk-Checks (Phase 48) ----------
+
+    def evaluate_portfolio(
+        self,
+        snapshot: LivePortfolioSnapshot,
+        *,
+        current_date: Optional[date] = None,
+    ) -> LiveRiskCheckResult:
+        """
+        Prüft das aktuelle Portfolio (Snapshot) gegen die konfigurierten Limits.
+
+        Nutzt dieselben Schwellenwerte wie check_orders(), aber wendet sie
+        auf den aktuellen Portfolio-Zustand an.
+
+        Args:
+            snapshot: LivePortfolioSnapshot mit aktuellen Positions- und Account-Daten
+            current_date: Optional Datum für Daily-Loss-Berechnung (Default: heute UTC)
+
+        Returns:
+            LiveRiskCheckResult mit allowed, reasons und metrics
+
+        Example:
+            >>> from src.live.portfolio_monitor import LivePortfolioMonitor
+            >>> monitor = LivePortfolioMonitor(exchange_client, risk_limits)
+            >>> snapshot = monitor.snapshot()
+            >>> result = risk_limits.evaluate_portfolio(snapshot)
+            >>> if not result.allowed:
+            ...     print("Portfolio verletzt Limits:", result.reasons)
+        """
+        # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
+
+        reasons: List[str] = []
+        allowed = True
+
+        # Wenn Live-Risk-Limits deaktiviert, einfach alles erlauben
+        if not self.config.enabled:
+            return LiveRiskCheckResult(
+                allowed=True,
+                reasons=[],
+                metrics={
+                    "portfolio_total_notional": snapshot.total_notional,
+                    "portfolio_symbol_notional": snapshot.symbol_notional,
+                    "portfolio_num_open_positions": snapshot.num_open_positions,
+                    "portfolio_total_realized_pnl": snapshot.total_realized_pnl,
+                    "portfolio_total_unrealized_pnl": snapshot.total_unrealized_pnl,
+                    "base_currency": self.config.base_currency,
+                    "live_risk_enabled": False,
+                },
+            )
+
+        # Exposure-Limits
+        cfg = self.config
+
+        # 1. Total Exposure
+        if cfg.max_total_exposure_notional is not None:
+            if snapshot.total_notional > cfg.max_total_exposure_notional:
+                allowed = False
+                reasons.append(
+                    f"max_total_exposure_exceeded(max={cfg.max_total_exposure_notional:.2f}, "
+                    f"observed={snapshot.total_notional:.2f})"
+                )
+
+        # 2. Symbol Exposure
+        if cfg.max_symbol_exposure_notional is not None:
+            for symbol, notional in snapshot.symbol_notional.items():
+                if notional > cfg.max_symbol_exposure_notional:
+                    allowed = False
+                    reasons.append(
+                        f"max_symbol_exposure_exceeded(symbol={symbol!r}, "
+                        f"max={cfg.max_symbol_exposure_notional:.2f}, "
+                        f"observed={notional:.2f})"
+                    )
+
+        # 3. Open Positions
+        if cfg.max_open_positions is not None:
+            if snapshot.num_open_positions > cfg.max_open_positions:
+                allowed = False
+                reasons.append(
+                    f"max_open_positions_exceeded(max={cfg.max_open_positions}, "
+                    f"observed={snapshot.num_open_positions})"
+                )
+
+        # 4. Daily Loss (aus Registry oder aus Snapshot)
+        daily_pnl = self._compute_daily_pnl_from_experiments(day=current_date)
+
+        # Falls Snapshot einen total_realized_pnl hat und dieser konservativer ist,
+        # verwende diesen (nur wenn Registry-PnL nicht verfügbar oder kleiner)
+        if snapshot.total_realized_pnl is not None:
+            # Verwende den negativeren Wert (konservativer)
+            if snapshot.total_realized_pnl < daily_pnl:
+                daily_pnl = snapshot.total_realized_pnl
+
+        if cfg.max_daily_loss_abs is not None and daily_pnl <= -cfg.max_daily_loss_abs:
+            allowed = False
+            reasons.append(
+                f"max_daily_loss_abs_reached(limit={cfg.max_daily_loss_abs:.2f}, pnl={daily_pnl:.2f})"
+            )
+
+        if cfg.max_daily_loss_pct is not None and self._starting_cash is not None:
+            starting_cash = self._starting_cash
+            if starting_cash and starting_cash > 0:
+                abs_limit = float(starting_cash) * (cfg.max_daily_loss_pct / 100.0)
+                if daily_pnl <= -abs_limit:
+                    allowed = False
+                    reasons.append(
+                        "max_daily_loss_pct_reached("
+                        f"limit_pct={cfg.max_daily_loss_pct:.2f}, "
+                        f"starting_cash={starting_cash:.2f}, "
+                        f"pnl={daily_pnl:.2f})"
+                    )
+
+        metrics: Dict[str, Any] = {
+            "portfolio_total_notional": snapshot.total_notional,
+            "portfolio_symbol_notional": snapshot.symbol_notional,
+            "portfolio_num_open_positions": snapshot.num_open_positions,
+            "portfolio_total_realized_pnl": snapshot.total_realized_pnl,
+            "portfolio_total_unrealized_pnl": snapshot.total_unrealized_pnl,
+            "daily_realized_pnl_net": daily_pnl,
+            "base_currency": cfg.base_currency,
+            "live_risk_enabled": True,
+        }
+
+        # Optional: Equity/Cash/Margin hinzufügen, falls verfügbar
+        if snapshot.equity is not None:
+            metrics["portfolio_equity"] = snapshot.equity
+        if snapshot.cash is not None:
+            metrics["portfolio_cash"] = snapshot.cash
+        if snapshot.margin_used is not None:
+            metrics["portfolio_margin_used"] = snapshot.margin_used
 
         return LiveRiskCheckResult(
             allowed=allowed,

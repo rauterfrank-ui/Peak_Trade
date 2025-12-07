@@ -26,6 +26,11 @@ from .orders import (
 )
 from .broker_base import BaseBrokerClient, DryRunBroker, PaperBroker
 from .risk_limits import LiveRiskLimits, LiveRiskConfig, LiveRiskCheckResult
+from .portfolio_monitor import (
+    LivePositionSnapshot,
+    LivePortfolioSnapshot,
+    LivePortfolioMonitor,
+)
 
 # Safety- und Shadow-Session-Module werden lazy importiert, um zirkuläre
 # Abhängigkeiten zu vermeiden. Direkter Import:
@@ -48,6 +53,10 @@ __all__ = [
     "LiveRiskLimits",
     "LiveRiskConfig",
     "LiveRiskCheckResult",
+    # Portfolio Monitoring (Phase 48)
+    "LivePositionSnapshot",
+    "LivePortfolioSnapshot",
+    "LivePortfolioMonitor",
     # Safety (Phase 17) - lazy loaded
     "SafetyGuard",
     "SafetyAuditEntry",
