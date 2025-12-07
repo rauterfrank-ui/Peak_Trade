@@ -274,6 +274,8 @@ python scripts/profile_research_and_portfolio.py --list
 
 Siehe auch [`TECH_DEBT_BACKLOG.md`](TECH_DEBT_BACKLOG.md), Abschnitt "Performance & Scale" für konkrete geplante Optimierungen.
 
+Siehe auch [`docs/OBSERVABILITY_AND_MONITORING_PLAN.md`](OBSERVABILITY_AND_MONITORING_PLAN.md) für den übergeordneten Kontext von Performance-Messungen im Rahmen von Observability & Monitoring.
+
 ---
 
 ## 8. Änderungshistorie

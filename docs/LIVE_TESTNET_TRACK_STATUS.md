@@ -362,6 +362,16 @@ Live-Status-Reports ermöglichen tägliche/wöchentliche Snapshots des Systemzus
 
 ---
 
+## 9a. Observability & Monitoring
+
+Ein detaillierter Plan für zukünftiges Monitoring (Metrics, Logs, Dashboards) ist in
+
+- [`docs/OBSERVABILITY_AND_MONITORING_PLAN.md`](OBSERVABILITY_AND_MONITORING_PLAN.md)
+
+dokumentiert. Dieses Dokument beschreibt, wie Live-Ops CLI, Alerts, Status-Reports und Incident-Drills später in ein vollständiges Observability-Setup integriert werden können.
+
+---
+
 ## 10. Gesamtbewertung & nächste Schritte
 
 Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈ 95%**:

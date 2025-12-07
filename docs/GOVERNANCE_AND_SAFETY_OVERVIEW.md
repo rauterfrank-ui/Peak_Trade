@@ -232,6 +232,20 @@ Regelmäßige Status-Reports (z.B. daily/weekly) sind Teil der operativen Govern
 3. **Dokumentation**: Alle Maßnahmen protokollieren
 4. **Review**: Lessons Learned dokumentieren
 
+### 4.7 Monitoring & Observability
+
+Für ein robustes Live-/Testnet-Setup ist neben Risk-Limits und Runbooks auch eine ausreichende Observability entscheidend:
+
+- Sichtbarkeit von System-Health, Risk-Status und Performance
+- Frühzeitige Erkennung von Anomalien
+- Nachvollziehbare Incidents & Drills
+
+Ein dedizierter Plan für Observability & Monitoring (inkl. Metriken, Integrationspunkten und möglicher Tool-Landschaft) ist in
+
+- [`docs/OBSERVABILITY_AND_MONITORING_PLAN.md`](OBSERVABILITY_AND_MONITORING_PLAN.md)
+
+beschrieben.
+
 ---
 
 ## 5. Verhältnis zu technischen Phasen
