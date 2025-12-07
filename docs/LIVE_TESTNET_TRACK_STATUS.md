@@ -18,7 +18,7 @@ Stand: 2025-12-07 (nach Phase 54)
 | Run-Logging & Live-Reporting                | 90%      |
 | Live-/Portfolio-Monitoring & Risk Bridge    | 95%      |
 | Live Alerts & Notifications                 | 95%      |
-| Governance, Runbooks & Checklisten          | 92%      |
+| Governance, Runbooks & Checklisten          | 94%      |
 | CLI-Tooling für Live-/Testnet-Operationen   | 95%      |
 | **Gesamt Live-/Testnet-Track**              | **~95%** |
 
@@ -321,6 +321,10 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~95%** –
 **Portfolio-basierte Promotions:**
 
 Portfolio-basierte Promotions von Research → Testnet/Live folgen dem in [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) beschriebenen Ablauf (Phase 54).
+
+**Incident-Drills (Phase 56):**
+
+Incident-Drills sind etabliert und werden regelmäßig durchgeführt, um Runbooks, Tooling und Alerts praktisch zu validieren. Die Drill-Szenarien sind in [`INCIDENT_SIMULATION_AND_DRILLS.md`](INCIDENT_SIMULATION_AND_DRILLS.md) dokumentiert, alle durchgeführten Drills werden in [`INCIDENT_DRILL_LOG.md`](INCIDENT_DRILL_LOG.md) protokolliert.
 
 ---
 

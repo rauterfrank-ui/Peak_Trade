@@ -194,7 +194,25 @@ Research-Code darf Live-Endpoints **niemals** versehentlich erreichen können.
 
 Portfolio-Entscheidungen (Research → Testnet/Live) erfolgen entlang des in [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) beschriebenen Ablaufs (Phase 54). Dieses Playbook definiert klare Go/No-Go-Kriterien, Dokumentationsanforderungen und Governance-Freigaben für Portfolio-Promotions.
 
-### 4.4 Notfall-Entscheidungen
+### 4.4 Incident-Drills
+
+Neben formaler Governance (Freigaben, Checklisten) werden regelmäßig **Incident-Drills** nach [`INCIDENT_SIMULATION_AND_DRILLS.md`](INCIDENT_SIMULATION_AND_DRILLS.md) durchgeführt (Phase 56), um Runbooks, Tooling und Alerts praktisch zu validieren.
+
+**Zweck:**
+- Runbooks in kontrollierter Umgebung üben
+- Alert-System & Monitoring-Tools testen
+- Incident-Handling-Prozesse validieren
+- Kontinuierliche Verbesserung der Incident-Response
+
+**Empfohlene Frequenz:**
+- **Monatlich**: Mindestens 1 Drill (abwechselnd Szenarien)
+- **Quartalsweise**: Kompletter Zyklus durch alle Szenarien
+
+**Dokumentation:**
+- Alle Drills werden in [`INCIDENT_DRILL_LOG.md`](INCIDENT_DRILL_LOG.md) protokolliert
+- Erkenntnisse werden in Runbooks & Governance-Doku eingearbeitet
+
+### 4.5 Notfall-Entscheidungen
 
 **Bei kritischen Incidents:**
 

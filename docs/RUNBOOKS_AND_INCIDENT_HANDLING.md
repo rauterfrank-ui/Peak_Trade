@@ -18,12 +18,16 @@ Ein **Runbook** ist eine dokumentierte Schritt-für-Schritt-Anleitung für wiede
 
 ### Warum Runbooks für Peak_Trade?
 
-Auch im Shadow-Modus (Phase 24) ist systematisches Vorgehen wichtig:
+Auch im Shadow-Modus ist systematisches Vorgehen wichtig:
 
 - **Reproduzierbarkeit**: Gleiche Bedingungen, gleiche Ergebnisse
 - **Fehlerminimierung**: Checklisten verhindern vergessene Schritte
 - **Vorbereitung**: Übung für spätere Testnet-/Live-Szenarien
 - **Dokumentation**: Nachvollziehbarkeit aller Aktionen
+
+### Runbooks aktiv üben
+
+Runbooks sollten **aktiv geübt** werden, um sicherzustellen, dass sie in der Praxis funktionieren. Die Szenarien für Incident-Drills sind in [`INCIDENT_SIMULATION_AND_DRILLS.md`](INCIDENT_SIMULATION_AND_DRILLS.md) dokumentiert (Phase 56). Regelmäßige Drills helfen dabei, Runbooks zu validieren und kontinuierlich zu verbessern.
 
 ---
 
@@ -205,6 +209,8 @@ Ein **Incident** ist ein unerwartetes Ereignis, das den normalen Betrieb beeintr
 | Unbekannte Exception crasht System | Medium–High | Logs sichern, Ursache finden |
 | API-Credentials kompromittiert | High | Sofort rotieren, Security-Review |
 
+**Hinweis:** Siehe auch Drill-Szenarien in [`INCIDENT_SIMULATION_AND_DRILLS.md`](INCIDENT_SIMULATION_AND_DRILLS.md) für praktische Übungen zu diesen Incident-Typen.
+
 ### 4.4 Reaktionsschema
 
 #### Phase 1: Sofortmaßnahmen (0–15 Min)
@@ -327,6 +333,8 @@ Der **Kill-Switch** ist die letzte Verteidigungslinie:
 | `SAFETY_POLICY_TESTNET_AND_LIVE.md` | Safety-Policies |
 | `LIVE_READINESS_CHECKLISTS.md` | Checklisten für Stufen-Übergänge |
 | `PHASE_24_SHADOW_EXECUTION.md` | Shadow-Execution-Dokumentation |
+| `INCIDENT_SIMULATION_AND_DRILLS.md` | Incident-Drill-Playbook (Phase 56) |
+| `INCIDENT_DRILL_LOG.md` | Drill-Log für dokumentierte Übungen |
 
 ---
 
@@ -339,3 +347,6 @@ Der **Kill-Switch** ist die letzte Verteidigungslinie:
   - Incident-Report-Vorlage erstellt
   - Platzhalter für zukünftige Runbooks
   - Keine Code-Änderungen
+- **Phase 56** (2025-12): Incident-Drills ergänzt
+  - Verweise auf Incident-Drill-Playbook hinzugefügt
+  - Hinweis auf aktive Übung von Runbooks ergänzt
