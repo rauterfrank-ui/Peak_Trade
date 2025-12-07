@@ -5,7 +5,7 @@
 
 ## 1. Kurz�berblick  Research-/Strategy-Track
 
-Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strategy-Sweeps (Phase 41), Top-N Promotion (Phase 42), Visualisierung (Phase 43) und Walk-Forward-Testing (Phase 44) für Out-of-Sample-Validierung. Der End-to-End-Flow von Sweep-Definition über Top-N-Auswahl bis hin zu Walk-Forward-Reports funktioniert stabil. Die Strategie-Bibliothek umfasst ~13–14 Strategien (MA, RSI, Momentum, MACD, Breakout, Vol-Regime-Filter, Portfolio-Strategien) und ist damit solide, aber noch nicht breit oder regime-adaptiv genug. Mit Phase 44 ist die Robustness-Analyse erstmals praktisch nutzbar (Walk-Forward-Testing), es fehlen aber weiterhin Monte-Carlo- und Stress-Test-Module. Die nächsten Schritte liegen weniger im Aufbau von Infrastruktur, sondern in der Vertiefung der Robustheit und in der Erweiterung des Strategieraums.
+Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strategy-Sweeps (Phase 41), Top-N Promotion (Phase 42), Visualisierung (Phase 43), Walk-Forward-Testing (Phase 44) und Monte-Carlo-Robustness (Phase 45) für statistische Unsicherheitsquantifizierung. Der End-to-End-Flow von Sweep-Definition über Top-N-Auswahl bis hin zu Walk-Forward- und Monte-Carlo-Reports funktioniert stabil. Die Strategie-Bibliothek umfasst ~13–14 Strategien (MA, RSI, Momentum, MACD, Breakout, Vol-Regime-Filter, Portfolio-Strategien) und ist damit solide, aber noch nicht breit oder regime-adaptiv genug. Mit Phase 44 (Walk-Forward) und Phase 45 (Monte-Carlo) ist die Robustness-Analyse praktisch nutzbar; es fehlen noch erweiterte Stress-Test-Module. Die nächsten Schritte liegen weniger im Aufbau von Infrastruktur, sondern in der Vertiefung der Robustheit und in der Erweiterung des Strategieraums.
 
 ---
 
@@ -20,6 +20,7 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
 - Top-N Promotion (Phase 42): Automatische Auswahl, TOML-Export
 - Visualisierung (Phase 43): 1D-Plots, 2D-Heatmaps, automatische Plot-Generierung
 - Walk-Forward-Testing (Phase 44): Out-of-Sample-Validierung fr Top-N-Konfigurationen
+- Monte-Carlo-Robustness (Phase 45): Bootstrap-basierte Unsicherheitsquantifizierung, Konfidenzintervalle für Kennzahlen
 - Portfolio-Layer (Phase 26): Multi-Strategy-Portfolio-Manager, Capital-Allocation-Methoden
 
 **Verst�rkungen sinnvoll:**
@@ -92,7 +93,7 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
 | **Portfolio-Strategien**                     | **70 %**   | Portfolio-Manager vorhanden (Phase 26); fehlen: Auto-Optimierung, Correlation-basierte Allokation |
 | **Registry & Sweeps**                        | **85 %**   | Experiment-Registry (Phase 29), Strategy-Sweeps (Phase 41), Top-N Promotion (Phase 42); fehlen: Walk-Forward-Integration, Monte-Carlo-Sweeps |
 | **Reporting f�r Research**                   | **80 %**   | Backtest-Reports (Phase 30), Sweep-Visualisierung (Phase 43); fehlen: Interaktive Dashboards, Feature-Importance-Plots |
-| **Robustness-Analyse**                       | **48 %**   | Walk-Forward-Testing vorhanden (Phase 44); fehlen: Monte-Carlo, Stress-Tests |
+| **Robustness-Analyse**                       | **65 %**   | Walk-Forward-Testing (Phase 44) und Monte-Carlo-Robustness (Phase 45) vorhanden; fehlen: Erweiterte Stress-Tests (Vol-Spikes, Crash-Szenarien) |
 | **Auto-Optimization**                        | **40 %**   | Top-N Promotion vorhanden; fehlen: Auto-Portfolio-Building, Parameter-Auto-Tuning |
 
 **Research-/Strategy-Track gesamt:** **H65 %**
@@ -107,6 +108,8 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
 - [ ] **RSI-Reversion-Varianten-Sweep** mit zus�tzlichen Parametern aufsetzen (z. B. RSI-Period 530, Oversold 1535, Overbought 6585)
 - [x] **Walk-Forward-Test implementieren** ✅ (Phase 44)  
       Einfache In-Sample/Out-of-Sample-Validierung für Top-N-Konfigurationen aufbauen. Basis implementiert: Walk-Forward-Engine, Reporting, CLI. Erweiterungen: Parameter-Optimierung auf Train-Daten, erweiterte Metriken.
+- [x] **Monte-Carlo-Simulationen implementieren** ✅ (Phase 45)  
+      Bootstrap-basierte Robustness-Analysen für Top-N-Konfigurationen. Implementiert: Simple & Block-Bootstrap, Konfidenzintervalle, Reports. Erweiterungen: Erweiterte Stress-Tests (Vol-Spikes, Crash-Szenarien), Regime-bewusste Simulationen.
 - [ ] **Experiment-Registry-View** bauen, um Top-N-Konfigurationen schnell zu finden (`scripts/view_top_candidates.py --sweep-name X`)
 - [ ] **Drawdown-Heatmap** als zus�tzlichen Plot-Typ in `sweep_visualization.py` hinzuf�gen
 - [ ] **Volatility-Strategien-Sweep** aufsetzen (ATR-basiert, Volatility-Breakout mit verschiedenen Lookback-Perioden)

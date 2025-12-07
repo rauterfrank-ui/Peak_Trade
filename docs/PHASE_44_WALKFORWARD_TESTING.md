@@ -531,9 +531,11 @@ python scripts/run_strategy_sweep.py --sweep-name rsi_reversion_basic
 
 Phase 44 ist die Basis für weitere Robustness-Analysen:
 
-- **Monte-Carlo-Simulationen** (Phase 50+): Bootstrapped Sharpe-Ratio-Konfidenzintervalle
-- **Stress-Tests**: Vol-Spikes, Flash-Crashes, Liquidity-Dry-ups
-- **Regime-basierte Analyse**: Walk-Forward getrennt nach Marktregimen
+- **Monte-Carlo-Simulationen** ✅ (Phase 45): Bootstrapped Sharpe-Ratio-Konfidenzintervalle, statistische Unsicherheitsquantifizierung
+  - **Siehe:** `docs/PHASE_45_MONTE_CARLO_ROBUSTNESS_AND_STRESS_TESTS.md` für Details
+  - **Abgrenzung:** Walk-Forward testet zeitliche Robustheit, Monte-Carlo testet statistische Robustheit
+- **Erweiterte Stress-Tests**: Vol-Spikes, Flash-Crashes, Liquidity-Dry-ups (zukünftig)
+- **Regime-basierte Analyse**: Walk-Forward getrennt nach Marktregimen (zukünftig)
 
 Siehe `docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md` für Details zur Research-Roadmap.
 
@@ -544,6 +546,7 @@ Siehe `docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md` für Details zur
 - **Phase 41**: `docs/PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md`
 - **Phase 42**: `docs/PHASE_42_TOPN_PROMOTION.md`
 - **Phase 43**: `docs/PHASE_43_VISUALIZATION_AND_SWEEP_DASHBOARDS.md`
+- **Phase 45**: `docs/PHASE_45_MONTE_CARLO_ROBUSTNESS_AND_STRESS_TESTS.md` (Monte-Carlo-Robustness)
 - **Research Roadmap**: `docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md`
 - **Research ToDo**: `docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md`
 

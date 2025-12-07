@@ -688,6 +688,7 @@ Nach Phase 43:
 1. **Walk-Forward-Analyse**: Out-of-Sample-Validierung der besten Parameter
    - **Siehe:** `docs/PHASE_44_WALKFORWARD_TESTING.md` für Details zum Walk-Forward-Workflow
 2. **Monte-Carlo-Simulation**: Robustness-Testing
+   - **Siehe:** `docs/PHASE_45_MONTE_CARLO_ROBUSTNESS_AND_STRESS_TESTS.md` für Details zur Monte-Carlo-Robustness-Analyse ✅ (Phase 45 implementiert)
 3. **Live-Deployment**: Beste Strategien in Testnet/Live übernehmen
 
 ---
