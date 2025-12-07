@@ -239,6 +239,17 @@ HTML-Reports enthalten die Plots als `<img>`-Tags mit relativen Pfaden.
 
 ## 5. CLI-Optionen
 
+### Unified Research-CLI (Empfohlen)
+
+Alternativ zur direkten Verwendung von `generate_strategy_sweep_report.py` kann die Report-Generierung über die Unified Research-CLI gestartet werden:
+
+```bash
+python scripts/research_cli.py report \
+  --sweep-name rsi_reversion_basic \
+  --format both \
+  --with-plots
+```
+
 ### generate_strategy_sweep_report.py
 
 ```bash

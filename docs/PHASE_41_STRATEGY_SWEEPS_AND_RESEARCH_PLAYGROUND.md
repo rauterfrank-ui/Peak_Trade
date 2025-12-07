@@ -84,6 +84,43 @@ vol_sweeps = get_vol_regime_filter_sweeps("medium", include_percentile=True)
 
 ### 3. CLI-Scripts
 
+#### Unified Research-CLI (Empfohlen)
+
+**Datei:** `scripts/research_cli.py`
+
+Neben den einzelnen Scripts (`run_strategy_sweep.py`, `generate_strategy_sweep_report.py`, `promote_sweep_topn.py`, `run_walkforward_backtest.py`) steht eine gebündelte Research-CLI zur Verfügung:
+
+```bash
+# Strategy-Sweep ausführen
+python scripts/research_cli.py sweep --sweep-name rsi_reversion_basic --config config/config.toml
+
+# Sweep-Report generieren
+python scripts/research_cli.py report --sweep-name rsi_reversion_basic --format both --with-plots
+
+# Top-N Promotion
+python scripts/research_cli.py promote --sweep-name rsi_reversion_basic --top-n 5
+
+# Walk-Forward-Testing
+python scripts/research_cli.py walkforward --sweep-name rsi_reversion_basic --top-n 3 --train-window 90d --test-window 30d --use-dummy-data
+```
+
+Für komplette Pipelines kann das `pipeline`-Subcommand genutzt werden:
+
+```bash
+python scripts/research_cli.py pipeline \
+  --sweep-name rsi_reversion_basic \
+  --config config/config.toml \
+  --format both \
+  --with-plots \
+  --top-n 5 \
+  --run-walkforward \
+  --train-window 90d \
+  --test-window 30d \
+  --use-dummy-data
+```
+
+**Dies ist der empfohlene Zugang für Research-Workflows**, da alle Schritte in einem einheitlichen Interface verfügbar sind.
+
 #### run_strategy_sweep.py
 
 **Datei:** `scripts/run_strategy_sweep.py`

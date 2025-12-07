@@ -199,6 +199,34 @@ python scripts/run_walkforward_backtest.py \
 
 ## 5. CLI-Optionen
 
+### Unified Research-CLI (Empfohlen)
+
+Alternativ zur direkten Verwendung von `run_walkforward_backtest.py` kann Walk-Forward-Testing über die Unified Research-CLI gestartet werden:
+
+```bash
+python scripts/research_cli.py walkforward \
+  --sweep-name rsi_reversion_basic \
+  --top-n 3 \
+  --train-window 90d \
+  --test-window 30d \
+  --use-dummy-data
+```
+
+Für komplette Pipelines (Sweep → Report → Promotion → Walk-Forward) kann das `pipeline`-Subcommand genutzt werden:
+
+```bash
+python scripts/research_cli.py pipeline \
+  --sweep-name rsi_reversion_basic \
+  --config config/config.toml \
+  --format both \
+  --with-plots \
+  --top-n 5 \
+  --run-walkforward \
+  --train-window 90d \
+  --test-window 30d \
+  --use-dummy-data
+```
+
 ### run_walkforward_backtest.py
 
 **Datei:** `scripts/run_walkforward_backtest.py`
