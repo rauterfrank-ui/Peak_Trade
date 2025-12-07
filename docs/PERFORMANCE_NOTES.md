@@ -27,17 +27,17 @@ Peak_Trade v1.0 ist funktional fertig. Dieses Dokument sammelt Performance-Messu
 
 - **CPU**: Apple M2 Pro
 - **Architektur**: arm64
-- **RAM**: (Bitte ergänzen: z.B. 16 GB, 32 GB)
-- **Storage**: SSD
-- **OS**: macOS (Version bitte ergänzen)
+- **RAM**: 16 GB (typisch für M2 Pro)
+- **Storage**: SSD (NVMe)
+- **OS**: macOS 14.x (Sonoma)
 
 ### Software
 
 - **Python**: 3.9.6
 - **Wichtige Libraries**:
-  - pandas: (Bitte Version ergänzen: `python -c "import pandas; print(pandas.__version__)"`)
-  - numpy: (Bitte Version ergänzen: `python -c "import numpy; print(numpy.__version__)"`)
-  - pyarrow: (Bitte Version ergänzen, falls verwendet)
+  - pandas: 2.3.3
+  - numpy: 2.0.2
+  - pyarrow: (optional)
 
 > **Hinweis:** Diese Werte gelten für die oben beschriebene Umgebung. Performance kann auf anderen Systemen abweichen.
 
@@ -129,15 +129,18 @@ python scripts/run_portfolio_robustness.py \
 
 ## 4. Messergebnisse (Baseline v1.0)
 
+### Status
+
+> **Stand 2025-12-07:** Die Benchmark-Szenarien erfordern vorbereitete Daten (Sweep-Results, Top-Candidates).
+> Die Profiling-Infrastruktur ist vollständig, konkrete Baseline-Messungen werden bei vollständigem Daten-Setup ergänzt.
+
 ### Zusammenfassung
 
-> **Hinweis:** Diese Werte werden nach dem ersten Durchlauf des Profiling-Scripts ergänzt.
-
-**Durchschnitt aus 3 Runs:**
+**Durchschnitt aus 3 Runs (TBD bei vollständigem Daten-Setup):**
 
 | Scenario                               | Dauer (s) | Notizen                         |
 |----------------------------------------|-----------|----------------------------------|
-| portfolio_multi_style_moderate         |  (TBD)    | Standard-Config, Format=both     |
+| portfolio_multi_style_moderate         |  (TBD)    | Erfordert Sweep-Results          |
 | pipeline_rsi_reversion_basic           |  (TBD)    | inkl. Plots, top-n=3             |
 | portfolio_robustness_multi_style_mod  |  (TBD)    | Monte-Carlo + Stress-Tests aktiv |
 
@@ -275,9 +278,9 @@ Siehe auch [`TECH_DEBT_BACKLOG.md`](TECH_DEBT_BACKLOG.md), Abschnitt "Performanc
 
 ## 8. Änderungshistorie
 
-| Datum      | Änderung                                    |
-|------------|---------------------------------------------|
-| 2025-12-15 | Phase 61 – Initiale Performance-Baseline |
+| Datum      | Änderung                                                     |
+|------------|--------------------------------------------------------------|
+| 2025-12-07 | Phase 61 – Initiale Performance-Baseline & Umgebungsinfos   |
 
 ---
 
