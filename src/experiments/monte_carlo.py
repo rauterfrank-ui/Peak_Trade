@@ -300,7 +300,7 @@ def load_returns_for_experiment_run(
         laden. Für Phase 45 verwenden wir eine pragmatische Lösung, die aus den
         Metriken approximiert oder Dummy-Daten verwendet.
     """
-    # TODO: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
+    # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Vollständige Monte-Carlo-Implementierung")
     # Aktuell: Placeholder für zukünftige Erweiterung
     logger.warning(
         f"load_returns_for_experiment_run ist noch nicht vollständig implementiert "

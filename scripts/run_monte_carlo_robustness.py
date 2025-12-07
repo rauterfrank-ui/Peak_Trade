@@ -136,7 +136,7 @@ def load_returns_for_config(
         logger.info(f"Verwende Dummy-Daten für Config {config.get('config_id', 'unknown')}")
         return create_dummy_returns(dummy_bars)
 
-    # TODO: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
+    # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Vollständige Monte-Carlo-Robustness-Implementierung")
     # Aktuell: Placeholder - würde hier die Equity-Curve aus dem Experiment-Run laden
     logger = logging.getLogger(__name__)
     logger.warning(

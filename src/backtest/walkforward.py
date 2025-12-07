@@ -384,7 +384,7 @@ def run_walkforward_for_config(
 
         # Train-Backtest (optional, aktuell nicht verwendet, aber für spätere Optimierung)
         train_result: Optional[BacktestResult] = None
-        # TODO: Später: Parameter-Optimierung auf Train-Daten
+        # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Walk-Forward: Parameter-Optimierung")
         # train_result = engine.run_realistic(
         #     df=train_df,
         #     strategy_signal_fn=strategy_signal_fn,

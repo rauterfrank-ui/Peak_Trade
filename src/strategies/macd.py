@@ -229,8 +229,9 @@ class MACDStrategy(BaseStrategy):
 # ============================================================================
 # LEGACY API (Backwards Compatibility)
 # ============================================================================
-# TODO: Legacy-Funktion entfernen, sobald alle Pipelines auf
-# MACDStrategy (OOP) umgestellt sind.
+# NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Legacy-API Cleanup: macd.py")
+# Legacy-Funktion für Backwards Compatibility. Sollte entfernt werden, sobald
+# alle Pipelines auf MACDStrategy (OOP) umgestellt sind.
 
 
 def calculate_macd(

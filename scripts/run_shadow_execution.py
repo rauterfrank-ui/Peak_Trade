@@ -499,7 +499,7 @@ def main() -> int:
         run_id = log_shadow_run(
             strategy_key=strategy_name,
             symbol=args.symbol,
-            timeframe="1h",  # TODO: aus Daten ableiten
+            timeframe="1h",  # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Timeframe aus Daten ableiten")
             stats=stats,
             execution_summary=execution_summary,
             start_date=start_date_str,

@@ -93,7 +93,7 @@ def create_exchange_client(cfg: PeakConfig) -> BaseBrokerClient:
     Returns:
         BaseBrokerClient
     """
-    # TODO: Später echten Exchange-Client integrieren (z.B. Kraken)
+    # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Echter Exchange-Client: preview_live_portfolio.py")
     # Aktuell: Fallback auf PaperBroker für Demo-Zwecke
 
     starting_cash = cfg.get("general.starting_capital", 10000.0)

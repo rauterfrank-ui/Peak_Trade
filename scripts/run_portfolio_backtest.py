@@ -116,7 +116,7 @@ def load_data_for_symbol(
     Lädt Daten für ein bestimmtes Symbol.
 
     Aktuell: Dummy-Daten mit symbol-spezifischem Seed.
-    TODO: Später mit echten Kraken-Daten ersetzen.
+    NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Echte Kraken-Daten: run_portfolio_backtest.py")
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")

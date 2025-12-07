@@ -1315,8 +1315,8 @@ def _calculate_allocation(
     Methods:
     - "equal": Gleichverteilung (1/N)
     - "manual": Nutzt portfolio.weights aus Config
-    - "risk_parity": TODO (gleiches Risk-Level pro Strategie)
-    - "sharpe_weighted": TODO (basierend auf historischer Sharpe)
+    - "risk_parity": NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (gleiches Risk-Level pro Strategie)
+    - "sharpe_weighted": NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (basierend auf historischer Sharpe)
     
     Args:
         strategies: Liste von Strategie-Namen

@@ -154,7 +154,7 @@ def get_current_price(symbol: str) -> float:
     Holt den aktuellen/letzten Preis für ein Symbol.
 
     Aktuell: Dummy-Implementation mit plausiblen Preisen.
-    TODO: Später mit echtem Daten-Adapter (Kraken API etc.) ersetzen.
+    NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Echte Daten-Adapter: preview_live_orders.py")
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")

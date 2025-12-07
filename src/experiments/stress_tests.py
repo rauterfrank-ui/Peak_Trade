@@ -386,7 +386,7 @@ def load_returns_for_top_config(
         dates = pd.date_range("2024-01-01", periods=n, freq="1h")
         return pd.Series(returns, index=dates)
 
-    # TODO: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
+    # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Vollständige Stress-Test-Implementierung")
     logger.warning(
         f"load_returns_for_top_config ist noch nicht vollständig implementiert "
         f"für sweep_name={sweep_name}, config_rank={config_rank}. "

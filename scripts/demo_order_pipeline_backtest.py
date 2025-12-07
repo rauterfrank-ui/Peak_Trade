@@ -303,7 +303,7 @@ def main(argv: Optional[List[str]] = None) -> None:
 
     if args.tag:
         print(f"\n📝 Tag: {args.tag}")
-        # TODO: Registry-Logging implementieren
+        # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Registry-Logging: demo_order_pipeline_backtest.py")
         # log_backtest_run(..., tag=args.tag)
 
     print()
