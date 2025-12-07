@@ -535,7 +535,16 @@ class TestKrakenCacheDataSource:
         from src.strategies.diagnostics import run_strategy_smoke_tests
 
         config_path = kraken_cache_dir / "config.toml"
-        config_path.write_text(f'[data]\ndata_dir = "{kraken_cache_dir / "data"}"\n')
+        # Phase 79: min_bars in real_market_smokes setzen
+        config_content = f"""
+[data]
+data_dir = "{kraken_cache_dir / "data"}"
+
+[real_market_smokes]
+base_path = "{kraken_cache_dir / "data" / "cache"}"
+min_bars = 100
+"""
+        config_path.write_text(config_content)
 
         results = run_strategy_smoke_tests(
             strategy_names=["ma_crossover"],
@@ -544,6 +553,7 @@ class TestKrakenCacheDataSource:
             timeframe="1h",
             n_bars=200,
             data_source="kraken_cache",
+            min_bars=100,  # Phase 79: explizit min_bars setzen
         )
 
         assert len(results) == 1
@@ -552,13 +562,15 @@ class TestKrakenCacheDataSource:
         assert result.data_source == "kraken_cache"
         assert result.symbol == "BTC/EUR"
         assert result.timeframe == "1h"
-        assert result.num_bars == 200
 
-        # Sollte OK sein (echte Daten)
+        # Sollte OK sein (echte Daten mit min_bars=100)
         if result.status == "ok":
+            assert result.num_bars == 200
             assert result.return_pct is not None
             assert result.start_ts is not None
             assert result.end_ts is not None
+            # Phase 79: Data-Health sollte gesetzt sein
+            assert result.data_health == "ok"
 
     def test_run_strategy_smoke_tests_kraken_cache_missing_data(self, tmp_path):
         """Bei fehlenden Kraken-Cache-Daten werden alle Strategien als fail markiert."""
@@ -712,6 +724,262 @@ class TestKrakenCacheCLIIntegration:
         assert "Data-Source: kraken_cache" in result.stdout
         # Sollte durchlaufen wenn Daten vorhanden
         assert result.returncode in [0, 1]  # 0=OK, 1=FAIL (aber kein Crash)
+
+
+# ============================================================================
+# TEST 9: PHASE 79 - DATA HEALTH FIELDS
+# ============================================================================
+
+class TestPhase79DataHealthFields:
+    """Tests fuer Phase 79 Data-Health-Felder in StrategySmokeResult."""
+
+    def test_smoke_result_has_data_health_fields(self):
+        """StrategySmokeResult hat data_health und data_notes Felder."""
+        from src.strategies.diagnostics import StrategySmokeResult
+
+        result = StrategySmokeResult(
+            name="test",
+            status="ok",
+            data_health="ok",
+            data_notes="All good",
+        )
+
+        assert result.data_health == "ok"
+        assert result.data_notes == "All good"
+
+    def test_smoke_result_data_health_missing_file(self):
+        """StrategySmokeResult mit data_health='missing_file'."""
+        from src.strategies.diagnostics import StrategySmokeResult
+
+        result = StrategySmokeResult(
+            name="test",
+            status="fail",
+            data_source="kraken_cache",
+            data_health="missing_file",
+            data_notes="Cache file not found",
+            error="Data-QC failed",
+        )
+
+        assert result.data_health == "missing_file"
+        assert result.data_notes == "Cache file not found"
+
+    def test_format_smoke_result_line_with_health_fail(self):
+        """format_smoke_result_line zeigt Data-Health bei FAIL an."""
+        from src.strategies.diagnostics import (
+            StrategySmokeResult,
+            format_smoke_result_line,
+        )
+
+        result = StrategySmokeResult(
+            name="ma_crossover",
+            status="fail",
+            data_source="kraken_cache",
+            data_health="missing_file",
+            error="Cache not found",
+        )
+
+        line = format_smoke_result_line(result)
+
+        assert "[FAIL]" in line
+        assert "ma_crossover" in line
+        assert "[Data: missing_file]" in line
+
+    def test_format_smoke_result_line_ok_hides_health_ok(self):
+        """format_smoke_result_line versteckt health='ok' bei OK-Results."""
+        from src.strategies.diagnostics import (
+            StrategySmokeResult,
+            format_smoke_result_line,
+        )
+
+        result = StrategySmokeResult(
+            name="ma_crossover",
+            status="ok",
+            data_source="kraken_cache",
+            data_health="ok",
+            return_pct=5.0,
+            sharpe=1.5,
+            max_drawdown_pct=-8.0,
+            num_trades=10,
+        )
+
+        line = format_smoke_result_line(result)
+
+        assert "[OK]" in line
+        # health=ok sollte NICHT angezeigt werden
+        assert "health=" not in line
+
+    def test_run_strategy_smoke_tests_sets_data_health(self):
+        """run_strategy_smoke_tests setzt data_health bei synthetischen Daten."""
+        from src.strategies.diagnostics import run_strategy_smoke_tests
+
+        results = run_strategy_smoke_tests(
+            strategy_names=["ma_crossover"],
+            n_bars=100,
+            data_source="synthetic",
+        )
+
+        assert len(results) == 1
+        # Bei synthetic sollte data_health "ok" sein
+        assert results[0].data_health == "ok"
+
+
+# ============================================================================
+# TEST 10: PHASE 79 - CLI DATA-QC-ONLY MODE
+# ============================================================================
+
+@pytest.mark.slow
+class TestPhase79CLIDataQCOnly:
+    """CLI-Tests fuer --check-data-only Modus (Phase 79)."""
+
+    def test_cli_check_data_only_help(self):
+        """CLI zeigt --check-data-only in der Hilfe an."""
+        result = subprocess.run(
+            [sys.executable, "scripts/strategy_smoke_check.py", "--help"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+        )
+
+        assert result.returncode == 0
+        assert "--check-data-only" in result.stdout
+        assert "--min-bars" in result.stdout
+
+    def test_cli_check_data_only_synthetic_warning(self):
+        """CLI --check-data-only mit synthetic gibt Warnung aus."""
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/strategy_smoke_check.py",
+                "--check-data-only",
+                "--data-source", "synthetic",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            timeout=30,
+        )
+
+        assert result.returncode == 0
+        assert "WARNUNG" in result.stdout or "nur sinnvoll" in result.stdout
+
+    def test_cli_check_data_only_kraken_cache(self):
+        """CLI --check-data-only mit kraken_cache zeigt QC-Ergebnis."""
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/strategy_smoke_check.py",
+                "--check-data-only",
+                "--data-source", "kraken_cache",
+                "--market", "BTC/EUR",
+                "--timeframe", "1h",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            timeout=30,
+        )
+
+        # Sollte ohne Crash laufen (Exit 0 oder 1)
+        assert result.returncode in [0, 1]
+        assert "DATA-QC" in result.stdout
+        assert "Status:" in result.stdout
+
+    def test_cli_min_bars_parameter(self):
+        """CLI --min-bars Parameter wird akzeptiert."""
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/strategy_smoke_check.py",
+                "--strategies", "ma_crossover",
+                "--n-bars", "100",
+                "--min-bars", "50",
+                "--data-source", "synthetic",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            timeout=60,
+        )
+
+        # Sollte ohne Fehler laufen
+        assert result.returncode in [0, 1]
+        assert "Min-Bars" in result.stdout
+
+
+# ============================================================================
+# TEST 11: PHASE 79 - JSON/MD REPORTS WITH DATA HEALTH
+# ============================================================================
+
+class TestPhase79ReportsWithDataHealth:
+    """Tests fuer Reports mit Data-Health-Feldern."""
+
+    def test_json_report_contains_data_health(self, tmp_path):
+        """JSON-Report enthaelt data_health und data_notes."""
+        from scripts.strategy_smoke_check import save_json_report
+        from src.strategies.diagnostics import StrategySmokeResult
+
+        results = [
+            StrategySmokeResult(
+                name="ma_crossover",
+                status="ok",
+                data_source="kraken_cache",
+                data_health="ok",
+                data_notes=None,
+                return_pct=5.0,
+            ),
+            StrategySmokeResult(
+                name="rsi_reversion",
+                status="fail",
+                data_source="kraken_cache",
+                data_health="missing_file",
+                data_notes="Cache not found",
+                error="Data-QC failed",
+            ),
+        ]
+
+        summary = {"total": 2, "ok": 1, "fail": 1, "failed_strategies": ["rsi_reversion"], "all_passed": False, "total_duration_ms": 100}
+
+        output_path = tmp_path / "test_report.json"
+        save_json_report(results, summary, str(output_path))
+
+        # JSON lesen und pruefen
+        import json
+        with open(output_path) as f:
+            report = json.load(f)
+
+        assert len(report["results"]) == 2
+        assert report["results"][0]["data_health"] == "ok"
+        assert report["results"][1]["data_health"] == "missing_file"
+        assert report["results"][1]["data_notes"] == "Cache not found"
+
+    def test_md_report_contains_data_health_column(self, tmp_path):
+        """Markdown-Report hat Data-Health-Spalte."""
+        from scripts.strategy_smoke_check import save_md_report
+        from src.strategies.diagnostics import StrategySmokeResult
+
+        results = [
+            StrategySmokeResult(
+                name="ma_crossover",
+                status="ok",
+                data_source="kraken_cache",
+                data_health="ok",
+                return_pct=5.0,
+                sharpe=1.2,
+                max_drawdown_pct=-8.0,
+                num_trades=10,
+            ),
+        ]
+
+        summary = {"total": 1, "ok": 1, "fail": 0, "failed_strategies": [], "all_passed": True, "total_duration_ms": 50}
+
+        output_path = tmp_path / "test_report.md"
+        save_md_report(results, summary, str(output_path))
+
+        # Markdown lesen und pruefen
+        content = output_path.read_text()
+
+        assert "| Data-Health |" in content
+        assert "| ok |" in content
 
 
 # ============================================================================

@@ -36,7 +36,7 @@ import traceback
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Set
+from typing import Any, Dict, List, Literal, Optional, Set, Tuple
 
 import numpy as np
 import pandas as pd
@@ -72,6 +72,8 @@ class StrategySmokeResult:
         error: Fehlermeldung (None bei Erfolg)
         duration_ms: Ausfuehrungsdauer in Millisekunden
         metadata: Zusaetzliche Infos (Kategorie, Timeframe, etc.)
+        data_health: Data-QC Status ("ok", "missing_file", "too_few_bars", "empty", "other")
+        data_notes: Data-QC Freitext (z.B. "only 120 bars < min_bars=500")
     """
     name: str
     status: Literal["ok", "fail"]
@@ -88,6 +90,9 @@ class StrategySmokeResult:
     error: Optional[str] = None
     duration_ms: Optional[float] = None
     metadata: Optional[Dict[str, Any]] = None
+    # Phase 79: Data-QC Fields
+    data_health: Optional[str] = None
+    data_notes: Optional[str] = None
 
 
 def get_v11_official_strategies(config_path: str = "config/config.toml") -> List[str]:
@@ -357,7 +362,8 @@ def _load_ohlcv_for_smoke(
     lookback_days: int,
     n_bars: Optional[int],
     config_path: str,
-) -> pd.DataFrame:
+    min_bars: int = 200,
+) -> Tuple[pd.DataFrame, Optional[Any]]:
     """
     Laedt OHLCV-Daten basierend auf der Datenquelle.
 
@@ -368,9 +374,12 @@ def _load_ohlcv_for_smoke(
         lookback_days: Anzahl Tage
         n_bars: Explizite Anzahl Bars
         config_path: Pfad zur Config
+        min_bars: Minimum benoetigte Bars fuer Data-QC (Phase 79)
 
     Returns:
-        DataFrame mit OHLCV-Daten
+        Tuple von (DataFrame, Optional[KrakenDataHealth])
+        - DataFrame: OHLCV-Daten
+        - KrakenDataHealth: Health-Report (nur bei kraken_cache, sonst None)
 
     Raises:
         ValueError: Bei unbekannter Datenquelle oder fehlenden Daten
@@ -379,17 +388,44 @@ def _load_ohlcv_for_smoke(
         # Bisheriges Verhalten: synthetische Daten
         if n_bars is None:
             n_bars = max(lookback_days * 24, 200)
-        return create_synthetic_ohlcv(n_bars=n_bars)
+        return create_synthetic_ohlcv(n_bars=n_bars), None
 
     elif data_source == "kraken_cache":
-        # Phase 78: echte Daten aus Kraken-Cache
-        return load_kraken_cache_ohlcv(
-            symbol=market,
+        # Phase 79: echte Daten aus Kraken-Cache mit Data-QC
+        from src.data.kraken_cache_loader import (
+            load_kraken_cache_window,
+            get_real_market_smokes_config,
+        )
+
+        # Config laden fuer base_path
+        rms_cfg = get_real_market_smokes_config(config_path)
+        base_path = Path(rms_cfg["base_path"])
+
+        # Falls test_base_path gesetzt und existiert, verwende diesen
+        test_base_path = Path(rms_cfg.get("test_base_path", "tests/data/kraken_smoke"))
+        if test_base_path.exists() and not base_path.exists():
+            base_path = test_base_path
+
+        # QC-Threshold: Parameter hat Prioritaet, dann Config
+        # Verwende immer den uebergebenen min_bars Parameter
+        qc_min_bars = min_bars
+
+        df, health = load_kraken_cache_window(
+            base_path=base_path,
+            market=market,
             timeframe=timeframe,
             lookback_days=lookback_days,
+            min_bars=qc_min_bars,
             n_bars=n_bars,
-            config_path=config_path,
         )
+
+        # Bei Data-QC-Fehler: Exception werfen (wird im Aufrufer gefangen)
+        if not health.is_ok:
+            raise ValueError(
+                f"Data-QC fehlgeschlagen: {health.status}. {health.notes or ''}"
+            )
+
+        return df, health
 
     else:
         raise ValueError(
@@ -540,6 +576,7 @@ def run_strategy_smoke_tests(
     lookback_days: int = 30,
     n_bars: Optional[int] = None,
     data_source: str = "synthetic",
+    min_bars: int = 200,
 ) -> List[StrategySmokeResult]:
     """
     Fuehrt Smoke-Tests fuer mehrere Strategien aus.
@@ -554,6 +591,7 @@ def run_strategy_smoke_tests(
         lookback_days: Anzahl Tage fuer Backtest (beeinflusst n_bars)
         n_bars: Explizite Anzahl Bars (ueberschreibt lookback_days)
         data_source: Datenquelle ("synthetic" oder "kraken_cache")
+        min_bars: Minimum benoetigte Bars fuer Data-QC (Phase 79)
 
     Returns:
         Liste von StrategySmokeResult fuer jede Strategie
@@ -562,6 +600,7 @@ def run_strategy_smoke_tests(
         - data_source="synthetic" (Default): Synthetische OHLCV-Daten
         - data_source="kraken_cache": Echte Daten aus lokalem Kraken-Cache
           (keine Netzwerk-Aufrufe, nur lokale Parquet-Dateien)
+        - Bei kraken_cache werden Data-Health-Felder gefuellt (Phase 79)
     """
     # Strategien ermitteln
     if strategy_names is None:
@@ -582,17 +621,29 @@ def run_strategy_smoke_tests(
             ]
 
     # Daten laden (je nach data_source)
+    data_health = None
     try:
-        df = _load_ohlcv_for_smoke(
+        df, data_health = _load_ohlcv_for_smoke(
             data_source=data_source,
             market=market,
             timeframe=timeframe,
             lookback_days=lookback_days,
             n_bars=n_bars,
             config_path=config_path,
+            min_bars=min_bars,
         )
     except (FileNotFoundError, ValueError) as e:
         # Bei Datenlade-Fehler: alle Strategien als fail markieren
+        # Extrahiere Data-Health-Status aus Error-Message wenn moeglich
+        error_str = str(e)
+        health_status = "other"
+        if "missing_file" in error_str.lower() or "nicht gefunden" in error_str.lower():
+            health_status = "missing_file"
+        elif "too_few_bars" in error_str.lower():
+            health_status = "too_few_bars"
+        elif "empty" in error_str.lower():
+            health_status = "empty"
+
         return [
             StrategySmokeResult(
                 name=name,
@@ -600,10 +651,19 @@ def run_strategy_smoke_tests(
                 data_source=data_source,
                 symbol=market,
                 timeframe=timeframe,
-                error=str(e),
+                error=error_str,
+                data_health=health_status,
+                data_notes=error_str[:200] if len(error_str) > 200 else error_str,
             )
             for name in strategy_names
         ]
+
+    # Health-Info extrahieren (fuer kraken_cache)
+    health_status_str = None
+    health_notes_str = None
+    if data_health is not None:
+        health_status_str = data_health.status
+        health_notes_str = data_health.notes
 
     # Tests ausfuehren
     results = []
@@ -616,6 +676,9 @@ def run_strategy_smoke_tests(
             symbol=market,
             timeframe=timeframe,
         )
+        # Data-Health-Felder setzen (Phase 79)
+        result.data_health = health_status_str if health_status_str else "ok"
+        result.data_notes = health_notes_str
         results.append(result)
 
     return results
@@ -669,6 +732,9 @@ def format_smoke_result_line(result: StrategySmokeResult, show_data_info: bool =
             data_parts.append(f"tf={result.timeframe}")
         if result.num_bars:
             data_parts.append(f"bars={result.num_bars}")
+        # Phase 79: Data-Health anzeigen wenn nicht "ok"
+        if result.data_health and result.data_health != "ok":
+            data_parts.append(f"health={result.data_health}")
         data_info = f" ({', '.join(data_parts)})"
 
     if result.status == "ok":
@@ -686,4 +752,8 @@ def format_smoke_result_line(result: StrategySmokeResult, show_data_info: bool =
         )
     else:
         error_short = result.error[:50] + "..." if result.error and len(result.error) > 50 else result.error
-        return f"[FAIL] {result.name:<20}{data_info} | Error: {error_short}"
+        # Phase 79: Data-Health-Info bei FAIL anzeigen
+        health_info = ""
+        if result.data_health and result.data_health != "ok":
+            health_info = f" [Data: {result.data_health}]"
+        return f"[FAIL] {result.name:<20}{data_info}{health_info} | Error: {error_short}"

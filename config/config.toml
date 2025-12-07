@@ -5,6 +5,32 @@
 # WICHTIG: Keine Secrets hier! API-Keys gehören in .env oder Umgebungsvariablen
 # ============================================================================
 
+# ============================================================================
+# PHASE 79: REAL-MARKET SMOKES CONFIGURATION
+# ============================================================================
+# Konfiguration für Real-Market-Smoke-Tests mit lokalem Kraken-Cache.
+# WICHTIG: Rein Offline - keine Netzwerk-Calls, nur lokale Parquet-Dateien!
+# ============================================================================
+
+[real_market_smokes]
+# Basis-Pfad für Kraken-Cache-Files (Produktiv)
+base_path = "data/cache"
+
+# Override-Base für Tests (in pytest über Fixture gesetzt)
+test_base_path = "tests/data/kraken_smoke"
+
+# Default-Parameter für Real-Market-Smokes
+default_market = "BTC/EUR"
+default_timeframe = "1h"
+default_lookback_days = 30
+
+# Data-Quality-Control Thresholds
+min_bars = 500
+
+# Liste konfigurierter Real-Market-Szenarien
+markets = ["BTC/EUR"]
+timeframes = ["1h"]
+
 [backtest]
 # Startkapital für Backtests
 initial_cash = 10000.0

@@ -146,6 +146,20 @@ def parse_args() -> argparse.Namespace:
         help="Zeigt nur die v1.1-Strategien an, fuehrt keine Tests aus",
     )
 
+    # Phase 79: Data-QC Modus
+    parser.add_argument(
+        "--check-data-only",
+        action="store_true",
+        help="Nur Data-QC ausfuehren ohne Strategie-Tests (nur bei kraken_cache)",
+    )
+
+    parser.add_argument(
+        "--min-bars",
+        type=int,
+        default=None,
+        help="Minimum benoetigte Bars fuer Data-QC (Default: aus Config oder 500)",
+    )
+
     return parser.parse_args()
 
 
@@ -246,6 +260,9 @@ def save_json_report(
                 "error": r.error,
                 "duration_ms": r.duration_ms,
                 "metadata": r.metadata,
+                # Phase 79: Data-Health-Felder
+                "data_health": r.data_health,
+                "data_notes": r.data_notes,
             }
             for r in results
         ],
@@ -275,6 +292,11 @@ def save_md_report(
     start_ts = ok_results[0].start_ts if ok_results and ok_results[0].start_ts else None
     end_ts = ok_results[0].end_ts if ok_results and ok_results[0].end_ts else None
 
+    # Phase 79: Data-Health aus erstem Result extrahieren
+    first_result = results[0] if results else None
+    data_health = first_result.data_health if first_result else None
+    data_notes = first_result.data_notes if first_result else None
+
     lines = [
         "# Strategy Smoke-Check Report",
         "",
@@ -290,6 +312,12 @@ def save_md_report(
 
     if start_ts and end_ts:
         lines.append(f"- **Zeitraum:** {start_ts} bis {end_ts}")
+
+    # Phase 79: Data-Health-Block
+    if data_health:
+        lines.append(f"- **Data-Health:** {data_health}")
+    if data_notes:
+        lines.append(f"- **Data-Notes:** {data_notes}")
 
     lines.extend([
         "",
@@ -308,24 +336,25 @@ def save_md_report(
 
     lines.append("## Ergebnisse")
     lines.append("")
-    lines.append("| Strategy | Status | Return | Sharpe | MaxDD | Trades |")
-    lines.append("|----------|--------|--------|--------|-------|--------|")
+    lines.append("| Strategy | Status | Return | Sharpe | MaxDD | Trades | Data-Health |")
+    lines.append("|----------|--------|--------|--------|-------|--------|-------------|")
 
     for r in results:
+        health_str = r.data_health if r.data_health else "-"
         if r.status == "ok":
             ret = f"{r.return_pct:+.2f}%" if r.return_pct is not None else "N/A"
             sharpe = f"{r.sharpe:.2f}" if r.sharpe is not None else "N/A"
             dd = f"{r.max_drawdown_pct:.2f}%" if r.max_drawdown_pct is not None else "N/A"
             trades = str(r.num_trades) if r.num_trades is not None else "N/A"
-            lines.append(f"| {r.name} | ✓ OK | {ret} | {sharpe} | {dd} | {trades} |")
+            lines.append(f"| {r.name} | OK | {ret} | {sharpe} | {dd} | {trades} | {health_str} |")
         else:
             error_short = r.error[:30] + "..." if r.error and len(r.error) > 30 else r.error
-            lines.append(f"| {r.name} | ✗ FAIL | - | - | - | {error_short} |")
+            lines.append(f"| {r.name} | FAIL | - | - | - | {error_short} | {health_str} |")
 
     lines.append("")
     lines.append("---")
     lines.append("")
-    lines.append("*Generiert von `scripts/strategy_smoke_check.py` (Phase 76)*")
+    lines.append("*Generiert von `scripts/strategy_smoke_check.py` (Phase 76/79)*")
 
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -336,11 +365,109 @@ def save_md_report(
     print(f"Markdown-Report gespeichert: {path}")
 
 
+def run_data_qc_only(args) -> int:
+    """
+    Phase 79: Nur Data-QC ausfuehren ohne Strategie-Tests.
+
+    Args:
+        args: CLI-Argumente
+
+    Returns:
+        Exit-Code (0=OK, 1=QC-Problem, 2=Fehler)
+    """
+    from pathlib import Path
+
+    print("-" * 80)
+    print("DATA-QC ONLY MODE (Phase 79)")
+    print("-" * 80)
+    print()
+
+    if args.data_source != "kraken_cache":
+        print("WARNUNG: --check-data-only ist nur sinnvoll mit --data-source kraken_cache")
+        print("         Bei synthetic Daten gibt es keine sinnvolle QC.")
+        return 0
+
+    # Lade QC-Funktionen
+    try:
+        from src.data.kraken_cache_loader import (
+            check_data_health_only,
+            get_real_market_smokes_config,
+            list_available_cache_files,
+        )
+    except ImportError as e:
+        print(f"Fehler beim Import: {e}")
+        return 2
+
+    # Config laden
+    rms_cfg = get_real_market_smokes_config(args.config)
+    base_path = Path(rms_cfg["base_path"])
+
+    # Falls test_base_path existiert und base_path nicht, verwende test_base_path
+    test_base_path = Path(rms_cfg.get("test_base_path", "tests/data/kraken_smoke"))
+    if test_base_path.exists() and not base_path.exists():
+        base_path = test_base_path
+        print(f"INFO: Verwende test_base_path: {base_path}")
+
+    min_bars = args.min_bars if args.min_bars else rms_cfg.get("min_bars", 500)
+
+    print(f"Config: {args.config}")
+    print(f"Base-Path: {base_path}")
+    print(f"Market: {args.market}")
+    print(f"Timeframe: {args.timeframe}")
+    print(f"Min-Bars: {min_bars}")
+    print()
+
+    # Verfuegbare Cache-Dateien anzeigen
+    print("Verfuegbare Cache-Dateien:")
+    available = list_available_cache_files(base_path)
+    if available:
+        for name, info in available.items():
+            print(f"  - {name}: {info['size_kb']:.1f} KB, modified: {info['modified']}")
+    else:
+        print("  (keine)")
+    print()
+
+    # Data-QC ausfuehren
+    print(f"Data-QC fuer {args.market} / {args.timeframe}...")
+    health = check_data_health_only(
+        base_path=base_path,
+        market=args.market,
+        timeframe=args.timeframe,
+        min_bars=min_bars,
+    )
+
+    print()
+    print("-" * 80)
+    print("DATA-QC ERGEBNIS")
+    print("-" * 80)
+    print()
+    print(f"  Status:      {health.status}")
+    print(f"  Num-Bars:    {health.num_bars}")
+    print(f"  Start-TS:    {health.start_ts}")
+    print(f"  End-TS:      {health.end_ts}")
+    print(f"  Lookback:    {health.lookback_days_actual:.1f} Tage" if health.lookback_days_actual else "  Lookback:    N/A")
+    print(f"  File-Path:   {health.file_path}")
+    if health.notes:
+        print(f"  Notes:       {health.notes}")
+    print()
+
+    if health.is_ok:
+        print("Data-QC: OK")
+        return 0
+    else:
+        print(f"Data-QC: PROBLEM ({health.status})")
+        return 1
+
+
 def main() -> int:
     """Hauptfunktion."""
     args = parse_args()
 
     print_header()
+
+    # Phase 79: Data-QC-Only Modus
+    if args.check_data_only:
+        return run_data_qc_only(args)
 
     # List-Modus: Nur Strategien anzeigen
     if args.list_strategies:
@@ -377,11 +504,16 @@ def main() -> int:
     print(f"Lookback: {args.lookback_days} Tage")
     if args.n_bars:
         print(f"Explizite Bars: {args.n_bars}")
+    if args.min_bars:
+        print(f"Min-Bars (QC): {args.min_bars}")
     print()
 
     # Smoke-Tests ausfuehren
     print("Fuehre Smoke-Tests aus...")
     print()
+
+    # min_bars fuer QC
+    min_bars = args.min_bars if args.min_bars else 200
 
     try:
         results = run_strategy_smoke_tests(
@@ -392,6 +524,7 @@ def main() -> int:
             lookback_days=args.lookback_days,
             n_bars=args.n_bars,
             data_source=args.data_source,
+            min_bars=min_bars,
         )
     except Exception as e:
         print(f"Fehler beim Ausfuehren der Smoke-Tests: {e}")
