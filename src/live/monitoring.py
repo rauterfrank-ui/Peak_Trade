@@ -1,562 +1,545 @@
 # src/live/monitoring.py
 """
-Peak_Trade: Live Run Monitoring (Phase 33)
-==========================================
+Peak_Trade: Live Monitoring & Dashboards v1 (Phase 65)
+======================================================
 
-Monitoring-Modul für Shadow-/Paper-Runs.
-Bietet Snapshot- und Tail-Funktionen zum Beobachten laufender oder
-abgeschlossener Runs.
+Monitoring-Funktionen für Shadow- und Testnet-Runs.
 
 Features:
-- LiveRunSnapshot: Zusammenfassung des aktuellen Run-Status
-- LiveRunTailRow: Einzelne Event-Zeile für Tail-Ansicht
-- load_run_snapshot(): Lädt Snapshot aus Run-Directory
-- load_run_tail(): Lädt letzte N Events
+- Run-Übersicht (list_runs)
+- Run-Snapshots mit aggregierten Metriken
+- Zeitreihen-Daten für Dashboards
+- Event-Tailing
 
-WICHTIG: Dieses Modul ist rein lesend (read-only).
-         Es trifft keine Trading-Entscheidungen.
-
-Example:
-    >>> from src.live.monitoring import load_run_snapshot, load_run_tail
-    >>>
-    >>> snapshot = load_run_snapshot(Path("live_runs/my_run"))
-    >>> print(f"Run: {snapshot.run_id}, Steps: {snapshot.total_steps}")
-    >>>
-    >>> tail = load_run_tail(Path("live_runs/my_run"), n=10)
-    >>> for row in tail:
-    ...     print(f"{row.ts_bar}: equity={row.equity:.2f}")
+WICHTIG: Diese Library nutzt die bestehende Run-Logging-Struktur.
+         Keine neue Persistenz wird erstellt.
 """
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
 from .run_logging import (
-    LiveRunMetadata,
     load_run_metadata,
     load_run_events,
-    list_runs,
+    list_runs as list_run_ids,
+    LiveRunMetadata,
 )
 
 logger = logging.getLogger(__name__)
 
 
 # =============================================================================
-# Config Dataclass
+# Data Structures
 # =============================================================================
 
 
 @dataclass
-class LiveMonitoringConfig:
+class RunMetricPoint:
     """
-    Konfiguration für Live-Monitoring.
+    Ein einzelner Metrik-Punkt in einer Zeitreihe.
 
     Attributes:
-        default_interval_seconds: Refresh-Intervall in Sekunden
-        default_tail_rows: Anzahl Tail-Zeilen
-        use_colors: ANSI-Farben verwenden
+        timestamp: Zeitstempel des Events
+        equity: Aktuelles Equity
+        pnl: Realisierter PnL
+        unrealized_pnl: Unrealisierter PnL
+        drawdown: Aktueller Drawdown (negativ)
+        exposure: Gesamt-Exposure
     """
-    default_interval_seconds: float = 2.0
-    default_tail_rows: int = 15
-    use_colors: bool = True
+    timestamp: datetime
+    equity: Optional[float] = None
+    pnl: Optional[float] = None
+    unrealized_pnl: Optional[float] = None
+    drawdown: Optional[float] = None
+    exposure: Optional[float] = None
 
-
-def load_live_monitoring_config(cfg: Any) -> LiveMonitoringConfig:
-    """
-    Lädt LiveMonitoringConfig aus PeakConfig.
-
-    Args:
-        cfg: PeakConfig-Objekt
-
-    Returns:
-        LiveMonitoringConfig mit Werten aus Config
-    """
-    return LiveMonitoringConfig(
-        default_interval_seconds=cfg.get("live_monitoring.default_interval_seconds", 2.0),
-        default_tail_rows=cfg.get("live_monitoring.default_tail_rows", 15),
-        use_colors=cfg.get("live_monitoring.use_colors", True),
-    )
-
-
-# =============================================================================
-# Snapshot Dataclass
-# =============================================================================
+    def to_dict(self) -> Dict[str, Any]:
+        """Konvertiert zu Dictionary."""
+        return {
+            "timestamp": self.timestamp.isoformat() if self.timestamp else None,
+            "equity": self.equity,
+            "pnl": self.pnl,
+            "unrealized_pnl": self.unrealized_pnl,
+            "drawdown": self.drawdown,
+            "exposure": self.exposure,
+        }
 
 
 @dataclass
-class LiveRunSnapshot:
+class RunSnapshot:
     """
-    Snapshot des aktuellen Run-Status.
-
-    Aggregiert alle relevanten Metriken aus Metadaten und Events
-    in einer einfach lesbaren Struktur.
+    Snapshot eines Runs mit aggregierten Metriken.
 
     Attributes:
         run_id: Eindeutige Run-ID
-        mode: Environment-Modus (paper, shadow)
-        strategy_name: Name der Strategie
+        mode: Environment-Modus (shadow, testnet)
+        strategy: Strategie-Name
         symbol: Trading-Symbol
-        timeframe: Candle-Timeframe
-        started_at: Startzeit des Runs
-        ended_at: Endzeit (falls Run beendet)
-        last_bar_time: Zeitstempel der letzten Bar
-        last_price: Letzter Close-Preis
-        position_size: Aktuelle Positionsgröße
-        cash: Verfügbares Cash
-        equity: Gesamtwert (Cash + Positionen)
-        realized_pnl: Realisierter PnL
-        unrealized_pnl: Unrealisierter PnL
-        total_steps: Anzahl verarbeiteter Steps
-        total_orders: Anzahl generierter Orders
-        total_blocked_orders: Anzahl blockierter Orders (Risk)
+        timeframe: Timeframe
+        is_active: Ob der Run als aktiv gilt
+        started_at: Start-Zeitpunkt
+        ended_at: End-Zeitpunkt (falls beendet)
+        last_event_time: Zeitstempel des letzten Events
+        equity: Aktuelles Equity (aus letztem Event)
+        pnl: Realisierter PnL (aus letztem Event)
+        unrealized_pnl: Unrealisierter PnL (aus letztem Event)
+        drawdown: Aktueller Drawdown (berechnet)
+        num_events: Anzahl Events
+        last_error: Letzter Fehler (falls vorhanden)
+        run_dir: Pfad zum Run-Verzeichnis
     """
     run_id: str
     mode: str
-    strategy_name: str
-    symbol: str
-    timeframe: str
-    started_at: Optional[datetime]
-    ended_at: Optional[datetime]
-    last_bar_time: Optional[datetime]
-    last_price: Optional[float]
-    position_size: Optional[float]
-    cash: Optional[float]
-    equity: Optional[float]
-    realized_pnl: Optional[float]
-    unrealized_pnl: Optional[float]
-    total_steps: int
-    total_orders: int
-    total_blocked_orders: int
+    strategy: Optional[str] = None
+    symbol: Optional[str] = None
+    timeframe: Optional[str] = None
+    is_active: bool = False
+    started_at: Optional[datetime] = None
+    ended_at: Optional[datetime] = None
+    last_event_time: Optional[datetime] = None
+    equity: Optional[float] = None
+    pnl: Optional[float] = None
+    unrealized_pnl: Optional[float] = None
+    drawdown: Optional[float] = None
+    num_events: int = 0
+    last_error: Optional[str] = None
+    run_dir: Optional[Path] = None
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Konvertiert zu Dictionary."""
+        return {
+            "run_id": self.run_id,
+            "mode": self.mode,
+            "strategy": self.strategy,
+            "symbol": self.symbol,
+            "timeframe": self.timeframe,
+            "is_active": self.is_active,
+            "started_at": self.started_at.isoformat() if self.started_at else None,
+            "ended_at": self.ended_at.isoformat() if self.ended_at else None,
+            "last_event_time": self.last_event_time.isoformat() if self.last_event_time else None,
+            "equity": self.equity,
+            "pnl": self.pnl,
+            "unrealized_pnl": self.unrealized_pnl,
+            "drawdown": self.drawdown,
+            "num_events": self.num_events,
+            "last_error": self.last_error,
+            "run_dir": str(self.run_dir) if self.run_dir else None,
+        }
 
 
 # =============================================================================
-# Tail Row Dataclass
+# Exceptions
 # =============================================================================
 
 
-@dataclass
-class LiveRunTailRow:
+class RunNotFoundError(Exception):
+    """Wird geworfen wenn ein Run nicht gefunden wird."""
+    pass
+
+
+# =============================================================================
+# Monitoring Functions
+# =============================================================================
+
+
+def _calculate_drawdown(equity_series: pd.Series) -> Optional[float]:
     """
-    Einzelne Zeile für die Tail-Ansicht.
-
-    Repräsentiert ein Event mit den wichtigsten Metriken
-    für die tabellarische Anzeige.
-
-    Attributes:
-        ts_bar: Zeitstempel der Bar
-        equity: Equity-Wert
-        realized_pnl: Realisierter PnL
-        unrealized_pnl: Unrealisierter PnL
-        position_size: Positionsgröße
-        orders_count: Anzahl Orders in diesem Step
-        risk_allowed: Ob Risk-Check bestanden
-        risk_reasons: Gründe für Risk-Block
-    """
-    ts_bar: Optional[datetime]
-    equity: Optional[float]
-    realized_pnl: Optional[float]
-    unrealized_pnl: Optional[float]
-    position_size: Optional[float]
-    orders_count: int
-    risk_allowed: bool
-    risk_reasons: str
-
-
-# =============================================================================
-# Load Functions
-# =============================================================================
-
-
-def load_run_snapshot(run_dir: Path) -> LiveRunSnapshot:
-    """
-    Lädt einen Snapshot aus einem Run-Verzeichnis.
-
-    Kombiniert Metadaten und Events zu einem aggregierten Snapshot
-    mit allen wichtigen Metriken.
+    Berechnet den aktuellen Drawdown aus einer Equity-Serie.
 
     Args:
-        run_dir: Pfad zum Run-Verzeichnis
+        equity_series: Serie von Equity-Werten
 
     Returns:
-        LiveRunSnapshot mit aggregierten Metriken
-
-    Raises:
-        FileNotFoundError: Wenn Run-Verzeichnis oder Dateien fehlen
+        Drawdown als negativer Prozentsatz (z.B. -0.05 für -5%)
     """
-    run_dir = Path(run_dir)
+    if len(equity_series) == 0:
+        return None
 
-    # 1. Metadaten laden
-    meta = load_run_metadata(run_dir)
+    # NaN-Werte entfernen
+    equity_clean = equity_series.dropna()
+    if len(equity_clean) == 0:
+        return None
 
-    # 2. Events laden
-    try:
-        events_df = load_run_events(run_dir)
-    except FileNotFoundError:
-        # Keine Events vorhanden - leerer Snapshot
-        return LiveRunSnapshot(
-            run_id=meta.run_id,
-            mode=meta.mode,
-            strategy_name=meta.strategy_name,
-            symbol=meta.symbol,
-            timeframe=meta.timeframe,
-            started_at=meta.started_at,
-            ended_at=meta.ended_at,
-            last_bar_time=None,
-            last_price=None,
-            position_size=None,
-            cash=None,
-            equity=None,
-            realized_pnl=None,
-            unrealized_pnl=None,
-            total_steps=0,
-            total_orders=0,
-            total_blocked_orders=0,
-        )
-
-    # 3. Aggregationen berechnen
-    total_steps = len(events_df)
-
-    # Orders zählen
-    orders_col = _find_column(events_df, ["orders_generated", "orders_count"])
-    total_orders = int(events_df[orders_col].sum()) if orders_col else 0
-
-    # Blocked Orders zählen
-    blocked_col = _find_column(events_df, ["orders_blocked"])
-    if blocked_col:
-        total_blocked_orders = int(events_df[blocked_col].sum())
-    else:
-        # Fallback: risk_allowed == False zählen
-        risk_col = _find_column(events_df, ["risk_allowed"])
-        if risk_col:
-            total_blocked_orders = int((events_df[risk_col] == False).sum())  # noqa: E712
-        else:
-            total_blocked_orders = 0
-
-    # Letzte Zeile für aktuelle Werte
-    if len(events_df) > 0:
-        last_row = events_df.iloc[-1]
-
-        last_bar_time = _parse_datetime(last_row.get("ts_bar"))
-        last_price = _safe_float(last_row.get("close") or last_row.get("price"))
-        position_size = _safe_float(last_row.get("position_size"))
-        cash = _safe_float(last_row.get("cash"))
-        equity = _safe_float(last_row.get("equity"))
-        realized_pnl = _safe_float(last_row.get("realized_pnl"))
-        unrealized_pnl = _safe_float(last_row.get("unrealized_pnl"))
-    else:
-        last_bar_time = None
-        last_price = None
-        position_size = None
-        cash = None
-        equity = None
-        realized_pnl = None
-        unrealized_pnl = None
-
-    return LiveRunSnapshot(
-        run_id=meta.run_id,
-        mode=meta.mode,
-        strategy_name=meta.strategy_name,
-        symbol=meta.symbol,
-        timeframe=meta.timeframe,
-        started_at=meta.started_at,
-        ended_at=meta.ended_at,
-        last_bar_time=last_bar_time,
-        last_price=last_price,
-        position_size=position_size,
-        cash=cash,
-        equity=equity,
-        realized_pnl=realized_pnl,
-        unrealized_pnl=unrealized_pnl,
-        total_steps=total_steps,
-        total_orders=total_orders,
-        total_blocked_orders=total_blocked_orders,
-    )
+    # Running Maximum
+    running_max = equity_clean.expanding().max()
+    
+    # Drawdown
+    drawdown = (equity_clean - running_max) / running_max
+    
+    # Aktueller Drawdown (letzter Wert)
+    current_dd = drawdown.iloc[-1]
+    
+    return float(current_dd) if not pd.isna(current_dd) else None
 
 
-def load_run_tail(run_dir: Path, n: int = 15) -> List[LiveRunTailRow]:
+def _is_run_active(
+    metadata: LiveRunMetadata,
+    last_event_time: Optional[datetime],
+    max_idle_minutes: int = 10,
+) -> bool:
     """
-    Lädt die letzten N Events aus einem Run-Verzeichnis.
+    Bestimmt ob ein Run als aktiv gilt.
 
     Args:
-        run_dir: Pfad zum Run-Verzeichnis
-        n: Anzahl der Zeilen (default: 15)
+        metadata: Run-Metadaten
+        last_event_time: Zeitstempel des letzten Events
+        max_idle_minutes: Max. Minuten ohne Event, bevor Run als inaktiv gilt
 
     Returns:
-        Liste von LiveRunTailRow (chronologisch, älteste zuerst)
-
-    Raises:
-        FileNotFoundError: Wenn Events-Datei fehlt
+        True wenn Run aktiv ist
     """
-    run_dir = Path(run_dir)
+    # Wenn Run beendet wurde, ist er nicht aktiv
+    if metadata.ended_at is not None:
+        return False
 
-    try:
-        events_df = load_run_events(run_dir)
-    except FileNotFoundError:
-        return []
+    # Wenn kein letztes Event, ist Run nicht aktiv
+    if last_event_time is None:
+        return False
 
-    # Tail nehmen
-    tail_df = events_df.tail(n)
+    # Prüfe ob letztes Event zu alt ist
+    now = datetime.now(timezone.utc)
+    idle_minutes = (now - last_event_time).total_seconds() / 60.0
 
-    # Zu TailRows konvertieren
-    rows: List[LiveRunTailRow] = []
-    for _, row in tail_df.iterrows():
-        # Orders zählen
-        orders_col = _find_column_in_row(row, ["orders_generated", "orders_count"])
-        orders_count = int(row[orders_col]) if orders_col else 0
-
-        # Risk-Info
-        risk_col = _find_column_in_row(row, ["risk_allowed"])
-        risk_allowed = bool(row[risk_col]) if risk_col else True
-
-        reasons_col = _find_column_in_row(row, ["risk_reasons"])
-        risk_reasons = str(row[reasons_col]) if reasons_col else ""
-
-        tail_row = LiveRunTailRow(
-            ts_bar=_parse_datetime(row.get("ts_bar")),
-            equity=_safe_float(row.get("equity")),
-            realized_pnl=_safe_float(row.get("realized_pnl")),
-            unrealized_pnl=_safe_float(row.get("unrealized_pnl")),
-            position_size=_safe_float(row.get("position_size")),
-            orders_count=orders_count,
-            risk_allowed=risk_allowed,
-            risk_reasons=risk_reasons if risk_reasons and risk_reasons != "nan" else "",
-        )
-        rows.append(tail_row)
-
-    return rows
+    return idle_minutes < max_idle_minutes
 
 
-def get_latest_run_dir(base_dir: str | Path = "live_runs") -> Optional[Path]:
+def list_runs(
+    base_dir: str | Path = "live_runs",
+    include_inactive: bool = False,
+    max_age: Optional[timedelta] = None,
+) -> List[RunSnapshot]:
     """
-    Findet das neueste Run-Verzeichnis.
+    Listet alle verfügbaren Runs und erstellt Snapshots.
 
     Args:
         base_dir: Basis-Verzeichnis für Runs
+        include_inactive: Ob inaktive Runs eingeschlossen werden sollen
+        max_age: Maximale Alter der Runs (z.B. timedelta(hours=24))
 
     Returns:
-        Pfad zum neuesten Run oder None
+        Liste von RunSnapshots
     """
-    runs = list_runs(base_dir)
-    if not runs:
-        return None
-    # list_runs gibt bereits sortiert zurück (neueste zuerst)
-    return Path(base_dir) / runs[0]
+    base_dir = Path(base_dir)
+    if not base_dir.exists():
+        logger.debug(f"Run-Verzeichnis existiert nicht: {base_dir}")
+        return []
 
+    run_ids = list_run_ids(base_dir=base_dir)
+    snapshots: List[RunSnapshot] = []
 
-# =============================================================================
-# Helper Functions
-# =============================================================================
+    now = datetime.now(timezone.utc)
 
-
-def _find_column(df: pd.DataFrame, candidates: List[str]) -> Optional[str]:
-    """Findet erste passende Spalte aus Kandidaten-Liste."""
-    for col in candidates:
-        if col in df.columns:
-            return col
-    return None
-
-
-def _find_column_in_row(row: pd.Series, candidates: List[str]) -> Optional[str]:
-    """Findet erste passende Spalte in einer Row."""
-    for col in candidates:
-        if col in row.index:
-            return col
-    return None
-
-
-def _safe_float(value: Any) -> Optional[float]:
-    """Konvertiert Wert zu float oder None."""
-    if value is None:
-        return None
-    if pd.isna(value):
-        return None
-    try:
-        return float(value)
-    except (ValueError, TypeError):
-        return None
-
-
-def _parse_datetime(value: Any) -> Optional[datetime]:
-    """Parst Datetime aus verschiedenen Formaten."""
-    if value is None:
-        return None
-    if pd.isna(value):
-        return None
-    if isinstance(value, datetime):
-        return value
-    if isinstance(value, pd.Timestamp):
-        return value.to_pydatetime()
-    if isinstance(value, str):
+    for run_id in run_ids:
         try:
-            return datetime.fromisoformat(value)
-        except ValueError:
-            return None
-    return None
+            run_dir = base_dir / run_id
+            snapshot = get_run_snapshot(run_id, base_dir=base_dir)
 
+            # Filter: max_age
+            if max_age is not None and snapshot.started_at:
+                age = now - snapshot.started_at
+                if age > max_age:
+                    continue
 
-# =============================================================================
-# Render Functions (für CLI)
-# =============================================================================
+            # Filter: include_inactive
+            if not include_inactive and not snapshot.is_active:
+                continue
 
+            snapshots.append(snapshot)
 
-# ANSI Color Codes
-class Colors:
-    """ANSI escape codes für Terminal-Farben."""
-    RESET = "\033[0m"
-    BOLD = "\033[1m"
-    RED = "\033[91m"
-    GREEN = "\033[92m"
-    YELLOW = "\033[93m"
-    BLUE = "\033[94m"
-    CYAN = "\033[96m"
-    GRAY = "\033[90m"
+        except Exception as e:
+            logger.warning(f"Fehler beim Laden von Run {run_id}: {e}")
+            continue
 
-
-def render_summary(snapshot: LiveRunSnapshot, use_colors: bool = True) -> str:
-    """
-    Rendert den Summary-Block als String.
-
-    Args:
-        snapshot: LiveRunSnapshot
-        use_colors: ANSI-Farben verwenden
-
-    Returns:
-        Formatierter String für Terminal-Ausgabe
-    """
-    c = Colors if use_colors else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
-
-    # Header
-    lines = [
-        f"{c.BOLD}{'=' * 60}{c.RESET}",
-        f"{c.BOLD}  RUN SUMMARY{c.RESET}",
-        f"{c.BOLD}{'=' * 60}{c.RESET}",
-        "",
-    ]
-
-    # Run-Infos
-    lines.extend([
-        f"  run_id        : {c.CYAN}{snapshot.run_id}{c.RESET}",
-        f"  mode          : {snapshot.mode.upper()}",
-        f"  strategy      : {snapshot.strategy_name}",
-        f"  symbol        : {snapshot.symbol}",
-        f"  timeframe     : {snapshot.timeframe}",
-    ])
-
-    # Zeitstempel
-    started_str = snapshot.started_at.strftime("%Y-%m-%d %H:%M:%S") if snapshot.started_at else "N/A"
-    lines.append(f"  started_at    : {started_str}")
-
-    if snapshot.ended_at:
-        ended_str = snapshot.ended_at.strftime("%Y-%m-%d %H:%M:%S")
-        lines.append(f"  ended_at      : {ended_str}")
-
-    last_bar_str = snapshot.last_bar_time.strftime("%Y-%m-%d %H:%M:%S") if snapshot.last_bar_time else "N/A"
-    lines.append(f"  last_bar_time : {last_bar_str}")
-
-    lines.append("")
-
-    # Portfolio-Status
-    price_str = f"{snapshot.last_price:,.2f}" if snapshot.last_price is not None else "N/A"
-    pos_str = f"{snapshot.position_size:,.6f}" if snapshot.position_size is not None else "0.00"
-    cash_str = f"{snapshot.cash:,.2f}" if snapshot.cash is not None else "N/A"
-    equity_str = f"{snapshot.equity:,.2f}" if snapshot.equity is not None else "N/A"
-
-    lines.extend([
-        f"  last_price    : {price_str}",
-        f"  position_size : {pos_str}",
-        f"  cash          : {cash_str}",
-        f"  equity        : {equity_str}",
-    ])
-
-    # PnL mit Farben
-    if snapshot.realized_pnl is not None:
-        pnl_color = c.GREEN if snapshot.realized_pnl >= 0 else c.RED
-        lines.append(f"  realized_pnl  : {pnl_color}{snapshot.realized_pnl:+,.2f}{c.RESET}")
-    else:
-        lines.append("  realized_pnl  : N/A")
-
-    if snapshot.unrealized_pnl is not None:
-        upnl_color = c.GREEN if snapshot.unrealized_pnl >= 0 else c.RED
-        lines.append(f"  unrealized_pnl: {upnl_color}{snapshot.unrealized_pnl:+,.2f}{c.RESET}")
-    else:
-        lines.append("  unrealized_pnl: N/A")
-
-    lines.append("")
-
-    # Statistiken
-    lines.extend([
-        f"  steps         : {snapshot.total_steps}",
-        f"  orders        : {snapshot.total_orders}",
-    ])
-
-    # Blocked Orders mit Warnung
-    if snapshot.total_blocked_orders > 0:
-        lines.append(f"  blocked       : {c.YELLOW}{snapshot.total_blocked_orders} (Risk-Blocked){c.RESET}")
-    else:
-        lines.append(f"  blocked       : 0")
-
-    lines.append("")
-
-    return "\n".join(lines)
-
-
-def render_tail(
-    tail_rows: List[LiveRunTailRow],
-    use_colors: bool = True,
-) -> str:
-    """
-    Rendert die Tail-Tabelle als String.
-
-    Args:
-        tail_rows: Liste von LiveRunTailRow
-        use_colors: ANSI-Farben verwenden
-
-    Returns:
-        Formatierter String für Terminal-Ausgabe
-    """
-    c = Colors if use_colors else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
-
-    lines = [
-        f"{c.BOLD}{'=' * 100}{c.RESET}",
-        f"{c.BOLD}  LAST {len(tail_rows)} EVENTS{c.RESET}",
-        f"{c.BOLD}{'=' * 100}{c.RESET}",
-    ]
-
-    # Header
-    header = (
-        f"  {'ts_bar':<20} {'equity':>12} {'r_pnl':>10} {'u_pnl':>10} "
-        f"{'pos':>10} {'ord':>4} {'risk':>6} {'reasons':<20}"
+    # Sortiere nach last_event_time (neueste zuerst)
+    snapshots.sort(
+        key=lambda s: s.last_event_time or datetime.min.replace(tzinfo=timezone.utc),
+        reverse=True,
     )
-    lines.append(f"{c.GRAY}{header}{c.RESET}")
-    lines.append(f"  {'-' * 96}")
 
-    # Rows
-    for row in tail_rows:
-        ts_str = row.ts_bar.strftime("%Y-%m-%d %H:%M:%S") if row.ts_bar else "N/A"
-        equity_str = f"{row.equity:>12,.2f}" if row.equity is not None else f"{'N/A':>12}"
-        rpnl_str = f"{row.realized_pnl:>10,.2f}" if row.realized_pnl is not None else f"{'N/A':>10}"
-        upnl_str = f"{row.unrealized_pnl:>10,.2f}" if row.unrealized_pnl is not None else f"{'N/A':>10}"
-        pos_str = f"{row.position_size:>10,.4f}" if row.position_size is not None else f"{'0':>10}"
+    return snapshots
 
-        # Risk-Status mit Farbe
-        if row.risk_allowed:
-            risk_str = f"{c.GREEN}{'OK':>6}{c.RESET}"
-        else:
-            risk_str = f"{c.RED}{'BLOCK':>6}{c.RESET}"
 
-        reasons_str = row.risk_reasons[:20] if row.risk_reasons else "-"
+def get_run_snapshot(
+    run_id: str,
+    base_dir: str | Path = "live_runs",
+) -> RunSnapshot:
+    """
+    Lädt einen Run-Snapshot mit aggregierten Metriken.
 
-        line = (
-            f"  {ts_str:<20} {equity_str} {rpnl_str} {upnl_str} "
-            f"{pos_str} {row.orders_count:>4} {risk_str} {reasons_str:<20}"
+    Args:
+        run_id: Run-ID
+        base_dir: Basis-Verzeichnis für Runs
+
+    Returns:
+        RunSnapshot mit aggregierten Metriken
+
+    Raises:
+        RunNotFoundError: Wenn Run nicht gefunden wird
+    """
+    base_dir = Path(base_dir)
+    run_dir = base_dir / run_id
+
+    if not run_dir.exists():
+        raise RunNotFoundError(f"Run-Verzeichnis nicht gefunden: {run_dir}")
+
+    try:
+        # Metadaten laden
+        metadata = load_run_metadata(run_dir)
+
+        # Events laden (falls vorhanden)
+        try:
+            events_df = load_run_events(run_dir)
+        except FileNotFoundError:
+            # Keine Events-Datei vorhanden (Run noch nicht gestartet)
+            events_df = pd.DataFrame()
+
+        # Letztes Event extrahieren
+        last_event_time: Optional[datetime] = None
+        equity: Optional[float] = None
+        pnl: Optional[float] = None
+        unrealized_pnl: Optional[float] = None
+        drawdown: Optional[float] = None
+        last_error: Optional[str] = None
+
+        if len(events_df) > 0:
+            # Letztes Event (höchster Step)
+            last_event = events_df.iloc[-1]
+
+            # Timestamp
+            ts_str = last_event.get("ts_event") or last_event.get("ts_bar")
+            if ts_str:
+                if isinstance(ts_str, str):
+                    try:
+                        last_event_time = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+                    except Exception:
+                        pass
+                elif isinstance(ts_str, pd.Timestamp):
+                    last_event_time = ts_str.to_pydatetime()
+
+            # Equity
+            if "equity" in last_event and pd.notna(last_event["equity"]):
+                equity = float(last_event["equity"])
+
+            # PnL
+            if "realized_pnl" in last_event and pd.notna(last_event["realized_pnl"]):
+                pnl = float(last_event["realized_pnl"])
+            elif "pnl" in last_event and pd.notna(last_event["pnl"]):
+                pnl = float(last_event["pnl"])
+
+            # Unrealized PnL
+            if "unrealized_pnl" in last_event and pd.notna(last_event["unrealized_pnl"]):
+                unrealized_pnl = float(last_event["unrealized_pnl"])
+
+            # Drawdown berechnen
+            if "equity" in events_df.columns:
+                equity_series = events_df["equity"].dropna()
+                if len(equity_series) > 0:
+                    drawdown = _calculate_drawdown(equity_series)
+
+            # Last Error
+            if "risk_reasons" in last_event and pd.notna(last_event["risk_reasons"]):
+                error_str = str(last_event["risk_reasons"]).strip()
+                if error_str:
+                    last_error = error_str
+
+        # Active-Status bestimmen
+        is_active = _is_run_active(metadata, last_event_time)
+
+        # Snapshot erstellen
+        snapshot = RunSnapshot(
+            run_id=run_id,
+            mode=metadata.mode,
+            strategy=metadata.strategy_name,
+            symbol=metadata.symbol,
+            timeframe=metadata.timeframe,
+            is_active=is_active,
+            started_at=metadata.started_at,
+            ended_at=metadata.ended_at,
+            last_event_time=last_event_time,
+            equity=equity,
+            pnl=pnl,
+            unrealized_pnl=unrealized_pnl,
+            drawdown=drawdown,
+            num_events=len(events_df),
+            last_error=last_error,
+            run_dir=run_dir,
         )
-        lines.append(line)
 
-    lines.append("")
+        return snapshot
 
-    return "\n".join(lines)
+    except FileNotFoundError as e:
+        raise RunNotFoundError(f"Run nicht gefunden: {run_id}") from e
+    except Exception as e:
+        logger.error(f"Fehler beim Laden des Run-Snapshots {run_id}: {e}")
+        raise RunNotFoundError(f"Fehler beim Laden des Run-Snapshots {run_id}: {e}") from e
+
+
+def get_run_timeseries(
+    run_id: str,
+    metric: str = "equity",
+    limit: int = 500,
+    base_dir: str | Path = "live_runs",
+) -> List[RunMetricPoint]:
+    """
+    Lädt eine Zeitreihe für einen Run.
+
+    Args:
+        run_id: Run-ID
+        metric: Metrik-Name ("equity", "pnl", "drawdown")
+        limit: Maximale Anzahl Events
+        base_dir: Basis-Verzeichnis für Runs
+
+    Returns:
+        Liste von RunMetricPoints
+
+    Raises:
+        RunNotFoundError: Wenn Run nicht gefunden wird
+    """
+    base_dir = Path(base_dir)
+    run_dir = base_dir / run_id
+
+    if not run_dir.exists():
+        raise RunNotFoundError(f"Run-Verzeichnis nicht gefunden: {run_dir}")
+
+    try:
+        events_df = load_run_events(run_dir)
+
+        if len(events_df) == 0:
+            return []
+
+        # Limitieren
+        if len(events_df) > limit:
+            events_df = events_df.tail(limit)
+
+        # Zeitreihe aufbauen
+        points: List[RunMetricPoint] = []
+
+        for _, row in events_df.iterrows():
+            # Timestamp
+            ts_str = row.get("ts_event") or row.get("ts_bar")
+            timestamp: Optional[datetime] = None
+            if ts_str:
+                if isinstance(ts_str, str):
+                    try:
+                        timestamp = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+                    except Exception:
+                        pass
+                elif isinstance(ts_str, pd.Timestamp):
+                    timestamp = ts_str.to_pydatetime()
+
+            if timestamp is None:
+                continue
+
+            # Equity
+            equity = None
+            if "equity" in row and pd.notna(row["equity"]):
+                equity = float(row["equity"])
+
+            # PnL
+            pnl = None
+            if "realized_pnl" in row and pd.notna(row["realized_pnl"]):
+                pnl = float(row["realized_pnl"])
+            elif "pnl" in row and pd.notna(row["pnl"]):
+                pnl = float(row["pnl"])
+
+            # Unrealized PnL
+            unrealized_pnl = None
+            if "unrealized_pnl" in row and pd.notna(row["unrealized_pnl"]):
+                unrealized_pnl = float(row["unrealized_pnl"])
+
+            # Drawdown (berechnen aus Equity-Serie bis zu diesem Punkt)
+            drawdown = None
+            if equity is not None and "equity" in events_df.columns:
+                equity_series = events_df.loc[:row.name, "equity"].dropna()
+                if len(equity_series) > 0:
+                    drawdown = _calculate_drawdown(equity_series)
+
+            # Exposure (optional)
+            exposure = None
+            if "position_size" in row and pd.notna(row["position_size"]):
+                position_size = float(row["position_size"])
+                price = row.get("price") or row.get("close")
+                if price is not None and pd.notna(price):
+                    exposure = abs(position_size * float(price))
+
+            point = RunMetricPoint(
+                timestamp=timestamp,
+                equity=equity,
+                pnl=pnl,
+                unrealized_pnl=unrealized_pnl,
+                drawdown=drawdown,
+                exposure=exposure,
+            )
+
+            points.append(point)
+
+        return points
+
+    except FileNotFoundError as e:
+        raise RunNotFoundError(f"Run nicht gefunden: {run_id}") from e
+    except Exception as e:
+        logger.error(f"Fehler beim Laden der Zeitreihe für Run {run_id}: {e}")
+        raise RunNotFoundError(f"Fehler beim Laden der Zeitreihe für Run {run_id}: {e}") from e
+
+
+def tail_events(
+    run_id: str,
+    limit: int = 100,
+    base_dir: str | Path = "live_runs",
+) -> List[Dict[str, Any]]:
+    """
+    Gibt die letzten Events eines Runs zurück.
+
+    Args:
+        run_id: Run-ID
+        limit: Maximale Anzahl Events
+        base_dir: Basis-Verzeichnis für Runs
+
+    Returns:
+        Liste von Event-Dictionaries
+
+    Raises:
+        RunNotFoundError: Wenn Run nicht gefunden wird
+    """
+    base_dir = Path(base_dir)
+    run_dir = base_dir / run_id
+
+    if not run_dir.exists():
+        raise RunNotFoundError(f"Run-Verzeichnis nicht gefunden: {run_dir}")
+
+    try:
+        events_df = load_run_events(run_dir)
+
+        if len(events_df) == 0:
+            return []
+
+        # Sortiere nach Step (neueste zuerst) und limitiere
+        events_df = events_df.sort_values("step", ascending=False).head(limit)
+        # Zurück sortieren für chronologische Reihenfolge
+        events_df = events_df.sort_values("step", ascending=True)
+
+        # Konvertiere zu Dict-Liste
+        events = events_df.to_dict("records")
+
+        # Konvertiere Timestamps zu ISO-Strings
+        for event in events:
+            for key in ["ts_event", "ts_bar"]:
+                if key in event and pd.notna(event[key]):
+                    if isinstance(event[key], pd.Timestamp):
+                        event[key] = event[key].isoformat()
+                    elif isinstance(event[key], datetime):
+                        event[key] = event[key].isoformat()
+
+        return events
+
+    except FileNotFoundError as e:
+        raise RunNotFoundError(f"Run nicht gefunden: {run_id}") from e
+    except Exception as e:
+        logger.error(f"Fehler beim Laden der Events für Run {run_id}: {e}")
+        raise RunNotFoundError(f"Fehler beim Laden der Events für Run {run_id}: {e}") from e

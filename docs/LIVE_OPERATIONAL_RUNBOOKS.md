@@ -896,6 +896,176 @@ python -c "import pandas as pd; df = pd.read_parquet('live_runs/shadow_20251207_
 
 ---
 
+## 10b. Monitoring & CLI-Dashboards v1 (Phase 65)
+
+### 10b.1 Übersicht
+
+Das **Live-Monitoring-System** bietet Operatoren eine einfache Möglichkeit, Shadow- und Testnet-Runs zu überwachen, ohne Code ändern zu müssen.
+
+**Zweck:**
+- Übersicht über alle relevanten Runs
+- Details zu einem Run einsehen
+- Echtzeit-Monitoring in einem "tail"-Mode
+
+**Features:**
+- Run-Übersicht mit aggregierten Metriken (Equity, PnL, Drawdown)
+- Run-Details mit letzten Events
+- Live-Tailing-Modus für Echtzeit-Überwachung
+- Wiederverwendbare Library-Schicht für zukünftige Web-Dashboards
+
+### 10b.2 Run-Übersicht
+
+**Kommando:**
+
+```bash
+python scripts/live_monitor_cli.py overview --only-active
+```
+
+**Output:**
+- Tabelle mit allen aktiven Runs
+- Spalten: Run-ID, Mode, Strategy, Symbol, Timeframe, Active, Last Event, Equity, PnL, Drawdown
+
+**Optionen:**
+- `--only-active`: Nur aktive Runs (Default)
+- `--include-inactive`: Auch inaktive Runs anzeigen
+- `--max-age-hours 24`: Nur Runs der letzten 24 Stunden
+- `--json`: JSON-Output für maschinelle Verarbeitung
+
+**Beispiel:**
+
+```bash
+# Übersicht aller aktiven Runs
+python scripts/live_monitor_cli.py overview --only-active
+
+# Übersicht der letzten 24 Stunden
+python scripts/live_monitor_cli.py overview --max-age-hours 24
+
+# Alle Runs (inkl. inaktive)
+python scripts/live_monitor_cli.py overview --include-inactive
+```
+
+### 10b.3 Run-Details
+
+**Kommando:**
+
+```bash
+python scripts/live_monitor_cli.py run --run-id shadow_20251207_120000_abc123
+```
+
+**Output:**
+- Run-Zusammenfassung (Mode, Strategy, Symbol, Timeframe, Active-Status, Start/End-Zeit)
+- Aktuelle Metriken (Equity, PnL, Unrealized PnL, Drawdown)
+- Letzte Events (Step, Time, Signal, Equity, PnL, Orders)
+
+**Beispiel:**
+
+```bash
+# Run-Details anzeigen
+python scripts/live_monitor_cli.py run \
+  --run-id shadow_20251207_120000_abc123 \
+  --config config/config.toml
+
+# JSON-Output
+python scripts/live_monitor_cli.py run \
+  --run-id shadow_20251207_120000_abc123 \
+  --json
+```
+
+### 10b.4 Live-Tailing (Follow-Modus)
+
+**Kommando:**
+
+```bash
+python scripts/live_monitor_cli.py follow \
+  --run-id shadow_20251207_120000_abc123 \
+  --refresh-interval 2.0
+```
+
+**Verhalten:**
+- Aktualisiert sich alle `refresh-interval` Sekunden
+- Zeigt aktuellen Status (Active, Events, Equity, PnL, Drawdown)
+- Zeigt neue Events in Echtzeit
+- Beenden mit Ctrl+C
+
+**Empfehlung:**
+- Während eines Testnet-Runs parallel ein "follow"-Fenster offen haben
+- Refresh-Intervall: 2-5 Sekunden für Live-Monitoring, 10-30 Sekunden für weniger häufige Updates
+
+**Beispiel:**
+
+```bash
+# Live-Tailing mit 2 Sekunden Refresh
+python scripts/live_monitor_cli.py follow \
+  --run-id shadow_20251207_120000_abc123 \
+  --refresh-interval 2.0 \
+  --config config/config.toml
+```
+
+### 10b.5 Run-Logs & Verzeichnisstruktur
+
+**Log-Pfad:**
+- Run-Logs werden in `live_runs/{run_id}/` gespeichert (konfigurierbar via `shadow_paper_logging.base_dir`)
+
+**Verzeichnisstruktur:**
+```
+live_runs/
+  {run_id}/
+    meta.json          # Run-Metadaten
+    events.parquet     # Time-Series Events (oder events.csv)
+```
+
+**Metadaten (`meta.json`):**
+- Run-ID, Mode, Strategy, Symbol, Timeframe
+- Start/End-Zeit
+- Config-Snapshot, Notizen
+
+**Events (`events.parquet`):**
+- Step, Timestamp (ts_event, ts_bar)
+- Equity, PnL, Unrealized PnL
+- Signal, Orders (generated, filled, rejected, blocked)
+- Risk-Info (risk_allowed, risk_reasons)
+- Preis-Daten (price, open, high, low, close, volume)
+
+**Logs manuell anzeigen:**
+
+```bash
+# Metadaten
+cat live_runs/shadow_20251207_120000_abc123/meta.json | jq
+
+# Events (mit pandas)
+python -c "
+import pandas as pd
+df = pd.read_parquet('live_runs/shadow_20251207_120000_abc123/events.parquet')
+print(df.tail(10))
+"
+```
+
+### 10b.6 Integration mit Testnet-Orchestrator
+
+Das Monitoring-System arbeitet nahtlos mit dem Testnet-Orchestrator zusammen:
+
+1. **Run starten** (via Orchestrator):
+   ```bash
+   python scripts/testnet_orchestrator_cli.py start-shadow \
+     --strategy ma_crossover --symbol BTC/EUR --timeframe 1m
+   ```
+
+2. **Run überwachen** (via Monitor):
+   ```bash
+   python scripts/live_monitor_cli.py follow --run-id <run_id>
+   ```
+
+3. **Run stoppen** (via Orchestrator):
+   ```bash
+   python scripts/testnet_orchestrator_cli.py stop --run-id <run_id>
+   ```
+
+**Vorteil:**
+- Orchestrator verwaltet den Lifecycle
+- Monitor bietet Sichtbarkeit ohne Lifecycle-Änderungen
+
+---
+
 ## 11. Kommunikation & Verantwortung
 
 ### 11.1 Rollen und Entscheidungswege

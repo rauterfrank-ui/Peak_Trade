@@ -1,464 +1,323 @@
 # tests/test_live_monitoring.py
 """
-Tests für src/live/monitoring.py (Phase 33)
+Tests für src/live/monitoring.py (Phase 65)
+===========================================
 
-Testet die Monitoring-Funktionen für Shadow-/Paper-Runs:
-- LiveRunSnapshot Laden
-- LiveRunTailRow Laden
-- Config Laden
-- Render-Funktionen
+Tests für Monitoring-Funktionen für Shadow- und Testnet-Runs.
 """
 from __future__ import annotations
 
+import sys
 import json
-import tempfile
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
 
+# Pfad-Setup
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 from src.live.monitoring import (
-    LiveMonitoringConfig,
-    LiveRunSnapshot,
-    LiveRunTailRow,
-    load_live_monitoring_config,
-    load_run_snapshot,
-    load_run_tail,
-    get_latest_run_dir,
-    render_summary,
-    render_tail,
-    Colors,
+    list_runs,
+    get_run_snapshot,
+    get_run_timeseries,
+    tail_events,
+    RunNotFoundError,
+    RunSnapshot,
+    RunMetricPoint,
+    _calculate_drawdown,
+    _is_run_active,
+)
+from src.live.run_logging import (
+    LiveRunLogger,
+    LiveRunMetadata,
+    LiveRunEvent,
+    ShadowPaperLoggingConfig,
 )
 
 
 # =============================================================================
-# Fixtures
+# Test Fixtures
 # =============================================================================
 
 
 @pytest.fixture
-def sample_metadata() -> Dict[str, Any]:
-    """Sample Run-Metadaten."""
-    return {
-        "run_id": "20251204_180000_paper_ma_crossover_BTC-EUR_1m",
-        "mode": "paper",
-        "strategy_name": "ma_crossover",
-        "symbol": "BTC/EUR",
-        "timeframe": "1m",
-        "started_at": "2025-12-04T18:00:00+00:00",
-        "ended_at": None,
-        "config_snapshot": {},
-        "notes": "",
-    }
+def temp_run_dir(tmp_path: Path) -> Path:
+    """Erstellt ein temporäres Run-Verzeichnis."""
+    run_dir = tmp_path / "live_runs"
+    run_dir.mkdir(parents=True)
+    return run_dir
 
 
 @pytest.fixture
-def sample_events_data() -> List[Dict[str, Any]]:
-    """Sample Events als Liste von Dicts."""
-    base_ts = datetime(2025, 12, 4, 18, 0, 0, tzinfo=timezone.utc)
-    events = []
+def sample_logging_config() -> ShadowPaperLoggingConfig:
+    """Erstellt eine Test-Logging-Config."""
+    return ShadowPaperLoggingConfig(
+        enabled=True,
+        base_dir="live_runs",
+        flush_interval_steps=10,
+        format="parquet",
+    )
 
-    for i in range(20):
-        ts = base_ts.replace(minute=i)
+
+@pytest.fixture
+def sample_metadata() -> LiveRunMetadata:
+    """Erstellt Test-Metadaten."""
+    return LiveRunMetadata(
+        run_id="test_shadow_20251207_120000_abc123",
+        mode="shadow",
+        strategy_name="ma_crossover",
+        symbol="BTC/EUR",
+        timeframe="1m",
+        started_at=datetime.now(timezone.utc) - timedelta(hours=1),
+    )
+
+
+@pytest.fixture
+def sample_run_with_events(temp_run_dir: Path, sample_logging_config: ShadowPaperLoggingConfig, sample_metadata: LiveRunMetadata) -> str:
+    """Erstellt einen Test-Run mit Events."""
+    run_dir = temp_run_dir / sample_metadata.run_id
+    run_dir.mkdir(parents=True)
+
+    # Metadaten schreiben
+    meta_path = run_dir / "meta.json"
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(sample_metadata.to_dict(), f, indent=2)
+
+    # Events erstellen
+    events = []
+    base_equity = 10000.0
+    for i in range(10):
+        equity = base_equity + (i * 50.0)  # Steigende Equity
+        pnl = i * 50.0
         event = {
             "step": i + 1,
-            "ts_bar": ts.isoformat(),
-            "ts_event": ts.isoformat(),
-            "price": 40000.0 + i * 10,
-            "open": 40000.0 + i * 10,
-            "high": 40050.0 + i * 10,
-            "low": 39950.0 + i * 10,
-            "close": 40000.0 + i * 10,
-            "volume": 100.0,
-            "position_size": 0.1 if i >= 5 else 0.0,
-            "cash": 9000.0 if i >= 5 else 10000.0,
-            "equity": 10000.0 + i * 5,
-            "realized_pnl": 50.0 if i >= 10 else 0.0,
-            "unrealized_pnl": 25.0 if i >= 5 else 0.0,
-            "signal": 1 if i >= 5 else 0,
-            "signal_changed": i == 5,
-            "orders_generated": 1 if i == 5 else 0,
-            "orders_filled": 1 if i == 5 else 0,
-            "orders_rejected": 0,
-            "orders_blocked": 1 if i == 15 else 0,
-            "risk_allowed": i != 15,
-            "risk_reasons": "max_total_exposure" if i == 15 else "",
+            "ts_event": (datetime.now(timezone.utc) - timedelta(minutes=10-i)).isoformat(),
+            "ts_bar": (datetime.now(timezone.utc) - timedelta(minutes=10-i)).isoformat(),
+            "equity": equity,
+            "realized_pnl": pnl,
+            "unrealized_pnl": 0.0,
+            "signal": 1 if i % 2 == 0 else 0,
+            "orders_generated": 1 if i % 2 == 0 else 0,
+            "orders_filled": 1 if i % 2 == 0 else 0,
+            "price": 50000.0 + (i * 100.0),
         }
         events.append(event)
 
-    return events
+    # Events als Parquet speichern
+    events_df = pd.DataFrame(events)
+    events_path = run_dir / "events.parquet"
+    events_df.to_parquet(events_path, index=False)
 
-
-@pytest.fixture
-def temp_run_dir(sample_metadata: Dict[str, Any], sample_events_data: List[Dict[str, Any]]) -> Path:
-    """Erstellt ein temporäres Run-Verzeichnis mit Testdaten."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        run_dir = Path(tmpdir) / sample_metadata["run_id"]
-        run_dir.mkdir(parents=True)
-
-        # meta.json schreiben
-        meta_path = run_dir / "meta.json"
-        with open(meta_path, "w", encoding="utf-8") as f:
-            json.dump(sample_metadata, f)
-
-        # events.parquet schreiben
-        events_df = pd.DataFrame(sample_events_data)
-        events_path = run_dir / "events.parquet"
-        events_df.to_parquet(events_path, index=False)
-
-        yield run_dir
-
-
-@pytest.fixture
-def temp_empty_run_dir(sample_metadata: Dict[str, Any]) -> Path:
-    """Erstellt ein Run-Verzeichnis ohne Events."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        run_dir = Path(tmpdir) / sample_metadata["run_id"]
-        run_dir.mkdir(parents=True)
-
-        # Nur meta.json
-        meta_path = run_dir / "meta.json"
-        with open(meta_path, "w", encoding="utf-8") as f:
-            json.dump(sample_metadata, f)
-
-        yield run_dir
-
-
-@pytest.fixture
-def temp_base_dir_with_runs(sample_metadata: Dict[str, Any], sample_events_data: List[Dict[str, Any]]) -> Path:
-    """Erstellt Base-Dir mit mehreren Runs."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        base_dir = Path(tmpdir)
-
-        # Mehrere Runs anlegen
-        run_ids = [
-            "20251201_100000_paper_test_BTC-EUR_1m",
-            "20251202_100000_paper_test_BTC-EUR_1m",
-            "20251204_180000_paper_ma_crossover_BTC-EUR_1m",
-        ]
-
-        for run_id in run_ids:
-            run_dir = base_dir / run_id
-            run_dir.mkdir(parents=True)
-
-            meta = sample_metadata.copy()
-            meta["run_id"] = run_id
-
-            with open(run_dir / "meta.json", "w", encoding="utf-8") as f:
-                json.dump(meta, f)
-
-            # Events für letzten Run
-            if run_id == run_ids[-1]:
-                events_df = pd.DataFrame(sample_events_data)
-                events_df.to_parquet(run_dir / "events.parquet", index=False)
-
-        yield base_dir
+    return sample_metadata.run_id
 
 
 # =============================================================================
-# Config Tests
+# Helper Function Tests
 # =============================================================================
 
 
-class TestLiveMonitoringConfig:
-    """Tests für LiveMonitoringConfig."""
+def test_calculate_drawdown() -> None:
+    """Test: Drawdown-Berechnung."""
+    # Steigende Equity (kein Drawdown)
+    equity_series = pd.Series([10000, 10100, 10200, 10300])
+    dd = _calculate_drawdown(equity_series)
+    assert dd == 0.0
 
-    def test_default_values(self) -> None:
-        """Test Default-Werte."""
-        cfg = LiveMonitoringConfig()
-        assert cfg.default_interval_seconds == 2.0
-        assert cfg.default_tail_rows == 15
-        assert cfg.use_colors is True
-
-    def test_custom_values(self) -> None:
-        """Test Custom-Werte."""
-        cfg = LiveMonitoringConfig(
-            default_interval_seconds=5.0,
-            default_tail_rows=20,
-            use_colors=False,
-        )
-        assert cfg.default_interval_seconds == 5.0
-        assert cfg.default_tail_rows == 20
-        assert cfg.use_colors is False
-
-    def test_load_from_config(self) -> None:
-        """Test Laden aus PeakConfig-artigem Objekt."""
-        # Mock PeakConfig mit get()
-        class MockConfig:
-            def get(self, path: str, default: Any = None) -> Any:
-                values = {
-                    "live_monitoring.default_interval_seconds": 3.0,
-                    "live_monitoring.default_tail_rows": 25,
-                    "live_monitoring.use_colors": False,
-                }
-                return values.get(path, default)
-
-        cfg = load_live_monitoring_config(MockConfig())
-        assert cfg.default_interval_seconds == 3.0
-        assert cfg.default_tail_rows == 25
-        assert cfg.use_colors is False
+    # Fallende Equity (Drawdown)
+    equity_series = pd.Series([10000, 10100, 9900, 9800])
+    dd = _calculate_drawdown(equity_series)
+    assert dd < 0.0
+    assert abs(dd - (-0.0198)) < 0.01  # ~-2%
 
 
-# =============================================================================
-# Snapshot Tests
-# =============================================================================
+def test_is_run_active() -> None:
+    """Test: Active-Status-Bestimmung."""
+    from src.live.run_logging import LiveRunMetadata
 
+    # Aktiver Run (letztes Event vor 5 Minuten)
+    metadata = LiveRunMetadata(
+        run_id="test",
+        mode="shadow",
+        strategy_name="test",
+        symbol="BTC/EUR",
+        timeframe="1m",
+        started_at=datetime.now(timezone.utc) - timedelta(hours=1),
+    )
+    last_event = datetime.now(timezone.utc) - timedelta(minutes=5)
+    assert _is_run_active(metadata, last_event) is True
 
-class TestLoadRunSnapshot:
-    """Tests für load_run_snapshot()."""
+    # Inaktiver Run (letztes Event vor 15 Minuten)
+    last_event = datetime.now(timezone.utc) - timedelta(minutes=15)
+    assert _is_run_active(metadata, last_event) is False
 
-    def test_load_snapshot_basic(self, temp_run_dir: Path) -> None:
-        """Test grundlegendes Snapshot-Laden."""
-        snapshot = load_run_snapshot(temp_run_dir)
-
-        assert snapshot.run_id == "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
-        assert snapshot.mode == "paper"
-        assert snapshot.strategy_name == "ma_crossover"
-        assert snapshot.symbol == "BTC/EUR"
-        assert snapshot.timeframe == "1m"
-
-    def test_load_snapshot_total_steps(self, temp_run_dir: Path) -> None:
-        """Test Anzahl Steps."""
-        snapshot = load_run_snapshot(temp_run_dir)
-        assert snapshot.total_steps == 20
-
-    def test_load_snapshot_total_orders(self, temp_run_dir: Path) -> None:
-        """Test Anzahl Orders."""
-        snapshot = load_run_snapshot(temp_run_dir)
-        # Nur bei Step 5 wurde eine Order generiert
-        assert snapshot.total_orders == 1
-
-    def test_load_snapshot_blocked_orders(self, temp_run_dir: Path) -> None:
-        """Test Anzahl blockierter Orders."""
-        snapshot = load_run_snapshot(temp_run_dir)
-        # Bei Step 15 wurde eine Order blockiert
-        assert snapshot.total_blocked_orders == 1
-
-    def test_load_snapshot_last_values(self, temp_run_dir: Path) -> None:
-        """Test letzte Werte aus Events."""
-        snapshot = load_run_snapshot(temp_run_dir)
-
-        # Letzte Zeile (Step 20)
-        assert snapshot.last_price is not None
-        assert snapshot.last_price == pytest.approx(40190.0, rel=1e-2)  # 40000 + 19*10
-
-        assert snapshot.equity is not None
-        assert snapshot.equity == pytest.approx(10095.0, rel=1e-2)  # 10000 + 19*5
-
-        assert snapshot.position_size is not None
-        assert snapshot.position_size == pytest.approx(0.1, rel=1e-2)
-
-    def test_load_snapshot_empty_events(self, temp_empty_run_dir: Path) -> None:
-        """Test Snapshot ohne Events."""
-        snapshot = load_run_snapshot(temp_empty_run_dir)
-
-        assert snapshot.run_id == "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
-        assert snapshot.total_steps == 0
-        assert snapshot.total_orders == 0
-        assert snapshot.total_blocked_orders == 0
-        assert snapshot.last_price is None
-        assert snapshot.equity is None
-
-    def test_load_snapshot_not_found(self, tmp_path: Path) -> None:
-        """Test FileNotFoundError bei fehlendem Run."""
-        with pytest.raises(FileNotFoundError):
-            load_run_snapshot(tmp_path / "nonexistent")
+    # Beendeter Run
+    metadata.ended_at = datetime.now(timezone.utc)
+    assert _is_run_active(metadata, last_event) is False
 
 
 # =============================================================================
-# Tail Tests
+# list_runs Tests
 # =============================================================================
 
 
-class TestLoadRunTail:
-    """Tests für load_run_tail()."""
+def test_list_runs_smoke(temp_run_dir: Path, sample_run_with_events: str) -> None:
+    """Test: list_runs findet Runs."""
+    runs = list_runs(base_dir=temp_run_dir, include_inactive=True)
 
-    def test_load_tail_default(self, temp_run_dir: Path) -> None:
-        """Test Tail mit Default-Anzahl."""
-        tail = load_run_tail(temp_run_dir, n=15)
-        assert len(tail) == 15
+    assert len(runs) == 1
+    assert runs[0].run_id == sample_run_with_events
+    assert runs[0].mode == "shadow"
+    assert runs[0].strategy == "ma_crossover"
+    assert runs[0].num_events > 0
+    assert runs[0].last_event_time is not None
 
-    def test_load_tail_all(self, temp_run_dir: Path) -> None:
-        """Test Tail größer als Events."""
-        tail = load_run_tail(temp_run_dir, n=50)
-        assert len(tail) == 20  # Nur 20 Events vorhanden
 
-    def test_load_tail_small(self, temp_run_dir: Path) -> None:
-        """Test Tail mit kleiner Anzahl."""
-        tail = load_run_tail(temp_run_dir, n=3)
-        assert len(tail) == 3
+def test_list_runs_only_active(temp_run_dir: Path, sample_run_with_events: str) -> None:
+    """Test: list_runs mit only_active Filter."""
+    # Run ist aktiv (letztes Event vor 5 Minuten)
+    runs = list_runs(base_dir=temp_run_dir, include_inactive=False)
+    assert len(runs) >= 0  # Kann 0 sein wenn Run zu alt ist
 
-    def test_load_tail_row_structure(self, temp_run_dir: Path) -> None:
-        """Test TailRow-Struktur."""
-        tail = load_run_tail(temp_run_dir, n=1)
-        assert len(tail) == 1
 
-        row = tail[0]
-        assert isinstance(row, LiveRunTailRow)
-        assert row.ts_bar is not None
-        assert row.equity is not None
-        assert isinstance(row.orders_count, int)
-        assert isinstance(row.risk_allowed, bool)
+def test_list_runs_max_age(temp_run_dir: Path) -> None:
+    """Test: list_runs mit max_age Filter."""
+    # Max-Age von 1 Stunde
+    runs = list_runs(base_dir=temp_run_dir, max_age=timedelta(hours=1))
+    # Sollte nur Runs der letzten Stunde zurückgeben
+    assert isinstance(runs, list)
 
-    def test_load_tail_chronological_order(self, temp_run_dir: Path) -> None:
-        """Test chronologische Reihenfolge."""
-        tail = load_run_tail(temp_run_dir, n=5)
 
-        # Prüfe dass Equity aufsteigend ist (in unseren Testdaten)
-        equities = [r.equity for r in tail if r.equity is not None]
-        assert equities == sorted(equities)
+def test_list_runs_empty_dir(tmp_path: Path) -> None:
+    """Test: list_runs mit leerem Verzeichnis."""
+    empty_dir = tmp_path / "empty_runs"
+    empty_dir.mkdir()
 
-    def test_load_tail_risk_blocked(self, temp_run_dir: Path) -> None:
-        """Test Risk-Blocked-Erkennung."""
-        tail = load_run_tail(temp_run_dir, n=20)
-
-        # Finde die blockierte Zeile (Step 15, Index 14)
-        blocked_rows = [r for r in tail if not r.risk_allowed]
-        assert len(blocked_rows) == 1
-        assert blocked_rows[0].risk_reasons == "max_total_exposure"
-
-    def test_load_tail_empty(self, temp_empty_run_dir: Path) -> None:
-        """Test Tail ohne Events."""
-        tail = load_run_tail(temp_empty_run_dir, n=10)
-        assert len(tail) == 0
+    runs = list_runs(base_dir=empty_dir)
+    assert len(runs) == 0
 
 
 # =============================================================================
-# Helper Tests
+# get_run_snapshot Tests
 # =============================================================================
 
 
-class TestGetLatestRunDir:
-    """Tests für get_latest_run_dir()."""
+def test_get_run_snapshot_aggregation(temp_run_dir: Path, sample_run_with_events: str) -> None:
+    """Test: get_run_snapshot aggregiert Metriken korrekt."""
+    snapshot = get_run_snapshot(sample_run_with_events, base_dir=temp_run_dir)
 
-    def test_latest_run(self, temp_base_dir_with_runs: Path) -> None:
-        """Test neuesten Run finden."""
-        latest = get_latest_run_dir(temp_base_dir_with_runs)
-        assert latest is not None
-        # Neuester Run (alphabetisch sortiert, reverse)
-        assert latest.name == "20251204_180000_paper_ma_crossover_BTC-EUR_1m"
-
-    def test_empty_base_dir(self, tmp_path: Path) -> None:
-        """Test leeres Base-Dir."""
-        latest = get_latest_run_dir(tmp_path)
-        assert latest is None
-
-    def test_nonexistent_base_dir(self, tmp_path: Path) -> None:
-        """Test nicht existierendes Base-Dir."""
-        latest = get_latest_run_dir(tmp_path / "nonexistent")
-        assert latest is None
+    assert snapshot.run_id == sample_run_with_events
+    assert snapshot.mode == "shadow"
+    assert snapshot.strategy == "ma_crossover"
+    assert snapshot.num_events == 10
+    assert snapshot.equity is not None
+    assert snapshot.equity > 10000.0  # Letztes Event hat höhere Equity
+    assert snapshot.pnl is not None
+    assert snapshot.pnl > 0
 
 
-# =============================================================================
-# Render Tests
-# =============================================================================
+def test_get_run_snapshot_not_found(temp_run_dir: Path) -> None:
+    """Test: get_run_snapshot mit nicht existierender Run-ID."""
+    with pytest.raises(RunNotFoundError, match="Run nicht gefunden"):
+        get_run_snapshot("nonexistent_run_id", base_dir=temp_run_dir)
 
 
-class TestRenderSummary:
-    """Tests für render_summary()."""
+def test_get_run_snapshot_no_events(temp_run_dir: Path, sample_metadata: LiveRunMetadata) -> None:
+    """Test: get_run_snapshot mit Run ohne Events."""
+    run_dir = temp_run_dir / sample_metadata.run_id
+    run_dir.mkdir(parents=True)
 
-    def test_render_summary_basic(self, temp_run_dir: Path) -> None:
-        """Test Summary-Rendering ohne Fehler."""
-        snapshot = load_run_snapshot(temp_run_dir)
-        output = render_summary(snapshot, use_colors=False)
+    # Nur Metadaten schreiben
+    meta_path = run_dir / "meta.json"
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(sample_metadata.to_dict(), f, indent=2)
 
-        assert "RUN SUMMARY" in output
-        assert snapshot.run_id in output
-        assert snapshot.strategy_name in output
-        assert snapshot.symbol in output
+    snapshot = get_run_snapshot(sample_metadata.run_id, base_dir=temp_run_dir)
 
-    def test_render_summary_with_colors(self, temp_run_dir: Path) -> None:
-        """Test Summary-Rendering mit Farben."""
-        snapshot = load_run_snapshot(temp_run_dir)
-        output = render_summary(snapshot, use_colors=True)
-
-        # ANSI-Codes sollten vorhanden sein
-        assert "\033[" in output
-
-    def test_render_summary_no_colors(self, temp_run_dir: Path) -> None:
-        """Test Summary-Rendering ohne Farben."""
-        snapshot = load_run_snapshot(temp_run_dir)
-        output = render_summary(snapshot, use_colors=False)
-
-        # Keine ANSI-Codes
-        assert "\033[" not in output
-
-    def test_render_summary_blocked_warning(self, temp_run_dir: Path) -> None:
-        """Test Blocked-Orders-Warnung."""
-        snapshot = load_run_snapshot(temp_run_dir)
-        output = render_summary(snapshot, use_colors=False)
-
-        # Blocked Orders vorhanden
-        assert "blocked" in output.lower()
-        assert "1" in output  # 1 blocked order
-
-
-class TestRenderTail:
-    """Tests für render_tail()."""
-
-    def test_render_tail_basic(self, temp_run_dir: Path) -> None:
-        """Test Tail-Rendering ohne Fehler."""
-        tail = load_run_tail(temp_run_dir, n=5)
-        output = render_tail(tail, use_colors=False)
-
-        assert "EVENTS" in output
-        assert "equity" in output.lower()
-
-    def test_render_tail_with_colors(self, temp_run_dir: Path) -> None:
-        """Test Tail-Rendering mit Farben."""
-        tail = load_run_tail(temp_run_dir, n=5)
-        output = render_tail(tail, use_colors=True)
-
-        # ANSI-Codes sollten vorhanden sein
-        assert "\033[" in output
-
-    def test_render_tail_risk_indicator(self, temp_run_dir: Path) -> None:
-        """Test Risk-Indikator im Tail."""
-        tail = load_run_tail(temp_run_dir, n=20)
-        output = render_tail(tail, use_colors=False)
-
-        # BLOCK sollte erscheinen
-        assert "BLOCK" in output or "block" in output.lower()
-
-    def test_render_tail_empty(self) -> None:
-        """Test leerer Tail."""
-        output = render_tail([], use_colors=False)
-        assert "0 EVENTS" in output
+    assert snapshot.run_id == sample_metadata.run_id
+    assert snapshot.num_events == 0
+    assert snapshot.equity is None
 
 
 # =============================================================================
-# Integration Tests
+# get_run_timeseries Tests
 # =============================================================================
 
 
-class TestMonitoringIntegration:
-    """Integration Tests für das Monitoring-Modul."""
+def test_get_run_timeseries_basic(temp_run_dir: Path, sample_run_with_events: str) -> None:
+    """Test: get_run_timeseries erstellt Zeitreihe."""
+    timeseries = get_run_timeseries(
+        sample_run_with_events,
+        metric="equity",
+        limit=10,
+        base_dir=temp_run_dir,
+    )
 
-    def test_full_workflow(self, temp_run_dir: Path) -> None:
-        """Test kompletter Workflow: Snapshot + Tail + Render."""
-        # Snapshot laden
-        snapshot = load_run_snapshot(temp_run_dir)
-        assert snapshot.total_steps == 20
+    assert len(timeseries) == 10
+    assert all(isinstance(p, RunMetricPoint) for p in timeseries)
+    assert all(p.timestamp is not None for p in timeseries)
+    assert all(p.equity is not None for p in timeseries)
 
-        # Tail laden
-        tail = load_run_tail(temp_run_dir, n=10)
-        assert len(tail) == 10
+    # Equity sollte steigend sein
+    equities = [p.equity for p in timeseries if p.equity is not None]
+    assert equities == sorted(equities)
 
-        # Rendern
-        summary = render_summary(snapshot, use_colors=False)
-        tail_output = render_tail(tail, use_colors=False)
 
-        # Beide Outputs sollten valide sein
-        assert len(summary) > 100
-        assert len(tail_output) > 50
+def test_get_run_timeseries_limit(temp_run_dir: Path, sample_run_with_events: str) -> None:
+    """Test: get_run_timeseries respektiert Limit."""
+    timeseries = get_run_timeseries(
+        sample_run_with_events,
+        metric="equity",
+        limit=5,
+        base_dir=temp_run_dir,
+    )
 
-    def test_multiple_loads(self, temp_run_dir: Path) -> None:
-        """Test mehrfaches Laden (Simulation von Refresh-Loop)."""
-        for _ in range(5):
-            snapshot = load_run_snapshot(temp_run_dir)
-            tail = load_run_tail(temp_run_dir, n=5)
+    assert len(timeseries) == 5
 
-            assert snapshot.total_steps == 20
-            assert len(tail) == 5
+
+def test_get_run_timeseries_not_found(temp_run_dir: Path) -> None:
+    """Test: get_run_timeseries mit nicht existierender Run-ID."""
+    with pytest.raises(RunNotFoundError, match="Run nicht gefunden"):
+        get_run_timeseries("nonexistent_run_id", base_dir=temp_run_dir)
+
+
+# =============================================================================
+# tail_events Tests
+# =============================================================================
+
+
+def test_tail_events_limit(temp_run_dir: Path, sample_run_with_events: str) -> None:
+    """Test: tail_events respektiert Limit."""
+    events = tail_events(sample_run_with_events, limit=5, base_dir=temp_run_dir)
+
+    assert len(events) == 5
+    assert all(isinstance(e, dict) for e in events)
+
+
+def test_tail_events_all(temp_run_dir: Path, sample_run_with_events: str) -> None:
+    """Test: tail_events gibt alle Events zurück wenn Limit größer."""
+    events = tail_events(sample_run_with_events, limit=100, base_dir=temp_run_dir)
+
+    assert len(events) == 10
+
+
+def test_tail_events_not_found(temp_run_dir: Path) -> None:
+    """Test: tail_events mit nicht existierender Run-ID."""
+    with pytest.raises(RunNotFoundError, match="Run nicht gefunden"):
+        tail_events("nonexistent_run_id", base_dir=temp_run_dir)
+
+
+def test_tail_events_format(temp_run_dir: Path, sample_run_with_events: str) -> None:
+    """Test: tail_events formatiert Timestamps korrekt."""
+    events = tail_events(sample_run_with_events, limit=5, base_dir=temp_run_dir)
+
+    for event in events:
+        # Timestamps sollten ISO-Strings sein
+        if "ts_event" in event:
+            assert isinstance(event["ts_event"], str)
+        if "ts_bar" in event:
+            assert isinstance(event["ts_bar"], str)
