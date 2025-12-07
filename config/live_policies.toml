@@ -1,0 +1,70 @@
+# config/live_policies.toml
+# =============================================================================
+# Peak_Trade Live Policies Configuration (Phase 83)
+# =============================================================================
+#
+# Definiert Grenzwerte und Anforderungen für Live-Eligibility.
+# Diese Policies werden von src/live/live_gates.py verwendet.
+#
+# WICHTIG: Änderungen hier beeinflussen, welche Strategien/Portfolios
+# für Shadow/Testnet/Live-Runs zugelassen werden.
+#
+
+[live_policy]
+# =============================================================================
+# STRATEGY PERFORMANCE REQUIREMENTS
+# =============================================================================
+
+# Core-Strategien (tier = "core")
+# Strengere Anforderungen für Hauptportfolio-Komponenten
+min_sharpe_core = 1.5           # Minimum Sharpe Ratio
+max_maxdd_core = -0.15          # Maximum MaxDD (-15%)
+
+# Aux-Strategien (tier = "aux")
+# Etwas lockerere Anforderungen für ergänzende Strategien
+min_sharpe_aux = 1.0            # Minimum Sharpe Ratio
+max_maxdd_aux = -0.20           # Maximum MaxDD (-20%)
+
+# =============================================================================
+# TIERING REQUIREMENTS
+# =============================================================================
+
+# Ob Legacy-Strategien für Live erlaubt sind
+# EMPFEHLUNG: Immer false - Legacy ist nur für Vergleichszwecke
+allow_legacy = false
+
+# Ob das allow_live Flag in strategy_tiering.toml erforderlich ist
+# Phase 83: false (noch nicht enforced, Strategien werden manuell geprüft)
+# Phase v1.1+: true (automatisches Enforcement)
+require_allow_live_flag = false
+
+# =============================================================================
+# PORTFOLIO REQUIREMENTS
+# =============================================================================
+
+# Ob Portfolio-Diversifikation geprüft werden soll
+require_diversification = true
+
+# Maximale Gewichtung einer einzelnen Strategie im Portfolio
+# Verhindert übermäßige Konzentration
+max_concentration = 0.60        # 60%
+
+# =============================================================================
+# NOTES
+# =============================================================================
+#
+# Phase 83 v1.0 Status:
+# - Tiering-basierte Eligibility ist aktiv
+# - Performance-Metriken werden nur geprüft wenn StrategyProfile vorhanden
+# - allow_live Flag ist noch nicht enforced (manueller Prozess)
+#
+# Upgrade-Pfad für v1.1+:
+# - require_allow_live_flag = true setzen
+# - Performance-Validierung gegen StrategyProfile automatisieren
+# - Monte-Carlo p5 Percentile als zusätzliches Kriterium
+#
+# Tiering-Referenz (config/strategy_tiering.toml):
+# - core:   Sharpe >= 1.5, MaxDD >= -15%, robust über Regime
+# - aux:    Sharpe >= 1.0, MaxDD >= -20%, spezifische Stärken
+# - legacy: Ersetzt oder underperformend, nur Vergleichszwecke
+#
