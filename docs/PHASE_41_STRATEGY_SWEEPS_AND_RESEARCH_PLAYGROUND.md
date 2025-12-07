@@ -649,12 +649,14 @@ reports/sweeps/
 Nach Phase 43:
 
 1. **Walk-Forward-Analyse**: Out-of-Sample-Validierung der besten Parameter
+   - **Siehe:** `docs/PHASE_44_WALKFORWARD_TESTING.md` für Details zum Walk-Forward-Workflow
 2. **Monte-Carlo-Simulation**: Robustness-Testing
 3. **Live-Deployment**: Beste Strategien in Testnet/Live übernehmen
 
 ---
 
-*Phase 41 – Strategy-Sweeps & Research-Playground*
-*Phase 42 – Top-N Promotion*
-*Phase 43 – Visualisierung & Sweep-Dashboards*
+*Phase 41 – Strategy-Sweeps & Research-Playground*  
+*Phase 42 – Top-N Promotion*  
+*Phase 43 – Visualisierung & Sweep-Dashboards*  
+*Phase 44 – Walk-Forward Testing*  
 *Peak_Trade Framework*

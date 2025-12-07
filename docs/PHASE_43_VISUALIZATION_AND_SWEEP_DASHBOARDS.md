@@ -423,11 +423,15 @@ Phase 43 erweitert den Research-Track um **visuelle Auswertung** von Sweep-Ergeb
 
 Phase 43 bildet die Grundlage für:
 
-1. **Interaktive Dashboards** (Phase 60+)
+1. **Walk-Forward-Testing** (Phase 44)
+   - Out-of-Sample-Validierung der Top-N-Konfigurationen
+   - **Siehe:** `docs/PHASE_44_WALKFORWARD_TESTING.md` für Details
+
+2. **Interaktive Dashboards** (Phase 60+)
    - Plotly-basierte interaktive Visualisierungen
    - Web-basierte Dashboards für Live-Monitoring
 
-2. **Deep-Research-Track Integration** (Phase 60+)
+3. **Deep-Research-Track Integration** (Phase 60+)
    - Regime-basierte Visualisierungen
    - Feature-Importance-Plots
    - Walk-Forward-Analysen
@@ -452,6 +456,7 @@ Phase 43 bildet die Grundlage für:
 - [Phase 30 – Reporting & Visualisierung](PHASE_30_REPORTING_AND_VISUALIZATION.md) – Grundlegende Reporting- und Plot-Funktionen
 - [Phase 41 – Strategy Sweeps & Research-Playground](PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md) – Sweep-Definition und -Ausführung
 - [Phase 42 – Top-N Promotion](PHASE_42_TOPN_PROMOTION.md) – Automatische Auswahl der besten Konfigurationen
+- [Phase 44 – Walk-Forward Testing](PHASE_44_WALKFORWARD_TESTING.md) – Out-of-Sample-Validierung der Top-N-Konfigurationen
 - [Reporting V2](REPORTING_V2.md) – Übersicht über das Reporting-System
 - [Deep Research Backoffice Overview](DEEP_RESEARCH_BACKOFFICE_OVERVIEW.md) – Langfristiger Research-Track
 
