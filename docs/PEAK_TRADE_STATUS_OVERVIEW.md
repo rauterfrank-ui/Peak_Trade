@@ -1,13 +1,13 @@
-# Peak_Trade – Projekt-Status Overview (Phasen 1–52)
+# Peak_Trade – Projekt-Status Overview (Phasen 1–53)
 
 Dieses Dokument beschreibt den aktuellen Gesamtstatus von **Peak_Trade**
-(Phasen **1–52**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
+(Phasen **1–53**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
 
 Ziel:
 
 * Eine **prozentuale Einschätzung** je Bereich
 * Klarheit, **was schon stabil ist** und **was noch fehlt**
-* Grundlage für zukünftige Roadmaps (Phase 53+)
+* Grundlage für zukünftige Roadmaps (Phase 54+)
 
 > **Hinweis:** Prozentwerte sind bewusst als **qualitative Reifegrade** zu verstehen
 > (Architektur, Codequalität, Tests, Doku, Operational Readiness), nicht als „fertig/nie-ändern".
@@ -24,14 +24,14 @@ Ziel:
 | ------------------------------- | --------- | ---------------------------------------------------------------------------------------- |
 | Data & Market Access            | 95%       | Data-Pipeline, Loader, Normalizer, Cache, Kraken-Integration stabil                      |
 | Backtest & Simulation           | 92%       | BacktestEngine, Stats, Registry-Integration, Reporting v2                                |
-| Strategy & Portfolio Layer      | 88%       | Einzel-Strategien, Portfolio-Layer, Portfolio-Robustness, Recipes                        |
+| Strategy & Portfolio Layer      | 90%       | Einzel-Strategien, Portfolio-Layer, Portfolio-Robustness, Recipes, Risk-Profiled Presets |
 | Risk & Safety (Research + Live) | 90%       | Risk-Metriken, Limits, LiveRiskLimits, Safety-Concept                                    |
 | Research & Experiments          | 90%       | Registry, Sweeps, Research-CLI, Pipeline v2, Portfolio-Level-Robustness                  |
 | Live-/Testnet & Operations      | 91%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks              |
 | Reporting, Monitoring & CLI     | 88%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI             |
 | Documentation & Governance      | 86%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs                        |
 | Developer-Experience & Tooling  | 90%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides |
-| **Gesamtprojekt (Phasen 1–52)** | **≈ 90%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides |
+| **Gesamtprojekt (Phasen 1–53)** | **≈ 91%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides, Strategy & Portfolio Library |
 
 ---
 
@@ -150,11 +150,10 @@ Ziel:
 
 **Offene Themen:**
 
-* Größere Strategie-Bibliothek (mehr Styles, mehr Märkte).
-* Bessere Trennung zwischen „Einsteiger-Strategien" und „Advanced/Research-Strategien".
+* Weitere Strategie-Familien und Märkte.
 * Erweiterte Portfolio-Optimierungs-Ansätze (z.B. Risk-Parity, CVaR-Minimierung, etc.).
 
-> **Reifegrad:** **ca. 88%** – funktional sehr stark, Bibliothek und Komfort können weiter ausgebaut werden.
+> **Reifegrad:** **ca. 90%** – Phase 53 erweitert die Strategy-/Portfolio-Library um klar benannte Presets für unterschiedliche Risk-Profile (conservative/moderate/aggressive) und Multi-Style-Portfolios (Trend + Mean-Reversion). Siehe `PORTFOLIO_RECIPES_AND_PRESETS.md`.
 
 ---
 
@@ -482,11 +481,11 @@ Ziel:
 * CI-Pipeline (GitHub Actions o.ä.) mit automatischem Testing / Linting.
 * Mehr „Developer-Guides" (z.B. „How to add a new strategy", „How to add a new exchange").
 
-> **Reifegrad:** **ca. 80%** – sehr gut nutzbar, aber mit viel Potenzial für „Luxury Dev Experience".
+> **Reifegrad:** **ca. 90%** – sehr gut nutzbar mit umfassender Architektur-Dokumentation und Developer-Guides.
 
 ---
 
-## 11. Highlights der letzten Phasen (47–49)
+## 11. Highlights der letzten Phasen (47–53)
 
 **Relevante Phasen & Doku:**
 
@@ -522,47 +521,80 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
    * Automatische Alerts bei Risk-Violations (Orders & Portfolio).
    * Integration in LiveRiskLimits und Live-/Testnet-Status-Doku.
 
+5. **Phase 50 – Live Alert Webhooks & Slack**
+
+   * Webhook- und Slack-Sinks für das Alert-System.
+   * `src/live/alerts.py` erweitert um HTTP-/Slack-Integration.
+   * Konfiguration über `[live_alerts]` Block in `config.toml`.
+
+6. **Phase 51 – Live-Ops-CLI**
+
+   * `scripts/live_ops.py` als zentraler Entry-Point für Live-Operationen.
+   * Subcommands: `orders`, `portfolio`, `alerts`, `health`.
+   * Ein einziger CLI-Entry-Point für Operatoren.
+
+7. **Phase 52 – Architecture Overview & Developer-Guides**
+
+   * `docs/ARCHITECTURE_OVERVIEW.md` mit High-Level-Diagramm.
+   * Developer-Guides für typische Erweiterungen:
+     * `DEV_GUIDE_ADD_STRATEGY.md`
+     * `DEV_GUIDE_ADD_EXCHANGE.md`
+     * `DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md`
+     * `DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md`
+
+8. **Phase 53 – Strategy & Portfolio Library Push**
+
+   * Klar benannte Strategie-Konfigurationen (`[strategy.*]` in `config.toml`):
+     * RSI-Reversion (BTC/ETH, 3 Risk-Profile)
+     * MA-Crossover (BTC, 3 Risk-Profile)
+     * Trend-Following (ETH, 3 Risk-Profile)
+   * 5 neue Portfolio-Recipes mit expliziten Risk-Profilen:
+     * `rsi_reversion_conservative`, `rsi_reversion_moderate`, `rsi_reversion_aggressive`
+     * `multi_style_moderate`, `multi_style_aggressive`
+   * Risk-Profile-Schema: `conservative`, `moderate`, `aggressive`
+   * Naming-Konvention: `<family>_<market>_<profile>`
+
 Diese Bausteine schließen die Lücke zwischen:
 
 * **Research-Robustness** (Backtests, Sweeps, Monte-Carlo, Stress)
 * und **Live-/Testnet-Safety & Monitoring** (Portfolio, Risk, Alerts, Runbooks)
+* und bieten eine **fertige Bibliothek aus robusten, benannten Setups**
 
 ---
 
-## 12. Empfohlene nächste Schritte (Phase 50+)
+## 12. Empfohlene nächste Schritte (Phase 54+)
 
-Basierend auf dem aktuellen Stand (≈ 88% Gesamt-Reifegrad) bieten sich folgende nächste Phasen an:
+Basierend auf dem aktuellen Stand (≈ 91% Gesamt-Reifegrad) bieten sich folgende nächste Phasen an:
 
-1. **Externe Notifications & Integrationen (Phase 50+)**
+1. **Weitere Strategie-/Portfolio-Library-Erweiterungen**
 
-   * Webhook-/Slack-/Mail-Sinks für das Alert-System.
-   * Basis-Throttling / Deduplizierung von Alerts.
-2. **Konsolidierter Live-Ops-CLI**
+   * Mehr Strategien (z.B. Bollinger Bands, MACD als Risk-Profile-Varianten).
+   * Mehr Märkte (z.B. Altcoins, traditionelle Assets).
+   * Multi-Asset-Portfolios über verschiedene Asset-Klassen.
 
-   * `scripts/live_ops.py` mit Subcommands:
-
-     * `live_ops orders`
-     * `live_ops portfolio`
-     * `live_ops health`
-   * Ein einziger Entry-Point für Operatoren.
-3. **Architektur & Developer-Guides (Phase 52) ✅**
-
-   * `ARCHITECTURE_OVERVIEW.md` mit High-Level-Diagramm und Layer-Beschreibung.
-   * Developer-Guides:
-     * `DEV_GUIDE_ADD_STRATEGY.md` – Neue Strategie hinzufügen
-     * `DEV_GUIDE_ADD_EXCHANGE.md` – Neuen Exchange-Adapter hinzufügen
-     * `DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md` – Neues Live-Risk-Limit hinzufügen
-     * `DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md` – Neues Portfolio-Rezept hinzufügen
-4. **Weitere Strategie-/Portfolio-Library**
-
-   * Mehr Strategien, mehr Märkte.
-   * Portfolio-Recipes für verschiedene Risk-Profile.
-5. **Optionale Dashboards**
+2. **Optionale Dashboards**
 
    * HTML-/Notebook-Dashboards für:
-
      * Research-Results
      * Live-Monitoring (Equity/Drawdown, Portfolio-Exposure, Risk-Events)
+   * Interaktive Visualisierung von Portfolio-Robustness-Ergebnissen.
+
+3. **CI/CD & Automation**
+
+   * GitHub Actions für automatisches Testing / Linting.
+   * Automatische Backtest-Runs bei Code-Änderungen.
+   * Docker-Setup für reproduzierbare Umgebungen.
+
+4. **Advanced Portfolio-Optimierung**
+
+   * Risk-Parity, CVaR-Minimierung, etc.
+   * Dynamische Gewichts-Anpassung basierend auf Regime-Erkennung.
+
+5. **Live-Trading-Verfeinerung**
+
+   * Mail-Sinks für Alerts (zusätzlich zu Webhook/Slack).
+   * Alert-Throttling / Deduplizierung.
+   * Historisierung von Portfolio-Snapshots & Alerts.
 
 ---
 
@@ -575,6 +607,7 @@ Basierend auf dem aktuellen Stand (≈ 88% Gesamt-Reifegrad) bieten sich folgend
 | 2025-12-07 | 226dfac   | Erstellung `PEAK_TRADE_STATUS_OVERVIEW.md` (Phasen 1–49)        |
 | 2025-12-07 | (aktuell) | Update mit konkreten Phasen-Referenzen                          |
 | 2025-12-07 | (aktuell) | Phase 52 – Architecture Overview & Developer-Guides             |
+| 2025-12-07 | (aktuell) | Phase 53 – Strategy & Portfolio Library Push                    |
 
 ---
 

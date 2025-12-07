@@ -139,6 +139,14 @@ graph TD
 - `src/experiments/portfolio_robustness.py` – Monte-Carlo & Stress-Tests
 - `src/experiments/portfolio_recipes.py` – Portfolio-Rezepte
 - `config/portfolio_recipes.toml` – Rezept-Definitionen
+- `config/config.toml` – Strategy-Presets (`[strategy.*]`)
+
+**Phase 53 – Strategy & Portfolio Library Push:**
+- Strategy-Presets werden über `config/config.toml` (`[strategy.*]`) definiert
+- Naming-Konvention: `<family>_<market>_<profile>` (z.B. `rsi_reversion_btc_conservative`)
+- Risk-Profile: `conservative`, `moderate`, `aggressive`
+- Portfolio-Recipes mit direkten Strategienamen (statt Sweep-basiert)
+- Siehe `PORTFOLIO_RECIPES_AND_PRESETS.md` für Details
 
 **Integration:**
 - Strategien werden in Registry registriert (`src/strategies/__init__.py`)

@@ -29,3 +29,128 @@ format = "both"
 risk_profile = "moderate"
 tags = ["rsi", "reversion", "balanced"]
 
+# ============================================================================
+# PHASE 53: STRATEGY & PORTFOLIO LIBRARY PUSH
+# ============================================================================
+# Neue Portfolio-Recipes mit direkten Strategienamen und expliziten
+# Risk-Profilen (conservative, moderate, aggressive).
+# ============================================================================
+
+# --- RSI Reversion Portfolios ---
+
+[portfolio_recipes.rsi_reversion_conservative]
+id = "rsi_reversion_conservative"
+portfolio_name = "RSI Reversion Conservative"
+description = "Konservatives RSI-Reversion-Portfolio auf BTC und ETH (1h, längere Lookbacks, breitere Stops)"
+
+strategies = [
+  "rsi_reversion_btc_conservative",
+  "rsi_reversion_eth_conservative",
+]
+weights = [0.6, 0.4]
+
+run_montecarlo = true
+mc_num_runs = 2000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.2
+
+format = "both"
+risk_profile = "conservative"
+tags = ["rsi", "reversion", "conservative", "btc", "eth"]
+
+[portfolio_recipes.rsi_reversion_moderate]
+id = "rsi_reversion_moderate"
+portfolio_name = "RSI Reversion Moderate"
+description = "Balanciertes RSI-Reversion-Portfolio BTC/ETH (1h, balanced Parameter)"
+
+strategies = [
+  "rsi_reversion_btc_moderate",
+  "rsi_reversion_eth_moderate",
+]
+weights = [0.5, 0.5]
+
+run_montecarlo = true
+mc_num_runs = 2000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.25
+
+format = "both"
+risk_profile = "moderate"
+tags = ["rsi", "reversion", "moderate", "btc", "eth"]
+
+[portfolio_recipes.rsi_reversion_aggressive]
+id = "rsi_reversion_aggressive"
+portfolio_name = "RSI Reversion Aggressive"
+description = "Aggressives RSI-Reversion-Portfolio BTC/ETH (15m, höhere Trade-Frequenz)"
+
+strategies = [
+  "rsi_reversion_btc_aggressive",
+  "rsi_reversion_eth_aggressive",
+]
+weights = [0.5, 0.5]
+
+run_montecarlo = true
+mc_num_runs = 3000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.3
+
+format = "both"
+risk_profile = "aggressive"
+tags = ["rsi", "reversion", "aggressive", "btc", "eth"]
+
+# --- Multi-Style Portfolios ---
+
+[portfolio_recipes.multi_style_moderate]
+id = "multi_style_moderate"
+portfolio_name = "Multi-Style Moderate"
+description = "Mixed-Style BTC/ETH Portfolio (Trend + Mean-Reversion, moderate Risk-Profil)"
+
+strategies = [
+  "rsi_reversion_btc_moderate",
+  "rsi_reversion_eth_moderate",
+  "ma_trend_btc_moderate",
+  "trend_following_eth_moderate",
+]
+weights = [0.25, 0.25, 0.25, 0.25]
+
+run_montecarlo = true
+mc_num_runs = 3000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.25
+
+format = "both"
+risk_profile = "moderate"
+tags = ["multi-style", "trend", "reversion", "moderate", "btc", "eth"]
+
+[portfolio_recipes.multi_style_aggressive]
+id = "multi_style_aggressive"
+portfolio_name = "Multi-Style Aggressive"
+description = "Aggressives Multi-Style BTC/ETH Portfolio (Trend + Mean-Reversion, aggressive Varianten)"
+
+strategies = [
+  "rsi_reversion_btc_aggressive",
+  "rsi_reversion_eth_aggressive",
+  "ma_trend_btc_aggressive",
+  "trend_following_eth_aggressive",
+]
+weights = [0.25, 0.25, 0.25, 0.25]
+
+run_montecarlo = true
+mc_num_runs = 5000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.35
+
+format = "both"
+risk_profile = "aggressive"
+tags = ["multi-style", "trend", "reversion", "aggressive", "btc", "eth"]
+

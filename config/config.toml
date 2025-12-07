@@ -742,3 +742,156 @@ report_format = "markdown"
 
 # Altes Usage-Daten behalten (Tage)
 usage_retention_days = 30
+
+# ============================================================================
+# PHASE 53: STRATEGY & PORTFOLIO LIBRARY PUSH
+# ============================================================================
+# Klar benannte Strategie-Konfigurationen für unterschiedliche Timeframes
+# und Volatilitäts-Umgebungen mit expliziten Risk-Profilen.
+# ============================================================================
+
+# --- RSI Reversion BTC ---
+
+[strategy.rsi_reversion_btc_conservative]
+# Konservative RSI-Reversion-Strategie für BTC (1h, längere Lookbacks)
+rsi_window = 21
+lower = 25.0
+upper = 75.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.03
+take_profit_pct = 0.06
+
+[strategy.rsi_reversion_btc_moderate]
+# Moderate RSI-Reversion-Strategie für BTC (1h, balanced)
+rsi_window = 14
+lower = 30.0
+upper = 70.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.04
+take_profit_pct = 0.08
+
+[strategy.rsi_reversion_btc_aggressive]
+# Aggressive RSI-Reversion-Strategie für BTC (15m, höhere Trade-Frequenz)
+rsi_window = 10
+lower = 20.0
+upper = 80.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.05
+take_profit_pct = 0.10
+
+# --- RSI Reversion ETH ---
+
+[strategy.rsi_reversion_eth_conservative]
+# Konservative RSI-Reversion-Strategie für ETH (1h, längere Lookbacks)
+rsi_window = 21
+lower = 25.0
+upper = 75.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.03
+take_profit_pct = 0.06
+
+[strategy.rsi_reversion_eth_moderate]
+# Moderate RSI-Reversion-Strategie für ETH (1h, balanced)
+rsi_window = 14
+lower = 30.0
+upper = 70.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.04
+take_profit_pct = 0.08
+
+[strategy.rsi_reversion_eth_aggressive]
+# Aggressive RSI-Reversion-Strategie für ETH (15m, höhere Trade-Frequenz)
+rsi_window = 10
+lower = 20.0
+upper = 80.0
+exit_lower = 50.0
+exit_upper = 50.0
+use_trend_filter = false
+trend_ma_window = 50
+use_wilder = true
+price_col = "close"
+stop_pct = 0.05
+take_profit_pct = 0.10
+
+# --- MA Crossover BTC ---
+
+[strategy.ma_trend_btc_conservative]
+# Konservative MA-Trend-Strategie für BTC (4h, längere MAs)
+fast_window = 20
+slow_window = 100
+price_col = "close"
+stop_pct = 0.04
+take_profit_pct = 0.12
+
+[strategy.ma_trend_btc_moderate]
+# Moderate MA-Trend-Strategie für BTC (1h, balanced)
+fast_window = 20
+slow_window = 60
+price_col = "close"
+stop_pct = 0.05
+take_profit_pct = 0.15
+
+[strategy.ma_trend_btc_aggressive]
+# Aggressive MA-Trend-Strategie für BTC (30m, kürzere MAs)
+fast_window = 10
+slow_window = 40
+price_col = "close"
+stop_pct = 0.06
+take_profit_pct = 0.20
+
+# --- Trend Following ETH ---
+
+[strategy.trend_following_eth_conservative]
+# Konservative Trend-Following-Strategie für ETH (4h, längere Lookbacks)
+adx_period = 14
+adx_threshold = 25.0
+exit_threshold = 20.0
+ma_period = 50
+use_ma_filter = true
+stop_pct = 0.04
+take_profit_pct = 0.12
+
+[strategy.trend_following_eth_moderate]
+# Moderate Trend-Following-Strategie für ETH (1h, balanced)
+adx_period = 14
+adx_threshold = 25.0
+exit_threshold = 20.0
+ma_period = 30
+use_ma_filter = true
+stop_pct = 0.05
+take_profit_pct = 0.15
+
+[strategy.trend_following_eth_aggressive]
+# Aggressive Trend-Following-Strategie für ETH (30m, kürzere Lookbacks)
+adx_period = 14
+adx_threshold = 25.0
+exit_threshold = 20.0
+ma_period = 20
+use_ma_filter = true
+stop_pct = 0.06
+take_profit_pct = 0.20

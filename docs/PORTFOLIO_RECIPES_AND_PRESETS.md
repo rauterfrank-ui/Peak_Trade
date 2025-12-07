@@ -370,5 +370,117 @@ ERROR: Recipes-Config-Datei nicht gefunden: missing.toml
 
 ---
 
+## Phase 53: Risk-Profile & Direkte Strategienamen
+
+**Phase 53** erweitert die Portfolio-Recipes um:
+
+1. **Direkte Strategienamen** (statt Sweep-basiert)
+2. **Explizite Risk-Profile** (`conservative`, `moderate`, `aggressive`)
+3. **Neue Rezepte** für verschiedene Risk-Profile
+
+### Risk-Profile
+
+Die drei Risk-Profile haben folgende Bedeutung:
+
+| Profil      | Beschreibung                                                                 | Parameter-Charakteristik                                    |
+| ----------- | --------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `conservative` | Geringere Volatilität, breitere Stops, niedrigere Leverage/Position-Size | Längere Lookbacks, breitere Stops, niedrigere Trade-Frequenz |
+| `moderate`  | "Balanced" – guter Kompromiss aus Return & Drawdown                        | Ausgewogene Parameter, moderate Trade-Frequenz              |
+| `aggressive` | Höhere Volatilität, kürzere Lookbacks, mehr Trade-Frequenz                | Kürzere Lookbacks, engere Stops, höhere Trade-Frequenz     |
+
+### Neue Rezepte (Phase 53)
+
+| Preset                       | Typ          | Assets   | Style(s)                        | Risk-Profil  | Kommentar                             |
+| ---------------------------- | ------------ | -------- | ------------------------------- | ------------ | ------------------------------------- |
+| `rsi_reversion_conservative` | Single-Style | BTC, ETH | RSI-Reversion                   | conservative | Längere Lookbacks, 1h TF              |
+| `rsi_reversion_moderate`     | Single-Style | BTC, ETH | RSI-Reversion                   | moderate     | Balanced 1h TF                        |
+| `rsi_reversion_aggressive`   | Single-Style | BTC, ETH | RSI-Reversion                   | aggressive   | 15m TF, höhere Trade-Frequenz         |
+| `multi_style_moderate`       | Multi-Style  | BTC, ETH | Trend-Following + MeanReversion | moderate     | 4 Strategien, alle gleich gewichtet   |
+| `multi_style_aggressive`     | Multi-Style  | BTC, ETH | Trend-Following + MeanReversion | aggressive   | Aggressive Varianten der 4 Strategien |
+
+### Beispiel-Workflows (Phase 53)
+
+#### 1. Research-Portfolio-Pipeline – moderate Multi-Style
+
+```bash
+# 1) Run Portfolio-Research mit Preset
+python scripts/research_cli.py portfolio \
+  --config config/config.toml \
+  --portfolio-preset multi_style_moderate \
+  --format both
+
+# 2) Portfolio-Robustness explizit
+python scripts/run_portfolio_robustness.py \
+  --config config/config.toml \
+  --portfolio-preset multi_style_moderate \
+  --format both
+```
+
+#### 2. Research-Portfolio – aggressive Multi-Style
+
+```bash
+python scripts/research_cli.py portfolio \
+  --config config/config.toml \
+  --portfolio-preset multi_style_aggressive \
+  --format both
+```
+
+#### 3. Conservative RSI-Reversion
+
+```bash
+python scripts/run_portfolio_robustness.py \
+  --config config/config.toml \
+  --portfolio-preset rsi_reversion_conservative \
+  --format both
+```
+
+### Rezepte mit direkten Strategienamen (Phase 53)
+
+Ab Phase 53 können Rezepte **direkte Strategienamen** verwenden statt Sweep-basiert zu sein:
+
+```toml
+[portfolio_recipes.rsi_reversion_conservative]
+id = "rsi_reversion_conservative"
+portfolio_name = "RSI Reversion Conservative"
+description = "Konservatives RSI-Reversion-Portfolio auf BTC und ETH"
+
+# Direkte Strategienamen (statt sweep_name + top_n)
+strategies = [
+  "rsi_reversion_btc_conservative",
+  "rsi_reversion_eth_conservative",
+]
+weights = [0.6, 0.4]
+
+run_montecarlo = true
+mc_num_runs = 2000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.2
+
+format = "both"
+risk_profile = "conservative"
+tags = ["rsi", "reversion", "conservative"]
+```
+
+**Wichtig:** 
+- Entweder `strategies` (Phase 53) **oder** `sweep_name` + `top_n` (Legacy) muss gesetzt sein
+- `weights` Länge muss mit `len(strategies)` übereinstimmen
+- `risk_profile` sollte eines von `conservative`, `moderate`, `aggressive` sein
+
+### Strategy-Konfigurationen (Phase 53)
+
+Phase 53 fügt neue Strategy-Konfigurationen in `config/config.toml` hinzu:
+
+- **RSI-Reversion**: `rsi_reversion_btc_conservative`, `rsi_reversion_btc_moderate`, `rsi_reversion_btc_aggressive`, etc.
+- **MA-Crossover**: `ma_trend_btc_conservative`, `ma_trend_btc_moderate`, `ma_trend_btc_aggressive`
+- **Trend-Following**: `trend_following_eth_conservative`, `trend_following_eth_moderate`, `trend_following_eth_aggressive`
+
+Diese Konfigurationen folgen dem Naming-Schema: `<family>_<market>_<profile>`.
+
+Siehe auch: `docs/PHASE_53_STRATEGY_AND_PORTFOLIO_LIBRARY_PUSH.md` (falls vorhanden)
+
+---
+
 **Built with ❤️ and reusable configurations**
 

@@ -44,9 +44,10 @@ class PortfolioRecipe:
         id: ID des Rezepts (kann identisch zu key sein)
         portfolio_name: Name des Portfolios (für Reports)
         description: Kurze Beschreibung
-        sweep_name: Name des Sweeps als Basis
-        top_n: Anzahl Top-Konfigurationen
-        weights: Liste von Gewichten (Länge = top_n)
+        sweep_name: Name des Sweeps als Basis (optional, wenn strategies gesetzt ist)
+        top_n: Anzahl Top-Konfigurationen (optional, wenn strategies gesetzt ist)
+        strategies: Liste von Strategienamen (optional, Phase 53)
+        weights: Liste von Gewichten (Länge = top_n oder len(strategies))
         run_montecarlo: Ob Monte-Carlo ausgeführt werden soll
         mc_num_runs: Anzahl Monte-Carlo-Runs
         run_stress_tests: Ob Stress-Tests ausgeführt werden sollen
@@ -61,9 +62,10 @@ class PortfolioRecipe:
     id: str
     portfolio_name: str
     description: str | None
-    sweep_name: str
-    top_n: int
-    weights: list[float]
+    sweep_name: str | None = None
+    top_n: int | None = None
+    strategies: list[str] | None = None
+    weights: list[float] = field(default_factory=list)
 
     run_montecarlo: bool = False
     mc_num_runs: int | None = None
@@ -84,13 +86,30 @@ class PortfolioRecipe:
         Raises:
             ValueError: Bei Validierungsfehlern
         """
-        # 1) top_n / weights Länge
-        if self.top_n <= 0:
-            raise ValueError(f"top_n must be > 0 for recipe {self.id!r}")
-
-        if len(self.weights) != self.top_n:
+        # 1) Entweder strategies ODER (sweep_name + top_n) muss gesetzt sein
+        if self.strategies is not None:
+            # Phase 53: Direkte Strategienamen
+            if len(self.strategies) == 0:
+                raise ValueError(f"strategies list must not be empty for recipe {self.id!r}")
+            if len(self.weights) != len(self.strategies):
+                raise ValueError(
+                    f"weights length ({len(self.weights)}) must match strategies length "
+                    f"({len(self.strategies)}) for recipe {self.id!r}"
+                )
+            expected_count = len(self.strategies)
+        elif self.sweep_name and self.top_n is not None:
+            # Legacy: Sweep-basiert
+            if self.top_n <= 0:
+                raise ValueError(f"top_n must be > 0 for recipe {self.id!r}")
+            if len(self.weights) != self.top_n:
+                raise ValueError(
+                    f"weights length ({len(self.weights)}) must match top_n ({self.top_n}) "
+                    f"for recipe {self.id!r}"
+                )
+            expected_count = self.top_n
+        else:
             raise ValueError(
-                f"weights length ({len(self.weights)}) must match top_n ({self.top_n}) "
+                f"Either 'strategies' or both 'sweep_name' and 'top_n' must be set "
                 f"for recipe {self.id!r}"
             )
 
@@ -179,8 +198,9 @@ def load_portfolio_recipes(path: Path) -> dict[str, PortfolioRecipe]:
                 id=recipe_id,
                 portfolio_name=recipe_data.get("portfolio_name", recipe_id),
                 description=recipe_data.get("description"),
-                sweep_name=recipe_data.get("sweep_name", ""),
-                top_n=recipe_data.get("top_n", 3),
+                sweep_name=recipe_data.get("sweep_name"),
+                top_n=recipe_data.get("top_n"),
+                strategies=recipe_data.get("strategies"),
                 weights=recipe_data.get("weights", []),
                 run_montecarlo=recipe_data.get("run_montecarlo", False),
                 mc_num_runs=recipe_data.get("mc_num_runs"),

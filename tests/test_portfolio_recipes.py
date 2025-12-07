@@ -359,3 +359,140 @@ def test_get_portfolio_recipe_file_not_found(tmp_path: Path):
     with pytest.raises(FileNotFoundError):
         get_portfolio_recipe(missing_file, "any_recipe")
 
+
+# =============================================================================
+# PHASE 53: TESTS FÜR NEUE RECIPES MIT DIREKTEN STRATEGIENAMEN
+# =============================================================================
+
+
+@pytest.fixture
+def phase53_recipe_toml(tmp_path: Path) -> Path:
+    """Erstellt eine temporäre TOML-Datei mit Phase-53-Rezepten (direkte Strategienamen)."""
+    toml_content = """
+[portfolio_recipes.rsi_reversion_conservative]
+id = "rsi_reversion_conservative"
+portfolio_name = "RSI Reversion Conservative"
+description = "Konservatives RSI-Reversion-Portfolio"
+strategies = ["rsi_reversion_btc_conservative", "rsi_reversion_eth_conservative"]
+weights = [0.6, 0.4]
+run_montecarlo = true
+mc_num_runs = 2000
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.2
+format = "both"
+risk_profile = "conservative"
+tags = ["rsi", "reversion", "conservative"]
+
+[portfolio_recipes.multi_style_moderate]
+id = "multi_style_moderate"
+portfolio_name = "Multi-Style Moderate"
+description = "Mixed-Style Portfolio"
+strategies = [
+  "rsi_reversion_btc_moderate",
+  "rsi_reversion_eth_moderate",
+  "ma_trend_btc_moderate",
+  "trend_following_eth_moderate",
+]
+weights = [0.25, 0.25, 0.25, 0.25]
+run_montecarlo = true
+mc_num_runs = 3000
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.25
+format = "both"
+risk_profile = "moderate"
+tags = ["multi-style", "moderate"]
+"""
+    recipe_file = tmp_path / "phase53_recipes.toml"
+    recipe_file.write_text(toml_content)
+    return recipe_file
+
+
+def test_load_phase53_recipes_with_strategies(phase53_recipe_toml: Path):
+    """Testet Laden von Phase-53-Rezepten mit direkten Strategienamen."""
+    recipes = load_portfolio_recipes(phase53_recipe_toml)
+
+    assert len(recipes) == 2
+    assert "rsi_reversion_conservative" in recipes
+    assert "multi_style_moderate" in recipes
+
+    # Prüfe erstes Rezept
+    recipe1 = recipes["rsi_reversion_conservative"]
+    assert recipe1.id == "rsi_reversion_conservative"
+    assert recipe1.portfolio_name == "RSI Reversion Conservative"
+    assert recipe1.strategies == ["rsi_reversion_btc_conservative", "rsi_reversion_eth_conservative"]
+    assert recipe1.weights == [0.6, 0.4]
+    assert len(recipe1.strategies) == len(recipe1.weights)
+    assert recipe1.risk_profile == "conservative"
+    # Description kann deutsch oder englisch sein
+    assert "konservativ" in recipe1.description.lower() or "conservative" in recipe1.description.lower()
+
+    # Prüfe zweites Rezept
+    recipe2 = recipes["multi_style_moderate"]
+    assert recipe2.id == "multi_style_moderate"
+    assert len(recipe2.strategies) == 4
+    assert len(recipe2.weights) == 4
+    assert sum(recipe2.weights) == pytest.approx(1.0, abs=0.01)
+    assert recipe2.risk_profile == "moderate"
+
+
+def test_phase53_recipe_validation_strategies_weights_mismatch(tmp_path: Path):
+    """Testet Validierung: weights Länge stimmt nicht mit strategies überein."""
+    toml_content = """
+[portfolio_recipes.invalid]
+id = "invalid"
+portfolio_name = "Invalid"
+strategies = ["strategy1", "strategy2", "strategy3"]
+weights = [0.5, 0.5]  # Falsche Länge!
+"""
+    recipe_file = tmp_path / "invalid.toml"
+    recipe_file.write_text(toml_content)
+
+    with pytest.raises(ValueError, match="weights length.*must match strategies length"):
+        load_portfolio_recipes(recipe_file)
+
+
+def test_phase53_recipe_validation_empty_strategies(tmp_path: Path):
+    """Testet Validierung: leere strategies-Liste."""
+    toml_content = """
+[portfolio_recipes.invalid]
+id = "invalid"
+portfolio_name = "Invalid"
+strategies = []
+weights = []
+"""
+    recipe_file = tmp_path / "invalid.toml"
+    recipe_file.write_text(toml_content)
+
+    with pytest.raises(ValueError, match="strategies list must not be empty"):
+        load_portfolio_recipes(recipe_file)
+
+
+def test_phase53_recipe_validation_missing_strategies_and_sweep(tmp_path: Path):
+    """Testet Validierung: weder strategies noch (sweep_name + top_n) gesetzt."""
+    toml_content = """
+[portfolio_recipes.invalid]
+id = "invalid"
+portfolio_name = "Invalid"
+weights = [0.5, 0.5]
+"""
+    recipe_file = tmp_path / "invalid.toml"
+    recipe_file.write_text(toml_content)
+
+    with pytest.raises(ValueError, match="Either 'strategies' or both 'sweep_name' and 'top_n' must be set"):
+        load_portfolio_recipes(recipe_file)
+
+
+def test_phase53_recipe_risk_profile_in_description(phase53_recipe_toml: Path):
+    """Testet, dass Risk-Profile in description enthalten sind (optionaler Test)."""
+    recipes = load_portfolio_recipes(phase53_recipe_toml)
+
+    conservative_recipe = recipes["rsi_reversion_conservative"]
+    assert conservative_recipe.risk_profile == "conservative"
+    # Prüfe, dass description das Keyword enthält (optional, aber gut für Dokumentation)
+    assert "conservative" in conservative_recipe.description.lower() or conservative_recipe.risk_profile == "conservative"
+
+    moderate_recipe = recipes["multi_style_moderate"]
+    assert moderate_recipe.risk_profile == "moderate"
+

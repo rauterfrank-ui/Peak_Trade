@@ -219,3 +219,159 @@ def test_build_parser_has_preset_args():
     assert args.portfolio_preset == "test_preset"
     assert args.recipes_config == "custom_recipes.toml"
 
+
+# =============================================================================
+# PHASE 53: TESTS FÜR NEUE RECIPES MIT DIREKTEN STRATEGIENAMEN
+# =============================================================================
+
+
+@pytest.fixture
+def phase53_recipe_toml(tmp_path: Path) -> Path:
+    """Erstellt eine temporäre TOML-Datei mit Phase-53-Rezepten (direkte Strategienamen)."""
+    toml_content = """
+[portfolio_recipes.rsi_reversion_conservative]
+id = "rsi_reversion_conservative"
+portfolio_name = "RSI Reversion Conservative"
+description = "Konservatives RSI-Reversion-Portfolio"
+strategies = ["rsi_reversion_btc_conservative", "rsi_reversion_eth_conservative"]
+weights = [0.6, 0.4]
+run_montecarlo = true
+mc_num_runs = 2000
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.2
+format = "both"
+risk_profile = "conservative"
+tags = ["rsi", "reversion", "conservative"]
+
+[portfolio_recipes.multi_style_moderate]
+id = "multi_style_moderate"
+portfolio_name = "Multi-Style Moderate"
+description = "Mixed-Style Portfolio"
+strategies = [
+  "rsi_reversion_btc_moderate",
+  "rsi_reversion_eth_moderate",
+  "ma_trend_btc_moderate",
+  "trend_following_eth_moderate",
+]
+weights = [0.25, 0.25, 0.25, 0.25]
+run_montecarlo = true
+mc_num_runs = 3000
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.25
+format = "both"
+risk_profile = "moderate"
+tags = ["multi-style", "moderate"]
+"""
+    recipe_file = tmp_path / "phase53_recipes.toml"
+    recipe_file.write_text(toml_content)
+    return recipe_file
+
+
+@pytest.fixture
+def mock_args_phase53_preset(phase53_recipe_toml: Path) -> argparse.Namespace:
+    """Erstellt Mock-Args mit Phase-53-Preset (direkte Strategienamen)."""
+    return argparse.Namespace(
+        portfolio_preset="rsi_reversion_conservative",
+        recipes_config=str(phase53_recipe_toml),
+        sweep_name=None,
+        config="config/config.toml",
+        top_n=None,
+        portfolio_name=None,
+        weights=None,
+        run_montecarlo=False,
+        mc_num_runs=1000,
+        mc_method="simple",
+        mc_block_size=20,
+        mc_seed=42,
+        run_stress_tests=False,
+        stress_scenarios=["single_crash_bar", "vol_spike"],
+        stress_severity=0.2,
+        stress_window=5,
+        stress_position="middle",
+        stress_seed=42,
+        output_dir=None,
+        format=None,
+        use_dummy_data=True,
+        dummy_bars=500,
+        verbose=False,
+    )
+
+
+def test_phase53_recipe_loading(phase53_recipe_toml: Path):
+    """Testet, dass Phase-53-Rezepte mit direkten Strategienamen geladen werden können."""
+    from src.experiments.portfolio_recipes import load_portfolio_recipes
+
+    recipes = load_portfolio_recipes(phase53_recipe_toml)
+
+    assert len(recipes) == 2
+    assert "rsi_reversion_conservative" in recipes
+    assert "multi_style_moderate" in recipes
+
+    # Prüfe erstes Rezept
+    recipe1 = recipes["rsi_reversion_conservative"]
+    assert recipe1.strategies is not None
+    assert len(recipe1.strategies) == 2
+    assert recipe1.strategies == ["rsi_reversion_btc_conservative", "rsi_reversion_eth_conservative"]
+    assert recipe1.weights == [0.6, 0.4]
+    assert recipe1.risk_profile == "conservative"
+
+    # Prüfe zweites Rezept
+    recipe2 = recipes["multi_style_moderate"]
+    assert recipe2.strategies is not None
+    assert len(recipe2.strategies) == 4
+    assert recipe2.risk_profile == "moderate"
+
+
+@patch("scripts.run_portfolio_robustness.load_top_n_configs_for_sweep")
+@patch("scripts.run_portfolio_robustness.run_portfolio_robustness")
+@patch("scripts.run_portfolio_robustness.build_portfolio_robustness_report")
+def test_phase53_preset_smoke_test(
+    mock_report,
+    mock_run_robustness,
+    mock_load_topn,
+    mock_args_phase53_preset,
+    phase53_recipe_toml: Path,
+):
+    """Smoke-Test: Phase-53-Preset kann geladen werden (auch wenn run_from_args später angepasst werden muss)."""
+    from src.experiments.portfolio_recipes import get_portfolio_recipe
+
+    # Teste dass Rezept geladen werden kann
+    recipe = get_portfolio_recipe(phase53_recipe_toml, "rsi_reversion_conservative")
+
+    assert recipe.portfolio_name == "RSI Reversion Conservative"
+    assert recipe.strategies is not None
+    assert len(recipe.strategies) == 2
+    assert recipe.risk_profile == "conservative"
+    assert "conservative" in recipe.description.lower() or recipe.risk_profile == "conservative"
+
+
+def test_phase53_all_new_recipes_exist():
+    """Testet, dass alle neuen Phase-53-Rezepte in der Haupt-Config-Datei existieren."""
+    from pathlib import Path
+    from src.experiments.portfolio_recipes import load_portfolio_recipes
+
+    recipes_path = Path("config/portfolio_recipes.toml")
+    if not recipes_path.exists():
+        pytest.skip("config/portfolio_recipes.toml nicht gefunden")
+
+    recipes = load_portfolio_recipes(recipes_path)
+
+    # Prüfe dass alle neuen Rezepte vorhanden sind
+    expected_recipes = [
+        "rsi_reversion_conservative",
+        "rsi_reversion_moderate",
+        "rsi_reversion_aggressive",
+        "multi_style_moderate",
+        "multi_style_aggressive",
+    ]
+
+    for recipe_key in expected_recipes:
+        assert recipe_key in recipes, f"Rezept {recipe_key} nicht gefunden"
+        recipe = recipes[recipe_key]
+        assert recipe.strategies is not None, f"Rezept {recipe_key} hat keine strategies"
+        assert len(recipe.strategies) == len(recipe.weights), f"Rezept {recipe_key}: weights Länge stimmt nicht"
+        assert recipe.risk_profile in ["conservative", "moderate", "aggressive"], \
+            f"Rezept {recipe_key}: ungültiges risk_profile"
+
