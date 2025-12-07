@@ -1,7 +1,7 @@
 # tests/conftest.py
 """
-Peak_Trade Test Configuration (Phase 36)
-=========================================
+Peak_Trade Test Configuration (Phase 36, erweitert Phase 59)
+=============================================================
 
 Dieses conftest.py setzt automatisch die Test-Config fuer alle Tests.
 
@@ -10,6 +10,7 @@ Funktionsweise:
     - Alle Config-Loader (peak_config.py, config_pydantic.py) respektieren diese ENV-Variable
     - Tests laufen isoliert von Produktions-Config
     - Config-Cache wird vor jedem Test zurueckgesetzt
+    - Warning-Filter für bekannte, harmlose Warnings (Phase 59)
 
 Verwendung:
     # Tests einfach normal ausfuehren - Config wird automatisch gesetzt
@@ -22,9 +23,37 @@ Verwendung:
 from __future__ import annotations
 
 import os
+import warnings
 from pathlib import Path
 
 import pytest
+
+# ============================================================================
+# Warning-Filter (Phase 59)
+# ============================================================================
+# Filter für bekannte, harmlose Warnings, die nicht behoben werden können
+# oder von externen Libraries stammen.
+
+# Pandas FutureWarnings (bekannte, harmlose Warnings von pandas/numpy)
+warnings.filterwarnings(
+    "ignore",
+    category=FutureWarning,
+    message=".*DataFrame.append.*",
+    module="pandas",
+)
+
+# Pandas FutureWarning für .fillna Downcasting (pandas 2.x Transition)
+# Diese Warning tritt auf bei `.shift(1).fillna(False)` Patterns in Strategies.
+# Der Code funktioniert korrekt, das Verhalten ändert sich erst in pandas 3.0.
+# Fix: Sobald pandas 3.0 Standard ist, Code auf `.astype(bool)` umstellen.
+warnings.filterwarnings(
+    "ignore",
+    category=FutureWarning,
+    message=".*Downcasting object dtype arrays on .fillna.*",
+)
+
+# Weitere bekannte, harmlose Warnings können hier hinzugefügt werden
+# mit klarem Kommentar, warum sie gefiltert werden.
 
 
 # Projekt-Root ermitteln (relativ zu dieser Datei)
