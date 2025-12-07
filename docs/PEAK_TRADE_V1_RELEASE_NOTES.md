@@ -1,123 +1,159 @@
-# Peak_Trade v1.0 – Release Notes
+# Peak_Trade v1.0 – Release Notes (Research & Live-Beta)
 
-> **Release-Datum:** Dezember 2024  
-> **Scope:** Phasen 1–58
-
----
-
-## Einleitung
-
-Peak_Trade v1.0 ist ein **modulares, research-getriebenes Trading-Framework** mit Fokus auf robuste Backtests, Portfolio-Robustheit, klar definierte Risk- & Governance-Prozesse und saubere Trennung von Research, Shadow/Testnet und Live.
-
-**Ziel:** Ein Trading-Stack, dem Future-Ich vertraut – technisch, risk-seitig und operativ.
+> **Status:** Research v1.0 abgeschlossen (Scope-Freeze), Live-Track: Shadow/Testnet produktionsreif, Live weiterhin als „Beta" klassifiziert.
 
 ---
 
-## Kernbereiche & Features
+## 1. Überblick
 
-### Data & Backtest
+**Peak_Trade v1.0** markiert den Zustand, in dem:
 
-- **Data-Layer** – Kraken API, CSV-Import, Parquet-Caching
-- **Backtest-Engine** – Realistic Mode mit Fees, Slippage, Stop-Loss
-- **Backtest-Registry** – Automatisches Tracking aller Runs
-- **Stats & Reporting** – Umfassende Performance-Metriken
+- die komplette Research-/Backtest-Plattform stabil, reproduzierbar und durch Tests/Docs abgesichert ist (**Research v1.0**), und
+- der Live-Track (Shadow/Testnet) über klare Gates, Policies und Operator-Tools verfügt und für kontrollierte Beta-Einsätze geeignet ist (**Live-Beta**).
 
-### Strategy & Portfolio Library
-
-- **Strategy-Registry** – OOP-Strategien (MA Crossover, RSI, Trend-Following), einfach erweiterbar
-- **Portfolio-Layer** – Multi-Strategy-Portfolio-Support
-- **Portfolio-Recipes & Presets** – Vordefinierte Portfolios mit Risk-Profilen (conservative/moderate/aggressive)
-- **Strategy-Presets** – Vordefinierte Strategie-Konfigurationen für verschiedene Märkte & Risk-Profile
-
-### Research & Robustness
-
-- **Research-Pipeline v2** – Sweeps, Walk-Forward, Monte-Carlo, Stress-Tests
-- **Portfolio-Robustness** – Portfolio-Level Robustness-Analysen
-- **Research-CLI** – Einheitliche CLI für alle Research-Workflows
-- **Experiment-Registry** – Automatisches Tracking aller Research-Runs
-
-### Live-/Testnet-Stack
-
-- **Environment & Safety** – Klare Trennung Shadow/Testnet/Live
-- **Live-Ops CLI** – Zentrales Operator-Cockpit (`live_ops`) mit Health, Orders, Portfolio
-- **Exchange-Integration** – Kraken Testnet & Live (via CCXT)
-- **Portfolio-Monitor** – Live-Portfolio-Snapshot & Risk-Bridge
-- **Alerts** – Logging, stderr, Webhook & Slack-Sinks
-
-### Governance & Safety
-
-- **Live-Risk-Limits** – Order- und Portfolio-Level Limits
-- **Governance-Doku** – Checklisten, Readiness, Runbooks
-- **Safety-Policies** – Klare Policies für Testnet & Live
-- **Incident-Drills** – Praktische Übungen für Incident-Handling
-- **Drill-Log** – Dokumentation aller durchgeführten Drills
-
-### Ops & Drills
-
-- **Live-Status-Reports** – Daily/Weekly Status-Reports (Markdown/HTML)
-- **Incident-Simulation** – Kontrollierte Drill-Szenarien
-- **Runbooks** – Schritt-für-Schritt-Anleitungen für kritische Operationen
-- **Research → Live Playbook** – End-to-End-Prozess von Research zu Live-Portfolio
-
-### Status-Reports
-
-- **Live-Status-Reports** – Automatisierte Reports für Health, Portfolio, Risk & Alerts
-- **Markdown & HTML** – Flexible Ausgabeformate
-- **Operator-Notizen** – Integration von Freitext-Notizen
+Dieses Dokument fasst die wichtigsten Bausteine, Änderungen und Einschränkungen von v1.0 zusammen.
 
 ---
 
-## Bekannte Grenzen / Nicht-Ziele
+## 2. Kern-Features in v1.0
 
-### Bewusst offen gelassen
+### 2.1 Data- & Core-Layer
 
-- **Kein automatisiertes Live-Trading** – Peak_Trade fokussiert auf Research, Shadow/Testnet und manuelles Live-Trading mit klaren Governance-Prozessen
-- **Keine Cloud-Deployment-Automatisierung** – Deployment bleibt manuell/kontrolliert
-- **Keine Multi-Exchange-Support** – Aktuell fokussiert auf Kraken (CCXT-basiert, erweiterbar)
-- **Keine automatische Rebalancing-Logik** – Rebalancing bleibt manuell/kontrolliert
+- Stabiler Data-Layer mit Caching, Normalisierung und QC.
+- Konfigurierbares Config-System (main/test) mit ENV-Support und sauberen Defaults.
+- Backtest-Engine für Single-Strategien und Portfolios mit:
+  - Performance-Metriken (CAGR, Sharpe, MaxDD, Volatilität, etc.).
+  - Portfolio-Level-Backtests und Risiko-Auswertung.
 
-### Zukünftige Erweiterungen (Post-v1.0)
+### 2.2 Strategy-Library & StrategyProfiles
 
-- Erweiterte Exchange-Integration (weitere Exchanges via CCXT)
-- Cloud-Deployment-Templates (optional)
-- Automatisierte Rebalancing-Strategien (optional)
-- Erweiterte Visualisierung & Dashboards (optional)
+- Strategy-Library v1.1 mit mehreren Kernstrategien (z.B. RSI-Reversion, Breakout, etc.).
+- Zentrales `StrategyProfile`-Datenmodell mit:
+  - Metadata
+  - PerformanceMetrics
+  - RobustnessMetrics (z.B. Monte-Carlo/Stress)
+  - RegimeProfile
+  - StrategyTieringInfo (`core`, `aux`, `legacy`)
+- Tiering-Config in `config/strategy_tiering.toml`:
+  - Strategien mit Tier, empfohlener Config-ID und Live-Flags.
 
----
+### 2.3 Research-Pipeline v2
 
-## Ausblick (Future-Phasen)
+- Research-Pipeline mit:
+  - Sweeps (Parameter-Scans)
+  - optionalem Walk-Forward
+  - optionaler Monte-Carlo-Analyse
+  - optionalen Stress-Tests
+- CLI-Integration (z.B. `research_cli.py`) für komplette Pipelines.
+- StrategyProfile- & Report-Erzeugung als Standard-Ausgabe.
 
-### Geplante Erweiterungen
+### 2.4 Portfolio & Regime
 
-- **Phase 59+**: Erweiterte Exchange-Integration
-- **Phase 60+**: Cloud-Deployment-Templates
-- **Phase 61+**: Automatisierte Rebalancing-Strategien
-- **Phase 62+**: Erweiterte Visualisierung & Dashboards
-
-### Kontinuierliche Verbesserung
-
-- **Tests & Code-Qualität** – Kontinuierliche Verbesserung der Test-Coverage
-- **Dokumentation** – Erweiterung basierend auf Nutzer-Feedback
-- **Performance** – Optimierung bei Bedarf
-
----
-
-## Verweise
-
-- **Projekt-Status & Phasen-Übersicht**  
-  [`docs/PEAK_TRADE_STATUS_OVERVIEW.md`](PEAK_TRADE_STATUS_OVERVIEW.md)
-
-- **Architektur**  
-  [`docs/ARCHITECTURE_OVERVIEW.md`](ARCHITECTURE_OVERVIEW.md)
-
-- **Getting Started**  
-  [`docs/GETTING_STARTED.md`](GETTING_STARTED.md)
-
-- **Research → Live Playbook**  
-  [`docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md)
+- Regime-Detection und Regime-Reporting.
+- Regime-aware Portfolio-Presets & Sweeps.
+- Tiered Portfolio Presets v1.0:
+  - Nutzung von `core` / `aux` / `legacy` bei Portfolio-Zusammenstellungen.
+  - Presets z.B. für Balanced-, Trend+MeanReversion- und Aggro-Setups.
 
 ---
 
-**Built with ❤️ and safety-first architecture**
+## 3. Micro-Phasen 80–86 (Mini-Roadmap umgesetzt)
 
+Im Rahmen der Mini-Roadmap wurden die Micro-Phasen 80–86 vollständig umgesetzt. Auszug (Details siehe Phasen-Dokumente):
 
+- **Phase 80 – Tiered Portfolio Presets v1.0**
+  - Tier-basierte Portfolio-Presets auf Basis von `strategy_tiering.toml`.
+  - Eigene Testsuite für Preset-/Tiering-Logik.
+- **Phase 81 – Research Golden Paths & Recipes**
+  - Dokumentierte Golden Paths für typische Research-Flows.
+- **Phase 82 – Research QA & Szenario-Library**
+  - Szenario-Configs und End-to-End Research-Tests.
+- **Phase 83 – Live-Gating & Risk Policies v1.0**
+  - Live-Gates & Policies als Brücke von Research → Shadow/Testnet/Live.
+- **Phase 84 – Operator Dashboards & Alerts v1.0**
+  - CLI-Dashboards & erste Alerts für Operatoren.
+- **Phase 85 – Live-Beta Drill (Shadow/Testnet)**
+  - End-to-End Drill für Shadow/Testnet.
+- **Phase 86 – Research v1.0 Freeze & Live-Beta Label**
+  - Scope-Freeze für Research v1.0 und formale Live-Beta-Klassifikation.
+
+Verweise:
+
+- `docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md`
+- Phasen-Dokumente: `PHASE_80_…` bis `PHASE_86_…`
+- `docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md`
+
+---
+
+## 4. Live-Track & Live-Beta
+
+### 4.1 Live-Gates & Policies
+
+- Live-Gates-Modul (z.B. `src/live/live_gates.py`) mit:
+  - Eligibility-Checks basierend auf:
+    - Tier (`core`)
+    - Live-Permissions (`allow_live`)
+    - optionalen Profil-Metriken (Sharpe, MaxDD, Monte-Carlo-Spanne).
+- `config/live_policies.toml` definiert:
+  - globale und/oder pro-Strategie Grenzwerte.
+
+### 4.2 Operator-Tools
+
+- Operator-Dashboard-Skript(e), z.B.:
+  - Übersicht über Strategien, Tiering, Live-Eligibility.
+  - Status der letzten Research-/Profil-Runs.
+- Alerts z.B. für:
+  - veraltete Profile,
+  - verletzte Policies.
+
+### 4.3 Live-Beta Drill (Shadow/Testnet)
+
+- Live-Beta Drill (Phase 85) als End-to-End-Simulation:
+  - Nutzung der Live-Gates.
+  - Start von Shadow-/Testnet-Sessions.
+  - Incident-Simulation (z.B. Datenlücken, Drawdown).
+
+---
+
+## 5. Tests & Qualität
+
+- Im Projekt wurden über die Zeit eine umfangreiche Testsuite aufgebaut (Details siehe CI/Status-Doku).
+- Im Rahmen der Micro-Phasen 80–86 kamen über 150 zusätzliche Tests hinzu.
+- Sämtliche Research-/Portfolio-/Live-Beta-Funktionen laufen:
+  - offline,
+  - reproduzierbar,
+  - ohne externe Secrets/Keys.
+
+---
+
+## 6. Einschränkungen & Nicht-Ziele in v1.0
+
+- Echtes Live-Trading ist weiterhin:
+  - über harte Gates eingeschränkt,
+  - als **„Live-Beta"** klassifiziert.
+- Keine Garantie für Produktionsreife in volatilen Echtmarkt-Umgebungen:
+  - v1.0 richtet sich primär an Research, Shadow und Testnet.
+- Erweiterte Multi-Asset-/Multi-Exchange-Live-Deployments sind Thema für zukünftige Versionen.
+
+---
+
+## 7. Ausblick auf v1.1 / v2
+
+Mögliche Themen für künftige Versionen:
+
+- Erweiterte Universe-Unterstützung (mehr Assets/Exchanges).
+- Tiefere Portfolio-Optimierung (z.B. Risk Parity, CVaR).
+- Erweiterte Operator-UI (Web-Dashboards).
+- Automatisierte „Continuous Research"-Pipelines.
+- Weitere Guardrails und Observability für echten Live-Betrieb.
+
+---
+
+## 8. Tagging & Versionierung
+
+Empfohlene Git-Tags für diesen Stand (vom User manuell zu setzen):
+
+- `v1.0-research`
+- `v1.0-live-beta`
+
+Diese Release Notes beschreiben den Stand, auf den diese Tags zeigen sollten.
