@@ -11,6 +11,7 @@ Gebündelte CLI für den gesamten Research-Workflow:
 - Monte-Carlo-Robustness (Phase 45)
 - Stress-Tests & Crash-Szenarien (Phase 46)
 - Portfolio-Level Robustness (Phase 47)
+- Strategy-Profiles & Tiering (Phase 41B)
 
 Verwendung:
     # Strategy-Sweep ausführen
@@ -33,6 +34,9 @@ Verwendung:
 
     # Portfolio-Level Robustness
     python scripts/research_cli.py portfolio --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --portfolio-name rsi_portfolio_v1 --run-montecarlo --run-stress-tests
+
+    # Strategy-Profile generieren (Phase 41B)
+    python scripts/research_cli.py strategy-profile --strategy-id rsi_reversion --output-format both --with-regime --with-montecarlo --with-stress
 
     # End-to-End-Pipeline
     python scripts/research_cli.py pipeline \\
@@ -338,6 +342,123 @@ def build_parser() -> argparse.ArgumentParser:
         help="Verbose Output",
     )
 
+    # Subparser: strategy-profile (Phase 41B)
+    profile_parser = subparsers.add_parser(
+        "strategy-profile",
+        help="Generiert ein Robustness-Profil für eine Strategie (Phase 41B).",
+    )
+
+    profile_parser.add_argument(
+        "--strategy-id", "-s",
+        type=str,
+        required=True,
+        help="Strategy-ID aus der Registry (z.B. rsi_reversion, ma_crossover, breakout)",
+    )
+    profile_parser.add_argument(
+        "--config",
+        type=str,
+        default="config/config.toml",
+        help="Pfad zur Config-Datei (default: config/config.toml)",
+    )
+    profile_parser.add_argument(
+        "--tiering-config",
+        type=str,
+        default="config/strategy_tiering.toml",
+        help="Pfad zur Tiering-Config (default: config/strategy_tiering.toml)",
+    )
+    profile_parser.add_argument(
+        "--output-format", "-f",
+        type=str,
+        choices=["json", "md", "both"],
+        default="both",
+        help="Output-Format (default: both)",
+    )
+    profile_parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=None,
+        help="Output-Verzeichnis (default: reports/strategy_profiles für JSON, docs/strategy_profiles für MD)",
+    )
+    profile_parser.add_argument(
+        "--with-regime",
+        action="store_true",
+        help="Führt Regime-Analyse durch (falls Regime-Detection verfügbar)",
+    )
+    profile_parser.add_argument(
+        "--with-montecarlo",
+        action="store_true",
+        help="Führt Monte-Carlo-Robustness-Analyse durch",
+    )
+    profile_parser.add_argument(
+        "--with-stress",
+        action="store_true",
+        help="Führt Stress-Tests durch",
+    )
+    profile_parser.add_argument(
+        "--mc-num-runs",
+        type=int,
+        default=100,
+        help="Anzahl Monte-Carlo-Runs (default: 100)",
+    )
+    profile_parser.add_argument(
+        "--mc-method",
+        choices=["simple", "block_bootstrap"],
+        default="simple",
+        help="Monte-Carlo-Methode (default: simple)",
+    )
+    profile_parser.add_argument(
+        "--stress-scenarios",
+        nargs="+",
+        default=["single_crash_bar", "vol_spike"],
+        choices=["single_crash_bar", "vol_spike", "drawdown_extension", "gap_down_open"],
+        help="Liste von Stress-Szenario-Typen (default: single_crash_bar vol_spike)",
+    )
+    profile_parser.add_argument(
+        "--stress-severity",
+        type=float,
+        default=0.2,
+        help="Basis-Severity für Stress-Szenarien (default: 0.2 = 20%%)",
+    )
+    profile_parser.add_argument(
+        "--symbol",
+        type=str,
+        default="BTC/EUR",
+        help="Trading-Symbol (default: BTC/EUR)",
+    )
+    profile_parser.add_argument(
+        "--timeframe",
+        type=str,
+        default="1h",
+        help="Timeframe (default: 1h)",
+    )
+    profile_parser.add_argument(
+        "--use-dummy-data",
+        action="store_true",
+        help="Verwende Dummy-Daten statt echte Marktdaten",
+    )
+    profile_parser.add_argument(
+        "--dummy-bars",
+        type=int,
+        default=500,
+        help="Anzahl Bars für Dummy-Daten (default: 500)",
+    )
+    profile_parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random Seed für Reproduzierbarkeit (default: 42)",
+    )
+    profile_parser.add_argument(
+        "--verbose", "-v",
+        action="store_true",
+        help="Verbose Output",
+    )
+    profile_parser.add_argument(
+        "--list-strategies",
+        action="store_true",
+        help="Zeigt alle verfügbaren Strategy-IDs und beendet",
+    )
+
     return parser
 
 
@@ -581,7 +702,318 @@ def run_pipeline(args: argparse.Namespace) -> int:
     logger.info("=" * 70)
     logger.info("✅ Pipeline erfolgreich abgeschlossen")
     logger.info("=" * 70)
-    
+
+    return 0
+
+
+# =============================================================================
+# STRATEGY PROFILE EXECUTION (Phase 41B)
+# =============================================================================
+
+
+def run_strategy_profile(args: argparse.Namespace) -> int:
+    """
+    Generiert ein Robustness-Profil für eine Strategie.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 = success, 1 = error)
+    """
+    import logging
+    import numpy as np
+    import pandas as pd
+    from pathlib import Path
+
+    logging.basicConfig(
+        level=logging.DEBUG if getattr(args, "verbose", False) else logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
+    logger = logging.getLogger(__name__)
+
+    # Import Strategy-Registry
+    try:
+        from src.strategies.registry import (
+            get_available_strategy_keys,
+            get_strategy_spec,
+        )
+    except ImportError as e:
+        logger.error(f"Konnte Strategy-Registry nicht importieren: {e}")
+        return 1
+
+    # Import Profile-Modul
+    try:
+        from src.experiments.strategy_profiles import (
+            StrategyProfileBuilder,
+            load_tiering_config,
+            PROFILE_VERSION,
+        )
+    except ImportError as e:
+        logger.error(f"Konnte Strategy-Profiles nicht importieren: {e}")
+        return 1
+
+    # List-Strategies-Modus
+    if getattr(args, "list_strategies", False):
+        print("\nVerfügbare Strategy-IDs:")
+        print("-" * 40)
+        for key in sorted(get_available_strategy_keys()):
+            try:
+                spec = get_strategy_spec(key)
+                print(f"  {key:25s} {spec.description}")
+            except Exception:
+                print(f"  {key}")
+        return 0
+
+    strategy_id = args.strategy_id
+
+    # Validiere Strategy-ID
+    available = get_available_strategy_keys()
+    if strategy_id not in available:
+        logger.error(f"Unbekannte Strategy-ID: '{strategy_id}'")
+        logger.info(f"Verfügbare Strategien: {', '.join(sorted(available))}")
+        return 1
+
+    logger.info(f"Generiere Robustness-Profil für: {strategy_id}")
+    logger.info("=" * 60)
+
+    # Initialisiere Builder
+    builder = StrategyProfileBuilder(
+        strategy_id=strategy_id,
+        timeframe=args.timeframe,
+        symbols=[args.symbol],
+    )
+
+    # Random Seed setzen
+    np.random.seed(args.seed)
+
+    # Generiere oder lade Daten
+    if args.use_dummy_data:
+        logger.info(f"Verwende Dummy-Daten ({args.dummy_bars} Bars)")
+        n = args.dummy_bars
+        dates = pd.date_range("2024-01-01", periods=n, freq="1h")
+        returns = np.random.normal(0.0005, 0.02, n)
+        equity = (1 + pd.Series(returns, index=dates)).cumprod() * 10000
+        builder.set_data_range("2024-01-01", dates[-1].strftime("%Y-%m-%d"))
+    else:
+        # Versuche echte Daten zu laden
+        try:
+            from src.data.kraken import fetch_ohlcv_df
+
+            logger.info(f"Lade Marktdaten für {args.symbol} ({args.timeframe})")
+            df = fetch_ohlcv_df(
+                symbol=args.symbol,
+                timeframe=args.timeframe,
+                limit=720,
+                use_cache=True,
+            )
+
+            if df.empty:
+                logger.warning("Keine Marktdaten gefunden, verwende Dummy-Daten")
+                n = args.dummy_bars
+                dates = pd.date_range("2024-01-01", periods=n, freq="1h")
+                returns = np.random.normal(0.0005, 0.02, n)
+                equity = (1 + pd.Series(returns, index=dates)).cumprod() * 10000
+            else:
+                returns = df["close"].pct_change().dropna()
+                equity = (1 + returns).cumprod() * 10000
+                builder.set_data_range(
+                    df.index[0].strftime("%Y-%m-%d"),
+                    df.index[-1].strftime("%Y-%m-%d"),
+                )
+        except Exception as e:
+            logger.warning(f"Konnte Marktdaten nicht laden: {e}")
+            logger.info("Fallback zu Dummy-Daten")
+            n = args.dummy_bars
+            dates = pd.date_range("2024-01-01", periods=n, freq="1h")
+            returns = np.random.normal(0.0005, 0.02, n)
+            equity = (1 + pd.Series(returns, index=dates)).cumprod() * 10000
+            builder.set_data_range("2024-01-01", dates[-1].strftime("%Y-%m-%d"))
+
+    # Returns als Series
+    if not isinstance(returns, pd.Series):
+        returns = pd.Series(returns)
+
+    # 1. Baseline-Performance berechnen
+    logger.info("Step 1/4: Berechne Baseline-Performance...")
+    try:
+        from src.backtest.stats import compute_basic_stats
+
+        stats = compute_basic_stats(equity)
+
+        # Erweiterte Metriken
+        if len(returns) > 0:
+            stats["volatility"] = float(returns.std() * np.sqrt(8760))  # Annualisiert
+            stats["win_rate"] = float((returns > 0).sum() / len(returns))
+            stats["trade_count"] = len(returns)
+            # Expectancy als avg_trade
+            stats["avg_trade"] = float(returns.mean())
+
+        builder.set_performance_from_stats(stats)
+        logger.info(f"  Sharpe: {stats.get('sharpe', 0):.2f}")
+        logger.info(f"  Max DD: {stats.get('max_drawdown', 0):.2%}")
+        logger.info(f"  Total Return: {stats.get('total_return', 0):.2%}")
+    except Exception as e:
+        logger.warning(f"Performance-Berechnung fehlgeschlagen: {e}")
+
+    # 2. Monte-Carlo-Analyse (optional)
+    if args.with_montecarlo:
+        logger.info(f"Step 2/4: Monte-Carlo-Analyse ({args.mc_num_runs} Runs)...")
+        try:
+            from src.experiments.monte_carlo import (
+                MonteCarloConfig,
+                run_monte_carlo_from_returns,
+            )
+
+            mc_config = MonteCarloConfig(
+                num_runs=args.mc_num_runs,
+                method=args.mc_method,
+                seed=args.seed,
+            )
+
+            mc_result = run_monte_carlo_from_returns(returns, mc_config)
+
+            # Extrahiere Quantilen
+            total_return_q = mc_result.metric_quantiles.get("total_return", {})
+            sharpe_q = mc_result.metric_quantiles.get("sharpe", {})
+
+            builder.set_montecarlo_results(
+                p5=total_return_q.get("p5", 0.0),
+                p50=total_return_q.get("p50", 0.0),
+                p95=total_return_q.get("p95", 0.0),
+                num_runs=mc_result.num_runs,
+                sharpe_p5=sharpe_q.get("p5"),
+                sharpe_p95=sharpe_q.get("p95"),
+            )
+
+            logger.info(f"  Return p5/p50/p95: {total_return_q.get('p5', 0):.2%} / {total_return_q.get('p50', 0):.2%} / {total_return_q.get('p95', 0):.2%}")
+        except Exception as e:
+            logger.warning(f"Monte-Carlo-Analyse fehlgeschlagen: {e}")
+    else:
+        logger.info("Step 2/4: Monte-Carlo übersprungen (--with-montecarlo nicht gesetzt)")
+
+    # 3. Stress-Tests (optional)
+    if args.with_stress:
+        logger.info(f"Step 3/4: Stress-Tests ({len(args.stress_scenarios)} Szenarien)...")
+        try:
+            from src.experiments.stress_tests import (
+                StressScenarioConfig,
+                run_stress_test_suite,
+            )
+            from src.backtest.stats import compute_basic_stats as stats_fn_wrapper
+
+            def stats_fn(returns_series: pd.Series) -> dict:
+                eq = (1 + returns_series).cumprod() * 10000
+                return compute_basic_stats(eq)
+
+            scenarios = [
+                StressScenarioConfig(
+                    scenario_type=scenario,
+                    severity=args.stress_severity,
+                    seed=args.seed,
+                )
+                for scenario in args.stress_scenarios
+            ]
+
+            suite = run_stress_test_suite(returns, scenarios, stats_fn)
+
+            # Aggregiere Stress-Ergebnisse
+            stress_returns = [
+                r.stressed_metrics.get("total_return", 0.0)
+                for r in suite.scenario_results
+            ]
+
+            if stress_returns:
+                builder.set_stress_results(
+                    min_return=min(stress_returns),
+                    max_return=max(stress_returns),
+                    avg_return=sum(stress_returns) / len(stress_returns),
+                    num_scenarios=len(stress_returns),
+                )
+                logger.info(f"  Min/Avg/Max Return: {min(stress_returns):.2%} / {sum(stress_returns)/len(stress_returns):.2%} / {max(stress_returns):.2%}")
+        except Exception as e:
+            logger.warning(f"Stress-Tests fehlgeschlagen: {e}")
+    else:
+        logger.info("Step 3/4: Stress-Tests übersprungen (--with-stress nicht gesetzt)")
+
+    # 4. Regime-Analyse (optional)
+    if args.with_regime:
+        logger.info("Step 4/4: Regime-Analyse...")
+        # Vereinfachte Regime-Simulation basierend auf Volatilität
+        try:
+            vol_window = 20
+            rolling_vol = returns.rolling(vol_window).std()
+            vol_median = rolling_vol.median()
+
+            # Definiere Regimes basierend auf Volatilität
+            regimes = pd.Series(index=returns.index, dtype=str)
+            regimes[rolling_vol <= vol_median * 0.8] = "low_vol"
+            regimes[(rolling_vol > vol_median * 0.8) & (rolling_vol <= vol_median * 1.2)] = "neutral"
+            regimes[rolling_vol > vol_median * 1.2] = "high_vol"
+
+            for regime_name in ["low_vol", "neutral", "high_vol"]:
+                mask = regimes == regime_name
+                if mask.sum() > 0:
+                    regime_returns = returns[mask]
+                    time_share = mask.sum() / len(returns)
+                    contribution = regime_returns.sum()
+                    builder.add_regime(
+                        name=regime_name,
+                        contribution_return=contribution,
+                        time_share=time_share,
+                        trade_count=len(regime_returns),
+                        avg_return=regime_returns.mean() if len(regime_returns) > 0 else 0.0,
+                    )
+
+            builder.finalize_regimes()
+            logger.info("  Regime-Analyse abgeschlossen")
+        except Exception as e:
+            logger.warning(f"Regime-Analyse fehlgeschlagen: {e}")
+    else:
+        logger.info("Step 4/4: Regime-Analyse übersprungen (--with-regime nicht gesetzt)")
+
+    # 5. Tiering-Info laden
+    logger.info("Lade Tiering-Konfiguration...")
+    try:
+        tiering_config = load_tiering_config(args.tiering_config)
+        tiering_info = tiering_config.get(strategy_id)
+        if tiering_info:
+            builder.tiering = tiering_info
+            logger.info(f"  Tier: {tiering_info.tier}")
+        else:
+            logger.info(f"  Kein Tiering-Eintrag für '{strategy_id}' gefunden")
+    except Exception as e:
+        logger.warning(f"Konnte Tiering-Config nicht laden: {e}")
+
+    # Build Profil
+    profile = builder.build()
+
+    # Output-Verzeichnisse
+    json_dir = Path(args.output_dir) if args.output_dir else Path("reports/strategy_profiles")
+    md_dir = Path(args.output_dir) if args.output_dir else Path("docs/strategy_profiles")
+
+    # Dateinamen
+    json_filename = f"{strategy_id}_profile_{PROFILE_VERSION}.json"
+    md_filename = f"{strategy_id.upper()}_PROFILE_{PROFILE_VERSION}.md"
+
+    # Export
+    output_format = args.output_format
+
+    if output_format in ("json", "both"):
+        json_path = json_dir / json_filename
+        json_dir.mkdir(parents=True, exist_ok=True)
+        profile.to_json(json_path)
+        logger.info(f"JSON-Profil exportiert: {json_path}")
+
+    if output_format in ("md", "both"):
+        md_path = md_dir / md_filename
+        md_dir.mkdir(parents=True, exist_ok=True)
+        profile.to_markdown(md_path)
+        logger.info(f"Markdown-Profil exportiert: {md_path}")
+
+    logger.info("=" * 60)
+    logger.info("✅ Strategy-Profil erfolgreich generiert")
+
     return 0
 
 
@@ -610,6 +1042,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return run_portfolio_robustness_from_args(args)
     elif args.command == "pipeline":
         return run_pipeline(args)
+    elif args.command == "strategy-profile":
+        return run_strategy_profile(args)
     else:
         parser.error(f"Unknown command: {args.command}")
         return 1

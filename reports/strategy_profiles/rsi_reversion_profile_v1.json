@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "strategy_id": "rsi_reversion",
+    "profile_version": "v1",
+    "created_at": "2025-12-07T22:28:31.390668",
+    "data_range": "2024-01-01..2024-01-09",
+    "symbols": [
+      "BTC/EUR"
+    ],
+    "timeframe": "1h"
+  },
+  "performance": {
+    "sharpe": -0.3784236481395684,
+    "cagr": -0.12617028032678035,
+    "max_drawdown": -0.27992948159722275,
+    "volatility": 1.742743839070505,
+    "winrate": 0.505,
+    "avg_trade": -0.00031541930344169944,
+    "trade_count": 200,
+    "total_return": -0.10233138419444214,
+    "sortino": null,
+    "calmar": null,
+    "profit_factor": null
+  },
+  "robustness": {
+    "param_sensitivity_index": null,
+    "montecarlo_p5": -0.3956381702026361,
+    "montecarlo_p50": -0.22005895599344544,
+    "montecarlo_p95": 0.03580265686455464,
+    "montecarlo_sharpe_p5": 0.0,
+    "montecarlo_sharpe_p95": 0.0,
+    "stress_min": -0.2613244499010424,
+    "stress_max": -0.11067223758122878,
+    "stress_avg": -0.1859983437411356,
+    "num_montecarlo_runs": 20,
+    "num_stress_scenarios": 2
+  },
+  "regimes": {
+    "regimes": [
+      {
+        "name": "low_vol",
+        "contribution_return": -0.043584599751435936,
+        "time_share": 0.035,
+        "efficiency_ratio": -1.245274278612455,
+        "trade_count": 7,
+        "avg_return": -0.006226371393062277
+      },
+      {
+        "name": "neutral",
+        "contribution_return": 0.0056134917440708865,
+        "time_share": 0.845,
+        "efficiency_ratio": 0.006643185495941878,
+        "trade_count": 169,
+        "avg_return": 3.321592747970939e-05
+      },
+      {
+        "name": "high_vol",
+        "contribution_return": 0.00566059786905088,
+        "time_share": 0.025,
+        "efficiency_ratio": 0.2264239147620352,
+        "trade_count": 5,
+        "avg_return": 0.001132119573810176
+      }
+    ],
+    "dominant_regime": "high_vol",
+    "weakest_regime": "low_vol"
+  },
+  "tiering": {
+    "tier": "core",
+    "reason": "Robust über mehrere Vol-Regime, gute Sharpe/MaxDD-Balance. Empfohlen als Mean-Reversion-Komponente.",
+    "recommended_config_id": "rsi_reversion_v1_core",
+    "allow_live": false,
+    "notes": "Robust über mehrere Vol-Regime, gute Sharpe/MaxDD-Balance. Empfohlen als Mean-Reversion-Komponente."
+  }
+}

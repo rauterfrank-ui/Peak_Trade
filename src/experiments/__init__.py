@@ -83,6 +83,33 @@ from .regime_sweeps import (
     REGIME_SWEEP_REGISTRY,
 )
 
+from .regime_aware_portfolio_sweeps import (
+    get_regime_aware_portfolio_sweeps,
+    get_regime_aware_aggressive_sweeps,
+    get_regime_aware_conservative_sweeps,
+    get_regime_aware_volmetric_sweeps,
+    get_regime_aware_combined_sweeps,
+    get_regime_aware_sweep,
+    list_available_regime_aware_sweeps,
+    REGIME_AWARE_PORTFOLIO_SWEEP_REGISTRY,
+)
+
+# Strategy Profiles (Phase 41B)
+from .strategy_profiles import (
+    StrategyProfile,
+    StrategyProfileBuilder,
+    Metadata,
+    PerformanceMetrics,
+    RobustnessMetrics,
+    RegimeProfile,
+    SingleRegimeProfile,
+    StrategyTieringInfo,
+    load_tiering_config,
+    get_tiering_for_strategy,
+    generate_markdown_profile,
+    PROFILE_VERSION,
+)
+
 __all__ = [
     # Base types
     "ParamSweep",
@@ -112,6 +139,15 @@ __all__ = [
     "get_strategy_switching_sweeps",
     "get_combined_regime_strategy_sweeps",
     "REGIME_SWEEP_REGISTRY",
+    # Regime-Aware Portfolio Sweeps
+    "get_regime_aware_portfolio_sweeps",
+    "get_regime_aware_aggressive_sweeps",
+    "get_regime_aware_conservative_sweeps",
+    "get_regime_aware_volmetric_sweeps",
+    "get_regime_aware_combined_sweeps",
+    "get_regime_aware_sweep",
+    "list_available_regime_aware_sweeps",
+    "REGIME_AWARE_PORTFOLIO_SWEEP_REGISTRY",
     # Research Playground (Phase 41)
     "StrategySweepConfig",
     "ParamConstraint",
@@ -123,4 +159,17 @@ __all__ = [
     "run_sweep_batch",
     "create_custom_sweep",
     "print_sweep_catalog",
+    # Strategy Profiles (Phase 41B)
+    "StrategyProfile",
+    "StrategyProfileBuilder",
+    "Metadata",
+    "PerformanceMetrics",
+    "RobustnessMetrics",
+    "RegimeProfile",
+    "SingleRegimeProfile",
+    "StrategyTieringInfo",
+    "load_tiering_config",
+    "get_tiering_for_strategy",
+    "generate_markdown_profile",
+    "PROFILE_VERSION",
 ]

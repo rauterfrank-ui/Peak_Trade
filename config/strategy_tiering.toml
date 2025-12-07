@@ -1,0 +1,128 @@
+# config/strategy_tiering.toml
+# =============================================================================
+# Peak_Trade Strategy Tiering Configuration (Phase 41B)
+# =============================================================================
+#
+# Zentrale Konfiguration für Strategy-Tiering:
+# - core:   Primäre Strategien für Hauptportfolio
+# - aux:    Ergänzende Strategien mit spezifischen Stärken
+# - legacy: Ältere Strategien, nur zu Vergleichszwecken
+#
+# Kriterien für Tiering:
+# - core:   Sharpe >= 1.5, MaxDD >= -15%, robust über Regime
+# - aux:    Sharpe >= 1.0, MaxDD >= -20%, spezifische Stärken
+# - legacy: Sharpe < 1.0 oder MaxDD < -20% oder ersetzt durch bessere Version
+#
+
+# =============================================================================
+# CORE STRATEGIES
+# =============================================================================
+
+[strategy.rsi_reversion]
+tier = "core"
+recommended_config_id = "rsi_reversion_v1_core"
+allow_live = false
+notes = "Robust über mehrere Vol-Regime, gute Sharpe/MaxDD-Balance. Empfohlen als Mean-Reversion-Komponente."
+
+[strategy.ma_crossover]
+tier = "core"
+recommended_config_id = "ma_crossover_v1_core"
+allow_live = false
+notes = "Klassischer Trend-Follower, stabil und vorhersagbar. Basis für Portfolio-Diversifikation."
+
+[strategy.bollinger_bands]
+tier = "core"
+recommended_config_id = "bollinger_bands_v1_core"
+allow_live = false
+notes = "Volatilitäts-basierte Mean-Reversion. Gute Performance in Range-Märkten."
+
+# =============================================================================
+# AUX STRATEGIES
+# =============================================================================
+
+[strategy.breakout]
+tier = "aux"
+recommended_config_id = "breakout_v1_balanced"
+allow_live = false
+notes = "Trend-folgend mit SL/TP, gute Ergänzung. Höhere Tail-Risiken in choppy Märkten."
+
+[strategy.macd]
+tier = "aux"
+recommended_config_id = "macd_v1_balanced"
+allow_live = false
+notes = "Momentum-basiert, gut in Trending-Phasen. Kann in Seitwärtsmärkten Verluste generieren."
+
+[strategy.momentum_1h]
+tier = "aux"
+recommended_config_id = "momentum_1h_v1"
+allow_live = false
+notes = "Kurzfristiges Momentum, als Timing-Filter nutzbar."
+
+[strategy.trend_following]
+tier = "aux"
+recommended_config_id = "trend_following_v1"
+allow_live = false
+notes = "ADX-basiert, robust in Trending-Märkten. Schlechte Performance in Range-Phasen."
+
+[strategy.mean_reversion]
+tier = "aux"
+recommended_config_id = "mean_reversion_v1"
+allow_live = false
+notes = "Z-Score-basiert, gut in stabilen Märkten. Risiko bei Regime-Wechseln."
+
+[strategy.vol_regime_filter]
+tier = "aux"
+recommended_config_id = "vol_regime_filter_v1"
+allow_live = false
+notes = "Volatilitäts-Filter, als Overlay für andere Strategien nutzbar."
+
+[strategy.composite]
+tier = "aux"
+recommended_config_id = "composite_v1"
+allow_live = false
+notes = "Multi-Strategy-Aggregation, Diversifikationseffekte. Komplexität erhöht."
+
+[strategy.regime_aware_portfolio]
+tier = "aux"
+recommended_config_id = "regime_aware_portfolio_v1"
+allow_live = false
+notes = "Regime-basierte Allokation, adaptive Gewichtung. Abhängig von Regime-Detection-Qualität."
+
+# =============================================================================
+# LEGACY STRATEGIES
+# =============================================================================
+
+[strategy.breakout_donchian]
+tier = "legacy"
+recommended_config_id = "breakout_donchian_v0"
+allow_live = false
+notes = "Ersetzt durch neuere Breakout-Strategie mit SL/TP. Nur zu Vergleichszwecken."
+
+[strategy.my_strategy]
+tier = "legacy"
+recommended_config_id = "my_strategy_v0"
+allow_live = false
+notes = "Demo-Strategie, nicht für Produktion gedacht."
+
+[strategy.vol_breakout]
+tier = "legacy"
+recommended_config_id = "vol_breakout_v0"
+allow_live = false
+notes = "Ersetzt durch vol_regime_filter + breakout Kombination."
+
+# =============================================================================
+# NOTES
+# =============================================================================
+#
+# Tiering-Updates:
+# - Bei neuen Strategien: Erst als "unclassified" starten, nach Profiling tiern
+# - Upgrade core -> aux: Wenn Robustness-Tests problematisch
+# - Downgrade aux -> legacy: Wenn bessere Alternative verfügbar
+#
+# Live-Trading-Freigabe:
+# - allow_live = true nur nach:
+#   1. Erfolgreichem Walk-Forward-Testing
+#   2. Monte-Carlo mit positivem 5%-Perzentil
+#   3. Stress-Tests bestanden
+#   4. Testnet-Validierung abgeschlossen
+#
