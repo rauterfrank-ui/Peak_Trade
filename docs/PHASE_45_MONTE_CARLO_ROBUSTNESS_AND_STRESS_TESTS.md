@@ -353,11 +353,12 @@ pytest tests/test_research_cli.py -v
 - **Phase 43:** Visualisierung & Sweep-Dashboards
 - **Phase 44:** Walk-Forward-Testing
 
-### 10.2 Nächste Schritte (Phase 46+)
+### 10.2 Nächste Schritte (Phase 47+)
 
-- **Erweiterte Stress-Tests:** Volatilitäts-Shocks, Crash-Szenarien
+- **Portfolio-Level Monte-Carlo** ✅ (Phase 47): Robustheit für Multi-Strategy-Portfolios
+  - **Siehe:** `docs/PHASE_47_PORTFOLIO_ROBUSTNESS_AND_STRESS_TESTING.md` für Details
+- **Erweiterte Stress-Tests:** Volatilitäts-Shocks, Crash-Szenarien (weitere Szenario-Typen)
 - **Regime-bewusste Monte-Carlo:** Berücksichtigung von Regime-Wechseln
-- **Portfolio-Level Monte-Carlo:** Robustheit für Multi-Strategy-Portfolios
 - **Live-Trading-Validierung:** Vergleich Monte-Carlo vs. Live-Performance
 
 ---

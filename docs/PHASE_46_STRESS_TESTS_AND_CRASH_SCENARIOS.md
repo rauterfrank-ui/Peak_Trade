@@ -354,9 +354,10 @@ pytest tests/test_research_cli.py -v
 
 ### 9.2 Nächste Schritte (Phase 47+)
 
-- **Erweiterte Stress-Szenarien:** Multi-Asset-Crashes, Korrelations-Breakdown
+- **Portfolio-Level Stress-Tests** ✅ (Phase 47): Stress für Multi-Strategy-Portfolios
+  - **Siehe:** `docs/PHASE_47_PORTFOLIO_ROBUSTNESS_AND_STRESS_TESTING.md` für Details
+- **Erweiterte Stress-Szenarien:** Multi-Asset-Crashes, Korrelations-Breakdown (weitere Szenario-Typen)
 - **Regime-bewusste Stress-Tests:** Stress nur in bestimmten Regimes
-- **Portfolio-Level Stress-Tests:** Stress für Multi-Strategy-Portfolios
 - **Live-Trading-Validierung:** Vergleich Stress-Tests vs. Live-Performance
 
 ---

@@ -91,10 +91,10 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
 | Bereich                                      | Status in % | Kommentar                                                                 |
 |----------------------------------------------|-----------:|---------------------------------------------------------------------------|
 | **Single-Strategien** (MA, RSI, Momentum, MACD, Breakout, Vol-Regime&) | **65 %** | ~1314 Strategien vorhanden; fehlen: Regime-Switching, Multi-Timeframe, Adaptive-Parameter |
-| **Portfolio-Strategien**                     | **70 %**   | Portfolio-Manager vorhanden (Phase 26); fehlen: Auto-Optimierung, Correlation-basierte Allokation |
+| **Portfolio-Strategien**                     | **80 %**   | Portfolio-Manager vorhanden (Phase 26), Portfolio-Level Robustness (Phase 47); fehlen: Auto-Optimierung, Correlation-basierte Allokation |
 | **Registry & Sweeps**                        | **85 %**   | Experiment-Registry (Phase 29), Strategy-Sweeps (Phase 41), Top-N Promotion (Phase 42); fehlen: Walk-Forward-Integration, Monte-Carlo-Sweeps |
 | **Reporting f�r Research**                   | **80 %**   | Backtest-Reports (Phase 30), Sweep-Visualisierung (Phase 43); fehlen: Interaktive Dashboards, Feature-Importance-Plots |
-| **Robustness-Analyse**                       | **75 %**   | Walk-Forward-Testing (Phase 44), Monte-Carlo-Robustness (Phase 45) und Stress-Tests (Phase 46) vorhanden; fehlen: Erweiterte Multi-Asset-Stress-Tests, Regime-bewusste Stress-Tests |
+| **Robustness-Analyse**                       | **85 %**   | Walk-Forward-Testing (Phase 44), Monte-Carlo-Robustness (Phase 45), Stress-Tests (Phase 46) und Portfolio-Level Robustness (Phase 47) vorhanden; fehlen: Erweiterte Multi-Asset-Stress-Tests, Regime-bewusste Stress-Tests, Korrelations-Analyse |
 | **Auto-Optimization**                        | **40 %**   | Top-N Promotion vorhanden; fehlen: Auto-Portfolio-Building, Parameter-Auto-Tuning |
 
 **Research-/Strategy-Track gesamt:** **H65 %**
