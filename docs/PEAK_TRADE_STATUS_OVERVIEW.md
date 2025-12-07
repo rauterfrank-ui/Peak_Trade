@@ -730,6 +730,37 @@ Basierend auf dem aktuellen Stand (≈ 91% Gesamt-Reifegrad) bieten sich folgend
 
 ---
 
+## Research v1.0 & Live-Beta – Status nach Phasen 80–86
+
+**Research v1.0**
+
+- Alle für v1.0 geplanten Research-Komponenten sind implementiert und getestet:
+  - Strategy-Library v1.1 mit StrategyProfiles & Tiering
+  - Tiered Portfolio Presets (Phase 80)
+  - Research Golden Paths & Recipes (Phase 81)
+  - Research QA & Szenario-Library (Phase 82)
+- Insgesamt wurden im Rahmen der Micro-Phasen 80–86 **159 zusätzliche Tests** ergänzt.
+- Research v1.0 steht unter **Scope-Freeze**: Änderungen passieren nur noch gezielt und rückwärts-kompatibel.
+
+**Live-Track / Live-Beta**
+
+- Live-/Shadow-/Testnet-Track nutzt nun:
+  - Live-Gating & Risk Policies v1.0 (Phase 83)
+  - Operator Dashboard & Alerts v1.0 (Phase 84)
+  - Live-Beta Drill (Shadow/Testnet) als End-to-End-Validierung (Phase 85)
+- Shadow-/Testnet-Stack ist als **„produktionsreif" für Beta-Einsätze** markiert.
+- Echtes Live-Trading bleibt:
+  - weiterhin **streng gegated** (Tiering + Profil + Policies),
+  - als **„Live-Beta"** klassifiziert, nicht als voll freigegebener Produktionsmodus.
+
+**Kurzfazit**
+
+- ✅ Research v1.0: abgeschlossen
+- ✅ Shadow-/Testnet-Beta: betriebsbereit
+- ⚠️ Live-Beta: vorhanden, aber bewusst konservativ gerahmt (Gates & Policies müssen explizit passiert werden)
+
+---
+
 ## 13. Reference Scenario
 
 Für einen vollständigen, praxisnahen Durchlauf (Research → Portfolio-Robustheit → Playbook → Shadow/Testnet → Status-Report → Incident-Drill) siehe:
