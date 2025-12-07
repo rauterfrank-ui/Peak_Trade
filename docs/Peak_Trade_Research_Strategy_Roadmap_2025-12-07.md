@@ -5,7 +5,7 @@
 
 ## 1. Kurz�berblick  Research-/Strategy-Track
 
-Der Strategy-/Research-Track bietet einen vollst�ndigen Workflow: Strategy-Sweeps (Phase 41), Top-N Promotion (Phase 42) und Visualisierung (Phase 43). Der End-to-End-Flow von Sweep-Definition bis Out-of-Sample-Validierung funktioniert stabil. Die Strategie-Bibliothek umfasst ~1314 Strategien (MA, RSI, Momentum, MACD, Breakout, Vol-Regime-Filter, Portfolio-Strategien), ist aber noch schlank. L�cken: erweiterte Robustness-Analysen (Monte-Carlo, Stress-Tests), begrenzte Strategie-Varianten (z. B. Regime-Switching, Multi-Timeframe), keine automatische Portfolio-Optimierung aus Sweep-Ergebnissen und eingeschr�nkte Feature-Importance-/Interpretability-Tools.
+Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strategy-Sweeps (Phase 41), Top-N Promotion (Phase 42), Visualisierung (Phase 43) und Walk-Forward-Testing (Phase 44) für Out-of-Sample-Validierung. Der End-to-End-Flow von Sweep-Definition über Top-N-Auswahl bis hin zu Walk-Forward-Reports funktioniert stabil. Die Strategie-Bibliothek umfasst ~13–14 Strategien (MA, RSI, Momentum, MACD, Breakout, Vol-Regime-Filter, Portfolio-Strategien) und ist damit solide, aber noch nicht breit oder regime-adaptiv genug. Mit Phase 44 ist die Robustness-Analyse erstmals praktisch nutzbar (Walk-Forward-Testing), es fehlen aber weiterhin Monte-Carlo- und Stress-Test-Module. Die nächsten Schritte liegen weniger im Aufbau von Infrastruktur, sondern in der Vertiefung der Robustheit und in der Erweiterung des Strategieraums.
 
 ---
 
@@ -40,20 +40,20 @@ Der Strategy-/Research-Track bietet einen vollst�ndigen Workflow: Strategy-Swe
    - Regime-Switching-Varianten (Trend vs. Mean-Reversion basierend auf Vol-Regime)
    - Trend-Following-Varianten (ADX-Filter, Multi-Timeframe-Confirmation)
 
-2. **Walk-Forward-Backtests f�r Top-N-Konfigurationen**
-   - Out-of-Sample-Validierung der Top-35 Konfigurationen
-   - Rolling-Window-Analyse (z. B. 6 Monate Training, 1 Monat Test)
-   - Automatische Generierung von Walk-Forward-Reports
+2. **Walk-Forward-Backtests verbreitern**
+   - Walk-Forward-Engine aus Phase 44 auf weitere Strategien und Sweeps anwenden.
+   - Mehr Märkte/Symbole und mehrere Zeiträume (verschiedene Marktphasen) abdecken.
+   - Kennzahlen aus Walk-Forward-Runs systematisch in die Entscheidungsfindung für Top-N-Strategien einbeziehen.
 
 3. **Zus�tzliche Metriken/Plots im Sweep-Workflow**
-   - Drawdown-Heatmaps (Parameter vs. Max-Drawdown)
-   - 3D-Visualisierungen f�r drei Parameter (z. B. RSI-Period � Oversold � Overbought)
-   - Korrelations-Matrizen zwischen Parametern und Metriken
+   - Drawdown-Heatmaps (Parameter vs. Max-Drawdown).
+   - 3D-Visualisierungen für drei Parameter (z. B. RSI-Period × Oversold × Overbought).
+   - Korrelations-Matrizen zwischen Parametern und Metriken.
 
 4. **CLI-/UX-Verbesserungen f�r Research-Flow**
-   - Unified Command: `peak-trade research sweep --name X --with-plots --promote-topn`
-   - Experiment-Viewer: `peak-trade research view --sweep-name X` (zeigt Top-Kandidaten interaktiv)
-   - Quick-Compare: `peak-trade research compare --sweep-name X --top-n 5` (vergleicht Top-5 visuell)
+   - Unified Command: `peak-trade research sweep --name X --with-plots --promote-topn`.
+   - Experiment-Viewer: `peak-trade research view --sweep-name X` (zeigt Top-Kandidaten interaktiv).
+   - Quick-Compare: `peak-trade research compare --sweep-name X --top-n 5` (vergleicht Top-5 visuell).
 
 ---
 
@@ -105,8 +105,8 @@ Der Strategy-/Research-Track bietet einen vollst�ndigen Workflow: Strategy-Swe
 ### Short-Term (n�chste 12 Sessions)
 
 - [ ] **RSI-Reversion-Varianten-Sweep** mit zus�tzlichen Parametern aufsetzen (z. B. RSI-Period 530, Oversold 1535, Overbought 6585)
-- [ ] **Walk-Forward-Test** f�r Top-3-Konfigurationen einer Strategie implementieren (Rolling-Window: 6 Monate Training, 1 Monat Test)
-- [ ] **Standard-Heatmap-Template** f�r 2 Parameter � 2 Metriken je Strategie definieren (z. B. Sharpe + Drawdown f�r alle Parameter-Kombinationen)
+- [x] **Walk-Forward-Test implementieren** ✅ (Phase 44)  
+      Einfache In-Sample/Out-of-Sample-Validierung für Top-N-Konfigurationen aufbauen. Basis implementiert: Walk-Forward-Engine, Reporting, CLI. Erweiterungen: Parameter-Optimierung auf Train-Daten, erweiterte Metriken.
 - [ ] **Experiment-Registry-View** bauen, um Top-N-Konfigurationen schnell zu finden (`scripts/view_top_candidates.py --sweep-name X`)
 - [ ] **Drawdown-Heatmap** als zus�tzlichen Plot-Typ in `sweep_visualization.py` hinzuf�gen
 - [ ] **Volatility-Strategien-Sweep** aufsetzen (ATR-basiert, Volatility-Breakout mit verschiedenen Lookback-Perioden)
