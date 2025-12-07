@@ -38,6 +38,7 @@ reports/experiments/
 reports/sweeps/images/
 reports/walkforward/
 reports/monte_carlo/
+reports/stress/
 
 # Secrets (KRITISCH!)
 .env
