@@ -480,6 +480,17 @@ Diese Konfigurationen folgen dem Naming-Schema: `<family>_<market>_<profile>`.
 
 Siehe auch: `docs/PHASE_53_STRATEGY_AND_PORTFOLIO_LIBRARY_PUSH.md` (falls vorhanden)
 
+### End-to-End-Prozess zur Portfolio-Aktivierung
+
+Für einen empfohlenen End-to-End-Prozess zur Bewertung und Aktivierung von Portfolio-Recipes siehe [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) (Phase 54).
+
+Dieses Playbook beschreibt:
+- Wie Portfolio-Presets durch die Research-Pipeline v2 geschickt werden
+- Go/No-Go-Kriterien basierend auf Metriken
+- Mapping von Research-Konfigurationen auf Live-/Testnet-Setups
+- Shadow-/Testnet-/Live-Aktivierung mit Checklisten & Runbooks
+- Laufendes Monitoring & Re-Kalibrierung
+
 ---
 
 **Built with ❤️ and reusable configurations**

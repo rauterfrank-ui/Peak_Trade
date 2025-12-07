@@ -190,6 +190,10 @@ Research-Code darf Live-Endpoints **niemals** versehentlich erreichen können.
 **Beispiel:** Research → Shadow (Stufe 0 → 1)
 - Siehe `LIVE_READINESS_CHECKLISTS.md`, Abschnitt "Research → Shadow"
 
+**Portfolio-basierte Promotions:**
+
+Portfolio-Entscheidungen (Research → Testnet/Live) erfolgen entlang des in [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) beschriebenen Ablaufs (Phase 54). Dieses Playbook definiert klare Go/No-Go-Kriterien, Dokumentationsanforderungen und Governance-Freigaben für Portfolio-Promotions.
+
 ### 4.4 Notfall-Entscheidungen
 
 **Bei kritischen Incidents:**

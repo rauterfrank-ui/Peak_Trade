@@ -154,6 +154,8 @@ Ziel:
 * Erweiterte Portfolio-Optimierungs-Ansätze (z.B. Risk-Parity, CVaR-Minimierung, etc.).
 
 > **Reifegrad:** **ca. 90%** – Phase 53 erweitert die Strategy-/Portfolio-Library um klar benannte Presets für unterschiedliche Risk-Profile (conservative/moderate/aggressive) und Multi-Style-Portfolios (Trend + Mean-Reversion). Siehe `PORTFOLIO_RECIPES_AND_PRESETS.md`.
+>
+> **Für den durchgängigen Prozess von Research-Portfolios bis zur Live-/Testnet-Aktivierung siehe:** [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) (Phase 54).
 
 ---
 
@@ -247,11 +249,12 @@ Ziel:
 
 **Offene Themen:**
 
-* Mehr Standard-Workflows dokumentieren („Wie finde ich neue stabile Portfolios in 5 Schritten?").
 * Integration mit externen Tracking-Tools (MLflow, Weights & Biases – nur optional).
 * Mehr Komfortfunktionen (z.B. automatische Best-Config-Snapshots für bestimmte Risk-Profile).
 
 > **Reifegrad:** **ca. 90%** – Research-Track ist auf sehr hohem Niveau, eher Komfort & Library-Ausbau sind offen.
+>
+> **Für den durchgängigen Prozess von Research-Portfolios bis zur Live-/Testnet-Aktivierung siehe:** [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) (Phase 54).
 
 ---
 

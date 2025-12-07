@@ -18,9 +18,9 @@ Stand: 2025-12-07 (nach Phase 50)
 | Run-Logging & Live-Reporting                | 90%      |
 | Live-/Portfolio-Monitoring & Risk Bridge    | 95%      |
 | Live Alerts & Notifications                 | 95%      |
-| Governance, Runbooks & Checklisten          | 90%      |
+| Governance, Runbooks & Checklisten          | 92%      |
 | CLI-Tooling für Live-/Testnet-Operationen   | 95%      |
-| **Gesamt Live-/Testnet-Track**              | **~94%** |
+| **Gesamt Live-/Testnet-Track**              | **~95%** |
 
 Interpretation:
 
@@ -317,6 +317,10 @@ Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~94%** –
 
 * Ergänzungen basierend auf echten Incidents & Learnings.
 * Engere Verknüpfung mit Monitoring-Outputs (Konkrete Aufrufe von CLI-Scripts in Runbooks).
+
+**Portfolio-basierte Promotions:**
+
+Portfolio-basierte Promotions von Research → Testnet/Live folgen dem in [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) beschriebenen Ablauf (Phase 54).
 
 ---
 

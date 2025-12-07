@@ -36,6 +36,21 @@ python scripts/check_live_risk_limits.py
 python scripts/paper_trade_from_orders.py
 ```
 
+## Portfolio Research to Live Playbook
+
+Wenn du mit AI-Assistenz (Claude/Cursor/ChatGPT) neue Portfolios/Presets evaluierst oder Richtung Live bringen willst, nutze [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) als Kontext-Prompt.
+
+Dieses Playbook beschreibt:
+- Den kompletten Weg von Portfolio-Presets in der Research-Welt bis zur Live-/Testnet-Aktivierung
+- Klare Go/No-Go-Kriterien basierend auf Metriken
+- Mapping von Research-Konfigurationen auf Live-/Testnet-Setups
+- Governance & Safety-Anbindung bei jedem Schritt
+
+**Verwendung als AI-Kontext:**
+- Füge das Playbook als Kontext hinzu, wenn du Portfolios evaluieren oder aktivieren willst
+- Der AI-Assistent kennt dann die Gatekeeping-Logik und Governance-Kriterien
+- Alle CLI-Commands und Workflows sind dokumentiert
+
 ## Directory Structure
 
 ```
