@@ -274,32 +274,36 @@ class TestRunPipeline:
 
     @patch("scripts.research_cli.run_sweep_from_args")
     @patch("scripts.research_cli.run_report_from_args")
-    def test_pipeline_runs_sweep_and_report(self, mock_report, mock_sweep):
-        """Pipeline führt Sweep und Report aus."""
+    @patch("scripts.research_cli.run_promote_from_args")
+    def test_pipeline_runs_sweep_and_report(self, mock_promote, mock_report, mock_sweep):
+        """Pipeline führt Sweep, Report und Promote aus."""
         mock_sweep.return_value = 0
         mock_report.return_value = 0
-        
+        mock_promote.return_value = 0
+
         args = argparse.Namespace(
             sweep_name="test",
             config="config/config.toml",
             format="both",
             with_plots=False,
-            top_n=None,
+            top_n=5,
             run_walkforward=False,
-            train_window=None,
-            test_window=None,
-            step_size=None,
-            use_dummy_data=False,
-            dummy_bars=1000,
+            walkforward_train_window=None,
+            walkforward_test_window=None,
+            walkforward_step_size=None,
+            walkforward_use_dummy_data=False,
+            walkforward_dummy_bars=1000,
+            run_montecarlo=False,
+            run_stress_tests=False,
             verbose=False,
         )
-        
+
         exit_code = research_cli.run_pipeline(args)
-        
+
         assert exit_code == 0
         assert mock_sweep.called
         assert mock_report.called
-        assert not mock_sweep.return_value  # 0 = success
+        assert mock_promote.called
 
     @patch("scripts.research_cli.run_sweep_from_args")
     @patch("scripts.research_cli.run_report_from_args")
@@ -317,11 +321,13 @@ class TestRunPipeline:
             with_plots=False,
             top_n=5,
             run_walkforward=False,
-            train_window=None,
-            test_window=None,
-            step_size=None,
-            use_dummy_data=False,
-            dummy_bars=1000,
+            walkforward_train_window=None,
+            walkforward_test_window=None,
+            walkforward_step_size=None,
+            walkforward_use_dummy_data=False,
+            walkforward_dummy_bars=1000,
+            run_montecarlo=False,
+            run_stress_tests=False,
             verbose=False,
         )
         
@@ -348,11 +354,13 @@ class TestRunPipeline:
             with_plots=False,
             top_n=5,
             run_walkforward=True,
-            train_window="90d",
-            test_window="30d",
-            step_size=None,
-            use_dummy_data=True,
-            dummy_bars=1000,
+            walkforward_train_window="90d",
+            walkforward_test_window="30d",
+            walkforward_step_size=None,
+            walkforward_use_dummy_data=True,
+            walkforward_dummy_bars=1000,
+            run_montecarlo=False,
+            run_stress_tests=False,
             verbose=False,
         )
         
@@ -371,13 +379,15 @@ class TestRunPipeline:
             config="config/config.toml",
             format="both",
             with_plots=False,
-            top_n=None,
+            top_n=5,
             run_walkforward=False,
-            train_window=None,
-            test_window=None,
-            step_size=None,
-            use_dummy_data=False,
-            dummy_bars=1000,
+            walkforward_train_window=None,
+            walkforward_test_window=None,
+            walkforward_step_size=None,
+            walkforward_use_dummy_data=False,
+            walkforward_dummy_bars=1000,
+            run_montecarlo=False,
+            run_stress_tests=False,
             verbose=False,
         )
         
@@ -398,13 +408,15 @@ class TestRunPipeline:
             config="config/config.toml",
             format="both",
             with_plots=False,
-            top_n=None,
+            top_n=5,
             run_walkforward=False,
-            train_window=None,
-            test_window=None,
-            step_size=None,
-            use_dummy_data=False,
-            dummy_bars=1000,
+            walkforward_train_window=None,
+            walkforward_test_window=None,
+            walkforward_step_size=None,
+            walkforward_use_dummy_data=False,
+            walkforward_dummy_bars=1000,
+            run_montecarlo=False,
+            run_stress_tests=False,
             verbose=False,
         )
         
@@ -413,4 +425,144 @@ class TestRunPipeline:
         assert exit_code == 1
         assert mock_sweep.called
         assert mock_report.called
+
+    @patch("scripts.research_cli.run_sweep_from_args")
+    @patch("scripts.research_cli.run_report_from_args")
+    @patch("scripts.research_cli.run_promote_from_args")
+    @patch("scripts.research_cli.run_montecarlo_from_args")
+    def test_pipeline_runs_montecarlo_when_flag_set(
+        self, mock_mc, mock_promote, mock_report, mock_sweep
+    ):
+        """Pipeline führt Monte-Carlo aus wenn --run-montecarlo gesetzt ist."""
+        mock_sweep.return_value = 0
+        mock_report.return_value = 0
+        mock_promote.return_value = 0
+        mock_mc.return_value = 0
+
+        args = argparse.Namespace(
+            sweep_name="test",
+            config="config/config.toml",
+            format="both",
+            with_plots=False,
+            top_n=5,
+            run_walkforward=False,
+            walkforward_train_window=None,
+            walkforward_test_window=None,
+            walkforward_step_size=None,
+            walkforward_use_dummy_data=False,
+            walkforward_dummy_bars=1000,
+            run_montecarlo=True,
+            mc_num_runs=500,
+            mc_method="simple",
+            mc_block_size=20,
+            mc_seed=42,
+            mc_use_dummy_data=True,
+            mc_dummy_bars=300,
+            run_stress_tests=False,
+            verbose=False,
+        )
+
+        exit_code = research_cli.run_pipeline(args)
+
+        assert exit_code == 0
+        assert mock_mc.called
+
+    @patch("scripts.research_cli.run_sweep_from_args")
+    @patch("scripts.research_cli.run_report_from_args")
+    @patch("scripts.research_cli.run_promote_from_args")
+    @patch("scripts.research_cli.run_stress_from_args")
+    def test_pipeline_runs_stress_tests_when_flag_set(
+        self, mock_stress, mock_promote, mock_report, mock_sweep
+    ):
+        """Pipeline führt Stress-Tests aus wenn --run-stress-tests gesetzt ist."""
+        mock_sweep.return_value = 0
+        mock_report.return_value = 0
+        mock_promote.return_value = 0
+        mock_stress.return_value = 0
+
+        args = argparse.Namespace(
+            sweep_name="test",
+            config="config/config.toml",
+            format="both",
+            with_plots=False,
+            top_n=5,
+            run_walkforward=False,
+            walkforward_train_window=None,
+            walkforward_test_window=None,
+            walkforward_step_size=None,
+            walkforward_use_dummy_data=False,
+            walkforward_dummy_bars=1000,
+            run_montecarlo=False,
+            run_stress_tests=True,
+            stress_scenarios=["single_crash_bar", "vol_spike"],
+            stress_severity=0.2,
+            stress_window=5,
+            stress_position="middle",
+            stress_seed=42,
+            stress_use_dummy_data=True,
+            stress_dummy_bars=300,
+            verbose=False,
+        )
+
+        exit_code = research_cli.run_pipeline(args)
+
+        assert exit_code == 0
+        assert mock_stress.called
+
+    @patch("scripts.research_cli.run_sweep_from_args")
+    @patch("scripts.research_cli.run_report_from_args")
+    @patch("scripts.research_cli.run_promote_from_args")
+    @patch("scripts.research_cli.run_walkforward_from_args")
+    @patch("scripts.research_cli.run_montecarlo_from_args")
+    @patch("scripts.research_cli.run_stress_from_args")
+    def test_pipeline_runs_all_optional_steps(
+        self, mock_stress, mock_mc, mock_wf, mock_promote, mock_report, mock_sweep
+    ):
+        """Pipeline führt alle optionalen Schritte aus wenn aktiviert."""
+        mock_sweep.return_value = 0
+        mock_report.return_value = 0
+        mock_promote.return_value = 0
+        mock_wf.return_value = 0
+        mock_mc.return_value = 0
+        mock_stress.return_value = 0
+
+        args = argparse.Namespace(
+            sweep_name="test",
+            config="config/config.toml",
+            format="both",
+            with_plots=True,
+            top_n=3,
+            run_walkforward=True,
+            walkforward_train_window="90d",
+            walkforward_test_window="30d",
+            walkforward_step_size=None,
+            walkforward_use_dummy_data=True,
+            walkforward_dummy_bars=1000,
+            run_montecarlo=True,
+            mc_num_runs=100,
+            mc_method="simple",
+            mc_block_size=20,
+            mc_seed=42,
+            mc_use_dummy_data=True,
+            mc_dummy_bars=200,
+            run_stress_tests=True,
+            stress_scenarios=["single_crash_bar"],
+            stress_severity=0.15,
+            stress_window=5,
+            stress_position="middle",
+            stress_seed=42,
+            stress_use_dummy_data=True,
+            stress_dummy_bars=200,
+            verbose=False,
+        )
+
+        exit_code = research_cli.run_pipeline(args)
+
+        assert exit_code == 0
+        assert mock_sweep.called
+        assert mock_report.called
+        assert mock_promote.called
+        assert mock_wf.called
+        assert mock_mc.called
+        assert mock_stress.called
 

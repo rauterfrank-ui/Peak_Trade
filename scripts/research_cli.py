@@ -150,7 +150,7 @@ def build_parser() -> argparse.ArgumentParser:
     # Subparser: pipeline (kombiniert mehrere Schritte)
     pipeline_parser = subparsers.add_parser(
         "pipeline",
-        help="End-to-End-Research-Pipeline (Sweep → Report → Promotion → optional Walk-Forward).",
+        help="End-to-End-Research-Pipeline v2 (Sweep → Report → Promotion → optional Walk-Forward/Monte-Carlo/Stress-Tests).",
     )
     
     # Pipeline-Flags: Kombination aus allen anderen Parsern
@@ -172,7 +172,7 @@ def build_parser() -> argparse.ArgumentParser:
     pipeline_parser.add_argument(
         "--format", "-f",
         type=str,
-        choices=["markdown", "html", "both"],
+        choices=["md", "html", "both"],
         default="both",
         help="Output-Format für Report (default: both)",
     )
@@ -186,8 +186,8 @@ def build_parser() -> argparse.ArgumentParser:
     pipeline_parser.add_argument(
         "--top-n", "-n",
         type=int,
-        default=None,
-        help="Anzahl der Top-Konfigurationen für Promotion (optional, wenn gesetzt → Promotion aktiv)",
+        default=5,
+        help="Anzahl der Top-Konfigurationen für Promotion (default: 5)",
     )
     
     # Walk-Forward-Optionen
@@ -197,31 +197,123 @@ def build_parser() -> argparse.ArgumentParser:
         help="Führt Walk-Forward-Tests aus (nur wenn gesetzt)",
     )
     pipeline_parser.add_argument(
-        "--train-window", "-t",
+        "--walkforward-train-window",
         type=str,
         help="Trainingsfenster-Dauer für Walk-Forward (z.B. 90d, 6M)",
     )
     pipeline_parser.add_argument(
-        "--test-window",
+        "--walkforward-test-window",
         type=str,
         help="Testfenster-Dauer für Walk-Forward (z.B. 30d, 1M)",
     )
     pipeline_parser.add_argument(
-        "--step-size",
+        "--walkforward-step-size",
         type=str,
         default=None,
         help="Schrittgröße zwischen Fenstern (default: test-window)",
     )
     pipeline_parser.add_argument(
-        "--use-dummy-data",
+        "--walkforward-use-dummy-data",
         action="store_true",
         help="Verwende Dummy-Daten für Walk-Forward-Tests",
     )
     pipeline_parser.add_argument(
-        "--dummy-bars",
+        "--walkforward-dummy-bars",
         type=int,
         default=1000,
         help="Anzahl Bars für Dummy-Daten (default: 1000)",
+    )
+    
+    # Monte-Carlo-Optionen
+    pipeline_parser.add_argument(
+        "--run-montecarlo",
+        action="store_true",
+        help="Führt Monte-Carlo-Robustness-Analysen aus (nur wenn gesetzt)",
+    )
+    pipeline_parser.add_argument(
+        "--mc-num-runs",
+        type=int,
+        default=1000,
+        help="Anzahl Monte-Carlo-Runs (default: 1000)",
+    )
+    pipeline_parser.add_argument(
+        "--mc-method",
+        choices=["simple", "block_bootstrap"],
+        default="simple",
+        help="Monte-Carlo-Methode (default: simple)",
+    )
+    pipeline_parser.add_argument(
+        "--mc-block-size",
+        type=int,
+        default=20,
+        help="Blockgröße für Block-Bootstrap (default: 20)",
+    )
+    pipeline_parser.add_argument(
+        "--mc-seed",
+        type=int,
+        default=42,
+        help="Random Seed für Monte-Carlo (default: 42)",
+    )
+    pipeline_parser.add_argument(
+        "--mc-use-dummy-data",
+        action="store_true",
+        help="Verwende Dummy-Daten für Monte-Carlo",
+    )
+    pipeline_parser.add_argument(
+        "--mc-dummy-bars",
+        type=int,
+        default=500,
+        help="Anzahl Bars für Monte-Carlo-Dummy-Daten (default: 500)",
+    )
+    
+    # Stress-Tests-Optionen
+    pipeline_parser.add_argument(
+        "--run-stress-tests",
+        action="store_true",
+        help="Führt Stress-Tests aus (nur wenn gesetzt)",
+    )
+    pipeline_parser.add_argument(
+        "--stress-scenarios",
+        nargs="+",
+        default=["single_crash_bar", "vol_spike"],
+        choices=["single_crash_bar", "vol_spike", "drawdown_extension", "gap_down_open"],
+        help="Liste von Stress-Szenario-Typen (default: single_crash_bar vol_spike)",
+    )
+    pipeline_parser.add_argument(
+        "--stress-severity",
+        type=float,
+        default=0.2,
+        help="Basis-Severity für Stress-Szenarien (default: 0.2 = 20%%)",
+    )
+    pipeline_parser.add_argument(
+        "--stress-window",
+        type=int,
+        default=5,
+        help="Fenster-Größe für vol_spike / drawdown_extension (default: 5)",
+    )
+    pipeline_parser.add_argument(
+        "--stress-position",
+        type=str,
+        choices=["start", "middle", "end"],
+        default="middle",
+        help="Position des Stress-Shocks (default: middle)",
+    )
+    pipeline_parser.add_argument(
+        "--stress-seed",
+        type=int,
+        default=42,
+        help="Random Seed für Stress-Tests (default: 42)",
+    )
+    pipeline_parser.add_argument(
+        "--stress-use-dummy-data",
+        action="store_true",
+        help="Verwende Dummy-Daten für Stress-Tests",
+    )
+    pipeline_parser.add_argument(
+        "--stress-dummy-bars",
+        type=int,
+        default=500,
+        help="Anzahl Bars für Stress-Test-Dummy-Daten (default: 500)",
     )
     
     # Weitere Optionen
@@ -234,25 +326,14 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def run_pipeline(args: argparse.Namespace) -> int:
-    """Führt eine End-to-End-Research-Pipeline aus.
-    
-    Args:
-        args: Parsed command-line arguments für Pipeline
-        
-    Returns:
-        Exit code (0 = success, 1 = error)
-    """
-    import logging
-    logger = logging.getLogger(__name__)
-    
-    # 1. Sweep
-    logger.info("=" * 70)
-    logger.info("Step 1/4: Strategy-Sweep ausführen")
-    logger.info("=" * 70)
-    
-    # Erstelle args für Sweep
-    sweep_args = argparse.Namespace(
+# =============================================================================
+# PIPELINE HELPER FUNCTIONS
+# =============================================================================
+
+
+def _build_sweep_args_from_pipeline_args(args: argparse.Namespace) -> argparse.Namespace:
+    """Baut Sweep-Args aus Pipeline-Args."""
+    return argparse.Namespace(
         sweep_name=args.sweep_name,
         strategy=None,
         granularity="medium",
@@ -273,21 +354,13 @@ def run_pipeline(args: argparse.Namespace) -> int:
         show_catalog=False,
         show_params=False,
         config=args.config,
-        verbose=args.verbose,
+        verbose=getattr(args, "verbose", False),
     )
-    
-    sweep_exit = run_sweep_from_args(sweep_args)
-    if sweep_exit != 0:
-        logger.error("Sweep fehlgeschlagen, Pipeline abgebrochen")
-        return sweep_exit
-    
-    # 2. Report
-    logger.info("=" * 70)
-    logger.info("Step 2/4: Sweep-Report generieren")
-    logger.info("=" * 70)
-    
-    # Erstelle args für Report
-    report_args = argparse.Namespace(
+
+
+def _build_report_args_from_pipeline_args(args: argparse.Namespace) -> argparse.Namespace:
+    """Baut Report-Args aus Pipeline-Args."""
+    return argparse.Namespace(
         sweep_name=args.sweep_name,
         input=None,
         format=args.format,
@@ -295,75 +368,200 @@ def run_pipeline(args: argparse.Namespace) -> int:
         sort_metric="metric_sharpe_ratio",
         top_n=20,
         heatmap_params=None,
-        with_plots=args.with_plots,
+        with_plots=getattr(args, "with_plots", False),
         plot_metric="metric_sharpe_ratio",
-        verbose=args.verbose,
+        verbose=getattr(args, "verbose", False),
     )
+
+
+def _build_promote_args_from_pipeline_args(args: argparse.Namespace) -> argparse.Namespace:
+    """Baut Promote-Args aus Pipeline-Args."""
+    return argparse.Namespace(
+        sweep_name=args.sweep_name,
+        metric="metric_sharpe_ratio",
+        fallback_metric="metric_total_return",
+        top_n=args.top_n,
+        output="reports/sweeps",
+        experiments_dir="reports/experiments",
+        verbose=getattr(args, "verbose", False),
+    )
+
+
+def _build_walkforward_args_from_pipeline_args(args: argparse.Namespace) -> argparse.Namespace:
+    """Baut Walk-Forward-Args aus Pipeline-Args."""
+    return argparse.Namespace(
+        sweep_name=args.sweep_name,
+        top_n=args.top_n,
+        train_window=getattr(args, "walkforward_train_window", None),
+        test_window=getattr(args, "walkforward_test_window", None),
+        step_size=getattr(args, "walkforward_step_size", None),
+        data_file=None,
+        use_dummy_data=getattr(args, "walkforward_use_dummy_data", False),
+        dummy_bars=getattr(args, "walkforward_dummy_bars", 1000),
+        start_date=None,
+        end_date=None,
+        symbol="BTC/EUR",
+        metric_primary="metric_sharpe_ratio",
+        metric_fallback="metric_total_return",
+        output_dir="reports/walkforward",
+        verbose=getattr(args, "verbose", False),
+    )
+
+
+def _build_montecarlo_args_from_pipeline_args(args: argparse.Namespace) -> argparse.Namespace:
+    """Baut Monte-Carlo-Args aus Pipeline-Args."""
+    return argparse.Namespace(
+        sweep_name=args.sweep_name,
+        config=args.config,
+        top_n=args.top_n,
+        num_runs=getattr(args, "mc_num_runs", 1000),
+        method=getattr(args, "mc_method", "simple"),
+        block_size=getattr(args, "mc_block_size", 20),
+        seed=getattr(args, "mc_seed", 42),
+        output_dir=None,
+        format="both",
+        use_dummy_data=getattr(args, "mc_use_dummy_data", False),
+        dummy_bars=getattr(args, "mc_dummy_bars", 500),
+        verbose=getattr(args, "verbose", False),
+    )
+
+
+def _build_stress_args_from_pipeline_args(args: argparse.Namespace) -> argparse.Namespace:
+    """Baut Stress-Test-Args aus Pipeline-Args."""
+    return argparse.Namespace(
+        sweep_name=args.sweep_name,
+        config=args.config,
+        top_n=args.top_n,
+        scenarios=getattr(args, "stress_scenarios", ["single_crash_bar", "vol_spike"]),
+        severity=getattr(args, "stress_severity", 0.2),
+        window=getattr(args, "stress_window", 5),
+        position=getattr(args, "stress_position", "middle"),
+        output_dir=None,
+        format="both",
+        seed=getattr(args, "stress_seed", 42),
+        use_dummy_data=getattr(args, "stress_use_dummy_data", False),
+        dummy_bars=getattr(args, "stress_dummy_bars", 500),
+        verbose=getattr(args, "verbose", False),
+    )
+
+
+# =============================================================================
+# PIPELINE EXECUTION
+# =============================================================================
+
+
+def run_pipeline(args: argparse.Namespace) -> int:
+    """Führt eine End-to-End-Research-Pipeline aus (v2).
     
+    Pipeline-Steps:
+    1. Sweep
+    2. Report + Plots
+    3. Top-N Promotion
+    4. Optional: Walk-Forward
+    5. Optional: Monte-Carlo
+    6. Optional: Stress-Tests
+    
+    Args:
+        args: Parsed command-line arguments für Pipeline
+        
+    Returns:
+        Exit code (0 = success, 1 = error)
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    # Bestimme Anzahl Steps für Logging
+    num_steps = 3  # Sweep, Report, Promote
+    if getattr(args, "run_walkforward", False):
+        num_steps += 1
+    if getattr(args, "run_montecarlo", False):
+        num_steps += 1
+    if getattr(args, "run_stress_tests", False):
+        num_steps += 1
+    
+    step_counter = 0
+    
+    # 1. Sweep
+    step_counter += 1
+    logger.info("=" * 70)
+    logger.info(f"Step {step_counter}/{num_steps}: Strategy-Sweep ausführen")
+    logger.info("=" * 70)
+    
+    sweep_args = _build_sweep_args_from_pipeline_args(args)
+    sweep_exit = run_sweep_from_args(sweep_args)
+    if sweep_exit != 0:
+        logger.error("[pipeline] Sweep fehlgeschlagen, Pipeline abgebrochen")
+        return sweep_exit
+    
+    # 2. Report
+    step_counter += 1
+    logger.info("=" * 70)
+    logger.info(f"Step {step_counter}/{num_steps}: Sweep-Report generieren")
+    logger.info("=" * 70)
+    
+    report_args = _build_report_args_from_pipeline_args(args)
     report_exit = run_report_from_args(report_args)
     if report_exit != 0:
-        logger.error("Report-Generierung fehlgeschlagen, Pipeline abgebrochen")
+        logger.error("[pipeline] Report-Generierung fehlgeschlagen, Pipeline abgebrochen")
         return report_exit
     
-    # 3. Promotion (nur wenn args.top_n gesetzt)
-    if getattr(args, "top_n", None) is not None:
-        logger.info("=" * 70)
-        logger.info(f"Step 3/4: Top-{args.top_n} Promotion")
-        logger.info("=" * 70)
-        
-        # Erstelle args für Promotion
-        promote_args = argparse.Namespace(
-            sweep_name=args.sweep_name,
-            metric="metric_sharpe_ratio",
-            fallback_metric="metric_total_return",
-            top_n=args.top_n,
-            output="reports/sweeps",
-            experiments_dir="reports/experiments",
-            verbose=args.verbose,
-        )
-        
-        promote_exit = run_promote_from_args(promote_args)
-        if promote_exit != 0:
-            logger.error("Promotion fehlgeschlagen, Pipeline abgebrochen")
-            return promote_exit
-    else:
-        logger.info("Step 3/4: Promotion übersprungen (--top-n nicht gesetzt)")
+    # 3. Promotion
+    step_counter += 1
+    logger.info("=" * 70)
+    logger.info(f"Step {step_counter}/{num_steps}: Top-{args.top_n} Promotion")
+    logger.info("=" * 70)
     
-    # 4. Walk-Forward (nur wenn args.run_walkforward True)
+    promote_args = _build_promote_args_from_pipeline_args(args)
+    promote_exit = run_promote_from_args(promote_args)
+    if promote_exit != 0:
+        logger.error("[pipeline] Promotion fehlgeschlagen, Pipeline abgebrochen")
+        return promote_exit
+    
+    # 4. Walk-Forward (optional)
     if getattr(args, "run_walkforward", False):
+        step_counter += 1
         logger.info("=" * 70)
-        logger.info("Step 4/4: Walk-Forward-Testing")
+        logger.info(f"Step {step_counter}/{num_steps}: Walk-Forward-Testing")
         logger.info("=" * 70)
         
-        if not args.train_window or not args.test_window:
-            logger.error("--train-window und --test-window müssen für Walk-Forward gesetzt sein")
+        train_window = getattr(args, "walkforward_train_window", None)
+        test_window = getattr(args, "walkforward_test_window", None)
+        
+        if not train_window or not test_window:
+            logger.error("[pipeline] --walkforward-train-window und --walkforward-test-window müssen für Walk-Forward gesetzt sein")
             return 1
         
-        # Erstelle args für Walk-Forward
-        walkforward_args = argparse.Namespace(
-            sweep_name=args.sweep_name,
-            top_n=getattr(args, "top_n", 3),
-            train_window=args.train_window,
-            test_window=args.test_window,
-            step_size=args.step_size,
-            data_file=None,
-            use_dummy_data=args.use_dummy_data,
-            dummy_bars=args.dummy_bars,
-            start_date=None,
-            end_date=None,
-            symbol="BTC/EUR",
-            metric_primary="metric_sharpe_ratio",
-            metric_fallback="metric_total_return",
-            output_dir="reports/walkforward",
-            verbose=args.verbose,
-        )
-        
+        walkforward_args = _build_walkforward_args_from_pipeline_args(args)
         wf_exit = run_walkforward_from_args(walkforward_args)
         if wf_exit != 0:
-            logger.error("Walk-Forward-Testing fehlgeschlagen")
+            logger.error("[pipeline] Walk-Forward-Testing fehlgeschlagen, Pipeline abgebrochen")
             return wf_exit
-    else:
-        logger.info("Step 4/4: Walk-Forward-Testing übersprungen (--run-walkforward nicht gesetzt)")
+    
+    # 5. Monte-Carlo (optional)
+    if getattr(args, "run_montecarlo", False):
+        step_counter += 1
+        logger.info("=" * 70)
+        logger.info(f"Step {step_counter}/{num_steps}: Monte-Carlo-Robustness")
+        logger.info("=" * 70)
+        
+        montecarlo_args = _build_montecarlo_args_from_pipeline_args(args)
+        mc_exit = run_montecarlo_from_args(montecarlo_args)
+        if mc_exit != 0:
+            logger.error("[pipeline] Monte-Carlo-Robustness fehlgeschlagen, Pipeline abgebrochen")
+            return mc_exit
+    
+    # 6. Stress-Tests (optional)
+    if getattr(args, "run_stress_tests", False):
+        step_counter += 1
+        logger.info("=" * 70)
+        logger.info(f"Step {step_counter}/{num_steps}: Stress-Tests")
+        logger.info("=" * 70)
+        
+        stress_args = _build_stress_args_from_pipeline_args(args)
+        stress_exit = run_stress_from_args(stress_args)
+        if stress_exit != 0:
+            logger.error("[pipeline] Stress-Tests fehlgeschlagen, Pipeline abgebrochen")
+            return stress_exit
     
     logger.info("=" * 70)
     logger.info("✅ Pipeline erfolgreich abgeschlossen")
