@@ -48,6 +48,7 @@ class TestBuildParser:
         assert "walkforward" in subparsers_action.choices
         assert "montecarlo" in subparsers_action.choices
         assert "stress" in subparsers_action.choices
+        assert "portfolio" in subparsers_action.choices
         assert "pipeline" in subparsers_action.choices
 
     def test_sweep_subparser_has_required_args(self):
@@ -242,6 +243,25 @@ class TestMain:
         assert mock_run_stress.called
         call_args = mock_run_stress.call_args[0][0]
         assert call_args.command == "stress"
+        assert call_args.sweep_name == "dummy"
+
+    @patch("scripts.research_cli.run_portfolio_robustness_from_args")
+    def test_main_portfolio_calls_portfolio_runner(self, mock_run_portfolio):
+        """Portfolio-Command ruft run_portfolio_robustness_from_args auf."""
+        mock_run_portfolio.return_value = 0
+        
+        exit_code = research_cli.main([
+            "portfolio",
+            "--sweep-name", "dummy",
+            "--config", "config/config.toml",
+            "--top-n", "3",
+            "--portfolio-name", "test_portfolio",
+        ])
+        
+        assert exit_code == 0
+        assert mock_run_portfolio.called
+        call_args = mock_run_portfolio.call_args[0][0]
+        assert call_args.command == "portfolio"
         assert call_args.sweep_name == "dummy"
 
     @patch("scripts.research_cli.run_pipeline")

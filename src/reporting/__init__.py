@@ -97,6 +97,11 @@ from .stress_test_report import (
     build_stress_test_report,
 )
 
+# Phase 47: Portfolio-Robustness Reports
+from .portfolio_robustness_report import (
+    build_portfolio_robustness_report,
+)
+
 __all__ = [
     # Execution Reports (Phase 16D)
     "ExecutionStats",
@@ -156,4 +161,6 @@ __all__ = [
     "build_monte_carlo_report",
     # Phase 46: Stress-Test Reports
     "build_stress_test_report",
+    # Phase 47: Portfolio-Robustness Reports
+    "build_portfolio_robustness_report",
 ]

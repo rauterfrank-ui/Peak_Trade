@@ -10,6 +10,7 @@ Gebündelte CLI für den gesamten Research-Workflow:
 - Walk-Forward-Testing (Phase 44)
 - Monte-Carlo-Robustness (Phase 45)
 - Stress-Tests & Crash-Szenarien (Phase 46)
+- Portfolio-Level Robustness (Phase 47)
 
 Verwendung:
     # Strategy-Sweep ausführen
@@ -29,6 +30,9 @@ Verwendung:
 
     # Stress-Tests
     python scripts/research_cli.py stress --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --scenarios single_crash_bar vol_spike
+
+    # Portfolio-Level Robustness
+    python scripts/research_cli.py portfolio --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --portfolio-name rsi_portfolio_v1 --run-montecarlo --run-stress-tests
 
     # End-to-End-Pipeline
     python scripts/research_cli.py pipeline \\
@@ -71,6 +75,7 @@ _promote_module = _import_module_from_path("promote_sweep_topn", project_root / 
 _walkforward_module = _import_module_from_path("run_walkforward_backtest", project_root / "scripts" / "run_walkforward_backtest.py")
 _montecarlo_module = _import_module_from_path("run_monte_carlo_robustness", project_root / "scripts" / "run_monte_carlo_robustness.py")
 _stress_module = _import_module_from_path("run_stress_tests", project_root / "scripts" / "run_stress_tests.py")
+_portfolio_module = _import_module_from_path("run_portfolio_robustness", project_root / "scripts" / "run_portfolio_robustness.py")
 
 # Extrahiere die Funktionen
 run_sweep_from_args = _sweep_module.run_from_args
@@ -85,6 +90,8 @@ run_montecarlo_from_args = _montecarlo_module.run_from_args
 build_montecarlo_parser = _montecarlo_module.build_parser
 run_stress_from_args = _stress_module.run_from_args
 build_stress_parser = _stress_module.build_parser
+run_portfolio_robustness_from_args = _portfolio_module.run_from_args
+build_portfolio_robustness_parser = _portfolio_module.build_parser
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -144,6 +151,14 @@ def build_parser() -> argparse.ArgumentParser:
         "stress",
         help="Stress-Tests (Crash-Szenarien) für Top-N-Konfigurationen (Phase 46).",
         parents=[build_stress_parser()],
+        add_help=False,
+    )
+
+    # Subparser: portfolio
+    portfolio_parser = subparsers.add_parser(
+        "portfolio",
+        help="Portfolio-Level Robustness (Monte-Carlo & Stress-Tests) für Top-N Strategien (Phase 47).",
+        parents=[build_portfolio_robustness_parser()],
         add_help=False,
     )
 
@@ -591,6 +606,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return run_montecarlo_from_args(args)
     elif args.command == "stress":
         return run_stress_from_args(args)
+    elif args.command == "portfolio":
+        return run_portfolio_robustness_from_args(args)
     elif args.command == "pipeline":
         return run_pipeline(args)
     else:
