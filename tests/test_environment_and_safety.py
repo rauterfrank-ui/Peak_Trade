@@ -146,15 +146,43 @@ class TestEnvironmentConfig:
         assert config.allows_real_orders is False
 
     def test_live_with_correct_token(self):
-        """Live mit korrektem Token würde erlauben."""
-        # In Phase 17 ist dies aber durch SafetyGuard blockiert
+        """Live mit korrektem Token und allen Gates würde erlauben."""
+        # Phase 71: Alle Gates müssen explizit gesetzt werden
         config = EnvironmentConfig(
             environment=TradingEnvironment.LIVE,
             enable_live_trading=True,
             require_confirm_token=True,
             confirm_token=LIVE_CONFIRM_TOKEN,
+            live_mode_armed=True,  # Gate 2 muss explizit aktiviert sein
+            live_dry_run_mode=False,  # Dry-Run muss deaktiviert sein
         )
         assert config.allows_real_orders is True
+
+    def test_live_blocked_by_dry_run_mode(self):
+        """Live mit live_dry_run_mode=True blockiert echte Orders."""
+        # Phase 71: Default-Verhalten - Live ist im Dry-Run-Modus
+        config = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            enable_live_trading=True,
+            require_confirm_token=True,
+            confirm_token=LIVE_CONFIRM_TOKEN,
+            live_mode_armed=True,
+            live_dry_run_mode=True,  # Phase 71 Default - blockiert echte Orders
+        )
+        assert config.allows_real_orders is False
+
+    def test_live_blocked_by_armed_flag(self):
+        """Live mit live_mode_armed=False blockiert echte Orders."""
+        # Phase 71: Gate 2 muss explizit aktiviert sein
+        config = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            enable_live_trading=True,
+            require_confirm_token=True,
+            confirm_token=LIVE_CONFIRM_TOKEN,
+            live_mode_armed=False,  # Gate 2 blockiert
+            live_dry_run_mode=False,
+        )
+        assert config.allows_real_orders is False
 
     def test_validate_confirm_token(self):
         """Confirm-Token-Validierung funktioniert."""
@@ -291,29 +319,51 @@ class TestSafetyGuard:
 
     def test_live_mode_wrong_token_blocks(self):
         """Live-Modus mit falschem Token blockt."""
+        # Phase 71: Alle Gates müssen aktiv sein, damit Token-Check erreicht wird
         config = EnvironmentConfig(
             environment=TradingEnvironment.LIVE,
             enable_live_trading=True,
             require_confirm_token=True,
             confirm_token="wrong_token",
+            live_mode_armed=True,  # Gate 2 aktiv, damit Token-Check erreicht wird
+            live_dry_run_mode=False,  # Dry-Run deaktiviert
         )
         guard = SafetyGuard(env_config=config)
 
         with pytest.raises(ConfirmTokenInvalidError):
             guard.ensure_may_place_order()
 
-    def test_live_mode_correct_token_still_blocked_in_phase17(self):
-        """Live mit korrektem Token ist in Phase 17 trotzdem blockiert."""
+    def test_live_mode_correct_token_still_blocked_in_phase71(self):
+        """Live mit korrektem Token ist in Phase 71 blockiert (not implemented)."""
+        # Phase 71: Alle Gates aktiv, aber LiveNotImplementedError am Ende
         config = EnvironmentConfig(
             environment=TradingEnvironment.LIVE,
             enable_live_trading=True,
             require_confirm_token=True,
             confirm_token=LIVE_CONFIRM_TOKEN,
+            live_mode_armed=True,  # Gate 2 aktiv
+            live_dry_run_mode=False,  # Dry-Run deaktiviert
         )
         guard = SafetyGuard(env_config=config)
 
         # LiveNotImplementedError weil Live-Trading nicht implementiert
         with pytest.raises(LiveNotImplementedError):
+            guard.ensure_may_place_order()
+
+    def test_live_mode_blocked_by_armed_flag(self):
+        """Live-Modus mit live_mode_armed=False blockt."""
+        # Phase 71: Gate 2 blockiert bevor Token-Check
+        config = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            enable_live_trading=True,
+            require_confirm_token=True,
+            confirm_token=LIVE_CONFIRM_TOKEN,
+            live_mode_armed=False,  # Gate 2 blockiert
+            live_dry_run_mode=False,
+        )
+        guard = SafetyGuard(env_config=config)
+
+        with pytest.raises(LiveTradingDisabledError):
             guard.ensure_may_place_order()
 
     def test_ensure_not_live_in_paper(self):
@@ -372,10 +422,20 @@ class TestSafetyGuard:
         )
         assert testnet_guard.get_effective_mode() == "dry_run"
 
+        # Phase 71: Live mit Default live_dry_run_mode=True gibt "live_dry_run"
         live_guard = SafetyGuard(
             env_config=EnvironmentConfig(environment=TradingEnvironment.LIVE)
         )
-        assert live_guard.get_effective_mode() == "blocked"
+        assert live_guard.get_effective_mode() == "live_dry_run"
+
+        # Live mit live_dry_run_mode=False gibt "blocked"
+        live_guard_blocked = SafetyGuard(
+            env_config=EnvironmentConfig(
+                environment=TradingEnvironment.LIVE,
+                live_dry_run_mode=False,
+            )
+        )
+        assert live_guard_blocked.get_effective_mode() == "blocked"
 
     def test_audit_log_is_populated(self):
         """Audit-Log wird bei Checks befüllt."""
@@ -536,19 +596,24 @@ class TestTestnetOrderExecutor:
 
 
 class TestLiveOrderExecutor:
-    """Tests für LiveOrderExecutor (Stub)."""
+    """Tests für LiveOrderExecutor (Phase 71: Dry-Run)."""
 
     @pytest.fixture
     def live_executor(self):
-        """Erstellt einen Live-Executor für Tests."""
-        # Auch mit "korrektem" Setup sollte es blockiert sein
+        """Erstellt einen Live-Executor für Tests (Dry-Run Mode)."""
+        # Phase 71: LiveOrderExecutor macht Dry-Run statt zu werfen
         config = EnvironmentConfig(
             environment=TradingEnvironment.LIVE,
             enable_live_trading=True,
             confirm_token=LIVE_CONFIRM_TOKEN,
+            live_dry_run_mode=True,  # Phase 71 Default
         )
         guard = SafetyGuard(env_config=config)
-        return LiveOrderExecutor(safety_guard=guard)
+        return LiveOrderExecutor(
+            safety_guard=guard,
+            simulated_prices={"BTC/EUR": 50000.0},
+            dry_run_mode=True,  # Phase 71: Immer Dry-Run
+        )
 
     @pytest.fixture
     def sample_order(self):
@@ -559,24 +624,26 @@ class TestLiveOrderExecutor:
             quantity=0.1,
         )
 
-    def test_live_executor_always_raises(self, live_executor, sample_order):
-        """LiveOrderExecutor wirft immer Exception."""
-        with pytest.raises(LiveNotImplementedError):
-            live_executor.execute_order(sample_order)
+    def test_live_executor_dry_run_mode(self, live_executor, sample_order):
+        """LiveOrderExecutor im Dry-Run-Modus führt simuliert aus."""
+        # Phase 71: Dry-Run statt Exception
+        result = live_executor.execute_order(sample_order)
+        
+        assert result.status == "filled"
+        assert result.metadata["dry_run"] is True
+        assert result.metadata["mode"] == "live_dry_run"
 
-    def test_live_executor_multiple_orders_raises(self, live_executor):
-        """execute_orders() wirft ebenfalls Exception."""
+    def test_live_executor_multiple_orders_dry_run(self, live_executor):
+        """execute_orders() führt mehrere Orders im Dry-Run aus."""
         orders = [OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.1)]
-        with pytest.raises(LiveNotImplementedError):
-            live_executor.execute_orders(orders)
+        results = live_executor.execute_orders(orders)
+        
+        assert len(results) == 1
+        assert results[0].metadata["dry_run"] is True
 
     def test_execution_count_tracked(self, live_executor, sample_order):
-        """Auch blockierte Versuche werden gezählt."""
-        try:
-            live_executor.execute_order(sample_order)
-        except LiveNotImplementedError:
-            pass
-
+        """Execution-Count wird korrekt gezählt."""
+        live_executor.execute_order(sample_order)
         assert live_executor.get_execution_count() == 1
 
 
@@ -621,16 +688,34 @@ class TestExchangeOrderExecutor:
         assert result.metadata["mode"] == EXECUTION_MODE_TESTNET_DRY_RUN
 
     def test_live_mode_blocked(self, sample_order):
-        """Live-Modus ist blockiert."""
+        """Live-Modus mit allen Gates ist blockiert (not implemented)."""
+        # Phase 71: Alle Gates aktiv, aber LiveNotImplementedError am Ende
         config = EnvironmentConfig(
             environment=TradingEnvironment.LIVE,
             enable_live_trading=True,
             confirm_token=LIVE_CONFIRM_TOKEN,
+            live_mode_armed=True,  # Gate 2 aktiv
+            live_dry_run_mode=False,  # Dry-Run deaktiviert
         )
         guard = SafetyGuard(env_config=config)
         executor = ExchangeOrderExecutor(safety_guard=guard)
 
         with pytest.raises(LiveNotImplementedError):
+            executor.execute_order(sample_order)
+
+    def test_live_mode_blocked_by_armed_flag(self, sample_order):
+        """Live-Modus mit live_mode_armed=False blockiert."""
+        # Phase 71: Gate 2 blockiert
+        config = EnvironmentConfig(
+            environment=TradingEnvironment.LIVE,
+            enable_live_trading=True,
+            confirm_token=LIVE_CONFIRM_TOKEN,
+            live_mode_armed=False,  # Gate 2 blockiert
+        )
+        guard = SafetyGuard(env_config=config)
+        executor = ExchangeOrderExecutor(safety_guard=guard)
+
+        with pytest.raises(LiveTradingDisabledError):
             executor.execute_order(sample_order)
 
 
