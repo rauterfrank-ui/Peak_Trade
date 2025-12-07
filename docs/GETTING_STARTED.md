@@ -258,6 +258,12 @@ Der Report enthält vier Hauptsektionen:
 - **Projekt-Status**  
   [`docs/PEAK_TRADE_STATUS_OVERVIEW.md`](PEAK_TRADE_STATUS_OVERVIEW.md)
 
+### 6.6 Reference Scenario (empfohlen nach der ersten Stunde)
+
+- **Reference Scenario `multi_style_moderate`**  
+  Ein vollständiger Golden Path vom Research über Portfolio-Robustheit bis zum Live-/Testnet-Status und einem Incident-Drill findest du in  
+  [`docs/REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md`](REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md).
+
 ---
 
 ## 7. Häufige Fragen

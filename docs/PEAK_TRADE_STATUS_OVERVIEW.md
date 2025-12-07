@@ -598,7 +598,17 @@ Basierend auf dem aktuellen Stand (≈ 91% Gesamt-Reifegrad) bieten sich folgend
 
 ---
 
-## 13. Änderungshistorie dieses Dokuments
+## 13. Reference Scenario
+
+Für einen vollständigen, praxisnahen Durchlauf (Research → Portfolio-Robustheit → Playbook → Shadow/Testnet → Status-Report → Incident-Drill) siehe:
+
+- [`docs/REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md`](REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md)
+
+Dieses Scenario demonstriert den **aktuellen v1.0-Stack** am konkreten Beispiel des Portfolio-Presets `multi_style_moderate` und bietet einen durchinszenierten Golden Path von A–Z.
+
+---
+
+## 14. Änderungshistorie dieses Dokuments
 
 | Datum      | Commit    | Änderung                                                        |
 |------------|-----------|-----------------------------------------------------------------|
@@ -610,8 +620,7 @@ Basierend auf dem aktuellen Stand (≈ 91% Gesamt-Reifegrad) bieten sich folgend
 | 2025-12-07 | (aktuell) | Phase 53 – Strategy & Portfolio Library Push                    |
 | 2025-12-07 | (aktuell) | Phase 54 – Research → Live Portfolios Playbook                  |
 | 2025-12-07 | (aktuell) | Phase 55 – Clean-Up & Polishing (Docs, Status, CLI-Cheatsheet) |
-| 2025-12-07 | (aktuell) | Phase 54 – Research → Live Portfolios Playbook                  |
-| 2025-12-07 | (aktuell) | Phase 55 – Clean-Up & Polishing (Docs, Status, CLI-Cheatsheet) |
+| 2025-12-07 | (aktuell) | Phase 60 – Reference Scenario `multi_style_moderate`             |
 
 ---
 
