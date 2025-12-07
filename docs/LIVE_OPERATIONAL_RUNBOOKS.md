@@ -1217,6 +1217,130 @@ Das Alerting-System arbeitet nahtlos mit Monitoring und Orchestrator zusammen:
 
 ---
 
+## 10d. Live Web Dashboard v0 (Phase 67)
+
+### 10d.1 Übersicht
+
+Das **Live Web Dashboard v0** bietet ein einfaches, read-only Web-Interface für das Monitoring von Shadow-/Testnet-Runs.
+
+**Features:**
+- REST-API für Run-Listen, Snapshots, Events, Alerts
+- HTML-Dashboard mit Auto-Refresh
+- Read-only (keine Order-Erzeugung, kein Start/Stop)
+
+**WICHTIG:**
+- Dashboard ist **nur** für Shadow-/Testnet-Monitoring gedacht
+- Orchestrierung (Start/Stop) bleibt in CLI-Skripten (`testnet_orchestrator_cli.py`)
+- Alerts laufen separat über `live_alerts_cli.py` oder Scheduler
+
+### 10d.2 Start
+
+**Option 1: Mit Script (empfohlen)**
+```bash
+python scripts/live_web_server.py
+```
+
+**Option 2: Mit uvicorn direkt**
+```bash
+uvicorn src.live.web.app:app --host 127.0.0.1 --port 8000 --reload
+```
+
+**Option 3: Mit Custom-Parametern**
+```bash
+python scripts/live_web_server.py \
+  --host 0.0.0.0 \
+  --port 9000 \
+  --base-runs-dir /path/to/live_runs \
+  --auto-refresh-seconds 10
+```
+
+### 10d.3 Wichtige URLs
+
+Nach dem Start sind folgende URLs verfügbar:
+
+- **Dashboard:** `http://localhost:8000/` oder `http://localhost:8000/dashboard`
+- **Health-Check:** `http://localhost:8000/health`
+- **Runs-Liste (JSON):** `http://localhost:8000/runs`
+- **Run-Snapshot (JSON):** `http://localhost:8000/runs/{run_id}/snapshot`
+- **Run-Events (JSON):** `http://localhost:8000/runs/{run_id}/tail?limit=100`
+- **Run-Alerts (JSON):** `http://localhost:8000/runs/{run_id}/alerts?limit=20`
+
+### 10d.4 API-Endpunkte
+
+**GET /health**
+- Response: `{"status": "ok"}`
+- HTTP 200
+
+**GET /runs**
+- Listet alle verfügbaren Runs
+- Response: Liste von Run-Metadaten (run_id, mode, strategy_name, symbol, timeframe, ...)
+
+**GET /runs/{run_id}/snapshot**
+- Lädt Snapshot eines Runs mit aggregierten Metriken
+- Response: Run-Snapshot (total_steps, total_orders, total_blocked_orders, equity, realized_pnl, unrealized_pnl, ...)
+- HTTP 404 wenn Run nicht gefunden
+
+**GET /runs/{run_id}/tail?limit=100**
+- Lädt die letzten Events eines Runs
+- Query-Parameter: `limit` (1-500, default: 50)
+- Response: Liste von Events (ts_bar, equity, realized_pnl, unrealized_pnl, position_size, orders_count, risk_allowed, risk_reasons, ...)
+- HTTP 404 wenn Run nicht gefunden
+
+**GET /runs/{run_id}/alerts?limit=20**
+- Lädt Alerts eines Runs aus `alerts.jsonl`
+- Query-Parameter: `limit` (1-100, default: 20)
+- Response: Liste von Alerts (rule_id, severity, message, run_id, timestamp)
+- HTTP 404 wenn Run nicht gefunden
+
+### 10d.5 Dashboard-Features
+
+Das HTML-Dashboard bietet:
+
+- **Run-Liste:** Übersicht aller verfügbaren Runs (links)
+- **Run-Details:** Detaillierte Ansicht des ausgewählten Runs (rechts)
+  - Metriken: Equity, Realized PnL, Position, Steps, Orders, Blocked Orders
+  - Recent Alerts: Letzte Alerts mit Severity
+  - Recent Events: Tabelle der letzten Events
+- **Auto-Refresh:** Automatisches Neuladen alle 5 Sekunden (konfigurierbar)
+
+### 10d.6 Integration
+
+**Mit Testnet-Orchestrator:**
+```bash
+# Terminal 1: Orchestrator starten
+python scripts/testnet_orchestrator_cli.py start --profile quick_smoke
+
+# Terminal 2: Web-Dashboard starten
+python scripts/live_web_server.py
+
+# Browser: http://localhost:8000 öffnen
+```
+
+**Mit Alerts:**
+- Alerts werden automatisch aus `{run_dir}/alerts.jsonl` geladen
+- Keine zusätzliche Konfiguration nötig
+
+### 10d.7 Bekannte Limitierungen (v0)
+
+- **Read-only:** Keine Order-Erzeugung, kein Start/Stop aus dem Web UI
+- **Kein SSE/WebSocket:** Auto-Refresh via JavaScript (Polling)
+- **Einfaches HTML:** Keine komplexe SPA, einfaches Template
+- **Keine Authentifizierung:** Nur für lokale/vertrauenswürdige Netzwerke
+
+### 10d.8 Troubleshooting
+
+**Problem: "Run not found"**
+- Prüfe ob `base_runs_dir` korrekt gesetzt ist
+- Prüfe ob Run-Verzeichnis existiert und `meta.json` enthält
+
+**Problem: "No runs found"**
+- Prüfe ob Runs-Verzeichnis existiert
+- Prüfe ob Runs vorhanden sind (via `live_monitor_cli.py overview`)
+
+**Problem: "Error loading snapshot"**
+- Prüfe ob `events.parquet` existiert und lesbar ist
+- Prüfe Logs für detaillierte Fehlermeldungen
+
 ## 11. Kommunikation & Verantwortung
 
 ### 11.1 Rollen und Entscheidungswege

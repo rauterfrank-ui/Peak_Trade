@@ -1,6 +1,6 @@
 # src/live/web/app.py
 """
-Peak_Trade: Web UI Application (Phase 34)
+Peak_Trade: Web UI Application (Phase 67)
 ==========================================
 
 FastAPI-basierte Web-Anwendung für das Monitoring von Shadow-/Paper-Runs.
@@ -15,12 +15,13 @@ WICHTIG: Die Web-UI ist read-only und trifft keine Trading-Entscheidungen.
 Example:
     >>> from src.live.web.app import create_app
     >>> app = create_app()
-    >>> # Start with: uvicorn app:app --host 127.0.0.1 --port 8000
+    >>> # Start with: uvicorn src.live.web.app:app --host 127.0.0.1 --port 8000
 """
 from __future__ import annotations
 
+import json
 import logging
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -29,15 +30,14 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
-from ..run_logging import list_runs, load_run_metadata
 from ..monitoring import (
-    LiveRunSnapshot,
-    LiveRunTailRow,
-    load_run_snapshot,
-    load_run_tail,
-    get_latest_run_dir,
+    list_runs as monitoring_list_runs,
+    get_run_snapshot,
+    tail_events,
+    RunNotFoundError,
+    RunSnapshot,
 )
-from ..alerts import load_alerts_from_file, AlertEvent
+from ..run_logging import load_run_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -86,6 +86,80 @@ def load_web_ui_config(cfg: Any) -> WebUIConfig:
 
 
 # =============================================================================
+# Helper Functions
+# =============================================================================
+
+
+def load_alerts_from_file(run_dir: Path, limit: int = 100) -> List[Dict[str, Any]]:
+    """
+    Lädt Alerts aus alerts.jsonl Datei.
+
+    Args:
+        run_dir: Run-Verzeichnis
+        limit: Maximale Anzahl Alerts
+
+    Returns:
+        Liste von Alert-Dictionaries
+    """
+    alerts_path = run_dir / "alerts.jsonl"
+    if not alerts_path.exists():
+        return []
+
+    alerts = []
+    try:
+        with open(alerts_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    alert = json.loads(line)
+                    alerts.append(alert)
+                except json.JSONDecodeError:
+                    logger.warning(f"Invalid JSON in alerts.jsonl: {line}")
+                    continue
+
+        # Neueste zuerst, dann limitieren
+        alerts.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+        return alerts[:limit]
+
+    except Exception as e:
+        logger.warning(f"Error loading alerts from {alerts_path}: {e}")
+        return []
+
+
+def _calculate_orders_count(events: List[Dict[str, Any]]) -> Dict[str, int]:
+    """
+    Berechnet Order-Statistiken aus Events.
+
+    Args:
+        events: Liste von Event-Dictionaries
+
+    Returns:
+        Dict mit total_orders, total_blocked_orders
+    """
+    total_orders = 0
+    total_blocked_orders = 0
+
+    for event in events:
+        # Orders: Summe von orders_filled (oder orders_generated falls filled nicht vorhanden)
+        orders_filled = event.get("orders_filled", 0) or 0
+        orders_generated = event.get("orders_generated", 0) or 0
+        # Verwende filled falls vorhanden, sonst generated
+        orders_count = orders_filled if orders_filled > 0 else orders_generated
+        total_orders += orders_count
+
+        # Blocked orders
+        orders_blocked = event.get("orders_blocked", 0) or 0
+        total_blocked_orders += orders_blocked
+
+    return {
+        "total_orders": total_orders,
+        "total_blocked_orders": total_blocked_orders,
+    }
+
+
+# =============================================================================
 # Pydantic Models for API Responses
 # =============================================================================
 
@@ -108,18 +182,12 @@ class RunSnapshotResponse(BaseModel):
     strategy_name: str
     symbol: str
     timeframe: str
-    started_at: Optional[str] = None
-    ended_at: Optional[str] = None
-    last_bar_time: Optional[str] = None
-    last_price: Optional[float] = None
-    position_size: Optional[float] = None
-    cash: Optional[float] = None
-    equity: Optional[float] = None
-    realized_pnl: Optional[float] = None
-    unrealized_pnl: Optional[float] = None
     total_steps: int = 0
     total_orders: int = 0
     total_blocked_orders: int = 0
+    equity: Optional[float] = None
+    realized_pnl: Optional[float] = None
+    unrealized_pnl: Optional[float] = None
 
 
 class TailRowResponse(BaseModel):
@@ -146,59 +214,6 @@ class AlertResponse(BaseModel):
 class HealthResponse(BaseModel):
     """API Response für Health-Check."""
     status: str
-
-
-# =============================================================================
-# Helper Functions
-# =============================================================================
-
-
-def _snapshot_to_response(snapshot: LiveRunSnapshot) -> RunSnapshotResponse:
-    """Konvertiert LiveRunSnapshot zu API Response."""
-    return RunSnapshotResponse(
-        run_id=snapshot.run_id,
-        mode=snapshot.mode,
-        strategy_name=snapshot.strategy_name,
-        symbol=snapshot.symbol,
-        timeframe=snapshot.timeframe,
-        started_at=snapshot.started_at.isoformat() if snapshot.started_at else None,
-        ended_at=snapshot.ended_at.isoformat() if snapshot.ended_at else None,
-        last_bar_time=snapshot.last_bar_time.isoformat() if snapshot.last_bar_time else None,
-        last_price=snapshot.last_price,
-        position_size=snapshot.position_size,
-        cash=snapshot.cash,
-        equity=snapshot.equity,
-        realized_pnl=snapshot.realized_pnl,
-        unrealized_pnl=snapshot.unrealized_pnl,
-        total_steps=snapshot.total_steps,
-        total_orders=snapshot.total_orders,
-        total_blocked_orders=snapshot.total_blocked_orders,
-    )
-
-
-def _tail_row_to_response(row: LiveRunTailRow) -> TailRowResponse:
-    """Konvertiert LiveRunTailRow zu API Response."""
-    return TailRowResponse(
-        ts_bar=row.ts_bar.isoformat() if row.ts_bar else None,
-        equity=row.equity,
-        realized_pnl=row.realized_pnl,
-        unrealized_pnl=row.unrealized_pnl,
-        position_size=row.position_size,
-        orders_count=row.orders_count,
-        risk_allowed=row.risk_allowed,
-        risk_reasons=row.risk_reasons,
-    )
-
-
-def _alert_to_response(alert: AlertEvent) -> AlertResponse:
-    """Konvertiert AlertEvent zu API Response."""
-    return AlertResponse(
-        rule_id=alert.rule_id,
-        severity=alert.severity,
-        message=alert.message,
-        run_id=alert.run_id,
-        timestamp=alert.timestamp.isoformat(),
-    )
 
 
 # =============================================================================
@@ -640,39 +655,55 @@ def create_app(
     @app.get("/runs", response_model=List[RunMetadataResponse])
     async def get_runs():
         """Listet alle verfügbaren Runs."""
-        run_ids = list_runs(runs_dir)
-        result: List[RunMetadataResponse] = []
+        try:
+            snapshots = monitoring_list_runs(base_dir=runs_dir, include_inactive=True)
+            result: List[RunMetadataResponse] = []
 
-        for run_id in run_ids[:50]:  # Max 50 Runs
-            try:
-                run_dir = runs_dir / run_id
-                meta = load_run_metadata(run_dir)
-                result.append(RunMetadataResponse(
-                    run_id=meta.run_id,
-                    mode=meta.mode,
-                    strategy_name=meta.strategy_name,
-                    symbol=meta.symbol,
-                    timeframe=meta.timeframe,
-                    started_at=meta.started_at.isoformat() if meta.started_at else None,
-                    ended_at=meta.ended_at.isoformat() if meta.ended_at else None,
-                ))
-            except Exception as e:
-                logger.warning(f"Error loading metadata for {run_id}: {e}")
-                continue
+            for snapshot in snapshots[:50]:  # Max 50 Runs
+                try:
+                    result.append(RunMetadataResponse(
+                        run_id=snapshot.run_id,
+                        mode=snapshot.mode,
+                        strategy_name=snapshot.strategy or "",
+                        symbol=snapshot.symbol or "",
+                        timeframe=snapshot.timeframe or "",
+                        started_at=snapshot.started_at.isoformat() if snapshot.started_at else None,
+                        ended_at=snapshot.ended_at.isoformat() if snapshot.ended_at else None,
+                    ))
+                except Exception as e:
+                    logger.warning(f"Error converting snapshot {snapshot.run_id}: {e}")
+                    continue
 
-        return result
+            return result
+        except Exception as e:
+            logger.error(f"Error listing runs: {e}")
+            return []
 
     @app.get("/runs/{run_id}/snapshot", response_model=RunSnapshotResponse)
-    async def get_run_snapshot(run_id: str):
+    async def get_run_snapshot_endpoint(run_id: str):
         """Lädt Snapshot für einen Run."""
-        run_dir = runs_dir / run_id
-
-        if not run_dir.exists():
-            raise HTTPException(status_code=404, detail=f"Run not found: {run_id}")
-
         try:
-            snapshot = load_run_snapshot(run_dir)
-            return _snapshot_to_response(snapshot)
+            snapshot = get_run_snapshot(run_id, base_dir=runs_dir)
+            
+            # Events laden für Order-Statistiken
+            events = tail_events(run_id, limit=10000, base_dir=runs_dir)
+            order_stats = _calculate_orders_count(events)
+
+            return RunSnapshotResponse(
+                run_id=snapshot.run_id,
+                mode=snapshot.mode,
+                strategy_name=snapshot.strategy or "",
+                symbol=snapshot.symbol or "",
+                timeframe=snapshot.timeframe or "",
+                total_steps=snapshot.num_events,
+                total_orders=order_stats["total_orders"],
+                total_blocked_orders=order_stats["total_blocked_orders"],
+                equity=snapshot.equity,
+                realized_pnl=snapshot.pnl,
+                unrealized_pnl=snapshot.unrealized_pnl,
+            )
+        except RunNotFoundError:
+            raise HTTPException(status_code=404, detail=f"Run not found: {run_id}")
         except Exception as e:
             logger.error(f"Error loading snapshot for {run_id}: {e}")
             raise HTTPException(status_code=500, detail=str(e))
@@ -683,14 +714,30 @@ def create_app(
         limit: int = Query(default=50, ge=1, le=500),
     ):
         """Lädt Tail-Events für einen Run."""
-        run_dir = runs_dir / run_id
-
-        if not run_dir.exists():
-            raise HTTPException(status_code=404, detail=f"Run not found: {run_id}")
-
         try:
-            tail = load_run_tail(run_dir, n=limit)
-            return [_tail_row_to_response(row) for row in tail]
+            events = tail_events(run_id, limit=limit, base_dir=runs_dir)
+            result: List[TailRowResponse] = []
+
+            for event in events:
+                # Orders count berechnen (verwende filled falls vorhanden, sonst generated)
+                orders_filled = event.get("orders_filled", 0) or 0
+                orders_generated = event.get("orders_generated", 0) or 0
+                orders_count = orders_filled if orders_filled > 0 else orders_generated
+
+                result.append(TailRowResponse(
+                    ts_bar=event.get("ts_bar"),
+                    equity=event.get("equity"),
+                    realized_pnl=event.get("realized_pnl"),
+                    unrealized_pnl=event.get("unrealized_pnl"),
+                    position_size=event.get("position_size"),
+                    orders_count=orders_count,
+                    risk_allowed=event.get("risk_allowed", True),
+                    risk_reasons=event.get("risk_reasons", "") or "",
+                ))
+
+            return result
+        except RunNotFoundError:
+            raise HTTPException(status_code=404, detail=f"Run not found: {run_id}")
         except Exception as e:
             logger.error(f"Error loading tail for {run_id}: {e}")
             raise HTTPException(status_code=500, detail=str(e))
@@ -708,7 +755,18 @@ def create_app(
 
         try:
             alerts = load_alerts_from_file(run_dir, limit=limit)
-            return [_alert_to_response(alert) for alert in alerts]
+            result: List[AlertResponse] = []
+
+            for alert in alerts:
+                result.append(AlertResponse(
+                    rule_id=alert.get("rule_id", ""),
+                    severity=alert.get("severity", "info"),
+                    message=alert.get("message", ""),
+                    run_id=alert.get("run_id", run_id),
+                    timestamp=alert.get("timestamp", ""),
+                ))
+
+            return result
         except Exception as e:
             logger.warning(f"Error loading alerts for {run_id}: {e}")
             return []
