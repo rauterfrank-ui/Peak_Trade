@@ -476,3 +476,41 @@ Die Developer-Guides erklären typische Erweiterungen Schritt für Schritt, inkl
 - [NOTIFICATIONS.md](NOTIFICATIONS.md) - Alerts & Notifications
 - [SCHEDULER_DAEMON.md](SCHEDULER_DAEMON.md) - Scheduler & Job Runner
 - [ORDER_LAYER_SANDBOX.md](ORDER_LAYER_SANDBOX.md) - Order-Layer (Sandbox)
+
+---
+
+## Live-Ops Quick Commands (Operator-Favoriten)
+
+**Die 3 wichtigsten Commands für Live-/Testnet-Operationen:**
+
+```bash
+# 1. Health-Check Live-/Testnet-Setup
+python scripts/live_ops.py health --config config/config.toml
+
+# 2. Portfolio-Snapshot (Text)
+python scripts/live_ops.py portfolio --config config/config.toml
+
+# 3. Portfolio-Snapshot (JSON für Tools)
+python scripts/live_ops.py portfolio --config config/config.toml --json
+```
+
+**Mit diesen 3 Commands weißt du sofort:**
+- ✅ Ob das Live-/Testnet-Setup gesund ist
+- ✅ Welche Positionen aktuell offen sind
+- ✅ Wie das Portfolio-Risk-Profil aussieht
+- ✅ Ob Risk-Limits eingehalten werden
+
+**Weitere nützliche Varianten:**
+
+```bash
+# Health-Check mit JSON-Output
+python scripts/live_ops.py health --config config/config.toml --json
+
+# Portfolio ohne Risk-Check (schneller)
+python scripts/live_ops.py portfolio --config config/config.toml --no-risk
+
+# Orders-Preview (wenn Signale vorhanden)
+python scripts/live_ops.py orders \
+  --signals reports/forward/forward_*_signals.csv \
+  --config config/config.toml
+```

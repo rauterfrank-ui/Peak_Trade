@@ -1,10 +1,18 @@
-# CLAUDE.md - Peak_Trade AI Assistant Guide
+# Peak_Trade – AI Assistant Guide (Claude/Cursor)
 
-## Project Overview
+> **Zweck:** Zentrale Anleitung für die Nutzung von AI-Assistenz (Claude, Cursor, ChatGPT) im Peak_Trade-Projekt
+>
+> **Zielgruppe:** Entwickler, die mit AI-Tools arbeiten, um Code zu schreiben, Dokumentation zu erstellen oder das Projekt zu verstehen
 
-**Peak_Trade** is a modular cryptocurrency trading and backtesting framework in Python 3.9+. It provides strategy development, backtesting with realistic market conditions, risk management, and live/paper trading capabilities.
+---
 
-## Quick Commands
+## 1. Projekt-Übersicht
+
+**Peak_Trade** ist ein modulares Kryptowährungs-Trading- und Backtesting-Framework in Python 3.9+. Es bietet Strategie-Entwicklung, Backtesting mit realistischen Marktbedingungen, Risk-Management und Live-/Paper-Trading-Funktionalität.
+
+---
+
+## 2. Quick Commands
 
 ```bash
 # Setup
@@ -36,9 +44,11 @@ python scripts/check_live_risk_limits.py
 python scripts/paper_trade_from_orders.py
 ```
 
-## Portfolio Research to Live Playbook
+---
 
-Wenn du mit AI-Assistenz (Claude/Cursor/ChatGPT) neue Portfolios/Presets evaluierst oder Richtung Live bringen willst, nutze [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) als Kontext-Prompt.
+## 3. Portfolio Research to Live Playbook
+
+Wenn du mit AI-Assistenz neue Portfolios/Presets evaluierst oder Richtung Live bringen willst, nutze [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](../PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) als Kontext-Prompt.
 
 Dieses Playbook beschreibt:
 - Den kompletten Weg von Portfolio-Presets in der Research-Welt bis zur Live-/Testnet-Aktivierung
@@ -51,7 +61,9 @@ Dieses Playbook beschreibt:
 - Der AI-Assistent kennt dann die Gatekeeping-Logik und Governance-Kriterien
 - Alle CLI-Commands und Workflows sind dokumentiert
 
-## Directory Structure
+---
+
+## 4. Verzeichnis-Struktur
 
 ```
 Peak_Trade/
@@ -75,7 +87,9 @@ Peak_Trade/
 └── reports/                 # Generated outputs (experiments, results)
 ```
 
-## Key Modules
+---
+
+## 5. Wichtige Module
 
 | Module | Purpose |
 |--------|---------|
@@ -89,7 +103,9 @@ Peak_Trade/
 | `src/backtest/stats.py` | Performance metrics (Sharpe, Drawdown, etc.) |
 | `src/live/risk_limits.py` | Pre-trade risk checks |
 
-## Available Strategies
+---
+
+## 6. Verfügbare Strategien
 
 | Key | Type | Description |
 |-----|------|-------------|
@@ -102,7 +118,9 @@ Peak_Trade/
 | `trend_following` | Trend | ADX-based |
 | `mean_reversion` | Reversion | Z-Score |
 
-## Architecture Patterns
+---
+
+## 7. Architektur-Patterns
 
 1. **Abstract Base Classes**: `BaseStrategy`, `BasePositionSizer`, `BaseRiskManager`
 2. **Factory Methods**: `Strategy.from_config(cfg, section)`
@@ -110,7 +128,9 @@ Peak_Trade/
 4. **Registry Pattern**: Strategy and experiment registries
 5. **Configuration-Driven**: All behaviors via `config.toml`
 
-## Creating a New Strategy
+---
+
+## 8. Neue Strategie erstellen
 
 ```python
 # src/strategies/my_strategy.py
@@ -134,7 +154,9 @@ class MyStrategy(BaseStrategy):
 
 Register in `src/strategies/registry.py` and add config to `config.toml`.
 
-## Config Structure (config.toml)
+---
+
+## 9. Config-Struktur (config.toml)
 
 ```toml
 [environment]
@@ -163,13 +185,17 @@ max_daily_loss_abs = 500.0
 block_on_violation = true
 ```
 
-## Risk Management Layers
+---
+
+## 10. Risk-Management-Layer
 
 1. **Position Sizing** (`src/core/position_sizing.py`): signal → units
 2. **Risk Management** (`src/core/risk.py`): adjusts units based on equity/drawdown
 3. **Live Risk Limits** (`src/live/risk_limits.py`): pre-trade checks
 
-## Code Style
+---
+
+## 11. Code-Style
 
 - **Python**: 3.9+, type hints, dataclasses
 - **Line length**: 100 characters
@@ -177,14 +203,18 @@ block_on_violation = true
 - **Linter**: Ruff
 - **Tests**: pytest with fixtures
 
-## Important Notes
+---
+
+## 12. Wichtige Hinweise
 
 - Strategies return **states** (persistent positions), not events
 - CLI args override `config.toml` settings
 - All runs logged to `reports/experiments/experiments.csv`
 - Documentation in German and English
 
-## Key Files to Start
+---
+
+## 13. Wichtige Dateien zum Einstieg
 
 1. `config.toml` - Central configuration
 2. `src/backtest/engine.py` - Backtest engine
@@ -192,7 +222,9 @@ block_on_violation = true
 4. `scripts/run_backtest.py` - Main entry point
 5. `docs/ARCHITECTURE_OVERVIEW.md` - Architecture overview (Phase 52)
 
-## Developer-Guides (Phase 52)
+---
+
+## 14. Developer-Guides (Phase 52)
 
 **Wie nutze ich die Developer-Guides mit AI-Assistenz?**
 
@@ -229,6 +261,22 @@ den Schritt-für-Schritt-Anweisungen.
 - `docs/DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md` – Neues Live-Risk-Limit hinzufügen
 - `docs/DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md` – Neues Portfolio-Rezept hinzufügen
 
-**Architektur-Übersicht:**
+---
+
+## 15. Architektur-Übersicht
 
 - `docs/ARCHITECTURE_OVERVIEW.md` – High-Level-Architektur mit Diagramm und Layer-Beschreibung
+
+---
+
+## 16. Weitere wichtige Dokumente
+
+- `docs/PEAK_TRADE_STATUS_OVERVIEW.md` – Gesamtstatus des Projekts
+- `docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md` – End-to-End-Prozess für Portfolio-Promotion
+- `docs/PORTFOLIO_RECIPES_AND_PRESETS.md` – Portfolio-Rezepte & Presets
+- `docs/CLI_CHEATSHEET.md` – CLI-Referenz & Quick Commands
+
+---
+
+**Built with ❤️ and AI-assistance**
+

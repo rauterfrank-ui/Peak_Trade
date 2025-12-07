@@ -276,13 +276,13 @@ graph TD
 **Ziel:** Entwickler-Workflow mit AI-Assistenz
 
 **Wichtige Module:**
-- `docs/CLAUDE_WORKFLOW.md` – AI-Assistenz-Guide
+- `docs/ai/CLAUDE_GUIDE.md` – AI-Assistenz-Guide
 
 **Integration:**
 - Developer-Guides (`DEV_GUIDE_*.md`) können als Kontext für AI-Tools verwendet werden
 - Architektur-Overview hilft AI-Tools, Code-Struktur zu verstehen
 
-**Siehe auch:** `docs/CLAUDE_WORKFLOW.md`
+**Siehe auch:** `docs/ai/CLAUDE_GUIDE.md`
 
 ---
 
@@ -375,7 +375,7 @@ graph TD
 - `CLI_CHEATSHEET.md` – CLI-Referenz
 
 ### AI-Assistenz
-- `CLAUDE_WORKFLOW.md` – AI-Assistenz-Guide
+- `docs/ai/CLAUDE_GUIDE.md` – AI-Assistenz-Guide
 
 ---
 

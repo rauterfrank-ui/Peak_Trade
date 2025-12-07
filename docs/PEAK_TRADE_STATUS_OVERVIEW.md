@@ -1,13 +1,13 @@
-# Peak_Trade – Projekt-Status Overview (Phasen 1–53)
+# Peak_Trade – Projekt-Status Overview (Phasen 1–54)
 
 Dieses Dokument beschreibt den aktuellen Gesamtstatus von **Peak_Trade**
-(Phasen **1–53**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
+(Phasen **1–54**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
 
 Ziel:
 
 * Eine **prozentuale Einschätzung** je Bereich
 * Klarheit, **was schon stabil ist** und **was noch fehlt**
-* Grundlage für zukünftige Roadmaps (Phase 54+)
+* Grundlage für zukünftige Roadmaps (Phase 55+)
 
 > **Hinweis:** Prozentwerte sind bewusst als **qualitative Reifegrade** zu verstehen
 > (Architektur, Codequalität, Tests, Doku, Operational Readiness), nicht als „fertig/nie-ändern".
@@ -24,14 +24,14 @@ Ziel:
 | ------------------------------- | --------- | ---------------------------------------------------------------------------------------- |
 | Data & Market Access            | 95%       | Data-Pipeline, Loader, Normalizer, Cache, Kraken-Integration stabil                      |
 | Backtest & Simulation           | 92%       | BacktestEngine, Stats, Registry-Integration, Reporting v2                                |
-| Strategy & Portfolio Layer      | 90%       | Einzel-Strategien, Portfolio-Layer, Portfolio-Robustness, Recipes, Risk-Profiled Presets |
+| Strategy & Portfolio Layer      | 92%       | Einzel-Strategien, Portfolio-Layer, Portfolio-Robustness, Recipes, Risk-Profiled Presets (Phase 53), Research→Live Playbook (Phase 54) |
 | Risk & Safety (Research + Live) | 90%       | Risk-Metriken, Limits, LiveRiskLimits, Safety-Concept                                    |
-| Research & Experiments          | 90%       | Registry, Sweeps, Research-CLI, Pipeline v2, Portfolio-Level-Robustness                  |
-| Live-/Testnet & Operations      | 91%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks              |
-| Reporting, Monitoring & CLI     | 88%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI             |
-| Documentation & Governance      | 86%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs                        |
-| Developer-Experience & Tooling  | 90%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides |
-| **Gesamtprojekt (Phasen 1–53)** | **≈ 91%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides, Strategy & Portfolio Library |
+| Research & Experiments          | 91%       | Registry, Sweeps, Research-CLI, Pipeline v2, Portfolio-Level-Robustness, Research→Live Playbook (Phase 54) |
+| Live-/Testnet & Operations      | 93%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Research→Live Playbook (Phase 54) |
+| Reporting, Monitoring & CLI     | 89%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI, Live-Ops CLI (Phase 51) |
+| Documentation & Governance      | 88%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs, Research→Live Playbook (Phase 54) |
+| Developer-Experience & Tooling  | 91%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides, AI-Guide (Phase 55) |
+| **Gesamtprojekt (Phasen 1–54)** | **≈ 92%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides, Strategy & Portfolio Library, Research→Live Playbook |
 
 ---
 
@@ -153,9 +153,7 @@ Ziel:
 * Weitere Strategie-Familien und Märkte.
 * Erweiterte Portfolio-Optimierungs-Ansätze (z.B. Risk-Parity, CVaR-Minimierung, etc.).
 
-> **Reifegrad:** **ca. 90%** – Phase 53 erweitert die Strategy-/Portfolio-Library um klar benannte Presets für unterschiedliche Risk-Profile (conservative/moderate/aggressive) und Multi-Style-Portfolios (Trend + Mean-Reversion). Siehe `PORTFOLIO_RECIPES_AND_PRESETS.md`.
->
-> **Für den durchgängigen Prozess von Research-Portfolios bis zur Live-/Testnet-Aktivierung siehe:** [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) (Phase 54).
+> **Reifegrad:** **ca. 92%** – Phase 53 erweitert die Strategy-/Portfolio-Library um klar benannte Presets für unterschiedliche Risk-Profile (conservative/moderate/aggressive) und Multi-Style-Portfolios (Trend + Mean-Reversion). Phase 54 fügt ein umfassendes Research→Live Playbook hinzu, das den kompletten Weg von Portfolio-Presets bis zur Live-/Testnet-Aktivierung dokumentiert. Siehe `PORTFOLIO_RECIPES_AND_PRESETS.md` und [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md).
 
 ---
 
@@ -252,9 +250,7 @@ Ziel:
 * Integration mit externen Tracking-Tools (MLflow, Weights & Biases – nur optional).
 * Mehr Komfortfunktionen (z.B. automatische Best-Config-Snapshots für bestimmte Risk-Profile).
 
-> **Reifegrad:** **ca. 90%** – Research-Track ist auf sehr hohem Niveau, eher Komfort & Library-Ausbau sind offen.
->
-> **Für den durchgängigen Prozess von Research-Portfolios bis zur Live-/Testnet-Aktivierung siehe:** [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) (Phase 54).
+> **Reifegrad:** **ca. 91%** – Research-Track ist auf sehr hohem Niveau. Phase 54 fügt ein umfassendes Research→Live Playbook hinzu, das den kompletten Prozess von Portfolio-Presets bis zur Live-/Testnet-Aktivierung dokumentiert. Siehe [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md).
 
 ---
 
@@ -371,11 +367,10 @@ Ziel:
 
 **Offene Themen:**
 
-* Konsolidiertes CLI-Tool (z.B. `peak_trade` oder `live_ops`) als „Meta-Entry-Point".
 * HTML-/Dashboard-Frontends für ausgewählte Reports/Monitoring-Ansichten.
 * Erweiterte Monitoring-Views (Equity, Drawdown, Risk-Events in „quasi-real-time").
 
-> **Reifegrad:** **ca. 88%** – viel Funktionalität, noch Luft nach oben bei UX & Konsolidierung.
+> **Reifegrad:** **ca. 89%** – Phase 51 fügt ein zentrales Live-Ops CLI hinzu (`live_ops.py`), das die wichtigsten Operator-Kommandos bündelt. Viel Funktionalität vorhanden, noch Luft nach oben bei UX & Dashboards.
 
 ---
 
@@ -427,7 +422,7 @@ Ziel:
   * „Quant-/Research-Handbuch"
 * Index / Inhaltsverzeichnis für die wichtigsten Docs.
 
-> **Reifegrad:** **ca. 86%** – viel Substanz, aber die „Meta-Struktur" kann noch besser werden.
+> **Reifegrad:** **ca. 88%** – Phase 52 fügt umfassende Architektur-Dokumentation und Developer-Guides hinzu. Phase 54 fügt ein Research→Live Playbook hinzu. Phase 55 konsolidiert die AI-/Claude-Dokumentation. Viel Substanz vorhanden, Meta-Struktur verbessert sich kontinuierlich.
 
 ---
 
@@ -447,7 +442,7 @@ Ziel:
   * `docs/CLI_CHEATSHEET.md`
 * AI-/Prompt-Setup:
 
-  * `docs/ai/CLAUDE_GUIDE.md` (ehem. `CLAUDE_WORKFLOW.md`) – Falls vorhanden
+  * `docs/ai/CLAUDE_GUIDE.md` – AI-Assistenz-Guide
   * weitere AI-/Tooling-Doku in `docs/ai/`
 
 **Relevante Bausteine:**
@@ -611,6 +606,10 @@ Basierend auf dem aktuellen Stand (≈ 91% Gesamt-Reifegrad) bieten sich folgend
 | 2025-12-07 | (aktuell) | Update mit konkreten Phasen-Referenzen                          |
 | 2025-12-07 | (aktuell) | Phase 52 – Architecture Overview & Developer-Guides             |
 | 2025-12-07 | (aktuell) | Phase 53 – Strategy & Portfolio Library Push                    |
+| 2025-12-07 | (aktuell) | Phase 54 – Research → Live Portfolios Playbook                  |
+| 2025-12-07 | (aktuell) | Phase 55 – Clean-Up & Polishing (Docs, Status, CLI-Cheatsheet) |
+| 2025-12-07 | (aktuell) | Phase 54 – Research → Live Portfolios Playbook                  |
+| 2025-12-07 | (aktuell) | Phase 55 – Clean-Up & Polishing (Docs, Status, CLI-Cheatsheet) |
 
 ---
 

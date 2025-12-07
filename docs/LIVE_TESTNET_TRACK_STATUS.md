@@ -3,7 +3,7 @@
 Dieses Dokument fasst den aktuellen Status des **Live-/Shadow-/Testnet-Tracks** von Peak_Trade zusammen.
 Ziel ist eine schnelle Einschätzung der **technischen Reife**, der **operativen Readiness** und der noch offenen Themen.
 
-Stand: 2025-12-07 (nach Phase 50)
+Stand: 2025-12-07 (nach Phase 54)
 
 ---
 
@@ -28,8 +28,8 @@ Interpretation:
 * 80–90%: solide, einsatzbereit mit bewussten Limitierungen
 * > 90%: stabiler Kern, nur noch Feintuning / Komfort / Edge-Cases offen
 
-Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~94%** –
-**funktional einsatzbereit** mit integriertem Alert-System für Risk-Violations und zentralem Live-Ops CLI.
+Der Live-/Testnet-Track bewegt sich aktuell im Bereich **~95%** –
+**funktional einsatzbereit** mit integriertem Alert-System für Risk-Violations, zentralem Live-Ops CLI (Phase 51) und umfassendem Research→Live Playbook (Phase 54).
 
 ---
 
@@ -356,35 +356,32 @@ Portfolio-basierte Promotions von Research → Testnet/Live folgen dem in [`PLAY
 
 ## 10. Gesamtbewertung & nächste Schritte
 
-Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈ 91%**:
+Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈ 95%**:
 
 * Technisch weitgehend komplett.
 * Safety- und Governance-Schicht etabliert.
-* Monitoring, Risk-Bridge und Alert-System fertig.
+* Monitoring, Risk-Bridge und Alert-System fertig (inkl. Webhook/Slack-Sinks, Phase 50).
+* Zentrales Live-Ops CLI für Operatoren (Phase 51).
+* Umfassendes Research→Live Playbook für Portfolio-Promotions (Phase 54).
 
 **Naheliegende nächste Schritte:**
 
-1. Externe Alert-Sinks (Phase X):
-
-   * Slack-Webhook-Integration.
-   * E-Mail-Sink (SMTP).
-   * PagerDuty/Discord-Integration.
-
-2. Operator-UX:
-
-   * Zusammenführung der wichtigsten Live-Scripts in ein konsistentes Command-Line-Interface.
-   * Standardisierte „Operator-Flows" mit klar dokumentierten Kommando-Folgen.
-
-3. Erweiterung der Exchange-/Order-Funktionalität:
-
-   * Zusätzliche Börsen / Märkte.
-   * Komplexere Order-Typen.
-   * Performance-/Resilienz-Optimierungen.
-
-4. Alert-Enhancements:
+1. Alert-Enhancements:
 
    * Alert-Deduplizierung und Throttling.
    * Persistente Alert-Historie für Audits.
+   * E-Mail-Sink (SMTP), PagerDuty/Discord-Integration.
+
+2. Erweiterung der Exchange-/Order-Funktionalität:
+
+   * Zusätzliche Börsen / Märkte.
+   * Komplexere Order-Typen (OCO, Bracket).
+   * Performance-/Resilienz-Optimierungen.
+
+3. Dashboards & Visualisierung:
+
+   * HTML-Dashboards für Live-Monitoring.
+   * Interaktive Portfolio-Views.
 
 ---
 
@@ -392,6 +389,7 @@ Der Live-/Testnet-Track von Peak_Trade ist aktuell auf einem Reifegrad von **≈
 
 | Datum      | Änderung                                                    |
 |------------|-------------------------------------------------------------|
+| 2025-12-07 | Update nach Abschluss Phase 54 (Research→Live Playbook)    |
 | 2025-12-07 | Update nach Abschluss Phase 51 (Live-Ops CLI)              |
 | 2025-12-07 | Update nach Abschluss Phase 50 (Webhook & Slack-Sinks für Alerts)|
 | 2025-12-07 | Update nach Abschluss Phase 49 (Live Alerts & Notifications)|
