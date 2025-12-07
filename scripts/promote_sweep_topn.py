@@ -31,6 +31,7 @@ import argparse
 import logging
 import sys
 from pathlib import Path
+from typing import Optional, Sequence
 
 # Projekt-Root zum Path hinzufügen
 project_root = Path(__file__).parent.parent
@@ -56,8 +57,8 @@ def setup_logging(verbose: bool = False) -> None:
     )
 
 
-def parse_args() -> argparse.Namespace:
-    """Parst Kommandozeilen-Argumente."""
+def build_parser() -> argparse.ArgumentParser:
+    """Erstellt den ArgumentParser für Top-N Promotion."""
     parser = argparse.ArgumentParser(
         description="Peak_Trade Top-N Promotion CLI (Phase 42)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -115,7 +116,12 @@ def parse_args() -> argparse.Namespace:
         help="Verbose Output",
     )
 
-    return parser.parse_args()
+    return parser
+
+
+def parse_args() -> argparse.Namespace:
+    """Parst Kommandozeilen-Argumente."""
+    return build_parser().parse_args()
 
 
 def format_params_summary(row: dict, param_cols: list) -> str:
@@ -138,9 +144,15 @@ def format_params_summary(row: dict, param_cols: list) -> str:
     return ", ".join(params)
 
 
-def main() -> int:
-    """Haupt-Entry-Point."""
-    args = parse_args()
+def run_from_args(args: argparse.Namespace) -> int:
+    """Führt Top-N Promotion basierend auf Argumenten aus.
+    
+    Args:
+        args: Parsed command-line arguments
+        
+    Returns:
+        Exit code (0 = success, 1 = error)
+    """
     setup_logging(args.verbose)
     logger = logging.getLogger(__name__)
 
@@ -228,6 +240,16 @@ def main() -> int:
     except Exception as e:
         logger.error(f"Unerwarteter Fehler: {e}", exc_info=True)
         return 1
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    """Haupt-Entry-Point."""
+    parser = build_parser()
+    if argv is None:
+        args = parser.parse_args()
+    else:
+        args = parser.parse_args(list(argv))
+    return run_from_args(args)
 
 
 if __name__ == "__main__":

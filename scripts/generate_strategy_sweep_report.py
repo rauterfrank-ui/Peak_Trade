@@ -33,7 +33,7 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Sequence, Tuple
 
 import pandas as pd
 
@@ -62,8 +62,8 @@ def setup_logging(verbose: bool = False) -> None:
     )
 
 
-def parse_args() -> argparse.Namespace:
-    """Parst Kommandozeilen-Argumente."""
+def build_parser() -> argparse.ArgumentParser:
+    """Erstellt den ArgumentParser für Sweep-Reports."""
     parser = argparse.ArgumentParser(
         description="Peak_Trade Strategy Sweep Report Generator (Phase 41)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -136,7 +136,12 @@ def parse_args() -> argparse.Namespace:
         help="Verbose Output",
     )
 
-    return parser.parse_args()
+    return parser
+
+
+def parse_args() -> argparse.Namespace:
+    """Parst Kommandozeilen-Argumente."""
+    return build_parser().parse_args()
 
 
 def find_sweep_results(sweep_name: str, experiments_dir: str = "reports/experiments") -> Optional[Path]:
@@ -351,9 +356,15 @@ def build_recommendations_section(
     )
 
 
-def main() -> int:
-    """Haupt-Entry-Point."""
-    args = parse_args()
+def run_from_args(args: argparse.Namespace) -> int:
+    """Generiert einen Sweep-Report basierend auf Argumenten.
+    
+    Args:
+        args: Parsed command-line arguments
+        
+    Returns:
+        Exit code (0 = success, 1 = error)
+    """
     setup_logging(args.verbose)
     logger = logging.getLogger(__name__)
 
@@ -583,6 +594,16 @@ def main() -> int:
     print("\n" + "=" * 70)
 
     return 0
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    """Haupt-Entry-Point."""
+    parser = build_parser()
+    if argv is None:
+        args = parser.parse_args()
+    else:
+        args = parser.parse_args(list(argv))
+    return run_from_args(args)
 
 
 if __name__ == "__main__":
