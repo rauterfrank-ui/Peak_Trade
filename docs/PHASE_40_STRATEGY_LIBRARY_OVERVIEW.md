@@ -347,6 +347,41 @@ strategy = BreakoutStrategy(
 
 ---
 
+## 10. Abschluss Phase 40 & Baseline für Phase 41+
+
+Ein umfassender Sanity-Check über Strategie-, Regime- und Experiment-Tests wurde ausgeführt:
+
+```bash
+pytest tests/test_strategy*py tests/test_regime*py tests/test_experiments*py -q
+```
+
+Ergebnis:
+
+* **446 passed in ca. 10.6 Sekunden**
+* Keine Warnungen oder Fehler, alle relevanten Teilbereiche abgedeckt.
+
+Die 446 grünen Tests in ~10s bestätigen u.a.:
+
+* **RSI-Reversion**
+  * Mean-Reversion-Logik ist stabil implementiert.
+* **Breakout/Momentum**
+  * Trend-Following-Strategie mit Stop-Loss/Take-Profit und ATR-Filter funktioniert wie erwartet.
+* **Vol-Regime-Filter**
+  * Filter-Mode und Regime-Mode arbeiten korrekt (Regime-Ermittlung + Skalierung der Exposure).
+* **Composite/Portfolio**
+  * Multi-Strategy-Aggregation läuft konsistent und integriert die neuen Strategien sauber.
+* **Regime-Detection**
+  * Marktregime-Erkennung ist integriert und spielt mit den Strategien zusammen.
+* **Experiment-Sweeps**
+  * Parameter-Sweeps und Optimierung für alle Strategien laufen durch und sind funktionsfähig.
+
+**Fazit:**
+
+* **Phase 40 – Strategy Library v1.1** ist abgeschlossen.
+* Der aktuelle Codestand gilt als **stabile, getestete Baseline** für alle weiteren Arbeiten in **Phase 41+** (z.B. erweiterte Sweeps, Reporting, weitere Strategien oder Live-nahe Flows).
+
+---
+
 ## Nächste Schritte (Phase 41+)
 
 - [ ] Walk-Forward Optimierung für Composite-Strategien
