@@ -454,6 +454,20 @@ python scripts/preview_live_orders.py \
 
 ---
 
+## Für Entwickler
+
+**Architektur & Developer-Guides:**
+
+- [`ARCHITECTURE_OVERVIEW.md`](ARCHITECTURE_OVERVIEW.md) – High-Level-Architektur mit Diagramm und Layer-Beschreibung
+- [`DEV_GUIDE_ADD_STRATEGY.md`](DEV_GUIDE_ADD_STRATEGY.md) – Neue Strategie hinzufügen (inkl. CLI-Beispiele)
+- [`DEV_GUIDE_ADD_EXCHANGE.md`](DEV_GUIDE_ADD_EXCHANGE.md) – Neuen Exchange-Adapter hinzufügen
+- [`DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md`](DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md) – Neues Live-Risk-Limit hinzufügen
+- [`DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md`](DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md) – Neues Portfolio-Rezept hinzufügen (inkl. CLI-Beispiele)
+
+Die Developer-Guides erklären typische Erweiterungen Schritt für Schritt, inkl. CLI-Beispiele für Tests und Integration.
+
+---
+
 ## Siehe auch
 
 - [AUTO_PORTFOLIOS.md](AUTO_PORTFOLIOS.md) - Auto-Portfolio-Builder

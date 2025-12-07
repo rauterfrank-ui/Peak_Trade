@@ -175,4 +175,45 @@ block_on_violation = true
 2. `src/backtest/engine.py` - Backtest engine
 3. `src/strategies/base.py` - Strategy base class
 4. `scripts/run_backtest.py` - Main entry point
-5. `docs/ARCHITECTURE.md` - Architecture overview
+5. `docs/ARCHITECTURE_OVERVIEW.md` - Architecture overview (Phase 52)
+
+## Developer-Guides (Phase 52)
+
+**Wie nutze ich die Developer-Guides mit AI-Assistenz?**
+
+Die Developer-Guides (`DEV_GUIDE_*.md`) können als Kontext für AI-Tools verwendet werden:
+
+1. **Neue Strategie hinzufügen:**
+   - Öffne `docs/DEV_GUIDE_ADD_STRATEGY.md` als Kontext
+   - AI-Tool kann die Schritt-für-Schritt-Anleitung befolgen
+
+2. **Neuen Exchange-Adapter hinzufügen:**
+   - Öffne `docs/DEV_GUIDE_ADD_EXCHANGE.md` als Kontext
+   - AI-Tool kann die Integration-Schritte befolgen
+
+3. **Neues Live-Risk-Limit hinzufügen:**
+   - Öffne `docs/DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md` als Kontext
+   - AI-Tool kann die Implementierung-Schritte befolgen
+
+4. **Neues Portfolio-Rezept hinzufügen:**
+   - Öffne `docs/DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md` als Kontext
+   - AI-Tool kann die Rezept-Definition befolgen
+
+**Beispiel-Prompt für AI-Tools:**
+
+```
+Ich möchte eine neue Strategie hinzufügen. Bitte nutze 
+docs/DEV_GUIDE_ADD_STRATEGY.md als Referenz und folge 
+den Schritt-für-Schritt-Anweisungen.
+```
+
+**Verfügbare Developer-Guides:**
+
+- `docs/DEV_GUIDE_ADD_STRATEGY.md` – Neue Strategie hinzufügen
+- `docs/DEV_GUIDE_ADD_EXCHANGE.md` – Neuen Exchange-Adapter hinzufügen
+- `docs/DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md` – Neues Live-Risk-Limit hinzufügen
+- `docs/DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md` – Neues Portfolio-Rezept hinzufügen
+
+**Architektur-Übersicht:**
+
+- `docs/ARCHITECTURE_OVERVIEW.md` – High-Level-Architektur mit Diagramm und Layer-Beschreibung

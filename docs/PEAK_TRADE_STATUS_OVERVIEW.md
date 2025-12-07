@@ -1,16 +1,18 @@
-# Peak_Trade – Projekt-Status Overview (Phasen 1–49)
+# Peak_Trade – Projekt-Status Overview (Phasen 1–52)
 
 Dieses Dokument beschreibt den aktuellen Gesamtstatus von **Peak_Trade**
-(Phasen **1–49**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
+(Phasen **1–52**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
 
 Ziel:
 
 * Eine **prozentuale Einschätzung** je Bereich
 * Klarheit, **was schon stabil ist** und **was noch fehlt**
-* Grundlage für zukünftige Roadmaps (Phase 50+)
+* Grundlage für zukünftige Roadmaps (Phase 53+)
 
 > **Hinweis:** Prozentwerte sind bewusst als **qualitative Reifegrade** zu verstehen
 > (Architektur, Codequalität, Tests, Doku, Operational Readiness), nicht als „fertig/nie-ändern".
+
+> **Für ein Architektur-Diagramm und Layer-Übersicht siehe:** [`ARCHITECTURE_OVERVIEW.md`](ARCHITECTURE_OVERVIEW.md)
 
 ---
 
@@ -28,8 +30,8 @@ Ziel:
 | Live-/Testnet & Operations      | 91%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks              |
 | Reporting, Monitoring & CLI     | 88%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI             |
 | Documentation & Governance      | 86%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs                        |
-| Developer-Experience & Tooling  | 80%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, aber noch Ausbaupotenzial     |
-| **Gesamtprojekt (Phasen 1–49)** | **≈ 88%** | Starkes Fundament, produktionsnahe Architektur, offene Themen v.a. bei Komfort & Scaling |
+| Developer-Experience & Tooling  | 90%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides |
+| **Gesamtprojekt (Phasen 1–52)** | **≈ 90%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides |
 
 ---
 
@@ -427,16 +429,23 @@ Ziel:
 
 ---
 
-## 10. Developer Experience & Tooling (~80%)
+## 10. Developer Experience & Tooling (~90%)
 
 **Relevante Doku & Artefakte:**
+
+* **Architektur & Developer-Guides (Phase 52):**
+  * `docs/ARCHITECTURE_OVERVIEW.md` – High-Level-Architektur mit Diagramm
+  * `docs/DEV_GUIDE_ADD_STRATEGY.md` – Neue Strategie hinzufügen
+  * `docs/DEV_GUIDE_ADD_EXCHANGE.md` – Neuen Exchange-Adapter hinzufügen
+  * `docs/DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md` – Neues Live-Risk-Limit hinzufügen
+  * `docs/DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md` – Neues Portfolio-Rezept hinzufügen
 
 * Projektstruktur & CLI-Cheatsheet:
 
   * `docs/CLI_CHEATSHEET.md`
 * AI-/Prompt-Setup:
 
-  * `docs/ai/CLAUDE_GUIDE.md` (ehem. `CLAUDE_WORKFLOW.md`)
+  * `docs/ai/CLAUDE_GUIDE.md` (ehem. `CLAUDE_WORKFLOW.md`) – Falls vorhanden
   * weitere AI-/Tooling-Doku in `docs/ai/`
 
 **Relevante Bausteine:**
@@ -453,8 +462,18 @@ Ziel:
 
 **Stärken:**
 
+* **Phase 52**: Umfassende Architektur-Dokumentation und Developer-Guides für typische Erweiterungen
+* Klare Struktur für neue Entwickler
+* AI-Tools können Developer-Guides als Kontext nutzen
 * Solide, nachvollziehbare Projektstruktur.
 * Tests sind fester Bestandteil der Entwicklung (nicht optional).
+
+**Weiterlesen:**
+
+* Strategy & Portfolio → `DEV_GUIDE_ADD_STRATEGY.md`, `DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md`
+* Risk & Safety → `DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md`
+* Live-/Testnet & Ops → `PHASE_51_LIVE_OPS_CLI.md`
+* Architektur → `ARCHITECTURE_OVERVIEW.md`
 * AI-Tools sind **integriert** (nicht nur „ein bisschen Copy-Paste").
 
 **Offene Themen:**
@@ -526,10 +545,14 @@ Basierend auf dem aktuellen Stand (≈ 88% Gesamt-Reifegrad) bieten sich folgend
      * `live_ops portfolio`
      * `live_ops health`
    * Ein einziger Entry-Point für Operatoren.
-3. **Architektur & Developer-Guides**
+3. **Architektur & Developer-Guides (Phase 52) ✅**
 
-   * Ein „Architecture Overview"-Dokument mit Diagrammen.
-   * Developer-Guides (Strategie hinzufügen, Exchange hinzufügen, neues Risk-Feature hinzufügen).
+   * `ARCHITECTURE_OVERVIEW.md` mit High-Level-Diagramm und Layer-Beschreibung.
+   * Developer-Guides:
+     * `DEV_GUIDE_ADD_STRATEGY.md` – Neue Strategie hinzufügen
+     * `DEV_GUIDE_ADD_EXCHANGE.md` – Neuen Exchange-Adapter hinzufügen
+     * `DEV_GUIDE_ADD_LIVE_RISK_LIMIT.md` – Neues Live-Risk-Limit hinzufügen
+     * `DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md` – Neues Portfolio-Rezept hinzufügen
 4. **Weitere Strategie-/Portfolio-Library**
 
    * Mehr Strategien, mehr Märkte.
@@ -551,6 +574,7 @@ Basierend auf dem aktuellen Stand (≈ 88% Gesamt-Reifegrad) bieten sich folgend
 | 2025-12-07 | c63ea36   | Abschluss Phase 49 – Live Alerts & Notifications                |
 | 2025-12-07 | 226dfac   | Erstellung `PEAK_TRADE_STATUS_OVERVIEW.md` (Phasen 1–49)        |
 | 2025-12-07 | (aktuell) | Update mit konkreten Phasen-Referenzen                          |
+| 2025-12-07 | (aktuell) | Phase 52 – Architecture Overview & Developer-Guides             |
 
 ---
 
