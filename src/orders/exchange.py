@@ -279,26 +279,45 @@ class TestnetOrderExecutor:
 
 class LiveOrderExecutor:
     """
-    Live-Order-Executor (NICHT IMPLEMENTIERT).
+    Live-Order-Executor (Phase 71: Design & Dry-Run).
 
-    In Phase 17 ist Live-Trading NICHT implementiert.
-    Jeder Versuch, diesen Executor zu verwenden, wird blockiert.
+    Phase 71 Verhalten:
+        - Live-Execution-Path existiert als Design
+        - Im Dry-Run-Modus: Nur Logging, keine echten Orders
+        - Echte Live-Orders sind weiterhin blockiert
 
-    Dieses Stub dient als Platzhalter für zukünftige Implementierungen
-    und demonstriert die Safety-Architektur.
+    Dieser Executor demonstriert, wie ein Live-Execution-Path aussehen würde,
+    aber er ist technisch auf "Dry-Run" verdrahtet.
 
-    WICHTIG: Diese Klasse sendet NIEMALS echte Orders!
-             Live-Trading wird erst in einer späteren Phase implementiert.
+    WICHTIG: In Phase 71 sendet diese Klasse KEINE echten Orders!
+             Alle Live-Operationen sind als TODO/commented-out/NotImplemented
+             gekennzeichnet.
+
+    Attributes:
+        safety_guard: SafetyGuard für Safety-Prüfungen
+        simulated_prices: Optionale simulierte Preise für Dry-Run-Fill-Berechnung
+        fee_bps: Simulierte Fee in Basispunkten
+        slippage_bps: Simulierte Slippage in Basispunkten
+        dry_run_mode: Ob im Dry-Run-Modus (Default: True in Phase 71)
 
     Example:
-        >>> executor = LiveOrderExecutor(safety_guard=guard)
-        >>> executor.execute_order(order)  # Raises LiveNotImplementedError
+        >>> env_config = EnvironmentConfig(
+        ...     environment=TradingEnvironment.LIVE,
+        ...     live_dry_run_mode=True  # Phase 71: Immer True
+        ... )
+        >>> guard = SafetyGuard(env_config=env_config)
+        >>> executor = LiveOrderExecutor(safety_guard=guard, dry_run_mode=True)
+        >>> result = executor.execute_order(order)  # Dry-Run mit Logging
     """
 
     def __init__(
         self,
         safety_guard: SafetyGuard,
-        # Zukünftige Parameter (nicht verwendet in Phase 17):
+        simulated_prices: Optional[Dict[str, float]] = None,
+        fee_bps: float = 10.0,
+        slippage_bps: float = 5.0,
+        dry_run_mode: bool = True,
+        # Zukünftige Parameter (nicht verwendet in Phase 71):
         # exchange_client: Any = None,
         # api_key: str = "",
         # api_secret: str = "",
@@ -308,77 +327,196 @@ class LiveOrderExecutor:
 
         Args:
             safety_guard: SafetyGuard für Safety-Prüfungen
+            simulated_prices: Optionale Preise für Dry-Run-Simulation
+            fee_bps: Simulierte Fee in Basispunkten (Default: 10)
+            slippage_bps: Simulierte Slippage in Basispunkten (Default: 5)
+            dry_run_mode: Ob im Dry-Run-Modus (Default: True in Phase 71)
 
         Note:
-            In Phase 17 wird die Initialisierung akzeptiert,
-            aber execute_order() wirft immer eine Exception.
+            In Phase 71 ist dry_run_mode immer True.
+            Echte Live-Orders werden erst in einer späteren Phase implementiert.
         """
         self._safety_guard = safety_guard
+        self._simulated_prices = simulated_prices or {}
+        self._fee_bps = fee_bps
+        self._slippage_bps = slippage_bps
+        self._dry_run_mode = dry_run_mode
         self._execution_count = 0
+        self._order_log: List[DryRunOrderLog] = []
 
-        logger.warning(
-            "[LIVE EXECUTOR] LiveOrderExecutor initialisiert. "
-            "HINWEIS: Live-Trading ist in Phase 17 NICHT implementiert!"
+        # Phase 71: Immer Dry-Run
+        if not self._dry_run_mode:
+            logger.warning(
+                "[LIVE EXECUTOR] dry_run_mode=False gesetzt, aber Phase 71 "
+                "erlaubt nur Dry-Run. Setze auf True."
+            )
+            self._dry_run_mode = True
+
+        logger.info(
+            "[LIVE EXECUTOR] LiveOrderExecutor initialisiert im Dry-Run-Modus. "
+            "Phase 71: Nur Design/Logging, keine echten Orders."
         )
+
+    def set_simulated_price(self, symbol: str, price: float) -> None:
+        """Setzt einen simulierten Preis für ein Symbol."""
+        if price <= 0:
+            raise ValueError(f"Preis muss > 0 sein: {price}")
+        self._simulated_prices[symbol] = price
+
+    def get_simulated_price(self, symbol: str) -> Optional[float]:
+        """Gibt den simulierten Preis für ein Symbol zurück."""
+        return self._simulated_prices.get(symbol)
+
+    def _compute_simulated_fill_price(
+        self, order: OrderRequest, base_price: float
+    ) -> float:
+        """Berechnet den simulierten Fill-Preis mit Slippage."""
+        if self._slippage_bps == 0.0:
+            return base_price
+
+        slip_factor = self._slippage_bps / 10000.0
+        if order.side == "buy":
+            return base_price * (1.0 + slip_factor)
+        else:
+            return base_price * (1.0 - slip_factor)
+
+    def _compute_simulated_fee(self, notional: float) -> float:
+        """Berechnet die simulierte Fee."""
+        if self._fee_bps == 0.0:
+            return 0.0
+        return abs(notional) * (self._fee_bps / 10000.0)
 
     def execute_order(self, order: OrderRequest) -> OrderExecutionResult:
         """
-        Würde eine Live-Order ausführen (NICHT IMPLEMENTIERT).
+        Führt eine Live-Order im Dry-Run-Modus aus (Phase 71).
 
-        In Phase 17 wirft diese Methode IMMER eine Exception.
-        Es werden KEINE echten Orders gesendet.
+        In Phase 71 wird KEINE echte Order gesendet.
+        Stattdessen wird ein simuliertes Ergebnis erzeugt und geloggt.
 
         Args:
             order: Die auszuführende OrderRequest
 
         Returns:
-            Nie - wirft immer Exception
+            OrderExecutionResult mit status und metadata
 
-        Raises:
-            LiveNotImplementedError: Live-Trading nicht implementiert
+        Note:
+            Diese Methode wirft keine Exception, sondern erzeugt
+            ein simuliertes Result für Dry-Run-Zwecke.
+            Echte Live-Orders sind weiterhin blockiert.
         """
         self._execution_count += 1
+        now = datetime.now(timezone.utc)
 
-        logger.error(
-            f"[LIVE EXECUTOR] Order #{self._execution_count} blockiert: "
-            f"{order.side.upper()} {order.quantity} {order.symbol} - "
-            f"Live-Trading ist in Phase 17 NICHT implementiert!"
+        # Phase 71: Immer Dry-Run
+        if not self._dry_run_mode:
+            logger.warning(
+                "[LIVE EXECUTOR] dry_run_mode=False, aber Phase 71 erlaubt nur Dry-Run. "
+                "Führe Dry-Run aus."
+            )
+
+        # Log-Info
+        logger.info(
+            f"[LIVE DRY-RUN] Order #{self._execution_count}: "
+            f"{order.side.upper()} {order.quantity} {order.symbol} @ {order.order_type} "
+            f"(Phase 71: Nur Design/Logging, keine echte Order)"
         )
 
-        # Safety-Check (wird immer Exception werfen)
-        try:
-            self._safety_guard.ensure_may_place_order(is_testnet=False)
-        except Exception as e:
-            # Erwartetes Verhalten - Exception wird durchgereicht
-            raise
+        # Prüfe ob wir einen Preis für das Symbol haben
+        base_price = self._simulated_prices.get(order.symbol)
 
-        # Falls Safety-Guard nicht greift (sollte nicht passieren):
-        raise LiveNotImplementedError(
-            f"Live-Trading ist in Phase 17 nicht implementiert. "
-            f"Diese Projektphase dient nur der Architektur-Vorbereitung. "
-            f"Verwende PaperOrderExecutor für Simulationen oder "
-            f"TestnetOrderExecutor für Dry-Run-Tests."
+        if base_price is None:
+            # Kein Preis -> simuliere Rejection
+            result = OrderExecutionResult(
+                status="rejected",
+                request=order,
+                fill=None,
+                reason=f"no_simulated_price: {order.symbol}",
+                metadata={
+                    "execution_id": self._execution_count,
+                    "mode": "live_dry_run",
+                    "environment": "live",
+                    "dry_run": True,
+                    "phase": "71",
+                    "note": "Phase 71: Live-Execution-Design - nur Dry-Run. "
+                    "Setze einen simulierten Preis mit set_simulated_price()",
+                },
+            )
+        else:
+            # Simuliere erfolgreichen Fill
+            fill_price = self._compute_simulated_fill_price(order, base_price)
+            notional = order.quantity * fill_price
+            fee = self._compute_simulated_fee(notional)
+
+            fill = OrderFill(
+                symbol=order.symbol,
+                side=order.side,
+                quantity=order.quantity,
+                price=fill_price,
+                timestamp=now,
+                fee=fee if fee > 0 else None,
+                fee_currency="EUR" if fee > 0 else None,
+            )
+
+            result = OrderExecutionResult(
+                status="filled",
+                request=order,
+                fill=fill,
+                reason=None,
+                metadata={
+                    "execution_id": self._execution_count,
+                    "mode": "live_dry_run",
+                    "environment": "live",
+                    "dry_run": True,
+                    "phase": "71",
+                    "simulated_market_price": base_price,
+                    "notional": notional,
+                    "fee": fee,
+                    "slippage_bps": self._slippage_bps,
+                    "note": "Phase 71: KEIN echter API-Call - nur Dry-Run-Simulation. "
+                    "Live-Execution-Path existiert als Design, aber ist technisch "
+                    "auf Dry-Run verdrahtet.",
+                },
+            )
+
+        # Log Entry speichern
+        log_entry = DryRunOrderLog(
+            timestamp=now,
+            request=order,
+            simulated_result=result,
+            environment=TradingEnvironment.LIVE,
+            notes="Phase 71: Live-Execution-Design - nur Dry-Run, keine echten Orders",
         )
+        self._order_log.append(log_entry)
+
+        return result
 
     def execute_orders(
         self, orders: Sequence[OrderRequest]
     ) -> List[OrderExecutionResult]:
-        """
-        Würde mehrere Live-Orders ausführen (NICHT IMPLEMENTIERT).
-
-        Wirft immer eine Exception.
-        """
-        # Versuche erste Order - wird Exception werfen
-        if orders:
-            self.execute_order(orders[0])
-
-        raise LiveNotImplementedError(
-            "Live-Trading ist in Phase 17 nicht implementiert."
-        )
+        """Führt mehrere Orders im Dry-Run aus."""
+        return [self.execute_order(order) for order in orders]
 
     def get_execution_count(self) -> int:
-        """Gibt die Anzahl der versuchten (blockierten) Orders zurück."""
+        """Gibt die Anzahl der ausgeführten Dry-Run-Orders zurück."""
         return self._execution_count
+
+    def get_order_log(self) -> List[DryRunOrderLog]:
+        """Gibt eine Kopie des Order-Logs zurück."""
+        return list(self._order_log)
+
+    def clear_order_log(self) -> None:
+        """Löscht das Order-Log."""
+        self._order_log.clear()
+
+    def reset(self) -> None:
+        """Setzt den Executor zurück."""
+        self._execution_count = 0
+        self._order_log.clear()
+
+    @property
+    def is_dry_run(self) -> bool:
+        """True wenn im Dry-Run-Modus (Phase 71: immer True)."""
+        return self._dry_run_mode
 
 
 # =============================================================================
@@ -722,3 +860,139 @@ class ExchangeOrderExecutor:
 
 # Type alias für Rückwärtskompatibilität
 PeakConfig = Any  # Vermeidet Import, wird nur für Type-Hints genutzt
+
+
+# =============================================================================
+# Factory-Funktion: create_order_executor (Phase 71)
+# =============================================================================
+
+
+def create_order_executor(
+    env_config: EnvironmentConfig,
+    simulated_prices: Optional[Dict[str, float]] = None,
+    trading_client: Optional["TradingExchangeClient"] = None,
+) -> OrderExecutor:
+    """
+    Factory-Funktion: Erstellt den passenden OrderExecutor basierend auf EnvironmentConfig.
+
+    Phase 71: Live-Execution-Design
+        - PAPER/Shadow: PaperOrderExecutor (oder ShadowOrderExecutor)
+        - TESTNET: TestnetOrderExecutor (Dry-Run)
+        - LIVE: LiveOrderExecutor (Dry-Run in Phase 71)
+
+    Entscheidungslogik:
+        1. env.mode == "paper" → PaperOrderExecutor (oder ShadowOrderExecutor)
+        2. env.mode == "testnet" → TestnetOrderExecutor (Dry-Run)
+        3. env.mode == "live" → LiveOrderExecutor (Dry-Run in Phase 71)
+        4. Mit trading_client → ExchangeOrderExecutor (kann echte Calls machen)
+
+    Args:
+        env_config: EnvironmentConfig mit Mode und Flags
+        simulated_prices: Optionale simulierte Preise für Dry-Run
+        trading_client: Optionaler TradingExchangeClient für echte Order-Aufrufe
+
+    Returns:
+        OrderExecutor-Instanz (PaperOrderExecutor, TestnetOrderExecutor, LiveOrderExecutor, etc.)
+
+    Example:
+        >>> from src.core.environment import EnvironmentConfig, TradingEnvironment
+        >>> from src.live.safety import SafetyGuard
+        >>>
+        >>> # Paper-Modus
+        >>> env = EnvironmentConfig(environment=TradingEnvironment.PAPER)
+        >>> executor = create_order_executor(env)
+        >>> # executor ist PaperOrderExecutor
+        >>>
+        >>> # Testnet-Modus
+        >>> env = EnvironmentConfig(environment=TradingEnvironment.TESTNET)
+        >>> guard = SafetyGuard(env_config=env)
+        >>> executor = create_order_executor(env)
+        >>> # executor ist TestnetOrderExecutor (Dry-Run)
+        >>>
+        >>> # Live-Modus (Phase 71: Dry-Run)
+        >>> env = EnvironmentConfig(
+        ...     environment=TradingEnvironment.LIVE,
+        ...     live_dry_run_mode=True  # Phase 71: Immer True
+        ... )
+        >>> guard = SafetyGuard(env_config=env)
+        >>> executor = create_order_executor(env)
+        >>> # executor ist LiveOrderExecutor (Dry-Run)
+
+    Note:
+        In Phase 71 ist LiveOrderExecutor immer im Dry-Run-Modus.
+        Echte Live-Orders werden erst in einer späteren Phase implementiert.
+    """
+    from .paper import PaperOrderExecutor, PaperMarketContext
+    from src.live.safety import SafetyGuard
+
+    env = env_config.environment
+    guard = SafetyGuard(env_config=env_config)
+
+    # Mit TradingExchangeClient: ExchangeOrderExecutor (kann echte Calls machen)
+    if trading_client is not None:
+        logger.info(
+            f"[FACTORY] Erstelle ExchangeOrderExecutor mit TradingClient "
+            f"({trading_client.get_name()}) für {env.value}-Modus"
+        )
+        return ExchangeOrderExecutor(
+            safety_guard=guard,
+            simulated_prices=simulated_prices,
+            trading_client=trading_client,
+        )
+
+    # PAPER/Shadow: PaperOrderExecutor
+    if env == TradingEnvironment.PAPER:
+        logger.info("[FACTORY] Erstelle PaperOrderExecutor für Paper-Modus")
+        market_ctx = PaperMarketContext(
+            prices=simulated_prices or {},
+            fee_bps=10.0,
+            slippage_bps=5.0,
+        )
+        return PaperOrderExecutor(market_context=market_ctx)
+
+    # TESTNET: TestnetOrderExecutor (Dry-Run)
+    if env == TradingEnvironment.TESTNET:
+        logger.info(
+            "[FACTORY] Erstelle TestnetOrderExecutor (Dry-Run) für Testnet-Modus"
+        )
+        return TestnetOrderExecutor(
+            safety_guard=guard,
+            simulated_prices=simulated_prices,
+            fee_bps=10.0,
+            slippage_bps=5.0,
+        )
+
+    # LIVE: LiveOrderExecutor (Phase 71: Dry-Run)
+    if env == TradingEnvironment.LIVE:
+        # Phase 71: Immer Dry-Run
+        dry_run = env_config.live_dry_run_mode
+        if not dry_run:
+            logger.warning(
+                "[FACTORY] live_dry_run_mode=False, aber Phase 71 erlaubt nur Dry-Run. "
+                "Setze auf True."
+            )
+            dry_run = True
+
+        logger.info(
+            "[FACTORY] Erstelle LiveOrderExecutor (Dry-Run) für Live-Modus "
+            "(Phase 71: Nur Design/Logging, keine echten Orders)"
+        )
+        return LiveOrderExecutor(
+            safety_guard=guard,
+            simulated_prices=simulated_prices,
+            fee_bps=10.0,
+            slippage_bps=5.0,
+            dry_run_mode=True,  # Phase 71: Immer True
+        )
+
+    # Unbekannter Modus -> Fallback auf Paper
+    logger.warning(
+        f"[FACTORY] Unbekannter Environment-Modus: {env}. "
+        "Fallback auf PaperOrderExecutor"
+    )
+    market_ctx = PaperMarketContext(
+        prices=simulated_prices or {},
+        fee_bps=10.0,
+        slippage_bps=5.0,
+    )
+    return PaperOrderExecutor(market_context=market_ctx)

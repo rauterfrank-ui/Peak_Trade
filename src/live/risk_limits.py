@@ -79,6 +79,11 @@ class LiveRiskConfig:
     block_on_violation: bool
     use_experiments_for_daily_pnl: bool
 
+    # Phase 71: Live-spezifische Limits (Design)
+    max_live_notional_per_order: Optional[float] = None
+    max_live_notional_total: Optional[float] = None
+    live_trade_min_size: Optional[float] = None
+
 
 @dataclass
 class LiveRiskCheckResult:
@@ -165,6 +170,11 @@ class LiveRiskLimits:
         block_on_violation = _get_bool("live_risk.block_on_violation", True)
         use_experiments_for_daily_pnl = _get_bool("live_risk.use_experiments_for_daily_pnl", True)
 
+        # Phase 71: Live-spezifische Limits aus Config lesen
+        max_live_notional_per_order = _get_float("live_risk.max_live_notional_per_order")
+        max_live_notional_total = _get_float("live_risk.max_live_notional_total")
+        live_trade_min_size = _get_float("live_risk.live_trade_min_size")
+
         # Falls nur Prozent angegeben, aber kein absolutes Limit: das ist ok,
         # wird aber nur wirksam, wenn starting_cash übergeben wurde.
         cfg_obj = LiveRiskConfig(
@@ -178,6 +188,10 @@ class LiveRiskLimits:
             max_order_notional=max_order_notional,
             block_on_violation=block_on_violation,
             use_experiments_for_daily_pnl=use_experiments_for_daily_pnl,
+            # Phase 71: Live-spezifische Limits (Design)
+            max_live_notional_per_order=max_live_notional_per_order,
+            max_live_notional_total=max_live_notional_total,
+            live_trade_min_size=live_trade_min_size,
         )
         obj = cls(cfg_obj, alert_sink=alert_sink)
         obj._starting_cash = starting_cash

@@ -227,13 +227,24 @@ class SafetyGuard:
 
         # --- LIVE Mode ---
         if env == TradingEnvironment.LIVE:
-            # Prüfe enable_live_trading
+            # Phase 71: Zweistufiges Gating
+            # Gate 1: enable_live_trading
             if not self.env_config.enable_live_trading:
-                reason = "enable_live_trading = False"
+                reason = "enable_live_trading = False (Gate 1)"
                 self._log_audit(action, False, reason)
                 raise LiveTradingDisabledError(
                     f"Live-Trading ist deaktiviert (enable_live_trading=False). "
                     f"Setze enable_live_trading=True in der Config, um fortzufahren."
+                )
+
+            # Phase 71: Gate 2: live_mode_armed
+            if not self.env_config.live_mode_armed:
+                reason = "live_mode_armed = False (Gate 2 - Phase 71)"
+                self._log_audit(action, False, reason)
+                raise LiveTradingDisabledError(
+                    f"Live-Modus ist nicht 'armed' (live_mode_armed=False). "
+                    f"Phase 71: Zweistufiges Gating - zusätzliche Freigabe erforderlich. "
+                    f"Setze live_mode_armed=True in der Config (nur für Design-Tests)."
                 )
 
             # Prüfe Confirm-Token
@@ -246,8 +257,28 @@ class SafetyGuard:
                         f"Setze confirm_token='{LIVE_CONFIRM_TOKEN}' in der Config."
                     )
 
-            # Selbst mit korrektem Token: Live ist in Phase 17 NICHT implementiert
-            reason = "Live-Trading nicht implementiert (Phase 17)"
+            # Phase 71: Live-Dry-Run-Modus prüfen
+            if self.env_config.live_dry_run_mode:
+                # Phase 71: Live-Path existiert als Design, aber nur Dry-Run
+                # Diese Methode wird normalerweise nicht aufgerufen, wenn live_dry_run_mode=True,
+                # da LiveOrderExecutor direkt simuliert. Aber für Safety-Checks:
+                reason = "Live-Dry-Run-Modus aktiv (Phase 71)"
+                self._log_audit(
+                    action,
+                    False,
+                    reason,
+                    "Phase 71: Live-Execution-Design - nur Dry-Run, keine echten Orders",
+                )
+                # In Phase 71 erlauben wir Dry-Run, aber blockieren echte Orders
+                # Diese Exception wird nur geworfen, wenn jemand versucht, echte Orders zu senden
+                raise LiveNotImplementedError(
+                    f"Live-Trading ist in Phase 71 nur als Design/Dry-Run implementiert. "
+                    f"live_dry_run_mode=True blockt echte Orders. "
+                    f"Verwende LiveOrderExecutor für Dry-Run-Simulationen."
+                )
+
+            # Falls live_dry_run_mode=False (sollte in Phase 71 nicht vorkommen):
+            reason = "Live-Trading nicht implementiert (Phase 71)"
             self._log_audit(
                 action,
                 False,
@@ -255,7 +286,7 @@ class SafetyGuard:
                 "Live-Order-Execution wird in einer späteren Phase implementiert",
             )
             raise LiveNotImplementedError(
-                f"Live-Trading ist in Phase 17 nicht implementiert. "
+                f"Live-Trading ist in Phase 71 nicht implementiert. "
                 f"Diese Projektphase dient nur der Architektur-Vorbereitung. "
                 f"Echte Live-Orders werden erst in einer späteren Phase unterstützt."
             )
@@ -326,20 +357,23 @@ class SafetyGuard:
         """
         Gibt den effektiven Ausführungsmodus zurück.
 
-        In Phase 17 ist der effektive Modus immer "dry_run" oder "paper",
-        da echte Orders nicht implementiert sind.
+        In Phase 71 ist der effektive Modus für Live "live_dry_run",
+        da Live-Execution-Path als Design existiert, aber nur Dry-Run erlaubt.
 
         Returns:
-            "paper", "dry_run", oder "blocked"
+            "paper", "dry_run", "live_dry_run", oder "blocked"
         """
         env = self.env_config.environment
 
         if env == TradingEnvironment.PAPER:
             return "paper"
         if env == TradingEnvironment.TESTNET:
-            return "dry_run"  # Immer Dry-Run in Phase 17
+            return "dry_run"  # Immer Dry-Run in Phase 71
         if env == TradingEnvironment.LIVE:
-            return "blocked"  # Live ist nicht implementiert
+            # Phase 71: Live-Path existiert als Design, aber nur Dry-Run
+            if self.env_config.live_dry_run_mode:
+                return "live_dry_run"  # Phase 71: Design/Dry-Run
+            return "blocked"  # Falls live_dry_run_mode=False (sollte nicht vorkommen)
 
         return "unknown"
 

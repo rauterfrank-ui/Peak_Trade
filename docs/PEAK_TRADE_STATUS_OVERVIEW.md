@@ -1,7 +1,7 @@
-# Peak_Trade – Projekt-Status Overview (Phasen 1–68)
+# Peak_Trade – Projekt-Status Overview (Phasen 1–71)
 
 Dieses Dokument beschreibt den aktuellen Gesamtstatus von **Peak_Trade**
-(Phasen **1–68**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
+(Phasen **1–71**, inkl. Research-/Portfolio-Track und Live-/Testnet-Track).
 
 > **Peak_Trade v1.0 Release-Paket:** siehe [`PEAK_TRADE_V1_RELEASE_NOTES.md`](PEAK_TRADE_V1_RELEASE_NOTES.md) und das aktualisierte Projekt-[`README.md`](../README.md).
 
@@ -29,11 +29,11 @@ Ziel:
 | Strategy & Portfolio Layer      | 92%       | Einzel-Strategien, Portfolio-Layer, Portfolio-Robustness, Recipes, Risk-Profiled Presets (Phase 53), Research→Live Playbook (Phase 54) |
 | Risk & Safety (Research + Live) | 90%       | Risk-Metriken, Limits, LiveRiskLimits, Safety-Concept                                    |
 | Research & Experiments          | 91%       | Registry, Sweeps, Research-CLI, Pipeline v2, Portfolio-Level-Robustness, Research→Live Playbook (Phase 54) |
-| Live-/Testnet & Operations      | 97%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Testnet-Orchestrator v1 (Phase 64), Research→Live Playbook (Phase 54) |
+| Live-/Testnet & Operations      | 98%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Testnet-Orchestrator v1 (Phase 64), Research→Live Playbook (Phase 54), Live-Execution-Design & Gating (Phase 71) |
 | Reporting, Monitoring & CLI     | 97%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI, Live-Ops CLI (Phase 51), Monitoring & CLI-Dashboards v1 (Phase 65), Alerts & Incident Notifications v1 (Phase 66), Live Web Dashboard v0 (Phase 67) |
 | Documentation & Governance      | 90%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs, Research→Live Playbook (Phase 54), v1.0 Known Limitations dokumentiert |
 | Developer-Experience & Tooling  | 93%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides, AI-Guide (Phase 55), Warning-free Test-Suite (Phase 68) |
-| **Gesamtprojekt (Phasen 1–68)** | **≈ 95%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides, Strategy & Portfolio Library, Research→Live Playbook, Live-Status-Reports, Incident-Drills, Testnet-Orchestrator, Monitoring & Alerts, Web-Dashboard v0, v1.0 Hardening & Polishing (Phase 68), 1733 Tests (alle grün) |
+| **Gesamtprojekt (Phasen 1–71)** | **≈ 96%** | Starkes Fundament, produktionsnahe Architektur, umfassende Dokumentation, Developer-Guides, Strategy & Portfolio Library, Research→Live Playbook, Live-Status-Reports, Incident-Drills, Testnet-Orchestrator, Monitoring & Alerts, Web-Dashboard v0, v1.0 Hardening & Polishing (Phase 68), Live-Execution-Design & Gating (Phase 71), 1733+ Tests (alle grün) |
 
 ---
 
@@ -554,6 +554,21 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
    * Risk-Profile-Schema: `conservative`, `moderate`, `aggressive`
    * Naming-Konvention: `<family>_<market>_<profile>`
 
+9. **Phase 71 – Live-Execution-Design & Gating**
+
+   * Live-Execution-Path als Design modelliert (Dry-Run)
+   * `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
+   * Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
+   * Zweistufiges Gating (`enable_live_trading` + `live_mode_armed`)
+   * `live_dry_run_mode = True` blockt echte Orders technisch
+   * Live-spezifische Limits in Config modelliert:
+     * `max_live_notional_per_order`
+     * `max_live_notional_total`
+     * `live_trade_min_size`
+   * Tests für Design & Gating hinzugefügt
+   * **WICHTIG:** Keine echte Live-Order-Ausführung aktiviert!
+   * Siehe [`docs/PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md`](PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md)
+
 Diese Bausteine schließen die Lücke zwischen:
 
 * **Research-Robustness** (Backtests, Sweeps, Monte-Carlo, Stress)
@@ -631,6 +646,7 @@ Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-P
 | 2025-12-07 | (aktuell) | Phase 54 – Research → Live Portfolios Playbook                  |
 | 2025-12-07 | (aktuell) | Phase 55 – Clean-Up & Polishing (Docs, Status, CLI-Cheatsheet) |
 | 2025-12-07 | (aktuell) | Phase 60 – Reference Scenario `multi_style_moderate`             |
+| 2025-12-07 | (aktuell) | Phase 71 – Live-Execution-Design & Gating                        |
 
 ---
 

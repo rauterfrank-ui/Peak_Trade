@@ -271,7 +271,65 @@ Diese Policy gilt für alle Nutzer und Entwickler von Peak_Trade, die an der Ent
 
 ---
 
-## 8. Changelog
+## 8. Live-Readiness v1.1 – Designstatus (Phase 71)
+
+### 8.1 Phase 71: Live-Execution-Design & Gating
+
+**Status:** Design & Dry-Wiring (keine echte Live-Aktivierung)
+
+**Was Phase 71 getan hat:**
+
+1. **Live-Execution-Path als Design modelliert:**
+   - `LiveOrderExecutor` existiert als Stub/Dry-Run
+   - Erfüllt das `OrderExecutor`-Interface
+   - Macht nur Logging und legt Events ab
+   - Sendet **keine echten Orders** an Exchange-APIs
+
+2. **Execution-Pfade klar getrennt:**
+   - `PaperExecutionPath` → `PaperOrderExecutor`
+   - `TestnetExecutionPath` → `TestnetOrderExecutor`
+   - `LiveExecutionPath` → `LiveOrderExecutor` (Dry-Run in Phase 71)
+   - Factory-Funktion `create_order_executor(env)` wählt automatisch
+
+3. **Zweistufiges Gating für Live:**
+   - Gate 1: `enable_live_trading = True`
+   - Gate 2: `live_mode_armed = True` (Phase 71: zusätzliches Gate)
+   - `live_dry_run_mode = True` blockt echte Orders (Phase 71: immer True)
+
+4. **Live-spezifische Limits modelliert:**
+   - `max_live_notional_per_order`
+   - `max_live_notional_total`
+   - `live_trade_min_size`
+   - In `EnvironmentConfig` und `LiveRiskConfig` verfügbar
+
+**WICHTIG:**
+- Live-Execution-Path existiert **nur als Design/Dry-Run**
+- Alle Live-Operationen sind klar als TODO/commented-out/NotImplemented gekennzeichnet
+- `live_dry_run_mode = True` blockt echte Orders technisch
+- Jede echte Live-Freigabe erfordert eine eigene Phase (z.B. Phase 72/73)
+
+**Gates/Flags VOR einer echten Aktivierung:**
+1. `environment.mode = "live"`
+2. `enable_live_trading = True`
+3. `live_mode_armed = True` (zweites Gate)
+4. `live_dry_run_mode = False` (muss explizit auf False gesetzt werden)
+5. `confirm_token = "I_KNOW_WHAT_I_AM_DOING"`
+6. Risk-Limits konfiguriert und aktiv
+7. Monitoring & Runbooks vorhanden
+8. Governance-Freigabe dokumentiert
+
+---
+
+## 9. Changelog
+
+- **Phase 71** (2025-12): Live-Execution-Design & Gating
+  - Live-Execution-Path als Design modelliert (Dry-Run)
+  - `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
+  - Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
+  - Zweistufiges Gating (`enable_live_trading` + `live_mode_armed`)
+  - Live-spezifische Limits in Config modelliert
+  - Tests für Design & Gating hinzugefügt
+  - Dokumentation aktualisiert
 
 - **Phase 25** (2025-12): Initial erstellt
   - Risk-Limits dokumentiert

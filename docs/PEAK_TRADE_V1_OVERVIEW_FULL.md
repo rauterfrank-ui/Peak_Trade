@@ -704,6 +704,22 @@ python scripts/generate_live_status_report.py \
 - Automatisierte Live-Trading-Orchestrierung (optional)
 - Erweiterte Order-Typen (OCO, Bracket-Orders)
 
+### 10.2 Live-Readiness v1.1 – Execution Design & Gating (Phase 71)
+
+**Status:** Design & Dry-Wiring (keine echte Live-Aktivierung)
+
+**Was Phase 71 getan hat:**
+- ✅ Live-Execution-Path als Design modelliert (Dry-Run)
+- ✅ `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
+- ✅ Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
+- ✅ Zweistufiges Gating (`enable_live_trading` + `live_mode_armed`)
+- ✅ Live-spezifische Limits in Config modelliert
+- ✅ Tests für Design & Gating hinzugefügt
+
+**WICHTIG:** Phase 71 erlaubt weiterhin **keine** echten Live-Trades. Das System **weiß**, wie ein Live-Execution-Path aussehen würde, aber er ist technisch auf "Dry-Run" verdrahtet.
+
+**Details:** Siehe [`docs/PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md`](PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md)
+
 **Details siehe später:** `ROADMAP_V2_AND_BEYOND.md` (noch in Planung)
 
 ---
