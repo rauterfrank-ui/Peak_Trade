@@ -323,7 +323,10 @@ def save_walkforward_report(
         ... )
     """
     # Bestimme vollständigen Pfad
-    if output_path.is_dir():
+    # Prüfe ob output_path ein Verzeichnispfad ist (kein .md Suffix) oder bereits existiert als Dir
+    is_directory_path = output_path.is_dir() or (not output_path.suffix and not output_path.is_file())
+
+    if is_directory_path:
         # Verzeichnisstruktur: reports/walkforward/{sweep_name}/{config_id}_walkforward_YYYYMMDD.md
         if sweep_name:
             output_path = output_path / sweep_name
@@ -336,7 +339,7 @@ def save_walkforward_report(
             filename = f"walkforward_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
         output_path = output_path / filename
     else:
-        # Vollständiger Pfad übergeben
+        # Vollständiger Pfad übergeben (hat .md oder andere Extension)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Speichere Report
