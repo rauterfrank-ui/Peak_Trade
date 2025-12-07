@@ -264,6 +264,37 @@ class TestMain:
         assert call_args.command == "portfolio"
         assert call_args.sweep_name == "dummy"
 
+    def test_portfolio_subparser_has_preset_args(self):
+        """Portfolio-Subparser hat --portfolio-preset und --recipes-config Argumente."""
+        parser = research_cli.build_parser()
+        args = parser.parse_args([
+            "portfolio",
+            "--portfolio-preset", "rsi_reversion_balanced",
+            "--recipes-config", "config/portfolio_recipes.toml",
+            "--config", "config/config.toml",
+        ])
+        
+        assert args.command == "portfolio"
+        assert args.portfolio_preset == "rsi_reversion_balanced"
+        assert args.recipes_config == "config/portfolio_recipes.toml"
+
+    @patch("scripts.research_cli.run_portfolio_robustness_from_args")
+    def test_main_portfolio_with_preset(self, mock_run_portfolio):
+        """Portfolio-Command mit --portfolio-preset ruft Runner mit Preset auf."""
+        mock_run_portfolio.return_value = 0
+        
+        exit_code = research_cli.main([
+            "portfolio",
+            "--portfolio-preset", "rsi_reversion_balanced",
+            "--config", "config/config.toml",
+        ])
+        
+        assert exit_code == 0
+        assert mock_run_portfolio.called
+        call_args = mock_run_portfolio.call_args[0][0]
+        assert call_args.command == "portfolio"
+        assert call_args.portfolio_preset == "rsi_reversion_balanced"
+
     @patch("scripts.research_cli.run_pipeline")
     def test_main_pipeline_calls_pipeline_runner(self, mock_run_pipeline):
         """Pipeline-Command ruft run_pipeline auf."""

@@ -34,6 +34,39 @@ python scripts/run_portfolio_backtest.py --tag portfolio-test
 
 ---
 
+## 2.1. Portfolio-Recipes & Presets (Research-CLI)
+
+**Vordefinierte Portfolio-Konfigurationen für Research-CLI:**
+
+```bash
+# Standard-Run mit Preset
+python scripts/research_cli.py portfolio \
+  --config config/config.toml \
+  --portfolio-preset rsi_reversion_balanced
+
+# Preset + Override: mehr Monte-Carlo-Runs
+python scripts/research_cli.py portfolio \
+  --config config/config.toml \
+  --portfolio-preset rsi_reversion_balanced \
+  --mc-num-runs 2000
+
+# Preset + Override: anderes Output-Format
+python scripts/research_cli.py portfolio \
+  --config config/config.toml \
+  --portfolio-preset rsi_reversion_balanced \
+  --format markdown
+
+# Custom Recipes-Datei
+python scripts/research_cli.py portfolio \
+  --config config/config.toml \
+  --recipes-config config/custom_recipes.toml \
+  --portfolio-preset my_custom_preset
+```
+
+**Siehe:** [PORTFOLIO_RECIPES_AND_PRESETS.md](PORTFOLIO_RECIPES_AND_PRESETS.md) für Details.
+
+---
+
 ## 3. Parameter-Sweeps
 
 ```bash

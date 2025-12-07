@@ -39,21 +39,22 @@ import sys
 from pathlib import Path
 from typing import Optional, Sequence
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 # Projekt-Root zum Path hinzufügen
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+from src.experiments.portfolio_recipes import get_portfolio_recipe
 from src.experiments.portfolio_robustness import (
     PortfolioComponent,
     PortfolioDefinition,
     PortfolioRobustnessConfig,
     run_portfolio_robustness,
 )
-from src.experiments.topn_promotion import load_top_n_configs_for_sweep
 from src.experiments.stress_tests import load_returns_for_top_config
+from src.experiments.topn_promotion import load_top_n_configs_for_sweep
 from src.reporting.portfolio_robustness_report import build_portfolio_robustness_report
 
 
@@ -152,30 +153,48 @@ def build_parser() -> argparse.ArgumentParser:
         epilog=__doc__,
     )
 
-    # Pflicht-Argumente
+    # Portfolio-Recipes (Presets)
+    parser.add_argument(
+        "--portfolio-preset",
+        type=str,
+        default=None,
+        help="Name/ID eines vordefinierten Portfolio-Recipes (z.B. rsi_reversion_balanced). "
+             "Wenn gesetzt, werden Default-Werte aus dem Preset geladen.",
+    )
+    parser.add_argument(
+        "--recipes-config",
+        type=str,
+        default="config/portfolio_recipes.toml",
+        help="Pfad zur TOML-Datei mit Portfolio-Recipes (default: config/portfolio_recipes.toml).",
+    )
+
+    # Pflicht-Argumente (werden optional, wenn --portfolio-preset gesetzt ist)
     parser.add_argument(
         "--sweep-name",
         type=str,
-        required=True,
-        help="Name des Sweeps (z.B. rsi_reversion_basic)",
+        default=None,
+        help="Name des Sweeps (z.B. rsi_reversion_basic). "
+             "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
     )
     parser.add_argument(
         "--config",
         type=str,
-        required=True,
+        default=None,
         help="Peak_Trade-Konfigurationsdatei (TOML).",
     )
     parser.add_argument(
         "--top-n",
         type=int,
-        default=3,
-        help="Anzahl Top-Konfigurationen für das Portfolio (default: 3)",
+        default=None,
+        help="Anzahl Top-Konfigurationen für das Portfolio (default: 3). "
+             "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
     )
     parser.add_argument(
         "--portfolio-name",
         type=str,
-        required=True,
-        help="Name des Portfolios (z.B. rsi_portfolio_v1)",
+        default=None,
+        help="Name des Portfolios (z.B. rsi_portfolio_v1). "
+             "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
     )
 
     # Portfolio-Konfiguration
@@ -268,8 +287,9 @@ def build_parser() -> argparse.ArgumentParser:
         "--format",
         type=str,
         choices=["md", "html", "both"],
-        default="both",
-        help="Output-Format (default: both)",
+        default=None,
+        help="Output-Format (default: both). "
+             "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
     )
 
     # Dummy-Daten (für Tests)
@@ -309,8 +329,113 @@ def run_from_args(args: argparse.Namespace) -> int:
     logger = logging.getLogger(__name__)
 
     try:
+        # 0. Lade Portfolio-Recipe (Preset), falls gesetzt
+        recipe = None
+        if args.portfolio_preset:
+            recipes_config_path = Path(args.recipes_config)
+            if not recipes_config_path.exists():
+                logger.error(f"Recipes-Config-Datei nicht gefunden: {recipes_config_path}")
+                return 1
+
+            try:
+                recipe = get_portfolio_recipe(recipes_config_path, args.portfolio_preset)
+                logger.info(f"✅ Portfolio-Recipe geladen: {recipe.portfolio_name}")
+                logger.info(f"   Beschreibung: {recipe.description or '(keine)'}")
+            except KeyError as e:
+                logger.error(f"Fehler beim Laden des Portfolio-Recipe: {e}")
+                return 1
+            except Exception as e:
+                logger.error(f"Unerwarteter Fehler beim Laden des Portfolio-Recipe: {e}")
+                return 1
+
+        # Merge: Preset-Werte als Defaults, CLI-Argumente überschreiben
+        # 1. sweep_name
+        sweep_name = args.sweep_name
+        if recipe and sweep_name is None:
+            sweep_name = recipe.sweep_name
+        if not sweep_name:
+            logger.error("--sweep-name ist erforderlich (oder via --portfolio-preset)")
+            return 1
+
+        # 2. config
+        config_path_str = args.config
+        if recipe and config_path_str is None:
+            # Recipe hat kein config-Feld, also muss es explizit gesetzt werden
+            config_path_str = "config/config.toml"  # Default
+        if not config_path_str:
+            logger.error("--config ist erforderlich")
+            return 1
+
+        # 3. top_n
+        top_n = args.top_n
+        if recipe and top_n is None:
+            top_n = recipe.top_n
+        if top_n is None:
+            top_n = 3  # Fallback
+
+        # 4. portfolio_name
+        portfolio_name = args.portfolio_name
+        if recipe and portfolio_name is None:
+            portfolio_name = recipe.portfolio_name
+        if not portfolio_name:
+            logger.error("--portfolio-name ist erforderlich (oder via --portfolio-preset)")
+            return 1
+
+        # 5. weights
+        weights = args.weights
+        if recipe and weights is None:
+            weights = recipe.weights
+        # weights kann None bleiben (wird später zu equal-weight)
+
+        # 6. Monte-Carlo-Flags
+        run_montecarlo = args.run_montecarlo
+        if recipe and not run_montecarlo:
+            run_montecarlo = recipe.run_montecarlo
+
+        mc_num_runs = args.mc_num_runs
+        # Wenn Preset gesetzt ist und mc_num_runs nicht explizit überschrieben wurde (Default = 1000),
+        # verwende Preset-Wert
+        if recipe and recipe.mc_num_runs is not None:
+            # Nur überschreiben, wenn es der Default-Wert ist (d.h. nicht explizit gesetzt)
+            # argparse setzt Defaults auch wenn nicht gesetzt, daher prüfen wir ob es der Default ist
+            if mc_num_runs == 1000:  # Default-Wert aus Parser
+                mc_num_runs = recipe.mc_num_runs
+
+        # 7. Stress-Test-Flags
+        run_stress_tests = args.run_stress_tests
+        if recipe and not run_stress_tests:
+            run_stress_tests = recipe.run_stress_tests
+
+        stress_scenarios = args.stress_scenarios
+        # Wenn Preset gesetzt ist und stress_scenarios nicht explizit überschrieben wurde,
+        # verwende Preset-Wert
+        if recipe and recipe.stress_scenarios:
+            # Nur überschreiben, wenn es der Default-Wert ist
+            if stress_scenarios == ["single_crash_bar", "vol_spike"]:  # Default aus Parser
+                stress_scenarios = recipe.stress_scenarios
+
+        stress_severity = args.stress_severity
+        # Wenn Preset gesetzt ist und stress_severity nicht explizit überschrieben wurde,
+        # verwende Preset-Wert
+        if recipe and recipe.stress_severity is not None:
+            # Nur überschreiben, wenn es der Default-Wert ist
+            if stress_severity == 0.2:  # Default-Wert aus Parser
+                stress_severity = recipe.stress_severity
+
+        # 8. format
+        format_str = args.format
+        if recipe and format_str is None:
+            format_str = recipe.format
+        if format_str is None:
+            format_str = "both"  # Fallback
+
+        # Validierung: weights Länge muss mit top_n übereinstimmen
+        if weights and len(weights) != top_n:
+            logger.error(f"Anzahl Gewichte ({len(weights)}) stimmt nicht mit top-n ({top_n}) überein")
+            return 1
+
         # 1. Lade Peak-Config (optional, für zukünftige Erweiterungen)
-        config_path = Path(args.config)
+        config_path = Path(config_path_str)
         if not config_path.exists():
             logger.warning(f"Config-Datei nicht gefunden: {config_path}, verwende Defaults")
 
@@ -321,13 +446,13 @@ def run_from_args(args: argparse.Namespace) -> int:
             output_root = Path("reports/portfolio_robustness")
 
         # 3. Lade Top-N-Konfigurationen
-        logger.info(f"Lade Top-{args.top_n} Konfigurationen für Sweep '{args.sweep_name}'...")
+        logger.info(f"Lade Top-{top_n} Konfigurationen für Sweep '{sweep_name}'...")
         experiments_dir = Path("reports/experiments")
 
         try:
             top_configs = load_top_n_configs_for_sweep(
-                sweep_name=args.sweep_name,
-                n=args.top_n,
+                sweep_name=sweep_name,
+                n=top_n,
                 experiments_dir=experiments_dir,
             )
         except Exception as e:
@@ -336,32 +461,30 @@ def run_from_args(args: argparse.Namespace) -> int:
                 logger.info("Erstelle Dummy-Konfigurationen für Tests...")
                 top_configs = [
                     {"config_id": f"config_{i+1}", "rank": i+1}
-                    for i in range(args.top_n)
+                    for i in range(top_n)
                 ]
             else:
                 return 1
 
         if not top_configs:
-            logger.error(f"Keine Top-N-Konfigurationen gefunden für Sweep '{args.sweep_name}'")
+            logger.error(f"Keine Top-N-Konfigurationen gefunden für Sweep '{sweep_name}'")
             return 1
 
         logger.info(f"Gefunden: {len(top_configs)} Konfigurationen")
 
         # 4. Erstelle Portfolio-Definition
         components = []
-        if args.weights:
-            if len(args.weights) != args.top_n:
-                logger.error(f"Anzahl Gewichte ({len(args.weights)}) stimmt nicht mit top-n ({args.top_n}) überein")
-                return 1
-            weights = args.weights
+        if weights:
+            # weights wurde bereits validiert (Länge = top_n)
+            pass
         else:
             # Equal-weight
-            weights = [1.0 / args.top_n] * args.top_n
+            weights = [1.0 / top_n] * top_n
 
         for i, config in enumerate(top_configs):
             config_id = config.get("config_id", f"config_{i+1}")
             # Versuche, Strategie-Name aus config zu extrahieren (für zukünftige Erweiterungen)
-            strategy_name = config.get("strategy_name", args.sweep_name.split("_")[0] if "_" in args.sweep_name else "unknown")
+            strategy_name = config.get("strategy_name", sweep_name.split("_")[0] if "_" in sweep_name else "unknown")
             components.append(
                 PortfolioComponent(
                     strategy_name=strategy_name,
@@ -371,7 +494,7 @@ def run_from_args(args: argparse.Namespace) -> int:
             )
 
         portfolio = PortfolioDefinition(
-            name=args.portfolio_name,
+            name=portfolio_name,
             components=components,
         )
 
@@ -382,13 +505,13 @@ def run_from_args(args: argparse.Namespace) -> int:
         # 5. Erstelle Robustness-Config
         robustness_config = PortfolioRobustnessConfig(
             portfolio=portfolio,
-            num_mc_runs=args.mc_num_runs if args.run_montecarlo else 0,
+            num_mc_runs=mc_num_runs if run_montecarlo else 0,
             mc_method=args.mc_method,  # type: ignore
             mc_block_size=args.mc_block_size,
             mc_seed=args.mc_seed,
-            run_stress_tests=args.run_stress_tests,
-            stress_scenarios=args.stress_scenarios if args.run_stress_tests else None,
-            stress_severity=args.stress_severity,
+            run_stress_tests=run_stress_tests,
+            stress_scenarios=stress_scenarios if run_stress_tests else None,
+            stress_severity=stress_severity,
             stress_window=args.stress_window,
             stress_position=args.stress_position,  # type: ignore
             stress_seed=args.stress_seed,
@@ -396,7 +519,7 @@ def run_from_args(args: argparse.Namespace) -> int:
 
         # 6. Erstelle Returns-Loader
         returns_loader = build_returns_loader(
-            sweep_name=args.sweep_name,
+            sweep_name=sweep_name,
             experiments_dir=experiments_dir,
             use_dummy_data=args.use_dummy_data,
             dummy_bars=args.dummy_bars,
@@ -410,18 +533,18 @@ def run_from_args(args: argparse.Namespace) -> int:
         result = run_portfolio_robustness(robustness_config, returns_loader)
 
         # 8. Erstelle Report
-        output_dir = output_root / args.portfolio_name
-        title = f"Portfolio Robustness: {args.portfolio_name}"
+        output_dir = output_root / portfolio_name
+        title = f"Portfolio Robustness: {portfolio_name}"
 
         try:
             paths = build_portfolio_robustness_report(
                 result,
                 title=title,
                 output_dir=output_dir,
-                format=args.format,
+                format=format_str,
             )
 
-            logger.info(f"✅ Report erstellt:")
+            logger.info("Report erstellt:")
             for fmt, path in paths.items():
                 logger.info(f"   {fmt.upper()}: {path}")
 

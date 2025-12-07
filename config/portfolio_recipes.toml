@@ -1,0 +1,31 @@
+# Portfolio Recipes & Presets
+# ============================
+#
+# Vordefinierte Portfolio-Konfigurationen für Research-CLI.
+# Diese Rezepte können per --portfolio-preset geladen werden.
+#
+# Verwendung:
+#   python scripts/research_cli.py portfolio \
+#     --config config/config.toml \
+#     --portfolio-preset rsi_reversion_balanced
+
+[portfolio_recipes.rsi_reversion_balanced]
+id = "rsi_reversion_balanced"
+portfolio_name = "RSI Reversion Balanced v1"
+description = "3x RSI-Reversion Top-Konfigurationen mit moderaten Gewichten."
+
+sweep_name = "rsi_reversion_basic"
+top_n = 3
+weights = [0.4, 0.3, 0.3]
+
+run_montecarlo = true
+mc_num_runs = 1000
+
+run_stress_tests = true
+stress_scenarios = ["single_crash_bar", "vol_spike"]
+stress_severity = 0.2
+
+format = "both"
+risk_profile = "moderate"
+tags = ["rsi", "reversion", "balanced"]
+
