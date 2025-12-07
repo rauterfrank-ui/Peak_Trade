@@ -674,6 +674,228 @@ ls -la data/*.csv | tail -5
 
 ---
 
+## 10a. Testnet-Orchestrator v1 (Phase 64)
+
+### 10a.1 Übersicht
+
+Der **Testnet-Orchestrator** ist ein v1-Tool für die Orchestrierung von Shadow- und Testnet-Runs. Er bietet:
+
+- **Start/Stop** von Shadow- und Testnet-Runs
+- **Status-Abfrage** für laufende Runs
+- **Event-Tailing** aus Run-Logging
+- **Automatische Readiness-Checks** vor dem Start
+- **Integration** mit LiveRunLogger, LiveRiskLimits, ShadowPaperSession
+
+**WICHTIG:** Der Orchestrator sendet **NIEMALS echte Orders**. Nur Shadow- und Testnet-Modi sind erlaubt.
+
+### 10a.2 Shadow-Run starten
+
+**Voraussetzungen:**
+- [ ] `environment.mode = "paper"` in `config/config.toml`
+- [ ] Strategie in Config definiert (z.B. `[strategy.ma_crossover]`)
+- [ ] Live-Risk-Limits konfiguriert
+
+**Schritt-für-Schritt:**
+
+```bash
+# Shadow-Run starten
+python scripts/testnet_orchestrator_cli.py start-shadow \
+  --strategy ma_crossover \
+  --symbol BTC/EUR \
+  --timeframe 1m \
+  --config config/config.toml \
+  --notes "Daily test run"
+
+# Output:
+# ✅ Shadow-Run gestartet: shadow_20251207_120000_abc123
+#    Strategie: ma_crossover
+#    Symbol: BTC/EUR
+#    Timeframe: 1m
+```
+
+**Was passiert automatisch:**
+1. Readiness-Checks (Environment-Mode, Config, Risk-Limits)
+2. Run-Logger wird erstellt
+3. ShadowPaperSession wird initialisiert
+4. Run wird in separatem Thread gestartet
+5. Run-ID wird zurückgegeben
+
+### 10a.3 Testnet-Run starten
+
+**Voraussetzungen:**
+- [ ] `environment.mode = "testnet"` in `config/config.toml`
+- [ ] Strategie in Config definiert
+- [ ] Live-Risk-Limits konfiguriert
+
+**Schritt-für-Schritt:**
+
+```bash
+# Testnet-Run starten
+python scripts/testnet_orchestrator_cli.py start-testnet \
+  --strategy ma_crossover \
+  --symbol BTC/EUR \
+  --timeframe 1m \
+  --config config/config.toml \
+  --notes "Testnet validation run"
+
+# Output:
+# ✅ Testnet-Run gestartet: testnet_20251207_120000_def456
+#    Strategie: ma_crossover
+#    Symbol: BTC/EUR
+#    Timeframe: 1m
+```
+
+**Hinweis:** In v1 werden Testnet-Runs ähnlich wie Shadow-Runs behandelt (Dry-Run). Später kann hier echte Testnet-Integration erfolgen.
+
+### 10a.4 Run-Status abfragen
+
+**Alle Runs:**
+
+```bash
+python scripts/testnet_orchestrator_cli.py status --config config/config.toml
+
+# Output:
+# Run-ID                                    Mode      Strategy            State     Started
+# ----------------------------------------------------------------------------------------------------
+# shadow_20251207_120000_abc123             shadow    ma_crossover       running   2025-12-07 12:00:00
+# testnet_20251207_130000_def456            testnet   ma_crossover       stopped   2025-12-07 13:00:00
+```
+
+**Einzelner Run:**
+
+```bash
+python scripts/testnet_orchestrator_cli.py status \
+  --run-id shadow_20251207_120000_abc123 \
+  --config config/config.toml
+
+# Output:
+# Run-ID: shadow_20251207_120000_abc123
+# Mode: shadow
+# Strategy: ma_crossover
+# Symbol: BTC/EUR
+# Timeframe: 1m
+# State: running
+# Started: 2025-12-07T12:00:00+00:00
+```
+
+**JSON-Output:**
+
+```bash
+python scripts/testnet_orchestrator_cli.py status --json
+```
+
+### 10a.5 Run stoppen
+
+**Einzelner Run:**
+
+```bash
+python scripts/testnet_orchestrator_cli.py stop \
+  --run-id shadow_20251207_120000_abc123 \
+  --config config/config.toml
+
+# Output:
+# ✅ Run gestoppt: shadow_20251207_120000_abc123
+```
+
+**Alle Runs:**
+
+```bash
+python scripts/testnet_orchestrator_cli.py stop --all --config config/config.toml
+
+# Output:
+# ✅ 2 Run(s) gestoppt
+```
+
+**Was passiert beim Stoppen:**
+1. Session wird sauber beendet (Shutdown-Signal)
+2. Run-Logger wird finalisiert
+3. Run-Status wird auf `stopped` gesetzt
+4. Stop-Zeit wird gespeichert
+
+### 10a.6 Events tailen
+
+**Letzte Events anzeigen:**
+
+```bash
+python scripts/testnet_orchestrator_cli.py tail \
+  --run-id shadow_20251207_120000_abc123 \
+  --limit 50 \
+  --config config/config.toml
+
+# Output:
+# Letzte 50 Events für Run: shadow_20251207_120000_abc123
+# ----------------------------------------------------------------------------------------------------
+# Step 1 | 2025-12-07T12:00:00 | Signal: 1 | Equity: 10000.0
+# Step 2 | 2025-12-07T12:01:00 | Signal: 0 | Equity: 10050.0
+# ...
+```
+
+**JSON-Output:**
+
+```bash
+python scripts/testnet_orchestrator_cli.py tail \
+  --run-id shadow_20251207_120000_abc123 \
+  --limit 10 \
+  --json
+```
+
+### 10a.7 Readiness-Checks
+
+Der Orchestrator führt automatisch folgende Checks durch:
+
+1. **Config-Validierung:**
+   - Config kann geladen werden
+   - Alle erforderlichen Sektionen vorhanden
+
+2. **Environment-Validierung:**
+   - Shadow-Runs erfordern `environment.mode = "paper"`
+   - Testnet-Runs erfordern `environment.mode = "testnet"`
+   - Live-Mode wird blockiert
+
+3. **Safety-Checks:**
+   - SafetyGuard prüft, dass kein Live-Mode aktiv ist
+   - Risk-Limits sind konfiguriert (optional, aber empfohlen)
+
+**Bei Fehlern:**
+- Klare Fehlermeldungen mit Exit-Code ≠ 0
+- Run wird nicht gestartet
+
+### 10a.8 Logs & Events
+
+**Log-Pfad:**
+- Run-Logs werden in `live_runs/{run_id}/` gespeichert
+- Metadaten: `live_runs/{run_id}/meta.json`
+- Events: `live_runs/{run_id}/events.parquet` (oder `.csv`)
+
+**Log-Struktur:**
+- `meta.json`: Run-Metadaten (Run-ID, Mode, Strategy, Symbol, Timeframe, Start/End-Zeit)
+- `events.parquet`: Time-Series Events (Step, Timestamp, Signal, Equity, PnL, Risk-Flags, etc.)
+
+**Logs manuell anzeigen:**
+
+```bash
+# Metadaten
+cat live_runs/shadow_20251207_120000_abc123/meta.json
+
+# Events (mit pandas)
+python -c "import pandas as pd; df = pd.read_parquet('live_runs/shadow_20251207_120000_abc123/events.parquet'); print(df.tail(10))"
+```
+
+### 10a.9 Bekannte Limitierungen (v1)
+
+- **Threading:** Runs laufen in separaten Threads (kein Multi-Process)
+- **Testnet:** Testnet-Runs nutzen aktuell ShadowPaperSession (später echte Testnet-Integration)
+- **Persistence:** Run-Status ist nur im Memory (bei Neustart verloren)
+- **Monitoring:** Kein automatisches Health-Checking (manuell via `status`)
+
+**Zukünftige Verbesserungen:**
+- Persistente Run-Registry (z.B. JSON-Datei)
+- Automatisches Health-Checking
+- Echte Testnet-Session-Integration
+- Multi-Process-Support für bessere Isolation
+
+---
+
 ## 11. Kommunikation & Verantwortung
 
 ### 11.1 Rollen und Entscheidungswege
