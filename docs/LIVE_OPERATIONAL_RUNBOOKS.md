@@ -36,6 +36,7 @@ Ein **Runbook** ist eine dokumentierte Schritt-für-Schritt-Anleitung für wiede
 | 5 | Sicheres Beenden laufender Sessions | Normales Herunterfahren |
 | 6 | System-Health-Check | Tägliche Prüfung |
 | 10a.10 | Shadow-/Testnet-Session mit Phase-80-Runner | Strategy-to-Execution Bridge (Phase 80) |
+| 12a | Live-Track Panel Monitoring | Dashboard-basiertes Session-Monitoring (Phase 82) |
 
 **Incident-Runbooks:**
 
@@ -1618,6 +1619,144 @@ top -l 1 | head -10
 
 ---
 
+## 12a. Runbook: Live-Track Panel Monitoring
+
+### 12a.1 Zweck
+
+Nutzung des Live-Track Panels (Phase 82) für kontinuierliches Session-Monitoring während Shadow-/Testnet-Runs.
+
+### 12a.2 Voraussetzungen
+
+- [ ] Web-Dashboard verfügbar (`src/webui/app.py`)
+- [ ] Live-Session-Registry mit Einträgen (`reports/experiments/live_sessions/`)
+- [ ] Browser oder curl verfügbar
+
+### 12a.3 Dashboard starten
+
+```bash
+# ═══════════════════════════════════════════════════════════════════════
+# RUNBOOK 12a: Live-Track Panel Monitoring
+# ═══════════════════════════════════════════════════════════════════════
+
+# Schritt 1: Dashboard starten
+cd ~/Peak_Trade
+source .venv/bin/activate
+uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000 &
+
+# Schritt 2: Health-Check
+curl http://127.0.0.1:8000/api/health
+# Erwartung: {"status": "ok"}
+
+# Schritt 3: Browser öffnen
+open http://127.0.0.1:8000/
+```
+
+### 12a.4 Pre-Session-Check im Dashboard
+
+```
+VOR EINER SESSION:
+□ Dashboard öffnen: http://127.0.0.1:8000/
+□ Live-Track Panel sichtbar (Snapshot-Kachel + Tabelle)
+□ Keine unbehandelten "failed"-Sessions in der Tabelle
+□ Falls "failed" vorhanden: Runbook 12a.7 anwenden
+```
+
+### 12a.5 Während der Session
+
+```bash
+# Option A: Browser-Tab offen halten und alle 15-30 Min refreshen
+
+# Option B: API-Monitoring im Terminal
+watch -n 60 'curl -s http://127.0.0.1:8000/api/live_sessions?limit=1 | jq ".[0] | {session_id, status, realized_pnl, max_drawdown}"'
+
+# Option C: Kombination CLI + Dashboard
+# Terminal 1: Dashboard läuft
+# Terminal 2: Session läuft
+# Terminal 3: API-Monitoring
+```
+
+**Prüfpunkte während Monitoring:**
+
+| Element | Normal | Aktion bei Anomalie |
+|---------|--------|---------------------|
+| Status | started oder completed | Bei "failed": Sofort Runbook 12a.7 |
+| Realized PnL | Grün oder leicht rot | Bei > -2%: Risk-Review |
+| Max Drawdown | < 5% | Bei > 5%: Risk-Review erwägen |
+| Notes | Leer | Bei Fehlermeldung: Untersuchen |
+
+### 12a.6 Post-Session-Check im Dashboard
+
+```
+NACH SESSION-ENDE:
+□ Dashboard refreshen (F5 oder Browser-Refresh)
+□ Session erscheint in Tabelle
+□ Status = "completed" (grün)
+□ Realized PnL dokumentieren
+□ Max Drawdown unter Limit (< 5%)
+□ Bei Auffälligkeiten: Notes-Feld prüfen
+```
+
+**API-Check für Details:**
+
+```bash
+# Letzte Session detailliert
+curl http://127.0.0.1:8000/api/live_sessions?limit=1 | jq .
+
+# Summary via CLI
+python scripts/report_live_sessions.py --limit 1 --stdout
+```
+
+### 12a.7 Behandlung: Failed-Session im Dashboard
+
+Wenn im Live-Track Panel eine Session mit Status "failed" erscheint:
+
+```bash
+# Schritt 1: Fehlerdetails abrufen
+curl http://127.0.0.1:8000/api/live_sessions?limit=1 | jq '.[0] | {session_id, status, notes}'
+
+# Schritt 2: Registry-File direkt prüfen
+ls -lt reports/experiments/live_sessions/ | head -3
+cat reports/experiments/live_sessions/<NEUESTE_DATEI>.json | jq '{error, status, finished_at}'
+
+# Schritt 3: Fehlerursache identifizieren
+# Typische Fehler:
+# - ConnectionError: Exchange-API nicht erreichbar
+# - AuthenticationError: API-Keys ungültig
+# - RateLimitExceeded: Zu viele Requests
+# - InsufficientFunds: Balance nicht ausreichend
+
+# Schritt 4: Entsprechendes Incident-Runbook anwenden
+# - Exchange-Fehler → Runbook 7
+# - Risk-Limit → Runbook 8
+# - PnL-Divergenz → Runbook 9
+# - Data-Gap → Runbook 10
+
+# Schritt 5: Nach Behebung neue Session starten und Dashboard prüfen
+```
+
+### 12a.8 Dashboard beenden
+
+```bash
+# Option A: Graceful
+pkill -f uvicorn
+
+# Option B: Port freigeben
+lsof -i :8000
+kill <PID>
+```
+
+### 12a.9 Wichtige URLs
+
+| URL | Funktion |
+|-----|----------|
+| http://127.0.0.1:8000/ | Dashboard mit Live-Track Panel |
+| http://127.0.0.1:8000/api/live_sessions | Sessions-API (JSON) |
+| http://127.0.0.1:8000/api/live_sessions?limit=N | Letzte N Sessions |
+| http://127.0.0.1:8000/api/health | Health-Check |
+| http://127.0.0.1:8000/docs | OpenAPI/Swagger UI |
+
+---
+
 ## 13. Referenzen
 
 | Dokument | Beschreibung |
@@ -1630,10 +1769,18 @@ top -l 1 | head -10
 | `PHASE_37_TESTNET_ORCHESTRATION_AND_LIMITS.md` | Testnet-Orchestrierung |
 | `PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md` | Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
 | `PHASE_81_LIVE_SESSION_REGISTRY.md` | Live-Session-Registry & Report-CLI |
+| `PHASE_82_LIVE_TRACK_DASHBOARD.md` | Live-Track Panel im Web-Dashboard |
+| `PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md` | Operator-Workflow für Live-Track Panel |
 
 ---
 
 ## 14. Changelog
+
+- **v1.4** (Phase 82/83, 2025-12): Live-Track Dashboard & Operator-Workflow
+  - Neues Runbook 12a: Live-Track Panel Monitoring
+  - Pre-Session, Während-Session und Post-Session Checks
+  - Failed-Session Behandlung im Dashboard
+  - Referenzen zu Phase 82/83 Dokumentation hinzugefügt
 
 - **v1.3** (Phase 81, 2025-12): Live-Session-Registry & Report-CLI ergänzt
   - Neuer Abschnitt "Post-Session-Checks – Registry & Reporting" in Runbook 10a.10 hinzugefügt

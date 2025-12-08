@@ -48,7 +48,7 @@ Ziel:
 | Strategy & Portfolio Layer      | 92%       | Einzel-Strategien, Portfolio-Layer, Portfolio-Robustness, Recipes, Risk-Profiled Presets (Phase 53), Research→Live Playbook (Phase 54) |
 | Risk & Safety (Research + Live) | 90%       | Risk-Metriken, Limits, LiveRiskLimits, Safety-Concept                                    |
 | Research & Experiments          | 91%       | Registry, Sweeps, Research-CLI, Pipeline v2, Portfolio-Level-Robustness, Research→Live Playbook (Phase 54) |
-| Live-/Testnet & Operations      | 98%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Testnet-Orchestrator v1 (Phase 64), Research→Live Playbook (Phase 54), Live-Execution-Design & Gating (Phase 71), Live-Operator-Status-CLI (Phase 72), Live-Dry-Run Drills (Phase 73), Live-Config Audit & Export (Phase 74), **Strategy-to-Execution Bridge v0 (Phase 80)** |
+| Live-/Testnet & Operations      | 98%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Testnet-Orchestrator v1 (Phase 64), Research→Live Playbook (Phase 54), Live-Execution-Design & Gating (Phase 71), Live-Operator-Status-CLI (Phase 72), Live-Dry-Run Drills (Phase 73), Live-Config Audit & Export (Phase 74), **Strategy-to-Execution Bridge v0 (Phase 80)**, Live-Session-Registry (Phase 81), **Live-Track Dashboard (Phase 82)**, Live-Track Operator Workflow (Phase 83) |
 | Reporting, Monitoring & CLI     | 97%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI, Live-Ops CLI (Phase 51), Monitoring & CLI-Dashboards v1 (Phase 65), Alerts & Incident Notifications v1 (Phase 66), Live Web Dashboard v0 (Phase 67) |
 | Documentation & Governance      | 90%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs, Research→Live Playbook (Phase 54), v1.0 Known Limitations dokumentiert |
 | Developer-Experience & Tooling  | 93%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides, AI-Guide (Phase 55), Warning-free Test-Suite (Phase 68) |
@@ -767,6 +767,42 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 
     **Details:** Siehe [`docs/PHASE_81_LIVE_SESSION_REGISTRY.md`](PHASE_81_LIVE_SESSION_REGISTRY.md)
 
+15. **Phase 82 – Live-Track Panel im Web-Dashboard**
+
+    **Status:** ✅ Abgeschlossen
+
+    **Ziel:** Live-Sessions im Web-Dashboard visualisieren
+
+    **Was implementiert wurde:**
+    * `LiveSessionSummary` Pydantic-Modell für API-Responses (`src/webui/live_track.py`)
+    * `get_recent_live_sessions()` Service-Funktion
+    * API-Endpoint `GET /api/live_sessions` mit Limit-Parameter
+    * API-Endpoint `GET /api/health` für Health-Checks
+    * Dashboard-UI mit:
+      * Snapshot-Kachel (letzte Session)
+      * Sessions-Tabelle (letzte N Sessions)
+      * Status-Badges, PnL-Farbcodierung, Mode-Badges
+    * 26 Tests (Model, Service, API, Dashboard, Integration)
+
+    **Details:** Siehe [`docs/PHASE_82_LIVE_TRACK_DASHBOARD.md`](PHASE_82_LIVE_TRACK_DASHBOARD.md)
+
+16. **Phase 83 – Live-Track Operator Workflow**
+
+    **Status:** ✅ Abgeschlossen
+
+    **Ziel:** Strukturierter Operator-Workflow für Live-Track Panel
+
+    **Was dokumentiert wurde:**
+    * Täglicher Ablauf (Pre-Session, Während Session, Post-Session)
+    * Konkrete Checks im Live-Track Panel (Snapshot-Kachel, Sessions-Tabelle)
+    * Fehlerbehandlung für Failed-Sessions
+    * Governance-Anforderungen und Eskalationspfad
+    * Quick-Reference für URLs und CLI-Befehle
+    * Integration in `LIVE_DEPLOYMENT_PLAYBOOK.md` (Abschnitt 12)
+    * Neues Runbook 12a in `LIVE_OPERATIONAL_RUNBOOKS.md`
+
+    **Details:** Siehe [`docs/PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md`](PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md)
+
    * Live-Execution-Path als Design modelliert (Dry-Run)
    * `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
    * Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
@@ -894,6 +930,8 @@ Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-P
 | 2025-12-07 | (aktuell) | Phase 74 – Live-Config Audit & Export (Read-Only)                |
 | 2025-12-08 | (aktuell) | Phase 80 – Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
 | 2025-12-08 | (aktuell) | Phase 81 – Live-Session-Registry & Report-CLI                        |
+| 2025-12-08 | (aktuell) | Phase 82 – Live-Track Panel im Web-Dashboard                         |
+| 2025-12-08 | (aktuell) | Phase 83 – Live-Track Operator Workflow                              |
 
 ---
 

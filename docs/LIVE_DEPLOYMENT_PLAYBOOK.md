@@ -706,10 +706,88 @@ tail -100 logs/*.log
 | `PHASE_38_EXCHANGE_V0_TESTNET.md` | Exchange-Integration |
 | `PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md` | Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
 | `PHASE_81_LIVE_SESSION_REGISTRY.md` | Live-Session-Registry & Report-CLI |
+| `PHASE_82_LIVE_TRACK_DASHBOARD.md` | Live-Track Panel im Web-Dashboard |
+| `PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md` | Operator-Workflow für Live-Track Panel |
 
 ---
 
-## 12. Changelog
+## 12. Live-Track Panel im Betrieb
+
+### 12.1 Dashboard als Monitoring-Zentrale
+
+Das Live-Track Panel (Phase 82) bietet eine zentrale Übersicht über alle laufenden und abgeschlossenen Sessions:
+
+```bash
+# Dashboard starten
+uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
+
+# Browser öffnen
+open http://127.0.0.1:8000/
+```
+
+**Wichtige URLs:**
+
+| URL | Funktion |
+|-----|----------|
+| http://127.0.0.1:8000/ | Dashboard mit Live-Track Panel |
+| http://127.0.0.1:8000/api/live_sessions | JSON-API für Sessions |
+| http://127.0.0.1:8000/api/health | Health-Check |
+| http://127.0.0.1:8000/docs | OpenAPI/Swagger UI |
+
+### 12.2 Live-Track Integration in Stufen-Workflow
+
+#### Stufe 1 (Shadow) - Dashboard-Checks
+
+```
+VOR SESSION:
+□ Dashboard öffnen und Health prüfen
+□ Keine unbehandelten failed-Sessions in letzter Zeit
+
+NACH SESSION:
+□ Dashboard refreshen
+□ Session erscheint in Tabelle mit Status "completed"
+□ PnL und Drawdown plausibel
+```
+
+#### Stufe 2 (Testnet) - Erweitertes Monitoring
+
+```
+WÄHREND SESSION:
+□ Dashboard alle 15-30 Min prüfen
+□ Status-Änderungen beobachten
+□ Bei "failed": Sofort stoppen und Notes prüfen
+
+NACH SESSION:
+□ API-Call für detaillierte Metriken:
+  curl http://127.0.0.1:8000/api/live_sessions?limit=1 | jq .
+□ Ergebnis dokumentieren
+```
+
+### 12.3 Kombination CLI + Dashboard
+
+Für vollständige Transparenz beide Tools nutzen:
+
+```bash
+# Terminal 1: Dashboard
+uvicorn src.webui.app:app --host 127.0.0.1 --port 8000
+
+# Terminal 2: Session starten
+python scripts/run_execution_session.py --mode shadow --strategy ma_crossover
+
+# Terminal 3: CLI-Reports
+python scripts/report_live_sessions.py --summary-only --stdout
+```
+
+**Empfohlener Workflow:** Siehe `PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md` für detaillierten Tagesablauf.
+
+---
+
+## 13. Changelog
+
+- **v1.4** (Phase 82/83, 2025-12): Live-Track Dashboard & Operator-Workflow
+  - Neuer Abschnitt 12: Live-Track Panel im Betrieb
+  - Dashboard-Integration in Stufen-Workflow (Shadow, Testnet)
+  - Referenzen zu Phase 82/83 Dokumentation hinzugefügt
 
 - **v1.3** (Phase 81, 2025-12): Live-Session-Registry & Report-CLI ergänzt
   - Post-Session-Registry & Reporting als Schritt im Shadow-/Testnet-Ablauf verankert
