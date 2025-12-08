@@ -25,6 +25,18 @@ from .vol_regime_filter import VolRegimeFilter
 from .composite import CompositeStrategy
 from .regime_aware_portfolio import RegimeAwarePortfolioStrategy
 
+# Research-Track: Armstrong & El-Karoui Strategien (R&D-Only)
+from .armstrong import ArmstrongCycleStrategy
+from .el_karoui import ElKarouiVolModelStrategy
+
+# Research-Track: Ehlers & López de Prado Strategien (R&D-Only)
+from .ehlers import EhlersCycleFilterStrategy
+from .lopez_de_prado import MetaLabelingStrategy
+
+# Research-Track: Bouchaud & Gatheral/Cont Strategien (R&D-Only, Skeleton)
+from .bouchaud import BouchaudMicrostructureStrategy
+from .gatheral_cont import VolRegimeOverlayStrategy
+
 
 @dataclass(frozen=True)
 class StrategySpec:
@@ -124,6 +136,46 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         cls=RegimeAwarePortfolioStrategy,
         config_section="portfolio.regime_aware_breakout_rsi",
         description="Regime-Aware Portfolio Strategy (Breakout + RSI + Vol-Regime)",
+    ),
+    # ==========================================================================
+    # Research-Track: R&D-Only Strategien (NICHT FÜR LIVE-TRADING)
+    # ==========================================================================
+    "armstrong_cycle": StrategySpec(
+        key="armstrong_cycle",
+        cls=ArmstrongCycleStrategy,
+        config_section="strategy.armstrong_cycle",
+        description="Armstrong ECM Cycle Strategy (R&D-Only, nicht für Live)",
+    ),
+    "el_karoui_vol_model": StrategySpec(
+        key="el_karoui_vol_model",
+        cls=ElKarouiVolModelStrategy,
+        config_section="strategy.el_karoui_vol_model",
+        description="El Karoui Stochastic Vol Model (R&D-Only, nicht für Live)",
+    ),
+    "ehlers_cycle_filter": StrategySpec(
+        key="ehlers_cycle_filter",
+        cls=EhlersCycleFilterStrategy,
+        config_section="strategy.ehlers_cycle_filter",
+        description="Ehlers DSP Cycle Filter (R&D-Only, Intraday-Signalqualität)",
+    ),
+    "meta_labeling": StrategySpec(
+        key="meta_labeling",
+        cls=MetaLabelingStrategy,
+        config_section="strategy.meta_labeling",
+        description="Meta-Labeling nach López de Prado (R&D-Only, ML-Layer)",
+    ),
+    # Skeleton-Strategien (Platzhalter für zukünftige Research)
+    "bouchaud_microstructure": StrategySpec(
+        key="bouchaud_microstructure",
+        cls=BouchaudMicrostructureStrategy,
+        config_section="strategy.bouchaud_microstructure",
+        description="Bouchaud Microstructure (R&D-Skeleton, Tick-/Orderbuch-basiert)",
+    ),
+    "vol_regime_overlay": StrategySpec(
+        key="vol_regime_overlay",
+        cls=VolRegimeOverlayStrategy,
+        config_section="strategy.vol_regime_overlay",
+        description="Gatheral & Cont Vol-Regime-Overlay (R&D-Skeleton, Meta-Layer)",
     ),
 }
 

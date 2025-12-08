@@ -25,6 +25,14 @@ STRATEGY_REGISTRY = {
     "vol_regime_filter": "vol_regime_filter",
     "composite": "composite",
     "regime_aware_portfolio": "regime_aware_portfolio",
+    # Research-Track: R&D-Only Strategien
+    "armstrong_cycle": "armstrong.armstrong_cycle_strategy",
+    "el_karoui_vol_model": "el_karoui.el_karoui_vol_model_strategy",
+    "ehlers_cycle_filter": "ehlers.ehlers_cycle_filter_strategy",
+    "meta_labeling": "lopez_de_prado.meta_labeling_strategy",
+    # R&D-Skeleton Strategien (Platzhalter)
+    "bouchaud_microstructure": "bouchaud.bouchaud_microstructure_strategy",
+    "vol_regime_overlay": "gatheral_cont.vol_regime_overlay_strategy",
 }
 
 def load_strategy(strategy_name: str):

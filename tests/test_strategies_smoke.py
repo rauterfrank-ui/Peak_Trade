@@ -98,7 +98,23 @@ def test_strategy_generate_signals():
         assert val in [-1, 0, 1]
 
 
-@pytest.mark.parametrize("strategy_key", get_available_strategy_keys())
+# R&D-Strategien, die übersprungen werden (Platzhalter oder Meta-Layer)
+R_AND_D_SKIP_STRATEGIES = {
+    "armstrong_cycle",
+    "bouchaud_microstructure",
+    "ehlers_cycle_filter",
+    "el_karoui_vol_model",
+    "vol_regime_overlay",
+    "meta_labeling",
+}
+
+
+def _get_testable_strategy_keys():
+    """Gibt nur testbare Strategien zurück (ohne R&D-Platzhalter)."""
+    return [k for k in get_available_strategy_keys() if k not in R_AND_D_SKIP_STRATEGIES]
+
+
+@pytest.mark.parametrize("strategy_key", _get_testable_strategy_keys())
 def test_all_strategies_generate_signals(strategy_key):
     """Test: Alle registrierten Strategien generieren Signale."""
     cfg = load_config()

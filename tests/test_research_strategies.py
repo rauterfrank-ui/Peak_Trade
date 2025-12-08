@@ -278,6 +278,159 @@ class TestStrategyTiering:
         assert "Research" in TIER_LABELS["r_and_d"]
 
 
+class TestAllRnDStrategiesInTiering:
+    """Tests: Alle R&D-Strategien sind in der Tiering-Struktur mit korrekten Feldern."""
+
+    # Erwartete R&D-Strategien mit ihren Kategorien
+    EXPECTED_RND_STRATEGIES = {
+        "armstrong_cycle": {
+            "label": "Armstrong Cycle Strategy",
+            "category": "cycles",
+        },
+        "ehlers_cycle_filter": {
+            "label": "Ehlers Cycle Filter",
+            "category": "cycles",
+        },
+        "el_karoui_vol_model": {
+            "label": "El Karoui Volatility Model",
+            "category": "volatility",
+        },
+        "bouchaud_microstructure": {
+            "label": "Bouchaud Microstructure Overlay",
+            "category": "microstructure",
+        },
+        "vol_regime_overlay": {
+            "label": "Gatheral Cont Vol Overlay",
+            "category": "volatility",
+        },
+        "meta_labeling": {
+            "label": "Lopez de Prado Meta-Labeling",
+            "category": "ml",
+        },
+    }
+
+    def test_all_rnd_strategies_present(self):
+        """Test: Alle erwarteten R&D-Strategien sind im Tiering vorhanden."""
+        from src.webui.app import load_strategy_tiering
+
+        tiering = load_strategy_tiering(include_research=True)
+        r_and_d_ids = [r["id"] for r in tiering["rows"] if r["tier"] == "r_and_d"]
+
+        for strategy_id in self.EXPECTED_RND_STRATEGIES:
+            assert strategy_id in r_and_d_ids, f"R&D-Strategie '{strategy_id}' fehlt im Tiering"
+
+    def test_all_rnd_strategies_have_r_and_d_tier(self):
+        """Test: Alle R&D-Strategien haben tier='r_and_d'."""
+        from src.webui.app import load_strategy_tiering
+
+        tiering = load_strategy_tiering(include_research=True)
+
+        for strategy_id in self.EXPECTED_RND_STRATEGIES:
+            row = next((r for r in tiering["rows"] if r["id"] == strategy_id), None)
+            assert row is not None, f"Strategie '{strategy_id}' nicht gefunden"
+            assert row["tier"] == "r_and_d", f"Strategie '{strategy_id}' hat falschen Tier"
+
+    def test_all_rnd_strategies_have_correct_category(self):
+        """Test: Alle R&D-Strategien haben die erwartete category."""
+        from src.webui.app import load_strategy_tiering
+
+        tiering = load_strategy_tiering(include_research=True)
+
+        for strategy_id, expected in self.EXPECTED_RND_STRATEGIES.items():
+            row = next((r for r in tiering["rows"] if r["id"] == strategy_id), None)
+            assert row is not None, f"Strategie '{strategy_id}' nicht gefunden"
+            assert row.get("category") == expected["category"], (
+                f"Strategie '{strategy_id}' hat category='{row.get('category')}', "
+                f"erwartet: '{expected['category']}'"
+            )
+
+    def test_all_rnd_strategies_have_label(self):
+        """Test: Alle R&D-Strategien haben ein Label."""
+        from src.webui.app import load_strategy_tiering
+
+        tiering = load_strategy_tiering(include_research=True)
+
+        for strategy_id, expected in self.EXPECTED_RND_STRATEGIES.items():
+            row = next((r for r in tiering["rows"] if r["id"] == strategy_id), None)
+            assert row is not None, f"Strategie '{strategy_id}' nicht gefunden"
+            assert row.get("label") == expected["label"], (
+                f"Strategie '{strategy_id}' hat label='{row.get('label')}', "
+                f"erwartet: '{expected['label']}'"
+            )
+
+    def test_all_rnd_strategies_have_experimental_risk_profile(self):
+        """Test: Alle R&D-Strategien haben risk_profile='experimental'."""
+        from src.webui.app import load_strategy_tiering
+
+        tiering = load_strategy_tiering(include_research=True)
+
+        for strategy_id in self.EXPECTED_RND_STRATEGIES:
+            row = next((r for r in tiering["rows"] if r["id"] == strategy_id), None)
+            assert row is not None, f"Strategie '{strategy_id}' nicht gefunden"
+            assert row.get("risk_profile") == "experimental", (
+                f"Strategie '{strategy_id}' hat risk_profile='{row.get('risk_profile')}', "
+                f"erwartet: 'experimental'"
+            )
+
+    def test_all_rnd_strategies_have_research_owner(self):
+        """Test: Alle R&D-Strategien haben owner='research'."""
+        from src.webui.app import load_strategy_tiering
+
+        tiering = load_strategy_tiering(include_research=True)
+
+        for strategy_id in self.EXPECTED_RND_STRATEGIES:
+            row = next((r for r in tiering["rows"] if r["id"] == strategy_id), None)
+            assert row is not None, f"Strategie '{strategy_id}' nicht gefunden"
+            assert row.get("owner") == "research", (
+                f"Strategie '{strategy_id}' hat owner='{row.get('owner')}', "
+                f"erwartet: 'research'"
+            )
+
+    def test_all_rnd_strategies_have_tags(self):
+        """Test: Alle R&D-Strategien haben Tags (nicht leer)."""
+        from src.webui.app import load_strategy_tiering
+
+        tiering = load_strategy_tiering(include_research=True)
+
+        for strategy_id in self.EXPECTED_RND_STRATEGIES:
+            row = next((r for r in tiering["rows"] if r["id"] == strategy_id), None)
+            assert row is not None, f"Strategie '{strategy_id}' nicht gefunden"
+            tags = row.get("tags", [])
+            assert isinstance(tags, list), f"Strategie '{strategy_id}' hat keine Tags-Liste"
+            assert len(tags) > 0, f"Strategie '{strategy_id}' hat leere Tags"
+
+    def test_rnd_categories_available(self):
+        """Test: Alle erwarteten Kategorien sind verfügbar."""
+        from src.webui.app import load_strategy_tiering
+
+        tiering = load_strategy_tiering(include_research=True)
+        category_ids = [c["id"] for c in tiering.get("categories", [])]
+
+        expected_categories = {"cycles", "volatility", "microstructure", "ml"}
+        for cat in expected_categories:
+            assert cat in category_ids, f"Kategorie '{cat}' fehlt in categories"
+
+    def test_rnd_tier_has_by_category_grouping(self):
+        """Test: R&D-Tier hat by_category Gruppierung."""
+        from src.webui.app import load_strategy_tiering
+
+        tiering = load_strategy_tiering(include_research=True)
+
+        r_and_d_tier = next(
+            (t for t in tiering.get("tiers", []) if t["tier"] == "r_and_d"),
+            None
+        )
+        assert r_and_d_tier is not None, "R&D-Tier nicht gefunden"
+        assert "by_category" in r_and_d_tier, "R&D-Tier hat keine by_category Gruppierung"
+
+        # Prüfe, dass jede Kategorie Strategien enthält
+        for cat_group in r_and_d_tier["by_category"]:
+            assert "category" in cat_group
+            assert "label" in cat_group
+            assert "strategies" in cat_group
+            assert len(cat_group["strategies"]) > 0
+
+
 # =============================================================================
 # WebUI/API Tests
 # =============================================================================

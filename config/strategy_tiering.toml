@@ -111,6 +111,139 @@ allow_live = false
 notes = "Ersetzt durch vol_regime_filter + breakout Kombination."
 
 # =============================================================================
+# R&D / RESEARCH STRATEGIES (NICHT FÜR LIVE-TRADING)
+# =============================================================================
+#
+# Diese Strategien befinden sich in der Research-Phase und dürfen NICHT
+# für Shadow/Testnet/Live-Trading verwendet werden. Sie sind ausschließlich
+# für Offline-Backtests und akademische Analysen gedacht.
+#
+# Felder:
+# - tier:           "r_and_d" für alle Research-Strategien
+# - category:       Gruppierung (z.B. "cycles", "volatility", "microstructure", "ml")
+# - risk_profile:   "experimental" für alle R&D-Strategien
+# - owner:          "research" - Team/Bereich
+# - tags:           Schlagworte für Filterung/Suche
+# - label:          Lesbare Anzeige im Dashboard
+#
+
+[strategy.armstrong_cycle]
+tier = "r_and_d"
+label = "Armstrong Cycle Strategy"
+category = "cycles"
+risk_profile = "experimental"
+owner = "research"
+tags = ["cycles", "timing", "ecm", "long-term"]
+recommended_config_id = "armstrong_cycle_v0_research"
+allow_live = false
+notes = """
+Armstrong ECM-Zyklus-Strategie (Research-Only).
+Basiert auf Martin Armstrongs Economic Confidence Model (8.6-Jahre-Zyklus).
+⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
+Deployment erst nach Phase-X-Freigabe möglich.
+"""
+
+[strategy.el_karoui_vol_model]
+tier = "r_and_d"
+label = "El Karoui Volatility Model"
+category = "volatility"
+risk_profile = "experimental"
+owner = "research"
+tags = ["volatility", "stochastic-vol", "risk-model", "options"]
+recommended_config_id = "el_karoui_vol_v0_research"
+allow_live = false
+notes = """
+El Karoui Stochastisches Volatilitätsmodell (Research-Only).
+Basiert auf Nicole El Karouis Arbeiten zu stoch. Vol-Modellen.
+⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
+Deployment erst nach Phase-X-Freigabe möglich.
+"""
+
+[strategy.ehlers_cycle_filter]
+tier = "r_and_d"
+label = "Ehlers Cycle Filter"
+category = "cycles"
+risk_profile = "experimental"
+owner = "research"
+tags = ["cycles", "dsp", "filters", "signal-processing", "intraday"]
+recommended_config_id = "ehlers_cycle_filter_v0_research"
+allow_live = false
+notes = """
+Ehlers DSP Cycle Filter (Research-Only).
+Basiert auf John Ehlers' Digital Signal Processing Techniken:
+- Super Smoother Filter (weniger Lag als EMA)
+- Bandpass-Filter für Cycle-Isolation
+- Hilbert Transform für Phase-Messung
+Ziel: Verbesserte Intraday-Signalqualität.
+⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
+Deployment erst nach Phase-X-Freigabe möglich.
+"""
+
+[strategy.meta_labeling]
+tier = "r_and_d"
+label = "Lopez de Prado Meta-Labeling"
+category = "ml"
+risk_profile = "experimental"
+owner = "research"
+tags = ["meta-labeling", "ml", "machine-learning", "signal-filtering", "triple-barrier"]
+recommended_config_id = "meta_labeling_v0_research"
+allow_live = false
+notes = """
+Meta-Labeling nach López de Prado (Research-Only).
+ML-basierter Meta-Layer über Basis-Strategien:
+- Triple-Barrier-Labeling für Outcomes
+- Feature-Engineering für ML-Modelle
+- Signal-Filterung durch Secondary Model
+Ziel: Bessere Precision durch ML-gestützte Signal-Auswahl.
+⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
+Deployment erst nach Phase-X-Freigabe möglich.
+"""
+
+# =============================================================================
+# R&D SKELETON STRATEGIES (Platzhalter ohne Implementierung)
+# =============================================================================
+
+[strategy.bouchaud_microstructure]
+tier = "r_and_d"
+label = "Bouchaud Microstructure Overlay"
+category = "microstructure"
+risk_profile = "experimental"
+owner = "research"
+tags = ["microstructure", "orderbook", "market-impact", "propagator"]
+recommended_config_id = "bouchaud_microstructure_v0_skeleton"
+allow_live = false
+notes = """
+Bouchaud Microstructure (R&D-SKELETON, Orderbuch-/Tick-basiert).
+Platzhalter-Skelett für Markt-Mikrostruktur-Analyse nach Bouchaud:
+- Orderbuch-Imbalance als Preisdruckindikator
+- Trade-Sign-Korrelationen (Metaorder-Detection)
+- Propagator-Modelle für Preisimpact
+Voraussetzung: Tick-/Orderbuch-Daten (nicht in Peak_Trade verfügbar).
+⚠️ SKELETON OHNE IMPLEMENTIERUNG - Nur strukturelle Basis.
+⚠️ NICHT FÜR LIVE-TRADING - Nur für offline_backtest/research.
+"""
+
+[strategy.vol_regime_overlay]
+tier = "r_and_d"
+label = "Gatheral Cont Vol Overlay"
+category = "volatility"
+risk_profile = "experimental"
+owner = "research"
+tags = ["volatility", "rough-vol", "regime-overlay", "risk-layer", "position-sizing"]
+recommended_config_id = "vol_regime_overlay_v0_skeleton"
+allow_live = false
+notes = """
+Vol-/Rough-Vol-Regime-Overlay nach Gatheral & Cont (R&D-SKELETON).
+Meta-Risk-Layer über bestehende Strategien:
+- Keine eigenen Entry/Exit-Signale
+- Vol-Budget-Management (Tages-Vol-Limit)
+- Regime-Detection (low/normal/high vol)
+- Position-Sizing basierend auf Vol-Regime
+⚠️ SKELETON OHNE IMPLEMENTIERUNG - Nur strukturelle Basis.
+⚠️ NICHT FÜR LIVE-TRADING - Nur für offline_backtest/research.
+"""
+
+# =============================================================================
 # NOTES
 # =============================================================================
 #

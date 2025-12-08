@@ -53,7 +53,7 @@ DEFAULT_TIERING_CONFIG = Path("config/strategy_tiering.toml")
 DEFAULT_PRESETS_DIR = Path("config/portfolio_presets")
 DEFAULT_RECIPES_FILE = Path("config/portfolio_recipes.toml")
 
-VALID_TIERS = {"core", "aux", "legacy", "unclassified"}
+VALID_TIERS = {"core", "aux", "legacy", "unclassified", "r_and_d"}
 
 
 # =============================================================================
