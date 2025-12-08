@@ -293,6 +293,35 @@ Nutze diesen Schritt in der Demo, um Operatoren und Stakeholdern den Live-Track-
 Der Operator startet die Session über CLI – das Dashboard macht den Live-Track-Stack sichtbar, ohne Orders direkt auszulösen. 
 So können Monitoring, Reviews und Schulungen durchgeführt werden, bevor echte Orders jemals das Haus verlassen.
 
+#### Storyboard: Ideale Demo-Session im Web-Dashboard v1
+
+Um die Live-Track-Demo greifbar zu machen, empfiehlt es sich, 3–4 Screens im Web-Dashboard v1 vorzubereiten. 
+So entsteht ein konsistentes Narrativ für Operatoren, Quant-Leads und Stakeholder:
+
+- **Screen 1 – System-Status & Tiering (Landing-Page)**  
+  - Dashboard-Startseite mit sichtbarer Version, Tag und CI-Status.  
+  - Tiering (Research/Beta/Live-ready) ist klar ersichtlich.  
+  - Message: *„Wir wissen genau, in welchem Zustand der Stack gerade ist."*
+
+- **Screen 2 – Live-Track Panel (Session-Übersicht)**  
+  - Live-Track-Ansicht mit mindestens einer frisch gelaufenen Shadow-/Testnet-Session.  
+  - Spalten wie Environment, Start-/Endzeit, Ergebnisstatus sind lesbar.  
+  - Message: *„Wir sehen alle relevanten Sessions zentral aggregiert."*
+
+- **Screen 3 – Session Explorer (Detail-Ansicht)**  
+  - Geöffnete Session mit Registry-Metadaten, Laufzeit, Ergebnisstatus und ggf. Error-Feldern.  
+  - Links zu Playbook-/Runbook-Dokumentation sichtbar.  
+  - Message: *„Wir können jede Session im Detail nachvollziehen und reviewen."*
+
+- **Screen 4 (optional) – Incident-/Review-Sicht**  
+  - Falls verfügbar: Beispiel einer Session mit einem auffälligen Ergebnis (z.B. Error/Warning) 
+    und referenziertem Incident/Review.  
+  - Message: *„Auch wenn etwas schiefgeht, bleibt der Prozess nachvollziehbar und auditierbar."*
+
+**Hinweis für die Vorbereitung:**  
+Vor der Demo 1–2 Shadow-/Testnet-Sessions bewusst laufen lassen, damit im Live-Track Panel und im Session Explorer 
+„schöne" Beispiele sichtbar sind (eine normale Session, optional eine mit Warning/Error).
+
 ### 6.1 Dashboard refreshen
 
 Führe einen manuellen Refresh im Browser durch (F5 oder Ctrl+R).
