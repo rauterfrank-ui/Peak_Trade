@@ -246,6 +246,15 @@ graph TD
 - [`docs/PHASE_REGIME_AWARE_PORTFOLIOS.md`](PHASE_REGIME_AWARE_PORTFOLIOS.md) – Regime-Aware Portfolios
 - `src/strategies/` – Implementierung
 
+#### R&D-Strategie-Welle v1 (Research-Layer)
+
+Neben dem stabilen Strategy-Core v1.1 existiert ein klar abgegrenzter **R&D- / Experimental-Layer**. Die erste R&D-Strategiewelle umfasst sechs Forschungsmodule (Armstrong, Ehlers, El Karoui, Bouchaud, Gatheral/Cont, Lopez de Prado) sowie ML-/Meta-Labeling-Komponenten. Sämtliche Module sind als `tier = "r_and_d"` klassifiziert, durch Tests abgesichert und ausschließlich für Offline-Nutzung vorgesehen (Backtests, Research-Sweeps, strukturierte Experimente) – der Live-Mode ist explizit deaktiviert. Über Strategy-Tiering und Web-Dashboard (`?include_research=true`) lässt sich der Research-Layer gezielt ein- oder ausblenden.
+
+**Verwandte Dokumente:**
+- [`docs/PEAK_TRADE_STATUS_OVERVIEW.md`](PEAK_TRADE_STATUS_OVERVIEW.md) – R&D-Track im Gesamtkontext
+- [`docs/PHASE_75_STRATEGY_LIBRARY_V1_1.md`](PHASE_75_STRATEGY_LIBRARY_V1_1.md) – Abschnitt 3a (R&D-Layer)
+- `config/strategy_tiering.toml` – R&D-Tier-Definitionen
+
 ### 4.4 Research-Pipeline v2 & Portfolio-Robustness
 
 **Was kann das?**
