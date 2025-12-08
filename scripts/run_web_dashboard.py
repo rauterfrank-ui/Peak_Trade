@@ -12,9 +12,14 @@ SRC_DIR = ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from webui.app import create_app  # noqa: E402
-
 
 if __name__ == "__main__":
-    app = create_app()
-    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
+    # Import-String für reload-Modus verwenden
+    uvicorn.run(
+        "webui.app:create_app",
+        factory=True,
+        host="127.0.0.1",
+        port=8000,
+        reload=True,
+        reload_dirs=[str(SRC_DIR), str(ROOT / "templates")],
+    )
