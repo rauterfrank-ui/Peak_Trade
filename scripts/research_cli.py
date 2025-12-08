@@ -459,6 +459,101 @@ def build_parser() -> argparse.ArgumentParser:
         help="Zeigt alle verfügbaren Strategy-IDs und beendet",
     )
 
+    # Subparser: run-experiment (R&D-Presets, Phase 75 Wave v2)
+    experiment_parser = subparsers.add_parser(
+        "run-experiment",
+        help="Führt ein R&D-Experiment mit Preset aus config/r_and_d_presets.toml aus.",
+    )
+
+    experiment_parser.add_argument(
+        "--preset", "-p",
+        type=str,
+        default=None,
+        help="Preset-ID aus config/r_and_d_presets.toml (z.B. armstrong_ecm_btc_longterm_v1)",
+    )
+    experiment_parser.add_argument(
+        "--symbol",
+        type=str,
+        default=None,
+        help="Trading-Symbol (überschreibt Preset-Default, z.B. BTC/USDT)",
+    )
+    experiment_parser.add_argument(
+        "--timeframe",
+        type=str,
+        default=None,
+        help="Timeframe (überschreibt Preset-Default, z.B. 1h, 4h, 1d)",
+    )
+    experiment_parser.add_argument(
+        "--from",
+        dest="from_date",
+        type=str,
+        default=None,
+        help="Startdatum (YYYY-MM-DD)",
+    )
+    experiment_parser.add_argument(
+        "--to",
+        dest="to_date",
+        type=str,
+        default=None,
+        help="Enddatum (YYYY-MM-DD)",
+    )
+    experiment_parser.add_argument(
+        "--tag",
+        type=str,
+        default=None,
+        help="Experiment-Tag für Ergebnisse (z.B. exp_rnd_w2_armstrong_v1)",
+    )
+    experiment_parser.add_argument(
+        "--config",
+        type=str,
+        default="config/config.toml",
+        help="Pfad zur Config-Datei (default: config/config.toml)",
+    )
+    experiment_parser.add_argument(
+        "--presets-file",
+        type=str,
+        default="config/r_and_d_presets.toml",
+        help="Pfad zur R&D-Presets-Datei (default: config/r_and_d_presets.toml)",
+    )
+    experiment_parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="reports/r_and_d_experiments",
+        help="Output-Verzeichnis für Ergebnisse (default: reports/r_and_d_experiments)",
+    )
+    experiment_parser.add_argument(
+        "--use-dummy-data",
+        action="store_true",
+        help="Verwende Dummy-Daten statt echte Marktdaten",
+    )
+    experiment_parser.add_argument(
+        "--dummy-bars",
+        type=int,
+        default=500,
+        help="Anzahl Bars für Dummy-Daten (default: 500)",
+    )
+    experiment_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Zeigt nur Preset-Details an, führt keinen Backtest aus",
+    )
+    experiment_parser.add_argument(
+        "--list-presets",
+        action="store_true",
+        help="Listet alle verfügbaren R&D-Presets auf",
+    )
+    experiment_parser.add_argument(
+        "--verbose", "-v",
+        action="store_true",
+        help="Verbose Output",
+    )
+    experiment_parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random Seed für Reproduzierbarkeit (default: 42)",
+    )
+
     return parser
 
 
@@ -1017,6 +1112,342 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
     return 0
 
 
+# =============================================================================
+# RUN-EXPERIMENT EXECUTION (R&D-Presets, Phase 75 Wave v2)
+# =============================================================================
+
+
+def run_experiment(args: argparse.Namespace) -> int:
+    """
+    Führt ein R&D-Experiment basierend auf einem Preset aus.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 = success, 1 = error)
+    """
+    import json
+    import logging
+    import numpy as np
+    import pandas as pd
+    from datetime import datetime, timedelta
+    from pathlib import Path
+
+    logging.basicConfig(
+        level=logging.DEBUG if getattr(args, "verbose", False) else logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
+    logger = logging.getLogger(__name__)
+
+    # Import R&D-Preset-Loader
+    try:
+        from src.experiments.r_and_d_presets import (
+            load_r_and_d_preset,
+            list_r_and_d_presets,
+            get_preset_ids,
+            print_preset_catalog,
+            RnDPresetConfig,
+        )
+    except ImportError as e:
+        logger.error(f"Konnte R&D-Preset-Loader nicht importieren: {e}")
+        return 1
+
+    # List-Presets-Modus
+    if getattr(args, "list_presets", False):
+        try:
+            presets_path = Path(args.presets_file) if args.presets_file else None
+            print_preset_catalog(presets_path)
+            return 0
+        except Exception as e:
+            logger.error(f"Fehler beim Auflisten der Presets: {e}")
+            return 1
+
+    # Preset-ID erforderlich
+    preset_id = args.preset
+    if not preset_id:
+        logger.error("--preset ist erforderlich. Nutze --list-presets für verfügbare Presets.")
+        return 1
+
+    # Preset laden
+    logger.info(f"Lade R&D-Preset: {preset_id}")
+    try:
+        presets_path = Path(args.presets_file) if args.presets_file else None
+        preset = load_r_and_d_preset(preset_id, presets_path)
+    except KeyError as e:
+        logger.error(f"Preset nicht gefunden: {e}")
+        try:
+            available = get_preset_ids(presets_path)
+            logger.info(f"Verfügbare Presets: {', '.join(available)}")
+        except Exception:
+            pass
+        return 1
+    except FileNotFoundError as e:
+        logger.error(f"Presets-Datei nicht gefunden: {e}")
+        return 1
+
+    # Safety-Check: R&D-Presets dürfen nicht live gehen
+    if preset.allow_live:
+        logger.error("SAFETY: Dieses Preset hat allow_live=true. R&D-Presets dürfen nicht live gehen!")
+        return 1
+
+    # Parameter zusammenstellen (CLI überschreibt Preset-Defaults)
+    symbol = args.symbol or preset.default_symbol
+    timeframe = args.timeframe or preset.default_timeframe
+    from_date = args.from_date or preset.default_from or "2020-01-01"
+    to_date = args.to_date or preset.default_to or datetime.now().strftime("%Y-%m-%d")
+    tag = args.tag or f"exp_rnd_{preset_id}"
+    output_dir = Path(args.output_dir)
+
+    logger.info("=" * 70)
+    logger.info("R&D EXPERIMENT")
+    logger.info("=" * 70)
+    logger.info(f"  Preset:      {preset_id}")
+    logger.info(f"  Strategy:    {preset.strategy}")
+    logger.info(f"  Symbol:      {symbol}")
+    logger.info(f"  Timeframe:   {timeframe}")
+    logger.info(f"  Zeitraum:    {from_date} bis {to_date}")
+    logger.info(f"  Tag:         {tag}")
+    logger.info(f"  Hypothese:   {preset.hypothesis}")
+    logger.info("=" * 70)
+
+    # Dry-Run-Modus
+    if getattr(args, "dry_run", False):
+        logger.info("\n[DRY-RUN] Preset-Details:")
+        logger.info(f"  Description: {preset.description}")
+        logger.info(f"  Tier:        {preset.tier}")
+        logger.info(f"  Experimental: {preset.experimental}")
+        logger.info(f"  Allow-Live:  {preset.allow_live}")
+        logger.info(f"  Markets:     {preset.markets}")
+        logger.info(f"  Timeframes:  {preset.timeframes}")
+        logger.info(f"  Focus-Metrics: {preset.focus_metrics}")
+        logger.info(f"  Parameters:  {preset.parameters}")
+        logger.info("\n[DRY-RUN] Kein Backtest ausgeführt.")
+        return 0
+
+    # Random Seed setzen
+    np.random.seed(args.seed)
+
+    # Daten laden oder generieren
+    logger.info("\n[1/4] Daten laden...")
+
+    if getattr(args, "use_dummy_data", False):
+        # Dummy-Daten generieren
+        n_bars = args.dummy_bars
+        logger.info(f"  Generiere {n_bars} Dummy-Bars")
+        
+        end = datetime.now()
+        start = end - timedelta(hours=n_bars)
+        
+        # Timeframe zu Frequenz mappen
+        freq_map = {"1h": "1h", "4h": "4h", "1d": "1D", "1w": "1W"}
+        freq = freq_map.get(timeframe, "1h")
+        
+        index = pd.date_range(start=start, periods=n_bars, freq=freq, tz="UTC")
+        
+        # Random Walk für Close
+        base_price = 50000.0
+        volatility = 0.015
+        returns = np.random.normal(0, volatility, n_bars)
+        trend = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 0.001
+        returns = returns + trend
+        close_prices = base_price * np.exp(np.cumsum(returns))
+        
+        df = pd.DataFrame(index=index)
+        df["close"] = close_prices
+        df["open"] = df["close"].shift(1).fillna(base_price)
+        high_bump = np.random.uniform(0, 0.005, n_bars)
+        df["high"] = np.maximum(df["open"], df["close"]) * (1 + high_bump)
+        low_dip = np.random.uniform(0, 0.005, n_bars)
+        df["low"] = np.minimum(df["open"], df["close"]) * (1 - low_dip)
+        df["volume"] = np.random.uniform(100, 1000, n_bars)
+        df = df[["open", "high", "low", "close", "volume"]]
+        
+    else:
+        # Versuche echte Daten zu laden
+        try:
+            from src.data.kraken import fetch_ohlcv_df
+            
+            logger.info(f"  Lade Marktdaten für {symbol} ({timeframe})")
+            df = fetch_ohlcv_df(
+                symbol=symbol,
+                timeframe=timeframe,
+                limit=2000,
+                use_cache=True,
+            )
+            
+            if df.empty:
+                logger.warning("  Keine Marktdaten gefunden, verwende Dummy-Daten")
+                args.use_dummy_data = True
+                return run_experiment(args)
+                
+            # Datums-Filter anwenden
+            if from_date:
+                start_dt = pd.to_datetime(from_date).tz_localize("UTC")
+                df = df[df.index >= start_dt]
+            if to_date:
+                end_dt = pd.to_datetime(to_date).tz_localize("UTC")
+                df = df[df.index <= end_dt]
+                
+        except Exception as e:
+            logger.warning(f"  Konnte Marktdaten nicht laden: {e}")
+            logger.info("  Fallback zu Dummy-Daten")
+            args.use_dummy_data = True
+            return run_experiment(args)
+
+    logger.info(f"  {len(df)} Bars geladen")
+    logger.info(f"  Zeitraum: {df.index[0]} - {df.index[-1]}")
+
+    # Strategy laden und Backtest ausführen
+    logger.info("\n[2/4] Strategy laden...")
+
+    try:
+        from src.strategies.registry import (
+            get_available_strategy_keys,
+            create_strategy_from_config,
+        )
+        from src.core.peak_config import load_config
+        from src.backtest.engine import BacktestEngine
+        from src.backtest.stats import compute_backtest_stats
+        from src.core.position_sizing import build_position_sizer_from_config
+        from src.core.risk import build_risk_manager_from_config
+    except ImportError as e:
+        logger.error(f"Import-Fehler: {e}")
+        return 1
+
+    # Prüfe ob Strategy verfügbar
+    available_strategies = get_available_strategy_keys()
+    if preset.strategy not in available_strategies:
+        logger.error(f"Strategy '{preset.strategy}' nicht gefunden.")
+        logger.info(f"Verfügbare Strategien: {', '.join(sorted(available_strategies))}")
+        return 1
+
+    # Config laden
+    try:
+        cfg = load_config(Path(args.config))
+    except Exception as e:
+        logger.error(f"Config-Fehler: {e}")
+        return 1
+
+    # Strategy instanziieren
+    try:
+        strategy = create_strategy_from_config(preset.strategy, cfg)
+        logger.info(f"  Strategy geladen: {preset.strategy}")
+    except Exception as e:
+        logger.error(f"Strategy-Instanziierung fehlgeschlagen: {e}")
+        return 1
+
+    # Backtest ausführen
+    logger.info("\n[3/4] Backtest ausführen...")
+
+    try:
+        position_sizer = build_position_sizer_from_config(cfg)
+        risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
+
+        engine = BacktestEngine(
+            core_position_sizer=position_sizer,
+            risk_manager=risk_manager,
+        )
+
+        def strategy_signal_fn(data, params):
+            return strategy.generate_signals(data)
+
+        result = engine.run_realistic(
+            df=df,
+            strategy_signal_fn=strategy_signal_fn,
+            strategy_params=preset.parameters,
+        )
+        result.strategy_name = preset.strategy
+
+        logger.info("  Backtest abgeschlossen")
+
+    except NotImplementedError as e:
+        logger.warning(f"  Strategy wirft NotImplementedError (R&D-Prototyp): {e}")
+        logger.info("  Erstelle Dummy-Ergebnis für R&D-Tracking...")
+        
+        # Dummy-Result für R&D-Strategien die noch nicht implementiert sind
+        result = type("DummyResult", (), {
+            "stats": {
+                "total_return": 0.0,
+                "max_drawdown": 0.0,
+                "sharpe": 0.0,
+                "total_trades": 0,
+                "win_rate": 0.0,
+                "profit_factor": 0.0,
+            },
+            "equity_curve": pd.Series([10000.0] * len(df), index=df.index),
+            "strategy_name": preset.strategy,
+        })()
+
+    except Exception as e:
+        logger.error(f"Backtest-Fehler: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        return 1
+
+    # Ergebnisse ausgeben und speichern
+    logger.info("\n[4/4] Ergebnisse...")
+
+    stats = result.stats
+
+    logger.info("\n--- BACKTEST-ERGEBNISSE ---")
+    logger.info(f"  Total Return:   {stats.get('total_return', 0):>10.2%}")
+    logger.info(f"  Max Drawdown:   {stats.get('max_drawdown', 0):>10.2%}")
+    logger.info(f"  Sharpe Ratio:   {stats.get('sharpe', 0):>10.2f}")
+    logger.info(f"  Total Trades:   {stats.get('total_trades', 0):>10}")
+    logger.info(f"  Win Rate:       {stats.get('win_rate', 0):>10.2%}")
+    logger.info(f"  Profit Factor:  {stats.get('profit_factor', 0):>10.2f}")
+
+    # Ergebnisse speichern
+    output_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    result_data = {
+        "experiment": {
+            "preset_id": preset_id,
+            "strategy": preset.strategy,
+            "symbol": symbol,
+            "timeframe": timeframe,
+            "from_date": from_date,
+            "to_date": to_date,
+            "tag": tag,
+            "timestamp": timestamp,
+            "hypothesis": preset.hypothesis,
+            "focus_metrics": preset.focus_metrics,
+        },
+        "parameters": preset.parameters,
+        "results": {
+            "total_return": stats.get("total_return", 0),
+            "max_drawdown": stats.get("max_drawdown", 0),
+            "sharpe": stats.get("sharpe", 0),
+            "total_trades": stats.get("total_trades", 0),
+            "win_rate": stats.get("win_rate", 0),
+            "profit_factor": stats.get("profit_factor", 0),
+            "bars": len(df),
+        },
+        "meta": {
+            "tier": preset.tier,
+            "experimental": preset.experimental,
+            "allow_live": preset.allow_live,
+            "seed": args.seed,
+            "use_dummy_data": getattr(args, "use_dummy_data", False),
+        },
+    }
+
+    result_file = output_dir / f"{tag}_{timestamp}.json"
+    with open(result_file, "w") as f:
+        json.dump(result_data, f, indent=2, default=str)
+    
+    logger.info(f"\n  Ergebnis gespeichert: {result_file}")
+
+    logger.info("\n" + "=" * 70)
+    logger.info("✅ R&D-Experiment abgeschlossen")
+    logger.info("=" * 70)
+
+    return 0
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """Haupt-Entry-Point."""
     parser = build_parser()
@@ -1044,6 +1475,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return run_pipeline(args)
     elif args.command == "strategy-profile":
         return run_strategy_profile(args)
+    elif args.command == "run-experiment":
+        return run_experiment(args)
     else:
         parser.error(f"Unknown command: {args.command}")
         return 1
