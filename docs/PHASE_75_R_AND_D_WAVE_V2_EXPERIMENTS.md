@@ -507,16 +507,77 @@ Nach Abschluss eines Experiments sollte dokumentiert werden:
 
 ---
 
-## 6. Abgrenzung & Safety
+## 6. Experiment-Wellen – Run-Logs
 
-### 6.1 Was diese Experimente NICHT sind
+Dieser Abschnitt dokumentiert die durchgeführten R&D-Experiment-Läufe chronologisch.
+
+### 6.1 R&D-Experiment-Welle W2 (2025-12-08) – Run-Log
+
+**Datum:** 2025-12-08  
+**Status:** ✅ Alle Läufe erfolgreich
+
+#### Run-Übersicht
+
+| Nr. | CLI-Befehl | Preset / Strategy | Status | Output |
+|-----|-----------|-------------------|--------|--------|
+| 1 | `run-experiment --list-presets` | – (Übersicht) | ✅ | stdout |
+| 2 | `run-experiment --preset armstrong_ecm_btc_longterm_v1 --dry-run` | Armstrong ECM | ✅ | Dry-Run |
+| 3 | `run-experiment --preset ehlers_super_smoother_v1 --use-dummy-data --dummy-bars 300 --tag exp_rnd_w2_ehlers_v1` | Ehlers Super Smoother | ✅ | JSON |
+| 4 | `run-experiment --preset lopez_meta_labeling_rsi_v1 --use-dummy-data --dummy-bars 500 --tag exp_rnd_w2_lopez_v1` | López Meta-Labeling | ✅ | JSON |
+| 5 | `run-experiment --preset el_karoui_stoch_vol_v1 --use-dummy-data --dummy-bars 400 --tag exp_rnd_w2_elkaroui_v1` | El Karoui Stoch-Vol | ✅ | JSON |
+| 6 | `run-experiment --preset ehlers_bandpass_cycle_v1 --timeframe 4h --from 2023-01-01 --to 2024-12-31 --use-dummy-data --tag exp_rnd_w2_ehlers_bandpass_4h` | Ehlers Bandpass | ✅ | JSON |
+
+#### Ergebnis-Dateien
+
+```
+reports/r_and_d_experiments/
+├── exp_rnd_w2_ehlers_v1_20251208_233254.json
+├── exp_rnd_w2_lopez_v1_20251208_233255.json
+├── exp_rnd_w2_elkaroui_v1_20251208_233256.json
+└── exp_rnd_w2_ehlers_bandpass_4h_20251208_233258.json
+```
+
+#### Hinweise zu den Ergebnissen
+
+> **⚠️ 0 Trades in allen Experimenten:**  
+> Dies ist **erwartetes Verhalten** und kein Fehler:
+> 
+> 1. **Dummy-Daten:** Alle Läufe nutzten synthetische/Dummy-Daten (`--use-dummy-data`)
+> 2. **Prototyp-Status:** Die R&D-Strategien (Armstrong, Ehlers, López, El Karoui) sind noch Prototypen ohne vollständig implementierte Signal-/Trade-Logik
+> 3. **Fokus:** Ziel der Welle W2 war die **CLI-/Pipeline-Validierung**, nicht die Generierung von Trades
+> 
+> **→ Trades werden generiert, sobald die Strategien vollständig implementiert sind und echte Marktdaten verwendet werden.**
+
+#### Nächste Schritte
+
+1. **Strategie-Implementierung ausbauen:**
+   - Signal-Generierung in Armstrong-, Ehlers-, López- und El-Karoui-Modulen vervollständigen
+   - Entry-/Exit-Logik mit konfigurierbaren Parametern versehen
+
+2. **Echte Marktdaten verwenden:**
+   - Läufe mit `--symbol BTC/USDT` statt `--use-dummy-data`
+   - Längere Zeiträume für aussagekräftige Statistiken
+
+3. **Robustheits-Checks:**
+   - Walk-Forward-Analysen mit `--run-walkforward`
+   - Monte-Carlo-Simulationen mit `--run-montecarlo`
+
+4. **Metriken evaluieren:**
+   - Sharpe Ratio, MaxDD, Win-Rate bei Signal-Generierung prüfen
+   - Vergleich mit Baseline-Strategien (Buy-and-Hold, Simple MA)
+
+---
+
+## 7. Abgrenzung & Safety
+
+### 7.1 Was diese Experimente NICHT sind
 
 - ❌ Kein Backtesting für Live-Trading-Entscheidungen
 - ❌ Keine Integration in Shadow-/Testnet-Mode
 - ❌ Keine Parameter-Optimierung für produktive Strategien
 - ❌ Keine Grundlage für Live-Risk-Limits
 
-### 6.2 Korrekte Verwendung
+### 7.2 Korrekte Verwendung
 
 - ✅ Hypothesen-getriebene Forschung
 - ✅ Signal-Qualitäts-Analyse
@@ -526,11 +587,12 @@ Nach Abschluss eines Experiments sollte dokumentiert werden:
 
 ---
 
-## 7. Änderungshistorie
+## 8. Änderungshistorie
 
 | Datum | Änderung |
 |-------|----------|
 | 2025-12-08 | Initiale Version – 18 Experiment-Templates für 9 Presets definiert |
+| 2025-12-08 | **Run-Log W2** – Abschnitt 6 hinzugefügt: 6 CLI-Läufe dokumentiert (Ehlers, López, El Karoui) |
 
 ---
 

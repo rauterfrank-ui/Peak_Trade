@@ -354,6 +354,7 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 * Preset-Dokumentation: [`PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md`](PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md)
 * Preset-Konfiguration: `config/r_and_d_presets.toml`
 * Status: 🔬 Experimente definiert, Ready for Execution
+* **Run-Logs:** Siehe Abschnitt [„R&D-Experiment-Welle W2 (2025-12-08) – Run-Log"](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md#61-rd-experiment-welle-w2-2025-12-08--run-log) für dokumentierte Läufe
 
 > **Wichtig:** R&D-Strategien sind **nicht live-freigegeben**. Sie sind ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
 
@@ -1081,6 +1082,7 @@ Für eine zentrale Sammlung aller Live-Track-, Dashboard-, Playbook- und Safety-
 | 2025-12-08 | (aktuell) | Phase 84 – Live-Track Demo Walkthrough & Case Study                  |
 | 2025-12-08 | (aktuell) | Phase 85 – Live-Track Session Explorer (Web-Dashboard v1)           |
 | 2025-12-08 | 7908106   | R&D-Strategie-Welle v1 (Armstrong, Ehlers, El Karoui, etc.)          |
+| 2025-12-08 | (aktuell) | **R&D-Experiment-Welle W2 Run-Log** – Verweis auf Run-Logs hinzugefügt |
 
 ---
 
