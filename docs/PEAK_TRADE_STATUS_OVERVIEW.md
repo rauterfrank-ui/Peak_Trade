@@ -821,6 +821,33 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 
     **Details:** Siehe [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
 
+18. **Phase 85 – Live-Track Session Explorer (Web-Dashboard v1)**
+
+    **Status:** ✅ Abgeschlossen
+
+    **Ziel:** Operatoren bekommen im Web-Dashboard eine durchsuchbare, filterbare Übersicht aller Live-Track Sessions (Shadow/Testnet/Live) inkl. Detailansicht, Metriken und Sicherheits-Hinweisen.
+
+    **Code:**
+    * `src/webui/live_track.py` – Live-Track Panel, Filter-Logik, Detail-View, Stats
+    * `src/webui/app.py` – API-Endpoints für Filter, Detail und Statistiken
+    * Templates: `.../index.html`, `.../session_detail.html` – UI für Liste & Detail
+    * Tests: `tests/test_webui_live_track.py` (54 Tests)
+
+    **Features:**
+    * Filterbare Session-Liste über Query-Params (`mode`, `status`)
+      * `/?mode=shadow`
+      * `/?mode=testnet&status=failed`
+    * Klickbare Sessions → Detailseite `/session/{session_id}`
+      * Config-Snapshot, Kennzahlen, Dauer, Run-Typ
+      * CLI-Hinweise zum Reproduzieren / Debuggen
+    * API-Endpoints:
+      * `/api/live_sessions?mode=testnet&status=completed`
+      * `/api/live_sessions/{session_id}`
+      * `/api/live_sessions/stats` (Aggregat-Statistiken)
+    * Safety: Live-Sessions werden im UI mit ⚠️ hervorgehoben
+
+    **Details:** Siehe [`docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`](PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md)
+
    * Live-Execution-Path als Design modelliert (Dry-Run)
    * `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
    * Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
@@ -951,6 +978,7 @@ Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-P
 | 2025-12-08 | (aktuell) | Phase 82 – Live-Track Panel im Web-Dashboard                         |
 | 2025-12-08 | (aktuell) | Phase 83 – Live-Track Operator Workflow                              |
 | 2025-12-08 | (aktuell) | Phase 84 – Live-Track Demo Walkthrough & Case Study                  |
+| 2025-12-08 | (aktuell) | Phase 85 – Live-Track Session Explorer (Web-Dashboard v1)           |
 
 ---
 

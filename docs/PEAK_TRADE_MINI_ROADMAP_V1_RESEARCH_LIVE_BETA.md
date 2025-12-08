@@ -14,18 +14,21 @@ Dazu werden sieben Micro-Phasen definiert, die auf dem bestehenden Stand (Strate
 | Micro-Phase | Fokus | Hauptziel |
 |------------|-------|-----------|
 | **Phase 80** | Research | Tiering → Portfolio-Presets & Sweeps |
+| **Phase 80B** | Execution | Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
 | **Phase 81** | Research UX | Golden-Path-Workflows & Recipes |
 | **Phase 82** | Research QA | E2E-Tests & Szenario-Library |
 | **Phase 83** | Live-Gates | Tiering-/Profile-basierte Live-Gates |
 | **Phase 84** | Monitoring | Operator-Dashboards & Alerts v1.0 |
-| **Phase 85** | Live-Beta Drill | Kompletter Dry-Run (Shadow/Testnet) |
+| **Phase 85** | Web-Dashboard | Live-Track Session Explorer (Filter, Detail, Stats-API) |
 | **Phase 86** | Freeze & Tag | Research v1.0 Freeze + Live-Beta Label |
 
 ---
 
 ## Phase 80 – Tiered Portfolio Presets v1.0 (Research)
 
-**Ziel:**  
+**Status:** ✅ ABGESCHLOSSEN
+
+**Ziel:**
 Die Informationen aus `StrategyProfile` und `config/strategy_tiering.toml` werden aktiv im Portfolio-/Regime-Layer verwendet. Standard-Presets verwenden nur Strategien mit `tier = "core"`, `aux` ist optional, `legacy` nur noch explizit.
 
 **Kern-Deliverables:**
@@ -44,6 +47,35 @@ Die Informationen aus `StrategyProfile` und `config/strategy_tiering.toml` werde
   - `legacy`-Strategien nicht automatisch in Presets landen,
   - `core`-Filterung korrekt funktioniert.
 - Beispiel-CLI-Befehle dokumentiert.
+
+---
+
+## Phase 80B – Strategy-to-Execution Bridge & Shadow/Testnet Runner v0
+
+**Status:** ✅ ABGESCHLOSSEN
+
+**Ziel:**
+Orchestrierter Flow von konfigurierten Strategien über Signale zu Orders, die via `ExecutionPipeline.execute_with_safety()` an sichere Targets (Shadow/Testnet) durchgereicht werden.
+
+**Kern-Deliverables:**
+
+- `LiveSessionRunner` + `LiveSessionConfig` + `LiveSessionMetrics` (`src/execution/live_session.py`)
+- CLI `scripts/run_execution_session.py` für Shadow/Testnet-Sessions
+- Shadow/Testnet-Session-Flow: Strategy → Signals → Orders → ExecutionPipeline
+- Safety: LIVE-Mode explizit und hart blockiert (an 3 Stellen), Safety-Gates & RiskLimits integriert
+- 24 Tests (Config, Runner, CLI, Pipeline-Integration) grün
+- Phasen-Dokumentation: `docs/PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md`
+
+**Baut auf:**
+
+- Phase 64 (TestnetOrchestrator)
+- Phase 71 (Live-Execution-Design & Gating)
+- Phase 16A (ExecutionPipeline)
+- Phase 17 (SafetyGuard)
+
+**Nächste Schritte:**
+
+- Phase 8x+: Erweiterung zum voll orchestrierten Live-Track (Scheduler, Heartbeats, Monitoring, Incident-Hooks) – auf Basis von Phase 80B.
 
 ---
 
@@ -130,9 +162,52 @@ Operatoren erhalten eine schnell erfassbare Sicht auf Strategien, Profile, Tieri
 
 ---
 
-## Phase 85 – Live-Beta Drill (Shadow/Testnet)
+## Phase 85 – Live-Track Session Explorer (Web-Dashboard v1)
 
-**Ziel:**  
+**Status:** ✅ ABGESCHLOSSEN
+
+**Kurzbeschreibung:**
+Operatoren bekommen im Web-Dashboard eine durchsuchbare, filterbare Übersicht aller Live-Sessions (Shadow/Testnet/Live) – mit Detailansicht, Stats-API und direkter Verlinkung zur Session-Registry.
+
+**Kern-Deliverables:**
+
+- **Live-Track-Liste:** Filterbare Session-Übersicht im Dashboard (`/` Startseite), Filter via Query-Params (`?mode=shadow`, `?status=completed`)
+- **Session-Detailseite:** Klickbare Sessions → `/session/{session_id}` mit allen Metriken (PnL, Drawdown, Orders, Errors, Timestamps)
+- **Stats-Endpoint:** `/api/live_sessions/stats` liefert Aggregationen (Anzahl Sessions pro Mode/Status, Avg PnL, etc.)
+
+**Operator-Nutzen:**
+
+- Schnelle Übersicht über laufende und abgeschlossene Sessions
+- Direkte Navigation von Dashboard → Session-Detail → Session-Logs
+- Stats-API für externe Monitoring-Tools (Grafana, Alerting)
+
+**Abhängigkeiten:**
+
+- Baut auf: Phase 80 (LiveSessionRunner), Phase 81 (Session-Registry), Phase 83 (Live-Gates), Phase 84 (Operator-Workflow)
+
+**Implementierung:**
+
+- `src/webui/live_track.py` – Service-Layer für Session-Abfragen
+- `src/webui/app.py` – Neue API-Endpoints (`/api/live_sessions`, `/api/live_sessions/{session_id}`, `/api/live_sessions/stats`)
+- `templates/peak_trade_dashboard/index.html` – Filter-UI
+- `templates/peak_trade_dashboard/session_detail.html` – Detail-View (NEU)
+- `tests/test_webui_live_track.py` – 54 Tests
+
+**Definition of Done:**
+
+- ✅ Session-Liste filterbar (mode, status)
+- ✅ Session-Detail zeigt alle relevanten Metriken
+- ✅ Stats-Endpoint liefert Aggregationen
+- ✅ 54 Tests grün
+
+---
+
+## Phase 85-alt – Live-Beta Drill (Shadow/Testnet)
+
+> **Hinweis:** Dieser Abschnitt beschreibt die ursprünglich geplante Phase 85.
+> Die tatsächlich implementierte Phase 85 ist der "Live-Track Session Explorer" (siehe oben).
+
+**Ziel:**
 Ein vollständiger Drill eines potenziellen Live-Betriebs, aber in Shadow/Testnet – inklusive Incident-Simulation.
 
 **Kern-Deliverables:**
@@ -181,13 +256,14 @@ Die in dieser Mini-Roadmap definierten Micro-Phasen 80–86 wurden vollständig 
 | Phase | Feature                                  | Tests | Status |
 |-------|------------------------------------------|-------|--------|
 | 80    | Tiered Portfolio Presets v1.0           | 33    | ✅     |
+| 80B   | Strategy-to-Execution Bridge v0         | 24    | ✅     |
 | 81    | Research Golden Paths & Recipes         | 16    | ✅     |
 | 82    | Research QA & Szenario-Library          | 28    | ✅     |
 | 83    | Live-Gating & Risk Policies v1.0        | 27    | ✅     |
 | 84    | Operator Dashboards & Alerts v1.0       | 15    | ✅     |
-| 85    | Live-Beta Drill (Shadow/Testnet)        | 40    | ✅     |
+| 85    | Live-Track Session Explorer (Web-Dashboard v1) | 54 | ✅     |
 | 86    | Research v1.0 Freeze & Live-Beta Label  | -     | ✅     |
-| **Summe** |                                      | **159** | ✅  |
+| **Summe** |                                      | **197** | ✅  |
 
 **Neue / erweiterte Komponenten (Auszug):**
 
@@ -198,10 +274,12 @@ Die in dieser Mini-Roadmap definierten Micro-Phasen 80–86 wurden vollständig 
 - **Source**
   - `src/experiments/portfolio_presets.py`
   - `src/live/live_gates.py`
+  - `src/execution/live_session.py` (Phase 80B: LiveSessionRunner, LiveSessionConfig, LiveSessionMetrics)
 - **Scripts**
   - `scripts/run_research_golden_path.py`
   - `scripts/operator_dashboard.py`
   - `scripts/run_live_beta_drill.py`
+  - `scripts/run_execution_session.py` (Phase 80B: Shadow/Testnet Session CLI)
 - **Tests**
   - `tests/test_portfolio_presets_tiering.py`
   - `tests/test_research_golden_paths.py`
@@ -209,14 +287,22 @@ Die in dieser Mini-Roadmap definierten Micro-Phasen 80–86 wurden vollständig 
   - `tests/test_live_gates.py`
   - `tests/test_operator_dashboard.py`
   - `tests/test_live_beta_drill.py`
+  - `tests/test_live_session_runner.py` (Phase 80B: 24 Tests)
+  - `tests/test_webui_live_track.py` (Phase 85: 54 Tests)
 - **Doku**
   - `docs/PHASE_80_TIERED_PORTFOLIO_PRESETS.md`
+  - `docs/PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md` (Phase 80B)
   - `docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md`
   - `docs/PHASE_82_RESEARCH_QA_AND_SCENARIOS.md`
   - `docs/PHASE_83_LIVE_GATING_AND_RISK_POLICIES.md`
   - `docs/PHASE_84_OPERATOR_DASHBOARD.md`
-  - `docs/PHASE_85_LIVE_BETA_DRILL.md`
+  - `docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`
   - `docs/PHASE_86_RESEARCH_V1_FREEZE.md`
+- **Web-UI (Phase 85)**
+  - `src/webui/live_track.py` – Service-Layer
+  - `src/webui/app.py` – API-Endpoints (erweitert)
+  - `templates/peak_trade_dashboard/index.html` – Filter-UI
+  - `templates/peak_trade_dashboard/session_detail.html` – Detail-View
 
 **Aktueller Gesamtstatus:**
 
