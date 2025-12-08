@@ -23,6 +23,7 @@ Phase 84 baut auf den vorherigen Live-Track-Phasen auf:
 | **82** | Live-Track Panel im Web-Dashboard | Visualisiert Sessions (Snapshot-Kachel + Sessions-Tabelle) |
 | **83** | Operator-Workflow & Runbooks | Definiert tägliche Checks, Fehlerbehandlung, Governance |
 | **84** | **Dieser Demo-Walkthrough** | Kombiniert alles zu einem konkreten Hands-On-Durchlauf |
+| **85** | Session Explorer (Web-Dashboard v1) | Filter, Detail-View, Stats-API – klickbare Sessions im Browser |
 
 ### 1.3 Ziel des Dokuments
 
@@ -270,11 +271,11 @@ Die wichtigsten Kennzahlen aus dem Report:
 
 ---
 
-## 6. Schritt 4 – Live-Track Panel beobachten (Phase 82+83)
+## 6. Schritt 4 – Live-Track Session Explorer (Phase 82/85)
 
-**Zeitbedarf:** ca. 2–3 Minuten
+**Zeitbedarf:** ca. 3–4 Minuten
 
-Wechsle nun in den Browser zum Dashboard.
+Wechsle nun in den Browser zum Dashboard – jetzt mit dem erweiterten **Session Explorer** (Phase 85).
 
 ### 6.1 Dashboard refreshen
 
@@ -291,24 +292,102 @@ Die **Snapshot-Kachel** (oberer Bereich des Live-Track Panels) zeigt die **letzt
 | **Environment** | z.B. `kraken_futures / BTC/EUR` | Exchange + Symbol |
 | **Realized PnL** | z.B. `+12.34` (grün) oder `-5.67` (rot) | PnL der Session |
 | **Max Drawdown** | z.B. `2.3%` | Maximaler Drawdown |
-| **Zeitraum** | Start → Ende | Dauer der Session |
+| **Duration** | z.B. `5m 30s` | Berechnete Session-Dauer |
 
-### 6.3 Sessions-Tabelle prüfen
+### 6.3 Filter-Leiste verwenden (Phase 85)
 
-Die **Sessions-Tabelle** zeigt die letzten N Sessions:
+Die **Filter-Leiste** (neu in Phase 85) erlaubt das schnelle Filtern der Sessions:
+
+**Mode-Filter:**
+- `Alle` – Alle Sessions anzeigen
+- `Shadow` – Nur Shadow-Sessions (purple)
+- `Testnet` – Nur Testnet-Sessions (amber)
+- `Paper` – Nur Paper-Sessions (sky)
+
+**Status-Filter:**
+- `Alle` – Alle Status anzeigen
+- `Completed` – Nur erfolgreiche Sessions
+- `Failed` – Nur fehlgeschlagene Sessions
+- `Running` – Nur laufende Sessions
+
+**Beispiel-URLs zum Testen:**
+```
+http://127.0.0.1:8000/?mode=shadow&status=completed
+http://127.0.0.1:8000/?mode=testnet
+http://127.0.0.1:8000/?status=failed
+```
+
+### 6.4 Sessions-Tabelle – Klickbare Zeilen (Phase 85)
+
+Die **Sessions-Tabelle** zeigt die letzten N Sessions – **jede Zeile ist jetzt klickbar!**
 
 | Spalte | Inhalt |
 |--------|--------|
-| Session | Session-ID (ggf. gekürzt) |
-| Mode | shadow/testnet/paper/live |
-| Status | OK (grün) / FAIL (rot) / ABORT (amber) |
+| Session | Session-ID (klickbar → öffnet Detail-Page) |
+| Mode | shadow/testnet/paper/live (mit ⚠️ für Live) |
+| Status | ✓ OK / ✕ FAIL / ⊘ ABORT / ● RUN |
 | Started | Startzeitpunkt |
-| Ended | Endzeitpunkt |
+| Duration | Berechnete Dauer (z.B. "1h 30m") |
 | PnL | Realized PnL (farbcodiert) |
 | Max DD | Max Drawdown |
 | Orders | Anzahl Orders |
 
-### 6.4 Erwartetes Verhalten nach der Demo-Session
+> 💡 **Tipp:** Klicke auf eine Zeile, um die Detail-Ansicht zu öffnen!
+
+### 6.5 Session-Detail-Page öffnen (Phase 85)
+
+**Klicke auf deine Demo-Session** in der Tabelle → Du landest auf:
+
+```
+http://127.0.0.1:8000/session/{session_id}
+```
+
+**Was du auf der Detail-Page siehst:**
+
+1. **Header mit Session-ID und Mode-Badge**
+2. **Haupt-Metriken-Kacheln:**
+   - Status (✓ Completed / ✕ Failed)
+   - Realized PnL (grün/rot)
+   - Max Drawdown (%)
+   - Anzahl Orders
+
+3. **Meta-Informationen:**
+   - Environment & Symbol
+   - Start/Ende-Zeitpunkt
+   - Berechnete Dauer
+   - Record-Erstellungszeitpunkt
+
+4. **Alle Metrics (Tabelle):**
+   - Jede Metrik aus der Session
+   - z.B. realized_pnl, max_drawdown, num_orders, etc.
+
+5. **Session-Config (JSON):**
+   - Komplette Konfiguration der Session
+   - Strategy-Name, Parameter, etc.
+
+6. **CLI-Aufruf (wenn vorhanden):**
+   - Der Original-Befehl, mit dem die Session gestartet wurde
+
+### 6.6 Stats-API prüfen (Phase 85)
+
+Die **Stats-API** gibt aggregierte Statistiken zurück:
+
+```bash
+curl http://127.0.0.1:8000/api/live_sessions/stats | jq .
+```
+
+**Erwarteter Output:**
+```json
+{
+  "total_sessions": 5,
+  "by_mode": {"shadow": 4, "testnet": 1},
+  "by_status": {"completed": 4, "failed": 1},
+  "total_pnl": 234.56,
+  "avg_drawdown": 0.023
+}
+```
+
+### 6.7 Erwartetes Verhalten nach der Demo-Session
 
 Nach deiner eben durchgeführten Shadow-Session solltest du sehen:
 
@@ -316,9 +395,10 @@ Nach deiner eben durchgeführten Shadow-Session solltest du sehen:
 2. ✅ Snapshot-Kachel zeigt diese Session
 3. ✅ Mode-Badge zeigt `shadow` (purple)
 4. ✅ Status zeigt `Completed` (grün)
-5. ✅ PnL und Max DD stimmen grob mit dem CLI-Report überein
+5. ✅ **Klick auf Zeile öffnet Detail-Page**
+6. ✅ Detail-Page zeigt Config, Metrics, CLI-Args
 
-### 6.5 Leerer Zustand (Falls keine Sessions)
+### 6.8 Leerer Zustand (Falls keine Sessions)
 
 Falls du keine Sessions siehst:
 
@@ -329,13 +409,15 @@ Sessions werden nach dem ersten Shadow-/Testnet-Run hier angezeigt.
 
 **Lösung:** Führe Schritt 2 (Shadow-Session starten) erneut aus.
 
-### 6.6 Checkliste: Live-Track Panel
+### 6.9 Checkliste: Session Explorer (Phase 85)
 
 - [ ] Eben abgeschlossene Session erscheint in der Tabelle
 - [ ] Snapshot-Kachel zeigt die richtige Session
-- [ ] Mode zeigt `shadow` (oder `testnet` je nach Demo)
-- [ ] Status zeigt `Completed` (grün)
-- [ ] PnL/Max DD sind plausibel
+- [ ] Filter-Leiste ist sichtbar und funktioniert
+- [ ] Klick auf Session öffnet Detail-Page
+- [ ] Detail-Page zeigt Config, Metrics, CLI-Args
+- [ ] Stats-API gibt plausible Werte zurück
+- [ ] PnL/Max DD stimmen mit CLI-Report überein
 
 ---
 
@@ -499,6 +581,8 @@ Nach diesem Walkthrough kannst du:
 3. ✅ Session-Ergebnisse über das CLI (Phase 81) auswerten
 4. ✅ Das Live-Track Panel (Phase 82) interpretieren
 5. ✅ Operator-Checks (Phase 83) für Plausibilitätsprüfungen anwenden
+6. ✅ Den Session Explorer (Phase 85) nutzen: Filter, Detail-View, Stats-API
+7. ✅ Session-Details im Browser analysieren (Config, Metrics, CLI-Args)
 
 ### 10.2 Quick-Reference
 
@@ -508,14 +592,22 @@ Nach diesem Walkthrough kannst du:
 | Health-Check | `curl http://127.0.0.1:8000/api/health` |
 | Shadow-Session | `python scripts/run_execution_session.py --strategy ma_crossover --steps 10` |
 | CLI-Report | `python scripts/report_live_sessions.py --summary-only --stdout` |
-| API-Query | `curl http://127.0.0.1:8000/api/live_sessions?limit=5 \| jq .` |
+| Sessions-API | `curl http://127.0.0.1:8000/api/live_sessions?limit=5 \| jq .` |
+| Gefilterte Sessions | `curl "http://127.0.0.1:8000/api/live_sessions?mode=shadow&status=completed"` |
+| Session-Detail-API | `curl http://127.0.0.1:8000/api/live_sessions/{session_id} \| jq .` |
+| Stats-API | `curl http://127.0.0.1:8000/api/live_sessions/stats \| jq .` |
 
-### 10.3 Wichtige URLs
+### 10.3 Wichtige URLs (Phase 85 erweitert)
 
 | URL | Beschreibung |
 |-----|--------------|
-| http://127.0.0.1:8000/ | Dashboard mit Live-Track Panel |
+| http://127.0.0.1:8000/ | Dashboard mit Session Explorer |
+| http://127.0.0.1:8000/?mode=shadow | Gefiltert nach Shadow-Sessions |
+| http://127.0.0.1:8000/?status=completed | Gefiltert nach Completed |
+| http://127.0.0.1:8000/session/{id} | Session-Detail-Page (Phase 85) |
 | http://127.0.0.1:8000/api/live_sessions | Sessions-API (JSON) |
+| http://127.0.0.1:8000/api/live_sessions/stats | Aggregierte Stats (Phase 85) |
+| http://127.0.0.1:8000/api/live_sessions/{id} | Session-Detail-API (Phase 85) |
 | http://127.0.0.1:8000/api/health | Health-Check |
 | http://127.0.0.1:8000/docs | OpenAPI/Swagger UI |
 
@@ -546,7 +638,60 @@ Nach der Demo empfohlen:
 
 ---
 
-## 12. Referenzen
+## 12. Appendix: 10-Minuten Demo-Cheatsheet
+
+Für schnelle Demos – alle Befehle auf einen Blick:
+
+### Phase A: Setup (2 Min)
+
+```bash
+# Terminal 1: Dashboard starten
+cd ~/Peak_Trade && source .venv/bin/activate
+uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
+```
+
+### Phase B: Session starten (3 Min)
+
+```bash
+# Terminal 2: Shadow-Session
+cd ~/Peak_Trade && source .venv/bin/activate
+python scripts/run_execution_session.py --strategy ma_crossover --symbol BTC/EUR --steps 10
+```
+
+### Phase C: CLI-Report prüfen (2 Min)
+
+```bash
+# Summary der letzten Sessions
+python scripts/report_live_sessions.py --summary-only --stdout
+
+# Letzte Session im Detail
+python scripts/report_live_sessions.py --limit 1 --output-format markdown --stdout
+```
+
+### Phase D: Web-Dashboard erkunden (3 Min)
+
+```bash
+# Browser öffnen
+open http://127.0.0.1:8000/
+
+# Filter testen
+open "http://127.0.0.1:8000/?mode=shadow&status=completed"
+
+# Stats-API
+curl http://127.0.0.1:8000/api/live_sessions/stats | jq .
+```
+
+### Golden Path im Browser
+
+1. **Dashboard laden:** http://127.0.0.1:8000/
+2. **Filter wählen:** Mode = Shadow
+3. **Session anklicken** → Detail-Page öffnet sich
+4. **Config & Metrics prüfen** auf der Detail-Page
+5. **Zurück zur Übersicht** → Link oben links
+
+---
+
+## 13. Referenzen
 
 | Dokument | Beschreibung |
 |----------|--------------|
@@ -554,18 +699,20 @@ Nach der Demo empfohlen:
 | `docs/PHASE_81_LIVE_SESSION_REGISTRY.md` | Live-Session-Registry & Report-CLI |
 | `docs/PHASE_82_LIVE_TRACK_DASHBOARD.md` | Live-Track Panel im Web-Dashboard |
 | `docs/PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md` | Operator-Workflow & Runbooks |
+| `docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md` | Session Explorer: Filter, Detail, Stats-API |
 | `docs/LIVE_DEPLOYMENT_PLAYBOOK.md` | Stufenplan Shadow → Testnet → Live |
 | `docs/LIVE_OPERATIONAL_RUNBOOKS.md` | Konkrete Ops-Anleitungen |
 | `docs/CLI_CHEATSHEET.md` | Übersicht aller wichtigen CLI-Befehle |
 
 ---
 
-## 13. Changelog
+## 14. Changelog
 
 | Datum | Version | Änderung |
 |-------|---------|----------|
 | 2025-12-08 | v1.0 | Initiale Erstellung Phase 84 Demo-Walkthrough |
+| 2025-12-08 | v1.1 | Phase 85 Session Explorer integriert (Filter, Detail-View, Stats-API) |
 
 ---
 
-*Dieses Dokument ist Teil der Peak_Trade v1.0 Dokumentation und verbindet die Phasen 80–83 zu einem praxisnahen Operator-Walkthrough.*
+*Dieses Dokument ist Teil der Peak_Trade v1.0 Dokumentation und verbindet die Phasen 80–85 zu einem praxisnahen Operator-Walkthrough mit Session Explorer.*
