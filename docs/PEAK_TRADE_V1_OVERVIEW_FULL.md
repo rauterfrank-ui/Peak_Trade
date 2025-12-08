@@ -272,25 +272,20 @@ graph TD
 
 #### Live-Track-Stack v1 (Shadow/Testnet)
 
-Der Live-Track-Stack bündelt die Phasen 80/81/83/84/85 zu einem durchgängigen Flow von der Strategie bis zur operativen Überwachung – komplett im Shadow-/Testnet-Mode, mit klaren Safety-Gates vor Live-Orders:
+Der Live-Track-Stack bündelt die Phasen 80/81/83/84/85 zu einem durchgängigen Flow 
+von der Strategie bis zur operativen Überwachung – komplett im Shadow-/Testnet-Mode, 
+mit klaren Safety-Gates vor Live-Orders:
 
-- **Phase 80 – Strategy-to-Execution Bridge:**  
-  Einheitlicher LiveSessionRunner, der Signale aus dem Strategy-Layer in ausführbare Orders übersetzt und Live-Mode hart blockiert.
+- **Phase 80** – Strategy-to-Execution Bridge
+- **Phase 81** – Live-Session-Registry & Reports
+- **Phase 83** – Operator-Workflow & Runbooks
+- **Phase 84** – Demo-Walkthrough & Hall-of-Fame
+- **Phase 85** – Live-Track Session Explorer (Web-Dashboard v1)
 
-- **Phase 81 – Live-Session-Registry & Reports:**  
-  Zentrale Registry für alle Shadow-/Testnet-Sessions inkl. CLI-Reports (Session-Status, Metriken, Reproduzierbarkeit).
-
-- **Phase 83 – Operator-Workflow & Runbooks:**  
-  Klar definierter Operator-Workflow mit Playbook- und Runbook-Schritten für Start, Überwachung und Post-Session-Checks.
-
-- **Phase 84 – Demo-Walkthrough & Hall-of-Fame:**  
-  10–15-Minuten Live-Demo (CLI → Registry → Dashboard) plus Hall-of-Fame-Snapshot für v1.0-Showcases.
-
-- **Phase 85 – Live-Track Session Explorer (Web-Dashboard v1):**  
-  Webbasierte Live-Track-Ansicht mit Filter-UI, Session-Details, Statistiken und klaren Safety-Hinweisen für (zukünftige) Live-Sessions.
-
-**Kurz-Fazit:**  
-Der Live-Track-Stack v1 ermöglicht es, das komplette Live-Operating-Modell im Shadow-/Testnet-Mode realistisch zu testen, zu demonstrieren und zu schulen – bevor echte Orders jemals das Haus verlassen.
+**Kurz-Fazit:**
+Der Live-Track-Stack v1 ermöglicht es, das komplette Live-Operating-Modell 
+im Shadow-/Testnet-Mode realistisch zu testen, zu demonstrieren und zu schulen – 
+bevor echte Orders jemals das Haus verlassen.
 
 **Verwandte Dokumente:**
 - [`docs/LIVE_TESTNET_TRACK_STATUS.md`](LIVE_TESTNET_TRACK_STATUS.md) – Live-/Testnet-Status
@@ -354,6 +349,25 @@ Der Live-Track-Stack v1 ermöglicht es, das komplette Live-Operating-Modell im S
 
 **Verwandte Dokumente:**
 - [`docs/OBSERVABILITY_AND_MONITORING_PLAN.md`](OBSERVABILITY_AND_MONITORING_PLAN.md) – Observability-Plan
+
+### 4.10 Web-Dashboard v1 – Status & Live-Track
+
+Das Peak_Trade Web-Dashboard v1 bietet eine kompakte, read-only Oberfläche für Status & Live-Track. 
+Es baut auf dem ursprünglichen Dashboard v0 (Status & Tiering) auf und erweitert es um den Live-Track-Stack:
+
+- **System-Status & Tiering** – Übersicht über Version, Tags, CI-Status und v1-Tiering (Research / Beta / Live-ready)
+- **Live-Track Panel** – Aggregierter Blick auf aktive und zuletzt gelaufene Live-Sessions (Shadow/Testnet), inkl. Environment, Start/Ende und Ergebnisstatus
+- **Session Explorer** – Detailansicht für einzelne Sessions mit Registry-Metadaten, Reports und Operator-Links (Playbook & Runbooks)
+- **Safety-Fokus** – Dashboard bleibt strikt read-only; Live-Mode bleibt durch Safety-Gates, Environment-Config und Risk-Limits geschützt
+
+**Kurz-Fazit:**
+Das Web-Dashboard v1 macht den technischen Live-Track-Stack für Operatoren, Quant-Leads und Stakeholder sichtbar – 
+ohne direkte Order-Kontrolle, aber mit allen Informationen für Monitoring, Reviews und Demos.
+
+**Verwandte Dokumente:**
+- [`docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`](PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md) – Session Explorer
+- [`docs/PHASE_82_LIVE_TRACK_DASHBOARD.md`](PHASE_82_LIVE_TRACK_DASHBOARD.md) – Live-Track Dashboard
+- `src/webui/app.py` – Web-Dashboard-Implementierung
 
 ---
 
