@@ -270,10 +270,36 @@ graph TD
 - Alerts & Incident Notifications v1 (Phase 66) – Alert-System
 - Live Web Dashboard v0 (Phase 67) – Web-basiertes Monitoring
 
+#### Live-Track-Stack v1 (Shadow/Testnet)
+
+Der Live-Track-Stack bündelt die Phasen 80/81/83/84/85 zu einem durchgängigen Flow von der Strategie bis zur operativen Überwachung – komplett im Shadow-/Testnet-Mode, mit klaren Safety-Gates vor Live-Orders:
+
+- **Phase 80 – Strategy-to-Execution Bridge:**  
+  Einheitlicher LiveSessionRunner, der Signale aus dem Strategy-Layer in ausführbare Orders übersetzt und Live-Mode hart blockiert.
+
+- **Phase 81 – Live-Session-Registry & Reports:**  
+  Zentrale Registry für alle Shadow-/Testnet-Sessions inkl. CLI-Reports (Session-Status, Metriken, Reproduzierbarkeit).
+
+- **Phase 83 – Operator-Workflow & Runbooks:**  
+  Klar definierter Operator-Workflow mit Playbook- und Runbook-Schritten für Start, Überwachung und Post-Session-Checks.
+
+- **Phase 84 – Demo-Walkthrough & Hall-of-Fame:**  
+  10–15-Minuten Live-Demo (CLI → Registry → Dashboard) plus Hall-of-Fame-Snapshot für v1.0-Showcases.
+
+- **Phase 85 – Live-Track Session Explorer (Web-Dashboard v1):**  
+  Webbasierte Live-Track-Ansicht mit Filter-UI, Session-Details, Statistiken und klaren Safety-Hinweisen für (zukünftige) Live-Sessions.
+
+**Kurz-Fazit:**  
+Der Live-Track-Stack v1 ermöglicht es, das komplette Live-Operating-Modell im Shadow-/Testnet-Mode realistisch zu testen, zu demonstrieren und zu schulen – bevor echte Orders jemals das Haus verlassen.
+
 **Verwandte Dokumente:**
 - [`docs/LIVE_TESTNET_TRACK_STATUS.md`](LIVE_TESTNET_TRACK_STATUS.md) – Live-/Testnet-Status
 - [`docs/PHASE_51_LIVE_OPS_CLI.md`](PHASE_51_LIVE_OPS_CLI.md) – Live-Ops CLI
 - [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) – Runbooks (Abschnitte 10a–10d)
+- [`docs/PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md`](PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md) – Strategy-to-Execution Bridge
+- [`docs/PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md`](PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md) – Operator-Workflow
+- [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md) – Demo-Walkthrough
+- [`docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`](PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md) – Session Explorer
 - `scripts/live_ops.py` – Live-Ops CLI
 - `scripts/testnet_orchestrator_cli.py` – Testnet-Orchestrator CLI
 - `scripts/live_monitor_cli.py` – Live Monitor CLI
@@ -883,6 +909,7 @@ python scripts/generate_live_status_report.py \
 |------------|--------------------------------------------------------------|
 | 2025-12-07 | Phase 63 – Erstversion im Rahmen von v1.0 Overview          |
 | 2025-12-08 | Phase 84 – Hall-of-Fame-Eintrag: Live-Track Demo Walkthrough |
+| 2025-12-08 | Phase 85 – Live-Track-Stack v1 Block hinzugefügt (Abschnitt 4.5) |
 
 ---
 
