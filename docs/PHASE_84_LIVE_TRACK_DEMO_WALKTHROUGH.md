@@ -279,8 +279,17 @@ Wechsle nun in den Browser zum Dashboard – jetzt mit dem erweiterten **Session
 
 #### Dashboard-Ansicht während der Demo
 
-Sobald die Shadow-/Testnet-Session läuft, wird der technische Flow im Web-Dashboard v1 sichtbar. 
+Sobald die Shadow-/Testnet-Session läuft, wird der technische Flow im Web-Dashboard v1.1 sichtbar.
 Nutze diesen Schritt in der Demo, um Operatoren und Stakeholdern den Live-Track-Stack zu zeigen:
+
+> **Hinweis – Web-Dashboard v1.1:**  
+> Der folgende Demo-Walkthrough zeigt das Peak_Trade Web-Dashboard in Version **v1.1**. Sichtbare Elemente in der Demo:
+> - 🟢 **System-Health im Header** – „System OK" Badge und sichtbare Version `v1.1`.
+> - 🔒 **LIVE-Mode gesperrt** – deutliches „LIVE LOCKED" Badge, Live bleibt vollständig blockiert.
+> - 📊 **Stats-Kacheln** – kompakter Überblick über Anzahl und Verteilung der Sessions (z.B. Total, Shadow, Testnet, Completed).
+> - 📋 **Polished Session-Tabelle** – Zebra-Stripes, `tabular-nums` für Zahlen und klickbare Session-Zeilen.
+>
+> Diese v1.1-Visuals ändern nichts am Ablauf des Walkthroughs, machen aber den Operator-Status (Shadow/Testnet ready, Live gesperrt) deutlich besser sichtbar.
 
 > **Dashboard in 5 Schritten nutzen**
 > 1. **Dashboard öffnen** – Im Browser die Dashboard-URL aufrufen (z.B. wie in README/Web-Dashboard-Doku angegeben).
@@ -293,9 +302,9 @@ Nutze diesen Schritt in der Demo, um Operatoren und Stakeholdern den Live-Track-
 Der Operator startet die Session über CLI – das Dashboard macht den Live-Track-Stack sichtbar, ohne Orders direkt auszulösen. 
 So können Monitoring, Reviews und Schulungen durchgeführt werden, bevor echte Orders jemals das Haus verlassen.
 
-#### Storyboard: Ideale Demo-Session im Web-Dashboard v1
+#### Storyboard: Ideale Demo-Session im Web-Dashboard v1.1
 
-Um die Live-Track-Demo greifbar zu machen, empfiehlt es sich, 3–4 Screens im Web-Dashboard v1 vorzubereiten. 
+Um die Live-Track-Demo greifbar zu machen, empfiehlt es sich, 3–4 Screens im Web-Dashboard v1.1 vorzubereiten. 
 So entsteht ein konsistentes Narrativ für Operatoren, Quant-Leads und Stakeholder:
 
 - **Screen 1 – System-Status & Tiering (Landing-Page)**  
