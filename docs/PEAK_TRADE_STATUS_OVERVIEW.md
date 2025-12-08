@@ -347,12 +347,13 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 2. ~~Aufbau von Research-Presets (Sweeps, Scans, Experiment-Sets) für ausgewählte Armstrong-, Ehlers- und Lopez-de-Prado-Setups~~ ✅ Vorbereitet (Welle v2)
 3. Schrittweise Evaluierung, welche R&D-Strategien später für einen möglichen Übergang in die produktive v2.x-Strategie-Library in Frage kommen
 
-**R&D-Strategie-Welle v2 (Vorbereitung):**
+**R&D-Strategie-Welle v2 (Ready for Execution):**
 
 * Research-Presets für Armstrong, Ehlers, Lopez de Prado definiert
-* Dokumentation: [`PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md`](PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md)
+* Experiment-Katalog: [`PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md`](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md) – 18 Experiment-Templates
+* Preset-Dokumentation: [`PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md`](PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md)
 * Preset-Konfiguration: `config/r_and_d_presets.toml`
-* Status: 🔜 Presets definiert, Experimente ausstehend
+* Status: 🔬 Experimente definiert, Ready for Execution
 
 > **Wichtig:** R&D-Strategien sind **nicht live-freigegeben**. Sie sind ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
 
