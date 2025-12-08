@@ -803,6 +803,24 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 
     **Details:** Siehe [`docs/PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md`](PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md)
 
+17. **Phase 84 – Live-Track Demo Walkthrough & Case Study**
+
+    **Status:** ✅ Dokumentiert
+
+    **Ziel:** Praxisnaher Walkthrough für Operatoren (10–15 Minuten Demo)
+
+    **Was dokumentiert wurde:**
+    * Schritt-für-Schritt Demo-Anleitung (Shadow/Testnet)
+    * System-Prüfung (Dashboard, Health-Check)
+    * Session-Start mit Phase-80-Runner
+    * Registry-Prüfung via CLI (Phase 81)
+    * Live-Track Panel Verifikation (Phase 82)
+    * Plausibilitäts-Checks nach Phase 83
+    * Beispiel-Szenarien (Success/Failure)
+    * Quick-Reference und Checklisten
+
+    **Details:** Siehe [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+
    * Live-Execution-Path als Design modelliert (Dry-Run)
    * `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
    * Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
@@ -932,6 +950,7 @@ Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-P
 | 2025-12-08 | (aktuell) | Phase 81 – Live-Session-Registry & Report-CLI                        |
 | 2025-12-08 | (aktuell) | Phase 82 – Live-Track Panel im Web-Dashboard                         |
 | 2025-12-08 | (aktuell) | Phase 83 – Live-Track Operator Workflow                              |
+| 2025-12-08 | (aktuell) | Phase 84 – Live-Track Demo Walkthrough & Case Study                  |
 
 ---
 

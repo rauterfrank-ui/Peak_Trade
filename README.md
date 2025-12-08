@@ -1,13 +1,27 @@
 # Peak_Trade
 
-Peak_Trade ist ein **modulares, research-getriebenes Trading-Framework** mit Fokus auf:
+Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit konsequentem Safety-First-Ansatz. Die Architektur trennt sauber zwischen Data, Strategy, Portfolio, Execution und Reporting – Research-Experimente, Shadow-Runs und Testnet-Betrieb sind klar voneinander abgegrenzt. Eine umfassende Research-Pipeline (Sweeps, Walk-Forward, Monte-Carlo, Stress-Tests) liefert fundierte Go/No-Go-Entscheidungen, während Risk-Limits auf Order- und Portfolio-Level greifen, bevor ein Trade überhaupt ausgeführt werden kann. Kurz: Ein produktionsnahes Framework, dem Future-Ich vertrauen kann.
 
-- robuste Backtests & Portfolio-Robustheit,
-- klar definierte Risk- & Governance-Prozesse,
-- saubere Trennung von Research, Shadow/Testnet und Live,
-- automatisierte Live-Status-Reports und Incident-Drills.
+---
 
-> **Ziel:** Ein Trading-Stack, dem Future-Ich vertraut – technisch, risk-seitig und operativ.
+## Schnelleinstieg
+
+- 📖 **Vollständige v1.0-Übersicht:** [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](docs/PEAK_TRADE_V1_OVERVIEW_FULL.md)
+- 🚀 **Onboarding „First 7 Days":** [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](docs/PEAK_TRADE_FIRST_7_DAYS.md)
+
+---
+
+## AI-Unterstützung & Guides
+
+Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entwickeln, Refactoren und Dokumentieren helfen können – unter klaren Spielregeln (Safety-First, Tests respektieren, Doku mitpflegen).
+
+- 🤖 **AI-Helper-Guide (Working Agreements & Best Practices)**
+  Lies zuerst diesen Guide, wenn du mit AI an Peak_Trade arbeiten willst:
+  [`docs/ai/PEAK_TRADE_AI_HELPER_GUIDE.md`](docs/ai/PEAK_TRADE_AI_HELPER_GUIDE.md)
+
+- 🧭 **CLAUDE_GUIDE (Technische Referenz für das Repo)**
+  Übersicht über Projektstruktur, Module, typische Commands und Einstiegspunkte:
+  [`docs/ai/CLAUDE_GUIDE.md`](docs/ai/CLAUDE_GUIDE.md)
 
 ---
 
@@ -32,6 +46,7 @@ Peak_Trade ist ein **modulares, research-getriebenes Trading-Framework** mit Fok
   - Live-Ops CLI (`live_ops`) mit Health, Orders, Portfolio
   - Alerts inkl. Logging, stderr, Webhook & Slack
   - Live-Status-Reports (Markdown/HTML) für Daily/Weekly Monitoring
+  - **Live-Track Demo:** 10–15 Min Hands-On für Shadow/Testnet ([Demo-Walkthrough](docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md))
 
 - 🤖 **AI-Assistenz-Integration**
   - `docs/ai/CLAUDE_GUIDE.md` als Guide für Coding-Assistants
@@ -94,6 +109,30 @@ python scripts/generate_live_status_report.py \
 
 > Für einen Schritt-für-Schritt-Flow (inkl. Screenshots/Details) siehe:  
 > [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md).
+
+---
+
+## Live-Track Demo (Shadow/Testnet)
+
+In **10–15 Minuten** den kompletten Live-Track praktisch erleben – ohne echtes Kapital:
+
+```bash
+# 1. Dashboard starten
+uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
+
+# 2. Shadow-Session (10 Steps)
+python scripts/run_execution_session.py --strategy ma_crossover --steps 10
+
+# 3. Registry prüfen
+python scripts/report_live_sessions.py --summary-only --stdout
+
+# 4. Dashboard öffnen: http://127.0.0.1:8000/
+```
+
+**Was du siehst:** Session-Start → Order-Simulation → Registry-Eintrag → Live-Track Panel mit Status, PnL, Drawdown.
+
+> **Safety-First:** Nur Shadow-/Testnet-Mode. Live-Mode bleibt durch Safety-Gates blockiert.
+> **Vollständiger Walkthrough:** [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
 
 ---
 

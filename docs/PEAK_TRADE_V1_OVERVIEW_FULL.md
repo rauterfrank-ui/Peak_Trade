@@ -1,7 +1,17 @@
 # Peak_Trade v1.0 – Vollständige Übersicht & Rollen-Guide
 
-> **Status:** Phase 63 – v1.0 Gesamtübersicht & Rollen-Guide  
+> **Status:** Phase 63 – v1.0 Gesamtübersicht & Rollen-Guide
 > **Zielgruppe:** Entwickler:innen, die bereits GETTING_STARTED gelesen haben und verstehen wollen, wie alles zusammenhängt
+
+---
+
+## Mini-Executive-Summary
+
+Peak_Trade ist ein modulares, research-getriebenes Trading-Framework, das robuste Backtests, Portfolio-Robustheit und ein konsequentes Safety-First-Mindset in den Mittelpunkt stellt. Die Architektur trennt sauber zwischen Data-, Strategy-, Portfolio-, Execution- und Reporting-Layer, sodass Research-Experimente, Shadow-Runs und Testnet-Betrieb klar voneinander abgegrenzt sind. Eine breite Strategy-Library mit OOP-basierten Strategien, Regime-Aware-Portfolios und vordefinierten Risk-Profilen ermöglicht reproduzierbare Experimente. Die Research-Pipeline orchestriert Sweeps, Walk-Forward-Analysen, Monte-Carlo-Simulationen und Stress-Tests, um fundierte Go/No-Go-Entscheidungen für die Live-Promotion zu treffen. Risk-Limits greifen sowohl auf Order- als auch auf Portfolio-Level, bevor überhaupt ein Trade ausgeführt werden kann.
+
+Der Live-Track folgt einem Stufenmodell von Shadow über Testnet bis Live, wobei echte Orders in v1.0 bewusst blockiert bleiben – Live-Aktivierung erfordert explizite Gates und dokumentierte Freigaben. Eine umfangreiche Test-Suite mit über 2.100 Tests, strukturierte Runbooks, Incident-Drills und ein Drill-Log sichern Qualität und kontinuierliche Verbesserung ab. Governance-Dokumente und Checklisten regeln den gesamten Übergang von Research zu Live.
+
+**Kurz gesagt:** Peak_Trade v1.0 ist ein produktionsnahes Research- und Trading-Framework mit integrierter Safety-Architektur – gebaut für ein Future-Ich, das dem System vertrauen kann.
 
 ---
 
@@ -29,6 +39,41 @@ Dieses Dokument richtet sich an:
 - [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](PEAK_TRADE_FIRST_7_DAYS.md) – First 7 Days Onboarding (erste Woche)
 - [`docs/PEAK_TRADE_V1_RELEASE_NOTES.md`](PEAK_TRADE_V1_RELEASE_NOTES.md) – Release Notes
 - [`docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md`](PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md) – End-to-End Research Workflows (Phase 81)
+
+### Wie du dieses Dokument nutzt
+
+1. **Schnell-Modus (5 Minuten):** Lies die [Mini-Executive-Summary](#mini-executive-summary) oben und die [10 Bullets](#peak_trade-v10-in-10-bullets) direkt im Anschluss – damit hast du den High-Level-Überblick.
+
+2. **Deep-Dive nach Rolle:**
+   - *Research/Quant:* Fokus auf [Architektur](#3-architektur-snapshot-v10), [Strategy- & Portfolio-Layer](#43-strategy--portfolio-layer), [Research-Pipeline](#44-research-pipeline-v2--portfolio-robustness), [Reporting](#47-reporting-backtest-experiments-live-status)
+   - *Operator/Run-Engineer:* Fokus auf [Live-/Testnet-Stack](#45-livetestnet-stack), [Runbooks & Drills](#48-governance-runbooks-drills), [Observability](#73-observability)
+   - *Reviewer/Risk:* Fokus auf [Governance & Safety](#7-governance-safety--observability), [Known Limitations](#11-known-limitations-v10)
+
+3. **Single Source of Truth:** Dieses Dokument ist die zentrale v1.0-Referenz. Für tiefere Details verweist es auf spezialisierte Dokus (First 7 Days, Runbooks, Playbooks, etc.).
+
+4. **Version-Hinweis:** Dieses Dokument beschreibt den **v1.0-Snapshot**. Änderungen in späteren Versionen (v1.1+) werden in separaten Release Notes und Changelogs dokumentiert.
+
+### Peak_Trade v1.0 in 10 Bullets
+
+- **Vision:** Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit Fokus auf robuste Backtests, Portfolio-Robustheit und einem Safety-First-Mindset – ein Stack, dem „Future-Ich" vertraut.
+
+- **Architektur:** Sauber getrennte Layer (Data, Backtest/Research, Strategy/Portfolio, Live/Testnet, Reporting, Governance) ermöglichen klare Verantwortlichkeiten und nahtlose Integration vom Research bis zum Live-Betrieb.
+
+- **Data-Layer:** Parquet-basiertes Caching, Kraken-Integration und normalisierte OHLCV-Pipelines liefern konsistente, reproduzierbare Marktdaten für alle nachgelagerten Komponenten.
+
+- **Strategy-Library:** OOP-basierte Strategien (MA Crossover, RSI, Trend-Following, Breakout, Vol-Regime-Filter) mit StrategyProfiles, Tiering-System und Regime-Aware-Portfolios für dynamische Gewichtung.
+
+- **Portfolio & Risk:** Multi-Strategy-Portfolios mit benannten Recipes (conservative/moderate/aggressive), Risk-Limits auf Order- und Portfolio-Level sowie Go/No-Go-Kriterien für Live-Promotion.
+
+- **Research-Pipeline:** Sweep → Walk-Forward → Monte-Carlo → Stress-Tests mit Registry-Integration, Research-CLI und automatisierten Portfolio-Robustness-Reports für fundierte Entscheidungen.
+
+- **Execution & Safety-Gates:** Stufenmodell Shadow → Testnet → Live mit zweistufigem Gating, SafetyGuards und bewusst blockierter Live-Order-Ausführung – echte Trades nur nach expliziter Freigabe.
+
+- **Monitoring & Alerts:** Live-Ops CLI, Portfolio-Monitor, Live-Status-Reports (Daily/Weekly) und Alert-System mit Logging, Webhook & Slack für kontinuierliche Transparenz im Betrieb.
+
+- **Tests & Qualität:** Über 2.100 Tests (alle grün), umfassende Dokumentation mit Developer-Guides, Runbooks, Incident-Drills und einem dokumentierten Drill-Log für kontinuierliche Verbesserung.
+
+- **Status v1.0:** Research v1.0 unter Scope-Freeze, Shadow-/Testnet-Track Beta-ready, Live-Trading bewusst konservativ gegated – v1.1+ adressiert erweiterte Exchanges, Dashboards und ML-Strategien.
 
 ---
 
@@ -837,6 +882,7 @@ python scripts/generate_live_status_report.py \
 | Datum      | Änderung                                                     |
 |------------|--------------------------------------------------------------|
 | 2025-12-07 | Phase 63 – Erstversion im Rahmen von v1.0 Overview          |
+| 2025-12-08 | Phase 84 – Hall-of-Fame-Eintrag: Live-Track Demo Walkthrough |
 
 ---
 
@@ -883,10 +929,48 @@ Dieser Abschnitt dokumentiert den Stand von **Peak_Trade v1.0** als referenzierb
   - Commit: `1d34fdc` – `chore: stop tracking local Claude settings, add regime experiments runner`  
   - Rolle: Kleiner Housekeeping-Commit **oberhalb** des v1.0-Snapshots, ohne Änderung am v1.0-Tag-Stand.
 
-### 13.4 Kurz-Fazit v1.0
+### 13.4 Live-Track Demo Walkthrough (Phase 84)
+
+Phase 84 liefert einen **praxisnahen Demo-Walkthrough**, mit dem Operatoren in 10–15 Minuten den kompletten Live-Track (Shadow/Testnet) durchspielen können.
+
+**Was Phase 84 dokumentiert:**
+
+| Schritt | Inhalt |
+|---------|--------|
+| **System prüfen** | Dashboard starten, Health-Check, Browser öffnen |
+| **Demo-Session** | Shadow-/Testnet-Run mit `run_execution_session.py` |
+| **Registry & Report** | Session-Ergebnisse via `report_live_sessions.py` |
+| **Live-Track Panel** | Dashboard-Verifikation (Snapshot-Kachel, Tabelle) |
+| **Plausibilitäts-Checks** | Phase-83-Checkliste für Konsistenz CLI ↔ Dashboard |
+
+**Warum das wichtig ist:**
+
+- **Onboarding-Ready:** Neue Operatoren können den Live-Track in Minuten praktisch erleben
+- **Showcase-Ready:** Für interne Demos und Reviews nutzbar
+- **Safety-First:** Nur Shadow-/Testnet-Mode, Live-Mode bleibt blockiert
+
+**Quick-Start:**
+
+```bash
+# 1. Dashboard starten
+uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
+
+# 2. Shadow-Session (10 Steps)
+python scripts/run_execution_session.py --strategy ma_crossover --steps 10
+
+# 3. Registry prüfen
+python scripts/report_live_sessions.py --summary-only --stdout
+
+# 4. Dashboard öffnen: http://127.0.0.1:8000/
+```
+
+**Details:** Siehe [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+
+### 13.5 Kurz-Fazit v1.0
 
 - ✅ **Research v1.0 abgeschlossen & gefreezed** (Scope-Freeze, dokumentiert in Release Notes & Status-Overview)
 - ✅ **Shadow-/Testnet-Track Beta-ready** mit Live-Gates, Policies, Operator-Dashboards & Live-Beta-Drill
+- ✅ **Live-Track Demo Walkthrough** (Phase 84) – 10–15 Min Hands-On für Operatoren
 - ✅ **Safety-first Defaults:** Kein `mode = "live"` als Default, Live-Gates und `live_mode_armed` / `live_dry_run_mode` konservativ gesetzt
 - ✅ **Tests & CLI geprüft:** Vollsuite grün, zentrale CLIs starten ohne Fehler und sind nachvollziehbar dokumentiert
 - 🏷️ **Referenz:** Für spätere Versionen (v1.1, v2.x) ist `48ecf50` der verbindliche Referenzpunkt für „Peak_Trade v1.0".

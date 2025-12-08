@@ -708,6 +708,7 @@ tail -100 logs/*.log
 | `PHASE_81_LIVE_SESSION_REGISTRY.md` | Live-Session-Registry & Report-CLI |
 | `PHASE_82_LIVE_TRACK_DASHBOARD.md` | Live-Track Panel im Web-Dashboard |
 | `PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md` | Operator-Workflow für Live-Track Panel |
+| `PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md` | Demo Walkthrough & Case Study (10–15 Min) |
 
 ---
 
@@ -780,9 +781,15 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 **Empfohlener Workflow:** Siehe `PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md` für detaillierten Tagesablauf.
 
+**Demo-Walkthrough:** Für einen praxisnahen 10–15 Minuten Durchlauf siehe [`PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md).
+
 ---
 
 ## 13. Changelog
+
+- **v1.5** (Phase 84, 2025-12): Live-Track Demo Walkthrough
+  - Referenz zu Phase 84 Demo Walkthrough hinzugefügt
+  - Abschnitt 12.3 um Demo-Verweis ergänzt
 
 - **v1.4** (Phase 82/83, 2025-12): Live-Track Dashboard & Operator-Workflow
   - Neuer Abschnitt 12: Live-Track Panel im Betrieb
