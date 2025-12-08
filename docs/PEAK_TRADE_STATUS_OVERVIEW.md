@@ -20,6 +20,23 @@ Ziel:
 
 ---
 
+## Wie du den v1.0 Status liest
+
+- **Schnell-Modus (5 Minuten):** Lies die Tabelle in [1. Gesamtstatus in Prozent](#1-gesamtstatus-in-prozent) für den High-Level-Überblick. Für den v1.0-Gesamtsnapshot mit Kennzahlen siehe den Abschnitt **„Hall of Fame – Peak_Trade v1.0 Snapshot"** in [`PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md).
+
+- **Status-Interpretation:** Prozentwerte sind **qualitative Reifegrade** (Architektur, Codequalität, Tests, Doku, Operational Readiness) – nicht als „100% = fertig für immer" zu verstehen. Kommentare in den Tabellen erläutern den jeweiligen Stand.
+
+- **Deep-Dive nach Layer:** Für Details zu einzelnen Bereichen navigiere zu den nummerierten Abschnitten (2–10), z.B. Data & Market Access, Backtest & Simulation, Strategy & Portfolio, Live-/Testnet & Operations.
+
+- **Rollen-Fokus:**
+  - *Research/Quant:* Abschnitte 3 (Backtest), 4 (Strategy & Portfolio), 6 (Research & Experiments)
+  - *Operator/Ops:* Abschnitte 7 (Live-/Testnet), 8 (Reporting & CLI), 11 (Highlights Phasen 47–74)
+  - *Reviewer/Risk:* Abschnitte 5 (Risk & Safety), 9 (Documentation & Governance), 13a (v1.0 Gesamtübersicht)
+
+- **v1.0-Gesamtsnapshot:** Für Test-Zahlen, Tags, Commits und die verbindliche v1.0-Referenz siehe den Abschnitt **„Hall of Fame – Peak_Trade v1.0 Snapshot"** am Ende von [`PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md).
+
+---
+
 ## 1. Gesamtstatus in Prozent
 
 ### 1.1 High-Level Übersicht
@@ -31,7 +48,7 @@ Ziel:
 | Strategy & Portfolio Layer      | 92%       | Einzel-Strategien, Portfolio-Layer, Portfolio-Robustness, Recipes, Risk-Profiled Presets (Phase 53), Research→Live Playbook (Phase 54) |
 | Risk & Safety (Research + Live) | 90%       | Risk-Metriken, Limits, LiveRiskLimits, Safety-Concept                                    |
 | Research & Experiments          | 91%       | Registry, Sweeps, Research-CLI, Pipeline v2, Portfolio-Level-Robustness, Research→Live Playbook (Phase 54) |
-| Live-/Testnet & Operations      | 98%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Testnet-Orchestrator v1 (Phase 64), Research→Live Playbook (Phase 54), Live-Execution-Design & Gating (Phase 71), Live-Operator-Status-CLI (Phase 72), Live-Dry-Run Drills (Phase 73), Live-Config Audit & Export (Phase 74) |
+| Live-/Testnet & Operations      | 98%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Testnet-Orchestrator v1 (Phase 64), Research→Live Playbook (Phase 54), Live-Execution-Design & Gating (Phase 71), Live-Operator-Status-CLI (Phase 72), Live-Dry-Run Drills (Phase 73), Live-Config Audit & Export (Phase 74), **Strategy-to-Execution Bridge v0 (Phase 80)** |
 | Reporting, Monitoring & CLI     | 97%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI, Live-Ops CLI (Phase 51), Monitoring & CLI-Dashboards v1 (Phase 65), Alerts & Incident Notifications v1 (Phase 66), Live Web Dashboard v0 (Phase 67) |
 | Documentation & Governance      | 90%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs, Research→Live Playbook (Phase 54), v1.0 Known Limitations dokumentiert |
 | Developer-Experience & Tooling  | 93%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides, AI-Guide (Phase 55), Warning-free Test-Suite (Phase 68) |
@@ -673,6 +690,83 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 
     **Details:** Siehe [`docs/PHASE_74_LIVE_AUDIT_EXPORT.md`](PHASE_74_LIVE_AUDIT_EXPORT.md)
 
+13. **Phase 80 – Strategy-to-Execution Bridge & Shadow/Testnet Runner v0**
+
+    **Status:** ✅ Abgeschlossen (100%)
+
+    **Ziel:** Orchestrierter Flow von konfigurierten Strategien über Signale zu Orders via ExecutionPipeline
+
+    **Was implementiert wurde:**
+    * `LiveSessionRunner` + `LiveSessionConfig` + `LiveSessionMetrics` (`src/execution/live_session.py`)
+    * CLI `scripts/run_execution_session.py` (Shadow/Testnet-Sessions)
+    * Shadow/Testnet-Session-Flow: Strategy → Signals → Orders → `ExecutionPipeline.execute_with_safety()`
+    * LIVE-Mode explizit und hart blockiert (Safety-First, an 3 Stellen)
+    * Integration mit bestehenden Safety-Komponenten (SafetyGuard, LiveRiskLimits, ExecutionPipeline)
+    * 24 Tests (Config, Runner, CLI, Pipeline-Integration) grün
+
+    **WICHTIG:** Phase 80 ist **Safety-First** – LIVE-Mode ist technisch blockiert, nur Shadow/Testnet erlaubt.
+
+    **Details:** Siehe [`docs/PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md`](PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md)
+
+14. **Phase 81 – Live-Session-Registry & Report-CLI**
+
+    **Status:** ✅ Abgeschlossen
+
+    **Ziel:** Live-/Shadow-/Testnet-Sessions analog zu Experiment-Runs erfassen und auswerten.
+
+    **Kernpunkte:**
+
+    * **Datenmodell & Storage**
+      * `LiveSessionRecord` (analog zu `SweepResultRow`) als zentrale Dataclass für einzelne Live-Session-Runs
+      * Felder u.a.: `session_id`, `run_id`, `run_type`, `mode`, `env_name`, `symbol`, `status`, `started_at`, `finished_at`, `config`, `metrics`, `cli_args`, `error`, `created_at`
+      * Persistierung als JSON unter:
+        * `reports/experiments/live_sessions/*.json`
+        * 1 Datei pro Session-Run (`<timestamp>_<run_type>_<session_id>.json`)
+
+    * **Run-Types & Modi**
+      * Run-Types: `live_session_shadow`, `live_session_testnet` (erweiterbar z.B. `live_session_live`)
+      * Modes: z.B. `shadow`, `testnet`, `live`, `paper`
+
+    * **Registry-Funktionen (Code)**
+      * Modul: `src/experiments/live_session_registry.py`
+      * `register_live_session_run()` – persistiert einen Session-Record (Config + Metrics + CLI-Args)
+      * `list_session_records()` – Query-API (Filter: Run-Type, Status, Limit)
+      * `get_session_summary()` – Aggregation (Anzahl, Status-Verteilung, Total PnL, Avg Drawdown)
+      * `render_session_markdown()` / `render_sessions_markdown()` – Markdown-Reports
+      * `render_session_html()` / `render_sessions_html()` – HTML-Reports
+
+    * **Integration in Execution-Flow**
+      * `scripts/run_execution_session.py`: Lifecycle mit `try/except/finally`
+      * Nach jeder Session (auch bei Fehler/Abbruch) wird ein `LiveSessionRecord` erzeugt und über `register_live_session_run()` registriert
+      * **Safety-Design:** Fehler in der Registry werden geloggt, dürfen aber die eigentliche Session nicht abbrechen
+
+    * **CLI-Tool für Auswertungen**
+      * Skript: `scripts/report_live_sessions.py`
+      * Nutzbare Flags (Auszug):
+        * `--run-type` (Filter nach Run-Type, z.B. `live_session_shadow`)
+        * `--status` (Filter nach Status, z.B. `completed`)
+        * `--limit` (Maximalanzahl Sessions)
+        * `--output-format` (`markdown` | `html` | `both`)
+        * `--summary-only` (nur Summary statt aller Sessions)
+        * `--output-dir` (Ziel-Verzeichnis für Reports)
+        * `--stdout` (Report zusätzlich auf STDOUT ausgeben)
+      * Typische Nutzung, z.B.:
+        ```bash
+        python scripts/report_live_sessions.py \
+          --run-type live_session_shadow \
+          --status completed \
+          --output-format markdown \
+          --summary-only \
+          --stdout
+        ```
+
+    * **Qualität & Tests**
+      * `tests/test_live_session_registry.py` – Roundtrip-, Persistenz-, Query-, Summary- und Renderer-Tests (31 grüne Tests)
+      * `tests/test_report_live_sessions_cli.py` – CLI-Tests für Summary-only, Markdown/HTML-Output, No-Sessions-Fälle (22 grüne Tests)
+      * Zusätzlich manueller Smoke-Test-Run mit dem CLI-Skript
+
+    **Details:** Siehe [`docs/PHASE_81_LIVE_SESSION_REGISTRY.md`](PHASE_81_LIVE_SESSION_REGISTRY.md)
+
    * Live-Execution-Path als Design modelliert (Dry-Run)
    * `LiveOrderExecutor` implementiert (nur Logging, keine echten Orders)
    * Factory-Funktion `create_order_executor()` für Execution-Pfad-Auswahl
@@ -798,6 +892,8 @@ Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-P
 | 2025-12-07 | (aktuell) | Phase 72 – Live-Operator-Konsole & Status-CLI (Read-Only)        |
 | 2025-12-07 | (aktuell) | Phase 73 – Live-Dry-Run Drills & Safety-Validation               |
 | 2025-12-07 | (aktuell) | Phase 74 – Live-Config Audit & Export (Read-Only)                |
+| 2025-12-08 | (aktuell) | Phase 80 – Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
+| 2025-12-08 | (aktuell) | Phase 81 – Live-Session-Registry & Report-CLI                        |
 
 ---
 
