@@ -9,14 +9,18 @@ einen OrderExecutor (z. B. PaperOrderExecutor) auszufuehren.
 Hauptkomponenten:
 - ExecutionPipeline: Zentrale Pipeline-Klasse fuer Order-Ausfuehrung
 - ExecutionPipelineConfig: Konfiguration fuer die Pipeline
+- LiveSessionRunner: Strategy-to-Execution Bridge (Phase 80)
+- LiveSessionConfig: Konfiguration fuer LiveSessionRunner
 
 Die Pipeline kann verwendet werden in:
 - Backtests (Paper-Simulation)
 - Paper-Trading
+- Shadow/Testnet-Sessions (Phase 80)
 - Forward-/Live-Simulationen (zukuenftig)
 
 WICHTIG: Es werden KEINE echten Orders an Boersen gesendet.
          Alles bleibt auf Paper-/Sandbox-Level.
+         LIVE-Mode ist in Phase 80 NICHT erlaubt!
 """
 from __future__ import annotations
 
@@ -27,9 +31,28 @@ from .pipeline import (
     ExecutionResult,
 )
 
+from .live_session import (
+    LiveSessionRunner,
+    LiveSessionConfig,
+    LiveSessionMetrics,
+    SessionMode,
+    LiveModeNotAllowedError,
+    SessionSetupError,
+    SessionRuntimeError,
+)
+
 __all__ = [
+    # Pipeline
     "ExecutionPipeline",
     "ExecutionPipelineConfig",
     "SignalEvent",
     "ExecutionResult",
+    # Phase 80: Live Session
+    "LiveSessionRunner",
+    "LiveSessionConfig",
+    "LiveSessionMetrics",
+    "SessionMode",
+    "LiveModeNotAllowedError",
+    "SessionSetupError",
+    "SessionRuntimeError",
 ]
