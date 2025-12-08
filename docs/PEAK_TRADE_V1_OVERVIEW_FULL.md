@@ -350,19 +350,41 @@ bevor echte Orders jemals das Haus verlassen.
 **Verwandte Dokumente:**
 - [`docs/OBSERVABILITY_AND_MONITORING_PLAN.md`](OBSERVABILITY_AND_MONITORING_PLAN.md) – Observability-Plan
 
-### 4.10 Web-Dashboard v1 – Status & Live-Track
+### 4.10 Web-Dashboard v1.1 – Live-Track Operator View
 
-Das Peak_Trade Web-Dashboard v1 bietet eine kompakte, read-only Oberfläche für Status & Live-Track. 
-Es baut auf dem ursprünglichen Dashboard v0 (Status & Tiering) auf und erweitert es um den Live-Track-Stack:
+Das Peak_Trade Web-Dashboard v1.1 ist die zentrale Operator-Ansicht für den Live-Track-Stack (Phasen 80/81/83/84/85). Es bietet einen stabilen, bewusst read-only gehaltenen Überblick über Systemzustand, Sessions und Umwelt (Shadow/Testnet/Live).
 
-- **System-Status & Tiering** – Übersicht über Version, Tags, CI-Status und v1-Tiering (Research / Beta / Live-ready)
-- **Live-Track Panel** – Aggregierter Blick auf aktive und zuletzt gelaufene Live-Sessions (Shadow/Testnet), inkl. Environment, Start/Ende und Ergebnisstatus
-- **Session Explorer** – Detailansicht für einzelne Sessions mit Registry-Metadaten, Reports und Operator-Links (Playbook & Runbooks)
-- **Safety-Fokus** – Dashboard bleibt strikt read-only; Live-Mode bleibt durch Safety-Gates, Environment-Config und Risk-Limits geschützt
+**Kernmerkmale v1.1:**
 
-**Kurz-Fazit:**
-Das Web-Dashboard v1 macht den technischen Live-Track-Stack für Operatoren, Quant-Leads und Stakeholder sichtbar – 
-ohne direkte Order-Kontrolle, aber mit allen Informationen für Monitoring, Reviews und Demos.
+- **System-Health im Header**
+  - Prominenter Header mit Version (`v1.1`) und Status-Badge (`🟢 System OK`).
+  - Der Operator sieht auf einen Blick, ob das Setup für Shadow-/Testnet-Demos gesund ist.
+
+- **Explizites Live-Lock**
+  - Live-Mode wird als **`🔒 LIVE LOCKED`** angezeigt.
+  - Klare Botschaft: Live-Execution ist in dieser Version gesperrt und durch Safety-Gates blockiert.
+
+- **Stats-Kacheln für schnellen Überblick**
+  - Kleine Kacheln mit Kernmetriken, z.B.:
+    - Anzahl Sessions insgesamt,
+    - Sessions nach Mode (Shadow/Testnet),
+    - Anzahl abgeschlossener Sessions.
+  - Eignet sich ideal für Demo-/Onboarding-Situationen („Wie aktiv ist der Stack aktuell?").
+
+- **Polished Session-Tabelle**
+  - Session-Liste mit:
+    - klaren Spalten-Headern,
+    - mehr Padding und `tabular-nums` für saubere Zahlendarstellung,
+    - Zebra-Stripes für bessere Scanbarkeit.
+  - Jede Session ist klickbar (Detail-View), die Sortierung ist standardmäßig zeitbasiert (neueste zuerst).
+
+- **Safety-First & Read-Only**
+  - Keine Endpoints zur Order-Ausführung im Dashboard.
+  - Das UI spiegelt den Live-Track-Stack (Phasen 80/81/83/84/85) wider, ohne neue Risiken zu öffnen.
+  - Für Demos wird ausschließlich Shadow-/Testnet-Mode genutzt; Live bleibt sichtbar, aber gesperrt.
+
+Dieses Dashboard ist die empfohlene Einstiegssicht für Operatoren in Shadow-/Testnet-Demos und ergänzt die CLI-Flows aus Phase 80/81 optimal:  
+CLI für Start/Registry → Dashboard für Überblick & Storytelling.
 
 **Verwandte Dokumente:**
 - [`docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`](PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md) – Session Explorer
