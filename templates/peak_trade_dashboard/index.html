@@ -104,17 +104,38 @@
 <section
   class="mt-8 bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"
 >
-  <div class="flex items-baseline justify-between mb-3">
-    <h2 class="text-sm font-semibold text-slate-200">
-      Live-Track – Session Explorer
-    </h2>
-    <p class="text-xs text-slate-400">
-      {{ live_track.sessions | length }} Session(s) geladen
-      {% if live_track.stats %}
-      · Total: {{ live_track.stats.total_sessions }}
-      {% endif %}
-    </p>
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-3">
+      <h2 class="text-sm font-semibold text-slate-200">
+        Live-Track – Session Explorer
+      </h2>
+      <span class="text-xs px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
+        Shadow/Testnet
+      </span>
+    </div>
   </div>
+
+  <!-- Stats-Kacheln (v1.1) -->
+  {% if live_track.stats %}
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
+      <p class="text-xs text-slate-400">Total Sessions</p>
+      <p class="text-lg font-semibold text-slate-200">{{ live_track.stats.total_sessions }}</p>
+    </div>
+    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
+      <p class="text-xs text-slate-400">Shadow</p>
+      <p class="text-lg font-semibold text-purple-300">{{ live_track.stats.by_mode.get('shadow', 0) }}</p>
+    </div>
+    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
+      <p class="text-xs text-slate-400">Testnet</p>
+      <p class="text-lg font-semibold text-amber-300">{{ live_track.stats.by_mode.get('testnet', 0) }}</p>
+    </div>
+    <div class="bg-slate-950/60 rounded-lg border border-slate-800/60 px-3 py-2">
+      <p class="text-xs text-slate-400">Completed</p>
+      <p class="text-lg font-semibold text-emerald-300">{{ live_track.stats.by_status.get('completed', 0) }}</p>
+    </div>
+  </div>
+  {% endif %}
 
   <!-- Phase 85: Filter-Leiste -->
   <div class="mb-4 flex flex-wrap gap-2 items-center">
@@ -292,33 +313,29 @@
     {% endif %}
   </div>
 
-  <!-- Tabelle: Letzte N Sessions (Phase 85: klickbare Zeilen) -->
-  <div
-    class="overflow-hidden rounded-xl border border-slate-800/80 bg-slate-950/60"
-  >
+  <!-- Tabelle: Letzte N Sessions (Phase 85: klickbare Zeilen, v1.1 Polish) -->
+  <div class="overflow-hidden rounded-xl border border-slate-800/80 bg-slate-950/60">
     <table class="w-full text-sm">
-      <thead
-        class="bg-slate-900/80 text-slate-400 text-xs uppercase tracking-wide"
-      >
+      <thead class="bg-slate-900/90 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700/50">
         <tr>
-          <th class="px-3 py-2 text-left">Session</th>
-          <th class="px-3 py-2 text-left">Mode</th>
-          <th class="px-3 py-2 text-left">Status</th>
-          <th class="px-3 py-2 text-left">Started</th>
-          <th class="px-3 py-2 text-left">Duration</th>
-          <th class="px-3 py-2 text-right">PnL</th>
-          <th class="px-3 py-2 text-right">Max DD</th>
-          <th class="px-3 py-2 text-right">Orders</th>
+          <th class="px-4 py-3 text-left font-semibold">Session</th>
+          <th class="px-4 py-3 text-left font-semibold">Mode</th>
+          <th class="px-4 py-3 text-left font-semibold">Status</th>
+          <th class="px-4 py-3 text-left font-semibold">Started</th>
+          <th class="px-4 py-3 text-left font-semibold">Duration</th>
+          <th class="px-4 py-3 text-right font-semibold">PnL</th>
+          <th class="px-4 py-3 text-right font-semibold">Max DD</th>
+          <th class="px-4 py-3 text-right font-semibold">Orders</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="divide-y divide-slate-800/50">
         {% for session in live_track.sessions %}
         <tr
-          class="border-t border-slate-800/80 hover:bg-slate-800/60 transition-colors cursor-pointer {% if session.is_live_warning %}bg-rose-950/20{% endif %}"
+          class="hover:bg-slate-800/40 transition-colors cursor-pointer {% if loop.index is odd %}bg-slate-900/20{% endif %} {% if session.is_live_warning %}bg-rose-950/20 hover:bg-rose-950/30{% endif %}"
           onclick="window.location='/session/{{ session.session_id }}'"
           title="Klicken für Details"
         >
-          <td class="px-3 py-1.5 font-mono text-xs">
+          <td class="px-4 py-2.5 font-mono text-xs">
             <a href="/session/{{ session.session_id }}" class="hover:text-sky-300 transition-colors">
               {{ session.session_id[:25] }}{% if session.session_id | length > 25 %}...{% endif %}
             </a>
@@ -326,48 +343,56 @@
             <span class="ml-1 text-rose-400" title="LIVE-Session (Safety-First!)">⚠️</span>
             {% endif %}
           </td>
-          <td class="px-3 py-1.5">
+          <td class="px-4 py-2.5">
             {% if session.mode == "shadow" %}
-            <span
-              class="text-purple-300 text-xs px-1.5 py-0.5 rounded bg-purple-500/10"
-              >shadow</span
-            >
+            <span class="inline-flex items-center text-purple-300 text-xs px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/20 font-medium">
+              shadow
+            </span>
             {% elif session.mode == "testnet" %}
-            <span
-              class="text-amber-300 text-xs px-1.5 py-0.5 rounded bg-amber-500/10"
-              >testnet</span
-            >
+            <span class="inline-flex items-center text-amber-300 text-xs px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/20 font-medium">
+              testnet
+            </span>
             {% elif session.mode == "paper" %}
-            <span
-              class="text-sky-300 text-xs px-1.5 py-0.5 rounded bg-sky-500/10"
-              >paper</span
-            >
+            <span class="inline-flex items-center text-sky-300 text-xs px-2 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/20 font-medium">
+              paper
+            </span>
             {% elif session.mode == "live" %}
-            <span
-              class="text-rose-300 text-xs px-1.5 py-0.5 rounded bg-rose-500/10 border border-rose-500/30"
-              >⚠️ live</span
-            >
+            <span class="inline-flex items-center text-rose-300 text-xs px-2 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 font-medium">
+              ⚠️ live
+            </span>
             {% else %}
             <span class="text-slate-400 text-xs">{{ session.mode }}</span>
             {% endif %}
           </td>
-          <td class="px-3 py-1.5 text-xs">
+          <td class="px-4 py-2.5 text-xs">
             {% if session.status == "completed" %}
-            <span class="text-emerald-300">✓ OK</span>
+            <span class="inline-flex items-center gap-1 text-emerald-300 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              OK
+            </span>
             {% elif session.status == "failed" %}
-            <span class="text-rose-400">✕ FAIL</span>
+            <span class="inline-flex items-center gap-1 text-rose-400 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+              FAIL
+            </span>
             {% elif session.status == "aborted" %}
-            <span class="text-amber-300">⊘ ABORT</span>
+            <span class="inline-flex items-center gap-1 text-amber-300 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              ABORT
+            </span>
             {% elif session.status == "started" %}
-            <span class="text-sky-300 animate-pulse">● RUN</span>
+            <span class="inline-flex items-center gap-1 text-sky-300 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-sky-400 pulse-dot"></span>
+              RUN
+            </span>
             {% else %}
             <span class="text-slate-400">{{ session.status }}</span>
             {% endif %}
           </td>
-          <td class="px-3 py-1.5 text-xs text-slate-300">
+          <td class="px-4 py-2.5 text-xs text-slate-300 tabular-nums">
             {{ session.started_at.strftime('%m-%d %H:%M') if session.started_at else '-' }}
           </td>
-          <td class="px-3 py-1.5 text-xs text-slate-300">
+          <td class="px-4 py-2.5 text-xs text-slate-300 tabular-nums">
             {% if session.duration_seconds is not none %}
               {% set hours = session.duration_seconds // 3600 %}
               {% set minutes = (session.duration_seconds % 3600) // 60 %}
@@ -378,25 +403,25 @@
               <span class="text-sky-300">laufend</span>
             {% endif %}
           </td>
-          <td class="px-3 py-1.5 text-xs text-right">
+          <td class="px-4 py-2.5 text-xs text-right tabular-nums">
             {% if session.realized_pnl is not none %}
               {% if session.realized_pnl >= 0 %}
-              <span class="text-emerald-300">+{{ "%.1f"|format(session.realized_pnl) }}</span>
+              <span class="text-emerald-300 font-medium">+{{ "%.1f"|format(session.realized_pnl) }}</span>
               {% else %}
-              <span class="text-rose-400">{{ "%.1f"|format(session.realized_pnl) }}</span>
+              <span class="text-rose-400 font-medium">{{ "%.1f"|format(session.realized_pnl) }}</span>
               {% endif %}
             {% else %}
             <span class="text-slate-500">–</span>
             {% endif %}
           </td>
-          <td class="px-3 py-1.5 text-xs text-right">
+          <td class="px-4 py-2.5 text-xs text-right tabular-nums">
             {% if session.max_drawdown is not none %}
-            <span class="text-amber-300">{{ "%.1f"|format(session.max_drawdown * 100) }}%</span>
+            <span class="text-amber-300 font-medium">{{ "%.1f"|format(session.max_drawdown * 100) }}%</span>
             {% else %}
             <span class="text-slate-500">–</span>
             {% endif %}
           </td>
-          <td class="px-3 py-1.5 text-xs text-right text-slate-300">
+          <td class="px-4 py-2.5 text-xs text-right text-slate-300 tabular-nums">
             {{ session.num_orders if session.num_orders is not none else '-' }}
           </td>
         </tr>
@@ -503,12 +528,14 @@
   </div>
 </section>
 
-<section class="mt-8 text-xs text-slate-500">
+<section class="mt-8 text-xs text-slate-500 flex items-center justify-between">
   <p>
-    Dashboard v1.0 (Phase 85) – read-only Session Explorer.
-    API: <code class="bg-slate-800 px-1 rounded">/api/live_sessions</code> ·
-    <code class="bg-slate-800 px-1 rounded">/api/live_sessions/{'{'}session_id{'}'}</code> ·
-    <code class="bg-slate-800 px-1 rounded">/api/live_sessions/stats</code>
+    Dashboard v1.1 – read-only Session Explorer · Shadow/Testnet Mode
+  </p>
+  <p>
+    API:
+    <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/live_sessions</code> ·
+    <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/health</code>
   </p>
 </section>
 

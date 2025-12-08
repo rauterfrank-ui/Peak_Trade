@@ -1,7 +1,7 @@
 # src/webui/app.py
 """
-Peak_Trade: Web Dashboard v1 (Phase 85 - Session Explorer)
-==========================================================
+Peak_Trade: Web Dashboard v1.1 (Quick-Wins Polish)
+==================================================
 
 FastAPI-App für read-only Status-Ansichten:
 - v1.0 Projekt-Status & Snapshot
@@ -9,14 +9,21 @@ FastAPI-App für read-only Status-Ansichten:
 - Live-Track Panel mit letzten Sessions (Phase 82)
 - Session Explorer mit Filter & Detail-View (Phase 85)
 
+v1.1 Polish:
+- Verbesserte Status-Badges (System OK, Live LOCKED)
+- Stats-Kacheln für Session Explorer
+- Polished Tabellen mit Zebra-Stripes
+- Sticky Header & Footer
+
 Start:
     uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 
-Phase 85 Features:
+API Endpoints:
 - GET /api/live_sessions?mode=shadow&status=completed (Filter)
 - GET /api/live_sessions/{session_id} (Detail)
 - GET /api/live_sessions/stats (Statistiken)
 - GET /session/{session_id} (HTML Detail-Page)
+- GET /api/health (Health-Check)
 """
 from __future__ import annotations
 
@@ -139,12 +146,13 @@ def load_live_sessions(limit: int = 10) -> Dict[str, Any]:
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="Peak_Trade Dashboard v1",
+        title="Peak_Trade Dashboard v1.1",
         description=(
             "Read-only Dashboard für Projekt-Status, Strategy-Tiering und Live-Sessions. "
-            "Phase 85: Session Explorer mit Filter & Detail-View."
+            "v1.1: Polished UI mit Status-Badges, Stats-Kacheln und verbesserter Tabellen-Darstellung. "
+            "Live-Mode ist bewusst gesperrt (Safety-First)."
         ),
-        version="1.0.0",
+        version="1.1.0",
     )
 
     # =========================================================================
