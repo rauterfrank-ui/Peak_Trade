@@ -312,6 +312,43 @@ Ziel:
 
 > **Reifegrad:** **ca. 91%** – Research-Track ist auf sehr hohem Niveau. Phase 54 fügt ein umfassendes Research→Live Playbook hinzu, das den kompletten Prozess von Portfolio-Presets bis zur Live-/Testnet-Aktivierung dokumentiert. Siehe [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md).
 
+### R&D-Strategie-Welle v1 – Armstrong, Ehlers, El Karoui & Co.
+
+Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde die erste **R&D-Strategie-Welle** in Peak_Trade integriert. Ziel ist es, fortgeschrittene Forschungsansätze aus der quantitativen Finance in einer sauberen, testbaren Form bereitzustellen – klar getrennt von der produktiven v1.1 Strategy-Library.
+
+**Umfang der R&D-Welle v1:**
+
+| Modul | Beschreibung | Kategorie |
+|-------|-------------|-----------|
+| **Armstrong** (`src/strategies/armstrong/`) | Cycle-/Timing-orientierte Strategien (ECM-Zyklen) | cycles |
+| **Ehlers** (`src/strategies/ehlers/`) | Signal-Processing & Cycle-Filter (DSP-Techniken) | cycles |
+| **El Karoui** (`src/strategies/el_karoui/`) | Stochastisches Volatilitätsmodell | volatility |
+| **Bouchaud** (`src/strategies/bouchaud/`) | Microstructure-Overlay (Orderbuch-Analyse) | microstructure |
+| **Gatheral/Cont** (`src/strategies/gatheral_cont/`) | Vol-Regime-Overlay (Rough-Vol-Modelle) | volatility |
+| **Lopez de Prado** (`src/strategies/lopez_de_prado/`) | Meta-Labeling & ML-orientierte Ansätze | ml |
+| **ML-Research** (`src/research/ml/`) | Zentrale Komponenten für ML-Labeling & Meta-Labeling | ml |
+
+**Tests & Safety:**
+
+* 94+ R&D-bezogene Tests (u.a. `test_bouchaud_gatheral_cont_strategies.py`, `test_ehlers_lopez_strategies.py`, `test_research_strategies.py`)
+* Alle Strategien laufen unter dem Label **"R&D / Experimental"** im Strategy-Tiering
+* Keine dieser Strategien ist für Live-Trading freigegeben; sie dienen ausschließlich Research, Backtests, Sweeps und strukturierten Experimenten
+
+**Integration in Strategy-Tiering & Dashboard:**
+
+* R&D-Strategien sind im `config/strategy_tiering.toml` als `tier = "r_and_d"` registriert
+* Web-Dashboard zeigt R&D-Strategien nur mit explizitem `?include_research=true` Parameter
+* Kategorisierung nach: `cycles`, `volatility`, `microstructure`, `ml`
+* Zusätzliche Felder: `label`, `category`, `risk_profile`, `owner`, `tags`
+
+**Nächste Schritte (R&D-Track):**
+
+1. ~~Einbindung der R&D-Strategien in das Strategy-Tiering und das Web-Dashboard~~ ✅ Umgesetzt
+2. Aufbau von Research-Presets (Sweeps, Scans, Experiment-Sets) für ausgewählte Armstrong-, Ehlers- und Lopez-de-Prado-Setups
+3. Schrittweise Evaluierung, welche R&D-Strategien später für einen möglichen Übergang in die produktive v2.x-Strategie-Library in Frage kommen
+
+> **Wichtig:** R&D-Strategien sind **nicht live-freigegeben**. Sie sind ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
+
 ### Phase 41B – Strategy Robustness & Tiering (Experiments)
 
 **Status:** ✅ abgeschlossen
@@ -1020,6 +1057,7 @@ Für eine zentrale Sammlung aller Live-Track-, Dashboard-, Playbook- und Safety-
 | 2025-12-08 | (aktuell) | Phase 83 – Live-Track Operator Workflow                              |
 | 2025-12-08 | (aktuell) | Phase 84 – Live-Track Demo Walkthrough & Case Study                  |
 | 2025-12-08 | (aktuell) | Phase 85 – Live-Track Session Explorer (Web-Dashboard v1)           |
+| 2025-12-08 | 7908106   | R&D-Strategie-Welle v1 (Armstrong, Ehlers, El Karoui, etc.)          |
 
 ---
 

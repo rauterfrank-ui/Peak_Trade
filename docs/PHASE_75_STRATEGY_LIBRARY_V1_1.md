@@ -109,6 +109,52 @@ Die folgenden **8 Strategien** sind als **v1.1-offiziell** kuratiert:
 
 ---
 
+## 3a. R&D / Experimental-Layer (separat von v1.1)
+
+Zusätzlich zur produktiven v1.1-Strategy-Library existiert ein **R&D-Layer** mit fortgeschrittenen Forschungsstrategien. Diese sind **klar getrennt** von der v1.1-Bibliothek und **nicht für Live-Trading freigegeben**.
+
+### Produktiver v1.1 Strategy-Core vs. R&D / Experimental-Layer
+
+| Aspekt | v1.1 Strategy-Core | R&D / Experimental |
+|--------|-------------------|-------------------|
+| **Tier** | `core`, `aux` | `r_and_d` |
+| **Live-Freigabe** | nach Validierung möglich | **NEIN** |
+| **Verwendung** | Research + Shadow + Testnet + Live | nur Research + Backtests |
+| **Beispiele** | ma_crossover, rsi_reversion, breakout | Armstrong, Ehlers, El Karoui |
+| **Tests** | vollständig | strukturell + Smoke |
+
+### R&D-Strategie-Welle v1
+
+Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde die erste R&D-Welle integriert:
+
+| R&D-Strategie | Kategorie | Modul |
+|---------------|-----------|-------|
+| Armstrong Cycle Strategy | cycles | `src/strategies/armstrong/` |
+| Ehlers Cycle Filter | cycles | `src/strategies/ehlers/` |
+| El Karoui Volatility Model | volatility | `src/strategies/el_karoui/` |
+| Bouchaud Microstructure Overlay | microstructure | `src/strategies/bouchaud/` |
+| Gatheral Cont Vol Overlay | volatility | `src/strategies/gatheral_cont/` |
+| Lopez de Prado Meta-Labeling | ml | `src/strategies/lopez_de_prado/` |
+
+### R&D-Nutzung
+
+R&D-Strategien sind **ausschließlich für folgende Zwecke** gedacht:
+
+1. **Offline-Backtests** – Parameter-Exploration und Sensitivitätsanalysen
+2. **Research-Sweeps** – Systematische Evaluation unter verschiedenen Marktbedingungen
+3. **Akademische Analysen** – Vergleich mit Referenz-Implementierungen
+4. **Strukturierte Experimente** – Prototyping neuer Ansätze
+
+> **Wichtig:** R&D-Strategien werden im Web-Dashboard nur mit `?include_research=true` angezeigt und sind im Strategy-Tiering als `tier = "r_and_d"` mit `allow_live = false` markiert.
+
+### Weiterführende Dokumentation
+
+- [PEAK_TRADE_STATUS_OVERVIEW.md](./PEAK_TRADE_STATUS_OVERVIEW.md) – R&D-Track-Beschreibung im Gesamtkontext
+- `config/strategy_tiering.toml` – R&D-Strategie-Einträge mit Labels, Tags und Kategorien
+- `tests/test_research_strategies.py` – Tests für R&D-Tiering und Dashboard-Integration
+
+---
+
 ## 4. Config-Struktur (v1.1)
 
 ### 4.1 Einheitliches Format
