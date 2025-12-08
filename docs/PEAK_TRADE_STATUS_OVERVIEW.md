@@ -349,6 +349,21 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 
 > **Wichtig:** R&D-Strategien sind **nicht live-freigegeben**. Sie sind ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
 
+#### Done-Definition R&D-Strategie-Welle v1
+
+* Alle R&D-Module der Welle v1 sind implementiert und in der Strategy-Registry sichtbar (Armstrong, Ehlers, El Karoui, Bouchaud, Gatheral/Cont, Lopez de Prado).
+* Zu allen R&D-Modulen existieren Tests; alle R&D-bezogenen Tests laufen grün (aktuell 94 Tests für den R&D-Track).
+* Strategy-Tiering & Web-Dashboard kennen den Tier `r_and_d` und können den Research-Layer explizit ein-/ausblenden (inkl. `?include_research=true`).
+* Die R&D-Strategien sind in der Doku verankert (`PHASE_75_STRATEGY_LIBRARY_V1_1.md`, `PEAK_TRADE_STATUS_OVERVIEW.md`, `PEAK_TRADE_V1_OVERVIEW_FULL.md`).
+* Live-Mode ist für alle R&D-Strategien explizit blockiert (`allow_live = false` / Safety-Gates dokumentiert); Nutzung nur für Offline-Backtests, Research-Sweeps und strukturierte Experimente.
+
+#### Einstiegskriterien für R&D-Strategie-Welle v2
+
+* Es liegen mehrere abgeschlossene R&D-Experimente/Reports mit Welle v1 vor (z.B. Parameter-Sweeps, Robustheits-Checks, Regime-Vergleiche).
+* Aus den Ergebnissen von Welle v1 wurden konkrete „Gaps" oder neue Hypothesen abgeleitet (z.B. zusätzliche Volatilitätsmodelle, Execution-Cost-Modelle, Orderbuch-/Microstructure-Signale, ML-Regime-Classifier).
+* Für mindestens 1–2 neue Baustein-Kategorien existiert ein klar umrissener Scope (z.B. *Execution-Cost / Almgren-Chriss*, *Market-Making / Avellaneda-Stoikov*, *Regime-Classifier / ML*).
+* R&D-Welle v1 ist stabil: keine offenen Blocker-/TODOs im Code, Strategy-Tiering oder Web-Dashboard, nur noch inkrementelle Verbesserungen.
+
 ### Phase 41B – Strategy Robustness & Tiering (Experiments)
 
 **Status:** ✅ abgeschlossen
