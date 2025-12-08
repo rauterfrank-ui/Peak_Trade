@@ -277,6 +277,22 @@ Die wichtigsten Kennzahlen aus dem Report:
 
 Wechsle nun in den Browser zum Dashboard – jetzt mit dem erweiterten **Session Explorer** (Phase 85).
 
+#### Dashboard-Ansicht während der Demo
+
+Sobald die Shadow-/Testnet-Session läuft, wird der technische Flow im Web-Dashboard v1 sichtbar. 
+Nutze diesen Schritt in der Demo, um Operatoren und Stakeholdern den Live-Track-Stack zu zeigen:
+
+> **Dashboard in 5 Schritten nutzen**
+> 1. **Dashboard öffnen** – Im Browser die Dashboard-URL aufrufen (z.B. wie in README/Web-Dashboard-Doku angegeben).
+> 2. **System-Status prüfen** – Auf der Startseite kurz Version, Tags und CI-Status zeigen (Tiering: Research/Beta/Live-ready).
+> 3. **Live-Track Panel öffnen** – Zum Live-Track-Bereich wechseln und die gerade gestartete Session (Environment: Shadow/Testnet) identifizieren.
+> 4. **Session Explorer öffnen** – Die Session anklicken und im Session Explorer die Registry-Metadaten, Laufzeit und Ergebnisstatus durchgehen.
+> 5. **Operator-Links highlighten** – Zeigen, dass aus dem Explorer heraus Playbook- und Runbook-Links verfügbar sind (für Reviews, Drills, Post-Mortems).
+
+**Kurz-Fazit (für die Demo):**  
+Der Operator startet die Session über CLI – das Dashboard macht den Live-Track-Stack sichtbar, ohne Orders direkt auszulösen. 
+So können Monitoring, Reviews und Schulungen durchgeführt werden, bevor echte Orders jemals das Haus verlassen.
+
 ### 6.1 Dashboard refreshen
 
 Führe einen manuellen Refresh im Browser durch (F5 oder Ctrl+R).
