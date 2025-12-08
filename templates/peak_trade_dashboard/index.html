@@ -100,6 +100,330 @@
   </section>
 </div>
 
+<!-- Live-Track Panel (Phase 85: Session Explorer) -->
+<section
+  class="mt-8 bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"
+>
+  <div class="flex items-baseline justify-between mb-3">
+    <h2 class="text-sm font-semibold text-slate-200">
+      Live-Track – Session Explorer
+    </h2>
+    <p class="text-xs text-slate-400">
+      {{ live_track.sessions | length }} Session(s) geladen
+      {% if live_track.stats %}
+      · Total: {{ live_track.stats.total_sessions }}
+      {% endif %}
+    </p>
+  </div>
+
+  <!-- Phase 85: Filter-Leiste -->
+  <div class="mb-4 flex flex-wrap gap-2 items-center">
+    <span class="text-xs text-slate-400">Filter:</span>
+
+    <!-- Mode-Filter -->
+    <div class="flex gap-1">
+      <a href="/?mode=&status={{ live_track.active_status_filter or '' }}"
+         class="text-xs px-2 py-1 rounded {% if not live_track.active_mode_filter %}bg-slate-700 text-slate-200{% else %}bg-slate-800 text-slate-400 hover:bg-slate-700{% endif %} transition-colors">
+        Alle
+      </a>
+      <a href="/?mode=shadow&status={{ live_track.active_status_filter or '' }}"
+         class="text-xs px-2 py-1 rounded {% if live_track.active_mode_filter == 'shadow' %}bg-purple-500/20 text-purple-300 border border-purple-500/30{% else %}bg-slate-800 text-slate-400 hover:bg-purple-500/10{% endif %} transition-colors">
+        Shadow
+      </a>
+      <a href="/?mode=testnet&status={{ live_track.active_status_filter or '' }}"
+         class="text-xs px-2 py-1 rounded {% if live_track.active_mode_filter == 'testnet' %}bg-amber-500/20 text-amber-300 border border-amber-500/30{% else %}bg-slate-800 text-slate-400 hover:bg-amber-500/10{% endif %} transition-colors">
+        Testnet
+      </a>
+      <a href="/?mode=paper&status={{ live_track.active_status_filter or '' }}"
+         class="text-xs px-2 py-1 rounded {% if live_track.active_mode_filter == 'paper' %}bg-sky-500/20 text-sky-300 border border-sky-500/30{% else %}bg-slate-800 text-slate-400 hover:bg-sky-500/10{% endif %} transition-colors">
+        Paper
+      </a>
+    </div>
+
+    <span class="text-slate-600">|</span>
+
+    <!-- Status-Filter -->
+    <div class="flex gap-1">
+      <a href="/?mode={{ live_track.active_mode_filter or '' }}&status="
+         class="text-xs px-2 py-1 rounded {% if not live_track.active_status_filter %}bg-slate-700 text-slate-200{% else %}bg-slate-800 text-slate-400 hover:bg-slate-700{% endif %} transition-colors">
+        Alle
+      </a>
+      <a href="/?mode={{ live_track.active_mode_filter or '' }}&status=completed"
+         class="text-xs px-2 py-1 rounded {% if live_track.active_status_filter == 'completed' %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-slate-800 text-slate-400 hover:bg-emerald-500/10{% endif %} transition-colors">
+        Completed
+      </a>
+      <a href="/?mode={{ live_track.active_mode_filter or '' }}&status=failed"
+         class="text-xs px-2 py-1 rounded {% if live_track.active_status_filter == 'failed' %}bg-rose-500/20 text-rose-300 border border-rose-500/30{% else %}bg-slate-800 text-slate-400 hover:bg-rose-500/10{% endif %} transition-colors">
+        Failed
+      </a>
+      <a href="/?mode={{ live_track.active_mode_filter or '' }}&status=started"
+         class="text-xs px-2 py-1 rounded {% if live_track.active_status_filter == 'started' %}bg-sky-500/20 text-sky-300 border border-sky-500/30{% else %}bg-slate-800 text-slate-400 hover:bg-sky-500/10{% endif %} transition-colors">
+        Running
+      </a>
+    </div>
+
+    {% if live_track.active_mode_filter or live_track.active_status_filter %}
+    <a href="/" class="text-xs text-rose-400 hover:text-rose-300 ml-2">
+      ✕ Reset
+    </a>
+    {% endif %}
+  </div>
+
+  {% if live_track.has_sessions %}
+  <!-- Snapshot-Kachel: Letzte Session -->
+  <div
+    class="mb-4 bg-slate-950/60 rounded-xl border border-slate-800/80 p-4"
+  >
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-slate-400">Letzte Session:</span>
+        <span class="font-mono text-xs text-slate-200">
+          {{ live_track.latest.session_id[:40] }}{% if live_track.latest.session_id | length > 40 %}...{% endif %}
+        </span>
+      </div>
+      <!-- Mode Badge -->
+      {% if live_track.latest.mode == "shadow" %}
+      <span
+        class="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30"
+        >shadow</span
+      >
+      {% elif live_track.latest.mode == "testnet" %}
+      <span
+        class="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30"
+        >testnet</span
+      >
+      {% elif live_track.latest.mode == "paper" %}
+      <span
+        class="text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30"
+        >paper</span
+      >
+      {% elif live_track.latest.mode == "live" %}
+      <span
+        class="text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/30"
+        >live</span
+      >
+      {% else %}
+      <span
+        class="text-xs px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-300 border border-slate-500/30"
+        >{{ live_track.latest.mode }}</span
+      >
+      {% endif %}
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+      <!-- Status -->
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Status</p>
+        {% if live_track.latest.status == "completed" %}
+        <p class="text-sm font-semibold text-emerald-300">Completed</p>
+        {% elif live_track.latest.status == "failed" %}
+        <p class="text-sm font-semibold text-rose-400">Failed</p>
+        {% elif live_track.latest.status == "aborted" %}
+        <p class="text-sm font-semibold text-amber-300">Aborted</p>
+        {% elif live_track.latest.status == "started" %}
+        <p class="text-sm font-semibold text-sky-300">Running</p>
+        {% else %}
+        <p class="text-sm font-semibold text-slate-300">{{ live_track.latest.status }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Zeitspanne -->
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Zeitraum</p>
+        <p class="text-xs text-slate-200">
+          {{ live_track.latest.started_at.strftime('%Y-%m-%d %H:%M') if live_track.latest.started_at else '-' }}
+          {% if live_track.latest.ended_at %}
+          → {{ live_track.latest.ended_at.strftime('%H:%M') }}
+          {% else %}
+          → laufend
+          {% endif %}
+        </p>
+      </div>
+
+      <!-- Realized PnL -->
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Realized PnL</p>
+        {% if live_track.latest.realized_pnl is not none %}
+          {% if live_track.latest.realized_pnl >= 0 %}
+          <p class="text-sm font-semibold text-emerald-300">
+            +{{ "%.2f"|format(live_track.latest.realized_pnl) }}
+          </p>
+          {% else %}
+          <p class="text-sm font-semibold text-rose-400">
+            {{ "%.2f"|format(live_track.latest.realized_pnl) }}
+          </p>
+          {% endif %}
+        {% else %}
+        <p class="text-sm text-slate-500">–</p>
+        {% endif %}
+      </div>
+
+      <!-- Max Drawdown -->
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Max Drawdown</p>
+        {% if live_track.latest.max_drawdown is not none %}
+        <p class="text-sm font-semibold text-amber-300">
+          {{ "%.2f"|format(live_track.latest.max_drawdown * 100) }}%
+        </p>
+        {% else %}
+        <p class="text-sm text-slate-500">–</p>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if live_track.latest.environment %}
+    <p class="mt-2 text-xs text-slate-400">
+      Environment: <span class="text-slate-300">{{ live_track.latest.environment }}</span>
+    </p>
+    {% endif %}
+
+    {% if live_track.latest.notes %}
+    <p class="mt-2 text-xs text-rose-400">
+      Hinweis: {{ live_track.latest.notes }}
+    </p>
+    {% endif %}
+  </div>
+
+  <!-- Tabelle: Letzte N Sessions (Phase 85: klickbare Zeilen) -->
+  <div
+    class="overflow-hidden rounded-xl border border-slate-800/80 bg-slate-950/60"
+  >
+    <table class="w-full text-sm">
+      <thead
+        class="bg-slate-900/80 text-slate-400 text-xs uppercase tracking-wide"
+      >
+        <tr>
+          <th class="px-3 py-2 text-left">Session</th>
+          <th class="px-3 py-2 text-left">Mode</th>
+          <th class="px-3 py-2 text-left">Status</th>
+          <th class="px-3 py-2 text-left">Started</th>
+          <th class="px-3 py-2 text-left">Duration</th>
+          <th class="px-3 py-2 text-right">PnL</th>
+          <th class="px-3 py-2 text-right">Max DD</th>
+          <th class="px-3 py-2 text-right">Orders</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for session in live_track.sessions %}
+        <tr
+          class="border-t border-slate-800/80 hover:bg-slate-800/60 transition-colors cursor-pointer {% if session.is_live_warning %}bg-rose-950/20{% endif %}"
+          onclick="window.location='/session/{{ session.session_id }}'"
+          title="Klicken für Details"
+        >
+          <td class="px-3 py-1.5 font-mono text-xs">
+            <a href="/session/{{ session.session_id }}" class="hover:text-sky-300 transition-colors">
+              {{ session.session_id[:25] }}{% if session.session_id | length > 25 %}...{% endif %}
+            </a>
+            {% if session.is_live_warning %}
+            <span class="ml-1 text-rose-400" title="LIVE-Session (Safety-First!)">⚠️</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-1.5">
+            {% if session.mode == "shadow" %}
+            <span
+              class="text-purple-300 text-xs px-1.5 py-0.5 rounded bg-purple-500/10"
+              >shadow</span
+            >
+            {% elif session.mode == "testnet" %}
+            <span
+              class="text-amber-300 text-xs px-1.5 py-0.5 rounded bg-amber-500/10"
+              >testnet</span
+            >
+            {% elif session.mode == "paper" %}
+            <span
+              class="text-sky-300 text-xs px-1.5 py-0.5 rounded bg-sky-500/10"
+              >paper</span
+            >
+            {% elif session.mode == "live" %}
+            <span
+              class="text-rose-300 text-xs px-1.5 py-0.5 rounded bg-rose-500/10 border border-rose-500/30"
+              >⚠️ live</span
+            >
+            {% else %}
+            <span class="text-slate-400 text-xs">{{ session.mode }}</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-1.5 text-xs">
+            {% if session.status == "completed" %}
+            <span class="text-emerald-300">✓ OK</span>
+            {% elif session.status == "failed" %}
+            <span class="text-rose-400">✕ FAIL</span>
+            {% elif session.status == "aborted" %}
+            <span class="text-amber-300">⊘ ABORT</span>
+            {% elif session.status == "started" %}
+            <span class="text-sky-300 animate-pulse">● RUN</span>
+            {% else %}
+            <span class="text-slate-400">{{ session.status }}</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-1.5 text-xs text-slate-300">
+            {{ session.started_at.strftime('%m-%d %H:%M') if session.started_at else '-' }}
+          </td>
+          <td class="px-3 py-1.5 text-xs text-slate-300">
+            {% if session.duration_seconds is not none %}
+              {% set hours = session.duration_seconds // 3600 %}
+              {% set minutes = (session.duration_seconds % 3600) // 60 %}
+              {% if hours > 0 %}{{ hours }}h {% endif %}{{ minutes }}m
+            {% elif session.ended_at %}
+              {{ session.ended_at.strftime('%H:%M') }}
+            {% else %}
+              <span class="text-sky-300">laufend</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-1.5 text-xs text-right">
+            {% if session.realized_pnl is not none %}
+              {% if session.realized_pnl >= 0 %}
+              <span class="text-emerald-300">+{{ "%.1f"|format(session.realized_pnl) }}</span>
+              {% else %}
+              <span class="text-rose-400">{{ "%.1f"|format(session.realized_pnl) }}</span>
+              {% endif %}
+            {% else %}
+            <span class="text-slate-500">–</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-1.5 text-xs text-right">
+            {% if session.max_drawdown is not none %}
+            <span class="text-amber-300">{{ "%.1f"|format(session.max_drawdown * 100) }}%</span>
+            {% else %}
+            <span class="text-slate-500">–</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-1.5 text-xs text-right text-slate-300">
+            {{ session.num_orders if session.num_orders is not none else '-' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Phase 85: Hinweis unter der Tabelle -->
+  <p class="mt-2 text-xs text-slate-500">
+    💡 Klicke auf eine Zeile für die Detail-Ansicht mit Config, Metrics und CLI-Args.
+  </p>
+  {% else %}
+  <!-- Keine Sessions vorhanden -->
+  <div
+    class="bg-slate-950/60 rounded-xl border border-slate-800/80 p-6 text-center"
+  >
+    <p class="text-slate-400 text-sm">
+      Keine Live-Sessions gefunden.
+    </p>
+    <p class="text-xs text-slate-500 mt-1">
+      Sessions werden nach dem ersten Shadow-/Testnet-Run hier angezeigt.
+    </p>
+  </div>
+  {% endif %}
+</section>
+
 <!-- Strategy-Tiering Tabelle -->
 <section
   class="mt-8 bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"
@@ -181,8 +505,10 @@
 
 <section class="mt-8 text-xs text-slate-500">
   <p>
-    Dashboard v0 – read-only. Für echte Live-/Shadow-/Testnet-Views können
-    zukünftige Versionen hier weitere Kacheln und Charts ergänzen.
+    Dashboard v1.0 (Phase 85) – read-only Session Explorer.
+    API: <code class="bg-slate-800 px-1 rounded">/api/live_sessions</code> ·
+    <code class="bg-slate-800 px-1 rounded">/api/live_sessions/{'{'}session_id{'}'}</code> ·
+    <code class="bg-slate-800 px-1 rounded">/api/live_sessions/stats</code>
   </p>
 </section>
 

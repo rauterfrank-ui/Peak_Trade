@@ -1,0 +1,242 @@
+<!-- templates/peak_trade_dashboard/session_detail.html -->
+<!-- Phase 85: Session Detail View -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Breadcrumb & Back-Link -->
+<div class="mb-4 flex items-center gap-2 text-sm">
+  <a href="/" class="text-slate-400 hover:text-slate-200 transition-colors">
+    ← Zurück zur Übersicht
+  </a>
+  <span class="text-slate-600">/</span>
+  <span class="text-slate-300">Session-Detail</span>
+</div>
+
+<!-- Live-Warnung Banner (nur bei mode=live) -->
+{% if session.is_live_warning %}
+<div class="mb-4 bg-rose-950/40 border border-rose-500/30 rounded-xl p-4">
+  <div class="flex items-center gap-2">
+    <span class="text-2xl">⚠️</span>
+    <div>
+      <p class="text-rose-300 font-semibold">LIVE-Session – Safety-First!</p>
+      <p class="text-rose-400/80 text-xs">
+        Diese Session läuft im Live-Mode. Echte Orders können/konnten ausgeführt werden.
+        Live-Mode ist bewusst konservativ gegated.
+      </p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Session-Header -->
+<section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 mb-6">
+  <div class="flex items-start justify-between">
+    <div>
+      <h2 class="text-lg font-semibold text-slate-200 mb-1">
+        Session: <span class="font-mono text-sky-300">{{ session.session_id }}</span>
+      </h2>
+      <p class="text-xs text-slate-400">
+        Run-Type: <span class="font-mono">{{ session.run_type }}</span>
+        {% if session.run_id %}
+        · Run-ID: <span class="font-mono">{{ session.run_id }}</span>
+        {% endif %}
+      </p>
+    </div>
+    <!-- Mode-Badge -->
+    <div>
+      {% if session.mode == "shadow" %}
+      <span class="text-sm px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+        shadow
+      </span>
+      {% elif session.mode == "testnet" %}
+      <span class="text-sm px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+        testnet
+      </span>
+      {% elif session.mode == "paper" %}
+      <span class="text-sm px-3 py-1 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+        paper
+      </span>
+      {% elif session.mode == "live" %}
+      <span class="text-sm px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+        ⚠️ live
+      </span>
+      {% else %}
+      <span class="text-sm px-3 py-1 rounded-full bg-slate-500/10 text-slate-300 border border-slate-500/30">
+        {{ session.mode }}
+      </span>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Haupt-Metriken -->
+<div class="grid gap-4 md:grid-cols-4 mb-6">
+  <!-- Status -->
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <p class="text-xs text-slate-400 mb-1">Status</p>
+    {% if session.status == "completed" %}
+    <p class="text-xl font-semibold text-emerald-300">✓ Completed</p>
+    {% elif session.status == "failed" %}
+    <p class="text-xl font-semibold text-rose-400">✕ Failed</p>
+    {% elif session.status == "aborted" %}
+    <p class="text-xl font-semibold text-amber-300">⊘ Aborted</p>
+    {% elif session.status == "started" %}
+    <p class="text-xl font-semibold text-sky-300 animate-pulse">● Running</p>
+    {% else %}
+    <p class="text-xl font-semibold text-slate-300">{{ session.status }}</p>
+    {% endif %}
+  </div>
+
+  <!-- Realized PnL -->
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <p class="text-xs text-slate-400 mb-1">Realized PnL</p>
+    {% if session.realized_pnl is not none %}
+      {% if session.realized_pnl >= 0 %}
+      <p class="text-xl font-semibold text-emerald-300">+{{ "%.2f"|format(session.realized_pnl) }}</p>
+      {% else %}
+      <p class="text-xl font-semibold text-rose-400">{{ "%.2f"|format(session.realized_pnl) }}</p>
+      {% endif %}
+    {% else %}
+    <p class="text-xl text-slate-500">–</p>
+    {% endif %}
+  </div>
+
+  <!-- Max Drawdown -->
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <p class="text-xs text-slate-400 mb-1">Max Drawdown</p>
+    {% if session.max_drawdown is not none %}
+    <p class="text-xl font-semibold text-amber-300">{{ "%.2f"|format(session.max_drawdown * 100) }}%</p>
+    {% else %}
+    <p class="text-xl text-slate-500">–</p>
+    {% endif %}
+  </div>
+
+  <!-- Orders -->
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <p class="text-xs text-slate-400 mb-1">Orders</p>
+    {% if session.num_orders is not none %}
+    <p class="text-xl font-semibold text-sky-300">{{ session.num_orders }}</p>
+    {% else %}
+    <p class="text-xl text-slate-500">–</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Meta-Informationen -->
+<section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 mb-6">
+  <h3 class="text-sm font-semibold text-slate-200 mb-3">Meta-Informationen</h3>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+    <div>
+      <p class="text-xs text-slate-400">Environment</p>
+      <p class="text-slate-200 font-mono text-xs">{{ session.env_name or '-' }}</p>
+    </div>
+    <div>
+      <p class="text-xs text-slate-400">Symbol</p>
+      <p class="text-slate-200 font-semibold">{{ session.symbol or '-' }}</p>
+    </div>
+    <div>
+      <p class="text-xs text-slate-400">Gestartet</p>
+      <p class="text-slate-200">
+        {{ session.started_at.strftime('%Y-%m-%d %H:%M:%S') if session.started_at else '-' }}
+      </p>
+    </div>
+    <div>
+      <p class="text-xs text-slate-400">Beendet</p>
+      <p class="text-slate-200">
+        {{ session.ended_at.strftime('%Y-%m-%d %H:%M:%S') if session.ended_at else 'laufend' }}
+      </p>
+    </div>
+    <div>
+      <p class="text-xs text-slate-400">Dauer</p>
+      <p class="text-slate-200">
+        {% if session.duration_seconds is not none %}
+          {% set hours = session.duration_seconds // 3600 %}
+          {% set minutes = (session.duration_seconds % 3600) // 60 %}
+          {% set seconds = session.duration_seconds % 60 %}
+          {% if hours > 0 %}{{ hours }}h {% endif %}{{ minutes }}m {{ seconds }}s
+        {% else %}
+          –
+        {% endif %}
+      </p>
+    </div>
+    <div>
+      <p class="text-xs text-slate-400">Record erstellt</p>
+      <p class="text-slate-200 text-xs">
+        {{ session.created_at.strftime('%Y-%m-%d %H:%M') if session.created_at else '-' }}
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Fehler-Anzeige (falls vorhanden) -->
+{% if session.notes %}
+<section class="bg-rose-950/30 rounded-2xl border border-rose-500/30 p-4 mb-6">
+  <h3 class="text-sm font-semibold text-rose-300 mb-2">⚠️ Fehler / Hinweis</h3>
+  <pre class="text-xs text-rose-200 bg-rose-950/40 rounded p-3 overflow-x-auto">{{ session.notes }}</pre>
+</section>
+{% endif %}
+
+<!-- Alle Metrics -->
+<section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 mb-6">
+  <h3 class="text-sm font-semibold text-slate-200 mb-3">Alle Metrics</h3>
+  {% if session.metrics %}
+  <div class="bg-slate-950/60 rounded-xl p-4 overflow-x-auto">
+    <table class="text-xs w-full">
+      <thead class="text-slate-400 uppercase">
+        <tr>
+          <th class="text-left py-1 px-2">Metric</th>
+          <th class="text-right py-1 px-2">Wert</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, value in session.metrics.items() %}
+        <tr class="border-t border-slate-800/50">
+          <td class="py-1.5 px-2 font-mono text-slate-300">{{ key }}</td>
+          <td class="py-1.5 px-2 text-right text-slate-200">
+            {% if value is number %}
+              {{ "%.4f"|format(value) if value != value|int else value }}
+            {% else %}
+              {{ value }}
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-slate-500 text-sm">Keine Metrics vorhanden.</p>
+  {% endif %}
+</section>
+
+<!-- Config -->
+<section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 mb-6">
+  <h3 class="text-sm font-semibold text-slate-200 mb-3">Session-Config</h3>
+  {% if session.config %}
+  <pre class="text-xs text-slate-300 bg-slate-950/60 rounded-xl p-4 overflow-x-auto">{{ session.config | tojson(indent=2) }}</pre>
+  {% else %}
+  <p class="text-slate-500 text-sm">Keine Config vorhanden.</p>
+  {% endif %}
+</section>
+
+<!-- CLI-Args -->
+{% if session.cli_args %}
+<section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 mb-6">
+  <h3 class="text-sm font-semibold text-slate-200 mb-3">CLI-Aufruf</h3>
+  <pre class="text-xs text-emerald-300 bg-slate-950/60 rounded-xl p-4 overflow-x-auto">{{ session.cli_args | join(' ') }}</pre>
+</section>
+{% endif %}
+
+<!-- JSON-Export Link -->
+<section class="text-xs text-slate-500">
+  <p>
+    API-Endpoint:
+    <a href="/api/live_sessions/{{ session.session_id }}"
+       class="text-sky-400 hover:text-sky-300 font-mono">
+      /api/live_sessions/{{ session.session_id }}
+    </a>
+  </p>
+</section>
+
+{% endblock %}
