@@ -977,7 +977,17 @@ Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-P
 
 ---
 
-## 14. Änderungshistorie dieses Dokuments
+## 14. Releases / Changelog
+
+- **v1.1 – Live-Track Web-Dashboard & Demo-Pack (2025-12-08)**
+  - Web-Dashboard v1.1 mit Live-Track Operator View
+  - Phase-84-Demo-Walkthrough (CLI → Registry → Dashboard)
+  - 2-Minuten-Demo-Script + Playbook-How-To (Abschnitt 12.5)
+  - Details: [`docs/RELEASE_NOTES_V1_1_LIVE_TRACK_DASHBOARD.md`](RELEASE_NOTES_V1_1_LIVE_TRACK_DASHBOARD.md)
+
+---
+
+## 15. Änderungshistorie dieses Dokuments
 
 | Datum      | Commit    | Änderung                                                        |
 |------------|-----------|-----------------------------------------------------------------|

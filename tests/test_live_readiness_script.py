@@ -956,3 +956,17 @@ default_type = "kraken_live"
         assert live_risk_check is not None
         assert live_risk_check.passed is False
 
+
+# ---------------------------------------------------------------------------
+# Lokal-Notizen: manuelles Ausführen des Live-Readiness-Scripts (optional)
+#
+# Diese Kommandos sind reine Shell-Beispiele und werden von Python / pytest
+# ignoriert, weil sie als Kommentare markiert sind. Sie dienen nur als
+# Erinnerungsstütze für manuelle Checks.
+#
+# cd "/Users/frnkhrz/Peak_Trade"
+# source ".venv/bin/activate"
+# python scripts/check_live_readiness.py
+# python scripts/operator_dashboard.py --help
+# python scripts/operator_dashboard.py
+# ---------------------------------------------------------------------------
