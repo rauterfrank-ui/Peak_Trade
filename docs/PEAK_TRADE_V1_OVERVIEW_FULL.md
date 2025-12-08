@@ -391,6 +391,30 @@ CLI für Start/Registry → Dashboard für Überblick & Storytelling.
 - [`docs/PHASE_82_LIVE_TRACK_DASHBOARD.md`](PHASE_82_LIVE_TRACK_DASHBOARD.md) – Live-Track Dashboard
 - `src/webui/app.py` – Web-Dashboard-Implementierung
 
+### 4.11 Live-Track Web-Dashboard v1.1 – Demo & Onboarding
+
+Das Peak_Trade Web-Dashboard v1.1 zeigt den aktuellen Live-/Shadow-/Testnet-Status des Systems in einer kompakten Ansicht (System-Health, Live-Lock, Tiering, Session-Übersicht).
+Es dient als zentrales UI für Demos, Operator-Onboarding und Status-Reports.
+
+**Kernelemente:**
+
+* **System-Header:** Betriebsmodus, Tiering, Live-Lock / Safety-Lock
+* **Status-Kacheln:** Anzahl Sessions, Shadow/Testnet-Verteilung, letzte Runs
+* **Session-Tabelle:** Registrierte Live-/Shadow-Sessions mit Kontext aus der Registry
+* **Safety-Fokus:** Live-Mode bleibt durch Safety-Gates blockiert – Demo-Flow nutzt Shadow-/Testnet-Mode.
+
+**Demo-Walkthrough & Script:**
+
+* Ausführlicher End-to-End-Walkthrough:
+  [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+  (CLI → Registry → Dashboard, inkl. Storyboard & Operator-Perspektive)
+
+* Kompaktes 2-Minuten-Script für Demos:
+  [`docs/DEMO_SCRIPT_DASHBOARD_V11.md`](DEMO_SCRIPT_DASHBOARD_V11.md)
+  (Fokus: Dashboard zeigen, Safety-Botschaft transportieren, CLI ↔ UI Brücke)
+
+Damit ist das Dashboard sowohl technisch beschrieben als auch praktisch bespielbar – ideal für interne Showcases, Onboarding-Sessions und Live-Demos.
+
 ---
 
 ## 5. Rollen & typische Workflows

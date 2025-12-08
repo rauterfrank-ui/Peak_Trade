@@ -828,9 +828,55 @@ Nach einer Shadow-/Testnet-Session die Ergebnisse im Web-Dashboard kontrollieren
 
 **Referenz:** [`PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`](PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md)
 
+### 12.5 Kurz-How-To: Live-Track Dashboard Demo (ca. 2 Minuten)
+
+Dieser Ablauf ist für Demos, Onboarding und interne Showcases gedacht.
+Ziel: In **2 Minuten** das Live-Track Web-Dashboard v1.1 zeigen und die Safety-Botschaft transportieren – ohne echte Live-Orders.
+
+**Voraussetzungen:**
+
+* Mindestens **eine aktuelle Shadow-/Testnet-Session** wurde gemäß Playbook gestartet
+  (z.B. über `scripts/run_execution_session.py` im Shadow-/Testnet-Mode).
+* Das Web-Dashboard läuft (FastAPI/Uvicorn gestartet, URL bekannt).
+
+**Demo-Ablauf (High-Level):**
+
+1. **CLI → Registry zeigen**
+   * Kurz auf die zuletzt gestartete Session hinweisen (Run-ID, Mode, Tiering).
+   * Optional: `live_session_registry` / Report-CLI erwähnen.
+
+2. **Web-Dashboard öffnen**
+   * Dashboard-URL im Browser öffnen.
+   * Zeigen, dass die zuletzt gestartete Session im Live-Track Panel / in der Tabelle sichtbar ist.
+
+3. **System-Header & Safety hervorheben**
+   * Betriebsmodus, Tiering und **Live-Lock / Safety-Lock** erklären.
+   * Klar sagen: **Live-Mode bleibt blockiert**, Demo läuft nur in Shadow-/Testnet.
+
+4. **Sessions & Status-Kacheln kurz erklären**
+   * Anzahl Sessions, Shadow/Testnet-Verteilung, letzte Runs.
+   * Eine konkrete Session anklicken / hervorheben.
+
+5. **Brücke CLI ↔ Dashboard**
+   * Verbindung erklären: „Was wir in der CLI gestartet/registriert haben, taucht hier im UI auf."
+
+**Detail-Script & Referenzen:**
+
+* Ausführlicher Schritt-für-Schritt-Walkthrough:
+  [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+
+* Kompaktes 2-Minuten-Moderationsscript inkl. Cheat-Sheet:
+  [`docs/DEMO_SCRIPT_DASHBOARD_V11.md`](DEMO_SCRIPT_DASHBOARD_V11.md)
+
+Damit haben Operatoren neben dem Playbook-Flow auch ein kurzes, reproduzierbares Demo-Format für das Live-Track Dashboard v1.1.
+
 ---
 
 ## 13. Changelog
+
+- **v1.7** (Dashboard v1.1, 2025-12): Demo How-To
+  - Neuer Abschnitt 12.5: Kurz-How-To für Live-Track Dashboard Demo
+  - Verweise auf Phase-84-Walkthrough und 2-Minuten-Script
 
 - **v1.6** (Phase 85, 2025-12): Live-Track Session Explorer
   - Neuer Abschnitt 12.4: Live-Track Session Explorer prüfen
