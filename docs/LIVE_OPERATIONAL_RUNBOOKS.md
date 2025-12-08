@@ -1885,6 +1885,39 @@ NACH ABGESCHLOSSENER SESSION:
 
 **Referenz:** [`PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`](PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md)
 
+### 12b.10 Dashboard-Check (Web-Dashboard v1)
+
+**Ziel:** Sicherstellen, dass die zuletzt gelaufene Shadow-/Testnet-Session im Web-Dashboard v1 korrekt sichtbar, geloggt und auswertbar ist.
+
+**Voraussetzung:** Die Session wurde über die CLI gestartet und ist laut Registry abgeschlossen.
+
+**Vorgehen:**
+
+1. **Dashboard öffnen**  
+   - Dashboard-URL im Browser öffnen (siehe zentrale Web-Dashboard-Doku / README).
+   - Prüfen, ob das Dashboard erreichbar ist und keine Fehlermeldung anzeigt.
+
+2. **System-Status prüfen**  
+   - Version, Tag und CI-Status kontrollieren.
+   - Verifizieren, dass das Tiering (Research/Beta/Live-ready) zum erwarteten Betriebszustand passt.
+
+3. **Live-Track Panel kontrollieren**  
+   - Die zuletzt gelaufene Session (Environment: Shadow/Testnet) identifizieren.
+   - Start-/Endzeit, Environment und Ergebnisstatus mit Registry/Report abgleichen.
+
+4. **Session Explorer öffnen**  
+   - Session im Explorer öffnen.
+   - Prüfen, ob Registry-Metadaten, Laufzeit, Ergebnisstatus und ggf. Error-Felder vollständig sind.
+   - Sicherstellen, dass Playbook-/Runbook-Links sichtbar sind.
+
+5. **Abweichungen dokumentieren**  
+   - Bei Inkonsistenzen (z.B. Session in Registry, aber nicht im Dashboard sichtbar) einen Incident-Eintrag anlegen.
+   - Incident-Referenz in der Session-Notiz ergänzen (falls vorhanden).
+
+**Erwartetes Ergebnis:**  
+Die Shadow-/Testnet-Session ist im Web-Dashboard v1 vollständig und konsistent zur Registry dargestellt. 
+Bei Abweichungen wird ein Incident erfasst und gemäß Incident-Runbook weiterbearbeitet.
+
 ---
 
 ## 13. Referenzen
