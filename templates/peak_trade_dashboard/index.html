@@ -1,0 +1,189 @@
+<!-- templates/peak_trade_dashboard/index.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="grid gap-6 md:grid-cols-3">
+  <!-- Projekt-Status -->
+  <section
+    class="col-span-2 bg-slate-900/60 rounded-2xl border border-slate-800 p-4"
+  >
+    <h2 class="text-sm font-semibold text-slate-200 mb-3">
+      Projekt-Status · Research / Live-Beta
+    </h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Version</p>
+        <p class="text-lg font-semibold text-emerald-300">
+          {{ status.version }}
+        </p>
+      </div>
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Snapshot-Commit</p>
+        <p class="text-xs font-mono text-slate-200">
+          {{ status.snapshot_commit }}
+        </p>
+      </div>
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Tags</p>
+        <p class="text-xs text-slate-100">
+          {{ status.tags | join(", ") }}
+        </p>
+      </div>
+
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Tests gesamt</p>
+        <p class="text-lg font-semibold text-sky-300">
+          {{ status.tests_total }}
+        </p>
+      </div>
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Skipped</p>
+        <p class="text-lg font-semibold text-amber-300">
+          {{ status.tests_skipped }}
+        </p>
+      </div>
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
+      >
+        <p class="text-xs text-slate-400">Failed</p>
+        <p class="text-lg font-semibold text-rose-400">
+          {{ status.tests_failed }}
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-3 text-xs text-slate-400">
+      Letzter Audit: {{ status.last_audit }} – Vollsuite grün, v1.0-Snapshot
+      referenziert.
+    </p>
+  </section>
+
+  <!-- Doku-Links -->
+  <section
+    class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"
+  >
+    <h2 class="text-sm font-semibold text-slate-200 mb-3">
+      v1.0 Dokumentation
+    </h2>
+    <ul class="space-y-1 text-xs text-slate-300">
+      <li>
+        • Overview Full:
+        <span class="font-mono">{{ status.docs.overview }}</span>
+      </li>
+      <li>
+        • Status Overview:
+        <span class="font-mono">{{ status.docs.status }}</span>
+      </li>
+      <li>
+        • Release Notes:
+        <span class="font-mono">{{ status.docs.release_notes }}</span>
+      </li>
+      <li>
+        • Mini-Roadmap:
+        <span class="font-mono">{{ status.docs.mini_roadmap }}</span>
+      </li>
+    </ul>
+    <p class="mt-3 text-xs text-slate-500">
+      (Diese Pfade sind lokale Dateien im Repo – ideal zum Öffnen im Editor.)
+    </p>
+  </section>
+</div>
+
+<!-- Strategy-Tiering Tabelle -->
+<section
+  class="mt-8 bg-slate-900/60 rounded-2xl border border-slate-800 p-4 text-sm"
+>
+  <div class="flex items-baseline justify-between mb-3">
+    <h2 class="text-sm font-semibold text-slate-200">Strategy-Tiering</h2>
+    <p class="text-xs text-slate-400">
+      Core: {{ strategy_tiering.counts.get("core", 0) }} · Aux:
+      {{ strategy_tiering.counts.get("aux", 0) }} · Legacy:
+      {{ strategy_tiering.counts.get("legacy", 0) }} · Other:
+      {{
+      (strategy_tiering.rows | length)
+      - strategy_tiering.counts.get("core", 0)
+      - strategy_tiering.counts.get("aux", 0)
+      - strategy_tiering.counts.get("legacy", 0)
+      }}
+    </p>
+  </div>
+
+  <div
+    class="overflow-hidden rounded-xl border border-slate-800/80 bg-slate-950/60"
+  >
+    <table class="w-full text-sm">
+      <thead
+        class="bg-slate-900/80 text-slate-400 text-xs uppercase tracking-wide"
+      >
+        <tr>
+          <th class="px-3 py-2 text-left">ID</th>
+          <th class="px-3 py-2 text-left">Tier</th>
+          <th class="px-3 py-2 text-left">Live?</th>
+          <th class="px-3 py-2 text-left">Label</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in strategy_tiering.rows %}
+        <tr
+          class="border-t border-slate-800/80 hover:bg-slate-900/60 transition-colors"
+        >
+          <td class="px-3 py-1.5 font-mono text-xs">{{ row.id }}</td>
+          <td class="px-3 py-1.5">
+            {% if row.tier == "core" %}
+            <span
+              class="text-emerald-300 text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30"
+              >{{ row.tier }}</span
+            >
+            {% elif row.tier == "aux" %}
+            <span
+              class="text-sky-300 text-xs px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/30"
+              >{{ row.tier }}</span
+            >
+            {% elif row.tier == "legacy" %}
+            <span
+              class="text-slate-300 text-xs px-2 py-0.5 rounded-full bg-slate-500/10 border border-slate-500/30"
+              >{{ row.tier }}</span
+            >
+            {% else %}
+            <span
+              class="text-slate-400 text-xs px-2 py-0.5 rounded-full bg-slate-700/40 border border-slate-700"
+              >{{ row.tier }}</span
+            >
+            {% endif %}
+          </td>
+          <td class="px-3 py-1.5 text-xs">
+            {% if row.allow_live %}
+            <span class="text-emerald-300 font-semibold">✔</span>
+            {% else %}
+            <span class="text-slate-500">–</span>
+            {% endif %}
+          </td>
+          <td class="px-3 py-1.5 text-xs text-slate-300">
+            {{ row.label }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="mt-8 text-xs text-slate-500">
+  <p>
+    Dashboard v0 – read-only. Für echte Live-/Shadow-/Testnet-Views können
+    zukünftige Versionen hier weitere Kacheln und Charts ergänzen.
+  </p>
+</section>
+
+{% endblock %}
