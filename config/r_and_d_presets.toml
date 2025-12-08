@@ -1,0 +1,214 @@
+# config/r_and_d_presets.toml
+# =============================================================================
+# Peak_Trade R&D Strategy Presets (Welle v2)
+# =============================================================================
+#
+# Diese Presets sind ausschließlich für OFFLINE-RESEARCH gedacht:
+# - Backtests, Parameter-Sweeps, Monte-Carlo-Simulationen
+# - KEIN Live-/Shadow-/Testnet-Trading
+# - KEINE Integration in Phase 80/81 (Live-Track)
+#
+# Alle Presets haben:
+# - tier = "r_and_d"
+# - enabled = false (muss explizit aktiviert werden)
+# - experimental = true
+# - allow_live = false
+#
+# Nutzung:
+#   python scripts/research_cli.py backtest --preset armstrong_ecm_btc_longterm_v1
+#
+
+# =============================================================================
+# ARMSTRONG – CYCLE & TIMING PRESETS
+# =============================================================================
+
+[preset.armstrong_ecm_btc_longterm_v1]
+description = "ECM-Zyklus auf BTC (Langfrist) – 8.6-Jahre-Zyklus-Analyse"
+strategy = "armstrong_cycle"
+tier = "r_and_d"
+enabled = false
+experimental = true
+allow_live = false
+markets = ["BTC/USDT"]
+timeframes = ["1d", "1w"]
+hypothesis = "ECM-Zyklen korrelieren mit BTC-Halving-Zyklen"
+focus_metrics = ["sharpe", "max_drawdown", "cycle_hit_rate"]
+
+[preset.armstrong_ecm_btc_longterm_v1.parameters]
+cycle_period_days = 3141  # π × 1000
+phase_offset = 0.0
+entry_threshold = 0.8
+exit_threshold = 0.2
+
+[preset.armstrong_multi_cycle_scan_v1]
+description = "Multi-Cycle-Overlay (kurz + lang) – Drawdown-Reduktion"
+strategy = "armstrong_cycle"
+tier = "r_and_d"
+enabled = false
+experimental = true
+allow_live = false
+markets = ["BTC/USDT", "ETH/USDT"]
+timeframes = ["4h", "1d"]
+hypothesis = "Multi-Cycle-Overlay reduziert Drawdown vs. Single-Cycle"
+focus_metrics = ["max_drawdown", "win_rate", "profit_factor"]
+
+[preset.armstrong_multi_cycle_scan_v1.parameters]
+short_cycle_days = 30
+long_cycle_days = 365
+overlay_mode = "intersection"
+entry_threshold = 0.7
+
+# =============================================================================
+# EHLERS – SIGNAL-PROCESSING & FILTER PRESETS
+# =============================================================================
+
+[preset.ehlers_super_smoother_v1]
+description = "Super Smoother Filter vs. EMA Vergleich"
+strategy = "ehlers_cycle_filter"
+tier = "r_and_d"
+enabled = false
+experimental = true
+allow_live = false
+markets = ["BTC/USDT", "ETH/USDT"]
+timeframes = ["1h", "4h"]
+hypothesis = "Super Smoother reduziert Whipsaw-Trades vs. Standard-MA"
+focus_metrics = ["lag_bars", "whipsaw_rate", "sharpe"]
+
+[preset.ehlers_super_smoother_v1.parameters]
+filter_type = "super_smoother"
+period = 20
+cutoff_period = 10
+price_source = "close"
+
+[preset.ehlers_bandpass_cycle_v1]
+description = "Bandpass-Filter Cycle-Isolation"
+strategy = "ehlers_cycle_filter"
+tier = "r_and_d"
+enabled = false
+experimental = true
+allow_live = false
+markets = ["BTC/USDT"]
+timeframes = ["4h", "1d"]
+hypothesis = "Bandpass-Filter isoliert dominante Zyklen zuverlässiger als FFT"
+focus_metrics = ["cycle_purity", "signal_noise_ratio", "sharpe"]
+
+[preset.ehlers_bandpass_cycle_v1.parameters]
+filter_type = "bandpass"
+center_period = 20
+bandwidth = 0.3
+delta = 0.1
+
+[preset.ehlers_hilbert_phase_v1]
+description = "Hilbert Transform Phase-Timing"
+strategy = "ehlers_cycle_filter"
+tier = "r_and_d"
+enabled = false
+experimental = true
+allow_live = false
+markets = ["BTC/USDT", "ETH/USDT"]
+timeframes = ["1h", "4h"]
+hypothesis = "Phase-basierte Entries verbessern Timing in Trending-Märkten"
+focus_metrics = ["entry_timing_accuracy", "phase_error", "sharpe"]
+
+[preset.ehlers_hilbert_phase_v1.parameters]
+filter_type = "hilbert"
+period = 20
+phase_threshold = 0.5
+use_instantaneous_period = true
+
+# =============================================================================
+# LOPEZ DE PRADO – ML & META-LABELING PRESETS
+# =============================================================================
+
+[preset.lopez_meta_labeling_rsi_v1]
+description = "Meta-Labeling mit RSI als Primär-Signal"
+strategy = "meta_labeling"
+tier = "r_and_d"
+enabled = false
+experimental = true
+allow_live = false
+markets = ["BTC/USDT"]
+timeframes = ["1h", "4h"]
+hypothesis = "Meta-Labeling verbessert Precision ohne Recall-Verlust"
+focus_metrics = ["precision", "recall", "f1_score", "sharpe"]
+
+[preset.lopez_meta_labeling_rsi_v1.parameters]
+primary_signal = "rsi_reversion"
+meta_model = "random_forest"
+barrier_width = 0.02
+min_return = 0.01
+max_holding_period = 24
+
+[preset.lopez_triple_barrier_scan_v1]
+description = "Triple-Barrier Label-Analyse"
+strategy = "meta_labeling"
+tier = "r_and_d"
+enabled = false
+experimental = true
+allow_live = false
+markets = ["BTC/USDT", "ETH/USDT"]
+timeframes = ["4h", "1d"]
+hypothesis = "Triple-Barrier-Labels sind robuster als feste Horizonte"
+focus_metrics = ["label_distribution", "barrier_hit_rate", "profit_factor"]
+
+[preset.lopez_triple_barrier_scan_v1.parameters]
+primary_signal = "ma_crossover"
+barrier_type = "triple"
+take_profit_mult = 2.0
+stop_loss_mult = 1.0
+max_holding_bars = 20
+
+[preset.lopez_feature_importance_v1]
+description = "Feature-Importance-Analyse (SHAP-basiert)"
+strategy = "meta_labeling"
+tier = "r_and_d"
+enabled = false
+experimental = true
+allow_live = false
+markets = ["BTC/USDT"]
+timeframes = ["4h"]
+hypothesis = "Top-Features korrelieren mit Regime-Zustand"
+focus_metrics = ["feature_importance", "shap_values", "model_stability"]
+
+[preset.lopez_feature_importance_v1.parameters]
+meta_model = "gradient_boosting"
+n_features = 20
+use_shap = true
+cross_validation_folds = 5
+
+# =============================================================================
+# EL KAROUI – STOCHASTIC VOLATILITY PRESETS (OPTIONAL)
+# =============================================================================
+
+[preset.el_karoui_stoch_vol_v1]
+description = "Stochastisches Volatilitätsmodell Baseline"
+strategy = "el_karoui_vol_model"
+tier = "r_and_d"
+enabled = false
+experimental = true
+allow_live = false
+markets = ["BTC/USDT"]
+timeframes = ["4h", "1d"]
+hypothesis = "Stoch-Vol-Modelle verbessern Vol-Forecasts vs. GARCH"
+focus_metrics = ["vol_forecast_error", "mae", "rmse"]
+
+[preset.el_karoui_stoch_vol_v1.parameters]
+vol_model = "heston"
+mean_reversion_speed = 2.0
+vol_of_vol = 0.3
+correlation = -0.7
+
+# =============================================================================
+# META-INFORMATION
+# =============================================================================
+
+[meta]
+version = "v2.0"
+created = "2025-12-08"
+author = "Peak_Trade Research Team"
+status = "preparation"
+wave = "R&D-Strategie-Welle v2"
+documentation = "docs/PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md"
+
+# WICHTIG: Diese Presets sind NICHT für Live-Trading freigegeben!
+# Nutzung nur für Offline-Backtests, Research-Sweeps und akademische Analysen.
