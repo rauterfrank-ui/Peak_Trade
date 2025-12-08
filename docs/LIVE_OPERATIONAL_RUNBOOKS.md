@@ -35,6 +35,7 @@ Ein **Runbook** ist eine dokumentierte Schritt-für-Schritt-Anleitung für wiede
 | 4 | Systemstart nach Wartung | Wiederanlauf nach Pause/Update |
 | 5 | Sicheres Beenden laufender Sessions | Normales Herunterfahren |
 | 6 | System-Health-Check | Tägliche Prüfung |
+| 10a.10 | Shadow-/Testnet-Session mit Phase-80-Runner | Strategy-to-Execution Bridge (Phase 80) |
 
 **Incident-Runbooks:**
 
@@ -896,6 +897,194 @@ python -c "import pandas as pd; df = pd.read_parquet('live_runs/shadow_20251207_
 
 ---
 
+## 10a.10 Runbook: Shadow-/Testnet-Session mit Phase-80-Runner
+
+### Übersicht
+
+Der **Phase-80-Runner** (`run_execution_session.py`) bietet eine Strategy-to-Execution Bridge für Single-Strategy-Sessions im Shadow- oder Testnet-Modus.
+
+**Unterschied zum Testnet-Orchestrator (10a):**
+- **Orchestrator (10a):** Multi-Run-Management, Run-Registry, Status-Verwaltung
+- **Phase-80-Runner:** Single-Strategy-Session mit vollständigem Order-Flow (Strategy → Signals → Orders → ExecutionPipeline)
+
+**Wann nutzen:**
+- Nach erfolgreichem Backtest/Sweep einer neuen Strategie
+- Um den Order-Flow inkl. Safety-Gates zu validieren
+- Vor der Aufnahme einer Strategie ins Tiering (core/aux)
+
+### Shadow-Session starten
+
+**Ziel:** Eine begrenzte Shadow-Session fahren, um Strategy-to-Execution-Flow, Risk-Gates und Logging zu prüfen.
+
+**Voraussetzungen:**
+- [ ] Strategie im Backtest/Research-Pipeline getestet
+- [ ] `[live_risk]`-Limits in Config definiert
+- [ ] Python-Environment aktiviert
+
+**Schritte:**
+
+```bash
+# ═══════════════════════════════════════════════════════════════════════
+# RUNBOOK: Shadow-Session mit Phase-80-Runner
+# ═══════════════════════════════════════════════════════════════════════
+
+# Schritt 1: Environment aktivieren
+cd ~/Peak_Trade
+source .venv/bin/activate
+
+# Schritt 2: Verfügbare Strategien prüfen
+python scripts/run_execution_session.py --list-strategies
+
+# Schritt 3: Schneller Smoke-Test (5 Schritte, nur Config validieren)
+python scripts/run_execution_session.py \
+    --strategy ma_crossover \
+    --steps 5 \
+    --dry-run
+
+# Schritt 4: Shadow-Session starten (30 Minuten)
+python scripts/run_execution_session.py \
+    --strategy ma_crossover \
+    --symbol ETH/EUR \
+    --timeframe 5m \
+    --duration 30
+
+# Schritt 5: Session-Metriken auswerten
+# Am Ende der Session werden Metriken ausgegeben:
+# - steps: Anzahl verarbeiteter Bars
+# - total_orders_generated: Signale → Orders
+# - orders_executed: Erfolgreich ausgeführt
+# - orders_blocked_risk: Von RiskLimits geblockt
+
+# Schritt 6: Ergebnis dokumentieren
+echo "$(date): Shadow-Session ma_crossover ETH/EUR - OK" >> logs/operations.log
+```
+
+### Testnet-Session starten
+
+**Ziel:** Order-Flow gegen Exchange-API validieren (validate_only).
+
+**Schritte:**
+
+```bash
+# ═══════════════════════════════════════════════════════════════════════
+# RUNBOOK: Testnet-Session mit Phase-80-Runner
+# ═══════════════════════════════════════════════════════════════════════
+
+# Schritt 1: Environment aktivieren
+cd ~/Peak_Trade
+source .venv/bin/activate
+
+# Schritt 2: API-Credentials setzen (falls nicht in .bashrc/.zshrc)
+export KRAKEN_TESTNET_API_KEY="your-testnet-api-key"
+export KRAKEN_TESTNET_API_SECRET="your-testnet-api-secret"
+
+# Schritt 3: Testnet-Session starten (20 Schritte)
+python scripts/run_execution_session.py \
+    --mode testnet \
+    --strategy trend_following \
+    --symbol ETH/EUR \
+    --steps 20
+
+# Schritt 4: Session-Metriken auswerten und dokumentieren
+```
+
+### Bei Problemen
+
+| Problem | Ursache | Lösung |
+|---------|---------|--------|
+| `LiveModeNotAllowedError` | Versuch, `--mode live` zu nutzen | Phase 80 blockt LIVE hart – das ist Absicht |
+| Keine Signale generiert | Strategie braucht mehr Warmup | `--warmup-candles 300` |
+| Alle Orders geblockt | RiskLimits zu eng | `config.toml` → `[live_risk]` prüfen |
+| Strategy nicht gefunden | Tippfehler oder nicht registriert | `--list-strategies` |
+
+**⚠️ WICHTIG:** Der Phase-80-Runner blockt **LIVE-Mode technisch**. Nur Shadow und Testnet sind erlaubt. Dies ist ein bewusster Safety-First-Ansatz.
+
+**Referenz:** Für detaillierte CLI-Optionen, Metriken-Interpretation und Troubleshooting siehe [`PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md`](PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md), Abschnitt 8.
+
+### Post-Session-Checks – Registry & Reporting (Phase 81)
+
+**Ziel:** Sicherstellen, dass jede Shadow-/Testnet-Session sauber in der Live-Session-Registry erfasst ist und eine Kurz-Summary generiert wurde.
+
+#### 1. Registry-Verfügbarkeit prüfen
+
+- Stelle sicher, dass `reports/experiments/live_sessions/` existiert.
+- Falls nicht, wurde ggf. noch keine Session erfolgreich registriert → Ursache prüfen (Logs von `run_execution_session.py`).
+
+```bash
+ls -la reports/experiments/live_sessions/
+```
+
+#### 2. Reporting-CLI ausführen (Shadow/Testnet)
+
+**Für Shadow-Sessions:**
+
+```bash
+python scripts/report_live_sessions.py \
+  --run-type live_session_shadow \
+  --status completed \
+  --output-format markdown \
+  --summary-only \
+  --stdout
+```
+
+**Für Testnet-Sessions:**
+
+```bash
+python scripts/report_live_sessions.py \
+  --run-type live_session_testnet \
+  --status completed \
+  --output-format markdown \
+  --summary-only \
+  --stdout
+```
+
+**Optional: Reports zusätzlich in ein eigenes Verzeichnis schreiben:**
+
+```bash
+python scripts/report_live_sessions.py \
+  --run-type live_session_shadow \
+  --status completed \
+  --output-format both \
+  --output-dir reports/experiments/live_sessions/reports
+```
+
+#### 3. Ergebnisse interpretieren
+
+Prüfe insbesondere:
+
+| Metrik | Beschreibung | Warnsignal |
+|--------|--------------|------------|
+| `num_sessions` | Anzahl Sessions | Weniger als erwartet |
+| `by_status` | Status-Verteilung | Viele `failed` |
+| `total_realized_pnl` | Gesamt-PnL | Stark negativ |
+| `avg_max_drawdown` | Durchschnittlicher Drawdown | > 10% |
+
+Dokumentiere Auffälligkeiten gemäß:
+- Incident-Runbook für PnL-Divergenzen (Abschnitt 9)
+- Incident-Runbook für Data-Gaps (Abschnitt 10)
+- Sonstige relevante Runbooks
+
+#### 4. Dokumentation
+
+Falls eine Session besonders auffällig war (extreme PnL, Drawdown, viele Fehler):
+
+1. Vermerke dies im entsprechenden Betriebsprotokoll (Operator-Log / Notion / internes Log-System)
+2. Verweise dabei auf:
+   - Session-ID
+   - Run-Type (Shadow/Testnet)
+   - Timestamp der Session
+   - Pfad zum Markdown/HTML-Report
+
+**Beispiel-Eintrag im Operations-Log:**
+
+```bash
+echo "$(date): Post-Session-Check – Shadow-Sessions: 5 completed, 0 failed, PnL +123.45 EUR" >> logs/operations.log
+```
+
+**Referenz:** Für Details zur Live-Session-Registry und Report-CLI siehe [`PHASE_81_LIVE_SESSION_REGISTRY.md`](PHASE_81_LIVE_SESSION_REGISTRY.md).
+
+---
+
 ## 10b. Monitoring & CLI-Dashboards v1 (Phase 65)
 
 ### 10b.1 Übersicht
@@ -1439,10 +1628,23 @@ top -l 1 | head -10
 | `SAFETY_POLICY_TESTNET_AND_LIVE.md` | Safety-Policies |
 | `GOVERNANCE_AND_SAFETY_OVERVIEW.md` | Governance-Übersicht, Rollen |
 | `PHASE_37_TESTNET_ORCHESTRATION_AND_LIMITS.md` | Testnet-Orchestrierung |
+| `PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md` | Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
+| `PHASE_81_LIVE_SESSION_REGISTRY.md` | Live-Session-Registry & Report-CLI |
 
 ---
 
 ## 14. Changelog
+
+- **v1.3** (Phase 81, 2025-12): Live-Session-Registry & Report-CLI ergänzt
+  - Neuer Abschnitt "Post-Session-Checks – Registry & Reporting" in Runbook 10a.10 hinzugefügt
+  - CLI-Beispiele für `scripts/report_live_sessions.py` (Shadow/Testnet)
+  - Interpretations-Tabelle für Registry-Metriken
+  - Referenz zu `PHASE_81_LIVE_SESSION_REGISTRY.md` hinzugefügt
+
+- **v1.2** (Phase 80, 2025-12): Phase-80-Runner ergänzt
+  - Runbook 10a.10: Shadow-/Testnet-Session mit Phase-80-Runner hinzugefügt
+  - Runbook-Index um Phase-80-Runner erweitert
+  - Referenz zu `PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md` hinzugefügt
 
 - **v1.1** (Phase 39, 2025-12): Erweitert
   - Runbook: Live-Run (Small Size) starten hinzugefügt

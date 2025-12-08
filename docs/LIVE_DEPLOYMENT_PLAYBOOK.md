@@ -137,6 +137,56 @@ python scripts/run_shadow_execution.py --strategy rsi_strategy --tag daily-shado
 1. Laufenden Prozess stoppen: `Ctrl+C` oder `kill <PID>`
 2. Logs sichern: `cp -r reports/experiments/ reports/experiments_backup_$(date +%Y%m%d)/`
 
+#### Shadow-/Testnet-Session mit Phase-80-Runner
+
+**Zweck:** Strategy-to-Execution Bridge (Phase 80) als Shadow- bzw. Testnet-Session fahren, bevor Live-Gates überhaupt in Reichweite kommen.
+
+**Wann nutzen:**
+- Nach erfolgreichem Backtest/Sweep, bevor eine Strategie ins Tiering aufgenommen wird
+- Um den vollständigen Order-Flow (Strategy → Signals → Orders → ExecutionPipeline) zu validieren
+- Um Safety-Gates und RiskLimits unter realistischeren Bedingungen zu beobachten
+
+**Typische Schritte:**
+
+1. Stelle sicher, dass die Strategie im Backtest/Research-Pipeline stabil ist (siehe Research-Dokus).
+2. Starte eine Shadow-Session mit dem Phase-80-Runner:
+   ```bash
+   python scripts/run_execution_session.py --strategy ma_crossover --duration 30
+   ```
+3. Für Testnet-Validierung (`validate_only`):
+   ```bash
+   python scripts/run_execution_session.py --mode testnet --strategy rsi_reversion --duration 30
+   ```
+4. Werte die Session-Metriken und Logs aus (siehe Abschnitt 8 in `PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md`).
+5. **Post-Session-Registry & Reporting (Phase 81):**
+   - Stelle sicher, dass die Session von `scripts/run_execution_session.py` erfolgreich beendet wurde (Status `completed` oder definierter Abbruch).
+   - Führe das Live-Session-Reporting-CLI aus, um die Registry zu prüfen und eine Kurz-Summary zu erzeugen:
+     ```bash
+     # Für Shadow-Sessions:
+     python scripts/report_live_sessions.py \
+       --run-type live_session_shadow \
+       --status completed \
+       --output-format markdown \
+       --summary-only \
+       --stdout
+
+     # Für Testnet-Sessions:
+     python scripts/report_live_sessions.py \
+       --run-type live_session_testnet \
+       --status completed \
+       --output-format markdown \
+       --summary-only \
+       --stdout
+     ```
+   - Überprüfe die Summary-Ausgabe (PnL, Status-Verteilung, Drawdowns) und dokumentiere Auffälligkeiten gemäß den Runbooks (z.B. Incident-Runbooks für PnL-Divergenzen oder Data-Gaps).
+6. Dokumentiere das Ergebnis im Run-Log oder in der Experiments-Registry.
+
+⚠️ **WICHTIG:** Der Phase-80-Runner blockt LIVE-Mode technisch an mehreren Stellen. Nur Shadow und Testnet sind erlaubt – bewusster Safety-First-Ansatz.
+
+**Referenz:**
+- Für CLI-Optionen, Metriken-Interpretation und Troubleshooting siehe `PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md`, Abschnitt 8.
+- Details zur Live-Session-Registry und Report-CLI: siehe `PHASE_81_LIVE_SESSION_REGISTRY.md`.
+
 ---
 
 ### 2.3 Stufe 2: Testnet
@@ -654,10 +704,21 @@ tail -100 logs/*.log
 | `GOVERNANCE_AND_SAFETY_OVERVIEW.md` | Governance-Übersicht |
 | `PHASE_37_TESTNET_ORCHESTRATION_AND_LIMITS.md` | Testnet-Orchestrierung |
 | `PHASE_38_EXCHANGE_V0_TESTNET.md` | Exchange-Integration |
+| `PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md` | Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
+| `PHASE_81_LIVE_SESSION_REGISTRY.md` | Live-Session-Registry & Report-CLI |
 
 ---
 
 ## 12. Changelog
+
+- **v1.3** (Phase 81, 2025-12): Live-Session-Registry & Report-CLI ergänzt
+  - Post-Session-Registry & Reporting als Schritt im Shadow-/Testnet-Ablauf verankert
+  - CLI-Beispiele für `scripts/report_live_sessions.py` hinzugefügt
+  - Referenz zu `PHASE_81_LIVE_SESSION_REGISTRY.md` hinzugefügt
+
+- **v1.2** (Phase 80, 2025-12): Phase-80-Runner ergänzt
+  - Shadow-/Testnet-Session mit Phase-80-Runner (Strategy-to-Execution Bridge) dokumentiert
+  - Referenz zu `PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md` hinzugefügt
 
 - **v1.1** (Phase 39, 2025-12): Erweitert
   - Gatekeeper-Matrix hinzugefügt
