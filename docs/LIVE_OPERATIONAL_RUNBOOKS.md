@@ -37,6 +37,7 @@ Ein **Runbook** ist eine dokumentierte Schritt-für-Schritt-Anleitung für wiede
 | 6 | System-Health-Check | Tägliche Prüfung |
 | 10a.10 | Shadow-/Testnet-Session mit Phase-80-Runner | Strategy-to-Execution Bridge (Phase 80) |
 | 12a | Live-Track Panel Monitoring | Dashboard-basiertes Session-Monitoring (Phase 82) |
+| 12b | Live-Track Session Explorer | Filter, Detail, Stats-API (Phase 85) |
 
 **Demo & Walkthrough:**
 
@@ -1763,6 +1764,129 @@ kill <PID>
 
 ---
 
+## 12b. Runbook: Live-Track Session Explorer (Phase 85)
+
+### 12b.1 Zweck
+
+Nutzung des Live-Track Session Explorers für detaillierte Post-Session-Analyse: Filtern, Detailansicht, Statistiken.
+
+### 12b.2 Voraussetzungen
+
+- [ ] Web-Dashboard läuft (`uvicorn src.webui.app:app --reload`)
+- [ ] Live-Session-Registry enthält Einträge (Phase 80/81 abgeschlossen)
+- [ ] Browser oder curl verfügbar
+
+### 12b.3 Session-Liste filtern
+
+```bash
+# ═══════════════════════════════════════════════════════════════════════
+# RUNBOOK 12b: Live-Track Session Explorer
+# ═══════════════════════════════════════════════════════════════════════
+
+# Schritt 1: Dashboard öffnen
+open http://127.0.0.1:8000/
+
+# Schritt 2: Nach Mode filtern
+# Shadow-Sessions:
+open "http://127.0.0.1:8000/?mode=shadow"
+
+# Testnet-Sessions:
+open "http://127.0.0.1:8000/?mode=testnet"
+
+# Schritt 3: Nach Status filtern
+# Nur failed:
+open "http://127.0.0.1:8000/?status=failed"
+
+# Kombination Mode + Status:
+open "http://127.0.0.1:8000/?mode=testnet&status=completed"
+
+# Schritt 4: API für programmatischen Zugriff
+curl "http://127.0.0.1:8000/api/live_sessions?mode=shadow&status=completed" | jq .
+```
+
+### 12b.4 Session-Detail prüfen
+
+```bash
+# Schritt 1: Session-ID aus Liste notieren (z.B. live_session_abc123)
+
+# Schritt 2: Detail-Seite öffnen
+open "http://127.0.0.1:8000/session/live_session_abc123"
+
+# Schritt 3: Im Browser prüfen:
+# □ Config-Snapshot (Strategy, Presets, Environment)
+# □ Kennzahlen (Dauer, Status, PnL, Drawdown)
+# □ CLI-Hinweise zum Reproduzieren/Debuggen
+
+# Schritt 4: API für programmatischen Zugriff
+curl "http://127.0.0.1:8000/api/live_sessions/live_session_abc123" | jq .
+```
+
+### 12b.5 Statistiken abrufen
+
+```bash
+# Aggregierte Statistiken aller Sessions
+curl "http://127.0.0.1:8000/api/live_sessions/stats" | jq .
+
+# Typische Auswertung:
+# - Anzahl Sessions pro Mode (shadow/testnet/live)
+# - Anzahl Sessions pro Status (completed/failed/running)
+# - Durchschnittlicher PnL, Drawdown
+
+# Für Monitoring-Integration (z.B. Grafana):
+# Stats-Endpoint kann regelmäßig gepollt werden
+watch -n 60 'curl -s http://127.0.0.1:8000/api/live_sessions/stats | jq .'
+```
+
+### 12b.6 Checkliste: Post-Session-Analyse
+
+```
+NACH ABGESCHLOSSENER SESSION:
+□ Dashboard öffnen: http://127.0.0.1:8000/
+□ Nach Mode filtern (shadow/testnet)
+□ Session in Liste lokalisieren
+□ Detail-Seite öffnen und prüfen:
+  □ Status = completed (✅) oder failed (❌)?
+  □ Realized PnL plausibel?
+  □ Max Drawdown < 5%?
+  □ Dauer wie erwartet?
+□ Bei Auffälligkeiten:
+  □ CLI-Befehle aus Detail-Seite für Re-Run/Debug nutzen
+  □ Entsprechendes Incident-Runbook anwenden (7-10)
+□ Statistiken prüfen (/api/live_sessions/stats)
+□ Ergebnis dokumentieren
+```
+
+### 12b.7 Safety-Hinweise
+
+- Sessions im Mode `live` werden im UI mit ⚠️ markiert
+- Live-Mode ist in Shadow-/Testnet-Playbooks nicht vorgesehen
+- Für Live-Sessions: Zusätzliche Governance-Prüfung erforderlich
+
+### 12b.8 Bei Problemen
+
+| Problem | Ursache | Lösung |
+|---------|---------|--------|
+| Session nicht in Liste | Filter zu restriktiv | Filter zurücksetzen (`/`) |
+| Detail-Seite leer | Session-ID falsch | ID aus Liste kopieren |
+| API gibt 404 | Session nicht in Registry | Registry prüfen |
+| Stats unvollständig | Zu wenige Sessions | Mehr Sessions fahren |
+
+### 12b.9 Wichtige URLs (Phase 85)
+
+| URL | Funktion |
+|-----|----------|
+| `http://127.0.0.1:8000/` | Session-Liste (filterbar) |
+| `http://127.0.0.1:8000/?mode=shadow` | Nur Shadow-Sessions |
+| `http://127.0.0.1:8000/?mode=testnet&status=failed` | Testnet + failed |
+| `http://127.0.0.1:8000/session/{session_id}` | Session-Detailseite |
+| `http://127.0.0.1:8000/api/live_sessions` | Sessions-API (JSON) |
+| `http://127.0.0.1:8000/api/live_sessions/{session_id}` | Session-Detail-API |
+| `http://127.0.0.1:8000/api/live_sessions/stats` | Aggregierte Statistiken |
+
+**Referenz:** [`PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`](PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md)
+
+---
+
 ## 13. Referenzen
 
 | Dokument | Beschreibung |
@@ -1778,10 +1902,17 @@ kill <PID>
 | `PHASE_82_LIVE_TRACK_DASHBOARD.md` | Live-Track Panel im Web-Dashboard |
 | `PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md` | Operator-Workflow für Live-Track Panel |
 | `PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md` | Demo Walkthrough & Case Study (10–15 Min) |
+| `PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md` | Session Explorer: Filter, Detail, Stats-API |
 
 ---
 
 ## 14. Changelog
+
+- **v1.6** (Phase 85, 2025-12): Live-Track Session Explorer
+  - Neues Runbook 12b: Live-Track Session Explorer
+  - Filter-, Detail- und Stats-Workflow für Post-Session-Analyse
+  - Runbook-Index um 12b ergänzt
+  - Referenz zu `PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md` hinzugefügt
 
 - **v1.5** (Phase 84, 2025-12): Live-Track Demo Walkthrough
   - Referenz zu Phase 84 Demo Walkthrough in Referenzen-Tabelle hinzugefügt

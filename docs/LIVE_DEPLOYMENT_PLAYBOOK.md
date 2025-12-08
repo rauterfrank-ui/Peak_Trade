@@ -709,6 +709,7 @@ tail -100 logs/*.log
 | `PHASE_82_LIVE_TRACK_DASHBOARD.md` | Live-Track Panel im Web-Dashboard |
 | `PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md` | Operator-Workflow für Live-Track Panel |
 | `PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md` | Demo Walkthrough & Case Study (10–15 Min) |
+| `PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md` | Session Explorer: Filter, Detail, Stats-API |
 
 ---
 
@@ -783,9 +784,58 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 **Demo-Walkthrough:** Für einen praxisnahen 10–15 Minuten Durchlauf siehe [`PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md).
 
+### 12.4 Live-Track Session Explorer prüfen (Phase 85)
+
+**Ziel:**
+Nach einer Shadow-/Testnet-Session die Ergebnisse im Web-Dashboard kontrollieren und Auffälligkeiten markieren.
+
+**Voraussetzungen:**
+- Uvicorn-Server läuft: `uvicorn src.webui.app:app --reload` (oder entsprechendes Start-Skript)
+- Live-Session-Registry enthält die Session (Phase 80/81 abgeschlossen)
+
+**Vorgehen:**
+
+1. **Dashboard öffnen**
+   - Browser: `http://127.0.0.1:8000/`
+   - Standardansicht zeigt aktuelle Live-Track Sessions.
+
+2. **Nach Mode filtern**
+   - Shadow-Run: `/?mode=shadow`
+   - Testnet-Run: `/?mode=testnet`
+   - Optional: Status filtern, z.B. `/?mode=testnet&status=failed`
+
+3. **Session-Detail öffnen**
+   - Gewünschte Session-Zeile anklicken
+   - Detailseite `/session/{session_id}` prüfen:
+     - Config (Strategy, Presets, Environment)
+     - Kennzahlen (Dauer, Result-Status, ggf. PnL/Exposure)
+     - Hinweise zu passenden CLI-Befehlen (Re-Run / Debug)
+
+4. **Statistiken prüfen (optional)**
+   - API: `/api/live_sessions/stats`
+   - Verwendung:
+     - Wie viele Sessions heute pro Mode?
+     - Wie viele `failed` vs. `completed`?
+
+5. **Safety-Hinweise beachten**
+   - Sessions im Mode `live` werden im UI mit ⚠️ markiert
+   - Live-Mode ist in Shadow-/Testnet-Playbooks nicht vorgesehen → nur zur Übersicht, nicht aktiv nutzen.
+
+**Erwartetes Ergebnis:**
+- Alle relevanten Shadow-/Testnet-Sessions sind im Explorer sichtbar
+- Auffällige Sessions (z.B. `failed`) sind identifiziert und markiert
+- Operator weiß, welche Runs als nächstes im Detail analysiert oder erneut gefahren werden sollen.
+
+**Referenz:** [`PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`](PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md)
+
 ---
 
 ## 13. Changelog
+
+- **v1.6** (Phase 85, 2025-12): Live-Track Session Explorer
+  - Neuer Abschnitt 12.4: Live-Track Session Explorer prüfen
+  - Filter- und Detail-Workflow für Post-Session-Analyse
+  - Referenz zu `PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md` hinzugefügt
 
 - **v1.5** (Phase 84, 2025-12): Live-Track Demo Walkthrough
   - Referenz zu Phase 84 Demo Walkthrough hinzugefügt
