@@ -867,6 +867,27 @@ Diese Bausteine schließen die Lücke zwischen:
 * und **Live-/Testnet-Safety & Monitoring** (Portfolio, Risk, Alerts, Runbooks)
 * und bieten eine **fertige Bibliothek aus robusten, benannten Setups**
 
+#### Live-Track-Stack v1 & Web-Dashboard v1 – Operator-Reifegrad
+
+Die Phasen 80/81/83/84/85 bilden zusammen den Live-Track-Stack v1 inkl. Web-Dashboard v1:
+
+- **Phase 80** – Strategy-to-Execution Bridge (CLI-Runner, Safety-Gates vor Live)
+- **Phase 81** – Live-Session-Registry & Reports (Post-Session-Metadaten & Auswertungen)
+- **Phase 83** – Operator-Workflow & Runbooks (Live-Track Playbook & Runbooks, inkl. Session Explorer)
+- **Phase 84** – Demo-Walkthrough & Hall-of-Fame (10–15 Minuten Demo-Flow, Onboarding & Showcases)
+- **Phase 85** – Live-Track Session Explorer & Dashboard-Integration (Web-Dashboard v1 Panels & Explorer)
+
+**Operator-Reifegrad (Stand v1.0):**
+
+- **Technik:** Shadow-/Testnet-Flow ist End-to-End implementiert (CLI → Registry → Reports → Web-Dashboard v1).
+- **Dokumentation:** Playbook, Runbooks (inkl. Dashboard-Check), Demo-Walkthrough & Storyboard sind vorhanden.
+- **Safety:** Live-Mode bleibt durch Environment-Config, Risk-Limits und Safety-Gates blockiert.
+- **Use-Cases:** Realistisches Testen, Monitoring, Reviews, Drills & Demos im Shadow-/Testnet-Mode sind voll unterstützt.
+
+**Kurz-Fazit:**  
+Der Live-Track-Stack v1 ist für Shadow-/Testnet-Betrieb operativ bereit („operator-ready"), 
+während echte Live-Orders weiterhin bewusst nicht freigegeben sind.
+
 ---
 
 ## 12. Empfohlene nächste Schritte (Phase 54+)
