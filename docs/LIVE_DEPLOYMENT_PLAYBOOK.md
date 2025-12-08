@@ -868,6 +868,9 @@ Ziel: In **2 Minuten** das Live-Track Web-Dashboard v1.1 zeigen und die Safety-B
 * Kompaktes 2-Minuten-Moderationsscript inkl. Cheat-Sheet:
   [`docs/DEMO_SCRIPT_DASHBOARD_V11.md`](DEMO_SCRIPT_DASHBOARD_V11.md)
 
+* **Schnellstart-How-To (3 Minuten, CLI → Readiness → Dashboard):**
+  [`docs/HOW_TO_LIVE_TRACK_V11_IN_3_MIN.md`](HOW_TO_LIVE_TRACK_V11_IN_3_MIN.md)
+
 Damit haben Operatoren neben dem Playbook-Flow auch ein kurzes, reproduzierbares Demo-Format für das Live-Track Dashboard v1.1.
 
 ---

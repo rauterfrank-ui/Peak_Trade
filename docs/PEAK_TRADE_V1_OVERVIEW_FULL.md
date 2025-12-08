@@ -39,6 +39,7 @@ Dieses Dokument richtet sich an:
 - [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](PEAK_TRADE_FIRST_7_DAYS.md) – First 7 Days Onboarding (erste Woche)
 - [`docs/PEAK_TRADE_V1_RELEASE_NOTES.md`](PEAK_TRADE_V1_RELEASE_NOTES.md) – Release Notes
 - [`docs/PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md`](PEAK_TRADE_RESEARCH_GOLDEN_PATHS.md) – End-to-End Research Workflows (Phase 81)
+- [`docs/LIVE_TRACK_DOC_INDEX_V1.md`](LIVE_TRACK_DOC_INDEX_V1.md) – **Live-Track Doc Index v1.1** – zentrale Übersicht aller Live-Track-, Dashboard-, Playbook- und Safety-Dokumente
 
 ### Wie du dieses Dokument nutzt
 
@@ -806,7 +807,8 @@ python scripts/generate_live_status_report.py \
 | **Research & Portfolios** | [`docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) | Research → Live Playbook |
 | | [`docs/PORTFOLIO_RECIPES_AND_PRESETS.md`](PORTFOLIO_RECIPES_AND_PRESETS.md) | Portfolio-Presets & Recipes |
 | | [`docs/REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md`](REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md) | Referenz-Szenario |
-| **Live-/Testnet-Stack** | [`docs/LIVE_TESTNET_TRACK_STATUS.md`](LIVE_TESTNET_TRACK_STATUS.md) | Live-/Testnet-Status |
+| **Live-/Testnet-Stack** | [`docs/LIVE_TRACK_DOC_INDEX_V1.md`](LIVE_TRACK_DOC_INDEX_V1.md) | **Live-Track Doc Index v1.1** – Zentrale Sammlung aller Live-Track-Dokumente |
+| | [`docs/LIVE_TESTNET_TRACK_STATUS.md`](LIVE_TESTNET_TRACK_STATUS.md) | Live-/Testnet-Status |
 | | [`docs/PHASE_51_LIVE_OPS_CLI.md`](PHASE_51_LIVE_OPS_CLI.md) | Live-Ops CLI |
 | | [`docs/LIVE_STATUS_REPORTS.md`](LIVE_STATUS_REPORTS.md) | Live-Status-Reports |
 | **Governance & Safety** | [`docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`](GOVERNANCE_AND_SAFETY_OVERVIEW.md) | Governance & Safety |

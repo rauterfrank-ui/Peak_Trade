@@ -18,6 +18,8 @@ Ziel:
 
 > **Für ein Architektur-Diagramm und Layer-Übersicht siehe:** [`ARCHITECTURE_OVERVIEW.md`](ARCHITECTURE_OVERVIEW.md)
 
+> **Live-Track Doc Index:** Für eine zentrale Übersicht aller Live-Track-, Dashboard-, Playbook- und Safety-Dokumente siehe [`LIVE_TRACK_DOC_INDEX_V1.md`](LIVE_TRACK_DOC_INDEX_V1.md).
+
 ---
 
 ## Wie du den v1.0 Status liest
@@ -974,6 +976,14 @@ Für eine zusammenhängende, narrative Beschreibung von Architektur, Flows, Roll
 - [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md)
 
 Dieses Dokument bietet eine vollständige v1.0-Übersicht mit Rollen- und Flow-Perspektive und verknüpft alle wichtigen Dokumente des Projekts.
+
+---
+
+## 13b. Live-Track Doc Index
+
+Für eine zentrale Sammlung aller Live-Track-, Dashboard-, Playbook- und Safety-Dokumente siehe:
+
+- [**Live-Track Doc Index v1.1**](./LIVE_TRACK_DOC_INDEX_V1.md) – Zentrale Übersicht für den gesamten Live-Track-Stack (Phasen 71–85), inkl. Web-Dashboard, Demo-Scripts, Operator-Workflow, Playbooks, Safety-Policies und Monitoring/Alerts.
 
 ---
 
