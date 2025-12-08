@@ -840,5 +840,60 @@ python scripts/generate_live_status_report.py \
 
 ---
 
+## 13. Hall of Fame – Peak_Trade v1.0 Snapshot
+
+Dieser Abschnitt dokumentiert den Stand von **Peak_Trade v1.0** als referenzierbaren Snapshot für die Zukunft.
+
+### 13.1 Projektumfang bis v1.0
+
+- **Phasen:** 1–86 abgeschlossen (inkl. Micro-Phasen 80–86 für Research v1.0 & Live-Beta)
+- **Layer-Coverage:**
+  - Data- & Core-Layer
+  - Strategy-Library v1.1 mit StrategyProfiles & Tiering
+  - Portfolio-Backtests & Regime-aware Portfolios
+  - Research-Pipeline v2 (Sweeps, Walk-Forward, Monte-Carlo, Stress)
+  - Live-/Shadow-/Testnet-Track mit Live-Gates, Policies & Operator-Tools
+- **Dokumentation:** Umfangreiche docs/ Struktur (Phase-Dokus, Overview, Status, Release Notes, Golden Paths)
+
+### 13.2 Test- & Qualitätsstatus
+
+| Kennzahl              | Wert                      |
+|-----------------------|---------------------------|
+| Test-Suite gesamt     | **2147 Tests**            |
+| Davon skipped         | 6                         |
+| Fehlgeschlagene Tests | 0                         |
+| Test-Umgebung         | Python 3.9.6, venv-basiert |
+| Letzter Audit-Status  | Vollsuite grün, CLI-Helps OK |
+
+> **Interpretation:**  
+> Die v1.0-Suite deckt Data-, Strategy-, Portfolio-, Research-, Regime- und Live-/Shadow-/Testnet-Pfade ab.  
+> Einzelne Tests sind bewusst `skipped` (z.B. für optionale/umgebungsabhängige Features), aber es gibt **keine** roten Tests im v1.0-Snapshot.
+
+### 13.3 v1.0-Tagging & Referenzen
+
+- **v1.0-Research-Tag:**  
+  - Tag: `v1.0-research`  
+  - Commit: `48ecf50` – `feat(v1.0): add regime-aware portfolio sweeps, reporting and live audit modules`
+
+- **v1.0-Live-Beta-Tag:**  
+  - Tag: `v1.0-live-beta`  
+  - Commit: `48ecf50` (identisch zu `v1.0-research`)
+
+- **Head zum Audit-Zeitpunkt:**  
+  - Commit: `1d34fdc` – `chore: stop tracking local Claude settings, add regime experiments runner`  
+  - Rolle: Kleiner Housekeeping-Commit **oberhalb** des v1.0-Snapshots, ohne Änderung am v1.0-Tag-Stand.
+
+### 13.4 Kurz-Fazit v1.0
+
+- ✅ **Research v1.0 abgeschlossen & gefreezed** (Scope-Freeze, dokumentiert in Release Notes & Status-Overview)
+- ✅ **Shadow-/Testnet-Track Beta-ready** mit Live-Gates, Policies, Operator-Dashboards & Live-Beta-Drill
+- ✅ **Safety-first Defaults:** Kein `mode = "live"` als Default, Live-Gates und `live_mode_armed` / `live_dry_run_mode` konservativ gesetzt
+- ✅ **Tests & CLI geprüft:** Vollsuite grün, zentrale CLIs starten ohne Fehler und sind nachvollziehbar dokumentiert
+- 🏷️ **Referenz:** Für spätere Versionen (v1.1, v2.x) ist `48ecf50` der verbindliche Referenzpunkt für „Peak_Trade v1.0".
+
+Dieser „Hall of Fame"-Block soll zukünftigen Lesern (und deinem zukünftigen Ich) helfen, den v1.0-Zustand schnell zu erkennen und wiederzufinden – sowohl im Code (Tags & Commits) als auch in der Doku.
+
+---
+
 **Built with ❤️ and safety-first architecture**
 
