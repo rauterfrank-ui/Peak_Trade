@@ -110,6 +110,35 @@ from .strategy_profiles import (
     PROFILE_VERSION,
 )
 
+# Live Session Registry (Phase 81)
+from .live_session_registry import (
+    LiveSessionRecord,
+    register_live_session_run,
+    load_session_record,
+    list_session_records,
+    get_session_summary,
+    generate_session_run_id,
+    # Report Renderers
+    render_session_markdown,
+    render_sessions_markdown,
+    render_session_html,
+    render_sessions_html,
+    # Constants
+    DEFAULT_LIVE_SESSION_DIR,
+    RUN_TYPE_LIVE_SESSION,
+    RUN_TYPE_LIVE_SESSION_SHADOW,
+    RUN_TYPE_LIVE_SESSION_TESTNET,
+    RUN_TYPE_LIVE_SESSION_PAPER,
+    RUN_TYPE_LIVE_SESSION_LIVE,
+    STATUS_STARTED,
+    STATUS_COMPLETED,
+    STATUS_FAILED,
+    STATUS_ABORTED,
+)
+
+# Backward compatibility alias
+DEFAULT_SESSIONS_DIR = DEFAULT_LIVE_SESSION_DIR
+
 __all__ = [
     # Base types
     "ParamSweep",
@@ -172,4 +201,28 @@ __all__ = [
     "get_tiering_for_strategy",
     "generate_markdown_profile",
     "PROFILE_VERSION",
+    # Live Session Registry (Phase 81)
+    "LiveSessionRecord",
+    "register_live_session_run",
+    "load_session_record",
+    "list_session_records",
+    "get_session_summary",
+    "generate_session_run_id",
+    # Report Renderers
+    "render_session_markdown",
+    "render_sessions_markdown",
+    "render_session_html",
+    "render_sessions_html",
+    # Constants
+    "DEFAULT_LIVE_SESSION_DIR",
+    "DEFAULT_SESSIONS_DIR",  # Backward compatibility
+    "RUN_TYPE_LIVE_SESSION",
+    "RUN_TYPE_LIVE_SESSION_SHADOW",
+    "RUN_TYPE_LIVE_SESSION_TESTNET",
+    "RUN_TYPE_LIVE_SESSION_PAPER",
+    "RUN_TYPE_LIVE_SESSION_LIVE",
+    "STATUS_STARTED",
+    "STATUS_COMPLETED",
+    "STATUS_FAILED",
+    "STATUS_ABORTED",
 ]
