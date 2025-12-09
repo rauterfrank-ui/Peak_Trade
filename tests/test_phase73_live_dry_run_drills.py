@@ -290,3 +290,6 @@ class TestLiveDrillSafety:
                 assert len(result.reason) > 10  # Mindestens eine Erklärung
 
 
+
+
+

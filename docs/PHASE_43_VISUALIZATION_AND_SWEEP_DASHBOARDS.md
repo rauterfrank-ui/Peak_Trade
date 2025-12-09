@@ -38,6 +38,28 @@ Phase 43 nutzt die bestehenden Reporting- und Plot-Funktionen aus Phase 30 und e
 
 ---
 
+## Wie du das v1.0 Dashboard liest
+
+- **Einstieg (3–5 Minuten):** Starte mit der **Top-Kennzahlen-Tabelle** im Report (Sharpe, Total Return, Max Drawdown) und der **Haupt-Heatmap** für den Parameter-Raum. Diese geben dir den schnellsten Überblick über die besten Konfigurationen.
+
+- **Equity & Drawdown verstehen:** Die 1D-Plots (Parameter vs. Metrik) zeigen, wie sensitiv eine Metrik auf Parameteränderungen reagiert. Flache Kurven = robuste Parameter; steile Kurven = instabil. Drawdown-Heatmaps helfen, stabile Regionen mit moderatem Risk zu identifizieren.
+
+- **Heatmaps interpretieren:** 2D-Heatmaps zeigen Interaktionen zwischen zwei Parametern. Suche nach „Inseln" hoher Performance – isolierte Maxima sind fragiler als breite Plateaus.
+
+- **Warnsignale erkennen:** Sehr tiefe Drawdowns (< -30%), stark schwankende Performance über kleine Parameteränderungen, oder wenige gültige Datenpunkte (NaN-Warnungen) sind Red Flags. Details zu Go/No-Go-Grenzwerten findest du in [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md).
+
+- **Rollen-Fokus:**
+  - *Research/Quant:* Fokus auf Parameter-Heatmaps, Sensitivitäts-Plots und Metrik-Verteilungen für Optimierung.
+  - *Operator/Ops:* Fokus auf Drawdown-Heatmaps und Top-N-Tabellen für aktuelle Performance-Einschätzung.
+  - *Reviewer/Risk:* Fokus auf Drawdown-Analysen, Extrem-Werte und Robustheits-Indikatoren (breite vs. schmale Optima).
+
+- **Einbettung in v1.0-Workflow:** Das Dashboard dient der **visuellen Ersteinschätzung**. Für fundierte Go/No-Go-Entscheidungen lies die zugehörigen Reports und Dokus:
+  - [`PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md) – v1.0 Gesamtübersicht
+  - [`PEAK_TRADE_STATUS_OVERVIEW.md`](PEAK_TRADE_STATUS_OVERVIEW.md) – Projekt-Status
+  - [`PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md) – Research → Live Playbook
+
+---
+
 ## 2. Komponentenübersicht
 
 ### Module

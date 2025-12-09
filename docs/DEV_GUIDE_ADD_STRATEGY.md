@@ -396,3 +396,6 @@ def test_my_new_strategy_backtest_integration():
 - `PEAK_TRADE_STATUS_OVERVIEW.md` – Projekt-Status
 
 
+
+
+

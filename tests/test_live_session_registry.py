@@ -811,6 +811,240 @@ class TestExports:
 
 
 # =============================================================================
+# Tests: Strategy Tier Support
+# =============================================================================
+
+
+class TestStrategyTierSupport:
+    """Tests für Strategy-Tier-Unterstützung in LiveSessionRecord."""
+
+    def test_strategy_tier_field_exists(self):
+        """Test: strategy_tier Feld existiert in LiveSessionRecord."""
+        from src.experiments.live_session_registry import LiveSessionRecord
+
+        record = LiveSessionRecord(
+            session_id="tier_test",
+            run_id=None,
+            run_type="live_session_shadow",
+            mode="shadow",
+            env_name="test",
+            symbol="BTC/USD",
+            status="completed",
+            started_at=datetime.utcnow(),
+            strategy_tier="core",
+        )
+
+        assert record.strategy_tier == "core"
+
+    def test_strategy_tier_default_is_none(self):
+        """Test: strategy_tier ist standardmäßig None."""
+        from src.experiments.live_session_registry import LiveSessionRecord
+
+        record = LiveSessionRecord(
+            session_id="tier_default_test",
+            run_id=None,
+            run_type="live_session_shadow",
+            mode="shadow",
+            env_name="test",
+            symbol="BTC/USD",
+            status="completed",
+            started_at=datetime.utcnow(),
+        )
+
+        assert record.strategy_tier is None
+
+    def test_strategy_tier_r_and_d(self):
+        """Test: R&D-Tier wird korrekt gespeichert."""
+        from src.experiments.live_session_registry import LiveSessionRecord
+
+        record = LiveSessionRecord(
+            session_id="rnd_test",
+            run_id=None,
+            run_type="live_session_shadow",
+            mode="shadow",
+            env_name="test",
+            symbol="BTC/USD",
+            status="completed",
+            started_at=datetime.utcnow(),
+            config={"strategy_name": "armstrong_cycle"},
+            strategy_tier="r_and_d",
+        )
+
+        assert record.strategy_tier == "r_and_d"
+
+    def test_strategy_tier_roundtrip(self):
+        """Test: strategy_tier wird bei to_dict/from_dict erhalten."""
+        from src.experiments.live_session_registry import LiveSessionRecord
+
+        record = LiveSessionRecord(
+            session_id="tier_roundtrip",
+            run_id=None,
+            run_type="live_session_shadow",
+            mode="shadow",
+            env_name="test",
+            symbol="BTC/USD",
+            status="completed",
+            started_at=datetime.utcnow(),
+            strategy_tier="r_and_d",
+        )
+
+        data = record.to_dict()
+        assert data["strategy_tier"] == "r_and_d"
+
+        restored = LiveSessionRecord.from_dict(data)
+        assert restored.strategy_tier == "r_and_d"
+
+    def test_strategy_tier_in_json(self, temp_sessions_dir):
+        """Test: strategy_tier wird in JSON-Datei gespeichert."""
+        from src.experiments.live_session_registry import (
+            LiveSessionRecord,
+            register_live_session_run,
+        )
+
+        record = LiveSessionRecord(
+            session_id="tier_json_test",
+            run_id=None,
+            run_type="live_session_shadow",
+            mode="shadow",
+            env_name="test",
+            symbol="BTC/USD",
+            status="completed",
+            started_at=datetime.utcnow(),
+            strategy_tier="aux",
+        )
+
+        path = register_live_session_run(record, base_dir=temp_sessions_dir)
+
+        with path.open("r", encoding="utf-8") as f:
+            saved_data = json.load(f)
+
+        assert saved_data["strategy_tier"] == "aux"
+
+    def test_summary_includes_by_tier(self, temp_sessions_dir):
+        """Test: get_session_summary() enthält by_tier."""
+        from src.experiments.live_session_registry import (
+            LiveSessionRecord,
+            register_live_session_run,
+            get_session_summary,
+        )
+
+        # Core-Session
+        record1 = LiveSessionRecord(
+            session_id="core_session",
+            run_id=None,
+            run_type="live_session_shadow",
+            mode="shadow",
+            env_name="test",
+            symbol="BTC/USD",
+            status="completed",
+            started_at=datetime(2024, 12, 8, 10, 0, 0),
+            strategy_tier="core",
+            metrics={"realized_pnl": 100.0},
+        )
+        register_live_session_run(record1, base_dir=temp_sessions_dir)
+
+        # R&D-Session
+        record2 = LiveSessionRecord(
+            session_id="rnd_session",
+            run_id=None,
+            run_type="live_session_shadow",
+            mode="shadow",
+            env_name="test",
+            symbol="BTC/USD",
+            status="completed",
+            started_at=datetime(2024, 12, 8, 11, 0, 0),
+            strategy_tier="r_and_d",
+            config={"strategy_name": "armstrong_cycle"},
+            metrics={"realized_pnl": 50.0},
+        )
+        register_live_session_run(record2, base_dir=temp_sessions_dir)
+
+        summary = get_session_summary(base_dir=temp_sessions_dir)
+
+        assert "by_tier" in summary
+        assert summary["by_tier"]["core"] == 1
+        assert summary["by_tier"]["r_and_d"] == 1
+
+    def test_summary_includes_r_and_d_summary(self, temp_sessions_dir):
+        """Test: get_session_summary() enthält r_and_d_summary wenn R&D-Sessions vorhanden."""
+        from src.experiments.live_session_registry import (
+            LiveSessionRecord,
+            register_live_session_run,
+            get_session_summary,
+        )
+
+        # R&D-Sessions erstellen
+        for i in range(2):
+            record = LiveSessionRecord(
+                session_id=f"rnd_session_{i}",
+                run_id=None,
+                run_type="live_session_shadow",
+                mode="shadow",
+                env_name="test",
+                symbol="BTC/USD",
+                status="completed",
+                started_at=datetime(2024, 12, 8, 10 + i, 0, 0),
+                strategy_tier="r_and_d",
+                config={"strategy_name": f"research_strategy_{i}"},
+                metrics={"realized_pnl": 100.0 * (i + 1)},
+            )
+            register_live_session_run(record, base_dir=temp_sessions_dir)
+
+        summary = get_session_summary(base_dir=temp_sessions_dir)
+
+        assert "r_and_d_summary" in summary
+        assert summary["r_and_d_summary"]["num_sessions"] == 2
+        assert summary["r_and_d_summary"]["total_realized_pnl"] == 300.0  # 100 + 200
+        assert "notice" in summary["r_and_d_summary"]
+
+    def test_render_markdown_includes_tier(self):
+        """Test: render_session_markdown() zeigt Tier-Information."""
+        from src.experiments.live_session_registry import (
+            LiveSessionRecord,
+            render_session_markdown,
+        )
+
+        record = LiveSessionRecord(
+            session_id="markdown_tier_test",
+            run_id=None,
+            run_type="live_session_shadow",
+            mode="shadow",
+            env_name="test",
+            symbol="BTC/USD",
+            status="completed",
+            started_at=datetime.utcnow(),
+            strategy_tier="core",
+        )
+
+        md = render_session_markdown(record)
+        assert "Strategy Tier" in md
+        assert "Core" in md
+
+    def test_render_markdown_r_and_d_warning(self):
+        """Test: render_session_markdown() zeigt R&D-Warnung."""
+        from src.experiments.live_session_registry import (
+            LiveSessionRecord,
+            render_session_markdown,
+        )
+
+        record = LiveSessionRecord(
+            session_id="rnd_markdown_test",
+            run_id=None,
+            run_type="live_session_shadow",
+            mode="shadow",
+            env_name="test",
+            symbol="BTC/USD",
+            status="completed",
+            started_at=datetime.utcnow(),
+            strategy_tier="r_and_d",
+        )
+
+        md = render_session_markdown(record)
+        assert "R&D / Research" in md
+        assert "R&D-Strategie" in md or "Research" in md
+
+
+# =============================================================================
 # Integration Tests
 # =============================================================================
 

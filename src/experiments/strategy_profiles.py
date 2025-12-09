@@ -60,7 +60,22 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 PROFILE_VERSION = "v1"
-TIER_TYPES = Literal["core", "aux", "legacy", "unclassified"]
+# Tier-Typen für Strategy-Klassifikation:
+# - core: Primäre Strategien für Hauptportfolio (Live-fähig nach Freigabe)
+# - aux: Ergänzende Strategien mit spezifischen Stärken
+# - legacy: Ältere Strategien, nur zu Vergleichszwecken
+# - r_and_d: Research & Development - NICHT für Live-Trading freigegeben
+# - unclassified: Noch nicht klassifiziert
+TIER_TYPES = Literal["core", "aux", "legacy", "r_and_d", "unclassified"]
+
+# Label-Mapping für Dashboard-Anzeige
+TIER_LABELS = {
+    "core": "Core",
+    "aux": "Auxiliary",
+    "legacy": "Legacy",
+    "r_and_d": "R&D / Research",
+    "unclassified": "Unclassified",
+}
 
 
 # =============================================================================
@@ -718,9 +733,12 @@ def generate_markdown_profile(profile: StrategyProfile) -> str:
     # Tiering
     if profile.tiering is not None:
         tier = profile.tiering
-        tier_emoji = {"core": "**Core**", "aux": "Aux", "legacy": "_Legacy_"}.get(
-            tier.tier, tier.tier
-        )
+        tier_emoji = {
+            "core": "**Core**",
+            "aux": "Aux",
+            "legacy": "_Legacy_",
+            "r_and_d": "🔬 **R&D/Research**",
+        }.get(tier.tier, tier.tier)
 
         lines.extend(
             [
@@ -1072,4 +1090,5 @@ __all__ = [
     # Constants
     "PROFILE_VERSION",
     "TIER_TYPES",
+    "TIER_LABELS",
 ]

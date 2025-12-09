@@ -294,3 +294,6 @@ Beide Strategien sind vollständig kompatibel mit der bestehenden Backtest-Engin
 **Wichtig:** Diese Erweiterungen sind **Research-/Backtest-/Shadow-Only**. Keine Änderungen am Live-/Testnet-/Execution-Code.
 
 
+
+
+

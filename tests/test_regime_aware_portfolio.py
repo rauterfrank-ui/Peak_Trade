@@ -425,3 +425,6 @@ class TestRegimeAwarePortfolioIntegration:
         assert set(regime.unique()).issubset({-1, 0, 1})
 
 
+
+
+

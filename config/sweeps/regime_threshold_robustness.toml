@@ -15,3 +15,6 @@ strategy_type   = "regime_aware_portfolio"
 components      = ["breakout", "rsi_reversion"]
 base_weights    = { breakout = 0.6, rsi_reversion = 0.4 }
 regime_strategy = "vol_regime_filter"
+
+
+

@@ -370,3 +370,6 @@ Vor Übernahme in Shadow/Testnet/Live:
 **Nächste Review:** Nach Walk-Forward-Validierung
 
 *Generiert von Peak_Trade Research-Agent*
+
+
+

@@ -392,3 +392,6 @@ Diese Phase stellt **Sweep-Presets für Regime-Aware Portfolios** bereit:
 Die Presets können direkt für systematische Untersuchungen von Regime-Aware Portfolios verwendet werden und integrieren sich nahtlos in die bestehende Research-Pipeline.
 
 
+
+
+

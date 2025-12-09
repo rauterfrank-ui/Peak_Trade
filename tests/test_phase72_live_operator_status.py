@@ -238,3 +238,6 @@ class TestLiveOperatorStatus:
         # Report sollte nur Status zeigen, keine Schreiboperationen vorschlagen
 
 
+
+
+

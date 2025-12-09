@@ -111,6 +111,7 @@ class LiveSessionRecord:
         cli_args: Vollständiger CLI-Call als Liste (z.B. sys.argv)
         error: Fehlermeldung/Kurzbeschreibung bei failed/aborted
         created_at: Zeitstempel der Record-Erstellung
+        strategy_tier: Strategy-Tier (core, aux, legacy, r_and_d, unclassified)
 
     Example:
         >>> record = LiveSessionRecord(
@@ -123,6 +124,7 @@ class LiveSessionRecord:
         ...     started_at=datetime.utcnow(),
         ...     config={"strategy_name": "ma_crossover", "timeframe": "1m"},
         ...     metrics={"realized_pnl": 150.0, "max_drawdown": 0.05},
+        ...     strategy_tier="core",
         ... )
     """
 
@@ -144,6 +146,7 @@ class LiveSessionRecord:
     error: Optional[str] = None
 
     created_at: datetime = field(default_factory=datetime.utcnow)
+    strategy_tier: Optional[str] = None  # core, aux, legacy, r_and_d, unclassified
 
     def to_dict(self) -> Dict[str, Any]:
         """Konvertiert den Record in ein JSON-serialisierbares Dict."""
@@ -162,6 +165,7 @@ class LiveSessionRecord:
             "cli_args": list(self.cli_args),
             "error": self.error,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "strategy_tier": self.strategy_tier,
         }
 
     @classmethod
@@ -188,6 +192,7 @@ class LiveSessionRecord:
             cli_args=data.get("cli_args", []) or [],
             error=data.get("error"),
             created_at=parse_dt(data.get("created_at")) or datetime.utcnow(),
+            strategy_tier=data.get("strategy_tier"),
         )
 
 
@@ -347,9 +352,11 @@ def get_session_summary(
         Dict mit:
         - num_sessions: Anzahl Sessions
         - by_status: Dict mit Status-Verteilung
+        - by_tier: Dict mit Tier-Verteilung (core, aux, legacy, r_and_d, etc.)
         - total_realized_pnl: Summe realized_pnl
         - avg_max_drawdown: Durchschnittlicher max_drawdown
         - first_started_at / last_started_at: ISO-Strings
+        - r_and_d_summary: Summary für R&D-Sessions (nur wenn vorhanden)
 
     Example:
         >>> summary = get_session_summary(run_type="live_session_shadow")
@@ -362,11 +369,14 @@ def get_session_summary(
         return {
             "num_sessions": 0,
             "by_status": {},
+            "by_tier": {},
             "total_realized_pnl": 0.0,
             "avg_max_drawdown": 0.0,
         }
 
     status_counter = Counter(r.status for r in records)
+    tier_counter = Counter(r.strategy_tier or "unclassified" for r in records)
+
     total_realized_pnl = sum(
         float(r.metrics.get("realized_pnl", 0.0)) for r in records
     )
@@ -377,14 +387,33 @@ def get_session_summary(
     ]
     avg_max_drawdown = sum(dd_values) / len(dd_values) if dd_values else 0.0
 
-    return {
+    result: Dict[str, Any] = {
         "num_sessions": num_sessions,
         "by_status": dict(status_counter),
+        "by_tier": dict(tier_counter),
         "total_realized_pnl": total_realized_pnl,
         "avg_max_drawdown": avg_max_drawdown,
         "first_started_at": min(r.started_at for r in records).isoformat(),
         "last_started_at": max(r.started_at for r in records).isoformat(),
     }
+
+    # R&D-Summary wenn R&D-Sessions vorhanden
+    r_and_d_records = [r for r in records if r.strategy_tier == "r_and_d"]
+    if r_and_d_records:
+        r_and_d_pnl = sum(
+            float(r.metrics.get("realized_pnl", 0.0)) for r in r_and_d_records
+        )
+        r_and_d_strategies = list(set(
+            r.config.get("strategy_name", "unknown") for r in r_and_d_records
+        ))
+        result["r_and_d_summary"] = {
+            "num_sessions": len(r_and_d_records),
+            "total_realized_pnl": r_and_d_pnl,
+            "strategies": r_and_d_strategies,
+            "notice": "R&D-Strategien: Nur für Research/Backtests, nicht live-freigegeben",
+        }
+
+    return result
 
 
 # =============================================================================
@@ -396,20 +425,41 @@ def render_session_markdown(record: LiveSessionRecord) -> str:
     """Gibt einen Markdown-Report für eine einzelne Session zurück."""
     import json as _json
 
+    # Tier-Label Mapping
+    tier_labels = {
+        "core": "Core",
+        "aux": "Auxiliary",
+        "legacy": "Legacy",
+        "r_and_d": "R&D / Research",
+        "unclassified": "Unclassified",
+    }
+
     header = f"# Live-Session {record.session_id}\n\n"
+
+    # Tier-Info wenn vorhanden
+    tier_line = ""
+    if record.strategy_tier:
+        tier_label = tier_labels.get(record.strategy_tier, record.strategy_tier)
+        tier_line = f"**Strategy Tier:** `{tier_label}`  \n"
+        # R&D-Warnung
+        if record.strategy_tier == "r_and_d":
+            tier_line += "⚠️ *R&D-Strategie: Nur für Research/Backtests, nicht für Live-Trading freigegeben*  \n"
+
     meta = (
         textwrap.dedent(
             f"""
-        **Run-Type:** `{record.run_type}`  
-        **Mode:** `{record.mode}`  
-        **Status:** `{record.status}`  
-        **Symbol:** `{record.symbol}`  
-        **Environment:** `{record.env_name}`  
-        **Started:** `{record.started_at.isoformat() if record.started_at else "-"}`  
+        **Run-Type:** `{record.run_type}`
+        **Mode:** `{record.mode}`
+        **Status:** `{record.status}`
+        **Symbol:** `{record.symbol}`
+        **Environment:** `{record.env_name}`
+        **Started:** `{record.started_at.isoformat() if record.started_at else "-"}`
         **Finished:** `{record.finished_at.isoformat() if record.finished_at else "-"}`
         """
         ).strip()
-        + "\n\n"
+        + "\n"
+        + tier_line
+        + "\n"
     )
 
     error_block = ""

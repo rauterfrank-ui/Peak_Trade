@@ -260,3 +260,6 @@ Diese Phase implementiert eine **Regime-Aware Portfolio-Strategie**, die:
 **Wichtig:** Diese Implementierung ist **Research-/Backtest-/Shadow-Only**. Keine Änderungen am Live-/Testnet-/Execution-Code.
 
 
+
+
+

@@ -1,5 +1,9 @@
 # Peak_Trade – AI Assistant Guide (Claude/Cursor)
 
+> **Hinweis:** Dieser Guide ist die technische Referenz für Claude/Cursor (Projekt-Übersicht, Module, Commands).
+> Bevor du mit AI-Tools aktiv am Peak_Trade-Repo arbeitest, lies bitte zuerst den **AI-Helper-Guide** (Working Agreements & Best Practices):
+> [`PEAK_TRADE_AI_HELPER_GUIDE.md`](PEAK_TRADE_AI_HELPER_GUIDE.md)
+
 > **Zweck:** Zentrale Anleitung für die Nutzung von AI-Assistenz (Claude, Cursor, ChatGPT) im Peak_Trade-Projekt
 >
 > **Zielgruppe:** Entwickler, die mit AI-Tools arbeiten, um Code zu schreiben, Dokumentation zu erstellen oder das Projekt zu verstehen
@@ -279,5 +283,8 @@ den Schritt-für-Schritt-Anweisungen.
 ---
 
 **Built with ❤️ and AI-assistance**
+
+
+
 
 

@@ -1,7 +1,7 @@
 # src/reporting/__init__.py
 """
-Peak_Trade Reporting Module (Phase 16D + Phase 21 + Phase 30 + Phase 32 + Phase 57)
-===================================================================================
+Peak_Trade Reporting Module (Phase 16D + Phase 21 + Phase 30 + Phase 32 + Phase 57 + Phase 81)
+==============================================================================================
 
 Bietet Reporting-Funktionen fuer Execution-Daten aus Backtests,
 HTML-Report-Generierung und Markdown-Reports.
@@ -16,6 +16,7 @@ Module:
 - experiment_report: Experiment/Sweep-Report-Generierung (Phase 30)
 - live_run_report: Live/Shadow Run Report-Generierung (Phase 32)
 - live_status_report: Live Status Report Formatter (Phase 57)
+- live_session_report: Live Session Registry Reports (Phase 81)
 """
 from .execution_reports import (
     ExecutionStats,
@@ -110,6 +111,13 @@ from .live_status_report import (
     build_html_report as build_live_status_html_report,
 )
 
+# Phase 81: Live Session Reports
+from .live_session_report import (
+    build_session_report,
+    build_multi_session_report,
+    save_session_report,
+)
+
 __all__ = [
     # Execution Reports (Phase 16D)
     "ExecutionStats",
@@ -175,4 +183,8 @@ __all__ = [
     "LiveStatusInput",
     "build_live_status_markdown_report",
     "build_live_status_html_report",
+    # Phase 81: Live Session Reports
+    "build_session_report",
+    "build_multi_session_report",
+    "save_session_report",
 ]

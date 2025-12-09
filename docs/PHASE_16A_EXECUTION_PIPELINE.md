@@ -255,3 +255,6 @@ Phase 16A stellt eine **stabile, getestete ExecutionPipeline** bereit, die:
 - ✅ Später ohne Breaking Changes für Live erweitert werden kann
 
 Die Pipeline ist das zentrale Rückgrat zwischen Strategie/Portfolio und Executor und stellt sicher, dass alle Orders durch die Safety- und Risk-Layer laufen, bevor sie ausgeführt werden.
+
+
+
