@@ -1,7 +1,7 @@
 # src/webui/r_and_d_api.py
 """
-Peak_Trade: R&D Dashboard API v0 (Phase 76)
-===========================================
+Peak_Trade: R&D Dashboard API v1.1 (Phase 76)
+=============================================
 
 API-Endpoints für das R&D-Dashboard:
 - GET /api/r_and_d/experiments - Liste aller R&D-Experimente (mit Filtern)
@@ -10,6 +10,14 @@ API-Endpoints für das R&D-Dashboard:
 - GET /api/r_and_d/presets - Aggregation nach Preset
 - GET /api/r_and_d/strategies - Aggregation nach Strategy
 - GET /api/r_and_d/stats - Globale Statistiken
+- GET /api/r_and_d/today - Heute fertige Experimente (Daily R&D View)
+- GET /api/r_and_d/running - Aktuell laufende Experimente
+
+v1.1 Änderungen:
+- run_type und tier Felder prominenter
+- Status: success, running, failed, no_trades
+- Today-Filter für "Was ist heute fertig geworden?"
+- Experiment-Kategorien nach R&D-Taxonomie
 
 Basis: reports/r_and_d_experiments/, view_r_and_d_experiments.py, Notebook-Template
 """
@@ -54,7 +62,7 @@ def get_r_and_d_dir() -> Path:
 
 
 class RnDExperimentSummary(BaseModel):
-    """Zusammenfassung eines R&D-Experiments für Listen-Ansicht."""
+    """Zusammenfassung eines R&D-Experiments für Listen-Ansicht (v1.1)."""
     filename: str
     run_id: str
     timestamp: str
@@ -68,8 +76,13 @@ class RnDExperimentSummary(BaseModel):
     max_drawdown: float
     total_trades: int
     win_rate: float
-    status: str
+    status: str  # success, running, failed, no_trades
     use_dummy_data: bool = False
+    # v1.1: Neue Felder für bessere Taxonomie
+    tier: str = "r_and_d"  # r_and_d, core, aux, legacy
+    run_type: str = "backtest"  # backtest, sweep, monte_carlo, walkforward
+    experiment_category: str = ""  # cycles, volatility, ml, microstructure
+    date_str: str = ""  # YYYY-MM-DD für einfache Filterung
 
 
 class RnDExperimentDetail(BaseModel):
@@ -187,7 +200,7 @@ def load_experiments_from_dir(dir_path: Optional[Path] = None) -> List[Dict[str,
 
 
 def extract_flat_fields(exp: Dict[str, Any]) -> Dict[str, Any]:
-    """Extrahiert flache Felder aus einem Experiment-Dict."""
+    """Extrahiert flache Felder aus einem Experiment-Dict (v1.1)."""
     experiment = exp.get("experiment", {})
     results = exp.get("results", {})
     meta = exp.get("meta", {})
@@ -197,6 +210,44 @@ def extract_flat_fields(exp: Dict[str, Any]) -> Dict[str, Any]:
 
     # Run-ID aus Filename oder Timestamp generieren
     run_id = filename.replace(".json", "") if filename else timestamp
+
+    # v1.1: Date-String für einfache Filterung extrahieren (YYYY-MM-DD)
+    date_str = ""
+    if timestamp and len(timestamp) >= 8:
+        try:
+            date_str = f"{timestamp[:4]}-{timestamp[4:6]}-{timestamp[6:8]}"
+        except (IndexError, ValueError):
+            date_str = ""
+
+    # v1.1: Run-Type und Tier aus Meta/Tag ableiten
+    run_type = meta.get("run_type", "")
+    if not run_type:
+        # Heuristik basierend auf Tag
+        tag = experiment.get("tag", "").lower()
+        if "sweep" in tag:
+            run_type = "sweep"
+        elif "monte" in tag or "mc_" in tag:
+            run_type = "monte_carlo"
+        elif "walkforward" in tag or "wf_" in tag:
+            run_type = "walkforward"
+        else:
+            run_type = "backtest"
+
+    # v1.1: Experiment-Kategorie aus Preset/Strategy ableiten
+    experiment_category = meta.get("category", "")
+    if not experiment_category:
+        strategy = experiment.get("strategy", "").lower()
+        preset = experiment.get("preset_id", "").lower()
+        if "ehlers" in strategy or "ehlers" in preset:
+            experiment_category = "cycles"
+        elif "armstrong" in strategy or "armstrong" in preset:
+            experiment_category = "cycles"
+        elif "meta_labeling" in strategy or "lopez" in preset:
+            experiment_category = "ml"
+        elif "el_karoui" in strategy or "vol" in preset:
+            experiment_category = "volatility"
+        else:
+            experiment_category = "general"
 
     return {
         "filename": filename,
@@ -215,16 +266,39 @@ def extract_flat_fields(exp: Dict[str, Any]) -> Dict[str, Any]:
         "profit_factor": float(results.get("profit_factor", 0.0)),
         "use_dummy_data": bool(meta.get("use_dummy_data", False)),
         "status": determine_status(exp),
+        # v1.1: Neue Felder
+        "tier": meta.get("tier", "r_and_d"),
+        "run_type": run_type,
+        "experiment_category": experiment_category,
+        "date_str": date_str,
     }
 
 
 def determine_status(exp: Dict[str, Any]) -> str:
-    """Bestimmt den Status eines Experiments."""
+    """
+    Bestimmt den Status eines Experiments (v1.1).
+
+    Status-Werte:
+    - success: Abgeschlossen mit Trades > 0
+    - running: Noch laufend (meta.status == "running")
+    - failed: Fehlgeschlagen (meta.status == "failed" oder error vorhanden)
+    - no_trades: Abgeschlossen aber 0 Trades
+    """
+    meta = exp.get("meta", {})
     results = exp.get("results", {})
+
+    # Expliziter Status aus Meta (v1.1)
+    meta_status = meta.get("status", "")
+    if meta_status == "running":
+        return "running"
+    if meta_status == "failed" or meta.get("error"):
+        return "failed"
+
+    # Fallback auf Trade-basierte Bestimmung
     total_trades = results.get("total_trades", 0)
     if total_trades == 0:
         return "no_trades"
-    return "ok"
+    return "success"
 
 
 def parse_date(date_str: str) -> Optional[datetime]:
@@ -650,3 +724,130 @@ async def get_stats() -> RnDGlobalStats:
     experiments = load_experiments_from_dir()
     stats = compute_global_stats(experiments)
     return RnDGlobalStats(**stats)
+
+
+# =============================================================================
+# v1.1 NEUE ENDPOINTS: Today & Running
+# =============================================================================
+
+
+@router.get(
+    "/today",
+    response_model=Dict[str, Any],
+    summary="Heute fertige Experimente (v1.1)",
+    description=(
+        "Liefert Experimente, die heute abgeschlossen wurden. "
+        "Ideal für Daily R&D Review: 'Was ist heute fertig geworden?'"
+    ),
+)
+async def get_today_experiments(
+    limit: int = Query(50, ge=1, le=500, description="Max. Anzahl"),
+) -> Dict[str, Any]:
+    """
+    Experimente, die heute abgeschlossen wurden (v1.1).
+
+    Returns:
+        Dict mit:
+        - items: Liste der heute fertigen Experimente
+        - count: Anzahl
+        - date: Heutiges Datum
+    """
+    from datetime import date
+
+    today_str = date.today().strftime("%Y-%m-%d")
+    experiments = load_experiments_from_dir()
+
+    # Filter auf heute
+    today_experiments = []
+    for exp in experiments:
+        flat = extract_flat_fields(exp)
+        if flat["date_str"] == today_str and flat["status"] != "running":
+            today_experiments.append(flat)
+
+    # Limit anwenden
+    limited = today_experiments[:limit]
+
+    return {
+        "items": limited,
+        "count": len(today_experiments),
+        "date": today_str,
+        "success_count": sum(1 for e in today_experiments if e["status"] == "success"),
+        "failed_count": sum(1 for e in today_experiments if e["status"] == "failed"),
+    }
+
+
+@router.get(
+    "/running",
+    response_model=Dict[str, Any],
+    summary="Aktuell laufende Experimente (v1.1)",
+    description=(
+        "Liefert Experimente, die aktuell noch laufen. "
+        "Für 'Was läuft gerade?' Übersicht."
+    ),
+)
+async def get_running_experiments() -> Dict[str, Any]:
+    """
+    Aktuell laufende Experimente (v1.1).
+
+    Returns:
+        Dict mit:
+        - items: Liste der laufenden Experimente
+        - count: Anzahl
+    """
+    experiments = load_experiments_from_dir()
+
+    running = []
+    for exp in experiments:
+        flat = extract_flat_fields(exp)
+        if flat["status"] == "running":
+            running.append(flat)
+
+    return {
+        "items": running,
+        "count": len(running),
+    }
+
+
+@router.get(
+    "/categories",
+    response_model=Dict[str, Any],
+    summary="Experiment-Kategorien (v1.1)",
+    description="Liefert verfügbare Experiment-Kategorien mit Counts.",
+)
+async def get_categories() -> Dict[str, Any]:
+    """
+    Verfügbare Experiment-Kategorien (v1.1).
+
+    Returns:
+        Dict mit Kategorien und deren Experiment-Anzahl
+    """
+    experiments = load_experiments_from_dir()
+
+    categories: Dict[str, int] = {}
+    run_types: Dict[str, int] = {}
+
+    for exp in experiments:
+        flat = extract_flat_fields(exp)
+        cat = flat.get("experiment_category", "general")
+        rt = flat.get("run_type", "backtest")
+
+        categories[cat] = categories.get(cat, 0) + 1
+        run_types[rt] = run_types.get(rt, 0) + 1
+
+    return {
+        "categories": categories,
+        "run_types": run_types,
+        "category_labels": {
+            "cycles": "Cycles & Timing",
+            "volatility": "Volatility Models",
+            "ml": "Machine Learning",
+            "microstructure": "Microstructure",
+            "general": "General",
+        },
+        "run_type_labels": {
+            "backtest": "Backtest",
+            "sweep": "Parameter Sweep",
+            "monte_carlo": "Monte Carlo",
+            "walkforward": "Walk-Forward",
+        },
+    }

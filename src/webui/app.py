@@ -365,14 +365,20 @@ def create_app() -> FastAPI:
         preset: Optional[str] = Query(None, description="Filter nach Preset-ID"),
         strategy: Optional[str] = Query(None, description="Filter nach Strategy-ID"),
         tag_substr: Optional[str] = Query(None, description="Filter nach Tag-Substring"),
+        run_type: Optional[str] = Query(None, description="Filter nach Run-Type"),
         with_trades: bool = Query(False, description="Nur Experimente mit Trades"),
         limit: int = Query(100, ge=1, le=500, description="Max. Anzahl"),
     ) -> Any:
-        """HTML Overview-Page für R&D-Experimente (Phase 76)."""
+        """HTML Overview-Page für R&D-Experimente (Phase 76 v1.1)."""
+        from datetime import date
+
         proj_status = get_project_status()
 
         # Experimente laden
         all_experiments = load_experiments_from_dir()
+
+        # Alle Experimente zu flachen Dicts konvertieren (für Stats)
+        all_flat = [extract_flat_fields(exp) for exp in all_experiments]
 
         # Filter anwenden
         filtered_experiments = filter_experiments(
@@ -383,6 +389,13 @@ def create_app() -> FastAPI:
             with_trades=with_trades,
         )
 
+        # Zusätzlicher Run-Type Filter (v1.1)
+        if run_type:
+            filtered_experiments = [
+                exp for exp in filtered_experiments
+                if extract_flat_fields(exp).get("run_type") == run_type
+            ]
+
         # Limit anwenden
         limited_experiments = filtered_experiments[:limit]
 
@@ -392,11 +405,23 @@ def create_app() -> FastAPI:
         # Statistiken berechnen
         stats = compute_global_stats(all_experiments)
 
+        # v1.1: Daily Summary Stats (heute fertig, laufend)
+        today_str = date.today().strftime("%Y-%m-%d")
+        today_experiments = [e for e in all_flat if e.get("date_str") == today_str and e.get("status") != "running"]
+        running_experiments = [e for e in all_flat if e.get("status") == "running"]
+
+        stats["today_date"] = today_str
+        stats["today_count"] = len(today_experiments)
+        stats["today_success"] = sum(1 for e in today_experiments if e.get("status") == "success")
+        stats["today_failed"] = sum(1 for e in today_experiments if e.get("status") == "failed")
+        stats["running_count"] = len(running_experiments)
+
         # Filter-State für Template
         filters = {
             "preset": preset,
             "strategy": strategy,
             "tag_substr": tag_substr,
+            "run_type": run_type,
             "with_trades": with_trades,
         }
 

@@ -14,7 +14,7 @@ Dazu werden sieben Micro-Phasen definiert, die auf dem bestehenden Stand (Strate
 | Micro-Phase | Fokus | Hauptziel |
 |------------|-------|-----------|
 | **Phase 75** | R&D | R&D-Wave v2 Experiments & Operator-View (CLI `view_r_and_d_experiments.py`) |
-| **Phase 76** | R&D | R&D Dashboard v0 (Design) – Read-Only Web-Dashboard für R&D-Experimente |
+| **Phase 76** | R&D | R&D Experiments Overview v1.1 – R&D Hub mit Daily Summary & Run-Type-Filter |
 | **Phase 80** | Research | Tiering → Portfolio-Presets & Sweeps |
 | **Phase 80B** | Execution | Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
 | **Phase 81** | Research UX | Golden-Path-Workflows & Recipes |
@@ -60,32 +60,35 @@ Standardisierte R&D-Experimente für fortgeschrittene Forschungsstrategien (Arms
 
 ---
 
-## Phase 76 – R&D Dashboard v0 (Design)
+## Phase 76 – R&D Experiments Overview v1.1
 
-**Status:** 📋 Design-Phase
+**Status:** ✅ ABGESCHLOSSEN
 
 **Ziel:**
-Read-Only Web-Dashboard für R&D-Experimente, das auf den Bausteinen aus Phase 75 aufsetzt (CLI, Notebook-Template, JSON-Daten).
+Schärft die R&D-Experimente-Übersicht im Web-Dashboard zu einem zentralen **R&D Hub** mit Daily-Summary-Kacheln („Heute fertig", „Aktuell laufend") und Run-Type-Filtern – direkt angebunden an Registry und R&D-API.
 
 **Kern-Deliverables:**
 
-- **Design-Spezifikation:** [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md)
-- **API-Endpoints:** 6 REST-Endpoints für Experiments, Summary, Presets, Strategies, Stats
-- **UI-Views:** Experiments List, Detail, Preset/Strategy Aggregations, Charts
+- **R&D Hub UI:** Daily Summary Kacheln, Quick-Actions, kompaktes Tabellenlayout mit Status-/Run-Type-Badges
+- **R&D-API v1.1:** Neue Felder (`run_type`, `tier`, `experiment_category`, `date_str`), erweiterte Status-Werte (`success`, `running`, `failed`, `no_trades`)
+- **Neue Endpoints:**
+  - `GET /api/r_and_d/today` – heute fertiggestellte Experimente
+  - `GET /api/r_and_d/running` – aktuell laufende Experimente
+  - `GET /api/r_and_d/categories` – verfügbare Kategorien & Run-Types
+- **Dokumentation:** [`PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md`](PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md)
 
-**Geplante Features:**
+**Operator-Nutzen:**
 
-- Filterbare Tabellenansicht (Preset, Tag, Strategy, Datum, Trades)
-- Aggregations-Views (Kennzahlen pro Preset/Strategy)
-- Basis-Visualisierungen (Sharpe-Verteilung, Return by Preset, Scatter)
-- Detailansicht mit JSON-Viewer
+- Fokus: Tagesübersicht über fertige & laufende R&D-Runs
+- Schnellscan über Status, Run-Type, Tier und Kategorie
+- Vorbereitung für kommende R&D-Wellen (Ehlers, Armstrong, Lopez de Prado, El Karoui)
 
 **Definition of Done:**
 
-- [ ] API-Endpoints liefern korrekte Daten
-- [ ] Tabelle filterbar und sortierbar
-- [ ] Mindestens 2 Charts implementiert
-- [ ] Tests für API-Endpoints (mind. 10 Tests)
+- ✅ API-Endpoints liefern korrekte Daten (9 Endpoints)
+- ✅ Tabelle filterbar und sortierbar (inkl. Run-Type-Filter)
+- ✅ Daily Summary Kacheln implementiert
+- ✅ 51 Tests für API-Endpoints grün
 
 ---
 

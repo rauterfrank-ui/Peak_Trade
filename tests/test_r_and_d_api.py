@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 """
-Tests für R&D Dashboard API (Phase 76).
+Tests für R&D Dashboard API (Phase 76 v1.1).
 
 Testet die API-Endpoints für R&D-Experimente.
+
+v1.1: Neue Tests für:
+- Status-Werte: running, failed, success, no_trades
+- Neue Felder: run_type, tier, experiment_category, date_str
+- Neue Endpoints: /today, /running, /categories
+- Run-Type Filter
 """
 from __future__ import annotations
 
@@ -145,7 +151,8 @@ class TestExtractFlatFields:
         assert flat["total_trades"] == 42
         assert flat["win_rate"] == 0.55
         assert flat["use_dummy_data"] is True
-        assert flat["status"] == "ok"
+        # v1.1: Status ist jetzt "success" statt "ok"
+        assert flat["status"] == "success"
 
     def test_status_no_trades(self, sample_experiment_no_trades):
         """Status ist 'no_trades' bei 0 Trades."""
@@ -207,7 +214,8 @@ class TestComputeStats:
         assert summary["experiments_with_dummy_data"] == 2
         assert summary["unique_presets"] == 2
         assert summary["unique_strategies"] == 2
-        assert summary["by_status"]["ok"] == 1
+        # v1.1: Status ist jetzt "success" statt "ok"
+        assert summary["by_status"]["success"] == 1
         assert summary["by_status"]["no_trades"] == 1
 
     def test_compute_preset_stats(self, sample_experiment, sample_experiment_no_trades):
@@ -397,7 +405,8 @@ class TestRAndDExperimentsPage:
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         assert "text/html" in resp.headers.get("content-type", "")
-        assert "R&D Experiments Overview" in resp.text
+        # v1.1: Neuer Titel
+        assert "R&D Experiments Hub" in resp.text
 
     def test_page_with_filters(self, client):
         """Page mit Filtern funktioniert."""
@@ -410,7 +419,7 @@ class TestRAndDExperimentsPage:
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         # Prüfe ob Stats-Kacheln vorhanden sind
-        assert "Experimente gesamt" in resp.text
+        assert "Gesamt" in resp.text
 
     def test_page_shows_table(self, client):
         """Page zeigt Tabelle mit Experimenten."""
@@ -420,3 +429,220 @@ class TestRAndDExperimentsPage:
         assert "Timestamp" in resp.text
         assert "Preset" in resp.text
         assert "Sharpe" in resp.text
+
+    def test_page_with_run_type_filter(self, client):
+        """Page mit Run-Type Filter (v1.1)."""
+        resp = client.get("/r_and_d?run_type=backtest")
+        assert resp.status_code == 200
+
+
+# =============================================================================
+# v1.1 TESTS - Neue Features
+# =============================================================================
+
+
+class TestExtractFlatFieldsV11:
+    """Tests für v1.1 Felder in extract_flat_fields."""
+
+    def test_extract_date_str(self, sample_experiment):
+        """date_str wird korrekt extrahiert (v1.1)."""
+        flat = extract_flat_fields(sample_experiment)
+        assert flat["date_str"] == "2024-12-08"
+
+    def test_extract_run_type_default(self, sample_experiment):
+        """run_type default ist backtest (v1.1)."""
+        flat = extract_flat_fields(sample_experiment)
+        assert flat["run_type"] == "backtest"
+
+    def test_extract_run_type_from_tag_sweep(self):
+        """run_type aus Tag mit 'sweep' (v1.1)."""
+        exp = {
+            "experiment": {"tag": "exp_sweep_v1", "timestamp": "20241208_120000"},
+            "results": {"total_trades": 10},
+            "meta": {},
+            "_filename": "test.json",
+        }
+        flat = extract_flat_fields(exp)
+        assert flat["run_type"] == "sweep"
+
+    def test_extract_run_type_from_tag_monte_carlo(self):
+        """run_type aus Tag mit 'monte' (v1.1)."""
+        exp = {
+            "experiment": {"tag": "exp_monte_carlo_v1", "timestamp": "20241208_120000"},
+            "results": {"total_trades": 10},
+            "meta": {},
+            "_filename": "test.json",
+        }
+        flat = extract_flat_fields(exp)
+        assert flat["run_type"] == "monte_carlo"
+
+    def test_extract_tier_default(self, sample_experiment):
+        """tier default ist r_and_d (v1.1)."""
+        flat = extract_flat_fields(sample_experiment)
+        assert flat["tier"] == "r_and_d"
+
+    def test_extract_experiment_category_cycles(self):
+        """experiment_category wird aus Strategy abgeleitet (v1.1)."""
+        exp = {
+            "experiment": {
+                "strategy": "ehlers_cycle_filter",
+                "preset_id": "ehlers_super_smoother_v1",
+                "timestamp": "20241208_120000",
+            },
+            "results": {"total_trades": 10},
+            "meta": {},
+            "_filename": "test.json",
+        }
+        flat = extract_flat_fields(exp)
+        assert flat["experiment_category"] == "cycles"
+
+    def test_extract_experiment_category_ml(self):
+        """experiment_category für ML-Strategien (v1.1)."""
+        exp = {
+            "experiment": {
+                "strategy": "meta_labeling",
+                "preset_id": "lopez_meta_labeling_v1",
+                "timestamp": "20241208_120000",
+            },
+            "results": {"total_trades": 10},
+            "meta": {},
+            "_filename": "test.json",
+        }
+        flat = extract_flat_fields(exp)
+        assert flat["experiment_category"] == "ml"
+
+
+class TestDetermineStatusV11:
+    """Tests für erweiterte Status-Werte (v1.1)."""
+
+    def test_status_success(self, sample_experiment):
+        """Status success bei Trades > 0 (v1.1)."""
+        from src.webui.r_and_d_api import determine_status
+
+        status = determine_status(sample_experiment)
+        assert status == "success"
+
+    def test_status_running(self):
+        """Status running aus meta.status (v1.1)."""
+        from src.webui.r_and_d_api import determine_status
+
+        exp = {"meta": {"status": "running"}, "results": {}}
+        status = determine_status(exp)
+        assert status == "running"
+
+    def test_status_failed_from_status(self):
+        """Status failed aus meta.status (v1.1)."""
+        from src.webui.r_and_d_api import determine_status
+
+        exp = {"meta": {"status": "failed"}, "results": {}}
+        status = determine_status(exp)
+        assert status == "failed"
+
+    def test_status_failed_from_error(self):
+        """Status failed bei error in meta (v1.1)."""
+        from src.webui.r_and_d_api import determine_status
+
+        exp = {"meta": {"error": "Some error"}, "results": {"total_trades": 0}}
+        status = determine_status(exp)
+        assert status == "failed"
+
+    def test_status_no_trades(self, sample_experiment_no_trades):
+        """Status no_trades bei 0 Trades (v1.1)."""
+        from src.webui.r_and_d_api import determine_status
+
+        status = determine_status(sample_experiment_no_trades)
+        assert status == "no_trades"
+
+
+class TestAPITodayEndpoint:
+    """Tests für /api/r_and_d/today (v1.1)."""
+
+    def test_today_endpoint_ok(self, client):
+        """Today-Endpoint gibt 200 (v1.1)."""
+        resp = client.get("/api/r_and_d/today")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "items" in data
+        assert "count" in data
+        assert "date" in data
+        assert "success_count" in data
+        assert "failed_count" in data
+
+    def test_today_endpoint_date_format(self, client):
+        """Today-Endpoint gibt korrektes Datumsformat (v1.1)."""
+        resp = client.get("/api/r_and_d/today")
+        assert resp.status_code == 200
+        data = resp.json()
+        # Format: YYYY-MM-DD
+        assert len(data["date"]) == 10
+        assert data["date"].count("-") == 2
+
+
+class TestAPIRunningEndpoint:
+    """Tests für /api/r_and_d/running (v1.1)."""
+
+    def test_running_endpoint_ok(self, client):
+        """Running-Endpoint gibt 200 (v1.1)."""
+        resp = client.get("/api/r_and_d/running")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "items" in data
+        assert "count" in data
+        assert isinstance(data["items"], list)
+
+
+class TestAPICategoriesEndpoint:
+    """Tests für /api/r_and_d/categories (v1.1)."""
+
+    def test_categories_endpoint_ok(self, client):
+        """Categories-Endpoint gibt 200 (v1.1)."""
+        resp = client.get("/api/r_and_d/categories")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "categories" in data
+        assert "run_types" in data
+        assert "category_labels" in data
+        assert "run_type_labels" in data
+
+    def test_categories_endpoint_labels(self, client):
+        """Categories-Endpoint hat korrekte Labels (v1.1)."""
+        resp = client.get("/api/r_and_d/categories")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "cycles" in data["category_labels"]
+        assert "backtest" in data["run_type_labels"]
+
+
+class TestRAndDExperimentsPageV11:
+    """Tests für v1.1 Features der HTML-Page."""
+
+    def test_page_shows_hub_header(self, client):
+        """Page zeigt R&D Hub Header (v1.1)."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "R&D Experiments Hub" in resp.text
+        assert "v1.1" in resp.text
+
+    def test_page_shows_daily_summary(self, client):
+        """Page zeigt Daily Summary (v1.1)."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "Heute fertig" in resp.text or "heute" in resp.text.lower()
+
+    def test_page_shows_status_column(self, client):
+        """Page zeigt Status-Spalte (v1.1)."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "Status" in resp.text
+
+    def test_page_shows_type_column(self, client):
+        """Page zeigt Type-Spalte (v1.1)."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "Type" in resp.text
+
+    def test_page_has_run_type_filter(self, client):
+        """Page hat Run-Type Filter (v1.1)."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "Run-Type" in resp.text or "run_type" in resp.text

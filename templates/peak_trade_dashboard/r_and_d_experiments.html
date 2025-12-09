@@ -1,27 +1,41 @@
 <!-- templates/peak_trade_dashboard/r_and_d_experiments.html -->
 <!-- 
-  R&D Experiments Overview (Phase 76)
-  ===================================
-  Read-only Übersicht aller R&D-Experimente.
+  R&D Experiments Overview v1.1 (Phase 76)
+  ========================================
+  Zentrale Einstiegsansicht für den Research-Track.
+  
+  v1.1 Änderungen:
+  - Klarere Kopfzeile mit Titel und Kurzbeschreibung
+  - Quick-Filters: "Heute fertig", "Laufend", "Mit Trades"
+  - Status-Badges: success, running, failed, no_trades
+  - Run-Type und Tier prominenter
+  - Kompakteres Tabellenlayout
+  - R&D-Hub Styling als zentrale Research-Ansicht
   
   Struktur:
-  1. Header / Intro
-  2. Stats-Kacheln (KPIs)
-  3. Filter-Form + aktive Filter-Badges
-  4. Experiments-Tabelle
-  5. Footer-Hinweis
+  1. R&D Hub Header (Titel, Beschreibung, Quick-Actions)
+  2. Daily Summary Kacheln (Was läuft? Was ist heute fertig?)
+  3. Stats-Kacheln (KPIs)
+  4. Filter-Form + aktive Filter-Badges
+  5. Experiments-Tabelle (kompakter, mit Run-Type & Tier)
+  6. Footer
 -->
 {% extends "base.html" %}
 
 {# ========================================================================= #}
-{# MACROS - Wiederverwendbare Komponenten                                    #}
+{# MACROS - Wiederverwendbare Komponenten (v1.1)                             #}
 {# ========================================================================= #}
 
 {# Stat-Kachel für KPI-Anzeige #}
-{% macro stat_tile(label, value, color_class="text-slate-100", format=None) %}
+{% macro stat_tile(label, value, color_class="text-slate-100", format=None, icon=None) %}
 <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3 min-w-0">
-  <p class="text-xs text-slate-400 truncate">{{ label }}</p>
-  <p class="text-2xl font-bold {{ color_class }} tabular-nums">
+  <div class="flex items-center gap-2">
+    {% if icon %}
+    <span class="text-sm">{{ icon }}</span>
+    {% endif %}
+    <p class="text-xs text-slate-400 truncate">{{ label }}</p>
+  </div>
+  <p class="text-2xl font-bold {{ color_class }} tabular-nums mt-1">
     {%- if format == 'percent' -%}
       {{ "%.2f%%"|format(value * 100) }}
     {%- elif format == 'decimal' -%}
@@ -33,31 +47,86 @@
 </div>
 {% endmacro %}
 
-{# Filter-Badge Komponente #}
-{% macro filter_badge(label, value, color="sky") %}
-<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-{{ color }}-500/10 text-{{ color }}-300 border border-{{ color }}-500/30">
-  <span class="font-medium">{{ label }}:</span> {{ value }}
-</span>
+{# Quick-Action Button #}
+{% macro quick_action(label, href, icon, active=false) %}
+<a 
+  href="{{ href }}"
+  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors
+    {% if active %}
+    bg-sky-600 text-white
+    {% else %}
+    bg-slate-800 hover:bg-slate-700 text-slate-300
+    {% endif %}"
+>
+  <span>{{ icon }}</span>
+  <span>{{ label }}</span>
+</a>
 {% endmacro %}
 
-{# Status-Badge Komponente #}
+{# Status-Badge Komponente v1.1 (erweitert) #}
 {% macro status_badge(status) %}
-{% if status == "ok" %}
+{% if status == "success" %}
 <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
   <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-  OK
+  Success
+</span>
+{% elif status == "running" %}
+<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+  <span class="w-1.5 h-1.5 rounded-full bg-sky-400 pulse-dot"></span>
+  Running
+</span>
+{% elif status == "failed" %}
+<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30">
+  <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+  Failed
 </span>
 {% elif status == "no_trades" %}
 <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/30">
   0 Trades
 </span>
-{% elif status == "failed" %}
-<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30">
-  <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
-  Fail
+{% elif status == "ok" %}
+<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+  OK
 </span>
 {% else %}
 <span class="text-xs text-slate-400">{{ status or '-' }}</span>
+{% endif %}
+{% endmacro %}
+
+{# Run-Type Badge #}
+{% macro run_type_badge(run_type) %}
+{% if run_type == "sweep" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
+  Sweep
+</span>
+{% elif run_type == "monte_carlo" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+  MC
+</span>
+{% elif run_type == "walkforward" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20">
+  WF
+</span>
+{% else %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-slate-700/50 text-slate-400">
+  BT
+</span>
+{% endif %}
+{% endmacro %}
+
+{# Category Badge #}
+{% macro category_badge(category) %}
+{% if category == "cycles" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300">🔄 Cycles</span>
+{% elif category == "volatility" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-300">📊 Vol</span>
+{% elif category == "ml" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-pink-500/10 text-pink-300">🤖 ML</span>
+{% elif category == "microstructure" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300">🔬 Micro</span>
+{% else %}
+<span class="text-xs text-slate-500">-</span>
 {% endif %}
 {% endmacro %}
 
@@ -69,53 +138,117 @@
 <div class="space-y-6">
 
   {# ======================================================================= #}
-  {# SECTION 1: Header / Intro                                               #}
+  {# SECTION 1: R&D Hub Header                                               #}
   {# ======================================================================= #}
-  <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-bold text-slate-100">R&D Experiments Overview</h1>
-      <p class="text-sm text-slate-400 mt-1">
-        Read-only Übersicht der R&D-Experimente aus 
-        <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300 text-xs">reports/r_and_d_experiments/</code>
-      </p>
+  <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🔬</span>
+          <div>
+            <h1 class="text-2xl font-bold text-slate-100">R&D Experiments Hub</h1>
+            <p class="text-sm text-slate-400 mt-0.5">
+              Zentrale Übersicht für Research & Development · v1.1
+            </p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 mt-3 max-w-xl">
+          Was läuft gerade? Was ist heute fertig geworden? Durchsuche und analysiere 
+          alle R&D-Experimente – Ehlers, Armstrong, Lopez de Prado und mehr.
+        </p>
+      </div>
+      
+      {# Quick-Actions #}
+      <div class="flex flex-wrap items-center gap-2">
+        {{ quick_action("Alle", "/r_and_d", "📋", not filters.with_trades and not filters.preset and not filters.strategy) }}
+        {{ quick_action("Mit Trades", "/r_and_d?with_trades=true", "✅", filters.with_trades) }}
+        <a 
+          href="/" 
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+        >
+          <span>←</span>
+          <span>Dashboard</span>
+        </a>
+      </div>
     </div>
-    <a 
-      href="/" 
-      class="self-start text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors inline-flex items-center gap-1"
-    >
-      <span>←</span>
-      <span>Zurück zum Dashboard</span>
-    </a>
   </header>
 
   {# ======================================================================= #}
-  {# SECTION 2: Stats-Kacheln (KPIs)                                         #}
+  {# SECTION 2: Daily Summary (Was läuft? Was ist heute fertig?)             #}
+  {# ======================================================================= #}
+  <section aria-label="Daily Summary" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {# Today Card #}
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-medium text-slate-200 flex items-center gap-2">
+          <span>📅</span> Heute fertig
+        </h3>
+        <span class="text-xs text-slate-500">{{ stats.today_date or 'N/A' }}</span>
+      </div>
+      {% if stats.today_count is defined and stats.today_count > 0 %}
+      <div class="flex items-baseline gap-3">
+        <span class="text-3xl font-bold text-emerald-300 tabular-nums">{{ stats.today_count }}</span>
+        <span class="text-sm text-slate-400">Experiment{% if stats.today_count != 1 %}e{% endif %}</span>
+      </div>
+      <div class="flex items-center gap-3 mt-2 text-xs">
+        <span class="text-emerald-400">✓ {{ stats.today_success or 0 }} success</span>
+        {% if stats.today_failed and stats.today_failed > 0 %}
+        <span class="text-rose-400">✗ {{ stats.today_failed }} failed</span>
+        {% endif %}
+      </div>
+      {% else %}
+      <p class="text-slate-500 text-sm">Noch keine Experimente heute abgeschlossen.</p>
+      {% endif %}
+    </div>
+    
+    {# Running Card #}
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-medium text-slate-200 flex items-center gap-2">
+          <span class="pulse-dot">🔄</span> Aktuell laufend
+        </h3>
+      </div>
+      {% if stats.running_count is defined and stats.running_count > 0 %}
+      <div class="flex items-baseline gap-3">
+        <span class="text-3xl font-bold text-sky-300 tabular-nums">{{ stats.running_count }}</span>
+        <span class="text-sm text-slate-400">Experiment{% if stats.running_count != 1 %}e{% endif %}</span>
+      </div>
+      <p class="text-xs text-slate-500 mt-2">Experimente in Arbeit...</p>
+      {% else %}
+      <p class="text-slate-500 text-sm">Keine Experimente laufen gerade.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  {# ======================================================================= #}
+  {# SECTION 3: Stats-Kacheln (KPIs)                                         #}
   {# ======================================================================= #}
   {% if stats %}
   <section aria-label="Statistiken">
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-      {{ stat_tile("Experimente gesamt", stats.total_experiments) }}
-      {{ stat_tile("Mit Trades", stats.experiments_with_trades, "text-emerald-300") }}
-      {{ stat_tile("Presets", stats.unique_presets, "text-sky-300") }}
-      {{ stat_tile("Ø Sharpe", stats.avg_sharpe, "text-amber-300", "decimal") }}
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      {{ stat_tile("Gesamt", stats.total_experiments, icon="📊") }}
+      {{ stat_tile("Mit Trades", stats.experiments_with_trades, "text-emerald-300", icon="✅") }}
+      {{ stat_tile("Presets", stats.unique_presets, "text-sky-300", icon="📦") }}
+      {{ stat_tile("Strategies", stats.unique_strategies, "text-purple-300", icon="🎯") }}
+      {{ stat_tile("Ø Sharpe", stats.avg_sharpe, "text-amber-300", "decimal", icon="📈") }}
       {% set return_color = "text-emerald-300" if stats.avg_return >= 0 else "text-rose-400" %}
-      {{ stat_tile("Ø Return", stats.avg_return, return_color, "percent") }}
+      {{ stat_tile("Ø Return", stats.avg_return, return_color, "percent", icon="💰") }}
     </div>
   </section>
   {% endif %}
 
   {# ======================================================================= #}
-  {# SECTION 3: Filter-Form + aktive Filter                                  #}
+  {# SECTION 4: Filter-Form + aktive Filter                                  #}
   {# ======================================================================= #}
   <section aria-label="Filter">
     <form method="GET" action="/r_and_d" class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
       
-      {# Filter-Inputs Grid #}
-      <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+      {# Filter-Inputs Grid (kompakter in v1.1) #}
+      <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
         
         {# Preset Filter #}
         <div class="flex flex-col gap-1">
-          <label for="filter-preset" class="text-xs uppercase tracking-wide text-slate-400 font-medium">
+          <label for="filter-preset" class="text-xs uppercase tracking-wide text-slate-500 font-medium">
             Preset
           </label>
           <input
@@ -123,14 +256,14 @@
             type="text"
             name="preset"
             value="{{ filters.preset or '' }}"
-            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
-            placeholder="z.B. ehlers_super_smoother_v1"
+            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 placeholder-slate-600 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
+            placeholder="z.B. ehlers_v1"
           />
         </div>
 
         {# Strategy Filter #}
         <div class="flex flex-col gap-1">
-          <label for="filter-strategy" class="text-xs uppercase tracking-wide text-slate-400 font-medium">
+          <label for="filter-strategy" class="text-xs uppercase tracking-wide text-slate-500 font-medium">
             Strategy
           </label>
           <input
@@ -138,29 +271,47 @@
             type="text"
             name="strategy"
             value="{{ filters.strategy or '' }}"
-            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
-            placeholder="z.B. armstrong_cycle"
+            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 placeholder-slate-600 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
+            placeholder="z.B. armstrong"
           />
         </div>
 
         {# Tag-Substring Filter #}
         <div class="flex flex-col gap-1">
-          <label for="filter-tag" class="text-xs uppercase tracking-wide text-slate-400 font-medium">
-            Tag-Substring
+          <label for="filter-tag" class="text-xs uppercase tracking-wide text-slate-500 font-medium">
+            Tag
           </label>
           <input
             id="filter-tag"
             type="text"
             name="tag_substr"
             value="{{ filters.tag_substr or '' }}"
-            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
+            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 placeholder-slate-600 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
             placeholder="z.B. wave2"
           />
         </div>
 
+        {# Run-Type Filter (v1.1) #}
+        <div class="flex flex-col gap-1">
+          <label for="filter-run-type" class="text-xs uppercase tracking-wide text-slate-500 font-medium">
+            Run-Type
+          </label>
+          <select
+            id="filter-run-type"
+            name="run_type"
+            class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30 focus:outline-none transition-colors"
+          >
+            <option value="">Alle</option>
+            <option value="backtest" {% if filters.run_type == 'backtest' %}selected{% endif %}>Backtest</option>
+            <option value="sweep" {% if filters.run_type == 'sweep' %}selected{% endif %}>Sweep</option>
+            <option value="monte_carlo" {% if filters.run_type == 'monte_carlo' %}selected{% endif %}>Monte Carlo</option>
+            <option value="walkforward" {% if filters.run_type == 'walkforward' %}selected{% endif %}>Walk-Forward</option>
+          </select>
+        </div>
+
         {# With Trades Checkbox #}
         <div class="flex flex-col gap-1">
-          <span class="text-xs uppercase tracking-wide text-slate-400 font-medium">Optionen</span>
+          <span class="text-xs uppercase tracking-wide text-slate-500 font-medium">Optionen</span>
           <label class="inline-flex items-center gap-2 py-2 cursor-pointer group">
             <input
               type="checkbox"
@@ -170,38 +321,38 @@
               class="rounded border-slate-600 bg-slate-950 text-sky-500 focus:ring-sky-500 focus:ring-offset-0 cursor-pointer"
             />
             <span class="text-sm text-slate-300 group-hover:text-slate-200 transition-colors">
-              Nur mit Trades
+              Mit Trades
             </span>
           </label>
         </div>
 
         {# Action Buttons #}
         <div class="flex flex-col gap-1 justify-end">
-          <span class="text-xs uppercase tracking-wide text-slate-400 font-medium hidden lg:block">&nbsp;</span>
+          <span class="text-xs uppercase tracking-wide text-slate-500 font-medium hidden lg:block">&nbsp;</span>
           <div class="flex gap-2">
             <button
               type="submit"
-              class="flex-1 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500/50"
+              class="flex-1 inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500/50"
             >
-              Filter anwenden
+              🔍 Filter
             </button>
             <a
               href="/r_and_d"
-              class="inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm border border-slate-600 hover:bg-slate-800 hover:border-slate-500 text-slate-300 transition-colors"
-              title="Alle Filter zurücksetzen"
+              class="inline-flex items-center justify-center rounded-lg px-2 py-2 text-sm border border-slate-600 hover:bg-slate-800 hover:border-slate-500 text-slate-400 transition-colors"
+              title="Reset"
             >
-              Reset
+              ↺
             </a>
           </div>
         </div>
       </div>
 
       {# Aktive Filter Badges + Result Count #}
-      {% set has_active_filters = filters.preset or filters.strategy or filters.tag_substr or filters.with_trades %}
+      {% set has_active_filters = filters.preset or filters.strategy or filters.tag_substr or filters.with_trades or filters.run_type %}
       {% if has_active_filters or experiments|length > 0 %}
       <div class="mt-4 pt-3 border-t border-slate-800/50 flex flex-wrap items-center gap-2">
         
-        {# Result Count - immer anzeigen #}
+        {# Result Count #}
         <span class="text-sm font-medium text-slate-200">
           {{ experiments|length }}
           {%- if experiments|length == 1 %} Experiment{% else %} Experimente{% endif %}
@@ -210,9 +361,8 @@
         
         {% if has_active_filters %}
         <span class="text-slate-600 mx-1">·</span>
-        <span class="text-xs text-slate-400">Aktive Filter:</span>
+        <span class="text-xs text-slate-500">Filter:</span>
         
-        {# Filter Badges #}
         {% if filters.preset %}
         <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
           preset: {{ filters.preset }}
@@ -231,13 +381,18 @@
         </span>
         {% endif %}
         
-        {% if filters.with_trades %}
-        <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-          nur mit Trades
+        {% if filters.run_type %}
+        <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/30">
+          type: {{ filters.run_type }}
         </span>
         {% endif %}
         
-        {# Verhältnis gefiltert/gesamt #}
+        {% if filters.with_trades %}
+        <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+          ✓ mit Trades
+        </span>
+        {% endif %}
+        
         <span class="text-xs text-slate-500 ml-auto">
           ({{ filtered }} von {{ total }} gesamt)
         </span>
@@ -248,7 +403,7 @@
   </section>
 
   {# ======================================================================= #}
-  {# SECTION 4: Experiments-Tabelle                                          #}
+  {# SECTION 5: Experiments-Tabelle (v1.1 kompakter)                         #}
   {# ======================================================================= #}
   <section aria-label="Experiments-Tabelle">
     <div class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
@@ -256,115 +411,121 @@
       {# Empty State #}
       {% if experiments|length == 0 %}
       <div class="px-6 py-12 text-center">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-800 mb-4">
-          <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-slate-800 mb-4">
+          <span class="text-2xl">🔬</span>
         </div>
         <h3 class="text-lg font-medium text-slate-200 mb-2">Keine Experimente gefunden</h3>
         {% if has_active_filters %}
         <p class="text-sm text-slate-400 mb-4 max-w-md mx-auto">
-          Deine Filter haben keine Ergebnisse geliefert. Versuche weniger restriktive Kriterien oder setze die Filter zurück.
+          Deine Filter haben keine Ergebnisse geliefert. Versuche weniger restriktive Kriterien.
         </p>
         <a
           href="/r_and_d"
           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-colors"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Filter zurücksetzen
+          ↺ Filter zurücksetzen
         </a>
         {% else %}
         <p class="text-sm text-slate-400 max-w-md mx-auto">
-          Stelle sicher, dass Experiment-JSONs in 
+          Noch keine R&D-Experimente in 
           <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">reports/r_and_d_experiments/</code> 
-          vorhanden sind.
+          vorhanden.
         </p>
         {% endif %}
       </div>
       
       {% else %}
-      {# Tabelle mit horizontalem Scroll auf kleinen Viewports #}
+      {# Tabelle (kompakter in v1.1) #}
       <div class="overflow-x-auto">
-        <table class="w-full text-sm min-w-[900px]">
+        <table class="w-full text-sm min-w-[1100px]">
           <thead class="bg-slate-900/90 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700/50 sticky top-0 z-10">
             <tr>
-              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Timestamp</th>
-              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Tag</th>
-              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Preset</th>
-              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Strategy</th>
-              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Symbol</th>
-              <th class="px-4 py-3 text-right font-semibold whitespace-nowrap">Trades</th>
-              <th class="px-4 py-3 text-right font-semibold whitespace-nowrap">Return</th>
-              <th class="px-4 py-3 text-right font-semibold whitespace-nowrap">Sharpe</th>
-              <th class="px-4 py-3 text-right font-semibold whitespace-nowrap">MaxDD</th>
-              <th class="px-4 py-3 text-right font-semibold whitespace-nowrap">WinRate</th>
-              <th class="px-4 py-3 text-center font-semibold whitespace-nowrap">Status</th>
+              <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Status</th>
+              <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Type</th>
+              <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Timestamp</th>
+              <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Tag</th>
+              <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Preset</th>
+              <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Strategy</th>
+              <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Symbol</th>
+              <th class="px-3 py-2.5 text-right font-semibold whitespace-nowrap">Trades</th>
+              <th class="px-3 py-2.5 text-right font-semibold whitespace-nowrap">Return</th>
+              <th class="px-3 py-2.5 text-right font-semibold whitespace-nowrap">Sharpe</th>
+              <th class="px-3 py-2.5 text-right font-semibold whitespace-nowrap">MaxDD</th>
+              <th class="px-3 py-2.5 text-right font-semibold whitespace-nowrap">WinRate</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-800/50">
             {% for exp in experiments %}
             <tr class="hover:bg-slate-800/40 transition-colors {{ 'bg-slate-900/20' if loop.index is odd else '' }}">
               
+              {# Status (v1.1 prominent) #}
+              <td class="px-3 py-2">
+                {{ status_badge(exp.status) }}
+              </td>
+
+              {# Run-Type (v1.1 neu) #}
+              <td class="px-3 py-2">
+                {{ run_type_badge(exp.run_type) }}
+              </td>
+
               {# Timestamp #}
-              <td class="px-4 py-2.5 font-mono text-xs text-slate-300 whitespace-nowrap">
-                {{ exp.timestamp or '-' }}
+              <td class="px-3 py-2 font-mono text-xs text-slate-400 whitespace-nowrap">
+                {{ exp.timestamp[:8] if exp.timestamp else '-' }}
               </td>
 
               {# Tag #}
-              <td class="px-4 py-2.5 text-xs max-w-[180px]">
+              <td class="px-3 py-2 text-xs max-w-[150px]">
                 {% if exp.tag %}
                 <span class="truncate block text-slate-200" title="{{ exp.tag }}">
-                  {{ exp.tag[:30] }}{{ '...' if exp.tag|length > 30 else '' }}
+                  {{ exp.tag[:25] }}{{ '...' if exp.tag|length > 25 else '' }}
                 </span>
                 {% else %}
-                <span class="text-slate-500">-</span>
+                <span class="text-slate-600">-</span>
                 {% endif %}
               </td>
 
               {# Preset #}
-              <td class="px-4 py-2.5 text-xs max-w-[160px]">
+              <td class="px-3 py-2 text-xs max-w-[140px]">
                 {% if exp.preset_id %}
                 <span class="truncate block text-sky-300" title="{{ exp.preset_id }}">
-                  {{ exp.preset_id[:25] }}{{ '...' if exp.preset_id|length > 25 else '' }}
+                  {{ exp.preset_id[:22] }}{{ '...' if exp.preset_id|length > 22 else '' }}
                 </span>
                 {% else %}
-                <span class="text-slate-500">-</span>
+                <span class="text-slate-600">-</span>
                 {% endif %}
               </td>
 
               {# Strategy #}
-              <td class="px-4 py-2.5 text-xs max-w-[140px]">
+              <td class="px-3 py-2 text-xs max-w-[120px]">
                 {% if exp.strategy %}
                 <span class="truncate block text-purple-300" title="{{ exp.strategy }}">
-                  {{ exp.strategy[:20] }}{{ '...' if exp.strategy|length > 20 else '' }}
+                  {{ exp.strategy[:18] }}{{ '...' if exp.strategy|length > 18 else '' }}
                 </span>
                 {% else %}
-                <span class="text-slate-500">-</span>
+                <span class="text-slate-600">-</span>
                 {% endif %}
               </td>
 
               {# Symbol #}
-              <td class="px-4 py-2.5 text-xs text-slate-300 whitespace-nowrap">
+              <td class="px-3 py-2 text-xs text-slate-300 whitespace-nowrap">
                 {{ exp.symbol or '-' }}
               </td>
 
               {# Trades #}
-              <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              <td class="px-3 py-2 text-xs text-right tabular-nums">
                 {% if exp.total_trades is not none %}
                   {% if exp.total_trades > 0 %}
                   <span class="text-emerald-300 font-medium">{{ exp.total_trades }}</span>
                   {% else %}
-                  <span class="text-slate-500">0</span>
+                  <span class="text-slate-600">0</span>
                   {% endif %}
                 {% else %}
-                <span class="text-slate-500">-</span>
+                <span class="text-slate-600">-</span>
                 {% endif %}
               </td>
 
               {# Return #}
-              <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              <td class="px-3 py-2 text-xs text-right tabular-nums">
                 {% if exp.total_return is not none %}
                   {% if exp.total_return >= 0 %}
                   <span class="text-emerald-300 font-medium">+{{ "%.2f%%"|format(exp.total_return * 100) }}</span>
@@ -372,12 +533,12 @@
                   <span class="text-rose-400 font-medium">{{ "%.2f%%"|format(exp.total_return * 100) }}</span>
                   {% endif %}
                 {% else %}
-                <span class="text-slate-500">-</span>
+                <span class="text-slate-600">-</span>
                 {% endif %}
               </td>
 
-              {# Sharpe - Farbcodierung nach Qualität #}
-              <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              {# Sharpe #}
+              <td class="px-3 py-2 text-xs text-right tabular-nums">
                 {% if exp.sharpe is not none %}
                   {% if exp.sharpe >= 1.5 %}
                   <span class="text-emerald-300 font-medium">{{ "%.2f"|format(exp.sharpe) }}</span>
@@ -389,21 +550,21 @@
                   <span class="text-rose-400">{{ "%.2f"|format(exp.sharpe) }}</span>
                   {% endif %}
                 {% else %}
-                <span class="text-slate-500">-</span>
+                <span class="text-slate-600">-</span>
                 {% endif %}
               </td>
 
               {# MaxDD #}
-              <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              <td class="px-3 py-2 text-xs text-right tabular-nums">
                 {% if exp.max_drawdown is not none %}
                 <span class="text-amber-300">{{ "%.1f%%"|format(exp.max_drawdown * 100) }}</span>
                 {% else %}
-                <span class="text-slate-500">-</span>
+                <span class="text-slate-600">-</span>
                 {% endif %}
               </td>
 
-              {# WinRate - Farbcodierung nach Qualität #}
-              <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              {# WinRate #}
+              <td class="px-3 py-2 text-xs text-right tabular-nums">
                 {% if exp.win_rate is not none %}
                   {% if exp.win_rate >= 0.55 %}
                   <span class="text-emerald-300">{{ "%.1f%%"|format(exp.win_rate * 100) }}</span>
@@ -413,13 +574,8 @@
                   <span class="text-rose-400">{{ "%.1f%%"|format(exp.win_rate * 100) }}</span>
                   {% endif %}
                 {% else %}
-                <span class="text-slate-500">-</span>
+                <span class="text-slate-600">-</span>
                 {% endif %}
-              </td>
-
-              {# Status #}
-              <td class="px-4 py-2.5 text-center">
-                {{ status_badge(exp.status) }}
               </td>
             </tr>
             {% endfor %}
@@ -427,7 +583,7 @@
         </table>
       </div>
 
-      {# Pagination / Info Footer #}
+      {# Table Footer #}
       <div class="px-4 py-3 border-t border-slate-800/50 bg-slate-900/40 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <span class="text-xs text-slate-400">
           Zeige <span class="text-slate-200 font-medium">{{ experiments|length }}</span> von 
@@ -445,18 +601,18 @@
   </section>
 
   {# ======================================================================= #}
-  {# SECTION 5: Footer-Hinweis                                               #}
+  {# SECTION 6: Footer                                                       #}
   {# ======================================================================= #}
   <footer class="text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2">
-    <p class="flex items-center gap-1">
-      <span>💡</span>
-      <span>R&D Dashboard v0 – Read-only View · Phase 76</span>
+    <p class="flex items-center gap-2">
+      <span>🔬</span>
+      <span>R&D Experiments Hub v1.1 · Phase 76 · Read-only</span>
     </p>
     <p class="flex flex-wrap items-center gap-2">
       <span>API:</span>
       <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/experiments</code>
-      <span class="text-slate-600">·</span>
-      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/stats</code>
+      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/today</code>
+      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/running</code>
     </p>
   </footer>
 
