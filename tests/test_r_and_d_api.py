@@ -2,6 +2,8 @@
 """
 Tests für R&D Dashboard API (Phase 76 v1.1).
 
+65 spezialisierte API-Tests für das R&D-Dashboard.
+
 Testet die API-Endpoints für R&D-Experimente.
 
 v1.1: Neue Tests für:
@@ -9,6 +11,9 @@ v1.1: Neue Tests für:
 - Neue Felder: run_type, tier, experiment_category, date_str
 - Neue Endpoints: /today, /running, /categories
 - Run-Type Filter
+- Paging / Limit (Boundary Tests, Min/Max Validation)
+- Edge-Cases (fehlende Timestamps, leere Results)
+- Filter-Kombinationen
 """
 from __future__ import annotations
 
@@ -646,3 +651,155 @@ class TestRAndDExperimentsPageV11:
         resp = client.get("/r_and_d")
         assert resp.status_code == 200
         assert "Run-Type" in resp.text or "run_type" in resp.text
+
+
+# =============================================================================
+# ADDITIONAL TESTS - Paging, Edge Cases & Filter Kombinationen
+# =============================================================================
+
+
+class TestAPIPagingAndLimits:
+    """Tests für Paging und Limit-Verhalten."""
+
+    def test_experiments_limit_boundary_min(self, client):
+        """Limit Minimum (1) funktioniert."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["returned"] <= 1
+
+    def test_experiments_limit_boundary_max(self, client):
+        """Limit Maximum (5000) akzeptiert."""
+        resp = client.get("/api/r_and_d/experiments?limit=5000")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "items" in data
+
+    def test_experiments_limit_over_max_validation(self, client):
+        """Limit über Maximum (5000+) gibt Validation Error."""
+        resp = client.get("/api/r_and_d/experiments?limit=5001")
+        # FastAPI ValidationError
+        assert resp.status_code == 422
+
+    def test_today_endpoint_limit(self, client):
+        """Today-Endpoint Limit funktioniert (v1.1)."""
+        resp = client.get("/api/r_and_d/today?limit=1")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data["items"]) <= 1
+
+
+class TestAPIFilterCombinations:
+    """Tests für verschiedene Filter-Kombinationen."""
+
+    def test_combined_preset_and_strategy(self, client):
+        """Kombination Preset + Strategy Filter."""
+        resp = client.get("/api/r_and_d/experiments?preset=test_preset_v1&strategy=test_strategy")
+        assert resp.status_code == 200
+        data = resp.json()
+        # Sollte 1 oder 0 Treffer haben
+        assert "items" in data
+
+    def test_combined_all_filters(self, client):
+        """Kombination aller Filter."""
+        resp = client.get(
+            "/api/r_and_d/experiments"
+            "?preset=test_preset_v1"
+            "&strategy=test_strategy"
+            "&tag_substr=test"
+            "&with_trades=true"
+            "&limit=10"
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "filtered" in data
+
+    def test_filter_with_nonexistent_preset(self, client):
+        """Filter mit nicht existierendem Preset gibt leere Liste."""
+        resp = client.get("/api/r_and_d/experiments?preset=nonexistent_preset_xyz")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["filtered"] == 0
+        assert len(data["items"]) == 0
+
+
+class TestAPIEdgeCases:
+    """Tests für Edge-Cases und Grenzfälle."""
+
+    def test_empty_tag_substr_filter(self, client):
+        """Leerer tag_substr Filter wird ignoriert."""
+        resp = client.get("/api/r_and_d/experiments?tag_substr=")
+        assert resp.status_code == 200
+        data = resp.json()
+        # Sollte alle Experimente zurückgeben
+        assert data["filtered"] == data["total"]
+
+    def test_stats_endpoint_returns_median(self, client):
+        """Stats-Endpoint liefert Median-Werte."""
+        resp = client.get("/api/r_and_d/stats")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "median_sharpe" in data
+        assert "median_return" in data
+        # Typ-Check
+        assert isinstance(data["median_sharpe"], (int, float))
+        assert isinstance(data["median_return"], (int, float))
+
+
+class TestDailyStatsCalculation:
+    """Tests für Daily-Stats-Berechnung."""
+
+    def test_today_success_count_type(self, client):
+        """success_count ist Integer (v1.1)."""
+        resp = client.get("/api/r_and_d/today")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert isinstance(data["success_count"], int)
+
+    def test_today_failed_count_type(self, client):
+        """failed_count ist Integer (v1.1)."""
+        resp = client.get("/api/r_and_d/today")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert isinstance(data["failed_count"], int)
+
+
+class TestExtractFlatFieldsEdgeCases:
+    """Edge-Case Tests für extract_flat_fields."""
+
+    def test_missing_timestamp_graceful(self):
+        """Fehlender Timestamp wird graceful behandelt."""
+        exp = {
+            "experiment": {"preset_id": "test"},
+            "results": {"total_trades": 0},
+            "meta": {},
+            "_filename": "test.json",
+        }
+        flat = extract_flat_fields(exp)
+        assert flat["timestamp"] == ""
+        assert flat["date_str"] == ""
+
+    def test_short_timestamp_graceful(self):
+        """Kurzer Timestamp wird graceful behandelt."""
+        exp = {
+            "experiment": {"preset_id": "test", "timestamp": "2024"},
+            "results": {"total_trades": 0},
+            "meta": {},
+            "_filename": "test.json",
+        }
+        flat = extract_flat_fields(exp)
+        # date_str sollte leer sein bei zu kurzem Timestamp
+        assert flat["date_str"] == ""
+
+    def test_missing_results_graceful(self):
+        """Fehlende Results werden mit Defaults behandelt."""
+        exp = {
+            "experiment": {"preset_id": "test", "timestamp": "20241208_120000"},
+            "results": {},
+            "meta": {},
+            "_filename": "test.json",
+        }
+        flat = extract_flat_fields(exp)
+        assert flat["total_return"] == 0.0
+        assert flat["sharpe"] == 0.0
+        assert flat["total_trades"] == 0

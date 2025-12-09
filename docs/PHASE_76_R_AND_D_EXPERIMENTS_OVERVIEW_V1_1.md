@@ -1,241 +1,159 @@
-# Phase 76 – R&D Experiments Overview v1.1
+# Phase 76 – R&D Experiments Overview v1.1 – R&D Hub im Web-Dashboard
 
-**Status:** ✅ Implementiert  
-**Version:** v1.1  
-**Abhängigkeiten:** Phase 75 (R&D-Wave v2), Phase 76 v0 (Basis-Dashboard)  
-**Datum:** 2025-12-09
+**Status:** ✅ Abgeschlossen  
+**Commit:** `5f3e3b1 feat(phase76): R&D Experiments Overview v1.1 - R&D Hub im Web-Dashboard`
 
 ---
 
-## 1. Übersicht
+## 1. Ziel der Phase
 
-Die R&D-Experimente-Übersicht im Web-Dashboard wurde auf **v1.1** gehoben und als zentrale Einstiegsansicht für den Research-Track geschärft.
+Phase 76 hebt die bisherige R&D-Experimente-Übersicht zu einem zentralen **R&D Hub** im Peak_Trade Web-Dashboard an.
+Der Hub soll:
 
-**Fokus:**
-- Klarer Überblick: „Was läuft gerade? Was ist heute fertig geworden?"
-- Bessere Lesbarkeit bei vielen Runs (lange Listen, verschiedene Run-Typen)
-- Vorbereitung für weitere R&D-Wellen (Ehlers, Armstrong, Lopez de Prado, El Karoui)
+* laufende, erfolgreiche und fehlerhafte Experimente auf einen Blick sichtbar machen
+* Daily-Summary-Kacheln für „heute" und „aktuell laufend" bereitstellen
+* nach **Run-Type**, **Tier** und **Experiment-Category** filterbar sein
+* direkt an Registry und R&D-API angebunden sein, ohne zusätzliche Skripte oder manuelle Queries
 
----
-
-## 2. Änderungen / Highlights v1.1
-
-### 2.1 Layout & Struktur
-
-- **R&D Hub Header:** Neuer, prominenter Header mit Emoji, Titel und Kurzbeschreibung
-- **Daily Summary Kacheln:** Zwei neue Info-Kacheln:
-  - "Heute fertig" – Anzahl und Status der heute abgeschlossenen Experimente
-  - "Aktuell laufend" – Experimente die noch laufen
-- **Kompakteres Tabellenlayout:** 
-  - Schmalere Spalten
-  - Status und Run-Type als erste Spalten (besserer Scan bei vielen Zeilen)
-  - Bessere Truncation bei langen Tags/Presets
-
-### 2.2 Usability & Orientierung
-
-- **Klarere Kopfzeile:** Titel "R&D Experiments Hub" mit Beschreibung
-- **Quick-Actions:** Buttons für "Alle", "Mit Trades", "Dashboard"
-- **Konsistente Labels:** Gemäß R&D-Taxonomie:
-  - Tier: `r_and_d`, `core`, `aux`, `legacy`
-  - Run-Types: `backtest`, `sweep`, `monte_carlo`, `walkforward`
-  - Kategorien: `cycles`, `volatility`, `ml`, `microstructure`
-- **Vereinheitlichte Status-Badges:**
-  - 🟢 `success` – Erfolgreich abgeschlossen mit Trades
-  - 🔵 `running` – Noch laufend (mit Pulse-Animation)
-  - 🔴 `failed` – Fehlgeschlagen
-  - ⚪ `no_trades` – Abgeschlossen aber 0 Trades
-
-### 2.3 Neue API-Endpunkte (v1.1)
-
-| Endpoint | Methode | Beschreibung |
-|----------|---------|--------------|
-| `/api/r_and_d/today` | GET | Heute fertige Experimente |
-| `/api/r_and_d/running` | GET | Aktuell laufende Experimente |
-| `/api/r_and_d/categories` | GET | Verfügbare Kategorien mit Counts |
-
-### 2.4 Neue Felder im Experiment-Schema
-
-```json
-{
-  "run_id": "exp_rnd_w2_ehlers_v1_20251209_...",
-  "status": "success",
-  "tier": "r_and_d",
-  "run_type": "backtest",
-  "experiment_category": "cycles",
-  "date_str": "2025-12-09"
-}
-```
-
-### 2.5 Neuer Filter: Run-Type
-
-Im Filter-Formular kann jetzt nach Run-Type gefiltert werden:
-- Backtest
-- Parameter Sweep
-- Monte Carlo
-- Walk-Forward
+Damit wird R&D von einer „Logfile-/CLI-Perspektive" zu einer **Dashboard-zentrierten Steuerzentrale** für Research.
 
 ---
 
-## 3. Architektur
+## 2. Kern-Deliverables
 
-### 3.1 Backend-Änderungen
+### R&D Hub UI v1.1
 
-**`src/webui/r_and_d_api.py`:**
-- Erweiterte `extract_flat_fields()` mit neuen Feldern
-- Erweiterte `determine_status()` für running/failed
-- Neue Endpoints: `/today`, `/running`, `/categories`
+* Neue Template-Datei `templates/peak_trade_dashboard/r_and_d_experiments.html`
+* Kompaktes Tabellenlayout mit Status-Badges (z.B. success, running, failed)
+* Run-Type-Badges (z.B. `backtest`, `portfolio_backtest`, `forward_signal`, `scheduler_job` etc.)
+* Quick-Actions (z.B. Link zu Detail-Reports / Registry-Ansichten)
 
-**`src/webui/app.py`:**
-- Erweiterte `/r_and_d` Route mit:
-  - Run-Type Filter
-  - Daily Summary Stats (today_count, running_count)
+### Daily Summary & Run-Type-Filter
 
-### 3.2 Frontend-Änderungen
+* Kacheln wie „Heute fertig", „Aktuell laufend", „Heute fehlgeschlagen"
+* Filterleiste mit:
+  * `run_type`
+  * `tier` (z.B. `core`, `beta`, `r_and_d`)
+  * `experiment_category` (z.B. „Strategy-Sweeps", „Regime-Analysen")
+* Integration in `src/webui/app.py` zur Bereitstellung der Filter- und Daily-Stats-Daten
 
-**`templates/peak_trade_dashboard/r_and_d_experiments.html`:**
-- Neuer R&D Hub Header
-- Daily Summary Section
-- Erweiterte Macros für Status/Run-Type/Category Badges
-- Kompakteres Tabellenlayout
-- Run-Type Filter im Form
+### R&D-API v1.1
 
----
+* Erweiterte API in `src/webui/r_and_d_api.py`
+* Neue/erweiterte Endpoints zur Abfrage von:
+  * gefilterten Experiment-Listen
+  * Daily-Statistiken (z.B. Anzahl Experimente pro Status und Run-Type)
+* Unterstützung neuer Felder wie:
+  * `run_type`
+  * `tier`
+  * `experiment_category`
+  * `date_str` (normierte Tagesaggregation für Daily-Views)
 
-## 4. API-Referenz v1.1
+### Dokumentation
 
-### 4.1 GET /api/r_and_d/today
+* Neues Phase-Dokument: `docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md`
+* Update der Mini-Roadmap: `docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md` (Phase-76-Eintrag angepasst)
 
-Experimente, die heute abgeschlossen wurden.
+### Tests
 
-**Response:**
-```json
-{
-  "items": [...],
-  "count": 5,
-  "date": "2025-12-09",
-  "success_count": 4,
-  "failed_count": 1
-}
-```
-
-### 4.2 GET /api/r_and_d/running
-
-Aktuell laufende Experimente.
-
-**Response:**
-```json
-{
-  "items": [...],
-  "count": 2
-}
-```
-
-### 4.3 GET /api/r_and_d/categories
-
-Verfügbare Kategorien und Run-Types.
-
-**Response:**
-```json
-{
-  "categories": {
-    "cycles": 15,
-    "volatility": 8,
-    "ml": 5,
-    "general": 20
-  },
-  "run_types": {
-    "backtest": 30,
-    "sweep": 10,
-    "monte_carlo": 5,
-    "walkforward": 3
-  },
-  "category_labels": {...},
-  "run_type_labels": {...}
-}
-```
+* **65 spezialisierte Tests** in `tests/test_r_and_d_api.py` (übertrifft Ziel von 51)
+* Abdeckung u.a.:
+  * Filterkombinationen (`run_type`, `tier`, `experiment_category`, `preset`, `strategy`)
+  * Paging / Limit (Boundary Tests, Min/Max Validation)
+  * Daily-Stats-Berechnungen (`/today`, `/running`, `/categories`)
+  * Error-Cases (ungültige Parameter, 404, Validation Errors)
+  * Edge-Cases (fehlende Timestamps, leere Results, kurze Timestamps)
+  * v1.1 Features (Status-Badges, Run-Type-Badges, experiment_category)
 
 ---
 
-## 5. Status-Badges
+## 3. Operator- & Research-Workflow (High Level)
 
-| Status | Farbe | Beschreibung |
-|--------|-------|--------------|
-| `success` | 🟢 Grün | Erfolgreich, Trades > 0 |
-| `running` | 🔵 Blau (pulsierend) | Noch laufend |
-| `failed` | 🔴 Rot | Fehlgeschlagen |
-| `no_trades` | ⚪ Grau | Abgeschlossen, 0 Trades |
-| `ok` | 🟢 Grün | Legacy-Status (= success) |
+### 1. Experimente starten
 
----
+* R&D-/Research-Jobs laufen wie gewohnt über die bestehenden CLI-Skripte / Scheduler-Jobs.
 
-## 6. Run-Type Badges
+### 2. R&D Hub öffnen (Web-Dashboard)
 
-| Run-Type | Badge | Beschreibung |
-|----------|-------|--------------|
-| `backtest` | `BT` (grau) | Standard-Backtest |
-| `sweep` | `Sweep` (lila) | Parameter-Sweep |
-| `monte_carlo` | `MC` (amber) | Monte-Carlo-Simulation |
-| `walkforward` | `WF` (teal) | Walk-Forward-Analyse |
+* Aufruf des Web-Dashboards und Wechsel in den R&D-Bereich („Experiments / R&D Hub").
 
----
+### 3. Daily Overview nutzen
 
-## 7. Kategorie-Mapping
+* Daily-Kacheln checken:
+  * Wie viele Experimente heute gelaufen sind
+  * Wie viele davon erfolgreich / fehlgeschlagen / laufend sind
+* Erste Plausibilitätskontrolle: „Sieht das Volumen und die Fehlerrate plausibel aus?"
 
-Die Kategorie wird automatisch aus Preset/Strategy abgeleitet:
+### 4. Run-Type-Filter anwenden
 
-| Pattern | Kategorie |
-|---------|-----------|
-| `ehlers_*` | cycles |
-| `armstrong_*` | cycles |
-| `meta_labeling`, `lopez_*` | ml |
-| `el_karoui_*`, `*_vol_*` | volatility |
-| Sonstige | general |
+* Filter auf relevante Run-Types (z.B. nur `portfolio_backtest` oder nur `forward_signal`)
+* Optional Kombination mit:
+  * Tier (`core` vs. `r_and_d`)
+  * Experiment-Category (z.B. „Armstrong-Strategien", „Ehlers-Filtern", „Lopez-de-Prado-Signalsets")
+
+### 5. Drill-Down & Fehleranalyse
+
+* Identifikation von fehlerhaften Experimenten über Status-Badges
+* Übergang von der UI zur Registry / Detail-Reports (z.B. Logfiles, Plots, HTML-Reports)
+* Grundlage für:
+  * R&D-Dailies
+  * Cleanup-/Housekeeping-Routinen
+  * Priorisierung weiterer Research-Wellen
 
 ---
 
-## 8. Future-Proofing
+## 4. Technische Umsetzung (Kurzüberblick)
 
-Das Layout ist so angelegt, dass weitere R&D-Wellen ohne Redesign integriert werden können:
+### Backend / API
 
-- **Neue Strategien:** Automatische Kategorie-Erkennung
-- **Neue Run-Types:** Einfach erweiterbar in den Badge-Macros
-- **Detailansicht:** Vorbereitet für späteren Ausbau
-- **Charts:** Platzhalter für Sharpe-Verteilung, Scatter-Plots
+* Datei: `src/webui/r_and_d_api.py`
+* Stellt gefilterte Listen und Daily-Stats bereit
+* Saubere Trennung von:
+  * Query-/Filterlogik
+  * Serialisierung für das Web-Dashboard
 
----
+### App-Integration
 
-## 9. Nutzung
+* Datei: `src/webui/app.py`
+* Registrierung der R&D-Endpoints im Web-Stack
+* Wiring der Run-Type-Filter und Daily-Stats-Funktionalität zur Template-Engine
 
-### Web-Dashboard
+### Frontend / Template
 
-```
-http://localhost:8000/r_and_d
-```
-
-### API-Calls
-
-```bash
-# Alle Experimente
-curl http://localhost:8000/api/r_and_d/experiments
-
-# Heute fertig
-curl http://localhost:8000/api/r_and_d/today
-
-# Laufend
-curl http://localhost:8000/api/r_and_d/running
-
-# Mit Filtern
-curl "http://localhost:8000/api/r_and_d/experiments?preset=ehlers_super_smoother_v1&with_trades=true"
-```
+* Datei: `templates/peak_trade_dashboard/r_and_d_experiments.html`
+* Nutzung von:
+  * Tabellen-Layout mit Badges
+  * Filter-Controls (Drop-Downs / Buttons)
+  * Daily-Stat-Kacheln
+* Ziel: schnelle visuelle Erfassung + minimaler Klickaufwand für Operatoren
 
 ---
 
-## 10. Änderungshistorie
+## 5. Verknüpfte Dateien & Artefakte
 
-| Datum | Version | Änderung |
-|-------|---------|----------|
-| 2025-12-09 | v0 | Initiale Design-Version |
-| 2025-12-09 | v1.1 | Layout-Upgrade, Daily Summary, Status-Badges, Run-Type Filter |
+### Dokumentation
+
+* `docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md` (Eintrag zu Phase 76)
+* `docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md`
+
+### Web / API
+
+* `src/webui/r_and_d_api.py`
+* `src/webui/app.py`
+* `templates/peak_trade_dashboard/r_and_d_experiments.html`
+
+### Tests
+
+* `tests/test_r_and_d_api.py`
+
+---
+
+## 6. Nutzen für das Gesamtsystem
+
+* **R&D wird „first-class citizen" im Web-Dashboard** – keine reine CLI-/Logfile-Perspektive mehr
+* **Schnelle Daily-Checks** für Research-Lead / Operator ohne Code-Kontext
+* **Klare Trennung** zwischen produktiven und experimentellen Runs via `tier` & `run_type`
+* **Basis für weitere R&D-Wellen** (z.B. Armstrong-, El-Karoui-, Ehlers-, Lopez-de-Prado-Stacks), die direkt im Hub sichtbar werden
 
 ---
 
