@@ -44,6 +44,32 @@ from .alerts import (
     build_alert_sink_from_config,
 )
 
+# Phase 82: Alert-Pipeline
+from .alert_pipeline import (
+    AlertSeverity,
+    AlertCategory,
+    AlertMessage,
+    SlackChannelConfig,
+    SlackAlertChannel,
+    EmailChannelConfig,
+    EmailAlertChannel,
+    NullAlertChannel,
+    AlertPipelineManager,
+    SeverityTransitionTracker,
+    build_alert_pipeline_from_config,
+)
+
+# Phase 83: Alert-Storage
+from .alert_storage import (
+    StoredAlert,
+    AlertStorage,
+    get_default_alert_storage,
+    reset_default_storage,
+    store_alert,
+    list_recent_alerts,
+    get_alert_stats,
+)
+
 # Safety- und Shadow-Session-Module werden lazy importiert, um zirkuläre
 # Abhängigkeiten zu vermeiden. Direkter Import:
 #   >>> from src.live.safety import SafetyGuard
@@ -80,6 +106,26 @@ __all__ = [
     "MultiAlertSink",
     "LiveAlertsConfig",
     "build_alert_sink_from_config",
+    # Phase 82: Alert-Pipeline (Slack/Mail)
+    "AlertSeverity",
+    "AlertCategory",
+    "AlertMessage",
+    "SlackChannelConfig",
+    "SlackAlertChannel",
+    "EmailChannelConfig",
+    "EmailAlertChannel",
+    "NullAlertChannel",
+    "AlertPipelineManager",
+    "SeverityTransitionTracker",
+    "build_alert_pipeline_from_config",
+    # Phase 83: Alert-Storage
+    "StoredAlert",
+    "AlertStorage",
+    "get_default_alert_storage",
+    "reset_default_storage",
+    "store_alert",
+    "list_recent_alerts",
+    "get_alert_stats",
     # Safety (Phase 17) - lazy loaded
     "SafetyGuard",
     "SafetyAuditEntry",

@@ -573,6 +573,225 @@ class RiskAlertFormatter:
 
 
 # =============================================================================
+# PHASE 82: ALERT-PIPELINE INTEGRATION
+# =============================================================================
+
+
+def trigger_risk_pipeline_alert(
+    result: "LiveRiskCheckResult",
+    pipeline_manager: Optional[Any] = None,
+    *,
+    source: str = "live_risk",
+    session_id: Optional[str] = None,
+    extra_context: Optional[Dict[str, Any]] = None,
+) -> bool:
+    """
+    Triggert einen Risk-Alert über die Alert-Pipeline (Phase 82).
+
+    Diese Funktion ist die empfohlene Methode für Phase 82+ und nutzt
+    die neue AlertPipelineManager-Infrastruktur.
+
+    Args:
+        result: LiveRiskCheckResult
+        pipeline_manager: AlertPipelineManager-Instanz (oder None = kein Alert)
+        source: Alert-Quelle (z.B. "live_risk.orders", "live_risk.limits")
+        session_id: Optional Session-ID
+        extra_context: Zusätzliche Context-Daten
+
+    Returns:
+        True wenn Alert gesendet wurde, False sonst
+
+    Example:
+        >>> from src.live.alert_pipeline import build_alert_pipeline_from_config
+        >>> manager = build_alert_pipeline_from_config(config)
+        >>> result = limits.check_orders(orders)
+        >>> triggered = trigger_risk_pipeline_alert(result, manager, session_id="sess_123")
+    """
+    if pipeline_manager is None:
+        return False
+
+    if result.severity.value == "ok":
+        # Kein Alert für OK-Status
+        return False
+
+    try:
+        # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
+        from src.live.alert_pipeline import (
+            AlertMessage,
+            AlertSeverity,
+            AlertCategory,
+        )
+
+        # Severity mappen
+        if result.severity.value == "breach":
+            severity = AlertSeverity.CRITICAL
+        else:
+            severity = AlertSeverity.WARN
+
+        # Title und Body formatieren
+        guidance = get_operator_guidance(result.risk_status)
+
+        if result.severity.value == "breach":
+            # Zähle Breaches
+            breach_count = sum(
+                1 for d in result.limit_details if d.severity.value == "breach"
+            )
+            breached_limits = [
+                d.limit_name for d in result.limit_details if d.severity.value == "breach"
+            ]
+            title = f"Risk Limit BREACH: {breach_count} Limit(s) verletzt"
+            body = f"⛔ {breach_count} Limit(s) verletzt: {', '.join(breached_limits[:3])}"
+            if len(breached_limits) > 3:
+                body += f" (+{len(breached_limits) - 3} weitere)"
+            body += f"\n\nOrders werden blockiert (allowed={result.allowed})."
+        else:
+            # Warning
+            warn_count = sum(
+                1 for d in result.limit_details if d.severity.value == "warning"
+            )
+            warned_limits = [
+                d.limit_name for d in result.limit_details if d.severity.value == "warning"
+            ]
+            title = f"Risk Limit WARNING: {warn_count} Limit(s) im Warnbereich"
+            body = f"⚠️ {warn_count} Limit(s) nähern sich dem Limit: {', '.join(warned_limits[:3])}"
+            if len(warned_limits) > 3:
+                body += f" (+{len(warned_limits) - 3} weitere)"
+            body += "\n\nErhöhte Aufmerksamkeit erforderlich."
+
+        # Empfohlene Aktionen anhängen
+        if guidance.actions:
+            body += "\n\n*Empfohlene Aktionen:*"
+            for action in guidance.actions[:3]:
+                body += f"\n• {action}"
+
+        # Context aufbauen
+        context: Dict[str, Any] = {
+            "risk_status": result.risk_status,
+            "severity": result.severity.value,
+            "allowed": result.allowed,
+        }
+
+        if result.metrics:
+            # Wichtigste Metriken
+            for key in ["total_notional", "daily_realized_pnl_net", "portfolio_equity"]:
+                if key in result.metrics:
+                    context[key] = result.metrics[key]
+
+        # Limit-Details kompakt
+        if result.limit_details:
+            context["limit_summary"] = [
+                {
+                    "name": d.limit_name,
+                    "value": round(d.current_value, 2),
+                    "limit": round(d.limit_value, 2),
+                    "ratio": round(d.ratio, 3),
+                    "status": d.severity.value,
+                }
+                for d in result.limit_details
+                if d.severity.value != "ok"
+            ][:5]  # Max 5 Einträge
+
+        if extra_context:
+            context.update(extra_context)
+
+        # AlertMessage erstellen
+        alert = AlertMessage(
+            title=title,
+            body=body,
+            severity=severity,
+            category=AlertCategory.RISK,
+            source=source,
+            session_id=session_id,
+            context=context,
+        )
+
+        # Alert senden
+        pipeline_manager.send(alert)
+        logger.debug(f"Risk pipeline alert triggered: {title}")
+        return True
+
+    except Exception as e:
+        logger.warning(f"Failed to send risk pipeline alert: {e}")
+        return False
+
+
+def create_limit_breach_alert(
+    limit_name: str,
+    current_value: float,
+    limit_value: float,
+    *,
+    session_id: Optional[str] = None,
+    extra_context: Optional[Dict[str, Any]] = None,
+) -> Optional[Any]:
+    """
+    Erstellt einen AlertMessage für eine Hard-Limit-Verletzung.
+
+    Args:
+        limit_name: Name des verletzten Limits (z.B. "max_daily_loss")
+        current_value: Aktueller Wert
+        limit_value: Limit-Wert
+        session_id: Optional Session-ID
+        extra_context: Zusätzliche Context-Daten
+
+    Returns:
+        AlertMessage oder None bei Import-Fehler
+
+    Example:
+        >>> alert = create_limit_breach_alert(
+        ...     "max_daily_loss",
+        ...     -600.0,
+        ...     500.0,
+        ...     session_id="sess_123",
+        ... )
+        >>> if alert:
+        ...     pipeline_manager.send(alert)
+    """
+    try:
+        from src.live.alert_pipeline import (
+            AlertMessage,
+            AlertSeverity,
+            AlertCategory,
+        )
+
+        ratio = abs(current_value / limit_value) if limit_value != 0 else 0
+        ratio_pct = ratio * 100
+
+        title = f"{limit_name} limit breached"
+        body = (
+            f"⛔ HARD LIMIT BREACH\n\n"
+            f"• Limit: {limit_name}\n"
+            f"• Value: {current_value:.2f}\n"
+            f"• Limit: {limit_value:.2f}\n"
+            f"• Ratio: {ratio_pct:.1f}%\n\n"
+            f"Sofortige Maßnahmen erforderlich. Neue Orders werden blockiert."
+        )
+
+        context: Dict[str, Any] = {
+            "breach_type": limit_name,
+            "current_value": current_value,
+            "limit_value": limit_value,
+            "ratio": ratio,
+        }
+
+        if extra_context:
+            context.update(extra_context)
+
+        return AlertMessage(
+            title=title,
+            body=body,
+            severity=AlertSeverity.CRITICAL,
+            category=AlertCategory.RISK,
+            source="live_risk_limits",
+            session_id=session_id,
+            context=context,
+        )
+
+    except ImportError:
+        logger.warning("Alert pipeline not available, cannot create breach alert")
+        return None
+
+
+# =============================================================================
 # EXPORTS
 # =============================================================================
 
@@ -586,6 +805,9 @@ __all__ = [
     "format_risk_alert_message",
     "format_slack_risk_alert",
     "RiskAlertFormatter",
-    # Alerting
+    # Alerting (Legacy)
     "trigger_risk_alert",
+    # Phase 82: Alert-Pipeline Integration
+    "trigger_risk_pipeline_alert",
+    "create_limit_breach_alert",
 ]

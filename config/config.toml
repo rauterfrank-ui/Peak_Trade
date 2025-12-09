@@ -769,14 +769,97 @@ use_colors = true
 # ============================================================================
 
 [alerts]
-# Alerts aktivieren
+# ============================================================================
+# PHASE 82: ALERT-PIPELINE (Slack/Mail) v1
+# ============================================================================
+# Robuste, konfigurierbare Alert-Pipeline für Live-/Shadow-/Testnet-Trading.
+# Sendet kritische Ereignisse automatisch an menschliche Operatoren.
+#
+# Trigger-Events:
+# - Risk Severity Transitions (GREEN↔YELLOW↔RED)
+# - Hard Limit Breaches (Daily Loss, Drawdown, Exposure)
+# - Optional: Execution-Fehler, System-Health-Checks (v1.1)
+# ============================================================================
+
+# Alerts global aktivieren/deaktivieren
 enabled = true
 
-# Minimale Severity für Alerts ("info", "warning", "critical")
-min_severity = "warning"
+# Default-Minimum-Severity für alle Channels ("INFO", "WARN", "CRITICAL")
+default_min_severity = "WARN"
 
 # Sekunden zwischen gleichen Alerts (Debouncing)
 debounce_seconds = 60
+
+# Recovery-Alerts senden (RED→YELLOW, RED→GREEN)?
+send_recovery_alerts = true
+
+# ============================================================================
+# SLACK ALERT CHANNEL
+# ============================================================================
+# Primärer Alert-Kanal über Slack Incoming Webhook.
+# Setup: Slack App → Incoming Webhooks → Webhook-URL kopieren
+# ============================================================================
+
+[alerts.slack]
+# Slack-Channel aktivieren
+enabled = false
+
+# Slack Incoming Webhook URL (NICHT committen, besser aus .env laden!)
+# Format: https://hooks.slack.com/services/XXX/YYY/ZZZ
+webhook_url = ""
+
+# Minimale Severity für Slack-Alerts ("INFO", "WARN", "CRITICAL")
+min_severity = "WARN"
+
+# Slack-Channel Override (optional, z.B. "#peak-trade-alerts")
+# Wenn leer, wird der Default-Channel des Webhooks verwendet
+channel = ""
+
+# Bot-Username (erscheint als Absender)
+username = "peak-trade-bot"
+
+# Bot-Emoji (erscheint als Avatar)
+icon_emoji = ":rotating_light:"
+
+# HTTP-Timeout in Sekunden
+timeout_seconds = 5.0
+
+# ============================================================================
+# EMAIL ALERT CHANNEL (Optional, v1.1)
+# ============================================================================
+# Sekundärer Alert-Kanal für kritische Events via SMTP.
+# Empfohlen für CRITICAL-Alerts als Backup zu Slack.
+# ============================================================================
+
+[alerts.email]
+# Email-Channel aktivieren
+enabled = false
+
+# Minimale Severity für Email-Alerts (empfohlen: "CRITICAL")
+min_severity = "CRITICAL"
+
+# SMTP-Server-Konfiguration
+smtp_host = "smtp.example.com"
+smtp_port = 587
+use_tls = true
+
+# SMTP-Authentifizierung
+# WICHTIG: Passwort NICHT hier speichern! Nutze Environment-Variable!
+username = "peak-trade-alerts@example.com"
+password_env_var = "PEAK_TRADE_SMTP_PASSWORD"
+
+# Absender-Adresse
+from_addr = "peak-trade-alerts@example.com"
+
+# Empfänger-Adressen (Liste)
+to_addrs = ["ops-oncall@example.com"]
+
+# SMTP-Timeout in Sekunden
+timeout_seconds = 30.0
+
+# ============================================================================
+# LEGACY: Alert-Rules (Phase 34, weiterhin unterstützt)
+# ============================================================================
 
 [alerts.rules]
 # Risk-Blocked-Regel (orders durch Risk-Limits blockiert)
