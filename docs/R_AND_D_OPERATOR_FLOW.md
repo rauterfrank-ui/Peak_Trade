@@ -267,6 +267,7 @@ mv reports/r_and_d_experiments/exp_old_*.json archive/r_and_d/
 
 | Thema                          | Dokument / Pfad                                                |
 |--------------------------------|----------------------------------------------------------------|
+| R&D-Runbook Armstrong/ElKaroui | [`R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md`](runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md) – beschreibt Standard-Workflows, Safety-Gates und Promotion-Pfade für `ArmstrongCycleStrategy` & `ElKarouiVolModelStrategy`. |
 | Phase 76 Design-Spezifikation  | [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) |
 | Phase 77 Detail Viewer         | [`PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md`](PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md) |
 | Phase 78 Multi-Run Comparison  | [`PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md`](PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md) |
