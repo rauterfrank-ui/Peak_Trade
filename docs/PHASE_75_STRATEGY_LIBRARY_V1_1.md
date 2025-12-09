@@ -136,6 +136,25 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 | Gatheral Cont Vol Overlay | volatility | `src/strategies/gatheral_cont/` |
 | Lopez de Prado Meta-Labeling | ml | `src/strategies/lopez_de_prado/` |
 
+### R&D-Strategien – Armstrong & El Karoui (Detail)
+
+Im R&D-Tier existieren zwei experimentelle Strategien, die explizit **nicht** für Live-Trading freigegeben sind:
+
+* **ArmstrongCycleStrategy** (`tier = "r_and_d"`, `IS_LIVE_READY = False`)
+  Abstrakte, zyklusbasierte Research-Strategie, die Ideen makroökonomischer
+  Zyklen modelliert, ohne proprietäre Modelle zu reproduzieren. Eingesetzt
+  ausschließlich in `offline_backtest` und `research`.
+
+* **ElKarouiVolModelStrategy** (`tier = "r_and_d"`, `IS_LIVE_READY = False`)
+  Volatilitäts- und Regime-Research-Strategie, die einfache Volatilitätsproxies
+  und Regime-Labels nutzt, um Risk-Signale zu untersuchen. Ebenfalls streng auf
+  `offline_backtest` und `research` limitiert.
+
+Beide Strategien sind im Strategy-Registry und in `config/strategy_tiering.toml`
+hinterlegt und werden von einer umfangreichen Test-Suite (`tests/test_research_strategies.py`)
+abgedeckt. Sie dienen als Startpunkt für tiefergehende makroökonomische und
+Volatilitäts-Research-Projekte, nicht als produktive Live-Bausteine.
+
 ### R&D-Nutzung
 
 R&D-Strategien sind **ausschließlich für folgende Zwecke** gedacht:
