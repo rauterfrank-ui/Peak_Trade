@@ -6,6 +6,16 @@
 
 ---
 
+## 2025-12-09 – R&D-Strategien Dokumentation
+
+### Docs
+
+* Verfeinerte Beschreibung der R&D-Strategien **ArmstrongCycleStrategy** und **ElKarouiVolModelStrategy** in `docs/PHASE_75_STRATEGY_LIBRARY_V1_1.md`
+  * Klarer R&D-Scope (Hypothesen- und Regime-Research, keine Live-/Paper-/Testnet-Freigabe)
+  * Dokumentierte typische Nutzungsszenarien für beide Strategien
+
+---
+
 ## 2025-12-02 – Risk- & Data-Layer Erweiterungen (Phase 2)
 
 ### Neue Dateien

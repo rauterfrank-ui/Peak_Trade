@@ -316,6 +316,8 @@ Ziel:
 
 Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde die erste **R&D-Strategie-Welle** in Peak_Trade integriert. Ziel ist es, fortgeschrittene Forschungsansätze aus der quantitativen Finance in einer sauberen, testbaren Form bereitzustellen – klar getrennt von der produktiven v1.1 Strategy-Library.
 
+* **Phase 75 – R&D-Strategien Armstrong & El Karoui:** Die experimentellen Strategien sind in `docs/PHASE_75_STRATEGY_LIBRARY_V1_1.md` jetzt detailliert beschrieben (Scope, typische Nutzungsszenarien, klare Abgrenzung zu Paper-/Testnet-/Live-Einsatz).
+
 **Umfang der R&D-Welle v1:**
 
 | Modul | Beschreibung | Kategorie |
