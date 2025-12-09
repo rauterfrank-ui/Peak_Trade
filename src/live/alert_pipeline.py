@@ -51,7 +51,10 @@ from datetime import datetime, timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from enum import IntEnum, Enum
-from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence
+from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.infra.runbooks import RunbookLink
 
 logger = logging.getLogger(__name__)
 
@@ -375,19 +378,34 @@ class SlackAlertChannel:
             "short": True,
         })
 
-        # Context-Daten (kompakt)
-        if alert.context:
+        # Context-Daten (kompakt) - ohne runbooks (separat behandelt)
+        context_items = {k: v for k, v in alert.context.items() if k != "runbooks"}
+        if context_items:
             context_lines = []
-            for key, value in list(alert.context.items())[:5]:  # Max 5 Einträge
+            for key, value in list(context_items.items())[:5]:  # Max 5 Einträge
                 if isinstance(value, float):
                     context_lines.append(f"• {key}: {value:.2f}")
                 else:
                     context_lines.append(f"• {key}: {value}")
-            if len(alert.context) > 5:
-                context_lines.append(f"... +{len(alert.context) - 5} more")
+            if len(context_items) > 5:
+                context_lines.append(f"... +{len(context_items) - 5} more")
             fields.append({
                 "title": "Context",
                 "value": "\n".join(context_lines),
+                "short": False,
+            })
+
+        # Phase 84: Runbooks-Sektion
+        runbooks = alert.context.get("runbooks", [])
+        if runbooks:
+            runbook_lines = []
+            for rb in runbooks[:3]:  # Max 3 Runbooks
+                runbook_lines.append(f"• <{rb['url']}|{rb['title']}>")
+            if len(runbooks) > 3:
+                runbook_lines.append(f"... +{len(runbooks) - 3} more")
+            fields.append({
+                "title": "📋 Runbooks",
+                "value": "\n".join(runbook_lines),
                 "short": False,
             })
 
@@ -574,14 +592,24 @@ class EmailAlertChannel:
         if alert.session_id:
             text_lines.append(f"Session: {alert.session_id}")
 
-        if alert.context:
+        # Context-Daten (ohne runbooks)
+        context_items = {k: v for k, v in alert.context.items() if k != "runbooks"}
+        if context_items:
             text_lines.append("")
             text_lines.append("Context:")
-            for key, value in alert.context.items():
+            for key, value in context_items.items():
                 if isinstance(value, float):
                     text_lines.append(f"  • {key}: {value:.4f}")
                 else:
                     text_lines.append(f"  • {key}: {value}")
+
+        # Phase 84: Runbooks-Sektion
+        runbooks = alert.context.get("runbooks", [])
+        if runbooks:
+            text_lines.append("")
+            text_lines.append("📋 Runbooks:")
+            for rb in runbooks:
+                text_lines.append(f"  • {rb['title']}: {rb['url']}")
 
         text_body = "\n".join(text_lines)
 
@@ -594,9 +622,10 @@ class EmailAlertChannel:
         color = severity_colors.get(alert.severity, "#6c757d")
 
         context_html = ""
-        if alert.context:
+        context_items = {k: v for k, v in alert.context.items() if k != "runbooks"}
+        if context_items:
             context_rows = []
-            for key, value in alert.context.items():
+            for key, value in context_items.items():
                 if isinstance(value, float):
                     val_str = f"{value:.4f}"
                 else:
@@ -607,6 +636,22 @@ class EmailAlertChannel:
             <table border="1" cellpadding="5" cellspacing="0">
                 {''.join(context_rows)}
             </table>
+            """
+
+        # Phase 84: Runbooks HTML
+        runbooks_html = ""
+        runbooks = alert.context.get("runbooks", [])
+        if runbooks:
+            runbook_items = []
+            for rb in runbooks:
+                runbook_items.append(
+                    f'<li><a href="{rb["url"]}" style="color: #10b981;">📘 {rb["title"]}</a></li>'
+                )
+            runbooks_html = f"""
+            <h3>📋 Runbooks</h3>
+            <ul>
+                {''.join(runbook_items)}
+            </ul>
             """
 
         html_body = f"""
@@ -625,9 +670,10 @@ class EmailAlertChannel:
                     {'<tr><td><strong>Session:</strong></td><td><code>' + alert.session_id + '</code></td></tr>' if alert.session_id else ''}
                 </table>
                 {context_html}
+                {runbooks_html}
             </div>
             <div style="font-size: 12px; color: #666; padding: 10px;">
-                Peak_Trade Alert Pipeline | Phase 82
+                Peak_Trade Alert Pipeline | Phase 84
             </div>
         </body>
         </html>
@@ -784,9 +830,14 @@ class AlertPipelineManager:
         Phase 83: Alerts werden automatisch für die Web-Dashboard-Historie
         gespeichert (unabhängig von Channel-Filterung).
 
+        Phase 84: Runbooks werden automatisch vor dem Senden angehängt.
+
         Args:
             alert: AlertMessage zum Senden
         """
+        # Phase 84: Runbooks an Alert anhängen
+        self._attach_runbooks(alert)
+
         # Phase 83: Alert persistieren für Historie
         if self._persist_alerts:
             self._persist_alert(alert)
@@ -807,6 +858,30 @@ class AlertPipelineManager:
                     f"Failed to send alert via {channel.name}: {e}",
                     exc_info=True,
                 )
+
+    def _attach_runbooks(self, alert: AlertMessage) -> None:
+        """
+        Hängt passende Runbooks an den Alert an (Phase 84).
+
+        Runbooks werden in alert.context["runbooks"] als Liste von Dicts gespeichert.
+        Dies ermöglicht einfache JSON-Serialisierung und Template-Zugriff.
+
+        Args:
+            alert: AlertMessage zum Erweitern
+        """
+        try:
+            # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
+            from src.infra.runbooks import resolve_runbooks_for_alert
+
+            runbooks = resolve_runbooks_for_alert(alert)
+            if runbooks:
+                alert.context["runbooks"] = [
+                    {"id": rb.id, "title": rb.title, "url": rb.url}
+                    for rb in runbooks
+                ]
+        except Exception as e:
+            # Fehler loggen, aber nicht propagieren
+            self._logger.debug(f"Failed to attach runbooks: {e}")
 
     def _persist_alert(self, alert: AlertMessage) -> None:
         """

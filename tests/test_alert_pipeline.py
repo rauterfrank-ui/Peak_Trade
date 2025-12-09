@@ -1095,3 +1095,252 @@ class TestAcceptanceCriteria:
             source="test",
         )
         manager.send(alert)  # Sollte nicht crashen
+
+
+# =============================================================================
+# PHASE 84 - RUNBOOK INTEGRATION TESTS
+# =============================================================================
+
+
+class TestPhase84RunbookIntegration:
+    """
+    Tests für Phase 84: Runbook-Integration in Alerts.
+
+    Testet:
+    - Automatisches Anhängen von Runbooks an Alerts
+    - Runbooks in Slack-Payload
+    - Runbooks in Email-Body
+    - Runbooks in context["runbooks"]
+    """
+
+    def test_manager_attaches_runbooks_to_alert(self):
+        """Testet dass AlertPipelineManager Runbooks an Alerts anhängt."""
+        sent_alerts: List[AlertMessage] = []
+
+        class CaptureChannel:
+            name = "capture"
+            is_enabled = True
+            min_severity = AlertSeverity.INFO
+
+            def send(self, alert: AlertMessage) -> None:
+                sent_alerts.append(alert)
+
+        manager = AlertPipelineManager([CaptureChannel()], persist_alerts=False)
+
+        # Risk-Alert mit bekannter Source
+        alert = AlertMessage(
+            title="Test Risk Alert",
+            body="Body",
+            severity=AlertSeverity.WARN,
+            category=AlertCategory.RISK,
+            source="live_risk_severity",
+        )
+        manager.send(alert)
+
+        assert len(sent_alerts) == 1
+        assert "runbooks" in sent_alerts[0].context
+        assert len(sent_alerts[0].context["runbooks"]) >= 1
+
+        # Prüfe Struktur
+        runbook = sent_alerts[0].context["runbooks"][0]
+        assert "id" in runbook
+        assert "title" in runbook
+        assert "url" in runbook
+
+    def test_runbooks_contain_expected_entries(self):
+        """Testet dass erwartete Runbooks enthalten sind."""
+        sent_alerts: List[AlertMessage] = []
+
+        class CaptureChannel:
+            name = "capture"
+            is_enabled = True
+            min_severity = AlertSeverity.INFO
+
+            def send(self, alert: AlertMessage) -> None:
+                sent_alerts.append(alert)
+
+        manager = AlertPipelineManager([CaptureChannel()], persist_alerts=False)
+
+        # RISK + live_risk_severity sollte Risk-Severity-Runbook enthalten
+        alert = AlertMessage(
+            title="Test",
+            body="Body",
+            severity=AlertSeverity.CRITICAL,
+            category=AlertCategory.RISK,
+            source="live_risk_severity",
+        )
+        manager.send(alert)
+
+        runbook_ids = [rb["id"] for rb in sent_alerts[0].context.get("runbooks", [])]
+        assert "live_risk_severity" in runbook_ids
+        assert "live_alert_pipeline" in runbook_ids
+
+    def test_slack_payload_includes_runbooks_section(self, mock_slack_channel: SlackAlertChannel):
+        """Testet dass Slack-Payload Runbooks-Sektion enthält."""
+        alert = AlertMessage(
+            title="Test",
+            body="Body",
+            severity=AlertSeverity.CRITICAL,
+            category=AlertCategory.RISK,
+            source="live_risk_severity",
+            context={
+                "runbooks": [
+                    {"id": "test_rb", "title": "Test Runbook", "url": "https://example.com/runbook"},
+                ]
+            },
+        )
+
+        payload = mock_slack_channel._build_payload(alert)
+
+        # Prüfe dass Runbooks-Feld vorhanden ist
+        attachment = payload["attachments"][0]
+        field_titles = [f["title"] for f in attachment["fields"]]
+        assert "📋 Runbooks" in field_titles
+
+        # Prüfe dass URL im Link-Format ist
+        runbooks_field = next(f for f in attachment["fields"] if f["title"] == "📋 Runbooks")
+        assert "<https://example.com/runbook|Test Runbook>" in runbooks_field["value"]
+
+    def test_email_body_includes_runbooks_section(self, mock_email_channel: EmailAlertChannel):
+        """Testet dass Email-Body Runbooks-Sektion enthält."""
+        import base64
+
+        alert = AlertMessage(
+            title="Test",
+            body="Body",
+            severity=AlertSeverity.CRITICAL,
+            category=AlertCategory.RISK,
+            source="live_risk_severity",
+            context={
+                "runbooks": [
+                    {"id": "test_rb", "title": "Test Runbook", "url": "https://example.com/runbook"},
+                ]
+            },
+        )
+
+        msg = mock_email_channel._build_email(alert)
+        parts = msg.get_payload()
+
+        # Plain-Text-Teil (möglicherweise base64-codiert)
+        plain_payload = parts[0].get_payload()
+        if parts[0].get("Content-Transfer-Encoding") == "base64":
+            plain_text = base64.b64decode(plain_payload).decode("utf-8")
+        else:
+            plain_text = plain_payload
+
+        assert "Runbooks:" in plain_text
+        assert "Test Runbook" in plain_text
+        assert "https://example.com/runbook" in plain_text
+
+        # HTML-Teil (möglicherweise base64-codiert)
+        html_payload = parts[1].get_payload()
+        if parts[1].get("Content-Transfer-Encoding") == "base64":
+            html_text = base64.b64decode(html_payload).decode("utf-8")
+        else:
+            html_text = html_payload
+
+        assert "Runbooks" in html_text
+        assert 'href="https://example.com/runbook"' in html_text
+
+    def test_alerts_without_matching_runbooks(self):
+        """Testet Alerts ohne passende Runbooks."""
+        sent_alerts: List[AlertMessage] = []
+
+        class CaptureChannel:
+            name = "capture"
+            is_enabled = True
+            min_severity = AlertSeverity.INFO
+
+            def send(self, alert: AlertMessage) -> None:
+                sent_alerts.append(alert)
+
+        manager = AlertPipelineManager([CaptureChannel()], persist_alerts=False)
+
+        # Alert mit unbekannter Source - sollte trotzdem Fallback-Runbooks haben
+        alert = AlertMessage(
+            title="Test",
+            body="Body",
+            severity=AlertSeverity.WARN,
+            category=AlertCategory.SYSTEM,
+            source="completely_unknown_source_xyz",
+        )
+        manager.send(alert)
+
+        # Sollte mindestens live_alert_pipeline als Fallback haben
+        runbooks = sent_alerts[0].context.get("runbooks", [])
+        assert len(runbooks) >= 1
+
+    def test_slack_payload_without_runbooks(self, mock_slack_channel: SlackAlertChannel):
+        """Testet dass Slack-Payload ohne Runbooks korrekt funktioniert."""
+        alert = AlertMessage(
+            title="Test",
+            body="Body",
+            severity=AlertSeverity.CRITICAL,
+            category=AlertCategory.RISK,
+            source="test",
+            context={},  # Keine Runbooks
+        )
+
+        payload = mock_slack_channel._build_payload(alert)
+
+        # Sollte keine Runbooks-Sektion haben
+        attachment = payload["attachments"][0]
+        field_titles = [f["title"] for f in attachment["fields"]]
+        assert "📋 Runbooks" not in field_titles
+
+    def test_email_body_without_runbooks(self, mock_email_channel: EmailAlertChannel):
+        """Testet dass Email-Body ohne Runbooks korrekt funktioniert."""
+        import base64
+
+        alert = AlertMessage(
+            title="Test",
+            body="Body",
+            severity=AlertSeverity.CRITICAL,
+            category=AlertCategory.RISK,
+            source="test",
+            context={},  # Keine Runbooks
+        )
+
+        msg = mock_email_channel._build_email(alert)
+        parts = msg.get_payload()
+
+        # Plain-Text-Teil (möglicherweise base64-codiert)
+        plain_payload = parts[0].get_payload()
+        if parts[0].get("Content-Transfer-Encoding") == "base64":
+            plain_text = base64.b64decode(plain_payload).decode("utf-8")
+        else:
+            plain_text = plain_payload
+
+        # Sollte keine Runbooks-Sektion haben
+        assert "📋 Runbooks:" not in plain_text
+
+    def test_context_preserved_with_runbooks(self):
+        """Testet dass vorhandener Context mit Runbooks erweitert wird."""
+        sent_alerts: List[AlertMessage] = []
+
+        class CaptureChannel:
+            name = "capture"
+            is_enabled = True
+            min_severity = AlertSeverity.INFO
+
+            def send(self, alert: AlertMessage) -> None:
+                sent_alerts.append(alert)
+
+        manager = AlertPipelineManager([CaptureChannel()], persist_alerts=False)
+
+        # Alert mit vorhandenem Context
+        alert = AlertMessage(
+            title="Test",
+            body="Body",
+            severity=AlertSeverity.WARN,
+            category=AlertCategory.RISK,
+            source="live_risk_severity",
+            context={"existing_key": "existing_value", "number": 42},
+        )
+        manager.send(alert)
+
+        # Prüfe dass vorhandener Context erhalten bleibt
+        assert sent_alerts[0].context.get("existing_key") == "existing_value"
+        assert sent_alerts[0].context.get("number") == 42
+        # Und Runbooks hinzugefügt wurden
+        assert "runbooks" in sent_alerts[0].context

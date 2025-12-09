@@ -8,7 +8,7 @@
     <div>
       <h1 class="text-2xl font-semibold">Alert-Historie</h1>
       <p class="text-slate-400 text-sm mt-1">
-        Übersicht aller Alerts aus der Alert-Pipeline (Phase 82/83)
+        Übersicht aller Alerts aus der Alert-Pipeline (Phase 82–84)
       </p>
     </div>
     <div class="flex items-center gap-2">
@@ -172,7 +172,8 @@
             <th class="px-4 py-3 w-24">Severity</th>
             <th class="px-4 py-3 w-24">Kategorie</th>
             <th class="px-4 py-3">Titel / Source</th>
-            <th class="px-4 py-3 w-48">Session</th>
+            <th class="px-4 py-3 w-40">Runbooks</th>
+            <th class="px-4 py-3 w-44">Session</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-700/30">
@@ -227,6 +228,26 @@
                   <div class="text-xs text-slate-400 mt-1 line-clamp-2">
                     {{ alert.body[:150] }}{% if alert.body|length > 150 %}...{% endif %}
                   </div>
+                {% endif %}
+              </td>
+
+              <!-- Runbooks (Phase 84) -->
+              <td class="px-4 py-3">
+                {% if alert.runbooks %}
+                  <div class="flex flex-wrap gap-1">
+                    {% for rb in alert.runbooks[:2] %}
+                      <a href="{{ rb.url }}" target="_blank" rel="noopener"
+                         class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors"
+                         title="{{ rb.title }}">
+                        📘 {{ rb.title[:20] }}{% if rb.title|length > 20 %}...{% endif %}
+                      </a>
+                    {% endfor %}
+                    {% if alert.runbooks|length > 2 %}
+                      <span class="text-xs text-slate-500">+{{ alert.runbooks|length - 2 }}</span>
+                    {% endif %}
+                  </div>
+                {% else %}
+                  <span class="text-slate-500 text-xs">–</span>
                 {% endif %}
               </td>
               

@@ -510,3 +510,54 @@ class TestEdgeCases:
         # Selbst mit höherem Limit wird max begrenzt
         alerts = storage.list_alerts(limit=100)
         assert len(alerts) <= 5
+
+    def test_store_alert_with_runbooks(self, storage: AlertStorage):
+        """Testet Speicherung eines Alerts mit Runbooks (Phase 84)."""
+        alert_with_runbooks = {
+            "title": "Alert with Runbooks",
+            "body": "Test body",
+            "severity": "WARN",
+            "category": "RISK",
+            "source": "live_risk_severity",
+            "context": {
+                "runbooks": [
+                    {"id": "live_risk_severity", "title": "Risk Severity Runbook", "url": "https://example.com/rb1"},
+                    {"id": "live_alert_pipeline", "title": "Alert Pipeline Runbook", "url": "https://example.com/rb2"},
+                ]
+            },
+        }
+
+        alert_id = storage.store(alert_with_runbooks)
+        assert alert_id is not None
+
+        # Wiedereinlesen
+        alerts = storage.list_alerts(limit=1)
+        assert len(alerts) == 1
+        assert "runbooks" in alerts[0].context
+        assert len(alerts[0].context["runbooks"]) == 2
+        assert alerts[0].context["runbooks"][0]["id"] == "live_risk_severity"
+
+    def test_alert_with_runbooks_roundtrip(self, storage: AlertStorage):
+        """Testet vollständigen Roundtrip von Alerts mit Runbooks."""
+        original_runbooks = [
+            {"id": "rb1", "title": "Runbook 1", "url": "https://example.com/1"},
+            {"id": "rb2", "title": "Runbook 2", "url": "https://example.com/2"},
+        ]
+
+        alert = {
+            "title": "Roundtrip Test",
+            "severity": "CRITICAL",
+            "category": "RISK",
+            "source": "test",
+            "context": {
+                "runbooks": original_runbooks,
+                "other_data": "preserved",
+            },
+        }
+
+        storage.store(alert)
+        loaded = storage.list_alerts(limit=1)[0]
+
+        # Prüfe dass Runbooks erhalten bleiben
+        assert loaded.context.get("runbooks") == original_runbooks
+        assert loaded.context.get("other_data") == "preserved"

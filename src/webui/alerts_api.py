@@ -28,6 +28,14 @@ from pydantic import BaseModel, Field
 # =============================================================================
 
 
+class RunbookSummary(BaseModel):
+    """Zusammenfassung eines Runbook-Links für die API (Phase 84)."""
+
+    id: str = Field(description="Eindeutige Runbook-ID")
+    title: str = Field(description="Runbook-Titel")
+    url: str = Field(description="URL zum Runbook")
+
+
 class AlertSummary(BaseModel):
     """Zusammenfassung eines Alerts für die API."""
 
@@ -40,6 +48,7 @@ class AlertSummary(BaseModel):
     session_id: Optional[str] = Field(None, description="Session-ID falls vorhanden")
     timestamp: str = Field(description="ISO-Timestamp")
     timestamp_display: str = Field(description="Formatierter Timestamp für UI")
+    runbooks: List[RunbookSummary] = Field(default_factory=list, description="Verlinkte Runbooks (Phase 84)")
 
     class Config:
         json_schema_extra = {
@@ -53,6 +62,9 @@ class AlertSummary(BaseModel):
                 "session_id": "shadow_2025-12-09_14-30-00",
                 "timestamp": "2025-12-09T14:30:00+00:00",
                 "timestamp_display": "09.12.2025 14:30:00",
+                "runbooks": [
+                    {"id": "live_risk_severity", "title": "Live Risk Severity Runbook", "url": "https://..."},
+                ],
             }
         }
 
@@ -144,6 +156,18 @@ def get_alerts_for_ui(
     # Zu UI-Modellen konvertieren
     alerts: List[AlertSummary] = []
     for alert in stored_alerts:
+        # Phase 84: Runbooks aus Context extrahieren
+        runbook_dicts = alert.context.get("runbooks", [])
+        runbooks = [
+            RunbookSummary(
+                id=rb.get("id", ""),
+                title=rb.get("title", ""),
+                url=rb.get("url", ""),
+            )
+            for rb in runbook_dicts
+            if isinstance(rb, dict)
+        ]
+
         alerts.append(
             AlertSummary(
                 id=alert.id,
@@ -155,6 +179,7 @@ def get_alerts_for_ui(
                 session_id=alert.session_id,
                 timestamp=alert.timestamp.isoformat(),
                 timestamp_display=_format_timestamp(alert.timestamp),
+                runbooks=runbooks,
             )
         )
 
@@ -265,6 +290,7 @@ def get_alerts_template_context(
 
 __all__ = [
     # Models
+    "RunbookSummary",
     "AlertSummary",
     "AlertStats",
     "AlertListResponse",
