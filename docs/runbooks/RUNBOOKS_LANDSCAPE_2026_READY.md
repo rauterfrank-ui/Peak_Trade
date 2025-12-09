@@ -1,0 +1,210 @@
+# Peak_Trade – Runbooks Landscape (2026-ready)
+
+Diese Übersicht dient als **zentraler Einstiegspunkt** für alle Runbooks und Operator-Guides im Peak_Trade-Projekt.
+
+Sie ist für **Operatoren, On-Call-Engineers und Risk Owner** gedacht, die im Incident-Fall oder vor kritischen Aktionen schnell das passende Dokument finden müssen.
+
+* Fokus: **Execution, Live-Risk, Alerts/Eskalation, Governance und R&D**
+* Gültigkeit: **2026-ready** (Stand: Dezember 2025)
+* Quelle: Alle Runbooks liegen unter `docs/` bzw. `docs/runbooks/` und sind im Master-Status-Dokument verlinkt.
+
+---
+
+## 1. Zentrale Runbook-Tabelle (2026-ready)
+
+| Runbook                                         | Pfad                                                                    | Version         | Scope / Zweck                                                                                                                          | Primary Cluster                                            | Layer                                    | 2026-ready Status       |
+| ----------------------------------------------- | ----------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------- | ----------------------- |
+| **ExecutionPipeline Governance & Risk Runbook** | `docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md`        | v1.1 (Dez 2025) | Governance- und Risk-Guidance für die ExecutionPipeline: Status-Codes, Entscheidungsbaum, Incident-Artefakte, Daily Checks             | Phase 16A (ExecutionPipeline), verknüpft mit Cluster 82–85 | **Execution & Environments, Governance** | ✅ 2026-ready            |
+| **Live Risk Severity Integration**              | `docs/runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md`                       | v1.0            | End-to-end Integration der Live-Risk-Severity-Ampel (GREEN/YELLOW/RED) inkl. Dashboard, Alerts und Runbook-Anweisungen                 | Cluster 80–81 (Live Risk & Severity)                       | **Live-Risk, Monitoring, Web-UI**        | ✅ 2026-ready            |
+| **Live Alert Pipeline Runbook**                 | `docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`           | v1.0            | Betrieb und Fehlerbehandlung der Alert-Pipeline (Slack, E-Mail, Severity, Routing)                                                     | Cluster 82–83 (Alert-Pipeline & Dashboard)                 | **Alerts & Monitoring**                  | ✅ 2026-ready            |
+| **Incident Runbook Integration**                | `docs/runbooks/INCIDENT_RUNBOOK_INTEGRATION_V1.md`                      | v1.0            | Standardisiertes Incident-Handling, Mapping von Alerts & Risk-Events auf Incident-Flows und Operator-Actions                           | Cluster 84 (Incident Runbook Integration)                  | **Incident-Management, Governance**      | ✅ 2026-ready            |
+| **Go/No-Go 2026 – Live Alerts & Escalation**    | `docs/GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md`                       | v1.0            | Go/No-Go-Entscheidungen für Live Alerts, Escalation-Pfade und Freigabekriterien für Live-/Shadow-/Testnet-Betrieb                      | Cluster 82–85 (Live Alerts & Escalation)                   | **Governance, On-Call, Decision-Gates**  | ✅ 2026-ready            |
+| **R&D-Runbook Armstrong & El Karoui**           | `docs/runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md`               | v1.0            | Runbook für R&D-Experimente mit Armstrong- und El-Karoui-Modellen (Set-up, Parameter, typische Fallstricke)                            | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Research Pipelines**              | ⚠️ R&D only (kein Live) |
+| **R&D-Playbook Armstrong & El Karoui**          | `docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md`              | v1.0            | Playbook mit Best Practices, Experiment-Design, Parameter-Sweeps und Auswertungs-Patterns für Armstrong/El-Karoui                      | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Methodik**                        | ⚠️ R&D only (kein Live) |
+| **Armstrong × El Karoui Cross-Run Findings**    | `docs/runbooks/ARMSTRONG_ELKAROUI_CROSS_RUN_FINDINGS_V1.md`             | v1.0            | Konsolidierte Findings aus Cross-Runs (State-Rankings, Vol-Regime, Limitierungen), dient als Meta-Referenz für weitere R&D-Iterationen | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Meta-Analyse**                    | ⚠️ R&D only (kein Live) |
+
+> **Hinweis:** Pfade ggf. an die tatsächlichen Dateinamen im Repository anpassen.
+> R&D-Runbooks sind **nicht live-freigegeben** und ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
+
+---
+
+## 2. Execution & Governance Runbooks
+
+### 2.1 ExecutionPipeline Governance & Risk Runbook (v1.1)
+
+* **Pfad:** `docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md`
+* **Rolle:** Primäres Runbook für alle Themen rund um die ExecutionPipeline:
+
+  * Interpretation von `ExecutionStatus`-Codes
+  * Entscheidungsbaum für Operatoren (wann stoppen, wann eskalieren, wann retriggern)
+  * Pflicht-Artefakte bei Incidents (`run_id`, `session_id`, Config-Snapshot, Logs)
+  * Daily Pre-Session Checks (5-Minuten-Routine) inkl. Beispiel-Kommandos
+  * Differenzierung: Bug vs. Expected-Block vs. Governance-Schutz
+
+### 2.2 Go/No-Go 2026 – Live Alerts & Escalation
+
+* **Pfad:** `docs/GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md`
+* **Rolle:** Governance-Dokument für:
+
+  * Go/No-Go-Entscheidungen vor kritischen Änderungen (z.B. neue Alerts, neue Risk-Limits)
+  * Bewertung von Alert-Clustern (Noise vs. Signal)
+  * Escalation-Level und On-Call-Übergabe
+  * 2026-ready Kriterien für Live-Betrieb
+
+### 2.3 Incident Runbook Integration
+
+* **Pfad:** `docs/runbooks/INCIDENT_RUNBOOK_INTEGRATION_V1.md`
+* **Rolle:** Brücke zwischen technischen Alerts und Incident-Management:
+
+  * Mapping Alert → Incident-Typ → Operator-Aktion
+  * Standardisierte Timeline & Kommunikationspfade
+  * Integration mit Severity-System und Go/No-Go-Entscheidungen
+
+---
+
+## 3. Live Risk & Severity Runbooks
+
+### 3.1 Live Risk Severity Integration
+
+* **Pfad:** `docs/runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md`
+* **Rolle:** End-to-end Dokumentation der **Severity-Ampel (GREEN/YELLOW/RED)**:
+
+  * Architektur (Risk-Limits → Severity-Bewertung → Alerts → Dashboard)
+  * Web-Dashboard-Ansichten (Globale Ampel, Session-Detail-View)
+  * Operator-Guidance: Was tun bei YELLOW? Was tun bei RED?
+  * Integration mit Live-Track, Alert-Pipeline und Incident-Runbooks
+
+---
+
+## 4. Alerts, Escalation & On-Call Runbooks
+
+### 4.1 Live Alert Pipeline Runbook
+
+* **Pfad:** `docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`
+* **Rolle:** Laufender Betrieb der Alert-Pipeline:
+
+  * Konfiguration von Severity, Channels (Slack, E-Mail) und Routing
+  * Typische Fehlerbilder (keine Alerts, zu viele Alerts, Duplikate)
+  * Debugging-Checkliste (Config, Logs, Test-Alerts)
+  * Verbindung zu Dashboard und Incident-Runbooks
+
+### 4.2 Incident Runbook Integration (siehe oben)
+
+* Bindeglied zwischen Alerts und echten Incidents.
+* Ergänzt die Alert-Pipeline um Operator-Flows und Governance-Aspekte.
+
+### 4.3 Go/No-Go (siehe oben)
+
+* Speziell relevant für On-Call-Entscheidungen:
+
+  * „Bleiben wir im aktuellen Modus?"
+  * „Brauchen wir eine temporäre Trading-Pause?"
+  * „Müssen Limits sofort angepasst oder Systeme in einen Safe-Mode versetzt werden?"
+
+---
+
+## 5. R&D & Research Runbooks (Armstrong × El Karoui)
+
+### 5.1 R&D-Runbook Armstrong & El Karoui
+
+* **Pfad:** `docs/runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md`
+* **Rolle:** Technischer Leitfaden für:
+
+  * Setup der Strategien Armstrong-Cycle und El-Karoui-Vol-Modell
+  * Parameter-Räume und typische Konfigurationen
+  * Einbindung in R&D-Pipelines (Backtests, Sweeps, Forward-Signals)
+
+### 5.2 R&D-Playbook Armstrong & El Karoui
+
+* **Pfad:** `docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md`
+* **Rolle:** Methodisches Playbook:
+
+  * Wie experimentieren? (Design, Hypothesen, Auswertungen)
+  * Best Practices für Parameter-Sweeps und Cross-Run Analysen
+  * Typische Fragestellungen und Auswertungs-Muster
+
+### 5.3 Armstrong × El Karoui Cross-Run Findings
+
+* **Pfad:** `docs/runbooks/ARMSTRONG_ELKAROUI_CROSS_RUN_FINDINGS_V1.md`
+* **Rolle:** Meta-Dokument:
+
+  * Konsolidierte Ergebnisse aus vielen Runs (State-Rankings, Vol-Regime, Edge-Stabilität)
+  * Einschränkungen und offene Fragen
+  * Basis für weitere R&D-Iterationen
+
+> **Wichtig:** Diese drei R&D-Dokumente sind **nicht** für Live-Betrieb gedacht, sondern ausschließlich für Forschung und Offline-Analysen.
+
+---
+
+## 6. Quick-Reference: Welche Situation → Welches Runbook?
+
+| Situation                                                   | Relevante Runbooks                                                          | Kommentar                                                                                              |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Pre-Session-Check vor Live/Paper-Session**                | ExecutionPipeline Governance & Risk Runbook, Live Risk Severity Integration | Daily Checks, Live-Risk-Ampel prüfen, Execution- und Risk-Pfade verifizieren                           |
+| **Order wird blockiert (ExecutionStatus ≠ OK)**             | ExecutionPipeline Governance & Risk Runbook, Go/No-Go 2026                  | Status-Code nachschlagen, Entscheidungsbaum folgen, ggf. Go/No-Go-Prozess triggern                     |
+| **RED Severity im Live-Dashboard**                          | Live Risk Severity Integration, Incident Runbook Integration, Go/No-Go 2026 | Severity-Runbook folgen, Incident eröffnen, Governance-Entscheidung (Weiterlaufen vs. Stoppen) treffen |
+| **Unklare Incident-Ursache (viele Alerts, wenig Klarheit)** | Live Alert Pipeline Runbook, Incident Runbook Integration                   | Alert-Pipeline debuggen, Incident-Flow nutzen, korrekte Klassifikation sicherstellen                   |
+| **Neue Alerts oder Änderungen an Escalation-Logik geplant** | Go/No-Go 2026, Live Alert Pipeline Runbook                                  | Änderungen nur über Go/No-Go-Prozess, Impact auf Operator-Flows prüfen                                 |
+| **R&D-Strategie Armstrong/El Karoui: Neuer Experiment-Run** | R&D-Runbook Armstrong & El Karoui, R&D-Playbook                             | Setup & Methodik prüfen, Parameter-Sets und Hypothesen sauber dokumentieren                            |
+| **Cross-Run-Analyse / Meta-Auswertung**                     | Armstrong × El Karoui Cross-Run Findings, R&D-Playbook                      | Bestehende Findings als Referenz nutzen, neue Runs konsistent einsortieren                             |
+
+---
+
+## 7. Architektur-Übersicht (Runbooks & Governance)
+
+```text
+                      +--------------------------------------+
+                      |  Runbooks Landscape (2026-ready)     |
+                      |  docs/runbooks/RUNBOOKS_LANDSCAPE_   |
+                      |                  2026_READY.md       |
+                      +-------------------------+------------+
+                                                |
+        +-------------------------------+-------+-------------------------------+
+        |                               |                                       |
++-------+----------------+   +----------+-------------------+        +----------+------------------+
+| Execution & Governance |   | Live Risk & Severity         |        | Alerts, Escalation & On-Call|
++------------------------+   +------------------------------+        +-----------------------------+
+| - ExecutionPipeline    |   | - Live Risk Severity         |        | - Live Alert Pipeline       |
+|   Governance & Risk    |   |   Integration                |        |   Runbook                   |
+|   Runbook (v1.1)       |   |                              |        | - Incident Runbook          |
+| - Go/No-Go 2026        |   |                              |        |   Integration               |
+| - Incident Runbook     |   |                              |        | - Go/No-Go 2026             |
+|   Integration          |   |                              |        |                             |
++------------------------+   +------------------------------+        +-----------------------------+
+                                |
+                                |
+                                v
+                    +-------------------------------+
+                    | R&D & Research (Armstrong ×   |
+                    | El Karoui, Phase 78)          |
+                    +-------------------------------+
+                    | - R&D-Runbook                 |
+                    | - R&D-Playbook                |
+                    | - Cross-Run Findings          |
+                    +-------------------------------+
+```
+
+---
+
+## 8. Governance-Verankerung & Code-Referenzen
+
+Die Runbooks sind nicht isoliert, sondern eng mit dem Code verknüpft:
+
+* `src/governance/go_no_go.py` – Programmlogik für Go/No-Go-Entscheidungen im Kontext von Live Alerts & Escalation.
+* `src/live/risk_limits.py` & verwandte Module – Basis für die Severity-Integration und Live-Risk-Evaluierung.
+* `src/execution/` – ExecutionPipeline-Implementierung, auf die sich das ExecutionPipeline-Runbook direkt bezieht.
+* `src/live/` – Alert-Infrastruktur der Live-Pipeline (u.a. `alert_pipeline.py`, `alerts.py`, `alert_manager.py`) und deren Integration in Dashboard & Incident-Flows.
+* `src/infra/escalation/` & `src/infra/runbooks/` – Infrastruktur für Escalation-Management und Runbook-Registry.
+
+Operatoren sollten Runbooks **immer im Kontext** dieser Module lesen – die Dokumentation beschreibt den beabsichtigten Use-Case, der Code erzwingt die technischen Grenzen.
+
+---
+
+## 9. Change-Log
+
+* **v1.0 – Dezember 2025 – 2026-ready**
+
+  * Initiale Erstellung der zentralen Runbook-Landscape mit 8 Runbooks.
+  * Einführung der Tabellenstruktur inkl. `Primary Cluster`, `Layer` und `2026-ready Status`.
+  * Ergänzung einer Quick-Reference-Tabelle für typische Operator-Situationen.
+  * Hinzufügen eines Architektur-Diagramms und Governance-Verankerung.
