@@ -355,6 +355,8 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 * Preset-Konfiguration: `config/r_and_d_presets.toml`
 * Status: 🔬 Experimente definiert, Ready for Execution
 * **Run-Logs:** Siehe Abschnitt [„R&D-Experiment-Welle W2 (2025-12-08) – Run-Log"](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md#61-rd-experiment-welle-w2-2025-12-08--run-log) für dokumentierte Läufe
+* **Operator-View:** Abschnitt 8 in [`PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md`](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md#8-rd-wave-v1--operator-view-strategy-profile--experiments-viewer--dashboard) beschreibt den praktischen Operator-Workflow (Strategy-Profile → Experiments-Viewer → Dashboard)
+* **R&D Experiments Viewer CLI:** `scripts/view_r_and_d_experiments.py` – zentrales Tool zur Sichtung aller R&D-Experimente (Filter nach Preset, Tag, Strategy, Datum, Trades; Detail- und JSON-Output)
 
 > **Wichtig:** R&D-Strategien sind **nicht live-freigegeben**. Sie sind ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
 

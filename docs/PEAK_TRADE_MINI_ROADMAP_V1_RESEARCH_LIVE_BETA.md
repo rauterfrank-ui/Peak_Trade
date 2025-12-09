@@ -13,6 +13,7 @@ Dazu werden sieben Micro-Phasen definiert, die auf dem bestehenden Stand (Strate
 
 | Micro-Phase | Fokus | Hauptziel |
 |------------|-------|-----------|
+| **Phase 75** | R&D | R&D-Wave v2 Experiments & Operator-View (CLI `view_r_and_d_experiments.py`) |
 | **Phase 80** | Research | Tiering → Portfolio-Presets & Sweeps |
 | **Phase 80B** | Execution | Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
 | **Phase 81** | Research UX | Golden-Path-Workflows & Recipes |
@@ -21,6 +22,40 @@ Dazu werden sieben Micro-Phasen definiert, die auf dem bestehenden Stand (Strate
 | **Phase 84** | Monitoring | Operator-Dashboards & Alerts v1.0 |
 | **Phase 85** | Web-Dashboard | Live-Track Session Explorer (Filter, Detail, Stats-API) |
 | **Phase 86** | Freeze & Tag | Research v1.0 Freeze + Live-Beta Label |
+
+---
+
+## Phase 75 – R&D-Wave v2 Experiments & Operator-View
+
+**Status:** ✅ ABGESCHLOSSEN
+
+**Ziel:**
+Standardisierte R&D-Experimente für fortgeschrittene Forschungsstrategien (Armstrong, Ehlers, López de Prado, El Karoui) sowie ein praktischer Operator-Workflow für deren Sichtung und Auswertung.
+
+**Kern-Deliverables:**
+
+- **Experiment-Katalog:** 18 Experiment-Templates für 9 Presets
+  - Detail-Doku: [`PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md`](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md)
+- **R&D-Presets:** Konfiguration in `config/r_and_d_presets.toml`
+  - Preset-Doku: [`PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md`](PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md)
+- **Operator-View (Abschnitt 8):** Praktischer Workflow Strategy-Profile → Experiments-Viewer → Dashboard
+- **R&D Experiments Viewer CLI:** `scripts/view_r_and_d_experiments.py`
+  - Filter nach Preset, Tag, Strategy, Datum, Trades
+  - Detail-Ansicht per Run-ID oder Datei-Pfad
+  - JSON-Output für Notebooks/Reports
+
+**Operator-Workflow (Kurzfassung):**
+
+1. **Strategy-Profiling:** `python scripts/research_cli.py strategy-profile --strategy <id>`
+2. **Experimente inspizieren:** `python scripts/view_r_and_d_experiments.py --preset <preset_id> --with-trades`
+3. **Ausblick:** R&D-Dashboard (geplant)
+
+**Definition of Done:**
+
+- ✅ 18 Experiment-Templates definiert
+- ✅ R&D-Presets dokumentiert und konfiguriert
+- ✅ Operator-View dokumentiert (Abschnitt 8)
+- ✅ CLI `view_r_and_d_experiments.py` implementiert und getestet (32 Tests)
 
 ---
 
