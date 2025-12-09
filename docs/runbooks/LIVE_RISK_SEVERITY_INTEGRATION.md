@@ -386,5 +386,12 @@ Die Erweiterung ist **vollständig rückwärtskompatibel**:
 
 ---
 
+### Verwandte Runbooks
+
+- [`LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1`](LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md) – Versand der Alerts (Slack/E-Mail) inkl. Severity
+- [`INCIDENT_RUNBOOK_INTEGRATION_V1`](INCIDENT_RUNBOOK_INTEGRATION_V1.md) – Wie Alerts automatisch mit Incident-Runbooks verknüpft werden (Phase 84)
+
+---
+
 **Maintainer:** Peak_Trade Team  
 **Letzte Aktualisierung:** 2025-12-09

@@ -256,4 +256,11 @@ Dieses Runbook beschreibt die Handlungsempfehlungen für Operatoren beim Empfang
 
 ---
 
+### Siehe auch
+
+- [`INCIDENT_RUNBOOK_INTEGRATION_V1`](INCIDENT_RUNBOOK_INTEGRATION_V1.md) – Beschreibung der Runbook-Verknüpfung in der Alert-Pipeline (Phase 84)
+- [`LIVE_RISK_SEVERITY_INTEGRATION`](LIVE_RISK_SEVERITY_INTEGRATION.md) – Details zum Live Risk Severity System, das viele Alerts triggert
+
+---
+
 *Version: v1.0 | Phase 82 | Dezember 2024*

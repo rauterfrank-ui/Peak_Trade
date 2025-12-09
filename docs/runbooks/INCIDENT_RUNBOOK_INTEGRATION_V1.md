@@ -78,7 +78,7 @@ So bleibt der Flow stabil, selbst wenn die Registry noch nicht alle Alert-Typen 
 
 ---
 
-## Verwandte Runbooks
+### Verweise
 
-- [Live Risk Severity Integration](./LIVE_RISK_SEVERITY_INTEGRATION.md)
-- [Live Alert Pipeline Slack/Email Runbook](./LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md)
+- [`LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1`](LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md) – Detailliertes Runbook zur Slack/E-Mail Alert-Pipeline
+- [`LIVE_RISK_SEVERITY_INTEGRATION`](LIVE_RISK_SEVERITY_INTEGRATION.md) – Runbook zum Live Risk Severity System
