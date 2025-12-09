@@ -1,17 +1,22 @@
 # src/webui/r_and_d_api.py
 """
-Peak_Trade: R&D Dashboard API v1.1 (Phase 76)
+Peak_Trade: R&D Dashboard API v1.2 (Phase 77)
 =============================================
 
 API-Endpoints für das R&D-Dashboard:
 - GET /api/r_and_d/experiments - Liste aller R&D-Experimente (mit Filtern)
-- GET /api/r_and_d/experiments/{run_id} - Detail eines Experiments
+- GET /api/r_and_d/experiments/{run_id} - Detail eines Experiments (v1.2: mit Report-Links)
 - GET /api/r_and_d/summary - Aggregierte Summary-Statistiken
 - GET /api/r_and_d/presets - Aggregation nach Preset
 - GET /api/r_and_d/strategies - Aggregation nach Strategy
 - GET /api/r_and_d/stats - Globale Statistiken
 - GET /api/r_and_d/today - Heute fertige Experimente (Daily R&D View)
 - GET /api/r_and_d/running - Aktuell laufende Experimente
+
+v1.2 Änderungen (Phase 77):
+- Report-Links (HTML/Markdown) in Detail-Endpoint
+- Erweiterte Meta-Daten mit Laufzeit-Infos
+- Strukturierte Response für Detail-View
 
 v1.1 Änderungen:
 - run_type und tier Felder prominenter
@@ -85,8 +90,17 @@ class RnDExperimentSummary(BaseModel):
     date_str: str = ""  # YYYY-MM-DD für einfache Filterung
 
 
+class RnDReportLink(BaseModel):
+    """Report-Link für ein R&D-Experiment (v1.2)."""
+    type: str  # html, markdown, json, png
+    label: str
+    path: str
+    url: str  # Relative URL für Web-Zugriff
+    exists: bool = True
+
+
 class RnDExperimentDetail(BaseModel):
-    """Vollständige Details eines R&D-Experiments."""
+    """Vollständige Details eines R&D-Experiments (v1.2)."""
     filename: str
     run_id: str
     experiment: Dict[str, Any]
@@ -94,6 +108,14 @@ class RnDExperimentDetail(BaseModel):
     meta: Dict[str, Any]
     parameters: Optional[Dict[str, Any]] = None
     raw: Dict[str, Any]
+    # v1.2: Report-Links
+    report_links: List[Dict[str, Any]] = []
+    # v1.2: Erweiterte Felder
+    status: str = ""
+    run_type: str = ""
+    tier: str = ""
+    experiment_category: str = ""
+    duration_info: Optional[Dict[str, Any]] = None
 
 
 class RnDSummary(BaseModel):
@@ -309,6 +331,164 @@ def parse_date(date_str: str) -> Optional[datetime]:
         return datetime.strptime(date_str, "%Y-%m-%d")
     except ValueError:
         return None
+
+
+def find_report_links(run_id: str, experiment: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """
+    Sucht nach zugehörigen Report-Dateien für ein Experiment (v1.2).
+
+    Sucht in verschiedenen Reports-Verzeichnissen nach:
+    - HTML-Reports (_report.html)
+    - Markdown-Reports (_report.md, .md)
+    - Stats-JSON (_stats.json)
+    - Equity-Charts (_equity.png)
+    - Drawdown-Charts (_drawdown.png)
+
+    Args:
+        run_id: Run-ID des Experiments
+        experiment: Experiment-Dict mit Meta-Daten
+
+    Returns:
+        Liste von Report-Link-Dicts
+    """
+    report_links: List[Dict[str, Any]] = []
+    base_dir = _BASE_DIR or Path(__file__).resolve().parents[2]
+
+    # Extrahiere mögliche Dateinamen-Präfixe
+    exp_data = experiment.get("experiment", {})
+    tag = exp_data.get("tag", "")
+    preset_id = exp_data.get("preset_id", "")
+    strategy = exp_data.get("strategy", "")
+    timestamp = exp_data.get("timestamp", "")
+
+    # Mögliche Präfixe für Report-Suche
+    prefixes = [run_id]
+    if tag:
+        prefixes.append(tag)
+    if preset_id and timestamp:
+        prefixes.append(f"{preset_id}_{timestamp}")
+    if strategy and timestamp:
+        prefixes.append(f"{strategy}_{timestamp}")
+
+    # Report-Verzeichnisse durchsuchen
+    report_dirs = [
+        base_dir / "reports",
+        base_dir / "reports" / "r_and_d_experiments",
+        base_dir / "reports" / "portfolio",
+        base_dir / "reports" / "ideas",
+    ]
+
+    # Report-Typen mit Labels
+    report_patterns = [
+        ("_report.html", "html", "📄 HTML Report"),
+        ("_report.md", "markdown", "📝 Markdown Report"),
+        (".md", "markdown", "📝 Markdown"),
+        ("_stats.json", "json", "📊 Stats JSON"),
+        ("_equity.png", "png", "📈 Equity Chart"),
+        ("_drawdown.png", "png", "📉 Drawdown Chart"),
+    ]
+
+    found_paths: set = set()  # Verhindere Duplikate
+
+    for report_dir in report_dirs:
+        if not report_dir.exists():
+            continue
+
+        for prefix in prefixes:
+            for suffix, rtype, label in report_patterns:
+                # Direkte Datei
+                report_path = report_dir / f"{prefix}{suffix}"
+                if report_path.exists() and str(report_path) not in found_paths:
+                    found_paths.add(str(report_path))
+                    rel_path = report_path.relative_to(base_dir)
+                    report_links.append({
+                        "type": rtype,
+                        "label": label,
+                        "path": str(rel_path),
+                        "url": f"/static/{rel_path}",
+                        "exists": True,
+                    })
+
+                # Auch in Unterverzeichnissen suchen (z.B. ideas/idea_*/...)
+                for subdir in report_dir.iterdir():
+                    if subdir.is_dir():
+                        sub_report = subdir / f"{prefix}{suffix}"
+                        if sub_report.exists() and str(sub_report) not in found_paths:
+                            found_paths.add(str(sub_report))
+                            rel_path = sub_report.relative_to(base_dir)
+                            report_links.append({
+                                "type": rtype,
+                                "label": f"{label} ({subdir.name})",
+                                "path": str(rel_path),
+                                "url": f"/static/{rel_path}",
+                                "exists": True,
+                            })
+
+    # Meta-Links aus dem Experiment selbst (falls vorhanden)
+    meta = experiment.get("meta", {})
+    if meta.get("report_path"):
+        report_path = Path(meta["report_path"])
+        if report_path.exists():
+            suffix = report_path.suffix.lower()
+            rtype = {"html": "html", ".md": "markdown", ".json": "json"}.get(suffix, "file")
+            report_links.append({
+                "type": rtype,
+                "label": f"📎 Meta Report ({report_path.name})",
+                "path": str(report_path),
+                "url": f"/static/{report_path.relative_to(base_dir)}",
+                "exists": True,
+            })
+
+    return report_links
+
+
+def compute_duration_info(experiment: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """
+    Berechnet Laufzeit-Informationen für ein Experiment (v1.2).
+
+    Args:
+        experiment: Experiment-Dict
+
+    Returns:
+        Dict mit start_time, end_time, duration_seconds oder None
+    """
+    meta = experiment.get("meta", {})
+    exp_data = experiment.get("experiment", {})
+
+    start_time = meta.get("start_time") or exp_data.get("timestamp")
+    end_time = meta.get("end_time")
+
+    if not start_time:
+        return None
+
+    result: Dict[str, Any] = {"start_time": start_time}
+
+    if end_time:
+        result["end_time"] = end_time
+        # Versuche Duration zu berechnen
+        try:
+            if len(start_time) >= 15 and len(end_time) >= 15:
+                start_dt = datetime.strptime(start_time[:15], "%Y%m%d_%H%M%S")
+                end_dt = datetime.strptime(end_time[:15], "%Y%m%d_%H%M%S")
+                duration = (end_dt - start_dt).total_seconds()
+                result["duration_seconds"] = duration
+                result["duration_human"] = format_duration(duration)
+        except (ValueError, TypeError):
+            pass
+
+    return result
+
+
+def format_duration(seconds: float) -> str:
+    """Formatiert Sekunden in menschenlesbare Form."""
+    if seconds < 60:
+        return f"{seconds:.1f}s"
+    elif seconds < 3600:
+        minutes = seconds / 60
+        return f"{minutes:.1f}m"
+    else:
+        hours = seconds / 3600
+        return f"{hours:.1f}h"
 
 
 def extract_date_from_timestamp(timestamp: str) -> Optional[datetime]:
@@ -616,18 +796,25 @@ async def list_experiments(
 @router.get(
     "/experiments/{run_id}",
     response_model=Dict[str, Any],
-    summary="Detail eines R&D-Experiments",
-    description="Liefert alle Details eines einzelnen Experiments nach Run-ID.",
+    summary="Detail eines R&D-Experiments (v1.2)",
+    description=(
+        "Liefert alle Details eines einzelnen Experiments nach Run-ID. "
+        "v1.2: Inkl. Report-Links und erweiterte Meta-Daten."
+    ),
 )
 async def get_experiment_detail(run_id: str) -> Dict[str, Any]:
     """
-    Detail-Endpoint für ein einzelnes Experiment.
+    Detail-Endpoint für ein einzelnes Experiment (v1.2).
 
     Args:
         run_id: Run-ID (Dateiname ohne .json oder Timestamp-Substring)
 
     Returns:
-        Vollständige Experiment-Details inkl. Raw-JSON
+        Vollständige Experiment-Details inkl.:
+        - Raw-JSON
+        - Report-Links (HTML/Markdown/PNG)
+        - Status, Run-Type, Tier
+        - Duration-Info
 
     Raises:
         HTTPException 404: Wenn Experiment nicht gefunden
@@ -641,6 +828,11 @@ async def get_experiment_detail(run_id: str) -> Dict[str, Any]:
 
         # Match auf Run-ID oder Timestamp-Substring
         if run_id == exp_run_id or run_id in filename or run_id in timestamp:
+            # v1.2: Extrahiere erweiterte Felder
+            flat = extract_flat_fields(exp)
+            report_links = find_report_links(exp_run_id, exp)
+            duration_info = compute_duration_info(exp)
+
             return {
                 "filename": filename,
                 "run_id": exp_run_id,
@@ -649,6 +841,13 @@ async def get_experiment_detail(run_id: str) -> Dict[str, Any]:
                 "meta": exp.get("meta", {}),
                 "parameters": exp.get("parameters"),
                 "raw": exp,
+                # v1.2: Neue Felder
+                "report_links": report_links,
+                "status": flat["status"],
+                "run_type": flat["run_type"],
+                "tier": flat["tier"],
+                "experiment_category": flat["experiment_category"],
+                "duration_info": duration_info,
             }
 
     raise HTTPException(status_code=404, detail=f"Experiment not found: {run_id}")

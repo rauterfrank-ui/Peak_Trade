@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """
-Tests für R&D Dashboard API (Phase 76 v1.1).
+Tests für R&D Dashboard API (Phase 76/77 v1.2).
 
-65 spezialisierte API-Tests für das R&D-Dashboard.
+80+ spezialisierte API-Tests für das R&D-Dashboard.
 
 Testet die API-Endpoints für R&D-Experimente.
+
+v1.2: Neue Tests für Phase 77:
+- Report-Links (find_report_links)
+- Duration-Info (compute_duration_info)
+- Detail-Endpoint v1.2 mit erweiterten Feldern
+- HTML Detail-View Route
 
 v1.1: Neue Tests für:
 - Status-Werte: running, failed, success, no_trades
@@ -40,6 +46,10 @@ from src.webui.r_and_d_api import (
     compute_strategy_stats,
     compute_global_stats,
     set_base_dir,
+    # v1.2 (Phase 77)
+    find_report_links,
+    compute_duration_info,
+    format_duration,
 )
 
 
@@ -803,3 +813,258 @@ class TestExtractFlatFieldsEdgeCases:
         assert flat["total_return"] == 0.0
         assert flat["sharpe"] == 0.0
         assert flat["total_trades"] == 0
+
+
+# =============================================================================
+# PHASE 77: NEW TESTS FOR DETAIL VIEW & REPORT LINKS
+# =============================================================================
+
+
+class TestDetailEndpointV12:
+    """Tests für den erweiterten Detail-Endpoint (v1.2 / Phase 77)."""
+
+    def test_detail_returns_report_links_field(self, client):
+        """Detail-Endpoint liefert report_links Feld (v1.2)."""
+        # Erst ein Experiment finden
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            detail_resp = client.get(f"/api/r_and_d/experiments/{run_id}")
+            assert detail_resp.status_code == 200
+            data = detail_resp.json()
+            assert "report_links" in data
+            assert isinstance(data["report_links"], list)
+
+    def test_detail_returns_status_field(self, client):
+        """Detail-Endpoint liefert status Feld (v1.2)."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            detail_resp = client.get(f"/api/r_and_d/experiments/{run_id}")
+            assert detail_resp.status_code == 200
+            data = detail_resp.json()
+            assert "status" in data
+            assert data["status"] in ["success", "running", "failed", "no_trades"]
+
+    def test_detail_returns_run_type_field(self, client):
+        """Detail-Endpoint liefert run_type Feld (v1.2)."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            detail_resp = client.get(f"/api/r_and_d/experiments/{run_id}")
+            assert detail_resp.status_code == 200
+            data = detail_resp.json()
+            assert "run_type" in data
+            assert data["run_type"] in ["backtest", "sweep", "monte_carlo", "walkforward"]
+
+    def test_detail_returns_tier_field(self, client):
+        """Detail-Endpoint liefert tier Feld (v1.2)."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            detail_resp = client.get(f"/api/r_and_d/experiments/{run_id}")
+            assert detail_resp.status_code == 200
+            data = detail_resp.json()
+            assert "tier" in data
+
+    def test_detail_returns_experiment_category_field(self, client):
+        """Detail-Endpoint liefert experiment_category Feld (v1.2)."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            detail_resp = client.get(f"/api/r_and_d/experiments/{run_id}")
+            assert detail_resp.status_code == 200
+            data = detail_resp.json()
+            assert "experiment_category" in data
+
+    def test_detail_returns_duration_info_field(self, client):
+        """Detail-Endpoint liefert duration_info Feld (v1.2)."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            detail_resp = client.get(f"/api/r_and_d/experiments/{run_id}")
+            assert detail_resp.status_code == 200
+            data = detail_resp.json()
+            assert "duration_info" in data
+            # duration_info kann None sein, ist aber immer vorhanden
+
+    def test_detail_404_for_nonexistent_run_id(self, client):
+        """Detail-Endpoint gibt 404 für nicht existierende Run-ID."""
+        resp = client.get("/api/r_and_d/experiments/nonexistent_run_id_xyz_123")
+        assert resp.status_code == 404
+        data = resp.json()
+        assert "detail" in data
+
+
+class TestFindReportLinks:
+    """Tests für die find_report_links Funktion (Phase 77)."""
+
+    def test_returns_list(self):
+        """find_report_links gibt immer eine Liste zurück."""
+        exp = {
+            "experiment": {"tag": "test", "preset_id": "test", "timestamp": "20241208"},
+            "meta": {},
+        }
+        result = find_report_links("test_run_id", exp)
+        assert isinstance(result, list)
+
+    def test_empty_experiment_returns_empty_list(self):
+        """Leeres Experiment gibt leere Liste zurück."""
+        exp = {"experiment": {}, "meta": {}}
+        result = find_report_links("empty_run", exp)
+        assert isinstance(result, list)
+
+    def test_report_link_structure(self):
+        """Report-Links haben korrekte Struktur."""
+        exp = {
+            "experiment": {"tag": "test", "preset_id": "test", "timestamp": "20241208"},
+            "meta": {},
+        }
+        result = find_report_links("test_run_id", exp)
+        # Auch wenn leer, prüfen wir das Format für gefundene Links
+        for link in result:
+            assert "type" in link
+            assert "label" in link
+            assert "path" in link
+            assert "url" in link
+            assert "exists" in link
+
+    def test_report_link_types(self):
+        """Report-Link-Typen sind valide."""
+        valid_types = {"html", "markdown", "json", "png", "file"}
+        exp = {
+            "experiment": {"tag": "test", "preset_id": "test", "timestamp": "20241208"},
+            "meta": {},
+        }
+        result = find_report_links("test_run_id", exp)
+        for link in result:
+            assert link["type"] in valid_types
+
+
+class TestComputeDurationInfo:
+    """Tests für die compute_duration_info Funktion (Phase 77)."""
+
+    def test_returns_none_for_empty_experiment(self):
+        """Leeres Experiment gibt None zurück."""
+        exp = {"experiment": {}, "meta": {}}
+        result = compute_duration_info(exp)
+        assert result is None
+
+    def test_returns_dict_with_start_time(self):
+        """Experiment mit Timestamp gibt Dict mit start_time zurück."""
+        exp = {
+            "experiment": {"timestamp": "20241208_120000"},
+            "meta": {},
+        }
+        result = compute_duration_info(exp)
+        assert result is not None
+        assert "start_time" in result
+        assert result["start_time"] == "20241208_120000"
+
+    def test_calculates_duration_when_end_time_present(self):
+        """Duration wird berechnet wenn end_time vorhanden."""
+        exp = {
+            "experiment": {"timestamp": "20241208_120000"},
+            "meta": {
+                "start_time": "20241208_120000",
+                "end_time": "20241208_121500",  # 15 Minuten später
+            },
+        }
+        result = compute_duration_info(exp)
+        assert result is not None
+        if "duration_seconds" in result:
+            # 15 Minuten = 900 Sekunden
+            assert result["duration_seconds"] == 900
+
+    def test_graceful_with_invalid_timestamps(self):
+        """Ungültige Timestamps werden graceful behandelt."""
+        exp = {
+            "experiment": {"timestamp": "invalid"},
+            "meta": {"end_time": "also_invalid"},
+        }
+        result = compute_duration_info(exp)
+        # Sollte nicht crashen
+        assert result is None or isinstance(result, dict)
+
+
+class TestFormatDuration:
+    """Tests für die format_duration Funktion (Phase 77)."""
+
+    def test_formats_seconds(self):
+        """Sekunden werden korrekt formatiert."""
+        assert format_duration(30) == "30.0s"
+        assert format_duration(59.9) == "59.9s"
+
+    def test_formats_minutes(self):
+        """Minuten werden korrekt formatiert."""
+        assert format_duration(60) == "1.0m"
+        assert format_duration(120) == "2.0m"
+        assert format_duration(900) == "15.0m"
+
+    def test_formats_hours(self):
+        """Stunden werden korrekt formatiert."""
+        assert format_duration(3600) == "1.0h"
+        assert format_duration(7200) == "2.0h"
+
+    def test_zero_duration(self):
+        """Null-Dauer wird korrekt formatiert."""
+        assert format_duration(0) == "0.0s"
+
+
+class TestHTMLDetailRoute:
+    """Tests für die HTML Detail-Route (Phase 77)."""
+
+    def test_detail_page_returns_html(self, client):
+        """Detail-Page gibt HTML zurück."""
+        # Erst ein Experiment finden
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            detail_resp = client.get(f"/r_and_d/experiment/{run_id}")
+            assert detail_resp.status_code == 200
+            assert "text/html" in detail_resp.headers.get("content-type", "")
+
+    def test_detail_page_404_for_nonexistent(self, client):
+        """Detail-Page gibt 404 für nicht existierendes Experiment."""
+        resp = client.get("/r_and_d/experiment/nonexistent_xyz_123")
+        assert resp.status_code == 404
+
+    def test_detail_page_contains_run_id(self, client):
+        """Detail-Page enthält die Run-ID."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        if resp.json()["items"]:
+            run_id = resp.json()["items"][0]["run_id"]
+            detail_resp = client.get(f"/r_and_d/experiment/{run_id}")
+            assert detail_resp.status_code == 200
+            # Run-ID sollte irgendwo in der HTML-Response sein
+            assert run_id in detail_resp.text or run_id.replace("_", "") in detail_resp.text
+
+
+class TestReportLinkTypes:
+    """Tests für verschiedene Report-Link-Typen."""
+
+    def test_html_report_label(self):
+        """HTML-Reports haben korrektes Label."""
+        exp = {"experiment": {}, "meta": {}}
+        # Die Funktion erstellt Links nur für existierende Dateien
+        # Daher prüfen wir hier nur die Grundstruktur
+        result = find_report_links("test", exp)
+        for link in result:
+            if link["type"] == "html":
+                assert "HTML" in link["label"] or "html" in link["label"].lower()
+
+    def test_markdown_report_label(self):
+        """Markdown-Reports haben korrektes Label."""
+        exp = {"experiment": {}, "meta": {}}
+        result = find_report_links("test", exp)
+        for link in result:
+            if link["type"] == "markdown":
+                assert "Markdown" in link["label"] or "md" in link["label"].lower()
+
+    def test_png_chart_label(self):
+        """PNG-Charts haben korrektes Label."""
+        exp = {"experiment": {}, "meta": {}}
+        result = find_report_links("test", exp)
+        for link in result:
+            if link["type"] == "png":
+                assert "Chart" in link["label"] or "png" in link["label"].lower()

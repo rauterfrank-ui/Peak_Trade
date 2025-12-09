@@ -1,7 +1,7 @@
 # src/webui/app.py
 """
-Peak_Trade: Web Dashboard v1.2 (R&D Dashboard API)
-==================================================
+Peak_Trade: Web Dashboard v1.3 (R&D Detail View)
+================================================
 
 FastAPI-App für read-only Status-Ansichten:
 - v1.0 Projekt-Status & Snapshot
@@ -9,6 +9,12 @@ FastAPI-App für read-only Status-Ansichten:
 - Live-Track Panel mit letzten Sessions (Phase 82)
 - Session Explorer mit Filter & Detail-View (Phase 85)
 - R&D Dashboard API (Phase 76)
+- R&D Experiment Detail View (Phase 77)
+
+v1.3 Features (Phase 77):
+- R&D Experiment Detail View mit Report-Links
+- Klickbare Zeilen in der R&D-Übersicht → Detail-Ansicht
+- Report-Link-Integration (HTML, Markdown, Charts)
 
 v1.2 Features:
 - R&D Dashboard API mit Experiments, Aggregations und Stats
@@ -27,6 +33,7 @@ HTML Pages:
 - GET / (Dashboard Home)
 - GET /session/{session_id} (Session Detail)
 - GET /r_and_d (R&D Experiments Overview - Phase 76)
+- GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77)
 
 API Endpoints:
 Live-Track:
@@ -34,9 +41,9 @@ Live-Track:
 - GET /api/live_sessions/{session_id} (Detail)
 - GET /api/live_sessions/stats (Statistiken)
 
-R&D Dashboard (Phase 76):
+R&D Dashboard (Phase 76/77):
 - GET /api/r_and_d/experiments (Liste mit Filtern)
-- GET /api/r_and_d/experiments/{run_id} (Detail)
+- GET /api/r_and_d/experiments/{run_id} (Detail mit Report-Links - v1.2)
 - GET /api/r_and_d/summary (Summary-Statistiken)
 - GET /api/r_and_d/presets (Aggregation nach Preset)
 - GET /api/r_and_d/strategies (Aggregation nach Strategy)
@@ -436,6 +443,81 @@ def create_app() -> FastAPI:
                 "total": len(all_experiments),
                 "filtered": len(filtered_experiments),
                 "limit": limit,
+            },
+        )
+
+    @app.get("/r_and_d/experiment/{run_id}", response_class=HTMLResponse)
+    async def r_and_d_experiment_detail_page(
+        request: Request,
+        run_id: str,
+    ) -> Any:
+        """
+        HTML Detail-Page für ein einzelnes R&D-Experiment (Phase 77).
+
+        Zeigt:
+        - Vollständige Meta-Daten und Parameter
+        - Kern-Metriken mit visueller Hervorhebung
+        - Report-Links (HTML, Markdown, Charts)
+        - Status-/Run-Type-Badges
+        - Raw JSON (collapsible)
+        """
+        from .r_and_d_api import find_report_links, compute_duration_info
+
+        proj_status = get_project_status()
+
+        # Experiment laden
+        all_experiments = load_experiments_from_dir()
+
+        experiment_data = None
+        for exp in all_experiments:
+            filename = exp.get("_filename", "")
+            exp_run_id = filename.replace(".json", "") if filename else ""
+            timestamp = exp.get("experiment", {}).get("timestamp", "")
+
+            # Match auf Run-ID oder Timestamp-Substring
+            if run_id == exp_run_id or run_id in filename or run_id in timestamp:
+                flat = extract_flat_fields(exp)
+                report_links = find_report_links(exp_run_id, exp)
+                duration_info = compute_duration_info(exp)
+
+                experiment_data = {
+                    "filename": filename,
+                    "run_id": exp_run_id,
+                    "experiment": exp.get("experiment", {}),
+                    "results": exp.get("results", {}),
+                    "meta": exp.get("meta", {}),
+                    "parameters": exp.get("parameters"),
+                    "raw": exp,
+                    "report_links": report_links,
+                    "status": flat["status"],
+                    "run_type": flat["run_type"],
+                    "tier": flat["tier"],
+                    "experiment_category": flat["experiment_category"],
+                    "duration_info": duration_info,
+                }
+                break
+
+        if experiment_data is None:
+            # 404 - Experiment nicht gefunden
+            return templates.TemplateResponse(
+                request,
+                "error.html",
+                {
+                    "status": proj_status,
+                    "error_code": 404,
+                    "error_message": f"Experiment nicht gefunden: {run_id}",
+                    "back_link": "/r_and_d",
+                    "back_label": "Zurück zum R&D Hub",
+                },
+                status_code=404,
+            )
+
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_experiment_detail.html",
+            {
+                "status": proj_status,
+                "experiment": experiment_data,
             },
         )
 

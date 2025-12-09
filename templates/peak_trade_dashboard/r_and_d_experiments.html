@@ -1,8 +1,13 @@
 <!-- templates/peak_trade_dashboard/r_and_d_experiments.html -->
 <!-- 
-  R&D Experiments Overview v1.1 (Phase 76)
-  ========================================
+  R&D Experiments Overview v1.2 (Phase 76/77)
+  ===========================================
   Zentrale Einstiegsansicht für den Research-Track.
+  
+  v1.2 Änderungen (Phase 77):
+  - Klickbare Zeilen → Detail-Ansicht pro Experiment
+  - Detail-Link-Spalte mit Pfeil-Icon
+  - Integration mit r_and_d_experiment_detail.html
   
   v1.1 Änderungen:
   - Klarere Kopfzeile mit Titel und Kurzbeschreibung
@@ -17,7 +22,7 @@
   2. Daily Summary Kacheln (Was läuft? Was ist heute fertig?)
   3. Stats-Kacheln (KPIs)
   4. Filter-Form + aktive Filter-Badges
-  5. Experiments-Tabelle (kompakter, mit Run-Type & Tier)
+  5. Experiments-Tabelle (kompakter, mit Run-Type & Tier, klickbar)
   6. Footer
 -->
 {% extends "base.html" %}
@@ -452,11 +457,16 @@
               <th class="px-3 py-2.5 text-right font-semibold whitespace-nowrap">Sharpe</th>
               <th class="px-3 py-2.5 text-right font-semibold whitespace-nowrap">MaxDD</th>
               <th class="px-3 py-2.5 text-right font-semibold whitespace-nowrap">WinRate</th>
+              <th class="px-3 py-2.5 text-center font-semibold whitespace-nowrap w-12"></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-800/50">
             {% for exp in experiments %}
-            <tr class="hover:bg-slate-800/40 transition-colors {{ 'bg-slate-900/20' if loop.index is odd else '' }}">
+            <tr 
+              class="hover:bg-slate-800/40 transition-colors cursor-pointer {{ 'bg-slate-900/20' if loop.index is odd else '' }}"
+              onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'"
+              title="Klicken für Details zu {{ exp.run_id }}"
+            >
               
               {# Status (v1.1 prominent) #}
               <td class="px-3 py-2">
@@ -577,6 +587,18 @@
                 <span class="text-slate-600">-</span>
                 {% endif %}
               </td>
+
+              {# Detail-Link (v1.1 / Phase 77) #}
+              <td class="px-3 py-2 text-center">
+                <a 
+                  href="/r_and_d/experiment/{{ exp.run_id }}"
+                  class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-800 hover:bg-sky-600 text-slate-400 hover:text-white transition-colors"
+                  title="Details anzeigen"
+                  onclick="event.stopPropagation();"
+                >
+                  →
+                </a>
+              </td>
             </tr>
             {% endfor %}
           </tbody>
@@ -606,13 +628,12 @@
   <footer class="text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2">
     <p class="flex items-center gap-2">
       <span>🔬</span>
-      <span>R&D Experiments Hub v1.1 · Phase 76 · Read-only</span>
+      <span>R&D Experiments Hub v1.2 · Phase 76/77 · Read-only</span>
     </p>
     <p class="flex flex-wrap items-center gap-2">
       <span>API:</span>
       <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/experiments</code>
-      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/today</code>
-      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/running</code>
+      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/experiments/{run_id}</code>
     </p>
   </footer>
 

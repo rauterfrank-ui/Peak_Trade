@@ -1,0 +1,378 @@
+<!-- templates/peak_trade_dashboard/r_and_d_experiment_detail.html -->
+<!-- 
+  R&D Experiment Detail View v1.0 (Phase 77)
+  ==========================================
+  Detaillierte Einzelansicht für ein R&D-Experiment.
+  
+  Features:
+  - Vollständige Meta-Daten & Parameter
+  - Kern-Metriken mit visueller Hervorhebung
+  - Report-Links (HTML, Markdown, Charts)
+  - Status-/Run-Type-Badges
+  - Zurück-Navigation zur Übersicht
+  
+  Struktur:
+  1. Header mit Breadcrumb & Status
+  2. Meta-Info Cards (Experiment, Timing, Konfiguration)
+  3. Results/Metriken Grid
+  4. Report-Links Section
+  5. Raw JSON (collapsible)
+-->
+{% extends "base.html" %}
+
+{# ========================================================================= #}
+{# MACROS - Wiederverwendbare Komponenten                                    #}
+{# ========================================================================= #}
+
+{# Status-Badge Komponente #}
+{% macro status_badge(status, size="md") %}
+{% set sizes = {"sm": "text-xs px-2 py-0.5", "md": "text-sm px-2.5 py-1", "lg": "text-base px-3 py-1.5"} %}
+{% set size_class = sizes.get(size, sizes.md) %}
+{% if status == "success" %}
+<span class="inline-flex items-center gap-1.5 {{ size_class }} rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+  Success
+</span>
+{% elif status == "running" %}
+<span class="inline-flex items-center gap-1.5 {{ size_class }} rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+  <span class="w-2 h-2 rounded-full bg-sky-400 pulse-dot"></span>
+  Running
+</span>
+{% elif status == "failed" %}
+<span class="inline-flex items-center gap-1.5 {{ size_class }} rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30">
+  <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+  Failed
+</span>
+{% elif status == "no_trades" %}
+<span class="inline-flex items-center gap-1.5 {{ size_class }} rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/30">
+  0 Trades
+</span>
+{% else %}
+<span class="text-sm text-slate-400">{{ status or '-' }}</span>
+{% endif %}
+{% endmacro %}
+
+{# Run-Type Badge #}
+{% macro run_type_badge(run_type) %}
+{% if run_type == "sweep" %}
+<span class="text-sm px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
+  🔄 Parameter Sweep
+</span>
+{% elif run_type == "monte_carlo" %}
+<span class="text-sm px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+  🎲 Monte Carlo
+</span>
+{% elif run_type == "walkforward" %}
+<span class="text-sm px-2 py-0.5 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20">
+  📊 Walk-Forward
+</span>
+{% else %}
+<span class="text-sm px-2 py-0.5 rounded bg-slate-700/50 text-slate-400">
+  📈 Backtest
+</span>
+{% endif %}
+{% endmacro %}
+
+{# Tier Badge #}
+{% macro tier_badge(tier) %}
+{% if tier == "core" %}
+<span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300">Core</span>
+{% elif tier == "aux" %}
+<span class="text-xs px-2 py-0.5 rounded bg-sky-500/10 text-sky-300">Auxiliary</span>
+{% elif tier == "legacy" %}
+<span class="text-xs px-2 py-0.5 rounded bg-slate-500/10 text-slate-400">Legacy</span>
+{% else %}
+<span class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300">R&D</span>
+{% endif %}
+{% endmacro %}
+
+{# Category Badge #}
+{% macro category_badge(category) %}
+{% if category == "cycles" %}
+<span class="text-xs px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300">🔄 Cycles</span>
+{% elif category == "volatility" %}
+<span class="text-xs px-2 py-0.5 rounded bg-orange-500/10 text-orange-300">📊 Volatility</span>
+{% elif category == "ml" %}
+<span class="text-xs px-2 py-0.5 rounded bg-pink-500/10 text-pink-300">🤖 ML</span>
+{% elif category == "microstructure" %}
+<span class="text-xs px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300">🔬 Microstructure</span>
+{% else %}
+<span class="text-xs px-2 py-0.5 rounded bg-slate-500/10 text-slate-400">General</span>
+{% endif %}
+{% endmacro %}
+
+{# Metric Card #}
+{% macro metric_card(label, value, format=None, color_class="text-slate-100", icon=None, subtitle=None) %}
+<div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+  <div class="flex items-center gap-2 mb-1">
+    {% if icon %}
+    <span class="text-sm">{{ icon }}</span>
+    {% endif %}
+    <p class="text-xs uppercase tracking-wide text-slate-500 font-medium">{{ label }}</p>
+  </div>
+  <p class="text-2xl font-bold {{ color_class }} tabular-nums">
+    {%- if format == 'percent' -%}
+      {{ "%.2f%%"|format(value * 100) }}
+    {%- elif format == 'decimal' -%}
+      {{ "%.3f"|format(value) }}
+    {%- elif format == 'int' -%}
+      {{ value|int }}
+    {%- else -%}
+      {{ value }}
+    {%- endif -%}
+  </p>
+  {% if subtitle %}
+  <p class="text-xs text-slate-500 mt-1">{{ subtitle }}</p>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{# Info Row #}
+{% macro info_row(label, value, mono=false) %}
+<div class="flex items-start justify-between py-2 border-b border-slate-800/50 last:border-0">
+  <span class="text-sm text-slate-400">{{ label }}</span>
+  <span class="text-sm text-slate-200 text-right {% if mono %}font-mono{% endif %}">
+    {{ value or '-' }}
+  </span>
+</div>
+{% endmacro %}
+
+{# Report Link Button #}
+{% macro report_link(link) %}
+<a 
+  href="{{ link.url }}"
+  target="_blank"
+  class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-slate-200 transition-colors group"
+>
+  {% if link.type == "html" %}
+  <span class="text-lg">📄</span>
+  {% elif link.type == "markdown" %}
+  <span class="text-lg">📝</span>
+  {% elif link.type == "json" %}
+  <span class="text-lg">📊</span>
+  {% elif link.type == "png" %}
+  <span class="text-lg">🖼️</span>
+  {% else %}
+  <span class="text-lg">📎</span>
+  {% endif %}
+  <div class="text-left">
+    <p class="text-sm font-medium">{{ link.label }}</p>
+    <p class="text-xs text-slate-500 group-hover:text-slate-400">{{ link.path|truncate(50) }}</p>
+  </div>
+  <span class="text-slate-500 group-hover:text-slate-300 ml-auto">→</span>
+</a>
+{% endmacro %}
+
+{# ========================================================================= #}
+{# CONTENT BLOCK                                                             #}
+{# ========================================================================= #}
+
+{% block content %}
+<div class="space-y-6">
+
+  {# ======================================================================= #}
+  {# SECTION 1: Header mit Breadcrumb & Status                               #}
+  {# ======================================================================= #}
+  <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
+    
+    {# Breadcrumb #}
+    <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
+      <a href="/" class="hover:text-slate-300 transition-colors">Dashboard</a>
+      <span>›</span>
+      <a href="/r_and_d" class="hover:text-slate-300 transition-colors">R&D Hub</a>
+      <span>›</span>
+      <span class="text-slate-300">{{ experiment.run_id or 'Detail' }}</span>
+    </nav>
+    
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-3 flex-wrap">
+          <span class="text-3xl">🔬</span>
+          <div class="min-w-0">
+            <h1 class="text-xl lg:text-2xl font-bold text-slate-100 truncate" title="{{ experiment.run_id }}">
+              {{ experiment.run_id or experiment.filename or 'Experiment Detail' }}
+            </h1>
+            <p class="text-sm text-slate-400 mt-0.5">
+              {{ experiment.experiment.tag or 'Kein Tag' }}
+            </p>
+          </div>
+        </div>
+        
+        {# Status & Type Badges #}
+        <div class="flex flex-wrap items-center gap-2 mt-4">
+          {{ status_badge(experiment.status, "md") }}
+          {{ run_type_badge(experiment.run_type) }}
+          {{ tier_badge(experiment.tier) }}
+          {{ category_badge(experiment.experiment_category) }}
+        </div>
+      </div>
+      
+      {# Actions #}
+      <div class="flex flex-wrap items-center gap-2">
+        <a 
+          href="/r_and_d" 
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+        >
+          <span>←</span>
+          <span>Zurück zur Übersicht</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  {# ======================================================================= #}
+  {# SECTION 2: Meta-Info Cards                                              #}
+  {# ======================================================================= #}
+  <section aria-label="Meta-Informationen" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    
+    {# Experiment Card #}
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+      <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
+        <span>📋</span> Experiment
+      </h3>
+      {{ info_row("Preset", experiment.experiment.preset_id) }}
+      {{ info_row("Strategy", experiment.experiment.strategy) }}
+      {{ info_row("Symbol", experiment.experiment.symbol) }}
+      {{ info_row("Timeframe", experiment.experiment.timeframe) }}
+    </div>
+    
+    {# Timing Card #}
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+      <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
+        <span>⏱️</span> Timing
+      </h3>
+      {{ info_row("Timestamp", experiment.experiment.timestamp, mono=true) }}
+      {{ info_row("Von", experiment.experiment.from_date) }}
+      {{ info_row("Bis", experiment.experiment.to_date) }}
+      {% if experiment.duration_info %}
+      {{ info_row("Laufzeit", experiment.duration_info.duration_human or '-') }}
+      {% endif %}
+    </div>
+    
+    {# Config Card #}
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+      <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
+        <span>⚙️</span> Konfiguration
+      </h3>
+      {{ info_row("Tier", experiment.tier) }}
+      {{ info_row("Run-Type", experiment.run_type) }}
+      {{ info_row("Kategorie", experiment.experiment_category) }}
+      {{ info_row("Dummy-Daten", "Ja" if experiment.meta.use_dummy_data else "Nein") }}
+    </div>
+  </section>
+
+  {# ======================================================================= #}
+  {# SECTION 3: Results/Metriken Grid                                        #}
+  {# ======================================================================= #}
+  <section aria-label="Ergebnisse">
+    <h2 class="text-lg font-semibold text-slate-200 mb-3 flex items-center gap-2">
+      <span>📊</span> Ergebnisse
+    </h2>
+    
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      {# Total Return #}
+      {% set return_val = experiment.results.total_return or 0 %}
+      {% set return_color = "text-emerald-300" if return_val >= 0 else "text-rose-400" %}
+      {{ metric_card("Total Return", return_val, "percent", return_color, "💰") }}
+      
+      {# Sharpe #}
+      {% set sharpe_val = experiment.results.sharpe or 0 %}
+      {% set sharpe_color = "text-emerald-300" if sharpe_val >= 1.5 else ("text-amber-300" if sharpe_val >= 0.5 else "text-slate-300") %}
+      {{ metric_card("Sharpe Ratio", sharpe_val, "decimal", sharpe_color, "📈") }}
+      
+      {# Max Drawdown #}
+      {% set mdd_val = experiment.results.max_drawdown or 0 %}
+      {{ metric_card("Max Drawdown", mdd_val, "percent", "text-amber-300", "📉") }}
+      
+      {# Total Trades #}
+      {% set trades_val = experiment.results.total_trades or 0 %}
+      {% set trades_color = "text-emerald-300" if trades_val > 0 else "text-slate-500" %}
+      {{ metric_card("Trades", trades_val, "int", trades_color, "🔄") }}
+      
+      {# Win Rate #}
+      {% set wr_val = experiment.results.win_rate or 0 %}
+      {% set wr_color = "text-emerald-300" if wr_val >= 0.55 else ("text-slate-300" if wr_val >= 0.45 else "text-rose-400") %}
+      {{ metric_card("Win Rate", wr_val, "percent", wr_color, "🎯") }}
+      
+      {# Profit Factor #}
+      {% set pf_val = experiment.results.profit_factor or 0 %}
+      {% set pf_color = "text-emerald-300" if pf_val >= 1.5 else ("text-amber-300" if pf_val >= 1.0 else "text-slate-300") %}
+      {{ metric_card("Profit Factor", pf_val, "decimal", pf_color, "⚖️") }}
+    </div>
+  </section>
+
+  {# ======================================================================= #}
+  {# SECTION 4: Report-Links                                                 #}
+  {# ======================================================================= #}
+  {% if experiment.report_links and experiment.report_links|length > 0 %}
+  <section aria-label="Reports">
+    <h2 class="text-lg font-semibold text-slate-200 mb-3 flex items-center gap-2">
+      <span>📎</span> Reports & Charts
+    </h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {% for link in experiment.report_links %}
+      {{ report_link(link) }}
+      {% endfor %}
+    </div>
+  </section>
+  {% else %}
+  <section aria-label="Reports" class="bg-slate-900/40 rounded-xl border border-slate-800/50 p-6 text-center">
+    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-800 mb-3">
+      <span class="text-xl">📎</span>
+    </div>
+    <h3 class="text-sm font-medium text-slate-300 mb-1">Keine Reports gefunden</h3>
+    <p class="text-xs text-slate-500">
+      Für dieses Experiment wurden keine zugehörigen Report-Dateien (HTML/Markdown/Charts) erkannt.
+    </p>
+  </section>
+  {% endif %}
+
+  {# ======================================================================= #}
+  {# SECTION 5: Parameters (falls vorhanden)                                 #}
+  {# ======================================================================= #}
+  {% if experiment.parameters %}
+  <section aria-label="Parameter">
+    <details class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
+      <summary class="px-4 py-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
+        <span class="text-sm font-semibold text-slate-200">⚙️ Parameter</span>
+        <span class="text-xs text-slate-500 ml-2">({{ experiment.parameters|length }} Einträge)</span>
+      </summary>
+      <div class="px-4 py-3 border-t border-slate-800">
+        <pre class="text-xs text-slate-300 overflow-x-auto font-mono bg-slate-950 p-3 rounded-lg">{{ experiment.parameters|tojson(indent=2) }}</pre>
+      </div>
+    </details>
+  </section>
+  {% endif %}
+
+  {# ======================================================================= #}
+  {# SECTION 6: Raw JSON (collapsible)                                       #}
+  {# ======================================================================= #}
+  <section aria-label="Raw Data">
+    <details class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
+      <summary class="px-4 py-3 cursor-pointer hover:bg-slate-800/50 transition-colors">
+        <span class="text-sm font-semibold text-slate-200">🔧 Raw JSON</span>
+        <span class="text-xs text-slate-500 ml-2">(klicken zum Ausklappen)</span>
+      </summary>
+      <div class="px-4 py-3 border-t border-slate-800">
+        <pre class="text-xs text-slate-400 overflow-x-auto font-mono bg-slate-950 p-3 rounded-lg max-h-96">{{ experiment.raw|tojson(indent=2) }}</pre>
+      </div>
+    </details>
+  </section>
+
+  {# ======================================================================= #}
+  {# FOOTER                                                                  #}
+  {# ======================================================================= #}
+  <footer class="text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2">
+    <p class="flex items-center gap-2">
+      <span>🔬</span>
+      <span>R&D Experiment Detail v1.0 · Phase 77 · Read-only</span>
+    </p>
+    <p class="flex flex-wrap items-center gap-2">
+      <span>API:</span>
+      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/experiments/{{ experiment.run_id }}</code>
+    </p>
+  </footer>
+
+</div>
+{% endblock %}
