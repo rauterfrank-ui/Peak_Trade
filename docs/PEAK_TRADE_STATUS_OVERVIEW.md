@@ -373,8 +373,39 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 * Neuer Detail-View `/r_and_d/experiment/{run_id}` mit Meta-Panel, Metriken-Grid, Status-/Run-Type-Badges, Report-Links und einklappbarem Raw-JSON
 * R&D-Übersicht `/r_and_d` um klickbare Zeilen + explizite Details-Spalte ergänzt
 * Fehlerhafte oder unbekannte `run_id`s landen sauber auf `error.html` mit Rück-Link zum R&D Hub
-* Testabdeckung: R&D API 114 Tests, Gesamtsuite 2518 Tests (voll grün)
 * Status: ✅ Implementiert
+
+**Phase 78 – R&D Report-Gallery & Multi-Run Comparison v1:**
+
+* R&D API auf v1.3 erweitert: Neuer Batch-Endpoint `/api/r_and_d/experiments/batch` für Multi-Run-Abfragen
+* Multi-Run Comparison View `/r_and_d/comparison` für den direkten Vergleich von 2–4 Experimenten
+* Checkbox-Auswahl in der R&D-Übersicht mit Counter und Compare-Button
+* Best-Metric-Hervorhebung (★) im Comparison-View für schnelle Identifikation der besten Runs
+* Validierung: Min. 2, max. 10 Run-IDs pro Batch; teilweise ungültige IDs werden transparent gemeldet
+* Design-Dokument: [`PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md`](PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md)
+* Status: ✅ Implementiert
+
+### Phase 78 v1.1 – R&D-API Helper-Refactoring
+
+**Kernidee:** R&D-API-Helper sind jetzt klar geschichtet, framework-agnostisch und robust gegen Edge-Cases – sowohl für Web-API als auch CLI.
+
+- **Architektur:** Neue Architekturnotiz beschreibt eine 4-Layer-Struktur:
+  - **Lookup Layer:** `load_experiment_json()`, `load_experiments_from_dir()`
+  - **Transform Layer:** `extract_flat_fields()`, `determine_status()`, `find_report_links()`
+  - **Aggregation Layer:** `compute_summary()`, `compute_preset_stats()`, `compute_best_metrics()`
+  - **Validation Layer:** `parse_and_validate_run_ids()` (wirft jetzt `ValueError` statt `HTTPException`)
+
+- **Run-ID-Validierung:**  
+  - `parse_and_validate_run_ids()` ist framework-agnostisch (nur noch `ValueError`, HTTP-Übersetzung passiert in den Endpoints).  
+  - Unterstützt Deduplizierung (standardmäßig aktiv), prüft Limits (`MAX_RUN_IDS = 100`) und validiert zulässige Zeichen (alphanumerisch, `_`, `-`).
+
+- **Best-Metrics-Aggregation:**  
+  - `compute_best_metrics()` ist mit `BestMetricsDict` (TypedDict, `total=False`) typisiert.  
+  - Funktioniert robust mit fehlenden oder partiellen Metrik-Sätzen, überspringt `None`-Werte und nicht-numerische Daten, ohne die Auswertung zu brechen.
+
+- **Tests / Robustheit:**  
+  - 15 Edge-Case-Tests für `parse_and_validate_run_ids()` (Whitespace, Deduplizierung, Limits, ungültige Zeichen, leere Eingaben).  
+  - 14 Tests für `compute_best_metrics()` (leere Listen, partielle Metriken, fehlende `results`/`_filename`, `None`-Werte, nicht-numerische Felder, TypedDict-Kompatibilität).
 
 > **Wichtig:** R&D-Strategien sind **nicht live-freigegeben**. Sie sind ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
 
@@ -1103,7 +1134,8 @@ Für eine zentrale Sammlung aller Live-Track-, Dashboard-, Playbook- und Safety-
 | 2025-12-08 | (aktuell) | Phase 85 – Live-Track Session Explorer (Web-Dashboard v1)           |
 | 2025-12-08 | 7908106   | R&D-Strategie-Welle v1 (Armstrong, Ehlers, El Karoui, etc.)          |
 | 2025-12-08 | (aktuell) | **R&D-Experiment-Welle W2 Run-Log** – Verweis auf Run-Logs hinzugefügt |
-| 2025-12-09 | (aktuell) | **Phase 77** – R&D Experiment Detail & Report Viewer v1 (API v1.2, Detail-View, Report-Links, 114 Tests) |
+| 2025-12-09 | (aktuell) | **Phase 77** – R&D Experiment Detail & Report Viewer v1 (API v1.2, Detail-View, Report-Links) |
+| 2025-12-09 | (aktuell) | **Phase 78** – R&D Report-Gallery & Multi-Run Comparison v1 (API v1.3, Batch-Endpoint, Comparison-View) |
 
 ---
 

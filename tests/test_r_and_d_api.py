@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """
-Tests für R&D Dashboard API (Phase 76/77 v1.2).
+Tests für R&D Dashboard API (Phase 76/77/78 v1.3).
 
-80+ spezialisierte API-Tests für das R&D-Dashboard.
+110+ spezialisierte API-Tests für das R&D-Dashboard.
 
 Testet die API-Endpoints für R&D-Experimente.
+
+v1.3: Neue Tests für Phase 78:
+- Batch-Endpoint für Multi-Run-Comparison
+- Comparison-View Route
+- Validierung für min/max IDs
+- Best-Metrics Berechnung
 
 v1.2: Neue Tests für Phase 77:
 - Report-Links (find_report_links)
@@ -50,6 +56,12 @@ from src.webui.r_and_d_api import (
     find_report_links,
     compute_duration_info,
     format_duration,
+    # v1.3 (Phase 78)
+    find_experiment_by_run_id,
+    build_experiment_detail,
+    compute_best_metrics,
+    parse_and_validate_run_ids,
+    RnDBatchResponse,
 )
 
 
@@ -1068,3 +1080,573 @@ class TestReportLinkTypes:
         for link in result:
             if link["type"] == "png":
                 assert "Chart" in link["label"] or "png" in link["label"].lower()
+
+
+# =============================================================================
+# PHASE 78: BATCH-ENDPOINT & COMPARISON-VIEW TESTS
+# =============================================================================
+
+
+class TestBatchEndpoint:
+    """Tests für den Batch-Endpoint (v1.3 / Phase 78)."""
+
+    def test_batch_endpoint_ok(self, client):
+        """Batch-Endpoint mit 2 gültigen IDs gibt 200."""
+        # Hole erst 2 existierende Run-IDs
+        resp = client.get("/api/r_and_d/experiments?limit=2")
+        items = resp.json().get("items", [])
+        
+        if len(items) >= 2:
+            run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
+            batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
+            assert batch_resp.status_code == 200
+            data = batch_resp.json()
+            assert "experiments" in data
+            assert "found_ids" in data
+            assert "not_found_ids" in data
+            assert data["total_found"] == 2
+
+    def test_batch_endpoint_response_structure(self, client):
+        """Batch-Response hat korrekte Struktur."""
+        resp = client.get("/api/r_and_d/experiments?limit=2")
+        items = resp.json().get("items", [])
+        
+        if len(items) >= 2:
+            run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
+            batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
+            assert batch_resp.status_code == 200
+            data = batch_resp.json()
+            
+            # Pflichtfelder prüfen
+            assert "experiments" in data
+            assert "requested_ids" in data
+            assert "found_ids" in data
+            assert "not_found_ids" in data
+            assert "total_requested" in data
+            assert "total_found" in data
+            
+            # Typen prüfen
+            assert isinstance(data["experiments"], list)
+            assert isinstance(data["requested_ids"], list)
+            assert isinstance(data["found_ids"], list)
+            assert isinstance(data["not_found_ids"], list)
+
+    def test_batch_endpoint_experiment_fields(self, client):
+        """Batch-Experimente haben erwartete Felder."""
+        resp = client.get("/api/r_and_d/experiments?limit=2")
+        items = resp.json().get("items", [])
+        
+        if len(items) >= 2:
+            run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
+            batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
+            assert batch_resp.status_code == 200
+            data = batch_resp.json()
+            
+            for exp in data["experiments"]:
+                # Basisfelder
+                assert "run_id" in exp
+                assert "experiment" in exp
+                assert "results" in exp
+                assert "status" in exp
+                # Flache Felder für Comparison
+                assert "total_return" in exp
+                assert "sharpe" in exp
+                assert "max_drawdown" in exp
+                assert "total_trades" in exp
+                assert "win_rate" in exp
+
+
+class TestBatchEndpointValidation:
+    """Tests für Batch-Endpoint Validierung."""
+
+    def test_batch_min_ids_required(self, client):
+        """Batch braucht mindestens 2 IDs."""
+        resp = client.get("/api/r_and_d/experiments/batch?run_ids=single_id")
+        assert resp.status_code == 400
+        assert "Mindestens 2" in resp.json().get("detail", "")
+
+    def test_batch_empty_ids_rejected(self, client):
+        """Leere IDs werden abgelehnt."""
+        resp = client.get("/api/r_and_d/experiments/batch?run_ids=")
+        assert resp.status_code == 400
+
+    def test_batch_max_ids_limit(self, client):
+        """Batch erlaubt maximal 10 IDs."""
+        # Generiere 11 Fake-IDs
+        ids = ",".join([f"fake_id_{i}" for i in range(11)])
+        resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={ids}")
+        assert resp.status_code == 400
+        assert "Maximal 10" in resp.json().get("detail", "")
+
+    def test_batch_10_ids_accepted(self, client):
+        """Genau 10 IDs werden akzeptiert."""
+        ids = ",".join([f"fake_id_{i}" for i in range(10)])
+        resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={ids}")
+        # 404 weil IDs nicht existieren, aber kein 400 für Limit
+        assert resp.status_code == 404
+
+    def test_batch_deduplicates_ids(self, client):
+        """Batch dedupliziert IDs."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        items = resp.json().get("items", [])
+        
+        if items:
+            run_id = items[0]["run_id"]
+            # Gleiche ID zweimal senden
+            batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_id},{run_id}")
+            # Sollte 400 sein weil nach Deduplizierung nur 1 ID
+            assert batch_resp.status_code == 400
+
+
+class TestBatchEndpointPartialMatch:
+    """Tests für teilweise gültige Batch-Anfragen."""
+
+    def test_batch_partial_match_returns_200(self, client):
+        """Teilweise gültige IDs geben 200 mit found/not_found."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        items = resp.json().get("items", [])
+        
+        if items:
+            valid_id = items[0]["run_id"]
+            invalid_id = "nonexistent_fake_id_xyz"
+            
+            batch_resp = client.get(
+                f"/api/r_and_d/experiments/batch?run_ids={valid_id},{invalid_id}"
+            )
+            assert batch_resp.status_code == 200
+            data = batch_resp.json()
+            
+            assert len(data["found_ids"]) == 1
+            assert len(data["not_found_ids"]) == 1
+            assert valid_id in data["found_ids"]
+            assert invalid_id in data["not_found_ids"]
+
+    def test_batch_all_invalid_returns_404(self, client):
+        """Nur ungültige IDs geben 404."""
+        resp = client.get(
+            "/api/r_and_d/experiments/batch?run_ids=fake_id_1,fake_id_2"
+        )
+        assert resp.status_code == 404
+        assert "Keine gültigen" in resp.json().get("detail", "")
+
+
+class TestComparisonRoute:
+    """Tests für die HTML Comparison-Route (Phase 78)."""
+
+    def test_comparison_page_returns_html(self, client):
+        """Comparison-Page gibt HTML zurück."""
+        resp = client.get("/api/r_and_d/experiments?limit=2")
+        items = resp.json().get("items", [])
+        
+        if len(items) >= 2:
+            run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
+            comp_resp = client.get(f"/r_and_d/comparison?run_ids={run_ids}")
+            assert comp_resp.status_code == 200
+            assert "text/html" in comp_resp.headers.get("content-type", "")
+
+    def test_comparison_page_shows_experiments(self, client):
+        """Comparison-Page zeigt Experiment-Daten."""
+        resp = client.get("/api/r_and_d/experiments?limit=2")
+        items = resp.json().get("items", [])
+        
+        if len(items) >= 2:
+            run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
+            comp_resp = client.get(f"/r_and_d/comparison?run_ids={run_ids}")
+            assert comp_resp.status_code == 200
+            # Prüfe ob Experiment-IDs im HTML vorkommen
+            text = comp_resp.text
+            assert items[0]["run_id"] in text or items[0]["run_id"][:20] in text
+
+    def test_comparison_page_no_ids_shows_error(self, client):
+        """Comparison ohne IDs zeigt Fehler."""
+        resp = client.get("/r_and_d/comparison")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        # Sollte eine Fehlermeldung oder leere Ansicht zeigen
+        assert "Keine Run-IDs" in resp.text or "Keine Experimente" in resp.text
+
+    def test_comparison_page_single_id_shows_error(self, client):
+        """Comparison mit nur 1 ID zeigt Fehler."""
+        resp = client.get("/api/r_and_d/experiments?limit=1")
+        items = resp.json().get("items", [])
+        
+        if items:
+            run_id = items[0]["run_id"]
+            comp_resp = client.get(f"/r_and_d/comparison?run_ids={run_id}")
+            assert comp_resp.status_code == 200
+            # Sollte Hinweis auf min. 2 Experimente zeigen
+            assert "Mindestens 2" in comp_resp.text
+
+    def test_comparison_page_too_many_ids_shows_error(self, client):
+        """Comparison mit > 10 IDs zeigt Fehler."""
+        ids = ",".join([f"fake_id_{i}" for i in range(11)])
+        resp = client.get(f"/r_and_d/comparison?run_ids={ids}")
+        assert resp.status_code == 200
+        assert "Maximal 10" in resp.text
+
+    def test_comparison_page_has_best_metrics(self, client):
+        """Comparison-Page hat Best-Metric-Markierung."""
+        resp = client.get("/api/r_and_d/experiments?limit=2")
+        items = resp.json().get("items", [])
+        
+        if len(items) >= 2:
+            run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
+            comp_resp = client.get(f"/r_and_d/comparison?run_ids={run_ids}")
+            assert comp_resp.status_code == 200
+            # Prüfe ob Best-Metric-Symbol vorhanden
+            assert "★" in comp_resp.text or "best" in comp_resp.text.lower()
+
+
+class TestRAndDExperimentsPageV13:
+    """Tests für v1.3 Features der HTML-Page (Phase 78)."""
+
+    def test_page_has_compare_checkbox_header(self, client):
+        """Page hat Checkbox-Spalten-Header."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        # Prüfe ob Comparison-UI-Elemente vorhanden
+        assert "compare-checkbox" in resp.text or "⚖️" in resp.text
+
+    def test_page_has_compare_bar(self, client):
+        """Page hat Compare-Leiste (initial hidden)."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "compare-bar" in resp.text
+        assert "compare-btn" in resp.text
+
+    def test_page_has_comparison_javascript(self, client):
+        """Page hat JavaScript für Comparison-Logik."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "toggleRunSelection" in resp.text
+        assert "openComparison" in resp.text
+        assert "MAX_SELECTION" in resp.text
+
+    def test_page_shows_updated_version(self, client):
+        """Page zeigt v1.3 im Footer."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "v1.3" in resp.text or "Phase 76/77/78" in resp.text
+
+
+# =============================================================================
+# PHASE 78 v1.1: HELPER-FUNKTIONEN TESTS
+# =============================================================================
+
+
+class TestFindExperimentByRunId:
+    """Tests für die zentralisierte Lookup-Funktion (v1.3)."""
+
+    def test_find_by_exact_run_id(self, sample_experiment):
+        """Exakter Match auf Run-ID funktioniert."""
+        experiments = [sample_experiment]
+        result = find_experiment_by_run_id(experiments, "exp_test_v1_20241208_120000")
+        assert result is not None
+        assert result["_filename"] == "exp_test_v1_20241208_120000.json"
+
+    def test_find_by_filename_with_json(self, sample_experiment):
+        """Match auf Filename mit .json funktioniert."""
+        experiments = [sample_experiment]
+        result = find_experiment_by_run_id(experiments, "exp_test_v1_20241208_120000.json")
+        assert result is not None
+
+    def test_find_by_exact_timestamp(self, sample_experiment):
+        """Exakter Match auf Timestamp funktioniert."""
+        experiments = [sample_experiment]
+        result = find_experiment_by_run_id(experiments, "20241208_120000")
+        assert result is not None
+
+    def test_not_found_returns_none(self, sample_experiment):
+        """Nicht gefundene ID gibt None zurück."""
+        experiments = [sample_experiment]
+        result = find_experiment_by_run_id(experiments, "nonexistent_run_id")
+        assert result is None
+
+    def test_empty_run_id_returns_none(self, sample_experiment):
+        """Leere Run-ID gibt None zurück."""
+        experiments = [sample_experiment]
+        assert find_experiment_by_run_id(experiments, "") is None
+        assert find_experiment_by_run_id(experiments, "   ") is None
+
+    def test_no_partial_timestamp_match(self, sample_experiment):
+        """Partial-Match auf Timestamp funktioniert NICHT (stricter matching)."""
+        experiments = [sample_experiment]
+        # Nur exakter Timestamp-Match, nicht Substring
+        result = find_experiment_by_run_id(experiments, "20241208")
+        assert result is None  # Sollte None sein weil kein exakter Match
+
+
+class TestBuildExperimentDetail:
+    """Tests für build_experiment_detail (v1.3)."""
+
+    def test_builds_all_required_fields(self, sample_experiment):
+        """Alle erforderlichen Felder werden gebaut."""
+        detail = build_experiment_detail(sample_experiment)
+        
+        # Basis-Felder
+        assert "filename" in detail
+        assert "run_id" in detail
+        assert "experiment" in detail
+        assert "results" in detail
+        assert "meta" in detail
+        
+        # Erweiterte Felder
+        assert "status" in detail
+        assert "run_type" in detail
+        assert "tier" in detail
+        assert "report_links" in detail
+        assert "duration_info" in detail
+        
+        # Flache Metriken
+        assert "total_return" in detail
+        assert "sharpe" in detail
+        assert "max_drawdown" in detail
+
+    def test_extracts_correct_values(self, sample_experiment):
+        """Korrekte Werte werden extrahiert."""
+        detail = build_experiment_detail(sample_experiment)
+        
+        assert detail["run_id"] == "exp_test_v1_20241208_120000"
+        assert detail["total_return"] == 0.15
+        assert detail["sharpe"] == 1.5
+        assert detail["status"] == "success"
+
+
+class TestComputeBestMetrics:
+    """Tests für compute_best_metrics (v1.3)."""
+
+    def test_empty_list_returns_empty_dict(self):
+        """Leere Liste gibt leeres Dict."""
+        result = compute_best_metrics([])
+        assert result == {}
+
+    def test_single_experiment_is_best(self):
+        """Einzelnes Experiment hat alle besten Werte."""
+        experiments = [{"total_return": 0.1, "sharpe": 1.5, "win_rate": 0.6}]
+        result = compute_best_metrics(experiments)
+        
+        assert result["total_return"] == 0.1
+        assert result["sharpe"] == 1.5
+        assert result["win_rate"] == 0.6
+
+    def test_finds_max_for_higher_is_better(self):
+        """Findet Maximum für 'höher ist besser' Metriken."""
+        experiments = [
+            {"total_return": 0.1, "sharpe": 1.0, "win_rate": 0.5},
+            {"total_return": 0.2, "sharpe": 1.5, "win_rate": 0.6},
+            {"total_return": 0.15, "sharpe": 2.0, "win_rate": 0.55},
+        ]
+        result = compute_best_metrics(experiments)
+        
+        assert result["total_return"] == 0.2
+        assert result["sharpe"] == 2.0
+        assert result["win_rate"] == 0.6
+
+    def test_drawdown_best_is_closest_to_zero(self):
+        """Für Drawdown ist der nächste zu 0 am besten."""
+        experiments = [
+            {"max_drawdown": -0.20},
+            {"max_drawdown": -0.05},  # Am besten (nächste zu 0)
+            {"max_drawdown": -0.15},
+        ]
+        result = compute_best_metrics(experiments)
+        
+        assert result["max_drawdown"] == -0.05
+
+    def test_handles_none_values(self):
+        """None-Werte werden ignoriert."""
+        experiments = [
+            {"total_return": None, "sharpe": 1.0},
+            {"total_return": 0.1, "sharpe": None},
+        ]
+        result = compute_best_metrics(experiments)
+        
+        assert result["total_return"] == 0.1
+        assert result["sharpe"] == 1.0
+
+
+class TestParseAndValidateRunIds:
+    """Tests für parse_and_validate_run_ids (v1.3)."""
+
+    def test_parses_comma_separated_ids(self):
+        """Komma-separierte IDs werden geparst."""
+        result = parse_and_validate_run_ids("id1,id2,id3")
+        assert result == ["id1", "id2", "id3"]
+
+    def test_trims_whitespace(self):
+        """Whitespace wird entfernt."""
+        result = parse_and_validate_run_ids("  id1 , id2  ,  id3  ")
+        assert result == ["id1", "id2", "id3"]
+
+    def test_removes_empty_entries(self):
+        """Leere Einträge werden entfernt."""
+        result = parse_and_validate_run_ids("id1,,id2,  ,id3")
+        assert result == ["id1", "id2", "id3"]
+
+    def test_deduplicates_ids(self):
+        """Duplikate werden entfernt (Reihenfolge beibehalten)."""
+        result = parse_and_validate_run_ids("id1,id2,id1,id3,id2")
+        assert result == ["id1", "id2", "id3"]
+
+    def test_raises_on_too_few_ids(self):
+        """Wirft ValueError bei zu wenig IDs (v1.3.1: Framework-agnostisch)."""
+        with pytest.raises(ValueError) as exc_info:
+            parse_and_validate_run_ids("single_id")
+
+        assert "Mindestens 2" in str(exc_info.value)
+
+    def test_raises_on_too_many_ids(self):
+        """Wirft ValueError bei zu vielen IDs (v1.3.1: Framework-agnostisch)."""
+        ids = ",".join([f"id_{i}" for i in range(15)])
+        with pytest.raises(ValueError) as exc_info:
+            parse_and_validate_run_ids(ids, max_ids=10)
+
+        assert "Maximal 10" in str(exc_info.value)
+
+    def test_custom_min_max_limits(self):
+        """Custom Min/Max Limits funktionieren."""
+        # Sollte funktionieren mit min=1
+        result = parse_and_validate_run_ids("single_id", min_ids=1)
+        assert result == ["single_id"]
+
+        # Sollte mit custom max funktionieren
+        with pytest.raises(ValueError):
+            parse_and_validate_run_ids("id1,id2,id3,id4,id5", max_ids=3)
+
+
+class TestParseAndValidateRunIdsEdgeCases:
+    """Zusätzliche Edge-Case-Tests für parse_and_validate_run_ids (v1.3.1)."""
+
+    def test_exactly_min_ids_accepted(self):
+        """Genau min_ids werden akzeptiert (Boundary-Test)."""
+        result = parse_and_validate_run_ids("id1,id2", min_ids=2, max_ids=10)
+        assert result == ["id1", "id2"]
+
+    def test_exactly_max_ids_accepted(self):
+        """Genau max_ids werden akzeptiert (Boundary-Test)."""
+        ids = ",".join([f"id_{i}" for i in range(10)])
+        result = parse_and_validate_run_ids(ids, min_ids=1, max_ids=10)
+        assert len(result) == 10
+        assert result[0] == "id_0"
+        assert result[-1] == "id_9"
+
+    def test_dedup_reduces_below_min_raises(self):
+        """Deduplizierung kann unter min_ids fallen → ValueError."""
+        with pytest.raises(ValueError) as exc_info:
+            parse_and_validate_run_ids("id1, id1", min_ids=2, max_ids=10)
+        assert "Mindestens 2 Run-IDs erforderlich" in str(exc_info.value)
+
+    def test_all_whitespace_raises(self):
+        """Nur Whitespace-IDs werden zu leerer Liste → ValueError."""
+        with pytest.raises(ValueError):
+            parse_and_validate_run_ids("   ,   ,   ", min_ids=2, max_ids=10)
+
+
+class TestComputeBestMetricsEdgeCases:
+    """Zusätzliche Edge-Case-Tests für compute_best_metrics (v1.3.1)."""
+
+    def test_all_negative_returns(self):
+        """Alle negativen Returns → der am wenigsten negative gewinnt."""
+        experiments = [
+            {"total_return": -0.20},
+            {"total_return": -0.05},  # Best (am wenigsten negativ)
+            {"total_return": -0.15},
+        ]
+        result = compute_best_metrics(experiments)
+        assert result["total_return"] == -0.05
+
+    def test_mixed_missing_fields(self):
+        """Experimente mit unterschiedlich fehlenden Feldern."""
+        experiments = [
+            {"total_return": 0.1, "sharpe": 1.0},        # kein win_rate
+            {"total_return": 0.2},                       # kein sharpe, kein win_rate
+            {"sharpe": 2.0, "win_rate": 0.7},           # kein total_return
+        ]
+        result = compute_best_metrics(experiments)
+        assert result["total_return"] == 0.2
+        assert result["sharpe"] == 2.0
+        assert result["win_rate"] == 0.7
+
+    def test_all_none_values_for_metric(self):
+        """Alle None-Werte für eine Metrik → Metrik nicht im Ergebnis."""
+        experiments = [
+            {"total_return": None, "sharpe": 1.0},
+            {"total_return": None, "sharpe": 2.0},
+        ]
+        result = compute_best_metrics(experiments)
+        assert "total_return" not in result
+        assert result["sharpe"] == 2.0
+
+
+class TestBatchEndpointValueErrorConversion:
+    """Tests für ValueError → HTTPException Konvertierung im Batch-Endpoint."""
+
+    def test_batch_endpoint_converts_valueerror_to_400(self, client):
+        """Batch-Endpoint konvertiert ValueError zu HTTP 400."""
+        # Nur eine ID → ValueError → HTTPException 400
+        resp = client.get("/api/r_and_d/experiments/batch?run_ids=single_id")
+        assert resp.status_code == 400
+        assert "Mindestens 2" in resp.json().get("detail", "")
+
+    def test_batch_endpoint_too_many_ids_400(self, client):
+        """Zu viele IDs → HTTP 400."""
+        ids = ",".join([f"id_{i}" for i in range(15)])
+        resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={ids}")
+        assert resp.status_code == 400
+        assert "Maximal" in resp.json().get("detail", "")
+
+
+class TestBatchEndpointV13Response:
+    """Tests für v1.3 Batch-Response-Struktur."""
+
+    def test_batch_response_includes_best_metrics(self, client):
+        """Batch-Response enthält best_metrics (v1.3)."""
+        resp = client.get("/api/r_and_d/experiments?limit=2")
+        items = resp.json().get("items", [])
+        
+        if len(items) >= 2:
+            run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
+            batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
+            assert batch_resp.status_code == 200
+            data = batch_resp.json()
+            
+            assert "best_metrics" in data
+            assert isinstance(data["best_metrics"], dict)
+
+    def test_batch_response_validates_pydantic_model(self, client):
+        """Batch-Response entspricht RnDBatchResponse-Modell."""
+        resp = client.get("/api/r_and_d/experiments?limit=2")
+        items = resp.json().get("items", [])
+        
+        if len(items) >= 2:
+            run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
+            batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
+            assert batch_resp.status_code == 200
+            data = batch_resp.json()
+            
+            # Validiere gegen Pydantic-Modell
+            response = RnDBatchResponse(**data)
+            assert response.total_found == 2
+            assert len(response.experiments) == 2
+
+
+class TestBatchEndpointEdgeCases:
+    """Zusätzliche Edge-Case-Tests für Batch-Endpoint (v1.3)."""
+
+    def test_whitespace_only_ids_rejected(self, client):
+        """Nur-Whitespace IDs werden abgelehnt."""
+        resp = client.get("/api/r_and_d/experiments/batch?run_ids=   ,   ,   ")
+        assert resp.status_code == 400
+
+    def test_very_long_run_id_handled(self, client):
+        """Sehr lange Run-IDs werden sauber behandelt."""
+        long_id = "a" * 500
+        resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={long_id},{long_id}a")
+        # Sollte 404 sein (nicht gefunden), nicht crashen
+        assert resp.status_code in [400, 404]
+
+    def test_special_characters_in_ids(self, client):
+        """Sonderzeichen in IDs werden sauber behandelt."""
+        # URL-encoded special chars
+        resp = client.get("/api/r_and_d/experiments/batch?run_ids=id%20with%20space,id-with-dash")
+        assert resp.status_code in [400, 404]

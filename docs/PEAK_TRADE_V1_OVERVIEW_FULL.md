@@ -265,12 +265,22 @@ Phase 76 und 77 erweitern das Web-Dashboard um einen vollständigen **R&D-Experi
 - Neuer Detail-View `/r_and_d/experiment/{run_id}` mit Meta-Panel, Metriken-Grid, Status-/Run-Type-Badges, Report-Links und einklappbarem Raw-JSON
 - R&D-Übersicht `/r_and_d` um klickbare Zeilen + explizite Details-Spalte ergänzt
 - Fehlerhafte oder unbekannte `run_id`s landen sauber auf `error.html` mit Rück-Link zum R&D Hub
-- Testabdeckung: R&D API 114 Tests, Gesamtsuite 2518 Tests (voll grün)
+
+**Phase 78 – R&D Report-Gallery & Multi-Run Comparison v1:**
+
+- R&D API auf v1.3 erweitert: Neuer Batch-Endpoint `/api/r_and_d/experiments/batch`
+- Multi-Run Comparison View `/r_and_d/comparison` für den direkten Vergleich von 2–4 Experimenten
+- Checkbox-Auswahl in der R&D-Übersicht mit Compare-Button
+- Best-Metric-Hervorhebung (★) im Comparison-View
+- Validierung für Min./Max. Run-IDs und transparente Fehlerbehandlung
 
 **Verwandte Dokumente:**
 - [`docs/PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) – Design-Spezifikation
-- `src/webui/r_and_d_api.py` – R&D API v1.2 Implementierung
+- [`docs/PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md`](PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md) – Phase 78 Design
+- [`docs/R_AND_D_OPERATOR_FLOW.md`](R_AND_D_OPERATOR_FLOW.md) – Operator-Workflow
+- `src/webui/r_and_d_api.py` – R&D API v1.3 Implementierung
 - `templates/peak_trade_dashboard/r_and_d_experiment_detail.html` – Detail-View Template
+- `templates/peak_trade_dashboard/r_and_d_experiment_comparison.html` – Comparison-View Template
 
 ### 4.4 Research-Pipeline v2 & Portfolio-Robustness
 
@@ -999,6 +1009,7 @@ python scripts/generate_live_status_report.py \
 | 2025-12-08 | Phase 84 – Hall-of-Fame-Eintrag: Live-Track Demo Walkthrough |
 | 2025-12-08 | Phase 85 – Live-Track-Stack v1 Block hinzugefügt (Abschnitt 4.5) |
 | 2025-12-09 | Phase 77 – R&D Experiment Detail & Report Viewer v1 (API v1.2, Detail-View, Report-Links) |
+| 2025-12-09 | Phase 78 – R&D Report-Gallery & Multi-Run Comparison v1 (API v1.3, Batch-Endpoint, Comparison-View) |
 
 ---
 

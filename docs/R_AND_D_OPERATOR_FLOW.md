@@ -1,7 +1,7 @@
 # R&D Operator-Flow – Experimente einsehen & analysieren
 
 **Zielgruppe:** Operators, Researcher, Quants  
-**Basis:** Phase 76 (R&D Hub) + Phase 77 (Detail & Report Viewer)  
+**Basis:** Phase 76 (R&D Hub) + Phase 77 (Detail & Report Viewer) + Phase 78 (Multi-Run Comparison)  
 **Stand:** 2025-12-09
 
 ---
@@ -135,6 +135,43 @@ Button **← Zurück zum R&D Hub** oder Browser-Back.
 
 ---
 
+## 3b. Schritt-für-Schritt: Multi-Run Comparison (Phase 78)
+
+### Schritt 1 – Experimente auswählen
+
+- In der R&D-Übersicht (`/r_and_d`) gibt es jetzt eine Checkbox-Spalte (⚖️)
+- Klicke die Checkbox bei 2–4 Experimenten, die du vergleichen möchtest
+- Die Compare-Leiste erscheint automatisch mit einem Counter
+
+### Schritt 2 – Vergleich starten
+
+- Klicke auf **⚖️ Vergleichen** in der Compare-Leiste
+- Du wirst zu `/r_and_d/comparison?run_ids=...` weitergeleitet
+
+### Schritt 3 – Vergleichstabelle analysieren
+
+Die Comparison-View zeigt:
+
+| Bereich           | Inhalt                                                |
+|-------------------|-------------------------------------------------------|
+| **Konfiguration** | Tag, Preset, Strategy, Symbol/TF, Timestamp           |
+| **Performance**   | Return, Sharpe, MaxDD, Trades, WinRate, Profit Factor |
+| **Best-Metric**   | ★-Symbol beim besten Wert pro Zeile                   |
+| **Aktionen**      | Link zur Detail-Ansicht jedes Experiments             |
+
+### Schritt 4 – Tiefere Analyse
+
+- Klicke auf **Details →** bei interessanten Runs
+- Oder kehre zur Übersicht zurück und wähle andere Experimente
+
+### Tipps für effektive Vergleiche
+
+- Vergleiche Runs mit **gleichem Symbol/Timeframe** für aussagekräftige Ergebnisse
+- Nutze die **Preset-Filter** in der Übersicht, um ähnliche Runs zu finden
+- Maximal **4 Runs** gleichzeitig vergleichen für Übersichtlichkeit
+
+---
+
 ## 4. Debugging & Fehlerbilder
 
 ### 4.1 Ungültige oder unbekannte `run_id`
@@ -232,10 +269,12 @@ mv reports/r_and_d_experiments/exp_old_*.json archive/r_and_d/
 |--------------------------------|----------------------------------------------------------------|
 | Phase 76 Design-Spezifikation  | [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) |
 | Phase 77 Detail Viewer         | [`PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md`](PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md) |
-| Status-Übersicht (Phase 76/77) | [`PEAK_TRADE_STATUS_OVERVIEW.md`](PEAK_TRADE_STATUS_OVERVIEW.md) → Abschnitt R&D |
+| Phase 78 Multi-Run Comparison  | [`PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md`](PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md) |
+| Status-Übersicht (Phase 76-78) | [`PEAK_TRADE_STATUS_OVERVIEW.md`](PEAK_TRADE_STATUS_OVERVIEW.md) → Abschnitt R&D |
 | R&D Presets                    | `config/r_and_d_presets.toml`                                  |
-| R&D API Implementierung        | `src/webui/r_and_d_api.py` (v1.2)                              |
+| R&D API Implementierung        | `src/webui/r_and_d_api.py` (v1.3)                              |
 | Detail-View Template           | `templates/peak_trade_dashboard/r_and_d_experiment_detail.html`|
+| Comparison-View Template       | `templates/peak_trade_dashboard/r_and_d_experiment_comparison.html` |
 | CLI Experiments Viewer         | `scripts/view_r_and_d_experiments.py`                          |
 | Notebook-Template              | `notebooks/r_and_d_experiment_analysis_template.py`            |
 
@@ -259,7 +298,8 @@ mv reports/r_and_d_experiments/exp_old_*.json archive/r_and_d/
 | Datum      | Änderung                                      |
 |------------|-----------------------------------------------|
 | 2025-12-09 | Initiale Version (Phase 76/77)                |
+| 2025-12-09 | Multi-Run Comparison hinzugefügt (Phase 78)   |
 
 ---
 
-**Built for Research – R&D Operator Flow v1**
+**Built for Research – R&D Operator Flow v1.1**

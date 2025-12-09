@@ -1,0 +1,394 @@
+<!-- templates/peak_trade_dashboard/r_and_d_experiment_comparison.html -->
+<!-- 
+  R&D Experiment Comparison View v1.0 (Phase 78)
+  ==============================================
+  Vergleichsansicht für mehrere R&D-Experimente.
+  
+  Features:
+  - Vergleichstabelle mit Kernmetriken
+  - Best-Metric-Hervorhebung (CSS-Klasse)
+  - Links zu Einzelansichten
+  - Status-/Run-Type-Badges
+  - Responsive Layout
+  
+  Struktur:
+  1. Header mit Breadcrumb & Anzahl
+  2. Vergleichstabelle (horizontal: Experimente, vertikal: Metriken)
+  3. Footer mit API-Referenz
+-->
+{% extends "base.html" %}
+
+{# ========================================================================= #}
+{# MACROS - Wiederverwendbare Komponenten                                    #}
+{# ========================================================================= #}
+
+{# Status-Badge Komponente #}
+{% macro status_badge(status) %}
+{% if status == "success" %}
+<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+  Success
+</span>
+{% elif status == "running" %}
+<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+  <span class="w-1.5 h-1.5 rounded-full bg-sky-400 pulse-dot"></span>
+  Running
+</span>
+{% elif status == "failed" %}
+<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30">
+  <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+  Failed
+</span>
+{% elif status == "no_trades" %}
+<span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/30">
+  0 Trades
+</span>
+{% else %}
+<span class="text-xs text-slate-400">{{ status or '-' }}</span>
+{% endif %}
+{% endmacro %}
+
+{# Run-Type Badge #}
+{% macro run_type_badge(run_type) %}
+{% if run_type == "sweep" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
+  Sweep
+</span>
+{% elif run_type == "monte_carlo" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+  MC
+</span>
+{% elif run_type == "walkforward" %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20">
+  WF
+</span>
+{% else %}
+<span class="text-xs px-1.5 py-0.5 rounded bg-slate-700/50 text-slate-400">
+  BT
+</span>
+{% endif %}
+{% endmacro %}
+
+{# Metrik-Zelle mit Best-Highlighting #}
+{% macro metric_cell(value, best_value, format="decimal", higher_is_better=true) %}
+{% set is_best = (value is not none and best_value is not none and value == best_value) %}
+<td class="px-3 py-2 text-sm text-right tabular-nums {{ 'bg-emerald-500/10 text-emerald-300 font-semibold' if is_best else 'text-slate-300' }}">
+  {% if value is not none %}
+    {% if format == 'percent' %}
+      {% if value >= 0 %}
+        <span class="{{ 'text-emerald-300' if not is_best and value > 0 else '' }}">+{{ "%.2f%%"|format(value * 100) }}</span>
+      {% else %}
+        <span class="{{ 'text-rose-400' if not is_best else '' }}">{{ "%.2f%%"|format(value * 100) }}</span>
+      {% endif %}
+    {% elif format == 'decimal' %}
+      {{ "%.2f"|format(value) }}
+    {% elif format == 'int' %}
+      {{ value|int }}
+    {% else %}
+      {{ value }}
+    {% endif %}
+    {% if is_best %}
+    <span class="ml-1 text-emerald-400">★</span>
+    {% endif %}
+  {% else %}
+    <span class="text-slate-600">-</span>
+  {% endif %}
+</td>
+{% endmacro %}
+
+{# ========================================================================= #}
+{# CONTENT BLOCK                                                             #}
+{# ========================================================================= #}
+
+{% block content %}
+<div class="space-y-6">
+
+  {# ======================================================================= #}
+  {# SECTION 1: Header mit Breadcrumb                                        #}
+  {# ======================================================================= #}
+  <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
+    
+    {# Breadcrumb #}
+    <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
+      <a href="/" class="hover:text-slate-300 transition-colors">Dashboard</a>
+      <span>›</span>
+      <a href="/r_and_d" class="hover:text-slate-300 transition-colors">R&D Hub</a>
+      <span>›</span>
+      <span class="text-slate-300">Vergleich</span>
+    </nav>
+    
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">⚖️</span>
+          <div>
+            <h1 class="text-2xl font-bold text-slate-100">R&D Experiment Comparison</h1>
+            <p class="text-sm text-slate-400 mt-0.5">
+              {% if experiments|length > 0 %}
+              {{ experiments|length }} Experiment{% if experiments|length != 1 %}e{% endif %} im Vergleich
+              {% else %}
+              Keine Experimente ausgewählt
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      {# Actions #}
+      <div class="flex items-center gap-2">
+        <a 
+          href="/r_and_d" 
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+        >
+          <span>←</span>
+          <span>Zurück zur Übersicht</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  {# ======================================================================= #}
+  {# ERROR / WARNING MESSAGES                                                #}
+  {# ======================================================================= #}
+  {% if error %}
+  <div class="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4">
+    <div class="flex items-center gap-3">
+      <span class="text-xl">⚠️</span>
+      <div>
+        <p class="text-sm font-medium text-rose-300">Fehler</p>
+        <p class="text-sm text-rose-400">{{ error }}</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if warning %}
+  <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+    <div class="flex items-center gap-3">
+      <span class="text-xl">ℹ️</span>
+      <div>
+        <p class="text-sm text-amber-300">{{ warning }}</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ======================================================================= #}
+  {# SECTION 2: Vergleichstabelle                                            #}
+  {# ======================================================================= #}
+  {% if experiments|length > 0 %}
+  <section aria-label="Vergleichstabelle">
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          {# Table Header: Experiment-IDs #}
+          <thead class="bg-slate-900/90 border-b border-slate-700/50">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs uppercase tracking-wider text-slate-400 font-semibold w-40">
+                Metrik
+              </th>
+              {% for exp in experiments %}
+              <th class="px-3 py-3 text-left min-w-[160px]">
+                <a 
+                  href="/r_and_d/experiment/{{ exp.run_id }}"
+                  class="text-sky-300 hover:text-sky-200 transition-colors text-xs font-medium block truncate"
+                  title="{{ exp.run_id }}"
+                >
+                  {{ exp.run_id[:25] }}{% if exp.run_id|length > 25 %}...{% endif %}
+                </a>
+                <div class="flex items-center gap-1 mt-1">
+                  {{ status_badge(exp.status) }}
+                  {{ run_type_badge(exp.run_type) }}
+                </div>
+              </th>
+              {% endfor %}
+            </tr>
+          </thead>
+          
+          <tbody class="divide-y divide-slate-800/50">
+            {# Meta-Informationen #}
+            <tr class="bg-slate-800/20">
+              <td colspan="{{ experiments|length + 1 }}" class="px-4 py-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                📋 Konfiguration
+              </td>
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">Tag</td>
+              {% for exp in experiments %}
+              <td class="px-3 py-2 text-sm text-slate-200 truncate max-w-[160px]" title="{{ exp.tag }}">
+                {{ exp.tag or '-' }}
+              </td>
+              {% endfor %}
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">Preset</td>
+              {% for exp in experiments %}
+              <td class="px-3 py-2 text-sm text-sky-300 truncate max-w-[160px]" title="{{ exp.preset_id }}">
+                {{ exp.preset_id or '-' }}
+              </td>
+              {% endfor %}
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">Strategy</td>
+              {% for exp in experiments %}
+              <td class="px-3 py-2 text-sm text-purple-300 truncate max-w-[160px]" title="{{ exp.strategy }}">
+                {{ exp.strategy or '-' }}
+              </td>
+              {% endfor %}
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">Symbol / TF</td>
+              {% for exp in experiments %}
+              <td class="px-3 py-2 text-sm text-slate-300">
+                {{ exp.symbol or '-' }} / {{ exp.timeframe or '-' }}
+              </td>
+              {% endfor %}
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">Timestamp</td>
+              {% for exp in experiments %}
+              <td class="px-3 py-2 text-xs font-mono text-slate-400">
+                {{ exp.timestamp[:8] if exp.timestamp else '-' }}
+              </td>
+              {% endfor %}
+            </tr>
+
+            {# Performance-Metriken #}
+            <tr class="bg-slate-800/20">
+              <td colspan="{{ experiments|length + 1 }}" class="px-4 py-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                📊 Performance
+              </td>
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">
+                <span class="flex items-center gap-1">💰 Total Return</span>
+              </td>
+              {% for exp in experiments %}
+              {{ metric_cell(exp.total_return, best_metrics.total_return, 'percent', true) }}
+              {% endfor %}
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">
+                <span class="flex items-center gap-1">📈 Sharpe Ratio</span>
+              </td>
+              {% for exp in experiments %}
+              {{ metric_cell(exp.sharpe, best_metrics.sharpe, 'decimal', true) }}
+              {% endfor %}
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">
+                <span class="flex items-center gap-1">📉 Max Drawdown</span>
+              </td>
+              {% for exp in experiments %}
+              {{ metric_cell(exp.max_drawdown, best_metrics.max_drawdown, 'percent', true) }}
+              {% endfor %}
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">
+                <span class="flex items-center gap-1">🔄 Trades</span>
+              </td>
+              {% for exp in experiments %}
+              {{ metric_cell(exp.total_trades, best_metrics.total_trades, 'int', true) }}
+              {% endfor %}
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">
+                <span class="flex items-center gap-1">🎯 Win Rate</span>
+              </td>
+              {% for exp in experiments %}
+              {{ metric_cell(exp.win_rate, best_metrics.win_rate, 'percent', true) }}
+              {% endfor %}
+            </tr>
+            
+            <tr class="hover:bg-slate-800/30">
+              <td class="px-4 py-2 text-sm text-slate-400">
+                <span class="flex items-center gap-1">⚖️ Profit Factor</span>
+              </td>
+              {% for exp in experiments %}
+              {{ metric_cell(exp.profit_factor, best_metrics.profit_factor, 'decimal', true) }}
+              {% endfor %}
+            </tr>
+
+            {# Actions #}
+            <tr class="bg-slate-800/20">
+              <td colspan="{{ experiments|length + 1 }}" class="px-4 py-2 text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                🔗 Aktionen
+              </td>
+            </tr>
+            
+            <tr>
+              <td class="px-4 py-2 text-sm text-slate-400">Detail-Ansicht</td>
+              {% for exp in experiments %}
+              <td class="px-3 py-2">
+                <a 
+                  href="/r_and_d/experiment/{{ exp.run_id }}"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded bg-sky-600/20 hover:bg-sky-600/40 text-sky-300 text-xs transition-colors"
+                >
+                  Details →
+                </a>
+              </td>
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {# Table Footer #}
+      <div class="px-4 py-3 border-t border-slate-800/50 bg-slate-900/40">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-slate-500">
+          <span>
+            ★ = Bester Wert pro Metrik
+          </span>
+          <span>
+            {{ experiments|length }} Experiment{% if experiments|length != 1 %}e{% endif %} verglichen
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% else %}
+  {# Empty State #}
+  <section class="bg-slate-900/40 rounded-xl border border-slate-800/50 p-8 text-center">
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800 mb-4">
+      <span class="text-3xl">⚖️</span>
+    </div>
+    <h3 class="text-lg font-medium text-slate-200 mb-2">Keine Experimente zum Vergleichen</h3>
+    <p class="text-sm text-slate-400 mb-6 max-w-md mx-auto">
+      Wähle mindestens 2 Experimente in der R&D-Übersicht aus, um sie hier zu vergleichen.
+    </p>
+    <a
+      href="/r_and_d"
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-colors"
+    >
+      Zur R&D-Übersicht →
+    </a>
+  </section>
+  {% endif %}
+
+  {# ======================================================================= #}
+  {# FOOTER                                                                  #}
+  {# ======================================================================= #}
+  <footer class="text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2">
+    <p class="flex items-center gap-2">
+      <span>⚖️</span>
+      <span>R&D Experiment Comparison v1.0 · Phase 78 · Read-only</span>
+    </p>
+    <p class="flex flex-wrap items-center gap-2">
+      <span>API:</span>
+      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/experiments/batch</code>
+    </p>
+  </footer>
+
+</div>
+{% endblock %}

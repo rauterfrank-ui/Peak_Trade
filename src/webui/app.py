@@ -1,7 +1,7 @@
 # src/webui/app.py
 """
-Peak_Trade: Web Dashboard v1.3 (R&D Detail View)
-================================================
+Peak_Trade: Web Dashboard v1.4 (R&D Comparison View)
+====================================================
 
 FastAPI-App für read-only Status-Ansichten:
 - v1.0 Projekt-Status & Snapshot
@@ -10,6 +10,12 @@ FastAPI-App für read-only Status-Ansichten:
 - Session Explorer mit Filter & Detail-View (Phase 85)
 - R&D Dashboard API (Phase 76)
 - R&D Experiment Detail View (Phase 77)
+- R&D Multi-Run Comparison View (Phase 78)
+
+v1.4 Features (Phase 78):
+- Multi-Run Comparison View (/r_and_d/comparison)
+- Checkbox-Auswahl in der R&D-Übersicht
+- Best-Metric-Hervorhebung im Comparison-View
 
 v1.3 Features (Phase 77):
 - R&D Experiment Detail View mit Report-Links
@@ -34,6 +40,7 @@ HTML Pages:
 - GET /session/{session_id} (Session Detail)
 - GET /r_and_d (R&D Experiments Overview - Phase 76)
 - GET /r_and_d/experiment/{run_id} (R&D Experiment Detail - Phase 77)
+- GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
 
 API Endpoints:
 Live-Track:
@@ -41,9 +48,10 @@ Live-Track:
 - GET /api/live_sessions/{session_id} (Detail)
 - GET /api/live_sessions/stats (Statistiken)
 
-R&D Dashboard (Phase 76/77):
+R&D Dashboard (Phase 76/77/78):
 - GET /api/r_and_d/experiments (Liste mit Filtern)
 - GET /api/r_and_d/experiments/{run_id} (Detail mit Report-Links - v1.2)
+- GET /api/r_and_d/experiments/batch (Batch-Abfrage für Comparison - v1.3)
 - GET /api/r_and_d/summary (Summary-Statistiken)
 - GET /api/r_and_d/presets (Aggregation nach Preset)
 - GET /api/r_and_d/strategies (Aggregation nach Strategy)
@@ -77,6 +85,11 @@ from .r_and_d_api import (
     filter_experiments,
     extract_flat_fields,
     compute_global_stats,
+    # v1.3 (Phase 78)
+    find_experiment_by_run_id,
+    build_experiment_detail,
+    compute_best_metrics,
+    parse_and_validate_run_ids,
 )
 
 
@@ -452,7 +465,7 @@ def create_app() -> FastAPI:
         run_id: str,
     ) -> Any:
         """
-        HTML Detail-Page für ein einzelnes R&D-Experiment (Phase 77).
+        HTML Detail-Page für ein einzelnes R&D-Experiment (Phase 77 v1.1).
 
         Zeigt:
         - Vollständige Meta-Daten und Parameter
@@ -460,44 +473,16 @@ def create_app() -> FastAPI:
         - Report-Links (HTML, Markdown, Charts)
         - Status-/Run-Type-Badges
         - Raw JSON (collapsible)
+        
+        v1.1: Refactored - nutzt zentralisierte Helper-Funktionen aus r_and_d_api.py
         """
-        from .r_and_d_api import find_report_links, compute_duration_info
-
         proj_status = get_project_status()
 
-        # Experiment laden
+        # Experiment laden (nutze zentralisierte Lookup-Funktion)
         all_experiments = load_experiments_from_dir()
+        exp = find_experiment_by_run_id(all_experiments, run_id)
 
-        experiment_data = None
-        for exp in all_experiments:
-            filename = exp.get("_filename", "")
-            exp_run_id = filename.replace(".json", "") if filename else ""
-            timestamp = exp.get("experiment", {}).get("timestamp", "")
-
-            # Match auf Run-ID oder Timestamp-Substring
-            if run_id == exp_run_id or run_id in filename or run_id in timestamp:
-                flat = extract_flat_fields(exp)
-                report_links = find_report_links(exp_run_id, exp)
-                duration_info = compute_duration_info(exp)
-
-                experiment_data = {
-                    "filename": filename,
-                    "run_id": exp_run_id,
-                    "experiment": exp.get("experiment", {}),
-                    "results": exp.get("results", {}),
-                    "meta": exp.get("meta", {}),
-                    "parameters": exp.get("parameters"),
-                    "raw": exp,
-                    "report_links": report_links,
-                    "status": flat["status"],
-                    "run_type": flat["run_type"],
-                    "tier": flat["tier"],
-                    "experiment_category": flat["experiment_category"],
-                    "duration_info": duration_info,
-                }
-                break
-
-        if experiment_data is None:
+        if exp is None:
             # 404 - Experiment nicht gefunden
             return templates.TemplateResponse(
                 request,
@@ -512,12 +497,99 @@ def create_app() -> FastAPI:
                 status_code=404,
             )
 
+        # Baue Detail-Data (nutze zentralisierte Funktion)
+        experiment_data = build_experiment_detail(exp)
+        experiment_data["raw"] = exp  # Nur für Detail-View
+
         return templates.TemplateResponse(
             request,
             "r_and_d_experiment_detail.html",
             {
                 "status": proj_status,
                 "experiment": experiment_data,
+            },
+        )
+
+    @app.get("/r_and_d/comparison", response_class=HTMLResponse)
+    async def r_and_d_comparison_page(
+        request: Request,
+        run_ids: Optional[str] = Query(None, description="Komma-separierte Run-IDs"),
+    ) -> Any:
+        """
+        HTML Comparison-Page für mehrere R&D-Experimente (Phase 78 v1.1).
+
+        Zeigt einen Vergleich mehrerer Experimente nebeneinander:
+        - Kern-Metriken mit Best-Metric-Hervorhebung
+        - Links zu Einzelansichten
+        - Status-/Run-Type-Badges
+        
+        v1.1: Refactored - nutzt zentralisierte Helper-Funktionen aus r_and_d_api.py
+        """
+        proj_status = get_project_status()
+
+        # Validierung: run_ids erforderlich
+        if not run_ids or not run_ids.strip():
+            return templates.TemplateResponse(
+                request,
+                "r_and_d_experiment_comparison.html",
+                {
+                    "status": proj_status,
+                    "experiments": [],
+                    "error": "Keine Run-IDs angegeben. Bitte wähle Experimente in der Übersicht aus.",
+                    "best_metrics": {},
+                },
+            )
+
+        # Parse und validiere IDs (ValueError → HTML-Fehlerseite)
+        try:
+            unique_ids = parse_and_validate_run_ids(run_ids, min_ids=2, max_ids=10)
+        except ValueError as e:
+            return templates.TemplateResponse(
+                request,
+                "r_and_d_experiment_comparison.html",
+                {
+                    "status": proj_status,
+                    "experiments": [],
+                    "error": str(e),
+                    "best_metrics": {},
+                },
+            )
+
+        # Lade Experimente und suche nach IDs
+        all_experiments = load_experiments_from_dir()
+        found_experiments: list = []
+        not_found_ids: list = []
+
+        for requested_id in unique_ids:
+            exp = find_experiment_by_run_id(all_experiments, requested_id)
+            
+            if exp:
+                experiment_data = build_experiment_detail(exp)
+                found_experiments.append(experiment_data)
+            else:
+                not_found_ids.append(requested_id)
+
+        # Berechne Best-Metrics (nutze API-Funktion)
+        best_metrics = compute_best_metrics(found_experiments) if found_experiments else {}
+
+        # Error/Warning Messages
+        error_msg = None
+        warning_msg = None
+        if not found_experiments:
+            error_msg = f"Keine gültigen Experimente gefunden für: {', '.join(unique_ids)}"
+        elif not_found_ids:
+            warning_msg = f"Hinweis: {len(not_found_ids)} Run-ID(s) nicht gefunden: {', '.join(not_found_ids)}"
+
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_experiment_comparison.html",
+            {
+                "status": proj_status,
+                "experiments": found_experiments,
+                "best_metrics": best_metrics,
+                "not_found_ids": not_found_ids,
+                "error": error_msg,
+                "warning": warning_msg,
             },
         )
 

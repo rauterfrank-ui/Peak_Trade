@@ -1,8 +1,14 @@
 <!-- templates/peak_trade_dashboard/r_and_d_experiments.html -->
 <!-- 
-  R&D Experiments Overview v1.2 (Phase 76/77)
-  ===========================================
+  R&D Experiments Overview v1.3 (Phase 76/77/78)
+  ==============================================
   Zentrale Einstiegsansicht für den Research-Track.
+  
+  v1.3 Änderungen (Phase 78):
+  - Checkbox-Auswahl pro Experiment für Multi-Run-Comparison
+  - Compare-Leiste mit Counter und Button
+  - Max. 4 Experimente gleichzeitig auswählbar
+  - Navigation zu /r_and_d/comparison?run_ids=...
   
   v1.2 Änderungen (Phase 77):
   - Klickbare Zeilen → Detail-Ansicht pro Experiment
@@ -22,8 +28,9 @@
   2. Daily Summary Kacheln (Was läuft? Was ist heute fertig?)
   3. Stats-Kacheln (KPIs)
   4. Filter-Form + aktive Filter-Badges
-  5. Experiments-Tabelle (kompakter, mit Run-Type & Tier, klickbar)
-  6. Footer
+  5. Compare-Leiste (Phase 78)
+  6. Experiments-Tabelle (kompakter, mit Checkbox, Run-Type & Tier, klickbar)
+  7. Footer
 -->
 {% extends "base.html" %}
 
@@ -177,6 +184,42 @@
       </div>
     </div>
   </header>
+
+  {# ======================================================================= #}
+  {# SECTION 1.5: Compare-Leiste (Phase 78)                                  #}
+  {# ======================================================================= #}
+  <section aria-label="Compare Selection" id="compare-bar" class="bg-slate-900/60 rounded-xl border border-slate-800 p-3 hidden">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="text-xl">⚖️</span>
+        <div>
+          <p class="text-sm font-medium text-slate-200">
+            <span id="compare-count">0</span> von max. 4 ausgewählt
+          </p>
+          <p class="text-xs text-slate-500">Wähle Experimente zum Vergleichen</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button 
+          type="button"
+          id="clear-selection-btn"
+          onclick="clearSelection()"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+        >
+          ✕ Auswahl löschen
+        </button>
+        <button 
+          type="button"
+          id="compare-btn"
+          onclick="openComparison()"
+          disabled
+          class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium bg-sky-600 hover:bg-sky-500 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white transition-colors"
+        >
+          ⚖️ Vergleichen
+        </button>
+      </div>
+    </div>
+  </section>
 
   {# ======================================================================= #}
   {# SECTION 2: Daily Summary (Was läuft? Was ist heute fertig?)             #}
@@ -440,11 +483,15 @@
       </div>
       
       {% else %}
-      {# Tabelle (kompakter in v1.1) #}
+      {# Tabelle (kompakter in v1.1, mit Checkbox in v1.3) #}
       <div class="overflow-x-auto">
-        <table class="w-full text-sm min-w-[1100px]">
+        <table class="w-full text-sm min-w-[1150px]">
           <thead class="bg-slate-900/90 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700/50 sticky top-0 z-10">
             <tr>
+              <th class="px-2 py-2.5 text-center font-semibold whitespace-nowrap w-10">
+                <span class="sr-only">Auswahl</span>
+                ⚖️
+              </th>
               <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Status</th>
               <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Type</th>
               <th class="px-3 py-2.5 text-left font-semibold whitespace-nowrap">Timestamp</th>
@@ -463,28 +510,37 @@
           <tbody class="divide-y divide-slate-800/50">
             {% for exp in experiments %}
             <tr 
-              class="hover:bg-slate-800/40 transition-colors cursor-pointer {{ 'bg-slate-900/20' if loop.index is odd else '' }}"
-              onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'"
-              title="Klicken für Details zu {{ exp.run_id }}"
+              class="hover:bg-slate-800/40 transition-colors {{ 'bg-slate-900/20' if loop.index is odd else '' }}"
+              data-run-id="{{ exp.run_id }}"
             >
+              {# Checkbox für Comparison (v1.3 / Phase 78) #}
+              <td class="px-2 py-2 text-center" onclick="event.stopPropagation();">
+                <input 
+                  type="checkbox"
+                  class="compare-checkbox rounded border-slate-600 bg-slate-950 text-sky-500 focus:ring-sky-500 focus:ring-offset-0 cursor-pointer"
+                  data-run-id="{{ exp.run_id }}"
+                  onchange="toggleRunSelection('{{ exp.run_id }}', this)"
+                  title="Zum Vergleich auswählen"
+                />
+              </td>
               
               {# Status (v1.1 prominent) #}
-              <td class="px-3 py-2">
+              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {{ status_badge(exp.status) }}
               </td>
 
               {# Run-Type (v1.1 neu) #}
-              <td class="px-3 py-2">
+              <td class="px-3 py-2 cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {{ run_type_badge(exp.run_type) }}
               </td>
 
               {# Timestamp #}
-              <td class="px-3 py-2 font-mono text-xs text-slate-400 whitespace-nowrap">
+              <td class="px-3 py-2 font-mono text-xs text-slate-400 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {{ exp.timestamp[:8] if exp.timestamp else '-' }}
               </td>
 
               {# Tag #}
-              <td class="px-3 py-2 text-xs max-w-[150px]">
+              <td class="px-3 py-2 text-xs max-w-[150px] cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {% if exp.tag %}
                 <span class="truncate block text-slate-200" title="{{ exp.tag }}">
                   {{ exp.tag[:25] }}{{ '...' if exp.tag|length > 25 else '' }}
@@ -495,7 +551,7 @@
               </td>
 
               {# Preset #}
-              <td class="px-3 py-2 text-xs max-w-[140px]">
+              <td class="px-3 py-2 text-xs max-w-[140px] cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {% if exp.preset_id %}
                 <span class="truncate block text-sky-300" title="{{ exp.preset_id }}">
                   {{ exp.preset_id[:22] }}{{ '...' if exp.preset_id|length > 22 else '' }}
@@ -506,7 +562,7 @@
               </td>
 
               {# Strategy #}
-              <td class="px-3 py-2 text-xs max-w-[120px]">
+              <td class="px-3 py-2 text-xs max-w-[120px] cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {% if exp.strategy %}
                 <span class="truncate block text-purple-300" title="{{ exp.strategy }}">
                   {{ exp.strategy[:18] }}{{ '...' if exp.strategy|length > 18 else '' }}
@@ -517,12 +573,12 @@
               </td>
 
               {# Symbol #}
-              <td class="px-3 py-2 text-xs text-slate-300 whitespace-nowrap">
+              <td class="px-3 py-2 text-xs text-slate-300 whitespace-nowrap cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {{ exp.symbol or '-' }}
               </td>
 
               {# Trades #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {% if exp.total_trades is not none %}
                   {% if exp.total_trades > 0 %}
                   <span class="text-emerald-300 font-medium">{{ exp.total_trades }}</span>
@@ -535,7 +591,7 @@
               </td>
 
               {# Return #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {% if exp.total_return is not none %}
                   {% if exp.total_return >= 0 %}
                   <span class="text-emerald-300 font-medium">+{{ "%.2f%%"|format(exp.total_return * 100) }}</span>
@@ -548,7 +604,7 @@
               </td>
 
               {# Sharpe #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {% if exp.sharpe is not none %}
                   {% if exp.sharpe >= 1.5 %}
                   <span class="text-emerald-300 font-medium">{{ "%.2f"|format(exp.sharpe) }}</span>
@@ -565,7 +621,7 @@
               </td>
 
               {# MaxDD #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {% if exp.max_drawdown is not none %}
                 <span class="text-amber-300">{{ "%.1f%%"|format(exp.max_drawdown * 100) }}</span>
                 {% else %}
@@ -574,7 +630,7 @@
               </td>
 
               {# WinRate #}
-              <td class="px-3 py-2 text-xs text-right tabular-nums">
+              <td class="px-3 py-2 text-xs text-right tabular-nums cursor-pointer" onclick="window.location='/r_and_d/experiment/{{ exp.run_id }}'">
                 {% if exp.win_rate is not none %}
                   {% if exp.win_rate >= 0.55 %}
                   <span class="text-emerald-300">{{ "%.1f%%"|format(exp.win_rate * 100) }}</span>
@@ -594,7 +650,6 @@
                   href="/r_and_d/experiment/{{ exp.run_id }}"
                   class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-800 hover:bg-sky-600 text-slate-400 hover:text-white transition-colors"
                   title="Details anzeigen"
-                  onclick="event.stopPropagation();"
                 >
                   →
                 </a>
@@ -628,14 +683,134 @@
   <footer class="text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2">
     <p class="flex items-center gap-2">
       <span>🔬</span>
-      <span>R&D Experiments Hub v1.2 · Phase 76/77 · Read-only</span>
+      <span>R&D Experiments Hub v1.3 · Phase 76/77/78 · Read-only</span>
     </p>
     <p class="flex flex-wrap items-center gap-2">
       <span>API:</span>
       <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/experiments</code>
-      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/experiments/{run_id}</code>
+      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/experiments/batch</code>
     </p>
   </footer>
 
 </div>
+
+{# ========================================================================= #}
+{# JAVASCRIPT: Comparison Selection Logic (Phase 78)                         #}
+{# ========================================================================= #}
+<script>
+// Maximum selection limit
+const MAX_SELECTION = 4;
+
+// Selected run IDs
+let selectedRuns = new Set();
+
+/**
+ * Toggle selection of a run for comparison.
+ * @param {string} runId - The run ID to toggle
+ * @param {HTMLInputElement} checkbox - The checkbox element
+ */
+function toggleRunSelection(runId, checkbox) {
+    if (checkbox.checked) {
+        // Check limit
+        if (selectedRuns.size >= MAX_SELECTION) {
+            checkbox.checked = false;
+            showNotification(`Maximal ${MAX_SELECTION} Experimente gleichzeitig auswählbar`, 'warning');
+            return;
+        }
+        selectedRuns.add(runId);
+    } else {
+        selectedRuns.delete(runId);
+    }
+    updateCompareUI();
+}
+
+/**
+ * Update the compare UI (bar visibility, counter, button state).
+ */
+function updateCompareUI() {
+    const compareBar = document.getElementById('compare-bar');
+    const compareCount = document.getElementById('compare-count');
+    const compareBtn = document.getElementById('compare-btn');
+    
+    const count = selectedRuns.size;
+    
+    // Show/hide compare bar
+    if (count > 0) {
+        compareBar.classList.remove('hidden');
+    } else {
+        compareBar.classList.add('hidden');
+    }
+    
+    // Update counter
+    compareCount.textContent = count;
+    
+    // Enable/disable button (min 2 required)
+    compareBtn.disabled = count < 2;
+}
+
+/**
+ * Clear all selections.
+ */
+function clearSelection() {
+    selectedRuns.clear();
+    
+    // Uncheck all checkboxes
+    document.querySelectorAll('.compare-checkbox').forEach(cb => {
+        cb.checked = false;
+    });
+    
+    updateCompareUI();
+}
+
+/**
+ * Navigate to comparison view with selected runs.
+ */
+function openComparison() {
+    if (selectedRuns.size < 2) {
+        showNotification('Mindestens 2 Experimente für einen Vergleich auswählen', 'warning');
+        return;
+    }
+    
+    const ids = Array.from(selectedRuns).join(',');
+    window.location.href = `/r_and_d/comparison?run_ids=${encodeURIComponent(ids)}`;
+}
+
+/**
+ * Show a temporary notification.
+ * @param {string} message - The message to show
+ * @param {string} type - The type ('info', 'warning', 'error')
+ */
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium transition-all transform translate-x-full`;
+    
+    if (type === 'warning') {
+        notification.classList.add('bg-amber-500/90', 'text-amber-50');
+    } else if (type === 'error') {
+        notification.classList.add('bg-rose-500/90', 'text-rose-50');
+    } else {
+        notification.classList.add('bg-sky-500/90', 'text-sky-50');
+    }
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Animate in
+    requestAnimationFrame(() => {
+        notification.classList.remove('translate-x-full');
+    });
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCompareUI();
+});
+</script>
 {% endblock %}

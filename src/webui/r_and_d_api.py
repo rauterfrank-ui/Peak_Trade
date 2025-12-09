@@ -1,17 +1,23 @@
 # src/webui/r_and_d_api.py
 """
-Peak_Trade: R&D Dashboard API v1.2 (Phase 77)
+Peak_Trade: R&D Dashboard API v1.3 (Phase 78)
 =============================================
 
 API-Endpoints für das R&D-Dashboard:
 - GET /api/r_and_d/experiments - Liste aller R&D-Experimente (mit Filtern)
 - GET /api/r_and_d/experiments/{run_id} - Detail eines Experiments (v1.2: mit Report-Links)
+- GET /api/r_and_d/experiments/batch - Batch-Abfrage mehrerer Experimente (v1.3: Phase 78)
 - GET /api/r_and_d/summary - Aggregierte Summary-Statistiken
 - GET /api/r_and_d/presets - Aggregation nach Preset
 - GET /api/r_and_d/strategies - Aggregation nach Strategy
 - GET /api/r_and_d/stats - Globale Statistiken
 - GET /api/r_and_d/today - Heute fertige Experimente (Daily R&D View)
 - GET /api/r_and_d/running - Aktuell laufende Experimente
+
+v1.3 Änderungen (Phase 78):
+- Batch-Endpoint für Multi-Run-Comparison
+- Unterstützung für 2-10 Run-IDs pro Request
+- Rückgabe von found/not_found IDs für Transparenz
 
 v1.2 Änderungen (Phase 77):
 - Report-Links (HTML/Markdown) in Detail-Endpoint
@@ -32,7 +38,7 @@ import json
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TypedDict
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
@@ -41,6 +47,63 @@ from pydantic import BaseModel
 # =============================================================================
 # KONFIGURATION
 # =============================================================================
+
+# Batch-Endpoint Limits (zentral konfigurierbar)
+BATCH_MIN_RUN_IDS: int = 2
+BATCH_MAX_RUN_IDS: int = 10
+
+
+# =============================================================================
+# TYPE DEFINITIONS
+# =============================================================================
+
+
+class BestMetricsDict(TypedDict, total=False):
+    """
+    Typisierung für Best-Metrics-Ergebnis (v1.3 / Phase 78).
+    
+    total=False bedeutet, dass alle Felder optional sind.
+    Felder werden nur gesetzt, wenn mindestens ein gültiger Wert existiert.
+    """
+    total_return: float
+    sharpe: float
+    max_drawdown: float
+    win_rate: float
+    profit_factor: float
+    total_trades: int
+
+
+# =============================================================================
+# ARCHITEKTUR-NOTE: Helper-Funktionen (R&D-API v1.3 / Phase 78)
+# =============================================================================
+#
+# Das Helper-Set ist nach folgenden Prinzipien aufgebaut:
+#
+# 1. LOOKUP-LAYER: `find_experiment_by_run_id()`
+#    - Zentralisiert alle Match-Logik an einer Stelle
+#    - Verhindert Inkonsistenzen zwischen API- und HTML-Endpoints
+#    - Strict-Match-only (kein Substring-Match) für Vorhersehbarkeit
+#
+# 2. TRANSFORMATION-LAYER: `build_experiment_detail()`
+#    - Einheitlicher Payload für Detail- und Batch-Endpoints
+#    - Kombiniert raw JSON mit berechneten Feldern (status, run_type, report_links)
+#    - Flache Metrik-Felder für einfaches Frontend-Binding
+#
+# 3. AGGREGATION-LAYER: `compute_best_metrics()`
+#    - Berechnet "Winner" pro Metrik für Comparison-Highlighting
+#    - Drawdown-Sonderlogik: der Wert nächste zu 0 gewinnt (nicht der mathematisch
+#      größte Verlust)
+#
+# 4. VALIDATION-LAYER: `parse_and_validate_run_ids()`
+#    - Input-Sanitization + Business-Rule-Validierung in einem Schritt
+#    - Deduplizierung vor Validierung (verhindert User-Verwirrung bei mehrfach
+#      eingegebenen IDs)
+#    - Framework-agnostisch: wirft ValueError (Umwandlung in HTTPException im Endpoint)
+#
+# Änderungen an der Match-Logik sollten in `find_experiment_by_run_id()` erfolgen,
+# nicht in einzelnen Endpoints. So bleibt das Verhalten API-weit konsistent.
+# =============================================================================
+
 
 # Standard-Verzeichnis für R&D-Experimente (relativ zum Repo-Root)
 # Wird von außen über BASE_DIR gesetzt
@@ -163,6 +226,17 @@ class RnDGlobalStats(BaseModel):
     avg_max_drawdown: float
     median_sharpe: float
     median_return: float
+
+
+class RnDBatchResponse(BaseModel):
+    """Response für Batch-Abfrage mehrerer Experimente (v1.3)."""
+    experiments: List[Dict[str, Any]]
+    requested_ids: List[str]
+    found_ids: List[str]
+    not_found_ids: List[str]
+    total_requested: int
+    total_found: int
+    best_metrics: Dict[str, Any] = {}  # v1.3: Für Comparison-Highlighting
 
 
 # =============================================================================
@@ -491,6 +565,78 @@ def format_duration(seconds: float) -> str:
         return f"{hours:.1f}h"
 
 
+def find_experiment_by_run_id(
+    experiments: List[Dict[str, Any]], 
+    run_id: str
+) -> Optional[Dict[str, Any]]:
+    """
+    Findet ein Experiment anhand der Run-ID (v1.3).
+    
+    Zentralisierte Lookup-Logik für konsistentes Matching.
+    
+    Args:
+        experiments: Liste aller Experimente
+        run_id: Gesuchte Run-ID
+        
+    Returns:
+        Experiment-Dict oder None wenn nicht gefunden
+    """
+    if not run_id or not run_id.strip():
+        return None
+    
+    run_id = run_id.strip()
+    
+    for exp in experiments:
+        filename = exp.get("_filename", "")
+        exp_run_id = filename.replace(".json", "") if filename else ""
+        
+        # Exakter Match auf Run-ID oder Filename (präferiert)
+        if run_id == exp_run_id or run_id == filename:
+            return exp
+        
+        # Match auf Timestamp nur wenn exakte Übereinstimmung
+        timestamp = exp.get("experiment", {}).get("timestamp", "")
+        if timestamp and run_id == timestamp:
+            return exp
+    
+    return None
+
+
+def compute_best_metrics(experiments: List[Dict[str, Any]]) -> BestMetricsDict:
+    """
+    Berechnet die besten Werte pro Metrik für Comparison-Highlighting (v1.3).
+
+    Für jede Metrik wird der "beste" Wert ermittelt:
+    - "higher_is_better": total_return, sharpe, win_rate, profit_factor, total_trades
+    - max_drawdown: der Wert am nächsten bei 0 gewinnt (also max(), da Drawdown negativ)
+
+    Args:
+        experiments: Liste von Experiment-Dicts mit flachen Metrik-Feldern
+
+    Returns:
+        BestMetricsDict mit besten Werten pro Metrik (nur gesetzte Felder)
+    """
+    if not experiments:
+        return {}
+
+    best_metrics: BestMetricsDict = {}
+
+    # Metriken wo höher = besser
+    higher_is_better = ["total_return", "sharpe", "win_rate", "profit_factor", "total_trades"]
+
+    for metric in higher_is_better:
+        values = [e.get(metric) for e in experiments if e.get(metric) is not None]
+        if values:
+            best_metrics[metric] = max(values)  # type: ignore[literal-required]
+
+    # Max Drawdown: nächste zu 0 ist am besten (Drawdown ist typisch negativ)
+    drawdowns = [e.get("max_drawdown") for e in experiments if e.get("max_drawdown") is not None]
+    if drawdowns:
+        best_metrics["max_drawdown"] = max(drawdowns)  # am wenigsten negativ
+
+    return best_metrics
+
+
 def extract_date_from_timestamp(timestamp: str) -> Optional[datetime]:
     """Extrahiert ein Datum aus einem Timestamp im Format YYYYMMDD_HHMMSS."""
     if not timestamp or len(timestamp) < 8:
@@ -793,21 +939,189 @@ async def list_experiments(
     }
 
 
+def parse_and_validate_run_ids(
+    run_ids_str: str,
+    min_ids: int = BATCH_MIN_RUN_IDS,
+    max_ids: int = BATCH_MAX_RUN_IDS,
+) -> List[str]:
+    """
+    Parst, dedupliziert und validiert eine komma-separierte Liste von Run-IDs (v1.3).
+
+    - Entfernt Whitespace
+    - Entfernt leere Strings
+    - Dedupliziert unter Beibehaltung der Reihenfolge
+
+    Args:
+        run_ids_str: Komma-separierte Run-IDs (z.B. "run_1, run_2, run_3").
+        min_ids: Minimale Anzahl an IDs nach Deduplizierung.
+        max_ids: Maximale Anzahl an IDs nach Deduplizierung.
+
+    Returns:
+        Liste der eindeutigen Run-IDs.
+
+    Raises:
+        ValueError: Wenn nach Deduplizierung weniger als min_ids oder mehr als max_ids IDs.
+    """
+    # Parse und bereinige: Nur nicht-leere, getrimmte IDs
+    raw_ids = [id.strip() for id in run_ids_str.split(",") if id.strip()]
+
+    # Deduplizierung (Reihenfolge beibehalten)
+    unique_ids = list(dict.fromkeys(raw_ids))
+
+    # Validierung (Framework-agnostisch: ValueError statt HTTPException)
+    if len(unique_ids) < min_ids:
+        raise ValueError(f"Mindestens {min_ids} Run-IDs erforderlich")
+    if len(unique_ids) > max_ids:
+        raise ValueError(f"Maximal {max_ids} Run-IDs erlaubt")
+
+    return unique_ids
+
+
+def build_experiment_detail(exp: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Baut ein vollständiges Experiment-Detail-Dict (v1.3).
+    
+    Zentralisierte Logik für Detail- und Batch-Endpoints.
+    
+    Args:
+        exp: Raw-Experiment-Dict aus JSON
+        
+    Returns:
+        Aufbereitetes Detail-Dict
+    """
+    filename = exp.get("_filename", "")
+    exp_run_id = filename.replace(".json", "") if filename else ""
+    
+    flat = extract_flat_fields(exp)
+    report_links = find_report_links(exp_run_id, exp)
+    duration_info = compute_duration_info(exp)
+    
+    return {
+        "filename": filename,
+        "run_id": exp_run_id,
+        "experiment": exp.get("experiment", {}),
+        "results": exp.get("results", {}),
+        "meta": exp.get("meta", {}),
+        "parameters": exp.get("parameters"),
+        "report_links": report_links,
+        "status": flat["status"],
+        "run_type": flat["run_type"],
+        "tier": flat["tier"],
+        "experiment_category": flat["experiment_category"],
+        "duration_info": duration_info,
+        # Flache Felder für Comparison-View
+        "total_return": flat["total_return"],
+        "sharpe": flat["sharpe"],
+        "max_drawdown": flat["max_drawdown"],
+        "total_trades": flat["total_trades"],
+        "win_rate": flat["win_rate"],
+        "profit_factor": flat["profit_factor"],
+        "preset_id": flat["preset_id"],
+        "strategy": flat["strategy"],
+        "symbol": flat["symbol"],
+        "timeframe": flat["timeframe"],
+        "tag": flat["tag"],
+        "timestamp": flat["timestamp"],
+    }
+
+
+@router.get(
+    "/experiments/batch",
+    response_model=RnDBatchResponse,
+    summary="Batch-Abfrage mehrerer Experimente (v1.3)",
+    description=(
+        "Liefert Details für mehrere Experimente in einer Abfrage. "
+        "v1.3 (Phase 78): Für Multi-Run-Comparison. "
+        "Unterstützt 2-10 Run-IDs pro Request."
+    ),
+)
+async def get_experiments_batch(
+    run_ids: str = Query(
+        ...,
+        description="Komma-separierte Liste von Run-IDs (2-10 IDs erforderlich)",
+    ),
+) -> RnDBatchResponse:
+    """
+    Batch-Endpoint für mehrere Experimente (v1.3 / Phase 78).
+
+    Ermöglicht den Vergleich mehrerer R&D-Experimente in einer Abfrage.
+    Ideal für Multi-Run-Comparison-Views.
+
+    Args:
+        run_ids: Komma-separierte Liste von Run-IDs
+
+    Returns:
+        RnDBatchResponse mit:
+        - experiments: Liste der gefundenen Experiment-Details
+        - requested_ids: Alle angeforderten IDs
+        - found_ids: Erfolgreich gefundene IDs
+        - not_found_ids: Nicht gefundene IDs
+        - best_metrics: Beste Werte pro Metrik für Highlighting
+
+    Raises:
+        HTTPException 400: Weniger als 2 oder mehr als 10 IDs
+        HTTPException 404: Keine gültigen Experimente gefunden
+    """
+    # Validiere und parse IDs (ValueError → HTTPException 400)
+    try:
+        unique_ids = parse_and_validate_run_ids(run_ids)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    # Lade alle Experimente
+    all_experiments = load_experiments_from_dir()
+    
+    # Suche nach den angeforderten IDs
+    found_experiments: List[Dict[str, Any]] = []
+    found_ids: List[str] = []
+    not_found_ids: List[str] = []
+    
+    for requested_id in unique_ids:
+        exp = find_experiment_by_run_id(all_experiments, requested_id)
+        
+        if exp:
+            experiment_data = build_experiment_detail(exp)
+            found_experiments.append(experiment_data)
+            found_ids.append(requested_id)
+        else:
+            not_found_ids.append(requested_id)
+    
+    # Wenn keine Experimente gefunden: 404
+    if not found_experiments:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Keine gültigen Experimente gefunden für: {', '.join(unique_ids)}",
+        )
+    
+    # Berechne Best-Metrics für Highlighting
+    best_metrics = compute_best_metrics(found_experiments)
+    
+    return RnDBatchResponse(
+        experiments=found_experiments,
+        requested_ids=unique_ids,
+        found_ids=found_ids,
+        not_found_ids=not_found_ids,
+        total_requested=len(unique_ids),
+        total_found=len(found_experiments),
+        best_metrics=best_metrics,
+    )
+
+
 @router.get(
     "/experiments/{run_id}",
     response_model=Dict[str, Any],
-    summary="Detail eines R&D-Experiments (v1.2)",
+    summary="Detail eines R&D-Experiments (v1.3)",
     description=(
         "Liefert alle Details eines einzelnen Experiments nach Run-ID. "
-        "v1.2: Inkl. Report-Links und erweiterte Meta-Daten."
+        "v1.3: Nutzt zentralisierte Lookup-Logik."
     ),
 )
 async def get_experiment_detail(run_id: str) -> Dict[str, Any]:
     """
-    Detail-Endpoint für ein einzelnes Experiment (v1.2).
+    Detail-Endpoint für ein einzelnes Experiment (v1.3).
 
     Args:
-        run_id: Run-ID (Dateiname ohne .json oder Timestamp-Substring)
+        run_id: Run-ID (Dateiname ohne .json oder exakter Timestamp)
 
     Returns:
         Vollständige Experiment-Details inkl.:
@@ -820,37 +1134,19 @@ async def get_experiment_detail(run_id: str) -> Dict[str, Any]:
         HTTPException 404: Wenn Experiment nicht gefunden
     """
     experiments = load_experiments_from_dir()
-
-    for exp in experiments:
-        filename = exp.get("_filename", "")
-        exp_run_id = filename.replace(".json", "") if filename else ""
-        timestamp = exp.get("experiment", {}).get("timestamp", "")
-
-        # Match auf Run-ID oder Timestamp-Substring
-        if run_id == exp_run_id or run_id in filename or run_id in timestamp:
-            # v1.2: Extrahiere erweiterte Felder
-            flat = extract_flat_fields(exp)
-            report_links = find_report_links(exp_run_id, exp)
-            duration_info = compute_duration_info(exp)
-
-            return {
-                "filename": filename,
-                "run_id": exp_run_id,
-                "experiment": exp.get("experiment", {}),
-                "results": exp.get("results", {}),
-                "meta": exp.get("meta", {}),
-                "parameters": exp.get("parameters"),
-                "raw": exp,
-                # v1.2: Neue Felder
-                "report_links": report_links,
-                "status": flat["status"],
-                "run_type": flat["run_type"],
-                "tier": flat["tier"],
-                "experiment_category": flat["experiment_category"],
-                "duration_info": duration_info,
-            }
-
-    raise HTTPException(status_code=404, detail=f"Experiment not found: {run_id}")
+    
+    # Zentralisierte Lookup-Logik
+    exp = find_experiment_by_run_id(experiments, run_id)
+    
+    if exp is None:
+        raise HTTPException(status_code=404, detail=f"Experiment not found: {run_id}")
+    
+    # Baue Detail-Response
+    detail = build_experiment_detail(exp)
+    # Füge raw hinzu (nur im Detail-Endpoint)
+    detail["raw"] = exp
+    
+    return detail
 
 
 @router.get(
