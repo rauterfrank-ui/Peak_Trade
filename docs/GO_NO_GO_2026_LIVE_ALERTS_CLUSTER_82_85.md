@@ -86,11 +86,46 @@ Solange diese Frage **nicht** mit „Ja, per separatem Go/No-Go-Entscheid" beant
 
 ---
 
-## 6. Referenzen
+## 6. Technische Governance-Verankerung
+
+Die Go/No-Go-Entscheidungen dieses Dokuments sind im Code verankert:
+
+**Modul:** `src/governance/go_no_go.py`
+
+**Programmatische Prüfung:**
+
+```python
+from src.governance.go_no_go import (
+    get_governance_status,
+    is_feature_approved_for_year,
+)
+
+# Status abfragen
+get_governance_status("live_alerts_cluster_82_85")  # → "approved_2026"
+get_governance_status("live_order_execution")        # → "locked"
+
+# Jahres-Freigabe prüfen
+is_feature_approved_for_year("live_alerts_cluster_82_85", 2026)  # → True
+is_feature_approved_for_year("live_order_execution", 2026)       # → False
+```
+
+**Registrierte Features:**
+
+| Feature-Key                  | Status           | Bedeutung                                      |
+|------------------------------|------------------|------------------------------------------------|
+| `live_alerts_cluster_82_85`  | `approved_2026`  | ✅ Für 2026-Betrieb freigegeben                |
+| `live_order_execution`       | `locked`         | 🔒 Gesperrt, separate Entscheidung erforderlich|
+
+**Tests:** `tests/test_governance_go_no_go.py`
+
+---
+
+## 7. Referenzen
 
 * [`docs/PEAK_TRADE_STATUS_OVERVIEW.md`](PEAK_TRADE_STATUS_OVERVIEW.md) – §15 Road to 2026
 * [`docs/PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md`](PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md)
 * [`docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`](runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md)
+* [`src/governance/go_no_go.py`](../src/governance/go_no_go.py) – Governance-Modul
 
 ---
 

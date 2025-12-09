@@ -1258,6 +1258,29 @@ Der aktuelle Stand (Q4 2025) markiert die **Basis-Konfiguration für den 2026-Be
 
 ---
 
+## 15a. Governance – Go/No-Go 2026
+
+Die folgende Tabelle zeigt den aktuellen Governance-Status der Haupt-Features für den 2026-Betrieb:
+
+| Feature                        | Status              | Governance-Key               | Kommentar                                    |
+|--------------------------------|---------------------|------------------------------|----------------------------------------------|
+| **Live Alerts Cluster 82–85**  | ✅ Approved 2026    | `live_alerts_cluster_82_85`  | Alert-Pipeline, Dashboard, Runbooks, Escalation |
+| **Live-Order-Execution**       | 🔒 Locked           | `live_order_execution`       | Separate Go/No-Go-Entscheidung erforderlich  |
+
+**Programmatische Prüfung:** `src/governance/go_no_go.py`
+
+```python
+from src.governance.go_no_go import is_feature_approved_for_year
+
+# Beispiel: Prüfen ob Feature für 2026 freigegeben ist
+is_feature_approved_for_year("live_alerts_cluster_82_85", 2026)  # → True
+is_feature_approved_for_year("live_order_execution", 2026)       # → False
+```
+
+**Referenz:** [`docs/GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md`](GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md)
+
+---
+
 ## 16. Änderungshistorie dieses Dokuments
 
 | Datum      | Commit    | Änderung                                                        |
