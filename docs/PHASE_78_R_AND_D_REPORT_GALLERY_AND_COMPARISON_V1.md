@@ -6,6 +6,22 @@
 
 ---
 
+## Versionshistorie
+
+- **v1.0 – Report-Gallery & Comparison-View**
+  - Erste Version der R&D-Report-Gallery im Experiment-Detail-View.
+  - Multi-Run-Comparison-View (Batch-Endpoint + UI) für schnelle Gegenüberstellung von Experimenten.
+  - Fokus auf visuelle Auswertung (Reports, Kennzahlen, Status).
+
+- **v1.1 – R&D-API Helper-Refactoring**
+  - Einführung einer klar dokumentierten 4-Layer-Helper-Architektur:
+    **Lookup → Transform → Aggregation → Validation**.
+  - `parse_and_validate_run_ids()` wirft jetzt `ValueError` statt `HTTPException` (framework-agnostisch, CLI-kompatibel).
+  - `compute_best_metrics()` mit `BestMetricsDict` (TypedDict, `total=False`) typisiert, robust gegen partielle/fehlende Metrik-Sätze.
+  - Erweiterte Edge-Case-Tests für Run-ID-Parsing und Best-Metrics-Aggregation.
+
+---
+
 ## 1. Ziel der Phase
 
 Phase 78 erweitert den R&D-Hub um zwei zentrale Features: eine **Report-Gallery** in der Detail-Ansicht und einen **Multi-Run Comparison View** für den direkten Vergleich mehrerer Experimente. Damit schließt sich die Lücke zwischen Einzelbetrachtung (Phase 77) und systematischer Analyse über mehrere Runs hinweg.
@@ -324,6 +340,21 @@ Die R&D-API wurde um ein zentralisiertes Helper-Set erweitert, das konsistentes 
 
 * **`RnDBatchResponse`** – Batch-Antwort mit transparenter Trennung in `found` und `not_found`.
 * **`BestMetricsDict`** (TypedDict) – explizite Typisierung für das Ergebnis von `compute_best_metrics()`, optional nach Metrik befüllt.
+
+### Helper-Architektur (v1.1)
+
+```mermaid
+flowchart LR
+    A[Lookup Layer<br/>load_experiment_json()<br/>load_experiments_from_dir()] 
+        --> B[Transform Layer<br/>extract_flat_fields()<br/>determine_status()<br/>find_report_links()]
+    B --> C[Aggregation Layer<br/>compute_summary()<br/>compute_preset_stats()<br/>compute_best_metrics()]
+    C --> D[Validation Layer<br/>parse_and_validate_run_ids()]
+```
+
+* **Lookup Layer:** Rohdaten-Ladefunktionen für einzelne und multiple Experimente.
+* **Transform Layer:** Extraktion flacher Felder, Statusbestimmung und Report-Link-Erkennung.
+* **Aggregation Layer:** Aggregation von Kennzahlen und Best-Metrics-Bestimmung auf Experimentebene.
+* **Validation Layer:** Validierung und Normalisierung von Run-IDs (Deduplizierung, Limits, Zeichensatz, Fehler via `ValueError`).
 
 ---
 
