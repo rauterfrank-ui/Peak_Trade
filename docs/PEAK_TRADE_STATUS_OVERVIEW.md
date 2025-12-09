@@ -83,6 +83,22 @@ Ziel:
 | **Docs & Meta-Runbooks**     | **≈ 97%**       | –             | **≈ 97%**       | **≈ 97%**          |
 | **Tooling & Dev-Workflow**   | **≈ 95%**       | **≈ 95%**     | **≈ 90%**       | **≈ 95%**          |
 
+## Layer-Fokus – Nächste 3–5 Prozent
+
+| Layer / Komponente           | Nächste 3–5 %                                                                                                                         | Priorität |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| **Data-Layer**               | Doku harter abgrenzen: welche Loader/Normalizer sind „Core", welche „Legacy/Optional"; kleine Beispiel-Snippets in der Doku ergänzen. | Niedrig   |
+| **Backtest-Engine**          | Erweiterte Beispiel-Configs & „Best Practices"-Abschnitt für komplexe Portfolio-Runs (Multi-Asset, Multi-Strategy) dokumentieren.     | Niedrig   |
+| **Strategy-Layer (Prod)**    | Konsistenter Param-Namensraum (+ evtl. Mapping-Tabelle), einheitliche „Live-Ready"-Kennzeichnung pro Strategie.                       | Mittel    |
+| **Strategy-Layer (R&D)**     | Kurze Research-Notes pro R&D-Strategie (Armstrong, El Karoui, Waves) + ein „How to interpret results"-Snippet.                        | Mittel    |
+| **Portfolio & Risk**         | Weitere Szenario-/Stress-Tests (Multi-Day-Drawdown, Gap-Risk) + knapper Risk-Runbook-Abschnitt „Was tun bei Breach?".                 | Hoch      |
+| **Execution & Environments** | Mehr Edge-Case-Tests (Order-Rejects, Retry-Logic, Network-Glitches) + klarer Failover-Flow je Environment.                            | Hoch      |
+| **Live-Track & Bridge**      | UI-Feinschliff (Badges, Tooltips, Filter), kleine „Operator-Playbook"-Sektion für typische Daily-Flows.                               | Mittel    |
+| **R&D Web-Dashboard**        | Zusätzliche Filter/Sortieroptionen (run_type, date_str) feintunen und in der Doku als „R&D Workflows" zeigen.                         | Niedrig   |
+| **Monitoring & Alerts**      | Checkliste: „Welche Checks müssen grün sein, bevor Live/Paper gestartet wird?" – direkt in Doku referenziert.                         | Mittel    |
+| **Docs & Meta-Runbooks**     | Ein zentrales „Start here"-Kapitel mit Verlinkung zu den wichtigsten Phase-/Runbook-Dokumenten.                                       | Mittel    |
+| **Tooling & Dev-Workflow**   | Pre-Commit-/CI-Hinweise (pytest-Subset, Format, Lint) als kleinen Dev-Guide ergänzen.                                                 | Mittel    |
+
 ---
 
 ## 2. Data & Market Access (~95%)
