@@ -56,6 +56,17 @@ Ziel:
 | **Docs & Runbooks**             | Phase-Dokus, Status-Overview, Runbooks, AI-Guides, Changelogs     | **≈ 97%**   |
 | **Tooling / Dev-Workflow**      | venv, Test-Suite (>2500 Tests), CLI-Skripte, Git-/GH-Flow         | **≈ 95%**   |
 
+## Phasen-Cluster – Fortschritt in Prozent
+
+| Phasen-Cluster   | Schwerpunkt                                                           | Fortschritt | Kommentar                                                     |
+| ---------------- | --------------------------------------------------------------------- | ----------- | ------------------------------------------------------------- |
+| **Phasen 1–20**  | Core-Framework, Data-Layer, Backtest-Engine, Basis-Infrastruktur      | **100%**    | Fundament steht, wird nur noch gepflegt/erweitert             |
+| **Phasen 21–40** | Strategy-Layer (Prod), erste Portfolio-Logik, Metriken & Reporting    | **≈ 99%**   | Alle Kernstrategien & Pipelines produktiv nutzbar             |
+| **Phasen 41–60** | Research-Ökosystem, Sweeps, Advanced Reporting, Risk-Vertiefung       | **≈ 97%**   | Voll funktionsfähig, nur noch Feintuning/Erweiterungen        |
+| **Phasen 61–75** | Execution-Stack, Environments, Risk-Gates, Monitoring & Checks        | **≈ 96%**   | Execution und Safety-Gates implementiert, laufendes Hardening |
+| **Phasen 76–81** | R&D Dashboard (Hub, Detail, Gallery, Comparison) & Live-Track Bridge  | **≈ 98%**   | 76–78 & 80/81 implementiert, UI/UX-Feinschliff laufend        |
+| **Phasen 82–86** | Future Extensions, Nice-to-have Features, Erweiterungen für Live & UI | **≈ 85%**   | Nur noch optionale Ausbau-Themen, Kernsystem ist vollständig  |
+
 ---
 
 ## 2. Data & Market Access (~95%)
