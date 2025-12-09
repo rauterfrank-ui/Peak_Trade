@@ -1,0 +1,337 @@
+<!-- templates/peak_trade_dashboard/r_and_d_experiments.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-100">R&D Experiments Overview</h1>
+      <p class="text-sm text-slate-400 mt-1">
+        Read-only Übersicht der R&D-Experimente aus <code class="bg-slate-800 px-1 rounded">reports/r_and_d_experiments/</code>
+      </p>
+    </div>
+    <a href="/" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors">
+      ← Zurück zum Dashboard
+    </a>
+  </div>
+
+  <!-- Stats-Kacheln -->
+  {% if stats %}
+  <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-400">Experimente gesamt</p>
+      <p class="text-2xl font-bold text-slate-100">{{ stats.total_experiments }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-400">Mit Trades</p>
+      <p class="text-2xl font-bold text-emerald-300">{{ stats.experiments_with_trades }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-400">Presets</p>
+      <p class="text-2xl font-bold text-sky-300">{{ stats.unique_presets }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-400">Ø Sharpe</p>
+      <p class="text-2xl font-bold text-amber-300">{{ "%.2f"|format(stats.avg_sharpe) }}</p>
+    </div>
+    <div class="bg-slate-900/60 rounded-xl border border-slate-800 px-4 py-3">
+      <p class="text-xs text-slate-400">Ø Return</p>
+      <p class="text-2xl font-bold {% if stats.avg_return >= 0 %}text-emerald-300{% else %}text-rose-400{% endif %}">
+        {{ "%.2f%%"|format(stats.avg_return * 100) }}
+      </p>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Filter-Bar -->
+  <form method="GET" action="/r_and_d" class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <div class="grid gap-4 md:grid-cols-5">
+      <!-- Preset -->
+      <div class="flex flex-col space-y-1">
+        <label class="text-xs uppercase tracking-wide text-slate-400">Preset</label>
+        <input
+          type="text"
+          name="preset"
+          value="{{ filters.preset or '' }}"
+          class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500 focus:outline-none"
+          placeholder="z.B. ehlers_super_smoother_v1"
+        />
+      </div>
+
+      <!-- Strategy -->
+      <div class="flex flex-col space-y-1">
+        <label class="text-xs uppercase tracking-wide text-slate-400">Strategy</label>
+        <input
+          type="text"
+          name="strategy"
+          value="{{ filters.strategy or '' }}"
+          class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500 focus:outline-none"
+          placeholder="z.B. armstrong_cycle"
+        />
+      </div>
+
+      <!-- Tag-Substring -->
+      <div class="flex flex-col space-y-1">
+        <label class="text-xs uppercase tracking-wide text-slate-400">Tag-Substring</label>
+        <input
+          type="text"
+          name="tag_substr"
+          value="{{ filters.tag_substr or '' }}"
+          class="rounded-lg px-3 py-2 bg-slate-950 border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500 focus:outline-none"
+          placeholder="z.B. wave2"
+        />
+      </div>
+
+      <!-- With Trades Checkbox -->
+      <div class="flex flex-col space-y-1">
+        <label class="text-xs uppercase tracking-wide text-slate-400">Optionen</label>
+        <label class="inline-flex items-center space-x-2 mt-2">
+          <input
+            type="checkbox"
+            name="with_trades"
+            value="true"
+            {% if filters.with_trades %}checked{% endif %}
+            class="rounded border-slate-600 bg-slate-950 text-sky-500 focus:ring-sky-500"
+          />
+          <span class="text-sm text-slate-300">Nur mit Trades</span>
+        </label>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex flex-col space-y-1 justify-end">
+        <div class="flex gap-2">
+          <button
+            type="submit"
+            class="flex-1 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium bg-sky-600 hover:bg-sky-500 text-white transition-colors"
+          >
+            Filter anwenden
+          </button>
+          <a
+            href="/r_and_d"
+            class="inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm border border-slate-600 hover:bg-slate-800 text-slate-300 transition-colors"
+          >
+            Reset
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Filters Info -->
+    {% if filters.preset or filters.strategy or filters.tag_substr or filters.with_trades %}
+    <div class="mt-3 flex flex-wrap gap-2 items-center">
+      <span class="text-xs text-slate-400">Aktive Filter:</span>
+      {% if filters.preset %}
+      <span class="text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">
+        preset: {{ filters.preset }}
+      </span>
+      {% endif %}
+      {% if filters.strategy %}
+      <span class="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+        strategy: {{ filters.strategy }}
+      </span>
+      {% endif %}
+      {% if filters.tag_substr %}
+      <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+        tag: {{ filters.tag_substr }}
+      </span>
+      {% endif %}
+      {% if filters.with_trades %}
+      <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+        nur mit Trades
+      </span>
+      {% endif %}
+      <span class="text-xs text-slate-500 ml-2">
+        {{ experiments | length }} von {{ total }} Experimenten
+      </span>
+    </div>
+    {% endif %}
+  </form>
+
+  <!-- Experiments Tabelle -->
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-900/90 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700/50">
+          <tr>
+            <th class="px-4 py-3 text-left font-semibold">Timestamp</th>
+            <th class="px-4 py-3 text-left font-semibold">Tag</th>
+            <th class="px-4 py-3 text-left font-semibold">Preset</th>
+            <th class="px-4 py-3 text-left font-semibold">Strategy</th>
+            <th class="px-4 py-3 text-left font-semibold">Symbol</th>
+            <th class="px-4 py-3 text-right font-semibold">Trades</th>
+            <th class="px-4 py-3 text-right font-semibold">Return</th>
+            <th class="px-4 py-3 text-right font-semibold">Sharpe</th>
+            <th class="px-4 py-3 text-right font-semibold">MaxDD</th>
+            <th class="px-4 py-3 text-right font-semibold">WinRate</th>
+            <th class="px-4 py-3 text-center font-semibold">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/50">
+          {% if experiments | length == 0 %}
+          <tr>
+            <td colspan="11" class="px-4 py-8 text-center text-slate-400">
+              <p class="text-sm">Keine Experimente gefunden.</p>
+              <p class="text-xs text-slate-500 mt-1">
+                {% if filters.preset or filters.strategy or filters.tag_substr or filters.with_trades %}
+                Versuche andere Filter oder klicke auf "Reset".
+                {% else %}
+                Stelle sicher, dass Experiment-JSONs in <code class="bg-slate-800 px-1 rounded">reports/r_and_d_experiments/</code> vorhanden sind.
+                {% endif %}
+              </p>
+            </td>
+          </tr>
+          {% endif %}
+          {% for exp in experiments %}
+          <tr class="hover:bg-slate-800/40 transition-colors {% if loop.index is odd %}bg-slate-900/20{% endif %}">
+            <!-- Timestamp -->
+            <td class="px-4 py-2.5 font-mono text-xs text-slate-300 whitespace-nowrap">
+              {{ exp.timestamp or '-' }}
+            </td>
+
+            <!-- Tag -->
+            <td class="px-4 py-2.5 text-xs max-w-[180px]">
+              <span class="truncate block text-slate-200" title="{{ exp.tag or '' }}">
+                {{ exp.tag[:30] }}{% if exp.tag and exp.tag | length > 30 %}...{% endif %}
+              </span>
+            </td>
+
+            <!-- Preset -->
+            <td class="px-4 py-2.5 text-xs max-w-[160px]">
+              <span class="truncate block text-sky-300" title="{{ exp.preset_id or '' }}">
+                {{ exp.preset_id[:25] if exp.preset_id else '-' }}{% if exp.preset_id and exp.preset_id | length > 25 %}...{% endif %}
+              </span>
+            </td>
+
+            <!-- Strategy -->
+            <td class="px-4 py-2.5 text-xs max-w-[140px]">
+              <span class="truncate block text-purple-300" title="{{ exp.strategy or '' }}">
+                {{ exp.strategy[:20] if exp.strategy else '-' }}{% if exp.strategy and exp.strategy | length > 20 %}...{% endif %}
+              </span>
+            </td>
+
+            <!-- Symbol -->
+            <td class="px-4 py-2.5 text-xs text-slate-300 whitespace-nowrap">
+              {{ exp.symbol or '-' }}
+            </td>
+
+            <!-- Trades -->
+            <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              {% if exp.total_trades is not none and exp.total_trades > 0 %}
+              <span class="text-emerald-300 font-medium">{{ exp.total_trades }}</span>
+              {% elif exp.total_trades == 0 %}
+              <span class="text-slate-500">0</span>
+              {% else %}
+              <span class="text-slate-500">-</span>
+              {% endif %}
+            </td>
+
+            <!-- Return -->
+            <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              {% if exp.total_return is not none %}
+                {% if exp.total_return >= 0 %}
+                <span class="text-emerald-300 font-medium">+{{ "%.2f%%"|format(exp.total_return * 100) }}</span>
+                {% else %}
+                <span class="text-rose-400 font-medium">{{ "%.2f%%"|format(exp.total_return * 100) }}</span>
+                {% endif %}
+              {% else %}
+              <span class="text-slate-500">-</span>
+              {% endif %}
+            </td>
+
+            <!-- Sharpe -->
+            <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              {% if exp.sharpe is not none %}
+                {% if exp.sharpe >= 1.5 %}
+                <span class="text-emerald-300 font-medium">{{ "%.2f"|format(exp.sharpe) }}</span>
+                {% elif exp.sharpe >= 0.5 %}
+                <span class="text-amber-300">{{ "%.2f"|format(exp.sharpe) }}</span>
+                {% elif exp.sharpe > 0 %}
+                <span class="text-slate-300">{{ "%.2f"|format(exp.sharpe) }}</span>
+                {% else %}
+                <span class="text-rose-400">{{ "%.2f"|format(exp.sharpe) }}</span>
+                {% endif %}
+              {% else %}
+              <span class="text-slate-500">-</span>
+              {% endif %}
+            </td>
+
+            <!-- MaxDD -->
+            <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              {% if exp.max_drawdown is not none %}
+              <span class="text-amber-300">{{ "%.1f%%"|format(exp.max_drawdown * 100) }}</span>
+              {% else %}
+              <span class="text-slate-500">-</span>
+              {% endif %}
+            </td>
+
+            <!-- WinRate -->
+            <td class="px-4 py-2.5 text-xs text-right tabular-nums">
+              {% if exp.win_rate is not none %}
+                {% if exp.win_rate >= 0.55 %}
+                <span class="text-emerald-300">{{ "%.1f%%"|format(exp.win_rate * 100) }}</span>
+                {% elif exp.win_rate >= 0.45 %}
+                <span class="text-slate-300">{{ "%.1f%%"|format(exp.win_rate * 100) }}</span>
+                {% else %}
+                <span class="text-rose-400">{{ "%.1f%%"|format(exp.win_rate * 100) }}</span>
+                {% endif %}
+              {% else %}
+              <span class="text-slate-500">-</span>
+              {% endif %}
+            </td>
+
+            <!-- Status -->
+            <td class="px-4 py-2.5 text-center">
+              {% if exp.status == "ok" %}
+              <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                OK
+              </span>
+              {% elif exp.status == "no_trades" %}
+              <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/30">
+                0 Trades
+              </span>
+              {% elif exp.status == "failed" %}
+              <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                Fail
+              </span>
+              {% else %}
+              <span class="text-xs text-slate-400">{{ exp.status or '-' }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Info -->
+    {% if experiments | length > 0 %}
+    <div class="px-4 py-3 border-t border-slate-800/50 bg-slate-900/40 flex items-center justify-between">
+      <span class="text-xs text-slate-400">
+        Zeige {{ experiments | length }} von {{ total }} Experimenten
+        {% if filtered != total %}({{ filtered }} nach Filter){% endif %}
+      </span>
+      <span class="text-xs text-slate-500">
+        Limit: {{ limit }} · Sortiert nach Timestamp (neueste zuerst)
+      </span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Hinweis -->
+  <div class="text-xs text-slate-500 flex items-center justify-between">
+    <p>
+      💡 R&D Dashboard v0 – Read-only View · Phase 76
+    </p>
+    <p>
+      API:
+      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/experiments</code> ·
+      <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">/api/r_and_d/stats</code>
+    </p>
+  </div>
+</div>
+
+{% endblock %}

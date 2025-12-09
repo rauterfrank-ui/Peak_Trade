@@ -382,3 +382,41 @@ class TestAPIHealth:
         assert resp.status_code == 200
         data = resp.json()
         assert data["status"] == "ok"
+
+
+# =============================================================================
+# HTML PAGE TESTS
+# =============================================================================
+
+
+class TestRAndDExperimentsPage:
+    """Tests für /r_and_d HTML-Page."""
+
+    def test_page_loads_ok(self, client):
+        """R&D Experiments Page gibt 200 und HTML."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        assert "text/html" in resp.headers.get("content-type", "")
+        assert "R&D Experiments Overview" in resp.text
+
+    def test_page_with_filters(self, client):
+        """Page mit Filtern funktioniert."""
+        resp = client.get("/r_and_d?preset=test_preset_v1&with_trades=true")
+        assert resp.status_code == 200
+        assert "test_preset_v1" in resp.text
+
+    def test_page_shows_stats(self, client):
+        """Page zeigt Statistiken an."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        # Prüfe ob Stats-Kacheln vorhanden sind
+        assert "Experimente gesamt" in resp.text
+
+    def test_page_shows_table(self, client):
+        """Page zeigt Tabelle mit Experimenten."""
+        resp = client.get("/r_and_d")
+        assert resp.status_code == 200
+        # Prüfe ob Tabellen-Header vorhanden sind
+        assert "Timestamp" in resp.text
+        assert "Preset" in resp.text
+        assert "Sharpe" in resp.text

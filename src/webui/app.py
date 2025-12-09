@@ -23,12 +23,16 @@ v1.1 Polish:
 Start:
     uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 
+HTML Pages:
+- GET / (Dashboard Home)
+- GET /session/{session_id} (Session Detail)
+- GET /r_and_d (R&D Experiments Overview - Phase 76)
+
 API Endpoints:
 Live-Track:
 - GET /api/live_sessions?mode=shadow&status=completed (Filter)
 - GET /api/live_sessions/{session_id} (Detail)
 - GET /api/live_sessions/stats (Statistiken)
-- GET /session/{session_id} (HTML Detail-Page)
 
 R&D Dashboard (Phase 76):
 - GET /api/r_and_d/experiments (Liste mit Filtern)
@@ -59,7 +63,14 @@ from .live_track import (
     get_session_by_id,
     get_session_stats,
 )
-from .r_and_d_api import router as r_and_d_router, set_base_dir as set_r_and_d_base_dir
+from .r_and_d_api import (
+    router as r_and_d_router,
+    set_base_dir as set_r_and_d_base_dir,
+    load_experiments_from_dir,
+    filter_experiments,
+    extract_flat_fields,
+    compute_global_stats,
+)
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -345,6 +356,61 @@ def create_app() -> FastAPI:
             {
                 "status": proj_status,
                 "session": detail,
+            },
+        )
+
+    @app.get("/r_and_d", response_class=HTMLResponse)
+    async def r_and_d_experiments_page(
+        request: Request,
+        preset: Optional[str] = Query(None, description="Filter nach Preset-ID"),
+        strategy: Optional[str] = Query(None, description="Filter nach Strategy-ID"),
+        tag_substr: Optional[str] = Query(None, description="Filter nach Tag-Substring"),
+        with_trades: bool = Query(False, description="Nur Experimente mit Trades"),
+        limit: int = Query(100, ge=1, le=500, description="Max. Anzahl"),
+    ) -> Any:
+        """HTML Overview-Page für R&D-Experimente (Phase 76)."""
+        proj_status = get_project_status()
+
+        # Experimente laden
+        all_experiments = load_experiments_from_dir()
+
+        # Filter anwenden
+        filtered_experiments = filter_experiments(
+            all_experiments,
+            preset=preset,
+            strategy=strategy,
+            tag_substr=tag_substr,
+            with_trades=with_trades,
+        )
+
+        # Limit anwenden
+        limited_experiments = filtered_experiments[:limit]
+
+        # Zu flachen Dicts konvertieren für Template
+        experiments = [extract_flat_fields(exp) for exp in limited_experiments]
+
+        # Statistiken berechnen
+        stats = compute_global_stats(all_experiments)
+
+        # Filter-State für Template
+        filters = {
+            "preset": preset,
+            "strategy": strategy,
+            "tag_substr": tag_substr,
+            "with_trades": with_trades,
+        }
+
+        return templates.TemplateResponse(
+            request,
+            "r_and_d_experiments.html",
+            {
+                "status": proj_status,
+                "experiments": experiments,
+                "stats": stats,
+                "filters": filters,
+                "total": len(all_experiments),
+                "filtered": len(filtered_experiments),
+                "limit": limit,
             },
         )
 

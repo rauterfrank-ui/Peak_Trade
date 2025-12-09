@@ -18,12 +18,12 @@
       <header class="border-b border-slate-800 bg-slate-900/70 backdrop-blur sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <h1 class="text-xl font-semibold tracking-tight">
+            <a href="/" class="text-xl font-semibold tracking-tight hover:text-slate-200 transition-colors">
               Peak_Trade Dashboard
-            </h1>
+            </a>
             <!-- Version Badge -->
             <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-              v1.1 · Read-Only
+              v1.2 · Read-Only
             </span>
             <!-- System Health Badge -->
             <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
@@ -35,9 +35,19 @@
               🔒 LIVE LOCKED
             </span>
           </div>
-          <div class="text-xs text-slate-400">
-            Snapshot: {{ status.version }} · Commit {{ status.snapshot_commit }}
-          </div>
+          <!-- Navigation -->
+          <nav class="flex items-center gap-4">
+            <a href="/" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Dashboard
+            </a>
+            <a href="/r_and_d" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              R&D Experiments
+            </a>
+            <span class="text-slate-600">|</span>
+            <span class="text-xs text-slate-500">
+              {{ status.version }} · {{ status.snapshot_commit }}
+            </span>
+          </nav>
         </div>
       </header>
 
@@ -47,8 +57,8 @@
 
       <footer class="border-t border-slate-800/50 bg-slate-900/30 mt-8">
         <div class="max-w-6xl mx-auto px-4 py-3 text-xs text-slate-500 flex items-center justify-between">
-          <span>Peak_Trade Dashboard v1.1 · Read-Only · Shadow/Testnet Mode</span>
-          <span>🔒 Live-Execution ist in v1.1 deaktiviert</span>
+          <span>Peak_Trade Dashboard v1.2 · Read-Only · Shadow/Testnet Mode · R&D Dashboard (Phase 76)</span>
+          <span>🔒 Live-Execution ist deaktiviert</span>
         </div>
       </footer>
     </div>
