@@ -403,9 +403,26 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
   - `compute_best_metrics()` ist mit `BestMetricsDict` (TypedDict, `total=False`) typisiert.  
   - Funktioniert robust mit fehlenden oder partiellen Metrik-Sätzen, überspringt `None`-Werte und nicht-numerische Daten, ohne die Auswertung zu brechen.
 
-- **Tests / Robustheit:**  
-  - 15 Edge-Case-Tests für `parse_and_validate_run_ids()` (Whitespace, Deduplizierung, Limits, ungültige Zeichen, leere Eingaben).  
+- **Tests / Robustheit:**
+  - 15 Edge-Case-Tests für `parse_and_validate_run_ids()` (Whitespace, Deduplizierung, Limits, ungültige Zeichen, leere Eingaben).
   - 14 Tests für `compute_best_metrics()` (leere Listen, partielle Metriken, fehlende `results`/`_filename`, `None`-Werte, nicht-numerische Felder, TypedDict-Kompatibilität).
+
+###### Visualisierung – R&D API Helper-Flow
+
+```mermaid
+flowchart LR
+    Registry[(Experiment Registry JSON)]
+    API[REST API /api/r_and_d/*]
+    Helper[Helper-Layer\n(find_experiment_by_run_id,\n build_experiment_detail,\n compute_best_metrics,\n parse_and_validate_run_ids)]
+    HTML[HTML Views /r_and_d/*]
+
+    Registry --> Helper
+    API --> Helper
+    Helper --> API
+    Helper --> HTML
+```
+
+Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views denselben Helper-Layer nutzen und die Registry nicht direkt, sondern immer über die Helper-Funktionen angesprochen wird.
 
 > **Wichtig:** R&D-Strategien sind **nicht live-freigegeben**. Sie sind ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
 
