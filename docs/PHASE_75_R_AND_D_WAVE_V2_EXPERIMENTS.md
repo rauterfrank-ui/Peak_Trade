@@ -587,12 +587,95 @@ reports/r_and_d_experiments/
 
 ---
 
-## 8. Änderungshistorie
+## 8. R&D-Wave v1 – Operator-View (Strategy-Profile → Experiments-Viewer → Dashboard)
+
+Dieser Flow beschreibt, wie ein Operator mit der R&D-Wave v1 arbeitet –
+vom ersten Strategy-Check über konkrete R&D-Experimente bis hin zum späteren
+R&D-Dashboard (geplant).
+
+### 8.1 Strategy-Profiling (Research-CLI)
+
+Zuerst wird eine R&D-Strategie isoliert betrachtet, um grundlegende
+Eigenschaften und Sensitivitäten zu verstehen.
+
+Typischer Aufruf (Beispiel, konkrete Optionen siehe `--help`):
+
+```bash
+python scripts/research_cli.py strategy-profile \
+  --strategy ehlers_super_smoother_v1 \
+  --preset r_and_d_wave1 \
+  --symbol BTC/USDT \
+  --timeframe 1h
+```
+
+Zweck dieses Schrittes:
+
+* Versteht die Logik und Parameter der Strategie
+* Liefert erste Kennzahlen (Return, Sharpe, Drawdown, Hit-Rate etc.)
+* Dient als „Baseline", bevor umfangreiche R&D-Sweeps gefahren werden
+
+### 8.2 R&D-Experimente inspizieren (`view_r_and_d_experiments.py`)
+
+Sobald R&D-Experimente gelaufen sind (z.B. via separaten R&D-Skripten
+oder Batch-Runs), werden sie mit dem R&D Experiments Viewer analysiert:
+
+```bash
+# Alle Experimente anzeigen
+python scripts/view_r_and_d_experiments.py
+
+# Fokus auf eine bestimmte Welle / ein Preset
+python scripts/view_r_and_d_experiments.py \
+  --preset ehlers_super_smoother_v1 \
+  --tag-substr wave2 \
+  --with-trades
+```
+
+Optional:
+
+```bash
+# Detail-Ansicht einer konkreten Run-ID
+python scripts/view_r_and_d_experiments.py \
+  --run-id <RUN_ID>
+
+# JSON-Output für weitere Auswertungen (z.B. Notebooks)
+python scripts/view_r_and_d_experiments.py \
+  --output json --limit 20
+```
+
+Zweck dieses Schrittes:
+
+* Überblick über alle R&D-Experimente (Wave, Preset, Strategy, Trades, Status)
+* Schnelles Identifizieren interessanter Runs (z.B. hohe Sharpe, bestimmte Tags)
+* Vorbereitung für tiefergehende Analysen (z.B. in Notebooks oder Reports)
+
+### 8.3 Ausblick: R&D-Dashboard (geplant)
+
+In einem späteren Schritt wird ein dediziertes R&D-Dashboard die
+wichtigsten Informationen aus den Experimenten visualisieren, z.B.:
+
+* Verteilung von Kennzahlen über verschiedene Presets und Parameter
+* Heatmaps für Sharpe/Return pro Parameterkombination
+* Filterbare Tabellen mit Drill-Down auf einzelne Runs
+
+Der aktuelle CLI-Workflow ist so aufgebaut, dass er „Dashboard-ready" ist:
+
+* Klare Struktur der Experiment-JSONs
+* Konsistente Filter (Preset, Tag, Strategy, Datum, Trades)
+* JSON-Output, der direkt in Dashboards/Notebooks konsumiert werden kann
+
+Bis das R&D-Dashboard implementiert ist, bildet die Kombination aus
+`strategy-profile` + `view_r_and_d_experiments.py` den Kern des
+Operator-Workflows für die R&D-Wave v1.
+
+---
+
+## 9. Änderungshistorie
 
 | Datum | Änderung |
 |-------|----------|
 | 2025-12-08 | Initiale Version – 18 Experiment-Templates für 9 Presets definiert |
 | 2025-12-08 | **Run-Log W2** – Abschnitt 6 hinzugefügt: 6 CLI-Läufe dokumentiert (Ehlers, López, El Karoui) |
+| 2025-12-09 | **Operator-View** – Abschnitt 8 hinzugefügt: Strategy-Profile → Experiments-Viewer → Dashboard Flow |
 
 ---
 
