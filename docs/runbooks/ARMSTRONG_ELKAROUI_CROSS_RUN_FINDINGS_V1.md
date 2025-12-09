@@ -1,6 +1,6 @@
 # Armstrong × El Karoui Combo – Cross-Run Findings v1
 
-> **Status:** R&D-Only | **Erstellt:** 2025-12-09 | **Version:** v1.0
+> **Status:** R&D-Only | **Erstellt:** 2025-12-09 | **Version:** v1.1
 
 ---
 
@@ -166,7 +166,61 @@ Die Ergebnisse sind **vielversprechend**, aber klar als **R&D-Signal** zu behand
 
 ---
 
-## 8. Konfidenz-Matrix (vorläufig)
+## 8. Dummy-Langzeit-Run (Framework-Sanity-Check)
+
+**Wichtiger Hinweis:**
+Die folgenden Ergebnisse stammen aus einem **Dummy-Daten-Run** und dienen ausschließlich der **Validierung des Frameworks**, nicht als inhaltliche Markt-Analyse.
+
+### 8.1 Setup
+
+* **Run-ID:** `rnd_combi_20251209_092138_04096e5a`
+* **Symbol:** BTC/EUR
+* **Timeframe:** 1h
+* **Zeitraum:** 2022-01-01 bis 2024-12-01
+* **Bars:** 10.000
+* **Datenquelle:** Dummy-Daten (kein Kraken-API-Zugriff, kein gefüllter Cache)
+* **Armstrong-State:** `NONE` (keine Events in den Dummy-Daten)
+
+### 8.2 Kombi-States (3d Forward Return, Dummy-Daten)
+
+| Kombi-State   | Count | Ø 3d Return |
+| ------------- | ----: | ----------: |
+| `NONE_LOW`    | 3.065 |     +0,05 % |
+| `NONE_HIGH`   | 2.993 |     +0,03 % |
+| `NONE_MEDIUM` | 3.942 |     -0,00 % |
+
+**Interpretation:**
+
+* Alle States liegen nahe 0 %, wie bei einem **Random Walk** zu erwarten.
+* Es existieren keine `EVENT_*` States, da in den Dummy-Daten keine echten Armstrong-Events definiert sind.
+* Der Run bestätigt:
+  * das Experiment skaliert technisch auf längere Zeiträume / größere Bar-Mengen,
+  * die Kombi-State-Logik funktioniert syntaktisch auch ohne Events,
+  * es gibt **keine** zusätzlichen Erkenntnisse über EVENT vs. NONE Phasen.
+
+### 8.3 Implikation für die Findings
+
+* Die **inhaltlichen Hypothesen (H1–H3)** und die **Konfidenz-Matrix** basieren weiterhin **nur** auf den kürzeren BTC/EUR-Runs mit (simulierten) EVENT-Phasen.
+* Der Dummy-Langzeit-Run wird als **Framework-Sanity-Check** verbucht und fließt **nicht** in die Bewertung eines handelbaren Edges ein.
+
+### 8.4 TODO – Echte Markt-Robustheit (wenn API/Caches verfügbar)
+
+Für eine echte Robustheits-Analyse über 2022–2024 werden benötigt:
+
+1. **Historische Marktdaten im Cache**, z.B. über ein separates Data-Loading-Script (Kraken o.ä.).
+2. Mindestens ein Run mit:
+   * echten `EVENT_*` und `NONE_*` Phasen,
+   * ausreichend langen Zeitreihen und realer Marktdynamik.
+3. Danach:
+   * erneute Cross-Run-Analyse (v2),
+   * Update der Hypothesen / Konfidenzen,
+   * ggf. erste Walk-Forward-Setups.
+
+Bis dahin bleibt dieser Abschnitt explizit als **technischer Validierungs-Check** gekennzeichnet.
+
+---
+
+## 9. Konfidenz-Matrix (vorläufig)
 
 | Hypothese                                    | Status      | Konfidenz |
 |----------------------------------------------|:-----------:|:---------:|
@@ -181,3 +235,4 @@ Die Ergebnisse sind **vielversprechend**, aber klar als **R&D-Signal** zu behand
 | Version | Datum      | Änderungen                                    |
 |---------|------------|-----------------------------------------------|
 | v1.0    | 2025-12-09 | Initial Findings aus 2 Runs (d9dfb356, 10b4f7c9) |
+| v1.1    | 2025-12-09 | Add Dummy-Langzeit-Run (Framework-Sanity-Check) |
