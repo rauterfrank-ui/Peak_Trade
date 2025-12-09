@@ -65,6 +65,7 @@ Ziel:
 | **Phasen 41–60** | Research-Ökosystem, Sweeps, Advanced Reporting, Risk-Vertiefung       | **≈ 97%**   | Voll funktionsfähig, nur noch Feintuning/Erweiterungen        |
 | **Phasen 61–75** | Execution-Stack, Environments, Risk-Gates, Monitoring & Checks        | **≈ 96%**   | Execution und Safety-Gates implementiert, laufendes Hardening |
 | **Phasen 76–81** | R&D Dashboard (Hub, Detail, Gallery, Comparison) & Live-Track Bridge  | **≈ 98%**   | 76–78 & 80/81 implementiert, UI/UX-Feinschliff laufend        |
+| **Phase 81** | Live / Risk | Live Session Registry v1 + Live Risk Severity & Alert Runbook v1 – Session-Registry, Severity-Ampel im Dashboard und kodifiziertes Operator-Runbook (GREEN/YELLOW/RED). |
 | **Phasen 82–86** | Future Extensions, Nice-to-have Features, Erweiterungen für Live & UI | **≈ 85%**   | Nur noch optionale Ausbau-Themen, Kernsystem ist vollständig  |
 
 ## Layer-Matrix – Fortschritt nach Systemkomponente
@@ -906,13 +907,26 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 
     **Details:** Siehe [`docs/PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md`](PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md)
 
-14. **Phase 81 – Live-Session-Registry & Report-CLI**
+14. **Phase 81 – Live Session Registry & Risk Severity v1**
 
-    **Status:** ✅ Abgeschlossen
+    **Status:** ✅ ABGESCHLOSSEN
 
-    **Ziel:** Live-/Shadow-/Testnet-Sessions analog zu Experiment-Runs erfassen und auswerten.
+    **Ziel:**
+    Bündelt alle Live-/Shadow-/Testnet-Sessions in einer zentralen **Live Session Registry** und schärft den Live-Track zu einem risk-sensitiven Cockpit:
+    - Session-Registry als Single Source of Truth für Live-/Shadow-/Testnet-Runs
+    - Einführung einer **Severity-Ampel** (GREEN/YELLOW/RED) im Live-Track-Dashboard
+    - Kodifiziertes **Operator-Runbook** für GREEN/YELLOW/RED inkl. Checklisten & Eskalationspfaden
 
-    **Kernpunkte:**
+    **Kern-Deliverables:**
+
+    - `docs/PHASE_81_LIVE_SESSION_REGISTRY.md` – Design & Flow der Session-Registry
+    - `docs/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md` – Live Risk Severity & Alert Runbook v1
+    - `src/live/risk_limits.py` – Severity-Herleitung auf Basis bestehender Risk-Limits
+    - `src/live/risk_alert_helpers.py` – Alert-Helfer (Severity → Messages/Struktur)
+    - `src/live/risk_runbook.py` – kodifizierte Runbook-Logik für GREEN/YELLOW/RED
+    - `src/webui/live_track.py` + Templates – Severity-Ampel im Dashboard & Session-Details
+
+    **Session-Registry (Kernpunkte):**
 
     * **Datenmodell & Storage**
       * `LiveSessionRecord` (analog zu `SweepResultRow`) als zentrale Dataclass für einzelne Live-Session-Runs
@@ -958,12 +972,17 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
           --stdout
         ```
 
-    * **Qualität & Tests**
-      * `tests/test_live_session_registry.py` – Roundtrip-, Persistenz-, Query-, Summary- und Renderer-Tests (31 grüne Tests)
-      * `tests/test_report_live_sessions_cli.py` – CLI-Tests für Summary-only, Markdown/HTML-Output, No-Sessions-Fälle (22 grüne Tests)
-      * Zusätzlich manueller Smoke-Test-Run mit dem CLI-Skript
+    **Testing & Safety:**
 
-    **Details:** Siehe [`docs/PHASE_81_LIVE_SESSION_REGISTRY.md`](PHASE_81_LIVE_SESSION_REGISTRY.md)
+    - 102 Risk-bezogene Tests (Severity, Szenarien, Alert-Helper, Runbook)
+    - 31 grüne Tests für Live-Session-Registry
+    - 22 CLI-Tests für Report-Generierung
+    - Live-Track UI Smoke-Test über `uvicorn "src.webui.app:create_app" --factory --reload --port 8000`
+    - Keine Breaking Changes: Live-Track-Flow bleibt kompatibel, Severity-Logik ist ein Add-on-Layer über den bestehenden Risk-Limits.
+
+    **Details:** 
+    - [`docs/PHASE_81_LIVE_SESSION_REGISTRY.md`](PHASE_81_LIVE_SESSION_REGISTRY.md)
+    - [`docs/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md`](PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md)
 
 15. **Phase 82 – Live-Track Panel im Web-Dashboard**
 

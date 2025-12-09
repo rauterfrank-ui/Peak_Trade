@@ -6,6 +6,18 @@
 
 ---
 
+## 2025-12-09 – Phase 81: Live Session Registry & Risk Severity v1
+
+### Phase 81 – Live Session Registry & Risk Severity v1
+
+- Neu: `PHASE_81_LIVE_SESSION_REGISTRY.md` als Design- und Flow-Dokument für die Live Session Registry.
+- Neu: `PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md` – Live Risk Severity & Alert Runbook v1 (Severity-Ampel, Alert-Helper, Operator-Runbook).
+- Live-Track Dashboard zeigt jetzt eine Severity-Ampel (GREEN/YELLOW/RED) pro Session sowie Runbook-Hinweise im Session-Detail.
+- Risk-Stack erweitert um `risk_alert_helpers` und `risk_runbook` – 102 neue/erweiterte Tests für Severity, Szenarien und Runbook-Logik.
+- Keine Breaking Changes; Live-/Shadow-/Testnet-Flows bleiben kompatibel, Severity wirkt als zusätzliche Safety- und UX-Schicht oben auf den bestehenden Risk-Limits.
+
+---
+
 ## 2025-12-09 – Live-Risk Severity in UI, Alerts & Runbook
 
 ### Live-Risk: Severity in UI, Alerts & Runbook
