@@ -1,6 +1,6 @@
 # src/webui/app.py
 """
-Peak_Trade: Web Dashboard v1.1 (Quick-Wins Polish)
+Peak_Trade: Web Dashboard v1.2 (R&D Dashboard API)
 ==================================================
 
 FastAPI-App für read-only Status-Ansichten:
@@ -8,6 +8,11 @@ FastAPI-App für read-only Status-Ansichten:
 - Strategy-Tiering Übersicht
 - Live-Track Panel mit letzten Sessions (Phase 82)
 - Session Explorer mit Filter & Detail-View (Phase 85)
+- R&D Dashboard API (Phase 76)
+
+v1.2 Features:
+- R&D Dashboard API mit Experiments, Aggregations und Stats
+- Endpoints analog zu `view_r_and_d_experiments.py`
 
 v1.1 Polish:
 - Verbesserte Status-Badges (System OK, Live LOCKED)
@@ -19,10 +24,21 @@ Start:
     uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 
 API Endpoints:
+Live-Track:
 - GET /api/live_sessions?mode=shadow&status=completed (Filter)
 - GET /api/live_sessions/{session_id} (Detail)
 - GET /api/live_sessions/stats (Statistiken)
 - GET /session/{session_id} (HTML Detail-Page)
+
+R&D Dashboard (Phase 76):
+- GET /api/r_and_d/experiments (Liste mit Filtern)
+- GET /api/r_and_d/experiments/{run_id} (Detail)
+- GET /api/r_and_d/summary (Summary-Statistiken)
+- GET /api/r_and_d/presets (Aggregation nach Preset)
+- GET /api/r_and_d/strategies (Aggregation nach Strategy)
+- GET /api/r_and_d/stats (Globale Statistiken)
+
+System:
 - GET /api/health (Health-Check)
 """
 from __future__ import annotations
@@ -43,6 +59,7 @@ from .live_track import (
     get_session_by_id,
     get_session_stats,
 )
+from .r_and_d_api import router as r_and_d_router, set_base_dir as set_r_and_d_base_dir
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -73,20 +90,37 @@ def get_project_status() -> Dict[str, Any]:
     }
 
 
-def load_strategy_tiering() -> Dict[str, Any]:
+def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
     """
     Lädt das Strategy-Tiering aus config/strategy_tiering.toml und bereitet
     es für das Template auf.
+
+    Args:
+        include_research: Wenn True, werden auch R&D/Research-Strategien inkludiert.
+                         Default: False (nur freigegebene Tiers)
 
     Erwartete Struktur (vereinfacht):
         [strategy.rsi_reversion]
         tier = "core"
         allow_live = true
         label = "RSI Reversion Basic"
+
+        # R&D-Strategien haben zusätzlich:
+        category = "cycles"           # Gruppierung (cycles, volatility, ml, microstructure)
+        risk_profile = "experimental" # Risikoprofil
+        owner = "research"            # Team/Bereich
+        tags = ["cycles", "timing"]   # Schlagworte
+
+    Returns:
+        Dict mit:
+        - rows: Liste aller Strategien
+        - counts: Anzahl pro Tier
+        - tiers: Gruppierte Strategien pro Tier (für API)
+        - categories: Verfügbare R&D-Kategorien (nur wenn include_research=True)
     """
     path = BASE_DIR / "config" / "strategy_tiering.toml"
     if not path.exists():
-        return {"rows": [], "counts": {}}
+        return {"rows": [], "counts": {}, "tiers": [], "categories": []}
 
     raw = toml.loads(path.read_text(encoding="utf-8"))
 
@@ -95,27 +129,121 @@ def load_strategy_tiering() -> Dict[str, Any]:
 
     rows: List[Dict[str, Any]] = []
     counts: Dict[str, int] = {}
+    categories_set: set = set()
+
+    # Tier-Label-Mapping für bessere Anzeige
+    tier_labels = {
+        "core": "Core",
+        "aux": "Auxiliary",
+        "legacy": "Legacy",
+        "r_and_d": "R&D / Research",
+        "unclassified": "Unclassified",
+    }
+
+    # Category-Label-Mapping für R&D-Strategien
+    category_labels = {
+        "cycles": "Cycles & Timing",
+        "volatility": "Volatility Models",
+        "microstructure": "Microstructure",
+        "ml": "Machine Learning",
+    }
+
+    # Tiers die standardmäßig angezeigt werden (ohne Research)
+    standard_tiers = {"core", "aux", "legacy", "unclassified"}
 
     for sid, meta in strategy_block.items():
         tier = meta.get("tier", "unknown")
         allow_live = bool(meta.get("allow_live", False))
         label = meta.get("label", "") or meta.get("name", "")
+        notes = meta.get("notes", "")
 
-        rows.append(
-            {
-                "id": sid,
-                "tier": tier,
-                "allow_live": allow_live,
-                "label": label,
-            }
-        )
+        # R&D-spezifische Felder
+        category = meta.get("category", "")
+        risk_profile = meta.get("risk_profile", "")
+        owner = meta.get("owner", "")
+        tags = meta.get("tags", [])
+
+        # Filtere R&D-Strategien wenn include_research=False
+        if tier == "r_and_d" and not include_research:
+            continue
+
+        # Sammle Kategorien für R&D
+        if tier == "r_and_d" and category:
+            categories_set.add(category)
+
+        # Extrahiere is_live_ready und allowed_environments aus Notes/Meta
+        is_live_ready = allow_live
+        allowed_environments = ["offline_backtest"]
+        if tier in {"core", "aux"}:
+            allowed_environments.append("shadow")
+        if allow_live:
+            allowed_environments.extend(["testnet", "live"])
+        if tier == "r_and_d":
+            allowed_environments = ["offline_backtest", "research"]
+
+        row_data: Dict[str, Any] = {
+            "id": sid,
+            "tier": tier,
+            "tier_label": tier_labels.get(tier, tier),
+            "allow_live": allow_live,
+            "is_live_ready": is_live_ready,
+            "label": label,
+            "notes": notes,
+            "allowed_environments": allowed_environments,
+        }
+
+        # R&D-spezifische Felder hinzufügen wenn vorhanden
+        if tier == "r_and_d":
+            row_data["category"] = category
+            row_data["category_label"] = category_labels.get(category, category)
+            row_data["risk_profile"] = risk_profile
+            row_data["owner"] = owner
+            row_data["tags"] = tags
+
+        rows.append(row_data)
         counts[tier] = counts.get(tier, 0) + 1
 
     rows_sorted = sorted(rows, key=lambda r: (r["tier"], r["id"]))
 
+    # Gruppiere nach Tier für API-Response
+    tiers_grouped: List[Dict[str, Any]] = []
+    for tier_key in ["core", "aux", "legacy", "r_and_d", "unclassified"]:
+        tier_strategies = [r for r in rows_sorted if r["tier"] == tier_key]
+        if tier_strategies:
+            tier_group: Dict[str, Any] = {
+                "tier": tier_key,
+                "label": tier_labels.get(tier_key, tier_key),
+                "strategies": tier_strategies,
+            }
+            # Für R&D-Tier: Gruppiere auch nach Kategorie
+            if tier_key == "r_and_d" and include_research:
+                by_category: Dict[str, List[Dict[str, Any]]] = {}
+                for s in tier_strategies:
+                    cat = s.get("category", "other")
+                    if cat not in by_category:
+                        by_category[cat] = []
+                    by_category[cat].append(s)
+                tier_group["by_category"] = [
+                    {
+                        "category": cat,
+                        "label": category_labels.get(cat, cat),
+                        "strategies": strats,
+                    }
+                    for cat, strats in sorted(by_category.items())
+                ]
+            tiers_grouped.append(tier_group)
+
+    # Kategorien-Liste für UI-Filter
+    categories_list = [
+        {"id": cat, "label": category_labels.get(cat, cat)}
+        for cat in sorted(categories_set)
+    ]
+
     return {
         "rows": rows_sorted,
         "counts": counts,
+        "tiers": tiers_grouped,
+        "categories": categories_list,
     }
 
 
@@ -146,14 +274,18 @@ def load_live_sessions(limit: int = 10) -> Dict[str, Any]:
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="Peak_Trade Dashboard v1.1",
+        title="Peak_Trade Dashboard v1.2",
         description=(
-            "Read-only Dashboard für Projekt-Status, Strategy-Tiering und Live-Sessions. "
-            "v1.1: Polished UI mit Status-Badges, Stats-Kacheln und verbesserter Tabellen-Darstellung. "
+            "Read-only Dashboard für Projekt-Status, Strategy-Tiering, Live-Sessions und R&D-Experimente. "
+            "v1.2: R&D Dashboard API (Phase 76) mit Experiments, Aggregations und Stats. "
             "Live-Mode ist bewusst gesperrt (Safety-First)."
         ),
-        version="1.1.0",
+        version="1.2.0",
     )
+
+    # R&D API: Setze Basis-Verzeichnis und registriere Router
+    set_r_and_d_base_dir(BASE_DIR)
+    app.include_router(r_and_d_router)
 
     # =========================================================================
     # HTML Dashboard Endpoints
@@ -164,10 +296,12 @@ def create_app() -> FastAPI:
         request: Request,
         mode: Optional[str] = Query(None, description="Filter: shadow, testnet, paper, live"),
         status: Optional[str] = Query(None, description="Filter: completed, failed, aborted, started"),
+        include_research: bool = Query(False, description="Zeige auch R&D/Research-Strategien"),
     ) -> Any:
         """HTML Dashboard mit Projekt-Status, Strategy-Tiering und Live-Track."""
         proj_status = get_project_status()
-        strategy_tiering = load_strategy_tiering()
+        strategy_tiering = load_strategy_tiering(include_research=include_research)
+        strategy_tiering["include_research"] = include_research
 
         # Phase 85: Filter anwenden wenn gesetzt
         if mode or status:
@@ -304,6 +438,100 @@ def create_app() -> FastAPI:
     async def api_health() -> Dict[str, str]:
         """Einfacher Health-Check Endpoint."""
         return {"status": "ok"}
+
+    # =========================================================================
+    # Strategy-Tiering API Endpoints
+    # =========================================================================
+
+    @app.get(
+        "/api/strategy_tiering",
+        summary="Strategy-Tiering Übersicht",
+        description=(
+            "Liefert alle Strategien gruppiert nach Tier. "
+            "Standardmäßig werden nur freigegebene Tiers (core, aux, legacy) angezeigt. "
+            "Mit include_research=true werden auch R&D-Strategien inkludiert."
+        ),
+        tags=["strategy-tiering"],
+    )
+    async def api_strategy_tiering(
+        include_research: bool = Query(
+            default=False,
+            description=(
+                "Wenn true, werden auch R&D/Research-Strategien angezeigt. "
+                "Diese sind NICHT für Live-Trading freigegeben."
+            ),
+        ),
+    ) -> Dict[str, Any]:
+        """
+        API-Endpoint für Strategy-Tiering.
+
+        Returns:
+            Dict mit:
+            - tiers: Liste der Tier-Gruppen mit Strategien
+            - counts: Anzahl Strategien pro Tier
+            - include_research: Ob Research-Strategien inkludiert sind
+
+        Notes:
+            R&D-Strategien (tier="r_and_d") werden nur mit include_research=true
+            zurückgegeben. Diese sind ausschließlich für Offline-Backtests und
+            Research gedacht - NICHT für Live-Trading.
+        """
+        tiering = load_strategy_tiering(include_research=include_research)
+
+        return {
+            "tiers": tiering.get("tiers", []),
+            "counts": tiering.get("counts", {}),
+            "categories": tiering.get("categories", []) if include_research else [],
+            "include_research": include_research,
+            "research_notice": (
+                "R&D-Strategien sind ausschließlich für Offline-Backtests und "
+                "Research gedacht. Deployment erst nach Phase-X-Freigabe möglich."
+                if include_research
+                else None
+            ),
+        }
+
+    @app.get(
+        "/api/strategy_tiering/{strategy_id}",
+        summary="Strategy-Tiering Detail",
+        description="Liefert Tiering-Details für eine einzelne Strategie.",
+        tags=["strategy-tiering"],
+    )
+    async def api_strategy_tiering_detail(
+        strategy_id: str,
+        include_research: bool = Query(
+            default=False,
+            description="Erlaube Zugriff auf R&D-Strategien",
+        ),
+    ) -> Dict[str, Any]:
+        """
+        Detail-Endpoint für eine einzelne Strategie.
+
+        Returns:
+            Dict mit Strategie-Tiering-Details oder 404 wenn nicht gefunden.
+
+        Raises:
+            HTTPException 404: Wenn Strategie nicht gefunden oder R&D ohne Flag.
+        """
+        tiering = load_strategy_tiering(include_research=include_research)
+
+        for row in tiering.get("rows", []):
+            if row["id"] == strategy_id:
+                # Zusätzliche Safety-Info für R&D-Strategien
+                if row["tier"] == "r_and_d":
+                    row["deployment_notice"] = (
+                        "Research-only. Deployment nur nach Phase-X-Freigabe möglich."
+                    )
+                    row["deployment_blocked"] = True
+                else:
+                    row["deployment_blocked"] = not row["allow_live"]
+
+                return row
+
+        raise HTTPException(
+            status_code=404,
+            detail=f"Strategy '{strategy_id}' nicht gefunden oder R&D-Strategie (setze include_research=true)",
+        )
 
     return app
 
