@@ -1166,3 +1166,38 @@ ma_period = 20
 use_ma_filter = true
 stop_pct = 0.06
 take_profit_pct = 0.20
+
+# ============================================================================
+# R&D-STRATEGIEN – nur Offline/Research (NICHT für Live-Trading!)
+# ============================================================================
+# Diese Strategien sind ausschließlich für Research-Zwecke gedacht.
+# Sie haben IS_LIVE_READY=false und dürfen nicht in Testnet/Live verwendet werden.
+# ============================================================================
+
+[strategy.armstrong_cycle]
+key = "armstrong_cycle"
+class_path = "strategies.armstrong.armstrong_cycle_strategy.ArmstrongCycleStrategy"
+tier = "r_and_d"
+is_live_ready = false
+allowed_environments = ["offline_backtest", "research"]
+description = "R&D: Armstrong-Zyklusmodell (nur Research/Backtests, nicht live)."
+tags = ["r_and_d", "cycles", "macro", "research"]
+# Default-Parameter
+cycle_length_days = 3141
+event_window_days = 90
+reference_date = "2015-10-01"
+
+[strategy.el_karoui_vol_model]
+key = "el_karoui_vol_model"
+class_path = "strategies.el_karoui.el_karoui_vol_model_strategy.ElKarouiVolModelStrategy"
+tier = "r_and_d"
+is_live_ready = false
+allowed_environments = ["offline_backtest", "research"]
+description = "R&D: El-Karoui-Volatilitäts-/Regime-Modell (nur Research/Backtests, nicht live)."
+tags = ["r_and_d", "volatility", "regime", "research"]
+# Default-Parameter
+vol_window = 20
+vol_threshold_low = 0.3
+vol_threshold_high = 0.7
+use_ewm = true
+annualization_factor = 252.0

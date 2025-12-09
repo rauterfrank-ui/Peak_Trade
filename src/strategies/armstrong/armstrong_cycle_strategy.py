@@ -210,7 +210,15 @@ class ArmstrongCycleStrategy(BaseStrategy):
         # (kann später für Analyse verwendet werden)
         if hasattr(data.index, "to_pydatetime"):
             # Berechne Tage seit Referenz-Datum
-            days_since_ref = (data.index - self.reference_date).days
+            # Handle timezone-aware vs naive datetime
+            index_for_calc = data.index
+            ref_date = self.reference_date
+            if hasattr(index_for_calc, 'tz') and index_for_calc.tz is not None:
+                # Index ist tz-aware, konvertiere zu tz-naive für Berechnung
+                index_for_calc = index_for_calc.tz_localize(None)
+            if hasattr(ref_date, 'tz') and ref_date.tz is not None:
+                ref_date = ref_date.tz_localize(None)
+            days_since_ref = (index_for_calc - ref_date).days
             cycle_phase = (days_since_ref % self.cycle_length_days) / self.cycle_length_days
 
             # Markiere Event-Fenster (nahe Turning-Point)

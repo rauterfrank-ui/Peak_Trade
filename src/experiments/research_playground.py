@@ -778,6 +778,52 @@ register_predefined_sweep(
 )
 
 
+# -----------------------------------------------------------------------------
+# R&D Sweeps: Armstrong Cycle Strategy
+# -----------------------------------------------------------------------------
+
+register_predefined_sweep(
+    StrategySweepConfig(
+        name="armstrong_cycles_v1",
+        strategy_name="armstrong_cycle",
+        param_grid={
+            # Zyklus-Länge in Tagen (Varianten um den ECM-Basiszyklus)
+            "cycle_length_days": [1570, 2355, 3141, 3927],
+            # Event-Fenster um Turning-Points (Tage)
+            "event_window_days": [30, 60, 90, 120],
+        },
+        symbols=["BTC/USD", "ETH/USD"],
+        description="R&D Sweep für Armstrong ECM Cycle-Parameter (Zyklus-Längen und Event-Fenster)",
+        tags=["r_and_d", "armstrong", "cycle", "research"],
+    )
+)
+
+
+# -----------------------------------------------------------------------------
+# R&D Sweeps: El Karoui Vol Model Strategy
+# -----------------------------------------------------------------------------
+
+register_predefined_sweep(
+    StrategySweepConfig(
+        name="el_karoui_vol_sensitivity_v1",
+        strategy_name="el_karoui_vol_model",
+        param_grid={
+            # Länge des Vol-Fensters (Bars)
+            "vol_window": [10, 20, 50, 100],
+            # Regime-Schwellen (Perzentile)
+            "vol_threshold_low": [0.2, 0.3, 0.4],
+            "vol_threshold_high": [0.6, 0.7, 0.8],
+            # Exponentiell gewichtete vs. einfache Volatilität
+            "use_ewm": [True, False],
+        },
+        constraints=[("vol_threshold_low", "<", "vol_threshold_high")],
+        symbols=["BTC/USD", "ETH/USD"],
+        description="R&D Sweep für El Karoui Volatilitäts-Regime-Sensitivität",
+        tags=["r_and_d", "el_karoui", "volatility", "regime", "research"],
+    )
+)
+
+
 # =============================================================================
 # SWEEP EXECUTION HELPERS
 # =============================================================================
