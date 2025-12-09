@@ -1020,6 +1020,38 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 
     **Details:** Siehe [`docs/PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md`](PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md)
 
+### Live-Track – Alerts & Incident-Handling (Cluster 82–85)
+
+**Status:** ✅ Production-Ready v1.1 (inkl. Escalation)  
+**Implementierung:** Q4 2025 – **2026-ready**
+
+Der Live Alerts & Incident Runbooks Cluster (Phasen 82–85) ist vollständig implementiert und bildet die **operative Baseline für den 2026-Betrieb**:
+
+- **Alert-Pipeline (Phase 82):** Automatische Benachrichtigungen via Slack/E-Mail bei Risk-Events (GREEN→YELLOW→RED), Limit-Breaches und System-Problemen. Severity-basiertes Routing (INFO/WARN/CRITICAL) an konfigurierbare Channels.
+  
+- **Alert-Historie & Dashboard (Phase 83):** Persistierte Alerts sind über das `/alerts` Dashboard einsehbar. Filterung nach Severity, Category, Zeitfenster. API-Endpoint `/api/live/alerts` für programmatischen Zugriff.
+
+- **Incident Runbook Integration (Phase 84):** Alerts werden automatisch mit passenden Runbooks angereichert basierend auf `category`, `source` und `severity`. Runbooks erscheinen in Slack-Messages, E-Mails und im Dashboard als klickbare Links.
+
+- **Escalation & On-Call Integration (Phase 85 – NEU):** Kritische Alerts können optional an On-Call-Dienste (PagerDuty, OpsGenie) eskaliert werden.
+  - Config-gated: Nur aktiv wenn `[escalation].enabled = true`
+  - Environment-gated: Standardmäßig nur in `live` aktiv
+  - Phase 85: Provider-Stubs (keine echten API-Calls)
+  - Safety: Eskalations-Fehler blockieren niemals Alerts
+
+- **Safety Property:** Weder Runbook-Registry- noch Escalation-Fehler blockieren Alerts – das System degradiert graceful und liefert Alerts immer aus.
+
+**Relevante Dokumente:**
+- [`docs/PHASE_84_INCIDENT_RUNBOOK_INTEGRATION_V1.md`](PHASE_84_INCIDENT_RUNBOOK_INTEGRATION_V1.md)
+- [`docs/PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md`](PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md)
+- [`docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`](runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md)
+- [`docs/runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md`](runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md)
+
+**Nächste Schritte (optional):**
+- Phase 86+: Alert Lifecycle & Acknowledge (open/acknowledged/resolved)
+- Phase 87+: Noise-Reduction & Alert-Deduplication
+- Runbook-Coverage-Checks (welche Alert-Types haben noch keine Runbooks?)
+
 17. **Phase 84 – Live-Track Demo Walkthrough & Case Study**
 
     **Status:** ✅ Dokumentiert
@@ -1212,7 +1244,21 @@ Für eine zentrale Sammlung aller Live-Track-, Dashboard-, Playbook- und Safety-
 
 ---
 
-## 15. Änderungshistorie dieses Dokuments
+## 15. Road to 2026 – Production Readiness
+
+Der aktuelle Stand (Q4 2025) markiert die **Basis-Konfiguration für den 2026-Betrieb**:
+
+| Bereich | Status | Kommentar |
+|---------|--------|-----------|
+| **Live-Track Monitoring & Alerts (Cluster 82–85)** | ✅ 2026-ready | Alert-Pipeline, Dashboard, Runbook-Integration und Escalation vollständig implementiert |
+| **Research & Backtest Plattform** | ✅ Stabil für 2026 | Research v1.0 Freeze, R&D-Dashboard v1.3, Strategy-Tiering |
+| **Live-Order-Execution** | 🔒 Noch gesperrt | Separate Go/No-Go-Entscheidung erforderlich; Shadow/Testnet-Betrieb aktiv |
+
+**Hinweis:** Die Phasen 82–85 wurden in Q4 2025 implementiert und auditiert. Dieses Setup bildet die **produktionsreife Grundlage** für den operativen 2026-Betrieb.
+
+---
+
+## 16. Änderungshistorie dieses Dokuments
 
 | Datum      | Commit    | Änderung                                                        |
 |------------|-----------|-----------------------------------------------------------------|
@@ -1239,6 +1285,7 @@ Für eine zentrale Sammlung aller Live-Track-, Dashboard-, Playbook- und Safety-
 | 2025-12-08 | (aktuell) | **R&D-Experiment-Welle W2 Run-Log** – Verweis auf Run-Logs hinzugefügt |
 | 2025-12-09 | (aktuell) | **Phase 77** – R&D Experiment Detail & Report Viewer v1 (API v1.2, Detail-View, Report-Links) |
 | 2025-12-09 | (aktuell) | **Phase 78** – R&D Report-Gallery & Multi-Run Comparison v1 (API v1.3, Batch-Endpoint, Comparison-View) |
+| 2025-12-09 | (aktuell) | **Jahreskorrektur & 2026-ready** – Cluster 82–85 Datums-Referenzen auf Q4 2025 korrigiert, "Road to 2026" Abschnitt hinzugefügt |
 
 ---
 

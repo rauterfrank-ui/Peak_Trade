@@ -155,4 +155,4 @@ curl "http://localhost:8000/api/live/alerts/stats?hours=24"
 
 ---
 
-*Phase 83 | Dezember 2024*
+*Phase 83 | Dezember 2025*

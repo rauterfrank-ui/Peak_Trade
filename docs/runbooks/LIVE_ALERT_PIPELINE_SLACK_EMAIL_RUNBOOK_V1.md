@@ -263,4 +263,4 @@ Dieses Runbook beschreibt die Handlungsempfehlungen für Operatoren beim Empfang
 
 ---
 
-*Version: v1.0 | Phase 82 | Dezember 2024*
+*Version: v1.0 | Phase 82 | Dezember 2025*
