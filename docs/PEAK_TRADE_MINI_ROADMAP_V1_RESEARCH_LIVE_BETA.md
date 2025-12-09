@@ -14,6 +14,7 @@ Dazu werden sieben Micro-Phasen definiert, die auf dem bestehenden Stand (Strate
 | Micro-Phase | Fokus | Hauptziel |
 |------------|-------|-----------|
 | **Phase 75** | R&D | R&D-Wave v2 Experiments & Operator-View (CLI `view_r_and_d_experiments.py`) |
+| **Phase 76** | R&D | R&D Dashboard v0 (Design) – Read-Only Web-Dashboard für R&D-Experimente |
 | **Phase 80** | Research | Tiering → Portfolio-Presets & Sweeps |
 | **Phase 80B** | Execution | Strategy-to-Execution Bridge & Shadow/Testnet Runner v0 |
 | **Phase 81** | Research UX | Golden-Path-Workflows & Recipes |
@@ -56,6 +57,35 @@ Standardisierte R&D-Experimente für fortgeschrittene Forschungsstrategien (Arms
 - ✅ R&D-Presets dokumentiert und konfiguriert
 - ✅ Operator-View dokumentiert (Abschnitt 8)
 - ✅ CLI `view_r_and_d_experiments.py` implementiert und getestet (32 Tests)
+
+---
+
+## Phase 76 – R&D Dashboard v0 (Design)
+
+**Status:** 📋 Design-Phase
+
+**Ziel:**
+Read-Only Web-Dashboard für R&D-Experimente, das auf den Bausteinen aus Phase 75 aufsetzt (CLI, Notebook-Template, JSON-Daten).
+
+**Kern-Deliverables:**
+
+- **Design-Spezifikation:** [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md)
+- **API-Endpoints:** 6 REST-Endpoints für Experiments, Summary, Presets, Strategies, Stats
+- **UI-Views:** Experiments List, Detail, Preset/Strategy Aggregations, Charts
+
+**Geplante Features:**
+
+- Filterbare Tabellenansicht (Preset, Tag, Strategy, Datum, Trades)
+- Aggregations-Views (Kennzahlen pro Preset/Strategy)
+- Basis-Visualisierungen (Sharpe-Verteilung, Return by Preset, Scatter)
+- Detailansicht mit JSON-Viewer
+
+**Definition of Done:**
+
+- [ ] API-Endpoints liefern korrekte Daten
+- [ ] Tabelle filterbar und sortierbar
+- [ ] Mindestens 2 Charts implementiert
+- [ ] Tests für API-Endpoints (mind. 10 Tests)
 
 ---
 
