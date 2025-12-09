@@ -255,6 +255,23 @@ Neben dem stabilen Strategy-Core v1.1 existiert ein klar abgegrenzter **R&D- / E
 - [`docs/PHASE_75_STRATEGY_LIBRARY_V1_1.md`](PHASE_75_STRATEGY_LIBRARY_V1_1.md) – Abschnitt 3a (R&D-Layer)
 - `config/strategy_tiering.toml` – R&D-Tier-Definitionen
 
+#### R&D Dashboard & Experiment Detail View (Phase 76/77)
+
+Phase 76 und 77 erweitern das Web-Dashboard um einen vollständigen **R&D-Experiments-Hub**:
+
+**Phase 77 – R&D Experiment Detail & Report Viewer v1:**
+
+- R&D API auf v1.2 erweitert (`report_links`, `duration_info`, `status`, `run_type`)
+- Neuer Detail-View `/r_and_d/experiment/{run_id}` mit Meta-Panel, Metriken-Grid, Status-/Run-Type-Badges, Report-Links und einklappbarem Raw-JSON
+- R&D-Übersicht `/r_and_d` um klickbare Zeilen + explizite Details-Spalte ergänzt
+- Fehlerhafte oder unbekannte `run_id`s landen sauber auf `error.html` mit Rück-Link zum R&D Hub
+- Testabdeckung: R&D API 114 Tests, Gesamtsuite 2518 Tests (voll grün)
+
+**Verwandte Dokumente:**
+- [`docs/PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md) – Design-Spezifikation
+- `src/webui/r_and_d_api.py` – R&D API v1.2 Implementierung
+- `templates/peak_trade_dashboard/r_and_d_experiment_detail.html` – Detail-View Template
+
 ### 4.4 Research-Pipeline v2 & Portfolio-Robustness
 
 **Was kann das?**
@@ -981,6 +998,7 @@ python scripts/generate_live_status_report.py \
 | 2025-12-07 | Phase 63 – Erstversion im Rahmen von v1.0 Overview          |
 | 2025-12-08 | Phase 84 – Hall-of-Fame-Eintrag: Live-Track Demo Walkthrough |
 | 2025-12-08 | Phase 85 – Live-Track-Stack v1 Block hinzugefügt (Abschnitt 4.5) |
+| 2025-12-09 | Phase 77 – R&D Experiment Detail & Report Viewer v1 (API v1.2, Detail-View, Report-Links) |
 
 ---
 

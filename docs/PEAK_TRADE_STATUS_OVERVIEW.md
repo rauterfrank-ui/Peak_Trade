@@ -365,7 +365,16 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 * Ziel: Read-Only Web-Dashboard für R&D-Experimente
 * Views: Experiments List, Detail, Preset/Strategy Aggregations, Charts
 * Basis: `reports/r_and_d_experiments/`, CLI `view_r_and_d_experiments.py`, Notebook-Template
-* Status: 📋 Design-Phase
+* Status: ✅ Implementiert
+
+**Phase 77 – R&D Experiment Detail & Report Viewer v1:**
+
+* R&D API auf v1.2 erweitert (`report_links`, `duration_info`, `status`, `run_type`)
+* Neuer Detail-View `/r_and_d/experiment/{run_id}` mit Meta-Panel, Metriken-Grid, Status-/Run-Type-Badges, Report-Links und einklappbarem Raw-JSON
+* R&D-Übersicht `/r_and_d` um klickbare Zeilen + explizite Details-Spalte ergänzt
+* Fehlerhafte oder unbekannte `run_id`s landen sauber auf `error.html` mit Rück-Link zum R&D Hub
+* Testabdeckung: R&D API 114 Tests, Gesamtsuite 2518 Tests (voll grün)
+* Status: ✅ Implementiert
 
 > **Wichtig:** R&D-Strategien sind **nicht live-freigegeben**. Sie sind ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
 
@@ -1094,6 +1103,7 @@ Für eine zentrale Sammlung aller Live-Track-, Dashboard-, Playbook- und Safety-
 | 2025-12-08 | (aktuell) | Phase 85 – Live-Track Session Explorer (Web-Dashboard v1)           |
 | 2025-12-08 | 7908106   | R&D-Strategie-Welle v1 (Armstrong, Ehlers, El Karoui, etc.)          |
 | 2025-12-08 | (aktuell) | **R&D-Experiment-Welle W2 Run-Log** – Verweis auf Run-Logs hinzugefügt |
+| 2025-12-09 | (aktuell) | **Phase 77** – R&D Experiment Detail & Report Viewer v1 (API v1.2, Detail-View, Report-Links, 114 Tests) |
 
 ---
 
