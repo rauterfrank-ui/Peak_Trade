@@ -136,6 +136,23 @@ from .live_session_registry import (
     STATUS_ABORTED,
 )
 
+# Armstrong × El-Karoui Kombi-Experiment (R&D)
+from .armstrong_elkaroui_combi_experiment import (
+    ArmstrongElKarouiCombiConfig,
+    CombiExperimentResult,
+    run_armstrong_elkaroui_combi_experiment,
+    generate_armstrong_elkaroui_combi_report,
+    compute_armstrong_event_labels,
+    compute_elkaroui_regime_labels,
+    compute_forward_returns,
+    create_combo_state_labels,
+    compute_combo_stats,
+    ArmstrongEventState,
+    ElKarouiRegime,
+    RUN_TYPE_ARMSTRONG_ELKAROUI_COMBI,
+    ALLOWED_ENVIRONMENTS as ARMSTRONG_ELKAROUI_ALLOWED_ENVIRONMENTS,
+)
+
 # Backward compatibility alias
 DEFAULT_SESSIONS_DIR = DEFAULT_LIVE_SESSION_DIR
 
@@ -225,4 +242,18 @@ __all__ = [
     "STATUS_COMPLETED",
     "STATUS_FAILED",
     "STATUS_ABORTED",
+    # Armstrong × El-Karoui Kombi-Experiment (R&D)
+    "ArmstrongElKarouiCombiConfig",
+    "CombiExperimentResult",
+    "run_armstrong_elkaroui_combi_experiment",
+    "generate_armstrong_elkaroui_combi_report",
+    "compute_armstrong_event_labels",
+    "compute_elkaroui_regime_labels",
+    "compute_forward_returns",
+    "create_combo_state_labels",
+    "compute_combo_stats",
+    "ArmstrongEventState",
+    "ElKarouiRegime",
+    "RUN_TYPE_ARMSTRONG_ELKAROUI_COMBI",
+    "ARMSTRONG_ELKAROUI_ALLOWED_ENVIRONMENTS",
 ]

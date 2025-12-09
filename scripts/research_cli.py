@@ -554,6 +554,90 @@ def build_parser() -> argparse.ArgumentParser:
         help="Random Seed für Reproduzierbarkeit (default: 42)",
     )
 
+    # Subparser: armstrong-elkaroui-combi (R&D Kombi-Experiment)
+    combi_parser = subparsers.add_parser(
+        "armstrong-elkaroui-combi",
+        help="Führt das Armstrong × El-Karoui Kombi-Experiment aus (R&D-Only).",
+    )
+
+    combi_parser.add_argument(
+        "--symbol", "-s",
+        type=str,
+        default="BTC/EUR",
+        help="Trading-Symbol (default: BTC/EUR)",
+    )
+    combi_parser.add_argument(
+        "--timeframe", "-t",
+        type=str,
+        default="1h",
+        help="Timeframe (default: 1h)",
+    )
+    combi_parser.add_argument(
+        "--from",
+        dest="from_date",
+        type=str,
+        default="2024-01-01",
+        help="Startdatum (YYYY-MM-DD, default: 2024-01-01)",
+    )
+    combi_parser.add_argument(
+        "--to",
+        dest="to_date",
+        type=str,
+        default=None,
+        help="Enddatum (YYYY-MM-DD, default: heute)",
+    )
+    combi_parser.add_argument(
+        "--cycle-length",
+        type=int,
+        default=3141,
+        help="Armstrong ECM Cycle-Länge in Tagen (default: 3141)",
+    )
+    combi_parser.add_argument(
+        "--event-window",
+        type=int,
+        default=90,
+        help="Armstrong Event-Fenster in Tagen (default: 90)",
+    )
+    combi_parser.add_argument(
+        "--vol-window",
+        type=int,
+        default=20,
+        help="El-Karoui Vol-Window (default: 20)",
+    )
+    combi_parser.add_argument(
+        "--vol-threshold-low",
+        type=float,
+        default=0.3,
+        help="El-Karoui Vol-Threshold Low (default: 0.3)",
+    )
+    combi_parser.add_argument(
+        "--vol-threshold-high",
+        type=float,
+        default=0.7,
+        help="El-Karoui Vol-Threshold High (default: 0.7)",
+    )
+    combi_parser.add_argument(
+        "--output-dir",
+        type=str,
+        default="reports/r_and_d/armstrong_elkaroui_combi",
+        help="Output-Verzeichnis für Ergebnisse",
+    )
+    combi_parser.add_argument(
+        "--generate-report",
+        action="store_true",
+        help="Generiert einen Markdown-Report",
+    )
+    combi_parser.add_argument(
+        "--use-dummy-data",
+        action="store_true",
+        help="Verwende Dummy-Daten statt echte Marktdaten",
+    )
+    combi_parser.add_argument(
+        "--verbose", "-v",
+        action="store_true",
+        help="Verbose Output",
+    )
+
     return parser
 
 
@@ -1448,6 +1532,124 @@ def run_experiment(args: argparse.Namespace) -> int:
     return 0
 
 
+# =============================================================================
+# ARMSTRONG-ELKAROUI-COMBI EXECUTION (R&D Kombi-Experiment)
+# =============================================================================
+
+
+def run_armstrong_elkaroui_combi(args: argparse.Namespace) -> int:
+    """
+    Führt das Armstrong × El-Karoui Kombi-Experiment aus.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 = success, 1 = error)
+    """
+    import logging
+    from datetime import datetime
+    from pathlib import Path
+
+    logging.basicConfig(
+        level=logging.DEBUG if getattr(args, "verbose", False) else logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
+    logger = logging.getLogger(__name__)
+
+    # Import Kombi-Experiment-Modul
+    try:
+        from src.experiments.armstrong_elkaroui_combi_experiment import (
+            ArmstrongElKarouiCombiConfig,
+            run_armstrong_elkaroui_combi_experiment,
+            generate_armstrong_elkaroui_combi_report,
+        )
+    except ImportError as e:
+        logger.error(f"Konnte Kombi-Experiment-Modul nicht importieren: {e}")
+        return 1
+
+    # Parameter aus CLI
+    symbol = args.symbol
+    timeframe = args.timeframe
+    from_date = args.from_date
+    to_date = args.to_date or datetime.now().strftime("%Y-%m-%d")
+
+    logger.info("=" * 70)
+    logger.info("ARMSTRONG × EL-KAROUI KOMBI-EXPERIMENT (R&D)")
+    logger.info("=" * 70)
+    logger.info(f"  Symbol:      {symbol}")
+    logger.info(f"  Timeframe:   {timeframe}")
+    logger.info(f"  Zeitraum:    {from_date} bis {to_date}")
+    logger.info("=" * 70)
+
+    # Config erstellen
+    try:
+        config = ArmstrongElKarouiCombiConfig(
+            symbol=symbol,
+            timeframe=timeframe,
+            start_date=datetime.strptime(from_date, "%Y-%m-%d"),
+            end_date=datetime.strptime(to_date, "%Y-%m-%d"),
+            armstrong_params={
+                "cycle_length_days": args.cycle_length,
+                "event_window_days": args.event_window,
+                "reference_date": "2015-10-01",
+            },
+            elkaroui_params={
+                "vol_window": args.vol_window,
+                "vol_threshold_low": args.vol_threshold_low,
+                "vol_threshold_high": args.vol_threshold_high,
+                "use_ewm": True,
+                "annualization_factor": 252.0,
+            },
+            output_dir=args.output_dir,
+        )
+    except ValueError as e:
+        logger.error(f"Konfigurationsfehler: {e}")
+        return 1
+
+    # Dummy-Daten falls gewünscht
+    data = None
+    if getattr(args, "use_dummy_data", False):
+        from src.experiments.armstrong_elkaroui_combi_experiment import _generate_dummy_data
+        logger.info("  Verwende Dummy-Daten")
+        data = _generate_dummy_data(config)
+
+    # Experiment ausführen
+    result = run_armstrong_elkaroui_combi_experiment(config, data=data)
+
+    if not result.success:
+        logger.error(f"Experiment fehlgeschlagen: {result.error_message}")
+        return 1
+
+    # Report generieren falls gewünscht
+    if getattr(args, "generate_report", False):
+        report_path = generate_armstrong_elkaroui_combi_report(result)
+        logger.info(f"Report generiert: {report_path}")
+
+    # Ergebnisse ausgeben
+    logger.info("\n--- ERGEBNISSE ---")
+    logger.info(f"  Run-ID: {result.run_id}")
+    logger.info(f"  Kombi-States: {len(result.combo_stats)}")
+
+    if result.combo_stats:
+        logger.info("\n  Top Kombi-States nach avg_ret_3d_fwd:")
+        sorted_states = sorted(
+            result.combo_stats.items(),
+            key=lambda x: x[1].get("avg_ret_3d_fwd", 0),
+            reverse=True,
+        )
+        for state, stats in sorted_states[:5]:
+            avg_3d = stats.get("avg_ret_3d_fwd", 0) * 100
+            count = stats.get("count_bars", 0)
+            logger.info(f"    {state}: {avg_3d:+.2f}% (n={count})")
+
+    logger.info("\n" + "=" * 70)
+    logger.info("✅ Kombi-Experiment erfolgreich abgeschlossen")
+    logger.info("=" * 70)
+
+    return 0
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """Haupt-Entry-Point."""
     parser = build_parser()
@@ -1477,6 +1679,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return run_strategy_profile(args)
     elif args.command == "run-experiment":
         return run_experiment(args)
+    elif args.command == "armstrong-elkaroui-combi":
+        return run_armstrong_elkaroui_combi(args)
     else:
         parser.error(f"Unknown command: {args.command}")
         return 1
