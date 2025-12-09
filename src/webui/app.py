@@ -91,6 +91,14 @@ from .r_and_d_api import (
     compute_best_metrics,
     parse_and_validate_run_ids,
 )
+from .alerts_api import (
+    AlertSummary,
+    AlertStats,
+    AlertListResponse,
+    get_alerts_for_ui,
+    get_alert_statistics,
+    get_alerts_template_context,
+)
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -510,6 +518,47 @@ def create_app() -> FastAPI:
             },
         )
 
+    # =========================================================================
+    # Phase 83: Alert-Historie & Status
+    # =========================================================================
+
+    @app.get("/live/alerts", response_class=HTMLResponse)
+    async def alerts_page(
+        request: Request,
+        hours: int = Query(24, ge=1, le=168, description="Zeitfenster in Stunden"),
+        severity: Optional[List[str]] = Query(None, description="Severity-Filter"),
+        category: Optional[List[str]] = Query(None, description="Category-Filter"),
+        session_id: Optional[str] = Query(None, description="Session-ID-Filter"),
+        limit: int = Query(100, ge=1, le=500, description="Max. Anzahl Alerts"),
+    ) -> Any:
+        """
+        HTML-View für Alert-Historie (Phase 83).
+
+        Zeigt:
+        - Status-Kacheln (Total, CRITICAL, WARN, Sessions)
+        - Filterbare Alert-Tabelle
+        - Link zum Operator-Runbook
+        """
+        proj_status = get_project_status()
+
+        # Template-Context aufbauen
+        context = get_alerts_template_context(
+            limit=limit,
+            hours=hours,
+            severity=severity,
+            category=category,
+            session_id=session_id,
+        )
+
+        return templates.TemplateResponse(
+            request,
+            "alerts.html",
+            {
+                "status": proj_status,
+                **context,
+            },
+        )
+
     @app.get("/r_and_d/comparison", response_class=HTMLResponse)
     async def r_and_d_comparison_page(
         request: Request,
@@ -683,6 +732,56 @@ def create_app() -> FastAPI:
     async def api_health() -> Dict[str, str]:
         """Einfacher Health-Check Endpoint."""
         return {"status": "ok"}
+
+    # =========================================================================
+    # Phase 83: Alert-Historie API Endpoints
+    # =========================================================================
+
+    @app.get(
+        "/api/live/alerts",
+        response_model=AlertListResponse,
+        summary="Liste der letzten Alerts",
+        description="Liefert Alerts aus der Alert-Pipeline mit optionalen Filtern (Phase 83).",
+        tags=["alerts"],
+    )
+    async def api_live_alerts(
+        limit: int = Query(100, ge=1, le=500, description="Max. Anzahl Alerts"),
+        hours: int = Query(24, ge=1, le=168, description="Zeitfenster in Stunden"),
+        severity: Optional[List[str]] = Query(None, description="Severity-Filter"),
+        category: Optional[List[str]] = Query(None, description="Category-Filter"),
+        session_id: Optional[str] = Query(None, description="Session-ID-Filter"),
+    ) -> AlertListResponse:
+        """
+        API-Endpoint für Alert-Liste (Phase 83).
+
+        Returns:
+            AlertListResponse mit gefilterten Alerts
+        """
+        return get_alerts_for_ui(
+            limit=limit,
+            hours=hours,
+            severity=severity,
+            category=category,
+            session_id=session_id,
+        )
+
+    @app.get(
+        "/api/live/alerts/stats",
+        response_model=AlertStats,
+        summary="Alert-Statistiken",
+        description="Aggregierte Statistiken über Alerts für Status-Kacheln (Phase 83).",
+        tags=["alerts"],
+    )
+    async def api_live_alerts_stats(
+        hours: int = Query(24, ge=1, le=168, description="Zeitfenster in Stunden"),
+    ) -> AlertStats:
+        """
+        API-Endpoint für Alert-Statistiken (Phase 83).
+
+        Returns:
+            AlertStats mit aggregierten Daten
+        """
+        return get_alert_statistics(hours=hours)
 
     # =========================================================================
     # Strategy-Tiering API Endpoints

@@ -1,0 +1,287 @@
+<!-- templates/peak_trade_dashboard/alerts.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold">Alert-Historie</h1>
+      <p class="text-slate-400 text-sm mt-1">
+        Übersicht aller Alerts aus der Alert-Pipeline (Phase 82/83)
+      </p>
+    </div>
+    <div class="flex items-center gap-2">
+      <!-- Refresh Button -->
+      <a href="{{ request.url }}" 
+         class="text-xs px-3 py-1.5 rounded bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-colors">
+        ↻ Aktualisieren
+      </a>
+    </div>
+  </div>
+
+  <!-- Status Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <!-- Total Alerts -->
+    <div class="bg-slate-800/50 rounded-lg border border-slate-700/50 p-4">
+      <div class="text-xs text-slate-400 uppercase tracking-wide">Alerts ({{ stats.hours }}h)</div>
+      <div class="text-3xl font-semibold mt-1 {% if stats.total > 0 %}text-slate-100{% else %}text-slate-500{% endif %}">
+        {{ stats.total }}
+      </div>
+      <div class="text-xs text-slate-500 mt-1">
+        {% if stats.total > 0 %}
+          {{ stats.by_severity.CRITICAL or 0 }} kritisch · {{ stats.by_severity.WARN or 0 }} Warnungen
+        {% else %}
+          Keine Alerts im Zeitfenster
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Critical Alerts -->
+    <div class="bg-slate-800/50 rounded-lg border {% if has_critical %}border-red-500/50{% else %}border-slate-700/50{% endif %} p-4">
+      <div class="text-xs text-slate-400 uppercase tracking-wide">CRITICAL</div>
+      <div class="text-3xl font-semibold mt-1 {% if has_critical %}text-red-400{% else %}text-slate-500{% endif %}">
+        {{ stats.by_severity.CRITICAL or 0 }}
+      </div>
+      <div class="text-xs text-slate-500 mt-1">
+        {% if stats.last_critical %}
+          Letzter: {{ stats.last_critical.timestamp_display or stats.last_critical.timestamp[:16] }}
+        {% else %}
+          Keine kritischen Alerts
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Warning Alerts -->
+    <div class="bg-slate-800/50 rounded-lg border {% if has_warn %}border-yellow-500/30{% else %}border-slate-700/50{% endif %} p-4">
+      <div class="text-xs text-slate-400 uppercase tracking-wide">WARN</div>
+      <div class="text-3xl font-semibold mt-1 {% if has_warn %}text-yellow-400{% else %}text-slate-500{% endif %}">
+        {{ stats.by_severity.WARN or 0 }}
+      </div>
+      <div class="text-xs text-slate-500 mt-1">
+        {{ stats.by_category.RISK or 0 }} Risk · {{ stats.by_category.SYSTEM or 0 }} System
+      </div>
+    </div>
+
+    <!-- Sessions with Alerts -->
+    <div class="bg-slate-800/50 rounded-lg border border-slate-700/50 p-4">
+      <div class="text-xs text-slate-400 uppercase tracking-wide">Sessions</div>
+      <div class="text-3xl font-semibold mt-1 text-slate-100">
+        {{ stats.sessions_with_alerts or 0 }}
+      </div>
+      <div class="text-xs text-slate-500 mt-1">
+        mit Alerts im Zeitfenster
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-slate-800/30 rounded-lg border border-slate-700/30 p-4">
+    <form method="GET" class="flex flex-wrap items-end gap-4">
+      <!-- Time Window -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">Zeitfenster</label>
+        <select name="hours" 
+                class="text-sm bg-slate-700/50 border border-slate-600/50 rounded px-3 py-1.5 text-slate-200">
+          {% for h in hours_options %}
+            <option value="{{ h }}" {% if filters.hours == h %}selected{% endif %}>
+              {% if h < 24 %}{{ h }}h{% elif h == 24 %}24h{% elif h == 48 %}2 Tage{% else %}7 Tage{% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Severity Filter -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">Severity</label>
+        <div class="flex gap-2">
+          {% for sev in severity_options %}
+            <label class="flex items-center gap-1 text-sm">
+              <input type="checkbox" name="severity" value="{{ sev }}"
+                     {% if sev in filters.severity %}checked{% endif %}
+                     class="rounded border-slate-600 bg-slate-700/50 text-emerald-500 focus:ring-emerald-500/50">
+              <span class="{% if sev == 'CRITICAL' %}text-red-400{% elif sev == 'WARN' %}text-yellow-400{% else %}text-slate-400{% endif %}">
+                {{ sev }}
+              </span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Category Filter -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">Kategorie</label>
+        <div class="flex gap-2">
+          {% for cat in category_options %}
+            <label class="flex items-center gap-1 text-sm">
+              <input type="checkbox" name="category" value="{{ cat }}"
+                     {% if cat in filters.category %}checked{% endif %}
+                     class="rounded border-slate-600 bg-slate-700/50 text-emerald-500 focus:ring-emerald-500/50">
+              <span class="text-slate-300">{{ cat }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Session Filter -->
+      <div>
+        <label class="text-xs text-slate-400 block mb-1">Session-ID</label>
+        <input type="text" name="session_id" value="{{ filters.session_id or '' }}"
+               placeholder="z.B. shadow_2025-12-09..."
+               class="text-sm bg-slate-700/50 border border-slate-600/50 rounded px-3 py-1.5 text-slate-200 w-52">
+      </div>
+
+      <!-- Submit -->
+      <div>
+        <button type="submit" 
+                class="text-sm px-4 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white transition-colors">
+          Filter anwenden
+        </button>
+      </div>
+
+      <!-- Reset -->
+      <div>
+        <a href="/live/alerts" 
+           class="text-sm px-3 py-1.5 rounded bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-colors inline-block">
+          Zurücksetzen
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Results Info -->
+  <div class="flex items-center justify-between text-xs text-slate-500">
+    <span>
+      Zeige {{ filtered }} von {{ total }} Alerts
+      {% if filters.severity or filters.category or filters.session_id %}
+        (gefiltert)
+      {% endif %}
+    </span>
+    <span>
+      Limit: {{ limit }} · Zeitfenster: {{ filters.hours or 24 }}h
+    </span>
+  </div>
+
+  <!-- Alert Table -->
+  <div class="bg-slate-800/30 rounded-lg border border-slate-700/30 overflow-hidden">
+    {% if has_alerts %}
+      <table class="w-full text-sm">
+        <thead class="bg-slate-800/50 border-b border-slate-700/50">
+          <tr class="text-left text-xs uppercase text-slate-400 tracking-wide">
+            <th class="px-4 py-3 w-40">Zeitpunkt</th>
+            <th class="px-4 py-3 w-24">Severity</th>
+            <th class="px-4 py-3 w-24">Kategorie</th>
+            <th class="px-4 py-3">Titel / Source</th>
+            <th class="px-4 py-3 w-48">Session</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-700/30">
+          {% for alert in alerts %}
+            <tr class="hover:bg-slate-700/20 transition-colors">
+              <!-- Timestamp -->
+              <td class="px-4 py-3 text-xs text-slate-400 font-mono">
+                {{ alert.timestamp_display }}
+              </td>
+              
+              <!-- Severity Badge -->
+              <td class="px-4 py-3">
+                {% if alert.severity == 'CRITICAL' %}
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-300 border border-red-500/30">
+                    🚨 CRITICAL
+                  </span>
+                {% elif alert.severity == 'WARN' %}
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
+                    ⚠️ WARN
+                  </span>
+                {% else %}
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-500/20 text-slate-300 border border-slate-500/30">
+                    ℹ️ INFO
+                  </span>
+                {% endif %}
+              </td>
+              
+              <!-- Category -->
+              <td class="px-4 py-3">
+                {% if alert.category == 'RISK' %}
+                  <span class="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    RISK
+                  </span>
+                {% elif alert.category == 'EXECUTION' %}
+                  <span class="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                    EXECUTION
+                  </span>
+                {% else %}
+                  <span class="text-xs px-2 py-0.5 rounded bg-slate-500/20 text-slate-300 border border-slate-500/30">
+                    SYSTEM
+                  </span>
+                {% endif %}
+              </td>
+              
+              <!-- Title & Source -->
+              <td class="px-4 py-3">
+                <div class="text-slate-200 font-medium">{{ alert.title }}</div>
+                <div class="text-xs text-slate-500 mt-0.5">
+                  <code>{{ alert.source }}</code>
+                </div>
+                {% if alert.body %}
+                  <div class="text-xs text-slate-400 mt-1 line-clamp-2">
+                    {{ alert.body[:150] }}{% if alert.body|length > 150 %}...{% endif %}
+                  </div>
+                {% endif %}
+              </td>
+              
+              <!-- Session -->
+              <td class="px-4 py-3 text-xs">
+                {% if alert.session_id %}
+                  <a href="/session/{{ alert.session_id }}" 
+                     class="text-emerald-400 hover:text-emerald-300 font-mono transition-colors">
+                    {{ alert.session_id[:30] }}{% if alert.session_id|length > 30 %}...{% endif %}
+                  </a>
+                {% else %}
+                  <span class="text-slate-500">–</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <!-- Empty State -->
+      <div class="p-12 text-center">
+        <div class="text-4xl mb-3">✅</div>
+        <div class="text-slate-300 font-medium">Keine Alerts gefunden</div>
+        <div class="text-slate-500 text-sm mt-1">
+          {% if filters.severity or filters.category or filters.session_id %}
+            Mit den aktuellen Filtern wurden keine Alerts gefunden.
+            <a href="/live/alerts" class="text-emerald-400 hover:underline">Filter zurücksetzen</a>
+          {% else %}
+            Im gewählten Zeitfenster ({{ filters.hours or 24 }}h) wurden keine Alerts ausgelöst.
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Legend / Info -->
+  <div class="text-xs text-slate-500 flex items-center gap-6">
+    <span class="flex items-center gap-1">
+      <span class="w-2 h-2 rounded-full bg-red-400"></span>
+      CRITICAL = Sofortige Aktion erforderlich
+    </span>
+    <span class="flex items-center gap-1">
+      <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+      WARN = Erhöhte Aufmerksamkeit
+    </span>
+    <span class="flex items-center gap-1">
+      <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+      INFO = Informativ
+    </span>
+    <span class="ml-auto">
+      <a href="/docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md" 
+         class="text-emerald-400 hover:underline">
+        📋 Operator Runbook
+      </a>
+    </span>
+  </div>
+</div>
+{% endblock %}
