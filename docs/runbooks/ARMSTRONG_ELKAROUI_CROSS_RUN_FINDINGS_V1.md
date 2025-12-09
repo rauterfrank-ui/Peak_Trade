@@ -1,6 +1,6 @@
 # Armstrong × El Karoui Combo – Cross-Run Findings v1
 
-> **Status:** R&D-Only | **Erstellt:** 2025-12-09 | **Version:** v1.1
+> **Status:** R&D-Only | **Erstellt:** 2025-12-09 | **Version:** v1.2
 
 ---
 
@@ -230,9 +230,43 @@ Bis dahin bleibt dieser Abschnitt explizit als **technischer Validierungs-Check*
 
 ---
 
+## 10. TODO – Real-Data Robustness (R&D)
+
+**Status:** ⏳ Vorbereitet, wartet auf echte Marktdaten (Kraken-API / Data-Cache).
+
+**Ziel:**
+Die bisherigen R&D-Findings (EVENT_LOW vs. EVENT_HIGH, NONE_LOW vs. NONE_HIGH) mit **echten Marktdaten** über längere Zeiträume (2022–2024), mehrere Assets und Timeframes zu validieren.
+
+### Voraussetzungen
+
+* Historische Daten im Data-Cache verfügbar (z.B. BTC/EUR, ETH/EUR, weitere Assets).
+* Kombi-Experiment `armstrong-elkaroui-combi` lauffähig gegen Real-Daten.
+
+### Geplante Schritte (wenn Daten da sind)
+
+| # | Schritt | Befehl / Details |
+|---|---------|------------------|
+| 1 | BTC/EUR, 1h, 2022–2024 | `--from 2022-01-01 --to 2024-12-01` (ohne Dummy-Fallback) |
+| 2 | Cross-Asset-Runs | ETH/EUR, ggf. FX-/Index-Asset |
+| 3 | Timeframe-Variation | 15m, 4h, 1d |
+| 4 | Findings-Update | `ARMSTRONG_ELKAROUI_CROSS_RUN_FINDINGS_V1.md` → v2 |
+| 5 | Walk-Forward-Setup | Train: 2022–2023, Test: 2024 |
+
+### Nach Abschluss
+
+* Neue Run-IDs dokumentieren
+* Hypothesen & Konfidenz-Matrix aktualisieren
+* Ggf. erste Walk-Forward-Ergebnisse einpflegen
+
+**Hinweis:**
+Bis diese Schritte mit echten Daten gelaufen sind, bleiben alle Armstrong × El Karoui Hypothesen klar als **R&D-only** markiert (kein produktiver Strategy-Layer-Einsatz).
+
+---
+
 ## Changelog
 
 | Version | Datum      | Änderungen                                    |
 |---------|------------|-----------------------------------------------|
 | v1.0    | 2025-12-09 | Initial Findings aus 2 Runs (d9dfb356, 10b4f7c9) |
 | v1.1    | 2025-12-09 | Add Dummy-Langzeit-Run (Framework-Sanity-Check) |
+| v1.2    | 2025-12-09 | Add TODO section for Real-Data Robustness |
