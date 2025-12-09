@@ -67,6 +67,22 @@ Ziel:
 | **Phasen 76–81** | R&D Dashboard (Hub, Detail, Gallery, Comparison) & Live-Track Bridge  | **≈ 98%**   | 76–78 & 80/81 implementiert, UI/UX-Feinschliff laufend        |
 | **Phasen 82–86** | Future Extensions, Nice-to-have Features, Erweiterungen für Live & UI | **≈ 85%**   | Nur noch optionale Ausbau-Themen, Kernsystem ist vollständig  |
 
+## Layer-Matrix – Fortschritt nach Systemkomponente
+
+| Layer / Komponente           | Implementierung | Testabdeckung | Doku / Runbooks | Gesamt-Fortschritt |
+| ---------------------------- | --------------- | ------------- | --------------- | ------------------ |
+| **Data-Layer**               | **100%**        | **100%**      | **≈ 95%**       | **100%**           |
+| **Backtest-Engine**          | **100%**        | **100%**      | **≈ 95%**       | **100%**           |
+| **Strategy-Layer (Prod)**    | **≈ 97%**       | **≈ 96%**     | **≈ 95%**       | **≈ 96%**          |
+| **Strategy-Layer (R&D)**     | **≈ 98%**       | **≈ 97%**     | **≈ 95%**       | **≈ 98%**          |
+| **Portfolio & Risk**         | **≈ 96%**       | **≈ 95%**     | **≈ 94%**       | **≈ 96%**          |
+| **Execution & Environments** | **≈ 95%**       | **≈ 93%**     | **≈ 92%**       | **≈ 95%**          |
+| **Live-Track & Bridge**      | **≈ 96%**       | **≈ 94%**     | **≈ 92%**       | **≈ 96%**          |
+| **R&D Web-Dashboard**        | **100%**        | **100%**      | **≈ 95%**       | **100%**           |
+| **Monitoring & Alerts**      | **≈ 95%**       | **≈ 94%**     | **≈ 93%**       | **≈ 95%**          |
+| **Docs & Meta-Runbooks**     | **≈ 97%**       | –             | **≈ 97%**       | **≈ 97%**          |
+| **Tooling & Dev-Workflow**   | **≈ 95%**       | **≈ 95%**     | **≈ 90%**       | **≈ 95%**          |
+
 ---
 
 ## 2. Data & Market Access (~95%)
