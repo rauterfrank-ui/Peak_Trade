@@ -80,6 +80,7 @@ Ziel:
 | **Live-Track & Bridge**      | **≈ 96%**       | **≈ 94%**     | **≈ 92%**       | **≈ 96%**          |
 | **R&D Web-Dashboard**        | **100%**        | **100%**      | **≈ 95%**       | **100%**           |
 | **Monitoring & Alerts**      | **≈ 95%**       | **≈ 94%**     | **≈ 93%**       | **≈ 95%**          |
+| **Live-Risk Severity**       | **100%**        | **100%**      | **100%**        | **100%**           |
 | **Docs & Meta-Runbooks**     | **≈ 97%**       | –             | **≈ 97%**       | **≈ 97%**          |
 | **Tooling & Dev-Workflow**   | **≈ 95%**       | **≈ 95%**     | **≈ 90%**       | **≈ 95%**          |
 
@@ -91,7 +92,7 @@ Ziel:
 | **Backtest-Engine**          | Erweiterte Beispiel-Configs & „Best Practices"-Abschnitt für komplexe Portfolio-Runs (Multi-Asset, Multi-Strategy) dokumentieren.     | Niedrig   |
 | **Strategy-Layer (Prod)**    | Konsistenter Param-Namensraum (+ evtl. Mapping-Tabelle), einheitliche „Live-Ready"-Kennzeichnung pro Strategie.                       | Mittel    |
 | **Strategy-Layer (R&D)**     | Kurze Research-Notes pro R&D-Strategie (Armstrong, El Karoui, Waves) + ein „How to interpret results"-Snippet.                        | Mittel    |
-| **Portfolio & Risk**         | Weitere Szenario-/Stress-Tests (Multi-Day-Drawdown, Gap-Risk) + knapper Risk-Runbook-Abschnitt „Was tun bei Breach?".                 | Hoch      |
+| **Portfolio & Risk**         | Weitere Szenario-/Stress-Tests (Multi-Day-Drawdown, Gap-Risk) – Risk-Runbook („Was tun bei Breach?") ist jetzt implementiert.         | Erledigt  |
 | **Execution & Environments** | Mehr Edge-Case-Tests (Order-Rejects, Retry-Logic, Network-Glitches) + klarer Failover-Flow je Environment.                            | Hoch      |
 | **Live-Track & Bridge**      | UI-Feinschliff (Badges, Tooltips, Filter), kleine „Operator-Playbook"-Sektion für typische Daily-Flows.                               | Mittel    |
 | **R&D Web-Dashboard**        | Zusätzliche Filter/Sortieroptionen (run_type, date_str) feintunen und in der Doku als „R&D Workflows" zeigen.                         | Niedrig   |
@@ -306,9 +307,30 @@ Ziel:
 
 * Risk-Profile (Conservative/Moderate/Aggressive) als zusätzliche Abstraktion über Roh-Limits.
 * Einheitliche Risk-Language zwischen Research-Reports, Live-Monitoring und Governance-Doku.
-* Mehr Automatisierung Richtung „Risk-Dashboards".
 
-> **Reifegrad:** **ca. 90%** – konzeptionell stark und tief integriert, eher Feinschliff & UX-Themen offen.
+### Live-Risk Severity – UI, Alerts & Runbook (NEU)
+
+**Status:** ✅ Abgeschlossen (vollständig dokumentiert & getestet)
+
+**Scope:**
+
+- Integration des bestehenden Severity-Systems (`OK`/`WARNING`/`BREACH`) in:
+  - Web-Dashboard (Sessions-Übersicht, Session-Detail),
+  - Alerting & Logging (Slack, CLI, Logs),
+  - Runbook-/Operator-Sicht (GREEN/YELLOW/RED Handlungsempfehlungen).
+- Neue Komponenten:
+  - `src/live/risk_alert_helpers.py` – Formatierung und Triggern von Risk-Alerts,
+  - `src/live/risk_runbook.py` – strukturierte Runbook-Einträge pro Status,
+  - `docs/runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md` – End-to-end Doku.
+- UI:
+  - Risk-Ampel in der Sessions-Tabelle (🟢/🟡/🔴),
+  - Risk-Status-Panel und Limit-Details in der Session-Detail-Ansicht,
+  - eingebettete Kurz-Guidance für Operatoren.
+- Qualität:
+  - 102 Tests grün (inkl. neuer Alert-/Runbook-Tests),
+  - keine Breaking Changes, bestehende Pipelines bleiben unverändert lauffähig.
+
+> **Reifegrad:** **ca. 95%** – konzeptionell stark und tief integriert, Risk-Dashboard & Alerting jetzt implementiert.
 
 ---
 

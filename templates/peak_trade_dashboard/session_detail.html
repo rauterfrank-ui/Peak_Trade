@@ -71,7 +71,7 @@
 </section>
 
 <!-- Haupt-Metriken -->
-<div class="grid gap-4 md:grid-cols-4 mb-6">
+<div class="grid gap-4 md:grid-cols-5 mb-6">
   <!-- Status -->
   <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
     <p class="text-xs text-slate-400 mb-1">Status</p>
@@ -86,6 +86,34 @@
     {% else %}
     <p class="text-xl font-semibold text-slate-300">{{ session.status }}</p>
     {% endif %}
+  </div>
+
+  <!-- Phase 87: Risk-Ampel -->
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4 {% if session.risk_status == 'red' %}border-rose-500/50 bg-rose-950/30{% elif session.risk_status == 'yellow' %}border-amber-500/40 bg-amber-950/20{% endif %}">
+    <p class="text-xs text-slate-400 mb-1">Risk-Ampel</p>
+    <div class="flex items-center gap-2">
+      {% if session.risk_status == "green" %}
+      <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/30">
+        <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+      </span>
+      <span class="text-xl font-semibold text-emerald-300">OK</span>
+      {% elif session.risk_status == "yellow" %}
+      <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/30">
+        <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+      </span>
+      <span class="text-xl font-semibold text-amber-300">WARNING</span>
+      {% elif session.risk_status == "red" %}
+      <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-rose-500/30">
+        <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+      </span>
+      <span class="text-xl font-semibold text-rose-400">BREACH</span>
+      {% else %}
+      <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-500/30">
+        <span class="w-3 h-3 rounded-full bg-slate-400"></span>
+      </span>
+      <span class="text-xl font-semibold text-slate-300">–</span>
+      {% endif %}
+    </div>
   </div>
 
   <!-- Realized PnL -->
@@ -122,6 +150,69 @@
     {% endif %}
   </div>
 </div>
+
+<!-- Phase 87: Risk-Limit-Details (nur wenn vorhanden und nicht OK) -->
+{% if session.risk_limit_details and session.risk_status != "green" %}
+<section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 mb-6 {% if session.risk_status == 'red' %}border-rose-500/30 bg-rose-950/20{% elif session.risk_status == 'yellow' %}border-amber-500/30 bg-amber-950/10{% endif %}">
+  <h3 class="text-sm font-semibold text-slate-200 mb-3 flex items-center gap-2">
+    {% if session.risk_status == "red" %}
+    <span class="text-rose-400">⛔</span> Risk-Limit-Details (BREACH)
+    {% elif session.risk_status == "yellow" %}
+    <span class="text-amber-400">⚠️</span> Risk-Limit-Details (WARNING)
+    {% endif %}
+  </h3>
+  <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+    {% for detail in session.risk_limit_details %}
+    <div class="bg-slate-950/60 rounded-lg p-3 border {% if detail.severity == 'breach' %}border-rose-500/40{% elif detail.severity == 'warning' %}border-amber-500/40{% else %}border-slate-700/50{% endif %}">
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-xs font-mono text-slate-300">{{ detail.name }}</span>
+        {% if detail.severity == "breach" %}
+        <span class="text-xs px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">BREACH</span>
+        {% elif detail.severity == "warning" %}
+        <span class="text-xs px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">WARNING</span>
+        {% else %}
+        <span class="text-xs px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">OK</span>
+        {% endif %}
+      </div>
+      <div class="flex items-baseline gap-1 text-sm">
+        <span class="{% if detail.severity == 'breach' %}text-rose-400{% elif detail.severity == 'warning' %}text-amber-400{% else %}text-slate-200{% endif %} font-semibold">
+          {{ "%.2f"|format(detail.value) }}
+        </span>
+        <span class="text-slate-500">/</span>
+        <span class="text-slate-400">{{ "%.2f"|format(detail.limit) }}</span>
+      </div>
+      <!-- Progress Bar -->
+      <div class="mt-2 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+        {% set ratio_pct = (detail.ratio * 100) | round | int %}
+        {% set capped_pct = [ratio_pct, 100] | min %}
+        <div class="h-full rounded-full {% if detail.severity == 'breach' %}bg-rose-500{% elif detail.severity == 'warning' %}bg-amber-500{% else %}bg-emerald-500{% endif %}"
+             style="width: {{ capped_pct }}%"></div>
+      </div>
+      <p class="text-xs text-slate-500 mt-1">{{ "%.1f"|format(detail.ratio * 100) }}% des Limits</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Operator-Hinweis -->
+  <div class="mt-4 p-3 bg-slate-950/40 rounded-lg border border-slate-700/50">
+    <p class="text-xs text-slate-400 font-semibold mb-1">Empfohlene Aktionen:</p>
+    {% if session.risk_status == "red" %}
+    <ul class="text-xs text-slate-300 list-disc list-inside space-y-0.5">
+      <li>Keine neuen Positionen eröffnen</li>
+      <li>Offene Orders prüfen und ggf. stornieren</li>
+      <li>Bestehende Positionen evaluieren – kontrollierter Abbau erwägen</li>
+      <li>Incident-Log anlegen, Team informieren</li>
+    </ul>
+    {% elif session.risk_status == "yellow" %}
+    <ul class="text-xs text-slate-300 list-disc list-inside space-y-0.5">
+      <li>Positionen und offene Orders überprüfen</li>
+      <li>Trading-Intensität reduzieren</li>
+      <li>Daily-PnL im Auge behalten</li>
+    </ul>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
 
 <!-- Meta-Informationen -->
 <section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 mb-6">

@@ -6,6 +6,33 @@
 
 ---
 
+## 2025-12-09 – Live-Risk Severity in UI, Alerts & Runbook
+
+### Live-Risk: Severity in UI, Alerts & Runbook
+
+- **Neu:** End-to-end Integration des Live-Risk Severity-Systems (`OK`, `WARNING`, `BREACH`) in:
+  - Web-Dashboard (Risk-Ampel pro Session, Risk-Detail-Ansicht),
+  - Alerting & Logging (Slack/CLI/Logs),
+  - Runbook-/Operator-Sicht (vollständige Handlungsempfehlungen).
+- **Neu:** `src/live/risk_alert_helpers.py`
+  - Formatierung von Risk-Alerts (inkl. Slack-Format),
+  - Mapping von `RiskCheckSeverity` auf Alert-Level,
+  - CLI/Terminal-Formatter mit ANSI-Farben.
+- **Neu:** `src/live/risk_runbook.py`
+  - Strukturierte Runbook-Einträge pro Status (`green`, `yellow`, `red`),
+  - Sofortmaßnahmen, Checklisten und Eskalationspfade für Operatoren.
+- **Neu:** `docs/runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md`
+  - Vollständige Dokumentation: Architektur, Dashboard, Alerting, Runbook, Tests, Konfiguration, Usage-Beispiele und Next Steps.
+- **Verbessert:** `src/webui/live_track.py` und Dashboard-Templates
+  - Sessions-Übersicht mit Risk-Ampel (🟢/🟡/🔴),
+  - Session-Detail-Seite mit Risk-Status, Limit-Details und Operator-Guidance.
+- **Tests:** 
+  - Neue Suiten `tests/test_risk_alert_helpers.py` und `tests/test_risk_runbook.py`,
+  - Insgesamt **102 Tests**, alle bestanden.
+- **Rückwärtskompatibel:** Keine Breaking Changes – bestehende Live-/Execution-Flows funktionieren unverändert, profitieren aber von zusätzlicher Transparenz (Severity, Alerts, Runbook).
+
+---
+
 ## 2025-12-09 – R&D-Strategien Dokumentation
 
 ### Docs

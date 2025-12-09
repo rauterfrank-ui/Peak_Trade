@@ -84,6 +84,8 @@ class LiveSessionSummary(BaseModel):
         notes: Fehler oder Notizen (falls vorhanden)
         duration_seconds: Berechnete Dauer in Sekunden (Phase 85)
         is_live_warning: True wenn mode=live (Safety-Warnung, Phase 85)
+        risk_status: Risk-Ampel-Status (green/yellow/red, Phase 87 Severity)
+        risk_severity: Severity-Level (ok/warning/breach, Phase 87)
     """
 
     session_id: str = Field(..., description="Eindeutige Session-ID")
@@ -104,6 +106,13 @@ class LiveSessionSummary(BaseModel):
     # Phase 85: Zusätzliche Felder
     duration_seconds: Optional[int] = Field(None, description="Session-Dauer in Sekunden")
     is_live_warning: bool = Field(False, description="True wenn mode=live (Safety)")
+    # Phase 87: Risk-Severity Integration
+    risk_status: Literal["green", "yellow", "red"] = Field(
+        "green", description="Risk-Ampel: green=OK, yellow=WARNING, red=BREACH"
+    )
+    risk_severity: Literal["ok", "warning", "breach"] = Field(
+        "ok", description="Risk-Severity-Level"
+    )
 
 
 class LiveSessionDetail(BaseModel):
@@ -115,6 +124,7 @@ class LiveSessionDetail(BaseModel):
     - Alle Metrics
     - CLI-Args
     - Run-Type und Run-ID
+    - Risk-Status und Limit-Details (Phase 87)
 
     Für die Detail-Page /session/{session_id}
     """
@@ -134,6 +144,18 @@ class LiveSessionDetail(BaseModel):
     notes: Optional[str] = Field(None, description="Fehler oder Notizen")
     duration_seconds: Optional[int] = Field(None, description="Session-Dauer")
     is_live_warning: bool = Field(False, description="Safety-Warnung für Live")
+
+    # Phase 87: Risk-Severity Integration
+    risk_status: Literal["green", "yellow", "red"] = Field(
+        "green", description="Risk-Ampel: green=OK, yellow=WARNING, red=BREACH"
+    )
+    risk_severity: Literal["ok", "warning", "breach"] = Field(
+        "ok", description="Risk-Severity-Level"
+    )
+    risk_limit_details: List[dict] = Field(
+        default_factory=list,
+        description="Limit-Check-Details [{name, value, limit, ratio, severity}]"
+    )
 
     # Detail-Felder (Phase 85)
     run_id: Optional[str] = Field(None, description="Experiment/Run-ID")
@@ -226,6 +248,52 @@ def get_recent_live_sessions(
         return []
 
 
+def _extract_risk_status_from_metrics(metrics: dict) -> tuple:
+    """
+    Extrahiert risk_status und risk_severity aus Metrics.
+
+    Versucht verschiedene Quellen:
+    1. Direkt in metrics["risk_status"] / metrics["risk_severity"]
+    2. In metrics["risk_check"]["severity"]
+    3. Default: green/ok
+
+    Returns:
+        Tuple (risk_status, risk_severity)
+    """
+    risk_status = "green"
+    risk_severity = "ok"
+
+    if not metrics:
+        return risk_status, risk_severity
+
+    # Direkte Felder
+    if "risk_status" in metrics:
+        rs = metrics["risk_status"]
+        if rs in ("green", "yellow", "red"):
+            risk_status = rs
+            # Severity ableiten
+            risk_severity = {"green": "ok", "yellow": "warning", "red": "breach"}.get(rs, "ok")
+
+    if "risk_severity" in metrics:
+        sev = metrics["risk_severity"]
+        if sev in ("ok", "warning", "breach"):
+            risk_severity = sev
+            # Status ableiten falls nicht gesetzt
+            if "risk_status" not in metrics:
+                risk_status = {"ok": "green", "warning": "yellow", "breach": "red"}.get(sev, "green")
+
+    # Aus risk_check Sub-Dict
+    risk_check = metrics.get("risk_check", {})
+    if isinstance(risk_check, dict):
+        if "severity" in risk_check:
+            sev = risk_check["severity"]
+            if sev in ("ok", "warning", "breach"):
+                risk_severity = sev
+                risk_status = {"ok": "green", "warning": "yellow", "breach": "red"}.get(sev, "green")
+
+    return risk_status, risk_severity
+
+
 def _record_to_summary(record) -> Optional[LiveSessionSummary]:
     """
     Konvertiert einen LiveSessionRecord in ein LiveSessionSummary.
@@ -265,6 +333,9 @@ def _record_to_summary(record) -> Optional[LiveSessionSummary]:
         duration = compute_duration_seconds(record.started_at, record.finished_at)
         is_live_warning = mode == "live"
 
+        # Phase 87: Risk-Status aus Metrics extrahieren
+        risk_status, risk_severity = _extract_risk_status_from_metrics(metrics)
+
         return LiveSessionSummary(
             session_id=record.session_id,
             started_at=record.started_at,
@@ -279,6 +350,8 @@ def _record_to_summary(record) -> Optional[LiveSessionSummary]:
             notes=record.error,
             duration_seconds=duration,
             is_live_warning=is_live_warning,
+            risk_status=risk_status,
+            risk_severity=risk_severity,
         )
     except Exception as e:
         logger.warning(
@@ -287,6 +360,47 @@ def _record_to_summary(record) -> Optional[LiveSessionSummary]:
             e,
         )
         return None
+
+
+def _extract_limit_details_from_metrics(metrics: dict) -> List[dict]:
+    """
+    Extrahiert Limit-Check-Details aus Metrics.
+
+    Sucht in metrics["risk_check"]["limit_details"] oder metrics["limit_details"].
+
+    Returns:
+        Liste von Dicts: [{name, value, limit, ratio, severity}]
+    """
+    details: List[dict] = []
+
+    if not metrics:
+        return details
+
+    # Suche in verschiedenen Quellen
+    limit_details = None
+
+    if "limit_details" in metrics:
+        limit_details = metrics["limit_details"]
+    elif "risk_check" in metrics and isinstance(metrics["risk_check"], dict):
+        limit_details = metrics["risk_check"].get("limit_details")
+
+    if not limit_details or not isinstance(limit_details, list):
+        return details
+
+    for item in limit_details:
+        if not isinstance(item, dict):
+            continue
+
+        detail = {
+            "name": item.get("limit_name", item.get("name", "unknown")),
+            "value": item.get("current_value", item.get("value", 0.0)),
+            "limit": item.get("limit_value", item.get("limit", 0.0)),
+            "ratio": item.get("ratio", 0.0),
+            "severity": item.get("severity", "ok"),
+        }
+        details.append(detail)
+
+    return details
 
 
 def _record_to_detail(record) -> Optional[LiveSessionDetail]:
@@ -326,6 +440,10 @@ def _record_to_detail(record) -> Optional[LiveSessionDetail]:
         duration = compute_duration_seconds(record.started_at, record.finished_at)
         is_live_warning = mode == "live"
 
+        # Phase 87: Risk-Status und Limit-Details aus Metrics extrahieren
+        risk_status, risk_severity = _extract_risk_status_from_metrics(metrics)
+        risk_limit_details = _extract_limit_details_from_metrics(metrics)
+
         return LiveSessionDetail(
             session_id=record.session_id,
             started_at=record.started_at,
@@ -339,6 +457,10 @@ def _record_to_detail(record) -> Optional[LiveSessionDetail]:
             notes=record.error,
             duration_seconds=duration,
             is_live_warning=is_live_warning,
+            # Phase 87: Risk-Fields
+            risk_status=risk_status,
+            risk_severity=risk_severity,
+            risk_limit_details=risk_limit_details,
             # Detail-Felder
             run_id=record.run_id,
             run_type=record.run_type or "",

@@ -33,6 +33,15 @@ aus der Experiments-Registry aggregiert:
 - run_type in {"live_dry_run", "paper_trade"}
 - Feld "realized_pnl_net" (bevorzugt) oder "realized_pnl_total"
 
+Severity-Levels:
+----------------
+Jeder Risk-Check liefert neben `allowed` auch eine `severity`:
+- OK: Wert deutlich unter Limit (< warning_threshold)
+- WARNING: Wert zwischen Warning-Threshold und Limit (warning_threshold <= value < limit)
+- BREACH: Wert >= Limit → `allowed` wird auf False gesetzt
+
+Default: warning_threshold_factor = 0.8 (80% des Limits)
+
 Config-Beispiel (config.toml):
 ------------------------------
     [live_risk]
@@ -45,12 +54,15 @@ Config-Beispiel (config.toml):
     max_daily_loss_pct = 5.0    # 5% von starting_cash
     block_on_violation = true
     use_experiments_for_daily_pnl = true
+    warning_threshold_factor = 0.8  # Warning ab 80% des Limits
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+import logging
+from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Sequence
+from enum import Enum
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Mapping, Optional, Sequence
 
 import pandas as pd
 
@@ -61,6 +73,111 @@ from src.live.orders import LiveOrderRequest
 if TYPE_CHECKING:
     from src.live.alerts import AlertLevel, AlertSink
     from src.live.portfolio_monitor import LivePortfolioSnapshot
+
+
+logger = logging.getLogger(__name__)
+
+
+# =============================================================================
+# SEVERITY ENUM
+# =============================================================================
+
+
+class RiskCheckSeverity(Enum):
+    """
+    Severity-Level für Risk-Checks.
+
+    Semantik:
+    - OK: Wert deutlich unter Limit (< warning_threshold)
+    - WARNING: Wert zwischen Warning-Threshold und Limit
+    - BREACH: Wert >= Limit → Orders werden blockiert
+
+    Aggregation: Bei mehreren Checks gilt immer die strengste Severity.
+    """
+    OK = "ok"
+    WARNING = "warning"
+    BREACH = "breach"
+
+    def __gt__(self, other: "RiskCheckSeverity") -> bool:
+        """BREACH > WARNING > OK."""
+        order = {RiskCheckSeverity.OK: 0, RiskCheckSeverity.WARNING: 1, RiskCheckSeverity.BREACH: 2}
+        return order[self] > order[other]
+
+    def __ge__(self, other: "RiskCheckSeverity") -> bool:
+        return self == other or self > other
+
+    def __lt__(self, other: "RiskCheckSeverity") -> bool:
+        return not self >= other
+
+    def __le__(self, other: "RiskCheckSeverity") -> bool:
+        return not self > other
+
+
+# Typ-Alias für UI-Status
+RiskStatus = Literal["green", "yellow", "red"]
+
+
+def severity_to_status(severity: RiskCheckSeverity) -> RiskStatus:
+    """
+    Konvertiert RiskCheckSeverity zu einem einfachen UI-Status.
+
+    Returns:
+        "green" für OK, "yellow" für WARNING, "red" für BREACH
+    """
+    mapping: Dict[RiskCheckSeverity, RiskStatus] = {
+        RiskCheckSeverity.OK: "green",
+        RiskCheckSeverity.WARNING: "yellow",
+        RiskCheckSeverity.BREACH: "red",
+    }
+    return mapping[severity]
+
+
+def aggregate_severities(severities: Sequence[RiskCheckSeverity]) -> RiskCheckSeverity:
+    """
+    Aggregiert mehrere Severities zur strengsten.
+
+    Args:
+        severities: Liste von Severities
+
+    Returns:
+        Die strengste Severity (BREACH > WARNING > OK)
+    """
+    if not severities:
+        return RiskCheckSeverity.OK
+    return max(severities, key=lambda s: {RiskCheckSeverity.OK: 0, RiskCheckSeverity.WARNING: 1, RiskCheckSeverity.BREACH: 2}[s])
+
+
+# =============================================================================
+# LIMIT-CHECK DETAIL
+# =============================================================================
+
+
+@dataclass
+class LimitCheckDetail:
+    """
+    Detail-Info für einen einzelnen Limit-Check.
+
+    Attributes:
+        limit_name: Name des Limits (z.B. "max_order_notional")
+        current_value: Aktueller Wert
+        limit_value: Konfiguriertes Limit
+        warning_threshold: Warning-Schwelle (i.d.R. 80% des Limits)
+        severity: Berechnete Severity
+        message: Human-readable Nachricht
+    """
+    limit_name: str
+    current_value: float
+    limit_value: float
+    warning_threshold: Optional[float] = None
+    severity: RiskCheckSeverity = RiskCheckSeverity.OK
+    message: str = ""
+
+    @property
+    def ratio(self) -> float:
+        """Verhältnis current_value / limit_value."""
+        if self.limit_value <= 0:
+            return 0.0
+        return self.current_value / self.limit_value
 
 
 @dataclass
@@ -84,12 +201,44 @@ class LiveRiskConfig:
     max_live_notional_total: Optional[float] = None
     live_trade_min_size: Optional[float] = None
 
+    # Warning-Threshold: Ab welchem Anteil des Limits wird WARNING ausgelöst
+    # Default: 0.8 = 80% des Limits
+    warning_threshold_factor: float = 0.8
+
 
 @dataclass
 class LiveRiskCheckResult:
+    """
+    Ergebnis eines Risk-Checks.
+
+    Attributes:
+        allowed: True wenn Order-Ausführung erlaubt ist
+        reasons: Liste von Verletzungsgründen (Strings)
+        metrics: Dict mit Kennzahlen (Notional, PnL, ...)
+        severity: Aggregierte Severity (OK, WARNING, BREACH)
+        limit_details: Liste von Detail-Infos pro geprüftem Limit
+
+    Invariante:
+        severity == BREACH → allowed muss False sein
+        severity in {OK, WARNING} → allowed kann True bleiben
+    """
     allowed: bool
     reasons: List[str]
     metrics: Dict[str, Any]
+    # Neue Felder mit Defaults für Rückwärtskompatibilität
+    severity: RiskCheckSeverity = RiskCheckSeverity.OK
+    limit_details: List[LimitCheckDetail] = field(default_factory=list)
+
+    @property
+    def risk_status(self) -> RiskStatus:
+        """UI-freundlicher Status: green/yellow/red."""
+        return severity_to_status(self.severity)
+
+    def __post_init__(self) -> None:
+        """Stelle sicher, dass BREACH immer allowed=False bedeutet."""
+        if self.severity == RiskCheckSeverity.BREACH and self.allowed:
+            # Korrigiere inkonsistenten Zustand
+            object.__setattr__(self, "allowed", False)
 
 
 class LiveRiskLimits:
@@ -175,6 +324,11 @@ class LiveRiskLimits:
         max_live_notional_total = _get_float("live_risk.max_live_notional_total")
         live_trade_min_size = _get_float("live_risk.live_trade_min_size")
 
+        # Warning-Threshold-Faktor (Default: 0.8 = 80%)
+        warning_threshold_factor = _get_float("live_risk.warning_threshold_factor")
+        if warning_threshold_factor is None or not (0.0 < warning_threshold_factor < 1.0):
+            warning_threshold_factor = 0.8
+
         # Falls nur Prozent angegeben, aber kein absolutes Limit: das ist ok,
         # wird aber nur wirksam, wenn starting_cash übergeben wurde.
         cfg_obj = LiveRiskConfig(
@@ -192,6 +346,8 @@ class LiveRiskLimits:
             max_live_notional_per_order=max_live_notional_per_order,
             max_live_notional_total=max_live_notional_total,
             live_trade_min_size=live_trade_min_size,
+            # Warning-Threshold
+            warning_threshold_factor=warning_threshold_factor,
         )
         obj = cls(cfg_obj, alert_sink=alert_sink)
         obj._starting_cash = starting_cash
@@ -250,6 +406,100 @@ class LiveRiskLimits:
             "per_symbol_notional": per_symbol_notional,
             "max_symbol_exposure_notional": max_symbol_exposure,
         }
+
+    def _evaluate_limit(
+        self,
+        limit_name: str,
+        current_value: float,
+        limit_value: Optional[float],
+        *,
+        invert: bool = False,
+    ) -> LimitCheckDetail:
+        """
+        Bewertet einen einzelnen Limit-Check mit Severity.
+
+        Args:
+            limit_name: Name des Limits (z.B. "max_order_notional")
+            current_value: Aktueller Wert
+            limit_value: Konfiguriertes Limit (None = kein Limit)
+            invert: True für Limits wo negative Werte geprüft werden (z.B. Daily-Loss)
+
+        Returns:
+            LimitCheckDetail mit berechneter Severity
+
+        Logik:
+            - Kein Limit konfiguriert → OK
+            - value < warn_threshold → OK
+            - warn_threshold <= value < limit → WARNING
+            - value >= limit → BREACH
+        """
+        if limit_value is None:
+            return LimitCheckDetail(
+                limit_name=limit_name,
+                current_value=current_value,
+                limit_value=0.0,
+                warning_threshold=None,
+                severity=RiskCheckSeverity.OK,
+                message="",
+            )
+
+        # Warning-Threshold berechnen
+        warn_factor = self.config.warning_threshold_factor
+        warning_threshold = limit_value * warn_factor
+
+        # Für invertierte Limits (negative Werte wie Daily-Loss):
+        # current_value ist negativ, limit_value ist positiv
+        # Wir vergleichen abs(current_value) mit dem Limit
+        if invert:
+            check_value = abs(current_value)
+        else:
+            check_value = current_value
+
+        # Severity bestimmen
+        if check_value >= limit_value:
+            severity = RiskCheckSeverity.BREACH
+            if invert:
+                message = f"{limit_name}_reached(limit={limit_value:.2f}, value={current_value:.2f})"
+            else:
+                message = f"{limit_name}_exceeded(max={limit_value:.2f}, observed={current_value:.2f})"
+        elif check_value >= warning_threshold:
+            severity = RiskCheckSeverity.WARNING
+            ratio = check_value / limit_value * 100
+            message = f"{limit_name}_warning(at {ratio:.1f}% of limit)"
+        else:
+            severity = RiskCheckSeverity.OK
+            message = ""
+
+        return LimitCheckDetail(
+            limit_name=limit_name,
+            current_value=current_value,
+            limit_value=limit_value,
+            warning_threshold=warning_threshold,
+            severity=severity,
+            message=message,
+        )
+
+    def _log_limit_check(self, detail: LimitCheckDetail) -> None:
+        """
+        Loggt einen Limit-Check basierend auf seiner Severity.
+
+        - OK: Kein Log (oder DEBUG bei Bedarf)
+        - WARNING: Log mit Level WARNING
+        - BREACH: Log mit Level ERROR
+        """
+        if detail.severity == RiskCheckSeverity.OK:
+            return
+
+        if detail.severity == RiskCheckSeverity.WARNING:
+            logger.warning(
+                f"[RISK WARNING] {detail.limit_name}: "
+                f"value={detail.current_value:.2f} at {detail.ratio*100:.1f}% of limit={detail.limit_value:.2f}"
+            )
+        elif detail.severity == RiskCheckSeverity.BREACH:
+            logger.error(
+                f"[RISK BREACH] {detail.limit_name}: "
+                f"value={detail.current_value:.2f} >= limit={detail.limit_value:.2f} → Orders blocked!"
+            )
 
     def _compute_daily_pnl_from_experiments(self, day: Optional[date] = None) -> float:
         """
@@ -318,10 +568,13 @@ class LiveRiskLimits:
         Gibt einen LiveRiskCheckResult zurück mit:
         - allowed: True/False
         - reasons: Liste von Verletzungsgründen (Strings)
-        - metrics: Dict mit Kennzahlen (Notional, PnL, ...).
+        - metrics: Dict mit Kennzahlen (Notional, PnL, ...)
+        - severity: Aggregierte Severity (OK, WARNING, BREACH)
+        - limit_details: Detail-Infos pro geprüftem Limit
         """
         reasons: List[str] = []
         allowed = True
+        limit_details: List[LimitCheckDetail] = []
 
         # Wenn Live-Risk-Limits deaktiviert, einfach alles erlauben
         if not self.config.enabled:
@@ -335,6 +588,8 @@ class LiveRiskLimits:
                     "base_currency": self.config.base_currency,
                     "live_risk_enabled": False,
                 },
+                severity=RiskCheckSeverity.OK,
+                limit_details=[],
             )
 
         aggregates = self._compute_orders_aggregates(orders)
@@ -344,61 +599,116 @@ class LiveRiskLimits:
         n_orders = aggregates["n_orders"]
         n_symbols = aggregates["n_symbols"]
 
-        # Exposure-Limits
         cfg = self.config
 
-        if cfg.max_order_notional is not None and max_order_notional > cfg.max_order_notional:
+        # 1. Check max_order_notional
+        detail = self._evaluate_limit(
+            "max_order_notional",
+            max_order_notional,
+            cfg.max_order_notional,
+        )
+        limit_details.append(detail)
+        self._log_limit_check(detail)
+        if detail.severity == RiskCheckSeverity.BREACH:
             allowed = False
-            reasons.append(
-                f"max_order_notional_exceeded(max={cfg.max_order_notional:.2f}, "
-                f"observed={max_order_notional:.2f})"
-            )
+            reasons.append(detail.message)
 
-        if cfg.max_total_exposure_notional is not None and total_notional > cfg.max_total_exposure_notional:
+        # 2. Check max_total_exposure_notional
+        detail = self._evaluate_limit(
+            "max_total_exposure",
+            total_notional,
+            cfg.max_total_exposure_notional,
+        )
+        limit_details.append(detail)
+        self._log_limit_check(detail)
+        if detail.severity == RiskCheckSeverity.BREACH:
             allowed = False
-            reasons.append(
-                f"max_total_exposure_exceeded(max={cfg.max_total_exposure_notional:.2f}, "
-                f"observed={total_notional:.2f})"
-            )
+            reasons.append(detail.message)
 
-        if (
-            cfg.max_symbol_exposure_notional is not None
-            and max_symbol_exposure_notional > cfg.max_symbol_exposure_notional
-        ):
+        # 3. Check max_symbol_exposure_notional
+        detail = self._evaluate_limit(
+            "max_symbol_exposure",
+            max_symbol_exposure_notional,
+            cfg.max_symbol_exposure_notional,
+        )
+        limit_details.append(detail)
+        self._log_limit_check(detail)
+        if detail.severity == RiskCheckSeverity.BREACH:
             allowed = False
-            reasons.append(
-                f"max_symbol_exposure_exceeded(max={cfg.max_symbol_exposure_notional:.2f}, "
-                f"observed={max_symbol_exposure_notional:.2f})"
-            )
+            reasons.append(detail.message)
 
-        if cfg.max_open_positions is not None and n_symbols > cfg.max_open_positions:
-            allowed = False
-            reasons.append(
-                f"max_open_positions_exceeded(max={cfg.max_open_positions}, "
-                f"observed_symbols={n_symbols})"
+        # 4. Check max_open_positions (Integer-Limit, spezielle Behandlung)
+        if cfg.max_open_positions is not None:
+            # Für Integer-Limits: Warning bei warning_factor * limit (aufgerundet)
+            warn_threshold = int(cfg.max_open_positions * cfg.warning_threshold_factor)
+            if n_symbols > cfg.max_open_positions:
+                severity = RiskCheckSeverity.BREACH
+                allowed = False
+                msg = f"max_open_positions_exceeded(max={cfg.max_open_positions}, observed_symbols={n_symbols})"
+                reasons.append(msg)
+            elif n_symbols > warn_threshold:
+                severity = RiskCheckSeverity.WARNING
+                msg = f"max_open_positions_warning(at {n_symbols}/{cfg.max_open_positions})"
+            else:
+                severity = RiskCheckSeverity.OK
+                msg = ""
+            detail = LimitCheckDetail(
+                limit_name="max_open_positions",
+                current_value=float(n_symbols),
+                limit_value=float(cfg.max_open_positions),
+                warning_threshold=float(warn_threshold),
+                severity=severity,
+                message=msg,
             )
+            limit_details.append(detail)
+            self._log_limit_check(detail)
 
-        # Daily Loss aus Registry
+        # 5. Daily Loss aus Registry
         daily_pnl = self._compute_daily_pnl_from_experiments(day=current_date)
 
-        if cfg.max_daily_loss_abs is not None and daily_pnl <= -cfg.max_daily_loss_abs:
-            allowed = False
-            reasons.append(
-                f"max_daily_loss_abs_reached(limit={cfg.max_daily_loss_abs:.2f}, pnl={daily_pnl:.2f})"
+        # 5a. max_daily_loss_abs
+        if cfg.max_daily_loss_abs is not None:
+            # daily_pnl ist negativ bei Verlust, Limit ist positiv
+            # Wir prüfen: abs(daily_pnl) gegen das Limit
+            detail = self._evaluate_limit(
+                "max_daily_loss_abs",
+                daily_pnl,
+                cfg.max_daily_loss_abs,
+                invert=True,
             )
+            limit_details.append(detail)
+            self._log_limit_check(detail)
+            if detail.severity == RiskCheckSeverity.BREACH:
+                allowed = False
+                reasons.append(detail.message)
 
+        # 5b. max_daily_loss_pct
         if cfg.max_daily_loss_pct is not None and self._starting_cash is not None:
             starting_cash = self._starting_cash
             if starting_cash and starting_cash > 0:
                 abs_limit = float(starting_cash) * (cfg.max_daily_loss_pct / 100.0)
-                if daily_pnl <= -abs_limit:
-                    allowed = False
-                    reasons.append(
-                        "max_daily_loss_pct_reached("
-                        f"limit_pct={cfg.max_daily_loss_pct:.2f}, "
-                        f"starting_cash={starting_cash:.2f}, "
-                        f"pnl={daily_pnl:.2f})"
+                detail = self._evaluate_limit(
+                    "max_daily_loss_pct",
+                    daily_pnl,
+                    abs_limit,
+                    invert=True,
+                )
+                # Erweitere Message mit Prozent-Info
+                if detail.severity != RiskCheckSeverity.OK:
+                    detail.message = (
+                        f"max_daily_loss_pct_{detail.severity.value}"
+                        f"(limit_pct={cfg.max_daily_loss_pct:.2f}, "
+                        f"starting_cash={starting_cash:.2f}, pnl={daily_pnl:.2f})"
                     )
+                limit_details.append(detail)
+                self._log_limit_check(detail)
+                if detail.severity == RiskCheckSeverity.BREACH:
+                    allowed = False
+                    reasons.append(detail.message)
+
+        # Aggregierte Severity berechnen
+        severities = [d.severity for d in limit_details]
+        overall_severity = aggregate_severities(severities)
 
         metrics: Dict[str, Any] = {
             "n_orders": n_orders,
@@ -409,16 +719,19 @@ class LiveRiskLimits:
             "daily_realized_pnl_net": daily_pnl,
             "base_currency": cfg.base_currency,
             "live_risk_enabled": True,
+            "warning_threshold_factor": cfg.warning_threshold_factor,
         }
 
         result = LiveRiskCheckResult(
             allowed=allowed,
             reasons=reasons,
             metrics=metrics,
+            severity=overall_severity,
+            limit_details=limit_details,
         )
 
-        # Alert bei Violation
-        if not result.allowed:
+        # Alert bei Violation oder Warning
+        if result.severity == RiskCheckSeverity.BREACH:
             self._emit_risk_alert(
                 result,
                 source="live_risk.orders",
@@ -427,6 +740,19 @@ class LiveRiskLimits:
                 extra_context={
                     "num_orders": n_orders,
                     "num_symbols": n_symbols,
+                    "severity": result.severity.value,
+                },
+            )
+        elif result.severity == RiskCheckSeverity.WARNING:
+            self._emit_risk_alert(
+                result,
+                source="live_risk.orders",
+                code="RISK_LIMIT_WARNING_ORDERS",
+                message="Live risk limit warning for proposed order batch.",
+                extra_context={
+                    "num_orders": n_orders,
+                    "num_symbols": n_symbols,
+                    "severity": result.severity.value,
                 },
             )
 
@@ -503,7 +829,7 @@ class LiveRiskLimits:
             current_date: Optional Datum für Daily-Loss-Berechnung (Default: heute UTC)
 
         Returns:
-            LiveRiskCheckResult mit allowed, reasons und metrics
+            LiveRiskCheckResult mit allowed, reasons, metrics, severity und limit_details
 
         Example:
             >>> from src.live.portfolio_monitor import LivePortfolioMonitor
@@ -512,11 +838,11 @@ class LiveRiskLimits:
             >>> result = risk_limits.evaluate_portfolio(snapshot)
             >>> if not result.allowed:
             ...     print("Portfolio verletzt Limits:", result.reasons)
+            >>> print(f"Status: {result.risk_status}")  # "green", "yellow" oder "red"
         """
-        # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
-
         reasons: List[str] = []
         allowed = True
+        limit_details: List[LimitCheckDetail] = []
 
         # Wenn Live-Risk-Limits deaktiviert, einfach alles erlauben
         if not self.config.enabled:
@@ -532,24 +858,35 @@ class LiveRiskLimits:
                     "base_currency": self.config.base_currency,
                     "live_risk_enabled": False,
                 },
+                severity=RiskCheckSeverity.OK,
+                limit_details=[],
             )
 
-        # Exposure-Limits
         cfg = self.config
 
         # 1. Total Exposure
-        if cfg.max_total_exposure_notional is not None:
-            if snapshot.total_notional > cfg.max_total_exposure_notional:
-                allowed = False
-                reasons.append(
-                    f"max_total_exposure_exceeded(max={cfg.max_total_exposure_notional:.2f}, "
-                    f"observed={snapshot.total_notional:.2f})"
-                )
+        detail = self._evaluate_limit(
+            "max_total_exposure",
+            snapshot.total_notional,
+            cfg.max_total_exposure_notional,
+        )
+        limit_details.append(detail)
+        self._log_limit_check(detail)
+        if detail.severity == RiskCheckSeverity.BREACH:
+            allowed = False
+            reasons.append(detail.message)
 
-        # 2. Symbol Exposure
+        # 2. Symbol Exposure (prüfe jedes Symbol einzeln)
         if cfg.max_symbol_exposure_notional is not None:
             for symbol, notional in snapshot.symbol_notional.items():
-                if notional > cfg.max_symbol_exposure_notional:
+                detail = self._evaluate_limit(
+                    f"symbol_exposure_{symbol}",
+                    notional,
+                    cfg.max_symbol_exposure_notional,
+                )
+                limit_details.append(detail)
+                self._log_limit_check(detail)
+                if detail.severity == RiskCheckSeverity.BREACH:
                     allowed = False
                     reasons.append(
                         f"max_symbol_exposure_exceeded(symbol={symbol!r}, "
@@ -559,12 +896,28 @@ class LiveRiskLimits:
 
         # 3. Open Positions
         if cfg.max_open_positions is not None:
+            warn_threshold = int(cfg.max_open_positions * cfg.warning_threshold_factor)
             if snapshot.num_open_positions > cfg.max_open_positions:
+                severity = RiskCheckSeverity.BREACH
                 allowed = False
-                reasons.append(
-                    f"max_open_positions_exceeded(max={cfg.max_open_positions}, "
-                    f"observed={snapshot.num_open_positions})"
-                )
+                msg = f"max_open_positions_exceeded(max={cfg.max_open_positions}, observed={snapshot.num_open_positions})"
+                reasons.append(msg)
+            elif snapshot.num_open_positions > warn_threshold:
+                severity = RiskCheckSeverity.WARNING
+                msg = f"max_open_positions_warning(at {snapshot.num_open_positions}/{cfg.max_open_positions})"
+            else:
+                severity = RiskCheckSeverity.OK
+                msg = ""
+            detail = LimitCheckDetail(
+                limit_name="max_open_positions",
+                current_value=float(snapshot.num_open_positions),
+                limit_value=float(cfg.max_open_positions),
+                warning_threshold=float(warn_threshold),
+                severity=severity,
+                message=msg,
+            )
+            limit_details.append(detail)
+            self._log_limit_check(detail)
 
         # 4. Daily Loss (aus Registry oder aus Snapshot)
         daily_pnl = self._compute_daily_pnl_from_experiments(day=current_date)
@@ -576,24 +929,46 @@ class LiveRiskLimits:
             if snapshot.total_realized_pnl < daily_pnl:
                 daily_pnl = snapshot.total_realized_pnl
 
-        if cfg.max_daily_loss_abs is not None and daily_pnl <= -cfg.max_daily_loss_abs:
-            allowed = False
-            reasons.append(
-                f"max_daily_loss_abs_reached(limit={cfg.max_daily_loss_abs:.2f}, pnl={daily_pnl:.2f})"
+        # 4a. max_daily_loss_abs
+        if cfg.max_daily_loss_abs is not None:
+            detail = self._evaluate_limit(
+                "max_daily_loss_abs",
+                daily_pnl,
+                cfg.max_daily_loss_abs,
+                invert=True,
             )
+            limit_details.append(detail)
+            self._log_limit_check(detail)
+            if detail.severity == RiskCheckSeverity.BREACH:
+                allowed = False
+                reasons.append(detail.message)
 
+        # 4b. max_daily_loss_pct
         if cfg.max_daily_loss_pct is not None and self._starting_cash is not None:
             starting_cash = self._starting_cash
             if starting_cash and starting_cash > 0:
                 abs_limit = float(starting_cash) * (cfg.max_daily_loss_pct / 100.0)
-                if daily_pnl <= -abs_limit:
-                    allowed = False
-                    reasons.append(
-                        "max_daily_loss_pct_reached("
-                        f"limit_pct={cfg.max_daily_loss_pct:.2f}, "
-                        f"starting_cash={starting_cash:.2f}, "
-                        f"pnl={daily_pnl:.2f})"
+                detail = self._evaluate_limit(
+                    "max_daily_loss_pct",
+                    daily_pnl,
+                    abs_limit,
+                    invert=True,
+                )
+                if detail.severity != RiskCheckSeverity.OK:
+                    detail.message = (
+                        f"max_daily_loss_pct_{detail.severity.value}"
+                        f"(limit_pct={cfg.max_daily_loss_pct:.2f}, "
+                        f"starting_cash={starting_cash:.2f}, pnl={daily_pnl:.2f})"
                     )
+                limit_details.append(detail)
+                self._log_limit_check(detail)
+                if detail.severity == RiskCheckSeverity.BREACH:
+                    allowed = False
+                    reasons.append(detail.message)
+
+        # Aggregierte Severity berechnen
+        severities = [d.severity for d in limit_details]
+        overall_severity = aggregate_severities(severities)
 
         metrics: Dict[str, Any] = {
             "portfolio_total_notional": snapshot.total_notional,
@@ -604,6 +979,7 @@ class LiveRiskLimits:
             "daily_realized_pnl_net": daily_pnl,
             "base_currency": cfg.base_currency,
             "live_risk_enabled": True,
+            "warning_threshold_factor": cfg.warning_threshold_factor,
         }
 
         # Optional: Equity/Cash/Margin hinzufügen, falls verfügbar
@@ -618,10 +994,12 @@ class LiveRiskLimits:
             allowed=allowed,
             reasons=reasons,
             metrics=metrics,
+            severity=overall_severity,
+            limit_details=limit_details,
         )
 
-        # Alert bei Violation
-        if not result.allowed:
+        # Alert bei Violation oder Warning
+        if result.severity == RiskCheckSeverity.BREACH:
             self._emit_risk_alert(
                 result,
                 source="live_risk.portfolio",
@@ -631,6 +1009,20 @@ class LiveRiskLimits:
                     "as_of": snapshot.as_of.isoformat(),
                     "total_notional": snapshot.total_notional,
                     "num_open_positions": snapshot.num_open_positions,
+                    "severity": result.severity.value,
+                },
+            )
+        elif result.severity == RiskCheckSeverity.WARNING:
+            self._emit_risk_alert(
+                result,
+                source="live_risk.portfolio",
+                code="RISK_LIMIT_WARNING_PORTFOLIO",
+                message="Live risk limit warning for current portfolio snapshot.",
+                extra_context={
+                    "as_of": snapshot.as_of.isoformat(),
+                    "total_notional": snapshot.total_notional,
+                    "num_open_positions": snapshot.num_open_positions,
+                    "severity": result.severity.value,
                 },
             )
 

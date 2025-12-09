@@ -231,7 +231,7 @@
       {% endif %}
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-sm">
       <!-- Status -->
       <div
         class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2"
@@ -248,6 +248,36 @@
         {% else %}
         <p class="text-sm font-semibold text-slate-300">{{ live_track.latest.status }}</p>
         {% endif %}
+      </div>
+
+      <!-- Phase 87: Risk-Ampel Kachel -->
+      <div
+        class="bg-slate-900/80 rounded-xl border border-slate-800 px-3 py-2 {% if live_track.latest.risk_status == 'red' %}border-rose-500/50 bg-rose-950/30{% elif live_track.latest.risk_status == 'yellow' %}border-amber-500/40 bg-amber-950/20{% endif %}"
+      >
+        <p class="text-xs text-slate-400">Risk-Ampel</p>
+        <div class="flex items-center gap-2">
+          {% if live_track.latest.risk_status == "green" %}
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/30">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          </span>
+          <span class="text-sm font-semibold text-emerald-300">OK</span>
+          {% elif live_track.latest.risk_status == "yellow" %}
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/30">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          </span>
+          <span class="text-sm font-semibold text-amber-300">WARNING</span>
+          {% elif live_track.latest.risk_status == "red" %}
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-rose-500/30">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+          </span>
+          <span class="text-sm font-semibold text-rose-400">BREACH</span>
+          {% else %}
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-slate-500/30">
+            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+          </span>
+          <span class="text-sm font-semibold text-slate-300">–</span>
+          {% endif %}
+        </div>
       </div>
 
       <!-- Zeitspanne -->
@@ -313,7 +343,7 @@
     {% endif %}
   </div>
 
-  <!-- Tabelle: Letzte N Sessions (Phase 85: klickbare Zeilen, v1.1 Polish) -->
+  <!-- Tabelle: Letzte N Sessions (Phase 85: klickbare Zeilen, v1.1 Polish, Phase 87: Risk-Ampel) -->
   <div class="overflow-hidden rounded-xl border border-slate-800/80 bg-slate-950/60">
     <table class="w-full text-sm">
       <thead class="bg-slate-900/90 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700/50">
@@ -321,6 +351,7 @@
           <th class="px-4 py-3 text-left font-semibold">Session</th>
           <th class="px-4 py-3 text-left font-semibold">Mode</th>
           <th class="px-4 py-3 text-left font-semibold">Status</th>
+          <th class="px-4 py-3 text-center font-semibold" title="Risk-Ampel: Grün=OK, Gelb=Warning, Rot=Breach">Risk</th>
           <th class="px-4 py-3 text-left font-semibold">Started</th>
           <th class="px-4 py-3 text-left font-semibold">Duration</th>
           <th class="px-4 py-3 text-right font-semibold">PnL</th>
@@ -387,6 +418,30 @@
             </span>
             {% else %}
             <span class="text-slate-400">{{ session.status }}</span>
+            {% endif %}
+          </td>
+          <!-- Phase 87: Risk-Ampel -->
+          <td class="px-4 py-2.5 text-center">
+            {% if session.risk_status == "green" %}
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40"
+                  title="Risk OK – Alle Limits eingehalten">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            </span>
+            {% elif session.risk_status == "yellow" %}
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500/40"
+                  title="Risk WARNING – Limit(s) im Warnbereich">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400 pulse-dot"></span>
+            </span>
+            {% elif session.risk_status == "red" %}
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-rose-500/20 border border-rose-500/40"
+                  title="Risk BREACH – Limit(s) verletzt, Orders blockiert">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+            </span>
+            {% else %}
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-500/20 border border-slate-500/40"
+                  title="Risk-Status unbekannt">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+            </span>
             {% endif %}
           </td>
           <td class="px-4 py-2.5 text-xs text-slate-300 tabular-nums">
