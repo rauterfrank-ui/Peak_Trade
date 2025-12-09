@@ -77,7 +77,7 @@ Ziel:
 | **Strategy-Layer (Prod)**    | **≈ 97%**       | **≈ 96%**     | **≈ 95%**       | **≈ 96%**          |
 | **Strategy-Layer (R&D)**     | **≈ 98%**       | **≈ 97%**     | **≈ 95%**       | **≈ 98%**          |
 | **Portfolio & Risk**         | **≈ 96%**       | **≈ 95%**     | **≈ 94%**       | **≈ 96%**          |
-| **Execution & Environments** | **≈ 95%**       | **≈ 93%**     | **≈ 92%**       | **≈ 95%**          |
+| **Execution & Environments** | **≈ 95%**       | **≈ 93%**     | **≈ 96%**       | **≈ 95%**          |
 | **Live-Track & Bridge**      | **≈ 96%**       | **≈ 94%**     | **≈ 92%**       | **≈ 96%**          |
 | **R&D Web-Dashboard**        | **100%**        | **100%**      | **≈ 95%**       | **100%**           |
 | **Monitoring & Alerts**      | **≈ 95%**       | **≈ 94%**     | **≈ 93%**       | **≈ 95%**          |
@@ -678,6 +678,7 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
 
   * `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
   * `docs/LIVE_READINESS_CHECKLISTS.md`
+  * `docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md` – **v1.1 (Dezember 2025, 2026-ready)** – ExecutionPipeline Governance & Risk Runbook mit vollständiger Operator-Guidance (Status-Codes, Entscheidungsbaum, Incident-Artefakten, Daily Checks)
 * Live-/Testnet-Status:
 
   * `docs/LIVE_TESTNET_TRACK_STATUS.md`
@@ -1046,6 +1047,7 @@ Der Live Alerts & Incident Runbooks Cluster (Phasen 82–85) ist vollständig im
 - [`docs/PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md`](PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md)
 - [`docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`](runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md)
 - [`docs/runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md`](runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md)
+- [`docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md`](runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md) – **v1.1 (2026-ready)** – Governance & Risk Runbook für ExecutionPipeline
 
 **Nächste Schritte (optional):**
 - Phase 86+: Alert Lifecycle & Acknowledge (open/acknowledged/resolved)
@@ -1309,6 +1311,7 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 | 2025-12-09 | (aktuell) | **Phase 77** – R&D Experiment Detail & Report Viewer v1 (API v1.2, Detail-View, Report-Links) |
 | 2025-12-09 | (aktuell) | **Phase 78** – R&D Report-Gallery & Multi-Run Comparison v1 (API v1.3, Batch-Endpoint, Comparison-View) |
 | 2025-12-09 | (aktuell) | **Jahreskorrektur & 2026-ready** – Cluster 82–85 Datums-Referenzen auf Q4 2025 korrigiert, "Road to 2026" Abschnitt hinzugefügt |
+| 2025-12-09 | (aktuell) | **ExecutionPipeline Runbook v1.1** – Referenz auf `EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md` (v1.1, 2026-ready) in Abschnitt 9 und Cluster 82–85 ergänzt |
 
 ---
 
