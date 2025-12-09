@@ -138,22 +138,25 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 
 ### R&D-Strategien – Armstrong & El Karoui (Detail)
 
-Im R&D-Tier existieren zwei experimentelle Strategien, die explizit **nicht** für Live-Trading freigegeben sind:
+Im R&D-Tier existieren zwei experimentelle Strategien, die explizit **nicht** für Live-Trading freigegeben sind. Sie dienen ausschließlich dazu, Hypothesen zu testen, Datenstrukturen auszuprobieren und künftige Strategien vorzubereiten:
 
 * **ArmstrongCycleStrategy** (`tier = "r_and_d"`, `IS_LIVE_READY = False`)
-  Abstrakte, zyklusbasierte Research-Strategie, die Ideen makroökonomischer
-  Zyklen modelliert, ohne proprietäre Modelle zu reproduzieren. Eingesetzt
-  ausschließlich in `offline_backtest` und `research`.
+  Zyklusbasierte Research-Strategie, die die Idee von **wiederkehrenden Marktzyklen** (Armstrong-/Kalender-Zyklen) exploriert.
+  Typische Nutzung:
+
+  * Analyse, ob bestimmte Zeitfenster/Zyklen statistisch auffällige Performance-Muster zeigen
+  * Experimentelle Generierung von Long-/Flat-/Short-Signalen auf Basis von Zyklusphasen
+  * Vorbereitung für mögliche zukünftige „Cycle-aware" Strategien im produktiven Tier
 
 * **ElKarouiVolModelStrategy** (`tier = "r_and_d"`, `IS_LIVE_READY = False`)
-  Volatilitäts- und Regime-Research-Strategie, die einfache Volatilitätsproxies
-  und Regime-Labels nutzt, um Risk-Signale zu untersuchen. Ebenfalls streng auf
-  `offline_backtest` und `research` limitiert.
+  Volatilitäts- und Regime-Research-Strategie, die Ideen aus **Volatilitäts-/Regime-Modellen** im Stil von El Karoui aufgreift.
+  Typische Nutzung:
 
-Beide Strategien sind im Strategy-Registry und in `config/strategy_tiering.toml`
-hinterlegt und werden von einer umfangreichen Test-Suite (`tests/test_research_strategies.py`)
-abgedeckt. Sie dienen als Startpunkt für tiefergehende makroökonomische und
-Volatilitäts-Research-Projekte, nicht als produktive Live-Bausteine.
+  * Untersuchung, wie sich Strategien in unterschiedlichen Volatilitätsregimes verhalten
+  * Testen alternativer Vol-Schätzer und Regime-Klassifikationen
+  * Grundlage für spätere Vol-Filter oder Regime-Switcher im produktiven Strategy-Layer
+
+> **Wichtig:** Beide Strategien sind klar als **R&D** gekennzeichnet und werden nur in Umgebungen wie `offline_backtest` und `research` ausgeführt. Sie sind weder für `paper_trade`, `testnet` noch `live` zugelassen und unterliegen strengeren Review- und Dokumentationsanforderungen, bevor eine mögliche Promotion in ein produktives Tier überhaupt in Betracht gezogen wird.
 
 ### R&D-Nutzung
 
