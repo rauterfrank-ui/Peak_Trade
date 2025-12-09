@@ -39,22 +39,22 @@ Ziel:
 
 ---
 
-## 1. Gesamtstatus in Prozent
+## Projektstatus – Gesamtüberblick (Stand: 2025-12-09)
 
-### 1.1 High-Level Übersicht
-
-| Bereich                         | Status    | Kommentar                                                                                |
-| ------------------------------- | --------- | ---------------------------------------------------------------------------------------- |
-| Data & Market Access            | 95%       | Data-Pipeline, Loader, Normalizer, Cache, Kraken-Integration stabil                      |
-| Backtest & Simulation           | 92%       | BacktestEngine, Stats, Registry-Integration, Reporting v2                                |
-| Strategy & Portfolio Layer      | 92%       | Einzel-Strategien, Portfolio-Layer, Portfolio-Robustness, Recipes, Risk-Profiled Presets (Phase 53), Research→Live Playbook (Phase 54) |
-| Risk & Safety (Research + Live) | 90%       | Risk-Metriken, Limits, LiveRiskLimits, Safety-Concept                                    |
-| Research & Experiments          | 91%       | Registry, Sweeps, Research-CLI, Pipeline v2, Portfolio-Level-Robustness, Research→Live Playbook (Phase 54) |
-| Live-/Testnet & Operations      | 98%       | Environment & Safety, Orders, Exchange, Portfolio-Monitor, Alerts, Runbooks, Live-Ops CLI (Phase 51), Testnet-Orchestrator v1 (Phase 64), Research→Live Playbook (Phase 54), Live-Execution-Design & Gating (Phase 71), Live-Operator-Status-CLI (Phase 72), Live-Dry-Run Drills (Phase 73), Live-Config Audit & Export (Phase 74), **Strategy-to-Execution Bridge v0 (Phase 80)**, Live-Session-Registry (Phase 81), **Live-Track Dashboard (Phase 82)**, Live-Track Operator Workflow (Phase 83) |
-| Reporting, Monitoring & CLI     | 97%       | Reports, Plots, Research-Reports, Live-Preview-Scripts, Portfolio-/Order-CLI, Live-Ops CLI (Phase 51), Monitoring & CLI-Dashboards v1 (Phase 65), Alerts & Incident Notifications v1 (Phase 66), Live Web Dashboard v0 (Phase 67) |
-| Documentation & Governance      | 90%       | Governance & Safety-Doku, Live-Runbooks, Phasen-Docs, Status-Docs, Research→Live Playbook (Phase 54), v1.0 Known Limitations dokumentiert |
-| Developer-Experience & Tooling  | 93%       | CLI-Skripte, strukturierte Prompts, Workflow mit AI-Tools, Architecture Overview, Developer-Guides, AI-Guide (Phase 55), Warning-free Test-Suite (Phase 68) |
-| **Gesamtprojekt (Phasen 1–86)** | **≈ 98%** | Research v1.0 Freeze erreicht. Tiered Portfolio Presets (Phase 80), Research Golden Paths (Phase 81), Research QA & Scenarios (Phase 82), Live-Gating & Risk Policies (Phase 83), Operator Dashboard (Phase 84), Live-Beta Drill (Phase 85), Research v1.0 Freeze (Phase 86). 1890+ Tests (alle grün). Live-Track: Beta-ready. |
+| Bereich                         | Beschreibung                                                      | Fortschritt |
+| ------------------------------- | ----------------------------------------------------------------- | ----------- |
+| **Gesamtprojekt (Phasen 1–86)** | Vollständiger Peak_Trade Stack von Data bis Live                  | **≈ 98%**   |
+| **Data-Layer**                  | Loader, Caches, Normalisierung, Multi-Source Support              | **100%**    |
+| **Backtest-Engine**             | Portfolio-Backtests, Metriken, Registry, Run-Management           | **100%**    |
+| **Strategy-Layer (Prod)**       | Kernstrategien, produktive Signals, Tier-System                   | **≈ 96%**   |
+| **Strategy-Layer (R&D)**        | R&D-Strategien (Armstrong, El Karoui, Waves), Sweeps              | **≈ 98%**   |
+| **Portfolio & Risk**            | Portfolio-Strategien, RiskLimits, Kelly/Exposure, Checks          | **≈ 96%**   |
+| **Execution & Live-Stack**      | Paper/Testnet-Flows, Live-Risk-Gates, Order-Executors             | **≈ 95%**   |
+| **Live-Track & Bridge**         | Strategy→Execution Bridge, Live-Session-Registry, Status-Overview | **≈ 96%**   |
+| **R&D Web-Dashboard**           | R&D Hub, Detail-View, Report-Gallery, Multi-Run-Comparison        | **100%**    |
+| **Monitoring & Alerts**         | CLI-Dashboards, Health-/Smoke-/Readiness-Checks                   | **≈ 95%**   |
+| **Docs & Runbooks**             | Phase-Dokus, Status-Overview, Runbooks, AI-Guides, Changelogs     | **≈ 97%**   |
+| **Tooling / Dev-Workflow**      | venv, Test-Suite (>2500 Tests), CLI-Skripte, Git-/GH-Flow         | **≈ 95%**   |
 
 ---
 
