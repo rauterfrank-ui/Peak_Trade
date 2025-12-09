@@ -667,6 +667,57 @@ Bis das R&D-Dashboard implementiert ist, bildet die Kombination aus
 `strategy-profile` + `view_r_and_d_experiments.py` den Kern des
 Operator-Workflows für die R&D-Wave v1.
 
+### 8.4 Notebook-Template für R&D-Analysen
+
+Für tiefergehende Analysen steht ein Python-Template bereit:
+
+**Datei:** `notebooks/r_and_d_experiment_analysis_template.py`
+
+**Features:**
+
+* Lädt Experimente aus dem JSON-Verzeichnis als pandas DataFrame
+* Filter-Funktionen analog zum CLI (Preset, Tag, Strategy, Datum, Trades)
+* Basis-Statistiken und Aggregationen (nach Preset, Strategy)
+* Top-N Rankings (Sharpe, Return)
+* Optionale Visualisierungen (Histogramme, Boxplots, Scatter)
+
+**Typische Nutzung:**
+
+```bash
+# Direkt als Skript ausführen (Demo-Output)
+python notebooks/r_and_d_experiment_analysis_template.py
+
+# In Jupyter Notebook importieren
+# → Sektionen als einzelne Zellen übernehmen
+# → %matplotlib inline für Plots
+```
+
+**Beispiel-Code (in Notebook/REPL):**
+
+```python
+from notebooks.r_and_d_experiment_analysis_template import (
+    load_experiments_from_dir,
+    to_dataframe,
+    apply_filters,
+    print_summary,
+    top_n_by_sharpe,
+)
+
+# Laden und DataFrame erstellen
+experiments = load_experiments_from_dir()
+df = to_dataframe(experiments)
+
+# Filtern
+df_filtered = apply_filters(df, preset="ehlers_super_smoother_v1", with_trades=True)
+
+# Analyse
+print_summary(df_filtered)
+print(top_n_by_sharpe(df_filtered, n=5))
+```
+
+Das Template ist als Startpunkt für eigene Analysen und Visualisierungen gedacht
+und kann beliebig erweitert werden.
+
 ---
 
 ## 9. Änderungshistorie
@@ -676,6 +727,7 @@ Operator-Workflows für die R&D-Wave v1.
 | 2025-12-08 | Initiale Version – 18 Experiment-Templates für 9 Presets definiert |
 | 2025-12-08 | **Run-Log W2** – Abschnitt 6 hinzugefügt: 6 CLI-Läufe dokumentiert (Ehlers, López, El Karoui) |
 | 2025-12-09 | **Operator-View** – Abschnitt 8 hinzugefügt: Strategy-Profile → Experiments-Viewer → Dashboard Flow |
+| 2025-12-09 | **Notebook-Template** – Abschnitt 8.4 hinzugefügt: `notebooks/r_and_d_experiment_analysis_template.py` |
 
 ---
 
