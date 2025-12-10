@@ -1,0 +1,157 @@
+# ============================================================================
+# Peak_Trade Test Health Automation - Profile Configuration
+# ============================================================================
+# Stand: Dezember 2024
+# Zweck: Definition von Test-Health-Check-Profilen für automatisierte
+#        Qualitätsprüfungen (Research, Offline-Drills, Live-Monitoring)
+# ============================================================================
+
+version = "0.1"
+default_profile = "daily_quick"  # Täglicher Quick-Check; für Produktion: weekly_core
+
+# ============================================================================
+# Profile: weekly_core
+# ============================================================================
+# Wöchentlicher Kern-Gesundheitscheck für Research- und Offline-Komponenten
+# ============================================================================
+
+[profiles.weekly_core]
+description = "Wöchentlicher Kern-Gesundheitscheck (Research & Offline)"
+time_window_days = 7  # für spätere Heatmaps interessant
+
+# Check 1: Pytest Smoke & Core Suite
+[[profiles.weekly_core.checks]]
+id = "pytest_smoke_core"
+name = "Pytest Smoke & Core"
+cmd = "python3 -m pytest -q tests/test_imports.py tests/test_backtest_smoke.py tests/test_config_env.py tests/test_strategies_smoke.py --maxfail=2 -x"
+weight = 3
+category = "tests"
+
+# Check 2: OfflineSynthSession Smoke Test
+[[profiles.weekly_core.checks]]
+id = "offline_synth_smoke"
+name = "OfflineSynthSession Smoke"
+cmd = "python3 scripts/run_offline_synth_session_smoke.py"
+weight = 2
+category = "offline_synth"
+
+# Check 3: Trigger Training Drill Demo
+[[profiles.weekly_core.checks]]
+id = "trigger_training_demo"
+name = "TriggerTraining Drill Demo"
+cmd = "python3 scripts/run_offline_trigger_training_drill_example.py --session-id TEST_HEALTH_SMOKE"
+weight = 2
+category = "trigger_training"
+
+# Check 4: Strategy Tests (Smoke)
+[[profiles.weekly_core.checks]]
+id = "pytest_strategies_smoke"
+name = "Pytest Strategies Smoke"
+cmd = "python3 -m pytest -q tests/strategies/armstrong tests/strategies/el_karoui --maxfail=1 -x"
+weight = 2
+category = "tests"
+
+# Check 5: Reporting Module Tests
+[[profiles.weekly_core.checks]]
+id = "pytest_reporting"
+name = "Pytest Reporting Module"
+cmd = "python3 -m pytest -q tests/reporting --maxfail=1 -x"
+weight = 1
+category = "tests"
+
+
+# ============================================================================
+# Profile: daily_quick
+# ============================================================================
+# Schnelle tägliche Checks (nur wichtigste Tests)
+# ============================================================================
+
+[profiles.daily_quick]
+description = "Tägliche Quick-Checks (nur kritische Tests)"
+time_window_days = 1
+
+# Check 1: Pytest Smoke Tests (kritische Basistests)
+[[profiles.daily_quick.checks]]
+id = "pytest_smoke_quick"
+name = "Pytest Smoke Quick"
+cmd = "python3 -m pytest -q tests/test_imports.py tests/test_backtest_smoke.py --maxfail=1 -x"
+weight = 2
+category = "tests"
+
+[[profiles.daily_quick.checks]]
+id = "trigger_training_quick"
+name = "TriggerTraining Quick"
+cmd = "python3 scripts/run_offline_trigger_training_drill_example.py --session-id DAILY_QUICK_SMOKE"
+weight = 1
+category = "trigger_training"
+
+
+# ============================================================================
+# Profile: full_suite
+# ============================================================================
+# Vollständiger Test-Health-Check (alle Module)
+# ============================================================================
+
+[profiles.full_suite]
+description = "Vollständiger Test-Health-Check (alle Module, langsam)"
+time_window_days = 30
+
+[[profiles.full_suite.checks]]
+id = "pytest_all"
+name = "Pytest All Tests"
+cmd = "python3 -m pytest -q tests/ --maxfail=3"
+weight = 5
+category = "tests"
+
+[[profiles.full_suite.checks]]
+id = "offline_synth_extended"
+name = "OfflineSynthSession Extended"
+cmd = "python3 scripts/run_offline_synth_session_smoke.py"
+weight = 2
+category = "offline_synth"
+
+[[profiles.full_suite.checks]]
+id = "trigger_training_full"
+name = "TriggerTraining Full Drill"
+cmd = "python3 scripts/run_offline_trigger_training_drill_example.py --session-id FULL_SUITE_SMOKE"
+weight = 2
+category = "trigger_training"
+
+[[profiles.full_suite.checks]]
+id = "stress_tests_smoke"
+name = "Stress Tests Smoke"
+cmd = "python3 -m pytest -q tests/test_stress_tests.py --maxfail=1"
+weight = 3
+category = "tests"
+
+
+# ============================================================================
+# Profile: demo_simple
+# ============================================================================
+# Demo-Profil mit simplen Shell-Commands für Demonstrationszwecke
+# ============================================================================
+
+[profiles.demo_simple]
+description = "Demo-Profil mit simplen Shell-Commands"
+time_window_days = 1
+
+[[profiles.demo_simple.checks]]
+id = "shell_true"
+name = "Shell True Command"
+cmd = "true"
+weight = 2
+category = "shell"
+
+[[profiles.demo_simple.checks]]
+id = "echo_test"
+name = "Echo Test"
+cmd = "echo 'Test Health Check OK' && exit 0"
+weight = 2
+category = "shell"
+
+[[profiles.demo_simple.checks]]
+id = "offline_synth_smoke_demo"
+name = "Offline Synth Smoke"
+cmd = "python3 scripts/run_offline_synth_session_smoke.py"
+weight = 3
+category = "smoke"

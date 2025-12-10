@@ -14,6 +14,13 @@ Dieses Script ist bewusst generisch gehalten:
      bestehende Offline-Session-Pipeline anbinden (TODO-Block unten).
 """
 
+import sys
+from pathlib import Path
+
+# Ensure src is in path (für standalone Ausführung)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
 import argparse
 from dataclasses import dataclass
 from datetime import datetime
@@ -31,6 +38,20 @@ from src.trigger_training.session_data_store import (
     load_session_data,
     session_exists,
     list_session_ids,
+)
+from src.trigger_training.reaction_stats import (
+    TriggerReactionConfig,
+    compute_reaction_records,
+    summarize_reaction_records,
+    reaction_records_to_df,
+    reaction_summary_to_dict,
+)
+from src.execution.metrics.execution_latency import (
+    create_latency_timestamps_from_trades_and_signals,
+    compute_latency_measures,
+    summarize_latency,
+    latency_measures_to_df,
+    latency_summary_to_dict,
 )
 from src.reporting.offline_paper_trade_integration import (
     OfflinePaperTradeReportConfig,
@@ -461,6 +482,58 @@ def main() -> None:
     )
     print(f"[DRILL] {len(trigger_events)} Trigger-Events erzeugt.")
 
+    # 2a) Trigger-Reaktions-Statistiken berechnen (NEU: v1)
+    print("[DRILL] Berechne Trigger-Reaktions-Statistiken ...")
+    reaction_cfg = TriggerReactionConfig(
+        impulsive_threshold_ms=300,
+        late_threshold_ms=3000,
+        consider_skipped=True,
+    )
+    reaction_records = compute_reaction_records(
+        signals_df=signals_df,
+        actions_df=actions_df,
+        config=reaction_cfg,
+        session_id=session_id,
+    )
+    reaction_summary = summarize_reaction_records(reaction_records)
+    reaction_records_df = reaction_records_to_df(reaction_records)
+    print(f"[DRILL] Reaktions-Stats: {reaction_summary.count_total} Signale, "
+          f"{reaction_summary.count_impulsive} impulsive, "
+          f"{reaction_summary.count_on_time} on-time, "
+          f"{reaction_summary.count_late} late, "
+          f"{reaction_summary.count_missed} missed.")
+
+    # 2b) Execution-Latenz-Statistiken berechnen (NEU: v1)
+    print("[DRILL] Berechne Execution-Latenz-Statistiken ...")
+    latency_timestamps = create_latency_timestamps_from_trades_and_signals(
+        trades_df=trades_df,
+        signals_df=signals_df,
+        session_id=session_id,
+    )
+    latency_measures = [compute_latency_measures(ts) for ts in latency_timestamps]
+    latency_summary = summarize_latency(latency_measures)
+    latency_measures_df = latency_measures_to_df(latency_measures)
+    if latency_summary.mean_trigger_delay_ms is not None:
+        print(f"[DRILL] Latenz-Stats: {latency_summary.count_orders} Orders, "
+              f"Avg Trigger-Delay: {latency_summary.mean_trigger_delay_ms:.1f} ms.")
+    else:
+        print(f"[DRILL] Latenz-Stats: {latency_summary.count_orders} Orders "
+              f"(keine Signal-Timestamps vorhanden).")
+
+    # 2c) DataFrames in Session-Report-Ordner speichern
+    session_report_dir = base_reports_dir / session_id
+    session_report_dir.mkdir(parents=True, exist_ok=True)
+    
+    if not reaction_records_df.empty:
+        csv_path = session_report_dir / "reaction_records.csv"
+        reaction_records_df.to_csv(csv_path, index=False)
+        print(f"[DRILL] Gespeichert: {csv_path}")
+    
+    if not latency_measures_df.empty:
+        csv_path = session_report_dir / "latency_measures.csv"
+        latency_measures_df.to_csv(csv_path, index=False)
+        print(f"[DRILL] Gespeichert: {csv_path}")
+
     # 3) Reports erzeugen (Offline-Paper + Trigger-Report)
     report_cfg = OfflinePaperTradeReportConfig(
         session_id=session_id,
@@ -473,6 +546,7 @@ def main() -> None:
         base_reports_dir=base_reports_dir,
     )
 
+    # 3) Reports erzeugen (Offline-Paper + Trigger-Report)
     print("[DRILL] Erzeuge Reports ...")
     result_paths = generate_reports_for_offline_paper_trade(
         trades=trades_df,
@@ -484,6 +558,9 @@ def main() -> None:
             "strategy": "ma_crossover",
             "symbol": symbol,
             "timeframe": timeframe,
+            # NEU: Speed-Metriken hinzufügen
+            "reaction_summary": reaction_summary_to_dict(reaction_summary),
+            "latency_summary": latency_summary_to_dict(latency_summary),
         },
     )
 
@@ -492,11 +569,40 @@ def main() -> None:
 
     print("[DRILL] Fertig.")
     if paper_report:
-        print(f"[REPORT] Offline-Paper-Report:   {paper_report}")
+        print(f"[REPORT] Offline-Paper-Report:       {paper_report}")
     if trigger_report:
-        print(f"[REPORT] Trigger-Training-Report: {trigger_report}")
+        print(f"[REPORT] Trigger-Training-Report:     {trigger_report}")
     if not trigger_report:
         print("[WARN] Kein Trigger-Report erzeugt (keine Trigger-Events?).")
+    
+    # NEU: Ausgabe der Speed-Metriken
+    print("\n" + "="*70)
+    print("📊 TRIGGER-GESCHWINDIGKEITS-METRIKEN")
+    print("="*70)
+    print(f"Total Signale:        {reaction_summary.count_total}")
+    print(f"  - Impulsive:        {reaction_summary.count_impulsive}")
+    print(f"  - On-Time:          {reaction_summary.count_on_time}")
+    print(f"  - Late:             {reaction_summary.count_late}")
+    print(f"  - Missed:           {reaction_summary.count_missed}")
+    print(f"  - Skipped:          {reaction_summary.count_skipped}")
+    if reaction_summary.mean_reaction_ms:
+        print(f"Avg Reaktionszeit:    {reaction_summary.mean_reaction_ms:.1f} ms")
+        print(f"Median Reaktionszeit: {reaction_summary.median_reaction_ms:.1f} ms")
+        print(f"P90 Reaktionszeit:    {reaction_summary.p90_reaction_ms:.1f} ms")
+    
+    print("\n" + "="*70)
+    print("⚡ EXECUTION-LATENZ-METRIKEN")
+    print("="*70)
+    print(f"Total Orders:         {latency_summary.count_orders}")
+    if latency_summary.mean_trigger_delay_ms:
+        print(f"Avg Trigger-Delay:    {latency_summary.mean_trigger_delay_ms:.1f} ms")
+        print(f"Median Trigger-Delay: {latency_summary.median_trigger_delay_ms:.1f} ms")
+    if latency_summary.mean_send_to_first_fill_ms:
+        print(f"Avg Send-to-Fill:     {latency_summary.mean_send_to_first_fill_ms:.1f} ms")
+        print(f"P90 Send-to-Fill:     {latency_summary.p90_send_to_first_fill_ms:.1f} ms")
+    if latency_summary.mean_slippage:
+        print(f"Avg Slippage:         {latency_summary.mean_slippage:.4f}")
+    print("="*70 + "\n")
 
 
 if __name__ == "__main__":
