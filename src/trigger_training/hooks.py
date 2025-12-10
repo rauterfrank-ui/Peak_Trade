@@ -240,8 +240,16 @@ def build_trigger_training_events_from_dfs(
                 recommended_action=recommended_action,
             )
 
-        # Tags
+        # Tags: Kombiniere aus DataFrame (falls vorhanden) und automatisch generierte Tags
         tags: List[str] = []
+        
+        # Tags aus DataFrame übernehmen (z.B. scenario_psych_tags)
+        tags_from_df = row.get("scenario_psych_tags", "")
+        if tags_from_df and not pd.isna(tags_from_df):
+            tags_list = [t.strip() for t in str(tags_from_df).split(",") if t.strip()]
+            tags.extend(tags_list)
+        
+        # Automatisch generierte Tags basierend auf Outcome
         if outcome == TriggerOutcome.MISSED and pnl_after > config.pain_threshold:
             tags.append("missed_opportunity")
         if outcome == TriggerOutcome.LATE and pnl_after > config.pain_threshold:

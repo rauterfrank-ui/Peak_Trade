@@ -312,41 +312,51 @@ def _generate_demo_data() -> Tuple[
             )
 
     # Signal 1: Schnelle Ausführung (2s) -> EXECUTED_FAST & FAVORABLE (Long)
+    # Trend-Following Setup
     _set_scenario(
         signal_id=1,
         reaction_type=ReactionType.EXECUTED_FAST,
         outcome_type=OutcomeType.FAVORABLE,
         default_id="DISC_EXEC_GOOD",
     )
+    signals_df.loc[signals_df["signal_id"] == 1, "scenario_psych_tags"] = "DISCIPLINE,TREND_FOLLOW,TRUST_SYSTEM"
 
     # Signal 2: Zu späte Ausführung (12s) -> EXECUTED_SLOW & ADVERSE
+    # Breakout Setup, aber zu spät (FOMO-Indikator)
     _set_scenario(
         signal_id=2,
         reaction_type=ReactionType.EXECUTED_SLOW,
         outcome_type=OutcomeType.ADVERSE,
     )
+    signals_df.loc[signals_df["signal_id"] == 2, "scenario_psych_tags"] = "HESITATION,BREAKOUT,TOO_SLOW,FOMO"
 
     # Signal 3: Keine Action (verpasst) -> MISSED & FAVORABLE
+    # Counter-Trend Setup, aus Angst verpasst
     _set_scenario(
         signal_id=3,
         reaction_type=ReactionType.MISSED,
         outcome_type=OutcomeType.FAVORABLE,
     )
+    signals_df.loc[signals_df["signal_id"] == 3, "scenario_psych_tags"] = "FEAR,REGRET,COUNTER_TREND,HESITATION"
 
     # Signal 4: Rechtzeitige Ausführung (3s), Short-Signal -> EXECUTED_FAST & FAVORABLE
+    # Exit-Setup (Take-Profit)
     _set_scenario(
         signal_id=4,
         reaction_type=ReactionType.EXECUTED_FAST,
         outcome_type=OutcomeType.FAVORABLE,
         default_id="DISC_EXEC_GOOD_SHORT",
     )
+    signals_df.loc[signals_df["signal_id"] == 4, "scenario_psych_tags"] = "DISCIPLINE,EXIT,CONFIDENCE,TAKE_PROFIT"
 
     # Signal 5: Bewusst übersprungen -> SKIPPED & ADVERSE
+    # Re-Entry Setup, aus Verlustangst geskippt
     _set_scenario(
         signal_id=5,
         reaction_type=ReactionType.SKIPPED,
         outcome_type=OutcomeType.ADVERSE,
     )
+    signals_df.loc[signals_df["signal_id"] == 5, "scenario_psych_tags"] = "DISCIPLINE,REENTRY,RISK_AVERSION_OK,SCALING"
 
     # --- 3) Actions (actions_df) ------------------------------------
     # Simuliert verschiedene Trader-Reaktionen auf Signale:
