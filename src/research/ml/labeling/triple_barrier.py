@@ -150,3 +150,5 @@ def apply_pnl_stop_loss(
     """
     # Placeholder
     return pd.Series(index=events.index, dtype="datetime64[ns]")
+
+

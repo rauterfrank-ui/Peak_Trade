@@ -1284,3 +1284,59 @@ vol_threshold_low = 0.3
 vol_threshold_high = 0.7
 use_ewm = true
 annualization_factor = 252.0
+
+# ============================================================================
+# PHASE 85: ESCALATION & ON-CALL INTEGRATION
+# ============================================================================
+# Optionale Eskalations-Schicht für kritische Alerts.
+# Sendet Alerts an On-Call-Dienste (PagerDuty, OpsGenie, etc.).
+#
+# WICHTIG: Phase 85 verwendet nur Stubs - keine echten API-Calls!
+# Echte Integration in späteren Phasen.
+#
+# Safety: Eskalations-Fehler blockieren NIEMALS Alerts.
+# ============================================================================
+
+[escalation]
+# Eskalation global aktivieren/deaktivieren
+enabled = false
+
+# Umgebungen in denen eskaliert wird (z.B. nur "live")
+enabled_environments = ["live"]
+
+# Provider für Eskalation ("null", "pagerduty_stub")
+# Phase 85: "null" oder "pagerduty_stub" (kein echter API-Call)
+provider = "null"
+
+# Severities die eskaliert werden
+critical_severities = ["CRITICAL"]
+
+# ============================================================================
+# ESCALATION TARGETS (On-Call-Ziele)
+# ============================================================================
+# Definiert wohin eskaliert wird. Mehrere Targets möglich.
+# ============================================================================
+
+[escalation.targets.primary]
+# Primäres On-Call-Target
+name = "Primary Risk On-Call"
+provider = "pagerduty_stub"
+# routing_key = ""  # PagerDuty-Routing-Key (in späteren Phasen)
+min_severity = "CRITICAL"
+enabled = true
+
+# ============================================================================
+# ESCALATION PROVIDERS CONFIG
+# ============================================================================
+# Provider-spezifische Konfiguration.
+# ============================================================================
+
+[escalation.providers.pagerduty]
+# PagerDuty Events API (Phase 85: nur Stub)
+api_url = "https://events.pagerduty.com/v2/enqueue"
+# Enable real API calls (Phase 85: IMMER false!)
+enable_real_calls = false
+
+[escalation.providers.null]
+# Null-Provider für Tests/Non-Live
+log_would_escalate = true

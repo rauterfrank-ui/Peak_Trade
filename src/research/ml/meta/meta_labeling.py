@@ -218,3 +218,5 @@ def _create_model(spec: MetaModelSpec) -> Any:
     raise NotImplementedError(
         f"Model type '{spec.model_type}' noch nicht implementiert (Research-Stub)"
     )
+
+

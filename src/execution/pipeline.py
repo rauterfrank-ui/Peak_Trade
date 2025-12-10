@@ -1,27 +1,30 @@
 # src/execution/pipeline.py
 """
-Peak_Trade: Execution-Pipeline (Phase 16A)
-==========================================
+Peak_Trade: Execution-Pipeline (Phase 16A V2 - Governance-aware)
+================================================================
 
 Kapselt die Transformations- und Ausfuehrungslogik von Strategie-Signalen
 zu OrderRequests und OrderExecutionResults.
 
 Workflow:
-    Strategie-Signale → ExecutionPipeline → OrderRequests → OrderExecutor → Fills
+    Strategy → OrderIntent → ExecutionPipeline → Risk → Governance → Executor → Result
 
 Die Pipeline ist bewusst leichtgewichtig gehalten und konzentriert sich auf:
 - Signale → gewuenschter Ziel-Exposure
 - Differenz zur aktuellen Position → OrderRequest(s)
-- OrderExecutor (Paper) fuehrt aus → Fills/Results
+- OrderExecutor (Paper/Shadow/Testnet) fuehrt aus → Fills/Results
 
-Phase 16A Erweiterung:
+Phase 16A V2 Erweiterung (Governance-aware):
 - Environment- und Safety-Checks vor Order-Ausfuehrung
 - Integration mit SafetyGuard und LiveRiskLimits
+- Governance-Check via get_governance_status("live_order_execution")
+- Environment-Executor-Mapping (paper/shadow/testnet/live)
+- Live-Execution ist governance-seitig gesperrt (status="locked")
 - Optionales Run-Logging ueber LiveRunLogger
-- LIVE-Mode wird hart blockiert (Phase 16A)
 
-WICHTIG: Es werden KEINE echten Orders an Boersen gesendet.
-         Alles bleibt auf Paper-/Sandbox-Level.
+WICHTIG: Es werden KEINE echten Live-Orders an Boersen gesendet!
+         live_order_execution ist governance-seitig gesperrt (locked).
+         Bei env="live" wird GovernanceViolationError geworfen.
 """
 from __future__ import annotations
 
@@ -29,7 +32,8 @@ import logging
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, Iterable, List, Optional, Sequence, TYPE_CHECKING
+from enum import Enum
+from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_CHECKING, Union
 
 import pandas as pd
 
@@ -42,14 +46,198 @@ from ..orders.base import (
 )
 from ..orders.paper import PaperOrderExecutor, PaperMarketContext
 from ..orders.shadow import ShadowOrderExecutor, ShadowMarketContext
+from ..governance.go_no_go import get_governance_status, GovernanceStatus
 
 if TYPE_CHECKING:
-    from ..core.environment import EnvironmentConfig
+    from ..core.environment import EnvironmentConfig, TradingEnvironment
     from ..live.safety import SafetyGuard
     from ..live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
     from ..live.run_logging import LiveRunLogger, LiveRunEvent
+    from ..orders.testnet_executor import TestnetExchangeOrderExecutor
 
 logger = logging.getLogger(__name__)
+
+
+# =============================================================================
+# Phase 16A V2: Custom Exceptions
+# =============================================================================
+
+
+class ExecutionPipelineError(Exception):
+    """Basisklasse fuer ExecutionPipeline-Fehler."""
+    pass
+
+
+class GovernanceViolationError(ExecutionPipelineError):
+    """
+    Governance-Verletzung: Eine Operation ist governance-seitig gesperrt.
+
+    Wird geworfen wenn:
+    - env="live" und get_governance_status("live_order_execution") == "locked"
+    - Zukuenftige Governance-Regeln verletzt werden
+
+    Attributes:
+        feature_key: Der Governance-Feature-Key (z.B. "live_order_execution")
+        status: Der aktuelle Governance-Status (z.B. "locked")
+        message: Beschreibende Fehlermeldung
+    """
+
+    def __init__(
+        self,
+        message: str,
+        feature_key: str = "live_order_execution",
+        status: GovernanceStatus = "locked",
+    ):
+        super().__init__(message)
+        self.feature_key = feature_key
+        self.status = status
+        self.message = message
+
+
+class LiveExecutionLockedError(GovernanceViolationError):
+    """
+    Live-Execution ist governance-seitig gesperrt.
+
+    Spezialisierte Exception fuer den Fall:
+    - get_governance_status("live_order_execution") == "locked"
+
+    In Phase 16A ist dies der Normalfall - Live-Orders sind nicht erlaubt.
+    """
+
+    def __init__(self, message: Optional[str] = None):
+        default_msg = (
+            "Live-Order-Execution ist governance-seitig gesperrt (status='locked'). "
+            "Governance-Feature: 'live_order_execution'. "
+            "Es werden keine echten Live-Orders ausgefuehrt. "
+            "Nutze paper/shadow/testnet Environments fuer Simulation."
+        )
+        super().__init__(
+            message=message or default_msg,
+            feature_key="live_order_execution",
+            status="locked",
+        )
+
+
+class RiskCheckFailedError(ExecutionPipelineError):
+    """
+    Risk-Check fehlgeschlagen: Orders wurden durch Risk-Limits blockiert.
+
+    Attributes:
+        reasons: Liste der Gruende fuer die Blockierung
+        metrics: Risk-Metriken zum Zeitpunkt der Blockierung
+    """
+
+    def __init__(self, message: str, reasons: List[str], metrics: Dict[str, Any]):
+        super().__init__(message)
+        self.reasons = reasons
+        self.metrics = metrics
+
+
+# =============================================================================
+# Phase 16A V2: OrderIntent & Environment Types
+# =============================================================================
+
+
+class ExecutionEnvironment(str, Enum):
+    """
+    Execution-Environment fuer die Pipeline.
+
+    Values:
+        PAPER: Paper-Trading / Backtest (PaperOrderExecutor)
+        SHADOW: Shadow-Mode / Dry-Run (ShadowOrderExecutor)
+        TESTNET: Testnet-Orders (TestnetExchangeOrderExecutor)
+        LIVE: Echte Orders (GESPERRT - GovernanceViolationError)
+    """
+    PAPER = "paper"
+    SHADOW = "shadow"
+    TESTNET = "testnet"
+    LIVE = "live"
+
+
+@dataclass
+class OrderIntent:
+    """
+    Order-Absicht (Intent) fuer die ExecutionPipeline.
+
+    Repraesentiert eine gewuenschte Order, bevor sie durch Risk/Governance
+    geprueft und an einen Executor delegiert wird.
+
+    Attributes:
+        symbol: Trading-Pair (z.B. "BTC/EUR")
+        side: Kauf- oder Verkaufsorder ("buy" oder "sell")
+        quantity: Menge (Stueckzahl)
+        order_type: Order-Typ ("market" oder "limit")
+        limit_price: Limit-Preis (nur bei order_type="limit")
+        strategy_key: Optional Strategy-Identifier
+        current_price: Aktueller Preis (fuer Risk-Berechnung)
+        metadata: Zusaetzliche Metadaten
+
+    Example:
+        >>> intent = OrderIntent(
+        ...     symbol="BTC/EUR",
+        ...     side="buy",
+        ...     quantity=0.01,
+        ...     order_type="market",
+        ...     strategy_key="ma_crossover",
+        ...     current_price=50000.0,
+        ... )
+        >>> result = pipeline.submit_order(intent)
+    """
+    symbol: str
+    side: OrderSide
+    quantity: float
+    order_type: Literal["market", "limit"] = "market"
+    limit_price: Optional[float] = None
+    strategy_key: Optional[str] = None
+    current_price: Optional[float] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def to_order_request(self, client_id: Optional[str] = None) -> OrderRequest:
+        """Konvertiert den OrderIntent zu einer OrderRequest."""
+        meta = dict(self.metadata)
+        if self.strategy_key:
+            meta["strategy_key"] = self.strategy_key
+        if self.current_price:
+            meta["current_price"] = self.current_price
+
+        return OrderRequest(
+            symbol=self.symbol,
+            side=self.side,
+            quantity=self.quantity,
+            order_type=self.order_type,
+            limit_price=self.limit_price,
+            client_id=client_id,
+            metadata=meta,
+        )
+
+
+# =============================================================================
+# Phase 16A V2: ExecutionResult Status
+# =============================================================================
+
+
+class ExecutionStatus(str, Enum):
+    """
+    Status einer Order-Ausfuehrung.
+
+    Values:
+        SUCCESS: Order erfolgreich ausgefuehrt
+        BLOCKED_BY_RISK: Durch Risk-Limits blockiert
+        BLOCKED_BY_GOVERNANCE: Durch Governance blockiert (z.B. live_order_execution=locked)
+        BLOCKED_BY_SAFETY: Durch SafetyGuard blockiert
+        BLOCKED_BY_ENVIRONMENT: Durch Environment-Check blockiert
+        REJECTED: Vom Executor abgelehnt
+        ERROR: Fehler bei der Ausfuehrung
+        INVALID: Ungueltiger Input (z.B. quantity <= 0)
+    """
+    SUCCESS = "success"
+    BLOCKED_BY_RISK = "blocked_by_risk"
+    BLOCKED_BY_GOVERNANCE = "blocked_by_governance"
+    BLOCKED_BY_SAFETY = "blocked_by_safety"
+    BLOCKED_BY_ENVIRONMENT = "blocked_by_environment"
+    REJECTED = "rejected"
+    ERROR = "error"
+    INVALID = "invalid"
 
 # Typ-Alias fuer Signal-Serien
 SignalSeries = pd.Series
@@ -60,20 +248,42 @@ class ExecutionResult:
     """
     Ergebnis einer Order-Ausfuehrung durch die ExecutionPipeline mit Safety-Checks.
 
-    Phase 16A: Wird von execute_with_safety() zurueckgegeben.
+    Phase 16A V2: Wird von execute_with_safety() und submit_order() zurueckgegeben.
 
     Attributes:
         risk_check: Ergebnis des Risk-Checks (falls durchgefuehrt)
         executed_orders: Liste der ausgeführten Orders (kann leer sein bei Blockierung)
-        rejected: True wenn die Ausfuehrung durch Environment oder Safety blockiert wurde
+        rejected: True wenn die Ausfuehrung durch Environment/Safety/Risk/Governance blockiert wurde
         reason: Grund fuer Blockierung (falls rejected=True)
         execution_results: Liste der OrderExecutionResults vom Executor
+        status: Phase 16A V2: Detaillierter Execution-Status
+        environment: Phase 16A V2: Environment in dem ausgefuehrt wurde
+        governance_status: Phase 16A V2: Governance-Status zum Zeitpunkt der Ausfuehrung
     """
     risk_check: Optional["LiveRiskCheckResult"] = None
     executed_orders: List[OrderExecutionResult] = field(default_factory=list)
     rejected: bool = False
     reason: Optional[str] = None
     execution_results: List[OrderExecutionResult] = field(default_factory=list)
+    # Phase 16A V2 Erweiterungen
+    status: ExecutionStatus = ExecutionStatus.SUCCESS
+    environment: Optional[str] = None
+    governance_status: Optional[GovernanceStatus] = None
+
+    @property
+    def is_success(self) -> bool:
+        """True wenn die Order erfolgreich ausgefuehrt wurde."""
+        return self.status == ExecutionStatus.SUCCESS and not self.rejected
+
+    @property
+    def is_blocked_by_governance(self) -> bool:
+        """True wenn durch Governance blockiert."""
+        return self.status == ExecutionStatus.BLOCKED_BY_GOVERNANCE
+
+    @property
+    def is_blocked_by_risk(self) -> bool:
+        """True wenn durch Risk-Limits blockiert."""
+        return self.status == ExecutionStatus.BLOCKED_BY_RISK
 
 
 @dataclass
@@ -692,7 +902,159 @@ class ExecutionPipeline:
         self._order_counter = 0
 
     # =============================================================================
-    # Phase 16A: execute_with_safety() - Safety-Check-Wrapper
+    # Phase 16A V2: submit_order() - Governance-aware Order Submission
+    # =============================================================================
+
+    def submit_order(
+        self,
+        intent: OrderIntent,
+        *,
+        raise_on_governance_violation: bool = True,
+    ) -> ExecutionResult:
+        """
+        Zentrale Methode fuer Governance-aware Order-Submission (Phase 16A V2).
+
+        Workflow:
+        1. Input validieren/normalisieren
+        2. Risk-Checks ausfuehren (bestehende Risk-Komponenten nutzen)
+        3. Governance-Check ausfuehren (get_governance_status)
+        4. Je nach Environment an passenden Executor delegieren
+
+        Args:
+            intent: OrderIntent mit allen Order-Details
+            raise_on_governance_violation: Wenn True, wird LiveExecutionLockedError geworfen
+                                          bei env="live". Wenn False, wird ExecutionResult
+                                          mit status=BLOCKED_BY_GOVERNANCE zurueckgegeben.
+
+        Returns:
+            ExecutionResult mit Status, executed_orders, governance_status
+
+        Raises:
+            LiveExecutionLockedError: Wenn env="live" und raise_on_governance_violation=True
+            GovernanceViolationError: Bei anderen Governance-Verletzungen
+            RiskCheckFailedError: Optional bei Risk-Verletzung (nicht in v1)
+
+        Example:
+            >>> intent = OrderIntent(
+            ...     symbol="BTC/EUR",
+            ...     side="buy",
+            ...     quantity=0.01,
+            ...     strategy_key="ma_crossover",
+            ...     current_price=50000.0,
+            ... )
+            >>> result = pipeline.submit_order(intent)
+            >>> if result.is_blocked_by_governance:
+            ...     print(f"Governance blockiert: {result.reason}")
+        """
+        # 1. Input validieren
+        if intent.quantity <= 0:
+            return ExecutionResult(
+                rejected=True,
+                reason="invalid_quantity: must be > 0",
+                status=ExecutionStatus.INVALID,
+            )
+
+        # Bestimme Environment
+        env_str = self._get_current_environment()
+
+        # 2. Governance-Check fuer Live-Environment
+        governance_status = get_governance_status("live_order_execution")
+
+        if env_str == "live":
+            if governance_status == "locked":
+                reason = (
+                    f"live_order_execution is governance-locked (status='{governance_status}'). "
+                    f"Live-Orders sind nicht erlaubt."
+                )
+                logger.warning(
+                    f"[EXECUTION PIPELINE] Governance-Block: {reason}"
+                )
+
+                if raise_on_governance_violation:
+                    raise LiveExecutionLockedError()
+
+                return ExecutionResult(
+                    rejected=True,
+                    reason=reason,
+                    status=ExecutionStatus.BLOCKED_BY_GOVERNANCE,
+                    environment=env_str,
+                    governance_status=governance_status,
+                )
+
+        # 3. OrderRequest erstellen
+        client_id = self._generate_client_id(intent.symbol)
+        order = intent.to_order_request(client_id=client_id)
+
+        # 4. Kontext fuer Risk-Check
+        context = {"current_price": intent.current_price} if intent.current_price else None
+
+        # 5. Durch execute_with_safety() ausfuehren
+        result = self.execute_with_safety([order], context=context)
+
+        # 6. Result erweitern mit Phase 16A V2 Feldern
+        result.environment = env_str
+        result.governance_status = governance_status
+
+        if result.rejected:
+            if "risk_limits" in (result.reason or ""):
+                result.status = ExecutionStatus.BLOCKED_BY_RISK
+            elif "safety_guard" in (result.reason or ""):
+                result.status = ExecutionStatus.BLOCKED_BY_SAFETY
+            elif "live_mode" in (result.reason or ""):
+                result.status = ExecutionStatus.BLOCKED_BY_ENVIRONMENT
+        else:
+            result.status = ExecutionStatus.SUCCESS
+
+        return result
+
+    def _get_current_environment(self) -> str:
+        """
+        Ermittelt das aktuelle Environment aus der Konfiguration.
+
+        Returns:
+            Environment-String: "paper", "shadow", "testnet", oder "live"
+        """
+        if self._env_config is None:
+            return "paper"  # Default
+
+        if self._env_config.is_live:
+            return "live"
+        if self._env_config.is_testnet:
+            return "testnet"
+        # Shadow wird durch Executor-Typ bestimmt
+        if isinstance(self._executor, ShadowOrderExecutor):
+            return "shadow"
+        return "paper"
+
+    def _check_governance(self, env: str) -> tuple[bool, GovernanceStatus, Optional[str]]:
+        """
+        Prueft Governance-Regeln fuer das gegebene Environment.
+
+        Args:
+            env: Environment-String ("paper", "shadow", "testnet", "live")
+
+        Returns:
+            Tuple (allowed, governance_status, reason)
+            - allowed: True wenn Ausfuehrung erlaubt
+            - governance_status: Aktueller Governance-Status
+            - reason: Grund bei Blockierung (None wenn erlaubt)
+        """
+        governance_status = get_governance_status("live_order_execution")
+
+        if env == "live":
+            if governance_status == "locked":
+                return (
+                    False,
+                    governance_status,
+                    f"live_order_execution is governance-locked",
+                )
+
+        # Fuer paper/shadow/testnet: Governance v1 nicht blockierend
+        # Code so gebaut, dass spaetere Governance-Regeln leicht ergaenzt werden koennen
+        return (True, governance_status, None)
+
+    # =============================================================================
+    # Phase 16A V2: execute_with_safety() - Safety-Check-Wrapper (erweitert)
     # =============================================================================
 
     def execute_with_safety(
@@ -701,24 +1063,23 @@ class ExecutionPipeline:
         context: Optional[Dict[str, Any]] = None,
     ) -> ExecutionResult:
         """
-        Fuehrt Orders mit vollstaendigen Safety- und Risk-Checks aus (Phase 16A).
+        Fuehrt Orders mit vollstaendigen Safety-, Risk- und Governance-Checks aus.
 
-        Workflow:
-        1. Environment-Check: LIVE-Mode wird hart blockiert
-        2. SafetyGuard-Check: Prueft ob Order-Platzierung erlaubt ist
-        3. Risk-Check: Optional LiveRiskLimits-Check (wenn konfiguriert)
-        4. Executor: Fuehrt Orders aus (wenn alle Checks passiert)
-        5. Run-Logging: Loggt Events (wenn run_logger konfiguriert)
+        Phase 16A V2 Workflow:
+        1. Environment-Check: Bestimme aktuelles Environment
+        2. Governance-Check: Pruefe governance-seitige Freigabe (NEU in V2)
+        3. SafetyGuard-Check: Prueft ob Order-Platzierung erlaubt ist
+        4. Risk-Check: Optional LiveRiskLimits-Check (wenn konfiguriert)
+        5. Executor: Fuehrt Orders aus (wenn alle Checks passiert)
+        6. Run-Logging: Loggt Events (wenn run_logger konfiguriert)
 
         Args:
             orders: Liste von OrderRequests
             context: Optionaler Kontext-Dict (z.B. {"current_price": 50000.0})
 
         Returns:
-            ExecutionResult mit Risk-Check-Ergebnis, executed_orders, rejected-Flag
-
-        Raises:
-            RuntimeError: Wenn LIVE-Mode erkannt wird (Phase 16A: hart blockiert)
+            ExecutionResult mit Risk-Check-Ergebnis, executed_orders, rejected-Flag,
+            sowie status, environment, governance_status (Phase 16A V2)
 
         Example:
             >>> from src.core.environment import EnvironmentConfig, TradingEnvironment
@@ -737,7 +1098,7 @@ class ExecutionPipeline:
             >>>
             >>> order = OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.01)
             >>> result = pipeline.execute_with_safety([order])
-            >>> print(f"Rejected: {result.rejected}, Executed: {len(result.executed_orders)}")
+            >>> print(f"Rejected: {result.rejected}, Status: {result.status.value}")
         """
         if not orders:
             return ExecutionResult(
@@ -745,11 +1106,30 @@ class ExecutionPipeline:
                 executed_orders=[],
                 execution_results=[],
                 reason=None,
+                status=ExecutionStatus.SUCCESS,
             )
 
         orders_list = list(orders)
+        env_str = self._get_current_environment()
 
-        # 1. Environment-Check: LIVE-Mode hart blockieren (Phase 16A)
+        # 1. Governance-Check (Phase 16A V2)
+        governance_allowed, governance_status, governance_reason = self._check_governance(env_str)
+
+        if not governance_allowed:
+            logger.warning(
+                f"[EXECUTION PIPELINE] Governance-Block: {governance_reason}"
+            )
+            return ExecutionResult(
+                rejected=True,
+                executed_orders=[],
+                execution_results=[],
+                reason=governance_reason,
+                status=ExecutionStatus.BLOCKED_BY_GOVERNANCE,
+                environment=env_str,
+                governance_status=governance_status,
+            )
+
+        # 2. Environment-Check: LIVE-Mode hart blockieren (Phase 16A)
         if self._env_config is not None:
             if self._env_config.is_live:
                 reason = "live_mode_not_supported_in_phase_16a"
@@ -762,9 +1142,12 @@ class ExecutionPipeline:
                     executed_orders=[],
                     execution_results=[],
                     reason=reason,
+                    status=ExecutionStatus.BLOCKED_BY_ENVIRONMENT,
+                    environment=env_str,
+                    governance_status=governance_status,
                 )
 
-        # 2. SafetyGuard-Check
+        # 3. SafetyGuard-Check
         if self._safety_guard is not None:
             try:
                 # SafetyGuard.ensure_may_place_order() wirft Exception bei Blockierung
@@ -785,9 +1168,12 @@ class ExecutionPipeline:
                     executed_orders=[],
                     execution_results=[],
                     reason=reason,
+                    status=ExecutionStatus.BLOCKED_BY_SAFETY,
+                    environment=env_str,
+                    governance_status=governance_status,
                 )
 
-        # 3. Risk-Check (optional, wenn LiveRiskLimits konfiguriert)
+        # 4. Risk-Check (optional, wenn LiveRiskLimits konfiguriert)
         risk_result: Optional["LiveRiskCheckResult"] = None
         if self._risk_limits is not None:
             # Konvertiere OrderRequest zu LiveOrderRequest fuer Risk-Check
@@ -808,13 +1194,16 @@ class ExecutionPipeline:
                     execution_results=[],
                     risk_check=risk_result,
                     reason=reason,
+                    status=ExecutionStatus.BLOCKED_BY_RISK,
+                    environment=env_str,
+                    governance_status=governance_status,
                 )
 
-        # 4. Executor: Fuehre Orders aus
+        # 5. Executor: Fuehre Orders aus
         execution_results = self._executor.execute_orders(orders_list)
         self._execution_history.extend(execution_results)
 
-        # 5. Run-Logging (optional)
+        # 6. Run-Logging (optional)
         if self._run_logger is not None:
             self._log_execution_results(execution_results, risk_result)
 
@@ -825,6 +1214,9 @@ class ExecutionPipeline:
             execution_results=execution_results,
             risk_check=risk_result,
             reason=None,
+            status=ExecutionStatus.SUCCESS,
+            environment=env_str,
+            governance_status=governance_status,
         )
 
     def _convert_to_live_orders(

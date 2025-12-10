@@ -13,13 +13,10 @@ Diese Strategie ist ausschließlich für:
 - Research & Analyse
 - Akademische Experimente
 
-Die generate_signals-Logik ist ein Placeholder/Stub. Die eigentliche Implementierung
-erfolgt in einer späteren Research-Phase nach wissenschaftlicher Validierung.
-
 Hintergrund:
 - ECM-Grundzyklus: 8,6 Jahre = 3141 Tage ≈ π × 1000
 - Halb-/Teilzyklen für Timing-Signale
-- Siehe: src/docs/armstrong_notes.md
+- Phasen: CRISIS, EXPANSION, CONTRACTION, PRE_CRISIS, POST_CRISIS
 
 Warnung:
 - Armstrong-Zyklen sind NICHT wissenschaftlich validiert
@@ -28,12 +25,56 @@ Warnung:
 """
 from __future__ import annotations
 
+from datetime import date
 from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
 
 from ..base import BaseStrategy, StrategyMetadata
+from .cycle_model import (
+    ArmstrongPhase,
+    ArmstrongCycleConfig,
+    ArmstrongCycleModel,
+)
+
+
+# =============================================================================
+# PHASE → POSITION MAPPING
+# =============================================================================
+
+
+# Default Mapping: Phase → Zielposition (1=long, 0=flat, -1=short)
+DEFAULT_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
+    ArmstrongPhase.EXPANSION: 1,      # Long in Expansion
+    ArmstrongPhase.POST_CRISIS: 1,    # Long nach Crisis (Erholung)
+    ArmstrongPhase.CONTRACTION: 0,    # Flat in Contraction
+    ArmstrongPhase.PRE_CRISIS: 0,     # Flat vor Crisis
+    ArmstrongPhase.CRISIS: 0,         # Flat während Crisis (konservativ)
+}
+
+# Aggressives Mapping: Short in Crisis
+AGGRESSIVE_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
+    ArmstrongPhase.EXPANSION: 1,      # Long in Expansion
+    ArmstrongPhase.POST_CRISIS: 1,    # Long nach Crisis
+    ArmstrongPhase.CONTRACTION: 0,    # Flat in Contraction
+    ArmstrongPhase.PRE_CRISIS: -1,    # Short vor Crisis
+    ArmstrongPhase.CRISIS: -1,        # Short während Crisis
+}
+
+# Konservatives Mapping: Nur Long in Expansion
+CONSERVATIVE_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
+    ArmstrongPhase.EXPANSION: 1,      # Long nur in Expansion
+    ArmstrongPhase.POST_CRISIS: 0,    # Flat sonst
+    ArmstrongPhase.CONTRACTION: 0,
+    ArmstrongPhase.PRE_CRISIS: 0,
+    ArmstrongPhase.CRISIS: 0,
+}
+
+
+# =============================================================================
+# ARMSTRONG CYCLE STRATEGY
+# =============================================================================
 
 
 class ArmstrongCycleStrategy(BaseStrategy):
@@ -50,38 +91,39 @@ class ArmstrongCycleStrategy(BaseStrategy):
     - Zyklus-Tiefpunkte: Potenziell günstige Einstiegspunkte
     - Fenster um Turning-Points: Erhöhte Vorsicht
 
+    Features:
+    - Verwendet ArmstrongCycleModel für Phasenbestimmung
+    - Konfigurierbares Phase→Position Mapping
+    - Risk-Multiplier basierend auf Zyklus-Phase
+    - Deterministisch und gut testbar
+
     Attributes:
-        cycle_length_days: ECM-Zyklus-Länge (default: 3141 Tage)
-        event_window_days: Tage um Turning-Points für Signal-Modulation
-        reference_date: Referenz-Turning-Point (Armstrong: 2015.75)
+        cycle_model: ArmstrongCycleModel-Instanz
+        phase_position_map: Mapping Phase → Position
+        use_risk_scaling: Ob Risk-Multiplier angewendet werden soll
 
     Args:
-        cycle_length_days: Länge des ECM-Zyklus in Tagen
-        event_window_days: Fenster um Events für Signal-Modulation
-        reference_date: Referenz-Datum für Zyklusberechnung
+        cycle_length_days: ECM-Zyklus-Länge in Tagen
+        event_window_days: Fenster um Turning-Points
+        reference_date: Referenz-Turning-Point (ISO-Format)
+        phase_position_map: Dict oder String ("default", "aggressive", "conservative")
+        use_risk_scaling: Ob Risk-Multiplier verwendet werden soll
+        underlying: Underlying-Symbol (Index/Future/ETF)
         config: Optional Config-Dict
         metadata: Optional StrategyMetadata
 
     Example:
         >>> # NUR FÜR RESEARCH
         >>> strategy = ArmstrongCycleStrategy()
-        >>> # Wirft NotImplementedError - Placeholder
         >>> signals = strategy.generate_signals(df)
 
     Raises:
-        NotImplementedError: generate_signals ist noch nicht implementiert
-
-    Notes:
-        Diese Strategie ist ein Research-Stub. Die eigentliche Signal-Logik
-        wird in einer späteren Phase implementiert, nachdem:
-        1. ECM-Turning-Points systematisch gesammelt wurden
-        2. Event-Studien durchgeführt wurden
-        3. Statistische Signifikanz geprüft wurde
+        RnDLiveTradingBlockedError: Bei Versuch, in Live/Paper/Testnet zu laufen
     """
 
     KEY = "armstrong_cycle"
 
-    # Research-only Konstanten
+    # R&D-Only Konstanten - NICHT ÄNDERN!
     IS_LIVE_READY = False
     ALLOWED_ENVIRONMENTS = ["offline_backtest", "research"]
     TIER = "r_and_d"
@@ -96,6 +138,9 @@ class ArmstrongCycleStrategy(BaseStrategy):
         cycle_length_days: int = DEFAULT_CYCLE_LENGTH,
         event_window_days: int = 90,
         reference_date: str = DEFAULT_REFERENCE_DATE,
+        phase_position_map: Optional[Dict[ArmstrongPhase, int] | str] = None,
+        use_risk_scaling: bool = True,
+        underlying: str = "SPX",
         config: Optional[Dict[str, Any]] = None,
         metadata: Optional[StrategyMetadata] = None,
     ) -> None:
@@ -106,6 +151,9 @@ class ArmstrongCycleStrategy(BaseStrategy):
             cycle_length_days: ECM-Zyklus-Länge in Tagen
             event_window_days: Fenster um Turning-Points
             reference_date: Referenz-Turning-Point (ISO-Format)
+            phase_position_map: Mapping-Strategie (dict oder "default"/"aggressive"/"conservative")
+            use_risk_scaling: Ob Risk-Multiplier angewendet werden soll
+            underlying: Underlying-Symbol
             config: Optional Config-Dict (überschreibt Parameter)
             metadata: Optional Metadata
         """
@@ -114,6 +162,9 @@ class ArmstrongCycleStrategy(BaseStrategy):
             "cycle_length_days": cycle_length_days,
             "event_window_days": event_window_days,
             "reference_date": reference_date,
+            "phase_position_map": phase_position_map or "default",
+            "use_risk_scaling": use_risk_scaling,
+            "underlying": underlying,
         }
 
         # Config-Override falls übergeben
@@ -123,16 +174,16 @@ class ArmstrongCycleStrategy(BaseStrategy):
         # Research-only Metadata
         if metadata is None:
             metadata = StrategyMetadata(
-                name="Armstrong Cycle v0 (Research)",
+                name="Armstrong Cycle Strategy",
                 description=(
                     "ECM-basierte Zyklus-Strategie für Research-Zwecke. "
                     "⚠️ NICHT FÜR LIVE-TRADING FREIGEGEBEN. "
                     "Basiert auf Martin Armstrongs Economic Confidence Model."
                 ),
-                version="0.1.0-research",
+                version="1.0.0-r_and_d",
                 author="Peak_Trade Research",
                 regime="macro_overlay",
-                tags=["research", "armstrong", "cycle", "ecm", "macro"],
+                tags=["research", "armstrong", "cycle", "ecm", "macro", "r_and_d"],
             )
 
         super().__init__(config=initial_config, metadata=metadata)
@@ -140,13 +191,51 @@ class ArmstrongCycleStrategy(BaseStrategy):
         # Parameter extrahieren
         self.cycle_length_days = self.config.get("cycle_length_days", cycle_length_days)
         self.event_window_days = self.config.get("event_window_days", event_window_days)
-        self.reference_date = pd.Timestamp(
-            self.config.get("reference_date", reference_date)
+        self.reference_date_str = self.config.get("reference_date", reference_date)
+        self.use_risk_scaling = self.config.get("use_risk_scaling", use_risk_scaling)
+        self.underlying = self.config.get("underlying", underlying)
+
+        # Referenz-Datum parsen
+        self.reference_date = date.fromisoformat(self.reference_date_str)
+
+        # Cycle-Model erstellen
+        cycle_config = ArmstrongCycleConfig(
+            reference_peak_date=self.reference_date,
+            cycle_length_days=self.cycle_length_days,
+        )
+        self.cycle_model = ArmstrongCycleModel(cycle_config)
+
+        # Phase→Position Mapping
+        self.phase_position_map = self._resolve_phase_position_map(
+            self.config.get("phase_position_map", phase_position_map or "default")
         )
 
-        # Abgeleitete Konstanten
-        self.half_cycle_days = self.cycle_length_days // 2
-        self.quarter_cycle_days = self.cycle_length_days // 4
+        # Validierung
+        self.validate()
+
+    def _resolve_phase_position_map(
+        self, mapping: Dict[ArmstrongPhase, int] | str | None
+    ) -> Dict[ArmstrongPhase, int]:
+        """
+        Löst das Phase→Position Mapping auf.
+
+        Args:
+            mapping: Dict oder String ("default", "aggressive", "conservative")
+
+        Returns:
+            Phase→Position Dict
+        """
+        if mapping is None or mapping == "default":
+            return DEFAULT_PHASE_POSITION_MAP.copy()
+        if mapping == "aggressive":
+            return AGGRESSIVE_PHASE_POSITION_MAP.copy()
+        if mapping == "conservative":
+            return CONSERVATIVE_PHASE_POSITION_MAP.copy()
+        if isinstance(mapping, dict):
+            return mapping.copy()
+
+        # Fallback
+        return DEFAULT_PHASE_POSITION_MAP.copy()
 
     @classmethod
     def from_config(
@@ -167,106 +256,114 @@ class ArmstrongCycleStrategy(BaseStrategy):
         cycle_length = cfg.get(f"{section}.cycle_length_days", cls.DEFAULT_CYCLE_LENGTH)
         event_window = cfg.get(f"{section}.event_window_days", 90)
         ref_date = cfg.get(f"{section}.reference_date", cls.DEFAULT_REFERENCE_DATE)
+        phase_map = cfg.get(f"{section}.phase_position_map", "default")
+        use_risk = cfg.get(f"{section}.use_risk_scaling", True)
+        underlying = cfg.get(f"{section}.underlying", "SPX")
 
         return cls(
             cycle_length_days=cycle_length,
             event_window_days=event_window,
             reference_date=ref_date,
+            phase_position_map=phase_map,
+            use_risk_scaling=use_risk,
+            underlying=underlying,
         )
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
         Generiert Handelssignale basierend auf ECM-Zyklen.
 
-        ⚠️ RESEARCH-STUB: Aktuell wird ein Dummy-Signal (flat) zurückgegeben.
-        Die vollständige Implementierung erfolgt nach Research-Validierung.
+        Die Strategie bestimmt für jedes Datum die Zyklus-Phase und
+        mappt diese auf eine Zielposition (long/flat/short).
 
         Args:
-            data: DataFrame mit OHLCV-Daten
+            data: DataFrame mit OHLCV-Daten (Index muss DatetimeIndex sein)
 
         Returns:
-            Series mit Signalen (aktuell: 0 für alle Bars = flat)
+            Series mit Signalen:
+            - 1 = long
+            - 0 = flat
+            - -1 = short
 
-        Raises:
-            NotImplementedError: Wenn research_mode=False (Default in Produktion)
-
-        Notes:
-            Die vollständige Implementierung würde:
-            1. ECM-Turning-Points relativ zum Index berechnen
-            2. Event-Fenster markieren
-            3. Regime-Filter basierend auf Zyklus-Phase generieren
-
-            Dies ist absichtlich ein Stub, um Research-Iteration zu ermöglichen,
-            ohne Live-Trading-Risiken.
+        Example:
+            >>> strategy = ArmstrongCycleStrategy()
+            >>> signals = strategy.generate_signals(df)
+            >>> print(signals.value_counts())
         """
-        # Research-Stub: Flat-Signal für alle Bars
-        # TODO: Implementierung nach ECM-Validierung in Research-Phase
+        # Validierung
+        if not isinstance(data.index, pd.DatetimeIndex):
+            raise ValueError("DataFrame-Index muss ein DatetimeIndex sein")
 
-        # Wir geben ein neutrales Signal zurück (0 = flat)
-        # Dies erlaubt Backtests ohne echte Trades
-        signals = pd.Series(0, index=data.index, dtype=int)
+        if len(data) == 0:
+            return pd.Series([], dtype=int)
 
-        # Optional: Zyklus-Phase-Info als Debug-Marker
-        # (kann später für Analyse verwendet werden)
-        if hasattr(data.index, "to_pydatetime"):
-            # Berechne Tage seit Referenz-Datum
-            # Handle timezone-aware vs naive datetime
-            index_for_calc = data.index
-            ref_date = self.reference_date
-            if hasattr(index_for_calc, 'tz') and index_for_calc.tz is not None:
-                # Index ist tz-aware, konvertiere zu tz-naive für Berechnung
-                index_for_calc = index_for_calc.tz_localize(None)
-            if hasattr(ref_date, 'tz') and ref_date.tz is not None:
-                ref_date = ref_date.tz_localize(None)
-            days_since_ref = (index_for_calc - ref_date).days
-            cycle_phase = (days_since_ref % self.cycle_length_days) / self.cycle_length_days
+        # Signale für jedes Datum generieren
+        signals = []
+        phases = []
+        risk_multipliers = []
 
-            # Markiere Event-Fenster (nahe Turning-Point)
-            near_turning_point = (
-                (cycle_phase < self.event_window_days / self.cycle_length_days) |
-                (cycle_phase > 1 - self.event_window_days / self.cycle_length_days)
-            )
+        for idx in data.index:
+            # Phase bestimmen
+            phase = self.cycle_model.phase_for_date(idx)
+            phases.append(phase)
 
-            # Speichere Zyklus-Info in Signal-Metadata (für spätere Analyse)
-            signals.attrs["cycle_phase"] = cycle_phase
-            signals.attrs["near_turning_point"] = near_turning_point
+            # Position aus Mapping
+            position = self.phase_position_map.get(phase, 0)
 
-        return signals
+            # Optional: Risk-Scaling
+            if self.use_risk_scaling:
+                risk_mult = self.cycle_model.risk_multiplier_for_date(idx)
+                risk_multipliers.append(risk_mult)
+            else:
+                risk_multipliers.append(1.0)
 
-    def get_cycle_info(self, date: pd.Timestamp) -> Dict[str, Any]:
+            signals.append(position)
+
+        signal_series = pd.Series(signals, index=data.index, dtype=int)
+
+        # Metadaten für Analyse speichern
+        signal_series.attrs["phases"] = phases
+        signal_series.attrs["risk_multipliers"] = risk_multipliers
+        signal_series.attrs["cycle_length_days"] = self.cycle_length_days
+        signal_series.attrs["reference_date"] = self.reference_date_str
+
+        return signal_series
+
+    def get_cycle_info(self, dt: pd.Timestamp) -> Dict[str, Any]:
         """
         Gibt ECM-Zyklus-Informationen für ein bestimmtes Datum zurück.
 
         Args:
-            date: Datum für Zyklus-Berechnung
+            dt: Datum für Zyklus-Berechnung
 
         Returns:
-            Dict mit:
-            - days_since_reference: Tage seit Referenz-Datum
-            - cycle_phase: Position im Zyklus (0.0 - 1.0)
-            - is_near_turning_point: Ob nahe einem Turning-Point
-            - next_turning_point: Nächster Turning-Point (Datum)
+            Dict mit Zyklus-Informationen
         """
-        days_since_ref = (date - self.reference_date).days
-        cycle_phase = (days_since_ref % self.cycle_length_days) / self.cycle_length_days
+        return self.cycle_model.get_cycle_info(dt)
 
-        # Nächster Turning-Point
-        days_to_next = self.cycle_length_days - (days_since_ref % self.cycle_length_days)
-        next_turning_point = date + pd.Timedelta(days=days_to_next)
+    def get_phase_for_date(self, dt: pd.Timestamp) -> ArmstrongPhase:
+        """
+        Gibt die Phase für ein Datum zurück.
 
-        # Event-Fenster-Check
-        is_near_turning_point = (
-            cycle_phase < self.event_window_days / self.cycle_length_days or
-            cycle_phase > 1 - self.event_window_days / self.cycle_length_days
-        )
+        Args:
+            dt: Datum
 
-        return {
-            "days_since_reference": days_since_ref,
-            "cycle_phase": cycle_phase,
-            "is_near_turning_point": is_near_turning_point,
-            "next_turning_point": next_turning_point,
-            "cycle_length_days": self.cycle_length_days,
-        }
+        Returns:
+            ArmstrongPhase
+        """
+        return self.cycle_model.phase_for_date(dt)
+
+    def get_position_for_phase(self, phase: ArmstrongPhase) -> int:
+        """
+        Gibt die Zielposition für eine Phase zurück.
+
+        Args:
+            phase: ArmstrongPhase
+
+        Returns:
+            Position (-1, 0, 1)
+        """
+        return self.phase_position_map.get(phase, 0)
 
     def validate(self) -> None:
         """Validiert Parameter."""
@@ -284,13 +381,32 @@ class ArmstrongCycleStrategy(BaseStrategy):
                 f"half cycle ({self.cycle_length_days // 2}) sein"
             )
 
+    def get_strategy_info(self) -> Dict[str, Any]:
+        """
+        Gibt Strategy-Metadaten zurück (für Logs/Reports).
+
+        Returns:
+            Dict mit Strategy-Info inkl. Tier
+        """
+        return {
+            "id": "armstrong_cycle_v1",
+            "name": self.meta.name,
+            "category": "cycles",
+            "tier": self.TIER,
+            "is_live_ready": self.IS_LIVE_READY,
+            "allowed_environments": self.ALLOWED_ENVIRONMENTS,
+            "cycle_length_days": self.cycle_length_days,
+            "reference_date": self.reference_date_str,
+            "underlying": self.underlying,
+        }
+
     def __repr__(self) -> str:
         return (
             f"<ArmstrongCycleStrategy("
             f"cycle={self.cycle_length_days}d, "
             f"window={self.event_window_days}d, "
-            f"ref={self.reference_date.date()}) "
-            f"[RESEARCH-ONLY]>"
+            f"ref={self.reference_date}) "
+            f"[R&D-ONLY, tier={self.TIER}]>"
         )
 
 
@@ -310,7 +426,21 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
         params: Parameter-Dict
 
     Returns:
-        Signal-Series (0=flat für Research-Stub)
+        Signal-Series
     """
     strategy = ArmstrongCycleStrategy(config=params)
     return strategy.generate_signals(df)
+
+
+# =============================================================================
+# EXPORTS
+# =============================================================================
+
+__all__ = [
+    "ArmstrongCycleStrategy",
+    "generate_signals",
+    # Phase-Position Mappings
+    "DEFAULT_PHASE_POSITION_MAP",
+    "AGGRESSIVE_PHASE_POSITION_MAP",
+    "CONSERVATIVE_PHASE_POSITION_MAP",
+]

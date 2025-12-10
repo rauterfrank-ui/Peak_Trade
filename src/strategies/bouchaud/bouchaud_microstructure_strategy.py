@@ -286,3 +286,5 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
             f"lookback={self.cfg.lookback_ticks}ticks) "
             f"[SKELETON – NOT IMPLEMENTED]>"
         )
+
+

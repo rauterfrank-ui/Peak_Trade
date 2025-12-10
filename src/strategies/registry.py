@@ -27,7 +27,7 @@ from .regime_aware_portfolio import RegimeAwarePortfolioStrategy
 
 # Research-Track: Armstrong & El-Karoui Strategien (R&D-Only)
 from .armstrong import ArmstrongCycleStrategy
-from .el_karoui import ElKarouiVolModelStrategy
+from .el_karoui import ElKarouiVolatilityStrategy, ElKarouiVolModelStrategy
 
 # Research-Track: Ehlers & López de Prado Strategien (R&D-Only)
 from .ehlers import EhlersCycleFilterStrategy

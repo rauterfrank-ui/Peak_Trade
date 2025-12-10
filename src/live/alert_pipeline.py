@@ -55,6 +55,7 @@ from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, TYPE_
 
 if TYPE_CHECKING:
     from src.infra.runbooks import RunbookLink
+    from src.infra.escalation import EscalationManager
 
 logger = logging.getLogger(__name__)
 
@@ -782,6 +783,7 @@ class AlertPipelineManager:
     - Enabled-Check pro Channel
     - Robuste Fehlerbehandlung (ein Channel-Fehler stoppt nicht andere)
     - Automatische Persistierung für Alert-Historie (Phase 83)
+    - Optionale Escalation für kritische Alerts (Phase 85)
 
     Usage:
         >>> manager = AlertPipelineManager([slack_channel, email_channel])
@@ -792,6 +794,7 @@ class AlertPipelineManager:
         self,
         channels: Sequence[AlertChannel],
         persist_alerts: bool = True,
+        escalation_manager: Optional["EscalationManager"] = None,
     ) -> None:
         """
         Initialisiert AlertPipelineManager.
@@ -799,9 +802,11 @@ class AlertPipelineManager:
         Args:
             channels: Liste von AlertChannel-Implementierungen
             persist_alerts: Ob Alerts für die Historie gespeichert werden sollen (Phase 83)
+            escalation_manager: Optionaler EscalationManager für On-Call-Integration (Phase 85)
         """
         self._channels = list(channels)
         self._persist_alerts = persist_alerts
+        self._escalation_manager = escalation_manager
         self._logger = logging.getLogger(f"{__name__}.AlertPipelineManager")
 
     @property
@@ -819,6 +824,11 @@ class AlertPipelineManager:
         """Ob Alerts persistiert werden."""
         return self._persist_alerts
 
+    @property
+    def escalation_manager(self) -> Optional["EscalationManager"]:
+        """Optionaler EscalationManager (Phase 85)."""
+        return self._escalation_manager
+
     def send(self, alert: AlertMessage) -> None:
         """
         Sendet Alert an alle passenden Channels und speichert für Historie.
@@ -832,6 +842,8 @@ class AlertPipelineManager:
 
         Phase 84: Runbooks werden automatisch vor dem Senden angehängt.
 
+        Phase 85: Kritische Alerts werden optional an On-Call eskaliert.
+
         Args:
             alert: AlertMessage zum Senden
         """
@@ -841,6 +853,9 @@ class AlertPipelineManager:
         # Phase 83: Alert persistieren für Historie
         if self._persist_alerts:
             self._persist_alert(alert)
+
+        # Phase 85: Escalation für kritische Alerts
+        self._maybe_escalate(alert)
 
         # An Channels senden
         for channel in self._channels:
@@ -897,6 +912,47 @@ class AlertPipelineManager:
         except Exception as e:
             # Fehler loggen, aber nicht propagieren
             self._logger.debug(f"Failed to persist alert: {e}")
+
+    def _maybe_escalate(self, alert: AlertMessage) -> None:
+        """
+        Eskaliert Alert optional an On-Call (Phase 85).
+
+        Escalation ist eine optionale Anreicherung. Fehler werden geloggt,
+        aber NIEMALS propagiert - die Alert-Pipeline darf nicht blockiert werden.
+
+        Args:
+            alert: AlertMessage zum potenziellen Eskalieren
+        """
+        if self._escalation_manager is None:
+            return
+
+        try:
+            # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
+            from src.infra.escalation import EscalationEvent
+            import uuid
+
+            # EscalationEvent aus AlertMessage bauen
+            event = EscalationEvent(
+                alert_id=str(uuid.uuid4()),
+                severity=alert.severity.name,
+                alert_type=alert.category.value,
+                summary=alert.title,
+                details={
+                    "body": alert.body,
+                    "source": alert.source,
+                    **alert.context,
+                },
+                symbol=alert.context.get("symbol"),
+                session_id=alert.session_id,
+                created_at=alert.timestamp,
+            )
+
+            # Eskalieren (Manager entscheidet ob wirklich eskaliert wird)
+            self._escalation_manager.maybe_escalate(event)
+
+        except Exception as e:
+            # KRITISCH: Fehler NIEMALS propagieren
+            self._logger.debug(f"Failed to escalate alert: {e}")
 
     # Convenience-Methoden für direktes Alerting
 
@@ -1123,6 +1179,7 @@ class SeverityTransitionTracker:
 
 def build_alert_pipeline_from_config(
     config: Mapping[str, Any],
+    environment: Optional[str] = None,
 ) -> AlertPipelineManager:
     """
     Baut AlertPipelineManager aus Config-Dict.
@@ -1151,8 +1208,15 @@ def build_alert_pipeline_from_config(
         from_addr = "alerts@example.com"
         to_addrs = ["ops@example.com"]
 
+        [escalation]
+        enabled = true
+        enabled_environments = ["live"]
+        provider = "pagerduty_stub"
+        critical_severities = ["CRITICAL"]
+
     Args:
         config: Config-Dict (z.B. aus TOML)
+        environment: Aktuelles Environment (für Escalation-Gating)
 
     Returns:
         Konfigurierter AlertPipelineManager
@@ -1222,7 +1286,53 @@ def build_alert_pipeline_from_config(
         logger.info("No alert channels configured, using null channel")
         channels.append(NullAlertChannel())
 
-    return AlertPipelineManager(channels)
+    # Phase 85: EscalationManager erstellen (optional)
+    escalation_manager = _build_escalation_manager(config, environment)
+
+    return AlertPipelineManager(
+        channels,
+        escalation_manager=escalation_manager,
+    )
+
+
+def _build_escalation_manager(
+    config: Mapping[str, Any],
+    environment: Optional[str] = None,
+) -> Optional["EscalationManager"]:
+    """
+    Baut EscalationManager aus Config (Phase 85).
+
+    Fehler beim Laden des EscalationManagers werden geloggt,
+    aber nicht propagiert - Escalation ist optional.
+
+    Args:
+        config: Config-Dict
+        environment: Aktuelles Environment
+
+    Returns:
+        EscalationManager oder None wenn deaktiviert/fehlerhaft
+    """
+    try:
+        escalation_config = config.get("escalation", {})
+
+        # Escalation deaktiviert?
+        if not escalation_config.get("enabled", False):
+            logger.debug("Escalation disabled in config")
+            return None
+
+        # Lazy import
+        from src.infra.escalation import build_escalation_manager_from_config
+
+        manager = build_escalation_manager_from_config(config, environment)
+        logger.info(
+            f"Escalation manager configured: provider={escalation_config.get('provider', 'null')}"
+        )
+        return manager
+
+    except Exception as e:
+        # Fehler loggen, aber nicht propagieren
+        logger.warning(f"Failed to build escalation manager: {e}")
+        return None
 
 
 # =============================================================================

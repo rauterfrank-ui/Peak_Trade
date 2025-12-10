@@ -154,131 +154,182 @@ allow_live = false
 
 ---
 
-## R&D-Varianten (Tier-3)
+## Kanonische R&D-Experimente
 
-Armstrong hat zwei „würzige" R&D-Varianten für unterschiedliche Test-Szenarien.
-Beide sind strikt **Tier-3 / R&D** – kein Live-, Paper- oder Testnet-Flow.
+> **⚠️ Tier-3 / R&D Only – Keine Live-/Testnet-Ausführung**
+>
+> Die folgenden Experimente sind ausschließlich für Research und Offline-Backtests freigegeben.
+> Live-Gates blockieren automatisch jeden Versuch, Armstrong in `live`, `paper`, `testnet` oder `shadow`
+> Modus auszuführen (`RnDLiveTradingBlockedError`).
 
-### A) Armstrong Last-Test (Dummy-Daten, mehr Last)
+### Übersicht
 
-**Zweck:** Pipeline-Performance- und Last-Tests mit synthetischen Daten
+| Name | Zweck | Command (Kurz) | Output-Pfad (Schema) |
+|------|-------|----------------|----------------------|
+| `armstrong_cycle_tier3_lasttest_v1` | Pipeline-/Last-Test mit synthetischen Daten (5000 Bars) | `run_backtest.py --strategy armstrong_cycle --bars 5000` | `reports/r_and_d/armstrong_cycle/lasttest_v1/` |
+| `armstrong_cycle_tier3_realdata_v1` | Cycle-Analyse mit echten OHLCV-Daten | `run_backtest.py --strategy armstrong_cycle --data-file ...` | `reports/r_and_d/armstrong_cycle/realdata_v1/` |
+
+---
+
+### 1) `armstrong_cycle_tier3_lasttest_v1`
+
+**Zweck:**
+- Pipeline-Performance- und Stabilitätstest unter höherer Last
+- Fokus auf Durchsatz und Fehlerfreiheit, nicht Markt-Realismus
+- Synthetische Dummy-Daten (Random-Walk mit Trend-Overlay)
 
 **Wann benutzen?**
-- Wenn du prüfen willst, ob die Pipeline unter höherer Last stabil läuft
-- Wenn synthetische Dummy-Daten ausreichen und Markt-Realismus nicht wichtig ist
+- Bei Code-Änderungen an der Pipeline oder Strategie
+- Vor größeren R&D-Kampagnen als Smoke-Check
+- Wenn schnelle Iteration wichtiger ist als Markt-Validierung
 
-**Command:**
+**Parameter:**
+
+| Parameter | Wert | Beschreibung |
+|-----------|------|--------------|
+| `strategy` | `armstrong_cycle` | Armstrong ECM-Zyklus-Strategie |
+| `bars` | `5000` | Anzahl synthetischer Bars |
+| `config` | `config/config.toml` | Standard-Config (nutzt Default-Parameter) |
+| `tag` | `rnd_armstrong_lasttest_v1` | Registry-Tag für Tracking |
+
+**CLI-Command:**
+
 ```bash
 python scripts/run_backtest.py \
   --strategy armstrong_cycle \
-  --config config.toml \
-  --tag rnd_armstrong_spicy_5k_bars \
+  --config config/config.toml \
   --bars 5000 \
-  --save-report reports/r_and_d/armstrong_spicy_5k_bars.html \
-  --verbose
-```
-
-**Erwartete Outputs:**
-- HTML-Report: `reports/r_and_d/armstrong_spicy_5k_bars.html`
-- Registry-Eintrag mit Tag `rnd_armstrong_spicy_5k_bars`
-- Terminal-Output mit Kennzahlen (Total Return, Sharpe, Trades)
-
----
-
-### B) Armstrong Real-Data (echte Daten, engeres Zeitfenster)
-
-**Zweck:** Armstrong mit echten OHLCV-Daten in einem volatilen Zeitfenster testen
-
-**Voraussetzung:** Eigene OHLCV-CSV-Datei unter `data/ohlcv/` (z.B. `btcusdt_1d.csv`)
-
-**Wann benutzen?**
-- Wenn der Basis-Smoke-Test stabil läuft
-- Wenn du Armstrong mit echten Daily-Daten sehen willst
-
-**Command:**
-```bash
-python scripts/run_backtest.py \
-  --strategy armstrong_cycle \
-  --config config.toml \
-  --tag rnd_armstrong_trend_spice \
-  --data-file data/ohlcv/btcusdt_1d.csv \
-  --start-date 2019-01-01 \
-  --end-date 2019-06-30 \
-  --save-report reports/r_and_d/armstrong_trend_spice.html \
-  --verbose
-```
-
-**Erwartete Outputs:**
-- HTML-Report: `reports/r_and_d/armstrong_trend_spice.html`
-- Equity-Plot: `reports/r_and_d/armstrong_trend_spice_equity.png`
-- Stats-JSON: `reports/r_and_d/armstrong_trend_spice_stats.json`
-- Registry-Eintrag mit Tag `rnd_armstrong_trend_spice`
-- Plots mit echten Trends/Drawdowns und Cycle-Phasen-Verteilung
-
----
-
-## Experiment Templates
-
-### Template 1: `armstrong_cycle_tier3_lasttest_v1`
-
-**Zweck:** Pipeline-Stabilität unter Last mit synthetischen Daten
-
-| Aspekt | Wert |
-|--------|------|
-| Strategy | `armstrong_cycle` |
-| Bars | 5000 |
-| Config | `config.toml` |
-| Tag | `rnd_armstrong_lasttest_v1` |
-| Output | `reports/r_and_d/armstrong_lasttest_v1.html` |
-
-```bash
-python scripts/run_backtest.py \
-  --strategy armstrong_cycle \
-  --config config.toml \
   --tag rnd_armstrong_lasttest_v1 \
-  --bars 5000 \
-  --save-report reports/r_and_d/armstrong_lasttest_v1.html \
+  --save-report reports/r_and_d/armstrong_cycle/lasttest_v1/report.html \
   --verbose
 ```
 
+**Erwartete Outputs:**
+
+```
+reports/r_and_d/armstrong_cycle/lasttest_v1/
+├── report.html                 # Interaktiver HTML-Report
+├── backtest_armstrong_cycle_equity.png      # Equity-Kurve
+├── backtest_armstrong_cycle_drawdown.png    # Drawdown-Plot
+└── backtest_armstrong_cycle_stats.json      # Kennzahlen
+```
+
+**Erwartete Kennzahlen (Richtwerte):**
+- Total Return: variabel (Random-Walk)
+- Sharpe Ratio: typisch 0.3–1.0
+- Max Drawdown: typisch -10% bis -30%
+- Trades: variabel je nach Phase-Mapping
+
 ---
 
-### Template 2: `armstrong_cycle_tier3_realdata_v1`
+### 2) `armstrong_cycle_tier3_realdata_v1`
 
-**Zweck:** Cycle-Phasen-Verhalten mit echten Marktdaten analysieren
+**Zweck:**
+- Armstrong-Zyklus-Verhalten mit echten Marktdaten analysieren
+- „Gefühl" für Metriken und Phasen-Verteilung entwickeln
+- Explorative Analyse – keine Produktions-Validierung
 
-| Aspekt | Wert |
-|--------|------|
-| Strategy | `armstrong_cycle` |
-| Data | `data/ohlcv/btcusdt_1d.csv` |
-| Date-Range | 2019-01-01 bis 2019-06-30 |
-| Config | `config.toml` |
-| Tag | `rnd_armstrong_realdata_v1` |
-| Output | `reports/r_and_d/armstrong_realdata_v1.html` |
+**Wann benutzen?**
+- Nach erfolgreichem `lasttest_v1`
+- Wenn echte Marktdynamik relevant ist
+- Für Phasen-Performance-Analyse (EXPANSION vs. CONTRACTION etc.)
+
+**Voraussetzung:**
+- OHLCV-CSV-Datei mit Daily-Daten (z.B. `data/ohlcv/btcusdt_1d.csv`)
+- Wenn keine Datei vorhanden: Pfad als Platzhalter verwenden und eigene Daten bereitstellen
+
+**Parameter:**
+
+| Parameter | Wert | Beschreibung |
+|-----------|------|--------------|
+| `strategy` | `armstrong_cycle` | Armstrong ECM-Zyklus-Strategie |
+| `data-file` | `data/ohlcv/btcusdt_1d.csv` | Pfad zur OHLCV-CSV (**⚠️ Platzhalter – eigene Daten bereitstellen**) |
+| `start-date` | `2019-01-01` | Startdatum (volatiler Crypto-Winter-Zeitraum) |
+| `end-date` | `2019-12-31` | Enddatum (1 Jahr für Cycle-Analyse) |
+| `config` | `config/config.toml` | Standard-Config |
+| `tag` | `rnd_armstrong_realdata_v1` | Registry-Tag für Tracking |
+
+**CLI-Command:**
 
 ```bash
 python scripts/run_backtest.py \
   --strategy armstrong_cycle \
-  --config config.toml \
-  --tag rnd_armstrong_realdata_v1 \
+  --config config/config.toml \
   --data-file data/ohlcv/btcusdt_1d.csv \
   --start-date 2019-01-01 \
-  --end-date 2019-06-30 \
-  --save-report reports/r_and_d/armstrong_realdata_v1.html \
+  --end-date 2019-12-31 \
+  --tag rnd_armstrong_realdata_v1 \
+  --save-report reports/r_and_d/armstrong_cycle/realdata_v1/report.html \
   --verbose
 ```
 
-**Output-Struktur:**
-```
-reports/r_and_d/
-├── armstrong_realdata_v1.html
-├── armstrong_realdata_v1_equity.png
-├── armstrong_realdata_v1_stats.json
-└── ...
+**⚠️ Hinweis zu Daten:**
+Falls `data/ohlcv/btcusdt_1d.csv` nicht existiert:
+1. Erstelle das Verzeichnis: `mkdir -p data/ohlcv`
+2. Lade Daily-OHLCV-Daten herunter (z.B. von Binance, Kraken, CoinGecko)
+3. Format: CSV mit Spalten `timestamp,open,high,low,close,volume`
 
-reports/experiments/
-└── experiments.csv  (neue Zeile mit run_id, strategy_key, Stats)
+**Erwartete Outputs:**
+
 ```
+reports/r_and_d/armstrong_cycle/realdata_v1/
+├── report.html                 # Interaktiver HTML-Report
+├── backtest_armstrong_cycle_equity.png      # Equity-Kurve
+├── backtest_armstrong_cycle_drawdown.png    # Drawdown-Plot
+└── backtest_armstrong_cycle_stats.json      # Kennzahlen
+```
+
+**Erwartete Kennzahlen (Richtwerte für BTC 2019):**
+- Total Return: abhängig von Marktphase
+- Sharpe Ratio: typisch 0.5–1.5
+- Max Drawdown: typisch -15% bis -35%
+- Trades: wenige (Cycle-basierte Signale sind langfristig)
+
+---
+
+### Output-Struktur
+
+Alle Armstrong-R&D-Experimente folgen diesem Schema:
+
+```
+reports/r_and_d/armstrong_cycle/
+├── lasttest_v1/
+│   ├── report.html
+│   ├── backtest_armstrong_cycle_equity.png
+│   ├── backtest_armstrong_cycle_drawdown.png
+│   └── backtest_armstrong_cycle_stats.json
+├── realdata_v1/
+│   ├── report.html
+│   ├── backtest_armstrong_cycle_equity.png
+│   ├── backtest_armstrong_cycle_drawdown.png
+│   └── backtest_armstrong_cycle_stats.json
+└── ... (zukünftige Experimente)
+```
+
+Registry-Einträge werden automatisch in `reports/experiments/experiments.csv` geloggt.
+
+---
+
+### Safety-Hinweise
+
+**Automatische Blockierung:**
+Die folgenden Live-Gates verhindern Armstrong-Ausführung in Production-Modi:
+
+| Funktion | Verhalten |
+|----------|-----------|
+| `check_strategy_live_eligibility("armstrong_cycle")` | `is_eligible=False`, Grund: R&D-Tier |
+| `check_r_and_d_tier_for_mode("armstrong_cycle", "live")` | `True` (blockiert) |
+| `assert_strategy_not_r_and_d_for_live("armstrong_cycle", "testnet")` | wirft `RnDLiveTradingBlockedError` |
+
+**Erlaubte Modi:**
+- `offline_backtest` ✅
+- `research` ✅
+
+**Blockierte Modi:**
+- `live` ❌
+- `paper` ❌
+- `testnet` ❌
+- `shadow` ❌
 
 ---
 

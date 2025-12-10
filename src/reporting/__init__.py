@@ -118,6 +118,26 @@ from .live_session_report import (
     save_session_report,
 )
 
+# Offline Paper Trade Reports
+from .offline_paper_trade_report import (
+    OfflinePaperTradeSessionMeta,
+    build_offline_paper_trade_report,
+)
+
+# Trigger Training Reports
+from .trigger_training_report import (
+    TriggerOutcome,
+    TriggerTrainingEvent,
+    events_to_dataframe,
+    build_trigger_training_report,
+)
+
+# Offline Paper Trade Integration
+from .offline_paper_trade_integration import (
+    OfflinePaperTradeReportConfig,
+    generate_reports_for_offline_paper_trade,
+)
+
 __all__ = [
     # Execution Reports (Phase 16D)
     "ExecutionStats",
@@ -187,4 +207,15 @@ __all__ = [
     "build_session_report",
     "build_multi_session_report",
     "save_session_report",
+    # Offline Paper Trade Reports
+    "OfflinePaperTradeSessionMeta",
+    "build_offline_paper_trade_report",
+    # Trigger Training Reports
+    "TriggerOutcome",
+    "TriggerTrainingEvent",
+    "events_to_dataframe",
+    "build_trigger_training_report",
+    # Offline Paper Trade Integration
+    "OfflinePaperTradeReportConfig",
+    "generate_reports_for_offline_paper_trade",
 ]

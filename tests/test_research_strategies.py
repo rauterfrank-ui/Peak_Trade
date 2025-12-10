@@ -54,8 +54,12 @@ class TestArmstrongCycleStrategy:
         assert strategy.event_window_days == 90
         assert "RESEARCH" in strategy.meta.description.upper()
 
-    def test_armstrong_generate_signals_returns_flat(self):
-        """Test: Armstrong generate_signals gibt Flat-Signal (Research-Stub)."""
+    def test_armstrong_generate_signals_returns_valid_signals(self):
+        """Test: Armstrong generate_signals gibt valide Signale zurück.
+
+        Nach R&D-Refactoring: Die Strategie generiert echte Signale
+        basierend auf dem Phase-Position-Mapping, nicht mehr nur Flat-Signale.
+        """
         from src.strategies.armstrong import ArmstrongCycleStrategy
 
         strategy = ArmstrongCycleStrategy()
@@ -75,10 +79,12 @@ class TestArmstrongCycleStrategy:
 
         signals = strategy.generate_signals(data)
 
-        # Research-Stub: Alle Signale sollten 0 (flat) sein
+        # Validierung: Signale sind valide (-1, 0, 1)
         assert isinstance(signals, pd.Series)
         assert len(signals) == len(data)
-        assert (signals == 0).all(), "Research-Stub sollte nur Flat-Signale liefern"
+        # Signale sollten nur -1, 0, 1 enthalten
+        unique_values = set(signals.unique())
+        assert unique_values.issubset({-1, 0, 1}), f"Ungültige Signale: {unique_values}"
 
     def test_armstrong_cycle_info(self):
         """Test: get_cycle_info gibt valide Informationen zurück."""
@@ -89,20 +95,24 @@ class TestArmstrongCycleStrategy:
 
         info = strategy.get_cycle_info(test_date)
 
-        assert "cycle_phase" in info
-        assert "is_near_turning_point" in info
+        # Aktualisierte Keys nach R&D-Refactoring:
+        # - cycle_phase → cycle_position
+        # - is_near_turning_point entfernt (nicht mehr in cycle_model)
+        # - phase & phase_name hinzugefügt
+        assert "cycle_position" in info
+        assert "phase" in info
         assert "next_turning_point" in info
-        assert 0 <= info["cycle_phase"] <= 1
-        assert isinstance(info["is_near_turning_point"], bool)
+        assert 0 <= info["cycle_position"] <= 1
 
     def test_armstrong_repr_shows_research_only(self):
-        """Test: __repr__ zeigt RESEARCH-ONLY an."""
+        """Test: __repr__ zeigt R&D-ONLY an (nach Refactoring)."""
         from src.strategies.armstrong import ArmstrongCycleStrategy
 
         strategy = ArmstrongCycleStrategy()
         repr_str = repr(strategy)
 
-        assert "RESEARCH-ONLY" in repr_str
+        # Aktualisiert nach R&D-Refactoring: "RESEARCH-ONLY" → "R&D-ONLY"
+        assert "R&D-ONLY" in repr_str
 
 
 class TestElKarouiVolModelStrategy:

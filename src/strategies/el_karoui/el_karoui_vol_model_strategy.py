@@ -1,10 +1,10 @@
 # src/strategies/el_karoui/el_karoui_vol_model_strategy.py
 """
-El Karoui Stochastic Volatility Model Strategy – Research-Only
-==============================================================
+El Karoui Volatility Model Strategy – Research-Only
+====================================================
 
-Diese Strategie implementiert Konzepte aus Nicole El Karouis Arbeiten zu
-stochastischen Volatilitätsmodellen für explorative Research-Zwecke.
+Diese Strategie implementiert ein Vol-Regime-basiertes Trading-Konzept,
+inspiriert von Nicole El Karouis Arbeiten zu stochastischen Volatilitätsmodellen.
 
 ⚠️ WICHTIG: RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
 
@@ -13,122 +13,173 @@ Diese Strategie ist ausschließlich für:
 - Research & Analyse
 - Akademische Experimente mit Volatilitätsmodellen
 
-Die generate_signals-Logik ist ein Placeholder/Stub. Die eigentliche Implementierung
-erfolgt in einer späteren Research-Phase.
+Konzept:
+- Nutzt das ElKarouiVolModel zur Regime-Erkennung
+- Klassifiziert Vol-Regime (LOW/MEDIUM/HIGH)
+- Passt Exposure basierend auf Regime an:
+  * LOW-Vol → volle Zielallokation (long)
+  * MEDIUM-Vol → reduziertes Exposure (long mit reduzierter Gewichtung)
+  * HIGH-Vol → stark reduziertes oder kein Exposure (flat/reduziert)
 
 Hintergrund (El-Karoui-Kontext):
 - Stochastische Differentialgleichungen (SDEs) für Asset-Preise
 - Lokale und stochastische Volatilitätsmodelle
 - Martingal-Ansatz und risikoneutrale Bewertung
-- Siehe: src/docs/nicole_el_karoui_notes.md
-
-Konzept:
-- Nutzt Volatilitäts-Regime-Erkennung basierend auf SDE-Theorie
-- Vergleicht realisierte vs. implizite Volatilität
-- Identifiziert Misspricing / Relative-Value-Signale
+- Volatilität als Mean-Reverting-Prozess
 
 Warnung:
 - Komplexe mathematische Modelle erfordern sorgfältige Kalibrierung
 - Modell-Risiko ist bei stochastischen Vol-Modellen signifikant
+- Regime-Wechsel können abrupt erfolgen
 - Nutze diese Strategie nur für explorative Analysen
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import numpy as np
 import pandas as pd
 
 from ..base import BaseStrategy, StrategyMetadata
+from .vol_model import (
+    VolRegime,
+    ElKarouiVolConfig,
+    ElKarouiVolModel,
+)
 
 
-class ElKarouiVolModelStrategy(BaseStrategy):
+# =============================================================================
+# REGIME → POSITION MAPPING
+# =============================================================================
+
+
+# Default Mapping: Regime → Zielposition (1=long, 0=flat)
+DEFAULT_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
+    VolRegime.LOW: 1,      # Long bei niedriger Volatilität
+    VolRegime.MEDIUM: 1,   # Long bei mittlerer Volatilität (reduziert durch Scaling)
+    VolRegime.HIGH: 0,     # Flat bei hoher Volatilität (Risk-Off)
+}
+
+# Konservatives Mapping: Nur in LOW-Vol long
+CONSERVATIVE_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
+    VolRegime.LOW: 1,      # Long nur bei niedriger Vol
+    VolRegime.MEDIUM: 0,   # Flat bei mittlerer Vol
+    VolRegime.HIGH: 0,     # Flat bei hoher Vol
+}
+
+# Aggressives Mapping: Immer long, nur Scaling unterschiedlich
+AGGRESSIVE_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
+    VolRegime.LOW: 1,      # Long bei niedriger Vol
+    VolRegime.MEDIUM: 1,   # Long bei mittlerer Vol
+    VolRegime.HIGH: 1,     # Long auch bei hoher Vol (reduziert durch Scaling)
+}
+
+
+# =============================================================================
+# EL KAROUI VOLATILITY STRATEGY
+# =============================================================================
+
+
+class ElKarouiVolatilityStrategy(BaseStrategy):
     """
-    El Karoui Stochastic Volatility Model Strategy.
+    El Karoui Volatility Model Strategy.
 
     ⚠️ RESEARCH-ONLY – NICHT FÜR LIVE-TRADING FREIGEGEBEN ⚠️
 
-    Diese Strategie nutzt Konzepte aus stochastischen Volatilitätsmodellen
-    für Regime-Detection und Volatilitäts-basierte Signale.
+    Diese Strategie nutzt das ElKarouiVolModel zur Volatilitäts-Regime-Erkennung
+    und passt das Exposure entsprechend an.
 
     Konzept:
-    - Schätzt lokale Volatilität aus historischen Daten
-    - Identifiziert Volatilitäts-Regime (low/normal/high)
-    - Generiert Signale basierend auf Vol-Regime-Wechseln
-
-    Theoretischer Hintergrund:
-    - Lokale Volatilität: σ(t, S_t) als Funktion von Zeit und Preis
-    - Mean-Reversion der Volatilität (typisch für stoch. Vol-Modelle)
-    - Volatilitäts-Surface-Analyse (für spätere Erweiterung)
+    - Berechnet realisierte Volatilität aus historischen Returns
+    - Klassifiziert Vol-Regime (LOW / MEDIUM / HIGH) basierend auf Perzentilen
+    - Generiert Signale basierend auf Regime:
+      * LOW-Vol → long (Risk-On, geringe Marktrisiken)
+      * MEDIUM-Vol → long (mit reduziertem Exposure via Scaling)
+      * HIGH-Vol → flat (Risk-Off, erhöhte Marktrisiken)
+    - Optional: Vol-Target-Scaling für Position-Sizing
 
     Attributes:
-        vol_window: Fenster für Volatilitätsschätzung
-        vol_threshold_low: Schwelle für "niedrige" Volatilität
-        vol_threshold_high: Schwelle für "hohe" Volatilität
-        use_ewm: Ob exponentiell gewichtete Schätzung verwendet wird
+        vol_model: ElKarouiVolModel-Instanz für Vol-Berechnung
+        regime_position_map: Mapping Regime → Position
+        use_vol_scaling: Ob Vol-Target-Scaling angewendet werden soll
 
     Args:
-        vol_window: Fenster für historische Volatilität
-        vol_threshold_low: Untere Schwelle (z.B. 0.3 = 30. Perzentil)
-        vol_threshold_high: Obere Schwelle (z.B. 0.7 = 70. Perzentil)
+        vol_window: Fenster für Volatilitätsschätzung
+        lookback_window: Fenster für Perzentil-Berechnung
+        low_threshold: Schwelle für LOW-Regime
+        high_threshold: Schwelle für HIGH-Regime
+        vol_target: Ziel-Volatilität p.a. für Scaling
         use_ewm: Exponentiell gewichtete Volatilität
+        use_vol_scaling: Ob Vol-Scaling für Position-Sizing verwendet wird
+        regime_position_map: Mapping-Strategie (dict oder "default"/"conservative"/"aggressive")
         config: Optional Config-Dict
         metadata: Optional StrategyMetadata
 
     Example:
         >>> # NUR FÜR RESEARCH
-        >>> strategy = ElKarouiVolModelStrategy()
-        >>> signals = strategy.generate_signals(df)  # Dummy-Signal
+        >>> strategy = ElKarouiVolatilityStrategy()
+        >>> signals = strategy.generate_signals(df)
+        >>> print(signals.value_counts())
 
-    Notes:
-        Diese Strategie ist ein Research-Stub. Die vollständige Implementierung
-        würde umfassen:
-        1. Robuste Volatilitätsschätzung (realized vol, Parkinson, etc.)
-        2. Volatilitäts-Regime-Klassifikation
-        3. Optional: Vergleich mit impliziter Volatilität (wenn Optionsdaten verfügbar)
+    Raises:
+        RnDLiveTradingBlockedError: Bei Versuch, in Live/Paper/Testnet zu laufen
     """
 
-    KEY = "el_karoui_vol_model"
+    KEY = "el_karoui_vol_v1"
 
-    # Research-only Konstanten
+    # R&D-Only Konstanten - NICHT ÄNDERN!
     IS_LIVE_READY = False
     ALLOWED_ENVIRONMENTS = ["offline_backtest", "research"]
     TIER = "r_and_d"
 
     # Default-Parameter
     DEFAULT_VOL_WINDOW = 20
-    DEFAULT_VOL_THRESHOLD_LOW = 0.3
-    DEFAULT_VOL_THRESHOLD_HIGH = 0.7
+    DEFAULT_LOOKBACK_WINDOW = 252
+    DEFAULT_LOW_THRESHOLD = 0.30
+    DEFAULT_HIGH_THRESHOLD = 0.70
+    DEFAULT_VOL_TARGET = 0.10
 
     def __init__(
         self,
         vol_window: int = DEFAULT_VOL_WINDOW,
-        vol_threshold_low: float = DEFAULT_VOL_THRESHOLD_LOW,
-        vol_threshold_high: float = DEFAULT_VOL_THRESHOLD_HIGH,
+        lookback_window: int = DEFAULT_LOOKBACK_WINDOW,
+        low_threshold: float = DEFAULT_LOW_THRESHOLD,
+        high_threshold: float = DEFAULT_HIGH_THRESHOLD,
+        vol_target: float = DEFAULT_VOL_TARGET,
         use_ewm: bool = True,
+        use_vol_scaling: bool = True,
         annualization_factor: float = 252.0,
+        regime_position_map: Optional[Dict[VolRegime, int] | str] = None,
         config: Optional[Dict[str, Any]] = None,
         metadata: Optional[StrategyMetadata] = None,
     ) -> None:
         """
-        Initialisiert El Karoui Vol Model Strategy.
+        Initialisiert El Karoui Volatility Strategy.
 
         Args:
             vol_window: Fenster für Volatilitätsschätzung
-            vol_threshold_low: Untere Schwelle für Regime-Klassifikation
-            vol_threshold_high: Obere Schwelle für Regime-Klassifikation
+            lookback_window: Fenster für Perzentil-Berechnung
+            low_threshold: Schwelle für LOW-Regime (Perzentil)
+            high_threshold: Schwelle für HIGH-Regime (Perzentil)
+            vol_target: Ziel-Volatilität p.a. für Scaling
             use_ewm: Ob exponentiell gewichtete Schätzung verwendet wird
-            annualization_factor: Faktor für Annualisierung (252 für täglich)
+            use_vol_scaling: Ob Vol-Target-Scaling angewendet wird
+            annualization_factor: Faktor für Annualisierung
+            regime_position_map: Mapping-Strategie (dict oder String)
             config: Optional Config-Dict (überschreibt Parameter)
             metadata: Optional Metadata
         """
         # Config zusammenbauen
         initial_config = {
             "vol_window": vol_window,
-            "vol_threshold_low": vol_threshold_low,
-            "vol_threshold_high": vol_threshold_high,
+            "lookback_window": lookback_window,
+            "low_threshold": low_threshold,
+            "high_threshold": high_threshold,
+            "vol_target": vol_target,
             "use_ewm": use_ewm,
+            "use_vol_scaling": use_vol_scaling,
             "annualization_factor": annualization_factor,
+            "regime_position_map": regime_position_map or "default",
         }
 
         # Config-Override falls übergeben
@@ -138,33 +189,80 @@ class ElKarouiVolModelStrategy(BaseStrategy):
         # Research-only Metadata
         if metadata is None:
             metadata = StrategyMetadata(
-                name="El Karoui Vol Model v0 (Research)",
+                name="El Karoui Volatility Model",
                 description=(
-                    "Stochastische Volatilitätsmodell-Strategie für Research-Zwecke. "
+                    "Volatilitäts-Regime-basierte Strategie für Research-Zwecke. "
                     "⚠️ NICHT FÜR LIVE-TRADING FREIGEGEBEN. "
-                    "Basiert auf Nicole El Karouis Arbeiten zu stoch. Vol-Modellen."
+                    "Basiert auf Konzepten von Nicole El Karoui zu stoch. Vol-Modellen."
                 ),
-                version="0.1.0-research",
+                version="1.0.0-r_and_d",
                 author="Peak_Trade Research",
                 regime="vol_regime",
-                tags=["research", "el_karoui", "stochastic_vol", "volatility", "quant"],
+                tags=["research", "el_karoui", "volatility", "regime", "r_and_d"],
             )
 
         super().__init__(config=initial_config, metadata=metadata)
 
         # Parameter extrahieren
         self.vol_window = self.config.get("vol_window", vol_window)
-        self.vol_threshold_low = self.config.get("vol_threshold_low", vol_threshold_low)
-        self.vol_threshold_high = self.config.get("vol_threshold_high", vol_threshold_high)
+        self.lookback_window = self.config.get("lookback_window", lookback_window)
+        self.low_threshold = self.config.get("low_threshold", low_threshold)
+        self.high_threshold = self.config.get("high_threshold", high_threshold)
+        self.vol_target = self.config.get("vol_target", vol_target)
         self.use_ewm = self.config.get("use_ewm", use_ewm)
+        self.use_vol_scaling = self.config.get("use_vol_scaling", use_vol_scaling)
         self.annualization_factor = self.config.get("annualization_factor", annualization_factor)
+
+        # Vol-Model erstellen
+        vol_config = ElKarouiVolConfig(
+            vol_window=self.vol_window,
+            lookback_window=self.lookback_window,
+            low_threshold=self.low_threshold,
+            high_threshold=self.high_threshold,
+            use_ewm=self.use_ewm,
+            annualization_factor=self.annualization_factor,
+            vol_target=self.vol_target,
+        )
+        self.vol_model = ElKarouiVolModel(vol_config)
+
+        # Regime→Position Mapping
+        self.regime_position_map = self._resolve_regime_position_map(
+            self.config.get("regime_position_map", regime_position_map or "default")
+        )
+
+        # Validierung
+        self.validate()
+
+    def _resolve_regime_position_map(
+        self, mapping: Dict[VolRegime, int] | str | None
+    ) -> Dict[VolRegime, int]:
+        """
+        Löst das Regime→Position Mapping auf.
+
+        Args:
+            mapping: Dict oder String ("default", "conservative", "aggressive")
+
+        Returns:
+            Regime→Position Dict
+        """
+        if mapping is None or mapping == "default":
+            return DEFAULT_REGIME_POSITION_MAP.copy()
+        if mapping == "conservative":
+            return CONSERVATIVE_REGIME_POSITION_MAP.copy()
+        if mapping == "aggressive":
+            return AGGRESSIVE_REGIME_POSITION_MAP.copy()
+        if isinstance(mapping, dict):
+            return mapping.copy()
+
+        # Fallback
+        return DEFAULT_REGIME_POSITION_MAP.copy()
 
     @classmethod
     def from_config(
         cls,
         cfg: Any,
-        section: str = "strategy.el_karoui_vol_model",
-    ) -> "ElKarouiVolModelStrategy":
+        section: str = "strategy.el_karoui_vol_v1",
+    ) -> "ElKarouiVolatilityStrategy":
         """
         Fabrikmethode für Config-basierte Instanziierung.
 
@@ -173,43 +271,52 @@ class ElKarouiVolModelStrategy(BaseStrategy):
             section: Dotted-Path zum Config-Abschnitt
 
         Returns:
-            ElKarouiVolModelStrategy-Instanz
+            ElKarouiVolatilityStrategy-Instanz
         """
         vol_window = cfg.get(f"{section}.vol_window", cls.DEFAULT_VOL_WINDOW)
-        vol_low = cfg.get(f"{section}.vol_threshold_low", cls.DEFAULT_VOL_THRESHOLD_LOW)
-        vol_high = cfg.get(f"{section}.vol_threshold_high", cls.DEFAULT_VOL_THRESHOLD_HIGH)
+        lookback = cfg.get(f"{section}.lookback_window", cls.DEFAULT_LOOKBACK_WINDOW)
+        low_thresh = cfg.get(f"{section}.low_threshold", cls.DEFAULT_LOW_THRESHOLD)
+        high_thresh = cfg.get(f"{section}.high_threshold", cls.DEFAULT_HIGH_THRESHOLD)
+        vol_target = cfg.get(f"{section}.vol_target", cls.DEFAULT_VOL_TARGET)
         use_ewm = cfg.get(f"{section}.use_ewm", True)
+        use_scaling = cfg.get(f"{section}.use_vol_scaling", True)
         ann_factor = cfg.get(f"{section}.annualization_factor", 252.0)
+        regime_map = cfg.get(f"{section}.regime_position_map", "default")
 
         return cls(
             vol_window=vol_window,
-            vol_threshold_low=vol_low,
-            vol_threshold_high=vol_high,
+            lookback_window=lookback,
+            low_threshold=low_thresh,
+            high_threshold=high_thresh,
+            vol_target=vol_target,
             use_ewm=use_ewm,
+            use_vol_scaling=use_scaling,
             annualization_factor=ann_factor,
+            regime_position_map=regime_map,
         )
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
         Generiert Handelssignale basierend auf Volatilitäts-Regime.
 
-        ⚠️ RESEARCH-STUB: Aktuell wird ein Dummy-Signal (flat) zurückgegeben.
-        Die vollständige Implementierung erfolgt nach Research-Validierung.
+        Die Strategie:
+        1. Berechnet Returns aus Close-Preisen
+        2. Schätzt realisierte Volatilität
+        3. Klassifiziert Vol-Regime (LOW/MEDIUM/HIGH)
+        4. Mappt Regime auf Positionierungssignal
 
         Args:
             data: DataFrame mit OHLCV-Daten (mindestens 'close')
 
         Returns:
-            Series mit Signalen (aktuell: 0 für alle Bars = flat)
+            Series mit Signalen:
+            - 1 = long
+            - 0 = flat
 
-        Notes:
-            Die vollständige Implementierung würde:
-            1. Realisierte Volatilität berechnen
-            2. Volatilitäts-Regime klassifizieren
-            3. Signale basierend auf Regime-Wechseln generieren
-
-            Dies ist absichtlich ein Stub, um Research-Iteration zu ermöglichen,
-            ohne Live-Trading-Risiken.
+        Example:
+            >>> strategy = ElKarouiVolatilityStrategy()
+            >>> signals = strategy.generate_signals(df)
+            >>> print(signals.value_counts())
         """
         # Validierung
         if "close" not in data.columns:
@@ -217,44 +324,66 @@ class ElKarouiVolModelStrategy(BaseStrategy):
                 f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}"
             )
 
-        if len(data) < self.vol_window:
-            raise ValueError(
-                f"Brauche mind. {self.vol_window} Bars, habe nur {len(data)}"
-            )
+        if len(data) == 0:
+            return pd.Series([], dtype=int)
 
-        # Berechne Returns
+        min_required = max(self.vol_window, 10)
+        if len(data) < min_required:
+            # Fallback: Flat-Signale wenn zu wenig Daten
+            return pd.Series(0, index=data.index, dtype=int)
+
+        # Returns berechnen
         returns = data["close"].pct_change()
 
-        # Berechne realisierte Volatilität
-        if self.use_ewm:
-            vol = returns.ewm(span=self.vol_window, min_periods=self.vol_window).std()
-        else:
-            vol = returns.rolling(window=self.vol_window, min_periods=self.vol_window).std()
+        # Volatilität und Regime berechnen
+        vol = self.vol_model.calculate_realized_vol(returns)
+        percentiles = self.vol_model.calculate_vol_percentile(vol)
 
-        # Annualisierte Volatilität
-        vol_annualized = vol * np.sqrt(self.annualization_factor)
+        # Signale generieren
+        signals = []
+        regimes = []
+        scaling_factors = []
 
-        # Volatilitäts-Regime klassifizieren (für Analyse)
-        vol_quantiles = vol_annualized.rolling(
-            window=min(252, len(data) // 2), min_periods=self.vol_window
-        ).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1], raw=False)
+        for i in range(len(data)):
+            if i < self.vol_window or pd.isna(percentiles.iloc[i]):
+                # Warmup-Phase: Flat
+                regime = VolRegime.MEDIUM
+                position = 0
+                scaling = 0.5
+            else:
+                # Regime aus Perzentil bestimmen
+                pct = percentiles.iloc[i]
+                regime = self.vol_model.regime_for_percentile(pct)
 
-        # Regime-Klassifikation
-        vol_regime = pd.Series("normal", index=data.index)
-        vol_regime[vol_quantiles < self.vol_threshold_low] = "low"
-        vol_regime[vol_quantiles > self.vol_threshold_high] = "high"
+                # Position aus Mapping
+                position = self.regime_position_map.get(regime, 0)
 
-        # Research-Stub: Flat-Signal für alle Bars
-        # Die eigentliche Trading-Logik würde hier basierend auf
-        # vol_regime Signale generieren
-        signals = pd.Series(0, index=data.index, dtype=int)
+                # Optional: Vol-Scaling
+                if self.use_vol_scaling:
+                    current_vol = vol.iloc[i]
+                    if pd.isna(current_vol) or current_vol <= 0:
+                        scaling = 1.0
+                    else:
+                        scaling = self.vol_target / current_vol
+                        scaling = max(0.2, min(2.0, scaling))
+                else:
+                    scaling = 1.0
 
-        # Speichere Vol-Info in Signal-Metadata (für spätere Analyse)
-        signals.attrs["vol_annualized"] = vol_annualized
-        signals.attrs["vol_regime"] = vol_regime
-        signals.attrs["vol_quantiles"] = vol_quantiles
+            regimes.append(regime)
+            signals.append(position)
+            scaling_factors.append(scaling)
 
-        return signals
+        signal_series = pd.Series(signals, index=data.index, dtype=int)
+
+        # Metadaten für Analyse speichern
+        signal_series.attrs["regimes"] = [r.value for r in regimes]
+        signal_series.attrs["scaling_factors"] = scaling_factors
+        signal_series.attrs["vol_annualized"] = vol
+        signal_series.attrs["vol_percentiles"] = percentiles
+        signal_series.attrs["vol_window"] = self.vol_window
+        signal_series.attrs["vol_target"] = self.vol_target
+
+        return signal_series
 
     def get_vol_analysis(self, data: pd.DataFrame) -> Dict[str, Any]:
         """
@@ -264,46 +393,46 @@ class ElKarouiVolModelStrategy(BaseStrategy):
             data: DataFrame mit OHLCV-Daten
 
         Returns:
-            Dict mit:
-            - current_vol: Aktuelle realisierte Volatilität
-            - vol_regime: Aktuelles Volatilitäts-Regime
-            - vol_percentile: Perzentil der aktuellen Volatilität
-            - vol_history: Historische Volatilität (Series)
+            Dict mit Analyse-Ergebnissen vom ElKarouiVolModel
         """
         if "close" not in data.columns or len(data) < self.vol_window:
             return {
                 "current_vol": None,
-                "vol_regime": "unknown",
+                "vol_regime": VolRegime.MEDIUM,
                 "vol_percentile": None,
-                "vol_history": None,
+                "scaling_factor": None,
             }
 
-        returns = data["close"].pct_change()
+        returns = data["close"].pct_change().dropna()
+        return self.vol_model.get_vol_analysis(returns)
 
-        if self.use_ewm:
-            vol = returns.ewm(span=self.vol_window, min_periods=self.vol_window).std()
-        else:
-            vol = returns.rolling(window=self.vol_window, min_periods=self.vol_window).std()
+    def get_current_regime(self, data: pd.DataFrame) -> VolRegime:
+        """
+        Gibt das aktuelle Vol-Regime zurück.
 
-        vol_annualized = vol * np.sqrt(self.annualization_factor)
+        Args:
+            data: DataFrame mit OHLCV-Daten
 
-        current_vol = vol_annualized.iloc[-1]
-        vol_percentile = (vol_annualized < current_vol).mean()
+        Returns:
+            VolRegime (LOW, MEDIUM, HIGH)
+        """
+        if "close" not in data.columns or len(data) < self.vol_window:
+            return VolRegime.MEDIUM
 
-        # Regime bestimmen
-        if vol_percentile < self.vol_threshold_low:
-            vol_regime = "low"
-        elif vol_percentile > self.vol_threshold_high:
-            vol_regime = "high"
-        else:
-            vol_regime = "normal"
+        returns = data["close"].pct_change().dropna()
+        return self.vol_model.regime_for_returns(returns)
 
-        return {
-            "current_vol": current_vol,
-            "vol_regime": vol_regime,
-            "vol_percentile": vol_percentile,
-            "vol_history": vol_annualized,
-        }
+    def get_position_for_regime(self, regime: VolRegime) -> int:
+        """
+        Gibt die Zielposition für ein Regime zurück.
+
+        Args:
+            regime: VolRegime
+
+        Returns:
+            Position (0 oder 1)
+        """
+        return self.regime_position_map.get(regime, 0)
 
     def validate(self) -> None:
         """Validiert Parameter."""
@@ -311,39 +440,71 @@ class ElKarouiVolModelStrategy(BaseStrategy):
             raise ValueError(
                 f"vol_window ({self.vol_window}) muss >= 2 sein"
             )
-        if not 0 < self.vol_threshold_low < 1:
+        if self.lookback_window < self.vol_window:
             raise ValueError(
-                f"vol_threshold_low ({self.vol_threshold_low}) muss zwischen 0 und 1 sein"
+                f"lookback_window ({self.lookback_window}) muss >= vol_window ({self.vol_window}) sein"
             )
-        if not 0 < self.vol_threshold_high < 1:
+        if not 0 < self.low_threshold < 1:
             raise ValueError(
-                f"vol_threshold_high ({self.vol_threshold_high}) muss zwischen 0 und 1 sein"
+                f"low_threshold ({self.low_threshold}) muss zwischen 0 und 1 sein"
             )
-        if self.vol_threshold_low >= self.vol_threshold_high:
+        if not 0 < self.high_threshold < 1:
             raise ValueError(
-                f"vol_threshold_low ({self.vol_threshold_low}) muss < "
-                f"vol_threshold_high ({self.vol_threshold_high}) sein"
+                f"high_threshold ({self.high_threshold}) muss zwischen 0 und 1 sein"
             )
+        if self.low_threshold >= self.high_threshold:
+            raise ValueError(
+                f"low_threshold ({self.low_threshold}) muss < high_threshold ({self.high_threshold}) sein"
+            )
+
+    def get_strategy_info(self) -> Dict[str, Any]:
+        """
+        Gibt Strategy-Metadaten zurück (für Logs/Reports).
+
+        Returns:
+            Dict mit Strategy-Info inkl. Tier
+        """
+        return {
+            "id": "el_karoui_vol_v1",
+            "name": self.meta.name,
+            "category": "volatility",
+            "tier": self.TIER,
+            "is_live_ready": self.IS_LIVE_READY,
+            "allowed_environments": self.ALLOWED_ENVIRONMENTS,
+            "vol_window": self.vol_window,
+            "vol_target": self.vol_target,
+            "thresholds": [self.low_threshold, self.high_threshold],
+        }
 
     def __repr__(self) -> str:
         return (
-            f"<ElKarouiVolModelStrategy("
+            f"<ElKarouiVolatilityStrategy("
             f"window={self.vol_window}, "
-            f"thresholds=[{self.vol_threshold_low:.2f}, {self.vol_threshold_high:.2f}], "
-            f"ewm={self.use_ewm}) "
-            f"[RESEARCH-ONLY]>"
+            f"thresholds=[{self.low_threshold:.2f}, {self.high_threshold:.2f}], "
+            f"target={self.vol_target:.0%}) "
+            f"[R&D-ONLY, tier={self.TIER}]>"
         )
+
+
+# =============================================================================
+# ALIAS FÜR BACKWARDS COMPATIBILITY
+# =============================================================================
+
+
+# Alias für die alte Klasse (ElKarouiVolModelStrategy)
+ElKarouiVolModelStrategy = ElKarouiVolatilityStrategy
 
 
 # =============================================================================
 # LEGACY API (Falls benötigt für Backwards Compatibility)
 # =============================================================================
 
+
 def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility.
 
-    DEPRECATED: Bitte ElKarouiVolModelStrategy verwenden.
+    DEPRECATED: Bitte ElKarouiVolatilityStrategy verwenden.
     ⚠️ RESEARCH-ONLY – NICHT FÜR LIVE-TRADING
 
     Args:
@@ -351,7 +512,22 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
         params: Parameter-Dict
 
     Returns:
-        Signal-Series (0=flat für Research-Stub)
+        Signal-Series
     """
-    strategy = ElKarouiVolModelStrategy(config=params)
+    strategy = ElKarouiVolatilityStrategy(config=params)
     return strategy.generate_signals(df)
+
+
+# =============================================================================
+# EXPORTS
+# =============================================================================
+
+__all__ = [
+    "ElKarouiVolatilityStrategy",
+    "ElKarouiVolModelStrategy",  # Alias für Backwards Compatibility
+    "generate_signals",
+    # Regime-Position Mappings
+    "DEFAULT_REGIME_POSITION_MAP",
+    "CONSERVATIVE_REGIME_POSITION_MAP",
+    "AGGRESSIVE_REGIME_POSITION_MAP",
+]

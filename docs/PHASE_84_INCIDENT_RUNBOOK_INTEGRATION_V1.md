@@ -199,6 +199,37 @@ RUNBOOK_REGISTRY["new_runbook"] = RunbookLink(
 
 ---
 
+## Safety & Backward Compatibility
+
+Die Runbook-Integration ist als **optionale Anreicherung** der bestehenden Live-Alert-Pipeline implementiert:
+
+- Ein Fehler in der Runbook-Registry (`resolve_runbooks_for_alert`) darf **niemals** dazu führen, dass Alerts unterdrückt werden.
+- `_attach_runbooks()` fängt Exceptions ab, loggt sie und liefert den Alert ohne Runbook-Anreicherung weiter.
+- Alerts funktionieren auch ohne Runbooks vollständig (Slack/E-Mail, Persistierung, Dashboard).
+
+**Defensives Verhalten im Code:**
+
+```python
+def _attach_runbooks(self, alert: AlertMessage) -> None:
+    try:
+        from src.infra.runbooks import resolve_runbooks_for_alert
+        runbooks = resolve_runbooks_for_alert(alert)
+        if runbooks:
+            alert.context["runbooks"] = [...]
+    except Exception as e:
+        # Fehler loggen, aber NICHT propagieren
+        self._logger.debug(f"Failed to attach runbooks: {e}")
+```
+
+Damit bleibt das System auch bei Konfigurations- oder Implementierungsfehlern im Runbook-Layer sicher und nach hinten kompatibel.
+
+**Test-Abdeckung:**
+
+- `test_manager_attaches_runbooks_registry_error_does_not_break_alert` – Validiert, dass Registry-Exceptions Alerts nicht blockieren
+- `test_manager_persists_alert_even_when_runbook_resolution_fails` – Validiert Persistierung trotz Registry-Fehler
+
+---
+
 ## Akzeptanzkriterien
 
 - [x] Alerts aus `live_risk_severity` enthalten Risk-Severity-Runbook
@@ -209,6 +240,7 @@ RUNBOOK_REGISTRY["new_runbook"] = RunbookLink(
 - [x] Web-Dashboard zeigt Runbook-Badges in Alert-Tabelle
 - [x] Runbooks werden in Alert-Storage persistiert
 - [x] Alle Tests bestehen
+- [x] Runbook-Registry-Fehler blockieren keine Alerts (Safety Property)
 
 ---
 

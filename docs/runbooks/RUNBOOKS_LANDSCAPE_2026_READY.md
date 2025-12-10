@@ -22,6 +22,7 @@ Sie ist für **Operatoren, On-Call-Engineers und Risk Owner** gedacht, die im In
 | **R&D-Runbook Armstrong & El Karoui**           | `docs/runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md`               | v1.0            | Runbook für R&D-Experimente mit Armstrong- und El-Karoui-Modellen (Set-up, Parameter, typische Fallstricke)                            | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Research Pipelines**              | ⚠️ R&D only (kein Live) |
 | **R&D-Playbook Armstrong & El Karoui**          | `docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md`              | v1.0            | Playbook mit Best Practices, Experiment-Design, Parameter-Sweeps und Auswertungs-Patterns für Armstrong/El-Karoui                      | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Methodik**                        | ⚠️ R&D only (kein Live) |
 | **Armstrong × El Karoui Cross-Run Findings**    | `docs/runbooks/ARMSTRONG_ELKAROUI_CROSS_RUN_FINDINGS_V1.md`             | v1.0            | Konsolidierte Findings aus Cross-Runs (State-Rankings, Vol-Regime, Limitierungen), dient als Meta-Referenz für weitere R&D-Iterationen | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Meta-Analyse**                    | ⚠️ R&D only (kein Live) |
+| **Offline-Realtime-Pipeline Runbook**           | `docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md`                 | v1.0            | Operator-Runbook für die Offline-Realtime-Pipeline mit synthetischen Ticks (`is_synthetic=True`) und MA-Crossover-Strategie im Paper-Modus | Phase 16A / Offline-Realtime Safety Sandbox                | **Offline Testing, Execution**           | ✅ Safety-Sandbox       |
 
 > **Hinweis:** Pfade ggf. an die tatsächlichen Dateinamen im Repository anpassen.
 > R&D-Runbooks sind **nicht live-freigegeben** und ausschließlich für Offline-Backtests, Research-Pipelines und akademische Analysen gedacht.
@@ -136,7 +137,24 @@ Sie ist für **Operatoren, On-Call-Engineers und Risk Owner** gedacht, die im In
 
 ---
 
-## 6. Quick-Reference: Welche Situation → Welches Runbook?
+## 6. Offline-Testing & Safety-Sandbox Runbooks
+
+### 6.1 Offline-Realtime-Pipeline Runbook
+
+* **Pfad:** `docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md`
+* **Rolle:** Operator-Runbook für die Offline-Realtime-Pipeline:
+
+  * Setup & Workflow für synthetische Ticks (`is_synthetic=True`)
+  * MA-Crossover-Strategie im Paper-Modus
+  * Typische Szenarien: Smoke-Tests, Stress-Tests, Regime-Varianz, Seed-Sweeps
+  * Report-Generierung (Einzel-Run & Meta-Overview)
+  * Safety-Guardrails & Troubleshooting
+
+> **Safety:** Diese Pipeline ist eine **komplett sichere Sandbox** – synthetische Daten, Paper-Execution, keine echten Markt-Interaktionen.
+
+---
+
+## 7. Quick-Reference: Welche Situation → Welches Runbook?
 
 | Situation                                                   | Relevante Runbooks                                                          | Kommentar                                                                                              |
 | ----------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -147,10 +165,12 @@ Sie ist für **Operatoren, On-Call-Engineers und Risk Owner** gedacht, die im In
 | **Neue Alerts oder Änderungen an Escalation-Logik geplant** | Go/No-Go 2026, Live Alert Pipeline Runbook                                  | Änderungen nur über Go/No-Go-Prozess, Impact auf Operator-Flows prüfen                                 |
 | **R&D-Strategie Armstrong/El Karoui: Neuer Experiment-Run** | R&D-Runbook Armstrong & El Karoui, R&D-Playbook                             | Setup & Methodik prüfen, Parameter-Sets und Hypothesen sauber dokumentieren                            |
 | **Cross-Run-Analyse / Meta-Auswertung**                     | Armstrong × El Karoui Cross-Run Findings, R&D-Playbook                      | Bestehende Findings als Referenz nutzen, neue Runs konsistent einsortieren                             |
+| **Execution-Pipeline offline testen (Safety-Sandbox)**       | Offline-Realtime-Pipeline Runbook                                            | Synthetische Ticks + Paper-Execution, komplett sicher, ideal für Strategie-Tests                        |
+| **MA-Crossover-Strategie Parameter-Tuning**                  | Offline-Realtime-Pipeline Runbook                                            | Seed-Sweeps, verschiedene MA-Fenster, Regime-Varianz testen                                             |
 
 ---
 
-## 7. Architektur-Übersicht (Runbooks & Governance)
+## 8. Architektur-Übersicht (Runbooks & Governance)
 
 ```text
                       +--------------------------------------+
@@ -182,11 +202,20 @@ Sie ist für **Operatoren, On-Call-Engineers und Risk Owner** gedacht, die im In
                     | - R&D-Playbook                |
                     | - Cross-Run Findings          |
                     +-------------------------------+
+                                |
+                                v
+                    +-------------------------------+
+                    | Offline Testing & Safety      |
+                    | Sandbox                       |
+                    +-------------------------------+
+                    | - Offline-Realtime-Pipeline   |
+                    |   Runbook (v1.0)              |
+                    +-------------------------------+
 ```
 
 ---
 
-## 8. Governance-Verankerung & Code-Referenzen
+## 9. Governance-Verankerung & Code-Referenzen
 
 Die Runbooks sind nicht isoliert, sondern eng mit dem Code verknüpft:
 
@@ -200,7 +229,14 @@ Operatoren sollten Runbooks **immer im Kontext** dieser Module lesen – die Dok
 
 ---
 
-## 9. Change-Log
+## 10. Change-Log
+
+* **v1.1 – Dezember 2025**
+
+  * Ergänzung: **Offline-Realtime-Pipeline Runbook (v1.0)** – Safety-Sandbox für synthetische Ticks & Paper-Execution
+  * Neue Sektion 6: "Offline-Testing & Safety-Sandbox Runbooks"
+  * Quick-Reference erweitert um Offline-Testing-Szenarien
+  * Architektur-Diagramm erweitert
 
 * **v1.0 – Dezember 2025 – 2026-ready**
 

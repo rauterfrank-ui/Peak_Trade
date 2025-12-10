@@ -63,6 +63,49 @@ DEFAULT_POLICIES_PATH = Path("config/live_policies.toml")
 DEFAULT_TIERING_PATH = Path("config/strategy_tiering.toml")
 DEFAULT_PRESETS_DIR = Path("config/portfolio_presets")
 
+# R&D-Tier ist NIEMALS für Live/Paper/Testnet freigegeben
+R_AND_D_TIER = "r_and_d"
+BLOCKED_MODES_FOR_R_AND_D = ["live", "paper", "testnet", "shadow"]
+
+
+# =============================================================================
+# EXCEPTIONS
+# =============================================================================
+
+
+class RnDLiveTradingBlockedError(Exception):
+    """
+    Exception wenn eine R&D-Strategie in Live/Paper/Testnet ausgeführt werden soll.
+
+    R&D-Strategien (tier="r_and_d") sind ausschließlich für Research und
+    Offline-Backtests freigegeben. Diese Exception wird geworfen, wenn
+    versucht wird, eine solche Strategie in einem nicht-erlaubten Modus
+    zu starten.
+
+    Attributes:
+        strategy_id: ID der blockierten Strategie
+        mode: Der versuchte Ausführungsmodus
+        message: Detaillierte Fehlermeldung
+    """
+
+    def __init__(
+        self,
+        strategy_id: str,
+        mode: str,
+        message: Optional[str] = None,
+    ) -> None:
+        self.strategy_id = strategy_id
+        self.mode = mode
+        self.message = message or (
+            f"R&D-Strategie '{strategy_id}' ist für Modus '{mode}' NICHT freigegeben. "
+            f"R&D-Strategien sind ausschließlich für Research/Backtests vorgesehen. "
+            f"Erlaubte Modi: offline_backtest, research."
+        )
+        super().__init__(self.message)
+
+    def __str__(self) -> str:
+        return self.message
+
 
 # =============================================================================
 # DATA MODELS
@@ -246,6 +289,13 @@ def check_strategy_live_eligibility(
     details["allow_live"] = allow_live
 
     # Check 1: Tier-Anforderung
+    # R&D-Strategien sind NIEMALS für Live/Paper/Testnet freigegeben
+    if tier == R_AND_D_TIER:
+        reasons.append(
+            f"R&D-Strategien sind ausschließlich für Research/Backtests freigegeben "
+            f"(tier={tier}). Live/Paper/Testnet ist blockiert."
+        )
+
     if tier == "legacy" and not policies.allow_legacy:
         reasons.append(f"Legacy-tier strategies are not eligible (tier={tier})")
 
@@ -549,10 +599,156 @@ def get_eligibility_summary() -> Dict[str, Any]:
 
 
 # =============================================================================
+# R&D TIER GATING
+# =============================================================================
+
+
+def check_r_and_d_tier_for_mode(
+    strategy_id: str,
+    mode: str,
+    tiering_config_path: Path = DEFAULT_TIERING_PATH,
+) -> bool:
+    """
+    Prüft, ob eine R&D-Strategie für einen bestimmten Modus blockiert ist.
+
+    R&D-Strategien (tier="r_and_d") sind ausschließlich für "offline_backtest"
+    und "research" freigegeben. Alle anderen Modi werden blockiert.
+
+    Args:
+        strategy_id: Strategy-ID
+        mode: Ausführungsmodus (live, paper, testnet, shadow, offline_backtest, research)
+        tiering_config_path: Pfad zur Tiering-Config
+
+    Returns:
+        True wenn blockiert (R&D + nicht-erlaubter Modus), False sonst
+
+    Example:
+        >>> is_blocked = check_r_and_d_tier_for_mode("armstrong_cycle", "live")
+        >>> print(is_blocked)
+        True
+    """
+    tiering = load_tiering_config(tiering_config_path)
+    tiering_info = tiering.get(strategy_id)
+
+    if tiering_info is None:
+        return False  # Unbekannte Strategie, nicht blockiert
+
+    if tiering_info.tier != R_AND_D_TIER:
+        return False  # Nicht R&D, nicht blockiert
+
+    # R&D-Strategie: Prüfe Modus
+    return mode.lower() in BLOCKED_MODES_FOR_R_AND_D
+
+
+def assert_strategy_not_r_and_d_for_live(
+    strategy_id: str,
+    mode: str,
+    tiering_config_path: Path = DEFAULT_TIERING_PATH,
+) -> None:
+    """
+    Stellt sicher, dass eine R&D-Strategie nicht in Live/Paper/Testnet läuft.
+
+    Wirft RnDLiveTradingBlockedError wenn die Strategie R&D-Tier hat
+    und der Modus nicht erlaubt ist.
+
+    Args:
+        strategy_id: Strategy-ID
+        mode: Ausführungsmodus
+        tiering_config_path: Pfad zur Tiering-Config
+
+    Raises:
+        RnDLiveTradingBlockedError: Wenn R&D-Strategie in nicht-erlaubtem Modus
+
+    Example:
+        >>> # Wirft Exception
+        >>> assert_strategy_not_r_and_d_for_live("armstrong_cycle", "live")
+        RnDLiveTradingBlockedError: R&D-Strategie 'armstrong_cycle' ist für Modus 'live' NICHT freigegeben...
+
+        >>> # OK, keine Exception
+        >>> assert_strategy_not_r_and_d_for_live("armstrong_cycle", "offline_backtest")
+    """
+    if check_r_and_d_tier_for_mode(strategy_id, mode, tiering_config_path):
+        raise RnDLiveTradingBlockedError(strategy_id, mode)
+
+    logger.debug(f"Strategy '{strategy_id}' is allowed for mode '{mode}'")
+
+
+def get_strategy_tier(
+    strategy_id: str,
+    tiering_config_path: Path = DEFAULT_TIERING_PATH,
+) -> str:
+    """
+    Gibt den Tier einer Strategie zurück.
+
+    Args:
+        strategy_id: Strategy-ID
+        tiering_config_path: Pfad zur Tiering-Config
+
+    Returns:
+        Tier-String (core, aux, legacy, r_and_d, unclassified)
+
+    Example:
+        >>> tier = get_strategy_tier("armstrong_cycle")
+        >>> print(tier)
+        r_and_d
+    """
+    tiering = load_tiering_config(tiering_config_path)
+    tiering_info = tiering.get(strategy_id)
+
+    if tiering_info is None:
+        return "unclassified"
+
+    return tiering_info.tier
+
+
+def log_strategy_tier_info(
+    strategy_id: str,
+    tiering_config_path: Path = DEFAULT_TIERING_PATH,
+) -> Dict[str, Any]:
+    """
+    Gibt Tier-Informationen für Logs/Reports zurück.
+
+    Args:
+        strategy_id: Strategy-ID
+        tiering_config_path: Pfad zur Tiering-Config
+
+    Returns:
+        Dict mit Tier-Informationen
+
+    Example:
+        >>> info = log_strategy_tier_info("armstrong_cycle")
+        >>> print(info)
+        {'strategy_id': 'armstrong_cycle', 'tier': 'r_and_d', 'is_r_and_d': True, ...}
+    """
+    tiering = load_tiering_config(tiering_config_path)
+    tiering_info = tiering.get(strategy_id)
+
+    if tiering_info is None:
+        return {
+            "strategy_id": strategy_id,
+            "tier": "unclassified",
+            "is_r_and_d": False,
+            "allow_live": False,
+            "notes": "Kein Tiering-Eintrag vorhanden",
+        }
+
+    return {
+        "strategy_id": strategy_id,
+        "tier": tiering_info.tier,
+        "is_r_and_d": tiering_info.tier == R_AND_D_TIER,
+        "allow_live": tiering_info.allow_live,
+        "notes": tiering_info.notes,
+        "recommended_config_id": tiering_info.recommended_config_id,
+    }
+
+
+# =============================================================================
 # EXPORTS
 # =============================================================================
 
 __all__ = [
+    # Exceptions
+    "RnDLiveTradingBlockedError",
     # Data Models
     "LiveGateResult",
     "LivePolicies",
@@ -567,4 +763,12 @@ __all__ = [
     "assert_strategy_eligible",
     "assert_portfolio_eligible",
     "get_eligibility_summary",
+    # R&D Tier Gating
+    "check_r_and_d_tier_for_mode",
+    "assert_strategy_not_r_and_d_for_live",
+    "get_strategy_tier",
+    "log_strategy_tier_info",
+    # Constants
+    "R_AND_D_TIER",
+    "BLOCKED_MODES_FOR_R_AND_D",
 ]

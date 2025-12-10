@@ -9,6 +9,8 @@ einen OrderExecutor (z. B. PaperOrderExecutor) auszufuehren.
 Hauptkomponenten:
 - ExecutionPipeline: Zentrale Pipeline-Klasse fuer Order-Ausfuehrung
 - ExecutionPipelineConfig: Konfiguration fuer die Pipeline
+- OrderIntent: Order-Absicht fuer submit_order() (Phase 16A V2)
+- ExecutionStatus: Detaillierter Execution-Status (Phase 16A V2)
 - LiveSessionRunner: Strategy-to-Execution Bridge (Phase 80)
 - LiveSessionConfig: Konfiguration fuer LiveSessionRunner
 
@@ -18,9 +20,13 @@ Die Pipeline kann verwendet werden in:
 - Shadow/Testnet-Sessions (Phase 80)
 - Forward-/Live-Simulationen (zukuenftig)
 
-WICHTIG: Es werden KEINE echten Orders an Boersen gesendet.
-         Alles bleibt auf Paper-/Sandbox-Level.
-         LIVE-Mode ist in Phase 80 NICHT erlaubt!
+Phase 16A V2 (Governance-aware):
+- Governance-Integration via get_governance_status("live_order_execution")
+- live_order_execution ist gesperrt (status="locked")
+- Bei env="live" wird GovernanceViolationError/LiveExecutionLockedError geworfen
+
+WICHTIG: Es werden KEINE echten Live-Orders an Boersen gesendet!
+         live_order_execution ist governance-seitig gesperrt.
 """
 from __future__ import annotations
 
@@ -29,6 +35,15 @@ from .pipeline import (
     ExecutionPipelineConfig,
     SignalEvent,
     ExecutionResult,
+    # Phase 16A V2: Neue Komponenten
+    OrderIntent,
+    ExecutionStatus,
+    ExecutionEnvironment,
+    # Phase 16A V2: Exceptions
+    ExecutionPipelineError,
+    GovernanceViolationError,
+    LiveExecutionLockedError,
+    RiskCheckFailedError,
 )
 
 from .live_session import (
@@ -47,6 +62,15 @@ __all__ = [
     "ExecutionPipelineConfig",
     "SignalEvent",
     "ExecutionResult",
+    # Phase 16A V2: Neue Komponenten
+    "OrderIntent",
+    "ExecutionStatus",
+    "ExecutionEnvironment",
+    # Phase 16A V2: Exceptions
+    "ExecutionPipelineError",
+    "GovernanceViolationError",
+    "LiveExecutionLockedError",
+    "RiskCheckFailedError",
     # Phase 80: Live Session
     "LiveSessionRunner",
     "LiveSessionConfig",
