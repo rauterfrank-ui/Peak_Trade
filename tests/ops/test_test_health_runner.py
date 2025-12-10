@@ -374,6 +374,134 @@ class TestRunTestHealthProfile:
 
 
 # ============================================================================
+# Tests für Test Health History
+# ============================================================================
+
+
+class TestHealthHistory:
+    """Tests für test_health_history.py"""
+
+    def test_append_and_load_history(self, tmp_path):
+        """Test: Historie anlegen und laden."""
+        import datetime as dt
+        from src.ops.test_health_history import (
+            append_to_history,
+            load_history,
+            HealthHistoryEntry,
+        )
+
+        history_path = tmp_path / "history.json"
+
+        # Erstelle eine Test-Summary
+        summary = TestHealthSummary(
+            profile_name="test_profile",
+            started_at=dt.datetime(2025, 12, 10, 14, 0, 0),
+            finished_at=dt.datetime(2025, 12, 10, 14, 5, 0),
+            checks=[],
+            health_score=85.0,
+            passed_checks=3,
+            failed_checks=1,
+            skipped_checks=0,
+            total_weight=10,
+            passed_weight=8,
+        )
+
+        # Füge zur Historie hinzu
+        result_path = append_to_history(summary, tmp_path / "report", history_path)
+        assert result_path == history_path
+        assert history_path.exists()
+
+        # Lade Historie
+        entries = load_history(history_path, "test_profile")
+        assert len(entries) == 1
+        assert entries[0].profile_name == "test_profile"
+        assert entries[0].health_score == 85.0
+        assert entries[0].passed_checks == 3
+
+    def test_get_history_stats(self, tmp_path):
+        """Test: Historie-Statistiken berechnen."""
+        import datetime as dt
+        from src.ops.test_health_history import (
+            append_to_history,
+            get_history_stats,
+        )
+
+        history_path = tmp_path / "history.json"
+
+        # Erstelle mehrere Einträge
+        for i, score in enumerate([70.0, 75.0, 80.0, 85.0]):
+            summary = TestHealthSummary(
+                profile_name="test_profile",
+                started_at=dt.datetime(2025, 12, 10, 14, i, 0),
+                finished_at=dt.datetime(2025, 12, 10, 14, i, 30),
+                checks=[],
+                health_score=score,
+                passed_checks=3,
+                failed_checks=1,
+                skipped_checks=0,
+                total_weight=10,
+                passed_weight=int(score / 10),
+            )
+            append_to_history(summary, history_path=history_path)
+
+        # Hole Stats
+        stats = get_history_stats("test_profile", days=14, history_path=history_path)
+
+        assert stats["count"] == 4
+        assert stats["avg_score"] == 77.5
+        assert stats["min_score"] == 70.0
+        assert stats["max_score"] == 85.0
+        assert stats["latest_score"] == 85.0
+        assert stats["trend"] == "improving"  # Steigender Trend
+
+    def test_load_history_empty(self, tmp_path):
+        """Test: Leere Historie laden."""
+        from src.ops.test_health_history import load_history
+
+        history_path = tmp_path / "nonexistent.json"
+        entries = load_history(history_path, "test_profile")
+        assert entries == []
+
+    def test_history_filter_by_profile(self, tmp_path):
+        """Test: Historie nach Profil filtern."""
+        import datetime as dt
+        from src.ops.test_health_history import (
+            append_to_history,
+            load_history,
+        )
+
+        history_path = tmp_path / "history.json"
+
+        # Erstelle Einträge für verschiedene Profile
+        for profile in ["profile_a", "profile_b", "profile_a"]:
+            summary = TestHealthSummary(
+                profile_name=profile,
+                started_at=dt.datetime.utcnow(),
+                finished_at=dt.datetime.utcnow(),
+                checks=[],
+                health_score=100.0,
+                passed_checks=1,
+                failed_checks=0,
+                skipped_checks=0,
+                total_weight=1,
+                passed_weight=1,
+            )
+            append_to_history(summary, history_path=history_path)
+
+        # Lade nur profile_a
+        entries_a = load_history(history_path, "profile_a")
+        assert len(entries_a) == 2
+
+        # Lade nur profile_b
+        entries_b = load_history(history_path, "profile_b")
+        assert len(entries_b) == 1
+
+        # Lade alle
+        entries_all = load_history(history_path, None)
+        assert len(entries_all) == 3
+
+
+# ============================================================================
 # Marker für Slow-Tests (falls gewünscht)
 # ============================================================================
 

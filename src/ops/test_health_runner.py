@@ -654,6 +654,14 @@ def run_test_health_profile(
     write_test_health_markdown(summary, report_dir / "summary.md")
     write_test_health_html(summary, report_dir / "summary.html")
 
+    # 6) Historie aktualisieren
+    try:
+        from .test_health_history import append_to_history
+        history_path = append_to_history(summary, report_dir)
+        print(f"📊 Historie aktualisiert: {history_path}")
+    except Exception as e:
+        print(f"⚠️ Historie konnte nicht aktualisiert werden: {e}")
+
     print(f"\n✅ Reports erzeugt: {report_dir}")
 
     return summary, report_dir
