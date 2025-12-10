@@ -25,6 +25,11 @@ from src.trigger_training.hooks import (
     TriggerTrainingHookConfig,
     build_trigger_training_events_from_dfs,
 )
+from src.trigger_training.session_data_store import (
+    load_session_data,
+    session_exists,
+    list_session_ids,
+)
 from src.reporting.offline_paper_trade_integration import (
     OfflinePaperTradeReportConfig,
     generate_reports_for_offline_paper_trade,
@@ -77,15 +82,86 @@ def load_data_for_session(session_id: str) -> Tuple[
     pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp
 ]:
     """
-    Demo-Implementierung für eine Offline-Trigger-Training-Session.
+    Lädt Session-Daten aus dem Session Data Store oder generiert Demo-Daten.
 
-    Diese Funktion erzeugt synthetische DataFrames, die exakt das Schema
-    nachbilden, das deine echte Offline-Session liefern sollte.
+    Workflow:
+      1. Prüft, ob session_id im Store existiert (live_runs/sessions/<session_id>/)
+      2. Falls ja: Lädt echte Daten aus dem Store
+      3. Falls nein: Generiert synthetische Demo-Daten für Testing
+    
+    Returns
+    -------
+    Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp]
+        trades_df, signals_df, actions_df, prices_df, start_ts, end_ts
+    
+    Erwartete Schemas:
+    ------------------
+    prices_df:
+        - timestamp (datetime): Zeitstempel
+        - close (float): Close-Preis
+        - optional: symbol, open, high, low, volume
+    
+    signals_df:
+        - signal_id (int): Eindeutige Signal-ID
+        - timestamp (datetime): Signal-Zeitstempel
+        - symbol (str): Trading-Symbol
+        - signal_state (int): Signal-Zustand (-1/0/1 für SHORT/FLAT/LONG)
+        - recommended_action (str): Empfohlene Action (z.B. "ENTER_LONG")
+    
+    actions_df:
+        - signal_id (int): Referenz zu signals_df
+        - timestamp (datetime): Action-Zeitstempel
+        - user_action (str): User-Reaktion (z.B. "EXECUTED", "SKIPPED")
+        - note (str): Optionale Notiz
+    
+    trades_df:
+        - timestamp (datetime): Trade-Zeitstempel
+        - price (float): Fill-Preis
+        - qty (float): Menge (signed: positiv=long, negativ=short)
+        - pnl (float): Profit/Loss
+        - fees (float): Gebühren
+    """
+    # Versuch 1: Echte Daten aus dem Store laden
+    if session_exists(session_id):
+        print(f"[LOAD] Lade echte Session-Daten aus Store: {session_id}")
+        data = load_session_data(session_id)
+        
+        trades_df = data["trades"]
+        signals_df = data["signals"]
+        actions_df = data["actions"]
+        prices_df = data["prices"]
+        meta = data["meta"]
+        
+        start_ts = pd.Timestamp(meta.start_ts)
+        end_ts = pd.Timestamp(meta.end_ts)
+        
+        print(f"[LOAD] Erfolgreich: {len(signals_df)} Signale, {len(trades_df)} Trades")
+        return trades_df, signals_df, actions_df, prices_df, start_ts, end_ts
+    
+    # Versuch 2: Demo-Daten generieren
+    print(f"[LOAD] Session '{session_id}' nicht im Store gefunden.")
+    available = list_session_ids()
+    if available:
+        print(f"[LOAD] Verfügbare Sessions: {', '.join(available[:5])}...")
+    else:
+        print(f"[LOAD] Keine Sessions im Store vorhanden.")
+    print(f"[LOAD] Generiere synthetische Demo-Daten für Testing...")
+    
+    return _generate_demo_data()
 
-    Du kannst diese Implementierung verwenden um:
-      - das Script sofort zu testen
-      - das erwartete Schema zu sehen
-      - später 1:1 durch deine echte Pipeline-Anbindung zu ersetzen.
+
+def _generate_demo_data() -> Tuple[
+    pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp
+]:
+    """
+    Generiert synthetische Demo-Daten für Testing.
+
+    Diese Funktion erzeugt 5 Signale mit verschiedenen Szenarien:
+      - Szenario 1: Schnelle Ausführung (2s nach Signal)
+      - Szenario 2: Zu späte Ausführung (12s nach Signal)
+      - Szenario 3: Verpasster Trade (keine Action)
+      - Szenario 4: Rechtzeitig ausgeführtes Signal (3s nach Signal)
+      - Szenario 5: Bewusst übersprungenes Signal (SKIPPED)
     """
     # --- 1) Preis-Zeitreihe (prices_df) -----------------------------
     start_ts = pd.Timestamp("2025-01-01T00:00:00Z")
