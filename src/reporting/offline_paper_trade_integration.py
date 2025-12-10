@@ -101,10 +101,19 @@ def generate_reports_for_offline_paper_trade(
                 "timeframe": report_config.timeframe,
             }
 
+        # NEU: Extrahiere Speed-Metriken aus session_meta (falls vorhanden)
+        reaction_summary = None
+        latency_summary = None
+        if isinstance(session_meta_for_trigger, dict):
+            reaction_summary = session_meta_for_trigger.get("reaction_summary")
+            latency_summary = session_meta_for_trigger.get("latency_summary")
+
         trigger_report_path = build_trigger_training_report(
             events=list(trigger_events),
             output_dir=output_dir,
             session_meta=session_meta_for_trigger,
+            reaction_summary=reaction_summary,
+            latency_summary=latency_summary,
         )
         result["trigger_report"] = trigger_report_path
 

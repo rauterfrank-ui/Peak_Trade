@@ -1,0 +1,176 @@
+name: Offline Test Suites
+
+on:
+  schedule:
+    # Daily Suite: Jeden Tag um 02:00 UTC
+    - cron: '0 2 * * *'
+    # Weekly Suite: Jeden Montag um 03:00 UTC
+    - cron: '0 3 * * 1'
+  
+  # Manueller Trigger über GitHub UI
+  workflow_dispatch:
+    inputs:
+      suite_type:
+        description: 'Suite-Typ zum Ausführen'
+        required: true
+        default: 'daily'
+        type: choice
+        options:
+          - daily
+          - weekly
+          - both
+
+jobs:
+  # ===========================================================================
+  # Daily Suite Job
+  # ===========================================================================
+  daily-suite:
+    name: Daily Test Suite
+    runs-on: ubuntu-latest
+    
+    # Nur ausführen wenn:
+    # - Schedule-Trigger für Daily (02:00 UTC)
+    # - Manueller Trigger mit suite_type='daily' oder 'both'
+    if: |
+      (github.event.schedule == '0 2 * * *') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.suite_type == 'daily' || inputs.suite_type == 'both'))
+    
+    timeout-minutes: 30
+    
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: 🧪 Run Daily Suite
+        run: |
+          python scripts/automation/run_offline_daily_suite.py --verbose
+      
+      - name: 📊 Upload Automation Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-suite-reports-${{ github.run_number }}
+          path: reports/automation/daily/
+          retention-days: 30
+          if-no-files-found: warn
+      
+      - name: 📈 Check Suite Status
+        if: always()
+        run: |
+          # Parse JSON-Log und prüfe auf Failed Jobs
+          LATEST_LOG=$(ls -t reports/automation/daily/automation_daily_*.json | head -1)
+          if [ -f "$LATEST_LOG" ]; then
+            FAILED_JOBS=$(jq '.summary.jobs_failed' "$LATEST_LOG")
+            echo "Failed Jobs: $FAILED_JOBS"
+            if [ "$FAILED_JOBS" -gt 0 ]; then
+              echo "❌ Daily Suite hat $FAILED_JOBS fehlgeschlagene Job(s)"
+              exit 1
+            else
+              echo "✅ Daily Suite erfolgreich abgeschlossen"
+            fi
+          else
+            echo "⚠️  Kein JSON-Log gefunden"
+            exit 1
+          fi
+
+  # ===========================================================================
+  # Weekly Suite Job
+  # ===========================================================================
+  weekly-suite:
+    name: Weekly Test Suite
+    runs-on: ubuntu-latest
+    
+    # Nur ausführen wenn:
+    # - Schedule-Trigger für Weekly (03:00 UTC am Montag)
+    # - Manueller Trigger mit suite_type='weekly' oder 'both'
+    if: |
+      (github.event.schedule == '0 3 * * 1') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.suite_type == 'weekly' || inputs.suite_type == 'both'))
+    
+    timeout-minutes: 90
+    
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: 🧪 Run Weekly Suite
+        run: |
+          python scripts/automation/run_offline_weekly_suite.py --verbose
+      
+      - name: 📊 Upload Automation Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-suite-reports-${{ github.run_number }}
+          path: reports/automation/weekly/
+          retention-days: 90
+          if-no-files-found: warn
+      
+      - name: 📈 Check Suite Status
+        if: always()
+        run: |
+          # Parse JSON-Log und prüfe auf Failed Jobs
+          LATEST_LOG=$(ls -t reports/automation/weekly/automation_weekly_*.json | head -1)
+          if [ -f "$LATEST_LOG" ]; then
+            FAILED_JOBS=$(jq '.summary.jobs_failed' "$LATEST_LOG")
+            echo "Failed Jobs: $FAILED_JOBS"
+            if [ "$FAILED_JOBS" -gt 0 ]; then
+              echo "❌ Weekly Suite hat $FAILED_JOBS fehlgeschlagene Job(s)"
+              exit 1
+            else
+              echo "✅ Weekly Suite erfolgreich abgeschlossen"
+            fi
+          else
+            echo "⚠️  Kein JSON-Log gefunden"
+            exit 1
+          fi
+      
+      - name: 📝 Display Summary
+        if: always()
+        run: |
+          # Zeige Markdown-Summary in GitHub Actions Log
+          LATEST_MD=$(ls -t reports/automation/weekly/automation_weekly_*.md | head -1)
+          if [ -f "$LATEST_MD" ]; then
+            echo "📋 Weekly Suite Summary:"
+            echo "========================"
+            cat "$LATEST_MD"
+          fi
+
+  # ===========================================================================
+  # Notification Job (optional)
+  # ===========================================================================
+  notify-on-failure:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [daily-suite, weekly-suite]
+    if: failure()
+    
+    steps:
+      - name: 🚨 Send Notification
+        run: |
+          echo "⚠️  Offline Suite fehlgeschlagen!"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Run: ${{ github.run_number }}"
+          # Hier könntest du z.B. einen Slack/Discord/Email-Webhook aufrufen

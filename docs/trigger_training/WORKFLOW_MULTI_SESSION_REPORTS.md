@@ -305,3 +305,4 @@ Bei Fragen oder Problemen: Peak_Trade Team
 Dokumentation: `docs/trigger_training/`
 
 **Happy Drilling!** 🚀
+

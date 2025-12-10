@@ -363,6 +363,27 @@ stop_pct = 0.02
 enabled = false
 mode = "paper"  # "paper" oder "live" (GEFÄHRLICH!)
 
+# ============================================================================
+# LIVE PROFILE: STRATEGY SWITCH CONFIGURATION
+# ============================================================================
+# Definiert welche Strategien für Live-Trading erlaubt sind und welche
+# aktuell aktiv ist. KEIN automatisches Switching - nur manuelle Auswahl!
+# ============================================================================
+
+[live_profile.strategy_switch]
+# Aktuell aktive Strategie für Live-Trading
+active_strategy_id = "ma_crossover"
+
+# Liste der für Live-Trading freigegebenen Strategien
+# Nur kuratierte, live-ready Strategien erlaubt (keine R&D!)
+allowed = ["ma_crossover", "rsi_reversion", "breakout"]
+
+# Automatisches Switching deaktiviert (Governance!)
+auto_switch_enabled = false
+
+# Manuelle Switch-Bestätigung erforderlich
+require_confirmation = true
+
 # Kraken API (Keys NICHT hier speichern!)
 # Verwende Umgebungsvariablen: KRAKEN_API_KEY, KRAKEN_API_SECRET
 exchange = "kraken"

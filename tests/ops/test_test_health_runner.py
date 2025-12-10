@@ -83,7 +83,7 @@ class TestLoadTestHealthProfile:
     def test_load_valid_profile(self, temp_config_dir):
         """Test: Korrektes Laden eines validen Profils."""
         config_path = temp_config_dir / "test_health_profiles.toml"
-        checks = load_test_health_profile(config_path, "test_profile")
+        checks, triggers = load_test_health_profile(config_path, "test_profile")
 
         assert len(checks) == 2
         assert checks[0].id == "success_check"
@@ -91,6 +91,10 @@ class TestLoadTestHealthProfile:
         assert checks[0].weight == 3
         assert checks[1].id == "fail_check"
         assert checks[1].weight == 2
+        
+        # Triggers sollten Default-Werte haben (da nicht in Fixture konfiguriert)
+        assert triggers.min_total_runs == 0
+        assert triggers.max_fail_rate == 1.0
 
     def test_load_nonexistent_profile(self, temp_config_dir):
         """Test: ValueError bei nicht existierendem Profil."""

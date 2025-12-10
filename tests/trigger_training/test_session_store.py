@@ -127,3 +127,4 @@ def test_load_from_nonexistent_store(tmp_path: Path) -> None:
     store_path = tmp_path / "nonexistent.jsonl"
     sessions = load_sessions_from_store(store_path)
     assert sessions == []
+

@@ -434,3 +434,4 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return strategy.generate_signals(df)
 
 
+

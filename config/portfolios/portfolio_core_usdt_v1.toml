@@ -1,0 +1,39 @@
+# =============================================================================
+# Peak_Trade Asset Portfolio: PORTFOLIO_CORE_USDT_V1
+# =============================================================================
+# Asset-basiertes Portfolio für USDT-denominierte Crypto-Märkte.
+# Referenziert: MARKET_UNIVERSE_CRYPTO_USDT_V1
+# =============================================================================
+
+[portfolio]
+portfolio_id = "PORTFOLIO_CORE_USDT_V1"
+portfolio_name = "Core USDT Portfolio"
+description = "Core-Portfolio mit BTC/ETH (USDT-Quote) – konservative Gewichtung"
+universe_id = "MARKET_UNIVERSE_CRYPTO_USDT_V1"
+quote_currency = "USDT"
+version = "1.0"
+
+# Asset-Allokation
+[[portfolio.assets]]
+symbol = "BTCUSDT"
+weight = 0.60
+enabled = true
+
+[[portfolio.assets]]
+symbol = "ETHUSDT"
+weight = 0.40
+enabled = true
+
+# Portfolio-Metadaten
+[portfolio.meta]
+risk_profile = "moderate"
+rebalance_freq = "weekly"
+max_single_asset_weight = 0.70
+tags = ["core", "usdt", "crypto", "conservative", "v1"]
+created = "2024-12-10"
+
+# Backtest-Defaults für Smoke-Tests
+[portfolio.backtest_defaults]
+lookback_days = 120
+strategy_key = "ma_crossover"  # Default-Strategie für Backtest
+allocation_method = "manual"   # Verwendet portfolio.assets.weight

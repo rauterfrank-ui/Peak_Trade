@@ -329,6 +329,114 @@ jobs:
 
 ---
 
+## Trigger-Bedingungen & Alerting (Neu)
+
+**Stand**: Dezember 2024
+
+### Trigger-Config
+
+Seit v0.2 unterstützt die Test Health Automation **erweiterte Trigger-Bedingungen** pro Profil, die automatisch bei jedem Run evaluiert werden:
+
+```toml
+[profiles.weekly_core]
+description = "Wöchentlicher Kern-Gesundheitscheck"
+time_window_days = 7
+
+  [profiles.weekly_core.triggers]
+  min_total_runs = 5               # Mindestanzahl Runs im Zeitfenster
+  max_fail_rate = 0.20             # Max. 20% Fails erlaubt
+  max_consecutive_failures = 3     # Max. 3 Fails in Folge
+  max_hours_since_last_run = 168   # Max. 7 Tage ohne Run
+  require_critical_green = true    # Kritische Testgruppen müssen grün sein
+
+[[profiles.weekly_core.checks]]
+id = "pytest_smoke_core"
+name = "Pytest Smoke & Core"
+cmd = "pytest tests/..."
+weight = 3
+category = "tests"
+```
+
+#### Verfügbare Trigger
+
+| Trigger                      | Beschreibung                                  | Severity | Beispiel |
+|------------------------------|-----------------------------------------------|----------|----------|
+| `min_total_runs`             | Mindestanzahl Runs im Zeitfenster             | warning  | `5`      |
+| `max_fail_rate`              | Maximale Fail-Rate (0.0 - 1.0)                | error    | `0.20`   |
+| `max_consecutive_failures`   | Max. aufeinanderfolgende Failures             | error    | `3`      |
+| `max_hours_since_last_run`   | Max. Stunden seit letztem Run                 | warning  | `168`    |
+| `require_critical_green`     | Kritische Testgruppen müssen grün sein        | error    | `true`   |
+
+#### Trigger-Evaluierung
+
+- Trigger werden **automatisch** bei jedem Run evaluiert
+- Violations werden im Report ausgegeben (JSON/MD/HTML)
+- Exit-Code bleibt unverändert (nur Failed Checks triggern Exit 1)
+- Violations sind **additiv** zum Health-Score (informativ, nicht blockierend)
+
+### Slack-Notifications
+
+Die Test Health Automation kann **automatisch Slack-Notifications** versenden bei:
+
+- Fehlgeschlagenen Checks (`failed_checks > 0`)
+- Trigger-Violations (konfigurierbare `min_severity`)
+
+#### Konfiguration
+
+```toml
+[notifications.slack]
+enabled = true
+webhook_env_var = "PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH"
+min_severity = "warning"    # "info" | "warning" | "error"
+include_profile_name = true
+include_violations = true
+```
+
+#### Setup
+
+1. **Webhook erstellen** in Slack:
+   - Gehe zu Slack App Directory → Incoming Webhooks
+   - Erstelle einen neuen Webhook für den gewünschten Channel (z.B. `#test-health`)
+   - Kopiere die Webhook-URL
+
+2. **ENV-Variable setzen**:
+   ```bash
+   export PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH="https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+   ```
+
+3. **In CI/CD** (GitHub Actions):
+   ```yaml
+   - name: Run Test Health
+     env:
+       PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH: ${{ secrets.SLACK_WEBHOOK_TESTHEALTH }}
+     run: |
+       python scripts/run_test_health_profile.py --profile weekly_core
+   ```
+
+#### Beispiel-Notification
+
+```
+🔴 Test Health Report: weekly_core
+
+Health Score: 65.0 / 100.0
+Passed Checks: 3
+Failed Checks: 2
+
+Trigger Violations: 2
+  ❌ Fail-Rate zu hoch: 40.00% > 20.00%
+  ⚠️ Zu wenige Runs im Zeitfenster: 3 < 5
+
+Report: reports/test_health/20241210_150342_weekly_core/
+```
+
+#### Fail-Safe
+
+- Slack-Fehler **killen nicht die Pipeline** (try/catch)
+- Bei fehlendem Webhook: leise deaktiviert (kein Fehler)
+- Bei API-Fehlern: Warning im Log, aber Exit-Code unverändert
+
+---
+
 ## Siehe auch
 
 - [PHASE_72_LIVE_OPERATOR_CONSOLE.md](../PHASE_72_LIVE_OPERATOR_CONSOLE.md) – Live-Monitoring

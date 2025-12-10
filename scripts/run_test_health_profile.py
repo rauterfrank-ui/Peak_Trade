@@ -1,18 +1,25 @@
 #!/usr/bin/env python3
 """
-Peak_Trade Test Health Profile Runner (CLI)
-============================================
+Peak_Trade Test Health Profile Runner (CLI) - v1
+==================================================
 
-Command-Line-Interface für Test Health Automation.
+Command-Line-Interface für Test Health Automation v1.
 
 Usage:
     python scripts/run_test_health_profile.py
     python scripts/run_test_health_profile.py --profile weekly_core
     python scripts/run_test_health_profile.py --profile daily_quick --config config/test_health_profiles.toml
+    python scripts/run_test_health_profile.py --no-strategy-coverage --no-switch-sanity
+
+v1-Features:
+  - Strategy-Coverage-Checks (Backtests & Paper-Runs pro Strategie)
+  - Strategy-Switch Sanity Check (Governance-Prüfung)
+  - Erweiterte Slack-Notifications
 
 Zweck:
   - Lädt Test-Health-Profil aus TOML-Config
   - Führt alle definierten Checks aus
+  - v1: Strategy-Coverage und Switch-Sanity prüfen
   - Erzeugt Reports (JSON, Markdown, HTML)
   - Gibt Health-Score und Exit-Code zurück
 
@@ -21,6 +28,7 @@ Exit-Codes:
   - 1: Mindestens ein Check fehlgeschlagen
 
 Stand: Dezember 2024
+Version: v1
 """
 
 from __future__ import annotations
@@ -39,7 +47,7 @@ from src.ops.test_health_runner import run_test_health_profile
 def parse_args() -> argparse.Namespace:
     """Parst Command-Line-Argumente."""
     parser = argparse.ArgumentParser(
-        description="Peak_Trade Test Health Profile Runner",
+        description="Peak_Trade Test Health Profile Runner (v1)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Beispiele:
@@ -54,6 +62,12 @@ Beispiele:
       --profile full_suite \\
       --config config/test_health_profiles.toml \\
       --report-root reports/test_health
+
+  # v1: Ohne Strategy-Coverage und Switch-Sanity (z.B. für lokale Tests)
+  python scripts/run_test_health_profile.py --no-strategy-coverage --no-switch-sanity
+
+  # v1: Ohne Slack-Notification
+  python scripts/run_test_health_profile.py --no-slack
         """,
     )
 
@@ -79,6 +93,25 @@ Beispiele:
         type=str,
         default="reports/test_health",
         help="Basis-Verzeichnis für Reports (default: reports/test_health)",
+    )
+    
+    # v1: Neue Optionen
+    parser.add_argument(
+        "--no-strategy-coverage",
+        action="store_true",
+        help="v1: Strategy-Coverage-Check überspringen",
+    )
+    
+    parser.add_argument(
+        "--no-switch-sanity",
+        action="store_true",
+        help="v1: Strategy-Switch Sanity Check überspringen",
+    )
+    
+    parser.add_argument(
+        "--no-slack",
+        action="store_true",
+        help="v1: Slack-Notification deaktivieren (für lokale Tests)",
     )
 
     return parser.parse_args()
@@ -124,7 +157,7 @@ def load_default_profile(config_path: Path) -> str:
 
 def main() -> int:
     """
-    Hauptfunktion: CLI-Entry-Point.
+    Hauptfunktion: CLI-Entry-Point (v1).
 
     Returns
     -------
@@ -149,13 +182,31 @@ def main() -> int:
 
     # Header ausgeben
     print("=" * 70)
-    print("🏥 Peak_Trade Test Health Automation v0")
+    print("🏥 Peak_Trade Test Health Automation v1")
     print("=" * 70)
     print(f"Profil:       {profile_name}")
     print(f"Config:       {config_path}")
     print(f"Report-Root:  {report_root}")
+    
+    # v1: Zeige aktivierte Features
+    features = []
+    if not args.no_strategy_coverage:
+        features.append("Strategy-Coverage")
+    if not args.no_switch_sanity:
+        features.append("Switch-Sanity")
+    if not args.no_slack:
+        features.append("Slack")
+    print(f"v1-Features:  {', '.join(features) if features else '(alle deaktiviert)'}")
     print("=" * 70)
     print()
+
+    # v1: Slack temporär deaktivieren wenn --no-slack
+    # Wir setzen die ENV-Variable temporär auf leer
+    import os
+    original_slack_env = None
+    if args.no_slack:
+        original_slack_env = os.environ.get("PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH")
+        os.environ["PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH"] = ""
 
     # Test-Health-Profil ausführen
     try:
@@ -163,6 +214,8 @@ def main() -> int:
             profile_name=profile_name,
             config_path=config_path,
             report_root=report_root,
+            skip_strategy_coverage=args.no_strategy_coverage,
+            skip_switch_sanity=args.no_switch_sanity,
         )
     except Exception as e:
         print(f"\n❌ Fehler beim Ausführen des Test-Health-Profils: {e}")
@@ -170,11 +223,15 @@ def main() -> int:
 
         traceback.print_exc()
         return 1
+    finally:
+        # Restore Slack ENV
+        if args.no_slack and original_slack_env is not None:
+            os.environ["PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH"] = original_slack_env
 
     # Zusammenfassung ausgeben
     print()
     print("=" * 70)
-    print("📊 Test Health Summary")
+    print("📊 Test Health Summary (v1)")
     print("=" * 70)
     print(f"Profile:         {summary.profile_name}")
     print(f"Health-Score:    {summary.health_score:.1f} / 100.0")
@@ -187,7 +244,7 @@ def main() -> int:
     print()
 
     # Ampel-Interpretation
-    if summary.health_score >= 80:
+    if summary.health_score >= 80 and not summary.has_any_violations():
         ampel = "🟢 Grün (gesund)"
     elif summary.health_score >= 50:
         ampel = "🟡 Gelb (teilweise gesund / genauer hinsehen)"
@@ -195,16 +252,43 @@ def main() -> int:
         ampel = "🔴 Rot (kritisch)"
 
     print(f"Ampel:           {ampel}")
+    
+    # v1: Trigger-Violations
+    if summary.has_trigger_violations():
+        print(f"\n⚠️  Trigger-Violations: {len(summary.trigger_violations)}")
+    
+    # v1: Strategy-Coverage
+    if summary.strategy_coverage and summary.strategy_coverage.enabled:
+        coverage = summary.strategy_coverage
+        status = "✅ OK" if coverage.is_healthy else f"❌ {len(coverage.all_violations)} Violations"
+        print(f"Strategy-Coverage: {status}")
+    
+    # v1: Switch-Sanity
+    if summary.switch_sanity and summary.switch_sanity.enabled:
+        sanity = summary.switch_sanity
+        status = "✅ OK" if sanity.is_ok else f"❌ {len(sanity.violations)} Violations"
+        print(f"Switch-Sanity:     {status}")
+    
     print()
     print(f"Reports:         {report_dir}")
     print("=" * 70)
 
     # Exit-Code bestimmen
-    if summary.failed_checks == 0:
+    if summary.failed_checks == 0 and not summary.has_any_violations():
         print("\n✅ Alle Checks erfolgreich!")
         return 0
     else:
-        print(f"\n❌ {summary.failed_checks} Check(s) fehlgeschlagen!")
+        issues = []
+        if summary.failed_checks > 0:
+            issues.append(f"{summary.failed_checks} Check(s) fehlgeschlagen")
+        if summary.has_trigger_violations():
+            issues.append(f"{len(summary.trigger_violations)} Trigger-Violation(s)")
+        if summary.has_strategy_coverage_violations():
+            issues.append("Strategy-Coverage-Violations")
+        if summary.has_switch_sanity_violations():
+            issues.append("Switch-Sanity-Violations")
+        
+        print(f"\n❌ Probleme: {', '.join(issues)}")
         return 1
 
 

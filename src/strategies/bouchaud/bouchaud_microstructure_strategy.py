@@ -288,3 +288,4 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
         )
 
 
+

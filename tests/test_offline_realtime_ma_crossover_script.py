@@ -453,3 +453,4 @@ class TestIntegration:
         assert "ma_crossover" in content
         assert str(perf_metrics["n_ticks"]) in content
         assert components["run_id"] in content  # Run-ID sollte im Report-Content sein
+

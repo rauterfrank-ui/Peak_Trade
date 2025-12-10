@@ -1,0 +1,83 @@
+version: "1.0"
+universe_id: MARKET_UNIVERSE_CRYPTO_EUR_V1
+
+markets:
+  - symbol: BTCEUR
+    base: BTC
+    quote: EUR
+    tier: 1
+    liquidity_score: 5
+    volatility_score: 4
+    enabled: true
+
+  - symbol: ETHEUR
+    base: ETH
+    quote: EUR
+    tier: 1
+    liquidity_score: 5
+    volatility_score: 4
+    enabled: true
+
+  - symbol: XRPEUR
+    base: XRP
+    quote: EUR
+    tier: 2
+    liquidity_score: 4
+    volatility_score: 4
+    enabled: true
+
+  - symbol: LTCEUR
+    base: LTC
+    quote: EUR
+    tier: 2
+    liquidity_score: 4
+    volatility_score: 4
+    enabled: true
+
+  - symbol: SOLEUR
+    base: SOL
+    quote: EUR
+    tier: 2
+    liquidity_score: 4
+    volatility_score: 5
+    enabled: true
+
+  - symbol: ADAEUR
+    base: ADA
+    quote: EUR
+    tier: 2
+    liquidity_score: 4
+    volatility_score: 4
+    enabled: true
+
+  - symbol: LINKEUR
+    base: LINK
+    quote: EUR
+    tier: 2
+    liquidity_score: 3
+    volatility_score: 4
+    enabled: false  # optional, erstmal aus
+
+  - symbol: TRXEUR
+    base: TRX
+    quote: EUR
+    tier: 3
+    liquidity_score: 3
+    volatility_score: 4
+    enabled: false
+
+  - symbol: XLMEUR
+    base: XLM
+    quote: EUR
+    tier: 3
+    liquidity_score: 3
+    volatility_score: 4
+    enabled: false
+
+  - symbol: DOGEEUR
+    base: DOGE
+    quote: EUR
+    tier: 3
+    liquidity_score: 3
+    volatility_score: 5
+    enabled: false

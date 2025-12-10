@@ -23,20 +23,124 @@ on:
           - r_and_d_experimental
           - demo_simple
   
-  # Bei Pull Requests (optional)
+  # CI-Gate: Bei Pull Requests und Push auf main
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
-    paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'config/**'
-      - '.github/workflows/test_health.yml'
 
 jobs:
+  # ===========================================================================
+  # CI Health Gate (weekly_core)
+  # ===========================================================================
+  # Dieser Job läuft bei jedem PR und Push auf main als Quality Gate.
+  # Er führt das weekly_core-Profil aus und schlägt HART fehl, wenn
+  # mindestens ein Check fehlschlägt.
+  # ===========================================================================
+  ci-health-gate:
+    name: CI Health Gate (weekly_core)
+    runs-on: ubuntu-latest
+    # Nur bei Push/PR triggern, nicht bei Schedules
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    
+    timeout-minutes: 20
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pandas numpy
+      
+      - name: 🏥 Run Test Health Profile (weekly_core)
+        id: health_check
+        run: |
+          set -e  # Fail-fast bei Fehler
+          python scripts/run_test_health_profile.py --profile weekly_core
+        # WICHTIG: Kein continue-on-error! Job soll hart fehlschlagen.
+      
+      - name: 📊 Upload Test Health Report (Artifacts)
+        uses: actions/upload-artifact@v4
+        if: always()  # Auch bei Failure Reports hochladen
+        with:
+          name: ci-health-report-${{ github.run_number }}
+          path: reports/test_health/
+          retention-days: 30
+      
+      - name: 📈 Display Health Summary
+        if: always()
+        run: |
+          echo "======================================================================"
+          echo "📋 Test Health Report Summary"
+          echo "======================================================================"
+          
+          # Finde letzten Report
+          LATEST_DIR=$(ls -t reports/test_health/ | grep -v history.json | head -1)
+          
+          if [ -d "reports/test_health/${LATEST_DIR}" ]; then
+            # JSON-Summary parsen
+            SUMMARY_JSON="reports/test_health/${LATEST_DIR}/summary.json"
+            
+            if [ -f "$SUMMARY_JSON" ]; then
+              echo "📄 Report Path: reports/test_health/${LATEST_DIR}/"
+              echo ""
+              
+              # Health-Score und Check-Zahlen extrahieren
+              HEALTH_SCORE=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(f\"{d['health_score']:.1f}\")")
+              PASSED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['passed_checks'])")
+              FAILED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['failed_checks'])")
+              SKIPPED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['skipped_checks'])")
+              
+              echo "🏥 Health Score:    ${HEALTH_SCORE} / 100.0"
+              echo "✅ Passed Checks:   ${PASSED}"
+              echo "❌ Failed Checks:   ${FAILED}"
+              echo "⏭️  Skipped Checks:  ${SKIPPED}"
+              echo ""
+              
+              # Ampel-Logik
+              if (( $(echo "$HEALTH_SCORE >= 80" | bc -l) )); then
+                echo "🟢 Status: HEALTHY (Score >= 80)"
+              elif (( $(echo "$HEALTH_SCORE >= 50" | bc -l) )); then
+                echo "🟡 Status: DEGRADED (50 <= Score < 80)"
+              else
+                echo "🔴 Status: CRITICAL (Score < 50)"
+              fi
+              
+              echo ""
+              echo "📄 Full Report: siehe CI-Artefakte (ci-health-report-${{ github.run_number }})"
+            else
+              echo "⚠️  summary.json nicht gefunden"
+            fi
+            
+            # Markdown-Summary anzeigen (falls vorhanden)
+            SUMMARY_MD="reports/test_health/${LATEST_DIR}/summary.md"
+            if [ -f "$SUMMARY_MD" ]; then
+              echo ""
+              echo "======================================================================"
+              echo "📝 Markdown Summary:"
+              echo "======================================================================"
+              cat "$SUMMARY_MD"
+            fi
+          else
+            echo "⚠️  Kein Report-Verzeichnis gefunden"
+          fi
+          
+          echo "======================================================================"
+
   daily-health-check:
     name: Daily Quick Health Check
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 6 * * *' || github.event_name == 'pull_request'
+    # Nur bei täglichem Schedule (nicht bei PR/Push)
+    if: github.event.schedule == '0 6 * * *'
     
     steps:
       - name: Checkout code

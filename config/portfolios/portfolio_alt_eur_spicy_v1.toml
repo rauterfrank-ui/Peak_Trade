@@ -1,0 +1,50 @@
+# =============================================================================
+# Peak_Trade Asset Portfolio: PORTFOLIO_ALT_EUR_SPICY_V1 (R&D)
+# =============================================================================
+# Altcoin-fokussiertes Portfolio für EUR-Märkte – höheres Risiko/Chance.
+# Status: R&D – noch nicht in Health-Automation integriert.
+# =============================================================================
+
+[portfolio]
+portfolio_id = "PORTFOLIO_ALT_EUR_SPICY_V1"
+portfolio_name = "Altcoin Spicy EUR Portfolio"
+description = "Altcoin-Portfolio mit SOL/ADA/XRP/DOGE (EUR-Quote) – spekulativ"
+universe_id = "MARKET_UNIVERSE_CRYPTO_EUR_V1"
+quote_currency = "EUR"
+version = "1.0"
+status = "r_and_d"  # Nicht für Health-Automation
+
+# Asset-Allokation (Altcoins, Equal Weight)
+[[portfolio.assets]]
+symbol = "SOLEUR"
+weight = 0.25
+enabled = true
+
+[[portfolio.assets]]
+symbol = "ADAEUR"
+weight = 0.25
+enabled = true
+
+[[portfolio.assets]]
+symbol = "XRPEUR"
+weight = 0.25
+enabled = true
+
+[[portfolio.assets]]
+symbol = "DOGEEUR"
+weight = 0.25
+enabled = true
+
+# Portfolio-Metadaten
+[portfolio.meta]
+risk_profile = "aggressive"
+rebalance_freq = "daily"
+max_single_asset_weight = 0.30
+tags = ["altcoin", "spicy", "eur", "crypto", "aggressive", "r_and_d", "v1"]
+created = "2024-12-10"
+
+# Backtest-Defaults
+[portfolio.backtest_defaults]
+lookback_days = 90
+strategy_key = "breakout"
+allocation_method = "manual"

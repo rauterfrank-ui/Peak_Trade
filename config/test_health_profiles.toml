@@ -1,13 +1,96 @@
 # ============================================================================
-# Peak_Trade Test Health Automation - Profile Configuration
+# Peak_Trade Test Health Automation - Profile Configuration (v1)
 # ============================================================================
 # Stand: Dezember 2024
+# Version: v1 - Erweitert mit Strategy-Coverage, Switch-Sanity, Slack v1
 # Zweck: Definition von Test-Health-Check-Profilen für automatisierte
 #        Qualitätsprüfungen (Research, Offline-Drills, Live-Monitoring)
 # ============================================================================
 
-version = "0.1"
+version = "1.0"
 default_profile = "daily_quick"  # Täglicher Quick-Check; für Produktion: weekly_core
+
+# ============================================================================
+# Notifications Configuration (v1)
+# ============================================================================
+
+[notifications.slack]
+enabled = true
+webhook_env_var = "PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH"
+min_severity = "warning"  # "info" | "warning" | "error"
+include_profile_name = true
+include_violations = true
+include_strategy_coverage = true  # v1: Strategy-Coverage in Slack-Nachricht
+include_switch_sanity = true      # v1: Switch-Sanity in Slack-Nachricht
+
+# ============================================================================
+# Strategy Coverage Configuration (v1)
+# ============================================================================
+# Prüft, ob für alle aktiven Strategien genügend Backtests und Paper-Runs
+# im definierten Zeitfenster durchgeführt wurden.
+# ============================================================================
+
+[strategy_coverage]
+enabled = true
+window_days = 7                     # Zeitraum für Run-Zählung
+min_backtests_per_strategy = 3      # Mindestanzahl Backtests pro Strategie
+min_paper_runs_per_strategy = 1     # Mindestanzahl Paper-Runs pro Strategie
+link_to_strategy_switch_allowed = true  # Nur Strategien aus live_profile.strategy_switch.allowed prüfen
+runs_directory = "reports/experiments"  # Verzeichnis mit Experiment-Runs (JSON/Parquet)
+
+# ============================================================================
+# Strategy-Switch Sanity Check Configuration (v1)
+# ============================================================================
+# Governance-Prüfung für die Live-Strategy-Switch-Konfiguration.
+# KEIN automatisches Umschalten - nur statische Validierung!
+# ============================================================================
+
+[switch_sanity]
+enabled = true
+config_path = "config/config.toml"  # Pfad zur Live-Config mit strategy_switch
+section_path = "live_profile.strategy_switch"  # TOML-Pfad für strategy_switch
+allow_r_and_d_in_allowed = false    # Wenn false: R&D-Strategien nicht in allowed erlaubt
+require_active_in_allowed = true    # active_strategy_id muss in allowed enthalten sein
+require_non_empty_allowed = true    # allowed darf nicht leer sein
+
+# R&D-Tier-Definitionen (Strategien mit diesen Keys werden als R&D betrachtet)
+r_and_d_strategy_keys = [
+    "armstrong_cycle",
+    "el_karoui_vol_model",
+    "ehlers_cycle_filter",
+    "meta_labeling",
+    "bouchaud_microstructure",
+    "vol_regime_overlay",
+]
+
+# ============================================================================
+# Profile: governance_strategy_switch_sanity
+# ============================================================================
+# Governance-Check für live_profile.strategy_switch Konfiguration.
+# Prüft: active_strategy_id in allowed, keine R&D-Strategien, keine unbekannten IDs.
+# ============================================================================
+
+[profiles.governance_strategy_switch_sanity]
+description = "Governance: Strategy-Switch Sanity Check (Whitelist, R&D-Blocker, Unknown IDs)"
+time_window_days = 1
+tags = ["governance", "strategy_switch", "config", "sanity"]
+
+  [profiles.governance_strategy_switch_sanity.triggers]
+  min_total_runs = 1
+  max_fail_rate = 0.0  # Keine Fails erlaubt (Governance!)
+  max_consecutive_failures = 1
+  max_hours_since_last_run = 48
+  require_critical_green = true
+
+# Check: Strategy-Switch Sanity Check (Governance)
+# Exit-Codes: 0=OK, 1=FAIL, 2=WARN
+[[profiles.governance_strategy_switch_sanity.checks]]
+id = "strategy_switch_sanity"
+name = "Strategy-Switch Sanity Check"
+cmd = "python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml"
+weight = 5
+category = "governance"
+
 
 # ============================================================================
 # Profile: weekly_core
@@ -18,6 +101,13 @@ default_profile = "daily_quick"  # Täglicher Quick-Check; für Produktion: week
 [profiles.weekly_core]
 description = "Wöchentlicher Kern-Gesundheitscheck (Research & Offline)"
 time_window_days = 7  # für spätere Heatmaps interessant
+
+  [profiles.weekly_core.triggers]
+  min_total_runs = 5
+  max_fail_rate = 0.20  # max. 20% Fails erlaubt
+  max_consecutive_failures = 3
+  max_hours_since_last_run = 168  # 7 Tage
+  require_critical_green = false  # weekly_core ist selbst kritisch
 
 # Check 1: Pytest Smoke & Core Suite
 [[profiles.weekly_core.checks]]
@@ -69,6 +159,13 @@ category = "tests"
 [profiles.daily_quick]
 description = "Tägliche Quick-Checks (nur kritische Tests)"
 time_window_days = 1
+
+  [profiles.daily_quick.triggers]
+  min_total_runs = 2
+  max_fail_rate = 0.10  # max. 10% Fails (strenger als weekly)
+  max_consecutive_failures = 2
+  max_hours_since_last_run = 36  # 1.5 Tage
+  require_critical_green = true  # daily_quick muss grün sein
 
 # Check 1: Pytest Smoke Tests (kritische Basistests)
 [[profiles.daily_quick.checks]]
@@ -199,3 +296,174 @@ name = "Regime-Aware Portfolio Tests"
 cmd = "python3 -m pytest -q tests/test_regime_aware_portfolio.py tests/test_regime_aware_portfolio_sweeps.py --maxfail=2"
 weight = 1
 category = "r_and_d"
+
+
+# ============================================================================
+# Profile: aggressive_7d
+# ============================================================================
+# Aggressives Profil für CI/CD und produktionsnahe Umgebungen
+# Strengere Trigger-Bedingungen als weekly_core
+# ============================================================================
+
+# ============================================================================
+# Profile: panic_test_24h (DRILL ONLY!)
+# ============================================================================
+# Bewusst strenges Profil für Drill-Tests (Slack-Notifications testen).
+# NICHT für regulären Betrieb gedacht - nur bei Bedarf explizit aufrufen!
+# ============================================================================
+
+[profiles.panic_test_24h]
+description = "DRILL: Bewusst strenge Trigger für Red-Alert-Tests"
+time_window_days = 1
+
+  [profiles.panic_test_24h.triggers]
+  min_total_runs = 20        # absichtlich hoch, wird fast sicher verfehlt
+  max_fail_rate = 0.05       # max. 5% Fails -> extrem streng
+  max_consecutive_failures = 1  # schon 2 Fails in Folge = Violation
+  max_hours_since_last_run = 6  # Alarm, wenn >6h kein Run
+  require_critical_green = true # kritische Gruppen MÜSSEN grün sein
+
+# Check 1: Shell-Test (wird bestehen)
+[[profiles.panic_test_24h.checks]]
+id = "shell_echo_drill"
+name = "Shell Echo Drill"
+cmd = "echo 'Drill Check 1 OK'"
+weight = 1
+category = "drill"
+
+# Check 2: Shell-Test (wird bestehen)
+[[profiles.panic_test_24h.checks]]
+id = "shell_true_drill"
+name = "Shell True Drill"
+cmd = "true"
+weight = 1
+category = "drill"
+
+
+# ============================================================================
+# Profile: aggressive_7d
+# ============================================================================
+# Aggressives Profil für CI/CD und produktionsnahe Umgebungen
+# Strengere Trigger-Bedingungen als weekly_core
+# ============================================================================
+
+[profiles.aggressive_7d]
+description = "Aggressiver 7-Tage-Check für CI/CD (strikte Trigger)"
+time_window_days = 7
+
+  [profiles.aggressive_7d.triggers]
+  min_total_runs = 10  # Mindestens 10 Runs in 7 Tagen
+  max_fail_rate = 0.05  # max. 5% Fails (sehr streng!)
+  max_consecutive_failures = 2  # Nur 2 Fails in Folge erlaubt
+  max_hours_since_last_run = 48  # Max. 2 Tage ohne Run
+  require_critical_green = true  # Kritische Gruppen müssen grün sein
+
+# Checks für aggressive_7d (basiert auf weekly_core)
+[[profiles.aggressive_7d.checks]]
+id = "pytest_smoke_core_aggressive"
+name = "Pytest Smoke & Core (Aggressive)"
+cmd = "python3 -m pytest -q tests/test_imports.py tests/test_backtest_smoke.py tests/test_config_env.py tests/test_strategies_smoke.py --maxfail=1 -x"
+weight = 5
+category = "tests"
+
+[[profiles.aggressive_7d.checks]]
+id = "offline_synth_smoke_aggressive"
+name = "OfflineSynthSession Smoke (Aggressive)"
+cmd = "python3 scripts/run_offline_synth_session_smoke.py"
+weight = 3
+category = "offline_synth"
+
+[[profiles.aggressive_7d.checks]]
+id = "trigger_training_aggressive"
+name = "TriggerTraining Drill (Aggressive)"
+cmd = "python3 scripts/run_offline_trigger_training_drill_example.py --session-id AGGRESSIVE_SMOKE"
+weight = 2
+category = "trigger_training"
+
+
+# ============================================================================
+# Profile: portfolio_core_eur_smoke
+# ============================================================================
+# Smoketest für das Core EUR Portfolio (BTCEUR/ETHEUR).
+# Kurzer Zeitraum, schnelle Validierung für Health-Automation.
+#
+# EXPECTATIONS (konservativ, Stabilität > Outperformance):
+#   - max_runtime: 150s (Fail), 90s (Warn)
+#   - min_trades: 1 (Fail), 3 (Warn)
+#   - return_range: -80% bis +500% (Fail), -40% bis +150% (Warn)
+#   - max_drawdown: 80% (Fail), 60% (Warn)
+#   - allow_exceptions: false
+# ============================================================================
+
+[profiles.portfolio_core_eur_smoke]
+description = "Smoketest für Portfolio CORE EUR (BTCEUR/ETHEUR, kurzer Zeitraum)"
+time_window_days = 7
+tags = ["portfolio", "crypto", "eur", "smoke", "core"]
+
+  [profiles.portfolio_core_eur_smoke.triggers]
+  min_total_runs = 1
+  max_fail_rate = 0.10
+  max_consecutive_failures = 2
+  max_hours_since_last_run = 168  # 7 Tage
+  require_critical_green = false
+
+# Check 1: Portfolio Config Validation (schnell, Grundvoraussetzung)
+[[profiles.portfolio_core_eur_smoke.checks]]
+id = "portfolio_core_eur_validate"
+name = "Portfolio CORE EUR Config Validation"
+cmd = "python3 scripts/run_portfolio_smoke.py --portfolio-id PORTFOLIO_CORE_EUR_V1 --validate-only"
+weight = 2
+category = "validation"
+
+# Check 2: Portfolio Smoke Test mit Expectations
+# Exit-Codes: 0=PASS, 1=FAIL, 2=WARN
+[[profiles.portfolio_core_eur_smoke.checks]]
+id = "portfolio_core_eur_smoke_test"
+name = "Portfolio CORE EUR Smoke Test (mit Expectations)"
+cmd = "python3 scripts/run_portfolio_smoke.py --portfolio-id PORTFOLIO_CORE_EUR_V1 --lookback-days 120 --verbose"
+weight = 4
+category = "portfolio"
+
+
+# ============================================================================
+# Profile: portfolio_core_usdt_smoke
+# ============================================================================
+# Smoketest für das Core USDT Portfolio (BTCUSDT/ETHUSDT).
+# Kurzer Zeitraum, schnelle Validierung für Health-Automation.
+#
+# EXPECTATIONS (identisch zu EUR – strukturelle Spiegelung):
+#   - max_runtime: 150s (Fail), 90s (Warn)
+#   - min_trades: 1 (Fail), 3 (Warn)
+#   - return_range: -80% bis +500% (Fail), -40% bis +150% (Warn)
+#   - max_drawdown: 80% (Fail), 60% (Warn)
+#   - allow_exceptions: false
+# ============================================================================
+
+[profiles.portfolio_core_usdt_smoke]
+description = "Smoketest für Portfolio CORE USDT (BTCUSDT/ETHUSDT, kurzer Zeitraum)"
+time_window_days = 7
+tags = ["portfolio", "crypto", "usdt", "smoke", "core"]
+
+  [profiles.portfolio_core_usdt_smoke.triggers]
+  min_total_runs = 1
+  max_fail_rate = 0.10
+  max_consecutive_failures = 2
+  max_hours_since_last_run = 168  # 7 Tage
+  require_critical_green = false
+
+# Check 1: Portfolio Config Validation (schnell, Grundvoraussetzung)
+[[profiles.portfolio_core_usdt_smoke.checks]]
+id = "portfolio_core_usdt_validate"
+name = "Portfolio CORE USDT Config Validation"
+cmd = "python3 scripts/run_portfolio_smoke.py --portfolio-id PORTFOLIO_CORE_USDT_V1 --validate-only"
+weight = 2
+category = "validation"
+
+# Check 2: Portfolio Smoke Test mit Expectations
+# Exit-Codes: 0=PASS, 1=FAIL, 2=WARN
+[[profiles.portfolio_core_usdt_smoke.checks]]
+id = "portfolio_core_usdt_smoke_test"
+name = "Portfolio CORE USDT Smoke Test (mit Expectations)"
+cmd = "python3 scripts/run_portfolio_smoke.py --portfolio-id PORTFOLIO_CORE_USDT_V1 --lookback-days 120 --verbose"
+weight = 4
+category = "portfolio"

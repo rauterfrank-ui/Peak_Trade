@@ -1,0 +1,777 @@
+From 0307abb9a07b04519839961f4a95dacaa79a82bb Mon Sep 17 00:00:00 2001
+From: rauterfrank-ui <rauter.frank@gmx.de>
+Date: Wed, 10 Dec 2025 13:23:53 +0100
+Subject: [PATCH 1/2] feat(trigger-training): integrate psychology heatmap into
+ drill report
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Implementiert Psychologie-Heatmap-Integration in den Offline-Trigger-Training-Drill:
+
+Core Changes:
+- Neue Funktion calculate_psychology_scores_from_events() in trigger_training_report.py
+  zur Berechnung psychologischer Scores (FOMO, Verlustangst, Impulsivität, Zögern, Regelbruch)
+- HTML-Generator _build_psychology_heatmap_html() für inline Heatmap-Rendering
+- Cluster-Erkennung via _determine_cluster_from_tags() (trend_follow, counter_trend, breakout, exit, reentry)
+- Integration in build_trigger_training_report() - Heatmap wird automatisch am Ende generiert
+
+Tag-Support:
+- Erweitert build_trigger_training_events_from_dfs() in hooks.py um Unterstützung für
+  scenario_psych_tags aus DataFrames
+- Tags aus signals_df werden nun in TriggerTrainingEvents übernommen
+
+Demo-Daten:
+- Verbesserte Demo-Signale in run_offline_trigger_training_drill_example.py mit
+  aussagekräftigen psychologischen Tags für alle 5 Szenarien
+- Tags: DISCIPLINE, TREND_FOLLOW, HESITATION, BREAKOUT, FOMO, FEAR, COUNTER_TREND, etc.
+
+Tests:
+- 18 neue Unit-Tests für Psychologie-Integration
+- Tests für Cluster-Erkennung, Score-Berechnung, HTML-Generierung
+- Integrations-Tests für vollständigen Report-Workflow
+
+Die Heatmap zeigt automatisch psychologische Muster über alle Events hinweg,
+gruppiert nach Trading-Clustern mit 4-stufiger Heat-Level-Skala (0-3).
+---
+ ..._offline_trigger_training_drill_example.py |  10 +
+ src/reporting/trigger_training_report.py      | 314 +++++++++++++++++-
+ src/trigger_training/hooks.py                 |  10 +-
+ ...trigger_training_psychology_integration.py | 308 +++++++++++++++++
+ 4 files changed, 640 insertions(+), 2 deletions(-)
+ create mode 100644 tests/test_trigger_training_psychology_integration.py
+
+diff --git a/scripts/run_offline_trigger_training_drill_example.py b/scripts/run_offline_trigger_training_drill_example.py
+index 4748529..8f6ed72 100755
+--- a/scripts/run_offline_trigger_training_drill_example.py
++++ b/scripts/run_offline_trigger_training_drill_example.py
+@@ -312,41 +312,51 @@ def _generate_demo_data() -> Tuple[
+             )
+ 
+     # Signal 1: Schnelle Ausführung (2s) -> EXECUTED_FAST & FAVORABLE (Long)
++    # Trend-Following Setup
+     _set_scenario(
+         signal_id=1,
+         reaction_type=ReactionType.EXECUTED_FAST,
+         outcome_type=OutcomeType.FAVORABLE,
+         default_id="DISC_EXEC_GOOD",
+     )
++    signals_df.loc[signals_df["signal_id"] == 1, "scenario_psych_tags"] = "DISCIPLINE,TREND_FOLLOW,TRUST_SYSTEM"
+ 
+     # Signal 2: Zu späte Ausführung (12s) -> EXECUTED_SLOW & ADVERSE
++    # Breakout Setup, aber zu spät (FOMO-Indikator)
+     _set_scenario(
+         signal_id=2,
+         reaction_type=ReactionType.EXECUTED_SLOW,
+         outcome_type=OutcomeType.ADVERSE,
+     )
++    signals_df.loc[signals_df["signal_id"] == 2, "scenario_psych_tags"] = "HESITATION,BREAKOUT,TOO_SLOW,FOMO"
+ 
+     # Signal 3: Keine Action (verpasst) -> MISSED & FAVORABLE
++    # Counter-Trend Setup, aus Angst verpasst
+     _set_scenario(
+         signal_id=3,
+         reaction_type=ReactionType.MISSED,
+         outcome_type=OutcomeType.FAVORABLE,
+     )
++    signals_df.loc[signals_df["signal_id"] == 3, "scenario_psych_tags"] = "FEAR,REGRET,COUNTER_TREND,HESITATION"
+ 
+     # Signal 4: Rechtzeitige Ausführung (3s), Short-Signal -> EXECUTED_FAST & FAVORABLE
++    # Exit-Setup (Take-Profit)
+     _set_scenario(
+         signal_id=4,
+         reaction_type=ReactionType.EXECUTED_FAST,
+         outcome_type=OutcomeType.FAVORABLE,
+         default_id="DISC_EXEC_GOOD_SHORT",
+     )
++    signals_df.loc[signals_df["signal_id"] == 4, "scenario_psych_tags"] = "DISCIPLINE,EXIT,CONFIDENCE,TAKE_PROFIT"
+ 
+     # Signal 5: Bewusst übersprungen -> SKIPPED & ADVERSE
++    # Re-Entry Setup, aus Verlustangst geskippt
+     _set_scenario(
+         signal_id=5,
+         reaction_type=ReactionType.SKIPPED,
+         outcome_type=OutcomeType.ADVERSE,
+     )
++    signals_df.loc[signals_df["signal_id"] == 5, "scenario_psych_tags"] = "DISCIPLINE,REENTRY,RISK_AVERSION_OK,SCALING"
+ 
+     # --- 3) Actions (actions_df) ------------------------------------
+     # Simuliert verschiedene Trader-Reaktionen auf Signale:
+diff --git a/src/reporting/trigger_training_report.py b/src/reporting/trigger_training_report.py
+index b65bf64..6aec8da 100644
+--- a/src/reporting/trigger_training_report.py
++++ b/src/reporting/trigger_training_report.py
+@@ -3,7 +3,8 @@ from __future__ import annotations
+ from dataclasses import dataclass
+ from enum import Enum
+ from pathlib import Path
+-from typing import Iterable, Sequence, Optional, Mapping, Any, List
++from typing import Iterable, Sequence, Optional, Mapping, Any, List, Dict
++from collections import defaultdict
+ 
+ import pandas as pd
+ 
+@@ -151,6 +152,310 @@ def _aggregate_tags(df: pd.DataFrame) -> pd.DataFrame:
+     )
+ 
+ 
++def _determine_cluster_from_tags(tags: List[str]) -> str:
++    """Bestimmt Trading-Cluster basierend auf Tags."""
++    tags_lower = [t.lower() for t in tags]
++    tags_joined = " ".join(tags_lower)  # Join für multi-word matching
++    
++    # Breakout zuerst prüfen (spezifischer)
++    if any(keyword in tags_joined for keyword in ["breakout", "breakdown", "break"]):
++        return "breakout"
++    # Counter-Trend (prüfe auch zusammengesetzte Tags)
++    elif any(keyword in tags_joined for keyword in ["counter_trend", "counter", "reversal", "against_trend"]):
++        return "counter_trend"
++    # Exit / Take-Profit
++    elif any(keyword in tags_joined for keyword in ["exit", "take_profit", "tp"]):
++        return "exit"
++    # Re-Entry / Scaling
++    elif any(keyword in tags_joined for keyword in ["reentry", "scaling", "add"]):
++        return "reentry"
++    # Trend-Follow (am Ende, da "trend" auch in anderen vorkommen kann)
++    elif any(keyword in tags_joined for keyword in ["trend_follow", "trend", "with_trend", "discipline"]):
++        return "trend_follow"
++    else:
++        return "other"
++
++
++def calculate_psychology_scores_from_events(
++    events: Sequence[TriggerTrainingEvent],
++) -> Dict[str, Dict[str, float]]:
++    """
++    Berechnet Psychologie-Scores aus Trigger-Training-Events.
++    
++    Diese Heuristik analysiert die Events und extrahiert psychologische Muster:
++    - FOMO: Spät-Entries bei bereits gelaufenen Signalen
++    - Verlustangst: Zu enge Stops, frühes Aussteigen
++    - Impulsivität: Sehr schnelle Reaktionen (<1s)
++    - Zögern: Verpasste Signale (MISSED), späte Entries (LATE)
++    - Regelbruch: Trades gegen Signal-Richtung oder ohne Setup
++    
++    Parameters
++    ----------
++    events : Sequence[TriggerTrainingEvent]
++        Liste von Trigger-Training-Events
++    
++    Returns
++    -------
++    Dict[str, Dict[str, float]]
++        Dictionary mit Cluster-Namen als Keys und Score-Dicts als Values.
++        Jeder Score liegt zwischen 0.0 und 3.0.
++        
++    Example
++    -------
++    >>> scores = calculate_psychology_scores_from_events(events)
++    >>> scores["trend_follow"]["fomo"]
++    2.0
++    """
++    # Score-Akkumulatoren pro Cluster
++    cluster_scores = defaultdict(lambda: {
++        "fomo": 0.0,
++        "loss_fear": 0.0,
++        "impulsivity": 0.0,
++        "hesitation": 0.0,
++        "rule_break": 0.0,
++    })
++    
++    # Zähler für Normalisierung
++    cluster_counts = defaultdict(int)
++    
++    for event in events:
++        # Cluster bestimmen
++        cluster = _determine_cluster_from_tags(event.tags)
++        cluster_counts[cluster] += 1
++        
++        # === FOMO-Score ===
++        # FOMO-Outcome direkt -> hoher Score
++        if event.outcome == TriggerOutcome.FOMO:
++            cluster_scores[cluster]["fomo"] += 1.0
++        # Späte Entries (LATE) mit negativem PnL -> FOMO-Indikator
++        elif event.outcome == TriggerOutcome.LATE and event.pnl_after_bars < 0:
++            cluster_scores[cluster]["fomo"] += 0.5
++        
++        # === Verlustangst-Score ===
++        # Frühes Aussteigen bei profitablen Setups (negative Tags)
++        if "fear" in ",".join(event.tags).lower() or "loss_aversion" in ",".join(event.tags).lower():
++            cluster_scores[cluster]["loss_fear"] += 0.7
++        # Sehr konservative Reaktion trotz gutem Signal
++        if event.reaction_delay_s > 10.0 and event.pnl_after_bars > 50.0:
++            cluster_scores[cluster]["loss_fear"] += 0.3
++        
++        # === Impulsivität-Score ===
++        # Sehr schnelle Reaktion (<1s) kann auf Impulsivität hinweisen
++        if event.reaction_delay_s < 1.0:
++            cluster_scores[cluster]["impulsivity"] += 0.4
++        # FOMO-Trades sind oft impulsiv
++        if event.outcome == TriggerOutcome.FOMO:
++            cluster_scores[cluster]["impulsivity"] += 0.5
++        
++        # === Zögern-Score ===
++        # Verpasste Signale -> direkter Indikator
++        if event.outcome == TriggerOutcome.MISSED:
++            cluster_scores[cluster]["hesitation"] += 1.0
++        # Späte Entries (LATE) -> Zögern
++        elif event.outcome == TriggerOutcome.LATE:
++            cluster_scores[cluster]["hesitation"] += 0.7
++        # Lange Reaktionszeit (>8s) bei gutem Signal
++        elif event.reaction_delay_s > 8.0 and event.pnl_after_bars > 30.0:
++            cluster_scores[cluster]["hesitation"] += 0.4
++        
++        # === Regelbruch-Score ===
++        # RULE_BREAK-Outcome direkt
++        if event.outcome == TriggerOutcome.RULE_BREAK:
++            cluster_scores[cluster]["rule_break"] += 1.2
++        # Tags mit "break", "violation" etc.
++        if any(tag in ",".join(event.tags).lower() for tag in ["break", "violation", "no_setup"]):
++            cluster_scores[cluster]["rule_break"] += 0.6
++    
++    # Normalisierung und Cappung auf 0-3 Skala
++    normalized_scores = {}
++    
++    for cluster, scores in cluster_scores.items():
++        count = cluster_counts[cluster]
++        if count == 0:
++            continue
++        
++        normalized = {}
++        for metric, raw_score in scores.items():
++            # Normalisiere durch Anzahl Events im Cluster
++            # Multipliziere mit Faktor, um in 0-3 Bereich zu kommen
++            normalized_value = (raw_score / count) * 2.5
++            # Cappe bei 3.0
++            normalized_value = min(normalized_value, 3.0)
++            normalized[metric] = round(normalized_value, 2)
++        
++        normalized_scores[cluster] = normalized
++    
++    return normalized_scores
++
++
++def _build_psychology_heatmap_html(
++    psychology_scores: Dict[str, Dict[str, float]],
++) -> str:
++    """
++    Erzeugt HTML für Psychologie-Heatmap (inline, ohne Template-System).
++    
++    Parameters
++    ----------
++    psychology_scores : Dict[str, Dict[str, float]]
++        Psychologie-Scores pro Cluster
++    
++    Returns
++    -------
++    str
++        HTML-String mit der Heatmap
++    """
++    # Mapping von Cluster-Namen zu Display-Namen
++    cluster_labels = {
++        "trend_follow": "Trend-Folge Einstiege",
++        "counter_trend": "Counter-Trend Einstiege",
++        "breakout": "Breakout / Breakdowns",
++        "exit": "Take-Profit / Exits",
++        "reentry": "Re-Entries / Scaling",
++        "other": "Sonstige Setups",
++    }
++    
++    def _get_heat_class(value: float) -> str:
++        """Bestimmt CSS-Klasse basierend auf Score."""
++        if value < 0.5:
++            return "heat-0"
++        elif value < 1.5:
++            return "heat-1"
++        elif value < 2.5:
++            return "heat-2"
++        else:
++            return "heat-3"
++    
++    html_parts = []
++    
++    # Styles für Heatmap
++    html_parts.append("""
++    <style>
++        .psychology-heatmap {
++            margin: 20px 0;
++            border: 1px solid #ddd;
++            border-radius: 8px;
++            padding: 20px;
++            background: #f9f9f9;
++        }
++        .psychology-heatmap h2 {
++            margin-top: 0;
++            color: #333;
++        }
++        .heatmap-legend {
++            margin: 10px 0;
++            font-size: 12px;
++            color: #666;
++        }
++        .legend-item {
++            display: inline-block;
++            margin-right: 15px;
++            padding: 3px 8px;
++            border-radius: 4px;
++            font-size: 11px;
++        }
++        .heatmap-table {
++            width: 100%;
++            border-collapse: collapse;
++            margin-top: 15px;
++            font-size: 12px;
++        }
++        .heatmap-table th {
++            background: #e9ecef;
++            padding: 10px 8px;
++            text-align: center;
++            font-weight: 600;
++            border: 1px solid #ddd;
++        }
++        .heatmap-table td {
++            padding: 10px 8px;
++            text-align: center;
++            border: 1px solid #ddd;
++            font-weight: 600;
++        }
++        .heatmap-table .row-label {
++            text-align: left;
++            font-weight: 500;
++            background: #f8f9fa;
++        }
++        .heat-0 { background: #e9ecef; color: #6c757d; }
++        .heat-1 { background: #cfe2ff; color: #084298; }
++        .heat-2 { background: #ffe69c; color: #664d03; }
++        .heat-3 { background: #f8d7da; color: #842029; }
++        .heatmap-note {
++            margin-top: 15px;
++            padding: 12px;
++            background: #fff3cd;
++            border-left: 4px solid #ffc107;
++            font-size: 11px;
++            color: #856404;
++        }
++    </style>
++    """)
++    
++    # Heatmap-Container
++    html_parts.append('<div class="psychology-heatmap">')
++    html_parts.append('<h2>🧠 Psychologie-Heatmap</h2>')
++    html_parts.append(
++        '<p style="font-size: 12px; color: #666;">Diese Heatmap zeigt psychologische Muster '
++        'über die analysierten Trigger-Training-Events. Höhere Werte bedeuten stärkere Ausprägung.</p>'
++    )
++    
++    # Legende
++    html_parts.append('<div class="heatmap-legend">')
++    html_parts.append('<strong>Skala:</strong> ')
++    html_parts.append('<span class="legend-item heat-0">0 – kein Thema</span>')
++    html_parts.append('<span class="legend-item heat-1">1 – leicht</span>')
++    html_parts.append('<span class="legend-item heat-2">2 – mittel</span>')
++    html_parts.append('<span class="legend-item heat-3">3 – stark</span>')
++    html_parts.append('</div>')
++    
++    # Tabelle
++    if not psychology_scores:
++        html_parts.append('<p style="color: #999;">Keine Psychologie-Daten verfügbar.</p>')
++    else:
++        html_parts.append('<table class="heatmap-table">')
++        
++        # Header
++        html_parts.append('<thead><tr>')
++        html_parts.append('<th class="row-label">Kontext / Cluster</th>')
++        html_parts.append('<th>FOMO<br><span style="font-size: 10px; font-weight: normal;">Hinterherjagen</span></th>')
++        html_parts.append('<th>Verlustangst<br><span style="font-size: 10px; font-weight: normal;">Nicht verlieren</span></th>')
++        html_parts.append('<th>Impulsivität<br><span style="font-size: 10px; font-weight: normal;">Spontan-Trades</span></th>')
++        html_parts.append('<th>Zögern<br><span style="font-size: 10px; font-weight: normal;">Signale verpasst</span></th>')
++        html_parts.append('<th>Regelbruch<br><span style="font-size: 10px; font-weight: normal;">Setup ignoriert</span></th>')
++        html_parts.append('</tr></thead>')
++        
++        # Body
++        html_parts.append('<tbody>')
++        for cluster, scores in sorted(psychology_scores.items()):
++            label = cluster_labels.get(cluster, cluster.replace("_", " ").title())
++            html_parts.append('<tr>')
++            html_parts.append(f'<td class="row-label">{label}</td>')
++            
++            for metric in ["fomo", "loss_fear", "impulsivity", "hesitation", "rule_break"]:
++                value = scores.get(metric, 0.0)
++                heat_class = _get_heat_class(value)
++                display_value = f"{value:.1f}" if value > 0 else "0"
++                html_parts.append(f'<td class="{heat_class}">{display_value}</td>')
++            
++            html_parts.append('</tr>')
++        html_parts.append('</tbody>')
++        html_parts.append('</table>')
++    
++    # Hinweis
++    html_parts.append(
++        '<div class="heatmap-note">'
++        '<strong>💡 Interpretation:</strong> '
++        'Ziel ist nicht "alles auf 0", sondern Bewusstsein über typische Trigger. '
++        'Nutze die Heatmap, um gezielt Drills für Cluster mit hohen Werten zu planen.'
++        '</div>'
++    )
++    
++    html_parts.append('</div>')
++    
++    return "".join(html_parts)
++
++
+ def build_trigger_training_report(
+     events: Sequence[TriggerTrainingEvent],
+     output_dir: Path,
+@@ -257,6 +562,13 @@ def build_trigger_training_report(
+             html_parts.append(f"<tr><td>{row['tag']}</td><td>{row['count']}</td></tr>")
+         html_parts.append("</table>")
+ 
++    # Psychologie-Heatmap
++    if events:
++        psychology_scores = calculate_psychology_scores_from_events(events)
++        if psychology_scores:
++            psychology_html = _build_psychology_heatmap_html(psychology_scores)
++            html_parts.append(psychology_html)
++
+     html_parts.append("</body></html>")
+ 
+     report_path.write_text("".join(html_parts), encoding="utf-8")
+diff --git a/src/trigger_training/hooks.py b/src/trigger_training/hooks.py
+index 0130a1d..359f6ca 100644
+--- a/src/trigger_training/hooks.py
++++ b/src/trigger_training/hooks.py
+@@ -240,8 +240,16 @@ def build_trigger_training_events_from_dfs(
+                 recommended_action=recommended_action,
+             )
+ 
+-        # Tags
++        # Tags: Kombiniere aus DataFrame (falls vorhanden) und automatisch generierte Tags
+         tags: List[str] = []
++        
++        # Tags aus DataFrame übernehmen (z.B. scenario_psych_tags)
++        tags_from_df = row.get("scenario_psych_tags", "")
++        if tags_from_df and not pd.isna(tags_from_df):
++            tags_list = [t.strip() for t in str(tags_from_df).split(",") if t.strip()]
++            tags.extend(tags_list)
++        
++        # Automatisch generierte Tags basierend auf Outcome
+         if outcome == TriggerOutcome.MISSED and pnl_after > config.pain_threshold:
+             tags.append("missed_opportunity")
+         if outcome == TriggerOutcome.LATE and pnl_after > config.pain_threshold:
+diff --git a/tests/test_trigger_training_psychology_integration.py b/tests/test_trigger_training_psychology_integration.py
+new file mode 100644
+index 0000000..395a5fc
+--- /dev/null
++++ b/tests/test_trigger_training_psychology_integration.py
+@@ -0,0 +1,308 @@
++"""
++Tests für Psychologie-Heatmap-Integration in Trigger-Training-Report
++=====================================================================
++
++Unit-Tests für die neuen Psychologie-Funktionen in trigger_training_report.py
++"""
++
++import pytest
++import pandas as pd
++from pathlib import Path
++from tempfile import TemporaryDirectory
++
++from src.reporting.trigger_training_report import (
++    TriggerTrainingEvent,
++    TriggerOutcome,
++    _determine_cluster_from_tags,
++    calculate_psychology_scores_from_events,
++    _build_psychology_heatmap_html,
++    build_trigger_training_report,
++)
++
++
++class TestDetermineClusterFromTags:
++    """Tests für _determine_cluster_from_tags."""
++    
++    def test_trend_follow_cluster(self):
++        """Test für Trend-Follow-Erkennung."""
++        assert _determine_cluster_from_tags(["TREND_FOLLOW", "DISCIPLINE"]) == "trend_follow"
++        assert _determine_cluster_from_tags(["trend", "WITH_TREND"]) == "trend_follow"
++    
++    def test_counter_trend_cluster(self):
++        """Test für Counter-Trend-Erkennung."""
++        assert _determine_cluster_from_tags(["COUNTER", "REVERSAL"]) == "counter_trend"
++    
++    def test_breakout_cluster(self):
++        """Test für Breakout-Erkennung."""
++        assert _determine_cluster_from_tags(["BREAKOUT", "FOMO"]) == "breakout"
++    
++    def test_exit_cluster(self):
++        """Test für Exit-Erkennung."""
++        assert _determine_cluster_from_tags(["EXIT", "TAKE_PROFIT"]) == "exit"
++    
++    def test_reentry_cluster(self):
++        """Test für Re-Entry-Erkennung."""
++        assert _determine_cluster_from_tags(["REENTRY", "SCALING"]) == "reentry"
++    
++    def test_other_cluster(self):
++        """Test für unbekannte Tags."""
++        assert _determine_cluster_from_tags(["UNKNOWN", "RANDOM"]) == "other"
++    
++    def test_empty_tags(self):
++        """Test für leere Tag-Liste."""
++        assert _determine_cluster_from_tags([]) == "other"
++
++
++class TestCalculatePsychologyScoresFromEvents:
++    """Tests für calculate_psychology_scores_from_events."""
++    
++    def test_empty_events(self):
++        """Test für leere Event-Liste."""
++        scores = calculate_psychology_scores_from_events([])
++        assert scores == {}
++    
++    def test_fomo_detection(self):
++        """Test für FOMO-Score-Berechnung."""
++        events = [
++            TriggerTrainingEvent(
++                timestamp=pd.Timestamp("2025-01-01 00:00:00"),
++                symbol="BTCEUR",
++                signal_state=1,
++                recommended_action="ENTER_LONG",
++                user_action="EXECUTED",
++                outcome=TriggerOutcome.FOMO,
++                reaction_delay_s=15.0,
++                pnl_after_bars=-50.0,
++                tags=["BREAKOUT", "FOMO"],
++                note="Zu spät",
++            )
++        ]
++        
++        scores = calculate_psychology_scores_from_events(events)
++        
++        assert "breakout" in scores
++        assert scores["breakout"]["fomo"] > 0.0
++    
++    def test_hesitation_detection(self):
++        """Test für Zögern-Score-Berechnung."""
++        events = [
++            TriggerTrainingEvent(
++                timestamp=pd.Timestamp("2025-01-01 00:00:00"),
++                symbol="BTCEUR",
++                signal_state=1,
++                recommended_action="ENTER_LONG",
++                user_action="",
++                outcome=TriggerOutcome.MISSED,
++                reaction_delay_s=0.0,
++                pnl_after_bars=100.0,
++                tags=["TREND_FOLLOW", "HESITATION"],
++                note="Verpasst",
++            )
++        ]
++        
++        scores = calculate_psychology_scores_from_events(events)
++        
++        assert "trend_follow" in scores
++        assert scores["trend_follow"]["hesitation"] > 0.0
++    
++    def test_rule_break_detection(self):
++        """Test für Regelbruch-Score-Berechnung."""
++        events = [
++            TriggerTrainingEvent(
++                timestamp=pd.Timestamp("2025-01-01 00:00:00"),
++                symbol="BTCEUR",
++                signal_state=1,
++                recommended_action="ENTER_LONG",
++                user_action="EXECUTED_WRONG",
++                outcome=TriggerOutcome.RULE_BREAK,
++                reaction_delay_s=1.0,
++                pnl_after_bars=-30.0,
++                tags=["COUNTER", "VIOLATION"],  # Klarere Tags ohne "BREAK"
++                note="Ohne Setup",
++            )
++        ]
++        
++        scores = calculate_psychology_scores_from_events(events)
++        
++        assert "counter_trend" in scores
++        assert scores["counter_trend"]["rule_break"] > 0.0
++    
++    def test_impulsivity_detection(self):
++        """Test für Impulsivitäts-Score-Berechnung."""
++        events = [
++            TriggerTrainingEvent(
++                timestamp=pd.Timestamp("2025-01-01 00:00:00"),
++                symbol="BTCEUR",
++                signal_state=1,
++                recommended_action="ENTER_LONG",
++                user_action="EXECUTED",
++                outcome=TriggerOutcome.HIT,
++                reaction_delay_s=0.5,  # Sehr schnell
++                pnl_after_bars=50.0,
++                tags=["REENTRY"],
++                note="",
++            )
++        ]
++        
++        scores = calculate_psychology_scores_from_events(events)
++        
++        assert "reentry" in scores
++        assert scores["reentry"]["impulsivity"] > 0.0
++    
++    def test_score_normalization(self):
++        """Test dass Scores auf 0-3 normalisiert sind."""
++        # Viele FOMO-Events generieren
++        events = [
++            TriggerTrainingEvent(
++                timestamp=pd.Timestamp("2025-01-01 00:00:00"),
++                symbol="BTCEUR",
++                signal_state=1,
++                recommended_action="ENTER_LONG",
++                user_action="EXECUTED",
++                outcome=TriggerOutcome.FOMO,
++                reaction_delay_s=15.0,
++                pnl_after_bars=-50.0,
++                tags=["BREAKOUT"],
++                note="",
++            )
++            for _ in range(10)
++        ]
++        
++        scores = calculate_psychology_scores_from_events(events)
++        
++        # Alle Scores sollten <= 3.0 sein
++        for cluster_scores in scores.values():
++            for metric_value in cluster_scores.values():
++                assert 0.0 <= metric_value <= 3.0
++
++
++class TestBuildPsychologyHeatmapHtml:
++    """Tests für _build_psychology_heatmap_html."""
++    
++    def test_empty_scores(self):
++        """Test für leere Score-Dictionary."""
++        html = _build_psychology_heatmap_html({})
++        
++        assert "Psychologie-Heatmap" in html
++        assert "Keine Psychologie-Daten verfügbar" in html
++    
++    def test_valid_scores(self):
++        """Test für valide Scores."""
++        scores = {
++            "trend_follow": {
++                "fomo": 0.5,
++                "loss_fear": 1.5,
++                "impulsivity": 2.5,
++                "hesitation": 0.0,
++                "rule_break": 1.0,
++            }
++        }
++        
++        html = _build_psychology_heatmap_html(scores)
++        
++        assert "Psychologie-Heatmap" in html
++        assert "Trend-Folge Einstiege" in html
++        assert "heat-1" in html  # loss_fear=1.5
++        assert "heat-2" in html  # impulsivity=2.5
++    
++    def test_heat_level_classes(self):
++        """Test dass alle Heat-Level-Klassen vorhanden sind."""
++        scores = {
++            "test": {
++                "fomo": 0.0,      # heat-0
++                "loss_fear": 1.0, # heat-1
++                "impulsivity": 2.0, # heat-2
++                "hesitation": 3.0,  # heat-3
++                "rule_break": 0.0,
++            }
++        }
++        
++        html = _build_psychology_heatmap_html(scores)
++        
++        assert "heat-0" in html
++        assert "heat-1" in html
++        assert "heat-2" in html
++        assert "heat-3" in html
++
++
++class TestBuildTriggerTrainingReportIntegration:
++    """Integrations-Tests für den vollständigen Report mit Psychologie-Heatmap."""
++    
++    def test_report_with_psychology_heatmap(self):
++        """Test dass der Report die Psychologie-Heatmap enthält."""
++        events = [
++            TriggerTrainingEvent(
++                timestamp=pd.Timestamp("2025-01-01 00:00:00"),
++                symbol="BTCEUR",
++                signal_state=1,
++                recommended_action="ENTER_LONG",
++                user_action="EXECUTED",
++                outcome=TriggerOutcome.FOMO,
++                reaction_delay_s=15.0,
++                pnl_after_bars=-50.0,
++                tags=["BREAKOUT", "FOMO"],
++                note="Test",
++            ),
++            TriggerTrainingEvent(
++                timestamp=pd.Timestamp("2025-01-01 00:05:00"),
++                symbol="BTCEUR",
++                signal_state=1,
++                recommended_action="ENTER_LONG",
++                user_action="",
++                outcome=TriggerOutcome.MISSED,
++                reaction_delay_s=0.0,
++                pnl_after_bars=100.0,
++                tags=["TREND_FOLLOW", "HESITATION"],
++                note="Verpasst",
++            ),
++        ]
++        
++        with TemporaryDirectory() as tmpdir:
++            output_dir = Path(tmpdir)
++            
++            report_path = build_trigger_training_report(
++                events=events,
++                output_dir=output_dir,
++                session_meta={"session_id": "TEST"},
++            )
++            
++            assert report_path.exists()
++            
++            # Report-Inhalt prüfen
++            html_content = report_path.read_text(encoding="utf-8")
++            
++            # Grundlegende Report-Elemente
++            assert "Trigger Training Report" in html_content
++            assert "Outcome Übersicht" in html_content
++            
++            # Psychologie-Heatmap-Elemente
++            assert "Psychologie-Heatmap" in html_content
++            assert "psychology-heatmap" in html_content
++            assert "FOMO" in html_content
++            assert "Zögern" in html_content
++            
++            # Heat-Level-Styles
++            assert ".heat-0" in html_content
++            assert ".heat-1" in html_content
++            assert ".heat-2" in html_content
++            assert ".heat-3" in html_content
++    
++    def test_report_without_events(self):
++        """Test dass der Report auch ohne Events funktioniert."""
++        with TemporaryDirectory() as tmpdir:
++            output_dir = Path(tmpdir)
++            
++            report_path = build_trigger_training_report(
++                events=[],
++                output_dir=output_dir,
++            )
++            
++            assert report_path.exists()
++            html_content = report_path.read_text(encoding="utf-8")
++            
++            # Sollte trotzdem generiert werden, aber ohne Heatmap
++            assert "Trigger Training Report" in html_content
++
++
++if __name__ == "__main__":
++    pytest.main([__file__, "-v"])
+-- 
+2.50.1 (Apple Git-155)
+

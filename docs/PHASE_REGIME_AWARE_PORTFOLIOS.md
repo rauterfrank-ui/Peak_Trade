@@ -265,3 +265,4 @@ Diese Phase implementiert eine **Regime-Aware Portfolio-Strategie**, die:
 
 
 
+

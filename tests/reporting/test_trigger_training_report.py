@@ -49,3 +49,4 @@ def test_build_trigger_training_report(tmp_path: Path) -> None:
     content = report_path.read_text(encoding="utf-8")
     assert "Trigger Training Report" in content
     assert "TEST_TRIGGER" in content
+
