@@ -15,7 +15,9 @@ Dieses Script ist bewusst generisch gehalten:
 """
 
 import argparse
+from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 from typing import Tuple
 
@@ -35,6 +37,83 @@ from src.reporting.offline_paper_trade_integration import (
     generate_reports_for_offline_paper_trade,
 )
 
+
+# ============================================================================
+# Szenario-Matrix für Trigger-Training
+# ============================================================================
+
+class ReactionType(str, Enum):
+    """Art der Trader-Reaktion auf ein Signal."""
+    EXECUTED_FAST = "executed_fast"
+    EXECUTED_SLOW = "executed_slow"
+    MISSED = "missed"
+    SKIPPED = "skipped"
+
+
+class OutcomeType(str, Enum):
+    """Markt-Outcome nach dem Signal."""
+    FAVORABLE = "favorable"
+    ADVERSE = "adverse"
+    NEUTRAL = "neutral"
+
+
+@dataclass(frozen=True)
+class TriggerScenarioDef:
+    """Definition eines Trigger-Training-Szenarios."""
+    scenario_id: str
+    label: str
+    reaction_type: ReactionType
+    outcome_type: OutcomeType
+    psych_tags: list[str]
+
+
+SCENARIO_MATRIX: list[TriggerScenarioDef] = [
+    TriggerScenarioDef(
+        scenario_id="DISC_EXEC_GOOD",
+        label="Disziplinierter schneller Entry, gutes Signal",
+        reaction_type=ReactionType.EXECUTED_FAST,
+        outcome_type=OutcomeType.FAVORABLE,
+        psych_tags=["DISCIPLINE", "TRUST_SYSTEM"],
+    ),
+    TriggerScenarioDef(
+        scenario_id="TOO_SLOW_ENTRY",
+        label="Zu später Entry, Markt schon gelaufen",
+        reaction_type=ReactionType.EXECUTED_SLOW,
+        outcome_type=OutcomeType.ADVERSE,
+        psych_tags=["HESITATION", "TOO_SLOW"],
+    ),
+    TriggerScenarioDef(
+        scenario_id="MISSED_OPPORTUNITY",
+        label="Verpasstes Signal, Markt läuft in Signalrichtung",
+        reaction_type=ReactionType.MISSED,
+        outcome_type=OutcomeType.FAVORABLE,
+        psych_tags=["FOMO", "REGRET"],
+    ),
+    TriggerScenarioDef(
+        scenario_id="DISC_EXEC_GOOD_SHORT",
+        label="Disziplinierter Short-Entry, Markt läuft mit",
+        reaction_type=ReactionType.EXECUTED_FAST,
+        outcome_type=OutcomeType.FAVORABLE,
+        psych_tags=["DISCIPLINE", "CONFIDENCE"],
+    ),
+    TriggerScenarioDef(
+        scenario_id="DISCIPLINED_SKIP",
+        label="Bewusst geskippt, Markt läuft dagegen",
+        reaction_type=ReactionType.SKIPPED,
+        outcome_type=OutcomeType.ADVERSE,
+        psych_tags=["DISCIPLINE", "RISK_AVERSION_OK"],
+    ),
+]
+
+# Lookup-Map: (reaction_type, outcome_type) -> TriggerScenarioDef
+SCENARIO_BY_KEY = {
+    (s.reaction_type, s.outcome_type): s for s in SCENARIO_MATRIX
+}
+
+
+# ============================================================================
+# CLI & Helper Functions
+# ============================================================================
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -201,6 +280,72 @@ def _generate_demo_data() -> Tuple[
                 "ENTER_SHORT",
             ],
         }
+    )
+
+    # --- Szenario-Annotation hinzufügen ---
+    signals_df["scenario_id"] = None
+    signals_df["scenario_label"] = None
+    signals_df["scenario_psych_tags"] = None
+
+    def _set_scenario(
+        signal_id: int,
+        reaction_type: ReactionType,
+        outcome_type: OutcomeType,
+        default_id: str | None = None,
+    ) -> None:
+        """Setzt Szenario-Metadaten für ein bestimmtes Signal."""
+        # Falls default_id angegeben, bevorzuge diesen
+        if default_id is not None:
+            scenario_def = next(
+                (s for s in SCENARIO_MATRIX if s.scenario_id == default_id), None
+            )
+        else:
+            # Ansonsten: Lookup über (reaction_type, outcome_type)
+            scenario_def = SCENARIO_BY_KEY.get((reaction_type, outcome_type))
+
+        row_mask = signals_df["signal_id"] == signal_id
+        if scenario_def is not None:
+            signals_df.loc[row_mask, "scenario_id"] = scenario_def.scenario_id
+            signals_df.loc[row_mask, "scenario_label"] = scenario_def.label
+            signals_df.loc[row_mask, "scenario_psych_tags"] = ",".join(
+                scenario_def.psych_tags
+            )
+
+    # Signal 1: Schnelle Ausführung (2s) -> EXECUTED_FAST & FAVORABLE (Long)
+    _set_scenario(
+        signal_id=1,
+        reaction_type=ReactionType.EXECUTED_FAST,
+        outcome_type=OutcomeType.FAVORABLE,
+        default_id="DISC_EXEC_GOOD",
+    )
+
+    # Signal 2: Zu späte Ausführung (12s) -> EXECUTED_SLOW & ADVERSE
+    _set_scenario(
+        signal_id=2,
+        reaction_type=ReactionType.EXECUTED_SLOW,
+        outcome_type=OutcomeType.ADVERSE,
+    )
+
+    # Signal 3: Keine Action (verpasst) -> MISSED & FAVORABLE
+    _set_scenario(
+        signal_id=3,
+        reaction_type=ReactionType.MISSED,
+        outcome_type=OutcomeType.FAVORABLE,
+    )
+
+    # Signal 4: Rechtzeitige Ausführung (3s), Short-Signal -> EXECUTED_FAST & FAVORABLE
+    _set_scenario(
+        signal_id=4,
+        reaction_type=ReactionType.EXECUTED_FAST,
+        outcome_type=OutcomeType.FAVORABLE,
+        default_id="DISC_EXEC_GOOD_SHORT",
+    )
+
+    # Signal 5: Bewusst übersprungen -> SKIPPED & ADVERSE
+    _set_scenario(
+        signal_id=5,
+        reaction_type=ReactionType.SKIPPED,
+        outcome_type=OutcomeType.ADVERSE,
     )
 
     # --- 3) Actions (actions_df) ------------------------------------
