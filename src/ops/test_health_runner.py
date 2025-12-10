@@ -73,6 +73,8 @@ class TestCheckResult:
     duration_seconds: float
     return_code: Optional[int] = None
     error_message: Optional[str] = None
+    stdout: Optional[str] = None  # P2: Stdout-Capture
+    stderr: Optional[str] = None  # P2: Stderr-Capture
 
 
 @dataclass
@@ -191,12 +193,14 @@ def run_single_check(check: TestCheckConfig) -> TestCheckResult:
     Returns
     -------
     TestCheckResult
-        Ergebnis mit Status, Dauer, Returncode
+        Ergebnis mit Status, Dauer, Returncode, Stdout/Stderr (P2)
     """
     started_at = dt.datetime.utcnow()
     status: HealthStatus = "FAIL"
     return_code: Optional[int] = None
     error_message: Optional[str] = None
+    stdout: Optional[str] = None
+    stderr: Optional[str] = None
 
     try:
         result = subprocess.run(
@@ -207,6 +211,8 @@ def run_single_check(check: TestCheckConfig) -> TestCheckResult:
             timeout=600,  # 10 Minuten Timeout
         )
         return_code = result.returncode
+        stdout = result.stdout
+        stderr = result.stderr
 
         if return_code == 0:
             status = "PASS"
@@ -214,13 +220,18 @@ def run_single_check(check: TestCheckConfig) -> TestCheckResult:
             status = "FAIL"
             error_message = (
                 f"Command exited with code {return_code}.\n"
-                f"STDOUT:\n{result.stdout[-500:]}\n"
-                f"STDERR:\n{result.stderr[-500:]}"
+                f"STDOUT (last 500 chars):\n{result.stdout[-500:]}\n"
+                f"STDERR (last 500 chars):\n{result.stderr[-500:]}"
             )
 
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired as e:
         status = "FAIL"
         error_message = f"Command timeout nach 600s: {check.cmd}"
+        # Versuche partial output zu erfassen
+        if hasattr(e, 'stdout') and e.stdout:
+            stdout = e.stdout.decode() if isinstance(e.stdout, bytes) else e.stdout
+        if hasattr(e, 'stderr') and e.stderr:
+            stderr = e.stderr.decode() if isinstance(e.stderr, bytes) else e.stderr
 
     except Exception as e:
         status = "FAIL"
@@ -241,6 +252,8 @@ def run_single_check(check: TestCheckConfig) -> TestCheckResult:
         duration_seconds=duration_seconds,
         return_code=return_code,
         error_message=error_message,
+        stdout=stdout,
+        stderr=stderr,
     )
 
 
@@ -351,6 +364,15 @@ def write_test_health_json(summary: TestHealthSummary, path: Path) -> None:
         raise TypeError(f"Type {type(obj)} not serializable")
     
     data = asdict(summary)
+    
+    # P2: Truncate stdout/stderr in checks für kleinere JSON-Dateien
+    MAX_OUTPUT_LEN = 5000  # 5k chars max
+    for check in data.get("checks", []):
+        if check.get("stdout") and len(check["stdout"]) > MAX_OUTPUT_LEN:
+            check["stdout"] = check["stdout"][-MAX_OUTPUT_LEN:] + f"\n\n[truncated, showing last {MAX_OUTPUT_LEN} chars]"
+        if check.get("stderr") and len(check["stderr"]) > MAX_OUTPUT_LEN:
+            check["stderr"] = check["stderr"][-MAX_OUTPUT_LEN:] + f"\n\n[truncated, showing last {MAX_OUTPUT_LEN} chars]"
+    
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False, default=json_serial)
@@ -416,6 +438,68 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
             f"| `{check.id}` | {check.name} | {check.category} | "
             f"{status_icon} {check.status} | {check.duration_seconds:.2f} | {check.weight} |"
         )
+
+    # P2: Failed Checks mit Stdout/Stderr
+    failed_checks = [c for c in summary.checks if c.status == "FAIL"]
+    if failed_checks:
+        md_lines.extend(
+            [
+                "",
+                "## ❌ Fehlgeschlagene Checks (Details)",
+                "",
+            ]
+        )
+        for check in failed_checks:
+            md_lines.extend(
+                [
+                    f"### {check.name} (`{check.id}`)",
+                    "",
+                    f"- **Status**: ❌ FAIL",
+                    f"- **Return Code**: {check.return_code}",
+                    f"- **Duration**: {check.duration_seconds:.2f}s",
+                    f"- **Command**: `{check.cmd}`",
+                    "",
+                ]
+            )
+            
+            if check.error_message:
+                md_lines.extend(
+                    [
+                        "**Error Message**:",
+                        "```",
+                        check.error_message,
+                        "```",
+                        "",
+                    ]
+                )
+            
+            # Stdout (truncate to 2000 chars)
+            if check.stdout:
+                stdout_display = check.stdout[-2000:] if len(check.stdout) > 2000 else check.stdout
+                truncated_note = " (showing last 2000 chars)" if len(check.stdout) > 2000 else ""
+                md_lines.extend(
+                    [
+                        f"**Stdout{truncated_note}**:",
+                        "```",
+                        stdout_display,
+                        "```",
+                        "",
+                    ]
+                )
+            
+            # Stderr (truncate to 2000 chars)
+            if check.stderr:
+                stderr_display = check.stderr[-2000:] if len(check.stderr) > 2000 else check.stderr
+                truncated_note = " (showing last 2000 chars)" if len(check.stderr) > 2000 else ""
+                md_lines.extend(
+                    [
+                        f"**Stderr{truncated_note}**:",
+                        "```",
+                        stderr_display,
+                        "```",
+                        "",
+                    ]
+                )
 
     md_lines.extend(
         [

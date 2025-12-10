@@ -157,6 +157,26 @@ class TestRunSingleCheck:
         result = run_single_check(check)
 
         assert result.status == "FAIL"
+
+    def test_stdout_stderr_capture(self):
+        """Test P2: Stdout/Stderr werden erfasst."""
+        check = TestCheckConfig(
+            id="test_output",
+            name="Test Output Capture",
+            cmd='python3 -c "import sys; print(\'STDOUT_TEST\'); print(\'STDERR_TEST\', file=sys.stderr); sys.exit(1)"',
+            weight=1,
+            category="tests",
+        )
+
+        result = run_single_check(check)
+
+        assert result.status == "FAIL"
+        assert result.return_code == 1
+        # Prüfe ob stdout/stderr erfasst wurden
+        assert result.stdout is not None
+        assert "STDOUT_TEST" in result.stdout
+        assert result.stderr is not None
+        assert "STDERR_TEST" in result.stderr
         # Exit-Code kann variieren (127 auf Unix, andere auf Windows)
         assert result.return_code != 0
         assert result.error_message is not None
@@ -311,6 +331,51 @@ class TestReportWriters:
         assert "# Test Health Report: test_profile" in content
         assert "75.0 / 100.0" in content
         assert "Passed Checks**: 2" in content
+
+    def test_write_markdown_with_failed_checks(self, tmp_path):
+        """Test P2: Markdown-Report mit fehlgeschlagenen Checks + stdout/stderr."""
+        import datetime as dt
+
+        failed_check = TestCheckResult(
+            id="test_fail",
+            name="Failed Test",
+            category="tests",
+            cmd="pytest test_something.py",
+            status="FAIL",
+            weight=1,
+            started_at=dt.datetime.utcnow(),
+            finished_at=dt.datetime.utcnow(),
+            duration_seconds=1.5,
+            return_code=1,
+            error_message="Test failed",
+            stdout="STDOUT: Test output here\nFailed: 1 test",
+            stderr="STDERR: Some error",
+        )
+
+        summary = TestHealthSummary(
+            profile_name="test_profile",
+            started_at=dt.datetime(2025, 12, 10, 14, 0, 0),
+            finished_at=dt.datetime(2025, 12, 10, 14, 5, 0),
+            checks=[failed_check],
+            health_score=50.0,
+            passed_checks=0,
+            failed_checks=1,
+            skipped_checks=0,
+            total_weight=1,
+            passed_weight=0,
+        )
+
+        md_path = tmp_path / "summary_failed.md"
+        write_test_health_markdown(summary, md_path)
+
+        assert md_path.exists()
+        content = md_path.read_text()
+        
+        # Prüfe ob fehlgeschlagener Check detailliert dargestellt wird
+        assert "❌ Fehlgeschlagene Checks (Details)" in content
+        assert "Failed Test" in content
+        assert "Test output here" in content
+        assert "Some error" in content
 
     def test_write_html(self, tmp_path):
         """Test: HTML-Report wird korrekt geschrieben."""
