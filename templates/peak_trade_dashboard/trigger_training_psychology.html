@@ -1,0 +1,344 @@
+<!-- templates/peak_trade_dashboard/trigger_training_psychology.html -->
+<!--
+  Trigger Training Psychology Dashboard
+  ======================================
+  
+  Detaillierte Ansicht der psychologischen Muster im Trigger-Training.
+  
+  Features:
+  - Vollständige Psychologie-Heatmap
+  - Aggregierte Statistiken
+  - Problem-Cluster Highlights
+  - Drill-Empfehlungen
+  - Zeitliche Trends (optional)
+-->
+{% extends "base.html" %}
+{% from 'psychology_heatmap_macro.html' import psychology_heatmap, psychology_heatmap_compact %}
+
+{% block content %}
+
+{# =========================================================================== #}
+{# Breadcrumb & Navigation                                                      #}
+{# =========================================================================== #}
+<div class="mb-4 flex items-center gap-2 text-sm">
+  <a href="/" class="text-slate-400 hover:text-slate-200 transition-colors">
+    ← Zurück zur Übersicht
+  </a>
+  <span class="text-slate-600">/</span>
+  <span class="text-slate-300">Trigger Training</span>
+  <span class="text-slate-600">/</span>
+  <span class="text-slate-300">Psychologie-Analyse</span>
+</div>
+
+{# =========================================================================== #}
+{# Header                                                                        #}
+{# =========================================================================== #}
+<header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6 mb-6">
+  <div class="flex items-start justify-between">
+    <div class="flex items-center gap-4">
+      <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/30">
+        <span class="text-3xl">🧠</span>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-slate-100">Psychologie-Analyse</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          Trigger-Training · Verhaltensmuster & Drill-Empfehlungen
+        </p>
+      </div>
+    </div>
+    
+    {% if meta %}
+    <div class="text-right">
+      <div class="text-xs text-slate-500 mb-1">Zeitraum</div>
+      <div class="text-sm text-slate-200 font-mono">
+        {{ meta.from_date or '–' }} bis {{ meta.to_date or '–' }}
+      </div>
+      <div class="text-xs text-slate-500 mt-1">
+        {{ meta.total_sessions or 0 }} Sessions · {{ meta.total_events or 0 }} Events
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</header>
+
+{# =========================================================================== #}
+{# Quick Stats Cards                                                            #}
+{# =========================================================================== #}
+{% if statistics %}
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+  
+  {# Total Clusters #}
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="text-sm">📊</span>
+      <p class="text-xs uppercase tracking-wide text-slate-500 font-medium">Analysierte Cluster</p>
+    </div>
+    <p class="text-2xl font-bold text-slate-100">{{ statistics.total_clusters }}</p>
+  </div>
+  
+  {# Highest Average Score #}
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="text-sm">⚠️</span>
+      <p class="text-xs uppercase tracking-wide text-slate-500 font-medium">Höchster Ø-Score</p>
+    </div>
+    {% set max_avg_category = statistics.avg_scores.items() | sort(attribute='1', reverse=True) | first %}
+    <p class="text-2xl font-bold 
+      {% if max_avg_category[1] >= 2.5 %}text-rose-400
+      {% elif max_avg_category[1] >= 1.5 %}text-amber-400
+      {% else %}text-emerald-300
+      {% endif %}">
+      {{ "%.1f"|format(max_avg_category[1]) }}
+    </p>
+    <p class="text-xs text-slate-500 mt-1">{{ max_avg_category[0] | replace('_', ' ') | title }}</p>
+  </div>
+  
+  {# Problem Clusters #}
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="text-sm">🔥</span>
+      <p class="text-xs uppercase tracking-wide text-slate-500 font-medium">Problem-Cluster</p>
+    </div>
+    <p class="text-2xl font-bold text-rose-400">{{ statistics.problem_clusters|length }}</p>
+    <p class="text-xs text-slate-500 mt-1">mit Score ≥ 2.5</p>
+  </div>
+  
+  {# Training Focus #}
+  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="text-sm">🎯</span>
+      <p class="text-xs uppercase tracking-wide text-slate-500 font-medium">Training-Fokus</p>
+    </div>
+    {% if statistics.problem_clusters %}
+    <p class="text-sm font-semibold text-amber-300 leading-tight mt-2">
+      {{ statistics.problem_clusters[0].name }}
+    </p>
+    {% else %}
+    <p class="text-sm text-emerald-300 mt-2">Alle Bereiche OK ✓</p>
+    {% endif %}
+  </div>
+  
+</div>
+{% endif %}
+
+{# =========================================================================== #}
+{# Haupt-Heatmap                                                                #}
+{# =========================================================================== #}
+<div class="mb-6">
+  {{ psychology_heatmap(heatmap_rows) }}
+</div>
+
+{# =========================================================================== #}
+{# Problem-Cluster Details                                                      #}
+{# =========================================================================== #}
+{% if statistics and statistics.problem_clusters %}
+<section class="bg-slate-900/60 rounded-2xl border border-rose-500/30 p-6 mb-6">
+  <div class="flex items-center gap-3 mb-4">
+    <span class="text-2xl">🔥</span>
+    <h2 class="text-lg font-bold text-slate-100">Problem-Cluster: Hohe Aufmerksamkeit erforderlich</h2>
+  </div>
+  
+  <div class="bg-rose-950/30 rounded-xl border border-rose-500/20 p-4 mb-4">
+    <p class="text-sm text-rose-200 leading-relaxed">
+      Diese Cluster zeigen mindestens einen Score von <strong>2.5 oder höher</strong>.
+      Fokussiere deine nächsten Drill-Sessions auf diese Bereiche, um gezielt an den
+      identifizierten Triggern zu arbeiten.
+    </p>
+  </div>
+  
+  <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+    {% for cluster in statistics.problem_clusters %}
+    <div class="bg-slate-950/60 rounded-lg border border-rose-500/20 p-4">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-sm font-semibold text-slate-200">{{ cluster.name }}</h3>
+        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+          Score: {{ "%.1f"|format(cluster.max_score) }}
+        </span>
+      </div>
+      
+      {# Empfehlungen basierend auf Cluster #}
+      <div class="mt-3 pt-3 border-t border-slate-800/50">
+        <p class="text-xs text-slate-400 font-semibold mb-1.5">Empfohlene Drills:</p>
+        <ul class="text-xs text-slate-300 space-y-1">
+          {% if 'Breakout' in cluster.name %}
+          <li>• FOMO-Drill: „Warte auf die Bestätigung"</li>
+          <li>• Setup-Drill: „Nur valide Breakouts"</li>
+          {% elif 'Counter' in cluster.name %}
+          <li>• Verlustangst-Drill: „Akzeptiere den Stop"</li>
+          <li>• Impuls-Kontrolle: „Pause vor Entry"</li>
+          {% elif 'Re-Entry' in cluster.name or 'Scaling' in cluster.name %}
+          <li>• Regelwerk-Drill: „Definiertes Sizing"</li>
+          <li>• Impuls-Kontrolle: „Warte auf Signal"</li>
+          {% elif 'Exit' in cluster.name %}
+          <li>• Zöger-Drill: „Profit sichern"</li>
+          <li>• Plan-Drill: „Exit nach Plan"</li>
+          {% else %}
+          <li>• Grundlagen-Drill: „Setup-Checkliste"</li>
+          <li>• Mindfulness-Drill: „Pause & Reflektion"</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+</section>
+{% endif %}
+
+{# =========================================================================== #}
+{# Kategorie-Übersicht (Durchschnittswerte)                                     #}
+{# =========================================================================== #}
+{% if statistics and statistics.avg_scores %}
+<section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-6 mb-6">
+  <div class="flex items-center gap-3 mb-4">
+    <span class="text-2xl">📊</span>
+    <h2 class="text-lg font-bold text-slate-100">Durchschnittswerte über alle Cluster</h2>
+  </div>
+  
+  <div class="space-y-3">
+    {% for category, avg_value in statistics.avg_scores.items() %}
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-sm font-medium text-slate-300">
+          {% if category == 'fomo' %}FOMO
+          {% elif category == 'loss_fear' %}Verlustangst
+          {% elif category == 'impulsivity' %}Impulsivität
+          {% elif category == 'hesitation' %}Zögern
+          {% elif category == 'rule_break' %}Regelbruch
+          {% else %}{{ category | title }}
+          {% endif %}
+        </span>
+        <span class="text-sm font-bold tabular-nums
+          {% if avg_value >= 2.5 %}text-rose-400
+          {% elif avg_value >= 1.5 %}text-amber-400
+          {% else %}text-emerald-300
+          {% endif %}">
+          {{ "%.2f"|format(avg_value) }}
+        </span>
+      </div>
+      
+      {# Progress Bar #}
+      <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+        {% set pct = (avg_value / 3 * 100) | int %}
+        <div class="h-full rounded-full transition-all duration-300
+          {% if avg_value >= 2.5 %}bg-gradient-to-r from-rose-600 to-rose-500
+          {% elif avg_value >= 1.5 %}bg-gradient-to-r from-amber-600 to-amber-500
+          {% else %}bg-gradient-to-r from-emerald-600 to-emerald-500
+          {% endif %}"
+          style="width: {{ pct }}%">
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <div class="mt-4 pt-4 border-t border-slate-800/50 text-xs text-slate-500">
+    <p>
+      💡 <strong>Interpretation:</strong> Durchschnittswerte unter 1.5 sind unkritisch.
+      Werte zwischen 1.5 und 2.5 zeigen Entwicklungspotenzial. Werte über 2.5 erfordern fokussiertes Training.
+    </p>
+  </div>
+</section>
+{% endif %}
+
+{# =========================================================================== #}
+{# Drill-Empfehlungen (Allgemein)                                               #}
+{# =========================================================================== #}
+<section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-6">
+  <div class="flex items-center gap-3 mb-4">
+    <span class="text-2xl">🎯</span>
+    <h2 class="text-lg font-bold text-slate-100">Nächste Schritte & Drill-Empfehlungen</h2>
+  </div>
+  
+  <div class="grid gap-4 md:grid-cols-2">
+    
+    {# Sofort-Maßnahmen #}
+    <div class="bg-slate-950/60 rounded-xl border border-slate-700 p-4">
+      <h3 class="text-sm font-semibold text-emerald-300 mb-3 flex items-center gap-2">
+        <span>⚡</span> Sofort-Maßnahmen
+      </h3>
+      <ul class="space-y-2 text-sm text-slate-300">
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-400 mt-0.5">•</span>
+          <span>Führe <strong>FOMO-Drill</strong> für die Top-2 Problem-Cluster durch</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-400 mt-0.5">•</span>
+          <span>Erstelle <strong>Setup-Checklisten</strong> für kritische Entry-Situationen</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-400 mt-0.5">•</span>
+          <span>Übe <strong>„Pause vor Entry"</strong>-Routine (3-Sekunden-Regel)</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-400 mt-0.5">•</span>
+          <span>Dokumentiere <strong>emotionale Trigger</strong> im Trading-Journal</span>
+        </li>
+      </ul>
+    </div>
+    
+    {# Mittel- bis langfristig #}
+    <div class="bg-slate-950/60 rounded-xl border border-slate-700 p-4">
+      <h3 class="text-sm font-semibold text-sky-300 mb-3 flex items-center gap-2">
+        <span>📅</span> Mittel- bis langfristig
+      </h3>
+      <ul class="space-y-2 text-sm text-slate-300">
+        <li class="flex items-start gap-2">
+          <span class="text-sky-400 mt-0.5">•</span>
+          <span>Wöchentliche <strong>Drill-Sessions</strong> mit strukturiertem Plan</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-sky-400 mt-0.5">•</span>
+          <span><strong>Trigger-Protokoll</strong> führen: Wann tritt welches Muster auf?</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-sky-400 mt-0.5">•</span>
+          <span>Monatliches <strong>Review</strong> der Psychologie-Heatmap</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-sky-400 mt-0.5">•</span>
+          <span><strong>Mentales Modell</strong> entwickeln: „Meine typischen Fallen"</span>
+        </li>
+      </ul>
+    </div>
+    
+  </div>
+  
+  {# Call-to-Action #}
+  <div class="mt-6 bg-gradient-to-r from-purple-950/40 to-pink-950/40 rounded-xl border border-purple-500/30 p-4">
+    <div class="flex items-start gap-3">
+      <span class="text-2xl">🚀</span>
+      <div class="flex-1">
+        <h3 class="text-sm font-semibold text-purple-200 mb-1">Bereit für die nächste Drill-Session?</h3>
+        <p class="text-sm text-purple-300/80 mb-3">
+          Starte jetzt ein fokussiertes Trigger-Training für deine Problem-Cluster.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <a href="/trigger_training/new_drill" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-purple-600 hover:bg-purple-500 text-white transition-colors">
+            <span>→</span>
+            <span>Neue Drill-Session starten</span>
+          </a>
+          <a href="/trigger_training/history" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-slate-700 hover:bg-slate-600 text-slate-200 transition-colors">
+            <span>📚</span>
+            <span>Vergangene Sessions ansehen</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+{# =========================================================================== #}
+{# Footer / Meta                                                                #}
+{# =========================================================================== #}
+<footer class="mt-6 pt-4 border-t border-slate-800/50 text-xs text-slate-500 flex items-center justify-between">
+  <span>
+    🧠 Psychologie-Analyse v1.0 · Trigger-Training System
+  </span>
+  <span>
+    Generiert: {{ timestamp or 'n/a' }}
+  </span>
+</footer>
+
+{% endblock %}

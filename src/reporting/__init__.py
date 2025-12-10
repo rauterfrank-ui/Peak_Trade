@@ -132,6 +132,17 @@ from .trigger_training_report import (
     build_trigger_training_report,
 )
 
+# Psychology Heatmap
+from .psychology_heatmap import (
+    PsychologyHeatmapCell,
+    PsychologyHeatmapRow,
+    build_psychology_heatmap_rows,
+    serialize_psychology_heatmap_rows,
+    build_example_psychology_heatmap_data,
+    calculate_cluster_statistics,
+    extract_psychology_scores_from_events,
+)
+
 # Offline Paper Trade Integration
 from .offline_paper_trade_integration import (
     OfflinePaperTradeReportConfig,
@@ -215,6 +226,14 @@ __all__ = [
     "TriggerTrainingEvent",
     "events_to_dataframe",
     "build_trigger_training_report",
+    # Psychology Heatmap
+    "PsychologyHeatmapCell",
+    "PsychologyHeatmapRow",
+    "build_psychology_heatmap_rows",
+    "serialize_psychology_heatmap_rows",
+    "build_example_psychology_heatmap_data",
+    "calculate_cluster_statistics",
+    "extract_psychology_scores_from_events",
     # Offline Paper Trade Integration
     "OfflinePaperTradeReportConfig",
     "generate_reports_for_offline_paper_trade",
