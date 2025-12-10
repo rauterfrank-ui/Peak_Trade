@@ -72,3 +72,6 @@ test_runs/
 .claude/
 reports/
 test_results/
+
+# Live runs & sessions (generierte Session-Daten)
+live_runs/
