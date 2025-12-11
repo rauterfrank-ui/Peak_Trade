@@ -168,10 +168,24 @@ oder ich baue dir nochmal einen aktualisierten All-in-One-Prompt.
 
 ## 4. Wie du diese Datei nutzen kannst
 
-- Speichere diese Datei z.B. als  
-  `docs/WORKFLOW_NOTES.md` oder `Peak_Trade_WORKFLOW_NOTES.md`  
+- Speichere diese Datei z.B. als
+  `docs/WORKFLOW_NOTES.md` oder `Peak_Trade_WORKFLOW_NOTES.md`
   in deinem Repo.
 - Sie dient als:
   - Snapshot des aktuellen technischen Stands,
   - Dokumentation unseres gemeinsamen Workflows,
   - Einstiegspunkt, um später wieder genau im selben Stil weiterzumachen.
+
+---
+
+## 5. Changelog / Meilensteine
+
+### 2025-12-11 – Repo-Cleanup abgeschlossen
+
+- Neue Doku-Struktur unter `docs/` eingeführt (Overview, Architecture, Phases, Runbooks, Reference, Archive)
+- Workflow- und Status-Dokumente nach `docs/00_overview/` verschoben
+- PHASE-Dokumente und Runbooks sauber einsortiert
+- Caches und temporäre Verzeichnisse entfernt (z.B. `__pycache__/`)
+- PR `chore/folder-cleanup` → `main` erstellt und gemerged
+
+**Ergebnis:** Repository ist übersichtlich strukturiert und zukunftssicher organisiert – bereit für die nächsten Peak_Trade-Phasen (InfoStream, TestHealth-Automation, Market-Forecast, Trigger-Training).
