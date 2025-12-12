@@ -75,3 +75,6 @@ test_results/
 
 # Live runs & sessions (generierte Session-Daten)
 live_runs/
+
+# Temporary test artifacts (Policy Critic cycles, etc.)
+tmp/

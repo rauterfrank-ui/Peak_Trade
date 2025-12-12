@@ -1,8 +1,0 @@
-diff --git a/config/live_risk_limits.toml b/config/live_risk_limits.toml
-index 7777777..8888888 100644
---- a/config/live_risk_limits.toml
-+++ b/config/live_risk_limits.toml
-@@ -12,7 +12,7 @@ max_daily_drawdown_pct = 3.0
-
--max_leverage = 2.0
-+max_leverage = 4.0
