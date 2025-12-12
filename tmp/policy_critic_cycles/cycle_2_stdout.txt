@@ -1,0 +1,44 @@
+============================================================
+POLICY CRITIC REVIEW
+============================================================
+Max Severity: WARN
+Recommended Action: REVIEW_REQUIRED
+Violations: 1
+
+VIOLATIONS:
+  [WARN] EXECUTION_ENDPOINT_TOUCH: Execution-critical file modified: src/live/session_registry.py. Review carefully.
+    → src/live/session_registry.py
+
+OPERATOR QUESTIONS:
+  ? Have these execution changes been tested in shadow mode?
+  ? Is there a rollback plan if issues arise?
+
+SUMMARY:
+  Policy review: 1 warning(s). Review required before applying.
+============================================================
+{
+  "max_severity": "WARN",
+  "recommended_action": "REVIEW_REQUIRED",
+  "violations": [
+    {
+      "rule_id": "EXECUTION_ENDPOINT_TOUCH",
+      "severity": "WARN",
+      "message": "Execution-critical file modified: src/live/session_registry.py. Review carefully.",
+      "evidence": [
+        {
+          "file_path": "src/live/session_registry.py",
+          "line_range": null,
+          "snippet": null,
+          "pattern": null
+        }
+      ],
+      "suggested_fix": "Ensure changes are well-tested and reviewed."
+    }
+  ],
+  "minimum_test_plan": [],
+  "operator_questions": [
+    "Have these execution changes been tested in shadow mode?",
+    "Is there a rollback plan if issues arise?"
+  ],
+  "summary": "Policy review: 1 warning(s). Review required before applying."
+}

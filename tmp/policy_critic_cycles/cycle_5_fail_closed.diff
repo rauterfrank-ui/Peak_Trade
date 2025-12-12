@@ -1,0 +1,9 @@
+diff --git a/src/execution/order_router.py b/src/execution/order_router.py
+index 9999999..aaaaaaa 100644
+--- a/src/execution/order_router.py
++++ b/src/execution/order_router.py
+@@ -1,4 +1,6 @@
+ def route_order(order):
++    # G3.5 synthetic: ensure fail-closed when context is broken
++    # No functional change intended.
+     return order
