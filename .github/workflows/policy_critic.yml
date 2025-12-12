@@ -55,8 +55,9 @@ jobs:
 
       - name: Run Policy Critic
         id: critic
-        continue-on-error: true  # Don't fail step, we handle exit code below
         run: |
+          set +e  # Don't exit on error - we need to capture exit code
+
           # Run with stderr visible for debugging
           python3 scripts/run_policy_critic.py \
             --diff-file pr.diff \
@@ -78,8 +79,12 @@ jobs:
             echo '{"max_severity": "INFO", "recommended_action": "REVIEW_REQUIRED", "violations": [], "minimum_test_plan": [], "operator_questions": [], "summary": "Policy Critic encountered an error. Manual review required."}' > policy_result.json
           fi
 
+          # This step always succeeds so artifacts and summary can be generated
+          exit 0
+
       - name: Parse results
         id: parse
+        if: always()
         run: |
           # Extract key fields from JSON
           MAX_SEVERITY=$(jq -r '.max_severity // "INFO"' policy_result.json)
@@ -93,6 +98,7 @@ jobs:
           echo "summary=${SUMMARY}" >> $GITHUB_OUTPUT
 
       - name: Upload results artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: policy-critic-results
@@ -100,9 +106,11 @@ jobs:
           retention-days: 30
 
       - name: Generate Job Summary
+        if: always()
         run: |
           echo "# Policy Critic Review" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Exit Code:** ${{ steps.critic.outputs.exit_code }}" >> $GITHUB_STEP_SUMMARY
           echo "**Max Severity:** ${{ steps.parse.outputs.max_severity }}" >> $GITHUB_STEP_SUMMARY
           echo "**Recommended Action:** ${{ steps.parse.outputs.recommended_action }}" >> $GITHUB_STEP_SUMMARY
           echo "**Violations:** ${{ steps.parse.outputs.violation_count }}" >> $GITHUB_STEP_SUMMARY
@@ -132,11 +140,11 @@ jobs:
             jq -r '.operator_questions[] | "- \(.)"' policy_result.json >> $GITHUB_STEP_SUMMARY
           fi
 
-      - name: Check for blocking violations
+      - name: Block PR on BLOCK severity
         if: steps.critic.outputs.exit_code == '2'
         run: |
-          echo "::error::Policy Critic detected blocking violations. Auto-apply DENIED."
-          echo "See job summary for details."
+          echo "::error::Policy Critic returned BLOCK (exit code 2). Merge is DENIED."
+          echo "::error::See job summary for violation details."
           exit 2
 
       - name: Success
