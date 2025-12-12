@@ -1,0 +1,463 @@
+# ============================================================================
+# Peak_Trade – Test Health Automation (Full Suite)
+# ============================================================================
+# Stand: Dezember 2024
+# Version: v1.1 (erweitert für alle Profile)
+#
+# Zweck:
+#   - Nightly vollständige Health-Prüfung aller Profile
+#   - Manueller Trigger mit Profil-Auswahl
+#   - Artefakte hochladen für Review
+#
+# SAFETY:
+#   - Kein Live-Trading - nur Offline-Tests, Backtests, Smoke-Tests
+#   - Keine Exchange-API-Keys erforderlich
+#   - Strategy-Coverage und Switch-Sanity optional deaktivierbar
+# ============================================================================
+
+name: Test Health Automation (Full Suite)
+
+on:
+  # ===========================================================================
+  # Manueller Trigger mit Profil-Auswahl
+  # ===========================================================================
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Health-Profil auswählen'
+        required: true
+        default: 'weekly_core'
+        type: choice
+        options:
+          - daily_quick
+          - weekly_core
+          - full_suite
+          - demo_simple
+          - aggressive_7d
+          - r_and_d_experimental
+          - portfolio_core_eur_smoke
+          - portfolio_core_usdt_smoke
+          - governance_strategy_switch_sanity
+          - panic_test_24h
+          - ALL_PROFILES
+      skip_coverage_checks:
+        description: 'Strategy-Coverage & Switch-Sanity überspringen'
+        required: false
+        default: true
+        type: boolean
+      fail_on_violations:
+        description: 'Bei Coverage-Violations hart fehlschlagen'
+        required: false
+        default: false
+        type: boolean
+
+  # ===========================================================================
+  # Nightly Run (alle stabilen Profile)
+  # ===========================================================================
+  schedule:
+    # Nachtlauf um 03:00 UTC (04:00 CET)
+    - cron: '0 3 * * *'
+
+# ============================================================================
+# Environment: Offline/Test-Modus sicherstellen
+# ============================================================================
+env:
+  # Globale ENV-Variablen für Safety
+  PEAK_TRADE_ENV: offline
+  PEAK_TRADE_LIVE_TRADING_ENABLED: "false"
+  PEAK_TRADE_TESTNET_ONLY: "true"
+  # Slack-Webhook nicht in CI (vermeidet Spam)
+  PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH: ""
+  # Python-Optimierungen
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  # ===========================================================================
+  # Job 1: Einzelnes Profil (manueller Trigger)
+  # ===========================================================================
+  single-profile:
+    name: "Health Check: ${{ github.event.inputs.profile || 'scheduled' }}"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.profile != 'ALL_PROFILES'
+    timeout-minutes: 30
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # Zusätzliche Test-Dependencies
+          pip install pytest pandas numpy
+
+      - name: 🏥 Run Health Profile
+        id: health_run
+        run: |
+          echo "======================================================================"
+          echo "🏥 Test Health Automation - Profile: ${{ github.event.inputs.profile }}"
+          echo "======================================================================"
+          
+          # Command zusammenbauen
+          CMD="python scripts/run_test_health_profile.py --profile ${{ github.event.inputs.profile }} --no-slack"
+          
+          # Optional: Coverage-Checks überspringen
+          if [ "${{ github.event.inputs.skip_coverage_checks }}" == "true" ]; then
+            CMD="$CMD --no-strategy-coverage --no-switch-sanity"
+            echo "ℹ️  Strategy-Coverage und Switch-Sanity übersprungen"
+          fi
+          
+          echo "📋 Command: $CMD"
+          echo ""
+          
+          # Ausführen
+          if [ "${{ github.event.inputs.fail_on_violations }}" == "true" ]; then
+            # Hart fehlschlagen bei Exit != 0
+            $CMD
+          else
+            # Weiter machen auch bei Coverage-Violations (Exit 1)
+            $CMD || echo "⚠️  Health-Check mit Violations beendet (Exit $?)"
+          fi
+
+      - name: 📊 Upload Health Report & InfoStream
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: health-report-${{ github.event.inputs.profile }}-${{ github.run_number }}
+          path: |
+            reports/test_health/
+            reports/infostream/events/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: 📈 Display Summary
+        if: always()
+        run: |
+          echo "======================================================================"
+          echo "📋 Test Health Report Summary"
+          echo "======================================================================"
+          
+          # Finde letzten Report
+          LATEST_DIR=$(ls -t reports/test_health/ 2>/dev/null | grep -v history.json | head -1)
+          
+          if [ -n "$LATEST_DIR" ] && [ -f "reports/test_health/${LATEST_DIR}/summary.json" ]; then
+            SUMMARY_JSON="reports/test_health/${LATEST_DIR}/summary.json"
+            
+            HEALTH_SCORE=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(f\"{d['health_score']:.1f}\")")
+            PASSED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['passed_checks'])")
+            FAILED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['failed_checks'])")
+            
+            echo "📄 Report: reports/test_health/${LATEST_DIR}/"
+            echo "🏥 Health Score: ${HEALTH_SCORE} / 100.0"
+            echo "✅ Passed: ${PASSED}"
+            echo "❌ Failed: ${FAILED}"
+            
+            # Markdown-Report anzeigen
+            if [ -f "reports/test_health/${LATEST_DIR}/summary.md" ]; then
+              echo ""
+              echo "======================================================================"
+              cat "reports/test_health/${LATEST_DIR}/summary.md"
+            fi
+          else
+            echo "⚠️  Kein Report gefunden"
+          fi
+
+      - name: 📦 Generate InfoStream Packet
+        if: always()
+        run: |
+          echo "======================================================================"
+          echo "📦 InfoStream: Generating INFO_PACKET"
+          echo "======================================================================"
+          
+          # Generiere INFO_PACKET aus dem letzten TestHealth-Report
+          python scripts/generate_infostream_packet.py \
+            --source test_health \
+            --latest \
+            --output reports/infostream/events/ \
+            || echo "⚠️  InfoStream-Paket konnte nicht generiert werden"
+          
+          # Zeige das generierte Paket
+          if [ -d "reports/infostream/events/" ]; then
+            LATEST_PACKET=$(ls -t reports/infostream/events/*.txt 2>/dev/null | head -1)
+            if [ -n "$LATEST_PACKET" ]; then
+              echo ""
+              echo "📄 Generated Packet: $LATEST_PACKET"
+              echo "======================================================================"
+              cat "$LATEST_PACKET"
+            fi
+          fi
+
+  # ===========================================================================
+  # Job 2: Alle Profile (manueller Trigger mit ALL_PROFILES)
+  # ===========================================================================
+  all-profiles-manual:
+    name: "Health Check: ALL_PROFILES (Manual)"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.profile == 'ALL_PROFILES'
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        profile:
+          - daily_quick
+          - weekly_core
+          - demo_simple
+          - aggressive_7d
+          - r_and_d_experimental
+          - portfolio_core_eur_smoke
+          - portfolio_core_usdt_smoke
+          # Auskommentiert: können bei Bedarf aktiviert werden
+          # - governance_strategy_switch_sanity  # Bekannter Bug
+          # - panic_test_24h  # Drill-Profil
+          # - full_suite  # Sehr lang
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pandas numpy
+
+      - name: 🏥 Run Health Profile (${{ matrix.profile }})
+        run: |
+          echo "🏥 Running profile: ${{ matrix.profile }}"
+          
+          # Skip Coverage-Checks für CI (vermeidet false-positive Fails)
+          python scripts/run_test_health_profile.py \
+            --profile ${{ matrix.profile }} \
+            --no-slack \
+            --no-strategy-coverage \
+            --no-switch-sanity \
+            || echo "⚠️  Profile ${{ matrix.profile }} mit Violations beendet"
+
+      - name: 📊 Upload Health Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: health-report-${{ matrix.profile }}-${{ github.run_number }}
+          path: reports/test_health/
+          retention-days: 30
+          if-no-files-found: warn
+
+  # ===========================================================================
+  # Job 3: Nightly Run (automatisch alle stabilen Profile)
+  # ===========================================================================
+  nightly-health-suite:
+    name: "Nightly Health Suite"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    timeout-minutes: 45
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pandas numpy
+
+      - name: 🌙 Nightly Health Checks (Core Profiles)
+        id: nightly_run
+        run: |
+          echo "======================================================================"
+          echo "🌙 Peak_Trade Nightly Health Suite"
+          echo "======================================================================"
+          echo "Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+          
+          # Ergebnis-Tracking
+          TOTAL_PROFILES=0
+          PASSED_PROFILES=0
+          FAILED_PROFILES=0
+          
+          # Liste der stabilen Profile für Nightly
+          PROFILES=(
+            "daily_quick"
+            "weekly_core"
+            "demo_simple"
+            "aggressive_7d"
+            "portfolio_core_eur_smoke"
+            "portfolio_core_usdt_smoke"
+          )
+          
+          for PROFILE in "${PROFILES[@]}"; do
+            echo ""
+            echo "======================================================================"
+            echo "🏥 Running: $PROFILE"
+            echo "======================================================================"
+            
+            TOTAL_PROFILES=$((TOTAL_PROFILES + 1))
+            
+            # Run mit Skip-Flags (Coverage-Violations ignorieren)
+            if python scripts/run_test_health_profile.py \
+                --profile "$PROFILE" \
+                --no-slack \
+                --no-strategy-coverage \
+                --no-switch-sanity; then
+              echo "✅ $PROFILE: PASSED"
+              PASSED_PROFILES=$((PASSED_PROFILES + 1))
+            else
+              # Prüfe ob nur Coverage-Violations oder echter Fail
+              LATEST_DIR=$(ls -t reports/test_health/ | grep -v history.json | head -1)
+              if [ -f "reports/test_health/${LATEST_DIR}/summary.json" ]; then
+                FAILED_CHECKS=$(python -c "import json; d=json.load(open('reports/test_health/${LATEST_DIR}/summary.json')); print(d['failed_checks'])")
+                if [ "$FAILED_CHECKS" -eq 0 ]; then
+                  echo "✅ $PROFILE: PASSED (Coverage-Violations ignoriert)"
+                  PASSED_PROFILES=$((PASSED_PROFILES + 1))
+                else
+                  echo "❌ $PROFILE: FAILED ($FAILED_CHECKS checks failed)"
+                  FAILED_PROFILES=$((FAILED_PROFILES + 1))
+                fi
+              else
+                echo "❌ $PROFILE: FAILED (no report generated)"
+                FAILED_PROFILES=$((FAILED_PROFILES + 1))
+              fi
+            fi
+          done
+          
+          echo ""
+          echo "======================================================================"
+          echo "📊 Nightly Summary"
+          echo "======================================================================"
+          echo "Total Profiles:  $TOTAL_PROFILES"
+          echo "Passed:          $PASSED_PROFILES"
+          echo "Failed:          $FAILED_PROFILES"
+          echo "======================================================================"
+          
+          # Speichere für Summary
+          echo "total=$TOTAL_PROFILES" >> $GITHUB_OUTPUT
+          echo "passed=$PASSED_PROFILES" >> $GITHUB_OUTPUT
+          echo "failed=$FAILED_PROFILES" >> $GITHUB_OUTPUT
+          
+          # Fail wenn mehr als 1 Profil fehlschlägt
+          if [ "$FAILED_PROFILES" -gt 1 ]; then
+            echo "❌ Nightly Suite FAILED: $FAILED_PROFILES profiles with failures"
+            exit 1
+          fi
+
+      - name: 📊 Upload Nightly Health Reports & InfoStream
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-health-reports-${{ github.run_number }}
+          path: |
+            reports/test_health/
+            reports/infostream/events/
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: 📈 Generate Nightly Summary
+        if: always()
+        run: |
+          echo "## 🌙 Nightly Health Suite Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Total Profiles** | ${{ steps.nightly_run.outputs.total || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Passed** | ${{ steps.nightly_run.outputs.passed || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Failed** | ${{ steps.nightly_run.outputs.failed || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📄 **Reports**: Siehe CI-Artefakte (nightly-health-reports-${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📦 Generate InfoStream Packets for Nightly
+        if: always()
+        run: |
+          echo "======================================================================"
+          echo "📦 InfoStream: Generating INFO_PACKET for Nightly Suite"
+          echo "======================================================================"
+          
+          # Generiere INFO_PACKET aus dem letzten TestHealth-Report
+          python scripts/generate_infostream_packet.py \
+            --source test_health \
+            --latest \
+            --output reports/infostream/events/ \
+            || echo "⚠️  InfoStream-Paket konnte nicht generiert werden"
+
+      - name: 📜 Show History
+        if: always()
+        run: |
+          if [ -f "reports/test_health/history.json" ]; then
+            echo "======================================================================"
+            echo "📜 Test Health History (letzte Einträge)"
+            echo "======================================================================"
+            python -c "
+          import json
+          with open('reports/test_health/history.json') as f:
+              data = json.load(f)
+          entries = data.get('entries', [])[-10:]
+          for e in entries:
+              print(f\"{e.get('timestamp', 'N/A')[:19]} | {e.get('profile_name', 'N/A'):25} | Score: {e.get('health_score', 0):.1f}\")
+          "
+          fi
+
+  # ===========================================================================
+  # Job 4: R&D Experimental (wöchentlich parallel zum Nightly)
+  # ===========================================================================
+  r-and-d-experimental:
+    name: "R&D Experimental Check"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    timeout-minutes: 30
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pandas numpy
+
+      - name: 🧪 Run R&D Experimental Profile
+        run: |
+          echo "🧪 Running R&D Experimental Profile"
+          echo "ℹ️  Hinweis: R&D-Tests dürfen fehlschlagen (experimentell)"
+          
+          python scripts/run_test_health_profile.py \
+            --profile r_and_d_experimental \
+            --no-slack \
+            --no-strategy-coverage \
+            --no-switch-sanity \
+            || echo "⚠️  R&D Profile mit Violations/Failures beendet (erwartet)"
+
+      - name: 📊 Upload R&D Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r-and-d-health-report-${{ github.run_number }}
+          path: reports/test_health/
+          retention-days: 90
+          if-no-files-found: warn
