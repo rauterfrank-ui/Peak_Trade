@@ -112,7 +112,7 @@ maybe_push() {
   fi
 
   if [[ "$do_push" == "1" ]]; then
-    git push -u "$REMOTE" "$branch"
+    git push -u -f "$REMOTE" "$branch"
   else
     log "  ⏭️  Push übersprungen."
   fi
