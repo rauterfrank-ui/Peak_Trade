@@ -214,6 +214,10 @@ class RiskLimitRaiseRule(PolicyRule):
                 for match in matches:
                     file_path = NoSecretsRule._extract_file_from_diff_position(diff, match.start())
 
+                    # Skip excluded paths: docs/, tmp/, tests/fixtures/
+                    if file_path and any(file_path.startswith(excluded) for excluded in ["docs/", "tmp/", "tests/fixtures/"]):
+                        continue
+
                     severity = Severity.WARN if has_justification else Severity.BLOCK
                     message = f"Risk limit change detected in {file_path or 'config'}."
 

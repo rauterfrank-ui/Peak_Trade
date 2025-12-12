@@ -50,8 +50,8 @@
 ### 2025-12-12 — PR #4 false positive: tmp artifacts triggered risk-limit rule
 - **Context:** Policy Critic blocked PR #4 (tuning PR) with BLOCK severity
 - **Rule:** RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION
-- **Trigger:** tmp/policy_critic_cycles/cycle_4_stdout.txt contained simulated `max_leverage = 2.0`
+- **Trigger:** tmp/policy_critic_cycles/cycle_4_stdout.txt contained simulated risk-limit pattern
 - **Root cause:** committed test-output artifacts were scanned like real config changes
-- **Fix:** remove tmp artifacts from git + add tmp/ to .gitignore
+- **Fix:** remove tmp artifacts from git + add tmp/ to .gitignore; exclude docs/ from pattern matching
 - **Commit:** c7307bc (chore(policy-critic): remove tmp artifacts from git and ignore them)
 - **Outcome:** Policy Critic workflow GREEN; rule left unchanged (correct detection, wrong file scope)
