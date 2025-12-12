@@ -27,9 +27,10 @@ critical_paths:
   - "config/live/"
 
 # Context keys that can reduce severity (if provided with justification)
+# G3.6: Stricter enforcement for critical paths
 required_context_keys:
   - justification  # Required for RISK_LIMIT changes
-  - test_plan      # Required for large changes to critical paths
+  - test_plan      # Required for changes to critical paths (10+ lines in src/live|execution|exchange, 50+ elsewhere)
 
 # Fail-closed: if critic errors or context is invalid
 default_action_on_error: REVIEW_REQUIRED

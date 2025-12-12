@@ -252,7 +252,17 @@ class MissingTestPlanRule(PolicyRule):
         "src/strategies/",
     ]
 
+    # G3.6: Stricter thresholds for highly critical paths
+    HIGH_CRITICAL_PATHS = [
+        "src/execution/",
+        "src/exchange/",
+        "src/live/",
+        "config/live",
+        "config/production",
+    ]
+
     MIN_LINES_CHANGED = 50  # Threshold for "significant change"
+    MIN_LINES_HIGH_CRITICAL = 10  # G3.6: Lower threshold for highly critical paths
 
     def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
         violations = []
@@ -270,17 +280,24 @@ class MissingTestPlanRule(PolicyRule):
         if not critical_files:
             return violations
 
+        # G3.6: Check for highly critical paths (lower threshold)
+        high_critical_files = [f for f in critical_files if any(f.startswith(path) for path in self.HIGH_CRITICAL_PATHS)]
+
         # Count changed lines (rough heuristic)
         added_lines = len(re.findall(r'^\+[^+]', diff, re.MULTILINE))
         removed_lines = len(re.findall(r'^-[^-]', diff, re.MULTILINE))
         total_changed = added_lines + removed_lines
 
-        if total_changed >= self.MIN_LINES_CHANGED:
+        # G3.6: Use lower threshold for highly critical paths
+        threshold = self.MIN_LINES_HIGH_CRITICAL if high_critical_files else self.MIN_LINES_CHANGED
+
+        if total_changed >= threshold:
+            path_type = "highly critical" if high_critical_files else "critical"
             violations.append(
                 Violation(
                     rule_id=self.rule_id,
                     severity=self.severity,
-                    message=f"Significant changes ({total_changed} lines) in critical paths without test plan.",
+                    message=f"Changes ({total_changed} lines) in {path_type} paths without test plan.",
                     evidence=[Evidence(file_path=f) for f in critical_files[:3]],  # Limit to first 3
                     suggested_fix="Provide test plan via --context-json with 'test_plan' field describing testing approach.",
                 )

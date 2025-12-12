@@ -56,6 +56,9 @@ class PolicyCritic:
             )
             all_violations.extend(violations)
 
+        # G3.6: Dedupe violations with same rule_id for better operator UX
+        all_violations = self._dedupe_violations(all_violations)
+
         # Determine max severity
         max_severity = Severity.INFO
         if all_violations:
@@ -95,6 +98,70 @@ class PolicyCritic:
             result.effective_ruleset_hash = pack.compute_hash()
 
         return result
+
+    def _dedupe_violations(self, violations: List[Violation]) -> List[Violation]:
+        """
+        Deduplicate violations with same rule_id by combining evidence.
+
+        G3.6: Improves operator UX by reducing noise when same rule triggers
+        multiple times (e.g., RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION hitting
+        both old and new values in the same diff).
+
+        Strategy: Group by (rule_id, message), combine evidence, keep highest severity.
+        """
+        if not violations:
+            return violations
+
+        from collections import defaultdict
+
+        # Group by (rule_id, message) tuple
+        groups = defaultdict(list)
+        for v in violations:
+            key = (v.rule_id, v.message)
+            groups[key].append(v)
+
+        # Dedupe: for each group, merge evidence and keep highest severity
+        deduped = []
+        for (rule_id, message), group_violations in groups.items():
+            if len(group_violations) == 1:
+                deduped.append(group_violations[0])
+                continue
+
+            # Multiple violations with same rule_id+message: merge
+            # Keep highest severity
+            severity_order = {Severity.INFO: 0, Severity.WARN: 1, Severity.BLOCK: 2}
+            highest_severity = max(
+                (v.severity for v in group_violations),
+                key=lambda s: severity_order[s]
+            )
+
+            # Combine all evidence (dedupe by file_path)
+            combined_evidence = []
+            seen_paths = set()
+            for v in group_violations:
+                for evidence in v.evidence:
+                    if evidence.file_path not in seen_paths:
+                        combined_evidence.append(evidence)
+                        seen_paths.add(evidence.file_path)
+
+            # Use first violation as template, update count in message if needed
+            base_violation = group_violations[0]
+            if len(group_violations) > 1:
+                # Update message to indicate count
+                updated_message = f"{message} ({len(group_violations)} occurrences)"
+            else:
+                updated_message = message
+
+            merged_violation = Violation(
+                rule_id=rule_id,
+                severity=highest_severity,
+                message=updated_message,
+                evidence=combined_evidence,
+                suggested_fix=base_violation.suggested_fix,
+            )
+            deduped.append(merged_violation)
+
+        return deduped
 
     def _determine_action(self, max_severity: Severity, violations: List[Violation]) -> RecommendedAction:
         """Determine recommended action based on severity and violations."""
