@@ -1,11 +1,11 @@
 """Governance module for feature approval, go/no-go decisions, sanity checks, and policy review."""
 
-from src.governance.go_no_go import (
+from .go_no_go import (
     GovernanceStatus,
     get_governance_status,
     is_feature_approved_for_year,
 )
-from src.governance.strategy_switch_sanity_check import (
+from .strategy_switch_sanity_check import (
     StrategySwitchSanityResult,
     StrategyMeta,
     run_strategy_switch_sanity_check,
