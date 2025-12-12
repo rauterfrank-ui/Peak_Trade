@@ -76,6 +76,28 @@ def detect_default_branch(fallback: str = "main") -> str:
     return fallback
 
 
+def get_deterministic_marker(source_file: Path) -> str:
+    """
+    Get a deterministic marker based on the source file's git history.
+    Returns format: "YYYY-MM-DD HH:MM:SS [sha7]"
+    Falls back to current timestamp if git info unavailable.
+    """
+    rc, out = _run_git(["log", "-1", "--format=%ct %h", "--", str(source_file)])
+    if rc == 0 and out:
+        parts = out.split()
+        if len(parts) == 2:
+            timestamp_str, sha_short = parts
+            try:
+                timestamp = int(timestamp_str)
+                dt_obj = dt.datetime.fromtimestamp(timestamp)
+                return f"{dt_obj.strftime('%Y-%m-%d %H:%M:%S')} [{sha_short}]"
+            except (ValueError, OSError):
+                pass
+
+    # Fallback to current time (non-deterministic)
+    return dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
 # -------------------------
 # TODO parsing
 # -------------------------
@@ -295,7 +317,7 @@ def claude_code_command(repo_root: Optional[Path], it: TodoItem) -> Optional[str
 # HTML rendering
 # -------------------------
 def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path], repo_web: Optional[str], branch: str) -> str:
-    now = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    marker = get_deterministic_marker(source_md)
     src_rel = str(source_md).replace("\\", "/")
 
     cards = []
@@ -476,7 +498,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
         <div class="title">Peak_Trade – TODO Board</div>
         <div class="meta">
           Quelle: {esc(src_rel)}<br/>
-          Generiert: {esc(now)}<br/>
+          Generiert: {esc(marker)}<br/>
           {repo_line}
         </div>
       </div>
@@ -734,6 +756,9 @@ def main() -> int:
     html_doc = render_html(items, source, repo_root, repo_web, branch)
     out_html.write_text(html_doc, encoding="utf-8")
 
+    # Generate deterministic marker for README
+    marker = get_deterministic_marker(source)
+
     out_readme = repo_root / args.out_readme
     out_readme.parent.mkdir(parents=True, exist_ok=True)
     out_readme.write_text(f"""# Peak_Trade – TODO Board
@@ -798,7 +823,7 @@ Override mit `--source-md`.
 
 ---
 
-**Generated:** {dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+**Generated:** {marker}
 **Output:** `{out_html.relative_to(repo_root)}`
 """, encoding="utf-8")
 
