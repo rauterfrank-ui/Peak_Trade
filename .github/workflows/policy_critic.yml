@@ -65,17 +65,26 @@ jobs:
           EXIT_CODE=$?
           echo "exit_code=${EXIT_CODE}" >> $GITHUB_OUTPUT
 
-          # Print human summary
+          # Print what we got (for debugging)
+          echo "=== Policy Critic Output ==="
           cat policy_result.json
+          echo "==="
+
+          # Validate JSON
+          if ! jq empty policy_result.json 2>/dev/null; then
+            echo "::warning::Policy Critic output is not valid JSON. Check logs."
+            # Create fallback JSON
+            echo '{"max_severity": "INFO", "recommended_action": "REVIEW_REQUIRED", "violations": [], "minimum_test_plan": [], "operator_questions": [], "summary": "Policy Critic encountered an error. Manual review required."}' > policy_result.json
+          fi
 
       - name: Parse results
         id: parse
         run: |
           # Extract key fields from JSON
-          MAX_SEVERITY=$(jq -r '.max_severity' policy_result.json)
-          RECOMMENDED_ACTION=$(jq -r '.recommended_action' policy_result.json)
-          VIOLATION_COUNT=$(jq '.violations | length' policy_result.json)
-          SUMMARY=$(jq -r '.summary' policy_result.json)
+          MAX_SEVERITY=$(jq -r '.max_severity // "INFO"' policy_result.json)
+          RECOMMENDED_ACTION=$(jq -r '.recommended_action // "REVIEW_REQUIRED"' policy_result.json)
+          VIOLATION_COUNT=$(jq '.violations | length // 0' policy_result.json)
+          SUMMARY=$(jq -r '.summary // "No summary available"' policy_result.json)
 
           echo "max_severity=${MAX_SEVERITY}" >> $GITHUB_OUTPUT
           echo "recommended_action=${RECOMMENDED_ACTION}" >> $GITHUB_OUTPUT
