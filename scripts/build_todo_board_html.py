@@ -80,6 +80,8 @@ def detect_default_branch(fallback: str = "main") -> str:
 # -------------------------
 ID_RE = re.compile(r"\[([A-Za-z0-9_\-]+)\]")
 HINT_PATH_RE = re.compile(r"hint_path:\s*\"([^\"]+)\"|hint_path:\s*([^\s]+)")
+HINT_REF_RE = re.compile(r"hint_ref:\s*\"([^\"]+)\"|hint_ref:\s*([^\s]+)")
+HINT_LINE_RE = re.compile(r"hint_line:\s*(\d+)")
 TAG_RE = re.compile(r"#([A-Za-z0-9_\-]+)")
 
 
@@ -90,6 +92,8 @@ class TodoItem:
     title: str
     section: str
     hint_path: Optional[str]
+    hint_ref: Optional[str]   # "file.py:120" format
+    hint_line: Optional[int]  # standalone line number
     tags: List[str]
 
 
@@ -141,10 +145,26 @@ def parse_todos(md_text: str) -> List[TodoItem]:
             item_id = f"T{auto_id:04d}"
             auto_id += 1
 
+        # hint_path
         hp = None
         mhp = HINT_PATH_RE.search(rest)
         if mhp:
             hp = (mhp.group(1) or mhp.group(2) or "").strip().strip('"')
+
+        # hint_ref: "file.py:120" format
+        hr = None
+        mhr = HINT_REF_RE.search(rest)
+        if mhr:
+            hr = (mhr.group(1) or mhr.group(2) or "").strip().strip('"')
+
+        # hint_line: standalone line number
+        hl = None
+        mhl = HINT_LINE_RE.search(rest)
+        if mhl:
+            try:
+                hl = int(mhl.group(1))
+            except ValueError:
+                pass
 
         tags = sorted({t.lower() for t in TAG_RE.findall(rest)})
 
@@ -154,6 +174,8 @@ def parse_todos(md_text: str) -> List[TodoItem]:
             title=rest,
             section=section,
             hint_path=hp,
+            hint_ref=hr,
+            hint_line=hl,
             tags=tags
         ))
 
@@ -163,43 +185,94 @@ def parse_todos(md_text: str) -> List[TodoItem]:
 # -------------------------
 # Link & command builders
 # -------------------------
-def github_link(repo_web: Optional[str], branch: str, hint_path: Optional[str]) -> Optional[str]:
-    # 🌐 GitHub nur aktiv wenn hint_path existiert
-    if not repo_web or not hint_path:
-        return None
-    p = hint_path.strip().lstrip("/")
-    if not p:
-        return None
-
-    is_dir = p.endswith("/") or (not os.path.splitext(p)[1])
-    mode = "tree" if is_dir else "blob"
-    return f"{repo_web}/{mode}/{branch}/{p.rstrip('/')}"
-
-
-def cursor_link(repo_root: Optional[Path], hint_path: Optional[str]) -> Optional[str]:
+def github_link(repo_web: Optional[str], branch: str, it: TodoItem) -> Optional[str]:
     """
-    cursor://file/<ABS_PATH>
-    Hinweis: Browser/OS kann beim ersten Mal nachfragen.
+    GitHub link mit optionaler Zeilen-Unterstützung.
+    Priorität: hint_ref > hint_path (+ hint_line)
+    """
+    if not repo_web:
+        return None
+
+    # hint_ref: "path/file.py:120"
+    if it.hint_ref:
+        ref = it.hint_ref.strip().lstrip("/")
+        if ":" in ref:
+            fpath, line = ref.split(":", 1)
+            return f"{repo_web}/blob/{branch}/{fpath.rstrip('/')}#L{line}"
+        else:
+            # kein :line → blob/tree heuristic
+            is_dir = ref.endswith("/") or (not os.path.splitext(ref)[1])
+            mode = "tree" if is_dir else "blob"
+            return f"{repo_web}/{mode}/{branch}/{ref.rstrip('/')}"
+
+    # hint_path + optional hint_line
+    if it.hint_path:
+        p = it.hint_path.strip().lstrip("/")
+        if not p:
+            return None
+        is_dir = p.endswith("/") or (not os.path.splitext(p)[1])
+        mode = "tree" if is_dir else "blob"
+        base = f"{repo_web}/{mode}/{branch}/{p.rstrip('/')}"
+        if it.hint_line and mode == "blob":
+            return f"{base}#L{it.hint_line}"
+        return base
+
+    return None
+
+
+def cursor_link(repo_root: Optional[Path], it: TodoItem) -> Optional[str]:
+    """
+    Cursor link mit Zeilen-Support.
+    Priorität: hint_ref > hint_path (+ hint_line) > repo_root
+    Format: cursor://file/<ABS_PATH>:line:col
     """
     if not repo_root:
         return None
 
-    if not hint_path:
-        abs_path = repo_root.resolve()
-    else:
-        p = hint_path.strip().lstrip("/")
-        abs_path = (repo_root / p).resolve()
+    # hint_ref: "path/file.py:120"
+    if it.hint_ref:
+        ref = it.hint_ref.strip().lstrip("/")
+        if ":" in ref:
+            fpath, line = ref.split(":", 1)
+            abs_path = (repo_root / fpath).resolve()
+            # Cursor format: cursor://file/path:line:col
+            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:{line}:1"
+        else:
+            abs_path = (repo_root / ref).resolve()
+            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
 
-    return "cursor://file/" + urllib.parse.quote(str(abs_path), safe="/:")
+    # hint_path + optional hint_line
+    if it.hint_path:
+        p = it.hint_path.strip().lstrip("/")
+        abs_path = (repo_root / p).resolve()
+        if it.hint_line:
+            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:{it.hint_line}:1"
+        return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
+
+    # fallback: repo root
+    abs_path = repo_root.resolve()
+    return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
 
 
 def build_work_prompt(it: TodoItem) -> str:
     tags = ", ".join([f"#{t}" for t in it.tags]) if it.tags else "(keine)"
-    hp = it.hint_path or "."
-    # bewusst kurz & "paste-friendly"
+    
+    # Location info mit Priorität
+    loc_parts = []
+    if it.hint_ref:
+        loc_parts.append(f"hint_ref: {it.hint_ref}")
+    elif it.hint_path:
+        loc_parts.append(f"hint_path: {it.hint_path}")
+        if it.hint_line:
+            loc_parts.append(f"line: {it.hint_line}")
+    else:
+        loc_parts.append("hint_path: .")
+    
+    loc = " | ".join(loc_parts)
+    
     return (
         f"Peak_Trade TODO [{it.id}] ({it.status}) — {it.title} | "
-        f"Section: {it.section} | hint_path: {hp} | Tags: {tags}. "
+        f"Section: {it.section} | {loc} | Tags: {tags}. "
         "Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, "
         "und gib mir einen sauberen Git-Diff + kurze Begründung."
     )
@@ -209,13 +282,11 @@ def claude_code_command(repo_root: Optional[Path], it: TodoItem) -> Optional[str
     """
     Claude Code startet mit initial prompt:
       claude "query"
-    Siehe CLI reference.
     """
     if not repo_root:
         return None
 
     prompt = build_work_prompt(it).replace("\n", " ").strip()
-    # quoting safe for shell paste
     return f'cd {shlex.quote(str(repo_root.resolve()))} && claude {shlex.quote(prompt)}'
 
 
@@ -234,9 +305,11 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
             "title": it.title,
             "section": it.section,
             "hint_path": it.hint_path,
+            "hint_ref": it.hint_ref,
+            "hint_line": it.hint_line,
             "tags": it.tags,
-            "github": github_link(repo_web, branch, it.hint_path),
-            "cursor": cursor_link(repo_root, it.hint_path),
+            "github": github_link(repo_web, branch, it),
+            "cursor": cursor_link(repo_root, it),
             "prompt": build_work_prompt(it),
             "claude_cmd": claude_code_command(repo_root, it),
         })
@@ -371,6 +444,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
       font-size: 12px;
       color: var(--muted);
       padding: 12px 4px 0 4px;
+      line-height: 1.6;
     }}
     .toast {{
       position: fixed;
@@ -413,9 +487,10 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
     <div class="grid" id="grid"></div>
 
     <div class="foot">
-      🌐 GitHub ist nur aktiv, wenn ein <code>hint_path</code> vorhanden ist.<br/>
-      🧠 Cursor: öffnet Pfad + kopiert das Thema als Prompt in die Zwischenablage.<br/>
-      🤖 Claude Code: kopiert ein fertiges <code>cd … && claude "…"</code> Kommando in die Zwischenablage (ins Terminal pasten & Enter).
+      🌐 GitHub ist aktiv bei <code>hint_path</code> oder <code>hint_ref</code> (springt zu Zeile bei <code>#L...</code>).<br/>
+      🧠 Cursor: öffnet Pfad + springt zu Zeile (bei <code>hint_ref: "file:120"</code> oder <code>hint_line</code>) + kopiert Prompt.<br/>
+      🤖 Claude Code: kopiert <code>cd … && claude "…"</code> Kommando (ins Terminal pasten & Enter).<br/>
+      <em>Syntax</em>: <code>hint_path: "src/"</code>, <code>hint_ref: "file.py:120"</code>, <code>hint_line: 42</code>
     </div>
   </div>
 
@@ -439,7 +514,7 @@ function showToast(msg) {{
   t.textContent = msg;
   t.classList.add("show");
   window.clearTimeout(window.__toastTimer);
-  window.__toastTimer = window.setTimeout(() => t.classList.remove("show"), 1400);
+  window.__toastTimer = window.setTimeout(() => t.classList.remove("show"), 1600);
 }}
 
 async function copyToClipboard(text) {{
@@ -466,10 +541,18 @@ function matches(card, q) {{
   const hay = [
     card.id, card.title, card.section,
     (card.hint_path || ""),
+    (card.hint_ref || ""),
     (card.tags || []).join(" "),
     (card.github || "")
   ].map(norm).join(" | ");
   return hay.includes(q);
+}}
+
+function buildLocationLabel(c) {{
+  if (c.hint_ref) return `Ref: ${{c.hint_ref}}`;
+  if (c.hint_path && c.hint_line) return `Pfad: ${{c.hint_path}}:${{c.hint_line}}`;
+  if (c.hint_path) return `Pfad: ${{c.hint_path}}`;
+  return null;
 }}
 
 function render(q) {{
@@ -524,10 +607,11 @@ function render(q) {{
       sec.textContent = `Section: ${{c.section}}`;
       sub.appendChild(sec);
 
-      if (c.hint_path) {{
-        const hp = document.createElement("span");
-        hp.textContent = `Pfad: ${{c.hint_path}}`;
-        sub.appendChild(hp);
+      const locLabel = buildLocationLabel(c);
+      if (locLabel) {{
+        const loc = document.createElement("span");
+        loc.textContent = locLabel;
+        sub.appendChild(loc);
       }}
 
       (c.tags || []).forEach(t => {{
@@ -548,10 +632,12 @@ function render(q) {{
         btnGH.href = c.github;
         btnGH.target = "_blank";
         btnGH.rel = "noopener noreferrer";
+        const hasLine = c.github.includes("#L");
+        btnGH.title = hasLine ? "Öffnet Datei auf GitHub an Zeile" : "Öffnet Datei/Verzeichnis auf GitHub";
       }} else {{
         btnGH.setAttribute("aria-disabled", "true");
         btnGH.href = "#";
-        btnGH.title = "Kein hint_path oder Repo nicht erkannt";
+        btnGH.title = "Kein hint_path/hint_ref oder Repo nicht erkannt";
       }}
 
       // 🧠 Cursor: copy prompt + open
@@ -561,12 +647,15 @@ function render(q) {{
       if (c.cursor) {{
         btnCU.href = c.cursor;
         btnCU.onclick = async (ev) => {{
-          // erst Prompt kopieren, dann Cursor öffnen
           const ok = await copyToClipboard(c.prompt || "");
-          showToast(ok ? "Cursor-Prompt kopiert — Cursor öffnet…" : "Konnte Prompt nicht kopieren (Clipboard)");
-          // Browser darf Navigation blocken wenn preventDefault; deshalb nicht preventen, nur toast
+          const hasLine = c.hint_ref && c.hint_ref.includes(":") || c.hint_line;
+          const msg = ok 
+            ? (hasLine ? "Cursor-Prompt kopiert — Cursor springt zu Zeile…" : "Cursor-Prompt kopiert — Cursor öffnet…")
+            : "Konnte Prompt nicht kopieren (Clipboard)";
+          showToast(msg);
         }};
-        btnCU.title = "Öffnet Pfad in Cursor + kopiert Task-Prompt";
+        const hasLine = c.hint_ref && c.hint_ref.includes(":") || c.hint_line;
+        btnCU.title = hasLine ? "Öffnet in Cursor + springt zu Zeile + kopiert Prompt" : "Öffnet in Cursor + kopiert Prompt";
       }} else {{
         btnCU.setAttribute("aria-disabled", "true");
         btnCU.href = "#";
@@ -662,8 +751,8 @@ python3 scripts/build_todo_board_html.py
 
 - 3-spaltige Kanban-Ansicht (TODO, DOING, DONE)
 - Echtzeit-Suche über Text, IDs, Tags, Sections, Pfade
-- Deep-Links zu GitHub (tree/blob)
-- Cursor URL-Scheme Links mit Prompt-Copy
+- Deep-Links zu GitHub (tree/blob) mit Zeilen-Support
+- Cursor URL-Scheme Links mit Zeilen-Sprung + Prompt-Copy
 - Claude Code Terminal-Kommando Generator
 - Dark Theme UI
 
@@ -673,15 +762,30 @@ python3 scripts/build_todo_board_html.py
 ## Meine Section
 
 - [ ] [PT-123] Aufgabe mit ID hint_path: "docs/ops/" #ops #urgent
+- [ ] Task mit Zeilen-Ref hint_ref: "scripts/foo.py:120" #feature
+- [ ] Task mit separatem Line hint_path: "src/core.py" hint_line: 42 #bug
 - [ ] Task ohne ID (wird T0001) #feature
 - [x] Erledigte Aufgabe
 - [ ] DOING: Läuft gerade (Status-Override)
 ```
 
+## Location Hints (Priorität)
+
+1. **`hint_ref: "file.py:120"`** - Kombiniert Pfad + Zeile (bevorzugt)
+   - Cursor springt direkt zu Zeile 120
+   - GitHub öffnet Datei bei `#L120`
+
+2. **`hint_path: "file.py"` + `hint_line: 42`** - Getrennte Angaben
+   - Cursor springt zu Zeile 42
+   - GitHub öffnet Datei bei `#L42`
+
+3. **`hint_path: "src/dir/"`** - Nur Pfad
+   - Cursor/GitHub öffnen Datei/Verzeichnis ohne Zeilen-Sprung
+
 ## Button-Funktionen
 
-- **🌐 GitHub**: Öffnet Datei/Verzeichnis auf GitHub (nur aktiv bei `hint_path`)
-- **🧠 Cursor**: Kopiert Task-Prompt + öffnet Pfad in Cursor
+- **🌐 GitHub**: Öffnet Datei/Verzeichnis auf GitHub (mit `#L...` bei Zeilen-Angabe)
+- **🧠 Cursor**: Kopiert Task-Prompt + öffnet Pfad (springt zu Zeile bei Angabe)
 - **🤖 Claude Code**: Kopiert `cd ... && claude "..."` Kommando für Terminal
 
 ## Quell-Datei
