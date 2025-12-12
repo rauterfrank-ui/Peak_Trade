@@ -60,5 +60,5 @@ Override mit `--source-md`.
 
 ---
 
-**Generated:** 2025-12-12 21:43:17
+**Generated:** 2025-12-13 00:24:43
 **Output:** `docs/00_overview/PEAK_TRADE_TODO_BOARD.html`
