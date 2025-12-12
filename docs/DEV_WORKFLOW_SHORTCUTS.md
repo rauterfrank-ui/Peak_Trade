@@ -146,6 +146,33 @@ python scripts/list_experiments.py --limit 10
 
 ---
 
+## Claude Code – OAuth 401 Reset (Quick Fix)
+
+Wenn `OAuth token has expired (401)`:
+
+```bash
+# show instructions + scan
+scripts/claude_code_auth_reset.sh
+
+# hard reset (delete auth.json)
+scripts/claude_code_auth_reset.sh --purge
+
+# purge + start claude
+scripts/claude_code_auth_reset.sh --purge --open
+```
+
+In Claude Code Session:
+
+* `/permissions`
+* `/logout`
+  (Claude Code komplett schließen)
+* `claude`
+* `/login`
+
+**Full documentation:** [`docs/ops/CLAUDE_CODE_AUTH_RUNBOOK.md`](ops/CLAUDE_CODE_AUTH_RUNBOOK.md)
+
+---
+
 ## Weitere Ressourcen
 
 - **CLI-Referenz:** [`docs/CLI_CHEATSHEET.md`](CLI_CHEATSHEET.md)
