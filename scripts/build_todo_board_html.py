@@ -565,13 +565,9 @@ Status-Keywords:
 Generiert: {dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 """, encoding="utf-8")
 
-    print(f"✅ TODO Board generiert:")
-    print(f"   HTML:   {out_html}")
-    print(f"   README: {out_readme}")
-    print(f"   Items:  {len(items)}")
-    print(f"   Repo:   {repo_web or '(nicht erkannt)'}")
-    print(f"   Branch: {branch}")
-
+    print(f"✅ Generated: {out_html}")
+    print(f"✅ README:    {out_readme}")
+    print(f"ℹ️  Items:     {len(items)}")
     return 0
 
 
