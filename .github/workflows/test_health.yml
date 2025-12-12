@@ -66,11 +66,13 @@ jobs:
         run: |
           set -e  # Fail-fast bei Fehler
           PROFILE="weekly_core"
+          EXTRA_FLAGS=""
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             PROFILE="daily_quick"
+            EXTRA_FLAGS="--no-strategy-coverage --no-switch-sanity --no-slack"
           fi
-          echo "Using Test Health profile: $PROFILE"
-          python scripts/run_test_health_profile.py --profile "$PROFILE"
+          echo "Using Test Health profile: $PROFILE $EXTRA_FLAGS"
+          python scripts/run_test_health_profile.py --profile "$PROFILE" $EXTRA_FLAGS
         # WICHTIG: Kein continue-on-error! Job soll hart fehlschlagen.
       
       - name: 📊 Upload Test Health Report (Artifacts)
