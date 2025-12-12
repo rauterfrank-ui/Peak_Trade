@@ -4,11 +4,32 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 from src.core.experiments import EXPERIMENTS_CSV
+
+# matplotlib ist optional: lazy import
+HAS_MATPLOTLIB = False
+plt = None  # type: ignore
+
+try:
+    import matplotlib.pyplot as _plt  # noqa: F401
+    plt = _plt
+    HAS_MATPLOTLIB = True
+except Exception:
+    # matplotlib ist optional: in CI nicht installiert → soll NICHT beim Import crashen
+    HAS_MATPLOTLIB = False
+    plt = None
+
+
+def require_matplotlib() -> None:
+    """Raise a friendly error if plotting is requested without matplotlib installed."""
+    if not HAS_MATPLOTLIB:
+        raise ImportError(
+            "matplotlib ist nicht installiert. Installiere optional deps "
+            "(z.B. `pip install matplotlib`) oder nutze Funktionen ohne Plotting."
+        )
 
 
 # =========================
@@ -105,6 +126,8 @@ def sweep_scatter(
     """
     Simpler Scatterplot: Metrik vs. Parameter.
     """
+    require_matplotlib()
+
     if x_param not in df.columns:
         raise ValueError(f"x-Parameter-Spalte {x_param!r} nicht in df.columns.")
     if metric not in df.columns:
@@ -134,6 +157,8 @@ def sweep_heatmap(
     """
     Heatmap über zwei Parameter (x,y) mit Metrik als Farbe.
     """
+    require_matplotlib()
+
     for col in (x_param, y_param, metric):
         if col not in df.columns:
             raise ValueError(f"Spalte {col!r} nicht in df.columns.")
