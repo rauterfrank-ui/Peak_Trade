@@ -1,0 +1,88 @@
+name: TODO Board determinism
+
+on:
+  pull_request:
+    paths:
+      - "scripts/build_todo_board_html.py"
+      - "docs/00_overview/**"
+      - "docs/**TODO**"
+      - "docs/**todo**"
+  push:
+    branches: [ "main" ]
+    paths:
+      - "scripts/build_todo_board_html.py"
+      - "docs/00_overview/**"
+      - "docs/**TODO**"
+      - "docs/**todo**"
+  workflow_dispatch: {}
+
+jobs:
+  determinism:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: UTC
+      LC_ALL: C
+      LANG: C
+      PYTHONHASHSEED: "0"
+
+    steps:
+      - name: Checkout (full history required for git log)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install deps (if requirements.txt exists)
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+      - name: Determinism check (run twice from clean state)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "== Run #1 =="
+          python3 scripts/build_todo_board_html.py
+
+          # Capture changed file list (tracked changes only)
+          git status --porcelain > /tmp/pt_status_1.txt || true
+          awk '{print $2}' /tmp/pt_status_1.txt | sort -u > /tmp/pt_changed_1.txt || true
+
+          # Snapshot changed files (if any)
+          mkdir -p /tmp/pt_snap
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            mkdir -p "/tmp/pt_snap/$(dirname "$f")"
+            cp -a "$f" "/tmp/pt_snap/$f"
+          done < /tmp/pt_changed_1.txt
+
+          # Reset back to clean HEAD (also remove untracked created by generator)
+          git reset --hard
+          git clean -fd
+
+          echo "== Run #2 =="
+          python3 scripts/build_todo_board_html.py
+
+          git status --porcelain > /tmp/pt_status_2.txt || true
+          awk '{print $2}' /tmp/pt_status_2.txt | sort -u > /tmp/pt_changed_2.txt || true
+
+          echo "== Compare changed file sets =="
+          diff -u /tmp/pt_changed_1.txt /tmp/pt_changed_2.txt
+
+          echo "== Compare file contents =="
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            diff -u "/tmp/pt_snap/$f" "$f"
+          done < /tmp/pt_changed_2.txt
+
+          echo "✅ TODO board generation is deterministic."
+
