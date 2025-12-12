@@ -4,6 +4,20 @@ Wenn du im Peak_Trade Workflow eine Meldung bekommst wie:
 
 > OAuth token has expired … 401 authentication_error
 
+## Preflight (1 Sekunde Status-Check)
+
+Bevor du lange suchst, prüfe kurz ob Claude Code "ready" ist:
+
+```bash
+scripts/check_claude_code_ready.sh
+```
+
+Optional maschinenlesbar:
+
+```bash
+scripts/check_claude_code_ready.sh --json
+```
+
 ## Quick Fix (Standard)
 
 1. **Claude Code starten**
