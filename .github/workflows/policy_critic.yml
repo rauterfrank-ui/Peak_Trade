@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install pyyaml
+          python3 -m pip install pyyaml tomli
 
       - name: Generate diff and changed files
         id: diff
