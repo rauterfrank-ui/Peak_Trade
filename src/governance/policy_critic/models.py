@@ -68,10 +68,14 @@ class PolicyCriticResult:
     minimum_test_plan: List[str] = field(default_factory=list)
     operator_questions: List[str] = field(default_factory=list)
     summary: str = ""
+    # G3: Policy Pack metadata
+    policy_pack_id: Optional[str] = None
+    policy_pack_version: Optional[str] = None
+    effective_ruleset_hash: Optional[str] = None
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
-        return {
+        result = {
             "max_severity": self.max_severity.value,
             "recommended_action": self.recommended_action.value,
             "violations": [
@@ -96,6 +100,16 @@ class PolicyCriticResult:
             "operator_questions": self.operator_questions,
             "summary": self.summary,
         }
+
+        # Include pack metadata if present
+        if self.policy_pack_id:
+            result["policy_pack_id"] = self.policy_pack_id
+        if self.policy_pack_version:
+            result["policy_pack_version"] = self.policy_pack_version
+        if self.effective_ruleset_hash:
+            result["effective_ruleset_hash"] = self.effective_ruleset_hash
+
+        return result
 
     @property
     def exit_code(self) -> int:

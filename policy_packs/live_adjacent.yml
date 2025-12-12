@@ -1,0 +1,65 @@
+# Policy Pack: Live-Adjacent
+# Context: Changes affecting production, live configs, deployment
+# Philosophy: STRICT - fail-closed, maximum scrutiny
+
+pack_id: live_adjacent
+version: "1.0.0"
+description: "Strictest policy pack for live-adjacent/production changes"
+
+# All rules enabled at maximum strictness
+enabled_rules:
+  - NO_SECRETS
+  - NO_LIVE_UNLOCK
+  - EXECUTION_ENDPOINT_TOUCH
+  - RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION
+  - MISSING_TEST_PLAN
+
+# Severity overrides: upgrade to BLOCK wherever safe
+severity_overrides:
+  EXECUTION_ENDPOINT_TOUCH: BLOCK                   # Any execution changes require manual review
+  RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION: BLOCK    # Risk changes always blocked
+  MISSING_TEST_PLAN: BLOCK                          # Test plan mandatory
+
+# Critical paths (comprehensive)
+critical_paths:
+  - "src/live/"
+  - "src/execution/"
+  - "src/exchange/"
+  - "config/production/"
+  - "config/live/"
+  - "scripts/deploy/"
+  - ".github/workflows/"  # Deployment workflows are critical
+
+# Context keys (all required)
+required_context_keys:
+  - justification
+  - test_plan
+  - author
+  - related_issue  # Must be linked to tracking issue
+
+# Fail-closed: strict enforcement
+default_action_on_error: AUTO_APPLY_DENY
+
+# Pack-specific settings
+settings:
+  # Docs-only fast path disabled for live-adjacent
+  docs_only_fast_path: false
+
+  # Very low threshold for test plan requirement
+  test_plan_threshold_lines: 10
+
+  # Low violation tolerance
+  max_violation_count: 3
+
+  # Live-adjacent specific: require multiple approvals
+  require_dual_approval: true
+
+  # Require change size limits
+  max_lines_changed: 500
+
+  # Block after-hours deployments (metaphorically - enforced elsewhere)
+  block_patterns:
+    - "BYPASS"
+    - "SKIP_CHECK"
+    - "FORCE"
+    - "EMERGENCY"  # Emergency changes require different process

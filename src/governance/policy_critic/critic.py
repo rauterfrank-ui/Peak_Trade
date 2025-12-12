@@ -77,7 +77,8 @@ class PolicyCritic:
         # Generate summary
         summary = self._generate_summary(max_severity, all_violations, recommended_action)
 
-        return PolicyCriticResult(
+        # Build result
+        result = PolicyCriticResult(
             max_severity=max_severity,
             recommended_action=recommended_action,
             violations=all_violations,
@@ -85,6 +86,15 @@ class PolicyCritic:
             operator_questions=operator_questions,
             summary=summary,
         )
+
+        # G3: Attach policy pack metadata if present
+        if hasattr(self, '_policy_pack'):
+            pack = self._policy_pack
+            result.policy_pack_id = pack.pack_id
+            result.policy_pack_version = pack.version
+            result.effective_ruleset_hash = pack.compute_hash()
+
+        return result
 
     def _determine_action(self, max_severity: Severity, violations: List[Violation]) -> RecommendedAction:
         """Determine recommended action based on severity and violations."""

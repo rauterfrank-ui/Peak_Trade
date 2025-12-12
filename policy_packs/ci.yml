@@ -1,0 +1,50 @@
+# Policy Pack: CI (Continuous Integration)
+# Context: Pull requests, automated bounded_auto proposals
+# Philosophy: Balanced - block critical violations, warn on risky patterns
+
+pack_id: ci
+version: "1.0.0"
+description: "Balanced policy pack for CI/PR environments"
+
+# All rules enabled by default
+enabled_rules:
+  - NO_SECRETS
+  - NO_LIVE_UNLOCK
+  - EXECUTION_ENDPOINT_TOUCH
+  - RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION
+  - MISSING_TEST_PLAN
+
+# Severity overrides (empty = use rule defaults)
+# Format: RULE_ID: INFO|WARN|BLOCK
+severity_overrides: {}
+
+# Critical paths that trigger stricter evaluation
+critical_paths:
+  - "src/live/"
+  - "src/execution/"
+  - "src/exchange/"
+  - "config/production/"
+  - "config/live/"
+
+# Context keys that can reduce severity (if provided with justification)
+required_context_keys:
+  - justification  # Required for RISK_LIMIT changes
+  - test_plan      # Required for large changes to critical paths
+
+# Fail-closed: if critic errors or context is invalid
+default_action_on_error: REVIEW_REQUIRED
+
+# Pack-specific settings
+settings:
+  # Allow docs-only changes to bypass certain checks
+  docs_only_fast_path: true
+  docs_patterns:
+    - "*.md"
+    - "docs/"
+    - "README"
+
+  # Minimum change size to require test plan (lines)
+  test_plan_threshold_lines: 50
+
+  # Maximum violations before auto-deny (regardless of severity)
+  max_violation_count: 10
