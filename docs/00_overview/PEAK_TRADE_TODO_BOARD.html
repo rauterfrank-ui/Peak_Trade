@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Peak_Trade – TODO Board</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #111827;
+      --muted: #9ca3af;
+      --text: #e5e7eb;
+      --border: rgba(255,255,255,0.08);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 14px;
+    }
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 18px; }
+    .top {
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      box-shadow: var(--shadow);
+    }
+    .title { font-size: 18px; font-weight: 700; letter-spacing: 0.2px; }
+    .meta { font-size: 12px; color: var(--muted); line-height: 1.45; }
+    .search {
+      display: flex; gap: 8px; align-items: center;
+    }
+    input {
+      width: 340px; max-width: 70vw;
+      padding: 10px 12px; border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline: none;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      input { width: 100%; }
+    }
+    .col {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.02);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 240px;
+    }
+    .colhead {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 10px;
+    }
+    .colname { font-weight: 700; }
+    .count { font-size: 12px; color: var(--muted); }
+    .list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 10px 10px 12px;
+      background: rgba(255,255,255,0.03);
+    }
+    .row {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+    }
+    .id {
+      font-size: 11px; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px;
+      flex: 0 0 auto;
+    }
+    .txt {
+      font-size: 13px; line-height: 1.35;
+      margin: 6px 0 4px 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .sub {
+      font-size: 11px; color: var(--muted);
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    }
+    .tag {
+      font-size: 11px; padding: 2px 8px; border-radius: 999px;
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    .btn {
+      display: inline-flex; gap: 6px; align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+    .btn[aria-disabled="true"] {
+      opacity: .45;
+      pointer-events: none;
+    }
+    .foot {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 12px 4px 0 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="title">Peak_Trade – TODO Board</div>
+        <div class="meta">
+          Quelle: /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md<br/>
+          Generiert: 2025-12-12 18:28:58<br/>
+          Repo: https://github.com/rauterfrank-ui/Peak_Trade (Branch: main)
+        </div>
+      </div>
+      <div class="search">
+        <input id="q" placeholder="Suche (Text, ID, Tag, Section, Pfad) …" />
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="foot">
+      Hinweis: GitHub-Buttons sind nur aktiv, wenn <code>origin</code> erkannt wurde und ein <code>hint_path</code> in der TODO-Zeile vorhanden ist
+      (z.B. <code>hint_path: "docs/ops/"</code>).
+    </div>
+  </div>
+
+<script>
+const CARDS = [{"id": "T0001", "status": "TODO", "title": "**RSI-Varianten-Sweep**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0002", "status": "DONE", "title": "**Walk-Forward-Test implementieren** ✅ (Phase 44)", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0003", "status": "TODO", "title": "**Sortino-Ratio erg�nzen**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0004", "status": "TODO", "title": "**Standard-Heatmap-Template**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0005", "status": "TODO", "title": "**Unified Pipeline-CLI**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0006", "status": "TODO", "title": "**Drawdown-Heatmap**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0007", "status": "TODO", "title": "**Vol-Regime-Filter als Wrapper**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0008", "status": "TODO", "title": "**Monte-Carlo-Robustness**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0009", "status": "TODO", "title": "**Korrelations-Matrix-Plot**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0010", "status": "TODO", "title": "**Rolling-Window-Stabilit�t**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0011", "status": "TODO", "title": "**Sweep-Comparison-Tool**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0012", "status": "TODO", "title": "**Mehr Metriken im Research-Track**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null}, {"id": "T0013", "status": "TODO", "title": "**Regime-adaptive Strategien**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null}, {"id": "T0014", "status": "TODO", "title": "**Auto-Portfolio-Builder**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null}, {"id": "T0015", "status": "TODO", "title": "**Nightly-Sweep-Automation**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null}, {"id": "T0016", "status": "TODO", "title": "**Interaktive Dashboards**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null}, {"id": "T0017", "status": "TODO", "title": "**Feature-Importance-Analyse**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null}, {"id": "T0018", "status": "TODO", "title": "**Risk-Parity-Integration**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null}];
+
+const COLS = [
+  { key: "TODO",  title: "Offen" },
+  { key: "DOING", title: "In Arbeit" },
+  { key: "DONE",  title: "Erledigt" },
+];
+
+function norm(s) {
+  return (s || "").toString().toLowerCase();
+}
+
+function matches(card, q) {
+  if (!q) return true;
+  const hay = [
+    card.id, card.title, card.section,
+    (card.hint_path || ""),
+    (card.tags || []).join(" "),
+    (card.github || "")
+  ].map(norm).join(" | ");
+  return hay.includes(q);
+}
+
+function render(q) {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  COLS.forEach(col => {
+    const colEl = document.createElement("div");
+    colEl.className = "col";
+
+    const head = document.createElement("div");
+    head.className = "colhead";
+    const name = document.createElement("div");
+    name.className = "colname";
+    name.textContent = col.title;
+
+    const list = document.createElement("div");
+    list.className = "list";
+
+    const filtered = CARDS.filter(c => c.status === col.key && matches(c, q));
+    const cnt = document.createElement("div");
+    cnt.className = "count";
+    cnt.textContent = `${filtered.length} Items`;
+
+    head.appendChild(name);
+    head.appendChild(cnt);
+
+    filtered.forEach(c => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const row = document.createElement("div");
+      row.className = "row";
+
+      const left = document.createElement("div");
+      left.style.flex = "1 1 auto";
+
+      const id = document.createElement("div");
+      id.className = "id";
+      id.textContent = c.id;
+
+      const title = document.createElement("div");
+      title.className = "txt";
+      title.textContent = c.title;
+
+      const sub = document.createElement("div");
+      sub.className = "sub";
+
+      const sec = document.createElement("span");
+      sec.textContent = `Section: ${c.section}`;
+      sub.appendChild(sec);
+
+      if (c.hint_path) {
+        const hp = document.createElement("span");
+        hp.textContent = `Pfad: ${c.hint_path}`;
+        sub.appendChild(hp);
+      }
+
+      (c.tags || []).forEach(t => {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = `#${t}`;
+        sub.appendChild(tag);
+      });
+
+      left.appendChild(title);
+      left.appendChild(sub);
+
+      const btn = document.createElement("a");
+      btn.className = "btn";
+      btn.textContent = "🌐 GitHub";
+      if (c.github) {
+        btn.href = c.github;
+        btn.target = "_blank";
+        btn.rel = "noopener noreferrer";
+      } else {
+        btn.setAttribute("aria-disabled", "true");
+        btn.href = "#";
+        btn.title = "Kein hint_path oder Repo nicht erkannt";
+      }
+
+      row.appendChild(id);
+      row.appendChild(left);
+      row.appendChild(btn);
+
+      card.appendChild(row);
+      list.appendChild(card);
+    });
+
+    colEl.appendChild(head);
+    colEl.appendChild(list);
+    grid.appendChild(colEl);
+  });
+}
+
+const qEl = document.getElementById("q");
+qEl.addEventListener("input", () => render(norm(qEl.value)));
+
+render("");
+</script>
+</body>
+</html>
