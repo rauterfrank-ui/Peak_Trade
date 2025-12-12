@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import hashlib
 import html
 import json
 import os
@@ -75,35 +74,6 @@ def detect_default_branch(fallback: str = "main") -> str:
         if parts:
             return parts[-1]
     return fallback
-
-
-def stable_generated_marker(source_md: Path) -> str:
-    """
-    Deterministischer Marker:
-    - bevorzugt: letzter Git-Commit-Zeitstempel der Source-Datei + commit SHA der Source-Datei
-    - fallback: sha256 der Source-Datei (12 chars)
-
-    Nur aktualisiert wenn die Source-Datei geändert wird (nicht bei jedem Commit).
-    """
-    try:
-        # Last commit that touched the source file
-        iso = subprocess.check_output(
-            ["git", "log", "-1", "--format=%cI", "--", str(source_md)],
-            text=True,
-        ).strip()
-        sha = subprocess.check_output(
-            ["git", "log", "-1", "--format=%h", "--", str(source_md)],
-            text=True,
-        ).strip()  # commit SHA that last modified source_md
-        if iso and sha:
-            return f"{iso} (sha {sha})"
-    except Exception:
-        pass
-
-    # Fallback: deterministic hash of file content (stable unless file content changes)
-    data = source_md.read_bytes()
-    h = hashlib.sha256(data).hexdigest()[:12]
-    return f"sha256:{h}"
 
 
 # -------------------------
@@ -255,7 +225,7 @@ def cursor_link(repo_root: Optional[Path], it: TodoItem) -> Optional[str]:
     """
     Cursor link mit Zeilen-Support.
     Priorität: hint_ref > hint_path (+ hint_line) > repo_root
-    Format: cursor://file/<REL_PATH>:line:col (using relative path for determinism)
+    Format: cursor://file/<ABS_PATH>:line:col
     """
     if not repo_root:
         return None
@@ -265,22 +235,24 @@ def cursor_link(repo_root: Optional[Path], it: TodoItem) -> Optional[str]:
         ref = it.hint_ref.strip().lstrip("/")
         if ":" in ref:
             fpath, line = ref.split(":", 1)
-            rel_path = fpath
+            abs_path = (repo_root / fpath).resolve()
             # Cursor format: cursor://file/path:line:col
-            return f"cursor://file/{urllib.parse.quote(rel_path, safe='/:')}:{line}:1"
+            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:{line}:1"
         else:
-            rel_path = ref
-            return f"cursor://file/{urllib.parse.quote(rel_path, safe='/:')}:1:1"
+            abs_path = (repo_root / ref).resolve()
+            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
 
     # hint_path + optional hint_line
     if it.hint_path:
         p = it.hint_path.strip().lstrip("/")
+        abs_path = (repo_root / p).resolve()
         if it.hint_line:
-            return f"cursor://file/{urllib.parse.quote(p, safe='/:')}:{it.hint_line}:1"
-        return f"cursor://file/{urllib.parse.quote(p, safe='/:')}:1:1"
+            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:{it.hint_line}:1"
+        return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
 
-    # fallback: repo root (use "." for determinism)
-    return f"cursor://file/.:1:1"
+    # fallback: repo root
+    abs_path = repo_root.resolve()
+    return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
 
 
 def build_work_prompt(it: TodoItem) -> str:
@@ -311,30 +283,20 @@ def claude_code_command(repo_root: Optional[Path], it: TodoItem) -> Optional[str
     """
     Claude Code startet mit initial prompt:
       claude "query"
-    Uses relative path placeholder for determinism.
     """
     if not repo_root:
         return None
 
     prompt = build_work_prompt(it).replace("\n", " ").strip()
-    # Use "." as placeholder for deterministic output (users run from repo root)
-    return f'cd . && claude {shlex.quote(prompt)}'
+    return f'cd {shlex.quote(str(repo_root.resolve()))} && claude {shlex.quote(prompt)}'
 
 
 # -------------------------
 # HTML rendering
 # -------------------------
 def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path], repo_web: Optional[str], branch: str) -> str:
-    generated_marker = stable_generated_marker(source_md)
-    # Make source path relative to repo_root for deterministic output
-    if repo_root:
-        try:
-            src_rel = str(source_md.relative_to(repo_root)).replace("\\", "/")
-        except ValueError:
-            # Fallback if source_md is not relative to repo_root
-            src_rel = str(source_md).replace("\\", "/")
-    else:
-        src_rel = str(source_md).replace("\\", "/")
+    now = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    src_rel = str(source_md).replace("\\", "/")
 
     cards = []
     for it in items:
@@ -514,7 +476,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
         <div class="title">Peak_Trade – TODO Board</div>
         <div class="meta">
           Quelle: {esc(src_rel)}<br/>
-          Generated-from: {esc(generated_marker)}<br/>
+          Generiert: {esc(now)}<br/>
           {repo_line}
         </div>
       </div>
@@ -767,9 +729,6 @@ def main() -> int:
     repo_web = args.repo_web or (origin_to_repo_web(origin) if origin else None)
     branch = args.branch or detect_default_branch("main")
 
-    # Generate stable marker for both HTML and README
-    generated_marker = stable_generated_marker(source)
-
     out_html = repo_root / args.out_html
     out_html.parent.mkdir(parents=True, exist_ok=True)
     html_doc = render_html(items, source, repo_root, repo_web, branch)
@@ -839,7 +798,7 @@ Override mit `--source-md`.
 
 ---
 
-**Generated-from:** {generated_marker}
+**Generated:** {dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 **Output:** `{out_html.relative_to(repo_root)}`
 """, encoding="utf-8")
 
