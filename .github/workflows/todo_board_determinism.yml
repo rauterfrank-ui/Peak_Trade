@@ -45,44 +45,74 @@ jobs:
             pip install -r requirements.txt
           fi
 
-      - name: Determinism check (run twice from clean state)
+      - name: Determinism + path-independence check
         shell: bash
         run: |
           set -euo pipefail
 
-          echo "== Run #1 =="
+          OUT_HTML="docs/00_overview/PEAK_TRADE_TODO_BOARD.html"
+          OUT_README="docs/00_overview/README_TODO_BOARD.md"
+
+          snap_copy () {
+            local dest="$1"
+            mkdir -p "$dest"
+            for f in "$OUT_HTML" "$OUT_README"; do
+              if [ -f "$f" ]; then
+                mkdir -p "$dest/$(dirname "$f")"
+                cp -a "$f" "$dest/$f"
+              fi
+            done
+          }
+
+          snap_diff () {
+            local a="$1"
+            local b="$2"
+            for f in "$OUT_HTML" "$OUT_README"; do
+              if [ -f "$a/$f" ] && [ -f "$b/$f" ]; then
+                diff -u "$a/$f" "$b/$f"
+              elif [ -f "$a/$f" ] || [ -f "$b/$f" ]; then
+                echo "❌ Output file presence mismatch for: $f"
+                echo "   $a/$f exists? $(test -f "$a/$f" && echo yes || echo no)"
+                echo "   $b/$f exists? $(test -f "$b/$f" && echo yes || echo no)"
+                exit 1
+              fi
+            done
+          }
+
+          echo "== Run #1 (workspace) =="
           python3 scripts/build_todo_board_html.py
+          snap_copy /tmp/pt_out_1
 
-          # Capture changed file list (tracked changes only)
-          git status --porcelain > /tmp/pt_status_1.txt || true
-          awk '{print $2}' /tmp/pt_status_1.txt | sort -u > /tmp/pt_changed_1.txt || true
-
-          # Snapshot changed files (if any)
-          mkdir -p /tmp/pt_snap
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            mkdir -p "/tmp/pt_snap/$(dirname "$f")"
-            cp -a "$f" "/tmp/pt_snap/$f"
-          done < /tmp/pt_changed_1.txt
-
-          # Reset back to clean HEAD (also remove untracked created by generator)
           git reset --hard
           git clean -fd
 
-          echo "== Run #2 =="
+          echo "== Run #2 (workspace) =="
           python3 scripts/build_todo_board_html.py
+          snap_copy /tmp/pt_out_2
 
-          git status --porcelain > /tmp/pt_status_2.txt || true
-          awk '{print $2}' /tmp/pt_status_2.txt | sort -u > /tmp/pt_changed_2.txt || true
+          echo "== Compare Run #1 vs Run #2 (same path) =="
+          snap_diff /tmp/pt_out_1 /tmp/pt_out_2
 
-          echo "== Compare changed file sets =="
-          diff -u /tmp/pt_changed_1.txt /tmp/pt_changed_2.txt
+          echo "== Path-independence (different absolute path via worktree) =="
+          ALT_DIR="/tmp/pt_alt_worktree"
+          rm -rf "$ALT_DIR" || true
+          git worktree add "$ALT_DIR" HEAD
 
-          echo "== Compare file contents =="
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            diff -u "/tmp/pt_snap/$f" "$f"
-          done < /tmp/pt_changed_2.txt
+          (cd "$ALT_DIR" && python3 scripts/build_todo_board_html.py)
 
-          echo "✅ TODO board generation is deterministic."
+          mkdir -p /tmp/pt_out_alt/docs/00_overview
+          if [ -f "$ALT_DIR/$OUT_HTML" ]; then
+            mkdir -p "/tmp/pt_out_alt/$(dirname "$OUT_HTML")"
+            cp -a "$ALT_DIR/$OUT_HTML" "/tmp/pt_out_alt/$OUT_HTML"
+          fi
+          if [ -f "$ALT_DIR/$OUT_README" ]; then
+            mkdir -p "/tmp/pt_out_alt/$(dirname "$OUT_README")"
+            cp -a "$ALT_DIR/$OUT_README" "/tmp/pt_out_alt/$OUT_README"
+          fi
 
+          git worktree remove --force "$ALT_DIR"
+
+          echo "== Compare workspace vs alt-worktree (different path) =="
+          snap_diff /tmp/pt_out_2 /tmp/pt_out_alt
+
+          echo "✅ Deterministic AND path-independent."
