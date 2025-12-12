@@ -2,7 +2,7 @@
 set -euo pipefail
 
 JSON=0
-for arg in "${@:-}"; do
+for arg in "$@"; do
   case "$arg" in
     --json) JSON=1 ;;
     -h|--help)
