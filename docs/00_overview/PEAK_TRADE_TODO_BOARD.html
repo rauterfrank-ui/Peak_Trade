@@ -13,6 +13,7 @@
       --border: rgba(255,255,255,0.08);
       --shadow: 0 10px 30px rgba(0,0,0,0.35);
       --radius: 14px;
+      --toast: rgba(0,0,0,0.75);
     }
     body {
       margin: 0; padding: 0;
@@ -29,11 +30,9 @@
     }
     .title { font-size: 18px; font-weight: 700; letter-spacing: 0.2px; }
     .meta { font-size: 12px; color: var(--muted); line-height: 1.45; }
-    .search {
-      display: flex; gap: 8px; align-items: center;
-    }
+    .search { display: flex; gap: 8px; align-items: center; }
     input {
-      width: 340px; max-width: 70vw;
+      width: 420px; max-width: 80vw;
       padding: 10px 12px; border-radius: 12px;
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.04);
@@ -82,15 +81,15 @@
       border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px;
       flex: 0 0 auto;
     }
+    .left {
+      flex: 1 1 460px;
+      min-width: 260px;
+    }
     .txt {
       font-size: 13px; line-height: 1.35;
       margin: 6px 0 4px 0;
       white-space: pre-wrap;
       word-break: break-word;
-    }
-    .left {
-      flex: 1 1 420px;
-      min-width: 260px;
     }
     .sub {
       font-size: 11px; color: var(--muted);
@@ -111,6 +110,7 @@
       font-size: 12px;
       flex: 0 0 auto;
       margin-top: 2px;
+      user-select: none;
     }
     .btn[aria-disabled="true"] {
       opacity: .45;
@@ -122,6 +122,25 @@
       color: var(--muted);
       padding: 12px 4px 0 4px;
     }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      background: var(--toast);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transition: opacity 120ms ease;
+      pointer-events: none;
+      font-size: 12px;
+      max-width: min(820px, 92vw);
+      text-align: center;
+    }
+    .toast.show { opacity: 1; }
     code { color: var(--text); }
   </style>
 </head>
@@ -132,7 +151,7 @@
         <div class="title">Peak_Trade – TODO Board</div>
         <div class="meta">
           Quelle: /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md<br/>
-          Generiert: 2025-12-12 19:51:22<br/>
+          Generiert: 2025-12-12 20:07:46<br/>
           Repo: https://github.com/rauterfrank-ui/Peak_Trade (Branch: main)
         </div>
       </div>
@@ -144,14 +163,16 @@
     <div class="grid" id="grid"></div>
 
     <div class="foot">
-      Hinweis: 🌐 GitHub-Buttons sind nur aktiv, wenn ein <code>hint_path</code> in der TODO-Zeile vorhanden ist
-      (z.B. <code>hint_path: "docs/ops/"</code>).<br/>
-      🧩 VS Code / 🧠 Cursor öffnen lokale Pfade; ohne <code>hint_path</code> öffnen sie das Repo-Root.
+      🌐 GitHub ist nur aktiv, wenn ein <code>hint_path</code> vorhanden ist.<br/>
+      🧠 Cursor: öffnet Pfad + kopiert das Thema als Prompt in die Zwischenablage.<br/>
+      🤖 Claude Code: kopiert ein fertiges <code>cd … && claude "…"</code> Kommando in die Zwischenablage (ins Terminal pasten & Enter).
     </div>
   </div>
 
+  <div id="toast" class="toast"></div>
+
 <script>
-const CARDS = [{"id": "T0001", "status": "TODO", "title": "RSI-Varianten-Sweep (hint_path: \"scripts/\") #automation", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "scripts/", "tags": ["automation"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/scripts", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts"}, {"id": "T0001", "status": "DONE", "title": "**Walk-Forward-Test implementieren** ✅ (Phase 44)", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0003", "status": "TODO", "title": "Sortino-Ratio ergänzen (hint_path: \"src/\") #research", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "src/", "tags": ["research"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/src", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src"}, {"id": "T0004", "status": "TODO", "title": "Standard-Heatmap-Template (hint_path: \"src/reporting/\") #docs", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "src/reporting/", "tags": ["docs"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/src/reporting", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src/reporting", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src/reporting"}, {"id": "T0002", "status": "TODO", "title": "**Unified Pipeline-CLI**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0003", "status": "TODO", "title": "**Drawdown-Heatmap**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0004", "status": "TODO", "title": "**Vol-Regime-Filter als Wrapper**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0005", "status": "TODO", "title": "**Monte-Carlo-Robustness**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0006", "status": "TODO", "title": "**Korrelations-Matrix-Plot**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0007", "status": "TODO", "title": "**Rolling-Window-Stabilit�t**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0008", "status": "TODO", "title": "**Sweep-Comparison-Tool**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0009", "status": "TODO", "title": "**Mehr Metriken im Research-Track**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0010", "status": "TODO", "title": "**Regime-adaptive Strategien**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0011", "status": "TODO", "title": "**Auto-Portfolio-Builder**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0012", "status": "TODO", "title": "**Nightly-Sweep-Automation**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0013", "status": "TODO", "title": "**Interaktive Dashboards**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0014", "status": "TODO", "title": "**Feature-Importance-Analyse**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0015", "status": "TODO", "title": "**Risk-Parity-Integration**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "PT-201", "status": "TODO", "title": "Runbook: Live-Track Incident Flow ergänzen (hint_path: \"docs/ops/\") #docs #ops", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "docs/ops/", "tags": ["docs", "ops"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/docs/ops", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/ops", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/ops"}, {"id": "PT-202", "status": "DOING", "title": "Script: Sync-Logik härten (in arbeit) (hint_path: \"scripts/sync_todo_issues.py\") #automation", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "scripts/sync_todo_issues.py", "tags": ["automation"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/blob/main/scripts/sync_todo_issues.py", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts/sync_todo_issues.py", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts/sync_todo_issues.py"}, {"id": "PT-203", "status": "DONE", "title": "README: Board-Usage aktualisieren (hint_path: \"docs/00_overview/README_TODO_BOARD.md\") #docs", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "docs/00_overview/README_TODO_BOARD.md", "tags": ["docs"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/blob/main/docs/00_overview/README_TODO_BOARD.md", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/00_overview/README_TODO_BOARD.md", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/00_overview/README_TODO_BOARD.md"}];
+const CARDS = [{"id": "T0001", "status": "TODO", "title": "RSI-Varianten-Sweep (hint_path: \"scripts/\") #automation", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "scripts/", "tags": ["automation"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/scripts", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts", "prompt": "Peak_Trade TODO [T0001] (TODO) — RSI-Varianten-Sweep (hint_path: \"scripts/\") #automation | Section: Kurzfristig (1\u00133 Sessions) | hint_path: scripts/ | Tags: #automation. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0001] (TODO) — RSI-Varianten-Sweep (hint_path: \"scripts/\") #automation | Section: Kurzfristig (1\u00133 Sessions) | hint_path: scripts/ | Tags: #automation. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0001", "status": "DONE", "title": "**Walk-Forward-Test implementieren** ✅ (Phase 44)", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0001] (DONE) — **Walk-Forward-Test implementieren** ✅ (Phase 44) | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0001] (DONE) — **Walk-Forward-Test implementieren** ✅ (Phase 44) | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0003", "status": "TODO", "title": "Sortino-Ratio ergänzen (hint_path: \"src/\") #research", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "src/", "tags": ["research"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/src", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src", "prompt": "Peak_Trade TODO [T0003] (TODO) — Sortino-Ratio ergänzen (hint_path: \"src/\") #research | Section: Kurzfristig (1\u00133 Sessions) | hint_path: src/ | Tags: #research. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0003] (TODO) — Sortino-Ratio ergänzen (hint_path: \"src/\") #research | Section: Kurzfristig (1\u00133 Sessions) | hint_path: src/ | Tags: #research. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0004", "status": "TODO", "title": "Standard-Heatmap-Template (hint_path: \"src/reporting/\") #docs", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "src/reporting/", "tags": ["docs"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/src/reporting", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src/reporting", "prompt": "Peak_Trade TODO [T0004] (TODO) — Standard-Heatmap-Template (hint_path: \"src/reporting/\") #docs | Section: Kurzfristig (1\u00133 Sessions) | hint_path: src/reporting/ | Tags: #docs. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0004] (TODO) — Standard-Heatmap-Template (hint_path: \"src/reporting/\") #docs | Section: Kurzfristig (1\u00133 Sessions) | hint_path: src/reporting/ | Tags: #docs. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0002", "status": "TODO", "title": "**Unified Pipeline-CLI**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0002] (TODO) — **Unified Pipeline-CLI** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0002] (TODO) — **Unified Pipeline-CLI** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0003", "status": "TODO", "title": "**Drawdown-Heatmap**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0003] (TODO) — **Drawdown-Heatmap** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0003] (TODO) — **Drawdown-Heatmap** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0004", "status": "TODO", "title": "**Vol-Regime-Filter als Wrapper**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0004] (TODO) — **Vol-Regime-Filter als Wrapper** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0004] (TODO) — **Vol-Regime-Filter als Wrapper** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0005", "status": "TODO", "title": "**Monte-Carlo-Robustness**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0005] (TODO) — **Monte-Carlo-Robustness** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0005] (TODO) — **Monte-Carlo-Robustness** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0006", "status": "TODO", "title": "**Korrelations-Matrix-Plot**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0006] (TODO) — **Korrelations-Matrix-Plot** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0006] (TODO) — **Korrelations-Matrix-Plot** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0007", "status": "TODO", "title": "**Rolling-Window-Stabilit�t**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0007] (TODO) — **Rolling-Window-Stabilit�t** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0007] (TODO) — **Rolling-Window-Stabilit�t** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0008", "status": "TODO", "title": "**Sweep-Comparison-Tool**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0008] (TODO) — **Sweep-Comparison-Tool** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0008] (TODO) — **Sweep-Comparison-Tool** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0009", "status": "TODO", "title": "**Mehr Metriken im Research-Track**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0009] (TODO) — **Mehr Metriken im Research-Track** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0009] (TODO) — **Mehr Metriken im Research-Track** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0010", "status": "TODO", "title": "**Regime-adaptive Strategien**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0010] (TODO) — **Regime-adaptive Strategien** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0010] (TODO) — **Regime-adaptive Strategien** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0011", "status": "TODO", "title": "**Auto-Portfolio-Builder**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0011] (TODO) — **Auto-Portfolio-Builder** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0011] (TODO) — **Auto-Portfolio-Builder** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0012", "status": "TODO", "title": "**Nightly-Sweep-Automation**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0012] (TODO) — **Nightly-Sweep-Automation** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0012] (TODO) — **Nightly-Sweep-Automation** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0013", "status": "TODO", "title": "**Interaktive Dashboards**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0013] (TODO) — **Interaktive Dashboards** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0013] (TODO) — **Interaktive Dashboards** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0014", "status": "TODO", "title": "**Feature-Importance-Analyse**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0014] (TODO) — **Feature-Importance-Analyse** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0014] (TODO) — **Feature-Importance-Analyse** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0015", "status": "TODO", "title": "**Risk-Parity-Integration**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "prompt": "Peak_Trade TODO [T0015] (TODO) — **Risk-Parity-Integration** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [T0015] (TODO) — **Risk-Parity-Integration** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "PT-201", "status": "TODO", "title": "Runbook: Live-Track Incident Flow ergänzen (hint_path: \"docs/ops/\") #docs #ops", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "docs/ops/", "tags": ["docs", "ops"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/docs/ops", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/ops", "prompt": "Peak_Trade TODO [PT-201] (TODO) — Runbook: Live-Track Incident Flow ergänzen (hint_path: \"docs/ops/\") #docs #ops | Section: Beispiel-Items (Issue-Sync Demo) | hint_path: docs/ops/ | Tags: #docs, #ops. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [PT-201] (TODO) — Runbook: Live-Track Incident Flow ergänzen (hint_path: \"docs/ops/\") #docs #ops | Section: Beispiel-Items (Issue-Sync Demo) | hint_path: docs/ops/ | Tags: #docs, #ops. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "PT-202", "status": "DOING", "title": "Script: Sync-Logik härten (in arbeit) (hint_path: \"scripts/sync_todo_issues.py\") #automation", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "scripts/sync_todo_issues.py", "tags": ["automation"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/blob/main/scripts/sync_todo_issues.py", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts/sync_todo_issues.py", "prompt": "Peak_Trade TODO [PT-202] (DOING) — Script: Sync-Logik härten (in arbeit) (hint_path: \"scripts/sync_todo_issues.py\") #automation | Section: Beispiel-Items (Issue-Sync Demo) | hint_path: scripts/sync_todo_issues.py | Tags: #automation. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [PT-202] (DOING) — Script: Sync-Logik härten (in arbeit) (hint_path: \"scripts/sync_todo_issues.py\") #automation | Section: Beispiel-Items (Issue-Sync Demo) | hint_path: scripts/sync_todo_issues.py | Tags: #automation. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "PT-203", "status": "DONE", "title": "README: Board-Usage aktualisieren (hint_path: \"docs/00_overview/README_TODO_BOARD.md\") #docs", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "docs/00_overview/README_TODO_BOARD.md", "tags": ["docs"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/blob/main/docs/00_overview/README_TODO_BOARD.md", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/00_overview/README_TODO_BOARD.md", "prompt": "Peak_Trade TODO [PT-203] (DONE) — README: Board-Usage aktualisieren (hint_path: \"docs/00_overview/README_TODO_BOARD.md\") #docs | Section: Beispiel-Items (Issue-Sync Demo) | hint_path: docs/00_overview/README_TODO_BOARD.md | Tags: #docs. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing && claude 'Peak_Trade TODO [PT-203] (DONE) — README: Board-Usage aktualisieren (hint_path: \"docs/00_overview/README_TODO_BOARD.md\") #docs | Section: Beispiel-Items (Issue-Sync Demo) | hint_path: docs/00_overview/README_TODO_BOARD.md | Tags: #docs. Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}];
 
 const COLS = [
   { key: "TODO",  title: "Offen" },
@@ -163,15 +184,40 @@ function norm(s) {
   return (s || "").toString().toLowerCase();
 }
 
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  window.clearTimeout(window.__toastTimer);
+  window.__toastTimer = window.setTimeout(() => t.classList.remove("show"), 1400);
+}
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch(e) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      return true;
+    } catch(_) {
+      return false;
+    }
+  }
+}
+
 function matches(card, q) {
   if (!q) return true;
   const hay = [
     card.id, card.title, card.section,
     (card.hint_path || ""),
     (card.tags || []).join(" "),
-    (card.github || ""),
-    (card.vscode || ""),
-    (card.cursor || "")
+    (card.github || "")
   ].map(norm).join(" | ");
   return hay.includes(q);
 }
@@ -244,7 +290,7 @@ function render(q) {
       left.appendChild(title);
       left.appendChild(sub);
 
-      // Buttons
+      // 🌐 GitHub
       const btnGH = document.createElement("a");
       btnGH.className = "btn";
       btnGH.textContent = "🌐 GitHub";
@@ -258,33 +304,46 @@ function render(q) {
         btnGH.title = "Kein hint_path oder Repo nicht erkannt";
       }
 
-      const btnVS = document.createElement("a");
-      btnVS.className = "btn";
-      btnVS.textContent = "🧩 VS Code";
-      if (c.vscode) {
-        btnVS.href = c.vscode;
-        btnVS.title = c.hint_path ? "Öffnet Pfad in VS Code" : "Öffnet Repo-Root in VS Code (kein hint_path)";
-      } else {
-        btnVS.setAttribute("aria-disabled", "true");
-        btnVS.href = "#";
-      }
-
+      // 🧠 Cursor: copy prompt + open
       const btnCU = document.createElement("a");
       btnCU.className = "btn";
       btnCU.textContent = "🧠 Cursor";
       if (c.cursor) {
         btnCU.href = c.cursor;
-        btnCU.title = c.hint_path ? "Öffnet Pfad in Cursor" : "Öffnet Repo-Root in Cursor (kein hint_path)";
+        btnCU.onclick = async (ev) => {
+          // erst Prompt kopieren, dann Cursor öffnen
+          const ok = await copyToClipboard(c.prompt || "");
+          showToast(ok ? "Cursor-Prompt kopiert — Cursor öffnet…" : "Konnte Prompt nicht kopieren (Clipboard)");
+          // Browser darf Navigation blocken wenn preventDefault; deshalb nicht preventen, nur toast
+        };
+        btnCU.title = "Öffnet Pfad in Cursor + kopiert Task-Prompt";
       } else {
         btnCU.setAttribute("aria-disabled", "true");
         btnCU.href = "#";
       }
 
+      // 🤖 Claude Code: copy terminal command
+      const btnCC = document.createElement("a");
+      btnCC.className = "btn";
+      btnCC.textContent = "🤖 Claude Code";
+      if (c.claude_cmd) {
+        btnCC.href = "#";
+        btnCC.onclick = async (ev) => {
+          ev.preventDefault();
+          const ok = await copyToClipboard(c.claude_cmd);
+          showToast(ok ? "Claude Code Kommando kopiert — im Terminal einfügen & Enter" : "Konnte Kommando nicht kopieren (Clipboard)");
+        };
+        btnCC.title = "Kopiert: cd … && claude "…" (ins Terminal pasten)";
+      } else {
+        btnCC.setAttribute("aria-disabled", "true");
+        btnCC.href = "#";
+      }
+
       row.appendChild(id);
       row.appendChild(left);
       row.appendChild(btnGH);
-      row.appendChild(btnVS);
       row.appendChild(btnCU);
+      row.appendChild(btnCC);
 
       card.appendChild(row);
       list.appendChild(card);

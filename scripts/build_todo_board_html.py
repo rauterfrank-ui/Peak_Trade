@@ -7,6 +7,7 @@ import html
 import json
 import os
 import re
+import shlex
 import subprocess
 import urllib.parse
 from dataclasses import dataclass
@@ -41,13 +42,6 @@ def detect_origin_url() -> Optional[str]:
 
 
 def origin_to_repo_web(origin: str) -> Optional[str]:
-    """
-    Converts origin formats to web base, e.g.
-      - https://github.com/OWNER/REPO.git -> https://github.com/OWNER/REPO
-      - git@github.com:OWNER/REPO.git    -> https://github.com/OWNER/REPO
-      - ssh://git@github.com/OWNER/REPO.git -> https://github.com/OWNER/REPO
-    Also works for GitHub Enterprise domains.
-    """
     origin = origin.strip()
 
     # HTTPS
@@ -73,7 +67,6 @@ def origin_to_repo_web(origin: str) -> Optional[str]:
 
 
 def detect_default_branch(fallback: str = "main") -> str:
-    # Best: refs/remotes/origin/HEAD -> origin/main
     rc, out = _run_git(["symbolic-ref", "-q", "refs/remotes/origin/HEAD"])
     if rc == 0 and out:
         parts = out.split("/")
@@ -136,13 +129,10 @@ def parse_todos(md_text: str) -> List[TodoItem]:
         checked = m.group(1).lower() == "x"
         rest = m.group(2).strip()
 
-        # status override keywords
         status = "DONE" if checked else "TODO"
-        if not checked:
-            if re.search(r"\b(doing|wip|in\s*arbeit)\b", rest, re.IGNORECASE):
-                status = "DOING"
+        if not checked and re.search(r"\b(doing|wip|in\s*arbeit)\b", rest, re.IGNORECASE):
+            status = "DOING"
 
-        # stable ID if present like [PT-123]
         mid = ID_RE.search(rest)
         if mid:
             item_id = mid.group(1)
@@ -151,20 +141,17 @@ def parse_todos(md_text: str) -> List[TodoItem]:
             item_id = f"T{auto_id:04d}"
             auto_id += 1
 
-        # hint_path if present
         hp = None
         mhp = HINT_PATH_RE.search(rest)
         if mhp:
             hp = (mhp.group(1) or mhp.group(2) or "").strip().strip('"')
 
-        # tags: #ops #docs
         tags = sorted({t.lower() for t in TAG_RE.findall(rest)})
 
-        title = rest
         items.append(TodoItem(
             id=item_id,
             status=status,
-            title=title,
+            title=rest,
             section=section,
             hint_path=hp,
             tags=tags
@@ -174,30 +161,25 @@ def parse_todos(md_text: str) -> List[TodoItem]:
 
 
 # -------------------------
-# Link builders
+# Link & command builders
 # -------------------------
 def github_link(repo_web: Optional[str], branch: str, hint_path: Optional[str]) -> Optional[str]:
-    # 🌐 GitHub bleibt "streng": nur aktiv bei hint_path
+    # 🌐 GitHub nur aktiv wenn hint_path existiert
     if not repo_web or not hint_path:
         return None
     p = hint_path.strip().lstrip("/")
     if not p:
         return None
 
-    # heuristic: dir -> tree, file -> blob
     is_dir = p.endswith("/") or (not os.path.splitext(p)[1])
     mode = "tree" if is_dir else "blob"
     return f"{repo_web}/{mode}/{branch}/{p.rstrip('/')}"
 
 
-def editor_file_link(scheme: str, repo_root: Optional[Path], hint_path: Optional[str]) -> Optional[str]:
+def cursor_link(repo_root: Optional[Path], hint_path: Optional[str]) -> Optional[str]:
     """
-    Builds:
-      vscode://file/<ABS_PATH>
-      cursor://file/<ABS_PATH>
-
-    Komfort-Fallback:
-      wenn kein hint_path -> Repo-Root öffnen (damit Buttons nicht "tot" sind).
+    cursor://file/<ABS_PATH>
+    Hinweis: Browser/OS kann beim ersten Mal nachfragen.
     """
     if not repo_root:
         return None
@@ -208,8 +190,33 @@ def editor_file_link(scheme: str, repo_root: Optional[Path], hint_path: Optional
         p = hint_path.strip().lstrip("/")
         abs_path = (repo_root / p).resolve()
 
-    # Encode spaces etc. but keep slashes + ':' (macOS paths) readable
-    return f"{scheme}://file/" + urllib.parse.quote(str(abs_path), safe="/:")
+    return "cursor://file/" + urllib.parse.quote(str(abs_path), safe="/:")
+
+
+def build_work_prompt(it: TodoItem) -> str:
+    tags = ", ".join([f"#{t}" for t in it.tags]) if it.tags else "(keine)"
+    hp = it.hint_path or "."
+    # bewusst kurz & "paste-friendly"
+    return (
+        f"Peak_Trade TODO [{it.id}] ({it.status}) — {it.title} | "
+        f"Section: {it.section} | hint_path: {hp} | Tags: {tags}. "
+        "Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, "
+        "und gib mir einen sauberen Git-Diff + kurze Begründung."
+    )
+
+
+def claude_code_command(repo_root: Optional[Path], it: TodoItem) -> Optional[str]:
+    """
+    Claude Code startet mit initial prompt:
+      claude "query"
+    Siehe CLI reference.
+    """
+    if not repo_root:
+        return None
+
+    prompt = build_work_prompt(it).replace("\n", " ").strip()
+    # quoting safe for shell paste
+    return f'cd {shlex.quote(str(repo_root.resolve()))} && claude {shlex.quote(prompt)}'
 
 
 # -------------------------
@@ -221,9 +228,6 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
 
     cards = []
     for it in items:
-        gh = github_link(repo_web, branch, it.hint_path)
-        vs = editor_file_link("vscode", repo_root, it.hint_path)
-        cu = editor_file_link("cursor", repo_root, it.hint_path)
         cards.append({
             "id": it.id,
             "status": it.status,
@@ -231,9 +235,10 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
             "section": it.section,
             "hint_path": it.hint_path,
             "tags": it.tags,
-            "github": gh,
-            "vscode": vs,
-            "cursor": cu,
+            "github": github_link(repo_web, branch, it.hint_path),
+            "cursor": cursor_link(repo_root, it.hint_path),
+            "prompt": build_work_prompt(it),
+            "claude_cmd": claude_code_command(repo_root, it),
         })
 
     cards_json = json.dumps(cards, ensure_ascii=False)
@@ -258,6 +263,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
       --border: rgba(255,255,255,0.08);
       --shadow: 0 10px 30px rgba(0,0,0,0.35);
       --radius: 14px;
+      --toast: rgba(0,0,0,0.75);
     }}
     body {{
       margin: 0; padding: 0;
@@ -274,11 +280,9 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
     }}
     .title {{ font-size: 18px; font-weight: 700; letter-spacing: 0.2px; }}
     .meta {{ font-size: 12px; color: var(--muted); line-height: 1.45; }}
-    .search {{
-      display: flex; gap: 8px; align-items: center;
-    }}
+    .search {{ display: flex; gap: 8px; align-items: center; }}
     input {{
-      width: 340px; max-width: 70vw;
+      width: 420px; max-width: 80vw;
       padding: 10px 12px; border-radius: 12px;
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.04);
@@ -327,15 +331,15 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
       border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px;
       flex: 0 0 auto;
     }}
+    .left {{
+      flex: 1 1 460px;
+      min-width: 260px;
+    }}
     .txt {{
       font-size: 13px; line-height: 1.35;
       margin: 6px 0 4px 0;
       white-space: pre-wrap;
       word-break: break-word;
-    }}
-    .left {{
-      flex: 1 1 420px;
-      min-width: 260px;
     }}
     .sub {{
       font-size: 11px; color: var(--muted);
@@ -356,6 +360,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
       font-size: 12px;
       flex: 0 0 auto;
       margin-top: 2px;
+      user-select: none;
     }}
     .btn[aria-disabled="true"] {{
       opacity: .45;
@@ -367,6 +372,25 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
       color: var(--muted);
       padding: 12px 4px 0 4px;
     }}
+    .toast {{
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      background: var(--toast);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transition: opacity 120ms ease;
+      pointer-events: none;
+      font-size: 12px;
+      max-width: min(820px, 92vw);
+      text-align: center;
+    }}
+    .toast.show {{ opacity: 1; }}
     code {{ color: var(--text); }}
   </style>
 </head>
@@ -389,11 +413,13 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
     <div class="grid" id="grid"></div>
 
     <div class="foot">
-      Hinweis: 🌐 GitHub-Buttons sind nur aktiv, wenn ein <code>hint_path</code> in der TODO-Zeile vorhanden ist
-      (z.B. <code>hint_path: "docs/ops/"</code>).<br/>
-      🧩 VS Code / 🧠 Cursor öffnen lokale Pfade; ohne <code>hint_path</code> öffnen sie das Repo-Root.
+      🌐 GitHub ist nur aktiv, wenn ein <code>hint_path</code> vorhanden ist.<br/>
+      🧠 Cursor: öffnet Pfad + kopiert das Thema als Prompt in die Zwischenablage.<br/>
+      🤖 Claude Code: kopiert ein fertiges <code>cd … && claude "…"</code> Kommando in die Zwischenablage (ins Terminal pasten & Enter).
     </div>
   </div>
+
+  <div id="toast" class="toast"></div>
 
 <script>
 const CARDS = {cards_json};
@@ -408,15 +434,40 @@ function norm(s) {{
   return (s || "").toString().toLowerCase();
 }}
 
+function showToast(msg) {{
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  window.clearTimeout(window.__toastTimer);
+  window.__toastTimer = window.setTimeout(() => t.classList.remove("show"), 1400);
+}}
+
+async function copyToClipboard(text) {{
+  try {{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }} catch(e) {{
+    try {{
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      return true;
+    }} catch(_) {{
+      return false;
+    }}
+  }}
+}}
+
 function matches(card, q) {{
   if (!q) return true;
   const hay = [
     card.id, card.title, card.section,
     (card.hint_path || ""),
     (card.tags || []).join(" "),
-    (card.github || ""),
-    (card.vscode || ""),
-    (card.cursor || "")
+    (card.github || "")
   ].map(norm).join(" | ");
   return hay.includes(q);
 }}
@@ -489,7 +540,7 @@ function render(q) {{
       left.appendChild(title);
       left.appendChild(sub);
 
-      // Buttons
+      // 🌐 GitHub
       const btnGH = document.createElement("a");
       btnGH.className = "btn";
       btnGH.textContent = "🌐 GitHub";
@@ -503,33 +554,46 @@ function render(q) {{
         btnGH.title = "Kein hint_path oder Repo nicht erkannt";
       }}
 
-      const btnVS = document.createElement("a");
-      btnVS.className = "btn";
-      btnVS.textContent = "🧩 VS Code";
-      if (c.vscode) {{
-        btnVS.href = c.vscode;
-        btnVS.title = c.hint_path ? "Öffnet Pfad in VS Code" : "Öffnet Repo-Root in VS Code (kein hint_path)";
-      }} else {{
-        btnVS.setAttribute("aria-disabled", "true");
-        btnVS.href = "#";
-      }}
-
+      // 🧠 Cursor: copy prompt + open
       const btnCU = document.createElement("a");
       btnCU.className = "btn";
       btnCU.textContent = "🧠 Cursor";
       if (c.cursor) {{
         btnCU.href = c.cursor;
-        btnCU.title = c.hint_path ? "Öffnet Pfad in Cursor" : "Öffnet Repo-Root in Cursor (kein hint_path)";
+        btnCU.onclick = async (ev) => {{
+          // erst Prompt kopieren, dann Cursor öffnen
+          const ok = await copyToClipboard(c.prompt || "");
+          showToast(ok ? "Cursor-Prompt kopiert — Cursor öffnet…" : "Konnte Prompt nicht kopieren (Clipboard)");
+          // Browser darf Navigation blocken wenn preventDefault; deshalb nicht preventen, nur toast
+        }};
+        btnCU.title = "Öffnet Pfad in Cursor + kopiert Task-Prompt";
       }} else {{
         btnCU.setAttribute("aria-disabled", "true");
         btnCU.href = "#";
       }}
 
+      // 🤖 Claude Code: copy terminal command
+      const btnCC = document.createElement("a");
+      btnCC.className = "btn";
+      btnCC.textContent = "🤖 Claude Code";
+      if (c.claude_cmd) {{
+        btnCC.href = "#";
+        btnCC.onclick = async (ev) => {{
+          ev.preventDefault();
+          const ok = await copyToClipboard(c.claude_cmd);
+          showToast(ok ? "Claude Code Kommando kopiert — im Terminal einfügen & Enter" : "Konnte Kommando nicht kopieren (Clipboard)");
+        }};
+        btnCC.title = "Kopiert: cd … && claude \"…\" (ins Terminal pasten)";
+      }} else {{
+        btnCC.setAttribute("aria-disabled", "true");
+        btnCC.href = "#";
+      }}
+
       row.appendChild(id);
       row.appendChild(left);
       row.appendChild(btnGH);
-      row.appendChild(btnVS);
       row.appendChild(btnCU);
+      row.appendChild(btnCC);
 
       card.appendChild(row);
       list.appendChild(card);
@@ -571,7 +635,7 @@ def main() -> int:
     md = source.read_text(encoding="utf-8", errors="replace")
     items = parse_todos(md)
 
-    origin = detect_origin_url() if repo_root else None
+    origin = detect_origin_url()
     repo_web = args.repo_web or (origin_to_repo_web(origin) if origin else None)
     branch = args.branch or detect_default_branch("main")
 
@@ -599,7 +663,8 @@ python3 scripts/build_todo_board_html.py
 - 3-spaltige Kanban-Ansicht (TODO, DOING, DONE)
 - Echtzeit-Suche über Text, IDs, Tags, Sections, Pfade
 - Deep-Links zu GitHub (tree/blob)
-- VS Code / Cursor URL-Scheme Links
+- Cursor URL-Scheme Links mit Prompt-Copy
+- Claude Code Terminal-Kommando Generator
 - Dark Theme UI
 
 ## Syntax in der Source-TODO-Datei
@@ -613,8 +678,11 @@ python3 scripts/build_todo_board_html.py
 - [ ] DOING: Läuft gerade (Status-Override)
 ```
 
-**Hinweis**: Die GitHub Buttons sind nur aktiv, wenn ein `hint_path` angegeben ist.
-VS Code / Cursor Buttons öffnen bei fehlendem `hint_path` das Repo-Root als Fallback.
+## Button-Funktionen
+
+- **🌐 GitHub**: Öffnet Datei/Verzeichnis auf GitHub (nur aktiv bei `hint_path`)
+- **🧠 Cursor**: Kopiert Task-Prompt + öffnet Pfad in Cursor
+- **🤖 Claude Code**: Kopiert `cd ... && claude "..."` Kommando für Terminal
 
 ## Quell-Datei
 

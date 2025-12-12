@@ -15,7 +15,8 @@ python3 scripts/build_todo_board_html.py
 - 3-spaltige Kanban-Ansicht (TODO, DOING, DONE)
 - Echtzeit-Suche über Text, IDs, Tags, Sections, Pfade
 - Deep-Links zu GitHub (tree/blob)
-- VS Code / Cursor URL-Scheme Links
+- Cursor URL-Scheme Links mit Prompt-Copy
+- Claude Code Terminal-Kommando Generator
 - Dark Theme UI
 
 ## Syntax in der Source-TODO-Datei
@@ -29,8 +30,11 @@ python3 scripts/build_todo_board_html.py
 - [ ] DOING: Läuft gerade (Status-Override)
 ```
 
-**Hinweis**: Die GitHub Buttons sind nur aktiv, wenn ein `hint_path` angegeben ist.
-VS Code / Cursor Buttons öffnen bei fehlendem `hint_path` das Repo-Root als Fallback.
+## Button-Funktionen
+
+- **🌐 GitHub**: Öffnet Datei/Verzeichnis auf GitHub (nur aktiv bei `hint_path`)
+- **🧠 Cursor**: Kopiert Task-Prompt + öffnet Pfad in Cursor
+- **🤖 Claude Code**: Kopiert `cd ... && claude "..."` Kommando für Terminal
 
 ## Quell-Datei
 
@@ -41,5 +45,5 @@ Override mit `--source-md`.
 
 ---
 
-**Generated:** 2025-12-12 19:51:22
+**Generated:** 2025-12-12 20:07:46
 **Output:** `docs/00_overview/PEAK_TRADE_TODO_BOARD.html`
