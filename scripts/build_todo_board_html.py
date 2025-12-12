@@ -178,11 +178,15 @@ def parse_todos(md_text: str) -> List[TodoItem]:
 # HTML rendering
 # -------------------------
 def github_link(repo_web: Optional[str], branch: str, hint_path: Optional[str]) -> Optional[str]:
-    if not repo_web or not hint_path:
+    if not repo_web:
         return None
+    # ✅ Fallback: ohne hint_path auf Repo-Root (tree)
+    if not hint_path:
+        return f"{repo_web}/tree/{branch}"
+
     p = hint_path.strip().lstrip("/")
     if not p:
-        return None
+        return f"{repo_web}/tree/{branch}"
 
     # heuristic: dir -> tree, file -> blob
     is_dir = p.endswith("/") or (not os.path.splitext(p)[1])
@@ -357,8 +361,8 @@ def render_html(items: List[TodoItem], source_md: Path, repo_web: Optional[str],
     <div class="grid" id="grid"></div>
 
     <div class="foot">
-      Hinweis: GitHub-Buttons sind nur aktiv, wenn <code>origin</code> erkannt wurde und ein <code>hint_path</code> in der TODO-Zeile vorhanden ist
-      (z.B. <code>hint_path: "docs/ops/"</code>).
+      Hinweis: GitHub-Buttons verlinken auf <code>hint_path</code> (falls angegeben) oder auf das Repo-Root.
+      Beispiel: <code>hint_path: "docs/ops/"</code> → tree/main/docs/ops/ | ohne hint_path → tree/main/
     </div>
   </div>
 
