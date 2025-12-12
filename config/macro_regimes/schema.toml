@@ -1,0 +1,181 @@
+# =============================================================================
+# Macro Regime Schema – Peak_Trade
+# =============================================================================
+# Dieses File definiert das Schema für maschinenlesbare Makro-Regime-Konfigurationen.
+# Aktuelle Werte: siehe current.toml
+# Dokumentation: docs/macro/MACRO_BRIEFING_TEMPLATE.md
+# =============================================================================
+
+[_schema]
+version = "1.0"
+description = "Schema für Global Macro Regime Definitionen"
+
+# -----------------------------------------------------------------------------
+# REGIME DEFINITION
+# -----------------------------------------------------------------------------
+# Das Regime beschreibt das aktuelle makroökonomische Umfeld auf hoher Ebene.
+# Es ergänzt die technischen Regimes aus config/regimes.toml (Volatilität/Trend).
+
+[_schema.regime]
+description = "Makro-Regime-Klassifikation"
+
+[_schema.regime.primary]
+type = "string"
+required = true
+description = "Primäres Makro-Regime"
+enum = [
+    # Geldpolitik
+    "fed_easing",           # Fed senkt aktiv Zinsen
+    "fed_pause",            # Fed in Wartehaltung
+    "fed_tightening",       # Fed erhöht Zinsen
+    
+    # Risiko-Umfeld
+    "risk_on",              # Breiter Risikoappetit
+    "risk_off",             # Flight to Safety
+    "risk_neutral",         # Keine klare Richtung
+    
+    # Stress-Szenarien
+    "liquidity_crunch",     # Liquiditätsengpass
+    "credit_stress",        # Credit-Spreads weiten
+    "crisis_mode",          # Akute Krise (Geopolitik etc.)
+    
+    # Inflation/Deflation
+    "inflation_scare",      # Inflationssorgen dominieren
+    "deflation_risk",       # Deflationsrisiko
+    "goldilocks",           # Ideales Umfeld (moderates Wachstum, niedrige Inflation)
+]
+
+[_schema.regime.secondary]
+type = "string"
+required = false
+description = "Optionales sekundäres Regime (Overlay)"
+enum = [
+    "tariff_uncertainty",   # Handels-/Zoll-Unsicherheit
+    "geopolitical_elevated",# Erhöhtes geopolitisches Risiko
+    "election_risk",        # Wahlbezogene Unsicherheit
+    "ai_bubble_watch",      # Tech/AI-Bewertungsrisiko
+    "china_stress",         # China-spezifischer Stress
+    "energy_shock",         # Energiepreis-Schock
+    "banking_stress",       # Bankensektor-Stress
+]
+
+[_schema.regime.signal]
+type = "string"
+required = true
+description = "Ampel-Signal für schnelle Übersicht"
+enum = ["green", "yellow", "red"]
+
+[_schema.regime.bias]
+type = "string"
+required = true
+description = "Grundsätzliche Marktneigung"
+enum = ["risk_on", "neutral", "risk_off"]
+
+# -----------------------------------------------------------------------------
+# SIZING
+# -----------------------------------------------------------------------------
+
+[_schema.sizing]
+description = "Position-Sizing-Empfehlungen basierend auf Makro-Umfeld"
+
+[_schema.sizing.max_allocation]
+type = "float"
+required = true
+min = 0.0
+max = 1.0
+description = "Maximale Kapitalallokation (0.0 = Cash, 1.0 = Voll investiert)"
+
+[_schema.sizing.rationale]
+type = "string"
+required = false
+description = "Begründung für Sizing-Empfehlung"
+
+# -----------------------------------------------------------------------------
+# WATCHLIST
+# -----------------------------------------------------------------------------
+
+[_schema.watchlist]
+description = "Markt-Watchlist nach Priorität"
+
+[_schema.watchlist.primary]
+type = "array"
+required = true
+description = "Primäre Märkte für aktives Trading"
+
+[_schema.watchlist.secondary]
+type = "array"
+required = false
+description = "Sekundäre Märkte zur Beobachtung"
+
+[_schema.watchlist.avoid]
+type = "array"
+required = false
+description = "Märkte, die aktuell gemieden werden sollten"
+
+# -----------------------------------------------------------------------------
+# STRATEGY TILT
+# -----------------------------------------------------------------------------
+
+[_schema.strategy_tilt]
+description = "Strategie-Präferenz basierend auf Makro-Umfeld"
+
+[_schema.strategy_tilt.prefer]
+type = "string"
+required = true
+enum = ["mean_reversion", "trend_following", "balanced", "defensive"]
+description = "Bevorzugter Strategie-Typ"
+
+[_schema.strategy_tilt.rationale]
+type = "string"
+required = false
+description = "Begründung für Strategie-Tilt"
+
+# -----------------------------------------------------------------------------
+# SCENARIOS
+# -----------------------------------------------------------------------------
+
+[_schema.scenarios]
+description = "Szenario-Matrix mit Wahrscheinlichkeiten"
+
+[_schema.scenarios.base]
+type = "object"
+required = true
+description = "Base Case Szenario"
+
+[_schema.scenarios.bull]
+type = "object"
+required = true
+description = "Bull Case Szenario"
+
+[_schema.scenarios.bear]
+type = "object"
+required = true
+description = "Bear Case Szenario"
+
+# -----------------------------------------------------------------------------
+# METADATA
+# -----------------------------------------------------------------------------
+
+[_schema.meta]
+description = "Metadaten zum Briefing"
+
+[_schema.meta.date]
+type = "date"
+required = true
+description = "Datum des Briefings (YYYY-MM-DD)"
+
+[_schema.meta.valid_until]
+type = "date"
+required = false
+description = "Gültigkeit bis (YYYY-MM-DD)"
+
+[_schema.meta.analyst]
+type = "string"
+required = false
+description = "Ersteller des Briefings"
+
+[_schema.meta.confidence]
+type = "string"
+required = false
+enum = ["high", "medium", "low"]
+description = "Konfidenz in die Einschätzung"
