@@ -38,4 +38,4 @@ Status-Keywords:
 - `[x]` → Status DONE
 - Sonst → Status TODO
 
-Generiert: 2025-12-12 18:28:58
+Generiert: 2025-12-12 19:07:34

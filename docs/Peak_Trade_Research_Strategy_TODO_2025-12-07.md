@@ -59,3 +59,10 @@ Diese Liste fokussiert sich auf den Research-/Strategy-Track, basierend auf den 
 **Erstellt am:** 2025-12-07  
 **Aktualisiert:** 2025-12-07 (nach Phase 44)  
 **Basierend auf:** Phasen 29, 30, 41, 42, 43, 44 sowie dem Gesamtstatus-Snapshot `docs/Peak_Trade_Gesamtstatus_2025-12-07.md`.
+
+## Beispiel-Items (Issue-Sync Demo)
+
+- [ ] [PT-201] Runbook: Live-Track Incident Flow ergänzen (hint_path: "docs/ops/") #docs #ops
+- [ ] [PT-202] Script: Sync-Logik härten (in arbeit) (hint_path: "scripts/sync_todo_issues.py") #automation
+- [x] [PT-203] README: Board-Usage aktualisieren (hint_path: "docs/00_overview/README_TODO_BOARD.md") #docs
+
