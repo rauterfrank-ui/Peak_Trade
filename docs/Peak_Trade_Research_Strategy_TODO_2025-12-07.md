@@ -7,14 +7,14 @@ Diese Liste fokussiert sich auf den Research-/Strategy-Track, basierend auf den 
 
 ## Kurzfristig (13 Sessions)
 
-- [ ] **RSI-Varianten-Sweep**
+- [ ] [T0001] RSI-Varianten-Sweep (hint_path: "scripts/") #automation
       Stochastic RSI und Multi-Timeframe-RSI als neue Sweeps aufsetzen.
 - [x] **Walk-Forward-Test implementieren** ✅ (Phase 44)
       Einfache In-Sample/Out-of-Sample-Validierung für Top-N-Konfigurationen aufbauen. Basis implementiert: Walk-Forward-Engine, Reporting, CLI. Erweiterungen: Parameter-Optimierung auf Train-Daten, erweiterte Metriken.
-- [ ] **Sortino-Ratio erg�nzen**
-      Sortino als zus�tzliche Metrik in allen Sweep-Ergebnissen berechnen und in Reports aufnehmen.
-- [ ] **Standard-Heatmap-Template**
-      Automatisches Template: 2 Parameter � 2 Metriken (Sharpe + Max Drawdown) je Strategie erzeugen.
+- [ ] [T0003] Sortino-Ratio ergänzen (hint_path: "src/") #research
+      Sortino als zusätzliche Metrik in allen Sweep-Ergebnissen berechnen und in Reports aufnehmen.
+- [ ] [T0004] Standard-Heatmap-Template (hint_path: "src/reporting/") #docs
+      Automatisches Template: 2 Parameter × 2 Metriken (Sharpe + Max Drawdown) je Strategie erzeugen.
 - [ ] **Unified Pipeline-CLI**
       `run_sweep_pipeline.py` mit Flags wie `--run`, `--report`, `--promote` f�r den gesamten Sweep-Workflow.
 - [ ] **Drawdown-Heatmap**
