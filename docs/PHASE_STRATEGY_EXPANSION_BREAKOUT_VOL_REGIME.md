@@ -300,3 +300,11 @@ Beide Strategien sind vollständig kompatibel mit der bestehenden Backtest-Engin
 
 
 
+
+
+
+
+
+
+
+

@@ -32,3 +32,11 @@ def test_build_offline_paper_trade_report(tmp_path: Path) -> None:
     assert "Offline Paper Trade Report" in content
     assert "TEST_SESSION" in content
 
+
+
+
+
+
+
+
+

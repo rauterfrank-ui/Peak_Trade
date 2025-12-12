@@ -532,3 +532,11 @@ Bis dahin reicht diese Heuristik-Sektion als praktischer „Mental-Check", um Of
 
 Damit hast du einen klaren Operator-Workflow für deine **OfflineRealtime Safety Sandbox** – ready für tägliche Nutzung & zukünftige Auswertung (Dashboards, Vergleiche mit Backtests, Testnet, Live).
 
+
+
+
+
+
+
+
+

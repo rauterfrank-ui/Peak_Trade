@@ -1,0 +1,255 @@
+# ============================================================================
+# Peak_Trade – InfoStream Automation
+# ============================================================================
+# Stand: Dezember 2025
+# Version: v1.0
+#
+# Zweck:
+#   - Täglich InfoStream-Zyklus ausführen
+#   - TestHealth-Reports in IntelEvents umwandeln
+#   - KI-gestützte Auswertung (EVAL_PACKAGE + LEARNING_SNIPPET)
+#   - Learnings automatisch in INFOSTREAM_LEARNING_LOG.md schreiben
+#
+# Trigger:
+#   - Täglich um 03:15 UTC (nach dem Nightly TestHealth um 03:00 UTC)
+#   - Manuell via workflow_dispatch
+#
+# SAFETY:
+#   - Kein Live-Trading - nur Datenverarbeitung
+#   - Keine Exchange-API-Keys erforderlich
+#   - Bei KI-Fehler wird Fallback-Learning erstellt
+# ============================================================================
+
+name: InfoStream Automation
+
+on:
+  # ===========================================================================
+  # Täglich um 03:15 UTC (15 Minuten nach dem TestHealth Nightly)
+  # ===========================================================================
+  schedule:
+    - cron: "15 3 * * *"
+  
+  # ===========================================================================
+  # Manueller Trigger
+  # ===========================================================================
+  workflow_dispatch:
+    inputs:
+      skip_ai:
+        description: 'KI-Auswertung überspringen'
+        required: false
+        default: false
+        type: boolean
+      dry_run:
+        description: 'Dry-Run (keine Dateien schreiben)'
+        required: false
+        default: false
+        type: boolean
+
+# ============================================================================
+# Environment
+# ============================================================================
+env:
+  # Globale ENV-Variablen für Safety
+  PEAK_TRADE_ENV: offline
+  PEAK_TRADE_LIVE_TRADING_ENABLED: "false"
+  # Python-Optimierungen
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  # ===========================================================================
+  # Job: InfoStream Cycle
+  # ===========================================================================
+  infostream:
+    name: "InfoStream Cycle"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # =========================================================================
+      # 1. Checkout mit vollem Git-History (für Commits)
+      # =========================================================================
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Vollständige History für Commits
+
+      # =========================================================================
+      # 2. Python Setup
+      # =========================================================================
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # =========================================================================
+      # 3. Dependencies installieren
+      # =========================================================================
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # OpenAI für KI-Auswertung
+          pip install openai
+
+      # =========================================================================
+      # 4. TestHealth Nightly ausführen (optional)
+      # =========================================================================
+      - name: 🏥 Run TestHealth Quick (optional)
+        if: github.event_name == 'schedule'
+        continue-on-error: true
+        run: |
+          echo "======================================================================"
+          echo "🏥 Running quick TestHealth check to generate fresh reports..."
+          echo "======================================================================"
+          
+          # Nur daily_quick laufen lassen für frische Daten
+          python scripts/run_test_health_profile.py \
+            --profile daily_quick \
+            --no-slack \
+            --no-strategy-coverage \
+            --no-switch-sanity \
+            || echo "⚠️  TestHealth completed with some issues (expected)"
+
+      # =========================================================================
+      # 5. InfoStream Cycle ausführen
+      # =========================================================================
+      - name: 🔄 Run InfoStream Cycle
+        id: infostream_run
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          INFOSTREAM_MODEL: "gpt-4o-mini"
+        run: |
+          echo "======================================================================"
+          echo "🔄 InfoStream Cycle v1"
+          echo "======================================================================"
+          echo "Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+          
+          # Command zusammenbauen
+          CMD="python -m scripts.infostream_run_cycle"
+          
+          # Optional: Dry-Run
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            CMD="$CMD --dry-run"
+            echo "ℹ️  Dry-Run Modus aktiviert"
+          fi
+          
+          # Optional: Skip AI
+          if [ "${{ github.event.inputs.skip_ai }}" == "true" ] || [ -z "$OPENAI_API_KEY" ]; then
+            CMD="$CMD --skip-ai"
+            echo "ℹ️  KI-Auswertung übersprungen"
+          fi
+          
+          echo "📋 Command: $CMD"
+          echo ""
+          
+          # Ausführen
+          $CMD
+          
+          # Exit-Code speichern
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      # =========================================================================
+      # 6. Änderungen committen (falls vorhanden)
+      # =========================================================================
+      - name: 📝 Commit changes
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          echo "======================================================================"
+          echo "📝 Checking for changes to commit..."
+          echo "======================================================================"
+          
+          # Git konfigurieren
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+          # Prüfe ob Änderungen vorhanden
+          if git status --porcelain | grep -q .; then
+            echo "Änderungen gefunden:"
+            git status --short
+            
+            # Alle relevanten Änderungen stagen
+            git add reports/infostream/
+            git add docs/mindmap/INFOSTREAM_LEARNING_LOG.md
+            
+            # Commit erstellen
+            TIMESTAMP=$(date -u +'%Y-%m-%d %H:%M UTC')
+            git commit -m "🤖 InfoStream: Auto-update learnings ($TIMESTAMP)" || echo "Nothing to commit"
+            
+            # Push
+            git push origin main || echo "⚠️  Push fehlgeschlagen - evtl. keine Schreibrechte"
+          else
+            echo "Keine Änderungen zum Committen"
+          fi
+
+      # =========================================================================
+      # 7. Artefakte hochladen
+      # =========================================================================
+      - name: 📊 Upload InfoStream Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: infostream-results-${{ github.run_number }}
+          path: |
+            reports/infostream/
+            docs/mindmap/INFOSTREAM_LEARNING_LOG.md
+          retention-days: 30
+          if-no-files-found: warn
+
+      # =========================================================================
+      # 8. Summary generieren
+      # =========================================================================
+      - name: 📈 Generate Summary
+        if: always()
+        run: |
+          echo "## 🔄 InfoStream Cycle Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Events zählen
+          EVENTS_COUNT=0
+          if [ -d "reports/infostream/events" ]; then
+            EVENTS_COUNT=$(ls -1 reports/infostream/events/*.json 2>/dev/null | wc -l || echo "0")
+          fi
+          
+          # Evals zählen
+          EVALS_COUNT=0
+          if [ -d "reports/infostream/evals" ]; then
+            EVALS_COUNT=$(ls -1 reports/infostream/evals/*.json 2>/dev/null | wc -l || echo "0")
+          fi
+          
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Events (total)** | $EVENTS_COUNT |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Evals (total)** | $EVALS_COUNT |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Dry-Run** | ${{ github.event.inputs.dry_run || 'false' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Skip AI** | ${{ github.event.inputs.skip_ai || 'false' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Learning-Log Statistiken
+          if [ -f "docs/mindmap/INFOSTREAM_LEARNING_LOG.md" ]; then
+            LEARNING_ENTRIES=$(grep -c "^### INF-" docs/mindmap/INFOSTREAM_LEARNING_LOG.md 2>/dev/null || echo "0")
+            echo "**Learning-Log Entries:** $LEARNING_ENTRIES" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📄 **Artifacts**: Siehe CI-Artefakte (infostream-results-${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
+
+      # =========================================================================
+      # 9. Fehler-Notification (optional)
+      # =========================================================================
+      - name: ⚠️ Report Failure
+        if: failure()
+        run: |
+          echo "::error::InfoStream Cycle fehlgeschlagen. Siehe Logs für Details."
+          echo ""
+          echo "Mögliche Ursachen:"
+          echo "  1. OPENAI_API_KEY nicht gesetzt oder ungültig"
+          echo "  2. Keine TestHealth-Reports vorhanden"
+          echo "  3. Parsing-Fehler in KI-Antwort"
+          echo ""
+          echo "Troubleshooting:"
+          echo "  - Prüfe ob reports/test_health/ Reports enthält"
+          echo "  - Führe lokal 'python -m scripts.infostream_run_cycle --skip-ai' aus"
+          echo "  - Prüfe die CI-Artefakte für Details"

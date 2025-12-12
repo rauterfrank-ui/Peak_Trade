@@ -1,0 +1,59 @@
+# ============================================================================
+# MarketSentinel – Daily Market Outlook Automation
+# ============================================================================
+# Automatische tägliche Marktprognose mit LLM-Integration
+# Stand: Dezember 2024
+# ============================================================================
+
+name: MarketSentinel – Daily Market Outlook
+
+on:
+  # Täglicher Lauf um 05:00 UTC
+  schedule:
+    - cron: "0 5 * * *"
+
+  # Manuell aus GitHub UI startbar
+  workflow_dispatch:
+
+jobs:
+  market_outlook_daily:
+    runs-on: ubuntu-latest
+
+    env:
+      PYTHONUNBUFFERED: "1"
+      # Muss in GitHub unter Settings → Secrets → Actions hinterlegt sein
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Falls du eine requirements.txt hast
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          # Optional: falls du ein Package via pyproject.toml hast
+          if [ -f pyproject.toml ]; then
+            pip install .
+          fi
+
+      - name: Run MarketSentinel v0 – Daily Market Outlook
+        run: |
+          mkdir -p reports/market_outlook
+          python scripts/generate_market_outlook_daily.py \
+            --config-path config/market_outlook/daily_market_outlook.yaml \
+            --out-dir reports/market_outlook/
+
+      - name: Upload daily market outlook reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-outlook-daily
+          path: reports/market_outlook

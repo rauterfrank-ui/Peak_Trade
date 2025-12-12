@@ -1,0 +1,131 @@
+# =============================================================================
+# Current Macro Regime – Peak_Trade
+# =============================================================================
+# Aktuelles Makro-Briefing in maschinenlesbarem Format.
+# Schema: schema.toml
+# Dokumentation: docs/macro/MACRO_BRIEFING_TEMPLATE.md
+#
+# Letztes Update: 2025-12-11
+# =============================================================================
+
+[meta]
+date = 2025-12-11
+valid_until = 2025-12-18
+analyst = "Global Macro Specialist"
+confidence = "medium"
+
+# -----------------------------------------------------------------------------
+# REGIME
+# -----------------------------------------------------------------------------
+
+[regime]
+primary = "fed_pause"
+secondary = "tariff_uncertainty"
+signal = "yellow"
+bias = "neutral"
+
+# Begründung:
+# - Fed hat gestern (10.12.2025) auf 3.5-3.75% gesenkt, signalisiert aber Pause
+# - Powell attribuiert Inflationsüberschuss explizit den Trump-Zöllen
+# - Nur 1 weitere Senkung in 2026 erwartet
+# - Geopolitik erhöht (Taiwan, Ukraine), aber nicht akut
+
+# -----------------------------------------------------------------------------
+# SIZING
+# -----------------------------------------------------------------------------
+
+[sizing]
+max_allocation = 0.70
+rationale = "Erhöhte Unsicherheit durch Zoll-Inflation + AI-Bubble-Sorgen (Oracle-Event)"
+
+# -----------------------------------------------------------------------------
+# WATCHLIST
+# -----------------------------------------------------------------------------
+
+[watchlist]
+primary = ["BTCUSDT", "ETHUSDT", "XAUUSD"]
+secondary = ["EURUSD", "VIX", "US10Y"]
+avoid = []
+
+# Begründung:
+# - BTC: ETF-Flows als Proxy für Risk-Sentiment, institutionelle Präsenz etabliert
+# - ETH: Zeigt aktuell mehr Resilienz (positive ETF-Inflows)
+# - Gold: Klassischer Geopolitik-Hedge
+# - EUR/USD: Zoll-sensitiv, Proxy für EU-Stress
+# - VIX: Frühindikator für Regime-Shifts
+
+# -----------------------------------------------------------------------------
+# STRATEGY TILT
+# -----------------------------------------------------------------------------
+
+[strategy_tilt]
+prefer = "mean_reversion"
+rationale = "Seitwärtsmarkt ohne klaren Trend; Breakout-Strategien nur bei Bestätigung"
+
+# -----------------------------------------------------------------------------
+# SCENARIOS
+# -----------------------------------------------------------------------------
+
+[scenarios.base]
+name = "Sideways mit erhöhter Volatilität"
+probability = 0.55
+description = "Status quo: Zölle bleiben, Fed pausiert, keine Eskalation"
+indicators = ["VIX 15-22", "SPX +5-10% 2026", "DXY 104-107"]
+btc_range = ["85000", "105000"]
+
+[scenarios.bull]
+name = "Risk-On Rally"
+probability = 0.25
+description = "US-EU-Handelsdeal, Ukraine-Waffenstillstand, Fed dovisher als erwartet"
+indicators = ["VIX <15", "SPX >7500", "EM Outperformance"]
+triggers = ["Trade deal announcement", "Fed pivot signal", "Ceasefire Ukraine"]
+btc_target = "120000+"
+
+[scenarios.bear]
+name = "Korrektur / Risk-Off"
+probability = 0.20
+description = "Taiwan-Eskalation, Rezessionssignale, AI-Bubble platzt"
+indicators = ["VIX >30", "SPX -15-20%", "Credit spreads widen"]
+triggers = ["Taiwan military action", "Jobless claims >250k", "Tech earnings miss"]
+btc_target = "60000-70000"
+
+# -----------------------------------------------------------------------------
+# REGIME SHIFT TRIGGERS
+# -----------------------------------------------------------------------------
+
+[triggers]
+# Diese Indikatoren beobachten für Regime-Wechsel
+
+[triggers.to_risk_off]
+vix_threshold = 25
+description = "VIX sustained >25 → Shift zu Risk-Off"
+
+[triggers.to_crisis]
+events = ["Taiwan military escalation", "Major bank failure", "Sovereign default"]
+description = "Sofort Crisis-Mode bei diesen Events"
+
+[triggers.to_risk_on]
+events = ["Fed pivot (>2 cuts signaled)", "US-EU trade deal", "Ukraine ceasefire"]
+description = "Upgrade zu Risk-On bei diesen Events"
+
+# -----------------------------------------------------------------------------
+# TOP DRIVERS (für Reporting)
+# -----------------------------------------------------------------------------
+
+[[drivers]]
+rank = 1
+name = "Fed pausiert"
+fact = "Nur 1 Cut in 2026 erwartet, Rate bei 3.5-3.75%"
+impact = "USD stark, Equities gedeckelt"
+
+[[drivers]]
+rank = 2
+name = "Tariff-Inflation"
+fact = "Powell nennt Zölle explizit als Inflationstreiber"
+impact = "Hawkish Bias bleibt"
+
+[[drivers]]
+rank = 3
+name = "AI-Bubble-Sorgen"
+fact = "Oracle-Capex-Warnung löst Tech-Sell-off aus"
+impact = "Erhöhte Volatilität in Tech"

@@ -1,0 +1,10 @@
+# Live Auto-Overrides (Promotion Loop v0)
+# ========================================
+# Diese Datei wird automatisch vom Promotion Loop beschrieben.
+# Änderungen werden nur in Live-nahen Environments angewendet.
+
+[auto_applied]
+# Example overrides (will be replaced by Promotion Loop)
+# "portfolio.leverage" = 1.75
+# "strategy.trigger_delay" = 8.0
+# "macro.regime_weight" = 0.35

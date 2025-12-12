@@ -50,3 +50,11 @@ def test_build_trigger_training_report(tmp_path: Path) -> None:
     assert "Trigger Training Report" in content
     assert "TEST_TRIGGER" in content
 
+
+
+
+
+
+
+
+

@@ -1,0 +1,160 @@
+# Learning & Promotion Loop v1 - Konfiguration
+# ==============================================
+# Diese Datei konfiguriert das Learning & Promotion Loop System.
+# 
+# WICHTIG: Änderungen an dieser Datei sollten nur nach sorgfältiger
+#          Review und mit Operator-Freigabe vorgenommen werden.
+
+[promotion_loop]
+# Betriebsmodus für den Promotion Loop
+# =====================================
+# Mögliche Werte:
+#   - "disabled"     : Killswitch - keine Proposals, kein Auto-Apply
+#   - "manual_only"  : Nur Proposals generieren, kein Auto-Apply (STANDARD, KONSERVATIV)
+#   - "bounded_auto" : Proposals + Auto-Apply innerhalb definierter Bounds (AUTOPILOT)
+#
+# AKTUELL AKTIV: manual_only (sicher für Production)
+mode = "manual_only"
+
+# Output-Verzeichnis für Promotion-Proposals
+output_dir = "reports/live_promotion"
+
+# Pfad zur Live-Overrides-Datei (nur relevant für bounded_auto)
+live_overrides_path = "config/live_overrides/auto.toml"
+
+
+# ============================================================================
+# bounded_auto Konfiguration (NICHT AKTIV - nur vorbereitet)
+# ============================================================================
+# Diese Einstellungen werden NUR verwendet, wenn mode = "bounded_auto"
+# ist. Im manual_only Modus haben sie keine Auswirkung.
+#
+# WICHTIG: bounded_auto sollte erst aktiviert werden, nachdem:
+#   1. Mehrere erfolgreiche manual_only Cycles durchgeführt wurden
+#   2. Die Proposals manuell reviewed und als sicher eingestuft wurden
+#   3. Die Bounds sorgfältig kalibriert wurden
+#   4. Monitoring & Rollback-Prozeduren etabliert sind
+
+[promotion_loop.bounds]
+# Leverage-Bounds
+# ---------------
+# Kontrolliert automatische Anpassungen des Portfolio-Hebels
+leverage_min = 1.0          # Minimaler Leverage
+leverage_max = 2.0          # Maximaler Leverage (konservativ)
+leverage_max_step = 0.25    # Maximale Änderung pro Update
+
+# Trigger-Delay-Bounds
+# --------------------
+# Kontrolliert automatische Anpassungen der Trigger-Verzögerung (in Sekunden)
+trigger_delay_min = 3.0     # Minimale Delay
+trigger_delay_max = 15.0    # Maximale Delay
+trigger_delay_max_step = 2.0  # Maximale Änderung pro Update
+
+# Macro-Weight-Bounds
+# -------------------
+# Kontrolliert automatische Anpassungen der Makro-Regime-Gewichtung
+macro_weight_min = 0.0      # Minimale Gewichtung (0% Einfluss)
+macro_weight_max = 0.8      # Maximale Gewichtung (80% Einfluss)
+macro_weight_max_step = 0.1 # Maximale Änderung pro Update
+
+
+[promotion_loop.safety]
+# Safety-Parameter für bounded_auto
+# ==================================
+
+# Minimale Confidence-Score für Auto-Apply
+# Nur Patches mit confidence_score >= diesem Wert werden automatisch angewendet
+min_confidence_for_auto_apply = 0.80
+
+# Maximale Anzahl Auto-Applies pro Tag
+# Verhindert zu schnelle/aggressive Änderungen
+max_auto_applies_per_day = 3
+
+# Whitelist für Auto-Apply-Targets
+# Nur diese Config-Pfade dürfen automatisch geändert werden
+# Leer = alle Targets erlaubt (VORSICHT!)
+auto_apply_whitelist = [
+    "portfolio.leverage",
+    "strategy.trigger_delay",
+    "macro.regime_weight",
+]
+
+# Blacklist für Auto-Apply-Targets (P0)
+# Diese Config-Pfade dürfen NIEMALS automatisch geändert werden
+# Prefix-Matching: "live.api_keys" blockt auch "live.api_keys.binance"
+auto_apply_blacklist = [
+    "risk.stop_loss",           # Kritisch - manuell only
+    "live.api_keys",            # Kritisch - manuell only
+    "live.max_order_size",      # Kritisch - manuell only
+    "strategy.name",            # Verhindert Strategy-Wechsel
+]
+
+# Blacklist für Tags (P0)
+# Patches mit diesen Tags dürfen NIEMALS auto-promoted werden
+blacklist_tags = [
+    "r_and_d",                  # R&D-Strategien
+    "experimental",             # Experimentelle Features
+    "untested",                 # Nicht getestet
+]
+
+
+[promotion_loop.governance]
+# Governance & Lock-Mechanismen (P1)
+# ===================================
+
+# Globaler Promotion-Lock (P1)
+# Wenn true: bounded_auto ist komplett deaktiviert
+# manual_only ist weiterhin erlaubt, aber mit deutlichem Warning
+global_promotion_lock = false
+
+# Audit-Log-Pfad
+# Alle Promotion-Entscheidungen werden hier geloggt (JSONL-Format)
+audit_log_path = "reports/promotion_audit/promotion_audit.jsonl"
+
+
+[promotion_loop.monitoring]
+# Monitoring & Alerting
+# =====================
+
+# Log-Level (DEBUG, INFO, WARNING, ERROR)
+log_level = "INFO"
+
+# Slack-Notifications (wenn konfiguriert)
+notify_on_proposal = true       # Benachrichtigung bei neuen Proposals
+notify_on_auto_apply = true     # Benachrichtigung bei Auto-Applies
+notify_on_rejection = false     # Benachrichtigung bei Rejections
+
+
+# ============================================================================
+# UMSCHALTEN AUF bounded_auto (Schritt-für-Schritt)
+# ============================================================================
+#
+# Wenn du bereit bist, auf bounded_auto umzuschalten:
+#
+# 1. Stelle sicher, dass:
+#    - Mehrere manual_only Cycles erfolgreich durchgeführt wurden
+#    - Die Proposals manuell reviewed und als sicher eingestuft wurden
+#    - Monitoring ist aktiv und Alerts funktionieren
+#    - Rollback-Prozedur ist dokumentiert und getestet
+#
+# 2. Passe die Bounds an (falls nötig):
+#    - Starte konservativ (kleine max_step Werte)
+#    - Erweitere schrittweise basierend auf Erfahrung
+#
+# 3. Ändere den Modus:
+#    mode = "bounded_auto"
+#
+# 4. Führe einen Test-Cycle durch:
+#    python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
+#
+# 5. Prüfe die Outputs:
+#    - Wurden die richtigen Patches angewendet?
+#    - Sind die Bounds korrekt?
+#    - Funktioniert das Monitoring?
+#
+# 6. Bei Problemen sofort zurückschalten:
+#    mode = "manual_only"
+#    # oder nutze den Killswitch:
+#    mode = "disabled"
+#
+# ============================================================================

@@ -13,6 +13,7 @@ pandas>=2.0.0
 # Configuration
 pydantic>=2.0.0
 toml>=0.10.2
+pyyaml>=6.0.0
 
 # Data & API
 ccxt>=4.0.0
@@ -36,3 +37,6 @@ pytest-cov>=4.1.0
 fastapi>=0.109.0
 uvicorn[standard]>=0.27.0
 Jinja2>=3.1.0
+
+# MarketSentinel (LLM-Integration)
+openai>=1.0.0

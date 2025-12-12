@@ -204,3 +204,11 @@ Ausführen via Cron:
 0 0 * * * /path/to/Peak_Trade/scripts/backup_session_store.sh
 ```
 
+
+
+
+
+
+
+
+

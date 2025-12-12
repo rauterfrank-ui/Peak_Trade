@@ -47,6 +47,9 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 # Default Config-Pfad
 _DEFAULT_CONFIG_PATH = _PROJECT_ROOT / "config" / "config.toml"
 
+# Live Auto-Overrides Pfad (Phase Promotion Loop v0)
+AUTO_LIVE_OVERRIDES_PATH = _PROJECT_ROOT / "config" / "live_overrides" / "auto.toml"
+
 
 @dataclass
 class PeakConfig:
@@ -217,3 +220,128 @@ def get_project_root() -> Path:
         Path zum Projekt-Root
     """
     return _PROJECT_ROOT
+
+
+def _load_live_auto_overrides(path: Path = AUTO_LIVE_OVERRIDES_PATH) -> Dict[str, Any]:
+    """
+    Load live auto overrides from config/live_overrides/auto.toml.
+
+    Diese Funktion lädt die vom Promotion Loop generierten Auto-Overrides.
+    Die Overrides werden nur angewendet, wenn wir in einem Live-nahen Environment sind.
+
+    Expected structure:
+
+        [auto_applied]
+        "portfolio.leverage" = 1.75
+        "strategy.trigger_delay" = 8.0
+
+    Args:
+        path: Pfad zur auto.toml Datei (default: config/live_overrides/auto.toml)
+
+    Returns:
+        Dict mit dotted-key -> value Mappings (z.B. "portfolio.leverage" -> 1.75)
+    """
+    if not path.exists():
+        return {}
+
+    try:
+        with path.open("rb") as f:
+            data = tomllib.load(f)
+        auto_applied = data.get("auto_applied") or {}
+        # Normalisiere Keys zu str -> Any
+        return {str(k): v for k, v in auto_applied.items()}
+    except Exception as e:
+        # Bei Fehlern beim Laden loggen wir und geben leeres Dict zurück
+        # Besser als die gesamte Config-Ladung zu blockieren
+        import warnings
+
+        warnings.warn(
+            f"Failed to load live auto overrides from {path}: {e}", stacklevel=2
+        )
+        return {}
+
+
+def _is_live_like_environment(cfg: PeakConfig) -> bool:
+    """
+    Erkenne Live-nahe Environments basierend auf der Config.
+
+    Live-nah sind:
+    - environment.mode = "live"
+    - environment.mode = "testnet"
+    - Oder wenn enable_live_trading = True
+
+    Args:
+        cfg: Die PeakConfig-Instanz
+
+    Returns:
+        True wenn Live-nahe, False sonst
+    """
+    # Prüfe environment.mode
+    mode = cfg.get("environment.mode", "paper")
+    if isinstance(mode, str):
+        mode = mode.lower()
+        if mode in ("live", "testnet", "paper_live", "shadow"):
+            return True
+
+    # Prüfe enable_live_trading Flag
+    if cfg.get("environment.enable_live_trading", False):
+        return True
+
+    return False
+
+
+def load_config_with_live_overrides(
+    path: Optional[str | Path] = None,
+    *,
+    auto_overrides_path: Optional[Path] = None,
+    force_apply_overrides: bool = False,
+) -> PeakConfig:
+    """
+    Laedt eine Config-Datei und wendet Live-Auto-Overrides an.
+
+    Diese Funktion erweitert load_config() um die automatische Anwendung
+    von Live-Overrides aus dem Promotion Loop, wenn wir in einem Live-nahen
+    Environment sind.
+
+    Args:
+        path: Pfad zur TOML-Config-Datei (optional)
+        auto_overrides_path: Pfad zur auto.toml (default: config/live_overrides/auto.toml)
+        force_apply_overrides: Wenn True, werden Overrides auch in Paper angewendet
+
+    Returns:
+        PeakConfig-Instanz mit angewandten Overrides
+
+    Example:
+        >>> # Standard-Nutzung (Auto-Overrides nur in Live-Environments)
+        >>> cfg = load_config_with_live_overrides()
+        >>>
+        >>> # Mit explizitem Pfad
+        >>> cfg = load_config_with_live_overrides("config/config.toml")
+        >>>
+        >>> # Force-Apply auch in Paper (für Tests)
+        >>> cfg = load_config_with_live_overrides(force_apply_overrides=True)
+    """
+    # Basis-Config laden
+    cfg = load_config(path)
+
+    # Prüfen ob wir in einem Live-nahen Environment sind
+    should_apply = force_apply_overrides or _is_live_like_environment(cfg)
+
+    if not should_apply:
+        return cfg
+
+    # Live-Auto-Overrides laden
+    overrides_path = auto_overrides_path or AUTO_LIVE_OVERRIDES_PATH
+    overrides = _load_live_auto_overrides(overrides_path)
+
+    if not overrides:
+        return cfg
+
+    # Overrides anwenden
+    print(
+        f"[peak_config] Applying {len(overrides)} live auto-overrides from {overrides_path}"
+    )
+    for key, value in overrides.items():
+        print(f"[peak_config]   {key} = {value}")
+
+    return cfg.with_overrides(overrides)

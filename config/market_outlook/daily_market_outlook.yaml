@@ -1,0 +1,81 @@
+# ============================================================================
+# MarketSentinel v0 – Daily Market Outlook Configuration
+# ============================================================================
+# Automatische tägliche Marktprognose mit LLM-Integration
+# Stand: Dezember 2024
+# ============================================================================
+
+report_id: "MARKET_SENTINEL_DAILY_V0"
+output_subdir: "daily"
+
+# Zeithorizonte für die Analyse
+horizons:
+  - "short_term"    # Tage bis ~4 Wochen
+  - "tactical"      # 1-3 Monate
+
+# Markt-Watchlist
+markets:
+  # Krypto
+  - id: "BTCUSDT"
+    symbol: "btcusdt"
+    display_name: "BTC / USDT"
+    timeframe: "1d"
+    lookback_days: 60
+
+  - id: "ETHUSDT"
+    symbol: "ethusdt"
+    display_name: "ETH / USDT"
+    timeframe: "1d"
+    lookback_days: 60
+
+  # Aktienindizes
+  - id: "SPX"
+    symbol: "spx"
+    display_name: "S&P 500"
+    timeframe: "1d"
+    lookback_days: 60
+
+  - id: "NDX"
+    symbol: "ndx"
+    display_name: "Nasdaq 100"
+    timeframe: "1d"
+    lookback_days: 60
+
+  - id: "DAX"
+    symbol: "dax"
+    display_name: "DAX 40"
+    timeframe: "1d"
+    lookback_days: 60
+
+  # Anleihen / Zinsen
+  - id: "US10Y"
+    symbol: "us10y"
+    display_name: "US 10Y Treasury Yield"
+    timeframe: "1d"
+    lookback_days: 60
+
+  # FX
+  - id: "EURUSD"
+    symbol: "eurusd"
+    display_name: "EUR / USD"
+    timeframe: "1d"
+    lookback_days: 60
+
+  # Rohstoffe
+  - id: "GOLD"
+    symbol: "gold"
+    display_name: "Gold (XAU/USD)"
+    timeframe: "1d"
+    lookback_days: 60
+
+  - id: "OIL"
+    symbol: "oil"
+    display_name: "Crude Oil (WTI)"
+    timeframe: "1d"
+    lookback_days: 60
+
+# LLM-Konfiguration (überschreibbar per ENV)
+llm:
+  model: "gpt-4o"  # Default-Modell, überschreibbar via OPENAI_MODEL
+  max_tokens: 4000
+  temperature: 0.7

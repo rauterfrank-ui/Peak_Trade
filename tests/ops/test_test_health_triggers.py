@@ -331,3 +331,11 @@ class TestTriggerViolationDataclass:
         assert "30.00%" in violation.message
         assert violation.actual_value == 0.3
         assert violation.threshold_value == 0.2
+
+
+
+
+
+
+
+
