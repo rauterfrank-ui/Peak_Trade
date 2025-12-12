@@ -123,7 +123,7 @@ class TestElKarouiVolModelStrategy:
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
 
         assert ElKarouiVolModelStrategy is not None
-        assert ElKarouiVolModelStrategy.KEY == "el_karoui_vol_model"
+        assert ElKarouiVolModelStrategy.KEY == "el_karoui_vol_v1"
 
     def test_el_karoui_is_research_only(self):
         """Test: El-Karoui ist als Research-Only markiert."""
@@ -142,12 +142,12 @@ class TestElKarouiVolModelStrategy:
 
         assert strategy is not None
         assert strategy.vol_window == 20
-        assert 0 < strategy.vol_threshold_low < 1
-        assert 0 < strategy.vol_threshold_high < 1
+        assert 0 < strategy.low_threshold < 1
+        assert 0 < strategy.high_threshold < 1
         assert "RESEARCH" in strategy.meta.description.upper()
 
     def test_el_karoui_generate_signals_returns_flat(self):
-        """Test: El-Karoui generate_signals gibt Flat-Signal (Research-Stub)."""
+        """Test: El-Karoui generate_signals gibt valide Signale."""
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
 
         strategy = ElKarouiVolModelStrategy()
@@ -167,14 +167,15 @@ class TestElKarouiVolModelStrategy:
 
         signals = strategy.generate_signals(data)
 
-        # Research-Stub: Alle Signale sollten 0 (flat) sein
+        # Signale sollten valide sein
         assert isinstance(signals, pd.Series)
         assert len(signals) == len(data)
-        assert (signals == 0).all(), "Research-Stub sollte nur Flat-Signale liefern"
+        assert signals.isin([0, 1]).all(), "Signale sollten 0 (flat) oder 1 (long) sein"
 
     def test_el_karoui_vol_analysis(self):
         """Test: get_vol_analysis gibt valide Analyse zurück."""
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
+        from src.strategies.el_karoui.vol_model import VolRegime
 
         strategy = ElKarouiVolModelStrategy()
 
@@ -190,18 +191,18 @@ class TestElKarouiVolModelStrategy:
         analysis = strategy.get_vol_analysis(data)
 
         assert "current_vol" in analysis
-        assert "vol_regime" in analysis
+        assert "regime" in analysis
         assert "vol_percentile" in analysis
-        assert analysis["vol_regime"] in {"low", "normal", "high"}
+        assert analysis["regime"] in {VolRegime.LOW, VolRegime.MEDIUM, VolRegime.HIGH}
 
     def test_el_karoui_repr_shows_research_only(self):
-        """Test: __repr__ zeigt RESEARCH-ONLY an."""
+        """Test: __repr__ zeigt R&D-ONLY an."""
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
 
         strategy = ElKarouiVolModelStrategy()
         repr_str = repr(strategy)
 
-        assert "RESEARCH-ONLY" in repr_str
+        assert "R&D-ONLY" in repr_str
 
 
 # =============================================================================
