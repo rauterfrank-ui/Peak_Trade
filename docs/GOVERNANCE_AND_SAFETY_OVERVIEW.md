@@ -286,6 +286,7 @@ Phase 25 ergänzt den **organisatorischen Layer**:
 | `LIVE_READINESS_CHECKLISTS.md` | Checklisten für Stufen-Übergänge |
 | `PHASE_23_LIVE_TESTNET_BLUEPRINT.md` | Technischer Blueprint |
 | `PHASE_24_SHADOW_EXECUTION.md` | Shadow-Execution-Dokumentation |
+| [`governance/LLM_POLICY_CRITIC_CHARTER.md`](governance/LLM_POLICY_CRITIC_CHARTER.md) | LLM Policy Critic: Read-only Governance-Layer für automatisierte Safety-Reviews |
 
 ---
 
