@@ -255,7 +255,7 @@ def cursor_link(repo_root: Optional[Path], it: TodoItem) -> Optional[str]:
     """
     Cursor link mit Zeilen-Support.
     Priorität: hint_ref > hint_path (+ hint_line) > repo_root
-    Format: cursor://file/<ABS_PATH>:line:col
+    Format: cursor://file/<REL_PATH>:line:col (using relative path for determinism)
     """
     if not repo_root:
         return None
@@ -265,24 +265,22 @@ def cursor_link(repo_root: Optional[Path], it: TodoItem) -> Optional[str]:
         ref = it.hint_ref.strip().lstrip("/")
         if ":" in ref:
             fpath, line = ref.split(":", 1)
-            abs_path = (repo_root / fpath).resolve()
+            rel_path = fpath
             # Cursor format: cursor://file/path:line:col
-            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:{line}:1"
+            return f"cursor://file/{urllib.parse.quote(rel_path, safe='/:')}:{line}:1"
         else:
-            abs_path = (repo_root / ref).resolve()
-            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
+            rel_path = ref
+            return f"cursor://file/{urllib.parse.quote(rel_path, safe='/:')}:1:1"
 
     # hint_path + optional hint_line
     if it.hint_path:
         p = it.hint_path.strip().lstrip("/")
-        abs_path = (repo_root / p).resolve()
         if it.hint_line:
-            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:{it.hint_line}:1"
-        return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
+            return f"cursor://file/{urllib.parse.quote(p, safe='/:')}:{it.hint_line}:1"
+        return f"cursor://file/{urllib.parse.quote(p, safe='/:')}:1:1"
 
-    # fallback: repo root
-    abs_path = repo_root.resolve()
-    return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
+    # fallback: repo root (use "." for determinism)
+    return f"cursor://file/.:1:1"
 
 
 def build_work_prompt(it: TodoItem) -> str:
@@ -313,12 +311,14 @@ def claude_code_command(repo_root: Optional[Path], it: TodoItem) -> Optional[str
     """
     Claude Code startet mit initial prompt:
       claude "query"
+    Uses relative path placeholder for determinism.
     """
     if not repo_root:
         return None
 
     prompt = build_work_prompt(it).replace("\n", " ").strip()
-    return f'cd {shlex.quote(str(repo_root.resolve()))} && claude {shlex.quote(prompt)}'
+    # Use "." as placeholder for deterministic output (users run from repo root)
+    return f'cd . && claude {shlex.quote(prompt)}'
 
 
 # -------------------------
@@ -326,7 +326,15 @@ def claude_code_command(repo_root: Optional[Path], it: TodoItem) -> Optional[str
 # -------------------------
 def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path], repo_web: Optional[str], branch: str) -> str:
     generated_marker = stable_generated_marker(source_md)
-    src_rel = str(source_md).replace("\\", "/")
+    # Make source path relative to repo_root for deterministic output
+    if repo_root:
+        try:
+            src_rel = str(source_md.relative_to(repo_root)).replace("\\", "/")
+        except ValueError:
+            # Fallback if source_md is not relative to repo_root
+            src_rel = str(source_md).replace("\\", "/")
+    else:
+        src_rel = str(source_md).replace("\\", "/")
 
     cards = []
     for it in items:
