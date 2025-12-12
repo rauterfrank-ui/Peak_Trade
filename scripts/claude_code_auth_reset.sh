@@ -26,14 +26,19 @@ TXT
 OPEN=0
 PURGE=0
 
-for arg in "${@:-}"; do
-  case "$arg" in
-    --open) OPEN=1 ;;
-    --purge) PURGE=1 ;;
-    -h|--help) usage; exit 0 ;;
-    *) echo "Unknown arg: $arg"; usage; exit 2 ;;
-  esac
-done
+if [ $# -eq 0 ]; then
+  # No arguments - run default behavior
+  :
+else
+  for arg in "$@"; do
+    case "$arg" in
+      --open) OPEN=1 ;;
+      --purge) PURGE=1 ;;
+      -h|--help) usage; exit 0 ;;
+      *) echo "Unknown arg: $arg"; usage; exit 2 ;;
+    esac
+  done
+fi
 
 echo "== Claude Code Auth Troubleshooting =="
 
