@@ -80,20 +80,27 @@ def detect_default_branch(fallback: str = "main") -> str:
 def stable_generated_marker(source_md: Path) -> str:
     """
     Deterministischer Marker:
-    - bevorzugt: letzter Git-Commit-Zeitstempel der Source-Datei + HEAD short-sha
+    - bevorzugt: letzter Git-Commit-Zeitstempel der Source-Datei + commit SHA der Source-Datei
     - fallback: sha256 der Source-Datei (12 chars)
+
+    Nur aktualisiert wenn die Source-Datei geändert wird (nicht bei jedem Commit).
     """
     try:
+        # Last commit that touched the source file
         iso = subprocess.check_output(
             ["git", "log", "-1", "--format=%cI", "--", str(source_md)],
             text=True,
         ).strip()
-        sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True).strip()
-        if iso:
+        sha = subprocess.check_output(
+            ["git", "log", "-1", "--format=%h", "--", str(source_md)],
+            text=True,
+        ).strip()  # commit SHA that last modified source_md
+        if iso and sha:
             return f"{iso} (sha {sha})"
     except Exception:
         pass
 
+    # Fallback: deterministic hash of file content (stable unless file content changes)
     data = source_md.read_bytes()
     h = hashlib.sha256(data).hexdigest()[:12]
     return f"sha256:{h}"
