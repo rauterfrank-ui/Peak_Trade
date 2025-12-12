@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import html
 import json
 import os
@@ -74,6 +75,28 @@ def detect_default_branch(fallback: str = "main") -> str:
         if parts:
             return parts[-1]
     return fallback
+
+
+def stable_generated_marker(source_md: Path) -> str:
+    """
+    Deterministischer Marker:
+    - bevorzugt: letzter Git-Commit-Zeitstempel der Source-Datei + HEAD short-sha
+    - fallback: sha256 der Source-Datei (12 chars)
+    """
+    try:
+        iso = subprocess.check_output(
+            ["git", "log", "-1", "--format=%cI", "--", str(source_md)],
+            text=True,
+        ).strip()
+        sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True).strip()
+        if iso:
+            return f"{iso} (sha {sha})"
+    except Exception:
+        pass
+
+    data = source_md.read_bytes()
+    h = hashlib.sha256(data).hexdigest()[:12]
+    return f"sha256:{h}"
 
 
 # -------------------------
@@ -295,7 +318,7 @@ def claude_code_command(repo_root: Optional[Path], it: TodoItem) -> Optional[str
 # HTML rendering
 # -------------------------
 def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path], repo_web: Optional[str], branch: str) -> str:
-    now = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    generated_marker = stable_generated_marker(source_md)
     src_rel = str(source_md).replace("\\", "/")
 
     cards = []
@@ -476,7 +499,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
         <div class="title">Peak_Trade – TODO Board</div>
         <div class="meta">
           Quelle: {esc(src_rel)}<br/>
-          Generiert: {esc(now)}<br/>
+          Generated-from: {esc(generated_marker)}<br/>
           {repo_line}
         </div>
       </div>
@@ -729,6 +752,9 @@ def main() -> int:
     repo_web = args.repo_web or (origin_to_repo_web(origin) if origin else None)
     branch = args.branch or detect_default_branch("main")
 
+    # Generate stable marker for both HTML and README
+    generated_marker = stable_generated_marker(source)
+
     out_html = repo_root / args.out_html
     out_html.parent.mkdir(parents=True, exist_ok=True)
     html_doc = render_html(items, source, repo_root, repo_web, branch)
@@ -798,7 +824,7 @@ Override mit `--source-md`.
 
 ---
 
-**Generated:** {dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+**Generated-from:** {generated_marker}
 **Output:** `{out_html.relative_to(repo_root)}`
 """, encoding="utf-8")
 
