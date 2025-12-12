@@ -8,34 +8,38 @@ Dieses TODO Board wird automatisch aus einer Markdown-TODO-Datei generiert.
 python3 scripts/build_todo_board_html.py
 ```
 
-## Öffnen
-
-```bash
-open docs/00_overview/PEAK_TRADE_TODO_BOARD.html
-```
+Öffne dann `docs/00_overview/PEAK_TRADE_TODO_BOARD.html` in deinem Browser.
 
 ## Features
 
-- **3-Spalten Kanban**: TODO / DOING / DONE
-- **Auto-IDs**: Wenn keine explizite `[ID]` in der Zeile → automatische T0001, T0002, …
-- **GitHub-Links**: Bei `hint_path: "..."` wird ein Button zu GitHub generiert
-- **Tags**: `#ops`, `#docs`, etc. werden erkannt und angezeigt
-- **Suche**: Echtzeit-Filter über Text, ID, Tags, Sections, Pfade
-- **Dark Theme**: Modern und responsive
+- 3-spaltige Kanban-Ansicht (TODO, DOING, DONE)
+- Echtzeit-Suche über Text, IDs, Tags, Sections, Pfade
+- Deep-Links zu GitHub (tree/blob)
+- VS Code / Cursor URL-Scheme Links
+- Dark Theme UI
 
-## Syntax-Beispiele
+## Syntax in der Source-TODO-Datei
 
 ```markdown
-## Phase 1: Strategie-Forschung
+## Meine Section
 
-- [ ] Armstrong-Strategie finalisieren [PT-001] hint_path: "src/strategies/armstrong/" #research #prio
-- [ ] Backtesting durchführen (doing) hint_path: "tests/backtest/" #testing
-- [x] Initial Prototype hint_path: "docs/prototypes/"
+- [ ] [PT-123] Aufgabe mit ID hint_path: "docs/ops/" #ops #urgent
+- [ ] Task ohne ID (wird T0001) #feature
+- [x] Erledigte Aufgabe
+- [ ] DOING: Läuft gerade (Status-Override)
 ```
 
-Status-Keywords:
-- `(doing)`, `(wip)`, `(in arbeit)` → Status DOING
-- `[x]` → Status DONE
-- Sonst → Status TODO
+**Hinweis**: Die GitHub Buttons sind nur aktiv, wenn ein `hint_path` angegeben ist.
+VS Code / Cursor Buttons öffnen bei fehlendem `hint_path` das Repo-Root als Fallback.
 
-Generiert: 2025-12-12 19:17:10
+## Quell-Datei
+
+Standard: `docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md`
+Fallback: Erste `*TODO*.md` in `docs/`.
+
+Override mit `--source-md`.
+
+---
+
+**Generated:** 2025-12-12 19:51:22
+**Output:** `docs/00_overview/PEAK_TRADE_TODO_BOARD.html`

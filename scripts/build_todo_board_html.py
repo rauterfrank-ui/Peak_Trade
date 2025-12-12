@@ -8,6 +8,7 @@ import json
 import os
 import re
 import subprocess
+import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -75,7 +76,6 @@ def detect_default_branch(fallback: str = "main") -> str:
     # Best: refs/remotes/origin/HEAD -> origin/main
     rc, out = _run_git(["symbolic-ref", "-q", "refs/remotes/origin/HEAD"])
     if rc == 0 and out:
-        # out: refs/remotes/origin/main
         parts = out.split("/")
         if parts:
             return parts[-1]
@@ -88,6 +88,7 @@ def detect_default_branch(fallback: str = "main") -> str:
 ID_RE = re.compile(r"\[([A-Za-z0-9_\-]+)\]")
 HINT_PATH_RE = re.compile(r"hint_path:\s*\"([^\"]+)\"|hint_path:\s*([^\s]+)")
 TAG_RE = re.compile(r"#([A-Za-z0-9_\-]+)")
+
 
 @dataclass(frozen=True)
 class TodoItem:
@@ -104,7 +105,6 @@ def detect_source_md(repo_root: Path) -> Path:
     if preferred.exists():
         return preferred
 
-    # fallback: find first TODO-ish markdown in docs
     docs_dir = repo_root / "docs"
     if docs_dir.exists():
         candidates = sorted(docs_dir.rglob("*TODO*.md"))
@@ -137,17 +137,15 @@ def parse_todos(md_text: str) -> List[TodoItem]:
         rest = m.group(2).strip()
 
         # status override keywords
-        # (simple + practical)
         status = "DONE" if checked else "TODO"
         if not checked:
-            if re.search(r"\b(doing|in\s*arbeit|wip)\b", rest, re.IGNORECASE):
+            if re.search(r"\b(doing|wip|in\s*arbeit)\b", rest, re.IGNORECASE):
                 status = "DOING"
 
         # stable ID if present like [PT-123]
         mid = ID_RE.search(rest)
         if mid:
             item_id = mid.group(1)
-            # remove id token from title text
             rest = ID_RE.sub("", rest).strip()
         else:
             item_id = f"T{auto_id:04d}"
@@ -158,6 +156,7 @@ def parse_todos(md_text: str) -> List[TodoItem]:
         mhp = HINT_PATH_RE.search(rest)
         if mhp:
             hp = (mhp.group(1) or mhp.group(2) or "").strip().strip('"')
+
         # tags: #ops #docs
         tags = sorted({t.lower() for t in TAG_RE.findall(rest)})
 
@@ -175,18 +174,15 @@ def parse_todos(md_text: str) -> List[TodoItem]:
 
 
 # -------------------------
-# HTML rendering
+# Link builders
 # -------------------------
 def github_link(repo_web: Optional[str], branch: str, hint_path: Optional[str]) -> Optional[str]:
-    if not repo_web:
+    # 🌐 GitHub bleibt "streng": nur aktiv bei hint_path
+    if not repo_web or not hint_path:
         return None
-    # ✅ Fallback: ohne hint_path auf Repo-Root (tree)
-    if not hint_path:
-        return f"{repo_web}/tree/{branch}"
-
     p = hint_path.strip().lstrip("/")
     if not p:
-        return f"{repo_web}/tree/{branch}"
+        return None
 
     # heuristic: dir -> tree, file -> blob
     is_dir = p.endswith("/") or (not os.path.splitext(p)[1])
@@ -194,17 +190,40 @@ def github_link(repo_web: Optional[str], branch: str, hint_path: Optional[str]) 
     return f"{repo_web}/{mode}/{branch}/{p.rstrip('/')}"
 
 
-def render_html(items: List[TodoItem], source_md: Path, repo_web: Optional[str], branch: str) -> str:
+def editor_file_link(scheme: str, repo_root: Optional[Path], hint_path: Optional[str]) -> Optional[str]:
+    """
+    Builds:
+      vscode://file/<ABS_PATH>
+      cursor://file/<ABS_PATH>
+
+    Komfort-Fallback:
+      wenn kein hint_path -> Repo-Root öffnen (damit Buttons nicht "tot" sind).
+    """
+    if not repo_root:
+        return None
+
+    if not hint_path:
+        abs_path = repo_root.resolve()
+    else:
+        p = hint_path.strip().lstrip("/")
+        abs_path = (repo_root / p).resolve()
+
+    # Encode spaces etc. but keep slashes + ':' (macOS paths) readable
+    return f"{scheme}://file/" + urllib.parse.quote(str(abs_path), safe="/:")
+
+
+# -------------------------
+# HTML rendering
+# -------------------------
+def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path], repo_web: Optional[str], branch: str) -> str:
     now = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     src_rel = str(source_md).replace("\\", "/")
 
-    # group by status
-    cols = [("TODO", "Offen"), ("DOING", "In Arbeit"), ("DONE", "Erledigt")]
-
-    # precompute cards
     cards = []
     for it in items:
         gh = github_link(repo_web, branch, it.hint_path)
+        vs = editor_file_link("vscode", repo_root, it.hint_path)
+        cu = editor_file_link("cursor", repo_root, it.hint_path)
         cards.append({
             "id": it.id,
             "status": it.status,
@@ -213,6 +232,8 @@ def render_html(items: List[TodoItem], source_md: Path, repo_web: Optional[str],
             "hint_path": it.hint_path,
             "tags": it.tags,
             "github": gh,
+            "vscode": vs,
+            "cursor": cu,
         })
 
     cards_json = json.dumps(cards, ensure_ascii=False)
@@ -299,6 +320,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_web: Optional[str],
     }}
     .row {{
       display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+      flex-wrap: wrap;
     }}
     .id {{
       font-size: 11px; color: var(--muted);
@@ -310,6 +332,10 @@ def render_html(items: List[TodoItem], source_md: Path, repo_web: Optional[str],
       margin: 6px 0 4px 0;
       white-space: pre-wrap;
       word-break: break-word;
+    }}
+    .left {{
+      flex: 1 1 420px;
+      min-width: 260px;
     }}
     .sub {{
       font-size: 11px; color: var(--muted);
@@ -329,6 +355,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_web: Optional[str],
       background: rgba(255,255,255,0.04);
       font-size: 12px;
       flex: 0 0 auto;
+      margin-top: 2px;
     }}
     .btn[aria-disabled="true"] {{
       opacity: .45;
@@ -340,6 +367,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_web: Optional[str],
       color: var(--muted);
       padding: 12px 4px 0 4px;
     }}
+    code {{ color: var(--text); }}
   </style>
 </head>
 <body>
@@ -361,8 +389,9 @@ def render_html(items: List[TodoItem], source_md: Path, repo_web: Optional[str],
     <div class="grid" id="grid"></div>
 
     <div class="foot">
-      Hinweis: GitHub-Buttons verlinken auf <code>hint_path</code> (falls angegeben) oder auf das Repo-Root.
-      Beispiel: <code>hint_path: "docs/ops/"</code> → tree/main/docs/ops/ | ohne hint_path → tree/main/
+      Hinweis: 🌐 GitHub-Buttons sind nur aktiv, wenn ein <code>hint_path</code> in der TODO-Zeile vorhanden ist
+      (z.B. <code>hint_path: "docs/ops/"</code>).<br/>
+      🧩 VS Code / 🧠 Cursor öffnen lokale Pfade; ohne <code>hint_path</code> öffnen sie das Repo-Root.
     </div>
   </div>
 
@@ -385,7 +414,9 @@ function matches(card, q) {{
     card.id, card.title, card.section,
     (card.hint_path || ""),
     (card.tags || []).join(" "),
-    (card.github || "")
+    (card.github || ""),
+    (card.vscode || ""),
+    (card.cursor || "")
   ].map(norm).join(" | ");
   return hay.includes(q);
 }}
@@ -400,6 +431,7 @@ function render(q) {{
 
     const head = document.createElement("div");
     head.className = "colhead";
+
     const name = document.createElement("div");
     name.className = "colname";
     name.textContent = col.title;
@@ -408,6 +440,7 @@ function render(q) {{
     list.className = "list";
 
     const filtered = CARDS.filter(c => c.status === col.key && matches(c, q));
+
     const cnt = document.createElement("div");
     cnt.className = "count";
     cnt.textContent = `${{filtered.length}} Items`;
@@ -422,12 +455,12 @@ function render(q) {{
       const row = document.createElement("div");
       row.className = "row";
 
-      const left = document.createElement("div");
-      left.style.flex = "1 1 auto";
-
       const id = document.createElement("div");
       id.className = "id";
       id.textContent = c.id;
+
+      const left = document.createElement("div");
+      left.className = "left";
 
       const title = document.createElement("div");
       title.className = "txt";
@@ -456,22 +489,47 @@ function render(q) {{
       left.appendChild(title);
       left.appendChild(sub);
 
-      const btn = document.createElement("a");
-      btn.className = "btn";
-      btn.textContent = "🌐 GitHub";
+      // Buttons
+      const btnGH = document.createElement("a");
+      btnGH.className = "btn";
+      btnGH.textContent = "🌐 GitHub";
       if (c.github) {{
-        btn.href = c.github;
-        btn.target = "_blank";
-        btn.rel = "noopener noreferrer";
+        btnGH.href = c.github;
+        btnGH.target = "_blank";
+        btnGH.rel = "noopener noreferrer";
       }} else {{
-        btn.setAttribute("aria-disabled", "true");
-        btn.href = "#";
-        btn.title = "Kein hint_path oder Repo nicht erkannt";
+        btnGH.setAttribute("aria-disabled", "true");
+        btnGH.href = "#";
+        btnGH.title = "Kein hint_path oder Repo nicht erkannt";
+      }}
+
+      const btnVS = document.createElement("a");
+      btnVS.className = "btn";
+      btnVS.textContent = "🧩 VS Code";
+      if (c.vscode) {{
+        btnVS.href = c.vscode;
+        btnVS.title = c.hint_path ? "Öffnet Pfad in VS Code" : "Öffnet Repo-Root in VS Code (kein hint_path)";
+      }} else {{
+        btnVS.setAttribute("aria-disabled", "true");
+        btnVS.href = "#";
+      }}
+
+      const btnCU = document.createElement("a");
+      btnCU.className = "btn";
+      btnCU.textContent = "🧠 Cursor";
+      if (c.cursor) {{
+        btnCU.href = c.cursor;
+        btnCU.title = c.hint_path ? "Öffnet Pfad in Cursor" : "Öffnet Repo-Root in Cursor (kein hint_path)";
+      }} else {{
+        btnCU.setAttribute("aria-disabled", "true");
+        btnCU.href = "#";
       }}
 
       row.appendChild(id);
       row.appendChild(left);
-      row.appendChild(btn);
+      row.appendChild(btnGH);
+      row.appendChild(btnVS);
+      row.appendChild(btnCU);
 
       card.appendChild(row);
       list.appendChild(card);
@@ -485,7 +543,6 @@ function render(q) {{
 
 const qEl = document.getElementById("q");
 qEl.addEventListener("input", () => render(norm(qEl.value)));
-
 render("");
 </script>
 </body>
@@ -518,13 +575,12 @@ def main() -> int:
     repo_web = args.repo_web or (origin_to_repo_web(origin) if origin else None)
     branch = args.branch or detect_default_branch("main")
 
-    out_html = repo_root / args.out_html if repo_root else Path(args.out_html)
+    out_html = repo_root / args.out_html
     out_html.parent.mkdir(parents=True, exist_ok=True)
-
-    html_doc = render_html(items, source, repo_web, branch)
+    html_doc = render_html(items, source, repo_root, repo_web, branch)
     out_html.write_text(html_doc, encoding="utf-8")
 
-    out_readme = repo_root / args.out_readme if repo_root else Path(args.out_readme)
+    out_readme = repo_root / args.out_readme
     out_readme.parent.mkdir(parents=True, exist_ok=True)
     out_readme.write_text(f"""# Peak_Trade – TODO Board
 
@@ -536,42 +592,47 @@ Dieses TODO Board wird automatisch aus einer Markdown-TODO-Datei generiert.
 python3 scripts/build_todo_board_html.py
 ```
 
-## Öffnen
-
-```bash
-open docs/00_overview/PEAK_TRADE_TODO_BOARD.html
-```
+Öffne dann `docs/00_overview/PEAK_TRADE_TODO_BOARD.html` in deinem Browser.
 
 ## Features
 
-- **3-Spalten Kanban**: TODO / DOING / DONE
-- **Auto-IDs**: Wenn keine explizite `[ID]` in der Zeile → automatische T0001, T0002, …
-- **GitHub-Links**: Bei `hint_path: "..."` wird ein Button zu GitHub generiert
-- **Tags**: `#ops`, `#docs`, etc. werden erkannt und angezeigt
-- **Suche**: Echtzeit-Filter über Text, ID, Tags, Sections, Pfade
-- **Dark Theme**: Modern und responsive
+- 3-spaltige Kanban-Ansicht (TODO, DOING, DONE)
+- Echtzeit-Suche über Text, IDs, Tags, Sections, Pfade
+- Deep-Links zu GitHub (tree/blob)
+- VS Code / Cursor URL-Scheme Links
+- Dark Theme UI
 
-## Syntax-Beispiele
+## Syntax in der Source-TODO-Datei
 
 ```markdown
-## Phase 1: Strategie-Forschung
+## Meine Section
 
-- [ ] Armstrong-Strategie finalisieren [PT-001] hint_path: "src/strategies/armstrong/" #research #prio
-- [ ] Backtesting durchführen (doing) hint_path: "tests/backtest/" #testing
-- [x] Initial Prototype hint_path: "docs/prototypes/"
+- [ ] [PT-123] Aufgabe mit ID hint_path: "docs/ops/" #ops #urgent
+- [ ] Task ohne ID (wird T0001) #feature
+- [x] Erledigte Aufgabe
+- [ ] DOING: Läuft gerade (Status-Override)
 ```
 
-Status-Keywords:
-- `(doing)`, `(wip)`, `(in arbeit)` → Status DOING
-- `[x]` → Status DONE
-- Sonst → Status TODO
+**Hinweis**: Die GitHub Buttons sind nur aktiv, wenn ein `hint_path` angegeben ist.
+VS Code / Cursor Buttons öffnen bei fehlendem `hint_path` das Repo-Root als Fallback.
 
-Generiert: {dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+## Quell-Datei
+
+Standard: `docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md`
+Fallback: Erste `*TODO*.md` in `docs/`.
+
+Override mit `--source-md`.
+
+---
+
+**Generated:** {dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+**Output:** `{out_html.relative_to(repo_root)}`
 """, encoding="utf-8")
 
-    print(f"✅ Generated: {out_html}")
-    print(f"✅ README:    {out_readme}")
-    print(f"ℹ️  Items:     {len(items)}")
+    print(f"✅ TODO Board erstellt:")
+    print(f"   HTML:   {out_html.relative_to(repo_root)}")
+    print(f"   README: {out_readme.relative_to(repo_root)}")
+    print(f"\n📂 Öffne {out_html.name} in deinem Browser.")
     return 0
 
 

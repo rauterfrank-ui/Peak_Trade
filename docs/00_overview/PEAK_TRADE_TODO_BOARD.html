@@ -75,6 +75,7 @@
     }
     .row {
       display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+      flex-wrap: wrap;
     }
     .id {
       font-size: 11px; color: var(--muted);
@@ -86,6 +87,10 @@
       margin: 6px 0 4px 0;
       white-space: pre-wrap;
       word-break: break-word;
+    }
+    .left {
+      flex: 1 1 420px;
+      min-width: 260px;
     }
     .sub {
       font-size: 11px; color: var(--muted);
@@ -105,6 +110,7 @@
       background: rgba(255,255,255,0.04);
       font-size: 12px;
       flex: 0 0 auto;
+      margin-top: 2px;
     }
     .btn[aria-disabled="true"] {
       opacity: .45;
@@ -116,6 +122,7 @@
       color: var(--muted);
       padding: 12px 4px 0 4px;
     }
+    code { color: var(--text); }
   </style>
 </head>
 <body>
@@ -125,7 +132,7 @@
         <div class="title">Peak_Trade – TODO Board</div>
         <div class="meta">
           Quelle: /Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md<br/>
-          Generiert: 2025-12-12 19:17:10<br/>
+          Generiert: 2025-12-12 19:51:22<br/>
           Repo: https://github.com/rauterfrank-ui/Peak_Trade (Branch: main)
         </div>
       </div>
@@ -137,13 +144,14 @@
     <div class="grid" id="grid"></div>
 
     <div class="foot">
-      Hinweis: GitHub-Buttons verlinken auf <code>hint_path</code> (falls angegeben) oder auf das Repo-Root.
-      Beispiel: <code>hint_path: "docs/ops/"</code> → tree/main/docs/ops/ | ohne hint_path → tree/main/
+      Hinweis: 🌐 GitHub-Buttons sind nur aktiv, wenn ein <code>hint_path</code> in der TODO-Zeile vorhanden ist
+      (z.B. <code>hint_path: "docs/ops/"</code>).<br/>
+      🧩 VS Code / 🧠 Cursor öffnen lokale Pfade; ohne <code>hint_path</code> öffnen sie das Repo-Root.
     </div>
   </div>
 
 <script>
-const CARDS = [{"id": "T0001", "status": "TODO", "title": "RSI-Varianten-Sweep (hint_path: \"scripts/\") #automation", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "scripts/", "tags": ["automation"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/scripts"}, {"id": "T0001", "status": "DONE", "title": "**Walk-Forward-Test implementieren** ✅ (Phase 44)", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0003", "status": "TODO", "title": "Sortino-Ratio ergänzen (hint_path: \"src/\") #research", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "src/", "tags": ["research"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/src"}, {"id": "T0004", "status": "TODO", "title": "Standard-Heatmap-Template (hint_path: \"src/reporting/\") #docs", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "src/reporting/", "tags": ["docs"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/src/reporting"}, {"id": "T0002", "status": "TODO", "title": "**Unified Pipeline-CLI**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0003", "status": "TODO", "title": "**Drawdown-Heatmap**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0004", "status": "TODO", "title": "**Vol-Regime-Filter als Wrapper**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0005", "status": "TODO", "title": "**Monte-Carlo-Robustness**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0006", "status": "TODO", "title": "**Korrelations-Matrix-Plot**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0007", "status": "TODO", "title": "**Rolling-Window-Stabilit�t**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0008", "status": "TODO", "title": "**Sweep-Comparison-Tool**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0009", "status": "TODO", "title": "**Mehr Metriken im Research-Track**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0010", "status": "TODO", "title": "**Regime-adaptive Strategien**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0011", "status": "TODO", "title": "**Auto-Portfolio-Builder**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0012", "status": "TODO", "title": "**Nightly-Sweep-Automation**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0013", "status": "TODO", "title": "**Interaktive Dashboards**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0014", "status": "TODO", "title": "**Feature-Importance-Analyse**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "T0015", "status": "TODO", "title": "**Risk-Parity-Integration**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main"}, {"id": "PT-201", "status": "TODO", "title": "Runbook: Live-Track Incident Flow ergänzen (hint_path: \"docs/ops/\") #docs #ops", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "docs/ops/", "tags": ["docs", "ops"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/docs/ops"}, {"id": "PT-202", "status": "DOING", "title": "Script: Sync-Logik härten (in arbeit) (hint_path: \"scripts/sync_todo_issues.py\") #automation", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "scripts/sync_todo_issues.py", "tags": ["automation"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/blob/main/scripts/sync_todo_issues.py"}, {"id": "PT-203", "status": "DONE", "title": "README: Board-Usage aktualisieren (hint_path: \"docs/00_overview/README_TODO_BOARD.md\") #docs", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "docs/00_overview/README_TODO_BOARD.md", "tags": ["docs"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/blob/main/docs/00_overview/README_TODO_BOARD.md"}];
+const CARDS = [{"id": "T0001", "status": "TODO", "title": "RSI-Varianten-Sweep (hint_path: \"scripts/\") #automation", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "scripts/", "tags": ["automation"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/scripts", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts"}, {"id": "T0001", "status": "DONE", "title": "**Walk-Forward-Test implementieren** ✅ (Phase 44)", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0003", "status": "TODO", "title": "Sortino-Ratio ergänzen (hint_path: \"src/\") #research", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "src/", "tags": ["research"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/src", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src"}, {"id": "T0004", "status": "TODO", "title": "Standard-Heatmap-Template (hint_path: \"src/reporting/\") #docs", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": "src/reporting/", "tags": ["docs"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/src/reporting", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src/reporting", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/src/reporting"}, {"id": "T0002", "status": "TODO", "title": "**Unified Pipeline-CLI**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0003", "status": "TODO", "title": "**Drawdown-Heatmap**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0004", "status": "TODO", "title": "**Vol-Regime-Filter als Wrapper**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0005", "status": "TODO", "title": "**Monte-Carlo-Robustness**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0006", "status": "TODO", "title": "**Korrelations-Matrix-Plot**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0007", "status": "TODO", "title": "**Rolling-Window-Stabilit�t**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0008", "status": "TODO", "title": "**Sweep-Comparison-Tool**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0009", "status": "TODO", "title": "**Mehr Metriken im Research-Track**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0010", "status": "TODO", "title": "**Regime-adaptive Strategien**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0011", "status": "TODO", "title": "**Auto-Portfolio-Builder**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0012", "status": "TODO", "title": "**Nightly-Sweep-Automation**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0013", "status": "TODO", "title": "**Interaktive Dashboards**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0014", "status": "TODO", "title": "**Feature-Importance-Analyse**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "T0015", "status": "TODO", "title": "**Risk-Parity-Integration**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "tags": [], "github": null, "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing"}, {"id": "PT-201", "status": "TODO", "title": "Runbook: Live-Track Incident Flow ergänzen (hint_path: \"docs/ops/\") #docs #ops", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "docs/ops/", "tags": ["docs", "ops"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/tree/main/docs/ops", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/ops", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/ops"}, {"id": "PT-202", "status": "DOING", "title": "Script: Sync-Logik härten (in arbeit) (hint_path: \"scripts/sync_todo_issues.py\") #automation", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "scripts/sync_todo_issues.py", "tags": ["automation"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/blob/main/scripts/sync_todo_issues.py", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts/sync_todo_issues.py", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/scripts/sync_todo_issues.py"}, {"id": "PT-203", "status": "DONE", "title": "README: Board-Usage aktualisieren (hint_path: \"docs/00_overview/README_TODO_BOARD.md\") #docs", "section": "Beispiel-Items (Issue-Sync Demo)", "hint_path": "docs/00_overview/README_TODO_BOARD.md", "tags": ["docs"], "github": "https://github.com/rauterfrank-ui/Peak_Trade/blob/main/docs/00_overview/README_TODO_BOARD.md", "vscode": "vscode://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/00_overview/README_TODO_BOARD.md", "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/sad-turing/docs/00_overview/README_TODO_BOARD.md"}];
 
 const COLS = [
   { key: "TODO",  title: "Offen" },
@@ -161,7 +169,9 @@ function matches(card, q) {
     card.id, card.title, card.section,
     (card.hint_path || ""),
     (card.tags || []).join(" "),
-    (card.github || "")
+    (card.github || ""),
+    (card.vscode || ""),
+    (card.cursor || "")
   ].map(norm).join(" | ");
   return hay.includes(q);
 }
@@ -176,6 +186,7 @@ function render(q) {
 
     const head = document.createElement("div");
     head.className = "colhead";
+
     const name = document.createElement("div");
     name.className = "colname";
     name.textContent = col.title;
@@ -184,6 +195,7 @@ function render(q) {
     list.className = "list";
 
     const filtered = CARDS.filter(c => c.status === col.key && matches(c, q));
+
     const cnt = document.createElement("div");
     cnt.className = "count";
     cnt.textContent = `${filtered.length} Items`;
@@ -198,12 +210,12 @@ function render(q) {
       const row = document.createElement("div");
       row.className = "row";
 
-      const left = document.createElement("div");
-      left.style.flex = "1 1 auto";
-
       const id = document.createElement("div");
       id.className = "id";
       id.textContent = c.id;
+
+      const left = document.createElement("div");
+      left.className = "left";
 
       const title = document.createElement("div");
       title.className = "txt";
@@ -232,22 +244,47 @@ function render(q) {
       left.appendChild(title);
       left.appendChild(sub);
 
-      const btn = document.createElement("a");
-      btn.className = "btn";
-      btn.textContent = "🌐 GitHub";
+      // Buttons
+      const btnGH = document.createElement("a");
+      btnGH.className = "btn";
+      btnGH.textContent = "🌐 GitHub";
       if (c.github) {
-        btn.href = c.github;
-        btn.target = "_blank";
-        btn.rel = "noopener noreferrer";
+        btnGH.href = c.github;
+        btnGH.target = "_blank";
+        btnGH.rel = "noopener noreferrer";
       } else {
-        btn.setAttribute("aria-disabled", "true");
-        btn.href = "#";
-        btn.title = "Kein hint_path oder Repo nicht erkannt";
+        btnGH.setAttribute("aria-disabled", "true");
+        btnGH.href = "#";
+        btnGH.title = "Kein hint_path oder Repo nicht erkannt";
+      }
+
+      const btnVS = document.createElement("a");
+      btnVS.className = "btn";
+      btnVS.textContent = "🧩 VS Code";
+      if (c.vscode) {
+        btnVS.href = c.vscode;
+        btnVS.title = c.hint_path ? "Öffnet Pfad in VS Code" : "Öffnet Repo-Root in VS Code (kein hint_path)";
+      } else {
+        btnVS.setAttribute("aria-disabled", "true");
+        btnVS.href = "#";
+      }
+
+      const btnCU = document.createElement("a");
+      btnCU.className = "btn";
+      btnCU.textContent = "🧠 Cursor";
+      if (c.cursor) {
+        btnCU.href = c.cursor;
+        btnCU.title = c.hint_path ? "Öffnet Pfad in Cursor" : "Öffnet Repo-Root in Cursor (kein hint_path)";
+      } else {
+        btnCU.setAttribute("aria-disabled", "true");
+        btnCU.href = "#";
       }
 
       row.appendChild(id);
       row.appendChild(left);
-      row.appendChild(btn);
+      row.appendChild(btnGH);
+      row.appendChild(btnVS);
+      row.appendChild(btnCU);
 
       card.appendChild(row);
       list.appendChild(card);
@@ -261,7 +298,6 @@ function render(q) {
 
 const qEl = document.getElementById("q");
 qEl.addEventListener("input", () => render(norm(qEl.value)));
-
 render("");
 </script>
 </body>
