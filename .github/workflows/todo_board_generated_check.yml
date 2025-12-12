@@ -1,0 +1,58 @@
+name: TODO Board Generated Files Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'docs/Peak_Trade_Research_Strategy_TODO_*.md'
+      - 'scripts/build_todo_board_html.py'
+      - 'scripts/inject_todo_board_shortcuts.py'
+      - 'docs/00_overview/PEAK_TRADE_TODO_BOARD.html'
+      - 'docs/00_overview/README_TODO_BOARD.md'
+  workflow_dispatch:
+
+jobs:
+  check-generated-files:
+    name: Verify TODO Board Files Are Up-to-Date
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build TODO board
+        run: |
+          echo "Generating TODO board HTML..."
+          python3 scripts/build_todo_board_html.py
+
+      - name: Check for uncommitted changes
+        id: check_diff
+        run: |
+          if git diff --exit-code docs/00_overview/PEAK_TRADE_TODO_BOARD.html docs/00_overview/README_TODO_BOARD.md; then
+            echo "status=clean" >> $GITHUB_OUTPUT
+            echo "✅ Generated files are up-to-date"
+          else
+            echo "status=dirty" >> $GITHUB_OUTPUT
+            echo "❌ Generated files are out of date"
+            echo ""
+            echo "The following files have uncommitted changes:"
+            git diff --name-only docs/00_overview/PEAK_TRADE_TODO_BOARD.html docs/00_overview/README_TODO_BOARD.md
+            echo ""
+            echo "To fix:"
+            echo "  python3 scripts/build_todo_board_html.py"
+            echo "  git add docs/00_overview/PEAK_TRADE_TODO_BOARD.html docs/00_overview/README_TODO_BOARD.md"
+            echo "  git commit -m 'chore(docs): regenerate TODO board'"
+            exit 1
+          fi
+
+      - name: Show diff (if any)
+        if: failure()
+        run: |
+          echo "=== Diff ==="
+          git diff docs/00_overview/PEAK_TRADE_TODO_BOARD.html docs/00_overview/README_TODO_BOARD.md || true
