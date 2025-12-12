@@ -246,6 +246,67 @@ Ein dedizierter Plan für Observability & Monitoring (inkl. Metriken, Integratio
 
 beschrieben.
 
+### 4.8 Policy Critic Gate (Phase G2)
+
+**Automatisierte Governance für Auto-Apply-Workflows**
+
+Der Policy Critic (Phase G1/G2) ist ein deterministischer, read-only Governance-Layer, der **vor jeder Auto-Apply-Entscheidung** vorgeschlagene Änderungen gegen Sicherheits-, Risiko- und Betriebsrichtlinien prüft.
+
+**Integration-Punkt:**
+```python
+from src.governance.policy_critic.auto_apply_gate import evaluate_policy_critic_before_apply
+
+# Vor jedem Auto-Apply:
+decision = evaluate_policy_critic_before_apply(
+    diff_text=patch_content,
+    changed_files=changed_files,
+    context={"run_id": "...", "source": "...", "justification": "..."}
+)
+
+if not decision.allowed:
+    # Auto-Apply MUSS verweigert werden
+    require_manual_review(decision)
+```
+
+**Kritische Invarianten:**
+1. **Fail-Closed:** Bei Exception/Unavailable → `REVIEW_REQUIRED` (kein Auto-Apply)
+2. **Can Brake, Never Accelerate:** Policy Critic kann Auto-Apply blockieren, aber niemals Hard-Gates überschreiben
+3. **Souveränität der Hard-Gates:** Live-Locks, Risk-Limits, Confirm-Token bleiben unabhängig aktiv
+
+**Entscheidungslogik:**
+- `AUTO_APPLY_DENY` → Auto-Apply blockiert (z.B. Secrets, Live-Unlock-Versuche)
+- `REVIEW_REQUIRED` → Manuelles Review nötig (z.B. Execution-Path-Änderungen)
+- `ALLOW` → Darf weiterlaufen (Hard-Gates bleiben trotzdem aktiv)
+
+**Report-Persistenz:**
+
+Jeder Run-Report enthält:
+```json
+{
+  "governance": {
+    "policy_critic": { "max_severity": "...", "violations": [...] },
+    "auto_apply_decision": {
+      "allowed": false,
+      "mode": "manual_only",
+      "reason": "...",
+      "decided_at": "2025-01-01T00:00:00Z"
+    }
+  }
+}
+```
+
+**GitHub Actions PR-Gate:**
+
+Automatische Policy-Prüfung für kritische Pfade (`src/live/**`, `src/execution/**`, `src/exchange/**`, `config/**`):
+- Exit-Code 2 → CI fail
+- JSON Summary als Artifact
+- Job Summary mit Violations + Testplan
+
+**Siehe:**
+- [`src/governance/policy_critic/README.md`](../src/governance/policy_critic/README.md) - Vollständige Dokumentation
+- [`docs/governance/LLM_POLICY_CRITIC_CHARTER.md`](governance/LLM_POLICY_CRITIC_CHARTER.md) - Governance-Charter
+- [`src/governance/policy_critic/auto_apply_gate.py`](../src/governance/policy_critic/auto_apply_gate.py) - Integration-API
+
 ---
 
 ## 5. Verhältnis zu technischen Phasen
