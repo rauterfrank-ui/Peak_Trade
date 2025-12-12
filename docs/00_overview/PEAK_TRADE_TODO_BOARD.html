@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Peak_Trade – TODO Board</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #111827;
+      --muted: #9ca3af;
+      --text: #e5e7eb;
+      --border: rgba(255,255,255,0.08);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --toast: rgba(0,0,0,0.75);
+    }
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 18px; }
+    .top {
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      box-shadow: var(--shadow);
+    }
+    .title { font-size: 18px; font-weight: 700; letter-spacing: 0.2px; }
+    .meta { font-size: 12px; color: var(--muted); line-height: 1.45; }
+    .search { display: flex; gap: 8px; align-items: center; }
+    input {
+      width: 420px; max-width: 80vw;
+      padding: 10px 12px; border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline: none;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      input { width: 100%; }
+    }
+    .col {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.02);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 240px;
+    }
+    .colhead {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 10px;
+    }
+    .colname { font-weight: 700; }
+    .count { font-size: 12px; color: var(--muted); }
+    .list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 10px 10px 12px;
+      background: rgba(255,255,255,0.03);
+    }
+    .row {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+      flex-wrap: wrap;
+    }
+    .id {
+      font-size: 11px; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px;
+      flex: 0 0 auto;
+    }
+    .left {
+      flex: 1 1 460px;
+      min-width: 260px;
+    }
+    .txt {
+      font-size: 13px; line-height: 1.35;
+      margin: 6px 0 4px 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .sub {
+      font-size: 11px; color: var(--muted);
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    }
+    .tag {
+      font-size: 11px; padding: 2px 8px; border-radius: 999px;
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    .btn {
+      display: inline-flex; gap: 6px; align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      font-size: 12px;
+      flex: 0 0 auto;
+      margin-top: 2px;
+      user-select: none;
+    }
+    .btn[aria-disabled="true"] {
+      opacity: .45;
+      pointer-events: none;
+    }
+    .foot {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 12px 4px 0 4px;
+      line-height: 1.6;
+    }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      background: var(--toast);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transition: opacity 120ms ease;
+      pointer-events: none;
+      font-size: 12px;
+      max-width: min(820px, 92vw);
+      text-align: center;
+    }
+    .toast.show { opacity: 1; }
+    code { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="title">Peak_Trade – TODO Board</div>
+        <div class="meta">
+          Quelle: /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya/docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md<br/>
+          Generiert: 2025-12-12 21:21:59<br/>
+          Repo: https://github.com/rauterfrank-ui/Peak_Trade (Branch: main)
+        </div>
+      </div>
+      <div class="search">
+        <input id="q" placeholder="Suche (Text, ID, Tag, Section, Pfad) …" />
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="foot">
+      🌐 GitHub ist aktiv bei <code>hint_path</code> oder <code>hint_ref</code> (springt zu Zeile bei <code>#L...</code>).<br/>
+      🧠 Cursor: öffnet Pfad + springt zu Zeile (bei <code>hint_ref: "file:120"</code> oder <code>hint_line</code>) + kopiert Prompt.<br/>
+      🤖 Claude Code: kopiert <code>cd … && claude "…"</code> Kommando (ins Terminal pasten & Enter).<br/>
+      <em>Syntax</em>: <code>hint_path: "src/"</code>, <code>hint_ref: "file.py:120"</code>, <code>hint_line: 42</code>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+<script>
+const CARDS = [{"id": "T0001", "status": "TODO", "title": "**RSI-Varianten-Sweep**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0001] (TODO) — **RSI-Varianten-Sweep** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0001] (TODO) — **RSI-Varianten-Sweep** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0002", "status": "DONE", "title": "**Walk-Forward-Test implementieren** ✅ (Phase 44)", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0002] (DONE) — **Walk-Forward-Test implementieren** ✅ (Phase 44) | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0002] (DONE) — **Walk-Forward-Test implementieren** ✅ (Phase 44) | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0003", "status": "TODO", "title": "**Sortino-Ratio erg�nzen**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0003] (TODO) — **Sortino-Ratio erg�nzen** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0003] (TODO) — **Sortino-Ratio erg�nzen** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0004", "status": "TODO", "title": "**Standard-Heatmap-Template**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0004] (TODO) — **Standard-Heatmap-Template** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0004] (TODO) — **Standard-Heatmap-Template** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0005", "status": "TODO", "title": "**Unified Pipeline-CLI**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0005] (TODO) — **Unified Pipeline-CLI** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0005] (TODO) — **Unified Pipeline-CLI** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0006", "status": "TODO", "title": "**Drawdown-Heatmap**", "section": "Kurzfristig (1\u00133 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0006] (TODO) — **Drawdown-Heatmap** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0006] (TODO) — **Drawdown-Heatmap** | Section: Kurzfristig (1\u00133 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0007", "status": "TODO", "title": "**Vol-Regime-Filter als Wrapper**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0007] (TODO) — **Vol-Regime-Filter als Wrapper** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0007] (TODO) — **Vol-Regime-Filter als Wrapper** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0008", "status": "TODO", "title": "**Monte-Carlo-Robustness**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0008] (TODO) — **Monte-Carlo-Robustness** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0008] (TODO) — **Monte-Carlo-Robustness** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0009", "status": "TODO", "title": "**Korrelations-Matrix-Plot**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0009] (TODO) — **Korrelations-Matrix-Plot** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0009] (TODO) — **Korrelations-Matrix-Plot** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0010", "status": "TODO", "title": "**Rolling-Window-Stabilit�t**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0010] (TODO) — **Rolling-Window-Stabilit�t** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0010] (TODO) — **Rolling-Window-Stabilit�t** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0011", "status": "TODO", "title": "**Sweep-Comparison-Tool**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0011] (TODO) — **Sweep-Comparison-Tool** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0011] (TODO) — **Sweep-Comparison-Tool** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0012", "status": "TODO", "title": "**Mehr Metriken im Research-Track**", "section": "Mittelfristig (4\u00138 Sessions)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0012] (TODO) — **Mehr Metriken im Research-Track** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0012] (TODO) — **Mehr Metriken im Research-Track** | Section: Mittelfristig (4\u00138 Sessions) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0013", "status": "TODO", "title": "**Regime-adaptive Strategien**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0013] (TODO) — **Regime-adaptive Strategien** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0013] (TODO) — **Regime-adaptive Strategien** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0014", "status": "TODO", "title": "**Auto-Portfolio-Builder**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0014] (TODO) — **Auto-Portfolio-Builder** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0014] (TODO) — **Auto-Portfolio-Builder** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0015", "status": "TODO", "title": "**Nightly-Sweep-Automation**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0015] (TODO) — **Nightly-Sweep-Automation** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0015] (TODO) — **Nightly-Sweep-Automation** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0016", "status": "TODO", "title": "**Interaktive Dashboards**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0016] (TODO) — **Interaktive Dashboards** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0016] (TODO) — **Interaktive Dashboards** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0017", "status": "TODO", "title": "**Feature-Importance-Analyse**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0017] (TODO) — **Feature-Importance-Analyse** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0017] (TODO) — **Feature-Importance-Analyse** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}, {"id": "T0018", "status": "TODO", "title": "**Risk-Parity-Integration**", "section": "Langfristig (Research-Track Phase 50+)", "hint_path": null, "hint_ref": null, "hint_line": null, "tags": [], "github": null, "cursor": "cursor://file//Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya:1:1", "prompt": "Peak_Trade TODO [T0018] (TODO) — **Risk-Parity-Integration** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.", "claude_cmd": "cd /Users/frnkhrz/.claude-worktrees/Peak_Trade/jolly-visvesvaraya && claude 'Peak_Trade TODO [T0018] (TODO) — **Risk-Parity-Integration** | Section: Langfristig (Research-Track Phase 50+) | hint_path: . | Tags: (keine). Bitte implementiere/fixe dieses TODO minimal-invasiv, mit Tests wo sinnvoll, und gib mir einen sauberen Git-Diff + kurze Begründung.'"}];
+
+const COLS = [
+  { key: "TODO",  title: "Offen" },
+  { key: "DOING", title: "In Arbeit" },
+  { key: "DONE",  title: "Erledigt" },
+];
+
+function norm(s) {
+  return (s || "").toString().toLowerCase();
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  window.clearTimeout(window.__toastTimer);
+  window.__toastTimer = window.setTimeout(() => t.classList.remove("show"), 1600);
+}
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch(e) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      return true;
+    } catch(_) {
+      return false;
+    }
+  }
+}
+
+function matches(card, q) {
+  if (!q) return true;
+  const hay = [
+    card.id, card.title, card.section,
+    (card.hint_path || ""),
+    (card.hint_ref || ""),
+    (card.tags || []).join(" "),
+    (card.github || "")
+  ].map(norm).join(" | ");
+  return hay.includes(q);
+}
+
+function buildLocationLabel(c) {
+  if (c.hint_ref) return `Ref: ${c.hint_ref}`;
+  if (c.hint_path && c.hint_line) return `Pfad: ${c.hint_path}:${c.hint_line}`;
+  if (c.hint_path) return `Pfad: ${c.hint_path}`;
+  return null;
+}
+
+function render(q) {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  COLS.forEach(col => {
+    const colEl = document.createElement("div");
+    colEl.className = "col";
+
+    const head = document.createElement("div");
+    head.className = "colhead";
+
+    const name = document.createElement("div");
+    name.className = "colname";
+    name.textContent = col.title;
+
+    const list = document.createElement("div");
+    list.className = "list";
+
+    const filtered = CARDS.filter(c => c.status === col.key && matches(c, q));
+
+    const cnt = document.createElement("div");
+    cnt.className = "count";
+    cnt.textContent = `${filtered.length} Items`;
+
+    head.appendChild(name);
+    head.appendChild(cnt);
+
+    filtered.forEach(c => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const row = document.createElement("div");
+      row.className = "row";
+
+      const id = document.createElement("div");
+      id.className = "id";
+      id.textContent = c.id;
+
+      const left = document.createElement("div");
+      left.className = "left";
+
+      const title = document.createElement("div");
+      title.className = "txt";
+      title.textContent = c.title;
+
+      const sub = document.createElement("div");
+      sub.className = "sub";
+
+      const sec = document.createElement("span");
+      sec.textContent = `Section: ${c.section}`;
+      sub.appendChild(sec);
+
+      const locLabel = buildLocationLabel(c);
+      if (locLabel) {
+        const loc = document.createElement("span");
+        loc.textContent = locLabel;
+        sub.appendChild(loc);
+      }
+
+      (c.tags || []).forEach(t => {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = `#${t}`;
+        sub.appendChild(tag);
+      });
+
+      left.appendChild(title);
+      left.appendChild(sub);
+
+      // 🌐 GitHub
+      const btnGH = document.createElement("a");
+      btnGH.className = "btn";
+      btnGH.textContent = "🌐 GitHub";
+      if (c.github) {
+        btnGH.href = c.github;
+        btnGH.target = "_blank";
+        btnGH.rel = "noopener noreferrer";
+        const hasLine = c.github.includes("#L");
+        btnGH.title = hasLine ? "Öffnet Datei auf GitHub an Zeile" : "Öffnet Datei/Verzeichnis auf GitHub";
+      } else {
+        btnGH.setAttribute("aria-disabled", "true");
+        btnGH.href = "#";
+        btnGH.title = "Kein hint_path/hint_ref oder Repo nicht erkannt";
+      }
+
+      // 🧠 Cursor: copy prompt + open
+      const btnCU = document.createElement("a");
+      btnCU.className = "btn";
+      btnCU.textContent = "🧠 Cursor";
+      if (c.cursor) {
+        btnCU.href = c.cursor;
+        btnCU.onclick = async (ev) => {
+          const ok = await copyToClipboard(c.prompt || "");
+          const hasLine = c.hint_ref && c.hint_ref.includes(":") || c.hint_line;
+          const msg = ok 
+            ? (hasLine ? "Cursor-Prompt kopiert — Cursor springt zu Zeile…" : "Cursor-Prompt kopiert — Cursor öffnet…")
+            : "Konnte Prompt nicht kopieren (Clipboard)";
+          showToast(msg);
+        };
+        const hasLine = c.hint_ref && c.hint_ref.includes(":") || c.hint_line;
+        btnCU.title = hasLine ? "Öffnet in Cursor + springt zu Zeile + kopiert Prompt" : "Öffnet in Cursor + kopiert Prompt";
+      } else {
+        btnCU.setAttribute("aria-disabled", "true");
+        btnCU.href = "#";
+      }
+
+      // 🤖 Claude Code: copy terminal command
+      const btnCC = document.createElement("a");
+      btnCC.className = "btn";
+      btnCC.textContent = "🤖 Claude Code";
+      if (c.claude_cmd) {
+        btnCC.href = "#";
+        btnCC.onclick = async (ev) => {
+          ev.preventDefault();
+          const ok = await copyToClipboard(c.claude_cmd);
+          showToast(ok ? "Claude Code Kommando kopiert — im Terminal einfügen & Enter" : "Konnte Kommando nicht kopieren (Clipboard)");
+        };
+        btnCC.title = "Kopiert: cd … && claude "…" (ins Terminal pasten)";
+      } else {
+        btnCC.setAttribute("aria-disabled", "true");
+        btnCC.href = "#";
+      }
+
+      row.appendChild(id);
+      row.appendChild(left);
+      row.appendChild(btnGH);
+      row.appendChild(btnCU);
+      row.appendChild(btnCC);
+
+      card.appendChild(row);
+      list.appendChild(card);
+    });
+
+    colEl.appendChild(head);
+    colEl.appendChild(list);
+    grid.appendChild(colEl);
+  });
+}
+
+const qEl = document.getElementById("q");
+qEl.addEventListener("input", () => render(norm(qEl.value)));
+render("");
+</script>
+<!-- PT_AUTH_SHORTCUT v1 START -->
+
+<style>
+  /* Peak_Trade: Claude Auth Shortcut */
+  #pt-auth-shortcut {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 99999;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  }
+  #pt-auth-shortcut a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(20,20,20,0.72);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    transition: transform 120ms ease, background 120ms ease;
+  }
+  #pt-auth-shortcut a:hover {
+    transform: translateY(-1px);
+    background: rgba(20,20,20,0.85);
+  }
+  #pt-auth-shortcut .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #34d399; /* grün */
+  }
+  #pt-auth-shortcut .warn {
+    background: #fbbf24; /* gelb */
+  }
+</style>
+
+<div id="pt-auth-shortcut" aria-label="Peak_Trade Shortcuts">
+  <a href="../ops/CLAUDE_CODE_AUTH_RUNBOOK.md" target="_blank" rel="noopener">
+    <span class="dot warn"></span>
+    Claude Auth Runbook
+  </a>
+  <a href="../DEV_WORKFLOW_SHORTCUTS.md" target="_blank" rel="noopener">
+    <span class="dot"></span>
+    Workflow Shortcuts
+  </a>
+  <a href="../../scripts/claude_code_auth_reset.sh" target="_blank" rel="noopener" title="Script öffnen (read-only)">
+    <span class="dot"></span>
+    auth_reset.sh
+  </a>
+</div>
+<!-- PT_AUTH_SHORTCUT v1 END -->
+
+</body>
+</html>
