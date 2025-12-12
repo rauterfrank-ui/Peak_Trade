@@ -557,3 +557,111 @@ def _extract_strategy_name(sweep_name: str) -> str:
             return "_".join(parts[:-1])
     return sweep_name
 
+
+# =============================================================================
+# POLICY CRITIC INTEGRATION EXAMPLE (Phase G2)
+# =============================================================================
+
+def export_top_n_with_policy_check(
+    df_top: pd.DataFrame,
+    config: TopNPromotionConfig,
+    auto_apply: bool = False,
+    context: Optional[Dict[str, Any]] = None,
+) -> Tuple[Path, Dict[str, Any]]:
+    """
+    Export Top-N configs with optional policy critic check for auto-apply.
+
+    This demonstrates Phase G2 integration: Before any automated config
+    application (auto-apply), the policy critic MUST be consulted.
+
+    Args:
+        df_top: DataFrame with top-N runs
+        config: TopNPromotionConfig
+        auto_apply: If True, attempt automated application (requires policy approval)
+        context: Optional context for policy critic (justification, test_plan, etc.)
+
+    Returns:
+        Tuple of (output_path, governance_report)
+
+    Example:
+        >>> df_top, metric = select_top_n(df, config)
+        >>> output_path, gov_report = export_top_n_with_policy_check(
+        ...     df_top,
+        ...     config,
+        ...     auto_apply=True,
+        ...     context={
+        ...         "run_id": "promo-123",
+        ...         "source": "topn_promotion",
+        ...         "justification": "Based on 6-month backtest results",
+        ...         "test_plan": "Shadow mode verification for 24h",
+        ...     }
+        ... )
+        >>> if not gov_report["auto_apply_decision"]["allowed"]:
+        ...     logger.warning("Auto-apply blocked by policy critic")
+    """
+    # Standard export (always happens)
+    output_path = export_top_n(df_top, config)
+
+    # Initialize governance report
+    governance_report = {
+        "export_path": str(output_path),
+        "auto_apply_requested": auto_apply,
+        "auto_apply_decision": None,
+        "policy_critic": None,
+    }
+
+    # If auto-apply requested, check policy critic
+    if auto_apply:
+        try:
+            from src.governance.policy_critic.auto_apply_gate import (
+                evaluate_policy_critic_before_apply,
+            )
+
+            # Generate diff from TOML export (simplified - in real scenario,
+            # this would be diff of actual config changes to be applied)
+            with open(output_path, "r") as f:
+                new_config_content = f.read()
+
+            # Simplified diff (in real scenario, compare against current config)
+            diff_text = f"+++ b/config/promoted_configs.toml\n{new_config_content}"
+            changed_files = [str(output_path.relative_to(Path.cwd()))]
+
+            # Evaluate policy critic
+            decision = evaluate_policy_critic_before_apply(
+                diff_text=diff_text,
+                changed_files=changed_files,
+                context=context or {},
+                fail_closed=True,  # Always fail-closed
+            )
+
+            # Update governance report
+            governance_report["auto_apply_decision"] = decision.to_dict()
+
+            # Log decision
+            if decision.allowed:
+                logger.info(f"Policy critic ALLOWS auto-apply: {decision.reason}")
+            else:
+                logger.warning(f"Policy critic BLOCKS auto-apply: {decision.reason}")
+                logger.warning(f"Mode: {decision.mode.value}")
+
+        except ImportError:
+            # Policy critic not available - fail-closed
+            logger.warning("Policy critic not available - failing closed (manual only)")
+            governance_report["auto_apply_decision"] = {
+                "allowed": False,
+                "mode": "manual_only",
+                "reason": "Policy critic module not available (fail-closed)",
+                "decided_at": datetime.now().isoformat(),
+            }
+        except Exception as e:
+            # Any error - fail-closed
+            logger.error(f"Policy critic evaluation failed: {e}", exc_info=True)
+            governance_report["auto_apply_decision"] = {
+                "allowed": False,
+                "mode": "manual_only",
+                "reason": f"Policy critic evaluation error (fail-closed): {str(e)}",
+                "decided_at": datetime.now().isoformat(),
+            }
+
+    return output_path, governance_report
+

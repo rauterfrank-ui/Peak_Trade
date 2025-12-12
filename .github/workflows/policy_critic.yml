@@ -1,0 +1,145 @@
+name: Policy Critic Gate
+
+on:
+  pull_request:
+    paths:
+      - 'src/live/**'
+      - 'src/execution/**'
+      - 'src/exchange/**'
+      - 'src/risk/**'
+      - 'config/**'
+      - 'docs/governance/**'
+      - '.github/workflows/policy_critic.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  policy-review:
+    name: Policy Critic Review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for diff
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install pyyaml tomli
+
+      - name: Generate diff and changed files
+        id: diff
+        run: |
+          # Get base branch (usually main)
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          HEAD_REF="${{ github.sha }}"
+
+          # Generate diff
+          git diff "origin/${BASE_REF}...${HEAD_REF}" > pr.diff
+
+          # Get changed files
+          CHANGED_FILES=$(git diff --name-only "origin/${BASE_REF}...${HEAD_REF}" | tr '\n' ',' | sed 's/,$//')
+          echo "changed_files=${CHANGED_FILES}" >> $GITHUB_OUTPUT
+
+          echo "Diff size: $(wc -l < pr.diff) lines"
+          echo "Changed files: ${CHANGED_FILES}"
+
+      - name: Run Policy Critic
+        id: critic
+        continue-on-error: true  # Don't fail step, we handle exit code below
+        run: |
+          # Run with stderr visible for debugging
+          python3 scripts/run_policy_critic.py \
+            --diff-file pr.diff \
+            --changed-files "${{ steps.diff.outputs.changed_files }}" \
+            --json-only > policy_result.json
+
+          EXIT_CODE=$?
+          echo "exit_code=${EXIT_CODE}" >> $GITHUB_OUTPUT
+
+          # Print what we got (for debugging)
+          echo "=== Policy Critic Output (exit code: ${EXIT_CODE}) ==="
+          cat policy_result.json || echo "(file is empty or missing)"
+          echo "==="
+
+          # Validate JSON
+          if [ ! -s policy_result.json ] || ! jq empty policy_result.json 2>/dev/null; then
+            echo "::warning::Policy Critic output is not valid JSON. Check logs above for errors."
+            # Create fallback JSON
+            echo '{"max_severity": "INFO", "recommended_action": "REVIEW_REQUIRED", "violations": [], "minimum_test_plan": [], "operator_questions": [], "summary": "Policy Critic encountered an error. Manual review required."}' > policy_result.json
+          fi
+
+      - name: Parse results
+        id: parse
+        run: |
+          # Extract key fields from JSON
+          MAX_SEVERITY=$(jq -r '.max_severity // "INFO"' policy_result.json)
+          RECOMMENDED_ACTION=$(jq -r '.recommended_action // "REVIEW_REQUIRED"' policy_result.json)
+          VIOLATION_COUNT=$(jq '.violations | length // 0' policy_result.json)
+          SUMMARY=$(jq -r '.summary // "No summary available"' policy_result.json)
+
+          echo "max_severity=${MAX_SEVERITY}" >> $GITHUB_OUTPUT
+          echo "recommended_action=${RECOMMENDED_ACTION}" >> $GITHUB_OUTPUT
+          echo "violation_count=${VIOLATION_COUNT}" >> $GITHUB_OUTPUT
+          echo "summary=${SUMMARY}" >> $GITHUB_OUTPUT
+
+      - name: Upload results artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: policy-critic-results
+          path: policy_result.json
+          retention-days: 30
+
+      - name: Generate Job Summary
+        run: |
+          echo "# Policy Critic Review" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Max Severity:** ${{ steps.parse.outputs.max_severity }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Recommended Action:** ${{ steps.parse.outputs.recommended_action }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Violations:** ${{ steps.parse.outputs.violation_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Summary:** ${{ steps.parse.outputs.summary }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Add top violations if any
+          if [ "${{ steps.parse.outputs.violation_count }}" -gt "0" ]; then
+            echo "## Violations" >> $GITHUB_STEP_SUMMARY
+            jq -r '.violations[] | "- **[\(.severity)] \(.rule_id):** \(.message)"' policy_result.json | head -5 >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Add test plan if suggested
+          TEST_PLAN_COUNT=$(jq '.minimum_test_plan | length' policy_result.json)
+          if [ "${TEST_PLAN_COUNT}" -gt "0" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "## Minimum Test Plan" >> $GITHUB_STEP_SUMMARY
+            jq -r '.minimum_test_plan[] | "- \(.)"' policy_result.json >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Add operator questions if any
+          QUESTION_COUNT=$(jq '.operator_questions | length' policy_result.json)
+          if [ "${QUESTION_COUNT}" -gt "0" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "## Operator Questions" >> $GITHUB_STEP_SUMMARY
+            jq -r '.operator_questions[] | "- \(.)"' policy_result.json >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check for blocking violations
+        if: steps.critic.outputs.exit_code == '2'
+        run: |
+          echo "::error::Policy Critic detected blocking violations. Auto-apply DENIED."
+          echo "See job summary for details."
+          exit 2
+
+      - name: Success
+        if: steps.critic.outputs.exit_code == '0'
+        run: |
+          echo "✅ Policy Critic review passed"
