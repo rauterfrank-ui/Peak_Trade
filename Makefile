@@ -1,4 +1,4 @@
-.PHONY: todo-board todo-board-check clean clean-all
+.PHONY: todo-board todo-board-check clean clean-all audit audit-tools gc
 
 todo-board:
 	python3 scripts/build_todo_board_html.py
@@ -33,3 +33,46 @@ clean-all: clean
 	@echo ""
 	git clean -fdX
 	@echo "Done. Full cleanup complete."
+
+# ============================================================================
+# Audit Targets
+# ============================================================================
+
+# Run full repository audit (idempotent, safe)
+audit:
+	@echo "Running repository audit..."
+	./scripts/run_audit.sh
+
+# Show install hints for audit tools
+audit-tools:
+	@echo ""
+	@echo "=== Audit Tool Installation ==="
+	@echo ""
+	@echo "macOS (Homebrew):"
+	@echo "  brew install ripgrep"
+	@echo ""
+	@echo "Python tools (pip):"
+	@echo "  pip install ruff black mypy pip-audit bandit"
+	@echo ""
+	@echo "Or install all at once:"
+	@echo "  pip install ruff black mypy pip-audit bandit"
+	@echo ""
+	@echo "GitHub CLI (optional):"
+	@echo "  brew install gh && gh auth login"
+	@echo ""
+
+# Git maintenance (manual confirmation required)
+gc:
+	@echo ""
+	@echo "=== Git Maintenance ==="
+	@echo ""
+	@echo "Before:"
+	@git count-objects -vH
+	@echo ""
+	@echo "Running git gc..."
+	git gc
+	@echo ""
+	@echo "After:"
+	@git count-objects -vH
+	@echo ""
+	@echo "Done. Git objects packed."

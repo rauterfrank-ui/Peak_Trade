@@ -193,6 +193,48 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 ---
 
+## Audit & Tooling
+
+Peak_Trade includes a comprehensive audit system for repository health checks.
+
+### Quick Audit
+
+```bash
+# Run full audit (safe, idempotent)
+make audit
+# or directly:
+./scripts/run_audit.sh
+```
+
+**Output:** `reports/audit/YYYY-MM-DD_HHMM/` with:
+- `summary.json` - Machine-readable results
+- `summary.md` - Human-readable report with status indicators
+- Individual check outputs (pytest, secrets scan, live gating, etc.)
+
+### Install Audit Tools
+
+```bash
+# Show install hints
+make audit-tools
+
+# macOS
+brew install ripgrep
+
+# Python tools
+pip install ruff black mypy pip-audit bandit
+```
+
+### Git Maintenance
+
+```bash
+# Pack loose objects (safe)
+make gc
+```
+
+> **Note:** Audit outputs are stored in `reports/audit/` and are gitignored.
+
+---
+
 ## Safety & Governance
 
 Peak_Trade ist bewusst so gebaut, dass:
