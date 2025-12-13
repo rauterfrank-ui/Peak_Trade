@@ -17,6 +17,11 @@ build/
 venv/
 ENV/
 
+# Linting / Type-Checking Caches
+.mypy_cache/
+.ruff_cache/
+.tox/
+
 # IDEs
 .vscode/
 .idea/
@@ -34,9 +39,13 @@ ENV/
 *.db
 
 # Reports & Visualizations (generierte Artefakte)
-reports/sweeps/
+# Explizit ignoriert: nur generierte/temporäre Report-Ordner
+# NICHT ignoriert: reports/ideas/, reports/portfolio/, reports/sweeps/ (getrackt)
 reports/experiments/
-reports/sweeps/images/
+reports/offline_paper_trade/
+reports/offline_synth/
+reports/r_and_d/
+reports/test_health/
 reports/walkforward/
 reports/monte_carlo/
 reports/stress/
@@ -68,9 +77,8 @@ htmlcov/
 *~
 test_runs/
 
-# Local AI / reports / test artefacts
+# Local AI / test artefacts
 .claude/
-reports/
 test_results/
 
 # Live runs & sessions (generierte Session-Daten)
