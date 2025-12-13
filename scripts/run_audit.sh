@@ -33,6 +33,10 @@ EXIT_CODE_FILE="$AUDIT_DIR/.exit_codes"
 > "$TOOL_STATUS_FILE"
 > "$EXIT_CODE_FILE"
 
+# Findings counters for exit code determination
+FINDINGS_COUNT=0
+HARD_FAIL_COUNT=0
+
 # -----------------------------------------------------------------------------
 # Helper Functions
 # -----------------------------------------------------------------------------
@@ -158,6 +162,7 @@ log "Running secrets scan..."
 SECRETS_FILE="$AUDIT_DIR/08_secrets_scan.txt"
 echo "### Secrets Scan" > "$SECRETS_FILE"
 
+# Pattern for potential secrets (includes env var references)
 SECRETS_PATTERN='(api[_-]?key|secret|token|password|BEGIN (RSA|OPENSSH|EC|PGP) PRIVATE|xox[baprs]-|AKIA[0-9A-Z]{16}|-----BEGIN)'
 
 if [[ "$(get_tool rg)" == "true" ]]; then
@@ -173,6 +178,37 @@ fi
 
 SECRETS_HITS=$(wc -l < "$SECRETS_FILE" | tr -d ' ')
 SECRETS_HITS=$((SECRETS_HITS - 3))  # Subtract header lines
+
+# Hard-fail patterns: REAL secrets (not env var references)
+HARD_FAIL_SECRETS_PATTERN='(AKIA[0-9A-Z]{16}|sk-[a-zA-Z0-9]{20,}|xox[baprs]-[0-9]+-[0-9]+-[a-zA-Z0-9]+|-----BEGIN (RSA|OPENSSH|EC) PRIVATE KEY-----)'
+HARD_FAIL_SECRETS_FILE="$AUDIT_DIR/08_hard_fail_secrets.txt"
+HARD_FAIL_SECRETS_RAW="$AUDIT_DIR/.08_hard_fail_secrets_raw.txt"
+echo "### Hard-Fail Secrets Detection" > "$HARD_FAIL_SECRETS_FILE"
+
+# Scan for real secrets, excluding safe locations
+if [[ "$(get_tool rg)" == "true" ]]; then
+  rg -n --hidden --glob '!.git/*' --glob '!*.pyc' --glob '!reports/*' --glob '!tests/*' --glob '!**/test_*' --glob '!docs/ops/*' -E "$HARD_FAIL_SECRETS_PATTERN" . >> "$HARD_FAIL_SECRETS_RAW" 2>&1 || true
+else
+  grep -rn --include='*.py' --include='*.md' --include='*.toml' --include='*.yaml' --include='*.yml' --include='*.json' \
+    -E "$HARD_FAIL_SECRETS_PATTERN" . 2>/dev/null | grep -v '.git/' | grep -v 'reports/' | grep -v 'tests/' | grep -v 'test_' | grep -v 'docs/ops/' >> "$HARD_FAIL_SECRETS_RAW" || true
+fi
+
+# Filter out known safe patterns (EXAMPLE keys, etc.)
+if [[ -f "$HARD_FAIL_SECRETS_RAW" ]]; then
+  grep -v 'EXAMPLE' "$HARD_FAIL_SECRETS_RAW" >> "$HARD_FAIL_SECRETS_FILE" 2>/dev/null || true
+fi
+
+HARD_SECRETS_HITS=$(wc -l < "$HARD_FAIL_SECRETS_FILE" | tr -d ' ')
+HARD_SECRETS_HITS=$((HARD_SECRETS_HITS - 1))  # Subtract header line
+[[ $HARD_SECRETS_HITS -lt 0 ]] && HARD_SECRETS_HITS=0
+
+if [[ $HARD_SECRETS_HITS -gt 0 ]]; then
+  HARD_FAIL_COUNT=$((HARD_FAIL_COUNT + 1))
+  log "HARD-FAIL: Real secrets detected ($HARD_SECRETS_HITS hits)"
+fi
+
+# Cleanup temp file
+rm -f "$HARD_FAIL_SECRETS_RAW"
 
 # 5) Tests
 if have_cmd python3; then
@@ -205,33 +241,65 @@ GATING_HITS=$(wc -l < "$GATING_FILE" | tr -d ' ')
 GATING_HITS=$((GATING_HITS - 1))
 
 # 8) Linting (optional tools)
+RUFF_EXIT="SKIPPED"
+BLACK_EXIT="SKIPPED"
+MYPY_EXIT="SKIPPED"
+
 if [[ "$(get_tool ruff)" == "true" ]]; then
   run_check "12_ruff" ruff check . --output-format=concise
+  RUFF_EXIT=$(grep "^12_ruff=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
+  if [[ "$RUFF_EXIT" != "0" && "$RUFF_EXIT" != "SKIPPED" ]]; then
+    FINDINGS_COUNT=$((FINDINGS_COUNT + 1))
+    log "FINDING: ruff check failed (exit $RUFF_EXIT)"
+  fi
 else
   skip_check "12_ruff" "ruff not installed (pip install ruff)"
 fi
 
 if [[ "$(get_tool black)" == "true" ]]; then
   run_check "13_black" black --check .
+  BLACK_EXIT=$(grep "^13_black=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
+  if [[ "$BLACK_EXIT" != "0" && "$BLACK_EXIT" != "SKIPPED" ]]; then
+    FINDINGS_COUNT=$((FINDINGS_COUNT + 1))
+    log "FINDING: black check failed (exit $BLACK_EXIT)"
+  fi
 else
   skip_check "13_black" "black not installed (pip install black)"
 fi
 
 if [[ "$(get_tool mypy)" == "true" ]]; then
   run_check "14_mypy" mypy src --ignore-missing-imports
+  MYPY_EXIT=$(grep "^14_mypy=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
+  if [[ "$MYPY_EXIT" != "0" && "$MYPY_EXIT" != "SKIPPED" ]]; then
+    FINDINGS_COUNT=$((FINDINGS_COUNT + 1))
+    log "FINDING: mypy check failed (exit $MYPY_EXIT)"
+  fi
 else
   skip_check "14_mypy" "mypy not installed (pip install mypy)"
 fi
 
 # 9) Security (optional tools)
+PIP_AUDIT_EXIT="SKIPPED"
+BANDIT_EXIT="SKIPPED"
+
 if [[ "$(get_tool pip-audit)" == "true" ]]; then
   run_check "15_pip_audit" pip-audit
+  PIP_AUDIT_EXIT=$(grep "^15_pip_audit=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
+  if [[ "$PIP_AUDIT_EXIT" != "0" && "$PIP_AUDIT_EXIT" != "SKIPPED" ]]; then
+    FINDINGS_COUNT=$((FINDINGS_COUNT + 1))
+    log "FINDING: pip-audit found vulnerabilities (exit $PIP_AUDIT_EXIT)"
+  fi
 else
   skip_check "15_pip_audit" "pip-audit not installed (pip install pip-audit)"
 fi
 
 if [[ "$(get_tool bandit)" == "true" ]]; then
   run_check "16_bandit" bandit -q -r src
+  BANDIT_EXIT=$(grep "^16_bandit=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
+  if [[ "$BANDIT_EXIT" != "0" && "$BANDIT_EXIT" != "SKIPPED" ]]; then
+    FINDINGS_COUNT=$((FINDINGS_COUNT + 1))
+    log "FINDING: bandit found security issues (exit $BANDIT_EXIT)"
+  fi
 else
   skip_check "16_bandit" "bandit not installed (pip install bandit)"
 fi
@@ -257,16 +325,28 @@ COMMIT_SHA=$(git rev-parse HEAD 2>/dev/null || echo "unknown")
 PYTEST_EXIT=$(grep "^09_pytest=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "SKIPPED")
 TODO_EXIT=$(grep "^10_todo_board=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "SKIPPED")
 
+# Check critical tests (pytest = hard fail if present and failing)
+if [[ "$PYTEST_EXIT" != "0" && "$PYTEST_EXIT" != "SKIPPED" ]]; then
+  HARD_FAIL_COUNT=$((HARD_FAIL_COUNT + 1))
+  log "HARD-FAIL: pytest failed (exit $PYTEST_EXIT)"
+fi
+
+# Check todo-board (finding, not hard fail)
+if [[ "$TODO_EXIT" != "0" && "$TODO_EXIT" != "SKIPPED" ]]; then
+  FINDINGS_COUNT=$((FINDINGS_COUNT + 1))
+  log "FINDING: todo-board-check failed (exit $TODO_EXIT)"
+fi
+
 # Determine overall status (needed for both JSON and Markdown)
-if [[ "$PYTEST_EXIT" == "0" ]] && [[ "$TODO_EXIT" == "0" || "$TODO_EXIT" == "SKIPPED" ]]; then
-  OVERALL_STATUS="GREEN"
-  OVERALL_EMOJI="[GREEN]"
-elif [[ "$PYTEST_EXIT" == "SKIPPED" ]]; then
+if [[ $HARD_FAIL_COUNT -gt 0 ]]; then
+  OVERALL_STATUS="RED"
+  OVERALL_EMOJI="[RED]"
+elif [[ $FINDINGS_COUNT -gt 0 ]]; then
   OVERALL_STATUS="YELLOW"
   OVERALL_EMOJI="[YELLOW]"
 else
-  OVERALL_STATUS="RED"
-  OVERALL_EMOJI="[RED]"
+  OVERALL_STATUS="GREEN"
+  OVERALL_EMOJI="[GREEN]"
 fi
 
 # Build JSON manually (portable)
@@ -295,11 +375,19 @@ cat > "$AUDIT_DIR/summary.json" <<EOF
   },
   "exit_codes": {
     "pytest": "$PYTEST_EXIT",
-    "todo_board": "$TODO_EXIT"
+    "todo_board": "$TODO_EXIT",
+    "ruff": "$RUFF_EXIT",
+    "black": "$BLACK_EXIT",
+    "mypy": "$MYPY_EXIT",
+    "pip_audit": "$PIP_AUDIT_EXIT",
+    "bandit": "$BANDIT_EXIT"
   },
   "findings": {
     "secrets_hits": $SECRETS_HITS,
-    "live_gating_hits": $GATING_HITS
+    "hard_secrets_hits": $HARD_SECRETS_HITS,
+    "live_gating_hits": $GATING_HITS,
+    "findings_count": $FINDINGS_COUNT,
+    "hard_fail_count": $HARD_FAIL_COUNT
   },
   "status": {
     "overall": "$OVERALL_STATUS",
@@ -378,32 +466,21 @@ EOF
 # Determine Overall Exit Code
 # -----------------------------------------------------------------------------
 # Exit codes:
-#   0 = All critical checks passed (GREEN)
-#   1 = Warnings/findings but no hard failures (YELLOW)
-#   2 = Critical failure (RED) - failing tests or real secrets found
+#   0 = OK (no findings)
+#   1 = Findings present (linting errors, todo-board issues, etc.)
+#   2 = Hard-Fail (real secrets found OR pytest failed OR script errors)
 
 AUDIT_EXIT_CODE=0
 
-# Critical checks: pytest must pass
-if [[ "$PYTEST_EXIT" != "0" && "$PYTEST_EXIT" != "SKIPPED" ]]; then
+if [[ $HARD_FAIL_COUNT -gt 0 ]]; then
   AUDIT_EXIT_CODE=2
-  log "CRITICAL: pytest failed (exit $PYTEST_EXIT)"
-fi
-
-# Critical checks: todo-board should pass (but less critical than tests)
-if [[ "$TODO_EXIT" != "0" && "$TODO_EXIT" != "SKIPPED" ]]; then
-  if [[ $AUDIT_EXIT_CODE -eq 0 ]]; then
-    AUDIT_EXIT_CODE=1
-    log "WARNING: todo-board-check failed (exit $TODO_EXIT)"
-  fi
-fi
-
-# Critical checks: real secrets detection (heuristic: >10 hits that aren't in tests/)
-if [[ $SECRETS_HITS -gt 50 ]]; then
-  log "WARNING: High number of potential secrets hits ($SECRETS_HITS) - manual review recommended"
-  if [[ $AUDIT_EXIT_CODE -eq 0 ]]; then
-    AUDIT_EXIT_CODE=1
-  fi
+  log "EXIT CODE: 2 (HARD-FAIL: $HARD_FAIL_COUNT issue(s))"
+elif [[ $FINDINGS_COUNT -gt 0 ]]; then
+  AUDIT_EXIT_CODE=1
+  log "EXIT CODE: 1 (FINDINGS: $FINDINGS_COUNT issue(s))"
+else
+  AUDIT_EXIT_CODE=0
+  log "EXIT CODE: 0 (OK: no findings)"
 fi
 
 # -----------------------------------------------------------------------------
@@ -431,22 +508,38 @@ rm -f "$TOOL_STATUS_FILE" "$EXIT_CODE_FILE"
 echo ""
 log "=== Audit Complete ==="
 echo ""
+echo "╔════════════════════════════════════════════════════════════════════════╗"
+if [[ $AUDIT_EXIT_CODE -eq 0 ]]; then
+  echo "║  STATUS: OK - No findings                                             ║"
+elif [[ $AUDIT_EXIT_CODE -eq 1 ]]; then
+  echo "║  STATUS: FINDINGS ($FINDINGS_COUNT issue(s) detected)                            ║"
+else
+  echo "║  STATUS: HARD FAIL ($HARD_FAIL_COUNT critical issue(s))                         ║"
+fi
+echo "╚════════════════════════════════════════════════════════════════════════╝"
+echo ""
+echo "Exit Code: $AUDIT_EXIT_CODE"
+echo "  0 = OK (no findings)"
+echo "  1 = Findings (linting/todo/warnings)"
+echo "  2 = Hard-Fail (real secrets or pytest failure)"
+echo ""
+echo "Findings Summary:"
+echo "  Hard-Fail Count: $HARD_FAIL_COUNT"
+echo "  Findings Count:  $FINDINGS_COUNT"
+echo "  Secrets (potential): $SECRETS_HITS"
+echo "  Secrets (REAL): $HARD_SECRETS_HITS"
+echo ""
 echo "Audit folder: $AUDIT_DIR"
 echo "Latest link:  $LATEST_LINK -> $TIMESTAMP"
 echo ""
-echo "Summary:"
-echo "   Status: $OVERALL_EMOJI $OVERALL_STATUS"
-echo "   pytest: $PYTEST_EXIT"
-echo "   todo-board: $TODO_EXIT"
-echo "   Exit code: $AUDIT_EXIT_CODE"
-echo ""
 echo "Key files:"
-echo "   $AUDIT_DIR/summary.json"
+echo "   $AUDIT_DIR/summary.json (machine-readable)"
 echo "   $AUDIT_DIR/summary.md"
-echo "   $LATEST_LINK/summary.json (machine-readable)"
+echo "   $LATEST_LINK/summary.json"
 echo ""
 echo "View summary:"
 echo "   cat $AUDIT_DIR/summary.md"
+echo "   jq . $LATEST_LINK/summary.json"
 echo ""
 
 # Safety reminders (never auto-execute)
