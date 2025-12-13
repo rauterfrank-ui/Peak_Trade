@@ -901,6 +901,14 @@ python3 scripts/build_todo_board_html.py
 
 Öffne dann `docs/00_overview/PEAK_TRADE_TODO_BOARD.html` in deinem Browser.
 
+### Operator Quick Commands
+
+```bash
+make todo-board                # Generiere TODO Board
+make todo-board-check          # Validierung (Idempotenz + Tests)
+./scripts/check_todo_board_ci.sh  # CI Guard direkt
+```
+
 ## Features
 
 - 3-spaltige Kanban-Ansicht (TODO, DOING, DONE)
