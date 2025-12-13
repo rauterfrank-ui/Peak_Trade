@@ -245,36 +245,37 @@ def github_link(repo_web: Optional[str], branch: str, it: TodoItem) -> Optional[
 
 def cursor_link(repo_root: Optional[Path], it: TodoItem) -> Optional[str]:
     """
-    Cursor link mit Zeilen-Support.
+    Cursor link mit Zeilen-Support - PATH INDEPENDENT.
     Priorität: hint_ref > hint_path (+ hint_line) > repo_root
-    Format: cursor://file/<ABS_PATH>:line:col
+    Format: cursor://file/__REPO_ROOT__/<REL_PATH>:line:col
+    The __REPO_ROOT__ placeholder will be replaced by the actual repo root path
+    when the HTML is opened (via JavaScript injection or similar mechanism).
     """
     if not repo_root:
         return None
+
+    # Use a placeholder for repo root to maintain path independence
+    repo_placeholder = "__REPO_ROOT__"
 
     # hint_ref: "path/file.py:120"
     if it.hint_ref:
         ref = it.hint_ref.strip().lstrip("/")
         if ":" in ref:
             fpath, line = ref.split(":", 1)
-            abs_path = (repo_root / fpath).resolve()
-            # Cursor format: cursor://file/path:line:col
-            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:{line}:1"
+            # Use relative path with placeholder
+            return f"cursor://file/{repo_placeholder}/{fpath}:{line}:1"
         else:
-            abs_path = (repo_root / ref).resolve()
-            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
+            return f"cursor://file/{repo_placeholder}/{ref}:1:1"
 
     # hint_path + optional hint_line
     if it.hint_path:
         p = it.hint_path.strip().lstrip("/")
-        abs_path = (repo_root / p).resolve()
         if it.hint_line:
-            return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:{it.hint_line}:1"
-        return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
+            return f"cursor://file/{repo_placeholder}/{p}:{it.hint_line}:1"
+        return f"cursor://file/{repo_placeholder}/{p}:1:1"
 
     # fallback: repo root
-    abs_path = repo_root.resolve()
-    return f"cursor://file/{urllib.parse.quote(str(abs_path), safe='/:')}:1:1"
+    return f"cursor://file/{repo_placeholder}:1:1"
 
 
 def build_work_prompt(it: TodoItem) -> str:
@@ -303,14 +304,17 @@ def build_work_prompt(it: TodoItem) -> str:
 
 def claude_code_command(repo_root: Optional[Path], it: TodoItem) -> Optional[str]:
     """
-    Claude Code startet mit initial prompt:
-      claude "query"
+    Claude Code startet mit initial prompt - PATH INDEPENDENT:
+      cd __REPO_ROOT__ && claude "query"
+    The __REPO_ROOT__ placeholder will be replaced by the actual repo root path
+    when the command is copied (via JavaScript).
     """
     if not repo_root:
         return None
 
     prompt = build_work_prompt(it).replace("\n", " ").strip()
-    return f'cd {shlex.quote(str(repo_root.resolve()))} && claude {shlex.quote(prompt)}'
+    # Use placeholder for repo root to maintain path independence
+    return f'cd __REPO_ROOT__ && claude {shlex.quote(prompt)}'
 
 
 # -------------------------
@@ -318,7 +322,11 @@ def claude_code_command(repo_root: Optional[Path], it: TodoItem) -> Optional[str
 # -------------------------
 def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path], repo_web: Optional[str], branch: str) -> str:
     marker = get_deterministic_marker(source_md)
-    src_rel = str(source_md).replace("\\", "/")
+    # Make source path relative to repo root for path independence
+    try:
+        src_rel = str(source_md.relative_to(repo_root)).replace("\\", "/")
+    except (ValueError, AttributeError):
+        src_rel = str(source_md).replace("\\", "/")
 
     cards = []
     for it in items:

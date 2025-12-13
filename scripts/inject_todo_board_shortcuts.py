@@ -1,10 +1,26 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 from pathlib import Path
+import subprocess
 import sys
 
 MARKER_START = "<!-- PT_AUTH_SHORTCUT v1 START -->"
 MARKER_END   = "<!-- PT_AUTH_SHORTCUT v1 END -->"
+
+def get_repo_root() -> str:
+    """Get the git repo root path, or current directory if not in a git repo."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except Exception:
+        pass
+    return str(Path.cwd())
 
 INJECT_BLOCK = f"""
 {MARKER_START}
@@ -67,6 +83,45 @@ INJECT_BLOCK = f"""
     auth_reset.sh
   </a>
 </div>
+
+<script>
+// Replace __REPO_ROOT__ placeholder with actual repo root at runtime
+(function() {{
+  // Detect repo root from current HTML file location
+  const htmlPath = window.location.pathname;
+  // Assuming HTML is at docs/00_overview/PEAK_TRADE_TODO_BOARD.html
+  // Go up 2 levels to reach repo root
+  const pathParts = htmlPath.split('/').filter(p => p);
+  const repoRootParts = pathParts.slice(0, -2); // Remove 'docs/00_overview'
+  const repoRoot = '/' + repoRootParts.join('/');
+
+  // For file:// protocol, extract the full path
+  let actualRepoRoot = repoRoot;
+  if (window.location.protocol === 'file:') {{
+    // Extract full path from file:// URL
+    actualRepoRoot = decodeURIComponent(window.location.pathname)
+      .split('/')
+      .slice(0, -2)  // Remove '/docs/00_overview'
+      .join('/');
+    // Handle Windows paths
+    if (actualRepoRoot.match(/^\/[A-Z]:/)) {{
+      actualRepoRoot = actualRepoRoot.substring(1); // Remove leading / from /C:/...
+    }}
+  }}
+
+  // Replace __REPO_ROOT__ in CARDS data
+  if (typeof CARDS !== 'undefined') {{
+    CARDS.forEach(card => {{
+      if (card.cursor && card.cursor.includes('__REPO_ROOT__')) {{
+        card.cursor = card.cursor.replace(/__REPO_ROOT__/g, actualRepoRoot);
+      }}
+      if (card.claude_cmd && card.claude_cmd.includes('__REPO_ROOT__')) {{
+        card.claude_cmd = card.claude_cmd.replace(/__REPO_ROOT__/g, actualRepoRoot);
+      }}
+    }});
+  }}
+}})();
+</script>
 {MARKER_END}
 """.lstrip("\n")
 
