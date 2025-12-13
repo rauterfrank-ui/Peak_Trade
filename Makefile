@@ -1,10 +1,4 @@
-.PHONY: todo-board todo-board-check clean clean-all audit audit-tools gc
-
-todo-board:
-	python3 scripts/build_todo_board_html.py
-
-todo-board-check:
-	./scripts/check_todo_board_ci.sh
+.PHONY: clean clean-all audit audit-tools gc
 
 # ============================================================================
 # Cleanup Targets
