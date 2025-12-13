@@ -1,0 +1,43 @@
+name: Audit
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC (adjust as needed)
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install (minimal)
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run audit
+        env:
+          # Avoid accidental tooling failures if script expects these to exist
+          OPENAI_API_KEY: "DUMMY_CI_VALUE"
+          LIVE_CONFIRM_TOKEN: "DUMMY_CI_VALUE"
+        run: |
+          chmod +x scripts/run_audit.sh
+          ./scripts/run_audit.sh
+
+      - name: Upload audit artifacts (best-effort)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-artifacts
+          path: |
+            reports/audit/**
+            docs/ops/AUDIT_VALIDATION_NOTES.md
+          if-no-files-found: warn
