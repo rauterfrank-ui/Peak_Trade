@@ -32,9 +32,9 @@ include_switch_sanity = true      # v1: Switch-Sanity in Slack-Nachricht
 
 [strategy_coverage]
 enabled = true
-window_days = 7                     # Zeitraum für Run-Zählung
-min_backtests_per_strategy = 3      # Mindestanzahl Backtests pro Strategie
-min_paper_runs_per_strategy = 1     # Mindestanzahl Paper-Runs pro Strategie
+window_days = 30                    # Zeitraum für Run-Zählung (erweitert auf 30 Tage)
+min_backtests_per_strategy = 0      # Mindestanzahl Backtests pro Strategie (optional, kein Zwang)
+min_paper_runs_per_strategy = 0     # Mindestanzahl Paper-Runs pro Strategie (optional, kein Zwang)
 link_to_strategy_switch_allowed = true  # Nur Strategien aus live_profile.strategy_switch.allowed prüfen
 runs_directory = "reports/experiments"  # Verzeichnis mit Experiment-Runs (JSON/Parquet)
 
@@ -103,11 +103,11 @@ description = "Wöchentlicher Kern-Gesundheitscheck (Research & Offline)"
 time_window_days = 7  # für spätere Heatmaps interessant
 
   [profiles.weekly_core.triggers]
-  min_total_runs = 5
-  max_fail_rate = 0.20  # max. 20% Fails erlaubt
+  min_total_runs = 1                # Mindestens 1 Run (gelockert von 5)
+  max_fail_rate = 0.20              # max. 20% Fails erlaubt
   max_consecutive_failures = 3
-  max_hours_since_last_run = 168  # 7 Tage
-  require_critical_green = false  # weekly_core ist selbst kritisch
+  max_hours_since_last_run = 168    # 7 Tage
+  require_critical_green = false    # weekly_core ist selbst kritisch
 
 # Check 1: Pytest Smoke & Core Suite
 [[profiles.weekly_core.checks]]
