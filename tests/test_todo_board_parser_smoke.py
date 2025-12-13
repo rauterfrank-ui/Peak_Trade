@@ -7,6 +7,42 @@ import sys
 import urllib.parse
 from pathlib import Path
 
+import pytest
+
+# --- TODO BOARD AUTO-REGEN FIXTURE ---
+def _find_repo_root(start: Path) -> Path:
+    """Robust repo-root detection without relying on git.
+    We look for pyproject.toml + the todo board generator script.
+    """
+    for p in (start, *start.parents):
+        if (p / "pyproject.toml").exists() and (p / "scripts" / "build_todo_board_html.py").exists():
+            return p
+    raise RuntimeError("Could not locate repo root (pyproject.toml + scripts/build_todo_board_html.py not found)")
+
+
+@pytest.fixture(scope="module", autouse=True)
+def _regen_todo_board_html_once():
+    """Generate the TODO board HTML before running assertions (CI-safe)."""
+    repo_root = _find_repo_root(Path(__file__).resolve())
+    script = repo_root / "scripts" / "build_todo_board_html.py"
+    assert script.exists(), f"TODO board generator script not found: {script}"
+
+    res = subprocess.run(
+        [sys.executable, str(script)],
+        cwd=str(repo_root),
+        capture_output=True,
+        text=True,
+    )
+    assert res.returncode == 0, (
+        "TODO board generator failed.\n"
+        f"cmd: {sys.executable} {script}\n"
+        f"cwd: {repo_root}\n"
+        f"stdout:\n{res.stdout}\n"
+        f"stderr:\n{res.stderr}\n"
+    )
+# --- TODO BOARD AUTO-REGEN FIXTURE --- END
+
+
 
 def _git_repo_root() -> Path:
     """Return repo root in a worktree-safe way."""
