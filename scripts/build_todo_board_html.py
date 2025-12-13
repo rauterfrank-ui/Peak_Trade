@@ -17,6 +17,27 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 
+# --- ZERO-DIFF WRITE GUARD (AUTO) ---
+def _write_text_if_changed(path: Path, content: str, encoding: str = "utf-8") -> bool:
+    """Write only if file content differs. Returns True if written."""
+    try:
+        if path.exists():
+            try:
+                old = path.read_text(encoding=encoding)
+            except Exception:
+                old = None  # unreadable -> treat as changed
+            if old is not None and old == content:
+                return False
+    except Exception:
+        # If any FS weirdness occurs, fall back to writing (safe default)
+        pass
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding=encoding)
+    return True
+# --- ZERO-DIFF WRITE GUARD (AUTO) --- END
+
+
 # -------------------------
 # Encoding helpers (robust UTF-16/BOM support)
 # -------------------------
@@ -861,16 +882,14 @@ def main() -> int:
     branch = args.branch or detect_default_branch("main")
 
     out_html = repo_root / args.out_html
-    out_html.parent.mkdir(parents=True, exist_ok=True)
     html_doc = render_html(items, source, repo_root, repo_web, branch)
-    out_html.write_text(html_doc, encoding="utf-8")
+    _write_text_if_changed(out_html, html_doc, encoding="utf-8")
 
     # Generate deterministic marker for README
     marker = get_deterministic_marker(source)
 
     out_readme = repo_root / args.out_readme
-    out_readme.parent.mkdir(parents=True, exist_ok=True)
-    out_readme.write_text(f"""# Peak_Trade – TODO Board
+    readme_content = f"""# Peak_Trade – TODO Board
 
 Dieses TODO Board wird automatisch aus einer Markdown-TODO-Datei generiert.
 
@@ -934,7 +953,8 @@ Override mit `--source-md`.
 
 **Generated:** {marker}
 **Output:** `{out_html.relative_to(repo_root)}`
-""", encoding="utf-8")
+"""
+    _write_text_if_changed(out_readme, readme_content, encoding="utf-8")
 
     print(f"✅ TODO Board erstellt:")
     print(f"   HTML:   {out_html.relative_to(repo_root)}")
