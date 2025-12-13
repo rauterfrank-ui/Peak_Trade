@@ -10,10 +10,76 @@ import re
 import shlex
 import subprocess
 import sys
+import unicodedata
 import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Tuple
+
+
+# -------------------------
+# Encoding helpers (robust UTF-16/BOM support)
+# -------------------------
+def read_text_smart(path: Path) -> str:
+    """
+    Robustly read text files with automatic encoding detection.
+
+    Handles:
+    - UTF-16 BOM (FF FE / FE FF)
+    - UTF-16LE/BE detection via NUL byte heuristic
+    - UTF-8 with fallback to replace mode
+    - Control character cleanup (except \n and \t)
+
+    Args:
+        path: Path to the file to read
+
+    Returns:
+        Cleaned text content as str
+    """
+    b = path.read_bytes()
+    head = b[:4096] if len(b) >= 4096 else b
+    nul_count = head.count(b"\x00")
+
+    enc = "utf-8"
+
+    # Check for BOM
+    if b.startswith(b"\xff\xfe"):
+        enc = "utf-16le"
+    elif b.startswith(b"\xfe\xff"):
+        enc = "utf-16be"
+    elif b.startswith(b"\xff\xfe\x00\x00"):
+        enc = "utf-32le"
+    elif b.startswith(b"\x00\x00\xfe\xff"):
+        enc = "utf-32be"
+    elif nul_count > 0:
+        # Heuristic: UTF-16LE often has NUL bytes in odd positions for ASCII text
+        if len(head) > 1:
+            odd_nul = head[1::2].count(0)
+            even_nul = head[0::2].count(0)
+            if odd_nul > even_nul:
+                enc = "utf-16le"
+            elif even_nul > odd_nul:
+                enc = "utf-16be"
+
+    # Try decoding
+    try:
+        txt = b.decode(enc)
+    except (UnicodeDecodeError, LookupError):
+        # Fallback: UTF-8 with replace
+        txt = b.decode("utf-8", errors="replace")
+
+    # Remove BOM if present
+    if txt.startswith('\ufeff'):
+        txt = txt[1:]
+
+    # Remove control characters except \n (0x0A) and \t (0x09)
+    # This prevents issues like DC3 (0x13) appearing in output
+    cleaned = "".join(
+        ch for ch in txt
+        if ch == "\n" or ch == "\t" or unicodedata.category(ch) != "Cc"
+    )
+
+    return cleaned
 
 
 # -------------------------
@@ -345,7 +411,7 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
             "claude_cmd": claude_code_command(repo_root, it),
         })
 
-    cards_json = json.dumps(cards, ensure_ascii=False)
+    cards_json = json.dumps(cards, ensure_ascii=False, indent=None)
 
     def esc(s: str) -> str:
         return html.escape(s, quote=True)
@@ -528,6 +594,37 @@ def render_html(items: List[TodoItem], source_md: Path, repo_root: Optional[Path
   <div id="toast" class="toast"></div>
 
 <script>
+// Replace __REPO_ROOT__ placeholder with actual repo root at runtime
+(function() {{
+  // Get the actual repo root from the HTML file's location
+  let actualRepoRoot = "";
+
+  if (window.location.protocol === "file:") {{
+    let pathname = decodeURIComponent(window.location.pathname);
+
+    // Windows file:// URLs may have leading slash before drive letter (e.g., /C:/...)
+    if (pathname.match(/^\/[A-Z]:\//)) {{
+      pathname = pathname.substring(1);
+    }}
+
+    // Strip marker: file is under docs/00_overview/<filename>
+    const marker = "/docs/00_overview/";
+    const markerIdx = pathname.indexOf(marker);
+
+    if (markerIdx !== -1) {{
+      // Extract repo root: everything before the marker
+      actualRepoRoot = pathname.substring(0, markerIdx);
+    }} else {{
+      // Fallback: assume file is 3 levels deep from repo root
+      const parts = pathname.split("/");
+      actualRepoRoot = parts.slice(0, -3).join("/");
+    }}
+  }}
+
+  // Replace __REPO_ROOT__ in all CARDS cursor and claude_cmd fields
+  window.__ACTUAL_REPO_ROOT__ = actualRepoRoot;
+}})();
+
 const CARDS = {cards_json};
 
 const COLS = [
@@ -676,11 +773,13 @@ function render(q) {{
       btnCU.className = "btn";
       btnCU.textContent = "🧠 Cursor";
       if (c.cursor) {{
-        btnCU.href = c.cursor;
+        // Replace __REPO_ROOT__ placeholder with actual path at runtime
+        const cursorUrl = c.cursor.replace(/__REPO_ROOT__/g, window.__ACTUAL_REPO_ROOT__ || "");
+        btnCU.href = cursorUrl;
         btnCU.onclick = async (ev) => {{
           const ok = await copyToClipboard(c.prompt || "");
           const hasLine = c.hint_ref && c.hint_ref.includes(":") || c.hint_line;
-          const msg = ok 
+          const msg = ok
             ? (hasLine ? "Cursor-Prompt kopiert — Cursor springt zu Zeile…" : "Cursor-Prompt kopiert — Cursor öffnet…")
             : "Konnte Prompt nicht kopieren (Clipboard)";
           showToast(msg);
@@ -700,7 +799,9 @@ function render(q) {{
         btnCC.href = "#";
         btnCC.onclick = async (ev) => {{
           ev.preventDefault();
-          const ok = await copyToClipboard(c.claude_cmd);
+          // Replace __REPO_ROOT__ placeholder with actual path at runtime
+          const claudeCmd = c.claude_cmd.replace(/__REPO_ROOT__/g, window.__ACTUAL_REPO_ROOT__ || "");
+          const ok = await copyToClipboard(claudeCmd);
           showToast(ok ? "Claude Code Kommando kopiert — im Terminal einfügen & Enter" : "Konnte Kommando nicht kopieren (Clipboard)");
         }};
         btnCC.title = "Kopiert: cd … && claude \"…\" (ins Terminal pasten)";
@@ -752,7 +853,7 @@ def main() -> int:
     if not source.exists():
         raise SystemExit(f"❌ Source not found: {source}")
 
-    md = source.read_text(encoding="utf-8", errors="replace")
+    md = read_text_smart(source)
     items = parse_todos(md)
 
     origin = detect_origin_url()
