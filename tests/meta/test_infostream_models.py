@@ -43,7 +43,7 @@ class TestIntelEvent:
     def test_auto_generated_id(self) -> None:
         """Test: event_id wird automatisch generiert."""
         event = IntelEvent(source="TEST")
-        assert event.event_id.startswith("intel_")
+        assert event.event_id.startswith("INF_")
         assert len(event.event_id) > 10
 
     def test_auto_generated_timestamp(self) -> None:
