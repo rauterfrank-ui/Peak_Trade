@@ -86,3 +86,6 @@ live_runs/
 
 # Temporary test artifacts (Policy Critic cycles, etc.)
 tmp/
+
+# Local audit outputs
+reports/audit/
