@@ -165,24 +165,21 @@ def detect_default_branch(fallback: str = "main") -> str:
 
 def get_deterministic_marker(source_file: Path) -> str:
     """
-    Get a deterministic marker based on the source file's git history.
-    Returns format: "YYYY-MM-DD HH:MM:SS [sha7]"
-    Falls back to current timestamp if git info unavailable.
+    Get a deterministic marker based on the source file's content hash.
+    Returns format: "content-hash:[sha256:8]"
+    This ensures the marker only changes when the source content changes,
+    not when git history changes (commits, merges, etc.).
     """
-    rc, out = _run_git(["log", "-1", "--format=%ct %h", "--", str(source_file)])
-    if rc == 0 and out:
-        parts = out.split()
-        if len(parts) == 2:
-            timestamp_str, sha_short = parts
-            try:
-                timestamp = int(timestamp_str)
-                dt_obj = dt.datetime.fromtimestamp(timestamp)
-                return f"{dt_obj.strftime('%Y-%m-%d %H:%M:%S')} [{sha_short}]"
-            except (ValueError, OSError):
-                pass
+    import hashlib
 
-    # Fallback to current time (non-deterministic)
-    return dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    try:
+        content = source_file.read_bytes()
+        hash_obj = hashlib.sha256(content)
+        hash_short = hash_obj.hexdigest()[:8]
+        return f"content-hash:[{hash_short}]"
+    except (OSError, IOError):
+        # Fallback if file can't be read
+        return "content-hash:[unknown]"
 
 
 # -------------------------

@@ -68,5 +68,5 @@ Override mit `--source-md`.
 
 ---
 
-**Generated:** 2025-12-13 01:45:20 [381934b]
+**Generated:** content-hash:[6f36d561]
 **Output:** `docs/00_overview/PEAK_TRADE_TODO_BOARD.html`
