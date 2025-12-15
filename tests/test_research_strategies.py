@@ -54,8 +54,12 @@ class TestArmstrongCycleStrategy:
         assert strategy.event_window_days == 90
         assert "RESEARCH" in strategy.meta.description.upper()
 
-    def test_armstrong_generate_signals_returns_flat(self):
-        """Test: Armstrong generate_signals gibt Flat-Signal (Research-Stub)."""
+    def test_armstrong_generate_signals_returns_valid_signals(self):
+        """Test: Armstrong generate_signals gibt valide Signale zurück.
+
+        Nach R&D-Refactoring: Die Strategie generiert echte Signale
+        basierend auf dem Phase-Position-Mapping, nicht mehr nur Flat-Signale.
+        """
         from src.strategies.armstrong import ArmstrongCycleStrategy
 
         strategy = ArmstrongCycleStrategy()
@@ -75,10 +79,12 @@ class TestArmstrongCycleStrategy:
 
         signals = strategy.generate_signals(data)
 
-        # Research-Stub: Alle Signale sollten 0 (flat) sein
+        # Validierung: Signale sind valide (-1, 0, 1)
         assert isinstance(signals, pd.Series)
         assert len(signals) == len(data)
-        assert (signals == 0).all(), "Research-Stub sollte nur Flat-Signale liefern"
+        # Signale sollten nur -1, 0, 1 enthalten
+        unique_values = set(signals.unique())
+        assert unique_values.issubset({-1, 0, 1}), f"Ungültige Signale: {unique_values}"
 
     def test_armstrong_cycle_info(self):
         """Test: get_cycle_info gibt valide Informationen zurück."""
@@ -89,20 +95,24 @@ class TestArmstrongCycleStrategy:
 
         info = strategy.get_cycle_info(test_date)
 
-        assert "cycle_phase" in info
-        assert "is_near_turning_point" in info
+        # Aktualisierte Keys nach R&D-Refactoring:
+        # - cycle_phase → cycle_position
+        # - is_near_turning_point entfernt (nicht mehr in cycle_model)
+        # - phase & phase_name hinzugefügt
+        assert "cycle_position" in info
+        assert "phase" in info
         assert "next_turning_point" in info
-        assert 0 <= info["cycle_phase"] <= 1
-        assert isinstance(info["is_near_turning_point"], bool)
+        assert 0 <= info["cycle_position"] <= 1
 
     def test_armstrong_repr_shows_research_only(self):
-        """Test: __repr__ zeigt RESEARCH-ONLY an."""
+        """Test: __repr__ zeigt R&D-ONLY an (nach Refactoring)."""
         from src.strategies.armstrong import ArmstrongCycleStrategy
 
         strategy = ArmstrongCycleStrategy()
         repr_str = repr(strategy)
 
-        assert "RESEARCH-ONLY" in repr_str
+        # Aktualisiert nach R&D-Refactoring: "RESEARCH-ONLY" → "R&D-ONLY"
+        assert "R&D-ONLY" in repr_str
 
 
 class TestElKarouiVolModelStrategy:
@@ -113,7 +123,7 @@ class TestElKarouiVolModelStrategy:
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
 
         assert ElKarouiVolModelStrategy is not None
-        assert ElKarouiVolModelStrategy.KEY == "el_karoui_vol_model"
+        assert ElKarouiVolModelStrategy.KEY == "el_karoui_vol_v1"
 
     def test_el_karoui_is_research_only(self):
         """Test: El-Karoui ist als Research-Only markiert."""
@@ -132,12 +142,12 @@ class TestElKarouiVolModelStrategy:
 
         assert strategy is not None
         assert strategy.vol_window == 20
-        assert 0 < strategy.vol_threshold_low < 1
-        assert 0 < strategy.vol_threshold_high < 1
+        assert 0 < strategy.low_threshold < 1
+        assert 0 < strategy.high_threshold < 1
         assert "RESEARCH" in strategy.meta.description.upper()
 
     def test_el_karoui_generate_signals_returns_flat(self):
-        """Test: El-Karoui generate_signals gibt Flat-Signal (Research-Stub)."""
+        """Test: El-Karoui generate_signals gibt valide Signale."""
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
 
         strategy = ElKarouiVolModelStrategy()
@@ -157,14 +167,15 @@ class TestElKarouiVolModelStrategy:
 
         signals = strategy.generate_signals(data)
 
-        # Research-Stub: Alle Signale sollten 0 (flat) sein
+        # Signale sollten valide sein
         assert isinstance(signals, pd.Series)
         assert len(signals) == len(data)
-        assert (signals == 0).all(), "Research-Stub sollte nur Flat-Signale liefern"
+        assert signals.isin([0, 1]).all(), "Signale sollten 0 (flat) oder 1 (long) sein"
 
     def test_el_karoui_vol_analysis(self):
         """Test: get_vol_analysis gibt valide Analyse zurück."""
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
+        from src.strategies.el_karoui.vol_model import VolRegime
 
         strategy = ElKarouiVolModelStrategy()
 
@@ -180,18 +191,18 @@ class TestElKarouiVolModelStrategy:
         analysis = strategy.get_vol_analysis(data)
 
         assert "current_vol" in analysis
-        assert "vol_regime" in analysis
+        assert "regime" in analysis
         assert "vol_percentile" in analysis
-        assert analysis["vol_regime"] in {"low", "normal", "high"}
+        assert analysis["regime"] in {VolRegime.LOW, VolRegime.MEDIUM, VolRegime.HIGH}
 
     def test_el_karoui_repr_shows_research_only(self):
-        """Test: __repr__ zeigt RESEARCH-ONLY an."""
+        """Test: __repr__ zeigt R&D-ONLY an."""
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
 
         strategy = ElKarouiVolModelStrategy()
         repr_str = repr(strategy)
 
-        assert "RESEARCH-ONLY" in repr_str
+        assert "R&D-ONLY" in repr_str
 
 
 # =============================================================================

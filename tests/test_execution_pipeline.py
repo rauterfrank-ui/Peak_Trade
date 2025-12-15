@@ -109,8 +109,8 @@ class TestExecutionPipelineWithSafety:
     """Tests für execute_with_safety() Methode."""
 
     def test_execution_pipeline_blocks_live_mode(self):
-        """execute_with_safety() blockiert LIVE-Mode hart (Phase 16A)."""
-        from src.execution import ExecutionPipeline
+        """execute_with_safety() blockiert LIVE-Mode hart (Phase 16A V2: via Governance)."""
+        from src.execution import ExecutionPipeline, ExecutionStatus
         from src.core.environment import EnvironmentConfig, TradingEnvironment
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
         from src.orders.base import OrderRequest
@@ -132,7 +132,9 @@ class TestExecutionPipelineWithSafety:
         # Executor sollte NICHT aufgerufen worden sein
         assert result.rejected is True
         assert len(result.executed_orders) == 0
-        assert result.reason == "live_mode_not_supported_in_phase_16a"
+        # Phase 16A V2: Governance-Block kommt zuerst
+        assert result.status == ExecutionStatus.BLOCKED_BY_GOVERNANCE
+        assert "governance" in result.reason.lower() or "locked" in result.reason.lower()
 
     def test_execution_pipeline_runs_safety_and_blocks_on_violation(self):
         """execute_with_safety() blockiert bei SafetyGuard-Verletzung."""
