@@ -127,7 +127,75 @@ cat policy_result.json | jq '.'
 
 ---
 
-## H) Telemetry Analysis Commands
+## H) Automation Helpers (Recommended)
+
+### Quick Start: Record a PR with Automation
+
+Instead of manual copy/paste, use the automation scripts:
+
+```bash
+# Record PR telemetry automatically
+python scripts/governance/g4_record_pr_telemetry.py --pr 123
+
+# Open PR in browser while recording
+python scripts/governance/g4_record_pr_telemetry.py --pr 123 --open
+
+# Use custom date
+python scripts/governance/g4_record_pr_telemetry.py --pr 123 --date 2025-12-01
+```
+
+**What it does:**
+- Fetches PR metadata from GitHub CLI (`gh pr view`)
+- Fetches checks status (`gh pr checks`)
+- Appends a pre-filled markdown template to `POLICY_CRITIC_TELEMETRY_G4.md`
+- You only need to fill in: Result, Severity, Rules, Classification, Actions, Notes
+
+**After running:**
+1. Edit `docs/governance/POLICY_CRITIC_TELEMETRY_G4.md`
+2. Fill in the placeholder fields marked `_FILL IN: ..._`
+3. Commit: `git add docs/governance/POLICY_CRITIC_TELEMETRY_G4.md && git commit -m "docs(governance): add G4 telemetry for PR #123"`
+
+### Analyze All Telemetry: Rollup Statistics
+
+After logging 5+ PRs, generate summary statistics:
+
+```bash
+# Display rollup to stdout
+python scripts/governance/g4_rollup_telemetry.py
+
+# Write rollup to file
+python scripts/governance/g4_rollup_telemetry.py --out docs/governance/POLICY_CRITIC_G4_ROLLUP.md
+```
+
+**What it computes:**
+- Total PRs logged
+- False Positive Rate (two variants: with/without NEEDS_REVIEW)
+- Real BLOCKs observed
+- Results breakdown (PASS/WARN/BLOCK counts)
+- Classification breakdown (TP/FP/MIXED/NEEDS_REVIEW)
+- Top triggered rules with frequencies
+- G4 exit criteria progress (10-20 PRs, FP < 10%, 1+ BLOCK)
+- Actionable recommendations
+
+### Script Requirements
+
+Both scripts require:
+- Python 3.7+ (stdlib only, no external dependencies)
+- GitHub CLI (`gh`) installed and authenticated
+- Run from repository root directory
+
+**Setup GitHub CLI:**
+```bash
+# Install (macOS)
+brew install gh
+
+# Authenticate
+gh auth login
+```
+
+---
+
+## I) Telemetry Analysis Commands (Manual)
 
 ### Count PRs by result
 ```bash
@@ -146,7 +214,7 @@ grep -E "^\s+- [A-Z_]+ \(" docs/governance/POLICY_CRITIC_TELEMETRY_G4.md | sed '
 
 ---
 
-## I) Batch Analysis (After 10+ PRs)
+## J) Batch Analysis (After 10+ PRs)
 
 ```bash
 cd docs/governance
@@ -173,7 +241,7 @@ echo "%"
 
 ---
 
-## J) Example Telemetry Entry (Reference)
+## K) Example Telemetry Entry (Reference)
 
 ```md
 ## PR #42 — 2025-12-15
