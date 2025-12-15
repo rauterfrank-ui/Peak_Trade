@@ -160,6 +160,12 @@ git clean -fdX
 
 ---
 
+## Audit Logs (Ops)
+
+- PR #45 – CI Fast Lane Verification Log: `docs/ops/PR_45_FINAL_REPORT.md`
+
+---
+
 ## Related Documentation
 
 - `scripts/run_audit.sh` - Audit script implementation
