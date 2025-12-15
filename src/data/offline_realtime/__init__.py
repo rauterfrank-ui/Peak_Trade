@@ -1,0 +1,36 @@
+"""
+Peak_Trade Offline Realtime Module
+===================================
+Synthetische Tick-Generierung für Offline-Simulation und Backtesting.
+
+WICHTIG: Dieses Modul ist NUR für Offline-Simulation gedacht!
+         Niemals für Live-Trading verwenden.
+
+Enthält:
+    - GARCH(1,1) + Markov-Regime-Switching Modell
+    - OfflineRealtimeFeedV0: Synthetischer Tick-Generator
+
+Alle generierten Ticks tragen is_synthetic=True.
+"""
+
+from .offline_realtime_feed_v0 import (
+    SyntheticTick,
+    RegimeParams,
+    OfflineRealtimeFeedV0Config,
+    OfflineRealtimeFeedV0,
+)
+from .synthetic_models.garch_regime_v0 import (
+    GarchRegimeModelV0,
+    GarchRegimeState,
+)
+
+__all__ = [
+    # Feed
+    "SyntheticTick",
+    "RegimeParams",
+    "OfflineRealtimeFeedV0Config",
+    "OfflineRealtimeFeedV0",
+    # Model
+    "GarchRegimeModelV0",
+    "GarchRegimeState",
+]
