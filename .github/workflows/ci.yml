@@ -6,9 +6,14 @@ on:
   pull_request:
     branches: ["main", "master"]
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     strategy:
       matrix:
@@ -64,6 +69,7 @@ jobs:
   # ============================================================================
   strategy-smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: tests  # Run after main tests pass
 
     steps:
