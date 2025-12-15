@@ -13,12 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ${{ fromJSON(
-          (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' ||
-           (github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master')))
-          && '["3.9","3.10","3.11"]'
-          || '["3.11"]'
-        ) }}
+        python-version: ${{ fromJSON((github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master'))) && '["3.9","3.10","3.11"]' || '["3.11"]') }}
 
     steps:
       - name: Checkout
