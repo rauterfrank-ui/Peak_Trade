@@ -172,6 +172,79 @@ ts,symbol,side,qty,fill_price
 - Use `--strict` for validation during testing
 - Review warnings in best-effort mode output
 
+## Golden Sample Evaluation
+
+Deterministic test case for quick sanity checks after refactoring or deployment.
+
+**Use Case:** Smoke test to verify FIFO PnL logic and output format without real session data.
+
+### Quick Command (Text Output)
+
+```bash
+# Create golden sample fixture
+python3 -c "
+from datetime import datetime, timezone
+from src.live_eval.live_session_eval import Fill, compute_metrics
+
+# FIFO PnL example: Buy 1.0@100, Buy 1.0@110, Sell 1.5@120
+# Expected PnL: (120-100)*1.0 + (120-110)*0.5 = 20 + 5 = 25
+fills = [
+    Fill(datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc), 'BTC/USD', 'buy', 1.0, 100.0),
+    Fill(datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc), 'BTC/USD', 'buy', 1.0, 110.0),
+    Fill(datetime(2025, 1, 15, 10, 10, 0, tzinfo=timezone.utc), 'BTC/USD', 'sell', 1.5, 120.0),
+]
+metrics = compute_metrics(fills)
+print(f\"Total PnL: {metrics['realized_pnl_total']}\")
+assert metrics['realized_pnl_total'] == 25.0, 'Golden sample failed!'
+print('✓ Golden sample passed')
+"
+```
+
+**Expected Output:**
+```
+Total PnL: 25.0
+✓ Golden sample passed
+```
+
+### Quick Command (JSON Output)
+
+```bash
+# Golden sample with JSON metrics
+python3 -c "
+import json
+from datetime import datetime, timezone
+from src.live_eval.live_session_eval import Fill, compute_metrics
+
+fills = [
+    Fill(datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc), 'BTC/USD', 'buy', 1.0, 100.0),
+    Fill(datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc), 'BTC/USD', 'buy', 1.0, 110.0),
+    Fill(datetime(2025, 1, 15, 10, 10, 0, tzinfo=timezone.utc), 'BTC/USD', 'sell', 1.5, 120.0),
+]
+metrics = compute_metrics(fills)
+print(json.dumps({
+    'realized_pnl_total': metrics['realized_pnl_total'],
+    'total_notional': metrics['total_notional'],
+    'vwap_overall': metrics['vwap_overall'],
+}, indent=2))
+"
+```
+
+**Expected Output:**
+```json
+{
+  "realized_pnl_total": 25.0,
+  "total_notional": 390.0,
+  "vwap_overall": 111.42857142857143
+}
+```
+
+**Use Cases:**
+- Post-refactor sanity check (deterministic PnL calculation)
+- CI smoke test (optional, can be added to test suite)
+- Quick verification after deployment
+
+---
+
 ## Testing
 
 ```bash

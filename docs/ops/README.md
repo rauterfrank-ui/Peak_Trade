@@ -167,6 +167,7 @@ Konvention:
 - Regel: Wenn ein Ops-PR einen auditierbaren Verification Log erzeugt, hier verlinken.
 
 - PR #45 – CI Fast Lane Verification Log: `docs/ops/PR_45_FINAL_REPORT.md`
+- PR #51 – Live Session Evaluation CLI: `docs/ops/PR_51_FINAL_REPORT.md`
 
 ---
 
