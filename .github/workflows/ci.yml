@@ -37,6 +37,33 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
+      - name: "Smoke: RL v0.1 Contract Test"
+        id: rl_v0_1_smoke
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          pytest -q tests/test_rl_v0_1_smoke.py
+
+      - name: Validate RL v0.1 Contract
+        id: rl_v0_1_contract
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          bash scripts/validate_rl_v0_1.sh
+
+      - name: Upload RL validation reports on failure
+        if: ${{ failure() && runner.os == 'Linux' && (steps.rl_v0_1_smoke.outcome == 'failure' || steps.rl_v0_1_contract.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: rl-v0-1-validation-reports-py${{ matrix.python-version }}
+          path: |
+            reports/rl/**/*
+            reports/rl_v0_1/**/*
+            logs/rl/**/*
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Run tests
         run: |
           pytest tests/ -v --tb=short
