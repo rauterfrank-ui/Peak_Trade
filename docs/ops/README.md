@@ -133,6 +133,24 @@ cat reports/audit/latest/summary.json | jq '.findings'
 
 ---
 
+## CI Smoke Tests
+
+### Quick Commands
+
+```bash
+# Run fast lane deterministic smoke tests (<3 min)
+make ci-smoke
+```
+
+**Output Location:**
+- Reports: `test_results/ci_smoke/`
+- Files: `junit.xml`, `pytest.txt`, `env.txt`, JSON, MD
+
+**Operator Guide:**
+- Details: `docs/ops/ci_smoke_fastlane.md`
+
+---
+
 ## Git Maintenance
 
 ```bash

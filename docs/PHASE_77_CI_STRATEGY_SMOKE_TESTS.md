@@ -133,6 +133,10 @@ Diese koennen im GitHub Actions UI unter "Artifacts" heruntergeladen werden.
 Die CI-Schritte koennen lokal reproduziert werden:
 
 ```bash
+# Quick command (recommended)
+make ci-smoke
+
+# Or manually:
 # Smoke pytest
 pytest tests/test_strategy_smoke_cli.py -v
 
@@ -142,6 +146,13 @@ python scripts/strategy_smoke_check.py \
   --output-json test_results/strategy_smoke/ci_smoke_latest.json \
   --output-md test_results/strategy_smoke/ci_smoke_latest.md
 ```
+
+**CI Output Location:**
+- Fast lane reports: `test_results/ci_smoke/`
+- Artifacts: `junit.xml`, `pytest.txt`, `env.txt`, JSON, MD
+
+**Operator Guide:**
+- Troubleshooting: `docs/ops/ci_smoke_fastlane.md`
 
 ## Done-Kriterien
 
