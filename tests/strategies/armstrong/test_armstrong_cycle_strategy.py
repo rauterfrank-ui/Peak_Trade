@@ -271,9 +271,11 @@ class TestSignalGeneration:
         """Prüft, dass Signale Metadaten enthalten."""
         signals = strategy_default.generate_signals(dummy_ohlcv_data)
 
-        assert "phases" in signals.attrs
-        assert "risk_multipliers" in signals.attrs
+        # Research-stub mode: only basic metadata, no phases/risk_multipliers
         assert "cycle_length_days" in signals.attrs
+        assert "reference_date" in signals.attrs
+        assert "is_research_stub" in signals.attrs
+        assert signals.attrs["is_research_stub"] is True
 
     def test_empty_dataframe_handling(
         self, strategy_default: ArmstrongCycleStrategy
@@ -317,11 +319,11 @@ class TestSignalGenerationWithDifferentConfigs:
 
         signals = strategy.generate_signals(dummy_ohlcv_data)
 
-        # Aggressive sollte -1 (short) Signale haben können
-        # Da Crisis und Pre-Crisis auf -1 gemappt sind
+        # Research-stub mode: only flat signals (0) for safety
+        # Real signal generation is disabled until explicitly approved
         unique_values = set(signals.unique())
-        # Prüfe, dass mindestens long oder short vorkommt
-        assert 1 in unique_values or -1 in unique_values
+        assert unique_values == {0}, f"Expected only flat signals in research-stub mode, got {unique_values}"
+        assert signals.attrs["is_research_stub"] is True
 
     def test_conservative_only_long_or_flat(
         self, dummy_ohlcv_data: pd.DataFrame
