@@ -52,3 +52,7 @@ Retention: 7 days
 - Smoke test skips gracefully if validation script doesn't exist yet
 - Fast Lane provides early visibility into contract violations
 - Full suite execution provides defense against test ordering bugs
+
+### Local Validation
+
+Local: `make rl-v0-1-validate` (or `./scripts/validate_rl_v0_1.sh`)

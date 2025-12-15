@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc
+.PHONY: clean clean-all audit audit-tools gc rl-v0-1-validate
 
 # ============================================================================
 # Cleanup Targets
@@ -70,3 +70,11 @@ gc:
 	@git count-objects -vH
 	@echo ""
 	@echo "Done. Git objects packed."
+
+# ============================================================================
+# RL v0.1 Validation
+# ============================================================================
+
+# Run RL v0.1 contract validation (smoke + contract tests)
+rl-v0-1-validate:
+	./scripts/validate_rl_v0_1.sh
