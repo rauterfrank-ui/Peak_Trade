@@ -50,6 +50,8 @@ make audit
   - `concurrency` mit `cancel-in-progress` (alte Runs werden abgebrochen)
   - **Timeouts:** `tests=20min`, `strategy-smoke=10min`
 
+**Siehe auch:** `docs/ops/PR_45_FINAL_REPORT.md` (Audit/Verification Log zu PR #45)
+
 ### Audit Checks
 
 The audit system runs:
