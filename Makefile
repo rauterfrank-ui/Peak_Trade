@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open
+.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open ops-validate-pr-reports
 
 # ============================================================================
 # Cleanup Targets
@@ -150,3 +150,10 @@ mlog-manual:
 
 deps-sync-check:
 	./scripts/ops/check_requirements_synced_with_uv.sh
+
+# Ops Validation Targets
+# ============================================================================
+
+# Validate PR final report formatting
+ops-validate-pr-reports:
+	bash scripts/validate_pr_report_format.sh
