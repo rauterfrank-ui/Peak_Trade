@@ -161,11 +161,17 @@ ts,symbol,side,qty,fill_price
 
 ## Safety Notes
 
-🔴 **OFFLINE ONLY**
+✅ **No Live Trading Paths Affected** – OFFLINE ONLY tool
 - This tool does NOT connect to exchanges or live systems
 - It only reads local CSV files
 - No API calls, no network activity
 - Safe for post-mortem analysis
+
+✅ **Default Text Output Unchanged** – Backward compatible
+
+✅ **No New Heavy Dependencies** – Pure stdlib
+
+✅ **Deterministic Tests** – No flakiness
 
 ⚠️ **Data Quality**
 - Best-effort mode may hide data quality issues
