@@ -40,6 +40,16 @@ make audit
 3. Download `audit-artifacts.zip`
 4. Extract and review `summary.md` and `summary.json`
 
+## CI Fast Lane
+
+- **Pull Requests (Fast Lane):** nur **Python 3.11** (schnelles Feedback, typ. ~3–4 min)
+- **main (Full Matrix):** **Python 3.9 / 3.10 / 3.11** (vollständige Kompatibilitätsprüfung nach Merge)
+- **Manuell & geplant:** Full Matrix via `workflow_dispatch` und `schedule`
+- **Hardening:**
+  - `fail-fast: false` (Matrix läuft vollständig durch, auch bei Fehlern)
+  - `concurrency` mit `cancel-in-progress` (alte Runs werden abgebrochen)
+  - **Timeouts:** `tests=20min`, `strategy-smoke=10min`
+
 ### Audit Checks
 
 The audit system runs:
