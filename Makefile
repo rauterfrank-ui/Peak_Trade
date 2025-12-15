@@ -1,4 +1,16 @@
-.PHONY: clean clean-all audit audit-tools gc
+.PHONY: clean clean-all audit audit-tools gc ci-smoke
+
+# ============================================================================
+# CI Smoke Fast-Lane (Issue #19)
+# ============================================================================
+
+# Run ultra-fast CI smoke tests (<2-3 min)
+# - Offline only, no external calls
+# - Deterministic, safe-by-default
+# - Covers live pipeline entrypoints and risk gates
+ci-smoke:
+	@echo "Running CI smoke fast-lane tests..."
+	@bash scripts/ci_smoke_fastlane.sh
 
 # ============================================================================
 # Cleanup Targets

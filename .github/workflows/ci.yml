@@ -53,6 +53,61 @@ jobs:
       #     ruff check src/ tests/
 
   # ============================================================================
+  # CI Smoke Fast-Lane (Issue #19 / G3-1)
+  # ============================================================================
+  # Ultra-fast smoke tests (<2-3 min) covering live pipeline entrypoints.
+  # Runs BEFORE main test matrix for rapid feedback on critical paths.
+  #
+  # Safety gates tested:
+  # - Live risk limits (position size, exposure) - Issue #20
+  # - Execution pipeline (signal → order lifecycle)
+  # - Core backtest engine (baseline functionality)
+  #
+  # GUARANTEES:
+  # - NO live/testnet exchanges
+  # - NO API keys or secrets
+  # - NO external network calls
+  # - Fully deterministic (synthetic data only)
+  # ============================================================================
+  ci-smoke-fastlane:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-smoke-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run CI smoke fast-lane
+        run: |
+          make ci-smoke
+
+      - name: Upload smoke test artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-smoke-fastlane-debug
+          path: test_results/ci_smoke_fastlane/
+          retention-days: 7
+
+  # ============================================================================
   # Strategy Smoke Tests (Phase 77)
   # ============================================================================
   # Runs the strategy smoke-check CLI and associated tests to ensure all
