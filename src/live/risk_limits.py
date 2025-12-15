@@ -12,6 +12,13 @@ Exposure-Limits:
 - max_total_exposure_notional: Max. Gesamt-Notional aller Orders
 - max_open_positions: Max. Anzahl verschiedener Symbole
 
+Position-Size-Limits (Issue #20 / D1-2):
+-----------------------------------------
+- max_units_per_order: Maximale Einheiten (quantity) pro Order
+- max_notional_per_order: Maximales Notional pro Order (alternative zu max_order_notional)
+- per_symbol_max_units: Symbol-spezifische Max-Einheiten (Dict[symbol, max_units])
+- allow_clip_position_size: Bei True werden Orders geclippt statt rejected (Default: False)
+
 Daily-Loss-Limits:
 ------------------
 - max_daily_loss_abs: Absoluter max. Tagesverlust (z.B. 500 EUR)
@@ -55,6 +62,16 @@ Config-Beispiel (config.toml):
     block_on_violation = true
     use_experiments_for_daily_pnl = true
     warning_threshold_factor = 0.8  # Warning ab 80% des Limits
+
+    # Issue #20 (D1-2): Position Size Limits
+    max_units_per_order = 1.0           # Max 1.0 BTC pro Order
+    max_notional_per_order = 50000.0    # Max 50k EUR pro Order
+    allow_clip_position_size = false    # REJECT statt clippen (default)
+
+    # Optional: Per-Symbol-Limits
+    [live_risk.per_symbol_max_units]
+    "BTC/EUR" = 0.5    # Max 0.5 BTC pro Order für BTC/EUR
+    "ETH/EUR" = 5.0    # Max 5.0 ETH pro Order für ETH/EUR
 """
 from __future__ import annotations
 
@@ -201,6 +218,12 @@ class LiveRiskConfig:
     max_live_notional_total: Optional[float] = None
     live_trade_min_size: Optional[float] = None
 
+    # Issue #20 (D1-2): Position Size Limits
+    max_units_per_order: Optional[float] = None
+    max_notional_per_order: Optional[float] = None
+    per_symbol_max_units: Optional[Dict[str, float]] = None
+    allow_clip_position_size: bool = False
+
     # Warning-Threshold: Ab welchem Anteil des Limits wird WARNING ausgelöst
     # Default: 0.8 = 80% des Limits
     warning_threshold_factor: float = 0.8
@@ -329,6 +352,21 @@ class LiveRiskLimits:
         if warning_threshold_factor is None or not (0.0 < warning_threshold_factor < 1.0):
             warning_threshold_factor = 0.8
 
+        # Issue #20 (D1-2): Position Size Limits aus Config lesen
+        max_units_per_order = _get_float("live_risk.max_units_per_order")
+        max_notional_per_order = _get_float("live_risk.max_notional_per_order")
+        allow_clip_position_size = _get_bool("live_risk.allow_clip_position_size", False)
+
+        # Per-Symbol-Limits aus Config lesen (JSON-Format)
+        per_symbol_max_units: Optional[Dict[str, float]] = None
+        per_symbol_raw = cfg.get("live_risk.per_symbol_max_units", None)
+        if per_symbol_raw is not None:
+            try:
+                if isinstance(per_symbol_raw, dict):
+                    per_symbol_max_units = {str(k): float(v) for k, v in per_symbol_raw.items()}
+            except Exception:
+                logger.warning("live_risk.per_symbol_max_units konnte nicht geparst werden")
+
         # Falls nur Prozent angegeben, aber kein absolutes Limit: das ist ok,
         # wird aber nur wirksam, wenn starting_cash übergeben wurde.
         cfg_obj = LiveRiskConfig(
@@ -346,6 +384,11 @@ class LiveRiskLimits:
             max_live_notional_per_order=max_live_notional_per_order,
             max_live_notional_total=max_live_notional_total,
             live_trade_min_size=live_trade_min_size,
+            # Issue #20 (D1-2): Position Size Limits
+            max_units_per_order=max_units_per_order,
+            max_notional_per_order=max_notional_per_order,
+            per_symbol_max_units=per_symbol_max_units,
+            allow_clip_position_size=allow_clip_position_size,
             # Warning-Threshold
             warning_threshold_factor=warning_threshold_factor,
         )
@@ -662,6 +705,73 @@ class LiveRiskLimits:
             )
             limit_details.append(detail)
             self._log_limit_check(detail)
+
+        # 4b. Issue #20 (D1-2): Position Size Limits - Check einzelne Orders
+        # Check max_units_per_order und max_notional_per_order für jede Order
+        for order in orders:
+            # Check units
+            if cfg.max_units_per_order is not None and order.quantity is not None:
+                detail = self._evaluate_limit(
+                    f"max_units_per_order_{order.symbol}",
+                    abs(order.quantity),
+                    cfg.max_units_per_order,
+                )
+                limit_details.append(detail)
+                self._log_limit_check(detail)
+                if detail.severity == RiskCheckSeverity.BREACH:
+                    if cfg.allow_clip_position_size:
+                        # Clippen erlaubt: Log explizit + später Order modifizieren
+                        logger.warning(
+                            f"[POSITION SIZE CLIP] Order {order.symbol} units clipped: "
+                            f"{order.quantity:.6f} -> {cfg.max_units_per_order:.6f}"
+                        )
+                    else:
+                        # REJECT
+                        allowed = False
+                        reasons.append(detail.message)
+
+            # Check notional
+            order_notional = self._order_notional(order)
+            if cfg.max_notional_per_order is not None and order_notional > 0:
+                detail = self._evaluate_limit(
+                    f"max_notional_per_order_{order.symbol}",
+                    order_notional,
+                    cfg.max_notional_per_order,
+                )
+                limit_details.append(detail)
+                self._log_limit_check(detail)
+                if detail.severity == RiskCheckSeverity.BREACH:
+                    if cfg.allow_clip_position_size:
+                        # Clippen erlaubt: Log explizit
+                        logger.warning(
+                            f"[POSITION SIZE CLIP] Order {order.symbol} notional clipped: "
+                            f"{order_notional:.2f} -> {cfg.max_notional_per_order:.2f}"
+                        )
+                    else:
+                        # REJECT
+                        allowed = False
+                        reasons.append(detail.message)
+
+            # Check per-symbol limits
+            if cfg.per_symbol_max_units is not None and order.symbol in cfg.per_symbol_max_units:
+                symbol_limit = cfg.per_symbol_max_units[order.symbol]
+                if order.quantity is not None:
+                    detail = self._evaluate_limit(
+                        f"per_symbol_max_units_{order.symbol}",
+                        abs(order.quantity),
+                        symbol_limit,
+                    )
+                    limit_details.append(detail)
+                    self._log_limit_check(detail)
+                    if detail.severity == RiskCheckSeverity.BREACH:
+                        if cfg.allow_clip_position_size:
+                            logger.warning(
+                                f"[POSITION SIZE CLIP] Symbol-specific limit {order.symbol} clipped: "
+                                f"{order.quantity:.6f} -> {symbol_limit:.6f}"
+                            )
+                        else:
+                            allowed = False
+                            reasons.append(detail.message)
 
         # 5. Daily Loss aus Registry
         daily_pnl = self._compute_daily_pnl_from_experiments(day=current_date)

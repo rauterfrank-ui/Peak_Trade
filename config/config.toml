@@ -713,6 +713,30 @@ block_on_violation = true
 use_experiments_for_daily_pnl = true
 
 # ============================================================================
+# Issue #20 (D1-2): Position Size Limits
+# ============================================================================
+# Harte Limits für Positionsgrößen - safe by default (REJECT bei breach)
+# max_units_per_order: Max. Einheiten (quantity) pro Order (z.B. BTC)
+# max_notional_per_order: Max. EUR-Gegenwert pro Order
+# allow_clip_position_size: false = REJECT (default), true = automatisch clippen + log
+
+# Max. Einheiten pro Order (z.B. 1.0 BTC)
+max_units_per_order = 1.0
+
+# Max. Notional pro Order (EUR) - überschreibt max_order_notional falls gesetzt
+max_notional_per_order = 50000.0
+
+# Policy: Bei Breach REJECT (false) oder automatisch clippen (true)
+# WICHTIG: false ist der safe-by-default Modus!
+allow_clip_position_size = false
+
+# Optional: Per-Symbol-Limits (überschreiben max_units_per_order)
+# Beispiel: BTC/EUR darf max 0.5 BTC, ETH/EUR max 5.0 ETH
+# [live_risk.per_symbol_max_units]
+# "BTC/EUR" = 0.5
+# "ETH/EUR" = 5.0
+
+# ============================================================================
 # ENVIRONMENT CONFIGURATION (Safety Layer)
 # ============================================================================
 
