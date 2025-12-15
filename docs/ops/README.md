@@ -162,6 +162,10 @@ git clean -fdX
 
 ## Audit Logs (Ops)
 
+Konvention:
+- Dateien: `docs/ops/PR_<NN>_FINAL_REPORT.md` (Verification Log pro PR)
+- Regel: Wenn ein Ops-PR einen auditierbaren Verification Log erzeugt, hier verlinken.
+
 - PR #45 – CI Fast Lane Verification Log: `docs/ops/PR_45_FINAL_REPORT.md`
 
 ---
