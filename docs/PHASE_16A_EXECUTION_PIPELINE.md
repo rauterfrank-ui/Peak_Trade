@@ -261,11 +261,3 @@ Die Pipeline ist das zentrale Rückgrat zwischen Strategie/Portfolio und Executo
 
 
 
-
-
-
-
-
-
-
-
