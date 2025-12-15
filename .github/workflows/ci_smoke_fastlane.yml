@@ -1,0 +1,97 @@
+name: CI Smoke Fast Lane
+
+# =============================================================================
+# CI Smoke Fast Lane - Ultra-fast deterministic smoke tests
+# =============================================================================
+# Purpose:
+#   - Catch critical issues FAST (< 2-3 min target)
+#   - No external calls, no secrets, no live risk
+#   - Fail fast on import/config/gating issues
+#
+# Scope:
+#   - Python syntax check (compileall)
+#   - Core imports smoke test
+#   - Config loading smoke test
+#   - Live-gating safety smoke test
+#
+# Artifacts (only on failure):
+#   - reports/ci_smoke/ (JUnit XML, test output, environment snapshot)
+#
+# Issue: #19 (G3-1) CI Pipeline with Smoke Tests (Fast Lane)
+# =============================================================================
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+# Cancel in-progress runs for the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke-fastlane:
+    name: Smoke Tests (Fast Lane)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5  # Hard timeout - should complete in < 3 min
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-smoke-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-smoke-
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies (minimal)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run CI Smoke Fast Lane
+        run: |
+          make ci-smoke
+
+      - name: Upload smoke test artifacts (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-smoke-failure-${{ github.run_number }}
+          path: |
+            reports/ci_smoke/
+            logs/
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Display smoke test summary
+        if: always()
+        run: |
+          echo "============================================"
+          echo "CI Smoke Fast Lane Summary"
+          echo "============================================"
+          if [ -f "reports/ci_smoke/junit.xml" ]; then
+            echo "✓ JUnit XML: reports/ci_smoke/junit.xml"
+          fi
+          if [ -f "reports/ci_smoke/pytest.txt" ]; then
+            echo "✓ Test output: reports/ci_smoke/pytest.txt"
+            echo ""
+            echo "--- Last 30 lines of pytest output ---"
+            tail -30 reports/ci_smoke/pytest.txt || true
+          fi
+          if [ -f "reports/ci_smoke/env.txt" ]; then
+            echo "✓ Environment: reports/ci_smoke/env.txt"
+          fi
+          echo "============================================"

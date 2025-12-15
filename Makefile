@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc
+.PHONY: clean clean-all audit audit-tools gc ci-smoke ci-smoke-local
 
 # ============================================================================
 # Cleanup Targets
@@ -70,3 +70,15 @@ gc:
 	@git count-objects -vH
 	@echo ""
 	@echo "Done. Git objects packed."
+
+# ============================================================================
+# CI Smoke Fast Lane
+# ============================================================================
+
+# Run CI smoke tests (fast, deterministic, no external deps)
+ci-smoke:
+	@echo "Running CI Smoke Fast Lane..."
+	bash scripts/ci_smoke_fastlane.sh
+
+# Run CI smoke tests locally (same as ci-smoke, for clarity)
+ci-smoke-local: ci-smoke
