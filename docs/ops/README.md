@@ -170,11 +170,36 @@ Konvention:
 
 ---
 
+## Live Session Evaluation
+
+Offline tool for analyzing live trading sessions from `fills.csv`.
+
+```bash
+# Evaluate session
+python scripts/evaluate_live_session.py --session-dir /path/to/session
+
+# Generate JSON report
+python scripts/evaluate_live_session.py \
+  --session-dir /path/to/session \
+  --write-report
+```
+
+**Key Features:**
+- FIFO PnL calculation per symbol
+- VWAP (overall + per symbol)
+- Side breakdown (buy/sell stats)
+- Offline only (no exchange/API calls)
+
+**See:** `docs/ops/LIVE_SESSION_EVALUATION.md` for detailed runbook
+
+---
+
 ## Related Documentation
 
 - `scripts/run_audit.sh` - Audit script implementation
 - `docs/ops/PYTHON_VERSION_PLAN.md` - Python upgrade roadmap
 - `docs/ops/AUDIT_VALIDATION_NOTES.md` - Baseline validation findings
+- `docs/ops/LIVE_SESSION_EVALUATION.md` - Live session evaluation runbook
 - `Makefile` - All available make targets
 
 ---
