@@ -56,3 +56,52 @@ Retention: 7 days
 ### Local Validation
 
 Local: `make rl-v0-1-validate` (or `./scripts/validate_rl_v0_1.sh`)
+
+Reports:
+- JSON: `reports/rl_v0_1/validate_rl_v0_1.json`
+- Log: `reports/rl_v0_1/validate_rl_v0_1.log`
+
+Expected outcomes:
+- **SB3 not installed**: exit 0, status `"skipped"` (per v0.1 spec)
+- **SB3 installed + tests pass**: exit 0, status `"passed"`
+- **Tests fail**: exit 1, status `"failure"` with `smoke_rc`/`extra_rc`
+
+### CI Failure Triage
+
+When RL validation steps fail in CI:
+
+1. **Check CI step logs** for immediate failure reason
+   - Fast Lane smoke test (step 5)
+   - Bash contract validation (step 6)
+
+2. **Download artifacts** (7-day retention)
+   - Go to failed workflow run → "Artifacts" section
+   - Download: `rl-validation-reports-Linux-<python-version>`
+   - Contains: `reports/rl_v0_1/validate_rl_v0_1.{json,log}`
+
+3. **Parse JSON report** for structured failure info
+   ```bash
+   jq . reports/rl_v0_1/validate_rl_v0_1.json
+   ```
+   - `status`: "failure" (or "skipped"/"passed")
+   - `reason`: failure category (e.g., "pytest_failed", "missing_smoke_test")
+   - `smoke_rc`/`extra_rc`: pytest exit codes (if reason="pytest_failed")
+   - `ts`: failure timestamp
+   - `log`: path to detailed log
+
+4. **Common failure causes**
+   - **Missing SB3 but test tried to import**: v0.1 allows SB3-optional; script should skip gracefully
+   - **Contract test regression**: RL API changed; review test expectations
+   - **Flaky test**: rerun CI; if persistent, investigate test stability
+   - **Script not executable**: check `chmod +x scripts/validate_rl_v0_1.sh`
+
+5. **Reproduce locally**
+   ```bash
+   make rl-v0-1-validate
+   cat reports/rl_v0_1/validate_rl_v0_1.json
+   cat reports/rl_v0_1/validate_rl_v0_1.log
+   ```
+
+6. **If artifacts missing**
+   - Check workflow upload condition: `steps.rl_v0_1_smoke.outcome == 'failure' || steps.rl_v0_1_contract.outcome == 'failure'`
+   - Artifacts only upload on step failure (not pass/skip)
