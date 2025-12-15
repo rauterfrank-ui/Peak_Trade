@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc
+.PHONY: clean clean-all audit audit-tools gc ops-validate-pr-reports
 
 # ============================================================================
 # Cleanup Targets
@@ -70,3 +70,11 @@ gc:
 	@git count-objects -vH
 	@echo ""
 	@echo "Done. Git objects packed."
+
+# ============================================================================
+# Ops Validation Targets
+# ============================================================================
+
+# Validate PR final report formatting
+ops-validate-pr-reports:
+	bash scripts/validate_pr_report_format.sh
