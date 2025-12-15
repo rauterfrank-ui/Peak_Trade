@@ -614,6 +614,3 @@ class TestRecoveryAfterBreachScenario:
             assert daily_loss_detail.severity == RiskCheckSeverity.OK
 
         assert result.allowed is True
-
-
-
