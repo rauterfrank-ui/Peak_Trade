@@ -220,6 +220,7 @@ python scripts/evaluate_live_session.py \
 - `scripts/run_audit.sh` - Audit script implementation
 - `docs/ops/PYTHON_VERSION_PLAN.md` - Python upgrade roadmap
 - `docs/ops/AUDIT_VALIDATION_NOTES.md` - Baseline validation findings
+- `GIT_STATE_VALIDATION.md` – Git state validation utilities and usage
 - `docs/ops/LIVE_SESSION_EVALUATION.md` - Live session evaluation runbook
 - `docs/ops/WORKTREE_POLICY.md` - Git worktree management policy
 - `Makefile` - All available make targets
