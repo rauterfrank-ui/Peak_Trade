@@ -41,20 +41,27 @@ run "tabs_check" bash -c 'git ls-files "*.py" "*.md" "*.toml" "*.yml" "*.yaml" 2
 run "todo_fixme" bash -c 'git grep -nE "TODO|FIXME|HACK" -- . ":!reports" || true'
 
 # --- Python sanity
+PYTHON_CMD=""
 if have python; then
-  run "python_version" python --version
-  run "compileall_src" bash -c 'python -m compileall -q src || true'
-  run "pip_check" bash -c 'python -m pip check || true'
+  PYTHON_CMD="python"
+elif have python3; then
+  PYTHON_CMD="python3"
+fi
+
+if [ -n "${PYTHON_CMD}" ]; then
+  run "python_version" ${PYTHON_CMD} --version
+  run "compileall_src" bash -c "${PYTHON_CMD} -m compileall -q src || true"
+  run "pip_check" bash -c "${PYTHON_CMD} -m pip check || true"
 else
   echo "python not found" > "${OUT_RAW}/python_version.txt"
 fi
 
 # --- Tests (quick vs full)
-if have python; then
+if [ -n "${PYTHON_CMD}" ]; then
   if [ "${MODE}" = "full" ]; then
-    run "pytest" bash -c 'python -m pytest -q || true'
+    run "pytest" bash -c "${PYTHON_CMD} -m pytest -q || true"
   else
-    run "pytest_smoke" bash -c 'python -m pytest -q -k "not slow" || true'
+    run "pytest_smoke" bash -c "${PYTHON_CMD} -m pytest -q -k \"not slow\" || true"
   fi
 fi
 
