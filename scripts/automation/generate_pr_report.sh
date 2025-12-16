@@ -28,6 +28,22 @@ PR_HEAD_BRANCH="$(gh pr view "$PR_NUMBER" --json headRefName --jq .headRefName)"
 PR_BASE_BRANCH="$(gh pr view "$PR_NUMBER" --json baseRefName --jq .baseRefName)"
 PR_STATE="$(gh pr view "$PR_NUMBER" --json state --jq .state)"
 
+# Generate stable timestamp from PR mergedAt (for idempotency)
+# If PR not merged, use createdAt; if neither, use current time
+if [ -n "$PR_MERGED_AT" ] && [ "$PR_MERGED_AT" != "null" ]; then
+  # Convert ISO 8601 to "YYYY-MM-DD HH:MM:SS UTC" format
+  # Input format: 2025-12-16T02:38:56Z
+  REPORT_TIMESTAMP="$(echo "$PR_MERGED_AT" | sed 's/T/ /' | sed 's/Z/ UTC/')"
+else
+  PR_CREATED_AT="$(gh pr view "$PR_NUMBER" --json createdAt --jq .createdAt)"
+  if [ -n "$PR_CREATED_AT" ] && [ "$PR_CREATED_AT" != "null" ]; then
+    REPORT_TIMESTAMP="$(echo "$PR_CREATED_AT" | sed 's/T/ /' | sed 's/Z/ UTC/')"
+  else
+    # Fallback to current time (should rarely happen)
+    REPORT_TIMESTAMP="$(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+  fi
+fi
+
 OUT="docs/ops/PR_${PR_NUMBER}_FINAL_REPORT.md"
 
 # --- Changed files list (Markdown bullets with backticks) ---
@@ -152,7 +168,7 @@ $FILES_LIST
 
 ---
 
-*Report generated on $(date -u +"%Y-%m-%d %H:%M:%S UTC") by generate_pr_report.sh*
+*Report generated on $REPORT_TIMESTAMP by generate_pr_report.sh*
 EOF
 
 echo ""
@@ -180,6 +196,25 @@ else
   exit_code=$?
   echo ""
   echo "❌ Validation FAILED (exit code: $exit_code)"
+  echo "Report file: $OUT"
+  exit "$exit_code"
+fi
+
+echo ""
+echo "🔒 Running Unicode/BiDi security guard..."
+
+# Run Unicode guard to detect suspicious characters
+UNICODE_GUARD="scripts/automation/unicode_guard.py"
+
+if [ ! -f "$UNICODE_GUARD" ]; then
+  echo "ERROR: Unicode guard script not found: $UNICODE_GUARD"
+  exit 2
+fi
+
+if ! python3 "$UNICODE_GUARD" "$OUT"; then
+  exit_code=$?
+  echo ""
+  echo "❌ Unicode guard FAILED (exit code: $exit_code)"
   echo "Report file: $OUT"
   exit "$exit_code"
 fi
