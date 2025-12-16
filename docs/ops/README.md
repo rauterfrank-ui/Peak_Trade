@@ -187,6 +187,7 @@ Konvention:
 Post-merge documentation logs for operational PRs.
 
 - PR #76 – Merge Log: `docs/ops/PR_76_MERGE_LOG.md`
+- PR #92 – Merge Log: `docs/ops/PR_92_MERGE_LOG.md`
 
 ---
 
