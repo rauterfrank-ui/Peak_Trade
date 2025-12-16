@@ -89,3 +89,4 @@ tmp/
 
 # Local audit outputs
 reports/audit/
+reports/housekeeping/
