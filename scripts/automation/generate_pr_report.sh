@@ -172,6 +172,26 @@ $FILES_LIST
 EOF
 
 echo ""
+echo "🔒 Running Unicode/BiDi security guard on this script (self-check)..."
+
+# Run Unicode guard on this script itself
+UNICODE_GUARD="scripts/automation/unicode_guard.py"
+THIS_SCRIPT="$0"
+
+if [ ! -f "$UNICODE_GUARD" ]; then
+  echo "ERROR: Unicode guard script not found: $UNICODE_GUARD"
+  exit 2
+fi
+
+if ! python3 "$UNICODE_GUARD" "$THIS_SCRIPT"; then
+  exit_code=$?
+  echo ""
+  echo "❌ Unicode guard self-check FAILED (exit code: $exit_code)"
+  echo "This script: $THIS_SCRIPT"
+  exit "$exit_code"
+fi
+
+echo ""
 echo "🔍 Validating report format..."
 
 # Use centralized validator script
@@ -201,29 +221,27 @@ else
 fi
 
 echo ""
-echo "🔒 Running Unicode/BiDi security guard..."
+echo "🔒 Running Unicode/BiDi security guard on generated report..."
 
 # Run Unicode guard to detect suspicious characters
-UNICODE_GUARD="scripts/automation/unicode_guard.py"
-
-if [ ! -f "$UNICODE_GUARD" ]; then
-  echo "ERROR: Unicode guard script not found: $UNICODE_GUARD"
-  exit 2
-fi
-
 if ! python3 "$UNICODE_GUARD" "$OUT"; then
   exit_code=$?
   echo ""
-  echo "❌ Unicode guard FAILED (exit code: $exit_code)"
+  echo "❌ Unicode guard FAILED on generated report (exit code: $exit_code)"
   echo "Report file: $OUT"
   exit "$exit_code"
 fi
 
 echo ""
-echo "✅ Successfully wrote: $OUT"
+echo "✅ All validation checks passed!"
 echo ""
 echo "📄 Report summary:"
 echo "   - PR #$PR_NUMBER: $PR_TITLE"
 echo "   - State: $PR_STATE"
 echo "   - Files changed: $PR_CHANGED_FILES (+$PR_ADDITIONS/-$PR_DELETIONS)"
 echo "   - Report: $OUT"
+echo ""
+echo "🔒 Security checks:"
+echo "   ✅ Self-check (Unicode guard on generate_pr_report.sh)"
+echo "   ✅ Format validation"
+echo "   ✅ Unicode scan (no suspicious characters)"
