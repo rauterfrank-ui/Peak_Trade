@@ -1,0 +1,66 @@
+name: Shell Script Sanity
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/**/*.sh'
+      - '.github/workflows/shell_sanity.yml'
+  push:
+    paths:
+      - 'scripts/**/*.sh'
+      - '.github/workflows/shell_sanity.yml'
+
+jobs:
+  validate-shell-scripts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Bash syntax check
+        run: |
+          set -euo pipefail
+          echo "==> Running bash -n on all shell scripts..."
+
+          shopt -s globstar nullglob
+          scripts=(scripts/**/*.sh)
+
+          if [ ${#scripts[@]} -eq 0 ]; then
+            echo "No shell scripts found in scripts/"
+            exit 0
+          fi
+
+          exit_code=0
+          for script in "${scripts[@]}"; do
+            echo "Checking: $script"
+            if ! bash -n "$script"; then
+              echo "❌ Syntax error in $script"
+              exit_code=1
+            else
+              echo "✅ $script"
+            fi
+          done
+
+          exit $exit_code
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y shellcheck
+
+      - name: Run shellcheck
+        run: |
+          set -euo pipefail
+          echo "==> Running shellcheck on all shell scripts..."
+
+          shopt -s globstar nullglob
+          scripts=(scripts/**/*.sh)
+
+          if [ ${#scripts[@]} -eq 0 ]; then
+            echo "No shell scripts found in scripts/"
+            exit 0
+          fi
+
+          # Run shellcheck with common recommended flags
+          shellcheck -x -S warning "${scripts[@]}"
