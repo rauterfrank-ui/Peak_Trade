@@ -39,38 +39,6 @@ FILES_LIST="$(
   done
 )"
 
-# --- Formatting regression guard --------------------------------------------
-validate_pr_report_format() {
-  local report_file="$1"
-
-  # 1) The exact regression: broken double backticks at list start
-  if grep -nE '^- ``' "$report_file" >/dev/null; then
-    echo "ERROR: Broken markdown list formatting detected (double backticks)."
-    echo "Offending lines:"
-    grep -nE '^- ``' "$report_file" || true
-    return 2
-  fi
-
-  # 2) Catch likely missing closing backtick for src/* bullets (common footgun)
-  if grep -nE '^- `src/[^`]*$' "$report_file" >/dev/null; then
-    echo "ERROR: Likely missing closing backtick in src/* bullet line(s)."
-    echo "Offending lines:"
-    grep -nE '^- `src/[^`]*$' "$report_file" || true
-    return 3
-  fi
-
-  # 3) Catch likely missing closing backtick for tests/* bullets
-  if grep -nE '^- `tests/[^`]*$' "$report_file" >/dev/null; then
-    echo "ERROR: Likely missing closing backtick in tests/* bullet line(s)."
-    echo "Offending lines:"
-    grep -nE '^- `tests/[^`]*$' "$report_file" || true
-    return 4
-  fi
-
-  return 0
-}
-# ----------------------------------------------------------------------------
-
 echo "📝 Generating report: $OUT"
 
 cat > "$OUT" <<EOF
@@ -190,13 +158,28 @@ EOF
 echo ""
 echo "🔍 Validating report format..."
 
-# Run validation and capture exit code
-if validate_pr_report_format "$OUT"; then
-  echo "✅ Format validation passed"
+# Use centralized validator script
+VALIDATOR="scripts/validate_pr_report_format.sh"
+
+if [ ! -f "$VALIDATOR" ]; then
+  echo "ERROR: Validator script not found: $VALIDATOR"
+  echo "Hint: Ensure scripts/validate_pr_report_format.sh exists in the repository"
+  exit 2
+fi
+
+if [ ! -x "$VALIDATOR" ]; then
+  echo "ERROR: Validator script is not executable: $VALIDATOR"
+  echo "Hint: chmod +x $VALIDATOR"
+  exit 2
+fi
+
+# Run centralized validator
+if bash "$VALIDATOR" "$OUT"; then
+  echo "✅ Report validated: $OUT"
 else
   exit_code=$?
   echo ""
-  echo "❌ Format validation FAILED (exit code: $exit_code)"
+  echo "❌ Validation FAILED (exit code: $exit_code)"
   echo "Report file: $OUT"
   exit "$exit_code"
 fi
