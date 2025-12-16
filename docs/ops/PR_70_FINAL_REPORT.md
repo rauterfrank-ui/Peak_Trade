@@ -113,4 +113,4 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 
 ---
 
-*Report generated on 2025-12-16 02:42:42 UTC by generate_pr_report.sh*
+*Report generated on 2025-12-16 02:53:44 UTC by generate_pr_report.sh*
