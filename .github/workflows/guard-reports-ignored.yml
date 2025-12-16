@@ -1,0 +1,72 @@
+name: Guard reports/ must be ignored
+
+on:
+  pull_request:
+    paths:
+      - ".gitignore"
+      - "reports/**"
+  push:
+    branches: ["main"]
+    paths:
+      - ".gitignore"
+      - "reports/**"
+
+jobs:
+  guard-reports-ignored:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail if anything under reports/ is tracked
+        shell: bash
+        run: |
+          set -euo pipefail
+          COUNT="$(git ls-files 'reports' | wc -l | tr -d ' ')"
+          echo "Tracked files under reports/: $COUNT"
+          if [[ "$COUNT" != "0" ]]; then
+            echo "::error::reports/ contains tracked files. Generated artifacts must NOT be committed."
+            echo "Tracked paths:"
+            git ls-files 'reports' | sed 's/^/ - /'
+            exit 1
+          fi
+
+      - name: Ensure .gitignore contains a root /reports/ rule
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f .gitignore ]]; then
+            echo "::error::.gitignore not found at repo root."
+            exit 1
+          fi
+
+          # Require an exact root rule: /reports/
+          if ! grep -Eq '^[[:space:]]*/reports/[[:space:]]*$' .gitignore; then
+            echo "::error::.gitignore must contain an exact root ignore rule '/reports/' (own line)."
+            echo "Hint: add a comment + '/reports/' and remove selective sub-rules."
+            exit 1
+          fi
+
+          # Optional strictness: disallow negations that re-include reports/*
+          if grep -Eq '^[[:space:]]*!reports/' .gitignore; then
+            echo "::error::.gitignore contains a negation '!reports/...'. This can re-include generated artifacts."
+            echo "Please remove '!reports/...' rules to keep behavior deterministic."
+            exit 1
+          fi
+
+      - name: Sanity check git check-ignore sees reports/ as ignored
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p reports/_ignore_probe
+          echo "probe" > reports/_ignore_probe/x.txt
+
+          if git check-ignore -v reports/_ignore_probe/x.txt; then
+            echo "OK: reports/_ignore_probe/x.txt is ignored."
+          else
+            echo "::error::git check-ignore did NOT consider reports/ ignored. .gitignore rule may be ineffective."
+            exit 1
+          fi
