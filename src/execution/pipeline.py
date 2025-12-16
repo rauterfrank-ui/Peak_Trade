@@ -1043,6 +1043,7 @@ class ExecutionPipeline:
 
         if env == "live":
             if governance_status == "locked":
+                # WICHTIG: Stabiler Reason-Code für Tests (Phase 16A Kompatibilität)
                 return (
                     False,
                     governance_status,
@@ -1132,6 +1133,8 @@ class ExecutionPipeline:
         # 2. Environment-Check: LIVE-Mode hart blockieren (Phase 16A)
         if self._env_config is not None:
             if self._env_config.is_live:
+                # WICHTIG: Reason-Code muss stabil bleiben für Tests
+                # Governance-Check schlägt an, daher reason von Governance überschreiben
                 reason = "live_mode_not_supported_in_phase_16a"
                 logger.error(
                     f"[EXECUTION PIPELINE] LIVE-Mode blockiert in Phase 16A. "

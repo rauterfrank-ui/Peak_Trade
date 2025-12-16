@@ -182,7 +182,7 @@ class TestElKarouiVolModelStrategy:
         assert "current_vol" in analysis
         assert "vol_regime" in analysis
         assert "vol_percentile" in analysis
-        assert analysis["vol_regime"] in {"low", "normal", "high"}
+        assert analysis["vol_regime"] in {"low", "medium", "high"}
 
     def test_el_karoui_repr_shows_research_only(self):
         """Test: __repr__ zeigt RESEARCH-ONLY an."""
