@@ -46,7 +46,19 @@ Fokus:
 
 ---
 
-## 3. Data Layer (`src/data/`)
+## 3. Repo Structure
+
+### Generated artifacts: `reports/`
+
+The `reports/` directory contains generated artifacts (HTML/PNG/JSON logs, validation outputs, etc.) and is **not tracked** in git.
+
+- Rule: `/reports/` is ignored via `.gitignore`
+- Policy: Never commit anything under `reports/` (CI/guard + local checks enforce this)
+- If you accidentally tracked files: `git rm -r --cached reports`
+
+---
+
+## 4. Data Layer (`src/data/`)
 
 **Verantwortung:**
 - Laden von Market-Daten (Kraken API, CSV)
@@ -71,7 +83,7 @@ df = fetch_kraken_data(
 
 ---
 
-## 4. Strategies Layer (`src/strategies/`)
+## 5. Strategies Layer (`src/strategies/`)
 
 **Verantwortung:**
 - Definition von Trading-Strategien
@@ -106,7 +118,7 @@ Siehe: [STRATEGY_DEV_GUIDE.md](STRATEGY_DEV_GUIDE.md)
 
 ---
 
-## 5. Core Layer (`src/core/`)
+## 6. Core Layer (`src/core/`)
 
 **Verantwortung:**
 - Config-Management
@@ -114,7 +126,7 @@ Siehe: [STRATEGY_DEV_GUIDE.md](STRATEGY_DEV_GUIDE.md)
 - Risk Management
 - Experiment-Tracking
 
-### 5.1 Config (`peak_config.py`)
+### 6.1 Config (`peak_config.py`)
 
 ```python
 from src.core.peak_config import load_config
@@ -123,7 +135,7 @@ cfg = load_config("config.toml")
 value = cfg.get("backtest.initial_cash", 10000.0)
 ```
 
-### 5.2 Position Sizing (`position_sizing.py`)
+### 6.2 Position Sizing (`position_sizing.py`)
 
 Methoden: `NoopPositionSizer`, `FixedSizeSizer`, `FixedFractionSizer`
 
@@ -134,7 +146,7 @@ sizer = build_position_sizer_from_config(cfg)
 target_units = sizer.get_target_position(signal=1, price=50000.0, equity=10000.0)
 ```
 
-### 5.3 Risk Management (`risk.py`)
+### 6.3 Risk Management (`risk.py`)
 
 Methoden: `NoopRiskManager`, `MaxDrawdownRiskManager`, `EquityFloorRiskManager`
 
@@ -145,7 +157,7 @@ risk_mgr = build_risk_manager_from_config(cfg)
 adjusted = risk_mgr.adjust_target_position(target_units=0.2, price=50000.0, equity=9000.0)
 ```
 
-### 5.4 Experiments (`experiments.py`)
+### 6.4 Experiments (`experiments.py`)
 
 Zentrales Tracking aller Runs in `reports/experiments/experiments.csv`.
 
@@ -181,7 +193,7 @@ run_id = log_portfolio_backtest_result(
 
 ---
 
-## 6. Backtest Layer (`src/backtest/`)
+## 7. Backtest Layer (`src/backtest/`)
 
 **Verantwortung:**
 - Bar-für-Bar Simulation
@@ -215,7 +227,7 @@ Siehe: [BACKTEST_ENGINE.md](BACKTEST_ENGINE.md)
 
 ---
 
-## 7. Forward Layer (`src/forward/`)
+## 8. Forward Layer (`src/forward/`)
 
 **Verantwortung:**
 - Forward-Signal-Generierung
@@ -231,7 +243,7 @@ Siehe: [BACKTEST_ENGINE.md](BACKTEST_ENGINE.md)
 
 ---
 
-## 8. Live Layer (`src/live/`)
+## 9. Live Layer (`src/live/`)
 
 **Verantwortung:**
 - Order-Management
@@ -239,7 +251,7 @@ Siehe: [BACKTEST_ENGINE.md](BACKTEST_ENGINE.md)
 - Live-Risk-Limits
 - Workflow-Helper
 
-### 8.1 Orders (`orders.py`)
+### 9.1 Orders (`orders.py`)
 
 ```python
 from src.live.orders import LiveOrderRequest
@@ -253,13 +265,13 @@ order = LiveOrderRequest(
 )
 ```
 
-### 8.2 Broker (`broker_base.py`)
+### 9.2 Broker (`broker_base.py`)
 
 - `BaseBrokerClient` (ABC)
 - `DryRunBroker` – Simuliert Fills ohne echten Handel
 - `PaperBroker` – Cash- und Positionsführung
 
-### 8.3 Live-Risk-Limits (`risk_limits.py`)
+### 9.3 Live-Risk-Limits (`risk_limits.py`)
 
 Konfigurierbarer Pre-Trade-Check:
 - `max_order_notional`
@@ -277,7 +289,7 @@ result = limits.check_orders(orders)
 
 Siehe: [LIVE_RISK_LIMITS.md](LIVE_RISK_LIMITS.md)
 
-### 8.4 Workflows (`workflows.py`)
+### 9.4 Workflows (`workflows.py`)
 
 Zentrale Helper für konsistentes Verhalten:
 
@@ -292,7 +304,7 @@ Siehe: [LIVE_WORKFLOWS.md](LIVE_WORKFLOWS.md)
 
 ---
 
-## 9. Analytics Layer (`src/analytics/`)
+## 10. Analytics Layer (`src/analytics/`)
 
 **Verantwortung:**
 - Experiment-Aggregationen & Strategie-Vergleiche
@@ -303,7 +315,7 @@ Siehe: [LIVE_WORKFLOWS.md](LIVE_WORKFLOWS.md)
 
 **Module:**
 
-### 9.1 Experiments-Analyse (`experiments_analysis.py`)
+### 10.1 Experiments-Analyse (`experiments_analysis.py`)
 
 Aggregationen und Reports für die Experiment-Registry:
 
@@ -355,21 +367,21 @@ python scripts/analyze_experiments.py --mode compare --strategies ma_crossover,r
 python scripts/analyze_experiments.py --mode summary --write-report reports/summary.md
 ```
 
-### 9.2 Leaderboard (`leaderboard.py`)
+### 10.2 Leaderboard (`leaderboard.py`)
 
 Standard-Leaderboards für Experimente.
 
-### 9.3 Notebook Helpers (`notebook_helpers.py`)
+### 10.3 Notebook Helpers (`notebook_helpers.py`)
 
 Jupyter-Helper: `load_experiments()`, `filter_experiments()`, `sweep_scatter()`, `sweep_heatmap()`
 
-### 9.4 Risk Monitor (`risk_monitor.py`)
+### 10.4 Risk Monitor (`risk_monitor.py`)
 
 Risiko-Analyse und Policy-Checks für Runs.
 
 ---
 
-## 10. Config-Philosophie (`config.toml`)
+## 11. Config-Philosophie (`config.toml`)
 
 Alle Einstellungen in **einer zentralen TOML-Datei**:
 
@@ -406,7 +418,7 @@ max_total_exposure_notional = 5000.0
 
 ---
 
-## 11. System-Flow (End-to-End)
+## 12. System-Flow (End-to-End)
 
 ```
 ┌─────────────────┐
@@ -457,7 +469,7 @@ max_total_exposure_notional = 5000.0
 
 ---
 
-## 12. Erweiterbarkeit
+## 13. Erweiterbarkeit
 
 ### Neue Strategie hinzufügen
 
@@ -480,7 +492,7 @@ Siehe: [STRATEGY_DEV_GUIDE.md](STRATEGY_DEV_GUIDE.md)
 
 ---
 
-## 13. Best Practices
+## 14. Best Practices
 
 ### Development
 
@@ -505,7 +517,7 @@ Siehe: [STRATEGY_DEV_GUIDE.md](STRATEGY_DEV_GUIDE.md)
 
 ---
 
-## 14. Weiterführende Dokumentation
+## 15. Weiterführende Dokumentation
 
 - [BACKTEST_ENGINE.md](BACKTEST_ENGINE.md) – Engine-Details
 - [STRATEGY_DEV_GUIDE.md](STRATEGY_DEV_GUIDE.md) – Strategie-Entwicklung
