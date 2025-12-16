@@ -62,6 +62,7 @@ System:
 """
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -69,6 +70,8 @@ import toml
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+
+logger = logging.getLogger(__name__)
 
 from .live_track import (
     LiveSessionSummary,
@@ -732,6 +735,120 @@ def create_app() -> FastAPI:
     async def api_health() -> Dict[str, str]:
         """Einfacher Health-Check Endpoint."""
         return {"status": "ok"}
+
+    # =========================================================================
+    # Phase 57 Extension: Live Status Snapshot Endpoints
+    # =========================================================================
+
+    @app.get(
+        "/api/live/status/snapshot.json",
+        summary="Live Status Snapshot (JSON)",
+        description="Returns a deterministic live status snapshot as JSON (Phase 57 Extension).",
+        tags=["live-status"],
+    )
+    async def api_live_status_snapshot_json() -> Dict[str, Any]:
+        """
+        Live Status Snapshot Endpoint (JSON).
+
+        Returns:
+            Dict with version, generated_at, panels, meta (deterministic, sorted)
+        """
+        from fastapi.responses import JSONResponse
+        from src.reporting.live_status_snapshot_builder import build_live_status_snapshot_auto
+        from src.reporting.status_snapshot_schema import model_dump_helper
+
+        try:
+            snapshot = build_live_status_snapshot_auto(meta={"source": "webui_api"})
+            snapshot_dict = model_dump_helper(snapshot)
+
+            return JSONResponse(
+                content=snapshot_dict,
+                headers={"Cache-Control": "no-store"},
+            )
+        except Exception as e:
+            logger.error(f"Error building live status snapshot: {e}")
+            raise HTTPException(status_code=500, detail=f"Failed to build snapshot: {str(e)}")
+
+    @app.get(
+        "/api/live/status/snapshot.html",
+        response_class=HTMLResponse,
+        summary="Live Status Snapshot (HTML)",
+        description="Returns a live status snapshot as HTML (Phase 57 Extension, XSS-safe).",
+        tags=["live-status"],
+    )
+    async def api_live_status_snapshot_html() -> str:
+        """
+        Live Status Snapshot Endpoint (HTML).
+
+        Returns:
+            HTML page with escaped panel data (XSS-safe via Phase-57 formatter)
+        """
+        from fastapi.responses import HTMLResponse
+        from src.reporting.live_status_snapshot_builder import build_live_status_snapshot_auto
+        from src.reporting.html_reports import _html_escape
+
+        try:
+            snapshot = build_live_status_snapshot_auto(meta={"source": "webui_api"})
+
+            # Build HTML using Phase-57 formatter (_html_escape)
+            html_lines = []
+            html_lines.append("<!DOCTYPE html>")
+            html_lines.append("<html lang='en'>")
+            html_lines.append("<head>")
+            html_lines.append("  <meta charset='UTF-8'>")
+            html_lines.append("  <meta name='viewport' content='width=device-width, initial-scale=1.0'>")
+            html_lines.append("  <title>Peak_Trade Live Status Snapshot</title>")
+            html_lines.append("  <style>")
+            html_lines.append("    body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }")
+            html_lines.append("    .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }")
+            html_lines.append("    h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }")
+            html_lines.append("    .meta { background: #ecf0f1; padding: 10px; border-radius: 4px; margin: 15px 0; font-size: 0.9em; }")
+            html_lines.append("    .panel { margin: 20px 0; border: 1px solid #ddd; border-radius: 4px; padding: 15px; }")
+            html_lines.append("    .panel h2 { margin: 0 0 10px 0; font-size: 1.2em; }")
+            html_lines.append("    .status-ok { color: #27ae60; font-weight: bold; }")
+            html_lines.append("    .status-warn { color: #f39c12; font-weight: bold; }")
+            html_lines.append("    .status-error { color: #e74c3c; font-weight: bold; }")
+            html_lines.append("    .status-unknown { color: #95a5a6; font-weight: bold; }")
+            html_lines.append("    .details { background: #f9f9f9; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.85em; white-space: pre-wrap; }")
+            html_lines.append("  </style>")
+            html_lines.append("</head>")
+            html_lines.append("<body>")
+            html_lines.append("  <div class='container'>")
+            html_lines.append("    <h1>Peak_Trade Live Status Snapshot</h1>")
+            html_lines.append(f"    <div class='meta'>")
+            html_lines.append(f"      <strong>Version:</strong> {_html_escape(snapshot.version)}<br>")
+            html_lines.append(f"      <strong>Generated:</strong> {_html_escape(snapshot.generated_at)}")
+            html_lines.append(f"    </div>")
+
+            # Render panels
+            for panel in snapshot.panels:
+                status_class = f"status-{panel.status}"
+                html_lines.append(f"    <div class='panel'>")
+                html_lines.append(f"      <h2>{_html_escape(panel.title)}</h2>")
+                html_lines.append(f"      <p><strong>ID:</strong> {_html_escape(panel.id)}</p>")
+                html_lines.append(f"      <p><strong>Status:</strong> <span class='{status_class}'>{_html_escape(panel.status.upper())}</span></p>")
+
+                # Render details (XSS-safe)
+                if panel.details:
+                    import json
+                    details_json = json.dumps(panel.details, indent=2, sort_keys=True)
+                    html_lines.append(f"      <div class='details'>{_html_escape(details_json)}</div>")
+
+                html_lines.append(f"    </div>")
+
+            html_lines.append("  </div>")
+            html_lines.append("</body>")
+            html_lines.append("</html>")
+
+            html_content = "\n".join(html_lines)
+
+            return HTMLResponse(
+                content=html_content,
+                headers={"Cache-Control": "no-store"},
+            )
+        except Exception as e:
+            logger.error(f"Error building live status snapshot HTML: {e}")
+            raise HTTPException(status_code=500, detail=f"Failed to build snapshot HTML: {str(e)}")
 
     # =========================================================================
     # Phase 83: Alert-Historie API Endpoints
