@@ -189,6 +189,7 @@ Post-merge documentation logs for operational PRs.
 - PR #76 – Merge Log: `docs/ops/PR_76_MERGE_LOG.md`
 - PR #85 – Merge Log: `docs/ops/PR_85_MERGE_LOG.md`
 - PR #87 – Merge Log: `docs/ops/PR_87_MERGE_LOG.md`
+- PR #90 – chore(ops): add git state + post-merge verification scripts – `docs/ops/PR_90_MERGE_LOG.md`
 
 ---
 
