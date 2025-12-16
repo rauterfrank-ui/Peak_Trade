@@ -89,3 +89,6 @@ tmp/
 
 # Local audit outputs
 reports/audit/
+
+# Test/runtime artifacts
+reports/
