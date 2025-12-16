@@ -188,6 +188,7 @@ Post-merge documentation logs for operational PRs.
 
 - PR #76 – Merge Log: `docs/ops/PR_76_MERGE_LOG.md`
 - PR #85 – Merge Log: `docs/ops/PR_85_MERGE_LOG.md`
+- PR #87 – Merge Log: `docs/ops/PR_87_MERGE_LOG.md`
 
 ---
 
