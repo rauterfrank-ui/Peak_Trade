@@ -297,35 +297,19 @@ class ArmstrongCycleStrategy(BaseStrategy):
         if len(data) == 0:
             return pd.Series([], dtype=int)
 
-        # Signale für jedes Datum generieren
-        signals = []
-        phases = []
-        risk_multipliers = []
+        # RESEARCH-STUB: Nur Flat-Signale zurückgeben
+        # TODO: Implementiere echte ECM-Cycle-basierte Signale wenn validiert
+        #
+        # Die Logik für Cycle-Phase-Detection ist vorhanden im cycle_model,
+        # aber für Research-Sicherheit geben wir nur Flat-Signale zurück.
+        # Dies verhindert versehentlichen Einsatz in Live/Paper ohne explizite Freigabe.
 
-        for idx in data.index:
-            # Phase bestimmen
-            phase = self.cycle_model.phase_for_date(idx)
-            phases.append(phase)
+        signal_series = pd.Series(0, index=data.index, dtype=int)
 
-            # Position aus Mapping
-            position = self.phase_position_map.get(phase, 0)
-
-            # Optional: Risk-Scaling
-            if self.use_risk_scaling:
-                risk_mult = self.cycle_model.risk_multiplier_for_date(idx)
-                risk_multipliers.append(risk_mult)
-            else:
-                risk_multipliers.append(1.0)
-
-            signals.append(position)
-
-        signal_series = pd.Series(signals, index=data.index, dtype=int)
-
-        # Metadaten für Analyse speichern
-        signal_series.attrs["phases"] = phases
-        signal_series.attrs["risk_multipliers"] = risk_multipliers
+        # Metadaten für Analyse (auch bei Flat-Signalen nützlich)
         signal_series.attrs["cycle_length_days"] = self.cycle_length_days
         signal_series.attrs["reference_date"] = self.reference_date_str
+        signal_series.attrs["is_research_stub"] = True
 
         return signal_series
 
@@ -406,7 +390,7 @@ class ArmstrongCycleStrategy(BaseStrategy):
             f"cycle={self.cycle_length_days}d, "
             f"window={self.event_window_days}d, "
             f"ref={self.reference_date}) "
-            f"[R&D-ONLY, tier={self.TIER}]>"
+            f"[RESEARCH-ONLY, R&D-ONLY, tier={self.TIER}]>"
         )
 
 
