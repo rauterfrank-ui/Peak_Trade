@@ -226,7 +226,7 @@ class TestRnDSafetyFlags:
 
     def test_strategy_key(self) -> None:
         """Prüft Strategy-Key."""
-        assert ElKarouiVolatilityStrategy.KEY == "el_karoui_vol_v1"
+        assert ElKarouiVolatilityStrategy.KEY == "el_karoui_vol_model"
 
 
 # =============================================================================
@@ -324,10 +324,11 @@ class TestSignalGeneration:
         """Prüft, dass Signale Metadaten enthalten."""
         signals = strategy_default.generate_signals(dummy_ohlcv_data)
 
-        assert "regimes" in signals.attrs
-        assert "scaling_factors" in signals.attrs
-        assert "vol_annualized" in signals.attrs
+        # Research-stub mode: only basic metadata, no regimes/scaling_factors/vol_annualized
         assert "vol_window" in signals.attrs
+        assert "vol_target" in signals.attrs
+        assert "is_research_stub" in signals.attrs
+        assert signals.attrs["is_research_stub"] is True
 
     def test_empty_dataframe_handling(
         self, strategy_default: ElKarouiVolatilityStrategy
@@ -408,19 +409,14 @@ class TestSignalGenerationWithDifferentConfigs:
         signals_with = strategy_with_scaling.generate_signals(dummy_ohlcv_data)
         signals_without = strategy_without_scaling.generate_signals(dummy_ohlcv_data)
 
-        # Mit Scaling sollten die Faktoren variieren
-        factors_with = signals_with.attrs["scaling_factors"]
-        factors_without = signals_without.attrs["scaling_factors"]
+        # Research-stub mode: no scaling_factors in metadata
+        # Both strategies should return flat signals regardless of scaling config
+        assert signals_with.attrs["is_research_stub"] is True
+        assert signals_without.attrs["is_research_stub"] is True
 
-        # Ohne Vol-Target-Scaling sollte die Varianz der Faktoren geringer sein
-        # (nur Regime-Multiplier, kein Vol-Target-Scaling)
-        warmup = strategy_without_scaling.vol_window
-        factors_with_valid = factors_with[warmup:]
-        factors_without_valid = factors_without[warmup:]
-
-        # Prüfe, dass beide Listen nicht leer sind
-        assert len(factors_with_valid) > 0
-        assert len(factors_without_valid) > 0
+        # All signals should be flat (0)
+        assert (signals_with == 0).all()
+        assert (signals_without == 0).all()
 
 
 # =============================================================================

@@ -392,15 +392,21 @@ class ArmstrongCycleModel:
         days_to_next = cycle_length - (days % cycle_length)
         next_tp = dt_date + pd.Timedelta(days=days_to_next)
 
+        # Berechne Proximity zum Turning Point
+        window_days = 90  # Event-Window für Turning-Point-Proximity
+        is_near_tp = (days_to_next <= window_days) or ((days % cycle_length) <= window_days)
+
         return {
             "phase": phase,
             "phase_name": str(phase),
             "cycle_position": position,
+            "cycle_phase": position,  # Alias für Backward Compatibility
             "days_since_reference": days,
             "days_in_current_cycle": days % cycle_length,
             "risk_multiplier": self.risk_multiplier_for_date(dt_date),
             "next_turning_point": next_tp,
             "cycle_length_days": cycle_length,
+            "is_near_turning_point": is_near_tp,
         }
 
     def __repr__(self) -> str:
