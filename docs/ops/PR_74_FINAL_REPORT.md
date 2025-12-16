@@ -1,5 +1,7 @@
 # PR #74 – OFFLINE Realtime Feed: Inspect CLI + Dashboard + Runbook (OFFLINE ONLY)
 
+**Delivery:** Delivered to `main` via PR #75 (docs-only transport).
+
 - **PR**: https://github.com/rauterfrank-ui/Peak_Trade/pull/74
 - **Title**: docs(ops): add PR #73 final report
 - **State**: MERGED
