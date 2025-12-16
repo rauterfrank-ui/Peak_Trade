@@ -173,6 +173,7 @@ Konvention:
 - PR #61 – Final Report: `docs/ops/PR_61_FINAL_REPORT.md`
 - PR #62 – Final Report: `docs/ops/PR_62_FINAL_REPORT.md`
 - PR #63 – Final Report: `docs/ops/PR_63_FINAL_REPORT.md`
+- PR #66 – Final Report: `docs/ops/PR_66_FINAL_REPORT.md`
 ## Live Session Evaluation
 
 Offline tool for analyzing live trading sessions from `fills.csv`.
