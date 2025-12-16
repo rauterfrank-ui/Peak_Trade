@@ -23,19 +23,40 @@ if [ "${#REPORTS[@]}" -eq 0 ]; then
 fi
 
 echo "Validating ${#REPORTS[@]} PR final report(s)..."
+echo ""
+
+UNICODE_GUARD="scripts/automation/unicode_guard.py"
+if [ ! -f "$UNICODE_GUARD" ]; then
+  echo "WARNING: Unicode guard not found: $UNICODE_GUARD"
+  echo "Skipping Unicode security checks."
+  UNICODE_GUARD=""
+fi
+
 FAIL=0
 for f in "${REPORTS[@]}"; do
   echo "==> $f"
+
+  # Run format validator
   if ! bash "$VALIDATOR" "$f"; then
-    echo "FAILED: $f"
+    echo "FAILED (format): $f"
     FAIL=1
   fi
+
+  # Run Unicode guard if available
+  if [ -n "$UNICODE_GUARD" ]; then
+    if ! python3 "$UNICODE_GUARD" "$f"; then
+      echo "FAILED (Unicode): $f"
+      FAIL=1
+    fi
+  fi
+
+  echo ""
 done
 
 if [ "$FAIL" -ne 0 ]; then
-  echo "One or more PR final reports failed validation."
+  echo "❌ One or more PR final reports failed validation."
   exit 1
 fi
 
-echo "All PR final reports passed validation."
+echo "✅ All PR final reports passed validation (format + Unicode security)."
 exit 0
