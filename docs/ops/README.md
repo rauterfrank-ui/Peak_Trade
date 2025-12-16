@@ -161,7 +161,6 @@ git clean -fdX
 ---
 
 ## Audit Logs (Ops)
-
 Konvention:
 - Dateien: `docs/ops/PR_<NN>_FINAL_REPORT.md` (Verification Log pro PR)
 - Regel: Wenn ein Ops-PR einen auditierbaren Verification Log erzeugt, hier verlinken.
@@ -171,7 +170,7 @@ Konvention:
 - PR #53 – Final Closeout Report: `docs/ops/PR_53_FINAL_REPORT.md`
 
 ---
-
+- PR #61 – Final Report: `docs/ops/PR_61_FINAL_REPORT.md`
 ## Live Session Evaluation
 
 Offline tool for analyzing live trading sessions from `fills.csv`.
