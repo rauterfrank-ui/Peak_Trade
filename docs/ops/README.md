@@ -164,6 +164,7 @@ git clean -fdX
 Konvention:
 - Dateien: `docs/ops/PR_<NN>_FINAL_REPORT.md` (Verification Log pro PR)
 - Regel: Wenn ein Ops-PR einen auditierbaren Verification Log erzeugt, hier verlinken.
+- **Automation Runbook**: [PR_REPORT_AUTOMATION_RUNBOOK.md](PR_REPORT_AUTOMATION_RUNBOOK.md) – Generate, validate, and CI guard PR reports
 
 - PR #45 – CI Fast Lane Verification Log: `docs/ops/PR_45_FINAL_REPORT.md`
 - PR #51 – Live Eval CLI + Metrics Final Report: `docs/ops/PR_51_FINAL_REPORT.md`
