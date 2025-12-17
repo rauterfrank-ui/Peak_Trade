@@ -73,11 +73,23 @@ Das Board sollte folgende Spalten haben:
 | Spalte | Symbol | Beschreibung | Farbcode |
 |--------|--------|--------------|----------|
 | **📥 Backlog** | 📥 | Gesammelte, noch nicht priorisierte Issues | Grau `#808080` |
-| **🔥 Priorität 1** | 🔥 | Kritisch - sofort bearbeiten | Rot `#d73a4a` |
-| **⚡ Priorität 2** | ⚡ | Wichtig - zeitnah bearbeiten | Orange `#fb8500` |
-| **⭐ Priorität 3** | ⭐ | Normal - bei Gelegenheit | Gelb `#ffc107` |
+| **🔥 Priorität 1** | 🔥 | Kritisch - sofort bearbeiten (High) | Rot `#d73a4a` |
+| **⚡ Priorität 2** | ⚡ | Wichtig - zeitnah bearbeiten (Medium) | Orange `#fb8500` |
+| **⭐ Priorität 3** | ⭐ | Normal - bei Gelegenheit (Low) | Gelb `#ffc107` |
 | **🚧 In Progress** | 🚧 | Wird aktuell bearbeitet | Blau `#0969da` |
 | **✅ Done** | ✅ | Abgeschlossen | Grün `#2da44e` |
+
+### Workflow-Flow
+
+```
+📥 Backlog → 🔥 Priorität 1 → ⚡ Priorität 2 → ⭐ Priorität 3 → 🚧 In Progress → ✅ Done
+```
+
+**Aktueller Status der Issues:**
+- 🔥 Priority 1 (High): #97, #101
+- ⚡ Priority 2 (Medium): #98, #99, #100
+- ⭐ Priority 3 (Low): #103
+- 🎯 Epic: #96
 
 ### Spalten einrichten
 
