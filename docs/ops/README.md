@@ -232,3 +232,6 @@ python scripts/evaluate_live_session.py \
 ---
 
 *Operations guide for Peak_Trade repository health and maintenance.*
+
+- PR #110 – feat(reporting): Quarto smoke report
+  - docs/ops/PR_110_MERGE_LOG.md
