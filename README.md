@@ -1,13 +1,48 @@
 # Peak_Trade
 
+[![CI](https://github.com/rauterfrank-ui/Peak_Trade/workflows/CI/badge.svg)](https://github.com/rauterfrank-ui/Peak_Trade/actions/workflows/ci.yml)
+[![Quality](https://github.com/rauterfrank-ui/Peak_Trade/workflows/Code%20Quality%20&%20Security/badge.svg)](https://github.com/rauterfrank-ui/Peak_Trade/actions/workflows/quality.yml)
+[![Docs](https://github.com/rauterfrank-ui/Peak_Trade/workflows/Documentation/badge.svg)](https://github.com/rauterfrank-ui/Peak_Trade/actions/workflows/docs.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: Proprietary](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
+
 Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit konsequentem Safety-First-Ansatz. Die Architektur trennt sauber zwischen Data, Strategy, Portfolio, Execution und Reporting – Research-Experimente, Shadow-Runs und Testnet-Betrieb sind klar voneinander abgegrenzt. Eine umfassende Research-Pipeline (Sweeps, Walk-Forward, Monte-Carlo, Stress-Tests) liefert fundierte Go/No-Go-Entscheidungen, während Risk-Limits auf Order- und Portfolio-Level greifen, bevor ein Trade überhaupt ausgeführt werden kann. Kurz: Ein produktionsnahes Framework, dem Future-Ich vertrauen kann.
 
 ---
 
-## Schnelleinstieg
+## 🚀 Quick Start & Setup
 
+### macOS (Recommended)
+```bash
+# One-command setup for Apple Silicon (M2/M3)
+bash scripts/setup_macos.sh
+source venv/bin/activate
+```
+
+### Manual Setup
+```bash
+python3.11 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+make validate-env
+```
+
+**📚 Detailed Setup Guide:** [`docs/guides/macos-setup.md`](docs/guides/macos-setup.md)
+
+---
+
+## 📖 Documentation
+
+### Getting Started
 - 📖 **Vollständige v1.0-Übersicht:** [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](docs/PEAK_TRADE_V1_OVERVIEW_FULL.md)
 - 🚀 **Onboarding „First 7 Days":** [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](docs/PEAK_TRADE_FIRST_7_DAYS.md)
+- 🍎 **macOS Setup Guide:** [`docs/guides/macos-setup.md`](docs/guides/macos-setup.md)
+
+### Development & Contributing
+- 🤝 **Contributing Guide:** [`docs/guides/contributing.md`](docs/guides/contributing.md)
+- 🏗️ **CI/CD Architecture:** [`docs/architecture/ci-cd.md`](docs/architecture/ci-cd.md)
+- 🎛️ **Feature Flags Guide:** [`docs/guides/feature-flags.md`](docs/guides/feature-flags.md)
 
 ---
 
@@ -109,6 +144,43 @@ python scripts/generate_live_status_report.py \
 
 > Für einen Schritt-für-Schritt-Flow (inkl. Screenshots/Details) siehe:  
 > [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md).
+
+---
+
+## 🛠️ Development & Code Quality
+
+Peak Trade uses automated quality checks to ensure code reliability and security.
+
+### Quick Quality Checks
+```bash
+# Run all quality checks (what CI runs)
+make quality
+
+# Individual checks
+make lint          # Ruff linting
+make lint-fix      # Auto-fix linting issues
+make typecheck     # MyPy type checking
+make security      # Security scans (Bandit, Safety, pip-audit)
+make test          # Run tests
+make coverage      # Tests with coverage report
+```
+
+### Run CI Locally
+```bash
+# Simulate complete CI pipeline before pushing
+make ci-local
+```
+
+### Pre-commit Hooks
+```bash
+# Install hooks (runs automatically on git commit)
+pre-commit install
+
+# Run manually on all files
+pre-commit run --all-files
+```
+
+**📚 More details:** [`docs/guides/contributing.md`](docs/guides/contributing.md)
 
 ---
 
