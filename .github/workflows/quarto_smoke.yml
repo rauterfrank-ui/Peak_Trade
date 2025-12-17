@@ -16,6 +16,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Guard: Quarto no-exec (no executable chunks)
+        run: bash scripts/ci/check_quarto_no_exec.sh
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
