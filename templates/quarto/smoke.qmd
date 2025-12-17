@@ -1,0 +1,105 @@
+---
+title: "Peak Trade - Quarto Smoke Report"
+author: "Peak Trade Development Team"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-fold: false
+    embed-resources: true
+    theme: cosmo
+---
+
+## Overview
+
+This is a minimal **smoke test** report for Quarto rendering in the Peak Trade project.
+
+### Purpose
+
+- Verify Quarto is installed and working correctly
+- Test HTML self-contained rendering (no Jupyter/R/TinyTeX dependencies)
+- Validate CI artifact upload workflow
+- Demonstrate basic Quarto features: markdown, code blocks, and simple visualizations
+
+## Environment Info
+
+```{python}
+import sys
+import platform
+from datetime import datetime
+
+print(f"Python version: {sys.version}")
+print(f"Platform: {platform.platform()}")
+print(f"Report generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+```
+
+## Basic Computation
+
+Simple Python example to verify code execution:
+
+```{python}
+# Sample data
+import numpy as np
+import pandas as pd
+
+data = {
+    'metric': ['Accuracy', 'Precision', 'Recall', 'F1-Score'],
+    'value': [0.95, 0.92, 0.89, 0.90]
+}
+
+df = pd.DataFrame(data)
+print(df)
+```
+
+## Simple Visualization
+
+```{python}
+import matplotlib.pyplot as plt
+
+# Create a simple bar chart
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.bar(df['metric'], df['value'], color='steelblue')
+ax.set_ylabel('Score')
+ax.set_title('Model Performance Metrics')
+ax.set_ylim(0, 1)
+ax.grid(axis='y', alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+## Markdown Features
+
+### Lists
+
+**Supported features:**
+
+- Markdown rendering
+- Python code execution
+- Matplotlib plots
+- Self-contained HTML output
+
+### Tables
+
+| Feature | Status |
+|---------|--------|
+| Quarto HTML | ✓ |
+| Python execution | ✓ |
+| Plots | ✓ |
+| CI artifact | ✓ |
+
+## Summary
+
+✓ Quarto smoke test **passed**
+
+This report demonstrates:
+
+1. Successful Quarto installation
+2. Python code execution within Quarto
+3. Matplotlib visualization rendering
+4. Self-contained HTML output (no external dependencies)
+5. Ready for CI/CD integration
+
+---
+
+*Generated with Quarto {{ QUARTO_VERSION }}*
