@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc health-check backup backup-list backup-cleanup restore
+.PHONY: clean clean-all audit audit-tools gc health-check backup backup-list backup-cleanup restore report-smoke report-smoke-open
 
 # ============================================================================
 # Cleanup Targets
@@ -108,3 +108,16 @@ restore:
 	@echo "Restoring backup..."
 	@python -m src.infra.backup.recovery restore --id $(ID) --dest $(DEST)
 
+# ============================================================================
+# Reporting Targets
+# ============================================================================
+
+# Render Quarto smoke report (minimal HTML self-contained)
+report-smoke:
+	@echo "Rendering Quarto smoke report..."
+	./scripts/dev/report_smoke.sh
+
+# Render and open smoke report in browser (macOS)
+report-smoke-open: report-smoke
+	@echo "Opening smoke report in browser..."
+	open reports/quarto/smoke.html
