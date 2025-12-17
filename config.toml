@@ -796,3 +796,50 @@ vol_threshold_low = 0.3
 vol_threshold_high = 0.7
 use_ewm = true
 annualization_factor = 252.0
+
+# ============================================================================
+# FEATURE FLAGS (CI/CD Enhancement - Issue #98)
+# ============================================================================
+# Feature flags for gradual rollouts, A/B testing, and safe feature deployment.
+# 
+# Usage in code:
+#   from src.core.feature_flags import FeatureFlags
+#   if FeatureFlags.is_enabled("new_risk_model"):
+#       use_new_risk_calculation()
+#
+# Override via environment variables:
+#   FEATURE_NEW_RISK_MODEL=true
+#   FEATURE_ROLLOUT_ML_BASED_EXECUTION=0.5  # 50% rollout
+# ============================================================================
+
+[feature_flags]
+# Development Features
+enable_experimental_strategies = false
+enable_ai_risk_advisor = false
+enable_advanced_analytics = true
+enable_debug_logging = false
+
+# Gradual Rollouts (0.0 = disabled, 1.0 = 100% enabled)
+[feature_flags.rollout]
+new_portfolio_optimizer = 0.0
+ml_based_execution = 0.0
+advanced_regime_detection = 0.0
+
+# Environment-specific Flags
+[feature_flags.by_env.production]
+debug_mode = false
+mock_exchange = false
+verbose_logging = false
+enable_experimental_strategies = false
+
+[feature_flags.by_env.development]
+debug_mode = true
+mock_exchange = true
+verbose_logging = true
+enable_experimental_strategies = true
+
+[feature_flags.by_env.staging]
+debug_mode = false
+mock_exchange = false
+verbose_logging = true
+enable_experimental_strategies = true

@@ -1,0 +1,37 @@
+# ============================================================================
+# Peak_Trade Development Dependencies
+# ============================================================================
+# Stand: Dezember 2024
+# Installation: pip install -r requirements-dev.txt
+# Requires: Python 3.10+
+# ============================================================================
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.11.0
+pytest-xdist>=3.5.0  # Parallel test execution
+
+# Code Quality & Linting
+ruff>=0.1.9
+mypy>=1.8.0
+types-toml>=0.10.8
+
+# Security
+bandit>=1.7.6
+safety>=2.3.5
+pip-audit>=2.6.0
+
+# Pre-commit Hooks
+pre-commit>=3.5.0
+
+# Documentation
+sphinx>=7.2.0
+sphinx-rtd-theme>=2.0.0
+myst-parser>=2.0.0
+sphinx-autodoc-typehints>=1.25.0
+
+# Development Utilities
+ipython>=8.12.0
+ipdb>=0.13.13
