@@ -25,7 +25,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install numpy pandas matplotlib
+          pip install numpy pandas matplotlib jupyter nbformat pyyaml
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
