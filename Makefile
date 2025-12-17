@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open
+.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open health-check backup restore
 
 # ============================================================================
 # Cleanup Targets
@@ -84,3 +84,41 @@ report-smoke:
 report-smoke-open: report-smoke
 	@echo "Opening smoke report in browser..."
 	open reports/quarto/smoke.html
+
+# ============================================================================
+# Health Check & Resilience Targets (Issue #97)
+# ============================================================================
+
+# Run health checks for all system components
+health-check:
+	@echo "Running system health checks..."
+	python -m src.infra.health.health_checker
+
+# Run health checks with JSON output
+health-check-json:
+	@echo "Running system health checks (JSON output)..."
+	python -m src.infra.health.health_checker --json
+
+# Create backup of current state
+backup:
+	@echo "Creating backup..."
+	python -m src.infra.backup.backup_manager create
+
+# List all available backups
+backup-list:
+	@echo "Listing available backups..."
+	python -m src.infra.backup.backup_manager list
+
+# Restore from latest backup
+restore:
+	@echo "Restoring from latest backup..."
+	python -m src.infra.backup.backup_manager restore
+
+# Restore from specific backup
+restore-backup:
+	@echo "Usage: make restore-backup BACKUP_ID=<backup_id>"
+	@if [ -z "$(BACKUP_ID)" ]; then \
+		echo "Error: BACKUP_ID not specified"; \
+		exit 1; \
+	fi
+	python -m src.infra.backup.backup_manager restore $(BACKUP_ID)

@@ -796,3 +796,68 @@ vol_threshold_low = 0.3
 vol_threshold_high = 0.7
 use_ewm = true
 annualization_factor = 252.0
+
+# ============================================================================
+# RESILIENCE & STABILITY (Issue #97)
+# ============================================================================
+# Circuit-Breaker, Rate-Limiting und Resilience-Features
+
+[resilience]
+circuit_breaker_enabled = true
+circuit_breaker_threshold = 5
+circuit_breaker_timeout = 60
+
+[resilience.rate_limits]
+kraken = 10  # requests per second
+binance = 15
+coinbasepro = 8
+default = 5
+
+[resilience.circuit_breaker.kraken]
+threshold = 5
+timeout_seconds = 60
+half_open_max_calls = 3
+
+[resilience.circuit_breaker.binance]
+threshold = 5
+timeout_seconds = 60
+half_open_max_calls = 3
+
+[resilience.circuit_breaker.coinbasepro]
+threshold = 5
+timeout_seconds = 60
+half_open_max_calls = 3
+
+# ============================================================================
+# MONITORING & LOGGING (Issue #97)
+# ============================================================================
+# Strukturiertes Logging und Performance-Metriken
+
+[monitoring]
+log_level = "INFO"
+structured_logging = true
+metrics_enabled = true
+log_format = "json"
+
+# ============================================================================
+# HEALTH CHECKS (Issue #97)
+# ============================================================================
+# Automatische System-Health-Checks
+
+[health_checks]
+enabled = true
+interval_seconds = 60
+alert_on_failure = true
+checks = ["backtest", "exchange", "portfolio", "risk", "live"]
+
+# ============================================================================
+# BACKUP & RECOVERY (Issue #97)
+# ============================================================================
+# Automatische Backups für Portfolio-States und Konfigurationen
+
+[backup]
+enabled = true
+interval_hours = 24
+retention_days = 30
+backup_path = "./backups"
+compress = true
