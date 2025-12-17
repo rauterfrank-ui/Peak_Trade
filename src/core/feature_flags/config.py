@@ -8,11 +8,6 @@ import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-try:
-    import toml
-except ImportError:
-    import tomllib as toml  # Python 3.11+ fallback
-
 
 class FeatureFlagConfig:
     """Load and manage feature flag configuration."""
@@ -43,8 +38,16 @@ class FeatureFlagConfig:
         if not self.config_path.exists():
             return {}
 
-        with open(self.config_path, "rb") as f:
-            return toml.load(f)
+        try:
+            # Try tomllib first (Python 3.11+ built-in, requires binary)
+            import tomllib
+            with open(self.config_path, "rb") as f:
+                return tomllib.load(f)
+        except (ImportError, AttributeError):
+            # Fall back to toml library (requires text mode)
+            import toml
+            with open(self.config_path, "r", encoding="utf-8") as f:
+                return toml.load(f)
 
     def get_flag(self, flag_name: str, default: bool = False) -> bool:
         """

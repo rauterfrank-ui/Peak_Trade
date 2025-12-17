@@ -52,9 +52,16 @@ def validate_config_toml() -> Tuple[bool, str]:
         return False, "❌ config.toml (missing)"
 
     try:
-        import toml
-        with open(config_path, "rb") as f:
-            config = toml.load(f)
+        # Try tomllib first (Python 3.11+)
+        try:
+            import tomllib
+            with open(config_path, "rb") as f:
+                config = tomllib.load(f)
+        except (ImportError, AttributeError):
+            # Fall back to toml library
+            import toml
+            with open(config_path, "r", encoding="utf-8") as f:
+                config = toml.load(f)
 
         # Check for required sections
         required_sections = ["environment", "risk", "backtest"]
