@@ -1,0 +1,96 @@
+name: CI - Unit Tests
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+  schedule:
+    - cron: "0 3 * * 1"  # Monday 03:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ci-unit-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-xdist
+
+      - name: Run unit tests with parallel execution
+        run: |
+          pytest tests/ -v --tb=short -n auto -m "not integration and not slow"
+
+      - name: Run unit tests with coverage (Python 3.11 only)
+        if: matrix.python-version == '3.11'
+        run: |
+          pytest tests/ --cov=src --cov-report=xml --cov-report=html --cov-report=term-missing -m "not integration and not slow"
+
+      - name: Upload coverage to Codecov (Python 3.11 only)
+        if: matrix.python-version == '3.11'
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-unit-tests
+          fail_ci_if_error: false
+
+      - name: Upload coverage reports (Python 3.11 only)
+        if: matrix.python-version == '3.11' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports-py${{ matrix.python-version }}
+          path: |
+            coverage.xml
+            htmlcov/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Generate JUnit XML results
+        if: always()
+        run: |
+          pytest tests/ --junitxml=junit-results-py${{ matrix.python-version }}.xml -m "not integration and not slow" || true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-py${{ matrix.python-version }}
+          path: junit-results-py${{ matrix.python-version }}.xml
+          retention-days: 30
+          if-no-files-found: ignore
