@@ -39,7 +39,13 @@ ENV/
 *.db
 
 # Generated artifacts (local-only)
-/reports/
+# Ignore report outputs, but keep committed source files (*.qmd)
+/reports/**/*.html
+/reports/**/*.pdf
+/reports/**/libs/
+/reports/**/_smoke/
+/reports/**/_files/
+# Do NOT ignore: reports/quarto/smoke.qmd (committed)
 
 # Secrets (KRITISCH!)
 .env
