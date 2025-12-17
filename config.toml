@@ -796,3 +796,72 @@ vol_threshold_low = 0.3
 vol_threshold_high = 0.7
 use_ewm = true
 annualization_factor = 252.0
+
+# ============================================================================
+# RESILIENCE & STABILITY (Issue #97)
+# ============================================================================
+# Circuit breaker, rate limiting, health checks, and backup configuration
+
+[resilience]
+# Circuit Breaker Settings
+circuit_breaker_enabled = true
+circuit_breaker_threshold = 5           # Failures before opening circuit
+circuit_breaker_timeout = 60            # Seconds before testing recovery (HALF_OPEN)
+circuit_breaker_half_open_calls = 3     # Max calls in HALF_OPEN state
+
+[resilience.rate_limits]
+# Rate limits per API/Exchange (requests per second)
+exchange_api = 10          # General exchange API calls
+data_api = 50              # Market data API calls
+default = 10               # Default for unspecified APIs
+
+# ============================================================================
+# MONITORING
+# ============================================================================
+[monitoring]
+# Logging Configuration
+log_level = "INFO"                # DEBUG, INFO, WARNING, ERROR, CRITICAL
+structured_logging = true          # Use JSON structured logging
+log_file = "logs/peak_trade.log"  # Log file path (optional)
+
+# Metrics Configuration
+metrics_enabled = true
+metrics_collection_interval = 60   # Seconds between metrics collection
+
+# Performance Tracking
+track_latency = true
+track_throughput = true
+track_error_rate = true
+
+# ============================================================================
+# HEALTH CHECKS
+# ============================================================================
+[health_checks]
+enabled = true
+interval_seconds = 60              # Interval between automated checks
+alert_on_failure = true            # Raise alerts on health check failures
+
+# Component-specific health check settings
+[health_checks.components]
+backtest_engine = true
+exchange_connectivity = true
+portfolio_management = true
+risk_management = true
+live_trading = true
+
+# ============================================================================
+# BACKUP & RECOVERY
+# ============================================================================
+[backup]
+enabled = true
+interval_hours = 24                # Hours between automatic backups
+retention_days = 30                # Days to retain backups
+backup_path = "./backups"          # Backup storage directory
+compress = true                    # Compress backups with gzip
+
+# What to backup
+[backup.targets]
+portfolio_states = true            # Portfolio state snapshots
+trading_history = true             # Trading history and orders
+configurations = true              # Configuration files
+experiment_results = false         # Experiment results (can be large)

@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc
+.PHONY: clean clean-all audit audit-tools gc health-check backup backup-list backup-cleanup restore
 
 # ============================================================================
 # Cleanup Targets
@@ -70,3 +70,41 @@ gc:
 	@git count-objects -vH
 	@echo ""
 	@echo "Done. Git objects packed."
+
+# ============================================================================
+# Health Check & Monitoring
+# ============================================================================
+
+# Run system health checks
+health-check:
+	@echo "Running Peak Trade health checks..."
+	@python -m src.infra.health.health_checker
+
+# Run health checks with JSON output
+health-check-json:
+	@python -m src.infra.health.health_checker --json
+
+# ============================================================================
+# Backup & Recovery
+# ============================================================================
+
+# Create a backup (requires --type and --source)
+backup:
+	@echo "Creating backup..."
+	@python -m src.infra.backup.backup_manager create --type $(TYPE) --source $(SOURCE)
+
+# List all backups
+backup-list:
+	@echo "Listing backups..."
+	@python -m src.infra.backup.backup_manager list
+
+# Clean up old backups
+backup-cleanup:
+	@echo "Cleaning up old backups..."
+	@python -m src.infra.backup.backup_manager cleanup
+
+# Restore a backup (requires --id and --dest)
+restore:
+	@echo "Restoring backup..."
+	@python -m src.infra.backup.recovery restore --id $(ID) --dest $(DEST)
+
