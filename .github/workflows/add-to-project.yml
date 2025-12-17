@@ -1,0 +1,24 @@
+name: Add Issue to Project
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add issue to project
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/users/rauterfrank-ui/projects/1
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+
+      - name: Set status to Backlog
+        uses: titoportas/update-project-fields@v0.1.0
+        with:
+          project-url: https://github.com/users/rauterfrank-ui/projects/1
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ steps.add-to-project.outputs.itemId }}
+          field-keys: Status
+          field-values: Backlog
