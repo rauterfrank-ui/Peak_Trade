@@ -16,12 +16,11 @@ usage() {
 post_merge_verify.sh - Post-merge verification
 
 Usage:
-  scripts/automation/post_merge_verify.sh --expected-head <sha> [options]
-
-Required:
-  --expected-head <sha>     Expected HEAD commit SHA (short or long)
+  scripts/automation/post_merge_verify.sh [--expected-head <sha>] [options]
 
 Optional:
+  --expected-head <sha>     Expected HEAD commit SHA (short or long)
+                            Default: origin/main (after git fetch origin)
   --pr <number>             Feature PR number (context only)
   --target-pr <number>      Alias for --pr
   --merge-log-pr <number>   PR number that contains merge-log documentation (meta PR)
@@ -32,6 +31,13 @@ Optional:
   --pytest-args "<args>"    Default: -q
   --strict                  Treat warnings as failures where possible
   -h, --help                Show help
+
+Examples:
+  scripts/automation/post_merge_verify.sh
+  # Validates HEAD against origin/main (with warning)
+
+  scripts/automation/post_merge_verify.sh --expected-head abc1234
+  # Validates HEAD against specified commit
 
 Exit codes:
   0  success
@@ -62,8 +68,18 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ -n "$EXPECTED" ]] || die_usage "--expected-head is required"
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || internal "Not inside a git repository"
+
+# Default to origin/main if --expected-head not provided
+if [[ -z "$EXPECTED" ]]; then
+  echo "WARN: --expected-head not provided; defaulting to origin/main" >&2
+  if ! git fetch origin >/dev/null 2>&1; then
+    internal "Failed to fetch origin for default --expected-head"
+  fi
+  if ! EXPECTED="$(git rev-parse --verify origin/main 2>/dev/null)"; then
+    internal "Cannot resolve origin/main for default --expected-head"
+  fi
+fi
 
 HEAD_SHA="$(git rev-parse HEAD)"
 HEAD_SHORT="$(git rev-parse --short HEAD)"
