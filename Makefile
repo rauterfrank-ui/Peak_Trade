@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc
+.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open
 
 # ============================================================================
 # Cleanup Targets
@@ -70,3 +70,15 @@ gc:
 	@git count-objects -vH
 	@echo ""
 	@echo "Done. Git objects packed."
+
+# ============================================================================
+# Reporting Targets
+# ============================================================================
+
+# Generate Quarto smoke test report
+report-smoke:
+	@./scripts/dev/report_smoke.sh
+
+# Generate and open smoke report in browser
+report-smoke-open:
+	@./scripts/dev/report_smoke.sh --open

@@ -1,0 +1,39 @@
+---
+title: "Peak Trade - Smoke Test Report"
+format:
+  html:
+    embed-resources: true
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+---
+
+## Overview
+
+This is a minimal smoke test report to verify the Quarto reporting pipeline.
+
+## Purpose
+
+The smoke report validates:
+
+- Quarto installation and rendering
+- HTML output generation with embedded resources
+- Basic document structure and formatting
+- Integration with the Peak Trade build system
+
+## Status
+
+**Report generated successfully.**
+
+The reporting infrastructure is operational.
+
+## Next Steps
+
+1. Extend with actual strategy metrics
+2. Add performance visualizations
+3. Integrate backtest results
+4. Add automated report generation
+
+---
+
+*Generated: `r format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z')`*

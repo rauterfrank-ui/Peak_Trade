@@ -1,0 +1,49 @@
+name: Quarto Smoke Test
+
+on:
+  push:
+    branches: [main, nervous-wilbur]
+    paths:
+      - 'reports/quarto/smoke.qmd'
+      - 'scripts/dev/report_smoke.sh'
+      - '.github/workflows/quarto_smoke.yml'
+  pull_request:
+    paths:
+      - 'reports/quarto/smoke.qmd'
+      - 'scripts/dev/report_smoke.sh'
+      - '.github/workflows/quarto_smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: pre-release
+
+      - name: Verify Quarto installation
+        run: quarto --version
+
+      - name: Render smoke report
+        run: ./scripts/dev/report_smoke.sh
+
+      - name: Upload smoke report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quarto-smoke-html
+          path: reports/quarto/_smoke/smoke.html
+          retention-days: 7
+
+      - name: Report summary
+        run: |
+          echo "### Quarto Smoke Test ✓" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Smoke report generated successfully." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Download artifact: \`quarto-smoke-html\`" >> $GITHUB_STEP_SUMMARY
