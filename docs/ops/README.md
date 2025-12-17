@@ -235,3 +235,5 @@ python scripts/evaluate_live_session.py \
 
 - PR #110 – feat(reporting): Quarto smoke report
   - docs/ops/PR_110_MERGE_LOG.md
+- PR #114 – fix(reporting): make Quarto smoke report truly no-exec
+  - docs/ops/PR_114_MERGE_LOG.md
