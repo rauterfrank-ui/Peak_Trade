@@ -30,11 +30,25 @@ import logging
 import time
 import functools
 from enum import Enum
-from typing import Callable, Dict, Any, Optional, Type
+from typing import Callable, Dict, Any, Optional, Type, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
+
+
+def get_utc_now() -> datetime:
+    """
+    Get current UTC time in a timezone-aware manner.
+    
+    Returns:
+        Timezone-aware datetime in UTC
+    """
+    # Python 3.11+ has datetime.UTC, fall back to utcnow() for older versions
+    if hasattr(datetime, 'UTC'):
+        return datetime.now(datetime.UTC)
+    else:
+        return datetime.utcnow()
 
 
 class CircuitState(Enum):
@@ -324,7 +338,7 @@ class HealthCheckResult:
     name: str
     healthy: bool
     message: str = ""
-    timestamp: datetime = field(default_factory=lambda: datetime.now(datetime.UTC) if hasattr(datetime, 'UTC') else datetime.utcnow())
+    timestamp: datetime = field(default_factory=get_utc_now)
     details: Dict[str, Any] = field(default_factory=dict)
     
     def to_dict(self) -> Dict[str, Any]:
@@ -451,12 +465,9 @@ class HealthCheck:
         results = self.run_all()
         all_healthy = all(result.healthy for result in results.values())
         
-        # Use timezone-aware datetime
-        now = datetime.now(datetime.UTC) if hasattr(datetime, 'UTC') else datetime.utcnow()
-        
         return {
             "healthy": all_healthy,
-            "timestamp": now.isoformat(),
+            "timestamp": get_utc_now().isoformat(),
             "checks": {name: result.to_dict() for name, result in results.items()},
             "summary": {
                 "total": len(results),

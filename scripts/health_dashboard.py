@@ -17,9 +17,9 @@ import json
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 
-from src.core.resilience import health_check, HealthCheckResult
+from src.core.resilience import health_check, HealthCheckResult, get_utc_now
 
 
 # Configure logging
@@ -42,7 +42,7 @@ def setup_health_checks() -> None:
     logger.info("Setting up health checks...")
     
     # Backtest Engine Health Check
-    def check_backtest_engine() -> tuple[bool, str]:
+    def check_backtest_engine() -> Tuple[bool, str]:
         """Check if backtest engine can be imported and initialized."""
         try:
             from src.backtest.engine import BacktestEngine
@@ -60,7 +60,7 @@ def setup_health_checks() -> None:
     health_check.register("backtest_engine", check_backtest_engine)
     
     # Database Health Check (if database module exists)
-    def check_database() -> tuple[bool, str]:
+    def check_database() -> Tuple[bool, str]:
         """Check database connectivity."""
         try:
             # Check if database module exists
@@ -83,7 +83,7 @@ def setup_health_checks() -> None:
     # Exchange API Health Check
     # This is automatically registered when ResilientExchangeClient is instantiated
     # We'll create a test instance to trigger registration
-    def check_exchange_api() -> tuple[bool, str]:
+    def check_exchange_api() -> Tuple[bool, str]:
         """Check exchange API connectivity."""
         try:
             from src.data.exchange_client import ResilientExchangeClient
@@ -115,14 +115,11 @@ def format_health_report(results: Dict[str, HealthCheckResult]) -> str:
     """
     output = []
     
-    # Use timezone-aware datetime
-    now = datetime.now(datetime.UTC) if hasattr(datetime, 'UTC') else datetime.utcnow()
-    
     # Header
     output.append("=" * 60)
     output.append("PEAK TRADE HEALTH DASHBOARD")
     output.append("=" * 60)
-    output.append(f"Timestamp: {now.isoformat()}")
+    output.append(f"Timestamp: {get_utc_now().isoformat()}")
     output.append("")
     
     # Individual checks
@@ -161,12 +158,9 @@ def save_health_report(results: Dict[str, HealthCheckResult], output_path: Path)
         results: Dictionary of health check results
         output_path: Path to save JSON report
     """
-    # Use timezone-aware datetime
-    now = datetime.now(datetime.UTC) if hasattr(datetime, 'UTC') else datetime.utcnow()
-    
     # Convert results to JSON-serializable format
     report = {
-        "timestamp": now.isoformat(),
+        "timestamp": get_utc_now().isoformat(),
         "checks": {name: result.to_dict() for name, result in results.items()},
         "summary": {
             "total": len(results),

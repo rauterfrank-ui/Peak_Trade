@@ -7,7 +7,7 @@ Provides robust API communication with automatic failure handling and recovery.
 """
 
 import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 import ccxt
 
 from src.core.resilience import circuit_breaker, retry_with_backoff, health_check
@@ -159,7 +159,7 @@ class ResilientExchangeClient:
             logger.error(f"Unexpected error fetching ticker for {symbol}: {e}")
             raise
     
-    def _health_check(self) -> tuple[bool, str]:
+    def _health_check(self) -> Tuple[bool, str]:
         """
         Health check for exchange connectivity.
         
