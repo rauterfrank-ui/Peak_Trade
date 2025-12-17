@@ -8,8 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
-
+from typing import Any, Literal
 
 # Schedule-Typen
 ScheduleType = Literal["once", "interval", "daily"]
@@ -29,10 +28,10 @@ class JobSchedule:
     """
 
     type: ScheduleType = "once"
-    interval_seconds: Optional[int] = None
-    daily_time: Optional[str] = None
-    next_run_at: Optional[datetime] = None
-    last_run_at: Optional[datetime] = None
+    interval_seconds: int | None = None
+    daily_time: str | None = None
+    next_run_at: datetime | None = None
+    last_run_at: datetime | None = None
 
 
 @dataclass
@@ -54,11 +53,11 @@ class JobDefinition:
 
     name: str
     command: str = "python"
-    args: Dict[str, Any] = field(default_factory=dict)
-    env: Dict[str, str] = field(default_factory=dict)
+    args: dict[str, Any] = field(default_factory=dict)
+    env: dict[str, str] = field(default_factory=dict)
     schedule: JobSchedule = field(default_factory=lambda: JobSchedule(type="once"))
     enabled: bool = True
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     timeout_seconds: int = 300  # 5 Minuten Default
     description: str = ""
 
@@ -87,7 +86,7 @@ class JobResult:
     success: bool
     stdout: str = ""
     stderr: str = ""
-    exception: Optional[str] = None
+    exception: str | None = None
     duration_seconds: float = 0.0
 
     def __post_init__(self):

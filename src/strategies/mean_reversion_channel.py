@@ -16,10 +16,9 @@ und nutzt die Tendenz von Preisen, zu ihrem Mittelwert zurückzukehren.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -57,10 +56,10 @@ class MeanReversionChannelStrategy(BaseStrategy):
         window: int = 20,
         num_std: float = 2.0,
         exit_at_mean: bool = True,
-        max_holding_bars: Optional[int] = None,
+        max_holding_bars: int | None = None,
         price_col: str = "close",
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Mean Reversion Channel Strategy.
@@ -126,7 +125,7 @@ class MeanReversionChannelStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.mean_reversion_channel",
-    ) -> "MeanReversionChannelStrategy":
+    ) -> MeanReversionChannelStrategy:
         """
         Fabrikmethode für Core-Config.
 
@@ -241,7 +240,7 @@ class MeanReversionChannelStrategy(BaseStrategy):
         bars_in_position = 0
 
         for i in range(len(data)):
-            idx = data.index[i]
+            data.index[i]
             signal = signals.iloc[i]
 
             if signal != 0:
@@ -279,7 +278,7 @@ class MeanReversionChannelStrategy(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 
@@ -296,7 +295,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
         "window": params.get("window", 20),
         "num_std": params.get("num_std", 2.0),
         "exit_at_mean": params.get("exit_at_mean", True),
-        "max_holding_bars": params.get("max_holding_bars", None),
+        "max_holding_bars": params.get("max_holding_bars"),
         "price_col": params.get("price_col", "close"),
     }
 
@@ -304,7 +303,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return strategy.generate_signals(df)
 
 
-def get_strategy_description(params: Dict) -> str:
+def get_strategy_description(params: dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
     max_hold = params.get('max_holding_bars', 'unbegrenzt')
     return f"""

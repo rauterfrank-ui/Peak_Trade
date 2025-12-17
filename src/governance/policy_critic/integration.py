@@ -8,7 +8,6 @@ into automated change approval workflows (future bounded_auto system).
 import json
 import subprocess
 from pathlib import Path
-from typing import Dict, Optional, Tuple
 
 from .models import PolicyCriticResult, RecommendedAction, Severity
 
@@ -16,8 +15,8 @@ from .models import PolicyCriticResult, RecommendedAction, Severity
 def run_policy_critic_subprocess(
     diff_file: Path,
     changed_files: list[str],
-    context_json: Optional[Path] = None,
-) -> Tuple[PolicyCriticResult, int]:
+    context_json: Path | None = None,
+) -> tuple[PolicyCriticResult, int]:
     """
     Run policy critic as subprocess and parse results.
 
@@ -72,7 +71,7 @@ def run_policy_critic_subprocess(
         raise RuntimeError(f"Failed to run policy critic: {e}") from e
 
 
-def _dict_to_result(data: Dict) -> PolicyCriticResult:
+def _dict_to_result(data: dict) -> PolicyCriticResult:
     """Convert dict back to PolicyCriticResult (simplified)."""
     from .models import Evidence, PolicyCriticResult, Violation
 
@@ -126,8 +125,8 @@ def should_deny_auto_apply(result: PolicyCriticResult) -> bool:
 
 
 def merge_policy_result_into_report(
-    existing_report: Dict, policy_result: PolicyCriticResult
-) -> Dict:
+    existing_report: dict, policy_result: PolicyCriticResult
+) -> dict:
     """
     Merge policy critic result into existing promotion/bounded_auto report.
 

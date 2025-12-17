@@ -38,9 +38,10 @@ Usage:
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from itertools import product
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import pandas as pd
 
@@ -49,16 +50,6 @@ from .base import (
     ExperimentResult,
     ExperimentRunner,
     ParamSweep,
-    SweepResultRow,
-)
-from .strategy_sweeps import (
-    get_ma_crossover_sweeps,
-    get_rsi_reversion_sweeps,
-    get_vol_breakout_sweeps,
-    get_momentum_sweeps,
-    get_bollinger_sweeps,
-    get_donchian_sweeps,
-    Granularity,
 )
 
 logger = logging.getLogger(__name__)
@@ -86,9 +77,9 @@ class ParamConstraint:
 
     left_param: str
     operator: ConstraintOperator
-    right: Union[str, int, float]
+    right: str | int | float
 
-    def evaluate(self, params: Dict[str, Any]) -> bool:
+    def evaluate(self, params: dict[str, Any]) -> bool:
         """
         Prüft ob die Constraint für gegebene Parameter erfüllt ist.
 
@@ -165,16 +156,16 @@ class StrategySweepConfig:
 
     name: str
     strategy_name: str
-    param_grid: Dict[str, List[Any]] = field(default_factory=dict)
-    constraints: List[Union[ParamConstraint, Tuple[str, str, Any]]] = field(
+    param_grid: dict[str, list[Any]] = field(default_factory=dict)
+    constraints: list[ParamConstraint | tuple[str, str, Any]] = field(
         default_factory=list
     )
-    base_params: Dict[str, Any] = field(default_factory=dict)
-    description: Optional[str] = None
-    tags: List[str] = field(default_factory=list)
-    symbols: List[str] = field(default_factory=lambda: ["BTC/EUR"])
+    base_params: dict[str, Any] = field(default_factory=dict)
+    description: str | None = None
+    tags: list[str] = field(default_factory=list)
+    symbols: list[str] = field(default_factory=lambda: ["BTC/EUR"])
     timeframe: str = "1h"
-    portfolio_config: Optional[Dict[str, Any]] = None
+    portfolio_config: dict[str, Any] | None = None
 
     def __post_init__(self) -> None:
         """Validierung und Normalisierung."""
@@ -184,7 +175,7 @@ class StrategySweepConfig:
             raise ValueError("StrategySweepConfig.strategy_name darf nicht leer sein")
 
         # Konvertiere Tuple-Constraints zu ParamConstraint
-        normalized_constraints: List[ParamConstraint] = []
+        normalized_constraints: list[ParamConstraint] = []
         for c in self.constraints:
             if isinstance(c, ParamConstraint):
                 normalized_constraints.append(c)
@@ -204,14 +195,11 @@ class StrategySweepConfig:
             n *= len(values)
         return n
 
-    def _passes_constraints(self, params: Dict[str, Any]) -> bool:
+    def _passes_constraints(self, params: dict[str, Any]) -> bool:
         """Prüft ob alle Constraints für params erfüllt sind."""
-        for constraint in self.constraints:
-            if not constraint.evaluate(params):
-                return False
-        return True
+        return all(constraint.evaluate(params) for constraint in self.constraints)
 
-    def generate_param_combinations(self) -> List[Dict[str, Any]]:
+    def generate_param_combinations(self) -> list[dict[str, Any]]:
         """
         Generiert alle gültigen Parameter-Kombinationen.
 
@@ -228,7 +216,7 @@ class StrategySweepConfig:
 
         combinations = []
         for combo in product(*param_values):
-            param_dict = dict(zip(param_names, combo))
+            param_dict = dict(zip(param_names, combo, strict=False))
             # Merge mit base_params
             full_params = {**self.base_params, **param_dict}
 
@@ -245,8 +233,8 @@ class StrategySweepConfig:
 
     def to_experiment_config(
         self,
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
         initial_capital: float = 10000.0,
         output_dir: str = "reports/experiments",
     ) -> ExperimentConfig:
@@ -278,10 +266,10 @@ class StrategySweepConfig:
             initial_capital=initial_capital,
             base_params=self.base_params,
             output_dir=output_dir,
-            tags=self.tags + ["phase41", "research_playground"],
+            tags=[*self.tags, "phase41", "research_playground"],
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "name": self.name,
@@ -306,7 +294,7 @@ class StrategySweepConfig:
 # =============================================================================
 
 # Registry der vordefinierten Sweeps
-_PREDEFINED_SWEEPS: Dict[str, StrategySweepConfig] = {}
+_PREDEFINED_SWEEPS: dict[str, StrategySweepConfig] = {}
 
 
 def register_predefined_sweep(sweep: StrategySweepConfig) -> None:
@@ -335,12 +323,12 @@ def get_predefined_sweep(name: str) -> StrategySweepConfig:
     return _PREDEFINED_SWEEPS[name]
 
 
-def list_predefined_sweeps() -> List[str]:
+def list_predefined_sweeps() -> list[str]:
     """Gibt Liste aller vordefinierten Sweep-Namen zurück."""
     return sorted(_PREDEFINED_SWEEPS.keys())
 
 
-def get_all_predefined_sweeps() -> Dict[str, StrategySweepConfig]:
+def get_all_predefined_sweeps() -> dict[str, StrategySweepConfig]:
     """Gibt alle vordefinierten Sweeps zurück."""
     return dict(_PREDEFINED_SWEEPS)
 
@@ -831,14 +819,14 @@ register_predefined_sweep(
 
 def run_sweep_batch(
     sweep_config: StrategySweepConfig,
-    data: Optional[pd.DataFrame] = None,
-    backtest_fn: Optional[Callable] = None,
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None,
+    data: pd.DataFrame | None = None,
+    backtest_fn: Callable | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
     initial_capital: float = 10000.0,
-    max_runs: Optional[int] = None,
+    max_runs: int | None = None,
     dry_run: bool = False,
-    progress_callback: Optional[Callable[[int, int, str], None]] = None,
+    progress_callback: Callable[[int, int, str], None] | None = None,
 ) -> ExperimentResult:
     """
     Führt einen kompletten Sweep-Batch aus.
@@ -896,8 +884,8 @@ def run_sweep_batch(
 def create_custom_sweep(
     name: str,
     strategy_name: str,
-    param_grid: Dict[str, List[Any]],
-    constraints: Optional[List[Tuple[str, str, Any]]] = None,
+    param_grid: dict[str, list[Any]],
+    constraints: list[tuple[str, str, Any]] | None = None,
     **kwargs: Any,
 ) -> StrategySweepConfig:
     """
@@ -935,7 +923,7 @@ def create_custom_sweep(
 # =============================================================================
 
 
-def get_sweeps_for_strategy(strategy_name: str) -> List[StrategySweepConfig]:
+def get_sweeps_for_strategy(strategy_name: str) -> list[StrategySweepConfig]:
     """
     Gibt alle vordefinierten Sweeps für eine Strategie zurück.
 
@@ -952,7 +940,7 @@ def get_sweeps_for_strategy(strategy_name: str) -> List[StrategySweepConfig]:
     ]
 
 
-def get_sweeps_by_tag(tag: str) -> List[StrategySweepConfig]:
+def get_sweeps_by_tag(tag: str) -> list[StrategySweepConfig]:
     """
     Gibt alle Sweeps mit einem bestimmten Tag zurück.
 
@@ -982,7 +970,7 @@ def print_sweep_catalog() -> str:
     ]
 
     # Nach Strategie gruppieren
-    by_strategy: Dict[str, List[StrategySweepConfig]] = {}
+    by_strategy: dict[str, list[StrategySweepConfig]] = {}
     for sweep in _PREDEFINED_SWEEPS.values():
         strategy = sweep.strategy_name
         if strategy not in by_strategy:

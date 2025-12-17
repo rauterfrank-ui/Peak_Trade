@@ -9,17 +9,14 @@ Testet die Governance-Prüfung für [live_profile.strategy_switch]:
 
 from __future__ import annotations
 
-import tempfile
 from pathlib import Path
 
 import pytest
 
 from src.governance.strategy_switch_sanity_check import (
     StrategySwitchSanityResult,
-    StrategyMeta,
     run_strategy_switch_sanity_check,
 )
-
 
 # ============================================================================
 # Fixtures
@@ -55,11 +52,11 @@ active_strategy_id = "ma_crossover"
 allowed = ["ma_crossover", "rsi_reversion"]
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
         )
-        
+
         assert result.status == "OK"
         assert result.ok is True
         assert result.active_strategy_id == "ma_crossover"
@@ -76,11 +73,11 @@ active_strategy_id = "breakout"
 allowed = ["breakout"]
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
         )
-        
+
         assert result.status == "OK"
         assert result.active_strategy_id == "breakout"
         assert result.allowed == ["breakout"]
@@ -102,11 +99,11 @@ active_strategy_id = "unknown_strategy"
 allowed = ["ma_crossover", "rsi_reversion"]
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
         )
-        
+
         assert result.status == "FAIL"
         assert result.has_failures is True
         assert "unknown_strategy" in result.active_strategy_id
@@ -120,11 +117,11 @@ active_strategy_id = ""
 allowed = ["ma_crossover"]
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
         )
-        
+
         # Leerer active ist kein Fehler, solange allowed nicht leer ist
         assert result.status == "OK"
 
@@ -149,11 +146,11 @@ tier = "r_and_d"
 is_live_ready = false
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
         )
-        
+
         assert result.status == "FAIL"
         assert "armstrong_cycle" in result.r_and_d_strategies
         assert any("R&D" in m for m in result.messages)
@@ -166,12 +163,12 @@ active_strategy_id = "ma_crossover"
 allowed = ["ma_crossover", "el_karoui_vol_model"]
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
             r_and_d_strategy_keys=["el_karoui_vol_model"],  # Explizit übergeben
         )
-        
+
         assert result.status == "FAIL"
         assert "el_karoui_vol_model" in result.r_and_d_strategies
 
@@ -192,11 +189,11 @@ active_strategy_id = "ma_crossover"
 allowed = []
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
         )
-        
+
         assert result.status == "FAIL"
         assert any("leer" in m for m in result.messages)
 
@@ -207,11 +204,11 @@ allowed = []
 active_strategy_id = "ma_crossover"
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
         )
-        
+
         assert result.status == "FAIL"
 
 
@@ -228,7 +225,7 @@ class TestConfigErrors:
         result = run_strategy_switch_sanity_check(
             config_path=str(temp_config_dir / "nonexistent.toml"),
         )
-        
+
         assert result.status == "FAIL"
         assert any("nicht gefunden" in m for m in result.messages)
 
@@ -239,11 +236,11 @@ class TestConfigErrors:
 foo = "bar"
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
         )
-        
+
         assert result.status == "FAIL"
         assert any("nicht in Config gefunden" in m for m in result.messages)
 
@@ -254,11 +251,11 @@ foo = "bar"
 active_strategy_id = "broken
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
         )
-        
+
         assert result.status == "FAIL"
         assert any("Parse" in m or "Fehler" in m for m in result.messages)
 
@@ -279,12 +276,12 @@ active_strategy_id = "ma_crossover"
 allowed = ["ma_crossover", "rsi_reversion", "breakout", "macd", "bollinger_bands", "momentum_1h"]
 """
         config_path = write_temp_config(temp_config_dir, config)
-        
+
         result = run_strategy_switch_sanity_check(
             config_path=str(config_path),
             max_allowed_strategies_warn=3,  # Niedrigerer Threshold für Test
         )
-        
+
         assert result.status == "WARN"
         assert result.has_warnings is True
         assert any("bewusst überprüfen" in m for m in result.messages)
@@ -308,7 +305,7 @@ class TestResultProperties:
             r_and_d_strategies=[],
             messages=["Alles gut"],
         )
-        
+
         assert result.ok is True
         assert result.has_failures is False
         assert result.has_warnings is False
@@ -323,7 +320,7 @@ class TestResultProperties:
             r_and_d_strategies=[],
             messages=["Fehler"],
         )
-        
+
         assert result.ok is False
         assert result.has_failures is True
         assert result.has_warnings is False
@@ -338,7 +335,7 @@ class TestResultProperties:
             r_and_d_strategies=[],
             messages=["Warnung"],
         )
-        
+
         assert result.ok is False
         assert result.has_failures is False
         assert result.has_warnings is True
@@ -361,7 +358,7 @@ class TestIntegrationWithRealConfig:
         result = run_strategy_switch_sanity_check(
             config_path="config/config.toml",
         )
-        
+
         # Mindestens sollte der Check durchlaufen (egal welcher Status)
         assert result.status in ("OK", "WARN", "FAIL")
         assert isinstance(result.allowed, list)

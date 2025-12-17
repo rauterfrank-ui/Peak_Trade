@@ -19,11 +19,11 @@ Usage:
         print(f"{rb.title}: {rb.url}")
 """
 from .models import RunbookLink
-from .registry import resolve_runbooks_for_alert, get_all_runbooks, RUNBOOK_REGISTRY
+from .registry import RUNBOOK_REGISTRY, get_all_runbooks, resolve_runbooks_for_alert
 
 __all__ = [
-    "RunbookLink",
-    "resolve_runbooks_for_alert",
-    "get_all_runbooks",
     "RUNBOOK_REGISTRY",
+    "RunbookLink",
+    "get_all_runbooks",
+    "resolve_runbooks_for_alert",
 ]

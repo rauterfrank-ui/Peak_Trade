@@ -17,19 +17,20 @@ Usage:
 """
 from __future__ import annotations
 
+import contextlib
 import json
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any
 
 import pandas as pd
 
 from src.analytics.experiments_analysis import (
-    filter_sweeps,
     filter_market_scans,
+    filter_sweeps,
 )
-
 
 # =============================================================================
 # DATACLASSES
@@ -57,7 +58,7 @@ class PortfolioComponentCandidate:
     weight: float
     source_run_id: str
     metric_score: float
-    params: Dict[str, Any] = field(default_factory=dict)
+    params: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -75,11 +76,11 @@ class PortfolioCandidate:
     """
 
     name: str
-    components: List[PortfolioComponentCandidate]
+    components: list[PortfolioComponentCandidate]
     allocation_method: str = "equal"
     initial_equity: float = 10000.0
     created_at: str = field(default_factory=lambda: datetime.utcnow().isoformat(timespec="seconds") + "Z")
-    source_tag: Optional[str] = None
+    source_tag: str | None = None
 
 
 # =============================================================================
@@ -94,13 +95,13 @@ def select_top_sweep_components(
     max_per_symbol: int = 1,
     max_per_strategy: int = 3,
     max_total: int = 10,
-    strategy_keys: Optional[Sequence[str]] = None,
-    symbols: Optional[Sequence[str]] = None,
-    timeframes: Optional[Sequence[str]] = None,
-    min_sharpe: Optional[float] = None,
-    min_return: Optional[float] = None,
-    tag: Optional[str] = None,
-) -> List[PortfolioComponentCandidate]:
+    strategy_keys: Sequence[str] | None = None,
+    symbols: Sequence[str] | None = None,
+    timeframes: Sequence[str] | None = None,
+    min_sharpe: float | None = None,
+    min_return: float | None = None,
+    tag: str | None = None,
+) -> list[PortfolioComponentCandidate]:
     """
     Selektiert die besten Sweep-Ergebnisse als Portfolio-Komponenten.
 
@@ -137,7 +138,7 @@ def select_top_sweep_components(
     # Timeframe-Filter (aus metadata_json extrahieren)
     if timeframes is not None and "metadata_json" in df_sweeps.columns:
 
-        def get_timeframe(meta_json: str) -> Optional[str]:
+        def get_timeframe(meta_json: str) -> str | None:
             try:
                 meta = json.loads(meta_json) if meta_json else {}
                 return meta.get("timeframe")
@@ -151,7 +152,7 @@ def select_top_sweep_components(
     # Tag-Filter
     if tag is not None and "metadata_json" in df_sweeps.columns:
 
-        def get_tag(meta_json: str) -> Optional[str]:
+        def get_tag(meta_json: str) -> str | None:
             try:
                 meta = json.loads(meta_json) if meta_json else {}
                 return meta.get("tag")
@@ -184,9 +185,9 @@ def select_top_sweep_components(
     df_sweeps = df_sweeps.sort_values(by=metric, ascending=False)
 
     # Komponenten extrahieren
-    candidates: List[PortfolioComponentCandidate] = []
-    symbol_counts: Dict[str, int] = {}
-    strategy_counts: Dict[str, int] = {}
+    candidates: list[PortfolioComponentCandidate] = []
+    symbol_counts: dict[str, int] = {}
+    strategy_counts: dict[str, int] = {}
 
     for _, row in df_sweeps.iterrows():
         symbol = str(row.get("symbol", ""))
@@ -210,10 +211,8 @@ def select_top_sweep_components(
 
         # Parameter aus params_json extrahieren
         params = {}
-        try:
+        with contextlib.suppress(json.JSONDecodeError, TypeError):
             params = json.loads(row.get("params_json", "{}") or "{}")
-        except (json.JSONDecodeError, TypeError):
-            pass
 
         # Metrik-Score
         metric_score = float(row.get(metric, 0) or 0)
@@ -243,12 +242,12 @@ def select_top_market_scan_components(
     metric: str = "sharpe",
     max_per_symbol: int = 1,
     max_total: int = 10,
-    strategy_keys: Optional[Sequence[str]] = None,
-    symbols: Optional[Sequence[str]] = None,
-    min_sharpe: Optional[float] = None,
-    min_return: Optional[float] = None,
-    tag: Optional[str] = None,
-) -> List[PortfolioComponentCandidate]:
+    strategy_keys: Sequence[str] | None = None,
+    symbols: Sequence[str] | None = None,
+    min_sharpe: float | None = None,
+    min_return: float | None = None,
+    tag: str | None = None,
+) -> list[PortfolioComponentCandidate]:
     """
     Selektiert die besten Market-Scan-Ergebnisse als Portfolio-Komponenten.
 
@@ -278,7 +277,7 @@ def select_top_market_scan_components(
     # Mode-Filter
     if "metadata_json" in df_scans.columns:
 
-        def get_mode(meta_json: str) -> Optional[str]:
+        def get_mode(meta_json: str) -> str | None:
             try:
                 meta = json.loads(meta_json) if meta_json else {}
                 return meta.get("mode")
@@ -300,7 +299,7 @@ def select_top_market_scan_components(
     # Tag-Filter
     if tag is not None and "metadata_json" in df_scans.columns:
 
-        def get_tag(meta_json: str) -> Optional[str]:
+        def get_tag(meta_json: str) -> str | None:
             try:
                 meta = json.loads(meta_json) if meta_json else {}
                 return meta.get("tag")
@@ -311,7 +310,7 @@ def select_top_market_scan_components(
         df_scans = df_scans[df_scans["_tag"] == tag]
 
     # Stats aus stats_json extrahieren
-    def extract_stats(stats_json: str) -> Dict[str, Any]:
+    def extract_stats(stats_json: str) -> dict[str, Any]:
         try:
             return json.loads(stats_json) if stats_json else {}
         except (json.JSONDecodeError, TypeError):
@@ -337,8 +336,8 @@ def select_top_market_scan_components(
     df_scans = df_scans.sort_values(by=sort_col, ascending=False)
 
     # Komponenten extrahieren
-    candidates: List[PortfolioComponentCandidate] = []
-    symbol_counts: Dict[str, int] = {}
+    candidates: list[PortfolioComponentCandidate] = []
+    symbol_counts: dict[str, int] = {}
 
     for _, row in df_scans.iterrows():
         symbol = str(row.get("symbol", ""))
@@ -384,17 +383,17 @@ def select_top_market_scan_components(
 def build_portfolio_candidates_from_sweeps_and_scans(
     *,
     df_sweeps: pd.DataFrame,
-    df_scans: Optional[pd.DataFrame] = None,
+    df_scans: pd.DataFrame | None = None,
     metric: str = "sharpe",
     max_components: int = 5,
-    min_sharpe: Optional[float] = None,
-    min_return: Optional[float] = None,
+    min_sharpe: float | None = None,
+    min_return: float | None = None,
     name_prefix: str = "auto_portfolio",
     allocation_method: str = "equal",
     initial_equity: float = 10000.0,
-    tag: Optional[str] = None,
+    tag: str | None = None,
     prefer_sweeps: bool = True,
-) -> List[PortfolioCandidate]:
+) -> list[PortfolioCandidate]:
     """
     Erzeugt automatische Portfolio-Kandidaten aus Sweep- und Market-Scan-Ergebnissen.
 
@@ -420,7 +419,7 @@ def build_portfolio_candidates_from_sweeps_and_scans(
     Returns:
         Liste von PortfolioCandidate
     """
-    all_components: List[PortfolioComponentCandidate] = []
+    all_components: list[PortfolioComponentCandidate] = []
 
     # 1. Sweep-Komponenten sammeln
     if not df_sweeps.empty:
@@ -506,13 +505,13 @@ def build_portfolio_candidates_from_sweeps_and_scans(
 def build_multiple_portfolio_candidates(
     *,
     df: pd.DataFrame,
-    strategies: Optional[Sequence[str]] = None,
+    strategies: Sequence[str] | None = None,
     metric: str = "sharpe",
     max_components_per_portfolio: int = 5,
-    min_sharpe: Optional[float] = None,
+    min_sharpe: float | None = None,
     name_prefix: str = "auto",
     initial_equity: float = 10000.0,
-) -> List[PortfolioCandidate]:
+) -> list[PortfolioCandidate]:
     """
     Erzeugt mehrere Portfolio-Kandidaten, gruppiert nach Strategie.
 
@@ -539,7 +538,7 @@ def build_multiple_portfolio_candidates(
     if strategies is None:
         strategies = df_sweeps["strategy_key"].unique().tolist()
 
-    candidates: List[PortfolioCandidate] = []
+    candidates: list[PortfolioCandidate] = []
 
     for strategy_key in strategies:
         # Nur Sweeps dieser Strategie
@@ -654,7 +653,7 @@ def write_portfolio_candidate_to_toml(
     # Symbol-spezifische Strategien
     lines.append("[portfolio.strategies]")
     for comp in candidate.components:
-        symbol_escaped = comp.symbol.replace("/", "_")
+        comp.symbol.replace("/", "_")
         lines.append(f'"{comp.symbol}" = "{comp.strategy_key}"')
     lines.append("")
 

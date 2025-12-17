@@ -19,18 +19,18 @@ from __future__ import annotations
 
 from .engine import (
     SweepConfig,
+    SweepEngine,
     SweepResult,
     SweepSummary,
-    SweepEngine,
     expand_parameter_grid,
     generate_sweep_id,
 )
 
 __all__ = [
     "SweepConfig",
+    "SweepEngine",
     "SweepResult",
     "SweepSummary",
-    "SweepEngine",
     "expand_parameter_grid",
     "generate_sweep_id",
 ]

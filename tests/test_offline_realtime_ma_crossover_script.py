@@ -11,7 +11,6 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
-import pytest
 
 # Python-Path anpassen für src-Import
 project_root = Path(__file__).resolve().parent.parent
@@ -20,18 +19,16 @@ if str(project_root) not in sys.path:
 
 # Import der Script-Module
 from scripts.run_offline_realtime_ma_crossover import (
-    normalize_symbol,
-    OfflineSynthSessionConfig,
-    run_offline_synth_session,
     OfflineRealtimeFeed,
     OfflineRealtimeFeedConfig,
     OfflineRealtimePipelineStats,
-    write_offline_realtime_report,
+    OfflineSynthSessionConfig,
     build_offline_ma_crossover_pipeline,
+    normalize_symbol,
+    run_offline_synth_session,
     run_pipeline,
-    parse_args,
+    write_offline_realtime_report,
 )
-
 
 # =============================================================================
 # Tests für Symbol-Normalisierung

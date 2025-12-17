@@ -7,10 +7,9 @@ Klassische Moving-Average-Crossover-Strategie:
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -45,8 +44,8 @@ class MACrossoverStrategy(BaseStrategy):
         fast_window: int = 20,
         slow_window: int = 50,
         price_col: str = "close",
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert MA-Crossover-Strategie.
@@ -100,7 +99,7 @@ class MACrossoverStrategy(BaseStrategy):
     @classmethod
     def from_config(
         cls,
-        cfg: "PeakConfigLike",
+        cfg: PeakConfigLike,
         section: str = "strategy.ma_crossover",
     ) -> MACrossoverStrategy:
         """
@@ -198,7 +197,7 @@ class PeakConfigLike:
 # LEGACY API (Backwards Compatibility)
 # ============================================================================
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 

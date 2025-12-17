@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Mapping, Any
+from typing import Any
 
 import pandas as pd
 
@@ -25,7 +26,7 @@ class OfflinePaperTradeSessionMeta:
     timeframe: str
     start_ts: pd.Timestamp
     end_ts: pd.Timestamp
-    extra: Optional[Mapping[str, Any]] = None
+    extra: Mapping[str, Any] | None = None
 
 
 def _ensure_output_dir(output_dir: Path) -> Path:
@@ -57,14 +58,14 @@ def _compute_basic_stats(trades: pd.DataFrame) -> dict:
     net_pnl = gross_pnl - fees
 
     return {
-        "n_trades": int(len(trades)),
+        "n_trades": len(trades),
         "gross_pnl": gross_pnl,
         "fees": fees,
         "net_pnl": net_pnl,
     }
 
 
-def _plot_equity_curve(trades: pd.DataFrame, output_dir: Path) -> Optional[str]:
+def _plot_equity_curve(trades: pd.DataFrame, output_dir: Path) -> str | None:
     """Erstellt eine einfache Equity-Kurve auf Basis einer 'pnl'-Spalte.
 
     Gibt den Dateinamen (relativ zu output_dir) zurück oder None.

@@ -10,24 +10,22 @@ WICHTIG: Diese Tests machen KEINE echten API-Calls!
 """
 from __future__ import annotations
 
-import pytest
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, Mock, patch
+from datetime import UTC, datetime
+from unittest.mock import MagicMock
 
-from src.orders.base import OrderRequest, OrderFill, OrderExecutionResult
+import pytest
+
+from src.core.environment import EnvironmentConfig, TradingEnvironment
+from src.live.risk_limits import LiveRiskCheckResult, LiveRiskLimits
+from src.live.safety import SafetyGuard
+from src.orders.base import OrderFill, OrderRequest
 from src.orders.testnet_executor import (
-    TestnetExchangeOrderExecutor,
-    TestnetExecutionLog,
-    EnvironmentNotTestnetError,
-    RiskLimitViolationError,
     EXECUTION_MODE_TESTNET_LIVE,
     EXECUTION_MODE_TESTNET_VALIDATED,
+    EnvironmentNotTestnetError,
+    TestnetExchangeOrderExecutor,
+    TestnetExecutionLog,
 )
-from src.core.environment import EnvironmentConfig, TradingEnvironment
-from src.live.safety import SafetyGuard
-from src.live.risk_limits import LiveRiskLimits, LiveRiskConfig, LiveRiskCheckResult
-
 
 # =============================================================================
 # Fixtures
@@ -82,14 +80,14 @@ def mock_exchange_client() -> MagicMock:
         vol_exec=0.01,
         avg_price=50000.0,
         fee=1.30,
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
     )
     client.fetch_order_as_fill.return_value = OrderFill(
         symbol="BTC/EUR",
         side="buy",
         quantity=0.01,
         price=50000.0,
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
         fee=1.30,
         fee_currency="EUR",
     )
@@ -332,7 +330,7 @@ class TestOrderExecution:
             side="buy",
             quantity=0.01,
             price=50000.0,
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             fee=1.30,
             fee_currency="EUR",
         )

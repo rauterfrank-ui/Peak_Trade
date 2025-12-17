@@ -13,7 +13,6 @@ from __future__ import annotations
 import subprocess
 import sys
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -23,21 +22,20 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.analytics.regimes import (
+    RegimeAnalysisResult,
     RegimeConfig,
     RegimeLabel,
     RegimeStats,
-    RegimeAnalysisResult,
     SweepRobustnessResult,
-    load_regime_config,
-    detect_regimes,
-    get_regime_distribution,
-    analyze_regimes_from_equity,
     analyze_experiment_regimes,
+    analyze_regimes_from_equity,
     compute_sweep_robustness,
-    format_regime_stats_table,
     create_regime_summary_df,
+    detect_regimes,
+    format_regime_stats_table,
+    get_regime_distribution,
+    load_regime_config,
 )
-
 
 # =============================================================================
 # FIXTURES

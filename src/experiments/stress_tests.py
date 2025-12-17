@@ -31,9 +31,10 @@ Usage:
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Dict, Iterable, Literal, Optional
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -75,7 +76,7 @@ class StressScenarioConfig:
     severity: float = 0.2
     window: int = 5
     position: Literal["start", "middle", "end"] = "middle"
-    seed: Optional[int] = 42
+    seed: int | None = 42
 
     def __post_init__(self) -> None:
         """Validiert Konfiguration."""
@@ -103,9 +104,9 @@ class StressScenarioResult:
     """
 
     scenario: StressScenarioConfig
-    baseline_metrics: Dict[str, float]
-    stressed_metrics: Dict[str, float]
-    diff_metrics: Dict[str, float]
+    baseline_metrics: dict[str, float]
+    stressed_metrics: dict[str, float]
+    diff_metrics: dict[str, float]
 
 
 @dataclass
@@ -120,7 +121,7 @@ class StressTestSuiteResult:
     """
 
     returns: pd.Series
-    baseline_metrics: Dict[str, float]
+    baseline_metrics: dict[str, float]
     scenario_results: list[StressScenarioResult]
 
 
@@ -132,7 +133,7 @@ class StressTestSuiteResult:
 def _get_position_index(
     length: int,
     position: Literal["start", "middle", "end"],
-    seed: Optional[int] = None,
+    seed: int | None = None,
 ) -> int:
     """
     Bestimmt den Index für eine Position.
@@ -271,7 +272,7 @@ def apply_stress_scenario_to_returns(
 def run_stress_test_suite(
     returns: pd.Series,
     scenarios: Iterable[StressScenarioConfig],
-    stats_fn: Callable[[pd.Series], Dict[str, float]],
+    stats_fn: Callable[[pd.Series], dict[str, float]],
 ) -> StressTestSuiteResult:
     """
     Führt eine Suite von Stress-Szenarien auf einer Baseline-Return-Serie aus.
@@ -323,7 +324,7 @@ def run_stress_test_suite(
             continue
 
         # Berechne Differenzen
-        diff_metrics: Dict[str, float] = {}
+        diff_metrics: dict[str, float] = {}
         for key in set(baseline_metrics.keys()) | set(stressed_metrics.keys()):
             baseline_val = baseline_metrics.get(key, 0.0)
             stressed_val = stressed_metrics.get(key, 0.0)
@@ -359,7 +360,7 @@ def load_returns_for_top_config(
     *,
     use_dummy_data: bool = False,
     dummy_bars: int = 500,
-) -> Optional[pd.Series]:
+) -> pd.Series | None:
     """
     Lädt Returns für eine Top-N-Konfiguration aus einem Sweep.
 

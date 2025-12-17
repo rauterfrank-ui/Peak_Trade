@@ -25,9 +25,10 @@ Usage:
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Dict, List, Literal, Optional
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -57,7 +58,7 @@ class MonteCarloConfig:
     num_runs: int = 1000
     method: Literal["simple", "block_bootstrap"] = "simple"
     block_size: int = 20
-    seed: Optional[int] = 42
+    seed: int | None = 42
 
     def __post_init__(self) -> None:
         """Validiert Konfiguration."""
@@ -83,7 +84,7 @@ class MonteCarloRunResult:
     """
 
     run_index: int
-    metrics: Dict[str, float]
+    metrics: dict[str, float]
 
 
 @dataclass
@@ -99,8 +100,8 @@ class MonteCarloSummaryResult:
     """
 
     config: MonteCarloConfig
-    metric_distributions: Dict[str, pd.Series]
-    metric_quantiles: Dict[str, Dict[str, float]]
+    metric_distributions: dict[str, pd.Series]
+    metric_quantiles: dict[str, dict[str, float]]
     num_runs: int
 
 
@@ -147,7 +148,7 @@ def _block_bootstrap(
         # Fallback zu simple bootstrap wenn Block zu groß
         return _simple_bootstrap(returns, n_samples, rng)
 
-    blocks: List[pd.Series] = []
+    blocks: list[pd.Series] = []
     for _ in range(n_blocks):
         start_idx = rng.integers(0, max_start_idx)
         block = returns.iloc[start_idx : start_idx + block_size]
@@ -167,7 +168,7 @@ def run_monte_carlo_from_returns(
     returns: pd.Series,
     config: MonteCarloConfig,
     *,
-    stats_fn: Optional[Callable[[pd.Series], Dict[str, float]]] = None,
+    stats_fn: Callable[[pd.Series], dict[str, float]] | None = None,
 ) -> MonteCarloSummaryResult:
     """
     Führt Monte-Carlo-Simulationen auf einer Serie von Returns durch.
@@ -193,7 +194,7 @@ def run_monte_carlo_from_returns(
     # Default stats_fn: Wrapper um compute_basic_stats
     if stats_fn is None:
 
-        def stats_fn(returns_series: pd.Series) -> Dict[str, float]:
+        def stats_fn(returns_series: pd.Series) -> dict[str, float]:
             # Konvertiere Returns zu Equity-Curve für compute_basic_stats
             equity = (1 + returns_series).cumprod() * 10000  # Startkapital = 10000
             stats = stats_mod.compute_basic_stats(equity)
@@ -207,8 +208,8 @@ def run_monte_carlo_from_returns(
     rng = np.random.default_rng(config.seed)
 
     # Führe Monte-Carlo-Runs durch
-    all_metrics: Dict[str, List[float]] = {}
-    run_results: List[MonteCarloRunResult] = []
+    all_metrics: dict[str, list[float]] = {}
+    run_results: list[MonteCarloRunResult] = []
 
     logger.info(f"Starte {config.num_runs} Monte-Carlo-Runs (Methode: {config.method})")
 
@@ -244,8 +245,8 @@ def run_monte_carlo_from_returns(
         raise ValueError("Keine gültigen Runs durchgeführt - alle Runs fehlgeschlagen")
 
     # Erstelle Verteilungen und Quantilen
-    metric_distributions: Dict[str, pd.Series] = {}
-    metric_quantiles: Dict[str, Dict[str, float]] = {}
+    metric_distributions: dict[str, pd.Series] = {}
+    metric_quantiles: dict[str, dict[str, float]] = {}
 
     for metric_name, values in all_metrics.items():
         series = pd.Series(values)
@@ -280,7 +281,7 @@ def run_monte_carlo_from_returns(
 def load_returns_for_experiment_run(
     experiment_id: str,
     experiments_dir: Path,
-) -> Optional[pd.Series]:
+) -> pd.Series | None:
     """
     Lädt Returns für einen Experiment-Run.
 
@@ -313,7 +314,7 @@ def run_monte_carlo_for_experiment(
     experiment_id: str,
     config: MonteCarloConfig,
     experiments_dir: Path,
-) -> Optional[MonteCarloSummaryResult]:
+) -> MonteCarloSummaryResult | None:
     """
     Führt Monte-Carlo-Analyse für einen Experiment-Run durch.
 
@@ -337,7 +338,7 @@ def run_monte_carlo_from_equity(
     equity: pd.Series,
     config: MonteCarloConfig,
     *,
-    stats_fn: Optional[Callable[[pd.Series], Dict[str, float]]] = None,
+    stats_fn: Callable[[pd.Series], dict[str, float]] | None = None,
 ) -> MonteCarloSummaryResult:
     """
     Führt Monte-Carlo-Analyse auf Basis einer Equity-Curve durch.
@@ -361,7 +362,7 @@ def run_monte_carlo_from_equity(
     # Wrapper für stats_fn, der Equity erwartet
     if stats_fn is None:
 
-        def stats_fn_equity(returns_series: pd.Series) -> Dict[str, float]:
+        def stats_fn_equity(returns_series: pd.Series) -> dict[str, float]:
             equity_sim = (1 + returns_series).cumprod() * equity.iloc[0]
             return stats_mod.compute_basic_stats(equity_sim)
 

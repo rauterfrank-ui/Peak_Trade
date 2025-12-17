@@ -17,7 +17,7 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Protocol, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Protocol
 
 import pandas as pd
 
@@ -49,15 +49,15 @@ class PortfolioContext:
     """
 
     timestamp: pd.Timestamp
-    symbols: List[str]
-    prices: Dict[str, float]
-    current_positions: Dict[str, float]
-    current_weights: Optional[Dict[str, float]] = None
-    strategy_signals: Optional[Dict[str, float]] = None
-    returns_history: Optional[pd.DataFrame] = None
-    volatilities: Optional[Dict[str, float]] = None
+    symbols: list[str]
+    prices: dict[str, float]
+    current_positions: dict[str, float]
+    current_weights: dict[str, float] | None = None
+    strategy_signals: dict[str, float] | None = None
+    returns_history: pd.DataFrame | None = None
+    volatilities: dict[str, float] | None = None
     equity: float = 0.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Berechnet abgeleitete Felder."""
@@ -102,7 +102,7 @@ class PortfolioStrategy(Protocol):
 
     def generate_target_weights(
         self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Generiert Zielgewichte für das Portfolio.
 
@@ -133,7 +133,7 @@ class BasePortfolioStrategy(ABC):
         name: Name der Strategie (für Logging)
     """
 
-    def __init__(self, config: "PortfolioConfig") -> None:
+    def __init__(self, config: PortfolioConfig) -> None:
         """
         Initialisiert die Portfolio-Strategie.
 
@@ -146,7 +146,7 @@ class BasePortfolioStrategy(ABC):
     @abstractmethod
     def _compute_raw_weights(
         self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Berechnet rohe (nicht-normalisierte) Gewichte.
 
@@ -162,7 +162,7 @@ class BasePortfolioStrategy(ABC):
 
     def generate_target_weights(
         self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Generiert Zielgewichte mit Normalisierung und Constraints.
 
@@ -201,8 +201,8 @@ class BasePortfolioStrategy(ABC):
         return final_weights
 
     def _apply_constraints(
-        self, weights: Dict[str, float]
-    ) -> Dict[str, float]:
+        self, weights: dict[str, float]
+    ) -> dict[str, float]:
         """
         Wendet Constraints auf Gewichte an.
 
@@ -241,8 +241,8 @@ class BasePortfolioStrategy(ABC):
         return constrained
 
     def _normalize_weights(
-        self, weights: Dict[str, float]
-    ) -> Dict[str, float]:
+        self, weights: dict[str, float]
+    ) -> dict[str, float]:
         """
         Normalisiert Gewichte auf Summe 1.0.
 
@@ -279,7 +279,7 @@ class BasePortfolioStrategy(ABC):
 
         return weights
 
-    def get_universe(self, context: PortfolioContext) -> List[str]:
+    def get_universe(self, context: PortfolioContext) -> list[str]:
         """
         Bestimmt das aktive Universe.
 
@@ -300,7 +300,7 @@ class BasePortfolioStrategy(ABC):
         return f"<{self.name}(enabled={self.config.enabled}, strategy={self.config.name})>"
 
 
-def make_portfolio_strategy(config: "PortfolioConfig") -> Optional[BasePortfolioStrategy]:
+def make_portfolio_strategy(config: PortfolioConfig) -> BasePortfolioStrategy | None:
     """
     Factory-Funktion: Erstellt Portfolio-Strategie basierend auf Config.
 

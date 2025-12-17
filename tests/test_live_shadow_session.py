@@ -17,38 +17,30 @@ WICHTIG: Alle Tests laufen ohne Netzwerk-Zugriff.
 """
 from __future__ import annotations
 
-import pytest
-from datetime import datetime, timezone, timedelta
-from typing import List, Optional
-from unittest.mock import Mock, patch, MagicMock
+from datetime import UTC, datetime, timedelta
+from unittest.mock import Mock
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
-from src.data.kraken_live import (
-    LiveCandle,
-    FakeCandleSource,
-    ShadowPaperConfig,
-    LiveExchangeConfig,
-    load_shadow_paper_config,
-    load_live_exchange_config,
-    KRAKEN_TIMEFRAME_MAP,
-    _timeframe_to_minutes,
-    _symbol_to_kraken,
-)
 from src.core.environment import EnvironmentConfig, TradingEnvironment
+from src.data.kraken_live import (
+    FakeCandleSource,
+    LiveCandle,
+    LiveExchangeConfig,
+    ShadowPaperConfig,
+    _symbol_to_kraken,
+    _timeframe_to_minutes,
+)
+from src.execution.pipeline import ExecutionPipeline
+from src.live.risk_limits import LiveRiskConfig, LiveRiskLimits
 from src.live.shadow_session import (
+    EnvironmentNotAllowedError,
     ShadowPaperSession,
     ShadowPaperSessionMetrics,
-    EnvironmentNotAllowedError,
-    ALLOWED_ENVIRONMENT_MODES,
 )
-from src.live.risk_limits import LiveRiskLimits, LiveRiskConfig, LiveRiskCheckResult
-from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
-from src.orders.base import OrderRequest
-from src.execution.pipeline import ExecutionPipeline, SignalEvent
 from src.strategies.base import BaseStrategy, StrategyMetadata
-
 
 # =============================================================================
 # Test Fixtures
@@ -60,7 +52,7 @@ def create_test_candles(
     start_price: float = 50000.0,
     volatility: float = 0.002,
     trend: float = 0.0001,
-) -> List[LiveCandle]:
+) -> list[LiveCandle]:
     """
     Erstellt Test-Candles mit kontrollierbarem Preisverlauf.
 
@@ -73,8 +65,8 @@ def create_test_candles(
     Returns:
         Liste von LiveCandle-Objekten
     """
-    candles: List[LiveCandle] = []
-    base_time = datetime.now(timezone.utc) - timedelta(minutes=n)
+    candles: list[LiveCandle] = []
+    base_time = datetime.now(UTC) - timedelta(minutes=n)
     price = start_price
 
     np.random.seed(42)  # Reproduzierbar
@@ -103,7 +95,7 @@ def create_test_candles(
     return candles
 
 
-def create_crossover_candles(n: int = 100) -> List[LiveCandle]:
+def create_crossover_candles(n: int = 100) -> list[LiveCandle]:
     """
     Erstellt Candles die einen klaren MA-Crossover erzeugen.
 
@@ -113,8 +105,8 @@ def create_crossover_candles(n: int = 100) -> List[LiveCandle]:
     Returns:
         Liste von LiveCandle-Objekten
     """
-    candles: List[LiveCandle] = []
-    base_time = datetime.now(timezone.utc) - timedelta(minutes=n)
+    candles: list[LiveCandle] = []
+    base_time = datetime.now(UTC) - timedelta(minutes=n)
 
     for i in range(n):
         if i < n // 2:
@@ -143,7 +135,7 @@ class DummyStrategy(BaseStrategy):
 
     KEY = "dummy"
 
-    def __init__(self, signal_pattern: Optional[List[int]] = None):
+    def __init__(self, signal_pattern: list[int] | None = None):
         super().__init__(
             config={},
             metadata=StrategyMetadata(name="Dummy", description="Test Strategy"),
@@ -152,7 +144,7 @@ class DummyStrategy(BaseStrategy):
         self._call_count = 0
 
     @classmethod
-    def from_config(cls, cfg, section: str = "strategy.dummy") -> "DummyStrategy":
+    def from_config(cls, cfg, section: str = "strategy.dummy") -> DummyStrategy:
         return cls()
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
@@ -304,7 +296,7 @@ class TestLiveCandle:
 
     def test_to_series(self):
         """Test: to_series konvertiert zu pandas Series."""
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         candle = LiveCandle(
             timestamp=ts,
             open=100.0,
@@ -323,7 +315,7 @@ class TestLiveCandle:
 
     def test_to_dict(self):
         """Test: to_dict konvertiert zu Dictionary."""
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         candle = LiveCandle(
             timestamp=ts,
             open=100.0,
@@ -814,9 +806,9 @@ class TestCallbacks:
             )
         )
 
-        callback_calls: List[int] = []
+        callback_calls: list[int] = []
 
-        def callback(step: int, candle: Optional[LiveCandle]) -> None:
+        def callback(step: int, candle: LiveCandle | None) -> None:
             callback_calls.append(step)
 
         session = ShadowPaperSession(

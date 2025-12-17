@@ -16,13 +16,14 @@ WICHTIG: Paper-only. Alle Daten stammen aus simulierten Backtests.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
+from datetime import datetime
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from src.orders.base import OrderExecutionResult
     from src.backtest.result import BacktestResult
+    from src.orders.base import OrderExecutionResult
 
 
 @dataclass
@@ -101,14 +102,14 @@ class ExecutionStats:
     n_losing_trades: int = 0
 
     # Timestamps
-    first_trade_time: Optional[datetime] = None
-    last_trade_time: Optional[datetime] = None
+    first_trade_time: datetime | None = None
+    last_trade_time: datetime | None = None
     trading_period_days: float = 0.0
 
     # Metadata
-    symbol: Optional[str] = None
-    run_id: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    symbol: str | None = None
+    run_id: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Berechnet abgeleitete Metriken nach Initialisierung."""
@@ -131,7 +132,7 @@ class ExecutionStats:
             delta = self.last_trade_time - self.first_trade_time
             self.trading_period_days = delta.total_seconds() / (24 * 3600)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert ExecutionStats zu einem Dictionary."""
         return {
             "n_orders": self.n_orders,
@@ -165,7 +166,7 @@ class ExecutionStats:
         }
 
 
-def from_execution_logs(logs: List[Dict[str, Any]]) -> ExecutionStats:
+def from_execution_logs(logs: list[dict[str, Any]]) -> ExecutionStats:
     """
     Erzeugt ExecutionStats aus Execution-Logs der BacktestEngine.
 
@@ -195,10 +196,10 @@ def from_execution_logs(logs: List[Dict[str, Any]]) -> ExecutionStats:
     total_fees = 0.0
     total_notional = 0.0
 
-    first_time: Optional[datetime] = None
-    last_time: Optional[datetime] = None
-    symbol: Optional[str] = None
-    run_id: Optional[str] = None
+    first_time: datetime | None = None
+    last_time: datetime | None = None
+    symbol: str | None = None
+    run_id: str | None = None
 
     for log in logs:
         total_orders += log.get("total_orders", 0)
@@ -256,8 +257,8 @@ def from_execution_logs(logs: List[Dict[str, Any]]) -> ExecutionStats:
 
 
 def from_execution_results(
-    results: Sequence["OrderExecutionResult"],
-    reference_prices: Optional[Dict[str, float]] = None,
+    results: Sequence[OrderExecutionResult],
+    reference_prices: dict[str, float] | None = None,
 ) -> ExecutionStats:
     """
     Erzeugt ExecutionStats aus einer Liste von OrderExecutionResult.
@@ -297,17 +298,17 @@ def from_execution_results(
     sell_volume = 0.0
 
     # Slippage tracking
-    slippages_bps: List[float] = []
+    slippages_bps: list[float] = []
     total_slippage = 0.0
 
     # Notional tracking
-    notionals: List[float] = []
+    notionals: list[float] = []
 
     # Timestamps
-    timestamps: List[datetime] = []
+    timestamps: list[datetime] = []
 
     # Symbol (nehme ersten gefundenen)
-    symbol: Optional[str] = None
+    symbol: str | None = None
 
     for result in results:
         req = result.request
@@ -344,7 +345,7 @@ def from_execution_results(
 
             # Slippage berechnen
             # Versuche Referenzpreis aus verschiedenen Quellen zu bekommen
-            ref_price: Optional[float] = None
+            ref_price: float | None = None
 
             # 1. Aus reference_prices Dict
             if reference_prices and req.symbol in reference_prices:
@@ -415,8 +416,8 @@ def from_execution_results(
 
 
 def from_backtest_result(
-    result: "BacktestResult",
-    execution_results: Optional[Sequence["OrderExecutionResult"]] = None,
+    result: BacktestResult,
+    execution_results: Sequence[OrderExecutionResult] | None = None,
 ) -> ExecutionStats:
     """
     Erzeugt ExecutionStats aus einem BacktestResult.

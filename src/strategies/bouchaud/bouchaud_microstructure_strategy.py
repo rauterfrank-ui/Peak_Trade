@@ -38,12 +38,11 @@ Referenzen:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas as pd
 
 from ..base import BaseStrategy, StrategyMetadata
-
 
 # =============================================================================
 # CONFIG
@@ -75,7 +74,7 @@ class BouchaudMicrostructureConfig:
     imbalance_threshold: float = 0.3
     propagator_decay: float = 0.5
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert Config zu Dictionary."""
         return {
             "use_orderbook_imbalance": self.use_orderbook_imbalance,
@@ -143,8 +142,8 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
         min_liquidity_filter: float = 1000.0,
         imbalance_threshold: float = 0.3,
         propagator_decay: float = 0.5,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Bouchaud Microstructure Strategy.
@@ -204,7 +203,7 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.bouchaud_microstructure",
-    ) -> "BouchaudMicrostructureStrategy":
+    ) -> BouchaudMicrostructureStrategy:
         """
         Fabrikmethode für Config-basierte Instanziierung.
 

@@ -33,7 +33,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -46,9 +46,9 @@ logger = logging.getLogger(__name__)
 
 
 def compute_duration_seconds(
-    started_at: Optional[datetime],
-    ended_at: Optional[datetime],
-) -> Optional[int]:
+    started_at: datetime | None,
+    ended_at: datetime | None,
+) -> int | None:
     """Berechnet die Session-Dauer in Sekunden."""
     if started_at is None:
         return None
@@ -90,7 +90,7 @@ class LiveSessionSummary(BaseModel):
 
     session_id: str = Field(..., description="Eindeutige Session-ID")
     started_at: datetime = Field(..., description="Start-Zeitpunkt")
-    ended_at: Optional[datetime] = Field(None, description="Ende-Zeitpunkt")
+    ended_at: datetime | None = Field(None, description="Ende-Zeitpunkt")
     mode: str = Field(..., description="shadow, testnet, paper, live")
     environment: str = Field(
         "", description="Environment-Info (Exchange + Symbol)"
@@ -98,13 +98,13 @@ class LiveSessionSummary(BaseModel):
     status: Literal["started", "completed", "failed", "aborted"] = Field(
         ..., description="Session-Status"
     )
-    realized_pnl: Optional[float] = Field(None, description="Realisierter PnL")
-    max_drawdown: Optional[float] = Field(None, description="Max Drawdown")
-    num_orders: Optional[int] = Field(None, description="Anzahl Orders")
-    report_path: Optional[str] = Field(None, description="Pfad zum Report")
-    notes: Optional[str] = Field(None, description="Fehler oder Notizen")
+    realized_pnl: float | None = Field(None, description="Realisierter PnL")
+    max_drawdown: float | None = Field(None, description="Max Drawdown")
+    num_orders: int | None = Field(None, description="Anzahl Orders")
+    report_path: str | None = Field(None, description="Pfad zum Report")
+    notes: str | None = Field(None, description="Fehler oder Notizen")
     # Phase 85: Zusätzliche Felder
-    duration_seconds: Optional[int] = Field(None, description="Session-Dauer in Sekunden")
+    duration_seconds: int | None = Field(None, description="Session-Dauer in Sekunden")
     is_live_warning: bool = Field(False, description="True wenn mode=live (Safety)")
     # Phase 87: Risk-Severity Integration
     risk_status: Literal["green", "yellow", "red"] = Field(
@@ -132,17 +132,17 @@ class LiveSessionDetail(BaseModel):
     # Basis-Felder (wie Summary)
     session_id: str = Field(..., description="Eindeutige Session-ID")
     started_at: datetime = Field(..., description="Start-Zeitpunkt")
-    ended_at: Optional[datetime] = Field(None, description="Ende-Zeitpunkt")
+    ended_at: datetime | None = Field(None, description="Ende-Zeitpunkt")
     mode: str = Field(..., description="shadow, testnet, paper, live")
     environment: str = Field("", description="Environment-Info")
     status: Literal["started", "completed", "failed", "aborted"] = Field(
         ..., description="Session-Status"
     )
-    realized_pnl: Optional[float] = Field(None, description="Realisierter PnL")
-    max_drawdown: Optional[float] = Field(None, description="Max Drawdown")
-    num_orders: Optional[int] = Field(None, description="Anzahl Orders")
-    notes: Optional[str] = Field(None, description="Fehler oder Notizen")
-    duration_seconds: Optional[int] = Field(None, description="Session-Dauer")
+    realized_pnl: float | None = Field(None, description="Realisierter PnL")
+    max_drawdown: float | None = Field(None, description="Max Drawdown")
+    num_orders: int | None = Field(None, description="Anzahl Orders")
+    notes: str | None = Field(None, description="Fehler oder Notizen")
+    duration_seconds: int | None = Field(None, description="Session-Dauer")
     is_live_warning: bool = Field(False, description="Safety-Warnung für Live")
 
     # Phase 87: Risk-Severity Integration
@@ -152,20 +152,20 @@ class LiveSessionDetail(BaseModel):
     risk_severity: Literal["ok", "warning", "breach"] = Field(
         "ok", description="Risk-Severity-Level"
     )
-    risk_limit_details: List[dict] = Field(
+    risk_limit_details: list[dict] = Field(
         default_factory=list,
         description="Limit-Check-Details [{name, value, limit, ratio, severity}]"
     )
 
     # Detail-Felder (Phase 85)
-    run_id: Optional[str] = Field(None, description="Experiment/Run-ID")
+    run_id: str | None = Field(None, description="Experiment/Run-ID")
     run_type: str = Field("", description="z.B. live_session_shadow")
     env_name: str = Field("", description="Environment-Name")
     symbol: str = Field("", description="Trading-Symbol")
     config: dict = Field(default_factory=dict, description="Session-Config")
     metrics: dict = Field(default_factory=dict, description="Alle Metrics")
-    cli_args: List[str] = Field(default_factory=list, description="CLI-Aufruf")
-    created_at: Optional[datetime] = Field(None, description="Record-Erstellung")
+    cli_args: list[str] = Field(default_factory=list, description="CLI-Aufruf")
+    created_at: datetime | None = Field(None, description="Record-Erstellung")
 
 
 # =============================================================================
@@ -175,8 +175,8 @@ class LiveSessionDetail(BaseModel):
 
 def get_recent_live_sessions(
     limit: int = 10,
-    base_dir: Optional[Path] = None,
-) -> List[LiveSessionSummary]:
+    base_dir: Path | None = None,
+) -> list[LiveSessionSummary]:
     """
     Lädt die letzten N Live-Sessions aus der Registry.
 
@@ -204,8 +204,8 @@ def get_recent_live_sessions(
     """
     try:
         from src.experiments.live_session_registry import (
-            list_session_records,
             LiveSessionRecord,
+            list_session_records,
         )
     except ImportError as e:
         logger.warning(
@@ -221,10 +221,10 @@ def get_recent_live_sessions(
         if base_dir is not None:
             kwargs["base_dir"] = base_dir
 
-        records: List[LiveSessionRecord] = list_session_records(**kwargs)
+        records: list[LiveSessionRecord] = list_session_records(**kwargs)
 
         # Konvertiere zu LiveSessionSummary
-        summaries: List[LiveSessionSummary] = []
+        summaries: list[LiveSessionSummary] = []
         for record in records:
             summary = _record_to_summary(record)
             if summary is not None:
@@ -284,17 +284,16 @@ def _extract_risk_status_from_metrics(metrics: dict) -> tuple:
 
     # Aus risk_check Sub-Dict
     risk_check = metrics.get("risk_check", {})
-    if isinstance(risk_check, dict):
-        if "severity" in risk_check:
-            sev = risk_check["severity"]
-            if sev in ("ok", "warning", "breach"):
-                risk_severity = sev
-                risk_status = {"ok": "green", "warning": "yellow", "breach": "red"}.get(sev, "green")
+    if isinstance(risk_check, dict) and "severity" in risk_check:
+        sev = risk_check["severity"]
+        if sev in ("ok", "warning", "breach"):
+            risk_severity = sev
+            risk_status = {"ok": "green", "warning": "yellow", "breach": "red"}.get(sev, "green")
 
     return risk_status, risk_severity
 
 
-def _record_to_summary(record) -> Optional[LiveSessionSummary]:
+def _record_to_summary(record) -> LiveSessionSummary | None:
     """
     Konvertiert einen LiveSessionRecord in ein LiveSessionSummary.
 
@@ -362,7 +361,7 @@ def _record_to_summary(record) -> Optional[LiveSessionSummary]:
         return None
 
 
-def _extract_limit_details_from_metrics(metrics: dict) -> List[dict]:
+def _extract_limit_details_from_metrics(metrics: dict) -> list[dict]:
     """
     Extrahiert Limit-Check-Details aus Metrics.
 
@@ -371,7 +370,7 @@ def _extract_limit_details_from_metrics(metrics: dict) -> List[dict]:
     Returns:
         Liste von Dicts: [{name, value, limit, ratio, severity}]
     """
-    details: List[dict] = []
+    details: list[dict] = []
 
     if not metrics:
         return details
@@ -403,7 +402,7 @@ def _extract_limit_details_from_metrics(metrics: dict) -> List[dict]:
     return details
 
 
-def _record_to_detail(record) -> Optional[LiveSessionDetail]:
+def _record_to_detail(record) -> LiveSessionDetail | None:
     """
     Konvertiert einen LiveSessionRecord in ein LiveSessionDetail (Phase 85).
 
@@ -487,10 +486,10 @@ def _record_to_detail(record) -> Optional[LiveSessionDetail]:
 
 def get_filtered_sessions(
     limit: int = 20,
-    mode_filter: Optional[str] = None,
-    status_filter: Optional[str] = None,
-    base_dir: Optional[Path] = None,
-) -> List[LiveSessionSummary]:
+    mode_filter: str | None = None,
+    status_filter: str | None = None,
+    base_dir: Path | None = None,
+) -> list[LiveSessionSummary]:
     """
     Lädt Sessions mit optionalen Filtern nach Mode und Status (Phase 85).
 
@@ -508,8 +507,8 @@ def get_filtered_sessions(
     """
     try:
         from src.experiments.live_session_registry import (
-            list_session_records,
             LiveSessionRecord,
+            list_session_records,
         )
     except ImportError as e:
         logger.warning(
@@ -518,7 +517,7 @@ def get_filtered_sessions(
         return []
 
     try:
-        kwargs: Dict[str, Any] = {"limit": limit * 3}  # Mehr laden für Filter
+        kwargs: dict[str, Any] = {"limit": limit * 3}  # Mehr laden für Filter
         if base_dir is not None:
             kwargs["base_dir"] = base_dir
 
@@ -526,14 +525,14 @@ def get_filtered_sessions(
         if status_filter:
             kwargs["status"] = status_filter
 
-        records: List[LiveSessionRecord] = list_session_records(**kwargs)
+        records: list[LiveSessionRecord] = list_session_records(**kwargs)
 
         # Mode-Filter nachträglich anwenden (nicht in Registry)
         if mode_filter:
             records = [r for r in records if r.mode == mode_filter]
 
         # Konvertiere zu Summary
-        summaries: List[LiveSessionSummary] = []
+        summaries: list[LiveSessionSummary] = []
         for record in records:
             summary = _record_to_summary(record)
             if summary is not None:
@@ -563,8 +562,8 @@ def get_filtered_sessions(
 
 def get_session_by_id(
     session_id: str,
-    base_dir: Optional[Path] = None,
-) -> Optional[LiveSessionDetail]:
+    base_dir: Path | None = None,
+) -> LiveSessionDetail | None:
     """
     Lädt eine einzelne Session nach ID (Phase 85).
 
@@ -582,8 +581,8 @@ def get_session_by_id(
     """
     try:
         from src.experiments.live_session_registry import (
-            list_session_records,
             LiveSessionRecord,
+            list_session_records,
         )
     except ImportError as e:
         logger.warning(
@@ -592,12 +591,12 @@ def get_session_by_id(
         return None
 
     try:
-        kwargs: Dict[str, Any] = {}
+        kwargs: dict[str, Any] = {}
         if base_dir is not None:
             kwargs["base_dir"] = base_dir
 
         # Alle Records laden und nach ID suchen
-        records: List[LiveSessionRecord] = list_session_records(**kwargs)
+        records: list[LiveSessionRecord] = list_session_records(**kwargs)
 
         for record in records:
             if record.session_id == session_id:
@@ -622,8 +621,8 @@ def get_session_by_id(
 
 
 def get_session_stats(
-    base_dir: Optional[Path] = None,
-) -> Dict[str, Any]:
+    base_dir: Path | None = None,
+) -> dict[str, Any]:
     """
     Aggregierte Statistiken über alle Sessions (Phase 85).
 
@@ -651,7 +650,7 @@ def get_session_stats(
         }
 
     try:
-        kwargs: Dict[str, Any] = {}
+        kwargs: dict[str, Any] = {}
         if base_dir is not None:
             kwargs["base_dir"] = base_dir
 
@@ -660,7 +659,7 @@ def get_session_stats(
         # Mode-Verteilung berechnen (nicht in get_session_summary enthalten)
         from src.experiments.live_session_registry import list_session_records
         records = list_session_records(**kwargs)
-        mode_counts: Dict[str, int] = {}
+        mode_counts: dict[str, int] = {}
         for r in records:
             mode = r.mode or "unknown"
             mode_counts[mode] = mode_counts.get(mode, 0) + 1
@@ -689,11 +688,11 @@ def get_session_stats(
 # =============================================================================
 
 __all__ = [
-    "LiveSessionSummary",
     "LiveSessionDetail",
-    "get_recent_live_sessions",
+    "LiveSessionSummary",
+    "compute_duration_seconds",
     "get_filtered_sessions",
+    "get_recent_live_sessions",
     "get_session_by_id",
     "get_session_stats",
-    "compute_duration_seconds",
 ]

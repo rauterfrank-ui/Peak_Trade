@@ -1,7 +1,7 @@
 # src/strategies/breakout_donchian.py
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pandas as pd
 
@@ -23,10 +23,10 @@ class DonchianBreakoutStrategy(BaseStrategy):
         self,
         lookback: int = 20,
         price_col: str = "close",
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
-        base_cfg: Dict[str, Any] = {
+        base_cfg: dict[str, Any] = {
             "lookback": lookback,
             "price_col": price_col,
         }
@@ -47,9 +47,9 @@ class DonchianBreakoutStrategy(BaseStrategy):
     @classmethod
     def from_config(
         cls,
-        cfg: "PeakConfigLike",
+        cfg: PeakConfigLike,
         section: str = "strategy.breakout_donchian",
-    ) -> "DonchianBreakoutStrategy":
+    ) -> DonchianBreakoutStrategy:
         lookback = cfg.get(f"{section}.lookback", 20)
         price = cfg.get(f"{section}.price_col", "close")
         return cls(

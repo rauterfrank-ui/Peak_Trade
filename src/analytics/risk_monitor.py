@@ -2,16 +2,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, Literal, Optional, Tuple
+from datetime import timedelta
+from typing import Literal
 
 import numpy as np
 import pandas as pd
 
-from src.core.peak_config import PeakConfig
 from src.core.experiments import EXPERIMENTS_CSV
-
+from src.core.peak_config import PeakConfig
 
 RiskStatus = Literal["OK", "WATCH", "BLOCKED", "UNKNOWN"]
 
@@ -32,7 +30,7 @@ class RiskPolicy:
     min_total_return: float = -1.0  # z.B. -1.0 = -100%
 
     @classmethod
-    def from_config(cls, cfg: PeakConfig) -> "RiskPolicy":
+    def from_config(cls, cfg: PeakConfig) -> RiskPolicy:
         return cls(
             lookback_days=int(cfg.get("risk_monitor.lookback_days", 365)),
             min_runs_per_strategy=int(cfg.get("risk_monitor.min_runs_per_strategy", 5)),
@@ -94,7 +92,7 @@ def filter_by_lookback(df: pd.DataFrame, policy: RiskPolicy) -> pd.DataFrame:
     return df[mask].copy()
 
 
-def _classify_run(row: pd.Series, policy: RiskPolicy) -> Tuple[RiskStatus, str]:
+def _classify_run(row: pd.Series, policy: RiskPolicy) -> tuple[RiskStatus, str]:
     """
     Klassifiziert einen einzelnen Run basierend auf MaxDD, Sharpe, TotalReturn.
     """

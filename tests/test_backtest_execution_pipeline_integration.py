@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # tests/test_backtest_execution_pipeline_integration.py
 """
 Peak_Trade: Tests fuer BacktestEngine ExecutionPipeline Integration (Phase 16B)
@@ -18,12 +17,10 @@ WICHTIG: Keine echten Orders - alles Paper/Sandbox.
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 # Projekt-Root zum Python-Path hinzufuegen
 ROOT_DIR = Path(__file__).resolve().parent.parent

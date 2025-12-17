@@ -17,15 +17,15 @@ Parameter-Kombinationen und führt für jede einen Backtest durch.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime
-from itertools import product
-from typing import Any, Callable, Dict, List, Optional, Union
 import hashlib
 import json
 import logging
 import time
-import traceback
+from collections.abc import Callable
+from dataclasses import dataclass, field
+from datetime import datetime
+from itertools import product
+from typing import Any
 
 import pandas as pd
 
@@ -58,8 +58,8 @@ class ParamSweep:
         ... )
     """
     name: str
-    values: List[Any]
-    description: Optional[str] = None
+    values: list[Any]
+    description: str | None = None
 
     def __post_init__(self) -> None:
         """Validierung nach Initialisierung."""
@@ -75,8 +75,8 @@ class ParamSweep:
         start: float,
         stop: float,
         step: float,
-        description: Optional[str] = None,
-    ) -> "ParamSweep":
+        description: str | None = None,
+    ) -> ParamSweep:
         """
         Erstellt ParamSweep aus Range-Definition.
 
@@ -109,8 +109,8 @@ class ParamSweep:
         start: float,
         stop: float,
         num: int,
-        description: Optional[str] = None,
-    ) -> "ParamSweep":
+        description: str | None = None,
+    ) -> ParamSweep:
         """
         Erstellt ParamSweep mit logarithmisch verteilten Werten.
 
@@ -132,10 +132,10 @@ class ParamSweep:
         import numpy as np
         values = list(np.logspace(np.log10(start), np.log10(stop), num))
         # Runde auf sinnvolle Werte
-        values = [round(v, 2) if v < 1 else int(round(v)) for v in values]
+        values = [round(v, 2) if v < 1 else round(v) for v in values]
         return cls(name=name, values=values, description=description)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "name": self.name,
@@ -189,16 +189,16 @@ class ExperimentConfig:
     """
     name: str
     strategy_name: str
-    param_sweeps: List[ParamSweep] = field(default_factory=list)
-    symbols: List[str] = field(default_factory=lambda: ["BTC/EUR"])
+    param_sweeps: list[ParamSweep] = field(default_factory=list)
+    symbols: list[str] = field(default_factory=lambda: ["BTC/EUR"])
     timeframe: str = "1h"
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
+    start_date: str | None = None
+    end_date: str | None = None
     initial_capital: float = 10000.0
-    regime_config: Optional[Dict[str, Any]] = None
-    switching_config: Optional[Dict[str, Any]] = None
-    base_params: Dict[str, Any] = field(default_factory=dict)
-    metrics_to_collect: List[str] = field(
+    regime_config: dict[str, Any] | None = None
+    switching_config: dict[str, Any] | None = None
+    base_params: dict[str, Any] = field(default_factory=dict)
+    metrics_to_collect: list[str] = field(
         default_factory=lambda: [
             "total_return",
             "sharpe_ratio",
@@ -212,7 +212,7 @@ class ExperimentConfig:
     max_workers: int = 4
     save_results: bool = True
     output_dir: str = "reports/experiments"
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         """Validierung nach Initialisierung."""
@@ -231,7 +231,7 @@ class ExperimentConfig:
             n *= len(sweep.values)
         return n * len(self.symbols)
 
-    def generate_param_combinations(self) -> List[Dict[str, Any]]:
+    def generate_param_combinations(self) -> list[dict[str, Any]]:
         """
         Generiert das kartesische Produkt aller Parameter-Kombinationen.
 
@@ -261,7 +261,7 @@ class ExperimentConfig:
 
         combinations = []
         for combo in product(*param_values):
-            param_dict = dict(zip(param_names, combo))
+            param_dict = dict(zip(param_names, combo, strict=False))
             # Merge mit base_params (base_params werden überschrieben)
             full_params = {**self.base_params, **param_dict}
             combinations.append(full_params)
@@ -287,7 +287,7 @@ class ExperimentConfig:
         )
         return hashlib.md5(config_str.encode()).hexdigest()[:12]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "name": self.name,
@@ -352,17 +352,17 @@ class SweepResultRow:
     strategy_name: str
     symbol: str
     timeframe: str
-    params: Dict[str, Any]
-    metrics: Dict[str, float]
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
+    params: dict[str, Any]
+    metrics: dict[str, float]
+    start_date: str | None = None
+    end_date: str | None = None
     runtime_seconds: float = 0.0
     success: bool = True
-    error_message: Optional[str] = None
+    error_message: str | None = None
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
-    regime_info: Optional[Dict[str, Any]] = None
+    regime_info: dict[str, Any] | None = None
 
-    def to_flat_dict(self) -> Dict[str, Any]:
+    def to_flat_dict(self) -> dict[str, Any]:
         """
         Konvertiert zu flachem Dictionary für DataFrame-Erstellung.
 
@@ -399,7 +399,7 @@ class SweepResultRow:
 
         return flat
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu nested Dictionary."""
         return {
             "experiment_id": self.experiment_id,
@@ -444,10 +444,10 @@ class ExperimentResult:
     """
     experiment_id: str
     config: ExperimentConfig
-    results: List[SweepResultRow] = field(default_factory=list)
+    results: list[SweepResultRow] = field(default_factory=list)
     total_runtime_seconds: float = 0.0
-    start_time: Optional[str] = None
-    end_time: Optional[str] = None
+    start_time: str | None = None
+    end_time: str | None = None
 
     @property
     def num_runs(self) -> int:
@@ -498,7 +498,7 @@ class ExperimentResult:
         metric: str,
         ascending: bool = False,
         top_n: int = 1,
-    ) -> List[SweepResultRow]:
+    ) -> list[SweepResultRow]:
         """
         Gibt die besten Runs nach einer Metrik zurück.
 
@@ -522,7 +522,7 @@ class ExperimentResult:
 
         return sorted_results[:top_n]
 
-    def get_summary_stats(self) -> Dict[str, Any]:
+    def get_summary_stats(self) -> dict[str, Any]:
         """
         Berechnet zusammenfassende Statistiken über alle Runs.
 
@@ -567,7 +567,7 @@ class ExperimentResult:
         df.to_parquet(filepath, index=False)
         logger.info(f"Ergebnisse gespeichert: {filepath}")
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "experiment_id": self.experiment_id,
@@ -589,8 +589,8 @@ class ExperimentResult:
 
 # Type alias für Backtest-Funktion
 BacktestFunction = Callable[
-    [str, Dict[str, Any], str, str, Optional[str], Optional[str], float],
-    Dict[str, Any],
+    [str, dict[str, Any], str, str, str | None, str | None, float],
+    dict[str, Any],
 ]
 
 
@@ -618,8 +618,8 @@ class ExperimentRunner:
 
     def __init__(
         self,
-        backtest_fn: Optional[BacktestFunction] = None,
-        progress_callback: Optional[Callable[[int, int, str], None]] = None,
+        backtest_fn: BacktestFunction | None = None,
+        progress_callback: Callable[[int, int, str], None] | None = None,
     ) -> None:
         """
         Initialisiert den ExperimentRunner.
@@ -634,13 +634,13 @@ class ExperimentRunner:
     def _default_backtest(
         self,
         strategy_name: str,
-        params: Dict[str, Any],
+        params: dict[str, Any],
         symbol: str,
         timeframe: str,
-        start_date: Optional[str],
-        end_date: Optional[str],
+        start_date: str | None,
+        end_date: str | None,
         initial_capital: float,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Default-Backtest-Funktion, die BacktestEngine verwendet.
 
@@ -657,10 +657,11 @@ class ExperimentRunner:
             Dict mit Metriken
         """
         try:
-            from src.backtest.engine import run_single_strategy_from_registry
-            from src.data.kraken import fetch_ohlcv_df
-            from src.core.config_registry import get_config
             import pandas as pd
+
+            from src.backtest.engine import run_single_strategy_from_registry
+            from src.core.config_registry import get_config
+            from src.data.kraken import fetch_ohlcv_df
 
             # Setze initial_capital in der Config
             cfg = get_config()
@@ -672,10 +673,10 @@ class ExperimentRunner:
                 # Konvertiere Symbol-Format falls nötig (z.B. "BTC/EUR" -> "BTC/EUR")
                 # Kraken verwendet "/" als Separator
                 kraken_symbol = symbol.replace("-", "/")
-                
+
                 # Berechne limit basierend auf start_date/end_date oder verwende Default
                 limit = 720  # Default für Kraken API
-                
+
                 # Wenn start_date gegeben, berechne since_ms
                 since_ms = None
                 if start_date:
@@ -684,7 +685,7 @@ class ExperimentRunner:
                         since_ms = int(start_dt.timestamp() * 1000)
                     except Exception:
                         logger.warning(f"Konnte start_date nicht parsen: {start_date}, verwende Default")
-                
+
                 # Lade Daten
                 df = fetch_ohlcv_df(
                     symbol=kraken_symbol,
@@ -693,7 +694,7 @@ class ExperimentRunner:
                     since_ms=since_ms,
                     use_cache=True,
                 )
-                
+
                 # Filtere nach end_date falls gegeben
                 if end_date:
                     try:
@@ -701,10 +702,10 @@ class ExperimentRunner:
                         df = df[df.index <= end_dt]
                     except Exception:
                         logger.warning(f"Konnte end_date nicht parsen: {end_date}, ignoriere Filter")
-                
+
                 if df.empty:
                     raise ValueError(f"Keine Daten für {symbol} {timeframe} gefunden")
-                
+
                 # Führe Backtest aus
                 # run_single_strategy_from_registry ist eine Standalone-Funktion, keine Methode
                 result = run_single_strategy_from_registry(
@@ -733,7 +734,7 @@ class ExperimentRunner:
         experiment_id: str,
         run_index: int,
         config: ExperimentConfig,
-        params: Dict[str, Any],
+        params: dict[str, Any],
         symbol: str,
     ) -> SweepResultRow:
         """
@@ -853,7 +854,7 @@ class ExperimentRunner:
             )
 
         # Führe Backtests aus
-        results: List[SweepResultRow] = []
+        results: list[SweepResultRow] = []
         total_runs = len(param_combinations) * len(config.symbols)
         run_index = 0
 
@@ -966,7 +967,7 @@ class ExperimentRunner:
         )
 
         param_combinations = config.generate_param_combinations()
-        results: List[SweepResultRow] = []
+        results: list[SweepResultRow] = []
 
         # Erstelle alle Run-Definitionen
         runs = []

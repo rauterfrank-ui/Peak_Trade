@@ -10,16 +10,15 @@ import subprocess
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
 
-from .models import JobDefinition, JobSchedule, JobResult
+from .models import JobDefinition, JobResult, JobSchedule
 
 
 def compute_next_run_at(
     schedule: JobSchedule,
     *,
-    now: Optional[datetime] = None,
-    reference: Optional[datetime] = None,
+    now: datetime | None = None,
+    reference: datetime | None = None,
 ) -> datetime:
     """
     Berechnet den nächsten Ausführungszeitpunkt.
@@ -84,7 +83,7 @@ def compute_next_run_at(
         return now
 
 
-def is_job_due(job: JobDefinition, *, now: Optional[datetime] = None) -> bool:
+def is_job_due(job: JobDefinition, *, now: datetime | None = None) -> bool:
     """
     Prüft ob ein Job fällig ist.
 
@@ -110,10 +109,10 @@ def is_job_due(job: JobDefinition, *, now: Optional[datetime] = None) -> bool:
 
 
 def get_due_jobs(
-    jobs: List[JobDefinition],
+    jobs: list[JobDefinition],
     *,
-    now: Optional[datetime] = None,
-) -> List[JobDefinition]:
+    now: datetime | None = None,
+) -> list[JobDefinition]:
     """
     Findet alle fälligen Jobs.
 
@@ -127,7 +126,7 @@ def get_due_jobs(
     if now is None:
         now = datetime.utcnow()
 
-    due: List[JobDefinition] = []
+    due: list[JobDefinition] = []
 
     for job in jobs:
         if is_job_due(job, now=now):
@@ -136,7 +135,7 @@ def get_due_jobs(
     return due
 
 
-def build_command_args(job: JobDefinition) -> List[str]:
+def build_command_args(job: JobDefinition) -> list[str]:
     """
     Baut die Kommandozeilen-Argumente für einen Job.
 
@@ -150,7 +149,7 @@ def build_command_args(job: JobDefinition) -> List[str]:
         args = {"script": "scripts/run_forward_signals.py", "strategy": "ma_crossover"}
         -> ["scripts/run_forward_signals.py", "--strategy", "ma_crossover"]
     """
-    cmd_args: List[str] = []
+    cmd_args: list[str] = []
 
     # Script zuerst
     script = job.args.get("script", "")
@@ -180,7 +179,7 @@ def run_job(
     job: JobDefinition,
     *,
     dry_run: bool = False,
-    cwd: Optional[Path] = None,
+    cwd: Path | None = None,
 ) -> JobResult:
     """
     Führt einen Job aus.
@@ -197,9 +196,9 @@ def run_job(
 
     # Kommando bauen
     if job.command == "python":
-        cmd = [sys.executable] + build_command_args(job)
+        cmd = [sys.executable, *build_command_args(job)]
     else:
-        cmd = [job.command] + build_command_args(job)
+        cmd = [job.command, *build_command_args(job)]
 
     if dry_run:
         # Nur simulieren
@@ -240,7 +239,7 @@ def run_job(
             stderr=stderr,
         )
 
-    except subprocess.TimeoutExpired as e:
+    except subprocess.TimeoutExpired:
         finished_at = datetime.utcnow()
         return JobResult(
             job_name=job.name,

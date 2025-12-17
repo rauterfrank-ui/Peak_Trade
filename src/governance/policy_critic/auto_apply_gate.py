@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 from .critic import PolicyCritic
 from .models import PolicyCriticInput, PolicyCriticResult, RecommendedAction, ReviewContext
@@ -39,10 +39,10 @@ class AutoApplyDecision:
     mode: ApplyMode
     reason: str
     decided_at: str
-    policy_critic_result: Optional[Dict[str, Any]] = None
-    inputs_summary: Optional[Dict[str, Any]] = None
+    policy_critic_result: dict[str, Any] | None = None
+    inputs_summary: dict[str, Any] | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "allowed": self.allowed,
@@ -57,7 +57,7 @@ class AutoApplyDecision:
 def evaluate_policy_critic_before_apply(
     diff_text: str,
     changed_files: list[str],
-    context: Optional[Dict[str, Any]] = None,
+    context: dict[str, Any] | None = None,
     fail_closed: bool = True,
 ) -> AutoApplyDecision:
     """
@@ -144,7 +144,7 @@ def evaluate_policy_critic_before_apply(
             return AutoApplyDecision(
                 allowed=False,
                 mode=ApplyMode.MANUAL_ONLY,
-                reason=f"Policy critic evaluation failed (fail-closed): {str(e)}",
+                reason=f"Policy critic evaluation failed (fail-closed): {e!s}",
                 decided_at=decided_at,
                 policy_critic_result=None,
                 inputs_summary=inputs_summary,
@@ -155,7 +155,7 @@ def evaluate_policy_critic_before_apply(
             return AutoApplyDecision(
                 allowed=True,
                 mode=ApplyMode.AUTO,
-                reason=f"Policy critic failed but fail-open mode enabled: {str(e)}",
+                reason=f"Policy critic failed but fail-open mode enabled: {e!s}",
                 decided_at=decided_at,
                 policy_critic_result=None,
                 inputs_summary=inputs_summary,
@@ -165,7 +165,7 @@ def evaluate_policy_critic_before_apply(
 def _map_critic_result_to_decision(
     result: PolicyCriticResult,
     decided_at: str,
-    inputs_summary: Dict[str, Any],
+    inputs_summary: dict[str, Any],
 ) -> AutoApplyDecision:
     """
     Map PolicyCriticResult to AutoApplyDecision.
@@ -228,7 +228,7 @@ def persist_decision_to_report(
         ValueError: If report is not valid JSON
     """
     # Load existing report
-    with open(report_path, "r") as f:
+    with open(report_path) as f:
         report = json.load(f)
 
     # Ensure governance section exists

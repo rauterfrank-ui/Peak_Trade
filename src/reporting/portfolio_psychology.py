@@ -17,9 +17,8 @@ Stand: Dezember 2024
 Version: v0
 """
 
-from dataclasses import dataclass, asdict
-from typing import List, Optional, Literal
-
+from dataclasses import asdict, dataclass
+from typing import Literal
 
 # ============================================================================
 # Type Definitions
@@ -37,7 +36,7 @@ PsychologyLevel = Literal["CALM", "MEDIUM", "SPICY"]
 class PsychologyAnnotation:
     """
     Psychologie-Annotation für Portfolio-Health-Ergebnisse.
-    
+
     Attributes:
         level: Psychologisches Risikoprofil ("CALM", "MEDIUM", "SPICY")
         notes: Liste von kurzen Hinweisen/Warnungen
@@ -45,17 +44,17 @@ class PsychologyAnnotation:
         total_return_pct: Verwendeter Return (für Transparenz)
         trades_count: Verwendete Trade-Anzahl (für Transparenz)
     """
-    
+
     level: PsychologyLevel
-    notes: List[str]
-    max_drawdown_pct: Optional[float] = None
-    total_return_pct: Optional[float] = None
-    trades_count: Optional[int] = None
-    
+    notes: list[str]
+    max_drawdown_pct: float | None = None
+    total_return_pct: float | None = None
+    trades_count: int | None = None
+
     def to_dict(self) -> dict:
         """Konvertiert zu Dictionary für JSON-Serialisierung."""
         return asdict(self)
-    
+
     @property
     def level_emoji(self) -> str:
         """Gibt Emoji für das Level zurück."""
@@ -64,7 +63,7 @@ class PsychologyAnnotation:
             "MEDIUM": "⚠️",
             "SPICY": "🔥"
         }.get(self.level, "❓")
-    
+
     @property
     def level_color(self) -> str:
         """Gibt CSS-Farbe für das Level zurück."""
@@ -84,16 +83,16 @@ def derive_portfolio_psychology(
     total_return_pct: float,
     max_drawdown_pct: float,
     trades_count: int,
-    volatility_pct: Optional[float] = None,
+    volatility_pct: float | None = None,
 ) -> PsychologyAnnotation:
     """
     Leitet Psychologie-Annotation aus Portfolio-Health-Metriken ab.
-    
+
     Die Logik ist bewusst simpel gehalten (v0):
     - Basis-Level wird primär vom Max-Drawdown bestimmt
     - Notes werden bei Extremwerten hinzugefügt
     - Kein Machine Learning, keine komplexen Heuristiken
-    
+
     Parameters
     ----------
     total_return_pct : float
@@ -104,12 +103,12 @@ def derive_portfolio_psychology(
         Anzahl der Trades im Backtest-Zeitraum
     volatility_pct : Optional[float]
         Optionale Volatilität in Prozent (für zukünftige Erweiterung)
-    
+
     Returns
     -------
     PsychologyAnnotation
         Annotation mit level und notes
-    
+
     Examples
     --------
     >>> psych = derive_portfolio_psychology(45.0, 25.0, 18)
@@ -117,20 +116,20 @@ def derive_portfolio_psychology(
     'CALM'
     >>> psych.notes
     ['Ruhiges Profil – psychologisch gut beherrschbar.']
-    
+
     >>> psych = derive_portfolio_psychology(-50.0, 70.0, 5)
     >>> psych.level
     'SPICY'
     >>> 'Hoher Max-Drawdown' in psych.notes[0]
     True
     """
-    notes: List[str] = []
-    
+    notes: list[str] = []
+
     # =========================================================================
     # 1. Basis-Level anhand Max-Drawdown
     # =========================================================================
     # Drawdown ist der primäre psychologische Stressfaktor
-    
+
     if max_drawdown_pct <= 30:
         level: PsychologyLevel = "CALM"
     elif max_drawdown_pct <= 60:
@@ -141,11 +140,11 @@ def derive_portfolio_psychology(
             f"Hoher Max-Drawdown ({max_drawdown_pct:.1f}%) – "
             "psychologisch anspruchsvoll, nur für erfahrene Operatoren."
         )
-    
+
     # =========================================================================
     # 2. Performance-Extremwerte flaggen
     # =========================================================================
-    
+
     # Extrem gute Performance → Overconfidence-Risiko
     if total_return_pct >= 150:
         notes.append(
@@ -157,7 +156,7 @@ def derive_portfolio_psychology(
             f"Starke Performance ({total_return_pct:.1f}%) – "
             "Erwartungsmanagement beachten (nicht als Normalfall interpretieren)."
         )
-    
+
     # Extrem schlechte Performance → Panic-Risiko
     if total_return_pct <= -40:
         notes.append(
@@ -167,11 +166,11 @@ def derive_portfolio_psychology(
         # Bei starken Verlusten mindestens MEDIUM
         if level == "CALM":
             level = "MEDIUM"
-    
+
     # =========================================================================
     # 3. Trade-Anzahl analysieren
     # =========================================================================
-    
+
     if trades_count < 3:
         notes.append(
             f"Sehr wenige Trades ({trades_count}) – "
@@ -192,24 +191,23 @@ def derive_portfolio_psychology(
             f"Erhöhte Trade-Frequenz ({trades_count}) – "
             "automatisches Monitoring empfohlen."
         )
-    
+
     # =========================================================================
     # 4. Volatilität (falls verfügbar)
     # =========================================================================
-    
-    if volatility_pct is not None:
-        if volatility_pct > 50:
-            notes.append(
-                f"Sehr hohe Volatilität ({volatility_pct:.1f}%) – "
-                "erwarte starke Schwankungen im Equity-Verlauf."
-            )
-            if level == "CALM":
-                level = "MEDIUM"
-    
+
+    if volatility_pct is not None and volatility_pct > 50:
+        notes.append(
+            f"Sehr hohe Volatilität ({volatility_pct:.1f}%) – "
+            "erwarte starke Schwankungen im Equity-Verlauf."
+        )
+        if level == "CALM":
+            level = "MEDIUM"
+
     # =========================================================================
     # 5. Default-Notes falls keine spezifischen Notes
     # =========================================================================
-    
+
     if not notes:
         if level == "CALM":
             notes.append(
@@ -223,7 +221,7 @@ def derive_portfolio_psychology(
             notes.append(
                 "Spicy Profil – nur für erfahrene Operatoren geeignet."
             )
-    
+
     return PsychologyAnnotation(
         level=level,
         notes=notes,
@@ -241,12 +239,12 @@ def derive_portfolio_psychology(
 def psychology_to_markdown(psych: PsychologyAnnotation) -> str:
     """
     Formatiert PsychologyAnnotation als Markdown-Snippet.
-    
+
     Parameters
     ----------
     psych : PsychologyAnnotation
         Die zu formatierende Annotation
-    
+
     Returns
     -------
     str
@@ -256,12 +254,12 @@ def psychology_to_markdown(psych: PsychologyAnnotation) -> str:
         f"### {psych.level_emoji} Psychologie: **{psych.level}**",
         "",
     ]
-    
+
     if psych.notes:
         for note in psych.notes:
             lines.append(f"- {note}")
         lines.append("")
-    
+
     # Metriken-Kontext (optional)
     if any([psych.max_drawdown_pct, psych.total_return_pct, psych.trades_count]):
         lines.append("*Basierend auf:*")
@@ -272,19 +270,19 @@ def psychology_to_markdown(psych: PsychologyAnnotation) -> str:
         if psych.trades_count is not None:
             lines.append(f"- Trades: {psych.trades_count}")
         lines.append("")
-    
+
     return "\n".join(lines)
 
 
 def psychology_to_html(psych: PsychologyAnnotation) -> str:
     """
     Formatiert PsychologyAnnotation als HTML-Snippet.
-    
+
     Parameters
     ----------
     psych : PsychologyAnnotation
         Die zu formatierende Annotation
-    
+
     Returns
     -------
     str
@@ -292,15 +290,15 @@ def psychology_to_html(psych: PsychologyAnnotation) -> str:
     """
     badge_class = {
         "CALM": "badge-success",
-        "MEDIUM": "badge-warning", 
+        "MEDIUM": "badge-warning",
         "SPICY": "badge-danger"
     }.get(psych.level, "badge-secondary")
-    
+
     notes_html = ""
     if psych.notes:
         notes_items = "\n".join(f"<li>{note}</li>" for note in psych.notes)
         notes_html = f"<ul class='psychology-notes'>{notes_items}</ul>"
-    
+
     return f"""
 <div class="psychology-section">
     <h4>{psych.level_emoji} Psychologie</h4>
@@ -322,7 +320,7 @@ if __name__ == "__main__":
     print("=" * 60)
     print("Portfolio Psychology Layer - Test")
     print("=" * 60)
-    
+
     test_cases = [
         {"total_return_pct": 45.0, "max_drawdown_pct": 20.0, "trades_count": 25},
         {"total_return_pct": 110.0, "max_drawdown_pct": 35.0, "trades_count": 50},
@@ -330,17 +328,17 @@ if __name__ == "__main__":
         {"total_return_pct": 200.0, "max_drawdown_pct": 75.0, "trades_count": 150},
         {"total_return_pct": 15.0, "max_drawdown_pct": 10.0, "trades_count": 2},
     ]
-    
+
     for i, tc in enumerate(test_cases, 1):
         print(f"\n--- Test Case {i} ---")
         print(f"Input: return={tc['total_return_pct']}%, dd={tc['max_drawdown_pct']}%, trades={tc['trades_count']}")
-        
+
         psych = derive_portfolio_psychology(**tc)
-        
+
         print(f"Level: {psych.level_emoji} {psych.level}")
         print("Notes:")
         for note in psych.notes:
             print(f"  - {note}")
-    
+
     print("\n" + "=" * 60)
     print("✅ Tests abgeschlossen")

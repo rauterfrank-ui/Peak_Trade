@@ -15,35 +15,35 @@ Category: volatility
 
 Siehe: docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md
 """
-from .vol_model import (
-    VolRegime,
-    ElKarouiVolConfig,
-    ElKarouiVolModel,
-    get_vol_regime,
-    get_vol_scaling_factor,
-)
 from .el_karoui_vol_model_strategy import (
+    AGGRESSIVE_REGIME_POSITION_MAP,
+    CONSERVATIVE_REGIME_POSITION_MAP,
+    DEFAULT_REGIME_POSITION_MAP,
     ElKarouiVolatilityStrategy,
     ElKarouiVolModelStrategy,  # Alias für Backwards Compatibility
     generate_signals,
-    DEFAULT_REGIME_POSITION_MAP,
-    CONSERVATIVE_REGIME_POSITION_MAP,
-    AGGRESSIVE_REGIME_POSITION_MAP,
+)
+from .vol_model import (
+    ElKarouiVolConfig,
+    ElKarouiVolModel,
+    VolRegime,
+    get_vol_regime,
+    get_vol_scaling_factor,
 )
 
 __all__ = [
-    # Vol Model
-    "VolRegime",
-    "ElKarouiVolConfig",
-    "ElKarouiVolModel",
-    "get_vol_regime",
-    "get_vol_scaling_factor",
-    # Strategy
-    "ElKarouiVolatilityStrategy",
-    "ElKarouiVolModelStrategy",  # Backwards Compatibility Alias
-    "generate_signals",
+    "AGGRESSIVE_REGIME_POSITION_MAP",
+    "CONSERVATIVE_REGIME_POSITION_MAP",
     # Regime-Position Mappings
     "DEFAULT_REGIME_POSITION_MAP",
-    "CONSERVATIVE_REGIME_POSITION_MAP",
-    "AGGRESSIVE_REGIME_POSITION_MAP",
+    "ElKarouiVolConfig",
+    "ElKarouiVolModel",
+    "ElKarouiVolModelStrategy",  # Backwards Compatibility Alias
+    # Strategy
+    "ElKarouiVolatilityStrategy",
+    # Vol Model
+    "VolRegime",
+    "generate_signals",
+    "get_vol_regime",
+    "get_vol_scaling_factor",
 ]

@@ -10,9 +10,10 @@ Testet:
 """
 from __future__ import annotations
 
-import pytest
 from datetime import datetime
 from pathlib import Path
+
+import pytest
 
 
 class TestAlert:
@@ -330,6 +331,7 @@ class TestFileNotifier:
     def test_file_notifier_json_format(self, tmp_path: Path):
         """FileNotifier kann JSON-Format schreiben."""
         import json
+
         from src.notifications.base import Alert
         from src.notifications.file import FileNotifier
 
@@ -391,9 +393,9 @@ class TestCombinedNotifier:
     def test_combined_notifier_sends_to_all(self, tmp_path: Path, capsys):
         """CombinedNotifier sendet an alle konfigurierten Notifier."""
         from src.notifications.base import Alert
+        from src.notifications.combined import CombinedNotifier
         from src.notifications.console import ConsoleNotifier
         from src.notifications.file import FileNotifier
-        from src.notifications.combined import CombinedNotifier
 
         log_path = tmp_path / "alerts.log"
         combined = CombinedNotifier([
@@ -422,8 +424,8 @@ class TestCombinedNotifier:
     def test_combined_notifier_continues_on_error(self, tmp_path: Path, capsys):
         """CombinedNotifier setzt fort, auch wenn ein Notifier fehlschlägt."""
         from src.notifications.base import Alert
-        from src.notifications.console import ConsoleNotifier
         from src.notifications.combined import CombinedNotifier
+        from src.notifications.console import ConsoleNotifier
 
         class FailingNotifier:
             def send(self, alert: Alert) -> None:
@@ -454,8 +456,8 @@ class TestCombinedNotifier:
     def test_combined_notifier_add(self, capsys):
         """CombinedNotifier.add() fügt Notifier hinzu."""
         from src.notifications.base import Alert
-        from src.notifications.console import ConsoleNotifier
         from src.notifications.combined import CombinedNotifier
+        from src.notifications.console import ConsoleNotifier
 
         combined = CombinedNotifier([])
         combined.add(ConsoleNotifier())
@@ -497,7 +499,7 @@ class TestNotifierProtocol:
 
     def test_custom_notifier_protocol(self):
         """Eigene Klassen können das Notifier-Protocol erfüllen."""
-        from src.notifications.base import Notifier, Alert
+        from src.notifications.base import Alert, Notifier
 
         class MyNotifier:
             def __init__(self):

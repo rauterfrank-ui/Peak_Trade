@@ -34,10 +34,10 @@ Example:
 """
 from __future__ import annotations
 
-from typing import Callable, Dict, List, Literal, Optional
+from collections.abc import Callable
+from typing import Literal
 
 from .base import ParamSweep
-
 
 # Type für Granularität
 Granularity = Literal["coarse", "medium", "fine"]
@@ -50,7 +50,7 @@ Granularity = Literal["coarse", "medium", "fine"]
 def get_ma_crossover_sweeps(
     granularity: Granularity = "medium",
     include_ma_type: bool = False,
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für MA Crossover Strategie zurück.
 
@@ -90,7 +90,7 @@ def get_ma_crossover_sweeps(
 
 def get_bollinger_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Bollinger Bands Strategie zurück.
 
@@ -121,7 +121,7 @@ def get_bollinger_sweeps(
 
 def get_macd_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für MACD Strategie zurück.
 
@@ -155,7 +155,7 @@ def get_macd_sweeps(
 
 def get_momentum_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Momentum Strategie zurück.
 
@@ -187,7 +187,7 @@ def get_momentum_sweeps(
 def get_trend_following_sweeps(
     granularity: Granularity = "medium",
     include_ma_filter: bool = False,
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Trend Following (ADX) Strategie zurück.
 
@@ -226,7 +226,7 @@ def get_trend_following_sweeps(
 
 def get_vol_breakout_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Volatility Breakout Strategie zurück.
 
@@ -260,7 +260,7 @@ def get_vol_breakout_sweeps(
 
 def get_mean_reversion_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Mean Reversion Strategie zurück.
 
@@ -294,7 +294,7 @@ def get_mean_reversion_sweeps(
 
 def get_rsi_reversion_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für RSI Reversion Strategie zurück.
 
@@ -330,7 +330,7 @@ def get_breakout_sweeps(
     granularity: Granularity = "medium",
     include_sl_tp: bool = True,
     include_trailing: bool = False,
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Breakout Strategie zurück.
 
@@ -377,7 +377,7 @@ def get_breakout_sweeps(
 def get_vol_regime_filter_sweeps(
     granularity: Granularity = "medium",
     include_percentile: bool = True,
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Vol Regime Filter zurück.
 
@@ -418,7 +418,7 @@ def get_vol_regime_filter_sweeps(
 
 def get_donchian_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Donchian Channel Strategie zurück.
 
@@ -448,7 +448,7 @@ def get_donchian_sweeps(
 # ============================================================================
 
 # Registry aller Sweep-Funktionen
-STRATEGY_SWEEP_REGISTRY: Dict[str, Callable[[Granularity], List[ParamSweep]]] = {
+STRATEGY_SWEEP_REGISTRY: dict[str, Callable[[Granularity], list[ParamSweep]]] = {
     "ma_crossover": lambda g: get_ma_crossover_sweeps(g),
     "bollinger": lambda g: get_bollinger_sweeps(g),
     "macd": lambda g: get_macd_sweeps(g),
@@ -468,7 +468,7 @@ STRATEGY_SWEEP_REGISTRY: Dict[str, Callable[[Granularity], List[ParamSweep]]] = 
 def get_strategy_sweeps(
     strategy_name: str,
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für eine beliebige Strategie zurück.
 
@@ -518,7 +518,7 @@ def get_strategy_sweeps(
     )
 
 
-def list_available_strategies() -> List[str]:
+def list_available_strategies() -> list[str]:
     """
     Gibt Liste aller Strategien mit verfügbaren Sweeps zurück.
 
@@ -530,7 +530,7 @@ def list_available_strategies() -> List[str]:
 
 def get_all_strategy_sweeps(
     granularity: Granularity = "medium",
-) -> Dict[str, List[ParamSweep]]:
+) -> dict[str, list[ParamSweep]]:
     """
     Gibt Sweeps für alle registrierten Strategien zurück.
 

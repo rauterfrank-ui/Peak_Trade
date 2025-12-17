@@ -13,8 +13,7 @@ um die Logik klar zu validieren.
 """
 from __future__ import annotations
 
-from datetime import datetime, timedelta
-from typing import List
+from datetime import datetime
 
 import pytest
 
@@ -22,11 +21,9 @@ from src.live.orders import LiveOrderRequest
 from src.live.portfolio_monitor import LivePortfolioSnapshot, LivePositionSnapshot
 from src.live.risk_limits import (
     LiveRiskConfig,
-    LiveRiskCheckResult,
     LiveRiskLimits,
     RiskCheckSeverity,
 )
-
 
 # =============================================================================
 # HELPER FUNCTIONS
@@ -75,7 +72,7 @@ def make_position(
 
 
 def make_snapshot(
-    positions: List[LivePositionSnapshot],
+    positions: list[LivePositionSnapshot],
     equity: float = 10000.0,
     cash: float = 5000.0,
 ) -> LivePortfolioSnapshot:

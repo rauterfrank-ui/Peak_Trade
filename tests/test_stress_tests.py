@@ -10,20 +10,20 @@ Tests für:
 """
 from __future__ import annotations
 
-import pytest
-import pandas as pd
-import numpy as np
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import pytest
 
 from src.experiments.stress_tests import (
     StressScenarioConfig,
     StressScenarioResult,
     StressTestSuiteResult,
     apply_stress_scenario_to_returns,
-    run_stress_test_suite,
     load_returns_for_top_config,
+    run_stress_test_suite,
 )
-
 
 # =============================================================================
 # FIXTURES

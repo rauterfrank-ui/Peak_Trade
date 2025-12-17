@@ -1,9 +1,9 @@
 """Core evaluation logic for live session fills."""
 
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Any
-from collections import defaultdict
+from typing import Any
 
 
 @dataclass
@@ -32,7 +32,7 @@ class Lot:
     price: float
 
 
-def compute_metrics(fills: List[Fill], strict: bool = False) -> Dict[str, Any]:
+def compute_metrics(fills: list[Fill], strict: bool = False) -> dict[str, Any]:
     """
     Compute comprehensive metrics from a list of fills.
 
@@ -86,8 +86,8 @@ def compute_metrics(fills: List[Fill], strict: bool = False) -> Dict[str, Any]:
         side_stats[fill.side]["notional"] += fill.qty * fill.fill_price
 
     # FIFO PnL calculation per symbol
-    lots_by_symbol: Dict[str, List[Lot]] = defaultdict(list)
-    realized_pnl_per_symbol: Dict[str, float] = {}
+    lots_by_symbol: dict[str, list[Lot]] = defaultdict(list)
+    realized_pnl_per_symbol: dict[str, float] = {}
 
     for fill in sorted_fills:
         symbol = fill.symbol

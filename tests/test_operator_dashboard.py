@@ -8,11 +8,12 @@ Testet:
 - JSON-Output ist valide
 - Alerts werden korrekt generiert
 """
-import pytest
+import json
 import subprocess
 import sys
-import json
 from pathlib import Path
+
+import pytest
 
 PROJECT_ROOT = Path(__file__).parent.parent
 SCRIPTS_DIR = PROJECT_ROOT / "scripts"
@@ -230,8 +231,8 @@ class TestOperatorDashboardIntegration:
     def test_dashboard_imports_work(self):
         """Dashboard-Imports funktionieren."""
         # Importiere Dashboard-Module
-        from src.live.live_gates import get_eligibility_summary
         from src.experiments.portfolio_presets import get_all_tiered_strategies
+        from src.live.live_gates import get_eligibility_summary
 
         summary = get_eligibility_summary()
         assert summary is not None
@@ -245,9 +246,9 @@ class TestOperatorDashboardIntegration:
         sys.path.insert(0, str(SCRIPTS_DIR))
 
         from operator_dashboard import (
-            collect_strategy_statuses,
-            collect_portfolio_statuses,
             collect_dashboard_data,
+            collect_portfolio_statuses,
+            collect_strategy_statuses,
         )
 
         strategies = collect_strategy_statuses()

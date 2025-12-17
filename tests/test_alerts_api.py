@@ -14,12 +14,11 @@ Run:
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
-
 
 # =============================================================================
 # FIXTURES
@@ -35,7 +34,7 @@ def temp_alerts_dir(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def sample_alert_with_runbooks() -> Dict[str, Any]:
+def sample_alert_with_runbooks() -> dict[str, Any]:
     """Sample-Alert mit Runbooks (Phase 84 Struktur)."""
     return {
         "title": "Risk Severity changed: GREEN → YELLOW",
@@ -44,7 +43,7 @@ def sample_alert_with_runbooks() -> Dict[str, Any]:
         "category": "RISK",
         "source": "live_risk_severity",
         "session_id": "test_session_001",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "context": {
             "daily_loss": -250.0,
             "limit": 500.0,
@@ -65,7 +64,7 @@ def sample_alert_with_runbooks() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def sample_alert_without_runbooks() -> Dict[str, Any]:
+def sample_alert_without_runbooks() -> dict[str, Any]:
     """Sample-Alert ohne Runbooks."""
     return {
         "title": "System Health Check Passed",
@@ -74,7 +73,7 @@ def sample_alert_without_runbooks() -> Dict[str, Any]:
         "category": "SYSTEM",
         "source": "health_monitor",
         "session_id": None,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "context": {},
     }
 
@@ -210,12 +209,12 @@ class TestGetAlertsForUiWithRunbooks:
     """Tests für get_alerts_for_ui() mit Runbook-Anreicherung."""
 
     def test_alerts_include_runbooks_from_storage(
-        self, temp_alerts_dir: Path, sample_alert_with_runbooks: Dict[str, Any], monkeypatch
+        self, temp_alerts_dir: Path, sample_alert_with_runbooks: dict[str, Any], monkeypatch
     ):
         """Testet dass Alerts aus Storage Runbooks enthalten."""
+        import src.live.alert_storage as storage_module
         from src.live.alert_storage import AlertStorage, reset_default_storage
         from src.webui.alerts_api import get_alerts_for_ui
-        import src.live.alert_storage as storage_module
 
         # Setup Storage
         reset_default_storage()
@@ -241,12 +240,12 @@ class TestGetAlertsForUiWithRunbooks:
         reset_default_storage()
 
     def test_alerts_without_runbooks_have_empty_list(
-        self, temp_alerts_dir: Path, sample_alert_without_runbooks: Dict[str, Any], monkeypatch
+        self, temp_alerts_dir: Path, sample_alert_without_runbooks: dict[str, Any], monkeypatch
     ):
         """Testet dass Alerts ohne Runbooks leere Liste haben."""
+        import src.live.alert_storage as storage_module
         from src.live.alert_storage import AlertStorage, reset_default_storage
         from src.webui.alerts_api import get_alerts_for_ui
-        import src.live.alert_storage as storage_module
 
         # Setup Storage
         reset_default_storage()
@@ -267,12 +266,12 @@ class TestGetAlertsForUiWithRunbooks:
         reset_default_storage()
 
     def test_runbook_structure_matches_api_contract(
-        self, temp_alerts_dir: Path, sample_alert_with_runbooks: Dict[str, Any], monkeypatch
+        self, temp_alerts_dir: Path, sample_alert_with_runbooks: dict[str, Any], monkeypatch
     ):
         """Testet dass Runbook-Struktur dem API-Contract entspricht (id, title, url)."""
+        import src.live.alert_storage as storage_module
         from src.live.alert_storage import AlertStorage, reset_default_storage
         from src.webui.alerts_api import get_alerts_for_ui
-        import src.live.alert_storage as storage_module
 
         # Setup Storage
         reset_default_storage()
@@ -309,7 +308,7 @@ class TestGetAlertsForUiWithRunbooks:
 class TestAlertsApiIncludesRunbooksForKnownAlertType:
     """
     API-Level Integration-Test: Alerts mit bekanntem Alert-Type enthalten Runbooks.
-    
+
     Dieser Test validiert den vollständigen Flow:
     1. Alert mit kategorie/source wird erstellt und persistiert (wie Live-Stack)
     2. API-Endpoint wird abgefragt
@@ -320,16 +319,16 @@ class TestAlertsApiIncludesRunbooksForKnownAlertType:
         self, temp_alerts_dir: Path, monkeypatch
     ):
         """Testet dass API-Response Runbooks für bekannte Alert-Types enthält."""
+        import src.live.alert_storage as storage_module
         from src.live.alert_pipeline import (
-            AlertMessage,
-            AlertSeverity,
             AlertCategory,
+            AlertMessage,
             AlertPipelineManager,
+            AlertSeverity,
             NullAlertChannel,
         )
         from src.live.alert_storage import reset_default_storage
         from src.webui.alerts_api import get_alerts_for_ui
-        import src.live.alert_storage as storage_module
 
         # Setup Storage
         reset_default_storage()
@@ -381,16 +380,16 @@ class TestAlertsApiIncludesRunbooksForKnownAlertType:
         self, temp_alerts_dir: Path, monkeypatch
     ):
         """Testet dass CRITICAL Risk-Alerts das Incident-Drills-Runbook enthalten."""
+        import src.live.alert_storage as storage_module
         from src.live.alert_pipeline import (
-            AlertMessage,
-            AlertSeverity,
             AlertCategory,
+            AlertMessage,
             AlertPipelineManager,
+            AlertSeverity,
             NullAlertChannel,
         )
         from src.live.alert_storage import reset_default_storage
         from src.webui.alerts_api import get_alerts_for_ui
-        import src.live.alert_storage as storage_module
 
         # Setup
         reset_default_storage()
@@ -414,7 +413,7 @@ class TestAlertsApiIncludesRunbooksForKnownAlertType:
         response = get_alerts_for_ui(limit=10, hours=24)
 
         assert len(response.alerts) >= 1
-        
+
         critical_alert = response.alerts[0]
         runbook_ids = [rb.id for rb in critical_alert.runbooks]
 
@@ -442,9 +441,9 @@ class TestRunbookEdgeCases:
         self, temp_alerts_dir: Path, monkeypatch
     ):
         """Testet dass fehlerhafte Runbook-Daten im Context behandelt werden."""
+        import src.live.alert_storage as storage_module
         from src.live.alert_storage import AlertStorage, reset_default_storage
         from src.webui.alerts_api import get_alerts_for_ui
-        import src.live.alert_storage as storage_module
 
         reset_default_storage()
         monkeypatch.setattr(storage_module, "_DEFAULT_ALERTS_DIR", temp_alerts_dir)
@@ -456,7 +455,7 @@ class TestRunbookEdgeCases:
             "severity": "WARN",
             "category": "RISK",
             "source": "test",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "context": {
                 "runbooks": [
                     {"id": "valid_rb", "title": "Valid Runbook", "url": "https://example.com"},
@@ -483,9 +482,9 @@ class TestRunbookEdgeCases:
         self, temp_alerts_dir: Path, monkeypatch
     ):
         """Testet dass Runbooks nach Storage-Roundtrip erhalten bleiben."""
+        import src.live.alert_storage as storage_module
         from src.live.alert_storage import AlertStorage, reset_default_storage
         from src.webui.alerts_api import get_alerts_for_ui
-        import src.live.alert_storage as storage_module
 
         reset_default_storage()
         monkeypatch.setattr(storage_module, "_DEFAULT_ALERTS_DIR", temp_alerts_dir)
@@ -502,7 +501,7 @@ class TestRunbookEdgeCases:
             "severity": "WARN",
             "category": "RISK",
             "source": "test",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "context": {"runbooks": original_runbooks, "other_key": "preserved"},
         }
 
@@ -527,11 +526,11 @@ class TestRunbookEdgeCases:
 # =============================================================================
 
 __all__ = [
-    "TestRunbookSummaryModel",
     "TestAlertSummaryWithRunbooks",
-    "TestGetAlertsForUiWithRunbooks",
     "TestAlertsApiIncludesRunbooksForKnownAlertType",
+    "TestGetAlertsForUiWithRunbooks",
     "TestRunbookEdgeCases",
+    "TestRunbookSummaryModel",
 ]
 
 

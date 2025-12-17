@@ -27,18 +27,18 @@ Usage:
 from __future__ import annotations
 
 from src.notifications.base import Alert, AlertLevel, Notifier
+from src.notifications.combined import CombinedNotifier
 from src.notifications.console import ConsoleNotifier
 from src.notifications.file import FileNotifier
-from src.notifications.combined import CombinedNotifier
 from src.notifications.slack import SlackNotifier, send_test_health_slack_notification
 
 __all__ = [
     "Alert",
     "AlertLevel",
-    "Notifier",
+    "CombinedNotifier",
     "ConsoleNotifier",
     "FileNotifier",
-    "CombinedNotifier",
+    "Notifier",
     "SlackNotifier",
     "send_test_health_slack_notification",
 ]

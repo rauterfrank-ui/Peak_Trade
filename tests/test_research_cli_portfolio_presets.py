@@ -350,6 +350,7 @@ def test_phase53_preset_smoke_test(
 def test_phase53_all_new_recipes_exist():
     """Testet, dass alle neuen Phase-53-Rezepte in der Haupt-Config-Datei existieren."""
     from pathlib import Path
+
     from src.experiments.portfolio_recipes import load_portfolio_recipes
 
     recipes_path = Path("config/portfolio_recipes.toml")

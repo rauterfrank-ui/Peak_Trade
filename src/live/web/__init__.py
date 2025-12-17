@@ -13,10 +13,10 @@ Features:
 WICHTIG: Die Web-UI ist read-only und trifft keine Trading-Entscheidungen.
 """
 
-from .app import create_app, WebUIConfig, load_web_ui_config
+from .app import WebUIConfig, create_app, load_web_ui_config
 
 __all__ = [
-    "create_app",
     "WebUIConfig",
+    "create_app",
     "load_web_ui_config",
 ]

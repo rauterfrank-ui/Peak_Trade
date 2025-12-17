@@ -32,25 +32,16 @@ Usage:
 from __future__ import annotations
 
 import logging
-import sys
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 # tomllib Import
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    try:
-        import tomli as tomllib
-    except ImportError:
-        tomllib = None
+import tomllib
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
 
 from src.experiments.strategy_profiles import (
     StrategyProfile,
-    StrategyTieringInfo,
     load_tiering_config,
-    get_tiering_for_strategy,
 )
 
 logger = logging.getLogger(__name__)
@@ -92,7 +83,7 @@ class RnDLiveTradingBlockedError(Exception):
         self,
         strategy_id: str,
         mode: str,
-        message: Optional[str] = None,
+        message: str | None = None,
     ) -> None:
         self.strategy_id = strategy_id
         self.mode = mode
@@ -130,10 +121,10 @@ class LiveGateResult:
     entity_id: str
     entity_type: str  # "strategy" oder "portfolio"
     is_eligible: bool
-    reasons: List[str] = field(default_factory=list)
-    details: Dict[str, Any] = field(default_factory=dict)
-    tier: Optional[str] = None
-    allow_live_flag: Optional[bool] = None
+    reasons: list[str] = field(default_factory=list)
+    details: dict[str, Any] = field(default_factory=dict)
+    tier: str | None = None
+    allow_live_flag: bool | None = None
 
     def __str__(self) -> str:
         status = "✅ ELIGIBLE" if self.is_eligible else "❌ NOT ELIGIBLE"
@@ -178,7 +169,7 @@ class LivePolicies:
     max_concentration: float = 0.6  # 60%
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "LivePolicies":
+    def from_dict(cls, data: dict[str, Any]) -> LivePolicies:
         """Erstellt LivePolicies aus Dictionary."""
         return cls(
             min_sharpe_core=data.get("min_sharpe_core", 1.5),
@@ -236,8 +227,8 @@ def load_live_policies(
 
 def check_strategy_live_eligibility(
     strategy_id: str,
-    profile: Optional[StrategyProfile] = None,
-    policies: Optional[LivePolicies] = None,
+    profile: StrategyProfile | None = None,
+    policies: LivePolicies | None = None,
     tiering_config_path: Path = DEFAULT_TIERING_PATH,
 ) -> LiveGateResult:
     """
@@ -262,8 +253,8 @@ def check_strategy_live_eligibility(
         >>> print(result.is_eligible)
         True
     """
-    reasons: List[str] = []
-    details: Dict[str, Any] = {}
+    reasons: list[str] = []
+    details: dict[str, Any] = {}
 
     # Policies laden
     if policies is None:
@@ -304,7 +295,7 @@ def check_strategy_live_eligibility(
 
     # Check 2: allow_live Flag
     if policies.require_allow_live_flag and not allow_live:
-        reasons.append(f"allow_live flag is False (required by policy)")
+        reasons.append("allow_live flag is False (required by policy)")
 
     # Check 3: Performance-Metriken (nur wenn Profile vorhanden)
     if profile is not None:
@@ -350,9 +341,9 @@ def check_strategy_live_eligibility(
 
 
 def get_eligible_strategies(
-    policies: Optional[LivePolicies] = None,
+    policies: LivePolicies | None = None,
     tiering_config_path: Path = DEFAULT_TIERING_PATH,
-) -> List[str]:
+) -> list[str]:
     """
     Gibt alle live-eligible Strategien zurück.
 
@@ -369,7 +360,7 @@ def get_eligible_strategies(
     tiering = load_tiering_config(tiering_config_path)
     eligible = []
 
-    for strategy_id in tiering.keys():
+    for strategy_id in tiering:
         result = check_strategy_live_eligibility(
             strategy_id,
             policies=policies,
@@ -388,9 +379,9 @@ def get_eligible_strategies(
 
 def check_portfolio_live_eligibility(
     portfolio_id: str,
-    strategies: Optional[List[str]] = None,
-    weights: Optional[List[float]] = None,
-    policies: Optional[LivePolicies] = None,
+    strategies: list[str] | None = None,
+    weights: list[float] | None = None,
+    policies: LivePolicies | None = None,
     tiering_config_path: Path = DEFAULT_TIERING_PATH,
     presets_dir: Path = DEFAULT_PRESETS_DIR,
 ) -> LiveGateResult:
@@ -418,8 +409,8 @@ def check_portfolio_live_eligibility(
         >>> print(result.is_eligible)
         True
     """
-    reasons: List[str] = []
-    details: Dict[str, Any] = {}
+    reasons: list[str] = []
+    details: dict[str, Any] = {}
 
     # Policies laden
     if policies is None:
@@ -510,7 +501,7 @@ def check_portfolio_live_eligibility(
 
 def assert_strategy_eligible(
     strategy_id: str,
-    policies: Optional[LivePolicies] = None,
+    policies: LivePolicies | None = None,
 ) -> None:
     """
     Stellt sicher, dass eine Strategie eligible ist. Wirft Exception bei Nicht-Eligibility.
@@ -531,9 +522,9 @@ def assert_strategy_eligible(
 
 def assert_portfolio_eligible(
     portfolio_id: str,
-    strategies: Optional[List[str]] = None,
-    weights: Optional[List[float]] = None,
-    policies: Optional[LivePolicies] = None,
+    strategies: list[str] | None = None,
+    weights: list[float] | None = None,
+    policies: LivePolicies | None = None,
 ) -> None:
     """
     Stellt sicher, dass ein Portfolio eligible ist. Wirft Exception bei Nicht-Eligibility.
@@ -559,7 +550,7 @@ def assert_portfolio_eligible(
         )
 
 
-def get_eligibility_summary() -> Dict[str, Any]:
+def get_eligibility_summary() -> dict[str, Any]:
     """
     Gibt eine Zusammenfassung der Eligibility aller Strategien zurück.
 
@@ -580,7 +571,7 @@ def get_eligibility_summary() -> Dict[str, Any]:
         },
     }
 
-    for strategy_id in tiering.keys():
+    for strategy_id in tiering:
         result = check_strategy_live_eligibility(strategy_id, policies=policies)
 
         if result.is_eligible:
@@ -704,7 +695,7 @@ def get_strategy_tier(
 def log_strategy_tier_info(
     strategy_id: str,
     tiering_config_path: Path = DEFAULT_TIERING_PATH,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Gibt Tier-Informationen für Logs/Reports zurück.
 
@@ -747,28 +738,28 @@ def log_strategy_tier_info(
 # =============================================================================
 
 __all__ = [
-    # Exceptions
-    "RnDLiveTradingBlockedError",
+    "BLOCKED_MODES_FOR_R_AND_D",
+    # Constants
+    "R_AND_D_TIER",
     # Data Models
     "LiveGateResult",
     "LivePolicies",
-    # Policy Loading
-    "load_live_policies",
-    # Strategy Eligibility
-    "check_strategy_live_eligibility",
-    "get_eligible_strategies",
-    # Portfolio Eligibility
-    "check_portfolio_live_eligibility",
+    # Exceptions
+    "RnDLiveTradingBlockedError",
+    "assert_portfolio_eligible",
     # Integration Helpers
     "assert_strategy_eligible",
-    "assert_portfolio_eligible",
-    "get_eligibility_summary",
+    "assert_strategy_not_r_and_d_for_live",
+    # Portfolio Eligibility
+    "check_portfolio_live_eligibility",
     # R&D Tier Gating
     "check_r_and_d_tier_for_mode",
-    "assert_strategy_not_r_and_d_for_live",
+    # Strategy Eligibility
+    "check_strategy_live_eligibility",
+    "get_eligibility_summary",
+    "get_eligible_strategies",
     "get_strategy_tier",
+    # Policy Loading
+    "load_live_policies",
     "log_strategy_tier_info",
-    # Constants
-    "R_AND_D_TIER",
-    "BLOCKED_MODES_FOR_R_AND_D",
 ]

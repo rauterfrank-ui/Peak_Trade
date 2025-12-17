@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.reporting.trigger_training_report import TriggerTrainingEvent, TriggerOutcome
+from src.reporting.trigger_training_report import TriggerOutcome, TriggerTrainingEvent
 from src.trigger_training.operator_meta_report import build_operator_meta_report
 
 

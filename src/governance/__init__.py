@@ -6,9 +6,11 @@ from .go_no_go import (
     is_feature_approved_for_year,
 )
 from .strategy_switch_sanity_check import (
-    StrategySwitchSanityResult,
     StrategyMeta,
+    StrategySwitchSanityResult,
     run_strategy_switch_sanity_check,
+)
+from .strategy_switch_sanity_check import (
     print_result as print_sanity_result,
 )
 
@@ -17,11 +19,11 @@ from .strategy_switch_sanity_check import (
 __all__ = [
     # Go/No-Go
     "GovernanceStatus",
-    "get_governance_status",
-    "is_feature_approved_for_year",
+    "StrategyMeta",
     # Strategy-Switch Sanity
     "StrategySwitchSanityResult",
-    "StrategyMeta",
-    "run_strategy_switch_sanity_check",
+    "get_governance_status",
+    "is_feature_approved_for_year",
     "print_sanity_result",
+    "run_strategy_switch_sanity_check",
 ]

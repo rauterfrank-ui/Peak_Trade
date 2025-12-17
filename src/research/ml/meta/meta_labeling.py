@@ -25,11 +25,10 @@ Referenz:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Protocol
+from typing import Any, Protocol
 
 import numpy as np
 import pandas as pd
-
 
 # =============================================================================
 # PROTOCOLS & TYPES
@@ -66,8 +65,8 @@ class MetaModelSpec:
     """
 
     model_type: str = "random_forest"
-    hyperparams: Dict[str, Any] = None
-    feature_cols: List[str] = None
+    hyperparams: dict[str, Any] = None
+    feature_cols: list[str] = None
     target_col: str = "label"
     min_confidence: float = 0.5
 
@@ -87,7 +86,7 @@ def apply_meta_model(
     signals: pd.Series,
     features: pd.DataFrame,
     model_spec: MetaModelSpec,
-    trained_model: Optional[MLModel] = None,
+    trained_model: MLModel | None = None,
 ) -> pd.Series:
     """
     Wendet Meta-Modell auf Basis-Signale an.

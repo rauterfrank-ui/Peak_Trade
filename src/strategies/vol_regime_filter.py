@@ -16,10 +16,10 @@ Verwendung:
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -77,19 +77,19 @@ class VolRegimeFilter(BaseStrategy):
         self,
         vol_window: int = 20,
         vol_method: str = "atr",
-        min_vol: Optional[float] = None,
-        max_vol: Optional[float] = None,
-        low_vol_threshold: Optional[float] = None,
-        high_vol_threshold: Optional[float] = None,
+        min_vol: float | None = None,
+        max_vol: float | None = None,
+        low_vol_threshold: float | None = None,
+        high_vol_threshold: float | None = None,
         min_bars: int = 30,
-        atr_threshold: Optional[float] = None,
-        vol_percentile_low: Optional[float] = None,
-        vol_percentile_high: Optional[float] = None,
+        atr_threshold: float | None = None,
+        vol_percentile_low: float | None = None,
+        vol_percentile_high: float | None = None,
         lookback_percentile: int = 100,
         invert: bool = False,
         regime_mode: bool = False,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Vol Regime Filter.
@@ -108,7 +108,7 @@ class VolRegimeFilter(BaseStrategy):
             config: Optional Config-Dict
             metadata: Optional Metadata
         """
-        base_cfg: Dict[str, Any] = {
+        base_cfg: dict[str, Any] = {
             "vol_window": vol_window,
             "vol_method": vol_method,
             "min_vol": min_vol,
@@ -180,12 +180,12 @@ class VolRegimeFilter(BaseStrategy):
             raise ValueError(
                 f"vol_method ({self.vol_method}) muss 'atr', 'std', 'realized' oder 'range' sein"
             )
-        
+
         if self.min_bars < 1:
             raise ValueError(
                 f"min_bars ({self.min_bars}) muss >= 1 sein"
             )
-        
+
         if self.low_vol_threshold is not None and self.high_vol_threshold is not None:
             if self.low_vol_threshold >= self.high_vol_threshold:
                 raise ValueError(
@@ -221,7 +221,7 @@ class VolRegimeFilter(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.vol_regime_filter",
-    ) -> "VolRegimeFilter":
+    ) -> VolRegimeFilter:
         """
         Fabrikmethode für Core-Config.
 
@@ -245,7 +245,7 @@ class VolRegimeFilter(BaseStrategy):
         lookback_percentile = cfg.get(f"{section}.lookback_percentile", 100)
         invert = cfg.get(f"{section}.invert", False)
         regime_mode = cfg.get(f"{section}.regime_mode", False)
-        
+
         # Auto-detect regime_mode wenn Thresholds gesetzt sind
         if regime_mode is False and (low_vol_threshold is not None or high_vol_threshold is not None):
             regime_mode = True
@@ -331,12 +331,12 @@ class VolRegimeFilter(BaseStrategy):
         if "high" not in data.columns or "low" not in data.columns:
             # Fallback zu Close-Range
             close = data["close"]
-            return (close.rolling(window=self.vol_window).max() - 
+            return (close.rolling(window=self.vol_window).max() -
                     close.rolling(window=self.vol_window).min())
-        
+
         high = data["high"]
         low = data["low"]
-        range_vol = (high.rolling(window=self.vol_window, min_periods=self.vol_window).max() - 
+        range_vol = (high.rolling(window=self.vol_window, min_periods=self.vol_window).max() -
                      low.rolling(window=self.vol_window, min_periods=self.vol_window).min())
         return range_vol
 
@@ -398,18 +398,18 @@ class VolRegimeFilter(BaseStrategy):
         if self.regime_mode and (self.low_vol_threshold is not None or self.high_vol_threshold is not None):
             # Regime-Mode: 1=Low-Vol, -1=High-Vol, 0=Neutral
             regime_signal = pd.Series(0, index=data.index, dtype=int)
-            
+
             # Vor min_bars: Neutral (0)
             for i in range(len(data)):
                 if i < self.min_bars:
                     regime_signal.iloc[i] = 0
                     continue
-                
+
                 current_vol = vol.iloc[i]
                 if pd.isna(current_vol):
                     regime_signal.iloc[i] = 0
                     continue
-                
+
                 # Low-Vol: Risk-On (1)
                 if self.low_vol_threshold is not None and current_vol < self.low_vol_threshold:
                     regime_signal.iloc[i] = 1
@@ -419,7 +419,7 @@ class VolRegimeFilter(BaseStrategy):
                 # Neutral (0) - zwischen den Thresholds oder außerhalb
                 else:
                     regime_signal.iloc[i] = 0
-            
+
             regime_signal.name = "vol_regime"
             return regime_signal
 
@@ -475,7 +475,7 @@ class VolRegimeFilter(BaseStrategy):
         # Vor min_bars: Blockieren
         for i in range(min(self.min_bars, len(data))):
             filter_signal.iloc[i] = 0
-        
+
         filter_signal = filter_signal.fillna(0).astype(int)
 
         filter_signal.name = "vol_filter"
@@ -522,7 +522,7 @@ class VolRegimeFilter(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 
@@ -538,11 +538,11 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     config = {
         "vol_window": params.get("vol_window", params.get("atr_window", 20)),
         "vol_method": params.get("vol_method", "atr"),
-        "min_vol": params.get("min_vol", None),
-        "max_vol": params.get("max_vol", None),
-        "atr_threshold": params.get("atr_threshold", None),
-        "vol_percentile_low": params.get("vol_percentile_low", None),
-        "vol_percentile_high": params.get("vol_percentile_high", None),
+        "min_vol": params.get("min_vol"),
+        "max_vol": params.get("max_vol"),
+        "atr_threshold": params.get("atr_threshold"),
+        "vol_percentile_low": params.get("vol_percentile_low"),
+        "vol_percentile_high": params.get("vol_percentile_high"),
         "lookback_percentile": params.get("lookback_percentile", 100),
         "invert": params.get("invert", False),
     }
@@ -551,7 +551,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return strategy.generate_signals(df)
 
 
-def get_strategy_description(params: Dict) -> str:
+def get_strategy_description(params: dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
     method = params.get("vol_method", "atr")
     min_vol = params.get("min_vol")

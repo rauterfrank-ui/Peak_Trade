@@ -20,9 +20,9 @@ def test_r_and_d_safety_flags(strategy_cls) -> None:
     Diese Tests stellen sicher, dass die beiden Strategien sauber im
     R&D-Track verankert bleiben und nicht versehentlich live-fähig werden.
     """
-    assert getattr(strategy_cls, "IS_LIVE_READY") is False
-    assert getattr(strategy_cls, "TIER") == "r_and_d"
-    assert getattr(strategy_cls, "ALLOWED_ENVIRONMENTS") == [
+    assert strategy_cls.IS_LIVE_READY is False
+    assert strategy_cls.TIER == "r_and_d"
+    assert strategy_cls.ALLOWED_ENVIRONMENTS == [
         "offline_backtest",
         "research",
     ]

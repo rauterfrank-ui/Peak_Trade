@@ -29,10 +29,9 @@ Verwendung:
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -94,14 +93,14 @@ class CompositeStrategy(BaseStrategy):
 
     def __init__(
         self,
-        strategies: Optional[List[Union[BaseStrategy, Tuple[BaseStrategy, float]]]] = None,
-        weights: Optional[List[float]] = None,
+        strategies: list[BaseStrategy | tuple[BaseStrategy, float]] | None = None,
+        weights: list[float] | None = None,
         aggregation: str = "weighted",
         signal_threshold: float = 0.3,
         require_all_valid: bool = False,
-        filter_strategy: Optional[BaseStrategy] = None,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        filter_strategy: BaseStrategy | None = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Composite Strategy.
@@ -116,7 +115,7 @@ class CompositeStrategy(BaseStrategy):
             config: Optional Config-Dict
             metadata: Optional Metadata
         """
-        base_cfg: Dict[str, Any] = {
+        base_cfg: dict[str, Any] = {
             "aggregation": aggregation,
             "signal_threshold": signal_threshold,
             "require_all_valid": require_all_valid,
@@ -141,8 +140,8 @@ class CompositeStrategy(BaseStrategy):
         self.require_all_valid = bool(self.config.get("require_all_valid", False))
 
         # Strategien und Gewichte verarbeiten
-        self.strategies: List[BaseStrategy] = []
-        self.weights: List[float] = []
+        self.strategies: list[BaseStrategy] = []
+        self.weights: list[float] = []
         self._process_strategies(strategies, weights)
 
         # Filter-Strategie
@@ -153,8 +152,8 @@ class CompositeStrategy(BaseStrategy):
 
     def _process_strategies(
         self,
-        strategies: Optional[List[Union[BaseStrategy, Tuple[BaseStrategy, float]]]],
-        weights: Optional[List[float]],
+        strategies: list[BaseStrategy | tuple[BaseStrategy, float]] | None,
+        weights: list[float] | None,
     ) -> None:
         """
         Verarbeitet Strategien und Gewichte aus verschiedenen Eingabeformaten.
@@ -220,7 +219,7 @@ class CompositeStrategy(BaseStrategy):
     def add_strategy(
         self,
         strategy: BaseStrategy,
-        weight: Optional[float] = None
+        weight: float | None = None
     ) -> None:
         """
         Fügt eine Strategie zur Composite hinzu.
@@ -270,7 +269,7 @@ class CompositeStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.composite",
-    ) -> "CompositeStrategy":
+    ) -> CompositeStrategy:
         """
         Fabrikmethode für Core-Config.
 
@@ -291,7 +290,7 @@ class CompositeStrategy(BaseStrategy):
             CompositeStrategy-Instanz
         """
         # Lazy import um zirkuläre Abhängigkeit zu vermeiden
-        from .registry import create_strategy_from_config, get_strategy_spec
+        from .registry import create_strategy_from_config
 
         aggregation = cfg.get(f"{section}.aggregation", "weighted")
         signal_threshold = cfg.get(f"{section}.signal_threshold", 0.3)
@@ -301,7 +300,7 @@ class CompositeStrategy(BaseStrategy):
         component_keys = cfg.get(f"{section}.components", [])
         weights = cfg.get(f"{section}.weights", None)
 
-        strategies: List[BaseStrategy] = []
+        strategies: list[BaseStrategy] = []
         for key in component_keys:
             try:
                 strategy = create_strategy_from_config(key, cfg)
@@ -443,7 +442,7 @@ class CompositeStrategy(BaseStrategy):
             raise ValueError("Keine Strategien in CompositeStrategy definiert")
 
         # Signale aller Strategien sammeln
-        signal_dict: Dict[str, pd.Series] = {}
+        signal_dict: dict[str, pd.Series] = {}
         valid_strategies = 0
 
         for i, strategy in enumerate(self.strategies):
@@ -512,7 +511,7 @@ class CompositeStrategy(BaseStrategy):
     def get_component_signals(
         self,
         data: pd.DataFrame
-    ) -> Dict[str, pd.Series]:
+    ) -> dict[str, pd.Series]:
         """
         Gibt Signale aller Komponenten-Strategien zurück.
 
@@ -541,7 +540,7 @@ class CompositeStrategy(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 
@@ -558,7 +557,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
         Kombinierte Signal-Series
     """
     strategies = params.get("strategies", [])
-    weights = params.get("weights", None)
+    weights = params.get("weights")
     aggregation = params.get("aggregation", "weighted")
     signal_threshold = params.get("signal_threshold", 0.3)
 
@@ -572,7 +571,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return composite.generate_signals(df)
 
 
-def get_strategy_description(params: Dict) -> str:
+def get_strategy_description(params: dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
     strategies = params.get("strategies", [])
     aggregation = params.get("aggregation", "weighted")

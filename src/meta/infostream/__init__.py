@@ -30,11 +30,11 @@ Verwendung:
     run_infostream_cycle(project_root=Path("."))
 """
 
-from .models import IntelEvent, InfoPacket, LearningSnippet, IntelEval
+from .models import InfoPacket, IntelEval, IntelEvent, LearningSnippet
 
 __all__ = [
-    "IntelEvent",
     "InfoPacket",
-    "LearningSnippet",
     "IntelEval",
+    "IntelEvent",
+    "LearningSnippet",
 ]

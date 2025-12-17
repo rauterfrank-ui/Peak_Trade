@@ -34,7 +34,6 @@ Verwendung:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
 
 import numpy as np
 
@@ -104,9 +103,9 @@ class GarchRegimeModelV0:
 
     def __init__(
         self,
-        regime_params: List[dict],
-        transition_matrix: List[List[float]],
-        seed: Optional[int] = None,
+        regime_params: list[dict],
+        transition_matrix: list[list[float]],
+        seed: int | None = None,
         initial_regime: int = 0,
     ):
         """
@@ -145,8 +144,8 @@ class GarchRegimeModelV0:
 
     def _validate_params(
         self,
-        regime_params: List[dict],
-        transition_matrix: List[List[float]],
+        regime_params: list[dict],
+        transition_matrix: list[list[float]],
     ) -> None:
         """Validiert die Modell-Parameter."""
         if len(regime_params) == 0:
@@ -233,7 +232,7 @@ class GarchRegimeModelV0:
             # TODO: scipy.stats.t installieren für korrekte Fat Tails
             return float(self.rng.standard_normal())
 
-    def reset(self, seed: Optional[int] = None) -> None:
+    def reset(self, seed: int | None = None) -> None:
         """
         Setzt das Modell auf den Anfangszustand zurück.
 
@@ -299,7 +298,7 @@ class GarchRegimeModelV0:
         self._step_idx += 1
         return state
 
-    def generate_returns(self, n_steps: int) -> Tuple[np.ndarray, np.ndarray]:
+    def generate_returns(self, n_steps: int) -> tuple[np.ndarray, np.ndarray]:
         """
         Generiert eine Sequenz von Returns und Regime-IDs.
 

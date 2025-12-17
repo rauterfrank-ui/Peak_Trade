@@ -4,7 +4,6 @@ Data Cache: Parquet-basierter Cache für normalisierte OHLCV-Daten.
 import glob
 import os
 import re
-from typing import Optional
 
 import pandas as pd
 
@@ -64,7 +63,7 @@ class ParquetCache:
         cache_path = self._get_cache_path(key)
         return os.path.exists(cache_path)
 
-    def clear(self, key: Optional[str] = None) -> None:
+    def clear(self, key: str | None = None) -> None:
         """
         Löscht Cache-Dateien.
         """

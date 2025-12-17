@@ -19,7 +19,7 @@ Lookup-Reihenfolge:
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from .models import RunbookLink
 
@@ -37,7 +37,7 @@ BASE_DOCS_URL = "https://github.com/rauterfrank-ui/Peak_Trade/blob/main/docs"
 # =============================================================================
 
 # Alle verfügbaren Runbooks
-RUNBOOK_REGISTRY: Dict[str, RunbookLink] = {
+RUNBOOK_REGISTRY: dict[str, RunbookLink] = {
     "live_alert_pipeline": RunbookLink(
         id="live_alert_pipeline",
         title="Live Alert Pipeline Runbook",
@@ -76,7 +76,7 @@ RUNBOOK_REGISTRY: Dict[str, RunbookLink] = {
 
 # Key: (category_name, source_pattern, severity_name_or_none)
 # Value: Liste von Runbook-IDs
-_ALERT_RUNBOOK_MAPPING: Dict[Tuple[str, Optional[str], Optional[str]], List[str]] = {
+_ALERT_RUNBOOK_MAPPING: dict[tuple[str, str | None, str | None], list[str]] = {
     # RISK + live_risk_severity
     ("RISK", "live_risk_severity", "CRITICAL"): [
         "live_risk_severity",
@@ -153,7 +153,7 @@ _ALERT_RUNBOOK_MAPPING: Dict[Tuple[str, Optional[str], Optional[str]], List[str]
 # =============================================================================
 
 
-def resolve_runbooks_for_alert(alert: Any) -> List[RunbookLink]:
+def resolve_runbooks_for_alert(alert: Any) -> list[RunbookLink]:
     """
     Bestimmt passende Runbooks basierend auf Alert-Attributen.
 
@@ -197,14 +197,14 @@ def resolve_runbooks_for_alert(alert: Any) -> List[RunbookLink]:
         (category, None, None),            # Nur Category
     ]
 
-    runbook_ids: List[str] = []
+    runbook_ids: list[str] = []
     for key in lookup_keys:
         if key in _ALERT_RUNBOOK_MAPPING:
             runbook_ids = _ALERT_RUNBOOK_MAPPING[key]
             break
 
     # IDs zu RunbookLinks auflösen
-    runbooks: List[RunbookLink] = []
+    runbooks: list[RunbookLink] = []
     for rb_id in runbook_ids:
         if rb_id in RUNBOOK_REGISTRY:
             runbooks.append(RUNBOOK_REGISTRY[rb_id])
@@ -214,7 +214,7 @@ def resolve_runbooks_for_alert(alert: Any) -> List[RunbookLink]:
     return runbooks
 
 
-def get_all_runbooks() -> List[RunbookLink]:
+def get_all_runbooks() -> list[RunbookLink]:
     """
     Gibt alle registrierten Runbooks zurück.
 
@@ -224,7 +224,7 @@ def get_all_runbooks() -> List[RunbookLink]:
     return list(RUNBOOK_REGISTRY.values())
 
 
-def get_runbook_by_id(runbook_id: str) -> Optional[RunbookLink]:
+def get_runbook_by_id(runbook_id: str) -> RunbookLink | None:
     """
     Gibt ein Runbook nach ID zurück.
 

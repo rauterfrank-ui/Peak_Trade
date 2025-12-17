@@ -12,21 +12,16 @@ Testet:
 """
 from __future__ import annotations
 
-import pytest
-
 from src.live.risk_runbook import (
-    RiskStatus,
-    RunbookChecklist,
-    RunbookEntry,
-    get_runbook_for_status,
-    get_runbook_for_severity,
-    format_runbook_for_operator,
-    format_runbook_compact,
     RUNBOOK_GREEN,
-    RUNBOOK_YELLOW,
     RUNBOOK_RED,
+    RUNBOOK_YELLOW,
+    RunbookChecklist,
+    format_runbook_compact,
+    format_runbook_for_operator,
+    get_runbook_for_severity,
+    get_runbook_for_status,
 )
-
 
 # =============================================================================
 # TESTS: RUNBOOK ENTRIES

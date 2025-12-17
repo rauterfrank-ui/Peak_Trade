@@ -20,24 +20,23 @@ from __future__ import annotations
 
 import itertools
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import pandas as pd
 
-from src.core.experiments import log_sweep_run, RUN_TYPE_SWEEP
+from src.backtest.engine import BacktestEngine
+from src.core.experiments import log_sweep_run
 from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
-from src.backtest.engine import BacktestEngine
 from src.strategies.registry import (
     create_strategy_from_config,
     get_available_strategy_keys,
-    get_strategy_spec,
 )
-
 
 # =============================================================================
 # DATA STRUCTURES
@@ -73,16 +72,16 @@ class SweepConfig:
     """
 
     strategy_key: str
-    param_grid: Dict[str, List[Any]]
+    param_grid: dict[str, list[Any]]
     symbol: str = "BTC/EUR"
     timeframe: str = "1h"
-    sweep_name: Optional[str] = None
-    tag: Optional[str] = None
-    max_runs: Optional[int] = None
+    sweep_name: str | None = None
+    tag: str | None = None
+    max_runs: int | None = None
     sort_by: str = "sharpe"
     sort_ascending: bool = False
     config_path: str = "config.toml"
-    extra_metadata: Dict[str, Any] = field(default_factory=dict)
+    extra_metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Validierung nach Initialisierung."""
@@ -130,11 +129,11 @@ class SweepResult:
         error: Fehlermeldung bei Misserfolg (None wenn erfolgreich)
     """
 
-    params: Dict[str, Any]
-    stats: Dict[str, Any]
+    params: dict[str, Any]
+    stats: dict[str, Any]
     run_id: str
     success: bool = True
-    error: Optional[str] = None
+    error: str | None = None
 
     @property
     def total_return(self) -> float:
@@ -188,8 +187,8 @@ class SweepSummary:
     runs_executed: int
     successful_runs: int
     failed_runs: int
-    results: List[SweepResult]
-    best_result: Optional[SweepResult]
+    results: list[SweepResult]
+    best_result: SweepResult | None
     duration_seconds: float
     started_at: str
     completed_at: str
@@ -199,7 +198,7 @@ class SweepSummary:
         n: int = 10,
         sort_by: str = "sharpe",
         ascending: bool = False,
-    ) -> List[SweepResult]:
+    ) -> list[SweepResult]:
         """
         Gibt die Top-N Ergebnisse zurück.
 
@@ -247,7 +246,7 @@ def generate_sweep_id() -> str:
     return str(uuid.uuid4())[:8]
 
 
-def expand_parameter_grid(grid: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
+def expand_parameter_grid(grid: dict[str, list[Any]]) -> list[dict[str, Any]]:
     """
     Erzeugt das kartesische Produkt aller Parameterwerte (Grid-Search).
 
@@ -275,13 +274,13 @@ def expand_parameter_grid(grid: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
 
     combinations = []
     for combo in itertools.product(*values):
-        param_dict = dict(zip(keys, combo))
+        param_dict = dict(zip(keys, combo, strict=False))
         combinations.append(param_dict)
 
     return combinations
 
 
-def validate_param_grid(grid: Dict[str, List[Any]]) -> None:
+def validate_param_grid(grid: dict[str, list[Any]]) -> None:
     """
     Validiert ein Parameter-Grid.
 
@@ -331,7 +330,7 @@ class SweepEngine:
     def __init__(
         self,
         verbose: bool = False,
-        progress_callback: Optional[Callable[[int, int, Dict], None]] = None,
+        progress_callback: Callable[[int, int, dict], None] | None = None,
     ) -> None:
         """
         Initialisiert die Sweep-Engine.
@@ -382,7 +381,7 @@ class SweepEngine:
         # Tracking
         start_time = datetime.utcnow()
         started_at = start_time.isoformat(timespec="seconds") + "Z"
-        results: List[SweepResult] = []
+        results: list[SweepResult] = []
 
         if self.verbose:
             print(f"\n[Sweep] Starte {len(combinations)} Runs für {config.strategy_key}")
@@ -494,9 +493,9 @@ class SweepEngine:
         self,
         data: pd.DataFrame,
         strategy_key: str,
-        params: Dict[str, Any],
+        params: dict[str, Any],
         cfg: PeakConfig,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Führt einen einzelnen Backtest mit spezifischen Parametern aus.
 
@@ -530,7 +529,7 @@ class SweepEngine:
             risk_manager=risk_manager,
         )
 
-        def strategy_signal_fn(df: pd.DataFrame, _params: Dict) -> pd.Series:
+        def strategy_signal_fn(df: pd.DataFrame, _params: dict) -> pd.Series:
             return strategy.generate_signals(df)
 
         result = engine.run_realistic(
@@ -543,10 +542,10 @@ class SweepEngine:
 
     def _find_best_result(
         self,
-        results: List[SweepResult],
+        results: list[SweepResult],
         sort_by: str,
         ascending: bool,
-    ) -> Optional[SweepResult]:
+    ) -> SweepResult | None:
         """Findet das beste Ergebnis nach der angegebenen Metrik."""
         if not results:
             return None
@@ -572,13 +571,13 @@ class SweepEngine:
 
 def run_strategy_sweep(
     strategy_key: str,
-    param_grid: Dict[str, List[Any]],
+    param_grid: dict[str, list[Any]],
     data: pd.DataFrame,
     symbol: str = "BTC/EUR",
     timeframe: str = "1h",
-    sweep_name: Optional[str] = None,
-    tag: Optional[str] = None,
-    max_runs: Optional[int] = None,
+    sweep_name: str | None = None,
+    tag: str | None = None,
+    max_runs: int | None = None,
     sort_by: str = "sharpe",
     config_path: str = "config.toml",
     verbose: bool = False,

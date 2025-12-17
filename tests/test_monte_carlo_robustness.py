@@ -10,21 +10,17 @@ Tests für:
 """
 from __future__ import annotations
 
-import pytest
-import pandas as pd
 import numpy as np
-from pathlib import Path
+import pandas as pd
+import pytest
 
 from src.experiments.monte_carlo import (
     MonteCarloConfig,
-    MonteCarloRunResult,
-    MonteCarloSummaryResult,
-    run_monte_carlo_from_returns,
-    run_monte_carlo_from_equity,
-    _simple_bootstrap,
     _block_bootstrap,
+    _simple_bootstrap,
+    run_monte_carlo_from_equity,
+    run_monte_carlo_from_returns,
 )
-
 
 # =============================================================================
 # FIXTURES

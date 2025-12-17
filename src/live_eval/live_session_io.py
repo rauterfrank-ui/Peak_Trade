@@ -3,12 +3,11 @@
 import csv
 from datetime import datetime
 from pathlib import Path
-from typing import List
 
 from .live_session_eval import Fill
 
 
-def read_fills_csv(path: Path, strict: bool = False) -> List[Fill]:
+def read_fills_csv(path: Path, strict: bool = False) -> list[Fill]:
     """
     Read fills from a CSV file.
 
@@ -29,8 +28,8 @@ def read_fills_csv(path: Path, strict: bool = False) -> List[Fill]:
     if not path.exists():
         raise FileNotFoundError(f"Fills CSV not found: {path}")
 
-    fills: List[Fill] = []
-    errors: List[str] = []
+    fills: list[Fill] = []
+    errors: list[str] = []
 
     with path.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f)

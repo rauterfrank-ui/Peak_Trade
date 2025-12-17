@@ -11,17 +11,16 @@ um einen AlertManager für einfachere Nutzung.
 from __future__ import annotations
 
 import logging
-import uuid
-from datetime import datetime, timezone
-from typing import Any, Dict, Optional, Sequence
+from collections.abc import Sequence
+from datetime import UTC, datetime
+from typing import Any
 
 from .alerts import (
     AlertEvent,
     AlertLevel,
     AlertSink,
-    LoggingAlertSink,
-    StderrAlertSink,
     MultiAlertSink,
+    StderrAlertSink,
 )
 
 logger = logging.getLogger(__name__)
@@ -68,8 +67,8 @@ class AlertManager:
         source: str,
         code: str,
         message: str,
-        run_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
+        run_id: str | None = None,
+        details: dict[str, Any] | None = None,
     ) -> None:
         """
         Erstellt und sendet einen Alert.
@@ -87,7 +86,7 @@ class AlertManager:
             return
 
         # Context aufbauen
-        context: Dict[str, Any] = {}
+        context: dict[str, Any] = {}
         if run_id:
             context["run_id"] = run_id
         if details:
@@ -95,7 +94,7 @@ class AlertManager:
 
         # Alert-Event erstellen
         alert = AlertEvent(
-            ts=datetime.now(timezone.utc),
+            ts=datetime.now(UTC),
             level=level,
             source=source,
             code=code,
@@ -115,8 +114,8 @@ class AlertManager:
         source: str,
         code: str,
         message: str,
-        run_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
+        run_id: str | None = None,
+        details: dict[str, Any] | None = None,
     ) -> None:
         """Erstellt einen INFO-Alert."""
         self.raise_alert(
@@ -133,8 +132,8 @@ class AlertManager:
         source: str,
         code: str,
         message: str,
-        run_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
+        run_id: str | None = None,
+        details: dict[str, Any] | None = None,
     ) -> None:
         """Erstellt einen WARNING-Alert."""
         self.raise_alert(
@@ -151,8 +150,8 @@ class AlertManager:
         source: str,
         code: str,
         message: str,
-        run_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
+        run_id: str | None = None,
+        details: dict[str, Any] | None = None,
     ) -> None:
         """Erstellt einen CRITICAL-Alert."""
         self.raise_alert(

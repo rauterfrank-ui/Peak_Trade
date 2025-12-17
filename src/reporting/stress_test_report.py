@@ -24,15 +24,15 @@ Usage:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 import pandas as pd
 
 from .base import Report, ReportSection, df_to_markdown, dict_to_markdown_table
 
 try:
-    import matplotlib.pyplot as plt
     import matplotlib
+    import matplotlib.pyplot as plt
 
     matplotlib.use("Agg")  # Non-interactive backend
     MATPLOTLIB_AVAILABLE = True
@@ -82,7 +82,7 @@ def _create_equity_comparison_plot(
     stressed_returns: pd.Series,
     scenario_name: str,
     output_path: Path,
-) -> Optional[Path]:
+) -> Path | None:
     """
     Erstellt einen Equity-Kurven-Vergleich (Baseline vs. Stressed).
 
@@ -147,12 +147,12 @@ def _create_equity_comparison_plot(
 
 
 def build_stress_test_report(
-    suite: "StressTestSuiteResult",  # Forward reference  # noqa: F821
+    suite: StressTestSuiteResult,  # Forward reference
     *,
     title: str,
     output_dir: Path,
     format: Literal["md", "html", "both"] = "both",
-) -> Dict[str, Path]:
+) -> dict[str, Path]:
     """
     Erzeugt einen Stress-Test-Report mit Baseline- und Szenario-Kennzahlen.
 
@@ -214,7 +214,7 @@ def build_stress_test_report(
     # 3. Scenario Comparison Table
     if suite.scenario_results:
         # Erstelle Vergleichstabelle
-        comparison_data: List[Dict[str, Any]] = []
+        comparison_data: list[dict[str, Any]] = []
 
         # W�hle wichtige Metriken f�r die �bersicht
         key_metrics = ["sharpe", "max_drawdown", "total_return", "cagr", "volatility"]
@@ -223,7 +223,7 @@ def build_stress_test_report(
         ]
 
         for result in suite.scenario_results:
-            row: Dict[str, Any] = {
+            row: dict[str, Any] = {
                 "Scenario": _format_scenario_type(result.scenario.scenario_type),
                 "Severity": f"{result.scenario.severity:.0%}",
             }
@@ -244,7 +244,7 @@ def build_stress_test_report(
             ))
 
     # 4. Detailed Scenario Results
-    detailed_lines: List[str] = []
+    detailed_lines: list[str] = []
 
     for i, result in enumerate(suite.scenario_results, 1):
         scenario_type = _format_scenario_type(result.scenario.scenario_type)
@@ -257,7 +257,7 @@ def build_stress_test_report(
         detailed_lines.append("")
 
         # Tabelle mit Baseline | Stressed | Diff
-        table_data: List[Dict[str, str]] = []
+        table_data: list[dict[str, str]] = []
         for metric in sorted(result.baseline_metrics.keys()):
             baseline_val = result.baseline_metrics.get(metric, 0.0)
             stressed_val = result.stressed_metrics.get(metric, 0.0)
@@ -282,7 +282,7 @@ def build_stress_test_report(
         ))
 
     # 5. Visualizations (optional)
-    charts_content: List[str] = []
+    charts_content: list[str] = []
 
     if MATPLOTLIB_AVAILABLE and suite.scenario_results:
         # Import here to avoid circular import
@@ -345,7 +345,7 @@ def build_stress_test_report(
     ))
 
     # Speichere Report
-    paths: Dict[str, Path] = {}
+    paths: dict[str, Path] = {}
 
     if format in ("md", "both"):
         md_path = output_dir / "stress_test_report.md"

@@ -1,8 +1,7 @@
 """Tests für Trigger Reaction Stats Modul."""
-import pytest
+
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
+import pytest
 
 from src.trigger_training.reaction_stats import (
     TriggerReactionCategory,
@@ -10,9 +9,9 @@ from src.trigger_training.reaction_stats import (
     TriggerReactionRecord,
     TriggerReactionSummary,
     compute_reaction_records,
-    summarize_reaction_records,
     reaction_records_to_df,
     reaction_summary_to_dict,
+    summarize_reaction_records,
 )
 
 
@@ -27,16 +26,16 @@ class TestTriggerReactionStats:
             "recommended_action": ["ENTER_LONG"],
             "symbol": ["BTCEUR"]
         })
-        
+
         actions_df = pd.DataFrame({
             "signal_id": [1],
             "timestamp": [pd.Timestamp("2025-01-01 10:00:00.100")],  # 100 ms
             "user_action": ["EXECUTED"]
         })
-        
+
         config = TriggerReactionConfig(impulsive_threshold_ms=300)
         records = compute_reaction_records(signals_df, actions_df, config)
-        
+
         assert len(records) == 1
         assert records[0].category == TriggerReactionCategory.IMPULSIVE
         assert records[0].reaction_ms == pytest.approx(100.0, abs=1.0)
@@ -48,16 +47,16 @@ class TestTriggerReactionStats:
             "timestamp": [pd.Timestamp("2025-01-01 10:00:00")],
             "recommended_action": ["ENTER_LONG"],
         })
-        
+
         actions_df = pd.DataFrame({
             "signal_id": [1],
             "timestamp": [pd.Timestamp("2025-01-01 10:00:00.500")],  # 500 ms
             "user_action": ["EXECUTED"]
         })
-        
+
         config = TriggerReactionConfig(impulsive_threshold_ms=300, late_threshold_ms=3000)
         records = compute_reaction_records(signals_df, actions_df, config)
-        
+
         assert len(records) == 1
         assert records[0].category == TriggerReactionCategory.ON_TIME
         assert records[0].reaction_ms == pytest.approx(500.0, abs=1.0)
@@ -69,16 +68,16 @@ class TestTriggerReactionStats:
             "timestamp": [pd.Timestamp("2025-01-01 10:00:00")],
             "recommended_action": ["ENTER_LONG"],
         })
-        
+
         actions_df = pd.DataFrame({
             "signal_id": [1],
             "timestamp": [pd.Timestamp("2025-01-01 10:00:10")],  # 10 s
             "user_action": ["EXECUTED"]
         })
-        
+
         config = TriggerReactionConfig(late_threshold_ms=3000)
         records = compute_reaction_records(signals_df, actions_df, config)
-        
+
         assert len(records) == 1
         assert records[0].category == TriggerReactionCategory.LATE
         assert records[0].reaction_ms == pytest.approx(10000.0, abs=1.0)
@@ -90,11 +89,11 @@ class TestTriggerReactionStats:
             "timestamp": [pd.Timestamp("2025-01-01 10:00:00")],
             "recommended_action": ["ENTER_LONG"],
         })
-        
+
         actions_df = pd.DataFrame(columns=["signal_id", "timestamp", "user_action"])
-        
+
         records = compute_reaction_records(signals_df, actions_df)
-        
+
         assert len(records) == 1
         assert records[0].category == TriggerReactionCategory.MISSED
         assert records[0].reaction_ms is None
@@ -106,16 +105,16 @@ class TestTriggerReactionStats:
             "timestamp": [pd.Timestamp("2025-01-01 10:00:00")],
             "recommended_action": ["ENTER_LONG"],
         })
-        
+
         actions_df = pd.DataFrame({
             "signal_id": [1],
             "timestamp": [pd.Timestamp("2025-01-01 10:00:00.100")],
             "user_action": ["SKIPPED"]
         })
-        
+
         config = TriggerReactionConfig(consider_skipped=True)
         records = compute_reaction_records(signals_df, actions_df, config)
-        
+
         assert len(records) == 1
         assert records[0].category == TriggerReactionCategory.SKIPPED
 
@@ -126,7 +125,7 @@ class TestTriggerReactionStats:
             "timestamp": pd.date_range("2025-01-01 10:00:00", periods=5, freq="1min"),
             "recommended_action": ["ENTER_LONG"] * 5,
         })
-        
+
         actions_df = pd.DataFrame({
             "signal_id": [1, 2, 4, 5],  # Signal 3 hat keine Aktion
             "timestamp": [
@@ -137,14 +136,14 @@ class TestTriggerReactionStats:
             ],
             "user_action": ["EXECUTED", "EXECUTED", "EXECUTED", "SKIPPED"]
         })
-        
+
         config = TriggerReactionConfig(
             impulsive_threshold_ms=300,
             late_threshold_ms=3000,
             consider_skipped=True
         )
         records = compute_reaction_records(signals_df, actions_df, config)
-        
+
         assert len(records) == 5
         assert records[0].category == TriggerReactionCategory.IMPULSIVE
         assert records[1].category == TriggerReactionCategory.ON_TIME
@@ -172,9 +171,9 @@ class TestTriggerReactionStats:
                 TriggerReactionCategory.SKIPPED,
             ])
         ]
-        
+
         summary = summarize_reaction_records(records)
-        
+
         assert summary.count_total == 5
         assert summary.count_impulsive == 1
         assert summary.count_on_time == 1
@@ -187,7 +186,7 @@ class TestTriggerReactionStats:
     def test_summarize_reaction_records_empty(self):
         """Test: Leere Records-Liste."""
         summary = summarize_reaction_records([])
-        
+
         assert summary.count_total == 0
         assert summary.mean_reaction_ms is None
 
@@ -204,9 +203,9 @@ class TestTriggerReactionStats:
                 symbol="BTCEUR",
             )
         ]
-        
+
         df = reaction_records_to_df(records)
-        
+
         assert len(df) == 1
         assert df["signal_id"].iloc[0] == 1
         assert df["category"].iloc[0] == "IMPULSIVE"
@@ -215,7 +214,7 @@ class TestTriggerReactionStats:
     def test_reaction_records_to_df_empty(self):
         """Test: Leere Records-Liste zu DataFrame."""
         df = reaction_records_to_df([])
-        
+
         assert df.empty
         assert "signal_id" in df.columns
 
@@ -229,9 +228,9 @@ class TestTriggerReactionStats:
             count_missed=1,
             mean_reaction_ms=500.0,
         )
-        
+
         d = reaction_summary_to_dict(summary)
-        
+
         assert d["count_total"] == 10
         assert d["count_impulsive"] == 2
         assert d["mean_reaction_ms"] == 500.0
@@ -243,14 +242,14 @@ class TestTriggerReactionStats:
             "timestamp": [pd.Timestamp("2025-01-01 10:00:00")],
             "recommended_action": ["ENTER_LONG"],
         })
-        
+
         actions_df = pd.DataFrame({
             "signal_id": [1],
             "timestamp": [pd.Timestamp("2025-01-01 10:00:00.100")],
             "user_action": ["EXECUTED"]
         })
-        
+
         records = compute_reaction_records(signals_df, actions_df, session_id="MY_SESSION")
-        
+
         assert len(records) == 1
         assert records[0].session_id == "MY_SESSION"

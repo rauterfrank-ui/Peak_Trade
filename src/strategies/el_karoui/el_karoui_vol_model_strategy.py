@@ -35,18 +35,16 @@ Warnung:
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
-import numpy as np
 import pandas as pd
 
 from ..base import BaseStrategy, StrategyMetadata
 from .vol_model import (
-    VolRegime,
     ElKarouiVolConfig,
     ElKarouiVolModel,
+    VolRegime,
 )
-
 
 # =============================================================================
 # REGIME → POSITION MAPPING
@@ -54,21 +52,21 @@ from .vol_model import (
 
 
 # Default Mapping: Regime → Zielposition (1=long, 0=flat)
-DEFAULT_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
+DEFAULT_REGIME_POSITION_MAP: dict[VolRegime, int] = {
     VolRegime.LOW: 1,      # Long bei niedriger Volatilität
     VolRegime.MEDIUM: 1,   # Long bei mittlerer Volatilität (reduziert durch Scaling)
     VolRegime.HIGH: 0,     # Flat bei hoher Volatilität (Risk-Off)
 }
 
 # Konservatives Mapping: Nur in LOW-Vol long
-CONSERVATIVE_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
+CONSERVATIVE_REGIME_POSITION_MAP: dict[VolRegime, int] = {
     VolRegime.LOW: 1,      # Long nur bei niedriger Vol
     VolRegime.MEDIUM: 0,   # Flat bei mittlerer Vol
     VolRegime.HIGH: 0,     # Flat bei hoher Vol
 }
 
 # Aggressives Mapping: Immer long, nur Scaling unterschiedlich
-AGGRESSIVE_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
+AGGRESSIVE_REGIME_POSITION_MAP: dict[VolRegime, int] = {
     VolRegime.LOW: 1,      # Long bei niedriger Vol
     VolRegime.MEDIUM: 1,   # Long bei mittlerer Vol
     VolRegime.HIGH: 1,     # Long auch bei hoher Vol (reduziert durch Scaling)
@@ -149,9 +147,9 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
         use_ewm: bool = True,
         use_vol_scaling: bool = True,
         annualization_factor: float = 252.0,
-        regime_position_map: Optional[Dict[VolRegime, int] | str] = None,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        regime_position_map: dict[VolRegime, int] | str | None = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert El Karoui Volatility Strategy.
@@ -244,8 +242,8 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
         return self.high_threshold
 
     def _resolve_regime_position_map(
-        self, mapping: Dict[VolRegime, int] | str | None
-    ) -> Dict[VolRegime, int]:
+        self, mapping: dict[VolRegime, int] | str | None
+    ) -> dict[VolRegime, int]:
         """
         Löst das Regime→Position Mapping auf.
 
@@ -272,7 +270,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.el_karoui_vol_v1",
-    ) -> "ElKarouiVolatilityStrategy":
+    ) -> ElKarouiVolatilityStrategy:
         """
         Fabrikmethode für Config-basierte Instanziierung.
 
@@ -358,7 +356,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
 
         return signal_series
 
-    def get_vol_analysis(self, data: pd.DataFrame) -> Dict[str, Any]:
+    def get_vol_analysis(self, data: pd.DataFrame) -> dict[str, Any]:
         """
         Gibt detaillierte Volatilitätsanalyse zurück.
 
@@ -430,7 +428,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
                 f"low_threshold ({self.low_threshold}) muss < high_threshold ({self.high_threshold}) sein"
             )
 
-    def get_strategy_info(self) -> Dict[str, Any]:
+    def get_strategy_info(self) -> dict[str, Any]:
         """
         Gibt Strategy-Metadaten zurück (für Logs/Reports).
 
@@ -473,7 +471,7 @@ ElKarouiVolModelStrategy = ElKarouiVolatilityStrategy
 # =============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility.
 
@@ -496,11 +494,11 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
 # =============================================================================
 
 __all__ = [
-    "ElKarouiVolatilityStrategy",
-    "ElKarouiVolModelStrategy",  # Alias für Backwards Compatibility
-    "generate_signals",
+    "AGGRESSIVE_REGIME_POSITION_MAP",
+    "CONSERVATIVE_REGIME_POSITION_MAP",
     # Regime-Position Mappings
     "DEFAULT_REGIME_POSITION_MAP",
-    "CONSERVATIVE_REGIME_POSITION_MAP",
-    "AGGRESSIVE_REGIME_POSITION_MAP",
+    "ElKarouiVolModelStrategy",  # Alias für Backwards Compatibility
+    "ElKarouiVolatilityStrategy",
+    "generate_signals",
 ]

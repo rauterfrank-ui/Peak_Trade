@@ -40,46 +40,43 @@ WICHTIG: Dieser Layer ist NUR fuer Research/Backtest/Shadow, NICHT fuer Live-Tra
 """
 
 from .base import (
-    RegimeLabel,
     RegimeContext,
     RegimeDetector,
+    RegimeLabel,
     RegimeSeriesDetector,
     StrategySwitchDecision,
     StrategySwitchingPolicy,
 )
-
 from .config import (
     RegimeDetectorConfig,
     StrategySwitchingConfig,
 )
-
 from .detectors import (
-    VolatilityRegimeDetector,
     RangeCompressionRegimeDetector,
+    VolatilityRegimeDetector,
     make_regime_detector,
 )
-
 from .switching import (
     SimpleRegimeMappingPolicy,
     make_switching_policy,
 )
 
 __all__ = [
-    # Base Types
-    "RegimeLabel",
+    "RangeCompressionRegimeDetector",
     "RegimeContext",
     "RegimeDetector",
-    "RegimeSeriesDetector",
-    "StrategySwitchDecision",
-    "StrategySwitchingPolicy",
     # Config
     "RegimeDetectorConfig",
-    "StrategySwitchingConfig",
-    # Detectors
-    "VolatilityRegimeDetector",
-    "RangeCompressionRegimeDetector",
-    "make_regime_detector",
+    # Base Types
+    "RegimeLabel",
+    "RegimeSeriesDetector",
     # Switching
     "SimpleRegimeMappingPolicy",
+    "StrategySwitchDecision",
+    "StrategySwitchingConfig",
+    "StrategySwitchingPolicy",
+    # Detectors
+    "VolatilityRegimeDetector",
+    "make_regime_detector",
     "make_switching_policy",
 ]

@@ -6,26 +6,25 @@ Smoke-Tests für den Analytics-Layer (experiments_analysis.py).
 Diese Tests verwenden Mock-DataFrames, um keine echte Registry zu benötigen.
 """
 
-import pytest
-import pandas as pd
-import numpy as np
 from pathlib import Path
 
+import pandas as pd
+import pytest
+
 from src.analytics.experiments_analysis import (
-    StrategySummary,
     PortfolioSummary,
-    load_experiments_df_filtered,
+    StrategySummary,
+    compare_strategies,
     filter_backtest_runs,
     filter_portfolio_backtest_runs,
-    summarize_strategies,
+    load_experiments_df_filtered,
     summarize_portfolios,
+    summarize_strategies,
     top_runs_by_metric,
-    compare_strategies,
     write_markdown_report,
     write_portfolio_markdown_report,
     write_top_runs_markdown_report,
 )
-from src.core import experiments
 
 
 def create_mock_experiments_df() -> pd.DataFrame:

@@ -10,31 +10,28 @@ Tests für:
 - build_live_run_report (Report-Generierung)
 """
 import json
-import os
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import List
 
 import pandas as pd
 import pytest
 
 from src.live.run_logging import (
-    ShadowPaperLoggingConfig,
-    LiveRunMetadata,
     LiveRunEvent,
     LiveRunLogger,
+    LiveRunMetadata,
+    ShadowPaperLoggingConfig,
     generate_run_id,
-    load_run_metadata,
-    load_run_events,
     list_runs,
+    load_run_events,
+    load_run_metadata,
 )
 from src.reporting.live_run_report import (
     build_live_run_report,
     load_and_build_report,
     save_report,
 )
-
 
 # =============================================================================
 # Test Fixtures
@@ -72,15 +69,15 @@ def sample_metadata() -> LiveRunMetadata:
         strategy_name="ma_crossover",
         symbol="BTC/EUR",
         timeframe="1m",
-        started_at=datetime(2025, 12, 4, 12, 0, 0, tzinfo=timezone.utc),
+        started_at=datetime(2025, 12, 4, 12, 0, 0, tzinfo=UTC),
         config_snapshot={"fee_rate": 0.0026},
     )
 
 
 @pytest.fixture
-def sample_events() -> List[LiveRunEvent]:
+def sample_events() -> list[LiveRunEvent]:
     """Sample-Events."""
-    base_time = datetime(2025, 12, 4, 12, 0, 0, tzinfo=timezone.utc)
+    base_time = datetime(2025, 12, 4, 12, 0, 0, tzinfo=UTC)
     events = []
     for i in range(10):
         events.append(
@@ -204,7 +201,7 @@ class TestGenerateRunId:
 
     def test_with_timestamp(self):
         """Test: Mit explizitem Timestamp."""
-        ts = datetime(2025, 12, 4, 15, 30, 0, tzinfo=timezone.utc)
+        ts = datetime(2025, 12, 4, 15, 30, 0, tzinfo=UTC)
         run_id = generate_run_id(
             mode="shadow",
             strategy_name="rsi",
@@ -284,7 +281,7 @@ class TestLiveRunLogger:
         assert events_path.exists()
 
         # Meta sollte ended_at haben
-        with open(logger.run_dir / "meta.json", "r") as f:
+        with open(logger.run_dir / "meta.json") as f:
             meta = json.load(f)
         assert meta["ended_at"] is not None
 
@@ -446,12 +443,17 @@ class TestSessionIntegration:
 
     def test_session_with_run_logger(self, temp_run_dir, sample_logging_config, sample_metadata):
         """Test: Session mit Run-Logger erstellen."""
-        from src.live.shadow_session import ShadowPaperSession
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.data.kraken_live import ShadowPaperConfig, LiveExchangeConfig, FakeCandleSource, LiveCandle
+        from src.data.kraken_live import (
+            FakeCandleSource,
+            LiveCandle,
+            LiveExchangeConfig,
+            ShadowPaperConfig,
+        )
         from src.execution.pipeline import ExecutionPipeline
+        from src.live.risk_limits import LiveRiskConfig, LiveRiskLimits
+        from src.live.shadow_session import ShadowPaperSession
         from src.orders.shadow import ShadowMarketContext
-        from src.live.risk_limits import LiveRiskLimits, LiveRiskConfig
 
         # Minimal-Setup für Session
         env_config = EnvironmentConfig(
@@ -481,7 +483,7 @@ class TestSessionIntegration:
         # Fake-Datenquelle
         candles = [
             LiveCandle(
-                timestamp=datetime(2025, 12, 4, 12, i, 0, tzinfo=timezone.utc),
+                timestamp=datetime(2025, 12, 4, 12, i, 0, tzinfo=UTC),
                 open=50000.0 + i * 10,
                 high=50100.0 + i * 10,
                 low=49900.0 + i * 10,
@@ -497,7 +499,6 @@ class TestSessionIntegration:
             key = "dummy"
 
             def generate_signals(self, df):
-                import pandas as pd
                 return pd.Series([0] * len(df), index=df.index)
 
         strategy = DummyStrategy()

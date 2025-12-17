@@ -24,10 +24,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import pandas as pd
-
 
 # =============================================================================
 # DATACLASSES
@@ -85,8 +84,8 @@ class Report:
     """
 
     title: str
-    sections: List[ReportSection] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    sections: list[ReportSection] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def add_section(self, section: ReportSection) -> None:
         """Fügt eine Section hinzu."""
@@ -210,10 +209,10 @@ def _markdown_to_html(markdown: str) -> str:
     - Links ([text](url))
     """
     lines = markdown.split("\n")
-    html_lines: List[str] = []
+    html_lines: list[str] = []
     in_table = False
     in_code_block = False
-    table_lines: List[str] = []
+    table_lines: list[str] = []
 
     for line in lines:
         # Code-Block Start/Ende
@@ -276,7 +275,7 @@ def _markdown_to_html(markdown: str) -> str:
     return "\n".join(html_lines)
 
 
-def _render_markdown_table(table_lines: List[str]) -> str:
+def _render_markdown_table(table_lines: list[str]) -> str:
     """Rendert Markdown-Tabellenzeilen als HTML-Tabelle."""
     if not table_lines:
         return ""
@@ -305,7 +304,7 @@ def _render_markdown_table(table_lines: List[str]) -> str:
 def df_to_markdown(
     df: pd.DataFrame,
     float_format: str = ".4f",
-    max_rows: Optional[int] = None,
+    max_rows: int | None = None,
 ) -> str:
     """
     Konvertiert ein Pandas DataFrame zu einer Markdown-Tabelle.
@@ -340,9 +339,9 @@ def df_to_markdown(
     separator = "| " + " | ".join("-" * max(3, len(str(h))) for h in headers) + " |"
 
     # Rows
-    rows: List[str] = []
+    rows: list[str] = []
     for _, row in df.iterrows():
-        cells: List[str] = []
+        cells: list[str] = []
         for val in row:
             if isinstance(val, float):
                 cells.append(format(val, float_format))
@@ -350,11 +349,11 @@ def df_to_markdown(
                 cells.append(str(val))
         rows.append("| " + " | ".join(cells) + " |")
 
-    return "\n".join([header_line, separator] + rows)
+    return "\n".join([header_line, separator, *rows])
 
 
 def dict_to_markdown_table(
-    data: Dict[str, Any],
+    data: dict[str, Any],
     key_header: str = "Metric",
     value_header: str = "Value",
     float_format: str = ".4f",
@@ -386,7 +385,7 @@ def dict_to_markdown_table(
     header = f"| {key_header} | {value_header} |"
     separator = f"| {'-' * len(key_header)} | {'-' * len(value_header)} |"
 
-    rows: List[str] = []
+    rows: list[str] = []
     for key, value in data.items():
         if isinstance(value, float):
             value_str = format(value, float_format)
@@ -394,7 +393,7 @@ def dict_to_markdown_table(
             value_str = str(value)
         rows.append(f"| {key} | {value_str} |")
 
-    return "\n".join([header, separator] + rows)
+    return "\n".join([header, separator, *rows])
 
 
 def format_metric(value: float, metric_name: str) -> str:

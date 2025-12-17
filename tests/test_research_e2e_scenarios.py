@@ -8,8 +8,9 @@ End-to-End-Tests für Research-Szenarien:
 - Szenario-basierte Erwartungen sind definiert
 - E2E-Workflow: Szenario → Backtest → Erwartungs-Check
 """
-import pytest
 from pathlib import Path
+
+import pytest
 
 try:
     import tomllib
@@ -254,7 +255,7 @@ class TestScenarioE2EWorkflow:
         for name, config in scenario_configs.items():
             assert "applicable_strategies" in config.get("scenario", {}), \
                 f"{name}: missing scenario.applicable_strategies"
-            
+
             applicable = config["scenario"]["applicable_strategies"]
             assert "primary" in applicable, f"{name}: missing applicable_strategies.primary"
 
@@ -264,7 +265,7 @@ class TestScenarioE2EWorkflow:
             expectations = config["scenario"]["test_expectations"]
             assert "max_acceptable_drawdown" in expectations, \
                 f"{name}: missing max_acceptable_drawdown in test_expectations"
-            
+
             max_dd = expectations["max_acceptable_drawdown"]
             assert max_dd < 0, f"{name}: max_acceptable_drawdown should be negative"
             assert max_dd >= -100, f"{name}: max_acceptable_drawdown too extreme: {max_dd}"
@@ -273,7 +274,7 @@ class TestScenarioE2EWorkflow:
         """Baseline-Erwartungen sind realistisch."""
         for name, config in scenario_configs.items():
             expectations = config["scenario"]["test_expectations"]
-            
+
             # Baseline-Drawdown sollte besser als max_acceptable sein
             if "baseline_max_portfolio_drawdown" in expectations:
                 baseline_dd = expectations["baseline_max_portfolio_drawdown"]
@@ -295,7 +296,7 @@ class TestScenarioRegressionDetection:
             if config["scenario"]["category"] == "stress":
                 severity = config["scenario"]["severity"]
                 max_dd = config["scenario"]["test_expectations"]["max_acceptable_drawdown"]
-                
+
                 # Höhere Severity = mehr erlaubter Drawdown
                 assert max_dd <= -20, \
                     f"Stress scenario {name} should have max_dd <= -20%, got {max_dd}"
@@ -305,11 +306,11 @@ class TestScenarioRegressionDetection:
         for name, config in scenario_configs.items():
             if config["scenario"]["category"] == "regime":
                 expectations = config["scenario"]["test_expectations"]
-                
+
                 # Regime-Szenarien sollten Gewinner/Verlierer-Strategien definieren
                 has_winners = "expected_winners" in expectations
                 has_losers = "expected_losers" in expectations
-                
+
                 # Mindestens eine Liste sollte vorhanden sein
                 assert has_winners or has_losers, \
                     f"Regime scenario {name} should define expected_winners or expected_losers"
@@ -325,12 +326,12 @@ class TestScenarioIntegration:
     def test_scenarios_reference_valid_strategies(self, scenario_configs):
         """Szenarien referenzieren nur gültige Strategien."""
         from src.strategies.registry import get_available_strategy_keys
-        
+
         valid_strategies = set(get_available_strategy_keys())
-        
+
         for name, config in scenario_configs.items():
             applicable = config["scenario"].get("applicable_strategies", {})
-            
+
             for category in ["primary", "secondary"]:
                 strategies = applicable.get(category, [])
                 for strat in strategies:
@@ -340,12 +341,12 @@ class TestScenarioIntegration:
     def test_scenarios_match_tiering_expectations(self, scenario_configs):
         """Szenarien-Erwartungen sind konsistent mit Tiering."""
         from src.experiments.portfolio_presets import get_strategies_by_tier
-        
+
         core_strategies = set(get_strategies_by_tier("core"))
-        
-        for name, config in scenario_configs.items():
+
+        for _name, config in scenario_configs.items():
             expectations = config["scenario"].get("test_expectations", {})
-            
+
             # Wenn expected_winners definiert sind, sollten Core-Strategien dabei sein
             winners = set(expectations.get("expected_winners", []))
             if winners and config["scenario"]["category"] == "regime":
@@ -361,7 +362,7 @@ class TestScenarioDocumentation:
         for name, config in scenario_configs.items():
             assert "notes" in config.get("scenario", {}), \
                 f"{name}: missing scenario.notes section"
-            
+
             notes = config["scenario"]["notes"]
             assert "description" in notes, \
                 f"{name}: missing notes.description"
@@ -371,7 +372,7 @@ class TestScenarioDocumentation:
         for name, config in scenario_configs.items():
             notes = config["scenario"].get("notes", {})
             description = notes.get("description", "")
-            
+
             # Beschreibung sollte nicht zu kurz sein
             assert len(description) >= 50, \
                 f"{name}: notes.description too short ({len(description)} chars)"

@@ -7,35 +7,35 @@ Zentrale Registry aller verfügbaren Strategien mit einheitlichem Zugriff.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Type
-
-from .base import BaseStrategy
-from .ma_crossover import MACrossoverStrategy
-from .rsi_reversion import RsiReversionStrategy
-from .breakout_donchian import DonchianBreakoutStrategy
-from .momentum import MomentumStrategy
-from .bollinger import BollingerBandsStrategy
-from .macd import MACDStrategy
-from .trend_following import TrendFollowingStrategy
-from .mean_reversion import MeanReversionStrategy
-from .my_strategy import MyStrategy
-# Phase 40: Strategy Library Erweiterungen
-from .breakout import BreakoutStrategy
-from .vol_regime_filter import VolRegimeFilter
-from .composite import CompositeStrategy
-from .regime_aware_portfolio import RegimeAwarePortfolioStrategy
+from typing import Any
 
 # Research-Track: Armstrong & El-Karoui Strategien (R&D-Only)
 from .armstrong import ArmstrongCycleStrategy
-from .el_karoui import ElKarouiVolatilityStrategy, ElKarouiVolModelStrategy
-
-# Research-Track: Ehlers & López de Prado Strategien (R&D-Only)
-from .ehlers import EhlersCycleFilterStrategy
-from .lopez_de_prado import MetaLabelingStrategy
+from .base import BaseStrategy
+from .bollinger import BollingerBandsStrategy
 
 # Research-Track: Bouchaud & Gatheral/Cont Strategien (R&D-Only, Skeleton)
 from .bouchaud import BouchaudMicrostructureStrategy
+
+# Phase 40: Strategy Library Erweiterungen
+from .breakout import BreakoutStrategy
+from .breakout_donchian import DonchianBreakoutStrategy
+from .composite import CompositeStrategy
+
+# Research-Track: Ehlers & López de Prado Strategien (R&D-Only)
+from .ehlers import EhlersCycleFilterStrategy
+from .el_karoui import ElKarouiVolModelStrategy
 from .gatheral_cont import VolRegimeOverlayStrategy
+from .lopez_de_prado import MetaLabelingStrategy
+from .ma_crossover import MACrossoverStrategy
+from .macd import MACDStrategy
+from .mean_reversion import MeanReversionStrategy
+from .momentum import MomentumStrategy
+from .my_strategy import MyStrategy
+from .regime_aware_portfolio import RegimeAwarePortfolioStrategy
+from .rsi_reversion import RsiReversionStrategy
+from .trend_following import TrendFollowingStrategy
+from .vol_regime_filter import VolRegimeFilter
 
 
 @dataclass(frozen=True)
@@ -51,13 +51,13 @@ class StrategySpec:
     """
 
     key: str
-    cls: Type[BaseStrategy]
+    cls: type[BaseStrategy]
     config_section: str
     description: str = ""
 
 
 # Zentrale Registry aller verfügbaren Strategien
-_STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
+_STRATEGY_REGISTRY: dict[str, StrategySpec] = {
     "ma_crossover": StrategySpec(
         key="ma_crossover",
         cls=MACrossoverStrategy,
@@ -279,7 +279,7 @@ def list_strategies(verbose: bool = False) -> None:
 
 def register_strategy(
     key: str,
-    cls: Type[BaseStrategy],
+    cls: type[BaseStrategy],
     config_section: str,
     description: str = "",
 ) -> None:

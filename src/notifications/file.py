@@ -25,7 +25,6 @@ from typing import Literal
 
 from src.notifications.base import Alert, AlertLevel
 
-
 # Level-Reihenfolge für Filterung
 LEVEL_ORDER = {"info": 0, "warning": 1, "critical": 2}
 

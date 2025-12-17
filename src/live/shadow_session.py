@@ -35,42 +35,37 @@ from __future__ import annotations
 import logging
 import signal
 import time
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Callable, Dict, List, Optional, Protocol, TYPE_CHECKING
-
-import pandas as pd
+from collections.abc import Callable
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any
 
 from ..core.environment import (
     EnvironmentConfig,
     TradingEnvironment,
     get_environment_from_config,
 )
-from ..live.safety import SafetyGuard, SafetyBlockedError
-from ..live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
-from ..live.orders import LiveOrderRequest, side_from_direction
-from ..orders.base import OrderRequest, OrderExecutionResult
-from ..orders.paper import PaperMarketContext, PaperOrderExecutor
-from ..orders.shadow import ShadowMarketContext, ShadowOrderExecutor
-from ..execution.pipeline import ExecutionPipeline, SignalEvent
 from ..data.kraken_live import (
-    ShadowPaperConfig,
-    LiveExchangeConfig,
-    LiveCandle,
     CandleSource,
+    LiveCandle,
+    LiveExchangeConfig,
+    ShadowPaperConfig,
 )
+from ..execution.pipeline import ExecutionPipeline, SignalEvent
+from ..live.orders import LiveOrderRequest
+from ..live.risk_limits import LiveRiskLimits
 from ..live.run_logging import (
-    LiveRunLogger,
     LiveRunEvent,
-    LiveRunMetadata,
-    ShadowPaperLoggingConfig,
+    LiveRunLogger,
     load_shadow_paper_logging_config,
-    generate_run_id,
 )
+from ..live.safety import SafetyGuard
+from ..orders.base import OrderExecutionResult, OrderRequest
+from ..orders.shadow import ShadowMarketContext
 
 if TYPE_CHECKING:
-    from ..strategies.base import BaseStrategy
     from ..core.peak_config import PeakConfig
+    from ..strategies.base import BaseStrategy
 
 logger = logging.getLogger(__name__)
 
@@ -98,9 +93,9 @@ class ShadowPaperSessionMetrics:
         current_position: Aktuelle Position
     """
     steps: int = 0
-    start_time: Optional[datetime] = None
-    last_bar_time: Optional[datetime] = None
-    last_risk_check: Optional[datetime] = None
+    start_time: datetime | None = None
+    last_bar_time: datetime | None = None
+    last_risk_check: datetime | None = None
     total_orders: int = 0
     filled_orders: int = 0
     rejected_orders: int = 0
@@ -108,7 +103,7 @@ class ShadowPaperSessionMetrics:
     total_pnl: float = 0.0
     current_position: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert Metriken zu Dictionary."""
         return {
             "steps": self.steps,
@@ -185,11 +180,11 @@ class ShadowPaperSession:
         shadow_cfg: ShadowPaperConfig,
         exchange_cfg: LiveExchangeConfig,
         data_source: CandleSource,
-        strategy: "BaseStrategy",
+        strategy: BaseStrategy,
         pipeline: ExecutionPipeline,
         risk_limits: LiveRiskLimits,
-        on_step_callback: Optional[Callable[[int, Optional[LiveCandle]], None]] = None,
-        run_logger: Optional[LiveRunLogger] = None,
+        on_step_callback: Callable[[int, LiveCandle | None], None] | None = None,
+        run_logger: LiveRunLogger | None = None,
     ) -> None:
         """
         Initialisiert die Shadow-/Paper-Session.
@@ -265,7 +260,7 @@ class ShadowPaperSession:
         return self._is_warmup_done
 
     @property
-    def run_logger(self) -> Optional[LiveRunLogger]:
+    def run_logger(self) -> LiveRunLogger | None:
         """Zugriff auf den Run-Logger (falls gesetzt)."""
         return self._run_logger
 
@@ -311,7 +306,7 @@ class ShadowPaperSession:
             )
 
             self._is_warmup_done = True
-            self._metrics.start_time = datetime.now(timezone.utc)
+            self._metrics.start_time = datetime.now(UTC)
 
             if candles:
                 self._metrics.last_bar_time = candles[-1].timestamp
@@ -320,7 +315,7 @@ class ShadowPaperSession:
             logger.error(f"[SHADOW SESSION] Warmup fehlgeschlagen: {e}")
             raise RuntimeError(f"Warmup fehlgeschlagen: {e}") from e
 
-    def step_once(self) -> Optional[List[OrderExecutionResult]]:
+    def step_once(self) -> list[OrderExecutionResult] | None:
         """
         Führt einen einzelnen Session-Schritt durch.
 
@@ -336,10 +331,10 @@ class ShadowPaperSession:
         """
         self._metrics.steps += 1
         step_num = self._metrics.steps
-        ts_event = datetime.now(timezone.utc)
+        ts_event = datetime.now(UTC)
 
         # Event-Daten sammeln (für Logging)
-        event_data: Dict[str, Any] = {
+        event_data: dict[str, Any] = {
             "step": step_num,
             "ts_event": ts_event,
             "signal": 0,
@@ -449,7 +444,7 @@ class ShadowPaperSession:
         event_data["orders_generated"] = len(orders)
 
         # 5. Risk-Check
-        self._metrics.last_risk_check = datetime.now(timezone.utc)
+        self._metrics.last_risk_check = datetime.now(UTC)
 
         # Konvertiere OrderRequests zu LiveOrderRequests für Risk-Check
         live_orders = self._convert_to_live_orders(orders, candle.close)
@@ -504,7 +499,7 @@ class ShadowPaperSession:
 
         return results
 
-    def _log_step_event(self, event_data: Dict[str, Any]) -> None:
+    def _log_step_event(self, event_data: dict[str, Any]) -> None:
         """
         Loggt ein Step-Event über den run_logger (falls gesetzt).
 
@@ -540,8 +535,8 @@ class ShadowPaperSession:
             logger.warning(f"[SHADOW SESSION] Event-Logging fehlgeschlagen: {e}")
 
     def _convert_to_live_orders(
-        self, orders: List[OrderRequest], current_price: float
-    ) -> List[LiveOrderRequest]:
+        self, orders: list[OrderRequest], current_price: float
+    ) -> list[LiveOrderRequest]:
         """
         Konvertiert OrderRequests zu LiveOrderRequests für Risk-Check.
 
@@ -552,7 +547,7 @@ class ShadowPaperSession:
         Returns:
             Liste von LiveOrderRequests
         """
-        live_orders: List[LiveOrderRequest] = []
+        live_orders: list[LiveOrderRequest] = []
 
         for i, order in enumerate(orders):
             notional = order.quantity * current_price
@@ -618,7 +613,7 @@ class ShadowPaperSession:
             self._finalize_run_logger()
             self._log_session_summary()
 
-    def run_n_steps(self, n: int, sleep_between: bool = False) -> List[OrderExecutionResult]:
+    def run_n_steps(self, n: int, sleep_between: bool = False) -> list[OrderExecutionResult]:
         """
         Führt n Schritte aus und stoppt dann.
 
@@ -634,7 +629,7 @@ class ShadowPaperSession:
         if not self._is_warmup_done:
             raise RuntimeError("Warmup muss vor run_n_steps() aufgerufen werden.")
 
-        all_results: List[OrderExecutionResult] = []
+        all_results: list[OrderExecutionResult] = []
 
         try:
             for i in range(n):
@@ -649,7 +644,7 @@ class ShadowPaperSession:
 
         return all_results
 
-    def run_for_duration(self, minutes: int) -> List[OrderExecutionResult]:
+    def run_for_duration(self, minutes: int) -> list[OrderExecutionResult]:
         """
         Führt Session für eine bestimmte Dauer aus.
 
@@ -663,7 +658,7 @@ class ShadowPaperSession:
             raise RuntimeError("Warmup muss vor run_for_duration() aufgerufen werden.")
 
         end_time = time.time() + (minutes * 60)
-        all_results: List[OrderExecutionResult] = []
+        all_results: list[OrderExecutionResult] = []
 
         logger.info(f"[SHADOW SESSION] Starte für {minutes} Minuten...")
 
@@ -711,7 +706,7 @@ class ShadowPaperSession:
             except Exception as e:
                 logger.warning(f"[SHADOW SESSION] Run-Logger-Finalisierung fehlgeschlagen: {e}")
 
-    def get_execution_summary(self) -> Dict[str, Any]:
+    def get_execution_summary(self) -> dict[str, Any]:
         """
         Gibt eine Zusammenfassung der Session zurück.
 
@@ -737,12 +732,12 @@ class ShadowPaperSession:
 
 
 def create_shadow_paper_session(
-    cfg: "PeakConfig",
-    strategy: "BaseStrategy",
-    data_source: Optional[CandleSource] = None,
-    run_id: Optional[str] = None,
+    cfg: PeakConfig,
+    strategy: BaseStrategy,
+    data_source: CandleSource | None = None,
+    run_id: str | None = None,
     enable_logging: bool = True,
-    log_dir_override: Optional[str] = None,
+    log_dir_override: str | None = None,
 ) -> ShadowPaperSession:
     """
     Factory-Funktion für ShadowPaperSession aus PeakConfig.
@@ -765,13 +760,12 @@ def create_shadow_paper_session(
         EnvironmentNotAllowedError: Bei nicht erlaubtem Environment-Modus
     """
     from ..data.kraken_live import (
-        load_shadow_paper_config,
-        load_live_exchange_config,
         create_kraken_source_from_config,
+        load_live_exchange_config,
+        load_shadow_paper_config,
     )
     from ..live.run_logging import (
         create_run_logger_from_config,
-        load_shadow_paper_logging_config,
     )
 
     # Configs laden
@@ -803,7 +797,7 @@ def create_shadow_paper_session(
     )
 
     # Run-Logger erstellen (wenn aktiviert)
-    run_logger: Optional[LiveRunLogger] = None
+    run_logger: LiveRunLogger | None = None
     if enable_logging and logging_cfg.enabled:
         # Config-Snapshot für Metadaten
         config_snapshot = {

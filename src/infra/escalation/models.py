@@ -8,8 +8,8 @@ Datenmodelle für die Eskalations-Integration.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 
 @dataclass
@@ -32,12 +32,12 @@ class EscalationEvent:
     severity: str
     alert_type: str
     summary: str
-    details: Optional[Dict[str, Any]] = None
-    symbol: Optional[str] = None
-    session_id: Optional[str] = None
-    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    details: dict[str, Any] | None = None
+    symbol: str | None = None
+    session_id: str | None = None
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert EscalationEvent zu Dict für Serialisierung."""
         return {
             "alert_id": self.alert_id,
@@ -51,13 +51,13 @@ class EscalationEvent:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EscalationEvent":
+    def from_dict(cls, data: dict[str, Any]) -> EscalationEvent:
         """Erstellt EscalationEvent aus Dict."""
         created_at = data.get("created_at")
         if isinstance(created_at, str):
             created_at = datetime.fromisoformat(created_at)
         elif created_at is None:
-            created_at = datetime.now(timezone.utc)
+            created_at = datetime.now(UTC)
 
         return cls(
             alert_id=data.get("alert_id", ""),
@@ -92,11 +92,11 @@ class EscalationTarget:
 
     name: str
     provider: str = "null"
-    routing_key: Optional[str] = None
+    routing_key: str | None = None
     min_severity: str = "CRITICAL"
     enabled: bool = True
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert EscalationTarget zu Dict."""
         return {
             "name": self.name,
@@ -107,7 +107,7 @@ class EscalationTarget:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EscalationTarget":
+    def from_dict(cls, data: dict[str, Any]) -> EscalationTarget:
         """Erstellt EscalationTarget aus Dict."""
         return cls(
             name=data.get("name", "default"),

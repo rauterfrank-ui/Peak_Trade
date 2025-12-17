@@ -11,7 +11,6 @@ Testet:
 from __future__ import annotations
 
 import pandas as pd
-import pytest
 
 from src.reporting.base import (
     Report,
@@ -20,7 +19,6 @@ from src.reporting.base import (
     dict_to_markdown_table,
     format_metric,
 )
-
 
 # =============================================================================
 # ReportSection Tests

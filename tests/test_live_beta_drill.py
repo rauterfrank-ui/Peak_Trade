@@ -16,7 +16,6 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -28,16 +27,14 @@ if str(ROOT_DIR) not in sys.path:
 from scripts.run_live_beta_drill import (
     DrillCheckResult,
     LiveBetaDrillResult,
-    run_preflight_drill,
-    run_eligibility_drill,
-    run_shadow_gates_drill,
-    run_incident_simulation_drill,
-    run_all_drills,
-    format_drill_report_text,
     format_drill_report_json,
-    get_available_presets,
+    format_drill_report_text,
+    run_all_drills,
+    run_eligibility_drill,
+    run_incident_simulation_drill,
+    run_preflight_drill,
+    run_shadow_gates_drill,
 )
-
 
 # =============================================================================
 # Test Fixtures

@@ -19,13 +19,14 @@ Usage:
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from collections.abc import Sequence
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any
 
 import pandas as pd
 
-from src.core.experiments import load_experiments_df, VALID_RUN_TYPES
+from src.core.experiments import load_experiments_df
 
 
 @dataclass
@@ -49,9 +50,9 @@ class StrategySummary:
     avg_total_return: float = 0.0
     avg_sharpe: float = 0.0
     avg_max_drawdown: float = 0.0
-    best_run_id: Optional[str] = None
-    worst_run_id: Optional[str] = None
-    best_sharpe_run_id: Optional[str] = None
+    best_run_id: str | None = None
+    worst_run_id: str | None = None
+    best_sharpe_run_id: str | None = None
 
 
 @dataclass
@@ -73,7 +74,7 @@ class PortfolioSummary:
     avg_total_return: float = 0.0
     avg_sharpe: float = 0.0
     avg_max_drawdown: float = 0.0
-    best_run_id: Optional[str] = None
+    best_run_id: str | None = None
 
 
 # =============================================================================
@@ -83,11 +84,11 @@ class PortfolioSummary:
 
 def load_experiments_df_filtered(
     *,
-    run_types: Optional[Sequence[str]] = None,
-    strategy_keys: Optional[Sequence[str]] = None,
-    symbols: Optional[Sequence[str]] = None,
-    portfolios: Optional[Sequence[str]] = None,
-    tags: Optional[Sequence[str]] = None,
+    run_types: Sequence[str] | None = None,
+    strategy_keys: Sequence[str] | None = None,
+    symbols: Sequence[str] | None = None,
+    portfolios: Sequence[str] | None = None,
+    tags: Sequence[str] | None = None,
 ) -> pd.DataFrame:
     """
     Lädt alle Experiments und filtert nach verschiedenen Kriterien.
@@ -128,7 +129,7 @@ def load_experiments_df_filtered(
     # Tag-Filter (aus metadata_json)
     if tags is not None and "metadata_json" in df.columns:
 
-        def get_tag(meta_json: str) -> Optional[str]:
+        def get_tag(meta_json: str) -> str | None:
             try:
                 meta = json.loads(meta_json)
                 return meta.get("tag")
@@ -161,7 +162,7 @@ def filter_portfolio_backtest_runs(df: pd.DataFrame) -> pd.DataFrame:
 # =============================================================================
 
 
-def summarize_strategies(df: pd.DataFrame) -> List[StrategySummary]:
+def summarize_strategies(df: pd.DataFrame) -> list[StrategySummary]:
     """
     Aggregiert Backtests pro strategy_key.
 
@@ -241,7 +242,7 @@ def summarize_strategies(df: pd.DataFrame) -> List[StrategySummary]:
     return summaries
 
 
-def summarize_portfolios(df: pd.DataFrame) -> List[PortfolioSummary]:
+def summarize_portfolios(df: pd.DataFrame) -> list[PortfolioSummary]:
     """
     Aggregiert Portfolio-Backtests pro portfolio_name.
 
@@ -384,11 +385,11 @@ def compare_strategies(
 
 
 def write_markdown_report(
-    summaries: List[StrategySummary],
+    summaries: list[StrategySummary],
     path: Path,
     *,
     title: str = "Peak_Trade Strategy Report",
-    run_type: Optional[str] = None,
+    run_type: str | None = None,
 ) -> None:
     """
     Schreibt eine Markdown-Übersicht der StrategySummary-Liste.
@@ -447,7 +448,7 @@ def write_markdown_report(
 
 
 def write_portfolio_markdown_report(
-    summaries: List[PortfolioSummary],
+    summaries: list[PortfolioSummary],
     path: Path,
     *,
     title: str = "Peak_Trade Portfolio Report",
@@ -556,11 +557,11 @@ class SweepSummary:
     run_count: int = 0
     best_sharpe: float = 0.0
     best_return: float = 0.0
-    best_params: Optional[Dict[str, Any]] = None
-    best_run_id: Optional[str] = None
+    best_params: dict[str, Any] | None = None
+    best_run_id: str | None = None
 
 
-def summarize_sweeps(df: pd.DataFrame) -> List[SweepSummary]:
+def summarize_sweeps(df: pd.DataFrame) -> list[SweepSummary]:
     """
     Aggregiert Sweep-Ergebnisse pro sweep_name.
 
@@ -646,11 +647,11 @@ class MarketScanSummary:
     long_signals: int = 0
     short_signals: int = 0
     flat_signals: int = 0
-    top_symbol: Optional[str] = None
+    top_symbol: str | None = None
     top_signal: float = 0.0
 
 
-def summarize_market_scans(df: pd.DataFrame) -> List[MarketScanSummary]:
+def summarize_market_scans(df: pd.DataFrame) -> list[MarketScanSummary]:
     """
     Aggregiert Market-Scan-Ergebnisse pro scan_name.
 

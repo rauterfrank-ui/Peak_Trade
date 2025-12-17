@@ -4,13 +4,12 @@ Peak_Trade Regime-Aware Portfolio Strategy Tests
 ================================================
 Unit-Tests für die Regime-Aware Portfolio-Strategie.
 """
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
-from src.strategies.regime_aware_portfolio import RegimeAwarePortfolioStrategy
 from src.strategies.base import BaseStrategy
-
+from src.strategies.regime_aware_portfolio import RegimeAwarePortfolioStrategy
 
 # ============================================================================
 # TEST FIXTURES

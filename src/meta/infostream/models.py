@@ -15,13 +15,13 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Literal, Optional
+from datetime import UTC, datetime
+from typing import Any, Literal
 
 
 def _now_utc() -> datetime:
     """Helper für konsistente UTC-Timestamps."""
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def _generate_id(prefix: str) -> str:
@@ -55,7 +55,7 @@ class IntelEvent:
         links: Liste von relevanten Links/Pfaden
         tags: Freie Tags, z.B. ["test_health", "nightly"]
         status: Lebenszyklus-Status ("new", "evaluated", "logged")
-        
+
         # Legacy-Felder für Rückwärtskompatibilität
         topic: Kurzer Titel (deprecated, use summary)
         importance: 1=low, 5=kritisch (deprecated, use severity)
@@ -67,34 +67,34 @@ class IntelEvent:
 
     # Wer liefert die Info?
     source: str = "unknown"
-    
+
     # Kategorie
     category: str = "general"
-    
+
     # Severity-Level
     severity: SeverityLevel = "info"
 
     # Worum geht es?
     summary: str = ""
-    
+
     # Details als Liste
-    details: List[str] = field(default_factory=list)
-    
+    details: list[str] = field(default_factory=list)
+
     # Relevante Links
-    links: List[str] = field(default_factory=list)
+    links: list[str] = field(default_factory=list)
 
     # Freie Tags
-    tags: List[str] = field(default_factory=list)
-    
+    tags: list[str] = field(default_factory=list)
+
     # Status im Lebenszyklus
     status: EventStatus = "new"
-    
+
     # Legacy-Felder
     topic: str = ""
     importance: int = 3
-    payload: Dict[str, Any] = field(default_factory=dict)
+    payload: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """JSON-freundliche Repräsentation (z.B. für JSON/HTML/Reports)."""
         data = asdict(self)
         if isinstance(self.created_at, datetime):
@@ -102,7 +102,7 @@ class IntelEvent:
         return data
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> IntelEvent:
+    def from_dict(cls, data: dict[str, Any]) -> IntelEvent:
         """Rekonstruiert ein IntelEvent aus einem Dict."""
         data = dict(data)
         created_at = data.get("created_at")
@@ -115,9 +115,9 @@ class IntelEvent:
 class IntelEval:
     """
     KI-Auswertung eines IntelEvents (EVAL_PACKAGE).
-    
+
     Enthält die strukturierte Bewertung durch das KI-Modell.
-    
+
     Attributes:
         event_id: Referenz zum ursprünglichen Event
         short_eval: Kurze Bewertung (1-2 Sätze)
@@ -127,21 +127,21 @@ class IntelEval:
         risk_notes: Erläuterungen zur Risiko-Einschätzung
         tags_out: Tags, die das KI-Modell vorschlägt
     """
-    
+
     event_id: str = ""
     short_eval: str = ""
-    key_findings: List[str] = field(default_factory=list)
-    recommendations: List[str] = field(default_factory=list)
+    key_findings: list[str] = field(default_factory=list)
+    recommendations: list[str] = field(default_factory=list)
     risk_level: RiskLevel = "none"
     risk_notes: str = ""
-    tags_out: List[str] = field(default_factory=list)
-    
-    def to_dict(self) -> Dict[str, Any]:
+    tags_out: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
         """JSON-freundliche Repräsentation."""
         return asdict(self)
-    
+
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> IntelEval:
+    def from_dict(cls, data: dict[str, Any]) -> IntelEval:
         """Rekonstruiert ein IntelEval aus einem Dict."""
         return cls(**data)
 
@@ -179,9 +179,9 @@ class InfoPacket:
     status: Literal["new", "in_review", "processed"] = "new"
 
     # Beliebige Zusatzinformationen
-    meta: Dict[str, Any] = field(default_factory=dict)
+    meta: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """JSON-freundliche Repräsentation für Speicherung/Transport."""
         return {
             "packet_id": self.packet_id,
@@ -193,7 +193,7 @@ class InfoPacket:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> InfoPacket:
+    def from_dict(cls, data: dict[str, Any]) -> InfoPacket:
         """Rekonstruiert ein InfoPacket aus einem Dict."""
         created_at = data.get("created_at")
         if isinstance(created_at, str):
@@ -235,8 +235,8 @@ class LearningSnippet:
 
     # Primary: event_id + lines für Learning-Log
     event_id: str = ""
-    lines: List[str] = field(default_factory=list)
-    
+    lines: list[str] = field(default_factory=list)
+
     # Auto-generated
     snippet_id: str = field(default_factory=lambda: _generate_id("learn"))
     created_at: datetime = field(default_factory=_now_utc)
@@ -251,21 +251,21 @@ class LearningSnippet:
     content: str = ""
 
     # Freie Tags
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
     # Optional: Qualitäts-Score (0..1) oder None
-    quality_score: Optional[float] = None
+    quality_score: float | None = None
 
     # Zusatzdaten
-    extra: Dict[str, Any] = field(default_factory=dict)
+    extra: dict[str, Any] = field(default_factory=dict)
 
     def to_markdown_block(self) -> str:
         """
         Erzeugt einen Markdown-Block für das Learning-Log.
-        
+
         Returns:
             str: Formatierter Markdown-Block
-            
+
         Beispiel:
             ### INF-20251211_143920_daily_quick
             - Punkt 1
@@ -274,7 +274,7 @@ class LearningSnippet:
         lines_md = "\n".join(f"- {line}" for line in self.lines) if self.lines else "- (keine Learnings)"
         return f"### {self.event_id}\n{lines_md}\n"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """JSON-freundliche Repräsentation für Speicherung/Reports."""
         data = asdict(self)
         if isinstance(self.created_at, datetime):
@@ -282,7 +282,7 @@ class LearningSnippet:
         return data
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> LearningSnippet:
+    def from_dict(cls, data: dict[str, Any]) -> LearningSnippet:
         """Rekonstruiert einen LearningSnippet aus einem Dict."""
         data = dict(data)
         created_at = data.get("created_at")

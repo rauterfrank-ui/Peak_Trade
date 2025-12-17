@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # tests/test_execution_reporting.py
 """
 Tests fuer src/reporting/execution_reports.py (Phase 16D).
@@ -10,9 +9,10 @@ Testet:
 - from_backtest_result()
 - format_execution_stats()
 """
+from datetime import datetime
+from typing import Any
+
 import pytest
-from datetime import datetime, timedelta
-from typing import Dict, Any, List
 
 
 class TestExecutionStatsDataclass:
@@ -238,7 +238,6 @@ class TestFromExecutionResults:
         """Erstellt ein Mock OrderExecutionResult."""
         from dataclasses import dataclass, field
         from datetime import datetime
-        from typing import Any, Dict, Optional
 
         @dataclass
         class MockFill:
@@ -247,21 +246,21 @@ class TestFromExecutionResults:
             quantity: float
             price: float
             timestamp: datetime
-            fee: Optional[float] = None
+            fee: float | None = None
 
         @dataclass
         class MockRequest:
             symbol: str
             side: str
             quantity: float
-            metadata: Dict[str, Any] = field(default_factory=dict)
+            metadata: dict[str, Any] = field(default_factory=dict)
 
         @dataclass
         class MockResult:
             status: str
             request: MockRequest
-            fill: Optional[MockFill] = None
-            metadata: Dict[str, Any] = field(default_factory=dict)
+            fill: MockFill | None = None
+            metadata: dict[str, Any] = field(default_factory=dict)
 
             @property
             def is_filled(self) -> bool:
@@ -381,14 +380,13 @@ class TestFromBacktestResult:
     ):
         """Erstellt ein Mock BacktestResult."""
         from dataclasses import dataclass
-        from typing import Any, Dict, Optional
 
         @dataclass
         class MockResult:
-            stats: Dict[str, Any]
-            metadata: Dict[str, Any]
-            trades: Optional[Any] = None
-            equity_curve: Optional[Any] = None
+            stats: dict[str, Any]
+            metadata: dict[str, Any]
+            trades: Any | None = None
+            equity_curve: Any | None = None
 
         return MockResult(
             stats={
@@ -515,10 +513,10 @@ class TestExecutionPlotsModule:
 
     def test_extract_fees_from_results(self):
         """extract_fees_from_results() extrahiert Fees korrekt."""
-        from src.reporting.execution_plots import extract_fees_from_results
         from dataclasses import dataclass, field
         from datetime import datetime
-        from typing import Any, Dict, Optional
+
+        from src.reporting.execution_plots import extract_fees_from_results
 
         @dataclass
         class MockFill:
@@ -527,20 +525,20 @@ class TestExecutionPlotsModule:
             quantity: float
             price: float
             timestamp: datetime
-            fee: Optional[float] = None
+            fee: float | None = None
 
         @dataclass
         class MockRequest:
             symbol: str
             side: str
             quantity: float
-            metadata: Dict[str, Any] = field(default_factory=dict)
+            metadata: dict[str, Any] = field(default_factory=dict)
 
         @dataclass
         class MockResult:
             status: str
             request: MockRequest
-            fill: Optional[MockFill] = None
+            fill: MockFill | None = None
 
             @property
             def is_filled(self) -> bool:
@@ -567,10 +565,10 @@ class TestExecutionPlotsModule:
 
     def test_extract_notionals_from_results(self):
         """extract_notionals_from_results() extrahiert Notionals korrekt."""
-        from src.reporting.execution_plots import extract_notionals_from_results
         from dataclasses import dataclass, field
         from datetime import datetime
-        from typing import Any, Dict, Optional
+
+        from src.reporting.execution_plots import extract_notionals_from_results
 
         @dataclass
         class MockFill:
@@ -579,20 +577,20 @@ class TestExecutionPlotsModule:
             quantity: float
             price: float
             timestamp: datetime
-            fee: Optional[float] = None
+            fee: float | None = None
 
         @dataclass
         class MockRequest:
             symbol: str
             side: str
             quantity: float
-            metadata: Dict[str, Any] = field(default_factory=dict)
+            metadata: dict[str, Any] = field(default_factory=dict)
 
         @dataclass
         class MockResult:
             status: str
             request: MockRequest
-            fill: Optional[MockFill] = None
+            fill: MockFill | None = None
 
             @property
             def is_filled(self) -> bool:
@@ -619,10 +617,10 @@ class TestReportingModuleImports:
         """execution_reports kann importiert werden."""
         from src.reporting.execution_reports import (
             ExecutionStats,
+            format_execution_stats,
+            from_backtest_result,
             from_execution_logs,
             from_execution_results,
-            from_backtest_result,
-            format_execution_stats,
         )
 
         assert ExecutionStats is not None
@@ -636,11 +634,6 @@ class TestReportingModuleImports:
         from src.reporting.execution_plots import (
             check_matplotlib,
             plot_slippage_histogram,
-            plot_fee_histogram,
-            plot_notional_histogram,
-            plot_equity_with_trades,
-            extract_fees_from_results,
-            extract_notionals_from_results,
         )
 
         assert callable(check_matplotlib)
@@ -650,10 +643,6 @@ class TestReportingModuleImports:
         """reporting Package exportiert korrekt."""
         from src.reporting import (
             ExecutionStats,
-            from_execution_logs,
-            from_execution_results,
-            from_backtest_result,
-            format_execution_stats,
         )
 
         assert ExecutionStats is not None

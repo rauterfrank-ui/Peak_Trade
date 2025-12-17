@@ -16,28 +16,24 @@ Tests für:
 """
 from __future__ import annotations
 
-import json
-import logging
-from datetime import datetime, timezone
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, patch, Mock
+from datetime import UTC
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from src.live.alert_pipeline import (
-    AlertSeverity,
     AlertCategory,
     AlertMessage,
-    SlackChannelConfig,
-    SlackAlertChannel,
-    EmailChannelConfig,
-    EmailAlertChannel,
-    NullAlertChannel,
     AlertPipelineManager,
+    AlertSeverity,
+    EmailAlertChannel,
+    EmailChannelConfig,
+    NullAlertChannel,
     SeverityTransitionTracker,
+    SlackAlertChannel,
+    SlackChannelConfig,
     build_alert_pipeline_from_config,
 )
-
 
 # =============================================================================
 # FIXTURES
@@ -218,7 +214,7 @@ class TestAlertMessage:
             source="test",
         )
         assert alert.timestamp is not None
-        assert alert.timestamp.tzinfo == timezone.utc
+        assert alert.timestamp.tzinfo == UTC
 
     def test_default_context_is_empty_dict(self):
         """Testet dass Context default ein leeres Dict ist."""
@@ -936,7 +932,7 @@ class TestAcceptanceCriteria:
 
     def test_ac1_green_to_yellow_sends_warn_alert(self):
         """AC1: GREEN → YELLOW erzeugt WARN Alert."""
-        sent_alerts: List[AlertMessage] = []
+        sent_alerts: list[AlertMessage] = []
 
         class CaptureChannel:
             name = "capture"
@@ -957,7 +953,7 @@ class TestAcceptanceCriteria:
 
     def test_ac2_yellow_to_red_sends_critical_alert(self):
         """AC2: YELLOW → RED erzeugt CRITICAL Alert."""
-        sent_alerts: List[AlertMessage] = []
+        sent_alerts: list[AlertMessage] = []
 
         class CaptureChannel:
             name = "capture"
@@ -978,7 +974,7 @@ class TestAcceptanceCriteria:
 
     def test_ac3_hard_limit_breach_sends_critical_alert(self):
         """AC3: Hard-Limit-Breach erzeugt CRITICAL Alert."""
-        sent_alerts: List[AlertMessage] = []
+        sent_alerts: list[AlertMessage] = []
 
         class CaptureChannel:
             name = "capture"
@@ -1005,8 +1001,8 @@ class TestAcceptanceCriteria:
 
     def test_ac4_channel_min_severity_is_respected(self):
         """AC4: Channel-spezifische min_severity wird respektiert."""
-        warn_alerts: List[AlertMessage] = []
-        critical_alerts: List[AlertMessage] = []
+        warn_alerts: list[AlertMessage] = []
+        critical_alerts: list[AlertMessage] = []
 
         class WarnChannel:
             name = "warn"
@@ -1115,7 +1111,7 @@ class TestPhase84RunbookIntegration:
 
     def test_manager_attaches_runbooks_to_alert(self):
         """Testet dass AlertPipelineManager Runbooks an Alerts anhängt."""
-        sent_alerts: List[AlertMessage] = []
+        sent_alerts: list[AlertMessage] = []
 
         class CaptureChannel:
             name = "capture"
@@ -1149,7 +1145,7 @@ class TestPhase84RunbookIntegration:
 
     def test_runbooks_contain_expected_entries(self):
         """Testet dass erwartete Runbooks enthalten sind."""
-        sent_alerts: List[AlertMessage] = []
+        sent_alerts: list[AlertMessage] = []
 
         class CaptureChannel:
             name = "capture"
@@ -1244,7 +1240,7 @@ class TestPhase84RunbookIntegration:
 
     def test_alerts_without_matching_runbooks(self):
         """Testet Alerts ohne passende Runbooks."""
-        sent_alerts: List[AlertMessage] = []
+        sent_alerts: list[AlertMessage] = []
 
         class CaptureChannel:
             name = "capture"
@@ -1316,7 +1312,7 @@ class TestPhase84RunbookIntegration:
 
     def test_context_preserved_with_runbooks(self):
         """Testet dass vorhandener Context mit Runbooks erweitert wird."""
-        sent_alerts: List[AlertMessage] = []
+        sent_alerts: list[AlertMessage] = []
 
         class CaptureChannel:
             name = "capture"

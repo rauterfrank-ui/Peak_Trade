@@ -28,12 +28,11 @@ See also:
 """
 from __future__ import annotations
 
-import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
-from .base import Report, ReportSection, dict_to_markdown_table, df_to_markdown
+from .base import Report, ReportSection, df_to_markdown, dict_to_markdown_table
 
 # Type hint für LiveSessionRecord (um zirkuläre Imports zu vermeiden)
 try:
@@ -48,7 +47,7 @@ except ImportError:
 
 
 def build_session_report(
-    record: "LiveSessionRecord",
+    record: LiveSessionRecord,
     include_config: bool = True,
     include_cli_args: bool = True,
 ) -> Report:
@@ -103,7 +102,7 @@ def build_session_report(
 
 
 def build_multi_session_report(
-    records: List["LiveSessionRecord"],
+    records: list[LiveSessionRecord],
     title: str = "Live Session Summary",
 ) -> Report:
     """
@@ -172,7 +171,7 @@ def build_multi_session_report(
 # =============================================================================
 
 
-def _build_summary_section(record: "LiveSessionRecord") -> ReportSection:
+def _build_summary_section(record: LiveSessionRecord) -> ReportSection:
     """Baut die Summary-Section."""
     summary_data = {
         "Run ID": record.run_id,
@@ -200,7 +199,7 @@ def _build_summary_section(record: "LiveSessionRecord") -> ReportSection:
     )
 
 
-def _build_metrics_section(record: "LiveSessionRecord") -> ReportSection:
+def _build_metrics_section(record: LiveSessionRecord) -> ReportSection:
     """Baut die Metrics-Section."""
     metrics = record.metrics
 
@@ -211,7 +210,7 @@ def _build_metrics_section(record: "LiveSessionRecord") -> ReportSection:
         )
 
     # Metriken formatieren
-    formatted_metrics: Dict[str, Any] = {}
+    formatted_metrics: dict[str, Any] = {}
 
     metric_labels = {
         "steps": "Total Steps",
@@ -249,7 +248,7 @@ def _build_metrics_section(record: "LiveSessionRecord") -> ReportSection:
     )
 
 
-def _build_config_section(record: "LiveSessionRecord") -> ReportSection:
+def _build_config_section(record: LiveSessionRecord) -> ReportSection:
     """Baut die Config-Section."""
     config = record.config
 
@@ -260,7 +259,7 @@ def _build_config_section(record: "LiveSessionRecord") -> ReportSection:
         )
 
     # Config formatieren
-    formatted_config: Dict[str, Any] = {}
+    formatted_config: dict[str, Any] = {}
 
     config_labels = {
         "mode": "Mode",
@@ -297,7 +296,7 @@ def _build_config_section(record: "LiveSessionRecord") -> ReportSection:
     )
 
 
-def _build_cli_args_section(record: "LiveSessionRecord") -> ReportSection:
+def _build_cli_args_section(record: LiveSessionRecord) -> ReportSection:
     """Baut die CLI-Arguments-Section."""
     cli_args = record.cli_args
 
@@ -317,7 +316,7 @@ def _build_cli_args_section(record: "LiveSessionRecord") -> ReportSection:
     )
 
 
-def _build_tags_section(record: "LiveSessionRecord") -> ReportSection:
+def _build_tags_section(record: LiveSessionRecord) -> ReportSection:
     """Baut die Tags-Section."""
     tags = record.tags
 
@@ -335,7 +334,7 @@ def _build_tags_section(record: "LiveSessionRecord") -> ReportSection:
     )
 
 
-def _build_error_section(record: "LiveSessionRecord") -> ReportSection:
+def _build_error_section(record: LiveSessionRecord) -> ReportSection:
     """Baut die Error-Section für fehlgeschlagene Sessions."""
     if record.success:
         return ReportSection(
@@ -349,10 +348,10 @@ def _build_error_section(record: "LiveSessionRecord") -> ReportSection:
     ]
 
     if record.error_message:
-        content_lines.append(f"**Error Message:**")
-        content_lines.append(f"```")
+        content_lines.append("**Error Message:**")
+        content_lines.append("```")
         content_lines.append(record.error_message)
-        content_lines.append(f"```")
+        content_lines.append("```")
 
     return ReportSection(
         title="Error Details",
@@ -365,7 +364,7 @@ def _build_error_section(record: "LiveSessionRecord") -> ReportSection:
 # =============================================================================
 
 
-def _aggregate_records(records: List["LiveSessionRecord"]) -> Dict[str, Any]:
+def _aggregate_records(records: list[LiveSessionRecord]) -> dict[str, Any]:
     """Aggregiert Metriken über mehrere Records."""
     if not records:
         return {"total_sessions": 0}
@@ -376,9 +375,9 @@ def _aggregate_records(records: List["LiveSessionRecord"]) -> Dict[str, Any]:
     total_blocked = sum(r.metrics.get("orders_blocked_risk", 0) for r in records)
     total_duration = sum(r.duration_seconds for r in records)
 
-    by_mode: Dict[str, int] = {}
-    by_strategy: Dict[str, int] = {}
-    by_tier: Dict[str, int] = {}
+    by_mode: dict[str, int] = {}
+    by_strategy: dict[str, int] = {}
+    by_tier: dict[str, int] = {}
 
     # Tier-Label-Mapping
     tier_labels = {
@@ -426,7 +425,7 @@ def _aggregate_records(records: List["LiveSessionRecord"]) -> Dict[str, Any]:
 
 def save_session_report(
     report: Report,
-    output_path: Union[str, Path],
+    output_path: str | Path,
     format: str = "markdown",
 ) -> str:
     """
@@ -457,7 +456,7 @@ def save_session_report(
 # =============================================================================
 
 __all__ = [
-    "build_session_report",
     "build_multi_session_report",
+    "build_session_report",
     "save_session_report",
 ]

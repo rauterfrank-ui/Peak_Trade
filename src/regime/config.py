@@ -21,8 +21,8 @@ TOML-Struktur:
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any, Literal, TYPE_CHECKING
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from ..core.peak_config import PeakConfig
@@ -85,7 +85,7 @@ class RegimeDetectorConfig:
     trending_ma_window: int = 50
     trending_slope_threshold: float = 0.0002
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert Config zu Dict."""
         return {
             "enabled": self.enabled,
@@ -104,9 +104,9 @@ class RegimeDetectorConfig:
     @classmethod
     def from_peak_config(
         cls,
-        cfg: "PeakConfig",
+        cfg: PeakConfig,
         section: str = "regime",
-    ) -> "RegimeDetectorConfig":
+    ) -> RegimeDetectorConfig:
         """
         Laedt Config aus PeakConfig (TOML).
 
@@ -165,13 +165,13 @@ class StrategySwitchingConfig:
     policy_name: str = "simple_regime_mapping"
 
     # Mapping: Regime -> Liste von Strategy-Namen
-    regime_to_strategies: Optional[Dict[str, List[str]]] = None
+    regime_to_strategies: dict[str, list[str]] | None = None
 
     # Optionale Gewichte: Regime -> {Strategy -> Weight}
-    regime_to_weights: Optional[Dict[str, Dict[str, float]]] = None
+    regime_to_weights: dict[str, dict[str, float]] | None = None
 
     # Fallback-Strategien (wenn Regime nicht gemappt)
-    default_strategies: Optional[List[str]] = None
+    default_strategies: list[str] | None = None
 
     def __post_init__(self) -> None:
         """Setzt Defaults fuer None-Werte."""
@@ -185,7 +185,7 @@ class StrategySwitchingConfig:
         if self.default_strategies is None:
             self.default_strategies = ["ma_crossover"]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert Config zu Dict."""
         return {
             "enabled": self.enabled,
@@ -195,7 +195,7 @@ class StrategySwitchingConfig:
             "default_strategies": self.default_strategies,
         }
 
-    def get_strategies_for_regime(self, regime: RegimeLabel) -> List[str]:
+    def get_strategies_for_regime(self, regime: RegimeLabel) -> list[str]:
         """
         Gibt die Strategien fuer ein Regime zurueck.
 
@@ -209,7 +209,7 @@ class StrategySwitchingConfig:
             return self.regime_to_strategies[regime]
         return self.default_strategies or []
 
-    def get_weights_for_regime(self, regime: RegimeLabel) -> Optional[Dict[str, float]]:
+    def get_weights_for_regime(self, regime: RegimeLabel) -> dict[str, float] | None:
         """
         Gibt die Gewichte fuer ein Regime zurueck.
 
@@ -226,9 +226,9 @@ class StrategySwitchingConfig:
     @classmethod
     def from_peak_config(
         cls,
-        cfg: "PeakConfig",
+        cfg: PeakConfig,
         section: str = "strategy_switching",
-    ) -> "StrategySwitchingConfig":
+    ) -> StrategySwitchingConfig:
         """
         Laedt Config aus PeakConfig (TOML).
 
@@ -257,7 +257,7 @@ class StrategySwitchingConfig:
 
         # Regime -> Strategies Mapping
         regime_to_strategies_raw = cfg.get(f"{section}.regime_to_strategies", None)
-        regime_to_strategies: Optional[Dict[str, List[str]]] = None
+        regime_to_strategies: dict[str, list[str]] | None = None
 
         if regime_to_strategies_raw and isinstance(regime_to_strategies_raw, dict):
             regime_to_strategies = {}
@@ -267,7 +267,7 @@ class StrategySwitchingConfig:
 
         # Regime -> Weights Mapping
         regime_to_weights_raw = cfg.get(f"{section}.regime_to_weights", None)
-        regime_to_weights: Optional[Dict[str, Dict[str, float]]] = None
+        regime_to_weights: dict[str, dict[str, float]] | None = None
 
         if regime_to_weights_raw and isinstance(regime_to_weights_raw, dict):
             regime_to_weights = {}
@@ -279,7 +279,7 @@ class StrategySwitchingConfig:
 
         # Default Strategies
         default_strategies_raw = cfg.get(f"{section}.default_strategies", None)
-        default_strategies: Optional[List[str]] = None
+        default_strategies: list[str] | None = None
 
         if default_strategies_raw and isinstance(default_strategies_raw, list):
             default_strategies = [str(s) for s in default_strategies_raw]

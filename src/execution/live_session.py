@@ -36,29 +36,25 @@ import logging
 import signal
 import time
 import uuid
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from collections.abc import Callable
+from dataclasses import dataclass
+from datetime import UTC, datetime
 from enum import Enum
-from typing import Any, Callable, Dict, List, Literal, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Literal
 
 import pandas as pd
 
-from ..orders.base import OrderRequest, OrderExecutionResult
-from .pipeline import ExecutionPipeline, ExecutionPipelineConfig, SignalEvent
+from ..orders.base import OrderExecutionResult
+from .pipeline import ExecutionPipeline, SignalEvent
 
 if TYPE_CHECKING:
     from ..core.environment import (
         EnvironmentConfig,
-        TradingEnvironment,
     )
-    from ..live.safety import SafetyGuard, SafetyBlockedError
-    from ..live.risk_limits import LiveRiskLimits
-    from ..orders.paper import PaperMarketContext
-    from ..orders.shadow import ShadowMarketContext, ShadowOrderExecutor
     from ..core.peak_config import PeakConfig
+    from ..live.risk_limits import LiveRiskLimits
+    from ..live.safety import SafetyGuard
     from ..strategies.base import BaseStrategy
-    from ..exchange.dummy_client import DummyExchangeClient
-    from ..exchange.kraken_testnet import KrakenTestnetClient
 
 logger = logging.getLogger(__name__)
 
@@ -129,7 +125,7 @@ class LiveSessionConfig:
     start_balance: float = 10000.0
     enable_risk_limits: bool = True
     enable_logging: bool = True
-    run_id: Optional[str] = None
+    run_id: str | None = None
 
     def __post_init__(self) -> None:
         """Validiert die Konfiguration nach Initialisierung."""
@@ -176,11 +172,11 @@ class LiveSessionConfig:
         """Generiert eine eindeutige Run-ID."""
         if self.run_id:
             return self.run_id
-        ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         short_uuid = uuid.uuid4().hex[:8]
         return f"{self.mode}_{self.strategy_key}_{ts}_{short_uuid}"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "mode": self.mode,
@@ -250,8 +246,8 @@ class LiveSessionMetrics:
     """
 
     steps: int = 0
-    start_time: Optional[datetime] = None
-    last_bar_time: Optional[datetime] = None
+    start_time: datetime | None = None
+    last_bar_time: datetime | None = None
     total_orders_generated: int = 0
     orders_executed: int = 0
     orders_rejected: int = 0
@@ -259,7 +255,7 @@ class LiveSessionMetrics:
     current_position: float = 0.0
     last_signal: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert Metriken zu Dictionary."""
         return {
             "steps": self.steps,
@@ -324,13 +320,13 @@ class LiveSessionRunner:
     def __init__(
         self,
         session_config: LiveSessionConfig,
-        env_config: "EnvironmentConfig",
-        strategy: "BaseStrategy",
+        env_config: EnvironmentConfig,
+        strategy: BaseStrategy,
         pipeline: ExecutionPipeline,
         data_source: Any,  # CandleSource oder kompatibel
-        risk_limits: Optional["LiveRiskLimits"] = None,
-        safety_guard: Optional["SafetyGuard"] = None,
-        on_step_callback: Optional[Callable[[int, Any], None]] = None,
+        risk_limits: LiveRiskLimits | None = None,
+        safety_guard: SafetyGuard | None = None,
+        on_step_callback: Callable[[int, Any], None] | None = None,
     ) -> None:
         """
         Initialisiert den LiveSessionRunner.
@@ -423,7 +419,7 @@ class LiveSessionRunner:
         return self._run_id
 
     @property
-    def strategy(self) -> "BaseStrategy":
+    def strategy(self) -> BaseStrategy:
         """Zugriff auf die Strategie."""
         return self._strategy
 
@@ -440,8 +436,8 @@ class LiveSessionRunner:
     def from_config(
         cls,
         session_config: LiveSessionConfig,
-        peak_config: Optional["PeakConfig"] = None,
-    ) -> "LiveSessionRunner":
+        peak_config: PeakConfig | None = None,
+    ) -> LiveSessionRunner:
         """
         Factory-Methode: Erstellt LiveSessionRunner aus Config.
 
@@ -477,8 +473,8 @@ class LiveSessionRunner:
                 EnvironmentConfig,
                 TradingEnvironment,
             )
-            from ..live.safety import SafetyGuard
             from ..live.risk_limits import LiveRiskLimits
+            from ..live.safety import SafetyGuard
 
             # 1. PeakConfig laden falls nicht übergeben
             if peak_config is None:
@@ -543,7 +539,7 @@ class LiveSessionRunner:
     def _build_pipeline(
         cls,
         session_config: LiveSessionConfig,
-        env_config: "EnvironmentConfig",
+        env_config: EnvironmentConfig,
     ) -> ExecutionPipeline:
         """
         Baut eine ExecutionPipeline basierend auf dem Session-Mode.
@@ -556,8 +552,8 @@ class LiveSessionRunner:
             Konfigurierte ExecutionPipeline
         """
         # Lazy imports um Circular Imports zu vermeiden
-        from ..orders.shadow import ShadowMarketContext
         from ..live.safety import SafetyGuard
+        from ..orders.shadow import ShadowMarketContext
 
         if session_config.mode == "shadow":
             # Shadow-Mode: ShadowOrderExecutor (keine echten API-Calls)
@@ -606,8 +602,8 @@ class LiveSessionRunner:
         try:
             from ..data.kraken_live import (
                 KrakenLiveCandleSource,
-                ShadowPaperConfig,
                 LiveExchangeConfig,
+                ShadowPaperConfig,
             )
 
             # Für Shadow-/Testnet-Mode: KrakenLiveCandleSource mit Public-API
@@ -660,12 +656,12 @@ class LiveSessionRunner:
                 logger.info("[LIVE SESSION] Data-Source hat keine warmup()-Methode")
 
             self._is_warmup_done = True
-            self._metrics.start_time = datetime.now(timezone.utc)
+            self._metrics.start_time = datetime.now(UTC)
 
         except Exception as e:
             raise SessionRuntimeError(f"Warmup fehlgeschlagen: {e}") from e
 
-    def step_once(self) -> Optional[List[OrderExecutionResult]]:
+    def step_once(self) -> list[OrderExecutionResult] | None:
         """
         Führt einen einzelnen Session-Schritt durch.
 
@@ -741,7 +737,7 @@ class LiveSessionRunner:
 
         # SignalEvent erstellen
         sig_event = SignalEvent(
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             symbol=self._config.symbol,
             signal=current_signal,
             price=current_price,
@@ -794,7 +790,7 @@ class LiveSessionRunner:
 
         return exec_result.executed_orders if not exec_result.rejected else []
 
-    def run_n_steps(self, n: int, sleep_between: bool = False) -> List[OrderExecutionResult]:
+    def run_n_steps(self, n: int, sleep_between: bool = False) -> list[OrderExecutionResult]:
         """
         Führt n Schritte aus und stoppt dann.
 
@@ -808,7 +804,7 @@ class LiveSessionRunner:
         if not self._is_warmup_done:
             raise SessionRuntimeError("Warmup muss vor run_n_steps() aufgerufen werden.")
 
-        all_results: List[OrderExecutionResult] = []
+        all_results: list[OrderExecutionResult] = []
 
         for i in range(n):
             if self._shutdown_requested:
@@ -823,7 +819,7 @@ class LiveSessionRunner:
 
         return all_results
 
-    def run_for_duration(self, minutes: int) -> List[OrderExecutionResult]:
+    def run_for_duration(self, minutes: int) -> list[OrderExecutionResult]:
         """
         Führt Session für eine bestimmte Dauer aus.
 
@@ -837,7 +833,7 @@ class LiveSessionRunner:
             raise SessionRuntimeError("Warmup muss vor run_for_duration() aufgerufen werden.")
 
         end_time = time.time() + (minutes * 60)
-        all_results: List[OrderExecutionResult] = []
+        all_results: list[OrderExecutionResult] = []
 
         logger.info(f"[LIVE SESSION] Starte für {minutes} Minuten...")
 
@@ -930,7 +926,7 @@ class LiveSessionRunner:
             f"  Current Position: {metrics['current_position']:.6f}"
         )
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """
         Gibt eine Zusammenfassung der Session zurück.
 
@@ -960,20 +956,20 @@ class _DummyCandleSource:
     def __init__(self, symbol: str, timeframe: str):
         self.symbol = symbol
         self.timeframe = timeframe
-        self._candles: List[Dict[str, Any]] = []
+        self._candles: list[dict[str, Any]] = []
         self._step = 0
 
-    def warmup(self) -> List[Dict[str, Any]]:
+    def warmup(self) -> list[dict[str, Any]]:
         """Simuliert Warmup mit Dummy-Daten."""
         import random
 
         base_price = 50000.0
         self._candles = []
 
-        for i in range(100):
+        for _i in range(100):
             price = base_price + random.uniform(-1000, 1000)
             candle = {
-                "timestamp": datetime.now(timezone.utc),
+                "timestamp": datetime.now(UTC),
                 "open": price,
                 "high": price + random.uniform(0, 100),
                 "low": price - random.uniform(0, 100),
@@ -984,7 +980,7 @@ class _DummyCandleSource:
 
         return self._candles
 
-    def poll_latest(self) -> Optional[Dict[str, Any]]:
+    def poll_latest(self) -> dict[str, Any] | None:
         """Gibt simulierte Candle zurück."""
         if not self._candles:
             return None
@@ -1008,12 +1004,12 @@ class _DummyCandleSource:
 # =============================================================================
 
 __all__ = [
-    "SessionMode",
-    "LiveSessionConfig",
-    "LiveSessionRunner",
-    "LiveSessionMetrics",
     "LiveModeNotAllowedError",
-    "SessionSetupError",
+    "LiveSessionConfig",
+    "LiveSessionMetrics",
+    "LiveSessionRunner",
+    "SessionMode",
     "SessionRuntimeError",
+    "SessionSetupError",
 ]
 

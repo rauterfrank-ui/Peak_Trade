@@ -1,8 +1,7 @@
 """Smoke tests for operator convenience scripts."""
-from pathlib import Path
-import subprocess
-import sys
 import os
+import subprocess
+from pathlib import Path
 
 
 def test_install_shortcuts_script_exists():

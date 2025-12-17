@@ -32,15 +32,13 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional, Set
 
-from src.experiments.strategy_profiles import (
-    StrategyTieringInfo,
-    load_tiering_config,
-)
 from src.experiments.portfolio_recipes import (
     PortfolioRecipe,
     load_portfolio_recipes,
+)
+from src.experiments.strategy_profiles import (
+    load_tiering_config,
 )
 
 logger = logging.getLogger(__name__)
@@ -77,9 +75,9 @@ class TieringComplianceResult:
 
     preset_name: str
     is_compliant: bool
-    allowed_tiers: List[str]
-    strategies_checked: List[str] = field(default_factory=list)
-    violations: List[str] = field(default_factory=list)
+    allowed_tiers: list[str]
+    strategies_checked: list[str] = field(default_factory=list)
+    violations: list[str] = field(default_factory=list)
     violation_details: dict[str, str] = field(default_factory=dict)
 
     def __str__(self) -> str:
@@ -106,7 +104,7 @@ class TieringComplianceResult:
 def get_strategies_by_tier(
     tier: str,
     tiering_config_path: Path = DEFAULT_TIERING_CONFIG,
-) -> List[str]:
+) -> list[str]:
     """
     Gibt alle Strategien eines bestimmten Tiers zurück.
 
@@ -136,10 +134,10 @@ def get_strategies_by_tier(
 
 
 def get_tiering_aware_strategies(
-    include_tiers: Optional[List[str]] = None,
-    exclude_tiers: Optional[List[str]] = None,
+    include_tiers: list[str] | None = None,
+    exclude_tiers: list[str] | None = None,
     tiering_config_path: Path = DEFAULT_TIERING_CONFIG,
-) -> List[str]:
+) -> list[str]:
     """
     Gibt Strategien basierend auf Tier-Filtern zurück.
 
@@ -193,7 +191,7 @@ def get_tiering_aware_strategies(
 
 def get_all_tiered_strategies(
     tiering_config_path: Path = DEFAULT_TIERING_CONFIG,
-) -> dict[str, List[str]]:
+) -> dict[str, list[str]]:
     """
     Gibt alle Strategien gruppiert nach Tier zurück.
 
@@ -210,7 +208,7 @@ def get_all_tiered_strategies(
     """
     tiering = load_tiering_config(tiering_config_path)
 
-    result: dict[str, List[str]] = {
+    result: dict[str, list[str]] = {
         "core": [],
         "aux": [],
         "legacy": [],
@@ -250,8 +248,8 @@ def get_strategy_tier(
 
 def validate_preset_tiering_compliance(
     preset_name: str,
-    allowed_tiers: List[str],
-    recipe: Optional[PortfolioRecipe] = None,
+    allowed_tiers: list[str],
+    recipe: PortfolioRecipe | None = None,
     recipes_path: Path = DEFAULT_RECIPES_FILE,
     tiering_config_path: Path = DEFAULT_TIERING_CONFIG,
 ) -> TieringComplianceResult:
@@ -311,7 +309,7 @@ def validate_preset_tiering_compliance(
     tiering = load_tiering_config(tiering_config_path)
 
     # Validierung
-    violations: List[str] = []
+    violations: list[str] = []
     violation_details: dict[str, str] = {}
     allowed_set = set(allowed_tiers)
 
@@ -482,7 +480,7 @@ def load_tiered_preset(
 def build_core_only_preset(
     name: str = "core_only",
     description: str = "Portfolio mit nur Core-Strategien",
-    weights: Optional[List[float]] = None,
+    weights: list[float] | None = None,
     tiering_config_path: Path = DEFAULT_TIERING_CONFIG,
 ) -> PortfolioRecipe:
     """
@@ -593,23 +591,23 @@ def build_core_plus_aux_preset(
 # =============================================================================
 
 __all__ = [
+    "DEFAULT_PRESETS_DIR",
+    # Constants
+    "DEFAULT_TIERING_CONFIG",
+    "VALID_TIERS",
     # Data Models
     "TieringComplianceResult",
-    # Tiering Helpers
-    "get_strategies_by_tier",
-    "get_tiering_aware_strategies",
-    "get_all_tiered_strategies",
-    "get_strategy_tier",
-    # Validation
-    "validate_preset_tiering_compliance",
-    "validate_all_presets_tiering",
-    # Loading
-    "load_tiered_preset",
     # Builders
     "build_core_only_preset",
     "build_core_plus_aux_preset",
-    # Constants
-    "DEFAULT_TIERING_CONFIG",
-    "DEFAULT_PRESETS_DIR",
-    "VALID_TIERS",
+    "get_all_tiered_strategies",
+    # Tiering Helpers
+    "get_strategies_by_tier",
+    "get_strategy_tier",
+    "get_tiering_aware_strategies",
+    # Loading
+    "load_tiered_preset",
+    "validate_all_presets_tiering",
+    # Validation
+    "validate_preset_tiering_compliance",
 ]

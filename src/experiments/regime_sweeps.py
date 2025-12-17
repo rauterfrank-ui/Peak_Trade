@@ -36,10 +36,10 @@ Example:
 """
 from __future__ import annotations
 
-from typing import Callable, Dict, List, Literal, Optional
+from collections.abc import Callable
+from typing import Literal
 
 from .base import ParamSweep
-
 
 # Type für Granularität
 Granularity = Literal["coarse", "medium", "fine"]
@@ -52,7 +52,7 @@ Granularity = Literal["coarse", "medium", "fine"]
 def get_volatility_detector_sweeps(
     granularity: Granularity = "medium",
     prefix: str = "regime_",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für VolatilityRegimeDetector zurück.
 
@@ -144,7 +144,7 @@ def get_volatility_detector_sweeps(
 def get_range_compression_detector_sweeps(
     granularity: Granularity = "medium",
     prefix: str = "regime_",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für RangeCompressionRegimeDetector zurück.
 
@@ -212,7 +212,7 @@ def get_regime_detector_sweeps(
     detector_name: str = "volatility_breakout",
     granularity: Granularity = "medium",
     prefix: str = "regime_",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für einen spezifischen Regime-Detector zurück.
 
@@ -243,7 +243,7 @@ def get_regime_detector_sweeps(
 def get_all_regime_detector_sweeps(
     granularity: Granularity = "medium",
     prefix: str = "regime_",
-) -> Dict[str, List[ParamSweep]]:
+) -> dict[str, list[ParamSweep]]:
     """
     Gibt Sweeps für alle Regime-Detectors zurück.
 
@@ -267,7 +267,7 @@ def get_all_regime_detector_sweeps(
 def get_strategy_switching_sweeps(
     granularity: Granularity = "medium",
     prefix: str = "switching_",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Strategy-Switching zurück.
 
@@ -324,7 +324,7 @@ def get_strategy_switching_sweeps(
     return sweeps
 
 
-def get_regime_mapping_variants() -> List[Dict[str, List[str]]]:
+def get_regime_mapping_variants() -> list[dict[str, list[str]]]:
     """
     Gibt verschiedene Regime-zu-Strategie-Mapping-Varianten zurück.
 
@@ -372,7 +372,7 @@ def get_regime_mapping_variants() -> List[Dict[str, List[str]]]:
     ]
 
 
-def get_weight_variants() -> List[Dict[str, Dict[str, float]]]:
+def get_weight_variants() -> list[dict[str, dict[str, float]]]:
     """
     Gibt verschiedene Weight-Konfigurationen für Multi-Strategy Regimes zurück.
 
@@ -406,7 +406,7 @@ def get_combined_regime_strategy_sweeps(
     strategy_name: str,
     detector_name: str = "volatility_breakout",
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Kombiniert Strategie- und Regime-Sweeps für ein Experiment.
 
@@ -437,14 +437,14 @@ def get_combined_regime_strategy_sweeps(
 # REGIME SWEEP REGISTRY
 # ============================================================================
 
-REGIME_SWEEP_REGISTRY: Dict[str, Callable[[Granularity], List[ParamSweep]]] = {
+REGIME_SWEEP_REGISTRY: dict[str, Callable[[Granularity], list[ParamSweep]]] = {
     "volatility_breakout": lambda g: get_volatility_detector_sweeps(g),
     "range_compression": lambda g: get_range_compression_detector_sweeps(g),
     "strategy_switching": lambda g: get_strategy_switching_sweeps(g),
 }
 
 
-def list_available_regime_sweeps() -> List[str]:
+def list_available_regime_sweeps() -> list[str]:
     """
     Gibt Liste aller verfügbaren Regime-Sweep-Typen zurück.
 

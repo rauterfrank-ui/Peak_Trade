@@ -12,21 +12,18 @@ Testet:
 """
 from __future__ import annotations
 
-from datetime import datetime
-
 import pytest
 
+from src.live.orders import LiveOrderRequest
 from src.live.risk_limits import (
-    LiveRiskConfig,
-    LiveRiskCheckResult,
-    LiveRiskLimits,
     LimitCheckDetail,
+    LiveRiskCheckResult,
+    LiveRiskConfig,
+    LiveRiskLimits,
     RiskCheckSeverity,
     aggregate_severities,
     severity_to_status,
 )
-from src.live.orders import LiveOrderRequest
-
 
 # =============================================================================
 # FIXTURES
@@ -93,7 +90,7 @@ class TestRiskCheckSeverityEnum:
         assert RiskCheckSeverity.WARNING == RiskCheckSeverity.WARNING
         assert RiskCheckSeverity.BREACH == RiskCheckSeverity.BREACH
 
-        assert not (RiskCheckSeverity.OK == RiskCheckSeverity.WARNING)
+        assert RiskCheckSeverity.OK != RiskCheckSeverity.WARNING
 
     def test_severity_ge_le(self):
         """Testet >= und <= Operatoren."""
@@ -386,7 +383,6 @@ class TestDailyLossSeverity:
             warning_threshold_factor=0.8,  # Warning ab 80% = 400 EUR Verlust
         )
 
-        from src.core.peak_config import PeakConfig
 
         limits = LiveRiskLimits(config)
         limits._starting_cash = 10000.0

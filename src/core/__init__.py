@@ -11,75 +11,83 @@ Es gibt zwei Config-Systeme:
 
 # Alte Pydantic-Config (Legacy)
 from .config_pydantic import (
+    DEFAULT_CONFIG_ENV_VAR,
+    DEFAULT_CONFIG_PATH,
     Settings,
     StrategyConfig,
-    load_config,  # Behalte Original-Namen für Rückwärtskompatibilität
-    load_config as load_pydantic_config,  # Alias
-    load_settings_from_file,
     get_config,
     get_strategy_cfg,
     list_strategies,
+    load_config,  # Behalte Original-Namen für Rückwärtskompatibilität
+    load_settings_from_file,
     reset_config,
     resolve_config_path,
-    DEFAULT_CONFIG_ENV_VAR,
-    DEFAULT_CONFIG_PATH,
 )
-
-# Neue TOML-Config (OOP)
-from .peak_config import (
-    PeakConfig,
-    load_config as load_peak_config,
+from .config_pydantic import (
+    load_config as load_pydantic_config,  # Alias
+)
+from .config_registry import (
+    get_active_strategies,
+    get_strategy_config,
 )
 
 # Registry-Config (Portfolio)
 from .config_registry import (
     get_config as get_registry_config,
-    get_active_strategies,
-    get_strategy_config,
+)
+from .config_registry import (
     list_strategies as list_registry_strategies,
 )
 
 # Environment & Safety (Phase 17)
 from .environment import (
-    TradingEnvironment,
-    EnvironmentConfig,
     LIVE_CONFIRM_TOKEN,
-    get_environment_from_config,
+    EnvironmentConfig,
+    TradingEnvironment,
     create_default_environment,
+    get_environment_from_config,
+    is_live,
     is_paper,
     is_testnet,
-    is_live,
+)
+
+# Neue TOML-Config (OOP)
+from .peak_config import (
+    PeakConfig,
+)
+from .peak_config import (
+    load_config as load_peak_config,
 )
 
 __all__ = [
+    "DEFAULT_CONFIG_ENV_VAR",
+    "DEFAULT_CONFIG_PATH",
+    "LIVE_CONFIRM_TOKEN",
+    "EnvironmentConfig",
+    # New TOML
+    "PeakConfig",
     # Legacy Pydantic
     "Settings",
     "StrategyConfig",
-    "load_config",  # Rückwärtskompatibilität
-    "load_pydantic_config",
-    "load_settings_from_file",
-    "get_config",
-    "get_strategy_cfg",
-    "list_strategies",
-    "reset_config",
-    "resolve_config_path",
-    "DEFAULT_CONFIG_ENV_VAR",
-    "DEFAULT_CONFIG_PATH",
-    # New TOML
-    "PeakConfig",
-    "load_peak_config",
-    # Registry
-    "get_registry_config",
-    "get_active_strategies",
-    "get_strategy_config",
-    "list_registry_strategies",
     # Environment & Safety (Phase 17)
     "TradingEnvironment",
-    "EnvironmentConfig",
-    "LIVE_CONFIRM_TOKEN",
-    "get_environment_from_config",
     "create_default_environment",
+    "get_active_strategies",
+    "get_config",
+    "get_environment_from_config",
+    # Registry
+    "get_registry_config",
+    "get_strategy_cfg",
+    "get_strategy_config",
+    "is_live",
     "is_paper",
     "is_testnet",
-    "is_live",
+    "list_registry_strategies",
+    "list_strategies",
+    "load_config",  # Rückwärtskompatibilität
+    "load_peak_config",
+    "load_pydantic_config",
+    "load_settings_from_file",
+    "reset_config",
+    "resolve_config_path",
 ]

@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 class PatchStatus(str, Enum):
@@ -36,17 +36,17 @@ class ConfigPatch:
     status: PatchStatus = PatchStatus.PROPOSED
 
     # Metadata
-    generated_at: Optional[datetime] = None
-    applied_at: Optional[datetime] = None
-    promoted_at: Optional[datetime] = None
+    generated_at: datetime | None = None
+    applied_at: datetime | None = None
+    promoted_at: datetime | None = None
 
     # Justification / provenance
-    reason: Optional[str] = None
-    source_experiment_id: Optional[str] = None
-    confidence_score: Optional[float] = None
+    reason: str | None = None
+    source_experiment_id: str | None = None
+    confidence_score: float | None = None
 
     # Additional context
-    meta: Dict[str, Any] = field(default_factory=dict)
+    meta: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Ensure generated_at is set if not provided."""

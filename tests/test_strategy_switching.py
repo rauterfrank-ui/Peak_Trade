@@ -5,17 +5,15 @@ Tests fuer Strategy Switching (Phase 28)
 
 Testet SimpleRegimeMappingPolicy und Konfiguration.
 """
+
 import pytest
-from typing import Dict, List
 
 from src.regime import (
-    RegimeLabel,
+    SimpleRegimeMappingPolicy,
     StrategySwitchDecision,
     StrategySwitchingConfig,
-    SimpleRegimeMappingPolicy,
     make_switching_policy,
 )
-
 
 # ============================================================================
 # TEST FIXTURES
@@ -41,7 +39,7 @@ def default_config() -> StrategySwitchingConfig:
 
 
 @pytest.fixture
-def available_strategies() -> List[str]:
+def available_strategies() -> list[str]:
     """Liste aller verfuegbaren Strategien."""
     return [
         "vol_breakout",
@@ -60,7 +58,7 @@ class TestSimpleRegimeMappingPolicy:
     """Tests fuer SimpleRegimeMappingPolicy."""
 
     def test_decide_returns_decision(
-        self, default_config: StrategySwitchingConfig, available_strategies: List[str]
+        self, default_config: StrategySwitchingConfig, available_strategies: list[str]
     ):
         """decide() gibt StrategySwitchDecision zurueck."""
         policy = SimpleRegimeMappingPolicy(default_config)
@@ -70,7 +68,7 @@ class TestSimpleRegimeMappingPolicy:
         assert decision.regime == "breakout"
 
     def test_breakout_maps_to_vol_breakout(
-        self, default_config: StrategySwitchingConfig, available_strategies: List[str]
+        self, default_config: StrategySwitchingConfig, available_strategies: list[str]
     ):
         """Breakout-Regime mappt auf vol_breakout."""
         policy = SimpleRegimeMappingPolicy(default_config)
@@ -80,7 +78,7 @@ class TestSimpleRegimeMappingPolicy:
         assert len(decision.active_strategies) == 1
 
     def test_ranging_maps_to_multiple_strategies(
-        self, default_config: StrategySwitchingConfig, available_strategies: List[str]
+        self, default_config: StrategySwitchingConfig, available_strategies: list[str]
     ):
         """Ranging-Regime mappt auf mehrere Strategien."""
         policy = SimpleRegimeMappingPolicy(default_config)
@@ -91,7 +89,7 @@ class TestSimpleRegimeMappingPolicy:
         assert len(decision.active_strategies) == 2
 
     def test_ranging_has_weights(
-        self, default_config: StrategySwitchingConfig, available_strategies: List[str]
+        self, default_config: StrategySwitchingConfig, available_strategies: list[str]
     ):
         """Ranging-Regime hat konfigurierte Gewichte."""
         policy = SimpleRegimeMappingPolicy(default_config)
@@ -102,7 +100,7 @@ class TestSimpleRegimeMappingPolicy:
         assert abs(decision.weights.get("rsi_reversion", 0) - 0.4) < 0.01
 
     def test_weights_are_normalized(
-        self, available_strategies: List[str]
+        self, available_strategies: list[str]
     ):
         """Gewichte werden normalisiert."""
         config = StrategySwitchingConfig(
@@ -160,7 +158,7 @@ class TestSimpleRegimeMappingPolicy:
         assert "actual_strategy" in decision.active_strategies
 
     def test_unknown_regime_uses_default(
-        self, default_config: StrategySwitchingConfig, available_strategies: List[str]
+        self, default_config: StrategySwitchingConfig, available_strategies: list[str]
     ):
         """Unknown-Regime nutzt gemappte Strategie."""
         policy = SimpleRegimeMappingPolicy(default_config)

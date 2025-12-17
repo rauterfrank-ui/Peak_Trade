@@ -9,7 +9,7 @@ Führt KI-gestützte Auswertung von IntelEvents durch:
 Verwendung:
     from src.meta.infostream.evaluator import call_ai_for_event, render_event_as_infopacket
     from openai import OpenAI
-    
+
     client = OpenAI()
     intel_eval, learning = call_ai_for_event(event, client)
 """
@@ -19,11 +19,10 @@ from __future__ import annotations
 import json
 import logging
 import os
-import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Protocol
+from typing import Any, Protocol
 
-from .models import IntelEvent, IntelEval, LearningSnippet
+from .models import IntelEval, IntelEvent, LearningSnippet
 
 logger = logging.getLogger(__name__)
 
@@ -136,13 +135,13 @@ Dann könnte deine Bewertung sein:
 
 class ChatCompletionClient(Protocol):
     """Protocol für Chat-Completion-Clients (OpenAI-kompatibel)."""
-    
+
     class chat:
         class completions:
             @staticmethod
             def create(
                 model: str,
-                messages: List[Dict[str, str]],
+                messages: list[dict[str, str]],
                 **kwargs
             ) -> Any:
                 ...
@@ -155,21 +154,21 @@ class ChatCompletionClient(Protocol):
 def render_event_as_infopacket(event: IntelEvent) -> str:
     """
     Rendert ein IntelEvent als INFO_PACKET-Textblock.
-    
+
     Parameters
     ----------
     event : IntelEvent
         Das zu rendernde Event
-        
+
     Returns
     -------
     str
         Formatierter INFO_PACKET-Block
-        
+
     Notes
     -----
     Format:
-    
+
     === INFO_PACKET ===
     source: ...
     event_id: ...
@@ -198,16 +197,16 @@ def render_event_as_infopacket(event: IntelEvent) -> str:
         created_at_str = event.created_at.isoformat()
     else:
         created_at_str = str(event.created_at)
-    
+
     # Details formatieren
     details_str = "\n".join(f"  - {d}" for d in event.details) if event.details else "  - (keine Details)"
-    
+
     # Links formatieren
     links_str = "\n".join(f"  - {link}" for link in event.links) if event.links else "  - (keine Links)"
-    
+
     # Tags formatieren
     tags_str = "\n".join(f"  - {tag}" for tag in event.tags) if event.tags else "  - (keine Tags)"
-    
+
     packet = f"""=== INFO_PACKET ===
 source: {event.source}
 event_id: {event.event_id}
@@ -229,7 +228,7 @@ tags:
 
 status: {event.status}
 === /INFO_PACKET ==="""
-    
+
     return packet
 
 
@@ -237,15 +236,15 @@ status: {event.status}
 # Response Parser
 # =============================================================================
 
-def parse_eval_package(text: str) -> Dict[str, Any]:
+def parse_eval_package(text: str) -> dict[str, Any]:
     """
     Parst ein EVAL_PACKAGE aus der KI-Antwort.
-    
+
     Parameters
     ----------
     text : str
         Die vollständige KI-Antwort
-        
+
     Returns
     -------
     Dict[str, Any]
@@ -257,13 +256,13 @@ def parse_eval_package(text: str) -> Dict[str, Any]:
         - risk_level: str
         - risk_notes: str
         - tags_out: List[str]
-        
+
     Notes
     -----
     TODO: Robustere Parser-Implementierung mit besserer Error-Handlung.
     v0: Einfache String-Suche und naive Zeilen-Parsing-Logik.
     """
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "event_id": "",
         "short_eval": "",
         "key_findings": [],
@@ -272,27 +271,27 @@ def parse_eval_package(text: str) -> Dict[str, Any]:
         "risk_notes": "",
         "tags_out": [],
     }
-    
+
     # Extrahiere Block zwischen === EVAL_PACKAGE === und === /EVAL_PACKAGE ===
     start_marker = "=== EVAL_PACKAGE ==="
     end_marker = "=== /EVAL_PACKAGE ==="
-    
+
     start_idx = text.find(start_marker)
     end_idx = text.find(end_marker)
-    
+
     if start_idx == -1 or end_idx == -1:
         logger.warning("EVAL_PACKAGE-Block nicht gefunden in Antwort")
         return result
-    
+
     block = text[start_idx + len(start_marker):end_idx].strip()
-    
+
     # Naive Zeilen-Parsing
-    current_section: Optional[str] = None
-    current_list: List[str] = []
-    
+    current_section: str | None = None
+    current_list: list[str] = []
+
     for line in block.split("\n"):
         line = line.strip()
-        
+
         # Sektion erkennen
         if line.startswith("event_id:"):
             result["event_id"] = line.split(":", 1)[1].strip()
@@ -331,7 +330,7 @@ def parse_eval_package(text: str) -> Dict[str, Any]:
         elif current_section == "short_eval" and line:
             # Multi-line short_eval
             result["short_eval"] = (result["short_eval"] + " " + line).strip()
-    
+
     # Letzte Liste speichern
     if current_section == "key_findings":
         result["key_findings"] = current_list
@@ -339,50 +338,50 @@ def parse_eval_package(text: str) -> Dict[str, Any]:
         result["recommendations"] = current_list
     elif current_section == "tags_out":
         result["tags_out"] = current_list
-    
+
     return result
 
 
-def parse_learning_snippet(text: str) -> List[str]:
+def parse_learning_snippet(text: str) -> list[str]:
     """
     Parst ein LEARNING_SNIPPET aus der KI-Antwort.
-    
+
     Parameters
     ----------
     text : str
         Die vollständige KI-Antwort
-        
+
     Returns
     -------
     List[str]
         Liste der Learning-Zeilen (ohne führendes "- ")
-        
+
     Notes
     -----
     TODO: Robustere Parser-Implementierung.
     v0: Extrahiert alle Zeilen, die mit '-' beginnen, aus dem LEARNING_SNIPPET-Block.
     """
-    lines: List[str] = []
-    
+    lines: list[str] = []
+
     # Extrahiere Block
     start_marker = "=== LEARNING_SNIPPET ==="
     end_marker = "=== /LEARNING_SNIPPET ==="
-    
+
     start_idx = text.find(start_marker)
     end_idx = text.find(end_marker)
-    
+
     if start_idx == -1 or end_idx == -1:
         logger.warning("LEARNING_SNIPPET-Block nicht gefunden in Antwort")
         return lines
-    
+
     block = text[start_idx + len(start_marker):end_idx].strip()
-    
+
     # Extrahiere Bullet-Points
     for line in block.split("\n"):
         line = line.strip()
         if line.startswith("- "):
             lines.append(line[2:].strip())
-    
+
     return lines
 
 
@@ -393,11 +392,11 @@ def parse_learning_snippet(text: str) -> List[str]:
 def call_ai_for_event(
     event: IntelEvent,
     client: Any,
-    model: Optional[str] = None,
-) -> Tuple[IntelEval, LearningSnippet]:
+    model: str | None = None,
+) -> tuple[IntelEval, LearningSnippet]:
     """
     Ruft das KI-Modell für ein Event auf und parst die Antwort.
-    
+
     Parameters
     ----------
     event : IntelEvent
@@ -406,28 +405,28 @@ def call_ai_for_event(
         OpenAI-kompatibler Client mit .chat.completions.create(...)
     model : str, optional
         Modellname. Falls nicht angegeben, wird aus ENV oder Default geladen.
-        
+
     Returns
     -------
     Tuple[IntelEval, LearningSnippet]
         (Bewertung, Learning)
-        
+
     Notes
     -----
     Der Client sollte die OpenAI-API-Struktur haben:
     client.chat.completions.create(model=..., messages=[...])
-    
+
     TODO: Saubere Konfiguration für Modellname und API-Key.
     """
     # Modellname aus Parameter, ENV oder Default
     if model is None:
         model = os.environ.get("INFOSTREAM_MODEL", "gpt-4o-mini")
-    
+
     # INFO_PACKET rendern
     info_packet = render_event_as_infopacket(event)
-    
+
     logger.info(f"Rufe KI-Modell auf für Event: {event.event_id}")
-    
+
     try:
         response = client.chat.completions.create(
             model=model,
@@ -436,9 +435,9 @@ def call_ai_for_event(
                 {"role": "user", "content": info_packet},
             ],
         )
-        
+
         response_text = response.choices[0].message.content
-        
+
     except Exception as e:
         logger.error(f"Fehler beim KI-Aufruf: {e}")
         # Fallback: Leere Ergebnisse
@@ -446,11 +445,11 @@ def call_ai_for_event(
             IntelEval(event_id=event.event_id, short_eval=f"KI-Aufruf fehlgeschlagen: {e}"),
             LearningSnippet(event_id=event.event_id, lines=["KI-Auswertung nicht verfügbar"]),
         )
-    
+
     # Response parsen
     eval_data = parse_eval_package(response_text)
     learning_lines = parse_learning_snippet(response_text)
-    
+
     # Objekte erstellen
     intel_eval = IntelEval(
         event_id=event.event_id,
@@ -461,39 +460,39 @@ def call_ai_for_event(
         risk_notes=eval_data.get("risk_notes", ""),
         tags_out=eval_data.get("tags_out", []),
     )
-    
+
     learning = LearningSnippet(
         event_id=event.event_id,
         lines=learning_lines,
     )
-    
+
     logger.info(f"KI-Auswertung abgeschlossen für {event.event_id}: {len(learning_lines)} Learnings")
-    
+
     return intel_eval, learning
 
 
 def save_intel_eval(intel_eval: IntelEval, base_dir: Path) -> Path:
     """
     Speichert ein IntelEval als JSON.
-    
+
     Parameters
     ----------
     intel_eval : IntelEval
         Das zu speichernde Eval
     base_dir : Path
         Basis-Verzeichnis, z.B. reports/infostream/evals
-        
+
     Returns
     -------
     Path
         Pfad zur gespeicherten Datei
     """
     base_dir.mkdir(parents=True, exist_ok=True)
-    
+
     output_path = base_dir / f"{intel_eval.event_id}.json"
-    
+
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(intel_eval.to_dict(), f, indent=2, ensure_ascii=False)
-    
+
     logger.info(f"IntelEval gespeichert: {output_path}")
     return output_path

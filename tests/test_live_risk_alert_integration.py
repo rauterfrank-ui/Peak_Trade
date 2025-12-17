@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 import urllib.request
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -227,7 +227,7 @@ def test_portfolio_violation_emits_alert(
     ]
 
     snapshot = LivePortfolioSnapshot(
-        as_of=datetime.now(timezone.utc),
+        as_of=datetime.now(UTC),
         positions=positions,
     )
 
@@ -266,7 +266,7 @@ def test_portfolio_ok_no_alert(
     ]
 
     snapshot = LivePortfolioSnapshot(
-        as_of=datetime.now(timezone.utc),
+        as_of=datetime.now(UTC),
         positions=positions,
     )
 
@@ -529,7 +529,7 @@ def test_portfolio_violation_triggers_webhook(monkeypatch):
     ]
 
     snapshot = LivePortfolioSnapshot(
-        as_of=datetime.now(timezone.utc),
+        as_of=datetime.now(UTC),
         positions=positions,
     )
 

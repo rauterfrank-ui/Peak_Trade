@@ -5,7 +5,6 @@ The Policy Critic is a read-only governance layer that reviews changes
 against security, risk, and operational policies.
 """
 
-from typing import List, Optional
 
 from .models import (
     PolicyCriticInput,
@@ -21,7 +20,7 @@ from .rules import ALL_RULES
 class PolicyCritic:
     """Main Policy Critic orchestrator."""
 
-    def __init__(self, rules: Optional[List] = None):
+    def __init__(self, rules: list | None = None):
         """Initialize with rules (defaults to ALL_RULES)."""
         self.rules = rules if rules is not None else ALL_RULES
 
@@ -35,7 +34,7 @@ class PolicyCritic:
         Returns:
             PolicyCriticResult with violations, recommendations, and summary
         """
-        all_violations: List[Violation] = []
+        all_violations: list[Violation] = []
 
         # Convert context to dict for rules
         context_dict = None
@@ -99,7 +98,7 @@ class PolicyCritic:
 
         return result
 
-    def _dedupe_violations(self, violations: List[Violation]) -> List[Violation]:
+    def _dedupe_violations(self, violations: list[Violation]) -> list[Violation]:
         """
         Deduplicate violations with same rule_id by combining evidence.
 
@@ -163,7 +162,7 @@ class PolicyCritic:
 
         return deduped
 
-    def _determine_action(self, max_severity: Severity, violations: List[Violation]) -> RecommendedAction:
+    def _determine_action(self, max_severity: Severity, violations: list[Violation]) -> RecommendedAction:
         """Determine recommended action based on severity and violations."""
         if max_severity == Severity.BLOCK:
             return RecommendedAction.AUTO_APPLY_DENY
@@ -182,7 +181,7 @@ class PolicyCritic:
 
         return RecommendedAction.ALLOW
 
-    def _generate_test_plan(self, changed_files: List[str], violations: List[Violation]) -> List[str]:
+    def _generate_test_plan(self, changed_files: list[str], violations: list[Violation]) -> list[str]:
         """Generate minimum test plan suggestions."""
         test_plan = []
 
@@ -206,8 +205,8 @@ class PolicyCritic:
         return test_plan
 
     def _generate_operator_questions(
-        self, violations: List[Violation], context: Optional[ReviewContext]
-    ) -> List[str]:
+        self, violations: list[Violation], context: ReviewContext | None
+    ) -> list[str]:
         """Generate questions for the operator/reviewer."""
         questions = []
 
@@ -232,7 +231,7 @@ class PolicyCritic:
         return questions
 
     def _generate_summary(
-        self, max_severity: Severity, violations: List[Violation], action: RecommendedAction
+        self, max_severity: Severity, violations: list[Violation], action: RecommendedAction
     ) -> str:
         """Generate human-readable summary."""
         if not violations:

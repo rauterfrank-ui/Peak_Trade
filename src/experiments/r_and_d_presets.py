@@ -31,7 +31,7 @@ except ImportError:
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # Standard-Pfad zur R&D-Presets-Datei
 DEFAULT_R_AND_D_PRESETS_PATH = Path(__file__).parent.parent.parent / "config" / "r_and_d_presets.toml"
@@ -65,13 +65,13 @@ class RnDPresetConfig:
     enabled: bool = False
     experimental: bool = True
     allow_live: bool = False
-    markets: List[str] = field(default_factory=lambda: ["BTC/USDT"])
-    timeframes: List[str] = field(default_factory=lambda: ["1h"])
+    markets: list[str] = field(default_factory=lambda: ["BTC/USDT"])
+    timeframes: list[str] = field(default_factory=lambda: ["1h"])
     hypothesis: str = ""
-    focus_metrics: List[str] = field(default_factory=list)
-    parameters: Dict[str, Any] = field(default_factory=dict)
-    default_from: Optional[str] = None
-    default_to: Optional[str] = None
+    focus_metrics: list[str] = field(default_factory=list)
+    parameters: dict[str, Any] = field(default_factory=dict)
+    default_from: str | None = None
+    default_to: str | None = None
 
     @property
     def default_symbol(self) -> str:
@@ -83,7 +83,7 @@ class RnDPresetConfig:
         """Gibt den ersten Timeframe als Default zurück."""
         return self.timeframes[0] if self.timeframes else "1h"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "preset_id": self.preset_id,
@@ -103,12 +103,12 @@ class RnDPresetConfig:
         }
 
 
-def _load_presets_toml(path: Optional[Path] = None) -> Dict[str, Any]:
+def _load_presets_toml(path: Path | None = None) -> dict[str, Any]:
     """Lädt die R&D-Presets-TOML-Datei."""
     preset_path = path or DEFAULT_R_AND_D_PRESETS_PATH
     if not preset_path.exists():
         raise FileNotFoundError(f"R&D-Presets-Datei nicht gefunden: {preset_path}")
-    
+
     # tomllib (Python 3.11+) und tomli brauchen binary mode
     # toml (legacy) braucht text mode
     try:
@@ -116,13 +116,13 @@ def _load_presets_toml(path: Optional[Path] = None) -> Dict[str, Any]:
             return tomllib.load(f)
     except TypeError:
         # Fallback für toml (text mode)
-        with open(preset_path, "r") as f:
+        with open(preset_path) as f:
             return tomllib.load(f)  # type: ignore
 
 
 def load_r_and_d_preset(
     preset_id: str,
-    path: Optional[Path] = None,
+    path: Path | None = None,
 ) -> RnDPresetConfig:
     """
     Lädt ein einzelnes R&D-Preset anhand der ID.
@@ -171,7 +171,7 @@ def load_r_and_d_preset(
     )
 
 
-def list_r_and_d_presets(path: Optional[Path] = None) -> List[RnDPresetConfig]:
+def list_r_and_d_presets(path: Path | None = None) -> list[RnDPresetConfig]:
     """
     Listet alle verfügbaren R&D-Presets auf.
 
@@ -187,7 +187,7 @@ def list_r_and_d_presets(path: Optional[Path] = None) -> List[RnDPresetConfig]:
         return []
 
     presets = []
-    for preset_id, preset_data in data["preset"].items():
+    for preset_id, _preset_data in data["preset"].items():
         try:
             preset = load_r_and_d_preset(preset_id, path)
             presets.append(preset)
@@ -197,7 +197,7 @@ def list_r_and_d_presets(path: Optional[Path] = None) -> List[RnDPresetConfig]:
     return presets
 
 
-def get_preset_ids(path: Optional[Path] = None) -> List[str]:
+def get_preset_ids(path: Path | None = None) -> list[str]:
     """
     Gibt alle Preset-IDs zurück.
 
@@ -213,7 +213,7 @@ def get_preset_ids(path: Optional[Path] = None) -> List[str]:
     return sorted(data["preset"].keys())
 
 
-def print_preset_catalog(path: Optional[Path] = None) -> None:
+def print_preset_catalog(path: Path | None = None) -> None:
     """Gibt einen formatierten Katalog aller R&D-Presets aus."""
     presets = list_r_and_d_presets(path)
 
@@ -222,7 +222,7 @@ def print_preset_catalog(path: Optional[Path] = None) -> None:
     print("=" * 70)
 
     # Gruppiere nach Strategy
-    by_strategy: Dict[str, List[RnDPresetConfig]] = {}
+    by_strategy: dict[str, list[RnDPresetConfig]] = {}
     for preset in presets:
         strategy = preset.strategy or "unknown"
         if strategy not in by_strategy:

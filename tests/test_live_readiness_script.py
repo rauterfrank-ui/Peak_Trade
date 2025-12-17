@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import pytest
 
@@ -19,24 +19,23 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from scripts.check_live_readiness import (
-    parse_args,
-    main,
-    run_readiness_checks,
+    ROOT_DIR,
+    CheckResult,
+    ReadinessReport,
+    WarningResult,
+    check_api_credentials,
     check_config_exists,
     check_config_valid,
-    check_risk_limits,
-    check_exchange_config,
-    check_api_credentials,
-    check_tests,
-    check_live_risk_config_loadable,
     check_documentation_exists,
-    CheckResult,
-    WarningResult,
-    ReadinessReport,
-    ROOT_DIR,
+    check_exchange_config,
+    check_live_risk_config_loadable,
+    check_risk_limits,
+    check_tests,
+    main,
+    parse_args,
+    run_readiness_checks,
 )
 from src.core.peak_config import PeakConfig
-
 
 # =============================================================================
 # Test Fixtures
@@ -790,17 +789,17 @@ class TestCheckDocumentationExists:
         docs_dir.mkdir()
         # Nur eine Datei
         (docs_dir / "LIVE_DEPLOYMENT_PLAYBOOK.md").write_text("# Playbook\nContent here...")
-        
+
         import scripts.check_live_readiness as module
         monkeypatch.setattr(module, "ROOT_DIR", tmp_path)
-        
+
         # run_readiness_checks mit der valid_config_path
         report = run_readiness_checks(
             stage="shadow",
             config_path=valid_config_path,
             run_tests=False,
         )
-        
+
         # Es gibt Warnungen
         assert report.warning_count >= 1
         # Aber Readiness sollte trotzdem bestehen (wenn alle harten Checks OK)
@@ -899,7 +898,7 @@ default_type = "dummy"
             config_path=config_file,
             run_tests=False,
         )
-        
+
         # Live-Risk-Config-Check finden
         live_risk_check = next(
             (c for c in report.checks if "Live-Risk" in c.name), None
@@ -922,14 +921,14 @@ default_type = "dummy"
             config_path=config_file,
             run_tests=False,
         )
-        
+
         # Live-Risk-Config-Check finden
         live_risk_check = next(
             (c for c in report.checks if "Live-Risk" in c.name), None
         )
         assert live_risk_check is not None
         assert live_risk_check.passed is False
-        
+
         # Gesamtreport sollte failed sein
         assert report.all_passed is False
 
@@ -948,7 +947,7 @@ default_type = "kraken_live"
             config_path=config_file,
             run_tests=False,
         )
-        
+
         # Live-Risk-Config-Check sollte failed sein
         live_risk_check = next(
             (c for c in report.checks if "Live-Risk" in c.name), None

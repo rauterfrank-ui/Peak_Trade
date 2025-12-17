@@ -12,11 +12,9 @@ Phase: Research-Track Integration (Bouchaud Microstructure + Gatheral/Cont Vol-R
 """
 from __future__ import annotations
 
-import pytest
-import pandas as pd
 import numpy as np
-from typing import Dict, Any
-
+import pandas as pd
+import pytest
 
 # =============================================================================
 # BOUCHAUD MICROSTRUCTURE STRATEGY TESTS
@@ -432,6 +430,7 @@ class TestFastAPIEndpoints:
         """FastAPI TestClient."""
         try:
             from fastapi.testclient import TestClient
+
             from src.webui.app import app
 
             return TestClient(app)

@@ -7,18 +7,16 @@ Diese Tests verwenden Mock-/Dummy-Daten, um keine echten Exchange-Calls
 zu machen.
 """
 
-import pytest
-import pandas as pd
-import numpy as np
 from pathlib import Path
-from unittest.mock import Mock, patch
 
-from src.core.peak_config import PeakConfig
+import numpy as np
+import pandas as pd
+
 from src.core.experiments import (
     RUN_TYPE_FORWARD_SIGNAL,
     log_forward_signal_run,
-    EXPERIMENTS_DIR,
 )
+from src.core.peak_config import PeakConfig
 from src.strategies.registry import create_strategy_from_config
 
 

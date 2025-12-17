@@ -24,14 +24,12 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from .base import Report, ReportSection, df_to_markdown, format_metric
 from .plots import save_heatmap, save_histogram, save_scatter_plot
-
 
 # =============================================================================
 # RESULT SUMMARIZATION
@@ -43,7 +41,7 @@ def summarize_experiment_results(
     top_n: int = 20,
     sort_metric: str = "metric_sharpe",
     ascending: bool = False,
-) -> Dict[str, pd.DataFrame]:
+) -> dict[str, pd.DataFrame]:
     """
     Aggregiert Experiment/Sweep-Ergebnisse.
 
@@ -67,7 +65,7 @@ def summarize_experiment_results(
         >>> print(results['summary'])
         >>> print(results['top_runs'])
     """
-    results: Dict[str, pd.DataFrame] = {}
+    results: dict[str, pd.DataFrame] = {}
 
     # Identifiziere Param- und Metrik-Spalten
     param_cols = [c for c in df.columns if c.startswith("param_")]
@@ -75,7 +73,7 @@ def summarize_experiment_results(
 
     # 1. Metrik-Summary (Statistiken)
     if metric_cols:
-        summary_data: List[Dict[str, Any]] = []
+        summary_data: list[dict[str, Any]] = []
         for col in metric_cols:
             values = df[col].dropna()
             if len(values) > 0:
@@ -105,7 +103,7 @@ def summarize_experiment_results(
 
     # 3. Parameter-Statistiken
     if param_cols:
-        param_data: List[Dict[str, Any]] = []
+        param_data: list[dict[str, Any]] = []
         for col in param_cols:
             values = df[col].dropna()
             param_data.append({
@@ -119,7 +117,7 @@ def summarize_experiment_results(
 
     # 4. Korrelation zwischen Parametern und Metriken
     if param_cols and metric_cols:
-        corr_data: List[Dict[str, Any]] = []
+        corr_data: list[dict[str, Any]] = []
         for p_col in param_cols:
             for m_col in metric_cols:
                 # Nur numerische Korrelationen
@@ -143,7 +141,7 @@ def find_best_params(
     df: pd.DataFrame,
     sort_metric: str = "metric_sharpe",
     ascending: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Findet die beste Parameter-Kombination.
 
@@ -216,7 +214,7 @@ def build_experiment_summary_section(
 def build_top_runs_section(
     top_runs_df: pd.DataFrame,
     title: str = "Top Runs",
-    display_columns: Optional[List[str]] = None,
+    display_columns: list[str] | None = None,
 ) -> ReportSection:
     """
     Erstellt eine Section mit Top-N-Runs.
@@ -259,7 +257,7 @@ def build_top_runs_section(
 
 
 def build_best_params_section(
-    best: Dict[str, Any],
+    best: dict[str, Any],
     title: str = "Best Parameters",
 ) -> ReportSection:
     """
@@ -275,7 +273,7 @@ def build_best_params_section(
     if not best or "params" not in best:
         return ReportSection(title=title, content_markdown="*No best parameters found*")
 
-    lines: List[str] = []
+    lines: list[str] = []
 
     # Parameter
     lines.append("**Parameters:**")
@@ -304,9 +302,9 @@ def build_experiment_report(
     sort_metric: str = "metric_sharpe",
     ascending: bool = False,
     top_n: int = 20,
-    heatmap_params: Optional[Tuple[str, str]] = None,
-    output_dir: Optional[Union[str, Path]] = None,
-    metadata: Optional[Dict[str, Any]] = None,
+    heatmap_params: tuple[str, str] | None = None,
+    output_dir: str | Path | None = None,
+    metadata: dict[str, Any] | None = None,
     with_regime_heatmaps: bool = False,
 ) -> Report:
     """
@@ -390,11 +388,11 @@ def build_experiment_report(
         report.add_section(ReportSection(title="Parameter Statistics", content_markdown=content))
 
     # 6. Charts Section
-    charts_content: List[str] = []
+    charts_content: list[str] = []
 
     # Regime-Aware Heatmaps (automatisch für regime_aware_* Sweeps)
     is_regime_aware = with_regime_heatmaps or "regime_aware" in title.lower()
-    
+
     if is_regime_aware:
         # Automatische Heatmap-Parameter für Regime-Aware Sweeps
         regime_param_candidates = [
@@ -402,7 +400,7 @@ def build_experiment_report(
             ("param_risk_on_scale", "param_neutral_scale"),
             ("param_neutral_scale", "param_risk_on_scale"),
         ]
-        
+
         for x_param, y_param in regime_param_candidates:
             if x_param in df.columns and y_param in df.columns and sort_metric in df.columns:
                 try:
@@ -517,7 +515,7 @@ def build_experiment_report(
 
 def save_experiment_report(
     report: Report,
-    output_path: Union[str, Path],
+    output_path: str | Path,
     format: str = "markdown",
 ) -> str:
     """
@@ -544,7 +542,7 @@ def save_experiment_report(
 
 
 def load_experiment_results(
-    filepath: Union[str, Path],
+    filepath: str | Path,
 ) -> pd.DataFrame:
     """
     Lädt Experiment-Ergebnisse aus CSV oder Parquet.

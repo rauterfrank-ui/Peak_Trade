@@ -31,14 +31,13 @@ See also:
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import pandas as pd
 
-from .base import Report, ReportSection, df_to_markdown, dict_to_markdown_table, format_metric
-
+from .base import Report, ReportSection, df_to_markdown, dict_to_markdown_table
 
 # =============================================================================
 # Report Builder
@@ -76,7 +75,7 @@ def build_live_run_report(
         raise FileNotFoundError(f"Events-Datei nicht gefunden: {events_path}")
 
     # Metadaten laden
-    with open(meta_path, "r", encoding="utf-8") as f:
+    with open(meta_path, encoding="utf-8") as f:
         meta = json.load(f)
 
     # Events laden
@@ -119,7 +118,7 @@ def build_live_run_report(
 # =============================================================================
 
 
-def _build_summary_section(meta: Dict[str, Any], events_df: pd.DataFrame) -> ReportSection:
+def _build_summary_section(meta: dict[str, Any], events_df: pd.DataFrame) -> ReportSection:
     """Baut die Summary-Section."""
     total_steps = len(events_df)
 
@@ -166,7 +165,7 @@ def _build_summary_section(meta: Dict[str, Any], events_df: pd.DataFrame) -> Rep
     )
 
 
-def _build_session_info_section(meta: Dict[str, Any]) -> ReportSection:
+def _build_session_info_section(meta: dict[str, Any]) -> ReportSection:
     """Baut die Session-Info-Section."""
     info = {
         "Run ID": meta.get("run_id", "N/A"),
@@ -314,7 +313,7 @@ def _build_trade_list_section(events_df: pd.DataFrame, max_trades: int) -> Repor
         "position_size": "Position",
     }
 
-    for col, label in col_mapping.items():
+    for col, _label in col_mapping.items():
         if col in trade_events.columns:
             display_cols.append(col)
 
@@ -338,7 +337,7 @@ def _build_trade_list_section(events_df: pd.DataFrame, max_trades: int) -> Repor
     )
 
 
-def _build_config_section(meta: Dict[str, Any]) -> ReportSection:
+def _build_config_section(meta: dict[str, Any]) -> ReportSection:
     """Baut die Config-Section."""
     config_snapshot = meta.get("config_snapshot", {})
 

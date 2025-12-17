@@ -26,18 +26,16 @@ Warnung:
 from __future__ import annotations
 
 from datetime import date
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-import numpy as np
 import pandas as pd
 
 from ..base import BaseStrategy, StrategyMetadata
 from .cycle_model import (
-    ArmstrongPhase,
     ArmstrongCycleConfig,
     ArmstrongCycleModel,
+    ArmstrongPhase,
 )
-
 
 # =============================================================================
 # PHASE → POSITION MAPPING
@@ -45,7 +43,7 @@ from .cycle_model import (
 
 
 # Default Mapping: Phase → Zielposition (1=long, 0=flat, -1=short)
-DEFAULT_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
+DEFAULT_PHASE_POSITION_MAP: dict[ArmstrongPhase, int] = {
     ArmstrongPhase.EXPANSION: 1,      # Long in Expansion
     ArmstrongPhase.POST_CRISIS: 1,    # Long nach Crisis (Erholung)
     ArmstrongPhase.CONTRACTION: 0,    # Flat in Contraction
@@ -54,7 +52,7 @@ DEFAULT_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
 }
 
 # Aggressives Mapping: Short in Crisis
-AGGRESSIVE_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
+AGGRESSIVE_PHASE_POSITION_MAP: dict[ArmstrongPhase, int] = {
     ArmstrongPhase.EXPANSION: 1,      # Long in Expansion
     ArmstrongPhase.POST_CRISIS: 1,    # Long nach Crisis
     ArmstrongPhase.CONTRACTION: 0,    # Flat in Contraction
@@ -63,7 +61,7 @@ AGGRESSIVE_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
 }
 
 # Konservatives Mapping: Nur Long in Expansion
-CONSERVATIVE_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
+CONSERVATIVE_PHASE_POSITION_MAP: dict[ArmstrongPhase, int] = {
     ArmstrongPhase.EXPANSION: 1,      # Long nur in Expansion
     ArmstrongPhase.POST_CRISIS: 0,    # Flat sonst
     ArmstrongPhase.CONTRACTION: 0,
@@ -138,11 +136,11 @@ class ArmstrongCycleStrategy(BaseStrategy):
         cycle_length_days: int = DEFAULT_CYCLE_LENGTH,
         event_window_days: int = 90,
         reference_date: str = DEFAULT_REFERENCE_DATE,
-        phase_position_map: Optional[Dict[ArmstrongPhase, int] | str] = None,
+        phase_position_map: dict[ArmstrongPhase, int] | str | None = None,
         use_risk_scaling: bool = True,
         underlying: str = "SPX",
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Armstrong Cycle Strategy.
@@ -214,8 +212,8 @@ class ArmstrongCycleStrategy(BaseStrategy):
         self.validate()
 
     def _resolve_phase_position_map(
-        self, mapping: Dict[ArmstrongPhase, int] | str | None
-    ) -> Dict[ArmstrongPhase, int]:
+        self, mapping: dict[ArmstrongPhase, int] | str | None
+    ) -> dict[ArmstrongPhase, int]:
         """
         Löst das Phase→Position Mapping auf.
 
@@ -242,7 +240,7 @@ class ArmstrongCycleStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.armstrong_cycle",
-    ) -> "ArmstrongCycleStrategy":
+    ) -> ArmstrongCycleStrategy:
         """
         Fabrikmethode für Config-basierte Instanziierung.
 
@@ -313,7 +311,7 @@ class ArmstrongCycleStrategy(BaseStrategy):
 
         return signal_series
 
-    def get_cycle_info(self, dt: pd.Timestamp) -> Dict[str, Any]:
+    def get_cycle_info(self, dt: pd.Timestamp) -> dict[str, Any]:
         """
         Gibt ECM-Zyklus-Informationen für ein bestimmtes Datum zurück.
 
@@ -365,7 +363,7 @@ class ArmstrongCycleStrategy(BaseStrategy):
                 f"half cycle ({self.cycle_length_days // 2}) sein"
             )
 
-    def get_strategy_info(self) -> Dict[str, Any]:
+    def get_strategy_info(self) -> dict[str, Any]:
         """
         Gibt Strategy-Metadaten zurück (für Logs/Reports).
 
@@ -398,7 +396,7 @@ class ArmstrongCycleStrategy(BaseStrategy):
 # LEGACY API (Falls benötigt für Backwards Compatibility)
 # =============================================================================
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility.
 
@@ -421,10 +419,10 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
 # =============================================================================
 
 __all__ = [
-    "ArmstrongCycleStrategy",
-    "generate_signals",
-    # Phase-Position Mappings
-    "DEFAULT_PHASE_POSITION_MAP",
     "AGGRESSIVE_PHASE_POSITION_MAP",
     "CONSERVATIVE_PHASE_POSITION_MAP",
+    # Phase-Position Mappings
+    "DEFAULT_PHASE_POSITION_MAP",
+    "ArmstrongCycleStrategy",
+    "generate_signals",
 ]

@@ -14,15 +14,13 @@ WICHTIG: Alle Tests sind Offline-Tests ohne Netzwerkzugriff!
 from __future__ import annotations
 
 import pytest
-from datetime import datetime, timezone
 
 from src.exchange.base import (
-    TradingExchangeClient,
-    ExchangeOrderStatus,
     ExchangeOrderResult,
+    ExchangeOrderStatus,
+    TradingExchangeClient,
 )
-from src.exchange.dummy_client import DummyExchangeClient, DummyOrderInfo
-
+from src.exchange.dummy_client import DummyExchangeClient
 
 # =============================================================================
 # Fixtures

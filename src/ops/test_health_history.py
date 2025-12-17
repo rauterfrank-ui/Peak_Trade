@@ -19,7 +19,6 @@ import datetime as dt
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Optional
 
 # Import from sibling module
 from .test_health_runner import TestHealthSummary
@@ -28,7 +27,7 @@ from .test_health_runner import TestHealthSummary
 @dataclass
 class HealthHistoryEntry:
     """Einzelner Eintrag in der Health-Historie."""
-    
+
     profile_name: str
     timestamp: str  # ISO format
     health_score: float
@@ -38,7 +37,7 @@ class HealthHistoryEntry:
     total_weight: int
     passed_weight: int
     duration_seconds: float
-    report_dir: Optional[str] = None
+    report_dir: str | None = None
 
 
 def _get_default_history_path() -> Path:
@@ -47,9 +46,9 @@ def _get_default_history_path() -> Path:
 
 
 def load_history(
-    history_path: Optional[Path] = None,
-    profile_name: Optional[str] = None,
-    days: Optional[int] = None,
+    history_path: Path | None = None,
+    profile_name: str | None = None,
+    days: int | None = None,
 ) -> list[HealthHistoryEntry]:
     """
     Lädt Health-Historie aus JSON-File.
@@ -74,7 +73,7 @@ def load_history(
     if not history_path.exists():
         return []
 
-    with open(history_path, "r", encoding="utf-8") as f:
+    with open(history_path, encoding="utf-8") as f:
         data = json.load(f)
 
     entries = []
@@ -103,8 +102,8 @@ def load_history(
 
 def append_to_history(
     summary: TestHealthSummary,
-    report_dir: Optional[Path] = None,
-    history_path: Optional[Path] = None,
+    report_dir: Path | None = None,
+    history_path: Path | None = None,
 ) -> Path:
     """
     Fügt einen neuen Eintrag zur Health-Historie hinzu.
@@ -131,7 +130,7 @@ def append_to_history(
 
     # Load existing data or create new
     if history_path.exists():
-        with open(history_path, "r", encoding="utf-8") as f:
+        with open(history_path, encoding="utf-8") as f:
             data = json.load(f)
     else:
         data = {
@@ -171,7 +170,7 @@ def append_to_history(
 def get_history_stats(
     profile_name: str,
     days: int = 14,
-    history_path: Optional[Path] = None,
+    history_path: Path | None = None,
 ) -> dict:
     """
     Berechnet Statistiken über die Health-Historie.
@@ -242,7 +241,7 @@ def get_history_stats(
 def print_history_summary(
     profile_name: str,
     days: int = 14,
-    history_path: Optional[Path] = None,
+    history_path: Path | None = None,
 ) -> None:
     """
     Gibt eine formatierte Historie-Zusammenfassung aus.
@@ -276,13 +275,13 @@ def print_history_summary(
 
     print(f"Runs:           {stats['count']}")
     print(f"Zeitraum:       {stats['first_entry'][:10]} bis {stats['last_entry'][:10]}")
-    print(f"")
+    print("")
     print(f"Avg Score:      {stats['avg_score']:.1f}")
     print(f"Min Score:      {stats['min_score']:.1f}")
     print(f"Max Score:      {stats['max_score']:.1f}")
     print(f"Latest Score:   {stats['latest_score']:.1f}")
     print(f"Trend:          {trend_emoji.get(stats['trend'], '?')} {stats['trend']}")
-    print(f"")
+    print("")
     print(f"Avg Duration:   {stats['avg_duration_seconds']:.2f}s")
     print(f"Total Passed:   {stats['total_passed']}")
     print(f"Total Failed:   {stats['total_failed']}")

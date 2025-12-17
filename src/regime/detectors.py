@@ -14,16 +14,15 @@ Factory:
 """
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
 import logging
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
 
 from .base import (
-    RegimeLabel,
     RegimeContext,
-    RegimeDetector,
+    RegimeLabel,
     RegimeSeriesDetector,
 )
 from .config import RegimeDetectorConfig
@@ -390,7 +389,7 @@ class RangeCompressionRegimeDetector:
 
 def make_regime_detector(
     config: RegimeDetectorConfig,
-) -> Optional[RegimeSeriesDetector]:
+) -> RegimeSeriesDetector | None:
     """
     Factory-Funktion: Erstellt einen RegimeDetector aus Config.
 

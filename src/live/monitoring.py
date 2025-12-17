@@ -16,19 +16,22 @@ WICHTIG: Diese Library nutzt die bestehende Run-Logging-Struktur.
 """
 from __future__ import annotations
 
+import contextlib
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas as pd
 
 from .run_logging import (
-    load_run_metadata,
-    load_run_events,
-    list_runs as list_run_ids,
     LiveRunMetadata,
+    load_run_events,
+    load_run_metadata,
+)
+from .run_logging import (
+    list_runs as list_run_ids,
 )
 
 logger = logging.getLogger(__name__)
@@ -53,13 +56,13 @@ class RunMetricPoint:
         exposure: Gesamt-Exposure
     """
     timestamp: datetime
-    equity: Optional[float] = None
-    pnl: Optional[float] = None
-    unrealized_pnl: Optional[float] = None
-    drawdown: Optional[float] = None
-    exposure: Optional[float] = None
+    equity: float | None = None
+    pnl: float | None = None
+    unrealized_pnl: float | None = None
+    drawdown: float | None = None
+    exposure: float | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "timestamp": self.timestamp.isoformat() if self.timestamp else None,
@@ -96,22 +99,22 @@ class RunSnapshot:
     """
     run_id: str
     mode: str
-    strategy: Optional[str] = None
-    symbol: Optional[str] = None
-    timeframe: Optional[str] = None
+    strategy: str | None = None
+    symbol: str | None = None
+    timeframe: str | None = None
     is_active: bool = False
-    started_at: Optional[datetime] = None
-    ended_at: Optional[datetime] = None
-    last_event_time: Optional[datetime] = None
-    equity: Optional[float] = None
-    pnl: Optional[float] = None
-    unrealized_pnl: Optional[float] = None
-    drawdown: Optional[float] = None
+    started_at: datetime | None = None
+    ended_at: datetime | None = None
+    last_event_time: datetime | None = None
+    equity: float | None = None
+    pnl: float | None = None
+    unrealized_pnl: float | None = None
+    drawdown: float | None = None
     num_events: int = 0
-    last_error: Optional[str] = None
-    run_dir: Optional[Path] = None
+    last_error: str | None = None
+    run_dir: Path | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "run_id": self.run_id,
@@ -148,7 +151,7 @@ class RunNotFoundError(Exception):
 # =============================================================================
 
 
-def _calculate_drawdown(equity_series: pd.Series) -> Optional[float]:
+def _calculate_drawdown(equity_series: pd.Series) -> float | None:
     """
     Berechnet den aktuellen Drawdown aus einer Equity-Serie.
 
@@ -168,19 +171,19 @@ def _calculate_drawdown(equity_series: pd.Series) -> Optional[float]:
 
     # Running Maximum
     running_max = equity_clean.expanding().max()
-    
+
     # Drawdown
     drawdown = (equity_clean - running_max) / running_max
-    
+
     # Aktueller Drawdown (letzter Wert)
     current_dd = drawdown.iloc[-1]
-    
+
     return float(current_dd) if not pd.isna(current_dd) else None
 
 
 def _is_run_active(
     metadata: LiveRunMetadata,
-    last_event_time: Optional[datetime],
+    last_event_time: datetime | None,
     max_idle_minutes: int = 10,
 ) -> bool:
     """
@@ -203,7 +206,7 @@ def _is_run_active(
         return False
 
     # Prüfe ob letztes Event zu alt ist
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     idle_minutes = (now - last_event_time).total_seconds() / 60.0
 
     return idle_minutes < max_idle_minutes
@@ -212,8 +215,8 @@ def _is_run_active(
 def list_runs(
     base_dir: str | Path = "live_runs",
     include_inactive: bool = False,
-    max_age: Optional[timedelta] = None,
-) -> List[RunSnapshot]:
+    max_age: timedelta | None = None,
+) -> list[RunSnapshot]:
     """
     Listet alle verfügbaren Runs und erstellt Snapshots.
 
@@ -231,13 +234,13 @@ def list_runs(
         return []
 
     run_ids = list_run_ids(base_dir=base_dir)
-    snapshots: List[RunSnapshot] = []
+    snapshots: list[RunSnapshot] = []
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     for run_id in run_ids:
         try:
-            run_dir = base_dir / run_id
+            base_dir / run_id
             snapshot = get_run_snapshot(run_id, base_dir=base_dir)
 
             # Filter: max_age
@@ -258,7 +261,7 @@ def list_runs(
 
     # Sortiere nach last_event_time (neueste zuerst)
     snapshots.sort(
-        key=lambda s: s.last_event_time or datetime.min.replace(tzinfo=timezone.utc),
+        key=lambda s: s.last_event_time or datetime.min.replace(tzinfo=UTC),
         reverse=True,
     )
 
@@ -300,12 +303,12 @@ def get_run_snapshot(
             events_df = pd.DataFrame()
 
         # Letztes Event extrahieren
-        last_event_time: Optional[datetime] = None
-        equity: Optional[float] = None
-        pnl: Optional[float] = None
-        unrealized_pnl: Optional[float] = None
-        drawdown: Optional[float] = None
-        last_error: Optional[str] = None
+        last_event_time: datetime | None = None
+        equity: float | None = None
+        pnl: float | None = None
+        unrealized_pnl: float | None = None
+        drawdown: float | None = None
+        last_error: str | None = None
 
         if len(events_df) > 0:
             # Letztes Event (höchster Step)
@@ -315,10 +318,8 @@ def get_run_snapshot(
             ts_str = last_event.get("ts_event") or last_event.get("ts_bar")
             if ts_str:
                 if isinstance(ts_str, str):
-                    try:
+                    with contextlib.suppress(Exception):
                         last_event_time = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
-                    except Exception:
-                        pass
                 elif isinstance(ts_str, pd.Timestamp):
                     last_event_time = ts_str.to_pydatetime()
 
@@ -385,7 +386,7 @@ def get_run_timeseries(
     metric: str = "equity",
     limit: int = 500,
     base_dir: str | Path = "live_runs",
-) -> List[RunMetricPoint]:
+) -> list[RunMetricPoint]:
     """
     Lädt eine Zeitreihe für einen Run.
 
@@ -418,18 +419,16 @@ def get_run_timeseries(
             events_df = events_df.tail(limit)
 
         # Zeitreihe aufbauen
-        points: List[RunMetricPoint] = []
+        points: list[RunMetricPoint] = []
 
         for _, row in events_df.iterrows():
             # Timestamp
             ts_str = row.get("ts_event") or row.get("ts_bar")
-            timestamp: Optional[datetime] = None
+            timestamp: datetime | None = None
             if ts_str:
                 if isinstance(ts_str, str):
-                    try:
+                    with contextlib.suppress(Exception):
                         timestamp = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
-                    except Exception:
-                        pass
                 elif isinstance(ts_str, pd.Timestamp):
                     timestamp = ts_str.to_pydatetime()
 
@@ -492,7 +491,7 @@ def tail_events(
     run_id: str,
     limit: int = 100,
     base_dir: str | Path = "live_runs",
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Gibt die letzten Events eines Runs zurück.
 
@@ -531,9 +530,7 @@ def tail_events(
         for event in events:
             for key in ["ts_event", "ts_bar"]:
                 if key in event and pd.notna(event[key]):
-                    if isinstance(event[key], pd.Timestamp):
-                        event[key] = event[key].isoformat()
-                    elif isinstance(event[key], datetime):
+                    if isinstance(event[key], pd.Timestamp) or isinstance(event[key], datetime):
                         event[key] = event[key].isoformat()
 
         return events

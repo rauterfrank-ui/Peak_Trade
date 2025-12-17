@@ -20,15 +20,14 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.core.environment import (
+    LIVE_CONFIRM_TOKEN,
     EnvironmentConfig,
     TradingEnvironment,
-    LIVE_CONFIRM_TOKEN,
     create_default_environment,
 )
-from src.live.risk_limits import LiveRiskConfig, LiveRiskLimits
 from src.live.safety import SafetyGuard, is_live_execution_allowed
 
 logger = logging.getLogger(__name__)
@@ -63,12 +62,12 @@ class LiveDrillScenario:
 
     name: str
     description: str
-    env_overrides: Dict[str, Any] = field(default_factory=dict)
-    risk_config_overrides: Optional[Dict[str, Any]] = None
+    env_overrides: dict[str, Any] = field(default_factory=dict)
+    risk_config_overrides: dict[str, Any] | None = None
     expected_is_live_execution_allowed: bool = False
-    expected_reasons: List[str] = field(default_factory=list)
-    simulated_orders: Optional[List[Dict[str, Any]]] = None
-    simulated_daily_pnl: Optional[float] = None
+    expected_reasons: list[str] = field(default_factory=list)
+    simulated_orders: list[dict[str, Any]] | None = None
+    simulated_daily_pnl: float | None = None
 
 
 @dataclass
@@ -92,8 +91,8 @@ class LiveDrillResult:
     is_live_execution_allowed: bool
     reason: str
     effective_mode: str
-    notes: List[str] = field(default_factory=list)
-    violations: List[str] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+    violations: list[str] = field(default_factory=list)
 
 
 # =============================================================================
@@ -110,12 +109,12 @@ class LiveDrillRunner:
 
     def __init__(self) -> None:
         """Initialisiert den Drill-Runner."""
-        self._results: List[LiveDrillResult] = []
+        self._results: list[LiveDrillResult] = []
 
     def run_scenario(
         self,
         scenario: LiveDrillScenario,
-        base_env_config: Optional[EnvironmentConfig] = None,
+        base_env_config: EnvironmentConfig | None = None,
     ) -> LiveDrillResult:
         """
         Führt ein Drill-Szenario aus.
@@ -159,7 +158,7 @@ class LiveDrillRunner:
         effective_mode = safety_guard.get_effective_mode()
 
         # Notizen sammeln
-        notes: List[str] = []
+        notes: list[str] = []
         notes.append(f"Mode: {env_config.environment.value}")
         notes.append(f"Effective Mode: {effective_mode}")
         notes.append(f"enable_live_trading: {env_config.enable_live_trading}")
@@ -177,7 +176,7 @@ class LiveDrillRunner:
             notes.append("Risk-Limits: Simuliert (nicht vollständig implementiert in Phase 73)")
 
         # Violations prüfen
-        violations: List[str] = []
+        violations: list[str] = []
         if allowed != scenario.expected_is_live_execution_allowed:
             violations.append(
                 f"is_live_execution_allowed mismatch: "
@@ -211,9 +210,9 @@ class LiveDrillRunner:
 
     def run_all(
         self,
-        scenarios: List[LiveDrillScenario],
-        base_env_config: Optional[EnvironmentConfig] = None,
-    ) -> List[LiveDrillResult]:
+        scenarios: list[LiveDrillScenario],
+        base_env_config: EnvironmentConfig | None = None,
+    ) -> list[LiveDrillResult]:
         """
         Führt alle Drill-Szenarien aus.
 
@@ -230,7 +229,7 @@ class LiveDrillRunner:
             results.append(result)
         return results
 
-    def get_results(self) -> List[LiveDrillResult]:
+    def get_results(self) -> list[LiveDrillResult]:
         """Gibt alle bisherigen Ergebnisse zurück."""
         return list(self._results)
 
@@ -244,7 +243,7 @@ class LiveDrillRunner:
 # =============================================================================
 
 
-def get_default_live_drill_scenarios() -> List[LiveDrillScenario]:
+def get_default_live_drill_scenarios() -> list[LiveDrillScenario]:
     """
     Gibt die Standard-Live-Drill-Szenarien zurück.
 

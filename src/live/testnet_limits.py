@@ -44,10 +44,10 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass, field, asdict
-from datetime import date, datetime, timezone
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, date, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from src.core.peak_config import PeakConfig
 
@@ -69,11 +69,11 @@ class TestnetRunLimits:
         max_trades_per_run: Maximale Anzahl Trades pro Run
         max_duration_minutes: Maximale Laufzeit pro Run in Minuten
     """
-    max_notional_per_run: Optional[float] = None
-    max_trades_per_run: Optional[int] = None
-    max_duration_minutes: Optional[int] = None
+    max_notional_per_run: float | None = None
+    max_trades_per_run: int | None = None
+    max_duration_minutes: int | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dict (fuer Logging/Serialisierung)."""
         return asdict(self)
 
@@ -87,10 +87,10 @@ class TestnetDailyLimits:
         max_notional_per_day: Maximales Gesamt-Notional pro Tag
         max_trades_per_day: Maximale Anzahl Trades pro Tag
     """
-    max_notional_per_day: Optional[float] = None
-    max_trades_per_day: Optional[int] = None
+    max_notional_per_day: float | None = None
+    max_trades_per_day: int | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dict (fuer Logging/Serialisierung)."""
         return asdict(self)
 
@@ -103,7 +103,7 @@ class TestnetSymbolPolicy:
     Attributes:
         allowed_symbols: Menge der erlaubten Symbole (z.B. {"BTC/EUR", "ETH/EUR"})
     """
-    allowed_symbols: Set[str] = field(default_factory=lambda: {"BTC/EUR", "ETH/EUR"})
+    allowed_symbols: set[str] = field(default_factory=lambda: {"BTC/EUR", "ETH/EUR"})
 
     def is_allowed(self, symbol: str) -> bool:
         """Prueft, ob ein Symbol erlaubt ist."""
@@ -112,7 +112,7 @@ class TestnetSymbolPolicy:
             return True
         return symbol in self.allowed_symbols
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dict (fuer Logging/Serialisierung)."""
         return {"allowed_symbols": list(self.allowed_symbols)}
 
@@ -133,7 +133,7 @@ class TestnetUsageState:
     trades_executed: int = 0
     runs_completed: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dict (fuer Serialisierung)."""
         return {
             "day": self.day.isoformat(),
@@ -143,7 +143,7 @@ class TestnetUsageState:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "TestnetUsageState":
+    def from_dict(cls, data: dict[str, Any]) -> TestnetUsageState:
         """Erstellt TestnetUsageState aus Dict."""
         day_str = data.get("day", "")
         if isinstance(day_str, str):
@@ -178,9 +178,9 @@ class TestnetCheckResult:
         limits_info: Informationen zu den Limits
     """
     allowed: bool
-    reasons: List[str] = field(default_factory=list)
-    current_usage: Optional[Dict[str, Any]] = None
-    limits_info: Optional[Dict[str, Any]] = None
+    reasons: list[str] = field(default_factory=list)
+    current_usage: dict[str, Any] | None = None
+    limits_info: dict[str, Any] | None = None
 
     def __bool__(self) -> bool:
         """Ermoeglicht `if result:` Syntax."""
@@ -248,7 +248,7 @@ class TestnetUsageStore:
             return TestnetUsageState(day=day)
 
         try:
-            with open(usage_file, "r") as f:
+            with open(usage_file) as f:
                 data = json.load(f)
             return TestnetUsageState.from_dict(data)
         except (json.JSONDecodeError, OSError) as e:
@@ -257,7 +257,7 @@ class TestnetUsageStore:
 
     def load_for_today(self) -> TestnetUsageState:
         """Laedt den Usage-Stand fuer heute (UTC)."""
-        today = datetime.now(timezone.utc).date()
+        today = datetime.now(UTC).date()
         return self.load_for_day(today)
 
     def save_for_day(self, state: TestnetUsageState) -> None:
@@ -280,7 +280,7 @@ class TestnetUsageStore:
     def save_for_today(self, state: TestnetUsageState) -> None:
         """Speichert den Usage-Stand fuer heute."""
         # Sicherstellen, dass das Datum heute ist
-        today = datetime.now(timezone.utc).date()
+        today = datetime.now(UTC).date()
         state.day = today
         self.save_for_day(state)
 
@@ -291,7 +291,7 @@ class TestnetUsageStore:
         Returns:
             Anzahl geloeschter Dateien
         """
-        cutoff = datetime.now(timezone.utc).date()
+        cutoff = datetime.now(UTC).date()
         deleted = 0
 
         try:
@@ -417,9 +417,9 @@ class TestnetLimitsController:
 
     def check_run_limits(
         self,
-        planned_notional: Optional[float] = None,
-        planned_trades: Optional[int] = None,
-        planned_duration_minutes: Optional[int] = None,
+        planned_notional: float | None = None,
+        planned_trades: int | None = None,
+        planned_duration_minutes: int | None = None,
     ) -> TestnetCheckResult:
         """
         Prueft, ob ein geplanter Run die Run-Limits einhält.
@@ -432,7 +432,7 @@ class TestnetLimitsController:
         Returns:
             TestnetCheckResult
         """
-        reasons: List[str] = []
+        reasons: list[str] = []
         limits = self._run_limits
 
         # Notional pruefen
@@ -476,8 +476,8 @@ class TestnetLimitsController:
 
     def check_daily_limits(
         self,
-        additional_notional: Optional[float] = None,
-        additional_trades: Optional[int] = None,
+        additional_notional: float | None = None,
+        additional_trades: int | None = None,
     ) -> TestnetCheckResult:
         """
         Prueft, ob ein zusaetzlicher Run die Daily-Limits einhalten wuerde.
@@ -489,7 +489,7 @@ class TestnetLimitsController:
         Returns:
             TestnetCheckResult mit aktuellem Usage-Stand
         """
-        reasons: List[str] = []
+        reasons: list[str] = []
         limits = self._daily_limits
         current_usage = self._usage_store.load_for_today()
 
@@ -524,10 +524,10 @@ class TestnetLimitsController:
 
     def check_run_allowed(
         self,
-        symbol: Optional[str] = None,
-        planned_notional: Optional[float] = None,
-        planned_trades: Optional[int] = None,
-        planned_duration_minutes: Optional[int] = None,
+        symbol: str | None = None,
+        planned_notional: float | None = None,
+        planned_trades: int | None = None,
+        planned_duration_minutes: int | None = None,
     ) -> TestnetCheckResult:
         """
         Kombinierte Pruefung aller Limits fuer einen geplanten Run.
@@ -546,7 +546,7 @@ class TestnetLimitsController:
         Returns:
             TestnetCheckResult mit allen Pruefungsergebnissen
         """
-        all_reasons: List[str] = []
+        all_reasons: list[str] = []
         current_usage = self._usage_store.load_for_today()
 
         # 1. Symbol-Check
@@ -619,7 +619,7 @@ class TestnetLimitsController:
         """Gibt den aktuellen taeglichen Nutzungsstand zurueck."""
         return self._usage_store.load_for_today()
 
-    def get_remaining_budget(self) -> Dict[str, Any]:
+    def get_remaining_budget(self) -> dict[str, Any]:
         """
         Berechnet das verbleibende Budget fuer heute.
 
@@ -655,7 +655,7 @@ class TestnetLimitsController:
 
 def load_testnet_limits_from_config(
     cfg: PeakConfig,
-    base_dir: Optional[Path] = None,
+    base_dir: Path | None = None,
 ) -> TestnetLimitsController:
     """
     Erstellt einen TestnetLimitsController aus PeakConfig.

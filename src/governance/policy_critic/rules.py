@@ -6,7 +6,6 @@ All rules are evidence-based and must provide concrete references.
 """
 
 import re
-from typing import List, Optional
 
 from .models import Evidence, Severity, Violation
 
@@ -18,7 +17,7 @@ class PolicyRule:
     severity: Severity = Severity.INFO
     description: str = ""
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(self, diff: str, changed_files: list[str], context: dict | None = None) -> list[Violation]:
         """Check for violations. Returns list of violations (empty if none)."""
         raise NotImplementedError
 
@@ -40,7 +39,7 @@ class NoSecretsRule(PolicyRule):
         (r"aws_secret_access_key", "AWS secret access key detected"),
     ]
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(self, diff: str, changed_files: list[str], context: dict | None = None) -> list[Violation]:
         violations = []
 
         for pattern, message in self.SECRET_PATTERNS:
@@ -72,7 +71,7 @@ class NoSecretsRule(PolicyRule):
         return violations
 
     @staticmethod
-    def _extract_file_from_diff_position(diff: str, position: int) -> Optional[str]:
+    def _extract_file_from_diff_position(diff: str, position: int) -> str | None:
         """Extract filename from diff for a given position."""
         # Look backwards for the most recent +++ line
         before = diff[:position]
@@ -99,7 +98,7 @@ class NoLiveUnlockRule(PolicyRule):
         (r"disable.*safety.*check", "Attempt to disable safety checks"),
     ]
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(self, diff: str, changed_files: list[str], context: dict | None = None) -> list[Violation]:
         violations = []
 
         for pattern, message in self.UNLOCK_PATTERNS:
@@ -145,7 +144,7 @@ class ExecutionEndpointTouchRule(PolicyRule):
         r"class\s+\w*Order\w*Executor",
     ]
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(self, diff: str, changed_files: list[str], context: dict | None = None) -> list[Violation]:
         violations = []
 
         # Check if any changed files are in critical paths
@@ -200,7 +199,7 @@ class RiskLimitRaiseRule(PolicyRule):
         r"max_drawdown\s*[=:]\s*(\d+\.?\d*)",
     ]
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(self, diff: str, changed_files: list[str], context: dict | None = None) -> list[Violation]:
         violations = []
         context_dict = context or {}
 
@@ -268,7 +267,7 @@ class MissingTestPlanRule(PolicyRule):
     MIN_LINES_CHANGED = 50  # Threshold for "significant change"
     MIN_LINES_HIGH_CRITICAL = 10  # G3.6: Lower threshold for highly critical paths
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(self, diff: str, changed_files: list[str], context: dict | None = None) -> list[Violation]:
         violations = []
         context_dict = context or {}
 
@@ -311,7 +310,7 @@ class MissingTestPlanRule(PolicyRule):
 
 
 # Registry of all rules
-ALL_RULES: List[PolicyRule] = [
+ALL_RULES: list[PolicyRule] = [
     NoSecretsRule(),
     NoLiveUnlockRule(),
     ExecutionEndpointTouchRule(),

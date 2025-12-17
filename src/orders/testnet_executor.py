@@ -26,31 +26,31 @@ WICHTIG: Dieser Executor ist NUR fuer Testnet-Trading vorgesehen!
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
+from collections.abc import Sequence
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any
 
-from .base import (
-    OrderRequest,
-    OrderFill,
-    OrderExecutionResult,
-    OrderStatus,
-)
 from src.core.environment import (
     EnvironmentConfig,
     TradingEnvironment,
 )
 from src.live.safety import (
     SafetyGuard,
-    SafetyBlockedError,
-    LiveNotImplementedError,
     TestnetDryRunOnlyError,
+)
+
+from .base import (
+    OrderExecutionResult,
+    OrderFill,
+    OrderRequest,
+    OrderStatus,
 )
 
 if TYPE_CHECKING:
     from src.exchange.kraken_testnet import KrakenTestnetClient
-    from src.live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
     from src.live.orders import LiveOrderRequest
+    from src.live.risk_limits import LiveRiskCheckResult, LiveRiskLimits
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +73,7 @@ class EnvironmentNotTestnetError(TestnetExecutorError):
 class RiskLimitViolationError(TestnetExecutorError):
     """Risk-Limit wurde verletzt."""
 
-    def __init__(self, message: str, reasons: List[str], metrics: Dict[str, Any]):
+    def __init__(self, message: str, reasons: list[str], metrics: dict[str, Any]):
         super().__init__(message)
         self.reasons = reasons
         self.metrics = metrics
@@ -110,10 +110,10 @@ class TestnetExecutionLog:
     timestamp: datetime
     request: OrderRequest
     result: OrderExecutionResult
-    exchange_order_id: Optional[str] = None
+    exchange_order_id: str | None = None
     mode: str = EXECUTION_MODE_TESTNET_LIVE
     risk_check_passed: bool = True
-    notes: Optional[str] = None
+    notes: str | None = None
 
 
 # =============================================================================
@@ -162,10 +162,10 @@ class TestnetExchangeOrderExecutor:
 
     def __init__(
         self,
-        exchange_client: "KrakenTestnetClient",
+        exchange_client: KrakenTestnetClient,
         safety_guard: SafetyGuard,
-        risk_limits: Optional["LiveRiskLimits"] = None,
-        env_config: Optional[EnvironmentConfig] = None,
+        risk_limits: LiveRiskLimits | None = None,
+        env_config: EnvironmentConfig | None = None,
     ) -> None:
         """
         Initialisiert den TestnetExchangeOrderExecutor.
@@ -192,7 +192,7 @@ class TestnetExchangeOrderExecutor:
             )
 
         self._execution_count = 0
-        self._execution_log: List[TestnetExecutionLog] = []
+        self._execution_log: list[TestnetExecutionLog] = []
 
         # Bestimme effektiven Modus
         if self._env_config.testnet_dry_run:
@@ -235,8 +235,8 @@ class TestnetExchangeOrderExecutor:
     def _check_risk_limits(
         self,
         orders: Sequence[OrderRequest],
-        current_price: Optional[float] = None,
-    ) -> Optional["LiveRiskCheckResult"]:
+        current_price: float | None = None,
+    ) -> LiveRiskCheckResult | None:
         """
         Prueft Orders gegen LiveRiskLimits.
 
@@ -254,7 +254,7 @@ class TestnetExchangeOrderExecutor:
         from src.live.orders import LiveOrderRequest
 
         # Konvertiere OrderRequests zu LiveOrderRequests
-        live_orders: List[LiveOrderRequest] = []
+        live_orders: list[LiveOrderRequest] = []
         for order in orders:
             notional = None
             if current_price and order.quantity:
@@ -276,7 +276,7 @@ class TestnetExchangeOrderExecutor:
     def execute_order(
         self,
         order: OrderRequest,
-        current_price: Optional[float] = None,
+        current_price: float | None = None,
     ) -> OrderExecutionResult:
         """
         Fuehrt eine Order im Testnet aus.
@@ -297,7 +297,7 @@ class TestnetExchangeOrderExecutor:
             EnvironmentNotTestnetError: Wenn nicht im Testnet-Modus
         """
         self._execution_count += 1
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         logger.info(
             f"[TESTNET EXECUTOR] Order #{self._execution_count}: "
@@ -423,8 +423,8 @@ class TestnetExchangeOrderExecutor:
     def execute_orders(
         self,
         orders: Sequence[OrderRequest],
-        current_price: Optional[float] = None,
-    ) -> List[OrderExecutionResult]:
+        current_price: float | None = None,
+    ) -> list[OrderExecutionResult]:
         """
         Fuehrt mehrere Orders im Testnet aus.
 
@@ -448,7 +448,7 @@ class TestnetExchangeOrderExecutor:
                 f"[TESTNET EXECUTOR] Batch Risk-Limits verletzt: {risk_result.reasons}"
             )
             # Alle Orders ablehnen
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             results = []
             for order in orders:
                 self._execution_count += 1
@@ -477,9 +477,9 @@ class TestnetExchangeOrderExecutor:
         order: OrderRequest,
         result: OrderExecutionResult,
         timestamp: datetime,
-        exchange_order_id: Optional[str] = None,
+        exchange_order_id: str | None = None,
         risk_check_passed: bool = True,
-        notes: Optional[str] = None,
+        notes: str | None = None,
     ) -> None:
         """Fuegt einen Eintrag zum Execution-Log hinzu."""
         log_entry = TestnetExecutionLog(
@@ -493,11 +493,11 @@ class TestnetExchangeOrderExecutor:
         )
         self._execution_log.append(log_entry)
 
-    def get_execution_log(self) -> List[TestnetExecutionLog]:
+    def get_execution_log(self) -> list[TestnetExecutionLog]:
         """Gibt eine Kopie des Execution-Logs zurueck."""
         return list(self._execution_log)
 
-    def get_execution_summary(self) -> Dict[str, Any]:
+    def get_execution_summary(self) -> dict[str, Any]:
         """
         Gibt eine Zusammenfassung aller Ausfuehrungen zurueck.
 
@@ -547,9 +547,9 @@ class TestnetExchangeOrderExecutor:
 
 
 def create_testnet_executor_from_config(
-    cfg: "PeakConfig",
-    exchange_client: Optional["KrakenTestnetClient"] = None,
-    risk_limits: Optional["LiveRiskLimits"] = None,
+    cfg: PeakConfig,
+    exchange_client: KrakenTestnetClient | None = None,
+    risk_limits: LiveRiskLimits | None = None,
 ) -> TestnetExchangeOrderExecutor:
     """
     Factory-Funktion fuer TestnetExchangeOrderExecutor aus PeakConfig.
@@ -570,14 +570,12 @@ def create_testnet_executor_from_config(
         >>> cfg = load_config("config/config.toml")
         >>> executor = create_testnet_executor_from_config(cfg)
     """
-    from src.core.peak_config import PeakConfig
     from src.core.environment import get_environment_from_config
-    from src.live.safety import SafetyGuard
-    from src.live.risk_limits import LiveRiskLimits
     from src.exchange.kraken_testnet import (
-        KrakenTestnetClient,
         create_kraken_testnet_client_from_config,
     )
+    from src.live.risk_limits import LiveRiskLimits
+    from src.live.safety import SafetyGuard
 
     # Environment-Config laden
     env_config = get_environment_from_config(cfg)

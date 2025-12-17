@@ -9,8 +9,9 @@ Prüft vor jedem Trade:
 - Max Position Size
 """
 
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
-from typing import Iterable, Sequence, Optional, Union
+
 import numpy as np
 import pandas as pd
 
@@ -46,12 +47,12 @@ class RiskLimits:
         >>> ok = limits.check_position_size(size_nominal=2500, capital=10000, max_pct=25.0)
     """
 
-    def __init__(self, config: Optional[RiskLimitsConfig] = None) -> None:
+    def __init__(self, config: RiskLimitsConfig | None = None) -> None:
         self.config = config or RiskLimitsConfig()
 
     @staticmethod
     def check_drawdown(
-        equity_curve: Union[Sequence[float], pd.Series],
+        equity_curve: Sequence[float] | pd.Series,
         max_dd_pct: float,
     ) -> bool:
         """
@@ -202,10 +203,7 @@ class RiskLimits:
             return False
 
         # 3. Position Size Check
-        if not self.check_position_size(new_position_nominal, capital, self.config.max_position_pct):
-            return False
-
-        return True
+        return self.check_position_size(new_position_nominal, capital, self.config.max_position_pct)
 
 
 # Backwards-Compatibility: Alte Klassen als Aliases
@@ -230,7 +228,7 @@ class RiskLimitChecker:
     DEPRECATED: Nutze stattdessen RiskLimits direkt.
     """
 
-    def __init__(self, config: Optional[RiskLimitsConfig] = None) -> None:
+    def __init__(self, config: RiskLimitsConfig | None = None) -> None:
         # Konvertiere alte Config-Format zu neuem
         if config is None:
             config = RiskLimitsConfig()

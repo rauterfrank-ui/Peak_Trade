@@ -14,8 +14,6 @@ Stand: Dezember 2024
 from __future__ import annotations
 
 import json
-import tempfile
-from pathlib import Path
 
 import pytest
 
@@ -91,7 +89,7 @@ class TestLoadTestHealthProfile:
         assert checks[0].weight == 3
         assert checks[1].id == "fail_check"
         assert checks[1].weight == 2
-        
+
         # Triggers sollten Default-Werte haben (da nicht in Fixture konfiguriert)
         assert triggers.min_total_runs == 0
         assert triggers.max_fail_rate == 1.0
@@ -192,7 +190,7 @@ class TestAggregateHealth:
     def test_all_pass(self):
         """Test: Alle Checks erfolgreich → Health-Score 100."""
         import datetime as dt
-        
+
         results = [
             TestCheckResult(
                 id="check1",
@@ -229,7 +227,7 @@ class TestAggregateHealth:
     def test_mixed_results(self):
         """Test: Gemischte Ergebnisse → Health-Score korrekt berechnet."""
         import datetime as dt
-        
+
         results = [
             TestCheckResult(
                 id="check1",
@@ -374,7 +372,7 @@ class TestReportWriters:
 
         assert md_path.exists()
         content = md_path.read_text()
-        
+
         # Prüfe ob fehlgeschlagener Check detailliert dargestellt wird
         assert "❌ Fehlgeschlagene Checks (Details)" in content
         assert "Failed Test" in content
@@ -453,10 +451,10 @@ class TestHealthHistory:
     def test_append_and_load_history(self, tmp_path):
         """Test: Historie anlegen und laden."""
         import datetime as dt
+
         from src.ops.test_health_history import (
             append_to_history,
             load_history,
-            HealthHistoryEntry,
         )
 
         history_path = tmp_path / "history.json"
@@ -490,6 +488,7 @@ class TestHealthHistory:
     def test_get_history_stats(self, tmp_path):
         """Test: Historie-Statistiken berechnen."""
         import datetime as dt
+
         from src.ops.test_health_history import (
             append_to_history,
             get_history_stats,
@@ -534,6 +533,7 @@ class TestHealthHistory:
     def test_history_filter_by_profile(self, tmp_path):
         """Test: Historie nach Profil filtern."""
         import datetime as dt
+
         from src.ops.test_health_history import (
             append_to_history,
             load_history,

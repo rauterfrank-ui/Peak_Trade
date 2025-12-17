@@ -10,8 +10,6 @@ Testet:
 """
 from __future__ import annotations
 
-from typing import List
-
 import numpy as np
 import pandas as pd
 import pytest
@@ -278,7 +276,7 @@ class TestBasicConstruction:
 
         feed = OfflineRealtimeFeed.from_ohlcv(ohlcv, config)
 
-        ticks: List[SyntheticTick] = []
+        ticks: list[SyntheticTick] = []
         for tick in feed:
             ticks.append(tick)
             if len(ticks) >= 10:
@@ -389,7 +387,7 @@ class TestRegimeSwitching:
         feed = OfflineRealtimeFeed.from_ohlcv(ohlcv, config)
 
         # Sammle alle Ticks (begrenzt auf 5000)
-        ticks: List[SyntheticTick] = []
+        ticks: list[SyntheticTick] = []
         for tick in feed:
             ticks.append(tick)
             if len(ticks) >= 5000:
@@ -438,7 +436,7 @@ class TestVolatilityModel:
         ticks1 = [next(feed1) for _ in range(50)]
         ticks2 = [next(feed2) for _ in range(50)]
 
-        for t1, t2 in zip(ticks1, ticks2):
+        for t1, t2 in zip(ticks1, ticks2, strict=False):
             assert t1.price == t2.price, "Preise sollten identisch sein bei gleichem Seed"
             assert t1.regime_id == t2.regime_id, "Regimes sollten identisch sein"
 
@@ -458,7 +456,7 @@ class TestResetAndIteration:
         second_ticks = [next(feed) for _ in range(10)]
 
         # Nach Reset sollte dieselbe Sequenz kommen (gleicher Seed im Vol-Model)
-        for t1, t2 in zip(first_ticks, second_ticks):
+        for t1, t2 in zip(first_ticks, second_ticks, strict=False):
             assert t1.timestamp == t2.timestamp
 
     def test_total_ticks_property(self):

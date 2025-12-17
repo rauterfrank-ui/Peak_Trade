@@ -20,17 +20,15 @@ from __future__ import annotations
 import logging
 import threading
 import uuid
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from dataclasses import dataclass
+from datetime import UTC, datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ..core.peak_config import PeakConfig
-    from ..strategies.base import BaseStrategy
+    from .run_logging import LiveRunLogger
     from .shadow_session import ShadowPaperSession
-    from .run_logging import LiveRunLogger, LiveRunEvent
 
 logger = logging.getLogger(__name__)
 
@@ -64,14 +62,14 @@ class RunInfo:
     timeframe: str
     state: RunState
     started_at: datetime
-    stopped_at: Optional[datetime] = None
-    last_event_time: Optional[datetime] = None
-    last_error: Optional[str] = None
+    stopped_at: datetime | None = None
+    last_event_time: datetime | None = None
+    last_error: str | None = None
     notes: str = ""
-    session: Optional[Any] = None  # ShadowPaperSession oder Testnet-Session
-    run_logger: Optional["LiveRunLogger"] = None
+    session: Any | None = None  # ShadowPaperSession oder Testnet-Session
+    run_logger: LiveRunLogger | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "run_id": self.run_id,
@@ -139,7 +137,7 @@ class TestnetOrchestrator:
         >>> orchestrator.stop_run(run_id)
     """
 
-    def __init__(self, config: "PeakConfig") -> None:
+    def __init__(self, config: PeakConfig) -> None:
         """
         Initialisiert den Orchestrator.
 
@@ -147,7 +145,7 @@ class TestnetOrchestrator:
             config: PeakConfig-Instanz
         """
         self._config = config
-        self._runs: Dict[str, RunInfo] = {}
+        self._runs: dict[str, RunInfo] = {}
         self._lock = threading.RLock()
 
         logger.info("[ORCHESTRATOR] Initialisiert")
@@ -163,7 +161,7 @@ class TestnetOrchestrator:
             ReadinessCheckFailedError: Wenn Readiness-Checks fehlschlagen
             InvalidModeError: Wenn Mode ungültig ist
         """
-        from ..core.environment import get_environment_from_config, TradingEnvironment
+        from ..core.environment import TradingEnvironment, get_environment_from_config
         from .safety import SafetyGuard
 
         # Mode-Validierung
@@ -178,7 +176,7 @@ class TestnetOrchestrator:
 
         # Environment-Validierung
         env_config = get_environment_from_config(self._config)
-        
+
         if mode == "shadow":
             # Shadow erfordert PAPER-Mode
             if env_config.environment != TradingEnvironment.PAPER:
@@ -195,8 +193,8 @@ class TestnetOrchestrator:
                 )
 
         # Safety-Guard prüfen
-        safety_guard = SafetyGuard(env_config=env_config)
-        
+        SafetyGuard(env_config=env_config)
+
         # Sicherstellen, dass kein Live-Mode aktiv ist
         if env_config.is_live:
             raise ReadinessCheckFailedError(
@@ -221,8 +219,8 @@ class TestnetOrchestrator:
         symbol: str,
         timeframe: str,
         run_id: str,
-        run_logger: Optional["LiveRunLogger"] = None,
-    ) -> "ShadowPaperSession":
+        run_logger: LiveRunLogger | None = None,
+    ) -> ShadowPaperSession:
         """
         Baut eine ShadowPaperSession auf.
 
@@ -238,12 +236,12 @@ class TestnetOrchestrator:
         """
         from ..core.environment import get_environment_from_config
         from ..data.kraken_live import (
-            ShadowPaperConfig,
             LiveExchangeConfig,
+            ShadowPaperConfig,
             create_kraken_source_from_config,
         )
-        from ..strategies.registry import create_strategy_from_config
         from ..execution.pipeline import ExecutionPipeline
+        from ..strategies.registry import create_strategy_from_config
         from .risk_limits import LiveRiskLimits
         from .shadow_session import ShadowPaperSession
 
@@ -323,7 +321,7 @@ class TestnetOrchestrator:
             self._ensure_readiness("shadow")
 
             # Run-ID generieren
-            run_id = f"shadow_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+            run_id = f"shadow_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
 
             try:
                 # Run-Logger erstellen
@@ -354,7 +352,7 @@ class TestnetOrchestrator:
                     symbol=symbol,
                     timeframe=timeframe,
                     state=RunState.PENDING,
-                    started_at=datetime.now(timezone.utc),
+                    started_at=datetime.now(UTC),
                     notes=notes,
                     session=session,
                     run_logger=run_logger,
@@ -373,12 +371,12 @@ class TestnetOrchestrator:
                     except KeyboardInterrupt:
                         logger.info(f"[ORCHESTRATOR] Shadow-Run gestoppt (KeyboardInterrupt): {run_id}")
                         run_info.state = RunState.STOPPED
-                        run_info.stopped_at = datetime.now(timezone.utc)
+                        run_info.stopped_at = datetime.now(UTC)
                     except Exception as e:
                         logger.error(f"[ORCHESTRATOR] Shadow-Run Fehler: {run_id}, {e}")
                         run_info.state = RunState.ERROR
                         run_info.last_error = str(e)
-                        run_info.stopped_at = datetime.now(timezone.utc)
+                        run_info.stopped_at = datetime.now(UTC)
                     finally:
                         if run_info.run_logger:
                             run_info.run_logger.finalize()
@@ -425,7 +423,7 @@ class TestnetOrchestrator:
             self._ensure_readiness("testnet")
 
             # Run-ID generieren
-            run_id = f"testnet_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+            run_id = f"testnet_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
 
             try:
                 # Run-Logger erstellen
@@ -457,7 +455,7 @@ class TestnetOrchestrator:
                     symbol=symbol,
                     timeframe=timeframe,
                     state=RunState.PENDING,
-                    started_at=datetime.now(timezone.utc),
+                    started_at=datetime.now(UTC),
                     notes=notes,
                     session=session,
                     run_logger=run_logger,
@@ -476,12 +474,12 @@ class TestnetOrchestrator:
                     except KeyboardInterrupt:
                         logger.info(f"[ORCHESTRATOR] Testnet-Run gestoppt (KeyboardInterrupt): {run_id}")
                         run_info.state = RunState.STOPPED
-                        run_info.stopped_at = datetime.now(timezone.utc)
+                        run_info.stopped_at = datetime.now(UTC)
                     except Exception as e:
                         logger.error(f"[ORCHESTRATOR] Testnet-Run Fehler: {run_id}, {e}")
                         run_info.state = RunState.ERROR
                         run_info.last_error = str(e)
-                        run_info.stopped_at = datetime.now(timezone.utc)
+                        run_info.stopped_at = datetime.now(UTC)
                     finally:
                         if run_info.run_logger:
                             run_info.run_logger.finalize()
@@ -530,7 +528,7 @@ class TestnetOrchestrator:
                     run_info.run_logger.finalize()
 
                 run_info.state = RunState.STOPPED
-                run_info.stopped_at = datetime.now(timezone.utc)
+                run_info.stopped_at = datetime.now(UTC)
 
                 logger.info(f"[ORCHESTRATOR] Run gestoppt: {run_id}")
 
@@ -539,7 +537,7 @@ class TestnetOrchestrator:
                 run_info.state = RunState.ERROR
                 run_info.last_error = str(e)
 
-    def get_status(self, run_id: Optional[str] = None) -> RunInfo | List[RunInfo]:
+    def get_status(self, run_id: str | None = None) -> RunInfo | list[RunInfo]:
         """
         Gibt Status eines Runs oder aller Runs zurück.
 
@@ -565,7 +563,7 @@ class TestnetOrchestrator:
         self,
         run_id: str,
         limit: int = 100,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Gibt die letzten Events eines Runs zurück.
 

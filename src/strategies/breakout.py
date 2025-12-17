@@ -17,10 +17,9 @@ Breakouts aus Konsolidierungsphasen.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -80,20 +79,20 @@ class BreakoutStrategy(BaseStrategy):
     def __init__(
         self,
         lookback_breakout: int = 20,
-        lookback_high: Optional[int] = None,
-        lookback_low: Optional[int] = None,
+        lookback_high: int | None = None,
+        lookback_low: int | None = None,
         atr_lookback: int = 14,
-        atr_multiplier: Optional[float] = None,
+        atr_multiplier: float | None = None,
         use_atr_filter: bool = False,
         exit_on_opposite_breakout: bool = True,
         risk_mode: str = "symmetric",
-        side: Optional[str] = None,
-        stop_loss_pct: Optional[float] = None,
-        take_profit_pct: Optional[float] = None,
-        trailing_stop_pct: Optional[float] = None,
+        side: str | None = None,
+        stop_loss_pct: float | None = None,
+        take_profit_pct: float | None = None,
+        trailing_stop_pct: float | None = None,
         price_col: str = "close",
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Breakout Strategy.
@@ -115,7 +114,7 @@ class BreakoutStrategy(BaseStrategy):
             config: Optional Config-Dict
             metadata: Optional Metadata
         """
-        base_cfg: Dict[str, Any] = {
+        base_cfg: dict[str, Any] = {
             "lookback_breakout": lookback_breakout,
             "lookback_high": lookback_high,
             "lookback_low": lookback_low,
@@ -157,7 +156,7 @@ class BreakoutStrategy(BaseStrategy):
         self.take_profit_pct = self.config.get("take_profit_pct")
         self.trailing_stop_pct = self.config.get("trailing_stop_pct")
         self.price_col = str(self.config.get("price_col", "close"))
-        
+
         # Legacy: side -> risk_mode Mapping
         legacy_side = self.config.get("side")
         if legacy_side and self.risk_mode == "symmetric":
@@ -174,7 +173,7 @@ class BreakoutStrategy(BaseStrategy):
             self.lookback_high = self.lookback_breakout
         else:
             self.lookback_high = int(self.lookback_high)
-        
+
         if self.lookback_low is None:
             self.lookback_low = self.lookback_breakout
         else:
@@ -237,7 +236,7 @@ class BreakoutStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.breakout",
-    ) -> "BreakoutStrategy":
+    ) -> BreakoutStrategy:
         """
         Fabrikmethode für Core-Config.
 
@@ -261,7 +260,7 @@ class BreakoutStrategy(BaseStrategy):
         take_profit = cfg.get(f"{section}.take_profit_pct", None)
         trailing = cfg.get(f"{section}.trailing_stop_pct", None)
         price = cfg.get(f"{section}.price_col", "close")
-        
+
         # Legacy: side -> risk_mode
         if risk_mode is None:
             if side == "long":
@@ -306,7 +305,7 @@ class BreakoutStrategy(BaseStrategy):
                 window=self.atr_lookback,
                 min_periods=self.atr_lookback
             ).mean()
-        
+
         high = data["high"]
         low = data["low"]
         close = data[self.price_col]
@@ -396,7 +395,7 @@ class BreakoutStrategy(BaseStrategy):
 
         # Breakout-Levels berechnen
         upper_level, lower_level = self._compute_breakout_levels(data)
-        
+
         # ATR für Filter berechnen (falls aktiviert)
         atr = None
         atr_baseline = None
@@ -564,7 +563,7 @@ class BreakoutStrategy(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 
@@ -579,9 +578,9 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """
     config = {
         "lookback_breakout": params.get("lookback_breakout", 20),
-        "stop_loss_pct": params.get("stop_loss_pct", None),
-        "take_profit_pct": params.get("take_profit_pct", None),
-        "trailing_stop_pct": params.get("trailing_stop_pct", None),
+        "stop_loss_pct": params.get("stop_loss_pct"),
+        "take_profit_pct": params.get("take_profit_pct"),
+        "trailing_stop_pct": params.get("trailing_stop_pct"),
         "side": params.get("side", "both"),
         "price_col": params.get("price_col", "close"),
     }
@@ -590,7 +589,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return strategy.generate_signals(df)
 
 
-def get_strategy_description(params: Dict) -> str:
+def get_strategy_description(params: dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
     sl = params.get("stop_loss_pct")
     tp = params.get("take_profit_pct")

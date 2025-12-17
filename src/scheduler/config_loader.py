@@ -7,7 +7,6 @@ Lädt Job-Definitionen aus TOML-Dateien.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List
 
 from .models import JobDefinition, JobSchedule
 
@@ -18,7 +17,7 @@ except ImportError:
     import tomli as tomllib
 
 
-def load_jobs_from_toml(path: Path) -> List[JobDefinition]:
+def load_jobs_from_toml(path: Path) -> list[JobDefinition]:
     """
     Lädt Job-Definitionen aus einer TOML-Datei.
 
@@ -49,7 +48,7 @@ def load_jobs_from_toml(path: Path) -> List[JobDefinition]:
     with path.open("rb") as f:
         data = tomllib.load(f)
 
-    jobs: List[JobDefinition] = []
+    jobs: list[JobDefinition] = []
 
     for raw in data.get("job", []):
         # Schedule aufbauen
@@ -76,7 +75,7 @@ def load_jobs_from_toml(path: Path) -> List[JobDefinition]:
     return jobs
 
 
-def validate_job_config(job: JobDefinition) -> List[str]:
+def validate_job_config(job: JobDefinition) -> list[str]:
     """
     Validiert eine Job-Definition und gibt Warnungen zurück.
 
@@ -86,7 +85,7 @@ def validate_job_config(job: JobDefinition) -> List[str]:
     Returns:
         Liste von Warnungen (leer wenn alles ok)
     """
-    warnings: List[str] = []
+    warnings: list[str] = []
 
     # Name prüfen
     if not job.name or job.name == "unnamed_job":

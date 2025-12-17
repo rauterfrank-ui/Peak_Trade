@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # tests/test_execution_pipeline_governance.py
 """
 Peak_Trade: Tests fuer ExecutionPipeline Phase 16A V2 (Governance-aware)
@@ -17,11 +16,9 @@ WICHTIG: Keine echten Orders - alles Paper/Sandbox.
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import List, Optional
 from dataclasses import dataclass
-from unittest.mock import patch, MagicMock
+from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -40,14 +37,14 @@ if str(ROOT_DIR) not in sys.path:
 class FakeLiveRiskCheckResult:
     """Fake LiveRiskCheckResult fuer Tests."""
     allowed: bool
-    reasons: List[str]
+    reasons: list[str]
     metrics: dict
 
 
 class FakeSafetyGuard:
     """Fake SafetyGuard fuer Tests."""
 
-    def __init__(self, allow_orders: bool = True, raise_exception: Optional[Exception] = None):
+    def __init__(self, allow_orders: bool = True, raise_exception: Exception | None = None):
         self.allow_orders = allow_orders
         self.raise_exception = raise_exception
         self.called = False
@@ -92,7 +89,7 @@ class FakeRunLogger:
     """Fake LiveRunLogger fuer Tests."""
 
     def __init__(self):
-        self.events: List[dict] = []
+        self.events: list[dict] = []
         self.called = False
 
     def log_event(self, event) -> None:
@@ -116,8 +113,8 @@ class TestExecutionPipelineGovernance:
         Akzeptanzkriterium: Bei env="live" wird eine Exception geworfen,
         keine Orders werden ausgefuehrt.
         """
-        from src.execution import ExecutionPipeline, OrderIntent, LiveExecutionLockedError
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution import ExecutionPipeline, LiveExecutionLockedError, OrderIntent
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # LIVE-Mode Environment
@@ -146,8 +143,8 @@ class TestExecutionPipelineGovernance:
         """
         env="live" + raise_on_governance_violation=False → ExecutionResult mit status=BLOCKED_BY_GOVERNANCE.
         """
-        from src.execution import ExecutionPipeline, OrderIntent, ExecutionStatus
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution import ExecutionPipeline, ExecutionStatus, OrderIntent
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # LIVE-Mode Environment
@@ -180,8 +177,8 @@ class TestExecutionPipelineGovernance:
         """
         Governance-Modul wird wirklich aufgerufen (get_governance_status("live_order_execution")).
         """
-        from src.execution import ExecutionPipeline, OrderIntent
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution import ExecutionPipeline, OrderIntent
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # LIVE-Mode Environment
@@ -213,8 +210,8 @@ class TestExecutionPipelineGovernance:
         """
         env="paper" + Risk ok → Executor wird aufgerufen, Orders werden ausgefuehrt.
         """
-        from src.execution import ExecutionPipeline, OrderIntent, ExecutionStatus
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution import ExecutionPipeline, ExecutionStatus, OrderIntent
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # PAPER-Mode Environment
@@ -251,9 +248,9 @@ class TestExecutionPipelineGovernance:
         """
         env="shadow" + Risk ok → ShadowOrderExecutor wird aufgerufen.
         """
-        from src.execution import ExecutionPipeline, OrderIntent, ExecutionStatus
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
+        from src.execution import ExecutionPipeline, ExecutionStatus, OrderIntent
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         # PAPER-Mode mit Shadow-Executor
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
@@ -286,8 +283,8 @@ class TestExecutionPipelineGovernance:
         """
         env="testnet" + Risk ok → Orders werden im Testnet-Modus ausgefuehrt.
         """
-        from src.execution import ExecutionPipeline, OrderIntent, ExecutionStatus
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution import ExecutionPipeline, ExecutionStatus, OrderIntent
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # TESTNET-Mode Environment
@@ -322,8 +319,8 @@ class TestExecutionPipelineGovernance:
         """
         Risk-Check fehlgeschlagen → keine Ausfuehrung, Result markiert als blocked_by_risk.
         """
-        from src.execution import ExecutionPipeline, OrderIntent, ExecutionStatus
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution import ExecutionPipeline, ExecutionStatus, OrderIntent
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # PAPER-Mode, aber Risk-Limits blockieren
@@ -359,10 +356,9 @@ class TestExecutionPipelineGovernance:
         """
         Bei env="live" wird der Executor NICHT aufgerufen.
         """
-        from src.execution import ExecutionPipeline, OrderIntent
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution import ExecutionPipeline, OrderIntent
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
-        from unittest.mock import MagicMock
 
         # LIVE-Mode Environment
         env_config = EnvironmentConfig(environment=TradingEnvironment.LIVE)
@@ -422,8 +418,8 @@ class TestExecutionPipelineGovernance:
         """
         ExecutionResult enthaelt governance_status.
         """
-        from src.execution import ExecutionPipeline, OrderIntent
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution import ExecutionPipeline, OrderIntent
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # PAPER-Mode
@@ -455,7 +451,7 @@ class TestExecutionPipelineGovernance:
         """
         Ungueltiger OrderIntent (quantity <= 0) liefert INVALID-Result.
         """
-        from src.execution import ExecutionPipeline, OrderIntent, ExecutionStatus
+        from src.execution import ExecutionPipeline, ExecutionStatus, OrderIntent
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         executor = PaperOrderExecutor(PaperMarketContext(prices={"BTC/EUR": 50000.0}))
@@ -482,10 +478,10 @@ class TestExecuteWithSafetyGovernance:
         """
         execute_with_safety() prueft auch Governance (Phase 16A V2).
         """
-        from src.execution import ExecutionPipeline, ExecutionStatus
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.execution import ExecutionPipeline, ExecutionStatus
         from src.orders.base import OrderRequest
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # LIVE-Mode Environment
         env_config = EnvironmentConfig(environment=TradingEnvironment.LIVE)
@@ -508,10 +504,10 @@ class TestExecuteWithSafetyGovernance:
         """
         execute_with_safety() setzt environment im Result.
         """
-        from src.execution import ExecutionPipeline, ExecutionStatus
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.execution import ExecutionPipeline, ExecutionStatus
         from src.orders.base import OrderRequest
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # PAPER-Mode Environment
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)

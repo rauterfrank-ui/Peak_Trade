@@ -10,25 +10,22 @@ Testet:
 """
 from __future__ import annotations
 
-import json
 import tempfile
-from datetime import date, datetime, timezone
+from datetime import date
 from pathlib import Path
 
 import pytest
 
+from src.core.peak_config import load_config
 from src.live.testnet_limits import (
-    TestnetRunLimits,
     TestnetDailyLimits,
+    TestnetLimitsController,
+    TestnetRunLimits,
     TestnetSymbolPolicy,
     TestnetUsageState,
     TestnetUsageStore,
-    TestnetLimitsController,
-    TestnetCheckResult,
     load_testnet_limits_from_config,
 )
-from src.core.peak_config import load_config
-
 
 # =============================================================================
 # TestnetRunLimits Tests

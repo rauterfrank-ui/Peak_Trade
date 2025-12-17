@@ -26,11 +26,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 import numpy as np
 import pandas as pd
-
 
 # =============================================================================
 # VOL REGIME ENUM
@@ -97,7 +96,7 @@ class ElKarouiVolConfig:
     smoothing_periods: int = 5
 
     # Risk-Multiplier pro Regime (für Position-Sizing)
-    regime_multipliers: Dict[str, float] = field(
+    regime_multipliers: dict[str, float] = field(
         default_factory=lambda: {
             "low": 1.0,      # Volles Exposure bei niedriger Vol
             "medium": 0.75,  # Reduziertes Exposure bei mittlerer Vol
@@ -133,7 +132,7 @@ class ElKarouiVolConfig:
             )
 
     @classmethod
-    def default(cls) -> "ElKarouiVolConfig":
+    def default(cls) -> ElKarouiVolConfig:
         """
         Erstellt eine Standardkonfiguration.
 
@@ -143,7 +142,7 @@ class ElKarouiVolConfig:
         return cls()
 
     @classmethod
-    def conservative(cls) -> "ElKarouiVolConfig":
+    def conservative(cls) -> ElKarouiVolConfig:
         """
         Erstellt eine konservative Konfiguration (engere Schwellen).
 
@@ -163,7 +162,7 @@ class ElKarouiVolConfig:
         )
 
     @classmethod
-    def aggressive(cls) -> "ElKarouiVolConfig":
+    def aggressive(cls) -> ElKarouiVolConfig:
         """
         Erstellt eine aggressive Konfiguration (weitere Schwellen).
 
@@ -182,7 +181,7 @@ class ElKarouiVolConfig:
             },
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "vol_window": self.vol_window,
@@ -243,7 +242,7 @@ class ElKarouiVolModel:
         self.config = config
 
     @classmethod
-    def from_default(cls) -> "ElKarouiVolModel":
+    def from_default(cls) -> ElKarouiVolModel:
         """
         Erstellt ein Modell mit Standardkonfiguration.
 
@@ -253,7 +252,7 @@ class ElKarouiVolModel:
         return cls(ElKarouiVolConfig.default())
 
     @classmethod
-    def from_config_dict(cls, config_dict: Dict[str, Any]) -> "ElKarouiVolModel":
+    def from_config_dict(cls, config_dict: dict[str, Any]) -> ElKarouiVolModel:
         """
         Erstellt ein Modell aus einem Config-Dictionary.
 
@@ -532,7 +531,7 @@ class ElKarouiVolModel:
     def get_vol_analysis(
         self,
         returns: pd.Series,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Gibt eine umfassende Volatilitätsanalyse zurück.
 
@@ -665,12 +664,12 @@ def get_vol_scaling_factor(
 # =============================================================================
 
 __all__ = [
-    # Enum
-    "VolRegime",
     # Config
     "ElKarouiVolConfig",
     # Model
     "ElKarouiVolModel",
+    # Enum
+    "VolRegime",
     # Convenience Functions
     "get_vol_regime",
     "get_vol_scaling_factor",

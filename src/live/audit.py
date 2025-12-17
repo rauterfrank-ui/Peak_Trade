@@ -19,13 +19,13 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 from src.core.environment import (
+    LIVE_CONFIRM_TOKEN,
     EnvironmentConfig,
     TradingEnvironment,
-    LIVE_CONFIRM_TOKEN,
 )
 from src.live.drills import get_default_live_drill_scenarios
 from src.live.risk_limits import LiveRiskLimits
@@ -76,9 +76,9 @@ class LiveAuditRiskState:
         limits_source: Quelle der Limits (z.B. "config.toml")
     """
 
-    max_live_notional_per_order: Optional[float]
-    max_live_notional_total: Optional[float]
-    live_trade_min_size: Optional[float]
+    max_live_notional_per_order: float | None
+    max_live_notional_total: float | None
+    live_trade_min_size: float | None
     limits_enabled: bool
     limits_source: str = "config.toml"
 
@@ -94,7 +94,7 @@ class LiveAuditDrillSummary:
         drills_executable: Ob Drills ausführbar sind (Meta-Info)
     """
 
-    available_scenarios: List[str]
+    available_scenarios: list[str]
     num_scenarios: int
     drills_executable: bool = True
 
@@ -111,7 +111,7 @@ class LiveAuditSafetySummary:
     """
 
     is_live_execution_allowed: bool
-    reasons: List[str]
+    reasons: list[str]
     safety_guarantee_v1_0: str = "Dry-Run only, no real orders possible (v1.0)"
 
 
@@ -131,12 +131,12 @@ class LiveAuditSnapshot:
     """
 
     timestamp_utc: str
-    environment_id: Optional[str] = None
+    environment_id: str | None = None
     gating: LiveAuditGatingState = None  # type: ignore
     risk: LiveAuditRiskState = None  # type: ignore
     drills: LiveAuditDrillSummary = None  # type: ignore
     safety: LiveAuditSafetySummary = None  # type: ignore
-    versions: Dict[str, str] = field(default_factory=dict)
+    versions: dict[str, str] = field(default_factory=dict)
 
 
 # =============================================================================
@@ -147,8 +147,8 @@ class LiveAuditSnapshot:
 def build_live_audit_snapshot(
     env_config: EnvironmentConfig,
     safety_guard: SafetyGuard,
-    live_risk_limits: Optional[LiveRiskLimits] = None,
-    environment_id: Optional[str] = None,
+    live_risk_limits: LiveRiskLimits | None = None,
+    environment_id: str | None = None,
 ) -> LiveAuditSnapshot:
     """
     Erstellt einen Live-Audit-Snapshot.
@@ -167,7 +167,7 @@ def build_live_audit_snapshot(
         Token-Werte werden NICHT exportiert (nur Boolean-Präsenz).
     """
     # Timestamp
-    timestamp_utc = datetime.now(timezone.utc).isoformat()
+    timestamp_utc = datetime.now(UTC).isoformat()
 
     # Gating-Status
     effective_mode = safety_guard.get_effective_mode()
@@ -258,7 +258,7 @@ def build_live_audit_snapshot(
     )
 
 
-def live_audit_snapshot_to_dict(snapshot: LiveAuditSnapshot) -> Dict[str, Any]:
+def live_audit_snapshot_to_dict(snapshot: LiveAuditSnapshot) -> dict[str, Any]:
     """
     Konvertiert LiveAuditSnapshot zu einem JSON-serialisierbaren Dict.
 
@@ -322,7 +322,7 @@ def live_audit_snapshot_to_markdown(snapshot: LiveAuditSnapshot) -> str:
     # Header
     lines.append("# Peak_Trade - Live Audit Snapshot")
     lines.append("")
-    lines.append(f"**Phase 71-74, v1.0**")
+    lines.append("**Phase 71-74, v1.0**")
     lines.append(f"**Timestamp:** {snapshot.timestamp_utc} (UTC)")
     if snapshot.environment_id:
         lines.append(f"**Environment ID:** {snapshot.environment_id}")

@@ -39,12 +39,12 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import threading
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -73,14 +73,14 @@ class StoredAlert:
     severity: str  # "INFO", "WARN", "CRITICAL"
     category: str  # "RISK", "EXECUTION", "SYSTEM"
     source: str
-    session_id: Optional[str]
+    session_id: str | None
     timestamp: datetime
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict[str, Any] = field(default_factory=dict)
 
     # Zusätzliche Felder für UI
-    stored_at: Optional[datetime] = None
+    stored_at: datetime | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dict für JSON-Serialisierung."""
         return {
             "id": self.id,
@@ -96,13 +96,13 @@ class StoredAlert:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "StoredAlert":
+    def from_dict(cls, data: dict[str, Any]) -> StoredAlert:
         """Erstellt StoredAlert aus Dict."""
         timestamp = data.get("timestamp")
         if isinstance(timestamp, str):
             timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
         elif timestamp is None:
-            timestamp = datetime.now(timezone.utc)
+            timestamp = datetime.now(UTC)
 
         stored_at = data.get("stored_at")
         if isinstance(stored_at, str):
@@ -182,7 +182,7 @@ class AlertStorage:
         date_str = date.strftime("%Y-%m-%d")
         return self._storage_dir / f"alerts_{date_str}.jsonl"
 
-    def _generate_alert_id(self, alert_data: Dict[str, Any]) -> str:
+    def _generate_alert_id(self, alert_data: dict[str, Any]) -> str:
         """Generiert eine eindeutige Alert-ID."""
         import hashlib
 
@@ -196,7 +196,7 @@ class AlertStorage:
         hash_digest = hashlib.sha256(hash_input.encode()).hexdigest()[:12]
         return f"alert_{hash_digest}"
 
-    def store(self, alert: Any) -> Optional[str]:
+    def store(self, alert: Any) -> str | None:
         """
         Speichert einen Alert.
 
@@ -221,21 +221,20 @@ class AlertStorage:
             if isinstance(timestamp, str):
                 timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
             elif timestamp is None:
-                timestamp = datetime.now(timezone.utc)
+                timestamp = datetime.now(UTC)
 
             # ID generieren
             alert_id = self._generate_alert_id(alert_data)
             alert_data["id"] = alert_id
-            alert_data["stored_at"] = datetime.now(timezone.utc).isoformat()
+            alert_data["stored_at"] = datetime.now(UTC).isoformat()
 
             # Dateipfad bestimmen
             file_path = self._get_file_path(timestamp)
 
             # Thread-safe schreiben
-            with self._write_lock:
-                with open(file_path, "a", encoding="utf-8") as f:
-                    json_line = json.dumps(alert_data, ensure_ascii=False, default=str)
-                    f.write(json_line + "\n")
+            with self._write_lock, open(file_path, "a", encoding="utf-8") as f:
+                json_line = json.dumps(alert_data, ensure_ascii=False, default=str)
+                f.write(json_line + "\n")
 
             self._logger.debug(f"Alert stored: {alert_id} → {file_path.name}")
             return alert_id
@@ -247,13 +246,13 @@ class AlertStorage:
     def list_alerts(
         self,
         limit: int = 100,
-        hours: Optional[int] = None,
-        since: Optional[datetime] = None,
-        severity: Optional[Sequence[str]] = None,
-        category: Optional[Sequence[str]] = None,
-        session_id: Optional[str] = None,
-        source: Optional[str] = None,
-    ) -> List[StoredAlert]:
+        hours: int | None = None,
+        since: datetime | None = None,
+        severity: Sequence[str] | None = None,
+        category: Sequence[str] | None = None,
+        session_id: str | None = None,
+        source: str | None = None,
+    ) -> list[StoredAlert]:
         """
         Liest Alerts mit optionalen Filtern.
 
@@ -273,7 +272,7 @@ class AlertStorage:
         limit = min(limit, self._max_alerts_per_query)
 
         # Zeitfenster bestimmen
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         if hours is not None:
             since = now - timedelta(hours=hours)
         elif since is None:
@@ -291,7 +290,7 @@ class AlertStorage:
         # Relevante Dateien finden (neueste zuerst)
         relevant_files = self._get_relevant_files(since, now)
 
-        alerts: List[StoredAlert] = []
+        alerts: list[StoredAlert] = []
 
         for file_path in relevant_files:
             if len(alerts) >= limit:
@@ -316,14 +315,14 @@ class AlertStorage:
 
     def _get_relevant_files(
         self, since: datetime, until: datetime
-    ) -> List[Path]:
+    ) -> list[Path]:
         """
         Findet relevante Alert-Dateien für einen Zeitraum.
 
         Returns:
             Liste von Dateipfaden (neueste zuerst)
         """
-        files: List[Path] = []
+        files: list[Path] = []
 
         if not self._storage_dir.exists():
             return files
@@ -334,7 +333,7 @@ class AlertStorage:
             try:
                 date_str = file_path.stem.replace("alerts_", "")
                 file_date = datetime.strptime(date_str, "%Y-%m-%d").replace(
-                    tzinfo=timezone.utc
+                    tzinfo=UTC
                 )
 
                 # Prüfe ob File im relevanten Zeitraum
@@ -350,24 +349,24 @@ class AlertStorage:
     def _read_alerts_from_file(
         self,
         file_path: Path,
-        since: Optional[datetime] = None,
-        severity: Optional[Sequence[str]] = None,
-        category: Optional[Sequence[str]] = None,
-        session_id: Optional[str] = None,
-        source: Optional[str] = None,
-    ) -> List[StoredAlert]:
+        since: datetime | None = None,
+        severity: Sequence[str] | None = None,
+        category: Sequence[str] | None = None,
+        session_id: str | None = None,
+        source: str | None = None,
+    ) -> list[StoredAlert]:
         """
         Liest und filtert Alerts aus einer Datei.
 
         Returns:
             Liste von StoredAlert-Objekten
         """
-        alerts: List[StoredAlert] = []
+        alerts: list[StoredAlert] = []
 
         if not file_path.exists():
             return alerts
 
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -397,7 +396,7 @@ class AlertStorage:
 
         return alerts
 
-    def get_stats(self, hours: int = 24) -> Dict[str, Any]:
+    def get_stats(self, hours: int = 24) -> dict[str, Any]:
         """
         Berechnet Statistiken über Alerts.
 
@@ -410,13 +409,13 @@ class AlertStorage:
         alerts = self.list_alerts(limit=self._max_alerts_per_query, hours=hours)
 
         # Gruppierung nach Severity
-        by_severity: Dict[str, int] = {"INFO": 0, "WARN": 0, "CRITICAL": 0}
+        by_severity: dict[str, int] = {"INFO": 0, "WARN": 0, "CRITICAL": 0}
         for alert in alerts:
             if alert.severity in by_severity:
                 by_severity[alert.severity] += 1
 
         # Gruppierung nach Category
-        by_category: Dict[str, int] = {"RISK": 0, "EXECUTION": 0, "SYSTEM": 0}
+        by_category: dict[str, int] = {"RISK": 0, "EXECUTION": 0, "SYSTEM": 0}
         for alert in alerts:
             if alert.category in by_category:
                 by_category[alert.category] += 1
@@ -450,14 +449,14 @@ class AlertStorage:
         if not self._storage_dir.exists():
             return 0
 
-        cutoff = datetime.now(timezone.utc) - timedelta(days=self._max_age_days)
+        cutoff = datetime.now(UTC) - timedelta(days=self._max_age_days)
         deleted = 0
 
         for file_path in self._storage_dir.glob("alerts_*.jsonl"):
             try:
                 date_str = file_path.stem.replace("alerts_", "")
                 file_date = datetime.strptime(date_str, "%Y-%m-%d").replace(
-                    tzinfo=timezone.utc
+                    tzinfo=UTC
                 )
 
                 if file_date < cutoff:
@@ -476,12 +475,12 @@ class AlertStorage:
 # =============================================================================
 
 
-_default_storage: Optional[AlertStorage] = None
+_default_storage: AlertStorage | None = None
 _storage_lock = threading.Lock()
 
 
 def get_default_alert_storage(
-    storage_dir: Optional[Path] = None,
+    storage_dir: Path | None = None,
 ) -> AlertStorage:
     """
     Gibt die Default-AlertStorage-Instanz zurück (Singleton).
@@ -518,7 +517,7 @@ def reset_default_storage() -> None:
 # =============================================================================
 
 
-def store_alert(alert: Any) -> Optional[str]:
+def store_alert(alert: Any) -> str | None:
     """
     Convenience-Funktion zum Speichern eines Alerts.
 
@@ -535,9 +534,9 @@ def store_alert(alert: Any) -> Optional[str]:
 def list_recent_alerts(
     limit: int = 100,
     hours: int = 24,
-    severity: Optional[Sequence[str]] = None,
-    category: Optional[Sequence[str]] = None,
-) -> List[StoredAlert]:
+    severity: Sequence[str] | None = None,
+    category: Sequence[str] | None = None,
+) -> list[StoredAlert]:
     """
     Convenience-Funktion zum Abrufen von Alerts.
 
@@ -559,7 +558,7 @@ def list_recent_alerts(
     )
 
 
-def get_alert_stats(hours: int = 24) -> Dict[str, Any]:
+def get_alert_stats(hours: int = 24) -> dict[str, Any]:
     """
     Convenience-Funktion für Alert-Statistiken.
 
@@ -578,16 +577,16 @@ def get_alert_stats(hours: int = 24) -> Dict[str, Any]:
 # =============================================================================
 
 __all__ = [
+    "AlertStorage",
     # Classes
     "StoredAlert",
-    "AlertStorage",
+    "get_alert_stats",
     # Singleton
     "get_default_alert_storage",
+    "list_recent_alerts",
     "reset_default_storage",
     # Convenience Functions
     "store_alert",
-    "list_recent_alerts",
-    "get_alert_stats",
 ]
 
 

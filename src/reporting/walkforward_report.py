@@ -23,11 +23,9 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-import pandas as pd
-
-from .base import Report, ReportSection, format_metric
+from .base import Report, ReportSection
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +38,8 @@ logger = logging.getLogger(__name__)
 def build_walkforward_report(
     result: Any,  # WalkForwardResult
     *,
-    sweep_name: Optional[str] = None,
-    wf_config: Optional[Any] = None,  # WalkForwardConfig
+    sweep_name: str | None = None,
+    wf_config: Any | None = None,  # WalkForwardConfig
 ) -> Report:
     """
     Erstellt einen Markdown-Report für ein WalkForwardResult.
@@ -99,7 +97,7 @@ def build_walkforward_report(
 
 def _build_summary_section(
     result: Any,  # WalkForwardResult
-    wf_config: Optional[Any] = None,  # WalkForwardConfig
+    wf_config: Any | None = None,  # WalkForwardConfig
 ) -> ReportSection:
     """Erstellt Summary-Section."""
     lines = []
@@ -220,9 +218,9 @@ def _build_parameters_section(result: Any) -> ReportSection:
 
 
 def build_multi_config_report(
-    results: List[Any],  # List[WalkForwardResult]
+    results: list[Any],  # List[WalkForwardResult]
     *,
-    sweep_name: Optional[str] = None,
+    sweep_name: str | None = None,
 ) -> Report:
     """
     Erstellt einen Vergleichs-Report für mehrere WalkForwardResult.
@@ -258,7 +256,7 @@ def build_multi_config_report(
     return report
 
 
-def _build_comparison_table_section(results: List[Any]) -> ReportSection:
+def _build_comparison_table_section(results: list[Any]) -> ReportSection:
     """Erstellt Vergleichs-Tabelle für mehrere Konfigurationen."""
     if not results:
         return ReportSection(title="Comparison", content_markdown="No results available.")
@@ -298,8 +296,8 @@ def save_walkforward_report(
     report: Report,
     output_path: Path,
     *,
-    sweep_name: Optional[str] = None,
-    config_id: Optional[str] = None,
+    sweep_name: str | None = None,
+    config_id: str | None = None,
 ) -> Path:
     """
     Speichert Walk-Forward-Report als Markdown-Datei.

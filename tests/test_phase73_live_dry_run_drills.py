@@ -9,17 +9,15 @@ Phase 73: Read-Only Simulation, keine echten Orders.
 """
 from __future__ import annotations
 
-import pytest
-
 from src.core.environment import (
+    LIVE_CONFIRM_TOKEN,
     EnvironmentConfig,
     TradingEnvironment,
-    LIVE_CONFIRM_TOKEN,
 )
 from src.live.drills import (
-    LiveDrillScenario,
     LiveDrillResult,
     LiveDrillRunner,
+    LiveDrillScenario,
     get_default_live_drill_scenarios,
 )
 

@@ -8,22 +8,20 @@ Testet:
 - Policy-Loading und -Validierung
 - Positive und Negative Cases
 """
+
 import pytest
-from pathlib import Path
 
+from src.experiments.strategy_profiles import StrategyProfileBuilder
 from src.live.live_gates import (
-    LiveGateResult,
     LivePolicies,
-    load_live_policies,
-    check_strategy_live_eligibility,
-    check_portfolio_live_eligibility,
-    get_eligible_strategies,
-    assert_strategy_eligible,
     assert_portfolio_eligible,
+    assert_strategy_eligible,
+    check_portfolio_live_eligibility,
+    check_strategy_live_eligibility,
     get_eligibility_summary,
+    get_eligible_strategies,
+    load_live_policies,
 )
-from src.experiments.strategy_profiles import StrategyProfile, StrategyProfileBuilder
-
 
 # =============================================================================
 # FIXTURES

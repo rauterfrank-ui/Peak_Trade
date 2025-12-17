@@ -15,10 +15,9 @@ Konsolidierungs- und Ausbruchsphasen.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -62,8 +61,8 @@ class VolBreakoutStrategy(BaseStrategy):
         vol_percentile: float = 50.0,
         atr_multiple: float = 1.5,
         side: str = "both",
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Volatility Breakout Strategy.
@@ -131,7 +130,7 @@ class VolBreakoutStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.vol_breakout",
-    ) -> "VolBreakoutStrategy":
+    ) -> VolBreakoutStrategy:
         """
         Fabrikmethode für Core-Config.
 
@@ -246,8 +245,8 @@ class VolBreakoutStrategy(BaseStrategy):
 
         # Breakout-Bedingungen
         close = data["close"]
-        high = data["high"]
-        low = data["low"]
+        data["high"]
+        data["low"]
 
         # Long Breakout: Close über Upper Level UND Vol-Filter
         long_breakout = (close > upper_level) & vol_filter
@@ -285,7 +284,7 @@ class VolBreakoutStrategy(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 
@@ -310,7 +309,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return strategy.generate_signals(df)
 
 
-def get_strategy_description(params: Dict) -> str:
+def get_strategy_description(params: dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
     return f"""
 Volatility Breakout Strategy

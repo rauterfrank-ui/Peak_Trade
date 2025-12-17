@@ -64,7 +64,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import toml
 from fastapi import FastAPI, HTTPException, Query, Request
@@ -73,43 +73,45 @@ from fastapi.templating import Jinja2Templates
 
 logger = logging.getLogger(__name__)
 
+from .alerts_api import (
+    AlertListResponse,
+    AlertStats,
+    get_alert_statistics,
+    get_alerts_for_ui,
+    get_alerts_template_context,
+)
 from .live_track import (
-    LiveSessionSummary,
     LiveSessionDetail,
-    get_recent_live_sessions,
+    LiveSessionSummary,
     get_filtered_sessions,
+    get_recent_live_sessions,
     get_session_by_id,
     get_session_stats,
 )
 from .r_and_d_api import (
-    router as r_and_d_router,
-    set_base_dir as set_r_and_d_base_dir,
-    load_experiments_from_dir,
-    filter_experiments,
-    extract_flat_fields,
-    compute_global_stats,
-    # v1.3 (Phase 78)
-    find_experiment_by_run_id,
     build_experiment_detail,
     compute_best_metrics,
+    compute_global_stats,
+    extract_flat_fields,
+    filter_experiments,
+    # v1.3 (Phase 78)
+    find_experiment_by_run_id,
+    load_experiments_from_dir,
     parse_and_validate_run_ids,
 )
-from .alerts_api import (
-    AlertSummary,
-    AlertStats,
-    AlertListResponse,
-    get_alerts_for_ui,
-    get_alert_statistics,
-    get_alerts_template_context,
+from .r_and_d_api import (
+    router as r_and_d_router,
 )
-
+from .r_and_d_api import (
+    set_base_dir as set_r_and_d_base_dir,
+)
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
 BASE_DIR = Path(__file__).resolve().parents[2]
 TEMPLATE_DIR = BASE_DIR / "templates" / "peak_trade_dashboard"
 
 
-def get_project_status() -> Dict[str, Any]:
+def get_project_status() -> dict[str, Any]:
     """
     Statischer v1.0-Snapshot-Status für das Dashboard v0.
 
@@ -132,7 +134,7 @@ def get_project_status() -> Dict[str, Any]:
     }
 
 
-def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
+def load_strategy_tiering(include_research: bool = False) -> dict[str, Any]:
     """
     Lädt das Strategy-Tiering aus config/strategy_tiering.toml und bereitet
     es für das Template auf.
@@ -169,8 +171,8 @@ def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
     # Entweder ist alles unter [strategy], oder direkt auf Top-Level
     strategy_block = raw.get("strategy", raw)
 
-    rows: List[Dict[str, Any]] = []
-    counts: Dict[str, int] = {}
+    rows: list[dict[str, Any]] = []
+    counts: dict[str, int] = {}
     categories_set: set = set()
 
     # Tier-Label-Mapping für bessere Anzeige
@@ -191,7 +193,6 @@ def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
     }
 
     # Tiers die standardmäßig angezeigt werden (ohne Research)
-    standard_tiers = {"core", "aux", "legacy", "unclassified"}
 
     for sid, meta in strategy_block.items():
         tier = meta.get("tier", "unknown")
@@ -223,7 +224,7 @@ def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
         if tier == "r_and_d":
             allowed_environments = ["offline_backtest", "research"]
 
-        row_data: Dict[str, Any] = {
+        row_data: dict[str, Any] = {
             "id": sid,
             "tier": tier,
             "tier_label": tier_labels.get(tier, tier),
@@ -248,18 +249,18 @@ def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
     rows_sorted = sorted(rows, key=lambda r: (r["tier"], r["id"]))
 
     # Gruppiere nach Tier für API-Response
-    tiers_grouped: List[Dict[str, Any]] = []
+    tiers_grouped: list[dict[str, Any]] = []
     for tier_key in ["core", "aux", "legacy", "r_and_d", "unclassified"]:
         tier_strategies = [r for r in rows_sorted if r["tier"] == tier_key]
         if tier_strategies:
-            tier_group: Dict[str, Any] = {
+            tier_group: dict[str, Any] = {
                 "tier": tier_key,
                 "label": tier_labels.get(tier_key, tier_key),
                 "strategies": tier_strategies,
             }
             # Für R&D-Tier: Gruppiere auch nach Kategorie
             if tier_key == "r_and_d" and include_research:
-                by_category: Dict[str, List[Dict[str, Any]]] = {}
+                by_category: dict[str, list[dict[str, Any]]] = {}
                 for s in tier_strategies:
                     cat = s.get("category", "other")
                     if cat not in by_category:
@@ -292,7 +293,7 @@ def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
 templates = Jinja2Templates(directory=str(TEMPLATE_DIR))
 
 
-def load_live_sessions(limit: int = 10) -> Dict[str, Any]:
+def load_live_sessions(limit: int = 10) -> dict[str, Any]:
     """
     Lädt Live-Sessions für das Dashboard-Template.
 
@@ -336,8 +337,8 @@ def create_app() -> FastAPI:
     @app.get("/", response_class=HTMLResponse)
     async def index(
         request: Request,
-        mode: Optional[str] = Query(None, description="Filter: shadow, testnet, paper, live"),
-        status: Optional[str] = Query(None, description="Filter: completed, failed, aborted, started"),
+        mode: str | None = Query(None, description="Filter: shadow, testnet, paper, live"),
+        status: str | None = Query(None, description="Filter: completed, failed, aborted, started"),
         include_research: bool = Query(False, description="Zeige auch R&D/Research-Strategien"),
     ) -> Any:
         """HTML Dashboard mit Projekt-Status, Strategy-Tiering und Live-Track."""
@@ -393,10 +394,10 @@ def create_app() -> FastAPI:
     @app.get("/r_and_d", response_class=HTMLResponse)
     async def r_and_d_experiments_page(
         request: Request,
-        preset: Optional[str] = Query(None, description="Filter nach Preset-ID"),
-        strategy: Optional[str] = Query(None, description="Filter nach Strategy-ID"),
-        tag_substr: Optional[str] = Query(None, description="Filter nach Tag-Substring"),
-        run_type: Optional[str] = Query(None, description="Filter nach Run-Type"),
+        preset: str | None = Query(None, description="Filter nach Preset-ID"),
+        strategy: str | None = Query(None, description="Filter nach Strategy-ID"),
+        tag_substr: str | None = Query(None, description="Filter nach Tag-Substring"),
+        run_type: str | None = Query(None, description="Filter nach Run-Type"),
         with_trades: bool = Query(False, description="Nur Experimente mit Trades"),
         limit: int = Query(100, ge=1, le=500, description="Max. Anzahl"),
     ) -> Any:
@@ -484,7 +485,7 @@ def create_app() -> FastAPI:
         - Report-Links (HTML, Markdown, Charts)
         - Status-/Run-Type-Badges
         - Raw JSON (collapsible)
-        
+
         v1.1: Refactored - nutzt zentralisierte Helper-Funktionen aus r_and_d_api.py
         """
         proj_status = get_project_status()
@@ -529,9 +530,9 @@ def create_app() -> FastAPI:
     async def alerts_page(
         request: Request,
         hours: int = Query(24, ge=1, le=168, description="Zeitfenster in Stunden"),
-        severity: Optional[List[str]] = Query(None, description="Severity-Filter"),
-        category: Optional[List[str]] = Query(None, description="Category-Filter"),
-        session_id: Optional[str] = Query(None, description="Session-ID-Filter"),
+        severity: list[str] | None = Query(None, description="Severity-Filter"),
+        category: list[str] | None = Query(None, description="Category-Filter"),
+        session_id: str | None = Query(None, description="Session-ID-Filter"),
         limit: int = Query(100, ge=1, le=500, description="Max. Anzahl Alerts"),
     ) -> Any:
         """
@@ -565,7 +566,7 @@ def create_app() -> FastAPI:
     @app.get("/r_and_d/comparison", response_class=HTMLResponse)
     async def r_and_d_comparison_page(
         request: Request,
-        run_ids: Optional[str] = Query(None, description="Komma-separierte Run-IDs"),
+        run_ids: str | None = Query(None, description="Komma-separierte Run-IDs"),
     ) -> Any:
         """
         HTML Comparison-Page für mehrere R&D-Experimente (Phase 78 v1.1).
@@ -574,7 +575,7 @@ def create_app() -> FastAPI:
         - Kern-Metriken mit Best-Metric-Hervorhebung
         - Links zu Einzelansichten
         - Status-/Run-Type-Badges
-        
+
         v1.1: Refactored - nutzt zentralisierte Helper-Funktionen aus r_and_d_api.py
         """
         proj_status = get_project_status()
@@ -614,7 +615,7 @@ def create_app() -> FastAPI:
 
         for requested_id in unique_ids:
             exp = find_experiment_by_run_id(all_experiments, requested_id)
-            
+
             if exp:
                 experiment_data = build_experiment_detail(exp)
                 found_experiments.append(experiment_data)
@@ -651,7 +652,7 @@ def create_app() -> FastAPI:
 
     @app.get(
         "/api/live_sessions",
-        response_model=List[LiveSessionSummary],
+        response_model=list[LiveSessionSummary],
         summary="Liste der letzten Live-Sessions (mit Filter)",
         description=(
             "Liefert die letzten N Live-Sessions (Shadow/Testnet/Paper/Live) "
@@ -666,15 +667,15 @@ def create_app() -> FastAPI:
             le=100,
             description="Maximale Anzahl Sessions (1-100)",
         ),
-        mode: Optional[str] = Query(
+        mode: str | None = Query(
             None,
             description="Filter nach Mode: shadow, testnet, paper, live",
         ),
-        status: Optional[str] = Query(
+        status: str | None = Query(
             None,
             description="Filter nach Status: completed, failed, aborted, started",
         ),
-    ) -> List[LiveSessionSummary]:
+    ) -> list[LiveSessionSummary]:
         """
         API-Endpoint für Live-Sessions mit optionalen Filtern.
 
@@ -696,7 +697,7 @@ def create_app() -> FastAPI:
         description="Liefert Statistiken über alle Sessions (Phase 85).",
         tags=["live-track"],
     )
-    async def api_live_sessions_stats() -> Dict[str, Any]:
+    async def api_live_sessions_stats() -> dict[str, Any]:
         """
         Aggregierte Statistiken über alle Sessions.
 
@@ -732,7 +733,7 @@ def create_app() -> FastAPI:
         summary="Health-Check",
         tags=["system"],
     )
-    async def api_health() -> Dict[str, str]:
+    async def api_health() -> dict[str, str]:
         """Einfacher Health-Check Endpoint."""
         return {"status": "ok"}
 
@@ -746,7 +747,7 @@ def create_app() -> FastAPI:
         description="Returns a deterministic live status snapshot as JSON (Phase 57 Extension).",
         tags=["live-status"],
     )
-    async def api_live_status_snapshot_json() -> Dict[str, Any]:
+    async def api_live_status_snapshot_json() -> dict[str, Any]:
         """
         Live Status Snapshot Endpoint (JSON).
 
@@ -754,6 +755,7 @@ def create_app() -> FastAPI:
             Dict with version, generated_at, panels, meta (deterministic, sorted)
         """
         from fastapi.responses import JSONResponse
+
         from src.reporting.live_status_snapshot_builder import build_live_status_snapshot_auto
         from src.reporting.status_snapshot_schema import model_dump_helper
 
@@ -767,7 +769,7 @@ def create_app() -> FastAPI:
             )
         except Exception as e:
             logger.error(f"Error building live status snapshot: {e}")
-            raise HTTPException(status_code=500, detail=f"Failed to build snapshot: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Failed to build snapshot: {e!s}")
 
     @app.get(
         "/api/live/status/snapshot.html",
@@ -784,8 +786,9 @@ def create_app() -> FastAPI:
             HTML page with escaped panel data (XSS-safe via Phase-57 formatter)
         """
         from fastapi.responses import HTMLResponse
-        from src.reporting.live_status_snapshot_builder import build_live_status_snapshot_auto
+
         from src.reporting.html_reports import _html_escape
+        from src.reporting.live_status_snapshot_builder import build_live_status_snapshot_auto
 
         try:
             snapshot = build_live_status_snapshot_auto(meta={"source": "webui_api"})
@@ -815,15 +818,15 @@ def create_app() -> FastAPI:
             html_lines.append("<body>")
             html_lines.append("  <div class='container'>")
             html_lines.append("    <h1>Peak_Trade Live Status Snapshot</h1>")
-            html_lines.append(f"    <div class='meta'>")
+            html_lines.append("    <div class='meta'>")
             html_lines.append(f"      <strong>Version:</strong> {_html_escape(snapshot.version)}<br>")
             html_lines.append(f"      <strong>Generated:</strong> {_html_escape(snapshot.generated_at)}")
-            html_lines.append(f"    </div>")
+            html_lines.append("    </div>")
 
             # Render panels
             for panel in snapshot.panels:
                 status_class = f"status-{panel.status}"
-                html_lines.append(f"    <div class='panel'>")
+                html_lines.append("    <div class='panel'>")
                 html_lines.append(f"      <h2>{_html_escape(panel.title)}</h2>")
                 html_lines.append(f"      <p><strong>ID:</strong> {_html_escape(panel.id)}</p>")
                 html_lines.append(f"      <p><strong>Status:</strong> <span class='{status_class}'>{_html_escape(panel.status.upper())}</span></p>")
@@ -834,7 +837,7 @@ def create_app() -> FastAPI:
                     details_json = json.dumps(panel.details, indent=2, sort_keys=True)
                     html_lines.append(f"      <div class='details'>{_html_escape(details_json)}</div>")
 
-                html_lines.append(f"    </div>")
+                html_lines.append("    </div>")
 
             html_lines.append("  </div>")
             html_lines.append("</body>")
@@ -848,7 +851,7 @@ def create_app() -> FastAPI:
             )
         except Exception as e:
             logger.error(f"Error building live status snapshot HTML: {e}")
-            raise HTTPException(status_code=500, detail=f"Failed to build snapshot HTML: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Failed to build snapshot HTML: {e!s}")
 
     # =========================================================================
     # Phase 83: Alert-Historie API Endpoints
@@ -864,9 +867,9 @@ def create_app() -> FastAPI:
     async def api_live_alerts(
         limit: int = Query(100, ge=1, le=500, description="Max. Anzahl Alerts"),
         hours: int = Query(24, ge=1, le=168, description="Zeitfenster in Stunden"),
-        severity: Optional[List[str]] = Query(None, description="Severity-Filter"),
-        category: Optional[List[str]] = Query(None, description="Category-Filter"),
-        session_id: Optional[str] = Query(None, description="Session-ID-Filter"),
+        severity: list[str] | None = Query(None, description="Severity-Filter"),
+        category: list[str] | None = Query(None, description="Category-Filter"),
+        session_id: str | None = Query(None, description="Session-ID-Filter"),
     ) -> AlertListResponse:
         """
         API-Endpoint für Alert-Liste (Phase 83).
@@ -922,7 +925,7 @@ def create_app() -> FastAPI:
                 "Diese sind NICHT für Live-Trading freigegeben."
             ),
         ),
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         API-Endpoint für Strategy-Tiering.
 
@@ -964,7 +967,7 @@ def create_app() -> FastAPI:
             default=False,
             description="Erlaube Zugriff auf R&D-Strategien",
         ),
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Detail-Endpoint für eine einzelne Strategie.
 
@@ -999,9 +1002,9 @@ def create_app() -> FastAPI:
 
 def load_filtered_sessions(
     limit: int = 20,
-    mode_filter: Optional[str] = None,
-    status_filter: Optional[str] = None,
-) -> Dict[str, Any]:
+    mode_filter: str | None = None,
+    status_filter: str | None = None,
+) -> dict[str, Any]:
     """
     Lädt gefilterte Live-Sessions für das Dashboard-Template (Phase 85).
 

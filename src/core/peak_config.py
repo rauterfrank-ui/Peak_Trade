@@ -25,10 +25,11 @@ Config-Pfad-Prioritaet:
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional
+from typing import Any
 
 try:
     # Python 3.11+
@@ -70,7 +71,7 @@ class PeakConfig:
         """Alias für get() für Kompatibilität."""
         return self.get(path, default)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Gibt eine tiefe Kopie der internen Config-Struktur als Dict zurück.
 
@@ -79,7 +80,7 @@ class PeakConfig:
         """
         return deepcopy(self.raw)
 
-    def with_overrides(self, updates: Dict[str, Any]) -> PeakConfig:
+    def with_overrides(self, updates: dict[str, Any]) -> PeakConfig:
         """
         Erzeugt eine neue PeakConfig mit überschriebenen Werten.
 
@@ -121,7 +122,7 @@ class PeakConfig:
         return PeakConfig(raw=data)
 
 
-def resolve_config_path(path: Optional[str | Path] = None) -> Path:
+def resolve_config_path(path: str | Path | None = None) -> Path:
     """
     Bestimmt den Config-Pfad mit folgender Prioritaet:
 
@@ -148,7 +149,7 @@ def resolve_config_path(path: Optional[str | Path] = None) -> Path:
     return _DEFAULT_CONFIG_PATH
 
 
-def load_config(path: Optional[str | Path] = None) -> PeakConfig:
+def load_config(path: str | Path | None = None) -> PeakConfig:
     """
     Laedt eine Config-Datei.
 

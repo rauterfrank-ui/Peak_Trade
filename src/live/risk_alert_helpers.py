@@ -32,16 +32,14 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from src.live.alerts import AlertEvent, AlertLevel, AlertSink
+    from src.live.alerts import AlertSink
     from src.live.risk_limits import (
         LimitCheckDetail,
         LiveRiskCheckResult,
-        RiskCheckSeverity,
-        RiskStatus,
     )
 
 logger = logging.getLogger(__name__)
@@ -71,9 +69,9 @@ class OperatorGuidance:
     severity_label: str
     icon: str
     summary: str
-    actions: List[str]
-    escalation: Optional[str] = None
-    monitoring_interval: Optional[str] = None
+    actions: list[str]
+    escalation: str | None = None
+    monitoring_interval: str | None = None
 
 
 # Vordefinierte Guidance pro Status
@@ -125,7 +123,7 @@ _GUIDANCE_RED = OperatorGuidance(
     monitoring_interval="Kontinuierlich (Live-Watch)",
 )
 
-_GUIDANCE_MAP: Dict[str, OperatorGuidance] = {
+_GUIDANCE_MAP: dict[str, OperatorGuidance] = {
     "green": _GUIDANCE_GREEN,
     "yellow": _GUIDANCE_YELLOW,
     "red": _GUIDANCE_RED,
@@ -152,7 +150,7 @@ def get_operator_guidance(risk_status: str) -> OperatorGuidance:
     return _GUIDANCE_MAP.get(risk_status, _GUIDANCE_GREEN)
 
 
-def get_guidance_for_result(result: "LiveRiskCheckResult") -> OperatorGuidance:
+def get_guidance_for_result(result: LiveRiskCheckResult) -> OperatorGuidance:
     """
     Gibt Operator-Guidance für ein LiveRiskCheckResult zurück.
 
@@ -170,7 +168,7 @@ def get_guidance_for_result(result: "LiveRiskCheckResult") -> OperatorGuidance:
 # =============================================================================
 
 
-def format_limit_detail(detail: "LimitCheckDetail") -> str:
+def format_limit_detail(detail: LimitCheckDetail) -> str:
     """
     Formatiert ein LimitCheckDetail als einzeiligen String.
 
@@ -194,7 +192,7 @@ def format_limit_detail(detail: "LimitCheckDetail") -> str:
 
 
 def format_risk_alert_message(
-    result: "LiveRiskCheckResult",
+    result: LiveRiskCheckResult,
     *,
     source: str = "live_risk",
     include_details: bool = True,
@@ -245,7 +243,7 @@ def format_risk_alert_message(
         ]
 
         if non_ok_details:
-            for i, detail in enumerate(non_ok_details[:max_details]):
+            for _i, detail in enumerate(non_ok_details[:max_details]):
                 lines.append(format_limit_detail(detail))
 
             if len(non_ok_details) > max_details:
@@ -262,10 +260,10 @@ def format_risk_alert_message(
 
 
 def format_slack_risk_alert(
-    result: "LiveRiskCheckResult",
+    result: LiveRiskCheckResult,
     *,
     source: str = "live_risk",
-    session_id: Optional[str] = None,
+    session_id: str | None = None,
 ) -> str:
     """
     Formatiert ein LiveRiskCheckResult als Slack-Message.
@@ -284,11 +282,11 @@ def format_slack_risk_alert(
 
     # Header mit Severity-abhängigem Emoji
     if result.severity.value == "breach":
-        header = f"🚨 *RISK BREACH* – Trading blockiert"
+        header = "🚨 *RISK BREACH* – Trading blockiert"
     elif result.severity.value == "warning":
-        header = f"⚠️ *RISK WARNING* – Monitoring erhöhen"
+        header = "⚠️ *RISK WARNING* – Monitoring erhöhen"
     else:
-        header = f"✅ Risk Status OK"
+        header = "✅ Risk Status OK"
 
     lines = [header]
 
@@ -328,12 +326,12 @@ def format_slack_risk_alert(
 
 
 def trigger_risk_alert(
-    result: "LiveRiskCheckResult",
-    alert_sink: Optional["AlertSink"],
+    result: LiveRiskCheckResult,
+    alert_sink: AlertSink | None,
     *,
     source: str = "live_risk",
-    session_id: Optional[str] = None,
-    extra_context: Optional[Dict[str, Any]] = None,
+    session_id: str | None = None,
+    extra_context: dict[str, Any] | None = None,
 ) -> bool:
     """
     Triggert einen Risk-Alert basierend auf dem LiveRiskCheckResult.
@@ -378,7 +376,7 @@ def trigger_risk_alert(
     message = format_risk_alert_message(result, source=source, include_details=True)
 
     # Context aufbauen
-    context: Dict[str, Any] = {
+    context: dict[str, Any] = {
         "risk_status": result.risk_status,
         "severity": result.severity.value,
         "allowed": result.allowed,
@@ -409,7 +407,7 @@ def trigger_risk_alert(
 
     # Alert erstellen und senden
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=level,
         source=source,
         code=code,
@@ -471,7 +469,7 @@ class RiskAlertFormatter:
             return text
         return f"{self.COLORS.get(color, '')}{text}{self.COLORS['reset']}"
 
-    def format_terminal(self, result: "LiveRiskCheckResult") -> str:
+    def format_terminal(self, result: LiveRiskCheckResult) -> str:
         """
         Formatiert Result für Terminal-Ausgabe mit Farben.
 
@@ -485,13 +483,13 @@ class RiskAlertFormatter:
 
         # Header mit Farbe basierend auf Status
         if result.risk_status == "red":
-            header = self._color(f"⛔ RISK BREACH", "red")
+            header = self._color("⛔ RISK BREACH", "red")
             status_color = "red"
         elif result.risk_status == "yellow":
-            header = self._color(f"⚠️  RISK WARNING", "yellow")
+            header = self._color("⚠️  RISK WARNING", "yellow")
             status_color = "yellow"
         else:
-            header = self._color(f"✅ RISK OK", "green")
+            header = self._color("✅ RISK OK", "green")
             status_color = "green"
 
         lines = [
@@ -538,7 +536,7 @@ class RiskAlertFormatter:
 
         return "\n".join(lines)
 
-    def format_compact(self, result: "LiveRiskCheckResult") -> str:
+    def format_compact(self, result: LiveRiskCheckResult) -> str:
         """
         Formatiert Result als einzeilige Zusammenfassung.
 
@@ -578,12 +576,12 @@ class RiskAlertFormatter:
 
 
 def trigger_risk_pipeline_alert(
-    result: "LiveRiskCheckResult",
-    pipeline_manager: Optional[Any] = None,
+    result: LiveRiskCheckResult,
+    pipeline_manager: Any | None = None,
     *,
     source: str = "live_risk",
-    session_id: Optional[str] = None,
-    extra_context: Optional[Dict[str, Any]] = None,
+    session_id: str | None = None,
+    extra_context: dict[str, Any] | None = None,
 ) -> bool:
     """
     Triggert einen Risk-Alert über die Alert-Pipeline (Phase 82).
@@ -617,9 +615,9 @@ def trigger_risk_pipeline_alert(
     try:
         # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
         from src.live.alert_pipeline import (
+            AlertCategory,
             AlertMessage,
             AlertSeverity,
-            AlertCategory,
         )
 
         # Severity mappen
@@ -665,7 +663,7 @@ def trigger_risk_pipeline_alert(
                 body += f"\n• {action}"
 
         # Context aufbauen
-        context: Dict[str, Any] = {
+        context: dict[str, Any] = {
             "risk_status": result.risk_status,
             "severity": result.severity.value,
             "allowed": result.allowed,
@@ -720,9 +718,9 @@ def create_limit_breach_alert(
     current_value: float,
     limit_value: float,
     *,
-    session_id: Optional[str] = None,
-    extra_context: Optional[Dict[str, Any]] = None,
-) -> Optional[Any]:
+    session_id: str | None = None,
+    extra_context: dict[str, Any] | None = None,
+) -> Any | None:
     """
     Erstellt einen AlertMessage für eine Hard-Limit-Verletzung.
 
@@ -748,9 +746,9 @@ def create_limit_breach_alert(
     """
     try:
         from src.live.alert_pipeline import (
+            AlertCategory,
             AlertMessage,
             AlertSeverity,
-            AlertCategory,
         )
 
         ratio = abs(current_value / limit_value) if limit_value != 0 else 0
@@ -766,7 +764,7 @@ def create_limit_breach_alert(
             f"Sofortige Maßnahmen erforderlich. Neue Orders werden blockiert."
         )
 
-        context: Dict[str, Any] = {
+        context: dict[str, Any] = {
             "breach_type": limit_name,
             "current_value": current_value,
             "limit_value": limit_value,
@@ -798,16 +796,16 @@ def create_limit_breach_alert(
 __all__ = [
     # Guidance
     "OperatorGuidance",
-    "get_operator_guidance",
-    "get_guidance_for_result",
+    "RiskAlertFormatter",
+    "create_limit_breach_alert",
     # Formatting
     "format_limit_detail",
     "format_risk_alert_message",
     "format_slack_risk_alert",
-    "RiskAlertFormatter",
+    "get_guidance_for_result",
+    "get_operator_guidance",
     # Alerting (Legacy)
     "trigger_risk_alert",
     # Phase 82: Alert-Pipeline Integration
     "trigger_risk_pipeline_alert",
-    "create_limit_breach_alert",
 ]

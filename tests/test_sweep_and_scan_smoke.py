@@ -11,10 +11,9 @@ Testet:
 from __future__ import annotations
 
 import json
-import pytest
-from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any
+
+import pytest
 
 
 class TestParameterGridExpansion:
@@ -124,7 +123,7 @@ class TestLogSweepRun:
 
     def test_log_sweep_run_returns_run_id(self, tmp_path: Path, monkeypatch):
         """log_sweep_run gibt eine run_id zurück."""
-        from src.core.experiments import log_sweep_run, EXPERIMENTS_DIR, EXPERIMENTS_CSV
+        from src.core.experiments import log_sweep_run
 
         # Experiments-Verzeichnis auf tmp_path umleiten
         test_experiments_dir = tmp_path / "experiments"
@@ -170,6 +169,7 @@ class TestLogSweepRun:
     def test_log_sweep_run_stores_params(self, tmp_path: Path, monkeypatch):
         """log_sweep_run speichert Parameter in params_json."""
         import pandas as pd
+
         from src.core.experiments import log_sweep_run
 
         test_experiments_dir = tmp_path / "experiments"
@@ -244,6 +244,7 @@ class TestLogMarketScanResult:
     def test_log_market_scan_stores_signal_in_stats(self, tmp_path: Path, monkeypatch):
         """Signal wird in stats_json gespeichert."""
         import pandas as pd
+
         from src.core.experiments import log_market_scan_result
 
         test_experiments_dir = tmp_path / "experiments"
@@ -271,6 +272,7 @@ class TestAnalyticsSweepFunctions:
     def test_filter_sweeps(self):
         """filter_sweeps filtert nur Sweep-Runs."""
         import pandas as pd
+
         from src.analytics.experiments_analysis import filter_sweeps
 
         df = pd.DataFrame({
@@ -285,6 +287,7 @@ class TestAnalyticsSweepFunctions:
     def test_filter_sweeps_empty(self):
         """filter_sweeps mit leerem DataFrame."""
         import pandas as pd
+
         from src.analytics.experiments_analysis import filter_sweeps
 
         df = pd.DataFrame({"run_type": ["backtest", "market_scan"]})
@@ -298,6 +301,7 @@ class TestAnalyticsMarketScanFunctions:
     def test_filter_market_scans(self):
         """filter_market_scans filtert nur Market-Scan-Runs."""
         import pandas as pd
+
         from src.analytics.experiments_analysis import filter_market_scans
 
         df = pd.DataFrame({
@@ -312,6 +316,7 @@ class TestAnalyticsMarketScanFunctions:
     def test_summarize_market_scans(self):
         """summarize_market_scans aggregiert korrekt."""
         import pandas as pd
+
         from src.analytics.experiments_analysis import summarize_market_scans
 
         df = pd.DataFrame({

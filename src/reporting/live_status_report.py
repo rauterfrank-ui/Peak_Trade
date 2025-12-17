@@ -23,7 +23,7 @@ Usage:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 @dataclass
@@ -32,12 +32,12 @@ class LiveStatusInput:
 
     ts_iso: str
     config_path: str
-    tag: Optional[str]
-    health: Dict[str, Any]
-    portfolio: Dict[str, Any]
+    tag: str | None
+    health: dict[str, Any]
+    portfolio: dict[str, Any]
 
 
-def build_markdown_report(data: LiveStatusInput, notes: Optional[str] = None) -> str:
+def build_markdown_report(data: LiveStatusInput, notes: str | None = None) -> str:
     """
     Baut einen Markdown-Report aus Live-Status-Daten.
 
@@ -202,7 +202,7 @@ def build_markdown_report(data: LiveStatusInput, notes: Optional[str] = None) ->
     return "\n".join(lines)
 
 
-def build_html_report(data: LiveStatusInput, notes: Optional[str] = None) -> str:
+def build_html_report(data: LiveStatusInput, notes: str | None = None) -> str:
     """
     Baut einen HTML-Report aus Live-Status-Daten.
 

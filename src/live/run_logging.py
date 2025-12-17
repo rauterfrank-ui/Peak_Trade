@@ -36,17 +36,15 @@ from __future__ import annotations
 
 import json
 import logging
-import os
-import uuid
-from dataclasses import dataclass, field, asdict
-from datetime import datetime, timezone
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
 if TYPE_CHECKING:
-    from ..orders.base import OrderExecutionResult
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -131,12 +129,12 @@ class LiveRunMetadata:
     strategy_name: str
     symbol: str
     timeframe: str
-    started_at: Optional[datetime] = None
-    ended_at: Optional[datetime] = None
-    config_snapshot: Dict[str, Any] = field(default_factory=dict)
+    started_at: datetime | None = None
+    ended_at: datetime | None = None
+    config_snapshot: dict[str, Any] = field(default_factory=dict)
     notes: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary (JSON-serialisierbar)."""
         d = asdict(self)
         # Datetime zu ISO-String
@@ -147,7 +145,7 @@ class LiveRunMetadata:
         return d
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "LiveRunMetadata":
+    def from_dict(cls, data: dict[str, Any]) -> LiveRunMetadata:
         """Erstellt LiveRunMetadata aus Dictionary."""
         # ISO-String zu Datetime
         started_at = data.get("started_at")
@@ -218,21 +216,21 @@ class LiveRunEvent:
         extra: Zusätzliche Key-Value-Paare
     """
     step: int
-    ts_bar: Optional[datetime] = None
-    ts_event: Optional[datetime] = None
+    ts_bar: datetime | None = None
+    ts_event: datetime | None = None
 
     # Preis-Daten
-    price: Optional[float] = None
-    open: Optional[float] = None
-    high: Optional[float] = None
-    low: Optional[float] = None
-    close: Optional[float] = None
-    volume: Optional[float] = None
+    price: float | None = None
+    open: float | None = None
+    high: float | None = None
+    low: float | None = None
+    close: float | None = None
+    volume: float | None = None
 
     # Portfolio-Status
     position_size: float = 0.0
-    cash: Optional[float] = None
-    equity: Optional[float] = None
+    cash: float | None = None
+    equity: float | None = None
     realized_pnl: float = 0.0
     unrealized_pnl: float = 0.0
 
@@ -251,9 +249,9 @@ class LiveRunEvent:
     risk_reasons: str = ""
 
     # Extra
-    extra: Dict[str, Any] = field(default_factory=dict)
+    extra: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary (für DataFrame)."""
         d = asdict(self)
         # Datetime zu ISO-String
@@ -278,7 +276,7 @@ def generate_run_id(
     strategy_name: str,
     symbol: str,
     timeframe: str,
-    timestamp: Optional[datetime] = None,
+    timestamp: datetime | None = None,
 ) -> str:
     """
     Generiert eine eindeutige Run-ID.
@@ -295,7 +293,7 @@ def generate_run_id(
     Returns:
         Eindeutige Run-ID
     """
-    ts = timestamp or datetime.now(timezone.utc)
+    ts = timestamp or datetime.now(UTC)
     ts_str = ts.strftime("%Y%m%d_%H%M%S")
 
     # Symbol aufräumen (z.B. BTC/EUR -> BTC-EUR)
@@ -337,7 +335,7 @@ class LiveRunLogger:
         self,
         logging_cfg: ShadowPaperLoggingConfig,
         metadata: LiveRunMetadata,
-        base_dir_override: Optional[str] = None,
+        base_dir_override: str | None = None,
     ) -> None:
         """
         Initialisiert den LiveRunLogger.
@@ -355,7 +353,7 @@ class LiveRunLogger:
         self._run_dir = self._base_dir / metadata.run_id
 
         # Events-Buffer
-        self._events_buffer: List[Dict[str, Any]] = []
+        self._events_buffer: list[dict[str, Any]] = []
         self._total_events_logged: int = 0
 
         # State
@@ -414,7 +412,7 @@ class LiveRunLogger:
 
             # Startzeit setzen
             if self._metadata.started_at is None:
-                self._metadata.started_at = datetime.now(timezone.utc)
+                self._metadata.started_at = datetime.now(UTC)
 
             # Metadaten schreiben
             self._write_metadata()
@@ -509,7 +507,7 @@ class LiveRunLogger:
             self._flush()
 
             # Endzeit setzen und Metadaten aktualisieren
-            self._metadata.ended_at = datetime.now(timezone.utc)
+            self._metadata.ended_at = datetime.now(UTC)
             self._write_metadata()
 
             # Optional: Markdown-Report generieren
@@ -556,7 +554,7 @@ class LiveRunLogger:
         except Exception as e:
             logger.error(f"[RUN LOGGER] Report-Generierung fehlgeschlagen: {e}")
 
-    def __enter__(self) -> "LiveRunLogger":
+    def __enter__(self) -> LiveRunLogger:
         """Kontext-Manager Entry."""
         self.initialize()
         return self
@@ -577,9 +575,9 @@ def create_run_logger_from_config(
     strategy_name: str,
     symbol: str,
     timeframe: str,
-    config_snapshot: Optional[Dict[str, Any]] = None,
-    run_id: Optional[str] = None,
-    base_dir_override: Optional[str] = None,
+    config_snapshot: dict[str, Any] | None = None,
+    run_id: str | None = None,
+    base_dir_override: str | None = None,
 ) -> LiveRunLogger:
     """
     Factory-Funktion für LiveRunLogger aus PeakConfig.
@@ -635,7 +633,7 @@ def load_run_metadata(run_dir: str | Path) -> LiveRunMetadata:
     if not meta_path.exists():
         raise FileNotFoundError(f"meta.json nicht gefunden: {meta_path}")
 
-    with open(meta_path, "r", encoding="utf-8") as f:
+    with open(meta_path, encoding="utf-8") as f:
         data = json.load(f)
 
     return LiveRunMetadata.from_dict(data)
@@ -669,7 +667,7 @@ def load_run_events(run_dir: str | Path) -> pd.DataFrame:
     raise FileNotFoundError(f"Keine Events-Datei gefunden in: {run_dir}")
 
 
-def list_runs(base_dir: str | Path = "live_runs") -> List[str]:
+def list_runs(base_dir: str | Path = "live_runs") -> list[str]:
     """
     Listet alle verfügbaren Run-IDs.
 

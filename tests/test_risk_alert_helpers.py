@@ -13,27 +13,24 @@ Testet:
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
-from src.live.risk_limits import (
-    LiveRiskCheckResult,
-    LimitCheckDetail,
-    RiskCheckSeverity,
-)
 from src.live.risk_alert_helpers import (
-    OperatorGuidance,
-    get_operator_guidance,
-    get_guidance_for_result,
+    RiskAlertFormatter,
     format_limit_detail,
     format_risk_alert_message,
     format_slack_risk_alert,
+    get_guidance_for_result,
+    get_operator_guidance,
     trigger_risk_alert,
-    RiskAlertFormatter,
 )
-
+from src.live.risk_limits import (
+    LimitCheckDetail,
+    LiveRiskCheckResult,
+    RiskCheckSeverity,
+)
 
 # =============================================================================
 # FIXTURES

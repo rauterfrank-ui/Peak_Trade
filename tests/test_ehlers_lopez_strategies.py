@@ -12,13 +12,9 @@ Phase: Research-Track Integration (Ehlers DSP + Meta-Labeling)
 """
 from __future__ import annotations
 
-import pytest
-import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, Any
-
+import pandas as pd
+import pytest
 
 # =============================================================================
 # EHLERS CYCLE FILTER STRATEGY TESTS
@@ -373,8 +369,8 @@ class TestResearchModules:
     def test_meta_labeling_module_import(self):
         """Test: Meta-Labeling-Modul kann importiert werden."""
         from src.research.ml.meta.meta_labeling import (
-            apply_meta_model,
             MetaModelSpec,
+            apply_meta_model,
         )
 
         assert apply_meta_model is not None
@@ -394,7 +390,7 @@ class TestResearchModules:
 
     def test_apply_meta_model_returns_series(self):
         """Test: apply_meta_model gibt Series zurück."""
-        from src.research.ml.meta.meta_labeling import apply_meta_model, MetaModelSpec
+        from src.research.ml.meta.meta_labeling import MetaModelSpec, apply_meta_model
 
         signals = pd.Series([1, -1, 1, 0, -1])
         features = pd.DataFrame({"volatility": [0.1, 0.2, 0.15, 0.1, 0.25]})
@@ -510,6 +506,7 @@ class TestFastAPIEndpoints:
         """FastAPI TestClient."""
         try:
             from fastapi.testclient import TestClient
+
             from src.webui.app import app
 
             return TestClient(app)

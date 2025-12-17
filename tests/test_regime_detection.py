@@ -5,20 +5,18 @@ Tests fuer Regime Detection (Phase 28)
 
 Testet VolatilityRegimeDetector und RangeCompressionRegimeDetector.
 """
-import pytest
-import pandas as pd
+
 import numpy as np
-from datetime import datetime, timedelta
+import pandas as pd
+import pytest
 
 from src.regime import (
-    RegimeLabel,
+    RangeCompressionRegimeDetector,
     RegimeContext,
     RegimeDetectorConfig,
     VolatilityRegimeDetector,
-    RangeCompressionRegimeDetector,
     make_regime_detector,
 )
-
 
 # ============================================================================
 # TEST DATA FIXTURES

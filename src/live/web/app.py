@@ -22,22 +22,21 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from ..monitoring import (
-    list_runs as monitoring_list_runs,
+    RunNotFoundError,
     get_run_snapshot,
     tail_events,
-    RunNotFoundError,
-    RunSnapshot,
 )
-from ..run_logging import load_run_metadata
+from ..monitoring import (
+    list_runs as monitoring_list_runs,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +89,7 @@ def load_web_ui_config(cfg: Any) -> WebUIConfig:
 # =============================================================================
 
 
-def load_alerts_from_file(run_dir: Path, limit: int = 100) -> List[Dict[str, Any]]:
+def load_alerts_from_file(run_dir: Path, limit: int = 100) -> list[dict[str, Any]]:
     """
     Lädt Alerts aus alerts.jsonl Datei.
 
@@ -107,7 +106,7 @@ def load_alerts_from_file(run_dir: Path, limit: int = 100) -> List[Dict[str, Any
 
     alerts = []
     try:
-        with open(alerts_path, "r", encoding="utf-8") as f:
+        with open(alerts_path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -128,7 +127,7 @@ def load_alerts_from_file(run_dir: Path, limit: int = 100) -> List[Dict[str, Any
         return []
 
 
-def _calculate_orders_count(events: List[Dict[str, Any]]) -> Dict[str, int]:
+def _calculate_orders_count(events: list[dict[str, Any]]) -> dict[str, int]:
     """
     Berechnet Order-Statistiken aus Events.
 
@@ -171,8 +170,8 @@ class RunMetadataResponse(BaseModel):
     strategy_name: str
     symbol: str
     timeframe: str
-    started_at: Optional[str] = None
-    ended_at: Optional[str] = None
+    started_at: str | None = None
+    ended_at: str | None = None
 
 
 class RunSnapshotResponse(BaseModel):
@@ -185,18 +184,18 @@ class RunSnapshotResponse(BaseModel):
     total_steps: int = 0
     total_orders: int = 0
     total_blocked_orders: int = 0
-    equity: Optional[float] = None
-    realized_pnl: Optional[float] = None
-    unrealized_pnl: Optional[float] = None
+    equity: float | None = None
+    realized_pnl: float | None = None
+    unrealized_pnl: float | None = None
 
 
 class TailRowResponse(BaseModel):
     """API Response für Tail-Row."""
-    ts_bar: Optional[str] = None
-    equity: Optional[float] = None
-    realized_pnl: Optional[float] = None
-    unrealized_pnl: Optional[float] = None
-    position_size: Optional[float] = None
+    ts_bar: str | None = None
+    equity: float | None = None
+    realized_pnl: float | None = None
+    unrealized_pnl: float | None = None
+    position_size: float | None = None
     orders_count: int = 0
     risk_allowed: bool = True
     risk_reasons: str = ""
@@ -621,8 +620,8 @@ def _generate_dashboard_html(
 
 
 def create_app(
-    config: Optional[WebUIConfig] = None,
-    base_runs_dir: Optional[str] = None,
+    config: WebUIConfig | None = None,
+    base_runs_dir: str | None = None,
 ) -> FastAPI:
     """
     Erstellt die FastAPI-Anwendung.
@@ -652,12 +651,12 @@ def create_app(
         """Health-Check-Endpoint."""
         return HealthResponse(status="ok")
 
-    @app.get("/runs", response_model=List[RunMetadataResponse])
+    @app.get("/runs", response_model=list[RunMetadataResponse])
     async def get_runs():
         """Listet alle verfügbaren Runs."""
         try:
             snapshots = monitoring_list_runs(base_dir=runs_dir, include_inactive=True)
-            result: List[RunMetadataResponse] = []
+            result: list[RunMetadataResponse] = []
 
             for snapshot in snapshots[:50]:  # Max 50 Runs
                 try:
@@ -684,7 +683,7 @@ def create_app(
         """Lädt Snapshot für einen Run."""
         try:
             snapshot = get_run_snapshot(run_id, base_dir=runs_dir)
-            
+
             # Events laden für Order-Statistiken
             events = tail_events(run_id, limit=10000, base_dir=runs_dir)
             order_stats = _calculate_orders_count(events)
@@ -708,7 +707,7 @@ def create_app(
             logger.error(f"Error loading snapshot for {run_id}: {e}")
             raise HTTPException(status_code=500, detail=str(e))
 
-    @app.get("/runs/{run_id}/tail", response_model=List[TailRowResponse])
+    @app.get("/runs/{run_id}/tail", response_model=list[TailRowResponse])
     async def get_run_tail(
         run_id: str,
         limit: int = Query(default=50, ge=1, le=500),
@@ -716,7 +715,7 @@ def create_app(
         """Lädt Tail-Events für einen Run."""
         try:
             events = tail_events(run_id, limit=limit, base_dir=runs_dir)
-            result: List[TailRowResponse] = []
+            result: list[TailRowResponse] = []
 
             for event in events:
                 # Orders count berechnen (verwende filled falls vorhanden, sonst generated)
@@ -742,7 +741,7 @@ def create_app(
             logger.error(f"Error loading tail for {run_id}: {e}")
             raise HTTPException(status_code=500, detail=str(e))
 
-    @app.get("/runs/{run_id}/alerts", response_model=List[AlertResponse])
+    @app.get("/runs/{run_id}/alerts", response_model=list[AlertResponse])
     async def get_run_alerts(
         run_id: str,
         limit: int = Query(default=20, ge=1, le=100),
@@ -755,7 +754,7 @@ def create_app(
 
         try:
             alerts = load_alerts_from_file(run_dir, limit=limit)
-            result: List[AlertResponse] = []
+            result: list[AlertResponse] = []
 
             for alert in alerts:
                 result.append(AlertResponse(

@@ -14,9 +14,10 @@ Environment Variables:
 """
 
 from __future__ import annotations
+
+import os
 from pathlib import Path
 from typing import Any
-import os
 
 try:
     import toml
@@ -81,7 +82,7 @@ def load_config(config_path: str | Path | None = None) -> dict[str, Any]:
         )
 
     # TOML laden
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(path, encoding='utf-8') as f:
         config = toml.load(f)
 
     return config

@@ -11,9 +11,7 @@ from __future__ import annotations
 
 import json
 import logging
-from abc import ABC, abstractmethod
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Protocol
+from typing import Any, Protocol
 
 from .models import EscalationEvent, EscalationTarget
 
@@ -124,7 +122,7 @@ class PagerDutyLikeProviderStub:
 
     def __init__(
         self,
-        api_url: Optional[str] = None,
+        api_url: str | None = None,
         enable_real_calls: bool = False,
     ) -> None:
         """
@@ -139,7 +137,7 @@ class PagerDutyLikeProviderStub:
         self._logger = logging.getLogger(f"{__name__}.PagerDutyLikeProviderStub")
 
         # Für Tests: Speichert alle "gesendeten" Payloads
-        self.sent_payloads: List[Dict[str, Any]] = []
+        self.sent_payloads: list[dict[str, Any]] = []
 
     @property
     def name(self) -> str:
@@ -174,7 +172,7 @@ class PagerDutyLikeProviderStub:
 
     def _build_payload(
         self, event: EscalationEvent, target: EscalationTarget
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Baut PagerDuty Events API v2 kompatiblen Payload.
 
@@ -223,7 +221,7 @@ class PagerDutyLikeProviderStub:
 # =============================================================================
 
 
-def get_provider(provider_name: str, config: Optional[Dict[str, Any]] = None) -> EscalationProvider:
+def get_provider(provider_name: str, config: dict[str, Any] | None = None) -> EscalationProvider:
     """
     Factory-Funktion für Escalation-Provider.
 

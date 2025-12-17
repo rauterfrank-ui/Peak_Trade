@@ -1,13 +1,13 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "peak_trade"
 version = "0.1.0"
 description = "Modulares Trading- und Backtest-Framework für Krypto-Strategien."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 license = {text = "Proprietary"}
 authors = [
     {name = "Frank Rauter"}
@@ -20,37 +20,63 @@ dependencies = [
     "toml>=0.10.2",
     "ccxt>=4.0.0",
     "pyarrow>=12.0.0",
+    "matplotlib>=3.7.0",
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "Jinja2>=3.1.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
-    "httpx",  # Required by FastAPI TestClient in tests
-    "ruff>=0.1.0",
-    "black>=23.0.0",
-]
-web = [
-    "fastapi>=0.104.0",
-    "uvicorn>=0.24.0",
+    "httpx",
+    "ruff>=0.8.0",
 ]
 
-[tool.setuptools]
-package-dir = {"" = "src"}
-
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
 
 # pytest config is in pytest.ini for better compatibility with warning filters
 
 [tool.ruff]
 line-length = 100
-target-version = "py39"
+target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I"]
-ignore = ["E501"]
+select = [
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "W",      # pycodestyle warnings
+    "I",      # isort
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "SIM",    # flake8-simplify
+    "RUF",    # ruff-specific
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "B008",   # function call in default argument (FastAPI Depends)
+    "SIM108", # ternary operator (sometimes less readable)
+    "RUF001", # ambiguous unicode in string (German text)
+    "RUF002", # ambiguous unicode in docstring (German text)
+    "RUF003", # ambiguous unicode in comment (German text)
+    "RUF012", # mutable class default (intentional in dataclasses)
+]
 
-[tool.black]
-line-length = 100
-target-version = ["py39", "py310", "py311"]
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "F841",   # unused variable (common in test fixtures)
+    "RUF059", # unused unpacked variable
+    "B011",   # assert False
+    "F821",   # undefined name (forward references in type hints)
+]
+"src/*" = [
+    "F821",   # undefined name (forward references with __future__ annotations)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

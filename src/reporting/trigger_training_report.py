@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from collections import defaultdict
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Iterable, Sequence, Optional, Mapping, Any, List, Dict
-from collections import defaultdict
+from typing import Any
 
 import pandas as pd
 
@@ -42,7 +43,7 @@ class TriggerTrainingEvent:
     outcome: TriggerOutcome
     reaction_delay_s: float
     pnl_after_bars: float
-    tags: List[str]
+    tags: list[str]
     note: str = ""
 
 
@@ -98,7 +99,7 @@ def _aggregate_outcomes(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-def _plot_reaction_time_hist(df: pd.DataFrame, output_dir: Path) -> Optional[str]:
+def _plot_reaction_time_hist(df: pd.DataFrame, output_dir: Path) -> str | None:
     if not HAS_MATPLOTLIB:
         return None
     if df.empty or "reaction_delay_s" not in df.columns:
@@ -152,11 +153,11 @@ def _aggregate_tags(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-def _determine_cluster_from_tags(tags: List[str]) -> str:
+def _determine_cluster_from_tags(tags: list[str]) -> str:
     """Bestimmt Trading-Cluster basierend auf Tags."""
     tags_lower = [t.lower() for t in tags]
     tags_joined = " ".join(tags_lower)  # Join für multi-word matching
-    
+
     # Breakout zuerst prüfen (spezifischer)
     if any(keyword in tags_joined for keyword in ["breakout", "breakdown", "break"]):
         return "breakout"
@@ -178,28 +179,28 @@ def _determine_cluster_from_tags(tags: List[str]) -> str:
 
 def calculate_psychology_scores_from_events(
     events: Sequence[TriggerTrainingEvent],
-) -> Dict[str, Dict[str, float]]:
+) -> dict[str, dict[str, float]]:
     """
     Berechnet Psychologie-Scores aus Trigger-Training-Events.
-    
+
     Diese Heuristik analysiert die Events und extrahiert psychologische Muster:
     - FOMO: Spät-Entries bei bereits gelaufenen Signalen
     - Verlustangst: Zu enge Stops, frühes Aussteigen
     - Impulsivität: Sehr schnelle Reaktionen (<1s)
     - Zögern: Verpasste Signale (MISSED), späte Entries (LATE)
     - Regelbruch: Trades gegen Signal-Richtung oder ohne Setup
-    
+
     Parameters
     ----------
     events : Sequence[TriggerTrainingEvent]
         Liste von Trigger-Training-Events
-    
+
     Returns
     -------
     Dict[str, Dict[str, float]]
         Dictionary mit Cluster-Namen als Keys und Score-Dicts als Values.
         Jeder Score liegt zwischen 0.0 und 3.0.
-        
+
     Example
     -------
     >>> scores = calculate_psychology_scores_from_events(events)
@@ -214,15 +215,15 @@ def calculate_psychology_scores_from_events(
         "hesitation": 0.0,
         "rule_break": 0.0,
     })
-    
+
     # Zähler für Normalisierung
     cluster_counts = defaultdict(int)
-    
+
     for event in events:
         # Cluster bestimmen
         cluster = _determine_cluster_from_tags(event.tags)
         cluster_counts[cluster] += 1
-        
+
         # === FOMO-Score ===
         # FOMO-Outcome direkt -> hoher Score
         if event.outcome == TriggerOutcome.FOMO:
@@ -230,7 +231,7 @@ def calculate_psychology_scores_from_events(
         # Späte Entries (LATE) mit negativem PnL -> FOMO-Indikator
         elif event.outcome == TriggerOutcome.LATE and event.pnl_after_bars < 0:
             cluster_scores[cluster]["fomo"] += 0.5
-        
+
         # === Verlustangst-Score ===
         # Frühes Aussteigen bei profitablen Setups (negative Tags)
         if "fear" in ",".join(event.tags).lower() or "loss_aversion" in ",".join(event.tags).lower():
@@ -238,7 +239,7 @@ def calculate_psychology_scores_from_events(
         # Sehr konservative Reaktion trotz gutem Signal
         if event.reaction_delay_s > 10.0 and event.pnl_after_bars > 50.0:
             cluster_scores[cluster]["loss_fear"] += 0.3
-        
+
         # === Impulsivität-Score ===
         # Sehr schnelle Reaktion (<1s) kann auf Impulsivität hinweisen
         if event.reaction_delay_s < 1.0:
@@ -246,7 +247,7 @@ def calculate_psychology_scores_from_events(
         # FOMO-Trades sind oft impulsiv
         if event.outcome == TriggerOutcome.FOMO:
             cluster_scores[cluster]["impulsivity"] += 0.5
-        
+
         # === Zögern-Score ===
         # Verpasste Signale -> direkter Indikator
         if event.outcome == TriggerOutcome.MISSED:
@@ -257,7 +258,7 @@ def calculate_psychology_scores_from_events(
         # Lange Reaktionszeit (>8s) bei gutem Signal
         elif event.reaction_delay_s > 8.0 and event.pnl_after_bars > 30.0:
             cluster_scores[cluster]["hesitation"] += 0.4
-        
+
         # === Regelbruch-Score ===
         # RULE_BREAK-Outcome direkt
         if event.outcome == TriggerOutcome.RULE_BREAK:
@@ -265,15 +266,15 @@ def calculate_psychology_scores_from_events(
         # Tags mit "break", "violation" etc.
         if any(tag in ",".join(event.tags).lower() for tag in ["break", "violation", "no_setup"]):
             cluster_scores[cluster]["rule_break"] += 0.6
-    
+
     # Normalisierung und Cappung auf 0-3 Skala
     normalized_scores = {}
-    
+
     for cluster, scores in cluster_scores.items():
         count = cluster_counts[cluster]
         if count == 0:
             continue
-        
+
         normalized = {}
         for metric, raw_score in scores.items():
             # Normalisiere durch Anzahl Events im Cluster
@@ -282,9 +283,9 @@ def calculate_psychology_scores_from_events(
             # Cappe bei 3.0
             normalized_value = min(normalized_value, 3.0)
             normalized[metric] = round(normalized_value, 2)
-        
+
         normalized_scores[cluster] = normalized
-    
+
     return normalized_scores
 
 
@@ -293,19 +294,19 @@ def _build_trigger_speed_section_html(
 ) -> str:
     """
     Erzeugt HTML-Sektion für Trigger-Geschwindigkeits-Metriken.
-    
+
     Parameters
     ----------
     reaction_summary : Mapping[str, Any]
         Reaktions-Summary-Dictionary (aus reaction_summary_to_dict)
-    
+
     Returns
     -------
     str
         HTML-String mit Geschwindigkeits-Sektion
     """
     html_parts = []
-    
+
     # Container
     html_parts.append('<div class="psychology-heatmap">')  # Reuse existing style
     html_parts.append('<h2>⚡ Trigger-Geschwindigkeit & Reaktionsmuster</h2>')
@@ -313,7 +314,7 @@ def _build_trigger_speed_section_html(
         '<p style="font-size: 12px; color: #666;">Diese Sektion zeigt die Reaktionsgeschwindigkeit '
         'auf Signale. Ziel: Schnelle, aber disziplinierte Reaktionen (ON_TIME).</p>'
     )
-    
+
     # Summary Badges
     count_total = reaction_summary.get("count_total", 0)
     count_impulsive = reaction_summary.get("count_impulsive", 0)
@@ -321,9 +322,9 @@ def _build_trigger_speed_section_html(
     count_late = reaction_summary.get("count_late", 0)
     count_missed = reaction_summary.get("count_missed", 0)
     count_skipped = reaction_summary.get("count_skipped", 0)
-    
+
     html_parts.append('<div style="display: flex; gap: 15px; margin: 15px 0; flex-wrap: wrap;">')
-    
+
     def _badge(label: str, value: int, color: str) -> str:
         return (
             f'<div style="background: {color}; padding: 12px 20px; border-radius: 6px; '
@@ -332,23 +333,23 @@ def _build_trigger_speed_section_html(
             f'<div style="font-size: 11px; color: #fff; opacity: 0.9;">{label}</div>'
             f'</div>'
         )
-    
+
     html_parts.append(_badge("Total Signale", count_total, "#6c757d"))
     html_parts.append(_badge("Impulsive", count_impulsive, "#ff9800"))
     html_parts.append(_badge("On-Time ✓", count_on_time, "#28a745"))
     html_parts.append(_badge("Late", count_late, "#ffc107"))
     html_parts.append(_badge("Missed", count_missed, "#dc3545"))
     html_parts.append(_badge("Skipped", count_skipped, "#6c757d"))
-    
+
     html_parts.append('</div>')
-    
+
     # Reaktionszeit-Statistiken
     mean_ms = reaction_summary.get("mean_reaction_ms")
     median_ms = reaction_summary.get("median_reaction_ms")
     p90_ms = reaction_summary.get("p90_reaction_ms")
     p95_ms = reaction_summary.get("p95_reaction_ms")
     p99_ms = reaction_summary.get("p99_reaction_ms")
-    
+
     if mean_ms is not None:
         html_parts.append('<h3 style="margin-top: 20px; font-size: 14px;">Reaktionszeit-Statistiken</h3>')
         html_parts.append('<table class="heatmap-table">')
@@ -356,8 +357,8 @@ def _build_trigger_speed_section_html(
         html_parts.append('<th>Metrik</th><th>Wert (ms)</th><th>Wert (s)</th>')
         html_parts.append('</tr></thead>')
         html_parts.append('<tbody>')
-        
-        def _row(label: str, value_ms: Optional[float]) -> str:
+
+        def _row(label: str, value_ms: float | None) -> str:
             if value_ms is None:
                 return ""
             value_s = value_ms / 1000.0
@@ -368,15 +369,15 @@ def _build_trigger_speed_section_html(
                 f'<td style="text-align: right;">{value_s:.3f}</td>'
                 f'</tr>'
             )
-        
+
         html_parts.append(_row("Durchschnitt", mean_ms))
         html_parts.append(_row("Median (P50)", median_ms))
         html_parts.append(_row("P90", p90_ms))
         html_parts.append(_row("P95", p95_ms))
         html_parts.append(_row("P99", p99_ms))
-        
+
         html_parts.append('</tbody></table>')
-    
+
     # Hinweis
     html_parts.append(
         '<div class="heatmap-note">'
@@ -386,9 +387,9 @@ def _build_trigger_speed_section_html(
         'Late (>3s) und Missed sind Verbesserungs-Zonen.'
         '</div>'
     )
-    
+
     html_parts.append('</div>')
-    
+
     return "".join(html_parts)
 
 
@@ -397,19 +398,19 @@ def _build_execution_latency_section_html(
 ) -> str:
     """
     Erzeugt HTML-Sektion für Execution-Latenz-Metriken.
-    
+
     Parameters
     ----------
     latency_summary : Mapping[str, Any]
         Latenz-Summary-Dictionary (aus latency_summary_to_dict)
-    
+
     Returns
     -------
     str
         HTML-String mit Execution-Latenz-Sektion
     """
     html_parts = []
-    
+
     # Container
     html_parts.append('<div class="psychology-heatmap">')  # Reuse existing style
     html_parts.append('<h2>🚀 Execution-Latenz & Slippage</h2>')
@@ -417,13 +418,13 @@ def _build_execution_latency_section_html(
         '<p style="font-size: 12px; color: #666;">Diese Sektion zeigt technische Ausführungs-Metriken. '
         'Niedrige Latenzen und geringer Slippage sind das Ziel.</p>'
     )
-    
+
     # Orders Count
     count_orders = latency_summary.get("count_orders", 0)
     html_parts.append(f'<p style="font-size: 13px; color: #333;"><strong>Total Orders:</strong> {count_orders}</p>')
-    
+
     # Helper-Funktion für Tabellenzeilen (außerhalb der if-Blöcke)
-    def _row(label: str, value_ms: Optional[float]) -> str:
+    def _row(label: str, value_ms: float | None) -> str:
         if value_ms is None:
             return ""
         value_s = value_ms / 1000.0
@@ -434,14 +435,14 @@ def _build_execution_latency_section_html(
             f'<td style="text-align: right;">{value_s:.3f}</td>'
             f'</tr>'
         )
-    
+
     # Trigger-Delay
     mean_trigger = latency_summary.get("mean_trigger_delay_ms")
     median_trigger = latency_summary.get("median_trigger_delay_ms")
     p90_trigger = latency_summary.get("p90_trigger_delay_ms")
     p95_trigger = latency_summary.get("p95_trigger_delay_ms")
     p99_trigger = latency_summary.get("p99_trigger_delay_ms")
-    
+
     if mean_trigger is not None:
         html_parts.append('<h3 style="margin-top: 15px; font-size: 14px;">Trigger-Delay (Signal → Order-Sent)</h3>')
         html_parts.append('<table class="heatmap-table">')
@@ -449,22 +450,22 @@ def _build_execution_latency_section_html(
         html_parts.append('<th>Metrik</th><th>Wert (ms)</th><th>Wert (s)</th>')
         html_parts.append('</tr></thead>')
         html_parts.append('<tbody>')
-        
+
         html_parts.append(_row("Durchschnitt", mean_trigger))
         html_parts.append(_row("Median (P50)", median_trigger))
         html_parts.append(_row("P90", p90_trigger))
         html_parts.append(_row("P95", p95_trigger))
         html_parts.append(_row("P99", p99_trigger))
-        
+
         html_parts.append('</tbody></table>')
-    
+
     # Send-to-Fill
     mean_fill = latency_summary.get("mean_send_to_first_fill_ms")
     median_fill = latency_summary.get("median_send_to_first_fill_ms")
     p90_fill = latency_summary.get("p90_send_to_first_fill_ms")
     p95_fill = latency_summary.get("p95_send_to_first_fill_ms")
     p99_fill = latency_summary.get("p99_send_to_first_fill_ms")
-    
+
     if mean_fill is not None:
         html_parts.append('<h3 style="margin-top: 15px; font-size: 14px;">Send-to-First-Fill (Order-Sent → First Fill)</h3>')
         html_parts.append('<table class="heatmap-table">')
@@ -472,22 +473,22 @@ def _build_execution_latency_section_html(
         html_parts.append('<th>Metrik</th><th>Wert (ms)</th><th>Wert (s)</th>')
         html_parts.append('</tr></thead>')
         html_parts.append('<tbody>')
-        
+
         html_parts.append(_row("Durchschnitt", mean_fill))
         html_parts.append(_row("Median (P50)", median_fill))
         html_parts.append(_row("P90", p90_fill))
         html_parts.append(_row("P95", p95_fill))
         html_parts.append(_row("P99", p99_fill))
-        
+
         html_parts.append('</tbody></table>')
-    
+
     # Total-Delay
     mean_total = latency_summary.get("mean_total_delay_ms")
     median_total = latency_summary.get("median_total_delay_ms")
     p90_total = latency_summary.get("p90_total_delay_ms")
     p95_total = latency_summary.get("p95_total_delay_ms")
     p99_total = latency_summary.get("p99_total_delay_ms")
-    
+
     if mean_total is not None:
         html_parts.append('<h3 style="margin-top: 15px; font-size: 14px;">Total-Delay (Signal → Last Fill)</h3>')
         html_parts.append('<table class="heatmap-table">')
@@ -495,19 +496,19 @@ def _build_execution_latency_section_html(
         html_parts.append('<th>Metrik</th><th>Wert (ms)</th><th>Wert (s)</th>')
         html_parts.append('</tr></thead>')
         html_parts.append('<tbody>')
-        
+
         html_parts.append(_row("Durchschnitt", mean_total))
         html_parts.append(_row("Median (P50)", median_total))
         html_parts.append(_row("P90", p90_total))
         html_parts.append(_row("P95", p95_total))
         html_parts.append(_row("P99", p99_total))
-        
+
         html_parts.append('</tbody></table>')
-    
+
     # Slippage
     mean_slippage = latency_summary.get("mean_slippage")
     median_slippage = latency_summary.get("median_slippage")
-    
+
     if mean_slippage is not None:
         html_parts.append('<h3 style="margin-top: 15px; font-size: 14px;">Slippage</h3>')
         html_parts.append('<table class="heatmap-table">')
@@ -528,13 +529,13 @@ def _build_execution_latency_section_html(
             f'</tr>'
         )
         html_parts.append('</tbody></table>')
-        
+
         html_parts.append(
             '<p style="font-size: 11px; color: #666; margin-top: 8px;">'
             'Positiver Slippage = ungünstiger Fill, Negativer = besserer Fill'
             '</p>'
         )
-    
+
     # Hinweis
     html_parts.append(
         '<div class="heatmap-note">'
@@ -544,23 +545,23 @@ def _build_execution_latency_section_html(
         'Nutze diese Baseline, um deine Offline-Performance zu verbessern.'
         '</div>'
     )
-    
+
     html_parts.append('</div>')
-    
+
     return "".join(html_parts)
 
 
 def _build_psychology_heatmap_html(
-    psychology_scores: Dict[str, Dict[str, float]],
+    psychology_scores: dict[str, dict[str, float]],
 ) -> str:
     """
     Erzeugt HTML für Psychologie-Heatmap (inline, ohne Template-System).
-    
+
     Parameters
     ----------
     psychology_scores : Dict[str, Dict[str, float]]
         Psychologie-Scores pro Cluster
-    
+
     Returns
     -------
     str
@@ -575,7 +576,7 @@ def _build_psychology_heatmap_html(
         "reentry": "Re-Entries / Scaling",
         "other": "Sonstige Setups",
     }
-    
+
     def _get_heat_class(value: float) -> str:
         """Bestimmt CSS-Klasse basierend auf Score."""
         if value < 0.5:
@@ -586,9 +587,9 @@ def _build_psychology_heatmap_html(
             return "heat-2"
         else:
             return "heat-3"
-    
+
     html_parts = []
-    
+
     # Styles für Heatmap
     html_parts.append("""
     <style>
@@ -653,7 +654,7 @@ def _build_psychology_heatmap_html(
         }
     </style>
     """)
-    
+
     # Heatmap-Container
     html_parts.append('<div class="psychology-heatmap">')
     html_parts.append('<h2>🧠 Psychologie-Heatmap</h2>')
@@ -661,7 +662,7 @@ def _build_psychology_heatmap_html(
         '<p style="font-size: 12px; color: #666;">Diese Heatmap zeigt psychologische Muster '
         'über die analysierten Trigger-Training-Events. Höhere Werte bedeuten stärkere Ausprägung.</p>'
     )
-    
+
     # Legende
     html_parts.append('<div class="heatmap-legend">')
     html_parts.append('<strong>Skala:</strong> ')
@@ -670,13 +671,13 @@ def _build_psychology_heatmap_html(
     html_parts.append('<span class="legend-item heat-2">2 – mittel</span>')
     html_parts.append('<span class="legend-item heat-3">3 – stark</span>')
     html_parts.append('</div>')
-    
+
     # Tabelle
     if not psychology_scores:
         html_parts.append('<p style="color: #999;">Keine Psychologie-Daten verfügbar.</p>')
     else:
         html_parts.append('<table class="heatmap-table">')
-        
+
         # Header
         html_parts.append('<thead><tr>')
         html_parts.append('<th class="row-label">Kontext / Cluster</th>')
@@ -686,24 +687,24 @@ def _build_psychology_heatmap_html(
         html_parts.append('<th>Zögern<br><span style="font-size: 10px; font-weight: normal;">Signale verpasst</span></th>')
         html_parts.append('<th>Regelbruch<br><span style="font-size: 10px; font-weight: normal;">Setup ignoriert</span></th>')
         html_parts.append('</tr></thead>')
-        
+
         # Body
         html_parts.append('<tbody>')
         for cluster, scores in sorted(psychology_scores.items()):
             label = cluster_labels.get(cluster, cluster.replace("_", " ").title())
             html_parts.append('<tr>')
             html_parts.append(f'<td class="row-label">{label}</td>')
-            
+
             for metric in ["fomo", "loss_fear", "impulsivity", "hesitation", "rule_break"]:
                 value = scores.get(metric, 0.0)
                 heat_class = _get_heat_class(value)
                 display_value = f"{value:.1f}" if value > 0 else "0"
                 html_parts.append(f'<td class="{heat_class}">{display_value}</td>')
-            
+
             html_parts.append('</tr>')
         html_parts.append('</tbody>')
         html_parts.append('</table>')
-    
+
     # Hinweis
     html_parts.append(
         '<div class="heatmap-note">'
@@ -712,9 +713,9 @@ def _build_psychology_heatmap_html(
         'Nutze die Heatmap, um gezielt Drills für Cluster mit hohen Werten zu planen.'
         '</div>'
     )
-    
+
     html_parts.append('</div>')
-    
+
     return "".join(html_parts)
 
 
@@ -722,10 +723,10 @@ def build_trigger_training_report(
     events: Sequence[TriggerTrainingEvent],
     output_dir: Path,
     *,
-    session_meta: Optional[Mapping[str, Any]] = None,
+    session_meta: Mapping[str, Any] | None = None,
     report_filename: str = "trigger_training_report.html",
-    reaction_summary: Optional[Mapping[str, Any]] = None,
-    latency_summary: Optional[Mapping[str, Any]] = None,
+    reaction_summary: Mapping[str, Any] | None = None,
+    latency_summary: Mapping[str, Any] | None = None,
 ) -> Path:
     """Erzeugt einen Trigger-Training-HTML-Report.
 

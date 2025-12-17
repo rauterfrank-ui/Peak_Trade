@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # tests/test_reporting_v2.py
 """
 Tests für Reporting v2 – HTML Dashboards & CLI-UX (Phase 21).
@@ -14,15 +13,13 @@ Testet:
 from __future__ import annotations
 
 import tempfile
-import pytest
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 from unittest.mock import MagicMock, patch
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
+import pytest
 
 # =============================================================================
 # FIXTURES
@@ -69,7 +66,7 @@ def mock_experiment_summary():
 @pytest.fixture
 def mock_sweep_overview():
     """Mock SweepOverview für Tests."""
-    from src.analytics.explorer import SweepOverview, RankedExperiment, ExperimentSummary
+    from src.analytics.explorer import ExperimentSummary, RankedExperiment, SweepOverview
 
     best_runs = []
     for i in range(5):
@@ -201,7 +198,7 @@ class TestReportSection:
 
     def test_create_with_content(self):
         """Test mit Inhalt."""
-        from src.reporting.html_reports import ReportSection, ReportFigure, ReportTable
+        from src.reporting.html_reports import ReportFigure, ReportSection, ReportTable
 
         section = ReportSection(
             title="Overview",
@@ -291,7 +288,7 @@ class TestRenderFunctions:
 
     def test_render_table(self):
         """Test Table-Rendering."""
-        from src.reporting.html_reports import _render_table, ReportTable
+        from src.reporting.html_reports import ReportTable, _render_table
 
         table = ReportTable(
             title="Test Table",
@@ -305,7 +302,7 @@ class TestRenderFunctions:
 
     def test_render_figure(self):
         """Test Figure-Rendering."""
-        from src.reporting.html_reports import _render_figure, ReportFigure
+        from src.reporting.html_reports import ReportFigure, _render_figure
 
         fig = ReportFigure(
             title="Test Fig",
@@ -318,7 +315,7 @@ class TestRenderFunctions:
 
     def test_render_section(self):
         """Test Section-Rendering."""
-        from src.reporting.html_reports import _render_section, ReportSection, ReportTable
+        from src.reporting.html_reports import ReportSection, ReportTable, _render_section
 
         section = ReportSection(
             title="Test Section",
@@ -332,7 +329,7 @@ class TestRenderFunctions:
 
     def test_render_html_report(self):
         """Test vollständiges Report-Rendering."""
-        from src.reporting.html_reports import _render_html_report, HtmlReport, ReportSection
+        from src.reporting.html_reports import HtmlReport, ReportSection, _render_html_report
 
         report = HtmlReport(
             title="Full Report",
@@ -403,7 +400,7 @@ class TestHtmlReportBuilder:
 
     def test_build_experiment_report_with_equity(self, temp_dir, mock_experiment_summary, sample_equity_curve):
         """Test Experiment-Report mit Equity-Kurve."""
-        from src.reporting.html_reports import HtmlReportBuilder, MATPLOTLIB_AVAILABLE
+        from src.reporting.html_reports import MATPLOTLIB_AVAILABLE, HtmlReportBuilder
 
         builder = HtmlReportBuilder(output_dir=temp_dir)
         report_path = builder.build_experiment_report(
@@ -506,7 +503,7 @@ class TestPlotFunctions:
 
     def test_plot_equity_curve_saves_file(self, temp_dir, sample_equity_curve):
         """Test Equity-Plot speichern."""
-        from src.reporting.html_reports import plot_equity_curve, MATPLOTLIB_AVAILABLE
+        from src.reporting.html_reports import MATPLOTLIB_AVAILABLE, plot_equity_curve
 
         if not MATPLOTLIB_AVAILABLE:
             pytest.skip("Matplotlib nicht verfügbar")
@@ -526,7 +523,7 @@ class TestPlotFunctions:
 
     def test_plot_drawdown_saves_file(self, temp_dir, sample_equity_curve):
         """Test Drawdown-Plot speichern."""
-        from src.reporting.html_reports import plot_drawdown, MATPLOTLIB_AVAILABLE
+        from src.reporting.html_reports import MATPLOTLIB_AVAILABLE, plot_drawdown
 
         if not MATPLOTLIB_AVAILABLE:
             pytest.skip("Matplotlib nicht verfügbar")
@@ -546,7 +543,7 @@ class TestPlotFunctions:
 
     def test_plot_metric_distribution_saves_file(self, temp_dir):
         """Test Metrik-Verteilung speichern."""
-        from src.reporting.html_reports import plot_metric_distribution, MATPLOTLIB_AVAILABLE
+        from src.reporting.html_reports import MATPLOTLIB_AVAILABLE, plot_metric_distribution
 
         if not MATPLOTLIB_AVAILABLE:
             pytest.skip("Matplotlib nicht verfügbar")
@@ -567,7 +564,7 @@ class TestPlotFunctions:
 
     def test_plot_sweep_scatter_saves_file(self, temp_dir):
         """Test Scatter-Plot speichern."""
-        from src.reporting.html_reports import plot_sweep_scatter, MATPLOTLIB_AVAILABLE
+        from src.reporting.html_reports import MATPLOTLIB_AVAILABLE, plot_sweep_scatter
 
         if not MATPLOTLIB_AVAILABLE:
             pytest.skip("Matplotlib nicht verfügbar")
@@ -831,17 +828,17 @@ class TestExportedSymbols:
     def test_reporting_module_exports(self):
         """Test src/reporting/__init__.py Exports."""
         from src.reporting import (
-            ReportFigure,
-            ReportTable,
-            ReportSection,
             HtmlReport,
             HtmlReportBuilder,
-            plot_equity_curve,
-            plot_drawdown,
-            plot_metric_distribution,
-            plot_sweep_scatter,
+            ReportFigure,
+            ReportSection,
+            ReportTable,
             build_quick_experiment_report,
             build_quick_sweep_report,
+            plot_drawdown,
+            plot_equity_curve,
+            plot_metric_distribution,
+            plot_sweep_scatter,
         )
 
         # Alle sollten importierbar sein

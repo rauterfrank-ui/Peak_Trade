@@ -22,22 +22,12 @@ from __future__ import annotations
 import datetime as dt
 import json
 import subprocess
-import sys
-from dataclasses import asdict, dataclass, field
-from pathlib import Path
-from typing import Any, Literal, Optional
 
 # Python 3.11+: tomllib ist built-in
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    try:
-        import tomli as tomllib  # type: ignore
-    except ImportError:
-        raise ImportError(
-            "Python <3.11 benötigt 'tomli' package: pip install tomli"
-        )
-
+import tomllib
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Any, Literal
 
 # ============================================================================
 # Type Definitions
@@ -56,7 +46,7 @@ TriggerViolationSeverity = Literal["info", "warning", "error"]
 class TestHealthTriggers:
     """
     Trigger-Bedingungen für ein Test-Health-Profil.
-    
+
     Attributes:
         min_total_runs: Mindestanzahl an Runs im Zeitfenster
         max_fail_rate: Maximale Fail-Rate (0.0 - 1.0)
@@ -68,7 +58,7 @@ class TestHealthTriggers:
     min_total_runs: int = 0
     max_fail_rate: float = 1.0
     max_consecutive_failures: int = 999999
-    max_hours_since_last_run: Optional[int] = None
+    max_hours_since_last_run: int | None = None
     require_critical_green: bool = False
 
 
@@ -76,9 +66,9 @@ class TestHealthTriggers:
 class TestHealthStats:
     """
     Statistiken über Test-Health-Runs (für Trigger-Evaluierung).
-    
+
     Diese Daten kommen typischerweise aus der Historie oder dem aktuellen Run.
-    
+
     Attributes:
         total_runs: Anzahl Runs im Zeitfenster
         failed_runs: Anzahl fehlgeschlagener Runs
@@ -90,7 +80,7 @@ class TestHealthStats:
     total_runs: int
     failed_runs: int
     max_consecutive_failures: int
-    hours_since_last_run: Optional[float]
+    hours_since_last_run: float | None
     all_critical_groups_green: bool
 
 
@@ -98,7 +88,7 @@ class TestHealthStats:
 class TriggerViolation:
     """
     Eine Verletzung einer Trigger-Bedingung.
-    
+
     Attributes:
         severity: Schweregrad ("info", "warning", "error")
         trigger_name: Name des Triggers (z.B. "max_fail_rate")
@@ -123,7 +113,7 @@ class TriggerViolation:
 class StrategyCoverageConfig:
     """
     Konfiguration für Strategy-Coverage-Checks (v1).
-    
+
     Attributes:
         enabled: Ob Strategy-Coverage-Checks aktiviert sind
         window_days: Zeitraum für Run-Zählung
@@ -132,7 +122,7 @@ class StrategyCoverageConfig:
         link_to_strategy_switch_allowed: Nur Strategien aus allowed prüfen
         runs_directory: Verzeichnis mit Experiment-Runs
     """
-    
+
     enabled: bool = True
     window_days: int = 7
     min_backtests_per_strategy: int = 3
@@ -145,14 +135,14 @@ class StrategyCoverageConfig:
 class StrategyCoverageStats:
     """
     Coverage-Statistiken für eine einzelne Strategie (v1).
-    
+
     Attributes:
         strategy_id: ID der Strategie
         n_backtests: Anzahl Backtests im Zeitfenster
         n_paper_runs: Anzahl Paper-Runs im Zeitfenster
         violations: Liste von Verletzungen
     """
-    
+
     strategy_id: str
     n_backtests: int
     n_paper_runs: int
@@ -163,7 +153,7 @@ class StrategyCoverageStats:
 class StrategyCoverageResult:
     """
     Gesamtergebnis der Strategy-Coverage-Prüfung (v1).
-    
+
     Attributes:
         enabled: Ob Coverage-Check aktiviert war
         strategies_checked: Anzahl geprüfter Strategien
@@ -172,7 +162,7 @@ class StrategyCoverageResult:
         all_violations: Alle Violations aggregiert
         is_healthy: True wenn keine Violations
     """
-    
+
     enabled: bool
     strategies_checked: int
     strategies_with_violations: int
@@ -190,7 +180,7 @@ class StrategyCoverageResult:
 class SwitchSanityConfig:
     """
     Konfiguration für Strategy-Switch Sanity Check (v1).
-    
+
     Attributes:
         enabled: Ob Sanity-Check aktiviert ist
         config_path: Pfad zur Live-Config
@@ -200,7 +190,7 @@ class SwitchSanityConfig:
         require_non_empty_allowed: allowed darf nicht leer sein
         r_and_d_strategy_keys: Liste von R&D-Strategie-Keys
     """
-    
+
     enabled: bool = True
     config_path: str = "config/config.toml"
     section_path: str = "live_profile.strategy_switch"
@@ -221,7 +211,7 @@ class SwitchSanityConfig:
 class SwitchSanityResult:
     """
     Ergebnis des Strategy-Switch Sanity Checks (v1).
-    
+
     Attributes:
         enabled: Ob Check aktiviert war
         is_ok: True wenn keine Violations
@@ -230,7 +220,7 @@ class SwitchSanityResult:
         allowed: Liste der erlaubten Strategien
         config_path: Verwendeter Config-Pfad
     """
-    
+
     enabled: bool
     is_ok: bool
     violations: list[str]
@@ -263,17 +253,17 @@ class TestCheckResult:
     started_at: dt.datetime
     finished_at: dt.datetime
     duration_seconds: float
-    return_code: Optional[int] = None
-    error_message: Optional[str] = None
-    stdout: Optional[str] = None  # P2: Stdout-Capture
-    stderr: Optional[str] = None  # P2: Stderr-Capture
+    return_code: int | None = None
+    error_message: str | None = None
+    stdout: str | None = None  # P2: Stdout-Capture
+    stderr: str | None = None  # P2: Stderr-Capture
 
 
 @dataclass
 class PortfolioPsychology:
     """
     Psychologie-Annotation für Portfolio-Profile (v0).
-    
+
     Attributes:
         level: Psychologisches Risikoprofil ("CALM", "MEDIUM", "SPICY")
         notes: Liste von kurzen Hinweisen/Warnungen
@@ -281,13 +271,13 @@ class PortfolioPsychology:
         total_return_pct: Verwendeter Return
         trades_count: Verwendete Trade-Anzahl
     """
-    
+
     level: str  # "CALM" | "MEDIUM" | "SPICY"
     notes: list[str]
-    max_drawdown_pct: Optional[float] = None
-    total_return_pct: Optional[float] = None
-    trades_count: Optional[int] = None
-    
+    max_drawdown_pct: float | None = None
+    total_return_pct: float | None = None
+    trades_count: int | None = None
+
     @property
     def level_emoji(self) -> str:
         """Gibt Emoji für das Level zurück."""
@@ -310,36 +300,36 @@ class TestHealthSummary:
     passed_weight: int
     trigger_violations: list[TriggerViolation] = None  # Trigger-Violations
     # v1: Strategy-Coverage und Switch-Sanity
-    strategy_coverage: Optional[StrategyCoverageResult] = None
-    switch_sanity: Optional[SwitchSanityResult] = None
+    strategy_coverage: StrategyCoverageResult | None = None
+    switch_sanity: SwitchSanityResult | None = None
     # v1.1: Portfolio-Psychologie (nur für portfolio-Profile)
-    psychology: Optional[PortfolioPsychology] = None
-    
+    psychology: PortfolioPsychology | None = None
+
     def __post_init__(self):
         """Initialisiert trigger_violations falls None."""
         if self.trigger_violations is None:
             self.trigger_violations = []
-    
+
     def has_trigger_violations(self) -> bool:
         """Prüft ob Trigger-Violations existieren."""
         return len(self.trigger_violations) > 0
-    
+
     def has_critical_violations(self) -> bool:
         """Prüft ob es kritische (error) Violations gibt."""
         return any(v.severity == "error" for v in self.trigger_violations)
-    
+
     def has_strategy_coverage_violations(self) -> bool:
         """Prüft ob Strategy-Coverage-Violations existieren (v1)."""
         if self.strategy_coverage is None:
             return False
         return not self.strategy_coverage.is_healthy
-    
+
     def has_switch_sanity_violations(self) -> bool:
         """Prüft ob Switch-Sanity-Violations existieren (v1)."""
         if self.switch_sanity is None:
             return False
         return not self.switch_sanity.is_ok
-    
+
     def has_any_violations(self) -> bool:
         """Prüft ob irgendwelche Violations existieren (v1)."""
         return (
@@ -347,7 +337,7 @@ class TestHealthSummary:
             or self.has_strategy_coverage_violations()
             or self.has_switch_sanity_violations()
         )
-    
+
     def has_psychology(self) -> bool:
         """Prüft ob Psychologie-Annotation vorhanden ist (v1.1)."""
         return self.psychology is not None
@@ -437,7 +427,7 @@ def load_test_health_profile(
                 category=category,
             )
         )
-    
+
     # Triggers laden (optional)
     triggers_dict = profile.get("triggers", {})
     triggers = TestHealthTriggers(
@@ -467,10 +457,10 @@ def run_single_check(check: TestCheckConfig) -> TestCheckResult:
     """
     started_at = dt.datetime.utcnow()
     status: HealthStatus = "FAIL"
-    return_code: Optional[int] = None
-    error_message: Optional[str] = None
-    stdout: Optional[str] = None
-    stderr: Optional[str] = None
+    return_code: int | None = None
+    error_message: str | None = None
+    stdout: str | None = None
+    stderr: str | None = None
 
     try:
         result = subprocess.run(
@@ -597,19 +587,19 @@ def evaluate_triggers(
 ) -> list[TriggerViolation]:
     """
     Evaluiert Trigger-Bedingungen und gibt Violations zurück.
-    
+
     Parameters
     ----------
     triggers : TestHealthTriggers
         Trigger-Config für das Profil
     stats : TestHealthStats
         Statistiken über Test-Runs
-    
+
     Returns
     -------
     list[TriggerViolation]
         Liste von Violations (leer = alles ok)
-    
+
     Examples
     --------
     >>> triggers = TestHealthTriggers(min_total_runs=5, max_fail_rate=0.2)
@@ -618,7 +608,7 @@ def evaluate_triggers(
     >>> assert len(violations) > 0  # min_total_runs nicht erfüllt
     """
     violations: list[TriggerViolation] = []
-    
+
     # Check 1: min_total_runs
     if stats.total_runs < triggers.min_total_runs:
         violations.append(
@@ -630,7 +620,7 @@ def evaluate_triggers(
                 threshold_value=triggers.min_total_runs,
             )
         )
-    
+
     # Check 2: max_fail_rate
     if stats.total_runs > 0:
         fail_rate = stats.failed_runs / stats.total_runs
@@ -647,7 +637,7 @@ def evaluate_triggers(
                     threshold_value=triggers.max_fail_rate,
                 )
             )
-    
+
     # Check 3: max_consecutive_failures
     if stats.max_consecutive_failures > triggers.max_consecutive_failures:
         violations.append(
@@ -662,26 +652,25 @@ def evaluate_triggers(
                 threshold_value=triggers.max_consecutive_failures,
             )
         )
-    
+
     # Check 4: max_hours_since_last_run
     if (
         triggers.max_hours_since_last_run is not None
         and stats.hours_since_last_run is not None
-    ):
-        if stats.hours_since_last_run > triggers.max_hours_since_last_run:
-            violations.append(
-                TriggerViolation(
-                    severity="warning",
-                    trigger_name="max_hours_since_last_run",
-                    message=(
-                        f"Zu lange kein Run: "
-                        f"{stats.hours_since_last_run:.1f}h > {triggers.max_hours_since_last_run}h"
-                    ),
-                    actual_value=stats.hours_since_last_run,
-                    threshold_value=triggers.max_hours_since_last_run,
-                )
+    ) and stats.hours_since_last_run > triggers.max_hours_since_last_run:
+        violations.append(
+            TriggerViolation(
+                severity="warning",
+                trigger_name="max_hours_since_last_run",
+                message=(
+                    f"Zu lange kein Run: "
+                    f"{stats.hours_since_last_run:.1f}h > {triggers.max_hours_since_last_run}h"
+                ),
+                actual_value=stats.hours_since_last_run,
+                threshold_value=triggers.max_hours_since_last_run,
             )
-    
+        )
+
     # Check 5: require_critical_green
     if triggers.require_critical_green and not stats.all_critical_groups_green:
         violations.append(
@@ -693,7 +682,7 @@ def evaluate_triggers(
                 threshold_value=True,
             )
         )
-    
+
     return violations
 
 
@@ -705,12 +694,12 @@ def evaluate_triggers(
 def load_strategy_coverage_config(config_path: Path) -> StrategyCoverageConfig:
     """
     Lädt die Strategy-Coverage-Konfiguration aus der TOML-Datei (v1).
-    
+
     Parameters
     ----------
     config_path : Path
         Pfad zur test_health_profiles.toml
-    
+
     Returns
     -------
     StrategyCoverageConfig
@@ -718,9 +707,9 @@ def load_strategy_coverage_config(config_path: Path) -> StrategyCoverageConfig:
     """
     with open(config_path, "rb") as f:
         config = tomllib.load(f)
-    
+
     coverage_cfg = config.get("strategy_coverage", {})
-    
+
     return StrategyCoverageConfig(
         enabled=coverage_cfg.get("enabled", True),
         window_days=coverage_cfg.get("window_days", 7),
@@ -734,14 +723,14 @@ def load_strategy_coverage_config(config_path: Path) -> StrategyCoverageConfig:
 def _load_allowed_strategies(config_path: str, section_path: str) -> list[str]:
     """
     Lädt die Liste der erlaubten Strategien aus der Live-Config.
-    
+
     Parameters
     ----------
     config_path : str
         Pfad zur Config-Datei
     section_path : str
         TOML-Pfad zur strategy_switch Sektion
-    
+
     Returns
     -------
     list[str]
@@ -750,10 +739,10 @@ def _load_allowed_strategies(config_path: str, section_path: str) -> list[str]:
     path = Path(config_path)
     if not path.exists():
         return []
-    
+
     with open(path, "rb") as f:
         config = tomllib.load(f)
-    
+
     # Navigiere durch den section_path
     parts = section_path.split(".")
     current = config
@@ -762,10 +751,10 @@ def _load_allowed_strategies(config_path: str, section_path: str) -> list[str]:
             current = current[part]
         else:
             return []
-    
+
     if isinstance(current, dict):
         return current.get("allowed", [])
-    
+
     return []
 
 
@@ -777,7 +766,7 @@ def _count_experiment_runs(
 ) -> tuple[int, int]:
     """
     Zählt Backtests und Paper-Runs für eine Strategie im Zeitfenster.
-    
+
     Parameters
     ----------
     runs_directory : Path
@@ -788,7 +777,7 @@ def _count_experiment_runs(
         Zeitfenster in Tagen
     now : dt.datetime
         Aktueller Zeitpunkt
-    
+
     Returns
     -------
     tuple[int, int]
@@ -796,57 +785,57 @@ def _count_experiment_runs(
     """
     n_backtests = 0
     n_paper_runs = 0
-    
+
     if not runs_directory.exists():
         return n_backtests, n_paper_runs
-    
+
     cutoff = now - dt.timedelta(days=window_days)
-    
+
     # Suche nach JSON-Dateien (rekursiv, aber dedupliziert)
     seen_files: set[Path] = set()
-    
+
     for run_file in runs_directory.rglob("*.json"):
         # Deduplizierung
         abs_path = run_file.resolve()
         if abs_path in seen_files:
             continue
         seen_files.add(abs_path)
-        
+
         try:
             # Prüfe Modifikationszeit
             mtime = dt.datetime.fromtimestamp(run_file.stat().st_mtime)
             if mtime < cutoff:
                 continue
-            
+
             # Lade JSON und prüfe strategy_id und run_type
-            with open(run_file, "r") as f:
+            with open(run_file) as f:
                 data = json.load(f)
-            
+
             file_strategy_id = data.get("strategy_id") or data.get("strategy")
             run_type = data.get("run_type") or data.get("type", "")
-            
+
             if file_strategy_id != strategy_id:
                 continue
-            
+
             if run_type.lower() in ("backtest", "offline_backtest", "backtest_run"):
                 n_backtests += 1
             elif run_type.lower() in ("paper_trade", "paper", "paper_run", "shadow"):
                 n_paper_runs += 1
-                
+
         except (json.JSONDecodeError, OSError, KeyError):
             continue
-    
+
     return n_backtests, n_paper_runs
 
 
 def compute_strategy_coverage(
     config: StrategyCoverageConfig,
     strategy_ids: list[str],
-    now: Optional[dt.datetime] = None,
+    now: dt.datetime | None = None,
 ) -> StrategyCoverageResult:
     """
     Berechnet Strategy-Coverage für alle gegebenen Strategien (v1).
-    
+
     Parameters
     ----------
     config : StrategyCoverageConfig
@@ -855,12 +844,12 @@ def compute_strategy_coverage(
         Liste der zu prüfenden Strategie-IDs
     now : Optional[dt.datetime]
         Aktueller Zeitpunkt (default: utcnow)
-    
+
     Returns
     -------
     StrategyCoverageResult
         Coverage-Ergebnis mit Stats pro Strategie
-    
+
     Examples
     --------
     >>> config = StrategyCoverageConfig(min_backtests_per_strategy=3)
@@ -869,7 +858,7 @@ def compute_strategy_coverage(
     """
     if now is None:
         now = dt.datetime.utcnow()
-    
+
     if not config.enabled:
         return StrategyCoverageResult(
             enabled=False,
@@ -879,18 +868,18 @@ def compute_strategy_coverage(
             all_violations=[],
             is_healthy=True,
         )
-    
+
     runs_dir = Path(config.runs_directory)
     coverage_stats: list[StrategyCoverageStats] = []
     all_violations: list[str] = []
-    
+
     for strategy_id in strategy_ids:
         n_backtests, n_paper_runs = _count_experiment_runs(
             runs_dir, strategy_id, config.window_days, now
         )
-        
+
         violations: list[str] = []
-        
+
         if n_backtests < config.min_backtests_per_strategy:
             msg = (
                 f"Strategy '{strategy_id}': only {n_backtests}/{config.min_backtests_per_strategy} "
@@ -898,7 +887,7 @@ def compute_strategy_coverage(
             )
             violations.append(msg)
             all_violations.append(msg)
-        
+
         if n_paper_runs < config.min_paper_runs_per_strategy:
             msg = (
                 f"Strategy '{strategy_id}': only {n_paper_runs}/{config.min_paper_runs_per_strategy} "
@@ -906,7 +895,7 @@ def compute_strategy_coverage(
             )
             violations.append(msg)
             all_violations.append(msg)
-        
+
         coverage_stats.append(
             StrategyCoverageStats(
                 strategy_id=strategy_id,
@@ -915,9 +904,9 @@ def compute_strategy_coverage(
                 violations=violations,
             )
         )
-    
+
     strategies_with_violations = sum(1 for s in coverage_stats if s.violations)
-    
+
     return StrategyCoverageResult(
         enabled=True,
         strategies_checked=len(strategy_ids),
@@ -936,12 +925,12 @@ def compute_strategy_coverage(
 def load_switch_sanity_config(config_path: Path) -> SwitchSanityConfig:
     """
     Lädt die Switch-Sanity-Konfiguration aus der TOML-Datei (v1).
-    
+
     Parameters
     ----------
     config_path : Path
         Pfad zur test_health_profiles.toml
-    
+
     Returns
     -------
     SwitchSanityConfig
@@ -949,9 +938,9 @@ def load_switch_sanity_config(config_path: Path) -> SwitchSanityConfig:
     """
     with open(config_path, "rb") as f:
         config = tomllib.load(f)
-    
+
     sanity_cfg = config.get("switch_sanity", {})
-    
+
     return SwitchSanityConfig(
         enabled=sanity_cfg.get("enabled", True),
         config_path=sanity_cfg.get("config_path", "config/config.toml"),
@@ -973,20 +962,20 @@ def load_switch_sanity_config(config_path: Path) -> SwitchSanityConfig:
 def run_switch_sanity_check(cfg: SwitchSanityConfig) -> SwitchSanityResult:
     """
     Führt den Strategy-Switch Sanity Check durch (v1).
-    
+
     Prüft die [live_profile.strategy_switch]-Sektion der Config.
     Führt KEIN Umschalten durch - nur statische Validierung!
-    
+
     Parameters
     ----------
     cfg : SwitchSanityConfig
         Sanity-Check-Konfiguration
-    
+
     Returns
     -------
     SwitchSanityResult
         Ergebnis mit Violations und aktiver Strategie
-    
+
     Examples
     --------
     >>> config = SwitchSanityConfig(config_path="config/config.toml")
@@ -1002,11 +991,11 @@ def run_switch_sanity_check(cfg: SwitchSanityConfig) -> SwitchSanityResult:
             allowed=[],
             config_path=cfg.config_path,
         )
-    
+
     violations: list[str] = []
     active_strategy_id = ""
     allowed: list[str] = []
-    
+
     # 1. Config laden
     config_path = Path(cfg.config_path)
     if not config_path.exists():
@@ -1018,7 +1007,7 @@ def run_switch_sanity_check(cfg: SwitchSanityConfig) -> SwitchSanityResult:
             allowed=[],
             config_path=cfg.config_path,
         )
-    
+
     try:
         with open(config_path, "rb") as f:
             config = tomllib.load(f)
@@ -1031,7 +1020,7 @@ def run_switch_sanity_check(cfg: SwitchSanityConfig) -> SwitchSanityResult:
             allowed=[],
             config_path=cfg.config_path,
         )
-    
+
     # 2. Navigiere zum section_path
     parts = cfg.section_path.split(".")
     current = config
@@ -1047,7 +1036,7 @@ def run_switch_sanity_check(cfg: SwitchSanityConfig) -> SwitchSanityResult:
                 allowed=[],
                 config_path=cfg.config_path,
             )
-    
+
     if not isinstance(current, dict):
         return SwitchSanityResult(
             enabled=True,
@@ -1057,24 +1046,24 @@ def run_switch_sanity_check(cfg: SwitchSanityConfig) -> SwitchSanityResult:
             allowed=[],
             config_path=cfg.config_path,
         )
-    
+
     # 3. Werte extrahieren
     active_strategy_id = current.get("active_strategy_id", "")
     allowed = current.get("allowed", [])
-    
+
     # 4. Checks durchführen
-    
+
     # Check: require_non_empty_allowed
     if cfg.require_non_empty_allowed and not allowed:
         violations.append("allowed list must not be empty")
-    
+
     # Check: require_active_in_allowed
     if cfg.require_active_in_allowed and active_strategy_id:
         if active_strategy_id not in allowed:
             violations.append(
                 f"active_strategy_id '{active_strategy_id}' not in allowed list"
             )
-    
+
     # Check: allow_r_and_d_in_allowed
     if not cfg.allow_r_and_d_in_allowed:
         for strategy_id in allowed:
@@ -1082,7 +1071,7 @@ def run_switch_sanity_check(cfg: SwitchSanityConfig) -> SwitchSanityResult:
                 violations.append(
                     f"Strategy '{strategy_id}' is tier r_and_d but present in allowed list"
                 )
-    
+
     return SwitchSanityResult(
         enabled=True,
         is_ok=(len(violations) == 0),
@@ -1133,9 +1122,9 @@ def write_test_health_json(summary: TestHealthSummary, path: Path) -> None:
         if isinstance(obj, dt.datetime):
             return obj.isoformat()
         raise TypeError(f"Type {type(obj)} not serializable")
-    
+
     data = asdict(summary)
-    
+
     # P2: Truncate stdout/stderr in checks für kleinere JSON-Dateien
     MAX_OUTPUT_LEN = 5000  # 5k chars max
     for check in data.get("checks", []):
@@ -1143,7 +1132,7 @@ def write_test_health_json(summary: TestHealthSummary, path: Path) -> None:
             check["stdout"] = check["stdout"][-MAX_OUTPUT_LEN:] + f"\n\n[truncated, showing last {MAX_OUTPUT_LEN} chars]"
         if check.get("stderr") and len(check["stderr"]) > MAX_OUTPUT_LEN:
             check["stderr"] = check["stderr"][-MAX_OUTPUT_LEN:] + f"\n\n[truncated, showing last {MAX_OUTPUT_LEN} chars]"
-    
+
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False, default=json_serial)
@@ -1193,7 +1182,7 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
         f"- **Passed Weight**: {summary.passed_weight} / {summary.total_weight}",
         "",
     ]
-    
+
     # Trigger-Violations (falls vorhanden)
     if summary.has_trigger_violations():
         md_lines.extend([
@@ -1202,7 +1191,7 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
             f"**Anzahl Violations**: {len(summary.trigger_violations)}",
             "",
         ])
-        
+
         for v in summary.trigger_violations:
             severity_emoji = {"info": "ℹ️", "warning": "⚠️", "error": "❌"}.get(
                 v.severity, "?"
@@ -1215,12 +1204,12 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
                 f"- **Threshold**: {v.threshold_value}",
                 "",
             ])
-    
+
     # v1: Strategy-Coverage (falls vorhanden)
     if summary.strategy_coverage and summary.strategy_coverage.enabled:
         coverage = summary.strategy_coverage
         coverage_status = "✅ Healthy" if coverage.is_healthy else "❌ Violations"
-        
+
         md_lines.extend([
             "## 📊 Strategy Coverage (v1)",
             "",
@@ -1229,20 +1218,20 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
             f"**With Violations**: {coverage.strategies_with_violations}",
             "",
         ])
-        
+
         if coverage.coverage_stats:
             md_lines.extend([
                 "| Strategy | Backtests | Paper Runs | Status |",
                 "|----------|-----------|------------|--------|",
             ])
-            
+
             for stat in coverage.coverage_stats:
                 status = "✅" if not stat.violations else "❌"
                 md_lines.append(
                     f"| `{stat.strategy_id}` | {stat.n_backtests} | {stat.n_paper_runs} | {status} |"
                 )
             md_lines.append("")
-        
+
         if coverage.all_violations:
             md_lines.extend([
                 "### Coverage Violations",
@@ -1251,12 +1240,12 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
             for violation in coverage.all_violations:
                 md_lines.append(f"- ❌ {violation}")
             md_lines.append("")
-    
+
     # v1: Switch-Sanity (falls vorhanden)
     if summary.switch_sanity and summary.switch_sanity.enabled:
         sanity = summary.switch_sanity
         sanity_status = "✅ OK" if sanity.is_ok else "❌ Violations"
-        
+
         md_lines.extend([
             "## 🔒 Strategy-Switch Sanity (v1)",
             "",
@@ -1266,7 +1255,7 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
             f"**Config Path**: `{sanity.config_path}`",
             "",
         ])
-        
+
         if sanity.violations:
             md_lines.extend([
                 "### Sanity Violations",
@@ -1275,26 +1264,26 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
             for violation in sanity.violations:
                 md_lines.append(f"- ❌ {violation}")
             md_lines.append("")
-    
+
     # v1.1: Portfolio-Psychologie (falls vorhanden)
     if summary.has_psychology():
         psych = summary.psychology
         psych_emoji = psych.level_emoji
-        
+
         md_lines.extend([
             f"## {psych_emoji} Portfolio-Psychologie (v1.1)",
             "",
             f"**Level**: {psych_emoji} **{psych.level}**",
             "",
         ])
-        
+
         if psych.notes:
             md_lines.append("**Hinweise:**")
             md_lines.append("")
             for note in psych.notes:
                 md_lines.append(f"- {note}")
             md_lines.append("")
-        
+
         # Metriken-Kontext
         md_lines.append("*Basierend auf:*")
         if psych.max_drawdown_pct is not None:
@@ -1304,7 +1293,7 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
         if psych.trades_count is not None:
             md_lines.append(f"- Trades: {psych.trades_count}")
         md_lines.append("")
-    
+
     md_lines.extend([
         "## Check-Details",
         "",
@@ -1339,14 +1328,14 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
                 [
                     f"### {check.name} (`{check.id}`)",
                     "",
-                    f"- **Status**: ❌ FAIL",
+                    "- **Status**: ❌ FAIL",
                     f"- **Return Code**: {check.return_code}",
                     f"- **Duration**: {check.duration_seconds:.2f}s",
                     f"- **Command**: `{check.cmd}`",
                     "",
                 ]
             )
-            
+
             if check.error_message:
                 md_lines.extend(
                     [
@@ -1357,7 +1346,7 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
                         "",
                     ]
                 )
-            
+
             # Stdout (truncate to 2000 chars)
             if check.stdout:
                 stdout_display = check.stdout[-2000:] if len(check.stdout) > 2000 else check.stdout
@@ -1371,7 +1360,7 @@ def write_test_health_markdown(summary: TestHealthSummary, path: Path) -> None:
                         "",
                     ]
                 )
-            
+
             # Stderr (truncate to 2000 chars)
             if check.stderr:
                 stderr_display = check.stderr[-2000:] if len(check.stderr) > 2000 else check.stderr
@@ -1535,7 +1524,7 @@ def write_test_health_html(summary: TestHealthSummary, path: Path) -> None:
 </head>
 <body>
     <h1>🏥 Test Health Report: {summary.profile_name}</h1>
-    
+
     <div class="health-score {color_class}">
         {summary.health_score:.1f} / 100.0
         <div style="font-size: 18px; margin-top: 10px;">{ampel_text}</div>
@@ -1562,7 +1551,7 @@ def write_test_health_html(summary: TestHealthSummary, path: Path) -> None:
         if psych.notes:
             notes_items = "".join(f"<li>{note}</li>" for note in psych.notes)
             notes_html = f"<ul class='psychology-notes'>{notes_items}</ul>"
-        
+
         metrics_html = "<div class='psychology-metrics'><em>Basierend auf: "
         metrics_parts = []
         if psych.max_drawdown_pct is not None:
@@ -1572,7 +1561,7 @@ def write_test_health_html(summary: TestHealthSummary, path: Path) -> None:
         if psych.trades_count is not None:
             metrics_parts.append(f"Trades: {psych.trades_count}")
         metrics_html += ", ".join(metrics_parts) + "</em></div>"
-        
+
         html += f"""
     <div class="psychology-section">
         <h2>{psych.level_emoji} Portfolio-Psychologie</h2>
@@ -1681,7 +1670,7 @@ def run_test_health_profile(
 
     # 3) Summary aggregieren
     summary = aggregate_health(profile_name, results)
-    
+
     # 3b) Trigger-Evaluierung (basierend auf aktuellem Run + Historie)
     # Für jetzt: Stats aus aktuellem Run ableiten
     # TODO P2: Historie mit einbeziehen für längerfristige Trends
@@ -1692,10 +1681,10 @@ def run_test_health_profile(
         hours_since_last_run=None,  # Erster Run (Historie TODO)
         all_critical_groups_green=(summary.failed_checks == 0),
     )
-    
+
     violations = evaluate_triggers(triggers, stats)
     summary.trigger_violations = violations
-    
+
     if violations:
         print(f"\n⚠️  {len(violations)} Trigger-Violation(s) erkannt:")
         for v in violations:
@@ -1703,14 +1692,14 @@ def run_test_health_profile(
                 v.severity, "?"
             )
             print(f"  {severity_icon} [{v.severity.upper()}] {v.message}")
-    
+
     # v1: Strategy-Coverage-Check
     if not skip_strategy_coverage:
         try:
             coverage_cfg = load_strategy_coverage_config(config_path)
             if coverage_cfg.enabled:
                 print("\n📊 Führe Strategy-Coverage-Check durch...")
-                
+
                 # Strategien bestimmen
                 if coverage_cfg.link_to_strategy_switch_allowed:
                     sanity_cfg = load_switch_sanity_config(config_path)
@@ -1720,13 +1709,13 @@ def run_test_health_profile(
                 else:
                     # Fallback: Alle bekannten Strategien
                     strategy_ids = []
-                
+
                 if strategy_ids:
                     coverage_result = compute_strategy_coverage(
                         coverage_cfg, strategy_ids
                     )
                     summary.strategy_coverage = coverage_result
-                    
+
                     if coverage_result.is_healthy:
                         print(f"   ✅ Strategy Coverage OK ({coverage_result.strategies_checked} strategies)")
                     else:
@@ -1737,7 +1726,7 @@ def run_test_health_profile(
                     print("   ⚠️  Keine Strategien zu prüfen (allowed list leer oder nicht gefunden)")
         except Exception as e:
             print(f"   ⚠️  Strategy-Coverage-Check fehlgeschlagen: {e}")
-    
+
     # v1: Switch-Sanity-Check
     if not skip_switch_sanity:
         try:
@@ -1746,7 +1735,7 @@ def run_test_health_profile(
                 print("\n🔒 Führe Strategy-Switch Sanity Check durch...")
                 sanity_result = run_switch_sanity_check(sanity_cfg)
                 summary.switch_sanity = sanity_result
-                
+
                 if sanity_result.is_ok:
                     print(f"   ✅ Switch Sanity OK (active: {sanity_result.active_strategy_id})")
                 else:
@@ -1773,7 +1762,7 @@ def run_test_health_profile(
         print(f"📊 Historie aktualisiert: {history_path}")
     except Exception as e:
         print(f"⚠️ Historie konnte nicht aktualisiert werden: {e}")
-    
+
     # 7) Slack-Notification (falls konfiguriert und Failures vorhanden)
     _send_slack_notification_if_needed(
         config_path=config_path,
@@ -1791,7 +1780,7 @@ def _send_slack_notification_if_needed(
 ) -> None:
     """
     Sendet Slack-Notification falls konfiguriert und Bedingungen erfüllt (v1).
-    
+
     Parameters
     ----------
     config_path : Path
@@ -1805,13 +1794,13 @@ def _send_slack_notification_if_needed(
         # Lade Slack-Config
         with open(config_path, "rb") as f:
             config = tomllib.load(f)
-        
+
         slack_config = config.get("notifications", {}).get("slack", {})
         enabled = slack_config.get("enabled", False)
-        
+
         if not enabled:
             return
-        
+
         # Min-Severity prüfen
         min_severity = slack_config.get("min_severity", "warning")
         webhook_env_var = slack_config.get(
@@ -1819,35 +1808,35 @@ def _send_slack_notification_if_needed(
         )
         include_strategy_coverage = slack_config.get("include_strategy_coverage", True)
         include_switch_sanity = slack_config.get("include_switch_sanity", True)
-        
+
         # Entscheide ob Notification nötig
         should_notify = False
-        
+
         # Notification bei Failed Checks
         if summary.failed_checks > 0:
             should_notify = True
-        
+
         # Notification bei Trigger-Violations (severity >= min_severity)
         if summary.has_trigger_violations():
             severity_levels = {"info": 0, "warning": 1, "error": 2}
             min_level = severity_levels.get(min_severity, 1)
-            
+
             for v in summary.trigger_violations:
                 if severity_levels.get(v.severity, 0) >= min_level:
                     should_notify = True
                     break
-        
+
         # v1: Notification bei Strategy-Coverage-Violations
         if summary.has_strategy_coverage_violations():
             should_notify = True
-        
+
         # v1: Notification bei Switch-Sanity-Violations
         if summary.has_switch_sanity_violations():
             should_notify = True
-        
+
         if not should_notify:
             return
-        
+
         # v1: Erweiterte Slack-Nachricht bauen
         message = _build_slack_message_v1(
             summary=summary,
@@ -1855,17 +1844,17 @@ def _send_slack_notification_if_needed(
             include_strategy_coverage=include_strategy_coverage,
             include_switch_sanity=include_switch_sanity,
         )
-        
+
         # Sende Notification
         from src.notifications.slack import send_test_health_slack_notification_v1
-        
+
         send_test_health_slack_notification_v1(
             message=message,
             webhook_env_var=webhook_env_var,
         )
-        
-        print(f"📱 Slack-Notification versendet")
-    
+
+        print("📱 Slack-Notification versendet")
+
     except Exception as e:
         # Fail-safe: Slack-Fehler killen nicht die Pipeline
         print(f"⚠️  Slack-Notification fehlgeschlagen: {e}")
@@ -1879,7 +1868,7 @@ def _build_slack_message_v1(
 ) -> str:
     """
     Baut eine Slack-Nachricht für TestHealth v1.
-    
+
     Parameters
     ----------
     summary : TestHealthSummary
@@ -1890,7 +1879,7 @@ def _build_slack_message_v1(
         Strategy-Coverage in Nachricht aufnehmen
     include_switch_sanity : bool
         Switch-Sanity in Nachricht aufnehmen
-    
+
     Returns
     -------
     str
@@ -1898,15 +1887,12 @@ def _build_slack_message_v1(
     """
     # Status-Emoji
     if summary.health_score >= 80 and not summary.has_any_violations():
-        status_emoji = "🟢"
         status_text = "HEALTHY"
     elif summary.health_score >= 50:
-        status_emoji = "🟡"
         status_text = "DEGRADED"
     else:
-        status_emoji = "🔴"
         status_text = "FAILED"
-    
+
     lines = [
         f"[Peak_Trade · TestHealth v1] Status: {status_text}",
         "",
@@ -1915,7 +1901,7 @@ def _build_slack_message_v1(
         f"*Passed Checks*: {summary.passed_checks}",
         f"*Failed Checks*: {summary.failed_checks}",
     ]
-    
+
     # Trigger-Violations
     if summary.has_trigger_violations():
         lines.extend([
@@ -1929,7 +1915,7 @@ def _build_slack_message_v1(
             lines.append(f"  {severity_emoji} {v.message}")
         if len(summary.trigger_violations) > 3:
             lines.append(f"  ... und {len(summary.trigger_violations) - 3} weitere")
-    
+
     # v1: Strategy-Coverage
     if include_strategy_coverage and summary.strategy_coverage:
         coverage = summary.strategy_coverage
@@ -1942,7 +1928,7 @@ def _build_slack_message_v1(
                 lines.append(f"  ❌ {v}")
             if len(coverage.all_violations) > 3:
                 lines.append(f"  ... und {len(coverage.all_violations) - 3} weitere")
-    
+
     # v1: Switch-Sanity
     if include_switch_sanity and summary.switch_sanity:
         sanity = summary.switch_sanity
@@ -1953,11 +1939,11 @@ def _build_slack_message_v1(
             ])
             for v in sanity.violations:
                 lines.append(f"  ❌ {v}")
-    
+
     # Report-Link
     lines.extend([
         "",
         f"*Report*: `{report_dir}`",
     ])
-    
+
     return "\n".join(lines)

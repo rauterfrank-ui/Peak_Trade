@@ -29,7 +29,7 @@ import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pandas as pd
@@ -37,8 +37,8 @@ import pandas as pd
 try:
     import matplotlib
     matplotlib.use('Agg')  # Non-interactive backend
-    import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
@@ -64,7 +64,7 @@ class ReportFigure:
         image_path: Relativer Pfad zum PNG (relativ zum HTML-Report)
     """
     title: str
-    description: Optional[str] = None
+    description: str | None = None
     image_path: str = ""
 
 
@@ -80,9 +80,9 @@ class ReportTable:
         rows: Liste von Zeilen (jede Zeile ist eine Liste von String-Werten)
     """
     title: str
-    description: Optional[str] = None
-    headers: List[str] = field(default_factory=list)
-    rows: List[List[str]] = field(default_factory=list)
+    description: str | None = None
+    headers: list[str] = field(default_factory=list)
+    rows: list[list[str]] = field(default_factory=list)
 
 
 @dataclass
@@ -98,10 +98,10 @@ class ReportSection:
         extra_html: Optionaler zusätzlicher HTML-Code
     """
     title: str
-    description: Optional[str] = None
-    figures: List[ReportFigure] = field(default_factory=list)
-    tables: List[ReportTable] = field(default_factory=list)
-    extra_html: Optional[str] = None
+    description: str | None = None
+    figures: list[ReportFigure] = field(default_factory=list)
+    tables: list[ReportTable] = field(default_factory=list)
+    extra_html: str | None = None
 
 
 @dataclass
@@ -118,11 +118,11 @@ class HtmlReport:
         metadata: Zusätzliche Metadaten
     """
     title: str
-    experiment_id: Optional[str] = None
-    sweep_name: Optional[str] = None
+    experiment_id: str | None = None
+    sweep_name: str | None = None
     created_at: datetime = field(default_factory=datetime.utcnow)
-    sections: List[ReportSection] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    sections: list[ReportSection] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 # =============================================================================
@@ -359,7 +359,7 @@ def _html_escape(text: str) -> str:
     )
 
 
-def _format_percent(value: Optional[float], decimals: int = 2) -> str:
+def _format_percent(value: float | None, decimals: int = 2) -> str:
     """Formatiert einen Wert als Prozent."""
     if value is None:
         return "-"
@@ -369,7 +369,7 @@ def _format_percent(value: Optional[float], decimals: int = 2) -> str:
         return "-"
 
 
-def _format_float(value: Optional[float], decimals: int = 2) -> str:
+def _format_float(value: float | None, decimals: int = 2) -> str:
     """Formatiert einen Float-Wert."""
     if value is None:
         return "-"
@@ -488,9 +488,9 @@ def _render_html_report(report: HtmlReport) -> str:
 def plot_equity_curve(
     equity: pd.Series,
     title: str = "Equity Curve",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     figsize: tuple = (12, 6),
-) -> Optional[Path]:
+) -> Path | None:
     """
     Erstellt einen Equity-Kurven-Plot.
 
@@ -540,9 +540,9 @@ def plot_equity_curve(
 def plot_drawdown(
     equity: pd.Series,
     title: str = "Drawdown",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     figsize: tuple = (12, 4),
-) -> Optional[Path]:
+) -> Path | None:
     """
     Erstellt einen Drawdown-Plot.
 
@@ -592,13 +592,13 @@ def plot_drawdown(
 
 
 def plot_metric_distribution(
-    values: List[float],
+    values: list[float],
     title: str = "Metric Distribution",
     xlabel: str = "Value",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     figsize: tuple = (10, 5),
     bins: int = 20,
-) -> Optional[Path]:
+) -> Path | None:
     """
     Erstellt ein Histogramm für eine Metrik-Verteilung.
 
@@ -643,14 +643,14 @@ def plot_metric_distribution(
 
 
 def plot_sweep_scatter(
-    x_values: List[float],
-    y_values: List[float],
+    x_values: list[float],
+    y_values: list[float],
     x_label: str,
     y_label: str,
     title: str = "Parameter vs Metric",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     figsize: tuple = (10, 6),
-) -> Optional[Path]:
+) -> Path | None:
     """
     Erstellt einen Scatter-Plot für Parameter vs. Metrik.
 
@@ -731,7 +731,7 @@ class HtmlReportBuilder:
 
     def _create_metrics_section(
         self,
-        metrics: Dict[str, float],
+        metrics: dict[str, float],
         title: str = "Performance Metrics",
     ) -> ReportSection:
         """Erstellt eine Metrik-Sektion mit Karten."""
@@ -765,9 +765,7 @@ class HtmlReportBuilder:
                 if positive_is_good is not None:
                     if positive_is_good and value > 0:
                         css_class = "positive"
-                    elif positive_is_good and value < 0:
-                        css_class = "negative"
-                    elif not positive_is_good and value < 0:
+                    elif (positive_is_good and value < 0) or (not positive_is_good and value < 0):
                         css_class = "negative"
 
                 metric_cards.append(f'''
@@ -786,7 +784,7 @@ class HtmlReportBuilder:
 
     def _create_params_section(
         self,
-        params: Dict[str, Any],
+        params: dict[str, Any],
         title: str = "Strategy Parameters",
     ) -> ReportSection:
         """Erstellt eine Sektion mit Strategie-Parametern."""
@@ -811,9 +809,9 @@ class HtmlReportBuilder:
 
     def build_experiment_report(
         self,
-        summary: "ExperimentSummary",
-        equity_curve: Optional[pd.Series] = None,
-        extra_sections: Optional[List[ReportSection]] = None,
+        summary: ExperimentSummary,
+        equity_curve: pd.Series | None = None,
+        extra_sections: list[ReportSection] | None = None,
     ) -> Path:
         """
         Erstellt einen HTML-Report für ein einzelnes Experiment.
@@ -905,10 +903,10 @@ class HtmlReportBuilder:
 
     def build_sweep_report(
         self,
-        overview: "SweepOverview",
-        top_runs: List["RankedExperiment"],
+        overview: SweepOverview,
+        top_runs: list[RankedExperiment],
         metric: str = "sharpe",
-        extra_sections: Optional[List[ReportSection]] = None,
+        extra_sections: list[ReportSection] | None = None,
     ) -> Path:
         """
         Erstellt einen HTML-Report für einen Sweep.
@@ -1060,7 +1058,7 @@ class HtmlReportBuilder:
 def build_quick_experiment_report(
     experiment_id: str,
     output_dir: Path = Path("reports"),
-) -> Optional[Path]:
+) -> Path | None:
     """
     Schnelle Report-Generierung für ein Experiment.
 
@@ -1088,7 +1086,7 @@ def build_quick_sweep_report(
     metric: str = "sharpe",
     top_n: int = 20,
     output_dir: Path = Path("reports"),
-) -> Optional[Path]:
+) -> Path | None:
     """
     Schnelle Report-Generierung für einen Sweep.
 

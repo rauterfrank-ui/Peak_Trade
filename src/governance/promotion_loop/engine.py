@@ -4,10 +4,10 @@ Core engine functions for the Promotion Loop v0.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, List, Optional
 
 import toml
 
@@ -23,7 +23,6 @@ from .policy import AutoApplyBounds, AutoApplyPolicy
 from .safety import (
     SafetyConfig,
     apply_safety_filters,
-    check_global_promotion_lock,
     has_p0_violations,
     write_audit_log_entry,
 )
@@ -31,7 +30,7 @@ from .safety import (
 
 def build_promotion_candidates_from_patches(
     patches: Iterable[ConfigPatch],
-) -> List[PromotionCandidate]:
+) -> list[PromotionCandidate]:
     """
     Build PromotionCandidate objects from ConfigPatch instances.
 
@@ -40,13 +39,13 @@ def build_promotion_candidates_from_patches(
     - Tag candidates based on target heuristics (very simple).
     - eligible_for_live bleibt False (muss explizit gesetzt werden).
     """
-    candidates: List[PromotionCandidate] = []
+    candidates: list[PromotionCandidate] = []
 
     for patch in patches:
         if patch.status not in (PatchStatus.APPLIED_OFFLINE, PatchStatus.PROMOTED):
             continue
 
-        tags: List[str] = []
+        tags: list[str] = []
         target_lower = patch.target.lower()
         if "leverage" in target_lower:
             tags.append("leverage")
@@ -70,9 +69,9 @@ def build_promotion_candidates_from_patches(
 
 def filter_candidates_for_live(
     candidates: Iterable[PromotionCandidate],
-    safety_config: Optional[SafetyConfig] = None,
+    safety_config: SafetyConfig | None = None,
     mode: str = "manual_only",
-) -> List[PromotionDecision]:
+) -> list[PromotionDecision]:
     """
     Apply conservative governance filters to candidates.
 
@@ -81,26 +80,26 @@ def filter_candidates_for_live(
     - Reject candidates with P0 violations for bounded_auto
     - Reject candidates not marked as eligible_for_live
     - Extra sanity checks (Leverage-Hardlimit)
-    
+
     Args:
         candidates: Promotion candidates to filter
         safety_config: Safety configuration (P0/P1 settings)
         mode: Promotion mode (manual_only, bounded_auto, disabled)
-    
+
     Returns:
         List of promotion decisions
     """
-    decisions: List[PromotionDecision] = []
+    decisions: list[PromotionDecision] = []
 
     MAX_LEVERAGE_HARD_LIMIT = 3.0
 
     for candidate in candidates:
-        reasons: List[str] = []
+        reasons: list[str] = []
 
         # Apply P0 safety filters
         if safety_config:
             apply_safety_filters(candidate, safety_config, mode)
-        
+
         # Check eligibility
         if not candidate.eligible_for_live:
             reasons.append("candidate not marked as eligible_for_live")
@@ -110,11 +109,11 @@ def filter_candidates_for_live(
                 reasons=reasons,
             )
             decisions.append(decision)
-            
+
             # P1: Write audit log
             if safety_config:
                 write_audit_log_entry(candidate, decision, mode, safety_config)
-            
+
             continue
 
         # Check for P0 violations
@@ -127,11 +126,11 @@ def filter_candidates_for_live(
                 reasons=reasons,
             )
             decisions.append(decision)
-            
+
             # P1: Write audit log
             if safety_config:
                 write_audit_log_entry(candidate, decision, mode, safety_config)
-            
+
             continue
 
         # Legacy sanity check: Leverage hard limit
@@ -148,11 +147,11 @@ def filter_candidates_for_live(
                     reasons=reasons,
                 )
                 decisions.append(decision)
-                
+
                 # P1: Write audit log
                 if safety_config:
                     write_audit_log_entry(candidate, decision, mode, safety_config)
-                
+
                 continue
 
         # Accepted
@@ -162,7 +161,7 @@ def filter_candidates_for_live(
             reasons=reasons,
         )
         decisions.append(decision)
-        
+
         # P1: Write audit log
         if safety_config:
             write_audit_log_entry(candidate, decision, mode, safety_config)
@@ -174,7 +173,7 @@ def build_promotion_proposals(
     decisions: Iterable[PromotionDecision],
     *,
     proposal_id_prefix: str = "live_promotion",
-) -> List[PromotionProposal]:
+) -> list[PromotionProposal]:
     """
     Group accepted decisions into a single PromotionProposal (v0: genau eines).
     """
@@ -202,12 +201,12 @@ def build_promotion_proposals(
 def materialize_promotion_proposals(
     proposals: Iterable[PromotionProposal],
     base_dir: Path,
-) -> List[Path]:
+) -> list[Path]:
     """
     Write proposal artifacts to disk under reports/live_promotion/<proposal_id>/.
     """
     base_dir.mkdir(parents=True, exist_ok=True)
-    written_paths: List[Path] = []
+    written_paths: list[Path] = []
 
     for proposal in proposals:
         proposal_dir = base_dir / proposal.proposal_id
@@ -255,7 +254,7 @@ def apply_proposals_to_live_overrides(
     *,
     policy: AutoApplyPolicy,
     live_override_path: Path,
-) -> Optional[Path]:
+) -> Path | None:
     """
     Optional step: apply accepted promotion proposals to a live override TOML file,
     respecting the given AutoApplyPolicy.
@@ -278,7 +277,7 @@ def apply_proposals_to_live_overrides(
             if not isinstance(patch.new_value, (int, float)):
                 continue
 
-            bounds: Optional[AutoApplyBounds] = None
+            bounds: AutoApplyBounds | None = None
             for tag in decision.candidate.tags:
                 if tag == "leverage":
                     bounds = policy.leverage_bounds
@@ -353,7 +352,7 @@ def _build_operator_checklist_md(proposal: PromotionProposal) -> str:
     lines.append(f"- Generated at: {proposal.meta.get('generated_at', 'n/a')}")
     lines.append(f"- Number of accepted candidates: {len(proposal.decisions)}")
     lines.append("")
-    
+
     # Check for P0 violations
     has_p0 = any(
         any(f.startswith("P0_") for f in d.candidate.safety_flags)
@@ -366,7 +365,7 @@ def _build_operator_checklist_md(proposal: PromotionProposal) -> str:
         lines.append("These candidates CANNOT be auto-promoted in bounded_auto mode.")
         lines.append("Manual review and approval is required.")
         lines.append("")
-    
+
     lines.append("## Checklist")
     lines.append("- [ ] Review each patch and confirm it is safe for live.")
     lines.append("- [ ] Verify that no R&D strategies are being promoted.")
@@ -379,18 +378,18 @@ def _build_operator_checklist_md(proposal: PromotionProposal) -> str:
     for idx, decision in enumerate(proposal.decisions, start=1):
         patch = decision.candidate.patch
         candidate = decision.candidate
-        
+
         lines.append(f"### Patch {idx}: {patch.id}")
         lines.append(f"- Target: `{patch.target}`")
         lines.append(f"- Old value: `{patch.old_value}`")
         lines.append(f"- New value: `{patch.new_value}`")
         lines.append(f"- Confidence: `{patch.confidence_score:.3f}`" if patch.confidence_score else "- Confidence: N/A")
         lines.append(f"- Tags: {', '.join(candidate.tags) or '(none)'}")
-        
+
         # Show safety flags if present
         if candidate.safety_flags:
             lines.append(f"- **Safety Flags:** {', '.join(candidate.safety_flags)}")
-        
+
         if decision.reasons:
             lines.append(f"- Decision notes: {', '.join(decision.reasons)}")
         lines.append("")

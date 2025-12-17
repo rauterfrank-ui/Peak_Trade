@@ -12,10 +12,9 @@ Tests für:
 """
 from __future__ import annotations
 
-import pytest
-import pandas as pd
 import numpy as np
-from pathlib import Path
+import pandas as pd
+import pytest
 
 from src.experiments.portfolio_robustness import (
     PortfolioComponent,
@@ -25,10 +24,9 @@ from src.experiments.portfolio_robustness import (
     build_portfolio_returns,
     compute_portfolio_metrics,
     run_portfolio_monte_carlo,
-    run_portfolio_stress_tests,
     run_portfolio_robustness,
+    run_portfolio_stress_tests,
 )
-
 
 # =============================================================================
 # FIXTURES
@@ -230,7 +228,7 @@ def test_run_portfolio_monte_carlo(sample_returns_1):
 
     # Prüfe, dass Quantilen vorhanden sind
     if mc_results["metric_quantiles"]:
-        first_metric = list(mc_results["metric_quantiles"].keys())[0]
+        first_metric = next(iter(mc_results["metric_quantiles"].keys()))
         quantiles = mc_results["metric_quantiles"][first_metric]
         assert "p50" in quantiles
 

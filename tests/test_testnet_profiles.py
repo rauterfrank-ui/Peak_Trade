@@ -14,18 +14,16 @@ from pathlib import Path
 
 import pytest
 
+from src.core.peak_config import load_config
 from src.live.testnet_profiles import (
     TestnetSessionProfile,
-    ProfileValidationResult,
-    validate_profile,
-    load_testnet_profiles,
+    get_default_profiles,
+    get_profiles_summary,
     get_testnet_profile,
     list_testnet_profiles,
-    get_profiles_summary,
-    get_default_profiles,
+    load_testnet_profiles,
+    validate_profile,
 )
-from src.core.peak_config import load_config
-
 
 # =============================================================================
 # TestnetSessionProfile Tests

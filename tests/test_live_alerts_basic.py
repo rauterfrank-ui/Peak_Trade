@@ -8,11 +8,10 @@ Tests für Alert-Manager, Notifier und Alert-Regeln.
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pandas as pd
 import pytest
 
 # Pfad-Setup
@@ -27,14 +26,13 @@ from src.live.alert_manager import (
     TelegramAlertNotifier,
 )
 from src.live.alert_rules import (
-    check_pnl_drop,
-    check_no_events,
-    check_error_spike,
     MonitoringAPI,
+    check_error_spike,
+    check_no_events,
+    check_pnl_drop,
 )
 from src.live.alerts import AlertEvent, AlertLevel
 from src.live.monitoring import RunMetricPoint, RunSnapshot
-
 
 # =============================================================================
 # Test Fixtures
@@ -166,7 +164,7 @@ def test_console_alert_notifier() -> None:
     """Test: ConsoleAlertNotifier implementiert AlertSink Protocol."""
     notifier = ConsoleAlertNotifier(min_level=AlertLevel.INFO)
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -186,7 +184,7 @@ def test_email_alert_notifier_stub() -> None:
         to_addrs=["recipient@example.com"],
     )
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -206,7 +204,7 @@ def test_telegram_alert_notifier_stub() -> None:
         chat_id="fake_chat_id",
     )
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -232,15 +230,15 @@ def test_check_pnl_drop_alert(alert_manager: AlertManager, fake_sink: FakeAlertS
     # Verwende größere Zeitabstände um Race-Conditions zu vermeiden
     timeseries = [
         RunMetricPoint(
-            timestamp=datetime.now(timezone.utc) - timedelta(hours=3),
+            timestamp=datetime.now(UTC) - timedelta(hours=3),
             equity=10000.0,
         ),
         RunMetricPoint(
-            timestamp=datetime.now(timezone.utc) - timedelta(minutes=30),
+            timestamp=datetime.now(UTC) - timedelta(minutes=30),
             equity=9500.0,  # Innerhalb des Fensters
         ),
         RunMetricPoint(
-            timestamp=datetime.now(timezone.utc) - timedelta(seconds=1),
+            timestamp=datetime.now(UTC) - timedelta(seconds=1),
             equity=8500.0,  # 15% Drop insgesamt, >10% vom window_start
         ),
     ]
@@ -267,11 +265,11 @@ def test_check_pnl_drop_no_alert(alert_manager: AlertManager, fake_sink: FakeAle
     # Mock Zeitreihe ohne großen Drop
     timeseries = [
         RunMetricPoint(
-            timestamp=datetime.now(timezone.utc) - timedelta(hours=1),
+            timestamp=datetime.now(UTC) - timedelta(hours=1),
             equity=10000.0,
         ),
         RunMetricPoint(
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             equity=9900.0,  # Nur 1% Drop
         ),
     ]
@@ -297,7 +295,7 @@ def test_check_no_events_alert(alert_manager: AlertManager, fake_sink: FakeAlert
     snapshot = RunSnapshot(
         run_id=run_id,
         mode="shadow",
-        last_event_time=datetime.now(timezone.utc) - timedelta(minutes=15),
+        last_event_time=datetime.now(UTC) - timedelta(minutes=15),
         num_events=10,
     )
 
@@ -322,7 +320,7 @@ def test_check_no_events_no_alert(alert_manager: AlertManager, fake_sink: FakeAl
     snapshot = RunSnapshot(
         run_id=run_id,
         mode="shadow",
-        last_event_time=datetime.now(timezone.utc) - timedelta(minutes=5),
+        last_event_time=datetime.now(UTC) - timedelta(minutes=5),
         num_events=10,
     )
 
@@ -343,7 +341,7 @@ def test_check_error_spike_alert(alert_manager: AlertManager, fake_sink: FakeAle
     run_id = "test_run"
 
     # Mock Events mit vielen Fehlern
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     events = [
         {
             "step": i,
@@ -373,7 +371,7 @@ def test_check_error_spike_no_alert(alert_manager: AlertManager, fake_sink: Fake
     run_id = "test_run"
 
     # Mock Events mit wenigen Fehlern
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     events = [
         {
             "step": i,

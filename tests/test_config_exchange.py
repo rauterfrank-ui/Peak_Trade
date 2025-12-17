@@ -10,16 +10,16 @@ Tests für:
 """
 from __future__ import annotations
 
-import pytest
 from pathlib import Path
 
-from src.core.peak_config import load_config, PeakConfig
+import pytest
+
+from src.core.peak_config import PeakConfig, load_config
 from src.exchange import (
-    build_trading_client_from_config,
     TradingExchangeClient,
+    build_trading_client_from_config,
 )
 from src.exchange.dummy_client import DummyExchangeClient
-
 
 # =============================================================================
 # PeakConfig-basierte Tests
@@ -141,7 +141,7 @@ class TestPydanticExchangeConfig:
 
     def test_exchange_config_in_settings(self) -> None:
         """Test: Settings enthält exchange-Feld."""
-        from src.core.config_pydantic import Settings, ExchangeConfig
+        from src.core.config_pydantic import ExchangeConfig, Settings
 
         # Erstelle Settings mit Minimal-Daten
         settings = Settings(

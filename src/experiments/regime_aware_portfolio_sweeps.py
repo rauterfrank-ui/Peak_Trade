@@ -19,7 +19,7 @@ Example:
 """
 from __future__ import annotations
 
-from typing import List, Literal
+from typing import Literal
 
 from .base import ParamSweep
 
@@ -33,7 +33,7 @@ Granularity = Literal["coarse", "medium", "fine"]
 def get_regime_aware_portfolio_sweeps(
     granularity: Granularity = "medium",
     include_components: bool = False,
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Parameter-Sweeps für Regime-Aware Portfolio-Strategie zurück.
 
@@ -90,7 +90,7 @@ def get_regime_aware_portfolio_sweeps(
 
 def get_regime_aware_aggressive_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Aggressives Preset: Starke Reduktion in Risk-Off, moderate Reduktion in Neutral.
 
@@ -135,7 +135,7 @@ def get_regime_aware_aggressive_sweeps(
 
 def get_regime_aware_conservative_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Konservatives Preset: Deutlich reduzierte Allokation in Neutral & Risk-Off.
 
@@ -179,7 +179,7 @@ def get_regime_aware_conservative_sweeps(
 
 def get_regime_aware_volmetric_sweeps(
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Vol-Metrik-Vergleich Preset: Fixes Portfolio, variierende Vol-Metriken.
 
@@ -223,7 +223,7 @@ def get_regime_aware_volmetric_sweeps(
 def get_regime_aware_combined_sweeps(
     granularity: Granularity = "medium",
     preset: str = "aggressive",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Kombiniert Portfolio-Sweeps mit Vol-Regime-Sweeps.
 
@@ -234,7 +234,6 @@ def get_regime_aware_combined_sweeps(
     Returns:
         Kombinierte Liste von ParamSweep-Objekten
     """
-    from .regime_sweeps import get_volatility_detector_sweeps
 
     # Portfolio-Sweeps basierend auf Preset
     if preset == "aggressive":
@@ -279,7 +278,7 @@ REGIME_AWARE_PORTFOLIO_SWEEP_REGISTRY = {
 }
 
 
-def list_available_regime_aware_sweeps() -> List[str]:
+def list_available_regime_aware_sweeps() -> list[str]:
     """
     Gibt Liste aller verfügbaren Regime-Aware Portfolio-Sweeps zurück.
 
@@ -292,7 +291,7 @@ def list_available_regime_aware_sweeps() -> List[str]:
 def get_regime_aware_sweep(
     name: str,
     granularity: Granularity = "medium",
-) -> List[ParamSweep]:
+) -> list[ParamSweep]:
     """
     Gibt Sweeps für einen gegebenen Namen zurück.
 

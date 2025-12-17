@@ -17,8 +17,7 @@ Formel (Kelly):
 """
 
 from dataclasses import dataclass
-from typing import Optional, Literal
-
+from typing import Literal
 
 PositionSizingMethod = Literal["fixed_fractional", "kelly"]
 
@@ -68,7 +67,7 @@ class PositionSizer:
       (z.B. Entry 20_000, Stop 18_000 => stop_distance = 2_000)
     """
 
-    def __init__(self, config: Optional[PositionSizerConfig] = None) -> None:
+    def __init__(self, config: PositionSizerConfig | None = None) -> None:
         self.config = config or PositionSizerConfig()
 
     @staticmethod
@@ -168,7 +167,7 @@ class PositionSizer:
 
         # Hard Cap via max_position_pct
         max_pct_decimal = self.config.max_position_pct / 100.0
-        max_value = self.max_position_size(capital, max_pct_decimal)
+        self.max_position_size(capital, max_pct_decimal)
 
         # Size limitieren
         # (Annahme: stop_distance ist bereits der Preis pro Unit)
@@ -235,9 +234,9 @@ class PositionSizer:
         self,
         capital: float,
         stop_distance: float,
-        win_rate: Optional[float] = None,
-        avg_win: Optional[float] = None,
-        avg_loss: Optional[float] = None,
+        win_rate: float | None = None,
+        avg_win: float | None = None,
+        avg_loss: float | None = None,
     ) -> float:
         """
         Generische Methode:

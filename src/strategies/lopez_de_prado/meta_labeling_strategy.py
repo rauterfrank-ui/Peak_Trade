@@ -36,14 +36,12 @@ Warnung:
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Literal, Optional
+from dataclasses import dataclass
+from typing import Any
 
-import numpy as np
 import pandas as pd
 
 from ..base import BaseStrategy, StrategyMetadata
-
 
 # =============================================================================
 # CONFIG
@@ -67,15 +65,15 @@ class MetaLabelingConfig:
     """
 
     base_strategy_id: str = "rsi_reversion"
-    take_profit: Optional[float] = 0.02
-    stop_loss: Optional[float] = 0.01
+    take_profit: float | None = 0.02
+    stop_loss: float | None = 0.01
     vertical_barrier_bars: int = 20
     prediction_horizon_bars: int = 10
     use_triple_barrier: bool = True
     meta_model_type: str = "random_forest"  # Platzhalter
     min_confidence: float = 0.5
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert Config zu Dictionary."""
         return {
             "base_strategy_id": self.base_strategy_id,
@@ -146,15 +144,15 @@ class MetaLabelingStrategy(BaseStrategy):
     def __init__(
         self,
         base_strategy_id: str = "rsi_reversion",
-        take_profit: Optional[float] = 0.02,
-        stop_loss: Optional[float] = 0.01,
+        take_profit: float | None = 0.02,
+        stop_loss: float | None = 0.01,
         vertical_barrier_bars: int = 20,
         prediction_horizon_bars: int = 10,
         use_triple_barrier: bool = True,
         meta_model_type: str = "random_forest",
         min_confidence: float = 0.5,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Meta-Labeling Strategy.
@@ -217,14 +215,14 @@ class MetaLabelingStrategy(BaseStrategy):
         )
 
         # Lazy-loaded Basis-Strategie
-        self._base_strategy: Optional[BaseStrategy] = None
+        self._base_strategy: BaseStrategy | None = None
 
     @classmethod
     def from_config(
         cls,
         cfg: Any,
         section: str = "strategy.meta_labeling",
-    ) -> "MetaLabelingStrategy":
+    ) -> MetaLabelingStrategy:
         """
         Fabrikmethode für Config-basierte Instanziierung.
 
@@ -255,7 +253,7 @@ class MetaLabelingStrategy(BaseStrategy):
             min_confidence=min_conf,
         )
 
-    def _load_base_strategy(self) -> Optional[BaseStrategy]:
+    def _load_base_strategy(self) -> BaseStrategy | None:
         """
         Lädt die Basis-Strategie aus der Registry.
 
@@ -416,7 +414,7 @@ class MetaLabelingStrategy(BaseStrategy):
 # LEGACY API (Falls benötigt für Backwards Compatibility)
 # =============================================================================
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility.
 

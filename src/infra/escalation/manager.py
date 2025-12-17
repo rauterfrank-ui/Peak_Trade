@@ -14,10 +14,11 @@ Features:
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Mapping, Optional, Set
+from collections.abc import Mapping
+from typing import Any
 
 from .models import EscalationEvent, EscalationTarget
-from .providers import EscalationProvider, NullEscalationProvider, get_provider
+from .providers import EscalationProvider, get_provider
 
 logger = logging.getLogger(__name__)
 
@@ -49,10 +50,10 @@ class EscalationManager:
     def __init__(
         self,
         provider: EscalationProvider,
-        targets: List[EscalationTarget],
+        targets: list[EscalationTarget],
         enabled: bool = True,
-        enabled_environments: Optional[Set[str]] = None,
-        critical_severities: Optional[Set[str]] = None,
+        enabled_environments: set[str] | None = None,
+        critical_severities: set[str] | None = None,
         current_environment: str = "paper",
     ) -> None:
         """
@@ -85,12 +86,12 @@ class EscalationManager:
         return self._current_environment
 
     @property
-    def enabled_environments(self) -> Set[str]:
+    def enabled_environments(self) -> set[str]:
         """Environments in denen eskaliert wird."""
         return self._enabled_environments
 
     @property
-    def critical_severities(self) -> Set[str]:
+    def critical_severities(self) -> set[str]:
         """Severities die eskaliert werden."""
         return self._critical_severities
 
@@ -209,7 +210,7 @@ class EscalationManager:
 
 def build_escalation_manager_from_config(
     config: Mapping[str, Any],
-    environment: Optional[str] = None,
+    environment: str | None = None,
 ) -> EscalationManager:
     """
     Baut EscalationManager aus Config-Dict.
@@ -269,7 +270,7 @@ def build_escalation_manager_from_config(
     provider = get_provider(provider_name, provider_config)
 
     # Targets erstellen
-    targets: List[EscalationTarget] = []
+    targets: list[EscalationTarget] = []
     targets_config = escalation_config.get("targets", {})
 
     if targets_config:

@@ -19,23 +19,25 @@ WICHTIG: In Phase 17 werden KEINE echten API-Calls durchgeführt!
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Sequence
+from collections.abc import Sequence
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import Any
 
-from .base import (
-    OrderRequest,
-    OrderFill,
-    OrderExecutionResult,
-    OrderStatus,
-)
+from src.core.environment import EnvironmentConfig, TradingEnvironment
+
 # Direkte Imports von safety.py (src/live/__init__.py verwendet lazy-loading)
 from src.live.safety import (
-    SafetyGuard,
     LiveNotImplementedError,
-    TestnetDryRunOnlyError,
+    SafetyGuard,
 )
-from src.core.environment import EnvironmentConfig, TradingEnvironment
+
+from .base import (
+    OrderExecutionResult,
+    OrderFill,
+    OrderRequest,
+    OrderStatus,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +75,7 @@ class DryRunOrderLog:
     request: OrderRequest
     simulated_result: OrderExecutionResult
     environment: TradingEnvironment
-    notes: Optional[str] = None
+    notes: str | None = None
 
 
 # =============================================================================
@@ -109,7 +111,7 @@ class TestnetOrderExecutor:
     def __init__(
         self,
         safety_guard: SafetyGuard,
-        simulated_prices: Optional[Dict[str, float]] = None,
+        simulated_prices: dict[str, float] | None = None,
         fee_bps: float = 10.0,
         slippage_bps: float = 5.0,
     ) -> None:
@@ -127,7 +129,7 @@ class TestnetOrderExecutor:
         self._fee_bps = fee_bps
         self._slippage_bps = slippage_bps
         self._execution_count = 0
-        self._order_log: List[DryRunOrderLog] = []
+        self._order_log: list[DryRunOrderLog] = []
 
     def set_simulated_price(self, symbol: str, price: float) -> None:
         """Setzt einen simulierten Preis für ein Symbol."""
@@ -135,7 +137,7 @@ class TestnetOrderExecutor:
             raise ValueError(f"Preis muss > 0 sein: {price}")
         self._simulated_prices[symbol] = price
 
-    def get_simulated_price(self, symbol: str) -> Optional[float]:
+    def get_simulated_price(self, symbol: str) -> float | None:
         """Gibt den simulierten Preis für ein Symbol zurück."""
         return self._simulated_prices.get(symbol)
 
@@ -176,7 +178,7 @@ class TestnetOrderExecutor:
             ein simuliertes Result für Dry-Run-Zwecke.
         """
         self._execution_count += 1
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Log-Info
         logger.info(
@@ -250,7 +252,7 @@ class TestnetOrderExecutor:
 
     def execute_orders(
         self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    ) -> list[OrderExecutionResult]:
         """Führt mehrere Orders im Dry-Run aus."""
         return [self.execute_order(order) for order in orders]
 
@@ -258,7 +260,7 @@ class TestnetOrderExecutor:
         """Gibt die Anzahl der ausgeführten Dry-Run-Orders zurück."""
         return self._execution_count
 
-    def get_order_log(self) -> List[DryRunOrderLog]:
+    def get_order_log(self) -> list[DryRunOrderLog]:
         """Gibt eine Kopie des Order-Logs zurück."""
         return list(self._order_log)
 
@@ -313,7 +315,7 @@ class LiveOrderExecutor:
     def __init__(
         self,
         safety_guard: SafetyGuard,
-        simulated_prices: Optional[Dict[str, float]] = None,
+        simulated_prices: dict[str, float] | None = None,
         fee_bps: float = 10.0,
         slippage_bps: float = 5.0,
         dry_run_mode: bool = True,
@@ -342,7 +344,7 @@ class LiveOrderExecutor:
         self._slippage_bps = slippage_bps
         self._dry_run_mode = dry_run_mode
         self._execution_count = 0
-        self._order_log: List[DryRunOrderLog] = []
+        self._order_log: list[DryRunOrderLog] = []
 
         # Phase 71: Immer Dry-Run
         if not self._dry_run_mode:
@@ -364,7 +366,7 @@ class LiveOrderExecutor:
             raise ValueError(f"Preis muss > 0 sein: {price}")
         self._simulated_prices[symbol] = price
 
-    def get_simulated_price(self, symbol: str) -> Optional[float]:
+    def get_simulated_price(self, symbol: str) -> float | None:
         """Gibt den simulierten Preis für ein Symbol zurück."""
         return self._simulated_prices.get(symbol)
 
@@ -406,7 +408,7 @@ class LiveOrderExecutor:
             Echte Live-Orders sind weiterhin blockiert.
         """
         self._execution_count += 1
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Phase 71: Immer Dry-Run
         if not self._dry_run_mode:
@@ -493,7 +495,7 @@ class LiveOrderExecutor:
 
     def execute_orders(
         self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    ) -> list[OrderExecutionResult]:
         """Führt mehrere Orders im Dry-Run aus."""
         return [self.execute_order(order) for order in orders]
 
@@ -501,7 +503,7 @@ class LiveOrderExecutor:
         """Gibt die Anzahl der ausgeführten Dry-Run-Orders zurück."""
         return self._execution_count
 
-    def get_order_log(self) -> List[DryRunOrderLog]:
+    def get_order_log(self) -> list[DryRunOrderLog]:
         """Gibt eine Kopie des Order-Logs zurück."""
         return list(self._order_log)
 
@@ -528,7 +530,7 @@ class LiveOrderExecutor:
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.exchange.base import TradingExchangeClient, ExchangeOrderResult
+    from src.exchange.base import ExchangeOrderResult, TradingExchangeClient
 
 
 class ExchangeOrderExecutor:
@@ -560,8 +562,8 @@ class ExchangeOrderExecutor:
     def __init__(
         self,
         safety_guard: SafetyGuard,
-        simulated_prices: Optional[Dict[str, float]] = None,
-        trading_client: Optional["TradingExchangeClient"] = None,
+        simulated_prices: dict[str, float] | None = None,
+        trading_client: TradingExchangeClient | None = None,
     ) -> None:
         """
         Initialisiert den ExchangeOrderExecutor.
@@ -602,7 +604,7 @@ class ExchangeOrderExecutor:
         return not self._use_trading_client
 
     @property
-    def trading_client(self) -> Optional["TradingExchangeClient"]:
+    def trading_client(self) -> TradingExchangeClient | None:
         """Gibt den TradingExchangeClient zurück (oder None)."""
         return self._trading_client
 
@@ -634,7 +636,7 @@ class ExchangeOrderExecutor:
         # Paper -> nicht über diesen Executor, sondern PaperOrderExecutor
         if env == TradingEnvironment.PAPER and not self._use_trading_client:
             logger.warning(
-                f"[EXCHANGE EXECUTOR] Paper-Modus: Verwende PaperOrderExecutor stattdessen."
+                "[EXCHANGE EXECUTOR] Paper-Modus: Verwende PaperOrderExecutor stattdessen."
             )
             return OrderExecutionResult(
                 status="rejected",
@@ -689,11 +691,10 @@ class ExchangeOrderExecutor:
         Returns:
             OrderExecutionResult mit Status und Fill-Informationen
         """
-        from src.exchange.base import ExchangeOrderStatus
 
         assert self._trading_client is not None
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         client_name = self._trading_client.get_name()
 
         logger.info(
@@ -743,7 +744,7 @@ class ExchangeOrderExecutor:
         self,
         order: OrderRequest,
         exchange_order_id: str,
-        exchange_result: "ExchangeOrderResult",
+        exchange_result: ExchangeOrderResult,
         client_name: str,
         timestamp: datetime,
     ) -> OrderExecutionResult:
@@ -763,7 +764,7 @@ class ExchangeOrderExecutor:
         from src.exchange.base import ExchangeOrderStatus
 
         # Status mappen
-        status_mapping: Dict[ExchangeOrderStatus, OrderStatus] = {
+        status_mapping: dict[ExchangeOrderStatus, OrderStatus] = {
             ExchangeOrderStatus.FILLED: "filled",
             ExchangeOrderStatus.PARTIALLY_FILLED: "partially_filled",
             ExchangeOrderStatus.PENDING: "pending",
@@ -805,7 +806,7 @@ class ExchangeOrderExecutor:
 
     def execute_orders(
         self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    ) -> list[OrderExecutionResult]:
         """Führt mehrere Orders aus."""
         return [self.execute_order(order) for order in orders]
 
@@ -813,7 +814,7 @@ class ExchangeOrderExecutor:
         """Gibt die Anzahl der ausgeführten Orders zurück."""
         return self._execution_count
 
-    def get_testnet_order_log(self) -> List[DryRunOrderLog]:
+    def get_testnet_order_log(self) -> list[DryRunOrderLog]:
         """Gibt das Testnet-Dry-Run-Log zurück."""
         return self._testnet_executor.get_order_log()
 
@@ -824,9 +825,9 @@ class ExchangeOrderExecutor:
     @classmethod
     def from_config(
         cls,
-        cfg: "PeakConfig",
-        safety_guard: Optional[SafetyGuard] = None,
-    ) -> "ExchangeOrderExecutor":
+        cfg: PeakConfig,
+        safety_guard: SafetyGuard | None = None,
+    ) -> ExchangeOrderExecutor:
         """
         Factory: Erstellt ExchangeOrderExecutor aus PeakConfig.
 
@@ -842,8 +843,8 @@ class ExchangeOrderExecutor:
             >>> cfg = load_config()
             >>> executor = ExchangeOrderExecutor.from_config(cfg)
         """
-        from src.exchange import build_trading_client_from_config
         from src.core.environment import get_environment_from_config
+        from src.exchange import build_trading_client_from_config
 
         # Safety-Guard erstellen wenn nicht übergeben
         if safety_guard is None:
@@ -870,8 +871,8 @@ PeakConfig = Any  # Vermeidet Import, wird nur für Type-Hints genutzt
 
 def create_order_executor(
     env_config: EnvironmentConfig,
-    simulated_prices: Optional[Dict[str, float]] = None,
-    trading_client: Optional["TradingExchangeClient"] = None,
+    simulated_prices: dict[str, float] | None = None,
+    trading_client: TradingExchangeClient | None = None,
 ) -> OrderExecutor:
     """
     Factory-Funktion: Erstellt den passenden OrderExecutor basierend auf EnvironmentConfig.
@@ -923,8 +924,9 @@ def create_order_executor(
         In Phase 71 ist LiveOrderExecutor immer im Dry-Run-Modus.
         Echte Live-Orders werden erst in einer späteren Phase implementiert.
     """
-    from .paper import PaperOrderExecutor, PaperMarketContext
     from src.live.safety import SafetyGuard
+
+    from .paper import PaperMarketContext, PaperOrderExecutor
 
     env = env_config.environment
     guard = SafetyGuard(env_config=env_config)

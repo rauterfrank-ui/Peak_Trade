@@ -50,15 +50,15 @@ Verwendung:
 from __future__ import annotations
 
 import uuid
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
-from typing import Dict, Iterable, Iterator, List, Optional, Any
+from collections.abc import Iterable, Iterator
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
+from typing import Any
 
 import numpy as np
 import pandas as pd
 
 from .synthetic_models.garch_regime_v0 import GarchRegimeModelV0
-
 
 # ==============================================================================
 # Data Models
@@ -93,7 +93,7 @@ class SyntheticTick:
     is_synthetic: bool
     sigma: float
     sim_run_id: str
-    meta: Optional[Dict[str, Any]] = None
+    meta: dict[str, Any] | None = None
 
     def __post_init__(self):
         # SAFETY: Erzwinge is_synthetic=True IMMER
@@ -136,7 +136,7 @@ class RegimeParams:
     alpha: float
     beta: float
     nu: float
-    name: Optional[str] = None
+    name: str | None = None
 
     def __post_init__(self):
         if self.omega < 0:
@@ -180,13 +180,13 @@ class OfflineRealtimeFeedV0Config:
     base_price: float
     dt: timedelta
     num_ticks: int
-    regime_params: List[RegimeParams]
-    transition_matrix: List[List[float]]
-    seed: Optional[int] = None
-    start_timestamp: Optional[datetime] = None
+    regime_params: list[RegimeParams]
+    transition_matrix: list[list[float]]
+    seed: int | None = None
+    start_timestamp: datetime | None = None
     initial_regime: int = 0
     volume_base: float = 100.0
-    volume_regime_multipliers: Optional[List[float]] = None
+    volume_regime_multipliers: list[float] | None = None
 
     def __post_init__(self):
         if self.base_price <= 0:
@@ -298,7 +298,7 @@ class OfflineRealtimeFeedV0:
         if config.start_timestamp is not None:
             self._start_ts = config.start_timestamp
         else:
-            self._start_ts = datetime.now(timezone.utc)
+            self._start_ts = datetime.now(UTC)
 
         # Volume Multipliers
         if config.volume_regime_multipliers is not None:
@@ -322,7 +322,7 @@ class OfflineRealtimeFeedV0:
         current_price = self.config.base_price
         current_ts = self._start_ts
 
-        for tick_idx in range(self.config.num_ticks):
+        for _tick_idx in range(self.config.num_ticks):
             # Model-Step
             state = self.model.step()
 
@@ -389,7 +389,7 @@ class OfflineRealtimeFeedV0:
         df = df.set_index("timestamp")
         return df
 
-    def reset(self, seed: Optional[int] = None) -> None:
+    def reset(self, seed: int | None = None) -> None:
         """
         Setzt den Feed zurück.
 

@@ -9,10 +9,9 @@ TODO: Beschreibe hier deine Strategie-Idee:
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from ..base import BaseStrategy, StrategyMetadata
 
@@ -43,8 +42,8 @@ class RsiKeltnerStrategy(BaseStrategy):
         param1: int = 20,
         param2: float = 0.02,
         price_col: str = "close",
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert RSI + Keltner Reversion Strategy.
@@ -169,7 +168,7 @@ class RsiKeltnerStrategy(BaseStrategy):
 
         return signals
 
-    def get_config_dict(self) -> Dict[str, Any]:
+    def get_config_dict(self) -> dict[str, Any]:
         """
         Gibt Config als Dict zurück (nützlich für Logging/Experiment-Tracking).
 

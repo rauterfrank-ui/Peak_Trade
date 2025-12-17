@@ -11,24 +11,21 @@ Tests für:
 """
 from __future__ import annotations
 
-import json
-import tempfile
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 
 from src.live.alert_storage import (
-    StoredAlert,
     AlertStorage,
+    StoredAlert,
+    get_alert_stats,
     get_default_alert_storage,
+    list_recent_alerts,
     reset_default_storage,
     store_alert,
-    list_recent_alerts,
-    get_alert_stats,
 )
-
 
 # =============================================================================
 # FIXTURES
@@ -50,7 +47,7 @@ def storage(temp_storage_dir: Path) -> AlertStorage:
 
 
 @pytest.fixture
-def sample_alert_dict() -> Dict[str, Any]:
+def sample_alert_dict() -> dict[str, Any]:
     """Sample Alert als Dict."""
     return {
         "title": "Test Alert",
@@ -59,7 +56,7 @@ def sample_alert_dict() -> Dict[str, Any]:
         "category": "RISK",
         "source": "test.source",
         "session_id": "test_session_123",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "context": {"key": "value", "number": 42.5},
     }
 
@@ -67,7 +64,7 @@ def sample_alert_dict() -> Dict[str, Any]:
 @pytest.fixture
 def sample_alert_message():
     """Sample AlertMessage (lazy import)."""
-    from src.live.alert_pipeline import AlertMessage, AlertSeverity, AlertCategory
+    from src.live.alert_pipeline import AlertCategory, AlertMessage, AlertSeverity
 
     return AlertMessage(
         title="Test AlertMessage",
@@ -88,7 +85,7 @@ def sample_alert_message():
 class TestStoredAlert:
     """Tests für StoredAlert Dataclass."""
 
-    def test_from_dict(self, sample_alert_dict: Dict[str, Any]):
+    def test_from_dict(self, sample_alert_dict: dict[str, Any]):
         """Testet Erstellung aus Dict."""
         alert = StoredAlert.from_dict(sample_alert_dict)
 
@@ -109,7 +106,7 @@ class TestStoredAlert:
         assert alert.category == "SYSTEM"
         assert alert.context == {}
 
-    def test_to_dict(self, sample_alert_dict: Dict[str, Any]):
+    def test_to_dict(self, sample_alert_dict: dict[str, Any]):
         """Testet Serialisierung zu Dict."""
         alert = StoredAlert.from_dict(sample_alert_dict)
         alert.id = "test_id"
@@ -148,7 +145,7 @@ class TestAlertStorage:
         assert storage_dir.exists()
         assert storage.storage_dir == storage_dir
 
-    def test_store_dict(self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]):
+    def test_store_dict(self, storage: AlertStorage, sample_alert_dict: dict[str, Any]):
         """Testet Speichern eines Dicts."""
         alert_id = storage.store(sample_alert_dict)
 
@@ -162,14 +159,14 @@ class TestAlertStorage:
         assert alert_id is not None
         assert alert_id.startswith("alert_")
 
-    def test_store_creates_file(self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]):
+    def test_store_creates_file(self, storage: AlertStorage, sample_alert_dict: dict[str, Any]):
         """Testet dass Datei erstellt wird."""
         storage.store(sample_alert_dict)
 
         files = list(storage.storage_dir.glob("alerts_*.jsonl"))
         assert len(files) == 1
 
-    def test_store_appends_to_file(self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]):
+    def test_store_appends_to_file(self, storage: AlertStorage, sample_alert_dict: dict[str, Any]):
         """Testet dass Alerts an Datei angehängt werden."""
         storage.store(sample_alert_dict)
         storage.store(sample_alert_dict)
@@ -179,7 +176,7 @@ class TestAlertStorage:
         assert len(files) == 1
 
         # Prüfe Anzahl Zeilen
-        with open(files[0], "r") as f:
+        with open(files[0]) as f:
             lines = f.readlines()
         assert len(lines) == 3
 
@@ -188,7 +185,7 @@ class TestAlertStorage:
         alerts = storage.list_alerts()
         assert alerts == []
 
-    def test_list_alerts_returns_stored(self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]):
+    def test_list_alerts_returns_stored(self, storage: AlertStorage, sample_alert_dict: dict[str, Any]):
         """Testet dass gespeicherte Alerts zurückgegeben werden."""
         storage.store(sample_alert_dict)
         storage.store(sample_alert_dict)
@@ -200,7 +197,7 @@ class TestAlertStorage:
     def test_list_alerts_sorted_by_timestamp(self, storage: AlertStorage):
         """Testet Sortierung nach Timestamp (neueste zuerst)."""
         # Erstelle Alerts mit unterschiedlichen Timestamps
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         for i in range(3):
             alert = {
                 "title": f"Alert {i}",
@@ -214,7 +211,7 @@ class TestAlertStorage:
         assert alerts[0].title == "Alert 0"  # Neuester
         assert alerts[2].title == "Alert 2"  # Ältester
 
-    def test_list_alerts_limit(self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]):
+    def test_list_alerts_limit(self, storage: AlertStorage, sample_alert_dict: dict[str, Any]):
         """Testet Limit-Parameter."""
         for _ in range(10):
             storage.store(sample_alert_dict)
@@ -257,7 +254,7 @@ class TestAlertStorage:
 
     def test_list_alerts_filter_hours(self, storage: AlertStorage):
         """Testet Zeitfenster-Filter."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Alert vor 2 Stunden
         storage.store({
@@ -304,7 +301,7 @@ class TestAlertStorage:
     def test_cleanup_old_files(self, storage: AlertStorage):
         """Testet Cleanup alter Dateien."""
         # Erstelle alte Datei
-        old_date = datetime.now(timezone.utc) - timedelta(days=40)
+        old_date = datetime.now(UTC) - timedelta(days=40)
         old_file = storage.storage_dir / f"alerts_{old_date.strftime('%Y-%m-%d')}.jsonl"
         old_file.write_text('{"title": "old"}')
 
@@ -392,14 +389,14 @@ class TestPipelineIntegration:
 
     def test_manager_persists_alerts(self, tmp_path: Path, monkeypatch):
         """Testet dass AlertPipelineManager Alerts persistiert."""
+        import src.live.alert_storage as storage_module
         from src.live.alert_pipeline import (
-            AlertPipelineManager,
-            AlertMessage,
-            AlertSeverity,
             AlertCategory,
+            AlertMessage,
+            AlertPipelineManager,
+            AlertSeverity,
             NullAlertChannel,
         )
-        import src.live.alert_storage as storage_module
 
         # Setup Storage
         reset_default_storage()
@@ -430,14 +427,14 @@ class TestPipelineIntegration:
 
     def test_manager_persist_disabled(self, tmp_path: Path, monkeypatch):
         """Testet dass persist_alerts=False keine Alerts speichert."""
+        import src.live.alert_storage as storage_module
         from src.live.alert_pipeline import (
-            AlertPipelineManager,
-            AlertMessage,
-            AlertSeverity,
             AlertCategory,
+            AlertMessage,
+            AlertPipelineManager,
+            AlertSeverity,
             NullAlertChannel,
         )
-        import src.live.alert_storage as storage_module
 
         # Setup Storage
         reset_default_storage()
@@ -488,7 +485,7 @@ class TestEdgeCases:
     def test_invalid_json_line_skipped(self, storage: AlertStorage):
         """Testet dass ungültige JSON-Zeilen übersprungen werden."""
         # Erstelle Datei mit ungültiger Zeile
-        today = datetime.now(timezone.utc)
+        today = datetime.now(UTC)
         file_path = storage._get_file_path(today)
         file_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -500,7 +497,7 @@ class TestEdgeCases:
         alerts = storage.list_alerts()
         assert len(alerts) == 2
 
-    def test_max_alerts_per_query_respected(self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]):
+    def test_max_alerts_per_query_respected(self, storage: AlertStorage, sample_alert_dict: dict[str, Any]):
         """Testet dass max_alerts_per_query nicht überschritten wird."""
         storage._max_alerts_per_query = 5
 

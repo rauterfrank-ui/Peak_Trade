@@ -5,17 +5,16 @@ Peak_Trade Phase 40 - Composite Strategy Tests
 Unit-Tests für die Multi-Strategy Composite-Strategie.
 """
 
-import pytest
-import pandas as pd
+
 import numpy as np
-from typing import Optional
+import pandas as pd
+import pytest
 
-from src.strategies.composite import CompositeStrategy, generate_signals
-from src.strategies.rsi_reversion import RsiReversionStrategy
-from src.strategies.breakout import BreakoutStrategy
-from src.strategies.vol_regime_filter import VolRegimeFilter
 from src.strategies.base import BaseStrategy
-
+from src.strategies.breakout import BreakoutStrategy
+from src.strategies.composite import CompositeStrategy
+from src.strategies.rsi_reversion import RsiReversionStrategy
+from src.strategies.vol_regime_filter import VolRegimeFilter
 
 # ============================================================================
 # TEST FIXTURES
@@ -44,7 +43,7 @@ class MockStrategy(BaseStrategy):
 
     KEY = "mock"
 
-    def __init__(self, signals: Optional[pd.Series] = None, name: str = "mock"):
+    def __init__(self, signals: pd.Series | None = None, name: str = "mock"):
         super().__init__(config={"name": name})
         self._signals = signals
         self._name = name
@@ -317,7 +316,7 @@ class TestCompositeStrategy:
         assert "rsi_reversion" in component_signals
         assert "breakout" in component_signals
 
-        for name, signals in component_signals.items():
+        for _name, signals in component_signals.items():
             assert len(signals) == len(df)
 
     def test_metadata(self):

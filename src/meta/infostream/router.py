@@ -20,7 +20,7 @@ Das Learning-Log hat folgende Struktur:
 
 Verwendung:
     from src.meta.infostream.router import append_learnings_to_log
-    
+
     snippets = [LearningSnippet(event_id="INF-...", lines=["Learning 1", "Learning 2"])]
     append_learnings_to_log(snippets, Path("docs/mindmap/INFOSTREAM_LEARNING_LOG.md"))
 """
@@ -31,7 +31,6 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
 
 from .models import LearningSnippet
 
@@ -51,13 +50,13 @@ LEARNING_LOG_HEADER = """# InfoStream Learning Log
 
 
 def append_learnings_to_log(
-    snippets: List[LearningSnippet],
+    snippets: list[LearningSnippet],
     log_path: Path,
-    date: Optional[datetime] = None,
+    date: datetime | None = None,
 ) -> None:
     """
     Hängt LearningSnippets an das zentrale Learning-Log an.
-    
+
     Parameters
     ----------
     snippets : List[LearningSnippet]
@@ -66,7 +65,7 @@ def append_learnings_to_log(
         Pfad zur Learning-Log-Datei, z.B. docs/mindmap/INFOSTREAM_LEARNING_LOG.md
     date : datetime, optional
         Datum für die Gruppierung. Default: heute.
-        
+
     Notes
     -----
     - Falls log_path nicht existiert, wird ein neues Log mit Header erstellt.
@@ -77,42 +76,42 @@ def append_learnings_to_log(
     if not snippets:
         logger.info("Keine Learnings zum Anhängen")
         return
-    
+
     if date is None:
         date = datetime.now()
-    
+
     date_str = date.strftime("%Y-%m-%d")
-    
+
     # Sicherstellen, dass das Verzeichnis existiert
     log_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Existierendes Log laden oder neues erstellen
     if log_path.exists():
         content = log_path.read_text(encoding="utf-8")
     else:
         content = LEARNING_LOG_HEADER
         logger.info(f"Neues Learning-Log erstellt: {log_path}")
-    
+
     # Bereits vorhandene Event-IDs ermitteln (Duplikat-Check)
     existing_event_ids = set(re.findall(r"### (INF-[^\n]+)", content))
-    
+
     # Neue Snippets filtern
     new_snippets = [s for s in snippets if s.event_id not in existing_event_ids]
-    
+
     if not new_snippets:
         logger.info("Alle Learnings bereits im Log vorhanden")
         return
-    
+
     # Datum-Sektion finden oder erstellen
     date_section_pattern = f"## {date_str}"
-    
+
     if date_section_pattern not in content:
         # Neue Datum-Sektion hinzufügen
         # Finde die beste Position (nach dem Header, vor älteren Einträgen)
-        
+
         # Suche nach existierenden Datum-Sektionen
         existing_dates = re.findall(r"## (\d{4}-\d{2}-\d{2})", content)
-        
+
         if existing_dates:
             # Füge vor der ersten existierenden Datum-Sektion ein (neueste zuerst)
             first_date_match = re.search(r"## \d{4}-\d{2}-\d{2}", content)
@@ -128,12 +127,12 @@ def append_learnings_to_log(
             if not content.endswith("\n"):
                 content += "\n"
             content += f"\n## {date_str}\n\n"
-    
+
     # Learnings einfügen unter der passenden Datum-Sektion
     for snippet in new_snippets:
         # Markdown-Block erstellen
         markdown_block = snippet.to_markdown_block()
-        
+
         # Position zum Einfügen finden (direkt nach ## YYYY-MM-DD)
         date_section_start = content.find(date_section_pattern)
         if date_section_start != -1:
@@ -142,27 +141,27 @@ def append_learnings_to_log(
             if line_end != -1:
                 # Finde die nächste Sektion oder Ende
                 next_section = content.find("\n## ", line_end + 1)
-                
+
                 if next_section != -1:
                     # Einfügen vor der nächsten Sektion
                     insert_pos = next_section
                 else:
                     # Ans Ende des Dokuments
                     insert_pos = len(content)
-                
+
                 # Sicherstellen, dass genug Leerzeilen vorhanden sind
                 # und einfügen direkt nach der Datum-Zeile
                 if content[line_end:line_end+2] != "\n\n":
                     content = content[:line_end+1] + "\n" + content[line_end+1:]
                     insert_pos += 1
-                
+
                 # Füge nach der Datum-Zeile und Leerzeile ein
                 # Suche die richtige Position
                 actual_insert = line_end + 2  # Nach ## YYYY-MM-DD\n\n
-                
+
                 # Prüfe ob schon Content unter diesem Datum ist
-                existing_under_date = content[actual_insert:next_section if next_section != -1 else len(content)]
-                
+                content[actual_insert:next_section if next_section != -1 else len(content)]
+
                 # Füge am Ende des Tages-Abschnitts ein
                 if next_section != -1:
                     content = (
@@ -174,9 +173,9 @@ def append_learnings_to_log(
                     if not content.endswith("\n"):
                         content += "\n"
                     content += markdown_block + "\n"
-        
+
         logger.info(f"Learning angehängt: {snippet.event_id}")
-    
+
     # Speichern
     log_path.write_text(content, encoding="utf-8")
     logger.info(f"Learning-Log aktualisiert: {log_path} (+{len(new_snippets)} Einträge)")
@@ -185,12 +184,12 @@ def append_learnings_to_log(
 def get_learning_log_stats(log_path: Path) -> dict:
     """
     Gibt Statistiken über das Learning-Log zurück.
-    
+
     Parameters
     ----------
     log_path : Path
         Pfad zur Learning-Log-Datei
-        
+
     Returns
     -------
     dict
@@ -206,22 +205,22 @@ def get_learning_log_stats(log_path: Path) -> dict:
         "latest_date": "",
         "event_ids": [],
     }
-    
+
     if not log_path.exists():
         return stats
-    
+
     content = log_path.read_text(encoding="utf-8")
-    
+
     # Event-IDs zählen
     event_ids = re.findall(r"### (INF-[^\n]+)", content)
     stats["event_ids"] = event_ids
     stats["total_entries"] = len(event_ids)
-    
+
     # Daten extrahieren
     dates = re.findall(r"## (\d{4}-\d{2}-\d{2})", content)
     stats["dates"] = sorted(set(dates), reverse=True)
-    
+
     if dates:
         stats["latest_date"] = max(dates)
-    
+
     return stats

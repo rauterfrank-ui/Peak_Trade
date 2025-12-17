@@ -11,7 +11,7 @@ Dies ist die einfachste Portfolio-Strategie und dient als Baseline.
 from __future__ import annotations
 
 import logging
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from .base import BasePortfolioStrategy, PortfolioContext
 
@@ -51,7 +51,7 @@ class EqualWeightPortfolioStrategy(BasePortfolioStrategy):
         >>> # weights ≈ {"BTC/EUR": 0.333, "ETH/EUR": 0.333, "LTC/EUR": 0.333}
     """
 
-    def __init__(self, config: "PortfolioConfig") -> None:
+    def __init__(self, config: PortfolioConfig) -> None:
         """
         Initialisiert Equal-Weight-Strategie.
 
@@ -63,7 +63,7 @@ class EqualWeightPortfolioStrategy(BasePortfolioStrategy):
 
     def _compute_raw_weights(
         self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Berechnet gleichverteilte Gewichte.
 

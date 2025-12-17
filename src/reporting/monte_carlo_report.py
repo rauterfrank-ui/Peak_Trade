@@ -25,11 +25,11 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Dict, Literal, Optional
+from typing import Literal
 
 import pandas as pd
 
-from .base import Report, ReportSection, df_to_markdown, format_metric
+from .base import Report, ReportSection, df_to_markdown
 from .plots import save_histogram
 
 try:
@@ -46,12 +46,12 @@ except ImportError:
 
 
 def build_monte_carlo_report(
-    summary: "MonteCarloSummaryResult",  # Forward reference
+    summary: MonteCarloSummaryResult,  # Forward reference
     *,
     title: str,
     output_dir: Path,
     format: Literal["md", "html", "both"] = "both",
-) -> Dict[str, Path]:
+) -> dict[str, Path]:
     """
     Erzeugt einen Monte-Carlo-Report mit Kennzahlen-Tabellen und Quantilen.
 
@@ -106,7 +106,7 @@ def build_monte_carlo_report(
     report.add_section(ReportSection(title="Overview", content_markdown="\n".join(overview_lines)))
 
     # 2. Metric Summary Table
-    metric_data: list[Dict[str, any]] = []
+    metric_data: list[dict[str, any]] = []
     for metric_name, quantiles in summary.metric_quantiles.items():
         metric_data.append({
             "Metric": metric_name,
@@ -155,7 +155,7 @@ def build_monte_carlo_report(
                     charts_content.append(
                         f"### {metric_name.title()} Distribution\n\n![{metric_name} Distribution]({rel_path})"
                     )
-                except Exception as e:
+                except Exception:
                     # Fehler beim Plotting nicht fatal
                     pass
 
@@ -185,7 +185,7 @@ def build_monte_carlo_report(
     ))
 
     # Speichere Report
-    paths: Dict[str, Path] = {}
+    paths: dict[str, Path] = {}
 
     if format in ("md", "both"):
         md_path = output_dir / "monte_carlo_report.md"

@@ -20,12 +20,12 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
 if TYPE_CHECKING:
-    from typing_extensions import Self
+    pass
 
 
 @dataclass
@@ -46,7 +46,7 @@ class StrategyMetadata:
     version: str = "0.1.0"
     author: str = "Peak_Trade"
     regime: str = "any"
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
 
 class BaseStrategy(ABC):
@@ -78,10 +78,10 @@ class BaseStrategy(ABC):
 
     def __init__(
         self,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
-        self.config: Dict[str, Any] = config or {}
+        self.config: dict[str, Any] = config or {}
         self.meta: StrategyMetadata = metadata or StrategyMetadata(
             name=self.__class__.__name__
         )
@@ -93,7 +93,7 @@ class BaseStrategy(ABC):
 
     @classmethod
     @abstractmethod
-    def from_config(cls, cfg: Any, section: str) -> "BaseStrategy":
+    def from_config(cls, cfg: Any, section: str) -> BaseStrategy:
         """
         Factory-Methode: Erstellt Strategie-Instanz aus Config.
 

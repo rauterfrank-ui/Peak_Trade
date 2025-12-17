@@ -12,8 +12,7 @@ WICHTIG: Diese Tests sind für Offline-Simulation.
 """
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
-from typing import List
+from datetime import UTC, datetime, timedelta
 
 import numpy as np
 import pytest
@@ -26,7 +25,6 @@ from src.data.offline_realtime import (
     RegimeParams,
     SyntheticTick,
 )
-
 
 # ==============================================================================
 # Fixtures
@@ -158,7 +156,7 @@ class TestGarchRegimeModelV0:
         states2 = [model.step() for _ in range(10)]
 
         # Sollte identisch sein
-        for s1, s2 in zip(states1, states2):
+        for s1, s2 in zip(states1, states2, strict=False):
             assert s1.return_t == s2.return_t
 
     def test_generate_returns(self):
@@ -232,7 +230,7 @@ class TestSyntheticTick:
 
     def test_tick_creation(self):
         """Tick kann erstellt werden."""
-        ts = datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        ts = datetime(2024, 1, 1, 0, 0, 0, tzinfo=UTC)
         tick = SyntheticTick(
             timestamp=ts,
             price=50000.0,
@@ -252,7 +250,7 @@ class TestSyntheticTick:
 
     def test_is_synthetic_always_true(self):
         """is_synthetic ist IMMER True, auch wenn False übergeben wird."""
-        ts = datetime(2024, 1, 1, tzinfo=timezone.utc)
+        ts = datetime(2024, 1, 1, tzinfo=UTC)
         tick = SyntheticTick(
             timestamp=ts,
             price=100.0,
@@ -269,7 +267,7 @@ class TestSyntheticTick:
 
     def test_tick_repr(self):
         """__repr__ funktioniert."""
-        ts = datetime(2024, 1, 1, tzinfo=timezone.utc)
+        ts = datetime(2024, 1, 1, tzinfo=UTC)
         tick = SyntheticTick(
             timestamp=ts,
             price=50000.0,
@@ -513,7 +511,7 @@ class TestReproducibility:
         ticks1 = list(feed1.generate_ticks())
         ticks2 = list(feed2.generate_ticks())
 
-        for t1, t2 in zip(ticks1, ticks2):
+        for t1, t2 in zip(ticks1, ticks2, strict=False):
             assert t1.price == t2.price, "Preise sollten identisch sein"
             assert t1.ret == t2.ret, "Returns sollten identisch sein"
             assert t1.regime_id == t2.regime_id, "Regime-IDs sollten identisch sein"
@@ -549,7 +547,7 @@ class TestReproducibility:
         ticks2 = list(feed2.generate_ticks())
 
         # Mindestens einige Preise sollten unterschiedlich sein
-        different_prices = sum(1 for t1, t2 in zip(ticks1, ticks2) if t1.price != t2.price)
+        different_prices = sum(1 for t1, t2 in zip(ticks1, ticks2, strict=False) if t1.price != t2.price)
         assert different_prices > 0, "Verschiedene Seeds sollten verschiedene Sequenzen erzeugen"
 
     def test_reset_restores_sequence(self):
@@ -574,7 +572,7 @@ class TestReproducibility:
         feed.reset()
         ticks2 = list(feed.generate_ticks())
 
-        for t1, t2 in zip(ticks1, ticks2):
+        for t1, t2 in zip(ticks1, ticks2, strict=False):
             assert t1.price == t2.price
 
 

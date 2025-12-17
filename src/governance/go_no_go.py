@@ -10,7 +10,8 @@ Referenz: docs/GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md
 
 from __future__ import annotations
 
-from typing import Literal, Mapping
+from collections.abc import Mapping
+from typing import Literal
 
 GovernanceStatus = Literal["locked", "approved_2026", "approved_2027", "unknown"]
 

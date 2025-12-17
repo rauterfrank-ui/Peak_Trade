@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # tests/test_live_session_runner.py
 """
 Peak_Trade: Tests für LiveSessionRunner (Phase 80)
@@ -20,9 +19,9 @@ from __future__ import annotations
 import subprocess
 import sys
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
@@ -48,7 +47,7 @@ class FakeStrategy:
 
     KEY = "fake_strategy"
 
-    def __init__(self, signal_sequence: Optional[List[int]] = None):
+    def __init__(self, signal_sequence: list[int] | None = None):
         """
         Args:
             signal_sequence: Liste von Signalen die nacheinander zurückgegeben werden.
@@ -72,7 +71,7 @@ class FakeStrategy:
         return pd.Series([signal] * len(data), index=data.index)
 
     @classmethod
-    def from_config(cls, cfg: Any, section: str) -> "FakeStrategy":
+    def from_config(cls, cfg: Any, section: str) -> FakeStrategy:
         return cls()
 
 
@@ -106,16 +105,16 @@ class FakeDataSource:
         self.timeframe = timeframe
         self.num_candles = num_candles
         self.base_price = base_price
-        self._candles: List[FakeCandle] = []
+        self._candles: list[FakeCandle] = []
         self._poll_count = 0
 
-    def warmup(self) -> List[FakeCandle]:
+    def warmup(self) -> list[FakeCandle]:
         """Generiert Warmup-Candles."""
         self._candles = []
         for i in range(self.num_candles):
             price = self.base_price + (i * 10)
             candle = FakeCandle(
-                timestamp=datetime.now(timezone.utc),
+                timestamp=datetime.now(UTC),
                 open=price,
                 high=price + 50,
                 low=price - 50,
@@ -124,7 +123,7 @@ class FakeDataSource:
             self._candles.append(candle)
         return self._candles
 
-    def poll_latest(self) -> Optional[FakeCandle]:
+    def poll_latest(self) -> FakeCandle | None:
         """Gibt die nächste Candle zurück."""
         self._poll_count += 1
         if not self._candles:
@@ -156,10 +155,10 @@ class FakeOrderExecutor:
     """Fake-Executor der Orders nur aufzeichnet."""
 
     def __init__(self):
-        self.orders_received: List[Any] = []
+        self.orders_received: list[Any] = []
         self.context = MagicMock()
 
-    def execute_orders(self, orders: List[Any]) -> List[Any]:
+    def execute_orders(self, orders: list[Any]) -> list[Any]:
         """Nimmt Orders entgegen und gibt Fake-Results zurück."""
         self.orders_received.extend(orders)
 
@@ -220,7 +219,7 @@ class TestLiveSessionConfig:
 
     def test_config_live_mode_blocked(self):
         """LIVE-Mode wird explizit blockiert (Phase 80)."""
-        from src.execution.live_session import LiveSessionConfig, LiveModeNotAllowedError
+        from src.execution.live_session import LiveModeNotAllowedError, LiveSessionConfig
 
         with pytest.raises(LiveModeNotAllowedError) as exc_info:
             LiveSessionConfig(
@@ -341,14 +340,12 @@ class TestLiveSessionRunner:
 
     def test_runner_init_shadow_mode(self):
         """Runner kann im Shadow-Mode initialisiert werden."""
+        from src.core.environment import EnvironmentConfig, TradingEnvironment
         from src.execution.live_session import (
             LiveSessionConfig,
             LiveSessionRunner,
-            LiveSessionMetrics,
         )
-        from src.core.environment import EnvironmentConfig, TradingEnvironment
         from src.execution.pipeline import ExecutionPipeline
-        from src.orders.shadow import ShadowMarketContext
 
         config = LiveSessionConfig(
             mode="shadow",
@@ -377,9 +374,8 @@ class TestLiveSessionRunner:
     def test_runner_init_live_mode_blocked(self):
         """Runner blockiert LIVE-Mode bei Initialisierung."""
         from src.execution.live_session import (
-            LiveSessionConfig,
-            LiveSessionRunner,
             LiveModeNotAllowedError,
+            LiveSessionConfig,
         )
 
         # Config mit mode="live" würde bereits Exception werfen
@@ -389,8 +385,8 @@ class TestLiveSessionRunner:
 
     def test_runner_warmup(self):
         """Runner führt Warmup korrekt durch."""
-        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.execution.pipeline import ExecutionPipeline
 
         config = LiveSessionConfig(
@@ -421,8 +417,8 @@ class TestLiveSessionRunner:
 
     def test_runner_step_once(self):
         """Runner führt einen Step korrekt durch."""
-        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.execution.pipeline import ExecutionPipeline
 
         config = LiveSessionConfig(
@@ -459,12 +455,12 @@ class TestLiveSessionRunner:
 
     def test_runner_run_n_steps(self):
         """Runner führt N Steps aus."""
+        from src.core.environment import EnvironmentConfig, TradingEnvironment
         from src.execution.live_session import (
             LiveSessionConfig,
             LiveSessionRunner,
             SessionRuntimeError,
         )
-        from src.core.environment import EnvironmentConfig, TradingEnvironment
         from src.execution.pipeline import ExecutionPipeline
 
         config = LiveSessionConfig(
@@ -501,8 +497,8 @@ class TestLiveSessionRunner:
 
     def test_runner_shutdown(self):
         """Runner kann sauber heruntergefahren werden."""
-        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.execution.pipeline import ExecutionPipeline
 
         config = LiveSessionConfig(
@@ -537,8 +533,8 @@ class TestLiveSessionRunner:
 
     def test_runner_get_summary(self):
         """Runner gibt korrekte Zusammenfassung zurück."""
-        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.execution.pipeline import ExecutionPipeline
 
         config = LiveSessionConfig(
@@ -584,11 +580,11 @@ class TestLiveSessionRunnerFactory:
     @patch("src.strategies.registry.create_strategy_from_config")
     def test_from_config_shadow_mode(self, mock_create_strategy, mock_build_data):
         """from_config erstellt Runner im Shadow-Mode."""
+        from src.core.peak_config import PeakConfig
         from src.execution.live_session import (
             LiveSessionConfig,
             LiveSessionRunner,
         )
-        from src.core.peak_config import PeakConfig
 
         # Mock-Strategie und Data-Source
         mock_create_strategy.return_value = FakeStrategy()
@@ -613,9 +609,8 @@ class TestLiveSessionRunnerFactory:
     def test_from_config_live_mode_blocked(self):
         """from_config blockiert LIVE-Mode."""
         from src.execution.live_session import (
-            LiveSessionConfig,
-            LiveSessionRunner,
             LiveModeNotAllowedError,
+            LiveSessionConfig,
         )
 
         # Config mit mode="live" wirft bereits bei Erstellung
@@ -712,8 +707,8 @@ class TestLiveSessionPipelineIntegration:
 
     def test_pipeline_execute_with_safety_called(self):
         """execute_with_safety wird korrekt aufgerufen."""
-        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
         from src.execution.pipeline import ExecutionPipeline
 
         config = LiveSessionConfig(

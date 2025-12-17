@@ -27,20 +27,21 @@ API-Dokumentation:
 """
 from __future__ import annotations
 
+import base64
+import contextlib
 import hashlib
 import hmac
-import base64
 import logging
 import os
 import time
 import urllib.parse
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 import requests
 
-from src.orders.base import OrderRequest, OrderFill, OrderSide
+from src.orders.base import OrderFill, OrderRequest
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +54,7 @@ logger = logging.getLogger(__name__)
 class ExchangeAPIError(Exception):
     """Basisklasse fuer Exchange-API-Fehler."""
 
-    def __init__(self, message: str, status_code: Optional[int] = None, response: Optional[Dict] = None):
+    def __init__(self, message: str, status_code: int | None = None, response: dict | None = None):
         super().__init__(message)
         self.status_code = status_code
         self.response = response
@@ -107,7 +108,7 @@ class KrakenTestnetConfig:
     max_retries: int = 3
     rate_limit_ms: int = 1000
 
-    def load_credentials(self) -> tuple[Optional[str], Optional[str]]:
+    def load_credentials(self) -> tuple[str | None, str | None]:
         """
         Laedt API-Credentials aus Environment-Variablen.
 
@@ -136,10 +137,10 @@ class KrakenOrderResponse:
         raw: Rohe API-Response
     """
 
-    txid: List[str] = field(default_factory=list)
-    descr: Dict[str, Any] = field(default_factory=dict)
+    txid: list[str] = field(default_factory=list)
+    descr: dict[str, Any] = field(default_factory=dict)
     validate_only: bool = False
-    raw: Dict[str, Any] = field(default_factory=dict)
+    raw: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -162,10 +163,10 @@ class KrakenOrderStatus:
     status: str
     vol: float
     vol_exec: float
-    avg_price: Optional[float] = None
-    fee: Optional[float] = None
-    timestamp: Optional[datetime] = None
-    raw: Dict[str, Any] = field(default_factory=dict)
+    avg_price: float | None = None
+    fee: float | None = None
+    timestamp: datetime | None = None
+    raw: dict[str, Any] = field(default_factory=dict)
 
 
 # =============================================================================
@@ -174,7 +175,7 @@ class KrakenOrderStatus:
 
 
 # Mapping von Standard-Symbolen zu Kraken-Symbolen
-SYMBOL_TO_KRAKEN: Dict[str, str] = {
+SYMBOL_TO_KRAKEN: dict[str, str] = {
     "BTC/EUR": "XXBTZEUR",
     "BTC/USD": "XXBTZUSD",
     "ETH/EUR": "XETHZEUR",
@@ -192,7 +193,7 @@ SYMBOL_TO_KRAKEN: Dict[str, str] = {
 }
 
 # Reverse Mapping
-KRAKEN_TO_SYMBOL: Dict[str, str] = {v: k for k, v in SYMBOL_TO_KRAKEN.items()}
+KRAKEN_TO_SYMBOL: dict[str, str] = {v: k for k, v in SYMBOL_TO_KRAKEN.items()}
 
 
 def to_kraken_symbol(symbol: str) -> str:
@@ -308,7 +309,7 @@ class KrakenTestnetClient:
         """Generiert einen Nonce fuer API-Requests."""
         return str(int(time.time() * 1000))
 
-    def _sign_request(self, url_path: str, data: Dict[str, Any]) -> str:
+    def _sign_request(self, url_path: str, data: dict[str, Any]) -> str:
         """
         Signiert einen API-Request mit HMAC-SHA512.
 
@@ -350,8 +351,8 @@ class KrakenTestnetClient:
             time.sleep(wait_ms / 1000.0)
 
     def _make_public_request(
-        self, endpoint: str, params: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, endpoint: str, params: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """
         Fuehrt einen Public API Request aus.
 
@@ -398,8 +399,8 @@ class KrakenTestnetClient:
             raise ExchangeNetworkError(f"Network error: {e}")
 
     def _make_private_request(
-        self, endpoint: str, data: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, endpoint: str, data: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """
         Fuehrt einen Private (authentifizierten) API Request aus.
 
@@ -514,7 +515,7 @@ class KrakenTestnetClient:
         order_type = "market" if order.order_type == "market" else "limit"
 
         # Request-Daten bauen
-        data: Dict[str, Any] = {
+        data: dict[str, Any] = {
             "pair": kraken_symbol,
             "type": order.side,  # "buy" oder "sell"
             "ordertype": order_type,
@@ -612,11 +613,11 @@ class KrakenTestnetClient:
             timestamp = None
             if "closetm" in order_data:
                 timestamp = datetime.fromtimestamp(
-                    float(order_data["closetm"]), tz=timezone.utc
+                    float(order_data["closetm"]), tz=UTC
                 )
             elif "opentm" in order_data:
                 timestamp = datetime.fromtimestamp(
-                    float(order_data["opentm"]), tz=timezone.utc
+                    float(order_data["opentm"]), tz=UTC
                 )
 
             return KrakenOrderStatus(
@@ -635,7 +636,7 @@ class KrakenTestnetClient:
         except Exception as e:
             raise ExchangeOrderError(f"Order status query failed: {e}")
 
-    def fetch_order_as_fill(self, exchange_order_id: str, original_order: OrderRequest) -> Optional[OrderFill]:
+    def fetch_order_as_fill(self, exchange_order_id: str, original_order: OrderRequest) -> OrderFill | None:
         """
         Wandelt Order-Status in ein OrderFill um (wenn ausgefuehrt).
 
@@ -660,7 +661,7 @@ class KrakenTestnetClient:
             side=original_order.side,
             quantity=status.vol_exec,
             price=status.avg_price or 0.0,
-            timestamp=status.timestamp or datetime.now(timezone.utc),
+            timestamp=status.timestamp or datetime.now(UTC),
             fee=status.fee,
             fee_currency="EUR",  # Kraken nutzt meist die Quote-Waehrung
         )
@@ -705,7 +706,7 @@ class KrakenTestnetClient:
     # Market-Data-Methoden (Public)
     # =========================================================================
 
-    def fetch_ticker(self, symbol: str) -> Dict[str, Any]:
+    def fetch_ticker(self, symbol: str) -> dict[str, Any]:
         """
         Holt aktuelle Ticker-Daten fuer ein Symbol.
 
@@ -730,7 +731,7 @@ class KrakenTestnetClient:
             "raw": ticker_data,
         }
 
-    def fetch_balance(self) -> Dict[str, float]:
+    def fetch_balance(self) -> dict[str, float]:
         """
         Holt Account-Balances.
 
@@ -742,12 +743,10 @@ class KrakenTestnetClient:
         """
         result = self._make_private_request("/0/private/Balance")
 
-        balances: Dict[str, float] = {}
+        balances: dict[str, float] = {}
         for asset, balance in result.items():
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 balances[asset] = float(balance)
-            except (ValueError, TypeError):
-                pass
 
         return balances
 
@@ -756,7 +755,7 @@ class KrakenTestnetClient:
         self._session.close()
         logger.debug("[KRAKEN TESTNET] Session geschlossen")
 
-    def __enter__(self) -> "KrakenTestnetClient":
+    def __enter__(self) -> KrakenTestnetClient:
         return self
 
     def __exit__(self, *args: Any) -> None:
@@ -769,7 +768,7 @@ class KrakenTestnetClient:
 
 
 def create_kraken_testnet_client_from_config(
-    cfg: "PeakConfig",
+    cfg: PeakConfig,
     config_prefix: str = "exchange.kraken_testnet",
 ) -> KrakenTestnetClient:
     """
@@ -787,7 +786,6 @@ def create_kraken_testnet_client_from_config(
         >>> cfg = load_config("config/config.toml")
         >>> client = create_kraken_testnet_client_from_config(cfg)
     """
-    from src.core.peak_config import PeakConfig
 
     config = KrakenTestnetConfig(
         base_url=cfg.get(f"{config_prefix}.base_url", "https://api.kraken.com"),

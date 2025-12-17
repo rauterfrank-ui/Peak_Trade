@@ -12,24 +12,22 @@ Testet:
 """
 from __future__ import annotations
 
-import os
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import pytest
 
-from src.reporting.base import Report, ReportSection
 from src.reporting.backtest_report import (
-    build_backtest_summary_section,
-    build_trade_stats_section,
-    build_parameters_section,
     build_backtest_report,
-    save_backtest_report,
+    build_backtest_summary_section,
+    build_parameters_section,
     build_quick_backtest_report,
+    build_trade_stats_section,
+    save_backtest_report,
 )
-
+from src.reporting.base import Report, ReportSection
 
 # =============================================================================
 # Fixtures
@@ -37,7 +35,7 @@ from src.reporting.backtest_report import (
 
 
 @pytest.fixture
-def sample_metrics() -> Dict[str, float]:
+def sample_metrics() -> dict[str, float]:
     """Sample Backtest-Metriken."""
     return {
         "total_return": 0.15,
@@ -61,7 +59,7 @@ def sample_equity_curve() -> pd.Series:
 
 
 @pytest.fixture
-def sample_trades() -> List[Dict[str, Any]]:
+def sample_trades() -> list[dict[str, Any]]:
     """Sample Trade-Liste."""
     return [
         {"pnl": 100, "side": "buy"},
@@ -73,7 +71,7 @@ def sample_trades() -> List[Dict[str, Any]]:
 
 
 @pytest.fixture
-def sample_params() -> Dict[str, Any]:
+def sample_params() -> dict[str, Any]:
     """Sample Strategie-Parameter."""
     return {
         "fast_period": 10,
@@ -91,7 +89,7 @@ def sample_params() -> Dict[str, Any]:
 class TestBuildBacktestSummarySection:
     """Tests für build_backtest_summary_section()."""
 
-    def test_basic_metrics(self, sample_metrics: Dict[str, float]) -> None:
+    def test_basic_metrics(self, sample_metrics: dict[str, float]) -> None:
         """Test: Section wird korrekt erstellt."""
         section = build_backtest_summary_section(sample_metrics)
 
@@ -99,7 +97,7 @@ class TestBuildBacktestSummarySection:
         assert section.title == "Performance Summary"
         assert section.content_markdown != ""
 
-    def test_metrics_in_markdown(self, sample_metrics: Dict[str, float]) -> None:
+    def test_metrics_in_markdown(self, sample_metrics: dict[str, float]) -> None:
         """Test: Alle Metriken erscheinen in Markdown."""
         section = build_backtest_summary_section(sample_metrics)
         md = section.content_markdown
@@ -118,7 +116,7 @@ class TestBuildBacktestSummarySection:
         # Sollte immer noch eine gültige Section sein
         assert isinstance(section, ReportSection)
 
-    def test_custom_title(self, sample_metrics: Dict[str, float]) -> None:
+    def test_custom_title(self, sample_metrics: dict[str, float]) -> None:
         """Test: Custom Title funktioniert."""
         section = build_backtest_summary_section(sample_metrics, title="Custom Summary")
         assert section.title == "Custom Summary"
@@ -127,7 +125,7 @@ class TestBuildBacktestSummarySection:
 class TestBuildTradeStatsSection:
     """Tests für build_trade_stats_section()."""
 
-    def test_with_trades(self, sample_trades: List[Dict[str, Any]]) -> None:
+    def test_with_trades(self, sample_trades: list[dict[str, Any]]) -> None:
         """Test: Trade-Stats werden korrekt berechnet."""
         section = build_trade_stats_section(sample_trades)
 
@@ -166,7 +164,7 @@ class TestBuildTradeStatsSection:
 class TestBuildParametersSection:
     """Tests für build_parameters_section()."""
 
-    def test_with_params(self, sample_params: Dict[str, Any]) -> None:
+    def test_with_params(self, sample_params: dict[str, Any]) -> None:
         """Test: Parameter werden angezeigt."""
         section = build_parameters_section(sample_params)
 
@@ -191,7 +189,7 @@ class TestBuildParametersSection:
 class TestBuildBacktestReport:
     """Tests für build_backtest_report()."""
 
-    def test_basic_report(self, sample_metrics: Dict[str, float], tmp_path: Path) -> None:
+    def test_basic_report(self, sample_metrics: dict[str, float], tmp_path: Path) -> None:
         """Test: Basis-Report wird erstellt."""
         report = build_backtest_report(
             title="Test Backtest",
@@ -205,7 +203,7 @@ class TestBuildBacktestReport:
 
     def test_report_with_equity(
         self,
-        sample_metrics: Dict[str, float],
+        sample_metrics: dict[str, float],
         sample_equity_curve: pd.Series,
         tmp_path: Path,
     ) -> None:
@@ -226,7 +224,7 @@ class TestBuildBacktestReport:
 
     def test_report_with_drawdown(
         self,
-        sample_metrics: Dict[str, float],
+        sample_metrics: dict[str, float],
         sample_equity_curve: pd.Series,
         tmp_path: Path,
     ) -> None:
@@ -247,8 +245,8 @@ class TestBuildBacktestReport:
 
     def test_report_with_trades(
         self,
-        sample_metrics: Dict[str, float],
-        sample_trades: List[Dict[str, Any]],
+        sample_metrics: dict[str, float],
+        sample_trades: list[dict[str, Any]],
         tmp_path: Path,
     ) -> None:
         """Test: Report mit Trade-Stats."""
@@ -264,8 +262,8 @@ class TestBuildBacktestReport:
 
     def test_report_with_params(
         self,
-        sample_metrics: Dict[str, float],
-        sample_params: Dict[str, Any],
+        sample_metrics: dict[str, float],
+        sample_params: dict[str, Any],
         tmp_path: Path,
     ) -> None:
         """Test: Report mit Parametern."""
@@ -279,7 +277,7 @@ class TestBuildBacktestReport:
         section_titles = [s.title for s in report.sections]
         assert "Strategy Parameters" in section_titles
 
-    def test_report_to_markdown(self, sample_metrics: Dict[str, float], tmp_path: Path) -> None:
+    def test_report_to_markdown(self, sample_metrics: dict[str, float], tmp_path: Path) -> None:
         """Test: Report kann zu Markdown konvertiert werden."""
         report = build_backtest_report(
             title="MD Test",
@@ -295,7 +293,7 @@ class TestBuildBacktestReport:
 class TestSaveBacktestReport:
     """Tests für save_backtest_report()."""
 
-    def test_save_markdown(self, sample_metrics: Dict[str, float], tmp_path: Path) -> None:
+    def test_save_markdown(self, sample_metrics: dict[str, float], tmp_path: Path) -> None:
         """Test: Report wird als Markdown gespeichert."""
         report = build_backtest_report(
             title="Save Test",
@@ -310,7 +308,7 @@ class TestSaveBacktestReport:
         content = Path(path).read_text()
         assert "# Save Test" in content
 
-    def test_save_html(self, sample_metrics: Dict[str, float], tmp_path: Path) -> None:
+    def test_save_html(self, sample_metrics: dict[str, float], tmp_path: Path) -> None:
         """Test: Report wird als HTML gespeichert."""
         report = build_backtest_report(
             title="HTML Test",

@@ -2,13 +2,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, Literal, Sequence, Tuple
+from typing import Literal
 
 import numpy as np
 import pandas as pd
 
 from src.core.peak_config import PeakConfig
-
 
 SelectionStatus = Literal["APPROVED", "WATCH", "BLOCKED", "UNKNOWN"]
 
@@ -24,7 +23,7 @@ class SelectionPolicy:
     - Gesamtzahl von Runs pro Strategie
     """
 
-    allowed_risk_statuses: Tuple[str, ...] = ("OK",)
+    allowed_risk_statuses: tuple[str, ...] = ("OK",)
 
     min_total_runs: int = 10
     min_forward_eval_runs: int = 3
@@ -33,7 +32,7 @@ class SelectionPolicy:
     min_forward_total_return: float = -0.5
 
     @classmethod
-    def from_config(cls, cfg: PeakConfig) -> "SelectionPolicy":
+    def from_config(cls, cfg: PeakConfig) -> SelectionPolicy:
         raw_allowed = cfg.get("filter_flow.allowed_risk_statuses", ["OK"])
         if isinstance(raw_allowed, str):
             allowed = tuple(s.strip() for s in raw_allowed.split(",") if s.strip())
@@ -60,7 +59,7 @@ def _safe_mean(series: pd.Series) -> float:
     return float(series.mean())
 
 
-def _classify_selection(row: pd.Series, policy: SelectionPolicy) -> Tuple[SelectionStatus, str]:
+def _classify_selection(row: pd.Series, policy: SelectionPolicy) -> tuple[SelectionStatus, str]:
     """
     Klassifiziert eine Strategie basierend auf:
     - risk_status_group
@@ -95,11 +94,10 @@ def _classify_selection(row: pd.Series, policy: SelectionPolicy) -> Tuple[Select
 
     # 4) Forward-Qualität (nur wenn nicht BLOCKED/UNKNOWN)
     if status not in ("BLOCKED", "UNKNOWN"):
-        if not (fwd_sh is None or np.isnan(fwd_sh)):
-            if fwd_sh < policy.min_forward_sharpe:
-                if status == "APPROVED":
-                    status = "WATCH"
-                reasons.append(f"forward_sharpe<{policy.min_forward_sharpe:.3f}")
+        if not (fwd_sh is None or np.isnan(fwd_sh)) and fwd_sh < policy.min_forward_sharpe:
+            if status == "APPROVED":
+                status = "WATCH"
+            reasons.append(f"forward_sharpe<{policy.min_forward_sharpe:.3f}")
 
         if not (fwd_tr is None or np.isnan(fwd_tr)):
             if fwd_tr < policy.min_forward_total_return:

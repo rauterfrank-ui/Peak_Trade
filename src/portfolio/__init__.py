@@ -38,33 +38,32 @@ Usage:
 """
 
 # Legacy: Portfolio Manager
-from .manager import PortfolioManager, PortfolioResult
-
 # Phase 26: Portfolio Strategy Layer
 from .base import (
+    BasePortfolioStrategy,
     PortfolioContext,
     PortfolioStrategy,
-    BasePortfolioStrategy,
     make_portfolio_strategy,
 )
 from .config import PortfolioConfig
 from .equal_weight import EqualWeightPortfolioStrategy
 from .fixed_weights import FixedWeightsPortfolioStrategy
+from .manager import PortfolioManager, PortfolioResult
 from .vol_target import VolTargetPortfolioStrategy
 
 __all__ = [
-    # Legacy
-    "PortfolioManager",
-    "PortfolioResult",
-    # Core (Phase 26)
-    "PortfolioContext",
-    "PortfolioStrategy",
     "BasePortfolioStrategy",
-    "PortfolioConfig",
-    # Factory
-    "make_portfolio_strategy",
     # Strategies
     "EqualWeightPortfolioStrategy",
     "FixedWeightsPortfolioStrategy",
+    "PortfolioConfig",
+    # Core (Phase 26)
+    "PortfolioContext",
+    # Legacy
+    "PortfolioManager",
+    "PortfolioResult",
+    "PortfolioStrategy",
     "VolTargetPortfolioStrategy",
+    # Factory
+    "make_portfolio_strategy",
 ]

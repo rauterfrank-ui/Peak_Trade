@@ -23,14 +23,13 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import List, Optional
+from datetime import UTC, datetime
 
 # Direkter Import um zirkuläre Abhängigkeiten zu vermeiden
 from src.core.environment import (
+    LIVE_CONFIRM_TOKEN,
     EnvironmentConfig,
     TradingEnvironment,
-    LIVE_CONFIRM_TOKEN,
 )
 
 logger = logging.getLogger(__name__)
@@ -106,7 +105,7 @@ class SafetyAuditEntry:
     environment: TradingEnvironment
     allowed: bool
     reason: str
-    details: Optional[str] = None
+    details: str | None = None
 
 
 # =============================================================================
@@ -138,7 +137,7 @@ class SafetyGuard:
     """
 
     env_config: EnvironmentConfig
-    audit_log: List[SafetyAuditEntry] = None  # type: ignore
+    audit_log: list[SafetyAuditEntry] = None  # type: ignore
 
     def __post_init__(self) -> None:
         """Initialisiert die Audit-Log-Liste."""
@@ -150,11 +149,11 @@ class SafetyGuard:
         action: str,
         allowed: bool,
         reason: str,
-        details: Optional[str] = None,
+        details: str | None = None,
     ) -> None:
         """Fügt einen Eintrag zum Audit-Log hinzu."""
         entry = SafetyAuditEntry(
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             action=action,
             environment=self.env_config.environment,
             allowed=allowed,
@@ -202,8 +201,8 @@ class SafetyGuard:
             reason = "Paper-Modus: Keine echten Orders erlaubt"
             self._log_audit(action, False, reason)
             raise PaperModeOrderError(
-                f"Im Paper-Modus können keine echten Orders gesendet werden. "
-                f"Verwende PaperOrderExecutor für Simulationen."
+                "Im Paper-Modus können keine echten Orders gesendet werden. "
+                "Verwende PaperOrderExecutor für Simulationen."
             )
 
         # --- TESTNET Mode ---
@@ -212,8 +211,8 @@ class SafetyGuard:
                 reason = "Testnet Dry-Run Modus aktiv"
                 self._log_audit(action, False, reason)
                 raise TestnetDryRunOnlyError(
-                    f"Testnet ist nur im Dry-Run-Modus verfügbar (Phase 17). "
-                    f"testnet_dry_run=True blockt echte Testnet-Orders."
+                    "Testnet ist nur im Dry-Run-Modus verfügbar (Phase 17). "
+                    "testnet_dry_run=True blockt echte Testnet-Orders."
                 )
             # Selbst wenn dry_run=False, ist echtes Testnet in Phase 17 nicht implementiert
             reason = "Testnet-Orders nicht implementiert (Phase 17)"
@@ -221,8 +220,8 @@ class SafetyGuard:
                 action, False, reason, "Echte Testnet-Integration folgt später"
             )
             raise LiveNotImplementedError(
-                f"Echte Testnet-Orders sind in Phase 17 nicht implementiert. "
-                f"Nutze testnet_dry_run=True für Dry-Run-Logging."
+                "Echte Testnet-Orders sind in Phase 17 nicht implementiert. "
+                "Nutze testnet_dry_run=True für Dry-Run-Logging."
             )
 
         # --- LIVE Mode ---
@@ -236,17 +235,17 @@ class SafetyGuard:
                     reason = "enable_live_trading = False (Gate 1)"
                     self._log_audit(action, False, reason)
                     raise LiveTradingDisabledError(
-                        f"Live-Trading ist deaktiviert (enable_live_trading=False). "
-                        f"Setze enable_live_trading=True in der Config, um fortzufahren."
+                        "Live-Trading ist deaktiviert (enable_live_trading=False). "
+                        "Setze enable_live_trading=True in der Config, um fortzufahren."
                     )
 
                 if "live_mode_armed=False" in reason_detail:
                     reason = "live_mode_armed = False (Gate 2 - Phase 71)"
                     self._log_audit(action, False, reason)
                     raise LiveTradingDisabledError(
-                        f"Live-Modus ist nicht 'armed' (live_mode_armed=False). "
-                        f"Phase 71: Zweistufiges Gating - zusätzliche Freigabe erforderlich. "
-                        f"Setze live_mode_armed=True in der Config (nur für Design-Tests)."
+                        "Live-Modus ist nicht 'armed' (live_mode_armed=False). "
+                        "Phase 71: Zweistufiges Gating - zusätzliche Freigabe erforderlich. "
+                        "Setze live_mode_armed=True in der Config (nur für Design-Tests)."
                     )
 
                 if "live_dry_run_mode=True" in reason_detail:
@@ -263,9 +262,9 @@ class SafetyGuard:
                     # In Phase 71 erlauben wir Dry-Run, aber blockieren echte Orders
                     # Diese Exception wird nur geworfen, wenn jemand versucht, echte Orders zu senden
                     raise LiveNotImplementedError(
-                        f"Live-Trading ist in Phase 71 nur als Design/Dry-Run implementiert. "
-                        f"live_dry_run_mode=True blockt echte Orders. "
-                        f"Verwende LiveOrderExecutor für Dry-Run-Simulationen."
+                        "Live-Trading ist in Phase 71 nur als Design/Dry-Run implementiert. "
+                        "live_dry_run_mode=True blockt echte Orders. "
+                        "Verwende LiveOrderExecutor für Dry-Run-Simulationen."
                     )
 
                 if "confirm_token" in reason_detail:
@@ -295,9 +294,9 @@ class SafetyGuard:
                 "Live-Order-Execution wird in einer späteren Phase implementiert",
             )
             raise LiveNotImplementedError(
-                f"Live-Trading ist in Phase 71 nicht implementiert. "
-                f"Diese Projektphase dient nur der Architektur-Vorbereitung. "
-                f"Echte Live-Orders werden erst in einer späteren Phase unterstützt."
+                "Live-Trading ist in Phase 71 nicht implementiert. "
+                "Diese Projektphase dient nur der Architektur-Vorbereitung. "
+                "Echte Live-Orders werden erst in einer späteren Phase unterstützt."
             )
 
         # Unbekannter Modus (sollte nicht vorkommen)
@@ -320,8 +319,8 @@ class SafetyGuard:
             reason = "Operation ist im Live-Modus nicht erlaubt"
             self._log_audit(action, False, reason)
             raise SafetyBlockedError(
-                f"Diese Operation ist im Live-Modus nicht erlaubt. "
-                f"Wechsle zu paper oder testnet Umgebung."
+                "Diese Operation ist im Live-Modus nicht erlaubt. "
+                "Wechsle zu paper oder testnet Umgebung."
             )
 
         self._log_audit("ensure_not_live", True, "Nicht im Live-Modus")
@@ -386,7 +385,7 @@ class SafetyGuard:
 
         return "unknown"
 
-    def get_audit_log(self) -> List[SafetyAuditEntry]:
+    def get_audit_log(self) -> list[SafetyAuditEntry]:
         """Gibt eine Kopie des Audit-Logs zurück."""
         return list(self.audit_log)
 
@@ -461,9 +460,8 @@ def is_live_execution_allowed(env_config: EnvironmentConfig) -> tuple[bool, str]
         )
 
     # Kriterium 5: Confirm-Token (wenn erforderlich)
-    if env_config.require_confirm_token:
-        if env_config.confirm_token != LIVE_CONFIRM_TOKEN:
-            return (False, "confirm_token ungültig oder fehlt")
+    if env_config.require_confirm_token and env_config.confirm_token != LIVE_CONFIRM_TOKEN:
+        return (False, "confirm_token ungültig oder fehlt")
 
     # Alle Kriterien erfüllt (theoretisch - in Phase 71 nicht erreichbar)
     return (
@@ -477,7 +475,7 @@ def is_live_execution_allowed(env_config: EnvironmentConfig) -> tuple[bool, str]
 # =============================================================================
 
 
-def create_safety_guard(env_config: Optional[EnvironmentConfig] = None) -> SafetyGuard:
+def create_safety_guard(env_config: EnvironmentConfig | None = None) -> SafetyGuard:
     """
     Erstellt einen SafetyGuard mit der gegebenen oder Default-Konfiguration.
 

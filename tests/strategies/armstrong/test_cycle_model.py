@@ -7,19 +7,18 @@ Testet:
 - ArmstrongCycleConfig Dataclass
 - ArmstrongCycleModel (phase_for_date, risk_multiplier_for_date)
 """
-import pytest
 from datetime import date, timedelta
 
 import pandas as pd
+import pytest
 
 from src.strategies.armstrong.cycle_model import (
-    ArmstrongPhase,
     ArmstrongCycleConfig,
     ArmstrongCycleModel,
+    ArmstrongPhase,
     get_phase_for_date,
     get_risk_multiplier_for_date,
 )
-
 
 # =============================================================================
 # FIXTURES

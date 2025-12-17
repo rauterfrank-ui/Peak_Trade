@@ -23,10 +23,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 import pandas as pd
-
 
 # =============================================================================
 # ARMSTRONG PHASE ENUM
@@ -85,7 +84,7 @@ class ArmstrongCycleConfig:
 
     # Phasenverteilung als Prozent des Zyklus (start_pct, end_pct)
     # Default: Einfache gleichmäßige Verteilung mit Turning-Point-Fenstern
-    phase_distribution: Dict[str, tuple[float, float]] = field(
+    phase_distribution: dict[str, tuple[float, float]] = field(
         default_factory=lambda: {
             # Post-Crisis: 0-15% des Zyklus (Erholung nach Peak)
             "post_crisis": (0.0, 0.15),
@@ -103,7 +102,7 @@ class ArmstrongCycleConfig:
     )
 
     # Risk-Multiplier pro Phase (0.0 = kein Risiko, 1.0 = volles Risiko)
-    risk_multipliers: Dict[str, float] = field(
+    risk_multipliers: dict[str, float] = field(
         default_factory=lambda: {
             "crisis": 0.3,           # Stark reduziert während Crisis
             "post_crisis": 0.5,      # Vorsichtig in Erholungsphase
@@ -122,7 +121,7 @@ class ArmstrongCycleConfig:
             )
 
     @classmethod
-    def default(cls) -> "ArmstrongCycleConfig":
+    def default(cls) -> ArmstrongCycleConfig:
         """
         Erstellt eine Standardkonfiguration mit ECM 2015.75 als Referenz.
 
@@ -134,7 +133,7 @@ class ArmstrongCycleConfig:
             cycle_length_days=3141,
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "reference_peak_date": self.reference_peak_date.isoformat(),
@@ -182,7 +181,7 @@ class ArmstrongCycleModel:
         self.config = config
 
     @classmethod
-    def from_default(cls) -> "ArmstrongCycleModel":
+    def from_default(cls) -> ArmstrongCycleModel:
         """
         Erstellt ein Modell mit Standardkonfiguration.
 
@@ -192,7 +191,7 @@ class ArmstrongCycleModel:
         return cls(ArmstrongCycleConfig.default())
 
     @classmethod
-    def from_config_dict(cls, config_dict: Dict[str, Any]) -> "ArmstrongCycleModel":
+    def from_config_dict(cls, config_dict: dict[str, Any]) -> ArmstrongCycleModel:
         """
         Erstellt ein Modell aus einem Config-Dictionary.
 
@@ -225,7 +224,7 @@ class ArmstrongCycleModel:
 
         return cls(config)
 
-    def _to_date(self, dt: Union[date, datetime, pd.Timestamp]) -> date:
+    def _to_date(self, dt: date | datetime | pd.Timestamp) -> date:
         """
         Konvertiert verschiedene Datumsformate zu date.
 
@@ -273,7 +272,7 @@ class ArmstrongCycleModel:
         return position
 
     def phase_for_date(
-        self, dt: Union[date, datetime, pd.Timestamp]
+        self, dt: date | datetime | pd.Timestamp
     ) -> ArmstrongPhase:
         """
         Bestimmt die Armstrong-Phase für ein gegebenes Datum.
@@ -320,7 +319,7 @@ class ArmstrongCycleModel:
         return ArmstrongPhase.POST_CRISIS
 
     def risk_multiplier_for_date(
-        self, dt: Union[date, datetime, pd.Timestamp]
+        self, dt: date | datetime | pd.Timestamp
     ) -> float:
         """
         Gibt den Risk-Multiplier für ein Datum zurück.
@@ -364,8 +363,8 @@ class ArmstrongCycleModel:
         return multipliers.get("post_crisis", 0.5)
 
     def get_cycle_info(
-        self, dt: Union[date, datetime, pd.Timestamp]
-    ) -> Dict[str, Any]:
+        self, dt: date | datetime | pd.Timestamp
+    ) -> dict[str, Any]:
         """
         Gibt umfassende Zyklus-Informationen für ein Datum zurück.
 
@@ -424,8 +423,8 @@ class ArmstrongCycleModel:
 
 
 def get_phase_for_date(
-    dt: Union[date, datetime, pd.Timestamp],
-    reference_date: Optional[date] = None,
+    dt: date | datetime | pd.Timestamp,
+    reference_date: date | None = None,
     cycle_length: int = 3141,
 ) -> ArmstrongPhase:
     """
@@ -449,8 +448,8 @@ def get_phase_for_date(
 
 
 def get_risk_multiplier_for_date(
-    dt: Union[date, datetime, pd.Timestamp],
-    reference_date: Optional[date] = None,
+    dt: date | datetime | pd.Timestamp,
+    reference_date: date | None = None,
     cycle_length: int = 3141,
 ) -> float:
     """
@@ -478,12 +477,12 @@ def get_risk_multiplier_for_date(
 # =============================================================================
 
 __all__ = [
-    # Enum
-    "ArmstrongPhase",
     # Config
     "ArmstrongCycleConfig",
     # Model
     "ArmstrongCycleModel",
+    # Enum
+    "ArmstrongPhase",
     # Convenience Functions
     "get_phase_for_date",
     "get_risk_multiplier_for_date",

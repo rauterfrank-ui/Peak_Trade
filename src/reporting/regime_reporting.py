@@ -24,13 +24,11 @@ Usage:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from .base import ReportSection, df_to_markdown, format_metric
-
 
 # =============================================================================
 # DATACLASSES
@@ -59,12 +57,12 @@ class RegimeBucketMetrics:
     time_fraction: float
     return_total: float
     return_annualized: float
-    sharpe: Optional[float] = None
+    sharpe: float | None = None
     max_drawdown: float = 0.0
     num_trades: int = 0
-    win_rate: Optional[float] = None
-    return_contribution_pct: Optional[float] = None
-    time_share_pct: Optional[float] = None
+    win_rate: float | None = None
+    return_contribution_pct: float | None = None
+    time_share_pct: float | None = None
 
     def to_dict(self) -> dict:
         """Konvertiert zu Dictionary für Tabellen."""
@@ -94,10 +92,10 @@ class RegimeStatsSummary:
         notes: Optionale Hinweise (z.B. bei sehr kurzem Sample)
     """
 
-    buckets: List[RegimeBucketMetrics]
+    buckets: list[RegimeBucketMetrics]
     overall_return: float
     overall_sharpe: float
-    notes: List[str] = None
+    notes: list[str] = None
 
     def __post_init__(self):
         """Initialisiert notes als leere Liste falls None."""
@@ -114,7 +112,7 @@ def compute_regime_stats(
     equity_series: pd.Series,
     returns_series: pd.Series,
     regime_series: pd.Series,
-    trades: Optional[pd.DataFrame] = None,
+    trades: pd.DataFrame | None = None,
 ) -> RegimeStatsSummary:
     """
     Berechnet Regime-spezifische Kennzahlen.
@@ -168,8 +166,8 @@ def compute_regime_stats(
 
     # Regime-Buckets
     unique_regimes = sorted(regime_aligned.unique())
-    buckets: List[RegimeBucketMetrics] = []
-    notes: List[str] = []
+    buckets: list[RegimeBucketMetrics] = []
+    notes: list[str] = []
 
     # Regime-Namen-Mapping
     regime_names = {
@@ -266,7 +264,7 @@ def compute_regime_stats(
     # Berechne Contribution & Time-Share für alle Buckets
     # Gesamt-Return über alle Regimes (kumuliert)
     total_return_sum = sum(bucket.return_total for bucket in buckets)
-    total_observations = len(regime_aligned)
+    len(regime_aligned)
 
     for bucket in buckets:
         # Time Share als Prozent

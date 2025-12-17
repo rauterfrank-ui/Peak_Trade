@@ -4,14 +4,13 @@ Peak_Trade Backtest Smoke Tests
 Minimaler Smoke-Test für die Backtest-Engine.
 """
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from src.backtest.engine import BacktestEngine
+from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
-from src.core.peak_config import load_config
 
 
 def create_dummy_ohlcv(n_bars: int = 200) -> pd.DataFrame:

@@ -5,26 +5,25 @@ Tests für src/experiments/strategy_sweeps.py (Phase 29)
 
 Testet die vordefinierten Parameter-Sweeps für alle Strategien.
 """
+
 import pytest
-from typing import List
 
 from src.experiments.base import ParamSweep
 from src.experiments.strategy_sweeps import (
-    get_ma_crossover_sweeps,
+    STRATEGY_SWEEP_REGISTRY,
+    get_all_strategy_sweeps,
     get_bollinger_sweeps,
+    get_donchian_sweeps,
+    get_ma_crossover_sweeps,
     get_macd_sweeps,
+    get_mean_reversion_sweeps,
     get_momentum_sweeps,
+    get_rsi_reversion_sweeps,
+    get_strategy_sweeps,
     get_trend_following_sweeps,
     get_vol_breakout_sweeps,
-    get_mean_reversion_sweeps,
-    get_rsi_reversion_sweeps,
-    get_donchian_sweeps,
-    get_strategy_sweeps,
     list_available_strategies,
-    get_all_strategy_sweeps,
-    STRATEGY_SWEEP_REGISTRY,
 )
-
 
 # ============================================================================
 # MA CROSSOVER SWEEPS TESTS
@@ -304,7 +303,7 @@ class TestStrategyRegistry:
 
     def test_all_strategies_callable(self):
         """Alle Registry-Einträge sind aufrufbar."""
-        for name, func in STRATEGY_SWEEP_REGISTRY.items():
+        for _name, func in STRATEGY_SWEEP_REGISTRY.items():
             sweeps = func("coarse")
             assert isinstance(sweeps, list)
 

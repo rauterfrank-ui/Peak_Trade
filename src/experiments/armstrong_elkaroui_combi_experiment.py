@@ -38,7 +38,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -61,7 +61,7 @@ ALLOWED_ENVIRONMENTS = ["offline_backtest", "research"]
 
 class ArmstrongEventState:
     """Armstrong Event-States für Label-Klassifikation."""
-    
+
     NONE = "NONE"
     PRE_EVENT = "PRE_EVENT"
     EVENT = "EVENT"
@@ -70,7 +70,7 @@ class ArmstrongEventState:
 
 class ElKarouiRegime:
     """El-Karoui Volatilitäts-Regime."""
-    
+
     LOW = "LOW"
     MEDIUM = "MEDIUM"
     HIGH = "HIGH"
@@ -104,12 +104,12 @@ class ArmstrongElKarouiCombiConfig:
     timeframe: str
     start_date: datetime
     end_date: datetime
-    armstrong_params: Dict[str, Any] = field(default_factory=lambda: {
+    armstrong_params: dict[str, Any] = field(default_factory=lambda: {
         "cycle_length_days": 3141,
         "event_window_days": 90,
         "reference_date": "2015-10-01",
     })
-    elkaroui_params: Dict[str, Any] = field(default_factory=lambda: {
+    elkaroui_params: dict[str, Any] = field(default_factory=lambda: {
         "vol_window": 20,
         "vol_threshold_low": 0.3,
         "vol_threshold_high": 0.7,
@@ -120,7 +120,7 @@ class ArmstrongElKarouiCombiConfig:
     run_type: str = RUN_TYPE_ARMSTRONG_ELKAROUI_COMBI
     tier: str = "r_and_d"
     experiment_category: str = "label_analysis"
-    forward_return_windows: List[int] = field(default_factory=lambda: [1, 3, 7])
+    forward_return_windows: list[int] = field(default_factory=lambda: [1, 3, 7])
     output_dir: str = "reports/r_and_d/armstrong_elkaroui_combi"
 
     def __post_init__(self) -> None:
@@ -135,7 +135,7 @@ class ArmstrongElKarouiCombiConfig:
                 f"Tier muss 'r_and_d' sein für dieses Experiment, nicht '{self.tier}'"
             )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "symbol": self.symbol,
@@ -174,12 +174,12 @@ class CombiExperimentResult:
 
     run_id: str
     config: ArmstrongElKarouiCombiConfig
-    combo_stats: Dict[str, Dict[str, Any]]
-    label_series: Optional[pd.DataFrame] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    combo_stats: dict[str, dict[str, Any]]
+    label_series: pd.DataFrame | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
     success: bool = True
-    error_message: Optional[str] = None
-    report_paths: List[str] = field(default_factory=list)
+    error_message: str | None = None
+    report_paths: list[str] = field(default_factory=list)
 
     @property
     def run_type(self) -> str:
@@ -196,7 +196,7 @@ class CombiExperimentResult:
         """Environment aus Config."""
         return self.config.environment
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary (für JSON-Export)."""
         return {
             "run_id": self.run_id,
@@ -212,7 +212,7 @@ class CombiExperimentResult:
             "report_paths": self.report_paths,
         }
 
-    def save_json(self, filepath: Optional[str] = None) -> str:
+    def save_json(self, filepath: str | None = None) -> str:
         """
         Speichert Ergebnis als JSON.
 
@@ -240,7 +240,7 @@ class CombiExperimentResult:
 
 def compute_armstrong_event_labels(
     data: pd.DataFrame,
-    armstrong_params: Dict[str, Any],
+    armstrong_params: dict[str, Any],
 ) -> pd.Series:
     """
     Berechnet Armstrong Event-State Labels für jeden Bar.
@@ -283,7 +283,7 @@ def compute_armstrong_event_labels(
     days_since_last = cycle_position
 
     # Klassifiziere Events
-    for i, idx in enumerate(data.index):
+    for i, _idx in enumerate(data.index):
         d_to_next = days_to_next.iloc[i] if hasattr(days_to_next, 'iloc') else days_to_next[i]
         d_since_last = days_since_last.iloc[i] if hasattr(days_since_last, 'iloc') else days_since_last[i]
 
@@ -304,7 +304,7 @@ def compute_armstrong_event_labels(
 
 def compute_elkaroui_regime_labels(
     data: pd.DataFrame,
-    elkaroui_params: Dict[str, Any],
+    elkaroui_params: dict[str, Any],
 ) -> pd.Series:
     """
     Berechnet El-Karoui Volatilitäts-Regime Labels für jeden Bar.
@@ -356,7 +356,7 @@ def compute_elkaroui_regime_labels(
 
 def compute_forward_returns(
     data: pd.DataFrame,
-    windows: List[int],
+    windows: list[int],
 ) -> pd.DataFrame:
     """
     Berechnet Forward-Returns für verschiedene Fenstergrößen.
@@ -405,9 +405,9 @@ def create_combo_state_labels(
 def compute_combo_stats(
     labels_df: pd.DataFrame,
     combo_col: str = "combo_state",
-    return_cols: Optional[List[str]] = None,
+    return_cols: list[str] | None = None,
     big_move_threshold: float = 0.02,
-) -> Dict[str, Dict[str, Any]]:
+) -> dict[str, dict[str, Any]]:
     """
     Berechnet aggregierte Statistiken pro Kombi-State.
 
@@ -429,8 +429,8 @@ def compute_combo_stats(
         mask = labels_df[combo_col] == combo_state
         subset = labels_df[mask]
 
-        state_stats: Dict[str, Any] = {
-            "count_bars": int(len(subset)),
+        state_stats: dict[str, Any] = {
+            "count_bars": len(subset),
         }
 
         # Return-Statistiken
@@ -464,7 +464,7 @@ def compute_combo_stats(
 
 def run_armstrong_elkaroui_combi_experiment(
     config: ArmstrongElKarouiCombiConfig,
-    data: Optional[pd.DataFrame] = None,
+    data: pd.DataFrame | None = None,
 ) -> CombiExperimentResult:
     """
     Führt das Armstrong-El-Karoui Kombi-Experiment aus.
@@ -665,7 +665,7 @@ def _generate_dummy_data(config: ArmstrongElKarouiCombiConfig) -> pd.DataFrame:
 
 def generate_armstrong_elkaroui_combi_report(
     result: CombiExperimentResult,
-    output_dir: Optional[str] = None,
+    output_dir: str | None = None,
 ) -> str:
     """
     Generiert einen Markdown-Report für das Kombi-Experiment.

@@ -5,25 +5,21 @@ Integration Tests für src/experiments/ (Phase 29)
 
 Testet das Zusammenspiel aller Experiment-Komponenten.
 """
-import pytest
-from datetime import datetime
-from typing import Dict, Any
 import os
 import tempfile
+from typing import Any
 
 import pandas as pd
+import pytest
 
 from src.experiments import (
-    ParamSweep,
-    ExperimentConfig,
-    ExperimentResult,
-    ExperimentRunner,
-    get_strategy_sweeps,
-    get_regime_detector_sweeps,
-    get_combined_regime_strategy_sweeps,
     STRATEGY_SWEEP_REGISTRY,
+    ExperimentConfig,
+    ExperimentRunner,
+    ParamSweep,
+    get_combined_regime_strategy_sweeps,
+    get_strategy_sweeps,
 )
-
 
 # ============================================================================
 # INTEGRATION TESTS
@@ -38,13 +34,13 @@ class TestExperimentWorkflow:
 
         def mock_backtest(
             strategy_name: str,
-            params: Dict[str, Any],
+            params: dict[str, Any],
             symbol: str,
             timeframe: str,
             start_date: str,
             end_date: str,
             initial_capital: float,
-        ) -> Dict[str, float]:
+        ) -> dict[str, float]:
             call_count[0] += 1
             # Variiere Returns basierend auf Parametern
             param_sum = sum(v for v in params.values() if isinstance(v, (int, float)))

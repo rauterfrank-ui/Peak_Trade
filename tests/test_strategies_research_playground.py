@@ -7,11 +7,11 @@ Testet:
 - Strategy Registry-Integration
 - Research-Scripts (Smoke-Tests)
 """
-import pytest
-import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
 
+import numpy as np
+import pandas as pd
+import pytest
 
 # =============================================================================
 # FIXTURES
@@ -601,10 +601,10 @@ class TestIntegration:
 
     def test_trend_following_with_backtest_engine(self, trending_data):
         """TrendFollowing funktioniert mit BacktestEngine."""
-        from src.strategies.trend_following import TrendFollowingStrategy
         from src.backtest.engine import BacktestEngine
         from src.core.position_sizing import NoopPositionSizer
         from src.core.risk import NoopRiskManager
+        from src.strategies.trend_following import TrendFollowingStrategy
 
         strategy = TrendFollowingStrategy()
 
@@ -628,10 +628,10 @@ class TestIntegration:
 
     def test_mean_reversion_with_backtest_engine(self, ranging_data):
         """MeanReversion funktioniert mit BacktestEngine."""
-        from src.strategies.mean_reversion import MeanReversionStrategy
         from src.backtest.engine import BacktestEngine
         from src.core.position_sizing import NoopPositionSizer
         from src.core.risk import NoopRiskManager
+        from src.strategies.mean_reversion import MeanReversionStrategy
 
         strategy = MeanReversionStrategy()
 
@@ -655,10 +655,10 @@ class TestIntegration:
 
     def test_my_strategy_with_backtest_engine(self, sample_ohlcv_data):
         """MyStrategy funktioniert mit BacktestEngine."""
-        from src.strategies.my_strategy import MyStrategy
         from src.backtest.engine import BacktestEngine
         from src.core.position_sizing import NoopPositionSizer
         from src.core.risk import NoopRiskManager
+        from src.strategies.my_strategy import MyStrategy
 
         strategy = MyStrategy()
 

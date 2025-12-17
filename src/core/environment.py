@@ -16,9 +16,9 @@ WICHTIG: In Phase 17 werden KEINE echten Orders gesendet.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .peak_config import PeakConfig
@@ -74,15 +74,15 @@ class EnvironmentConfig:
     environment: TradingEnvironment = TradingEnvironment.PAPER
     enable_live_trading: bool = False
     require_confirm_token: bool = True
-    confirm_token: Optional[str] = None
+    confirm_token: str | None = None
     testnet_dry_run: bool = True
     log_all_orders: bool = True
     # Phase 71: Live-Execution-Design
     live_mode_armed: bool = False
     live_dry_run_mode: bool = True
-    max_live_notional_per_order: Optional[float] = None
-    max_live_notional_total: Optional[float] = None
-    live_trade_min_size: Optional[float] = None
+    max_live_notional_per_order: float | None = None
+    max_live_notional_total: float | None = None
+    live_trade_min_size: float | None = None
 
     def __post_init__(self) -> None:
         """Validierung und Typ-Konvertierung nach Initialisierung."""

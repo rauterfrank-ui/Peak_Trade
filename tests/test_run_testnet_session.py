@@ -11,11 +11,12 @@ WICHTIG: Diese Tests machen KEINE echten API-Calls!
 """
 from __future__ import annotations
 
-import pytest
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
-from unittest.mock import MagicMock, Mock, patch
+from typing import Any
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 # Projekt-Root zum Path hinzufuegen
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -32,13 +33,12 @@ from scripts.run_testnet_session import (
 )
 from src.core.environment import EnvironmentConfig, TradingEnvironment
 from src.core.peak_config import PeakConfig
+from src.live.risk_limits import LiveRiskCheckResult, LiveRiskLimits
 from src.live.safety import SafetyGuard
-from src.live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
 from src.orders.testnet_executor import (
-    TestnetExchangeOrderExecutor,
     EnvironmentNotTestnetError,
+    TestnetExchangeOrderExecutor,
 )
-
 
 # =============================================================================
 # Fixtures
@@ -46,7 +46,7 @@ from src.orders.testnet_executor import (
 
 
 @pytest.fixture
-def testnet_config_dict() -> Dict[str, Any]:
+def testnet_config_dict() -> dict[str, Any]:
     """Erstellt ein Test-Config-Dict fuer Testnet-Session."""
     return {
         "environment": {
@@ -100,13 +100,13 @@ def testnet_config_dict() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def testnet_peak_config(testnet_config_dict: Dict[str, Any]) -> PeakConfig:
+def testnet_peak_config(testnet_config_dict: dict[str, Any]) -> PeakConfig:
     """Erstellt eine PeakConfig fuer Testnet."""
     return PeakConfig(raw=testnet_config_dict)
 
 
 @pytest.fixture
-def paper_config_dict(testnet_config_dict: Dict[str, Any]) -> Dict[str, Any]:
+def paper_config_dict(testnet_config_dict: dict[str, Any]) -> dict[str, Any]:
     """Config mit Paper-Environment (nicht erlaubt fuer Testnet)."""
     config = testnet_config_dict.copy()
     config["environment"] = {"mode": "paper"}
@@ -276,7 +276,7 @@ class TestSessionBuilder:
         self,
         mock_create_client: MagicMock,
         mock_exchange_client: MagicMock,
-        paper_config_dict: Dict[str, Any],
+        paper_config_dict: dict[str, Any],
     ) -> None:
         """Test: Session im Paper-Modus schlaegt fehl."""
         mock_create_client.return_value = mock_exchange_client
@@ -444,7 +444,7 @@ class TestCLIIntegration:
         self,
         mock_load_config: MagicMock,
         mock_create_client: MagicMock,
-        testnet_config_dict: Dict[str, Any],
+        testnet_config_dict: dict[str, Any],
         mock_exchange_client: MagicMock,
     ) -> None:
         """Test: CLI dry-run funktioniert."""

@@ -13,7 +13,6 @@ import pytest
 from src.governance.policy_critic import (
     PolicyCriticInput,
     RecommendedAction,
-    ReviewContext,
     Severity,
 )
 from src.governance.policy_critic.packs import (
@@ -25,7 +24,6 @@ from src.governance.policy_critic.packs import (
 from src.governance.policy_critic.rules import (
     ALL_RULES,
     ExecutionEndpointTouchRule,
-    NoLiveUnlockRule,
     NoSecretsRule,
     RiskLimitRaiseRule,
 )

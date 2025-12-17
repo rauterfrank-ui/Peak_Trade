@@ -16,19 +16,19 @@ Usage:
 """
 from __future__ import annotations
 
-import os
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 try:
     import matplotlib
 
     matplotlib.use("Agg")  # Non-interactive backend
-    import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
     from matplotlib.colors import LinearSegmentedColormap
 
     MATPLOTLIB_AVAILABLE = True
@@ -64,14 +64,14 @@ COLORS = {
 
 def save_line_plot(
     series: pd.Series,
-    output_path: Union[str, Path],
-    title: Optional[str] = None,
-    ylabel: Optional[str] = None,
-    xlabel: Optional[str] = None,
-    figsize: Tuple[int, int] = DEFAULT_FIGSIZE,
+    output_path: str | Path,
+    title: str | None = None,
+    ylabel: str | None = None,
+    xlabel: str | None = None,
+    figsize: tuple[int, int] = DEFAULT_FIGSIZE,
     color: str = COLORS["primary"],
     fill: bool = True,
-    reference_line: Optional[float] = None,
+    reference_line: float | None = None,
     dpi: int = DEFAULT_DPI,
 ) -> str:
     """
@@ -142,8 +142,8 @@ def save_line_plot(
 
 def save_equity_plot(
     equity_curve: pd.Series,
-    output_path: Union[str, Path],
-    title: Optional[str] = "Equity Curve",
+    output_path: str | Path,
+    title: str | None = "Equity Curve",
     show_start_line: bool = True,
     dpi: int = DEFAULT_DPI,
 ) -> str:
@@ -175,8 +175,8 @@ def save_equity_plot(
 
 def save_drawdown_plot(
     drawdown_series: pd.Series,
-    output_path: Union[str, Path],
-    title: Optional[str] = "Drawdown",
+    output_path: str | Path,
+    title: str | None = "Drawdown",
     dpi: int = DEFAULT_DPI,
 ) -> str:
     """
@@ -239,12 +239,12 @@ def save_drawdown_plot(
 
 def save_heatmap(
     pivot_df: pd.DataFrame,
-    output_path: Union[str, Path],
-    title: Optional[str] = None,
-    xlabel: Optional[str] = None,
-    ylabel: Optional[str] = None,
-    cbar_label: Optional[str] = None,
-    figsize: Tuple[int, int] = (10, 8),
+    output_path: str | Path,
+    title: str | None = None,
+    xlabel: str | None = None,
+    ylabel: str | None = None,
+    cbar_label: str | None = None,
+    figsize: tuple[int, int] = (10, 8),
     cmap: str = "RdYlGn",
     dpi: int = DEFAULT_DPI,
     annotate: bool = True,
@@ -332,11 +332,11 @@ def save_heatmap(
 def save_scatter_plot(
     x_values: Sequence[float],
     y_values: Sequence[float],
-    output_path: Union[str, Path],
-    title: Optional[str] = None,
-    xlabel: Optional[str] = None,
-    ylabel: Optional[str] = None,
-    figsize: Tuple[int, int] = (10, 6),
+    output_path: str | Path,
+    title: str | None = None,
+    xlabel: str | None = None,
+    ylabel: str | None = None,
+    figsize: tuple[int, int] = (10, 6),
     color: str = COLORS["primary"],
     dpi: int = DEFAULT_DPI,
     show_trend: bool = False,
@@ -408,12 +408,12 @@ def save_scatter_plot(
 
 def save_histogram(
     values: Sequence[float],
-    output_path: Union[str, Path],
-    title: Optional[str] = None,
-    xlabel: Optional[str] = None,
+    output_path: str | Path,
+    title: str | None = None,
+    xlabel: str | None = None,
     ylabel: str = "Frequency",
     bins: int = 20,
-    figsize: Tuple[int, int] = (10, 5),
+    figsize: tuple[int, int] = (10, 5),
     color: str = COLORS["primary"],
     dpi: int = DEFAULT_DPI,
     show_mean: bool = True,
@@ -494,9 +494,9 @@ def save_histogram(
 def save_equity_with_regimes(
     equity_curve: pd.Series,
     regimes: pd.Series,
-    output_path: Union[str, Path],
-    title: Optional[str] = "Equity Curve with Regimes",
-    regime_colors: Optional[Dict[str, str]] = None,
+    output_path: str | Path,
+    title: str | None = "Equity Curve with Regimes",
+    regime_colors: dict[str, str] | None = None,
     dpi: int = DEFAULT_DPI,
 ) -> str:
     """
@@ -552,18 +552,18 @@ def save_equity_with_regimes(
 
         # Falls am Anfang aktiv, füge Start hinzu
         if mask.iloc[0]:
-            starts = [regimes.index[0]] + starts
+            starts = [regimes.index[0], *starts]
         # Falls am Ende aktiv, füge Ende hinzu
         if mask.iloc[-1]:
-            ends = ends + [regimes.index[-1]]
+            ends = [*ends, regimes.index[-1]]
 
         color = colors.get(str(regime).lower(), "#e0e0e0")
-        for start, end in zip(starts, ends):
+        for start, end in zip(starts, ends, strict=False):
             ax.axvspan(start, end, alpha=0.3, color=color, label=regime)
 
     # Legend (nur einzigartige Labels)
     handles, labels = ax.get_legend_handles_labels()
-    by_label = dict(zip(labels, handles))
+    by_label = dict(zip(labels, handles, strict=False))
     ax.legend(by_label.values(), by_label.keys(), loc="upper left")
 
     if title:
@@ -585,8 +585,8 @@ def save_equity_with_regimes(
 def save_equity_with_regime_overlay(
     equity_curve: pd.Series,
     regime_series: pd.Series,
-    output_path: Union[str, Path],
-    title: Optional[str] = "Equity Curve with Regime Overlay",
+    output_path: str | Path,
+    title: str | None = "Equity Curve with Regime Overlay",
     dpi: int = DEFAULT_DPI,
 ) -> str:
     """
@@ -661,10 +661,10 @@ def save_equity_with_regime_overlay(
 
         # Falls am Anfang aktiv, füge Start hinzu
         if mask.iloc[0]:
-            starts = [equity_curve.index[0]] + starts
+            starts = [equity_curve.index[0], *starts]
         # Falls am Ende aktiv, füge Ende hinzu
         if mask.iloc[-1]:
-            ends = ends + [equity_curve.index[-1]]
+            ends = [*ends, equity_curve.index[-1]]
 
         # Zeichne Bänder
         color = regime_colors.get(regime_val, "#e0e0e0")
@@ -707,8 +707,8 @@ def save_equity_with_regime_overlay(
 
 def save_regime_contribution_bars(
     regime_stats: Any,
-    output_path: Union[str, Path],
-    title: Optional[str] = "Return Contribution by Regime",
+    output_path: str | Path,
+    title: str | None = "Return Contribution by Regime",
     dpi: int = DEFAULT_DPI,
 ) -> str:
     """
@@ -743,8 +743,8 @@ def save_regime_contribution_bars(
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Extrahiere Labels und Werte
-    labels: List[str] = []
-    values: List[float] = []
+    labels: list[str] = []
+    values: list[float] = []
 
     for bucket in regime_stats.buckets:
         contrib = bucket.return_contribution_pct
@@ -780,7 +780,7 @@ def save_regime_contribution_bars(
     bars = ax.bar(labels, values, color=colors, alpha=0.7, edgecolor="black", linewidth=1)
 
     # Werte auf Balken anzeigen
-    for bar, value in zip(bars, values):
+    for bar, value in zip(bars, values, strict=False):
         height = bar.get_height()
         ax.text(
             bar.get_x() + bar.get_width() / 2.0,

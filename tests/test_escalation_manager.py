@@ -13,21 +13,19 @@ Tests für:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, patch
+from datetime import UTC
+from unittest.mock import MagicMock
 
 import pytest
 
 from src.infra.escalation import (
     EscalationEvent,
-    EscalationTarget,
     EscalationManager,
+    EscalationTarget,
     NullEscalationProvider,
     PagerDutyLikeProviderStub,
     build_escalation_manager_from_config,
 )
-
 
 # =============================================================================
 # FIXTURES
@@ -98,7 +96,7 @@ class TestEscalationEvent:
             summary="Test",
         )
         assert event.created_at is not None
-        assert event.created_at.tzinfo == timezone.utc
+        assert event.created_at.tzinfo == UTC
 
     def test_to_dict(self, sample_critical_event: EscalationEvent):
         """Testet Serialisierung zu Dict."""

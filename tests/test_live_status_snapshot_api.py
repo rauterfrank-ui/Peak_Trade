@@ -17,10 +17,9 @@ Run:
 from __future__ import annotations
 
 import json
+
 import pytest
-
 from fastapi.testclient import TestClient
-
 
 # =============================================================================
 # Fixtures
@@ -171,11 +170,8 @@ def test_html_endpoint_cache_control(test_client):
 def test_html_xss_safety_script_tag():
     """Test that <script> tags in panel details are escaped (not executed)."""
     # Create custom app with malicious provider
-    from fastapi import FastAPI
-    from fastapi.responses import HTMLResponse
-    from fastapi.testclient import TestClient
-    from src.reporting.live_status_snapshot_builder import build_live_status_snapshot
     from src.reporting.html_reports import _html_escape
+    from src.reporting.live_status_snapshot_builder import build_live_status_snapshot
 
     # Build snapshot with XSS payload
     def xss_provider():
@@ -232,6 +228,7 @@ def test_json_endpoint_with_failing_provider():
     """Test that JSON endpoint returns 200 even if a provider fails."""
     from fastapi import FastAPI
     from fastapi.testclient import TestClient
+
     from src.reporting.live_status_snapshot_builder import build_live_status_snapshot
 
     # Create app with failing provider
@@ -244,8 +241,9 @@ def test_json_endpoint_with_failing_provider():
 
         snapshot = build_live_status_snapshot(panel_providers={"broken": failing_provider})
 
-        from src.reporting.status_snapshot_schema import model_dump_helper
         from fastapi.responses import JSONResponse
+
+        from src.reporting.status_snapshot_schema import model_dump_helper
 
         return JSONResponse(
             content=model_dump_helper(snapshot),
@@ -271,10 +269,11 @@ def test_json_endpoint_with_failing_provider():
 def test_html_endpoint_with_failing_provider():
     """Test that HTML endpoint returns 200 even if a provider fails."""
     from fastapi import FastAPI
-    from fastapi.testclient import TestClient
-    from src.reporting.live_status_snapshot_builder import build_live_status_snapshot
-    from src.reporting.html_reports import _html_escape
     from fastapi.responses import HTMLResponse
+    from fastapi.testclient import TestClient
+
+    from src.reporting.html_reports import _html_escape
+    from src.reporting.live_status_snapshot_builder import build_live_status_snapshot
 
     # Create app with failing provider
     app = FastAPI()
@@ -287,11 +286,11 @@ def test_html_endpoint_with_failing_provider():
         snapshot = build_live_status_snapshot(panel_providers={"crash": failing_provider})
 
         # Minimal HTML rendering
-        html = f"<html><body><h1>Status</h1>"
+        html = "<html><body><h1>Status</h1>"
         for panel in snapshot.panels:
             html += f"<div><h2>{_html_escape(panel.title)}</h2>"
             html += f"<p>Status: {_html_escape(panel.status)}</p>"
-            html += f"</div>"
+            html += "</div>"
         html += "</body></html>"
 
         return HTMLResponse(content=html, headers={"Cache-Control": "no-store"})

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # tests/test_demo_execution_backtest_smoke.py
 """
 Smoke-Tests fuer scripts/demo_execution_backtest.py (Phase 16C).
@@ -9,9 +8,8 @@ Testet:
 - main() mit Test-Argumenten (ohne echte CLI)
 - ExecutionPipeline vs. Legacy-Modus
 """
-import pytest
 import pandas as pd
-import numpy as np
+import pytest
 
 
 class TestDemoScriptImports:
@@ -195,10 +193,10 @@ class TestRunBacktest:
     def test_execution_pipeline_mode(self):
         """Backtest mit ExecutionPipeline funktioniert."""
         from scripts.demo_execution_backtest import (
-            run_backtest,
-            get_strategy_fn,
-            get_default_strategy_params,
             generate_sample_data,
+            get_default_strategy_params,
+            get_strategy_fn,
+            run_backtest,
         )
 
         df = generate_sample_data(symbol="BTC/EUR", bars=100)
@@ -226,10 +224,10 @@ class TestRunBacktest:
     def test_legacy_mode(self):
         """Backtest im Legacy-Modus funktioniert."""
         from scripts.demo_execution_backtest import (
-            run_backtest,
-            get_strategy_fn,
-            get_default_strategy_params,
             generate_sample_data,
+            get_default_strategy_params,
+            get_strategy_fn,
+            run_backtest,
         )
 
         df = generate_sample_data(symbol="BTC/EUR", bars=100)
@@ -254,10 +252,10 @@ class TestRunBacktest:
     def test_execution_logs_populated(self):
         """Execution-Logs werden bei log_executions=True gefuellt."""
         from scripts.demo_execution_backtest import (
-            run_backtest,
-            get_strategy_fn,
-            get_default_strategy_params,
             generate_sample_data,
+            get_default_strategy_params,
+            get_strategy_fn,
+            run_backtest,
         )
 
         df = generate_sample_data(symbol="BTC/EUR", bars=100)
@@ -362,10 +360,10 @@ class TestEdgeCases:
     def test_minimal_bars(self):
         """Backtest mit minimalen Bars."""
         from scripts.demo_execution_backtest import (
-            run_backtest,
-            get_strategy_fn,
-            get_default_strategy_params,
             generate_sample_data,
+            get_default_strategy_params,
+            get_strategy_fn,
+            run_backtest,
         )
 
         # Sehr wenige Bars (koennte zu keinen Trades fuehren)
@@ -391,10 +389,10 @@ class TestEdgeCases:
     def test_zero_fees_slippage(self):
         """Backtest ohne Fees und Slippage."""
         from scripts.demo_execution_backtest import (
-            run_backtest,
-            get_strategy_fn,
-            get_default_strategy_params,
             generate_sample_data,
+            get_default_strategy_params,
+            get_strategy_fn,
+            run_backtest,
         )
 
         df = generate_sample_data(symbol="BTC/EUR", bars=100)

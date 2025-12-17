@@ -11,10 +11,11 @@ Diese Tests stellen sicher, dass:
 
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+
 import pytest
-from typing import Dict, List, Set
 
 try:
     import tomllib
@@ -39,14 +40,14 @@ def sweeps_dir() -> Path:
 
 
 @pytest.fixture
-def config_data(config_path: Path) -> Dict:
+def config_data(config_path: Path) -> dict:
     """Lädt die Haupt-Config."""
     with open(config_path, "rb") as f:
         return tomllib.load(f)
 
 
 @pytest.fixture
-def v11_strategies() -> Set[str]:
+def v11_strategies() -> set[str]:
     """Liste der offiziellen v1.1-Strategien."""
     return {
         "ma_crossover",
@@ -62,7 +63,7 @@ def v11_strategies() -> Set[str]:
 
 
 @pytest.fixture
-def sweep_files(sweeps_dir: Path) -> Dict[str, Path]:
+def sweep_files(sweeps_dir: Path) -> dict[str, Path]:
     """Mapping von Strategie-Namen zu Sweep-Dateien."""
     return {f.stem: f for f in sweeps_dir.glob("*.toml")}
 
@@ -71,7 +72,7 @@ def sweep_files(sweeps_dir: Path) -> Dict[str, Path]:
 # TEST 1: Strategy ↔ Config
 # ============================================================================
 
-def test_v11_strategies_have_config_blocks(config_data: Dict, v11_strategies: Set[str]):
+def test_v11_strategies_have_config_blocks(config_data: dict, v11_strategies: set[str]):
     """
     Jede v1.1-Strategie muss einen [strategies.<name>]-Block haben.
     """
@@ -87,7 +88,7 @@ def test_v11_strategies_have_config_blocks(config_data: Dict, v11_strategies: Se
     )
 
 
-def test_v11_strategies_are_enabled(config_data: Dict, v11_strategies: Set[str]):
+def test_v11_strategies_are_enabled(config_data: dict, v11_strategies: set[str]):
     """
     Alle v1.1-Strategien (außer meta/filter) sollten enabled=true haben.
     """
@@ -109,7 +110,7 @@ def test_v11_strategies_are_enabled(config_data: Dict, v11_strategies: Set[str])
     )
 
 
-def test_v11_strategies_have_category(config_data: Dict, v11_strategies: Set[str]):
+def test_v11_strategies_have_category(config_data: dict, v11_strategies: set[str]):
     """
     Jede v1.1-Strategie muss eine Kategorie haben.
     """
@@ -136,7 +137,7 @@ def test_v11_strategies_have_category(config_data: Dict, v11_strategies: Set[str
     )
 
 
-def test_v11_strategies_have_defaults(config_data: Dict, v11_strategies: Set[str]):
+def test_v11_strategies_have_defaults(config_data: dict, v11_strategies: set[str]):
     """
     Jede v1.1-Strategie sollte einen .defaults-Block haben.
     """
@@ -157,11 +158,11 @@ def test_v11_strategies_have_defaults(config_data: Dict, v11_strategies: Set[str
 # TEST 2: Config ↔ Implementation
 # ============================================================================
 
-def test_registry_can_load_all_v11_strategies(v11_strategies: Set[str]):
+def test_registry_can_load_all_v11_strategies(v11_strategies: set[str]):
     """
     Die Strategy-Registry kann alle v1.1-Strategien laden.
     """
-    from src.strategies.registry import get_strategy_spec, get_available_strategy_keys
+    from src.strategies.registry import get_available_strategy_keys
 
     available = set(get_available_strategy_keys())
 
@@ -186,7 +187,7 @@ def test_registry_strategies_can_be_instantiated():
     """
     Strategie-Klassen können ohne Config instanziiert werden (Default-Parameter).
     """
-    from src.strategies.registry import get_strategy_spec, get_available_strategy_keys
+    from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
 
     # Strategien die spezielle Initialisierung brauchen
     skip_instantiation = {
@@ -225,8 +226,8 @@ def test_registry_strategies_can_be_instantiated():
 # ============================================================================
 
 def test_v11_strategies_have_sweep_configs(
-    v11_strategies: Set[str],
-    sweep_files: Dict[str, Path]
+    v11_strategies: set[str],
+    sweep_files: dict[str, Path]
 ):
     """
     Jede enabled v1.1-Strategie hat eine Sweep-Config.
@@ -255,7 +256,7 @@ def test_v11_strategies_have_sweep_configs(
     )
 
 
-def test_sweep_configs_are_parseable(sweep_files: Dict[str, Path]):
+def test_sweep_configs_are_parseable(sweep_files: dict[str, Path]):
     """
     Alle Sweep-Configs können geparst werden.
     """
@@ -281,7 +282,7 @@ def test_sweep_configs_are_parseable(sweep_files: Dict[str, Path]):
     assert not errors, f"Sweep-Config Parse-Fehler: {errors}"
 
 
-def test_sweep_configs_have_parameters(sweep_files: Dict[str, Path]):
+def test_sweep_configs_have_parameters(sweep_files: dict[str, Path]):
     """
     Sweep-Configs enthalten mindestens einen sinnvollen Parameter-Grid.
     """
@@ -364,13 +365,13 @@ def portfolio_recipes_path() -> Path:
 
 
 @pytest.fixture
-def portfolio_recipes_data(portfolio_recipes_path: Path) -> Dict:
+def portfolio_recipes_data(portfolio_recipes_path: Path) -> dict:
     """Lädt portfolio_recipes.toml."""
     with open(portfolio_recipes_path, "rb") as f:
         return tomllib.load(f)
 
 
-def test_v11_portfolio_presets_exist(portfolio_recipes_data: Dict):
+def test_v11_portfolio_presets_exist(portfolio_recipes_data: dict):
     """
     Die v1.1 Portfolio-Presets existieren.
     """
@@ -382,7 +383,7 @@ def test_v11_portfolio_presets_exist(portfolio_recipes_data: Dict):
     assert not missing, f"Fehlende v1.1 Portfolio-Presets: {missing}"
 
 
-def test_v11_portfolio_presets_have_required_fields(portfolio_recipes_data: Dict):
+def test_v11_portfolio_presets_have_required_fields(portfolio_recipes_data: dict):
     """
     v1.1 Portfolio-Presets haben alle erforderlichen Felder.
     """
@@ -401,8 +402,8 @@ def test_v11_portfolio_presets_have_required_fields(portfolio_recipes_data: Dict
 
 
 def test_v11_portfolio_presets_use_v11_strategies(
-    portfolio_recipes_data: Dict,
-    v11_strategies: Set[str]
+    portfolio_recipes_data: dict,
+    v11_strategies: set[str]
 ):
     """
     v1.1 Portfolio-Presets verwenden nur v1.1-offizielle Strategien.

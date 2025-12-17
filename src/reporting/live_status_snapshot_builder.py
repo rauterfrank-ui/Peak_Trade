@@ -29,14 +29,14 @@ Usage:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from collections.abc import Callable
+from datetime import UTC, datetime
+from typing import Any, Union
 
 from .status_snapshot_schema import (
     LiveStatusSnapshot,
     PanelSnapshot,
     create_default_system_panel,
-    model_dump_helper,
     normalize_details,
     normalize_status,
 )
@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 # - PanelSnapshot instance
 # - dict with {id, title, status, details}
 # - tuple (status, title, details) - id inferred from provider key
-PanelProviderReturn = Union[PanelSnapshot, Dict[str, Any], Tuple[str, str, Dict[str, Any]]]
+PanelProviderReturn = Union[PanelSnapshot, dict[str, Any], tuple[str, str, dict[str, Any]]]
 PanelProvider = Callable[[], PanelProviderReturn]
 
 
@@ -62,9 +62,9 @@ PanelProvider = Callable[[], PanelProviderReturn]
 
 
 def build_live_status_snapshot(
-    panel_providers: Optional[Dict[str, PanelProvider]] = None,
+    panel_providers: dict[str, PanelProvider] | None = None,
     *,
-    meta: Optional[Dict[str, Any]] = None,
+    meta: dict[str, Any] | None = None,
 ) -> LiveStatusSnapshot:
     """
     Builds a live status snapshot from panel providers.
@@ -88,7 +88,7 @@ def build_live_status_snapshot(
         LiveStatusSnapshot with panels and metadata
     """
     # Generate timestamp (UTC ISO)
-    generated_at = datetime.now(timezone.utc).isoformat()
+    generated_at = datetime.now(UTC).isoformat()
 
     # Normalize meta
     normalized_meta = normalize_details(meta or {})
@@ -118,7 +118,7 @@ def build_live_status_snapshot(
                 title=f"Panel: {panel_id} (Error)",
                 status="error",
                 details={
-                    "error": f"{type(exc).__name__}: {str(exc)}",
+                    "error": f"{type(exc).__name__}: {exc!s}",
                     "note": "Provider failed during invocation",
                 }
             )
@@ -185,7 +185,7 @@ def _invoke_provider_safely(panel_id: str, provider: PanelProvider) -> PanelSnap
     )
 
 
-def _panel_from_dict(fallback_id: str, data: Dict[str, Any]) -> PanelSnapshot:
+def _panel_from_dict(fallback_id: str, data: dict[str, Any]) -> PanelSnapshot:
     """
     Converts a dict to PanelSnapshot.
 
@@ -220,7 +220,7 @@ def _panel_from_dict(fallback_id: str, data: Dict[str, Any]) -> PanelSnapshot:
 # =============================================================================
 
 
-def _try_load_live_providers() -> Optional[Dict[str, PanelProvider]]:
+def _try_load_live_providers() -> dict[str, PanelProvider] | None:
     """
     Best-effort attempt to load panel providers from live-track modules.
 
@@ -245,7 +245,7 @@ def _try_load_live_providers() -> Optional[Dict[str, PanelProvider]]:
 
 def build_live_status_snapshot_auto(
     *,
-    meta: Optional[Dict[str, Any]] = None,
+    meta: dict[str, Any] | None = None,
 ) -> LiveStatusSnapshot:
     """
     Builds a live status snapshot with automatic provider discovery.

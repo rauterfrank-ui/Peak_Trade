@@ -46,8 +46,8 @@ Verwendung:
 from __future__ import annotations
 
 import uuid
-from dataclasses import dataclass, field
-from typing import Iterator, List, Optional, Tuple
+from collections.abc import Iterator
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
@@ -114,7 +114,7 @@ class RegimeConfig:
     garch_omega: float
     garch_alpha: float
     garch_beta: float
-    base_vol: Optional[float] = None
+    base_vol: float | None = None
 
     def __post_init__(self):
         # Validierung
@@ -149,12 +149,12 @@ class OfflineRealtimeFeedConfig:
     symbol: str
     base_timeframe: str
     tick_interval_ms: int
-    regimes: List[RegimeConfig]
-    transition_matrix: List[List[float]]
+    regimes: list[RegimeConfig]
+    transition_matrix: list[list[float]]
     student_df: float
     usage_context: DataUsageContextKind
     initial_regime: int = 0
-    seed: Optional[int] = None
+    seed: int | None = None
 
     def __post_init__(self):
         # Validierung
@@ -208,10 +208,10 @@ class RegimeSwitchingVolModel:
 
     def __init__(
         self,
-        regimes: List[RegimeConfig],
-        transition_matrix: List[List[float]],
+        regimes: list[RegimeConfig],
+        transition_matrix: list[list[float]],
         student_df: float,
-        seed: Optional[int] = None,
+        seed: int | None = None,
         initial_regime: int = 0,
     ):
         """
@@ -256,7 +256,7 @@ class RegimeSwitchingVolModel:
         self._prev_return = 0.0
         self._sigma_sq = self._init_sigma_sq()
 
-    def step(self) -> Tuple[int, float, float]:
+    def step(self) -> tuple[int, float, float]:
         """
         Führt einen Zeitschritt durch.
 
@@ -332,7 +332,7 @@ class OfflineRealtimeFeed:
         ohlcv: pd.DataFrame,
         config: OfflineRealtimeFeedConfig,
         *,
-        safety_gate: Optional[DataSafetyGate] = None,
+        safety_gate: DataSafetyGate | None = None,
     ):
         """
         Initialisiert den OfflineRealtimeFeed.
@@ -376,8 +376,8 @@ class OfflineRealtimeFeed:
 
         # Iterator-Zustand
         self._current_idx = 0
-        self._current_price: Optional[float] = None
-        self._current_timestamp: Optional[pd.Timestamp] = None
+        self._current_price: float | None = None
+        self._current_timestamp: pd.Timestamp | None = None
 
     def _validate_ohlcv(self, ohlcv: pd.DataFrame) -> None:
         """Validiert den OHLCV DataFrame."""
@@ -405,7 +405,7 @@ class OfflineRealtimeFeed:
         cls,
         ohlcv: pd.DataFrame,
         config: OfflineRealtimeFeedConfig,
-    ) -> "OfflineRealtimeFeed":
+    ) -> OfflineRealtimeFeed:
         """
         Factory-Methode: Erstellt einen OfflineRealtimeFeed aus OHLCV-Daten.
 
@@ -483,7 +483,7 @@ class OfflineRealtimeFeed:
         current_ts = base_ts + tick_offset
 
         # Generiere Return via Vol-Modell
-        regime_id, sigma_t, return_t = self.vol_model.step()
+        regime_id, _sigma_t, return_t = self.vol_model.step()
 
         # Update Preis (log-return Modell)
         self._current_price = self._current_price * np.exp(return_t)

@@ -29,17 +29,14 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-from os import PathLike
+from typing import Any
 
 import pandas as pd
 
+from ..strategies import load_strategy
 from .engine import BacktestEngine
 from .result import BacktestResult
-from ..strategies import load_strategy
-from ..core.config_registry import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -72,10 +69,10 @@ class WalkForwardConfig:
     top_n: int = 3
     sweep_name: str = ""
     symbol: str = "BTC/EUR"
-    config_path: Optional[Path] = None
-    start_date: Optional[pd.Timestamp] = None
-    end_date: Optional[pd.Timestamp] = None
-    step_size: Optional[str] = None  # None = anchored mode (lückenlos)
+    config_path: Path | None = None
+    start_date: pd.Timestamp | None = None
+    end_date: pd.Timestamp | None = None
+    step_size: str | None = None  # None = anchored mode (lückenlos)
     output_dir: Path = field(default_factory=lambda: Path("results/walkforward"))
 
     def __post_init__(self) -> None:
@@ -114,10 +111,10 @@ class WalkForwardWindowResult:
     train_end: pd.Timestamp
     test_start: pd.Timestamp
     test_end: pd.Timestamp
-    train_result: Optional[BacktestResult] = None
+    train_result: BacktestResult | None = None
     test_result: BacktestResult = field(default_factory=lambda: None)
-    metrics: Dict[str, float] = field(default_factory=dict)
-    result_path: Optional[Path] = None
+    metrics: dict[str, float] = field(default_factory=dict)
+    result_path: Path | None = None
 
 
 @dataclass
@@ -136,9 +133,9 @@ class WalkForwardResult:
 
     config_id: str
     strategy_name: str
-    windows: List[WalkForwardWindowResult] = field(default_factory=list)
-    aggregate_metrics: Dict[str, float] = field(default_factory=dict)
-    config_params: Dict[str, Any] = field(default_factory=dict)
+    windows: list[WalkForwardWindowResult] = field(default_factory=list)
+    aggregate_metrics: dict[str, float] = field(default_factory=dict)
+    config_params: dict[str, Any] = field(default_factory=dict)
     output_dir: Path = field(default_factory=lambda: Path("results/walkforward"))
 
 
@@ -151,7 +148,7 @@ def split_train_test_windows(
     start: pd.Timestamp,
     end: pd.Timestamp,
     wf_config: WalkForwardConfig,
-) -> List[Tuple[pd.Timestamp, pd.Timestamp, pd.Timestamp, pd.Timestamp]]:
+) -> list[tuple[pd.Timestamp, pd.Timestamp, pd.Timestamp, pd.Timestamp]]:
     """
     Teilt den Zeitraum in (train_start, train_end, test_start, test_end)-Fenster auf.
 
@@ -181,7 +178,7 @@ def split_train_test_windows(
         >>> windows = split_train_test_windows(start, end, config)
         >>> print(f"{len(windows)} Fenster erstellt")
     """
-    windows: List[Tuple[pd.Timestamp, pd.Timestamp, pd.Timestamp, pd.Timestamp]] = []
+    windows: list[tuple[pd.Timestamp, pd.Timestamp, pd.Timestamp, pd.Timestamp]] = []
 
     # Parse Fenster-Dauern
     try:
@@ -249,11 +246,11 @@ def run_walkforward_for_config(
     config_id: str,
     wf_config: WalkForwardConfig,
     *,
-    df: Optional[pd.DataFrame] = None,
-    strategy_name: Optional[str] = None,
-    strategy_params: Optional[Dict[str, Any]] = None,
-    strategy_signal_fn: Optional[Any] = None,
-    logger: Optional[logging.Logger] = None,
+    df: pd.DataFrame | None = None,
+    strategy_name: str | None = None,
+    strategy_params: dict[str, Any] | None = None,
+    strategy_signal_fn: Any | None = None,
+    logger: logging.Logger | None = None,
 ) -> WalkForwardResult:
     """
     Führt einen Walk-Forward-Backtest für eine gegebene Strategiekonfiguration aus.
@@ -361,7 +358,7 @@ def run_walkforward_for_config(
     engine = BacktestEngine()
 
     # 6. Für jedes Fenster: Backtest durchführen
-    window_results: List[WalkForwardWindowResult] = []
+    window_results: list[WalkForwardWindowResult] = []
 
     for window_idx, (train_start, train_end, test_start, test_end) in enumerate(windows):
         logger.info(
@@ -383,7 +380,7 @@ def run_walkforward_for_config(
             continue
 
         # Train-Backtest (optional, aktuell nicht verwendet, aber für spätere Optimierung)
-        train_result: Optional[BacktestResult] = None
+        train_result: BacktestResult | None = None
         # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Walk-Forward: Parameter-Optimierung")
         # train_result = engine.run_realistic(
         #     df=train_df,
@@ -456,8 +453,8 @@ def run_walkforward_for_config(
 
 
 def _compute_aggregate_metrics(
-    window_results: List[WalkForwardWindowResult],
-) -> Dict[str, float]:
+    window_results: list[WalkForwardWindowResult],
+) -> dict[str, float]:
     """
     Berechnet aggregierte Metriken über alle Fenster.
 
@@ -525,11 +522,11 @@ def run_walkforward_for_top_n_from_sweep(
     wf_config: WalkForwardConfig,
     *,
     top_n: int = 3,
-    df: Optional[pd.DataFrame] = None,
+    df: pd.DataFrame | None = None,
     metric_primary: str = "metric_sharpe_ratio",
     metric_fallback: str = "metric_total_return",
-    logger: Optional[logging.Logger] = None,
-) -> List[WalkForwardResult]:
+    logger: logging.Logger | None = None,
+) -> list[WalkForwardResult]:
     """
     Lädt die Top-N-Konfigurationen eines Sweeps aus der Registry
     und führt für jede Konfiguration einen Walk-Forward-Backtest aus.
@@ -606,7 +603,7 @@ def run_walkforward_for_top_n_from_sweep(
         raise ValueError(f"Keine Konfigurationen für Sweep '{sweep_name}' gefunden")
 
     # 3. Führe Walk-Forward für jede Konfiguration aus
-    results: List[WalkForwardResult] = []
+    results: list[WalkForwardResult] = []
 
     for i, config_dict in enumerate(configs, 1):
         config_id = config_dict.get("config_id", f"config_{i}")

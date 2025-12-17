@@ -34,7 +34,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import pandas as pd
 import toml
@@ -81,7 +81,7 @@ class TopNPromotionConfig:
 # =============================================================================
 
 
-def find_sweep_results(sweep_name: str, experiments_dir: Path) -> Optional[Path]:
+def find_sweep_results(sweep_name: str, experiments_dir: Path) -> Path | None:
     """
     Sucht nach der neuesten Ergebnis-Datei für einen Sweep.
 
@@ -165,7 +165,7 @@ def load_sweep_results(config: TopNPromotionConfig) -> pd.DataFrame:
 
 def select_top_n(
     df: pd.DataFrame, config: TopNPromotionConfig
-) -> Tuple[pd.DataFrame, str]:
+) -> tuple[pd.DataFrame, str]:
     """
     Wählt Top-N Konfigurationen nach Metrik aus.
 
@@ -242,7 +242,7 @@ def export_top_n(
         metric_used = config.metric_fallback
 
     # Baue TOML-Struktur
-    toml_data: Dict[str, Any] = {
+    toml_data: dict[str, Any] = {
         "meta": {
             "sweep_name": config.sweep_name,
             "metric_used": metric_used,
@@ -258,7 +258,7 @@ def export_top_n(
 
     # Erstelle Einträge für jeden Kandidaten
     for _, row in df_top.iterrows():
-        candidate: Dict[str, Any] = {
+        candidate: dict[str, Any] = {
             "rank": int(row["rank"]),
         }
 
@@ -275,7 +275,7 @@ def export_top_n(
                 candidate[key] = float(val)
 
         # Parameter
-        params: Dict[str, Any] = {}
+        params: dict[str, Any] = {}
         for col in param_cols:
             val = row[col]
             if pd.notna(val):
@@ -315,9 +315,9 @@ def load_top_n_configs_for_sweep(
     *,
     metric_primary: str = "metric_sharpe_ratio",
     metric_fallback: str = "metric_total_return",
-    experiments_dir: Optional[Path] = None,
-    output_path: Optional[Path] = None,
-) -> List[Dict[str, Any]]:
+    experiments_dir: Path | None = None,
+    output_path: Path | None = None,
+) -> list[dict[str, Any]]:
     """
     Lädt die Top-N-Strategiekonfigurationen für einen gegebenen Sweep.
 
@@ -363,7 +363,7 @@ def load_top_n_configs_for_sweep(
         return _load_configs_from_toml(toml_file, n)
 
     # Fallback: Lade direkt aus Sweep-Ergebnissen
-    logger.info(f"TOML nicht gefunden, lade Top-N direkt aus Sweep-Ergebnissen")
+    logger.info("TOML nicht gefunden, lade Top-N direkt aus Sweep-Ergebnissen")
     config = TopNPromotionConfig(
         sweep_name=sweep_name,
         metric_primary=metric_primary,
@@ -385,7 +385,7 @@ def load_top_n_configs_for_sweep(
     return configs
 
 
-def _load_configs_from_toml(toml_file: Path, n: int) -> List[Dict[str, Any]]:
+def _load_configs_from_toml(toml_file: Path, n: int) -> list[dict[str, Any]]:
     """
     Lädt Top-N-Konfigurationen aus TOML-Datei.
 
@@ -398,7 +398,7 @@ def _load_configs_from_toml(toml_file: Path, n: int) -> List[Dict[str, Any]]:
     """
     import toml
 
-    with open(toml_file, "r") as f:
+    with open(toml_file) as f:
         toml_data = toml.load(f)
 
     candidates = toml_data.get("candidates", [])
@@ -479,7 +479,7 @@ def _parse_string_value(val: Any) -> Any:
 
 def _dataframe_to_config_dicts(
     df_top: pd.DataFrame, sweep_name: str, metric_used: str
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Konvertiert DataFrame mit Top-N Runs zu Config-Dicts.
 
@@ -566,8 +566,8 @@ def export_top_n_with_policy_check(
     df_top: pd.DataFrame,
     config: TopNPromotionConfig,
     auto_apply: bool = False,
-    context: Optional[Dict[str, Any]] = None,
-) -> Tuple[Path, Dict[str, Any]]:
+    context: dict[str, Any] | None = None,
+) -> tuple[Path, dict[str, Any]]:
     """
     Export Top-N configs with optional policy critic check for auto-apply.
 
@@ -619,7 +619,7 @@ def export_top_n_with_policy_check(
 
             # Generate diff from TOML export (simplified - in real scenario,
             # this would be diff of actual config changes to be applied)
-            with open(output_path, "r") as f:
+            with open(output_path) as f:
                 new_config_content = f.read()
 
             # Simplified diff (in real scenario, compare against current config)
@@ -659,7 +659,7 @@ def export_top_n_with_policy_check(
             governance_report["auto_apply_decision"] = {
                 "allowed": False,
                 "mode": "manual_only",
-                "reason": f"Policy critic evaluation error (fail-closed): {str(e)}",
+                "reason": f"Policy critic evaluation error (fail-closed): {e!s}",
                 "decided_at": datetime.now().isoformat(),
             }
 

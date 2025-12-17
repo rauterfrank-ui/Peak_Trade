@@ -38,10 +38,10 @@ Usage:
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional, Tuple
+from typing import Any, Literal
 
 import pandas as pd
 
@@ -71,13 +71,13 @@ class KrakenDataHealth:
     """
     status: HealthStatus
     num_bars: int = 0
-    start_ts: Optional[pd.Timestamp] = None
-    end_ts: Optional[pd.Timestamp] = None
-    notes: Optional[str] = None
-    file_path: Optional[str] = None
-    lookback_days_actual: Optional[float] = None
+    start_ts: pd.Timestamp | None = None
+    end_ts: pd.Timestamp | None = None
+    notes: str | None = None
+    file_path: str | None = None
+    lookback_days_actual: float | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary fuer JSON-Serialisierung."""
         return {
             "status": self.status,
@@ -97,7 +97,7 @@ class KrakenDataHealth:
 
 def get_real_market_smokes_config(
     config_path: str = "config/config.toml",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Laedt die [real_market_smokes]-Konfiguration aus config.toml.
 
@@ -182,8 +182,8 @@ def load_kraken_cache_window(
     timeframe: str,
     lookback_days: int = 30,
     min_bars: int = 500,
-    n_bars: Optional[int] = None,
-) -> Tuple[pd.DataFrame, KrakenDataHealth]:
+    n_bars: int | None = None,
+) -> tuple[pd.DataFrame, KrakenDataHealth]:
     """
     Laedt Daten aus lokalem Kraken-Cache mit Data-QC.
 
@@ -361,7 +361,7 @@ def check_data_health_only(
     return health
 
 
-def list_available_cache_files(base_path: Path) -> Dict[str, Dict[str, Any]]:
+def list_available_cache_files(base_path: Path) -> dict[str, dict[str, Any]]:
     """
     Listet alle verfuegbaren Cache-Dateien mit Basisinfos.
 

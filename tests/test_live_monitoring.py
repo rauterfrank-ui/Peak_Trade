@@ -7,11 +7,10 @@ Tests für Monitoring-Funktionen für Shadow- und Testnet-Runs.
 """
 from __future__ import annotations
 
-import sys
 import json
-from datetime import datetime, timedelta, timezone
+import sys
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from unittest.mock import patch
 
 import pandas as pd
 import pytest
@@ -22,23 +21,19 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from src.live.monitoring import (
-    list_runs,
-    get_run_snapshot,
-    get_run_timeseries,
-    tail_events,
-    RunNotFoundError,
-    RunSnapshot,
     RunMetricPoint,
+    RunNotFoundError,
     _calculate_drawdown,
     _is_run_active,
+    get_run_snapshot,
+    get_run_timeseries,
+    list_runs,
+    tail_events,
 )
 from src.live.run_logging import (
-    LiveRunLogger,
     LiveRunMetadata,
-    LiveRunEvent,
     ShadowPaperLoggingConfig,
 )
-
 
 # =============================================================================
 # Test Fixtures
@@ -73,7 +68,7 @@ def sample_metadata() -> LiveRunMetadata:
         strategy_name="ma_crossover",
         symbol="BTC/EUR",
         timeframe="1m",
-        started_at=datetime.now(timezone.utc) - timedelta(hours=1),
+        started_at=datetime.now(UTC) - timedelta(hours=1),
     )
 
 
@@ -96,8 +91,8 @@ def sample_run_with_events(temp_run_dir: Path, sample_logging_config: ShadowPape
         pnl = i * 50.0
         event = {
             "step": i + 1,
-            "ts_event": (datetime.now(timezone.utc) - timedelta(minutes=10-i)).isoformat(),
-            "ts_bar": (datetime.now(timezone.utc) - timedelta(minutes=10-i)).isoformat(),
+            "ts_event": (datetime.now(UTC) - timedelta(minutes=10-i)).isoformat(),
+            "ts_bar": (datetime.now(UTC) - timedelta(minutes=10-i)).isoformat(),
             "equity": equity,
             "realized_pnl": pnl,
             "unrealized_pnl": 0.0,
@@ -146,17 +141,17 @@ def test_is_run_active() -> None:
         strategy_name="test",
         symbol="BTC/EUR",
         timeframe="1m",
-        started_at=datetime.now(timezone.utc) - timedelta(hours=1),
+        started_at=datetime.now(UTC) - timedelta(hours=1),
     )
-    last_event = datetime.now(timezone.utc) - timedelta(minutes=5)
+    last_event = datetime.now(UTC) - timedelta(minutes=5)
     assert _is_run_active(metadata, last_event) is True
 
     # Inaktiver Run (letztes Event vor 15 Minuten)
-    last_event = datetime.now(timezone.utc) - timedelta(minutes=15)
+    last_event = datetime.now(UTC) - timedelta(minutes=15)
     assert _is_run_active(metadata, last_event) is False
 
     # Beendeter Run
-    metadata.ended_at = datetime.now(timezone.utc)
+    metadata.ended_at = datetime.now(UTC)
     assert _is_run_active(metadata, last_event) is False
 
 

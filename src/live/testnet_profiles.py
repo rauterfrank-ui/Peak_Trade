@@ -51,7 +51,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.core.peak_config import PeakConfig
 
@@ -88,15 +88,15 @@ class TestnetSessionProfile:
     strategy: str = "ma_crossover"
     symbol: str = "BTC/EUR"
     timeframe: str = "1m"
-    duration_minutes: Optional[int] = None
-    max_notional: Optional[float] = None
-    max_trades: Optional[int] = None
-    position_fraction: Optional[float] = None
-    fee_rate: Optional[float] = None
-    slippage_bps: Optional[float] = None
-    extra_params: Dict[str, Any] = field(default_factory=dict)
+    duration_minutes: int | None = None
+    max_notional: float | None = None
+    max_trades: int | None = None
+    position_fraction: float | None = None
+    fee_rate: float | None = None
+    slippage_bps: float | None = None
+    extra_params: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert das Profil zu einem Dictionary."""
         return {
             "id": self.id,
@@ -113,7 +113,7 @@ class TestnetSessionProfile:
             "extra_params": self.extra_params,
         }
 
-    def with_overrides(self, **kwargs: Any) -> "TestnetSessionProfile":
+    def with_overrides(self, **kwargs: Any) -> TestnetSessionProfile:
         """
         Erstellt eine Kopie des Profils mit ueberschriebenen Werten.
 
@@ -132,7 +132,7 @@ class TestnetSessionProfile:
         return TestnetSessionProfile(**current)
 
     @classmethod
-    def from_dict(cls, profile_id: str, data: Dict[str, Any]) -> "TestnetSessionProfile":
+    def from_dict(cls, profile_id: str, data: dict[str, Any]) -> TestnetSessionProfile:
         """
         Erstellt ein Profil aus einem Dictionary.
 
@@ -192,8 +192,8 @@ class ProfileValidationResult:
         warnings: Liste von Warnungen
     """
     valid: bool
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
 
 
 def validate_profile(profile: TestnetSessionProfile) -> ProfileValidationResult:
@@ -211,8 +211,8 @@ def validate_profile(profile: TestnetSessionProfile) -> ProfileValidationResult:
     Returns:
         ProfileValidationResult
     """
-    errors: List[str] = []
-    warnings: List[str] = []
+    errors: list[str] = []
+    warnings: list[str] = []
 
     # Pflichtfelder
     if not profile.id:
@@ -232,11 +232,10 @@ def validate_profile(profile: TestnetSessionProfile) -> ProfileValidationResult:
     if profile.max_trades is not None and profile.max_trades <= 0:
         errors.append(f"max_trades muss positiv sein (ist: {profile.max_trades})")
 
-    if profile.position_fraction is not None:
-        if not (0 < profile.position_fraction <= 1.0):
-            errors.append(
-                f"position_fraction muss zwischen 0 und 1 liegen (ist: {profile.position_fraction})"
-            )
+    if profile.position_fraction is not None and not (0 < profile.position_fraction <= 1.0):
+        errors.append(
+            f"position_fraction muss zwischen 0 und 1 liegen (ist: {profile.position_fraction})"
+        )
 
     # Timeframe-Format
     valid_timeframes = {"1m", "5m", "15m", "30m", "1h", "4h", "1d", "1w"}
@@ -264,7 +263,7 @@ def validate_profile(profile: TestnetSessionProfile) -> ProfileValidationResult:
 # =============================================================================
 
 
-def load_testnet_profiles(cfg: PeakConfig) -> Dict[str, TestnetSessionProfile]:
+def load_testnet_profiles(cfg: PeakConfig) -> dict[str, TestnetSessionProfile]:
     """
     Laedt alle Testnet-Profile aus der Config.
 
@@ -282,7 +281,7 @@ def load_testnet_profiles(cfg: PeakConfig) -> Dict[str, TestnetSessionProfile]:
         >>> for name, profile in profiles.items():
         ...     print(f"{name}: {profile.description}")
     """
-    profiles: Dict[str, TestnetSessionProfile] = {}
+    profiles: dict[str, TestnetSessionProfile] = {}
 
     # Hole den gesamten testnet_profiles Block
     profiles_block = cfg.get("testnet_profiles", {})
@@ -332,7 +331,7 @@ def load_testnet_profiles(cfg: PeakConfig) -> Dict[str, TestnetSessionProfile]:
 def get_testnet_profile(
     cfg: PeakConfig,
     profile_id: str,
-) -> Optional[TestnetSessionProfile]:
+) -> TestnetSessionProfile | None:
     """
     Laedt ein einzelnes Testnet-Profil aus der Config.
 
@@ -352,7 +351,7 @@ def get_testnet_profile(
     return profiles.get(profile_id)
 
 
-def list_testnet_profiles(cfg: PeakConfig) -> List[str]:
+def list_testnet_profiles(cfg: PeakConfig) -> list[str]:
     """
     Listet alle verfuegbaren Profil-IDs.
 
@@ -417,7 +416,7 @@ def get_profiles_summary(cfg: PeakConfig) -> str:
 # =============================================================================
 
 
-def get_default_profiles() -> Dict[str, TestnetSessionProfile]:
+def get_default_profiles() -> dict[str, TestnetSessionProfile]:
     """
     Gibt die eingebauten Default-Profile zurueck.
 

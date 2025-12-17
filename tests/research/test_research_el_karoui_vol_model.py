@@ -24,12 +24,12 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.research_el_karoui_vol_model import (
-    BacktestResult,
-    BacktestRunConfig,
     DEFAULT_DATE_RANGES,
     DEFAULT_MAPPING_VARIANTS,
     DEFAULT_SYMBOLS,
     REPORT_PATH,
+    BacktestResult,
+    BacktestRunConfig,
     _format_float,
     _format_pct,
     _parse_cli_args,
@@ -39,7 +39,6 @@ from scripts.research_el_karoui_vol_model import (
     run_el_karoui_backtest,
     write_report,
 )
-
 
 # =============================================================================
 # FIXTURES

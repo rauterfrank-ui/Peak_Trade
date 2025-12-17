@@ -22,10 +22,10 @@ Hinweis:
 """
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Literal, Union
-import logging
+from typing import Any, Literal
 
 import numpy as np
 import pandas as pd
@@ -79,7 +79,7 @@ class RegimeConfig:
     trend_long_window: int = 50
     trend_slope_threshold: float = 0.02
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert Config zu Dict."""
         return {
             "vol_lookback": self.vol_lookback,
@@ -136,11 +136,11 @@ class RegimeStats:
     return_sum: float
     return_mean: float
     return_std: float
-    sharpe: Optional[float] = None
-    max_drawdown: Optional[float] = None
-    total_return: Optional[float] = None
+    sharpe: float | None = None
+    max_drawdown: float | None = None
+    total_return: float | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dict."""
         return {
             "regime": self.regime,
@@ -170,15 +170,15 @@ class RegimeAnalysisResult:
         config_used: Die verwendete RegimeConfig
     """
 
-    experiment_id: Optional[str] = None
-    strategy_name: Optional[str] = None
-    regimes: List[RegimeStats] = field(default_factory=list)
+    experiment_id: str | None = None
+    strategy_name: str | None = None
+    regimes: list[RegimeStats] = field(default_factory=list)
     overall_return: float = 0.0
-    overall_sharpe: Optional[float] = None
-    regime_distribution: Dict[str, float] = field(default_factory=dict)
-    config_used: Optional[RegimeConfig] = None
+    overall_sharpe: float | None = None
+    regime_distribution: dict[str, float] = field(default_factory=dict)
+    config_used: RegimeConfig | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dict für Serialisierung."""
         return {
             "experiment_id": self.experiment_id,
@@ -190,14 +190,14 @@ class RegimeAnalysisResult:
             "config_used": self.config_used.to_dict() if self.config_used else None,
         }
 
-    def get_best_regime(self) -> Optional[RegimeStats]:
+    def get_best_regime(self) -> RegimeStats | None:
         """Gibt das Regime mit dem besten Sharpe zurück."""
         valid = [r for r in self.regimes if r.sharpe is not None]
         if not valid:
             return None
         return max(valid, key=lambda r: r.sharpe or float("-inf"))
 
-    def get_worst_regime(self) -> Optional[RegimeStats]:
+    def get_worst_regime(self) -> RegimeStats | None:
         """Gibt das Regime mit dem schlechtesten Sharpe zurück."""
         valid = [r for r in self.regimes if r.sharpe is not None]
         if not valid:
@@ -210,7 +210,7 @@ class RegimeAnalysisResult:
 # =============================================================================
 
 
-def load_regime_config(path: Optional[Path] = None) -> RegimeConfig:
+def load_regime_config(path: Path | None = None) -> RegimeConfig:
     """
     Lädt Regime-Konfiguration aus TOML-Datei.
 
@@ -426,7 +426,7 @@ def detect_regimes(
     return result
 
 
-def get_regime_distribution(regimes: pd.DataFrame) -> Dict[str, float]:
+def get_regime_distribution(regimes: pd.DataFrame) -> dict[str, float]:
     """
     Berechnet die Verteilung der Regimes.
 
@@ -460,7 +460,7 @@ def analyze_regimes_from_equity(
     regimes: pd.DataFrame,
     annualization_factor: int = 365,
     combine_regimes: bool = True,
-) -> List[RegimeStats]:
+) -> list[RegimeStats]:
     """
     Analysiert Performance pro Regime basierend auf Equity-Curve.
 
@@ -573,9 +573,9 @@ def analyze_regimes_from_equity(
 def analyze_experiment_regimes(
     prices: pd.DataFrame,
     equity: pd.Series,
-    cfg: Optional[RegimeConfig] = None,
-    experiment_id: Optional[str] = None,
-    strategy_name: Optional[str] = None,
+    cfg: RegimeConfig | None = None,
+    experiment_id: str | None = None,
+    strategy_name: str | None = None,
     price_col: str = "close",
 ) -> RegimeAnalysisResult:
     """
@@ -664,13 +664,13 @@ class SweepRobustnessResult:
 
     sweep_name: str
     run_count: int
-    regime_consistency: Dict[str, int] = field(default_factory=dict)
-    best_regime: Optional[str] = None
-    worst_regime: Optional[str] = None
+    regime_consistency: dict[str, int] = field(default_factory=dict)
+    best_regime: str | None = None
+    worst_regime: str | None = None
     robustness_score: float = 0.0
-    per_run_results: List[RegimeAnalysisResult] = field(default_factory=list)
+    per_run_results: list[RegimeAnalysisResult] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dict."""
         return {
             "sweep_name": self.sweep_name,
@@ -683,7 +683,7 @@ class SweepRobustnessResult:
 
 
 def compute_sweep_robustness(
-    regime_results: List[RegimeAnalysisResult],
+    regime_results: list[RegimeAnalysisResult],
     sweep_name: str = "unknown",
 ) -> SweepRobustnessResult:
     """
@@ -705,9 +705,9 @@ def compute_sweep_robustness(
     run_count = len(regime_results)
 
     # Regime-Konsistenz: Wie oft ist Sharpe > 0 pro Regime?
-    regime_positive_count: Dict[str, int] = {}
-    regime_sharpe_sum: Dict[str, float] = {}
-    regime_count: Dict[str, int] = {}
+    regime_positive_count: dict[str, int] = {}
+    regime_sharpe_sum: dict[str, float] = {}
+    regime_count: dict[str, int] = {}
 
     for result in regime_results:
         for rs in result.regimes:
@@ -753,7 +753,7 @@ def compute_sweep_robustness(
 # =============================================================================
 
 
-def format_regime_stats_table(stats: List[RegimeStats]) -> str:
+def format_regime_stats_table(stats: list[RegimeStats]) -> str:
     """
     Formatiert RegimeStats als ASCII-Tabelle.
 
@@ -796,7 +796,7 @@ def format_regime_stats_table(stats: List[RegimeStats]) -> str:
     return "\n".join(lines)
 
 
-def create_regime_summary_df(results: List[RegimeAnalysisResult]) -> pd.DataFrame:
+def create_regime_summary_df(results: list[RegimeAnalysisResult]) -> pd.DataFrame:
     """
     Erstellt einen DataFrame mit Regime-Summaries für mehrere Experimente.
 

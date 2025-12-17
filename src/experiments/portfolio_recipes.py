@@ -96,7 +96,7 @@ class PortfolioRecipe:
                     f"weights length ({len(self.weights)}) must match strategies length "
                     f"({len(self.strategies)}) for recipe {self.id!r}"
                 )
-            expected_count = len(self.strategies)
+            len(self.strategies)
         elif self.sweep_name and self.top_n is not None:
             # Legacy: Sweep-basiert
             if self.top_n <= 0:
@@ -106,7 +106,6 @@ class PortfolioRecipe:
                     f"weights length ({len(self.weights)}) must match top_n ({self.top_n}) "
                     f"for recipe {self.id!r}"
                 )
-            expected_count = self.top_n
         else:
             raise ValueError(
                 f"Either 'strategies' or both 'sweep_name' and 'top_n' must be set "
@@ -144,12 +143,11 @@ class PortfolioRecipe:
             )
 
         # 5) stress_severity sollte zwischen 0 und 1 sein
-        if self.stress_severity is not None:
-            if not (0.0 <= self.stress_severity <= 1.0):
-                raise ValueError(
-                    f"stress_severity must be between 0.0 and 1.0, got {self.stress_severity} "
-                    f"for recipe {self.id!r}"
-                )
+        if self.stress_severity is not None and not (0.0 <= self.stress_severity <= 1.0):
+            raise ValueError(
+                f"stress_severity must be between 0.0 and 1.0, got {self.stress_severity} "
+                f"for recipe {self.id!r}"
+            )
 
 
 def load_portfolio_recipes(path: Path) -> dict[str, PortfolioRecipe]:

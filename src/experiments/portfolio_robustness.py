@@ -35,8 +35,9 @@ Usage:
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
-from typing import Callable, Dict, Iterable, Literal, Optional
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -45,7 +46,6 @@ from ..backtest import stats as stats_mod
 from .monte_carlo import MonteCarloConfig, run_monte_carlo_from_returns
 from .stress_tests import (
     StressScenarioConfig,
-    StressTestSuiteResult,
     run_stress_test_suite,
 )
 
@@ -132,13 +132,13 @@ class PortfolioRobustnessConfig:
     num_mc_runs: int = 0
     mc_method: Literal["simple", "block_bootstrap"] = "simple"
     mc_block_size: int = 20
-    mc_seed: Optional[int] = 42
+    mc_seed: int | None = 42
     run_stress_tests: bool = False
-    stress_scenarios: Optional[list[str]] = None
+    stress_scenarios: list[str] | None = None
     stress_severity: float = 0.2
     stress_window: int = 5
     stress_position: Literal["start", "middle", "end"] = "middle"
-    stress_seed: Optional[int] = 42
+    stress_seed: int | None = 42
 
     def __post_init__(self) -> None:
         """Validiert Konfiguration."""
@@ -163,9 +163,9 @@ class PortfolioRobustnessResult:
 
     portfolio: PortfolioDefinition
     portfolio_returns: pd.Series
-    baseline_metrics: Dict[str, float]
-    mc_results: Optional[Dict] = None
-    stress_results: Optional[Dict] = None
+    baseline_metrics: dict[str, float]
+    mc_results: dict | None = None
+    stress_results: dict | None = None
 
 
 # =============================================================================
@@ -175,7 +175,7 @@ class PortfolioRobustnessResult:
 
 def build_portfolio_returns(
     components: Iterable[PortfolioComponent],
-    returns_loader: Callable[[str, str], Optional[pd.Series]],
+    returns_loader: Callable[[str, str], pd.Series | None],
 ) -> pd.Series:
     """
     Baut eine Portfolio-Return-Serie aus mehreren Komponenten, gewichtet nach `weight`.
@@ -262,7 +262,7 @@ def build_portfolio_returns(
 # =============================================================================
 
 
-def compute_portfolio_metrics(returns: pd.Series) -> Dict[str, float]:
+def compute_portfolio_metrics(returns: pd.Series) -> dict[str, float]:
     """
     Berechnet Portfolio-Level-Metriken aus Returns.
 
@@ -309,8 +309,8 @@ def run_portfolio_monte_carlo(
     num_runs: int,
     method: str = "simple",
     block_size: int = 20,
-    seed: Optional[int] = 42,
-) -> Dict:
+    seed: int | None = 42,
+) -> dict:
     """
     Führt Monte-Carlo-Simulationen auf Portfolio-Returns durch.
 
@@ -339,7 +339,7 @@ def run_portfolio_monte_carlo(
         seed=seed,
     )
 
-    def stats_fn(returns_series: pd.Series) -> Dict[str, float]:
+    def stats_fn(returns_series: pd.Series) -> dict[str, float]:
         return compute_portfolio_metrics(returns_series)
 
     summary = run_monte_carlo_from_returns(returns, config, stats_fn=stats_fn)
@@ -366,8 +366,8 @@ def run_portfolio_stress_tests(
     severity: float = 0.2,
     window: int = 5,
     position: Literal["start", "middle", "end"] = "middle",
-    seed: Optional[int] = 42,
-) -> Dict:
+    seed: int | None = 42,
+) -> dict:
     """
     Führt Portfolio-Level-Stress-Szenarien aus.
 
@@ -406,7 +406,7 @@ def run_portfolio_stress_tests(
             )
         )
 
-    def stats_fn(returns_series: pd.Series) -> Dict[str, float]:
+    def stats_fn(returns_series: pd.Series) -> dict[str, float]:
         return compute_portfolio_metrics(returns_series)
 
     suite = run_stress_test_suite(returns, scenarios, stats_fn)
@@ -435,7 +435,7 @@ def run_portfolio_stress_tests(
 
 def run_portfolio_robustness(
     robustness_config: PortfolioRobustnessConfig,
-    returns_loader: Callable[[str, str], Optional[pd.Series]],
+    returns_loader: Callable[[str, str], pd.Series | None],
 ) -> PortfolioRobustnessResult:
     """
     Führt Baseline-Analyse, optional Monte-Carlo und optional Stress-Tests auf Portfolio-Ebene durch.

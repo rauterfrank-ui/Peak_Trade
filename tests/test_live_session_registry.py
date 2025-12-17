@@ -20,11 +20,10 @@ from __future__ import annotations
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import patch
 
 import pytest
-
 
 # =============================================================================
 # Fixtures
@@ -40,7 +39,7 @@ def temp_sessions_dir(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def sample_record() -> "LiveSessionRecord":
+def sample_record() -> LiveSessionRecord:
     """Erstellt einen Sample LiveSessionRecord."""
     from src.experiments.live_session_registry import LiveSessionRecord
 
@@ -71,7 +70,7 @@ def sample_record() -> "LiveSessionRecord":
 
 
 @pytest.fixture
-def sample_record_dict() -> Dict[str, Any]:
+def sample_record_dict() -> dict[str, Any]:
     """Erstellt ein Sample-Record als Dict."""
     return {
         "session_id": "session_20251208_001",
@@ -267,8 +266,8 @@ class TestListSessionRecordsFiltersAndLimit:
         """
         from src.experiments.live_session_registry import (
             LiveSessionRecord,
-            register_live_session_run,
             list_session_records,
+            register_live_session_run,
         )
 
         # Erstelle mehrere Records mit unterschiedlichen run_type / status
@@ -327,8 +326,8 @@ class TestListSessionRecordsFiltersAndLimit:
         """Test: Records werden nach Timestamp sortiert (neueste zuerst)."""
         from src.experiments.live_session_registry import (
             LiveSessionRecord,
-            register_live_session_run,
             list_session_records,
+            register_live_session_run,
         )
 
         # Erstelle Records mit unterschiedlichen Timestamps
@@ -368,8 +367,8 @@ class TestListSessionRecordsFiltersAndLimit:
         """Test: Beschädigte JSON-Dateien werden übersprungen."""
         from src.experiments.live_session_registry import (
             LiveSessionRecord,
-            register_live_session_run,
             list_session_records,
+            register_live_session_run,
         )
 
         # Gültigen Record erstellen
@@ -409,8 +408,8 @@ class TestGetSessionSummaryBasic:
         """
         from src.experiments.live_session_registry import (
             LiveSessionRecord,
-            register_live_session_run,
             get_session_summary,
+            register_live_session_run,
         )
 
         # Erstelle 3 Records mit metrics
@@ -481,8 +480,8 @@ class TestGetSessionSummaryBasic:
         """Test: Summary mit run_type Filter."""
         from src.experiments.live_session_registry import (
             LiveSessionRecord,
-            register_live_session_run,
             get_session_summary,
+            register_live_session_run,
         )
 
         # Shadow-Records
@@ -699,10 +698,10 @@ class TestConstants:
         """Test: Run-Type-Konstanten sind definiert."""
         from src.experiments.live_session_registry import (
             RUN_TYPE_LIVE_SESSION,
+            RUN_TYPE_LIVE_SESSION_LIVE,
+            RUN_TYPE_LIVE_SESSION_PAPER,
             RUN_TYPE_LIVE_SESSION_SHADOW,
             RUN_TYPE_LIVE_SESSION_TESTNET,
-            RUN_TYPE_LIVE_SESSION_PAPER,
-            RUN_TYPE_LIVE_SESSION_LIVE,
         )
 
         assert RUN_TYPE_LIVE_SESSION == "live_session"
@@ -714,10 +713,10 @@ class TestConstants:
     def test_status_constants(self):
         """Test: Status-Konstanten sind definiert."""
         from src.experiments.live_session_registry import (
-            STATUS_STARTED,
+            STATUS_ABORTED,
             STATUS_COMPLETED,
             STATUS_FAILED,
-            STATUS_ABORTED,
+            STATUS_STARTED,
         )
 
         assert STATUS_STARTED == "started"
@@ -729,7 +728,7 @@ class TestConstants:
         """Test: Default-Verzeichnis ist definiert."""
         from src.experiments.live_session_registry import DEFAULT_LIVE_SESSION_DIR
 
-        assert DEFAULT_LIVE_SESSION_DIR == Path("reports/experiments/live_sessions")
+        assert Path("reports/experiments/live_sessions") == DEFAULT_LIVE_SESSION_DIR
 
 
 # =============================================================================
@@ -764,8 +763,8 @@ class TestHelperFunctions:
     def test_load_session_record(self, sample_record, temp_sessions_dir):
         """Test: load_session_record() lädt JSON korrekt."""
         from src.experiments.live_session_registry import (
-            register_live_session_run,
             load_session_record,
+            register_live_session_run,
         )
 
         # Speichere Record
@@ -790,16 +789,11 @@ class TestExports:
     def test_exports_from_experiments_package(self):
         """Test: Alle Phase-81-Komponenten werden exportiert."""
         from src.experiments import (
-            LiveSessionRecord,
-            register_live_session_run,
-            load_session_record,
-            list_session_records,
-            get_session_summary,
-            generate_session_run_id,
             DEFAULT_LIVE_SESSION_DIR,
-            RUN_TYPE_LIVE_SESSION,
-            RUN_TYPE_LIVE_SESSION_SHADOW,
-            RUN_TYPE_LIVE_SESSION_TESTNET,
+            LiveSessionRecord,
+            get_session_summary,
+            list_session_records,
+            register_live_session_run,
         )
 
         # Alle Imports sollten funktionieren
@@ -924,8 +918,8 @@ class TestStrategyTierSupport:
         """Test: get_session_summary() enthält by_tier."""
         from src.experiments.live_session_registry import (
             LiveSessionRecord,
-            register_live_session_run,
             get_session_summary,
+            register_live_session_run,
         )
 
         # Core-Session
@@ -969,8 +963,8 @@ class TestStrategyTierSupport:
         """Test: get_session_summary() enthält r_and_d_summary wenn R&D-Sessions vorhanden."""
         from src.experiments.live_session_registry import (
             LiveSessionRecord,
-            register_live_session_run,
             get_session_summary,
+            register_live_session_run,
         )
 
         # R&D-Sessions erstellen
@@ -1056,10 +1050,10 @@ class TestIntegration:
         """Test: Kompletter Workflow - Registrieren, Laden, Abfragen, Summary."""
         from src.experiments.live_session_registry import (
             LiveSessionRecord,
-            register_live_session_run,
-            load_session_record,
-            list_session_records,
             get_session_summary,
+            list_session_records,
+            load_session_record,
+            register_live_session_run,
             render_session_markdown,
         )
 

@@ -23,8 +23,6 @@ Referenz:
 """
 from __future__ import annotations
 
-from typing import Optional, Tuple
-
 import numpy as np
 import pandas as pd
 
@@ -32,8 +30,8 @@ import pandas as pd
 def compute_triple_barrier_labels(
     prices: pd.Series,
     signals: pd.Series,
-    take_profit: Optional[float] = 0.02,
-    stop_loss: Optional[float] = 0.01,
+    take_profit: float | None = 0.02,
+    stop_loss: float | None = 0.01,
     vertical_barrier_bars: int = 20,
     side_prediction: bool = True,
 ) -> pd.Series:
@@ -109,7 +107,7 @@ def get_horizontal_barriers(
     events: pd.DataFrame,
     take_profit: float,
     stop_loss: float,
-) -> Tuple[pd.Series, pd.Series]:
+) -> tuple[pd.Series, pd.Series]:
     """
     Berechnet horizontale Barriers (TP/SL) für Events.
 

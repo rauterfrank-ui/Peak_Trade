@@ -38,20 +38,13 @@ from __future__ import annotations
 
 import json
 import logging
-import sys
-from dataclasses import dataclass, field
 
 # tomllib ist erst ab Python 3.11 verfügbar, Fallback zu tomli
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    try:
-        import tomli as tomllib
-    except ImportError:
-        tomllib = None  # type: ignore
+import tomllib  # type: ignore
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 logger = logging.getLogger(__name__)
 
@@ -100,11 +93,11 @@ class Metadata:
     strategy_id: str
     profile_version: str = PROFILE_VERSION
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
-    data_range: Optional[str] = None
-    symbols: List[str] = field(default_factory=list)
+    data_range: str | None = None
+    symbols: list[str] = field(default_factory=list)
     timeframe: str = "1h"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "strategy_id": self.strategy_id,
@@ -139,15 +132,15 @@ class PerformanceMetrics:
     cagr: float = 0.0
     max_drawdown: float = 0.0
     volatility: float = 0.0
-    winrate: Optional[float] = None
-    avg_trade: Optional[float] = None
+    winrate: float | None = None
+    avg_trade: float | None = None
     trade_count: int = 0
     total_return: float = 0.0
-    sortino: Optional[float] = None
-    calmar: Optional[float] = None
-    profit_factor: Optional[float] = None
+    sortino: float | None = None
+    calmar: float | None = None
+    profit_factor: float | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "sharpe": self.sharpe,
@@ -164,7 +157,7 @@ class PerformanceMetrics:
         }
 
     @classmethod
-    def from_backtest_stats(cls, stats: Dict[str, Any]) -> "PerformanceMetrics":
+    def from_backtest_stats(cls, stats: dict[str, Any]) -> PerformanceMetrics:
         """
         Erstellt PerformanceMetrics aus Backtest-Stats.
 
@@ -208,19 +201,19 @@ class RobustnessMetrics:
         num_stress_scenarios: Anzahl Stress-Szenarien
     """
 
-    param_sensitivity_index: Optional[float] = None
-    montecarlo_p5: Optional[float] = None
-    montecarlo_p50: Optional[float] = None
-    montecarlo_p95: Optional[float] = None
-    montecarlo_sharpe_p5: Optional[float] = None
-    montecarlo_sharpe_p95: Optional[float] = None
-    stress_min: Optional[float] = None
-    stress_max: Optional[float] = None
-    stress_avg: Optional[float] = None
+    param_sensitivity_index: float | None = None
+    montecarlo_p5: float | None = None
+    montecarlo_p50: float | None = None
+    montecarlo_p95: float | None = None
+    montecarlo_sharpe_p5: float | None = None
+    montecarlo_sharpe_p95: float | None = None
+    stress_min: float | None = None
+    stress_max: float | None = None
+    stress_avg: float | None = None
     num_montecarlo_runs: int = 0
     num_stress_scenarios: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "param_sensitivity_index": self.param_sensitivity_index,
@@ -258,7 +251,7 @@ class SingleRegimeProfile:
     trade_count: int = 0
     avg_return: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "name": self.name,
@@ -281,11 +274,11 @@ class RegimeProfile:
         weakest_regime: Regime mit niedrigstem Return-Beitrag
     """
 
-    regimes: List[SingleRegimeProfile] = field(default_factory=list)
-    dominant_regime: Optional[str] = None
-    weakest_regime: Optional[str] = None
+    regimes: list[SingleRegimeProfile] = field(default_factory=list)
+    dominant_regime: str | None = None
+    weakest_regime: str | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "regimes": [r.to_dict() for r in self.regimes],
@@ -309,11 +302,11 @@ class StrategyTieringInfo:
 
     tier: TIER_TYPES = "unclassified"
     reason: str = ""
-    recommended_config_id: Optional[str] = None
+    recommended_config_id: str | None = None
     allow_live: bool = False
     notes: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "tier": self.tier,
@@ -347,10 +340,10 @@ class StrategyProfile:
     metadata: Metadata
     performance: PerformanceMetrics
     robustness: RobustnessMetrics = field(default_factory=RobustnessMetrics)
-    regimes: Optional[RegimeProfile] = None
-    tiering: Optional[StrategyTieringInfo] = None
+    regimes: RegimeProfile | None = None
+    tiering: StrategyTieringInfo | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary für JSON-Export."""
         result = {
             "metadata": self.metadata.to_dict(),
@@ -383,7 +376,7 @@ class StrategyProfile:
         logger.info(f"Strategy-Profil exportiert: {filepath}")
 
     @classmethod
-    def from_json(cls, filepath: str | Path) -> "StrategyProfile":
+    def from_json(cls, filepath: str | Path) -> StrategyProfile:
         """
         Lädt ein Profil aus einer JSON-Datei.
 
@@ -395,13 +388,13 @@ class StrategyProfile:
         """
         filepath = Path(filepath)
 
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             data = json.load(f)
 
         return cls.from_dict(data)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "StrategyProfile":
+    def from_dict(cls, data: dict[str, Any]) -> StrategyProfile:
         """
         Erstellt ein Profil aus einem Dictionary.
 
@@ -451,7 +444,7 @@ class StrategyProfile:
         )
 
         regimes = None
-        if "regimes" in data and data["regimes"]:
+        if data.get("regimes"):
             regime_data = data["regimes"]
             regime_list = [
                 SingleRegimeProfile(
@@ -471,7 +464,7 @@ class StrategyProfile:
             )
 
         tiering = None
-        if "tiering" in data and data["tiering"]:
+        if data.get("tiering"):
             tier_data = data["tiering"]
             tiering = StrategyTieringInfo(
                 tier=tier_data.get("tier", "unclassified"),
@@ -514,7 +507,7 @@ class StrategyProfile:
 
 def load_tiering_config(
     config_path: str | Path = "config/strategy_tiering.toml",
-) -> Dict[str, StrategyTieringInfo]:
+) -> dict[str, StrategyTieringInfo]:
     """
     Lädt die Tiering-Konfiguration aus einer TOML-Datei.
 
@@ -542,7 +535,7 @@ def load_tiering_config(
     with open(config_path, "rb") as f:
         data = tomllib.load(f)
 
-    result: Dict[str, StrategyTieringInfo] = {}
+    result: dict[str, StrategyTieringInfo] = {}
 
     strategies = data.get("strategy", {})
     for strategy_id, info in strategies.items():
@@ -560,7 +553,7 @@ def load_tiering_config(
 
 def get_tiering_for_strategy(
     strategy_id: str,
-    tiering_config: Optional[Dict[str, StrategyTieringInfo]] = None,
+    tiering_config: dict[str, StrategyTieringInfo] | None = None,
 ) -> StrategyTieringInfo:
     """
     Holt Tiering-Info für eine Strategie.
@@ -589,14 +582,14 @@ def get_tiering_for_strategy(
 # =============================================================================
 
 
-def _format_percent(value: Optional[float], digits: int = 2) -> str:
+def _format_percent(value: float | None, digits: int = 2) -> str:
     """Formatiert einen Wert als Prozent."""
     if value is None:
         return "N/A"
     return f"{value * 100:.{digits}f}%"
 
 
-def _format_number(value: Optional[float], digits: int = 2) -> str:
+def _format_number(value: float | None, digits: int = 2) -> str:
     """Formatiert eine Zahl."""
     if value is None:
         return "N/A"
@@ -633,8 +626,8 @@ def generate_markdown_profile(profile: StrategyProfile) -> str:
         "",
         "## 2. Performance (Baseline)",
         "",
-        f"| Metrik | Wert |",
-        f"|--------|------|",
+        "| Metrik | Wert |",
+        "|--------|------|",
         f"| Sharpe | {_format_number(perf.sharpe)} |",
         f"| CAGR | {_format_percent(perf.cagr)} |",
         f"| Max Drawdown | {_format_percent(perf.max_drawdown)} |",
@@ -849,7 +842,7 @@ class StrategyProfileBuilder:
         self,
         strategy_id: str,
         timeframe: str = "1h",
-        symbols: Optional[List[str]] = None,
+        symbols: list[str] | None = None,
     ):
         """
         Initialisiert den Builder.
@@ -866,15 +859,15 @@ class StrategyProfileBuilder:
         )
         self.performance = PerformanceMetrics()
         self.robustness = RobustnessMetrics()
-        self.regimes: Optional[RegimeProfile] = None
-        self.tiering: Optional[StrategyTieringInfo] = None
+        self.regimes: RegimeProfile | None = None
+        self.tiering: StrategyTieringInfo | None = None
 
-    def set_data_range(self, start: str, end: str) -> "StrategyProfileBuilder":
+    def set_data_range(self, start: str, end: str) -> StrategyProfileBuilder:
         """Setzt den Datenbereich."""
         self.metadata.data_range = f"{start}..{end}"
         return self
 
-    def set_performance(self, **kwargs: Any) -> "StrategyProfileBuilder":
+    def set_performance(self, **kwargs: Any) -> StrategyProfileBuilder:
         """
         Setzt Performance-Metriken.
 
@@ -887,13 +880,13 @@ class StrategyProfileBuilder:
         return self
 
     def set_performance_from_stats(
-        self, stats: Dict[str, Any]
-    ) -> "StrategyProfileBuilder":
+        self, stats: dict[str, Any]
+    ) -> StrategyProfileBuilder:
         """Setzt Performance aus Backtest-Stats."""
         self.performance = PerformanceMetrics.from_backtest_stats(stats)
         return self
 
-    def set_robustness(self, **kwargs: Any) -> "StrategyProfileBuilder":
+    def set_robustness(self, **kwargs: Any) -> StrategyProfileBuilder:
         """
         Setzt Robustness-Metriken.
 
@@ -911,9 +904,9 @@ class StrategyProfileBuilder:
         p50: float,
         p95: float,
         num_runs: int,
-        sharpe_p5: Optional[float] = None,
-        sharpe_p95: Optional[float] = None,
-    ) -> "StrategyProfileBuilder":
+        sharpe_p5: float | None = None,
+        sharpe_p95: float | None = None,
+    ) -> StrategyProfileBuilder:
         """
         Setzt Monte-Carlo-Ergebnisse.
 
@@ -939,7 +932,7 @@ class StrategyProfileBuilder:
         max_return: float,
         avg_return: float,
         num_scenarios: int,
-    ) -> "StrategyProfileBuilder":
+    ) -> StrategyProfileBuilder:
         """
         Setzt Stress-Test-Ergebnisse.
 
@@ -962,7 +955,7 @@ class StrategyProfileBuilder:
         time_share: float,
         trade_count: int = 0,
         avg_return: float = 0.0,
-    ) -> "StrategyProfileBuilder":
+    ) -> StrategyProfileBuilder:
         """
         Fügt ein Regime zum Profil hinzu.
 
@@ -990,7 +983,7 @@ class StrategyProfileBuilder:
         )
         return self
 
-    def finalize_regimes(self) -> "StrategyProfileBuilder":
+    def finalize_regimes(self) -> StrategyProfileBuilder:
         """
         Finalisiert Regime-Analyse (berechnet dominant/weakest).
         """
@@ -1012,10 +1005,10 @@ class StrategyProfileBuilder:
         self,
         tier: TIER_TYPES,
         reason: str = "",
-        recommended_config_id: Optional[str] = None,
+        recommended_config_id: str | None = None,
         allow_live: bool = False,
         notes: str = "",
-    ) -> "StrategyProfileBuilder":
+    ) -> StrategyProfileBuilder:
         """
         Setzt Tiering-Informationen.
 
@@ -1038,7 +1031,7 @@ class StrategyProfileBuilder:
     def set_tiering_from_config(
         self,
         config_path: str | Path = "config/strategy_tiering.toml",
-    ) -> "StrategyProfileBuilder":
+    ) -> StrategyProfileBuilder:
         """
         Lädt Tiering aus Config-Datei.
 
@@ -1072,23 +1065,23 @@ class StrategyProfileBuilder:
 # =============================================================================
 
 __all__ = [
+    # Constants
+    "PROFILE_VERSION",
+    "TIER_LABELS",
+    "TIER_TYPES",
     # Data Models
     "Metadata",
     "PerformanceMetrics",
+    "RegimeProfile",
     "RobustnessMetrics",
     "SingleRegimeProfile",
-    "RegimeProfile",
-    "StrategyTieringInfo",
     "StrategyProfile",
     # Builder
     "StrategyProfileBuilder",
-    # Config
-    "load_tiering_config",
-    "get_tiering_for_strategy",
+    "StrategyTieringInfo",
     # Markdown
     "generate_markdown_profile",
-    # Constants
-    "PROFILE_VERSION",
-    "TIER_TYPES",
-    "TIER_LABELS",
+    "get_tiering_for_strategy",
+    # Config
+    "load_tiering_config",
 ]

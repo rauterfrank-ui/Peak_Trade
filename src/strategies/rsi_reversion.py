@@ -15,10 +15,10 @@ und nutzt Übertreibungen (Oversold/Overbought) für Einstiege.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -71,8 +71,8 @@ class RsiReversionStrategy(BaseStrategy):
         trend_ma_window: int = 50,
         use_wilder: bool = True,
         price_col: str = "close",
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert RSI Reversion Strategy.
@@ -90,7 +90,7 @@ class RsiReversionStrategy(BaseStrategy):
             config: Optional Config-Dict
             metadata: Optional Metadata
         """
-        base_cfg: Dict[str, Any] = {
+        base_cfg: dict[str, Any] = {
             "rsi_window": rsi_window,
             "lower": lower,
             "upper": upper,
@@ -146,7 +146,7 @@ class RsiReversionStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.rsi_reversion",
-    ) -> "RsiReversionStrategy":
+    ) -> RsiReversionStrategy:
         """
         Fabrikmethode für Core-Config.
 
@@ -304,7 +304,7 @@ class RsiReversionStrategy(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 
@@ -333,7 +333,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return strategy.generate_signals(df)
 
 
-def get_strategy_description(params: Dict) -> str:
+def get_strategy_description(params: dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
     trend_filter = "Aktiv" if params.get('use_trend_filter', False) else "Inaktiv"
     return f"""

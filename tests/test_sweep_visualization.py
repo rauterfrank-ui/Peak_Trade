@@ -5,20 +5,18 @@ Tests für src/reporting/sweep_visualization.py (Phase 43)
 
 Testet Sweep-Visualisierungsfunktionen.
 """
-import pytest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pandas as pd
-import numpy as np
+import pytest
 
 from src.reporting.sweep_visualization import (
-    plot_metric_vs_single_param,
-    plot_metric_heatmap_two_params,
     create_drawdown_heatmap,
     generate_default_sweep_plots,
+    plot_metric_heatmap_two_params,
+    plot_metric_vs_single_param,
 )
-
 
 # =============================================================================
 # PLOT METRIC VS SINGLE PARAM TESTS
@@ -456,9 +454,9 @@ class TestDrawdownHeatmapIntegration:
             )
 
             # Sollte Drawdown-Heatmap enthalten
-            drawdown_heatmaps = [k for k in plots.keys() if "drawdown" in k.lower()]
+            drawdown_heatmaps = [k for k in plots if "drawdown" in k.lower()]
             assert len(drawdown_heatmaps) > 0, "Drawdown-Heatmap sollte erstellt werden"
-            
+
             # Prüfe dass alle Drawdown-Heatmaps existieren
             for key in drawdown_heatmaps:
                 assert plots[key].exists()
@@ -482,6 +480,6 @@ class TestDrawdownHeatmapIntegration:
             )
 
             # Sollte keine Drawdown-Heatmap enthalten
-            drawdown_heatmaps = [k for k in plots.keys() if "drawdown" in k.lower()]
+            drawdown_heatmaps = [k for k in plots if "drawdown" in k.lower()]
             assert len(drawdown_heatmaps) == 0, "Keine Drawdown-Heatmap sollte erstellt werden wenn max_drawdown fehlt"
 

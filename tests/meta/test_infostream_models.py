@@ -8,11 +8,9 @@ drei Kern-Datenstrukturen: IntelEvent, InfoPacket, LearningSnippet.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-import pytest
-
-from src.meta.infostream import IntelEvent, InfoPacket, LearningSnippet
+from src.meta.infostream import InfoPacket, IntelEvent, LearningSnippet
 
 
 class TestIntelEvent:
@@ -50,7 +48,7 @@ class TestIntelEvent:
         """Test: created_at wird automatisch auf UTC gesetzt."""
         event = IntelEvent(source="TEST")
         assert event.created_at.tzinfo is not None
-        assert event.created_at.tzinfo == timezone.utc
+        assert event.created_at.tzinfo == UTC
 
     def test_json_serializable(self) -> None:
         """Test: to_dict() Ergebnis ist JSON-serialisierbar."""
@@ -261,7 +259,7 @@ class TestIntegration:
 
     def test_timestamp_preservation(self) -> None:
         """Test: Timestamps werden korrekt über Serialisierung erhalten."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         event = IntelEvent(source="TEST", created_at=now)
         packet = InfoPacket(intel_event=event, created_at=now)

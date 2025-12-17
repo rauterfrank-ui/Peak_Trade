@@ -1,7 +1,6 @@
 """
 Data Normalizer: Konvertiert rohe Daten in Peak_Trade-Standard-Format.
 """
-from typing import Dict, Optional
 
 import pandas as pd
 
@@ -22,7 +21,7 @@ class DataNormalizer:
     @staticmethod
     def normalize(
         df: pd.DataFrame,
-        column_mapping: Optional[Dict[str, str]] = None,
+        column_mapping: dict[str, str] | None = None,
         ensure_utc: bool = True,
         drop_extra_columns: bool = True,
     ) -> pd.DataFrame:

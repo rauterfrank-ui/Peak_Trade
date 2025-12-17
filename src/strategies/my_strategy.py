@@ -17,10 +17,9 @@ Konsolidierungsphasen.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -62,8 +61,8 @@ class MyStrategy(BaseStrategy):
         entry_multiplier: float = 1.5,
         exit_multiplier: float = 0.5,
         use_close_only: bool = False,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Volatility-Breakout-Strategie.
@@ -128,7 +127,7 @@ class MyStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.my_strategy",
-    ) -> "MyStrategy":
+    ) -> MyStrategy:
         """
         Fabrikmethode für Core-Config.
 
@@ -265,7 +264,7 @@ class MyStrategy(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 
@@ -292,7 +291,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return strategy.generate_signals(df)
 
 
-def get_strategy_description(params: Dict) -> str:
+def get_strategy_description(params: dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
     return f"""
 Volatility Breakout Strategy (ATR-basiert)

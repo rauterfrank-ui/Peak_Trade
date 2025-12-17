@@ -4,7 +4,6 @@ Tests for Policy Critic rules.
 All tests are deterministic and verify rule behavior.
 """
 
-import pytest
 
 from src.governance.policy_critic.models import Severity
 from src.governance.policy_critic.rules import (

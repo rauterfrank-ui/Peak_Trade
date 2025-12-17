@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional, List
 
 import pandas as pd
 
-from src.reporting.trigger_training_report import TriggerTrainingEvent, TriggerOutcome
+from src.reporting.trigger_training_report import TriggerOutcome, TriggerTrainingEvent
 
 
 @dataclass
@@ -27,7 +26,7 @@ def _compute_pnl_after_bars(
     prices: pd.DataFrame,
     ts: pd.Timestamp,
     *,
-    symbol: Optional[str],
+    symbol: str | None,
     lookahead_bars: int,
     recommended_action: str,
 ) -> float:
@@ -91,8 +90,8 @@ def _compute_pnl_after_bars(
 
 def _classify_outcome(
     recommended_action: str,
-    user_action: Optional[str],
-    reaction_delay_s: Optional[float],
+    user_action: str | None,
+    reaction_delay_s: float | None,
     *,
     late_threshold_s: float,
 ) -> TriggerOutcome:
@@ -122,10 +121,10 @@ def _classify_outcome(
 
 def build_trigger_training_events_from_dfs(
     signals: pd.DataFrame,
-    actions: Optional[pd.DataFrame],
-    prices: Optional[pd.DataFrame],
-    config: Optional[TriggerTrainingHookConfig] = None,
-) -> List[TriggerTrainingEvent]:
+    actions: pd.DataFrame | None,
+    prices: pd.DataFrame | None,
+    config: TriggerTrainingHookConfig | None = None,
+) -> list[TriggerTrainingEvent]:
     """Erzeugt TriggerTrainingEvent-Objekte aus Signals-, Actions- und Price-DataFrames.
 
     V0-Schema (bewusst einfach, damit die Pipeline es leicht befüllen kann):
@@ -165,7 +164,7 @@ def build_trigger_training_events_from_dfs(
     if "signal_id" not in s_df.columns:
         s_df = s_df.reset_index().rename(columns={"index": "signal_id"})
 
-    a_df: Optional[pd.DataFrame]
+    a_df: pd.DataFrame | None
     if actions is not None and not actions.empty:
         a_df = actions.copy()
         if "signal_id" not in a_df.columns:
@@ -191,7 +190,7 @@ def build_trigger_training_events_from_dfs(
         merged["user_action"] = None
         merged["note"] = None
 
-    events: List[TriggerTrainingEvent] = []
+    events: list[TriggerTrainingEvent] = []
 
     for _, row in merged.iterrows():
         # Signal-Basis
@@ -217,7 +216,7 @@ def build_trigger_training_events_from_dfs(
 
         # Reaktionszeit
         if ts_action is not None:
-            reaction_delay_s: Optional[float] = (ts_action - ts_signal).total_seconds()
+            reaction_delay_s: float | None = (ts_action - ts_signal).total_seconds()
         else:
             reaction_delay_s = None
 
@@ -241,14 +240,14 @@ def build_trigger_training_events_from_dfs(
             )
 
         # Tags: Kombiniere aus DataFrame (falls vorhanden) und automatisch generierte Tags
-        tags: List[str] = []
-        
+        tags: list[str] = []
+
         # Tags aus DataFrame übernehmen (z.B. scenario_psych_tags)
         tags_from_df = row.get("scenario_psych_tags", "")
         if tags_from_df and not pd.isna(tags_from_df):
             tags_list = [t.strip() for t in str(tags_from_df).split(",") if t.strip()]
             tags.extend(tags_list)
-        
+
         # Automatisch generierte Tags basierend auf Outcome
         if outcome == TriggerOutcome.MISSED and pnl_after > config.pain_threshold:
             tags.append("missed_opportunity")

@@ -12,39 +12,39 @@ Testet:
 
 WICHTIG: Diese Tests verifizieren, dass KEINE echten Orders gesendet werden.
 """
+
+import contextlib
+
 import pytest
-from datetime import datetime, timezone
 
 from src.core.environment import (
-    TradingEnvironment,
-    EnvironmentConfig,
     LIVE_CONFIRM_TOKEN,
-    get_environment_from_config,
+    EnvironmentConfig,
+    TradingEnvironment,
     create_default_environment,
+    get_environment_from_config,
+    is_live,
     is_paper,
     is_testnet,
-    is_live,
 )
 from src.core.peak_config import PeakConfig
 from src.live.safety import (
-    SafetyGuard,
-    SafetyAuditEntry,
-    SafetyBlockedError,
-    LiveTradingDisabledError,
     ConfirmTokenInvalidError,
     LiveNotImplementedError,
-    TestnetDryRunOnlyError,
+    LiveTradingDisabledError,
     PaperModeOrderError,
+    SafetyBlockedError,
+    SafetyGuard,
+    TestnetDryRunOnlyError,
     create_safety_guard,
 )
 from src.orders.base import OrderRequest
 from src.orders.exchange import (
-    TestnetOrderExecutor,
-    LiveOrderExecutor,
-    ExchangeOrderExecutor,
     EXECUTION_MODE_TESTNET_DRY_RUN,
+    ExchangeOrderExecutor,
+    LiveOrderExecutor,
+    TestnetOrderExecutor,
 )
-
 
 # =============================================================================
 # TradingEnvironment Tests
@@ -442,10 +442,8 @@ class TestSafetyGuard:
         config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         guard = SafetyGuard(env_config=config)
 
-        try:
+        with contextlib.suppress(PaperModeOrderError):
             guard.ensure_may_place_order()
-        except PaperModeOrderError:
-            pass
 
         log = guard.get_audit_log()
         assert len(log) == 1
@@ -628,7 +626,7 @@ class TestLiveOrderExecutor:
         """LiveOrderExecutor im Dry-Run-Modus führt simuliert aus."""
         # Phase 71: Dry-Run statt Exception
         result = live_executor.execute_order(sample_order)
-        
+
         assert result.status == "filled"
         assert result.metadata["dry_run"] is True
         assert result.metadata["mode"] == "live_dry_run"
@@ -637,7 +635,7 @@ class TestLiveOrderExecutor:
         """execute_orders() führt mehrere Orders im Dry-Run aus."""
         orders = [OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.1)]
         results = live_executor.execute_orders(orders)
-        
+
         assert len(results) == 1
         assert results[0].metadata["dry_run"] is True
 
@@ -729,7 +727,7 @@ class TestSafetyIntegration:
 
     def test_full_paper_workflow(self):
         """Kompletter Paper-Workflow funktioniert."""
-        from src.orders import PaperOrderExecutor, PaperMarketContext
+        from src.orders import PaperMarketContext, PaperOrderExecutor
 
         # Paper-Setup
         ctx = PaperMarketContext(prices={"BTC/EUR": 50000.0})

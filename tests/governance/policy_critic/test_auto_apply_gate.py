@@ -8,8 +8,6 @@ import json
 import tempfile
 from pathlib import Path
 
-import pytest
-
 from src.governance.policy_critic.auto_apply_gate import (
     ApplyMode,
     AutoApplyDecision,
@@ -183,7 +181,7 @@ class TestReportPersistence:
             persist_decision_to_report(report_path, decision)
 
             # Read back
-            with open(report_path, "r") as f:
+            with open(report_path) as f:
                 report = json.load(f)
 
             # Verify
@@ -217,7 +215,7 @@ class TestReportPersistence:
 
             persist_decision_to_report(report_path, decision)
 
-            with open(report_path, "r") as f:
+            with open(report_path) as f:
                 report = json.load(f)
 
             # Verify existing key is preserved

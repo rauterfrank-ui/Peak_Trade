@@ -24,8 +24,7 @@ Usage:
 """
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 try:
     from pydantic import BaseModel, Field
@@ -54,7 +53,7 @@ class PanelSnapshot(BaseModel):
     id: str = Field(..., description="Unique panel identifier")
     title: str = Field(..., description="Human-readable panel title")
     status: str = Field(..., description="Panel status (ok/warn/error/unknown)")
-    details: Dict[str, Any] = Field(default_factory=dict, description="Panel-specific data")
+    details: dict[str, Any] = Field(default_factory=dict, description="Panel-specific data")
 
     if PYDANTIC_V2:
         model_config = {"extra": "forbid"}
@@ -75,8 +74,8 @@ class LiveStatusSnapshot(BaseModel):
     """
     version: str = Field(default="0.1", description="Schema version")
     generated_at: str = Field(..., description="ISO 8601 timestamp (UTC)")
-    panels: List[PanelSnapshot] = Field(default_factory=list, description="List of panels")
-    meta: Dict[str, Any] = Field(default_factory=dict, description="Optional metadata")
+    panels: list[PanelSnapshot] = Field(default_factory=list, description="List of panels")
+    meta: dict[str, Any] = Field(default_factory=dict, description="Optional metadata")
 
     if PYDANTIC_V2:
         model_config = {"extra": "forbid"}
@@ -90,7 +89,7 @@ class LiveStatusSnapshot(BaseModel):
 # =============================================================================
 
 
-def model_dump_helper(model: BaseModel) -> Dict[str, Any]:
+def model_dump_helper(model: BaseModel) -> dict[str, Any]:
     """
     Pydantic v1/v2 compatible model -> dict conversion.
 
@@ -106,7 +105,7 @@ def model_dump_helper(model: BaseModel) -> Dict[str, Any]:
         return model.dict()
 
 
-def normalize_details(details: Dict[str, Any]) -> Dict[str, Any]:
+def normalize_details(details: dict[str, Any]) -> dict[str, Any]:
     """
     Normalizes details dict for deterministic output.
 

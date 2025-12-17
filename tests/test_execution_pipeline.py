@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # tests/test_execution_pipeline.py
 """
 Peak_Trade: Tests für ExecutionPipeline Phase 16A
@@ -17,10 +16,8 @@ WICHTIG: Keine echten Orders - alles Paper/Sandbox.
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import List, Optional
 from dataclasses import dataclass
+from pathlib import Path
 
 import pytest
 
@@ -39,14 +36,14 @@ if str(ROOT_DIR) not in sys.path:
 class FakeLiveRiskCheckResult:
     """Fake LiveRiskCheckResult für Tests."""
     allowed: bool
-    reasons: List[str]
+    reasons: list[str]
     metrics: dict
 
 
 class FakeSafetyGuard:
     """Fake SafetyGuard für Tests."""
 
-    def __init__(self, allow_orders: bool = True, raise_exception: Optional[Exception] = None):
+    def __init__(self, allow_orders: bool = True, raise_exception: Exception | None = None):
         self.allow_orders = allow_orders
         self.raise_exception = raise_exception
         self.called = False
@@ -91,7 +88,7 @@ class FakeRunLogger:
     """Fake LiveRunLogger für Tests."""
 
     def __init__(self):
-        self.events: List[dict] = []
+        self.events: list[dict] = []
         self.called = False
 
     def log_event(self, event) -> None:
@@ -110,10 +107,10 @@ class TestExecutionPipelineWithSafety:
 
     def test_execution_pipeline_blocks_live_mode(self):
         """execute_with_safety() blockiert LIVE-Mode hart (Phase 16A)."""
-        from src.execution import ExecutionPipeline
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.execution import ExecutionPipeline
         from src.orders.base import OrderRequest
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # LIVE-Mode Environment
         env_config = EnvironmentConfig(environment=TradingEnvironment.LIVE)
@@ -136,11 +133,11 @@ class TestExecutionPipelineWithSafety:
 
     def test_execution_pipeline_runs_safety_and_blocks_on_violation(self):
         """execute_with_safety() blockiert bei SafetyGuard-Verletzung."""
-        from src.execution import ExecutionPipeline
         from src.core.environment import EnvironmentConfig, TradingEnvironment
+        from src.execution import ExecutionPipeline
         from src.live.safety import SafetyBlockedError
-        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
         from src.orders.base import OrderRequest
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # PAPER-Mode, aber SafetyGuard blockiert
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
@@ -167,10 +164,10 @@ class TestExecutionPipelineWithSafety:
 
     def test_execution_pipeline_executes_orders_when_safe(self):
         """execute_with_safety() fuehrt Orders aus wenn alle Checks passieren."""
-        from src.execution import ExecutionPipeline
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.execution import ExecutionPipeline
         from src.orders.base import OrderRequest
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # PAPER-Mode, SafetyGuard erlaubt
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
@@ -194,10 +191,10 @@ class TestExecutionPipelineWithSafety:
 
     def test_execution_pipeline_blocks_on_risk_violation(self):
         """execute_with_safety() blockiert bei Risk-Limit-Verletzung."""
-        from src.execution import ExecutionPipeline
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.execution import ExecutionPipeline
         from src.orders.base import OrderRequest
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # PAPER-Mode, SafetyGuard erlaubt, aber Risk-Limits blockieren
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
@@ -225,10 +222,10 @@ class TestExecutionPipelineWithSafety:
 
     def test_execution_pipeline_logs_events_when_logger_configured(self):
         """execute_with_safety() loggt Events wenn Run-Logger konfiguriert."""
-        from src.execution import ExecutionPipeline
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.execution import ExecutionPipeline
         from src.orders.base import OrderRequest
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # PAPER-Mode, alle Checks passieren, Logger konfiguriert
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
@@ -267,8 +264,8 @@ class TestExecutionPipelineWithSafety:
     def test_execution_pipeline_works_without_safety_components(self):
         """execute_with_safety() funktioniert auch ohne Safety-Komponenten."""
         from src.execution import ExecutionPipeline
-        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
         from src.orders.base import OrderRequest
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         # Pipeline ohne Safety-Komponenten
         executor = PaperOrderExecutor(PaperMarketContext(prices={"BTC/EUR": 50000.0}))
@@ -283,10 +280,10 @@ class TestExecutionPipelineWithSafety:
 
     def test_execution_pipeline_converts_orders_for_risk_check(self):
         """execute_with_safety() konvertiert OrderRequest zu LiveOrderRequest für Risk-Check."""
-        from src.execution import ExecutionPipeline
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
+        from src.execution import ExecutionPipeline
         from src.orders.base import OrderRequest
+        from src.orders.paper import PaperMarketContext, PaperOrderExecutor
 
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         safety_guard = FakeSafetyGuard(allow_orders=True)

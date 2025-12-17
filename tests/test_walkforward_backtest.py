@@ -10,20 +10,20 @@ from pathlib import Path
 # Projekt-Root zum Path hinzufügen
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pytest
-import pandas as pd
+from datetime import datetime
+
 import numpy as np
-from datetime import datetime, timedelta
+import pandas as pd
+import pytest
 
 from src.backtest.walkforward import (
     WalkForwardConfig,
     WalkForwardResult,
-    split_train_test_windows,
     run_walkforward_for_config,
     run_walkforward_for_top_n_from_sweep,
+    split_train_test_windows,
 )
 from src.strategies.ma_crossover import generate_signals as ma_signals
-
 
 # =============================================================================
 # TEST FIXTURES
@@ -127,7 +127,7 @@ class TestSplitTrainTestWindows:
         windows = split_train_test_windows(start, end, config)
 
         # Prüfe, dass alle Fenster vollständig sind
-        for train_start, train_end, test_start, test_end in windows:
+        for _train_start, train_end, _test_start, test_end in windows:
             # Train-Fenster muss vollständig sein
             assert train_end <= end
             # Test-Fenster muss vollständig sein

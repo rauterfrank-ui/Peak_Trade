@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # tests/test_experiments_explorer.py
 """
 Peak_Trade – Tests für Experiment & Metrics Explorer (Phase 22)
@@ -17,11 +16,8 @@ import csv
 import json
 import subprocess
 import sys
-import tempfile
 import uuid
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -29,22 +25,20 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.analytics.explorer import (
+    ExperimentExplorer,
     ExperimentFilter,
     ExperimentSummary,
     RankedExperiment,
     SweepOverview,
-    ExperimentExplorer,
+    _extract_tag,
+    _extract_tags_list,
+    _parse_params,
+    _parse_timestamp,
     get_explorer,
     quick_list,
     quick_rank,
     quick_sweep_summary,
-    _parse_timestamp,
-    _extract_tag,
-    _extract_tags_list,
-    _parse_params,
-    _row_to_summary,
 )
-
 
 # =============================================================================
 # FIXTURES
@@ -725,15 +719,11 @@ class TestImports:
     def test_import_from_analytics(self):
         """Test: Import aus src.analytics funktioniert."""
         from src.analytics import (
+            ExperimentExplorer,
             ExperimentFilter,
             ExperimentSummary,
             RankedExperiment,
             SweepOverview,
-            ExperimentExplorer,
-            get_explorer,
-            quick_list,
-            quick_rank,
-            quick_sweep_summary,
         )
 
         # Alle sollten importierbar sein
@@ -747,8 +737,6 @@ class TestImports:
         """Test: Direkter Import aus explorer.py funktioniert."""
         from src.analytics.explorer import (
             ExperimentFilter,
-            ExperimentSummary,
-            ExperimentExplorer,
         )
 
         assert ExperimentFilter is not None

@@ -8,25 +8,24 @@ Testet:
 - Core-Presets enthalten keine Legacy-Strategien
 - Core+Aux-Presets enthalten nur Core und Aux
 """
-import pytest
 from pathlib import Path
 
+import pytest
+
 from src.experiments.portfolio_presets import (
-    get_strategies_by_tier,
-    get_tiering_aware_strategies,
-    get_all_tiered_strategies,
-    get_strategy_tier,
-    validate_preset_tiering_compliance,
-    validate_all_presets_tiering,
-    load_tiered_preset,
+    VALID_TIERS,
     build_core_only_preset,
     build_core_plus_aux_preset,
-    TieringComplianceResult,
-    VALID_TIERS,
+    get_all_tiered_strategies,
+    get_strategies_by_tier,
+    get_strategy_tier,
+    get_tiering_aware_strategies,
+    load_tiered_preset,
+    validate_all_presets_tiering,
+    validate_preset_tiering_compliance,
 )
 from src.experiments.portfolio_recipes import load_portfolio_recipes
 from src.experiments.strategy_profiles import load_tiering_config
-
 
 # =============================================================================
 # FIXTURES

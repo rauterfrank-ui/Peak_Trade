@@ -8,24 +8,29 @@ Tests für die neuen Strategien:
 - RsiReversionStrategy (erweitert)
 """
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
-from src.strategies.vol_breakout import (
-    VolBreakoutStrategy,
-    generate_signals as vol_breakout_generate_signals,
-)
+from src.strategies.base import BaseStrategy
 from src.strategies.mean_reversion_channel import (
     MeanReversionChannelStrategy,
+)
+from src.strategies.mean_reversion_channel import (
     generate_signals as mean_reversion_channel_generate_signals,
 )
 from src.strategies.rsi_reversion import (
     RsiReversionStrategy,
+)
+from src.strategies.rsi_reversion import (
     generate_signals as rsi_reversion_generate_signals,
 )
-from src.strategies.base import BaseStrategy
-
+from src.strategies.vol_breakout import (
+    VolBreakoutStrategy,
+)
+from src.strategies.vol_breakout import (
+    generate_signals as vol_breakout_generate_signals,
+)
 
 # ============================================================================
 # TEST FIXTURES

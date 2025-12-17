@@ -17,11 +17,10 @@ Endpoints (registriert in app.py):
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel, Field
-
 
 # =============================================================================
 # PYDANTIC MODELS
@@ -45,10 +44,10 @@ class AlertSummary(BaseModel):
     severity: str = Field(description="Severity: INFO, WARN, CRITICAL")
     category: str = Field(description="Category: RISK, EXECUTION, SYSTEM")
     source: str = Field(description="Quelle des Alerts")
-    session_id: Optional[str] = Field(None, description="Session-ID falls vorhanden")
+    session_id: str | None = Field(None, description="Session-ID falls vorhanden")
     timestamp: str = Field(description="ISO-Timestamp")
     timestamp_display: str = Field(description="Formatierter Timestamp für UI")
-    runbooks: List[RunbookSummary] = Field(default_factory=list, description="Verlinkte Runbooks (Phase 84)")
+    runbooks: list[RunbookSummary] = Field(default_factory=list, description="Verlinkte Runbooks (Phase 84)")
 
     class Config:
         json_schema_extra = {
@@ -73,10 +72,10 @@ class AlertStats(BaseModel):
     """Statistiken über Alerts für Status-Kacheln."""
 
     total: int = Field(description="Gesamtzahl Alerts im Zeitfenster")
-    by_severity: Dict[str, int] = Field(description="Anzahl nach Severity")
-    by_category: Dict[str, int] = Field(description="Anzahl nach Category")
+    by_severity: dict[str, int] = Field(description="Anzahl nach Severity")
+    by_category: dict[str, int] = Field(description="Anzahl nach Category")
     sessions_with_alerts: int = Field(description="Anzahl Sessions mit Alerts")
-    last_critical: Optional[Dict[str, Any]] = Field(
+    last_critical: dict[str, Any] | None = Field(
         None, description="Letzter CRITICAL Alert"
     )
     hours: int = Field(description="Betrachtetes Zeitfenster in Stunden")
@@ -85,11 +84,11 @@ class AlertStats(BaseModel):
 class AlertListResponse(BaseModel):
     """Response für Alert-Liste."""
 
-    alerts: List[AlertSummary]
+    alerts: list[AlertSummary]
     total: int = Field(description="Gesamtzahl (ungefiltert)")
     filtered: int = Field(description="Anzahl nach Filter")
     limit: int = Field(description="Angewandtes Limit")
-    filters: Dict[str, Any] = Field(description="Angewandte Filter")
+    filters: dict[str, Any] = Field(description="Angewandte Filter")
 
 
 # =============================================================================
@@ -111,10 +110,10 @@ def _truncate_body(body: str, max_length: int = 200) -> str:
 
 def get_alerts_for_ui(
     limit: int = 100,
-    hours: Optional[int] = 24,
-    severity: Optional[List[str]] = None,
-    category: Optional[List[str]] = None,
-    session_id: Optional[str] = None,
+    hours: int | None = 24,
+    severity: list[str] | None = None,
+    category: list[str] | None = None,
+    session_id: str | None = None,
 ) -> AlertListResponse:
     """
     Lädt Alerts für die UI mit Filtern.
@@ -130,7 +129,7 @@ def get_alerts_for_ui(
         AlertListResponse mit formatierten Alerts
     """
     try:
-        from src.live.alert_storage import list_recent_alerts, get_alert_stats
+        from src.live.alert_storage import get_alert_stats, list_recent_alerts
     except ImportError:
         # Fallback wenn Storage nicht verfügbar
         return AlertListResponse(
@@ -154,7 +153,7 @@ def get_alerts_for_ui(
         stored_alerts = [a for a in stored_alerts if a.session_id == session_id]
 
     # Zu UI-Modellen konvertieren
-    alerts: List[AlertSummary] = []
+    alerts: list[AlertSummary] = []
     for alert in stored_alerts:
         # Phase 84: Runbooks aus Context extrahieren
         runbook_dicts = alert.context.get("runbooks", [])
@@ -237,11 +236,11 @@ def get_alert_statistics(hours: int = 24) -> AlertStats:
 
 def get_alerts_template_context(
     limit: int = 100,
-    hours: Optional[int] = 24,
-    severity: Optional[List[str]] = None,
-    category: Optional[List[str]] = None,
-    session_id: Optional[str] = None,
-) -> Dict[str, Any]:
+    hours: int | None = 24,
+    severity: list[str] | None = None,
+    category: list[str] | None = None,
+    session_id: str | None = None,
+) -> dict[str, Any]:
     """
     Baut Template-Context für die Alert-Historie-Seite.
 
@@ -289,13 +288,13 @@ def get_alerts_template_context(
 # =============================================================================
 
 __all__ = [
+    "AlertListResponse",
+    "AlertStats",
+    "AlertSummary",
     # Models
     "RunbookSummary",
-    "AlertSummary",
-    "AlertStats",
-    "AlertListResponse",
+    "get_alert_statistics",
     # Functions
     "get_alerts_for_ui",
-    "get_alert_statistics",
     "get_alerts_template_context",
 ]

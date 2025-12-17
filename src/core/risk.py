@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 
 class BaseRiskManager(ABC):
@@ -17,7 +17,7 @@ class BaseRiskManager(ABC):
     """
 
     @abstractmethod
-    def reset(self, start_equity: Optional[float] = None) -> None:
+    def reset(self, start_equity: float | None = None) -> None:
         """
         Setzt den RiskManager für einen neuen Backtest zurück.
 
@@ -32,7 +32,7 @@ class BaseRiskManager(ABC):
         target_units: float,
         price: float,
         equity: float,
-        timestamp: Optional[Any] = None,
+        timestamp: Any | None = None,
     ) -> float:
         """
         Passt die Ziel-Position basierend auf Risk-Limits an.
@@ -56,7 +56,7 @@ class NoopRiskManager(BaseRiskManager):
     Use Case: Minimales Risk-Management oder wenn andere Mechanismen genutzt werden.
     """
 
-    def reset(self, start_equity: Optional[float] = None) -> None:
+    def reset(self, start_equity: float | None = None) -> None:
         pass  # Nichts zu tun
 
     def adjust_target_position(
@@ -64,7 +64,7 @@ class NoopRiskManager(BaseRiskManager):
         target_units: float,
         price: float,
         equity: float,
-        timestamp: Optional[Any] = None,
+        timestamp: Any | None = None,
     ) -> float:
         return target_units
 
@@ -93,7 +93,7 @@ class MaxDrawdownRiskManager(BaseRiskManager):
         self.peak_equity: float = 0.0
         self.trading_stopped: bool = False
 
-    def reset(self, start_equity: Optional[float] = None) -> None:
+    def reset(self, start_equity: float | None = None) -> None:
         """Setzt Peak-Equity und Trading-Status zurück."""
         self.peak_equity = start_equity if start_equity else 0.0
         self.trading_stopped = False
@@ -103,7 +103,7 @@ class MaxDrawdownRiskManager(BaseRiskManager):
         target_units: float,
         price: float,
         equity: float,
-        timestamp: Optional[Any] = None,
+        timestamp: Any | None = None,
     ) -> float:
         """
         Prüft Drawdown und stoppt Trading bei Überschreitung.
@@ -161,7 +161,7 @@ class EquityFloorRiskManager(BaseRiskManager):
     def __post_init__(self) -> None:
         self.trading_stopped: bool = False
 
-    def reset(self, start_equity: Optional[float] = None) -> None:
+    def reset(self, start_equity: float | None = None) -> None:
         """Setzt Trading-Status zurück."""
         self.trading_stopped = False
 
@@ -170,7 +170,7 @@ class EquityFloorRiskManager(BaseRiskManager):
         target_units: float,
         price: float,
         equity: float,
-        timestamp: Optional[Any] = None,
+        timestamp: Any | None = None,
     ) -> float:
         """
         Prüft Equity-Floor und stoppt Trading bei Unterschreitung.

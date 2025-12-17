@@ -12,12 +12,9 @@ Phase: Research-Track Integration
 """
 from __future__ import annotations
 
-import pytest
-import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, Any
+import pandas as pd
+import pytest
 
 # =============================================================================
 # Strategy Import Tests
@@ -262,10 +259,10 @@ class TestStrategyTiering:
 
     def test_tier_types_includes_r_and_d(self):
         """Test: TIER_TYPES inkludiert 'r_and_d'."""
-        from src.experiments.strategy_profiles import TIER_TYPES
-
         # Literal-Typ prüfen (indirekt via get_args)
         from typing import get_args
+
+        from src.experiments.strategy_profiles import TIER_TYPES
 
         allowed_tiers = get_args(TIER_TYPES)
         assert "r_and_d" in allowed_tiers
@@ -562,6 +559,7 @@ class TestStrategyTieringAPIEndpoints:
         """FastAPI TestClient."""
         try:
             from fastapi.testclient import TestClient
+
             from src.webui.app import app
 
             return TestClient(app)

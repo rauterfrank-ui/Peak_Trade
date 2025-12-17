@@ -1,8 +1,8 @@
 # src/analytics/notebook_helpers.py
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence
 
 import numpy as np
 import pandas as pd
@@ -14,7 +14,7 @@ HAS_MATPLOTLIB = False
 plt = None  # type: ignore
 
 try:
-    import matplotlib.pyplot as _plt  # noqa: F401
+    import matplotlib.pyplot as _plt
     plt = _plt
     HAS_MATPLOTLIB = True
 except Exception:

@@ -1,6 +1,6 @@
 """Tests for live session evaluation metrics."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -25,7 +25,7 @@ def test_compute_metrics_single_fill():
     """Test metrics with a single fill."""
     fills = [
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=0.1,
@@ -49,21 +49,21 @@ def test_compute_metrics_fifo_pnl_simple():
     """Test FIFO PnL calculation with simple scenario."""
     fills = [
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
             fill_price=100.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
             fill_price=110.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 10, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 10, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="sell",
             qty=1.5,
@@ -85,14 +85,14 @@ def test_compute_metrics_fifo_pnl_exact_match():
     """Test FIFO PnL with exact buy/sell match."""
     fills = [
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="ETH/USD",
             side="buy",
             qty=2.0,
             fill_price=3000.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=UTC),
             symbol="ETH/USD",
             side="sell",
             qty=2.0,
@@ -112,14 +112,14 @@ def test_compute_metrics_fifo_pnl_multiple_symbols():
     fills = [
         # BTC trades
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
             fill_price=50000.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="sell",
             qty=1.0,
@@ -127,14 +127,14 @@ def test_compute_metrics_fifo_pnl_multiple_symbols():
         ),
         # ETH trades
         Fill(
-            ts=datetime(2025, 1, 15, 10, 10, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 10, 0, tzinfo=UTC),
             symbol="ETH/USD",
             side="buy",
             qty=2.0,
             fill_price=3000.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 15, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 15, 0, tzinfo=UTC),
             symbol="ETH/USD",
             side="sell",
             qty=2.0,
@@ -156,14 +156,14 @@ def test_compute_metrics_fifo_pnl_loss():
     """Test FIFO PnL with a losing trade."""
     fills = [
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
             fill_price=50000.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="sell",
             qty=1.0,
@@ -181,21 +181,21 @@ def test_compute_metrics_side_breakdown():
     """Test side breakdown statistics."""
     fills = [
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=0.5,
             fill_price=50000.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=0.3,
             fill_price=51000.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 10, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 10, 0, tzinfo=UTC),
             symbol="ETH/USD",
             side="sell",
             qty=2.0,
@@ -220,14 +220,14 @@ def test_compute_metrics_vwap():
     """Test VWAP calculation."""
     fills = [
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
             fill_price=50000.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=2.0,
@@ -245,14 +245,14 @@ def test_compute_metrics_excess_sell_strict_mode():
     """Test that excess sell quantity raises error in strict mode."""
     fills = [
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
             fill_price=50000.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="sell",
             qty=2.0,  # Selling more than bought
@@ -268,14 +268,14 @@ def test_compute_metrics_excess_sell_best_effort():
     """Test that excess sell is handled gracefully in best-effort mode."""
     fills = [
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
             fill_price=50000.0
         ),
         Fill(
-            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="sell",
             qty=2.0,  # Selling more than bought
@@ -295,7 +295,7 @@ def test_fill_validation():
     """Test Fill dataclass validation."""
     # Valid fill
     fill = Fill(
-        ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+        ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
         symbol="BTC/USD",
         side="buy",
         qty=1.0,
@@ -306,7 +306,7 @@ def test_fill_validation():
     # Invalid side
     with pytest.raises(ValueError, match="Invalid side"):
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="invalid",
             qty=1.0,
@@ -316,7 +316,7 @@ def test_fill_validation():
     # Invalid quantity
     with pytest.raises(ValueError, match="Quantity must be positive"):
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=-1.0,
@@ -326,7 +326,7 @@ def test_fill_validation():
     # Invalid price
     with pytest.raises(ValueError, match="Fill price must be positive"):
         Fill(
-            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
+            ts=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
             symbol="BTC/USD",
             side="buy",
             qty=1.0,

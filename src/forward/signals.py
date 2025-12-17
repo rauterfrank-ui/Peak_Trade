@@ -1,10 +1,10 @@
 # src/forward/signals.py
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
-from datetime import datetime
+from collections.abc import Iterable, Sequence
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Sequence
+from typing import Any
 
 import pandas as pd
 
@@ -35,7 +35,7 @@ class ForwardSignal:
 
     size_hint: float | None = None
     comment: str | None = None
-    extra: Dict[str, Any] | None = None
+    extra: dict[str, Any] | None = None
 
 
 FORWARD_SIGNALS_COLUMNS: Sequence[str] = [
@@ -55,7 +55,7 @@ def signals_to_dataframe(signals: Iterable[ForwardSignal]) -> pd.DataFrame:
     """
     Wandelt eine Liste von ForwardSignal in ein DataFrame mit bekannten Spalten um.
     """
-    rows: List[Dict[str, Any]] = []
+    rows: list[dict[str, Any]] = []
     for sig in signals:
         d = asdict(sig)
         extra = d.pop("extra", None)

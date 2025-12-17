@@ -12,7 +12,7 @@ um das Risiko gleichmäßiger zu verteilen (Risk-Parity-Ansatz).
 from __future__ import annotations
 
 import logging
-from typing import Dict, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -72,7 +72,7 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
         >>> # ETH bekommt höheres Gewicht wegen niedrigerer Vol
     """
 
-    def __init__(self, config: "PortfolioConfig") -> None:
+    def __init__(self, config: PortfolioConfig) -> None:
         """
         Initialisiert Vol-Target-Strategie.
 
@@ -95,7 +95,7 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
 
     def _compute_raw_weights(
         self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Berechnet inverse-volatilitäts-gewichtete Gewichte.
 
@@ -131,7 +131,7 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
         self,
         context: PortfolioContext,
         universe: list[str],
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Berechnet Volatilitäten für alle Symbole.
 
@@ -201,8 +201,8 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
         return {}
 
     def _inverse_vol_weights(
-        self, volatilities: Dict[str, float]
-    ) -> Dict[str, float]:
+        self, volatilities: dict[str, float]
+    ) -> dict[str, float]:
         """
         Berechnet Inverse-Volatilitäts-Gewichte.
 
@@ -246,9 +246,9 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
 
     def compute_portfolio_vol(
         self,
-        weights: Dict[str, float],
-        volatilities: Dict[str, float],
-        correlation_matrix: Optional[pd.DataFrame] = None,
+        weights: dict[str, float],
+        volatilities: dict[str, float],
+        correlation_matrix: pd.DataFrame | None = None,
     ) -> float:
         """
         Berechnet die erwartete Portfolio-Volatilität.

@@ -6,21 +6,17 @@ Tests für src/experiments/base.py (Phase 29)
 Testet ParamSweep, ExperimentConfig, SweepResultRow,
 ExperimentResult und ExperimentRunner.
 """
-import pytest
-from datetime import datetime
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
 
 import pandas as pd
+import pytest
 
 from src.experiments.base import (
-    ParamSweep,
     ExperimentConfig,
-    SweepResultRow,
     ExperimentResult,
     ExperimentRunner,
+    ParamSweep,
+    SweepResultRow,
 )
-
 
 # ============================================================================
 # PARAM SWEEP TESTS
@@ -308,7 +304,7 @@ class TestExperimentResult:
         )
 
     @pytest.fixture
-    def sample_results(self) -> List[SweepResultRow]:
+    def sample_results(self) -> list[SweepResultRow]:
         """Sample SweepResultRows."""
         return [
             SweepResultRow(

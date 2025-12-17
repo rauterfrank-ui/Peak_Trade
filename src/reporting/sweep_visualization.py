@@ -23,13 +23,12 @@ Usage:
 from __future__ import annotations
 
 import logging
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
 
 import pandas as pd
-import numpy as np
 
-from .plots import save_heatmap, save_scatter_plot, MATPLOTLIB_AVAILABLE
+from .plots import MATPLOTLIB_AVAILABLE, save_heatmap, save_scatter_plot
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ def plot_metric_vs_single_param(
     *,
     sweep_name: str,
     output_dir: Path,
-) -> Optional[Path]:
+) -> Path | None:
     """
     Erzeugt einen Line/Scatter-Plot einer Metrik gegen einen Parameter.
 
@@ -128,7 +127,7 @@ def plot_metric_heatmap_two_params(
     *,
     sweep_name: str,
     output_dir: Path,
-) -> Optional[Path]:
+) -> Path | None:
     """
     Erzeugt eine 2D-Heatmap einer Metrik über zwei Parameter.
 
@@ -225,11 +224,11 @@ def create_drawdown_heatmap(
     param_y: str,
     metric_col: str = "metric_max_drawdown",
     *,
-    title: Optional[str] = None,
-    output_path: Optional[Path] = None,
-    sweep_name: Optional[str] = None,
-    output_dir: Optional[Path] = None,
-) -> Optional[Path]:
+    title: str | None = None,
+    output_path: Path | None = None,
+    sweep_name: str | None = None,
+    output_dir: Path | None = None,
+) -> Path | None:
     """
     Erzeugt eine 2D-Heatmap für eine Drawdown-Metrik (z. B. Max-Drawdown) über zwei Parameterachsen.
 
@@ -340,10 +339,10 @@ def generate_default_sweep_plots(
     df: pd.DataFrame,
     sweep_name: str,
     output_dir: Path,
-    param_candidates: Optional[Sequence[str]] = None,
+    param_candidates: Sequence[str] | None = None,
     metric_primary: str = "metric_sharpe_ratio",
     metric_fallback: str = "metric_total_return",
-) -> Dict[str, Path]:
+) -> dict[str, Path]:
     """
     Erzeugt eine Standardkollektion von Plots für Sweep-Ergebnisse.
 
@@ -358,7 +357,7 @@ def generate_default_sweep_plots(
     Returns:
         Dictionary mit Plot-Namen -> Pfad (z.B. {"param_vs_metric": Path(...), "heatmap": Path(...)})
     """
-    plots: Dict[str, Path] = {}
+    plots: dict[str, Path] = {}
 
     # Extrahiere Param- und Metrik-Spalten
     param_cols = [c for c in df.columns if c.startswith("param_")]

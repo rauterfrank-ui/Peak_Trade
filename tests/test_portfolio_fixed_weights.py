@@ -3,9 +3,8 @@
 Tests für FixedWeightsPortfolioStrategy (Phase 26)
 """
 
-import pytest
 import pandas as pd
-import numpy as np
+import pytest
 
 from src.portfolio import (
     FixedWeightsPortfolioStrategy,

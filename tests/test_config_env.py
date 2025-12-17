@@ -4,17 +4,19 @@ Tests für Environment-Variable-basiertes Config-System
 
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pytest
 import os
-import tempfile
+
+import pytest
+
 from src.core import (
-    resolve_config_path,
-    load_settings_from_file,
     DEFAULT_CONFIG_ENV_VAR,
     DEFAULT_CONFIG_PATH,
+    load_settings_from_file,
     reset_config,
+    resolve_config_path,
 )
 
 
@@ -23,7 +25,7 @@ def test_resolve_config_path_default():
     # Sicherstellen dass env var nicht gesetzt ist
     if DEFAULT_CONFIG_ENV_VAR in os.environ:
         del os.environ[DEFAULT_CONFIG_ENV_VAR]
-    
+
     path = resolve_config_path()
     assert path == DEFAULT_CONFIG_PATH
 
@@ -31,10 +33,10 @@ def test_resolve_config_path_default():
 def test_resolve_config_path_env_var(tmp_path):
     """Test: Environment Variable hat Priorität."""
     custom_config = tmp_path / "custom_config.toml"
-    
+
     # Env var setzen
     os.environ[DEFAULT_CONFIG_ENV_VAR] = str(custom_config)
-    
+
     try:
         path = resolve_config_path()
         assert path == custom_config
@@ -47,10 +49,10 @@ def test_resolve_config_path_env_var(tmp_path):
 def test_resolve_config_path_explicit():
     """Test: Expliziter Pfad hat höchste Priorität."""
     explicit_path = Path("/tmp/explicit_config.toml")
-    
+
     # Selbst wenn env var gesetzt ist
     os.environ[DEFAULT_CONFIG_ENV_VAR] = "/tmp/env_config.toml"
-    
+
     try:
         path = resolve_config_path(explicit_path)
         assert path == explicit_path
@@ -84,18 +86,18 @@ min_trades = 50
 min_profit_factor = 1.3
 min_backtest_months = 6
 """)
-    
+
     # Env var setzen
     os.environ[DEFAULT_CONFIG_ENV_VAR] = str(test_config)
-    
+
     try:
         reset_config()  # Cache leeren
         settings = load_settings_from_file()
-        
+
         # Prüfen dass die Test-Werte geladen wurden
         assert settings.backtest.initial_cash == 5000.0
         assert settings.risk.risk_per_trade == 0.02
-        
+
     finally:
         if DEFAULT_CONFIG_ENV_VAR in os.environ:
             del os.environ[DEFAULT_CONFIG_ENV_VAR]

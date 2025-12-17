@@ -19,7 +19,7 @@ from __future__ import annotations
 import json
 import logging
 import urllib.request
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -44,7 +44,7 @@ from src.live.alerts import (
 def sample_alert_info() -> AlertEvent:
     """Erstellt Sample-INFO-Alert."""
     return AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.INFO,
         source="test.source",
         code="TEST_INFO",
@@ -57,7 +57,7 @@ def sample_alert_info() -> AlertEvent:
 def sample_alert_warning() -> AlertEvent:
     """Erstellt Sample-WARNING-Alert."""
     return AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test.source",
         code="TEST_WARNING",
@@ -70,7 +70,7 @@ def sample_alert_warning() -> AlertEvent:
 def sample_alert_critical() -> AlertEvent:
     """Erstellt Sample-CRITICAL-Alert."""
     return AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.CRITICAL,
         source="test.source",
         code="TEST_CRITICAL",
@@ -223,7 +223,7 @@ def test_multi_alert_sink_forwards_to_all():
     multi = MultiAlertSink([sink1, sink2])
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -256,7 +256,7 @@ def test_multi_alert_sink_exception_handling(caplog):
     multi = MultiAlertSink([failing, working])
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -406,7 +406,7 @@ def test_webhook_alert_sink_respects_min_level(monkeypatch):
     )
 
     low_alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.INFO,
         source="test",
         code="TEST",
@@ -415,7 +415,7 @@ def test_webhook_alert_sink_respects_min_level(monkeypatch):
     )
 
     high_alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.CRITICAL,
         source="test",
         code="TEST",
@@ -441,7 +441,7 @@ def test_webhook_alert_sink_empty_urls():
     sink = WebhookAlertSink(urls=[], min_level=AlertLevel.INFO)
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -475,7 +475,7 @@ def test_webhook_alert_sink_multiple_urls(monkeypatch):
     )
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -502,7 +502,7 @@ def test_webhook_alert_sink_exception_handling(monkeypatch, caplog):
     )
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -545,7 +545,7 @@ def test_slack_webhook_alert_sink_builds_text(monkeypatch):
     )
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="live_risk.portfolio",
         code="RISK_LIMIT_VIOLATION_PORTFOLIO",
@@ -585,7 +585,7 @@ def test_slack_webhook_alert_sink_respects_min_level(monkeypatch):
     )
 
     info_alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.INFO,
         source="test",
         code="TEST",
@@ -593,7 +593,7 @@ def test_slack_webhook_alert_sink_respects_min_level(monkeypatch):
     )
 
     warning_alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -611,7 +611,7 @@ def test_slack_webhook_alert_sink_empty_urls():
     sink = SlackWebhookAlertSink(urls=[], min_level=AlertLevel.INFO)
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -655,7 +655,7 @@ def test_build_alert_sink_from_config_webhook(monkeypatch):
     assert isinstance(sink, WebhookAlertSink)
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -695,7 +695,7 @@ def test_build_alert_sink_from_config_slack_webhook(monkeypatch):
     assert isinstance(sink, SlackWebhookAlertSink)
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",
@@ -767,7 +767,7 @@ def test_build_alert_sink_from_config_multi_with_webhook(monkeypatch):
     assert isinstance(sink, MultiAlertSink)
 
     alert = AlertEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         level=AlertLevel.WARNING,
         source="test",
         code="TEST",

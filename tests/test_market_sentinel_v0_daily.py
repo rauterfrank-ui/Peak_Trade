@@ -10,28 +10,24 @@ Stand: Dezember 2024
 from __future__ import annotations
 
 import tempfile
-from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
-import numpy as np
 import pandas as pd
 import pytest
 
 from src.market_sentinel.v0_daily_outlook import (
-    MarketConfig,
-    MarketFeatureSnapshot,
     DailyMarketOutlookConfig,
     DailyMarketOutlookResult,
+    MarketConfig,
+    MarketFeatureSnapshot,
+    _generate_dummy_ohlcv,
+    build_llm_messages,
+    compute_feature_snapshot,
     load_daily_outlook_config,
     load_ohlcv_for_market,
-    compute_feature_snapshot,
-    build_llm_messages,
-    write_markdown_report,
     run_daily_market_outlook,
-    _generate_dummy_ohlcv,
+    write_markdown_report,
 )
-
 
 # ============================================================================
 # FIXTURES
@@ -592,15 +588,7 @@ class TestSmokeTests:
     def test_imports_work(self) -> None:
         """Test: Alle Imports funktionieren."""
         from src.market_sentinel import (
-            MarketConfig,
-            MarketFeatureSnapshot,
-            DailyMarketOutlookConfig,
-            DailyMarketOutlookResult,
             load_daily_outlook_config,
-            load_ohlcv_for_market,
-            compute_feature_snapshot,
-            build_llm_messages,
-            write_markdown_report,
             run_daily_market_outlook,
         )
 

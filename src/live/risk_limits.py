@@ -59,10 +59,11 @@ Config-Beispiel (config.toml):
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Mapping, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Literal
 
 import pandas as pd
 
@@ -98,18 +99,18 @@ class RiskCheckSeverity(Enum):
     WARNING = "warning"
     BREACH = "breach"
 
-    def __gt__(self, other: "RiskCheckSeverity") -> bool:
+    def __gt__(self, other: RiskCheckSeverity) -> bool:
         """BREACH > WARNING > OK."""
         order = {RiskCheckSeverity.OK: 0, RiskCheckSeverity.WARNING: 1, RiskCheckSeverity.BREACH: 2}
         return order[self] > order[other]
 
-    def __ge__(self, other: "RiskCheckSeverity") -> bool:
+    def __ge__(self, other: RiskCheckSeverity) -> bool:
         return self == other or self > other
 
-    def __lt__(self, other: "RiskCheckSeverity") -> bool:
+    def __lt__(self, other: RiskCheckSeverity) -> bool:
         return not self >= other
 
-    def __le__(self, other: "RiskCheckSeverity") -> bool:
+    def __le__(self, other: RiskCheckSeverity) -> bool:
         return not self > other
 
 
@@ -124,7 +125,7 @@ def severity_to_status(severity: RiskCheckSeverity) -> RiskStatus:
     Returns:
         "green" für OK, "yellow" für WARNING, "red" für BREACH
     """
-    mapping: Dict[RiskCheckSeverity, RiskStatus] = {
+    mapping: dict[RiskCheckSeverity, RiskStatus] = {
         RiskCheckSeverity.OK: "green",
         RiskCheckSeverity.WARNING: "yellow",
         RiskCheckSeverity.BREACH: "red",
@@ -168,7 +169,7 @@ class LimitCheckDetail:
     limit_name: str
     current_value: float
     limit_value: float
-    warning_threshold: Optional[float] = None
+    warning_threshold: float | None = None
     severity: RiskCheckSeverity = RiskCheckSeverity.OK
     message: str = ""
 
@@ -185,21 +186,21 @@ class LiveRiskConfig:
     enabled: bool
     base_currency: str
 
-    max_daily_loss_abs: Optional[float]
-    max_daily_loss_pct: Optional[float]
+    max_daily_loss_abs: float | None
+    max_daily_loss_pct: float | None
 
-    max_total_exposure_notional: Optional[float]
-    max_symbol_exposure_notional: Optional[float]
-    max_open_positions: Optional[int]
-    max_order_notional: Optional[float]
+    max_total_exposure_notional: float | None
+    max_symbol_exposure_notional: float | None
+    max_open_positions: int | None
+    max_order_notional: float | None
 
     block_on_violation: bool
     use_experiments_for_daily_pnl: bool
 
     # Phase 71: Live-spezifische Limits (Design)
-    max_live_notional_per_order: Optional[float] = None
-    max_live_notional_total: Optional[float] = None
-    live_trade_min_size: Optional[float] = None
+    max_live_notional_per_order: float | None = None
+    max_live_notional_total: float | None = None
+    live_trade_min_size: float | None = None
 
     # Warning-Threshold: Ab welchem Anteil des Limits wird WARNING ausgelöst
     # Default: 0.8 = 80% des Limits
@@ -223,11 +224,11 @@ class LiveRiskCheckResult:
         severity in {OK, WARNING} → allowed kann True bleiben
     """
     allowed: bool
-    reasons: List[str]
-    metrics: Dict[str, Any]
+    reasons: list[str]
+    metrics: dict[str, Any]
     # Neue Felder mit Defaults für Rückwärtskompatibilität
     severity: RiskCheckSeverity = RiskCheckSeverity.OK
-    limit_details: List[LimitCheckDetail] = field(default_factory=list)
+    limit_details: list[LimitCheckDetail] = field(default_factory=list)
 
     @property
     def risk_status(self) -> RiskStatus:
@@ -262,10 +263,10 @@ class LiveRiskLimits:
     def __init__(
         self,
         config: LiveRiskConfig,
-        alert_sink: Optional["AlertSink"] = None,
+        alert_sink: AlertSink | None = None,
     ) -> None:
         self.config = config
-        self._starting_cash: Optional[float] = None
+        self._starting_cash: float | None = None
         self._alert_sink = alert_sink
 
     # ---------- Konstruktor aus PeakConfig ----------
@@ -274,12 +275,12 @@ class LiveRiskLimits:
     def from_config(
         cls,
         cfg: PeakConfig,
-        starting_cash: Optional[float] = None,
-        alert_sink: Optional["AlertSink"] = None,
-    ) -> "LiveRiskLimits":
+        starting_cash: float | None = None,
+        alert_sink: AlertSink | None = None,
+    ) -> LiveRiskLimits:
         base_currency = str(cfg.get("live.base_currency", "EUR"))
 
-        def _get_float(key: str) -> Optional[float]:
+        def _get_float(key: str) -> float | None:
             val = cfg.get(key, None)
             if val is None:
                 return None
@@ -384,8 +385,8 @@ class LiveRiskLimits:
     def _compute_orders_aggregates(
         self,
         orders: Sequence[LiveOrderRequest],
-    ) -> Dict[str, Any]:
-        per_symbol_notional: Dict[str, float] = {}
+    ) -> dict[str, Any]:
+        per_symbol_notional: dict[str, float] = {}
         total_notional = 0.0
         max_order_notional = 0.0
 
@@ -411,7 +412,7 @@ class LiveRiskLimits:
         self,
         limit_name: str,
         current_value: float,
-        limit_value: Optional[float],
+        limit_value: float | None,
         *,
         invert: bool = False,
     ) -> LimitCheckDetail:
@@ -501,7 +502,7 @@ class LiveRiskLimits:
                 f"value={detail.current_value:.2f} >= limit={detail.limit_value:.2f} → Orders blocked!"
             )
 
-    def _compute_daily_pnl_from_experiments(self, day: Optional[date] = None) -> float:
+    def _compute_daily_pnl_from_experiments(self, day: date | None = None) -> float:
         """
         Aggregiert realisierten Tages-PnL (Netto, falls verfügbar) über Experiments-Registry.
 
@@ -560,7 +561,7 @@ class LiveRiskLimits:
         self,
         orders: Sequence[LiveOrderRequest],
         *,
-        current_date: Optional[date] = None,
+        current_date: date | None = None,
     ) -> LiveRiskCheckResult:
         """
         Prüft die gegebene Order-Batch gegen die Live-Risk-Limits.
@@ -572,9 +573,9 @@ class LiveRiskLimits:
         - severity: Aggregierte Severity (OK, WARNING, BREACH)
         - limit_details: Detail-Infos pro geprüftem Limit
         """
-        reasons: List[str] = []
+        reasons: list[str] = []
         allowed = True
-        limit_details: List[LimitCheckDetail] = []
+        limit_details: list[LimitCheckDetail] = []
 
         # Wenn Live-Risk-Limits deaktiviert, einfach alles erlauben
         if not self.config.enabled:
@@ -710,7 +711,7 @@ class LiveRiskLimits:
         severities = [d.severity for d in limit_details]
         overall_severity = aggregate_severities(severities)
 
-        metrics: Dict[str, Any] = {
+        metrics: dict[str, Any] = {
             "n_orders": n_orders,
             "n_symbols": n_symbols,
             "total_notional": total_notional,
@@ -767,7 +768,7 @@ class LiveRiskLimits:
         code: str,
         message: str,
         extra_context: Mapping[str, Any] | None = None,
-        level: Optional["AlertLevel"] = None,
+        level: AlertLevel | None = None,
     ) -> None:
         """
         Sendet einen Risk-Alert (falls Alert-Sink konfiguriert).
@@ -801,7 +802,7 @@ class LiveRiskLimits:
             context.update(extra_context)
 
         alert = AlertEvent(
-            ts=datetime.now(timezone.utc),
+            ts=datetime.now(UTC),
             level=level,
             source=source,
             code=code,
@@ -816,7 +817,7 @@ class LiveRiskLimits:
         self,
         snapshot: LivePortfolioSnapshot,
         *,
-        current_date: Optional[date] = None,
+        current_date: date | None = None,
     ) -> LiveRiskCheckResult:
         """
         Prüft das aktuelle Portfolio (Snapshot) gegen die konfigurierten Limits.
@@ -840,9 +841,9 @@ class LiveRiskLimits:
             ...     print("Portfolio verletzt Limits:", result.reasons)
             >>> print(f"Status: {result.risk_status}")  # "green", "yellow" oder "red"
         """
-        reasons: List[str] = []
+        reasons: list[str] = []
         allowed = True
-        limit_details: List[LimitCheckDetail] = []
+        limit_details: list[LimitCheckDetail] = []
 
         # Wenn Live-Risk-Limits deaktiviert, einfach alles erlauben
         if not self.config.enabled:
@@ -970,7 +971,7 @@ class LiveRiskLimits:
         severities = [d.severity for d in limit_details]
         overall_severity = aggregate_severities(severities)
 
-        metrics: Dict[str, Any] = {
+        metrics: dict[str, Any] = {
             "portfolio_total_notional": snapshot.total_notional,
             "portfolio_symbol_notional": snapshot.symbol_notional,
             "portfolio_num_open_positions": snapshot.num_open_positions,

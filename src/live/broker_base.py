@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, Dict, List, Sequence
+from typing import Any
 
 import pandas as pd
 
-from .orders import LiveOrderRequest, LiveExecutionReport
+from .orders import LiveExecutionReport, LiveOrderRequest
 
 
 class BaseBrokerClient(ABC):
@@ -18,7 +19,7 @@ class BaseBrokerClient(ABC):
     """
 
     @abstractmethod
-    def submit_orders(self, orders: Sequence[LiveOrderRequest]) -> List[LiveExecutionReport]:
+    def submit_orders(self, orders: Sequence[LiveOrderRequest]) -> list[LiveExecutionReport]:
         """
         Nimmt eine Liste von Orders entgegen und gibt Execution-Reports zurück.
 
@@ -47,8 +48,8 @@ class DryRunBroker(BaseBrokerClient):
     def __init__(self, log_to_console: bool = True) -> None:
         self.log_to_console = log_to_console
 
-    def submit_orders(self, orders: Sequence[LiveOrderRequest]) -> List[LiveExecutionReport]:
-        reports: List[LiveExecutionReport] = []
+    def submit_orders(self, orders: Sequence[LiveOrderRequest]) -> list[LiveExecutionReport]:
+        reports: list[LiveExecutionReport] = []
 
         for order in orders:
             if self.log_to_console:
@@ -110,10 +111,10 @@ class PaperBroker(BaseBrokerClient):
         #   "realized_pnl": float,
         #   "last_price": float | None,
         # }
-        self.positions: Dict[str, Dict[str, float]] = {}
+        self.positions: dict[str, dict[str, float]] = {}
 
         # Liste von Trade-Records (fuer CSV-Export)
-        self.trades: List[Dict[str, Any]] = []
+        self.trades: list[dict[str, Any]] = []
 
         # Aggregierte Metriken
         self.total_fees: float = 0.0
@@ -259,8 +260,8 @@ class PaperBroker(BaseBrokerClient):
 
         return realized_pnl
 
-    def submit_orders(self, orders: Sequence[LiveOrderRequest]) -> List[LiveExecutionReport]:
-        reports: List[LiveExecutionReport] = []
+    def submit_orders(self, orders: Sequence[LiveOrderRequest]) -> list[LiveExecutionReport]:
+        reports: list[LiveExecutionReport] = []
 
         for order in orders:
             qty, fill_price, ref_price = self._determine_fill(order)
@@ -333,7 +334,7 @@ class PaperBroker(BaseBrokerClient):
             symbol, quantity, avg_price, last_price,
             market_value, unrealized_pnl, realized_pnl
         """
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for symbol, pos in self.positions.items():
             qty = float(pos["qty"])
             avg_price = float(pos["avg_price"])

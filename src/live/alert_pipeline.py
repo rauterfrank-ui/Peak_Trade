@@ -46,15 +46,15 @@ import smtplib
 import ssl
 import urllib.error
 import urllib.request
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from enum import IntEnum, Enum
-from typing import Any, Dict, List, Mapping, Optional, Protocol, Sequence, TYPE_CHECKING
+from enum import Enum, IntEnum
+from typing import TYPE_CHECKING, Any, Protocol
 
 if TYPE_CHECKING:
-    from src.infra.runbooks import RunbookLink
     from src.infra.escalation import EscalationManager
 
 logger = logging.getLogger(__name__)
@@ -83,7 +83,7 @@ class AlertSeverity(IntEnum):
     CRITICAL = 30
 
     @classmethod
-    def from_risk_status(cls, status: str) -> "AlertSeverity":
+    def from_risk_status(cls, status: str) -> AlertSeverity:
         """
         Konvertiert Risk-Status zu AlertSeverity.
 
@@ -101,7 +101,7 @@ class AlertSeverity(IntEnum):
         return mapping.get(status.lower(), cls.INFO)
 
     @classmethod
-    def from_string(cls, value: str) -> "AlertSeverity":
+    def from_string(cls, value: str) -> AlertSeverity:
         """
         Parst String zu AlertSeverity.
 
@@ -142,7 +142,7 @@ class AlertCategory(str, Enum):
     SYSTEM = "SYSTEM"
 
     @classmethod
-    def from_string(cls, value: str) -> "AlertCategory":
+    def from_string(cls, value: str) -> AlertCategory:
         """Parst String zu AlertCategory."""
         try:
             return cls(value.upper())
@@ -177,11 +177,11 @@ class AlertMessage:
     severity: AlertSeverity
     category: AlertCategory
     source: str
-    session_id: Optional[str] = None
-    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    context: Dict[str, Any] = field(default_factory=dict)
+    session_id: str | None = None
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
+    context: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert AlertMessage zu Dict für Serialisierung."""
         return {
             "title": self.title,
@@ -258,7 +258,7 @@ class SlackChannelConfig:
     """
 
     webhook_url: str
-    channel: Optional[str] = None
+    channel: str | None = None
     username: str = "peak-trade-bot"
     icon_emoji: str = ":rotating_light:"
     min_severity: AlertSeverity = AlertSeverity.WARN
@@ -333,7 +333,7 @@ class SlackAlertChannel:
             # Fehler loggen, aber nicht nach außen propagieren
             self._logger.error(f"Failed to send Slack alert: {e}", exc_info=True)
 
-    def _build_payload(self, alert: AlertMessage) -> Dict[str, Any]:
+    def _build_payload(self, alert: AlertMessage) -> dict[str, Any]:
         """
         Baut Slack-Webhook-Payload mit Blocks.
 
@@ -421,7 +421,7 @@ class SlackAlertChannel:
             "ts": int(alert.timestamp.timestamp()),
         }
 
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "attachments": [attachment],
         }
 
@@ -435,7 +435,7 @@ class SlackAlertChannel:
 
         return payload
 
-    def _send_webhook(self, payload: Dict[str, Any]) -> None:
+    def _send_webhook(self, payload: dict[str, Any]) -> None:
         """
         Sendet Payload an Slack-Webhook.
 
@@ -492,7 +492,7 @@ class EmailChannelConfig:
     username: str = ""
     password_env_var: str = ""
     from_addr: str = ""
-    to_addrs: List[str] = field(default_factory=list)
+    to_addrs: list[str] = field(default_factory=list)
     min_severity: AlertSeverity = AlertSeverity.CRITICAL
     enabled: bool = False
     timeout_seconds: float = 30.0
@@ -794,7 +794,7 @@ class AlertPipelineManager:
         self,
         channels: Sequence[AlertChannel],
         persist_alerts: bool = True,
-        escalation_manager: Optional["EscalationManager"] = None,
+        escalation_manager: EscalationManager | None = None,
     ) -> None:
         """
         Initialisiert AlertPipelineManager.
@@ -810,12 +810,12 @@ class AlertPipelineManager:
         self._logger = logging.getLogger(f"{__name__}.AlertPipelineManager")
 
     @property
-    def channels(self) -> List[AlertChannel]:
+    def channels(self) -> list[AlertChannel]:
         """Liste aller konfigurierten Channels."""
         return self._channels
 
     @property
-    def enabled_channels(self) -> List[AlertChannel]:
+    def enabled_channels(self) -> list[AlertChannel]:
         """Liste aller aktivierten Channels."""
         return [c for c in self._channels if c.is_enabled]
 
@@ -825,7 +825,7 @@ class AlertPipelineManager:
         return self._persist_alerts
 
     @property
-    def escalation_manager(self) -> Optional["EscalationManager"]:
+    def escalation_manager(self) -> EscalationManager | None:
         """Optionaler EscalationManager (Phase 85)."""
         return self._escalation_manager
 
@@ -928,8 +928,9 @@ class AlertPipelineManager:
 
         try:
             # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
-            from src.infra.escalation import EscalationEvent
             import uuid
+
+            from src.infra.escalation import EscalationEvent
 
             # EscalationEvent aus AlertMessage bauen
             event = EscalationEvent(
@@ -962,8 +963,8 @@ class AlertPipelineManager:
         body: str,
         severity: AlertSeverity,
         source: str,
-        session_id: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
+        session_id: str | None = None,
+        context: dict[str, Any] | None = None,
     ) -> None:
         """
         Convenience-Methode für Risk-Alerts.
@@ -993,8 +994,8 @@ class AlertPipelineManager:
         body: str,
         severity: AlertSeverity,
         source: str,
-        session_id: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
+        session_id: str | None = None,
+        context: dict[str, Any] | None = None,
     ) -> None:
         """Convenience-Methode für Execution-Alerts."""
         alert = AlertMessage(
@@ -1014,8 +1015,8 @@ class AlertPipelineManager:
         body: str,
         severity: AlertSeverity,
         source: str,
-        session_id: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
+        session_id: str | None = None,
+        context: dict[str, Any] | None = None,
     ) -> None:
         """Convenience-Methode für System-Alerts."""
         alert = AlertMessage(
@@ -1080,21 +1081,21 @@ class SeverityTransitionTracker:
             send_recovery_alerts: Ob Recovery-Alerts gesendet werden sollen
         """
         self._alert_manager = alert_manager
-        self._current_status: Optional[str] = None
+        self._current_status: str | None = None
         self._send_recovery_alerts = send_recovery_alerts
         self._logger = logging.getLogger(f"{__name__}.SeverityTransitionTracker")
 
     @property
-    def current_status(self) -> Optional[str]:
+    def current_status(self) -> str | None:
         """Aktueller Risk-Status (green/yellow/red)."""
         return self._current_status
 
     def update(
         self,
         new_status: str,
-        session_id: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
-    ) -> Optional[AlertMessage]:
+        session_id: str | None = None,
+        context: dict[str, Any] | None = None,
+    ) -> AlertMessage | None:
         """
         Aktualisiert den Status und sendet ggf. einen Alert.
 
@@ -1179,7 +1180,7 @@ class SeverityTransitionTracker:
 
 def build_alert_pipeline_from_config(
     config: Mapping[str, Any],
-    environment: Optional[str] = None,
+    environment: str | None = None,
 ) -> AlertPipelineManager:
     """
     Baut AlertPipelineManager aus Config-Dict.
@@ -1230,9 +1231,9 @@ def build_alert_pipeline_from_config(
 
     # Default-Severity
     default_severity_str = alerts_config.get("default_min_severity", "WARN")
-    default_severity = AlertSeverity.from_string(default_severity_str)
+    AlertSeverity.from_string(default_severity_str)
 
-    channels: List[AlertChannel] = []
+    channels: list[AlertChannel] = []
 
     # Slack-Channel
     slack_config = alerts_config.get("slack", {})
@@ -1297,8 +1298,8 @@ def build_alert_pipeline_from_config(
 
 def _build_escalation_manager(
     config: Mapping[str, Any],
-    environment: Optional[str] = None,
-) -> Optional["EscalationManager"]:
+    environment: str | None = None,
+) -> EscalationManager | None:
     """
     Baut EscalationManager aus Config (Phase 85).
 
@@ -1340,23 +1341,23 @@ def _build_escalation_manager(
 # =============================================================================
 
 __all__ = [
-    # Enums
-    "AlertSeverity",
     "AlertCategory",
+    "AlertChannel",
     # Message
     "AlertMessage",
-    # Channel Configs
-    "SlackChannelConfig",
-    "EmailChannelConfig",
-    # Channels
-    "SlackAlertChannel",
-    "EmailAlertChannel",
-    "NullAlertChannel",
-    "AlertChannel",
     # Manager
     "AlertPipelineManager",
+    # Enums
+    "AlertSeverity",
+    "EmailAlertChannel",
+    "EmailChannelConfig",
+    "NullAlertChannel",
     # Tracker
     "SeverityTransitionTracker",
+    # Channels
+    "SlackAlertChannel",
+    # Channel Configs
+    "SlackChannelConfig",
     # Factory
     "build_alert_pipeline_from_config",
 ]

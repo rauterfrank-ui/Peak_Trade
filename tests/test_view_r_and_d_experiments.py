@@ -17,19 +17,18 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from scripts.view_r_and_d_experiments import (
-    load_experiment_json,
-    load_all_experiments,
-    filter_experiments,
-    extract_date_from_timestamp,
-    format_percent,
-    format_number,
-    format_timestamp,
     determine_status,
-    truncate,
+    extract_date_from_timestamp,
+    filter_experiments,
+    format_number,
+    format_percent,
+    format_timestamp,
     get_safe,
+    load_all_experiments,
+    load_experiment_json,
     main,
+    truncate,
 )
-
 
 # =============================================================================
 # FIXTURES

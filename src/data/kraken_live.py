@@ -33,9 +33,9 @@ from __future__ import annotations
 
 import logging
 import time
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Protocol, Sequence
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import Any, Protocol
 
 import pandas as pd
 import requests
@@ -48,7 +48,7 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 # Kraken OHLC interval in minutes
-KRAKEN_TIMEFRAME_MAP: Dict[str, int] = {
+KRAKEN_TIMEFRAME_MAP: dict[str, int] = {
     "1m": 1,
     "5m": 5,
     "15m": 15,
@@ -70,7 +70,7 @@ def _timeframe_to_minutes(tf: str) -> int:
 # =============================================================================
 
 # Mapping von Standard-Symbolen zu Kraken-internen Namen
-KRAKEN_SYMBOL_MAP: Dict[str, str] = {
+KRAKEN_SYMBOL_MAP: dict[str, str] = {
     "BTC/EUR": "XXBTZEUR",
     "BTC/USD": "XXBTZUSD",
     "ETH/EUR": "XETHZEUR",
@@ -133,7 +133,7 @@ class LiveCandle:
             "volume": self.volume,
         }, name=self.timestamp)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert zu Dictionary."""
         return {
             "timestamp": self.timestamp,
@@ -204,11 +204,11 @@ class ShadowPaperConfig:
 class CandleSource(Protocol):
     """Protocol für Candle-Datenquellen."""
 
-    def warmup(self) -> List[LiveCandle]:
+    def warmup(self) -> list[LiveCandle]:
         """Holt initiale Candles für Warmup."""
         ...
 
-    def poll_latest(self) -> Optional[LiveCandle]:
+    def poll_latest(self) -> LiveCandle | None:
         """Pollt die neueste Candle."""
         ...
 
@@ -216,7 +216,7 @@ class CandleSource(Protocol):
         """Gibt den Candle-Buffer als DataFrame zurück."""
         ...
 
-    def get_latest_price(self) -> Optional[float]:
+    def get_latest_price(self) -> float | None:
         """Gibt den aktuellsten Preis zurück."""
         ...
 
@@ -265,7 +265,7 @@ class KrakenLiveCandleSource:
         max_retries: int = 3,
         retry_delay: float = 5.0,
         rate_limit_ms: int = 1000,
-        session: Optional[requests.Session] = None,
+        session: requests.Session | None = None,
     ) -> None:
         """
         Initialisiert die Kraken Live Candle Source.
@@ -299,8 +299,8 @@ class KrakenLiveCandleSource:
         })
 
         # Interner Buffer
-        self._buffer: List[LiveCandle] = []
-        self._last_timestamp: Optional[datetime] = None
+        self._buffer: list[LiveCandle] = []
+        self._last_timestamp: datetime | None = None
         self._last_poll_time: float = 0.0
 
         logger.info(
@@ -317,7 +317,7 @@ class KrakenLiveCandleSource:
             time.sleep(sleep_time)
         self._last_poll_time = time.time()
 
-    def _fetch_ohlc(self, since: Optional[int] = None) -> List[List[Any]]:
+    def _fetch_ohlc(self, since: int | None = None) -> list[list[Any]]:
         """
         Holt OHLC-Daten von Kraken Public API.
 
@@ -333,14 +333,14 @@ class KrakenLiveCandleSource:
         self._enforce_rate_limit()
 
         url = f"{self.base_url}/0/public/OHLC"
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             "pair": self.kraken_symbol,
             "interval": self.interval_minutes,
         }
         if since is not None:
             params["since"] = since
 
-        last_error: Optional[Exception] = None
+        last_error: Exception | None = None
 
         for attempt in range(self.max_retries):
             try:
@@ -360,7 +360,7 @@ class KrakenLiveCandleSource:
                 result = data.get("result", {})
 
                 # Finde den richtigen Key (kann variieren)
-                ohlc_data: List[List[Any]] = []
+                ohlc_data: list[list[Any]] = []
                 for key, value in result.items():
                     if key != "last" and isinstance(value, list):
                         ohlc_data = value
@@ -386,7 +386,7 @@ class KrakenLiveCandleSource:
             f"Kraken API nicht erreichbar nach {self.max_retries} Versuchen: {last_error}"
         )
 
-    def _parse_ohlc_row(self, row: List[Any]) -> LiveCandle:
+    def _parse_ohlc_row(self, row: list[Any]) -> LiveCandle:
         """
         Parst eine OHLC-Zeile zu LiveCandle.
 
@@ -400,7 +400,7 @@ class KrakenLiveCandleSource:
             LiveCandle-Objekt
         """
         # Timestamp ist in Sekunden (Unix)
-        ts = datetime.fromtimestamp(float(row[0]), tz=timezone.utc)
+        ts = datetime.fromtimestamp(float(row[0]), tz=UTC)
 
         return LiveCandle(
             timestamp=ts,
@@ -412,7 +412,7 @@ class KrakenLiveCandleSource:
             is_complete=True,  # Historische Candles sind komplett
         )
 
-    def warmup(self) -> List[LiveCandle]:
+    def warmup(self) -> list[LiveCandle]:
         """
         Holt initiale Candles für Warmup der Strategie.
 
@@ -460,7 +460,7 @@ class KrakenLiveCandleSource:
             logger.error(f"[KRAKEN LIVE] Warmup fehlgeschlagen: {e}")
             raise
 
-    def poll_latest(self) -> Optional[LiveCandle]:
+    def poll_latest(self) -> LiveCandle | None:
         """
         Pollt die neueste Candle von Kraken.
 
@@ -472,7 +472,7 @@ class KrakenLiveCandleSource:
         """
         try:
             # Since-Parameter: Letzte bekannte Timestamp
-            since: Optional[int] = None
+            since: int | None = None
             if self._last_timestamp:
                 since = int(self._last_timestamp.timestamp())
 
@@ -536,7 +536,7 @@ class KrakenLiveCandleSource:
         df.drop(columns=["is_complete"], inplace=True, errors="ignore")
         return df
 
-    def get_latest_price(self) -> Optional[float]:
+    def get_latest_price(self) -> float | None:
         """
         Gibt den aktuellsten Close-Preis zurück.
 
@@ -547,7 +547,7 @@ class KrakenLiveCandleSource:
             return None
         return self._buffer[-1].close
 
-    def get_latest_candle(self) -> Optional[LiveCandle]:
+    def get_latest_candle(self) -> LiveCandle | None:
         """
         Gibt die neueste Candle zurück.
 
@@ -593,7 +593,7 @@ class FakeCandleSource:
 
     def __init__(
         self,
-        candles: Optional[List[LiveCandle]] = None,
+        candles: list[LiveCandle] | None = None,
         symbol: str = "BTC/EUR",
     ) -> None:
         """
@@ -605,10 +605,10 @@ class FakeCandleSource:
         """
         self._candles = list(candles) if candles else []
         self._index = 0
-        self._buffer: List[LiveCandle] = []
+        self._buffer: list[LiveCandle] = []
         self.symbol = symbol
 
-    def warmup(self) -> List[LiveCandle]:
+    def warmup(self) -> list[LiveCandle]:
         """Lädt alle Candles in den Buffer."""
         # Warmup liefert die ersten 80% der Candles
         warmup_count = max(1, int(len(self._candles) * 0.8))
@@ -616,7 +616,7 @@ class FakeCandleSource:
         self._index = warmup_count
         return list(self._buffer)
 
-    def poll_latest(self) -> Optional[LiveCandle]:
+    def poll_latest(self) -> LiveCandle | None:
         """Gibt die nächste Candle zurück."""
         if self._index >= len(self._candles):
             return None
@@ -641,13 +641,13 @@ class FakeCandleSource:
         df.drop(columns=["is_complete"], inplace=True, errors="ignore")
         return df
 
-    def get_latest_price(self) -> Optional[float]:
+    def get_latest_price(self) -> float | None:
         """Gibt den letzten Close-Preis zurück."""
         if not self._buffer:
             return None
         return self._buffer[-1].close
 
-    def get_latest_candle(self) -> Optional[LiveCandle]:
+    def get_latest_candle(self) -> LiveCandle | None:
         """Gibt die letzte Candle zurück."""
         if not self._buffer:
             return None

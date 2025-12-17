@@ -4,16 +4,16 @@ Peak_Trade Strategies Smoke Tests
 Tests für Strategy Registry und OOP-Strategien.
 """
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
-from src.strategies.registry import (
-    get_available_strategy_keys,
-    create_strategy_from_config,
-)
-from src.strategies.base import BaseStrategy
 from src.core.peak_config import load_config
+from src.strategies.base import BaseStrategy
+from src.strategies.registry import (
+    create_strategy_from_config,
+    get_available_strategy_keys,
+)
 
 
 def create_dummy_ohlcv(n_bars: int = 100) -> pd.DataFrame:

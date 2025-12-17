@@ -12,29 +12,23 @@ WICHTIG: Diese Tests machen KEINE echten API-Calls!
 from __future__ import annotations
 
 import base64
-import hashlib
-import json
-import pytest
-from datetime import datetime, timezone
-from typing import Any, Dict
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, Mock, patch
 
+import pytest
+
 from src.exchange.kraken_testnet import (
-    KrakenTestnetClient,
-    KrakenTestnetConfig,
-    KrakenOrderResponse,
-    KrakenOrderStatus,
     ExchangeAPIError,
     ExchangeAuthenticationError,
-    ExchangeOrderError,
-    ExchangeNetworkError,
     ExchangeRateLimitError,
-    to_kraken_symbol,
+    KrakenOrderResponse,
+    KrakenOrderStatus,
+    KrakenTestnetClient,
+    KrakenTestnetConfig,
     from_kraken_symbol,
-    SYMBOL_TO_KRAKEN,
+    to_kraken_symbol,
 )
-from src.orders.base import OrderRequest, OrderFill
-
+from src.orders.base import OrderFill, OrderRequest
 
 # =============================================================================
 # Fixtures
@@ -252,7 +246,7 @@ class TestResponseMapping:
             vol_exec=float(raw_status["vol_exec"]),
             avg_price=float(raw_status["price"]),
             fee=float(raw_status["fee"]),
-            timestamp=datetime.fromtimestamp(raw_status["opentm"], tz=timezone.utc),
+            timestamp=datetime.fromtimestamp(raw_status["opentm"], tz=UTC),
             raw=raw_status,
         )
 
@@ -271,7 +265,7 @@ class TestResponseMapping:
             vol_exec=0.01,
             avg_price=50000.0,
             fee=1.30,
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(UTC),
             raw={},
         )
 
@@ -282,7 +276,7 @@ class TestResponseMapping:
                 side=sample_order.side,
                 quantity=status.vol_exec,
                 price=status.avg_price or 0.0,
-                timestamp=status.timestamp or datetime.now(timezone.utc),
+                timestamp=status.timestamp or datetime.now(UTC),
                 fee=status.fee,
                 fee_currency="EUR",
             )

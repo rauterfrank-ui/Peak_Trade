@@ -8,31 +8,24 @@ Testet:
 - R&D-Safety-Flags
 - Tier-Gating-Mechanismus
 """
-import pytest
-from datetime import date, timedelta
+from datetime import date
 
 import numpy as np
 import pandas as pd
+import pytest
 
+from src.live.live_gates import (
+    RnDLiveTradingBlockedError,
+    assert_strategy_not_r_and_d_for_live,
+    check_r_and_d_tier_for_mode,
+    check_strategy_live_eligibility,
+    get_strategy_tier,
+    log_strategy_tier_info,
+)
 from src.strategies.armstrong import (
     ArmstrongCycleStrategy,
     ArmstrongPhase,
-    ArmstrongCycleModel,
 )
-from src.strategies.armstrong.armstrong_cycle_strategy import (
-    DEFAULT_PHASE_POSITION_MAP,
-    AGGRESSIVE_PHASE_POSITION_MAP,
-    CONSERVATIVE_PHASE_POSITION_MAP,
-)
-from src.live.live_gates import (
-    RnDLiveTradingBlockedError,
-    check_r_and_d_tier_for_mode,
-    assert_strategy_not_r_and_d_for_live,
-    get_strategy_tier,
-    log_strategy_tier_info,
-    check_strategy_live_eligibility,
-)
-
 
 # =============================================================================
 # FIXTURES
@@ -163,7 +156,7 @@ class TestRnDSafetyFlags:
     def test_allowed_environments(self) -> None:
         """Prüft erlaubte Environments."""
         expected = ["offline_backtest", "research"]
-        assert ArmstrongCycleStrategy.ALLOWED_ENVIRONMENTS == expected
+        assert expected == ArmstrongCycleStrategy.ALLOWED_ENVIRONMENTS
 
     def test_metadata_contains_r_and_d_tag(self) -> None:
         """Prüft, dass Metadata r_and_d Tag enthält."""

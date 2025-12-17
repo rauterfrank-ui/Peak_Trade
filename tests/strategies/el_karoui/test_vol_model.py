@@ -7,18 +7,17 @@ Testet:
 - ElKarouiVolConfig Dataclass
 - ElKarouiVolModel (Vol-Berechnung, Regime-Klassifikation, Scaling)
 """
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
 
 from src.strategies.el_karoui.vol_model import (
-    VolRegime,
     ElKarouiVolConfig,
     ElKarouiVolModel,
+    VolRegime,
     get_vol_regime,
     get_vol_scaling_factor,
 )
-
 
 # =============================================================================
 # FIXTURES

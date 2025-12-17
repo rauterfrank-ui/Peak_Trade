@@ -32,24 +32,24 @@ Usage:
     )
     manager.maybe_escalate(event)
 """
+from .manager import EscalationManager, build_escalation_manager_from_config
 from .models import EscalationEvent, EscalationTarget
 from .providers import (
     EscalationProvider,
     NullEscalationProvider,
     PagerDutyLikeProviderStub,
 )
-from .manager import EscalationManager, build_escalation_manager_from_config
 
 __all__ = [
     # Models
     "EscalationEvent",
-    "EscalationTarget",
-    # Providers
-    "EscalationProvider",
-    "NullEscalationProvider",
-    "PagerDutyLikeProviderStub",
     # Manager
     "EscalationManager",
+    # Providers
+    "EscalationProvider",
+    "EscalationTarget",
+    "NullEscalationProvider",
+    "PagerDutyLikeProviderStub",
     "build_escalation_manager_from_config",
 ]
 

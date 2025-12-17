@@ -20,8 +20,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, Literal, Protocol, runtime_checkable
-
+from typing import Any, Literal, Protocol, runtime_checkable
 
 # Alert-Level als Literal-Type für Typ-Sicherheit
 AlertLevel = Literal["info", "warning", "critical"]
@@ -54,7 +53,7 @@ class Alert:
     source: str
     message: str
     timestamp: datetime
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Validiert Alert-Daten nach Initialisierung."""
@@ -102,7 +101,7 @@ def create_alert(
     level: AlertLevel,
     source: str,
     message: str,
-    context: Dict[str, Any] | None = None,
+    context: dict[str, Any] | None = None,
 ) -> Alert:
     """
     Convenience-Funktion zum Erstellen eines Alerts mit aktuellem Timestamp.

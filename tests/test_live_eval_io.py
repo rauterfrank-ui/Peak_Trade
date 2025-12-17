@@ -1,13 +1,12 @@
 """Tests for live session evaluation IO."""
 
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
 
 from src.live_eval.live_session_io import read_fills_csv
-from src.live_eval.live_session_eval import Fill
 
 
 def test_read_fills_csv_basic():
@@ -25,14 +24,14 @@ def test_read_fills_csv_basic():
         assert len(fills) == 2
 
         # First fill
-        assert fills[0].ts == datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc)
+        assert fills[0].ts == datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC)
         assert fills[0].symbol == "BTC/USD"
         assert fills[0].side == "buy"
         assert fills[0].qty == 0.1
         assert fills[0].fill_price == 50000.0
 
         # Second fill
-        assert fills[1].ts == datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc)
+        assert fills[1].ts == datetime(2025, 1, 15, 10, 5, 0, tzinfo=UTC)
         assert fills[1].symbol == "ETH/USD"
         assert fills[1].side == "sell"
         assert fills[1].qty == 1.5
@@ -50,7 +49,7 @@ def test_read_fills_csv_timezone_aware():
 
         fills = read_fills_csv(csv_path)
         assert fills[0].ts.tzinfo is not None
-        assert fills[0].ts.tzinfo == timezone.utc
+        assert fills[0].ts.tzinfo == UTC
 
 
 def test_read_fills_csv_side_validation():

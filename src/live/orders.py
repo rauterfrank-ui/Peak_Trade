@@ -1,13 +1,13 @@
 # src/live/orders.py
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
-from pathlib import Path
-from typing import Any, Dict, Iterable, List, Literal, Sequence
-
 import json
-import pandas as pd
+from collections.abc import Iterable, Sequence
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Literal
 
+import pandas as pd
 
 Side = Literal["BUY", "SELL"]
 OrderType = Literal["MARKET", "LIMIT"]
@@ -38,7 +38,7 @@ class LiveOrderRequest:
     signal_as_of: str | None = None
     comment: str | None = None
 
-    extra: Dict[str, Any] | None = None
+    extra: dict[str, Any] | None = None
 
 
 @dataclass
@@ -57,7 +57,7 @@ class LiveExecutionReport:
     ts: str | None = None
 
     message: str | None = None
-    extra: Dict[str, Any] | None = None
+    extra: dict[str, Any] | None = None
 
 
 ORDERS_COLUMNS: Sequence[str] = [
@@ -92,7 +92,7 @@ def side_from_direction(direction: float) -> Side | None:
 
 
 def orders_to_dataframe(orders: Iterable[LiveOrderRequest]) -> pd.DataFrame:
-    rows: List[Dict[str, Any]] = []
+    rows: list[dict[str, Any]] = []
 
     for order in orders:
         d = asdict(order)
@@ -123,7 +123,7 @@ def save_orders_to_csv(orders: Iterable[LiveOrderRequest], path: Path | str) -> 
     return df
 
 
-def load_orders_csv(path: Path | str) -> List[LiveOrderRequest]:
+def load_orders_csv(path: Path | str) -> list[LiveOrderRequest]:
     """
     Lädt Orders aus einer CSV, die mit save_orders_to_csv geschrieben wurde.
     """
@@ -132,7 +132,7 @@ def load_orders_csv(path: Path | str) -> List[LiveOrderRequest]:
         raise FileNotFoundError(f"Orders-CSV nicht gefunden: {path}")
 
     df = pd.read_csv(path)
-    orders: List[LiveOrderRequest] = []
+    orders: list[LiveOrderRequest] = []
 
     for _, row in df.iterrows():
         extra = None

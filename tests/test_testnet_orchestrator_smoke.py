@@ -21,15 +21,14 @@ if str(ROOT_DIR) not in sys.path:
 
 from src.core.peak_config import PeakConfig
 from src.live.testnet_orchestrator import (
-    TestnetOrchestrator,
-    RunState,
-    RunInfo,
-    RunNotFoundError,
-    ReadinessCheckFailedError,
     InvalidModeError,
     OrchestratorError,
+    ReadinessCheckFailedError,
+    RunInfo,
+    RunNotFoundError,
+    RunState,
+    TestnetOrchestrator,
 )
-
 
 # =============================================================================
 # Test Fixtures
@@ -142,7 +141,7 @@ def orchestrator(test_config: PeakConfig) -> TestnetOrchestrator:
 def test_readiness_check_shadow_mode(test_config: PeakConfig) -> None:
     """Test: Readiness-Check für Shadow-Mode."""
     orchestrator = TestnetOrchestrator(config=test_config)
-    
+
     # Sollte keine Exception werfen
     orchestrator._ensure_readiness("shadow")
 
@@ -150,7 +149,7 @@ def test_readiness_check_shadow_mode(test_config: PeakConfig) -> None:
 def test_readiness_check_testnet_mode(testnet_test_config: PeakConfig) -> None:
     """Test: Readiness-Check für Testnet-Mode."""
     orchestrator = TestnetOrchestrator(config=testnet_test_config)
-    
+
     # Sollte keine Exception werfen
     orchestrator._ensure_readiness("testnet")
 
@@ -158,7 +157,7 @@ def test_readiness_check_testnet_mode(testnet_test_config: PeakConfig) -> None:
 def test_readiness_check_invalid_mode(test_config: PeakConfig) -> None:
     """Test: Readiness-Check mit ungültigem Mode."""
     orchestrator = TestnetOrchestrator(config=test_config)
-    
+
     with pytest.raises(InvalidModeError, match="Ungültiger Mode"):
         orchestrator._ensure_readiness("live")
 
@@ -167,10 +166,10 @@ def test_readiness_check_wrong_environment(testnet_test_config: PeakConfig) -> N
     """Test: Readiness-Check mit falschem Environment."""
     # Config mit Paper-Mode, aber Testnet-Check
     orchestrator = TestnetOrchestrator(config=testnet_test_config)
-    
+
     # Ändere Environment zu Paper
     testnet_test_config.raw["environment"]["mode"] = "paper"
-    
+
     with pytest.raises(ReadinessCheckFailedError, match="Testnet-Runs erfordern"):
         orchestrator._ensure_readiness("testnet")
 
@@ -311,7 +310,7 @@ def test_start_testnet_run_smoke(
 def test_get_status_all_runs(orchestrator: TestnetOrchestrator) -> None:
     """Test: Status aller Runs."""
     status = orchestrator.get_status()
-    
+
     assert isinstance(status, list)
     # Initial sollte keine Runs vorhanden sein
     assert len(status) == 0

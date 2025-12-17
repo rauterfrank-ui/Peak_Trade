@@ -14,22 +14,11 @@ Stand: Dezember 2024
 
 from __future__ import annotations
 
-import sys
+# Python 3.11+: tomllib ist built-in
+import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Mapping, Optional
-
-# Python 3.11+: tomllib ist built-in
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    try:
-        import tomli as tomllib  # type: ignore
-    except ImportError:
-        raise ImportError(
-            "Python <3.11 benötigt 'tomli' package: pip install tomli"
-        )
-
+from typing import Any, Literal
 
 # ============================================================================
 # Data Classes
@@ -53,10 +42,10 @@ class StrategySwitchSanityResult:
 
     status: Literal["OK", "WARN", "FAIL"]
     active_strategy_id: str
-    allowed: List[str]
-    invalid_strategies: List[str]
-    r_and_d_strategies: List[str]
-    messages: List[str]
+    allowed: list[str]
+    invalid_strategies: list[str]
+    r_and_d_strategies: list[str]
+    messages: list[str]
     config_path: str = ""
 
     @property
@@ -90,7 +79,7 @@ class StrategyMeta:
     key: str
     tier: str = "core"
     is_live_ready: bool = True
-    allowed_environments: List[str] = field(default_factory=lambda: ["live", "testnet", "paper"])
+    allowed_environments: list[str] = field(default_factory=lambda: ["live", "testnet", "paper"])
 
 
 # ============================================================================
@@ -98,7 +87,7 @@ class StrategyMeta:
 # ============================================================================
 
 
-def _get_registry_strategy_keys() -> List[str]:
+def _get_registry_strategy_keys() -> list[str]:
     """
     Holt alle verfügbaren Strategy-Keys aus der Registry.
 
@@ -114,10 +103,10 @@ def _get_registry_strategy_keys() -> List[str]:
 
 
 def _build_strategy_meta_from_config(
-    config: Dict[str, Any],
-    registry_keys: List[str],
-    r_and_d_keys: List[str],
-) -> Dict[str, StrategyMeta]:
+    config: dict[str, Any],
+    registry_keys: list[str],
+    r_and_d_keys: list[str],
+) -> dict[str, StrategyMeta]:
     """
     Baut ein Strategy-Meta-Mapping aus Config und Registry.
 
@@ -134,7 +123,7 @@ def _build_strategy_meta_from_config(
     Returns:
         Mapping {strategy_key: StrategyMeta}
     """
-    meta_map: Dict[str, StrategyMeta] = {}
+    meta_map: dict[str, StrategyMeta] = {}
 
     for key in registry_keys:
         # Versuche Config-Block zu laden
@@ -170,7 +159,7 @@ def _build_strategy_meta_from_config(
 def run_strategy_switch_sanity_check(
     config_path: str = "config/config.toml",
     section_path: str = "live_profile.strategy_switch",
-    r_and_d_strategy_keys: Optional[List[str]] = None,
+    r_and_d_strategy_keys: list[str] | None = None,
     max_allowed_strategies_warn: int = 5,
 ) -> StrategySwitchSanityResult:
     """
@@ -197,7 +186,7 @@ def run_strategy_switch_sanity_check(
         >>> print(result.messages)
         ['Strategy-Switch-Konfiguration sieht gesund aus.']
     """
-    messages: List[str] = []
+    messages: list[str] = []
 
     # Default R&D-Keys
     if r_and_d_strategy_keys is None:
@@ -277,8 +266,8 @@ def run_strategy_switch_sanity_check(
         r_and_d_keys=r_and_d_strategy_keys,
     )
 
-    invalid_strategies: List[str] = []
-    r_and_d_strategies: List[str] = []
+    invalid_strategies: list[str] = []
+    r_and_d_strategies: list[str] = []
     hard_fail = False
 
     # 5) Basis-Checks

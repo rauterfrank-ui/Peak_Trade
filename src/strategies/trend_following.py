@@ -14,10 +14,10 @@ während +DI/-DI die Trendrichtung anzeigen.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -60,8 +60,8 @@ class TrendFollowingStrategy(BaseStrategy):
         exit_threshold: float = 20.0,
         ma_period: int = 50,
         use_ma_filter: bool = True,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Trend-Following-Strategie.
@@ -129,7 +129,7 @@ class TrendFollowingStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.trend_following",
-    ) -> "TrendFollowingStrategy":
+    ) -> TrendFollowingStrategy:
         """
         Fabrikmethode für Core-Config.
 
@@ -272,7 +272,7 @@ class TrendFollowingStrategy(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 
@@ -300,7 +300,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return strategy.generate_signals(df)
 
 
-def get_strategy_description(params: Dict) -> str:
+def get_strategy_description(params: dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
     return f"""
 Trend Following Strategy (ADX-basiert)

@@ -13,9 +13,9 @@ from __future__ import annotations
 
 import json
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import pandas as pd
 import pytest
@@ -28,8 +28,7 @@ except ImportError:
     FASTAPI_AVAILABLE = False
     TestClient = None
 
-from src.live.web.app import create_app, WebUIConfig
-
+from src.live.web.app import WebUIConfig, create_app
 
 # =============================================================================
 # Skip if FastAPI not available
@@ -47,7 +46,7 @@ pytestmark = pytest.mark.skipif(
 
 
 @pytest.fixture
-def sample_metadata() -> Dict[str, Any]:
+def sample_metadata() -> dict[str, Any]:
     """Sample Run-Metadaten."""
     return {
         "run_id": "20251204_180000_paper_ma_crossover_BTC-EUR_1m",
@@ -63,9 +62,9 @@ def sample_metadata() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def sample_events_data() -> List[Dict[str, Any]]:
+def sample_events_data() -> list[dict[str, Any]]:
     """Sample Events als Liste von Dicts."""
-    base_ts = datetime(2025, 12, 4, 18, 0, 0, tzinfo=timezone.utc)
+    base_ts = datetime(2025, 12, 4, 18, 0, 0, tzinfo=UTC)
     events = []
 
     for i in range(20):
@@ -100,7 +99,7 @@ def sample_events_data() -> List[Dict[str, Any]]:
 
 
 @pytest.fixture
-def sample_alerts() -> List[Dict[str, Any]]:
+def sample_alerts() -> list[dict[str, Any]]:
     """Sample Alerts als JSON-Lines."""
     return [
         {
@@ -122,9 +121,9 @@ def sample_alerts() -> List[Dict[str, Any]]:
 
 @pytest.fixture
 def temp_runs_dir(
-    sample_metadata: Dict[str, Any],
-    sample_events_data: List[Dict[str, Any]],
-    sample_alerts: List[Dict[str, Any]],
+    sample_metadata: dict[str, Any],
+    sample_events_data: list[dict[str, Any]],
+    sample_alerts: list[dict[str, Any]],
 ) -> Path:
     """Erstellt ein temporäres Runs-Verzeichnis mit Testdaten."""
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -227,7 +226,7 @@ class TestSnapshotEndpoint:
     def test_get_snapshot(
         self,
         test_client: TestClient,
-        sample_metadata: Dict[str, Any],
+        sample_metadata: dict[str, Any],
     ) -> None:
         """Test Snapshot-Endpoint."""
         run_id = sample_metadata["run_id"]
@@ -241,7 +240,7 @@ class TestSnapshotEndpoint:
     def test_snapshot_fields(
         self,
         test_client: TestClient,
-        sample_metadata: Dict[str, Any],
+        sample_metadata: dict[str, Any],
     ) -> None:
         """Test Snapshot-Felder."""
         run_id = sample_metadata["run_id"]
@@ -260,7 +259,7 @@ class TestSnapshotEndpoint:
     def test_snapshot_values(
         self,
         test_client: TestClient,
-        sample_metadata: Dict[str, Any],
+        sample_metadata: dict[str, Any],
     ) -> None:
         """Test Snapshot-Werte."""
         run_id = sample_metadata["run_id"]
@@ -288,7 +287,7 @@ class TestTailEndpoint:
     def test_get_tail_default(
         self,
         test_client: TestClient,
-        sample_metadata: Dict[str, Any],
+        sample_metadata: dict[str, Any],
     ) -> None:
         """Test Tail-Endpoint mit Default-Limit."""
         run_id = sample_metadata["run_id"]
@@ -301,7 +300,7 @@ class TestTailEndpoint:
     def test_get_tail_with_limit(
         self,
         test_client: TestClient,
-        sample_metadata: Dict[str, Any],
+        sample_metadata: dict[str, Any],
     ) -> None:
         """Test Tail-Endpoint mit Limit."""
         run_id = sample_metadata["run_id"]
@@ -313,7 +312,7 @@ class TestTailEndpoint:
     def test_tail_row_fields(
         self,
         test_client: TestClient,
-        sample_metadata: Dict[str, Any],
+        sample_metadata: dict[str, Any],
     ) -> None:
         """Test Tail-Row-Felder."""
         run_id = sample_metadata["run_id"]
@@ -346,7 +345,7 @@ class TestAlertsEndpoint:
     def test_get_alerts(
         self,
         test_client: TestClient,
-        sample_metadata: Dict[str, Any],
+        sample_metadata: dict[str, Any],
     ) -> None:
         """Test Alerts-Endpoint."""
         run_id = sample_metadata["run_id"]
@@ -359,7 +358,7 @@ class TestAlertsEndpoint:
     def test_get_alerts_with_limit(
         self,
         test_client: TestClient,
-        sample_metadata: Dict[str, Any],
+        sample_metadata: dict[str, Any],
     ) -> None:
         """Test Alerts-Endpoint mit Limit."""
         run_id = sample_metadata["run_id"]
@@ -371,7 +370,7 @@ class TestAlertsEndpoint:
     def test_alert_fields(
         self,
         test_client: TestClient,
-        sample_metadata: Dict[str, Any],
+        sample_metadata: dict[str, Any],
     ) -> None:
         """Test Alert-Felder."""
         run_id = sample_metadata["run_id"]

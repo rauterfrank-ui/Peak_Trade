@@ -32,7 +32,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
 
 
 class DataSourceKind(Enum):
@@ -88,8 +87,8 @@ class DataSafetyContext:
 
     source_kind: DataSourceKind
     usage: DataUsageContextKind
-    run_id: Optional[str] = None
-    notes: Optional[str] = None
+    run_id: str | None = None
+    notes: str | None = None
 
 
 @dataclass(frozen=True)
@@ -105,7 +104,7 @@ class DataSafetyResult:
 
     allowed: bool
     reason: str
-    details: Optional[dict] = field(default=None)
+    details: dict | None = field(default=None)
 
 
 class DataSafetyViolationError(RuntimeError):
@@ -123,7 +122,7 @@ class DataSafetyViolationError(RuntimeError):
     def __init__(
         self,
         result: DataSafetyResult,
-        context: Optional[DataSafetyContext] = None,
+        context: DataSafetyContext | None = None,
     ):
         self.result = result
         self.context = context

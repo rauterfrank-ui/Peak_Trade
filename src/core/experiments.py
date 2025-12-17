@@ -14,13 +14,13 @@ Konventionen:
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 import csv
 import json
-from datetime import datetime
 import uuid
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 from src.backtest.result import BacktestResult
 
@@ -92,25 +92,25 @@ class ExperimentRecord:
     run_name: str
     timestamp: str          # ISO-String in UTC
 
-    strategy_key: Optional[str] = None
-    symbol: Optional[str] = None
-    portfolio_name: Optional[str] = None
-    sweep_name: Optional[str] = None
-    scan_name: Optional[str] = None
+    strategy_key: str | None = None
+    symbol: str | None = None
+    portfolio_name: str | None = None
+    sweep_name: str | None = None
+    scan_name: str | None = None
 
-    total_return: Optional[float] = None
-    cagr: Optional[float] = None
-    max_drawdown: Optional[float] = None
-    sharpe: Optional[float] = None
+    total_return: float | None = None
+    cagr: float | None = None
+    max_drawdown: float | None = None
+    sharpe: float | None = None
 
-    report_dir: Optional[str] = None      # z.B. "reports" oder "reports/portfolio"
-    report_prefix: Optional[str] = None   # z.B. "ma_crossover_run1", "portfolio_core_ma"
+    report_dir: str | None = None      # z.B. "reports" oder "reports/portfolio"
+    report_prefix: str | None = None   # z.B. "ma_crossover_run1", "portfolio_core_ma"
 
     params_json: str = ""     # JSON-String mit Strategy-Params
     stats_json: str = ""      # JSON-String mit allen Stats
     metadata_json: str = ""   # JSON-String mit vollstaendiger metadata
 
-    def to_row(self) -> Dict[str, Any]:
+    def to_row(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -138,14 +138,14 @@ def build_record_from_result(
     result: BacktestResult,
     run_type: str,
     run_name: str,
-    strategy_key: Optional[str] = None,
-    symbol: Optional[str] = None,
-    portfolio_name: Optional[str] = None,
-    sweep_name: Optional[str] = None,
-    scan_name: Optional[str] = None,
-    report_dir: Optional[Path] = None,
-    report_prefix: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    strategy_key: str | None = None,
+    symbol: str | None = None,
+    portfolio_name: str | None = None,
+    sweep_name: str | None = None,
+    scan_name: str | None = None,
+    report_dir: Path | None = None,
+    report_prefix: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> ExperimentRecord:
     """
     Baut einen ExperimentRecord aus einem BacktestResult und Zusatzinfos.
@@ -196,14 +196,14 @@ def log_experiment_from_result(
     result: BacktestResult,
     run_type: str,
     run_name: str,
-    strategy_key: Optional[str] = None,
-    symbol: Optional[str] = None,
-    portfolio_name: Optional[str] = None,
-    sweep_name: Optional[str] = None,
-    scan_name: Optional[str] = None,
-    report_dir: Optional[Path] = None,
-    report_prefix: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    strategy_key: str | None = None,
+    symbol: str | None = None,
+    portfolio_name: str | None = None,
+    sweep_name: str | None = None,
+    scan_name: str | None = None,
+    report_dir: Path | None = None,
+    report_prefix: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> ExperimentRecord:
     """
     Convenience-Funktion: Record aus Result bauen, in CSV schreiben, Record zurueckgeben.
@@ -228,15 +228,15 @@ def log_experiment_from_result(
 def log_generic_experiment(
     run_type: str,
     run_name: str,
-    strategy_key: Optional[str] = None,
-    symbol: Optional[str] = None,
-    portfolio_name: Optional[str] = None,
-    sweep_name: Optional[str] = None,
-    scan_name: Optional[str] = None,
-    stats: Optional[Dict[str, Any]] = None,
-    report_dir: Optional[Path] = None,
-    report_prefix: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    strategy_key: str | None = None,
+    symbol: str | None = None,
+    portfolio_name: str | None = None,
+    sweep_name: str | None = None,
+    scan_name: str | None = None,
+    stats: dict[str, Any] | None = None,
+    report_dir: Path | None = None,
+    report_prefix: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> ExperimentRecord:
     """
     Generic Logging für Experimente, die kein BacktestResult haben,
@@ -248,7 +248,7 @@ def log_generic_experiment(
         Zusätzliche Metadaten (wird in metadata_json gemerged).
     """
     stats = stats or {}
-    metadata: Dict[str, Any] = {}
+    metadata: dict[str, Any] = {}
     if extra_metadata:
         metadata.update(extra_metadata)
 
@@ -296,14 +296,14 @@ def log_backtest_result(
     result: BacktestResult,
     *,
     strategy_name: str,
-    tag: Optional[str] = None,
-    config_path: Optional[str] = None,
-    data_source: Optional[str] = None,
-    symbol: Optional[str] = None,
-    timeframe: Optional[str] = None,
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    tag: str | None = None,
+    config_path: str | None = None,
+    data_source: str | None = None,
+    symbol: str | None = None,
+    timeframe: str | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> str:
     """
     Loggt das Ergebnis eines Backtests in der Registry.
@@ -366,14 +366,14 @@ def log_backtest_result(
 
 
 def log_live_risk_check(
-    metrics: Dict[str, Any],
+    metrics: dict[str, Any],
     *,
     allowed: bool,
-    reasons: List[str],
-    orders_csv: Optional[str] = None,
-    tag: Optional[str] = None,
-    config_path: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    reasons: list[str],
+    orders_csv: str | None = None,
+    tag: str | None = None,
+    config_path: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> str:
     """
     Loggt einen Live-Risk-Check in der Registry.
@@ -426,15 +426,15 @@ def log_forward_signal_run(
     strategy_key: str,
     symbol: str,
     timeframe: str,
-    last_timestamp: "pd.Timestamp",
+    last_timestamp: pd.Timestamp,
     last_signal: float,
     last_price: float,
-    tag: Optional[str] = None,
-    config_path: Optional[str] = None,
-    exchange_name: Optional[str] = None,
-    bars_fetched: Optional[int] = None,
-    extra_stats: Optional[Dict[str, Any]] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    tag: str | None = None,
+    config_path: str | None = None,
+    exchange_name: str | None = None,
+    bars_fetched: int | None = None,
+    extra_stats: dict[str, Any] | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> str:
     """
     Loggt einen Forward-Signal-Run in der Registry.
@@ -478,7 +478,7 @@ def log_forward_signal_run(
         run_name = f"forward_signal_{strategy_key}_{tag}_{ts_label}"
 
     # Stats
-    stats: Dict[str, Any] = {
+    stats: dict[str, Any] = {
         "last_signal": float(last_signal),
         "last_price": float(last_price),
     }
@@ -486,7 +486,7 @@ def log_forward_signal_run(
         stats.update(extra_stats)
 
     # Metadata
-    metadata: Dict[str, Any] = {
+    metadata: dict[str, Any] = {
         "symbol": symbol,
         "timeframe": timeframe,
         "strategy_key": strategy_key,
@@ -519,13 +519,13 @@ def log_forward_signal_run(
 def log_portfolio_backtest_result(
     *,
     portfolio_name: str,
-    equity_curve: "pd.Series",
-    component_runs: List[Dict[str, Any]],
-    portfolio_stats: Optional[Dict[str, Any]] = None,
-    tag: Optional[str] = None,
-    config_path: Optional[str] = None,
-    allocation_method: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    equity_curve: pd.Series,
+    component_runs: list[dict[str, Any]],
+    portfolio_stats: dict[str, Any] | None = None,
+    tag: str | None = None,
+    config_path: str | None = None,
+    allocation_method: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> str:
     """
     Loggt einen Portfolio-Backtest in der Registry.
@@ -566,7 +566,6 @@ def log_portfolio_backtest_result(
         ...     tag="weekend-research",
         ... )
     """
-    import pandas as pd  # Local import to avoid top-level dependency
 
     ts_label = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     run_name = f"portfolio_{portfolio_name}_{ts_label}"
@@ -608,7 +607,7 @@ def log_portfolio_backtest_result(
     }
 
     # Metadata
-    metadata: Dict[str, Any] = {
+    metadata: dict[str, Any] = {
         "portfolio_name": portfolio_name,
         "components": component_runs,
         "allocation_method": allocation_method,
@@ -634,15 +633,15 @@ def log_portfolio_backtest_result(
 
 
 def log_paper_trade_run(
-    stats: Dict[str, Any],
+    stats: dict[str, Any],
     *,
-    strategy_name: Optional[str] = None,
-    orders_csv: Optional[str] = None,
-    positions_csv: Optional[str] = None,
-    trades_csv: Optional[str] = None,
-    tag: Optional[str] = None,
-    config_path: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    strategy_name: str | None = None,
+    orders_csv: str | None = None,
+    positions_csv: str | None = None,
+    trades_csv: str | None = None,
+    tag: str | None = None,
+    config_path: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> str:
     """
     Loggt einen Paper-Trade-Run in der Registry.
@@ -692,13 +691,13 @@ def log_sweep_run(
     strategy_key: str,
     symbol: str,
     timeframe: str,
-    params: Dict[str, Any],
-    stats: Dict[str, Any],
-    sweep_name: Optional[str] = None,
-    backtest_run_id: Optional[str] = None,
-    tag: Optional[str] = None,
-    config_path: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    params: dict[str, Any],
+    stats: dict[str, Any],
+    sweep_name: str | None = None,
+    backtest_run_id: str | None = None,
+    tag: str | None = None,
+    config_path: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> str:
     """
     Loggt einen einzelnen Sweep-Run (eine Parameterkombination) in der Registry.
@@ -739,7 +738,7 @@ def log_sweep_run(
         run_name = f"sweep_{sweep_label}_{tag}_{ts_label}"
 
     # Metadata
-    metadata: Dict[str, Any] = {
+    metadata: dict[str, Any] = {
         "symbol": symbol,
         "timeframe": timeframe,
         "strategy_key": strategy_key,
@@ -780,13 +779,13 @@ def log_market_scan_result(
     symbol: str,
     timeframe: str,
     mode: str,
-    signal: Optional[float] = None,
-    stats: Optional[Dict[str, Any]] = None,
-    scan_name: Optional[str] = None,
-    tag: Optional[str] = None,
-    config_path: Optional[str] = None,
-    bars_fetched: Optional[int] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    signal: float | None = None,
+    stats: dict[str, Any] | None = None,
+    scan_name: str | None = None,
+    tag: str | None = None,
+    config_path: str | None = None,
+    bars_fetched: int | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> str:
     """
     Loggt das Ergebnis eines Market-Scans für ein einzelnes Symbol.
@@ -838,14 +837,14 @@ def log_market_scan_result(
         run_name = f"market_scan_{scan_label}_{tag}_{ts_label}"
 
     # Stats aufbauen
-    result_stats: Dict[str, Any] = {}
+    result_stats: dict[str, Any] = {}
     if signal is not None:
         result_stats["last_signal"] = float(signal)
     if stats:
         result_stats.update(stats)
 
     # Metadata
-    metadata: Dict[str, Any] = {
+    metadata: dict[str, Any] = {
         "symbol": symbol,
         "timeframe": timeframe,
         "strategy_key": strategy_key,
@@ -884,12 +883,12 @@ def log_scheduler_job_run(
     *,
     job_name: str,
     command: str,
-    args: Dict[str, Any],
+    args: dict[str, Any],
     return_code: int,
     started_at: datetime,
     finished_at: datetime,
-    tag: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    tag: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> str:
     """
     Loggt einen Scheduler-Job-Run in der Registry.
@@ -927,14 +926,14 @@ def log_scheduler_job_run(
     success = return_code == 0
 
     # Stats
-    stats: Dict[str, Any] = {
+    stats: dict[str, Any] = {
         "return_code": return_code,
         "success": success,
         "duration_seconds": duration_seconds,
     }
 
     # Metadata
-    metadata: Dict[str, Any] = {
+    metadata: dict[str, Any] = {
         "job_name": job_name,
         "command": command,
         "args": args,
@@ -965,13 +964,13 @@ def log_shadow_run(
     strategy_key: str,
     symbol: str,
     timeframe: str,
-    stats: Dict[str, Any],
-    execution_summary: Optional[Dict[str, Any]] = None,
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None,
-    tag: Optional[str] = None,
-    config_path: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
+    stats: dict[str, Any],
+    execution_summary: dict[str, Any] | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    tag: str | None = None,
+    config_path: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
 ) -> str:
     """
     Loggt einen Shadow-/Dry-Run in der Registry (Phase 24).
@@ -1016,14 +1015,14 @@ def log_shadow_run(
         run_name = f"shadow_{strategy_key}_{tag}_{ts_label}"
 
     # Stats für Registry (Top-Level-Felder)
-    result_stats: Dict[str, Any] = dict(stats)
+    result_stats: dict[str, Any] = dict(stats)
 
     # Execution-Summary in Stats mergen
     if execution_summary:
         result_stats["execution"] = execution_summary
 
     # Metadata
-    metadata: Dict[str, Any] = {
+    metadata: dict[str, Any] = {
         "symbol": symbol,
         "timeframe": timeframe,
         "strategy_key": strategy_key,
@@ -1063,7 +1062,7 @@ def log_shadow_run(
 # ANALYSE-FUNKTIONEN (Lesen aus Registry)
 # =============================================================================
 
-def load_experiments_df() -> "pd.DataFrame":
+def load_experiments_df() -> pd.DataFrame:
     """
     Lädt alle Experiments aus der CSV als pandas DataFrame.
 
@@ -1084,7 +1083,7 @@ def load_experiments_df() -> "pd.DataFrame":
     return df
 
 
-def get_experiment_by_id(run_id: str) -> Optional[ExperimentRecord]:
+def get_experiment_by_id(run_id: str) -> ExperimentRecord | None:
     """
     Holt einen einzelnen Experiment-Record per run_id.
 
@@ -1108,11 +1107,11 @@ def get_experiment_by_id(run_id: str) -> Optional[ExperimentRecord]:
 
 
 def list_experiments(
-    run_type: Optional[str] = None,
-    tag: Optional[str] = None,
-    strategy_key: Optional[str] = None,
+    run_type: str | None = None,
+    tag: str | None = None,
+    strategy_key: str | None = None,
     limit: int = 20,
-) -> List[ExperimentRecord]:
+) -> list[ExperimentRecord]:
     """
     Listet Experiments mit optionalen Filtern.
 
@@ -1166,7 +1165,7 @@ def list_experiments(
     return records
 
 
-def get_experiment_stats(run_id: str) -> Optional[Dict[str, Any]]:
+def get_experiment_stats(run_id: str) -> dict[str, Any] | None:
     """
     Holt die Stats eines Experiments als Dict.
 
@@ -1186,7 +1185,7 @@ def get_experiment_stats(run_id: str) -> Optional[Dict[str, Any]]:
         return {}
 
 
-def get_experiment_metadata(run_id: str) -> Optional[Dict[str, Any]]:
+def get_experiment_metadata(run_id: str) -> dict[str, Any] | None:
     """
     Holt die Metadata eines Experiments als Dict.
 

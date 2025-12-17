@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Mapping, Any, Optional, Sequence, Dict
+from typing import Any
 
 import pandas as pd
 
@@ -30,7 +31,7 @@ class OfflinePaperTradeReportConfig:
     timeframe: str
     start_ts: pd.Timestamp
     end_ts: pd.Timestamp
-    extra_meta: Optional[Mapping[str, Any]] = None
+    extra_meta: Mapping[str, Any] | None = None
     base_reports_dir: Path = Path("reports/offline_paper_trade")
 
 
@@ -44,9 +45,9 @@ def generate_reports_for_offline_paper_trade(
     trades: pd.DataFrame,
     report_config: OfflinePaperTradeReportConfig,
     *,
-    trigger_events: Optional[Sequence[TriggerTrainingEvent]] = None,
-    session_meta_for_trigger: Optional[Mapping[str, Any]] = None,
-) -> Dict[str, Path]:
+    trigger_events: Sequence[TriggerTrainingEvent] | None = None,
+    session_meta_for_trigger: Mapping[str, Any] | None = None,
+) -> dict[str, Path]:
     """Erzeugt spezialisierte Reports für eine Offline-Paper-Trade-Session.
 
     - Erstellt immer den Offline-Paper-Trade-Report.
@@ -89,7 +90,7 @@ def generate_reports_for_offline_paper_trade(
         output_dir=output_dir,
     )
 
-    result: Dict[str, Path] = {"paper_report": paper_report_path}
+    result: dict[str, Path] = {"paper_report": paper_report_path}
 
     if trigger_events:
         # Default-Meta, falls nichts übergeben wurde

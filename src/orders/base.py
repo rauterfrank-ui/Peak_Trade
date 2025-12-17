@@ -15,9 +15,10 @@ WICHTIG: Diese Strukturen sind unabhaengig vom konkreten Executor.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional, Protocol, Sequence
+from typing import Any, Literal, Protocol
 
 # Type aliases fuer Order-Attribute
 OrderSide = Literal["buy", "sell"]
@@ -44,9 +45,9 @@ class OrderRequest:
     side: OrderSide
     quantity: float
     order_type: OrderType = "market"
-    limit_price: Optional[float] = None
-    client_id: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    limit_price: float | None = None
+    client_id: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Validierung nach Initialisierung."""
@@ -78,8 +79,8 @@ class OrderFill:
     quantity: float
     price: float
     timestamp: datetime
-    fee: Optional[float] = None
-    fee_currency: Optional[str] = None
+    fee: float | None = None
+    fee_currency: str | None = None
 
 
 @dataclass
@@ -97,9 +98,9 @@ class OrderExecutionResult:
 
     status: OrderStatus
     request: OrderRequest
-    fill: Optional[OrderFill] = None
-    reason: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    fill: OrderFill | None = None
+    reason: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def is_filled(self) -> bool:
@@ -127,7 +128,7 @@ class OrderExecutor(Protocol):
 
     def execute_orders(
         self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    ) -> list[OrderExecutionResult]:
         """
         Fuehrt eine Liste von Orders aus.
 

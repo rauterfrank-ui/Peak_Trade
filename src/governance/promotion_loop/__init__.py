@@ -27,8 +27,8 @@ from .safety import (
     SafetyConfig,
     apply_safety_filters,
     check_blacklist,
-    check_bounds,
     check_bounded_auto_guardrails,
+    check_bounds,
     check_global_promotion_lock,
     has_p0_violations,
     load_safety_config_from_toml,
@@ -36,28 +36,28 @@ from .safety import (
 )
 
 __all__ = [
-    # Engine functions
-    "apply_proposals_to_live_overrides",
-    "build_promotion_candidates_from_patches",
-    "build_promotion_proposals",
-    "filter_candidates_for_live",
-    "materialize_promotion_proposals",
+    # Policy
+    "AutoApplyBounds",
+    "AutoApplyPolicy",
     # Models
     "DecisionStatus",
     "PromotionCandidate",
     "PromotionDecision",
     "PromotionProposal",
-    # Policy
-    "AutoApplyBounds",
-    "AutoApplyPolicy",
     # Safety (P0/P1)
     "SafetyConfig",
+    # Engine functions
+    "apply_proposals_to_live_overrides",
     "apply_safety_filters",
+    "build_promotion_candidates_from_patches",
+    "build_promotion_proposals",
     "check_blacklist",
-    "check_bounds",
     "check_bounded_auto_guardrails",
+    "check_bounds",
     "check_global_promotion_lock",
+    "filter_candidates_for_live",
     "has_p0_violations",
     "load_safety_config_from_toml",
+    "materialize_promotion_proposals",
     "write_audit_log_entry",
 ]

@@ -26,14 +26,19 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import pandas as pd
 
-from .base import Report, ReportSection, dict_to_markdown_table, df_to_markdown, format_metric
-from .plots import save_equity_plot, save_drawdown_plot, save_equity_with_regimes, save_equity_with_regime_overlay, save_regime_contribution_bars
-from .regime_reporting import compute_regime_stats, build_regime_report_section
-
+from .base import Report, ReportSection, df_to_markdown, format_metric
+from .plots import (
+    save_drawdown_plot,
+    save_equity_plot,
+    save_equity_with_regime_overlay,
+    save_equity_with_regimes,
+    save_regime_contribution_bars,
+)
+from .regime_reporting import build_regime_report_section, compute_regime_stats
 
 # =============================================================================
 # SECTION BUILDERS
@@ -41,7 +46,7 @@ from .regime_reporting import compute_regime_stats, build_regime_report_section
 
 
 def build_backtest_summary_section(
-    metrics: Dict[str, float],
+    metrics: dict[str, float],
     title: str = "Performance Summary",
 ) -> ReportSection:
     """
@@ -60,12 +65,12 @@ def build_backtest_summary_section(
         >>> print(section.to_markdown())
     """
     # Formatiere Metriken mit passender Darstellung
-    formatted_metrics: Dict[str, str] = {}
+    formatted_metrics: dict[str, str] = {}
     for key, value in metrics.items():
         formatted_metrics[key] = format_metric(value, key)
 
     # Erstelle Markdown-Tabelle
-    rows: List[str] = []
+    rows: list[str] = []
     header = "| Metric | Value |"
     separator = "|--------|-------|"
     rows.append(header)
@@ -82,7 +87,7 @@ def build_backtest_summary_section(
 
 
 def build_trade_stats_section(
-    trades: List[Dict[str, Any]],
+    trades: list[dict[str, Any]],
     title: str = "Trade Statistics",
 ) -> ReportSection:
     """
@@ -138,7 +143,7 @@ def build_trade_stats_section(
 
 
 def build_parameters_section(
-    params: Dict[str, Any],
+    params: dict[str, Any],
     title: str = "Strategy Parameters",
 ) -> ReportSection:
     """
@@ -172,8 +177,8 @@ def build_parameters_section(
 
 def build_equity_plot(
     equity_curve: pd.Series,
-    output_path: Union[str, Path],
-    title: Optional[str] = "Equity Curve",
+    output_path: str | Path,
+    title: str | None = "Equity Curve",
 ) -> str:
     """
     Erstellt einen Equity-Curve-Plot und speichert ihn.
@@ -195,8 +200,8 @@ def build_equity_plot(
 
 def build_drawdown_plot(
     drawdown_series: pd.Series,
-    output_path: Union[str, Path],
-    title: Optional[str] = "Drawdown",
+    output_path: str | Path,
+    title: str | None = "Drawdown",
 ) -> str:
     """
     Erstellt einen Drawdown-Plot und speichert ihn.
@@ -223,15 +228,15 @@ def build_drawdown_plot(
 
 def build_backtest_report(
     title: str,
-    metrics: Dict[str, float],
-    equity_curve: Optional[pd.Series] = None,
-    drawdown_series: Optional[pd.Series] = None,
-    trades: Optional[List[Dict[str, Any]]] = None,
-    params: Optional[Dict[str, Any]] = None,
-    extra_tables: Optional[Dict[str, pd.DataFrame]] = None,
-    regimes: Optional[pd.Series] = None,
-    output_dir: Optional[Union[str, Path]] = None,
-    metadata: Optional[Dict[str, Any]] = None,
+    metrics: dict[str, float],
+    equity_curve: pd.Series | None = None,
+    drawdown_series: pd.Series | None = None,
+    trades: list[dict[str, Any]] | None = None,
+    params: dict[str, Any] | None = None,
+    extra_tables: dict[str, pd.DataFrame] | None = None,
+    regimes: pd.Series | None = None,
+    output_dir: str | Path | None = None,
+    metadata: dict[str, Any] | None = None,
 ) -> Report:
     """
     Erstellt einen kompletten Backtest-Report.
@@ -282,7 +287,7 @@ def build_backtest_report(
         report.add_section(build_trade_stats_section(trades))
 
     # 4. Charts-Section
-    charts_content: List[str] = []
+    charts_content: list[str] = []
 
     if equity_curve is not None and len(equity_curve) > 0:
         if regimes is not None and len(regimes) > 0:
@@ -339,7 +344,7 @@ def build_backtest_report(
                     regime_series=regimes,
                     trades=trades if trades else None,
                 )
-                
+
                 # Erstelle Contribution-Plot
                 contribution_plot_path = output_dir / "regime_contribution.png"
                 try:
@@ -350,10 +355,10 @@ def build_backtest_report(
                     )
                     rel_contribution_path = os.path.relpath(contribution_plot_path, output_dir.parent)
                     charts_content.append(f"### Return Contribution by Regime\n\n![Regime Contribution]({rel_contribution_path})")
-                except Exception as plot_error:
+                except Exception:
                     # Plot-Fehler nicht kritisch, nur loggen
                     pass
-                
+
                 # Füge Regime-Section hinzu
                 report.add_section(build_regime_report_section(regime_stats))
         except Exception as e:
@@ -386,7 +391,7 @@ def build_backtest_report(
 
 def save_backtest_report(
     report: Report,
-    output_path: Union[str, Path],
+    output_path: str | Path,
     format: str = "markdown",
 ) -> str:
     """
@@ -414,11 +419,11 @@ def save_backtest_report(
 
 def build_quick_backtest_report(
     equity_curve: pd.Series,
-    trades: Optional[List[Dict[str, Any]]] = None,
+    trades: list[dict[str, Any]] | None = None,
     strategy_name: str = "Strategy",
     symbol: str = "Unknown",
-    params: Optional[Dict[str, Any]] = None,
-    output_dir: Optional[Union[str, Path]] = None,
+    params: dict[str, Any] | None = None,
+    output_dir: str | Path | None = None,
 ) -> Report:
     """
     Schnelle Report-Generierung aus Equity-Curve.

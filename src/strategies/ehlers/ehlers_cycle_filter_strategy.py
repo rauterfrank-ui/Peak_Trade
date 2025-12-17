@@ -32,14 +32,12 @@ Warnung:
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Literal, Optional
+from dataclasses import dataclass
+from typing import Any, Literal
 
-import numpy as np
 import pandas as pd
 
 from ..base import BaseStrategy, StrategyMetadata
-
 
 # =============================================================================
 # CONFIG
@@ -69,7 +67,7 @@ class EhlersCycleFilterConfig:
     lookback: int = 100
     use_hilbert_transform: bool = True
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert Config zu Dictionary."""
         return {
             "smoother_type": self.smoother_type,
@@ -145,8 +143,8 @@ class EhlersCycleFilterStrategy(BaseStrategy):
         bandpass_bandwidth: float = 0.3,
         lookback: int = 100,
         use_hilbert_transform: bool = True,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Ehlers Cycle Filter Strategy.
@@ -210,7 +208,7 @@ class EhlersCycleFilterStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.ehlers_cycle_filter",
-    ) -> "EhlersCycleFilterStrategy":
+    ) -> EhlersCycleFilterStrategy:
         """
         Fabrikmethode für Config-basierte Instanziierung.
 
@@ -394,7 +392,7 @@ class EhlersCycleFilterStrategy(BaseStrategy):
 # LEGACY API (Falls benötigt für Backwards Compatibility)
 # =============================================================================
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility.
 

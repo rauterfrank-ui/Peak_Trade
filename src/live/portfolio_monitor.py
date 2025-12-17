@@ -263,7 +263,7 @@ class LivePortfolioMonitor:
                 return None
 
             # Side bestimmen
-            side = pos_data.get("side", None)
+            side = pos_data.get("side")
             raw_size = float(pos_data.get("size", pos_data.get("qty", 0.0)))
 
             if side is None or side not in ["long", "short", "flat"]:
@@ -278,11 +278,11 @@ class LivePortfolioMonitor:
             size = abs(raw_size)
 
             # Preise
-            entry_price = pos_data.get("entry_price", pos_data.get("avg_price", None))
+            entry_price = pos_data.get("entry_price", pos_data.get("avg_price"))
             if entry_price is not None:
                 entry_price = float(entry_price)
 
-            mark_price = pos_data.get("mark_price", pos_data.get("last_price", pos_data.get("current_price", None)))
+            mark_price = pos_data.get("mark_price", pos_data.get("last_price", pos_data.get("current_price")))
             if mark_price is not None:
                 mark_price = float(mark_price)
 
@@ -294,16 +294,16 @@ class LivePortfolioMonitor:
                 notional = float(notional) if notional else 0.0
 
             # PnL
-            unrealized_pnl = pos_data.get("unrealized_pnl", None)
+            unrealized_pnl = pos_data.get("unrealized_pnl")
             if unrealized_pnl is not None:
                 unrealized_pnl = float(unrealized_pnl)
 
-            realized_pnl = pos_data.get("realized_pnl", None)
+            realized_pnl = pos_data.get("realized_pnl")
             if realized_pnl is not None:
                 realized_pnl = float(realized_pnl)
 
             # Leverage
-            leverage = pos_data.get("leverage", None)
+            leverage = pos_data.get("leverage")
             if leverage is not None:
                 leverage = float(leverage)
 

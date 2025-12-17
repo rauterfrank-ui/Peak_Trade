@@ -5,10 +5,8 @@ Testet die Funktionen get_governance_status() und is_feature_approved_for_year()
 gemäß der Spezifikation in docs/GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md.
 """
 
-import pytest
 
 from src.governance.go_no_go import (
-    GovernanceStatus,
     get_governance_status,
     is_feature_approved_for_year,
 )

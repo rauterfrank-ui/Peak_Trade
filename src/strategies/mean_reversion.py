@@ -15,10 +15,10 @@ und kann in starken Trends Verluste produzieren.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -63,8 +63,8 @@ class MeanReversionStrategy(BaseStrategy):
         use_vol_filter: bool = False,
         vol_window: int = 20,
         max_vol_percentile: float = 70.0,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Mean-Reversion-Strategie.
@@ -137,7 +137,7 @@ class MeanReversionStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.mean_reversion",
-    ) -> "MeanReversionStrategy":
+    ) -> MeanReversionStrategy:
         """
         Fabrikmethode für Core-Config.
 
@@ -274,7 +274,7 @@ class MeanReversionStrategy(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility mit alter API.
 
@@ -303,7 +303,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     return strategy.generate_signals(df)
 
 
-def add_zscore_indicators(df: pd.DataFrame, params: Dict) -> pd.DataFrame:
+def add_zscore_indicators(df: pd.DataFrame, params: dict) -> pd.DataFrame:
     """
     Fügt Z-Score-Indikatoren zum DataFrame hinzu (für Visualisierung).
 
@@ -334,7 +334,7 @@ def add_zscore_indicators(df: pd.DataFrame, params: Dict) -> pd.DataFrame:
     return df
 
 
-def get_strategy_description(params: Dict) -> str:
+def get_strategy_description(params: dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
     return f"""
 Mean Reversion Strategy (Z-Score)

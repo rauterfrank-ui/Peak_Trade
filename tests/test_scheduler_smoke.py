@@ -11,9 +11,10 @@ Testet:
 """
 from __future__ import annotations
 
-import pytest
 from datetime import datetime, timedelta
 from pathlib import Path
+
+import pytest
 
 
 class TestDataclasses:
@@ -137,8 +138,8 @@ class TestValidateJobConfig:
 
     def test_validate_valid_job(self):
         """Valider Job hat keine Warnungen."""
-        from src.scheduler.models import JobDefinition, JobSchedule
         from src.scheduler.config_loader import validate_job_config
+        from src.scheduler.models import JobDefinition, JobSchedule
 
         job = JobDefinition(
             name="valid_job",
@@ -151,8 +152,8 @@ class TestValidateJobConfig:
 
     def test_validate_missing_script(self):
         """Job ohne script-Argument erzeugt Warnung."""
-        from src.scheduler.models import JobDefinition
         from src.scheduler.config_loader import validate_job_config
+        from src.scheduler.models import JobDefinition
 
         job = JobDefinition(
             name="no_script_job",
@@ -164,8 +165,8 @@ class TestValidateJobConfig:
 
     def test_validate_interval_without_seconds(self):
         """Interval-Job ohne interval_seconds erzeugt Warnung."""
-        from src.scheduler.models import JobDefinition, JobSchedule
         from src.scheduler.config_loader import validate_job_config
+        from src.scheduler.models import JobDefinition, JobSchedule
 
         job = JobDefinition(
             name="interval_job",
@@ -462,7 +463,7 @@ class TestSchedulerJobRegistry:
 
     def test_log_scheduler_job_run(self, tmp_path: Path, monkeypatch):
         """log_scheduler_job_run loggt in Registry."""
-        from src.core.experiments import log_scheduler_job_run, EXPERIMENTS_DIR, EXPERIMENTS_CSV
+        from src.core.experiments import log_scheduler_job_run
 
         # Experiments-Verzeichnis auf tmp_path umleiten
         test_experiments_dir = tmp_path / "experiments"

@@ -283,7 +283,7 @@ def load_daily_outlook_config(path: Path) -> DailyMarketOutlookConfig:
     if not path.exists():
         raise FileNotFoundError(f"Config-Datei nicht gefunden: {path}")
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         raw = yaml.safe_load(f)
 
     if not raw:

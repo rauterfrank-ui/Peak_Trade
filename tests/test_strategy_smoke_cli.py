@@ -25,13 +25,11 @@ from __future__ import annotations
 import subprocess
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
-from typing import List
+from unittest.mock import patch
 
-import pytest
-import pandas as pd
 import numpy as np
-
+import pandas as pd
+import pytest
 
 # Projekt-Root
 PROJECT_ROOT = Path(__file__).parent.parent

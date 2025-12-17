@@ -18,21 +18,21 @@ Run:
 """
 from __future__ import annotations
 
-import pytest
 from datetime import datetime
 
+import pytest
+
 from src.reporting.live_status_snapshot_builder import (
-    build_live_status_snapshot,
     _invoke_provider_safely,
     _panel_from_dict,
+    build_live_status_snapshot,
 )
 from src.reporting.status_snapshot_schema import (
     PanelSnapshot,
-    normalize_status,
-    normalize_details,
     model_dump_helper,
+    normalize_details,
+    normalize_status,
 )
-
 
 # =============================================================================
 # Tests: normalize_status

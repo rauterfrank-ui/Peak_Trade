@@ -24,10 +24,10 @@ Datum: Dezember 2025
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Literal, Sequence, Dict, List, Optional
 from collections import defaultdict
-
+from collections.abc import Sequence
+from dataclasses import dataclass
+from typing import Literal
 
 # ============================================================================
 # Type Definitions
@@ -69,13 +69,13 @@ SKIP_STREAK_HIGH = 4
 def clamp_0_3(x: float) -> int:
     """
     Begrenzt einen Float-Wert auf den Bereich [0, 3] und rundet auf int.
-    
+
     Args:
         x: Beliebiger Float-Wert
-    
+
     Returns:
         Integer im Bereich 0-3
-    
+
     Beispiele:
         >>> clamp_0_3(-1.5)
         0
@@ -84,7 +84,7 @@ def clamp_0_3(x: float) -> int:
         >>> clamp_0_3(5.0)
         3
     """
-    return max(0, min(3, int(round(x))))
+    return max(0, min(3, round(x)))
 
 
 # ============================================================================
@@ -96,40 +96,40 @@ class TriggerTrainingPsychEventFeatures:
     """
     Abgeleitete Features für ein Trigger-Training-Event, speziell
     für die Psychologie-Heuristiken.
-    
+
     Ein "Event" ist typischerweise:
       - ein Signal mit optionaler Action
       - oder eine Action (Entry/Exit/Re-Entry/Scale) im Kontext eines Signals
-    
+
     Alle numerischen Werte sind bereits auf sinnvolle Einheiten normiert.
     """
-    
+
     # ========================================================================
     # Cluster & Klassifikation
     # ========================================================================
     cluster: str  # z.B. "Breakout / Breakdowns"
     event_type: EventType  # "ENTER", "EXIT", "NO_ACTION", "SKIP"
-    side: Optional[Side]  # LONG/SHORT oder None bei NO_ACTION/neutral
+    side: Side | None  # LONG/SHORT oder None bei NO_ACTION/neutral
     signal_strength: float  # 0.0–1.0 (intern normalisiert)
-    
+
     # ========================================================================
     # Zeitliche Komponente
     # ========================================================================
     latency_s: float  # Sek. zwischen Signal und Action oder Ende des Action-Fensters
     latency_window_s: float  # Soll-Fenster für "rechtzeitiges" Handeln (z.B. 3s)
-    
+
     # ========================================================================
     # Marktdynamik relativ zum Signal
     # ========================================================================
     price_move_since_signal_pct: float  # % Move vom Signalpreis bis zur Action oder Fensterende
     price_max_favorable_pct: float  # max. günstige Bewegung im Fenster
     price_max_adverse_pct: float  # max. ungünstige Bewegung im Fenster
-    
+
     # ========================================================================
     # PnL / Qualität relativ zu Ideal-Execution
     # ========================================================================
     pnl_vs_ideal_bp: float  # PnL-Differenz in Basis-Punkten ggü. idealer Entry/Exit
-    
+
     # ========================================================================
     # Kontextflags
     # ========================================================================
@@ -138,13 +138,13 @@ class TriggerTrainingPsychEventFeatures:
     opposite_to_signal: bool  # Entry in entgegengesetzte Richtung zum Signal
     size_violation: bool  # Positionsgröße > erlaubter Size
     risk_violation: bool  # Stop/Risk-Regel verletzt
-    
+
     # ========================================================================
     # Historie / Serie
     # ========================================================================
     recent_loss_streak: int  # Anzahl vorheriger Verlust-Trades im relevanten Fenster
     recent_skip_streak: int  # Anzahl verpasster Setups davor
-    
+
     # ========================================================================
     # Manuelle Markierungen
     # ========================================================================
@@ -157,14 +157,14 @@ class TriggerTrainingPsychEventFeatures:
 class TriggerTrainingPsychClusterScores:
     """
     Aggregierte Psychologie-Scores für einen Trading-Cluster.
-    
+
     Alle Scores liegen im Bereich [0, 3]:
     - 0: kein Thema
     - 1: leicht
     - 2: mittel
     - 3: stark
     """
-    
+
     cluster: str
     fomo: int  # 0-3
     loss_fear: int  # 0-3
@@ -180,24 +180,24 @@ class TriggerTrainingPsychClusterScores:
 def score_fomo(ev: TriggerTrainingPsychEventFeatures) -> int:
     """
     Berechnet FOMO-Score (Hinterherjagen) für ein Event.
-    
+
     Intuition:
     - Spät in einen schon gelaufenen Move hinterher springen
     - Entry nach signifikanter Preisbewegung
     - Kombiniert Latenz + Move-Größe
-    
+
     Args:
         ev: Event-Features
-    
+
     Returns:
         Score 0-3
-    
+
     Formel-Details:
     - late_factor: (latency - LATENCY_OK_S) / (LATENCY_HESITATION_S - LATENCY_OK_S)
     - move_component: Stufenfunktion basierend auf price_move_since_signal_pct
     - base = late_factor * 1.5 + move_component
     - manuelle Markierung: +1.0
-    
+
     Beispiele:
         >>> ev = TriggerTrainingPsychEventFeatures(
         ...     cluster="Breakout", event_type="ENTER", side="LONG",
@@ -220,7 +220,7 @@ def score_fomo(ev: TriggerTrainingPsychEventFeatures) -> int:
         # Latenz-Komponente: wie spät ist der Entry?
         late_factor = max(0.0, (ev.latency_s - LATENCY_OK_S) / (LATENCY_HESITATION_S - LATENCY_OK_S))
         late_factor = min(late_factor, 1.5)  # Deckelung
-        
+
         # Move-Komponente: wie stark ist der Move schon gelaufen?
         move = abs(ev.price_move_since_signal_pct)
         if move < MOVE_SMALL_PCT:
@@ -231,39 +231,39 @@ def score_fomo(ev: TriggerTrainingPsychEventFeatures) -> int:
             move_component = 1.5
         else:
             move_component = 2.2
-        
+
         base = 0.0
         base += late_factor * 1.5
         base += move_component
-    
+
     # Manuelle Markierung verstärkt
     if ev.manually_marked_fomo:
         base += 1.0
-    
+
     return clamp_0_3(base)
 
 
 def score_loss_fear(ev: TriggerTrainingPsychEventFeatures) -> int:
     """
     Berechnet Verlustangst-Score für ein Event.
-    
+
     Intuition:
     - Zu frühes Wegklicken von Trades
     - Kein Entry nach Verlustserie
     - Exit bei minimalem Adverse Move
-    
+
     Args:
         ev: Event-Features
-    
+
     Returns:
         Score 0-3
-    
+
     Formel-Details:
     - Für Exits: adverse < MOVE_SMALL_PCT && favorable > MOVE_SMALL_PCT → +1.0
     - PnL-Differenz zu ideal: < -MEDIUM_BP → +1.0, < -LARGE_BP → +0.5 extra
     - Für NO_ACTION/SKIP: loss_streak >= MEDIUM → +1.0, >= HIGH → +0.7
     - Manuelle Markierung: +1.0
-    
+
     Beispiele:
         >>> ev = TriggerTrainingPsychEventFeatures(
         ...     cluster="Exit", event_type="EXIT", side="LONG",
@@ -280,58 +280,58 @@ def score_loss_fear(ev: TriggerTrainingPsychEventFeatures) -> int:
         3
     """
     base = 0.0
-    
+
     # 1) Exits, die "zu früh" wirken
     if ev.event_type == "EXIT":
         adverse = ev.price_max_adverse_pct
         favorable = ev.price_max_favorable_pct
         pnl = ev.pnl_vs_ideal_bp
-        
+
         # Früher Exit trotz geringen Adverse-Moves
         if adverse < MOVE_SMALL_PCT and favorable > MOVE_SMALL_PCT:
             base += 1.0
-        
+
         # Starker Unterschied zu idealem Exit
         if pnl < -PNL_MEDIUM_BP:
             base += 1.0
         if pnl < -PNL_LARGE_BP:
             base += 0.5
-    
+
     # 2) Kein Entry wegen Verlustserie (NO_ACTION / SKIP)
     if ev.event_type in ("NO_ACTION", "SKIP") and ev.had_valid_setup:
         if ev.recent_loss_streak >= LOSS_STREAK_MEDIUM:
             base += 1.0
         if ev.recent_loss_streak >= LOSS_STREAK_HIGH:
             base += 0.7
-    
+
     # 3) Manuelle Markierung
     if ev.manually_marked_fear:
         base += 1.0
-    
+
     return clamp_0_3(base)
 
 
 def score_impulsivity(ev: TriggerTrainingPsychEventFeatures) -> int:
     """
     Berechnet Impulsivitäts-Score für ein Event.
-    
+
     Intuition:
     - Hyper-schnelle Entries/Exits ohne Setup
     - Action ohne Regelwerk-Konformität
     - "Spontan-Trades"
-    
+
     Args:
         ev: Event-Features
-    
+
     Returns:
         Score 0-3
-    
+
     Formel-Details:
     - Action ohne gültiges Setup: +1.5
     - Extrem schnelle Latenz (< 0.2 * LATENCY_OK_S): +1.0
     - Entry ohne Signal-Flag: +1.5
     - Manuelle Markierung: +1.0
-    
+
     Beispiele:
         >>> ev = TriggerTrainingPsychEventFeatures(
         ...     cluster="Impuls", event_type="ENTER", side="LONG",
@@ -348,49 +348,48 @@ def score_impulsivity(ev: TriggerTrainingPsychEventFeatures) -> int:
         3
     """
     base = 0.0
-    
+
     # 1) Action ohne gültiges Setup
     if ev.event_type in ("ENTER", "EXIT") and not ev.had_valid_setup:
         base += 1.5
-    
+
     # 2) Entry/Exit extrem schnell nach Signal (Flip-Seite von Zögern)
-    if ev.event_type in ("ENTER", "EXIT"):
-        if ev.latency_s < 0.2 * LATENCY_OK_S:
-            base += 1.0
-    
+    if ev.event_type in ("ENTER", "EXIT") and ev.latency_s < 0.2 * LATENCY_OK_S:
+        base += 1.0
+
     # 3) Flag: entered_without_signal
     if ev.entered_without_signal:
         base += 1.5
-    
+
     # 4) Manuelle Markierung
     if ev.manually_marked_impulsive:
         base += 1.0
-    
+
     return clamp_0_3(base)
 
 
 def score_hesitation(ev: TriggerTrainingPsychEventFeatures) -> int:
     """
     Berechnet Zögerungs-Score für ein Event.
-    
+
     Intuition:
     - Zu spät oder gar nicht handeln, obwohl Setup da ist
     - Signal verpasst
     - Lange Reaktionszeit
-    
+
     Args:
         ev: Event-Features
-    
+
     Returns:
         Score 0-3
-    
+
     Formel-Details:
     - Späte Action (> LATENCY_OK_S): +1.0
     - Sehr späte Action (> LATENCY_HESITATION_S): +1.0 extra
     - NO_ACTION/SKIP bei Setup: +1.0
     - NO_ACTION/SKIP + großer favorable Move verpasst: +0.5
     - Skip-Streak >= MEDIUM: +0.5, >= HIGH: +0.5 extra
-    
+
     Beispiele:
         >>> ev = TriggerTrainingPsychEventFeatures(
         ...     cluster="Zögern", event_type="NO_ACTION", side=None,
@@ -407,51 +406,51 @@ def score_hesitation(ev: TriggerTrainingPsychEventFeatures) -> int:
         3
     """
     base = 0.0
-    
+
     # 1) Späte Action
     if ev.event_type in ("ENTER", "EXIT") and ev.had_valid_setup:
         if ev.latency_s > LATENCY_OK_S:
             base += 1.0
         if ev.latency_s > LATENCY_HESITATION_S:
             base += 1.0
-    
+
     # 2) NO_ACTION/ SKIP bei Setup innerhalb Fenster
     if ev.event_type in ("NO_ACTION", "SKIP") and ev.had_valid_setup:
         base += 1.0
         if ev.price_max_favorable_pct > MOVE_MEDIUM_PCT:
             base += 0.5
-    
+
     # 3) Skip-Streak verstärkt
     if ev.recent_skip_streak >= SKIP_STREAK_MEDIUM:
         base += 0.5
     if ev.recent_skip_streak >= SKIP_STREAK_HIGH:
         base += 0.5
-    
+
     return clamp_0_3(base)
 
 
 def score_rule_break(ev: TriggerTrainingPsychEventFeatures) -> int:
     """
     Berechnet Regelbruch-Score für ein Event.
-    
+
     Intuition:
     - Bewusst gegen System-Regeln handeln
     - Richtung gegen Signal
     - Size/Risk-Violations
-    
+
     Args:
         ev: Event-Features
-    
+
     Returns:
         Score 0-3
-    
+
     Formel-Details:
     - Richtung gegen Signal: +1.5
     - Size-Violation: +1.0
     - Risk-Violation: +1.0
     - Entry ohne Setup: +1.0
     - PnL << ideal (< -LARGE_BP): +0.5
-    
+
     Beispiele:
         >>> ev = TriggerTrainingPsychEventFeatures(
         ...     cluster="Regelbruch", event_type="ENTER", side="SHORT",
@@ -468,25 +467,25 @@ def score_rule_break(ev: TriggerTrainingPsychEventFeatures) -> int:
         3
     """
     base = 0.0
-    
+
     # Richtung gegen Signal
     if ev.opposite_to_signal:
         base += 1.5
-    
+
     # Größe / Risk
     if ev.size_violation:
         base += 1.0
     if ev.risk_violation:
         base += 1.0
-    
+
     # Entry ohne Setup
     if ev.entered_without_signal and not ev.had_valid_setup:
         base += 1.0
-    
+
     # PnL als Indikator für "teuren" Regelbruch
     if ev.pnl_vs_ideal_bp < -PNL_LARGE_BP:
         base += 0.5
-    
+
     return clamp_0_3(base)
 
 
@@ -496,10 +495,10 @@ def score_rule_break(ev: TriggerTrainingPsychEventFeatures) -> int:
 
 def aggregate_cluster_scores(
     events: Sequence[TriggerTrainingPsychEventFeatures],
-) -> List[TriggerTrainingPsychClusterScores]:
+) -> list[TriggerTrainingPsychClusterScores]:
     """
     Aggregiert Event-Scores zu Cluster-Scores.
-    
+
     Vorgehen:
     1. Events nach Cluster gruppieren
     2. Pro Event: Alle 5 Achsen-Scores berechnen
@@ -507,13 +506,13 @@ def aggregate_cluster_scores(
        - Top-3-Events bekommen 50% Gewicht
        - Alle Events bekommen 50% Gewicht
     4. Ergebnis clampen auf [0, 3]
-    
+
     Args:
         events: Liste von Event-Features
-    
+
     Returns:
         Liste von Cluster-Scores
-    
+
     Beispiel:
         >>> events = [
         ...     TriggerTrainingPsychEventFeatures(
@@ -536,12 +535,12 @@ def aggregate_cluster_scores(
     """
     if not events:
         return []
-    
+
     # 1. Gruppierung nach Cluster
-    cluster_events: Dict[str, List[TriggerTrainingPsychEventFeatures]] = defaultdict(list)
+    cluster_events: dict[str, list[TriggerTrainingPsychEventFeatures]] = defaultdict(list)
     for ev in events:
         cluster_events[ev.cluster].append(ev)
-    
+
     # 2. Pro Cluster: Scores aggregieren
     result = []
     for cluster_name, cluster_evs in sorted(cluster_events.items()):
@@ -551,15 +550,15 @@ def aggregate_cluster_scores(
         impulsivity_scores = [score_impulsivity(ev) for ev in cluster_evs]
         hesitation_scores = [score_hesitation(ev) for ev in cluster_evs]
         rule_break_scores = [score_rule_break(ev) for ev in cluster_evs]
-        
+
         # Aggregationsstrategie: Gewichteter Mix aus avg_all und avg_top3
-        def aggregate_scores(scores: List[int]) -> int:
+        def aggregate_scores(scores: list[int]) -> int:
             if not scores:
                 return 0
-            
+
             # Durchschnitt aller Scores
             avg_all = sum(scores) / len(scores)
-            
+
             # Durchschnitt der Top-3 Scores (wenn genug vorhanden)
             if len(scores) >= 3:
                 top_3 = sorted(scores, reverse=True)[:3]
@@ -569,9 +568,9 @@ def aggregate_cluster_scores(
             else:
                 # Zu wenig Events: nur avg_all nutzen
                 combined = avg_all
-            
+
             return clamp_0_3(combined)
-        
+
         cluster_score = TriggerTrainingPsychClusterScores(
             cluster=cluster_name,
             fomo=aggregate_scores(fomo_scores),
@@ -581,22 +580,22 @@ def aggregate_cluster_scores(
             rule_break=aggregate_scores(rule_break_scores),
         )
         result.append(cluster_score)
-    
+
     return result
 
 
 def build_heatmap_input_from_clusters(
     clusters: Sequence[TriggerTrainingPsychClusterScores],
-) -> List[Dict[str, float]]:
+) -> list[dict[str, float]]:
     """
     Konvertiert Cluster-Scores in Heatmap-Input-Format.
-    
+
     Args:
         clusters: Liste von Cluster-Scores
-    
+
     Returns:
         Liste von Dictionaries kompatibel mit build_psychology_heatmap_rows()
-    
+
     Beispiel:
         >>> clusters = [
         ...     TriggerTrainingPsychClusterScores(
@@ -630,24 +629,24 @@ def build_heatmap_input_from_clusters(
 
 def compute_psychology_heatmap_from_events(
     events: Sequence[TriggerTrainingPsychEventFeatures],
-) -> List[Dict[str, any]]:
+) -> list[dict[str, any]]:
     """
     End-to-End: Event-Features → Cluster-Scores → Heatmap-kompatibles Dict.
-    
+
     Dies ist die Haupt-Convenience-Funktion für die Integration.
-    
+
     Args:
         events: Liste von Event-Features
-    
+
     Returns:
         Serialisierte Heatmap-Rows (ready für Template-Rendering)
-    
+
     Workflow:
     1. Events → Cluster-Scores (aggregate_cluster_scores)
     2. Cluster-Scores → Raw-Dicts (build_heatmap_input_from_clusters)
     3. Raw-Dicts → Heatmap-Rows (build_psychology_heatmap_rows)
     4. Rows → Serialisiert (serialize_psychology_heatmap_rows)
-    
+
     Beispiel:
         >>> events = [...]  # Liste von TriggerTrainingPsychEventFeatures
         >>> heatmap_data = compute_psychology_heatmap_from_events(events)
@@ -659,16 +658,16 @@ def compute_psychology_heatmap_from_events(
         build_psychology_heatmap_rows,
         serialize_psychology_heatmap_rows,
     )
-    
+
     # 1. Aggregation
     clusters = aggregate_cluster_scores(events)
-    
+
     # 2. Raw-Format
     raw_rows = build_heatmap_input_from_clusters(clusters)
-    
+
     # 3. Heatmap-Rows bauen
     rows = build_psychology_heatmap_rows(raw_rows)
-    
+
     # 4. Serialisieren
     return serialize_psychology_heatmap_rows(rows)
 
@@ -680,7 +679,7 @@ def compute_psychology_heatmap_from_events(
 def create_example_fomo_event() -> TriggerTrainingPsychEventFeatures:
     """
     Erzeugt ein Beispiel-Event mit hohem FOMO-Score.
-    
+
     Charakteristik:
     - ENTER-Event
     - Hohe Latenz (spät)
@@ -714,7 +713,7 @@ def create_example_fomo_event() -> TriggerTrainingPsychEventFeatures:
 def create_example_loss_fear_event() -> TriggerTrainingPsychEventFeatures:
     """
     Erzeugt ein Beispiel-Event mit hohem Verlustangst-Score.
-    
+
     Charakteristik:
     - EXIT-Event
     - Kleiner Adverse-Move, aber früher Exit
@@ -748,7 +747,7 @@ def create_example_loss_fear_event() -> TriggerTrainingPsychEventFeatures:
 def create_example_impulsivity_event() -> TriggerTrainingPsychEventFeatures:
     """
     Erzeugt ein Beispiel-Event mit hohem Impulsivitäts-Score.
-    
+
     Charakteristik:
     - ENTER-Event ohne Setup
     - Sehr schnelle Reaktion
@@ -781,7 +780,7 @@ def create_example_impulsivity_event() -> TriggerTrainingPsychEventFeatures:
 def create_example_hesitation_event() -> TriggerTrainingPsychEventFeatures:
     """
     Erzeugt ein Beispiel-Event mit hohem Zögerungs-Score.
-    
+
     Charakteristik:
     - NO_ACTION bei gültigem Setup
     - Großer favorable Move verpasst
@@ -814,7 +813,7 @@ def create_example_hesitation_event() -> TriggerTrainingPsychEventFeatures:
 def create_example_rule_break_event() -> TriggerTrainingPsychEventFeatures:
     """
     Erzeugt ein Beispiel-Event mit hohem Regelbruch-Score.
-    
+
     Charakteristik:
     - ENTER gegen Signal-Richtung
     - Size + Risk Violations
@@ -844,10 +843,10 @@ def create_example_rule_break_event() -> TriggerTrainingPsychEventFeatures:
     )
 
 
-def create_example_mixed_events() -> List[TriggerTrainingPsychEventFeatures]:
+def create_example_mixed_events() -> list[TriggerTrainingPsychEventFeatures]:
     """
     Erzeugt eine gemischte Liste von Beispiel-Events für alle Cluster.
-    
+
     Returns:
         Liste mit je 1-2 Events pro Standard-Cluster
     """

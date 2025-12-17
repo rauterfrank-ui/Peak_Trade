@@ -32,7 +32,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -44,26 +44,24 @@ from fastapi.testclient import TestClient
 
 from src.webui.app import create_app
 from src.webui.r_and_d_api import (
-    load_experiments_from_dir,
-    filter_experiments,
-    extract_flat_fields,
-    compute_summary,
-    compute_preset_stats,
-    compute_strategy_stats,
-    compute_global_stats,
-    set_base_dir,
-    # v1.2 (Phase 77)
-    find_report_links,
-    compute_duration_info,
-    format_duration,
-    # v1.3 (Phase 78)
-    find_experiment_by_run_id,
+    RnDBatchResponse,
     build_experiment_detail,
     compute_best_metrics,
+    compute_duration_info,
+    compute_global_stats,
+    compute_preset_stats,
+    compute_strategy_stats,
+    compute_summary,
+    extract_flat_fields,
+    filter_experiments,
+    # v1.3 (Phase 78)
+    find_experiment_by_run_id,
+    # v1.2 (Phase 77)
+    find_report_links,
+    format_duration,
     parse_and_validate_run_ids,
-    RnDBatchResponse,
+    set_base_dir,
 )
-
 
 # =============================================================================
 # FIXTURES
@@ -71,7 +69,7 @@ from src.webui.r_and_d_api import (
 
 
 @pytest.fixture
-def sample_experiment() -> Dict[str, Any]:
+def sample_experiment() -> dict[str, Any]:
     """Beispiel-Experiment-Dict."""
     return {
         "experiment": {
@@ -103,7 +101,7 @@ def sample_experiment() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def sample_experiment_no_trades() -> Dict[str, Any]:
+def sample_experiment_no_trades() -> dict[str, Any]:
     """Experiment ohne Trades."""
     return {
         "experiment": {
@@ -1095,7 +1093,7 @@ class TestBatchEndpoint:
         # Hole erst 2 existierende Run-IDs
         resp = client.get("/api/r_and_d/experiments?limit=2")
         items = resp.json().get("items", [])
-        
+
         if len(items) >= 2:
             run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
             batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
@@ -1110,13 +1108,13 @@ class TestBatchEndpoint:
         """Batch-Response hat korrekte Struktur."""
         resp = client.get("/api/r_and_d/experiments?limit=2")
         items = resp.json().get("items", [])
-        
+
         if len(items) >= 2:
             run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
             batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
             assert batch_resp.status_code == 200
             data = batch_resp.json()
-            
+
             # Pflichtfelder prüfen
             assert "experiments" in data
             assert "requested_ids" in data
@@ -1124,7 +1122,7 @@ class TestBatchEndpoint:
             assert "not_found_ids" in data
             assert "total_requested" in data
             assert "total_found" in data
-            
+
             # Typen prüfen
             assert isinstance(data["experiments"], list)
             assert isinstance(data["requested_ids"], list)
@@ -1135,13 +1133,13 @@ class TestBatchEndpoint:
         """Batch-Experimente haben erwartete Felder."""
         resp = client.get("/api/r_and_d/experiments?limit=2")
         items = resp.json().get("items", [])
-        
+
         if len(items) >= 2:
             run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
             batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
             assert batch_resp.status_code == 200
             data = batch_resp.json()
-            
+
             for exp in data["experiments"]:
                 # Basisfelder
                 assert "run_id" in exp
@@ -1189,7 +1187,7 @@ class TestBatchEndpointValidation:
         """Batch dedupliziert IDs."""
         resp = client.get("/api/r_and_d/experiments?limit=1")
         items = resp.json().get("items", [])
-        
+
         if items:
             run_id = items[0]["run_id"]
             # Gleiche ID zweimal senden
@@ -1205,17 +1203,17 @@ class TestBatchEndpointPartialMatch:
         """Teilweise gültige IDs geben 200 mit found/not_found."""
         resp = client.get("/api/r_and_d/experiments?limit=1")
         items = resp.json().get("items", [])
-        
+
         if items:
             valid_id = items[0]["run_id"]
             invalid_id = "nonexistent_fake_id_xyz"
-            
+
             batch_resp = client.get(
                 f"/api/r_and_d/experiments/batch?run_ids={valid_id},{invalid_id}"
             )
             assert batch_resp.status_code == 200
             data = batch_resp.json()
-            
+
             assert len(data["found_ids"]) == 1
             assert len(data["not_found_ids"]) == 1
             assert valid_id in data["found_ids"]
@@ -1237,7 +1235,7 @@ class TestComparisonRoute:
         """Comparison-Page gibt HTML zurück."""
         resp = client.get("/api/r_and_d/experiments?limit=2")
         items = resp.json().get("items", [])
-        
+
         if len(items) >= 2:
             run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
             comp_resp = client.get(f"/r_and_d/comparison?run_ids={run_ids}")
@@ -1248,7 +1246,7 @@ class TestComparisonRoute:
         """Comparison-Page zeigt Experiment-Daten."""
         resp = client.get("/api/r_and_d/experiments?limit=2")
         items = resp.json().get("items", [])
-        
+
         if len(items) >= 2:
             run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
             comp_resp = client.get(f"/r_and_d/comparison?run_ids={run_ids}")
@@ -1269,7 +1267,7 @@ class TestComparisonRoute:
         """Comparison mit nur 1 ID zeigt Fehler."""
         resp = client.get("/api/r_and_d/experiments?limit=1")
         items = resp.json().get("items", [])
-        
+
         if items:
             run_id = items[0]["run_id"]
             comp_resp = client.get(f"/r_and_d/comparison?run_ids={run_id}")
@@ -1288,7 +1286,7 @@ class TestComparisonRoute:
         """Comparison-Page hat Best-Metric-Markierung."""
         resp = client.get("/api/r_and_d/experiments?limit=2")
         items = resp.json().get("items", [])
-        
+
         if len(items) >= 2:
             run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
             comp_resp = client.get(f"/r_and_d/comparison?run_ids={run_ids}")
@@ -1382,21 +1380,21 @@ class TestBuildExperimentDetail:
     def test_builds_all_required_fields(self, sample_experiment):
         """Alle erforderlichen Felder werden gebaut."""
         detail = build_experiment_detail(sample_experiment)
-        
+
         # Basis-Felder
         assert "filename" in detail
         assert "run_id" in detail
         assert "experiment" in detail
         assert "results" in detail
         assert "meta" in detail
-        
+
         # Erweiterte Felder
         assert "status" in detail
         assert "run_type" in detail
         assert "tier" in detail
         assert "report_links" in detail
         assert "duration_info" in detail
-        
+
         # Flache Metriken
         assert "total_return" in detail
         assert "sharpe" in detail
@@ -1405,7 +1403,7 @@ class TestBuildExperimentDetail:
     def test_extracts_correct_values(self, sample_experiment):
         """Korrekte Werte werden extrahiert."""
         detail = build_experiment_detail(sample_experiment)
-        
+
         assert detail["run_id"] == "exp_test_v1_20241208_120000"
         assert detail["total_return"] == 0.15
         assert detail["sharpe"] == 1.5
@@ -1424,7 +1422,7 @@ class TestComputeBestMetrics:
         """Einzelnes Experiment hat alle besten Werte."""
         experiments = [{"total_return": 0.1, "sharpe": 1.5, "win_rate": 0.6}]
         result = compute_best_metrics(experiments)
-        
+
         assert result["total_return"] == 0.1
         assert result["sharpe"] == 1.5
         assert result["win_rate"] == 0.6
@@ -1437,7 +1435,7 @@ class TestComputeBestMetrics:
             {"total_return": 0.15, "sharpe": 2.0, "win_rate": 0.55},
         ]
         result = compute_best_metrics(experiments)
-        
+
         assert result["total_return"] == 0.2
         assert result["sharpe"] == 2.0
         assert result["win_rate"] == 0.6
@@ -1450,7 +1448,7 @@ class TestComputeBestMetrics:
             {"max_drawdown": -0.15},
         ]
         result = compute_best_metrics(experiments)
-        
+
         assert result["max_drawdown"] == -0.05
 
     def test_handles_none_values(self):
@@ -1460,7 +1458,7 @@ class TestComputeBestMetrics:
             {"total_return": 0.1, "sharpe": None},
         ]
         result = compute_best_metrics(experiments)
-        
+
         assert result["total_return"] == 0.1
         assert result["sharpe"] == 1.0
 
@@ -1603,13 +1601,13 @@ class TestBatchEndpointV13Response:
         """Batch-Response enthält best_metrics (v1.3)."""
         resp = client.get("/api/r_and_d/experiments?limit=2")
         items = resp.json().get("items", [])
-        
+
         if len(items) >= 2:
             run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
             batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
             assert batch_resp.status_code == 200
             data = batch_resp.json()
-            
+
             assert "best_metrics" in data
             assert isinstance(data["best_metrics"], dict)
 
@@ -1617,13 +1615,13 @@ class TestBatchEndpointV13Response:
         """Batch-Response entspricht RnDBatchResponse-Modell."""
         resp = client.get("/api/r_and_d/experiments?limit=2")
         items = resp.json().get("items", [])
-        
+
         if len(items) >= 2:
             run_ids = f"{items[0]['run_id']},{items[1]['run_id']}"
             batch_resp = client.get(f"/api/r_and_d/experiments/batch?run_ids={run_ids}")
             assert batch_resp.status_code == 200
             data = batch_resp.json()
-            
+
             # Validiere gegen Pydantic-Modell
             response = RnDBatchResponse(**data)
             assert response.total_found == 2

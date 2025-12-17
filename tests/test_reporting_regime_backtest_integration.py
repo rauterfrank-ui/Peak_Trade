@@ -5,15 +5,13 @@ Integrationstests für Regime-Aware Backtest-Reports
 """
 from __future__ import annotations
 
-import pytest
-import pandas as pd
-import numpy as np
-from pathlib import Path
 import tempfile
-import shutil
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 from src.reporting.backtest_report import build_backtest_report
-from src.reporting.regime_reporting import compute_regime_stats
 
 
 class TestRegimeBacktestIntegration:

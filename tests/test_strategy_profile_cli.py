@@ -16,8 +16,6 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-
 
 class TestStrategyProfileCLIHelp:
     """Tests für CLI-Hilfe und Argument-Parsing."""
@@ -344,5 +342,5 @@ class TestStrategyProfileCLIWithTiering:
                 data = json.load(f)
 
             # Tiering sollte vorhanden sein (wenn config/strategy_tiering.toml existiert)
-            if "tiering" in data and data["tiering"]:
+            if data.get("tiering"):
                 assert data["tiering"]["tier"] in ("core", "aux", "legacy", "unclassified")

@@ -12,9 +12,13 @@ from __future__ import annotations
 
 import pytest
 
-from src.infra.runbooks import RunbookLink, resolve_runbooks_for_alert, get_all_runbooks, RUNBOOK_REGISTRY
+from src.infra.runbooks import (
+    RUNBOOK_REGISTRY,
+    RunbookLink,
+    get_all_runbooks,
+    resolve_runbooks_for_alert,
+)
 from src.infra.runbooks.registry import get_runbook_by_id
-
 
 # =============================================================================
 # RUNBOOK LINK TESTS
@@ -142,7 +146,7 @@ class TestResolveRunbooks:
 
     def test_risk_severity_critical(self):
         """Testet Auflösung für RISK + live_risk_severity + CRITICAL."""
-        from src.live.alert_pipeline import AlertMessage, AlertSeverity, AlertCategory
+        from src.live.alert_pipeline import AlertCategory, AlertMessage, AlertSeverity
 
         alert = AlertMessage(
             title="Test",
@@ -161,7 +165,7 @@ class TestResolveRunbooks:
 
     def test_risk_severity_warn(self):
         """Testet Auflösung für RISK + live_risk_severity + WARN."""
-        from src.live.alert_pipeline import AlertMessage, AlertSeverity, AlertCategory
+        from src.live.alert_pipeline import AlertCategory, AlertMessage, AlertSeverity
 
         alert = AlertMessage(
             title="Test",
@@ -179,7 +183,7 @@ class TestResolveRunbooks:
 
     def test_risk_limits_critical(self):
         """Testet Auflösung für RISK + live_risk_limits + CRITICAL."""
-        from src.live.alert_pipeline import AlertMessage, AlertSeverity, AlertCategory
+        from src.live.alert_pipeline import AlertCategory, AlertMessage, AlertSeverity
 
         alert = AlertMessage(
             title="Test",
@@ -198,7 +202,7 @@ class TestResolveRunbooks:
 
     def test_execution_alert(self):
         """Testet Auflösung für EXECUTION-Alerts."""
-        from src.live.alert_pipeline import AlertMessage, AlertSeverity, AlertCategory
+        from src.live.alert_pipeline import AlertCategory, AlertMessage, AlertSeverity
 
         alert = AlertMessage(
             title="Test",
@@ -216,7 +220,7 @@ class TestResolveRunbooks:
 
     def test_system_alert(self):
         """Testet Auflösung für SYSTEM-Alerts."""
-        from src.live.alert_pipeline import AlertMessage, AlertSeverity, AlertCategory
+        from src.live.alert_pipeline import AlertCategory, AlertMessage, AlertSeverity
 
         alert = AlertMessage(
             title="Test",
@@ -234,7 +238,7 @@ class TestResolveRunbooks:
 
     def test_unknown_source_fallback(self):
         """Testet Fallback für unbekannte Source."""
-        from src.live.alert_pipeline import AlertMessage, AlertSeverity, AlertCategory
+        from src.live.alert_pipeline import AlertCategory, AlertMessage, AlertSeverity
 
         alert = AlertMessage(
             title="Test",
@@ -283,7 +287,7 @@ class TestResolveRunbooks:
 
     def test_critical_includes_incident_drills(self):
         """Testet dass CRITICAL-Alerts Incident Drills enthalten."""
-        from src.live.alert_pipeline import AlertMessage, AlertSeverity, AlertCategory
+        from src.live.alert_pipeline import AlertCategory, AlertMessage, AlertSeverity
 
         alert = AlertMessage(
             title="Test",

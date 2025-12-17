@@ -7,23 +7,21 @@ End-to-End-Tests fuer den gesamten Regime-Layer:
 - RegimeDetector + StrategySwitchingPolicy zusammen
 - Simulation eines Backtests mit Regime-basiertem Switching
 """
-import pytest
-import pandas as pd
+
 import numpy as np
-from typing import Dict, List
+import pandas as pd
+import pytest
 
 from src.regime import (
-    RegimeLabel,
     RegimeContext,
     RegimeDetectorConfig,
+    SimpleRegimeMappingPolicy,
+    StrategySwitchDecision,
     StrategySwitchingConfig,
     VolatilityRegimeDetector,
-    SimpleRegimeMappingPolicy,
     make_regime_detector,
     make_switching_policy,
-    StrategySwitchDecision,
 )
-
 
 # ============================================================================
 # TEST DATA FIXTURES
@@ -116,7 +114,7 @@ def full_config() -> tuple[RegimeDetectorConfig, StrategySwitchingConfig]:
 
 
 @pytest.fixture
-def available_strategies() -> List[str]:
+def available_strategies() -> list[str]:
     """Liste aller verfuegbaren Strategien."""
     return [
         "vol_breakout",
@@ -138,7 +136,7 @@ class TestRegimeIntegration:
         self,
         synthetic_market_data: pd.DataFrame,
         full_config: tuple[RegimeDetectorConfig, StrategySwitchingConfig],
-        available_strategies: List[str],
+        available_strategies: list[str],
     ):
         """Detector und Policy arbeiten zusammen."""
         detector_config, switching_config = full_config
@@ -171,7 +169,7 @@ class TestRegimeIntegration:
         self,
         synthetic_market_data: pd.DataFrame,
         full_config: tuple[RegimeDetectorConfig, StrategySwitchingConfig],
-        available_strategies: List[str],
+        available_strategies: list[str],
     ):
         """Regime-Wechsel fuehren zu Strategy-Wechseln."""
         detector_config, switching_config = full_config
@@ -185,7 +183,7 @@ class TestRegimeIntegration:
         prev_strategies = None
         strategy_changes = 0
 
-        for i, regime in enumerate(regimes):
+        for _i, regime in enumerate(regimes):
             decision = policy.decide(regime, available_strategies)
             current_strategies = set(decision.active_strategies)
 
@@ -202,7 +200,7 @@ class TestRegimeIntegration:
         self,
         synthetic_market_data: pd.DataFrame,
         full_config: tuple[RegimeDetectorConfig, StrategySwitchingConfig],
-        available_strategies: List[str],
+        available_strategies: list[str],
     ):
         """Bei Breakout-Regime wird vol_breakout verwendet."""
         detector_config, switching_config = full_config
@@ -224,7 +222,7 @@ class TestRegimeIntegration:
         self,
         synthetic_market_data: pd.DataFrame,
         full_config: tuple[RegimeDetectorConfig, StrategySwitchingConfig],
-        available_strategies: List[str],
+        available_strategies: list[str],
     ):
         """Bei Ranging-Regime werden Mean-Reversion-Strategien verwendet."""
         detector_config, switching_config = full_config
@@ -299,7 +297,7 @@ class TestBacktestSimulation:
         self,
         synthetic_market_data: pd.DataFrame,
         full_config: tuple[RegimeDetectorConfig, StrategySwitchingConfig],
-        available_strategies: List[str],
+        available_strategies: list[str],
     ):
         """
         Simuliert den Backtest-Flow mit Regime Detection:
@@ -373,7 +371,7 @@ class TestDisabledRegimeLayer:
     def test_backtest_without_regime_layer(
         self,
         synthetic_market_data: pd.DataFrame,
-        available_strategies: List[str],
+        available_strategies: list[str],
     ):
         """Backtest funktioniert auch ohne Regime-Layer."""
         detector_config = RegimeDetectorConfig(enabled=False)

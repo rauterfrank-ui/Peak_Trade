@@ -4,7 +4,14 @@ import importlib
 from typing import TYPE_CHECKING, Any, List
 
 if TYPE_CHECKING:
-    from .data_safety_gate import DataSafetyContext, DataSafetyGate, DataSafetyResult, DataSafetyViolationError, DataSourceKind, DataUsageContextKind
+    from .data_safety_gate import (
+        DataSafetyContext,
+        DataSafetyGate,
+        DataSafetyResult,
+        DataSafetyViolationError,
+        DataSourceKind,
+        DataUsageContextKind,
+    )
 
 __all__ = [
     "DataSafetyContext",
@@ -23,5 +30,5 @@ def __getattr__(name: str) -> Any:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-def __dir__() -> List[str]:
+def __dir__() -> list[str]:
     return sorted(list(globals().keys()) + __all__)

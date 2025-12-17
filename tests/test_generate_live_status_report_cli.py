@@ -11,8 +11,6 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import List
-from unittest.mock import patch
 
 import pytest
 
@@ -37,7 +35,7 @@ class DummyCompletedProcess:
 
 
 def fake_subprocess_run(
-    args: List[str],
+    args: list[str],
     check: bool = False,
     capture_output: bool = False,
     text: bool = False,
@@ -108,10 +106,10 @@ def test_generate_live_status_report_markdown(tmp_path: Path, monkeypatch: pytes
     config_path.write_text("[environment]\nmode = 'testnet'")
 
     # Import nach Mock-Setup
-    from scripts.generate_live_status_report import main
-
     # CLI-Args simulieren
     import sys
+
+    from scripts.generate_live_status_report import main
 
     original_argv = sys.argv
     try:
@@ -152,9 +150,9 @@ def test_generate_live_status_report_html(tmp_path: Path, monkeypatch: pytest.Mo
     config_path = tmp_path / "config.toml"
     config_path.write_text("[environment]\nmode = 'testnet'")
 
-    from scripts.generate_live_status_report import main
-
     import sys
+
+    from scripts.generate_live_status_report import main
 
     original_argv = sys.argv
     try:
@@ -193,9 +191,9 @@ def test_generate_live_status_report_both(tmp_path: Path, monkeypatch: pytest.Mo
     config_path = tmp_path / "config.toml"
     config_path.write_text("[environment]\nmode = 'testnet'")
 
-    from scripts.generate_live_status_report import main
-
     import sys
+
+    from scripts.generate_live_status_report import main
 
     original_argv = sys.argv
     try:
@@ -233,9 +231,9 @@ def test_generate_live_status_report_with_notes(tmp_path: Path, monkeypatch: pyt
     notes_file = tmp_path / "notes.md"
     notes_file.write_text("- [ ] TODO: Test-Notiz\n- [ ] TODO: Weitere Notiz")
 
-    from scripts.generate_live_status_report import main
-
     import sys
+
+    from scripts.generate_live_status_report import main
 
     original_argv = sys.argv
     try:
@@ -273,9 +271,9 @@ def test_generate_live_status_report_missing_config(tmp_path: Path, monkeypatch:
     output_dir = tmp_path / "reports" / "live_status"
     config_path = tmp_path / "nonexistent.toml"
 
-    from scripts.generate_live_status_report import main
-
     import sys
+
+    from scripts.generate_live_status_report import main
 
     original_argv = sys.argv
     try:

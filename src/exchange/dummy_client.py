@@ -28,12 +28,11 @@ from __future__ import annotations
 import logging
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
 
 from .base import (
-    ExchangeOrderStatus,
     ExchangeOrderResult,
+    ExchangeOrderStatus,
     TradingOrderSide,
     TradingOrderType,
 )
@@ -72,14 +71,14 @@ class DummyOrderInfo:
     side: TradingOrderSide
     quantity: float
     order_type: TradingOrderType
-    limit_price: Optional[float] = None
-    client_order_id: Optional[str] = None
+    limit_price: float | None = None
+    client_order_id: str | None = None
     status: ExchangeOrderStatus = ExchangeOrderStatus.PENDING
     filled_qty: float = 0.0
-    avg_price: Optional[float] = None
-    fee: Optional[float] = None
-    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    avg_price: float | None = None
+    fee: float | None = None
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 
 
 # =============================================================================
@@ -114,10 +113,10 @@ class DummyExchangeClient:
 
     def __init__(
         self,
-        simulated_prices: Optional[Dict[str, float]] = None,
+        simulated_prices: dict[str, float] | None = None,
         fee_bps: float = 10.0,
         slippage_bps: float = 5.0,
-        initial_balances: Optional[Dict[str, float]] = None,
+        initial_balances: dict[str, float] | None = None,
     ) -> None:
         """
         Initialisiert den DummyExchangeClient.
@@ -133,7 +132,7 @@ class DummyExchangeClient:
         self._slippage_bps = slippage_bps
 
         # Order-Storage
-        self._orders: Dict[str, DummyOrderInfo] = {}
+        self._orders: dict[str, DummyOrderInfo] = {}
         self._order_counter = 0
 
         # Balance-Tracking (optional)
@@ -160,8 +159,8 @@ class DummyExchangeClient:
         side: TradingOrderSide,
         quantity: float,
         order_type: TradingOrderType = "market",
-        limit_price: Optional[float] = None,
-        client_order_id: Optional[str] = None,
+        limit_price: float | None = None,
+        client_order_id: str | None = None,
     ) -> str:
         """
         Platziert eine Order (simuliert).
@@ -195,7 +194,7 @@ class DummyExchangeClient:
         self._order_counter += 1
         order_id = f"DUMMY-{self._order_counter:06d}-{uuid.uuid4().hex[:8].upper()}"
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Order erstellen
         order = DummyOrderInfo(
@@ -253,7 +252,7 @@ class DummyExchangeClient:
             return False
 
         order.status = ExchangeOrderStatus.CANCELLED
-        order.updated_at = datetime.now(timezone.utc)
+        order.updated_at = datetime.now(UTC)
 
         logger.info(f"[DUMMY EXCHANGE] Order storniert: {exchange_order_id}")
         return True
@@ -333,7 +332,7 @@ class DummyExchangeClient:
         order.filled_qty = order.quantity
         order.avg_price = fill_price
         order.fee = fee if fee > 0 else None
-        order.updated_at = datetime.now(timezone.utc)
+        order.updated_at = datetime.now(UTC)
 
         logger.info(
             f"[DUMMY EXCHANGE] Order filled: {order.order_id} - "
@@ -360,11 +359,11 @@ class DummyExchangeClient:
         self._prices[symbol] = price
         logger.debug(f"[DUMMY EXCHANGE] Preis gesetzt: {symbol} = {price}")
 
-    def get_price(self, symbol: str) -> Optional[float]:
+    def get_price(self, symbol: str) -> float | None:
         """Gibt den simulierten Preis für ein Symbol zurück."""
         return self._prices.get(symbol)
 
-    def get_all_prices(self) -> Dict[str, float]:
+    def get_all_prices(self) -> dict[str, float]:
         """Gibt alle simulierten Preise zurück."""
         return dict(self._prices)
 
@@ -380,18 +379,18 @@ class DummyExchangeClient:
     # Query Methods
     # =========================================================================
 
-    def get_all_orders(self) -> List[DummyOrderInfo]:
+    def get_all_orders(self) -> list[DummyOrderInfo]:
         """Gibt alle Orders zurück."""
         return list(self._orders.values())
 
-    def get_open_orders(self) -> List[DummyOrderInfo]:
+    def get_open_orders(self) -> list[DummyOrderInfo]:
         """Gibt alle offenen Orders zurück."""
         return [
             o for o in self._orders.values()
             if o.status in (ExchangeOrderStatus.PENDING, ExchangeOrderStatus.OPEN)
         ]
 
-    def get_filled_orders(self) -> List[DummyOrderInfo]:
+    def get_filled_orders(self) -> list[DummyOrderInfo]:
         """Gibt alle gefüllten Orders zurück."""
         return [o for o in self._orders.values() if o.status == ExchangeOrderStatus.FILLED]
 
@@ -399,7 +398,7 @@ class DummyExchangeClient:
         """Gibt die Gesamtzahl der Orders zurück."""
         return len(self._orders)
 
-    def get_balances(self) -> Dict[str, float]:
+    def get_balances(self) -> dict[str, float]:
         """Gibt die simulierten Balances zurück."""
         return dict(self._balances)
 

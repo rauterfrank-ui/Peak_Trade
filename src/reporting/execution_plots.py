@@ -13,25 +13,26 @@ WICHTIG: Paper-only. Alle Daten stammen aus simulierten Backtests.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 try:
     import matplotlib
     matplotlib.use('Agg')  # Non-interactive backend
-    import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
     plt = None  # type: ignore
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 if TYPE_CHECKING:
     from src.orders.base import OrderExecutionResult
-    from src.backtest.result import BacktestResult
+
     from .execution_reports import ExecutionStats
 
 
@@ -41,12 +42,12 @@ def check_matplotlib() -> bool:
 
 
 def plot_slippage_histogram(
-    slippages_bps: List[float],
+    slippages_bps: list[float],
     title: str = "Slippage Distribution",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     bins: int = 20,
     figsize: tuple = (10, 6),
-) -> Optional[Any]:
+) -> Any | None:
     """
     Erstellt ein Histogramm der Slippage-Verteilung.
 
@@ -92,12 +93,12 @@ def plot_slippage_histogram(
 
 
 def plot_fee_histogram(
-    fees: List[float],
+    fees: list[float],
     title: str = "Fee Distribution",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     bins: int = 20,
     figsize: tuple = (10, 6),
-) -> Optional[Any]:
+) -> Any | None:
     """
     Erstellt ein Histogramm der Fee-Verteilung.
 
@@ -142,12 +143,12 @@ def plot_fee_histogram(
 
 
 def plot_notional_histogram(
-    notionals: List[float],
+    notionals: list[float],
     title: str = "Trade Size Distribution",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     bins: int = 20,
     figsize: tuple = (10, 6),
-) -> Optional[Any]:
+) -> Any | None:
     """
     Erstellt ein Histogramm der Trade-Groessen (Notional).
 
@@ -194,11 +195,11 @@ def plot_notional_histogram(
 
 def plot_equity_with_trades(
     equity_curve: pd.Series,
-    trades_df: Optional[pd.DataFrame] = None,
+    trades_df: pd.DataFrame | None = None,
     title: str = "Equity Curve with Trades",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     figsize: tuple = (14, 8),
-) -> Optional[Any]:
+) -> Any | None:
     """
     Erstellt einen Equity-Kurven-Plot mit markierten Entry/Exit-Punkten.
 
@@ -269,11 +270,11 @@ def plot_equity_with_trades(
 
 
 def plot_buy_sell_breakdown(
-    stats: "ExecutionStats",
+    stats: ExecutionStats,
     title: str = "Buy/Sell Breakdown",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     figsize: tuple = (10, 6),
-) -> Optional[Any]:
+) -> Any | None:
     """
     Erstellt ein Balkendiagramm der Buy/Sell-Verteilung.
 
@@ -331,11 +332,11 @@ def plot_buy_sell_breakdown(
 
 
 def plot_execution_summary(
-    stats: "ExecutionStats",
+    stats: ExecutionStats,
     title: str = "Execution Summary",
-    output_path: Optional[Path] = None,
+    output_path: Path | None = None,
     figsize: tuple = (12, 8),
-) -> Optional[Any]:
+) -> Any | None:
     """
     Erstellt eine zusammenfassende Visualisierung der Execution-Stats.
 
@@ -380,7 +381,7 @@ def plot_execution_summary(
     ax2.set_title('Costs')
     ax2.grid(True, alpha=0.3, axis='y')
 
-    for bar, v in zip(bars, values):
+    for bar, v in zip(bars, values, strict=False):
         ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(values)*0.02,
                 f'{v:.2f}', ha='center', fontsize=10)
 
@@ -419,7 +420,7 @@ def plot_execution_summary(
         ax4.set_title('Volume Split')
         ax4.grid(True, alpha=0.3, axis='y')
 
-        for bar, v in zip(bars, volumes):
+        for bar, v in zip(bars, volumes, strict=False):
             ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(volumes)*0.02,
                     f'{v:,.0f}', ha='center', fontsize=10)
     else:
@@ -439,9 +440,9 @@ def plot_execution_summary(
 
 
 def extract_slippages_from_results(
-    results: Sequence["OrderExecutionResult"],
-    reference_prices: Optional[Dict[str, float]] = None,
-) -> List[float]:
+    results: Sequence[OrderExecutionResult],
+    reference_prices: dict[str, float] | None = None,
+) -> list[float]:
     """
     Extrahiert Slippage-Werte aus OrderExecutionResults.
 
@@ -452,7 +453,7 @@ def extract_slippages_from_results(
     Returns:
         Liste von Slippage-Werten in bps
     """
-    slippages: List[float] = []
+    slippages: list[float] = []
 
     for result in results:
         if not result.is_filled or not result.fill:
@@ -462,7 +463,7 @@ def extract_slippages_from_results(
         fill = result.fill
 
         # Referenzpreis ermitteln
-        ref_price: Optional[float] = None
+        ref_price: float | None = None
         if reference_prices and req.symbol in reference_prices:
             ref_price = reference_prices[req.symbol]
         if ref_price is None:
@@ -480,7 +481,7 @@ def extract_slippages_from_results(
     return slippages
 
 
-def extract_fees_from_results(results: Sequence["OrderExecutionResult"]) -> List[float]:
+def extract_fees_from_results(results: Sequence[OrderExecutionResult]) -> list[float]:
     """
     Extrahiert Fee-Werte aus OrderExecutionResults.
 
@@ -490,7 +491,7 @@ def extract_fees_from_results(results: Sequence["OrderExecutionResult"]) -> List
     Returns:
         Liste von Fee-Werten (EUR)
     """
-    fees: List[float] = []
+    fees: list[float] = []
 
     for result in results:
         if result.is_filled and result.fill and result.fill.fee:
@@ -499,7 +500,7 @@ def extract_fees_from_results(results: Sequence["OrderExecutionResult"]) -> List
     return fees
 
 
-def extract_notionals_from_results(results: Sequence["OrderExecutionResult"]) -> List[float]:
+def extract_notionals_from_results(results: Sequence[OrderExecutionResult]) -> list[float]:
     """
     Extrahiert Notional-Werte aus OrderExecutionResults.
 
@@ -509,7 +510,7 @@ def extract_notionals_from_results(results: Sequence["OrderExecutionResult"]) ->
     Returns:
         Liste von Notional-Werten (EUR)
     """
-    notionals: List[float] = []
+    notionals: list[float] = []
 
     for result in results:
         if result.is_filled and result.fill:

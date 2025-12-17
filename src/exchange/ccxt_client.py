@@ -30,12 +30,12 @@ Verwendung:
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import ccxt
 import pandas as pd
 
-from .base import Balance, ExchangeClient, Ticker
+from .base import Balance, Ticker
 
 
 class CcxtExchangeClient:
@@ -78,12 +78,12 @@ class CcxtExchangeClient:
     def __init__(
         self,
         exchange_id: str,
-        api_key: Optional[str] = None,
-        secret: Optional[str] = None,
+        api_key: str | None = None,
+        secret: str | None = None,
         *,
         enable_rate_limit: bool = True,
         sandbox: bool = False,
-        extra_config: Optional[Dict[str, Any]] = None,
+        extra_config: dict[str, Any] | None = None,
     ) -> None:
         # Prüfe ob Exchange existiert
         if not hasattr(ccxt, exchange_id):
@@ -95,7 +95,7 @@ class CcxtExchangeClient:
 
         # Exchange-Klasse holen und instanziieren
         klass = getattr(ccxt, exchange_id)
-        config: Dict[str, Any] = {
+        config: dict[str, Any] = {
             "enableRateLimit": enable_rate_limit,
         }
 
@@ -166,8 +166,8 @@ class CcxtExchangeClient:
         self,
         symbol: str,
         timeframe: str = "1h",
-        since: Optional[int] = None,
-        limit: Optional[int] = None,
+        since: int | None = None,
+        limit: int | None = None,
     ) -> pd.DataFrame:
         """
         OHLCV-Daten als DataFrame abrufen.
@@ -230,7 +230,7 @@ class CcxtExchangeClient:
         raw = self._exchange.fetch_balance()
 
         # free/used/total extrahieren und zu floats konvertieren
-        def to_float_dict(d: Optional[Dict]) -> Dict[str, float]:
+        def to_float_dict(d: dict | None) -> dict[str, float]:
             if not d:
                 return {}
             return {k: float(v) for k, v in d.items() if v is not None}
@@ -242,7 +242,7 @@ class CcxtExchangeClient:
             raw=raw,
         )
 
-    def fetch_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+    def fetch_open_orders(self, symbol: str | None = None) -> list[dict[str, Any]]:
         """
         Offene Orders abrufen (nur Lesen, keine Änderung!).
 
@@ -263,7 +263,7 @@ class CcxtExchangeClient:
             return self._exchange.fetch_open_orders(symbol)
         return self._exchange.fetch_open_orders()
 
-    def fetch_markets(self) -> List[Dict[str, Any]]:
+    def fetch_markets(self) -> list[dict[str, Any]]:
         """
         Alle verfügbaren Märkte/Symbole abrufen.
 
@@ -274,7 +274,7 @@ class CcxtExchangeClient:
         """
         return self._exchange.fetch_markets()
 
-    def get_available_timeframes(self) -> List[str]:
+    def get_available_timeframes(self) -> list[str]:
         """
         Liste der unterstützten Timeframes für diesen Exchange.
 

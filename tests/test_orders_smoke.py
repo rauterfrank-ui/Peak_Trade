@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # tests/test_orders_smoke.py
 """
 Peak_Trade: Smoke-Tests fuer Order-Layer (src/orders)
@@ -14,7 +13,7 @@ Testet:
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -113,7 +112,7 @@ class TestOrderFill:
         """OrderFill kann instanziiert werden."""
         from src.orders import OrderFill
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         fill = OrderFill(
             symbol="BTC/EUR",
             side="buy",
@@ -133,7 +132,7 @@ class TestOrderFill:
         """OrderFill kann mit Fee instanziiert werden."""
         from src.orders import OrderFill
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         fill = OrderFill(
             symbol="BTC/EUR",
             side="buy",
@@ -152,9 +151,9 @@ class TestOrderExecutionResult:
 
     def test_filled_result(self):
         """OrderExecutionResult fuer erfolgreiche Order."""
-        from src.orders import OrderRequest, OrderFill, OrderExecutionResult
+        from src.orders import OrderExecutionResult, OrderFill, OrderRequest
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         req = OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.1)
         fill = OrderFill(
             symbol="BTC/EUR",
@@ -176,7 +175,7 @@ class TestOrderExecutionResult:
 
     def test_rejected_result(self):
         """OrderExecutionResult fuer abgelehnte Order."""
-        from src.orders import OrderRequest, OrderExecutionResult
+        from src.orders import OrderExecutionResult, OrderRequest
 
         req = OrderRequest(symbol="UNKNOWN/EUR", side="buy", quantity=0.1)
         result = OrderExecutionResult(
@@ -244,7 +243,7 @@ class TestPaperOrderExecutor:
 
     def test_market_order_filled(self):
         """Market-Order wird gefillt wenn Preis vorhanden."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(prices={"BTC/EUR": 50000.0})
         executor = PaperOrderExecutor(ctx)
@@ -260,7 +259,7 @@ class TestPaperOrderExecutor:
 
     def test_market_order_rejected_no_price(self):
         """Market-Order wird rejected wenn kein Preis vorhanden."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(prices={})  # Kein Preis fuer BTC/EUR
         executor = PaperOrderExecutor(ctx)
@@ -274,7 +273,7 @@ class TestPaperOrderExecutor:
 
     def test_slippage_buy(self):
         """Slippage erhoeht den Preis bei Kauf."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -291,7 +290,7 @@ class TestPaperOrderExecutor:
 
     def test_slippage_sell(self):
         """Slippage reduziert den Preis bei Verkauf."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -308,7 +307,7 @@ class TestPaperOrderExecutor:
 
     def test_fee_calculation(self):
         """Fees werden korrekt berechnet."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -326,7 +325,7 @@ class TestPaperOrderExecutor:
 
     def test_limit_order_filled_buy(self):
         """Limit-Buy-Order wird gefillt wenn Marktpreis <= Limit."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(prices={"BTC/EUR": 49000.0})
         executor = PaperOrderExecutor(ctx)
@@ -345,7 +344,7 @@ class TestPaperOrderExecutor:
 
     def test_limit_order_rejected_buy(self):
         """Limit-Buy-Order wird rejected wenn Marktpreis > Limit."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(prices={"BTC/EUR": 51000.0})
         executor = PaperOrderExecutor(ctx)
@@ -364,7 +363,7 @@ class TestPaperOrderExecutor:
 
     def test_limit_order_filled_sell(self):
         """Limit-Sell-Order wird gefillt wenn Marktpreis >= Limit."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(prices={"BTC/EUR": 51000.0})
         executor = PaperOrderExecutor(ctx)
@@ -383,7 +382,7 @@ class TestPaperOrderExecutor:
 
     def test_limit_order_rejected_sell(self):
         """Limit-Sell-Order wird rejected wenn Marktpreis < Limit."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(prices={"BTC/EUR": 49000.0})
         executor = PaperOrderExecutor(ctx)
@@ -402,7 +401,7 @@ class TestPaperOrderExecutor:
 
     def test_execute_orders_batch(self):
         """execute_orders verarbeitet mehrere Orders."""
-        from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext, PaperOrderExecutor
 
         ctx = PaperMarketContext(
             prices={"BTC/EUR": 50000.0, "ETH/EUR": 3000.0}
@@ -431,8 +430,8 @@ class TestFromLiveOrderRequest:
 
     def test_basic_mapping(self):
         """Einfaches Mapping von LiveOrderRequest."""
-        from src.orders import from_live_order_request
         from src.live.orders import LiveOrderRequest
+        from src.orders import from_live_order_request
 
         live_req = LiveOrderRequest(
             client_order_id="test-123",
@@ -456,8 +455,8 @@ class TestFromLiveOrderRequest:
 
     def test_quantity_from_notional(self):
         """Quantity wird aus Notional berechnet wenn nicht vorhanden."""
-        from src.orders import from_live_order_request
         from src.live.orders import LiveOrderRequest
+        from src.orders import from_live_order_request
 
         live_req = LiveOrderRequest(
             client_order_id="test-123",
@@ -479,8 +478,9 @@ class TestFromOrdersCsvRow:
 
     def test_basic_mapping(self):
         """Einfaches Mapping von CSV-Row."""
-        from src.orders import from_orders_csv_row
         import json
+
+        from src.orders import from_orders_csv_row
 
         row = {
             "client_order_id": "test-456",
@@ -502,9 +502,9 @@ class TestFromOrdersCsvRow:
 
     def test_quantity_from_notional_csv(self):
         """Quantity wird aus Notional berechnet wenn nicht vorhanden (CSV)."""
-        from src.orders import from_orders_csv_row
         import json
-        import math
+
+        from src.orders import from_orders_csv_row
 
         row = {
             "client_order_id": "test-789",
@@ -526,8 +526,8 @@ class TestToOrderRequests:
 
     def test_batch_conversion(self):
         """Batch-Konvertierung von LiveOrderRequests."""
-        from src.orders import to_order_requests
         from src.live.orders import LiveOrderRequest
+        from src.orders import to_order_requests
 
         live_orders = [
             LiveOrderRequest(
@@ -562,12 +562,12 @@ class TestIntegration:
 
     def test_live_order_to_execution(self):
         """Vollstaendiger Flow: LiveOrderRequest -> OrderRequest -> Execution."""
+        from src.live.orders import LiveOrderRequest
         from src.orders import (
             PaperMarketContext,
             PaperOrderExecutor,
             to_order_requests,
         )
-        from src.live.orders import LiveOrderRequest
 
         # 1. LiveOrderRequests erstellen (wie von preview_live_orders.py)
         live_orders = [
@@ -621,9 +621,9 @@ class TestIntegration:
     def test_mixed_filled_rejected(self):
         """Flow mit gemischten Ergebnissen (filled + rejected)."""
         from src.orders import (
+            OrderRequest,
             PaperMarketContext,
             PaperOrderExecutor,
-            OrderRequest,
         )
 
         # Marktkontext nur mit BTC-Preis

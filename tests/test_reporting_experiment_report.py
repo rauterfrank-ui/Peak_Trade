@@ -12,23 +12,22 @@ Testet:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import pytest
 
 from src.reporting.base import Report, ReportSection
 from src.reporting.experiment_report import (
-    summarize_experiment_results,
-    find_best_params,
-    build_experiment_summary_section,
-    build_top_runs_section,
     build_best_params_section,
     build_experiment_report,
+    build_experiment_summary_section,
+    build_top_runs_section,
+    find_best_params,
     save_experiment_report,
+    summarize_experiment_results,
 )
-
 
 # =============================================================================
 # Fixtures
@@ -45,7 +44,7 @@ def sample_sweep_df() -> pd.DataFrame:
     rsi_windows = [10, 14, 20, 25, 30]
     thresholds = [25, 30, 35, 40]
 
-    data: List[Dict[str, Any]] = []
+    data: list[dict[str, Any]] = []
     for i in range(n_runs):
         rsi_window = rsi_windows[i % len(rsi_windows)]
         threshold = thresholds[i % len(thresholds)]

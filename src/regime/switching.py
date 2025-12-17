@@ -16,7 +16,6 @@ Factory:
 """
 from __future__ import annotations
 
-from typing import List, Optional, Dict
 import logging
 
 from .base import (
@@ -69,7 +68,7 @@ class SimpleRegimeMappingPolicy:
     def __init__(self, config: StrategySwitchingConfig) -> None:
         self.config = config
 
-    def _normalize_weights(self, weights: Dict[str, float]) -> Dict[str, float]:
+    def _normalize_weights(self, weights: dict[str, float]) -> dict[str, float]:
         """
         Normalisiert Gewichte auf Summe = 1.0.
 
@@ -89,9 +88,9 @@ class SimpleRegimeMappingPolicy:
 
     def _filter_available_strategies(
         self,
-        desired_strategies: List[str],
-        available_strategies: List[str],
-    ) -> List[str]:
+        desired_strategies: list[str],
+        available_strategies: list[str],
+    ) -> list[str]:
         """
         Filtert gewuenschte Strategien auf verfuegbare.
 
@@ -116,7 +115,7 @@ class SimpleRegimeMappingPolicy:
     def decide(
         self,
         regime: RegimeLabel,
-        available_strategies: List[str],
+        available_strategies: list[str],
     ) -> StrategySwitchDecision:
         """
         Entscheidet, welche Strategien fuer ein Regime aktiv sein sollen.
@@ -150,14 +149,14 @@ class SimpleRegimeMappingPolicy:
             # Letzter Fallback: Alle verfuegbaren Strategien
             if not active_strategies and available_strategies:
                 logger.warning(
-                    f"Auch default_strategies nicht verfuegbar, "
-                    f"nutze alle verfuegbaren Strategien"
+                    "Auch default_strategies nicht verfuegbar, "
+                    "nutze alle verfuegbaren Strategien"
                 )
                 active_strategies = list(available_strategies)
 
         # 4. Hole und normalisiere Gewichte
         raw_weights = self.config.get_weights_for_regime(regime)
-        weights: Optional[Dict[str, float]] = None
+        weights: dict[str, float] | None = None
 
         if raw_weights:
             # Filtere Gewichte auf aktive Strategien
@@ -199,7 +198,7 @@ class SimpleRegimeMappingPolicy:
 
 def make_switching_policy(
     config: StrategySwitchingConfig,
-) -> Optional[StrategySwitchingPolicy]:
+) -> StrategySwitchingPolicy | None:
     """
     Factory-Funktion: Erstellt eine StrategySwitchingPolicy aus Config.
 

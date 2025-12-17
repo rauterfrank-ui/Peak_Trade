@@ -13,16 +13,16 @@ Regeln:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, Optional
+from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from .alert_manager import AlertManager
 from .alerts import AlertLevel
 from .monitoring import (
+    RunNotFoundError,
     get_run_snapshot,
     get_run_timeseries,
     tail_events,
-    RunNotFoundError,
 )
 
 logger = logging.getLogger(__name__)
@@ -100,10 +100,10 @@ def check_pnl_drop(
             return False
 
         # Zeitfenster-Beginn
-        window_start = datetime.now(timezone.utc) - window
+        window_start = datetime.now(UTC) - window
 
         # Equity am Zeitfenster-Beginn finden
-        window_equity: Optional[float] = None
+        window_equity: float | None = None
         for point in timeseries:
             if point.timestamp >= window_start and point.equity is not None:
                 window_equity = point.equity
@@ -175,14 +175,14 @@ def check_no_events(
             alert_manager.warning(
                 source="monitoring.no_events",
                 code="NO_EVENTS",
-                message=f"Run has no events yet",
+                message="Run has no events yet",
                 run_id=run_id,
                 details={"num_events": snapshot.num_events},
             )
             return True
 
         # Zeit seit letztem Event
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         silence_duration = now - snapshot.last_event_time
 
         if silence_duration > max_silence:
@@ -252,11 +252,11 @@ def check_error_spike(
             return False
 
         # Zeitfenster-Beginn
-        window_start = datetime.now(timezone.utc) - window
+        window_start = datetime.now(UTC) - window
 
         # Fehler zählen
         error_count = 0
-        error_details: list[Dict[str, Any]] = []
+        error_details: list[dict[str, Any]] = []
 
         for event in events:
             # Timestamp prüfen

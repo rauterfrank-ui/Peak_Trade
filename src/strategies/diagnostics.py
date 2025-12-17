@@ -36,7 +36,7 @@ import traceback
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Set, Tuple
+from typing import Any, Literal
 
 import numpy as np
 import pandas as pd
@@ -78,24 +78,24 @@ class StrategySmokeResult:
     name: str
     status: Literal["ok", "fail"]
     data_source: str = "synthetic"
-    symbol: Optional[str] = None
-    timeframe: Optional[str] = None
-    num_bars: Optional[int] = None
-    start_ts: Optional[pd.Timestamp] = None
-    end_ts: Optional[pd.Timestamp] = None
-    return_pct: Optional[float] = None
-    sharpe: Optional[float] = None
-    max_drawdown_pct: Optional[float] = None
-    num_trades: Optional[int] = None
-    error: Optional[str] = None
-    duration_ms: Optional[float] = None
-    metadata: Optional[Dict[str, Any]] = None
+    symbol: str | None = None
+    timeframe: str | None = None
+    num_bars: int | None = None
+    start_ts: pd.Timestamp | None = None
+    end_ts: pd.Timestamp | None = None
+    return_pct: float | None = None
+    sharpe: float | None = None
+    max_drawdown_pct: float | None = None
+    num_trades: int | None = None
+    error: str | None = None
+    duration_ms: float | None = None
+    metadata: dict[str, Any] | None = None
     # Phase 79: Data-QC Fields
-    data_health: Optional[str] = None
-    data_notes: Optional[str] = None
+    data_health: str | None = None
+    data_notes: str | None = None
 
 
-def get_v11_official_strategies(config_path: str = "config/config.toml") -> List[str]:
+def get_v11_official_strategies(config_path: str = "config/config.toml") -> list[str]:
     """
     Ermittelt alle v1.1-offiziellen Strategien aus der Config.
 
@@ -137,7 +137,7 @@ def get_v11_official_strategies(config_path: str = "config/config.toml") -> List
 def get_strategy_category(
     strategy_name: str,
     config_path: str = "config/config.toml"
-) -> Optional[str]:
+) -> str | None:
     """
     Ermittelt die Kategorie einer Strategie aus der Config.
 
@@ -164,7 +164,7 @@ def get_strategy_category(
 def get_strategy_defaults(
     strategy_name: str,
     config_path: str = "config/config.toml"
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Holt die Default-Parameter einer Strategie aus der Config.
 
@@ -193,7 +193,7 @@ def create_synthetic_ohlcv(
     start_price: float = 50000.0,
     volatility: float = 0.02,
     trend: float = 0.0001,
-    seed: Optional[int] = 42,
+    seed: int | None = 42,
 ) -> pd.DataFrame:
     """
     Erstellt synthetische OHLCV-Daten fuer Smoke-Tests.
@@ -251,7 +251,7 @@ def load_kraken_cache_ohlcv(
     symbol: str = "BTC/EUR",
     timeframe: str = "1h",
     lookback_days: int = 30,
-    n_bars: Optional[int] = None,
+    n_bars: int | None = None,
     config_path: str = "config/config.toml",
 ) -> pd.DataFrame:
     """
@@ -360,10 +360,10 @@ def _load_ohlcv_for_smoke(
     market: str,
     timeframe: str,
     lookback_days: int,
-    n_bars: Optional[int],
+    n_bars: int | None,
     config_path: str,
     min_bars: int = 200,
-) -> Tuple[pd.DataFrame, Optional[Any]]:
+) -> tuple[pd.DataFrame, Any | None]:
     """
     Laedt OHLCV-Daten basierend auf der Datenquelle.
 
@@ -393,8 +393,8 @@ def _load_ohlcv_for_smoke(
     elif data_source == "kraken_cache":
         # Phase 79: echte Daten aus Kraken-Cache mit Data-QC
         from src.data.kraken_cache_loader import (
-            load_kraken_cache_window,
             get_real_market_smokes_config,
+            load_kraken_cache_window,
         )
 
         # Config laden fuer base_path
@@ -439,8 +439,8 @@ def run_single_strategy_smoke(
     df: pd.DataFrame,
     config_path: str = "config/config.toml",
     data_source: str = "synthetic",
-    symbol: Optional[str] = None,
-    timeframe: Optional[str] = None,
+    symbol: str | None = None,
+    timeframe: str | None = None,
 ) -> StrategySmokeResult:
     """
     Fuehrt einen Smoke-Test fuer eine einzelne Strategie aus.
@@ -461,11 +461,11 @@ def run_single_strategy_smoke(
 
     try:
         # Imports hier, um Fehler abzufangen
-        from src.strategies.registry import get_strategy_spec
         from src.backtest.engine import BacktestEngine
         from src.core.peak_config import load_config
         from src.core.position_sizing import build_position_sizer_from_config
         from src.core.risk import build_risk_manager_from_config
+        from src.strategies.registry import get_strategy_spec
 
         # Strategie aus Registry holen
         spec = get_strategy_spec(strategy_name)
@@ -481,12 +481,12 @@ def run_single_strategy_smoke(
                 strategy = spec.cls(**defaults)
             else:
                 strategy = spec.cls()
-        except TypeError as e:
+        except TypeError:
             # Wenn das nicht klappt, versuche ohne Parameter
             strategy = spec.cls()
 
         # Signal-Funktion erstellen
-        def strategy_fn(data: pd.DataFrame, params: Dict) -> pd.Series:
+        def strategy_fn(data: pd.DataFrame, params: dict) -> pd.Series:
             return strategy.generate_signals(data)
 
         # Config laden (fuer BacktestEngine)
@@ -569,15 +569,15 @@ def run_single_strategy_smoke(
 
 
 def run_strategy_smoke_tests(
-    strategy_names: Optional[List[str]] = None,
+    strategy_names: list[str] | None = None,
     config_path: str = "config/config.toml",
     market: str = "BTC/EUR",
     timeframe: str = "1h",
     lookback_days: int = 30,
-    n_bars: Optional[int] = None,
+    n_bars: int | None = None,
     data_source: str = "synthetic",
     min_bars: int = 200,
-) -> List[StrategySmokeResult]:
+) -> list[StrategySmokeResult]:
     """
     Fuehrt Smoke-Tests fuer mehrere Strategien aus.
 
@@ -606,7 +606,7 @@ def run_strategy_smoke_tests(
     if strategy_names is None:
         try:
             strategy_names = get_v11_official_strategies(config_path)
-        except Exception as e:
+        except Exception:
             # Fallback auf bekannte v1.1-Strategien
             strategy_names = [
                 "ma_crossover",
@@ -684,7 +684,7 @@ def run_strategy_smoke_tests(
     return results
 
 
-def summarize_smoke_results(results: List[StrategySmokeResult]) -> Dict[str, Any]:
+def summarize_smoke_results(results: list[StrategySmokeResult]) -> dict[str, Any]:
     """
     Erstellt eine Zusammenfassung der Smoke-Test-Ergebnisse.
 

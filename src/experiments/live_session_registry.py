@@ -54,15 +54,15 @@ See also:
 """
 from __future__ import annotations
 
+import html
+import json
+import textwrap
+from collections import Counter
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Mapping, List, Optional, Sequence
-import json
-from collections import Counter
-import textwrap
-import html
-
+from typing import Any
 
 # =============================================================================
 # Constants
@@ -129,7 +129,7 @@ class LiveSessionRecord:
     """
 
     session_id: str
-    run_id: Optional[str]
+    run_id: str | None
     run_type: str  # z.B. "live_session_shadow", "live_session_testnet"
     mode: str  # z.B. "shadow", "testnet", "live", "paper"
     env_name: str
@@ -138,17 +138,17 @@ class LiveSessionRecord:
     status: str  # "started", "completed", "failed", "aborted"
 
     started_at: datetime
-    finished_at: Optional[datetime] = None
+    finished_at: datetime | None = None
 
     config: Mapping[str, Any] = field(default_factory=dict)
     metrics: Mapping[str, float] = field(default_factory=dict)
-    cli_args: List[str] = field(default_factory=list)
-    error: Optional[str] = None
+    cli_args: list[str] = field(default_factory=list)
+    error: str | None = None
 
     created_at: datetime = field(default_factory=datetime.utcnow)
-    strategy_tier: Optional[str] = None  # core, aux, legacy, r_and_d, unclassified
+    strategy_tier: str | None = None  # core, aux, legacy, r_and_d, unclassified
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert den Record in ein JSON-serialisierbares Dict."""
         return {
             "session_id": self.session_id,
@@ -169,10 +169,10 @@ class LiveSessionRecord:
         }
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "LiveSessionRecord":
+    def from_dict(cls, data: Mapping[str, Any]) -> LiveSessionRecord:
         """Erzeugt einen LiveSessionRecord aus einem JSON-Dict."""
 
-        def parse_dt(value: Optional[str]) -> Optional[datetime]:
+        def parse_dt(value: str | None) -> datetime | None:
             if value is None:
                 return None
             return datetime.fromisoformat(value)
@@ -280,10 +280,10 @@ def register_live_session_run(
 
 def list_session_records(
     base_dir: Path | str | None = None,
-    run_type: Optional[str] = None,
-    status: Optional[str] = None,
-    limit: Optional[int] = None,
-) -> List[LiveSessionRecord]:
+    run_type: str | None = None,
+    status: str | None = None,
+    limit: int | None = None,
+) -> list[LiveSessionRecord]:
     """
     Lädt LiveSessionRecord-JSONs aus reports/experiments/live_sessions.
 
@@ -308,7 +308,7 @@ def list_session_records(
     if not base.exists():
         return []
 
-    records: List[LiveSessionRecord] = []
+    records: list[LiveSessionRecord] = []
 
     # Dateinamen sind mit Timestamp-Präfix, daher sortiert = chronologische Reihenfolge
     for path in sorted(base.glob("*.json"), reverse=True):
@@ -339,8 +339,8 @@ def list_session_records(
 
 def get_session_summary(
     base_dir: Path | str | None = None,
-    run_type: Optional[str] = None,
-) -> Dict[str, Any]:
+    run_type: str | None = None,
+) -> dict[str, Any]:
     """
     Liefert eine einfache Aggregations-Summary über alle passenden Sessions.
 
@@ -387,7 +387,7 @@ def get_session_summary(
     ]
     avg_max_drawdown = sum(dd_values) / len(dd_values) if dd_values else 0.0
 
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "num_sessions": num_sessions,
         "by_status": dict(status_counter),
         "by_tier": dict(tier_counter),
@@ -491,7 +491,7 @@ def render_sessions_markdown(records: Sequence[LiveSessionRecord]) -> str:
     if not records:
         return "# Live-Sessions\n\nKeine Sessions gefunden.\n"
 
-    parts: List[str] = ["# Live-Sessions\n"]
+    parts: list[str] = ["# Live-Sessions\n"]
     for rec in records:
         parts.append(render_session_markdown(rec))
         parts.append("\n---\n")
@@ -570,7 +570,7 @@ def render_sessions_html(records: Sequence[LiveSessionRecord]) -> str:
     def esc(s: str) -> str:
         return html.escape(s, quote=True)
 
-    rows: List[str] = []
+    rows: list[str] = []
     for rec in records:
         rows.append(
             f"""<tr>
@@ -674,25 +674,25 @@ __all__ = [
     # Constants
     "DEFAULT_LIVE_SESSION_DIR",
     "RUN_TYPE_LIVE_SESSION",
+    "RUN_TYPE_LIVE_SESSION_LIVE",
+    "RUN_TYPE_LIVE_SESSION_PAPER",
     "RUN_TYPE_LIVE_SESSION_SHADOW",
     "RUN_TYPE_LIVE_SESSION_TESTNET",
-    "RUN_TYPE_LIVE_SESSION_PAPER",
-    "RUN_TYPE_LIVE_SESSION_LIVE",
-    "STATUS_STARTED",
+    "STATUS_ABORTED",
     "STATUS_COMPLETED",
     "STATUS_FAILED",
-    "STATUS_ABORTED",
+    "STATUS_STARTED",
     # Record class
     "LiveSessionRecord",
+    "generate_session_run_id",
+    "get_session_summary",
+    "list_session_records",
+    "load_session_record",
     # Functions
     "register_live_session_run",
-    "list_session_records",
-    "get_session_summary",
-    "load_session_record",
-    "generate_session_run_id",
+    "render_session_html",
     # Report Renderers
     "render_session_markdown",
-    "render_sessions_markdown",
-    "render_session_html",
     "render_sessions_html",
+    "render_sessions_markdown",
 ]

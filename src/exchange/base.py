@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional, Protocol, runtime_checkable
+from typing import Any, Literal, Protocol, runtime_checkable
 
 import pandas as pd
 
@@ -38,19 +38,19 @@ class Ticker:
     """
 
     symbol: str
-    last: Optional[float] = None
-    bid: Optional[float] = None
-    ask: Optional[float] = None
-    timestamp: Optional[int] = None
-    raw: Optional[Dict[str, Any]] = None
+    last: float | None = None
+    bid: float | None = None
+    ask: float | None = None
+    timestamp: int | None = None
+    raw: dict[str, Any] | None = None
 
-    def spread(self) -> Optional[float]:
+    def spread(self) -> float | None:
         """Berechnet Bid-Ask-Spread, falls verfügbar."""
         if self.bid is not None and self.ask is not None and self.bid > 0:
             return (self.ask - self.bid) / self.bid
         return None
 
-    def spread_bps(self) -> Optional[float]:
+    def spread_bps(self) -> float | None:
         """Spread in Basispunkten (1 bp = 0.01%)."""
         s = self.spread()
         return s * 10000 if s is not None else None
@@ -68,12 +68,12 @@ class Balance:
         raw: Rohe Exchange-Response (optional)
     """
 
-    free: Dict[str, float] = field(default_factory=dict)
-    used: Dict[str, float] = field(default_factory=dict)
-    total: Dict[str, float] = field(default_factory=dict)
-    raw: Optional[Dict[str, Any]] = None
+    free: dict[str, float] = field(default_factory=dict)
+    used: dict[str, float] = field(default_factory=dict)
+    total: dict[str, float] = field(default_factory=dict)
+    raw: dict[str, Any] | None = None
 
-    def get_asset(self, asset: str) -> Dict[str, float]:
+    def get_asset(self, asset: str) -> dict[str, float]:
         """
         Gibt Balance für ein einzelnes Asset zurück.
 
@@ -89,7 +89,7 @@ class Balance:
             "total": self.total.get(asset, 0.0),
         }
 
-    def non_zero_assets(self) -> List[str]:
+    def non_zero_assets(self) -> list[str]:
         """Gibt Liste aller Assets mit Guthaben > 0 zurück."""
         return [asset for asset, amount in self.total.items() if amount > 0]
 
@@ -140,8 +140,8 @@ class ExchangeClient(Protocol):
         self,
         symbol: str,
         timeframe: str = "1h",
-        since: Optional[int] = None,
-        limit: Optional[int] = None,
+        since: int | None = None,
+        limit: int | None = None,
     ) -> pd.DataFrame:
         """
         OHLCV-Daten als DataFrame zurückgeben.
@@ -178,7 +178,7 @@ class ExchangeClient(Protocol):
         """
         ...
 
-    def fetch_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+    def fetch_open_orders(self, symbol: str | None = None) -> list[dict[str, Any]]:
         """
         Offene Orders (Spot) als rohe Dicts zurückgeben (nur Lesen).
 
@@ -243,10 +243,10 @@ class ExchangeOrderResult:
     exchange_order_id: str
     status: ExchangeOrderStatus
     filled_qty: float = 0.0
-    avg_price: Optional[float] = None
-    fee: Optional[float] = None
-    fee_currency: Optional[str] = None
-    raw: Optional[Dict[str, Any]] = None
+    avg_price: float | None = None
+    fee: float | None = None
+    fee_currency: str | None = None
+    raw: dict[str, Any] | None = None
 
 
 @runtime_checkable
@@ -295,8 +295,8 @@ class TradingExchangeClient(Protocol):
         side: TradingOrderSide,
         quantity: float,
         order_type: TradingOrderType = "market",
-        limit_price: Optional[float] = None,
-        client_order_id: Optional[str] = None,
+        limit_price: float | None = None,
+        client_order_id: str | None = None,
     ) -> str:
         """
         Platziert eine Order auf der Exchange.

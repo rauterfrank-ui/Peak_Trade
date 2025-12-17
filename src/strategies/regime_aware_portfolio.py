@@ -29,10 +29,9 @@ Verwendung:
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas as pd
-import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
 
@@ -78,16 +77,16 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
 
     def __init__(
         self,
-        components: Optional[List[str]] = None,
-        base_weights: Optional[Dict[str, float]] = None,
-        regime_strategy: Optional[str] = None,
+        components: list[str] | None = None,
+        base_weights: dict[str, float] | None = None,
+        regime_strategy: str | None = None,
         mode: str = "scale",
         risk_on_scale: float = 1.0,
         neutral_scale: float = 0.5,
         risk_off_scale: float = 0.0,
         signal_threshold: float = 0.3,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Regime-Aware Portfolio Strategy.
@@ -104,7 +103,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
             config: Optional Config-Dict
             metadata: Optional Metadata
         """
-        base_cfg: Dict[str, Any] = {
+        base_cfg: dict[str, Any] = {
             "components": components or [],
             "base_weights": base_weights or {},
             "regime_strategy": regime_strategy,
@@ -139,8 +138,8 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         self.signal_threshold = float(self.config.get("signal_threshold", 0.3))
 
         # Strategie-Instanzen (werden bei generate_signals geladen)
-        self._component_strategies: List[BaseStrategy] = []
-        self._regime_strategy: Optional[BaseStrategy] = None
+        self._component_strategies: list[BaseStrategy] = []
+        self._regime_strategy: BaseStrategy | None = None
 
         # Validierung
         self.validate()
@@ -181,7 +180,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "portfolio.regime_aware_breakout_rsi",
-    ) -> "RegimeAwarePortfolioStrategy":
+    ) -> RegimeAwarePortfolioStrategy:
         """
         Fabrikmethode für Core-Config.
 
@@ -193,7 +192,6 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
             RegimeAwarePortfolioStrategy-Instanz
         """
         # Lazy import
-        from .registry import create_strategy_from_config
 
         components = cfg.get(f"{section}.components", [])
         base_weights = cfg.get(f"{section}.base_weights", {})
@@ -225,8 +223,8 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         if self._component_strategies:
             return  # Bereits geladen
 
-        from .registry import create_strategy_from_config
         from ..core.peak_config import load_config
+        from .registry import create_strategy_from_config
 
         cfg = load_config()
 
@@ -309,7 +307,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         self._load_strategies(data)
 
         # 1. Generiere Signale aller Komponenten
-        component_signals: Dict[str, pd.Series] = {}
+        component_signals: dict[str, pd.Series] = {}
         for i, strategy in enumerate(self._component_strategies):
             component_name = self.components[i]
             try:
@@ -345,14 +343,14 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
 
         for i in range(len(data)):
             regime_value = regime_signals.iloc[i]
-            
+
             # Prüfe ob gültiger Wert (nicht NaN)
             if pd.isna(regime_value):
                 regime_value = 0  # Default zu Neutral
 
             # Hole Skalierungsfaktor
             scale = self._get_regime_scale(int(regime_value))
-            
+
             # Skaliere kombiniertes Signal
             if self.mode == "filter":
                 # Filter-Mode: 0 wenn Risk-Off, sonst normal
@@ -379,7 +377,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
     def get_component_signals(
         self,
         data: pd.DataFrame
-    ) -> Dict[str, pd.Series]:
+    ) -> dict[str, pd.Series]:
         """
         Gibt Signale aller Komponenten-Strategien zurück.
 
@@ -431,7 +429,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
 # ============================================================================
 
 
-def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
+def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility.
 
@@ -447,7 +445,7 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     config = {
         "components": params.get("components", []),
         "base_weights": params.get("base_weights", {}),
-        "regime_strategy": params.get("regime_strategy", None),
+        "regime_strategy": params.get("regime_strategy"),
         "mode": params.get("mode", "scale"),
         "risk_on_scale": params.get("risk_on_scale", 1.0),
         "neutral_scale": params.get("neutral_scale", 0.5),

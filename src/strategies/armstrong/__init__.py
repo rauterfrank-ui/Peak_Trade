@@ -13,22 +13,22 @@ Module:
 
 Siehe: docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md
 """
+from .armstrong_cycle_strategy import ArmstrongCycleStrategy
 from .cycle_model import (
-    ArmstrongPhase,
     ArmstrongCycleConfig,
     ArmstrongCycleModel,
+    ArmstrongPhase,
     get_phase_for_date,
     get_risk_multiplier_for_date,
 )
-from .armstrong_cycle_strategy import ArmstrongCycleStrategy
 
 __all__ = [
-    # Cycle Model
-    "ArmstrongPhase",
     "ArmstrongCycleConfig",
     "ArmstrongCycleModel",
-    "get_phase_for_date",
-    "get_risk_multiplier_for_date",
     # Strategy
     "ArmstrongCycleStrategy",
+    # Cycle Model
+    "ArmstrongPhase",
+    "get_phase_for_date",
+    "get_risk_multiplier_for_date",
 ]

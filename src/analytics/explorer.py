@@ -36,22 +36,19 @@ Usage:
 """
 from __future__ import annotations
 
+import contextlib
 import json
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any
 
 import pandas as pd
 
 from src.core.experiments import (
-    ExperimentRecord,
     EXPERIMENTS_CSV,
-    VALID_RUN_TYPES,
-    get_experiment_by_id,
-    load_experiments_df,
 )
-
 
 # =============================================================================
 # DATACLASSES
@@ -76,16 +73,16 @@ class ExperimentFilter:
         limit: Maximale Anzahl Ergebnisse
     """
 
-    run_types: Optional[List[str]] = None
-    strategies: Optional[List[str]] = None
-    tags: Optional[List[str]] = None
-    sweep_names: Optional[List[str]] = None
-    scan_names: Optional[List[str]] = None
-    portfolios: Optional[List[str]] = None
-    symbols: Optional[List[str]] = None
-    created_from: Optional[datetime] = None
-    created_to: Optional[datetime] = None
-    limit: Optional[int] = None
+    run_types: list[str] | None = None
+    strategies: list[str] | None = None
+    tags: list[str] | None = None
+    sweep_names: list[str] | None = None
+    scan_names: list[str] | None = None
+    portfolios: list[str] | None = None
+    symbols: list[str] | None = None
+    created_from: datetime | None = None
+    created_to: datetime | None = None
+    limit: int | None = None
 
 
 @dataclass
@@ -111,15 +108,15 @@ class ExperimentSummary:
     experiment_id: str
     run_type: str
     run_name: str
-    strategy_name: Optional[str] = None
-    sweep_name: Optional[str] = None
-    scan_name: Optional[str] = None
-    portfolio_name: Optional[str] = None
-    symbol: Optional[str] = None
-    tags: List[str] = field(default_factory=list)
-    created_at: Optional[datetime] = None
-    metrics: Dict[str, float] = field(default_factory=dict)
-    params: Dict[str, Any] = field(default_factory=dict)
+    strategy_name: str | None = None
+    sweep_name: str | None = None
+    scan_name: str | None = None
+    portfolio_name: str | None = None
+    symbol: str | None = None
+    tags: list[str] = field(default_factory=list)
+    created_at: datetime | None = None
+    metrics: dict[str, float] = field(default_factory=dict)
+    params: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -157,9 +154,9 @@ class SweepOverview:
     sweep_name: str
     strategy_key: str
     run_count: int
-    best_runs: List[RankedExperiment] = field(default_factory=list)
-    metric_stats: Dict[str, float] = field(default_factory=dict)
-    param_ranges: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    best_runs: list[RankedExperiment] = field(default_factory=list)
+    metric_stats: dict[str, float] = field(default_factory=dict)
+    param_ranges: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
 # =============================================================================
@@ -167,7 +164,7 @@ class SweepOverview:
 # =============================================================================
 
 
-def _parse_timestamp(ts_str: str) -> Optional[datetime]:
+def _parse_timestamp(ts_str: str) -> datetime | None:
     """Parst einen ISO-Timestamp-String zu datetime."""
     if not ts_str or pd.isna(ts_str):
         return None
@@ -179,7 +176,7 @@ def _parse_timestamp(ts_str: str) -> Optional[datetime]:
         return None
 
 
-def _extract_tag(metadata_json: str) -> Optional[str]:
+def _extract_tag(metadata_json: str) -> str | None:
     """Extrahiert Tag aus metadata_json."""
     try:
         meta = json.loads(metadata_json)
@@ -188,7 +185,7 @@ def _extract_tag(metadata_json: str) -> Optional[str]:
         return None
 
 
-def _extract_tags_list(metadata_json: str) -> List[str]:
+def _extract_tags_list(metadata_json: str) -> list[str]:
     """Extrahiert alle Tags als Liste aus metadata_json."""
     try:
         meta = json.loads(metadata_json)
@@ -200,7 +197,7 @@ def _extract_tags_list(metadata_json: str) -> List[str]:
         return []
 
 
-def _parse_params(params_json: str) -> Dict[str, Any]:
+def _parse_params(params_json: str) -> dict[str, Any]:
     """Parst params_json zu Dict."""
     try:
         return json.loads(params_json) if params_json else {}
@@ -215,20 +212,16 @@ def _row_to_summary(row: pd.Series) -> ExperimentSummary:
     for key in ["sharpe", "total_return", "max_drawdown", "cagr"]:
         val = row.get(key)
         if pd.notna(val):
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 metrics[key] = float(val)
-            except (ValueError, TypeError):
-                pass
 
     # Zusätzliche Metriken aus stats_json
     try:
         stats = json.loads(row.get("stats_json", "{}"))
         for key in ["win_rate", "profit_factor", "sortino", "calmar", "total_trades"]:
             if key in stats and stats[key] is not None:
-                try:
+                with contextlib.suppress(ValueError, TypeError):
                     metrics[key] = float(stats[key])
-                except (ValueError, TypeError):
-                    pass
     except (json.JSONDecodeError, TypeError):
         pass
 
@@ -270,7 +263,7 @@ class ExperimentExplorer:
         >>> top_sharpe = explorer.rank_experiments(flt, metric="sharpe", top_n=10)
     """
 
-    def __init__(self, experiments_csv: Optional[Path] = None):
+    def __init__(self, experiments_csv: Path | None = None):
         """
         Initialisiert den Explorer.
 
@@ -338,10 +331,10 @@ class ExperimentExplorer:
 
     def list_experiments(
         self,
-        flt: Optional[ExperimentFilter] = None,
+        flt: ExperimentFilter | None = None,
         sort_by: str = "timestamp",
         ascending: bool = False,
-    ) -> List[ExperimentSummary]:
+    ) -> list[ExperimentSummary]:
         """
         Listet Experimente mit optionalen Filtern.
 
@@ -376,11 +369,11 @@ class ExperimentExplorer:
 
     def rank_experiments(
         self,
-        flt: Optional[ExperimentFilter] = None,
+        flt: ExperimentFilter | None = None,
         metric: str = "sharpe",
-        top_n: Optional[int] = None,
+        top_n: int | None = None,
         descending: bool = True,
-    ) -> List[RankedExperiment]:
+    ) -> list[RankedExperiment]:
         """
         Rankt Experimente nach einer Metrik.
 
@@ -433,7 +426,7 @@ class ExperimentExplorer:
 
         return ranked
 
-    def get_experiment_details(self, experiment_id: str) -> Optional[ExperimentSummary]:
+    def get_experiment_details(self, experiment_id: str) -> ExperimentSummary | None:
         """
         Holt Details zu einem einzelnen Experiment.
 
@@ -458,7 +451,7 @@ class ExperimentExplorer:
         sweep_name: str,
         metric: str = "sharpe",
         top_n: int = 10,
-    ) -> Optional[SweepOverview]:
+    ) -> SweepOverview | None:
         """
         Erstellt eine Übersicht für einen Sweep.
 
@@ -505,9 +498,9 @@ class ExperimentExplorer:
                 }
 
         # Parameter-Ranges aus params_json extrahieren
-        param_ranges: Dict[str, Dict[str, Any]] = {}
+        param_ranges: dict[str, dict[str, Any]] = {}
         if "params_json" in sweep_df.columns:
-            all_params: Dict[str, List[Any]] = {}
+            all_params: dict[str, list[Any]] = {}
             for _, row in sweep_df.iterrows():
                 params = _parse_params(row.get("params_json", "{}"))
                 for key, val in params.items():
@@ -535,7 +528,7 @@ class ExperimentExplorer:
             param_ranges=param_ranges,
         )
 
-    def list_sweeps(self) -> List[str]:
+    def list_sweeps(self) -> list[str]:
         """
         Listet alle verfügbaren Sweep-Namen.
 
@@ -556,7 +549,7 @@ class ExperimentExplorer:
         self,
         sweep_names: Sequence[str],
         metric: str = "sharpe",
-    ) -> List[SweepOverview]:
+    ) -> list[SweepOverview]:
         """
         Vergleicht mehrere Sweeps.
 
@@ -581,7 +574,7 @@ class ExperimentExplorer:
 
         return overviews
 
-    def get_unique_strategies(self) -> List[str]:
+    def get_unique_strategies(self) -> list[str]:
         """
         Listet alle einzigartigen Strategie-Keys.
 
@@ -594,7 +587,7 @@ class ExperimentExplorer:
 
         return sorted(df["strategy_key"].dropna().unique().tolist())
 
-    def get_unique_run_types(self) -> List[str]:
+    def get_unique_run_types(self) -> list[str]:
         """
         Listet alle einzigartigen Run-Types.
 
@@ -607,7 +600,7 @@ class ExperimentExplorer:
 
         return sorted(df["run_type"].dropna().unique().tolist())
 
-    def count_experiments(self, flt: Optional[ExperimentFilter] = None) -> int:
+    def count_experiments(self, flt: ExperimentFilter | None = None) -> int:
         """
         Zählt Experimente (mit optionalem Filter).
 
@@ -628,9 +621,9 @@ class ExperimentExplorer:
 
     def export_to_csv(
         self,
-        flt: Optional[ExperimentFilter] = None,
+        flt: ExperimentFilter | None = None,
         output_path: Path = Path("experiments_export.csv"),
-        columns: Optional[List[str]] = None,
+        columns: list[str] | None = None,
     ) -> Path:
         """
         Exportiert gefilterte Experimente in eine CSV-Datei.
@@ -658,7 +651,7 @@ class ExperimentExplorer:
 
     def export_to_markdown(
         self,
-        flt: Optional[ExperimentFilter] = None,
+        flt: ExperimentFilter | None = None,
         output_path: Path = Path("experiments_export.md"),
         metric: str = "sharpe",
         top_n: int = 20,
@@ -719,7 +712,7 @@ class ExperimentExplorer:
 # =============================================================================
 
 
-def get_explorer(experiments_csv: Optional[Path] = None) -> ExperimentExplorer:
+def get_explorer(experiments_csv: Path | None = None) -> ExperimentExplorer:
     """
     Factory-Funktion für ExperimentExplorer.
 
@@ -733,10 +726,10 @@ def get_explorer(experiments_csv: Optional[Path] = None) -> ExperimentExplorer:
 
 
 def quick_list(
-    run_type: Optional[str] = None,
-    strategy: Optional[str] = None,
+    run_type: str | None = None,
+    strategy: str | None = None,
     limit: int = 20,
-) -> List[ExperimentSummary]:
+) -> list[ExperimentSummary]:
     """
     Schnelle Auflistung von Experimenten.
 
@@ -758,10 +751,10 @@ def quick_list(
 
 def quick_rank(
     metric: str = "sharpe",
-    run_type: Optional[str] = None,
-    strategy: Optional[str] = None,
+    run_type: str | None = None,
+    strategy: str | None = None,
     top_n: int = 10,
-) -> List[RankedExperiment]:
+) -> list[RankedExperiment]:
     """
     Schnelles Ranking von Experimenten.
 
@@ -785,7 +778,7 @@ def quick_sweep_summary(
     sweep_name: str,
     metric: str = "sharpe",
     top_n: int = 10,
-) -> Optional[SweepOverview]:
+) -> SweepOverview | None:
     """
     Schnelle Sweep-Zusammenfassung.
 

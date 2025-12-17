@@ -9,8 +9,8 @@ Wird aus config.toml geladen und steuert den Portfolio-Layer.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from dataclasses import dataclass
+from typing import Any
 
 from ..core.peak_config import PeakConfig
 
@@ -35,8 +35,8 @@ class PortfolioConfig:
 
     enabled: bool = False
     name: str = "equal_weight"
-    symbols: Optional[List[str]] = None
-    fixed_weights: Optional[Dict[str, float]] = None
+    symbols: list[str] | None = None
+    fixed_weights: dict[str, float] | None = None
     rebalance_frequency: str = "1D"
     vol_lookback: int = 20
     vol_target: float = 0.15  # 15% annualisierte Volatilität
@@ -62,7 +62,7 @@ class PortfolioConfig:
             raise ValueError(f"vol_lookback muss >= 2 sein, ist: {self.vol_lookback}")
 
     @classmethod
-    def from_peak_config(cls, cfg: PeakConfig) -> "PortfolioConfig":
+    def from_peak_config(cls, cfg: PeakConfig) -> PortfolioConfig:
         """
         Erstellt PortfolioConfig aus PeakConfig.
 
@@ -101,7 +101,7 @@ class PortfolioConfig:
             # Fallback: asset_weights + symbols kombinieren
             asset_weights = cfg.get("portfolio.asset_weights", None)
             if asset_weights and symbols:
-                fixed_weights = dict(zip(symbols, asset_weights))
+                fixed_weights = dict(zip(symbols, asset_weights, strict=False))
 
         # Rebalancing
         rebalance_freq_bars = cfg.get("portfolio.rebalance_frequency", 24)
@@ -139,7 +139,7 @@ class PortfolioConfig:
         )
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "PortfolioConfig":
+    def from_dict(cls, data: dict[str, Any]) -> PortfolioConfig:
         """
         Erstellt PortfolioConfig aus einem Dict.
 
@@ -162,7 +162,7 @@ class PortfolioConfig:
             normalize_weights=data.get("normalize_weights", True),
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Konvertiert Config zu Dict.
 

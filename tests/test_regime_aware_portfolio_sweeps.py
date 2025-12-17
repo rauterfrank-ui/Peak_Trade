@@ -7,20 +7,18 @@ Unit-Tests für Regime-Aware Portfolio Sweep-Presets.
 import pytest
 
 from src.experiments.regime_aware_portfolio_sweeps import (
-    get_regime_aware_portfolio_sweeps,
     get_regime_aware_aggressive_sweeps,
-    get_regime_aware_conservative_sweeps,
-    get_regime_aware_volmetric_sweeps,
     get_regime_aware_combined_sweeps,
+    get_regime_aware_conservative_sweeps,
+    get_regime_aware_portfolio_sweeps,
     get_regime_aware_sweep,
+    get_regime_aware_volmetric_sweeps,
     list_available_regime_aware_sweeps,
 )
-from src.experiments.base import ParamSweep
 from src.experiments.research_playground import (
     get_predefined_sweep,
     list_predefined_sweeps,
 )
-
 
 # ============================================================================
 # BASE SWEEP TESTS

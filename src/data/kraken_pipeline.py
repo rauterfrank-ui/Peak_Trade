@@ -10,15 +10,15 @@ Workflow:
 4. Optional: Resampling für andere Timeframes
 """
 
-import pandas as pd
-from pathlib import Path
-from typing import Optional
 import logging
+from pathlib import Path
 
+import pandas as pd
+
+from ..core.config_registry import get_config
+from .cache import ParquetCache
 from .kraken import fetch_ohlcv_df, get_kraken_client
 from .normalizer import DataNormalizer, resample_ohlcv
-from .cache import ParquetCache
-from ..core.config_registry import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class KrakenDataPipeline:
 
     def __init__(
         self,
-        cache_dir: Optional[str] = None,
+        cache_dir: str | None = None,
         use_cache: bool = True
     ) -> None:
         """
@@ -60,7 +60,7 @@ class KrakenDataPipeline:
         symbol: str,
         timeframe: str = "1h",
         limit: int = 720,
-        since_ms: Optional[int] = None,
+        since_ms: int | None = None,
         force_refresh: bool = False
     ) -> pd.DataFrame:
         """
@@ -129,7 +129,7 @@ class KrakenDataPipeline:
         source_timeframe: str = "1m",
         target_timeframe: str = "1h",
         limit: int = 720,
-        since_ms: Optional[int] = None,
+        since_ms: int | None = None,
         force_refresh: bool = False
     ) -> pd.DataFrame:
         """
@@ -184,7 +184,7 @@ class KrakenDataPipeline:
         logger.info(f"✅ Resampled: {len(df_source)} → {len(df_resampled)} Bars")
         return df_resampled
 
-    def clear_cache(self, symbol: Optional[str] = None) -> None:
+    def clear_cache(self, symbol: str | None = None) -> None:
         """
         Löscht Cache-Einträge.
 
@@ -210,7 +210,7 @@ class KrakenDataPipeline:
         symbol: str,
         timeframe: str,
         limit: int,
-        since_ms: Optional[int]
+        since_ms: int | None
     ) -> str:
         """Generiert eindeutigen Cache-Key."""
         key_parts = [

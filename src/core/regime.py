@@ -2,9 +2,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal, Dict, Any
+from typing import Any, Literal
 
-import numpy as np
 import pandas as pd
 
 from .peak_config import PeakConfig
@@ -37,7 +36,7 @@ class RegimeConfig:
     vol_window: int = 50
     vol_threshold: float = 0.02     # ~2% Volatilität
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "price_col": self.price_col,
             "trend_window": self.trend_window,
@@ -175,7 +174,7 @@ def label_combined_regime(
 
 def summarize_regime_distribution(
     combined_regime: pd.Series,
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """
     Berechnet die Verteilung der kombinierten Regime als Anteile (0..1).
     """

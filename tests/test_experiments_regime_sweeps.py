@@ -6,23 +6,22 @@ Tests für src/experiments/regime_sweeps.py (Phase 29)
 Testet die vordefinierten Parameter-Sweeps für Regime-Detection
 und Strategy-Switching.
 """
+
 import pytest
-from typing import List
 
 from src.experiments.base import ParamSweep
 from src.experiments.regime_sweeps import (
-    get_volatility_detector_sweeps,
+    REGIME_SWEEP_REGISTRY,
+    get_all_regime_detector_sweeps,
+    get_combined_regime_strategy_sweeps,
     get_range_compression_detector_sweeps,
     get_regime_detector_sweeps,
-    get_all_regime_detector_sweeps,
-    get_strategy_switching_sweeps,
     get_regime_mapping_variants,
+    get_strategy_switching_sweeps,
+    get_volatility_detector_sweeps,
     get_weight_variants,
-    get_combined_regime_strategy_sweeps,
     list_available_regime_sweeps,
-    REGIME_SWEEP_REGISTRY,
 )
-
 
 # ============================================================================
 # VOLATILITY DETECTOR SWEEPS TESTS
@@ -145,7 +144,7 @@ class TestGetAllRegimeDetectorSweeps:
         """Alle Werte sind Listen von ParamSweeps."""
         all_sweeps = get_all_regime_detector_sweeps("medium")
 
-        for name, sweeps in all_sweeps.items():
+        for _name, sweeps in all_sweeps.items():
             assert isinstance(sweeps, list)
             assert all(isinstance(s, ParamSweep) for s in sweeps)
 
@@ -202,7 +201,7 @@ class TestRegimeMappingVariants:
         variants = get_regime_mapping_variants()
 
         for variant in variants:
-            for regime, strategies in variant.items():
+            for _regime, strategies in variant.items():
                 assert isinstance(strategies, list)
                 assert len(strategies) > 0
 
@@ -279,7 +278,7 @@ class TestRegimeSweepRegistry:
 
     def test_all_entries_callable(self):
         """Alle Registry-Einträge sind aufrufbar."""
-        for name, func in REGIME_SWEEP_REGISTRY.items():
+        for _name, func in REGIME_SWEEP_REGISTRY.items():
             sweeps = func("coarse")
             assert isinstance(sweeps, list)
 

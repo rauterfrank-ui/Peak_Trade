@@ -39,15 +39,15 @@ Phase 38: Ergänzt um TradingExchangeClient-Offline-Tests (DummyExchangeClient).
 """
 
 import os
-import pytest
-import pandas as pd
 
-from src.exchange.base import Ticker, Balance, ExchangeClient, TradingExchangeClient
+import pandas as pd
+import pytest
+
+from src.core.peak_config import load_config
+from src.exchange import build_exchange_client_from_config, build_trading_client_from_config
+from src.exchange.base import Balance, ExchangeClient, Ticker, TradingExchangeClient
 from src.exchange.ccxt_client import CcxtExchangeClient
 from src.exchange.dummy_client import DummyExchangeClient
-from src.exchange import build_exchange_client_from_config, build_trading_client_from_config
-from src.core.peak_config import load_config
-
 
 # ============================================================================
 # OFFLINE-TESTS (kein Netzwerkzugriff)

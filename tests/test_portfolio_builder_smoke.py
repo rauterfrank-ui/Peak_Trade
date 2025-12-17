@@ -11,11 +11,9 @@ Testet:
 """
 from __future__ import annotations
 
-import json
-import pytest
-import pandas as pd
 from pathlib import Path
-from datetime import datetime
+
+import pandas as pd
 
 
 class TestDataclasses:

@@ -9,17 +9,12 @@ Diese Tests prüfen:
 - RUN_TYPE_PORTFOLIO_BACKTEST in Registry
 """
 
-import pytest
-import pandas as pd
 import numpy as np
-from pathlib import Path
+import pandas as pd
 
-from src.core.peak_config import PeakConfig
 from src.core.experiments import (
     RUN_TYPE_PORTFOLIO_BACKTEST,
     log_portfolio_backtest_result,
-    EXPERIMENTS_DIR,
-    EXPERIMENTS_CSV,
 )
 
 

@@ -2,11 +2,11 @@ from datetime import timedelta
 
 import pandas as pd
 
+from src.reporting.trigger_training_report import TriggerOutcome
 from src.trigger_training.hooks import (
     TriggerTrainingHookConfig,
     build_trigger_training_events_from_dfs,
 )
-from src.reporting.trigger_training_report import TriggerOutcome
 
 
 def test_build_trigger_training_events_from_dfs_basic() -> None:

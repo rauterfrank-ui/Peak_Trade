@@ -9,16 +9,14 @@ Phase 72: Read-Only Status-CLI, keine State-Änderungen.
 """
 from __future__ import annotations
 
-import pytest
-
+from scripts.live_operator_status import generate_live_status_report
 from src.core.environment import (
+    LIVE_CONFIRM_TOKEN,
     EnvironmentConfig,
     TradingEnvironment,
-    LIVE_CONFIRM_TOKEN,
 )
 from src.live.risk_limits import LiveRiskConfig, LiveRiskLimits
 from src.live.safety import SafetyGuard
-from scripts.live_operator_status import generate_live_status_report
 
 
 class TestLiveOperatorStatus:

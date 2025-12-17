@@ -17,16 +17,14 @@ WICHTIG: Dieser Executor schickt KEINE echten Orders.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Sequence
+from datetime import UTC, datetime
 
 from .base import (
-    OrderRequest,
-    OrderFill,
     OrderExecutionResult,
-    OrderExecutor,
-    OrderStatus,
+    OrderFill,
+    OrderRequest,
 )
 
 
@@ -45,12 +43,12 @@ class PaperMarketContext:
         base_currency: Basis-Waehrung fuer Fees
     """
 
-    prices: Dict[str, float] = field(default_factory=dict)
+    prices: dict[str, float] = field(default_factory=dict)
     fee_bps: float = 0.0
     slippage_bps: float = 0.0
     base_currency: str = "EUR"
 
-    def get_price(self, symbol: str) -> Optional[float]:
+    def get_price(self, symbol: str) -> float | None:
         """Gibt den aktuellen Preis fuer ein Symbol zurueck."""
         return self.prices.get(symbol)
 
@@ -209,7 +207,7 @@ class PaperOrderExecutor:
         fee = self._compute_fee(notional)
 
         # Fill erstellen
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         fill = OrderFill(
             symbol=order.symbol,
             side=order.side,
@@ -237,7 +235,7 @@ class PaperOrderExecutor:
 
     def execute_orders(
         self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    ) -> list[OrderExecutionResult]:
         """
         Fuehrt eine Liste von Orders aus.
 
@@ -281,7 +279,7 @@ class ExchangeOrderExecutor:
 
     def execute_orders(
         self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    ) -> list[OrderExecutionResult]:
         raise NotImplementedError(
             "Echte Order-Ausfuehrung ist in dieser Phase nicht verfuegbar."
         )

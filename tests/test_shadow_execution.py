@@ -13,14 +13,12 @@ WICHTIG: Alle Tests sind offline (keine externen Dienste)
          und testen nur simulierte (Shadow-)Ausführung.
 """
 
-import pytest
 import subprocess
 import sys
 from pathlib import Path
-from datetime import datetime, timezone
 
 import pandas as pd
-import numpy as np
+import pytest
 
 # Projekt-Root zum Path hinzufügen
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -116,7 +114,7 @@ class TestShadowOrderExecutor:
 
     def test_create_executor_with_context(self):
         """Executor mit benutzerdefiniertem Context erstellen."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -129,8 +127,8 @@ class TestShadowOrderExecutor:
 
     def test_execute_market_order_filled(self):
         """Market-Order wird korrekt gefüllt."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -158,8 +156,8 @@ class TestShadowOrderExecutor:
 
     def test_execute_order_no_price(self):
         """Order ohne Preis wird rejected."""
-        from src.orders.shadow import ShadowOrderExecutor
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowOrderExecutor
 
         executor = ShadowOrderExecutor()
 
@@ -178,8 +176,8 @@ class TestShadowOrderExecutor:
 
     def test_fee_calculation(self):
         """Fee wird korrekt berechnet."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -201,8 +199,8 @@ class TestShadowOrderExecutor:
 
     def test_slippage_buy_order(self):
         """Slippage bei Kauforder erhöht den Preis."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -223,8 +221,8 @@ class TestShadowOrderExecutor:
 
     def test_slippage_sell_order(self):
         """Slippage bei Verkaufsorder reduziert den Preis."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -245,8 +243,8 @@ class TestShadowOrderExecutor:
 
     def test_limit_order_filled(self):
         """Limit-Order wird gefüllt wenn Bedingung erfüllt."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(prices={"BTC/EUR": 50000.0})
         executor = ShadowOrderExecutor(market_context=ctx)
@@ -267,8 +265,8 @@ class TestShadowOrderExecutor:
 
     def test_limit_order_rejected(self):
         """Limit-Order wird rejected wenn Bedingung nicht erfüllt."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(prices={"BTC/EUR": 50000.0})
         executor = ShadowOrderExecutor(market_context=ctx)
@@ -289,8 +287,8 @@ class TestShadowOrderExecutor:
 
     def test_execute_multiple_orders(self):
         """Mehrere Orders werden korrekt ausgeführt."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(prices={"BTC/EUR": 50000.0, "ETH/EUR": 3000.0})
         executor = ShadowOrderExecutor(market_context=ctx)
@@ -312,8 +310,8 @@ class TestShadowOrderExecutor:
 
     def test_order_log(self):
         """Order-Log wird korrekt geführt."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(prices={"BTC/EUR": 50000.0})
         executor = ShadowOrderExecutor(market_context=ctx)
@@ -331,8 +329,8 @@ class TestShadowOrderExecutor:
 
     def test_execution_summary(self):
         """Execution-Summary wird korrekt berechnet."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -361,8 +359,8 @@ class TestShadowOrderExecutor:
 
     def test_reset(self):
         """Reset setzt Executor zurück."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(prices={"BTC/EUR": 50000.0})
         executor = ShadowOrderExecutor(market_context=ctx)
@@ -458,7 +456,7 @@ class TestExecutionPipelineForShadow:
     def test_create_shadow_pipeline_with_context(self):
         """Shadow-Pipeline mit benutzerdefiniertem Context."""
         from src.execution.pipeline import ExecutionPipeline
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         ctx = ShadowMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -481,7 +479,7 @@ class TestExecutionPipelineForShadow:
         prices = pd.Series([50000 + i * 100 for i in range(10)], index=index)
 
         # Preise im Context setzen
-        for ts, price in prices.items():
+        for _ts, price in prices.items():
             pipeline.executor.context.set_price("BTC/EUR", price)
 
         results = pipeline.execute_from_signals(
@@ -509,12 +507,12 @@ class TestModuleExports:
     def test_shadow_exports_from_orders(self):
         """Shadow-Klassen können aus src.orders importiert werden."""
         from src.orders import (
-            ShadowOrderExecutor,
-            ShadowMarketContext,
-            ShadowOrderLog,
-            create_shadow_executor,
             EXECUTION_MODE_SHADOW,
             EXECUTION_MODE_SHADOW_RUN,
+            ShadowMarketContext,
+            ShadowOrderExecutor,
+            ShadowOrderLog,
+            create_shadow_executor,
         )
 
         assert ShadowOrderExecutor is not None
@@ -677,8 +675,8 @@ class TestShadowExecutionIntegration:
 
     def test_shadow_execution_no_network_calls(self):
         """Shadow-Execution macht keine Netzwerk-Calls."""
-        from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
         from src.orders.base import OrderRequest
+        from src.orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 
         # Context mit Preisen
         ctx = ShadowMarketContext(prices={"BTC/EUR": 50000.0})

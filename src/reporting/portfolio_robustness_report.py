@@ -24,15 +24,15 @@ Usage:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Literal
 
 import pandas as pd
 
 from .base import Report, ReportSection, df_to_markdown, dict_to_markdown_table
 
 try:
-    import matplotlib.pyplot as plt
     import matplotlib
+    import matplotlib.pyplot as plt
 
     matplotlib.use("Agg")  # Non-interactive backend
     MATPLOTLIB_AVAILABLE = True
@@ -70,7 +70,7 @@ def _create_portfolio_equity_plot(
     returns: pd.Series,
     output_path: Path,
     title: str = "Portfolio Equity Curve",
-) -> Optional[Path]:
+) -> Path | None:
     """
     Erstellt einen Portfolio-Equity-Plot.
 
@@ -112,12 +112,12 @@ def _create_portfolio_equity_plot(
 
 
 def build_portfolio_robustness_report(
-    result: "PortfolioRobustnessResult",  # Forward reference  # noqa: F821
+    result: PortfolioRobustnessResult,  # Forward reference
     *,
     title: str,
     output_dir: Path,
     format: Literal["md", "html", "both"] = "both",
-) -> Dict[str, Path]:
+) -> dict[str, Path]:
     """
     Erzeugt einen Portfolio-Robustness-Report mit Baseline-, Monte-Carlo- und Stress-Test-Ergebnissen.
 
@@ -263,7 +263,7 @@ def build_portfolio_robustness_report(
         ))
 
     # 6. Visualizations (optional)
-    charts_content: List[str] = []
+    charts_content: list[str] = []
 
     if MATPLOTLIB_AVAILABLE:
         # Portfolio-Equity-Plot
@@ -314,7 +314,7 @@ def build_portfolio_robustness_report(
     ))
 
     # Speichere Report
-    paths: Dict[str, Path] = {}
+    paths: dict[str, Path] = {}
 
     if format in ("md", "both"):
         md_path = output_dir / "portfolio_robustness_report.md"

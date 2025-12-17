@@ -4,9 +4,10 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import matplotlib
+
 matplotlib.use('Agg')  # Non-interactive backend für Server/CI
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -23,7 +24,7 @@ def ensure_dir(path: str | Path) -> Path:
 
 
 def save_equity_and_drawdown(
-    result: "BacktestResult",
+    result: BacktestResult,
     output_dir: str | Path,
     run_name: str,
 ) -> None:
@@ -45,7 +46,7 @@ def save_equity_and_drawdown(
 
 
 def save_trades(
-    result: "BacktestResult",
+    result: BacktestResult,
     output_dir: str | Path,
     run_name: str,
 ) -> None:
@@ -66,7 +67,7 @@ def save_trades(
 
 
 def save_stats_json(
-    result: "BacktestResult",
+    result: BacktestResult,
     output_dir: str | Path,
     run_name: str,
 ) -> None:
@@ -91,13 +92,13 @@ def save_stats_json(
 
 
 def save_regime_distribution(
-    result: "BacktestResult",
+    result: BacktestResult,
     output_dir: str | Path,
     run_name: str,
 ) -> None:
     """
     Speichert Regime-Verteilung als separate CSV (optional).
-    
+
     Args:
         result: BacktestResult-Objekt
         output_dir: Output-Verzeichnis
@@ -106,10 +107,10 @@ def save_regime_distribution(
     regime_dist = result.metadata.get('regime_distribution', {})
     if not regime_dist:
         return
-    
+
     out_dir = ensure_dir(output_dir)
     regime_path = out_dir / f"{run_name}_regime_distribution.csv"
-    
+
     # Als DataFrame speichern
     df = pd.DataFrame([
         {'regime': k, 'percentage': v}
@@ -120,7 +121,7 @@ def save_regime_distribution(
 
 
 def save_plots(
-    result: "BacktestResult",
+    result: BacktestResult,
     output_dir: str | Path,
     run_name: str,
 ) -> None:
@@ -160,7 +161,7 @@ def save_plots(
 
 
 def generate_html_report(
-    result: "BacktestResult",
+    result: BacktestResult,
     output_dir: str | Path,
     run_name: str,
 ) -> Path:
@@ -412,7 +413,7 @@ def generate_html_report(
 
 
 def save_full_report(
-    result: "BacktestResult",
+    result: BacktestResult,
     output_dir: str | Path = "reports",
     run_name: str = "run",
     save_plots_flag: bool = True,

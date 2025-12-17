@@ -1,18 +1,19 @@
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Sequence, Tuple, Mapping, Any, List
+from typing import Any
 
 import pandas as pd
 
-from src.reporting.trigger_training_report import TriggerTrainingEvent, TriggerOutcome
+from src.reporting.trigger_training_report import TriggerOutcome, TriggerTrainingEvent
 
 
 def _events_to_dataframe_with_session(
-    sessions: Sequence[Tuple[str, Sequence[TriggerTrainingEvent]]]
+    sessions: Sequence[tuple[str, Sequence[TriggerTrainingEvent]]]
 ) -> pd.DataFrame:
     """Konvertiert (session_id, Events) in ein gemeinsames DataFrame mit session_id-Spalte."""
-    records: List[Mapping[str, Any]] = []
+    records: list[Mapping[str, Any]] = []
 
     for session_id, events in sessions:
         for ev in events:
@@ -53,7 +54,7 @@ def _events_to_dataframe_with_session(
 
 
 def build_operator_meta_report(
-    sessions: Sequence[Tuple[str, Sequence[TriggerTrainingEvent]]],
+    sessions: Sequence[tuple[str, Sequence[TriggerTrainingEvent]]],
     output_path: Path,
 ) -> Path:
     """Erzeugt einen Trigger-Training Operator-Meta-Report (HTML) über mehrere Sessions.
@@ -95,7 +96,7 @@ def build_operator_meta_report(
     df["pnl_after_bars"] = pd.to_numeric(df["pnl_after_bars"], errors="coerce").fillna(0.0)
 
     # Outcome-Verteilung pro Session
-    session_outcome = (
+    (
         df.groupby(["session_id", "outcome"])
         .size()
         .reset_index(name="count")

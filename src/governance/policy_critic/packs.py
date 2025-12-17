@@ -8,10 +8,8 @@ Policy Packs allow environment-specific rule configurations:
 """
 
 import hashlib
-import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
 
 import yaml
 
@@ -25,12 +23,12 @@ class PolicyPack:
     pack_id: str
     version: str
     description: str
-    enabled_rules: List[str]
-    severity_overrides: Dict[str, str] = field(default_factory=dict)
-    critical_paths: List[str] = field(default_factory=list)
-    required_context_keys: List[str] = field(default_factory=list)
+    enabled_rules: list[str]
+    severity_overrides: dict[str, str] = field(default_factory=dict)
+    critical_paths: list[str] = field(default_factory=list)
+    required_context_keys: list[str] = field(default_factory=list)
     default_action_on_error: str = "REVIEW_REQUIRED"
-    settings: Dict = field(default_factory=dict)
+    settings: dict = field(default_factory=dict)
 
     def compute_hash(self) -> str:
         """Compute stable hash of pack configuration for audit trail."""
@@ -47,7 +45,7 @@ class PolicyPack:
 class PackLoader:
     """Loads and manages policy packs."""
 
-    def __init__(self, pack_dir: Optional[Path] = None):
+    def __init__(self, pack_dir: Path | None = None):
         """
         Initialize pack loader.
 
@@ -58,7 +56,7 @@ class PackLoader:
             # Default to policy_packs/ at repo root
             pack_dir = Path(__file__).parent.parent.parent.parent / "policy_packs"
         self.pack_dir = Path(pack_dir)
-        self._cache: Dict[str, PolicyPack] = {}
+        self._cache: dict[str, PolicyPack] = {}
 
     def load_pack(self, pack_id: str) -> PolicyPack:
         """
@@ -83,7 +81,7 @@ class PackLoader:
         if not pack_file.exists():
             raise FileNotFoundError(f"Policy pack not found: {pack_file}")
 
-        with open(pack_file, 'r') as f:
+        with open(pack_file) as f:
             data = yaml.safe_load(f)
 
         # Validate required fields
@@ -111,7 +109,7 @@ class PackLoader:
         self._cache[pack_id] = pack
         return pack
 
-    def list_available_packs(self) -> List[str]:
+    def list_available_packs(self) -> list[str]:
         """List all available pack IDs."""
         if not self.pack_dir.exists():
             return []
@@ -132,7 +130,7 @@ class PackAwareRule:
         else:
             self.effective_severity = rule.severity
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None):
+    def check(self, diff: str, changed_files: list[str], context: dict | None = None):
         """Check with pack-aware severity."""
         violations = self.rule.check(diff, changed_files, context)
 
@@ -143,7 +141,7 @@ class PackAwareRule:
         return violations
 
 
-def create_pack_aware_critic(pack: PolicyPack, rules: List[PolicyRule]):
+def create_pack_aware_critic(pack: PolicyPack, rules: list[PolicyRule]):
     """
     Create a PolicyCritic with pack-aware rules.
 

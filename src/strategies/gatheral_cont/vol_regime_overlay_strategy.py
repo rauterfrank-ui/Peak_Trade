@@ -45,12 +45,11 @@ Referenzen:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas as pd
 
 from ..base import BaseStrategy, StrategyMetadata
-
 
 # =============================================================================
 # CONFIG
@@ -85,7 +84,7 @@ class VolRegimeOverlayConfig:
     hurst_lookback: int = 252
     vol_target_scaling: bool = True
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Konvertiert Config zu Dictionary."""
         return {
             "day_vol_budget": self.day_vol_budget,
@@ -171,8 +170,8 @@ class VolRegimeOverlayStrategy(BaseStrategy):
         use_rough_vol: bool = False,
         hurst_lookback: int = 252,
         vol_target_scaling: bool = True,
-        config: Optional[Dict[str, Any]] = None,
-        metadata: Optional[StrategyMetadata] = None,
+        config: dict[str, Any] | None = None,
+        metadata: StrategyMetadata | None = None,
     ) -> None:
         """
         Initialisiert Vol Regime Overlay Strategy.
@@ -238,7 +237,7 @@ class VolRegimeOverlayStrategy(BaseStrategy):
         cls,
         cfg: Any,
         section: str = "strategy.vol_regime_overlay",
-    ) -> "VolRegimeOverlayStrategy":
+    ) -> VolRegimeOverlayStrategy:
         """
         Fabrikmethode für Config-basierte Instanziierung.
 

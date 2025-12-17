@@ -15,7 +15,8 @@ from __future__ import annotations
 
 import json
 import uuid
-from typing import Any, Dict, List, Optional, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from .base import OrderRequest, OrderSide, OrderType
 
@@ -117,14 +118,14 @@ def from_live_order_request(live_req: Any) -> OrderRequest:
         client_id = f"order_{uuid.uuid4().hex[:8]}"
 
     # Limit-Preis (falls vorhanden)
-    limit_price: Optional[float] = None
+    limit_price: float | None = None
     if order_type == "limit":
         limit_price = extra.get("limit_price")
         if limit_price is not None:
             limit_price = float(limit_price)
 
     # Metadata zusammenstellen
-    metadata: Dict[str, Any] = {}
+    metadata: dict[str, Any] = {}
     if getattr(live_req, "strategy_key", None):
         metadata["strategy_key"] = str(live_req.strategy_key)
     if getattr(live_req, "run_name", None):
@@ -151,7 +152,7 @@ def from_live_order_request(live_req: Any) -> OrderRequest:
     )
 
 
-def from_orders_csv_row(row: Dict[str, Any]) -> OrderRequest:
+def from_orders_csv_row(row: dict[str, Any]) -> OrderRequest:
     """
     Konvertiert eine CSV-Zeile (Dict) in eine OrderRequest.
 
@@ -185,7 +186,7 @@ def from_orders_csv_row(row: Dict[str, Any]) -> OrderRequest:
     order_type = _normalize_order_type(str(order_type_raw))
 
     # Extra-JSON parsen
-    extra: Dict[str, Any] = {}
+    extra: dict[str, Any] = {}
     extra_json = row.get("extra_json")
     if extra_json and str(extra_json).strip():
         try:
@@ -237,14 +238,14 @@ def from_orders_csv_row(row: Dict[str, Any]) -> OrderRequest:
         client_id = str(client_id)
 
     # Limit-Preis (falls vorhanden)
-    limit_price: Optional[float] = None
+    limit_price: float | None = None
     if order_type == "limit":
         limit_price = extra.get("limit_price")
         if limit_price is not None:
             limit_price = float(limit_price)
 
     # Metadata zusammenstellen
-    metadata: Dict[str, Any] = {}
+    metadata: dict[str, Any] = {}
 
     strategy_key = row.get("strategy_key")
     if strategy_key and str(strategy_key) != "nan":
@@ -284,7 +285,7 @@ def from_orders_csv_row(row: Dict[str, Any]) -> OrderRequest:
 
 def to_order_requests(
     live_orders: Sequence[Any],
-) -> List[OrderRequest]:
+) -> list[OrderRequest]:
     """
     Konvertiert eine Liste von LiveOrderRequest-Objekten in OrderRequests.
 

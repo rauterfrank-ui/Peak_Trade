@@ -5,22 +5,20 @@ Tests für src/experiments/topn_promotion.py (Phase 42)
 
 Testet Top-N Promotion Pipeline für Sweep-Ergebnisse.
 """
-import pytest
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from unittest.mock import patch, MagicMock
 
 import pandas as pd
+import pytest
 import toml
 
 from src.experiments.topn_promotion import (
     TopNPromotionConfig,
-    load_sweep_results,
-    select_top_n,
     export_top_n,
     find_sweep_results,
+    load_sweep_results,
+    select_top_n,
 )
-
 
 # =============================================================================
 # CONFIG TESTS
@@ -222,7 +220,7 @@ class TestExportTopN:
             output_path = export_top_n(df_top, config)
 
             # Lade und parse TOML
-            with open(output_path, "r") as f:
+            with open(output_path) as f:
                 data = toml.load(f)
 
             assert "meta" in data

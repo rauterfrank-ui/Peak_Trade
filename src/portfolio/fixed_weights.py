@@ -9,7 +9,7 @@ Portfolio-Strategie mit festen, vordefinierten Gewichten aus der Config.
 from __future__ import annotations
 
 import logging
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from .base import BasePortfolioStrategy, PortfolioContext
 
@@ -63,7 +63,7 @@ class FixedWeightsPortfolioStrategy(BasePortfolioStrategy):
         >>> # weights = {"BTC/EUR": 0.6, "ETH/EUR": 0.4}
     """
 
-    def __init__(self, config: "PortfolioConfig") -> None:
+    def __init__(self, config: PortfolioConfig) -> None:
         """
         Initialisiert Fixed-Weights-Strategie.
 
@@ -94,7 +94,7 @@ class FixedWeightsPortfolioStrategy(BasePortfolioStrategy):
 
     def _compute_raw_weights(
         self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Gibt feste Gewichte für verfügbare Symbole zurück.
 

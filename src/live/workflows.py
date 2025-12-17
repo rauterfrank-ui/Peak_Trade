@@ -12,22 +12,22 @@ Diese Funktionen werden von allen Live-/Paper-Scripts verwendet.
 """
 from __future__ import annotations
 
-import sys
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any
 
+from src.core.experiments import log_live_risk_check
 from src.core.peak_config import PeakConfig
-from src.core.experiments import log_live_risk_check, RUN_TYPE_LIVE_RISK_CHECK
 from src.live.alerts import LiveAlertsConfig, build_alert_sink_from_config
 from src.live.orders import LiveOrderRequest
-from src.live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
-from src.notifications.base import Alert, Notifier, AlertLevel
+from src.live.risk_limits import LiveRiskCheckResult, LiveRiskLimits
+from src.notifications.base import Alert, AlertLevel, Notifier
 
 
 class LiveRiskViolationError(Exception):
     """Exception bei erzwungenem Risk-Check-Fehler (--enforce-live-risk)."""
 
-    def __init__(self, reasons: List[str], metrics: Dict[str, Any]) -> None:
+    def __init__(self, reasons: list[str], metrics: dict[str, Any]) -> None:
         self.reasons = reasons
         self.metrics = metrics
         msg = f"Live-Risk-Limits verletzt: {', '.join(reasons)}"
@@ -52,14 +52,14 @@ class RiskCheckContext:
     """
 
     config: PeakConfig
-    starting_cash: Optional[float] = None
+    starting_cash: float | None = None
     enforce: bool = False
     skip: bool = False
-    tag: Optional[str] = None
-    config_path: Optional[str] = None
+    tag: str | None = None
+    config_path: str | None = None
     log_to_registry: bool = True
     runner_name: str = "live_workflow"
-    notifier: Optional[Notifier] = None
+    notifier: Notifier | None = None
 
 
 def validate_risk_flags(enforce: bool, skip: bool) -> None:
@@ -85,9 +85,9 @@ def run_live_risk_check(
     orders: Sequence[LiveOrderRequest],
     ctx: RiskCheckContext,
     *,
-    orders_csv: Optional[str] = None,
-    extra_metadata: Optional[Dict[str, Any]] = None,
-) -> Optional[LiveRiskCheckResult]:
+    orders_csv: str | None = None,
+    extra_metadata: dict[str, Any] | None = None,
+) -> LiveRiskCheckResult | None:
     """
     Führt einen Live-Risk-Check für Orders durch.
 
@@ -203,7 +203,7 @@ def _print_risk_check_summary(result: LiveRiskCheckResult) -> None:
         print("\n✅ Keine Live-Risk-Verletzungen festgestellt.")
 
 
-def exit_on_risk_violation(result: Optional[LiveRiskCheckResult], enforce: bool) -> bool:
+def exit_on_risk_violation(result: LiveRiskCheckResult | None, enforce: bool) -> bool:
     """
     Prüft, ob bei einem Risk-Violation-Ergebnis abgebrochen werden soll.
 
@@ -235,7 +235,7 @@ def exit_on_risk_violation(result: Optional[LiveRiskCheckResult], enforce: bool)
 def _send_risk_alert(
     result: LiveRiskCheckResult,
     notifier: Notifier,
-    tag: Optional[str] = None,
+    tag: str | None = None,
 ) -> None:
     """
     Sendet einen Alert basierend auf dem Risk-Check-Ergebnis.

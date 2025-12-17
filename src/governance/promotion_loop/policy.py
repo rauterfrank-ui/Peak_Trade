@@ -5,7 +5,6 @@ Auto-apply policies for the Promotion Loop v0.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -31,9 +30,9 @@ class AutoApplyPolicy:
     """
 
     mode: str = "manual_only"
-    leverage_bounds: Optional[AutoApplyBounds] = None
-    trigger_delay_bounds: Optional[AutoApplyBounds] = None
-    macro_weight_bounds: Optional[AutoApplyBounds] = None
+    leverage_bounds: AutoApplyBounds | None = None
+    trigger_delay_bounds: AutoApplyBounds | None = None
+    macro_weight_bounds: AutoApplyBounds | None = None
 
     def is_bounded_auto(self) -> bool:
         """Check if bounded auto-apply is enabled."""

@@ -38,11 +38,10 @@ import json
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, TypedDict
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
-
 
 # =============================================================================
 # KONFIGURATION
@@ -61,7 +60,7 @@ BATCH_MAX_RUN_IDS: int = 10
 class BestMetricsDict(TypedDict, total=False):
     """
     Typisierung für Best-Metrics-Ergebnis (v1.3 / Phase 78).
-    
+
     total=False bedeutet, dass alle Felder optional sind.
     Felder werden nur gesetzt, wenn mindestens ein gültiger Wert existiert.
     """
@@ -107,7 +106,7 @@ class BestMetricsDict(TypedDict, total=False):
 
 # Standard-Verzeichnis für R&D-Experimente (relativ zum Repo-Root)
 # Wird von außen über BASE_DIR gesetzt
-_BASE_DIR: Optional[Path] = None
+_BASE_DIR: Path | None = None
 
 
 def set_base_dir(base_dir: Path) -> None:
@@ -166,19 +165,19 @@ class RnDExperimentDetail(BaseModel):
     """Vollständige Details eines R&D-Experiments (v1.2)."""
     filename: str
     run_id: str
-    experiment: Dict[str, Any]
-    results: Dict[str, Any]
-    meta: Dict[str, Any]
-    parameters: Optional[Dict[str, Any]] = None
-    raw: Dict[str, Any]
+    experiment: dict[str, Any]
+    results: dict[str, Any]
+    meta: dict[str, Any]
+    parameters: dict[str, Any] | None = None
+    raw: dict[str, Any]
     # v1.2: Report-Links
-    report_links: List[Dict[str, Any]] = []
+    report_links: list[dict[str, Any]] = []
     # v1.2: Erweiterte Felder
     status: str = ""
     run_type: str = ""
     tier: str = ""
     experiment_category: str = ""
-    duration_info: Optional[Dict[str, Any]] = None
+    duration_info: dict[str, Any] | None = None
 
 
 class RnDSummary(BaseModel):
@@ -188,7 +187,7 @@ class RnDSummary(BaseModel):
     experiments_with_dummy_data: int
     unique_presets: int
     unique_strategies: int
-    by_status: Dict[str, int]
+    by_status: dict[str, int]
 
 
 class RnDPresetStats(BaseModel):
@@ -230,13 +229,13 @@ class RnDGlobalStats(BaseModel):
 
 class RnDBatchResponse(BaseModel):
     """Response für Batch-Abfrage mehrerer Experimente (v1.3)."""
-    experiments: List[Dict[str, Any]]
-    requested_ids: List[str]
-    found_ids: List[str]
-    not_found_ids: List[str]
+    experiments: list[dict[str, Any]]
+    requested_ids: list[str]
+    found_ids: list[str]
+    not_found_ids: list[str]
     total_requested: int
     total_found: int
-    best_metrics: Dict[str, Any] = {}  # v1.3: Für Comparison-Highlighting
+    best_metrics: dict[str, Any] = {}  # v1.3: Für Comparison-Highlighting
 
 
 # =============================================================================
@@ -244,7 +243,7 @@ class RnDBatchResponse(BaseModel):
 # =============================================================================
 
 
-def load_experiment_json(filepath: Path) -> Optional[Dict[str, Any]]:
+def load_experiment_json(filepath: Path) -> dict[str, Any] | None:
     """
     Lädt eine einzelne Experiment-JSON-Datei.
 
@@ -255,16 +254,16 @@ def load_experiment_json(filepath: Path) -> Optional[Dict[str, Any]]:
         Experiment-Dict mit Metadaten oder None bei Fehler
     """
     try:
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             data = json.load(f)
         data["_filepath"] = str(filepath)
         data["_filename"] = filepath.name
         return data
-    except (json.JSONDecodeError, FileNotFoundError, IOError):
+    except (OSError, json.JSONDecodeError, FileNotFoundError):
         return None
 
 
-def load_experiments_from_dir(dir_path: Optional[Path] = None) -> List[Dict[str, Any]]:
+def load_experiments_from_dir(dir_path: Path | None = None) -> list[dict[str, Any]]:
     """
     Lädt alle R&D-Experimente aus dem Verzeichnis.
 
@@ -279,7 +278,7 @@ def load_experiments_from_dir(dir_path: Optional[Path] = None) -> List[Dict[str,
     if not experiments_dir.exists():
         return []
 
-    experiments: List[Dict[str, Any]] = []
+    experiments: list[dict[str, Any]] = []
     json_files = list(experiments_dir.glob("*.json"))
 
     for json_file in json_files:
@@ -288,14 +287,14 @@ def load_experiments_from_dir(dir_path: Optional[Path] = None) -> List[Dict[str,
             experiments.append(data)
 
     # Sortiere nach Timestamp (neueste zuerst)
-    def get_timestamp(exp: Dict[str, Any]) -> str:
+    def get_timestamp(exp: dict[str, Any]) -> str:
         return exp.get("experiment", {}).get("timestamp", "")
 
     experiments.sort(key=get_timestamp, reverse=True)
     return experiments
 
 
-def extract_flat_fields(exp: Dict[str, Any]) -> Dict[str, Any]:
+def extract_flat_fields(exp: dict[str, Any]) -> dict[str, Any]:
     """Extrahiert flache Felder aus einem Experiment-Dict (v1.1)."""
     experiment = exp.get("experiment", {})
     results = exp.get("results", {})
@@ -334,9 +333,7 @@ def extract_flat_fields(exp: Dict[str, Any]) -> Dict[str, Any]:
     if not experiment_category:
         strategy = experiment.get("strategy", "").lower()
         preset = experiment.get("preset_id", "").lower()
-        if "ehlers" in strategy or "ehlers" in preset:
-            experiment_category = "cycles"
-        elif "armstrong" in strategy or "armstrong" in preset:
+        if "ehlers" in strategy or "ehlers" in preset or "armstrong" in strategy or "armstrong" in preset:
             experiment_category = "cycles"
         elif "meta_labeling" in strategy or "lopez" in preset:
             experiment_category = "ml"
@@ -370,7 +367,7 @@ def extract_flat_fields(exp: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def determine_status(exp: Dict[str, Any]) -> str:
+def determine_status(exp: dict[str, Any]) -> str:
     """
     Bestimmt den Status eines Experiments (v1.1).
 
@@ -397,7 +394,7 @@ def determine_status(exp: Dict[str, Any]) -> str:
     return "success"
 
 
-def parse_date(date_str: str) -> Optional[datetime]:
+def parse_date(date_str: str) -> datetime | None:
     """Parst ein Datum im Format YYYY-MM-DD."""
     if not date_str:
         return None
@@ -407,7 +404,7 @@ def parse_date(date_str: str) -> Optional[datetime]:
         return None
 
 
-def find_report_links(run_id: str, experiment: Dict[str, Any]) -> List[Dict[str, Any]]:
+def find_report_links(run_id: str, experiment: dict[str, Any]) -> list[dict[str, Any]]:
     """
     Sucht nach zugehörigen Report-Dateien für ein Experiment (v1.2).
 
@@ -425,7 +422,7 @@ def find_report_links(run_id: str, experiment: Dict[str, Any]) -> List[Dict[str,
     Returns:
         Liste von Report-Link-Dicts
     """
-    report_links: List[Dict[str, Any]] = []
+    report_links: list[dict[str, Any]] = []
     base_dir = _BASE_DIR or Path(__file__).resolve().parents[2]
 
     # Extrahiere mögliche Dateinamen-Präfixe
@@ -516,7 +513,7 @@ def find_report_links(run_id: str, experiment: Dict[str, Any]) -> List[Dict[str,
     return report_links
 
 
-def compute_duration_info(experiment: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+def compute_duration_info(experiment: dict[str, Any]) -> dict[str, Any] | None:
     """
     Berechnet Laufzeit-Informationen für ein Experiment (v1.2).
 
@@ -535,7 +532,7 @@ def compute_duration_info(experiment: Dict[str, Any]) -> Optional[Dict[str, Any]
     if not start_time:
         return None
 
-    result: Dict[str, Any] = {"start_time": start_time}
+    result: dict[str, Any] = {"start_time": start_time}
 
     if end_time:
         result["end_time"] = end_time
@@ -566,43 +563,43 @@ def format_duration(seconds: float) -> str:
 
 
 def find_experiment_by_run_id(
-    experiments: List[Dict[str, Any]], 
+    experiments: list[dict[str, Any]],
     run_id: str
-) -> Optional[Dict[str, Any]]:
+) -> dict[str, Any] | None:
     """
     Findet ein Experiment anhand der Run-ID (v1.3).
-    
+
     Zentralisierte Lookup-Logik für konsistentes Matching.
-    
+
     Args:
         experiments: Liste aller Experimente
         run_id: Gesuchte Run-ID
-        
+
     Returns:
         Experiment-Dict oder None wenn nicht gefunden
     """
     if not run_id or not run_id.strip():
         return None
-    
+
     run_id = run_id.strip()
-    
+
     for exp in experiments:
         filename = exp.get("_filename", "")
         exp_run_id = filename.replace(".json", "") if filename else ""
-        
+
         # Exakter Match auf Run-ID oder Filename (präferiert)
-        if run_id == exp_run_id or run_id == filename:
+        if run_id in (exp_run_id, filename):
             return exp
-        
+
         # Match auf Timestamp nur wenn exakte Übereinstimmung
         timestamp = exp.get("experiment", {}).get("timestamp", "")
         if timestamp and run_id == timestamp:
             return exp
-    
+
     return None
 
 
-def compute_best_metrics(experiments: List[Dict[str, Any]]) -> BestMetricsDict:
+def compute_best_metrics(experiments: list[dict[str, Any]]) -> BestMetricsDict:
     """
     Berechnet die besten Werte pro Metrik für Comparison-Highlighting (v1.3).
 
@@ -637,7 +634,7 @@ def compute_best_metrics(experiments: List[Dict[str, Any]]) -> BestMetricsDict:
     return best_metrics
 
 
-def extract_date_from_timestamp(timestamp: str) -> Optional[datetime]:
+def extract_date_from_timestamp(timestamp: str) -> datetime | None:
     """Extrahiert ein Datum aus einem Timestamp im Format YYYYMMDD_HHMMSS."""
     if not timestamp or len(timestamp) < 8:
         return None
@@ -648,14 +645,14 @@ def extract_date_from_timestamp(timestamp: str) -> Optional[datetime]:
 
 
 def filter_experiments(
-    experiments: List[Dict[str, Any]],
-    preset: Optional[str] = None,
-    tag_substr: Optional[str] = None,
-    strategy: Optional[str] = None,
-    date_from: Optional[str] = None,
-    date_to: Optional[str] = None,
+    experiments: list[dict[str, Any]],
+    preset: str | None = None,
+    tag_substr: str | None = None,
+    strategy: str | None = None,
+    date_from: str | None = None,
+    date_to: str | None = None,
     with_trades: bool = False,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Filtert Experimente nach verschiedenen Kriterien.
 
@@ -712,9 +709,9 @@ def filter_experiments(
     return filtered
 
 
-def compute_summary(experiments: List[Dict[str, Any]]) -> Dict[str, Any]:
+def compute_summary(experiments: list[dict[str, Any]]) -> dict[str, Any]:
     """Berechnet Summary-Statistiken."""
-    by_status: Dict[str, int] = defaultdict(int)
+    by_status: dict[str, int] = defaultdict(int)
     experiments_with_trades = 0
     experiments_with_dummy = 0
     presets: set = set()
@@ -742,9 +739,9 @@ def compute_summary(experiments: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
-def compute_preset_stats(experiments: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def compute_preset_stats(experiments: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Berechnet Statistiken gruppiert nach Preset."""
-    by_preset: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+    by_preset: dict[str, list[dict[str, Any]]] = defaultdict(list)
 
     for exp in experiments:
         flat = extract_flat_fields(exp)
@@ -777,9 +774,9 @@ def compute_preset_stats(experiments: List[Dict[str, Any]]) -> List[Dict[str, An
     return result
 
 
-def compute_strategy_stats(experiments: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def compute_strategy_stats(experiments: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Berechnet Statistiken gruppiert nach Strategy."""
-    by_strategy: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+    by_strategy: dict[str, list[dict[str, Any]]] = defaultdict(list)
 
     for exp in experiments:
         flat = extract_flat_fields(exp)
@@ -810,7 +807,7 @@ def compute_strategy_stats(experiments: List[Dict[str, Any]]) -> List[Dict[str, 
     return result
 
 
-def compute_global_stats(experiments: List[Dict[str, Any]]) -> Dict[str, Any]:
+def compute_global_stats(experiments: list[dict[str, Any]]) -> dict[str, Any]:
     """Berechnet globale Statistiken."""
     if not experiments:
         return {
@@ -831,9 +828,9 @@ def compute_global_stats(experiments: List[Dict[str, Any]]) -> Dict[str, Any]:
     symbols: set = set()
     with_trades = 0
 
-    returns: List[float] = []
-    sharpes: List[float] = []
-    drawdowns: List[float] = []
+    returns: list[float] = []
+    sharpes: list[float] = []
+    drawdowns: list[float] = []
 
     for exp in experiments:
         flat = extract_flat_fields(exp)
@@ -885,7 +882,7 @@ router = APIRouter(
 
 @router.get(
     "/experiments",
-    response_model=Dict[str, Any],
+    response_model=dict[str, Any],
     summary="Liste aller R&D-Experimente",
     description=(
         "Liefert eine Liste aller R&D-Experimente mit optionalen Filtern. "
@@ -893,14 +890,14 @@ router = APIRouter(
     ),
 )
 async def list_experiments(
-    preset: Optional[str] = Query(None, description="Filter nach Preset-ID (exakt)"),
-    tag_substr: Optional[str] = Query(None, description="Filter nach Substring im Tag"),
-    strategy: Optional[str] = Query(None, description="Filter nach Strategy-ID (exakt)"),
-    date_from: Optional[str] = Query(None, description="Filter ab Datum (YYYY-MM-DD)"),
-    date_to: Optional[str] = Query(None, description="Filter bis Datum (YYYY-MM-DD)"),
+    preset: str | None = Query(None, description="Filter nach Preset-ID (exakt)"),
+    tag_substr: str | None = Query(None, description="Filter nach Substring im Tag"),
+    strategy: str | None = Query(None, description="Filter nach Strategy-ID (exakt)"),
+    date_from: str | None = Query(None, description="Filter ab Datum (YYYY-MM-DD)"),
+    date_to: str | None = Query(None, description="Filter bis Datum (YYYY-MM-DD)"),
     with_trades: bool = Query(False, description="Nur Experimente mit Trades > 0"),
     limit: int = Query(200, ge=1, le=5000, description="Maximale Anzahl (1-5000)"),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Liste aller R&D-Experimente mit Filtern.
 
@@ -943,7 +940,7 @@ def parse_and_validate_run_ids(
     run_ids_str: str,
     min_ids: int = BATCH_MIN_RUN_IDS,
     max_ids: int = BATCH_MAX_RUN_IDS,
-) -> List[str]:
+) -> list[str]:
     """
     Parst, dedupliziert und validiert eine komma-separierte Liste von Run-IDs (v1.3).
 
@@ -977,25 +974,25 @@ def parse_and_validate_run_ids(
     return unique_ids
 
 
-def build_experiment_detail(exp: Dict[str, Any]) -> Dict[str, Any]:
+def build_experiment_detail(exp: dict[str, Any]) -> dict[str, Any]:
     """
     Baut ein vollständiges Experiment-Detail-Dict (v1.3).
-    
+
     Zentralisierte Logik für Detail- und Batch-Endpoints.
-    
+
     Args:
         exp: Raw-Experiment-Dict aus JSON
-        
+
     Returns:
         Aufbereitetes Detail-Dict
     """
     filename = exp.get("_filename", "")
     exp_run_id = filename.replace(".json", "") if filename else ""
-    
+
     flat = extract_flat_fields(exp)
     report_links = find_report_links(exp_run_id, exp)
     duration_info = compute_duration_info(exp)
-    
+
     return {
         "filename": filename,
         "run_id": exp_run_id,
@@ -1067,35 +1064,35 @@ async def get_experiments_batch(
         unique_ids = parse_and_validate_run_ids(run_ids)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
+
     # Lade alle Experimente
     all_experiments = load_experiments_from_dir()
-    
+
     # Suche nach den angeforderten IDs
-    found_experiments: List[Dict[str, Any]] = []
-    found_ids: List[str] = []
-    not_found_ids: List[str] = []
-    
+    found_experiments: list[dict[str, Any]] = []
+    found_ids: list[str] = []
+    not_found_ids: list[str] = []
+
     for requested_id in unique_ids:
         exp = find_experiment_by_run_id(all_experiments, requested_id)
-        
+
         if exp:
             experiment_data = build_experiment_detail(exp)
             found_experiments.append(experiment_data)
             found_ids.append(requested_id)
         else:
             not_found_ids.append(requested_id)
-    
+
     # Wenn keine Experimente gefunden: 404
     if not found_experiments:
         raise HTTPException(
             status_code=404,
             detail=f"Keine gültigen Experimente gefunden für: {', '.join(unique_ids)}",
         )
-    
+
     # Berechne Best-Metrics für Highlighting
     best_metrics = compute_best_metrics(found_experiments)
-    
+
     return RnDBatchResponse(
         experiments=found_experiments,
         requested_ids=unique_ids,
@@ -1109,14 +1106,14 @@ async def get_experiments_batch(
 
 @router.get(
     "/experiments/{run_id}",
-    response_model=Dict[str, Any],
+    response_model=dict[str, Any],
     summary="Detail eines R&D-Experiments (v1.3)",
     description=(
         "Liefert alle Details eines einzelnen Experiments nach Run-ID. "
         "v1.3: Nutzt zentralisierte Lookup-Logik."
     ),
 )
-async def get_experiment_detail(run_id: str) -> Dict[str, Any]:
+async def get_experiment_detail(run_id: str) -> dict[str, Any]:
     """
     Detail-Endpoint für ein einzelnes Experiment (v1.3).
 
@@ -1134,18 +1131,18 @@ async def get_experiment_detail(run_id: str) -> Dict[str, Any]:
         HTTPException 404: Wenn Experiment nicht gefunden
     """
     experiments = load_experiments_from_dir()
-    
+
     # Zentralisierte Lookup-Logik
     exp = find_experiment_by_run_id(experiments, run_id)
-    
+
     if exp is None:
         raise HTTPException(status_code=404, detail=f"Experiment not found: {run_id}")
-    
+
     # Baue Detail-Response
     detail = build_experiment_detail(exp)
     # Füge raw hinzu (nur im Detail-Endpoint)
     detail["raw"] = exp
-    
+
     return detail
 
 
@@ -1169,11 +1166,11 @@ async def get_summary() -> RnDSummary:
 
 @router.get(
     "/presets",
-    response_model=List[RnDPresetStats],
+    response_model=list[RnDPresetStats],
     summary="Statistiken nach Preset",
     description="Liefert aggregierte Statistiken gruppiert nach Preset-ID.",
 )
-async def get_presets() -> List[RnDPresetStats]:
+async def get_presets() -> list[RnDPresetStats]:
     """
     Statistiken gruppiert nach Preset.
 
@@ -1187,11 +1184,11 @@ async def get_presets() -> List[RnDPresetStats]:
 
 @router.get(
     "/strategies",
-    response_model=List[RnDStrategyStats],
+    response_model=list[RnDStrategyStats],
     summary="Statistiken nach Strategy",
     description="Liefert aggregierte Statistiken gruppiert nach Strategy-ID.",
 )
-async def get_strategies() -> List[RnDStrategyStats]:
+async def get_strategies() -> list[RnDStrategyStats]:
     """
     Statistiken gruppiert nach Strategy.
 
@@ -1228,7 +1225,7 @@ async def get_stats() -> RnDGlobalStats:
 
 @router.get(
     "/today",
-    response_model=Dict[str, Any],
+    response_model=dict[str, Any],
     summary="Heute fertige Experimente (v1.1)",
     description=(
         "Liefert Experimente, die heute abgeschlossen wurden. "
@@ -1237,7 +1234,7 @@ async def get_stats() -> RnDGlobalStats:
 )
 async def get_today_experiments(
     limit: int = Query(50, ge=1, le=500, description="Max. Anzahl"),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Experimente, die heute abgeschlossen wurden (v1.1).
 
@@ -1273,14 +1270,14 @@ async def get_today_experiments(
 
 @router.get(
     "/running",
-    response_model=Dict[str, Any],
+    response_model=dict[str, Any],
     summary="Aktuell laufende Experimente (v1.1)",
     description=(
         "Liefert Experimente, die aktuell noch laufen. "
         "Für 'Was läuft gerade?' Übersicht."
     ),
 )
-async def get_running_experiments() -> Dict[str, Any]:
+async def get_running_experiments() -> dict[str, Any]:
     """
     Aktuell laufende Experimente (v1.1).
 
@@ -1305,11 +1302,11 @@ async def get_running_experiments() -> Dict[str, Any]:
 
 @router.get(
     "/categories",
-    response_model=Dict[str, Any],
+    response_model=dict[str, Any],
     summary="Experiment-Kategorien (v1.1)",
     description="Liefert verfügbare Experiment-Kategorien mit Counts.",
 )
-async def get_categories() -> Dict[str, Any]:
+async def get_categories() -> dict[str, Any]:
     """
     Verfügbare Experiment-Kategorien (v1.1).
 
@@ -1318,8 +1315,8 @@ async def get_categories() -> Dict[str, Any]:
     """
     experiments = load_experiments_from_dir()
 
-    categories: Dict[str, int] = {}
-    run_types: Dict[str, int] = {}
+    categories: dict[str, int] = {}
+    run_types: dict[str, int] = {}
 
     for exp in experiments:
         flat = extract_flat_fields(exp)

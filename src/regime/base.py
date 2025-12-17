@@ -15,7 +15,7 @@ Definiert die Core-Typen und Protokolle fuer den Regime-Layer:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Protocol, Literal, Dict, List, Any, Optional, runtime_checkable
+from typing import Any, Literal, Protocol, runtime_checkable
 
 import pandas as pd
 
@@ -63,8 +63,8 @@ class RegimeContext:
     """
     timestamp: pd.Timestamp
     window: pd.DataFrame
-    symbol: Optional[str] = None
-    features: Optional[Dict[str, Any]] = None
+    symbol: str | None = None
+    features: dict[str, Any] | None = None
 
 
 # ============================================================================
@@ -157,9 +157,9 @@ class StrategySwitchDecision:
         ... )
     """
     regime: RegimeLabel
-    active_strategies: List[str]
-    weights: Optional[Dict[str, float]] = None
-    metadata: Optional[Dict[str, Any]] = field(default_factory=dict)
+    active_strategies: list[str]
+    weights: dict[str, float] | None = None
+    metadata: dict[str, Any] | None = field(default_factory=dict)
 
     def get_weight(self, strategy_name: str) -> float:
         """
@@ -186,7 +186,7 @@ class StrategySwitchDecision:
         return len(self.active_strategies) == 1
 
     @property
-    def primary_strategy(self) -> Optional[str]:
+    def primary_strategy(self) -> str | None:
         """Gibt die primaere (erste/gewichtigste) Strategie zurueck."""
         if not self.active_strategies:
             return None
@@ -226,7 +226,7 @@ class StrategySwitchingPolicy(Protocol):
     def decide(
         self,
         regime: RegimeLabel,
-        available_strategies: List[str],
+        available_strategies: list[str],
     ) -> StrategySwitchDecision:
         """
         Entscheidet, welche Strategien fuer ein Regime aktiv sein sollen.

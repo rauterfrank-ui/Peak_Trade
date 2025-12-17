@@ -23,12 +23,11 @@ Run:
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
-
 
 # =============================================================================
 # Fixtures
@@ -44,7 +43,7 @@ def temp_sessions_dir(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def sample_session_data() -> Dict[str, Any]:
+def sample_session_data() -> dict[str, Any]:
     """Sample-Daten für eine Session."""
     return {
         "session_id": "session_20251208_test_001",
@@ -70,7 +69,7 @@ def sample_session_data() -> Dict[str, Any]:
 
 def create_session_file(
     sessions_dir: Path,
-    data: Dict[str, Any],
+    data: dict[str, Any],
     index: int = 0,
 ) -> Path:
     """Erstellt eine Session-JSON-Datei."""
@@ -306,6 +305,7 @@ class TestApiLiveSessionsEndpoint:
     def test_client(self):
         """Erstellt einen TestClient für die FastAPI-App."""
         from fastapi.testclient import TestClient
+
         from src.webui.app import create_app
 
         app = create_app()
@@ -355,6 +355,7 @@ class TestDashboardRendering:
     def test_client(self):
         """Erstellt einen TestClient für die FastAPI-App."""
         from fastapi.testclient import TestClient
+
         from src.webui.app import create_app
 
         app = create_app()
@@ -798,6 +799,7 @@ class TestPhase85ApiEndpoints:
     def test_client(self):
         """Erstellt einen TestClient für die FastAPI-App."""
         from fastapi.testclient import TestClient
+
         from src.webui.app import create_app
 
         app = create_app()
@@ -854,6 +856,7 @@ class TestDashboardWithFilters:
     def test_client(self):
         """Erstellt einen TestClient für die FastAPI-App."""
         from fastapi.testclient import TestClient
+
         from src.webui.app import create_app
 
         app = create_app()

@@ -7,10 +7,11 @@ Testet:
 - Golden-Path-Dokumentation existiert und ist vollständig
 - Helper-Funktionen funktionieren korrekt
 """
-import pytest
 import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 # Pfade
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -144,10 +145,7 @@ class TestGoldenPathIntegration:
     def test_tiering_functions_available(self):
         """Tiering-Funktionen sind importierbar."""
         from src.experiments.portfolio_presets import (
-            get_strategies_by_tier,
-            get_tiering_aware_strategies,
             get_all_tiered_strategies,
-            validate_preset_tiering_compliance,
         )
 
         # Basic smoke test

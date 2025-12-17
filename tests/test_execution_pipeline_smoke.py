@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # tests/test_execution_pipeline_smoke.py
 """
 Peak_Trade: Smoke-Tests fuer Execution-Pipeline (Phase 16A)
@@ -19,12 +18,12 @@ WICHTIG: Keine echten Orders - alles Paper/Sandbox.
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 # Projekt-Root zum Python-Path hinzufuegen
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -233,7 +232,7 @@ class TestExecutionPipeline:
     def test_pipeline_execute_single_order_via_list(self):
         """Pipeline kann einzelne Order via execute_orders([order]) ausfuehren."""
         from src.execution import ExecutionPipeline
-        from src.orders import PaperMarketContext, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext
 
         ctx = PaperMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -261,7 +260,7 @@ class TestExecutionPipeline:
     def test_pipeline_execute_multiple_orders(self):
         """Pipeline kann mehrere Orders ausfuehren."""
         from src.execution import ExecutionPipeline
-        from src.orders import PaperMarketContext, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext
 
         ctx = PaperMarketContext(
             prices={"BTC/EUR": 50000.0, "ETH/EUR": 3000.0},
@@ -405,7 +404,7 @@ class TestExecutionPipeline:
     def test_pipeline_get_execution_summary(self):
         """get_execution_summary() liefert Statistiken."""
         from src.execution import ExecutionPipeline
-        from src.orders import PaperMarketContext, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext
 
         ctx = PaperMarketContext(
             prices={"BTC/EUR": 50000.0},
@@ -711,7 +710,7 @@ class TestEdgeCases:
     def test_order_with_unknown_symbol_rejected(self):
         """Order mit unbekanntem Symbol wird rejected."""
         from src.execution import ExecutionPipeline
-        from src.orders import PaperMarketContext, OrderRequest
+        from src.orders import OrderRequest, PaperMarketContext
 
         ctx = PaperMarketContext(
             prices={"BTC/EUR": 50000.0},  # Nur BTC/EUR bekannt

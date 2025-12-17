@@ -46,7 +46,7 @@ Usage:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Literal, Optional
+from typing import Literal
 
 RiskStatus = Literal["green", "yellow", "red"]
 
@@ -103,18 +103,18 @@ class RunbookEntry:
     summary: str
     description: str
 
-    immediate_actions: List[str] = field(default_factory=list)
-    monitoring_actions: List[str] = field(default_factory=list)
-    communication_actions: List[str] = field(default_factory=list)
-    recovery_actions: List[str] = field(default_factory=list)
+    immediate_actions: list[str] = field(default_factory=list)
+    monitoring_actions: list[str] = field(default_factory=list)
+    communication_actions: list[str] = field(default_factory=list)
+    recovery_actions: list[str] = field(default_factory=list)
 
-    escalation_threshold: Optional[str] = None
-    escalation_contacts: List[str] = field(default_factory=list)
+    escalation_threshold: str | None = None
+    escalation_contacts: list[str] = field(default_factory=list)
 
-    checklist: List[RunbookChecklist] = field(default_factory=list)
+    checklist: list[RunbookChecklist] = field(default_factory=list)
     monitoring_interval: str = "Standard"
-    auto_actions: List[str] = field(default_factory=list)
-    documentation_required: List[str] = field(default_factory=list)
+    auto_actions: list[str] = field(default_factory=list)
+    documentation_required: list[str] = field(default_factory=list)
 
 
 # =============================================================================
@@ -404,7 +404,7 @@ Ziel: Kontrollierte Stabilisierung, Ursachenanalyse, Dokumentation.
 )
 
 # Mapping
-_RUNBOOK_MAP: Dict[RiskStatus, RunbookEntry] = {
+_RUNBOOK_MAP: dict[RiskStatus, RunbookEntry] = {
     "green": RUNBOOK_GREEN,
     "yellow": RUNBOOK_YELLOW,
     "red": RUNBOOK_RED,
@@ -563,14 +563,14 @@ def format_runbook_compact(entry: RunbookEntry) -> str:
 # =============================================================================
 
 __all__ = [
+    "RUNBOOK_GREEN",
+    "RUNBOOK_RED",
+    "RUNBOOK_YELLOW",
     "RiskStatus",
     "RunbookChecklist",
     "RunbookEntry",
-    "get_runbook_for_status",
-    "get_runbook_for_severity",
-    "format_runbook_for_operator",
     "format_runbook_compact",
-    "RUNBOOK_GREEN",
-    "RUNBOOK_YELLOW",
-    "RUNBOOK_RED",
+    "format_runbook_for_operator",
+    "get_runbook_for_severity",
+    "get_runbook_for_status",
 ]

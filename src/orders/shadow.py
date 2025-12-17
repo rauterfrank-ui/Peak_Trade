@@ -24,15 +24,15 @@ WICHTIG: Dieser Executor sendet NIEMALS echte Orders.
 from __future__ import annotations
 
 import logging
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Sequence
+from datetime import UTC, datetime
+from typing import Any
 
 from .base import (
-    OrderRequest,
-    OrderFill,
     OrderExecutionResult,
-    OrderStatus,
+    OrderFill,
+    OrderRequest,
 )
 
 logger = logging.getLogger(__name__)
@@ -68,7 +68,7 @@ class ShadowOrderLog:
     request: OrderRequest
     result: OrderExecutionResult
     shadow_mode: str = EXECUTION_MODE_SHADOW_RUN
-    notes: Optional[str] = None
+    notes: str | None = None
 
 
 # =============================================================================
@@ -91,12 +91,12 @@ class ShadowMarketContext:
         base_currency: Basis-Währung für Fees (z.B. "EUR")
     """
 
-    prices: Dict[str, float] = field(default_factory=dict)
+    prices: dict[str, float] = field(default_factory=dict)
     fee_rate: float = 0.0005  # 5 bps = 0.05%
     slippage_bps: float = 0.0
     base_currency: str = "EUR"
 
-    def get_price(self, symbol: str) -> Optional[float]:
+    def get_price(self, symbol: str) -> float | None:
         """Gibt den aktuellen Preis für ein Symbol zurück."""
         return self.prices.get(symbol)
 
@@ -152,9 +152,9 @@ class ShadowOrderExecutor:
 
     def __init__(
         self,
-        market_context: Optional[ShadowMarketContext] = None,
-        fee_rate: Optional[float] = None,
-        slippage_bps: Optional[float] = None,
+        market_context: ShadowMarketContext | None = None,
+        fee_rate: float | None = None,
+        slippage_bps: float | None = None,
     ) -> None:
         """
         Initialisiert den ShadowOrderExecutor.
@@ -174,7 +174,7 @@ class ShadowOrderExecutor:
             self._ctx.slippage_bps = slippage_bps
 
         self._execution_count = 0
-        self._order_log: List[ShadowOrderLog] = []
+        self._order_log: list[ShadowOrderLog] = []
 
         logger.info(
             f"[SHADOW EXECUTOR] Initialisiert mit fee_rate={self._ctx.fee_rate:.6f} "
@@ -190,7 +190,7 @@ class ShadowOrderExecutor:
         """Setzt den aktuellen Preis für ein Symbol."""
         self._ctx.set_price(symbol, price)
 
-    def get_price(self, symbol: str) -> Optional[float]:
+    def get_price(self, symbol: str) -> float | None:
         """Gibt den aktuellen Preis für ein Symbol zurück."""
         return self._ctx.get_price(symbol)
 
@@ -276,7 +276,7 @@ class ShadowOrderExecutor:
             sondern erzeugt immer ein simuliertes Result.
         """
         self._execution_count += 1
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         # Log-Info
         logger.debug(
@@ -372,7 +372,7 @@ class ShadowOrderExecutor:
 
     def execute_orders(
         self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    ) -> list[OrderExecutionResult]:
         """
         Führt mehrere Orders im Shadow-Modus aus.
 
@@ -404,11 +404,11 @@ class ShadowOrderExecutor:
         """Gibt die Anzahl der ausgeführten Shadow-Orders zurück."""
         return self._execution_count
 
-    def get_order_log(self) -> List[ShadowOrderLog]:
+    def get_order_log(self) -> list[ShadowOrderLog]:
         """Gibt eine Kopie des Order-Logs zurück."""
         return list(self._order_log)
 
-    def get_execution_summary(self) -> Dict[str, Any]:
+    def get_execution_summary(self) -> dict[str, Any]:
         """
         Gibt eine Zusammenfassung aller Shadow-Ausführungen zurück.
 
@@ -468,7 +468,7 @@ class ShadowOrderExecutor:
 
 
 def create_shadow_executor(
-    prices: Optional[Dict[str, float]] = None,
+    prices: dict[str, float] | None = None,
     fee_rate: float = 0.0005,
     slippage_bps: float = 0.0,
     base_currency: str = "EUR",

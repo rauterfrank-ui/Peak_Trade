@@ -10,8 +10,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import pytest
-
 # Pfad-Setup
 ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
@@ -19,10 +17,9 @@ if str(ROOT_DIR) not in sys.path:
 
 from src.reporting.live_status_report import (
     LiveStatusInput,
-    build_markdown_report,
     build_html_report,
+    build_markdown_report,
 )
-
 
 # =============================================================================
 # Test Fixtures
