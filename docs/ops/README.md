@@ -235,3 +235,4 @@ python scripts/evaluate_live_session.py \
 
 - PR #110 – feat(reporting): Quarto smoke report
   - docs/ops/PR_110_MERGE_LOG.md
+- PR #116: docs/ops/PR_116_MERGE_LOG.md
