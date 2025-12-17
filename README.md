@@ -42,6 +42,14 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   - Governance- & Safety-Doku (Checklisten, Readiness, Runbooks)
   - Incident-Drills & Drill-Log
 
+- 🏥 **Stability & Resilience (Issue #97)**
+  - Health-Check-System mit Traffic-Light-Status (🟢 GREEN / 🟡 YELLOW / 🔴 RED)
+  - Circuit Breaker Pattern für externe Abhängigkeiten
+  - Rate Limiting (Token-Bucket-Algorithmus)
+  - Strukturiertes Logging & Performance-Metriken
+  - Automatische Backups & Recovery
+  - **Dokumentation:** [`docs/resilience/`](docs/resilience/)
+
 - 🛰️ **Live-/Testnet-Track**
   - Live-Ops CLI (`live_ops`) mit Health, Orders, Portfolio
   - Alerts inkl. Logging, stderr, Webhook & Slack
@@ -90,14 +98,24 @@ python scripts/research_cli.py portfolio \
   --format both
 ```
 
-### 3. Live-/Testnet Health & Portfolio prüfen (ohne echte Orders)
+### 3. System Health-Check ausführen
+
+```bash
+# Alle Komponenten prüfen
+make health-check
+
+# JSON-Format für Monitoring-Tools
+make health-check-json
+```
+
+### 4. Live-/Testnet Health & Portfolio prüfen (ohne echte Orders)
 
 ```bash
 python scripts/live_ops.py health --config config/config.toml
 python scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
-### 4. Daily Live-Status-Report generieren (Markdown)
+### 5. Daily Live-Status-Report generieren (Markdown)
 
 ```bash
 python scripts/generate_live_status_report.py \
@@ -133,6 +151,55 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 > **Safety-First:** Nur Shadow-/Testnet-Mode. Live-Mode bleibt durch Safety-Gates blockiert.
 > **Vollständiger Walkthrough:** [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+
+---
+
+## Resilience & Stability Features
+
+Peak_Trade verfügt über ein umfassendes Stability-System (Issue #97):
+
+### Health-Check-System
+```bash
+# System-Health prüfen (Traffic-Light-Status)
+make health-check
+
+# JSON-Output für Monitoring
+make health-check-json
+```
+
+### Backup & Recovery
+```bash
+# Backup erstellen
+make backup TYPE=portfolio SOURCE=./data/portfolio_state.json
+
+# Backups auflisten
+make backup-list
+
+# Backup wiederherstellen
+make restore ID=backup_id DEST=./data/
+
+# Alte Backups aufräumen
+make backup-cleanup
+```
+
+### Circuit Breaker & Resilience im Code
+```python
+from src.infra.resilience import circuit_breaker, retry_with_backoff, rate_limit
+
+# Circuit Breaker für externe APIs
+@circuit_breaker(name="exchange_api", failure_threshold=5, timeout_seconds=60)
+@retry_with_backoff(max_attempts=3, base_delay=1.0)
+@rate_limit(name="exchange_api", requests_per_second=10)
+def call_exchange_api():
+    # API-Call mit vollständigem Resilience-Stack
+    return exchange.fetch_ticker("BTC/EUR")
+```
+
+**Dokumentation:**
+- 📖 [Health Checks](docs/resilience/HEALTH_CHECKS.md)
+- 📖 [Circuit Breaker](docs/resilience/CIRCUIT_BREAKER.md)
+- 📖 [Monitoring & Logging](docs/resilience/MONITORING.md)
+- 📖 [Backup & Recovery](docs/resilience/BACKUP_RECOVERY.md)
 
 ---
 
