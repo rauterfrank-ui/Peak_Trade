@@ -236,3 +236,4 @@ python scripts/evaluate_live_session.py \
 - PR #110 – feat(reporting): Quarto smoke report
   - docs/ops/PR_110_MERGE_LOG.md
 - PR #116: docs/ops/PR_116_MERGE_LOG.md
+- PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
