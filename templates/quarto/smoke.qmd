@@ -9,6 +9,8 @@ format:
     code-fold: false
     embed-resources: true
     theme: cosmo
+execute:
+  enabled: false
 ---
 
 ## Overview
