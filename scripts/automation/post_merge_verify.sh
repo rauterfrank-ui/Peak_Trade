@@ -16,12 +16,11 @@ usage() {
 post_merge_verify.sh - Post-merge verification
 
 Usage:
-  scripts/automation/post_merge_verify.sh --expected-head <sha> [options]
-
-Required:
-  --expected-head <sha>     Expected HEAD commit SHA (short or long)
+  scripts/automation/post_merge_verify.sh [--expected-head <sha>] [options]
 
 Optional:
+  --expected-head <sha>     Expected HEAD commit SHA (short or long)
+                            Default: automatically fetches and uses origin/main
   --pr <number>             Feature PR number (context only)
   --target-pr <number>      Alias for --pr
   --merge-log-pr <number>   PR number that contains merge-log documentation (meta PR)
@@ -62,8 +61,28 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ -n "$EXPECTED" ]] || die_usage "--expected-head is required"
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || internal "Not inside a git repository"
+
+# If --expected-head not provided, default to origin/main
+if [[ -z "$EXPECTED" ]]; then
+  echo "⚠️  WARNING: --expected-head not provided, defaulting to ${REMOTE}/${BRANCH}" >&2
+
+  # Ensure we have up-to-date refs
+  if [[ "$SKIP_FETCH" -eq 0 ]]; then
+    echo "   Fetching from ${REMOTE}..." >&2
+    if ! git fetch "$REMOTE" --prune --tags >/dev/null 2>&1; then
+      internal "Failed to fetch from ${REMOTE} (required for default expected-head)"
+    fi
+  fi
+
+  # Get the commit SHA from origin/main
+  if ! EXPECTED="$(git rev-parse "${REMOTE}/${BRANCH}" 2>/dev/null)"; then
+    internal "Failed to resolve ${REMOTE}/${BRANCH} (required for default expected-head)"
+  fi
+
+  echo "   Using expected HEAD: ${EXPECTED}" >&2
+  echo "" >&2
+fi
 
 HEAD_SHA="$(git rev-parse HEAD)"
 HEAD_SHORT="$(git rev-parse --short HEAD)"
