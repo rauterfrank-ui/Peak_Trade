@@ -47,7 +47,6 @@ Usage:
     # Validate all files
     manifest.validate()
 """
-
 import hashlib
 import json
 import os

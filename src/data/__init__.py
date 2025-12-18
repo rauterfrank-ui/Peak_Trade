@@ -29,7 +29,7 @@ __all__ = [
     "DataNormalizer",
     "resample_ohlcv",
     "ParquetCache",
-]
+]   
 # Kraken-Pipeline (neu)
 from .kraken_pipeline import (
     KrakenDataPipeline,
@@ -38,13 +38,11 @@ from .kraken_pipeline import (
 )
 
 # Update __all__
-__all__.extend(
-    [
-        "KrakenDataPipeline",
-        "fetch_kraken_data",
-        "test_kraken_connection",
-    ]
-)
+__all__.extend([
+    "KrakenDataPipeline",
+    "fetch_kraken_data",
+    "test_kraken_connection",
+])
 
 # Phase 31: Kraken Live Candle Source
 from .kraken_live import (
@@ -58,18 +56,16 @@ from .kraken_live import (
     create_kraken_source_from_config,
 )
 
-__all__.extend(
-    [
-        "KrakenLiveCandleSource",
-        "FakeCandleSource",
-        "LiveCandle",
-        "ShadowPaperConfig",
-        "LiveExchangeConfig",
-        "load_shadow_paper_config",
-        "load_live_exchange_config",
-        "create_kraken_source_from_config",
-    ]
-)
+__all__.extend([
+    "KrakenLiveCandleSource",
+    "FakeCandleSource",
+    "LiveCandle",
+    "ShadowPaperConfig",
+    "LiveExchangeConfig",
+    "load_shadow_paper_config",
+    "load_live_exchange_config",
+    "create_kraken_source_from_config",
+])
 
 # Phase 79: Kraken Cache Loader with Data-QC
 from .kraken_cache_loader import (
@@ -80,24 +76,20 @@ from .kraken_cache_loader import (
     list_available_cache_files,
 )
 
-__all__.extend(
-    [
-        "KrakenDataHealth",
-        "load_kraken_cache_window",
-        "check_data_health_only",
-        "get_real_market_smokes_config",
-        "list_available_cache_files",
-    ]
-)
+__all__.extend([
+    "KrakenDataHealth",
+    "load_kraken_cache_window",
+    "check_data_health_only",
+    "get_real_market_smokes_config",
+    "list_available_cache_files",
+])
 
 # Wave A (Stability): Data Contract Gate
 from .contracts import validate_ohlcv
 
-__all__.extend(
-    [
-        "validate_ohlcv",
-    ]
-)
+__all__.extend([
+    "validate_ohlcv",
+])
 
 # Wave A (Stability): Atomic Cache Operations
 from .cache_atomic import (
@@ -105,12 +97,10 @@ from .cache_atomic import (
     atomic_read,
 )
 
-__all__.extend(
-    [
-        "atomic_write",
-        "atomic_read",
-    ]
-)
+__all__.extend([
+    "atomic_write",
+    "atomic_read",
+])
 
 # Wave B (Stability): Cache Manifest System
 from .cache_manifest import (
@@ -118,9 +108,7 @@ from .cache_manifest import (
     FileEntry,
 )
 
-__all__.extend(
-    [
-        "CacheManifest",
-        "FileEntry",
-    ]
-)
+__all__.extend([
+    "CacheManifest",
+    "FileEntry",
+])
