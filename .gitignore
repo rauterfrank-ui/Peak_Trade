@@ -77,3 +77,4 @@ live_runs/
 
 # Temporary test artifacts (Policy Critic cycles, etc.)
 tmp/
+reports/

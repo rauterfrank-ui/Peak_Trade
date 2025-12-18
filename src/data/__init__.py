@@ -83,3 +83,21 @@ __all__.extend([
     "get_real_market_smokes_config",
     "list_available_cache_files",
 ])
+
+# Wave A (Stability): Data Contract Gate
+from .contracts import validate_ohlcv
+
+__all__.extend([
+    "validate_ohlcv",
+])
+
+# Wave A (Stability): Atomic Cache Operations
+from .cache_atomic import (
+    atomic_write,
+    atomic_read,
+)
+
+__all__.extend([
+    "atomic_write",
+    "atomic_read",
+])

@@ -9,6 +9,16 @@ Es gibt zwei Config-Systeme:
 3. config_registry.py - Registry-basiert (für Portfolio-Backtests)
 """
 
+# Wave A (Stability): Error Taxonomy
+from .errors import (
+    PeakTradeError,
+    DataContractError,
+    ConfigError,
+    ProviderError,
+    CacheCorruptionError,
+    BacktestInvariantError,
+)
+
 # Alte Pydantic-Config (Legacy)
 from .config_pydantic import (
     Settings,
@@ -51,7 +61,36 @@ from .environment import (
     is_live,
 )
 
+# Wave A (Stability): Repro Context & Seed Policy
+from .repro import (
+    ReproContext,
+    set_global_seed,
+    verify_determinism,
+)
+
+# Resilience & Stability
+from .resilience import (
+    CircuitBreaker,
+    CircuitState,
+    circuit_breaker,
+    retry_with_backoff,
+    HealthCheck,
+    HealthCheckResult,
+    health_check,
+)
+
 __all__ = [
+    # Wave A (Stability): Error Taxonomy
+    "PeakTradeError",
+    "DataContractError",
+    "ConfigError",
+    "ProviderError",
+    "CacheCorruptionError",
+    "BacktestInvariantError",
+    # Wave A (Stability): Repro
+    "ReproContext",
+    "set_global_seed",
+    "verify_determinism",
     # Legacy Pydantic
     "Settings",
     "StrategyConfig",
@@ -82,4 +121,12 @@ __all__ = [
     "is_paper",
     "is_testnet",
     "is_live",
+    # Resilience & Stability
+    "CircuitBreaker",
+    "CircuitState",
+    "circuit_breaker",
+    "retry_with_backoff",
+    "HealthCheck",
+    "HealthCheckResult",
+    "health_check",
 ]
