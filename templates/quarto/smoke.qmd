@@ -26,7 +26,7 @@ This is a minimal **smoke test** report for Quarto rendering in the Peak Trade p
 
 ## Environment Info
 
-```{python}
+```python
 import sys
 import platform
 from datetime import datetime
@@ -38,9 +38,9 @@ print(f"Report generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 ## Basic Computation
 
-Simple Python example to verify code execution:
+Simple Python example (non-executable):
 
-```{python}
+```python
 # Sample data
 import numpy as np
 import pandas as pd
@@ -56,7 +56,7 @@ print(df)
 
 ## Simple Visualization
 
-```{python}
+```python
 import matplotlib.pyplot as plt
 
 # Create a simple bar chart
@@ -77,8 +77,8 @@ plt.show()
 **Supported features:**
 
 - Markdown rendering
-- Python code execution
-- Matplotlib plots
+- Python code highlighting (non-executable)
+- Static code examples
 - Self-contained HTML output
 
 ### Tables
@@ -86,8 +86,8 @@ plt.show()
 | Feature | Status |
 |---------|--------|
 | Quarto HTML | ✓ |
-| Python execution | ✓ |
-| Plots | ✓ |
+| Python syntax highlighting | ✓ |
+| Markdown rendering | ✓ |
 | CI artifact | ✓ |
 
 ## Summary
@@ -97,9 +97,9 @@ plt.show()
 This report demonstrates:
 
 1. Successful Quarto installation
-2. Python code execution within Quarto
-3. Matplotlib visualization rendering
-4. Self-contained HTML output (no external dependencies)
+2. Pure Markdown-to-HTML rendering (no runtime execution)
+3. Python syntax highlighting
+4. Self-contained HTML output (no Python/Jupyter dependencies)
 5. Ready for CI/CD integration
 
 ---
