@@ -245,6 +245,8 @@ ops/observability/
 
 ### Phase 2.1: Data Lake Foundation (4-6 weeks)
 
+**Status:** ✅ MINIMAL IMPLEMENTATION COMPLETE (2025-12-18)
+
 **Goals:**
 - Define schema (`src/data/lake/schema.py`)
 - Implement ingest pipeline (`src/data/lake/ingest.py`)
@@ -255,6 +257,52 @@ ops/observability/
 - Working DuckDB data lake
 - CLI tool to ingest Evidence Chain runs
 - Example queries in documentation
+
+**Actual Delivery (Minimal P2.1):**
+- ✅ Core infrastructure: `src/data/lake/` package created
+- ✅ `LakeClient` class with minimal API:
+  - `create_table_from_df()`: Load DataFrames into DuckDB
+  - `register_parquet_file()`: Register single parquet file as table
+  - `register_parquet_folder()`: Register folder of parquet files as table
+  - `query()`: Execute SQL and return DataFrame
+  - `execute()`: Execute DDL statements
+- ✅ Optional dependency management: `pip install peak_trade[lake]` or `pip install duckdb`
+- ✅ Graceful degradation: `is_lake_available()` check, clear error messages
+- ✅ Comprehensive tests (`tests/data/test_lake_client.py`):
+  - Without duckdb: Imports work, clear error on usage
+  - With duckdb: Full roundtrip tests (create, query, parquet)
+- ✅ Clean, typed API with docstrings
+
+**Done Criteria Met:**
+- ✅ DuckDB client works (in-memory and persistent)
+- ✅ Parquet registration (files and folders via glob patterns)
+- ✅ SQL query interface with DataFrame results
+- ✅ Tests cover both with/without duckdb scenarios
+- ✅ No observability/Grafana/OTel in this step (as designed)
+
+**Remaining P2.1 Work (Future):**
+- ❌ Schema definition for Evidence Chain artifacts (`schema.py`)
+- ❌ Ingest pipeline for Evidence Chain runs (`ingest.py`)
+- ❌ High-level query API (`query.py` with filters/aggregation)
+- ❌ Retention policies and maintenance (`maintenance.py`)
+
+**Usage Example:**
+```python
+from src.data.lake import LakeClient, is_lake_available
+
+if not is_lake_available():
+    print("Data lake features disabled - install: pip install peak_trade[lake]")
+else:
+    with LakeClient(":memory:") as client:
+        # Load DataFrame into table
+        import pandas as pd
+        df = pd.DataFrame({"symbol": ["BTC", "ETH"], "price": [50000, 3000]})
+        client.create_table_from_df(df, "crypto")
+
+        # Query with SQL
+        result = client.query("SELECT * FROM crypto WHERE price > 4000")
+        print(result)
+```
 
 ### Phase 2.2: Observability Wiring (3-4 weeks)
 
