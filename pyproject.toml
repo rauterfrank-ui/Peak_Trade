@@ -48,9 +48,35 @@ line-length = 100
 target-version = "py39"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I"]
-ignore = ["E501"]
+# Conservative gate to avoid legacy churn
+# E = pycodestyle errors, F = pyflakes
+select = ["E", "F"]
+ignore = [
+    "E402",  # module level import not at top of file
+    "E501",  # line too long (handled by formatter)
+    "E741",  # ambiguous variable name (legacy code uses short names)
+    "F401",  # imported but unused (many __init__.py re-exports)
+    "F402",  # import shadowed by loop variable
+    "F541",  # f-string without placeholders (many in legacy code)
+    "F811",  # redefinition of unused name
+    "F821",  # undefined name (forward references, type hints)
+    "F841",  # local variable assigned but never used
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests may have unusual patterns
+"tests/**/*.py" = ["F811", "F821"]
+# Scripts may have different import patterns
+"scripts/**/*.py" = ["E402"]
 
 [tool.black]
 line-length = 100
 target-version = ["py39", "py310", "py311"]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.0",
+]

@@ -167,11 +167,9 @@ Konvention:
 - **Automation Runbook**: [PR_REPORT_AUTOMATION_RUNBOOK.md](PR_REPORT_AUTOMATION_RUNBOOK.md) – Generate, validate, and CI guard PR reports
 
 - PR #45 – CI Fast Lane Verification Log: `docs/ops/PR_45_FINAL_REPORT.md`
-- PR #51 – Live Eval CLI + Metrics Final Report: `docs/ops/PR_51_FINAL_REPORT.md`
+- PR #51 – Live Session Evaluation CLI: `docs/ops/PR_51_FINAL_REPORT.md`
 - PR #53 – Final Closeout Report: `docs/ops/PR_53_FINAL_REPORT.md`
 - PR #59 – Final Report: `docs/ops/PR_59_FINAL_REPORT.md`
-
----
 - PR #61 – Final Report: `docs/ops/PR_61_FINAL_REPORT.md`
 - PR #62 – Final Report: `docs/ops/PR_62_FINAL_REPORT.md`
 - PR #63 – Final Report: `docs/ops/PR_63_FINAL_REPORT.md`
@@ -192,6 +190,11 @@ Post-merge documentation logs for operational PRs.
 - PR #90 – chore(ops): add git state + post-merge verification scripts – `docs/ops/PR_90_MERGE_LOG.md`
 - PR #92 – Merge Log: `docs/ops/PR_92_MERGE_LOG.md`
 - PR #93 – Merge Log: `docs/ops/PR_93_MERGE_LOG.md`
+- PR #110 – feat(reporting): Quarto smoke report – `docs/ops/PR_110_MERGE_LOG.md`
+- PR #112 – fix(reporting): make Quarto smoke report no-exec – `docs/ops/PR_112_MERGE_LOG.md`
+- PR #114 – fix(reporting): make Quarto smoke report truly no-exec – `docs/ops/PR_114_MERGE_LOG.md`
+- PR #116 – Merge Log: `docs/ops/PR_116_MERGE_LOG.md`
+- PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
 
 ---
 
