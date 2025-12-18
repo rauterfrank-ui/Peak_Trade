@@ -68,6 +68,17 @@ from .repro import (
     verify_determinism,
 )
 
+# Resilience & Stability
+from .resilience import (
+    CircuitBreaker,
+    CircuitState,
+    circuit_breaker,
+    retry_with_backoff,
+    HealthCheck,
+    HealthCheckResult,
+    health_check,
+)
+
 __all__ = [
     # Wave A (Stability): Error Taxonomy
     "PeakTradeError",
@@ -110,4 +121,12 @@ __all__ = [
     "is_paper",
     "is_testnet",
     "is_live",
+    # Resilience & Stability
+    "CircuitBreaker",
+    "CircuitState",
+    "circuit_breaker",
+    "retry_with_backoff",
+    "HealthCheck",
+    "HealthCheckResult",
+    "health_check",
 ]
