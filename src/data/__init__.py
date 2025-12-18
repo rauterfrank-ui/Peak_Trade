@@ -101,3 +101,14 @@ __all__.extend([
     "atomic_write",
     "atomic_read",
 ])
+
+# Wave B (Stability): Cache Manifest System
+from .cache_manifest import (
+    CacheManifest,
+    FileEntry,
+)
+
+__all__.extend([
+    "CacheManifest",
+    "FileEntry",
+])

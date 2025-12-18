@@ -66,6 +66,8 @@ from .repro import (
     ReproContext,
     set_global_seed,
     verify_determinism,
+    get_git_sha,  # Wave B: public export
+    stable_hash_dict,  # Wave B: public export
 )
 
 # Resilience & Stability
@@ -91,6 +93,9 @@ __all__ = [
     "ReproContext",
     "set_global_seed",
     "verify_determinism",
+    # Wave B (Stability): Repro Metadata Helpers
+    "get_git_sha",
+    "stable_hash_dict",
     # Legacy Pydantic
     "Settings",
     "StrategyConfig",
