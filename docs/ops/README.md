@@ -181,7 +181,6 @@ Konvention:
 ---
 
 ## Merge Logs (Ops)
-
 Post-merge documentation logs for operational PRs.
 
 - PR #76 – Merge Log: `docs/ops/PR_76_MERGE_LOG.md`
@@ -197,7 +196,7 @@ Post-merge documentation logs for operational PRs.
 - PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
 
 ---
-
+- PR #80 – Merge Log: `docs/ops/PR_80_MERGE_LOG.md`
 ## Live Session Evaluation
 
 Offline tool for analyzing live trading sessions from `fills.csv`.
