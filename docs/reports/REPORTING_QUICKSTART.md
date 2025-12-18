@@ -112,7 +112,7 @@ The `trades.parquet` file is optional and will be skipped if the parquet engine 
 
 ## Report Template
 
-The Quarto report template is in `reports/quarto/backtest_report.qmd`.
+The Quarto report template is in `templates/quarto/backtest_report.qmd`.
 
 **Key features:**
 
@@ -125,7 +125,7 @@ The Quarto report template is in `reports/quarto/backtest_report.qmd`.
 
 ### Edit Template
 
-Edit `reports/quarto/backtest_report.qmd` to customize:
+Edit `templates/quarto/backtest_report.qmd` to customize:
 
 - Sections
 - Metrics display
@@ -263,4 +263,4 @@ done
 
 - 📖 Read [P1 Evidence Chain Spec](../../docs/stability/P1_EVIDENCE_CHAIN.md) for design details
 - 🧪 Check [tests/test_evidence_chain.py](../../tests/test_evidence_chain.py) for usage examples
-- 📊 Customize [reports/quarto/backtest_report.qmd](../../reports/quarto/backtest_report.qmd) for your needs
+- 📊 Customize [templates/quarto/backtest_report.qmd](../../templates/quarto/backtest_report.qmd) for your needs
