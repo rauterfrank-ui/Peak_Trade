@@ -219,6 +219,15 @@ python scripts/evaluate_live_session.py \
 
 ---
 
+## Stability & Resilience
+
+- **Stability & Resilience Plan v1**: [STABILITY_RESILIENCE_PLAN_V1.md](STABILITY_RESILIENCE_PLAN_V1.md)
+  - Production-readiness initiative (data contracts, atomic cache, error taxonomy, reproducibility, config validation, observability, CI smoke gates)
+  - Milestone: [Stability & Resilience v1](https://github.com/rauterfrank-ui/Peak_Trade/milestone/1)
+  - Issues: [#124](https://github.com/rauterfrank-ui/Peak_Trade/issues/124) - [#134](https://github.com/rauterfrank-ui/Peak_Trade/issues/134)
+
+---
+
 ## Related Documentation
 
 - `scripts/run_audit.sh` - Audit script implementation
