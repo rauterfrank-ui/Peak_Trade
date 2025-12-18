@@ -51,6 +51,17 @@ from .environment import (
     is_live,
 )
 
+# Resilience & Stability
+from .resilience import (
+    CircuitBreaker,
+    CircuitState,
+    circuit_breaker,
+    retry_with_backoff,
+    HealthCheck,
+    HealthCheckResult,
+    health_check,
+)
+
 __all__ = [
     # Legacy Pydantic
     "Settings",
@@ -82,4 +93,12 @@ __all__ = [
     "is_paper",
     "is_testnet",
     "is_live",
+    # Resilience & Stability
+    "CircuitBreaker",
+    "CircuitState",
+    "circuit_breaker",
+    "retry_with_backoff",
+    "HealthCheck",
+    "HealthCheckResult",
+    "health_check",
 ]
