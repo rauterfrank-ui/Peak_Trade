@@ -4,6 +4,18 @@ Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit konsequ
 
 ---
 
+## CI/CD Status
+
+Peak_Trade verwendet eine moderne **3-Tier CI/CD Pipeline** für schnelles Feedback und umfassende Qualitätssicherung:
+
+- **TIER 1** (Fast Gates <5min): Linting, Formatting, Security Scans
+- **TIER 2** (Core CI <15min): Unit Tests (Python 3.10/3.11/3.12), Integration Tests, Strategy Smoke Tests
+- **TIER 3** (Deep Validation): Audit Checks, Test Health Monitoring
+
+📖 **Details:** [`docs/ops/CI_CD_ARCHITECTURE.md`](docs/ops/CI_CD_ARCHITECTURE.md)
+
+---
+
 ## Schnelleinstieg
 
 - 📖 **Vollständige v1.0-Übersicht:** [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](docs/PEAK_TRADE_V1_OVERVIEW_FULL.md)
