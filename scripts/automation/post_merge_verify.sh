@@ -20,7 +20,7 @@ Usage:
 
 Optional:
   --expected-head <sha>     Expected HEAD commit SHA (short or long)
-                            Default: origin/main (after git fetch origin)
+                            If omitted, defaults to origin/main after git fetch
   --pr <number>             Feature PR number (context only)
   --target-pr <number>      Alias for --pr
   --merge-log-pr <number>   PR number that contains merge-log documentation (meta PR)
@@ -70,15 +70,12 @@ done
 
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || internal "Not inside a git repository"
 
-# Default to origin/main if --expected-head not provided
+# Default EXPECTED to origin/main if not provided
 if [[ -z "$EXPECTED" ]]; then
-  echo "WARN: --expected-head not provided; defaulting to origin/main" >&2
-  if ! git fetch origin >/dev/null 2>&1; then
-    internal "Failed to fetch origin for default --expected-head"
-  fi
-  if ! EXPECTED="$(git rev-parse --verify origin/main 2>/dev/null)"; then
-    internal "Cannot resolve origin/main for default --expected-head"
-  fi
+  echo "⚠️  WARN: --expected-head not provided; defaulting to origin/${BRANCH} after git fetch" >&2
+  git fetch "$REMOTE" --prune --tags >/dev/null 2>&1 || internal "Failed to fetch ${REMOTE}"
+  EXPECTED="$(git rev-parse "${REMOTE}/${BRANCH}")" || internal "Failed to resolve ${REMOTE}/${BRANCH}"
+  SKIP_FETCH=1  # Already fetched
 fi
 
 HEAD_SHA="$(git rev-parse HEAD)"
