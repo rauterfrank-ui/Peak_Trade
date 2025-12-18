@@ -101,18 +101,29 @@ class ReproContext:
         return json.dumps(self.to_dict(), indent=2)
 
 
-def _get_git_sha() -> Optional[str]:
+def get_git_sha(short: bool = True) -> Optional[str]:
     """
-    Get current git SHA (short form).
+    Get current git SHA.
+
+    Args:
+        short: If True, return short SHA (7 chars), else full SHA
 
     Returns:
-        Git SHA (7 chars) or None if not in git repo
+        Git SHA or None if not in git repo
+
+    Example:
+        >>> sha = get_git_sha()  # 'abc1234'
+        >>> sha_full = get_git_sha(short=False)  # 'abc1234567890...'
     """
     import subprocess
 
     try:
+        cmd = ["git", "rev-parse", "HEAD"]
+        if short:
+            cmd.insert(2, "--short=7")
+
         result = subprocess.run(
-            ["git", "rev-parse", "--short=7", "HEAD"],
+            cmd,
             capture_output=True,
             text=True,
             timeout=1.0,
@@ -125,7 +136,17 @@ def _get_git_sha() -> Optional[str]:
     return None
 
 
-def _stable_hash_dict(d: Dict[str, Any]) -> str:
+def _get_git_sha() -> Optional[str]:
+    """
+    Get current git SHA (short form) - legacy wrapper.
+
+    Returns:
+        Git SHA (7 chars) or None if not in git repo
+    """
+    return get_git_sha(short=True)
+
+
+def stable_hash_dict(d: Dict[str, Any], short: bool = True) -> str:
     """
     Compute stable SHA256 hash of dict.
 
@@ -136,14 +157,30 @@ def _stable_hash_dict(d: Dict[str, Any]) -> str:
 
     Args:
         d: Dict to hash
+        short: If True, return first 16 chars, else full hash
 
     Returns:
-        SHA256 hex string (first 16 chars)
+        SHA256 hex string (16 chars if short=True, 64 chars if short=False)
+
+    Example:
+        >>> config = {"seed": 42, "strategy": "ma_crossover"}
+        >>> stable_hash_dict(config)  # '1a2b3c4d5e6f7g8h'
+        >>> stable_hash_dict(config, short=False)  # '1a2b3c4d...(64 chars)'
     """
     # Canonical JSON: sorted keys, no whitespace
     canonical_json = json.dumps(d, sort_keys=True, separators=(",", ":"))
     sha256 = hashlib.sha256(canonical_json.encode("utf-8"))
-    return sha256.hexdigest()[:16]  # First 16 chars
+    return sha256.hexdigest()[:16] if short else sha256.hexdigest()
+
+
+def _stable_hash_dict(d: Dict[str, Any]) -> str:
+    """
+    Compute stable SHA256 hash of dict (short form) - legacy wrapper.
+
+    Returns:
+        SHA256 hex string (first 16 chars)
+    """
+    return stable_hash_dict(d, short=True)
 
 
 def set_global_seed(seed: int) -> None:

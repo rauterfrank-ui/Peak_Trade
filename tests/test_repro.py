@@ -177,3 +177,75 @@ def test_repro_context_git_sha_explicit():
     """ReproContext accepts explicit git SHA."""
     ctx = ReproContext.create(git_sha="abc1234")
     assert ctx.git_sha == "abc1234"
+
+
+# Wave B: Tests for public metadata helpers
+def test_get_git_sha_short():
+    """get_git_sha() returns short SHA (7 chars) by default."""
+    from src.core.repro import get_git_sha
+
+    sha = get_git_sha()
+
+    # Either returns SHA or None (if not in git repo)
+    if sha is not None:
+        assert len(sha) == 7
+        assert sha.isalnum()
+
+
+def test_get_git_sha_full():
+    """get_git_sha(short=False) returns full SHA (40 chars)."""
+    from src.core.repro import get_git_sha
+
+    sha = get_git_sha(short=False)
+
+    if sha is not None:
+        assert len(sha) == 40
+        assert sha.isalnum()
+
+
+def test_stable_hash_dict_short():
+    """stable_hash_dict() returns short hash (16 chars) by default."""
+    from src.core.repro import stable_hash_dict
+
+    config = {"seed": 42, "strategy": "ma_crossover"}
+    hash_value = stable_hash_dict(config)
+
+    assert len(hash_value) == 16
+    assert hash_value.isalnum()
+
+
+def test_stable_hash_dict_full():
+    """stable_hash_dict(short=False) returns full hash (64 chars)."""
+    from src.core.repro import stable_hash_dict
+
+    config = {"seed": 42, "strategy": "ma_crossover"}
+    hash_value = stable_hash_dict(config, short=False)
+
+    assert len(hash_value) == 64
+    assert hash_value.isalnum()
+
+
+def test_stable_hash_dict_key_order_independent():
+    """stable_hash_dict() is independent of key order."""
+    from src.core.repro import stable_hash_dict
+
+    config1 = {"a": 1, "b": 2, "c": 3}
+    config2 = {"c": 3, "a": 1, "b": 2}
+
+    hash1 = stable_hash_dict(config1)
+    hash2 = stable_hash_dict(config2)
+
+    assert hash1 == hash2
+
+
+def test_stable_hash_dict_value_sensitive():
+    """stable_hash_dict() changes with different values."""
+    from src.core.repro import stable_hash_dict
+
+    config1 = {"seed": 42}
+    config2 = {"seed": 43}
+
+    hash1 = stable_hash_dict(config1)
+    hash2 = stable_hash_dict(config2)
+
+    assert hash1 != hash2
