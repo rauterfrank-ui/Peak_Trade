@@ -192,6 +192,10 @@ Post-merge documentation logs for operational PRs.
 - PR #90 – chore(ops): add git state + post-merge verification scripts – `docs/ops/PR_90_MERGE_LOG.md`
 - PR #92 – Merge Log: `docs/ops/PR_92_MERGE_LOG.md`
 - PR #93 – Merge Log: `docs/ops/PR_93_MERGE_LOG.md`
+- PR #110 – feat(reporting): Quarto smoke report – `docs/ops/PR_110_MERGE_LOG.md`
+- PR #114 – fix(reporting): make Quarto smoke report truly no-exec – `docs/ops/PR_114_MERGE_LOG.md`
+- PR #116 – Merge Log: `docs/ops/PR_116_MERGE_LOG.md`
+- PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
 
 ---
 
@@ -232,8 +236,3 @@ python scripts/evaluate_live_session.py \
 ---
 
 *Operations guide for Peak_Trade repository health and maintenance.*
-
-- PR #110 – feat(reporting): Quarto smoke report
-  - docs/ops/PR_110_MERGE_LOG.md
-- PR #116: docs/ops/PR_116_MERGE_LOG.md
-- PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
