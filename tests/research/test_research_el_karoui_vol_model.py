@@ -501,7 +501,7 @@ class TestSmoke:
     def test_report_path_constant(self) -> None:
         """Prüft, dass REPORT_PATH korrekt gesetzt ist."""
         assert REPORT_PATH.name == "R_AND_D_EL_KAROUI_VOL_MODEL_V1.md"
-        assert "reports" in str(REPORT_PATH)
+        assert "docs/research" in str(REPORT_PATH)
 
     def test_defaults_are_valid(self) -> None:
         """Prüft, dass alle Default-Werte gültig sind."""
