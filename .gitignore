@@ -67,6 +67,7 @@ htmlcov/
 *.backup
 *~
 test_runs/
+backups/
 
 # Local AI / test artefacts
 .claude/

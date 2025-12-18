@@ -42,6 +42,13 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   - Governance- & Safety-Doku (Checklisten, Readiness, Runbooks)
   - Incident-Drills & Drill-Log
 
+- 🔧 **Resilience & Stability** (Issue #97)
+  - Health-Check-System mit Ampel-Status (GREEN/YELLOW/RED)
+  - Circuit-Breaker-Pattern für Exchange-APIs
+  - Rate-Limiting & Retry-Logic mit Exponential Backoff
+  - Strukturiertes JSON-Logging & Performance-Metriken
+  - Automatische Backups & Recovery
+
 - 🛰️ **Live-/Testnet-Track**
   - Live-Ops CLI (`live_ops`) mit Health, Orders, Portfolio
   - Alerts inkl. Logging, stderr, Webhook & Slack
@@ -150,6 +157,12 @@ python scripts/report_live_sessions.py --summary-only --stdout
   3. Daily/Weekly Live-Status-Reports generieren
   4. Incident-Drills regelmäßig ausführen: [`docs/INCIDENT_SIMULATION_AND_DRILLS.md`](docs/INCIDENT_SIMULATION_AND_DRILLS.md)
 
+- 🔧 **System-Health & Backups**
+  1. Health-Checks ausführen: `make health-check`
+  2. Backup erstellen: `make backup`
+  3. Backups auflisten: `make backup-list`
+  4. Bei Problemen wiederherstellen: `make restore`
+
 - 🧪 **Incident-Handling üben**
   1. Drill-Szenario auswählen (Data-Gap, PnL-Divergenz, Risk-Limit, Alerts)
   2. Drill gemäß `INCIDENT_SIMULATION_AND_DRILLS.md` durchführen
@@ -185,6 +198,12 @@ python scripts/report_live_sessions.py --summary-only --stdout
   - [`docs/INCIDENT_DRILL_LOG.md`](docs/INCIDENT_DRILL_LOG.md)  
   - [`docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`](docs/RUNBOOKS_AND_INCIDENT_HANDLING.md)
 
+- **Resilience & Stability (Issue #97)**
+  - [`docs/resilience/HEALTH_CHECKS.md`](docs/resilience/HEALTH_CHECKS.md)
+  - [`docs/resilience/CIRCUIT_BREAKER.md`](docs/resilience/CIRCUIT_BREAKER.md)
+  - [`docs/resilience/MONITORING.md`](docs/resilience/MONITORING.md)
+  - [`docs/resilience/BACKUP_RECOVERY.md`](docs/resilience/BACKUP_RECOVERY.md)
+
 - **Governance & Safety**  
   [`docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`](docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md)
 
@@ -195,9 +214,35 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 ## Audit & Tooling
 
-Peak_Trade includes a comprehensive audit system for repository health checks.
+Peak_Trade includes comprehensive systems for health checks, backups, and monitoring.
 
-### Quick Audit
+### Health Checks
+
+```bash
+# Run system health checks
+make health-check
+
+# JSON output for monitoring tools
+make health-check-json
+```
+
+### Backup & Recovery
+
+```bash
+# Create backup
+make backup
+
+# List backups
+make backup-list
+
+# Restore from latest backup
+make restore
+
+# Restore from specific backup
+python src/infra/backup/__main__.py restore <backup_id>
+```
+
+### Repository Audit
 
 ```bash
 # Run full audit (safe, idempotent)
