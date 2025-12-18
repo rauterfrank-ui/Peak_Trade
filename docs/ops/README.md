@@ -193,6 +193,7 @@ Post-merge documentation logs for operational PRs.
 - PR #92 – Merge Log: `docs/ops/PR_92_MERGE_LOG.md`
 - PR #93 – Merge Log: `docs/ops/PR_93_MERGE_LOG.md`
 - PR #110 – feat(reporting): Quarto smoke report – `docs/ops/PR_110_MERGE_LOG.md`
+- PR #112 – fix(reporting): make Quarto smoke report no-exec – `docs/ops/PR_112_MERGE_LOG.md`
 - PR #114 – fix(reporting): make Quarto smoke report truly no-exec – `docs/ops/PR_114_MERGE_LOG.md`
 - PR #116 – Merge Log: `docs/ops/PR_116_MERGE_LOG.md`
 - PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
