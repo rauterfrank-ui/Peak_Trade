@@ -1,0 +1,25 @@
+name: peak-trade
+
+services:
+  mlflow:
+    build:
+      context: ..
+      dockerfile: docker/mlflow/Dockerfile
+    container_name: peak-trade-mlflow
+    ports:
+      - "${MLFLOW_PORT:-5001}:5000"
+    environment:
+      # Wird im Container genutzt (sqlite + artifacts lokal im Volume)
+      MLFLOW_BACKEND_STORE_URI: sqlite:////mlflow/mlflow.db
+      MLFLOW_DEFAULT_ARTIFACT_ROOT: /mlflow/artifacts
+    volumes:
+      - peak_trade_mlflow:/mlflow
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri ${MLFLOW_BACKEND_STORE_URI}
+      --default-artifact-root ${MLFLOW_DEFAULT_ARTIFACT_ROOT}
+
+volumes:
+  peak_trade_mlflow:
