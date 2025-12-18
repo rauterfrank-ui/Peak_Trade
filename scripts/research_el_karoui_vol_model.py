@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Sequence
 
 # Standard-Pfad für den Report (aus Repo-Root ausgeführt)
-REPORT_PATH = Path("docs/reports/R_AND_D_EL_KAROUI_VOL_MODEL_V1.md")
+REPORT_PATH = Path("docs/research/R_AND_D_EL_KAROUI_VOL_MODEL_V1.md")
 
 # Defaults – bei Bedarf anpassen
 DEFAULT_SYMBOLS: list[str] = ["SPY", "QQQ", "EURUSD"]
