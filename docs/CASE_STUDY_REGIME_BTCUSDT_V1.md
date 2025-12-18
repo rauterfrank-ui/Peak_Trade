@@ -376,11 +376,3 @@ Vor Übernahme in Shadow/Testnet/Live:
 
 
 
-
-
-
-
-
-
-
-

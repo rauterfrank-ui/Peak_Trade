@@ -17,6 +17,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate PR final report formatting
+        run: |
+          chmod +x scripts/validate_pr_report_format.sh
+          chmod +x scripts/automation/validate_all_pr_reports.sh
+          bash scripts/automation/validate_all_pr_reports.sh
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

@@ -161,13 +161,38 @@ git clean -fdX
 ---
 
 ## Audit Logs (Ops)
-
 Konvention:
 - Dateien: `docs/ops/PR_<NN>_FINAL_REPORT.md` (Verification Log pro PR)
 - Regel: Wenn ein Ops-PR einen auditierbaren Verification Log erzeugt, hier verlinken.
+- **Automation Runbook**: [PR_REPORT_AUTOMATION_RUNBOOK.md](PR_REPORT_AUTOMATION_RUNBOOK.md) – Generate, validate, and CI guard PR reports
 
 - PR #45 – CI Fast Lane Verification Log: `docs/ops/PR_45_FINAL_REPORT.md`
 - PR #51 – Live Session Evaluation CLI: `docs/ops/PR_51_FINAL_REPORT.md`
+- PR #53 – Final Closeout Report: `docs/ops/PR_53_FINAL_REPORT.md`
+- PR #59 – Final Report: `docs/ops/PR_59_FINAL_REPORT.md`
+- PR #61 – Final Report: `docs/ops/PR_61_FINAL_REPORT.md`
+- PR #62 – Final Report: `docs/ops/PR_62_FINAL_REPORT.md`
+- PR #63 – Final Report: `docs/ops/PR_63_FINAL_REPORT.md`
+- PR #66 – Final Report: `docs/ops/PR_66_FINAL_REPORT.md`
+- PR #70 – Final Report: `docs/ops/PR_70_FINAL_REPORT.md`
+- PR #73 – Final Report: `docs/ops/PR_73_FINAL_REPORT.md`
+- PR #74 – Final Report: `docs/ops/PR_74_FINAL_REPORT.md`
+
+---
+
+## Merge Logs (Ops)
+
+Post-merge documentation logs for operational PRs.
+
+- PR #76 – Merge Log: `docs/ops/PR_76_MERGE_LOG.md`
+- PR #85 – Merge Log: `docs/ops/PR_85_MERGE_LOG.md`
+- PR #87 – Merge Log: `docs/ops/PR_87_MERGE_LOG.md`
+- PR #90 – chore(ops): add git state + post-merge verification scripts – `docs/ops/PR_90_MERGE_LOG.md`
+- PR #92 – Merge Log: `docs/ops/PR_92_MERGE_LOG.md`
+- PR #93 – Merge Log: `docs/ops/PR_93_MERGE_LOG.md`
+- PR #110 – feat(reporting): Quarto smoke report – `docs/ops/PR_110_MERGE_LOG.md`
+- PR #116 – Merge Log: `docs/ops/PR_116_MERGE_LOG.md`
+- PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
 
 ---
 
@@ -200,7 +225,9 @@ python scripts/evaluate_live_session.py \
 - `scripts/run_audit.sh` - Audit script implementation
 - `docs/ops/PYTHON_VERSION_PLAN.md` - Python upgrade roadmap
 - `docs/ops/AUDIT_VALIDATION_NOTES.md` - Baseline validation findings
+- `GIT_STATE_VALIDATION.md` – Git state validation utilities and usage
 - `docs/ops/LIVE_SESSION_EVALUATION.md` - Live session evaluation runbook
+- `docs/ops/WORKTREE_POLICY.md` - Git worktree management policy
 - `Makefile` - All available make targets
 
 ---

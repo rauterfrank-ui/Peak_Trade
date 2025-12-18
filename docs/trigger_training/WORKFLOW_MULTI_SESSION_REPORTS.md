@@ -306,11 +306,3 @@ Dokumentation: `docs/trigger_training/`
 
 **Happy Drilling!** 🚀
 
-
-
-
-
-
-
-
-
