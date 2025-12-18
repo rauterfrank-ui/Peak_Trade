@@ -32,6 +32,13 @@ Optional:
   --strict                  Treat warnings as failures where possible
   -h, --help                Show help
 
+Examples:
+  scripts/automation/post_merge_verify.sh
+  # Validates HEAD against origin/main (with warning)
+
+  scripts/automation/post_merge_verify.sh --expected-head abc1234
+  # Validates HEAD against specified commit
+
 Exit codes:
   0  success
   2  usage error
