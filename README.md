@@ -211,6 +211,8 @@ make audit
 - `summary.md` - Human-readable report with status indicators
 - Individual check outputs (pytest, secrets scan, live gating, etc.)
 
+> **Note:** `reports/` contains generated artifacts and is ignored by git (`/reports/` in `.gitignore`). See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for details.
+
 ### Install Audit Tools
 
 ```bash
