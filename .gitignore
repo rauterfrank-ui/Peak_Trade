@@ -38,17 +38,8 @@ ENV/
 *.h5
 *.db
 
-# Reports & Visualizations (generierte Artefakte)
-# Explizit ignoriert: nur generierte/temporäre Report-Ordner
-# NICHT ignoriert: reports/ideas/, reports/portfolio/, reports/sweeps/ (getrackt)
-reports/experiments/
-reports/offline_paper_trade/
-reports/offline_synth/
-reports/r_and_d/
-reports/test_health/
-reports/walkforward/
-reports/monte_carlo/
-reports/stress/
+# Generated artifacts (local-only)
+/reports/
 
 # Secrets (KRITISCH!)
 .env
@@ -86,6 +77,4 @@ live_runs/
 
 # Temporary test artifacts (Policy Critic cycles, etc.)
 tmp/
-
-# Local audit outputs
-reports/audit/
+reports/

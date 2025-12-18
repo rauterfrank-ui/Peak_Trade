@@ -1238,6 +1238,54 @@ Für eine zentrale Sammlung aller Live-Track-, Dashboard-, Playbook- und Safety-
 
 ## 14. Releases / Changelog
 
+### 14.1 **Phase 76 – R&D Experiments Overview v1.1 (R&D Hub im Web-Dashboard)**
+
+Phase 76 hebt die R&D-Experimente-Übersicht im Web-Dashboard auf **v1.1** und etabliert sie als zentralen **R&D Hub**. Die View verbindet Registry-Daten, neue R&D-API-Endpunkte und ein geschärftes UI für den täglichen Research-Flow.
+
+**Ziele**
+
+* Schneller Überblick: *Was läuft gerade? Was ist heute fertig geworden?*
+* Bessere Lesbarkeit bei vielen Runs (verschiedene Run-Types, Tiers, Kategorien)
+* Klar definierter Einstiegspunkt für kommende R&D-Wellen (Ehlers, Armstrong, Lopez de Prado, El Karoui)
+
+**Änderungen / Highlights**
+
+* **R&D-API (`src/webui/r_and_d_api.py`)**
+
+  * Neue Felder: `run_type`, `tier`, `experiment_category`, `date_str`
+  * Erweiterte Status-Werte: `success`, `running`, `failed`, `no_trades`
+  * Neue Endpoints:
+
+    * `GET /api/r_and_d/today` – heute fertiggestellte Experimente
+    * `GET /api/r_and_d/running` – aktuell laufende Experimente
+    * `GET /api/r_and_d/categories` – verfügbare Kategorien & Run-Types
+  * Kategorie-Mapping aus Strategy/Preset (z.B. cycles, ml, volatility)
+
+* **Dashboard-Template (`templates/peak_trade_dashboard/r_and_d_experiments.html`)**
+
+  * R&D Hub Header mit Titel, Emoji und Kurzbeschreibung
+  * Daily Summary Kacheln: **„Heute fertig"** und **„Aktuell laufend"**
+  * Quick-Actions (Alle, Mit Trades, Dashboard) für typischen Operator-Flow
+  * Kompaktes Tabellenlayout mit Status- und Run-Type-Badges (BT, Sweep, MC, WF)
+  * Formular mit Run-Type-Filter für fokussierte Auswertungen
+
+* **App-Integration (`src/webui/app.py`)**
+
+  * Run-Type-Filter in der `/r_and_d`-Route
+  * Berechnung der Daily Summary Statistiken (`today_count`, `running_count`)
+
+* **Tests & Dokumentation**
+
+  * **51 Tests** in `tests/test_r_and_d_api.py` – alle bestanden ✅
+  * Neues Phasen-Dokument: `docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md`
+
+**Version**
+
+* Status: **R&D Experiments Overview v1.1**
+* Scope: Web-Dashboard (Phase 76), R&D-Track (Registry + R&D-API)
+
+---
+
 - **v1.1 – Live-Track Web-Dashboard & Demo-Pack (2025-12-08)**
   - Web-Dashboard v1.1 mit Live-Track Operator View
   - Phase-84-Demo-Walkthrough (CLI → Registry → Dashboard)

@@ -36,6 +36,7 @@ while [[ $# -gt 0 ]]; do
     --update-readme) UPDATE_README="true"; shift ;;
     --force-index)   FORCE_INDEX="true"; shift ;;
     --skip-guards)   SKIP_GUARDS="true"; shift ;;
+    -h|--help)       usage; exit 0 ;;
     *) echo "Unknown arg: $1"; usage; exit 2 ;;
   esac
 done
