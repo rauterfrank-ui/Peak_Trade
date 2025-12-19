@@ -8,6 +8,9 @@
 #
 # Expected runtime: < 2 seconds
 # Exit codes: 0 = all pass, non-zero = failures
+#
+# Note: Collection errors from optional dependencies (e.g., FastAPI tests)
+# are ignored. Only smoke-marked tests are executed.
 
 set -e
 
@@ -21,13 +24,13 @@ echo "Peak_Trade Fast Smoke Tests"
 echo "=========================================="
 echo ""
 
-# Run smoke tests only
+# Run smoke tests only (discovers all tests marked with @pytest.mark.smoke)
+# Ignore collection errors from optional dependencies
 python -m pytest \
     -m smoke \
-    tests/test_resilience.py \
-    tests/test_stability_smoke.py \
     -v \
-    --tb=short
+    --tb=short \
+    --continue-on-collection-errors
 
 echo ""
 echo "=========================================="
