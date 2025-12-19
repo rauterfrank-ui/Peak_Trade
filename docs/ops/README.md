@@ -241,3 +241,6 @@ python scripts/evaluate_live_session.py \
 
 ## Snapshots
 - 2025-12-19: PR Labeling Snapshot (16 PRs) → PR_LABELING_SNAPSHOT_2025-12-19.md
+
+## Guides
+- Labeling Guide → LABELING_GUIDE.md
