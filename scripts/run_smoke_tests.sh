@@ -27,8 +27,7 @@ python -m pytest \
     tests/test_resilience.py \
     tests/test_stability_smoke.py \
     -v \
-    --tb=short \
-    --quiet
+    --tb=short
 
 echo ""
 echo "=========================================="
