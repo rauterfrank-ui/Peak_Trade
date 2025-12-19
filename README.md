@@ -88,6 +88,12 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   - API-Security & Key-Management mit Rotation-Tracking
   - **Governance Playbook:** Systematische Prüfung externer Wissensquellen ([Playbook](docs/KNOWLEDGE_SOURCES_GOVERNANCE_PLAYBOOK.md))
 
+- 🤖 **Autonomer KI-gesteuerter Workflow**
+  - Intelligente Entscheidungsfindung basierend auf Markt-, Signal- und Performance-Metriken
+  - Automatisierte Workflow-Ausführung mit AI-enhanced Decision Engine
+  - Integration mit Scheduler für kontinuierliches Monitoring
+  - Details: [`docs/AUTONOMOUS_AI_WORKFLOW.md`](docs/AUTONOMOUS_AI_WORKFLOW.md)
+
 ---
 
 ## Architektur-Snapshot
@@ -99,6 +105,7 @@ Peak_Trade ist in mehrere Layer strukturiert:
 - **Backtest- & Research-Layer** (`src/backtest/`, `scripts/research_cli.py`) – Backtest-Engine, Research-Pipeline
 - **Strategy- & Portfolio-Layer** (`src/strategies/`, `config/config.toml`, `config/portfolio_recipes.toml`) – Strategien, Portfolio-Recipes
 - **Live-/Testnet-Layer** (`src/live/`, `scripts/live_ops.py`) – Live-Ops, Alerts, Risk-Limits
+- **Autonomous Workflow-Layer** (`src/autonomous/`, `scripts/run_autonomous_workflow.py`) – AI-gesteuerter autonomer Workflow, Decision Engine
 - **Reporting & Status-Reports** (`src/reporting/`, `scripts/generate_live_status_report.py`) – Reports, Visualisierung
 - **Governance, Safety & Runbooks** (`docs/*.md`) – Dokumentation, Prozesse, Drills
 
@@ -142,6 +149,18 @@ python scripts/generate_live_status_report.py \
   --output-dir reports/live_status \
   --format markdown \
   --tag daily
+```
+
+### 5. Autonomer KI-gesteuerter Workflow ausführen
+
+```bash
+# Einmalige Ausführung mit automatischer Entscheidung
+python scripts/run_autonomous_workflow.py --once --dry-run
+
+# Mit Scheduler: Täglich automatisch
+python scripts/run_scheduler.py \
+  --config config/scheduler/jobs.toml \
+  --include-tags autonomous
 ```
 
 > Für einen Schritt-für-Schritt-Flow (inkl. Screenshots/Details) siehe:  
