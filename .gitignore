@@ -79,3 +79,12 @@ live_runs/
 tmp/
 reports/
 docker/.env
+
+# local artifacts
+.venv*/
+.venv-*/
+mlruns/
+*.old
+
+# backup files
+*.old.*
