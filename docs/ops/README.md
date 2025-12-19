@@ -195,6 +195,7 @@ Post-merge documentation logs for operational PRs.
 - PR #116 – Merge Log: `docs/ops/PR_116_MERGE_LOG.md`
 - PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
 - PR #136 – feat(stability): wave A contracts, cache integrity, errors, reproducibility – `docs/ops/PR_136_MERGE_LOG.md`
+- PR #150 – feat(dev): add local MLflow via docker compose + make targets – `docs/ops/PR_150_MERGE_LOG.md` (2025-12-18 23:50:42 UTC)
 
 ---
 - PR #80 – Merge Log: `docs/ops/PR_80_MERGE_LOG.md`
