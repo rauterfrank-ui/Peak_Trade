@@ -9,6 +9,9 @@ Module Components:
 - performance_timer: Decorator for timing function execution
 - MetricsCollector: Aggregates and reports performance metrics
 
+Note: Current implementation is NOT thread-safe. For concurrent use,
+consider adding threading.Lock() around metric recording operations.
+
 Usage:
     from src.core.performance import performance_monitor, performance_timer
     
@@ -61,7 +64,9 @@ class PerformanceMonitor:
     Performance monitoring and metrics collection.
     
     Tracks execution times for operations and provides summary statistics.
-    Thread-safe for concurrent use.
+    
+    Note: This implementation is NOT thread-safe. For concurrent use, wrap
+    record() calls with threading.Lock() or use thread-local storage.
     
     Example:
         monitor = PerformanceMonitor()
@@ -81,10 +86,10 @@ class PerformanceMonitor:
         Initialize performance monitor.
         
         Args:
-            max_metrics: Maximum number of metrics to keep in memory
+            max_metrics: Maximum number of metrics to keep in memory per operation
         """
         self.max_metrics = max_metrics
-        self._metrics: Dict[str, List[PerformanceMetric]] = defaultdict(list)
+        self._metrics: Dict[str, List[PerformanceMetric]] = defaultdict(lambda: [])
         self._total_measurements = 0
         
         logger.info(f"PerformanceMonitor initialized with max_metrics={max_metrics}")
@@ -105,12 +110,15 @@ class PerformanceMonitor:
             metadata=metadata or {}
         )
         
-        self._metrics[name].append(metric)
+        # Use list directly - deque would be better but requires import change
+        metrics_list = self._metrics[name]
+        metrics_list.append(metric)
         self._total_measurements += 1
         
-        # Trim if we exceed max metrics
-        if len(self._metrics[name]) > self.max_metrics:
-            self._metrics[name] = self._metrics[name][-self.max_metrics:]
+        # Trim only when significantly over limit to reduce frequency
+        if len(metrics_list) > self.max_metrics * 1.1:
+            # Keep only the most recent max_metrics
+            self._metrics[name] = metrics_list[-self.max_metrics:]
         
         # Log slow operations (>1000ms)
         if duration_ms > 1000:
@@ -196,6 +204,11 @@ class PerformanceMonitor:
             durations = [m.duration_ms for m in metrics]
             sorted_durations = sorted(durations)
             
+            # Calculate percentiles safely
+            n = len(sorted_durations)
+            p95_idx = min(int(n * 0.95), n - 1) if n > 0 else 0
+            p99_idx = min(int(n * 0.99), n - 1) if n > 0 else 0
+            
             summaries[metric_name] = MetricSummary(
                 name=metric_name,
                 count=len(durations),
@@ -204,8 +217,8 @@ class PerformanceMonitor:
                 median_ms=statistics.median(durations),
                 min_ms=min(durations),
                 max_ms=max(durations),
-                p95_ms=sorted_durations[int(len(durations) * 0.95)] if len(durations) > 1 else durations[0],
-                p99_ms=sorted_durations[int(len(durations) * 0.99)] if len(durations) > 1 else durations[0],
+                p95_ms=sorted_durations[p95_idx],
+                p99_ms=sorted_durations[p99_idx],
             )
         
         return summaries

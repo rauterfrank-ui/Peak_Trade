@@ -23,6 +23,35 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   Übersicht über Projektstruktur, Module, typische Commands und Einstiegspunkte:
   [`docs/ai/CLAUDE_GUIDE.md`](docs/ai/CLAUDE_GUIDE.md)
 
+- 🚀 **AI Workflow Guide (Praktische Workflows & Templates)**
+  Konkrete Workflows und Prompt-Templates für effiziente AI-Nutzung:
+  [`docs/ai/AI_WORKFLOW_GUIDE.md`](docs/ai/AI_WORKFLOW_GUIDE.md)
+
+---
+
+## Developer Experience & Productivity
+
+- ⚡ **Developer Workflow Guide**
+  Streamlined workflows und Automation-Tools für produktive Entwicklung:
+  [`docs/DEVELOPER_WORKFLOW_GUIDE.md`](docs/DEVELOPER_WORKFLOW_GUIDE.md)
+
+- 📚 **Knowledge Base Index**
+  Zentraler Dokumentations-Hub mit Navigation und Lernpfaden:
+  [`docs/KNOWLEDGE_BASE_INDEX.md`](docs/KNOWLEDGE_BASE_INDEX.md)
+
+- 🎯 **Quick Reference Card**
+  Schnellreferenz für häufige Commands und Patterns:
+  [`docs/QUICK_REFERENCE.md`](docs/QUICK_REFERENCE.md)
+
+- 🛠️ **Developer Workflow Script**
+  Automatisierung häufiger Entwicklungsaufgaben:
+  ```bash
+  python scripts/dev_workflow.py --help
+  python scripts/dev_workflow.py setup    # Environment setup
+  python scripts/dev_workflow.py test     # Run tests
+  python scripts/dev_workflow.py health   # Health check
+  ```
+
 ---
 
 ## Key Features

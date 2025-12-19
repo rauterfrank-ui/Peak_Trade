@@ -1,5 +1,23 @@
 """
 Tests for Performance Monitoring Module
+
+This module tests the performance monitoring infrastructure including:
+- PerformanceMonitor class for metrics collection and analysis
+- Context managers and decorators for timing operations
+- Statistical summary generation (mean, median, percentiles)
+- Global performance monitor singleton
+- Integration with various operation patterns
+
+Test patterns:
+- Unit tests for individual components
+- Integration tests for end-to-end workflows
+- Edge case testing for empty data, single items, etc.
+- Performance validation for monitoring overhead
+
+Setup requirements:
+- No special setup required
+- Uses time.sleep() for timing validation (may be slow)
+- Some tests may be timing-sensitive
 """
 
 import pytest
