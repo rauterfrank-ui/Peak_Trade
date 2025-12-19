@@ -38,6 +38,7 @@ class TestCircuitBreaker:
         assert breaker.stats.failure_count == 0
         assert breaker.stats.success_count == 0
     
+    @pytest.mark.smoke
     def test_circuit_breaker_opens_after_failures(self):
         """Test circuit opens after threshold failures."""
         breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=30, name="test_breaker")
@@ -206,6 +207,7 @@ class TestRetryWithBackoff:
         assert result == "success"
         assert call_count[0] == 1
     
+    @pytest.mark.smoke
     def test_retry_with_backoff_success(self):
         """Test successful retry after failures."""
         call_count = [0]
@@ -321,6 +323,7 @@ class TestRetryWithBackoff:
 class TestHealthCheck:
     """Tests for HealthCheck system."""
     
+    @pytest.mark.smoke
     def test_health_check_init(self):
         """Test HealthCheck initialization."""
         hc = HealthCheck()
@@ -338,6 +341,7 @@ class TestHealthCheck:
         assert "test_check" in hc._checks
         assert hc._checks["test_check"] == check_func
     
+    @pytest.mark.smoke
     def test_health_check_run_all_success(self):
         """Test running all health checks successfully."""
         hc = HealthCheck()
