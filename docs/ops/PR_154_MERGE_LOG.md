@@ -1,92 +1,77 @@
-# PR #154 — MERGE LOG
+# PR #154 — MERGE LOG (Ops)
 
-## PR
-- Title: chore(dev): suppress MLflow startup warnings with empty env vars
-- URL: https://github.com/rauterfrank-ui/Peak_Trade/pull/154
-- Base: main
-- Head: chore/mlflow-suppress-warnings (deleted)
+## TL;DR (DE)
+PR **#154** wurde per **squash merge** in `main` integriert (**cb304d3**) und unterdrückt wiederkehrende **MLflow-Startup-Warnungen** in der lokalen Docker-Compose-Umgebung, indem leere Default-Env-Variablen gesetzt werden. Dadurch bleibt das **Standard-Verhalten (file-based storage)** erhalten, während die Warnungen verschwinden. CI war vollständig grün, Smoke-Test ist verifiziert.
 
-## Merge
-- Merge SHA: cb304d3
-- Merged at: 2025-12-19T00:20:44Z
-- Diffstat: `docker/.env.example`, `docker/README.md`
+## TL;DR (EN)
+PR **#154** was squash-merged into `main` (**cb304d3**) to suppress noisy MLflow startup warnings in local Docker Compose by setting empty default env vars, while keeping the default file-based storage behavior. CI green; smoke verified.
 
-## Summary
+---
 
-Beseitigt wiederkehrende **MLflow Startup-Warnungen** in der lokalen Docker-Compose-Entwicklungsumgebung, indem leere Default-Env-Variablen gesetzt werden:
+## Merge-Metadaten
+- PR: **#154**
+- Titel: `chore(dev): suppress MLflow startup warnings with empty env vars`
+- Merge-Strategie: **Squash**
+- Target: `main`
+- Merge-Commit: **cb304d3**
+- Merged (UTC): **2025-12-19T00:20:44Z**
 
-- `MLFLOW_BACKEND_STORE_URI=`
-- `MLFLOW_DEFAULT_ARTIFACT_ROOT=`
+---
 
-**Effekt:**
-- Warnungen verschwinden beim `make mlflow-up`
-- Standard-Verhalten (file-based storage) bleibt **unverändert**
-- Logs bleiben sauber (Developer UX Improvement)
+## Änderungen (Files)
+- `docker/.env.example`
+- `docker/README.md`
 
-**Root Cause:** Docker Compose behandelt **unset** vs. **empty string** unterschiedlich. Ein unset Env Var triggert Warnung, aber `VAR=` (explizit leer) unterdrückt die Warnung, ohne das Default-Verhalten zu ändern.
+---
 
-## Changes
+## CI / Checks
+Alle Checks **passed**:
+- `tests (3.11)` ✅
+- `strategy-smoke` ✅
+- `audit` ✅
+- `CI Health Gate` ✅
 
-**Geänderte Dateien:**
-- `docker/.env.example` — Explizite leere Werte für MLflow Env Vars
-- `docker/README.md` — Dokumentation zu Configuration + Startup Warnings
+---
 
-**Behavior Before/After:**
-- **Before:** MLflow startet korrekt (file-based storage), zeigt aber Warnungen
-- **After:** MLflow startet korrekt (file-based storage), **keine Warnungen**
-- **Keine funktionalen Änderungen:** Default file-based storage ist intentional
+## Technische Erklärung (Mechanismus)
+In der lokalen Docker-Compose-Konfiguration werden MLflow-relevante Env Vars (z.B. Backend Store URI / Artifact Root) ausgewertet. Wenn diese Variablen **nicht gesetzt** sind, kann MLflow je nach Pfad/Logging **Warnungen** ausgeben („env var missing / not set"), obwohl MLflow funktional auf Default-Storage zurückfällt.
 
-## CI Status
+Durch das explizite Setzen auf **leere Werte** (leere Strings) wird:
+- der „missing env var" Pfad vermieden → **keine Warnungen**,
+- gleichzeitig **kein** alternativer Remote-Store aktiviert,
+- das Default-Verhalten (**lokaler File Store**) bleibt aktiv.
 
-Alle Checks ✅:
+**Kurz:** „leer gesetzt" = kein Warnspam, aber weiterhin Default-Storage.
 
-| Check | Status | Duration |
-|-------|--------|----------|
-| tests (3.11) | pass | 3m42s |
-| strategy-smoke | pass | 46s |
-| audit | pass | 1m55s |
-| CI Health Gate | pass | 48s |
+---
 
 ## Operator Notes
-
-### Opt-Out
-Falls Warnungen gewünscht sind (z.B. als Reminder für externe Storage-Konfiguration):
-- Entferne `MLFLOW_BACKEND_STORE_URI=` und `MLFLOW_DEFAULT_ARTIFACT_ROOT=` aus `.env`
-- Warnungen erscheinen wieder, Verhalten bleibt gleich
+### Opt-out / Override
+- Wer bewusst einen non-default Store nutzen will (z.B. DB/Remote Artifact Store), setzt die Variablen **explizit** auf valide Werte.
+- `.env.example` ist ein **Template**; echte Werte gehören in lokale `.env` / Secret-Management (nicht ins Repo).
 
 ### Production Considerations
-Diese Änderung betrifft nur **lokale Dev-Umgebung**. Für Production:
-- `MLFLOW_BACKEND_STORE_URI` → Database URL (PostgreSQL/MySQL)
-- `MLFLOW_DEFAULT_ARTIFACT_ROOT` → Object Storage (S3/Azure Blob)
-- Siehe [MLflow Tracking Server Docs](https://mlflow.org/docs/latest/tracking.html#mlflow-tracking-servers)
+- Diese Änderung ist primär **Dev/Local UX** (Docker Compose).
+- Für produktionsnahe Deployments sollten Store/Artifacts **explizit** konfiguriert und über Infra/Secrets verwaltet werden.
 
-## Verification
+---
 
-**Smoke-Test:**
-```bash
-# 1. Fresh .env aus Template erstellen
-rm -f docker/.env
-cp docker/.env.example docker/.env
+## Verification Steps (Smoke)
+Verifiziert wurde, dass MLflow in der lokalen Docker-Compose-Umgebung ohne Startup-Warnungen startet.
 
-# 2. MLflow starten
-make mlflow-up
+Empfohlener Ablauf:
+1) Frische lokale Env aus Template erzeugen (falls euer Setup das so vorsieht)
+   - `.env` aus `docker/.env.example` erstellen
+2) MLflow lokal starten (über eure Make-/Compose-Kommandos)
+3) Container-Logs prüfen:
+   - **keine** Warnungen bzgl. `MLFLOW_BACKEND_STORE_URI` / `MLFLOW_DEFAULT_ARTIFACT_ROOT`
+   - normaler Gunicorn/Server-Startup
 
-# 3. Logs prüfen - nur normales Gunicorn-Startup, keine Warnungen
-make mlflow-logs | tail -n 80
-# Expected:
-# [2025-12-19 00:21:15 +0000] [19] [INFO] Starting gunicorn 22.0.0
-# [2025-12-19 00:21:15 +0000] [19] [INFO] Listening at: http://0.0.0.0:5000 (19)
-# (Keine Warnungen zu MLFLOW_BACKEND_STORE_URI / MLFLOW_DEFAULT_ARTIFACT_ROOT)
+**Ergebnis:** Smoke-Test bestanden ✅ (Warnungen verschwunden, Default-Verhalten unverändert)
 
-# 4. Cleanup
-make mlflow-down
-```
-
-**Ergebnis:** Saubere Startup-Logs, keine Warnungen ✅
+---
 
 ## Links
-
-- PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/154
-- Docker Compose Env Vars: https://docs.docker.com/compose/environment-variables/
-- MLflow Tracking: https://mlflow.org/docs/latest/tracking.html
-- Related: `docker/README.md` (Configuration Section)
+- PR #154: (GitHub) — `gh pr view 154`
+- Merge Commit: `cb304d3`
+- Ops Index: `docs/ops/README.md`
