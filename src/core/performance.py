@@ -204,10 +204,18 @@ class PerformanceMonitor:
             durations = [m.duration_ms for m in metrics]
             sorted_durations = sorted(durations)
             
-            # Calculate percentiles safely
+            # Calculate percentiles safely using proper indexing
+            # For percentile p, use index = (n-1) * p/100
             n = len(sorted_durations)
-            p95_idx = min(int(n * 0.95), n - 1) if n > 0 else 0
-            p99_idx = min(int(n * 0.99), n - 1) if n > 0 else 0
+            if n == 1:
+                p95_ms = sorted_durations[0]
+                p99_ms = sorted_durations[0]
+            else:
+                # Use interpolation-free percentile (nearest rank method)
+                p95_idx = max(0, min(int((n - 1) * 0.95), n - 1))
+                p99_idx = max(0, min(int((n - 1) * 0.99), n - 1))
+                p95_ms = sorted_durations[p95_idx]
+                p99_ms = sorted_durations[p99_idx]
             
             summaries[metric_name] = MetricSummary(
                 name=metric_name,
@@ -217,8 +225,8 @@ class PerformanceMonitor:
                 median_ms=statistics.median(durations),
                 min_ms=min(durations),
                 max_ms=max(durations),
-                p95_ms=sorted_durations[p95_idx],
-                p99_ms=sorted_durations[p99_idx],
+                p95_ms=p95_ms,
+                p99_ms=p99_ms,
             )
         
         return summaries

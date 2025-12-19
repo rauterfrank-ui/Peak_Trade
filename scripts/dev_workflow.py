@@ -109,7 +109,13 @@ def setup_environment() -> None:
     
     # Install dependencies
     print_info("Installing dependencies...")
-    pip_cmd = str(venv_path / "bin" / "pip")
+    
+    # Platform-agnostic pip path
+    if os.name == 'nt':  # Windows
+        pip_cmd = str(venv_path / "Scripts" / "pip.exe")
+    else:  # Unix/Linux/Mac
+        pip_cmd = str(venv_path / "bin" / "pip")
+    
     run_command([pip_cmd, "install", "-e", ".[dev]"])
     print_success("Dependencies installed")
     
