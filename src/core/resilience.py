@@ -32,7 +32,7 @@ import functools
 from enum import Enum
 from typing import Callable, Dict, Any, Optional, Type, Tuple
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -44,11 +44,8 @@ def get_utc_now() -> datetime:
     Returns:
         Timezone-aware datetime in UTC
     """
-    # Python 3.11+ has datetime.UTC, fall back to utcnow() for older versions
-    if hasattr(datetime, 'UTC'):
-        return datetime.now(datetime.UTC)
-    else:
-        return datetime.utcnow()
+    # Use timezone.utc for Python 3.2+
+    return datetime.now(timezone.utc)
 
 
 class CircuitState(Enum):
