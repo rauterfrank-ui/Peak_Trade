@@ -39,9 +39,15 @@ Edit `docker/.env` to customize (auto-created from `.env.example`):
 ```bash
 # Port for MLflow UI (default: 5001)
 MLFLOW_PORT=5001
+
+# Suppress MLflow startup warnings (file-based storage is default for local dev)
+MLFLOW_BACKEND_STORE_URI=
+MLFLOW_DEFAULT_ARTIFACT_ROOT=
 ```
 
-**Note:** Port 5000 is often occupied by macOS AirPlay Receiver. Using 5001 avoids conflicts.
+**Notes:**
+- Port 5000 is often occupied by macOS AirPlay Receiver. Using 5001 avoids conflicts.
+- Empty `MLFLOW_BACKEND_STORE_URI` and `MLFLOW_DEFAULT_ARTIFACT_ROOT` suppress startup warnings while using default file-based storage.
 
 ## Persistence
 
@@ -56,16 +62,18 @@ MLFLOW_PORT=5001
 
 Use `mlflow-reset` when you want a clean slate or to free disk space.
 
-## Expected Warnings (Non-Critical)
+## Startup Warnings
 
-When starting MLflow, you may see:
+The default `.env.example` includes empty values for `MLFLOW_BACKEND_STORE_URI` and `MLFLOW_DEFAULT_ARTIFACT_ROOT` to suppress startup warnings.
+
+If you remove these from your `.env`, MLflow will show:
 
 ```
 The "MLFLOW_BACKEND_STORE_URI" variable is not set. Defaulting to a blank string.
 The "MLFLOW_DEFAULT_ARTIFACT_ROOT" variable is not set. Defaulting to a blank string.
 ```
 
-**This is expected and safe.** MLflow defaults to file-based local storage (suitable for development). These warnings can be ignored unless you're configuring an external database backend.
+**This is safe.** MLflow defaults to file-based local storage (suitable for development). The warnings can be ignored or suppressed by setting the variables to empty strings as shown in Configuration above.
 
 ## Troubleshooting
 
