@@ -44,7 +44,7 @@ def get_utc_now() -> datetime:
     Returns:
         Timezone-aware datetime in UTC
     """
-    # Use timezone.utc for Python 3.2+
+    # Use timezone.utc (Python 3.2+, recommended for all modern Python versions)
     return datetime.now(timezone.utc)
 
 

@@ -19,7 +19,7 @@ Implement resilience patterns (circuit breaker, retry with backoff, health check
 - [x] tests: add @pytest.mark.smoke markers to key tests (9 smoke tests, 0.82s)
 - [x] ci: integrate smoke tests in GitHub Actions workflow
 - [x] docs: create smoke test guide — `docs/stability/SMOKE_TESTS_GUIDE.md`
-- [ ] docs: update main stability plan
+- [x] docs: update main stability plan
 
 ## Implementation
 
@@ -209,9 +209,11 @@ Wave C features are available now:
 ## Breaking Changes
 None. All features are opt-in via decorators and explicit registration.
 
-## Next Steps
-1. Add `@pytest.mark.smoke` markers to key tests
-2. Update `pytest.ini` with smoke marker definition
-3. Create/update GitHub Actions workflow for smoke tests
-4. Update main stability plan with Wave C completion
-5. Document smoke test usage in developer guide
+## Maintenance
+
+### Future Enhancements (Optional)
+1. Add more smoke tests for other critical paths
+2. Consider integration with additional monitoring systems
+3. Expand health check coverage to more subsystems
+4. Add performance benchmarking for resilience patterns
+5. Create runbooks for common failure scenarios
