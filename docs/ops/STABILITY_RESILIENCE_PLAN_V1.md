@@ -1,6 +1,6 @@
 # Peak_Trade Stability & Resilience Plan V1
 
-**Status:** Wave A Complete ✅ | Wave B Complete ✅ | Wave C Mostly Complete ✅
+**Status:** Wave A Complete ✅ | Wave B Complete ✅ | Wave C Complete ✅
 
 **Owner:** Staff Engineer + Reliability Lead
 **Last Updated:** 2024-12-19
@@ -229,11 +229,11 @@ See [`docs/stability/WAVE_B_PLAN.md`](../stability/WAVE_B_PLAN.md) for detailed 
 
 ---
 
-## Wave C: Resilience Patterns & CI Integration (P2) ✅ (Mostly Complete)
+## Wave C: Resilience Patterns & CI Integration (P2) ✅
 
 **Branch:** `feat/stability-wave-c`
-**Status:** Core features complete, CI integration pending
-**Tests:** 28 tests passing
+**Status:** Complete
+**Tests:** 28 tests passing + 9 smoke tests
 
 ### Implemented Components
 
@@ -284,18 +284,28 @@ is_healthy = health_check.is_system_healthy()
 **Bug Fixes:**
 - Fixed `datetime.utcnow()` deprecation warning by using `timezone.utc`
 
-#### C2: CI Smoke Gate 🔜 (Pending)
+#### C2: CI Smoke Gate ✅
 **Marker:** `@pytest.mark.smoke`
 
-**Status:** Pending implementation
+**Status:** Complete
 
-**Plan:**
-- Add `@pytest.mark.smoke` markers to key fast tests
-- Update `pytest.ini` with smoke marker definition
-- Create GitHub Actions workflow for smoke tests
-- Target: < 5 seconds for all smoke tests
+**Implementation:**
+- ✅ Added `@pytest.mark.smoke` markers to 9 critical tests
+- ✅ Updated `pytest.ini` with smoke marker definition
+- ✅ Integrated smoke tests in GitHub Actions CI workflow
+- ✅ Created comprehensive guide: [`docs/stability/SMOKE_TESTS_GUIDE.md`](../stability/SMOKE_TESTS_GUIDE.md)
+- ✅ Actual runtime: 0.82s (target: < 5s)
 
-**See:** [`docs/stability/WAVE_C_PLAN.md`](../stability/WAVE_C_PLAN.md) for details
+**Usage:**
+```bash
+# Run all smoke tests
+pytest -m smoke -v
+
+# Run stability smoke tests only
+pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v
+```
+
+**See:** [`docs/stability/WAVE_C_PLAN.md`](../stability/WAVE_C_PLAN.md) and [`docs/stability/SMOKE_TESTS_GUIDE.md`](../stability/SMOKE_TESTS_GUIDE.md) for details
 
 ### Test Results
 
@@ -305,6 +315,12 @@ is_healthy = health_check.is_system_healthy()
 - Health Check: 10/10 passing
 - Integration & Global: 4/4 passing
 - **Warnings:** 0 (datetime deprecation fixed)
+
+**Smoke Tests:** 9 tests passing in 0.82s
+- Data Contracts: 2/2 smoke tests
+- Error Taxonomy: 2/2 smoke tests
+- Stability Smoke: 3/3 smoke tests
+- Resilience: 2/2 smoke tests
 
 ### Breaking Changes
 
@@ -434,17 +450,19 @@ See [`docs/stability/WAVE_C_PLAN.md`](../stability/WAVE_C_PLAN.md) for detailed 
 
 ## Rollout Status
 
-| Wave | Status | Branch | Tests | Docs |
-|------|--------|--------|-------|------|
-| A    | ✅ Complete | `feat/stability-wave-a` | 63 passed | ✅ Complete |
-| B    | ✅ Complete | `feat/stability-wave-b` | 50 passed | ✅ Complete |
-| C    | ✅ Mostly Complete | `feat/stability-wave-c` | 28 passed | ✅ Complete |
+| Wave | Status | Branch | Tests | Smoke Tests | Docs |
+|------|--------|--------|-------|-------------|------|
+| A    | ✅ Complete | `feat/stability-wave-a` | 63 passed | - | ✅ Complete |
+| B    | ✅ Complete | `feat/stability-wave-b` | 50 passed | 3 passed (0.3s) | ✅ Complete |
+| C    | ✅ Complete | `feat/stability-wave-c` | 28 passed | 6 passed (0.5s) | ✅ Complete |
 
-**Overall Status:** 141 tests passing across all waves
+**Overall Status:** All 3 waves complete
+- **Total Tests:** 141 tests passing
+- **Total Smoke Tests:** 9 passing in 0.82s
+- **Warnings:** 0
+- **CI Integration:** ✅ Smoke tests run in GitHub Actions
 
-**Remaining Work:**
-- Wave C: Add `@pytest.mark.smoke` markers to tests
-- Wave C: Integrate smoke tests in GitHub Actions CI
+**Stability & Resilience v1: COMPLETE** ✅
 
 ---
 

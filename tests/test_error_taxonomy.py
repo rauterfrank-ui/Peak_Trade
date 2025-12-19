@@ -13,6 +13,7 @@ from src.core.errors import (
 )
 
 
+@pytest.mark.smoke
 def test_peak_trade_error_base():
     """PeakTradeError base class works correctly."""
     error = PeakTradeError("Test error")
@@ -22,6 +23,7 @@ def test_peak_trade_error_base():
     assert error.context == {}
 
 
+@pytest.mark.smoke
 def test_peak_trade_error_with_hint():
     """PeakTradeError includes hint in message."""
     error = PeakTradeError("Test error", hint="Try fixing it this way")
