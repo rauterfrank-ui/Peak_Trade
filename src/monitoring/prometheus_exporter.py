@@ -30,35 +30,39 @@ class PrometheusExporter:
     - Data Metrics (Cache Hits, API Calls)
     """
     
-    def __init__(self, port: int = 9090):
+    def __init__(self, port: int = 9090, registry=None):
         """
         Initialize Prometheus exporter.
         
         Args:
             port: Port to expose metrics on (default: 9090)
+            registry: Custom Prometheus registry (default: REGISTRY)
         """
         self.port = port
+        self.registry = registry
         
         # System Metrics
-        self.cpu_usage = Gauge('peak_cpu_usage_percent', 'CPU usage percentage')
-        self.memory_usage = Gauge('peak_memory_usage_mb', 'Memory usage in MB')
+        self.cpu_usage = Gauge('peak_cpu_usage_percent', 'CPU usage percentage', registry=registry)
+        self.memory_usage = Gauge('peak_memory_usage_mb', 'Memory usage in MB', registry=registry)
         
         # Trading Metrics
-        self.orders_total = Counter('peak_orders_total', 'Total orders', ['status', 'symbol'])
-        self.pnl_gauge = Gauge('peak_pnl_usd', 'Current P&L in USD', ['strategy'])
-        self.position_size = Gauge('peak_position_size', 'Current position size', ['symbol'])
+        self.orders_total = Counter('peak_orders_total', 'Total orders', ['status', 'symbol'], registry=registry)
+        self.pnl_gauge = Gauge('peak_pnl_usd', 'Current P&L in USD', ['strategy'], registry=registry)
+        self.position_size = Gauge('peak_position_size', 'Current position size', ['symbol'], registry=registry)
         
         # Resilience Metrics
         self.circuit_breaker_state = Gauge(
             'peak_circuit_breaker_state',
             'Circuit breaker state (0=closed, 1=half_open, 2=open)',
-            ['name']
+            ['name'],
+            registry=registry
         )
-        self.retry_attempts = Counter('peak_retry_attempts_total', 'Retry attempts', ['operation'])
+        self.retry_attempts = Counter('peak_retry_attempts_total', 'Retry attempts', ['operation'], registry=registry)
         self.health_check_status = Gauge(
             'peak_health_check_status',
             'Health check status (1=healthy, 0=unhealthy)',
-            ['service']
+            ['service'],
+            registry=registry
         )
         
         # Performance Metrics
@@ -66,19 +70,21 @@ class PrometheusExporter:
             'peak_request_duration_seconds',
             'Request duration',
             ['endpoint', 'method'],
-            buckets=[0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+            buckets=[0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0],
+            registry=registry
         )
         self.backtest_duration = Histogram(
             'peak_backtest_duration_seconds',
             'Backtest duration',
             ['strategy'],
-            buckets=[1, 5, 10, 30, 60, 120, 300]
+            buckets=[1, 5, 10, 30, 60, 120, 300],
+            registry=registry
         )
         
         # Data Metrics
-        self.cache_hits = Counter('peak_cache_hits_total', 'Cache hits', ['level'])
-        self.cache_misses = Counter('peak_cache_misses_total', 'Cache misses', ['level'])
-        self.api_calls = Counter('peak_api_calls_total', 'API calls', ['provider', 'status'])
+        self.cache_hits = Counter('peak_cache_hits_total', 'Cache hits', ['level'], registry=registry)
+        self.cache_misses = Counter('peak_cache_misses_total', 'Cache misses', ['level'], registry=registry)
+        self.api_calls = Counter('peak_api_calls_total', 'API calls', ['provider', 'status'], registry=registry)
         
         # Custom Metrics
         self.custom_metrics: Dict[str, Any] = {}
