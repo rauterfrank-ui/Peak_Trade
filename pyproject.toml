@@ -53,9 +53,18 @@ line-length = 100
 target-version = "py39"
 
 [tool.ruff.lint]
-# Conservative gate to avoid legacy churn
-# E = pycodestyle errors, F = pyflakes
-select = ["E", "F"]
+# Comprehensive linting rules
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+]
 ignore = [
     "E402",  # module level import not at top of file
     "E501",  # line too long (handled by formatter)
@@ -70,9 +79,20 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 # Tests may have unusual patterns
-"tests/**/*.py" = ["F811", "F821"]
+"tests/**/*.py" = ["F811", "F821", "ARG"]
 # Scripts may have different import patterns
 "scripts/**/*.py" = ["E402"]
+# __init__.py files export symbols
+"__init__.py" = ["F401"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+check_untyped_defs = true
+# Note: strict mode disabled to accommodate existing codebase
+# disallow_untyped_defs = true
 
 [tool.black]
 line-length = 100
