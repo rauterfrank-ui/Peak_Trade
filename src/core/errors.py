@@ -8,6 +8,7 @@ Design Principles:
 - Always provide actionable hints
 - Include context dict for programmatic access
 - Inherit from common base for uniform handling
+- Automatic trace context enrichment
 
 Usage:
     from src.core.errors import ConfigError, DataContractError
@@ -19,6 +20,27 @@ Usage:
     )
 """
 from typing import Any, Dict, Optional
+
+
+def enrich_error_with_trace(error: "PeakTradeError") -> None:
+    """Add trace context to error.
+    
+    Args:
+        error: PeakTradeError instance to enrich with trace context
+        
+    Example:
+        >>> try:
+        ...     raise ConfigError("Invalid config")
+        ... except ConfigError as e:
+        ...     enrich_error_with_trace(e)
+        ...     # e.context now includes run_id and trace_id
+    """
+    from src.core.trace_context import get_run_id, get_trace_id
+    
+    error.context.update({
+        "run_id": get_run_id(),
+        "trace_id": get_trace_id()
+    })
 
 
 class PeakTradeError(Exception):
