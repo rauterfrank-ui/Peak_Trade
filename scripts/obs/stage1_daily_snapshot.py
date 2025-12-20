@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
 import datetime as dt
 import json
@@ -6,6 +8,11 @@ import pathlib
 import re
 import sys
 from collections import Counter
+
+# Add repo root to Python path for src imports
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.parent))
+
+from src.utils.md_helpers import ensure_section_insert_at_top, pick_first_existing
 
 
 def parse_ts(d):
