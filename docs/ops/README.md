@@ -181,6 +181,8 @@ Konvention:
 ---
 
 ## Merge Logs (Ops)
+
+- [PR #201](PR_201_MERGE_LOG.md) – Web-UI tests optional via extras + importorskip
 Post-merge documentation logs for operational PRs.
 
 - PR #76 – Merge Log: `docs/ops/PR_76_MERGE_LOG.md`
