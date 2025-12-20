@@ -1,4 +1,58 @@
-.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open
+.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open test lint typecheck check serve docs docs-serve
+
+# ============================================================================
+# Development Workflow Targets
+# ============================================================================
+
+# Run tests
+test:
+	@echo "Running tests..."
+	pytest tests/ -v
+
+# Run tests with coverage
+test-cov:
+	@echo "Running tests with coverage..."
+	pytest tests/ --cov=src --cov-report=term-missing --cov-report=html
+
+# Run linting
+lint:
+	@echo "Running linting..."
+	ruff check .
+
+# Run type checking
+typecheck:
+	@echo "Running type checking..."
+	mypy src/ --ignore-missing-imports
+
+# Run security scan
+security:
+	@echo "Running security scan..."
+	bandit -r src/ -ll
+
+# Run all checks
+check:
+	@echo "Running all quality checks..."
+	python scripts/code_review.py
+
+# Format code
+format:
+	@echo "Formatting code..."
+	ruff format .
+
+# Serve development server
+serve:
+	@echo "Starting development server..."
+	python -m uvicorn src.webui.app:app --reload
+
+# Build and serve documentation
+docs:
+	@echo "Building documentation..."
+	python scripts/generate_docs.py
+	mkdocs build
+
+docs-serve:
+	@echo "Serving documentation..."
+	mkdocs serve
 
 # ============================================================================
 # Cleanup Targets

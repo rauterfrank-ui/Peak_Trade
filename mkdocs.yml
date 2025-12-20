@@ -1,0 +1,77 @@
+site_name: Peak Trade Documentation
+site_description: Quantitative Trading System Documentation
+site_author: Frank Rauter
+repo_url: https://github.com/rauterfrank-ui/Peak_Trade
+repo_name: rauterfrank-ui/Peak_Trade
+
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Configuration: getting-started/configuration.md
+    - Onboarding: getting-started/onboarding.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - Data Layer: architecture/data-layer.md
+    - Backtest Engine: architecture/backtest.md
+    - Portfolio Management: architecture/portfolio.md
+    - Risk Management: architecture/risk.md
+  - User Guide:
+    - Strategy Development: guides/strategy-development.md
+    - Feature Flags: guides/feature-flags.md
+    - Performance Optimization: guides/performance.md
+    - Live Trading: guides/live-trading.md
+  - API Reference:
+    - Core: api/core.md
+    - Data: api/data.md
+    - Strategies: api/strategies.md
+    - Backtest: api/backtest.md
+    - Portfolio: api/portfolio.md
+    - Risk: api/risk.md
+  - Development:
+    - Contributing: development/contributing.md
+    - Code Review Process: development/code-review.md
+    - CI/CD Pipeline: development/cicd.md

@@ -1,0 +1,20 @@
+{
+  "enable_redis_cache": {
+    "enabled": true,
+    "environments": ["production", "staging"]
+  },
+  "enable_ai_workflow": {
+    "enabled": true,
+    "percentage": 50
+  },
+  "enable_advanced_metrics": {
+    "enabled": true
+  },
+  "enable_experimental_strategies": {
+    "enabled": false,
+    "environments": ["development"]
+  },
+  "enable_backup_recovery": {
+    "enabled": true
+  }
+}
