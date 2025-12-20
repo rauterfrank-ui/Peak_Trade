@@ -196,6 +196,7 @@ Post-merge documentation logs for operational PRs.
 - PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
 - PR #136 – feat(stability): wave A contracts, cache integrity, errors, reproducibility – `docs/ops/PR_136_MERGE_LOG.md`
 - PR #154 – chore(dev): suppress MLflow startup warnings with empty env vars – `docs/ops/PR_154_MERGE_LOG.md`
+- PR #195 – chore: error taxonomy hardening (Docs/Tooling) – `docs/ops/PR_195_MERGE_LOG.md`
 
 ---
 - PR #80 – Merge Log: `docs/ops/PR_80_MERGE_LOG.md`
@@ -223,6 +224,21 @@ python scripts/evaluate_live_session.py \
 
 ---
 
+
+## Audit Tooling
+
+### Error Taxonomy Adoption Audit
+- **Script:** `scripts/audit/check_error_taxonomy_adoption.py`
+- **Purpose:** Checks adoption/usage of Error Taxonomy (repo-wide) to detect drift early
+- **Usage:**
+  ```bash
+  python scripts/audit/check_error_taxonomy_adoption.py
+  ```
+- **Output:** Identifies files using legacy error patterns vs. new taxonomy
+- **Integration:** Can be integrated into CI audit workflow
+- **See also:** [Error Handling Guide](../ERROR_HANDLING_GUIDE.md)
+
+---
 ## Related Documentation
 
 - `scripts/run_audit.sh` - Audit script implementation
