@@ -5,10 +5,10 @@ Provides environment-based, user-based, and percentage-based feature rollouts
 with runtime toggle support.
 """
 
-from enum import Enum
-from typing import Dict, Any, Optional
 import json
+from enum import Enum
 from pathlib import Path
+from typing import Any, Optional
 
 
 class FeatureFlag(Enum):
@@ -44,9 +44,9 @@ class FeatureFlagManager:
     def __init__(self, config_path: Optional[Path] = None):
         self.config_path = config_path or Path("config/feature_flags.json")
         self.flags = self._load_flags()
-        self.overrides: Dict[str, bool] = {}
+        self.overrides: dict[str, bool] = {}
 
-    def _load_flags(self) -> Dict[str, Any]:
+    def _load_flags(self) -> dict[str, Any]:
         """Load flags from config file."""
         if self.config_path.exists():
             with open(self.config_path) as f:
@@ -57,7 +57,6 @@ class FeatureFlagManager:
         self,
         flag: FeatureFlag,
         user_id: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
     ) -> bool:
         """
         Check if feature flag is enabled.
@@ -65,7 +64,6 @@ class FeatureFlagManager:
         Args:
             flag: Feature flag to check
             user_id: Optional user ID for user-based rollout
-            context: Additional context for evaluation
 
         Returns:
             True if flag is enabled, False otherwise

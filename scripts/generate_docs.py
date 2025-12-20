@@ -78,9 +78,12 @@ def main():
 
     # Generate package index pages
     for package_dir in src_dir.rglob("*"):
-        if package_dir.is_dir() and (package_dir / "__init__.py").exists():
-            if "__pycache__" not in str(package_dir):
-                generate_package_index(package_dir, docs_dir, src_dir)
+        if (
+            package_dir.is_dir()
+            and (package_dir / "__init__.py").exists()
+            and "__pycache__" not in str(package_dir)
+        ):
+            generate_package_index(package_dir, docs_dir, src_dir)
 
     print("\n✅ API documentation generated successfully!")
     print(f"📁 Output directory: {docs_dir}")

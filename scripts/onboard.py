@@ -10,11 +10,11 @@ Sets up:
 - IDE settings
 """
 
+import json
+import platform
 import subprocess
 import sys
 from pathlib import Path
-import platform
-import json
 
 
 def print_header(text: str):
