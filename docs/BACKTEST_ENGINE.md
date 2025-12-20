@@ -610,10 +610,155 @@ print(strategy.fast_window, strategy.slow_window)
 
 ---
 
+## Determinismus & No-Lookahead-Garantie
+
+### Prinzipien
+
+Die BacktestEngine garantiert **realistische Simulation** ohne Look-Ahead-Bias:
+
+#### ✅ Was ist garantiert
+
+1. **Bar-für-Bar Execution**
+   - Jede Bar wird sequenziell verarbeitet
+   - State wird zwischen Bars persistent gehalten
+   - Keine Zukunftsinformationen verfügbar
+
+2. **No Lookahead**
+   - Signale basieren nur auf Daten bis (inkl.) aktueller Bar
+   - Stop-Loss wird erst nach Bar-Close geprüft
+   - Position-Sizing nutzt nur bekannte Equity
+
+3. **Realistische Order-Fills**
+   - Entry: Next Bar's Open (nach Signal)
+   - Stop-Loss: Intrabar-Check mit Bar-Low/High
+   - Exit: Next Bar's Open (bei Flat-Signal)
+
+#### ⚠️ Was NICHT garantiert ist
+
+- **Intrabar-Events:** Keine Simulation von Tick-Daten
+- **Slippage:** Momentan nicht modelliert (kommt in v2)
+- **Order-Latency:** Instant-Fills angenommen
+
+### Position-Sizing Integration
+
+Die Engine integriert zwei unabhängige Sizing-Systeme:
+
+#### 1. Core Position Sizers (Empfohlen)
+
+```python
+from src.core.position_sizing import FixedFractionSizer
+
+sizer = FixedFractionSizer(fraction=0.1)
+engine = BacktestEngine(core_position_sizer=sizer)
+```
+
+**Verfügbare Sizers:**
+- `FixedFractionSizer` – Prozentsatz des Kapitals (z.B. 10%)
+- `FixedSizeSizer` – Feste Anzahl Contracts/Units
+- `NoopPositionSizer` – Keine Sizing-Logik (für Testing)
+
+#### 2. Vol-Regime Overlay Sizers (Erweitert)
+
+```python
+from src.core.position_sizing_overlay import VolRegimeOverlaySizer
+
+overlay = VolRegimeOverlaySizer(
+    base_sizer=FixedFractionSizer(fraction=0.1),
+    regime_scaling={
+        "low": 1.5,    # 150% in niedrig-volatilen Märkten
+        "medium": 1.0, # 100% normal
+        "high": 0.5    # 50% in hoch-volatilen Märkten
+    }
+)
+engine = BacktestEngine(core_position_sizer=overlay)
+```
+
+**Overlay-Typen:**
+- `VolRegimeOverlaySizer` – Volatilitäts-adaptiv
+- `TrendStrengthOverlaySizer` – Trend-adaptiv
+- `CompositeOverlaySizer` – Kombiniert mehrere Overlays
+
+#### 3. Pipeline: Strategy → Sizing → Risk
+
+```text
+┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+│  Strategy   │ ───▶ │   Sizing    │ ───▶ │    Risk     │
+│  Signal: 1  │      │  Size: 0.1  │      │  Allowed?   │
+└─────────────┘      └─────────────┘      └─────────────┘
+       │                    │                     │
+       │                    │                     │
+       └────────────────────┴─────────────────────┘
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │   Execute   │
+                    │  Position   │
+                    └─────────────┘
+```
+
+**Wichtig:** Sizing und Risk sind **orthogonal**:
+- Sizing bestimmt **wie viel** gehandelt wird
+- Risk entscheidet **ob** überhaupt gehandelt wird
+
+### Config-Beispiel mit Sizing
+
+```toml
+[backtest]
+initial_capital = 10000.0
+
+[sizing]
+type = "fixed_fraction"
+fraction = 0.1
+
+[sizing.overlay]
+type = "vol_regime"
+window = 20
+thresholds = [0.015, 0.03]  # Low/Medium/High Grenzen
+scaling_factors = {low = 1.5, medium = 1.0, high = 0.5}
+
+[risk]
+type = "max_drawdown"
+max_drawdown = 0.20
+```
+
+### Runner-Beispiel mit Sizing
+
+```python
+from src.core.peak_config import load_config
+from src.core.position_sizing import build_position_sizer_from_config
+from src.core.risk import build_risk_manager_from_config
+from src.backtest.engine import BacktestEngine
+
+# Config laden
+cfg = load_config("config/my_backtest.toml")
+
+# Position Sizer aus Config erstellen
+position_sizer = build_position_sizer_from_config(cfg)
+
+# Risk Manager aus Config erstellen
+risk_manager = build_risk_manager_from_config(cfg)
+
+# Engine mit Sizing + Risk
+engine = BacktestEngine(
+    core_position_sizer=position_sizer,
+    risk_manager=risk_manager
+)
+
+# Backtest ausführen
+result = engine.run_realistic(df, strategy.generate_signals, {})
+
+# Position-Sizes im Result
+print(result.position_sizes)  # Liste der tatsächlichen Sizes
+```
+
+---
+
 ## Weiterführende Dokumentation
 
 - [Architektur-Übersicht](PEAK_TRADE_OVERVIEW.md)
 - [Strategy Developer Guide](STRATEGY_DEV_GUIDE.md)
+- [Position Sizing & Overlays](../src/core/position_sizing.py)
+- [Vol Regime Overlay Sizer Tests](../tests/test_vol_regime_overlay_sizer.py)
 - [Config Reference](../config.toml)
 
 ---
