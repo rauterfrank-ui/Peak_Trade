@@ -26,7 +26,7 @@ httpx  # Required by FastAPI TestClient in tests
 # Optional: Visualization (für spätere Charts)
 matplotlib>=3.7.0
 # seaborn>=0.12.0
-# plotly>=5.14.0
+plotly>=5.14.0
 
 # Optional: Advanced Analytics
 # scipy>=1.11.0
@@ -37,3 +37,5 @@ matplotlib>=3.7.0
 fastapi>=0.109.0
 uvicorn[standard]>=0.27.0
 Jinja2>=3.1.0
+streamlit>=1.31.0
+websockets>=12.0

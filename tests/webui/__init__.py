@@ -1,0 +1,3 @@
+"""
+WebUI tests package
+"""

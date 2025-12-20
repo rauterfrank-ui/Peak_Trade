@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    container_name: peak-api
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../:/app
+    networks:
+      - peak-network
+    restart: unless-stopped
+
+  streamlit:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.streamlit
+    container_name: peak-streamlit
+    environment:
+      - API_BASE_URL=http://api:8000
+      - PYTHONPATH=/app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ../:/app
+    networks:
+      - peak-network
+    depends_on:
+      - api
+    restart: unless-stopped
+
+networks:
+  peak-network:
+    driver: bridge
