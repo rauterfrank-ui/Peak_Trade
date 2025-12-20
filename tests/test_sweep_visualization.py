@@ -6,6 +6,8 @@ Tests für src/reporting/sweep_visualization.py (Phase 43)
 Testet Sweep-Visualisierungsfunktionen.
 """
 import pytest
+pytest.importorskip("matplotlib")
+
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
