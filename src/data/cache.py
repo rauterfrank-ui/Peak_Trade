@@ -9,6 +9,7 @@ from typing import Optional
 import pandas as pd
 
 from . import REQUIRED_OHLCV_COLUMNS
+from .cache_atomic import atomic_write, atomic_read
 
 
 class ParquetCache:
@@ -27,7 +28,24 @@ class ParquetCache:
         compression: str = "snappy",
     ) -> None:
         """
-        Speichert DataFrame als Parquet.
+        Speichert DataFrame als Parquet mit atomaren Schreiboperationen.
+
+        Atomic Write Contract:
+        - Schreibt zuerst in temporäre Datei (.tmp)
+        - Führt fsync() aus um Daten auf Disk zu flushen
+        - Verwendet os.replace() (atomic auf POSIX) für finales Rename
+        - Räumt .tmp bei Fehler automatisch auf
+
+        Dies verhindert Datenverlust bei Crash/Interrupt während des Schreibens.
+
+        Args:
+            df: DataFrame mit DatetimeIndex und OHLCV-Spalten
+            key: Cache-Key für Dateiname
+            compression: Parquet-Kompression (default: snappy)
+
+        Raises:
+            ValueError: Wenn df nicht DatetimeIndex hat oder OHLCV-Spalten fehlen
+            CacheCorruptionError: Wenn atomares Schreiben fehlschlägt
         """
         if not isinstance(df.index, pd.DatetimeIndex):
             raise ValueError(
@@ -43,11 +61,26 @@ class ParquetCache:
             )
 
         cache_path = self._get_cache_path(key)
-        df.to_parquet(cache_path, compression=compression, index=True)
+        atomic_write(df, cache_path, compression=compression, checksum=False)
 
     def load(self, key: str) -> pd.DataFrame:
         """
-        Lädt DataFrame aus Cache.
+        Lädt DataFrame aus Cache mit Corruption Detection.
+
+        Führt Integritätsprüfung durch beim Laden:
+        - Prüft ob Datei existiert
+        - Versucht Parquet-Datei zu laden
+        - Gibt aussagekräftige Fehlermeldung bei Corruption (kein Silent Fail)
+
+        Args:
+            key: Cache-Key für Dateiname
+
+        Returns:
+            Geladener DataFrame aus Cache
+
+        Raises:
+            FileNotFoundError: Wenn Cache-Datei nicht gefunden
+            CacheCorruptionError: Wenn Datei korrupt oder unleserlich
         """
         cache_path = self._get_cache_path(key)
         if not os.path.exists(cache_path):
@@ -55,7 +88,7 @@ class ParquetCache:
                 f"Cache nicht gefunden für Key: '{key}'. "
                 f"Erwarteter Pfad: {cache_path}"
             )
-        return pd.read_parquet(cache_path)
+        return atomic_read(cache_path, verify_checksum=False)
 
     def exists(self, key: str) -> bool:
         """
