@@ -1,0 +1,55 @@
+groups:
+  - name: peak_trade_alerts
+    interval: 30s
+    rules:
+      # Circuit Breaker Alerts
+      - alert: CircuitBreakerOpen
+        expr: peak_circuit_breaker_state == 2
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Circuit breaker {{ $labels.name }} is OPEN"
+          description: "Circuit breaker has been open for more than 1 minute"
+      
+      # Health Check Alerts
+      - alert: ServiceUnhealthy
+        expr: peak_health_check_status == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Service {{ $labels.service }} is unhealthy"
+          description: "Health check failing for {{ $labels.service }}"
+      
+      # Performance Alerts
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(peak_request_duration_seconds_bucket[5m])) > 1.0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request latency detected"
+          description: "P95 latency is {{ $value }}s"
+      
+      # Cache Alerts
+      - alert: LowCacheHitRate
+        expr: |
+          rate(peak_cache_hits_total[5m]) / 
+          (rate(peak_cache_hits_total[5m]) + rate(peak_cache_misses_total[5m])) < 0.5
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low cache hit rate"
+          description: "Cache hit rate is {{ $value | humanizePercentage }}"
+      
+      # System Alerts
+      - alert: HighMemoryUsage
+        expr: peak_memory_usage_mb > 2000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value }}MB"
