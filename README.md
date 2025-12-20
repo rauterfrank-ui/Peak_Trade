@@ -123,8 +123,16 @@ Peak_Trade ist **strikt modular** aufgebaut. Jede Komponente ist austauschbar un
     - 9 specialized error types (DataContractError, ConfigError, ProviderError, etc.)
     - Consistent message/hint/context/cause pattern for all errors
     - Exception chaining for root cause analysis
-    - Guide: [Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md)
-    - Audit: `python scripts/audit/check_error_taxonomy_adoption.py`
+    - **Default:** All new code uses `src.core.errors` taxonomy
+    - **Quick Usage:**
+      ```python
+      # Raise with hint + context
+      raise DataContractError("Invalid OHLCV", hint="Check columns", context={"cols": df.columns})
+      # Chain exceptions
+      raise ConfigError("Load failed", hint="Check syntax", cause=original_error)
+      ```
+    - **Documentation:** [Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md)
+    - **Audit Tool:** `python scripts/audit/check_error_taxonomy_adoption.py`
 
 - 🔄 **Resilience & Stability**
   - Circuit Breaker Pattern für alle kritischen Module
