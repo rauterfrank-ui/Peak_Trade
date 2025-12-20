@@ -1320,6 +1320,63 @@ def create_app() -> FastAPI:
         except Exception as e:
             logger.warning(f"Error running health checks: {e}")
         
+        # Load health trends (Phase 16H)
+        trends_summary = None
+        try:
+            from src.execution.telemetry_health_trends import load_snapshots, compute_rollup
+            from datetime import datetime, timedelta, timezone
+            
+            snapshots_path = Path("logs/telemetry_health_snapshots.jsonl")
+            if snapshots_path.exists():
+                now = datetime.now(timezone.utc)
+                
+                # Load snapshots for different time windows
+                snapshots_24h = load_snapshots(
+                    snapshots_path,
+                    since_ts=now - timedelta(hours=24),
+                )
+                snapshots_7d = load_snapshots(
+                    snapshots_path,
+                    since_ts=now - timedelta(days=7),
+                )
+                snapshots_30d = load_snapshots(
+                    snapshots_path,
+                    since_ts=now - timedelta(days=30),
+                )
+                
+                if snapshots_30d:
+                    rollup_24h = compute_rollup(snapshots_24h) if snapshots_24h else None
+                    rollup_7d = compute_rollup(snapshots_7d) if snapshots_7d else None
+                    rollup_30d = compute_rollup(snapshots_30d)
+                    
+                    trends_summary = {
+                        "available": True,
+                        "last_24h": {
+                            "count": len(snapshots_24h),
+                            "worst_severity": rollup_24h.worst_severity if rollup_24h else "unknown",
+                            "critical_count": rollup_24h.critical_count if rollup_24h else 0,
+                            "warn_count": rollup_24h.warn_count if rollup_24h else 0,
+                        } if snapshots_24h else None,
+                        "last_7d": {
+                            "count": len(snapshots_7d),
+                            "worst_severity": rollup_7d.worst_severity if rollup_7d else "unknown",
+                            "critical_count": rollup_7d.critical_count if rollup_7d else 0,
+                            "warn_count": rollup_7d.warn_count if rollup_7d else 0,
+                            "disk_avg": rollup_7d.disk_avg if rollup_7d else 0.0,
+                            "disk_max": rollup_7d.disk_max if rollup_7d else 0.0,
+                        } if snapshots_7d else None,
+                        "last_30d": {
+                            "count": len(snapshots_30d),
+                            "worst_severity": rollup_30d.worst_severity,
+                            "critical_count": rollup_30d.critical_count,
+                            "warn_count": rollup_30d.warn_count,
+                            "disk_avg": rollup_30d.disk_avg,
+                            "disk_max": rollup_30d.disk_max,
+                        },
+                    }
+        except Exception as e:
+            logger.warning(f"Error loading health trends: {e}")
+        
         # Retention policy (default)
         retention_policy = {
             "enabled": True,
@@ -1339,6 +1396,7 @@ def create_app() -> FastAPI:
                 "health_report": health_report,
                 "retention_policy": retention_policy,
                 "telemetry_root": str(telemetry_root),
+                "trends_summary": trends_summary,
             },
         )
 
@@ -1363,6 +1421,111 @@ def create_app() -> FastAPI:
             raise HTTPException(
                 status_code=500,
                 detail=f"Health check failed: {str(e)}",
+            )
+
+    @app.get("/api/telemetry/health/trends", tags=["Phase 16H"])
+    async def telemetry_health_trends_api(
+        days: int = Query(30, ge=1, le=365, description="Number of days to analyze"),
+        snapshots_path: str = Query(
+            "logs/telemetry_health_snapshots.jsonl",
+            description="Path to snapshots file"
+        ),
+    ):
+        """Get telemetry health trends over time (Phase 16H)."""
+        try:
+            from src.execution.telemetry_health_trends import (
+                load_snapshots,
+                compute_rollup,
+                detect_degradation,
+            )
+            from datetime import datetime, timedelta, timezone
+            
+            path = Path(snapshots_path)
+            
+            # Load snapshots for requested period
+            since_ts = datetime.now(timezone.utc) - timedelta(days=days)
+            snapshots = load_snapshots(path, since_ts=since_ts)
+            
+            if not snapshots:
+                return {
+                    "period_days": days,
+                    "snapshots_found": 0,
+                    "message": "No health snapshots found for requested period",
+                    "hint": "Run 'python scripts/telemetry_health_snapshot.py' to start collecting data",
+                }
+            
+            # Compute overall rollup
+            rollup = compute_rollup(snapshots)
+            
+            # Compute rollups for different time windows
+            now = datetime.now(timezone.utc)
+            last_24h = [s for s in snapshots if s.ts_utc >= now - timedelta(hours=24)]
+            last_7d = [s for s in snapshots if s.ts_utc >= now - timedelta(days=7)]
+            
+            rollup_24h = compute_rollup(last_24h) if last_24h else None
+            rollup_7d = compute_rollup(last_7d) if last_7d else None
+            
+            # Detect degradation
+            degradation = detect_degradation(snapshots, window_size=min(10, len(snapshots)))
+            
+            # Build time series (simplified: just timestamps + severity)
+            time_series = [
+                {
+                    "ts": s.ts_utc.isoformat(),
+                    "severity": s.severity,
+                    "disk_mb": s.disk_usage_mb,
+                    "parse_error_rate": s.parse_error_rate,
+                }
+                for s in snapshots
+            ]
+            
+            return {
+                "period_days": days,
+                "snapshots_found": len(snapshots),
+                "period_start": rollup.period_start.isoformat(),
+                "period_end": rollup.period_end.isoformat(),
+                "overall": {
+                    "worst_severity": rollup.worst_severity,
+                    "ok_count": rollup.ok_count,
+                    "warn_count": rollup.warn_count,
+                    "critical_count": rollup.critical_count,
+                    "disk_mb": {
+                        "min": rollup.disk_min,
+                        "avg": rollup.disk_avg,
+                        "max": rollup.disk_max,
+                    },
+                    "parse_error_rate": {
+                        "min": rollup.parse_error_min,
+                        "avg": rollup.parse_error_avg,
+                        "max": rollup.parse_error_max,
+                    },
+                },
+                "last_24h": {
+                    "snapshots": len(last_24h),
+                    "worst_severity": rollup_24h.worst_severity if rollup_24h else "unknown",
+                    "warn_count": rollup_24h.warn_count if rollup_24h else 0,
+                    "critical_count": rollup_24h.critical_count if rollup_24h else 0,
+                } if last_24h else None,
+                "last_7d": {
+                    "snapshots": len(last_7d),
+                    "worst_severity": rollup_7d.worst_severity if rollup_7d else "unknown",
+                    "warn_count": rollup_7d.warn_count if rollup_7d else 0,
+                    "critical_count": rollup_7d.critical_count if rollup_7d else 0,
+                } if last_7d else None,
+                "degradation": degradation,
+                "time_series": time_series,
+            }
+        
+        except ImportError:
+            raise HTTPException(
+                status_code=503,
+                detail="Telemetry health trends module not available",
+            )
+        except Exception as e:
+            logger.error(f"Error loading health trends: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to load trends: {str(e)}",
             )
 
     return app
