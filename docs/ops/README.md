@@ -198,6 +198,7 @@ Post-merge documentation logs for operational PRs.
 - PR #154 – chore(dev): suppress MLflow startup warnings with empty env vars – `docs/ops/PR_154_MERGE_LOG.md`
 - PR #195 – chore: error taxonomy hardening (Docs/Tooling) – `docs/ops/PR_195_MERGE_LOG.md`
 - PR #197 – feat(ops): Phase 16K Stage1 Ops Dashboard Panel – `docs/ops/PR_197_MERGE_LOG.md`
+- PR #199 – feat(ops): Docker Ops Runner for Stage1 monitoring (Phase 16L) – `docs/ops/PR_199_MERGE_LOG.md`
 
 ---
 - PR #80 – Merge Log: `docs/ops/PR_80_MERGE_LOG.md`
