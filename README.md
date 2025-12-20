@@ -119,7 +119,12 @@ Peak_Trade ist **strikt modular** aufgebaut. Jede Komponente ist austauschbar un
   - Live-Risk-Limits (Order- und Portfolio-Level)
   - Governance- & Safety-Doku (Checklisten, Readiness, Runbooks)
   - Incident-Drills & Drill-Log
-  - **Comprehensive Error Handling:** Structured error taxonomy with actionable hints ([Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md))
+  - **Comprehensive Error Handling:** Structured error taxonomy with actionable hints
+    - 9 specialized error types (DataContractError, ConfigError, ProviderError, etc.)
+    - Consistent message/hint/context/cause pattern for all errors
+    - Exception chaining for root cause analysis
+    - Guide: [Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md)
+    - Audit: `python scripts/audit/check_error_taxonomy_adoption.py`
 
 - 🔄 **Resilience & Stability**
   - Circuit Breaker Pattern für alle kritischen Module
