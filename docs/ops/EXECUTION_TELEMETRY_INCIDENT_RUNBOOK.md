@@ -340,6 +340,149 @@ python scripts/view_execution_telemetry.py --session session_123 --summary
 
 ---
 
+## 🗄️ Retention & Rotation (Phase 16E)
+
+**Purpose:** Manage telemetry log lifecycle (compression + deletion).
+
+**Default Policy:**
+```bash
+# Recommended defaults (can override via CLI flags)
+Max age: 30 days
+Keep last N sessions: 200 (protected even if old)
+Max total size: 2048 MB (2 GB)
+Compress after: 7 days (gzip, ~80% size reduction)
+```
+
+### Dry-Run (Safe, Default)
+
+**Check what would be deleted/compressed:**
+```bash
+python scripts/ops/telemetry_retention.py
+```
+
+**Output:**
+- Summary stats (sessions, size before/after)
+- Actions planned (compress/delete with reasons)
+- No files modified (dry-run)
+
+### Apply Retention
+
+**Execute cleanup (requires --apply):**
+```bash
+python scripts/ops/telemetry_retention.py --apply
+```
+
+**Custom policy:**
+```bash
+# Keep only last 14 days, compress after 3 days
+python scripts/ops/telemetry_retention.py --apply \
+  --max-age-days 14 \
+  --compress-after-days 3 \
+  --keep-last-n 100
+```
+
+**Check results:**
+```bash
+# Before
+du -sh logs/execution
+# 850M logs/execution
+
+# After (compression + deletion)
+du -sh logs/execution
+# 180M logs/execution
+```
+
+### Manual Cleanup Scenarios
+
+**Scenario 1: Disk Almost Full (Aggressive)**
+```bash
+# Keep only last 7 days, no compression (delete immediately)
+python scripts/ops/telemetry_retention.py --apply \
+  --max-age-days 7 \
+  --compress-after-days 0 \
+  --keep-last-n 50
+```
+
+**Scenario 2: Archive Old Sessions (Compress Only)**
+```bash
+# Don't delete, just compress everything > 3 days
+python scripts/ops/telemetry_retention.py --apply \
+  --max-age-days 365 \
+  --compress-after-days 3 \
+  --max-total-mb 0  # Disable size limit
+```
+
+**Scenario 3: Size Limit Enforcement**
+```bash
+# Keep total size under 500 MB
+python scripts/ops/telemetry_retention.py --apply \
+  --max-total-mb 500 \
+  --keep-last-n 100
+```
+
+### View Compressed Logs
+
+**Compressed logs (.jsonl.gz) are still queryable:**
+```bash
+# Viewer auto-detects compressed files
+python scripts/view_execution_telemetry.py \
+  --path logs/execution \
+  --summary
+
+# Manual inspection
+zcat logs/execution/session_123.jsonl.gz | head -20
+```
+
+### Safety Features
+
+- ✅ **Dry-run default** (--apply required to modify)
+- ✅ **Session-count protection** (keeps last N sessions even if old)
+- ✅ **Root directory validation** (must contain "execution"/"telemetry"/"logs")
+- ✅ **Deterministic sorting** (oldest deleted first)
+- ✅ **Compression preserves mtime** (age calculation stays correct)
+
+### Troubleshooting
+
+**Problem:** "Unsafe or invalid telemetry root"
+```bash
+# Solution: Use correct path with "execution" or "telemetry" in name
+python scripts/ops/telemetry_retention.py --root logs/execution
+```
+
+**Problem:** Not enough space freed
+```bash
+# Check actual file sizes
+ls -lh logs/execution/*.jsonl
+
+# More aggressive cleanup
+python scripts/ops/telemetry_retention.py --apply \
+  --max-age-days 3 \
+  --keep-last-n 20
+```
+
+**Problem:** Need to restore compressed log
+```bash
+# Decompress manually
+gunzip logs/execution/session_123.jsonl.gz
+# Creates: logs/execution/session_123.jsonl
+```
+
+### Recommended Maintenance Schedule
+
+| Frequency | Task | Command |
+|-----------|------|---------|
+| **Daily** | Dry-run check | `python scripts/ops/telemetry_retention.py` |
+| **Weekly** | Apply retention | `python scripts/ops/telemetry_retention.py --apply` |
+| **Monthly** | Verify size | `du -sh logs/execution` |
+
+**Or:** Set up a cron job (optional)
+```bash
+# Example: Daily at 3 AM
+0 3 * * * cd /path/to/Peak_Trade && python scripts/ops/telemetry_retention.py --apply
+```
+
+---
+
 ## 🔗 Related Documentation
 
 - **Telemetry Viewer Guide:** `docs/execution/TELEMETRY_VIEWER.md`
