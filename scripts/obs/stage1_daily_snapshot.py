@@ -200,7 +200,33 @@ def main():
 
     out_path.write_text("".join(lines), encoding="utf-8")
 
+    # Phase 16K: Write JSON summary
+    json_summary = {
+        "schema_version": 1,
+        "date": date_str,
+        "created_at_utc": now.isoformat(),
+        "report_dir": str(out_dir / date_str),
+        "metrics": {
+            "new_alerts": new_alerts_24,
+            "critical_alerts": sev_24.get("critical", 0) + sev_24.get("CRITICAL", 0),
+            "parse_errors": 0,  # not tracked yet
+            "operator_actions": actions,
+            "legacy_alerts": legacy_hits,
+        },
+        "notes": [],
+    }
+    
+    # Add notes based on context
+    if new_alerts_24 == 0:
+        json_summary["notes"].append("no new alerts")
+    if total_lines == 0:
+        json_summary["notes"].append("baseline - no data found")
+    
+    json_out_path = out_dir / f"{date_str}_summary.json"
+    json_out_path.write_text(json.dumps(json_summary, indent=2), encoding="utf-8")
+
     print(f"✅ Wrote: {out_path}")
+    print(f"✅ Wrote: {json_out_path}")
     print(f"   New-alerts heuristic (24h): {new_alerts_24}")
     if args.fail_on_new_alerts and new_alerts_24 > 0:
         # 2 = actionable warning (matches your ops style)

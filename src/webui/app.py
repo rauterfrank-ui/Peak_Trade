@@ -118,6 +118,11 @@ from .health_endpoint import (
     router as health_router,
     register_standard_checks,
 )
+# Phase 16K: Stage1 Ops Dashboard
+from .ops_stage1_router import (
+    router as stage1_router,
+    set_stage1_config,
+)
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -348,6 +353,11 @@ def create_app() -> FastAPI:
     # Health Check API: Registriere Health Check Router
     app.include_router(health_router)
     register_standard_checks()
+    
+    # Phase 16K: Stage1 Ops Dashboard API
+    stage1_report_root = BASE_DIR / "reports" / "obs" / "stage1"
+    set_stage1_config(stage1_report_root, templates)
+    app.include_router(stage1_router)
 
     # =========================================================================
     # HTML Dashboard Endpoints

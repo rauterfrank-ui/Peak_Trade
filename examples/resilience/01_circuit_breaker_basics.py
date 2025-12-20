@@ -149,7 +149,7 @@ def example_3_manual_reset():
     for _ in range(2):
         try:
             flaky_operation()
-        except:
+        except Exception:
             pass
     
     print(f"   State: {breaker.state.value}")

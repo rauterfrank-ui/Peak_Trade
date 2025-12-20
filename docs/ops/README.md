@@ -266,3 +266,100 @@ python scripts/evaluate_live_session.py \
 ## Utilities
 
 - `src/utils/md_helpers.py` — Markdown helpers (`pick_first_existing`, `ensure_section_insert_at_top`) + tests: `tests/test_md_helpers.py` (2025-12-20)
+
+---
+
+## Stage1 Ops Dashboard
+
+**Phase 16K:** Read-only Web Dashboard für Stage1 (DRY-RUN) Monitoring.
+
+### Overview
+
+Das Stage1 Dashboard bietet Echtzeit-Überwachung von Alerts und Events im Dry-Run-Modus:
+- **Latest Metrics:** Aktuelle Messung (New Alerts, Critical, Parse Errors, Operator Actions)
+- **Trend Analysis:** Zeitreihe der letzten N Tage mit Go/No-Go Bewertung
+- **Auto-Refresh:** Automatische Aktualisierung alle 30 Sekunden
+
+### Web Interface
+
+**Route:** `http://localhost:8000/ops/stage1`
+
+```bash
+# Start dashboard server
+uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
+
+# Open browser
+open http://localhost:8000/ops/stage1
+```
+
+### API Endpoints
+
+**JSON Endpoints (für Automation):**
+
+```bash
+# Latest daily summary
+curl http://localhost:8000/ops/stage1/latest
+
+# Trend analysis (default 14 days)
+curl http://localhost:8000/ops/stage1/trend
+
+# Custom time range (7-90 days)
+curl http://localhost:8000/ops/stage1/trend?days=30
+```
+
+### Reports & Data Files
+
+**Default Report Root:** `reports/obs/stage1/`
+
+**Generated Files:**
+
+1. **Daily Summaries** (from `scripts/obs/stage1_daily_snapshot.py`):
+   - Format: `YYYY-MM-DD_summary.json`
+   - Schema Version: 1
+   - Contains: metrics (new_alerts, critical_alerts, parse_errors, operator_actions, legacy_alerts)
+
+2. **Trend Analysis** (from `scripts/obs/stage1_trend_report.py`):
+   - File: `stage1_trend.json`
+   - Schema Version: 1
+   - Contains: series (time series data), rollups (aggregated stats), go_no_go assessment
+
+**Generate Reports:**
+
+```bash
+# Daily snapshot (creates YYYY-MM-DD_summary.json)
+python scripts/obs/stage1_daily_snapshot.py
+
+# Trend report (creates stage1_trend.json)
+python scripts/obs/stage1_trend_report.py
+```
+
+### Go/No-Go Heuristic
+
+The trend analysis includes a simple readiness assessment:
+
+- **NO_GO:** Critical alerts detected on any day
+- **HOLD:** New alerts total > 5 (over period) OR parse errors detected
+- **GO:** All checks passed
+
+**Logic is transparent and configurable** in `src/obs/stage1/trend.py`.
+
+### Implementation Details
+
+**Core Modules:**
+- `src/obs/stage1/models.py` — Pydantic data models
+- `src/obs/stage1/io.py` — Discovery & loading functions
+- `src/obs/stage1/trend.py` — Trend computation
+- `src/webui/ops_stage1_router.py` — FastAPI router
+- `templates/peak_trade_dashboard/ops_stage1.html` — HTML template
+
+**Tests:**
+- `tests/test_stage1_io.py` — IO module tests
+- `tests/test_stage1_trend.py` — Trend computation tests
+- `tests/test_stage1_router.py` — Router/API tests
+
+### Breaking Change Policy
+
+**Phase 16K ist additiv und safe:**
+- Stage1 Scripts schreiben zusätzliche JSON Files (bestehende Markdown Reports unverändert)
+- Keine Breaking Changes an bestehenden Workflows
+- Falls JSON Files fehlen: Empty State im Dashboard, keine Errors
