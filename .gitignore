@@ -88,3 +88,9 @@ mlruns/
 
 # backup files
 *.old.*
+
+# --- Stage 1 monitoring artifacts ---
+reports/obs/stage1/*_snapshot.md
+reports/obs/stage1/*trend*.md
+logs/obs/
+logs/launchd/
