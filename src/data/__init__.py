@@ -85,10 +85,20 @@ __all__.extend([
 ])
 
 # Wave A (Stability): Data Contract Gate
-from .contracts import validate_ohlcv
+from .contracts import (
+    validate_ohlcv,
+    check_ohlcv,
+    OHLCVContract,
+    StrictnessLevel,
+    CONTRACT_VERSION,
+)
 
 __all__.extend([
     "validate_ohlcv",
+    "check_ohlcv",
+    "OHLCVContract",
+    "StrictnessLevel",
+    "CONTRACT_VERSION",
 ])
 
 # Wave A (Stability): Atomic Cache Operations

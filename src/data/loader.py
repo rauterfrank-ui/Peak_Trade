@@ -1,8 +1,16 @@
 """
 Data Loader: CSV-Loader für verschiedene Datenquellen.
+
+Wave A (Stability): Data Contract Validation at CSV Load Boundaries
 """
 import os
+import logging
 import pandas as pd
+
+from .contracts import validate_ohlcv
+from ..core.errors import DataContractError
+
+logger = logging.getLogger(__name__)
 
 
 class CsvLoader:
@@ -18,16 +26,23 @@ class CsvLoader:
         delimiter: str = ",",
         decimal: str = ".",
         parse_dates: bool = True,
+        validate_contract: bool = False,
     ) -> None:
         """
         Args:
             delimiter: CSV-Trennzeichen (default: ",")
             decimal: Dezimalzeichen (default: ".")
             parse_dates: Automatisches Datum-Parsing (default: True)
+            validate_contract: Data contract validation durchführen (default: False for backward compatibility)
+            
+        Note:
+            For production use with OHLCV data, it's recommended to enable validation:
+            loader = CsvLoader(validate_contract=True)
         """
         self.delimiter = delimiter
         self.decimal = decimal
         self.parse_dates = parse_dates
+        self.validate_contract = validate_contract
 
     def load(self, filepath: str) -> pd.DataFrame:
         """
@@ -75,9 +90,18 @@ class KrakenCsvLoader(CsvLoader):
     - time: Unix-Timestamp (Sekunden)
     """
 
-    def __init__(self) -> None:
-        """Initialisiert mit Kraken-spezifischen Settings."""
-        super().__init__(delimiter=",", decimal=".", parse_dates=False)
+    def __init__(self, validate_contract: bool = False) -> None:
+        """
+        Initialisiert mit Kraken-spezifischen Settings.
+        
+        Args:
+            validate_contract: Data contract validation durchführen (default: False for backward compatibility)
+            
+        Note:
+            For production use, it's recommended to enable validation:
+            loader = KrakenCsvLoader(validate_contract=True)
+        """
+        super().__init__(delimiter=",", decimal=".", parse_dates=False, validate_contract=validate_contract)
 
     def load(self, filepath: str) -> pd.DataFrame:
         """
@@ -92,6 +116,7 @@ class KrakenCsvLoader(CsvLoader):
         Raises:
             FileNotFoundError: Wenn Datei nicht existiert
             ValueError: Wenn CSV nicht lesbar ist oder 'time'-Spalte fehlt
+            DataContractError: Wenn Validierung fehlschlägt (validate_contract=True)
         """
         df = super().load(filepath)
 
@@ -103,4 +128,23 @@ class KrakenCsvLoader(CsvLoader):
 
         df.index = pd.to_datetime(df["time"], unit="s", utc=True)
         df = df.drop(columns=["time"])
+        
+        # Wave A (Stability): Data Contract Validation after CSV Load
+        if self.validate_contract:
+            # Only validate if we have OHLCV columns
+            from . import REQUIRED_OHLCV_COLUMNS
+            if all(col in df.columns for col in REQUIRED_OHLCV_COLUMNS):
+                is_valid, errors = validate_ohlcv(df, strict=True, require_tz=True)
+                if not is_valid:
+                    raise DataContractError(
+                        f"OHLCV validation failed after loading CSV: {errors[0]}",
+                        hint="Check CSV file for data quality issues",
+                        context={
+                            "errors": errors,
+                            "shape": df.shape,
+                            "filepath": filepath,
+                        }
+                    )
+                logger.debug(f"Data contract validation passed for CSV: {filepath}")
+        
         return df
