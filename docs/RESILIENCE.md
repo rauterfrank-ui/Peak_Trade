@@ -1,16 +1,17 @@
 # Peak_Trade Resilience & Stability Module
 
 > **Status:** ✅ Implemented (December 2024)  
-> **Version:** 1.0.0  
+> **Version:** 1.1.0  
 > **Related Issue:** #97
 
 ## Overview
 
-The Resilience & Stability Module provides robust patterns for handling external dependencies and preventing cascading failures in Peak Trade. It implements three core patterns:
+The Resilience & Stability Module provides robust patterns for handling external dependencies and preventing cascading failures in Peak Trade. It implements four core patterns:
 
 1. **Circuit Breaker** - Prevents cascading failures by temporarily blocking calls to failing services
 2. **Retry with Backoff** - Automatically retries transient failures with exponential delays
 3. **Health Check System** - Monitors system component health and availability
+4. **Backup & Recovery** - Disaster recovery with automated backups and state snapshots
 
 ## Table of Contents
 
@@ -18,8 +19,10 @@ The Resilience & Stability Module provides robust patterns for handling external
 - [Circuit Breaker](#circuit-breaker)
 - [Retry with Backoff](#retry-with-backoff)
 - [Health Check System](#health-check-system)
+- [Backup & Recovery System](#backup--recovery-system)
 - [ResilientExchangeClient](#resilientexchangeclient)
 - [Health Dashboard](#health-dashboard)
+- [Integration Examples](#integration-examples)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
 
@@ -346,6 +349,349 @@ The dashboard generates a JSON report at `reports/health_check.json`:
 }
 ```
 
+## Backup & Recovery System
+
+The backup and recovery system provides disaster recovery capabilities through automated backups of configuration, state, and data.
+
+### Concept
+
+Ensures system resilience through:
+- **State Snapshots**: Capture runtime state from registered providers
+- **Configuration Backup**: Preserve configuration files
+- **Data Backup**: Protect critical data files and directories
+- **Restore Operations**: Recover from disasters with verified backups
+- **Metadata Tracking**: Organize backups with tags and descriptions
+
+### Basic Usage
+
+```python
+from src.core.backup_recovery import RecoveryManager
+
+# Initialize recovery manager
+recovery = RecoveryManager(backup_dir="backups")
+
+# Configure what to backup
+recovery.config_backup.add_config(Path("config/config.toml"))
+recovery.data_backup.add_data_path(Path("data/critical.csv"))
+
+# Register state providers
+recovery.state_snapshot.register_provider(
+    "app_state",
+    lambda: {"version": "1.0", "active_users": 42}
+)
+
+# Create backup
+backup_id = recovery.create_backup(
+    include_config=True,
+    include_state=True,
+    include_data=True,
+    description="Daily backup",
+    tags=["daily", "production"]
+)
+
+# List backups
+backups = recovery.list_backups()
+for backup in backups:
+    print(f"{backup.backup_id}: {backup.description}")
+
+# Restore from backup
+recovery.restore_backup(backup_id, restore_config=True, restore_data=True)
+```
+
+### State Snapshots
+
+Capture runtime state for recovery:
+
+```python
+from src.core.backup_recovery import StateSnapshot
+
+snapshot = StateSnapshot()
+
+# Register state providers
+def get_trading_metrics():
+    return {
+        "active_positions": 5,
+        "pending_orders": 2,
+        "total_pnl": 1250.50
+    }
+
+snapshot.register_provider("trading", get_trading_metrics)
+
+# Capture and save
+snapshot.save(Path("state_snapshot.json"))
+
+# Load later
+state = snapshot.load(Path("state_snapshot.json"))
+print(state["providers"]["trading"])
+```
+
+### Configuration Backup
+
+Protect configuration files:
+
+```python
+from src.core.backup_recovery import ConfigBackup
+
+config_backup = ConfigBackup()
+
+# Add configs to backup
+config_backup.add_config(Path("config/config.toml"))
+config_backup.add_config(Path("config/strategies.json"))
+
+# Backup
+count = config_backup.backup(Path("backups/config"))
+print(f"Backed up {count} config files")
+
+# Restore (with dry-run option)
+count = config_backup.restore(Path("backups/config"), dry_run=True)
+print(f"Would restore {count} config files")
+
+# Actually restore
+config_backup.restore(Path("backups/config"))
+```
+
+### Data Backup
+
+Backup critical data files and directories:
+
+```python
+from src.core.backup_recovery import DataBackup
+
+data_backup = DataBackup()
+
+# Add data paths
+data_backup.add_data_path(Path("data/positions.csv"))
+data_backup.add_data_path(Path("data/trades/"))  # Entire directory
+
+# Backup
+files_count, size_bytes = data_backup.backup(Path("backups/data"))
+print(f"Backed up {files_count} files ({size_bytes} bytes)")
+
+# Restore
+files_count = data_backup.restore(Path("backups/data"))
+print(f"Restored {files_count} files")
+```
+
+### Recovery Manager
+
+Orchestrate complete backup/recovery workflows:
+
+```python
+from src.core.backup_recovery import RecoveryManager, BackupType
+
+recovery = RecoveryManager(backup_dir="backups")
+
+# Configure sources
+recovery.config_backup.add_config(Path("config.toml"))
+recovery.data_backup.add_data_path(Path("data/"))
+recovery.state_snapshot.register_provider("app", lambda: {"status": "ok"})
+
+# Create full backup
+backup_id = recovery.create_backup(
+    include_config=True,
+    include_state=True,
+    include_data=True,
+    description="Pre-deployment backup",
+    tags=["deployment", "critical"]
+)
+
+# List and filter backups
+all_backups = recovery.list_backups()
+critical_backups = recovery.list_backups(tags=["critical"])
+config_backups = recovery.list_backups(backup_type=BackupType.CONFIG)
+
+# Restore from specific backup
+success = recovery.restore_backup(
+    backup_id,
+    restore_config=True,
+    restore_state=True,
+    restore_data=True
+)
+
+# Cleanup old backups (keep most recent 10)
+deleted = recovery.cleanup_old_backups(keep_count=10)
+```
+
+### Backup Metadata
+
+Track backup details for organization:
+
+```python
+# Create backup with metadata
+backup_id = recovery.create_backup(
+    include_config=True,
+    description="Before major update",
+    tags=["pre-update", "v2.0", "production"]
+)
+
+# List backups
+backups = recovery.list_backups()
+for backup in backups:
+    print(f"ID: {backup.backup_id}")
+    print(f"Type: {backup.backup_type.value}")
+    print(f"Status: {backup.status.value}")
+    print(f"Description: {backup.description}")
+    print(f"Tags: {', '.join(backup.tags)}")
+    print(f"Files: {backup.files_count}")
+    print(f"Size: {backup.size_bytes} bytes")
+    print(f"Created: {backup.created_at}")
+    print()
+```
+
+### Disaster Recovery Workflow
+
+Complete disaster recovery process:
+
+```python
+# 1. Initialize system with recovery
+recovery = RecoveryManager(backup_dir="backups")
+recovery.config_backup.add_config(Path("config.toml"))
+recovery.data_backup.add_data_path(Path("data/"))
+
+# 2. Create regular backups
+def create_daily_backup():
+    return recovery.create_backup(
+        include_config=True,
+        include_state=True,
+        include_data=True,
+        description=f"Daily backup {datetime.now().date()}",
+        tags=["daily", "automated"]
+    )
+
+# 3. Detect disaster (e.g., via health checks)
+from src.core.resilience import health_check
+
+def check_config():
+    if not Path("config.toml").exists():
+        return False, "Config missing"
+    return True, "Config OK"
+
+health_check.register("config", check_config)
+is_healthy = health_check.is_system_healthy()
+
+# 4. Recover if unhealthy
+if not is_healthy:
+    print("🚨 System unhealthy, initiating recovery...")
+    
+    # Get most recent successful backup
+    backups = recovery.list_backups()
+    if backups:
+        latest_backup = backups[0]
+        success = recovery.restore_backup(
+            latest_backup.backup_id,
+            restore_config=True,
+            restore_data=True
+        )
+        
+        if success:
+            print("✅ Recovery successful")
+            # Create post-recovery backup
+            recovery.create_backup(
+                include_config=True,
+                description="Post-recovery verification",
+                tags=["recovery", "verified"]
+            )
+```
+
+### Backup Best Practices
+
+1. **Regular Backups**
+   ```python
+   # Create backups before major operations
+   backup_id = recovery.create_backup(
+       include_config=True,
+       include_data=True,
+       description="Pre-deployment",
+       tags=["deployment"]
+   )
+   ```
+
+2. **Use Tags for Organization**
+   ```python
+   # Tag backups appropriately
+   tags = ["daily"] if is_scheduled else ["manual", "on-demand"]
+   backup_id = recovery.create_backup(tags=tags)
+   ```
+
+3. **Test Restores**
+   ```python
+   # Use dry-run to test restore
+   success = recovery.restore_backup(backup_id, dry_run=True)
+   if success:
+       print("Restore would succeed")
+   ```
+
+4. **Implement Retention Policy**
+   ```python
+   # Keep only recent backups
+   recovery.cleanup_old_backups(keep_count=30)  # Keep last 30
+   ```
+
+5. **Verify Backup Integrity**
+   ```python
+   # Check backup exists and is complete
+   backups = recovery.list_backups()
+   for backup in backups:
+       if backup.status != BackupStatus.SUCCESS:
+           print(f"⚠️  Backup {backup.backup_id} incomplete")
+   ```
+
+### Integration with Health Checks
+
+Combine backups with health monitoring:
+
+```python
+from src.core.resilience import health_check
+from src.core.backup_recovery import RecoveryManager
+
+recovery = RecoveryManager()
+
+# Register backup health check
+def check_recent_backup():
+    backups = recovery.list_backups()
+    if not backups:
+        return False, "No backups found"
+    
+    latest = backups[0]
+    # Check if backup is recent (within 24 hours)
+    from datetime import datetime, timedelta
+    backup_time = datetime.fromisoformat(latest.created_at.replace('Z', '+00:00'))
+    age = datetime.now(backup_time.tzinfo) - backup_time
+    
+    if age > timedelta(hours=24):
+        return False, f"Latest backup is {age.total_seconds()/3600:.1f} hours old"
+    
+    return True, f"Latest backup: {age.total_seconds()/3600:.1f} hours ago"
+
+health_check.register("backups", check_recent_backup)
+```
+
+## Integration Examples
+
+Complete examples are available in `examples/resilience/`:
+
+### Circuit Breaker Examples
+- `01_circuit_breaker_basics.py` - Basic usage, states, monitoring
+- See [examples/resilience/README.md](../examples/resilience/README.md)
+
+### Combined Patterns
+- `06_combining_patterns.py` - Circuit breaker + retry together
+- Demonstrates correct decorator order and configuration
+
+### Backup & Recovery Examples
+- `10_backup_basics.py` - Basic backup operations and restore
+- `13_disaster_recovery.py` - Complete disaster recovery workflow
+
+Run examples:
+```bash
+cd examples/resilience
+python 01_circuit_breaker_basics.py
+python 10_backup_basics.py
+python 13_disaster_recovery.py
+```
+
+
+
 ### Exit Codes
 
 - **0**: All health checks passed (system healthy)
@@ -625,6 +971,26 @@ def setup_backtest_health_check():
 - [AWS - Exponential Backoff and Jitter](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/)
 
 ## Changelog
+
+### Version 1.1.0 (December 2024)
+
+**New Features:**
+- Complete backup and recovery system
+  - StateSnapshot for runtime state capture
+  - ConfigBackup for configuration file protection
+  - DataBackup for critical data preservation
+  - RecoveryManager for orchestration
+- Backup metadata with tags and descriptions
+- Dry-run capability for safe restore testing
+- Automated backup cleanup and retention
+- Integration examples for complete workflows
+- Disaster recovery workflow example
+
+**Improvements:**
+- Enhanced documentation with backup/recovery patterns
+- 30 new comprehensive tests (all passing)
+- Production-ready examples directory
+- Integration with health check system
 
 ### Version 1.0.0 (December 2024)
 
