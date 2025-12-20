@@ -1,0 +1,239 @@
+{% extends "peak_trade_dashboard/base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+  
+  <!-- Page Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold">Telemetry Console</h1>
+      <p class="text-sm text-slate-400 mt-1">Phase 16F · Session overview + health monitoring</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="/api/telemetry/health?root={{ telemetry_root }}"
+         class="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors"
+         target="_blank">
+        📊 Health API (JSON)
+      </a>
+      <a href="javascript:location.reload()"
+         class="text-xs px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 transition-colors">
+        🔄 Refresh
+      </a>
+    </div>
+  </div>
+
+  <!-- Health Status Section -->
+  {% if health_report %}
+  <div class="bg-slate-900/50 rounded-lg border border-slate-800 p-6">
+    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+      {% if health_report.status == "ok" %}
+        <span class="text-2xl">✅</span>
+      {% elif health_report.status == "warn" %}
+        <span class="text-2xl">⚠️</span>
+      {% else %}
+        <span class="text-2xl">🔴</span>
+      {% endif %}
+      Health Status: 
+      <span class="{% if health_report.status == 'ok' %}text-emerald-400{% elif health_report.status == 'warn' %}text-yellow-400{% else %}text-red-400{% endif %}">
+        {{ health_report.status|upper }}
+      </span>
+    </h2>
+
+    <!-- Health Checks Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {% for check in health_report.checks %}
+      <div class="bg-slate-800/30 rounded p-4 border {% if check.status == 'ok' %}border-emerald-500/30{% elif check.status == 'warn' %}border-yellow-500/30{% else %}border-red-500/30{% endif %}">
+        <div class="flex items-start justify-between mb-2">
+          <span class="text-sm font-medium text-slate-300">{{ check.name|replace("_", " ")|title }}</span>
+          <span class="text-xs px-2 py-0.5 rounded {% if check.status == 'ok' %}bg-emerald-500/10 text-emerald-300{% elif check.status == 'warn' %}bg-yellow-500/10 text-yellow-300{% else %}bg-red-500/10 text-red-300{% endif %}">
+            {{ check.status|upper }}
+          </span>
+        </div>
+        <p class="text-xs text-slate-400 mb-2">{{ check.message }}</p>
+        {% if check.value is not none %}
+        <div class="text-xs text-slate-500">
+          Value: <span class="text-slate-300">{{ "%.1f"|format(check.value) }}</span>
+          {% if check.threshold_warn is not none %}
+          · Warn: {{ "%.1f"|format(check.threshold_warn) }} · Critical: {{ "%.1f"|format(check.threshold_critical) }}
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-4 text-xs text-slate-500">
+      Last check: {{ health_report.timestamp }} · Exit code: {{ health_report.exit_code }}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Disk Usage & Retention Policy Summary -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    <!-- Disk Usage -->
+    <div class="bg-slate-900/50 rounded-lg border border-slate-800 p-6">
+      <h2 class="text-lg font-semibold mb-4">📊 Disk Usage</h2>
+      <div class="space-y-3">
+        <div>
+          <div class="text-sm text-slate-400">Total Size</div>
+          <div class="text-2xl font-bold text-slate-100">{{ total_size_mb }} MB</div>
+        </div>
+        <div>
+          <div class="text-sm text-slate-400">Total Sessions</div>
+          <div class="text-2xl font-bold text-slate-100">{{ total_sessions }}</div>
+        </div>
+        <div>
+          <div class="text-sm text-slate-400">Root Directory</div>
+          <div class="text-xs font-mono text-slate-300 bg-slate-800/50 px-2 py-1 rounded">{{ telemetry_root }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Retention Policy -->
+    <div class="bg-slate-900/50 rounded-lg border border-slate-800 p-6">
+      <h2 class="text-lg font-semibold mb-4">🗄️ Retention Policy</h2>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-slate-400">Enabled</span>
+          <span class="{% if retention_policy.enabled %}text-emerald-400{% else %}text-slate-500{% endif %}">
+            {{ "✓ Yes" if retention_policy.enabled else "✗ No" }}
+          </span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Max Age</span>
+          <span class="text-slate-100">{{ retention_policy.max_age_days }} days</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Keep Last N Sessions</span>
+          <span class="text-slate-100">{{ retention_policy.keep_last_n_sessions }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Max Total Size</span>
+          <span class="text-slate-100">{{ retention_policy.max_total_mb }} MB</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Compress After</span>
+          <span class="text-slate-100">{{ retention_policy.compress_after_days }} days</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sessions Table -->
+  <div class="bg-slate-900/50 rounded-lg border border-slate-800 overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-800">
+      <h2 class="text-lg font-semibold">Recent Sessions (last 50)</h2>
+      <p class="text-xs text-slate-400 mt-1">Newest first · Click session ID to view details</p>
+    </div>
+
+    {% if sessions %}
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-800/50 text-slate-300 text-xs uppercase tracking-wider sticky top-0">
+          <tr>
+            <th class="px-4 py-3 text-left font-semibold">Session ID</th>
+            <th class="px-4 py-3 text-right font-semibold">Size (MB)</th>
+            <th class="px-4 py-3 text-right font-semibold">Age (days)</th>
+            <th class="px-4 py-3 text-center font-semibold">Compressed</th>
+            <th class="px-4 py-3 text-left font-semibold">Modified</th>
+            <th class="px-4 py-3 text-center font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/50">
+          {% for session in sessions %}
+          <tr class="hover:bg-slate-800/30 transition-colors">
+            <td class="px-4 py-3">
+              <span class="font-mono text-xs text-emerald-400">{{ session.session_id }}</span>
+            </td>
+            <td class="px-4 py-3 text-right text-slate-300">
+              {{ "%.2f"|format(session.size_mb) }}
+            </td>
+            <td class="px-4 py-3 text-right text-slate-300">
+              {{ "%.1f"|format(session.age_days) }}
+            </td>
+            <td class="px-4 py-3 text-center">
+              {% if session.is_compressed %}
+                <span class="text-xs px-2 py-0.5 rounded bg-blue-500/10 text-blue-300">GZ</span>
+              {% else %}
+                <span class="text-xs px-2 py-0.5 rounded bg-slate-700/50 text-slate-400">RAW</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-slate-400 text-xs">
+              {{ session.mtime[:10] }}
+            </td>
+            <td class="px-4 py-3 text-center">
+              <div class="flex items-center justify-center gap-2">
+                <a href="/api/telemetry?session_id={{ session.session_id }}"
+                   class="text-xs px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 transition-colors"
+                   target="_blank">
+                  📊 Details
+                </a>
+                {% if not session.is_compressed %}
+                <a href="{{ session.path }}"
+                   class="text-xs px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 transition-colors"
+                   download>
+                  ⬇️ Raw
+                </a>
+                {% else %}
+                <a href="{{ session.path }}"
+                   class="text-xs px-2 py-1 rounded bg-blue-700 hover:bg-blue-600 transition-colors"
+                   download>
+                  ⬇️ GZ
+                </a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="px-6 py-12 text-center">
+      <p class="text-slate-400">No telemetry sessions found</p>
+      <p class="text-xs text-slate-500 mt-2">Sessions will appear here after execution telemetry events are logged</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- CLI Commands Reference -->
+  <div class="bg-slate-900/50 rounded-lg border border-slate-800 p-6">
+    <h2 class="text-lg font-semibold mb-4">🔧 CLI Commands</h2>
+    <div class="space-y-3 text-xs font-mono">
+      <div>
+        <div class="text-slate-400 mb-1">Health Check:</div>
+        <code class="block bg-slate-800/50 px-3 py-2 rounded text-emerald-400">
+          python scripts/telemetry_health_check.py
+        </code>
+      </div>
+      <div>
+        <div class="text-slate-400 mb-1">Health Check (JSON):</div>
+        <code class="block bg-slate-800/50 px-3 py-2 rounded text-emerald-400">
+          python scripts/telemetry_health_check.py --json
+        </code>
+      </div>
+      <div>
+        <div class="text-slate-400 mb-1">Retention Dry-Run:</div>
+        <code class="block bg-slate-800/50 px-3 py-2 rounded text-emerald-400">
+          python scripts/ops/telemetry_retention.py
+        </code>
+      </div>
+      <div>
+        <div class="text-slate-400 mb-1">Retention Apply:</div>
+        <code class="block bg-slate-800/50 px-3 py-2 rounded text-yellow-400">
+          python scripts/ops/telemetry_retention.py --apply
+        </code>
+      </div>
+      <div>
+        <div class="text-slate-400 mb-1">View Session Events:</div>
+        <code class="block bg-slate-800/50 px-3 py-2 rounded text-emerald-400">
+          python scripts/view_execution_telemetry.py --session &lt;SESSION_ID&gt;
+        </code>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
