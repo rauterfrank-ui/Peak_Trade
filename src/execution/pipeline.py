@@ -481,17 +481,18 @@ class ExecutionPipeline:
             payload: Event-specific data
         
         Note:
-            Uses local time (datetime.now()). For UTC, switch to datetime.now(timezone.utc)
-            in a future phase if needed for multi-region deployments.
+            Uses UTC timestamps (datetime.now(timezone.utc)) for consistency across
+            regions and to avoid timezone ambiguities in logs.
         """
         if self._emitter is None:
             return
 
         try:
+            from datetime import timezone
             from .events import ExecutionEvent
             
             event = ExecutionEvent(
-                ts=datetime.now(),  # Local time (for single-region deployments)
+                ts=datetime.now(timezone.utc),  # UTC timestamps for Production
                 session_id=session_id,
                 symbol=symbol,
                 mode=self._get_current_environment(),
