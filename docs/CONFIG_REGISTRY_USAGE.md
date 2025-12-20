@@ -1,5 +1,7 @@
 # Peak_Trade Config Registry - Usage Guide
 
+> **Note**: This document describes the legacy config registry system. For the new **thread-safe config registry with hot-reload support**, see [CONFIGURATION_GUIDE.md](CONFIGURATION_GUIDE.md).
+
 ## 📚 Übersicht
 
 Die neue **Strategien-Registry** bietet:
