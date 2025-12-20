@@ -24,6 +24,8 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 import pandas as pd
 
+from ..core.errors import StrategyError
+
 if TYPE_CHECKING:
     from typing_extensions import Self
 
@@ -126,7 +128,7 @@ class BaseStrategy(ABC):
             - 0 = Flat (keine Position)
 
         Raises:
-            ValueError: Bei fehlenden Spalten oder zu wenig Daten
+            StrategyError: Bei fehlenden Spalten oder zu wenig Daten
         """
         raise NotImplementedError
 
@@ -146,7 +148,7 @@ class BaseStrategy(ABC):
         Kann von Subklassen überschrieben werden.
 
         Raises:
-            ValueError: Bei ungültigen Parametern
+            StrategyError: Bei ungültigen Parametern
         """
         return
 

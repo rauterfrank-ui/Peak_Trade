@@ -7,7 +7,7 @@ Features:
 - ccxt-basierte Kraken-Integration
 - Automatisches Parquet-Caching
 - UTC-DatetimeIndex
-- Error-Handling
+- Error-Handling mit ProviderError
 """
 
 import ccxt
@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 import logging
 
 from ..core.config_registry import get_config
+from ..core.errors import ProviderError, CacheError, chain_error
 
 logger = logging.getLogger(__name__)
 
@@ -75,8 +76,8 @@ def fetch_ohlcv_df(
         Spalten: [open, high, low, close, volume]
         
     Raises:
-        ccxt.NetworkError: Bei Verbindungsproblemen
-        ccxt.ExchangeError: Bei API-Fehlern
+        ProviderError: Bei Verbindungsproblemen oder API-Fehlern
+        CacheError: Bei Cache-Lese-/Schreibproblemen
         
     Example:
         >>> df = fetch_ohlcv_df("BTC/USD", "1h", limit=100)
@@ -89,9 +90,17 @@ def fetch_ohlcv_df(
     # 1. Cache-Check
     if use_cache and cache_path.exists():
         logger.info(f"Lade {symbol} {timeframe} aus Cache: {cache_path}")
-        df = pd.read_parquet(cache_path)
-        df.index = pd.to_datetime(df.index, utc=True)
-        return df
+        try:
+            df = pd.read_parquet(cache_path)
+            df.index = pd.to_datetime(df.index, utc=True)
+            return df
+        except Exception as e:
+            raise CacheError(
+                f"Failed to read cache file: {cache_path}",
+                hint="Try clearing the cache with clear_cache() or check file permissions",
+                context={"cache_path": str(cache_path), "symbol": symbol, "timeframe": timeframe},
+                cause=e
+            )
     
     # 2. Von Kraken holen
     logger.info(f"Hole {symbol} {timeframe} von Kraken (limit={limit})")
@@ -118,17 +127,55 @@ def fetch_ohlcv_df(
         # 5. In Cache speichern
         if use_cache:
             logger.info(f"Speichere in Cache: {cache_path}")
-            df.to_parquet(cache_path)
+            try:
+                df.to_parquet(cache_path)
+            except Exception as e:
+                # Log but don't fail on cache write errors
+                logger.warning(f"Failed to write cache: {e}")
         
         logger.info(f"Geladen: {len(df)} Bars von {df.index[0]} bis {df.index[-1]}")
         return df
         
     except ccxt.NetworkError as e:
         logger.error(f"Netzwerkfehler bei Kraken: {e}")
-        raise
+        raise ProviderError(
+            f"Network error connecting to Kraken API",
+            hint="Check your internet connection and verify Kraken API status at status.kraken.com",
+            context={"symbol": symbol, "timeframe": timeframe, "limit": limit},
+            cause=e
+        )
+    except ccxt.RateLimitExceeded as e:
+        logger.error(f"Kraken Rate Limit überschritten: {e}")
+        raise ProviderError(
+            f"Kraken API rate limit exceeded",
+            hint="Wait 60 seconds before retrying or reduce request frequency",
+            context={"symbol": symbol, "timeframe": timeframe},
+            cause=e
+        )
+    except ccxt.AuthenticationError as e:
+        logger.error(f"Kraken Authentifizierungsfehler: {e}")
+        raise ProviderError(
+            f"Kraken API authentication failed",
+            hint="Check API credentials in environment variables (KRAKEN_API_KEY, KRAKEN_API_SECRET)",
+            context={"symbol": symbol},
+            cause=e
+        )
     except ccxt.ExchangeError as e:
         logger.error(f"Kraken API-Fehler: {e}")
-        raise
+        raise ProviderError(
+            f"Kraken API error: {str(e)}",
+            hint="Check if symbol '{symbol}' is valid and supported by Kraken",
+            context={"symbol": symbol, "timeframe": timeframe},
+            cause=e
+        )
+    except Exception as e:
+        logger.error(f"Unerwarteter Fehler beim Laden von Kraken-Daten: {e}")
+        raise chain_error(
+            e,
+            f"Unexpected error fetching data from Kraken",
+            hint="Check logs for details",
+            context={"symbol": symbol, "timeframe": timeframe}
+        )
 
 
 def clear_cache(symbol: Optional[str] = None, timeframe: Optional[str] = None) -> None:
