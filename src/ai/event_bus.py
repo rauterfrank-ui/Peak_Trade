@@ -4,7 +4,7 @@ Event Bus for agent communication.
 Provides a publish-subscribe system for event-driven agent interactions.
 """
 
-from typing import Callable, Dict, List, Any
+from typing import Callable, Dict, List, Any, Optional
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
