@@ -4,8 +4,10 @@ Tests for workflow automation components.
 
 import subprocess
 from pathlib import Path
+
 import pytest
-from src.core.feature_flags import FeatureFlagManager, FeatureFlag, requires_feature
+
+from src.core.feature_flags import FeatureFlag, FeatureFlagManager, requires_feature
 
 
 class TestFeatureFlags:
