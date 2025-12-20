@@ -1127,17 +1127,21 @@ def create_app() -> FastAPI:
         from_ts: Optional[str] = Query(None, alias="from", description="Filter events after ISO timestamp"),
         to_ts: Optional[str] = Query(None, alias="to", description="Filter events before ISO timestamp"),
         limit: int = Query(200, le=2000, description="Maximum events to return"),
+        format: str = Query("json", regex="^(json|csv)$", description="Response format (json or csv)"),
     ):
         """
-        Query telemetry events (Phase 16C).
+        Query telemetry events (Phase 16C+16D).
 
         Returns:
+            JSON (default):
             {
                 "summary": {...},
                 "timeline": [...],
                 "query": {...},
                 "stats": {...}
             }
+            
+            CSV (format=csv): timeline as CSV download
         """
         from pathlib import Path
         from src.execution.telemetry_viewer import (
@@ -1198,6 +1202,44 @@ def create_app() -> FastAPI:
         summary = summarize_events(events_list)
         timeline = build_timeline(events_list, max_items=limit)
 
+        # CSV export (Phase 16D)
+        if format == "csv":
+            import csv
+            import io
+            from fastapi.responses import StreamingResponse
+            
+            output = io.StringIO()
+            writer = csv.DictWriter(
+                output,
+                fieldnames=["ts", "kind", "symbol", "session_id", "description", "details"],
+                extrasaction="ignore"
+            )
+            writer.writeheader()
+            
+            for item in timeline:
+                # Flatten nested details for CSV
+                details_str = ""
+                if "details" in item and isinstance(item["details"], dict):
+                    details_str = "; ".join(f"{k}={v}" for k, v in item["details"].items())
+                
+                writer.writerow({
+                    "ts": item.get("ts", ""),
+                    "kind": item.get("kind", ""),
+                    "symbol": item.get("symbol", ""),
+                    "session_id": item.get("session_id", ""),
+                    "description": item.get("description", ""),
+                    "details": details_str,
+                })
+            
+            output.seek(0)
+            filename = f"telemetry_{session_id or 'all'}_{type or 'all'}.csv"
+            return StreamingResponse(
+                iter([output.getvalue()]),
+                media_type="text/csv",
+                headers={"Content-Disposition": f"attachment; filename={filename}"}
+            )
+
+        # JSON response (default)
         return {
             "summary": summary,
             "timeline": timeline,
