@@ -13,9 +13,9 @@ import tempfile
 import shutil
 from pathlib import Path
 
-from ..performance.benchmark import PerformanceBenchmark
-from ...core.cache import MultiLevelCache
-from ...core.serialization import save_optimized_parquet, load_optimized_parquet
+from tests.performance.benchmark import PerformanceBenchmark
+from src.core.cache import MultiLevelCache
+from src.core.serialization import save_optimized_parquet, load_optimized_parquet
 
 
 @pytest.fixture
