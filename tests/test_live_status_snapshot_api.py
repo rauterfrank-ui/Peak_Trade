@@ -19,7 +19,13 @@ from __future__ import annotations
 import json
 import pytest
 
+# Skip if FastAPI not installed
+pytest.importorskip("fastapi")
+
 from fastapi.testclient import TestClient
+
+# Mark all tests in this module as web tests
+pytestmark = pytest.mark.web
 
 
 # =============================================================================

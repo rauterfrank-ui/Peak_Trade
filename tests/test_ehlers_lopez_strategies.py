@@ -19,6 +19,13 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, Any
 
+# Check if FastAPI is available for web-related tests
+try:
+    import fastapi
+    FASTAPI_AVAILABLE = True
+except ImportError:
+    FASTAPI_AVAILABLE = False
+
 
 # =============================================================================
 # EHLERS CYCLE FILTER STRATEGY TESTS
@@ -411,6 +418,8 @@ class TestResearchModules:
 # =============================================================================
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestStrategyTieringAPI:
     """Tests für API-Integration der neuen Strategien."""
 
@@ -502,19 +511,18 @@ class TestResearchStrategySafety:
 # =============================================================================
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestFastAPIEndpoints:
     """Integration-Tests für FastAPI-Endpoints mit neuen Strategien."""
 
     @pytest.fixture
     def client(self):
         """FastAPI TestClient."""
-        try:
-            from fastapi.testclient import TestClient
-            from src.webui.app import app
+        from fastapi.testclient import TestClient
+        from src.webui.app import app
 
-            return TestClient(app)
-        except ImportError:
-            pytest.skip("fastapi.testclient nicht verfügbar")
+        return TestClient(app)
 
     def test_api_includes_ehlers_with_research_flag(self, client):
         """Test: API inkludiert Ehlers mit include_research=true."""

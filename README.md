@@ -18,7 +18,13 @@ python scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/
 # 3. Tests ausführen
 pytest -m smoke -q  # Schnelle Smoke-Tests (~1 Sekunde)
 pytest -q           # Full Suite (~70 Sekunden)
+
+# 4. Optionale Web-UI Dependencies (für Dashboard/API Tests)
+uv sync --extra web  # oder: pip install -e ".[web]"
+pytest -m web        # Web-UI Tests ausführen
 ```
+
+**Hinweis:** Web-UI Tests werden automatisch übersprungen, wenn FastAPI nicht installiert ist. Core-Tests laufen ohne Web-Stack.
 
 **Nächste Schritte:**
 - 📖 **Architektur & Überblick:** [`docs/PEAK_TRADE_OVERVIEW.md`](docs/PEAK_TRADE_OVERVIEW.md)

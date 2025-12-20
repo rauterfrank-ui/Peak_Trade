@@ -40,7 +40,13 @@ import pytest
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+# Skip if FastAPI not installed
+pytest.importorskip("fastapi")
+
 from fastapi.testclient import TestClient
+
+# Mark all tests in this module as web tests
+pytestmark = pytest.mark.web
 
 from src.webui.app import create_app
 from src.webui.r_and_d_api import (

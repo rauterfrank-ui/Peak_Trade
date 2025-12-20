@@ -20,25 +20,14 @@ from typing import Any, Dict, List
 import pandas as pd
 import pytest
 
-# FastAPI TestClient importieren
-try:
-    from fastapi.testclient import TestClient
-    FASTAPI_AVAILABLE = True
-except ImportError:
-    FASTAPI_AVAILABLE = False
-    TestClient = None
+# Skip if FastAPI not installed - must be done before any FastAPI imports
+pytest.importorskip("fastapi")
 
+from fastapi.testclient import TestClient
 from src.live.web.app import create_app, WebUIConfig
 
-
-# =============================================================================
-# Skip if FastAPI not available
-# =============================================================================
-
-pytestmark = pytest.mark.skipif(
-    not FASTAPI_AVAILABLE,
-    reason="FastAPI not installed"
-)
+# Mark all tests in this module as web tests
+pytestmark = pytest.mark.web
 
 
 # =============================================================================
