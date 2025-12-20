@@ -6,9 +6,15 @@ import json
 from pathlib import Path
 
 import pytest
-from fastapi.testclient import TestClient
 
+# Skip if FastAPI not installed
+pytest.importorskip("fastapi")
+
+from fastapi.testclient import TestClient
 from src.webui.app import create_app
+
+# Mark all tests in this module as web tests
+pytestmark = pytest.mark.web
 
 
 def test_stage1_router_imports():

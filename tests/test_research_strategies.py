@@ -19,6 +19,13 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, Any
 
+# Check if FastAPI is available for web-related tests
+try:
+    import fastapi
+    FASTAPI_AVAILABLE = True
+except ImportError:
+    FASTAPI_AVAILABLE = False
+
 # =============================================================================
 # Strategy Import Tests
 # =============================================================================
@@ -278,6 +285,8 @@ class TestStrategyTiering:
         assert "Research" in TIER_LABELS["r_and_d"]
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestAllRnDStrategiesInTiering:
     """Tests: Alle R&D-Strategien sind in der Tiering-Struktur mit korrekten Feldern."""
 
@@ -436,6 +445,8 @@ class TestAllRnDStrategiesInTiering:
 # =============================================================================
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestStrategyTieringAPI:
     """Tests für Strategy-Tiering API-Endpoints."""
 
@@ -504,6 +515,8 @@ class TestStrategyTieringAPI:
 # =============================================================================
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestResearchStrategySafety:
     """Tests für Safety-Constraints von Research-Strategien."""
 
@@ -554,19 +567,18 @@ class TestResearchStrategySafety:
 # =============================================================================
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestStrategyTieringAPIEndpoints:
     """Integration-Tests für FastAPI-Endpoints."""
 
     @pytest.fixture
     def client(self):
         """FastAPI TestClient."""
-        try:
-            from fastapi.testclient import TestClient
-            from src.webui.app import app
+        from fastapi.testclient import TestClient
+        from src.webui.app import app
 
-            return TestClient(app)
-        except ImportError:
-            pytest.skip("fastapi.testclient nicht verfügbar")
+        return TestClient(app)
 
     def test_api_strategy_tiering_excludes_research_by_default(self, client):
         """Test: API /api/strategy_tiering schließt R&D standardmäßig aus."""

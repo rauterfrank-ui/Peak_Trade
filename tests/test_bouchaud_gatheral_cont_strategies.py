@@ -17,6 +17,13 @@ import pandas as pd
 import numpy as np
 from typing import Dict, Any
 
+# Check if FastAPI is available for web-related tests
+try:
+    import fastapi
+    FASTAPI_AVAILABLE = True
+except ImportError:
+    FASTAPI_AVAILABLE = False
+
 
 # =============================================================================
 # BOUCHAUD MICROSTRUCTURE STRATEGY TESTS
@@ -344,6 +351,8 @@ class TestStrategyTiering:
 # =============================================================================
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestStrategyTieringAPI:
     """Tests für API-Integration der Skeleton-Strategien."""
 
@@ -424,19 +433,18 @@ class TestResearchStrategySafety:
 # =============================================================================
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestFastAPIEndpoints:
     """Integration-Tests für FastAPI-Endpoints mit Skeleton-Strategien."""
 
     @pytest.fixture
     def client(self):
         """FastAPI TestClient."""
-        try:
-            from fastapi.testclient import TestClient
-            from src.webui.app import app
+        from fastapi.testclient import TestClient
+        from src.webui.app import app
 
-            return TestClient(app)
-        except ImportError:
-            pytest.skip("fastapi.testclient nicht verfügbar")
+        return TestClient(app)
 
     def test_api_includes_bouchaud_with_research_flag(self, client):
         """Test: API inkludiert Bouchaud mit include_research=true."""
