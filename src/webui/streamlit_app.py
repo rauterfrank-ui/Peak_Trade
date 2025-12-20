@@ -31,7 +31,7 @@ def fetch_api(endpoint: str):
         response = requests.get(f"{API_BASE_URL}{endpoint}", timeout=5)
         response.raise_for_status()
         return response.json()
-    except Exception as e:
+    except (requests.RequestException, requests.Timeout) as e:
         st.error(f"API Error: {e}")
         return None
 
@@ -41,7 +41,7 @@ def post_api(endpoint: str, data: dict):
         response = requests.post(f"{API_BASE_URL}{endpoint}", json=data, timeout=30)
         response.raise_for_status()
         return response.json()
-    except Exception as e:
+    except (requests.RequestException, requests.Timeout) as e:
         st.error(f"API Error: {e}")
         return None
 
@@ -158,8 +158,8 @@ elif page == "🔬 Backtest":
                     "end_date": str(end_date),
                     "initial_capital": initial_capital,
                     "parameters": {
-                        "lookback_period": float(lookback_period),
-                        "threshold": float(threshold)
+                        "lookback_period": lookback_period,
+                        "threshold": threshold
                     }
                 }
                 

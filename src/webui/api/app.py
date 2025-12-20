@@ -137,12 +137,22 @@ async def run_backtest(config: BacktestConfig):
         # Generate mock data for now (replace with real data loader later)
         # TODO: Integrate with actual data loader
         dates = pd.date_range(start=config.start_date, end=config.end_date, freq='1H')
+        base_price = 100
+        price_changes = np.random.randn(len(dates)).cumsum()
+        close_prices = base_price + price_changes
+        open_prices = np.roll(close_prices, 1)
+        open_prices[0] = base_price
+        
+        # Ensure OHLC constraints: low <= min(open, close), high >= max(open, close)
+        high_prices = np.maximum(open_prices, close_prices) + np.abs(np.random.randn(len(dates)))
+        low_prices = np.minimum(open_prices, close_prices) - np.abs(np.random.randn(len(dates)))
+        
         data = pd.DataFrame({
             'timestamp': dates,
-            'open': 100 + np.random.randn(len(dates)).cumsum(),
-            'high': 102 + np.random.randn(len(dates)).cumsum(),
-            'low': 98 + np.random.randn(len(dates)).cumsum(),
-            'close': 100 + np.random.randn(len(dates)).cumsum(),
+            'open': open_prices,
+            'high': high_prices,
+            'low': low_prices,
+            'close': close_prices,
             'volume': np.random.randint(1000, 10000, len(dates))
         })
         
@@ -275,10 +285,12 @@ async def list_backups():
 
 @app.post("/backups/create")
 async def create_backup(
-    tags: List[str] = [],
+    tags: List[str] = None,
     description: str = "Manual backup from dashboard"
 ):
     """Create new backup."""
+    if tags is None:
+        tags = []
     try:
         from src.core.backup_recovery import RecoveryManager
         
