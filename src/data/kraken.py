@@ -164,7 +164,7 @@ def fetch_ohlcv_df(
         logger.error(f"Kraken API-Fehler: {e}")
         raise ProviderError(
             f"Kraken API error: {str(e)}",
-            hint="Check if symbol '{symbol}' is valid and supported by Kraken",
+            hint=f"Check if symbol '{symbol}' is valid and supported by Kraken",
             context={"symbol": symbol, "timeframe": timeframe},
             cause=e
         )
