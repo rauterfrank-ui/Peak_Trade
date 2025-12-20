@@ -7,7 +7,6 @@ Design:
 - Use Pydantic V2 features (Field, field_validator)
 - Follow existing error taxonomy (ConfigError)
 - Backward compatible with existing TOML files
-- Apple Silicon (M2/M3) compatible
 
 Usage:
     from src.config.models import PeakTradeConfig

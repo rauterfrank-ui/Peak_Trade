@@ -482,7 +482,7 @@ end_date = "2024-12-31"  # Must be after start_date
 
 - **Pydantic V2 Docs**: https://docs.pydantic.dev/latest/
 - **Error Taxonomy**: `src/core/errors.py`
-- **Existing Config System**: `src/core/config_pydantic.py`
+- **Legacy Config System**: `src/core/config_registry.py` (non-validated)
 - **Tests**: `tests/config/`
 
 ---

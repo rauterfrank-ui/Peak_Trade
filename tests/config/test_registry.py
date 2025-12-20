@@ -12,6 +12,7 @@ Test Coverage:
 - Singleton pattern
 """
 
+import os
 import pytest
 import tempfile
 from pathlib import Path
@@ -307,7 +308,6 @@ max_position_size = 0.1
         reset_registry()
         
         # Override default path via env
-        import os
         os.environ["PEAK_TRADE_CONFIG"] = str(config_file)
         
         try:
@@ -365,7 +365,6 @@ provider = "kraken"
 max_position_size = 0.1
 """)
         
-        import os
         os.environ["PEAK_TRADE_CONFIG"] = str(config_file)
         
         try:
@@ -416,7 +415,6 @@ provider = "kraken"
 max_position_size = 0.1
 """)
         
-        import os
         os.environ["PEAK_TRADE_CONFIG"] = str(config_file)
         
         try:

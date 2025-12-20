@@ -46,7 +46,7 @@ from src.config.models import (
 from src.core.errors import ConfigError
 
 
-# Default Config-Pfad (relativ zum Projekt-Root)
+# Default config path (relative to project root)
 DEFAULT_CONFIG_PATH = Path("config.toml")
 
 
