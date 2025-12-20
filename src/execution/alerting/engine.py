@@ -1,16 +1,19 @@
 """
-Alert Engine - Phase 16I
+Alert Engine - Phase 16I + 16J
 
-Core alerting engine with deduplication, cooldown, and rate limiting.
+Core alerting engine with deduplication, cooldown, rate limiting, and operator state.
 """
 
 import logging
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from .models import AlertEvent, AlertSeverity
 from .rules import AlertRule, DEFAULT_RULES
+
+if TYPE_CHECKING:
+    from .operator_state import OperatorState
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +34,7 @@ class AlertEngine:
         self,
         rules: Optional[List[AlertRule]] = None,
         max_alerts_per_run: int = 20,
+        operator_state: Optional["OperatorState"] = None,
     ):
         """
         Initialize alert engine.
@@ -38,9 +42,11 @@ class AlertEngine:
         Args:
             rules: List of alert rules (defaults to DEFAULT_RULES)
             max_alerts_per_run: Maximum alerts to emit per run
+            operator_state: Optional operator state (for ACK/SNOOZE) - Phase 16J
         """
         self.rules = rules if rules is not None else DEFAULT_RULES.copy()
         self.max_alerts_per_run = max_alerts_per_run
+        self.operator_state = operator_state
         
         # State tracking
         self._last_alert_by_dedupe_key: Dict[str, datetime] = {}
@@ -73,6 +79,11 @@ class AlertEngine:
             if not rule.enabled:
                 continue
             
+            # Check operator state: SNOOZE (Phase 16J)
+            if self.operator_state and self.operator_state.is_snoozed(rule.rule_id):
+                logger.debug(f"Rule {rule.rule_id} is snoozed, skipping")
+                continue
+            
             # Check cooldown
             if not self._check_cooldown(rule, now):
                 logger.debug(f"Rule {rule.rule_id} in cooldown, skipping")
@@ -84,10 +95,17 @@ class AlertEngine:
             if alert:
                 candidate_alerts.append((rule, alert))
         
-        # Apply deduplication
+        # Apply deduplication + operator state (ACK)
         alerts = []
         
         for rule, alert in candidate_alerts:
+            # Check operator state: ACK (Phase 16J)
+            if self.operator_state and self.operator_state.is_acked(
+                alert.dedupe_key, severity=alert.severity.value
+            ):
+                logger.debug(f"Alert acked: {alert.dedupe_key}")
+                continue
+            
             if self._check_dedupe(rule, alert, now):
                 alerts.append(alert)
                 

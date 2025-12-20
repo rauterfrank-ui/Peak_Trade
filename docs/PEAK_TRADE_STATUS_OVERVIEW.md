@@ -49,7 +49,7 @@ Ziel:
 | **Strategy-Layer (Prod)**       | Kernstrategien, produktive Signals, Tier-System                   | **≈ 96%**   |
 | **Strategy-Layer (R&D)**        | R&D-Strategien (Armstrong, El Karoui, Waves), Sweeps              | **≈ 98%**   |
 | **Portfolio & Risk**            | Portfolio-Strategien, RiskLimits, Kelly/Exposure, Checks          | **≈ 96%**   |
-| **Execution & Live-Stack**      | Paper/Testnet-Flows, Live-Risk-Gates, Order-Executors, Telemetry Observability (Phase 16A–I: Events, Viewer, QA, Retention, Health, Trends, Alerting) | **≈ 98%**   |
+| **Execution & Live-Stack**      | Paper/Testnet-Flows, Live-Risk-Gates, Order-Executors, Telemetry Observability (Phase 16A–J: Events, Viewer, QA, Retention, Health, Trends, Alerting, Lifecycle) | **≈ 99%**   |
 | **Live-Track & Bridge**         | Strategy→Execution Bridge, Live-Session-Registry, Status-Overview | **≈ 96%**   |
 | **R&D Web-Dashboard**           | R&D Hub, Detail-View, Report-Gallery, Multi-Run-Comparison        | **100%**    |
 | **Monitoring & Alerts**         | CLI-Dashboards, Health-/Smoke-/Readiness-Checks                   | **≈ 95%**   |
@@ -1368,6 +1368,7 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 | 2025-12-20 | (aktuell) | **Phase 16F** – Telemetry Console & Health Monitoring – Ops dashboard (`/live/telemetry`) with session overview, disk usage, retention policy summary, health checks (disk/retention/compression/parse errors), CLI tool (`scripts/telemetry_health_check.py`, exit codes 0/2/3), API endpoint (`/api/telemetry/health`), 24 tests, Health runbook, customizable thresholds |
 | 2025-12-20 | (aktuell) | **Phase 16H** – Historical Health Trends Dashboard – Snapshot capture (`scripts/telemetry_health_snapshot.py`), JSONL append-only storage, Trends API (`/api/telemetry/health/trends?days=30`), Dashboard integration (24h/7d/30d windows), Rollup metrics (min/avg/max), Degradation detection, 26 tests, Trends runbook, Leading indicators guide |
 | 2025-12-20 | (aktuell) | **Phase 16I** – Real-time Alerting & Incident Hooks – Rule-based evaluation (health critical, degradation, leading indicators, parse errors), AlertEngine (dedupe + cooldown + rate limiting), Adapters (console, webhook), Alert Runner CLI (`scripts/telemetry_alerts.py`), Alerts API (`/api/telemetry/alerts/latest`), Dashboard integration (auto-refresh), 26 tests, Config-driven (safe by default), Dry-run mode, Exit codes (0/1/2), Alerting runbook |
+| 2025-12-20 | (aktuell) | **Phase 16J** – Alert Lifecycle & Noise Control – Alert History (JSONL persistence, retention), Operator State (ACK/SNOOZE with TTL), Engine integration (suppress based on operator actions), Lifecycle CLI (`scripts/telemetry_alerts_lifecycle.py` with subcommands: history/ack/snooze/unsnooze/stats), Config-driven (safe defaults), 17 tests, CRITICAL bypass ACK (configurable), Atomic state file writes, Auto-cleanup expired entries |
 
 ---
 
