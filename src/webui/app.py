@@ -1114,6 +1114,109 @@ def create_app() -> FastAPI:
             detail=f"Strategy '{strategy_id}' nicht gefunden oder R&D-Strategie (setze include_research=true)",
         )
 
+    # ========================================================================
+    # PHASE 16C: TELEMETRY VIEWER API
+    # ========================================================================
+
+    @app.get("/api/telemetry", response_model=None)
+    def get_telemetry_data(
+        request: Request,
+        session_id: Optional[str] = Query(None, description="Filter by session ID"),
+        type: Optional[str] = Query(None, description="Filter by event type"),
+        symbol: Optional[str] = Query(None, description="Filter by symbol"),
+        from_ts: Optional[str] = Query(None, alias="from", description="Filter events after ISO timestamp"),
+        to_ts: Optional[str] = Query(None, alias="to", description="Filter events before ISO timestamp"),
+        limit: int = Query(200, le=2000, description="Maximum events to return"),
+    ):
+        """
+        Query telemetry events (Phase 16C).
+
+        Returns:
+            {
+                "summary": {...},
+                "timeline": [...],
+                "query": {...},
+                "stats": {...}
+            }
+        """
+        from pathlib import Path
+        from src.execution.telemetry_viewer import (
+            TelemetryQuery,
+            build_timeline,
+            find_session_logs,
+            iter_events,
+            summarize_events,
+        )
+
+        # Build query
+        query = TelemetryQuery(
+            session_id=session_id,
+            event_type=type,
+            symbol=symbol,
+            ts_from=from_ts,
+            ts_to=to_ts,
+            limit=limit,
+        )
+
+        # Find log files
+        base_path = Path("logs/execution")
+        if session_id:
+            log_path = base_path / f"{session_id}.jsonl"
+            if not log_path.exists():
+                raise HTTPException(status_code=404, detail=f"Session log not found: {session_id}")
+            paths = [log_path]
+        else:
+            paths = find_session_logs(base_path)
+            if not paths:
+                raise HTTPException(status_code=404, detail="No telemetry logs found")
+
+        # Read events
+        event_iter, stats = iter_events(paths, query)
+        events_list = list(event_iter)
+
+        if not events_list:
+            return {
+                "summary": {"total_events": 0, "counts_by_type": {}},
+                "timeline": [],
+                "query": {
+                    "session_id": session_id,
+                    "type": type,
+                    "symbol": symbol,
+                    "from": from_ts,
+                    "to": to_ts,
+                    "limit": limit,
+                },
+                "stats": {
+                    "total_lines": stats.total_lines,
+                    "valid_events": stats.valid_events,
+                    "invalid_lines": stats.invalid_lines,
+                    "error_rate": stats.error_rate,
+                },
+            }
+
+        # Generate summary and timeline
+        summary = summarize_events(events_list)
+        timeline = build_timeline(events_list, max_items=limit)
+
+        return {
+            "summary": summary,
+            "timeline": timeline,
+            "query": {
+                "session_id": session_id,
+                "type": type,
+                "symbol": symbol,
+                "from": from_ts,
+                "to": to_ts,
+                "limit": limit,
+            },
+            "stats": {
+                "total_lines": stats.total_lines,
+                "valid_events": stats.valid_events,
+                "invalid_lines": stats.invalid_lines,
+                "error_rate": stats.error_rate,
+            },
+        }
+
     return app
 
 
