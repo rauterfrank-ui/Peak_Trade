@@ -260,3 +260,7 @@ python scripts/evaluate_live_session.py \
 
 ## Guides
 - Labeling Guide → LABELING_GUIDE.md
+
+## Utilities
+
+- `src/utils/md_helpers.py` — Markdown helpers (`pick_first_existing`, `ensure_section_insert_at_top`) + tests: `tests/test_md_helpers.py` (2025-12-20)
