@@ -168,7 +168,7 @@ class BacktestEngine:
             check_mode_enum = CheckMode(mode_str)
         except ValueError:
             logger.warning(
-                f"Ungültiger invariant_check_mode '{mode_str}', nutze 'start_end'"
+                f"Invalid invariant_check_mode '{mode_str}', using 'start_end' as fallback"
             )
             check_mode_enum = CheckMode.START_END
         
@@ -593,7 +593,9 @@ class BacktestEngine:
             
             # Update engine state for invariant checking
             self.equity = equity
-            # Note: cash tracking is complex in legacy mode, skip for now
+            # TODO: Cash tracking in legacy mode is incomplete as it's not updated during trades.
+            # This may cause cash_balance_valid invariant to be less reliable in legacy mode.
+            # Consider tracking cash separately or switching to execution pipeline mode.
             # positions update happens during trade management
             
             # Check invariants if mode == ALWAYS

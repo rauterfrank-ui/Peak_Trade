@@ -136,7 +136,9 @@ class BacktestInvariants:
             return True
 
 
-# Define all core invariants with metadata
+# Core invariants that should always be checked in backtest engine.
+# Order is significant: equity and cash checks come before position checks
+# as position validation may depend on valid equity/cash state.
 CORE_INVARIANTS = [
     Invariant(
         name="equity_non_negative",
@@ -148,7 +150,7 @@ CORE_INVARIANTS = [
         name="positions_valid",
         check=BacktestInvariants.positions_valid,
         error_message="Position list corrupted (None or duplicates)",
-        hint="Check position add/remove logic"
+        hint="Check position add/remove logic and position sizing"
     ),
     Invariant(
         name="timestamps_monotonic",

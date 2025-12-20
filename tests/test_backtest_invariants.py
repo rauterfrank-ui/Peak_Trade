@@ -468,7 +468,7 @@ def test_backtest_never_mode_allows_invalid_state():
 
 def test_core_invariants_count():
     """Test: Verify all 5 core invariants are defined."""
-    assert len(CORE_INVARIANTS) >= 5
+    assert len(CORE_INVARIANTS) == 5, f"Expected exactly 5 core invariants, got {len(CORE_INVARIANTS)}"
     
     names = [inv.name for inv in CORE_INVARIANTS]
     assert "equity_non_negative" in names
