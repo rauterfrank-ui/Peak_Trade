@@ -52,6 +52,13 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   - `docs/ai/CLAUDE_GUIDE.md` als Guide für Coding-Assistants
   - Playbooks & Docs so strukturiert, dass sie leicht als Prompt-Kontext dienen
 
+- 🧠 **Knowledge Databases & AI Research**
+  - Vector-DB-Integration (Chroma, Pinecone, Qdrant) für semantische Suche
+  - Time-Series-DB für Ticks und Portfolio-Historien
+  - RAG (Retrieval-Augmented Generation) für KI-gestützte Research-Entscheidungen
+  - API-Security & Key-Management mit Rotation-Tracking
+  - **Governance Playbook:** Systematische Prüfung externer Wissensquellen ([Playbook](docs/KNOWLEDGE_SOURCES_GOVERNANCE_PLAYBOOK.md))
+
 ---
 
 ## Architektur-Snapshot
@@ -59,6 +66,7 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
 Peak_Trade ist in mehrere Layer strukturiert:
 
 - **Data-Layer** (`src/data/`) – Daten-Loading, Caching, Exchange-Integration
+- **Knowledge-Layer** (`src/knowledge/`) – Vector-DB, Time-Series-DB, RAG-Pipeline für AI-Research
 - **Backtest- & Research-Layer** (`src/backtest/`, `scripts/research_cli.py`) – Backtest-Engine, Research-Pipeline
 - **Strategy- & Portfolio-Layer** (`src/strategies/`, `config/config.toml`, `config/portfolio_recipes.toml`) – Strategien, Portfolio-Recipes
 - **Live-/Testnet-Layer** (`src/live/`, `scripts/live_ops.py`) – Live-Ops, Alerts, Risk-Limits
@@ -187,6 +195,11 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 - **Governance & Safety**  
   [`docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`](docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md)
+
+- **Knowledge Databases & AI Research**  
+  - [`docs/KNOWLEDGE_DB_ARCHITECTURE.md`](docs/KNOWLEDGE_DB_ARCHITECTURE.md)  
+  - [`docs/KNOWLEDGE_SOURCES_GOVERNANCE_PLAYBOOK.md`](docs/KNOWLEDGE_SOURCES_GOVERNANCE_PLAYBOOK.md)  
+  - [`docs/KNOWLEDGE_SOURCES_REGISTRY.md`](docs/KNOWLEDGE_SOURCES_REGISTRY.md)
 
 - **AI-Assistenz (z.B. Claude, ChatGPT, Cursor)**  
   [`docs/ai/CLAUDE_GUIDE.md`](docs/ai/CLAUDE_GUIDE.md)
