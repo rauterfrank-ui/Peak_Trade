@@ -93,6 +93,7 @@ class BacktestEngine:
         log_executions: bool = False,
         # Backward-compatibility alias
         use_order_layer: Optional[bool] = None,
+        check_mode: Optional[str] = None,
     ):
         """
         Initialisiert Backtest-Engine mit Risk-Layer.
@@ -108,6 +109,8 @@ class BacktestEngine:
             log_executions: Wenn True, werden Execution-Summaries gesammelt und in
                            _execution_logs gespeichert. Default: False
             use_order_layer: DEPRECATED - Alias fuer use_execution_pipeline (backward compat)
+            check_mode: Optional CheckMode for invariant checking ("always", "start_end", "never").
+                       If None, uses config value. Default from config: "start_end"
         """
         self.config = get_config()
 
@@ -150,6 +153,32 @@ class BacktestEngine:
 
         # DataFrame-Referenz für Regime-Berechnung
         self.data: Optional[pd.DataFrame] = None
+        
+        # Invariant Checker initialisieren
+        from .invariants import InvariantChecker, CheckMode
+        
+        # CheckMode aus config oder parameter bestimmen
+        if check_mode is not None:
+            mode_str = check_mode
+        else:
+            mode_str = self.config.get("backtest", {}).get("invariant_check_mode", "start_end")
+        
+        # String zu CheckMode enum konvertieren
+        try:
+            check_mode_enum = CheckMode(mode_str)
+        except ValueError:
+            logger.warning(
+                f"Ungültiger invariant_check_mode '{mode_str}', nutze 'start_end'"
+            )
+            check_mode_enum = CheckMode.START_END
+        
+        self.invariant_checker = InvariantChecker(mode=check_mode_enum)
+        
+        # Initialize state attributes for invariant checking
+        self.equity = self.config.get("backtest", {}).get("initial_cash", 10000.0)
+        self.cash = self.equity
+        self.positions = []
+        self.history = []
 
     def _register_trade_pnl(self, trade_dt: pd.Timestamp, pnl_pct: float) -> None:
         """
@@ -378,6 +407,14 @@ class BacktestEngine:
         # Risk Manager initialisieren
         if self.risk_manager is not None:
             self.risk_manager.reset(start_equity=equity)
+        
+        # Update engine state for invariant checking
+        self.equity = equity
+        self.cash = equity
+        self.positions = []
+        
+        # Check invariants at start
+        self.invariant_checker.check_all(self)
 
         # Signale generieren
         signals = strategy_signal_fn(df, strategy_params)
@@ -553,6 +590,16 @@ class BacktestEngine:
 
             # Equity-Curve aktualisieren
             self.equity_curve.append(equity)
+            
+            # Update engine state for invariant checking
+            self.equity = equity
+            # Note: cash tracking is complex in legacy mode, skip for now
+            # positions update happens during trade management
+            
+            # Check invariants if mode == ALWAYS
+            from .invariants import CheckMode
+            if self.invariant_checker.mode == CheckMode.ALWAYS:
+                self.invariant_checker.check_all(self)
 
         # Offene Position am Ende schließen
         if current_trade is not None:
@@ -574,6 +621,12 @@ class BacktestEngine:
 
             # Daily Returns registrieren
             self._register_trade_pnl(last_bar.name, current_trade.pnl_pct)
+        
+        # Update final engine state for invariant checking
+        self.equity = equity
+        
+        # Check invariants at end
+        self.invariant_checker.check_all(self)
 
         # Stats berechnen
         equity_series = pd.Series(self.equity_curve, index=[df.index[0]] + list(df.index))
@@ -778,6 +831,14 @@ class BacktestEngine:
 
         # DataFrame speichern
         self.data = df
+        
+        # Update engine state for invariant checking
+        self.equity = equity
+        self.cash = equity
+        self.positions = {}  # Dict-style for ExecutionPipeline mode
+        
+        # Check invariants at start
+        self.invariant_checker.check_all(self)
 
         # Signale generieren
         signals = strategy_signal_fn(df, strategy_params)
@@ -917,6 +978,15 @@ class BacktestEngine:
 
             self.equity_curve.append(current_equity)
             previous_signal = signal
+            
+            # Update engine state for invariant checking
+            self.equity = current_equity
+            self.positions = {symbol: current_position}
+            
+            # Check invariants if mode == ALWAYS
+            from .invariants import CheckMode
+            if self.invariant_checker.mode == CheckMode.ALWAYS:
+                self.invariant_checker.check_all(self)
 
         # Offene Position am Ende schliessen
         if current_position != 0:
@@ -955,6 +1025,13 @@ class BacktestEngine:
                     "exit_reason": "end_of_data",
                 })
                 equity += pnl
+        
+        # Update final engine state for invariant checking
+        self.equity = equity
+        self.positions = {symbol: current_position if current_position != 0 else 0.0}
+        
+        # Check invariants at end
+        self.invariant_checker.check_all(self)
 
         # Stats berechnen
         equity_series = pd.Series(self.equity_curve, index=[df.index[0]] + list(df.index))
