@@ -207,7 +207,6 @@ class S3BackupClient:
     def apply_retention_policy(
         self,
         prefix: str = "backups/",
-        retention_days: int = 30,
         keep_daily: int = 7,
         keep_weekly: int = 4,
         keep_monthly: int = 12
@@ -216,14 +215,13 @@ class S3BackupClient:
         Apply backup retention policy.
         
         Retention Strategy:
-        - Keep all backups from last 7 days (daily)
-        - Keep 1 backup per week for last 4 weeks
-        - Keep 1 backup per month for last 12 months
+        - Keep all backups from last N days (daily)
+        - Keep 1 backup per week for last M weeks
+        - Keep 1 backup per month for last K months
         - Delete everything older
         
         Args:
             prefix: S3 key prefix
-            retention_days: Total retention period
             keep_daily: Days to keep all backups
             keep_weekly: Weeks to keep weekly backups
             keep_monthly: Months to keep monthly backups
@@ -232,13 +230,24 @@ class S3BackupClient:
             Number of backups deleted
         """
         backups = self.list_backups(prefix)
+        if not backups:
+            return 0
+        
         now = datetime.now()
         deleted = 0
         
-        # Group backups by time period
+        # Sort backups by date (oldest first)
+        backups.sort(key=lambda b: b['last_modified'])
+        
+        # Time cutoffs
         daily_cutoff = now - timedelta(days=keep_daily)
-        weekly_cutoff = now - timedelta(weeks=keep_weekly)
+        weekly_cutoff = now - timedelta(weeks=keep_weekly + keep_daily // 7)
         monthly_cutoff = now - timedelta(days=keep_monthly * 30)
+        
+        # Track which backups to keep
+        kept_weekly = {}  # week_number: backup
+        kept_monthly = {}  # month_key: backup
+        to_delete = []
         
         for backup in backups:
             backup_date = backup['last_modified'].replace(tzinfo=None)
@@ -247,19 +256,31 @@ class S3BackupClient:
             if backup_date >= daily_cutoff:
                 continue
             
-            # Keep weekly
+            # Weekly retention
             if backup_date >= weekly_cutoff:
-                # Keep one per week
-                # Simplified: keep first backup of each week
-                continue
+                week_key = backup_date.strftime("%Y-W%W")
+                if week_key not in kept_weekly:
+                    kept_weekly[week_key] = backup
+                    continue
+                else:
+                    to_delete.append(backup)
+                    continue
             
-            # Keep monthly
+            # Monthly retention
             if backup_date >= monthly_cutoff:
-                # Keep one per month
-                # Simplified: keep first backup of each month
-                continue
+                month_key = backup_date.strftime("%Y-%m")
+                if month_key not in kept_monthly:
+                    kept_monthly[month_key] = backup
+                    continue
+                else:
+                    to_delete.append(backup)
+                    continue
             
-            # Delete old backups
+            # Too old - delete
+            to_delete.append(backup)
+        
+        # Delete backups
+        for backup in to_delete:
             if self.delete_backup(backup['key']):
                 deleted += 1
         

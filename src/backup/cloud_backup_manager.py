@@ -191,14 +191,17 @@ class CloudBackupManager:
         """
         synced = 0
         
+        # Get list of cloud backups once to avoid N+1 queries
+        cloud_backups = self.list_cloud_backups()
+        cloud_backup_keys = {b['key'] for b in cloud_backups}
+        
         for backup_dir in self.local_backup_dir.iterdir():
             if backup_dir.is_dir():
                 backup_id = backup_dir.name
                 s3_key = f"{self.s3_prefix}{backup_id}.tar.gz"
                 
                 # Check if already exists in S3
-                cloud_backups = self.list_cloud_backups()
-                if any(b['key'] == s3_key for b in cloud_backups):
+                if s3_key in cloud_backup_keys:
                     logger.debug(f"Backup {backup_id} already in S3")
                     continue
                 
