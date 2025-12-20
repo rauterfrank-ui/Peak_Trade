@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
-import argparse, pathlib, re, datetime as dt
+import argparse
+import pathlib
+import re
+import datetime as dt
 
 RE_NEW_ALERTS = re.compile(r"New-alerts heuristic.*\*\*(\d+)\*\*", re.I)
-RE_LEGACY     = re.compile(r"Legacy-keyword hits.*\*\*(\d+)\*\*", re.I)
-RE_ACTIONS    = re.compile(r"ack/snooze/resolve/silence.*\*\*(\d+)\*\*", re.I)
+RE_LEGACY = re.compile(r"Legacy-keyword hits.*\*\*(\d+)\*\*", re.I)
+RE_ACTIONS = re.compile(r"ack/snooze/resolve/silence.*\*\*(\d+)\*\*", re.I)
+
 
 def read_int(pat, text):
     m = pat.search(text)
     return int(m.group(1)) if m else None
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -17,18 +22,20 @@ def main():
 
     d = pathlib.Path(args.dir)
     files = sorted(d.glob("*_snapshot.md"))
-    files = files[-args.days:] if len(files) > args.days else files
+    files = files[-args.days :] if len(files) > args.days else files
 
     rows = []
     for fp in files:
         txt = fp.read_text(encoding="utf-8", errors="replace")
         day = fp.name.split("_snapshot.md")[0]
-        rows.append({
-            "day": day,
-            "new_alerts_24h": read_int(RE_NEW_ALERTS, txt),
-            "legacy_hits": read_int(RE_LEGACY, txt),
-            "operator_actions": read_int(RE_ACTIONS, txt),
-        })
+        rows.append(
+            {
+                "day": day,
+                "new_alerts_24h": read_int(RE_NEW_ALERTS, txt),
+                "legacy_hits": read_int(RE_LEGACY, txt),
+                "operator_actions": read_int(RE_ACTIONS, txt),
+            }
+        )
 
     today = dt.date.today().isoformat()
     print("# Peak_Trade — Stage 1 Trend Report")
@@ -39,9 +46,11 @@ def main():
     print("| Day | New alerts (24h) | Legacy hits | Operator actions |")
     print("|---|---:|---:|---:|")
     for r in rows:
-        print(f"| {r['day']} | {r['new_alerts_24h'] if r['new_alerts_24h'] is not None else 'n/a'} | "
-              f"{r['legacy_hits'] if r['legacy_hits'] is not None else 'n/a'} | "
-              f"{r['operator_actions'] if r['operator_actions'] is not None else 'n/a'} |")
+        print(
+            f"| {r['day']} | {r['new_alerts_24h'] if r['new_alerts_24h'] is not None else 'n/a'} | "
+            f"{r['legacy_hits'] if r['legacy_hits'] is not None else 'n/a'} | "
+            f"{r['operator_actions'] if r['operator_actions'] is not None else 'n/a'} |"
+        )
 
     # quick Go/No-Go hint
     new_alerts_sum = sum((r["new_alerts_24h"] or 0) for r in rows)
@@ -50,7 +59,10 @@ def main():
     if new_alerts_sum == 0:
         print("- ✅ Keine neuen Alerts im gewählten Zeitraum (heuristisch).")
     else:
-        print(f"- ⚠️ Neue Alerts im Zeitraum (heuristisch): {new_alerts_sum} → Ursachenanalyse empfohlen.")
+        print(
+            f"- ⚠️ Neue Alerts im Zeitraum (heuristisch): {new_alerts_sum} → Ursachenanalyse empfohlen."
+        )
+
 
 if __name__ == "__main__":
     main()
