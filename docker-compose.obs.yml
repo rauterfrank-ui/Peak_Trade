@@ -1,0 +1,18 @@
+# Peak_Trade – Phase 16L: Docker Compose for Ops Runner
+# Reproducible Stage1 Monitoring in isolated container
+
+name: peak-trade-ops
+
+services:
+  peaktrade-ops:
+    build:
+      context: .
+      dockerfile: docker/obs/Dockerfile
+    container_name: peak-trade-ops-runner
+    working_dir: /app
+    environment:
+      PEAK_REPORTS_DIR: /reports
+    volumes:
+      - ./reports:/reports
+    # No default command - user must specify (stage1-snapshot, stage1-trends, etc.)
+

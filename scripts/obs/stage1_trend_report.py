@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
 import pathlib
 import re
 import datetime as dt
 import json
+import sys
+
+# Add repo root to Python path for src imports
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.parent))
+
+from src.utils.report_paths import get_reports_root
 
 RE_NEW_ALERTS = re.compile(r"New-alerts heuristic.*\*\*(\d+)\*\*", re.I)
 RE_LEGACY = re.compile(r"Legacy-keyword hits.*\*\*(\d+)\*\*", re.I)
@@ -19,10 +27,23 @@ def read_int(pat, text):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dir", default="reports/obs/stage1", help="Snapshot directory")
+    ap.add_argument(
+        "--reports-root",
+        default=None,
+        help="Reports root directory (overrides ENV PEAK_REPORTS_DIR and default logic)",
+    )
     ap.add_argument("--days", type=int, default=14, help="How many most recent days")
     args = ap.parse_args()
 
-    d = pathlib.Path(args.dir)
+    # Phase 16L: Support --reports-root for Docker/CI use
+    if args.reports_root:
+        d = pathlib.Path(args.reports_root).resolve() / "obs" / "stage1"
+    elif args.dir == "reports/obs/stage1":
+        # Default case: use smart resolution (respects PEAK_REPORTS_DIR)
+        d = get_reports_root() / "obs" / "stage1"
+    else:
+        # Custom --dir specified: use as-is
+        d = pathlib.Path(args.dir)
     files = sorted(d.glob("*_snapshot.md"))
     files = files[-args.days :] if len(files) > args.days else files
 
