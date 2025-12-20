@@ -36,6 +36,9 @@ web = [
     "jinja2>=3.1.0",
     "httpx>=0.25.0",  # Required by FastAPI TestClient
 ]
+viz = [
+    "matplotlib>=3.8.0",
+]
 otel = [
     "opentelemetry-api>=1.24.0",
     "opentelemetry-sdk>=1.24.0",
