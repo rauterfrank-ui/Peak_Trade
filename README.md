@@ -71,6 +71,14 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   - Governance- & Safety-Doku (Checklisten, Readiness, Runbooks)
   - Incident-Drills & Drill-Log
 
+- 🔄 **Resilience & Stability**
+  - Circuit Breaker Pattern für alle kritischen Module
+  - Rate Limiting für externe APIs und Datenquellen
+  - Prometheus-Metriken für System-Monitoring
+  - Health Check API (`/health`, `/health/detailed`)
+  - Konfigurierbare Resilience-Settings pro Modul
+  - **Dokumentation:** [`docs/resilience_guide.md`](docs/resilience_guide.md)
+
 - 🛰️ **Live-/Testnet-Track**
   - Live-Ops CLI (`live_ops`) mit Health, Orders, Portfolio
   - Alerts inkl. Logging, stderr, Webhook & Slack

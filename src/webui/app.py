@@ -102,6 +102,10 @@ from .alerts_api import (
     get_alert_statistics,
     get_alerts_template_context,
 )
+from .health_endpoint import (
+    router as health_router,
+    register_standard_checks,
+)
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -328,6 +332,10 @@ def create_app() -> FastAPI:
     # R&D API: Setze Basis-Verzeichnis und registriere Router
     set_r_and_d_base_dir(BASE_DIR)
     app.include_router(r_and_d_router)
+    
+    # Health Check API: Registriere Health Check Router
+    app.include_router(health_router)
+    register_standard_checks()
 
     # =========================================================================
     # HTML Dashboard Endpoints

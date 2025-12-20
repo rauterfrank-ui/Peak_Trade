@@ -9,10 +9,14 @@ import numpy as np
 from typing import Dict, List, Callable, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
+import logging
 
 from ..core import get_config, get_strategy_cfg
 from ..backtest.engine import BacktestEngine, BacktestResult
 from ..backtest.stats import compute_basic_stats, compute_sharpe_ratio
+from ..core.resilience_helpers import with_resilience, create_module_circuit_breaker
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -55,6 +59,10 @@ class PortfolioManager:
         self.config = get_config()
         self.strategies: List[StrategyAllocation] = []
         self.total_capital = 10000.0
+        
+        # Initialize circuit breaker for portfolio operations
+        self._circuit_breaker = create_module_circuit_breaker("portfolio", "computation")
+        logger.info("PortfolioManager initialized with circuit breaker protection")
     
     def add_strategy(
         self,
@@ -87,6 +95,7 @@ class PortfolioManager:
         
         self.strategies.append(allocation)
     
+    @with_resilience("portfolio", "allocation")
     def _allocate_capital(self, method: str = "equal") -> None:
         """
         Verteilt Kapital auf Strategien.
@@ -180,6 +189,7 @@ class PortfolioManager:
             allocations=self.strategies
         )
     
+    @with_resilience("portfolio", "combine_equity")
     def _combine_equity_curves(
         self,
         strategy_results: Dict[str, BacktestResult]
@@ -203,6 +213,7 @@ class PortfolioManager:
         
         return portfolio_equity
     
+    @with_resilience("portfolio", "compute_stats")
     def _compute_portfolio_stats(
         self,
         portfolio_equity: pd.Series,
