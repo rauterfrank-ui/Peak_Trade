@@ -1,0 +1,218 @@
+# ============================================================================
+# AI Agent Framework Configuration
+# ============================================================================
+# Configuration for autonomous AI agents in Peak Trade system.
+# IMPORTANT: API keys should be set via environment variables!
+# ============================================================================
+
+[ai]
+# Master switch: Enable AI agent framework
+enabled = true
+
+# Default LLM provider: openai, anthropic, local, mock
+default_provider = "openai"
+
+# Maximum concurrent agents
+max_concurrent_agents = 5
+
+# Global cost limit (USD per day)
+daily_cost_limit = 10.0
+
+# ============================================================================
+# RESEARCH AGENT
+# ============================================================================
+[ai.research_agent]
+# Enable research agent
+enabled = true
+
+# Automatically run backtest after strategy discovery
+auto_backtest = true
+
+# Minimum confidence score (0-1) for strategy recommendations
+min_confidence = 0.75
+
+# Maximum research iterations
+max_iterations = 5
+
+# ============================================================================
+# RISK AGENT
+# ============================================================================
+[ai.risk_agent]
+# Enable risk review agent
+enabled = true
+
+# Automatically enforce risk limits (false = manual approval required)
+auto_enforcement = false
+
+# Alert threshold (0-1) - when to generate alerts
+alert_threshold = 0.8
+
+# Risk check frequency (seconds)
+check_frequency = 300
+
+# ============================================================================
+# EXECUTION AGENT
+# ============================================================================
+[ai.execution_agent]
+# Enable strategy execution agent
+enabled = true
+
+# Execution mode: paper, live
+mode = "paper"
+
+# Require approval for live trading
+require_approval = true
+
+# Pre-trade risk checks
+pre_trade_checks = true
+
+# Post-trade analysis
+post_trade_analysis = true
+
+# ============================================================================
+# MONITORING AGENT
+# ============================================================================
+[ai.monitoring_agent]
+# Enable monitoring agent
+enabled = true
+
+# Health check interval (seconds)
+check_interval = 60
+
+# Anomaly detection threshold (0-1)
+anomaly_threshold = 0.8
+
+# Auto-healing enabled
+auto_healing = false
+
+# ============================================================================
+# LLM CONFIGURATION
+# ============================================================================
+[ai.llm]
+# LLM provider: openai, anthropic, local, mock
+provider = "openai"
+
+# Model name (depends on provider)
+model = "gpt-4-turbo-preview"
+
+# API key (use environment variable: ${OPENAI_API_KEY})
+api_key = "${OPENAI_API_KEY}"
+
+# Maximum tokens per request
+max_tokens = 4000
+
+# Temperature (0-1, higher = more creative)
+temperature = 0.7
+
+# Enable cost tracking
+cost_tracking = true
+
+# Daily cost limit (USD)
+cost_limit_daily = 10.0
+
+# Token budget per agent per day
+token_budget_per_agent = 100000
+
+# ============================================================================
+# MEMORY CONFIGURATION
+# ============================================================================
+[ai.memory]
+# Enable persistent memory
+enabled = true
+
+# Maximum items in memory
+max_items = 1000
+
+# Enable vector memory (requires ChromaDB)
+vector_memory_enabled = false
+
+# Vector database collection name
+vector_collection = "peak_trade"
+
+# ============================================================================
+# EVENT BUS CONFIGURATION
+# ============================================================================
+[ai.event_bus]
+# Enable event-driven architecture
+enabled = true
+
+# Maximum event history
+max_event_history = 1000
+
+# Event types to log
+log_events = [
+    "strategy_discovered",
+    "risk_alert",
+    "execution_completed",
+    "system_error",
+    "market_anomaly",
+]
+
+# ============================================================================
+# WORKFLOW CONFIGURATION
+# ============================================================================
+[ai.workflows]
+# Enable multi-agent workflows
+enabled = true
+
+# Predefined workflows to load
+active_workflows = [
+    "strategy_discovery",
+]
+
+# ============================================================================
+# SAFETY & COMPLIANCE
+# ============================================================================
+[ai.safety]
+# Approval gates for live trading
+require_live_approval = true
+
+# Maximum single trade size (USD)
+max_trade_size = 1000.0
+
+# Maximum daily loss (USD)
+max_daily_loss = 500.0
+
+# Rate limiting (requests per minute)
+rate_limit_rpm = 10
+
+# Rollback on error
+auto_rollback = true
+
+# ============================================================================
+# LOGGING & OBSERVABILITY
+# ============================================================================
+[ai.logging]
+# Log level: DEBUG, INFO, WARNING, ERROR
+log_level = "INFO"
+
+# Log agent decisions
+log_decisions = true
+
+# Log to file
+log_to_file = true
+
+# Log file path
+log_file = "logs/ai_agents.log"
+
+# ============================================================================
+# METRICS & MONITORING
+# ============================================================================
+[ai.metrics]
+# Enable metrics collection
+enabled = true
+
+# Metrics to track
+track_metrics = [
+    "agent_calls_total",
+    "agent_duration_seconds",
+    "agent_tokens_used_total",
+    "agent_cost_usd",
+    "agent_errors_total",
+]
+
+# Export metrics (prometheus, json, none)
+export_format = "json"
+
+# Metrics export path
+export_path = "metrics/ai_metrics.json"
