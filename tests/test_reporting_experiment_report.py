@@ -11,6 +11,9 @@ Testet:
 """
 from __future__ import annotations
 
+import pytest
+pytest.importorskip("matplotlib")
+
 from pathlib import Path
 from typing import Any, Dict, List
 
