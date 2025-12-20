@@ -49,7 +49,7 @@ Ziel:
 | **Strategy-Layer (Prod)**       | Kernstrategien, produktive Signals, Tier-System                   | **≈ 96%**   |
 | **Strategy-Layer (R&D)**        | R&D-Strategien (Armstrong, El Karoui, Waves), Sweeps              | **≈ 98%**   |
 | **Portfolio & Risk**            | Portfolio-Strategien, RiskLimits, Kelly/Exposure, Checks          | **≈ 96%**   |
-| **Execution & Live-Stack**      | Paper/Testnet-Flows, Live-Risk-Gates, Order-Executors, Telemetry QA/Retention (Phase 16D+E) | **≈ 95%**   |
+| **Execution & Live-Stack**      | Paper/Testnet-Flows, Live-Risk-Gates, Order-Executors, Telemetry Observability (Phase 16A–F: Events, Viewer, QA, Retention, Health Console) | **≈ 96%**   |
 | **Live-Track & Bridge**         | Strategy→Execution Bridge, Live-Session-Registry, Status-Overview | **≈ 96%**   |
 | **R&D Web-Dashboard**           | R&D Hub, Detail-View, Report-Gallery, Multi-Run-Comparison        | **100%**    |
 | **Monitoring & Alerts**         | CLI-Dashboards, Health-/Smoke-/Readiness-Checks                   | **≈ 95%**   |
@@ -1365,6 +1365,7 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 | 2025-12-20 | (aktuell) | **Phase 16C** – Telemetry Viewer & Ops Pack – Read-only CLI (`scripts/view_execution_telemetry.py`), API endpoint (`/api/telemetry`), robust JSONL parsing mit Filter (session/type/symbol/time), Latency-Analyse, 14 tests, Merge Log PR #183 |
 | 2025-12-20 | (aktuell) | **Phase 16D** – Telemetry QA + Incident Playbook + Regression Gates – Golden fixtures (deterministisch), 18 regression gate tests (parse robustness, schema, latency sanity), Incident runbook (operator-first, copy/paste CLI), CSV export (`/api/telemetry?format=csv`), Merge Log PR #185 |
 | 2025-12-20 | (aktuell) | **Phase 16E** – Telemetry Retention & Compression – Automated log lifecycle management (age-based deletion, session-count protection, size limits), gzip compression (~80% reduction), safe-by-default CLI (`scripts/ops/telemetry_retention.py`, dry-run default), 22 tests, deterministic ordering, root-safety checks, Merge Log PR #186 |
+| 2025-12-20 | (aktuell) | **Phase 16F** – Telemetry Console & Health Monitoring – Ops dashboard (`/live/telemetry`) with session overview, disk usage, retention policy summary, health checks (disk/retention/compression/parse errors), CLI tool (`scripts/telemetry_health_check.py`, exit codes 0/2/3), API endpoint (`/api/telemetry/health`), 24 tests, Health runbook, customizable thresholds |
 
 ---
 

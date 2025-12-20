@@ -102,6 +102,18 @@ from .alerts_api import (
     get_alert_statistics,
     get_alerts_template_context,
 )
+# Phase 16F: Telemetry Health & Console
+try:
+    from src.execution.telemetry_retention import discover_sessions as discover_telemetry_sessions, RetentionPolicy
+    from src.execution.telemetry_health import run_health_checks, HealthThresholds
+    TELEMETRY_AVAILABLE = True
+except ImportError:
+    discover_telemetry_sessions = None
+    RetentionPolicy = None
+    run_health_checks = None
+    HealthThresholds = None
+    TELEMETRY_AVAILABLE = False
+
 from .health_endpoint import (
     router as health_router,
     register_standard_checks,
@@ -1258,6 +1270,100 @@ def create_app() -> FastAPI:
                 "error_rate": stats.error_rate,
             },
         }
+
+    # ========================================================================
+    # PHASE 16F: Telemetry Console & Health Endpoints
+    # ========================================================================
+
+    @app.get("/live/telemetry", response_class=HTMLResponse, tags=["Phase 16F"])
+    async def telemetry_console_page(request: Request):
+        """Telemetry Console - Session overview + health status (Phase 16F)."""
+        if not TELEMETRY_AVAILABLE:
+            return templates.TemplateResponse(
+                "error.html",
+                {
+                    "request": request,
+                    "error": "Telemetry module not available",
+                    "details": "Phase 16F telemetry health module not imported",
+                },
+                status_code=503,
+            )
+        
+        # Discover sessions
+        telemetry_root = Path("logs/execution")
+        sessions = []
+        total_size_mb = 0.0
+        
+        if telemetry_root.exists():
+            try:
+                sessions_meta = discover_telemetry_sessions(telemetry_root, include_compressed=True)
+                # Sort by mtime (newest first)
+                sessions_meta.sort(key=lambda s: s.mtime, reverse=True)
+                
+                for s in sessions_meta[:50]:  # Limit to 50 most recent
+                    sessions.append({
+                        "session_id": s.session_id,
+                        "size_mb": s.size_mb,
+                        "age_days": s.age_days,
+                        "is_compressed": s.is_compressed,
+                        "mtime": s.mtime.isoformat(),
+                        "path": str(s.path),
+                    })
+                    total_size_mb += s.size_mb
+            except Exception as e:
+                logger.warning(f"Error discovering sessions: {e}")
+        
+        # Run health checks
+        health_report = None
+        try:
+            health_report = run_health_checks(telemetry_root)
+        except Exception as e:
+            logger.warning(f"Error running health checks: {e}")
+        
+        # Retention policy (default)
+        retention_policy = {
+            "enabled": True,
+            "max_age_days": 30,
+            "keep_last_n_sessions": 200,
+            "max_total_mb": 2048,
+            "compress_after_days": 7,
+        }
+        
+        return templates.TemplateResponse(
+            "peak_trade_dashboard/telemetry_console.html",
+            {
+                "request": request,
+                "sessions": sessions,
+                "total_sessions": len(sessions),
+                "total_size_mb": round(total_size_mb, 2),
+                "health_report": health_report,
+                "retention_policy": retention_policy,
+                "telemetry_root": str(telemetry_root),
+            },
+        )
+
+    @app.get("/api/telemetry/health", tags=["Phase 16F"])
+    async def telemetry_health_api(
+        root: str = Query("logs/execution", description="Telemetry root directory"),
+    ):
+        """Get telemetry health status (Phase 16F)."""
+        if not TELEMETRY_AVAILABLE:
+            raise HTTPException(
+                status_code=503,
+                detail="Telemetry health module not available",
+            )
+        
+        telemetry_root = Path(root)
+        
+        try:
+            report = run_health_checks(telemetry_root)
+            return report.to_dict()
+        except Exception as e:
+            logger.error(f"Error running health checks: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Health check failed: {str(e)}",
+            )
 
     return app
 
