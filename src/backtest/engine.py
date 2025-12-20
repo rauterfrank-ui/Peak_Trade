@@ -50,6 +50,9 @@ from ..orders.base import OrderRequest, OrderExecutionResult, OrderFill
 from ..orders.paper import PaperMarketContext, PaperOrderExecutor
 from ..execution.pipeline import ExecutionPipeline, ExecutionPipelineConfig, SignalEvent
 
+# Invariant Checking Imports
+from .invariants import CheckMode
+
 logger = logging.getLogger(__name__)
 
 
@@ -599,7 +602,6 @@ class BacktestEngine:
             # positions update happens during trade management
             
             # Check invariants if mode == ALWAYS
-            from .invariants import CheckMode
             if self.invariant_checker.mode == CheckMode.ALWAYS:
                 self.invariant_checker.check_all(self)
 
@@ -986,7 +988,6 @@ class BacktestEngine:
             self.positions = {symbol: current_position}
             
             # Check invariants if mode == ALWAYS
-            from .invariants import CheckMode
             if self.invariant_checker.mode == CheckMode.ALWAYS:
                 self.invariant_checker.check_all(self)
 
