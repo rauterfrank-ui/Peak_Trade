@@ -6,6 +6,27 @@ Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit konsequ
 
 ## Schnelleinstieg
 
+### 🚀 Quick Start: Ersten Backtest in 5 Minuten
+
+```bash
+# 1. Dependencies installieren (einmalig)
+pip install -e .
+
+# 2. Ersten Backtest laufen lassen
+python scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
+
+# 3. Tests ausführen
+pytest -m smoke -q  # Schnelle Smoke-Tests (~1 Sekunde)
+pytest -q           # Full Suite (~70 Sekunden)
+```
+
+**Nächste Schritte:**
+- 📖 **Architektur & Überblick:** [`docs/PEAK_TRADE_OVERVIEW.md`](docs/PEAK_TRADE_OVERVIEW.md)
+- 🔬 **Backtest Engine Details:** [`docs/BACKTEST_ENGINE.md`](docs/BACKTEST_ENGINE.md)
+- 🎯 **Eigene Strategien entwickeln:** [`docs/STRATEGY_DEV_GUIDE.md`](docs/STRATEGY_DEV_GUIDE.md)
+
+### 📚 Ausführliche Guides
+
 - 📖 **Vollständige v1.0-Übersicht:** [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](docs/PEAK_TRADE_V1_OVERVIEW_FULL.md)
 - 🚀 **Onboarding „First 7 Days":** [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](docs/PEAK_TRADE_FIRST_7_DAYS.md)
 
@@ -54,12 +75,40 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
 
 ---
 
+## Modulare Architektur
+
+Peak_Trade ist **strikt modular** aufgebaut. Jede Komponente ist austauschbar und testbar:
+
+```text
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
+│   DATA   │ → │ STRATEGY │ → │  SIZING  │ → │   RISK   │
+│  Feeds   │   │ Registry │   │ Overlay  │   │  Limits  │
+└──────────┘   └──────────┘   └──────────┘   └──────────┘
+                                                    │
+                              ┌─────────────────────┘
+                              ▼
+                        ┌──────────┐   ┌──────────┐
+                        │ BACKTEST │ → │ REPORTING│
+                        │  Runner  │   │  & Stats │
+                        └──────────┘   └──────────┘
+```
+
+**Strategy Registry:** Alle Strategien zentral registriert, austauschbar per Config
+**Position Sizing:** Fixed-Fraction, Vol-Regime-Overlay, Trend-Strength-Overlay
+**Risk Management:** Max-Drawdown, Equity-Floor, Position-Limits
+**Runner:** Backtest, Walk-Forward, Monte-Carlo, Live-Session
+
+→ Details: [`docs/PEAK_TRADE_OVERVIEW.md`](docs/PEAK_TRADE_OVERVIEW.md)
+
+---
+
 ## Key Features
 
 - 🧠 **Research & Strategy-Engine**
-  - Backtest-Engine mit Portfolio-Support
+  - Backtest-Engine mit Portfolio-Support & No-Lookahead-Garantie
   - Research-Pipeline v2 (Sweeps, Walk-Forward, Monte-Carlo, Stress-Tests)
   - Strategy- & Portfolio-Library mit vordefinierten Presets (inkl. Risk-Profilen)
+  - **Strategy Registry:** 15+ Production-Ready Strategien, 6+ R&D-Strategien
 
 - 📊 **Portfolio-Level Robustness**
   - Portfolio-Robustness-Module
