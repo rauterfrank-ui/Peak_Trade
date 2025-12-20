@@ -68,6 +68,113 @@
   </div>
   {% endif %}
 
+  <!-- Alerts Section (Phase 16I) -->
+  <div class="bg-slate-900/50 rounded-lg border border-slate-800 p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold flex items-center gap-2">
+        🚨 Recent Alerts
+        <span class="text-xs px-2 py-0.5 rounded bg-orange-500/10 text-orange-300 border border-orange-500/30">
+          Phase 16I
+        </span>
+      </h2>
+      <div class="flex gap-2">
+        <a href="/api/telemetry/alerts/latest?limit=50"
+           class="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors"
+           target="_blank">
+          📊 API (JSON)
+        </a>
+        <button onclick="loadAlerts()"
+                class="text-xs px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 transition-colors">
+          🔄 Refresh Alerts
+        </button>
+      </div>
+    </div>
+
+    <div id="alerts-container" class="space-y-3">
+      <div class="text-center py-8 text-slate-400">
+        <p class="mb-2">Loading alerts...</p>
+        <p class="text-xs text-slate-500">Run <code class="text-slate-300 bg-slate-800/50 px-2 py-1 rounded">python scripts/telemetry_alerts.py</code> to evaluate alert rules</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load alerts via API
+    async function loadAlerts() {
+      const container = document.getElementById('alerts-container');
+      
+      try {
+        const response = await fetch('/api/telemetry/alerts/latest?limit=10');
+        const data = await response.json();
+        
+        if (data.alerts.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-8 text-slate-400">
+              <p class="mb-2">✅ No recent alerts</p>
+              <p class="text-xs text-slate-500">Run <code class="text-slate-300 bg-slate-800/50 px-2 py-1 rounded">python scripts/telemetry_alerts.py</code> to evaluate alert rules</p>
+            </div>
+          `;
+          return;
+        }
+        
+        const alertsHtml = data.alerts.map(alert => {
+          const severityEmoji = {
+            'info': 'ℹ️',
+            'warn': '⚠️',
+            'critical': '🔴'
+          }[alert.severity] || '⚠️';
+          
+          const severityColor = {
+            'info': 'border-blue-500/30 bg-blue-500/5',
+            'warn': 'border-yellow-500/30 bg-yellow-500/5',
+            'critical': 'border-red-500/30 bg-red-500/5'
+          }[alert.severity] || 'border-slate-700';
+          
+          const severityBadge = {
+            'info': 'bg-blue-500/10 text-blue-300',
+            'warn': 'bg-yellow-500/10 text-yellow-300',
+            'critical': 'bg-red-500/10 text-red-300'
+          }[alert.severity] || '';
+          
+          return `
+            <div class="bg-slate-800/30 rounded p-4 border ${severityColor}">
+              <div class="flex items-start justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">${severityEmoji}</span>
+                  <span class="text-sm font-medium text-slate-200">${alert.title}</span>
+                </div>
+                <span class="text-xs px-2 py-0.5 rounded ${severityBadge}">
+                  ${alert.severity.toUpperCase()}
+                </span>
+              </div>
+              <div class="text-xs text-slate-400 mb-2">
+                <span>${alert.source}</span> · 
+                <span>${new Date(alert.timestamp_utc).toLocaleString()}</span>
+              </div>
+              <div class="text-xs text-slate-300 whitespace-pre-wrap">${alert.body}</div>
+            </div>
+          `;
+        }).join('');
+        
+        container.innerHTML = alertsHtml;
+        
+      } catch (error) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-red-400">
+            <p class="mb-2">❌ Failed to load alerts</p>
+            <p class="text-xs text-slate-500">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+    
+    // Load on page load
+    loadAlerts();
+    
+    // Auto-refresh every 60 seconds
+    setInterval(loadAlerts, 60000);
+  </script>
+
   <!-- Health Trends Section (Phase 16H) -->
   {% if trends_summary and trends_summary.available %}
   <div class="bg-slate-900/50 rounded-lg border border-slate-800 p-6">
