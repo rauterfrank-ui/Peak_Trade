@@ -230,10 +230,17 @@ class APIManager:
         Args:
             db_type: Type of database (e.g., "chroma", "pinecone", "influxdb")
             include_secrets: Whether to include API keys (default: False)
+                           WARNING: Only use in secure contexts! Never log or expose.
 
         Returns:
             Configuration dict for the database
         """
+        if include_secrets:
+            logger.warning(
+                "get_db_config called with include_secrets=True. "
+                "Ensure secrets are not logged or exposed!"
+            )
+        
         configs = {
             "chroma": {
                 "persist_directory": os.environ.get(

@@ -227,6 +227,9 @@ class ParquetAdapter(TimeSeriesDBInterface):
         safe_symbol = symbol.replace("/", "_")
         file_path = self.ticks_path / f"{safe_symbol}.parquet"
 
+        # Copy data to avoid mutating the original DataFrame
+        data = data.copy()
+        
         # Add tags as columns if provided
         if tags:
             for key, value in tags.items():
@@ -241,6 +244,9 @@ class ParquetAdapter(TimeSeriesDBInterface):
         """Write portfolio history to Parquet."""
         file_path = self.portfolio_path / "history.parquet"
 
+        # Copy data to avoid mutating the original DataFrame
+        data = data.copy()
+        
         # Add tags as columns if provided
         if tags:
             for key, value in tags.items():
