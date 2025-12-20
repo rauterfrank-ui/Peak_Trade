@@ -139,6 +139,18 @@ class CircuitBreaker:
         self._state = new_state
         self._stats.state_changes += 1
         
+        # Report to Prometheus
+        try:
+            from src.monitoring.prometheus_exporter import prometheus_exporter
+            state_value = {
+                CircuitState.CLOSED: 0,
+                CircuitState.HALF_OPEN: 1,
+                CircuitState.OPEN: 2
+            }[new_state]
+            prometheus_exporter.record_circuit_breaker_state(self.name, state_value)
+        except ImportError:
+            pass  # Prometheus exporter not available
+        
         logger.warning(
             f"CircuitBreaker '{self.name}' state change: "
             f"{old_state.value} -> {new_state.value}"
@@ -428,6 +440,13 @@ class HealthCheck:
                     message=message,
                     details=details
                 )
+                
+                # Report to Prometheus
+                try:
+                    from src.monitoring.prometheus_exporter import prometheus_exporter
+                    prometheus_exporter.record_health_check(name, healthy)
+                except ImportError:
+                    pass  # Prometheus exporter not available
                 
                 status = "✅ PASS" if healthy else "❌ FAIL"
                 logger.info(f"Health check '{name}': {status}")
