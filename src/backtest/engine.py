@@ -300,6 +300,8 @@ class BacktestEngine:
         symbol: str = "BTC/EUR",
         fee_bps: float = 0.0,
         slippage_bps: float = 0.0,
+        seed: Optional[int] = None,
+        save_repro: bool = True,
     ) -> BacktestResult:
         """
         Realistischer Backtest mit vollständigem Risk-Management.
@@ -325,6 +327,8 @@ class BacktestEngine:
             symbol: Trading-Symbol (default: "BTC/EUR") - nur bei ExecutionPipeline verwendet
             fee_bps: Fees in Basispunkten (default: 0.0) - nur bei ExecutionPipeline verwendet
             slippage_bps: Slippage in Basispunkten (default: 0.0) - nur bei ExecutionPipeline verwendet
+            seed: Random seed for reproducibility (default: None = use 42)
+            save_repro: Whether to save reproducibility metadata (default: True)
 
         Returns:
             BacktestResult mit Equity-Curve, Trades, Stats
@@ -340,6 +344,7 @@ class BacktestEngine:
             ...     strategy_params={'fast_period': 10, 'slow_period': 30},
             ...     symbol="BTC/EUR",
             ...     fee_bps=10.0,
+            ...     seed=42,
             ... )
             >>>
             >>> # Legacy-Modus (ohne ExecutionPipeline)
@@ -350,9 +355,23 @@ class BacktestEngine:
             ...     strategy_params={'fast_period': 10, 'slow_period': 30, 'stop_pct': 0.02}
             ... )
         """
+        # Set seed for reproducibility
+        if seed is None:
+            seed = 42  # Default seed
+        
+        from ..core.repro import ReproContext, set_global_seed, get_git_sha, stable_hash_dict, generate_run_id
+        
+        set_global_seed(seed)
+        
+        # Create reproducibility context
+        repro_ctx = ReproContext.create(
+            seed=seed,
+            config_dict=strategy_params,
+        )
+        
         # Dispatch: ExecutionPipeline oder Legacy-Pfad
         if self.use_execution_pipeline:
-            return self._run_with_execution_pipeline(
+            result = self._run_with_execution_pipeline(
                 df=df,
                 strategy_signal_fn=strategy_signal_fn,
                 strategy_params=strategy_params,
@@ -360,8 +379,43 @@ class BacktestEngine:
                 fee_bps=fee_bps,
                 slippage_bps=slippage_bps,
             )
-
-        # Legacy-Pfad (ohne ExecutionPipeline)
+        else:
+            result = self._run_realistic_legacy(
+                df=df,
+                strategy_signal_fn=strategy_signal_fn,
+                strategy_params=strategy_params,
+            )
+        
+        # Save repro metadata alongside results
+        if save_repro:
+            from pathlib import Path
+            output_dir = Path("results") / repro_ctx.run_id
+            output_dir.mkdir(parents=True, exist_ok=True)
+            repro_ctx.save(output_dir / "repro.json")
+            logger.info(f"Saved reproducibility metadata to {output_dir / 'repro.json'}")
+        
+        # Add repro context to metadata
+        result.metadata["repro_context"] = repro_ctx.to_dict()
+        
+        return result
+    
+    def _run_realistic_legacy(
+        self,
+        df: pd.DataFrame,
+        strategy_signal_fn: Callable,
+        strategy_params: Dict,
+    ) -> BacktestResult:
+        """
+        Internal legacy backtest implementation (without ExecutionPipeline).
+        
+        Args:
+            df: OHLCV-DataFrame
+            strategy_signal_fn: Signal generator function
+            strategy_params: Strategy parameters
+            
+        Returns:
+            BacktestResult
+        """
         # Init
         equity = self.config["backtest"]["initial_cash"]
         self.equity_curve = [equity]
