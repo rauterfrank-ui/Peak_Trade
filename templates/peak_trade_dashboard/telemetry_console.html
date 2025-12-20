@@ -68,6 +68,137 @@
   </div>
   {% endif %}
 
+  <!-- Health Trends Section (Phase 16H) -->
+  {% if trends_summary and trends_summary.available %}
+  <div class="bg-slate-900/50 rounded-lg border border-slate-800 p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold flex items-center gap-2">
+        📈 Health Trends
+        <span class="text-xs px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/30">
+          Phase 16H
+        </span>
+      </h2>
+      <a href="/api/telemetry/health/trends?days=30"
+         class="text-xs px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors"
+         target="_blank">
+        📊 API (JSON)
+      </a>
+    </div>
+
+    <!-- Time Windows Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      
+      <!-- Last 24h -->
+      {% if trends_summary.last_24h %}
+      <div class="bg-slate-800/30 rounded p-4 border {% if trends_summary.last_24h.worst_severity == 'critical' %}border-red-500/30{% elif trends_summary.last_24h.worst_severity == 'warn' %}border-yellow-500/30{% else %}border-emerald-500/30{% endif %}">
+        <div class="text-sm font-medium text-slate-300 mb-2">Last 24 Hours</div>
+        <div class="space-y-2">
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Snapshots:</span>
+            <span class="text-slate-100 font-mono">{{ trends_summary.last_24h.count }}</span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Worst:</span>
+            <span class="{% if trends_summary.last_24h.worst_severity == 'ok' %}text-emerald-400{% elif trends_summary.last_24h.worst_severity == 'warn' %}text-yellow-400{% else %}text-red-400{% endif %} font-semibold">
+              {{ trends_summary.last_24h.worst_severity|upper }}
+            </span>
+          </div>
+          {% if trends_summary.last_24h.critical_count > 0 %}
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">🔴 Critical:</span>
+            <span class="text-red-400 font-mono">{{ trends_summary.last_24h.critical_count }}</span>
+          </div>
+          {% endif %}
+          {% if trends_summary.last_24h.warn_count > 0 %}
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">⚠️  Warn:</span>
+            <span class="text-yellow-400 font-mono">{{ trends_summary.last_24h.warn_count }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <div class="bg-slate-800/30 rounded p-4 border border-slate-700">
+        <div class="text-sm font-medium text-slate-300 mb-2">Last 24 Hours</div>
+        <div class="text-xs text-slate-500">No data</div>
+      </div>
+      {% endif %}
+
+      <!-- Last 7d -->
+      {% if trends_summary.last_7d %}
+      <div class="bg-slate-800/30 rounded p-4 border {% if trends_summary.last_7d.worst_severity == 'critical' %}border-red-500/30{% elif trends_summary.last_7d.worst_severity == 'warn' %}border-yellow-500/30{% else %}border-emerald-500/30{% endif %}">
+        <div class="text-sm font-medium text-slate-300 mb-2">Last 7 Days</div>
+        <div class="space-y-2">
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Snapshots:</span>
+            <span class="text-slate-100 font-mono">{{ trends_summary.last_7d.count }}</span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Worst:</span>
+            <span class="{% if trends_summary.last_7d.worst_severity == 'ok' %}text-emerald-400{% elif trends_summary.last_7d.worst_severity == 'warn' %}text-yellow-400{% else %}text-red-400{% endif %} font-semibold">
+              {{ trends_summary.last_7d.worst_severity|upper }}
+            </span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Disk Avg:</span>
+            <span class="text-slate-300 font-mono">{{ "%.1f"|format(trends_summary.last_7d.disk_avg) }} MB</span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Disk Max:</span>
+            <span class="text-slate-300 font-mono">{{ "%.1f"|format(trends_summary.last_7d.disk_max) }} MB</span>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="bg-slate-800/30 rounded p-4 border border-slate-700">
+        <div class="text-sm font-medium text-slate-300 mb-2">Last 7 Days</div>
+        <div class="text-xs text-slate-500">No data</div>
+      </div>
+      {% endif %}
+
+      <!-- Last 30d -->
+      {% if trends_summary.last_30d %}
+      <div class="bg-slate-800/30 rounded p-4 border {% if trends_summary.last_30d.worst_severity == 'critical' %}border-red-500/30{% elif trends_summary.last_30d.worst_severity == 'warn' %}border-yellow-500/30{% else %}border-emerald-500/30{% endif %}">
+        <div class="text-sm font-medium text-slate-300 mb-2">Last 30 Days</div>
+        <div class="space-y-2">
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Snapshots:</span>
+            <span class="text-slate-100 font-mono">{{ trends_summary.last_30d.count }}</span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Worst:</span>
+            <span class="{% if trends_summary.last_30d.worst_severity == 'ok' %}text-emerald-400{% elif trends_summary.last_30d.worst_severity == 'warn' %}text-yellow-400{% else %}text-red-400{% endif %} font-semibold">
+              {{ trends_summary.last_30d.worst_severity|upper }}
+            </span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Disk Avg:</span>
+            <span class="text-slate-300 font-mono">{{ "%.1f"|format(trends_summary.last_30d.disk_avg) }} MB</span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-slate-400">Disk Max:</span>
+            <span class="text-slate-300 font-mono">{{ "%.1f"|format(trends_summary.last_30d.disk_max) }} MB</span>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <div class="mt-4 text-xs text-slate-500">
+      💡 Tip: Use <code class="text-slate-300 bg-slate-800/50 px-1 rounded">python scripts/telemetry_health_snapshot.py</code> to capture snapshots (recommended: hourly/daily via cron)
+    </div>
+  </div>
+  {% elif trends_summary %}
+  <div class="bg-slate-900/50 rounded-lg border border-slate-800 p-6">
+    <h2 class="text-lg font-semibold mb-4">📈 Health Trends</h2>
+    <div class="text-center py-8">
+      <p class="text-slate-400 mb-2">No health snapshots found</p>
+      <p class="text-xs text-slate-500">Run <code class="text-slate-300 bg-slate-800/50 px-2 py-1 rounded">python scripts/telemetry_health_snapshot.py</code> to start collecting historical data</p>
+    </div>
+  </div>
+  {% endif %}
+
   <!-- Disk Usage & Retention Policy Summary -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     
