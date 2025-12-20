@@ -99,7 +99,7 @@ class TestTimeSeriesDB:
         # Create sample tick data
         data = pd.DataFrame(
             {
-                "timestamp": pd.date_range("2024-01-01", periods=10, freq="H"),
+                "timestamp": pd.date_range("2024-01-01", periods=10, freq="h"),
                 "price": [100 + i for i in range(10)],
                 "volume": [1000 + i * 10 for i in range(10)],
             }
