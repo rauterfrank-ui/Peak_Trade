@@ -27,6 +27,7 @@ from src.core.resilience import (
 class TestCircuitBreaker:
     """Tests for CircuitBreaker class."""
     
+    @pytest.mark.smoke
     def test_circuit_breaker_init(self):
         """Test circuit breaker initialization."""
         breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=30)
@@ -190,6 +191,7 @@ class TestCircuitBreakerDecorator:
 class TestRetryWithBackoff:
     """Tests for retry_with_backoff decorator."""
     
+    @pytest.mark.smoke
     def test_retry_success_first_attempt(self):
         """Test successful call on first attempt."""
         call_count = [0]
