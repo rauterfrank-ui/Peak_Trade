@@ -29,6 +29,12 @@ from typing import Any, Dict
 
 import pytest
 
+# Skip if FastAPI not installed - all tests in this module require web stack
+pytest.importorskip("fastapi")
+
+# Mark all tests in this module as web tests
+pytestmark = pytest.mark.web
+
 
 # =============================================================================
 # Fixtures
