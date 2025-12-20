@@ -909,6 +909,118 @@ def create_app() -> FastAPI:
         return get_alert_statistics(hours=hours)
 
     # =========================================================================
+    # Phase 16B: Execution Timeline API Endpoints
+    # =========================================================================
+
+    @app.get(
+        "/api/live/execution/{session_id}",
+        summary="Execution Timeline für Session",
+        description="Liefert Execution-Events für eine Session (Phase 16B).",
+        tags=["execution"],
+    )
+    async def api_execution_timeline(
+        session_id: str,
+        limit: int = Query(200, ge=1, le=1000, description="Max. Anzahl Events"),
+        kind: Optional[str] = Query(None, description="Filter nach Event-Kind (intent/order/fill/gate)"),
+    ) -> Dict[str, Any]:
+        """
+        API-Endpoint für Execution Timeline (Phase 16B).
+
+        Returns:
+            Dict mit timeline, summary, filters
+        """
+        from src.live.execution_bridge import get_execution_timeline, get_execution_summary
+
+        # Load timeline
+        timeline_rows = get_execution_timeline(session_id, limit=limit)
+
+        # Filter by kind if specified
+        if kind:
+            timeline_rows = [row for row in timeline_rows if row.kind == kind]
+
+        # Convert to dicts for JSON
+        timeline = [
+            {
+                "ts": row.ts.isoformat(),
+                "kind": row.kind,
+                "symbol": row.symbol,
+                "description": row.description,
+                "details": row.details,
+            }
+            for row in timeline_rows
+        ]
+
+        # Get summary
+        summary = get_execution_summary(session_id)
+
+        return {
+            "session_id": session_id,
+            "timeline": timeline,
+            "summary": summary,
+            "filters": {"kind": kind, "limit": limit},
+            "count": len(timeline),
+        }
+
+    @app.get(
+        "/live/execution/{session_id}",
+        response_class=HTMLResponse,
+        summary="Execution Timeline View (HTML)",
+        description="HTML-View für Execution-Timeline einer Session (Phase 16B).",
+    )
+    async def execution_timeline_page(
+        request: Request,
+        session_id: str,
+        limit: int = Query(200, ge=1, le=1000, description="Max. Anzahl Events"),
+        kind: Optional[str] = Query(None, description="Filter nach Event-Kind"),
+    ) -> Any:
+        """
+        HTML-View für Execution Timeline (Phase 16B).
+
+        Zeigt:
+        - Execution-Events in Tabelle
+        - Filter nach Kind (intent/order/fill/gate)
+        - Summary-Stats
+        """
+        from src.live.execution_bridge import get_execution_timeline, get_execution_summary
+
+        proj_status = get_project_status()
+
+        # Load timeline
+        timeline_rows = get_execution_timeline(session_id, limit=limit)
+
+        # Filter by kind if specified
+        if kind:
+            timeline_rows = [row for row in timeline_rows if row.kind == kind]
+
+        # Get summary
+        summary = get_execution_summary(session_id)
+
+        # Prepare timeline for template
+        timeline = [
+            {
+                "ts": row.ts.strftime("%Y-%m-%d %H:%M:%S"),
+                "kind": row.kind,
+                "symbol": row.symbol,
+                "description": row.description,
+                "details": row.details,
+            }
+            for row in timeline_rows
+        ]
+
+        return templates.TemplateResponse(
+            request,
+            "execution_timeline.html",
+            {
+                "status": proj_status,
+                "session_id": session_id,
+                "timeline": timeline,
+                "summary": summary,
+                "filters": {"kind": kind, "limit": limit},
+                "count": len(timeline),
+            },
+        )
+
+    # =========================================================================
     # Strategy-Tiering API Endpoints
     # =========================================================================
 
