@@ -23,9 +23,12 @@ import hashlib
 import json
 import platform
 import random
+import socket
 import sys
 import uuid
+from datetime import datetime, timezone
 from dataclasses import asdict, dataclass
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 
@@ -35,20 +38,24 @@ class ReproContext:
     Reproducibility context capturing environment state.
 
     Attributes:
-        seed: Random seed (None = not set)
+        run_id: Unique run identifier (UUID)
         git_sha: Git commit SHA (None = not available)
         config_hash: Stable hash of config dict
+        seed: Random seed (None = not set)
+        dependencies_hash: Hash of requirements.txt (None = not available)
+        timestamp: ISO format timestamp (UTC)
+        hostname: Machine identifier
         python_version: Python version string
-        platform: Platform string (e.g., "darwin", "linux")
-        run_id: Unique run identifier (UUID)
     """
 
-    seed: Optional[int]
+    run_id: str
     git_sha: Optional[str]
     config_hash: str
+    seed: Optional[int]
+    dependencies_hash: Optional[str]
+    timestamp: str
+    hostname: str
     python_version: str
-    platform: str
-    run_id: str
 
     @classmethod
     def create(
@@ -56,6 +63,7 @@ class ReproContext:
         seed: Optional[int] = None,
         git_sha: Optional[str] = None,
         config_dict: Optional[Dict[str, Any]] = None,
+        dependencies_hash: Optional[str] = None,
     ) -> "ReproContext":
         """
         Create a ReproContext from current environment.
@@ -64,6 +72,7 @@ class ReproContext:
             seed: Random seed (None = not set)
             git_sha: Git commit SHA (None = auto-detect or not available)
             config_dict: Config dict to hash (None = empty dict)
+            dependencies_hash: Hash of dependencies (None = auto-detect)
 
         Returns:
             ReproContext instance
@@ -76,20 +85,31 @@ class ReproContext:
         config_dict = config_dict or {}
         config_hash = _stable_hash_dict(config_dict)
 
-        # Capture Python version and platform
+        # Hash dependencies if not provided
+        if dependencies_hash is None:
+            dependencies_hash = hash_dependencies()
+
+        # Capture Python version
         python_version = sys.version.split()[0]  # e.g., "3.9.6"
-        platform_str = platform.system().lower()  # e.g., "darwin", "linux"
 
         # Generate unique run_id
-        run_id = str(uuid.uuid4())
+        run_id = generate_run_id()
+
+        # Capture timestamp (UTC)
+        timestamp = datetime.now(timezone.utc).isoformat()
+
+        # Capture hostname
+        hostname = socket.gethostname()
 
         return cls(
-            seed=seed,
+            run_id=run_id,
             git_sha=git_sha,
             config_hash=config_hash,
+            seed=seed,
+            dependencies_hash=dependencies_hash,
+            timestamp=timestamp,
+            hostname=hostname,
             python_version=python_version,
-            platform=platform_str,
-            run_id=run_id,
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -99,6 +119,51 @@ class ReproContext:
     def to_json(self) -> str:
         """Convert to JSON string."""
         return json.dumps(self.to_dict(), indent=2)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "ReproContext":
+        """
+        Deserialize from dict.
+
+        Args:
+            data: Dictionary containing ReproContext fields
+
+        Returns:
+            ReproContext instance
+        """
+        return cls(**data)
+
+    def save(self, path: Path) -> None:
+        """
+        Save to JSON file.
+
+        Args:
+            path: Path to JSON file (will be created/overwritten)
+        """
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, 'w') as f:
+            json.dump(self.to_dict(), f, indent=2)
+
+    @classmethod
+    def load(cls, path: Path) -> "ReproContext":
+        """
+        Load from JSON file.
+
+        Args:
+            path: Path to JSON file
+
+        Returns:
+            ReproContext instance
+
+        Raises:
+            FileNotFoundError: If file doesn't exist
+            json.JSONDecodeError: If file is not valid JSON
+        """
+        path = Path(path)
+        with open(path, 'r') as f:
+            data = json.load(f)
+        return cls.from_dict(data)
 
 
 def get_git_sha(short: bool = True) -> Optional[str]:
@@ -220,6 +285,37 @@ def set_global_seed(seed: int) -> None:
         torch.use_deterministic_algorithms(True, warn_only=True)
     except ImportError:
         pass
+
+
+def generate_run_id() -> str:
+    """
+    Generate unique run ID.
+
+    Returns:
+        Short UUID (8 chars) for readability
+
+    Example:
+        >>> run_id = generate_run_id()  # 'a1b2c3d4'
+    """
+    return str(uuid.uuid4())[:8]
+
+
+def hash_dependencies() -> Optional[str]:
+    """
+    Hash requirements.txt for environment reproducibility.
+
+    Returns:
+        SHA256 hash (first 16 chars) or None if requirements.txt not found
+
+    Example:
+        >>> deps_hash = hash_dependencies()  # 'a1b2c3d4e5f6g7h8'
+    """
+    try:
+        with open("requirements.txt", "r") as f:
+            content = f.read()
+        return hashlib.sha256(content.encode()).hexdigest()[:16]
+    except FileNotFoundError:
+        return None
 
 
 def verify_determinism(func, seed: int, num_runs: int = 2, **kwargs) -> bool:

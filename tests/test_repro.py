@@ -14,9 +14,10 @@ def test_repro_context_create_minimal():
 
     assert ctx.seed is None
     assert ctx.python_version is not None
-    assert ctx.platform in ["darwin", "linux", "windows"]
+    assert ctx.hostname is not None
     assert ctx.run_id is not None
-    assert len(ctx.run_id) == 36  # UUID format
+    assert len(ctx.run_id) == 8  # Short UUID format (8 chars)
+    assert ctx.timestamp is not None
 
 
 def test_repro_context_create_with_seed():
@@ -83,8 +84,10 @@ def test_repro_context_to_dict():
     assert d["seed"] == 42
     assert "config_hash" in d
     assert "python_version" in d
-    assert "platform" in d
+    assert "hostname" in d
+    assert "timestamp" in d
     assert "run_id" in d
+    assert "dependencies_hash" in d
 
 
 def test_repro_context_to_json():
@@ -249,3 +252,143 @@ def test_stable_hash_dict_value_sensitive():
     hash2 = stable_hash_dict(config2)
 
     assert hash1 != hash2
+
+
+# Wave C: Tests for new ReproContext fields and methods
+def test_repro_context_timestamp():
+    """ReproContext.create() captures UTC timestamp."""
+    ctx = ReproContext.create(seed=42)
+    
+    # Should be ISO format
+    assert "T" in ctx.timestamp
+    assert ctx.timestamp.endswith("+00:00") or ctx.timestamp.endswith("Z")
+
+
+def test_repro_context_hostname():
+    """ReproContext.create() captures hostname."""
+    ctx = ReproContext.create(seed=42)
+    
+    assert ctx.hostname is not None
+    assert len(ctx.hostname) > 0
+
+
+def test_repro_context_dependencies_hash():
+    """ReproContext.create() hashes dependencies if available."""
+    ctx = ReproContext.create(seed=42)
+    
+    # May be None if requirements.txt not found, otherwise should be 16 chars
+    if ctx.dependencies_hash is not None:
+        assert len(ctx.dependencies_hash) == 16
+
+
+def test_repro_context_from_dict():
+    """ReproContext.from_dict() deserializes correctly."""
+    ctx = ReproContext.create(seed=42, config_dict={"test": "value"})
+    d = ctx.to_dict()
+    
+    ctx2 = ReproContext.from_dict(d)
+    
+    assert ctx2.run_id == ctx.run_id
+    assert ctx2.seed == ctx.seed
+    assert ctx2.git_sha == ctx.git_sha
+    assert ctx2.config_hash == ctx.config_hash
+    assert ctx2.timestamp == ctx.timestamp
+    assert ctx2.hostname == ctx.hostname
+
+
+def test_repro_context_save_load(tmp_path):
+    """ReproContext.save() and load() work correctly."""
+    ctx = ReproContext.create(seed=42, config_dict={"test": "value"})
+    
+    # Save to temp file
+    save_path = tmp_path / "repro.json"
+    ctx.save(save_path)
+    
+    # File should exist
+    assert save_path.exists()
+    
+    # Load back
+    loaded_ctx = ReproContext.load(save_path)
+    
+    # All fields should match
+    assert loaded_ctx.run_id == ctx.run_id
+    assert loaded_ctx.seed == ctx.seed
+    assert loaded_ctx.git_sha == ctx.git_sha
+    assert loaded_ctx.config_hash == ctx.config_hash
+    assert loaded_ctx.dependencies_hash == ctx.dependencies_hash
+    assert loaded_ctx.timestamp == ctx.timestamp
+    assert loaded_ctx.hostname == ctx.hostname
+    assert loaded_ctx.python_version == ctx.python_version
+
+
+def test_repro_context_save_creates_parent_dirs(tmp_path):
+    """ReproContext.save() creates parent directories."""
+    ctx = ReproContext.create(seed=42)
+    
+    # Save to nested path
+    save_path = tmp_path / "nested" / "dir" / "repro.json"
+    ctx.save(save_path)
+    
+    assert save_path.exists()
+
+
+def test_repro_context_load_missing_file(tmp_path):
+    """ReproContext.load() raises FileNotFoundError for missing file."""
+    missing_path = tmp_path / "nonexistent.json"
+    
+    with pytest.raises(FileNotFoundError):
+        ReproContext.load(missing_path)
+
+
+def test_generate_run_id():
+    """generate_run_id() produces 8-char string."""
+    from src.core.repro import generate_run_id
+    
+    run_id = generate_run_id()
+    
+    assert isinstance(run_id, str)
+    assert len(run_id) == 8
+    # Should be hex chars
+    assert all(c in "0123456789abcdef-" for c in run_id)
+
+
+def test_generate_run_id_unique():
+    """generate_run_id() produces unique IDs."""
+    from src.core.repro import generate_run_id
+    
+    id1 = generate_run_id()
+    id2 = generate_run_id()
+    
+    assert id1 != id2
+
+
+def test_hash_dependencies_with_file():
+    """hash_dependencies() returns 16-char hash when requirements.txt exists."""
+    from src.core.repro import hash_dependencies
+    
+    deps_hash = hash_dependencies()
+    
+    # Should return hash if file exists, None otherwise
+    if deps_hash is not None:
+        assert len(deps_hash) == 16
+        assert deps_hash.isalnum()
+
+
+def test_hash_dependencies_missing_file(monkeypatch, tmp_path):
+    """hash_dependencies() returns None when requirements.txt missing."""
+    from src.core.repro import hash_dependencies
+    
+    # Change to temp dir without requirements.txt
+    monkeypatch.chdir(tmp_path)
+    
+    deps_hash = hash_dependencies()
+    assert deps_hash is None
+
+
+def test_repro_context_run_id_short():
+    """ReproContext uses short run_id (8 chars) for readability."""
+    ctx = ReproContext.create()
+    
+    # Should be 8 chars (short UUID)
+    assert len(ctx.run_id) == 8
+
