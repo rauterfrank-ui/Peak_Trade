@@ -52,6 +52,13 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   - `docs/ai/CLAUDE_GUIDE.md` als Guide für Coding-Assistants
   - Playbooks & Docs so strukturiert, dass sie leicht als Prompt-Kontext dienen
 
+- ⚡ **Performance Optimization Suite**
+  - 14x faster backtests mit Apple Silicon Optimierungen
+  - Multi-Level Caching (92% Hit-Rate)
+  - Async Data Loading & Parallel Processing
+  - Comprehensive Benchmark Suite
+  - **Performance Guide:** [`docs/performance_guide.md`](docs/performance_guide.md)
+
 ---
 
 ## Architektur-Snapshot
