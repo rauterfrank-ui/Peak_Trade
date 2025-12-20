@@ -1,0 +1,42 @@
+# ============================================================================
+# Peak_Trade Performance Configuration
+# ============================================================================
+# Performance optimization settings for Apple Silicon and general optimization
+# ============================================================================
+
+[performance]
+enable_caching = true
+enable_profiling = false  # Production: false
+
+[performance.cache]
+l1_size = 1000  # In-memory entries
+l1_ttl = 300    # seconds
+l2_enabled = false  # Redis (optional)
+l2_host = "localhost"
+l2_port = 6379
+l3_enabled = true  # Disk cache
+l3_path = "data/cache"
+
+[performance.parallel]
+max_workers = 8  # Apple Silicon performance cores (M2 Pro)
+use_processes = true  # CPU-bound tasks
+
+[performance.database]
+batch_size = 1000
+enable_indexes = true
+vacuum_interval = 86400  # daily (seconds)
+
+[performance.serialization]
+format = "pickle"  # msgpack|pickle (msgpack requires package)
+compression = "zstd"  # zstd|gzip|none (zstd requires package)
+compression_level = 3
+
+[performance.numpy]
+num_threads = 8  # Number of threads for NumPy operations
+auto_configure = true  # Auto-configure on startup
+
+[performance.benchmarks]
+enabled = true
+warmup_iterations = 10
+test_iterations = 100
+memory_profiling = true
