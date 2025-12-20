@@ -8,6 +8,7 @@ Features:
 - Automatisches Parquet-Caching
 - UTC-DatetimeIndex
 - Error-Handling
+- Data Contract Validation (Wave A - Stability)
 """
 
 import ccxt
@@ -18,6 +19,8 @@ from datetime import datetime, timezone
 import logging
 
 from ..core.config_registry import get_config
+from ..core.errors import DataContractError
+from .contracts import validate_ohlcv
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +61,8 @@ def fetch_ohlcv_df(
     timeframe: str = "1h",
     limit: int = 720,
     since_ms: Optional[int] = None,
-    use_cache: bool = True
+    use_cache: bool = True,
+    validate_contract: bool = False,
 ) -> pd.DataFrame:
     """
     Holt OHLCV-Daten von Kraken mit optionalem Caching.
@@ -69,6 +73,7 @@ def fetch_ohlcv_df(
         limit: Anzahl Bars (max. 720)
         since_ms: Start-Timestamp in Millisekunden
         use_cache: Parquet-Cache verwenden?
+        validate_contract: Data contract validation durchführen? (default: False for backward compatibility)
         
     Returns:
         DataFrame mit UTC-DatetimeIndex
@@ -77,6 +82,11 @@ def fetch_ohlcv_df(
     Raises:
         ccxt.NetworkError: Bei Verbindungsproblemen
         ccxt.ExchangeError: Bei API-Fehlern
+        DataContractError: Bei Contract-Validation-Fehlern (wenn validate_contract=True)
+        
+    Note:
+        For production use, it's recommended to enable validation:
+        df = fetch_ohlcv_df("BTC/USD", "1h", validate_contract=True)
         
     Example:
         >>> df = fetch_ohlcv_df("BTC/USD", "1h", limit=100)
@@ -91,6 +101,22 @@ def fetch_ohlcv_df(
         logger.info(f"Lade {symbol} {timeframe} aus Cache: {cache_path}")
         df = pd.read_parquet(cache_path)
         df.index = pd.to_datetime(df.index, utc=True)
+        
+        # Validate cached data
+        if validate_contract:
+            is_valid, errors = validate_ohlcv(df, strict=True, require_tz=True)
+            if not is_valid:
+                logger.warning(
+                    f"Cached data validation failed for {symbol} {timeframe}: {errors[0]}"
+                )
+                # Clear corrupted cache and fetch fresh data
+                cache_path.unlink()
+                logger.info(f"Corrupted cache cleared, fetching fresh data")
+                return fetch_ohlcv_df(
+                    symbol, timeframe, limit, since_ms, 
+                    use_cache=True, validate_contract=validate_contract
+                )
+        
         return df
     
     # 2. Von Kraken holen
@@ -115,7 +141,23 @@ def fetch_ohlcv_df(
         df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True)
         df.set_index("timestamp", inplace=True)
         
-        # 5. In Cache speichern
+        # 5. Data Contract Validation (Wave A - Stability)
+        if validate_contract:
+            is_valid, errors = validate_ohlcv(df, strict=True, require_tz=True)
+            if not is_valid:
+                raise DataContractError(
+                    f"OHLCV validation failed for {symbol} {timeframe}: {errors[0]}",
+                    hint="Check Kraken API response for corruption or schema changes",
+                    context={
+                        "errors": errors,
+                        "shape": df.shape,
+                        "symbol": symbol,
+                        "timeframe": timeframe,
+                    }
+                )
+            logger.debug(f"Data contract validation passed for {symbol} {timeframe}")
+        
+        # 6. In Cache speichern
         if use_cache:
             logger.info(f"Speichere in Cache: {cache_path}")
             df.to_parquet(cache_path)
