@@ -90,6 +90,23 @@ use_cache = true
 cache_format = "parquet"
 
 # ============================================================================
+# CONFIG SYSTEM SETTINGS (Thread-Safe Registry with Hot-Reload)
+# ============================================================================
+[config]
+# Enable automatic hot-reload when config file changes
+# Requires watchdog library: pip install watchdog
+hot_reload_enabled = true
+
+# Maximum number of config snapshots to keep for rollback
+# Each snapshot is a full config copy in memory
+max_rollback_snapshots = 5
+
+# Reload behavior on validation errors
+# false (strict mode): Keep previous config, log error
+# true: Force reload even if validation fails (NOT RECOMMENDED)
+reload_on_validation_error = false
+
+# ============================================================================
 # STRATEGIEN-REGISTRY (Zentrale Verwaltung aller Strategien)
 # ============================================================================
 [strategies]
