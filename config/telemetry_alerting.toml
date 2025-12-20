@@ -11,10 +11,10 @@
 
 [telemetry.alerting]
 # Enable/disable alerting system
-enabled = false
+enabled = true  # ← CHANGED: Enabled for dry-run testing
 
 # Dry-run mode: print alerts but don't send to external systems
-dry_run = true
+dry_run = true  # ← SAFE: Dry-run stays enabled for initial testing
 
 # Default sink: "console" | "webhook"
 default_sink = "console"
@@ -103,7 +103,7 @@ retention_days = 30
 
 [telemetry.alerting.history]
 # Enable alert history (persistent JSONL storage)
-enabled = false
+enabled = true  # ← ENABLED: Track all alerts for analysis
 
 # History file path
 path = "data/telemetry/alerts/alerts_history.jsonl"
@@ -118,7 +118,7 @@ retain_days = 14
 
 [telemetry.alerting.operator_actions]
 # Enable operator actions (ACK, SNOOZE, RESOLVE)
-enabled = false
+enabled = true  # ← ENABLED: Allow noise control via ACK/SNOOZE
 
 # State file path (JSON)
 state_path = "data/telemetry/alerts/alerts_state.json"
