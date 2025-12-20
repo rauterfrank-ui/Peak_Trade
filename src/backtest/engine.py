@@ -362,6 +362,17 @@ class BacktestEngine:
             )
 
         # Legacy-Pfad (ohne ExecutionPipeline)
+        # Generate run_id for trace context
+        import uuid
+        from src.core.trace_context import TraceContext
+        run_id = f"backtest_legacy_{uuid.uuid4().hex[:8]}"
+        
+        # Set trace context for observability
+        trace_ctx = TraceContext.create(run_id=run_id)
+        trace_ctx.set_active()
+        
+        logger.info(f"Starting legacy backtest with run_id={run_id}")
+        
         # Init
         equity = self.config["backtest"]["initial_cash"]
         self.equity_curve = [equity]
@@ -767,8 +778,15 @@ class BacktestEngine:
         Returns:
             BacktestResult mit Equity-Curve, Trades (als OrderFills), Stats
         """
+        from src.core.trace_context import TraceContext
         import uuid
         run_id = f"backtest_{uuid.uuid4().hex[:8]}"
+        
+        # Set trace context for observability
+        trace_ctx = TraceContext.create(run_id=run_id)
+        trace_ctx.set_active()
+        
+        logger.info(f"Starting backtest with run_id={run_id}, symbol={symbol}")
 
         # Init
         initial_equity = self.config["backtest"]["initial_cash"]
