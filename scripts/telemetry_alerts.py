@@ -45,7 +45,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.execution.telemetry_health import run_health_checks, HealthThresholds
 from src.execution.telemetry_health_trends import load_snapshots, compute_rollup, detect_degradation
-from src.execution.alerting import AlertEngine, AlertSeverity
+from src.execution.alerting import AlertEngine, AlertSeverity, AlertHistory, OperatorState
 from src.execution.alerting.rules import DEFAULT_RULES
 from src.execution.alerting.adapters import ConsoleAlertSink, WebhookAlertSink
 from src.execution.alerting.persistence import get_global_alert_store
@@ -202,9 +202,35 @@ Exit codes:
     except Exception as e:
         logger.error(f"Trend analysis failed: {e}", exc_info=True)
 
+    # Build history and operator state (Phase 16J)
+    history_config = config.get("telemetry", {}).get("alerting", {}).get("history", {})
+    operator_config = config.get("telemetry", {}).get("alerting", {}).get("operator_actions", {})
+    
+    history = None
+    if history_config.get("enabled", False):
+        history = AlertHistory(
+            history_path=Path(history_config.get("path", "data/telemetry/alerts/alerts_history.jsonl")),
+            retain_days=history_config.get("retain_days", 14),
+            enabled=True,
+        )
+        logger.info("Alert history enabled")
+    
+    operator_state = None
+    if operator_config.get("enabled", False):
+        operator_state = OperatorState(
+            state_path=Path(operator_config.get("state_path", "data/telemetry/alerts/alerts_state.json")),
+            enabled=True,
+            suppress_critical_on_ack=operator_config.get("suppress_critical_on_ack", False),
+        )
+        logger.info("Operator actions enabled")
+    
     # Build alert engine
     logger.info(f"Evaluating alert rules (max {args.max} alerts)...")
-    engine = AlertEngine(rules=DEFAULT_RULES.copy(), max_alerts_per_run=args.max)
+    engine = AlertEngine(
+        rules=DEFAULT_RULES.copy(),
+        max_alerts_per_run=args.max,
+        operator_state=operator_state,
+    )
 
     # Evaluate rules
     alerts = engine.evaluate(health_report=health_report, trend_report=trend_report)
@@ -248,17 +274,23 @@ Exit codes:
             logger.error(f"Unknown sink: {args.sink}")
             return 1
 
-    # Send alerts + store
+    # Send alerts + store + history
     send_failures = 0
     alert_store = get_global_alert_store()
     
     for alert in alerts:
         success = sink.send(alert)
+        delivery_status = "sent" if success else "failed"
+        
         if not success:
             send_failures += 1
         
         # Store alert (for dashboard/API)
         alert_store.add(alert)
+        
+        # Store in history (Phase 16J)
+        if history:
+            history.append(alert, delivery_status=delivery_status)
 
     # Exit code
     if critical_count > 0:

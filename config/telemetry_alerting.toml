@@ -98,6 +98,39 @@ retention_days = 30
 
 
 # =============================================================================
+# ALERT HISTORY (PHASE 16J)
+# =============================================================================
+
+[telemetry.alerting.history]
+# Enable alert history (persistent JSONL storage)
+enabled = false
+
+# History file path
+path = "data/telemetry/alerts/alerts_history.jsonl"
+
+# Retention days
+retain_days = 14
+
+
+# =============================================================================
+# OPERATOR ACTIONS (PHASE 16J)
+# =============================================================================
+
+[telemetry.alerting.operator_actions]
+# Enable operator actions (ACK, SNOOZE, RESOLVE)
+enabled = false
+
+# State file path (JSON)
+state_path = "data/telemetry/alerts/alerts_state.json"
+
+# Require explicit --enable-operator-actions flag in CLI
+require_flag = true
+
+# Suppress CRITICAL alerts when acked (default: false, CRITICAL bypasses ACK)
+suppress_critical_on_ack = false
+
+
+# =============================================================================
 # EXAMPLE: PRODUCTION CONFIGURATION
 # =============================================================================
 
