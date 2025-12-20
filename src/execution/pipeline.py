@@ -479,6 +479,10 @@ class ExecutionPipeline:
             symbol: Trading symbol
             session_id: Session ID
             payload: Event-specific data
+        
+        Note:
+            Uses local time (datetime.now()). For UTC, switch to datetime.now(timezone.utc)
+            in a future phase if needed for multi-region deployments.
         """
         if self._emitter is None:
             return
@@ -487,7 +491,7 @@ class ExecutionPipeline:
             from .events import ExecutionEvent
             
             event = ExecutionEvent(
-                ts=datetime.now(),
+                ts=datetime.now(),  # Local time (for single-region deployments)
                 session_id=session_id,
                 symbol=symbol,
                 mode=self._get_current_environment(),
@@ -1061,17 +1065,18 @@ class ExecutionPipeline:
         # Phase 16B: Emit fill events if executed
         if result.executed_orders:
             for exec_order in result.executed_orders:
-                for fill in exec_order.fills:
+                if exec_order.fill:  # OrderExecutionResult has 'fill' (singular), not 'fills'
+                    fill = exec_order.fill
                     self._emit_event(
                         kind="fill",
                         symbol=intent.symbol,
                         session_id=session_id,
                         payload={
-                            "client_id": exec_order.client_id,
+                            "client_id": exec_order.request.client_id,  # client_id is in request
                             "filled_quantity": fill.quantity,
                             "fill_price": fill.price,
-                            "fill_notional": fill.notional,
-                            "fill_fee": fill.fee,
+                            "fill_notional": fill.quantity * fill.price,  # Calculate notional
+                            "fill_fee": fill.fee or 0.0,  # fee is optional
                         },
                     )
 

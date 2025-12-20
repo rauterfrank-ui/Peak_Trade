@@ -1360,6 +1360,8 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 | 2025-12-09 | (aktuell) | **Phase 78** – R&D Report-Gallery & Multi-Run Comparison v1 (API v1.3, Batch-Endpoint, Comparison-View) |
 | 2025-12-09 | (aktuell) | **Jahreskorrektur & 2026-ready** – Cluster 82–85 Datums-Referenzen auf Q4 2025 korrigiert, "Road to 2026" Abschnitt hinzugefügt |
 | 2025-12-09 | (aktuell) | **ExecutionPipeline Runbook v1.1** – Referenz auf `EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md` (v1.1, 2026-ready) in Abschnitt 9 und Cluster 82–85 ergänzt |
+| 2025-12-20 | (aktuell) | **Phase 16A** – Simplified Execution Pipeline for Learning (`src/execution_simple/`) – Standalone learning module mit Gates (PriceSanity, ResearchOnly, LotSize, MinNotional), SimulatedBrokerAdapter, dry-run demo, 16 tests |
+| 2025-12-20 | (aktuell) | **Phase 16B** – Execution Telemetry & Live-Track Bridge – ExecutionEvent schema (intent/order/fill), JsonlExecutionLogger (`logs/execution/<session>.jsonl`), `execution_bridge.py` (timeline + summary), Dashboard widget (`/live/execution/{session_id}`), 17 tests |
 
 ---
 
