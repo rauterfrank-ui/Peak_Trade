@@ -13,6 +13,7 @@ from collections import Counter
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.parent))
 
 from src.utils.md_helpers import ensure_section_insert_at_top, pick_first_existing
+from src.utils.report_paths import get_reports_root, ensure_dir
 
 
 def parse_ts(d):
@@ -48,6 +49,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", default=".", help="Repo root (default: .)")
     ap.add_argument("--out-dir", default="reports/obs/stage1", help="Output dir")
+    ap.add_argument(
+        "--reports-root",
+        default=None,
+        help="Reports root directory (overrides ENV PEAK_REPORTS_DIR and default logic)",
+    )
     ap.add_argument("--max-depth", type=int, default=10, help="Find max depth")
     ap.add_argument("--max-files", type=int, default=8, help="Parse most recent N files")
     ap.add_argument(
@@ -63,8 +69,22 @@ def main():
     args = ap.parse_args()
 
     repo = pathlib.Path(args.repo).resolve()
-    out_dir = (repo / args.out_dir).resolve()
-    out_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Phase 16L: Support --reports-root for Docker/CI use
+    if args.reports_root:
+        # Explicit override via CLI flag
+        base = pathlib.Path(args.reports_root).resolve()
+        out_dir = ensure_dir(base / "obs" / "stage1")
+    else:
+        # Legacy behavior: use --repo and --out-dir (respects PEAK_REPORTS_DIR via get_reports_root)
+        # For backwards compatibility, only use get_reports_root() if out_dir is still the default
+        if args.out_dir == "reports/obs/stage1":
+            # Default case: use smart resolution
+            base = get_reports_root()
+            out_dir = ensure_dir(base / "obs" / "stage1")
+        else:
+            # Custom --out-dir specified: use legacy logic
+            out_dir = ensure_dir(repo / args.out_dir)
 
     now = dt.datetime.now(dt.timezone.utc)
     cut_24h = now - dt.timedelta(hours=24)
