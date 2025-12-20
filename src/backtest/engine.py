@@ -33,6 +33,7 @@ from ..core.regime import (
     summarize_regime_distribution,
 )
 from ..core.peak_config import PeakConfig, load_config
+from ..core.errors import BacktestError, BacktestInvariantError, add_backtest_context
 from ..strategies import load_strategy
 from ..risk import (
     PositionSizer,

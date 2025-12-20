@@ -28,6 +28,8 @@ except ImportError:
             "Benötigt Python 3.11+ (tomllib) oder 'pip install tomli'"
         )
 
+from .errors import ConfigError
+
 
 # Default Config-Pfad (relativ zum Projekt-Root)
 DEFAULT_CONFIG_PATH = Path("config.toml")
@@ -92,12 +94,22 @@ class ConfigRegistry:
     def _load_config(self) -> Dict[str, Any]:
         """Lädt config.toml."""
         if not self.config_path.exists():
-            raise FileNotFoundError(
-                f"Config nicht gefunden: {self.config_path}"
+            raise ConfigError(
+                f"Configuration file not found: {self.config_path}",
+                hint="Create config.toml in project root or set PEAK_TRADE_CONFIG environment variable",
+                context={"config_path": str(self.config_path)}
             )
         
-        with open(self.config_path, "rb") as f:
-            return tomllib.load(f)
+        try:
+            with open(self.config_path, "rb") as f:
+                return tomllib.load(f)
+        except Exception as e:
+            raise ConfigError(
+                f"Failed to parse configuration file: {self.config_path}",
+                hint="Verify TOML syntax is valid. Use a TOML validator or check for common errors (missing quotes, brackets, etc.)",
+                context={"config_path": str(self.config_path)},
+                cause=e
+            )
     
     @property
     def config(self) -> Dict[str, Any]:
@@ -137,13 +149,19 @@ class ConfigRegistry:
             StrategyConfig mit merged Parameters
         
         Raises:
-            KeyError: Wenn Strategie nicht definiert
+            ConfigError: Wenn Strategie nicht definiert
         """
         if name not in self.config.get("strategy", {}):
-            available = ", ".join(self.list_strategies()) or "keine"
-            raise KeyError(
-                f"Strategie '{name}' nicht in config.toml definiert. "
-                f"Verfügbare: {available}"
+            available = self.list_strategies()
+            available_str = ", ".join(available) if available else "none"
+            raise ConfigError(
+                f"Strategy '{name}' not found in configuration",
+                hint=f"Available strategies: [{available_str}]. Check [strategy.{name}] section in config.toml",
+                context={
+                    "requested_strategy": name,
+                    "available_strategies": available,
+                    "config_path": str(self.config_path)
+                }
             )
         
         defaults = self.get_strategy_defaults()

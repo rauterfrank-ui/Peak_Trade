@@ -119,6 +119,7 @@ Peak_Trade ist **strikt modular** aufgebaut. Jede Komponente ist austauschbar un
   - Live-Risk-Limits (Order- und Portfolio-Level)
   - Governance- & Safety-Doku (Checklisten, Readiness, Runbooks)
   - Incident-Drills & Drill-Log
+  - **Comprehensive Error Handling:** Structured error taxonomy with actionable hints ([Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md))
 
 - 🔄 **Resilience & Stability**
   - Circuit Breaker Pattern für alle kritischen Module
