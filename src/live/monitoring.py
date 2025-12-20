@@ -30,6 +30,7 @@ from .run_logging import (
     list_runs as list_run_ids,
     LiveRunMetadata,
 )
+from ..core.resilience_helpers import with_resilience
 
 logger = logging.getLogger(__name__)
 

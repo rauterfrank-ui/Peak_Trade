@@ -13,6 +13,11 @@ from dataclasses import dataclass
 from typing import Iterable, Sequence, Optional, Union
 import numpy as np
 import pandas as pd
+import logging
+
+from ..core.resilience_helpers import with_resilience
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -48,8 +53,10 @@ class RiskLimits:
 
     def __init__(self, config: Optional[RiskLimitsConfig] = None) -> None:
         self.config = config or RiskLimitsConfig()
+        logger.info(f"RiskLimits initialized with config: {self.config}")
 
     @staticmethod
+    @with_resilience("risk", "check_drawdown", use_circuit_breaker=True)
     def check_drawdown(
         equity_curve: Union[Sequence[float], pd.Series],
         max_dd_pct: float,
