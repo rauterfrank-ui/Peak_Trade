@@ -131,6 +131,10 @@ data_dir = "data"
 use_cache = true
 cache_format = "parquet"
 
+# Performance-Settings (siehe config/performance.toml für Details)
+# Multi-level caching, parallel processing, Apple Silicon optimizations
+enable_performance_optimizations = true
+
 # ============================================================================
 # POSITION SIZING
 # ============================================================================

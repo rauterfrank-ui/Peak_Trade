@@ -62,6 +62,12 @@ logs/
 .coverage
 htmlcov/
 
+# Performance cache
+data/cache/
+
+# Benchmark results
+.benchmark_cache/
+
 # Backups
 *.bak
 *.backup
