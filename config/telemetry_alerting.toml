@@ -1,0 +1,126 @@
+# Telemetry Alerting Configuration - Phase 16I
+#
+# Real-time alerting and incident hooks on top of health + trend analysis.
+#
+# Features:
+# - Config-driven (default: disabled)
+# - Dry-run mode (no external calls)
+# - Rule-based evaluation
+# - Dedupe + cooldown logic
+# - Multiple sinks (console, webhook)
+
+[telemetry.alerting]
+# Enable/disable alerting system
+enabled = false
+
+# Dry-run mode: print alerts but don't send to external systems
+dry_run = true
+
+# Default sink: "console" | "webhook"
+default_sink = "console"
+
+# Rate limiting: maximum alerts per run
+max_alerts_per_run = 20
+
+# Default cooldown (seconds) between alerts from same rule
+cooldown_seconds_default = 300  # 5 minutes
+
+# Default deduplication window (seconds) for same alert
+dedupe_window_seconds_default = 900  # 15 minutes
+
+
+# =============================================================================
+# WEBHOOK SINK CONFIGURATION
+# =============================================================================
+
+[telemetry.alerting.webhook]
+# Enable webhook sink (disabled by default for safety)
+enabled = false
+
+# Webhook URL (must be valid HTTP/HTTPS)
+# Example: "https://hooks.example.com/telemetry-alerts"
+url = ""
+
+# Request timeout (seconds)
+timeout = 10
+
+# Optional custom headers (JSON object as string)
+# Example: '{"Authorization": "Bearer YOUR_TOKEN"}'
+headers = ""
+
+
+# =============================================================================
+# ALERT RULES
+# =============================================================================
+
+# Rule: Health check critical
+[telemetry.alerting.rules.health_critical]
+enabled = true
+severity = "critical"
+cooldown_seconds = 300  # 5 minutes
+dedupe_window_seconds = 900  # 15 minutes
+
+# Rule: Degradation detected
+[telemetry.alerting.rules.degradation_detected]
+enabled = true
+severity = "warn"
+cooldown_seconds = 600  # 10 minutes
+dedupe_window_seconds = 1800  # 30 minutes
+
+# Rule: Leading indicator - disk growth
+[telemetry.alerting.rules.leading_indicator_disk_growth]
+enabled = true
+severity = "warn"
+cooldown_seconds = 3600  # 1 hour (long-term trend)
+dedupe_window_seconds = 7200  # 2 hours
+
+# Rule: Parse error rate high
+[telemetry.alerting.rules.parse_error_rate_high]
+enabled = true
+severity = "warn"
+cooldown_seconds = 600  # 10 minutes
+dedupe_window_seconds = 1800  # 30 minutes
+
+
+# =============================================================================
+# PERSISTENCE (OPTIONAL)
+# =============================================================================
+
+[telemetry.alerting.persistence]
+# Enable alert log persistence (JSONL)
+enabled = false
+
+# Alert log file path
+log_path = "logs/telemetry_alerts.jsonl"
+
+# Retention days (reuse existing retention mechanisms if possible)
+retention_days = 30
+
+
+# =============================================================================
+# EXAMPLE: PRODUCTION CONFIGURATION
+# =============================================================================
+
+# To enable alerting in production:
+#
+# 1. Set telemetry.alerting.enabled = true
+# 2. Set telemetry.alerting.dry_run = false
+# 3. Configure webhook:
+#    - Set telemetry.alerting.webhook.enabled = true
+#    - Set telemetry.alerting.webhook.url = "https://your-webhook-url"
+#    - Optional: Add headers for authentication
+# 4. Adjust cooldown/dedupe windows per rule as needed
+# 5. Test with: python scripts/telemetry_alerts.py --dry-run
+# 6. Deploy with: python scripts/telemetry_alerts.py --no-dry-run
+
+# Example production config:
+#
+# [telemetry.alerting]
+# enabled = true
+# dry_run = false
+# default_sink = "webhook"
+#
+# [telemetry.alerting.webhook]
+# enabled = true
+# url = "https://hooks.example.com/telemetry-alerts"
+# headers = '{"Authorization": "Bearer YOUR_SECRET_TOKEN"}'

@@ -1528,6 +1528,40 @@ def create_app() -> FastAPI:
                 detail=f"Failed to load trends: {str(e)}",
             )
 
+    @app.get("/api/telemetry/alerts/latest", tags=["Phase 16I"])
+    async def telemetry_alerts_latest_api(
+        limit: int = Query(50, ge=1, le=500, description="Maximum alerts to return"),
+        severity: Optional[str] = Query(None, description="Filter by severity (info/warn/critical)"),
+    ):
+        """Get latest alerts (Phase 16I)."""
+        try:
+            from src.execution.alerting.persistence import get_global_alert_store
+            
+            store = get_global_alert_store()
+            
+            if severity:
+                alerts = store.get_by_severity(severity, limit=limit)
+            else:
+                alerts = store.get_latest(limit=limit)
+            
+            return {
+                "alerts": [a.to_dict() for a in alerts],
+                "count": len(alerts),
+                "severity_filter": severity,
+            }
+        
+        except ImportError:
+            raise HTTPException(
+                status_code=503,
+                detail="Telemetry alerting module not available",
+            )
+        except Exception as e:
+            logger.error(f"Error loading alerts: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to load alerts: {str(e)}",
+            )
+
     return app
 
 
