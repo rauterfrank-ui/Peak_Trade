@@ -54,6 +54,7 @@ if TYPE_CHECKING:
     from ..live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
     from ..live.run_logging import LiveRunLogger, LiveRunEvent
     from ..orders.testnet_executor import TestnetExchangeOrderExecutor
+    from .telemetry import ExecutionEventEmitter
 
 logger = logging.getLogger(__name__)
 
@@ -419,6 +420,7 @@ class ExecutionPipeline:
         safety_guard: Optional["SafetyGuard"] = None,
         risk_limits: Optional["LiveRiskLimits"] = None,
         run_logger: Optional["LiveRunLogger"] = None,
+        emitter: Optional["ExecutionEventEmitter"] = None,
     ) -> None:
         """
         Initialisiert die ExecutionPipeline.
@@ -431,6 +433,7 @@ class ExecutionPipeline:
             safety_guard: Optional SafetyGuard fuer Safety-Checks (Phase 16A)
             risk_limits: Optional LiveRiskLimits fuer Risk-Checks (Phase 16A)
             run_logger: Optional LiveRunLogger fuer Run-Logging (Phase 16A)
+            emitter: Optional ExecutionEventEmitter fuer Telemetry (Phase 16B)
         """
         self._executor = executor
         self._config = config if config is not None else ExecutionPipelineConfig()
@@ -442,6 +445,9 @@ class ExecutionPipeline:
         self._safety_guard = safety_guard
         self._risk_limits = risk_limits
         self._run_logger = run_logger
+        
+        # Phase 16B: Telemetry
+        self._emitter = emitter
 
     @property
     def config(self) -> ExecutionPipelineConfig:
@@ -457,6 +463,45 @@ class ExecutionPipeline:
     def execution_history(self) -> List[OrderExecutionResult]:
         """Gibt die Historie aller Ausfuehrungen zurueck (Kopie)."""
         return self._execution_history.copy()
+
+    def _emit_event(
+        self,
+        kind: str,
+        symbol: str,
+        session_id: str,
+        payload: Dict[str, Any],
+    ) -> None:
+        """
+        Emit execution event (Phase 16B).
+
+        Args:
+            kind: Event kind (gate/intent/order/fill/error)
+            symbol: Trading symbol
+            session_id: Session ID
+            payload: Event-specific data
+        
+        Note:
+            Uses UTC timestamps (datetime.now(timezone.utc)) for consistency across
+            regions and to avoid timezone ambiguities in logs.
+        """
+        if self._emitter is None:
+            return
+
+        try:
+            from datetime import timezone
+            from .events import ExecutionEvent
+            
+            event = ExecutionEvent(
+                ts=datetime.now(timezone.utc),  # UTC timestamps for Production
+                session_id=session_id,
+                symbol=symbol,
+                mode=self._get_current_environment(),
+                kind=kind,  # type: ignore
+                payload=payload,
+            )
+            self._emitter.emit(event)
+        except Exception as e:
+            logger.warning(f"Failed to emit execution event: {e}")
 
     @classmethod
     def for_paper(
@@ -946,6 +991,20 @@ class ExecutionPipeline:
             >>> if result.is_blocked_by_governance:
             ...     print(f"Governance blockiert: {result.reason}")
         """
+        # Phase 16B: Emit intent event
+        session_id = getattr(intent, "session_id", "default")
+        self._emit_event(
+            kind="intent",
+            symbol=intent.symbol,
+            session_id=session_id,
+            payload={
+                "side": intent.side,
+                "quantity": intent.quantity,
+                "current_price": intent.current_price,
+                "strategy_key": intent.strategy_key,
+            },
+        )
+
         # 1. Input validieren
         if intent.quantity <= 0:
             return ExecutionResult(
@@ -985,11 +1044,42 @@ class ExecutionPipeline:
         client_id = self._generate_client_id(intent.symbol)
         order = intent.to_order_request(client_id=client_id)
 
+        # Phase 16B: Emit order event
+        self._emit_event(
+            kind="order",
+            symbol=intent.symbol,
+            session_id=session_id,
+            payload={
+                "client_id": client_id,
+                "side": order.side,
+                "quantity": order.quantity,
+                "order_type": order.order_type,
+            },
+        )
+
         # 4. Kontext fuer Risk-Check
         context = {"current_price": intent.current_price} if intent.current_price else None
 
         # 5. Durch execute_with_safety() ausfuehren
         result = self.execute_with_safety([order], context=context)
+
+        # Phase 16B: Emit fill events if executed
+        if result.executed_orders:
+            for exec_order in result.executed_orders:
+                if exec_order.fill:  # OrderExecutionResult has 'fill' (singular), not 'fills'
+                    fill = exec_order.fill
+                    self._emit_event(
+                        kind="fill",
+                        symbol=intent.symbol,
+                        session_id=session_id,
+                        payload={
+                            "client_id": exec_order.request.client_id,  # client_id is in request
+                            "filled_quantity": fill.quantity,
+                            "fill_price": fill.price,
+                            "fill_notional": fill.quantity * fill.price,  # Calculate notional
+                            "fill_fee": fill.fee or 0.0,  # fee is optional
+                        },
+                    )
 
         # 6. Result erweitern mit Phase 16A V2 Feldern
         result.environment = env_str
