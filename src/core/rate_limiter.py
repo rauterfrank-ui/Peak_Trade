@@ -25,7 +25,7 @@ Usage:
 import logging
 import threading
 import time
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -259,7 +259,9 @@ class RateLimiter:
             if endpoint_bucket:
                 if not endpoint_bucket.acquire(tokens):
                     # Return the global token since endpoint limit exceeded
-                    self.bucket.tokens += tokens
+                    # Thread-safe: reacquire global bucket lock to restore tokens
+                    with self.bucket.lock:
+                        self.bucket.tokens += tokens
                     self._record_rejection(endpoint)
                     logger.warning(
                         f"RateLimiter '{self.name}' endpoint '{endpoint}' limit exceeded"
@@ -297,7 +299,7 @@ class RateLimiter:
         
         return wait_time
     
-    def get_stats(self, endpoint: Optional[str] = None) -> Dict[str, any]:
+    def get_stats(self, endpoint: Optional[str] = None) -> Dict[str, Any]:
         """
         Get rate limiter statistics.
         

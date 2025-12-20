@@ -222,15 +222,15 @@ async def health_prometheus():
 
 
 def _count_circuit_breakers() -> int:
-    """Count active circuit breakers (placeholder)."""
-    # This would need to be implemented with a registry of circuit breakers
-    return 0
+    """Count active circuit breakers."""
+    from ..core.resilience_helpers import get_all_circuit_breakers
+    return len(get_all_circuit_breakers())
 
 
 def _count_rate_limiters() -> int:
-    """Count active rate limiters (placeholder)."""
-    # This would need to be implemented with a registry of rate limiters
-    return 0
+    """Count active rate limiters."""
+    from ..core.resilience_helpers import get_all_rate_limiters
+    return len(get_all_rate_limiters())
 
 
 # Health check registration helper

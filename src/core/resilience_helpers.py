@@ -57,11 +57,19 @@ def load_resilience_config() -> Dict[str, Any]:
     if _config is not None:
         return _config
     
-    # Try to load config.toml
-    config_path = Path(__file__).resolve().parents[2] / "config.toml"
+    # Try to find config.toml starting from this file location
+    # Search up the directory tree for config.toml
+    current_path = Path(__file__).resolve()
     
-    if not config_path.exists():
-        logger.warning(f"Config file not found at {config_path}, using defaults")
+    # Search up to 5 levels
+    for _ in range(5):
+        current_path = current_path.parent
+        config_path = current_path / "config.toml"
+        if config_path.exists():
+            break
+    else:
+        # Not found, use defaults
+        logger.warning(f"Config file not found, using defaults")
         _config = {
             "resilience": {
                 "circuit_breaker_threshold": 5,
