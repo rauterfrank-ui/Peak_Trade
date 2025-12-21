@@ -47,6 +47,7 @@ Usage:
     if profile:
         print(f"Profile: {profile.id} - {profile.description}")
 """
+
 from __future__ import annotations
 
 import logging
@@ -191,6 +192,7 @@ class ProfileValidationResult:
         errors: Liste von Fehlern
         warnings: Liste von Warnungen
     """
+
     valid: bool
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
@@ -242,8 +244,7 @@ def validate_profile(profile: TestnetSessionProfile) -> ProfileValidationResult:
     valid_timeframes = {"1m", "5m", "15m", "30m", "1h", "4h", "1d", "1w"}
     if profile.timeframe and profile.timeframe not in valid_timeframes:
         warnings.append(
-            f"Unbekannter Timeframe: {profile.timeframe}. "
-            f"Bekannte: {sorted(valid_timeframes)}"
+            f"Unbekannter Timeframe: {profile.timeframe}. Bekannte: {sorted(valid_timeframes)}"
         )
 
     # Warnungen fuer fehlende Limits
@@ -306,24 +307,20 @@ def load_testnet_profiles(cfg: PeakConfig) -> Dict[str, TestnetSessionProfile]:
             validation = validate_profile(profile)
             if not validation.valid:
                 logger.warning(
-                    f"[TESTNET PROFILES] Profil '{profile_id}' ungueltig: "
-                    f"{validation.errors}"
+                    f"[TESTNET PROFILES] Profil '{profile_id}' ungueltig: {validation.errors}"
                 )
                 continue
 
             if validation.warnings:
                 logger.debug(
-                    f"[TESTNET PROFILES] Profil '{profile_id}' Warnungen: "
-                    f"{validation.warnings}"
+                    f"[TESTNET PROFILES] Profil '{profile_id}' Warnungen: {validation.warnings}"
                 )
 
             profiles[profile_id] = profile
             logger.debug(f"[TESTNET PROFILES] Profil '{profile_id}' geladen")
 
         except Exception as e:
-            logger.warning(
-                f"[TESTNET PROFILES] Fehler beim Laden von '{profile_id}': {e}"
-            )
+            logger.warning(f"[TESTNET PROFILES] Fehler beim Laden von '{profile_id}': {e}")
 
     logger.info(f"[TESTNET PROFILES] {len(profiles)} Profile geladen: {list(profiles.keys())}")
     return profiles

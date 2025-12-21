@@ -29,6 +29,7 @@ Usage:
     # Hilfe
     python scripts/run_research_golden_path.py --help
 """
+
 from __future__ import annotations
 
 import argparse
@@ -82,52 +83,96 @@ def golden_path_new_strategy(args: argparse.Namespace) -> int:
     steps = []
 
     # Step 1: Sweep
-    steps.append((
-        [python, str(RESEARCH_CLI), "sweep",
-         "--sweep-name", args.sweep_name,
-         "--config", str(CONFIG_PATH)],
-        "Step 1/5: Running parameter sweep"
-    ))
+    steps.append(
+        (
+            [
+                python,
+                str(RESEARCH_CLI),
+                "sweep",
+                "--sweep-name",
+                args.sweep_name,
+                "--config",
+                str(CONFIG_PATH),
+            ],
+            "Step 1/5: Running parameter sweep",
+        )
+    )
 
     # Step 2: Report
-    steps.append((
-        [python, str(RESEARCH_CLI), "report",
-         "--sweep-name", args.sweep_name,
-         "--format", "both",
-         "--with-plots"],
-        "Step 2/5: Generating sweep report"
-    ))
+    steps.append(
+        (
+            [
+                python,
+                str(RESEARCH_CLI),
+                "report",
+                "--sweep-name",
+                args.sweep_name,
+                "--format",
+                "both",
+                "--with-plots",
+            ],
+            "Step 2/5: Generating sweep report",
+        )
+    )
 
     # Step 3: Walk-Forward
-    steps.append((
-        [python, str(RESEARCH_CLI), "walkforward",
-         "--sweep-name", args.sweep_name,
-         "--top-n", str(args.top_n),
-         "--train-window", args.train_window,
-         "--test-window", args.test_window],
-        "Step 3/5: Walk-forward testing"
-    ))
+    steps.append(
+        (
+            [
+                python,
+                str(RESEARCH_CLI),
+                "walkforward",
+                "--sweep-name",
+                args.sweep_name,
+                "--top-n",
+                str(args.top_n),
+                "--train-window",
+                args.train_window,
+                "--test-window",
+                args.test_window,
+            ],
+            "Step 3/5: Walk-forward testing",
+        )
+    )
 
     # Step 4: Monte-Carlo
-    steps.append((
-        [python, str(RESEARCH_CLI), "montecarlo",
-         "--sweep-name", args.sweep_name,
-         "--config", str(CONFIG_PATH),
-         "--top-n", str(args.top_n),
-         "--num-runs", str(args.mc_runs)],
-        "Step 4/5: Monte-Carlo analysis"
-    ))
+    steps.append(
+        (
+            [
+                python,
+                str(RESEARCH_CLI),
+                "montecarlo",
+                "--sweep-name",
+                args.sweep_name,
+                "--config",
+                str(CONFIG_PATH),
+                "--top-n",
+                str(args.top_n),
+                "--num-runs",
+                str(args.mc_runs),
+            ],
+            "Step 4/5: Monte-Carlo analysis",
+        )
+    )
 
     # Step 5: Profile
-    steps.append((
-        [python, str(PROFILE_CLI),
-         "--strategy-id", args.strategy_id,
-         "--sweep-name", args.sweep_name,
-         "--with-regime",
-         "--with-montecarlo",
-         "--output-format", "both"],
-        "Step 5/5: Generating strategy profile"
-    ))
+    steps.append(
+        (
+            [
+                python,
+                str(PROFILE_CLI),
+                "--strategy-id",
+                args.strategy_id,
+                "--sweep-name",
+                args.sweep_name,
+                "--with-regime",
+                "--with-montecarlo",
+                "--output-format",
+                "both",
+            ],
+            "Step 5/5: Generating strategy profile",
+        )
+    )
 
     # Execute all steps
     success_count = 0
@@ -146,9 +191,13 @@ def golden_path_new_strategy(args: argparse.Namespace) -> int:
     if success_count == len(steps):
         logger.info("")
         logger.info("Next steps:")
-        logger.info(f"  1. Review profile: reports/strategy_profiles/{args.strategy_id}_profile_v1.json")
+        logger.info(
+            f"  1. Review profile: reports/strategy_profiles/{args.strategy_id}_profile_v1.json"
+        )
         logger.info(f"  2. Add tiering entry to config/strategy_tiering.toml")
-        logger.info(f"  3. Run: python -c \"from src.experiments.portfolio_presets import get_strategy_tier; print(get_strategy_tier('{args.strategy_id}'))\"")
+        logger.info(
+            f"  3. Run: python -c \"from src.experiments.portfolio_presets import get_strategy_tier; print(get_strategy_tier('{args.strategy_id}'))\""
+        )
 
     return 0 if success_count == len(steps) else 1
 
@@ -168,32 +217,50 @@ def golden_path_optimize(args: argparse.Namespace) -> int:
     python = sys.executable
 
     cmd = [
-        python, str(RESEARCH_CLI), "pipeline",
-        "--sweep-name", args.sweep_name,
-        "--config", str(CONFIG_PATH),
-        "--format", "both",
+        python,
+        str(RESEARCH_CLI),
+        "pipeline",
+        "--sweep-name",
+        args.sweep_name,
+        "--config",
+        str(CONFIG_PATH),
+        "--format",
+        "both",
         "--with-plots",
-        "--top-n", str(args.top_n),
+        "--top-n",
+        str(args.top_n),
     ]
 
     if args.run_walkforward:
-        cmd.extend([
-            "--run-walkforward",
-            "--train-window", args.train_window,
-            "--test-window", args.test_window,
-        ])
+        cmd.extend(
+            [
+                "--run-walkforward",
+                "--train-window",
+                args.train_window,
+                "--test-window",
+                args.test_window,
+            ]
+        )
 
     if args.run_montecarlo:
-        cmd.extend([
-            "--run-montecarlo",
-            "--mc-num-runs", str(args.mc_runs),
-        ])
+        cmd.extend(
+            [
+                "--run-montecarlo",
+                "--mc-num-runs",
+                str(args.mc_runs),
+            ]
+        )
 
     if args.run_stress:
-        cmd.extend([
-            "--run-stress-tests",
-            "--stress-scenarios", "flash_crash", "high_volatility", "trend_reversal",
-        ])
+        cmd.extend(
+            [
+                "--run-stress-tests",
+                "--stress-scenarios",
+                "flash_crash",
+                "high_volatility",
+                "trend_reversal",
+            ]
+        )
 
     success = run_command(cmd, "Running full optimization pipeline")
 
@@ -240,7 +307,9 @@ def golden_path_portfolio(args: argparse.Namespace) -> int:
         preset_file = presets_dir / f"{args.preset}.toml"
 
         if preset_file.exists():
-            recipe = load_tiered_preset(args.preset, presets_dir=presets_dir, enforce_compliance=False)
+            recipe = load_tiered_preset(
+                args.preset, presets_dir=presets_dir, enforce_compliance=False
+            )
 
             # Determine allowed tiers based on preset name
             if args.preset.startswith("core_plus_aux") or args.preset.startswith("core_aux"):
@@ -274,10 +343,15 @@ def golden_path_portfolio(args: argparse.Namespace) -> int:
 
     # Step 2: Portfolio-Robustness
     cmd = [
-        python, str(RESEARCH_CLI), "portfolio",
-        "--config", str(CONFIG_PATH),
-        "--portfolio-preset", args.preset,
-        "--format", "both",
+        python,
+        str(RESEARCH_CLI),
+        "portfolio",
+        "--config",
+        str(CONFIG_PATH),
+        "--portfolio-preset",
+        args.preset,
+        "--format",
+        "both",
     ]
 
     if args.with_plots:
@@ -293,7 +367,9 @@ def golden_path_portfolio(args: argparse.Namespace) -> int:
     if success:
         logger.info("")
         logger.info("Next steps:")
-        logger.info(f"  1. Review report: reports/portfolio_robustness/{args.preset}_robustness.html")
+        logger.info(
+            f"  1. Review report: reports/portfolio_robustness/{args.preset}_robustness.html"
+        )
         logger.info(f"  2. Check Go/No-Go criteria (Sharpe, MC p5, Stress Min)")
         logger.info(f"  3. If Go: Prepare for Shadow/Testnet")
 
@@ -327,28 +403,42 @@ Examples:
     p1.add_argument("--strategy-id", required=True, help="Strategy ID")
     p1.add_argument("--sweep-name", required=True, help="Sweep name to use")
     p1.add_argument("--top-n", type=int, default=5, help="Top N configs to test (default: 5)")
-    p1.add_argument("--train-window", default="90d", help="Walk-forward train window (default: 90d)")
+    p1.add_argument(
+        "--train-window", default="90d", help="Walk-forward train window (default: 90d)"
+    )
     p1.add_argument("--test-window", default="30d", help="Walk-forward test window (default: 30d)")
     p1.add_argument("--mc-runs", type=int, default=500, help="Monte-Carlo runs (default: 500)")
-    p1.add_argument("--continue-on-error", action="store_true", help="Continue even if a step fails")
+    p1.add_argument(
+        "--continue-on-error", action="store_true", help="Continue even if a step fails"
+    )
 
     # Golden Path 2: optimize
     p2 = subparsers.add_parser("optimize", help="Optimize an existing strategy")
     p2.add_argument("--sweep-name", required=True, help="Sweep name to use")
     p2.add_argument("--top-n", type=int, default=5, help="Top N configs to test (default: 5)")
-    p2.add_argument("--train-window", default="90d", help="Walk-forward train window (default: 90d)")
+    p2.add_argument(
+        "--train-window", default="90d", help="Walk-forward train window (default: 90d)"
+    )
     p2.add_argument("--test-window", default="30d", help="Walk-forward test window (default: 30d)")
     p2.add_argument("--mc-runs", type=int, default=500, help="Monte-Carlo runs (default: 500)")
-    p2.add_argument("--run-walkforward", action="store_true", default=True, help="Run walk-forward testing")
-    p2.add_argument("--run-montecarlo", action="store_true", default=True, help="Run Monte-Carlo analysis")
+    p2.add_argument(
+        "--run-walkforward", action="store_true", default=True, help="Run walk-forward testing"
+    )
+    p2.add_argument(
+        "--run-montecarlo", action="store_true", default=True, help="Run Monte-Carlo analysis"
+    )
     p2.add_argument("--run-stress", action="store_true", default=True, help="Run stress tests")
-    p2.add_argument("--continue-on-error", action="store_true", help="Continue even if a step fails")
+    p2.add_argument(
+        "--continue-on-error", action="store_true", help="Continue even if a step fails"
+    )
 
     # Golden Path 3: portfolio
     p3 = subparsers.add_parser("portfolio", help="Test portfolio robustness")
     p3.add_argument("--preset", required=True, help="Portfolio preset name")
     p3.add_argument("--with-plots", action="store_true", default=True, help="Generate plots")
-    p3.add_argument("--continue-on-error", action="store_true", help="Continue even if a step fails")
+    p3.add_argument(
+        "--continue-on-error", action="store_true", help="Continue even if a step fails"
+    )
 
     args = parser.parse_args()
 

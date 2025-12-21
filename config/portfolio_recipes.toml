@@ -241,4 +241,3 @@ format = "both"
 risk_profile = "aggressive"
 max_drawdown_target = 0.25
 tags = ["v1.1", "aggressive", "high-risk", "high-return"]
-

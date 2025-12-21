@@ -30,6 +30,7 @@ Warnung:
 - Lookahead-Bias bei falscher Implementierung möglich
 - Nur für explorative Research-Analysen verwenden
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -267,14 +268,10 @@ class EhlersCycleFilterStrategy(BaseStrategy):
         """
         # Validierung
         if "close" not in data.columns:
-            raise ValueError(
-                f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}"
-            )
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
         if len(data) < self.cfg.lookback:
-            raise ValueError(
-                f"Brauche mind. {self.cfg.lookback} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {self.cfg.lookback} Bars, habe nur {len(data)}")
 
         # =====================================================================
         # TODO: Ehlers DSP-Filter implementieren
@@ -338,9 +335,7 @@ class EhlersCycleFilterStrategy(BaseStrategy):
         # Placeholder - konstante Periode
         return pd.Series(self.cfg.min_cycle_length, index=series.index)
 
-    def _bandpass_filter(
-        self, series: pd.Series, period: pd.Series, bandwidth: float
-    ) -> pd.Series:
+    def _bandpass_filter(self, series: pd.Series, period: pd.Series, bandwidth: float) -> pd.Series:
         """
         Bandpass Filter zur Isolierung der Cycle-Komponente.
 
@@ -363,9 +358,7 @@ class EhlersCycleFilterStrategy(BaseStrategy):
     def validate(self) -> None:
         """Validiert Parameter."""
         if self.cfg.min_cycle_length < 2:
-            raise ValueError(
-                f"min_cycle_length ({self.cfg.min_cycle_length}) muss >= 2 sein"
-            )
+            raise ValueError(f"min_cycle_length ({self.cfg.min_cycle_length}) muss >= 2 sein")
         if self.cfg.max_cycle_length <= self.cfg.min_cycle_length:
             raise ValueError(
                 f"max_cycle_length ({self.cfg.max_cycle_length}) muss > "
@@ -394,6 +387,7 @@ class EhlersCycleFilterStrategy(BaseStrategy):
 # LEGACY API (Falls benötigt für Backwards Compatibility)
 # =============================================================================
 
+
 def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility.
@@ -410,6 +404,3 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """
     strategy = EhlersCycleFilterStrategy(config=params)
     return strategy.generate_signals(df)
-
-
-

@@ -98,7 +98,7 @@ Datenvielfalt:        100%
 Patch:
   Target: live.api_keys.binance
   Confidence: 0.990 (sehr hoch!)
-  
+
 Erwartet: ❌ REJECTED (Blacklist)
 Aktuell:  ✅ ACCEPTED (Fehler!)
 
@@ -141,9 +141,9 @@ Action: Vor bounded_auto empfohlen
 1. **Blacklist-Implementation (P0)**
    ```python
    # In src/governance/promotion_loop/engine.py
-   
+
    def _apply_blacklist_filter(
-       candidate: PromotionCandidate, 
+       candidate: PromotionCandidate,
        blacklist: List[str]
    ) -> PromotionDecision:
        """Reject candidates that match blacklist patterns."""
@@ -160,7 +160,7 @@ Action: Vor bounded_auto empfohlen
 2. **Bounds-Check-Implementation (P1)**
    ```python
    # In src/governance/promotion_loop/engine.py
-   
+
    def _apply_bounds_filter(
        candidate: PromotionCandidate,
        bounds: AutoApplyBounds
@@ -170,7 +170,7 @@ Action: Vor bounded_auto empfohlen
            old_val = float(candidate.patch.old_value)
            new_val = float(candidate.patch.new_value)
            step = abs(new_val - old_val)
-           
+
            # Check max_step
            if step > bounds.max_step:
                return PromotionDecision(
@@ -178,7 +178,7 @@ Action: Vor bounded_auto empfohlen
                    status=DecisionStatus.REJECTED_BY_POLICY,
                    reasons=[f"Step {step:.3f} exceeds max_step {bounds.max_step}"]
                )
-           
+
            # Check min/max range
            if new_val < bounds.min_value or new_val > bounds.max_value:
                return PromotionDecision(
@@ -189,23 +189,23 @@ Action: Vor bounded_auto empfohlen
        except (ValueError, TypeError):
            # Non-numeric values: Skip bounds check
            pass
-       
+
        return None  # Not rejected
    ```
 
 3. **Tests schreiben**
    ```python
    # In tests/test_promotion_loop_governance_filters.py
-   
+
    def test_blacklist_rejects_sensitive_targets():
        # Test: api_keys should be rejected
        # Test: stop_loss should be rejected
        # Test: max_order_size should be rejected
-   
+
    def test_bounds_rejects_large_steps():
        # Test: leverage 1.0 → 2.5 should be rejected (step > max_step)
        # Test: leverage 1.0 → 1.2 should be accepted (step <= max_step)
-   
+
    def test_bounds_rejects_out_of_range():
        # Test: leverage 3.0 should be rejected (> max_value)
        # Test: leverage 0.5 should be rejected (< min_value)

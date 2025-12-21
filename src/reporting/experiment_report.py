@@ -20,6 +20,7 @@ Usage:
         heatmap_params=("param_rsi_window", "param_lower_threshold"),
     )
 """
+
 from __future__ import annotations
 
 import os
@@ -79,22 +80,26 @@ def summarize_experiment_results(
         for col in metric_cols:
             values = df[col].dropna()
             if len(values) > 0:
-                summary_data.append({
-                    "metric": col.replace("metric_", ""),
-                    "count": len(values),
-                    "mean": values.mean(),
-                    "std": values.std(),
-                    "min": values.min(),
-                    "max": values.max(),
-                    "median": values.median(),
-                    "q25": values.quantile(0.25),
-                    "q75": values.quantile(0.75),
-                })
+                summary_data.append(
+                    {
+                        "metric": col.replace("metric_", ""),
+                        "count": len(values),
+                        "mean": values.mean(),
+                        "std": values.std(),
+                        "min": values.min(),
+                        "max": values.max(),
+                        "median": values.median(),
+                        "q25": values.quantile(0.25),
+                        "q75": values.quantile(0.75),
+                    }
+                )
         results["summary"] = pd.DataFrame(summary_data)
 
     # 2. Top-N Runs
     if sort_metric in df.columns:
-        top_runs = df.nlargest(top_n, sort_metric) if not ascending else df.nsmallest(top_n, sort_metric)
+        top_runs = (
+            df.nlargest(top_n, sort_metric) if not ascending else df.nsmallest(top_n, sort_metric)
+        )
         # Füge Rank hinzu
         top_runs = top_runs.copy()
         top_runs.insert(0, "rank", range(1, len(top_runs) + 1))
@@ -108,13 +113,15 @@ def summarize_experiment_results(
         param_data: List[Dict[str, Any]] = []
         for col in param_cols:
             values = df[col].dropna()
-            param_data.append({
-                "parameter": col.replace("param_", ""),
-                "unique_values": values.nunique(),
-                "min": values.min(),
-                "max": values.max(),
-                "most_common": values.mode().iloc[0] if len(values.mode()) > 0 else None,
-            })
+            param_data.append(
+                {
+                    "parameter": col.replace("param_", ""),
+                    "unique_values": values.nunique(),
+                    "min": values.min(),
+                    "max": values.max(),
+                    "most_common": values.mode().iloc[0] if len(values.mode()) > 0 else None,
+                }
+            )
         results["param_stats"] = pd.DataFrame(param_data)
 
     # 4. Korrelation zwischen Parametern und Metriken
@@ -126,11 +133,13 @@ def summarize_experiment_results(
                 try:
                     corr = df[[p_col, m_col]].dropna().corr().iloc[0, 1]
                     if not pd.isna(corr):
-                        corr_data.append({
-                            "parameter": p_col.replace("param_", ""),
-                            "metric": m_col.replace("metric_", ""),
-                            "correlation": corr,
-                        })
+                        corr_data.append(
+                            {
+                                "parameter": p_col.replace("param_", ""),
+                                "metric": m_col.replace("metric_", ""),
+                                "correlation": corr,
+                            }
+                        )
                 except (ValueError, TypeError):
                     pass
         if corr_data:
@@ -243,7 +252,12 @@ def build_top_runs_section(
         cols = ["rank"]
         cols += [c for c in display_df.columns if c.startswith("param_")]
         # Wichtige Metriken zuerst
-        priority_metrics = ["metric_sharpe", "metric_total_return", "metric_max_drawdown", "metric_win_rate"]
+        priority_metrics = [
+            "metric_sharpe",
+            "metric_total_return",
+            "metric_max_drawdown",
+            "metric_win_rate",
+        ]
         cols += [c for c in priority_metrics if c in display_df.columns]
         # Dann restliche Metriken
         cols += [c for c in display_df.columns if c.startswith("metric_") and c not in cols]
@@ -341,7 +355,9 @@ def build_experiment_report(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Analysiere Ergebnisse
-    summary = summarize_experiment_results(df, top_n=top_n, sort_metric=sort_metric, ascending=ascending)
+    summary = summarize_experiment_results(
+        df, top_n=top_n, sort_metric=sort_metric, ascending=ascending
+    )
     best = find_best_params(df, sort_metric=sort_metric, ascending=ascending)
 
     # Erstelle Report
@@ -365,20 +381,24 @@ def build_experiment_report(
         f"- **Metrics Collected:** {len(metric_cols)}",
         f"- **Sort Metric:** {sort_metric.replace('metric_', '')}",
     ]
-    report.add_section(ReportSection(
-        title="Overview",
-        content_markdown="\n".join(overview_lines),
-    ))
+    report.add_section(
+        ReportSection(
+            title="Overview",
+            content_markdown="\n".join(overview_lines),
+        )
+    )
 
     # 2. Best Parameters
     report.add_section(build_best_params_section(best, title="Best Parameter Combination"))
 
     # 3. Top Runs
     if "top_runs" in summary:
-        report.add_section(build_top_runs_section(
-            summary["top_runs"],
-            title=f"Top {top_n} Runs by {sort_metric.replace('metric_', '').title()}",
-        ))
+        report.add_section(
+            build_top_runs_section(
+                summary["top_runs"],
+                title=f"Top {top_n} Runs by {sort_metric.replace('metric_', '').title()}",
+            )
+        )
 
     # 4. Metric Statistics
     if "summary" in summary:
@@ -394,7 +414,7 @@ def build_experiment_report(
 
     # Regime-Aware Heatmaps (automatisch für regime_aware_* Sweeps)
     is_regime_aware = with_regime_heatmaps or "regime_aware" in title.lower()
-    
+
     if is_regime_aware:
         # Automatische Heatmap-Parameter für Regime-Aware Sweeps
         regime_param_candidates = [
@@ -402,7 +422,7 @@ def build_experiment_report(
             ("param_risk_on_scale", "param_neutral_scale"),
             ("param_neutral_scale", "param_risk_on_scale"),
         ]
-        
+
         for x_param, y_param in regime_param_candidates:
             if x_param in df.columns and y_param in df.columns and sort_metric in df.columns:
                 try:
@@ -492,20 +512,24 @@ def build_experiment_report(
             )
 
     if charts_content:
-        report.add_section(ReportSection(
-            title="Visualizations",
-            content_markdown="\n\n".join(charts_content),
-        ))
+        report.add_section(
+            ReportSection(
+                title="Visualizations",
+                content_markdown="\n\n".join(charts_content),
+            )
+        )
 
     # 7. Correlation Analysis
     if "correlation" in summary and not summary["correlation"].empty:
         corr_df = summary["correlation"].copy()
         corr_df["correlation"] = corr_df["correlation"].apply(lambda x: f"{x:.4f}")
         content = df_to_markdown(corr_df)
-        report.add_section(ReportSection(
-            title="Parameter-Metric Correlations",
-            content_markdown=content,
-        ))
+        report.add_section(
+            ReportSection(
+                title="Parameter-Metric Correlations",
+                content_markdown=content,
+            )
+        )
 
     return report
 

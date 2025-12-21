@@ -8,6 +8,7 @@ Tests für:
 - MonteCarloConfig Validierung
 - Integration mit Stats-Funktionen
 """
+
 from __future__ import annotations
 
 import pytest
@@ -255,8 +256,3 @@ def test_run_monte_carlo_different_seeds(sample_returns):
     tr1 = summary1.metric_distributions["total_return"]
     tr2 = summary2.metric_distributions["total_return"]
     assert not tr1.equals(tr2)
-
-
-
-
-

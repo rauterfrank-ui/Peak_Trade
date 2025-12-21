@@ -25,6 +25,7 @@ Usage:
     # Dry-Run (nur Kombinationen anzeigen)
     python scripts/run_sweep.py --strategy ma_crossover --symbol BTC/EUR --grid ... --dry-run
 """
+
 from __future__ import annotations
 
 import argparse
@@ -149,7 +150,8 @@ Examples:
     )
 
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe",
     )
@@ -224,9 +226,7 @@ def load_parameter_grid(grid_arg: str) -> Dict[str, List[Any]]:
     try:
         return json.loads(grid_arg)
     except json.JSONDecodeError as e:
-        raise ValueError(
-            f"Konnte Grid nicht laden. Weder gültige Datei noch JSON-String: {e}"
-        )
+        raise ValueError(f"Konnte Grid nicht laden. Weder gültige Datei noch JSON-String: {e}")
 
 
 def generate_dummy_ohlcv(
@@ -353,9 +353,9 @@ def print_summary_table(
         reverse=True,
     )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"TOP {min(top_n, len(sorted_results))} ERGEBNISSE (nach Sharpe)")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
 
     header = f"{'#':>3} {'Return':>10} {'Sharpe':>8} {'MaxDD':>10} {'Trades':>7} | Parameter"
     print(header)
@@ -375,9 +375,7 @@ def print_summary_table(
         if len(param_str) > 35:
             param_str = param_str[:32] + "..."
 
-        print(
-            f"{i:>3} {total_ret:>10.2%} {sharpe:>8.2f} {max_dd:>10.2%} {trades:>7} | {param_str}"
-        )
+        print(f"{i:>3} {total_ret:>10.2%} {sharpe:>8.2f} {max_dd:>10.2%} {trades:>7} | {param_str}")
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -482,20 +480,24 @@ def main(argv: Optional[List[str]] = None) -> int:
                 config_path=str(config_path),
             )
 
-            results.append({
-                "params": params,
-                "stats": stats,
-                "run_id": run_id,
-            })
+            results.append(
+                {
+                    "params": params,
+                    "stats": stats,
+                    "run_id": run_id,
+                }
+            )
 
         except Exception as e:
             if args.verbose:
                 print(f"    FEHLER: {e}")
-            results.append({
-                "params": params,
-                "stats": {},
-                "error": str(e),
-            })
+            results.append(
+                {
+                    "params": params,
+                    "stats": {},
+                    "error": str(e),
+                }
+            )
 
     print()  # Newline nach Fortschrittsanzeige
 
@@ -503,9 +505,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     successful = [r for r in results if "error" not in r]
     failed = [r for r in results if "error" in r]
 
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("SWEEP ABGESCHLOSSEN")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
     print(f"  Strategie:   {args.strategy}")
     print(f"  Symbol:      {args.symbol}")
     print(f"  Sweep-Name:  {sweep_name}")
@@ -522,7 +524,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     print("\nNächste Schritte:")
     print(f"  python scripts/list_experiments.py --run-type sweep")
-    print(f"  python scripts/analyze_experiments.py --mode top-runs --run-type sweep --metric sharpe")
+    print(
+        f"  python scripts/analyze_experiments.py --mode top-runs --run-type sweep --metric sharpe"
+    )
 
     return 0
 

@@ -37,6 +37,7 @@ Voraussetzungen:
 
 WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
 """
+
 from __future__ import annotations
 
 import argparse
@@ -96,6 +97,7 @@ def setup_logging(level: str = "INFO") -> logging.Logger:
 @dataclass
 class OrchestrationConfig:
     """Konfiguration fuer den Orchestrator."""
+
     runs_base_dir: Path
     reports_dir: Path
     auto_generate_report: bool
@@ -122,6 +124,7 @@ class OrchestrationConfig:
 @dataclass
 class OrchestrationResult:
     """Ergebnis einer Orchestrierung."""
+
     success: bool
     profile_id: str
     run_id: Optional[str] = None
@@ -174,9 +177,7 @@ class TestnetOrchestrator:
         # Profile laden
         self._profiles = load_testnet_profiles(cfg)
 
-        self._logger.info(
-            f"[ORCHESTRATOR] Initialisiert mit {len(self._profiles)} Profilen"
-        )
+        self._logger.info(f"[ORCHESTRATOR] Initialisiert mit {len(self._profiles)} Profilen")
 
     @property
     def profiles(self) -> Dict[str, TestnetSessionProfile]:
@@ -243,13 +244,16 @@ class TestnetOrchestrator:
             return OrchestrationResult(
                 success=False,
                 profile_id=profile_id,
-                error=f"Profil '{profile_id}' nicht gefunden. "
-                      f"Verfuegbar: {self.list_profiles()}",
+                error=f"Profil '{profile_id}' nicht gefunden. Verfuegbar: {self.list_profiles()}",
                 dry_run=dry_run,
             )
 
         # 2. Overrides anwenden
-        if override_duration is not None or override_max_notional is not None or override_max_trades is not None:
+        if (
+            override_duration is not None
+            or override_max_notional is not None
+            or override_max_trades is not None
+        ):
             overrides = {}
             if override_duration is not None:
                 overrides["duration_minutes"] = override_duration
@@ -264,9 +268,7 @@ class TestnetOrchestrator:
         # 3. Limits pruefen
         check_result = self.check_profile(profile)
         if not check_result.allowed:
-            self._logger.warning(
-                f"[ORCHESTRATOR] Limit-Verletzung: {check_result.reasons}"
-            )
+            self._logger.warning(f"[ORCHESTRATOR] Limit-Verletzung: {check_result.reasons}")
             return OrchestrationResult(
                 success=False,
                 profile_id=profile_id,
@@ -426,20 +428,24 @@ class TestnetOrchestrator:
         # Session-Metriken
         if "session_metrics" in session_summary:
             metrics = session_summary["session_metrics"]
-            lines.extend([
-                f"- **Steps:** {metrics.get('steps', 'N/A')}",
-                f"- **Total Orders:** {metrics.get('total_orders', 'N/A')}",
-                f"- **Filled Orders:** {metrics.get('filled_orders', 'N/A')}",
-                f"- **Rejected Orders:** {metrics.get('rejected_orders', 'N/A')}",
-                f"- **Fill Rate:** {metrics.get('fill_rate', 0):.1%}",
-            ])
+            lines.extend(
+                [
+                    f"- **Steps:** {metrics.get('steps', 'N/A')}",
+                    f"- **Total Orders:** {metrics.get('total_orders', 'N/A')}",
+                    f"- **Filled Orders:** {metrics.get('filled_orders', 'N/A')}",
+                    f"- **Rejected Orders:** {metrics.get('rejected_orders', 'N/A')}",
+                    f"- **Fill Rate:** {metrics.get('fill_rate', 0):.1%}",
+                ]
+            )
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            f"*Report generiert am {now.strftime('%Y-%m-%d %H:%M:%S UTC')}*",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                f"*Report generiert am {now.strftime('%Y-%m-%d %H:%M:%S UTC')}*",
+            ]
+        )
 
         # Report schreiben
         with open(report_path, "w") as f:
@@ -474,17 +480,17 @@ def cmd_show_budget(cfg: PeakConfig, logger: logging.Logger) -> int:
     print(f"  Runs:      {budget['runs_completed']}")
     print()
     print("Verbleibend:")
-    if budget['remaining_notional'] is not None:
+    if budget["remaining_notional"] is not None:
         print(f"  Notional:  {budget['remaining_notional']:.2f}")
     else:
         print("  Notional:  unbegrenzt")
-    if budget['remaining_trades'] is not None:
+    if budget["remaining_trades"] is not None:
         print(f"  Trades:    {budget['remaining_trades']}")
     else:
         print("  Trades:    unbegrenzt")
     print()
     print("Limits:")
-    limits = budget['limits']
+    limits = budget["limits"]
     print(f"  Max Notional/Tag:  {limits.get('max_notional_per_day', 'N/A')}")
     print(f"  Max Trades/Tag:    {limits.get('max_trades_per_day', 'N/A')}")
     print("=" * 30)

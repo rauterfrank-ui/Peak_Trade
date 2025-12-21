@@ -19,6 +19,7 @@ TOML-Struktur:
     policy_name = "simple_regime_mapping"
     ...
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -33,6 +34,7 @@ RegimeLabel = Literal["breakout", "ranging", "trending", "unknown"]
 # ============================================================================
 # REGIME DETECTOR CONFIG
 # ============================================================================
+
 
 @dataclass
 class RegimeDetectorConfig:
@@ -65,6 +67,7 @@ class RegimeDetectorConfig:
         ...     vol_percentile_breakout=0.8,
         ... )
     """
+
     enabled: bool = False
     detector_name: str = "volatility_breakout"
 
@@ -136,6 +139,7 @@ class RegimeDetectorConfig:
 # STRATEGY SWITCHING CONFIG
 # ============================================================================
 
+
 @dataclass
 class StrategySwitchingConfig:
     """
@@ -161,6 +165,7 @@ class StrategySwitchingConfig:
         ...     },
         ... )
     """
+
     enabled: bool = False
     policy_name: str = "simple_regime_mapping"
 

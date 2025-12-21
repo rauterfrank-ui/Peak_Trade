@@ -20,6 +20,7 @@ Verwendung:
     # ENV-Variable kann auch manuell gesetzt werden:
     PEAK_TRADE_CONFIG_PATH=config/config.test.toml pytest tests/
 """
+
 from __future__ import annotations
 
 import os
@@ -86,6 +87,7 @@ def pytest_configure(config):
     # Config-Caches zuruecksetzen
     try:
         from src.core.config_pydantic import reset_config
+
         reset_config()
     except ImportError:
         pass
@@ -93,18 +95,13 @@ def pytest_configure(config):
     # Warning-Filter für pytest hinzufügen (Phase 68 v1.0 Hardening)
     # Diese werden zur filterwarnings-Liste von pytest hinzugefügt
     config.addinivalue_line(
-        "filterwarnings",
-        "ignore:Downcasting object dtype arrays:FutureWarning"
+        "filterwarnings", "ignore:Downcasting object dtype arrays:FutureWarning"
     )
     config.addinivalue_line(
-        "filterwarnings",
-        "ignore:cannot collect test class:pytest.PytestCollectionWarning"
+        "filterwarnings", "ignore:cannot collect test class:pytest.PytestCollectionWarning"
     )
     # urllib3 LibreSSL Warning (macOS system Python with LibreSSL)
-    config.addinivalue_line(
-        "filterwarnings",
-        "ignore:urllib3 v2 only supports OpenSSL"
-    )
+    config.addinivalue_line("filterwarnings", "ignore:urllib3 v2 only supports OpenSSL")
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -131,6 +128,7 @@ def _set_test_config_env():
     # Config-Caches zuruecksetzen (falls schon geladen)
     try:
         from src.core.config_pydantic import reset_config
+
         reset_config()
     except ImportError:
         pass
@@ -154,6 +152,7 @@ def _reset_config_cache():
     """
     try:
         from src.core.config_pydantic import reset_config
+
         reset_config()
     except ImportError:
         pass
@@ -161,6 +160,7 @@ def _reset_config_cache():
     # Cleanup nach dem Test
     try:
         from src.core.config_pydantic import reset_config
+
         reset_config()
     except ImportError:
         pass

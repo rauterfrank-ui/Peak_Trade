@@ -11,6 +11,7 @@ Features:
 - Robuste Fehlerbehandlung (Eskalations-Fehler blockieren nie Alerts)
 - Unterstützung für mehrere Targets
 """
+
 from __future__ import annotations
 
 import logging
@@ -180,9 +181,7 @@ class EscalationManager:
 
         return escalated_any
 
-    def _severity_meets_target(
-        self, event_severity: str, target_min_severity: str
-    ) -> bool:
+    def _severity_meets_target(self, event_severity: str, target_min_severity: str) -> bool:
         """
         Prüft ob Event-Severity >= Target-Min-Severity.
 
@@ -307,6 +306,3 @@ def build_escalation_manager_from_config(
         critical_severities=critical_severities,
         current_environment=environment,
     )
-
-
-

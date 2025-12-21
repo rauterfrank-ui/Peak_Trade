@@ -31,6 +31,7 @@ Verwendung:
         state = model.step()
         print(f"Regime: {state.regime_id}, Return: {state.return_t:.6f}")
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -158,9 +159,7 @@ class GarchRegimeModelV0:
             required = {"omega", "alpha", "beta", "nu"}
             missing = required - set(params.keys())
             if missing:
-                raise ValueError(
-                    f"Regime {i}: Fehlende Parameter: {missing}"
-                )
+                raise ValueError(f"Regime {i}: Fehlende Parameter: {missing}")
 
             omega = params["omega"]
             alpha = params["alpha"]
@@ -174,27 +173,21 @@ class GarchRegimeModelV0:
             if not 0 <= beta <= 1:
                 raise ValueError(f"Regime {i}: beta muss in [0, 1] sein, ist {beta}")
             if nu <= 2:
-                raise ValueError(
-                    f"Regime {i}: nu muss > 2 sein für endliche Varianz, ist {nu}"
-                )
+                raise ValueError(f"Regime {i}: nu muss > 2 sein für endliche Varianz, ist {nu}")
 
         if len(transition_matrix) != n_regimes:
             raise ValueError(
-                f"transition_matrix hat {len(transition_matrix)} Zeilen, "
-                f"erwartet {n_regimes}"
+                f"transition_matrix hat {len(transition_matrix)} Zeilen, erwartet {n_regimes}"
             )
 
         for i, row in enumerate(transition_matrix):
             if len(row) != n_regimes:
                 raise ValueError(
-                    f"transition_matrix Zeile {i} hat {len(row)} Spalten, "
-                    f"erwartet {n_regimes}"
+                    f"transition_matrix Zeile {i} hat {len(row)} Spalten, erwartet {n_regimes}"
                 )
             row_sum = sum(row)
             if not np.isclose(row_sum, 1.0, atol=1e-6):
-                raise ValueError(
-                    f"transition_matrix Zeile {i} summiert zu {row_sum}, erwartet 1.0"
-                )
+                raise ValueError(f"transition_matrix Zeile {i} summiert zu {row_sum}, erwartet 1.0")
 
     def _compute_initial_variance(self) -> float:
         """Berechnet die initiale Varianz aus dem Start-Regime."""
@@ -273,7 +266,7 @@ class GarchRegimeModelV0:
         nu = params["nu"]
 
         # σ²_t = ω + α * r²_{t-1} + β * σ²_{t-1}
-        self._sigma_sq = omega + alpha * (self._prev_return ** 2) + beta * self._sigma_sq
+        self._sigma_sq = omega + alpha * (self._prev_return**2) + beta * self._sigma_sq
 
         # Numerische Stabilität
         self._sigma_sq = max(self._sigma_sq, 1e-12)

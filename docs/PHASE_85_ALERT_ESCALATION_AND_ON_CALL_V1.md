@@ -92,12 +92,12 @@ class EscalationManager:
     def maybe_escalate(self, event: EscalationEvent) -> bool:
         """
         Prüft ob eskaliert werden soll und führt ggf. durch.
-        
+
         Gates:
         1. enabled = True?
         2. current_environment in enabled_environments?
         3. event.severity in critical_severities?
-        
+
         Returns True wenn eskaliert wurde.
         """
 ```

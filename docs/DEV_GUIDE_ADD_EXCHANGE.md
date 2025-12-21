@@ -267,7 +267,7 @@ from src.orders.base import OrderRequest, OrderSide
 def test_place_order_success(mock_api):
     """Testet erfolgreiche Order-Platzierung."""
     client = MyExchangeClient(api_key="test", api_secret="test", sandbox=True)
-    
+
     order = OrderRequest(
         symbol="BTC/EUR",
         side=OrderSide.BUY,
@@ -365,11 +365,3 @@ Kurze Beschreibung der My Exchange-Integration.
 - `src/data/kraken.py` – Kraken-Data-Adapter als Referenz
 - `src/orders/exchange.py` – Exchange-Order-Execution
 - `docs/LIVE_TESTNET_PREPARATION.md` – Live-/Testnet-Vorbereitung
-
-
-
-
-
-
-
-

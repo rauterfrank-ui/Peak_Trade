@@ -36,5 +36,3 @@ neutral_scale = 0.5
 risk_off_scale = 0.0
 mode = "scale"
 signal_threshold = 0.3
-
-

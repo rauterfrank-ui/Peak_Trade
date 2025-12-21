@@ -17,6 +17,7 @@ Usage:
         write_markdown_report,
     )
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -187,19 +188,11 @@ def summarize_strategies(df: pd.DataFrame) -> List[StrategySummary]:
 
         # Durchschnitte berechnen
         avg_return = (
-            group["total_return"].astype(float).mean()
-            if "total_return" in group.columns
-            else 0.0
+            group["total_return"].astype(float).mean() if "total_return" in group.columns else 0.0
         )
-        avg_sharpe = (
-            group["sharpe"].astype(float).mean()
-            if "sharpe" in group.columns
-            else 0.0
-        )
+        avg_sharpe = group["sharpe"].astype(float).mean() if "sharpe" in group.columns else 0.0
         avg_dd = (
-            group["max_drawdown"].astype(float).mean()
-            if "max_drawdown" in group.columns
-            else 0.0
+            group["max_drawdown"].astype(float).mean() if "max_drawdown" in group.columns else 0.0
         )
 
         # Best/Worst Run
@@ -266,19 +259,11 @@ def summarize_portfolios(df: pd.DataFrame) -> List[PortfolioSummary]:
         run_count = len(group)
 
         avg_return = (
-            group["total_return"].astype(float).mean()
-            if "total_return" in group.columns
-            else 0.0
+            group["total_return"].astype(float).mean() if "total_return" in group.columns else 0.0
         )
-        avg_sharpe = (
-            group["sharpe"].astype(float).mean()
-            if "sharpe" in group.columns
-            else 0.0
-        )
+        avg_sharpe = group["sharpe"].astype(float).mean() if "sharpe" in group.columns else 0.0
         avg_dd = (
-            group["max_drawdown"].astype(float).mean()
-            if "max_drawdown" in group.columns
-            else 0.0
+            group["max_drawdown"].astype(float).mean() if "max_drawdown" in group.columns else 0.0
         )
 
         best_run_id = None
@@ -421,12 +406,8 @@ def write_markdown_report(
         lines.append("*Keine Strategien gefunden.*")
     else:
         # Tabellen-Header
-        lines.append(
-            "| Strategy Key | Runs | Avg Return | Avg Sharpe | Avg MaxDD | Best Run |"
-        )
-        lines.append(
-            "|--------------|------|------------|------------|-----------|----------|"
-        )
+        lines.append("| Strategy Key | Runs | Avg Return | Avg Sharpe | Avg MaxDD | Best Run |")
+        lines.append("|--------------|------|------------|------------|-----------|----------|")
 
         for s in summaries:
             avg_ret = f"{s.avg_total_return:.2%}" if s.avg_total_return else "-"
@@ -476,12 +457,8 @@ def write_portfolio_markdown_report(
     if not summaries:
         lines.append("*Keine Portfolios gefunden.*")
     else:
-        lines.append(
-            "| Portfolio Name | Runs | Avg Return | Avg Sharpe | Avg MaxDD | Best Run |"
-        )
-        lines.append(
-            "|----------------|------|------------|------------|-----------|----------|"
-        )
+        lines.append("| Portfolio Name | Runs | Avg Return | Avg Sharpe | Avg MaxDD | Best Run |")
+        lines.append("|----------------|------|------------|------------|-----------|----------|")
 
         for s in summaries:
             avg_ret = f"{s.avg_total_return:.2%}" if s.avg_total_return else "-"
@@ -752,31 +729,19 @@ def write_top_runs_markdown_report(
     if df.empty:
         lines.append("*Keine Runs gefunden.*")
     else:
-        lines.append(
-            "| Rank | Run ID | Type | Strategy | Return | Sharpe | MaxDD |"
-        )
-        lines.append(
-            "|------|--------|------|----------|--------|--------|-------|"
-        )
+        lines.append("| Rank | Run ID | Type | Strategy | Return | Sharpe | MaxDD |")
+        lines.append("|------|--------|------|----------|--------|--------|-------|")
 
         for rank, (_, row) in enumerate(df.iterrows(), 1):
             run_id = str(row.get("run_id", "-"))[:12]
             run_type = str(row.get("run_type", "-"))[:10]
             strategy = str(row.get("strategy_key", "-"))[:15]
             total_ret = (
-                f"{float(row['total_return']):.2%}"
-                if pd.notna(row.get("total_return"))
-                else "-"
+                f"{float(row['total_return']):.2%}" if pd.notna(row.get("total_return")) else "-"
             )
-            sharpe = (
-                f"{float(row['sharpe']):.2f}"
-                if pd.notna(row.get("sharpe"))
-                else "-"
-            )
+            sharpe = f"{float(row['sharpe']):.2f}" if pd.notna(row.get("sharpe")) else "-"
             max_dd = (
-                f"{float(row['max_drawdown']):.2%}"
-                if pd.notna(row.get("max_drawdown"))
-                else "-"
+                f"{float(row['max_drawdown']):.2%}" if pd.notna(row.get("max_drawdown")) else "-"
             )
 
             lines.append(

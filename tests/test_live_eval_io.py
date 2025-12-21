@@ -44,8 +44,7 @@ def test_read_fills_csv_timezone_aware():
     with tempfile.TemporaryDirectory() as tmpdir:
         csv_path = Path(tmpdir) / "fills.csv"
         csv_path.write_text(
-            "ts,symbol,side,qty,fill_price\n"
-            "2025-01-15T10:00:00Z,BTC/USD,buy,0.1,50000.0\n"
+            "ts,symbol,side,qty,fill_price\n2025-01-15T10:00:00Z,BTC/USD,buy,0.1,50000.0\n"
         )
 
         fills = read_fills_csv(csv_path)
@@ -58,8 +57,7 @@ def test_read_fills_csv_side_validation():
     with tempfile.TemporaryDirectory() as tmpdir:
         csv_path = Path(tmpdir) / "fills.csv"
         csv_path.write_text(
-            "ts,symbol,side,qty,fill_price\n"
-            "2025-01-15T10:00:00Z,BTC/USD,invalid_side,0.1,50000.0\n"
+            "ts,symbol,side,qty,fill_price\n2025-01-15T10:00:00Z,BTC/USD,invalid_side,0.1,50000.0\n"
         )
 
         with pytest.raises(ValueError, match="Invalid side"):
@@ -71,8 +69,7 @@ def test_read_fills_csv_invalid_float():
     with tempfile.TemporaryDirectory() as tmpdir:
         csv_path = Path(tmpdir) / "fills.csv"
         csv_path.write_text(
-            "ts,symbol,side,qty,fill_price\n"
-            "2025-01-15T10:00:00Z,BTC/USD,buy,not_a_number,50000.0\n"
+            "ts,symbol,side,qty,fill_price\n2025-01-15T10:00:00Z,BTC/USD,buy,not_a_number,50000.0\n"
         )
 
         with pytest.raises(ValueError, match="Parse error"):
@@ -83,10 +80,7 @@ def test_read_fills_csv_missing_columns():
     """Test error handling for missing required columns."""
     with tempfile.TemporaryDirectory() as tmpdir:
         csv_path = Path(tmpdir) / "fills.csv"
-        csv_path.write_text(
-            "ts,symbol,side\n"
-            "2025-01-15T10:00:00Z,BTC/USD,buy\n"
-        )
+        csv_path.write_text("ts,symbol,side\n2025-01-15T10:00:00Z,BTC/USD,buy\n")
 
         with pytest.raises(ValueError, match="must contain columns"):
             read_fills_csv(csv_path)

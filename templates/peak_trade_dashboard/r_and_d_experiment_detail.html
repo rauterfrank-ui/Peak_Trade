@@ -1,16 +1,16 @@
 <!-- templates/peak_trade_dashboard/r_and_d_experiment_detail.html -->
-<!-- 
+<!--
   R&D Experiment Detail View v1.0 (Phase 77)
   ==========================================
   Detaillierte Einzelansicht für ein R&D-Experiment.
-  
+
   Features:
   - Vollständige Meta-Daten & Parameter
   - Kern-Metriken mit visueller Hervorhebung
   - Report-Links (HTML, Markdown, Charts)
   - Status-/Run-Type-Badges
   - Zurück-Navigation zur Übersicht
-  
+
   Struktur:
   1. Header mit Breadcrumb & Status
   2. Meta-Info Cards (Experiment, Timing, Konfiguration)
@@ -139,7 +139,7 @@
 
 {# Report Link Button #}
 {% macro report_link(link) %}
-<a 
+<a
   href="{{ link.url }}"
   target="_blank"
   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-slate-200 transition-colors group"
@@ -174,7 +174,7 @@
   {# SECTION 1: Header mit Breadcrumb & Status                               #}
   {# ======================================================================= #}
   <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
-    
+
     {# Breadcrumb #}
     <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
       <a href="/" class="hover:text-slate-300 transition-colors">Dashboard</a>
@@ -183,7 +183,7 @@
       <span>›</span>
       <span class="text-slate-300">{{ experiment.run_id or 'Detail' }}</span>
     </nav>
-    
+
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-3 flex-wrap">
@@ -197,7 +197,7 @@
             </p>
           </div>
         </div>
-        
+
         {# Status & Type Badges #}
         <div class="flex flex-wrap items-center gap-2 mt-4">
           {{ status_badge(experiment.status, "md") }}
@@ -206,11 +206,11 @@
           {{ category_badge(experiment.experiment_category) }}
         </div>
       </div>
-      
+
       {# Actions #}
       <div class="flex flex-wrap items-center gap-2">
-        <a 
-          href="/r_and_d" 
+        <a
+          href="/r_and_d"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
         >
           <span>←</span>
@@ -224,7 +224,7 @@
   {# SECTION 2: Meta-Info Cards                                              #}
   {# ======================================================================= #}
   <section aria-label="Meta-Informationen" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-    
+
     {# Experiment Card #}
     <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
       <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
@@ -235,7 +235,7 @@
       {{ info_row("Symbol", experiment.experiment.symbol) }}
       {{ info_row("Timeframe", experiment.experiment.timeframe) }}
     </div>
-    
+
     {# Timing Card #}
     <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
       <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
@@ -248,7 +248,7 @@
       {{ info_row("Laufzeit", experiment.duration_info.duration_human or '-') }}
       {% endif %}
     </div>
-    
+
     {# Config Card #}
     <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
       <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
@@ -268,32 +268,32 @@
     <h2 class="text-lg font-semibold text-slate-200 mb-3 flex items-center gap-2">
       <span>📊</span> Ergebnisse
     </h2>
-    
+
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
       {# Total Return #}
       {% set return_val = experiment.results.total_return or 0 %}
       {% set return_color = "text-emerald-300" if return_val >= 0 else "text-rose-400" %}
       {{ metric_card("Total Return", return_val, "percent", return_color, "💰") }}
-      
+
       {# Sharpe #}
       {% set sharpe_val = experiment.results.sharpe or 0 %}
       {% set sharpe_color = "text-emerald-300" if sharpe_val >= 1.5 else ("text-amber-300" if sharpe_val >= 0.5 else "text-slate-300") %}
       {{ metric_card("Sharpe Ratio", sharpe_val, "decimal", sharpe_color, "📈") }}
-      
+
       {# Max Drawdown #}
       {% set mdd_val = experiment.results.max_drawdown or 0 %}
       {{ metric_card("Max Drawdown", mdd_val, "percent", "text-amber-300", "📉") }}
-      
+
       {# Total Trades #}
       {% set trades_val = experiment.results.total_trades or 0 %}
       {% set trades_color = "text-emerald-300" if trades_val > 0 else "text-slate-500" %}
       {{ metric_card("Trades", trades_val, "int", trades_color, "🔄") }}
-      
+
       {# Win Rate #}
       {% set wr_val = experiment.results.win_rate or 0 %}
       {% set wr_color = "text-emerald-300" if wr_val >= 0.55 else ("text-slate-300" if wr_val >= 0.45 else "text-rose-400") %}
       {{ metric_card("Win Rate", wr_val, "percent", wr_color, "🎯") }}
-      
+
       {# Profit Factor #}
       {% set pf_val = experiment.results.profit_factor or 0 %}
       {% set pf_color = "text-emerald-300" if pf_val >= 1.5 else ("text-amber-300" if pf_val >= 1.0 else "text-slate-300") %}
@@ -309,7 +309,7 @@
     <h2 class="text-lg font-semibold text-slate-200 mb-3 flex items-center gap-2">
       <span>📎</span> Reports & Charts
     </h2>
-    
+
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
       {% for link in experiment.report_links %}
       {{ report_link(link) }}

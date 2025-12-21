@@ -25,6 +25,7 @@ API-Dokumentation:
   - Demo-Modus mit validate=true (Orders werden validiert, aber nicht ausgefuehrt)
   - Oder externe Testnet-Endpoints (falls verfuegbar)
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -53,7 +54,9 @@ logger = logging.getLogger(__name__)
 class ExchangeAPIError(Exception):
     """Basisklasse fuer Exchange-API-Fehler."""
 
-    def __init__(self, message: str, status_code: Optional[int] = None, response: Optional[Dict] = None):
+    def __init__(
+        self, message: str, status_code: Optional[int] = None, response: Optional[Dict] = None
+    ):
         super().__init__(message)
         self.status_code = status_code
         self.response = response
@@ -61,21 +64,25 @@ class ExchangeAPIError(Exception):
 
 class ExchangeAuthenticationError(ExchangeAPIError):
     """API-Key oder Secret ungueltig oder fehlend."""
+
     pass
 
 
 class ExchangeOrderError(ExchangeAPIError):
     """Fehler bei der Order-Verarbeitung."""
+
     pass
 
 
 class ExchangeRateLimitError(ExchangeAPIError):
     """Rate-Limit erreicht."""
+
     pass
 
 
 class ExchangeNetworkError(ExchangeAPIError):
     """Netzwerkfehler bei API-Call."""
+
     pass
 
 
@@ -284,10 +291,12 @@ class KrakenTestnetClient:
 
         # Session fuer Connection-Pooling
         self._session = requests.Session()
-        self._session.headers.update({
-            "User-Agent": "Peak_Trade/1.0",
-            "Content-Type": "application/x-www-form-urlencoded",
-        })
+        self._session.headers.update(
+            {
+                "User-Agent": "Peak_Trade/1.0",
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+        )
 
         # Rate-Limiting
         self._last_request_time: float = 0.0
@@ -549,9 +558,7 @@ class KrakenTestnetClient:
             )
 
             if self._config.validate_only:
-                logger.info(
-                    f"[KRAKEN TESTNET] Order validiert: descr={response.descr}"
-                )
+                logger.info(f"[KRAKEN TESTNET] Order validiert: descr={response.descr}")
                 return "VALIDATED"
 
             if response.txid:
@@ -611,13 +618,9 @@ class KrakenTestnetClient:
             # Timestamp parsen
             timestamp = None
             if "closetm" in order_data:
-                timestamp = datetime.fromtimestamp(
-                    float(order_data["closetm"]), tz=timezone.utc
-                )
+                timestamp = datetime.fromtimestamp(float(order_data["closetm"]), tz=timezone.utc)
             elif "opentm" in order_data:
-                timestamp = datetime.fromtimestamp(
-                    float(order_data["opentm"]), tz=timezone.utc
-                )
+                timestamp = datetime.fromtimestamp(float(order_data["opentm"]), tz=timezone.utc)
 
             return KrakenOrderStatus(
                 txid=exchange_order_id,
@@ -635,7 +638,9 @@ class KrakenTestnetClient:
         except Exception as e:
             raise ExchangeOrderError(f"Order status query failed: {e}")
 
-    def fetch_order_as_fill(self, exchange_order_id: str, original_order: OrderRequest) -> Optional[OrderFill]:
+    def fetch_order_as_fill(
+        self, exchange_order_id: str, original_order: OrderRequest
+    ) -> Optional[OrderFill]:
         """
         Wandelt Order-Status in ein OrderFill um (wenn ausgefuehrt).
 
@@ -792,7 +797,9 @@ def create_kraken_testnet_client_from_config(
     config = KrakenTestnetConfig(
         base_url=cfg.get(f"{config_prefix}.base_url", "https://api.kraken.com"),
         api_key_env_var=cfg.get(f"{config_prefix}.api_key_env_var", "KRAKEN_TESTNET_API_KEY"),
-        api_secret_env_var=cfg.get(f"{config_prefix}.api_secret_env_var", "KRAKEN_TESTNET_API_SECRET"),
+        api_secret_env_var=cfg.get(
+            f"{config_prefix}.api_secret_env_var", "KRAKEN_TESTNET_API_SECRET"
+        ),
         validate_only=cfg.get(f"{config_prefix}.validate_only", True),
         timeout_seconds=float(cfg.get(f"{config_prefix}.timeout_seconds", 30.0)),
         max_retries=int(cfg.get(f"{config_prefix}.max_retries", 3)),

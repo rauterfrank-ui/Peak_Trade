@@ -27,6 +27,7 @@ Usage:
         --tag optimization-v1 \
         --prefix auto_ma
 """
+
 from __future__ import annotations
 
 import argparse
@@ -72,7 +73,7 @@ Examples:
   python scripts/build_auto_portfolios.py \\
       --mode per-strategy \\
       --output-dir config/portfolios
-        """
+        """,
     )
 
     parser.add_argument(
@@ -80,42 +81,33 @@ Examples:
         type=str,
         default="sharpe",
         choices=["sharpe", "total_return", "cagr"],
-        help="Metric for ranking components (default: sharpe)"
+        help="Metric for ranking components (default: sharpe)",
     )
 
     parser.add_argument(
-        "--min-sharpe",
-        type=float,
-        default=None,
-        help="Minimum Sharpe ratio for inclusion"
+        "--min-sharpe", type=float, default=None, help="Minimum Sharpe ratio for inclusion"
     )
 
     parser.add_argument(
-        "--min-return",
-        type=float,
-        default=None,
-        help="Minimum total return for inclusion"
+        "--min-return", type=float, default=None, help="Minimum total return for inclusion"
     )
 
     parser.add_argument(
         "--max-components",
         type=int,
         default=5,
-        help="Maximum components per portfolio (default: 5)"
+        help="Maximum components per portfolio (default: 5)",
     )
 
     parser.add_argument(
-        "--tag",
-        type=str,
-        default=None,
-        help="Filter on specific tag from sweep/scan runs"
+        "--tag", type=str, default=None, help="Filter on specific tag from sweep/scan runs"
     )
 
     parser.add_argument(
         "--strategy",
         type=str,
         default=None,
-        help="Filter on specific strategy (comma-separated for multiple)"
+        help="Filter on specific strategy (comma-separated for multiple)",
     )
 
     parser.add_argument(
@@ -123,7 +115,7 @@ Examples:
         type=str,
         default="combined",
         choices=["combined", "per-strategy"],
-        help="Generation mode: 'combined' for single portfolio, 'per-strategy' for one per strategy"
+        help="Generation mode: 'combined' for single portfolio, 'per-strategy' for one per strategy",
     )
 
     parser.add_argument(
@@ -131,48 +123,43 @@ Examples:
         type=str,
         default="equal",
         choices=["equal", "metric_weighted"],
-        help="Allocation method for portfolio weights (default: equal)"
+        help="Allocation method for portfolio weights (default: equal)",
     )
 
     parser.add_argument(
         "--initial-equity",
         type=float,
         default=10000.0,
-        help="Initial equity for portfolio (default: 10000.0)"
+        help="Initial equity for portfolio (default: 10000.0)",
     )
 
     parser.add_argument(
         "--prefix",
         type=str,
         default="auto_portfolio",
-        help="Prefix for portfolio names (default: auto_portfolio)"
+        help="Prefix for portfolio names (default: auto_portfolio)",
     )
 
     parser.add_argument(
         "--output-dir",
         type=str,
         default="config/portfolios",
-        help="Output directory for TOML files (default: config/portfolios)"
+        help="Output directory for TOML files (default: config/portfolios)",
     )
 
     parser.add_argument(
         "--include-scans",
         action="store_true",
-        help="Also include market-scan results (backtest-lite mode)"
+        help="Also include market-scan results (backtest-lite mode)",
     )
 
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Only show what would be generated, don't write files"
+        help="Only show what would be generated, don't write files",
     )
 
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        action="store_true",
-        help="Verbose output"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 
     return parser.parse_args(argv)
 
@@ -192,7 +179,9 @@ def main(argv=None) -> int:
         print(f"      Loaded {len(df)} experiments")
     except FileNotFoundError:
         print("      ERROR: No experiments found. Run some sweeps first.")
-        print("      Example: python scripts/run_sweep.py --strategy ma_crossover --grid config/sweeps/ma_crossover.toml")
+        print(
+            "      Example: python scripts/run_sweep.py --strategy ma_crossover --grid config/sweeps/ma_crossover.toml"
+        )
         return 1
 
     # 2. Sweeps/Scans filtern
@@ -207,7 +196,9 @@ def main(argv=None) -> int:
     if df_sweeps.empty:
         print("\n      WARNING: No sweep results found.")
         print("      Run sweeps first to generate portfolio candidates.")
-        print("      Example: python scripts/run_sweep.py --strategy ma_crossover --grid config/sweeps/ma_crossover.toml")
+        print(
+            "      Example: python scripts/run_sweep.py --strategy ma_crossover --grid config/sweeps/ma_crossover.toml"
+        )
         return 1
 
     # Strategie-Filter
@@ -288,7 +279,9 @@ def main(argv=None) -> int:
     if args.dry_run:
         print("  Mode: DRY-RUN (no files written)")
         print("\n  To save these portfolios, run without --dry-run:")
-        print(f"    python scripts/build_auto_portfolios.py {' '.join(sys.argv[1:]).replace('--dry-run', '')}")
+        print(
+            f"    python scripts/build_auto_portfolios.py {' '.join(sys.argv[1:]).replace('--dry-run', '')}"
+        )
     else:
         print(f"  Output directory: {output_dir}")
         print("\n  Next steps:")

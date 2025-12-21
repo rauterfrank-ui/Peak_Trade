@@ -8,6 +8,7 @@ Tests für:
 - Subcommands (orders, portfolio, health)
 - JSON-Output
 """
+
 from __future__ import annotations
 
 import json
@@ -265,13 +266,15 @@ def test_live_ops_orders_json_mode(mock_load_signals, mock_risk_check, capsys, t
     import pandas as pd
 
     # Mock Signals
-    df_signals = pd.DataFrame({
-        "symbol": ["BTC/EUR"],
-        "direction": [1.0],
-        "as_of": ["2025-01-15T10:00:00"],
-        "strategy_key": ["test_strategy"],
-        "run_name": ["test_run"],
-    })
+    df_signals = pd.DataFrame(
+        {
+            "symbol": ["BTC/EUR"],
+            "direction": [1.0],
+            "as_of": ["2025-01-15T10:00:00"],
+            "strategy_key": ["test_strategy"],
+            "run_name": ["test_run"],
+        }
+    )
     mock_load_signals.return_value = df_signals
 
     # Mock Risk-Check
@@ -290,14 +293,20 @@ mode = "testnet"
     )
 
     signals_file = tmp_path / "signals.csv"
-    signals_file.write_text("symbol,direction,as_of,strategy_key,run_name\nBTC/EUR,1.0,2025-01-15T10:00:00,test,test")
+    signals_file.write_text(
+        "symbol,direction,as_of,strategy_key,run_name\nBTC/EUR,1.0,2025-01-15T10:00:00,test,test"
+    )
 
-    exit_code = live_ops.main([
-        "orders",
-        "--signals", str(signals_file),
-        "--config", str(config_file),
-        "--json",
-    ])
+    exit_code = live_ops.main(
+        [
+            "orders",
+            "--signals",
+            str(signals_file),
+            "--config",
+            str(config_file),
+            "--json",
+        ]
+    )
 
     assert exit_code == 0
     captured = capsys.readouterr()
@@ -315,13 +324,15 @@ def test_live_ops_orders_text_mode(mock_load_signals, mock_risk_check, capsys, t
     """Testet dass 'orders' Text-Output erzeugt."""
     import pandas as pd
 
-    df_signals = pd.DataFrame({
-        "symbol": ["BTC/EUR"],
-        "direction": [1.0],
-        "as_of": ["2025-01-15T10:00:00"],
-        "strategy_key": ["test_strategy"],
-        "run_name": ["test_run"],
-    })
+    df_signals = pd.DataFrame(
+        {
+            "symbol": ["BTC/EUR"],
+            "direction": [1.0],
+            "as_of": ["2025-01-15T10:00:00"],
+            "strategy_key": ["test_strategy"],
+            "run_name": ["test_run"],
+        }
+    )
     mock_load_signals.return_value = df_signals
 
     mock_result = MagicMock()
@@ -339,13 +350,19 @@ mode = "testnet"
     )
 
     signals_file = tmp_path / "signals.csv"
-    signals_file.write_text("symbol,direction,as_of,strategy_key,run_name\nBTC/EUR,1.0,2025-01-15T10:00:00,test,test")
+    signals_file.write_text(
+        "symbol,direction,as_of,strategy_key,run_name\nBTC/EUR,1.0,2025-01-15T10:00:00,test,test"
+    )
 
-    exit_code = live_ops.main([
-        "orders",
-        "--signals", str(signals_file),
-        "--config", str(config_file),
-    ])
+    exit_code = live_ops.main(
+        [
+            "orders",
+            "--signals",
+            str(signals_file),
+            "--config",
+            str(config_file),
+        ]
+    )
 
     assert exit_code == 0
     captured = capsys.readouterr()
@@ -377,8 +394,3 @@ def test_live_ops_orders_missing_signals():
     except SystemExit as exc:
         # argparse exits with code 2 for missing required arguments
         assert exc.code == 2
-
-
-
-
-

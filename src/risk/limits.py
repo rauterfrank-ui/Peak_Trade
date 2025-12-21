@@ -13,6 +13,11 @@ from dataclasses import dataclass
 from typing import Iterable, Sequence, Optional, Union
 import numpy as np
 import pandas as pd
+import logging
+
+from ..core.resilience_helpers import with_resilience
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -21,6 +26,7 @@ class RiskLimitsConfig:
     Zentrale Konfiguration für Risiko-Limits.
     Alle Werte in Prozent (z.B. 20.0 für 20%).
     """
+
     max_drawdown_pct: float = 20.0
     max_position_pct: float = 10.0
     daily_loss_limit_pct: float = 5.0
@@ -48,8 +54,10 @@ class RiskLimits:
 
     def __init__(self, config: Optional[RiskLimitsConfig] = None) -> None:
         self.config = config or RiskLimitsConfig()
+        logger.info(f"RiskLimits initialized with config: {self.config}")
 
     @staticmethod
+    @with_resilience("risk", "check_drawdown", use_circuit_breaker=True)
     def check_drawdown(
         equity_curve: Union[Sequence[float], pd.Series],
         max_dd_pct: float,
@@ -202,7 +210,9 @@ class RiskLimits:
             return False
 
         # 3. Position Size Check
-        if not self.check_position_size(new_position_nominal, capital, self.config.max_position_pct):
+        if not self.check_position_size(
+            new_position_nominal, capital, self.config.max_position_pct
+        ):
             return False
 
         return True
@@ -216,6 +226,7 @@ class PortfolioState:
 
     DEPRECATED: Nutze stattdessen check_all() mit direkten Parametern.
     """
+
     equity: float
     peak_equity: float
     daily_start_equity: float
@@ -238,7 +249,9 @@ class RiskLimitChecker:
         self.limits = RiskLimits(config)
         self.config = config
 
-    def check_limits(self, state: PortfolioState, proposed_position_value: float) -> 'LimitCheckResult':
+    def check_limits(
+        self, state: PortfolioState, proposed_position_value: float
+    ) -> "LimitCheckResult":
         """
         Legacy-Methode für Backwards-Compatibility.
 
@@ -248,7 +261,9 @@ class RiskLimitChecker:
         equity_curve = [state.daily_start_equity, state.equity]
 
         # Berechne Daily Returns (vereinfacht)
-        daily_return_pct = ((state.equity - state.daily_start_equity) / state.daily_start_equity) * 100.0
+        daily_return_pct = (
+            (state.equity - state.daily_start_equity) / state.daily_start_equity
+        ) * 100.0
         returns_today_pct = [daily_return_pct] if daily_return_pct < 0 else []
 
         # Check Drawdown
@@ -257,7 +272,7 @@ class RiskLimitChecker:
             drawdown = ((state.equity - state.peak_equity) / state.peak_equity) * 100.0
             return LimitCheckResult(
                 rejected=True,
-                reason=f"Max Drawdown erreicht: {drawdown:.1f}% (Max: {self.config.max_drawdown_pct:.1f}%)"
+                reason=f"Max Drawdown erreicht: {drawdown:.1f}% (Max: {self.config.max_drawdown_pct:.1f}%)",
             )
 
         # Check Daily Loss
@@ -265,20 +280,18 @@ class RiskLimitChecker:
         if not loss_ok:
             return LimitCheckResult(
                 rejected=True,
-                reason=f"Daily Loss Limit erreicht: {abs(daily_return_pct):.1f}% (Max: {self.config.daily_loss_limit_pct:.1f}%)"
+                reason=f"Daily Loss Limit erreicht: {abs(daily_return_pct):.1f}% (Max: {self.config.daily_loss_limit_pct:.1f}%)",
             )
 
         # Check Position Size
         pos_ok = self.limits.check_position_size(
-            proposed_position_value,
-            state.equity,
-            self.config.max_position_pct
+            proposed_position_value, state.equity, self.config.max_position_pct
         )
         if not pos_ok:
             pos_pct = (proposed_position_value / state.equity) * 100.0
             return LimitCheckResult(
                 rejected=True,
-                reason=f"Max Position Size überschritten: {pos_pct:.1f}% (Max: {self.config.max_position_pct:.1f}%)"
+                reason=f"Max Position Size überschritten: {pos_pct:.1f}% (Max: {self.config.max_position_pct:.1f}%)",
             )
 
         return LimitCheckResult(rejected=False, reason="OK")
@@ -287,6 +300,7 @@ class RiskLimitChecker:
 @dataclass
 class LimitCheckResult:
     """Ergebnis einer Limit-Prüfung (Legacy-Support)."""
+
     rejected: bool
     reason: str
     daily_loss: float = 0.0

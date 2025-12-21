@@ -7,6 +7,7 @@ Testet:
 - Strategy Registry-Integration
 - Research-Scripts (Smoke-Tests)
 """
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -115,6 +116,7 @@ class TestTrendFollowingStrategy:
     def test_import(self):
         """Strategy kann importiert werden."""
         from src.strategies.trend_following import TrendFollowingStrategy
+
         assert TrendFollowingStrategy is not None
 
     def test_instantiation_default_params(self):
@@ -219,6 +221,7 @@ class TestMeanReversionStrategy:
     def test_import(self):
         """Strategy kann importiert werden."""
         from src.strategies.mean_reversion import MeanReversionStrategy
+
         assert MeanReversionStrategy is not None
 
     def test_instantiation_default_params(self):
@@ -310,6 +313,7 @@ class TestMyStrategy:
     def test_import(self):
         """Strategy kann importiert werden."""
         from src.strategies.my_strategy import MyStrategy
+
         assert MyStrategy is not None
 
     def test_instantiation_default_params(self):

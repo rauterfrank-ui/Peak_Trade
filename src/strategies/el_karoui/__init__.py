@@ -15,6 +15,7 @@ Category: volatility
 
 Siehe: docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md
 """
+
 from .vol_model import (
     VolRegime,
     ElKarouiVolConfig,

@@ -1,6 +1,7 @@
 """
 Peak_Trade Risk-Module
 """
+
 from .base import BaseRiskModule
 from .position_sizing import (
     FixedFractionalPositionSizer,

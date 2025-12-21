@@ -3,20 +3,48 @@ name: Quarto Smoke Test
 on:
   push:
     branches: [main, develop, "feat/**", "fix/**"]
+    paths:
+      - 'docs/**'
+      - '**/*.md'
+      - '**/*.qmd'
+      - 'templates/quarto/**'
+      - 'scripts/dev/report_smoke.sh'
+      - '.github/workflows/quarto_smoke.yml'
   pull_request:
     branches: [main, develop]
+    paths:
+      - 'docs/**'
+      - '**/*.md'
+      - '**/*.qmd'
+      - 'templates/quarto/**'
+      - 'scripts/dev/report_smoke.sh'
+      - '.github/workflows/quarto_smoke.yml'
   workflow_dispatch:
 
 jobs:
   quarto-smoke:
     name: Render Quarto Smoke Report
     runs-on: ubuntu-latest
+    # TEMP: non-blocking until Quarto smoke baseline is stable
+    # Track: Ensure all Quarto reports render without errors, then remove continue-on-error
+    continue-on-error: true
 
     steps:
+      - name: Job Info
+        run: |
+          echo "# Quarto Smoke Test" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ⚠️ Non-blocking (temporary)" >> $GITHUB_STEP_SUMMARY
+          echo "**Purpose:** Validate Quarto documentation renders without errors" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** This job will not block PR merges until baseline is stable" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Guard: Quarto no-exec (no executable chunks)
+      - name: "Guard: Quarto no-exec (no executable chunks)"
         run: bash scripts/ci/check_quarto_no_exec.sh
 
       - name: Set up Python

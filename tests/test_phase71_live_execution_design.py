@@ -8,6 +8,7 @@ ohne echte Live-Orders zu aktivieren.
 
 Phase 71: Live-Execution-Path existiert als Design/Dry-Run.
 """
+
 from __future__ import annotations
 
 import pytest
@@ -181,9 +182,7 @@ class TestLiveExecutionDesign:
         # Auch mit allen Flags: live_dry_run_mode=True blockt echte Orders
         with pytest.raises(LiveNotImplementedError) as exc_info:
             guard.ensure_may_place_order(is_testnet=False)
-        assert "live_dry_run_mode=True" in str(exc_info.value) or "Phase 71" in str(
-            exc_info.value
-        )
+        assert "live_dry_run_mode=True" in str(exc_info.value) or "Phase 71" in str(exc_info.value)
 
     def test_safety_guard_effective_mode_live_dry_run(self):
         """Test: get_effective_mode() für Live-Dry-Run."""
@@ -339,4 +338,3 @@ class TestLiveExecutionDesign:
         # In Phase 71 sollte dies theoretisch True sein, aber praktisch blockiert
         # durch andere Mechanismen
         assert "theoretisch" in reason.lower() or "phase 71" in reason.lower()
-

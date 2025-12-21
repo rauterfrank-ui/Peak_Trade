@@ -27,7 +27,9 @@ Usage:
 """
 
 import argparse
+import subprocess
 import sys
+import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
@@ -49,6 +51,15 @@ from src.core.experiments import log_backtest_result
 from src.strategies.registry import (
     get_available_strategy_keys,
     create_strategy_from_config,
+)
+from src.experiments.evidence_chain import (
+    ensure_run_dir,
+    write_config_snapshot,
+    write_stats_json,
+    write_equity_csv,
+    write_trades_parquet_optional,
+    write_report_snippet_md,
+    get_optional_tracker,
 )
 
 
@@ -113,7 +124,8 @@ Beispiele:
         help="Optionaler Tag für Registry-Logging (z.B. 'dev-test')",
     )
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe",
     )
@@ -122,6 +134,31 @@ Beispiele:
         type=str,
         default=None,
         help="Pfad zum Speichern des Reports (z.B. results/backtest_2024.html)",
+    )
+    # P1 Evidence Chain arguments
+    parser.add_argument(
+        "--run-id",
+        type=str,
+        default=None,
+        help="Run-ID für Evidence Chain (default: auto-generated UUID)",
+    )
+    parser.add_argument(
+        "--results-dir",
+        type=str,
+        default="results",
+        help="Basis-Verzeichnis für Results (default: results)",
+    )
+    parser.add_argument(
+        "--tracker",
+        type=str,
+        choices=["auto", "null", "mlflow"],
+        default="auto",
+        help="Tracker-Typ (auto=try mlflow/fallback null, null=kein tracking, mlflow=force mlflow)",
+    )
+    parser.add_argument(
+        "--no-report",
+        action="store_true",
+        help="Quarto-Report-Rendering überspringen",
     )
 
     return parser.parse_args()
@@ -256,7 +293,9 @@ def print_summary(
     print("=" * 70)
 
     # Zeitraum
-    print(f"\nZeitraum:   {df.index[0].strftime('%Y-%m-%d')} bis {df.index[-1].strftime('%Y-%m-%d')}")
+    print(
+        f"\nZeitraum:   {df.index[0].strftime('%Y-%m-%d')} bis {df.index[-1].strftime('%Y-%m-%d')}"
+    )
     print(f"Strategie:  {strategy_name}")
     print(f"Bars:       {len(df)}")
 
@@ -315,12 +354,19 @@ def main() -> int:
     """
     args = parse_args()
 
+    # P1 Evidence Chain: Generate run_id
+    run_id = (
+        args.run_id
+        or f"backtest_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+    )
+
     print("\n" + "=" * 70)
     print("  Peak_Trade Backtest Runner")
+    print(f"  Run ID: {run_id}")
     print("=" * 70)
 
     # 1. Config laden
-    print("\n[1/5] Config laden...")
+    print("\n[1/7] Config laden...")
     config_path = Path(args.config)
     if not config_path.exists():
         print(f"\nFEHLER: Config nicht gefunden: {config_path}")
@@ -336,7 +382,7 @@ def main() -> int:
         return 1
 
     # 2. Strategie bestimmen
-    print("\n[2/5] Strategie bestimmen...")
+    print("\n[2/7] Strategie bestimmen...")
     strategy_name = args.strategy or cfg.get("general.active_strategy", "ma_crossover")
     if args.verbose:
         print(f"  Strategie: {strategy_name}")
@@ -349,7 +395,7 @@ def main() -> int:
         print("  Nutze Default-Parameter.")
 
     # 3. Daten laden
-    print("\n[3/5] Daten laden...")
+    print("\n[3/7] Daten laden...")
     try:
         df = load_ohlcv_data(
             data_file=args.data_file,
@@ -365,7 +411,7 @@ def main() -> int:
         return 1
 
     # 4. Backtest ausführen
-    print("\n[4/5] Backtest ausführen...")
+    print("\n[4/7] Backtest ausführen...")
     try:
         # OOP-Position-Sizer und Risk-Manager aus Config erstellen
         position_sizer = build_position_sizer_from_config(cfg)
@@ -407,11 +453,12 @@ def main() -> int:
         print(f"\nFEHLER beim Backtest: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
     # 5. Ergebnis ausgeben
-    print("\n[5/5] Ergebnis ausgeben...")
+    print("\n[5/7] Ergebnis ausgeben...")
     print_summary(
         result=result,
         strategy_name=strategy_name,
@@ -439,7 +486,7 @@ def main() -> int:
     start_date_str = df.index[0].strftime("%Y-%m-%d")
     end_date_str = df.index[-1].strftime("%Y-%m-%d")
 
-    run_id = log_backtest_result(
+    registry_run_id = log_backtest_result(
         result=result,
         strategy_name=strategy_name,
         tag=args.tag,
@@ -449,9 +496,127 @@ def main() -> int:
         end_date=end_date_str,
     )
 
-    print(f"Registry-Run-ID: {run_id}")
+    print(f"Registry-Run-ID: {registry_run_id}")
     if args.tag:
         print(f"Tag: {args.tag}")
+
+    # ============================================================================
+    # P1 Evidence Chain: Write Artifacts
+    # ============================================================================
+    print("\n[6/6] Writing Evidence Chain artifacts...")
+
+    # 1. Ensure run directory
+    run_dir = ensure_run_dir(run_id, base_dir=Path(args.results_dir))
+    print(f"  Run directory: {run_dir}")
+
+    # 2. Get git SHA (if in git repo)
+    git_sha = None
+    try:
+        git_sha = (
+            subprocess.check_output(
+                ["git", "rev-parse", "HEAD"],
+                cwd=PROJECT_ROOT,
+                stderr=subprocess.DEVNULL,
+            )
+            .decode("utf-8")
+            .strip()[:8]
+        )
+    except Exception:
+        pass  # Not in git repo or git not available
+
+    # 3. Write config_snapshot.json
+    meta = {
+        "run_id": run_id,
+        "strategy": strategy_name,
+        "symbol": "BTC/EUR",  # TODO: extract from config or args
+        "git_sha": git_sha,
+        "argv": sys.argv,
+        "stage": "backtest",
+        "runner": "run_backtest.py",
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "data_source": data_source,
+        "start_date": start_date_str,
+        "end_date": end_date_str,
+    }
+    params = strategy_params
+    config_snapshot_path = write_config_snapshot(run_dir, meta, params)
+    print(f"  ✓ {config_snapshot_path.name}")
+
+    # 4. Write stats.json
+    stats_path = write_stats_json(run_dir, result.stats)
+    print(f"  ✓ {stats_path.name}")
+
+    # 5. Write equity.csv
+    equity_data = pd.DataFrame(
+        {
+            "timestamp": result.equity_curve.index.strftime("%Y-%m-%dT%H:%M:%S"),
+            "equity": result.equity_curve.values,
+        }
+    )
+    equity_path = write_equity_csv(run_dir, equity_data)
+    print(f"  ✓ {equity_path.name}")
+
+    # 6. Write trades.parquet (optional)
+    trades_df = None
+    if hasattr(result, "trades") and result.trades is not None and len(result.trades) > 0:
+        trades_df = result.trades
+    trades_path = write_trades_parquet_optional(run_dir, trades_df)
+    if trades_path:
+        print(f"  ✓ {trades_path.name}")
+    else:
+        print(f"  ⊘ trades.parquet (skipped)")
+
+    # 7. Write report_snippet.md
+    summary = {
+        "run_id": run_id,
+        "strategy": strategy_name,
+        "symbol": meta["symbol"],
+        "timestamp": meta["timestamp"],
+        **result.stats,
+    }
+    snippet_path = write_report_snippet_md(run_dir, summary)
+    print(f"  ✓ {snippet_path.name}")
+
+    # 8. Optional: Tracker logging (mlflow)
+    if args.tracker != "null":
+        tracker = get_optional_tracker()
+        try:
+            tracker.log_params(params)
+            tracker.log_metrics(result.stats)
+            tracker.log_artifact(config_snapshot_path)
+            tracker.log_artifact(stats_path)
+            tracker.log_artifact(equity_path)
+            tracker.set_tag("run_id", run_id)
+            tracker.set_tag("stage", "backtest")
+            print(f"  ✓ Tracker logged (type: {type(tracker).__name__})")
+        except Exception as e:
+            if args.tracker == "mlflow":
+                # Force mlflow mode, so fail hard
+                print(f"  ✗ Tracker failed: {e}")
+                return 1
+            else:
+                # Auto mode, graceful degradation
+                print(f"  ⊘ Tracker failed (graceful degradation): {e}")
+
+    # 9. Optional: Render Quarto report
+    if not args.no_report:
+        print("\n[7/7] Rendering Quarto report...")
+        try:
+            render_script = PROJECT_ROOT / "scripts" / "render_last_report.sh"
+            result_code = subprocess.call(
+                ["bash", str(render_script), run_id],
+                cwd=PROJECT_ROOT,
+            )
+            if result_code == 0:
+                print(f"  ✓ Report rendered: {run_dir}/report/backtest.html")
+            else:
+                print(f"  ⊘ Report rendering skipped or failed (exit code {result_code})")
+        except Exception as e:
+            print(f"  ⊘ Report rendering failed: {e}")
+
+    print("\n" + "=" * 70)
+    print("✅ Backtest + Evidence Chain abgeschlossen")
+    print("=" * 70 + "\n")
 
     return 0
 

@@ -15,6 +15,7 @@ Verwendung:
     # Szenarien auflisten
     python scripts/profile_research_and_portfolio.py --list
 """
+
 from __future__ import annotations
 
 import argparse
@@ -268,11 +269,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
-
-
-
-
-
-

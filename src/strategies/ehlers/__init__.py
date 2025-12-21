@@ -17,9 +17,7 @@ Referenzen:
 - "Cybernetic Analysis for Stocks and Futures" (John Ehlers)
 - "Rocket Science for Traders" (John Ehlers)
 """
+
 from .ehlers_cycle_filter_strategy import EhlersCycleFilterStrategy
 
 __all__ = ["EhlersCycleFilterStrategy"]
-
-
-

@@ -46,6 +46,14 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
+      - name: "Stability Smoke Tests (Fast Gate)"
+        id: stability_smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Running fast stability smoke tests (<5s)..."
+          pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
+
       - name: "Smoke: RL v0.1 Contract Test"
         id: rl_v0_1_smoke
         if: runner.os == 'Linux'

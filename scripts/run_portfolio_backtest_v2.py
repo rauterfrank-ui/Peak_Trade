@@ -68,7 +68,7 @@ Examples:
 
   # Mit benutzerdefiniertem Run-Namen
   python scripts/run_portfolio_backtest_v2.py --run-name my_crypto_portfolio
-        """
+        """,
     )
     parser.add_argument(
         "--run-name",
@@ -132,7 +132,7 @@ def load_data_for_symbol(cfg: PeakConfig, symbol: str, n_bars: int = 200) -> pd.
 
     # Start-Zeitpunkt
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation mit symbol-spezifischen Eigenschaften
     if "BTC" in symbol:
@@ -160,19 +160,23 @@ def load_data_for_symbol(cfg: PeakConfig, symbol: str, n_bars: int = 200) -> pd.
     close_prices = base_price + trend + cycle + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * volatility),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
 
-
-def get_portfolio_definition(cfg: PeakConfig) -> Tuple[str, List[str], List[float], float, Dict[str, str]]:
+def get_portfolio_definition(
+    cfg: PeakConfig,
+) -> Tuple[str, List[str], List[float], float, Dict[str, str]]:
     """
     Liest die Portfolio-Definition aus der Config.
 
@@ -250,14 +254,9 @@ def run_single_symbol_backtest(
     strategy_params = {"stop_pct": stop_pct}
 
     # Backtest durchführen
-    engine = BacktestEngine(
-        core_position_sizer=position_sizer,
-        risk_manager=risk_manager
-    )
+    engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
-        df=data,
-        strategy_signal_fn=strategy_signal_fn,
-        strategy_params=strategy_params
+        df=data, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
     )
 
     # Metadaten anreichern
@@ -300,11 +299,11 @@ def build_portfolio_equity(
         eq = res.equity_curve.astype(float)
         if eq.empty:
             raise ValueError(f"Leere Equity-Curve für Symbol {symbol}.")
-        
+
         # Duplikate im Index entfernen (behalte letzten Wert)
         if eq.index.duplicated().any():
-            eq = eq[~eq.index.duplicated(keep='last')]
-        
+            eq = eq[~eq.index.duplicated(keep="last")]
+
         # Normalisieren auf Startwert
         norm_eq = eq / eq.iloc[0]
         equity_frames[symbol] = norm_eq
@@ -326,7 +325,6 @@ def build_portfolio_equity(
     portfolio_equity = initial_equity * portfolio_norm
     portfolio_equity.name = "portfolio_equity"
     return portfolio_equity
-
 
 
 def aggregate_regime_distribution(
@@ -369,34 +367,38 @@ def print_portfolio_summary(
 ) -> None:
     """Druckt eine formatierte Portfolio-Zusammenfassung."""
 
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print(f"PORTFOLIO BACKTEST SUMMARY – {portfolio_name.upper()}")
-    print("="*80)
+    print("=" * 80)
 
     print("\n📊 PORTFOLIO ALLOCATION")
-    print("-"*80)
-    print(f"{'Symbol':<15} {'Gewicht':<10} {'Return':<12} {'Sharpe':<10} {'Max DD':<12} {'Trades':<8}")
-    print("-"*80)
+    print("-" * 80)
+    print(
+        f"{'Symbol':<15} {'Gewicht':<10} {'Return':<12} {'Sharpe':<10} {'Max DD':<12} {'Trades':<8}"
+    )
+    print("-" * 80)
 
     for symbol, weight in zip(symbols, weights):
         res = symbol_results.get(symbol)
         if res:
-            ret = res.stats.get('total_return', 0.0)
-            sharpe = res.stats.get('sharpe', 0.0)
-            max_dd = res.stats.get('max_drawdown', 0.0)
-            trades = res.stats.get('total_trades', 0)
-            print(f"{symbol:<15} {weight:>8.1%}   {ret:>9.2%}   {sharpe:>8.2f}   {max_dd:>9.2%}   {trades:>6}")
+            ret = res.stats.get("total_return", 0.0)
+            sharpe = res.stats.get("sharpe", 0.0)
+            max_dd = res.stats.get("max_drawdown", 0.0)
+            trades = res.stats.get("total_trades", 0)
+            print(
+                f"{symbol:<15} {weight:>8.1%}   {ret:>9.2%}   {sharpe:>8.2f}   {max_dd:>9.2%}   {trades:>6}"
+            )
 
-    print("-"*80)
+    print("-" * 80)
 
     print("\n💼 PORTFOLIO PERFORMANCE")
-    print("-"*80)
+    print("-" * 80)
     print(f"  Total Return:     {portfolio_stats.get('total_return', 0.0):>8.2%}")
     print(f"  CAGR:             {portfolio_stats.get('cagr', 0.0):>8.2%}")
     print(f"  Max Drawdown:     {portfolio_stats.get('max_drawdown', 0.0):>8.2%}")
     print(f"  Sharpe Ratio:     {portfolio_stats.get('sharpe', 0.0):>8.2f}")
 
-    print("\n" + "="*80 + "\n")
+    print("\n" + "=" * 80 + "\n")
 
 
 def main(argv: List[str] | None = None) -> None:
@@ -404,7 +406,7 @@ def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
 
     print("\n🚀 Peak_Trade Multi-Asset Portfolio Backtest")
-    print("="*70)
+    print("=" * 70)
 
     # Config laden
     print("\n⚙️  Lade Konfiguration...")
@@ -418,7 +420,9 @@ def main(argv: List[str] | None = None) -> None:
 
     # Portfolio-Definition laden
     try:
-        portfolio_name, symbols, weights, initial_equity, symbol_strategies = get_portfolio_definition(cfg)
+        portfolio_name, symbols, weights, initial_equity, symbol_strategies = (
+            get_portfolio_definition(cfg)
+        )
     except ValueError as e:
         print(f"\n❌ FEHLER bei Portfolio-Definition: {e}")
         return
@@ -441,7 +445,7 @@ def main(argv: List[str] | None = None) -> None:
 
     # Backtests pro Symbol durchführen
     print(f"\n🔄 Starte Backtests für {len(symbols)} Symbole...")
-    print("-"*70)
+    print("-" * 70)
 
     symbol_results: Dict[str, BacktestResult] = {}
 
@@ -466,16 +470,17 @@ def main(argv: List[str] | None = None) -> None:
             continue
 
         # Kurze Zusammenfassung
-        print(f"  ✅ Return: {res.stats.get('total_return', 0.0):>7.2%} | "
-              f"Sharpe: {res.stats.get('sharpe', 0.0):>6.2f} | "
-              f"Trades: {res.stats.get('total_trades', 0):>4}")
+        print(
+            f"  ✅ Return: {res.stats.get('total_return', 0.0):>7.2%} | "
+            f"Sharpe: {res.stats.get('sharpe', 0.0):>6.2f} | "
+            f"Trades: {res.stats.get('total_trades', 0):>4}"
+        )
 
         symbol_results[symbol] = res
 
     if not symbol_results:
         print("\n❌ Keine Symbol-Resultate vorhanden – Portfolio-Backtest abgebrochen.")
         return
-
 
     # Portfolio-Equity berechnen
     print("\n📊 Berechne Portfolio-Equity...")
@@ -510,9 +515,7 @@ def main(argv: List[str] | None = None) -> None:
         "initial_equity": initial_equity,
         "global_strategy_key": global_strategy_key,
         "regime_distribution": portfolio_regime_dist,
-        "symbols_stats": {
-            symbol: res.stats for symbol, res in symbol_results.items()
-        },
+        "symbols_stats": {symbol: res.stats for symbol, res in symbol_results.items()},
         "symbols_regimes": {
             symbol: res.metadata.get("regime_distribution", {})
             for symbol, res in symbol_results.items()

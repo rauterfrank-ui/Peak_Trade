@@ -8,6 +8,7 @@ Testet:
 - FileNotifier-Schreiben
 - CombinedNotifier-Kombination
 """
+
 from __future__ import annotations
 
 import pytest
@@ -396,10 +397,12 @@ class TestCombinedNotifier:
         from src.notifications.combined import CombinedNotifier
 
         log_path = tmp_path / "alerts.log"
-        combined = CombinedNotifier([
-            ConsoleNotifier(),
-            FileNotifier(log_path),
-        ])
+        combined = CombinedNotifier(
+            [
+                ConsoleNotifier(),
+                FileNotifier(log_path),
+            ]
+        )
 
         alert = Alert(
             level="warning",
@@ -429,10 +432,12 @@ class TestCombinedNotifier:
             def send(self, alert: Alert) -> None:
                 raise RuntimeError("Intentional failure")
 
-        combined = CombinedNotifier([
-            FailingNotifier(),
-            ConsoleNotifier(),
-        ])
+        combined = CombinedNotifier(
+            [
+                FailingNotifier(),
+                ConsoleNotifier(),
+            ]
+        )
 
         alert = Alert(
             level="info",
