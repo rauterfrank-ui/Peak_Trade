@@ -1377,5 +1377,7 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 **Peak_Trade** – Ein produktionsnahes Trading-Research-Framework mit integrierter Safety-First-Architektur.
 
 ## Changelog
+- 2025-12-21: PR #204 – docs(ops): workflow scripts documentation + automation infrastructure (vollständige Dokumentation + Helper-Scripts)
+- 2025-12-21: PR #203 – test(viz): matplotlib-based report/plot tests optional via extras (Core ohne Viz-Dependencies lauffähig)
 - 2025-12-21: PR #201 – Web-UI tests optional via extras (Core ohne Web-Stack lauffähig)
 - 2025-12-21: Workflow Scripts Dokumentation – Ops-Automations-Guide (post_merge_workflow, quick_pr_merge)
