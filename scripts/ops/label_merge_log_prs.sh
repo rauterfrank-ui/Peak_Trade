@@ -59,14 +59,14 @@ TMP="/tmp/peak_trade_merge_log_prs.txt"
 TMP_JSON="/tmp/peak_trade_prs.json"
 rm -f "$TMP" "$TMP_JSON"
 
-# PR Nummern extrahieren (closed, full)
-gh pr list --state closed --limit "$LIMIT" --json number,title > "$TMP_JSON"
+# PR Nummern extrahieren (all states: open + closed)
+gh pr list --state all --limit "$LIMIT" --json number,title > "$TMP_JSON"
 
 "$PYBIN" - <<'PY' > "$TMP"
 import json, re, sys
 from pathlib import Path
 data = json.loads(Path("/tmp/peak_trade_prs.json").read_text())
-rx = re.compile(r"^docs\(ops\): add PR #\d+ merge log", re.I)
+rx = re.compile(r"^docs\(ops\): (?:add|align|update) PR #\d+ merge log", re.I)
 nums = [str(pr["number"]) for pr in data if rx.search(pr.get("title",""))]
 print("\n".join(nums))
 PY
