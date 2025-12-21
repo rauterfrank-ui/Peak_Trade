@@ -76,6 +76,53 @@ case "$MODE" in
 esac
 
 # ─────────────────────────────────────────────────────────────
+# Depth=1 Policy: Refuse to create merge-logs for merge-log PRs
+# ─────────────────────────────────────────────────────────────
+
+ALLOW_RECURSIVE="${ALLOW_RECURSIVE:-0}"
+
+if [ "$ALLOW_RECURSIVE" != "1" ]; then
+  echo "🔍 Checking Depth=1 policy: is PR #${PR} a merge-log PR?"
+
+  # In TEST_MODE: use PEAK_TEST_PR_TITLE env var
+  # In Normal mode: fetch via gh pr view
+  if [ "$TEST_MODE" = "1" ]; then
+    PR_TITLE="${PEAK_TEST_PR_TITLE:-}"
+  else
+    # Fetch PR title (suppress stderr, tolerate failures)
+    PR_TITLE="$(gh pr view "$PR" --json title --jq .title 2>/dev/null || echo "")"
+  fi
+
+  if [ -n "$PR_TITLE" ]; then
+    # Pattern: ^docs\(ops\): add PR #[0-9]+ merge log
+    if echo "$PR_TITLE" | grep -Eq '^docs\(ops\): add PR #[0-9]+ merge log'; then
+      echo ""
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo "⛔ Depth=1 Policy Violation"
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo ""
+      echo "Refusing to generate a merge log for a merge-log PR:"
+      echo "  PR #${PR}: ${PR_TITLE}"
+      echo ""
+      echo "Why: This would create a recursive merge-log PR chain."
+      echo "     Merge-log PRs are documentation-only and do not need their own logs."
+      echo ""
+      echo "Override (if you really need this):"
+      echo "  ALLOW_RECURSIVE=1 make mlog-auto PR=${PR}"
+      echo ""
+      exit 2
+    fi
+  else
+    # Only warn in normal mode (in test mode, empty title is expected if not set)
+    if [ "$TEST_MODE" != "1" ]; then
+      echo "⚠️  Could not fetch PR title (gh pr view failed). Proceeding anyway."
+    fi
+  fi
+
+  echo "✅ Depth=1 check passed: PR #${PR} is not a merge-log PR"
+fi
+
+# ─────────────────────────────────────────────────────────────
 # Test Mode: Output resolved values and exit
 # ─────────────────────────────────────────────────────────────
 
