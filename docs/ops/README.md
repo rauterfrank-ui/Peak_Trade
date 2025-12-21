@@ -198,6 +198,35 @@ To actually apply labels:
 
 ---
 
+## 🧩 Ops Bash Run Helpers (strict/robust)
+
+Für konsistente "fail-fast" vs "warn-only" Semantik in neuen Ops-Skripten nutzen wir:
+- `scripts/ops/run_helpers.sh` (Quelle der Wahrheit, inkl. Quick Reference im Header)
+
+**Default:** strict (fail fast)  
+**Robust mode:** `PT_MODE=robust bash <script>.sh` (optional: `MODE=robust`)
+
+**Minimal usage (copy/paste):**
+```bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=run_helpers.sh
+source "${SCRIPT_DIR}/run_helpers.sh"
+
+pt_require_cmd gh
+pt_section "Strict core"
+pt_run_required "Update main" bash -lc 'git checkout main && git pull --ff-only'
+
+pt_section "Main work"
+pt_run "Do the thing" bash -lc 'echo "work"'
+
+pt_section "Optional extras"
+pt_run_optional "Dry-run labels" bash scripts/ops/label_merge_log_prs.sh
+```
+
+**Hinweis:** Bestehende Skripte (`pr_inventory_full.sh`, `label_merge_log_prs.sh`) verwenden die Helpers **nicht** (bleiben im Original-Stil). Nur für neue Skripte gedacht.
+
+---
+
 ## 📦 Voraussetzungen
 
 ### System-Tools
