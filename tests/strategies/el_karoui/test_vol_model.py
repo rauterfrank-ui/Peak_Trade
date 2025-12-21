@@ -7,6 +7,7 @@ Testet:
 - ElKarouiVolConfig Dataclass
 - ElKarouiVolModel (Vol-Berechnung, Regime-Klassifikation, Scaling)
 """
+
 import pytest
 import numpy as np
 import pandas as pd
@@ -465,9 +466,7 @@ class TestConvenienceFunctions:
         assert isinstance(factor, float)
         assert factor > 0
 
-    def test_get_vol_scaling_factor_custom_params(
-        self, low_vol_returns: pd.Series
-    ) -> None:
+    def test_get_vol_scaling_factor_custom_params(self, low_vol_returns: pd.Series) -> None:
         """Prüft get_vol_scaling_factor mit Custom-Parametern."""
         factor = get_vol_scaling_factor(
             low_vol_returns,
@@ -487,9 +486,7 @@ class TestConvenienceFunctions:
 class TestModelRepr:
     """Tests für __repr__ Methode."""
 
-    def test_model_repr_contains_key_info(
-        self, model_test: ElKarouiVolModel
-    ) -> None:
+    def test_model_repr_contains_key_info(self, model_test: ElKarouiVolModel) -> None:
         """Prüft, dass __repr__ wichtige Infos enthält."""
         repr_str = repr(model_test)
 
@@ -498,6 +495,3 @@ class TestModelRepr:
         assert "window=" in repr_str
         assert "thresholds=" in repr_str
         assert "target=" in repr_str
-
-
-

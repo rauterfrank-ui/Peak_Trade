@@ -30,6 +30,7 @@ Example:
     >>> session.warmup()
     >>> session.run_forever()  # Ctrl+C zum Stoppen
 """
+
 from __future__ import annotations
 
 import logging
@@ -97,6 +98,7 @@ class ShadowPaperSessionMetrics:
         total_pnl: Kumulierter PnL (nur für Tracking)
         current_position: Aktuelle Position
     """
+
     steps: int = 0
     start_time: Optional[datetime] = None
     last_bar_time: Optional[datetime] = None
@@ -137,6 +139,7 @@ ALLOWED_ENVIRONMENT_MODES = {
 
 class EnvironmentNotAllowedError(Exception):
     """Wird geworfen wenn der Environment-Modus nicht erlaubt ist."""
+
     pass
 
 
@@ -271,6 +274,7 @@ class ShadowPaperSession:
 
     def _setup_signal_handlers(self) -> None:
         """Installiert Signal-Handler für graceful shutdown."""
+
         def shutdown_handler(signum: int, frame: Any) -> None:
             logger.info(f"[SHADOW SESSION] Shutdown-Signal empfangen (signal={signum})")
             self._shutdown_requested = True
@@ -295,9 +299,7 @@ class ShadowPaperSession:
         Raises:
             RuntimeError: Bei Warmup-Fehlern
         """
-        logger.info(
-            f"[SHADOW SESSION] Starte Warmup: {self._shadow_cfg.warmup_candles} Candles..."
-        )
+        logger.info(f"[SHADOW SESSION] Starte Warmup: {self._shadow_cfg.warmup_candles} Candles...")
 
         try:
             candles = self._data_source.warmup()
@@ -306,9 +308,7 @@ class ShadowPaperSession:
                 logger.warning("[SHADOW SESSION] Warmup: Keine Candles erhalten")
                 return
 
-            logger.info(
-                f"[SHADOW SESSION] Warmup abgeschlossen: {len(candles)} Candles geladen"
-            )
+            logger.info(f"[SHADOW SESSION] Warmup abgeschlossen: {len(candles)} Candles geladen")
 
             self._is_warmup_done = True
             self._metrics.start_time = datetime.now(timezone.utc)
@@ -367,22 +367,22 @@ class ShadowPaperSession:
         self._metrics.last_bar_time = candle.timestamp
 
         # Event-Daten mit Candle-Infos ergänzen
-        event_data.update({
-            "ts_bar": candle.timestamp,
-            "price": candle.close,
-            "open": candle.open,
-            "high": candle.high,
-            "low": candle.low,
-            "close": candle.close,
-            "volume": candle.volume,
-            "position_size": self._metrics.current_position,
-        })
+        event_data.update(
+            {
+                "ts_bar": candle.timestamp,
+                "price": candle.close,
+                "open": candle.open,
+                "high": candle.high,
+                "low": candle.low,
+                "close": candle.close,
+                "volume": candle.volume,
+                "position_size": self._metrics.current_position,
+            }
+        )
 
         # 2. Preis im Pipeline-Executor aktualisieren
         if hasattr(self._pipeline.executor, "context"):
-            self._pipeline.executor.context.set_price(
-                self._shadow_cfg.symbol, candle.close
-            )
+            self._pipeline.executor.context.set_price(self._shadow_cfg.symbol, candle.close)
 
         # 3. Signal von Strategie generieren
         buffer_df = self._data_source.get_buffer()
@@ -407,10 +407,7 @@ class ShadowPaperSession:
 
         # 4. Bei Signal-Änderung: Order erstellen
         if current_signal == self._last_signal:
-            logger.debug(
-                f"[SHADOW SESSION] Step {step_num}: "
-                f"Signal unverändert ({current_signal})"
-            )
+            logger.debug(f"[SHADOW SESSION] Step {step_num}: Signal unverändert ({current_signal})")
             self._log_step_event(event_data)
             return None
 
@@ -462,8 +459,7 @@ class ShadowPaperSession:
             event_data["risk_allowed"] = False
             event_data["risk_reasons"] = "; ".join(risk_result.reasons)
             logger.warning(
-                f"[SHADOW SESSION] Orders blockiert durch Risk-Limits: "
-                f"{risk_result.reasons}"
+                f"[SHADOW SESSION] Orders blockiert durch Risk-Limits: {risk_result.reasons}"
             )
             # Signal trotzdem aktualisieren, damit wir nicht in Loop geraten
             self._last_signal = current_signal
@@ -585,8 +581,7 @@ class ShadowPaperSession:
         """
         if not self._is_warmup_done:
             raise RuntimeError(
-                "Warmup muss vor run_forever() aufgerufen werden. "
-                "Verwende session.warmup() zuerst."
+                "Warmup muss vor run_forever() aufgerufen werden. Verwende session.warmup() zuerst."
             )
 
         self._is_running = True
@@ -594,8 +589,7 @@ class ShadowPaperSession:
         self._setup_signal_handlers()
 
         logger.info(
-            f"[SHADOW SESSION] Starte Loop: "
-            f"poll_interval={self._shadow_cfg.poll_interval_seconds}s"
+            f"[SHADOW SESSION] Starte Loop: poll_interval={self._shadow_cfg.poll_interval_seconds}s"
         )
 
         try:
@@ -798,9 +792,7 @@ def create_shadow_paper_session(
     )
 
     # Risk-Limits
-    risk_limits = LiveRiskLimits.from_config(
-        cfg, starting_cash=shadow_cfg.start_balance
-    )
+    risk_limits = LiveRiskLimits.from_config(cfg, starting_cash=shadow_cfg.start_balance)
 
     # Run-Logger erstellen (wenn aktiviert)
     run_logger: Optional[LiveRunLogger] = None

@@ -98,7 +98,7 @@ from src.reporting.psychology_heatmap import (
 
 def build_trigger_training_report(stats):
     """Erweitere bestehenden Report mit Psychologie-Heatmap."""
-    
+
     # Scores aus deinen Stats extrahieren
     psychology_raw_rows = [
         {
@@ -111,14 +111,14 @@ def build_trigger_training_report(stats):
         },
         # ... weitere Cluster
     ]
-    
+
     # Rows bauen und serialisieren
     rows = build_psychology_heatmap_rows(psychology_raw_rows)
     heatmap_ctx = serialize_psychology_heatmap_rows(rows)
-    
+
     # Statistiken berechnen (optional)
     stats_ctx = calculate_cluster_statistics(rows)
-    
+
     return {
         # ... dein bisheriger Context
         "psychology_heatmap_rows": heatmap_ctx,
@@ -139,15 +139,15 @@ from src.reporting.psychology_heatmap import (
 @app.route("/trigger_training/psychology")
 def trigger_training_psychology():
     """Zeigt die vollständige Psychologie-Analyse."""
-    
+
     # 1. Daten aus DB / Stats laden
     raw_data = load_psychology_data_from_db()
-    
+
     # 2. Processing
     rows = build_psychology_heatmap_rows(raw_data)
     serialized_rows = serialize_psychology_heatmap_rows(rows)
     stats = calculate_cluster_statistics(rows)
-    
+
     # 3. Meta-Informationen
     meta = {
         "from_date": "2025-01-01",
@@ -155,7 +155,7 @@ def trigger_training_psychology():
         "total_sessions": 42,
         "total_events": 1337,
     }
-    
+
     # 4. Render Template
     return render_template(
         "trigger_training_psychology.html",
@@ -309,24 +309,24 @@ def calculate_custom_scores(events):
         "hesitation": 0.0,
         "rule_break": 0.0,
     })
-    
+
     for event in events:
         cluster = determine_cluster(event)
-        
+
         # FOMO: Trade nach starker Bewegung ohne Setup
         if event.outcome == "FOMO":
             scores[cluster]["fomo"] += 0.5
-        
+
         # Impulsivität: Sehr schnelle Reaktion
         if event.reaction_delay_s < 1.0:
             scores[cluster]["impulsivity"] += 0.2
-        
+
         # Zögern: Signal verpasst
         if event.outcome == "MISSED":
             scores[cluster]["hesitation"] += 0.5
-        
+
         # ... weitere Logik
-    
+
     return scores
 ```
 

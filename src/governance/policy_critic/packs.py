@@ -22,6 +22,7 @@ from .rules import PolicyRule
 @dataclass
 class PolicyPack:
     """A policy pack configuration."""
+
     pack_id: str
     version: str
     description: str
@@ -83,25 +84,25 @@ class PackLoader:
         if not pack_file.exists():
             raise FileNotFoundError(f"Policy pack not found: {pack_file}")
 
-        with open(pack_file, 'r') as f:
+        with open(pack_file, "r") as f:
             data = yaml.safe_load(f)
 
         # Validate required fields
-        required = ['pack_id', 'version', 'description', 'enabled_rules']
+        required = ["pack_id", "version", "description", "enabled_rules"]
         for field in required:
             if field not in data:
                 raise ValueError(f"Policy pack missing required field: {field}")
 
         pack = PolicyPack(
-            pack_id=data['pack_id'],
-            version=data['version'],
-            description=data['description'],
-            enabled_rules=data['enabled_rules'],
-            severity_overrides=data.get('severity_overrides', {}),
-            critical_paths=data.get('critical_paths', []),
-            required_context_keys=data.get('required_context_keys', []),
-            default_action_on_error=data.get('default_action_on_error', 'REVIEW_REQUIRED'),
-            settings=data.get('settings', {}),
+            pack_id=data["pack_id"],
+            version=data["version"],
+            description=data["description"],
+            enabled_rules=data["enabled_rules"],
+            severity_overrides=data.get("severity_overrides", {}),
+            critical_paths=data.get("critical_paths", []),
+            required_context_keys=data.get("required_context_keys", []),
+            default_action_on_error=data.get("default_action_on_error", "REVIEW_REQUIRED"),
+            settings=data.get("settings", {}),
         )
 
         # Validate pack_id matches filename

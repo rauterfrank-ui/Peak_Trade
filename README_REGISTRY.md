@@ -60,13 +60,13 @@ from src.core.config_registry import (
 # Alle aktiven Strategien durchgehen
 for name in get_active_strategies():
     cfg = get_strategy_config(name)
-    
+
     # Zugriff auf Parameter (mit Fallback auf Defaults)
     print(f"{name}:")
     print(f"  Stop: {cfg.get('stop_pct'):.1%}")
     print(f"  Take-Profit: {cfg.get('take_profit_pct'):.1%}")
     print(f"  Position: {cfg.get('position_fraction'):.0%}")
-    
+
     # Alle Parameter als Dict
     all_params = cfg.to_dict()
 ```
@@ -112,10 +112,10 @@ engine = BacktestEngine(initial_cash=10000)
 # Dynamisch alle aktiven Strategien backtesten
 for name in get_active_strategies():
     cfg = get_strategy_config(name)
-    
+
     # Strategie mit merged Config erstellen
     strategy = create_strategy(name, **cfg.to_dict())
-    
+
     # Backtest durchführen
     results = engine.run(strategy, data)
     print(f"✅ {name}: Sharpe={results.sharpe:.2f}")

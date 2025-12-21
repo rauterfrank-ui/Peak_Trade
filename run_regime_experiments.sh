@@ -2,7 +2,7 @@
 # Peak_Trade – Regime-Analyse Experiment-Serie (BTCUSDT)
 # =======================================================
 # Strukturierte Sequenz für 7 Experimente in 3 Phasen
-# 
+#
 # Usage: bash run_regime_experiments.sh
 # Oder: Blockweise ausführen (jede Phase einzeln)
 
@@ -136,9 +136,3 @@ echo ""
 echo "============================================================"
 echo "Alle Experimente abgeschlossen!"
 echo "============================================================"
-
-
-
-
-
-

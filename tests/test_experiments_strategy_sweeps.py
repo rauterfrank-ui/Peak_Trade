@@ -5,6 +5,7 @@ Tests für src/experiments/strategy_sweeps.py (Phase 29)
 
 Testet die vordefinierten Parameter-Sweeps für alle Strategien.
 """
+
 import pytest
 from typing import List
 
@@ -29,6 +30,7 @@ from src.experiments.strategy_sweeps import (
 # ============================================================================
 # MA CROSSOVER SWEEPS TESTS
 # ============================================================================
+
 
 class TestMACrossoverSweeps:
     """Tests für MA Crossover Sweeps."""
@@ -72,6 +74,7 @@ class TestMACrossoverSweeps:
 # BOLLINGER SWEEPS TESTS
 # ============================================================================
 
+
 class TestBollingerSweeps:
     """Tests für Bollinger Sweeps."""
 
@@ -93,6 +96,7 @@ class TestBollingerSweeps:
 # ============================================================================
 # MACD SWEEPS TESTS
 # ============================================================================
+
 
 class TestMACDSweeps:
     """Tests für MACD Sweeps."""
@@ -123,6 +127,7 @@ class TestMACDSweeps:
 # MOMENTUM SWEEPS TESTS
 # ============================================================================
 
+
 class TestMomentumSweeps:
     """Tests für Momentum Sweeps."""
 
@@ -142,6 +147,7 @@ class TestMomentumSweeps:
 # ============================================================================
 # TREND FOLLOWING SWEEPS TESTS
 # ============================================================================
+
 
 class TestTrendFollowingSweeps:
     """Tests für Trend Following Sweeps."""
@@ -168,6 +174,7 @@ class TestTrendFollowingSweeps:
 # VOL BREAKOUT SWEEPS TESTS
 # ============================================================================
 
+
 class TestVolBreakoutSweeps:
     """Tests für Vol Breakout Sweeps."""
 
@@ -183,6 +190,7 @@ class TestVolBreakoutSweeps:
 # ============================================================================
 # MEAN REVERSION SWEEPS TESTS
 # ============================================================================
+
 
 class TestMeanReversionSweeps:
     """Tests für Mean Reversion Sweeps."""
@@ -212,6 +220,7 @@ class TestMeanReversionSweeps:
 # RSI REVERSION SWEEPS TESTS
 # ============================================================================
 
+
 class TestRSIReversionSweeps:
     """Tests für RSI Reversion Sweeps."""
 
@@ -238,6 +247,7 @@ class TestRSIReversionSweeps:
 # DONCHIAN SWEEPS TESTS
 # ============================================================================
 
+
 class TestDonchianSweeps:
     """Tests für Donchian Sweeps."""
 
@@ -253,6 +263,7 @@ class TestDonchianSweeps:
 # ============================================================================
 # GET STRATEGY SWEEPS TESTS
 # ============================================================================
+
 
 class TestGetStrategySweeps:
     """Tests für get_strategy_sweeps()."""
@@ -295,6 +306,7 @@ class TestGetStrategySweeps:
 # REGISTRY TESTS
 # ============================================================================
 
+
 class TestStrategyRegistry:
     """Tests für STRATEGY_SWEEP_REGISTRY."""
 
@@ -328,6 +340,7 @@ class TestStrategyRegistry:
 # ============================================================================
 # PARAM SWEEP VALIDATION TESTS
 # ============================================================================
+
 
 class TestSweepValidation:
     """Tests für Sweep-Validierung."""

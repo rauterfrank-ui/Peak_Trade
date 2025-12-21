@@ -15,6 +15,7 @@ plt = None  # type: ignore
 
 try:
     import matplotlib.pyplot as _plt  # noqa: F401
+
     plt = _plt
     HAS_MATPLOTLIB = True
 except Exception:
@@ -35,6 +36,7 @@ def require_matplotlib() -> None:
 # =========================
 #  Experiments / Registry
 # =========================
+
 
 def load_experiments(path: Path | str | None = None) -> pd.DataFrame:
     """
@@ -106,6 +108,7 @@ def describe_metric_distribution(
 # =========================
 #  Sweep-Analysis
 # =========================
+
 
 def load_sweep(csv_path: Path | str) -> pd.DataFrame:
     """
@@ -193,6 +196,7 @@ def sweep_heatmap(
 #  Portfolio-Analysis
 # =========================
 
+
 def filter_portfolio_runs(
     df: pd.DataFrame,
     portfolio_name: str | None = None,
@@ -230,6 +234,7 @@ def top_portfolios(
 # =========================
 #  Utility
 # =========================
+
 
 def print_headline(title: str) -> None:
     """

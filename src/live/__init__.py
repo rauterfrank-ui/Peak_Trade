@@ -203,14 +203,18 @@ def __getattr__(name: str):
     }
     if name in _safety_exports:
         from . import safety
+
         return getattr(safety, name)
     if name in _shadow_session_exports:
         from . import shadow_session
+
         return getattr(shadow_session, name)
     if name in _monitoring_exports:
         from . import monitoring
+
         return getattr(monitoring, name)
     if name in _alerts_exports:
         from . import alerts
+
         return getattr(alerts, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

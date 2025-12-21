@@ -15,6 +15,7 @@ Features:
 WICHTIG: Dieser Executor schickt KEINE echten Orders.
          Er dient ausschliesslich zur Simulation/Paper-Trading.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -90,9 +91,7 @@ class PaperOrderExecutor:
         """Zugriff auf den Marktkontext."""
         return self._ctx
 
-    def _compute_fill_price(
-        self, order: OrderRequest, market_price: float
-    ) -> float:
+    def _compute_fill_price(self, order: OrderRequest, market_price: float) -> float:
         """
         Berechnet den Fill-Preis inkl. Slippage.
 
@@ -129,9 +128,7 @@ class PaperOrderExecutor:
             return 0.0
         return abs(notional) * (self._ctx.fee_bps / 10000.0)
 
-    def _should_fill_limit_order(
-        self, order: OrderRequest, market_price: float
-    ) -> bool:
+    def _should_fill_limit_order(self, order: OrderRequest, market_price: float) -> bool:
         """
         Prueft ob eine Limit-Order ausgefuehrt werden sollte.
 
@@ -235,9 +232,7 @@ class PaperOrderExecutor:
             },
         )
 
-    def execute_orders(
-        self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    def execute_orders(self, orders: Sequence[OrderRequest]) -> List[OrderExecutionResult]:
         """
         Fuehrt eine Liste von Orders aus.
 
@@ -262,6 +257,7 @@ class PaperOrderExecutor:
 # Stub fuer zukuenftige Exchange-/Testnet-Executor (NICHT implementiert)
 # -----------------------------------------------------------------------------
 
+
 class ExchangeOrderExecutor:
     """
     Stub fuer einen echten Exchange-Order-Executor.
@@ -279,14 +275,8 @@ class ExchangeOrderExecutor:
             "Verwende PaperOrderExecutor fuer Paper-/Sandbox-Trading."
         )
 
-    def execute_orders(
-        self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
-        raise NotImplementedError(
-            "Echte Order-Ausfuehrung ist in dieser Phase nicht verfuegbar."
-        )
+    def execute_orders(self, orders: Sequence[OrderRequest]) -> List[OrderExecutionResult]:
+        raise NotImplementedError("Echte Order-Ausfuehrung ist in dieser Phase nicht verfuegbar.")
 
     def execute_order(self, order: OrderRequest) -> OrderExecutionResult:
-        raise NotImplementedError(
-            "Echte Order-Ausfuehrung ist in dieser Phase nicht verfuegbar."
-        )
+        raise NotImplementedError("Echte Order-Ausfuehrung ist in dieser Phase nicht verfuegbar.")

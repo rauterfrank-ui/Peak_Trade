@@ -54,7 +54,7 @@ Es öffnet sich ein Modal mit verschiedenen Templates:
 
 - **Name:** `Peak Trade TO-MAKE Board`
 - **Description:** `Aufgabenverwaltung und Priorisierung für Peak Trade - Issues #95-103 und weitere`
-- **Visibility:** 
+- **Visibility:**
   - ✅ **Private** (nur für Team-Mitglieder sichtbar)
   - ⬜ Public (öffentlich sichtbar)
 
@@ -532,7 +532,7 @@ pt-add-issue() {
 Empfohlener Workflow:
 
 ```
-📥 Backlog 
+📥 Backlog
   ↓ (Priorisierung)
 🔥 Priorität 1/2/3
   ↓ (Zuweisung + Start)

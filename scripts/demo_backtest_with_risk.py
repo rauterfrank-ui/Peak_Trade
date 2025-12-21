@@ -147,7 +147,9 @@ def demo_aggressive_risk():
 
     # Aggressive Risk-Config
     position_config = PositionSizerConfig(
-        method="fixed_fractional", risk_pct=2.0, max_position_pct=50.0  # 2% Risk  # 50% Position erlaubt
+        method="fixed_fractional",
+        risk_pct=2.0,
+        max_position_pct=50.0,  # 2% Risk  # 50% Position erlaubt
     )
 
     risk_config = RiskLimitsConfig(
@@ -202,7 +204,9 @@ def demo_trade_details():
 
     for i, trade in enumerate(result.trades[:5], 1):
         print(f"Trade {i}:")
-        print(f"  Entry:  {trade.entry_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.entry_price:,.2f}")
+        print(
+            f"  Entry:  {trade.entry_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.entry_price:,.2f}"
+        )
         print(f"  Exit:   {trade.exit_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.exit_price:,.2f}")
         print(f"  Size:   {trade.size:.4f} BTC")
         print(f"  Stop:   ${trade.stop_price:,.2f}")

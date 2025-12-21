@@ -31,6 +31,7 @@ Output:
     - reports/portfolio_robustness/{portfolio_name}/portfolio_robustness_report.md
     - reports/portfolio_robustness/{portfolio_name}/portfolio_robustness_report.html
 """
+
 from __future__ import annotations
 
 import argparse
@@ -81,8 +82,9 @@ def create_dummy_returns(n_bars: int = 500, seed: int = 42) -> pd.Series:
     """
     np.random.seed(seed)
     from datetime import datetime, timedelta
+
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Simuliere Returns (leicht positiv mit Volatilität)
     returns = np.random.normal(0.0005, 0.02, n_bars)  # ~0.05% pro Stunde, 2% Vol
@@ -109,6 +111,7 @@ def build_returns_loader(
     Returns:
         Funktion (strategy_name: str, config_id: str) -> Optional[pd.Series]
     """
+
     def returns_loader(strategy_name: str, config_id: str) -> Optional[pd.Series]:
         """
         Lädt Returns für eine Strategie-Konfiguration.
@@ -159,7 +162,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         default=None,
         help="Name/ID eines vordefinierten Portfolio-Recipes (z.B. rsi_reversion_balanced). "
-             "Wenn gesetzt, werden Default-Werte aus dem Preset geladen.",
+        "Wenn gesetzt, werden Default-Werte aus dem Preset geladen.",
     )
     parser.add_argument(
         "--recipes-config",
@@ -174,7 +177,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         default=None,
         help="Name des Sweeps (z.B. rsi_reversion_basic). "
-             "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
+        "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
     )
     parser.add_argument(
         "--config",
@@ -187,14 +190,14 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         default=None,
         help="Anzahl Top-Konfigurationen für das Portfolio (default: 3). "
-             "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
+        "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
     )
     parser.add_argument(
         "--portfolio-name",
         type=str,
         default=None,
         help="Name des Portfolios (z.B. rsi_portfolio_v1). "
-             "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
+        "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
     )
 
     # Portfolio-Konfiguration
@@ -289,7 +292,7 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["md", "html", "both"],
         default=None,
         help="Output-Format (default: both). "
-             "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
+        "Wird überschrieben, wenn --portfolio-preset gesetzt ist.",
     )
 
     # Dummy-Daten (für Tests)
@@ -307,7 +310,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Weitere Optionen
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -431,7 +435,9 @@ def run_from_args(args: argparse.Namespace) -> int:
 
         # Validierung: weights Länge muss mit top_n übereinstimmen
         if weights and len(weights) != top_n:
-            logger.error(f"Anzahl Gewichte ({len(weights)}) stimmt nicht mit top-n ({top_n}) überein")
+            logger.error(
+                f"Anzahl Gewichte ({len(weights)}) stimmt nicht mit top-n ({top_n}) überein"
+            )
             return 1
 
         # 1. Lade Peak-Config (optional, für zukünftige Erweiterungen)
@@ -460,8 +466,7 @@ def run_from_args(args: argparse.Namespace) -> int:
             if args.use_dummy_data:
                 logger.info("Erstelle Dummy-Konfigurationen für Tests...")
                 top_configs = [
-                    {"config_id": f"config_{i+1}", "rank": i+1}
-                    for i in range(top_n)
+                    {"config_id": f"config_{i + 1}", "rank": i + 1} for i in range(top_n)
                 ]
             else:
                 return 1
@@ -482,9 +487,11 @@ def run_from_args(args: argparse.Namespace) -> int:
             weights = [1.0 / top_n] * top_n
 
         for i, config in enumerate(top_configs):
-            config_id = config.get("config_id", f"config_{i+1}")
+            config_id = config.get("config_id", f"config_{i + 1}")
             # Versuche, Strategie-Name aus config zu extrahieren (für zukünftige Erweiterungen)
-            strategy_name = config.get("strategy_name", sweep_name.split("_")[0] if "_" in sweep_name else "unknown")
+            strategy_name = config.get(
+                "strategy_name", sweep_name.split("_")[0] if "_" in sweep_name else "unknown"
+            )
             components.append(
                 PortfolioComponent(
                     strategy_name=strategy_name,
@@ -577,4 +584,3 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

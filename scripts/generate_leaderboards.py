@@ -102,7 +102,7 @@ def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
 
     print("\n📊 Peak_Trade Leaderboard Generator")
-    print("="*70)
+    print("=" * 70)
 
     metric = args.metric
     ascending = args.ascending

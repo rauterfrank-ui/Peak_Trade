@@ -5,6 +5,7 @@ Tests für src/experiments/topn_promotion.py (Phase 42)
 
 Testet Top-N Promotion Pipeline für Sweep-Ergebnisse.
 """
+
 import pytest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -76,11 +77,13 @@ class TestSelectTopN:
 
     def test_select_top_n_basic(self):
         """Top-N Auswahl funktioniert mit vorhandener Metrik."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14, 21, 7, 14],
-            "metric_sharpe_ratio": [1.5, 2.0, 0.8, 1.2, 1.8],
-            "metric_total_return": [0.1, 0.2, 0.05, 0.08, 0.15],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14, 21, 7, 14],
+                "metric_sharpe_ratio": [1.5, 2.0, 0.8, 1.2, 1.8],
+                "metric_total_return": [0.1, 0.2, 0.05, 0.08, 0.15],
+            }
+        )
 
         config = TopNPromotionConfig(
             sweep_name="test",
@@ -101,10 +104,12 @@ class TestSelectTopN:
 
     def test_select_top_n_fallback(self):
         """Fallback-Metrik wird verwendet, wenn primary fehlt."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14, 21],
-            "metric_total_return": [0.1, 0.2, 0.05],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14, 21],
+                "metric_total_return": [0.1, 0.2, 0.05],
+            }
+        )
 
         config = TopNPromotionConfig(
             sweep_name="test",
@@ -121,11 +126,13 @@ class TestSelectTopN:
 
     def test_select_top_n_filters_nan(self):
         """NaN-Werte werden gefiltert."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14, 21, 7],
-            "metric_sharpe_ratio": [1.5, float("nan"), 0.8, 1.2],
-            "metric_total_return": [0.1, 0.2, 0.05, 0.08],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14, 21, 7],
+                "metric_sharpe_ratio": [1.5, float("nan"), 0.8, 1.2],
+                "metric_total_return": [0.1, 0.2, 0.05, 0.08],
+            }
+        )
 
         config = TopNPromotionConfig(
             sweep_name="test",
@@ -141,10 +148,12 @@ class TestSelectTopN:
 
     def test_select_top_n_no_valid_metric_raises(self):
         """Fehler wenn keine gültige Metrik gefunden wird."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14],
-            "other_col": [1, 2],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14],
+                "other_col": [1, 2],
+            }
+        )
 
         config = TopNPromotionConfig(
             sweep_name="test",
@@ -157,10 +166,12 @@ class TestSelectTopN:
 
     def test_select_top_n_all_nan_raises(self):
         """Fehler wenn alle Werte NaN sind."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14],
-            "metric_sharpe_ratio": [float("nan"), float("nan")],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14],
+                "metric_sharpe_ratio": [float("nan"), float("nan")],
+            }
+        )
 
         config = TopNPromotionConfig(
             sweep_name="test",
@@ -181,14 +192,16 @@ class TestExportTopN:
 
     def test_export_top_n_creates_file(self):
         """TOML-Datei wird erstellt."""
-        df_top = pd.DataFrame({
-            "rank": [1, 2],
-            "param_rsi_period": [14, 7],
-            "param_oversold_level": [30, 20],
-            "metric_sharpe_ratio": [2.0, 1.5],
-            "metric_total_return": [0.2, 0.1],
-            "experiment_id": ["abc123", "def456"],
-        })
+        df_top = pd.DataFrame(
+            {
+                "rank": [1, 2],
+                "param_rsi_period": [14, 7],
+                "param_oversold_level": [30, 20],
+                "metric_sharpe_ratio": [2.0, 1.5],
+                "metric_total_return": [0.2, 0.1],
+                "experiment_id": ["abc123", "def456"],
+            }
+        )
 
         config = TopNPromotionConfig(
             sweep_name="test_sweep",
@@ -204,13 +217,15 @@ class TestExportTopN:
 
     def test_export_top_n_toml_structure(self):
         """TOML-Struktur ist korrekt."""
-        df_top = pd.DataFrame({
-            "rank": [1],
-            "param_rsi_period": [14],
-            "param_oversold_level": [30],
-            "metric_sharpe_ratio": [2.0],
-            "metric_total_return": [0.2],
-        })
+        df_top = pd.DataFrame(
+            {
+                "rank": [1],
+                "param_rsi_period": [14],
+                "param_oversold_level": [30],
+                "metric_sharpe_ratio": [2.0],
+                "metric_total_return": [0.2],
+            }
+        )
 
         config = TopNPromotionConfig(
             sweep_name="test_sweep",
@@ -243,11 +258,13 @@ class TestExportTopN:
 
     def test_export_top_n_creates_directory(self):
         """Output-Verzeichnis wird erstellt falls nicht vorhanden."""
-        df_top = pd.DataFrame({
-            "rank": [1],
-            "param_rsi_period": [14],
-            "metric_sharpe_ratio": [2.0],
-        })
+        df_top = pd.DataFrame(
+            {
+                "rank": [1],
+                "param_rsi_period": [14],
+                "metric_sharpe_ratio": [2.0],
+            }
+        )
 
         config = TopNPromotionConfig(
             sweep_name="test",
@@ -338,10 +355,12 @@ class TestLoadSweepResults:
 
     def test_load_sweep_results_csv(self):
         """CSV-Datei wird geladen."""
-        df_test = pd.DataFrame({
-            "param_rsi_period": [7, 14],
-            "metric_sharpe_ratio": [1.5, 2.0],
-        })
+        df_test = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14],
+                "metric_sharpe_ratio": [1.5, 2.0],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             exp_dir = Path(tmpdir)
@@ -360,10 +379,12 @@ class TestLoadSweepResults:
 
     def test_load_sweep_results_parquet(self):
         """Parquet-Datei wird geladen."""
-        df_test = pd.DataFrame({
-            "param_rsi_period": [7, 14],
-            "metric_sharpe_ratio": [1.5, 2.0],
-        })
+        df_test = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14],
+                "metric_sharpe_ratio": [1.5, 2.0],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             exp_dir = Path(tmpdir)
@@ -392,4 +413,3 @@ class TestLoadSweepResults:
 
             with pytest.raises(FileNotFoundError, match="Keine Ergebnisse gefunden"):
                 load_sweep_results(config)
-

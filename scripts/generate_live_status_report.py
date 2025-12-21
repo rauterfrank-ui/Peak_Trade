@@ -16,6 +16,7 @@ Usage:
       --tag daily \
       --notes-file docs/live_status_notes.md
 """
+
 from __future__ import annotations
 
 import argparse
@@ -31,7 +32,11 @@ ROOT_DIR = CURRENT_DIR.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from src.reporting.live_status_report import LiveStatusInput, build_html_report, build_markdown_report
+from src.reporting.live_status_report import (
+    LiveStatusInput,
+    build_html_report,
+    build_markdown_report,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -194,12 +199,26 @@ def main() -> int:
 
         print("📊 Sammle Health-Daten...", file=sys.stderr)
         health_data = run_subprocess_json(
-            [sys.executable, "scripts/live_ops.py", "health", "--config", str(config_path), "--json"]
+            [
+                sys.executable,
+                "scripts/live_ops.py",
+                "health",
+                "--config",
+                str(config_path),
+                "--json",
+            ]
         )
 
         print("📊 Sammle Portfolio-Daten...", file=sys.stderr)
         portfolio_data = run_subprocess_json(
-            [sys.executable, "scripts/live_ops.py", "portfolio", "--config", str(config_path), "--json"]
+            [
+                sys.executable,
+                "scripts/live_ops.py",
+                "portfolio",
+                "--config",
+                str(config_path),
+                "--json",
+            ]
         )
 
         # 3. Notes laden (optional)
@@ -260,11 +279,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
-
-
-
-
-
-

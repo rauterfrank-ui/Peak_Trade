@@ -28,6 +28,7 @@ Usage:
     # Operator-Guidance abrufen:
     guidance = get_operator_guidance(result.risk_status)
 """
+
 from __future__ import annotations
 
 import logging
@@ -231,18 +232,14 @@ def format_risk_alert_message(
         lines.append(f"{icon} Live-Risk {label} – Limit(s) verletzt, Orders blockiert")
     elif result.severity.value == "warning":
         # Zähle WARNING-Details
-        warn_count = sum(
-            1 for d in result.limit_details if d.severity.value == "warning"
-        )
+        warn_count = sum(1 for d in result.limit_details if d.severity.value == "warning")
         lines.append(f"{icon} Live-Risk {label} – {warn_count} Limit(s) im Warnbereich")
     else:
         lines.append(f"{icon} Live-Risk {label} – Alle Limits OK")
 
     # Details (nur nicht-OK)
     if include_details:
-        non_ok_details = [
-            d for d in result.limit_details if d.severity.value != "ok"
-        ]
+        non_ok_details = [d for d in result.limit_details if d.severity.value != "ok"]
 
         if non_ok_details:
             for i, detail in enumerate(non_ok_details[:max_details]):
@@ -551,12 +548,8 @@ class RiskAlertFormatter:
         guidance = get_operator_guidance(result.risk_status)
 
         # Zähle Probleme
-        warn_count = sum(
-            1 for d in result.limit_details if d.severity.value == "warning"
-        )
-        breach_count = sum(
-            1 for d in result.limit_details if d.severity.value == "breach"
-        )
+        warn_count = sum(1 for d in result.limit_details if d.severity.value == "warning")
+        breach_count = sum(1 for d in result.limit_details if d.severity.value == "breach")
 
         if breach_count > 0:
             return (
@@ -633,9 +626,7 @@ def trigger_risk_pipeline_alert(
 
         if result.severity.value == "breach":
             # Zähle Breaches
-            breach_count = sum(
-                1 for d in result.limit_details if d.severity.value == "breach"
-            )
+            breach_count = sum(1 for d in result.limit_details if d.severity.value == "breach")
             breached_limits = [
                 d.limit_name for d in result.limit_details if d.severity.value == "breach"
             ]
@@ -646,9 +637,7 @@ def trigger_risk_pipeline_alert(
             body += f"\n\nOrders werden blockiert (allowed={result.allowed})."
         else:
             # Warning
-            warn_count = sum(
-                1 for d in result.limit_details if d.severity.value == "warning"
-            )
+            warn_count = sum(1 for d in result.limit_details if d.severity.value == "warning")
             warned_limits = [
                 d.limit_name for d in result.limit_details if d.severity.value == "warning"
             ]

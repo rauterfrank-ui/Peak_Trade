@@ -32,6 +32,7 @@ Example:
     ...         # ... process ...
     ...         logger.log_event(event)
 """
+
 from __future__ import annotations
 
 import json
@@ -71,6 +72,7 @@ class ShadowPaperLoggingConfig:
         log_order_details: Order-Details loggen
         log_risk_details: Risk-Check-Details loggen
     """
+
     enabled: bool = True
     base_dir: str = "live_runs"
     flush_interval_steps: int = 50
@@ -126,6 +128,7 @@ class LiveRunMetadata:
         config_snapshot: Relevante Config-Werte
         notes: Optionale Notizen
     """
+
     run_id: str
     mode: str
     strategy_name: str
@@ -217,6 +220,7 @@ class LiveRunEvent:
         # Extra-Daten
         extra: Zusätzliche Key-Value-Paare
     """
+
     step: int
     ts_bar: Optional[datetime] = None
     ts_event: Optional[datetime] = None
@@ -364,8 +368,7 @@ class LiveRunLogger:
         self._logging_disabled_due_to_error = False
 
         logger.info(
-            f"[RUN LOGGER] Initialisiert: run_id={metadata.run_id}, "
-            f"base_dir={self._base_dir}"
+            f"[RUN LOGGER] Initialisiert: run_id={metadata.run_id}, base_dir={self._base_dir}"
         )
 
     @property
@@ -485,9 +488,7 @@ class LiveRunLogger:
                 write_header = not events_path.exists()
                 df.to_csv(events_path, mode="a", header=write_header, index=False)
 
-            logger.debug(
-                f"[RUN LOGGER] Flush: {len(self._events_buffer)} Events geschrieben"
-            )
+            logger.debug(f"[RUN LOGGER] Flush: {len(self._events_buffer)} Events geschrieben")
             self._events_buffer.clear()
 
         except Exception as e:

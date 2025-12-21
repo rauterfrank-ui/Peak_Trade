@@ -28,7 +28,7 @@ from typing import List, Dict, Any, Optional
 @dataclass
 class PsychologyHeatmapCell:
     """Einzelne Zelle in der Heatmap."""
-    
+
     value: float  # Rohwert (0-3+)
     heat_level: int  # Diskrete Heat-Level: 0, 1, 2, 3
     display_value: str  # Formatierter Wert für Anzeige
@@ -38,7 +38,7 @@ class PsychologyHeatmapCell:
 @dataclass
 class PsychologyHeatmapRow:
     """Eine Zeile in der Heatmap (ein Trading-Cluster)."""
-    
+
     name: str  # z.B. "Trend-Folge Einstiege"
     fomo: PsychologyHeatmapCell
     loss_fear: PsychologyHeatmapCell
@@ -50,7 +50,7 @@ class PsychologyHeatmapRow:
 def _score_to_heat_level(score: float) -> int:
     """
     Konvertiert einen kontinuierlichen Score in ein diskretes Heat-Level (0-3).
-    
+
     Mapping:
     - 0.0 - 0.4: Level 0 (kein Thema)
     - 0.5 - 1.4: Level 1 (leicht)
@@ -70,13 +70,13 @@ def _score_to_heat_level(score: float) -> int:
 def _create_heatmap_cell(value: float) -> PsychologyHeatmapCell:
     """Erstellt eine Heatmap-Zelle aus einem Rohwert."""
     heat_level = _score_to_heat_level(value)
-    
+
     # Wert runden für Anzeige
     display_value = str(round(value))
-    
+
     # CSS-Klasse
     css_class = f"heat-{heat_level}"
-    
+
     return PsychologyHeatmapCell(
         value=value,
         heat_level=heat_level,
@@ -85,12 +85,10 @@ def _create_heatmap_cell(value: float) -> PsychologyHeatmapCell:
     )
 
 
-def build_psychology_heatmap_rows(
-    raw_rows: List[Dict[str, Any]]
-) -> List[PsychologyHeatmapRow]:
+def build_psychology_heatmap_rows(raw_rows: List[Dict[str, Any]]) -> List[PsychologyHeatmapRow]:
     """
     Baut strukturierte Heatmap-Rows aus Roh-Daten.
-    
+
     Args:
         raw_rows: Liste von Dictionaries mit folgenden Keys:
             - name: str (Name des Clusters)
@@ -99,10 +97,10 @@ def build_psychology_heatmap_rows(
             - impulsivity: float (0-3+)
             - hesitation: float (0-3+)
             - rule_break: float (0-3+)
-    
+
     Returns:
         Liste von PsychologyHeatmapRow-Objekten
-    
+
     Beispiel:
         >>> raw = [
         ...     {
@@ -121,7 +119,7 @@ def build_psychology_heatmap_rows(
         2
     """
     result = []
-    
+
     for raw_row in raw_rows:
         row = PsychologyHeatmapRow(
             name=raw_row["name"],
@@ -132,25 +130,23 @@ def build_psychology_heatmap_rows(
             rule_break=_create_heatmap_cell(raw_row.get("rule_break", 0.0)),
         )
         result.append(row)
-    
+
     return result
 
 
-def serialize_psychology_heatmap_rows(
-    rows: List[PsychologyHeatmapRow]
-) -> List[Dict[str, Any]]:
+def serialize_psychology_heatmap_rows(rows: List[PsychologyHeatmapRow]) -> List[Dict[str, Any]]:
     """
     Serialisiert Heatmap-Rows für Template-Rendering.
-    
+
     Konvertiert die strukturierten Row-Objekte in einfache Dictionaries,
     die direkt im Jinja2-Template verwendet werden können.
-    
+
     Args:
         rows: Liste von PsychologyHeatmapRow-Objekten
-    
+
     Returns:
         Liste von Dictionaries mit serialisierten Daten
-    
+
     Beispiel:
         >>> rows = build_psychology_heatmap_rows([...])
         >>> serialized = serialize_psychology_heatmap_rows(rows)
@@ -160,7 +156,7 @@ def serialize_psychology_heatmap_rows(
         'heat-2'
     """
     result = []
-    
+
     for row in rows:
         serialized = {
             "name": row.name,
@@ -171,14 +167,14 @@ def serialize_psychology_heatmap_rows(
             "rule_break": asdict(row.rule_break),
         }
         result.append(serialized)
-    
+
     return result
 
 
 def build_example_psychology_heatmap_data() -> List[Dict[str, Any]]:
     """
     Erzeugt Beispieldaten für die Heatmap (zu Testzwecken).
-    
+
     Returns:
         Liste von Dictionaries mit Beispiel-Scores
     """
@@ -226,15 +222,13 @@ def build_example_psychology_heatmap_data() -> List[Dict[str, Any]]:
     ]
 
 
-def calculate_cluster_statistics(
-    rows: List[PsychologyHeatmapRow]
-) -> Dict[str, Any]:
+def calculate_cluster_statistics(rows: List[PsychologyHeatmapRow]) -> Dict[str, Any]:
     """
     Berechnet aggregierte Statistiken über alle Cluster hinweg.
-    
+
     Args:
         rows: Liste von PsychologyHeatmapRow-Objekten
-    
+
     Returns:
         Dictionary mit aggregierten Metriken:
         - total_clusters: Anzahl der Cluster
@@ -249,14 +243,14 @@ def calculate_cluster_statistics(
             "max_scores": {},
             "problem_clusters": [],
         }
-    
+
     # Sammle alle Werte
     fomo_values = [row.fomo.value for row in rows]
     loss_fear_values = [row.loss_fear.value for row in rows]
     impulsivity_values = [row.impulsivity.value for row in rows]
     hesitation_values = [row.hesitation.value for row in rows]
     rule_break_values = [row.rule_break.value for row in rows]
-    
+
     avg_scores = {
         "fomo": sum(fomo_values) / len(fomo_values),
         "loss_fear": sum(loss_fear_values) / len(loss_fear_values),
@@ -264,7 +258,7 @@ def calculate_cluster_statistics(
         "hesitation": sum(hesitation_values) / len(hesitation_values),
         "rule_break": sum(rule_break_values) / len(rule_break_values),
     }
-    
+
     max_scores = {
         "fomo": max(fomo_values),
         "loss_fear": max(loss_fear_values),
@@ -272,7 +266,7 @@ def calculate_cluster_statistics(
         "hesitation": max(hesitation_values),
         "rule_break": max(rule_break_values),
     }
-    
+
     # Finde Problem-Cluster (mindestens ein Score >= 2.5)
     problem_clusters = []
     for row in rows:
@@ -284,11 +278,13 @@ def calculate_cluster_statistics(
             row.rule_break.value,
         )
         if max_value_in_row >= 2.5:
-            problem_clusters.append({
-                "name": row.name,
-                "max_score": max_value_in_row,
-            })
-    
+            problem_clusters.append(
+                {
+                    "name": row.name,
+                    "max_score": max_value_in_row,
+                }
+            )
+
     return {
         "total_clusters": len(rows),
         "avg_scores": avg_scores,
@@ -301,26 +297,27 @@ def calculate_cluster_statistics(
 # Integration Helper für Trigger-Training-Report
 # ============================================================================
 
+
 def extract_psychology_scores_from_events(
     events: List[Any],  # TriggerTrainingEvent
 ) -> Dict[str, Dict[str, float]]:
     """
     Extrahiert Psychologie-Scores aus Trigger-Training-Events.
-    
+
     Diese Funktion analysiert die Tags und Outcomes der Events und berechnet
     aggregierte Scores für verschiedene Trading-Cluster.
-    
+
     Args:
         events: Liste von TriggerTrainingEvent-Objekten
-    
+
     Returns:
         Dictionary mit Cluster-Namen als Keys und Score-Dicts als Values
-    
+
     Beispiel:
         >>> scores = extract_psychology_scores_from_events(events)
         >>> scores["trend_follow"]["fomo"]
         2.0
-    
+
     Hinweis:
         Dies ist eine vereinfachte Implementierung. In der Praxis sollte hier
         eine ausgefeilte Analyse der Event-Daten stattfinden, die z.B.:
@@ -331,24 +328,26 @@ def extract_psychology_scores_from_events(
     """
     # TODO: Implementiere echte Analyse-Logik
     # Für jetzt: Dummy-Implementation als Platzhalter
-    
+
     from collections import defaultdict
-    
-    cluster_scores = defaultdict(lambda: {
-        "fomo": 0.0,
-        "loss_fear": 0.0,
-        "impulsivity": 0.0,
-        "hesitation": 0.0,
-        "rule_break": 0.0,
-    })
-    
+
+    cluster_scores = defaultdict(
+        lambda: {
+            "fomo": 0.0,
+            "loss_fear": 0.0,
+            "impulsivity": 0.0,
+            "hesitation": 0.0,
+            "rule_break": 0.0,
+        }
+    )
+
     # Beispiel-Analyse: Zähle bestimmte Outcomes und Tags
     for event in events:
         # Vereinfachte Cluster-Zuordnung basierend auf Tags
         cluster = _determine_cluster_from_tags(event.tags)
-        
+
         # Erhöhe Scores basierend auf Outcome
-        if hasattr(event, 'outcome'):
+        if hasattr(event, "outcome"):
             if event.outcome.value == "FOMO":
                 cluster_scores[cluster]["fomo"] += 0.5
             elif event.outcome.value == "MISSED":
@@ -357,27 +356,25 @@ def extract_psychology_scores_from_events(
                 cluster_scores[cluster]["hesitation"] += 0.3
             elif event.outcome.value == "RULE_BREAK":
                 cluster_scores[cluster]["rule_break"] += 0.5
-        
+
         # Impulsivität basierend auf Reaktionszeit
-        if hasattr(event, 'reaction_delay_s'):
+        if hasattr(event, "reaction_delay_s"):
             if event.reaction_delay_s < 1.0:  # Sehr schnelle Reaktion
                 cluster_scores[cluster]["impulsivity"] += 0.2
-    
+
     # Normalisiere Scores auf 0-3 Skala
     for cluster in cluster_scores:
         for metric in cluster_scores[cluster]:
             # Cappung bei 3.0
-            cluster_scores[cluster][metric] = min(
-                cluster_scores[cluster][metric], 3.0
-            )
-    
+            cluster_scores[cluster][metric] = min(cluster_scores[cluster][metric], 3.0)
+
     return dict(cluster_scores)
 
 
 def _determine_cluster_from_tags(tags: List[str]) -> str:
     """Bestimmt den Trading-Cluster basierend auf Tags."""
     tags_lower = [t.lower() for t in tags]
-    
+
     if any(t in tags_lower for t in ["trend", "trend_follow", "with_trend"]):
         return "trend_follow"
     elif any(t in tags_lower for t in ["counter", "reversal", "against_trend"]):

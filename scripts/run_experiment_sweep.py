@@ -44,6 +44,7 @@ Output:
     - reports/experiments/{strategy}_{id}_{timestamp}.parquet
     - reports/experiments/{strategy}_{id}_{timestamp}_summary.json
 """
+
 from __future__ import annotations
 
 import argparse
@@ -90,12 +91,14 @@ def parse_args() -> argparse.Namespace:
 
     # Haupt-Argumente
     parser.add_argument(
-        "--strategy", "-s",
+        "--strategy",
+        "-s",
         type=str,
         help="Name der Strategie (z.B. ma_crossover, vol_breakout)",
     )
     parser.add_argument(
-        "--name", "-n",
+        "--name",
+        "-n",
         type=str,
         help="Name des Experiments (optional)",
     )
@@ -114,7 +117,8 @@ def parse_args() -> argparse.Namespace:
         help="Mehrere Symbole (überschreibt --symbol)",
     )
     parser.add_argument(
-        "--timeframe", "-t",
+        "--timeframe",
+        "-t",
         type=str,
         default="1h",
         help="Zeitrahmen (default: 1h)",
@@ -138,7 +142,8 @@ def parse_args() -> argparse.Namespace:
 
     # Sweep-Konfiguration
     parser.add_argument(
-        "--granularity", "-g",
+        "--granularity",
+        "-g",
         type=str,
         choices=["coarse", "medium", "fine"],
         default="medium",
@@ -166,12 +171,14 @@ def parse_args() -> argparse.Namespace:
 
     # Ausführungs-Optionen
     parser.add_argument(
-        "--parallel", "-p",
+        "--parallel",
+        "-p",
         action="store_true",
         help="Parallel ausführen",
     )
     parser.add_argument(
-        "--workers", "-w",
+        "--workers",
+        "-w",
         type=int,
         default=4,
         help="Anzahl paralleler Worker (default: 4)",
@@ -184,7 +191,8 @@ def parse_args() -> argparse.Namespace:
 
     # Output-Optionen
     parser.add_argument(
-        "--output-dir", "-o",
+        "--output-dir",
+        "-o",
         type=str,
         default="reports/experiments",
         help="Ausgabe-Verzeichnis (default: reports/experiments)",
@@ -214,7 +222,8 @@ def parse_args() -> argparse.Namespace:
 
     # Logging
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -271,7 +280,7 @@ def show_params(config: ExperimentConfig) -> None:
 
     print("\nErste 10 Kombinationen:")
     for i, combo in enumerate(combos[:10]):
-        print(f"  {i+1:3d}. {combo}")
+        print(f"  {i + 1:3d}. {combo}")
 
     if len(combos) > 10:
         print(f"  ... und {len(combos) - 10} weitere")
@@ -296,8 +305,7 @@ def create_progress_callback():
         bar = "█" * filled + "░" * (bar_width - filled)
 
         print(
-            f"\r[{bar}] {pct:5.1f}% | {current}/{total} | "
-            f"ETA: {eta:.0f}s | {message[:40]:40s}",
+            f"\r[{bar}] {pct:5.1f}% | {current}/{total} | ETA: {eta:.0f}s | {message[:40]:40s}",
             end="",
             flush=True,
         )
@@ -349,6 +357,7 @@ def main() -> int:
     # Custom Sweeps hinzufügen
     if args.custom_sweeps:
         import json
+
         try:
             custom = json.loads(args.custom_sweeps)
             for name, values in custom.items():
@@ -428,6 +437,7 @@ def main() -> int:
         logger.error(f"Experiment fehlgeschlagen: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -448,7 +458,7 @@ def main() -> int:
         for i, r in enumerate(best, 1):
             sharpe = r.metrics.get("sharpe_ratio", float("nan"))
             ret = r.metrics.get("total_return", float("nan"))
-            print(f"  {i}. Sharpe: {sharpe:.3f}, Return: {ret*100:.1f}%")
+            print(f"  {i}. Sharpe: {sharpe:.3f}, Return: {ret * 100:.1f}%")
             print(f"     Params: {r.params}")
 
         print("\n--- Top 5 nach Total Return ---")
@@ -456,7 +466,7 @@ def main() -> int:
         for i, r in enumerate(best, 1):
             sharpe = r.metrics.get("sharpe_ratio", float("nan"))
             ret = r.metrics.get("total_return", float("nan"))
-            print(f"  {i}. Return: {ret*100:.1f}%, Sharpe: {sharpe:.3f}")
+            print(f"  {i}. Return: {ret * 100:.1f}%, Sharpe: {sharpe:.3f}")
             print(f"     Params: {r.params}")
 
     # Summary Stats

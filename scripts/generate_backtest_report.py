@@ -35,6 +35,7 @@ Examples:
         --output reports/rsi_btc.md \\
         --title "RSI Strategy - BTC/EUR Backtest"
 """
+
 from __future__ import annotations
 
 import argparse
@@ -258,7 +259,9 @@ def main() -> int:
     # Lade Regime-Daten (optional, wenn --with-regime gesetzt)
     if args.with_regime:
         # Versuche Regime-Daten aus Results-Datei zu extrahieren
-        regime_cols = [c for c in df.columns if "regime" in c.lower() and c not in ["regime_strategy"]]
+        regime_cols = [
+            c for c in df.columns if "regime" in c.lower() and c not in ["regime_strategy"]
+        ]
         if regime_cols:
             # Nehme erste Regime-Spalte
             regime_col = regime_cols[0]

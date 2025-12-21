@@ -9,6 +9,7 @@ Testet:
 - Profil-Generierung mit Dummy-Daten
 - Output-Dateien
 """
+
 from __future__ import annotations
 
 import subprocess

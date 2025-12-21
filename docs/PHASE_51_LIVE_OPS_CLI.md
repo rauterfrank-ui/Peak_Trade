@@ -176,7 +176,7 @@ Live-Ops CLI kann in Runbooks referenziert werden:
    ```bash
    # Health-Check ausführen
    python scripts/live_ops.py health --config config/config.toml
-   
+
    # Bei FAIL: Session nicht starten
    ```
 
@@ -190,7 +190,7 @@ Live-Ops CLI kann in Runbooks referenziert werden:
    ```bash
    # Portfolio-Status prüfen
    python scripts/live_ops.py portfolio --config config/config.toml
-   
+
    # Orders-Preview vor Ausführung
    python scripts/live_ops.py orders --signals reports/forward/..._signals.csv
    ```
@@ -268,11 +268,3 @@ pytest tests/test_live_ops_cli.py -v
 - [PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md](PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md)
 - [CLI_CHEATSHEET.md](CLI_CHEATSHEET.md)
 - [LIVE_TESTNET_TRACK_STATUS.md](LIVE_TESTNET_TRACK_STATUS.md)
-
-
-
-
-
-
-
-

@@ -54,7 +54,7 @@ class TestEqualWeightPortfolioStrategy:
 
         # Jedes Symbol sollte ~1/3 bekommen
         for symbol, weight in weights.items():
-            assert abs(weight - 1/3) < 0.01, f"{symbol} weight {weight} != 1/3"
+            assert abs(weight - 1 / 3) < 0.01, f"{symbol} weight {weight} != 1/3"
 
         # Summe sollte 1.0 sein
         assert abs(sum(weights.values()) - 1.0) < 0.001

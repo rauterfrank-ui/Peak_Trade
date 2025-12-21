@@ -28,17 +28,17 @@ enum = [
     "fed_easing",           # Fed senkt aktiv Zinsen
     "fed_pause",            # Fed in Wartehaltung
     "fed_tightening",       # Fed erhöht Zinsen
-    
+
     # Risiko-Umfeld
     "risk_on",              # Breiter Risikoappetit
     "risk_off",             # Flight to Safety
     "risk_neutral",         # Keine klare Richtung
-    
+
     # Stress-Szenarien
     "liquidity_crunch",     # Liquiditätsengpass
     "credit_stress",        # Credit-Spreads weiten
     "crisis_mode",          # Akute Krise (Geopolitik etc.)
-    
+
     # Inflation/Deflation
     "inflation_scare",      # Inflationssorgen dominieren
     "deflation_risk",       # Deflationsrisiko

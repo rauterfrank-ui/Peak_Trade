@@ -19,8 +19,7 @@ df["slow_ma"] = df["close"].rolling(50).mean()
 # 3) Signale generieren (Crossover)
 # ----------------------------------------------------
 df["signal_raw"] = np.where(
-    df["fast_ma"] > df["slow_ma"], 1,
-    np.where(df["fast_ma"] < df["slow_ma"], -1, 0)
+    df["fast_ma"] > df["slow_ma"], 1, np.where(df["fast_ma"] < df["slow_ma"], -1, 0)
 )
 
 df["signal"] = df["signal_raw"].diff().fillna(0)

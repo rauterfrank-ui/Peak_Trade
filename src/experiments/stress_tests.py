@@ -28,6 +28,7 @@ Usage:
     stressed_returns = apply_stress_scenario_to_returns(returns, scenario)
     suite = run_stress_test_suite(returns, [scenario], stats_fn)
 """
+
 from __future__ import annotations
 
 import logging
@@ -46,10 +47,10 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 StressScenarioType = Literal[
-    "single_crash_bar",      # ein starker negativer Return an einem Tag
-    "vol_spike",             # Volatilität sprunghaft erhöht
-    "drawdown_extension",    # vorhandene Drawdowns werden verlängert/vertieft
-    "gap_down_open",         # großer einmaliger Gap nach unten
+    "single_crash_bar",  # ein starker negativer Return an einem Tag
+    "vol_spike",  # Volatilität sprunghaft erhöht
+    "drawdown_extension",  # vorhandene Drawdowns werden verlängert/vertieft
+    "gap_down_open",  # großer einmaliger Gap nach unten
 ]
 
 
@@ -319,7 +320,9 @@ def run_stress_test_suite(
         try:
             stressed_metrics = stats_fn(stressed_returns)
         except Exception as e:
-            logger.warning(f"Fehler bei Berechnung der gestressten Metriken: {e}, überspringe Szenario")
+            logger.warning(
+                f"Fehler bei Berechnung der gestressten Metriken: {e}, überspringe Szenario"
+            )
             continue
 
         # Berechne Differenzen

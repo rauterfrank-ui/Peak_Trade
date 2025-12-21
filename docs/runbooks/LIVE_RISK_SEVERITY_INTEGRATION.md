@@ -165,15 +165,15 @@ class RunbookEntry:
     icon: str
     summary: str
     description: str
-    
+
     immediate_actions: List[str]            # Sofort-Aktionen
     monitoring_actions: List[str]           # Monitoring-Empfehlungen
     communication_actions: List[str]        # Kommunikation
     recovery_actions: List[str]             # Erholung/Stabilisierung
-    
+
     escalation_threshold: Optional[str]     # Wann eskalieren
     escalation_contacts: List[str]          # An wen
-    
+
     checklist: List[RunbookChecklist]       # Detaillierte Checkliste
     monitoring_interval: str                # z.B. "1-5 min"
     auto_actions: List[str]                 # Was das System automatisch tut
@@ -259,7 +259,7 @@ AUTOMATISCHE SYSTEM-AKTIONEN:
   ➤ Logging auf ERROR-Level
 
 ESKALATION: SOFORT bei BREACH
-  Kontakte: Trading-Team-Lead (sofort), Risk-Manager (sofort), 
+  Kontakte: Trading-Team-Lead (sofort), Risk-Manager (sofort),
             Management (bei > 2% Verlust)
 
 ERFORDERLICHE DOKUMENTATION:

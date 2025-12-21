@@ -20,6 +20,7 @@ Usage:
         output_dir=Path("reports/sweeps/images"),
     )
 """
+
 from __future__ import annotations
 
 import logging
@@ -258,7 +259,9 @@ def create_drawdown_heatmap(
     # Normalisiere Spaltennamen
     param_x_col = param_x if param_x.startswith("param_") else f"param_{param_x}"
     param_y_col = param_y if param_y.startswith("param_") else f"param_{param_y}"
-    metric_col_normalized = metric_col if metric_col.startswith("metric_") else f"metric_{metric_col}"
+    metric_col_normalized = (
+        metric_col if metric_col.startswith("metric_") else f"metric_{metric_col}"
+    )
 
     # Validierung
     if param_x_col not in df.columns:
@@ -376,7 +379,9 @@ def generate_default_sweep_plots(
     metric_used = metric_primary if metric_primary in df.columns else metric_fallback
     if metric_used not in df.columns:
         if metric_cols:
-            logger.warning(f"Weder {metric_primary} noch {metric_fallback} gefunden, verwende erste verfügbare Metrik: {metric_cols[0]}")
+            logger.warning(
+                f"Weder {metric_primary} noch {metric_fallback} gefunden, verwende erste verfügbare Metrik: {metric_cols[0]}"
+            )
             metric_used = metric_cols[0]
         else:
             logger.warning("Keine Metrik-Spalten gefunden")
@@ -457,10 +462,11 @@ def generate_default_sweep_plots(
                 if drawdown_heatmap_path:
                     param_x_clean = param_x.replace("param_", "")
                     param_y_clean = param_y.replace("param_", "")
-                    plots[f"drawdown_heatmap_{param_x_clean}_vs_{param_y_clean}"] = drawdown_heatmap_path
+                    plots[f"drawdown_heatmap_{param_x_clean}_vs_{param_y_clean}"] = (
+                        drawdown_heatmap_path
+                    )
             except Exception as e:
                 logger.warning(f"Fehler beim Erstellen der Drawdown-Heatmap: {e}")
 
     logger.info(f"Erstellt: {len(plots)} Plots für Sweep '{sweep_name}'")
     return plots
-

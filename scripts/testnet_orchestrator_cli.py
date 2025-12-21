@@ -20,6 +20,7 @@ Usage:
     python scripts/testnet_orchestrator_cli.py stop --run-id shadow_20251207_120000_abc123
     python scripts/testnet_orchestrator_cli.py tail --run-id shadow_20251207_120000_abc123 --limit 50
 """
+
 from __future__ import annotations
 
 import argparse
@@ -50,8 +51,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="testnet_orchestrator",
         description="Peak_Trade Testnet-Orchestrator CLI\n\n"
-                    "WICHTIG: Dieses Script ist für Shadow/Testnet-Runs gedacht.\n"
-                    "Keine echten Live-Orders werden gesendet.",
+        "WICHTIG: Dieses Script ist für Shadow/Testnet-Runs gedacht.\n"
+        "Keine echten Live-Orders werden gesendet.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Beispiele:
@@ -346,11 +347,17 @@ def cmd_status(args: argparse.Namespace, orchestrator: TestnetOrchestrator) -> i
                     print("Keine aktiven Runs")
                     return 0
 
-                print(f"\n{'Run-ID':<40} {'Mode':<10} {'Strategy':<20} {'State':<10} {'Started':<20}")
+                print(
+                    f"\n{'Run-ID':<40} {'Mode':<10} {'Strategy':<20} {'State':<10} {'Started':<20}"
+                )
                 print("-" * 100)
                 for s in status:
-                    started_str = s.started_at.strftime("%Y-%m-%d %H:%M:%S") if s.started_at else "N/A"
-                    print(f"{s.run_id:<40} {s.mode:<10} {s.strategy_name:<20} {s.state.value:<10} {started_str:<20}")
+                    started_str = (
+                        s.started_at.strftime("%Y-%m-%d %H:%M:%S") if s.started_at else "N/A"
+                    )
+                    print(
+                        f"{s.run_id:<40} {s.mode:<10} {s.strategy_name:<20} {s.state.value:<10} {started_str:<20}"
+                    )
             else:
                 print(f"\nRun-ID: {status.run_id}")
                 print(f"Mode: {status.mode}")
@@ -390,7 +397,10 @@ def cmd_stop(args: argparse.Namespace, orchestrator: TestnetOrchestrator) -> int
                             orchestrator.stop_run(run_info.run_id)
                             stopped_count += 1
                         except Exception as e:
-                            print(f"⚠️  Fehler beim Stoppen von {run_info.run_id}: {e}", file=sys.stderr)
+                            print(
+                                f"⚠️  Fehler beim Stoppen von {run_info.run_id}: {e}",
+                                file=sys.stderr,
+                            )
 
                 print(f"✅ {stopped_count} Run(s) gestoppt")
                 return 0
@@ -478,4 +488,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

@@ -5,6 +5,7 @@ Tests for Evidence Chain Module (P1)
 
 Tests für src/experiments/evidence_chain.py - Artifact-Generierung für Backtests/Research.
 """
+
 import json
 import tempfile
 from datetime import datetime
@@ -162,10 +163,12 @@ class TestWriteEquityCsv:
         """Test dass equity.csv aus DataFrame geschrieben wird."""
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir)
-            df_equity = pd.DataFrame({
-                "timestamp": pd.date_range("2024-01-01", periods=5, freq="h"),
-                "equity": [10000, 10050, 10100, 10150, 10200],
-            })
+            df_equity = pd.DataFrame(
+                {
+                    "timestamp": pd.date_range("2024-01-01", periods=5, freq="h"),
+                    "equity": [10000, 10050, 10100, 10150, 10200],
+                }
+            )
 
             csv_path = write_equity_csv(run_dir, df_equity)
 
@@ -207,17 +210,20 @@ class TestWriteTradesParquetOptional:
 
     def test_returns_none_if_parquet_not_available(self, monkeypatch):
         """Test dass None zurückgegeben wird wenn parquet engine fehlt."""
+
         # Mocke pd.DataFrame.to_parquet um ImportError zu simulieren
         def mock_to_parquet(*args, **kwargs):
             raise ImportError("No module named 'pyarrow'")
 
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir)
-            trades_data = pd.DataFrame({
-                "timestamp": ["2024-01-01T00:00:00"],
-                "symbol": ["BTC/EUR"],
-                "side": ["buy"],
-            })
+            trades_data = pd.DataFrame(
+                {
+                    "timestamp": ["2024-01-01T00:00:00"],
+                    "symbol": ["BTC/EUR"],
+                    "side": ["buy"],
+                }
+            )
 
             monkeypatch.setattr(pd.DataFrame, "to_parquet", mock_to_parquet)
 
@@ -228,12 +234,14 @@ class TestWriteTradesParquetOptional:
         """Test dass trades.parquet geschrieben wird wenn deps vorhanden."""
         with tempfile.TemporaryDirectory() as tmpdir:
             run_dir = Path(tmpdir)
-            trades_data = pd.DataFrame({
-                "timestamp": ["2024-01-01T00:00:00", "2024-01-01T01:00:00"],
-                "symbol": ["BTC/EUR", "BTC/EUR"],
-                "side": ["buy", "sell"],
-                "quantity": [0.1, 0.1],
-            })
+            trades_data = pd.DataFrame(
+                {
+                    "timestamp": ["2024-01-01T00:00:00", "2024-01-01T01:00:00"],
+                    "symbol": ["BTC/EUR", "BTC/EUR"],
+                    "side": ["buy", "sell"],
+                    "quantity": [0.1, 0.1],
+                }
+            )
 
             result = write_trades_parquet_optional(run_dir, trades_data)
 

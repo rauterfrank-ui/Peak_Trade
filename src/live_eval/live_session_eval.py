@@ -9,6 +9,7 @@ from collections import defaultdict
 @dataclass
 class Fill:
     """Represents a single fill/trade execution."""
+
     ts: datetime
     symbol: str
     side: str  # 'buy' or 'sell'
@@ -28,6 +29,7 @@ class Fill:
 @dataclass
 class Lot:
     """Represents an open position lot (for FIFO PnL calculation)."""
+
     qty: float
     price: float
 
@@ -55,10 +57,10 @@ def compute_metrics(fills: List[Fill], strict: bool = False) -> Dict[str, Any]:
             "vwap_overall": None,
             "side_breakdown": {
                 "buy": {"count": 0, "qty": 0.0, "notional": 0.0},
-                "sell": {"count": 0, "qty": 0.0, "notional": 0.0}
+                "sell": {"count": 0, "qty": 0.0, "notional": 0.0},
             },
             "realized_pnl_total": 0.0,
-            "realized_pnl_per_symbol": {}
+            "realized_pnl_per_symbol": {},
         }
 
     # Sort fills by timestamp
@@ -77,7 +79,7 @@ def compute_metrics(fills: List[Fill], strict: bool = False) -> Dict[str, Any]:
     # Side breakdown
     side_stats = {
         "buy": {"count": 0, "qty": 0.0, "notional": 0.0},
-        "sell": {"count": 0, "qty": 0.0, "notional": 0.0}
+        "sell": {"count": 0, "qty": 0.0, "notional": 0.0},
     }
 
     for fill in fills:
@@ -126,10 +128,14 @@ def compute_metrics(fills: List[Fill], strict: bool = False) -> Dict[str, Any]:
                     )
                 else:
                     # Best-effort: treat as short lot with entry price = sell price (PnL=0)
-                    lots_by_symbol[symbol].insert(0, Lot(qty=-remaining_sell_qty, price=fill.fill_price))
+                    lots_by_symbol[symbol].insert(
+                        0, Lot(qty=-remaining_sell_qty, price=fill.fill_price)
+                    )
 
             # Accumulate realized PnL for this symbol
-            realized_pnl_per_symbol[symbol] = realized_pnl_per_symbol.get(symbol, 0.0) + realized_pnl
+            realized_pnl_per_symbol[symbol] = (
+                realized_pnl_per_symbol.get(symbol, 0.0) + realized_pnl
+            )
 
     realized_pnl_total = sum(realized_pnl_per_symbol.values())
 
@@ -152,5 +158,5 @@ def compute_metrics(fills: List[Fill], strict: bool = False) -> Dict[str, Any]:
         "vwap_per_symbol": vwap_per_symbol,
         "side_breakdown": side_stats,
         "realized_pnl_total": realized_pnl_total,
-        "realized_pnl_per_symbol": realized_pnl_per_symbol
+        "realized_pnl_per_symbol": realized_pnl_per_symbol,
     }

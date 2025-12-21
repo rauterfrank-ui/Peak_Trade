@@ -20,6 +20,7 @@ Hinweis:
     Es liest nur Daten und erzeugt Statistiken.
     Keine Änderungen an Order-/Execution-/Safety-Komponenten.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -232,10 +233,7 @@ def load_regime_config(path: Optional[Path] = None) -> RegimeConfig:
     config_path = path or DEFAULT_CONFIG_PATH
 
     if not config_path.exists():
-        logger.warning(
-            f"Regime-Config nicht gefunden: {config_path}. "
-            "Verwende Default-Werte."
-        )
+        logger.warning(f"Regime-Config nicht gefunden: {config_path}. Verwende Default-Werte.")
         return RegimeConfig()
 
     with open(config_path, "rb") as f:
@@ -389,8 +387,7 @@ def detect_regimes(
     """
     if price_col not in prices.columns:
         raise KeyError(
-            f"Spalte '{price_col}' nicht im DataFrame. "
-            f"Verfügbare Spalten: {list(prices.columns)}"
+            f"Spalte '{price_col}' nicht im DataFrame. Verfügbare Spalten: {list(prices.columns)}"
         )
 
     result = prices.copy()
@@ -532,9 +529,7 @@ def analyze_regimes_from_equity(
         # Sharpe Ratio
         sharpe = None
         if return_std > 0 and len(regime_returns) > 1:
-            sharpe = float(
-                return_mean / return_std * np.sqrt(annualization_factor)
-            )
+            sharpe = float(return_mean / return_std * np.sqrt(annualization_factor))
 
         # Lokaler Max Drawdown
         max_dd = None
@@ -716,9 +711,7 @@ def compute_sweep_robustness(
             if rs.sharpe is not None:
                 regime_sharpe_sum[regime] = regime_sharpe_sum.get(regime, 0) + rs.sharpe
                 if rs.sharpe > 0:
-                    regime_positive_count[regime] = (
-                        regime_positive_count.get(regime, 0) + 1
-                    )
+                    regime_positive_count[regime] = regime_positive_count.get(regime, 0) + 1
 
     # Bestes und schlechtestes Regime (nach durchschnittlichem Sharpe)
     regime_avg_sharpe = {}
@@ -768,12 +761,7 @@ def format_regime_stats_table(stats: List[RegimeStats]) -> str:
 
     lines = []
     header = (
-        f"{'Regime':<25} "
-        f"{'Weight':>8} "
-        f"{'Bars':>6} "
-        f"{'Return_mean':>12} "
-        f"{'Sharpe':>8} "
-        f"{'MaxDD':>8}"
+        f"{'Regime':<25} {'Weight':>8} {'Bars':>6} {'Return_mean':>12} {'Sharpe':>8} {'MaxDD':>8}"
     )
     lines.append(header)
     lines.append("-" * len(header))

@@ -28,6 +28,7 @@ Verwendung:
     ... )
     >>> balance = client.fetch_balance()
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -90,7 +91,7 @@ class CcxtExchangeClient:
             available = [x for x in dir(ccxt) if not x.startswith("_") and x.islower()]
             raise ValueError(
                 f"Unknown ccxt exchange id: {exchange_id!r}. "
-                f"Available: {', '.join(available[:10])}... (and {len(available)-10} more)"
+                f"Available: {', '.join(available[:10])}... (and {len(available) - 10} more)"
             )
 
         # Exchange-Klasse holen und instanziieren

@@ -18,7 +18,9 @@ class PolicyRule:
     severity: Severity = Severity.INFO
     description: str = ""
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(
+        self, diff: str, changed_files: List[str], context: Optional[dict] = None
+    ) -> List[Violation]:
         """Check for violations. Returns list of violations (empty if none)."""
         raise NotImplementedError
 
@@ -32,7 +34,10 @@ class NoSecretsRule(PolicyRule):
 
     SECRET_PATTERNS = [
         (r"BEGIN.*PRIVATE KEY", "Private key detected"),
-        (r"[Aa][Pp][Ii][_-]?[Kk][Ee][Yy]\s*[=:]\s*['\"][a-zA-Z0-9_\-]{16,}['\"]", "API key pattern detected"),
+        (
+            r"[Aa][Pp][Ii][_-]?[Kk][Ee][Yy]\s*[=:]\s*['\"][a-zA-Z0-9_\-]{16,}['\"]",
+            "API key pattern detected",
+        ),
         (r"secret[_-]?key[\s:=]+['\"]?[a-zA-Z0-9]{16,}", "Secret key pattern detected"),
         (r"password[\s:=]+['\"]?[^\s'\"]{8,}", "Password pattern detected"),
         (r"token[\s:=]+['\"]?[a-zA-Z0-9_\-]{20,}", "Token pattern detected"),
@@ -40,7 +45,9 @@ class NoSecretsRule(PolicyRule):
         (r"aws_secret_access_key", "AWS secret access key detected"),
     ]
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(
+        self, diff: str, changed_files: List[str], context: Optional[dict] = None
+    ) -> List[Violation]:
         violations = []
 
         for pattern, message in self.SECRET_PATTERNS:
@@ -76,7 +83,7 @@ class NoSecretsRule(PolicyRule):
         """Extract filename from diff for a given position."""
         # Look backwards for the most recent +++ line
         before = diff[:position]
-        match = re.findall(r'\+\+\+ b/(.+?)$', before, re.MULTILINE)
+        match = re.findall(r"\+\+\+ b/(.+?)$", before, re.MULTILINE)
         if match:
             return match[-1]
         return None
@@ -99,7 +106,9 @@ class NoLiveUnlockRule(PolicyRule):
         (r"disable.*safety.*check", "Attempt to disable safety checks"),
     ]
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(
+        self, diff: str, changed_files: List[str], context: Optional[dict] = None
+    ) -> List[Violation]:
         violations = []
 
         for pattern, message in self.UNLOCK_PATTERNS:
@@ -145,11 +154,15 @@ class ExecutionEndpointTouchRule(PolicyRule):
         r"class\s+\w*Order\w*Executor",
     ]
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(
+        self, diff: str, changed_files: List[str], context: Optional[dict] = None
+    ) -> List[Violation]:
         violations = []
 
         # Check if any changed files are in critical paths
-        critical_files = [f for f in changed_files if any(f.startswith(path) for path in self.CRITICAL_PATHS)]
+        critical_files = [
+            f for f in changed_files if any(f.startswith(path) for path in self.CRITICAL_PATHS)
+        ]
 
         if not critical_files:
             return violations
@@ -200,7 +213,9 @@ class RiskLimitRaiseRule(PolicyRule):
         r"max_drawdown\s*[=:]\s*(\d+\.?\d*)",
     ]
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(
+        self, diff: str, changed_files: List[str], context: Optional[dict] = None
+    ) -> List[Violation]:
         violations = []
         context_dict = context or {}
 
@@ -215,7 +230,10 @@ class RiskLimitRaiseRule(PolicyRule):
                     file_path = NoSecretsRule._extract_file_from_diff_position(diff, match.start())
 
                     # Skip excluded paths: docs/, tmp/, tests/fixtures/
-                    if file_path and any(file_path.startswith(excluded) for excluded in ["docs/", "tmp/", "tests/fixtures/"]):
+                    if file_path and any(
+                        file_path.startswith(excluded)
+                        for excluded in ["docs/", "tmp/", "tests/fixtures/"]
+                    ):
                         continue
 
                     severity = Severity.WARN if has_justification else Severity.BLOCK
@@ -229,11 +247,13 @@ class RiskLimitRaiseRule(PolicyRule):
                             rule_id=self.rule_id,
                             severity=severity,
                             message=message,
-                            evidence=[Evidence(
-                                file_path=file_path or "unknown",
-                                snippet=match.group(0),
-                                pattern=pattern,
-                            )],
+                            evidence=[
+                                Evidence(
+                                    file_path=file_path or "unknown",
+                                    snippet=match.group(0),
+                                    pattern=pattern,
+                                )
+                            ],
                             suggested_fix="Provide justification via --context-json with 'justification' field explaining why limits are changed.",
                         )
                     )
@@ -268,7 +288,9 @@ class MissingTestPlanRule(PolicyRule):
     MIN_LINES_CHANGED = 50  # Threshold for "significant change"
     MIN_LINES_HIGH_CRITICAL = 10  # G3.6: Lower threshold for highly critical paths
 
-    def check(self, diff: str, changed_files: List[str], context: Optional[dict] = None) -> List[Violation]:
+    def check(
+        self, diff: str, changed_files: List[str], context: Optional[dict] = None
+    ) -> List[Violation]:
         violations = []
         context_dict = context or {}
 
@@ -279,17 +301,23 @@ class MissingTestPlanRule(PolicyRule):
             return violations  # No violation if test plan exists
 
         # Check if changes are in critical paths
-        critical_files = [f for f in changed_files if any(f.startswith(path) for path in self.CRITICAL_PATHS)]
+        critical_files = [
+            f for f in changed_files if any(f.startswith(path) for path in self.CRITICAL_PATHS)
+        ]
 
         if not critical_files:
             return violations
 
         # G3.6: Check for highly critical paths (lower threshold)
-        high_critical_files = [f for f in critical_files if any(f.startswith(path) for path in self.HIGH_CRITICAL_PATHS)]
+        high_critical_files = [
+            f
+            for f in critical_files
+            if any(f.startswith(path) for path in self.HIGH_CRITICAL_PATHS)
+        ]
 
         # Count changed lines (rough heuristic)
-        added_lines = len(re.findall(r'^\+[^+]', diff, re.MULTILINE))
-        removed_lines = len(re.findall(r'^-[^-]', diff, re.MULTILINE))
+        added_lines = len(re.findall(r"^\+[^+]", diff, re.MULTILINE))
+        removed_lines = len(re.findall(r"^-[^-]", diff, re.MULTILINE))
         total_changed = added_lines + removed_lines
 
         # G3.6: Use lower threshold for highly critical paths
@@ -302,7 +330,9 @@ class MissingTestPlanRule(PolicyRule):
                     rule_id=self.rule_id,
                     severity=self.severity,
                     message=f"Changes ({total_changed} lines) in {path_type} paths without test plan.",
-                    evidence=[Evidence(file_path=f) for f in critical_files[:3]],  # Limit to first 3
+                    evidence=[
+                        Evidence(file_path=f) for f in critical_files[:3]
+                    ],  # Limit to first 3
                     suggested_fix="Provide test plan via --context-json with 'test_plan' field describing testing approach.",
                 )
             )

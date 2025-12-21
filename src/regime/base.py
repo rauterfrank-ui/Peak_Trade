@@ -12,6 +12,7 @@ Definiert die Core-Typen und Protokolle fuer den Regime-Layer:
 - StrategySwitchDecision: Ergebnis einer Switching-Entscheidung
 - StrategySwitchingPolicy: Protokoll fuer Strategy Switching
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -38,6 +39,7 @@ Regime-Labels fuer Marktphasen:
 # REGIME CONTEXT
 # ============================================================================
 
+
 @dataclass
 class RegimeContext:
     """
@@ -61,6 +63,7 @@ class RegimeContext:
         ...     features={"atr": 1500.0, "volatility_rank": 0.75},
         ... )
     """
+
     timestamp: pd.Timestamp
     window: pd.DataFrame
     symbol: Optional[str] = None
@@ -70,6 +73,7 @@ class RegimeContext:
 # ============================================================================
 # REGIME DETECTOR PROTOCOLS
 # ============================================================================
+
 
 @runtime_checkable
 class RegimeDetector(Protocol):
@@ -135,6 +139,7 @@ class RegimeSeriesDetector(Protocol):
 # STRATEGY SWITCHING
 # ============================================================================
 
+
 @dataclass
 class StrategySwitchDecision:
     """
@@ -156,6 +161,7 @@ class StrategySwitchDecision:
         ...     weights={"mean_reversion_channel": 0.6, "rsi_reversion": 0.4},
         ... )
     """
+
     regime: RegimeLabel
     active_strategies: List[str]
     weights: Optional[Dict[str, float]] = None

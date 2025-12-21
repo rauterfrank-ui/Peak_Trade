@@ -56,6 +56,7 @@ Config-Beispiel (config.toml):
     use_experiments_for_daily_pnl = true
     warning_threshold_factor = 0.8  # Warning ab 80% des Limits
 """
+
 from __future__ import annotations
 
 import logging
@@ -94,6 +95,7 @@ class RiskCheckSeverity(Enum):
 
     Aggregation: Bei mehreren Checks gilt immer die strengste Severity.
     """
+
     OK = "ok"
     WARNING = "warning"
     BREACH = "breach"
@@ -144,7 +146,14 @@ def aggregate_severities(severities: Sequence[RiskCheckSeverity]) -> RiskCheckSe
     """
     if not severities:
         return RiskCheckSeverity.OK
-    return max(severities, key=lambda s: {RiskCheckSeverity.OK: 0, RiskCheckSeverity.WARNING: 1, RiskCheckSeverity.BREACH: 2}[s])
+    return max(
+        severities,
+        key=lambda s: {
+            RiskCheckSeverity.OK: 0,
+            RiskCheckSeverity.WARNING: 1,
+            RiskCheckSeverity.BREACH: 2,
+        }[s],
+    )
 
 
 # =============================================================================
@@ -165,6 +174,7 @@ class LimitCheckDetail:
         severity: Berechnete Severity
         message: Human-readable Nachricht
     """
+
     limit_name: str
     current_value: float
     limit_value: float
@@ -222,6 +232,7 @@ class LiveRiskCheckResult:
         severity == BREACH → allowed muss False sein
         severity in {OK, WARNING} → allowed kann True bleiben
     """
+
     allowed: bool
     reasons: List[str]
     metrics: Dict[str, Any]
@@ -459,9 +470,13 @@ class LiveRiskLimits:
         if check_value >= limit_value:
             severity = RiskCheckSeverity.BREACH
             if invert:
-                message = f"{limit_name}_reached(limit={limit_value:.2f}, value={current_value:.2f})"
+                message = (
+                    f"{limit_name}_reached(limit={limit_value:.2f}, value={current_value:.2f})"
+                )
             else:
-                message = f"{limit_name}_exceeded(max={limit_value:.2f}, observed={current_value:.2f})"
+                message = (
+                    f"{limit_name}_exceeded(max={limit_value:.2f}, observed={current_value:.2f})"
+                )
         elif check_value >= warning_threshold:
             severity = RiskCheckSeverity.WARNING
             ratio = check_value / limit_value * 100
@@ -493,7 +508,7 @@ class LiveRiskLimits:
         if detail.severity == RiskCheckSeverity.WARNING:
             logger.warning(
                 f"[RISK WARNING] {detail.limit_name}: "
-                f"value={detail.current_value:.2f} at {detail.ratio*100:.1f}% of limit={detail.limit_value:.2f}"
+                f"value={detail.current_value:.2f} at {detail.ratio * 100:.1f}% of limit={detail.limit_value:.2f}"
             )
         elif detail.severity == RiskCheckSeverity.BREACH:
             logger.error(

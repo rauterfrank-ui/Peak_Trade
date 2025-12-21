@@ -18,6 +18,7 @@ Usage:
     # Einzelnes Rezept laden
     recipe = get_portfolio_recipe(Path("config/portfolio_recipes.toml"), "rsi_reversion_balanced")
 """
+
 from __future__ import annotations
 
 import logging
@@ -259,4 +260,3 @@ def get_portfolio_recipe(path: Path, recipe_id: str) -> PortfolioRecipe:
         f"Portfolio recipe '{recipe_id}' not found in {path}. "
         f"Available recipes: {', '.join(available)}"
     )
-

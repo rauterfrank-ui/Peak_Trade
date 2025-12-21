@@ -1,16 +1,16 @@
 <!-- templates/peak_trade_dashboard/r_and_d_experiment_comparison.html -->
-<!-- 
+<!--
   R&D Experiment Comparison View v1.0 (Phase 78)
   ==============================================
   Vergleichsansicht für mehrere R&D-Experimente.
-  
+
   Features:
   - Vergleichstabelle mit Kernmetriken
   - Best-Metric-Hervorhebung (CSS-Klasse)
   - Links zu Einzelansichten
   - Status-/Run-Type-Badges
   - Responsive Layout
-  
+
   Struktur:
   1. Header mit Breadcrumb & Anzahl
   2. Vergleichstabelle (horizontal: Experimente, vertikal: Metriken)
@@ -107,7 +107,7 @@
   {# SECTION 1: Header mit Breadcrumb                                        #}
   {# ======================================================================= #}
   <header class="bg-gradient-to-r from-slate-900/80 to-slate-900/40 rounded-2xl border border-slate-800 p-6">
-    
+
     {# Breadcrumb #}
     <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
       <a href="/" class="hover:text-slate-300 transition-colors">Dashboard</a>
@@ -116,7 +116,7 @@
       <span>›</span>
       <span class="text-slate-300">Vergleich</span>
     </nav>
-    
+
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
       <div>
         <div class="flex items-center gap-3">
@@ -133,11 +133,11 @@
           </div>
         </div>
       </div>
-      
+
       {# Actions #}
       <div class="flex items-center gap-2">
-        <a 
-          href="/r_and_d" 
+        <a
+          href="/r_and_d"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
         >
           <span>←</span>
@@ -189,7 +189,7 @@
               </th>
               {% for exp in experiments %}
               <th class="px-3 py-3 text-left min-w-[160px]">
-                <a 
+                <a
                   href="/r_and_d/experiment/{{ exp.run_id }}"
                   class="text-sky-300 hover:text-sky-200 transition-colors text-xs font-medium block truncate"
                   title="{{ exp.run_id }}"
@@ -204,7 +204,7 @@
               {% endfor %}
             </tr>
           </thead>
-          
+
           <tbody class="divide-y divide-slate-800/50">
             {# Meta-Informationen #}
             <tr class="bg-slate-800/20">
@@ -212,7 +212,7 @@
                 📋 Konfiguration
               </td>
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">Tag</td>
               {% for exp in experiments %}
@@ -221,7 +221,7 @@
               </td>
               {% endfor %}
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">Preset</td>
               {% for exp in experiments %}
@@ -230,7 +230,7 @@
               </td>
               {% endfor %}
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">Strategy</td>
               {% for exp in experiments %}
@@ -239,7 +239,7 @@
               </td>
               {% endfor %}
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">Symbol / TF</td>
               {% for exp in experiments %}
@@ -248,7 +248,7 @@
               </td>
               {% endfor %}
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">Timestamp</td>
               {% for exp in experiments %}
@@ -264,7 +264,7 @@
                 📊 Performance
               </td>
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">
                 <span class="flex items-center gap-1">💰 Total Return</span>
@@ -273,7 +273,7 @@
               {{ metric_cell(exp.total_return, best_metrics.total_return, 'percent', true) }}
               {% endfor %}
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">
                 <span class="flex items-center gap-1">📈 Sharpe Ratio</span>
@@ -282,7 +282,7 @@
               {{ metric_cell(exp.sharpe, best_metrics.sharpe, 'decimal', true) }}
               {% endfor %}
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">
                 <span class="flex items-center gap-1">📉 Max Drawdown</span>
@@ -291,7 +291,7 @@
               {{ metric_cell(exp.max_drawdown, best_metrics.max_drawdown, 'percent', true) }}
               {% endfor %}
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">
                 <span class="flex items-center gap-1">🔄 Trades</span>
@@ -300,7 +300,7 @@
               {{ metric_cell(exp.total_trades, best_metrics.total_trades, 'int', true) }}
               {% endfor %}
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">
                 <span class="flex items-center gap-1">🎯 Win Rate</span>
@@ -309,7 +309,7 @@
               {{ metric_cell(exp.win_rate, best_metrics.win_rate, 'percent', true) }}
               {% endfor %}
             </tr>
-            
+
             <tr class="hover:bg-slate-800/30">
               <td class="px-4 py-2 text-sm text-slate-400">
                 <span class="flex items-center gap-1">⚖️ Profit Factor</span>
@@ -325,12 +325,12 @@
                 🔗 Aktionen
               </td>
             </tr>
-            
+
             <tr>
               <td class="px-4 py-2 text-sm text-slate-400">Detail-Ansicht</td>
               {% for exp in experiments %}
               <td class="px-3 py-2">
-                <a 
+                <a
                   href="/r_and_d/experiment/{{ exp.run_id }}"
                   class="inline-flex items-center gap-1 px-2 py-1 rounded bg-sky-600/20 hover:bg-sky-600/40 text-sky-300 text-xs transition-colors"
                 >
@@ -392,6 +392,3 @@
 
 </div>
 {% endblock %}
-
-
-

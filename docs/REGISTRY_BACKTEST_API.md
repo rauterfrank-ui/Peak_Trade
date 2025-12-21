@@ -102,7 +102,7 @@ result = run_portfolio_from_config(
    - Ohne Filter: nutzt `strategies.active` aus Config
    - Mit `strategy_filter`: explizite Liste
    - Mit `regime_filter`: filtert nach `metadata.best_market_regime`
-   
+
 2. **Limit prüfen:** Max. `portfolio.max_strategies_active` Strategien
 
 3. **Capital Allocation:**
@@ -198,7 +198,7 @@ active = ["ma_crossover", "momentum_1h", "rsi_strategy"]
 # Verfügbare Strategien (Dokumentation)
 available = [
     "ma_crossover",
-    "momentum_1h", 
+    "momentum_1h",
     "rsi_strategy",
     "bollinger_bands",
     "macd",

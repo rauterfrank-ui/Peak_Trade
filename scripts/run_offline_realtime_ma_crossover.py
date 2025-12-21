@@ -29,6 +29,7 @@ Usage:
         --fast-window 10 \
         --slow-window 30
 """
+
 from __future__ import annotations
 
 import argparse
@@ -66,15 +67,15 @@ logger = logging.getLogger(__name__)
 def normalize_symbol(symbol: str) -> str:
     """
     Normalisiert ein Trading-Symbol für interne Verwendung.
-    
+
     Konvertiert z.B. "BTC/EUR" -> "BTCEUR" für Exchange-API-Kompatibilität.
-    
+
     Args:
         symbol: Symbol im Format "BASE/QUOTE" (z.B. "BTC/EUR")
-    
+
     Returns:
         Normalisiertes Symbol ohne "/" (z.B. "BTCEUR")
-    
+
     Example:
         >>> normalize_symbol("BTC/EUR")
         'BTCEUR'
@@ -93,7 +94,7 @@ def normalize_symbol(symbol: str) -> str:
 class OfflineSynthSessionConfig:
     """
     Konfiguration für Offline-Synth-Session.
-    
+
     Attributes:
         n_steps: Anzahl der zu generierenden Ticks/Bars
         n_regimes: Anzahl der Regime-Wechsel im synthetischen Verlauf
@@ -101,6 +102,7 @@ class OfflineSynthSessionConfig:
         base_price: Start-Preis
         volatility: Volatilität für Preis-Simulation
     """
+
     n_steps: int = 1000
     n_regimes: int = 3
     seed: int = 42
@@ -112,7 +114,7 @@ class OfflineSynthSessionConfig:
 class OfflineSynthSessionResult:
     """
     Ergebnis einer Offline-Synth-Session.
-    
+
     Attributes:
         df: DataFrame mit OHLCV-Daten (timestamp, open, high, low, close, volume)
         config: Verwendete Config
@@ -120,6 +122,7 @@ class OfflineSynthSessionResult:
         run_id: Eindeutige Run-ID
         metadata: Zusätzliche Metadaten
     """
+
     df: pd.DataFrame
     config: OfflineSynthSessionConfig
     symbol: str
@@ -133,14 +136,14 @@ def run_offline_synth_session(
 ) -> OfflineSynthSessionResult:
     """
     Führt eine Offline-Synth-Session aus und generiert synthetische Marktdaten.
-    
+
     Diese Implementierung ist ein Platzhalter und generiert einfache
     synthetische OHLCV-Daten mit Random-Walk und Regime-Switching.
-    
+
     Args:
         config: Synth-Session-Konfiguration
         symbol: Trading-Symbol
-    
+
     Returns:
         OfflineSynthSessionResult mit generierten Daten
     """
@@ -148,52 +151,52 @@ def run_offline_synth_session(
         f"[SYNTH] Starting offline synth session: "
         f"symbol={symbol}, n_steps={config.n_steps}, n_regimes={config.n_regimes}, seed={config.seed}"
     )
-    
+
     np.random.seed(config.seed)
-    
+
     # Timestamps generieren (minütliche Bars)
     start_time = pd.Timestamp("2024-01-01", tz="UTC")
     timestamps = pd.date_range(start=start_time, periods=config.n_steps, freq="1min")
-    
+
     # Regime-Wechsel einbauen
-    regime_lengths = np.diff(
-        np.linspace(0, config.n_steps, config.n_regimes + 1, dtype=int)
-    )
+    regime_lengths = np.diff(np.linspace(0, config.n_steps, config.n_regimes + 1, dtype=int))
     regimes = np.repeat(np.arange(config.n_regimes), regime_lengths)
-    
+
     # Regime-spezifische Drifts und Volatilitäten
     regime_drift = np.random.randn(config.n_regimes) * 0.0001
     regime_vol = np.abs(np.random.randn(config.n_regimes)) * config.volatility
-    
+
     # Preis-Pfad generieren (Random Walk mit Regime-Switching)
     returns = np.zeros(config.n_steps)
     for i in range(config.n_steps):
         regime = regimes[i]
         returns[i] = regime_drift[regime] + regime_vol[regime] * np.random.randn()
-    
+
     prices = config.base_price * np.exp(np.cumsum(returns))
-    
+
     # OHLCV-Daten generieren (vereinfacht)
-    df = pd.DataFrame({
-        "timestamp": timestamps,
-        "open": prices * (1 + np.random.randn(config.n_steps) * 0.0001),
-        "high": prices * (1 + np.abs(np.random.randn(config.n_steps)) * 0.0005),
-        "low": prices * (1 - np.abs(np.random.randn(config.n_steps)) * 0.0005),
-        "close": prices,
-        "volume": np.random.uniform(0.1, 10.0, config.n_steps),
-    })
-    
+    df = pd.DataFrame(
+        {
+            "timestamp": timestamps,
+            "open": prices * (1 + np.random.randn(config.n_steps) * 0.0001),
+            "high": prices * (1 + np.abs(np.random.randn(config.n_steps)) * 0.0005),
+            "low": prices * (1 - np.abs(np.random.randn(config.n_steps)) * 0.0005),
+            "close": prices,
+            "volume": np.random.uniform(0.1, 10.0, config.n_steps),
+        }
+    )
+
     # High/Low korrigieren (müssen Open/Close umfassen)
     df["high"] = df[["open", "high", "close"]].max(axis=1)
     df["low"] = df[["open", "low", "close"]].min(axis=1)
-    
+
     run_id = f"synth_{symbol}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
-    
+
     logger.info(
         f"[SYNTH] Generated {len(df)} bars. "
         f"Price range: {df['close'].min():.2f} - {df['close'].max():.2f}"
     )
-    
+
     return OfflineSynthSessionResult(
         df=df,
         config=config,
@@ -216,12 +219,13 @@ def run_offline_synth_session(
 class OfflineRealtimeFeedConfig:
     """
     Konfiguration für Offline-Realtime-Feed.
-    
+
     Attributes:
         symbol: Trading-Symbol
         playback_mode: "fast_forward" (ohne Delays) oder "realtime" (mit Delays)
         speed_factor: Geschwindigkeitsfaktor (nur für "realtime"-Modus)
     """
+
     symbol: str
     playback_mode: str = "fast_forward"
     speed_factor: float = 10.0
@@ -230,11 +234,11 @@ class OfflineRealtimeFeedConfig:
 class OfflineRealtimeFeed:
     """
     Feed für Offline-Realtime-Wiedergabe von Synth-Daten.
-    
+
     Simuliert einen Live-Feed durch sequentielle Wiedergabe
     von vorab generierten Daten.
     """
-    
+
     def __init__(
         self,
         df: pd.DataFrame,
@@ -242,7 +246,7 @@ class OfflineRealtimeFeed:
     ) -> None:
         """
         Initialisiert den Offline-Realtime-Feed.
-        
+
         Args:
             df: DataFrame mit OHLCV-Daten
             config: Feed-Konfiguration
@@ -250,7 +254,7 @@ class OfflineRealtimeFeed:
         self.df = df
         self.config = config
         self._current_idx = 0
-    
+
     @classmethod
     def from_synth_session_result(
         cls,
@@ -259,20 +263,20 @@ class OfflineRealtimeFeed:
     ) -> "OfflineRealtimeFeed":
         """
         Factory-Methode: Erstellt Feed aus Synth-Session-Result.
-        
+
         Args:
             result: Synth-Session-Result
             config: Feed-Konfiguration
-        
+
         Returns:
             OfflineRealtimeFeed-Instanz
         """
         return cls(df=result.df, config=config)
-    
+
     def get_data(self) -> pd.DataFrame:
         """Gibt die kompletten Daten zurück (für Backtest-Modus)."""
         return self.df.copy()
-    
+
     def reset(self) -> None:
         """Setzt den Feed zurück auf den Anfang."""
         self._current_idx = 0
@@ -287,23 +291,23 @@ class OfflineRealtimeFeed:
 class OfflineRealtimePipelineStats:
     """
     Performance-Statistiken für Offline-Realtime-Pipeline.
-    
+
     Attributes:
         run_id: Eindeutige Run-ID
         run_type: Run-Typ ("offline_realtime_pipeline")
         symbol: Trading-Symbol
         strategy_id: Strategy-Identifier
         env_mode: Environment-Modus ("paper")
-        
+
         # Synth-Settings
         synth_n_steps: Anzahl der Synth-Steps
         synth_n_regimes: Anzahl der Regime-Wechsel
         synth_seed: Random-Seed
-        
+
         # Strategy-Settings
         fast_window: Fast-MA-Window
         slow_window: Slow-MA-Window
-        
+
         # Performance-Metriken
         n_ticks: Anzahl der verarbeiteten Ticks
         n_orders: Anzahl der generierten Orders
@@ -312,28 +316,29 @@ class OfflineRealtimePipelineStats:
         net_pnl: Netto-PnL (nach Fees)
         fees_paid: Gezahlte Fees
         max_drawdown: Maximaler Drawdown
-        
+
         # Timing
         started_at: Start-Zeitpunkt
         finished_at: End-Zeitpunkt
         duration_seconds: Laufzeit in Sekunden
-        
+
         # Metadata
         metadata: Zusätzliche Metadaten
     """
+
     run_id: str
     run_type: str
     symbol: str
     strategy_id: str
     env_mode: str
-    
+
     synth_n_steps: int
     synth_n_regimes: int
     synth_seed: int
-    
+
     fast_window: int
     slow_window: int
-    
+
     n_ticks: int = 0
     n_orders: int = 0
     n_trades: int = 0
@@ -341,11 +346,11 @@ class OfflineRealtimePipelineStats:
     net_pnl: float = 0.0
     fees_paid: float = 0.0
     max_drawdown: float = 0.0
-    
+
     started_at: Optional[datetime] = None
     finished_at: Optional[datetime] = None
     duration_seconds: float = 0.0
-    
+
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -355,17 +360,17 @@ def write_offline_realtime_report(
 ) -> Path:
     """
     Schreibt einen HTML-Report für Offline-Realtime-Pipeline.
-    
+
     Args:
         stats: Pipeline-Statistiken
         output_dir: Output-Verzeichnis
-    
+
     Returns:
         Pfad zum generierten HTML-Report
     """
     output_dir.mkdir(parents=True, exist_ok=True)
     report_path = output_dir / "summary.html"
-    
+
     # HTML-Report generieren (vereinfacht)
     html_content = f"""
 <!DOCTYPE html>
@@ -444,7 +449,7 @@ def write_offline_realtime_report(
 <body>
     <div class="container">
         <h1>🚀 Offline-Realtime-Pipeline Report</h1>
-        
+
         <div class="section">
             <h2>📊 Run-Informationen</h2>
             <div class="metric">
@@ -469,18 +474,18 @@ def write_offline_realtime_report(
             </div>
             <div class="metric">
                 <div class="metric-label">Started:</div>
-                <div class="metric-value">{stats.started_at.strftime('%Y-%m-%d %H:%M:%S UTC') if stats.started_at else 'N/A'}</div>
+                <div class="metric-value">{stats.started_at.strftime("%Y-%m-%d %H:%M:%S UTC") if stats.started_at else "N/A"}</div>
             </div>
             <div class="metric">
                 <div class="metric-label">Finished:</div>
-                <div class="metric-value">{stats.finished_at.strftime('%Y-%m-%d %H:%M:%S UTC') if stats.finished_at else 'N/A'}</div>
+                <div class="metric-value">{stats.finished_at.strftime("%Y-%m-%d %H:%M:%S UTC") if stats.finished_at else "N/A"}</div>
             </div>
             <div class="metric">
                 <div class="metric-label">Duration:</div>
                 <div class="metric-value">{stats.duration_seconds:.2f}s</div>
             </div>
         </div>
-        
+
         <div class="section">
             <h2>🎲 Synth-Session-Einstellungen</h2>
             <div class="metric">
@@ -496,7 +501,7 @@ def write_offline_realtime_report(
                 <div class="metric-value">{stats.synth_seed}</div>
             </div>
         </div>
-        
+
         <div class="section">
             <h2>📈 Strategie-Parameter</h2>
             <div class="metric">
@@ -508,7 +513,7 @@ def write_offline_realtime_report(
                 <div class="metric-value">{stats.slow_window}</div>
             </div>
         </div>
-        
+
         <div class="section">
             <h2>💰 Performance-Metriken</h2>
             <div class="metric">
@@ -525,11 +530,11 @@ def write_offline_realtime_report(
             </div>
             <div class="metric">
                 <div class="metric-label">Brutto-PnL:</div>
-                <div class="metric-value {'positive' if stats.gross_pnl >= 0 else 'negative'}">{stats.gross_pnl:,.2f} EUR</div>
+                <div class="metric-value {"positive" if stats.gross_pnl >= 0 else "negative"}">{stats.gross_pnl:,.2f} EUR</div>
             </div>
             <div class="metric">
                 <div class="metric-label">Netto-PnL:</div>
-                <div class="metric-value {'positive' if stats.net_pnl >= 0 else 'negative'}"><strong>{stats.net_pnl:,.2f} EUR</strong></div>
+                <div class="metric-value {"positive" if stats.net_pnl >= 0 else "negative"}"><strong>{stats.net_pnl:,.2f} EUR</strong></div>
             </div>
             <div class="metric">
                 <div class="metric-label">Gezahlte Fees:</div>
@@ -540,19 +545,19 @@ def write_offline_realtime_report(
                 <div class="metric-value negative">{stats.max_drawdown:,.2f} EUR</div>
             </div>
         </div>
-        
+
         <div class="footer">
             <p>Generated by Peak_Trade Offline-Realtime-Pipeline</p>
-            <p>Timestamp: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}</p>
+            <p>Timestamp: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")}</p>
         </div>
     </div>
 </body>
 </html>
 """
-    
+
     report_path.write_text(html_content, encoding="utf-8")
     logger.info(f"[REPORT] HTML-Report geschrieben: {report_path}")
-    
+
     return report_path
 
 
@@ -564,10 +569,10 @@ def write_offline_realtime_report(
 def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, Any]:
     """
     Baut die komplette Offline-MA-Crossover-Pipeline.
-    
+
     Args:
         args: Geparste CLI-Argumente
-    
+
     Returns:
         Dict mit Pipeline-Komponenten:
         - synth_result: Synth-Session-Result
@@ -580,20 +585,20 @@ def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, A
     # 1. Symbol normalisieren
     internal_symbol = normalize_symbol(args.symbol)
     logger.info(f"[BUILD] Symbol: {args.symbol} -> {internal_symbol}")
-    
+
     # 2. Synth-Session-Config erstellen
     synth_cfg = OfflineSynthSessionConfig(
         n_steps=args.n_steps,
         n_regimes=args.n_regimes,
         seed=args.seed,
     )
-    
+
     # 3. Synth-Session ausführen
     synth_result = run_offline_synth_session(
         config=synth_cfg,
         symbol=internal_symbol,
     )
-    
+
     # 4. OfflineRealtimeFeed erstellen
     feed_cfg = OfflineRealtimeFeedConfig(
         symbol=internal_symbol,
@@ -602,7 +607,7 @@ def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, A
     )
     feed = OfflineRealtimeFeed.from_synth_session_result(synth_result, feed_cfg)
     logger.info(f"[BUILD] Feed erstellt: {feed.config.playback_mode}-Modus")
-    
+
     # 5. MACrossoverStrategy erstellen
     strategy = MACrossoverStrategy(
         fast_window=args.fast_window,
@@ -612,14 +617,14 @@ def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, A
         f"[BUILD] Strategie erstellt: MA-Crossover "
         f"(fast={args.fast_window}, slow={args.slow_window})"
     )
-    
+
     # 6. Environment-Config
     env_config = EnvironmentConfig(
         environment=TradingEnvironment.PAPER,
         enable_live_trading=False,
         log_all_orders=True,
     )
-    
+
     # 7. PaperOrderExecutor & ExecutionPipeline
     market_ctx = PaperMarketContext(
         prices={internal_symbol: synth_result.df["close"].iloc[0]},
@@ -627,7 +632,7 @@ def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, A
         slippage_bps=5.0,  # 0.05% Slippage
     )
     executor = PaperOrderExecutor(market_ctx)
-    
+
     pipeline_cfg = ExecutionPipelineConfig(
         default_order_type="market",
         max_position_notional_pct=1.0,
@@ -639,7 +644,7 @@ def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, A
         env_config=env_config,
     )
     logger.info("[BUILD] Execution-Pipeline erstellt")
-    
+
     return {
         "synth_result": synth_result,
         "feed": feed,
@@ -664,26 +669,26 @@ def run_pipeline(
 ) -> Dict[str, Any]:
     """
     Führt die Pipeline aus.
-    
+
     Args:
         pipeline: ExecutionPipeline
         strategy: MACrossoverStrategy
         feed: OfflineRealtimeFeed
         symbol: Trading-Symbol
-    
+
     Returns:
         Dict mit Performance-Metriken
     """
     logger.info("[RUN] Starte Pipeline-Ausführung...")
-    
+
     # Daten vom Feed holen
     df = feed.get_data()
-    
+
     # Signale generieren
     logger.info("[RUN] Generiere Signale...")
     signals = strategy.generate_signals(df)
     logger.info(f"[RUN] {len(signals)} Signale generiert")
-    
+
     # Pipeline ausführen
     logger.info("[RUN] Führe Orders aus...")
     results = pipeline.execute_from_signals(
@@ -693,23 +698,23 @@ def run_pipeline(
         base_currency="EUR",
         quote_currency=symbol.replace("EUR", "").replace("/", ""),
     )
-    
+
     logger.info(f"[RUN] {len(results)} Order-Results")
-    
+
     # Performance-Metriken berechnen
     summary = pipeline.get_execution_summary()
-    
+
     # PnL berechnen (vereinfacht)
     filled_results = [r for r in results if r.is_filled and r.fill]
-    
+
     gross_pnl = 0.0
     fees_paid = 0.0
     position = 0.0
     entry_price = 0.0
-    
+
     for result in filled_results:
         fill = result.fill
-        
+
         if fill.side == "buy":
             if position == 0:
                 # Entry Long
@@ -727,21 +732,21 @@ def run_pipeline(
                 if position <= 0:
                     position = 0
                     entry_price = 0
-        
+
         if fill.fee:
             fees_paid += fill.fee
-    
+
     net_pnl = gross_pnl - fees_paid
-    
+
     # Drawdown berechnen (vereinfacht)
     equity_curve = [0.0]
     current_equity = 0.0
     position = 0.0
     entry_price = 0.0
-    
+
     for result in filled_results:
         fill = result.fill
-        
+
         if fill.side == "buy":
             if position == 0:
                 entry_price = fill.price
@@ -752,9 +757,9 @@ def run_pipeline(
                 pnl = (fill.price - entry_price) * min(fill.quantity, position)
                 current_equity += pnl - (fill.fee or 0)
                 position -= fill.quantity
-        
+
         equity_curve.append(current_equity)
-    
+
     # Max Drawdown
     peak = equity_curve[0]
     max_dd = 0.0
@@ -764,12 +769,12 @@ def run_pipeline(
         dd = peak - equity
         if dd > max_dd:
             max_dd = dd
-    
+
     logger.info(
         f"[RUN] Performance: Brutto-PnL={gross_pnl:.2f}, "
         f"Netto-PnL={net_pnl:.2f}, Fees={fees_paid:.2f}, MaxDD={max_dd:.2f}"
     )
-    
+
     return {
         "n_ticks": len(df),
         "n_orders": summary["total_orders"],
@@ -789,7 +794,7 @@ def run_pipeline(
 def parse_args() -> argparse.Namespace:
     """
     Parsed CLI-Argumente.
-    
+
     Returns:
         argparse.Namespace mit geparsten Argumenten
     """
@@ -800,13 +805,13 @@ def parse_args() -> argparse.Namespace:
 Examples:
   # Basic run mit Defaults
   python scripts/run_offline_realtime_ma_crossover.py
-  
+
   # Custom Symbol und MA-Fenster
   python scripts/run_offline_realtime_ma_crossover.py \\
       --symbol BTC/EUR \\
       --fast-window 10 \\
       --slow-window 30
-  
+
   # Lange Simulation mit vielen Regimes
   python scripts/run_offline_realtime_ma_crossover.py \\
       --symbol ETH/USD \\
@@ -816,7 +821,7 @@ Examples:
       --slow-window 50
         """,
     )
-    
+
     # Symbol
     parser.add_argument(
         "--symbol",
@@ -824,7 +829,7 @@ Examples:
         default="BTC/EUR",
         help="Trading-Symbol (z.B. BTC/EUR, ETH/USD). Default: BTC/EUR",
     )
-    
+
     # Synth-Session-Parameter
     parser.add_argument(
         "--n-steps",
@@ -844,7 +849,7 @@ Examples:
         default=42,
         help="Random-Seed für Reproduzierbarkeit. Default: 42",
     )
-    
+
     # MA-Crossover-Parameter
     parser.add_argument(
         "--fast-window",
@@ -858,7 +863,7 @@ Examples:
         default=50,
         help="Slow-MA-Periode. Default: 50",
     )
-    
+
     # Feed-Parameter
     parser.add_argument(
         "--playback-mode",
@@ -873,7 +878,7 @@ Examples:
         default=10.0,
         help="Geschwindigkeitsfaktor für realtime-Modus. Default: 10.0",
     )
-    
+
     # Output
     parser.add_argument(
         "--output-dir",
@@ -881,27 +886,25 @@ Examples:
         default=None,
         help="Output-Verzeichnis für Reports. Default: reports/offline_realtime_pipeline/<run_id>",
     )
-    
+
     # Logging
     parser.add_argument(
         "--verbose",
         action="store_true",
         help="Aktiviert verbose Logging",
     )
-    
+
     args = parser.parse_args()
-    
+
     # Validierung
     if args.fast_window >= args.slow_window:
         parser.error(
             f"fast-window ({args.fast_window}) muss < slow-window ({args.slow_window}) sein"
         )
-    
+
     if args.n_steps < args.slow_window:
-        parser.error(
-            f"n-steps ({args.n_steps}) muss >= slow-window ({args.slow_window}) sein"
-        )
-    
+        parser.error(f"n-steps ({args.n_steps}) muss >= slow-window ({args.slow_window}) sein")
+
     return args
 
 
@@ -913,13 +916,13 @@ Examples:
 def main() -> int:
     """
     Main-Einstiegspunkt.
-    
+
     Returns:
         Exit-Code (0 = Erfolg, 1 = Fehler)
     """
     # CLI-Args parsen
     args = parse_args()
-    
+
     # Logging konfigurieren
     log_level = logging.DEBUG if args.verbose else logging.INFO
     logging.basicConfig(
@@ -927,7 +930,7 @@ def main() -> int:
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
-    
+
     logger.info("=" * 80)
     logger.info("Offline-Realtime MA-Crossover Pipeline")
     logger.info("=" * 80)
@@ -938,15 +941,15 @@ def main() -> int:
     logger.info(f"Slow-Window: {args.slow_window}")
     logger.info(f"Playback-Mode: {args.playback_mode}")
     logger.info("=" * 80)
-    
+
     try:
         # Startzeit
         started_at = datetime.now(timezone.utc)
-        
+
         # Pipeline bauen
         logger.info("[MAIN] Baue Pipeline...")
         components = build_offline_ma_crossover_pipeline(args)
-        
+
         # Pipeline ausführen
         logger.info("[MAIN] Führe Pipeline aus...")
         perf_metrics = run_pipeline(
@@ -955,11 +958,11 @@ def main() -> int:
             feed=components["feed"],
             symbol=components["internal_symbol"],
         )
-        
+
         # Endzeit
         finished_at = datetime.now(timezone.utc)
         duration = (finished_at - started_at).total_seconds()
-        
+
         # Stats zusammenstellen
         stats = OfflineRealtimePipelineStats(
             run_id=components["run_id"],
@@ -977,17 +980,17 @@ def main() -> int:
             duration_seconds=duration,
             **perf_metrics,
         )
-        
+
         # Output-Verzeichnis bestimmen
         if args.output_dir:
             output_dir = args.output_dir
         else:
             output_dir = Path("reports") / "offline_realtime_pipeline" / components["run_id"]
-        
+
         # Report schreiben
         logger.info("[MAIN] Schreibe Report...")
         report_path = write_offline_realtime_report(stats, output_dir)
-        
+
         # Zusammenfassung ausgeben
         logger.info("=" * 80)
         logger.info("✓ Pipeline erfolgreich abgeschlossen")
@@ -1002,9 +1005,9 @@ def main() -> int:
         logger.info(f"Duration: {duration:.2f}s")
         logger.info(f"Report: {report_path.absolute()}")
         logger.info("=" * 80)
-        
+
         return 0
-    
+
     except Exception as e:
         logger.exception(f"[MAIN] Fehler: {e}")
         return 1
@@ -1012,4 +1015,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

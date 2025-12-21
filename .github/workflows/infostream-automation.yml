@@ -28,7 +28,7 @@ on:
   # ===========================================================================
   schedule:
     - cron: "15 3 * * *"
-  
+
   # ===========================================================================
   # Manueller Trigger
   # ===========================================================================
@@ -103,7 +103,7 @@ jobs:
           echo "======================================================================"
           echo "🏥 Running quick TestHealth check to generate fresh reports..."
           echo "======================================================================"
-          
+
           # Nur daily_quick laufen lassen für frische Daten
           python scripts/run_test_health_profile.py \
             --profile daily_quick \
@@ -126,28 +126,28 @@ jobs:
           echo "======================================================================"
           echo "Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           echo ""
-          
+
           # Command zusammenbauen
           CMD="python -m scripts.infostream_run_cycle"
-          
+
           # Optional: Dry-Run
           if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
             CMD="$CMD --dry-run"
             echo "ℹ️  Dry-Run Modus aktiviert"
           fi
-          
+
           # Optional: Skip AI
           if [ "${{ github.event.inputs.skip_ai }}" == "true" ] || [ -z "$OPENAI_API_KEY" ]; then
             CMD="$CMD --skip-ai"
             echo "ℹ️  KI-Auswertung übersprungen"
           fi
-          
+
           echo "📋 Command: $CMD"
           echo ""
-          
+
           # Ausführen
           $CMD
-          
+
           # Exit-Code speichern
           echo "exit_code=$?" >> $GITHUB_OUTPUT
 
@@ -160,24 +160,24 @@ jobs:
           echo "======================================================================"
           echo "📝 Checking for changes to commit..."
           echo "======================================================================"
-          
+
           # Git konfigurieren
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
-          
+
           # Prüfe ob Änderungen vorhanden
           if git status --porcelain | grep -q .; then
             echo "Änderungen gefunden:"
             git status --short
-            
+
             # Alle relevanten Änderungen stagen
             git add reports/infostream/
             git add docs/mindmap/INFOSTREAM_LEARNING_LOG.md
-            
+
             # Commit erstellen
             TIMESTAMP=$(date -u +'%Y-%m-%d %H:%M UTC')
             git commit -m "🤖 InfoStream: Auto-update learnings ($TIMESTAMP)" || echo "Nothing to commit"
-            
+
             # Push
             git push origin main || echo "⚠️  Push fehlgeschlagen - evtl. keine Schreibrechte"
           else
@@ -206,19 +206,19 @@ jobs:
         run: |
           echo "## 🔄 InfoStream Cycle Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Events zählen
           EVENTS_COUNT=0
           if [ -d "reports/infostream/events" ]; then
             EVENTS_COUNT=$(ls -1 reports/infostream/events/*.json 2>/dev/null | wc -l || echo "0")
           fi
-          
+
           # Evals zählen
           EVALS_COUNT=0
           if [ -d "reports/infostream/evals" ]; then
             EVALS_COUNT=$(ls -1 reports/infostream/evals/*.json 2>/dev/null | wc -l || echo "0")
           fi
-          
+
           echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| **Events (total)** | $EVENTS_COUNT |" >> $GITHUB_STEP_SUMMARY
@@ -226,13 +226,13 @@ jobs:
           echo "| **Dry-Run** | ${{ github.event.inputs.dry_run || 'false' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Skip AI** | ${{ github.event.inputs.skip_ai || 'false' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Learning-Log Statistiken
           if [ -f "docs/mindmap/INFOSTREAM_LEARNING_LOG.md" ]; then
             LEARNING_ENTRIES=$(grep -c "^### INF-" docs/mindmap/INFOSTREAM_LEARNING_LOG.md 2>/dev/null || echo "0")
             echo "**Learning-Log Entries:** $LEARNING_ENTRIES" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📄 **Artifacts**: Siehe CI-Artefakte (infostream-results-${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
 

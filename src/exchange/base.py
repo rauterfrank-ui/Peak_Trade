@@ -14,6 +14,7 @@ Dieses Modul definiert:
 Phase 38: TradingExchangeClient ermöglicht Order-Platzierung via Exchange-API.
           ExchangeClient bleibt weiterhin read-only.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

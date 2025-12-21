@@ -67,7 +67,7 @@ def compute_simple_pnl(df: pd.DataFrame, signals: pd.Series) -> pd.Series:
 
 def print_strategy_stats(name: str, df: pd.DataFrame, signals: pd.Series) -> None:
     """Gibt einfache Statistiken zur Strategie aus."""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Strategie: {name}")
     print("=" * 60)
 
@@ -77,7 +77,7 @@ def print_strategy_stats(name: str, df: pd.DataFrame, signals: pd.Series) -> Non
     print(f"\nSignal-Verteilung (n={total}):")
     for val, count in value_counts.items():
         label = {1: "Long", -1: "Short", 0: "Flat"}[val]
-        print(f"  {label:6s}: {count:5d} ({100*count/total:.1f}%)")
+        print(f"  {label:6s}: {count:5d} ({100 * count / total:.1f}%)")
 
     # Einfache P&L
     cumulative_pnl = compute_simple_pnl(df, signals)
@@ -85,8 +85,8 @@ def print_strategy_stats(name: str, df: pd.DataFrame, signals: pd.Series) -> Non
     max_dd = (cumulative_pnl.cummax() - cumulative_pnl).max()
 
     print(f"\nPerformance (einfache Simulation):")
-    print(f"  Total Return:   {100*final_pnl:+.2f}%")
-    print(f"  Max Drawdown:   {100*max_dd:.2f}%")
+    print(f"  Total Return:   {100 * final_pnl:+.2f}%")
+    print(f"  Max Drawdown:   {100 * max_dd:.2f}%")
 
     # Signal-Wechsel zählen
     signal_changes = (signals != signals.shift(1)).sum()

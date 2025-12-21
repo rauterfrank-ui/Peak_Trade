@@ -16,6 +16,7 @@ Lookup-Reihenfolge:
 3. Nur Category: (category, None, None)
 4. Default: Leere Liste
 """
+
 from __future__ import annotations
 
 import logging
@@ -191,10 +192,10 @@ def resolve_runbooks_for_alert(alert: Any) -> List[RunbookLink]:
 
     # Lookup-Reihenfolge
     lookup_keys = [
-        (category, source, severity),      # Exakt
-        (category, source, None),          # Ohne Severity
-        (category, None, severity),        # Ohne Source
-        (category, None, None),            # Nur Category
+        (category, source, severity),  # Exakt
+        (category, source, None),  # Ohne Severity
+        (category, None, severity),  # Ohne Source
+        (category, None, None),  # Nur Category
     ]
 
     runbook_ids: List[str] = []

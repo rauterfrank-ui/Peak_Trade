@@ -299,12 +299,12 @@ Nutze diesen Schritt in der Demo, um Operatoren und Stakeholdern den Live-Track-
 > 5. **Operator-Links highlighten** – Zeigen, dass aus dem Explorer heraus Playbook- und Runbook-Links verfügbar sind (für Reviews, Drills, Post-Mortems).
 
 **Kurz-Fazit (für die Demo):**  
-Der Operator startet die Session über CLI – das Dashboard macht den Live-Track-Stack sichtbar, ohne Orders direkt auszulösen. 
+Der Operator startet die Session über CLI – das Dashboard macht den Live-Track-Stack sichtbar, ohne Orders direkt auszulösen.
 So können Monitoring, Reviews und Schulungen durchgeführt werden, bevor echte Orders jemals das Haus verlassen.
 
 #### Storyboard: Ideale Demo-Session im Web-Dashboard v1.1
 
-Um die Live-Track-Demo greifbar zu machen, empfiehlt es sich, 3–4 Screens im Web-Dashboard v1.1 vorzubereiten. 
+Um die Live-Track-Demo greifbar zu machen, empfiehlt es sich, 3–4 Screens im Web-Dashboard v1.1 vorzubereiten.
 So entsteht ein konsistentes Narrativ für Operatoren, Quant-Leads und Stakeholder:
 
 - **Screen 1 – System-Status & Tiering (Landing-Page)**  
@@ -323,7 +323,7 @@ So entsteht ein konsistentes Narrativ für Operatoren, Quant-Leads und Stakehold
   - Message: *„Wir können jede Session im Detail nachvollziehen und reviewen."*
 
 - **Screen 4 (optional) – Incident-/Review-Sicht**  
-  - Falls verfügbar: Beispiel einer Session mit einem auffälligen Ergebnis (z.B. Error/Warning) 
+  - Falls verfügbar: Beispiel einer Session mit einem auffälligen Ergebnis (z.B. Error/Warning)
     und referenziertem Incident/Review.  
   - Message: *„Auch wenn etwas schiefgeht, bleibt der Prozess nachvollziehbar und auditierbar."*
 
