@@ -82,12 +82,31 @@ def get_templates() -> Jinja2Templates:
 
 def _get_workflow_definitions() -> List[Dict[str, Any]]:
     """
-    Define the 4 core ops workflow scripts.
+    Define the 5 core ops workflow scripts.
 
     Returns:
         List of workflow definitions (without filesystem metadata).
     """
     return [
+        {
+            "id": "merge_and_format_sweep",
+            "title": "Merge + Format Sweep Workflow",
+            "description": (
+                "Standardisierter Merge-Prozess + optionaler Format-Sweep. "
+                "Merged PR, führt pre-commit aus, erstellt Format-Sweep PR. "
+                "Inkl. Large-PR Handling Simulation."
+            ),
+            "script_path": "scripts/workflows/merge_and_format_sweep.sh",
+            "commands": [
+                "PR_NUM=<nummer> ./scripts/workflows/merge_and_format_sweep.sh",
+                "PR_NUM=<nummer> RUN_LARGE_SIM=1 LARGE_SIM_FILES=1250 ./scripts/workflows/merge_and_format_sweep.sh",
+            ],
+            "docs_refs": [
+                "docs/ops/WORKFLOW_MERGE_AND_FORMAT_SWEEP.md",
+                "docs/ops/CI_LARGE_PR_HANDLING.md",
+                "scripts/workflows/merge_and_format_sweep.sh",
+            ],
+        },
         {
             "id": "post_merge_pr203",
             "title": "Post-Merge Workflow PR203",
