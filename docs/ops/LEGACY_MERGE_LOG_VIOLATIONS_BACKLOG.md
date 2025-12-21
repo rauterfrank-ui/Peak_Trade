@@ -1,100 +1,115 @@
 # Legacy Merge Log Violations Backlog
 
-**Status:** legacy-only (non-blocking CI guard aktiv)  
-**Letzter Audit-Run:** 2025-12-21  
-**Gesamt-Violations:** 27 von 28 Logs haben Violations
+**Generated:** 2025-12-21 17:09:35  
+**Status:** Forward-only policy active (CI guard non-blocking)  
+**Total Logs:** 28  
+**Compliant:** 1  
+**With Violations:** 27
 
-## Ziel
+## Goal
 
-- **Forward-only Policy:** Neue Merge Logs müssen dem kompakten Standard entsprechen
-- Legacy-Logs werden nur nach Bedarf/priorisiert migriert
-- CI Guard ist non-blocking, um bestehende Workflows nicht zu blockieren
+- **Forward-only Policy:** New merge logs must comply with compact standard
+- Legacy logs are migrated on-demand, prioritized by leverage
+- CI guard is non-blocking to avoid workflow disruption
 
-## Standard-Requirements
+## Standard Requirements
 
-Alle neuen `PR_*_MERGE_LOG.md` Dateien müssen folgende Requirements erfüllen:
+All new `PR_*_MERGE_LOG.md` files must include:
 
-### Header-Felder (Pflicht)
-- `**Title:**` — PR-Titel
-- `**PR:**` — PR-Nummer (#XXX)
-- `**Merged:**` — Merge-Datum (YYYY-MM-DD)
-- `**Merge Commit:**` — Commit-Hash (kurz)
-- `**Branch:**` — Branch-Name (deleted/aktiv)
-- `**Change Type:**` — Art der Änderung (additiv, breaking, etc.)
+### Required Headers
+- `**Title:**` — PR title
+- `**PR:**` — PR number (#XXX)
+- `**Merged:**` — Merge date (YYYY-MM-DD)
+- `**Merge Commit:**` — Commit hash (short)
+- `**Branch:**` — Branch name (deleted/active)
+- `**Change Type:**` — Change type (additive, breaking, etc.)
 
-### Sections (Pflicht)
-- `## Summary` — Kurze Zusammenfassung (2-3 Sätze)
-- `## Motivation` — Warum diese Änderung?
-- `## Changes` — Was wurde geändert? (strukturiert)
-- `## Files Changed` — Dateiliste mit Checksums
-- `## Verification` — CI-Checks, lokale Tests
-- `## Risk Assessment` — Risikobewertung
+### Required Sections
+- `## Summary` — Brief summary (2-3 sentences)
+- `## Motivation` — Why this change?
+- `## Changes` — What changed? (structured)
+- `## Files Changed` — File list with checksums
+- `## Verification` — CI checks, local tests
+- `## Risk Assessment` — Risk evaluation
 
-### Kompaktheit
-- **< 200 Zeilen** (Richtwert)
-- Fokus auf Essentials, keine ausschweifenden Details
+### Compactness
+- **< 200 lines** (guideline)
+- Focus on essentials, avoid verbose details
 
-## Hinweise
+## Reference Implementation
 
-- **Source of Truth:** `scripts/audit/check_ops_merge_logs.py`
-- **CI Guard:** `.github/workflows/audit.yml` (non-blocking step)
-- **Reports:** `reports/ops/merge_log_violations_*.txt`
+✅ **`docs/ops/PR_206_MERGE_LOG.md`** — Use as template for new logs
 
-## Top Violations (nach Schwere)
+## Prioritized Backlog
 
-### Kategorie 1: Komplett inkomplette Logs (>10 Violations)
-- `PR_112_MERGE_LOG.md` — 11 Violations
-- `PR_154_MERGE_LOG.md` — 11 Violations
-- `PR_186_MERGE_LOG.md` — 11 Violations
-- `PR_87_MERGE_LOG.md` — 12 Violations
-- `PR_90_MERGE_LOG.md` — 12 Violations
-- `PR_93_MERGE_LOG.md` — 11 Violations
+**Strategy:** Newest PRs first (highest leverage, likely more relevant)
 
-### Kategorie 2: Fehlende Header + Sections (9-10 Violations)
-- `PR_110_MERGE_LOG.md` — 10 Violations
-- `PR_114_MERGE_LOG.md` — 9 Violations
-- `PR_116_MERGE_LOG.md` — 10 Violations
-- `PR_121_MERGE_LOG.md` — 10 Violations
-- `PR_136_MERGE_LOG.md` — 9 Violations
-- `PR_161_MERGE_LOG.md` — 10 Violations
-- `PR_180_MERGE_LOG.md` — 10 Violations
-- `PR_182_MERGE_LOG.md` — 10 Violations
-- `PR_185_MERGE_LOG.md` — 9 Violations
-- `PR_193_MERGE_LOG.md` — 9 Violations
-- `PR_199_MERGE_LOG.md` — 10 Violations
-- `PR_201_MERGE_LOG.md` — 10 Violations
-- `PR_204_MERGE_LOG.md` — 9 Violations
-- `PR_76_MERGE_LOG.md` — 9 Violations
-- `PR_78_MERGE_LOG.md` — 9 Violations
-- `PR_80_MERGE_LOG.md` — 9 Violations
-- `PR_85_MERGE_LOG.md` — 9 Violations
+### High Priority (≥10 violations)
 
-### Kategorie 3: Teilweise konform (7-8 Violations)
-- `PR_143_MERGE_LOG.md` — 8 Violations
-- `PR_183_MERGE_LOG.md` — 7 Violations
-- `PR_195_MERGE_LOG.md` — 8 Violations
-- `PR_197_MERGE_LOG.md` — 8 Violations
+- [ ] **PR #201** — `PR_201_MERGE_LOG.md` (10E, 0W)
+- [ ] **PR #199** — `PR_199_MERGE_LOG.md` (9E, 1W)
+- [ ] **PR #186** — `PR_186_MERGE_LOG.md` (10E, 1W)
+- [ ] **PR #182** — `PR_182_MERGE_LOG.md` (9E, 1W)
+- [ ] **PR #180** — `PR_180_MERGE_LOG.md` (9E, 1W)
+- [ ] **PR #161** — `PR_161_MERGE_LOG.md` (9E, 1W)
+- [ ] **PR #154** — `PR_154_MERGE_LOG.md` (11E, 0W)
+- [ ] **PR #121** — `PR_121_MERGE_LOG.md` (10E, 0W)
+- [ ] **PR #116** — `PR_116_MERGE_LOG.md` (10E, 0W)
+- [ ] **PR #112** — `PR_112_MERGE_LOG.md` (11E, 0W)
+- [ ] **PR #110** — `PR_110_MERGE_LOG.md` (10E, 0W)
+- [ ] **PR #93** — `PR_93_MERGE_LOG.md` (11E, 0W)
+- [ ] **PR #90** — `PR_90_MERGE_LOG.md` (11E, 1W)
+- [ ] **PR #87** — `PR_87_MERGE_LOG.md` (12E, 0W)
 
-### Kategorie 4: Konform ✅
-- `PR_206_MERGE_LOG.md` — 0 Violations (Referenz-Implementierung)
+### Medium Priority (5-9 violations)
 
-## Backlog-Strategie
+- [ ] **PR #204** — `PR_204_MERGE_LOG.md` (9E, 0W)
+- [ ] **PR #197** — `PR_197_MERGE_LOG.md` (7E, 1W)
+- [ ] **PR #195** — `PR_195_MERGE_LOG.md` (7E, 1W)
+- [ ] **PR #193** — `PR_193_MERGE_LOG.md` (9E, 0W)
+- [ ] **PR #185** — `PR_185_MERGE_LOG.md` (8E, 1W)
+- [ ] **PR #183** — `PR_183_MERGE_LOG.md` (6E, 1W)
+- [ ] **PR #143** — `PR_143_MERGE_LOG.md` (8E, 0W)
+- [ ] **PR #136** — `PR_136_MERGE_LOG.md` (9E, 0W)
+- [ ] **PR #114** — `PR_114_MERGE_LOG.md` (9E, 0W)
+- [ ] **PR #85** — `PR_85_MERGE_LOG.md` (9E, 0W)
+- [ ] **PR #80** — `PR_80_MERGE_LOG.md` (9E, 0W)
+- [ ] **PR #78** — `PR_78_MERGE_LOG.md` (9E, 0W)
+- [ ] **PR #76** — `PR_76_MERGE_LOG.md` (9E, 0W)
 
-1. **Forward-only:** Alle neuen PRs (ab PR #207) müssen konform sein
-2. **Legacy-Migration:** Optional, priorisiert nach Bedarf
-3. **Templates:** `PR_206_MERGE_LOG.md` als Vorlage für neue Logs verwenden
-4. **Automation:** CI Guard warnt bei Violations, blockiert aber nicht
+## Tools & Resources
 
-## Migration-Priorität (optional)
+### Audit Tool
+```bash
+# Check all logs
+python scripts/audit/check_ops_merge_logs.py
 
-Falls Legacy-Migration gewünscht:
+# Generate reports
+python scripts/audit/check_ops_merge_logs.py \
+  --report-md reports/ops/violations.md \
+  --report-json reports/ops/violations.json
+```
 
-1. **Hoch:** Kategorie 1 (komplett inkomplett)
-2. **Mittel:** Kategorie 2 (9-10 Violations)
-3. **Niedrig:** Kategorie 3 (7-8 Violations)
+### Regenerate This Backlog
+```bash
+python scripts/ops/generate_legacy_merge_log_backlog.py
+```
 
-## Referenz
+### CI Integration
+- **Workflow:** `.github/workflows/audit.yml`
+- **Status:** Non-blocking guard active
+- **Future:** Can flip to blocking when legacy backlog is cleared
 
-- **Template:** `docs/ops/PR_206_MERGE_LOG.md`
-- **Audit-Tool:** `scripts/audit/check_ops_merge_logs.py`
-- **Workflow:** `scripts/workflows/pr_merge_with_ops_audit.sh`
+## Migration Strategy
+
+1. **Forward-only:** All new PRs must be compliant (enforced by review)
+2. **Legacy:** Migrate on-demand, starting with high-priority items
+3. **Template:** Use `PR_206_MERGE_LOG.md` as reference
+4. **Review:** Update this backlog after migrations
+
+## Next Steps
+
+1. New PRs: Use compliant format (see reference implementation)
+2. Legacy: Pick items from backlog as needed/prioritized
+3. CI Guard: Keep non-blocking until backlog is significantly reduced
+4. Documentation: Keep this backlog up-to-date by re-running generator
