@@ -433,3 +433,7 @@ The trend analysis includes a simple readiness assessment:
 - Stage1 Scripts schreiben zusätzliche JSON Files (bestehende Markdown Reports unverändert)
 - Keine Breaking Changes an bestehenden Workflows
 - Falls JSON Files fehlen: Empty State im Dashboard, keine Errors
+
+## Merge Logs
+
+- [PR #209](PR_209_MERGE_LOG.md) — docs(ops): add merge log for PR #208 (ops workflow hub) (merged 2025-12-21)
