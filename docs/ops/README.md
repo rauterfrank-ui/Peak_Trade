@@ -184,6 +184,7 @@ Konvention:
 
 Post-merge documentation logs for operational PRs.
 
+- [PR #211](PR_211_MERGE_LOG.md) — docs(ops): add PR #210 merge log (merged 2025-12-21)
 - [PR #204](PR_204_MERGE_LOG.md) – docs(ops): workflow scripts documentation + automation infrastructure
 - [PR #203](PR_203_MERGE_LOG.md) – test(viz): skip matplotlib-based report/plot tests when matplotlib missing
 - [PR #201](PR_201_MERGE_LOG.md) – Web-UI tests optional via extras + importorskip
