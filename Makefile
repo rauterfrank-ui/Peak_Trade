@@ -106,3 +106,37 @@ mlflow-reset:
 mlflow-smoke:
 	@echo "Using MLFLOW_TRACKING_URI=http://localhost:$${MLFLOW_PORT:-5001}"
 	@MLFLOW_TRACKING_URI="http://localhost:$${MLFLOW_PORT:-5001}" python3 -c 'import mlflow; mlflow.set_experiment("peak_trade_local_docker"); r = mlflow.start_run(run_name="make_mlflow_smoke"); mlflow.log_param("ui_port", 5001); mlflow.log_metric("ok", 1.0); mlflow.end_run(); print("✅ logged run to", mlflow.get_tracking_uri())'
+
+# ============================================================================
+# Merge-Log PR Workflow
+# ============================================================================
+
+.PHONY: mlog mlog-auto mlog-review mlog-no-web mlog-manual
+
+# Generic target with MODE parameter
+mlog:
+	@if [ -z "$(PR)" ]; then \
+		echo "❌ Missing required argument: PR"; \
+		echo "Usage: make mlog PR=<NUM> MODE=<auto|review|no-web|manual>"; \
+		echo "  or: make mlog-auto PR=<NUM>"; \
+		echo "  or: make mlog-review PR=<NUM>"; \
+		echo "  or: make mlog-no-web PR=<NUM>"; \
+		echo "  or: make mlog-manual PR=<NUM>"; \
+		exit 2; \
+	fi
+	@MODE=$${MODE:-auto}; \
+	echo "Running merge-log workflow: PR=$(PR) MODE=$$MODE"; \
+	bash scripts/ops/run_merge_log_workflow_robust.sh $(PR) $$MODE
+
+# Convenience targets (auto-set MODE)
+mlog-auto:
+	@$(MAKE) mlog PR=$(PR) MODE=auto
+
+mlog-review:
+	@$(MAKE) mlog PR=$(PR) MODE=review
+
+mlog-no-web:
+	@$(MAKE) mlog PR=$(PR) MODE=no-web
+
+mlog-manual:
+	@$(MAKE) mlog PR=$(PR) MODE=manual
