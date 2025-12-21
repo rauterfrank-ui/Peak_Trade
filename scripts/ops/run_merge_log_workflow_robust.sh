@@ -143,6 +143,7 @@ fi
 # Normal Mode: Proceed with workflow
 # ─────────────────────────────────────────────────────────────
 
+echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Peak_Trade: Merge-Log Workflow für PR #${PR}"
 echo "Mode: ${MODE}"
