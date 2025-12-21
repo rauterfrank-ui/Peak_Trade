@@ -180,7 +180,9 @@ Konvention:
 
 ---
 
-## Merge Logs (Ops)
+## Merge Log
+- [PR #212](PR_212_MERGE_LOG.md) — docs(ops): add PR #211 merge log (merged 2025-12-21)
+s (Ops)
 
 Post-merge documentation logs for operational PRs.
 

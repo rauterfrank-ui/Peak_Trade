@@ -1377,6 +1377,7 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 **Peak_Trade** – Ein produktionsnahes Trading-Research-Framework mit integrierter Safety-First-Architektur.
 
 ## Changelog
+- 2025-12-21 — PR #212 merged: added merge log for PR #211.
 - 2025-12-21 — PR #211 merged: added merge log for PR #210.
 - 2025-12-21 — PR #210 merged: added merge log for PR #209.
 - 2025-12-21 — PR #209 merged: added merge log for PR #208 (Ops Workflow Hub).
