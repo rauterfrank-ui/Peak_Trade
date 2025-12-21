@@ -339,6 +339,10 @@ reports/obs/stage1/
 - Workflow Scripts → WORKFLOW_SCRIPTS.md
 - [WORKFLOW_MERGE_AND_FORMAT_SWEEP.md](WORKFLOW_MERGE_AND_FORMAT_SWEEP.md) — Merge PRs safely + optional format sweep (pairs with `scripts/workflows/merge_and_format_sweep.sh` and `CI_LARGE_PR_HANDLING.md`)
 
+### Workflow Automation Scripts
+
+- `scripts/ops/run_ops_convenience_pack_pr.sh` — End-to-end PR creation for ops convenience updates (auto-stash, quality checks, PR creation/merge)
+
 ## Utilities
 
 - `src/utils/md_helpers.py` — Markdown helpers (`pick_first_existing`, `ensure_section_insert_at_top`) + tests: `tests/test_md_helpers.py` (2025-12-20)
@@ -445,6 +449,73 @@ The trend analysis includes a simple readiness assessment:
 ### Templates
 
 - [MERGE_LOG_TEMPLATE_COMPACT](MERGE_LOG_TEMPLATE_COMPACT.md) — Standardvorlage (kompakt, fokussiert)
+
+### Merge-Log PR Workflow (robust)
+
+Vollautomatisierter Workflow zur Erstellung von Merge-Logs für bereits gemergte PRs.
+
+#### Quick Commands (via Makefile)
+
+```bash
+# Standard: Auto-Merge + Browser öffnen
+make mlog-auto PR=207
+
+# Review-Mode: Kein Auto-Merge (manuelle Prüfung)
+make mlog-review PR=207
+
+# Kein Browser öffnen
+make mlog-no-web PR=207
+
+# Vollständig manuell: Kein Browser + kein Auto-Merge
+make mlog-manual PR=207
+
+# Generisch mit MODE parameter
+make mlog PR=207 MODE=auto
+```
+
+#### Wrapper Script (End-to-End)
+
+Der Workflow-Wrapper orchestriert den kompletten Prozess:
+
+```bash
+bash scripts/ops/run_merge_log_workflow_robust.sh <PR_NUMBER> [MODE]
+```
+
+**Modi:**
+- `auto` (default): Standard-Workflow mit Auto-Merge + Browser
+- `review`: Kein Auto-Merge (für manuelle Review)
+- `no-web`: Kein Browser öffnen
+- `manual`: Kombiniert `no-web` + `review` (vollständig manuell)
+
+**Workflow-Schritte:**
+1. Preflight: main checkout, pull, auth check
+2. Merge-Log generieren + PR erstellen
+3. Ultra-robuste PR-Detection (Branch + Title Search)
+4. CI checks watch + optional auto-merge
+5. Lokal main updaten
+
+#### Core Tool (Direktaufruf)
+
+Für erweiterte Szenarien kann das Core-Tool direkt aufgerufen werden:
+
+```bash
+# Standard: Auto-Merge + Browser
+bash scripts/ops/create_and_open_merge_log_pr.sh --pr 207
+
+# Flags für manuelle Kontrolle
+bash scripts/ops/create_and_open_merge_log_pr.sh --pr 207 --no-merge      # Kein Auto-Merge
+bash scripts/ops/create_and_open_merge_log_pr.sh --pr 207 --no-web        # Kein Browser
+bash scripts/ops/create_and_open_merge_log_pr.sh --pr 207 --no-web --no-merge  # Beide
+```
+
+#### Manual CI Check Watch
+
+Falls du im manuellen Modus arbeitest und CI checks manuell verfolgen möchtest:
+
+```bash
+# Watch CI checks für eine PR
+gh pr checks <PR_NUMBER> --watch
+```
 
 ### Recent Merge Logs
 
