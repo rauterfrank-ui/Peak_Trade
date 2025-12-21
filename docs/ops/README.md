@@ -447,5 +447,6 @@ The trend analysis includes a simple readiness assessment:
 
 ### Recent Merge Logs
 
+- [PR #225](PR_225_MERGE_LOG.md) — fix(quarto): make backtest report template no-exec (merged 2025-12-21)
 - [PR #210](PR_210_MERGE_LOG.md) — docs(ops): add merge log for PR #209 (merged 2025-12-21)
 - [PR #209](PR_209_MERGE_LOG.md) — docs(ops): add merge log for PR #208 (ops workflow hub) (merged 2025-12-21)
