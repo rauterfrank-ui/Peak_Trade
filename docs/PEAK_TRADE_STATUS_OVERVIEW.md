@@ -1378,3 +1378,4 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 
 ## Changelog
 - 2025-12-21: PR #201 – Web-UI tests optional via extras (Core ohne Web-Stack lauffähig)
+- 2025-12-21: Workflow Scripts Dokumentation – Ops-Automations-Guide (post_merge_workflow, quick_pr_merge)
