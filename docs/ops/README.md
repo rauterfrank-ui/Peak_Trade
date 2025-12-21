@@ -343,6 +343,50 @@ reports/obs/stage1/
 
 - `scripts/ops/run_ops_convenience_pack_pr.sh` — End-to-end PR creation for ops convenience updates (auto-stash, quality checks, PR creation/merge)
 
+---
+
+## Git / PR Convenience Scripts
+
+### `scripts/git_push_and_pr.sh` — Push + PR aus bestehenden Commits
+
+Dieses Script macht aus bereits vorhandenen lokalen Commits **automatisch einen PR** (ohne manuelles Branch-Gefummel).
+
+**Was es macht:**
+- ✅ Preflight: bricht ab, wenn der Working Tree nicht clean ist
+- ✅ `fetch --prune` von `origin`
+- ✅ zeigt die letzten Commits
+- ✅ prüft, ob `HEAD` **ahead** von `origin/main` ist
+- ✅ wenn du auf `main` bist: erstellt automatisch einen PR-Branch (mit Datum + SHA)
+- ✅ pusht den Branch (`git push -u origin <branch>`)
+- ✅ erstellt PR via `gh pr create --fill` (Titel/Beschreibung aus Commits)
+- ✅ öffnet PR und watched CI (`gh pr checks --watch`)
+
+**Voraussetzungen:**
+- Git remote `origin` vorhanden
+- `gh` CLI installiert + authentifiziert (empfohlen):
+  ```bash
+  gh auth status
+  ```
+
+**Usage:**
+```bash
+cd ~/Peak_Trade
+./scripts/git_push_and_pr.sh
+```
+
+**Typischer Workflow:**
+```bash
+# 1. Commits erstellen (normal)
+git add .
+git commit -m "feat: mein neues Feature"
+
+# 2. Skript ausführen (macht Branch + Push + PR)
+./scripts/git_push_and_pr.sh
+```
+
+**Fallback (ohne `gh` CLI):**
+- Skript zeigt GitHub-URL zum manuellen PR-Erstellen
+
 ## Utilities
 
 - `src/utils/md_helpers.py` — Markdown helpers (`pick_first_existing`, `ensure_section_insert_at_top`) + tests: `tests/test_md_helpers.py` (2025-12-20)
