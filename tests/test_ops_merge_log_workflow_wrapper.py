@@ -7,6 +7,7 @@ um keine echten Git/GitHub Aktionen zu triggern.
 
 import subprocess
 from pathlib import Path
+from typing import Optional
 
 
 # ============================================================================
@@ -16,17 +17,20 @@ from pathlib import Path
 SCRIPT_PATH = Path(__file__).parent.parent / "scripts/ops/run_merge_log_workflow_robust.sh"
 
 
-def run_wrapper(*args: str) -> subprocess.CompletedProcess:
+def run_wrapper(*args: str, extra_env: Optional[dict] = None) -> subprocess.CompletedProcess:
     """
     Führt den Wrapper-Script im TEST_MODE aus.
 
     Args:
         *args: Positional arguments für das Script (z.B. "207", "auto")
+        extra_env: Optionale zusätzliche Environment-Variablen
 
     Returns:
         CompletedProcess mit stdout/stderr/returncode
     """
     env = {"PEAK_TRADE_TEST_MODE": "1"}
+    if extra_env:
+        env.update(extra_env)
     result = subprocess.run(
         ["bash", str(SCRIPT_PATH), *args],
         capture_output=True,
@@ -129,3 +133,84 @@ def test_default_mode_is_auto():
     # Keine flags
     assert "--no-merge" not in result.stdout
     assert "--no-web" not in result.stdout
+
+
+# ============================================================================
+# Depth=1 Policy Tests
+# ============================================================================
+
+
+def test_depth1_policy_blocks_merge_log_pr():
+    """Test: Depth=1 policy blocks merge-log PRs (exit 2)"""
+    # Simulate a merge-log PR title
+    result = run_wrapper(
+        "207",
+        "auto",
+        extra_env={"PEAK_TEST_PR_TITLE": "docs(ops): add PR #123 merge log"},
+    )
+
+    assert result.returncode == 2, f"Expected exit 2, got {result.returncode}"
+    assert "⛔ Depth=1 Policy Violation" in result.stdout
+    assert "Refusing to generate a merge log for a merge-log PR" in result.stdout
+    assert "ALLOW_RECURSIVE=1" in result.stdout
+
+
+def test_depth1_policy_allows_with_override():
+    """Test: ALLOW_RECURSIVE=1 bypasses depth-1 guard"""
+    result = run_wrapper(
+        "207",
+        "auto",
+        extra_env={
+            "PEAK_TEST_PR_TITLE": "docs(ops): add PR #123 merge log",
+            "ALLOW_RECURSIVE": "1",
+        },
+    )
+
+    # Should NOT exit 2, but proceed to TEST_MODE success
+    assert result.returncode == 0, f"Expected exit 0, got {result.returncode}"
+    assert "⛔ Depth=1 Policy Violation" not in result.stdout
+    assert "TEST_MODE: Resolved configuration" in result.stdout
+
+
+def test_depth1_policy_allows_normal_pr():
+    """Test: Normal PR (not merge-log) passes depth-1 check"""
+    result = run_wrapper(
+        "207",
+        "auto",
+        extra_env={"PEAK_TEST_PR_TITLE": "feat(core): add new feature"},
+    )
+
+    assert result.returncode == 0, f"Expected exit 0, got {result.returncode}"
+    assert "✅ Depth=1 check passed" in result.stdout
+    assert "TEST_MODE: Resolved configuration" in result.stdout
+
+
+def test_depth1_policy_pattern_variations():
+    """Test: Different merge-log title patterns are all blocked"""
+    test_cases = [
+        "docs(ops): add PR #123 merge log",
+        "docs(ops): add PR #1 merge log",
+        "docs(ops): add PR #99999 merge log",
+    ]
+
+    for title in test_cases:
+        result = run_wrapper("207", "auto", extra_env={"PEAK_TEST_PR_TITLE": title})
+        assert result.returncode == 2, f"Expected exit 2 for title: {title}"
+        assert "⛔ Depth=1 Policy Violation" in result.stdout
+
+
+def test_depth1_policy_non_matching_patterns():
+    """Test: Similar but non-matching titles are allowed"""
+    test_cases = [
+        "docs(ops): add merge log for PR #123",  # Different word order
+        "docs: add PR #123 merge log",  # Missing (ops)
+        "chore(ops): add PR #123 merge log",  # Different scope
+        "docs(ops): add PR #123 final report",  # Not "merge log"
+        "docs(ops): update PR #123 merge log",  # "update" not "add"
+    ]
+
+    for title in test_cases:
+        result = run_wrapper("207", "auto", extra_env={"PEAK_TEST_PR_TITLE": title})
+        # Should pass depth-1 check and reach TEST_MODE
+        assert result.returncode == 0, f"Expected exit 0 for title: {title}"
+        assert "⛔ Depth=1 Policy Violation" not in result.stdout
