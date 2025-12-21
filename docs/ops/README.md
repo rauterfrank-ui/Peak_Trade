@@ -443,5 +443,11 @@ The trend analysis includes a simple readiness assessment:
 
 ## Merge Logs
 
+### Templates
+
+- [MERGE_LOG_TEMPLATE_COMPACT](MERGE_LOG_TEMPLATE_COMPACT.md) — Standardvorlage (kompakt, fokussiert)
+
+### Recent Merge Logs
+
 - [PR #210](PR_210_MERGE_LOG.md) — docs(ops): add merge log for PR #209 (merged 2025-12-21)
 - [PR #209](PR_209_MERGE_LOG.md) — docs(ops): add merge log for PR #208 (ops workflow hub) (merged 2025-12-21)
