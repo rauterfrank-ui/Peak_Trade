@@ -26,6 +26,7 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 | `scripts/quick_pr_merge.sh` | Quick PR-Merge | Wenn Docs bereits committet sind |
 | `scripts/post_merge_workflow.sh` | Generisches Post-Merge Verification | Hygiene + Verification nach jedem Merge |
 | `scripts/workflows/merge_and_format_sweep.sh` | PR Merge + Format-Sweep + Large-PR Test | Automated merge + format sweep workflow |
+| `scripts/workflows/pr_merge_with_ops_audit.sh` | PR Merge + Ops Merge-Log Audit | Safe merge with pre/post merge log validation |
 
 **Siehe auch:** [WORKFLOW_MERGE_AND_FORMAT_SWEEP.md](WORKFLOW_MERGE_AND_FORMAT_SWEEP.md) — Comprehensive ops runbook für Merge + Format Sweep Workflow (inkl. CI Large-PR Handling, Quickstart, Scenarios, Troubleshooting).
 
@@ -319,6 +320,84 @@ uv run pytest -q
 - `scripts/quick_pr_merge.sh`
 - `scripts/post_merge_workflow.sh`
 - `scripts/finalize_workflow_docs_pr.sh`
+- `scripts/workflows/pr_merge_with_ops_audit.sh`
+
+---
+
+## 4. PR Merge with Ops Merge-Log Audit
+
+**Script:** `scripts/workflows/pr_merge_with_ops_audit.sh`
+
+### Zweck
+
+Sicherer PR-Merge-Workflow mit **automatischer Validierung der Merge-Log-Infrastruktur** vor und nach dem Merge.
+
+### Was es macht
+
+1. **Safety-Checks:**
+   - Working tree muss clean sein
+   - PR-Nummer automatisch erkennen (oder via `export PR=225`)
+
+2. **Pre-Merge:**
+   - PR Overview anzeigen
+   - CI Checks verfolgen (`gh pr checks --watch`)
+   - **Ops Audit:** `check_ops_merge_logs.py` ausführen
+
+3. **Merge:**
+   - Squash Merge + Branch löschen
+
+4. **Post-Merge:**
+   - `main` lokal aktualisieren
+   - **Ops Audit:** Erneute Validierung der Merge Logs
+   - Final Sanity Checks
+
+### Verwendung
+
+```bash
+# Auf deinem PR-Branch
+cd ~/Peak_Trade
+bash scripts/workflows/pr_merge_with_ops_audit.sh
+
+# Oder mit expliziter PR-Nummer
+export PR=227
+bash scripts/workflows/pr_merge_with_ops_audit.sh
+```
+
+### Workflow-Ablauf
+
+```
+✅ Working tree clean
+✅ PR=226
+== PR Overview ==
+[PR Details werden angezeigt]
+== CI Checks (watch) ==
+[Live-Verfolgung der CI Checks]
+== Ops Audit: check_ops_merge_logs.py (pre-merge) ==
+✅ Alle Merge Logs sind compliant
+== Merge: squash + delete branch ==
+✓ Merged and deleted branch
+== Local main update ==
+Already on 'main'
+== Ops Audit: check_ops_merge_logs.py (post-merge) ==
+✅ Alle Merge Logs sind compliant
+== Final Sanity ==
+## main...origin/main
+edf8685 feat(ops): add merge log generator + format guard (#226)
+🎉 DONE: PR gemerged, main aktuell, Ops Merge-Log Audit grün.
+```
+
+### Features
+
+- ✅ **Pre-Merge Audit:** Validiert bestehende Merge Logs vor dem Merge
+- ✅ **Post-Merge Audit:** Konsistenz-Check nach dem Merge
+- ✅ **Auto-Detection:** Erkennt PR-Nummer automatisch vom aktuellen Branch
+- ✅ **Safety-First:** Prüft working tree Status vor Start
+- ✅ **CI-Integration:** Wartet auf grüne CI Checks
+
+### Exit Codes
+
+- `0` - Success (Merge erfolgreich, Audits grün)
+- `1` - Error (Working tree dirty, PR nicht gefunden, Audit Violations)
 
 ---
 
