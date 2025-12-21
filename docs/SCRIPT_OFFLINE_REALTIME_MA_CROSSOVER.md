@@ -79,11 +79,11 @@ python scripts/run_offline_realtime_ma_crossover.py \
 - `--n-steps N_STEPS`: Anzahl der zu generierenden Ticks/Bars
   - Default: `1000`
   - Muss >= `slow-window` sein
-  
+
 - `--n-regimes N_REGIMES`: Anzahl der Regime-Wechsel
   - Default: `3`
   - Bestimmt, wie oft sich die Markt-Charakteristik ändert
-  
+
 - `--seed SEED`: Random-Seed für Reproduzierbarkeit
   - Default: `42`
   - Gleicher Seed → gleiche Ergebnisse
@@ -93,7 +93,7 @@ python scripts/run_offline_realtime_ma_crossover.py \
 - `--fast-window FAST_WINDOW`: Fast-MA-Periode
   - Default: `20`
   - Muss < `slow-window` sein
-  
+
 - `--slow-window SLOW_WINDOW`: Slow-MA-Periode
   - Default: `50`
   - Muss > `fast-window` sein
@@ -104,7 +104,7 @@ python scripts/run_offline_realtime_ma_crossover.py \
   - Default: `fast_forward`
   - `fast_forward`: Ohne Delays (für Backtests)
   - `realtime`: Mit Delays (für Live-Simulation)
-  
+
 - `--speed-factor SPEED_FACTOR`: Geschwindigkeitsfaktor für realtime-Modus
   - Default: `10.0`
   - Nur relevant bei `--playback-mode realtime`
@@ -149,7 +149,7 @@ Der generierte HTML-Report (`summary.html`) enthält:
 - **Run-Informationen**: Run-ID, Symbol, Strategie, Environment, Timestamps
 - **Synth-Session-Einstellungen**: N-Steps, N-Regimes, Seed
 - **Strategie-Parameter**: Fast-Window, Slow-Window
-- **Performance-Metriken**: 
+- **Performance-Metriken**:
   - Verarbeitete Ticks
   - Generierte Orders
   - Ausgeführte Trades
@@ -263,7 +263,7 @@ Das Script validiert automatisch:
 
 Das Script ist bewusst modular aufgebaut und kann leicht erweitert werden:
 
-1. **Weitere Strategien**: 
+1. **Weitere Strategien**:
    - Einfach `MACrossoverStrategy` durch andere Strategien ersetzen
    - Parameter über CLI übergeben
 

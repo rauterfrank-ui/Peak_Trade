@@ -4,6 +4,7 @@ Peak_Trade Scheduler – Datenmodelle
 ====================================
 Dataclasses für Jobs, Schedules und Ergebnisse.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

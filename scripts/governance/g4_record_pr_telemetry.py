@@ -23,12 +23,7 @@ from typing import Dict, Optional
 def check_gh_cli() -> bool:
     """Check if GitHub CLI is installed and authenticated."""
     try:
-        result = subprocess.run(
-            ["gh", "auth", "status"],
-            capture_output=True,
-            text=True,
-            timeout=5
-        )
+        result = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True, timeout=5)
         return result.returncode == 0
     except (FileNotFoundError, subprocess.TimeoutExpired):
         return False
@@ -52,7 +47,7 @@ def fetch_pr_metadata(pr_number: int) -> Optional[Dict]:
         "headRefName",
         "changedFiles",
         "additions",
-        "deletions"
+        "deletions",
     ]
 
     try:
@@ -61,7 +56,7 @@ def fetch_pr_metadata(pr_number: int) -> Optional[Dict]:
             capture_output=True,
             text=True,
             timeout=10,
-            check=True
+            check=True,
         )
         return json.loads(result.stdout)
     except subprocess.CalledProcessError as e:
@@ -84,10 +79,7 @@ def fetch_pr_checks(pr_number: int) -> str:
     """
     try:
         result = subprocess.run(
-            ["gh", "pr", "checks", str(pr_number)],
-            capture_output=True,
-            text=True,
-            timeout=10
+            ["gh", "pr", "checks", str(pr_number)], capture_output=True, text=True, timeout=10
         )
         if result.returncode == 0:
             return result.stdout.strip()
@@ -97,11 +89,7 @@ def fetch_pr_checks(pr_number: int) -> str:
         return "(checks fetch timed out)"
 
 
-def format_telemetry_entry(
-    pr_metadata: Dict,
-    checks_summary: str,
-    entry_date: str
-) -> str:
+def format_telemetry_entry(pr_metadata: Dict, checks_summary: str, entry_date: str) -> str:
     """Format a telemetry entry markdown block.
 
     Args:
@@ -151,10 +139,7 @@ def format_telemetry_entry(
     return entry
 
 
-def append_telemetry_entry(
-    output_file: Path,
-    entry: str
-) -> None:
+def append_telemetry_entry(output_file: Path, entry: str) -> None:
     """Append telemetry entry to the output file.
 
     Args:
@@ -188,11 +173,7 @@ def open_pr_in_browser(pr_number: int) -> None:
         pr_number: The pull request number
     """
     try:
-        subprocess.run(
-            ["gh", "pr", "view", str(pr_number), "--web"],
-            timeout=5,
-            check=False
-        )
+        subprocess.run(["gh", "pr", "view", str(pr_number), "--web"], timeout=5, check=False)
     except subprocess.TimeoutExpired:
         print("Warning: Opening PR in browser timed out", file=sys.stderr)
 
@@ -212,32 +193,23 @@ Examples:
 
   # Use custom date
   python scripts/governance/g4_record_pr_telemetry.py --pr 123 --date 2025-12-01
-"""
+""",
     )
 
-    parser.add_argument(
-        "--pr",
-        type=int,
-        required=True,
-        help="Pull request number to record"
-    )
+    parser.add_argument("--pr", type=int, required=True, help="Pull request number to record")
     parser.add_argument(
         "--out",
         type=Path,
         default=Path("docs/governance/POLICY_CRITIC_TELEMETRY_G4.md"),
-        help="Output file path (default: docs/governance/POLICY_CRITIC_TELEMETRY_G4.md)"
+        help="Output file path (default: docs/governance/POLICY_CRITIC_TELEMETRY_G4.md)",
     )
     parser.add_argument(
         "--date",
         type=str,
         default=date.today().isoformat(),
-        help="Entry date in YYYY-MM-DD format (default: today)"
+        help="Entry date in YYYY-MM-DD format (default: today)",
     )
-    parser.add_argument(
-        "--open",
-        action="store_true",
-        help="Open PR in browser after recording"
-    )
+    parser.add_argument("--open", action="store_true", help="Open PR in browser after recording")
 
     args = parser.parse_args()
 
@@ -269,8 +241,12 @@ Examples:
     print("")
     print(f"Next steps:")
     print(f"  1. Edit {args.out}")
-    print(f"  2. Fill in: Result, Severity, Rules triggered, Classification, Operator action, Notes")
-    print(f"  3. Commit: git add {args.out} && git commit -m 'docs(governance): add G4 telemetry for PR #{args.pr}'")
+    print(
+        f"  2. Fill in: Result, Severity, Rules triggered, Classification, Operator action, Notes"
+    )
+    print(
+        f"  3. Commit: git add {args.out} && git commit -m 'docs(governance): add G4 telemetry for PR #{args.pr}'"
+    )
     print("")
 
     if args.open:

@@ -50,39 +50,36 @@ def parse_telemetry_file(file_path: Path) -> List[TelemetryEntry]:
     entries = []
 
     # Split by PR entries (## PR #...)
-    pr_sections = re.split(r'^## PR #', content, flags=re.MULTILINE)
+    pr_sections = re.split(r"^## PR #", content, flags=re.MULTILINE)
 
     for section in pr_sections[1:]:  # Skip header
         entry = TelemetryEntry()
 
         # Extract PR number and date from header
-        header_match = re.match(r'(\d+)\s*—\s*(\S+)', section)
+        header_match = re.match(r"(\d+)\s*—\s*(\S+)", section)
         if header_match:
             entry.pr_number = int(header_match.group(1))
             entry.date = header_match.group(2)
 
         # Extract fields
-        if title_match := re.search(r'\*\*Title:\*\*\s*(.+?)(?=\n|$)', section):
+        if title_match := re.search(r"\*\*Title:\*\*\s*(.+?)(?=\n|$)", section):
             entry.title = title_match.group(1).strip()
 
-        if result_match := re.search(r'\*\*Result:\*\*\s*(\w+)', section):
+        if result_match := re.search(r"\*\*Result:\*\*\s*(\w+)", section):
             entry.result = result_match.group(1).strip()
 
-        if severity_match := re.search(r'\*\*Severity:\*\*\s*(\w+)', section):
+        if severity_match := re.search(r"\*\*Severity:\*\*\s*(\w+)", section):
             entry.severity = severity_match.group(1).strip()
 
-        if classification_match := re.search(r'\*\*Classification:\*\*\s*(\w+)', section):
+        if classification_match := re.search(r"\*\*Classification:\*\*\s*(\w+)", section):
             entry.classification = classification_match.group(1).strip()
 
         # Extract rules (lines starting with "- " under "Rules triggered:")
-        rules_section = re.search(
-            r'\*\*Rules triggered:\*\*\s*\n((?:\s*[-•]\s*.+\n?)*)',
-            section
-        )
+        rules_section = re.search(r"\*\*Rules triggered:\*\*\s*\n((?:\s*[-•]\s*.+\n?)*)", section)
         if rules_section:
-            for line in rules_section.group(1).split('\n'):
+            for line in rules_section.group(1).split("\n"):
                 # Match lines like: "  - RULE_KEY (files: ...)"
-                if rule_match := re.search(r'[-•]\s*([A-Z_0-9]+)\s*\(', line):
+                if rule_match := re.search(r"[-•]\s*([A-Z_0-9]+)\s*\(", line):
                     entry.rules.append(rule_match.group(1))
 
         entries.append(entry)
@@ -102,19 +99,13 @@ def compute_statistics(entries: List[TelemetryEntry]) -> Dict:
     total_prs = len(entries)
 
     # Count classifications
-    classifications = Counter(
-        e.classification for e in entries if e.classification
-    )
+    classifications = Counter(e.classification for e in entries if e.classification)
 
     # Count results
-    results = Counter(
-        e.result for e in entries if e.result
-    )
+    results = Counter(e.result for e in entries if e.result)
 
     # Count severities
-    severities = Counter(
-        e.severity for e in entries if e.severity
-    )
+    severities = Counter(e.severity for e in entries if e.severity)
 
     # Count blocks (Result: BLOCK)
     blocks = sum(1 for e in entries if e.result == "BLOCK")
@@ -182,9 +173,9 @@ def format_summary(stats: Dict) -> str:
 
     # Results breakdown
     summary += "### Results Breakdown\n\n"
-    if stats['results']:
-        for result, count in stats['results'].most_common():
-            pct = (count / stats['total_prs'] * 100) if stats['total_prs'] > 0 else 0
+    if stats["results"]:
+        for result, count in stats["results"].most_common():
+            pct = (count / stats["total_prs"] * 100) if stats["total_prs"] > 0 else 0
             summary += f"- **{result}:** {count} ({pct:.1f}%)\n"
     else:
         summary += "- _(no results recorded)_\n"
@@ -192,9 +183,9 @@ def format_summary(stats: Dict) -> str:
 
     # Classification breakdown
     summary += "### Classification Breakdown\n\n"
-    if stats['classifications']:
-        for classification, count in stats['classifications'].most_common():
-            pct = (count / stats['total_prs'] * 100) if stats['total_prs'] > 0 else 0
+    if stats["classifications"]:
+        for classification, count in stats["classifications"].most_common():
+            pct = (count / stats["total_prs"] * 100) if stats["total_prs"] > 0 else 0
             summary += f"- **{classification}:** {count} ({pct:.1f}%)\n"
     else:
         summary += "- _(no classifications recorded)_\n"
@@ -202,9 +193,9 @@ def format_summary(stats: Dict) -> str:
 
     # Severity breakdown
     summary += "### Severity Breakdown\n\n"
-    if stats['severities']:
-        for severity, count in stats['severities'].most_common():
-            pct = (count / stats['total_prs'] * 100) if stats['total_prs'] > 0 else 0
+    if stats["severities"]:
+        for severity, count in stats["severities"].most_common():
+            pct = (count / stats["total_prs"] * 100) if stats["total_prs"] > 0 else 0
             summary += f"- **{severity}:** {count} ({pct:.1f}%)\n"
     else:
         summary += "- _(no severities recorded)_\n"
@@ -212,8 +203,8 @@ def format_summary(stats: Dict) -> str:
 
     # Top rules
     summary += "### Top Triggered Rules\n\n"
-    if stats['rule_frequencies']:
-        for rule, count in stats['rule_frequencies'].most_common(10):
+    if stats["rule_frequencies"]:
+        for rule, count in stats["rule_frequencies"].most_common(10):
             summary += f"- **{rule}:** {count} occurrences\n"
     else:
         summary += "- _(no rules recorded)_\n"
@@ -221,11 +212,11 @@ def format_summary(stats: Dict) -> str:
 
     # G4 Exit Criteria
     summary += "## G4 Exit Criteria Progress\n\n"
-    pr_status = 'DONE' if stats['total_prs'] >= 10 else f"IN PROGRESS ({stats['total_prs']}/10)"
+    pr_status = "DONE" if stats["total_prs"] >= 10 else f"IN PROGRESS ({stats['total_prs']}/10)"
     summary += f"- ✅ **10-20 PRs logged:** {pr_status}\n"
-    fp_status = 'DONE' if stats['fp_rate_v1'] < 10.0 else f"NOT MET ({stats['fp_rate_v1']:.1f}%)"
+    fp_status = "DONE" if stats["fp_rate_v1"] < 10.0 else f"NOT MET ({stats['fp_rate_v1']:.1f}%)"
     summary += f"- ✅ **FP Rate < 10%:** {fp_status}\n"
-    block_status = 'DONE' if stats['blocks'] >= 1 else 'NOT MET (0 blocks)'
+    block_status = "DONE" if stats["blocks"] >= 1 else "NOT MET (0 blocks)"
     summary += f"- ✅ **At least 1 real BLOCK:** {block_status}\n"
     summary += "- ✅ **Change Set 2 decision:** _(manual review required)_\n"
     summary += "\n"
@@ -233,19 +224,21 @@ def format_summary(stats: Dict) -> str:
     # Recommendations
     summary += "## Recommendations\n\n"
 
-    if stats['total_prs'] < 10:
+    if stats["total_prs"] < 10:
         summary += "- Continue logging PRs (target: 10-20 PRs)\n"
 
-    if stats['fp_rate_v1'] >= 10.0:
+    if stats["fp_rate_v1"] >= 10.0:
         summary += f"- FP rate is {stats['fp_rate_v1']:.1f}% (above 10% target)\n"
-        if stats['rule_frequencies']:
-            top_rule = stats['rule_frequencies'].most_common(1)[0]
-            summary += f"- Review top triggered rule: **{top_rule[0]}** ({top_rule[1]} occurrences)\n"
+        if stats["rule_frequencies"]:
+            top_rule = stats["rule_frequencies"].most_common(1)[0]
+            summary += (
+                f"- Review top triggered rule: **{top_rule[0]}** ({top_rule[1]} occurrences)\n"
+            )
 
-    if stats['blocks'] == 0:
+    if stats["blocks"] == 0:
         summary += "- No real BLOCKs observed yet - continue monitoring\n"
 
-    if stats['needs_review'] > 0:
+    if stats["needs_review"] > 0:
         summary += f"- {stats['needs_review']} PRs marked NEEDS_REVIEW - review and classify\n"
 
     summary += "\n"
@@ -268,20 +261,16 @@ Examples:
 
   # Write summary to file
   python scripts/governance/g4_rollup_telemetry.py --out docs/governance/POLICY_CRITIC_G4_ROLLUP.md
-"""
+""",
     )
 
     parser.add_argument(
         "--input",
         type=Path,
         default=Path("docs/governance/POLICY_CRITIC_TELEMETRY_G4.md"),
-        help="Input telemetry file (default: docs/governance/POLICY_CRITIC_TELEMETRY_G4.md)"
+        help="Input telemetry file (default: docs/governance/POLICY_CRITIC_TELEMETRY_G4.md)",
     )
-    parser.add_argument(
-        "--out",
-        type=Path,
-        help="Output file path (default: print to stdout)"
-    )
+    parser.add_argument("--out", type=Path, help="Output file path (default: print to stdout)")
 
     args = parser.parse_args()
 
@@ -292,7 +281,10 @@ Examples:
         print(f"Warning: No telemetry entries found in {args.input}", file=sys.stderr)
         print("", file=sys.stderr)
         print("To record a PR:", file=sys.stderr)
-        print("  python scripts/governance/g4_record_pr_telemetry.py --pr <PR_NUMBER>", file=sys.stderr)
+        print(
+            "  python scripts/governance/g4_record_pr_telemetry.py --pr <PR_NUMBER>",
+            file=sys.stderr,
+        )
         return 1
 
     # Compute statistics

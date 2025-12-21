@@ -37,6 +37,7 @@ Usage:
     )
     manager.send(alert)
 """
+
 from __future__ import annotations
 
 import json
@@ -353,31 +354,39 @@ class SlackAlertChannel:
         fields = []
 
         # Kategorie und Source
-        fields.append({
-            "title": "Category",
-            "value": alert.category.value,
-            "short": True,
-        })
-        fields.append({
-            "title": "Source",
-            "value": f"`{alert.source}`",
-            "short": True,
-        })
+        fields.append(
+            {
+                "title": "Category",
+                "value": alert.category.value,
+                "short": True,
+            }
+        )
+        fields.append(
+            {
+                "title": "Source",
+                "value": f"`{alert.source}`",
+                "short": True,
+            }
+        )
 
         # Session-ID falls vorhanden
         if alert.session_id:
-            fields.append({
-                "title": "Session",
-                "value": f"`{alert.session_id}`",
-                "short": True,
-            })
+            fields.append(
+                {
+                    "title": "Session",
+                    "value": f"`{alert.session_id}`",
+                    "short": True,
+                }
+            )
 
         # Timestamp
-        fields.append({
-            "title": "Time (UTC)",
-            "value": alert.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-            "short": True,
-        })
+        fields.append(
+            {
+                "title": "Time (UTC)",
+                "value": alert.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                "short": True,
+            }
+        )
 
         # Context-Daten (kompakt) - ohne runbooks (separat behandelt)
         context_items = {k: v for k, v in alert.context.items() if k != "runbooks"}
@@ -390,11 +399,13 @@ class SlackAlertChannel:
                     context_lines.append(f"• {key}: {value}")
             if len(context_items) > 5:
                 context_lines.append(f"... +{len(context_items) - 5} more")
-            fields.append({
-                "title": "Context",
-                "value": "\n".join(context_lines),
-                "short": False,
-            })
+            fields.append(
+                {
+                    "title": "Context",
+                    "value": "\n".join(context_lines),
+                    "short": False,
+                }
+            )
 
         # Phase 84: Runbooks-Sektion
         runbooks = alert.context.get("runbooks", [])
@@ -404,11 +415,13 @@ class SlackAlertChannel:
                 runbook_lines.append(f"• <{rb['url']}|{rb['title']}>")
             if len(runbooks) > 3:
                 runbook_lines.append(f"... +{len(runbooks) - 3} more")
-            fields.append({
-                "title": "📋 Runbooks",
-                "value": "\n".join(runbook_lines),
-                "short": False,
-            })
+            fields.append(
+                {
+                    "title": "📋 Runbooks",
+                    "value": "\n".join(runbook_lines),
+                    "short": False,
+                }
+            )
 
         # Attachment mit Farbe
         attachment = {
@@ -455,9 +468,7 @@ class SlackAlertChannel:
             method="POST",
         )
 
-        with urllib.request.urlopen(
-            req, timeout=self._config.timeout_seconds
-        ) as response:
+        with urllib.request.urlopen(req, timeout=self._config.timeout_seconds) as response:
             # Response ignorieren, nur Status-Code prüfen
             if response.status != 200:
                 raise RuntimeError(f"Slack webhook returned {response.status}")
@@ -635,7 +646,7 @@ class EmailAlertChannel:
             context_html = f"""
             <h3>Context</h3>
             <table border="1" cellpadding="5" cellspacing="0">
-                {''.join(context_rows)}
+                {"".join(context_rows)}
             </table>
             """
 
@@ -651,7 +662,7 @@ class EmailAlertChannel:
             runbooks_html = f"""
             <h3>📋 Runbooks</h3>
             <ul>
-                {''.join(runbook_items)}
+                {"".join(runbook_items)}
             </ul>
             """
 
@@ -667,8 +678,8 @@ class EmailAlertChannel:
                 <table>
                     <tr><td><strong>Category:</strong></td><td>{alert.category.value}</td></tr>
                     <tr><td><strong>Source:</strong></td><td><code>{alert.source}</code></td></tr>
-                    <tr><td><strong>Time:</strong></td><td>{alert.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC')}</td></tr>
-                    {'<tr><td><strong>Session:</strong></td><td><code>' + alert.session_id + '</code></td></tr>' if alert.session_id else ''}
+                    <tr><td><strong>Time:</strong></td><td>{alert.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")}</td></tr>
+                    {"<tr><td><strong>Session:</strong></td><td><code>" + alert.session_id + "</code></td></tr>" if alert.session_id else ""}
                 </table>
                 {context_html}
                 {runbooks_html}
@@ -891,8 +902,7 @@ class AlertPipelineManager:
             runbooks = resolve_runbooks_for_alert(alert)
             if runbooks:
                 alert.context["runbooks"] = [
-                    {"id": rb.id, "title": rb.title, "url": rb.url}
-                    for rb in runbooks
+                    {"id": rb.id, "title": rb.title, "url": rb.url} for rb in runbooks
                 ]
         except Exception as e:
             # Fehler loggen, aber nicht propagieren
@@ -908,6 +918,7 @@ class AlertPipelineManager:
         try:
             # Lazy import um zirkuläre Abhängigkeiten zu vermeiden
             from src.live.alert_storage import store_alert
+
             store_alert(alert)
         except Exception as e:
             # Fehler loggen, aber nicht propagieren
@@ -1133,9 +1144,7 @@ class SeverityTransitionTracker:
         is_partial_recovery = new_status == "green" and old_status == "yellow"
 
         if (is_recovery or is_partial_recovery) and not self._send_recovery_alerts:
-            self._logger.debug(
-                f"Recovery transition {old_status} → {new_status} (alerts disabled)"
-            )
+            self._logger.debug(f"Recovery transition {old_status} → {new_status} (alerts disabled)")
             return None
 
         # Alert erstellen

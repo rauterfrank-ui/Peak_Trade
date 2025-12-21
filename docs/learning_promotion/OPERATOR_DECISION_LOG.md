@@ -29,7 +29,7 @@
 * **Patch 3:** `macro.regime_weight: 0.0 → 0.25` (Confidence: 0.72) - ABGELEHNT
 * **Patch 4:** `risk.max_position: 0.1 → 0.25` (Confidence: 0.45) - ABGELEHNT
 
-**Empfohlene Entscheidung:** 
+**Empfohlene Entscheidung:**
 
 * **Patch 1:** `HOLD` - Gute Evidenz, aber konservativ bleiben in Cycle #1
 * **Patch 2:** `GO` - Bereits in Backtest-Config übernommen
@@ -271,7 +271,7 @@
 * ❌ Keine Evidenz für Handling verschiedener Szenarien (schlecht)
 * ❌ Bounds-Kalibrierung kann nicht validiert werden (schlecht)
 
-**Empfehlung:** 
+**Empfehlung:**
 * **Dringend:** Neue Demo-Patches mit Varianz generieren für Cycles #6-10
 * **Mittelfristig:** Learning-Loop-Integration für echte, variierende Patches
 
@@ -303,7 +303,7 @@
 | Leverage | Mittel | 5 Cycles mit konsistenter Evidenz |
 | Max-Position | Hoch | Würde viele Cycles + manuelle Tests brauchen |
 
-**Erkenntnis:** 
+**Erkenntnis:**
 * System berücksichtigt implizit Risiko-Level
 * Konservativerer Ansatz bei kritischen Parametern ist korrekt
 
@@ -453,8 +453,8 @@ python scripts/generate_demo_patches_for_promotion.py --variant diverse
 4. **Review-Meeting nach Cycle #10** 📅
 5. **Entscheidung über bounded_auto** (frühestens nach Cycle #15-20) 🎯
 
-**Timeline-Klarstellung:** Cycles #1-10 dürfen zeitlich komprimiert werden (mehrere pro Tag OK). 
-Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nicht für Stabilisierung. 
+**Timeline-Klarstellung:** Cycles #1-10 dürfen zeitlich komprimiert werden (mehrere pro Tag OK).
+Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nicht für Stabilisierung.
 → Siehe [TIMELINE_CLARIFICATION.md](./TIMELINE_CLARIFICATION.md)
 
 ---

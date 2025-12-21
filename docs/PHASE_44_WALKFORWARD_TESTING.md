@@ -568,4 +568,3 @@ Siehe `docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md` für Details zur
 - **Phase 46**: `docs/PHASE_46_STRESS_TESTS_AND_CRASH_SCENARIOS.md` (Stress-Tests & Crash-Szenarien)
 - **Research Roadmap**: `docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md`
 - **Research ToDo**: `docs/Peak_Trade_Research_Strategy_TODO_2025-12-07.md`
-

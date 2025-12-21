@@ -8,6 +8,7 @@ Testet:
 - Policy-Loading und -Validierung
 - Positive und Negative Cases
 """
+
 import pytest
 from pathlib import Path
 
@@ -28,6 +29,7 @@ from src.experiments.strategy_profiles import StrategyProfile, StrategyProfileBu
 # =============================================================================
 # FIXTURES
 # =============================================================================
+
 
 @pytest.fixture
 def default_policies():
@@ -87,6 +89,7 @@ def weak_strategy_profile():
 # TESTS: LIVE POLICIES
 # =============================================================================
 
+
 class TestLivePolicies:
     """Tests für LivePolicies Datenmodell."""
 
@@ -128,6 +131,7 @@ class TestLivePolicies:
 # =============================================================================
 # TESTS: STRATEGY ELIGIBILITY - POSITIVE CASES
 # =============================================================================
+
 
 class TestStrategyEligibilityPositive:
     """Positive Tests für Strategy-Eligibility."""
@@ -180,6 +184,7 @@ class TestStrategyEligibilityPositive:
 # TESTS: STRATEGY ELIGIBILITY - NEGATIVE CASES
 # =============================================================================
 
+
 class TestStrategyEligibilityNegative:
     """Negative Tests für Strategy-Eligibility."""
 
@@ -211,7 +216,9 @@ class TestStrategyEligibilityNegative:
             policies=strict_policies,
         )
 
-        assert not result.is_eligible, "Strategy without allow_live should fail with strict policies"
+        assert not result.is_eligible, (
+            "Strategy without allow_live should fail with strict policies"
+        )
         assert any("allow_live" in r.lower() for r in result.reasons)
 
     def test_strategy_with_weak_profile_not_eligible(self, default_policies, weak_strategy_profile):
@@ -259,6 +266,7 @@ class TestStrategyEligibilityEdgeCases:
 # =============================================================================
 # TESTS: PORTFOLIO ELIGIBILITY
 # =============================================================================
+
 
 class TestPortfolioEligibility:
     """Tests für Portfolio-Eligibility."""
@@ -328,6 +336,7 @@ class TestPortfolioEligibility:
 # =============================================================================
 # TESTS: HELPER FUNCTIONS
 # =============================================================================
+
 
 class TestHelperFunctions:
     """Tests für Helper-Funktionen."""
@@ -399,6 +408,7 @@ class TestHelperFunctions:
 # TESTS: INTEGRATION
 # =============================================================================
 
+
 class TestLiveGatesIntegration:
     """Integration Tests für Live-Gates."""
 
@@ -413,7 +423,7 @@ class TestLiveGatesIntegration:
             result = check_portfolio_live_eligibility(
                 preset_name,
                 strategies=strategies,
-                weights=[1/len(strategies)] * len(strategies),
+                weights=[1 / len(strategies)] * len(strategies),
                 policies=default_policies,
             )
             assert result.is_eligible, f"Preset {preset_name} should be eligible: {result}"
@@ -421,8 +431,12 @@ class TestLiveGatesIntegration:
     def test_core_plus_aux_preset_eligible(self, default_policies):
         """Core+Aux Preset ist eligible."""
         strategies = [
-            "rsi_reversion", "ma_crossover", "bollinger_bands",  # Core
-            "breakout", "macd", "momentum_1h",  # Aux
+            "rsi_reversion",
+            "ma_crossover",
+            "bollinger_bands",  # Core
+            "breakout",
+            "macd",
+            "momentum_1h",  # Aux
         ]
 
         result = check_portfolio_live_eligibility(
@@ -450,7 +464,7 @@ class TestLiveGatesIntegration:
         # 4. Portfolio aus eligible Strategien bauen und prüfen
         if summary["eligible"]:
             eligible_strategies = summary["eligible"][:3]  # Max 3
-            weights = [1/len(eligible_strategies)] * len(eligible_strategies)
+            weights = [1 / len(eligible_strategies)] * len(eligible_strategies)
 
             result = check_portfolio_live_eligibility(
                 "test_dynamic_portfolio",

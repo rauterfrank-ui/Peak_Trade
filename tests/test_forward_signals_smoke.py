@@ -51,23 +51,25 @@ def create_dummy_ohlcv(n_bars: int = 100) -> pd.DataFrame:
 
 def create_test_config() -> PeakConfig:
     """Erstellt eine minimale Test-Config."""
-    return PeakConfig(raw={
-        "strategy": {
-            "ma_crossover": {
-                "fast_window": 5,
-                "slow_window": 20,
+    return PeakConfig(
+        raw={
+            "strategy": {
+                "ma_crossover": {
+                    "fast_window": 5,
+                    "slow_window": 20,
+                },
+                "rsi_reversion": {
+                    "rsi_period": 14,
+                    "oversold": 30,
+                    "overbought": 70,
+                },
             },
-            "rsi_reversion": {
-                "rsi_period": 14,
-                "oversold": 30,
-                "overbought": 70,
+            "exchange": {
+                "id": "kraken",
+                "sandbox": True,
             },
-        },
-        "exchange": {
-            "id": "kraken",
-            "sandbox": True,
-        },
-    })
+        }
+    )
 
 
 class TestForwardSignalConstants:
@@ -80,6 +82,7 @@ class TestForwardSignalConstants:
     def test_run_type_in_valid_types(self):
         """Test: forward_signal ist in VALID_RUN_TYPES."""
         from src.core.experiments import VALID_RUN_TYPES
+
         assert RUN_TYPE_FORWARD_SIGNAL in VALID_RUN_TYPES
 
 
@@ -191,6 +194,7 @@ class TestForwardSignalScript:
         """Test: format_signal für Long-Signal."""
         # Import aus dem Script
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from run_forward_signals import format_signal
 
@@ -200,6 +204,7 @@ class TestForwardSignalScript:
     def test_format_signal_short(self):
         """Test: format_signal für Short-Signal."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from run_forward_signals import format_signal
 
@@ -209,6 +214,7 @@ class TestForwardSignalScript:
     def test_format_signal_flat(self):
         """Test: format_signal für Flat-Signal."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from run_forward_signals import format_signal
 

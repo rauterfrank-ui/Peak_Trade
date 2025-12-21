@@ -9,6 +9,7 @@ Testet:
 - Job-Runner (build_command_args, run_job)
 - CLI-Script (dry-run)
 """
+
 from __future__ import annotations
 
 import pytest
@@ -423,11 +424,14 @@ enabled = true
         toml_file = tmp_path / "jobs.toml"
         toml_file.write_text(toml_content)
 
-        exit_code = main([
-            "--config", str(toml_file),
-            "--once",
-            "--dry-run",
-        ])
+        exit_code = main(
+            [
+                "--config",
+                str(toml_file),
+                "--once",
+                "--dry-run",
+            ]
+        )
 
         assert exit_code == 0
 
@@ -435,10 +439,13 @@ enabled = true
         """Dry-Run mit fehlender Config gibt Fehler."""
         from scripts.run_scheduler import main
 
-        exit_code = main([
-            "--config", str(tmp_path / "nonexistent.toml"),
-            "--once",
-        ])
+        exit_code = main(
+            [
+                "--config",
+                str(tmp_path / "nonexistent.toml"),
+                "--once",
+            ]
+        )
 
         assert exit_code == 1
 

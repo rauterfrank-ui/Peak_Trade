@@ -13,6 +13,7 @@ Usage:
     python scripts/generate_forward_signals.py --strategy ma_crossover --symbols BTC/EUR,ETH/EUR
     python scripts/generate_forward_signals.py --strategy ma_crossover --run-name forward_daily_2025-12-04
 """
+
 from __future__ import annotations
 
 import sys
@@ -109,7 +110,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
 
     # Start-Zeitpunkt
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation mit symbol-spezifischen Eigenschaften
     if "BTC" in symbol:
@@ -137,17 +138,20 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     close_prices = base_price + trend + cycle + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * volatility),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     # Sicherstellen dass High/Low korrekt sind
-    df['high'] = df[['open', 'close', 'high']].max(axis=1)
-    df['low'] = df[['open', 'close', 'low']].min(axis=1)
+    df["high"] = df[["open", "close", "high"]].max(axis=1)
+    df["low"] = df[["open", "close", "low"]].min(axis=1)
 
     return df
 
@@ -201,8 +205,7 @@ def enforce_strategy_selection(cfg: PeakConfig, strategy_key: str) -> None:
         )
 
     print(
-        f"Filter-Flow Enforcement: Strategy-Key {strategy_key!r} ist APPROVED "
-        f"(reasons={reasons})."
+        f"Filter-Flow Enforcement: Strategy-Key {strategy_key!r} ist APPROVED (reasons={reasons})."
     )
 
 
@@ -224,7 +227,9 @@ def main(argv: List[str] | None = None) -> None:
         enforce_strategy_selection(cfg, strategy_key)
 
     universe = determine_universe(cfg, args.symbols)
-    run_name = args.run_name or f"forward_{strategy_key}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+    run_name = (
+        args.run_name or f"forward_{strategy_key}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+    )
 
     print(f"\n⚙️  Konfiguration:")
     print(f"  Strategy:      {strategy_key}")

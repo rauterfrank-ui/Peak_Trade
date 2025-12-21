@@ -21,6 +21,7 @@ Usage:
         format="both",
     )
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -165,27 +166,33 @@ def build_portfolio_robustness_report(
         "Top-N-Konfigurationen aus Sweeps.",
     ]
 
-    report.add_section(ReportSection(
-        title="Overview",
-        content_markdown="\n".join(overview_lines),
-    ))
+    report.add_section(
+        ReportSection(
+            title="Overview",
+            content_markdown="\n".join(overview_lines),
+        )
+    )
 
     # 2. Portfolio Composition Section
     component_data = []
     for component in portfolio.components:
-        component_data.append({
-            "Strategy": component.strategy_name,
-            "Config ID": component.config_id,
-            "Weight": f"{component.weight:.1%}",
-        })
+        component_data.append(
+            {
+                "Strategy": component.strategy_name,
+                "Config ID": component.config_id,
+                "Weight": f"{component.weight:.1%}",
+            }
+        )
 
     if component_data:
         df_components = pd.DataFrame(component_data)
         components_content = df_to_markdown(df_components, float_format=".4f")
-        report.add_section(ReportSection(
-            title="Portfolio Composition",
-            content_markdown=components_content,
-        ))
+        report.add_section(
+            ReportSection(
+                title="Portfolio Composition",
+                content_markdown=components_content,
+            )
+        )
 
     # 3. Baseline Metrics Section
     baseline_content = dict_to_markdown_table(
@@ -194,10 +201,12 @@ def build_portfolio_robustness_report(
         value_header="Baseline Value",
         float_format=".4f",
     )
-    report.add_section(ReportSection(
-        title="Baseline Metrics",
-        content_markdown=baseline_content,
-    ))
+    report.add_section(
+        ReportSection(
+            title="Baseline Metrics",
+            content_markdown=baseline_content,
+        )
+    )
 
     # 4. Monte-Carlo Results (optional)
     if result.mc_results:
@@ -210,14 +219,16 @@ def build_portfolio_robustness_report(
         # Quantile-Tabelle
         quantile_data = []
         for metric_name, quantiles in result.mc_results.get("metric_quantiles", {}).items():
-            quantile_data.append({
-                "Metric": metric_name,
-                "p5": f"{quantiles.get('p5', 0):.4f}",
-                "p25": f"{quantiles.get('p25', 0):.4f}",
-                "p50": f"{quantiles.get('p50', 0):.4f}",
-                "p75": f"{quantiles.get('p75', 0):.4f}",
-                "p95": f"{quantiles.get('p95', 0):.4f}",
-            })
+            quantile_data.append(
+                {
+                    "Metric": metric_name,
+                    "p5": f"{quantiles.get('p5', 0):.4f}",
+                    "p25": f"{quantiles.get('p25', 0):.4f}",
+                    "p50": f"{quantiles.get('p50', 0):.4f}",
+                    "p75": f"{quantiles.get('p75', 0):.4f}",
+                    "p95": f"{quantiles.get('p95', 0):.4f}",
+                }
+            )
 
         if quantile_data:
             df_quantiles = pd.DataFrame(quantile_data)
@@ -225,10 +236,12 @@ def build_portfolio_robustness_report(
             mc_lines.append("")
             mc_lines.append(df_to_markdown(df_quantiles, float_format=".4f"))
 
-        report.add_section(ReportSection(
-            title="Monte-Carlo Results",
-            content_markdown="\n".join(mc_lines),
-        ))
+        report.add_section(
+            ReportSection(
+                title="Monte-Carlo Results",
+                content_markdown="\n".join(mc_lines),
+            )
+        )
 
     # 5. Stress-Test Results (optional)
     if result.stress_results:
@@ -257,10 +270,12 @@ def build_portfolio_robustness_report(
             df_scenarios = pd.DataFrame(scenario_data)
             stress_lines.append(df_to_markdown(df_scenarios, float_format=".4f"))
 
-        report.add_section(ReportSection(
-            title="Stress-Test Results",
-            content_markdown="\n".join(stress_lines),
-        ))
+        report.add_section(
+            ReportSection(
+                title="Stress-Test Results",
+                content_markdown="\n".join(stress_lines),
+            )
+        )
 
     # 6. Visualizations (optional)
     charts_content: List[str] = []
@@ -276,15 +291,15 @@ def build_portfolio_robustness_report(
 
         if saved_path:
             rel_path = "portfolio_equity.png"
-            charts_content.append(
-                f"### Portfolio Equity Curve\n\n![Portfolio Equity]({rel_path})"
-            )
+            charts_content.append(f"### Portfolio Equity Curve\n\n![Portfolio Equity]({rel_path})")
 
     if charts_content:
-        report.add_section(ReportSection(
-            title="Visualizations",
-            content_markdown="\n\n".join(charts_content),
-        ))
+        report.add_section(
+            ReportSection(
+                title="Visualizations",
+                content_markdown="\n\n".join(charts_content),
+            )
+        )
 
     # 7. Interpretation Section
     interpretation_lines = [
@@ -308,10 +323,12 @@ def build_portfolio_robustness_report(
         "- Stress-Tests helfen, Schwachstellen im Portfolio zu identifizieren",
     ]
 
-    report.add_section(ReportSection(
-        title="Interpretation",
-        content_markdown="\n".join(interpretation_lines),
-    ))
+    report.add_section(
+        ReportSection(
+            title="Interpretation",
+            content_markdown="\n".join(interpretation_lines),
+        )
+    )
 
     # Speichere Report
     paths: Dict[str, Path] = {}
@@ -327,11 +344,3 @@ def build_portfolio_robustness_report(
         paths["html"] = html_path
 
     return paths
-
-
-
-
-
-
-
-

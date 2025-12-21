@@ -14,6 +14,7 @@ Hauptkomponenten:
 
 WICHTIG: Paper-only. Alle Daten stammen aus simulierten Backtests.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -157,7 +158,9 @@ class ExecutionStats:
             "hit_rate": self.hit_rate,
             "n_winning_trades": self.n_winning_trades,
             "n_losing_trades": self.n_losing_trades,
-            "first_trade_time": self.first_trade_time.isoformat() if self.first_trade_time else None,
+            "first_trade_time": self.first_trade_time.isoformat()
+            if self.first_trade_time
+            else None,
             "last_trade_time": self.last_trade_time.isoformat() if self.last_trade_time else None,
             "trading_period_days": self.trading_period_days,
             "symbol": self.symbol,
@@ -558,45 +561,55 @@ def format_execution_stats(
         lines.append(f"  Min Trade Size:   {stats.min_trade_notional:>12.2f} EUR")
 
     if include_slippage and (stats.avg_slippage_bps != 0 or stats.total_slippage > 0):
-        lines.extend([
-            "",
-            "[Slippage]",
-            f"  Avg Slippage:     {stats.avg_slippage_bps:>12.2f} bps",
-            f"  Max Slippage:     {stats.max_slippage_bps:>12.2f} bps",
-            f"  Total Slippage:   {stats.total_slippage:>12.2f} EUR",
-        ])
+        lines.extend(
+            [
+                "",
+                "[Slippage]",
+                f"  Avg Slippage:     {stats.avg_slippage_bps:>12.2f} bps",
+                f"  Max Slippage:     {stats.max_slippage_bps:>12.2f} bps",
+                f"  Total Slippage:   {stats.total_slippage:>12.2f} EUR",
+            ]
+        )
 
     if include_buy_sell and (stats.n_buys > 0 or stats.n_sells > 0):
-        lines.extend([
-            "",
-            "[Buy/Sell Split]",
-            f"  Buys:             {stats.n_buys:>8} ({stats.buy_volume:,.2f} EUR)",
-            f"  Sells:            {stats.n_sells:>8} ({stats.sell_volume:,.2f} EUR)",
-        ])
+        lines.extend(
+            [
+                "",
+                "[Buy/Sell Split]",
+                f"  Buys:             {stats.n_buys:>8} ({stats.buy_volume:,.2f} EUR)",
+                f"  Sells:            {stats.n_sells:>8} ({stats.sell_volume:,.2f} EUR)",
+            ]
+        )
 
     if stats.hit_rate > 0 or stats.n_winning_trades > 0:
-        lines.extend([
-            "",
-            "[Performance]",
-            f"  Hit-Rate:         {stats.hit_rate:>8.1%}",
-            f"  Winning Trades:   {stats.n_winning_trades:>8}",
-            f"  Losing Trades:    {stats.n_losing_trades:>8}",
-        ])
+        lines.extend(
+            [
+                "",
+                "[Performance]",
+                f"  Hit-Rate:         {stats.hit_rate:>8.1%}",
+                f"  Winning Trades:   {stats.n_winning_trades:>8}",
+                f"  Losing Trades:    {stats.n_losing_trades:>8}",
+            ]
+        )
 
     if include_timestamps and stats.first_trade_time:
-        lines.extend([
-            "",
-            "[Timestamps]",
-            f"  First Trade:      {stats.first_trade_time}",
-            f"  Last Trade:       {stats.last_trade_time}",
-            f"  Trading Period:   {stats.trading_period_days:.1f} days",
-        ])
+        lines.extend(
+            [
+                "",
+                "[Timestamps]",
+                f"  First Trade:      {stats.first_trade_time}",
+                f"  Last Trade:       {stats.last_trade_time}",
+                f"  Trading Period:   {stats.trading_period_days:.1f} days",
+            ]
+        )
 
     if stats.symbol:
-        lines.extend([
-            "",
-            f"[Symbol: {stats.symbol}]",
-        ])
+        lines.extend(
+            [
+                "",
+                f"[Symbol: {stats.symbol}]",
+            ]
+        )
 
     if stats.run_id:
         lines.append(f"[Run-ID: {stats.run_id}]")

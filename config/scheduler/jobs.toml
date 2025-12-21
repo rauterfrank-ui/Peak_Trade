@@ -133,3 +133,52 @@ daily_time = "08:00"
 enabled = false  # Aktivieren wenn Orders vorhanden
 tags = ["risk", "daily", "prod"]
 timeout_seconds = 60
+
+
+# =============================================================================
+# AUTONOMOUS AI-DRIVEN WORKFLOWS
+# =============================================================================
+
+[[job]]
+name = "autonomous_morning_analysis"
+description = "KI-gesteuerter autonomer Workflow für morgendliche Marktanalyse"
+command = "python"
+args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "auto", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-morning" }
+schedule_type = "daily"
+daily_time = "08:15"
+enabled = true
+tags = ["autonomous", "ai", "daily", "prod"]
+timeout_seconds = 300
+
+[[job]]
+name = "autonomous_midday_check"
+description = "KI-gesteuerter Mittags-Check für Signale und Risiko"
+command = "python"
+args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "auto", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-midday" }
+schedule_type = "daily"
+daily_time = "12:00"
+enabled = true
+tags = ["autonomous", "ai", "daily", "prod"]
+timeout_seconds = 300
+
+[[job]]
+name = "autonomous_evening_review"
+description = "KI-gesteuerter Tages-Review am Abend"
+command = "python"
+args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "portfolio_analysis", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-evening" }
+schedule_type = "daily"
+daily_time = "20:00"
+enabled = true
+tags = ["autonomous", "ai", "daily", "prod"]
+timeout_seconds = 300
+
+[[job]]
+name = "autonomous_hourly_monitor"
+description = "Stündliches autonomes Monitoring (optional)"
+command = "python"
+args = { script = "scripts/run_autonomous_workflow.py", workflow_type = "auto", symbol = "BTC/EUR", strategy = "ma_crossover", once = true, tag = "autonomous-hourly" }
+schedule_type = "interval"
+interval_seconds = 3600  # 1 Stunde
+enabled = false  # Manuell aktivieren bei Bedarf
+tags = ["autonomous", "ai", "monitoring"]
+timeout_seconds = 180

@@ -5,7 +5,11 @@ Tests für src/reporting/sweep_visualization.py (Phase 43)
 
 Testet Sweep-Visualisierungsfunktionen.
 """
+
 import pytest
+
+pytest.importorskip("matplotlib")
+
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -30,10 +34,12 @@ class TestPlotMetricVsSingleParam:
 
     def test_plot_metric_vs_single_param_creates_file(self):
         """Plot wird erstellt."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14, 21, 28],
-            "metric_total_return": [0.1, 0.15, 0.12, 0.18],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14, 21, 28],
+                "metric_total_return": [0.1, 0.15, 0.12, 0.18],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -53,10 +59,12 @@ class TestPlotMetricVsSingleParam:
 
     def test_plot_metric_vs_single_param_with_prefix(self):
         """Funktioniert auch mit param_/metric_ Prefix."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14, 21],
-            "metric_sharpe_ratio": [1.2, 1.5, 1.3],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14, 21],
+                "metric_sharpe_ratio": [1.2, 1.5, 1.3],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -73,9 +81,11 @@ class TestPlotMetricVsSingleParam:
 
     def test_plot_metric_vs_single_param_missing_param_raises(self):
         """Fehler wenn Parameter fehlt."""
-        df = pd.DataFrame({
-            "metric_total_return": [0.1, 0.15],
-        })
+        df = pd.DataFrame(
+            {
+                "metric_total_return": [0.1, 0.15],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -90,9 +100,11 @@ class TestPlotMetricVsSingleParam:
 
     def test_plot_metric_vs_single_param_missing_metric_raises(self):
         """Fehler wenn Metrik fehlt."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -107,10 +119,12 @@ class TestPlotMetricVsSingleParam:
 
     def test_plot_metric_vs_single_param_filters_nan(self):
         """NaN-Werte werden gefiltert."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14, 21, 28],
-            "metric_total_return": [0.1, float("nan"), 0.12, 0.18],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14, 21, 28],
+                "metric_total_return": [0.1, float("nan"), 0.12, 0.18],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -136,11 +150,13 @@ class TestPlotMetricHeatmapTwoParams:
 
     def test_plot_metric_heatmap_two_params_creates_file(self):
         """Heatmap wird erstellt."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 5, 10, 10, 20, 20],
-            "param_slow_period": [50, 100, 50, 100, 50, 100],
-            "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6, 1.1, 1.4],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 5, 10, 10, 20, 20],
+                "param_slow_period": [50, 100, 50, 100, 50, 100],
+                "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6, 1.1, 1.4],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -160,10 +176,12 @@ class TestPlotMetricHeatmapTwoParams:
 
     def test_plot_metric_heatmap_two_params_missing_param_raises(self):
         """Fehler wenn Parameter fehlt."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 10],
-            "metric_sharpe_ratio": [1.2, 1.5],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 10],
+                "metric_sharpe_ratio": [1.2, 1.5],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -179,11 +197,13 @@ class TestPlotMetricHeatmapTwoParams:
 
     def test_plot_metric_heatmap_two_params_filters_nan(self):
         """NaN-Werte werden gefiltert."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 5, 10],
-            "param_slow_period": [50, 100, 50],
-            "metric_sharpe_ratio": [1.2, float("nan"), 1.3],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 5, 10],
+                "param_slow_period": [50, 100, 50],
+                "metric_sharpe_ratio": [1.2, float("nan"), 1.3],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -210,12 +230,14 @@ class TestGenerateDefaultSweepPlots:
 
     def test_generate_default_sweep_plots_creates_plots(self):
         """Standard-Plots werden erstellt."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14, 21, 7, 14, 21],
-            "param_oversold_level": [20, 20, 20, 30, 30, 30],
-            "metric_total_return": [0.1, 0.15, 0.12, 0.11, 0.16, 0.13],
-            "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.25, 1.55, 1.35],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14, 21, 7, 14, 21],
+                "param_oversold_level": [20, 20, 20, 30, 30, 30],
+                "metric_total_return": [0.1, 0.15, 0.12, 0.11, 0.16, 0.13],
+                "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.25, 1.55, 1.35],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -235,10 +257,12 @@ class TestGenerateDefaultSweepPlots:
 
     def test_generate_default_sweep_plots_with_fallback(self):
         """Fallback-Metrik wird verwendet wenn primary fehlt."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14, 21],
-            "metric_total_return": [0.1, 0.15, 0.12],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14, 21],
+                "metric_total_return": [0.1, 0.15, 0.12],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -255,9 +279,11 @@ class TestGenerateDefaultSweepPlots:
 
     def test_generate_default_sweep_plots_no_params_returns_empty(self):
         """Leeres Dict wenn keine Parameter vorhanden."""
-        df = pd.DataFrame({
-            "metric_total_return": [0.1, 0.15],
-        })
+        df = pd.DataFrame(
+            {
+                "metric_total_return": [0.1, 0.15],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -271,11 +297,13 @@ class TestGenerateDefaultSweepPlots:
 
     def test_generate_default_sweep_plots_creates_heatmap(self):
         """Heatmap wird erstellt wenn mindestens 2 Parameter vorhanden."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 5, 10, 10],
-            "param_slow_period": [50, 100, 50, 100],
-            "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 5, 10, 10],
+                "param_slow_period": [50, 100, 50, 100],
+                "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -300,11 +328,13 @@ class TestCreateDrawdownHeatmap:
 
     def test_create_drawdown_heatmap_creates_file(self):
         """Drawdown-Heatmap wird erstellt."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 5, 10, 10, 20, 20],
-            "param_slow_period": [50, 100, 50, 100, 50, 100],
-            "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.12, -0.06, -0.09],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 5, 10, 10, 20, 20],
+                "param_slow_period": [50, 100, 50, 100, 50, 100],
+                "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.12, -0.06, -0.09],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -326,11 +356,13 @@ class TestCreateDrawdownHeatmap:
 
     def test_create_drawdown_heatmap_with_prefix(self):
         """Funktioniert auch mit param_/metric_ Prefix."""
-        df = pd.DataFrame({
-            "param_rsi_period": [7, 14, 21, 7, 14, 21],
-            "param_oversold_level": [20, 20, 20, 30, 30, 30],
-            "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.06, -0.12, -0.09],
-        })
+        df = pd.DataFrame(
+            {
+                "param_rsi_period": [7, 14, 21, 7, 14, 21],
+                "param_oversold_level": [20, 20, 20, 30, 30, 30],
+                "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.06, -0.12, -0.09],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -348,10 +380,12 @@ class TestCreateDrawdownHeatmap:
 
     def test_create_drawdown_heatmap_missing_param_raises(self):
         """Fehler wenn Parameter fehlt."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 10],
-            "metric_max_drawdown": [-0.05, -0.10],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 10],
+                "metric_max_drawdown": [-0.05, -0.10],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -367,10 +401,12 @@ class TestCreateDrawdownHeatmap:
 
     def test_create_drawdown_heatmap_missing_metric_raises(self):
         """Fehler wenn Drawdown-Metrik fehlt."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 5, 10, 10],
-            "param_slow_period": [50, 100, 50, 100],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 5, 10, 10],
+                "param_slow_period": [50, 100, 50, 100],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -386,11 +422,13 @@ class TestCreateDrawdownHeatmap:
 
     def test_create_drawdown_heatmap_filters_nan(self):
         """NaN-Werte werden gefiltert."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 5, 10],
-            "param_slow_period": [50, 100, 50],
-            "metric_max_drawdown": [-0.05, float("nan"), -0.08],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 5, 10],
+                "param_slow_period": [50, 100, 50],
+                "metric_max_drawdown": [-0.05, float("nan"), -0.08],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -408,11 +446,13 @@ class TestCreateDrawdownHeatmap:
 
     def test_create_drawdown_heatmap_with_custom_title(self):
         """Funktioniert mit benutzerdefiniertem Titel."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 5, 10, 10],
-            "param_slow_period": [50, 100, 50, 100],
-            "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.12],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 5, 10, 10],
+                "param_slow_period": [50, 100, 50, 100],
+                "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.12],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -440,12 +480,14 @@ class TestDrawdownHeatmapIntegration:
 
     def test_generate_default_sweep_plots_creates_drawdown_heatmap(self):
         """Drawdown-Heatmap wird automatisch erstellt wenn max_drawdown vorhanden."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 5, 10, 10],
-            "param_slow_period": [50, 100, 50, 100],
-            "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
-            "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.12],
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 5, 10, 10],
+                "param_slow_period": [50, 100, 50, 100],
+                "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
+                "metric_max_drawdown": [-0.05, -0.10, -0.08, -0.12],
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -458,7 +500,7 @@ class TestDrawdownHeatmapIntegration:
             # Sollte Drawdown-Heatmap enthalten
             drawdown_heatmaps = [k for k in plots.keys() if "drawdown" in k.lower()]
             assert len(drawdown_heatmaps) > 0, "Drawdown-Heatmap sollte erstellt werden"
-            
+
             # Prüfe dass alle Drawdown-Heatmaps existieren
             for key in drawdown_heatmaps:
                 assert plots[key].exists()
@@ -466,12 +508,14 @@ class TestDrawdownHeatmapIntegration:
 
     def test_generate_default_sweep_plots_no_drawdown_metric_no_heatmap(self):
         """Keine Drawdown-Heatmap wenn max_drawdown fehlt."""
-        df = pd.DataFrame({
-            "param_fast_period": [5, 5, 10, 10],
-            "param_slow_period": [50, 100, 50, 100],
-            "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
-            # Keine max_drawdown Spalte
-        })
+        df = pd.DataFrame(
+            {
+                "param_fast_period": [5, 5, 10, 10],
+                "param_slow_period": [50, 100, 50, 100],
+                "metric_sharpe_ratio": [1.2, 1.5, 1.3, 1.6],
+                # Keine max_drawdown Spalte
+            }
+        )
 
         with TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir)
@@ -483,5 +527,6 @@ class TestDrawdownHeatmapIntegration:
 
             # Sollte keine Drawdown-Heatmap enthalten
             drawdown_heatmaps = [k for k in plots.keys() if "drawdown" in k.lower()]
-            assert len(drawdown_heatmaps) == 0, "Keine Drawdown-Heatmap sollte erstellt werden wenn max_drawdown fehlt"
-
+            assert len(drawdown_heatmaps) == 0, (
+                "Keine Drawdown-Heatmap sollte erstellt werden wenn max_drawdown fehlt"
+            )

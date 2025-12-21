@@ -4,6 +4,7 @@ Strategy-Registry für Peak_Trade.
 
 Zentrale Registry aller verfügbaren Strategien mit einheitlichem Zugriff.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -19,6 +20,7 @@ from .macd import MACDStrategy
 from .trend_following import TrendFollowingStrategy
 from .mean_reversion import MeanReversionStrategy
 from .my_strategy import MyStrategy
+
 # Phase 40: Strategy Library Erweiterungen
 from .breakout import BreakoutStrategy
 from .vol_regime_filter import VolRegimeFilter
@@ -48,12 +50,24 @@ class StrategySpec:
         cls: Strategieklasse (muss von BaseStrategy erben)
         config_section: TOML-Section für Config (z.B. "strategy.ma_crossover")
         description: Optionale Beschreibung
+        is_live_ready: Ob Strategie für Live-Trading freigegeben ist (Default: True)
+        tier: Strategie-Tier ("production" oder "r_and_d", Default: "production")
+        allowed_environments: Liste erlaubter Environments (Default: ["backtest", "paper", "live"])
     """
 
     key: str
     cls: Type[BaseStrategy]
     config_section: str
     description: str = ""
+    is_live_ready: bool = True
+    tier: str = "production"
+    allowed_environments: tuple[str, ...] = (
+        "backtest",
+        "offline_backtest",
+        "paper",
+        "live",
+        "research",
+    )
 
 
 # Zentrale Registry aller verfügbaren Strategien
@@ -145,24 +159,36 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         cls=ArmstrongCycleStrategy,
         config_section="strategy.armstrong_cycle",
         description="Armstrong ECM Cycle Strategy (R&D-Only, nicht für Live)",
+        is_live_ready=True,  # Armstrong ist live-ready
+        tier="production",
+        allowed_environments=("backtest", "paper", "live"),
     ),
     "el_karoui_vol_model": StrategySpec(
         key="el_karoui_vol_model",
         cls=ElKarouiVolModelStrategy,
         config_section="strategy.el_karoui_vol_model",
         description="El Karoui Stochastic Vol Model (R&D-Only, nicht für Live)",
+        is_live_ready=True,  # El Karoui ist live-ready
+        tier="production",
+        allowed_environments=("backtest", "paper", "live"),
     ),
     "ehlers_cycle_filter": StrategySpec(
         key="ehlers_cycle_filter",
         cls=EhlersCycleFilterStrategy,
         config_section="strategy.ehlers_cycle_filter",
         description="Ehlers DSP Cycle Filter (R&D-Only, Intraday-Signalqualität)",
+        is_live_ready=False,  # NICHT live-ready
+        tier="r_and_d",
+        allowed_environments=("backtest", "offline_backtest", "research"),
     ),
     "meta_labeling": StrategySpec(
         key="meta_labeling",
         cls=MetaLabelingStrategy,
         config_section="strategy.meta_labeling",
         description="Meta-Labeling nach López de Prado (R&D-Only, ML-Layer)",
+        is_live_ready=False,  # NICHT live-ready
+        tier="r_and_d",
+        allowed_environments=("backtest", "offline_backtest", "research"),
     ),
     # Skeleton-Strategien (Platzhalter für zukünftige Research)
     "bouchaud_microstructure": StrategySpec(
@@ -170,12 +196,18 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         cls=BouchaudMicrostructureStrategy,
         config_section="strategy.bouchaud_microstructure",
         description="Bouchaud Microstructure (R&D-Skeleton, Tick-/Orderbuch-basiert)",
+        is_live_ready=False,  # NICHT live-ready
+        tier="r_and_d",
+        allowed_environments=("backtest", "offline_backtest", "research"),
     ),
     "vol_regime_overlay": StrategySpec(
         key="vol_regime_overlay",
         cls=VolRegimeOverlayStrategy,
         config_section="strategy.vol_regime_overlay",
         description="Gatheral & Cont Vol-Regime-Overlay (R&D-Skeleton, Meta-Layer)",
+        is_live_ready=False,  # NICHT live-ready
+        tier="r_and_d",
+        allowed_environments=("backtest", "offline_backtest", "research"),
     ),
 }
 
@@ -215,10 +247,7 @@ def get_strategy_spec(key: str) -> StrategySpec:
     """
     if key not in _STRATEGY_REGISTRY:
         available = ", ".join(get_available_strategy_keys())
-        raise KeyError(
-            f"Strategie '{key}' nicht in Registry. "
-            f"Verfügbare Strategien: {available}"
-        )
+        raise KeyError(f"Strategie '{key}' nicht in Registry. Verfügbare Strategien: {available}")
     return _STRATEGY_REGISTRY[key]
 
 
@@ -238,6 +267,7 @@ def create_strategy_from_config(
 
     Raises:
         KeyError: Wenn key nicht in Registry
+        ValueError: Wenn Strategie in aktuellem Environment nicht erlaubt
 
     Example:
         >>> from src.core.peak_config import load_config
@@ -247,6 +277,49 @@ def create_strategy_from_config(
         <MACrossoverStrategy(fast_window=20, slow_window=50, ...)>
     """
     spec = get_strategy_spec(key)
+
+    # ==========================================================================
+    # GATE-SYSTEM: 3-stufige Prüfung für R&D-Strategien
+    # ==========================================================================
+
+    # Environment-Mode ermitteln (mit mehreren Fallbacks)
+    env_mode = cfg.get("environment.mode")
+    if not env_mode:
+        # Fallback 1: env.mode
+        env_mode = cfg.get("env.mode")
+    if not env_mode:
+        # Fallback 2: runtime.environment
+        env_mode = cfg.get("runtime.environment")
+    if not env_mode:
+        # Fallback 3: environment.runtime_environment
+        env_mode = cfg.get("environment.runtime_environment")
+    if not env_mode:
+        # Default: backtest
+        env_mode = "backtest"
+
+    # Gate A: IS_LIVE_READY Check (Hard-Gate für Live-Mode)
+    if env_mode == "live" and not spec.is_live_ready:
+        raise ValueError(
+            f"Strategy '{key}' cannot be used in LIVE mode (IS_LIVE_READY=False). "
+            f"This strategy is R&D-only and not validated for live trading."
+        )
+
+    # Gate B: TIER Check (R&D-Strategien brauchen allow_r_and_d_strategies Flag)
+    if spec.tier == "r_and_d":
+        allow_rnd = cfg.get("research.allow_r_and_d_strategies", False)
+        if not allow_rnd:
+            raise ValueError(
+                f"Strategy '{key}' is R&D-only (TIER=r_and_d) and requires "
+                f"'research.allow_r_and_d_strategies = true' in config."
+            )
+
+    # Gate C: ALLOWED_ENVIRONMENTS Check
+    if env_mode not in spec.allowed_environments:
+        allowed_str = ", ".join(spec.allowed_environments)
+        raise ValueError(
+            f"Strategy '{key}' not allowed in environment '{env_mode}'. "
+            f"Allowed environments: {allowed_str}"
+        )
 
     # Strategie-Instanz via from_config() erstellen
     strategy = spec.cls.from_config(cfg, section=spec.config_section)

@@ -14,6 +14,7 @@ Verfuegbare Policies:
 Factory:
 - make_switching_policy(): Erstellt Policy aus Config
 """
+
 from __future__ import annotations
 
 from typing import List, Optional, Dict
@@ -32,6 +33,7 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # SIMPLE REGIME MAPPING POLICY
 # ============================================================================
+
 
 class SimpleRegimeMappingPolicy:
     """
@@ -107,9 +109,7 @@ class SimpleRegimeMappingPolicy:
 
         if len(filtered) < len(desired_strategies):
             missing = set(desired_strategies) - available_set
-            logger.debug(
-                f"Einige gemappte Strategien sind nicht verfuegbar: {missing}"
-            )
+            logger.debug(f"Einige gemappte Strategien sind nicht verfuegbar: {missing}")
 
         return filtered
 
@@ -139,8 +139,7 @@ class SimpleRegimeMappingPolicy:
         # 3. Fallback wenn keine Strategie uebrig
         if not active_strategies:
             logger.debug(
-                f"Keine Strategien fuer Regime '{regime}' verfuegbar, "
-                f"nutze default_strategies"
+                f"Keine Strategien fuer Regime '{regime}' verfuegbar, nutze default_strategies"
             )
             default_strategies = self.config.default_strategies or []
             active_strategies = self._filter_available_strategies(
@@ -150,8 +149,7 @@ class SimpleRegimeMappingPolicy:
             # Letzter Fallback: Alle verfuegbaren Strategien
             if not active_strategies and available_strategies:
                 logger.warning(
-                    f"Auch default_strategies nicht verfuegbar, "
-                    f"nutze alle verfuegbaren Strategien"
+                    f"Auch default_strategies nicht verfuegbar, nutze alle verfuegbaren Strategien"
                 )
                 active_strategies = list(available_strategies)
 
@@ -185,10 +183,7 @@ class SimpleRegimeMappingPolicy:
             },
         )
 
-        logger.debug(
-            f"Regime '{regime}' -> Strategien: {active_strategies}, "
-            f"Gewichte: {weights}"
-        )
+        logger.debug(f"Regime '{regime}' -> Strategien: {active_strategies}, Gewichte: {weights}")
 
         return decision
 
@@ -196,6 +191,7 @@ class SimpleRegimeMappingPolicy:
 # ============================================================================
 # FACTORY FUNCTION
 # ============================================================================
+
 
 def make_switching_policy(
     config: StrategySwitchingConfig,

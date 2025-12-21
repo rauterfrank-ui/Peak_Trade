@@ -39,6 +39,7 @@ WICHTIG: Dieses Tool ist read-only und trifft keine Trading-Entscheidungen.
 
 Zum Beenden: Ctrl+C
 """
+
 from __future__ import annotations
 
 import argparse
@@ -109,7 +110,11 @@ def render_status_line(
     use_colors: bool = True,
 ) -> str:
     """Rendert die Status-Zeile am unteren Rand."""
-    c = Colors if use_colors else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
+    c = (
+        Colors
+        if use_colors
+        else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
+    )
     return (
         f"{c.GRAY}[monitor] run_dir={run_dir} | "
         f"refresh in {interval:.1f}s | Ctrl+C to exit{c.RESET}"
@@ -118,7 +123,11 @@ def render_status_line(
 
 def render_error(message: str, use_colors: bool = True) -> str:
     """Rendert eine Fehlermeldung."""
-    c = Colors if use_colors else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
+    c = (
+        Colors
+        if use_colors
+        else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
+    )
     return f"{c.RED}ERROR: {message}{c.RESET}"
 
 
@@ -141,7 +150,11 @@ def monitor_run(
         use_colors: ANSI-Farben verwenden
         alert_engine: Optional AlertEngine für Alert-Auswertung
     """
-    c = Colors if use_colors else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
+    c = (
+        Colors
+        if use_colors
+        else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
+    )
 
     print(f"{c.CYAN}Starting monitor for: {run_dir}{c.RESET}")
     print(f"Interval: {interval}s, Rows: {rows}, View: {view}")
@@ -220,7 +233,11 @@ def monitor_run(
 
 def list_available_runs(base_dir: str | Path, use_colors: bool = True) -> None:
     """Listet alle verfügbaren Runs auf."""
-    c = Colors if use_colors else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
+    c = (
+        Colors
+        if use_colors
+        else type("NoColors", (), {k: "" for k in dir(Colors) if not k.startswith("_")})()
+    )
 
     print(f"{c.BOLD}Available Runs in: {base_dir}{c.RESET}")
     print(f"{c.GRAY}{'=' * 60}{c.RESET}")
@@ -370,7 +387,9 @@ NOTE: This tool is read-only and does not affect trading.
         base_dir = "live_runs"
 
     # Defaults aus Config übernehmen
-    interval = args.interval if args.interval is not None else monitoring_cfg.default_interval_seconds
+    interval = (
+        args.interval if args.interval is not None else monitoring_cfg.default_interval_seconds
+    )
     rows = args.rows if args.rows is not None else monitoring_cfg.default_tail_rows
     use_colors = not args.no_colors and monitoring_cfg.use_colors
 

@@ -63,8 +63,10 @@ from src.reporting.offline_paper_trade_integration import (
 # Szenario-Matrix für Trigger-Training
 # ============================================================================
 
+
 class ReactionType(str, Enum):
     """Art der Trader-Reaktion auf ein Signal."""
+
     EXECUTED_FAST = "executed_fast"
     EXECUTED_SLOW = "executed_slow"
     MISSED = "missed"
@@ -73,6 +75,7 @@ class ReactionType(str, Enum):
 
 class OutcomeType(str, Enum):
     """Markt-Outcome nach dem Signal."""
+
     FAVORABLE = "favorable"
     ADVERSE = "adverse"
     NEUTRAL = "neutral"
@@ -81,6 +84,7 @@ class OutcomeType(str, Enum):
 @dataclass(frozen=True)
 class TriggerScenarioDef:
     """Definition eines Trigger-Training-Szenarios."""
+
     scenario_id: str
     label: str
     reaction_type: ReactionType
@@ -127,14 +131,13 @@ SCENARIO_MATRIX: list[TriggerScenarioDef] = [
 ]
 
 # Lookup-Map: (reaction_type, outcome_type) -> TriggerScenarioDef
-SCENARIO_BY_KEY = {
-    (s.reaction_type, s.outcome_type): s for s in SCENARIO_MATRIX
-}
+SCENARIO_BY_KEY = {(s.reaction_type, s.outcome_type): s for s in SCENARIO_MATRIX}
 
 
 # ============================================================================
 # CLI & Helper Functions
 # ============================================================================
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -178,9 +181,9 @@ def _default_session_id() -> str:
     return f"DRILL_TRIGGER_{ts}"
 
 
-def load_data_for_session(session_id: str) -> Tuple[
-    pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp
-]:
+def load_data_for_session(
+    session_id: str,
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp]:
     """
     Lädt Session-Daten aus dem Session Data Store oder generiert Demo-Daten.
 
@@ -188,32 +191,32 @@ def load_data_for_session(session_id: str) -> Tuple[
       1. Prüft, ob session_id im Store existiert (live_runs/sessions/<session_id>/)
       2. Falls ja: Lädt echte Daten aus dem Store
       3. Falls nein: Generiert synthetische Demo-Daten für Testing
-    
+
     Returns
     -------
     Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp]
         trades_df, signals_df, actions_df, prices_df, start_ts, end_ts
-    
+
     Erwartete Schemas:
     ------------------
     prices_df:
         - timestamp (datetime): Zeitstempel
         - close (float): Close-Preis
         - optional: symbol, open, high, low, volume
-    
+
     signals_df:
         - signal_id (int): Eindeutige Signal-ID
         - timestamp (datetime): Signal-Zeitstempel
         - symbol (str): Trading-Symbol
         - signal_state (int): Signal-Zustand (-1/0/1 für SHORT/FLAT/LONG)
         - recommended_action (str): Empfohlene Action (z.B. "ENTER_LONG")
-    
+
     actions_df:
         - signal_id (int): Referenz zu signals_df
         - timestamp (datetime): Action-Zeitstempel
         - user_action (str): User-Reaktion (z.B. "EXECUTED", "SKIPPED")
         - note (str): Optionale Notiz
-    
+
     trades_df:
         - timestamp (datetime): Trade-Zeitstempel
         - price (float): Fill-Preis
@@ -225,19 +228,19 @@ def load_data_for_session(session_id: str) -> Tuple[
     if session_exists(session_id):
         print(f"[LOAD] Lade echte Session-Daten aus Store: {session_id}")
         data = load_session_data(session_id)
-        
+
         trades_df = data["trades"]
         signals_df = data["signals"]
         actions_df = data["actions"]
         prices_df = data["prices"]
         meta = data["meta"]
-        
+
         start_ts = pd.Timestamp(meta.start_ts)
         end_ts = pd.Timestamp(meta.end_ts)
-        
+
         print(f"[LOAD] Erfolgreich: {len(signals_df)} Signale, {len(trades_df)} Trades")
         return trades_df, signals_df, actions_df, prices_df, start_ts, end_ts
-    
+
     # Versuch 2: Demo-Daten generieren
     print(f"[LOAD] Session '{session_id}' nicht im Store gefunden.")
     available = list_session_ids()
@@ -246,7 +249,7 @@ def load_data_for_session(session_id: str) -> Tuple[
     else:
         print(f"[LOAD] Keine Sessions im Store vorhanden.")
     print(f"[LOAD] Generiere synthetische Demo-Daten für Testing...")
-    
+
     return _generate_demo_data()
 
 
@@ -268,7 +271,9 @@ def _generate_demo_data() -> Tuple[
     periods = 60  # 60 Minuten = 1h Drill
     idx = pd.date_range(start_ts, periods=periods, freq="1min", tz="UTC")
 
-    close = 30000 + (idx.astype("int64") // 10**9 % 100) * 2.0  # leicht steigender/variierender Preis
+    close = (
+        30000 + (idx.astype("int64") // 10**9 % 100) * 2.0
+    )  # leicht steigender/variierender Preis
 
     prices_df = pd.DataFrame(
         {
@@ -282,10 +287,7 @@ def _generate_demo_data() -> Tuple[
 
     # --- 2) Signals (signals_df) ------------------------------------
     # Wir setzen 5 Signale im Verlauf der Session
-    signal_times = [
-        prices_df["timestamp"].iloc[i]
-        for i in [5, 15, 25, 35, 45]
-    ]
+    signal_times = [prices_df["timestamp"].iloc[i] for i in [5, 15, 25, 35, 45]]
 
     signals_df = pd.DataFrame(
         {
@@ -317,9 +319,7 @@ def _generate_demo_data() -> Tuple[
         """Setzt Szenario-Metadaten für ein bestimmtes Signal."""
         # Falls default_id angegeben, bevorzuge diesen
         if default_id is not None:
-            scenario_def = next(
-                (s for s in SCENARIO_MATRIX if s.scenario_id == default_id), None
-            )
+            scenario_def = next((s for s in SCENARIO_MATRIX if s.scenario_id == default_id), None)
         else:
             # Ansonsten: Lookup über (reaction_type, outcome_type)
             scenario_def = SCENARIO_BY_KEY.get((reaction_type, outcome_type))
@@ -328,9 +328,7 @@ def _generate_demo_data() -> Tuple[
         if scenario_def is not None:
             signals_df.loc[row_mask, "scenario_id"] = scenario_def.scenario_id
             signals_df.loc[row_mask, "scenario_label"] = scenario_def.label
-            signals_df.loc[row_mask, "scenario_psych_tags"] = ",".join(
-                scenario_def.psych_tags
-            )
+            signals_df.loc[row_mask, "scenario_psych_tags"] = ",".join(scenario_def.psych_tags)
 
     # Signal 1: Schnelle Ausführung (2s) -> EXECUTED_FAST & FAVORABLE (Long)
     # Trend-Following Setup
@@ -340,7 +338,9 @@ def _generate_demo_data() -> Tuple[
         outcome_type=OutcomeType.FAVORABLE,
         default_id="DISC_EXEC_GOOD",
     )
-    signals_df.loc[signals_df["signal_id"] == 1, "scenario_psych_tags"] = "DISCIPLINE,TREND_FOLLOW,TRUST_SYSTEM"
+    signals_df.loc[signals_df["signal_id"] == 1, "scenario_psych_tags"] = (
+        "DISCIPLINE,TREND_FOLLOW,TRUST_SYSTEM"
+    )
 
     # Signal 2: Zu späte Ausführung (12s) -> EXECUTED_SLOW & ADVERSE
     # Breakout Setup, aber zu spät (FOMO-Indikator)
@@ -349,7 +349,9 @@ def _generate_demo_data() -> Tuple[
         reaction_type=ReactionType.EXECUTED_SLOW,
         outcome_type=OutcomeType.ADVERSE,
     )
-    signals_df.loc[signals_df["signal_id"] == 2, "scenario_psych_tags"] = "HESITATION,BREAKOUT,TOO_SLOW,FOMO"
+    signals_df.loc[signals_df["signal_id"] == 2, "scenario_psych_tags"] = (
+        "HESITATION,BREAKOUT,TOO_SLOW,FOMO"
+    )
 
     # Signal 3: Keine Action (verpasst) -> MISSED & FAVORABLE
     # Counter-Trend Setup, aus Angst verpasst
@@ -358,7 +360,9 @@ def _generate_demo_data() -> Tuple[
         reaction_type=ReactionType.MISSED,
         outcome_type=OutcomeType.FAVORABLE,
     )
-    signals_df.loc[signals_df["signal_id"] == 3, "scenario_psych_tags"] = "FEAR,REGRET,COUNTER_TREND,HESITATION"
+    signals_df.loc[signals_df["signal_id"] == 3, "scenario_psych_tags"] = (
+        "FEAR,REGRET,COUNTER_TREND,HESITATION"
+    )
 
     # Signal 4: Rechtzeitige Ausführung (3s), Short-Signal -> EXECUTED_FAST & FAVORABLE
     # Exit-Setup (Take-Profit)
@@ -368,7 +372,9 @@ def _generate_demo_data() -> Tuple[
         outcome_type=OutcomeType.FAVORABLE,
         default_id="DISC_EXEC_GOOD_SHORT",
     )
-    signals_df.loc[signals_df["signal_id"] == 4, "scenario_psych_tags"] = "DISCIPLINE,EXIT,CONFIDENCE,TAKE_PROFIT"
+    signals_df.loc[signals_df["signal_id"] == 4, "scenario_psych_tags"] = (
+        "DISCIPLINE,EXIT,CONFIDENCE,TAKE_PROFIT"
+    )
 
     # Signal 5: Bewusst übersprungen -> SKIPPED & ADVERSE
     # Re-Entry Setup, aus Verlustangst geskippt
@@ -377,7 +383,9 @@ def _generate_demo_data() -> Tuple[
         reaction_type=ReactionType.SKIPPED,
         outcome_type=OutcomeType.ADVERSE,
     )
-    signals_df.loc[signals_df["signal_id"] == 5, "scenario_psych_tags"] = "DISCIPLINE,REENTRY,RISK_AVERSION_OK,SCALING"
+    signals_df.loc[signals_df["signal_id"] == 5, "scenario_psych_tags"] = (
+        "DISCIPLINE,REENTRY,RISK_AVERSION_OK,SCALING"
+    )
 
     # --- 3) Actions (actions_df) ------------------------------------
     # Simuliert verschiedene Trader-Reaktionen auf Signale:
@@ -434,8 +442,10 @@ def _generate_demo_data() -> Tuple[
                 }
             )
 
-    trades_df = pd.DataFrame.from_records(trade_rows) if trade_rows else pd.DataFrame(
-        columns=["timestamp", "price", "qty", "pnl", "fees"]
+    trades_df = (
+        pd.DataFrame.from_records(trade_rows)
+        if trade_rows
+        else pd.DataFrame(columns=["timestamp", "price", "qty", "pnl", "fees"])
     )
 
     return trades_df, signals_df, actions_df, prices_df, start_ts, end_ts
@@ -497,11 +507,13 @@ def main() -> None:
     )
     reaction_summary = summarize_reaction_records(reaction_records)
     reaction_records_df = reaction_records_to_df(reaction_records)
-    print(f"[DRILL] Reaktions-Stats: {reaction_summary.count_total} Signale, "
-          f"{reaction_summary.count_impulsive} impulsive, "
-          f"{reaction_summary.count_on_time} on-time, "
-          f"{reaction_summary.count_late} late, "
-          f"{reaction_summary.count_missed} missed.")
+    print(
+        f"[DRILL] Reaktions-Stats: {reaction_summary.count_total} Signale, "
+        f"{reaction_summary.count_impulsive} impulsive, "
+        f"{reaction_summary.count_on_time} on-time, "
+        f"{reaction_summary.count_late} late, "
+        f"{reaction_summary.count_missed} missed."
+    )
 
     # 2b) Execution-Latenz-Statistiken berechnen (NEU: v1)
     print("[DRILL] Berechne Execution-Latenz-Statistiken ...")
@@ -514,21 +526,25 @@ def main() -> None:
     latency_summary = summarize_latency(latency_measures)
     latency_measures_df = latency_measures_to_df(latency_measures)
     if latency_summary.mean_trigger_delay_ms is not None:
-        print(f"[DRILL] Latenz-Stats: {latency_summary.count_orders} Orders, "
-              f"Avg Trigger-Delay: {latency_summary.mean_trigger_delay_ms:.1f} ms.")
+        print(
+            f"[DRILL] Latenz-Stats: {latency_summary.count_orders} Orders, "
+            f"Avg Trigger-Delay: {latency_summary.mean_trigger_delay_ms:.1f} ms."
+        )
     else:
-        print(f"[DRILL] Latenz-Stats: {latency_summary.count_orders} Orders "
-              f"(keine Signal-Timestamps vorhanden).")
+        print(
+            f"[DRILL] Latenz-Stats: {latency_summary.count_orders} Orders "
+            f"(keine Signal-Timestamps vorhanden)."
+        )
 
     # 2c) DataFrames in Session-Report-Ordner speichern
     session_report_dir = base_reports_dir / session_id
     session_report_dir.mkdir(parents=True, exist_ok=True)
-    
+
     if not reaction_records_df.empty:
         csv_path = session_report_dir / "reaction_records.csv"
         reaction_records_df.to_csv(csv_path, index=False)
         print(f"[DRILL] Gespeichert: {csv_path}")
-    
+
     if not latency_measures_df.empty:
         csv_path = session_report_dir / "latency_measures.csv"
         latency_measures_df.to_csv(csv_path, index=False)
@@ -574,11 +590,11 @@ def main() -> None:
         print(f"[REPORT] Trigger-Training-Report:     {trigger_report}")
     if not trigger_report:
         print("[WARN] Kein Trigger-Report erzeugt (keine Trigger-Events?).")
-    
+
     # NEU: Ausgabe der Speed-Metriken
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("📊 TRIGGER-GESCHWINDIGKEITS-METRIKEN")
-    print("="*70)
+    print("=" * 70)
     print(f"Total Signale:        {reaction_summary.count_total}")
     print(f"  - Impulsive:        {reaction_summary.count_impulsive}")
     print(f"  - On-Time:          {reaction_summary.count_on_time}")
@@ -589,10 +605,10 @@ def main() -> None:
         print(f"Avg Reaktionszeit:    {reaction_summary.mean_reaction_ms:.1f} ms")
         print(f"Median Reaktionszeit: {reaction_summary.median_reaction_ms:.1f} ms")
         print(f"P90 Reaktionszeit:    {reaction_summary.p90_reaction_ms:.1f} ms")
-    
-    print("\n" + "="*70)
+
+    print("\n" + "=" * 70)
     print("⚡ EXECUTION-LATENZ-METRIKEN")
-    print("="*70)
+    print("=" * 70)
     print(f"Total Orders:         {latency_summary.count_orders}")
     if latency_summary.mean_trigger_delay_ms:
         print(f"Avg Trigger-Delay:    {latency_summary.mean_trigger_delay_ms:.1f} ms")
@@ -602,7 +618,7 @@ def main() -> None:
         print(f"P90 Send-to-Fill:     {latency_summary.p90_send_to_first_fill_ms:.1f} ms")
     if latency_summary.mean_slippage:
         print(f"Avg Slippage:         {latency_summary.mean_slippage:.4f}")
-    print("="*70 + "\n")
+    print("=" * 70 + "\n")
 
 
 if __name__ == "__main__":

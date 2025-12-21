@@ -25,6 +25,7 @@ Usage:
 
 WICHTIG: Diese Web-UI ist read-only und trifft keine Trading-Entscheidungen.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -150,8 +151,7 @@ Open http://127.0.0.1:8000 in your browser to view the dashboard.
         import uvicorn
     except ImportError:
         logger.error(
-            "uvicorn is required to run the dashboard server.\n"
-            "Install with: pip install uvicorn"
+            "uvicorn is required to run the dashboard server.\nInstall with: pip install uvicorn"
         )
         return 1
 

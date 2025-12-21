@@ -8,6 +8,7 @@ Testet:
 - R&D-Safety-Flags
 - Tier-Gating-Mechanismus
 """
+
 import pytest
 from datetime import date, timedelta
 
@@ -277,9 +278,7 @@ class TestSignalGeneration:
         assert "is_research_stub" in signals.attrs
         assert signals.attrs["is_research_stub"] is True
 
-    def test_empty_dataframe_handling(
-        self, strategy_default: ArmstrongCycleStrategy
-    ) -> None:
+    def test_empty_dataframe_handling(self, strategy_default: ArmstrongCycleStrategy) -> None:
         """Prüft Handling von leerem DataFrame."""
         empty_df = pd.DataFrame(
             columns=["open", "high", "low", "close", "volume"],
@@ -290,9 +289,7 @@ class TestSignalGeneration:
 
         assert len(signals) == 0
 
-    def test_non_datetime_index_raises(
-        self, strategy_default: ArmstrongCycleStrategy
-    ) -> None:
+    def test_non_datetime_index_raises(self, strategy_default: ArmstrongCycleStrategy) -> None:
         """Prüft, dass nicht-datetime Index einen Fehler wirft."""
         bad_df = pd.DataFrame(
             {"close": [100, 101, 102]},
@@ -306,14 +303,12 @@ class TestSignalGeneration:
 class TestSignalGenerationWithDifferentConfigs:
     """Tests für Signal-Generierung mit verschiedenen Configs."""
 
-    def test_aggressive_generates_short_signals(
-        self, dummy_ohlcv_data: pd.DataFrame
-    ) -> None:
+    def test_aggressive_generates_short_signals(self, dummy_ohlcv_data: pd.DataFrame) -> None:
         """Prüft, dass aggressive Mapping Short-Signale generiert."""
         strategy = ArmstrongCycleStrategy(
             phase_position_map="aggressive",
             cycle_length_days=200,  # Zyklus muss > 2*event_window sein
-            event_window_days=20,   # Angepasst für kurzen Zyklus
+            event_window_days=20,  # Angepasst für kurzen Zyklus
             reference_date="2024-01-01",
         )
 
@@ -322,17 +317,17 @@ class TestSignalGenerationWithDifferentConfigs:
         # Research-stub mode: only flat signals (0) for safety
         # Real signal generation is disabled until explicitly approved
         unique_values = set(signals.unique())
-        assert unique_values == {0}, f"Expected only flat signals in research-stub mode, got {unique_values}"
+        assert unique_values == {0}, (
+            f"Expected only flat signals in research-stub mode, got {unique_values}"
+        )
         assert signals.attrs["is_research_stub"] is True
 
-    def test_conservative_only_long_or_flat(
-        self, dummy_ohlcv_data: pd.DataFrame
-    ) -> None:
+    def test_conservative_only_long_or_flat(self, dummy_ohlcv_data: pd.DataFrame) -> None:
         """Prüft, dass conservative Mapping nur long oder flat generiert."""
         strategy = ArmstrongCycleStrategy(
             phase_position_map="conservative",
             cycle_length_days=200,  # Zyklus muss > 2*event_window sein
-            event_window_days=20,   # Angepasst für kurzen Zyklus
+            event_window_days=20,  # Angepasst für kurzen Zyklus
             reference_date="2024-01-01",
         )
 
@@ -350,9 +345,7 @@ class TestSignalGenerationWithDifferentConfigs:
 class TestHelperMethods:
     """Tests für Helper-Methoden."""
 
-    def test_get_cycle_info(
-        self, strategy_default: ArmstrongCycleStrategy
-    ) -> None:
+    def test_get_cycle_info(self, strategy_default: ArmstrongCycleStrategy) -> None:
         """Prüft get_cycle_info Methode."""
         info = strategy_default.get_cycle_info(pd.Timestamp("2024-06-15"))
 
@@ -360,17 +353,13 @@ class TestHelperMethods:
         assert "risk_multiplier" in info
         assert isinstance(info["phase"], ArmstrongPhase)
 
-    def test_get_phase_for_date(
-        self, strategy_default: ArmstrongCycleStrategy
-    ) -> None:
+    def test_get_phase_for_date(self, strategy_default: ArmstrongCycleStrategy) -> None:
         """Prüft get_phase_for_date Methode."""
         phase = strategy_default.get_phase_for_date(pd.Timestamp("2024-06-15"))
 
         assert isinstance(phase, ArmstrongPhase)
 
-    def test_get_position_for_phase(
-        self, strategy_default: ArmstrongCycleStrategy
-    ) -> None:
+    def test_get_position_for_phase(self, strategy_default: ArmstrongCycleStrategy) -> None:
         """Prüft get_position_for_phase Methode."""
         pos_expansion = strategy_default.get_position_for_phase(ArmstrongPhase.EXPANSION)
         pos_crisis = strategy_default.get_position_for_phase(ArmstrongPhase.CRISIS)
@@ -378,9 +367,7 @@ class TestHelperMethods:
         assert pos_expansion in [-1, 0, 1]
         assert pos_crisis in [-1, 0, 1]
 
-    def test_get_strategy_info(
-        self, strategy_default: ArmstrongCycleStrategy
-    ) -> None:
+    def test_get_strategy_info(self, strategy_default: ArmstrongCycleStrategy) -> None:
         """Prüft get_strategy_info Methode."""
         info = strategy_default.get_strategy_info()
 
@@ -576,6 +563,3 @@ class TestSmoke:
 
         # Aber offline_backtest sollte funktionieren
         assert_strategy_not_r_and_d_for_live(strategy_id, "offline_backtest")
-
-
-

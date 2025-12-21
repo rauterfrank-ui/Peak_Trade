@@ -919,7 +919,3 @@ Damit haben Operatoren neben dem Playbook-Flow auch ein kurzes, reproduzierbares
 ---
 
 *Dieses Playbook ist ein lebendes Dokument. Bei Änderungen an Prozessen oder Architektur sollte es aktualisiert werden.*
-
-
-
-

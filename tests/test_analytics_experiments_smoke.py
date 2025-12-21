@@ -75,7 +75,7 @@ def create_mock_experiments_df() -> pd.DataFrame:
                 "sharpe": 1.3,
                 "max_drawdown": -0.07,
                 "timestamp": "2025-01-04T10:00:00",
-                "metadata_json": '{}',
+                "metadata_json": "{}",
             },
             {
                 "run_id": "run-005",
@@ -87,7 +87,7 @@ def create_mock_experiments_df() -> pd.DataFrame:
                 "sharpe": 1.1,
                 "max_drawdown": -0.06,
                 "timestamp": "2025-01-05T10:00:00",
-                "metadata_json": '{}',
+                "metadata_json": "{}",
             },
         ]
     )
@@ -120,6 +120,7 @@ class TestLoadExperimentsFiltered:
         mock_df = create_mock_experiments_df()
         # Patch im richtigen Modul
         import src.analytics.experiments_analysis as ea_module
+
         monkeypatch.setattr(ea_module, "load_experiments_df", lambda: mock_df)
 
         df = load_experiments_df_filtered(run_types=["backtest"])
@@ -131,6 +132,7 @@ class TestLoadExperimentsFiltered:
         """Test: Filter nach strategy_key funktioniert."""
         mock_df = create_mock_experiments_df()
         import src.analytics.experiments_analysis as ea_module
+
         monkeypatch.setattr(ea_module, "load_experiments_df", lambda: mock_df)
 
         df = load_experiments_df_filtered(strategy_keys=["ma_crossover"])
@@ -142,6 +144,7 @@ class TestLoadExperimentsFiltered:
         """Test: Filter nach Tag funktioniert."""
         mock_df = create_mock_experiments_df()
         import src.analytics.experiments_analysis as ea_module
+
         monkeypatch.setattr(ea_module, "load_experiments_df", lambda: mock_df)
 
         df = load_experiments_df_filtered(tags=["test"])
@@ -152,6 +155,7 @@ class TestLoadExperimentsFiltered:
         """Test: Kombinierte Filter funktionieren."""
         mock_df = create_mock_experiments_df()
         import src.analytics.experiments_analysis as ea_module
+
         monkeypatch.setattr(ea_module, "load_experiments_df", lambda: mock_df)
 
         df = load_experiments_df_filtered(
@@ -189,6 +193,7 @@ class TestSummarizeStrategies:
         """Test: summarize_strategies aggregiert korrekt."""
         mock_df = create_mock_experiments_df()
         import src.analytics.experiments_analysis as ea_module
+
         monkeypatch.setattr(ea_module, "load_experiments_df", lambda: mock_df)
 
         df = load_experiments_df_filtered(run_types=["backtest"])
@@ -206,6 +211,7 @@ class TestSummarizeStrategies:
         """Test: Best/Worst Run IDs werden korrekt ermittelt."""
         mock_df = create_mock_experiments_df()
         import src.analytics.experiments_analysis as ea_module
+
         monkeypatch.setattr(ea_module, "load_experiments_df", lambda: mock_df)
 
         df = load_experiments_df_filtered(run_types=["backtest"])
@@ -233,6 +239,7 @@ class TestSummarizePortfolios:
         """Test: summarize_portfolios aggregiert korrekt."""
         mock_df = create_mock_experiments_df()
         import src.analytics.experiments_analysis as ea_module
+
         monkeypatch.setattr(ea_module, "load_experiments_df", lambda: mock_df)
 
         df = load_experiments_df_filtered(run_types=["portfolio_backtest"])
@@ -366,6 +373,7 @@ class TestCLIScript:
     def test_cli_help(self):
         """Test: CLI zeigt Hilfe an."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
         from analyze_experiments import parse_args
@@ -377,6 +385,7 @@ class TestCLIScript:
     def test_cli_top_runs_mode(self):
         """Test: CLI parst top-runs Modus."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
         from analyze_experiments import parse_args

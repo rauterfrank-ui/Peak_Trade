@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ops Workflow Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-950 text-slate-100">
+    <div class="min-h-screen">
+      <header class="border-b border-slate-800 bg-slate-900/70 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <a href="/" class="text-xl font-semibold tracking-tight hover:text-slate-200 transition-colors">
+              Peak_Trade Dashboard
+            </a>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/30">
+              Ops Workflows
+            </span>
+          </div>
+          <nav class="flex items-center gap-4">
+            <a href="/" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Dashboard
+            </a>
+            <a href="/ops/stage1" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Stage1
+            </a>
+            <a href="/ops/workflows" class="text-xs text-blue-400">
+              Workflows
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="pb-12">
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold mb-2">🔧 Ops Workflow Hub</h1>
+    <p class="text-sm text-slate-400">
+      Übersicht der Ops Workflow Scripts mit Copy-Paste Commands
+      <span class="ml-2 text-xs text-slate-500">Repo: {{ repo_root }}</span>
+    </p>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="mb-6 bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+    <h2 class="text-sm font-semibold mb-2 text-slate-300">📚 Quick Links</h2>
+    <div class="flex flex-wrap gap-3 text-xs">
+      <a href="#" class="text-slate-400 hover:text-blue-300 transition-colors font-mono">
+        docs/ops/WORKFLOW_SCRIPTS.md
+      </a>
+      <a href="#" class="text-slate-400 hover:text-blue-300 transition-colors font-mono">
+        docs/ops/README.md
+      </a>
+      <a href="#" class="text-slate-400 hover:text-blue-300 transition-colors font-mono">
+        docs/PEAK_TRADE_STATUS_OVERVIEW.md
+      </a>
+    </div>
+    <p class="text-xs text-slate-500 mt-2">
+      ℹ️ Links zeigen nur Pfade (keine GitHub URLs hardcoded). Öffne lokal im Editor.
+    </p>
+  </div>
+
+  <!-- Workflows -->
+  {% for wf in workflows %}
+  <div class="mb-6 bg-slate-900/50 border border-slate-800 rounded-lg overflow-hidden">
+    <!-- Workflow Header -->
+    <div class="px-4 py-3 border-b border-slate-800 flex items-start justify-between">
+      <div>
+        <h3 class="text-lg font-semibold mb-1">{{ wf.title }}</h3>
+        <p class="text-sm text-slate-400">{{ wf.description }}</p>
+      </div>
+      <div class="flex items-center gap-2">
+        {% if wf.exists %}
+        <span class="text-xs px-2 py-1 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+          ✅ exists
+        </span>
+        {% else %}
+        <span class="text-xs px-2 py-1 rounded bg-red-500/10 text-red-300 border border-red-500/30">
+          ❌ not found
+        </span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Workflow Details -->
+    <div class="px-4 py-3">
+      <!-- Script Path -->
+      <div class="mb-3">
+        <div class="text-xs text-slate-500 mb-1">Script Path:</div>
+        <div class="font-mono text-sm text-slate-300 bg-slate-950 px-3 py-2 rounded border border-slate-800">
+          {{ wf.script_path }}
+        </div>
+      </div>
+
+      <!-- Metadata (if exists) -->
+      {% if wf.exists %}
+      <div class="mb-3 flex items-center gap-4 text-xs text-slate-500">
+        <span>Size: {{ (wf.size_bytes / 1024)|round(1) }} KB</span>
+        <span>Modified: {{ wf.last_modified }}</span>
+      </div>
+      {% endif %}
+
+      <!-- Commands -->
+      <div class="mb-3">
+        <div class="text-xs text-slate-500 mb-1">Commands:</div>
+        {% for cmd in wf.commands %}
+        <div class="mb-2 flex items-center gap-2">
+          <div class="flex-1 font-mono text-sm text-slate-300 bg-slate-950 px-3 py-2 rounded border border-slate-800">
+            {{ cmd }}
+          </div>
+          <button
+            onclick="copyText('{{ cmd }}')"
+            class="px-3 py-2 text-xs font-medium rounded bg-blue-500/10 text-blue-300 border border-blue-500/30 hover:bg-blue-500/20 transition-colors">
+            📋 Copy
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Docs Refs -->
+      {% if wf.docs_refs %}
+      <div>
+        <div class="text-xs text-slate-500 mb-1">Docs:</div>
+        <div class="flex flex-wrap gap-2">
+          {% for doc in wf.docs_refs %}
+          <span class="text-xs font-mono px-2 py-1 rounded bg-slate-800/50 text-slate-400">
+            {{ doc }}
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- API Info -->
+  <div class="mt-8 bg-slate-900/30 border border-slate-800/50 rounded-lg p-4">
+    <h3 class="text-sm font-semibold mb-2 text-slate-300">🔌 JSON API</h3>
+    <p class="text-xs text-slate-400 mb-2">
+      Für Automationen und Tooling steht ein JSON-Endpoint zur Verfügung:
+    </p>
+    <div class="font-mono text-sm text-slate-300 bg-slate-950 px-3 py-2 rounded border border-slate-800 inline-block">
+      GET /ops/workflows/list
+    </div>
+  </div>
+</div>
+      </main>
+    </div>
+
+    <!-- Copy Button JavaScript -->
+    <script>
+      function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text)
+            .then(() => {
+              // Optional: Show success feedback
+              console.log('Copied:', text);
+            })
+            .catch(err => {
+              console.error('Copy failed:', err);
+              fallbackCopy(text);
+            });
+        } else {
+          fallbackCopy(text);
+        }
+      }
+
+      function fallbackCopy(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          console.log('Copied (fallback):', text);
+        } catch (err) {
+          console.error('Fallback copy failed:', err);
+        }
+        document.body.removeChild(textArea);
+      }
+    </script>
+  </body>
+</html>

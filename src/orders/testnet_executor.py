@@ -23,6 +23,7 @@ Sicherheitsmerkmale:
 WICHTIG: Dieser Executor ist NUR fuer Testnet-Trading vorgesehen!
          Echtes Live-Trading erfordert eine separate Implementierung (Phase 40+).
 """
+
 from __future__ import annotations
 
 import logging
@@ -62,11 +63,13 @@ logger = logging.getLogger(__name__)
 
 class TestnetExecutorError(Exception):
     """Basisklasse fuer Testnet-Executor-Fehler."""
+
     pass
 
 
 class EnvironmentNotTestnetError(TestnetExecutorError):
     """Environment ist nicht auf Testnet gesetzt."""
+
     pass
 
 
@@ -325,9 +328,7 @@ class TestnetExchangeOrderExecutor:
         # 2. Risk-Check
         risk_result = self._check_risk_limits([order], current_price)
         if risk_result is not None and not risk_result.allowed:
-            logger.warning(
-                f"[TESTNET EXECUTOR] Risk-Limits verletzt: {risk_result.reasons}"
-            )
+            logger.warning(f"[TESTNET EXECUTOR] Risk-Limits verletzt: {risk_result.reasons}")
             result = OrderExecutionResult(
                 status="rejected",
                 request=order,
@@ -347,9 +348,7 @@ class TestnetExchangeOrderExecutor:
         try:
             exchange_order_id = self._client.create_order(order)
 
-            logger.info(
-                f"[TESTNET EXECUTOR] Order gesendet: exchange_order_id={exchange_order_id}"
-            )
+            logger.info(f"[TESTNET EXECUTOR] Order gesendet: exchange_order_id={exchange_order_id}")
 
             # 4. Bei validate_only kommt "VALIDATED" zurueck
             if exchange_order_id == "VALIDATED":
@@ -444,9 +443,7 @@ class TestnetExchangeOrderExecutor:
         # Batch-Risk-Check
         risk_result = self._check_risk_limits(orders, current_price)
         if risk_result is not None and not risk_result.allowed:
-            logger.warning(
-                f"[TESTNET EXECUTOR] Batch Risk-Limits verletzt: {risk_result.reasons}"
-            )
+            logger.warning(f"[TESTNET EXECUTOR] Batch Risk-Limits verletzt: {risk_result.reasons}")
             # Alle Orders ablehnen
             now = datetime.now(timezone.utc)
             results = []

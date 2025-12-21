@@ -15,6 +15,7 @@ Endpoints (registriert in app.py):
 - GET /api/live/alerts → JSON-API
 - GET /api/live/alerts/stats → Statistiken
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -48,7 +49,9 @@ class AlertSummary(BaseModel):
     session_id: Optional[str] = Field(None, description="Session-ID falls vorhanden")
     timestamp: str = Field(description="ISO-Timestamp")
     timestamp_display: str = Field(description="Formatierter Timestamp für UI")
-    runbooks: List[RunbookSummary] = Field(default_factory=list, description="Verlinkte Runbooks (Phase 84)")
+    runbooks: List[RunbookSummary] = Field(
+        default_factory=list, description="Verlinkte Runbooks (Phase 84)"
+    )
 
     class Config:
         json_schema_extra = {
@@ -63,7 +66,11 @@ class AlertSummary(BaseModel):
                 "timestamp": "2025-12-09T14:30:00+00:00",
                 "timestamp_display": "09.12.2025 14:30:00",
                 "runbooks": [
-                    {"id": "live_risk_severity", "title": "Live Risk Severity Runbook", "url": "https://..."},
+                    {
+                        "id": "live_risk_severity",
+                        "title": "Live Risk Severity Runbook",
+                        "url": "https://...",
+                    },
                 ],
             }
         }
@@ -76,9 +83,7 @@ class AlertStats(BaseModel):
     by_severity: Dict[str, int] = Field(description="Anzahl nach Severity")
     by_category: Dict[str, int] = Field(description="Anzahl nach Category")
     sessions_with_alerts: int = Field(description="Anzahl Sessions mit Alerts")
-    last_critical: Optional[Dict[str, Any]] = Field(
-        None, description="Letzter CRITICAL Alert"
-    )
+    last_critical: Optional[Dict[str, Any]] = Field(None, description="Letzter CRITICAL Alert")
     hours: int = Field(description="Betrachtetes Zeitfenster in Stunden")
 
 

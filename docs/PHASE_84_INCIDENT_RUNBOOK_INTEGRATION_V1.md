@@ -9,7 +9,7 @@
 ## Übersicht
 
 Phase 84 erweitert das Alert-System um automatische Runbook-Verlinkungen.
-Jeder Alert erhält basierend auf `category`, `source` und `severity` passende 
+Jeder Alert erhält basierend auf `category`, `source` und `severity` passende
 Incident-Runbooks, die in Slack/E-Mail und im Web-Dashboard angezeigt werden.
 
 ## Features
@@ -156,7 +156,7 @@ manager.send(alert)
 
 ### Erweiterungen in `tests/test_alert_pipeline.py`
 
-- `TestPhase84RunbookIntegration`: 
+- `TestPhase84RunbookIntegration`:
   - Automatisches Anhängen von Runbooks
   - Slack-Payload mit Runbooks
   - Email-Body mit Runbooks

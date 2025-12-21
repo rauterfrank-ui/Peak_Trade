@@ -245,7 +245,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 **Verhalten:**
 
 ```
-[promotion_loop] WARNING: Global promotion lock is active. 
+[promotion_loop] WARNING: Global promotion lock is active.
                  bounded_auto is disabled. Only manual changes are allowed.
 [promotion_loop] Forcing mode to manual_only due to global lock.
 ```
@@ -497,5 +497,3 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 **Version:** 1.1  
 **Letztes Update:** 2025-12-11  
 **Status:** ✅ Implementiert & Produktionsbereit
-
-

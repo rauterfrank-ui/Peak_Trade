@@ -4,7 +4,12 @@ import importlib
 from typing import TYPE_CHECKING, Any, List
 
 if TYPE_CHECKING:
-    from .offline_realtime_feed import OfflineRealtimeFeed, OfflineRealtimeFeedConfig, RegimeConfig, SyntheticTick
+    from .offline_realtime_feed import (
+        OfflineRealtimeFeed,
+        OfflineRealtimeFeedConfig,
+        RegimeConfig,
+        SyntheticTick,
+    )
 
 __all__ = [
     "OfflineRealtimeFeed",

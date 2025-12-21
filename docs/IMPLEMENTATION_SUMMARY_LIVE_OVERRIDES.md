@@ -166,13 +166,13 @@ $ pytest tests/test_live_overrides*.py -v
 
 2. Promotion Loop (bounded_auto)
    ↓ filtert, validiert, schreibt auto.toml
-   
+
 3. config/live_overrides/auto.toml
    ↓ wird automatisch geladen
-   
+
 4. load_config_with_live_overrides()
    ↓ merged in Laufzeit-Config
-   
+
 5. Live-Session
    ↓ nutzt angepasste Parameter
 ```

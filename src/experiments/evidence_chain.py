@@ -33,6 +33,7 @@ Usage:
     write_trades_parquet_optional(run_dir, trades_df)
     write_report_snippet_md(run_dir, summary)
 """
+
 from __future__ import annotations
 
 import csv
@@ -301,7 +302,11 @@ def write_report_snippet_md(
                 lines.append(f"- **{label}:** {formatted}\n")
 
     # Zusätzliche Keys (falls vorhanden)
-    extra_keys = set(summary.keys()) - {k for _, k, _ in metrics} - {"run_id", "strategy", "symbol", "timestamp"}
+    extra_keys = (
+        set(summary.keys())
+        - {k for _, k, _ in metrics}
+        - {"run_id", "strategy", "symbol", "timestamp"}
+    )
     if extra_keys:
         lines.append("\n## Additional Info\n")
         for key in sorted(extra_keys):
@@ -352,6 +357,7 @@ def get_optional_tracker() -> Union[Any, NullTracker]:
     """
     try:
         import mlflow
+
         # Wenn mlflow verfügbar ist, gebe einen einfachen Wrapper zurück
         # der die wichtigsten Methoden exponiert
         class MLflowTrackerWrapper:

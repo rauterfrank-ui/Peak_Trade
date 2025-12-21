@@ -28,6 +28,7 @@ Verwendung:
     )
     DataSafetyGate.ensure_allowed(context)  # Raises DataSafetyViolationError
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -132,10 +133,7 @@ class DataSafetyViolationError(RuntimeError):
     def _format_message(self) -> str:
         msg = f"DataSafetyViolation: {self.result.reason}"
         if self.context:
-            msg += (
-                f" [source={self.context.source_kind.value}, "
-                f"usage={self.context.usage.value}]"
-            )
+            msg += f" [source={self.context.source_kind.value}, usage={self.context.usage.value}]"
         if self.result.details:
             msg += f" Details: {self.result.details}"
         return msg
@@ -209,9 +207,7 @@ class DataSafetyGate:
             if usage in DataSafetyGate._SYNTHETIC_ALLOWED_USAGES:
                 return DataSafetyResult(
                     allowed=True,
-                    reason=(
-                        f"Synthetische Daten sind für {usage.value} erlaubt."
-                    ),
+                    reason=(f"Synthetische Daten sind für {usage.value} erlaubt."),
                     details={
                         "source_kind": source.value,
                         "usage": usage.value,

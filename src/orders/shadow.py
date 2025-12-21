@@ -21,6 +21,7 @@ Use Cases:
 WICHTIG: Dieser Executor sendet NIEMALS echte Orders.
          Er ist zu 100% simulativ und dient nur zu Test-/Logging-Zwecken.
 """
+
 from __future__ import annotations
 
 import logging
@@ -194,9 +195,7 @@ class ShadowOrderExecutor:
         """Gibt den aktuellen Preis für ein Symbol zurück."""
         return self._ctx.get_price(symbol)
 
-    def _compute_fill_price(
-        self, order: OrderRequest, market_price: float
-    ) -> float:
+    def _compute_fill_price(self, order: OrderRequest, market_price: float) -> float:
         """
         Berechnet den Fill-Preis inkl. Slippage.
 
@@ -233,9 +232,7 @@ class ShadowOrderExecutor:
             return 0.0
         return abs(notional) * self._ctx.fee_rate
 
-    def _should_fill_limit_order(
-        self, order: OrderRequest, market_price: float
-    ) -> bool:
+    def _should_fill_limit_order(self, order: OrderRequest, market_price: float) -> bool:
         """
         Prüft ob eine Limit-Order ausgefüllt werden sollte.
 
@@ -370,9 +367,7 @@ class ShadowOrderExecutor:
         self._log_order(order, result, now)
         return result
 
-    def execute_orders(
-        self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    def execute_orders(self, orders: Sequence[OrderRequest]) -> List[OrderExecutionResult]:
         """
         Führt mehrere Orders im Shadow-Modus aus.
 
@@ -421,12 +416,8 @@ class ShadowOrderExecutor:
             - total_notional: Summe aller Transaktionswerte
             - total_fees: Summe aller Fees
         """
-        filled = [
-            log for log in self._order_log if log.result.status == "filled"
-        ]
-        rejected = [
-            log for log in self._order_log if log.result.status == "rejected"
-        ]
+        filled = [log for log in self._order_log if log.result.status == "filled"]
+        rejected = [log for log in self._order_log if log.result.status == "rejected"]
 
         total_notional = 0.0
         total_fees = 0.0

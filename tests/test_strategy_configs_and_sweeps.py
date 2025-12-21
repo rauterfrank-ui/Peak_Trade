@@ -11,6 +11,7 @@ Diese Tests stellen sicher, dass:
 
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
@@ -25,6 +26,7 @@ except ImportError:
 # ============================================================================
 # TEST FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def config_path() -> Path:
@@ -71,6 +73,7 @@ def sweep_files(sweeps_dir: Path) -> Dict[str, Path]:
 # TEST 1: Strategy ↔ Config
 # ============================================================================
 
+
 def test_v11_strategies_have_config_blocks(config_data: Dict, v11_strategies: Set[str]):
     """
     Jede v1.1-Strategie muss einen [strategies.<name>]-Block haben.
@@ -82,9 +85,7 @@ def test_v11_strategies_have_config_blocks(config_data: Dict, v11_strategies: Se
         if strategy not in strategies_section:
             missing.append(strategy)
 
-    assert not missing, (
-        f"Folgende v1.1-Strategien fehlen in config.toml [strategies.*]: {missing}"
-    )
+    assert not missing, f"Folgende v1.1-Strategien fehlen in config.toml [strategies.*]: {missing}"
 
 
 def test_v11_strategies_are_enabled(config_data: Dict, v11_strategies: Set[str]):
@@ -104,9 +105,7 @@ def test_v11_strategies_are_enabled(config_data: Dict, v11_strategies: Set[str])
         if not strategy_cfg.get("enabled", False):
             disabled.append(strategy)
 
-    assert not disabled, (
-        f"Folgende v1.1-Strategien sollten enabled=true haben: {disabled}"
-    )
+    assert not disabled, f"Folgende v1.1-Strategien sollten enabled=true haben: {disabled}"
 
 
 def test_v11_strategies_have_category(config_data: Dict, v11_strategies: Set[str]):
@@ -128,12 +127,8 @@ def test_v11_strategies_have_category(config_data: Dict, v11_strategies: Set[str
         elif category not in valid_categories:
             invalid_category.append((strategy, category))
 
-    assert not missing_category, (
-        f"Strategien ohne Kategorie: {missing_category}"
-    )
-    assert not invalid_category, (
-        f"Strategien mit ungültiger Kategorie: {invalid_category}"
-    )
+    assert not missing_category, f"Strategien ohne Kategorie: {missing_category}"
+    assert not invalid_category, f"Strategien mit ungültiger Kategorie: {invalid_category}"
 
 
 def test_v11_strategies_have_defaults(config_data: Dict, v11_strategies: Set[str]):
@@ -156,6 +151,7 @@ def test_v11_strategies_have_defaults(config_data: Dict, v11_strategies: Set[str
 # ============================================================================
 # TEST 2: Config ↔ Implementation
 # ============================================================================
+
 
 def test_registry_can_load_all_v11_strategies(v11_strategies: Set[str]):
     """
@@ -203,18 +199,13 @@ def test_registry_strategies_can_be_instantiated():
             spec = get_strategy_spec(key)
             # Versuche Instanziierung mit Default-Parametern
             instance = spec.cls()
-            assert hasattr(instance, "generate_signals"), (
-                f"{key}: generate_signals Methode fehlt"
-            )
+            assert hasattr(instance, "generate_signals"), f"{key}: generate_signals Methode fehlt"
         except Exception as e:
             errors.append((key, str(e)))
 
     # Einige Strategien brauchen spezielle Parameter - das ist OK
     # Wir prüfen nur, dass keine unerwarteten Fehler auftreten
-    critical_errors = [
-        (k, e) for k, e in errors
-        if "required positional argument" not in e
-    ]
+    critical_errors = [(k, e) for k, e in errors if "required positional argument" not in e]
 
     if critical_errors:
         pytest.fail(f"Fehler bei Strategie-Instanziierung: {critical_errors}")
@@ -224,10 +215,8 @@ def test_registry_strategies_can_be_instantiated():
 # TEST 3: Config ↔ Sweeps
 # ============================================================================
 
-def test_v11_strategies_have_sweep_configs(
-    v11_strategies: Set[str],
-    sweep_files: Dict[str, Path]
-):
+
+def test_v11_strategies_have_sweep_configs(v11_strategies: Set[str], sweep_files: Dict[str, Path]):
     """
     Jede enabled v1.1-Strategie hat eine Sweep-Config.
     """
@@ -267,10 +256,7 @@ def test_sweep_configs_are_parseable(sweep_files: Dict[str, Path]):
 
             # Prüfe ob entweder [grid] oder [sweep.parameters] existiert
             has_grid = "grid" in data
-            has_sweep_params = (
-                "sweep" in data and
-                "parameters" in data.get("sweep", {})
-            )
+            has_sweep_params = "sweep" in data and "parameters" in data.get("sweep", {})
 
             if not has_grid and not has_sweep_params:
                 errors.append((name, "Weder [grid] noch [sweep.parameters] gefunden"))
@@ -309,11 +295,15 @@ def test_sweep_configs_have_parameters(sweep_files: Dict[str, Path]):
 # TEST 4: CLI Smoke Tests
 # ============================================================================
 
-@pytest.mark.parametrize("strategy_type,strategy_name", [
-    ("trend", "ma_crossover"),
-    ("mean_reversion", "rsi_reversion"),
-    ("momentum", "momentum_1h"),
-])
+
+@pytest.mark.parametrize(
+    "strategy_type,strategy_name",
+    [
+        ("trend", "ma_crossover"),
+        ("mean_reversion", "rsi_reversion"),
+        ("momentum", "momentum_1h"),
+    ],
+)
 def test_strategy_smoke_instantiation(strategy_type: str, strategy_name: str):
     """
     Smoke-Test: Strategie kann instanziiert werden und generate_signals existiert.
@@ -335,9 +325,7 @@ def test_strategy_registry_list_not_empty():
     from src.strategies.registry import get_available_strategy_keys
 
     keys = get_available_strategy_keys()
-    assert len(keys) >= 8, (
-        f"Mindestens 8 Strategien erwartet, gefunden: {len(keys)}"
-    )
+    assert len(keys) >= 8, f"Mindestens 8 Strategien erwartet, gefunden: {len(keys)}"
 
 
 def test_config_registry_loads_without_error():
@@ -356,6 +344,7 @@ def test_config_registry_loads_without_error():
 # ============================================================================
 # TEST 5: v1.1 Portfolio Presets
 # ============================================================================
+
 
 @pytest.fixture
 def portfolio_recipes_path() -> Path:
@@ -401,8 +390,7 @@ def test_v11_portfolio_presets_have_required_fields(portfolio_recipes_data: Dict
 
 
 def test_v11_portfolio_presets_use_v11_strategies(
-    portfolio_recipes_data: Dict,
-    v11_strategies: Set[str]
+    portfolio_recipes_data: Dict, v11_strategies: Set[str]
 ):
     """
     v1.1 Portfolio-Presets verwenden nur v1.1-offizielle Strategien.
@@ -424,9 +412,7 @@ def test_v11_portfolio_presets_use_v11_strategies(
             if strat_name and strat_name not in v11_strategies:
                 errors.append((preset_name, strat_name))
 
-    assert not errors, (
-        f"v1.1-Presets verwenden nicht-v1.1-Strategien: {errors}"
-    )
+    assert not errors, f"v1.1-Presets verwenden nicht-v1.1-Strategien: {errors}"
 
 
 # ============================================================================

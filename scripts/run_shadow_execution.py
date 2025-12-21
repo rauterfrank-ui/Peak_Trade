@@ -147,7 +147,8 @@ Beispiele:
         help="Slippage in bps (z.B. 5). Default: aus Config",
     )
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe",
     )
@@ -291,7 +292,9 @@ def print_summary(
     print("=" * 70)
 
     # Zeitraum
-    print(f"\nZeitraum:   {df.index[0].strftime('%Y-%m-%d')} bis {df.index[-1].strftime('%Y-%m-%d')}")
+    print(
+        f"\nZeitraum:   {df.index[0].strftime('%Y-%m-%d')} bis {df.index[-1].strftime('%Y-%m-%d')}"
+    )
     print(f"Strategie:  {strategy_name}")
     print(f"Symbol:     {symbol}")
     print(f"Bars:       {len(df)}")
@@ -315,7 +318,7 @@ def print_summary(
 
     # Execution-Parameter
     print("\n--- SHADOW-PARAMETER ---")
-    print(f"  Fee Rate:        {execution_summary.get('fee_rate', 0)*10000:>10.1f} bps")
+    print(f"  Fee Rate:        {execution_summary.get('fee_rate', 0) * 10000:>10.1f} bps")
     print(f"  Slippage:        {execution_summary.get('slippage_bps', 0):>10.1f} bps")
 
     # Trade-Statistiken (falls vorhanden)
@@ -366,7 +369,9 @@ def main() -> int:
     # Shadow-Konfiguration aus Config lesen
     shadow_enabled = cfg.get("shadow.enabled", True)
     fee_rate = args.fee_rate or cfg.get("shadow.fee_rate", 0.0005)
-    slippage_bps = args.slippage_bps if args.slippage_bps is not None else cfg.get("shadow.slippage_bps", 0.0)
+    slippage_bps = (
+        args.slippage_bps if args.slippage_bps is not None else cfg.get("shadow.slippage_bps", 0.0)
+    )
     base_currency = cfg.get("shadow.base_currency", "EUR")
 
     if args.verbose:
@@ -477,6 +482,7 @@ def main() -> int:
         print(f"\nFEHLER bei der Shadow-Execution: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 

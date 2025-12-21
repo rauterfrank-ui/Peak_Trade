@@ -36,6 +36,7 @@ Usage:
     # Report in spezifisches Verzeichnis:
     python scripts/report_live_sessions.py --output-dir reports/custom/
 """
+
 from __future__ import annotations
 
 import argparse

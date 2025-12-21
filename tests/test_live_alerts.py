@@ -14,6 +14,7 @@ Tests für:
 - LiveAlertsConfig
 - build_alert_sink_from_config
 """
+
 from __future__ import annotations
 
 import json
@@ -211,6 +212,7 @@ def test_stderr_alert_sink_info_filtered(capfd, sample_alert_info: AlertEvent):
 
 def test_multi_alert_sink_forwards_to_all():
     """Testet dass MultiAlertSink an alle Sinks weiterleitet."""
+
     class CollectingSink:
         def __init__(self) -> None:
             self.events: list[AlertEvent] = []
@@ -240,6 +242,7 @@ def test_multi_alert_sink_forwards_to_all():
 
 def test_multi_alert_sink_exception_handling(caplog):
     """Testet dass MultiAlertSink Exceptions in Sinks abfängt."""
+
     class FailingSink:
         def send(self, alert: AlertEvent) -> None:
             raise Exception("Test exception")
@@ -290,12 +293,14 @@ def test_live_alerts_config_from_dict_defaults():
 
 def test_live_alerts_config_from_dict_custom():
     """Testet LiveAlertsConfig.from_dict mit Custom-Werten."""
-    config = LiveAlertsConfig.from_dict({
-        "enabled": False,
-        "min_level": "critical",
-        "sinks": ["log", "stderr"],
-        "log_logger_name": "custom.logger",
-    })
+    config = LiveAlertsConfig.from_dict(
+        {
+            "enabled": False,
+            "min_level": "critical",
+            "sinks": ["log", "stderr"],
+            "log_logger_name": "custom.logger",
+        }
+    )
 
     assert config.enabled is False
     assert config.min_level == AlertLevel.CRITICAL
@@ -388,6 +393,7 @@ def test_webhook_alert_sink_respects_min_level(monkeypatch):
 
     def fake_urlopen(req, timeout=0):
         called.append((req.full_url, timeout, req.data))
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -458,6 +464,7 @@ def test_webhook_alert_sink_multiple_urls(monkeypatch):
 
     def fake_urlopen(req, timeout=0):
         called_urls.append(req.full_url)
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -491,6 +498,7 @@ def test_webhook_alert_sink_multiple_urls(monkeypatch):
 
 def test_webhook_alert_sink_exception_handling(monkeypatch, caplog):
     """Testet dass WebhookAlertSink Exceptions abfängt und loggt."""
+
     def fake_urlopen(req, timeout=0):
         raise Exception("Network error")
 
@@ -527,6 +535,7 @@ def test_slack_webhook_alert_sink_builds_text(monkeypatch):
 
     def fake_urlopen(req, timeout=0):
         called.append(json.loads(req.data.decode("utf-8")))
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -568,6 +577,7 @@ def test_slack_webhook_alert_sink_respects_min_level(monkeypatch):
 
     def fake_urlopen(req, timeout=0):
         called.append(req.data)
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -633,6 +643,7 @@ def test_build_alert_sink_from_config_webhook(monkeypatch):
 
     def fake_urlopen(req, timeout=0):
         called.append(req.full_url)
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -673,6 +684,7 @@ def test_build_alert_sink_from_config_slack_webhook(monkeypatch):
 
     def fake_urlopen(req, timeout=0):
         called.append(req.full_url)
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -736,7 +748,9 @@ def test_build_alert_sink_from_config_slack_webhook_no_urls(caplog):
     assert sink is None
 
     # Warnung sollte geloggt worden sein
-    assert any("no slack_webhook_urls are configured" in record.message for record in caplog.records)
+    assert any(
+        "no slack_webhook_urls are configured" in record.message for record in caplog.records
+    )
 
 
 def test_build_alert_sink_from_config_multi_with_webhook(monkeypatch):
@@ -745,6 +759,7 @@ def test_build_alert_sink_from_config_multi_with_webhook(monkeypatch):
 
     def fake_urlopen(req, timeout=0):
         called.append(req.full_url)
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -782,11 +797,13 @@ def test_build_alert_sink_from_config_multi_with_webhook(monkeypatch):
 
 def test_live_alerts_config_from_dict_webhook_fields():
     """Testet LiveAlertsConfig.from_dict mit Webhook-Feldern."""
-    config = LiveAlertsConfig.from_dict({
-        "webhook_urls": ["https://example.com/hook"],
-        "slack_webhook_urls": ["https://hooks.slack.com/services/AAA/BBB/CCC"],
-        "webhook_timeout_seconds": 5.0,
-    })
+    config = LiveAlertsConfig.from_dict(
+        {
+            "webhook_urls": ["https://example.com/hook"],
+            "slack_webhook_urls": ["https://hooks.slack.com/services/AAA/BBB/CCC"],
+            "webhook_timeout_seconds": 5.0,
+        }
+    )
 
     assert config.webhook_urls == ["https://example.com/hook"]
     assert config.slack_webhook_urls == ["https://hooks.slack.com/services/AAA/BBB/CCC"]
@@ -795,8 +812,10 @@ def test_live_alerts_config_from_dict_webhook_fields():
 
 def test_live_alerts_config_from_dict_webhook_urls_string():
     """Testet LiveAlertsConfig.from_dict mit webhook_urls als String."""
-    config = LiveAlertsConfig.from_dict({
-        "webhook_urls": "https://example.com/hook",
-    })
+    config = LiveAlertsConfig.from_dict(
+        {
+            "webhook_urls": "https://example.com/hook",
+        }
+    )
 
     assert config.webhook_urls == ["https://example.com/hook"]

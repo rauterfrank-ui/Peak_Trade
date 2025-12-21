@@ -78,3 +78,19 @@ live_runs/
 # Temporary test artifacts (Policy Critic cycles, etc.)
 tmp/
 reports/
+docker/.env
+
+# local artifacts
+.venv*/
+.venv-*/
+mlruns/
+*.old
+
+# backup files
+*.old.*
+
+# --- Stage 1 monitoring artifacts ---
+reports/obs/stage1/*_snapshot.md
+reports/obs/stage1/*trend*.md
+logs/obs/
+logs/launchd/

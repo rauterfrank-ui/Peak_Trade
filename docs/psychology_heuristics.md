@@ -226,7 +226,7 @@ def score_fomo(ev: TriggerTrainingPsychEventFeatures) -> int:
         # Latenz-Komponente
         late_factor = (ev.latency_s - LATENCY_OK_S) / (LATENCY_HESITATION_S - LATENCY_OK_S)
         late_factor = clamp(late_factor, 0.0, 1.5)
-        
+
         # Move-Komponente (Stufenfunktion)
         move = abs(ev.price_move_since_signal_pct)
         if move < MOVE_SMALL_PCT:
@@ -237,13 +237,13 @@ def score_fomo(ev: TriggerTrainingPsychEventFeatures) -> int:
             move_component = 1.5
         else:
             move_component = 2.2
-        
+
         base = late_factor * 1.5 + move_component
-    
+
     # Manuelle Markierung
     if ev.manually_marked_fomo:
         base += 1.0
-    
+
     return clamp_0_3(base)
 ```
 
@@ -264,29 +264,29 @@ def score_fomo(ev: TriggerTrainingPsychEventFeatures) -> int:
 ```python
 def score_loss_fear(ev: TriggerTrainingPsychEventFeatures) -> int:
     base = 0.0
-    
+
     # 1) Zu frühe Exits
     if ev.event_type == "EXIT":
         if ev.price_max_adverse_pct < MOVE_SMALL_PCT and \
            ev.price_max_favorable_pct > MOVE_SMALL_PCT:
             base += 1.0
-        
+
         if ev.pnl_vs_ideal_bp < -PNL_MEDIUM_BP:
             base += 1.0
         if ev.pnl_vs_ideal_bp < -PNL_LARGE_BP:
             base += 0.5
-    
+
     # 2) Vermeidung nach Verlusten
     if ev.event_type in ("NO_ACTION", "SKIP") and ev.had_valid_setup:
         if ev.recent_loss_streak >= LOSS_STREAK_MEDIUM:
             base += 1.0
         if ev.recent_loss_streak >= LOSS_STREAK_HIGH:
             base += 0.7
-    
+
     # 3) Manuelle Markierung
     if ev.manually_marked_fear:
         base += 1.0
-    
+
     return clamp_0_3(base)
 ```
 
@@ -307,24 +307,24 @@ def score_loss_fear(ev: TriggerTrainingPsychEventFeatures) -> int:
 ```python
 def score_impulsivity(ev: TriggerTrainingPsychEventFeatures) -> int:
     base = 0.0
-    
+
     # 1) Action ohne Setup
     if ev.event_type in ("ENTER", "EXIT") and not ev.had_valid_setup:
         base += 1.5
-    
+
     # 2) Extrem schnell
     if ev.event_type in ("ENTER", "EXIT"):
         if ev.latency_s < 0.2 * LATENCY_OK_S:
             base += 1.0
-    
+
     # 3) Entry ohne Signal
     if ev.entered_without_signal:
         base += 1.5
-    
+
     # 4) Manuelle Markierung
     if ev.manually_marked_impulsive:
         base += 1.0
-    
+
     return clamp_0_3(base)
 ```
 
@@ -345,26 +345,26 @@ def score_impulsivity(ev: TriggerTrainingPsychEventFeatures) -> int:
 ```python
 def score_hesitation(ev: TriggerTrainingPsychEventFeatures) -> int:
     base = 0.0
-    
+
     # 1) Späte Action
     if ev.event_type in ("ENTER", "EXIT") and ev.had_valid_setup:
         if ev.latency_s > LATENCY_OK_S:
             base += 1.0
         if ev.latency_s > LATENCY_HESITATION_S:
             base += 1.0
-    
+
     # 2) NO_ACTION bei Setup
     if ev.event_type in ("NO_ACTION", "SKIP") and ev.had_valid_setup:
         base += 1.0
         if ev.price_max_favorable_pct > MOVE_MEDIUM_PCT:
             base += 0.5
-    
+
     # 3) Skip-Streak
     if ev.recent_skip_streak >= SKIP_STREAK_MEDIUM:
         base += 0.5
     if ev.recent_skip_streak >= SKIP_STREAK_HIGH:
         base += 0.5
-    
+
     return clamp_0_3(base)
 ```
 
@@ -385,25 +385,25 @@ def score_hesitation(ev: TriggerTrainingPsychEventFeatures) -> int:
 ```python
 def score_rule_break(ev: TriggerTrainingPsychEventFeatures) -> int:
     base = 0.0
-    
+
     # Richtung gegen Signal
     if ev.opposite_to_signal:
         base += 1.5
-    
+
     # Size/Risk Violations
     if ev.size_violation:
         base += 1.0
     if ev.risk_violation:
         base += 1.0
-    
+
     # Entry ohne Setup
     if ev.entered_without_signal and not ev.had_valid_setup:
         base += 1.0
-    
+
     # Teurer Regelbruch
     if ev.pnl_vs_ideal_bp < -PNL_LARGE_BP:
         base += 0.5
-    
+
     return clamp_0_3(base)
 ```
 
@@ -425,7 +425,7 @@ Pro Cluster werden Event-Scores wie folgt aggregiert:
 def aggregate_scores(scores: List[int]) -> int:
     # Durchschnitt aller Scores
     avg_all = sum(scores) / len(scores)
-    
+
     # Durchschnitt der Top-3 Scores
     if len(scores) >= 3:
         top_3 = sorted(scores, reverse=True)[:3]
@@ -434,7 +434,7 @@ def aggregate_scores(scores: List[int]) -> int:
         combined = 0.5 * avg_all + 0.5 * avg_top
     else:
         combined = avg_all
-    
+
     return clamp_0_3(combined)
 ```
 
@@ -535,10 +535,10 @@ from src.reporting.trigger_training_report import (
 
 def build_trigger_training_report_with_psychology(session_id: str):
     """Erweitert bestehenden Report um Psychologie-Analyse."""
-    
+
     # 1. Bestehende Session-Daten laden
     session = load_trigger_training_session(session_id)
-    
+
     # 2. Events in Feature-Format konvertieren
     events = [
         TriggerTrainingPsychEventFeatures(
@@ -565,10 +565,10 @@ def build_trigger_training_report_with_psychology(session_id: str):
         )
         for e in session.events
     ]
-    
+
     # 3. Psychologie-Heatmap generieren
     psychology_heatmap = compute_psychology_heatmap_from_events(events)
-    
+
     # 4. In Report-Context einfügen
     return {
         # ... bestehender Context
@@ -587,13 +587,13 @@ from src.reporting.psychology_heuristics import (
 @app.route("/trigger_training/psychology/<session_id>")
 def trigger_training_psychology(session_id: str):
     """Standalone Psychologie-Analyse für eine Session."""
-    
+
     # 1. Events laden und konvertieren
     events = load_and_convert_events(session_id)
-    
+
     # 2. Heatmap generieren
     heatmap_data = compute_psychology_heatmap_from_events(events)
-    
+
     # 3. Template rendern
     return render_template(
         "trigger_training_psychology.html",
@@ -609,11 +609,11 @@ def trigger_training_psychology(session_id: str):
 
 <section class="psychology-analysis">
   <h1>Psychologie-Analyse: Session {{ session_id }}</h1>
-  
+
   {{ psychology_heatmap(heatmap_rows, show_legend=True, show_notes=True) }}
-  
+
   <div class="actions mt-4">
-    <a href="/trigger_training/drills?session={{ session_id }}" 
+    <a href="/trigger_training/drills?session={{ session_id }}"
        class="btn btn-primary">
       🎯 Gezieltes Training starten
     </a>
@@ -658,7 +658,7 @@ Implementiere eine eigene `determine_cluster()`-Funktion:
 ```python
 def determine_cluster(event: YourEventType) -> str:
     """Ordnet Event einem Cluster zu basierend auf deinen Kriterien."""
-    
+
     if event.setup_type == "TREND_FOLLOW":
         return "Trend-Folge Einstiege"
     elif event.setup_type == "BREAKOUT":
@@ -713,7 +713,7 @@ def test_custom_scenario():
     ev = TriggerTrainingPsychEventFeatures(
         # ... dein Szenario
     )
-    
+
     score = score_fomo(ev)
     assert score == 2, "Expected FOMO score of 2"
 ```
@@ -889,7 +889,7 @@ event_scores = [
 
 ### Wie oft sollte ich die Schwellenwerte neu kalibrieren?
 
-**Antwort:** 
+**Antwort:**
 - **Initial:** Nach ersten 20-30 Sessions anschauen und ggf. anpassen
 - **Danach:** Monatlich oder nach signifikanten Strategie-Änderungen
 - **Trigger:** Wenn Scores durchweg zu niedrig/hoch sind (z.B. avg < 0.5 oder avg > 2.5)

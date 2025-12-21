@@ -114,7 +114,7 @@ Beispiel: `scripts/run_offline_realtime_ma_crossover.py` erweitern:
 # Am Ende des Scripts, nach dem Trigger-Training-Report
 if trigger_training_events:
     from src.trigger_training import save_session_to_store
-    
+
     session_id = f"OFFLINE_REALTIME_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     save_session_to_store(
         session_id=session_id,
@@ -305,4 +305,3 @@ Bei Fragen oder Problemen: Peak_Trade Team
 Dokumentation: `docs/trigger_training/`
 
 **Happy Drilling!** 🚀
-

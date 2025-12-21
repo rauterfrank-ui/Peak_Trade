@@ -4,6 +4,7 @@ import argparse
 import re
 from pathlib import Path
 
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--readme", required=True)
@@ -30,7 +31,7 @@ def main() -> int:
     # Split into lines for controlled insertion
     lines = text.splitlines(keepends=True)
     # Find header line index
-    h_idx = next(i for i,l in enumerate(lines) if l.strip() == header)
+    h_idx = next(i for i, l in enumerate(lines) if l.strip() == header)
 
     # Define section range: from header to next '## ' or EOF
     sec_start = h_idx + 1
@@ -64,6 +65,7 @@ def main() -> int:
     new_text = prefix + section_new + suffix
     readme.write_text(new_text, encoding="utf-8")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -9,6 +9,3 @@ Enthält experimentelle und Research-only Komponenten:
 
 ⚠️ NICHT FÜR PRODUKTION / LIVE-TRADING
 """
-
-
-

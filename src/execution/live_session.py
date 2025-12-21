@@ -30,6 +30,7 @@ Example:
     >>> runner.warmup()
     >>> runner.run_n_steps(10)  # Führe 10 Steps aus
 """
+
 from __future__ import annotations
 
 import logging
@@ -143,9 +144,7 @@ class LiveSessionConfig:
 
         # Validiere mode
         if self.mode not in ("shadow", "testnet"):
-            raise ValueError(
-                f"Ungültiger mode: '{self.mode}'. Erlaubt: 'shadow', 'testnet'"
-            )
+            raise ValueError(f"Ungültiger mode: '{self.mode}'. Erlaubt: 'shadow', 'testnet'")
 
         # Validiere strategy_key
         if not self.strategy_key:
@@ -166,9 +165,7 @@ class LiveSessionConfig:
                 f"position_fraction muss im Bereich (0.0, 1.0] sein: {self.position_fraction}"
             )
         if self.poll_interval_seconds <= 0:
-            raise ValueError(
-                f"poll_interval_seconds muss > 0 sein: {self.poll_interval_seconds}"
-            )
+            raise ValueError(f"poll_interval_seconds muss > 0 sein: {self.poll_interval_seconds}")
         if self.start_balance <= 0:
             raise ValueError(f"start_balance muss > 0 sein: {self.start_balance}")
 
@@ -365,6 +362,7 @@ class LiveSessionRunner:
         # Lazy import für SafetyGuard falls nicht übergeben
         if safety_guard is None:
             from ..live.safety import SafetyGuard
+
             safety_guard = SafetyGuard(env_config=env_config)
         self._safety_guard = safety_guard
         self._on_step_callback = on_step_callback
@@ -465,9 +463,7 @@ class LiveSessionRunner:
         """
         # LIVE-Mode hart blockieren (redundant, aber explizit)
         if session_config.mode == "live":
-            raise LiveModeNotAllowedError(
-                "LIVE-Mode ist in Phase 80 NICHT erlaubt!"
-            )
+            raise LiveModeNotAllowedError("LIVE-Mode ist in Phase 80 NICHT erlaubt!")
 
         logger.info(f"[LIVE SESSION] Baue Session aus Config: {session_config.mode}")
 
@@ -503,9 +499,7 @@ class LiveSessionRunner:
             # 3. Strategy laden über Registry
             from ..strategies.registry import create_strategy_from_config
 
-            strategy = create_strategy_from_config(
-                session_config.strategy_key, peak_config
-            )
+            strategy = create_strategy_from_config(session_config.strategy_key, peak_config)
             logger.info(f"[LIVE SESSION] Strategy geladen: {strategy}")
 
             # 4. ExecutionPipeline erstellen
@@ -582,9 +576,7 @@ class LiveSessionRunner:
                 fee_rate=session_config.fee_rate,
                 slippage_bps=session_config.slippage_bps,
             )
-            logger.info(
-                "[LIVE SESSION] Testnet-Mode nutzt Shadow-Pipeline (Phase 80: Dry-Run)"
-            )
+            logger.info("[LIVE SESSION] Testnet-Mode nutzt Shadow-Pipeline (Phase 80: Dry-Run)")
 
         # Safety-Komponenten zur Pipeline hinzufügen
         pipeline._env_config = env_config
@@ -621,8 +613,7 @@ class LiveSessionRunner:
         except ImportError:
             # Fallback: Einfache In-Memory-Source für Tests
             logger.warning(
-                "[LIVE SESSION] KrakenLiveCandleSource nicht verfügbar, "
-                "verwende Dummy-Source"
+                "[LIVE SESSION] KrakenLiveCandleSource nicht verfügbar, verwende Dummy-Source"
             )
             return _DummyCandleSource(
                 symbol=session_config.symbol,
@@ -640,18 +631,14 @@ class LiveSessionRunner:
         Raises:
             SessionRuntimeError: Bei Warmup-Fehlern
         """
-        logger.info(
-            f"[LIVE SESSION] Starte Warmup: {self._config.warmup_candles} Candles..."
-        )
+        logger.info(f"[LIVE SESSION] Starte Warmup: {self._config.warmup_candles} Candles...")
 
         try:
             if hasattr(self._data_source, "warmup"):
                 candles = self._data_source.warmup()
 
                 if candles:
-                    logger.info(
-                        f"[LIVE SESSION] Warmup abgeschlossen: {len(candles)} Candles"
-                    )
+                    logger.info(f"[LIVE SESSION] Warmup abgeschlossen: {len(candles)} Candles")
                     if hasattr(candles[-1], "timestamp"):
                         self._metrics.last_bar_time = candles[-1].timestamp
                 else:
@@ -713,9 +700,7 @@ class LiveSessionRunner:
             buffer_df = self._data_source.get_buffer()
 
         if buffer_df is None or len(buffer_df) < 50:
-            logger.debug(
-                f"[LIVE SESSION] Step {step_num}: Zu wenig Daten für Signal"
-            )
+            logger.debug(f"[LIVE SESSION] Step {step_num}: Zu wenig Daten für Signal")
             return None
 
         try:
@@ -729,9 +714,7 @@ class LiveSessionRunner:
 
         # 4. Bei Signal-Änderung: Orders erstellen
         if current_signal == self._last_signal:
-            logger.debug(
-                f"[LIVE SESSION] Step {step_num}: Signal unverändert ({current_signal})"
-            )
+            logger.debug(f"[LIVE SESSION] Step {step_num}: Signal unverändert ({current_signal})")
             return None
 
         logger.info(
@@ -775,9 +758,7 @@ class LiveSessionRunner:
         # Metriken aktualisieren
         if exec_result.rejected:
             self._metrics.orders_blocked_risk += len(orders)
-            logger.warning(
-                f"[LIVE SESSION] Orders blockiert: {exec_result.reason}"
-            )
+            logger.warning(f"[LIVE SESSION] Orders blockiert: {exec_result.reason}")
         else:
             for result in exec_result.executed_orders:
                 if result.is_filled:
@@ -1016,4 +997,3 @@ __all__ = [
     "SessionSetupError",
     "SessionRuntimeError",
 ]
-

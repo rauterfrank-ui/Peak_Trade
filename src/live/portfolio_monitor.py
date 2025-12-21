@@ -21,6 +21,7 @@ Usage:
     monitor = LivePortfolioMonitor(exchange_client)
     snapshot = monitor.snapshot()
 """
+
 from __future__ import annotations
 
 import logging
@@ -216,7 +217,9 @@ class LivePortfolioMonitor:
         logger.info("Keine Positionen vom Exchange-Client gefunden (leeres Portfolio)")
         return []
 
-    def _convert_positions_dict(self, positions_dict: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    def _convert_positions_dict(
+        self, positions_dict: dict[str, dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """
         Konvertiert positions-Dict (z.B. von PaperBroker) in Liste von Position-Dicts.
 
@@ -237,14 +240,16 @@ class LivePortfolioMonitor:
             last_price = pos_data.get("last_price", None)
             realized_pnl = pos_data.get("realized_pnl", None)
 
-            result.append({
-                "symbol": symbol,
-                "side": side,
-                "size": abs(qty),
-                "entry_price": avg_price,
-                "mark_price": last_price,
-                "realized_pnl": realized_pnl,
-            })
+            result.append(
+                {
+                    "symbol": symbol,
+                    "side": side,
+                    "size": abs(qty),
+                    "entry_price": avg_price,
+                    "mark_price": last_price,
+                    "realized_pnl": realized_pnl,
+                }
+            )
         return result
 
     def _parse_position(self, pos_data: dict[str, Any]) -> LivePositionSnapshot | None:
@@ -282,7 +287,9 @@ class LivePortfolioMonitor:
             if entry_price is not None:
                 entry_price = float(entry_price)
 
-            mark_price = pos_data.get("mark_price", pos_data.get("last_price", pos_data.get("current_price", None)))
+            mark_price = pos_data.get(
+                "mark_price", pos_data.get("last_price", pos_data.get("current_price", None))
+            )
             if mark_price is not None:
                 mark_price = float(mark_price)
 
@@ -352,11 +359,3 @@ class LivePortfolioMonitor:
             logger.debug(f"Fehler beim Abrufen von Cash via cash-Attribut: {e}")
 
         return None
-
-
-
-
-
-
-
-

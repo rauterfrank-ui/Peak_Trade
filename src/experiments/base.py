@@ -15,6 +15,7 @@ Komponenten:
 Der ExperimentRunner generiert das kartesische Produkt aller
 Parameter-Kombinationen und führt für jede einen Backtest durch.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -35,6 +36,7 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # PARAM SWEEP
 # ============================================================================
+
 
 @dataclass
 class ParamSweep:
@@ -57,6 +59,7 @@ class ParamSweep:
         ...     description="ADX-Schwellwert für Trend-Erkennung"
         ... )
     """
+
     name: str
     values: List[Any]
     description: Optional[str] = None
@@ -96,6 +99,7 @@ class ParamSweep:
             [5, 10, 15, 20, 25]
         """
         import numpy as np
+
         values = list(np.arange(start, stop + step / 2, step))
         # Konvertiere zu int wenn sinnvoll
         if all(v == int(v) for v in values):
@@ -130,6 +134,7 @@ class ParamSweep:
             [10, 46, 215, 1000]
         """
         import numpy as np
+
         values = list(np.logspace(np.log10(start), np.log10(stop), num))
         # Runde auf sinnvolle Werte
         values = [round(v, 2) if v < 1 else int(round(v)) for v in values]
@@ -148,6 +153,7 @@ class ParamSweep:
 # ============================================================================
 # EXPERIMENT CONFIG
 # ============================================================================
+
 
 @dataclass
 class ExperimentConfig:
@@ -187,6 +193,7 @@ class ExperimentConfig:
         ...     end_date="2024-06-01",
         ... )
     """
+
     name: str
     strategy_name: str
     param_sweeps: List[ParamSweep] = field(default_factory=list)
@@ -311,6 +318,7 @@ class ExperimentConfig:
 # SWEEP RESULT ROW
 # ============================================================================
 
+
 @dataclass
 class SweepResultRow:
     """
@@ -347,6 +355,7 @@ class SweepResultRow:
         ...     success=True,
         ... )
     """
+
     experiment_id: str
     run_id: str
     strategy_name: str
@@ -423,6 +432,7 @@ class SweepResultRow:
 # EXPERIMENT RESULT
 # ============================================================================
 
+
 @dataclass
 class ExperimentResult:
     """
@@ -442,6 +452,7 @@ class ExperimentResult:
         >>> df = result.to_dataframe()
         >>> best = result.get_best_by_metric("sharpe_ratio")
     """
+
     experiment_id: str
     config: ExperimentConfig
     results: List[SweepResultRow] = field(default_factory=list)
@@ -485,12 +496,18 @@ class ExperimentResult:
         df = pd.DataFrame(rows)
 
         # Sortiere Spalten
-        cols = sorted(df.columns, key=lambda x: (
-            0 if x in ["experiment_id", "run_id", "strategy_name", "symbol", "timeframe"] else
-            1 if x.startswith("param_") else
-            2 if x.startswith("metric_") else
-            3
-        ))
+        cols = sorted(
+            df.columns,
+            key=lambda x: (
+                0
+                if x in ["experiment_id", "run_id", "strategy_name", "symbol", "timeframe"]
+                else 1
+                if x.startswith("param_")
+                else 2
+                if x.startswith("metric_")
+                else 3
+            ),
+        )
         return df[cols]
 
     def get_best_by_metric(
@@ -672,10 +689,10 @@ class ExperimentRunner:
                 # Konvertiere Symbol-Format falls nötig (z.B. "BTC/EUR" -> "BTC/EUR")
                 # Kraken verwendet "/" als Separator
                 kraken_symbol = symbol.replace("-", "/")
-                
+
                 # Berechne limit basierend auf start_date/end_date oder verwende Default
                 limit = 720  # Default für Kraken API
-                
+
                 # Wenn start_date gegeben, berechne since_ms
                 since_ms = None
                 if start_date:
@@ -683,8 +700,10 @@ class ExperimentRunner:
                         start_dt = pd.to_datetime(start_date)
                         since_ms = int(start_dt.timestamp() * 1000)
                     except Exception:
-                        logger.warning(f"Konnte start_date nicht parsen: {start_date}, verwende Default")
-                
+                        logger.warning(
+                            f"Konnte start_date nicht parsen: {start_date}, verwende Default"
+                        )
+
                 # Lade Daten
                 df = fetch_ohlcv_df(
                     symbol=kraken_symbol,
@@ -693,18 +712,20 @@ class ExperimentRunner:
                     since_ms=since_ms,
                     use_cache=True,
                 )
-                
+
                 # Filtere nach end_date falls gegeben
                 if end_date:
                     try:
                         end_dt = pd.to_datetime(end_date)
                         df = df[df.index <= end_dt]
                     except Exception:
-                        logger.warning(f"Konnte end_date nicht parsen: {end_date}, ignoriere Filter")
-                
+                        logger.warning(
+                            f"Konnte end_date nicht parsen: {end_date}, ignoriere Filter"
+                        )
+
                 if df.empty:
                     raise ValueError(f"Keine Daten für {symbol} {timeframe} gefunden")
-                
+
                 # Führe Backtest aus
                 # run_single_strategy_from_registry ist eine Standalone-Funktion, keine Methode
                 result = run_single_strategy_from_registry(

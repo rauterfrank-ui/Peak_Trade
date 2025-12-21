@@ -180,7 +180,7 @@ pytest tests/test_live_risk_alert_integration.py::test_risk_violation_triggers_w
    ```python
    from src.live.alerts import AlertEvent, AlertLevel, WebhookAlertSink
    from datetime import datetime, timezone
-   
+
    sink = WebhookAlertSink(urls=["https://example.com/test"])
    alert = AlertEvent(
        ts=datetime.now(timezone.utc),
@@ -203,11 +203,3 @@ pytest tests/test_live_risk_alert_integration.py::test_risk_violation_triggers_w
 - [PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md](PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md)
 - [LIVE_TESTNET_TRACK_STATUS.md](LIVE_TESTNET_TRACK_STATUS.md)
 - [CLI_CHEATSHEET.md](CLI_CHEATSHEET.md)
-
-
-
-
-
-
-
-

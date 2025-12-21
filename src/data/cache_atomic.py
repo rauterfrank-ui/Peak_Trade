@@ -18,6 +18,7 @@ Usage:
     # Read with checksum verification
     df = atomic_read("path/to/file.parquet", verify_checksum=True)
 """
+
 import hashlib
 import os
 import tempfile

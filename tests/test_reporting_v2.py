@@ -11,6 +11,7 @@ Testet:
 - Convenience-Funktionen
 - CLI-Tools (Argument-Parsing)
 """
+
 from __future__ import annotations
 
 import tempfile
@@ -92,12 +93,14 @@ def mock_sweep_overview():
                 "slow_period": 20 + i * 5,
             },
         )
-        best_runs.append(RankedExperiment(
-            summary=summary,
-            rank=i + 1,
-            sort_key="sharpe",
-            sort_value=1.2 + i * 0.2,
-        ))
+        best_runs.append(
+            RankedExperiment(
+                summary=summary,
+                rank=i + 1,
+                sort_key="sharpe",
+                sort_value=1.2 + i * 0.2,
+            )
+        )
 
     return SweepOverview(
         sweep_name="test_sweep_v1",
@@ -401,7 +404,9 @@ class TestHtmlReportBuilder:
         assert "BTC/EUR" in content
         assert "25.00%" in content  # total_return formatted
 
-    def test_build_experiment_report_with_equity(self, temp_dir, mock_experiment_summary, sample_equity_curve):
+    def test_build_experiment_report_with_equity(
+        self, temp_dir, mock_experiment_summary, sample_equity_curve
+    ):
         """Test Experiment-Report mit Equity-Kurve."""
         from src.reporting.html_reports import HtmlReportBuilder, MATPLOTLIB_AVAILABLE
 
@@ -447,11 +452,13 @@ class TestHtmlReportBuilder:
         from src.reporting.html_reports import HtmlReportBuilder
 
         builder = HtmlReportBuilder(output_dir=temp_dir)
-        section = builder._create_metrics_section({
-            "total_return": 0.25,
-            "sharpe": 1.5,
-            "max_drawdown": -0.15,
-        })
+        section = builder._create_metrics_section(
+            {
+                "total_return": 0.25,
+                "sharpe": 1.5,
+                "max_drawdown": -0.15,
+            }
+        )
 
         assert section.title == "Performance Metrics"
         assert section.extra_html is not None
@@ -463,10 +470,12 @@ class TestHtmlReportBuilder:
         from src.reporting.html_reports import HtmlReportBuilder
 
         builder = HtmlReportBuilder(output_dir=temp_dir)
-        section = builder._create_params_section({
-            "fast_period": 10,
-            "slow_period": 30,
-        })
+        section = builder._create_params_section(
+            {
+                "fast_period": 10,
+                "slow_period": 30,
+            }
+        )
 
         assert section.title == "Strategy Parameters"
         assert "fast_period" in section.extra_html
@@ -592,6 +601,7 @@ class TestReportExperimentCLI:
     def test_build_parser(self):
         """Test Argument-Parser-Erstellung."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from report_experiment import build_parser
 
@@ -601,6 +611,7 @@ class TestReportExperimentCLI:
     def test_parser_requires_id(self):
         """Test dass --id erforderlich ist."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from report_experiment import build_parser
 
@@ -611,6 +622,7 @@ class TestReportExperimentCLI:
     def test_parser_with_id(self):
         """Test Parser mit --id."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from report_experiment import build_parser
 
@@ -624,17 +636,22 @@ class TestReportExperimentCLI:
     def test_parser_all_options(self):
         """Test Parser mit allen Optionen."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from report_experiment import build_parser
 
         parser = build_parser()
-        args = parser.parse_args([
-            "--id", "test-123",
-            "--out-dir", "custom/reports",
-            "--open",
-            "--text-only",
-            "--no-charts",
-        ])
+        args = parser.parse_args(
+            [
+                "--id",
+                "test-123",
+                "--out-dir",
+                "custom/reports",
+                "--open",
+                "--text-only",
+                "--no-charts",
+            ]
+        )
         assert args.id == "test-123"
         assert args.out_dir == "custom/reports"
         assert args.open is True
@@ -648,6 +665,7 @@ class TestReportSweepCLI:
     def test_build_parser(self):
         """Test Argument-Parser-Erstellung."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from report_sweep import build_parser
 
@@ -657,6 +675,7 @@ class TestReportSweepCLI:
     def test_parser_defaults(self):
         """Test Standard-Werte."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from report_sweep import build_parser
 
@@ -669,6 +688,7 @@ class TestReportSweepCLI:
     def test_parser_with_sweep_name(self):
         """Test Parser mit --sweep-name."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from report_sweep import build_parser
 
@@ -679,20 +699,27 @@ class TestReportSweepCLI:
     def test_parser_all_options(self):
         """Test Parser mit allen Optionen."""
         import sys
+
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
         from report_sweep import build_parser
 
         parser = build_parser()
-        args = parser.parse_args([
-            "--sweep-name", "test_sweep",
-            "--metric", "total_return",
-            "--top-n", "50",
-            "--out-dir", "custom/out",
-            "--open",
-            "--text-only",
-            "--list-sweeps",
-            "--no-charts",
-        ])
+        args = parser.parse_args(
+            [
+                "--sweep-name",
+                "test_sweep",
+                "--metric",
+                "total_return",
+                "--top-n",
+                "50",
+                "--out-dir",
+                "custom/out",
+                "--open",
+                "--text-only",
+                "--list-sweeps",
+                "--no-charts",
+            ]
+        )
         assert args.sweep_name == "test_sweep"
         assert args.metric == "total_return"
         assert args.top_n == 50
@@ -810,7 +837,7 @@ class TestIntegration:
 
         # Gefährliche Werte in Summary einfügen
         mock_experiment_summary.run_name = "<script>alert('xss')</script>"
-        mock_experiment_summary.params["test_param"] = "value<>&\""
+        mock_experiment_summary.params["test_param"] = 'value<>&"'
 
         builder = HtmlReportBuilder(output_dir=temp_dir)
         report_path = builder.build_experiment_report(mock_experiment_summary)
@@ -945,7 +972,7 @@ class TestEdgeCases:
         summary = ExperimentSummary(
             experiment_id="special-chars-test",
             run_type="backtest",
-            run_name="Test & Strategy <v1> \"quoted\"",
+            run_name='Test & Strategy <v1> "quoted"',
             strategy_name="strategy/with/slashes",
             sweep_name=None,
             symbol="BTC/EUR",
