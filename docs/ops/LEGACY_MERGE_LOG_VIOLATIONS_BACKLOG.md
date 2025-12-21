@@ -1,6 +1,6 @@
 # Legacy Merge Log Violations Backlog
 
-**Generated:** 2025-12-21 17:09:35  
+**Generated:** 2025-12-21 17:19:19  
 **Status:** Forward-only policy active (CI guard non-blocking)  
 **Total Logs:** 28  
 **Compliant:** 1  
