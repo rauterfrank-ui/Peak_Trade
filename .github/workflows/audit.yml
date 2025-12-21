@@ -41,6 +41,11 @@ jobs:
           chmod +x scripts/run_audit.sh
           ./scripts/run_audit.sh
 
+      - name: Ops Merge Log Guard (non-blocking for legacy)
+        run: |
+          python scripts/audit/check_ops_merge_logs.py \
+            || echo "⚠️ Ops merge log violations found (legacy) — non-blocking"
+
       - name: Upload audit artifacts (even if failed)
         if: always()
         uses: actions/upload-artifact@v4
