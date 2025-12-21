@@ -1,0 +1,23 @@
+# ============================================================================
+# Peak_Trade Cloud Backup Configuration
+# ============================================================================
+
+[backup]
+enabled = true
+local_dir = "backups"
+schedule = "0 2 * * *"  # Daily at 2 AM
+
+[backup.s3]
+enabled = true
+bucket_name = "peak-trade-backups"
+access_key = "${S3_ACCESS_KEY}"  # From environment
+secret_key = "${S3_SECRET_KEY}"  # From environment
+endpoint_url = ""  # Empty for AWS, set for MinIO/Spaces
+region = "us-east-1"
+prefix = "peak-trade/backups/"
+encrypt = true
+
+[backup.retention]
+keep_daily = 7     # Keep all backups for 7 days
+keep_weekly = 4    # Keep weekly for 4 weeks
+keep_monthly = 12  # Keep monthly for 12 months
