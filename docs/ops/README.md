@@ -492,6 +492,7 @@ The trend analysis includes a simple readiness assessment:
 
 ## Merge Logs
 
+- [PR #229](PR_229_MERGE_LOG.md) — docs(ops): add PR #228 merge log (merged 2025-12-21) <!-- PR-229-MERGE-LOG -->
 - [PR #228](PR_228_MERGE_LOG.md) — chore/ops convenience pack 2025 12 21 ee67053 (merged 2025-12-21) <!-- PR-228-MERGE-LOG -->
 ### Templates
 
