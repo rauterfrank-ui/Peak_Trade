@@ -96,6 +96,7 @@ Der `PR_INVENTORY_REPORT.md` enthält:
 
 ## Latest merge-log PRs (top 25)
 
+- [PR #240](PR_240_MERGE_LOG.md) — test(ops): add run_helpers adoption guard (merged 2025-12-21)
 - PR #208 — docs(ops): add PR #207 merge log (2025-12-20T10:15:00Z)
   - https://github.com/rauterfrank-ui/Peak_Trade/pull/208
 ...
