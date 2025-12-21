@@ -181,9 +181,10 @@ Konvention:
 ---
 
 ## Merge Log
+- [PR #218](PR_218_MERGE_LOG.md) — docs(ops): add PR #217 merge log (merged 2025-12-21)
+- [PR #217](PR_217_MERGE_LOG.md) — chore(format): pre-commit format sweep (merged 2025-12-21)
 - [PR #213](PR_213_MERGE_LOG.md) — docs(ops): add PR #212 merge log (merged 2025-12-21)
 - [PR #212](PR_212_MERGE_LOG.md) — docs(ops): add PR #211 merge log (merged 2025-12-21)
-s (Ops)
 
 Post-merge documentation logs for operational PRs.
 
