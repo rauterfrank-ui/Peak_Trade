@@ -1387,6 +1387,7 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 - 2025-12-21 — PR #211 merged: added merge log for PR #210.
 - 2025-12-21 — PR #210 merged: added merge log for PR #209.
 - 2025-12-21 — PR #209 merged: added merge log for PR #208 (Ops Workflow Hub).
+- 2025-12-21: PR #206 – add ops workflow scripts bash syntax smoke guard (CI-safe)
 - 2025-12-21: PR #204 – docs(ops): workflow scripts documentation + automation infrastructure (vollständige Dokumentation + Helper-Scripts)
 - 2025-12-21: PR #203 – test(viz): matplotlib-based report/plot tests optional via extras (Core ohne Viz-Dependencies lauffähig)
 - 2025-12-21: PR #201 – Web-UI tests optional via extras (Core ohne Web-Stack lauffähig)

@@ -401,6 +401,167 @@ edf8685 feat(ops): add merge log generator + format guard (#226)
 
 ---
 
+## Merge Log Audit System
+
+**Version:** 2.0 (Enhanced with Report Generation)
+
+Peak_Trade implementiert ein **Forward-only Policy** System für Ops Merge Logs:
+- Neue PRs müssen dem kompakten Standard entsprechen
+- Legacy-Logs bleiben as-is (optional migrierbar)
+- CI Guard ist non-blocking (keine Workflow-Disruption)
+
+### Forward-only Policy
+
+**Prinzip:** Alle neuen `PR_*_MERGE_LOG.md` Dateien (ab PR #207) müssen konform sein:
+
+#### Required Headers
+- `**Title:**` — PR title
+- `**PR:**` — PR number (#XXX)
+- `**Merged:**` — Merge date (YYYY-MM-DD)
+- `**Merge Commit:**` — Commit hash (short)
+- `**Branch:**` — Branch name (deleted/active)
+- `**Change Type:**` — Change type (additive, breaking, etc.)
+
+#### Required Sections
+- `## Summary` — Brief summary (2-3 sentences)
+- `## Motivation` — Why this change?
+- `## Changes` — What changed? (structured)
+- `## Files Changed` — File list
+- `## Verification` — CI checks, local tests
+- `## Risk Assessment` — Risk evaluation
+
+#### Compactness
+- **< 200 lines** (guideline)
+- Focus on essentials
+
+### Reference Implementation
+
+✅ **`docs/ops/PR_206_MERGE_LOG.md`** — Use as template for new merge logs
+
+### Tools
+
+#### 1. Audit Tool (Console + Reports)
+
+```bash
+# Console output only (default behavior)
+uv run python scripts/audit/check_ops_merge_logs.py
+
+# Generate Markdown report
+uv run python scripts/audit/check_ops_merge_logs.py \
+  --report-md reports/ops/violations.md
+
+# Generate JSON report (machine-readable)
+uv run python scripts/audit/check_ops_merge_logs.py \
+  --report-json reports/ops/violations.json
+
+# Generate both reports
+uv run python scripts/audit/check_ops_merge_logs.py \
+  --report-md reports/ops/violations.md \
+  --report-json reports/ops/violations.json
+
+# Reports without failing (non-blocking)
+uv run python scripts/audit/check_ops_merge_logs.py \
+  --report-md violations.md \
+  --no-exit-nonzero-on-violations
+```
+
+**Report Features:**
+- **JSON:** Machine-readable violations with codes, severities, timestamps
+- **Markdown:** Human-readable with tables, checklist, recommendations
+- **Prioritization:** Newest PRs first (highest leverage)
+
+#### 2. Legacy Backlog Generator
+
+```bash
+# Generate/update backlog from internal audit
+uv run python scripts/ops/generate_legacy_merge_log_backlog.py
+
+# Or from existing JSON report
+uv run python scripts/ops/generate_legacy_merge_log_backlog.py \
+  --json-report reports/ops/violations.json
+
+# Custom output path
+uv run python scripts/ops/generate_legacy_merge_log_backlog.py \
+  --output docs/ops/MY_BACKLOG.md
+```
+
+**Output:** `docs/ops/LEGACY_MERGE_LOG_VIOLATIONS_BACKLOG.md`
+- Prioritized checklist (high/medium/low)
+- Newest PRs first
+- Deterministic/idempotent (re-run safe)
+
+### CI Integration
+
+**Workflow:** `.github/workflows/audit.yml`
+
+```yaml
+- name: Ops Merge Log Guard (non-blocking for legacy)
+  run: |
+    python scripts/audit/check_ops_merge_logs.py \
+      || echo "⚠️ Ops merge log violations found (legacy) — non-blocking"
+```
+
+**Status:** Non-blocking guard active
+- Logs violations to CI output
+- Does not fail PR checks (legacy-friendly)
+- Future: Can flip to blocking when legacy backlog cleared
+
+### When to Flip CI Guard to Blocking
+
+Consider making the guard blocking when:
+1. **High-priority legacy items cleared** (≥10 violations)
+2. **Forward-only policy proven** (3+ new PRs compliant)
+3. **Team buy-in confirmed** (no workflow disruption expected)
+
+To flip to blocking:
+```yaml
+# In .github/workflows/audit.yml
+- name: Ops Merge Log Guard (blocking)
+  run: python scripts/audit/check_ops_merge_logs.py
+```
+
+### Migration Workflow
+
+For migrating legacy logs (optional):
+
+1. **Pick item from backlog**
+   ```bash
+   # View backlog
+   cat docs/ops/LEGACY_MERGE_LOG_VIOLATIONS_BACKLOG.md
+   ```
+
+2. **Update log manually**
+   ```bash
+   # Use reference as template
+   cp docs/ops/PR_206_MERGE_LOG.md docs/ops/PR_XXX_MERGE_LOG.md
+   vim docs/ops/PR_XXX_MERGE_LOG.md
+   ```
+
+3. **Verify compliance**
+   ```bash
+   uv run python scripts/audit/check_ops_merge_logs.py
+   ```
+
+4. **Regenerate backlog**
+   ```bash
+   uv run python scripts/ops/generate_legacy_merge_log_backlog.py
+   ```
+
+### Testing
+
+```bash
+# Run audit tool tests
+uv run pytest -q tests/test_ops_merge_log_audit.py
+
+# Includes:
+# - Violation detection (headers, sections, length)
+# - JSON report structure & content
+# - Markdown report structure & content
+# - Idempotency checks
+```
+
+---
+
 ## Best Practices
 
 ### 1. Immer auf aktuellem main starten
