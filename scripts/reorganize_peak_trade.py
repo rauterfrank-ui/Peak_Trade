@@ -67,7 +67,9 @@ def ensure_dir(path: Path, report: ReorganizationReport, dry_run: bool = False) 
         report.add_created_dir(str(path))
 
 
-def move_file(source: Path, dest: Path, report: ReorganizationReport, dry_run: bool = False) -> None:
+def move_file(
+    source: Path, dest: Path, report: ReorganizationReport, dry_run: bool = False
+) -> None:
     """Move file from source to destination, with conflict handling."""
     if not source.exists():
         report.add_skipped(str(source), "source file does not exist")
@@ -101,7 +103,9 @@ def move_dir(source: Path, dest: Path, report: ReorganizationReport, dry_run: bo
     report.add_moved(str(source), str(dest))
 
 
-def create_file_if_missing(path: Path, content: str, report: ReorganizationReport, dry_run: bool = False) -> None:
+def create_file_if_missing(
+    path: Path, content: str, report: ReorganizationReport, dry_run: bool = False
+) -> None:
     """Create a file with given content if it doesn't exist."""
     if path.exists():
         report.add_skipped(str(path), "file already exists")
@@ -127,7 +131,12 @@ def reorganize_peak_trade(project_root: Path, dry_run: bool = False) -> None:
 
     move_dir(project_root / "PeakTradeRepo", archive_dir / "PeakTradeRepo", report, dry_run)
     move_dir(project_root / "noch einordnen", archive_dir / "noch_einordnen", report, dry_run)
-    move_file(project_root / "full_files_stand_02.12.2025", archive_dir / "full_files_stand_02.12.2025", report, dry_run)
+    move_file(
+        project_root / "full_files_stand_02.12.2025",
+        archive_dir / "full_files_stand_02.12.2025",
+        report,
+        dry_run,
+    )
 
     # Step 2: Create config directory and move config.toml
     config_dir = project_root / "config"
@@ -146,33 +155,74 @@ def reorganize_peak_trade(project_root: Path, dry_run: bool = False) -> None:
     ensure_dir(project_docs_dir, report, dry_run)
 
     # Move architecture files
-    move_file(project_root / "architecture_diagram.png", architecture_dir / "architecture_diagram.png", report, dry_run)
+    move_file(
+        project_root / "architecture_diagram.png",
+        architecture_dir / "architecture_diagram.png",
+        report,
+        dry_run,
+    )
 
     # Move report files
     move_file(project_root / "dashboard.html", reports_dir / "dashboard.html", report, dry_run)
-    move_file(project_root / "peak_trade_documentation.pdf", reports_dir / "peak_trade_documentation.pdf", report, dry_run)
-    move_file(project_root / "PeakTrade_enhanced.pdf", reports_dir / "PeakTrade_enhanced.pdf", report, dry_run)
-    move_file(project_root / "peak_trade_documentation.html", reports_dir / "peak_trade_documentation.html", report, dry_run)
+    move_file(
+        project_root / "peak_trade_documentation.pdf",
+        reports_dir / "peak_trade_documentation.pdf",
+        report,
+        dry_run,
+    )
+    move_file(
+        project_root / "PeakTrade_enhanced.pdf",
+        reports_dir / "PeakTrade_enhanced.pdf",
+        report,
+        dry_run,
+    )
+    move_file(
+        project_root / "peak_trade_documentation.html",
+        reports_dir / "peak_trade_documentation.html",
+        report,
+        dry_run,
+    )
 
     # Step 4: Move and rename project markdown files
-    move_file(project_root / "FINAL_SUMMARY.md", project_docs_dir / "FINAL_SUMMARY.md", report, dry_run)
-    move_file(project_root / "CONFIG_SYSTEM.md", project_docs_dir / "CONFIG_SYSTEM.md", report, dry_run)
-    move_file(project_root / "RISK_LIMITS_UPDATE.md", project_docs_dir / "RISK_LIMITS_UPDATE.md", report, dry_run)
+    move_file(
+        project_root / "FINAL_SUMMARY.md", project_docs_dir / "FINAL_SUMMARY.md", report, dry_run
+    )
+    move_file(
+        project_root / "CONFIG_SYSTEM.md", project_docs_dir / "CONFIG_SYSTEM.md", report, dry_run
+    )
+    move_file(
+        project_root / "RISK_LIMITS_UPDATE.md",
+        project_docs_dir / "RISK_LIMITS_UPDATE.md",
+        report,
+        dry_run,
+    )
     move_file(project_root / "NEXT_STEPS.md", project_docs_dir / "NEXT_STEPS.md", report, dry_run)
-    move_file(project_root / "FILES_CHANGED.md", project_docs_dir / "FILES_CHANGED.md", report, dry_run)
+    move_file(
+        project_root / "FILES_CHANGED.md", project_docs_dir / "FILES_CHANGED.md", report, dry_run
+    )
 
     # Handle files with pattern matching for truncated names
     backtest_files = list(project_root.glob("BACKTEST_RI*GRATION.md"))
     if backtest_files:
         move_file(backtest_files[0], project_docs_dir / "BACKTEST_INTEGRATION.md", report, dry_run)
     else:
-        move_file(project_root / "BACKTEST_INTEGRATION.md", project_docs_dir / "BACKTEST_INTEGRATION.md", report, dry_run)
+        move_file(
+            project_root / "BACKTEST_INTEGRATION.md",
+            project_docs_dir / "BACKTEST_INTEGRATION.md",
+            report,
+            dry_run,
+        )
 
     # Rename CLAUDE.MD to CLAUDE_NOTES.md
     move_file(project_root / "CLAUDE.MD", project_docs_dir / "CLAUDE_NOTES.md", report, dry_run)
 
     # Move Peak_Trade_Data_Layer_Doku.md if it exists
-    move_file(project_root / "Peak_Trade_Data_Layer_Doku.md", project_docs_dir / "Peak_Trade_Data_Layer_Doku.md", report, dry_run)
+    move_file(
+        project_root / "Peak_Trade_Data_Layer_Doku.md",
+        project_docs_dir / "Peak_Trade_Data_Layer_Doku.md",
+        report,
+        dry_run,
+    )
 
     # Step 5: Create CHANGELOG.md and RISK_MANAGEMENT.md if they don't exist
     changelog_content = """# Changelog
@@ -202,7 +252,9 @@ Central documentation for risk management in Peak_Trade.
 """
 
     create_file_if_missing(project_docs_dir / "CHANGELOG.md", changelog_content, report, dry_run)
-    create_file_if_missing(project_docs_dir / "RISK_MANAGEMENT.md", risk_management_content, report, dry_run)
+    create_file_if_missing(
+        project_docs_dir / "RISK_MANAGEMENT.md", risk_management_content, report, dry_run
+    )
 
     # Step 6: Rename gitignore to .gitignore if needed
     if (project_root / "gitignore").exists():
@@ -224,13 +276,13 @@ def main():
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Show what would be done without making actual changes"
+        help="Show what would be done without making actual changes",
     )
     parser.add_argument(
         "--project-root",
         type=Path,
         default=Path(__file__).parent.parent,
-        help="Path to the Peak_Trade project root (default: parent of scripts directory)"
+        help="Path to the Peak_Trade project root (default: parent of scripts directory)",
     )
 
     args = parser.parse_args()

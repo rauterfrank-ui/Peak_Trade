@@ -142,7 +142,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 **Kategorie:** Community (Low Trust)  
 **Beschreibung:** Twitter/X Sentiment-Analyse
 
-**Grund für Deaktivierung:** 
+**Grund für Deaktivierung:**
 - Zu viel Noise, geringe Qualität
 - Twitter API Kosten zu hoch
 - Keine konsistente Korrelation mit Trading-Signalen

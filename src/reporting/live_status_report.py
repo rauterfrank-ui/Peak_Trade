@@ -20,6 +20,7 @@ Usage:
     )
     md_text = build_markdown_report(data, notes="Optional notes")
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -74,20 +75,26 @@ def build_markdown_report(data: LiveStatusInput, notes: Optional[str] = None) ->
     # Config Check
     config_ok = data.health.get("config_ok", False)
     config_status = "OK" if config_ok else "FAIL"
-    config_details = "Config geladen" if config_ok else ", ".join(data.health.get("config_errors", []))
+    config_details = (
+        "Config geladen" if config_ok else ", ".join(data.health.get("config_errors", []))
+    )
     lines.append(f"| config | {config_status} | {config_details} |")
 
     # Exchange Check
     exchange_ok = data.health.get("exchange_ok", False)
     exchange_status = "OK" if exchange_ok else "FAIL"
-    exchange_details = "Exchange verbunden" if exchange_ok else ", ".join(data.health.get("exchange_errors", []))
+    exchange_details = (
+        "Exchange verbunden" if exchange_ok else ", ".join(data.health.get("exchange_errors", []))
+    )
     lines.append(f"| exchange | {exchange_status} | {exchange_details} |")
 
     # Alerts Check
     alerts_enabled = data.health.get("alerts_enabled", False)
     alerts_status = "OK" if alerts_enabled else "WARN"
     alert_sinks = data.health.get("alert_sinks_configured", [])
-    alerts_details = f"{len(alert_sinks)} Sink(s) konfiguriert" if alert_sinks else "Keine Sinks konfiguriert"
+    alerts_details = (
+        f"{len(alert_sinks)} Sink(s) konfiguriert" if alert_sinks else "Keine Sinks konfiguriert"
+    )
     if data.health.get("alert_config_warnings"):
         alerts_details += f" ({', '.join(data.health['alert_config_warnings'])})"
     lines.append(f"| alerts | {alerts_status} | {alerts_details} |")
@@ -171,7 +178,9 @@ def build_markdown_report(data: LiveStatusInput, notes: Optional[str] = None) ->
         if allowed and not reasons:
             lines.append("- Live-Risk Limits: ✅ Innerhalb definierter Grenzen")
         else:
-            lines.append(f"- Live-Risk Limits: ⚠️ {'Nicht erlaubt' if not allowed else 'Warnungen vorhanden'}")
+            lines.append(
+                f"- Live-Risk Limits: ⚠️ {'Nicht erlaubt' if not allowed else 'Warnungen vorhanden'}"
+            )
             if reasons:
                 lines.append(f"  - Gründe: {', '.join(reasons)}")
     else:
@@ -225,7 +234,9 @@ def build_html_report(data: LiveStatusInput, notes: Optional[str] = None) -> str
     lines.append("  <style>")
     lines.append("    body { font-family: Arial, sans-serif; margin: 20px; }")
     lines.append("    h1 { color: #2c3e50; }")
-    lines.append("    h2 { color: #34495e; border-bottom: 2px solid #3498db; padding-bottom: 5px; }")
+    lines.append(
+        "    h2 { color: #34495e; border-bottom: 2px solid #3498db; padding-bottom: 5px; }"
+    )
     lines.append("    h3 { color: #7f8c8d; }")
     lines.append("    table { border-collapse: collapse; width: 100%; margin: 10px 0; }")
     lines.append("    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }")
@@ -255,8 +266,12 @@ def build_html_report(data: LiveStatusInput, notes: Optional[str] = None) -> str
     # 1. Health Overview
     lines.append("  <h2>1. Health Overview</h2>")
     overall_status = data.health.get("overall_status", "UNKNOWN")
-    status_class = {"OK": "status-ok", "DEGRADED": "status-warn", "FAIL": "status-fail"}.get(overall_status, "")
-    lines.append(f"  <p><strong>Overall Status:</strong> <span class='{status_class}'>{overall_status}</span></p>")
+    status_class = {"OK": "status-ok", "DEGRADED": "status-warn", "FAIL": "status-fail"}.get(
+        overall_status, ""
+    )
+    lines.append(
+        f"  <p><strong>Overall Status:</strong> <span class='{status_class}'>{overall_status}</span></p>"
+    )
     lines.append("")
 
     lines.append("  <table>")
@@ -268,20 +283,28 @@ def build_html_report(data: LiveStatusInput, notes: Optional[str] = None) -> str
     # Config Check
     config_ok = data.health.get("config_ok", False)
     config_status = "OK" if config_ok else "FAIL"
-    config_details = "Config geladen" if config_ok else ", ".join(data.health.get("config_errors", []))
+    config_details = (
+        "Config geladen" if config_ok else ", ".join(data.health.get("config_errors", []))
+    )
     lines.append(f"      <tr><td>config</td><td>{config_status}</td><td>{config_details}</td></tr>")
 
     # Exchange Check
     exchange_ok = data.health.get("exchange_ok", False)
     exchange_status = "OK" if exchange_ok else "FAIL"
-    exchange_details = "Exchange verbunden" if exchange_ok else ", ".join(data.health.get("exchange_errors", []))
-    lines.append(f"      <tr><td>exchange</td><td>{exchange_status}</td><td>{exchange_details}</td></tr>")
+    exchange_details = (
+        "Exchange verbunden" if exchange_ok else ", ".join(data.health.get("exchange_errors", []))
+    )
+    lines.append(
+        f"      <tr><td>exchange</td><td>{exchange_status}</td><td>{exchange_details}</td></tr>"
+    )
 
     # Alerts Check
     alerts_enabled = data.health.get("alerts_enabled", False)
     alerts_status = "OK" if alerts_enabled else "WARN"
     alert_sinks = data.health.get("alert_sinks_configured", [])
-    alerts_details = f"{len(alert_sinks)} Sink(s) konfiguriert" if alert_sinks else "Keine Sinks konfiguriert"
+    alerts_details = (
+        f"{len(alert_sinks)} Sink(s) konfiguriert" if alert_sinks else "Keine Sinks konfiguriert"
+    )
     if data.health.get("alert_config_warnings"):
         alerts_details += f" ({', '.join(data.health['alert_config_warnings'])})"
     lines.append(f"      <tr><td>alerts</td><td>{alerts_status}</td><td>{alerts_details}</td></tr>")
@@ -292,7 +315,9 @@ def build_html_report(data: LiveStatusInput, notes: Optional[str] = None) -> str
     live_risk_details = "Limits geladen, keine Errors"
     if data.health.get("live_risk_warnings"):
         live_risk_details = ", ".join(data.health["live_risk_warnings"])
-    lines.append(f"      <tr><td>live_risk</td><td>{live_risk_status}</td><td>{live_risk_details}</td></tr>")
+    lines.append(
+        f"      <tr><td>live_risk</td><td>{live_risk_status}</td><td>{live_risk_details}</td></tr>"
+    )
 
     lines.append("    </tbody>")
     lines.append("  </table>")
@@ -330,7 +355,9 @@ def build_html_report(data: LiveStatusInput, notes: Optional[str] = None) -> str
     if positions:
         lines.append("  <table>")
         lines.append("    <thead>")
-        lines.append("      <tr><th>Symbol</th><th>Position</th><th>Notional</th><th>Side</th><th>Unrealized PnL</th></tr>")
+        lines.append(
+            "      <tr><th>Symbol</th><th>Position</th><th>Notional</th><th>Side</th><th>Unrealized PnL</th></tr>"
+        )
         lines.append("    </thead>")
         lines.append("    <tbody>")
 
@@ -362,15 +389,23 @@ def build_html_report(data: LiveStatusInput, notes: Optional[str] = None) -> str
         allowed = risk.get("allowed", True)
         reasons = risk.get("reasons", [])
         if allowed and not reasons:
-            lines.append("    <li><strong>Live-Risk Limits:</strong> <span class='status-ok'>✅ Innerhalb definierter Grenzen</span></li>")
+            lines.append(
+                "    <li><strong>Live-Risk Limits:</strong> <span class='status-ok'>✅ Innerhalb definierter Grenzen</span></li>"
+            )
         else:
-            lines.append(f"    <li><strong>Live-Risk Limits:</strong> <span class='status-warn'>⚠️ {'Nicht erlaubt' if not allowed else 'Warnungen vorhanden'}</span></li>")
+            lines.append(
+                f"    <li><strong>Live-Risk Limits:</strong> <span class='status-warn'>⚠️ {'Nicht erlaubt' if not allowed else 'Warnungen vorhanden'}</span></li>"
+            )
             if reasons:
                 lines.append(f"      <ul><li>Gründe: {', '.join(reasons)}</li></ul>")
     else:
-        lines.append("    <li><strong>Live-Risk Limits:</strong> ℹ️ Keine Risk-Check-Daten verfügbar</li>")
+        lines.append(
+            "    <li><strong>Live-Risk Limits:</strong> ℹ️ Keine Risk-Check-Daten verfügbar</li>"
+        )
 
-    lines.append(f"    <li><strong>Letzter Risk-Check:</strong> Health-Check {'OK' if live_risk_ok else 'WARN'}</li>")
+    lines.append(
+        f"    <li><strong>Letzter Risk-Check:</strong> Health-Check {'OK' if live_risk_ok else 'WARN'}</li>"
+    )
     lines.append("    <li><strong>Alerts (letzte Periode):</strong>")
     lines.append("      <ul>")
     lines.append("        <li>ℹ️ Keine Alert-Historie im aktuellen System verfügbar</li>")
@@ -385,7 +420,9 @@ def build_html_report(data: LiveStatusInput, notes: Optional[str] = None) -> str
     if notes:
         lines.append(f"  <pre>{notes}</pre>")
     else:
-        lines.append("  <p><em>(Optionaler Freitext – z.B. aus --notes-file oder manuell ergänzt)</em></p>")
+        lines.append(
+            "  <p><em>(Optionaler Freitext – z.B. aus --notes-file oder manuell ergänzt)</em></p>"
+        )
 
     lines.append("")
     lines.append("</body>")
@@ -402,4 +439,3 @@ def _format_number(value: float, sign: bool = False) -> str:
     if sign and value != 0:
         formatted = f"{'+' if value > 0 else ''}{formatted}"
     return formatted
-

@@ -26,6 +26,7 @@ WICHTIG: Es werden KEINE echten Live-Orders an Boersen gesendet!
          live_order_execution ist governance-seitig gesperrt (locked).
          Bei env="live" wird GovernanceViolationError geworfen.
 """
+
 from __future__ import annotations
 
 import logging
@@ -66,6 +67,7 @@ logger = logging.getLogger(__name__)
 
 class ExecutionPipelineError(Exception):
     """Basisklasse fuer ExecutionPipeline-Fehler."""
+
     pass
 
 
@@ -149,6 +151,7 @@ class ExecutionEnvironment(str, Enum):
         TESTNET: Testnet-Orders (TestnetExchangeOrderExecutor)
         LIVE: Echte Orders (GESPERRT - GovernanceViolationError)
     """
+
     PAPER = "paper"
     SHADOW = "shadow"
     TESTNET = "testnet"
@@ -184,6 +187,7 @@ class OrderIntent:
         ... )
         >>> result = pipeline.submit_order(intent)
     """
+
     symbol: str
     side: OrderSide
     quantity: float
@@ -231,6 +235,7 @@ class ExecutionStatus(str, Enum):
         ERROR: Fehler bei der Ausfuehrung
         INVALID: Ungueltiger Input (z.B. quantity <= 0)
     """
+
     SUCCESS = "success"
     BLOCKED_BY_RISK = "blocked_by_risk"
     BLOCKED_BY_GOVERNANCE = "blocked_by_governance"
@@ -239,6 +244,7 @@ class ExecutionStatus(str, Enum):
     REJECTED = "rejected"
     ERROR = "error"
     INVALID = "invalid"
+
 
 # Typ-Alias fuer Signal-Serien
 SignalSeries = pd.Series
@@ -261,6 +267,7 @@ class ExecutionResult:
         environment: Phase 16A V2: Environment in dem ausgefuehrt wurde
         governance_status: Phase 16A V2: Governance-Status zum Zeitpunkt der Ausfuehrung
     """
+
     risk_check: Optional["LiveRiskCheckResult"] = None
     executed_orders: List[OrderExecutionResult] = field(default_factory=list)
     rejected: bool = False
@@ -439,13 +446,13 @@ class ExecutionPipeline:
         self._config = config if config is not None else ExecutionPipelineConfig()
         self._execution_history: List[OrderExecutionResult] = []
         self._order_counter = 0
-        
+
         # Phase 16A: Safety-Komponenten
         self._env_config = env_config
         self._safety_guard = safety_guard
         self._risk_limits = risk_limits
         self._run_logger = run_logger
-        
+
         # Phase 16B: Telemetry
         self._emitter = emitter
 
@@ -479,7 +486,7 @@ class ExecutionPipeline:
             symbol: Trading symbol
             session_id: Session ID
             payload: Event-specific data
-        
+
         Note:
             Uses UTC timestamps (datetime.now(timezone.utc)) for consistency across
             regions and to avoid timezone ambiguities in logs.
@@ -490,7 +497,7 @@ class ExecutionPipeline:
         try:
             from datetime import timezone
             from .events import ExecutionEvent
-            
+
             event = ExecutionEvent(
                 ts=datetime.now(timezone.utc),  # UTC timestamps for Production
                 session_id=session_id,
@@ -632,9 +639,7 @@ class ExecutionPipeline:
                     f"qty={result.fill.quantity:.6f} @ {result.fill.price:.4f}"
                 )
             elif result.is_rejected:
-                logger.debug(
-                    f"[EXECUTION] REJECTED {result.request.symbol}: {result.reason}"
-                )
+                logger.debug(f"[EXECUTION] REJECTED {result.request.symbol}: {result.reason}")
 
         return results
 
@@ -685,7 +690,9 @@ class ExecutionPipeline:
                         side="buy",
                         quantity=abs(current_position),
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol) if self._config.generate_client_ids else None,
+                        client_id=self._generate_client_id(event.symbol)
+                        if self._config.generate_client_ids
+                        else None,
                         metadata={**metadata, "order_reason": "close_short"},
                     )
                 )
@@ -698,7 +705,9 @@ class ExecutionPipeline:
                         side="buy",
                         quantity=position_size,
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol) if self._config.generate_client_ids else None,
+                        client_id=self._generate_client_id(event.symbol)
+                        if self._config.generate_client_ids
+                        else None,
                         metadata={**metadata, "order_reason": "entry_long"},
                     )
                 )
@@ -712,7 +721,9 @@ class ExecutionPipeline:
                         side="sell",
                         quantity=current_position,
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol) if self._config.generate_client_ids else None,
+                        client_id=self._generate_client_id(event.symbol)
+                        if self._config.generate_client_ids
+                        else None,
                         metadata={**metadata, "order_reason": "exit_long"},
                     )
                 )
@@ -727,7 +738,9 @@ class ExecutionPipeline:
                         side="sell",
                         quantity=current_position,
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol) if self._config.generate_client_ids else None,
+                        client_id=self._generate_client_id(event.symbol)
+                        if self._config.generate_client_ids
+                        else None,
                         metadata={**metadata, "order_reason": "close_long"},
                     )
                 )
@@ -740,7 +753,9 @@ class ExecutionPipeline:
                         side="sell",
                         quantity=position_size,
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol) if self._config.generate_client_ids else None,
+                        client_id=self._generate_client_id(event.symbol)
+                        if self._config.generate_client_ids
+                        else None,
                         metadata={**metadata, "order_reason": "entry_short"},
                     )
                 )
@@ -754,7 +769,9 @@ class ExecutionPipeline:
                         side="buy",
                         quantity=abs(current_position),
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol) if self._config.generate_client_ids else None,
+                        client_id=self._generate_client_id(event.symbol)
+                        if self._config.generate_client_ids
+                        else None,
                         metadata={**metadata, "order_reason": "exit_short"},
                     )
                 )
@@ -864,9 +881,7 @@ class ExecutionPipeline:
 
             # OrderRequest erstellen
             client_id = (
-                self._generate_client_id(symbol)
-                if self._config.generate_client_ids
-                else None
+                self._generate_client_id(symbol) if self._config.generate_client_ids else None
             )
 
             order = OrderRequest(
@@ -1025,9 +1040,7 @@ class ExecutionPipeline:
                     f"live_order_execution is governance-locked (status='{governance_status}'). "
                     f"Live-Orders sind nicht erlaubt."
                 )
-                logger.warning(
-                    f"[EXECUTION PIPELINE] Governance-Block: {reason}"
-                )
+                logger.warning(f"[EXECUTION PIPELINE] Governance-Block: {reason}")
 
                 if raise_on_governance_violation:
                     raise LiveExecutionLockedError()
@@ -1207,9 +1220,7 @@ class ExecutionPipeline:
         governance_allowed, governance_status, governance_reason = self._check_governance(env_str)
 
         if not governance_allowed:
-            logger.warning(
-                f"[EXECUTION PIPELINE] Governance-Block: {governance_reason}"
-            )
+            logger.warning(f"[EXECUTION PIPELINE] Governance-Block: {governance_reason}")
             return ExecutionResult(
                 rejected=True,
                 executed_orders=[],
@@ -1245,17 +1256,11 @@ class ExecutionPipeline:
             try:
                 # SafetyGuard.ensure_may_place_order() wirft Exception bei Blockierung
                 # Wir pruefen nur, ob wir im Testnet sind (fuer is_testnet Flag)
-                is_testnet = (
-                    self._env_config.is_testnet
-                    if self._env_config is not None
-                    else False
-                )
+                is_testnet = self._env_config.is_testnet if self._env_config is not None else False
                 self._safety_guard.ensure_may_place_order(is_testnet=is_testnet)
             except Exception as e:
                 reason = f"safety_guard_blocked: {str(e)}"
-                logger.warning(
-                    f"[EXECUTION PIPELINE] SafetyGuard blockiert Orders: {reason}"
-                )
+                logger.warning(f"[EXECUTION PIPELINE] SafetyGuard blockiert Orders: {reason}")
                 return ExecutionResult(
                     rejected=True,
                     executed_orders=[],
@@ -1275,9 +1280,7 @@ class ExecutionPipeline:
 
             if not risk_result.allowed:
                 reason = f"risk_limits_violated: {', '.join(risk_result.reasons)}"
-                logger.warning(
-                    f"[EXECUTION PIPELINE] Risk-Limits blockieren Orders: {reason}"
-                )
+                logger.warning(f"[EXECUTION PIPELINE] Risk-Limits blockieren Orders: {reason}")
                 # Optional: Run-Logger Event mit abgelehnter Ausfuehrung
                 if self._run_logger is not None:
                     self._log_rejected_execution(orders_list, reason, risk_result)
@@ -1331,9 +1334,7 @@ class ExecutionPipeline:
         from ..live.orders import LiveOrderRequest
 
         live_orders: List[LiveOrderRequest] = []
-        current_price = (
-            context.get("current_price") if context else None
-        ) or 0.0  # Fallback
+        current_price = (context.get("current_price") if context else None) or 0.0  # Fallback
 
         for i, order in enumerate(orders):
             # Notional berechnen
@@ -1343,8 +1344,7 @@ class ExecutionPipeline:
             side: "Side" = "BUY" if order.side == "buy" else "SELL"
 
             live_order = LiveOrderRequest(
-                client_order_id=order.client_id
-                or f"exec_{i}_{uuid.uuid4().hex[:8]}",
+                client_order_id=order.client_id or f"exec_{i}_{uuid.uuid4().hex[:8]}",
                 symbol=order.symbol,
                 side=side,
                 order_type="MARKET" if order.order_type == "market" else "LIMIT",
@@ -1388,7 +1388,9 @@ class ExecutionPipeline:
                     orders_filled=1 if result.is_filled else 0,
                     orders_rejected=1 if result.is_rejected else 0,
                     risk_allowed=risk_result.allowed if risk_result else True,
-                    risk_reasons="; ".join(risk_result.reasons) if risk_result and risk_result.reasons else "",
+                    risk_reasons="; ".join(risk_result.reasons)
+                    if risk_result and risk_result.reasons
+                    else "",
                     extra={
                         "order_symbol": result.request.symbol,
                         "order_side": result.request.side,
@@ -1407,9 +1409,7 @@ class ExecutionPipeline:
                 self._run_logger.log_event(event)
 
         except Exception as e:
-            logger.warning(
-                f"[EXECUTION PIPELINE] Run-Logging fehlgeschlagen: {e}"
-            )
+            logger.warning(f"[EXECUTION PIPELINE] Run-Logging fehlgeschlagen: {e}")
 
     def _log_rejected_execution(
         self,
@@ -1451,6 +1451,4 @@ class ExecutionPipeline:
             self._run_logger.log_event(event)
 
         except Exception as e:
-            logger.warning(
-                f"[EXECUTION PIPELINE] Run-Logging (rejected) fehlgeschlagen: {e}"
-            )
+            logger.warning(f"[EXECUTION PIPELINE] Run-Logging (rejected) fehlgeschlagen: {e}")

@@ -14,6 +14,7 @@ Tests:
 Run:
     pytest tests/test_live_status_snapshot_api.py -v
 """
+
 from __future__ import annotations
 
 import json
@@ -192,7 +193,7 @@ def test_html_xss_safety_script_tag():
             "details": {
                 "payload": "<script>alert('XSS in details')</script>",
                 "onclick": "onclick='alert(1)'",
-            }
+            },
         }
 
     snapshot = build_live_status_snapshot(panel_providers={"xss": xss_provider})

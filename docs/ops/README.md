@@ -180,10 +180,16 @@ Konvention:
 
 ---
 
-## Merge Logs (Ops)
+## Merge Log
+- [PR #222](PR_222_MERGE_LOG.md) — feat(web): add merge+format-sweep workflow to ops hub (merged 2025-12-21)
+- [PR #218](PR_218_MERGE_LOG.md) — docs(ops): add PR #217 merge log (merged 2025-12-21)
+- [PR #217](PR_217_MERGE_LOG.md) — chore(format): pre-commit format sweep (merged 2025-12-21)
+- [PR #213](PR_213_MERGE_LOG.md) — docs(ops): add PR #212 merge log (merged 2025-12-21)
+- [PR #212](PR_212_MERGE_LOG.md) — docs(ops): add PR #211 merge log (merged 2025-12-21)
 
 Post-merge documentation logs for operational PRs.
 
+- [PR #211](PR_211_MERGE_LOG.md) — docs(ops): add PR #210 merge log (merged 2025-12-21)
 - [PR #206](PR_206_MERGE_LOG.md) – test(ops): workflow scripts bash syntax smoke guard
 - [PR #204](PR_204_MERGE_LOG.md) – docs(ops): workflow scripts documentation + automation infrastructure
 - [PR #203](PR_203_MERGE_LOG.md) – test(viz): skip matplotlib-based report/plot tests when matplotlib missing
@@ -331,6 +337,7 @@ reports/obs/stage1/
 ## Guides
 - Labeling Guide → LABELING_GUIDE.md
 - Workflow Scripts → WORKFLOW_SCRIPTS.md
+- [WORKFLOW_MERGE_AND_FORMAT_SWEEP.md](WORKFLOW_MERGE_AND_FORMAT_SWEEP.md) — Merge PRs safely + optional format sweep (pairs with `scripts/workflows/merge_and_format_sweep.sh` and `CI_LARGE_PR_HANDLING.md`)
 
 ## Utilities
 
@@ -432,3 +439,15 @@ The trend analysis includes a simple readiness assessment:
 - Stage1 Scripts schreiben zusätzliche JSON Files (bestehende Markdown Reports unverändert)
 - Keine Breaking Changes an bestehenden Workflows
 - Falls JSON Files fehlen: Empty State im Dashboard, keine Errors
+
+## Merge Logs
+
+### Templates
+
+- [MERGE_LOG_TEMPLATE_COMPACT](MERGE_LOG_TEMPLATE_COMPACT.md) — Standardvorlage (kompakt, fokussiert)
+
+### Recent Merge Logs
+
+- [PR #225](PR_225_MERGE_LOG.md) — fix(quarto): make backtest report template no-exec (merged 2025-12-21)
+- [PR #210](PR_210_MERGE_LOG.md) — docs(ops): add merge log for PR #209 (merged 2025-12-21)
+- [PR #209](PR_209_MERGE_LOG.md) — docs(ops): add merge log for PR #208 (ops workflow hub) (merged 2025-12-21)

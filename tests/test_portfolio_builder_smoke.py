@@ -9,6 +9,7 @@ Testet:
 - TOML-Export (write_portfolio_candidate_to_toml)
 - CLI-Script Dry-Run
 """
+
 from __future__ import annotations
 
 import json
@@ -95,27 +96,29 @@ class TestSelectTopSweepComponents:
 
     def _create_sweep_df(self) -> pd.DataFrame:
         """Erstellt ein Beispiel-DataFrame mit Sweep-Daten."""
-        return pd.DataFrame({
-            "run_id": ["run-1", "run-2", "run-3", "run-4"],
-            "run_type": ["sweep", "sweep", "sweep", "backtest"],
-            "strategy_key": ["ma_crossover", "ma_crossover", "rsi_reversion", "ma_crossover"],
-            "symbol": ["BTC/EUR", "ETH/EUR", "BTC/EUR", "BTC/EUR"],
-            "sharpe": [1.5, 1.2, 0.9, 2.0],
-            "total_return": [0.15, 0.10, 0.08, 0.20],
-            "max_drawdown": [-0.10, -0.08, -0.12, -0.05],
-            "params_json": [
-                '{"short_window": 10, "long_window": 50}',
-                '{"short_window": 20, "long_window": 100}',
-                '{"rsi_period": 14}',
-                '{"short_window": 15}',
-            ],
-            "metadata_json": [
-                '{"timeframe": "1h", "tag": "test"}',
-                '{"timeframe": "1h", "tag": "test"}',
-                '{"timeframe": "4h", "tag": "other"}',
-                '{"timeframe": "1h"}',
-            ],
-        })
+        return pd.DataFrame(
+            {
+                "run_id": ["run-1", "run-2", "run-3", "run-4"],
+                "run_type": ["sweep", "sweep", "sweep", "backtest"],
+                "strategy_key": ["ma_crossover", "ma_crossover", "rsi_reversion", "ma_crossover"],
+                "symbol": ["BTC/EUR", "ETH/EUR", "BTC/EUR", "BTC/EUR"],
+                "sharpe": [1.5, 1.2, 0.9, 2.0],
+                "total_return": [0.15, 0.10, 0.08, 0.20],
+                "max_drawdown": [-0.10, -0.08, -0.12, -0.05],
+                "params_json": [
+                    '{"short_window": 10, "long_window": 50}',
+                    '{"short_window": 20, "long_window": 100}',
+                    '{"rsi_period": 14}',
+                    '{"short_window": 15}',
+                ],
+                "metadata_json": [
+                    '{"timeframe": "1h", "tag": "test"}',
+                    '{"timeframe": "1h", "tag": "test"}',
+                    '{"timeframe": "4h", "tag": "other"}',
+                    '{"timeframe": "1h"}',
+                ],
+            }
+        )
 
     def test_select_from_sweeps(self):
         """Selektiert Komponenten aus Sweeps."""
@@ -144,9 +147,7 @@ class TestSelectTopSweepComponents:
         from src.analytics.portfolio_builder import select_top_sweep_components
 
         df = self._create_sweep_df()
-        components = select_top_sweep_components(
-            df, metric="sharpe", min_sharpe=1.0, max_total=10
-        )
+        components = select_top_sweep_components(df, metric="sharpe", min_sharpe=1.0, max_total=10)
 
         # Nur Komponenten mit Sharpe >= 1.0
         assert all(c.metric_score >= 1.0 for c in components)
@@ -156,9 +157,7 @@ class TestSelectTopSweepComponents:
         from src.analytics.portfolio_builder import select_top_sweep_components
 
         df = self._create_sweep_df()
-        components = select_top_sweep_components(
-            df, metric="sharpe", tag="test", max_total=10
-        )
+        components = select_top_sweep_components(df, metric="sharpe", tag="test", max_total=10)
 
         # Nur 2 Runs haben tag="test"
         assert len(components) <= 2
@@ -179,22 +178,24 @@ class TestSelectTopMarketScanComponents:
 
     def _create_scan_df(self) -> pd.DataFrame:
         """Erstellt ein Beispiel-DataFrame mit Market-Scan-Daten."""
-        return pd.DataFrame({
-            "run_id": ["scan-1", "scan-2", "scan-3"],
-            "run_type": ["market_scan", "market_scan", "market_scan"],
-            "strategy_key": ["ma_crossover", "ma_crossover", "rsi_reversion"],
-            "symbol": ["BTC/EUR", "ETH/EUR", "LTC/EUR"],
-            "stats_json": [
-                '{"sharpe": 1.2, "total_return": 0.12}',
-                '{"sharpe": 0.9, "total_return": 0.08}',
-                '{"sharpe": 1.5, "total_return": 0.15}',
-            ],
-            "metadata_json": [
-                '{"mode": "backtest-lite", "timeframe": "1h"}',
-                '{"mode": "backtest-lite", "timeframe": "1h"}',
-                '{"mode": "backtest-lite", "timeframe": "4h"}',
-            ],
-        })
+        return pd.DataFrame(
+            {
+                "run_id": ["scan-1", "scan-2", "scan-3"],
+                "run_type": ["market_scan", "market_scan", "market_scan"],
+                "strategy_key": ["ma_crossover", "ma_crossover", "rsi_reversion"],
+                "symbol": ["BTC/EUR", "ETH/EUR", "LTC/EUR"],
+                "stats_json": [
+                    '{"sharpe": 1.2, "total_return": 0.12}',
+                    '{"sharpe": 0.9, "total_return": 0.08}',
+                    '{"sharpe": 1.5, "total_return": 0.15}',
+                ],
+                "metadata_json": [
+                    '{"mode": "backtest-lite", "timeframe": "1h"}',
+                    '{"mode": "backtest-lite", "timeframe": "1h"}',
+                    '{"mode": "backtest-lite", "timeframe": "4h"}',
+                ],
+            }
+        )
 
     def test_select_from_scans(self):
         """Selektiert Komponenten aus Market-Scans."""
@@ -226,24 +227,26 @@ class TestBuildPortfolioCandidates:
 
     def _create_sweep_df(self) -> pd.DataFrame:
         """Erstellt Sweep-DataFrame."""
-        return pd.DataFrame({
-            "run_id": ["run-1", "run-2", "run-3"],
-            "run_type": ["sweep", "sweep", "sweep"],
-            "strategy_key": ["ma_crossover", "ma_crossover", "rsi_reversion"],
-            "symbol": ["BTC/EUR", "ETH/EUR", "LTC/EUR"],
-            "sharpe": [1.5, 1.2, 0.9],
-            "total_return": [0.15, 0.10, 0.08],
-            "params_json": [
-                '{"short_window": 10}',
-                '{"short_window": 20}',
-                '{"rsi_period": 14}',
-            ],
-            "metadata_json": [
-                '{"timeframe": "1h"}',
-                '{"timeframe": "1h"}',
-                '{"timeframe": "4h"}',
-            ],
-        })
+        return pd.DataFrame(
+            {
+                "run_id": ["run-1", "run-2", "run-3"],
+                "run_type": ["sweep", "sweep", "sweep"],
+                "strategy_key": ["ma_crossover", "ma_crossover", "rsi_reversion"],
+                "symbol": ["BTC/EUR", "ETH/EUR", "LTC/EUR"],
+                "sharpe": [1.5, 1.2, 0.9],
+                "total_return": [0.15, 0.10, 0.08],
+                "params_json": [
+                    '{"short_window": 10}',
+                    '{"short_window": 20}',
+                    '{"rsi_period": 14}',
+                ],
+                "metadata_json": [
+                    '{"timeframe": "1h"}',
+                    '{"timeframe": "1h"}',
+                    '{"timeframe": "4h"}',
+                ],
+            }
+        )
 
     def test_build_creates_portfolio(self):
         """Builder erzeugt mindestens ein Portfolio."""
@@ -333,16 +336,25 @@ class TestBuildMultiplePortfolioCandidates:
 
     def _create_multi_strategy_df(self) -> pd.DataFrame:
         """Erstellt DataFrame mit mehreren Strategien."""
-        return pd.DataFrame({
-            "run_id": [f"run-{i}" for i in range(6)],
-            "run_type": ["sweep"] * 6,
-            "strategy_key": ["ma_crossover", "ma_crossover", "rsi_reversion", "rsi_reversion", "macd", "macd"],
-            "symbol": ["BTC/EUR", "ETH/EUR", "BTC/EUR", "ETH/EUR", "BTC/EUR", "ETH/EUR"],
-            "sharpe": [1.5, 1.2, 0.9, 1.1, 0.8, 0.7],
-            "total_return": [0.15, 0.10, 0.08, 0.12, 0.05, 0.04],
-            "params_json": ['{}'] * 6,
-            "metadata_json": ['{"timeframe": "1h"}'] * 6,
-        })
+        return pd.DataFrame(
+            {
+                "run_id": [f"run-{i}" for i in range(6)],
+                "run_type": ["sweep"] * 6,
+                "strategy_key": [
+                    "ma_crossover",
+                    "ma_crossover",
+                    "rsi_reversion",
+                    "rsi_reversion",
+                    "macd",
+                    "macd",
+                ],
+                "symbol": ["BTC/EUR", "ETH/EUR", "BTC/EUR", "ETH/EUR", "BTC/EUR", "ETH/EUR"],
+                "sharpe": [1.5, 1.2, 0.9, 1.1, 0.8, 0.7],
+                "total_return": [0.15, 0.10, 0.08, 0.12, 0.05, 0.04],
+                "params_json": ["{}"] * 6,
+                "metadata_json": ['{"timeframe": "1h"}'] * 6,
+            }
+        )
 
     def test_builds_per_strategy_portfolios(self):
         """Erzeugt ein Portfolio pro Strategie."""

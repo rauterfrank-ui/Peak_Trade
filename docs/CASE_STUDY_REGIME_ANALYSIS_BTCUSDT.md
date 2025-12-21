@@ -227,11 +227,3 @@ python scripts/run_walkforward.py \
   * optionalem Hedge-System für Risk-Off-Phasen
 
 Diese Case Study dient als Referenz, wie Regime-Analyse in Peak_Trade für **konkrete Portfolio-Entscheidungen** eingesetzt wird.
-
-
-
-
-
-
-
-

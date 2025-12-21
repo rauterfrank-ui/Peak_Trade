@@ -205,7 +205,7 @@ mv data/raw/btc_eur_1h.backup.parquet data/raw/btc_eur_1h.parquet
    ```bash
    # Portfolio-Snapshot aus Shadow-Run
    python scripts/live_ops.py portfolio --config config/config.toml --json > shadow_pnl.json
-   
+
    # Vergleich mit Research-Ergebnissen
    # (manuell oder mit kleinem Vergleichs-Script)
    ```
@@ -537,11 +537,3 @@ Dieses Drill-Playbook bietet:
 ---
 
 **Built with ❤️ and safety-first architecture**
-
-
-
-
-
-
-
-

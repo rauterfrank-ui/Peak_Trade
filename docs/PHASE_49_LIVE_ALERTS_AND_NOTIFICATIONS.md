@@ -388,4 +388,3 @@ Siehe [PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md](PHASE_50_LIVE_ALERT_WEBHOOKS_A
 ---
 
 **Built with ❤️ and safety-first alerting**
-

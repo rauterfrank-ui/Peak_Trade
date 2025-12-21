@@ -37,6 +37,7 @@ Verfügbare Strategien:
 
 Zum Beenden: Ctrl+C (SIGINT) oder SIGTERM
 """
+
 from __future__ import annotations
 
 import argparse
@@ -133,28 +134,30 @@ def create_strategy(strategy_name: str, cfg: PeakConfig) -> BaseStrategy:
     # Versuche weitere Strategien zu importieren
     try:
         from src.strategies.momentum import MomentumStrategy
-        strategy_map["momentum_1h"] = lambda: MomentumStrategy.from_config(cfg, "strategy.momentum_1h")
+
+        strategy_map["momentum_1h"] = lambda: MomentumStrategy.from_config(
+            cfg, "strategy.momentum_1h"
+        )
     except ImportError:
         pass
 
     try:
         from src.strategies.rsi_reversion import RSIStrategy
+
         strategy_map["rsi_strategy"] = lambda: RSIStrategy.from_config(cfg, "strategy.rsi_strategy")
     except ImportError:
         pass
 
     try:
         from src.strategies.macd import MACDStrategy
+
         strategy_map["macd"] = lambda: MACDStrategy.from_config(cfg, "strategy.macd")
     except ImportError:
         pass
 
     if strategy_name not in strategy_map:
         available = list(strategy_map.keys())
-        raise ValueError(
-            f"Unbekannte Strategie: '{strategy_name}'. "
-            f"Verfügbar: {available}"
-        )
+        raise ValueError(f"Unbekannte Strategie: '{strategy_name}'. Verfügbar: {available}")
 
     return strategy_map[strategy_name]()
 
@@ -223,9 +226,7 @@ def build_session(
     logger.info(f"Strategie geladen: {strategy}")
 
     # 4. Datenquelle erstellen
-    logger.info(
-        f"Initialisiere Datenquelle: {shadow_cfg.symbol} @ {shadow_cfg.timeframe}"
-    )
+    logger.info(f"Initialisiere Datenquelle: {shadow_cfg.symbol} @ {shadow_cfg.timeframe}")
     data_source = KrakenLiveCandleSource(
         symbol=shadow_cfg.symbol,
         timeframe=shadow_cfg.timeframe,
@@ -250,9 +251,7 @@ def build_session(
 
     # 6. Risk-Limits
     logger.info("Initialisiere Risk-Limits")
-    risk_limits = LiveRiskLimits.from_config(
-        cfg, starting_cash=shadow_cfg.start_balance
-    )
+    risk_limits = LiveRiskLimits.from_config(cfg, starting_cash=shadow_cfg.start_balance)
 
     # 7. Run-Logger erstellen (Phase 32)
     run_logger: Optional[LiveRunLogger] = None
@@ -484,9 +483,7 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
 
     except EnvironmentNotAllowedError as e:
         logger.error(f"Environment-Fehler: {e}")
-        logger.error(
-            "Lösung: Setze [environment] mode = 'paper' in config/config.toml"
-        )
+        logger.error("Lösung: Setze [environment] mode = 'paper' in config/config.toml")
         return 1
 
     except ValueError as e:

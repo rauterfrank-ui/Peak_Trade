@@ -42,6 +42,7 @@ Referenzen:
 - "Volatility is Rough" (Gatheral et al.)
 - "Empirical Properties of Asset Returns" (Cont)
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -346,13 +347,9 @@ class VolRegimeOverlayStrategy(BaseStrategy):
     def validate(self) -> None:
         """Validiert Parameter."""
         if self.cfg.day_vol_budget <= 0:
-            raise ValueError(
-                f"day_vol_budget ({self.cfg.day_vol_budget}) muss > 0 sein"
-            )
+            raise ValueError(f"day_vol_budget ({self.cfg.day_vol_budget}) muss > 0 sein")
         if self.cfg.max_intraday_dd <= 0:
-            raise ValueError(
-                f"max_intraday_dd ({self.cfg.max_intraday_dd}) muss > 0 sein"
-            )
+            raise ValueError(f"max_intraday_dd ({self.cfg.max_intraday_dd}) muss > 0 sein")
         if self.cfg.regime_lookback_bars < 10:
             raise ValueError(
                 f"regime_lookback_bars ({self.cfg.regime_lookback_bars}) muss >= 10 sein"
@@ -371,6 +368,3 @@ class VolRegimeOverlayStrategy(BaseStrategy):
             f"regime_lookback={self.cfg.regime_lookback_bars}bars) "
             f"[SKELETON – NOT IMPLEMENTED]>"
         )
-
-
-

@@ -20,6 +20,7 @@ Usage:
     # Mit Verbose-Output
     pytest tests/test_strategy_smoke_cli.py -v -s
 """
+
 from __future__ import annotations
 
 import subprocess
@@ -41,6 +42,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 # FIXTURES
 # ============================================================================
 
+
 @pytest.fixture
 def v11_expected_strategies() -> set:
     """Erwartete v1.1-offizielle Strategien."""
@@ -61,12 +63,14 @@ def v11_expected_strategies() -> set:
 def small_ohlcv_df() -> pd.DataFrame:
     """Kleine OHLCV-Daten fuer schnelle Tests."""
     from src.strategies.diagnostics import create_synthetic_ohlcv
+
     return create_synthetic_ohlcv(n_bars=100)
 
 
 # ============================================================================
 # TEST 1: ENUMERATION
 # ============================================================================
+
 
 class TestStrategyEnumeration:
     """Tests fuer die Strategie-Enumeration."""
@@ -127,6 +131,7 @@ class TestStrategyEnumeration:
 # ============================================================================
 # TEST 2: ERFOLGSPFAD
 # ============================================================================
+
 
 class TestSmokeTestSuccess:
     """Tests fuer erfolgreiche Smoke-Tests."""
@@ -207,6 +212,7 @@ class TestSmokeTestSuccess:
 # TEST 3: FEHLERPFAD
 # ============================================================================
 
+
 class TestSmokeTestFailure:
     """Tests fuer Fehlerbehandlung."""
 
@@ -265,6 +271,7 @@ class TestSmokeTestFailure:
 # TEST 4: SYNTHETIC DATA
 # ============================================================================
 
+
 class TestSyntheticData:
     """Tests fuer synthetische Daten-Generierung."""
 
@@ -315,6 +322,7 @@ class TestSyntheticData:
 # ============================================================================
 # TEST 5: FORMAT OUTPUT
 # ============================================================================
+
 
 class TestFormatOutput:
     """Tests fuer Output-Formatierung."""
@@ -368,6 +376,7 @@ class TestFormatOutput:
 # TEST 6: CLI INTEGRATION (optional, kann uebersprungen werden)
 # ============================================================================
 
+
 @pytest.mark.slow
 class TestCLIIntegration:
     """Integration-Tests fuer die CLI."""
@@ -391,8 +400,10 @@ class TestCLIIntegration:
             [
                 sys.executable,
                 "scripts/strategy_smoke_check.py",
-                "--strategies", "ma_crossover",
-                "--n-bars", "50",
+                "--strategies",
+                "ma_crossover",
+                "--n-bars",
+                "50",
             ],
             capture_output=True,
             text=True,
@@ -409,8 +420,10 @@ class TestCLIIntegration:
             [
                 sys.executable,
                 "scripts/strategy_smoke_check.py",
-                "--strategies", "nonexistent_xyz",
-                "--n-bars", "50",
+                "--strategies",
+                "nonexistent_xyz",
+                "--n-bars",
+                "50",
             ],
             capture_output=True,
             text=True,
@@ -425,6 +438,7 @@ class TestCLIIntegration:
 # ============================================================================
 # TEST 7: REGISTRY INTEGRATION
 # ============================================================================
+
 
 class TestRegistryIntegration:
     """Tests fuer Registry-Integration."""
@@ -457,6 +471,7 @@ class TestRegistryIntegration:
 # ============================================================================
 # TEST 8: PHASE 78 - KRAKEN CACHE DATA SOURCE
 # ============================================================================
+
 
 class TestKrakenCacheDataSource:
     """Tests fuer Kraken-Cache-Datenquelle (Phase 78)."""
@@ -685,9 +700,12 @@ class TestKrakenCacheCLIIntegration:
             [
                 sys.executable,
                 "scripts/strategy_smoke_check.py",
-                "--strategies", "ma_crossover",
-                "--n-bars", "100",
-                "--data-source", "synthetic",
+                "--strategies",
+                "ma_crossover",
+                "--n-bars",
+                "100",
+                "--data-source",
+                "synthetic",
             ],
             capture_output=True,
             text=True,
@@ -709,11 +727,16 @@ class TestKrakenCacheCLIIntegration:
             [
                 sys.executable,
                 "scripts/strategy_smoke_check.py",
-                "--strategies", "ma_crossover",
-                "--data-source", "kraken_cache",
-                "--market", "BTC/EUR",
-                "--timeframe", "1h",
-                "--n-bars", "200",
+                "--strategies",
+                "ma_crossover",
+                "--data-source",
+                "kraken_cache",
+                "--market",
+                "BTC/EUR",
+                "--timeframe",
+                "1h",
+                "--n-bars",
+                "200",
             ],
             capture_output=True,
             text=True,
@@ -729,6 +752,7 @@ class TestKrakenCacheCLIIntegration:
 # ============================================================================
 # TEST 9: PHASE 79 - DATA HEALTH FIELDS
 # ============================================================================
+
 
 class TestPhase79DataHealthFields:
     """Tests fuer Phase 79 Data-Health-Felder in StrategySmokeResult."""
@@ -827,6 +851,7 @@ class TestPhase79DataHealthFields:
 # TEST 10: PHASE 79 - CLI DATA-QC-ONLY MODE
 # ============================================================================
 
+
 @pytest.mark.slow
 class TestPhase79CLIDataQCOnly:
     """CLI-Tests fuer --check-data-only Modus (Phase 79)."""
@@ -851,7 +876,8 @@ class TestPhase79CLIDataQCOnly:
                 sys.executable,
                 "scripts/strategy_smoke_check.py",
                 "--check-data-only",
-                "--data-source", "synthetic",
+                "--data-source",
+                "synthetic",
             ],
             capture_output=True,
             text=True,
@@ -869,9 +895,12 @@ class TestPhase79CLIDataQCOnly:
                 sys.executable,
                 "scripts/strategy_smoke_check.py",
                 "--check-data-only",
-                "--data-source", "kraken_cache",
-                "--market", "BTC/EUR",
-                "--timeframe", "1h",
+                "--data-source",
+                "kraken_cache",
+                "--market",
+                "BTC/EUR",
+                "--timeframe",
+                "1h",
             ],
             capture_output=True,
             text=True,
@@ -890,10 +919,14 @@ class TestPhase79CLIDataQCOnly:
             [
                 sys.executable,
                 "scripts/strategy_smoke_check.py",
-                "--strategies", "ma_crossover",
-                "--n-bars", "100",
-                "--min-bars", "50",
-                "--data-source", "synthetic",
+                "--strategies",
+                "ma_crossover",
+                "--n-bars",
+                "100",
+                "--min-bars",
+                "50",
+                "--data-source",
+                "synthetic",
             ],
             capture_output=True,
             text=True,
@@ -909,6 +942,7 @@ class TestPhase79CLIDataQCOnly:
 # ============================================================================
 # TEST 11: PHASE 79 - JSON/MD REPORTS WITH DATA HEALTH
 # ============================================================================
+
 
 class TestPhase79ReportsWithDataHealth:
     """Tests fuer Reports mit Data-Health-Feldern."""
@@ -937,13 +971,21 @@ class TestPhase79ReportsWithDataHealth:
             ),
         ]
 
-        summary = {"total": 2, "ok": 1, "fail": 1, "failed_strategies": ["rsi_reversion"], "all_passed": False, "total_duration_ms": 100}
+        summary = {
+            "total": 2,
+            "ok": 1,
+            "fail": 1,
+            "failed_strategies": ["rsi_reversion"],
+            "all_passed": False,
+            "total_duration_ms": 100,
+        }
 
         output_path = tmp_path / "test_report.json"
         save_json_report(results, summary, str(output_path))
 
         # JSON lesen und pruefen
         import json
+
         with open(output_path) as f:
             report = json.load(f)
 
@@ -970,7 +1012,14 @@ class TestPhase79ReportsWithDataHealth:
             ),
         ]
 
-        summary = {"total": 1, "ok": 1, "fail": 0, "failed_strategies": [], "all_passed": True, "total_duration_ms": 50}
+        summary = {
+            "total": 1,
+            "ok": 1,
+            "fail": 0,
+            "failed_strategies": [],
+            "all_passed": True,
+            "total_duration_ms": 50,
+        }
 
         output_path = tmp_path / "test_report.md"
         save_md_report(results, summary, str(output_path))

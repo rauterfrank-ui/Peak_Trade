@@ -33,7 +33,7 @@ Documentation and tooling hardening for the Error Taxonomy system introduced in 
   ```python
   # Raise with hint + context
   raise DataContractError("Invalid OHLCV", hint="Check columns", context={"cols": df.columns})
-  
+
   # Chain exceptions
   raise ConfigError("Load failed", hint="Check syntax", cause=original_error)
   ```
@@ -61,7 +61,7 @@ Documentation and tooling hardening for the Error Taxonomy system introduced in 
   - Migration strategy for 4 critical modules
   - Test coverage details
   - Integration approach
-  
+
 - **PR #193:** Documents follow-up linting fixes
   - Ruff compliance (E401, E722)
   - Import cleanup
@@ -85,7 +85,7 @@ Documentation and tooling hardening for the Error Taxonomy system introduced in 
   - ✅ New taxonomy usage (`from src.core.errors import ...`)
   - ⚠️ Legacy patterns (`ValueError`, `RuntimeError`, etc.)
   - 📊 File-level adoption metrics
-  
+
 - **Output Modes:**
   - **Summary:** High-level adoption percentage
   - **Detailed:** Per-file breakdown with line numbers
@@ -326,4 +326,3 @@ python scripts/audit/check_error_taxonomy_adoption.py --verbose
 ---
 
 *PR #195 – Error Taxonomy Hardening – Merged 2025-12-20*
-

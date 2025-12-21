@@ -50,6 +50,7 @@ Verwendung:
         --test-window 30d \\
         --use-dummy-data
 """
+
 from __future__ import annotations
 
 import argparse
@@ -65,6 +66,7 @@ sys.path.insert(0, str(project_root))
 # Da die Scripts im scripts/ Verzeichnis sind, müssen wir sie direkt importieren
 import importlib.util
 
+
 def _import_module_from_path(module_name: str, file_path: Path):
     """Importiert ein Modul aus einem Dateipfad."""
     spec = importlib.util.spec_from_file_location(module_name, file_path)
@@ -72,14 +74,29 @@ def _import_module_from_path(module_name: str, file_path: Path):
     spec.loader.exec_module(module)
     return module
 
+
 # Importiere die Module
-_sweep_module = _import_module_from_path("run_strategy_sweep", project_root / "scripts" / "run_strategy_sweep.py")
-_report_module = _import_module_from_path("generate_strategy_sweep_report", project_root / "scripts" / "generate_strategy_sweep_report.py")
-_promote_module = _import_module_from_path("promote_sweep_topn", project_root / "scripts" / "promote_sweep_topn.py")
-_walkforward_module = _import_module_from_path("run_walkforward_backtest", project_root / "scripts" / "run_walkforward_backtest.py")
-_montecarlo_module = _import_module_from_path("run_monte_carlo_robustness", project_root / "scripts" / "run_monte_carlo_robustness.py")
-_stress_module = _import_module_from_path("run_stress_tests", project_root / "scripts" / "run_stress_tests.py")
-_portfolio_module = _import_module_from_path("run_portfolio_robustness", project_root / "scripts" / "run_portfolio_robustness.py")
+_sweep_module = _import_module_from_path(
+    "run_strategy_sweep", project_root / "scripts" / "run_strategy_sweep.py"
+)
+_report_module = _import_module_from_path(
+    "generate_strategy_sweep_report", project_root / "scripts" / "generate_strategy_sweep_report.py"
+)
+_promote_module = _import_module_from_path(
+    "promote_sweep_topn", project_root / "scripts" / "promote_sweep_topn.py"
+)
+_walkforward_module = _import_module_from_path(
+    "run_walkforward_backtest", project_root / "scripts" / "run_walkforward_backtest.py"
+)
+_montecarlo_module = _import_module_from_path(
+    "run_monte_carlo_robustness", project_root / "scripts" / "run_monte_carlo_robustness.py"
+)
+_stress_module = _import_module_from_path(
+    "run_stress_tests", project_root / "scripts" / "run_stress_tests.py"
+)
+_portfolio_module = _import_module_from_path(
+    "run_portfolio_robustness", project_root / "scripts" / "run_portfolio_robustness.py"
+)
 
 # Extrahiere die Funktionen
 run_sweep_from_args = _sweep_module.run_from_args
@@ -106,7 +123,7 @@ def build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
-    
+
     subparsers = parser.add_subparsers(dest="command", required=True, help="Verfügbare Kommandos")
 
     # Subparser: sweep
@@ -171,11 +188,12 @@ def build_parser() -> argparse.ArgumentParser:
         "pipeline",
         help="End-to-End-Research-Pipeline v2 (Sweep → Report → Promotion → optional Walk-Forward/Monte-Carlo/Stress-Tests).",
     )
-    
+
     # Pipeline-Flags: Kombination aus allen anderen Parsern
     # Pflicht-Argumente
     pipeline_parser.add_argument(
-        "--sweep-name", "-s",
+        "--sweep-name",
+        "-s",
         type=str,
         required=True,
         help="Name des Sweeps (z.B. rsi_reversion_basic)",
@@ -186,10 +204,11 @@ def build_parser() -> argparse.ArgumentParser:
         default="config/config.toml",
         help="Pfad zur Config-Datei (default: config/config.toml)",
     )
-    
+
     # Report-Optionen
     pipeline_parser.add_argument(
-        "--format", "-f",
+        "--format",
+        "-f",
         type=str,
         choices=["md", "html", "both"],
         default="both",
@@ -200,15 +219,16 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Erzeugt Visualisierungen (Parameter vs. Metrik, Heatmaps)",
     )
-    
+
     # Promotion-Optionen
     pipeline_parser.add_argument(
-        "--top-n", "-n",
+        "--top-n",
+        "-n",
         type=int,
         default=5,
         help="Anzahl der Top-Konfigurationen für Promotion (default: 5)",
     )
-    
+
     # Walk-Forward-Optionen
     pipeline_parser.add_argument(
         "--run-walkforward",
@@ -242,7 +262,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=1000,
         help="Anzahl Bars für Dummy-Daten (default: 1000)",
     )
-    
+
     # Monte-Carlo-Optionen
     pipeline_parser.add_argument(
         "--run-montecarlo",
@@ -284,7 +304,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=500,
         help="Anzahl Bars für Monte-Carlo-Dummy-Daten (default: 500)",
     )
-    
+
     # Stress-Tests-Optionen
     pipeline_parser.add_argument(
         "--run-stress-tests",
@@ -334,10 +354,11 @@ def build_parser() -> argparse.ArgumentParser:
         default=500,
         help="Anzahl Bars für Stress-Test-Dummy-Daten (default: 500)",
     )
-    
+
     # Weitere Optionen
     pipeline_parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -349,7 +370,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     profile_parser.add_argument(
-        "--strategy-id", "-s",
+        "--strategy-id",
+        "-s",
         type=str,
         required=True,
         help="Strategy-ID aus der Registry (z.B. rsi_reversion, ma_crossover, breakout)",
@@ -367,7 +389,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Pfad zur Tiering-Config (default: config/strategy_tiering.toml)",
     )
     profile_parser.add_argument(
-        "--output-format", "-f",
+        "--output-format",
+        "-f",
         type=str,
         choices=["json", "md", "both"],
         default="both",
@@ -449,7 +472,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Random Seed für Reproduzierbarkeit (default: 42)",
     )
     profile_parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -466,7 +490,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     experiment_parser.add_argument(
-        "--preset", "-p",
+        "--preset",
+        "-p",
         type=str,
         default=None,
         help="Preset-ID aus config/r_and_d_presets.toml (z.B. armstrong_ecm_btc_longterm_v1)",
@@ -543,7 +568,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Listet alle verfügbaren R&D-Presets auf",
     )
     experiment_parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -561,13 +587,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     combi_parser.add_argument(
-        "--symbol", "-s",
+        "--symbol",
+        "-s",
         type=str,
         default="BTC/EUR",
         help="Trading-Symbol (default: BTC/EUR)",
     )
     combi_parser.add_argument(
-        "--timeframe", "-t",
+        "--timeframe",
+        "-t",
         type=str,
         default="1h",
         help="Timeframe (default: 1h)",
@@ -633,7 +661,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Verwende Dummy-Daten statt echte Marktdaten",
     )
     combi_parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -767,7 +796,7 @@ def _build_stress_args_from_pipeline_args(args: argparse.Namespace) -> argparse.
 
 def run_pipeline(args: argparse.Namespace) -> int:
     """Führt eine End-to-End-Research-Pipeline aus (v2).
-    
+
     Pipeline-Steps:
     1. Sweep
     2. Report + Plots
@@ -775,16 +804,17 @@ def run_pipeline(args: argparse.Namespace) -> int:
     4. Optional: Walk-Forward
     5. Optional: Monte-Carlo
     6. Optional: Stress-Tests
-    
+
     Args:
         args: Parsed command-line arguments für Pipeline
-        
+
     Returns:
         Exit code (0 = success, 1 = error)
     """
     import logging
+
     logger = logging.getLogger(__name__)
-    
+
     # Bestimme Anzahl Steps für Logging
     num_steps = 3  # Sweep, Report, Promote
     if getattr(args, "run_walkforward", False):
@@ -793,91 +823,93 @@ def run_pipeline(args: argparse.Namespace) -> int:
         num_steps += 1
     if getattr(args, "run_stress_tests", False):
         num_steps += 1
-    
+
     step_counter = 0
-    
+
     # 1. Sweep
     step_counter += 1
     logger.info("=" * 70)
     logger.info(f"Step {step_counter}/{num_steps}: Strategy-Sweep ausführen")
     logger.info("=" * 70)
-    
+
     sweep_args = _build_sweep_args_from_pipeline_args(args)
     sweep_exit = run_sweep_from_args(sweep_args)
     if sweep_exit != 0:
         logger.error("[pipeline] Sweep fehlgeschlagen, Pipeline abgebrochen")
         return sweep_exit
-    
+
     # 2. Report
     step_counter += 1
     logger.info("=" * 70)
     logger.info(f"Step {step_counter}/{num_steps}: Sweep-Report generieren")
     logger.info("=" * 70)
-    
+
     report_args = _build_report_args_from_pipeline_args(args)
     report_exit = run_report_from_args(report_args)
     if report_exit != 0:
         logger.error("[pipeline] Report-Generierung fehlgeschlagen, Pipeline abgebrochen")
         return report_exit
-    
+
     # 3. Promotion
     step_counter += 1
     logger.info("=" * 70)
     logger.info(f"Step {step_counter}/{num_steps}: Top-{args.top_n} Promotion")
     logger.info("=" * 70)
-    
+
     promote_args = _build_promote_args_from_pipeline_args(args)
     promote_exit = run_promote_from_args(promote_args)
     if promote_exit != 0:
         logger.error("[pipeline] Promotion fehlgeschlagen, Pipeline abgebrochen")
         return promote_exit
-    
+
     # 4. Walk-Forward (optional)
     if getattr(args, "run_walkforward", False):
         step_counter += 1
         logger.info("=" * 70)
         logger.info(f"Step {step_counter}/{num_steps}: Walk-Forward-Testing")
         logger.info("=" * 70)
-        
+
         train_window = getattr(args, "walkforward_train_window", None)
         test_window = getattr(args, "walkforward_test_window", None)
-        
+
         if not train_window or not test_window:
-            logger.error("[pipeline] --walkforward-train-window und --walkforward-test-window müssen für Walk-Forward gesetzt sein")
+            logger.error(
+                "[pipeline] --walkforward-train-window und --walkforward-test-window müssen für Walk-Forward gesetzt sein"
+            )
             return 1
-        
+
         walkforward_args = _build_walkforward_args_from_pipeline_args(args)
         wf_exit = run_walkforward_from_args(walkforward_args)
         if wf_exit != 0:
             logger.error("[pipeline] Walk-Forward-Testing fehlgeschlagen, Pipeline abgebrochen")
             return wf_exit
-    
+
     # 5. Monte-Carlo (optional)
     if getattr(args, "run_montecarlo", False):
         step_counter += 1
         logger.info("=" * 70)
         logger.info(f"Step {step_counter}/{num_steps}: Monte-Carlo-Robustness")
         logger.info("=" * 70)
-        
+
         montecarlo_args = _build_montecarlo_args_from_pipeline_args(args)
         mc_exit = run_montecarlo_from_args(montecarlo_args)
         if mc_exit != 0:
             logger.error("[pipeline] Monte-Carlo-Robustness fehlgeschlagen, Pipeline abgebrochen")
             return mc_exit
-    
+
     # 6. Stress-Tests (optional)
     if getattr(args, "run_stress_tests", False):
         step_counter += 1
         logger.info("=" * 70)
         logger.info(f"Step {step_counter}/{num_steps}: Stress-Tests")
         logger.info("=" * 70)
-        
+
         stress_args = _build_stress_args_from_pipeline_args(args)
         stress_exit = run_stress_from_args(stress_args)
         if stress_exit != 0:
             logger.error("[pipeline] Stress-Tests fehlgeschlagen, Pipeline abgebrochen")
             return stress_exit
-    
+
     logger.info("=" * 70)
     logger.info("✅ Pipeline erfolgreich abgeschlossen")
     logger.info("=" * 70)
@@ -1065,7 +1097,9 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
                 sharpe_p95=sharpe_q.get("p95"),
             )
 
-            logger.info(f"  Return p5/p50/p95: {total_return_q.get('p5', 0):.2%} / {total_return_q.get('p50', 0):.2%} / {total_return_q.get('p95', 0):.2%}")
+            logger.info(
+                f"  Return p5/p50/p95: {total_return_q.get('p5', 0):.2%} / {total_return_q.get('p50', 0):.2%} / {total_return_q.get('p95', 0):.2%}"
+            )
         except Exception as e:
             logger.warning(f"Monte-Carlo-Analyse fehlgeschlagen: {e}")
     else:
@@ -1098,8 +1132,7 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
 
             # Aggregiere Stress-Ergebnisse
             stress_returns = [
-                r.stressed_metrics.get("total_return", 0.0)
-                for r in suite.scenario_results
+                r.stressed_metrics.get("total_return", 0.0) for r in suite.scenario_results
             ]
 
             if stress_returns:
@@ -1109,7 +1142,9 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
                     avg_return=sum(stress_returns) / len(stress_returns),
                     num_scenarios=len(stress_returns),
                 )
-                logger.info(f"  Min/Avg/Max Return: {min(stress_returns):.2%} / {sum(stress_returns)/len(stress_returns):.2%} / {max(stress_returns):.2%}")
+                logger.info(
+                    f"  Min/Avg/Max Return: {min(stress_returns):.2%} / {sum(stress_returns) / len(stress_returns):.2%} / {max(stress_returns):.2%}"
+                )
         except Exception as e:
             logger.warning(f"Stress-Tests fehlgeschlagen: {e}")
     else:
@@ -1127,7 +1162,9 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
             # Definiere Regimes basierend auf Volatilität
             regimes = pd.Series(index=returns.index, dtype=str)
             regimes[rolling_vol <= vol_median * 0.8] = "low_vol"
-            regimes[(rolling_vol > vol_median * 0.8) & (rolling_vol <= vol_median * 1.2)] = "neutral"
+            regimes[(rolling_vol > vol_median * 0.8) & (rolling_vol <= vol_median * 1.2)] = (
+                "neutral"
+            )
             regimes[rolling_vol > vol_median * 1.2] = "high_vol"
 
             for regime_name in ["low_vol", "neutral", "high_vol"]:
@@ -1272,7 +1309,9 @@ def run_experiment(args: argparse.Namespace) -> int:
 
     # Safety-Check: R&D-Presets dürfen nicht live gehen
     if preset.allow_live:
-        logger.error("SAFETY: Dieses Preset hat allow_live=true. R&D-Presets dürfen nicht live gehen!")
+        logger.error(
+            "SAFETY: Dieses Preset hat allow_live=true. R&D-Presets dürfen nicht live gehen!"
+        )
         return 1
 
     # Parameter zusammenstellen (CLI überschreibt Preset-Defaults)
@@ -1319,16 +1358,16 @@ def run_experiment(args: argparse.Namespace) -> int:
         # Dummy-Daten generieren
         n_bars = args.dummy_bars
         logger.info(f"  Generiere {n_bars} Dummy-Bars")
-        
+
         end = datetime.now()
         start = end - timedelta(hours=n_bars)
-        
+
         # Timeframe zu Frequenz mappen
         freq_map = {"1h": "1h", "4h": "4h", "1d": "1D", "1w": "1W"}
         freq = freq_map.get(timeframe, "1h")
-        
+
         index = pd.date_range(start=start, periods=n_bars, freq=freq, tz="UTC")
-        
+
         # Random Walk für Close
         base_price = 50000.0
         volatility = 0.015
@@ -1336,7 +1375,7 @@ def run_experiment(args: argparse.Namespace) -> int:
         trend = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 0.001
         returns = returns + trend
         close_prices = base_price * np.exp(np.cumsum(returns))
-        
+
         df = pd.DataFrame(index=index)
         df["close"] = close_prices
         df["open"] = df["close"].shift(1).fillna(base_price)
@@ -1346,12 +1385,12 @@ def run_experiment(args: argparse.Namespace) -> int:
         df["low"] = np.minimum(df["open"], df["close"]) * (1 - low_dip)
         df["volume"] = np.random.uniform(100, 1000, n_bars)
         df = df[["open", "high", "low", "close", "volume"]]
-        
+
     else:
         # Versuche echte Daten zu laden
         try:
             from src.data.kraken import fetch_ohlcv_df
-            
+
             logger.info(f"  Lade Marktdaten für {symbol} ({timeframe})")
             df = fetch_ohlcv_df(
                 symbol=symbol,
@@ -1359,12 +1398,12 @@ def run_experiment(args: argparse.Namespace) -> int:
                 limit=2000,
                 use_cache=True,
             )
-            
+
             if df.empty:
                 logger.warning("  Keine Marktdaten gefunden, verwende Dummy-Daten")
                 args.use_dummy_data = True
                 return run_experiment(args)
-                
+
             # Datums-Filter anwenden
             if from_date:
                 start_dt = pd.to_datetime(from_date).tz_localize("UTC")
@@ -1372,7 +1411,7 @@ def run_experiment(args: argparse.Namespace) -> int:
             if to_date:
                 end_dt = pd.to_datetime(to_date).tz_localize("UTC")
                 df = df[df.index <= end_dt]
-                
+
         except Exception as e:
             logger.warning(f"  Konnte Marktdaten nicht laden: {e}")
             logger.info("  Fallback zu Dummy-Daten")
@@ -1448,25 +1487,30 @@ def run_experiment(args: argparse.Namespace) -> int:
     except NotImplementedError as e:
         logger.warning(f"  Strategy wirft NotImplementedError (R&D-Prototyp): {e}")
         logger.info("  Erstelle Dummy-Ergebnis für R&D-Tracking...")
-        
+
         # Dummy-Result für R&D-Strategien die noch nicht implementiert sind
-        result = type("DummyResult", (), {
-            "stats": {
-                "total_return": 0.0,
-                "max_drawdown": 0.0,
-                "sharpe": 0.0,
-                "total_trades": 0,
-                "win_rate": 0.0,
-                "profit_factor": 0.0,
+        result = type(
+            "DummyResult",
+            (),
+            {
+                "stats": {
+                    "total_return": 0.0,
+                    "max_drawdown": 0.0,
+                    "sharpe": 0.0,
+                    "total_trades": 0,
+                    "win_rate": 0.0,
+                    "profit_factor": 0.0,
+                },
+                "equity_curve": pd.Series([10000.0] * len(df), index=df.index),
+                "strategy_name": preset.strategy,
             },
-            "equity_curve": pd.Series([10000.0] * len(df), index=df.index),
-            "strategy_name": preset.strategy,
-        })()
+        )()
 
     except Exception as e:
         logger.error(f"Backtest-Fehler: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -1486,7 +1530,7 @@ def run_experiment(args: argparse.Namespace) -> int:
     # Ergebnisse speichern
     output_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
+
     result_data = {
         "experiment": {
             "preset_id": preset_id,
@@ -1522,7 +1566,7 @@ def run_experiment(args: argparse.Namespace) -> int:
     result_file = output_dir / f"{tag}_{timestamp}.json"
     with open(result_file, "w") as f:
         json.dump(result_data, f, indent=2, default=str)
-    
+
     logger.info(f"\n  Ergebnis gespeichert: {result_file}")
 
     logger.info("\n" + "=" * 70)
@@ -1611,6 +1655,7 @@ def run_armstrong_elkaroui_combi(args: argparse.Namespace) -> int:
     data = None
     if getattr(args, "use_dummy_data", False):
         from src.experiments.armstrong_elkaroui_combi_experiment import _generate_dummy_data
+
         logger.info("  Verwende Dummy-Daten")
         data = _generate_dummy_data(config)
 
@@ -1653,12 +1698,12 @@ def run_armstrong_elkaroui_combi(args: argparse.Namespace) -> int:
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """Haupt-Entry-Point."""
     parser = build_parser()
-    
+
     if argv is None:
         args = parser.parse_args()
     else:
         args = parser.parse_args(list(argv))
-    
+
     if args.command == "sweep":
         return run_sweep_from_args(args)
     elif args.command == "report":
@@ -1688,4 +1733,3 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

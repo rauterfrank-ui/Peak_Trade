@@ -61,9 +61,7 @@ class EqualWeightPortfolioStrategy(BasePortfolioStrategy):
         super().__init__(config)
         self.name = "EqualWeightPortfolioStrategy"
 
-    def _compute_raw_weights(
-        self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    def _compute_raw_weights(self, context: PortfolioContext) -> Dict[str, float]:
         """
         Berechnet gleichverteilte Gewichte.
 
@@ -77,9 +75,7 @@ class EqualWeightPortfolioStrategy(BasePortfolioStrategy):
         universe = self.get_universe(context)
 
         if not universe:
-            logger.warning(
-                f"{self.name}: Leeres Universe, keine Gewichte berechnet"
-            )
+            logger.warning(f"{self.name}: Leeres Universe, keine Gewichte berechnet")
             return {}
 
         n = len(universe)
@@ -87,8 +83,6 @@ class EqualWeightPortfolioStrategy(BasePortfolioStrategy):
 
         weights = {symbol: weight for symbol in universe}
 
-        logger.debug(
-            f"{self.name}: Equal weights für {n} Symbole: {weight:.4f} pro Symbol"
-        )
+        logger.debug(f"{self.name}: Equal weights für {n} Symbole: {weight:.4f} pro Symbol")
 
         return weights

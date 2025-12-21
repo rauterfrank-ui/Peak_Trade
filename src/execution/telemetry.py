@@ -4,6 +4,7 @@ Execution Telemetry - Event Emitters & Loggers.
 
 Phase 16B: Pluggable telemetry backends for execution events.
 """
+
 from __future__ import annotations
 
 import json

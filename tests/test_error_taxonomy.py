@@ -1,6 +1,7 @@
 """
 Tests for Error Taxonomy (Wave A - Stability Plan)
 """
+
 import pytest
 import pandas as pd
 
@@ -41,9 +42,7 @@ def test_peak_trade_error_with_hint():
 
 def test_peak_trade_error_with_context():
     """PeakTradeError includes context in message."""
-    error = PeakTradeError(
-        "Test error", context={"key": "value", "count": 42}
-    )
+    error = PeakTradeError("Test error", context={"key": "value", "count": 42})
     msg = str(error)
     assert "Test error" in msg
     assert "Context:" in msg
@@ -194,7 +193,7 @@ def test_error_with_cause():
     """PeakTradeError can include a cause exception."""
     original = ValueError("Original error")
     error = PeakTradeError("Wrapped error", cause=original)
-    
+
     assert error.cause is original
     assert "Caused by: ValueError: Original error" in str(error)
     assert error.__cause__ is original
@@ -207,9 +206,9 @@ def test_chain_error_function():
         original,
         "Failed to load configuration",
         hint="Check file path",
-        context={"file": "config.toml"}
+        context={"file": "config.toml"},
     )
-    
+
     assert isinstance(error, PeakTradeError)
     assert error.message == "Failed to load configuration"
     assert error.hint == "Check file path"
@@ -234,7 +233,7 @@ def test_error_chaining_with_specific_error_types():
     """Error chaining works with specific error types."""
     original = KeyError("missing_key")
     error = ConfigError("Invalid configuration", cause=original)
-    
+
     assert isinstance(error, ConfigError)
     assert isinstance(error, PeakTradeError)
     assert error.cause is original
@@ -249,9 +248,9 @@ def test_add_backtest_context():
     """add_backtest_context enriches error with backtest metadata."""
     error = BacktestError("Something went wrong")
     timestamp = pd.Timestamp("2024-01-15 10:30:00", tz="UTC")
-    
+
     result = add_backtest_context(error, run_id="bt_12345", timestamp=timestamp)
-    
+
     assert result is error  # Returns same instance
     assert "run_id" in error.context
     assert error.context["run_id"] == "bt_12345"
@@ -263,9 +262,9 @@ def test_add_backtest_context_preserves_existing_context():
     """add_backtest_context preserves existing context entries."""
     error = BacktestError("Error", context={"symbol": "BTC/USD"})
     timestamp = pd.Timestamp("2024-01-15", tz="UTC")
-    
+
     add_backtest_context(error, run_id="bt_001", timestamp=timestamp)
-    
+
     assert error.context["symbol"] == "BTC/USD"
     assert error.context["run_id"] == "bt_001"
     assert "timestamp" in error.context
@@ -274,13 +273,11 @@ def test_add_backtest_context_preserves_existing_context():
 def test_error_context_in_formatted_message():
     """Error context appears in formatted error message."""
     error = BacktestError(
-        "Backtest failed",
-        hint="Check your data",
-        context={"symbol": "BTC/USD", "timeframe": "1h"}
+        "Backtest failed", hint="Check your data", context={"symbol": "BTC/USD", "timeframe": "1h"}
     )
     timestamp = pd.Timestamp("2024-01-15", tz="UTC")
     add_backtest_context(error, run_id="bt_001", timestamp=timestamp)
-    
+
     msg = str(error)
     assert "BacktestError: Backtest failed" in msg
     assert "Hint: Check your data" in msg
@@ -299,12 +296,9 @@ def test_error_with_all_fields():
     """Error with message, hint, context, and cause formats correctly."""
     original = RuntimeError("Low-level error")
     error = PeakTradeError(
-        "High-level error",
-        hint="Try this fix",
-        context={"key": "value"},
-        cause=original
+        "High-level error", hint="Try this fix", context={"key": "value"}, cause=original
     )
-    
+
     msg = str(error)
     assert "PeakTradeError: High-level error" in msg
     assert "Hint: Try this fix" in msg
@@ -317,7 +311,7 @@ def test_error_without_optional_fields():
     """Error without optional fields formats correctly."""
     error = PeakTradeError("Simple error")
     msg = str(error)
-    
+
     assert "PeakTradeError: Simple error" in msg
     assert "Hint:" not in msg
     assert "Context:" not in msg
@@ -336,10 +330,10 @@ def test_realistic_config_error_scenario():
         context={
             "key": "invalid_strategy",
             "config_file": "/path/to/config.toml",
-            "available_keys": ["momentum", "mean_reversion", "breakout"]
-        }
+            "available_keys": ["momentum", "mean_reversion", "breakout"],
+        },
     )
-    
+
     msg = str(error)
     assert "ConfigError:" in msg
     assert "Unknown config key" in msg
@@ -352,13 +346,9 @@ def test_realistic_provider_error_scenario():
     error = ProviderError(
         "API request failed: Rate limit exceeded",
         hint="Wait 60 seconds before retrying or check API credentials in .env",
-        context={
-            "endpoint": "/api/v3/ohlcv",
-            "status_code": 429,
-            "retry_after": 60
-        }
+        context={"endpoint": "/api/v3/ohlcv", "status_code": 429, "retry_after": 60},
     )
-    
+
     msg = str(error)
     assert "ProviderError:" in msg
     assert "Rate limit exceeded" in msg
@@ -375,9 +365,9 @@ def test_realistic_strategy_error_with_chaining():
             e,
             "Failed to initialize MA Crossover strategy",
             hint="Check strategy parameters in config",
-            context={"lookback_period": -10, "valid_range": ">0"}
+            context={"lookback_period": -10, "valid_range": ">0"},
         )
-        
+
         assert isinstance(error, PeakTradeError)
         assert "Failed to initialize" in str(error)
         assert "Caused by: ValueError" in str(error)
@@ -392,10 +382,10 @@ def test_realistic_risk_error_scenario():
             "requested_size": 15000,
             "daily_limit": 10000,
             "risk_pct": 1.0,
-            "account_balance": 100000
-        }
+            "account_balance": 100000,
+        },
     )
-    
+
     msg = str(error)
     assert "RiskError:" in msg
     assert "exceeds daily risk limit" in msg

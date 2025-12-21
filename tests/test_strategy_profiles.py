@@ -9,6 +9,7 @@ Testet:
 - Tiering-Config Parsing
 - StrategyProfileBuilder
 """
+
 from __future__ import annotations
 
 import json

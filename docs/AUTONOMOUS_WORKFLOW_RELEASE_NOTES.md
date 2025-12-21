@@ -108,7 +108,7 @@ python scripts/run_scheduler.py \
 2. **Eigene Decision Criteria hinzufügen** (optional):
    ```python
    from src.autonomous import DecisionEngine, DecisionCriteria
-   
+
    engine = DecisionEngine()
    engine.add_criteria(
        workflow_type="custom_workflow",
@@ -125,7 +125,7 @@ python scripts/run_scheduler.py \
 3. **Monitoring integrieren** (optional):
    ```python
    from src.autonomous import MarketMonitor, SignalMonitor, PerformanceMonitor
-   
+
    market_monitor = MarketMonitor()
    result = market_monitor.check_conditions("BTC/EUR")
    ```

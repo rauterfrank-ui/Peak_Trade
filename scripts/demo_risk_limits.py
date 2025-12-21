@@ -19,9 +19,9 @@ from src.risk import RiskLimits, RiskLimitsConfig
 
 def demo_drawdown_check():
     """Demo: Drawdown-Check."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 1: Drawdown Check")
-    print("="*70)
+    print("=" * 70)
 
     limits = RiskLimits()
 
@@ -34,6 +34,7 @@ def demo_drawdown_check():
 
     # Berechne tatsächlichen Drawdown
     import numpy as np
+
     equity_arr = np.array(equity_curve)
     running_max = np.maximum.accumulate(equity_arr)
     drawdown_pct = (equity_arr - running_max) / running_max * 100.0
@@ -64,9 +65,9 @@ def demo_drawdown_check():
 
 def demo_daily_loss_check():
     """Demo: Daily Loss Check."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 2: Daily Loss Check")
-    print("="*70)
+    print("=" * 70)
 
     limits = RiskLimits()
 
@@ -78,6 +79,7 @@ def demo_daily_loss_check():
     result = limits.check_daily_loss(returns, max_loss_pct)
 
     import numpy as np
+
     returns_arr = np.array(returns)
     losses = returns_arr[returns_arr < 0]
     total_loss = abs(np.sum(losses))
@@ -106,9 +108,9 @@ def demo_daily_loss_check():
 
 def demo_position_size_check():
     """Demo: Position Size Check."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 3: Position Size Check")
-    print("="*70)
+    print("=" * 70)
 
     limits = RiskLimits()
 
@@ -147,14 +149,12 @@ def demo_position_size_check():
 
 def demo_check_all():
     """Demo: Kombinierter Check aller Limits."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 4: check_all() - Kombinierter Check")
-    print("="*70)
+    print("=" * 70)
 
     config = RiskLimitsConfig(
-        max_drawdown_pct=20.0,
-        max_position_pct=25.0,
-        daily_loss_limit_pct=5.0
+        max_drawdown_pct=20.0, max_position_pct=25.0, daily_loss_limit_pct=5.0
     )
     limits = RiskLimits(config)
 
@@ -164,7 +164,7 @@ def demo_check_all():
         equity_curve=[10000, 10200, 10500, 10300],
         returns_today_pct=[0.5, -1.0, 0.3],
         new_position_nominal=2000,
-        capital=10300
+        capital=10300,
     )
 
     print(f"  Equity-Curve: [10000, 10200, 10500, 10300]")
@@ -179,7 +179,7 @@ def demo_check_all():
         equity_curve=[10000, 10200, 10500, 9800],
         returns_today_pct=[-2.5, 0.3, -3.5, 0.2],
         new_position_nominal=2000,
-        capital=9800
+        capital=9800,
     )
 
     print(f"  Equity-Curve: [10000, 10200, 10500, 9800]")
@@ -194,7 +194,7 @@ def demo_check_all():
         equity_curve=[10000, 10200, 10500, 10300],
         returns_today_pct=[0.5, -1.0, 0.3],
         new_position_nominal=3000,  # 29% von 10300
-        capital=10300
+        capital=10300,
     )
 
     print(f"  Equity-Curve: [10000, 10200, 10500, 10300]")
@@ -209,7 +209,7 @@ def demo_check_all():
         equity_curve=[10000, 10500, 8000, 7800],
         returns_today_pct=[0.5, -1.0],
         new_position_nominal=1500,
-        capital=7800
+        capital=7800,
     )
 
     print(f"  Equity-Curve: [10000, 10500, 8000, 7800] (Drawdown: ~26%)")
@@ -221,16 +221,16 @@ def demo_check_all():
 
 def demo_custom_config():
     """Demo: Eigene Config."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 5: Custom Config")
-    print("="*70)
+    print("=" * 70)
 
     # Aggressive Config
     print("\n🔴 Aggressive Config:")
     aggressive_config = RiskLimitsConfig(
         max_drawdown_pct=30.0,  # 30% DD erlaubt
         max_position_pct=50.0,  # 50% Position erlaubt
-        daily_loss_limit_pct=10.0  # 10% Daily Loss erlaubt
+        daily_loss_limit_pct=10.0,  # 10% Daily Loss erlaubt
     )
     print(f"  Max Drawdown: {aggressive_config.max_drawdown_pct}%")
     print(f"  Max Position: {aggressive_config.max_position_pct}%")
@@ -240,8 +240,8 @@ def demo_custom_config():
     print("\n🟢 Conservative Config:")
     conservative_config = RiskLimitsConfig(
         max_drawdown_pct=10.0,  # 10% DD erlaubt
-        max_position_pct=5.0,   # 5% Position erlaubt
-        daily_loss_limit_pct=2.0  # 2% Daily Loss erlaubt
+        max_position_pct=5.0,  # 5% Position erlaubt
+        daily_loss_limit_pct=2.0,  # 2% Daily Loss erlaubt
     )
     print(f"  Max Drawdown: {conservative_config.max_drawdown_pct}%")
     print(f"  Max Position: {conservative_config.max_position_pct}%")
@@ -259,14 +259,14 @@ def demo_custom_config():
         equity_curve=equity_curve,
         returns_today_pct=returns_today,
         new_position_nominal=2000,
-        capital=10000
+        capital=10000,
     )
 
     result_cons = conservative.check_all(
         equity_curve=equity_curve,
         returns_today_pct=returns_today,
         new_position_nominal=2000,
-        capital=10000
+        capital=10000,
     )
 
     print(f"  Aggressive: {'✅ ALLOWED' if result_agg else '❌ BLOCKED'}")
@@ -276,9 +276,9 @@ def demo_custom_config():
 
 def main():
     """Hauptfunktion."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("PEAK_TRADE RISK LIMITS DEMO")
-    print("="*70)
+    print("=" * 70)
     print("\nDemonstriert die neue RiskLimits Klasse:")
     print("  - check_drawdown()")
     print("  - check_daily_loss()")
@@ -292,9 +292,9 @@ def main():
         demo_check_all()
         demo_custom_config()
 
-        print("\n" + "="*70)
+        print("\n" + "=" * 70)
         print("✅ ALLE DEMOS ERFOLGREICH ABGESCHLOSSEN!")
-        print("="*70)
+        print("=" * 70)
 
         print("\n📝 Verwendung im Code:")
         print("""
@@ -327,6 +327,7 @@ else:
     except Exception as e:
         print(f"\n\n❌ Fehler: {e}")
         import traceback
+
         traceback.print_exc()
 
 

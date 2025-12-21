@@ -37,20 +37,20 @@ def format_text_output(metrics: Dict[str, Any], session_dir: Path) -> str:
     lines.append("=== Aggregate Metrics ===")
     lines.append(f"Total Notional: {metrics['total_notional']:.2f}")
     lines.append(f"Total Quantity: {metrics['total_qty']:.4f}")
-    vwap = metrics['vwap_overall']
+    vwap = metrics["vwap_overall"]
     lines.append(f"VWAP (Overall): {vwap:.2f}" if vwap else "VWAP (Overall): N/A")
     lines.append("")
 
     # VWAP per symbol
-    if metrics.get('vwap_per_symbol'):
+    if metrics.get("vwap_per_symbol"):
         lines.append("=== VWAP per Symbol ===")
-        for symbol, vwap_val in sorted(metrics['vwap_per_symbol'].items()):
+        for symbol, vwap_val in sorted(metrics["vwap_per_symbol"].items()):
             lines.append(f"  {symbol}: {vwap_val:.2f}" if vwap_val else f"  {symbol}: N/A")
         lines.append("")
 
     lines.append("=== Side Breakdown ===")
     for side in ["buy", "sell"]:
-        stats = metrics['side_breakdown'][side]
+        stats = metrics["side_breakdown"][side]
         lines.append(f"{side.upper()}:")
         lines.append(f"  Count: {stats['count']}")
         lines.append(f"  Quantity: {stats['qty']:.4f}")
@@ -60,9 +60,9 @@ def format_text_output(metrics: Dict[str, Any], session_dir: Path) -> str:
     lines.append("=== Realized PnL (FIFO) ===")
     lines.append(f"Total Realized PnL: {metrics['realized_pnl_total']:.2f}")
 
-    if metrics['realized_pnl_per_symbol']:
+    if metrics["realized_pnl_per_symbol"]:
         lines.append("Per Symbol:")
-        for symbol, pnl in sorted(metrics['realized_pnl_per_symbol'].items()):
+        for symbol, pnl in sorted(metrics["realized_pnl_per_symbol"].items()):
             lines.append(f"  {symbol}: {pnl:.2f}")
 
     return "\n".join(lines)
@@ -77,30 +77,30 @@ def main() -> None:
         "--session-dir",
         type=Path,
         required=True,
-        help="Path to session directory containing fills CSV"
+        help="Path to session directory containing fills CSV",
     )
     parser.add_argument(
         "--fills-csv",
         type=str,
         default="fills.csv",
-        help="Name of fills CSV file (default: fills.csv)"
+        help="Name of fills CSV file (default: fills.csv)",
     )
     parser.add_argument(
         "--format",
         type=str,
         choices=["text", "json"],
         default="text",
-        help="Output format (default: text)"
+        help="Output format (default: text)",
     )
     parser.add_argument(
         "--write-report",
         action="store_true",
-        help="Write JSON report to session-dir/live_eval_report.json"
+        help="Write JSON report to session-dir/live_eval_report.json",
     )
     parser.add_argument(
         "--strict",
         action="store_true",
-        help="Strict mode: fail on parsing/validation errors (default: best-effort)"
+        help="Strict mode: fail on parsing/validation errors (default: best-effort)",
     )
 
     args = parser.parse_args()

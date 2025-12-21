@@ -27,7 +27,7 @@ Die bestehende Breakout-Strategie wurde um folgende Features erweitert:
 - **`lookback_high`** (int, optional): Separates Lookback-Fenster für Long-Breakout-Level
 - **`lookback_low`** (int, optional): Separates Lookback-Fenster für Short-Breakout-Level
   - Falls nicht gesetzt, wird `lookback_breakout` verwendet (rückwärtskompatibel)
-  
+
 - **`atr_lookback`** (int, default: 14): ATR-Fenster für Filter-Berechnung
 - **`atr_multiplier`** (float, optional): Mindest-ATR-Level für validen Breakout
   - Breakout nur valid, wenn: `ATR >= atr_multiplier * ATR-Baseline`
@@ -292,11 +292,3 @@ Diese Phase erweitert die Strategy-Library um zwei mächtige Bausteine:
 Beide Strategien sind vollständig kompatibel mit der bestehenden Backtest-Engine und Research-Pipeline. Sie können in Sweeps, Backtests und Reports verwendet werden.
 
 **Wichtig:** Diese Erweiterungen sind **Research-/Backtest-/Shadow-Only**. Keine Änderungen am Live-/Testnet-/Execution-Code.
-
-
-
-
-
-
-
-

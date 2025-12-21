@@ -11,6 +11,7 @@ Unterstuetzte Quellen:
 - LiveOrderRequest (aus src/live/orders.py)
 - CSV-Zeilen (aus Orders-CSV, erzeugt von preview_live_orders.py)
 """
+
 from __future__ import annotations
 
 import json
@@ -201,6 +202,7 @@ def from_orders_csv_row(row: Dict[str, Any]) -> OrderRequest:
 
     # NaN-Check fuer pandas
     import math
+
     if quantity is not None:
         try:
             if math.isnan(float(quantity)):

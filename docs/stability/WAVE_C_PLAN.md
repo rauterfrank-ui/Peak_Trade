@@ -170,7 +170,7 @@ Wave C features are available now:
 1. **Wrap external API calls with resilience patterns:**
    ```python
    from src.core.resilience import circuit_breaker, retry_with_backoff
-   
+
    @circuit_breaker(failure_threshold=3, recovery_timeout=60)
    @retry_with_backoff(max_attempts=3, base_delay=1.0)
    def fetch_market_data():
@@ -181,10 +181,10 @@ Wave C features are available now:
 2. **Register health checks for monitoring:**
    ```python
    from src.core.resilience import health_check
-   
+
    health_check.register("exchange_api", lambda: check_exchange_health())
    health_check.register("cache", lambda: check_cache_health())
-   
+
    # Check overall system health
    if not health_check.is_system_healthy():
        logger.error("System health check failed")
@@ -200,7 +200,7 @@ Wave C features are available now:
 2. **Test resilience behavior:**
    ```python
    from src.core.resilience import CircuitBreaker
-   
+
    breaker = CircuitBreaker(failure_threshold=3)
    # Test circuit opens after failures
    # Test recovery in HALF_OPEN state

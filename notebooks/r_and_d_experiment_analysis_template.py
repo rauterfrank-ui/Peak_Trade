@@ -43,7 +43,9 @@ sys.path.insert(0, str(PROJECT_ROOT))
 DEFAULT_EXPERIMENTS_DIR = PROJECT_ROOT / "reports" / "r_and_d_experiments"
 
 # Alternative: Überschreiben via Umgebungsvariable
-EXPERIMENTS_DIR = Path(os.environ.get("PEAK_TRADE_RND_EXPERIMENTS_DIR", str(DEFAULT_EXPERIMENTS_DIR)))
+EXPERIMENTS_DIR = Path(
+    os.environ.get("PEAK_TRADE_RND_EXPERIMENTS_DIR", str(DEFAULT_EXPERIMENTS_DIR))
+)
 
 # =============================================================================
 # IMPORTS (Data Science Stack)
@@ -51,6 +53,7 @@ EXPERIMENTS_DIR = Path(os.environ.get("PEAK_TRADE_RND_EXPERIMENTS_DIR", str(DEFA
 
 try:
     import pandas as pd
+
     PANDAS_AVAILABLE = True
 except ImportError:
     PANDAS_AVAILABLE = False
@@ -58,6 +61,7 @@ except ImportError:
 
 try:
     import matplotlib.pyplot as plt
+
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
@@ -230,15 +234,22 @@ def to_dataframe(experiments: List[Dict[str, Any]]) -> "pd.DataFrame":
 
     # Datentypen setzen
     numeric_cols = [
-        "total_return", "max_drawdown", "sharpe", "win_rate",
-        "profit_factor", "sortino", "calmar"
+        "total_return",
+        "max_drawdown",
+        "sharpe",
+        "win_rate",
+        "profit_factor",
+        "sortino",
+        "calmar",
     ]
     for col in numeric_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
     if "total_trades" in df.columns:
-        df["total_trades"] = pd.to_numeric(df["total_trades"], errors="coerce").fillna(0).astype(int)
+        df["total_trades"] = (
+            pd.to_numeric(df["total_trades"], errors="coerce").fillna(0).astype(int)
+        )
 
     # Timestamp parsen (falls möglich)
     if "timestamp" in df.columns:
@@ -271,9 +282,7 @@ def filter_by_strategy(df: "pd.DataFrame", strategy: str) -> "pd.DataFrame":
 
 
 def filter_by_date_range(
-    df: "pd.DataFrame",
-    date_from: Optional[str] = None,
-    date_to: Optional[str] = None
+    df: "pd.DataFrame", date_from: Optional[str] = None, date_to: Optional[str] = None
 ) -> "pd.DataFrame":
     """
     Filtert DataFrame nach Datumsbereich.
@@ -418,14 +427,16 @@ def group_by_preset(df: "pd.DataFrame") -> "pd.DataFrame":
     if df.empty:
         return df
 
-    agg_df = df.groupby("preset_id").agg({
-        "total_return": ["mean", "std", "min", "max"],
-        "sharpe": ["mean", "std", "min", "max"],
-        "max_drawdown": ["mean", "min"],
-        "win_rate": ["mean"],
-        "total_trades": ["sum", "mean"],
-        "tag": "count",
-    })
+    agg_df = df.groupby("preset_id").agg(
+        {
+            "total_return": ["mean", "std", "min", "max"],
+            "sharpe": ["mean", "std", "min", "max"],
+            "max_drawdown": ["mean", "min"],
+            "win_rate": ["mean"],
+            "total_trades": ["sum", "mean"],
+            "tag": "count",
+        }
+    )
 
     # Spalten flach machen
     agg_df.columns = ["_".join(col).strip() for col in agg_df.columns.values]
@@ -447,13 +458,15 @@ def group_by_strategy(df: "pd.DataFrame") -> "pd.DataFrame":
     if df.empty:
         return df
 
-    agg_df = df.groupby("strategy").agg({
-        "total_return": ["mean", "std"],
-        "sharpe": ["mean", "std"],
-        "max_drawdown": ["mean"],
-        "total_trades": ["sum"],
-        "tag": "count",
-    })
+    agg_df = df.groupby("strategy").agg(
+        {
+            "total_return": ["mean", "std"],
+            "sharpe": ["mean", "std"],
+            "max_drawdown": ["mean"],
+            "total_trades": ["sum"],
+            "tag": "count",
+        }
+    )
 
     agg_df.columns = ["_".join(col).strip() for col in agg_df.columns.values]
     agg_df = agg_df.rename(columns={"tag_count": "experiment_count"})
@@ -472,7 +485,15 @@ def top_n_by_sharpe(df: "pd.DataFrame", n: int = 10) -> "pd.DataFrame":
     Returns:
         Top-N DataFrame
     """
-    cols = ["tag", "preset_id", "strategy", "sharpe", "total_return", "max_drawdown", "total_trades"]
+    cols = [
+        "tag",
+        "preset_id",
+        "strategy",
+        "sharpe",
+        "total_return",
+        "max_drawdown",
+        "total_trades",
+    ]
     available_cols = [c for c in cols if c in df.columns]
     return df.nlargest(n, "sharpe")[available_cols]
 
@@ -488,7 +509,15 @@ def top_n_by_return(df: "pd.DataFrame", n: int = 10) -> "pd.DataFrame":
     Returns:
         Top-N DataFrame
     """
-    cols = ["tag", "preset_id", "strategy", "total_return", "sharpe", "max_drawdown", "total_trades"]
+    cols = [
+        "tag",
+        "preset_id",
+        "strategy",
+        "total_return",
+        "sharpe",
+        "max_drawdown",
+        "total_trades",
+    ]
     available_cols = [c for c in cols if c in df.columns]
     return df.nlargest(n, "total_return")[available_cols]
 
@@ -519,7 +548,9 @@ def plot_sharpe_distribution(df: "pd.DataFrame", title: str = "Sharpe Ratio Dist
     ax.set_xlabel("Sharpe Ratio")
     ax.set_ylabel("Anzahl Experimente")
     ax.set_title(title)
-    ax.axvline(df["sharpe"].mean(), color="red", linestyle="--", label=f"Mean: {df['sharpe'].mean():.2f}")
+    ax.axvline(
+        df["sharpe"].mean(), color="red", linestyle="--", label=f"Mean: {df['sharpe'].mean():.2f}"
+    )
     ax.legend()
     plt.tight_layout()
     plt.show()

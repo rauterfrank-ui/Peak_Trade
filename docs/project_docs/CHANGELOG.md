@@ -38,7 +38,7 @@
 - **Verbessert:** `src/webui/live_track.py` und Dashboard-Templates
   - Sessions-Übersicht mit Risk-Ampel (🟢/🟡/🔴),
   - Session-Detail-Seite mit Risk-Status, Limit-Details und Operator-Guidance.
-- **Tests:** 
+- **Tests:**
   - Neue Suiten `tests/test_risk_alert_helpers.py` und `tests/test_risk_runbook.py`,
   - Insgesamt **102 Tests**, alle bestanden.
 - **Rückwärtskompatibel:** Keine Breaking Changes – bestehende Live-/Execution-Flows funktionieren unverändert, profitieren aber von zusätzlicher Transparenz (Severity, Alerts, Runbook).

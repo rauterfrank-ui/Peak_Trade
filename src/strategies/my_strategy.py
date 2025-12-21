@@ -15,6 +15,7 @@ Trendbewegungen.
 Diese Strategie eignet sich für Märkte mit klaren Ausbrüchen nach
 Konsolidierungsphasen.
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -192,7 +193,9 @@ class MyStrategy(BaseStrategy):
         true_range = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
 
         # ATR = Rolling Mean
-        atr = true_range.rolling(window=self.lookback_window, min_periods=self.lookback_window).mean()
+        atr = true_range.rolling(
+            window=self.lookback_window, min_periods=self.lookback_window
+        ).mean()
 
         return atr
 
@@ -211,27 +214,25 @@ class MyStrategy(BaseStrategy):
         """
         # Validierung
         if "close" not in data.columns:
-            raise ValueError(
-                f"Spalte 'close' nicht in DataFrame. "
-                f"Verfügbar: {list(data.columns)}"
-            )
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
         if not self.use_close_only:
             for col in ["high", "low"]:
                 if col not in data.columns:
                     raise ValueError(
-                        f"Spalte '{col}' nicht in DataFrame. "
-                        f"Verfügbar: {list(data.columns)}"
+                        f"Spalte '{col}' nicht in DataFrame. Verfügbar: {list(data.columns)}"
                     )
 
         min_bars = self.lookback_window + 10
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mind. {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {min_bars} Bars, habe nur {len(data)}")
 
         # MA und ATR berechnen
-        ma = data["close"].rolling(window=self.lookback_window, min_periods=self.lookback_window).mean()
+        ma = (
+            data["close"]
+            .rolling(window=self.lookback_window, min_periods=self.lookback_window)
+            .mean()
+        )
         atr = self._compute_atr(data)
 
         # Volatilitätsbänder
@@ -297,14 +298,14 @@ def get_strategy_description(params: Dict) -> str:
     return f"""
 Volatility Breakout Strategy (ATR-basiert)
 ===========================================
-Lookback-Window:     {params.get('lookback_window', 20)} Bars
-Entry-Multiplier:    {params.get('entry_multiplier', 1.5)} x ATR
-Exit-Multiplier:     {params.get('exit_multiplier', 0.5)} x ATR
-Close-Only:          {'Ja' if params.get('use_close_only', False) else 'Nein'}
+Lookback-Window:     {params.get("lookback_window", 20)} Bars
+Entry-Multiplier:    {params.get("entry_multiplier", 1.5)} x ATR
+Exit-Multiplier:     {params.get("exit_multiplier", 0.5)} x ATR
+Close-Only:          {"Ja" if params.get("use_close_only", False) else "Nein"}
 
 Konzept:
-- Entry: Close > MA + ({params.get('entry_multiplier', 1.5)} x ATR) (Breakout)
-- Exit: Close < MA - ({params.get('exit_multiplier', 0.5)} x ATR) (Stop)
+- Entry: Close > MA + ({params.get("entry_multiplier", 1.5)} x ATR) (Breakout)
+- Exit: Close < MA - ({params.get("exit_multiplier", 0.5)} x ATR) (Stop)
 
 Geeignet für: Märkte mit klaren Breakouts nach Konsolidierung
 """

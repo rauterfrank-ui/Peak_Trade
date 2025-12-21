@@ -5,6 +5,7 @@ Tests für src/live/testnet_orchestrator.py (Phase 64)
 
 Smoke-Tests für Testnet-Orchestrator v1.
 """
+
 from __future__ import annotations
 
 import sys
@@ -39,93 +40,97 @@ from src.live.testnet_orchestrator import (
 @pytest.fixture
 def test_config() -> PeakConfig:
     """Erstellt eine Test-Config für Shadow-Mode."""
-    return PeakConfig(raw={
-        "environment": {
-            "mode": "paper",
-            "enable_live_trading": False,
-            "require_confirm_token": True,
-            "confirm_token": "",
-            "testnet_dry_run": True,
-            "log_all_orders": True,
-        },
-        "general": {
-            "base_currency": "EUR",
-            "starting_capital": 10000.0,
-        },
-        "shadow": {
-            "enabled": True,
-            "run_type": "shadow_run",
-            "fee_rate": 0.0005,
-            "slippage_bps": 0.0,
-            "base_currency": "EUR",
-            "log_all_orders": True,
-        },
-        "live_risk": {
-            "enabled": True,
-            "base_currency": "EUR",
-            "max_order_notional": 1000.0,
-            "max_symbol_exposure_notional": 2000.0,
-            "max_total_exposure_notional": 5000.0,
-            "max_open_positions": 5,
-            "max_daily_loss_abs": 500.0,
-            "max_daily_loss_pct": 5.0,
-            "block_on_violation": True,
-            "use_experiments_for_daily_pnl": True,
-        },
-        "strategy": {
-            "ma_crossover": {
-                "fast_window": 10,
-                "slow_window": 30,
-                "price_col": "close",
+    return PeakConfig(
+        raw={
+            "environment": {
+                "mode": "paper",
+                "enable_live_trading": False,
+                "require_confirm_token": True,
+                "confirm_token": "",
+                "testnet_dry_run": True,
+                "log_all_orders": True,
             },
-        },
-    })
+            "general": {
+                "base_currency": "EUR",
+                "starting_capital": 10000.0,
+            },
+            "shadow": {
+                "enabled": True,
+                "run_type": "shadow_run",
+                "fee_rate": 0.0005,
+                "slippage_bps": 0.0,
+                "base_currency": "EUR",
+                "log_all_orders": True,
+            },
+            "live_risk": {
+                "enabled": True,
+                "base_currency": "EUR",
+                "max_order_notional": 1000.0,
+                "max_symbol_exposure_notional": 2000.0,
+                "max_total_exposure_notional": 5000.0,
+                "max_open_positions": 5,
+                "max_daily_loss_abs": 500.0,
+                "max_daily_loss_pct": 5.0,
+                "block_on_violation": True,
+                "use_experiments_for_daily_pnl": True,
+            },
+            "strategy": {
+                "ma_crossover": {
+                    "fast_window": 10,
+                    "slow_window": 30,
+                    "price_col": "close",
+                },
+            },
+        }
+    )
 
 
 @pytest.fixture
 def testnet_test_config() -> PeakConfig:
     """Erstellt eine Test-Config für Testnet-Mode."""
-    return PeakConfig(raw={
-        "environment": {
-            "mode": "testnet",
-            "enable_live_trading": False,
-            "require_confirm_token": True,
-            "confirm_token": "",
-            "testnet_dry_run": True,
-            "log_all_orders": True,
-        },
-        "general": {
-            "base_currency": "EUR",
-            "starting_capital": 10000.0,
-        },
-        "shadow": {
-            "enabled": True,
-            "run_type": "shadow_run",
-            "fee_rate": 0.0005,
-            "slippage_bps": 0.0,
-            "base_currency": "EUR",
-            "log_all_orders": True,
-        },
-        "live_risk": {
-            "enabled": True,
-            "base_currency": "EUR",
-            "max_order_notional": 1000.0,
-            "max_symbol_exposure_notional": 2000.0,
-            "max_total_exposure_notional": 5000.0,
-            "max_open_positions": 5,
-            "max_daily_loss_abs": 500.0,
-            "max_daily_loss_pct": 5.0,
-            "block_on_violation": True,
-            "use_experiments_for_daily_pnl": True,
-        },
-        "strategy": {
-            "ma_crossover": {
-                "fast_window": 10,
-                "slow_window": 30,
-                "price_col": "close",
+    return PeakConfig(
+        raw={
+            "environment": {
+                "mode": "testnet",
+                "enable_live_trading": False,
+                "require_confirm_token": True,
+                "confirm_token": "",
+                "testnet_dry_run": True,
+                "log_all_orders": True,
             },
-        },
-    })
+            "general": {
+                "base_currency": "EUR",
+                "starting_capital": 10000.0,
+            },
+            "shadow": {
+                "enabled": True,
+                "run_type": "shadow_run",
+                "fee_rate": 0.0005,
+                "slippage_bps": 0.0,
+                "base_currency": "EUR",
+                "log_all_orders": True,
+            },
+            "live_risk": {
+                "enabled": True,
+                "base_currency": "EUR",
+                "max_order_notional": 1000.0,
+                "max_symbol_exposure_notional": 2000.0,
+                "max_total_exposure_notional": 5000.0,
+                "max_open_positions": 5,
+                "max_daily_loss_abs": 500.0,
+                "max_daily_loss_pct": 5.0,
+                "block_on_violation": True,
+                "use_experiments_for_daily_pnl": True,
+            },
+            "strategy": {
+                "ma_crossover": {
+                    "fast_window": 10,
+                    "slow_window": 30,
+                    "price_col": "close",
+                },
+            },
+        }
+    )
 
 
 @pytest.fixture
@@ -142,7 +147,7 @@ def orchestrator(test_config: PeakConfig) -> TestnetOrchestrator:
 def test_readiness_check_shadow_mode(test_config: PeakConfig) -> None:
     """Test: Readiness-Check für Shadow-Mode."""
     orchestrator = TestnetOrchestrator(config=test_config)
-    
+
     # Sollte keine Exception werfen
     orchestrator._ensure_readiness("shadow")
 
@@ -150,7 +155,7 @@ def test_readiness_check_shadow_mode(test_config: PeakConfig) -> None:
 def test_readiness_check_testnet_mode(testnet_test_config: PeakConfig) -> None:
     """Test: Readiness-Check für Testnet-Mode."""
     orchestrator = TestnetOrchestrator(config=testnet_test_config)
-    
+
     # Sollte keine Exception werfen
     orchestrator._ensure_readiness("testnet")
 
@@ -158,7 +163,7 @@ def test_readiness_check_testnet_mode(testnet_test_config: PeakConfig) -> None:
 def test_readiness_check_invalid_mode(test_config: PeakConfig) -> None:
     """Test: Readiness-Check mit ungültigem Mode."""
     orchestrator = TestnetOrchestrator(config=test_config)
-    
+
     with pytest.raises(InvalidModeError, match="Ungültiger Mode"):
         orchestrator._ensure_readiness("live")
 
@@ -167,10 +172,10 @@ def test_readiness_check_wrong_environment(testnet_test_config: PeakConfig) -> N
     """Test: Readiness-Check mit falschem Environment."""
     # Config mit Paper-Mode, aber Testnet-Check
     orchestrator = TestnetOrchestrator(config=testnet_test_config)
-    
+
     # Ändere Environment zu Paper
     testnet_test_config.raw["environment"]["mode"] = "paper"
-    
+
     with pytest.raises(ReadinessCheckFailedError, match="Testnet-Runs erfordern"):
         orchestrator._ensure_readiness("testnet")
 
@@ -311,7 +316,7 @@ def test_start_testnet_run_smoke(
 def test_get_status_all_runs(orchestrator: TestnetOrchestrator) -> None:
     """Test: Status aller Runs."""
     status = orchestrator.get_status()
-    
+
     assert isinstance(status, list)
     # Initial sollte keine Runs vorhanden sein
     assert len(status) == 0
@@ -436,4 +441,3 @@ def test_tail_events_run_not_found(orchestrator: TestnetOrchestrator) -> None:
     """Test: Events tailen mit nicht existierender Run-ID."""
     with pytest.raises(RunNotFoundError, match="Run-ID nicht gefunden"):
         orchestrator.tail_events(run_id="nonexistent_run_id", limit=10)
-

@@ -9,15 +9,15 @@ Handles:
 
 Usage:
     from src.knowledge.api_manager import APIManager
-    
+
     manager = APIManager()
-    
+
     # Get API key securely
     pinecone_key = manager.get_api_key("PINECONE_API_KEY")
-    
+
     # Track API usage
     manager.track_request("pinecone", endpoint="/query")
-    
+
     # Check if key rotation is needed
     if manager.should_rotate_key("OPENAI_API_KEY"):
         print("Consider rotating API key")
@@ -71,9 +71,7 @@ class APIManager:
         if log_path.exists():
             with open(log_path) as f:
                 data = json.load(f)
-                return {
-                    k: datetime.fromisoformat(v) for k, v in data.items()
-                }
+                return {k: datetime.fromisoformat(v) for k, v in data.items()}
 
         return {}
 
@@ -82,9 +80,7 @@ class APIManager:
         log_path = Path("data/api_rotation_log.json")
         log_path.parent.mkdir(parents=True, exist_ok=True)
 
-        data = {
-            k: v.isoformat() for k, v in self.key_rotation_log.items()
-        }
+        data = {k: v.isoformat() for k, v in self.key_rotation_log.items()}
         with open(log_path, "w") as f:
             json.dump(data, f, indent=2)
 
@@ -132,9 +128,7 @@ class APIManager:
             return False
 
         last_rotation = self.key_rotation_log[key_name]
-        rotation_interval = timedelta(
-            days=self.config.get("rotation_interval_days", 90)
-        )
+        rotation_interval = timedelta(days=self.config.get("rotation_interval_days", 90))
 
         should_rotate = datetime.now() - last_rotation > rotation_interval
 
@@ -221,9 +215,7 @@ class APIManager:
 
         return True
 
-    def get_db_config(
-        self, db_type: str, include_secrets: bool = False
-    ) -> Dict[str, Any]:
+    def get_db_config(self, db_type: str, include_secrets: bool = False) -> Dict[str, Any]:
         """
         Get database configuration.
 
@@ -240,40 +232,24 @@ class APIManager:
                 "get_db_config called with include_secrets=True. "
                 "Ensure secrets are not logged or exposed!"
             )
-        
+
         configs = {
             "chroma": {
-                "persist_directory": os.environ.get(
-                    "CHROMA_PERSIST_DIR", "./data/chroma_db"
-                ),
-                "collection_name": os.environ.get(
-                    "CHROMA_COLLECTION", "peak_trade"
-                ),
+                "persist_directory": os.environ.get("CHROMA_PERSIST_DIR", "./data/chroma_db"),
+                "collection_name": os.environ.get("CHROMA_COLLECTION", "peak_trade"),
             },
             "pinecone": {
-                "environment": os.environ.get(
-                    "PINECONE_ENV", "us-west1-gcp"
-                ),
-                "index_name": os.environ.get(
-                    "PINECONE_INDEX", "peak-trade"
-                ),
+                "environment": os.environ.get("PINECONE_ENV", "us-west1-gcp"),
+                "index_name": os.environ.get("PINECONE_INDEX", "peak-trade"),
             },
             "qdrant": {
-                "url": os.environ.get(
-                    "QDRANT_URL", ":memory:"
-                ),
-                "collection_name": os.environ.get(
-                    "QDRANT_COLLECTION", "peak_trade"
-                ),
+                "url": os.environ.get("QDRANT_URL", ":memory:"),
+                "collection_name": os.environ.get("QDRANT_COLLECTION", "peak_trade"),
             },
             "influxdb": {
-                "url": os.environ.get(
-                    "INFLUXDB_URL", "http://localhost:8086"
-                ),
+                "url": os.environ.get("INFLUXDB_URL", "http://localhost:8086"),
                 "org": os.environ.get("INFLUXDB_ORG", "peak_trade"),
-                "bucket": os.environ.get(
-                    "INFLUXDB_BUCKET", "market_data"
-                ),
+                "bucket": os.environ.get("INFLUXDB_BUCKET", "market_data"),
             },
         }
 
@@ -282,17 +258,11 @@ class APIManager:
         # Add API keys if requested (use cautiously!)
         if include_secrets:
             if db_type == "pinecone":
-                config["api_key"] = self.get_api_key(
-                    "PINECONE_API_KEY", required=False
-                )
+                config["api_key"] = self.get_api_key("PINECONE_API_KEY", required=False)
             elif db_type == "qdrant":
-                config["api_key"] = self.get_api_key(
-                    "QDRANT_API_KEY", required=False
-                )
+                config["api_key"] = self.get_api_key("QDRANT_API_KEY", required=False)
             elif db_type == "influxdb":
-                config["token"] = self.get_api_key(
-                    "INFLUXDB_TOKEN", required=False
-                )
+                config["token"] = self.get_api_key("INFLUXDB_TOKEN", required=False)
 
         return config
 
@@ -315,9 +285,7 @@ class APIManager:
             if not keys:
                 validation[api_name] = True
             else:
-                validation[api_name] = all(
-                    os.environ.get(key) is not None for key in keys
-                )
+                validation[api_name] = all(os.environ.get(key) is not None for key in keys)
 
         return validation
 

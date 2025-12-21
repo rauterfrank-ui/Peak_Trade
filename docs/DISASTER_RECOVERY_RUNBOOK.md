@@ -149,10 +149,10 @@ else:
 2. **Verify backup availability**
    ```python
    from src.core.backup_recovery import RecoveryManager
-   
+
    recovery = RecoveryManager(backup_dir="backups")
    backups = recovery.list_backups()
-   
+
    print(f"Available backups: {len(backups)}")
    for backup in backups[:5]:
        print(f"  - {backup.backup_id[:30]}... ({backup.created_at})")
@@ -173,7 +173,7 @@ else:
        restore_config=True,
        dry_run=True
    )
-   
+
    if success:
        print("✅ Dry-run successful, proceeding with actual restore")
    else:
@@ -189,7 +189,7 @@ else:
        restore_state=False,
        restore_data=False
    )
-   
+
    if success:
        print("✅ Config restored successfully")
    else:
@@ -200,7 +200,7 @@ else:
 6. **Verify configuration**
    ```python
    from pathlib import Path
-   
+
    config_file = Path("config/config.toml")
    if config_file.exists():
        print(f"✅ Config file exists ({config_file.stat().st_size} bytes)")
@@ -216,7 +216,7 @@ else:
 7. **Run health checks**
    ```python
    from src.core.resilience import health_check
-   
+
    results = health_check.run_all()
    if results["config"].healthy:
        print("✅ Config health check passed")
@@ -249,13 +249,13 @@ else:
 1. **Assess data loss extent**
    ```python
    from pathlib import Path
-   
+
    critical_paths = [
        Path("data/positions.csv"),
        Path("data/trades.csv"),
        Path("data/reports/"),
    ]
-   
+
    missing = [p for p in critical_paths if not p.exists()]
    print(f"Missing: {len(missing)}/{len(critical_paths)} items")
    for path in missing:
@@ -265,20 +265,20 @@ else:
 2. **Identify suitable backup**
    ```python
    from src.core.backup_recovery import RecoveryManager, BackupType
-   
+
    recovery = RecoveryManager()
-   
+
    # Find backups with data
    data_backups = [
        b for b in recovery.list_backups()
        if b.backup_type in [BackupType.FULL, BackupType.DATA]
        and b.status == BackupStatus.SUCCESS
    ]
-   
+
    if not data_backups:
        print("🚨 No data backups available!")
        # Escalate immediately
-   
+
    backup_to_restore = data_backups[0]
    print(f"Selected backup: {backup_to_restore.backup_id}")
    print(f"Files: {backup_to_restore.files_count}")
@@ -288,13 +288,13 @@ else:
 3. **Calculate data loss window**
    ```python
    from datetime import datetime
-   
+
    backup_time = datetime.fromisoformat(
        backup_to_restore.created_at.replace('Z', '+00:00')
    )
    current_time = datetime.now(backup_time.tzinfo)
    data_loss_window = current_time - backup_time
-   
+
    print(f"⚠️  Data loss window: {data_loss_window.total_seconds()/3600:.1f} hours")
    print("   (All data from this period will be lost)")
    ```
@@ -326,7 +326,7 @@ else:
        restore_state=False,
        restore_data=True
    )
-   
+
    if success:
        print("✅ Data restored successfully")
    else:
@@ -337,15 +337,15 @@ else:
 7. **Verify data integrity**
    ```python
    import pandas as pd
-   
+
    # Check positions file
    positions = pd.read_csv("data/positions.csv")
    print(f"✅ Positions restored: {len(positions)} rows")
-   
+
    # Check trades file
    trades = pd.read_csv("data/trades.csv")
    print(f"✅ Trades restored: {len(trades)} rows")
-   
+
    # Verify data makes sense
    if len(positions) > 0:
        print(f"   Latest position: {positions.iloc[-1]['symbol']}")
@@ -356,10 +356,10 @@ else:
    # Compare restored data with exchange balances
    # This step is critical to ensure consistency
    from src.exchange.client import get_exchange_client
-   
+
    exchange = get_exchange_client()
    exchange_balance = exchange.fetch_balance()
-   
+
    # Compare with restored positions
    # Log any discrepancies
    print("Reconciliation required with exchange")
@@ -390,13 +390,13 @@ else:
    ```python
    from src.core.resilience import health_check
    from src.core.backup_recovery import RecoveryManager
-   
+
    # Run all health checks
    results = health_check.run_all()
    failed_checks = [name for name, r in results.items() if not r.healthy]
-   
+
    print(f"Failed checks: {', '.join(failed_checks)}")
-   
+
    # Check backup availability
    recovery = RecoveryManager()
    backups = recovery.list_backups()
@@ -411,12 +411,12 @@ else:
        if b.backup_type == BackupType.FULL
        and b.status == BackupStatus.SUCCESS
    ]
-   
+
    if not full_backups:
        print("🚨 No full backups available!")
        # May need to perform partial recovery
        # Escalate to senior engineer
-   
+
    recovery_backup = full_backups[0]
    print(f"Recovery point: {recovery_backup.created_at}")
    print(f"Description: {recovery_backup.description}")
@@ -433,7 +433,7 @@ else:
 5. **Perform complete restore**
    ```python
    print("🔧 Initiating full system restore...")
-   
+
    success = recovery.restore_backup(
        recovery_backup.backup_id,
        restore_config=True,
@@ -441,12 +441,12 @@ else:
        restore_data=True,
        dry_run=False
    )
-   
+
    if not success:
        print("❌ CRITICAL: Full restore failed")
        # Stop here and escalate to senior engineer immediately
        raise Exception("Full restore failed")
-   
+
    print("✅ Full restore completed")
    ```
 
@@ -455,7 +455,7 @@ else:
    # Re-run all health checks
    results = health_check.run_all()
    all_healthy = all(r.healthy for r in results.values())
-   
+
    if all_healthy:
        print("✅ All health checks passed")
    else:
@@ -504,20 +504,20 @@ This scenario is particularly concerning as it affects disaster recovery capabil
    ```python
    from src.core.backup_recovery import RecoveryManager
    from pathlib import Path
-   
+
    backup_dir = Path("backups")
-   
+
    # Check backup directory
    if not backup_dir.exists():
        print("🚨 Backup directory missing!")
        backup_dir.mkdir(parents=True)
        print("✅ Created backup directory")
-   
+
    # Check permissions
    if not os.access(backup_dir, os.W_OK):
        print("❌ No write permission to backup directory")
        # Fix permissions
-   
+
    # List existing backups
    recovery = RecoveryManager()
    backups = recovery.list_backups()
@@ -528,12 +528,12 @@ This scenario is particularly concerning as it affects disaster recovery capabil
    ```python
    for backup in backups:
        backup_path = recovery._get_backup_dir(backup.backup_id)
-       
+
        # Check metadata
        metadata_file = backup_path / "metadata.json"
        if not metadata_file.exists():
            print(f"⚠️  {backup.backup_id}: Missing metadata")
-       
+
        # Check files count
        actual_files = sum(1 for _ in backup_path.rglob("*") if _.is_file())
        if actual_files == 0:
@@ -627,7 +627,7 @@ config_file = Path("config/config.toml")
 try:
     config = toml.load(config_file)
     print("✅ Configuration valid")
-    
+
     # Check critical keys
     required_keys = ["trading", "risk", "live"]
     for key in required_keys:

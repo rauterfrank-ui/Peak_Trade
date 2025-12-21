@@ -32,6 +32,7 @@ Usage:
     config = PortfolioRobustnessConfig(portfolio=portfolio, num_mc_runs=1000, run_stress_tests=True)
     result = run_portfolio_robustness(config, returns_loader)
 """
+
 from __future__ import annotations
 
 import logging
@@ -349,9 +350,7 @@ def run_portfolio_monte_carlo(
         "num_runs": summary.num_runs,
         "method": summary.config.method,
         "metric_quantiles": summary.metric_quantiles,
-        "metric_distributions": {
-            k: v.tolist() for k, v in summary.metric_distributions.items()
-        },
+        "metric_distributions": {k: v.tolist() for k, v in summary.metric_distributions.items()},
     }
 
 
@@ -414,13 +413,15 @@ def run_portfolio_stress_tests(
     # Konvertiere zu kompakter Dict-Struktur
     scenario_summaries = []
     for result in suite.scenario_results:
-        scenario_summaries.append({
-            "scenario_type": result.scenario.scenario_type,
-            "severity": result.scenario.severity,
-            "baseline_metrics": result.baseline_metrics,
-            "stressed_metrics": result.stressed_metrics,
-            "diff_metrics": result.diff_metrics,
-        })
+        scenario_summaries.append(
+            {
+                "scenario_type": result.scenario.scenario_type,
+                "severity": result.scenario.severity,
+                "baseline_metrics": result.baseline_metrics,
+                "stressed_metrics": result.stressed_metrics,
+                "diff_metrics": result.diff_metrics,
+            }
+        )
 
     return {
         "baseline_metrics": suite.baseline_metrics,
@@ -504,11 +505,3 @@ def run_portfolio_robustness(
         mc_results=mc_results,
         stress_results=stress_results,
     )
-
-
-
-
-
-
-
-

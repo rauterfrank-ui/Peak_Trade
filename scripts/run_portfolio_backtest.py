@@ -60,14 +60,11 @@ Examples:
 
   # Custom run name
   python scripts/run_portfolio_backtest.py --run-name crypto_portfolio_q4
-        """
+        """,
     )
 
     parser.add_argument(
-        "--bars",
-        type=int,
-        default=None,
-        help="Number of bars per backtest (overrides config.toml)"
+        "--bars", type=int, default=None, help="Number of bars per backtest (overrides config.toml)"
     )
 
     parser.add_argument(
@@ -75,42 +72,38 @@ Examples:
         type=str,
         default=None,
         choices=["equal", "risk_parity", "sharpe_weighted", "manual"],
-        help="Capital allocation method (overrides config.toml)"
+        help="Capital allocation method (overrides config.toml)",
     )
 
     parser.add_argument(
         "--run-name",
         type=str,
         default=None,
-        help="Optional name for this portfolio run (for reports)"
+        help="Optional name for this portfolio run (for reports)",
     )
 
     parser.add_argument(
         "--save-individual",
         action="store_true",
-        help="Save individual asset reports in addition to portfolio report"
+        help="Save individual asset reports in addition to portfolio report",
     )
 
     parser.add_argument(
         "--tag",
         type=str,
         default=None,
-        help="Optional tag for registry logging (e.g. 'weekend-research')"
+        help="Optional tag for registry logging (e.g. 'weekend-research')",
     )
 
     parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Run backtest but do not log to registry"
+        "--dry-run", action="store_true", help="Run backtest but do not log to registry"
     )
 
     return parser.parse_args()
 
 
 def load_data_for_symbol(
-    symbol: str,
-    n_bars: int = 200,
-    start_time: datetime = None
+    symbol: str, n_bars: int = 200, start_time: datetime = None
 ) -> pd.DataFrame:
     """
     Lädt Daten für ein bestimmtes Symbol.
@@ -135,7 +128,7 @@ def load_data_for_symbol(
         start = datetime.now() - timedelta(hours=n_bars)
     else:
         start = start_time
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation mit symbol-spezifischen Eigenschaften
     if "BTC" in symbol:
@@ -163,13 +156,16 @@ def load_data_for_symbol(
     close_prices = base_price + trend + cycle + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * volatility),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
@@ -180,7 +176,7 @@ def run_single_asset_backtest(
     cfg: Any,
     n_bars: int = 200,
     start_time: datetime = None,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> BacktestResult:
     """
     Führt Backtest für ein einzelnes Asset aus.
@@ -219,27 +215,22 @@ def run_single_asset_backtest(
     strategy_params = {"stop_pct": stop_pct}
 
     # Backtest durchführen
-    engine = BacktestEngine(
-        core_position_sizer=position_sizer,
-        risk_manager=risk_manager
-    )
+    engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
-        df=df,
-        strategy_signal_fn=strategy_signal_fn,
-        strategy_params=strategy_params
+        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
     )
 
     if verbose:
-        print(f"    ✅ Return: {result.stats.get('total_return', 0.0):>7.2%} | "
-              f"Sharpe: {result.stats.get('sharpe', 0.0):>6.2f}")
+        print(
+            f"    ✅ Return: {result.stats.get('total_return', 0.0):>7.2%} | "
+            f"Sharpe: {result.stats.get('sharpe', 0.0):>6.2f}"
+        )
 
     return result
 
 
 def calculate_portfolio_weights(
-    results: Dict[str, BacktestResult],
-    method: str,
-    config_weights: Dict[str, float] = None
+    results: Dict[str, BacktestResult], method: str, config_weights: Dict[str, float] = None
 ) -> Dict[str, float]:
     """
     Berechnet Portfolio-Gewichte basierend auf Allocation-Methode.
@@ -307,9 +298,7 @@ def calculate_portfolio_weights(
 
 
 def aggregate_portfolio_equity(
-    results: Dict[str, BacktestResult],
-    weights: Dict[str, float],
-    initial_capital: float
+    results: Dict[str, BacktestResult], weights: Dict[str, float], initial_capital: float
 ) -> pd.Series:
     """
     Aggregiert Equity-Curves zu Portfolio-Equity.
@@ -330,7 +319,7 @@ def aggregate_portfolio_equity(
 
         # Duplikate im Index entfernen (keep first)
         if eq.index.has_duplicates:
-            eq = eq[~eq.index.duplicated(keep='first')]
+            eq = eq[~eq.index.duplicated(keep="first")]
 
         # Normalisieren auf initial_capital * weight
         eq_normalized = eq * (initial_capital * weights[sym] / eq.iloc[0])
@@ -346,8 +335,7 @@ def aggregate_portfolio_equity(
 
 
 def calculate_portfolio_stats(
-    portfolio_equity: pd.Series,
-    initial_capital: float
+    portfolio_equity: pd.Series, initial_capital: float
 ) -> Dict[str, Any]:
     """
     Berechnet Portfolio-Stats aus aggregierter Equity.
@@ -395,8 +383,7 @@ def calculate_portfolio_stats(
 
 
 def aggregate_regime_distribution(
-    results: Dict[str, BacktestResult],
-    weights: Dict[str, float]
+    results: Dict[str, BacktestResult], weights: Dict[str, float]
 ) -> Dict[str, float]:
     """
     Berechnet gewichtete Regime-Verteilung des Portfolios.
@@ -431,12 +418,12 @@ def print_portfolio_summary(
     portfolio_stats: Dict[str, Any],
     weights: Dict[str, float],
     asset_stats: Dict[str, Dict[str, Any]],
-    regime_dist: Dict[str, float]
+    regime_dist: Dict[str, float],
 ):
     """Druckt formatierte Portfolio-Zusammenfassung."""
-    print("\n" + "="*90)
+    print("\n" + "=" * 90)
     print("PORTFOLIO BACKTEST SUMMARY")
-    print("="*90)
+    print("=" * 90)
 
     # Portfolio-Level Stats
     print("\n📊 Portfolio Performance:")
@@ -450,12 +437,12 @@ def print_portfolio_summary(
     # Asset Allocation
     print("\n💼 Asset Allocation:")
     print(f"  {'Symbol':<12} {'Weight':<10} {'Return':<12} {'Sharpe':<10} {'Max DD':<10}")
-    print("  " + "-"*60)
+    print("  " + "-" * 60)
     for sym, weight in weights.items():
         stats = asset_stats[sym]
-        ret = stats.get('total_return', 0.0)
-        sharpe = stats.get('sharpe', 0.0)
-        dd = stats.get('max_drawdown', 0.0)
+        ret = stats.get("total_return", 0.0)
+        sharpe = stats.get("sharpe", 0.0)
+        dd = stats.get("max_drawdown", 0.0)
         print(f"  {sym:<12} {weight:>8.1%}  {ret:>10.2%}  {sharpe:>8.2f}  {dd:>8.2%}")
 
     # Regime Distribution
@@ -467,7 +454,7 @@ def print_portfolio_summary(
     else:
         print("  No regime data available")
 
-    print("="*90 + "\n")
+    print("=" * 90 + "\n")
 
 
 def save_portfolio_report(
@@ -477,7 +464,7 @@ def save_portfolio_report(
     asset_stats: Dict[str, Dict[str, Any]],
     regime_dist: Dict[str, float],
     output_dir: str,
-    run_name: str
+    run_name: str,
 ):
     """
     Speichert Portfolio-Report als CSV/JSON/HTML.
@@ -522,16 +509,18 @@ def save_portfolio_report(
     print(f"  ✅ Portfolio Stats: {stats_path}")
 
     # 4. Allocation CSV
-    alloc_df = pd.DataFrame([
-        {
-            "symbol": sym,
-            "weight": weights[sym],
-            "total_return": asset_stats[sym].get("total_return", 0.0),
-            "sharpe": asset_stats[sym].get("sharpe", 0.0),
-            "max_drawdown": asset_stats[sym].get("max_drawdown", 0.0),
-        }
-        for sym in weights.keys()
-    ])
+    alloc_df = pd.DataFrame(
+        [
+            {
+                "symbol": sym,
+                "weight": weights[sym],
+                "total_return": asset_stats[sym].get("total_return", 0.0),
+                "sharpe": asset_stats[sym].get("sharpe", 0.0),
+                "max_drawdown": asset_stats[sym].get("max_drawdown", 0.0),
+            }
+            for sym in weights.keys()
+        ]
+    )
     alloc_path = out_dir / f"{run_name}_allocation.csv"
     alloc_df.to_csv(alloc_path, index=False)
     print(f"  ✅ Allocation: {alloc_path}")
@@ -542,7 +531,7 @@ def main():
     args = parse_args()
 
     print("\n💼 Peak_Trade Portfolio Backtest")
-    print("="*70)
+    print("=" * 70)
 
     # Config laden
     print("\n⚙️  Lade Konfiguration...")
@@ -557,7 +546,9 @@ def main():
     # Portfolio-Settings
     initial_capital = cfg.get("portfolio.initial_equity", 10000.0)
     symbols = cfg.get("portfolio.symbols", ["BTC/EUR", "ETH/EUR", "LTC/EUR"])
-    default_strategy = cfg.get("portfolio.strategy_key", cfg.get("general.active_strategy", "ma_crossover"))
+    default_strategy = cfg.get(
+        "portfolio.strategy_key", cfg.get("general.active_strategy", "ma_crossover")
+    )
     allocation_method = args.allocation or cfg.get("portfolio.allocation_method", "equal")
     n_bars = args.bars or cfg.get("scan.scan_bars", 200)
 
@@ -578,7 +569,7 @@ def main():
 
     # Backtests durchführen
     print(f"\n🚀 Führe Backtests für {len(symbols)} Assets aus...")
-    print("-"*70)
+    print("-" * 70)
 
     # Fester Start-Zeitpunkt für alle Symbole (damit gleiche Indizes)
     portfolio_start_time = datetime.now() - timedelta(hours=n_bars)
@@ -597,7 +588,7 @@ def main():
                 cfg=cfg,
                 n_bars=n_bars,
                 start_time=portfolio_start_time,
-                verbose=True
+                verbose=True,
             )
             results[symbol] = result
             asset_stats[symbol] = dict(result.stats)
@@ -637,7 +628,7 @@ def main():
         asset_stats=asset_stats,
         regime_dist=regime_dist,
         output_dir="reports",
-        run_name=run_name
+        run_name=run_name,
     )
 
     # Optional: Individuelle Asset-Reports
@@ -666,14 +657,16 @@ def main():
         # Component-Runs für Registry vorbereiten
         component_runs = []
         for sym in weights.keys():
-            component_runs.append({
-                "symbol": sym,
-                "strategy_key": portfolio_strategies.get(sym, default_strategy),
-                "weight": weights[sym],
-                "total_return": asset_stats[sym].get("total_return", 0.0),
-                "sharpe": asset_stats[sym].get("sharpe", 0.0),
-                "max_drawdown": asset_stats[sym].get("max_drawdown", 0.0),
-            })
+            component_runs.append(
+                {
+                    "symbol": sym,
+                    "strategy_key": portfolio_strategies.get(sym, default_strategy),
+                    "weight": weights[sym],
+                    "total_return": asset_stats[sym].get("total_return", 0.0),
+                    "sharpe": asset_stats[sym].get("sharpe", 0.0),
+                    "max_drawdown": asset_stats[sym].get("max_drawdown", 0.0),
+                }
+            )
 
         portfolio_name_cfg = cfg.get("portfolio.name", "portfolio")
         run_id = log_portfolio_backtest_result(

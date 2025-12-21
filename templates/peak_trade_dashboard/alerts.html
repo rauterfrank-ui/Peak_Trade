@@ -13,7 +13,7 @@
     </div>
     <div class="flex items-center gap-2">
       <!-- Refresh Button -->
-      <a href="{{ request.url }}" 
+      <a href="{{ request.url }}"
          class="text-xs px-3 py-1.5 rounded bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-colors">
         ↻ Aktualisieren
       </a>
@@ -81,7 +81,7 @@
       <!-- Time Window -->
       <div>
         <label class="text-xs text-slate-400 block mb-1">Zeitfenster</label>
-        <select name="hours" 
+        <select name="hours"
                 class="text-sm bg-slate-700/50 border border-slate-600/50 rounded px-3 py-1.5 text-slate-200">
           {% for h in hours_options %}
             <option value="{{ h }}" {% if filters.hours == h %}selected{% endif %}>
@@ -133,7 +133,7 @@
 
       <!-- Submit -->
       <div>
-        <button type="submit" 
+        <button type="submit"
                 class="text-sm px-4 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white transition-colors">
           Filter anwenden
         </button>
@@ -141,7 +141,7 @@
 
       <!-- Reset -->
       <div>
-        <a href="/live/alerts" 
+        <a href="/live/alerts"
            class="text-sm px-3 py-1.5 rounded bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-colors inline-block">
           Zurücksetzen
         </a>
@@ -183,7 +183,7 @@
               <td class="px-4 py-3 text-xs text-slate-400 font-mono">
                 {{ alert.timestamp_display }}
               </td>
-              
+
               <!-- Severity Badge -->
               <td class="px-4 py-3">
                 {% if alert.severity == 'CRITICAL' %}
@@ -200,7 +200,7 @@
                   </span>
                 {% endif %}
               </td>
-              
+
               <!-- Category -->
               <td class="px-4 py-3">
                 {% if alert.category == 'RISK' %}
@@ -217,7 +217,7 @@
                   </span>
                 {% endif %}
               </td>
-              
+
               <!-- Title & Source -->
               <td class="px-4 py-3">
                 <div class="text-slate-200 font-medium">{{ alert.title }}</div>
@@ -250,11 +250,11 @@
                   <span class="text-slate-500 text-xs">–</span>
                 {% endif %}
               </td>
-              
+
               <!-- Session -->
               <td class="px-4 py-3 text-xs">
                 {% if alert.session_id %}
-                  <a href="/session/{{ alert.session_id }}" 
+                  <a href="/session/{{ alert.session_id }}"
                      class="text-emerald-400 hover:text-emerald-300 font-mono transition-colors">
                     {{ alert.session_id[:30] }}{% if alert.session_id|length > 30 %}...{% endif %}
                   </a>
@@ -298,7 +298,7 @@
       INFO = Informativ
     </span>
     <span class="ml-auto">
-      <a href="/docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md" 
+      <a href="/docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md"
          class="text-emerald-400 hover:underline">
         📋 Operator Runbook
       </a>

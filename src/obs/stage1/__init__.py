@@ -29,4 +29,3 @@ __all__ = [
     "load_trend",
     "compute_trend_from_summaries",
 ]
-

@@ -23,7 +23,7 @@ This guide provides concrete workflows, templates, and best practices for using 
 1. **Initial Research**
    ```
    Prompt Template:
-   "I want to implement a {strategy_name} strategy in Peak_Trade. 
+   "I want to implement a {strategy_name} strategy in Peak_Trade.
    Research similar strategies in the codebase and suggest an implementation approach.
    Context: [Include DEV_GUIDE_ADD_STRATEGY.md]"
    ```
@@ -43,7 +43,7 @@ This guide provides concrete workflows, templates, and best practices for using 
 3. **Testing**
    ```
    Prompt Template:
-   "Write comprehensive tests for {strategy_name} following the pattern in 
+   "Write comprehensive tests for {strategy_name} following the pattern in
    tests/strategies/test_{example}_strategy.py. Include:
    - Basic functionality tests
    - Edge cases (empty data, NaN values)
@@ -88,12 +88,12 @@ Shall I proceed?"
    ```
    Prompt Template:
    "I'm getting this error: {error_message}
-   
+
    Context:
    - File: {file_path}
    - Function: {function_name}
    - Stack trace: {stack_trace}
-   
+
    Help me:
    1. Understand the root cause
    2. Suggest a fix
@@ -104,10 +104,10 @@ Shall I proceed?"
    ```
    Prompt Template:
    "This operation is slow: {operation_name}
-   
+
    Performance data:
    {performance_monitor.get_summary()}
-   
+
    Suggest:
    1. Potential bottlenecks
    2. Optimization strategies
@@ -118,10 +118,10 @@ Shall I proceed?"
    ```
    Prompt Template:
    "Test {test_name} is failing with: {failure_message}
-   
+
    Test code: [paste test]
    Production code: [paste relevant code]
-   
+
    Help me:
    1. Diagnose why it's failing
    2. Fix the issue
@@ -136,13 +136,13 @@ Shall I proceed?"
    ```
    Prompt Template:
    "Analyze {module_name} for refactoring opportunities.
-   
+
    Look for:
    - Code duplication
    - Complex functions (>50 lines)
    - Missing abstractions
    - Performance issues
-   
+
    Suggest improvements that maintain backward compatibility."
    ```
 
@@ -150,13 +150,13 @@ Shall I proceed?"
    ```
    Prompt Template:
    "Refactor {function_name} to improve {quality_aspect}.
-   
+
    Requirements:
    - Maintain existing API
    - Keep all tests passing
    - Add type hints
    - Improve documentation
-   
+
    Show before/after comparison."
    ```
 
@@ -164,9 +164,9 @@ Shall I proceed?"
    ```
    Prompt Template:
    "Review my refactoring of {module_name}.
-   
+
    Changes: [describe changes]
-   
+
    Verify:
    - All tests pass
    - Performance not degraded
@@ -182,14 +182,14 @@ Shall I proceed?"
    ```
    Prompt Template:
    "Create comprehensive documentation for {module_name}.
-   
+
    Include:
    - Module overview
    - Key classes/functions
    - Usage examples
    - Integration points
    - Related modules
-   
+
    Follow the style of {example_doc}.md"
    ```
 
@@ -197,7 +197,7 @@ Shall I proceed?"
    ```
    Prompt Template:
    "Generate API documentation for {class_name}.
-   
+
    Include:
    - Class description
    - Constructor parameters
@@ -210,7 +210,7 @@ Shall I proceed?"
    ```
    Prompt Template:
    "Create a tutorial for {feature_name}.
-   
+
    Target: {audience}
    Format: Step-by-step with code examples
    Include:
@@ -404,7 +404,7 @@ Good: Include specific relevant files
 "Context: [paste src/strategies/base.py]"
 
 Better: Reference with purpose
-"I'm implementing a new strategy. 
+"I'm implementing a new strategy.
 Key pattern from src/strategies/rsi_reversion.py: [relevant excerpt]"
 
 Best: Hierarchical context

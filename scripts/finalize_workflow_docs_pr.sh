@@ -80,4 +80,3 @@ git pull --ff-only
 echo ""
 echo "✅ DONE"
 git log -1 --oneline
-

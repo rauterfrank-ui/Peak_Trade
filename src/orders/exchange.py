@@ -16,6 +16,7 @@ dass keine unbeabsichtigten echten Orders gesendet werden.
 WICHTIG: In Phase 17 werden KEINE echten API-Calls durchgeführt!
          Dies ist eine reine Architektur-Vorbereitung.
 """
+
 from __future__ import annotations
 
 import logging
@@ -29,6 +30,7 @@ from .base import (
     OrderExecutionResult,
     OrderStatus,
 )
+
 # Direkte Imports von safety.py (src/live/__init__.py verwendet lazy-loading)
 from src.live.safety import (
     SafetyGuard,
@@ -139,9 +141,7 @@ class TestnetOrderExecutor:
         """Gibt den simulierten Preis für ein Symbol zurück."""
         return self._simulated_prices.get(symbol)
 
-    def _compute_simulated_fill_price(
-        self, order: OrderRequest, base_price: float
-    ) -> float:
+    def _compute_simulated_fill_price(self, order: OrderRequest, base_price: float) -> float:
         """Berechnet den simulierten Fill-Preis mit Slippage."""
         if self._slippage_bps == 0.0:
             return base_price
@@ -248,9 +248,7 @@ class TestnetOrderExecutor:
 
         return result
 
-    def execute_orders(
-        self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    def execute_orders(self, orders: Sequence[OrderRequest]) -> List[OrderExecutionResult]:
         """Führt mehrere Orders im Dry-Run aus."""
         return [self.execute_order(order) for order in orders]
 
@@ -368,9 +366,7 @@ class LiveOrderExecutor:
         """Gibt den simulierten Preis für ein Symbol zurück."""
         return self._simulated_prices.get(symbol)
 
-    def _compute_simulated_fill_price(
-        self, order: OrderRequest, base_price: float
-    ) -> float:
+    def _compute_simulated_fill_price(self, order: OrderRequest, base_price: float) -> float:
         """Berechnet den simulierten Fill-Preis mit Slippage."""
         if self._slippage_bps == 0.0:
             return base_price
@@ -491,9 +487,7 @@ class LiveOrderExecutor:
 
         return result
 
-    def execute_orders(
-        self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    def execute_orders(self, orders: Sequence[OrderRequest]) -> List[OrderExecutionResult]:
         """Führt mehrere Orders im Dry-Run aus."""
         return [self.execute_order(order) for order in orders]
 
@@ -587,14 +581,9 @@ class ExchangeOrderExecutor:
 
         env = safety_guard.env_config.environment
         mode_info = (
-            f"TradingClient={trading_client.get_name()}"
-            if self._use_trading_client
-            else "Dry-Run"
+            f"TradingClient={trading_client.get_name()}" if self._use_trading_client else "Dry-Run"
         )
-        logger.info(
-            f"[EXCHANGE EXECUTOR] Initialisiert im {env.value}-Modus. "
-            f"Mode: {mode_info}"
-        )
+        logger.info(f"[EXCHANGE EXECUTOR] Initialisiert im {env.value}-Modus. Mode: {mode_info}")
 
     @property
     def is_dry_run(self) -> bool:
@@ -663,9 +652,7 @@ class ExchangeOrderExecutor:
             self._safety_guard.ensure_may_place_order(is_testnet=False)
 
             # Sollte nie erreicht werden
-            raise LiveNotImplementedError(
-                "Live-Trading ist in Phase 17 nicht implementiert."
-            )
+            raise LiveNotImplementedError("Live-Trading ist in Phase 17 nicht implementiert.")
 
         # Unbekannter Modus
         return OrderExecutionResult(
@@ -793,7 +780,9 @@ class ExchangeOrderExecutor:
             status=mapped_status,
             request=order,
             fill=fill,
-            reason=None if mapped_status in ("filled", "pending", "partially_filled") else f"status_{exchange_result.status.value}",
+            reason=None
+            if mapped_status in ("filled", "pending", "partially_filled")
+            else f"status_{exchange_result.status.value}",
             metadata={
                 "execution_id": self._execution_count,
                 "mode": f"trading_client_{client_name}",
@@ -803,9 +792,7 @@ class ExchangeOrderExecutor:
             },
         )
 
-    def execute_orders(
-        self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    def execute_orders(self, orders: Sequence[OrderRequest]) -> List[OrderExecutionResult]:
         """Führt mehrere Orders aus."""
         return [self.execute_order(order) for order in orders]
 
@@ -953,9 +940,7 @@ def create_order_executor(
 
     # TESTNET: TestnetOrderExecutor (Dry-Run)
     if env == TradingEnvironment.TESTNET:
-        logger.info(
-            "[FACTORY] Erstelle TestnetOrderExecutor (Dry-Run) für Testnet-Modus"
-        )
+        logger.info("[FACTORY] Erstelle TestnetOrderExecutor (Dry-Run) für Testnet-Modus")
         return TestnetOrderExecutor(
             safety_guard=guard,
             simulated_prices=simulated_prices,
@@ -988,8 +973,7 @@ def create_order_executor(
 
     # Unbekannter Modus -> Fallback auf Paper
     logger.warning(
-        f"[FACTORY] Unbekannter Environment-Modus: {env}. "
-        "Fallback auf PaperOrderExecutor"
+        f"[FACTORY] Unbekannter Environment-Modus: {env}. Fallback auf PaperOrderExecutor"
     )
     market_ctx = PaperMarketContext(
         prices=simulated_prices or {},

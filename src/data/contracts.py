@@ -14,6 +14,7 @@ Usage:
     # Strict validation (fail on NaNs, unsorted, duplicates, etc.)
     validate_ohlcv(df, strict=True, require_tz=True)
 """
+
 from typing import Optional
 
 import pandas as pd

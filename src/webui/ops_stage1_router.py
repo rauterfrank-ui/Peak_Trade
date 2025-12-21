@@ -45,7 +45,7 @@ _TEMPLATES: Optional[Jinja2Templates] = None
 def set_stage1_config(report_root: Path, templates: Jinja2Templates) -> None:
     """
     Configure Stage1 router with paths.
-    
+
     Args:
         report_root: Path to Stage1 reports directory
         templates: Jinja2Templates instance
@@ -79,22 +79,22 @@ def get_templates() -> Jinja2Templates:
 async def get_latest_summary() -> Stage1Summary:
     """
     Get the most recent Stage1 daily summary.
-    
+
     Returns:
         Stage1Summary object with latest metrics.
-    
+
     Raises:
         HTTPException: 404 if no summary found.
     """
     report_root = get_report_root()
-    
+
     summary = load_latest_summary(report_root)
     if summary is None:
         raise HTTPException(
             status_code=404,
             detail=f"No Stage1 summary found in {report_root}",
         )
-    
+
     return summary
 
 
@@ -102,29 +102,29 @@ async def get_latest_summary() -> Stage1Summary:
 async def get_trend(days: int = Query(14, ge=1, le=90)) -> Stage1Trend:
     """
     Get Stage1 trend analysis.
-    
+
     Priority:
     1. Load pre-computed stage1_trend.json if available
     2. Compute from recent summaries
-    
+
     Args:
         days: Number of days to analyze (1-90, default 14)
-    
+
     Returns:
         Stage1Trend object with series and rollups.
-    
+
     Raises:
         HTTPException: 404 if no data available.
     """
     report_root = get_report_root()
-    
+
     trend = load_trend(report_root, days=days)
     if trend is None:
         raise HTTPException(
             status_code=404,
             detail=f"No Stage1 trend data available in {report_root}",
         )
-    
+
     return trend
 
 
@@ -135,36 +135,36 @@ async def stage1_dashboard(
 ) -> Any:
     """
     Stage1 Ops Dashboard HTML page.
-    
+
     Shows:
     - Latest metrics badge (GO/HOLD/NO_GO)
     - Most recent measurement
     - Trend table (last N days)
     - Auto-refresh (30s)
-    
+
     Args:
         request: FastAPI request object
         days: Number of days to show in trend (1-90, default 14)
-    
+
     Returns:
         HTML page with Stage1 monitoring status.
     """
     templates = get_templates()
     report_root = get_report_root()
-    
+
     # Load data
     try:
         latest = load_latest_summary(report_root)
     except Exception as e:
         logger.error(f"Failed to load latest summary: {e}")
         latest = None
-    
+
     try:
         trend = load_trend(report_root, days=days)
     except Exception as e:
         logger.error(f"Failed to load trend: {e}")
         trend = None
-    
+
     # Build context
     context: Dict[str, Any] = {
         "request": request,
@@ -174,6 +174,5 @@ async def stage1_dashboard(
         "report_root": str(report_root),
         "has_data": latest is not None or trend is not None,
     }
-    
-    return templates.TemplateResponse(request, "ops_stage1.html", context)
 
+    return templates.TemplateResponse(request, "ops_stage1.html", context)

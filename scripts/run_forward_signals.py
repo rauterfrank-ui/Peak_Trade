@@ -24,6 +24,7 @@ Usage:
     # Mit spezifischer Config
     python scripts/run_forward_signals.py --config my_config.toml --strategy ma_crossover --symbol BTC/EUR
 """
+
 from __future__ import annotations
 
 import argparse
@@ -233,6 +234,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     except Exception as e:
         print(f"      FEHLER bei Signalberechnung: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 

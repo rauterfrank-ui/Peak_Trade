@@ -14,6 +14,7 @@ Usage:
     python scripts/report_paper_risk.py --run-name paper_fees_demo
     python scripts/report_paper_risk.py --trades reports/paper/paper_trades_...csv
 """
+
 from __future__ import annotations
 
 import argparse
@@ -279,7 +280,14 @@ def build_exposure_table(
         )
 
     df = positions_df.copy()
-    for col in ["quantity", "avg_price", "last_price", "market_value", "realized_pnl", "unrealized_pnl"]:
+    for col in [
+        "quantity",
+        "avg_price",
+        "last_price",
+        "market_value",
+        "realized_pnl",
+        "unrealized_pnl",
+    ]:
         if col in df.columns:
             df[col] = _to_float(df[col])
 

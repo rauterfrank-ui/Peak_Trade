@@ -693,4 +693,3 @@ curl http://localhost:8000/ops/stage1/trend?days=14
 ---
 
 *PR #197 – Phase 16K: Stage1 Ops Dashboard Panel – Merged 2025-12-20*
-

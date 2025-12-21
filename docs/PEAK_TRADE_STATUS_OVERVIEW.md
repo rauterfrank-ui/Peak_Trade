@@ -666,6 +666,7 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
 * `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
 * `docs/LIVE_READINESS_CHECKLISTS.md`
 * `docs/LIVE_TESTNET_TRACK_STATUS.md`
+* `docs/ops/WORKFLOW_MERGE_AND_FORMAT_SWEEP.md` – Ops Runbook für Merge + Format-Sweep Workflow
 * Diverse Phasen-Dokumente (`docs/PHASE_XX_*.md`)
 
 **Kernkomponenten (Auszug):**
@@ -981,7 +982,7 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
     - Live-Track UI Smoke-Test über `uvicorn "src.webui.app:create_app" --factory --reload --port 8000`
     - Keine Breaking Changes: Live-Track-Flow bleibt kompatibel, Severity-Logik ist ein Add-on-Layer über den bestehenden Risk-Limits.
 
-    **Details:** 
+    **Details:**
     - [`docs/PHASE_81_LIVE_SESSION_REGISTRY.md`](PHASE_81_LIVE_SESSION_REGISTRY.md)
     - [`docs/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md`](PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md)
 
@@ -1029,7 +1030,7 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 Der Live Alerts & Incident Runbooks Cluster (Phasen 82–85) ist vollständig implementiert und bildet die **operative Baseline für den 2026-Betrieb**:
 
 - **Alert-Pipeline (Phase 82):** Automatische Benachrichtigungen via Slack/E-Mail bei Risk-Events (GREEN→YELLOW→RED), Limit-Breaches und System-Problemen. Severity-basiertes Routing (INFO/WARN/CRITICAL) an konfigurierbare Channels.
-  
+
 - **Alert-Historie & Dashboard (Phase 83):** Persistierte Alerts sind über das `/alerts` Dashboard einsehbar. Filterung nach Severity, Category, Zeitfenster. API-Endpoint `/api/live/alerts` für programmatischen Zugriff.
 
 - **Incident Runbook Integration (Phase 84):** Alerts werden automatisch mit passenden Runbooks angereichert basierend auf `category`, `source` und `severity`. Runbooks erscheinen in Slack-Messages, E-Mails und im Dashboard als klickbare Links.
@@ -1136,7 +1137,7 @@ Die Phasen 80/81/83/84/85 bilden zusammen den Live-Track-Stack v1 inkl. Web-Dash
 - **Use-Cases:** Realistisches Testen, Monitoring, Reviews, Drills & Demos im Shadow-/Testnet-Mode sind voll unterstützt.
 
 **Kurz-Fazit:**  
-Der Live-Track-Stack v1 ist für Shadow-/Testnet-Betrieb operativ bereit („operator-ready"), 
+Der Live-Track-Stack v1 ist für Shadow-/Testnet-Betrieb operativ bereit („operator-ready"),
 während echte Live-Orders weiterhin bewusst nicht freigegeben sind.
 
 ---
@@ -1377,6 +1378,15 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 **Peak_Trade** – Ein produktionsnahes Trading-Research-Framework mit integrierter Safety-First-Architektur.
 
 ## Changelog
+- 2025-12-21 — PR #222 merged: feat(web): add merge+format-sweep workflow to ops hub — integrated workflow into /ops/workflows dashboard (5 workflows total, 2 commands, 3 docs refs).
+- 2025-12-21 — PR #220 merged: added comprehensive ops runbook for merge+format-sweep workflow (413 lines, includes quickstart, scenarios, troubleshooting, CI integration).
+- 2025-12-21 — PR #218 merged: added PR #217 post-merge ops documentation; verified Quarto non-blocking + path filter.
+- 2025-12-21 — PR #217 merged: added workflow script `merge_and_format_sweep.sh` for automated merge + format-sweep operations.
+- 2025-12-21 — PR #213 merged: added merge log for PR #212.
+- 2025-12-21 — PR #212 merged: added merge log for PR #211.
+- 2025-12-21 — PR #211 merged: added merge log for PR #210.
+- 2025-12-21 — PR #210 merged: added merge log for PR #209.
+- 2025-12-21 — PR #209 merged: added merge log for PR #208 (Ops Workflow Hub).
 - 2025-12-21: PR #206 – add ops workflow scripts bash syntax smoke guard (CI-safe)
 - 2025-12-21: PR #204 – docs(ops): workflow scripts documentation + automation infrastructure (vollständige Dokumentation + Helper-Scripts)
 - 2025-12-21: PR #203 – test(viz): matplotlib-based report/plot tests optional via extras (Core ohne Viz-Dependencies lauffähig)

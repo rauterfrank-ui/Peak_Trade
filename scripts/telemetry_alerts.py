@@ -60,13 +60,14 @@ logger = logging.getLogger(__name__)
 def load_config() -> dict:
     """Load alerting config (simple TOML loader)."""
     config_path = Path("config/telemetry_alerting.toml")
-    
+
     if not config_path.exists():
         logger.warning(f"Config not found: {config_path}, using defaults")
         return {}
-    
+
     try:
         import toml
+
         return toml.load(config_path)
     except ImportError:
         logger.warning("toml not available, using defaults")
@@ -160,7 +161,7 @@ Exit codes:
     # Run health checks
     logger.info(f"Running health checks (root: {args.root})...")
     health_report = None
-    
+
     try:
         report = run_health_checks(args.root)
         health_report = report.to_dict()
@@ -176,16 +177,16 @@ Exit codes:
     # Load trend data
     logger.info(f"Loading trend data (last {args.days} days)...")
     trend_report = None
-    
+
     try:
         if args.snapshots.exists():
             since_ts = datetime.now(timezone.utc) - timedelta(days=args.days)
             snapshots = load_snapshots(args.snapshots, since_ts=since_ts)
-            
+
             if snapshots:
                 rollup = compute_rollup(snapshots)
                 degradation = detect_degradation(snapshots, window_size=min(10, len(snapshots)))
-                
+
                 trend_report = {
                     "degradation": degradation,
                     "overall": {
@@ -205,25 +206,29 @@ Exit codes:
     # Build history and operator state (Phase 16J)
     history_config = config.get("telemetry", {}).get("alerting", {}).get("history", {})
     operator_config = config.get("telemetry", {}).get("alerting", {}).get("operator_actions", {})
-    
+
     history = None
     if history_config.get("enabled", False):
         history = AlertHistory(
-            history_path=Path(history_config.get("path", "data/telemetry/alerts/alerts_history.jsonl")),
+            history_path=Path(
+                history_config.get("path", "data/telemetry/alerts/alerts_history.jsonl")
+            ),
             retain_days=history_config.get("retain_days", 14),
             enabled=True,
         )
         logger.info("Alert history enabled")
-    
+
     operator_state = None
     if operator_config.get("enabled", False):
         operator_state = OperatorState(
-            state_path=Path(operator_config.get("state_path", "data/telemetry/alerts/alerts_state.json")),
+            state_path=Path(
+                operator_config.get("state_path", "data/telemetry/alerts/alerts_state.json")
+            ),
             enabled=True,
             suppress_critical_on_ack=operator_config.get("suppress_critical_on_ack", False),
         )
         logger.info("Operator actions enabled")
-    
+
     # Build alert engine
     logger.info(f"Evaluating alert rules (max {args.max} alerts)...")
     engine = AlertEngine(
@@ -263,12 +268,12 @@ Exit codes:
             webhook_config = alerting_config.get("webhook", {})
             url = webhook_config.get("url", "")
             enabled = webhook_config.get("enabled", False)
-            
+
             if not enabled or not url:
                 logger.error("Webhook sink not configured (enable + URL required)")
                 print("❌ Webhook sink not configured")
                 return 1
-            
+
             sink = WebhookAlertSink(url=url, enabled=True, timeout=10)
         else:
             logger.error(f"Unknown sink: {args.sink}")
@@ -277,17 +282,17 @@ Exit codes:
     # Send alerts + store + history
     send_failures = 0
     alert_store = get_global_alert_store()
-    
+
     for alert in alerts:
         success = sink.send(alert)
         delivery_status = "sent" if success else "failed"
-        
+
         if not success:
             send_failures += 1
-        
+
         # Store alert (for dashboard/API)
         alert_store.add(alert)
-        
+
         # Store in history (Phase 16J)
         if history:
             history.append(alert, delivery_status=delivery_status)

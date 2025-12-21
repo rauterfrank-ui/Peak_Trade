@@ -26,6 +26,7 @@ See also:
     - src/experiments/live_session_registry.py (LiveSessionRecord)
     - src/reporting/base.py (Report, ReportSection)
 """
+
 from __future__ import annotations
 
 import json
@@ -133,14 +134,16 @@ def build_multi_session_report(
 
     # Overview Section
     overview_data = _aggregate_records(records)
-    report.add_section(ReportSection(
-        title="Overview",
-        content_markdown=dict_to_markdown_table(
-            overview_data,
-            key_header="Metric",
-            value_header="Value",
-        ),
-    ))
+    report.add_section(
+        ReportSection(
+            title="Overview",
+            content_markdown=dict_to_markdown_table(
+                overview_data,
+                key_header="Metric",
+                value_header="Value",
+            ),
+        )
+    )
 
     # Session-Liste
     if records:
@@ -148,21 +151,25 @@ def build_multi_session_report(
 
         rows = []
         for r in records:
-            rows.append({
-                "run_id": r.run_id[:40] + "..." if len(r.run_id) > 40 else r.run_id,
-                "mode": r.mode,
-                "strategy": r.strategy_name,
-                "symbol": r.symbol,
-                "success": "✓" if r.success else "✗",
-                "steps": r.metrics.get("steps", 0),
-                "orders": r.metrics.get("total_orders_generated", 0),
-            })
+            rows.append(
+                {
+                    "run_id": r.run_id[:40] + "..." if len(r.run_id) > 40 else r.run_id,
+                    "mode": r.mode,
+                    "strategy": r.strategy_name,
+                    "symbol": r.symbol,
+                    "success": "✓" if r.success else "✗",
+                    "steps": r.metrics.get("steps", 0),
+                    "orders": r.metrics.get("total_orders_generated", 0),
+                }
+            )
 
         df = pd.DataFrame(rows)
-        report.add_section(ReportSection(
-            title="Session List",
-            content_markdown=df_to_markdown(df, max_rows=50),
-        ))
+        report.add_section(
+            ReportSection(
+                title="Session List",
+                content_markdown=df_to_markdown(df, max_rows=50),
+            )
+        )
 
     return report
 
@@ -412,8 +419,7 @@ def _aggregate_records(records: List["LiveSessionRecord"]) -> Dict[str, Any]:
     # Tier-Breakdown hinzufügen (mit lesbaren Labels)
     if by_tier:
         tier_display = ", ".join(
-            f"{tier_labels.get(k, k)}({v})"
-            for k, v in sorted(by_tier.items())
+            f"{tier_labels.get(k, k)}({v})" for k, v in sorted(by_tier.items())
         )
         result["By Tier"] = tier_display
 

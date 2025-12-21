@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-  
+
   <!-- Page Header -->
   <div class="flex items-center justify-between">
     <div>
@@ -33,7 +33,7 @@
       {% else %}
         <span class="text-2xl">🔴</span>
       {% endif %}
-      Health Status: 
+      Health Status:
       <span class="{% if health_report.status == 'ok' %}text-emerald-400{% elif health_report.status == 'warn' %}text-yellow-400{% else %}text-red-400{% endif %}">
         {{ health_report.status|upper }}
       </span>
@@ -102,11 +102,11 @@
     // Load alerts via API
     async function loadAlerts() {
       const container = document.getElementById('alerts-container');
-      
+
       try {
         const response = await fetch('/api/telemetry/alerts/latest?limit=10');
         const data = await response.json();
-        
+
         if (data.alerts.length === 0) {
           container.innerHTML = `
             <div class="text-center py-8 text-slate-400">
@@ -116,26 +116,26 @@
           `;
           return;
         }
-        
+
         const alertsHtml = data.alerts.map(alert => {
           const severityEmoji = {
             'info': 'ℹ️',
             'warn': '⚠️',
             'critical': '🔴'
           }[alert.severity] || '⚠️';
-          
+
           const severityColor = {
             'info': 'border-blue-500/30 bg-blue-500/5',
             'warn': 'border-yellow-500/30 bg-yellow-500/5',
             'critical': 'border-red-500/30 bg-red-500/5'
           }[alert.severity] || 'border-slate-700';
-          
+
           const severityBadge = {
             'info': 'bg-blue-500/10 text-blue-300',
             'warn': 'bg-yellow-500/10 text-yellow-300',
             'critical': 'bg-red-500/10 text-red-300'
           }[alert.severity] || '';
-          
+
           return `
             <div class="bg-slate-800/30 rounded p-4 border ${severityColor}">
               <div class="flex items-start justify-between mb-2">
@@ -148,16 +148,16 @@
                 </span>
               </div>
               <div class="text-xs text-slate-400 mb-2">
-                <span>${alert.source}</span> · 
+                <span>${alert.source}</span> ·
                 <span>${new Date(alert.timestamp_utc).toLocaleString()}</span>
               </div>
               <div class="text-xs text-slate-300 whitespace-pre-wrap">${alert.body}</div>
             </div>
           `;
         }).join('');
-        
+
         container.innerHTML = alertsHtml;
-        
+
       } catch (error) {
         container.innerHTML = `
           <div class="text-center py-8 text-red-400">
@@ -167,10 +167,10 @@
         `;
       }
     }
-    
+
     // Load on page load
     loadAlerts();
-    
+
     // Auto-refresh every 60 seconds
     setInterval(loadAlerts, 60000);
   </script>
@@ -194,7 +194,7 @@
 
     <!-- Time Windows Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      
+
       <!-- Last 24h -->
       {% if trends_summary.last_24h %}
       <div class="bg-slate-800/30 rounded p-4 border {% if trends_summary.last_24h.worst_severity == 'critical' %}border-red-500/30{% elif trends_summary.last_24h.worst_severity == 'warn' %}border-yellow-500/30{% else %}border-emerald-500/30{% endif %}">
@@ -308,7 +308,7 @@
 
   <!-- Disk Usage & Retention Policy Summary -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    
+
     <!-- Disk Usage -->
     <div class="bg-slate-900/50 rounded-lg border border-slate-800 p-6">
       <h2 class="text-lg font-semibold mb-4">📊 Disk Usage</h2>

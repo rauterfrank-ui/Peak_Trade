@@ -12,6 +12,7 @@ SCRIPTS = [
     Path("scripts/quick_pr_merge.sh"),
     Path("scripts/post_merge_workflow.sh"),
     Path("scripts/finalize_workflow_docs_pr.sh"),
+    Path("scripts/workflows/pr_merge_with_ops_audit.sh"),
 ]
 
 
@@ -36,8 +37,5 @@ def test_ops_workflow_script_bash_syntax_ok(script_path: Path) -> None:
         check=False,
     )
     assert proc.returncode == 0, (
-        f"Bash syntax error in {script_path}\n"
-        f"STDOUT:\n{proc.stdout}\n"
-        f"STDERR:\n{proc.stderr}\n"
+        f"Bash syntax error in {script_path}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}\n"
     )
-

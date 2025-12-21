@@ -5,6 +5,7 @@ Tests für scripts/smoke_test_testnet_stack.py (Phase 39)
 
 Testet das Testnet-Stack Smoke-Test-Script.
 """
+
 from __future__ import annotations
 
 import sys
@@ -363,7 +364,3 @@ class TestSmokeTestIntegration:
         assert "Order-Platzierung" in test_names
         assert "Executor-Order" in test_names
         assert "Order-Cancel" in test_names
-
-
-
-

@@ -33,11 +33,7 @@ class KrakenDataPipeline:
         >>> print(df.head())
     """
 
-    def __init__(
-        self,
-        cache_dir: Optional[str] = None,
-        use_cache: bool = True
-    ) -> None:
+    def __init__(self, cache_dir: Optional[str] = None, use_cache: bool = True) -> None:
         """
         Args:
             cache_dir: Cache-Verzeichnis (default: aus config.toml)
@@ -61,7 +57,7 @@ class KrakenDataPipeline:
         timeframe: str = "1h",
         limit: int = 720,
         since_ms: Optional[int] = None,
-        force_refresh: bool = False
+        force_refresh: bool = False,
     ) -> pd.DataFrame:
         """
         Holt und bereitet OHLCV-Daten von Kraken auf.
@@ -104,23 +100,21 @@ class KrakenDataPipeline:
             timeframe=timeframe,
             limit=limit,
             since_ms=since_ms,
-            use_cache=False  # Kraken-eigener Cache deaktiviert, wir nutzen unseren
+            use_cache=False,  # Kraken-eigener Cache deaktiviert, wir nutzen unseren
         )
 
         # 3. Normalisieren (Kraken-Daten sind bereits im richtigen Format)
         # Aber wir prüfen trotzdem und stellen sicher
-        df_normalized = self.normalizer.normalize(
-            df_raw,
-            ensure_utc=True,
-            drop_extra_columns=True
-        )
+        df_normalized = self.normalizer.normalize(df_raw, ensure_utc=True, drop_extra_columns=True)
 
         # 4. In Cache speichern
         if self.use_cache:
             logger.info(f"💾 Speichere in Cache: {cache_key}")
             self.cache.save(df_normalized, key=cache_key)
 
-        logger.info(f"✅ Geladen: {len(df_normalized)} Bars ({df_normalized.index[0]} bis {df_normalized.index[-1]})")
+        logger.info(
+            f"✅ Geladen: {len(df_normalized)} Bars ({df_normalized.index[0]} bis {df_normalized.index[-1]})"
+        )
         return df_normalized
 
     def fetch_and_resample(
@@ -130,7 +124,7 @@ class KrakenDataPipeline:
         target_timeframe: str = "1h",
         limit: int = 720,
         since_ms: Optional[int] = None,
-        force_refresh: bool = False
+        force_refresh: bool = False,
     ) -> pd.DataFrame:
         """
         Holt Daten in einem Timeframe und resampled sie.
@@ -167,7 +161,7 @@ class KrakenDataPipeline:
             timeframe=source_timeframe,
             limit=limit,
             since_ms=since_ms,
-            force_refresh=force_refresh
+            force_refresh=force_refresh,
         )
 
         # 2. Resamplen
@@ -206,18 +200,10 @@ class KrakenDataPipeline:
             self.cache.clear()
 
     def _generate_cache_key(
-        self,
-        symbol: str,
-        timeframe: str,
-        limit: int,
-        since_ms: Optional[int]
+        self, symbol: str, timeframe: str, limit: int, since_ms: Optional[int]
     ) -> str:
         """Generiert eindeutigen Cache-Key."""
-        key_parts = [
-            symbol.replace("/", "_"),
-            timeframe,
-            f"limit{limit}"
-        ]
+        key_parts = [symbol.replace("/", "_"), timeframe, f"limit{limit}"]
         if since_ms:
             key_parts.append(f"since{since_ms}")
 
@@ -226,11 +212,9 @@ class KrakenDataPipeline:
 
 # Convenience-Funktionen für schnellen Zugriff
 
+
 def fetch_kraken_data(
-    symbol: str,
-    timeframe: str = "1h",
-    limit: int = 720,
-    use_cache: bool = True
+    symbol: str, timeframe: str = "1h", limit: int = 720, use_cache: bool = True
 ) -> pd.DataFrame:
     """
     Convenience-Funktion: Holt Kraken-Daten mit voller Pipeline.
@@ -249,11 +233,7 @@ def fetch_kraken_data(
         >>> df = fetch_kraken_data("BTC/USD", "1h", limit=100)
     """
     pipeline = KrakenDataPipeline(use_cache=use_cache)
-    return pipeline.fetch_and_prepare(
-        symbol=symbol,
-        timeframe=timeframe,
-        limit=limit
-    )
+    return pipeline.fetch_and_prepare(symbol=symbol, timeframe=timeframe, limit=limit)
 
 
 def test_kraken_connection() -> bool:

@@ -10,6 +10,7 @@ Diese Tests verifizieren:
 
 Phase: Research-Track Integration (Ehlers DSP + Meta-Labeling)
 """
+
 from __future__ import annotations
 
 import pytest
@@ -22,6 +23,7 @@ from typing import Dict, Any
 # Check if FastAPI is available for web-related tests
 try:
     import fastapi
+
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
@@ -64,9 +66,9 @@ class TestEhlersCycleFilterStrategy:
         # Prüfe auf Research-Hinweis (verschiedene Varianten)
         desc_upper = strategy.meta.description.upper()
         assert (
-            "RESEARCH" in desc_upper or
-            "NICHT FÜR LIVE" in desc_upper or
-            "NOT FOR LIVE" in desc_upper
+            "RESEARCH" in desc_upper
+            or "NICHT FÜR LIVE" in desc_upper
+            or "NOT FOR LIVE" in desc_upper
         )
 
     def test_ehlers_instantiation_custom(self):
@@ -196,9 +198,9 @@ class TestMetaLabelingStrategy:
         # Prüfe auf Research-Hinweis (verschiedene Varianten)
         desc_upper = strategy.meta.description.upper()
         assert (
-            "RESEARCH" in desc_upper or
-            "NICHT FÜR LIVE" in desc_upper or
-            "NOT FOR LIVE" in desc_upper
+            "RESEARCH" in desc_upper
+            or "NICHT FÜR LIVE" in desc_upper
+            or "NOT FOR LIVE" in desc_upper
         )
 
     def test_meta_labeling_instantiation_custom(self):
