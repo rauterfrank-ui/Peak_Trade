@@ -5,6 +5,7 @@ Tests für src/live/alert_manager.py und src/live/alert_rules.py (Phase 66)
 
 Tests für Alert-Manager, Notifier und Alert-Regeln.
 """
+
 from __future__ import annotations
 
 import sys
@@ -224,7 +225,9 @@ def test_telegram_alert_notifier_stub() -> None:
 # =============================================================================
 
 
-def test_check_pnl_drop_alert(alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI) -> None:
+def test_check_pnl_drop_alert(
+    alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI
+) -> None:
     """Test: PnL-Drop-Rule löst Alert aus bei Drop > Threshold."""
     run_id = "test_run"
 
@@ -260,7 +263,9 @@ def test_check_pnl_drop_alert(alert_manager: AlertManager, fake_sink: FakeAlertS
         assert fake_sink.alerts[0].code == "PNL_DROP"
 
 
-def test_check_pnl_drop_no_alert(alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI) -> None:
+def test_check_pnl_drop_no_alert(
+    alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI
+) -> None:
     """Test: PnL-Drop-Rule löst keinen Alert aus bei Drop < Threshold."""
     run_id = "test_run"
 
@@ -289,7 +294,9 @@ def test_check_pnl_drop_no_alert(alert_manager: AlertManager, fake_sink: FakeAle
         assert len(fake_sink.alerts) == 0
 
 
-def test_check_no_events_alert(alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI) -> None:
+def test_check_no_events_alert(
+    alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI
+) -> None:
     """Test: No-Events-Rule löst Alert aus bei zu langer Stille."""
     run_id = "test_run"
 
@@ -314,7 +321,9 @@ def test_check_no_events_alert(alert_manager: AlertManager, fake_sink: FakeAlert
         assert fake_sink.alerts[0].code in ("NO_EVENTS", "NO_EVENTS_CRITICAL")
 
 
-def test_check_no_events_no_alert(alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI) -> None:
+def test_check_no_events_no_alert(
+    alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI
+) -> None:
     """Test: No-Events-Rule löst keinen Alert aus bei frischen Events."""
     run_id = "test_run"
 
@@ -338,7 +347,9 @@ def test_check_no_events_no_alert(alert_manager: AlertManager, fake_sink: FakeAl
         assert len(fake_sink.alerts) == 0
 
 
-def test_check_error_spike_alert(alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI) -> None:
+def test_check_error_spike_alert(
+    alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI
+) -> None:
     """Test: Error-Spike-Rule löst Alert aus bei zu vielen Fehlern."""
     run_id = "test_run"
 
@@ -347,7 +358,7 @@ def test_check_error_spike_alert(alert_manager: AlertManager, fake_sink: FakeAle
     events = [
         {
             "step": i,
-            "ts_event": (now - timedelta(minutes=10-i)).isoformat(),
+            "ts_event": (now - timedelta(minutes=10 - i)).isoformat(),
             "risk_reasons": f"Risk violation {i}" if i % 2 == 0 else "",
             "orders_rejected": 1 if i % 2 == 1 else 0,
         }
@@ -368,7 +379,9 @@ def test_check_error_spike_alert(alert_manager: AlertManager, fake_sink: FakeAle
         assert fake_sink.alerts[0].code in ("ERROR_SPIKE", "ERROR_SPIKE_CRITICAL")
 
 
-def test_check_error_spike_no_alert(alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI) -> None:
+def test_check_error_spike_no_alert(
+    alert_manager: AlertManager, fake_sink: FakeAlertSink, monitoring_api: MonitoringAPI
+) -> None:
     """Test: Error-Spike-Rule löst keinen Alert aus bei wenigen Fehlern."""
     run_id = "test_run"
 
@@ -377,7 +390,7 @@ def test_check_error_spike_no_alert(alert_manager: AlertManager, fake_sink: Fake
     events = [
         {
             "step": i,
-            "ts_event": (now - timedelta(minutes=10-i)).isoformat(),
+            "ts_event": (now - timedelta(minutes=10 - i)).isoformat(),
             "risk_reasons": "",
             "orders_rejected": 0,
         }
@@ -395,8 +408,3 @@ def test_check_error_spike_no_alert(alert_manager: AlertManager, fake_sink: Fake
 
         assert result is False
         assert len(fake_sink.alerts) == 0
-
-
-
-
-

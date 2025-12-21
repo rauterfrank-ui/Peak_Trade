@@ -25,6 +25,7 @@ Verwendung:
 Output:
     - reports/sweeps/{sweep_name}_top_candidates.toml
 """
+
 from __future__ import annotations
 
 import argparse
@@ -67,7 +68,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Sweep-Auswahl
     parser.add_argument(
-        "--sweep-name", "-s",
+        "--sweep-name",
+        "-s",
         type=str,
         required=True,
         help="Name des Sweeps (z.B. rsi_reversion_basic)",
@@ -75,13 +77,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Metrik-Optionen
     parser.add_argument(
-        "--metric", "-m",
+        "--metric",
+        "-m",
         type=str,
         default="metric_sharpe_ratio",
         help="Primäre Metrik für Sortierung (default: metric_sharpe_ratio)",
     )
     parser.add_argument(
-        "--fallback-metric", "-f",
+        "--fallback-metric",
+        "-f",
         type=str,
         default="metric_total_return",
         help="Fallback-Metrik falls primary fehlt (default: metric_total_return)",
@@ -89,7 +93,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Top-N
     parser.add_argument(
-        "--top-n", "-n",
+        "--top-n",
+        "-n",
         type=int,
         default=5,
         help="Anzahl der Top-Konfigurationen (default: 5)",
@@ -97,13 +102,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Output-Optionen
     parser.add_argument(
-        "--output", "-o",
+        "--output",
+        "-o",
         type=str,
         default="reports/sweeps",
         help="Ausgabe-Verzeichnis (default: reports/sweeps)",
     )
     parser.add_argument(
-        "--experiments-dir", "-e",
+        "--experiments-dir",
+        "-e",
         type=str,
         default="reports/experiments",
         help="Verzeichnis mit Experiment-Ergebnissen (default: reports/experiments)",
@@ -111,7 +118,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Logging
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -146,10 +154,10 @@ def format_params_summary(row: dict, param_cols: list) -> str:
 
 def run_from_args(args: argparse.Namespace) -> int:
     """Führt Top-N Promotion basierend auf Argumenten aus.
-    
+
     Args:
         args: Parsed command-line arguments
-        
+
     Returns:
         Exit code (0 = success, 1 = error)
     """
@@ -215,7 +223,7 @@ def run_from_args(args: argparse.Namespace) -> int:
                 parts.append(f"{val:>10.4f}" if pd.notna(val) else "       nan")
             if "metric_total_return" in df_top.columns and used_metric != "metric_total_return":
                 val = row["metric_total_return"]
-                parts.append(f"{val*100:>6.2f}%" if pd.notna(val) else "  nan%")
+                parts.append(f"{val * 100:>6.2f}%" if pd.notna(val) else "  nan%")
             # Parameter-Zusammenfassung
             params_str = format_params_summary(row.to_dict(), param_cols)
             if len(params_str) > 40:
@@ -254,4 +262,3 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

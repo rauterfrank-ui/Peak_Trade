@@ -150,9 +150,7 @@ def test_load_with_custom_filename(tmp_path: Path) -> None:
     )
 
     # Act
-    cfg = load_current_macro_regime_config(
-        base_dir=tmp_path, filename="2025-12-01_briefing.toml"
-    )
+    cfg = load_current_macro_regime_config(base_dir=tmp_path, filename="2025-12-01_briefing.toml")
 
     # Assert
     assert cfg.get("regime.primary") == "risk_on"

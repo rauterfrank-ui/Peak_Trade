@@ -418,5 +418,3 @@ mode = "manual_only"      # Sicher, nur Proposals
 **Letzte Aktualisierung:** 2025-12-12  
 **Version:** 1.0  
 **Autor:** Peak_Trade Governance Team
-
-

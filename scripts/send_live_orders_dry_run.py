@@ -12,6 +12,7 @@ Usage:
     python scripts/send_live_orders_dry_run.py --orders reports/live/preview_20251204_orders.csv
     python scripts/send_live_orders_dry_run.py --orders reports/live/preview_20251204_orders.csv --output-dir reports/live/executions
 """
+
 from __future__ import annotations
 
 import sys
@@ -128,7 +129,9 @@ def main(argv: List[str] | None = None) -> None:
     # Mode-Check
     live_mode = cfg.get("live.mode", "dry_run")
     if live_mode != "dry_run":
-        print(f"\n⚠️  Warnung: [live].mode = '{live_mode}', aber dieses Script ist nur für dry_run gedacht!")
+        print(
+            f"\n⚠️  Warnung: [live].mode = '{live_mode}', aber dieses Script ist nur für dry_run gedacht!"
+        )
         print("   Fahre trotzdem fort mit DryRunBroker (kein echter Handel).")
 
     # Orders-CSV laden

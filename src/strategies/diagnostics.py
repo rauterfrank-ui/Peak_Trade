@@ -30,6 +30,7 @@ Usage:
         else:
             print(f"[FAIL] {r.name}: {r.error}")
 """
+
 from __future__ import annotations
 
 import traceback
@@ -75,6 +76,7 @@ class StrategySmokeResult:
         data_health: Data-QC Status ("ok", "missing_file", "too_few_bars", "empty", "other")
         data_notes: Data-QC Freitext (z.B. "only 120 bars < min_bars=500")
     """
+
     name: str
     status: Literal["ok", "fail"]
     data_source: str = "synthetic"
@@ -135,8 +137,7 @@ def get_v11_official_strategies(config_path: str = "config/config.toml") -> List
 
 
 def get_strategy_category(
-    strategy_name: str,
-    config_path: str = "config/config.toml"
+    strategy_name: str, config_path: str = "config/config.toml"
 ) -> Optional[str]:
     """
     Ermittelt die Kategorie einer Strategie aus der Config.
@@ -162,8 +163,7 @@ def get_strategy_category(
 
 
 def get_strategy_defaults(
-    strategy_name: str,
-    config_path: str = "config/config.toml"
+    strategy_name: str, config_path: str = "config/config.toml"
 ) -> Dict[str, Any]:
     """
     Holt die Default-Parameter einer Strategie aus der Config.
@@ -297,7 +297,9 @@ def load_kraken_cache_ohlcv(
             cache_path = alt_candidates[0]
         else:
             available_files = list(cache_dir.glob("*.parquet"))
-            available_str = ", ".join([f.name for f in available_files]) if available_files else "keine"
+            available_str = (
+                ", ".join([f.name for f in available_files]) if available_files else "keine"
+            )
             raise FileNotFoundError(
                 f"Kraken cache nicht gefunden: {cache_filename}\n"
                 f"Gesuchter Pfad: {cache_path}\n"
@@ -339,8 +341,7 @@ def load_kraken_cache_ohlcv(
 
     if len(df) < required_bars:
         raise ValueError(
-            f"Nicht genuegend Daten im Cache: {len(df)} Bars vorhanden, "
-            f"{required_bars} benoetigt"
+            f"Nicht genuegend Daten im Cache: {len(df)} Bars vorhanden, {required_bars} benoetigt"
         )
 
     # Nur die letzten n_bars zurueckgeben
@@ -421,16 +422,13 @@ def _load_ohlcv_for_smoke(
 
         # Bei Data-QC-Fehler: Exception werfen (wird im Aufrufer gefangen)
         if not health.is_ok:
-            raise ValueError(
-                f"Data-QC fehlgeschlagen: {health.status}. {health.notes or ''}"
-            )
+            raise ValueError(f"Data-QC fehlgeschlagen: {health.status}. {health.notes or ''}")
 
         return df, health
 
     else:
         raise ValueError(
-            f"Unbekannte Datenquelle: '{data_source}'. "
-            f"Erlaubt: 'synthetic', 'kraken_cache'"
+            f"Unbekannte Datenquelle: '{data_source}'. Erlaubt: 'synthetic', 'kraken_cache'"
         )
 
 
@@ -457,6 +455,7 @@ def run_single_strategy_smoke(
         StrategySmokeResult mit Kennzahlen oder Fehlermeldung
     """
     import time
+
     start_time = time.perf_counter()
 
     try:
@@ -751,7 +750,9 @@ def format_smoke_result_line(result: StrategySmokeResult, show_data_info: bool =
             f"Trades: {trades_str:>4}"
         )
     else:
-        error_short = result.error[:50] + "..." if result.error and len(result.error) > 50 else result.error
+        error_short = (
+            result.error[:50] + "..." if result.error and len(result.error) > 50 else result.error
+        )
         # Phase 79: Data-Health-Info bei FAIL anzeigen
         health_info = ""
         if result.data_health and result.data_health != "ok":

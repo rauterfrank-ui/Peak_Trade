@@ -9,7 +9,7 @@ from src.reporting.trigger_training_report import TriggerTrainingEvent, TriggerO
 
 
 def _events_to_dataframe_with_session(
-    sessions: Sequence[Tuple[str, Sequence[TriggerTrainingEvent]]]
+    sessions: Sequence[Tuple[str, Sequence[TriggerTrainingEvent]]],
 ) -> pd.DataFrame:
     """Konvertiert (session_id, Events) in ein gemeinsames DataFrame mit session_id-Spalte."""
     records: List[Mapping[str, Any]] = []
@@ -95,25 +95,16 @@ def build_operator_meta_report(
     df["pnl_after_bars"] = pd.to_numeric(df["pnl_after_bars"], errors="coerce").fillna(0.0)
 
     # Outcome-Verteilung pro Session
-    session_outcome = (
-        df.groupby(["session_id", "outcome"])
-        .size()
-        .reset_index(name="count")
-    )
+    session_outcome = df.groupby(["session_id", "outcome"]).size().reset_index(name="count")
 
     # Globale Outcome-Verteilung
     global_outcome = (
-        df.groupby("outcome")
-        .size()
-        .reset_index(name="count")
-        .sort_values("count", ascending=False)
+        df.groupby("outcome").size().reset_index(name="count").sort_values("count", ascending=False)
     )
 
     # Durchschnittliche Reaktionszeit pro Session
     session_reaction = (
-        df.groupby("session_id")["reaction_delay_s"]
-        .mean()
-        .reset_index(name="avg_reaction_delay_s")
+        df.groupby("session_id")["reaction_delay_s"].mean().reset_index(name="avg_reaction_delay_s")
     )
 
     # Pain Score pro Session: Summe pnl_after_bars für MISSED/LATE/RULE_BREAK
@@ -125,18 +116,11 @@ def build_operator_meta_report(
         ]
     )
     pain_df = (
-        df[pain_mask]
-        .groupby("session_id")["pnl_after_bars"]
-        .sum()
-        .reset_index(name="pain_score")
+        df[pain_mask].groupby("session_id")["pnl_after_bars"].sum().reset_index(name="pain_score")
     )
 
     # Anzahl Events pro Session
-    n_events_df = (
-        df.groupby("session_id")
-        .size()
-        .reset_index(name="n_events")
-    )
+    n_events_df = df.groupby("session_id").size().reset_index(name="n_events")
 
     # HIT/MISSED-Rates pro Session
     hit_df = (
@@ -163,8 +147,12 @@ def build_operator_meta_report(
     overview["pain_score"] = overview["pain_score"].fillna(0.0)
 
     # Raten berechnen
-    overview["hit_rate"] = overview["n_hit"] / overview["n_events"].where(overview["n_events"] > 0, 1)
-    overview["missed_rate"] = overview["n_missed"] / overview["n_events"].where(overview["n_events"] > 0, 1)
+    overview["hit_rate"] = overview["n_hit"] / overview["n_events"].where(
+        overview["n_events"] > 0, 1
+    )
+    overview["missed_rate"] = overview["n_missed"] / overview["n_events"].where(
+        overview["n_events"] > 0, 1
+    )
 
     # Top-Sessions nach Pain Score
     top_pain = overview.sort_values("pain_score", ascending=False).head(5)

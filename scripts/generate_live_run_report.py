@@ -21,6 +21,7 @@ Usage:
     # Letzten Run anzeigen
     python -m scripts.generate_live_run_report --latest
 """
+
 from __future__ import annotations
 
 import argparse
@@ -170,6 +171,7 @@ Beispiele:
     except Exception as e:
         print(f"Fehler: {e}", file=sys.stderr)
         import traceback
+
         traceback.print_exc()
         return 1
 

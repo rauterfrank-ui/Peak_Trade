@@ -33,6 +33,11 @@ dev = [
 web = [
     "fastapi>=0.104.0",
     "uvicorn>=0.24.0",
+    "jinja2>=3.1.0",
+    "httpx>=0.25.0",  # Required by FastAPI TestClient
+]
+viz = [
+    "matplotlib>=3.8.0",
 ]
 otel = [
     "opentelemetry-api>=1.24.0",

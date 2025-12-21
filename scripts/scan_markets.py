@@ -61,7 +61,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
 
     # Start-Zeitpunkt
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation mit symbol-spezifischen Eigenschaften
     # BTC: höherer Preis, ETH: mittlerer Preis, LTC: niedriger Preis
@@ -90,23 +90,22 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     close_prices = base_price + trend + cycle + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * volatility),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
 
 def run_backtest_for_symbol(
-    symbol: str,
-    strategy_key: str,
-    cfg: Any,
-    n_bars: int = 200,
-    verbose: bool = False
+    symbol: str, strategy_key: str, cfg: Any, n_bars: int = 200, verbose: bool = False
 ) -> Dict[str, Any]:
     """
     Führt Backtest für ein Symbol aus.
@@ -153,50 +152,47 @@ def run_backtest_for_symbol(
     strategy_params = {"stop_pct": stop_pct}
 
     # Backtest durchführen
-    engine = BacktestEngine(
-        core_position_sizer=position_sizer,
-        risk_manager=risk_manager
-    )
+    engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
-        df=df,
-        strategy_signal_fn=strategy_signal_fn,
-        strategy_params=strategy_params
+        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
     )
 
     # Ergebnis-Dict erstellen (inkl. Regime-Infos aus metadata)
-    regime_dist = result.metadata.get('regime_distribution', {})
-    
+    regime_dist = result.metadata.get("regime_distribution", {})
+
     return {
-        'symbol': symbol,
-        'total_return': result.stats.get('total_return', 0.0),
-        'sharpe': result.stats.get('sharpe', 0.0),
-        'max_drawdown': result.stats.get('max_drawdown', 0.0),
-        'total_trades': result.stats.get('total_trades', 0),
-        'profit_factor': result.stats.get('profit_factor', 0.0),
-        'win_rate': result.stats.get('win_rate', 0.0),
-        'cagr': result.stats.get('cagr', 0.0),
-        'regime_distribution': regime_dist,
-        'result': result,
+        "symbol": symbol,
+        "total_return": result.stats.get("total_return", 0.0),
+        "sharpe": result.stats.get("sharpe", 0.0),
+        "max_drawdown": result.stats.get("max_drawdown", 0.0),
+        "total_trades": result.stats.get("total_trades", 0),
+        "profit_factor": result.stats.get("profit_factor", 0.0),
+        "win_rate": result.stats.get("win_rate", 0.0),
+        "cagr": result.stats.get("cagr", 0.0),
+        "regime_distribution": regime_dist,
+        "result": result,
     }
 
 
 def print_scan_table(results_df: pd.DataFrame, strategy_name: str):
     """Druckt formatierte Scan-Tabelle."""
 
-    print("\n" + "="*90)
+    print("\n" + "=" * 90)
     print(f"MARKET SCAN RESULTS - {strategy_name.upper()}")
-    print("="*90)
+    print("=" * 90)
 
     if len(results_df) == 0:
         print("Keine Ergebnisse verfügbar.")
         return
 
-    print(f"\n{'Rank':<6} {'Symbol':<12} {'Return':<10} {'Sharpe':<8} {'Max DD':<10} {'Trades':<8} {'PF':<8} {'Win %':<8}")
-    print("-"*90)
+    print(
+        f"\n{'Rank':<6} {'Symbol':<12} {'Return':<10} {'Sharpe':<8} {'Max DD':<10} {'Trades':<8} {'PF':<8} {'Win %':<8}"
+    )
+    print("-" * 90)
 
     for i, row in results_df.iterrows():
         rank = i + 1
-        symbol = row['symbol']
+        symbol = row["symbol"]
         ret = f"{row['total_return']:>7.2%}"
         sharpe = f"{row['sharpe']:>6.2f}"
         dd = f"{row['max_drawdown']:>7.2%}"
@@ -206,7 +202,7 @@ def print_scan_table(results_df: pd.DataFrame, strategy_name: str):
 
         print(f"{rank:<6} {symbol:<12} {ret:<10} {sharpe:<8} {dd:<10} {trades:<8} {pf:<8} {wr:<8}")
 
-    print("="*90 + "\n")
+    print("=" * 90 + "\n")
 
 
 def parse_args():
@@ -230,47 +226,36 @@ Examples:
 
   # Disable individual reports per symbol
   python scripts/scan_markets.py --no-individual-reports
-        """
+        """,
     )
 
     parser.add_argument(
-        "--strategy",
-        type=str,
-        default=None,
-        help="Strategy key (overrides config.toml)"
+        "--strategy", type=str, default=None, help="Strategy key (overrides config.toml)"
     )
 
     parser.add_argument(
-        "--run-name",
-        type=str,
-        default=None,
-        help="Optional name for this scan (for reports)"
+        "--run-name", type=str, default=None, help="Optional name for this scan (for reports)"
     )
 
     parser.add_argument(
         "--sort-by",
         type=str,
         default=None,
-        help="Sort metric (overrides config.toml). Options: total_return, sharpe, max_drawdown, profit_factor, total_trades"
+        help="Sort metric (overrides config.toml). Options: total_return, sharpe, max_drawdown, profit_factor, total_trades",
     )
 
     parser.add_argument(
-        "--ascending",
-        action="store_true",
-        help="Sort ascending (default: descending)"
+        "--ascending", action="store_true", help="Sort ascending (default: descending)"
     )
 
     parser.add_argument(
         "--no-individual-reports",
         action="store_true",
-        help="If set, no individual reports per symbol will be saved"
+        help="If set, no individual reports per symbol will be saved",
     )
 
     parser.add_argument(
-        "--bars",
-        type=int,
-        default=None,
-        help="Number of bars per backtest (overrides config.toml)"
+        "--bars", type=int, default=None, help="Number of bars per backtest (overrides config.toml)"
     )
 
     return parser.parse_args()
@@ -282,7 +267,7 @@ def main():
     args = parse_args()
 
     print("\n🔍 Peak_Trade Market Scanner")
-    print("="*70)
+    print("=" * 70)
 
     # Config laden
     print("\n⚙️  Lade Konfiguration...")
@@ -330,29 +315,27 @@ def main():
 
     # Scan durchführen
     print(f"\n🚀 Starte Market Scan für {len(universe)} Symbole...")
-    print("-"*70)
+    print("-" * 70)
 
     results = []
     for symbol in universe:
         try:
             result = run_backtest_for_symbol(
-                symbol=symbol,
-                strategy_key=strategy_key,
-                cfg=cfg,
-                n_bars=n_bars,
-                verbose=True
+                symbol=symbol, strategy_key=strategy_key, cfg=cfg, n_bars=n_bars, verbose=True
             )
             results.append(result)
 
             # Kurze Zusammenfassung
-            print(f"  ✅ Return: {result['total_return']:>7.2%} | "
-                  f"Sharpe: {result['sharpe']:>6.2f} | "
-                  f"Trades: {result['total_trades']:>4}")
+            print(
+                f"  ✅ Return: {result['total_return']:>7.2%} | "
+                f"Sharpe: {result['sharpe']:>6.2f} | "
+                f"Trades: {result['total_trades']:>4}"
+            )
 
             # Experiment-Record pro Symbol-Scan loggen
             run_name_symbol = f"{strategy_key}_{symbol.replace('/', '_')}_{scan_name}"
             log_experiment_from_result(
-                result=result['result'],
+                result=result["result"],
                 run_type="market_scan",
                 run_name=run_name_symbol,
                 strategy_key=strategy_key,
@@ -379,10 +362,10 @@ def main():
     rows = []
     for r in results:
         # Basis-Stats (ohne 'result' und 'regime_distribution')
-        row = {k: v for k, v in r.items() if k not in ['result', 'regime_distribution']}
-        
+        row = {k: v for k, v in r.items() if k not in ["result", "regime_distribution"]}
+
         # Regime-Verteilungen als separate Spalten hinzufügen
-        regime_dist = r.get('regime_distribution', {})
+        regime_dist = r.get("regime_distribution", {})
         for regime_key in [
             "TREND_UP_LOW_VOL",
             "TREND_UP_HIGH_VOL",
@@ -393,9 +376,9 @@ def main():
         ]:
             col_name = f"regime_{regime_key.lower()}"
             row[col_name] = regime_dist.get(regime_key, 0.0)
-        
+
         rows.append(row)
-    
+
     results_df = pd.DataFrame(rows)
 
     # Sortieren
@@ -421,13 +404,13 @@ def main():
     if not args.no_individual_reports:
         print("\n💾 Erstelle individuelle Reports pro Symbol...")
         for i, result in enumerate(results):
-            symbol = result['symbol']
+            symbol = result["symbol"]
             symbol_safe = symbol.replace("/", "_")
             report_name = f"{strategy_key}_{run_name}_{symbol_safe}"
 
             try:
                 save_full_report(
-                    result=result['result'],
+                    result=result["result"],
                     output_dir="reports",
                     run_name=report_name,
                     save_plots_flag=True,
@@ -438,8 +421,10 @@ def main():
                 print(f"  ⚠️  Warnung: Konnte Report für {symbol} nicht erstellen: {e}")
 
     print(f"\n✅ Market Scan abgeschlossen!")
-    print(f"   Beste Performance: {results_df.iloc[0]['symbol']} "
-          f"({results_df.iloc[0]['total_return']:.2%})")
+    print(
+        f"   Beste Performance: {results_df.iloc[0]['symbol']} "
+        f"({results_df.iloc[0]['total_return']:.2%})"
+    )
     print()
 
 

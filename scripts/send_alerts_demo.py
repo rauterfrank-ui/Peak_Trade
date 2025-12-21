@@ -12,6 +12,7 @@ Usage:
     python scripts/send_alerts_demo.py --alert-log logs/custom_alerts.log
     python scripts/send_alerts_demo.py --console-only
 """
+
 from __future__ import annotations
 
 import argparse

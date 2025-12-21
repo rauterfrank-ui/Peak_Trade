@@ -35,6 +35,7 @@ Referenzen:
 - "Price Impact" (Bouchaud et al.)
 - "More Statistical Properties of Order Books" (Bouchaud et al.)
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -191,7 +192,9 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
 
         # Config-Objekt erstellen
         self.cfg = BouchaudMicrostructureConfig(
-            use_orderbook_imbalance=self.config.get("use_orderbook_imbalance", use_orderbook_imbalance),
+            use_orderbook_imbalance=self.config.get(
+                "use_orderbook_imbalance", use_orderbook_imbalance
+            ),
             use_trade_signs=self.config.get("use_trade_signs", use_trade_signs),
             lookback_ticks=self.config.get("lookback_ticks", lookback_ticks),
             min_liquidity_filter=self.config.get("min_liquidity_filter", min_liquidity_filter),
@@ -266,9 +269,7 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
     def validate(self) -> None:
         """Validiert Parameter."""
         if self.cfg.lookback_ticks < 1:
-            raise ValueError(
-                f"lookback_ticks ({self.cfg.lookback_ticks}) muss >= 1 sein"
-            )
+            raise ValueError(f"lookback_ticks ({self.cfg.lookback_ticks}) muss >= 1 sein")
         if self.cfg.min_liquidity_filter < 0:
             raise ValueError(
                 f"min_liquidity_filter ({self.cfg.min_liquidity_filter}) muss >= 0 sein"
@@ -286,6 +287,3 @@ class BouchaudMicrostructureStrategy(BaseStrategy):
             f"lookback={self.cfg.lookback_ticks}ticks) "
             f"[SKELETON – NOT IMPLEMENTED]>"
         )
-
-
-

@@ -14,7 +14,7 @@ Stand: Dezember 2024
 # Daily Quick Check (1-2 Sekunden)
 python scripts/run_test_health_profile.py --profile daily_quick
 
-# Ergebnis: 
+# Ergebnis:
 # ✅ 100% Health Score
 # Reports in: reports/test_health/{timestamp}_daily_quick/
 ```

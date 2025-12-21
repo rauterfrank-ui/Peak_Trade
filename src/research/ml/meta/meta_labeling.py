@@ -22,6 +22,7 @@ Vorteile:
 Referenz:
 - "Advances in Financial Machine Learning" (López de Prado), Chapter 3
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -218,6 +219,3 @@ def _create_model(spec: MetaModelSpec) -> Any:
     raise NotImplementedError(
         f"Model type '{spec.model_type}' noch nicht implementiert (Research-Stub)"
     )
-
-
-

@@ -8,6 +8,7 @@ Testet:
 - log_market_scan_result() Logger
 - Analytics-Funktionen für Sweeps/Scans
 """
+
 from __future__ import annotations
 
 import json
@@ -273,10 +274,12 @@ class TestAnalyticsSweepFunctions:
         import pandas as pd
         from src.analytics.experiments_analysis import filter_sweeps
 
-        df = pd.DataFrame({
-            "run_type": ["sweep", "backtest", "sweep", "market_scan"],
-            "strategy_key": ["ma", "ma", "rsi", "ma"],
-        })
+        df = pd.DataFrame(
+            {
+                "run_type": ["sweep", "backtest", "sweep", "market_scan"],
+                "strategy_key": ["ma", "ma", "rsi", "ma"],
+            }
+        )
 
         result = filter_sweeps(df)
         assert len(result) == 2
@@ -300,10 +303,12 @@ class TestAnalyticsMarketScanFunctions:
         import pandas as pd
         from src.analytics.experiments_analysis import filter_market_scans
 
-        df = pd.DataFrame({
-            "run_type": ["market_scan", "backtest", "market_scan", "sweep"],
-            "symbol": ["BTC/EUR", "BTC/EUR", "ETH/EUR", "BTC/EUR"],
-        })
+        df = pd.DataFrame(
+            {
+                "run_type": ["market_scan", "backtest", "market_scan", "sweep"],
+                "symbol": ["BTC/EUR", "BTC/EUR", "ETH/EUR", "BTC/EUR"],
+            }
+        )
 
         result = filter_market_scans(df)
         assert len(result) == 2
@@ -314,17 +319,19 @@ class TestAnalyticsMarketScanFunctions:
         import pandas as pd
         from src.analytics.experiments_analysis import summarize_market_scans
 
-        df = pd.DataFrame({
-            "run_type": ["market_scan", "market_scan", "market_scan"],
-            "scan_name": ["daily", "daily", "daily"],
-            "strategy_key": ["ma", "ma", "ma"],
-            "symbol": ["BTC/EUR", "ETH/EUR", "LTC/EUR"],
-            "stats_json": [
-                '{"last_signal": 1.0}',
-                '{"last_signal": -1.0}',
-                '{"last_signal": 0.0}',
-            ],
-        })
+        df = pd.DataFrame(
+            {
+                "run_type": ["market_scan", "market_scan", "market_scan"],
+                "scan_name": ["daily", "daily", "daily"],
+                "strategy_key": ["ma", "ma", "ma"],
+                "symbol": ["BTC/EUR", "ETH/EUR", "LTC/EUR"],
+                "stats_json": [
+                    '{"last_signal": 1.0}',
+                    '{"last_signal": -1.0}',
+                    '{"last_signal": 0.0}',
+                ],
+            }
+        )
 
         summaries = summarize_market_scans(df)
         assert len(summaries) == 1
@@ -388,12 +395,17 @@ class TestSweepScriptDryRun:
         """Dry-Run beendet mit Exit-Code 0."""
         from scripts.run_sweep import main
 
-        exit_code = main([
-            "--strategy", "ma_crossover",
-            "--symbol", "BTC/EUR",
-            "--grid", '{"short_window": [5, 10]}',
-            "--dry-run",
-        ])
+        exit_code = main(
+            [
+                "--strategy",
+                "ma_crossover",
+                "--symbol",
+                "BTC/EUR",
+                "--grid",
+                '{"short_window": [5, 10]}',
+                "--dry-run",
+            ]
+        )
 
         assert exit_code == 0
 
@@ -405,11 +417,16 @@ class TestMarketScanScriptDryRun:
         """Dry-Run beendet mit Exit-Code 0."""
         from scripts.run_market_scan import main
 
-        exit_code = main([
-            "--strategy", "ma_crossover",
-            "--symbols", "BTC/EUR,ETH/EUR",
-            "--mode", "backtest-lite",
-            "--dry-run",
-        ])
+        exit_code = main(
+            [
+                "--strategy",
+                "ma_crossover",
+                "--symbols",
+                "BTC/EUR,ETH/EUR",
+                "--mode",
+                "backtest-lite",
+                "--dry-run",
+            ]
+        )
 
         assert exit_code == 0

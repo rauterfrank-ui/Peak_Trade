@@ -12,7 +12,7 @@
 
 - **G1 (Charter):** LLM Policy Critic Charter defined
 - **G2 (Core Implementation):** PolicyCritic engine + rules + packs implemented
-- **G3 (Validation):** 
+- **G3 (Validation):**
   - G3.5: 5 synthetic cycles tested
   - G3.6: UX improvements + tuning based on cycle results
 - **G3.7 (CI Integration):** GitHub Actions workflow deployed

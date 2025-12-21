@@ -19,9 +19,7 @@ Referenzen:
 - "A Rough Path Perspective on Volatility" (Bayer, Friz, Gatheral)
 - "Empirical Properties of Asset Returns" (Rama Cont)
 """
+
 from .vol_regime_overlay_strategy import VolRegimeOverlayStrategy
 
 __all__ = ["VolRegimeOverlayStrategy"]
-
-
-

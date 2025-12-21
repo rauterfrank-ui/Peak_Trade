@@ -28,6 +28,7 @@ See also:
     - src/live/run_logging.py (LiveRunLogger, LiveRunMetadata, LiveRunEvent)
     - src/reporting/base.py (Report, ReportSection)
 """
+
 from __future__ import annotations
 
 import json
@@ -124,16 +125,28 @@ def _build_summary_section(meta: Dict[str, Any], events_df: pd.DataFrame) -> Rep
     total_steps = len(events_df)
 
     # Orders summieren
-    total_orders = events_df["orders_generated"].sum() if "orders_generated" in events_df.columns else 0
+    total_orders = (
+        events_df["orders_generated"].sum() if "orders_generated" in events_df.columns else 0
+    )
     total_filled = events_df["orders_filled"].sum() if "orders_filled" in events_df.columns else 0
-    total_rejected = events_df["orders_rejected"].sum() if "orders_rejected" in events_df.columns else 0
-    total_blocked = events_df["orders_blocked"].sum() if "orders_blocked" in events_df.columns else 0
+    total_rejected = (
+        events_df["orders_rejected"].sum() if "orders_rejected" in events_df.columns else 0
+    )
+    total_blocked = (
+        events_df["orders_blocked"].sum() if "orders_blocked" in events_df.columns else 0
+    )
 
     # Signal-Änderungen
-    signal_changes = events_df["signal_changed"].sum() if "signal_changed" in events_df.columns else 0
+    signal_changes = (
+        events_df["signal_changed"].sum() if "signal_changed" in events_df.columns else 0
+    )
 
     # Position
-    final_position = events_df["position_size"].iloc[-1] if "position_size" in events_df.columns and len(events_df) > 0 else 0.0
+    final_position = (
+        events_df["position_size"].iloc[-1]
+        if "position_size" in events_df.columns and len(events_df) > 0
+        else 0.0
+    )
 
     # Laufzeit berechnen
     started_at = meta.get("started_at")
@@ -162,7 +175,9 @@ def _build_summary_section(meta: Dict[str, Any], events_df: pd.DataFrame) -> Rep
 
     return ReportSection(
         title="Summary",
-        content_markdown=dict_to_markdown_table(summary_data, key_header="Metric", value_header="Value"),
+        content_markdown=dict_to_markdown_table(
+            summary_data, key_header="Metric", value_header="Value"
+        ),
     )
 
 
@@ -200,7 +215,9 @@ def _build_signal_stats_section(events_df: pd.DataFrame) -> ReportSection:
     labeled_counts = {signal_labels.get(k, str(k)): v for k, v in signal_counts.items()}
 
     content_lines = ["**Signal Distribution:**", ""]
-    content_lines.append(dict_to_markdown_table(labeled_counts, key_header="Signal", value_header="Count"))
+    content_lines.append(
+        dict_to_markdown_table(labeled_counts, key_header="Signal", value_header="Count")
+    )
 
     # Signal-Änderungen zählen
     if "signal_changed" in events_df.columns:
@@ -226,7 +243,11 @@ def _build_order_stats_section(events_df: pd.DataFrame) -> ReportSection:
         )
 
     # Nur Zeilen mit Orders
-    orders_mask = events_df["orders_generated"] > 0 if "orders_generated" in events_df.columns else pd.Series([False] * len(events_df))
+    orders_mask = (
+        events_df["orders_generated"] > 0
+        if "orders_generated" in events_df.columns
+        else pd.Series([False] * len(events_df))
+    )
     order_events = events_df[orders_mask]
 
     if len(order_events) == 0:
@@ -237,10 +258,18 @@ def _build_order_stats_section(events_df: pd.DataFrame) -> ReportSection:
 
     stats = {
         "Events with Orders": len(order_events),
-        "Total Orders Generated": int(events_df["orders_generated"].sum()) if "orders_generated" in events_df.columns else 0,
-        "Total Filled": int(events_df["orders_filled"].sum()) if "orders_filled" in events_df.columns else 0,
-        "Total Rejected": int(events_df["orders_rejected"].sum()) if "orders_rejected" in events_df.columns else 0,
-        "Total Blocked (Risk)": int(events_df["orders_blocked"].sum()) if "orders_blocked" in events_df.columns else 0,
+        "Total Orders Generated": int(events_df["orders_generated"].sum())
+        if "orders_generated" in events_df.columns
+        else 0,
+        "Total Filled": int(events_df["orders_filled"].sum())
+        if "orders_filled" in events_df.columns
+        else 0,
+        "Total Rejected": int(events_df["orders_rejected"].sum())
+        if "orders_rejected" in events_df.columns
+        else 0,
+        "Total Blocked (Risk)": int(events_df["orders_blocked"].sum())
+        if "orders_blocked" in events_df.columns
+        else 0,
     }
 
     return ReportSection(

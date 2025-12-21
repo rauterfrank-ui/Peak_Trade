@@ -81,6 +81,15 @@ from .resilience import (
     health_check,
 )
 
+# Performance Monitoring
+from .performance import (
+    PerformanceMonitor,
+    PerformanceMetric,
+    MetricSummary,
+    performance_monitor,
+    performance_timer,
+)
+
 __all__ = [
     # Wave A (Stability): Error Taxonomy
     "PeakTradeError",
@@ -134,4 +143,10 @@ __all__ = [
     "HealthCheck",
     "HealthCheckResult",
     "health_check",
+    # Performance Monitoring
+    "PerformanceMonitor",
+    "PerformanceMetric",
+    "MetricSummary",
+    "performance_monitor",
+    "performance_timer",
 ]

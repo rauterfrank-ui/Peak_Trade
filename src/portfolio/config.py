@@ -49,8 +49,7 @@ class PortfolioConfig:
         valid_strategies = ["equal_weight", "fixed_weights", "vol_target"]
         if self.name not in valid_strategies:
             raise ValueError(
-                f"Unbekannte Portfolio-Strategie: '{self.name}'. "
-                f"Verfügbar: {valid_strategies}"
+                f"Unbekannte Portfolio-Strategie: '{self.name}'. Verfügbar: {valid_strategies}"
             )
 
         if self.max_single_weight <= 0 or self.max_single_weight > 1.0:

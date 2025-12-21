@@ -1,4 +1,5 @@
 """Smoke tests for operator convenience scripts."""
+
 from pathlib import Path
 import subprocess
 import sys
@@ -21,14 +22,13 @@ def test_install_shortcuts_dry_run():
 
     # Dry run should work even if Desktop doesn't exist (it just shows what would happen)
     result = subprocess.run(
-        [str(script), "--dry-run"],
-        cwd=str(repo_root),
-        capture_output=True,
-        text=True
+        [str(script), "--dry-run"], cwd=str(repo_root), capture_output=True, text=True
     )
 
     # Exit code 0 (success) or 1 (no Desktop dir on non-macOS) is acceptable for dry-run
-    assert result.returncode in [0, 1], f"Unexpected exit code: {result.returncode}\n{result.stderr}"
+    assert result.returncode in [0, 1], (
+        f"Unexpected exit code: {result.returncode}\n{result.stderr}"
+    )
 
     if result.returncode == 0:
         assert "Would create:" in result.stdout, "Dry run should show what would be created"
@@ -40,10 +40,7 @@ def test_install_shortcuts_help():
     script = repo_root / "scripts" / "install_desktop_shortcuts.sh"
 
     result = subprocess.run(
-        [str(script), "--help"],
-        cwd=str(repo_root),
-        capture_output=True,
-        text=True
+        [str(script), "--help"], cwd=str(repo_root), capture_output=True, text=True
     )
 
     assert result.returncode == 0, f"Help command failed: {result.stderr}"

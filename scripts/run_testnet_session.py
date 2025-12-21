@@ -37,6 +37,7 @@ WICHTIG:
 
 Zum Beenden: Ctrl+C (SIGINT) oder SIGTERM
 """
+
 from __future__ import annotations
 
 import argparse
@@ -216,28 +217,30 @@ def create_strategy(strategy_name: str, cfg: PeakConfig) -> BaseStrategy:
     # Weitere Strategien dynamisch importieren
     try:
         from src.strategies.momentum import MomentumStrategy
-        strategy_map["momentum_1h"] = lambda: MomentumStrategy.from_config(cfg, "strategy.momentum_1h")
+
+        strategy_map["momentum_1h"] = lambda: MomentumStrategy.from_config(
+            cfg, "strategy.momentum_1h"
+        )
     except ImportError:
         pass
 
     try:
         from src.strategies.rsi_reversion import RSIStrategy
+
         strategy_map["rsi_strategy"] = lambda: RSIStrategy.from_config(cfg, "strategy.rsi_strategy")
     except ImportError:
         pass
 
     try:
         from src.strategies.macd import MACDStrategy
+
         strategy_map["macd"] = lambda: MACDStrategy.from_config(cfg, "strategy.macd")
     except ImportError:
         pass
 
     if strategy_name not in strategy_map:
         available = list(strategy_map.keys())
-        raise ValueError(
-            f"Unbekannte Strategie: '{strategy_name}'. "
-            f"Verfuegbar: {available}"
-        )
+        raise ValueError(f"Unbekannte Strategie: '{strategy_name}'. Verfuegbar: {available}")
 
     return strategy_map[strategy_name]()
 
@@ -330,6 +333,7 @@ class TestnetSession:
 
     def _setup_signal_handlers(self) -> None:
         """Installiert Signal-Handler fuer graceful shutdown."""
+
         def shutdown_handler(signum: int, frame: Any) -> None:
             self._logger.info(f"[TESTNET SESSION] Shutdown-Signal empfangen (signal={signum})")
             self._shutdown_requested = True
@@ -349,8 +353,7 @@ class TestnetSession:
         Fuehrt Warmup durch: Holt historische Daten fuer Strategie.
         """
         self._logger.info(
-            f"[TESTNET SESSION] Starte Warmup: "
-            f"{self._session_config.warmup_candles} Candles..."
+            f"[TESTNET SESSION] Starte Warmup: {self._session_config.warmup_candles} Candles..."
         )
 
         try:
@@ -409,10 +412,12 @@ class TestnetSession:
             self._metrics.last_bar_time = now
 
             # Preis zum Buffer hinzufuegen (fuer Strategie)
-            self._price_buffer.append({
-                "timestamp": now,
-                "close": current_price,
-            })
+            self._price_buffer.append(
+                {
+                    "timestamp": now,
+                    "close": current_price,
+                }
+            )
 
             # Buffer begrenzen
             max_buffer = self._session_config.warmup_candles + 50
@@ -612,11 +617,12 @@ class TestnetSession:
             try:
                 self._run_logger.finalize()
                 self._logger.info(
-                    f"[TESTNET SESSION] Run-Logger finalisiert: "
-                    f"run_id={self._run_logger.run_id}"
+                    f"[TESTNET SESSION] Run-Logger finalisiert: run_id={self._run_logger.run_id}"
                 )
             except Exception as e:
-                self._logger.warning(f"[TESTNET SESSION] Run-Logger-Finalisierung fehlgeschlagen: {e}")
+                self._logger.warning(
+                    f"[TESTNET SESSION] Run-Logger-Finalisierung fehlgeschlagen: {e}"
+                )
 
     def _log_session_summary(self) -> None:
         """Loggt eine Zusammenfassung der Session."""
@@ -716,9 +722,7 @@ def build_testnet_session(
 
     # 4. Risk-Limits
     logger.info("Initialisiere Risk-Limits...")
-    risk_limits = LiveRiskLimits.from_config(
-        cfg, starting_cash=session_config.start_balance
-    )
+    risk_limits = LiveRiskLimits.from_config(cfg, starting_cash=session_config.start_balance)
 
     # 5. Safety-Guard
     safety_guard = SafetyGuard(env_config=env_config)
@@ -953,9 +957,7 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
 
     except EnvironmentNotTestnetError as e:
         logger.error(f"Environment-Fehler: {e}")
-        logger.error(
-            "Loesung: Setze [environment] mode = 'testnet' in config/config.toml"
-        )
+        logger.error("Loesung: Setze [environment] mode = 'testnet' in config/config.toml")
         return 1
 
     except ExchangeAPIError as e:

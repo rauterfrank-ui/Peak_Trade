@@ -1,5 +1,5 @@
 <!-- templates/peak_trade_dashboard/error.html -->
-<!-- 
+<!--
   Error Page Template
   ===================
   Generische Fehlerseite für 404, 500 und andere HTTP-Fehler.
@@ -9,7 +9,7 @@
 {% block content %}
 <div class="min-h-[60vh] flex items-center justify-center">
   <div class="text-center max-w-md mx-auto px-4">
-    
+
     {# Error Icon #}
     <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-800 mb-6">
       {% if error_code == 404 %}
@@ -20,18 +20,18 @@
       <span class="text-4xl">❌</span>
       {% endif %}
     </div>
-    
+
     {# Error Code #}
     <h1 class="text-6xl font-bold text-slate-300 mb-2">{{ error_code or '?' }}</h1>
-    
+
     {# Error Message #}
     <p class="text-lg text-slate-400 mb-6">
       {{ error_message or 'Ein unerwarteter Fehler ist aufgetreten.' }}
     </p>
-    
+
     {# Back Link #}
     {% if back_link %}
-    <a 
+    <a
       href="{{ back_link }}"
       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-medium transition-colors"
     >
@@ -39,7 +39,7 @@
       <span>{{ back_label or 'Zurück' }}</span>
     </a>
     {% else %}
-    <a 
+    <a
       href="/"
       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-medium transition-colors"
     >
@@ -47,7 +47,7 @@
       <span>Zum Dashboard</span>
     </a>
     {% endif %}
-    
+
   </div>
 </div>
 {% endblock %}

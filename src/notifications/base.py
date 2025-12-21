@@ -16,6 +16,7 @@ Notifier:
     Protocol/Interface für Alert-Versand.
     Implementierungen: ConsoleNotifier, FileNotifier, etc.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

@@ -16,6 +16,7 @@ WICHTIG: Phase 73 - Read-Only Simulation
     - Keine Exchange-API-Calls
     - Nur Simulation & Validierung
 """
+
 from __future__ import annotations
 
 import logging
@@ -189,8 +190,7 @@ class LiveDrillRunner:
         for expected_reason in scenario.expected_reasons:
             if expected_reason not in reason:
                 violations.append(
-                    f"Expected reason not found: '{expected_reason}' "
-                    f"(actual reason: '{reason}')"
+                    f"Expected reason not found: '{expected_reason}' (actual reason: '{reason}')"
                 )
 
         # Drill bestanden?
@@ -414,11 +414,3 @@ def get_default_live_drill_scenarios() -> List[LiveDrillScenario]:
     )
 
     return scenarios
-
-
-
-
-
-
-
-

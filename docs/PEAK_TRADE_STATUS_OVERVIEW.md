@@ -49,7 +49,7 @@ Ziel:
 | **Strategy-Layer (Prod)**       | Kernstrategien, produktive Signals, Tier-System                   | **≈ 96%**   |
 | **Strategy-Layer (R&D)**        | R&D-Strategien (Armstrong, El Karoui, Waves), Sweeps              | **≈ 98%**   |
 | **Portfolio & Risk**            | Portfolio-Strategien, RiskLimits, Kelly/Exposure, Checks          | **≈ 96%**   |
-| **Execution & Live-Stack**      | Paper/Testnet-Flows, Live-Risk-Gates, Order-Executors             | **≈ 95%**   |
+| **Execution & Live-Stack**      | Paper/Testnet-Flows, Live-Risk-Gates, Order-Executors, Telemetry Observability (Phase 16A–J: Events, Viewer, QA, Retention, Health, Trends, Alerting, Lifecycle) | **≈ 99%**   |
 | **Live-Track & Bridge**         | Strategy→Execution Bridge, Live-Session-Registry, Status-Overview | **≈ 96%**   |
 | **R&D Web-Dashboard**           | R&D Hub, Detail-View, Report-Gallery, Multi-Run-Comparison        | **100%**    |
 | **Monitoring & Alerts**         | CLI-Dashboards, Health-/Smoke-/Readiness-Checks                   | **≈ 95%**   |
@@ -666,6 +666,7 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
 * `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
 * `docs/LIVE_READINESS_CHECKLISTS.md`
 * `docs/LIVE_TESTNET_TRACK_STATUS.md`
+* `docs/ops/WORKFLOW_MERGE_AND_FORMAT_SWEEP.md` – Ops Runbook für Merge + Format-Sweep Workflow
 * Diverse Phasen-Dokumente (`docs/PHASE_XX_*.md`)
 
 **Kernkomponenten (Auszug):**
@@ -981,7 +982,7 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
     - Live-Track UI Smoke-Test über `uvicorn "src.webui.app:create_app" --factory --reload --port 8000`
     - Keine Breaking Changes: Live-Track-Flow bleibt kompatibel, Severity-Logik ist ein Add-on-Layer über den bestehenden Risk-Limits.
 
-    **Details:** 
+    **Details:**
     - [`docs/PHASE_81_LIVE_SESSION_REGISTRY.md`](PHASE_81_LIVE_SESSION_REGISTRY.md)
     - [`docs/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md`](PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md)
 
@@ -1029,7 +1030,7 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 Der Live Alerts & Incident Runbooks Cluster (Phasen 82–85) ist vollständig implementiert und bildet die **operative Baseline für den 2026-Betrieb**:
 
 - **Alert-Pipeline (Phase 82):** Automatische Benachrichtigungen via Slack/E-Mail bei Risk-Events (GREEN→YELLOW→RED), Limit-Breaches und System-Problemen. Severity-basiertes Routing (INFO/WARN/CRITICAL) an konfigurierbare Channels.
-  
+
 - **Alert-Historie & Dashboard (Phase 83):** Persistierte Alerts sind über das `/alerts` Dashboard einsehbar. Filterung nach Severity, Category, Zeitfenster. API-Endpoint `/api/live/alerts` für programmatischen Zugriff.
 
 - **Incident Runbook Integration (Phase 84):** Alerts werden automatisch mit passenden Runbooks angereichert basierend auf `category`, `source` und `severity`. Runbooks erscheinen in Slack-Messages, E-Mails und im Dashboard als klickbare Links.
@@ -1136,7 +1137,7 @@ Die Phasen 80/81/83/84/85 bilden zusammen den Live-Track-Stack v1 inkl. Web-Dash
 - **Use-Cases:** Realistisches Testen, Monitoring, Reviews, Drills & Demos im Shadow-/Testnet-Mode sind voll unterstützt.
 
 **Kurz-Fazit:**  
-Der Live-Track-Stack v1 ist für Shadow-/Testnet-Betrieb operativ bereit („operator-ready"), 
+Der Live-Track-Stack v1 ist für Shadow-/Testnet-Betrieb operativ bereit („operator-ready"),
 während echte Live-Orders weiterhin bewusst nicht freigegeben sind.
 
 ---
@@ -1360,7 +1361,34 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 | 2025-12-09 | (aktuell) | **Phase 78** – R&D Report-Gallery & Multi-Run Comparison v1 (API v1.3, Batch-Endpoint, Comparison-View) |
 | 2025-12-09 | (aktuell) | **Jahreskorrektur & 2026-ready** – Cluster 82–85 Datums-Referenzen auf Q4 2025 korrigiert, "Road to 2026" Abschnitt hinzugefügt |
 | 2025-12-09 | (aktuell) | **ExecutionPipeline Runbook v1.1** – Referenz auf `EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md` (v1.1, 2026-ready) in Abschnitt 9 und Cluster 82–85 ergänzt |
+| 2025-12-20 | (aktuell) | **Phase 16A** – Simplified Execution Pipeline for Learning (`src/execution_simple/`) – Standalone learning module mit Gates (PriceSanity, ResearchOnly, LotSize, MinNotional), SimulatedBrokerAdapter, dry-run demo, 16 tests |
+| 2025-12-20 | (aktuell) | **Phase 16B** – Execution Telemetry & Live-Track Bridge – ExecutionEvent schema (intent/order/fill), JsonlExecutionLogger (`logs/execution/<session>.jsonl`), `execution_bridge.py` (timeline + summary), Dashboard widget (`/live/execution/{session_id}`), 17 tests |
+| 2025-12-20 | (aktuell) | **Phase 16C** – Telemetry Viewer & Ops Pack – Read-only CLI (`scripts/view_execution_telemetry.py`), API endpoint (`/api/telemetry`), robust JSONL parsing mit Filter (session/type/symbol/time), Latency-Analyse, 14 tests, Merge Log PR #183 |
+| 2025-12-20 | (aktuell) | **Phase 16D** – Telemetry QA + Incident Playbook + Regression Gates – Golden fixtures (deterministisch), 18 regression gate tests (parse robustness, schema, latency sanity), Incident runbook (operator-first, copy/paste CLI), CSV export (`/api/telemetry?format=csv`), Merge Log PR #185 |
+| 2025-12-20 | (aktuell) | **Phase 16E** – Telemetry Retention & Compression – Automated log lifecycle management (age-based deletion, session-count protection, size limits), gzip compression (~80% reduction), safe-by-default CLI (`scripts/ops/telemetry_retention.py`, dry-run default), 22 tests, deterministic ordering, root-safety checks, Merge Log PR #186 |
+| 2025-12-20 | (aktuell) | **Phase 16F** – Telemetry Console & Health Monitoring – Ops dashboard (`/live/telemetry`) with session overview, disk usage, retention policy summary, health checks (disk/retention/compression/parse errors), CLI tool (`scripts/telemetry_health_check.py`, exit codes 0/2/3), API endpoint (`/api/telemetry/health`), 24 tests, Health runbook, customizable thresholds |
+| 2025-12-20 | (aktuell) | **Phase 16H** – Historical Health Trends Dashboard – Snapshot capture (`scripts/telemetry_health_snapshot.py`), JSONL append-only storage, Trends API (`/api/telemetry/health/trends?days=30`), Dashboard integration (24h/7d/30d windows), Rollup metrics (min/avg/max), Degradation detection, 26 tests, Trends runbook, Leading indicators guide |
+| 2025-12-20 | (aktuell) | **Phase 16I** – Real-time Alerting & Incident Hooks – Rule-based evaluation (health critical, degradation, leading indicators, parse errors), AlertEngine (dedupe + cooldown + rate limiting), Adapters (console, webhook), Alert Runner CLI (`scripts/telemetry_alerts.py`), Alerts API (`/api/telemetry/alerts/latest`), Dashboard integration (auto-refresh), 26 tests, Config-driven (safe by default), Dry-run mode, Exit codes (0/1/2), Alerting runbook |
+| 2025-12-20 | (aktuell) | **Phase 16J** – Alert Lifecycle & Noise Control – Alert History (JSONL persistence, retention), Operator State (ACK/SNOOZE with TTL), Engine integration (suppress based on operator actions), Lifecycle CLI (`scripts/telemetry_alerts_lifecycle.py` with subcommands: history/ack/snooze/unsnooze/stats), Config-driven (safe defaults), 17 tests, CRITICAL bypass ACK (configurable), Atomic state file writes, Auto-cleanup expired entries |
+| 2025-12-20 | (aktuell) | **Phase 16K** – Stage1 Ops Dashboard Panel – Read-only Web Dashboard für Stage1 (DRY-RUN) Monitoring mit JSON Schema v1 (daily summaries + trend), FastAPI Router (3 endpoints: HTML dashboard + JSON API), Go/No-Go Heuristic, Auto-Refresh (30s), Empty-State-Safe, Additiv (keine Breaking Changes), 25 tests, Merge Log PR #197 |
+| 2025-12-20 | (aktuell) | **Phase 16L** – Docker Ops Runner (Stage1) – Reproducible Docker execution für Stage1 Monitoring (frozen deps via uv.lock), Multi-stage Dockerfile, Compose-based runner, Report path resolution (ENV + CLI override), Backwards compatible (host unchanged), Shell wrappers + entrypoint, 12 tests, 3 docs (Implementation Summary, Verification Report, Operational Runbook), Merge Log PR #199 |
 
 ---
 
 **Peak_Trade** – Ein produktionsnahes Trading-Research-Framework mit integrierter Safety-First-Architektur.
+
+## Changelog
+- 2025-12-21 — PR #222 merged: feat(web): add merge+format-sweep workflow to ops hub — integrated workflow into /ops/workflows dashboard (5 workflows total, 2 commands, 3 docs refs).
+- 2025-12-21 — PR #220 merged: added comprehensive ops runbook for merge+format-sweep workflow (413 lines, includes quickstart, scenarios, troubleshooting, CI integration).
+- 2025-12-21 — PR #218 merged: added PR #217 post-merge ops documentation; verified Quarto non-blocking + path filter.
+- 2025-12-21 — PR #217 merged: added workflow script `merge_and_format_sweep.sh` for automated merge + format-sweep operations.
+- 2025-12-21 — PR #213 merged: added merge log for PR #212.
+- 2025-12-21 — PR #212 merged: added merge log for PR #211.
+- 2025-12-21 — PR #211 merged: added merge log for PR #210.
+- 2025-12-21 — PR #210 merged: added merge log for PR #209.
+- 2025-12-21 — PR #209 merged: added merge log for PR #208 (Ops Workflow Hub).
+- 2025-12-21: PR #206 – add ops workflow scripts bash syntax smoke guard (CI-safe)
+- 2025-12-21: PR #204 – docs(ops): workflow scripts documentation + automation infrastructure (vollständige Dokumentation + Helper-Scripts)
+- 2025-12-21: PR #203 – test(viz): matplotlib-based report/plot tests optional via extras (Core ohne Viz-Dependencies lauffähig)
+- 2025-12-21: PR #201 – Web-UI tests optional via extras (Core ohne Web-Stack lauffähig)
+- 2025-12-21: Workflow Scripts Dokumentation – Ops-Automations-Guide (post_merge_workflow, quick_pr_merge)

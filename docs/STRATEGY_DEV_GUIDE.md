@@ -432,8 +432,75 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         cls=MyNewStrategy,
         config_section="strategy.my_new_strategy",
         description="[Kurzbeschreibung]",
+        # Optional: R&D-Flags (für Research-Strategien)
+        is_live_ready=True,  # Für Live-Trading freigegeben?
+        tier="production",   # "production" oder "r_and_d"
+        allowed_environments=("backtest", "offline_backtest", "paper", "live", "research"),
     ),
 }
+```
+
+#### Registry-Flags Erklärung
+
+**`is_live_ready`** (Default: `True`)
+- `True` = Strategie kann in Live-Mode verwendet werden
+- `False` = Strategie ist R&D-only, blockiert im Live-Mode
+
+**`tier`** (Default: `"production"`)
+- `"production"` = Produktionsreife Strategie
+- `"r_and_d"` = Research-Strategie, benötigt `research.allow_r_and_d_strategies = true` in Config
+
+**`allowed_environments`** (Default: alle Environments erlaubt)
+- Tuple mit erlaubten Environment-Namen
+- Standard: `("backtest", "offline_backtest", "paper", "live", "research")`
+- R&D-Only Beispiel: `("backtest", "offline_backtest", "research")`
+
+#### Beispiele
+
+**Production-Ready Strategie:**
+```python
+"ma_crossover": StrategySpec(
+    key="ma_crossover",
+    cls=MACrossoverStrategy,
+    config_section="strategy.ma_crossover",
+    description="Moving Average Crossover (Trend-Following)",
+    # Defaults sind ok: is_live_ready=True, tier="production"
+)
+```
+
+**Research-Strategie (R&D-Only):**
+```python
+"ehlers_cycle_filter": StrategySpec(
+    key="ehlers_cycle_filter",
+    cls=EhlersCycleFilterStrategy,
+    config_section="strategy.ehlers_cycle_filter",
+    description="Ehlers DSP Cycle Filter (R&D-Only)",
+    is_live_ready=False,  # Nicht für Live-Trading
+    tier="r_and_d",
+    allowed_environments=("backtest", "offline_backtest", "research"),
+)
+```
+
+#### Gate-System
+
+Die Registry prüft automatisch 3 Gates:
+
+1. **Gate A: IS_LIVE_READY**
+   - Wenn `is_live_ready=False` und `environment.mode=live` → ValueError
+
+2. **Gate B: TIER**
+   - Wenn `tier="r_and_d"` und `research.allow_r_and_d_strategies=false` → ValueError
+
+3. **Gate C: ALLOWED_ENVIRONMENTS**
+   - Wenn aktuelles Environment nicht in `allowed_environments` → ValueError
+
+**Config für R&D-Strategien:**
+```toml
+[environment]
+mode = "backtest"  # Nicht "live"!
+
+[research]
+allow_r_and_d_strategies = true  # Explizit erlauben
 ```
 
 ### 4.6 Schritt 6: Config-Block anlegen
@@ -606,6 +673,35 @@ def test_my_new_strategy_from_config():
 
     assert strategy.param1 == 20
     assert strategy.param2 == 0.02
+
+@pytest.mark.smoke
+def test_my_new_strategy_smoke():
+    """Smoke test: Quick sanity check."""
+    from src.strategies.registry import create_strategy_from_config
+    from src.core.peak_config import load_config
+
+    cfg = load_config()
+    strategy = create_strategy_from_config("my_new_strategy", cfg)
+
+    # Minimal data
+    df = pd.DataFrame({
+        "close": [100, 101, 102],
+    }, index=pd.date_range("2024-01-01", periods=3, freq="1h"))
+
+    signals = strategy.generate_signals(df)
+
+    # Smoke test: No crashes, valid output
+    assert isinstance(signals, pd.Series)
+    assert len(signals) == 3
+```
+
+**Smoke Tests ausführen:**
+```bash
+# Nur Smoke Tests (schnell, ~1 Sekunde)
+pytest -m smoke -q
+
+# Alle Tests (vollständig)
+pytest -q
 ```
 
 ### 6.2 Interaktive Tests

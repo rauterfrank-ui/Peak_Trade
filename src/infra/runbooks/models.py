@@ -5,6 +5,7 @@ Peak_Trade: Runbook Models (Phase 84)
 
 Datenmodelle für Incident-Runbooks.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass

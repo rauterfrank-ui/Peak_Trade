@@ -8,6 +8,7 @@ Zentrale Verwaltung von Alerts mit Notifier-Integration.
 Nutzt das bestehende Alert-System (AlertEvent, AlertSink) und erweitert es
 um einen AlertManager für einfachere Nutzung.
 """
+
 from __future__ import annotations
 
 import logging
@@ -60,7 +61,11 @@ class AlertManager:
             notifiers: Liste von Alert-Sinks (Notifier)
         """
         self._notifiers = list(notifiers)
-        self._sink = MultiAlertSink(self._notifiers) if len(self._notifiers) > 1 else (self._notifiers[0] if self._notifiers else None)
+        self._sink = (
+            MultiAlertSink(self._notifiers)
+            if len(self._notifiers) > 1
+            else (self._notifiers[0] if self._notifiers else None)
+        )
 
     def raise_alert(
         self,
@@ -284,4 +289,3 @@ class TelegramAlertNotifier:
             f"[TELEGRAM-STUB] Would send alert to chat {self.chat_id}: "
             f"[{alert.level.name}] {alert.source} - {alert.code}: {alert.message}"
         )
-

@@ -15,6 +15,7 @@ Komponenten:
 Run:
     pytest tests/test_live_session_registry.py -v
 """
+
 from __future__ import annotations
 
 import json
@@ -188,9 +189,7 @@ class TestLiveSessionRecordRoundtrip:
 class TestRegisterLiveSessionRunWritesJson:
     """Tests für register_live_session_run() JSON-Schreibfunktion."""
 
-    def test_register_live_session_run_writes_json(
-        self, sample_record, temp_sessions_dir
-    ):
+    def test_register_live_session_run_writes_json(self, sample_record, temp_sessions_dir):
         """
         Test: register_live_session_run() schreibt JSON-Datei.
         """
@@ -305,9 +304,7 @@ class TestListSessionRecordsFiltersAndLimit:
         assert all(r.run_type == "live_session_shadow" for r in shadow_records)
 
         # Test: Filter nach status="completed"
-        completed_records = list_session_records(
-            base_dir=temp_sessions_dir, status="completed"
-        )
+        completed_records = list_session_records(base_dir=temp_sessions_dir, status="completed")
         assert len(completed_records) == 3
         assert all(r.status == "completed" for r in completed_records)
 
@@ -530,9 +527,7 @@ class TestGetSessionSummaryBasic:
 class TestRegistryFailureHandling:
     """Tests für Safety-Design: Registry-Fehler brechen Sessions nicht."""
 
-    def test_registry_failure_does_not_raise_if_caught_in_caller(
-        self, sample_record, tmp_path
-    ):
+    def test_registry_failure_does_not_raise_if_caught_in_caller(self, sample_record, tmp_path):
         """
         Test: Wenn register_live_session_run() fehlschlägt (z.B. IO-Fehler),
         kann der Caller die Exception abfangen und die Session fortsetzen.
@@ -560,9 +555,7 @@ class TestRegistryFailureHandling:
 
         try:
             # Versuche zu registrieren (mit gültigem Pfad)
-            registry_path = register_live_session_run(
-                sample_record, base_dir=tmp_path / "sessions"
-            )
+            registry_path = register_live_session_run(sample_record, base_dir=tmp_path / "sessions")
         except Exception as e:
             # Registry-Fehler nur loggen, nicht weitergeben
             registry_error = str(e)
@@ -1095,9 +1088,7 @@ class TestIntegration:
         all_records = list_session_records(base_dir=temp_sessions_dir)
         assert len(all_records) == 3
 
-        completed = list_session_records(
-            base_dir=temp_sessions_dir, status="completed"
-        )
+        completed = list_session_records(base_dir=temp_sessions_dir, status="completed")
         assert len(completed) == 2
 
         # 4. Summary abrufen

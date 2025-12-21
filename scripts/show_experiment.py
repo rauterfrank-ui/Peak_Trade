@@ -10,6 +10,7 @@ Usage:
     python scripts/show_experiment.py --run-id <UUID>
     python scripts/show_experiment.py --run-id abc12345-...
 """
+
 from __future__ import annotations
 
 import sys
@@ -92,9 +93,9 @@ def print_backtest_stats(stats: Dict[str, Any]) -> None:
     print(f"  CAGR:            {format_percent(stats.get('cagr'))}")
     print(f"  Sharpe Ratio:    {format_float(stats.get('sharpe'))}")
 
-    if stats.get('sortino') is not None:
+    if stats.get("sortino") is not None:
         print(f"  Sortino Ratio:   {format_float(stats.get('sortino'))}")
-    if stats.get('calmar') is not None:
+    if stats.get("calmar") is not None:
         print(f"  Calmar Ratio:    {format_float(stats.get('calmar'))}")
 
     print("\n--- TRADE-STATISTIKEN ---")
@@ -102,7 +103,7 @@ def print_backtest_stats(stats: Dict[str, Any]) -> None:
     print(f"  Win Rate:        {format_percent(stats.get('win_rate'))}")
     print(f"  Profit Factor:   {format_float(stats.get('profit_factor'))}")
 
-    if stats.get('blocked_trades') is not None:
+    if stats.get("blocked_trades") is not None:
         print(f"  Blocked Trades:  {stats.get('blocked_trades')}")
 
 

@@ -26,6 +26,7 @@ Usage:
     python scripts/paper_trade_from_orders.py --orders ... --enforce-live-risk
     python scripts/paper_trade_from_orders.py --orders ... --skip-live-risk
 """
+
 from __future__ import annotations
 
 import sys
@@ -283,9 +284,7 @@ def main(argv: List[str] | None = None) -> None:
                         f"fee={fill.fee or 0:.4f} {base_currency}"
                     )
                 elif result.is_rejected:
-                    print(
-                        f"[ORDER-LAYER] REJECTED {result.request.symbol}: {result.reason}"
-                    )
+                    print(f"[ORDER-LAYER] REJECTED {result.request.symbol}: {result.reason}")
 
         # Summary-Metriken aus ExecutionResults berechnen
         filled_results = [r for r in execution_results if r.is_filled and r.fill]
@@ -302,22 +301,32 @@ def main(argv: List[str] | None = None) -> None:
 
         # Leere DataFrames (Order-Layer hat kein Positions-/Trade-Tracking wie PaperBroker)
         import pandas as pd
-        positions_df = pd.DataFrame(columns=[
-            "symbol", "quantity", "avg_price", "last_price",
-            "market_value", "unrealized_pnl", "realized_pnl"
-        ])
-        trades_df = pd.DataFrame([
-            {
-                "ts": r.fill.timestamp.isoformat() if r.fill else None,
-                "symbol": r.fill.symbol if r.fill else None,
-                "side": r.fill.side if r.fill else None,
-                "quantity": r.fill.quantity if r.fill else None,
-                "price": r.fill.price if r.fill else None,
-                "fee": r.fill.fee if r.fill else None,
-                "client_order_id": r.request.client_id,
-            }
-            for r in filled_results
-        ])
+
+        positions_df = pd.DataFrame(
+            columns=[
+                "symbol",
+                "quantity",
+                "avg_price",
+                "last_price",
+                "market_value",
+                "unrealized_pnl",
+                "realized_pnl",
+            ]
+        )
+        trades_df = pd.DataFrame(
+            [
+                {
+                    "ts": r.fill.timestamp.isoformat() if r.fill else None,
+                    "symbol": r.fill.symbol if r.fill else None,
+                    "side": r.fill.side if r.fill else None,
+                    "quantity": r.fill.quantity if r.fill else None,
+                    "price": r.fill.price if r.fill else None,
+                    "fee": r.fill.fee if r.fill else None,
+                    "client_order_id": r.request.client_id,
+                }
+                for r in filled_results
+            ]
+        )
 
     else:
         # Alter PaperBroker (bestehende Logik)
@@ -341,15 +350,9 @@ def main(argv: List[str] | None = None) -> None:
 
         # Summary-Metriken berechnen (wie bisher)
         if not positions_df.empty:
-            total_market_value = float(
-                positions_df["market_value"].fillna(0.0).sum()
-            )
-            total_realized_pnl = float(
-                positions_df["realized_pnl"].fillna(0.0).sum()
-            )
-            total_unrealized_pnl = float(
-                positions_df["unrealized_pnl"].fillna(0.0).sum()
-            )
+            total_market_value = float(positions_df["market_value"].fillna(0.0).sum())
+            total_realized_pnl = float(positions_df["realized_pnl"].fillna(0.0).sum())
+            total_unrealized_pnl = float(positions_df["unrealized_pnl"].fillna(0.0).sum())
             n_positions = int(len(positions_df))
         else:
             total_market_value = 0.0
@@ -392,7 +395,9 @@ def main(argv: List[str] | None = None) -> None:
     print(f"   Unrealized PnL:         {total_unrealized_pnl:12.2f} {base_currency}")
     print(f"   Anzahl Orders:          {len(orders):12d}")
     print(f"   Anzahl Positions:       {n_positions:12d}")
-    print(f"   Fee-Modell:             fee_bps={fee_bps:.3f}, fee_min_per_order={fee_min_per_order:.4f}")
+    print(
+        f"   Fee-Modell:             fee_bps={fee_bps:.3f}, fee_min_per_order={fee_min_per_order:.4f}"
+    )
     print(f"   Slippage-Modell:        slippage_bps={slippage_bps:.3f}")
 
     print(f"\n💾 Reports gespeichert:")

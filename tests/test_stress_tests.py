@@ -8,6 +8,7 @@ Tests für:
 - run_stress_test_suite
 - StressScenarioConfig Validierung
 """
+
 from __future__ import annotations
 
 import pytest
@@ -305,8 +306,3 @@ def test_load_returns_for_top_config_dummy():
     assert returns is not None
     assert len(returns) == 100
     assert isinstance(returns.index, pd.DatetimeIndex)
-
-
-
-
-

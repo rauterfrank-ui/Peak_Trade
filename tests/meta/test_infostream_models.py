@@ -273,12 +273,6 @@ class TestIntegration:
         snippet_restored = LearningSnippet.from_dict(snippet.to_dict())
 
         # Timestamps sollten gleich sein (auf Sekunden-Ebene)
-        assert event_restored.created_at.replace(microsecond=0) == now.replace(
-            microsecond=0
-        )
-        assert packet_restored.created_at.replace(microsecond=0) == now.replace(
-            microsecond=0
-        )
-        assert snippet_restored.created_at.replace(microsecond=0) == now.replace(
-            microsecond=0
-        )
+        assert event_restored.created_at.replace(microsecond=0) == now.replace(microsecond=0)
+        assert packet_restored.created_at.replace(microsecond=0) == now.replace(microsecond=0)
+        assert snippet_restored.created_at.replace(microsecond=0) == now.replace(microsecond=0)

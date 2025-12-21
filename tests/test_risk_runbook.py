@@ -10,6 +10,7 @@ Testet:
 - format_runbook_for_operator() Formatierung
 - format_runbook_compact() Kompakt-Format
 """
+
 from __future__ import annotations
 
 import pytest

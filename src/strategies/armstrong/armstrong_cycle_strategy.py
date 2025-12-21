@@ -23,6 +23,7 @@ Warnung:
 - Hindsight-Bias ist ein bekanntes Problem
 - Nutze diese Strategie nur für explorative Analysen
 """
+
 from __future__ import annotations
 
 from datetime import date
@@ -46,26 +47,26 @@ from .cycle_model import (
 
 # Default Mapping: Phase → Zielposition (1=long, 0=flat, -1=short)
 DEFAULT_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
-    ArmstrongPhase.EXPANSION: 1,      # Long in Expansion
-    ArmstrongPhase.POST_CRISIS: 1,    # Long nach Crisis (Erholung)
-    ArmstrongPhase.CONTRACTION: 0,    # Flat in Contraction
-    ArmstrongPhase.PRE_CRISIS: 0,     # Flat vor Crisis
-    ArmstrongPhase.CRISIS: 0,         # Flat während Crisis (konservativ)
+    ArmstrongPhase.EXPANSION: 1,  # Long in Expansion
+    ArmstrongPhase.POST_CRISIS: 1,  # Long nach Crisis (Erholung)
+    ArmstrongPhase.CONTRACTION: 0,  # Flat in Contraction
+    ArmstrongPhase.PRE_CRISIS: 0,  # Flat vor Crisis
+    ArmstrongPhase.CRISIS: 0,  # Flat während Crisis (konservativ)
 }
 
 # Aggressives Mapping: Short in Crisis
 AGGRESSIVE_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
-    ArmstrongPhase.EXPANSION: 1,      # Long in Expansion
-    ArmstrongPhase.POST_CRISIS: 1,    # Long nach Crisis
-    ArmstrongPhase.CONTRACTION: 0,    # Flat in Contraction
-    ArmstrongPhase.PRE_CRISIS: -1,    # Short vor Crisis
-    ArmstrongPhase.CRISIS: -1,        # Short während Crisis
+    ArmstrongPhase.EXPANSION: 1,  # Long in Expansion
+    ArmstrongPhase.POST_CRISIS: 1,  # Long nach Crisis
+    ArmstrongPhase.CONTRACTION: 0,  # Flat in Contraction
+    ArmstrongPhase.PRE_CRISIS: -1,  # Short vor Crisis
+    ArmstrongPhase.CRISIS: -1,  # Short während Crisis
 }
 
 # Konservatives Mapping: Nur Long in Expansion
 CONSERVATIVE_PHASE_POSITION_MAP: Dict[ArmstrongPhase, int] = {
-    ArmstrongPhase.EXPANSION: 1,      # Long nur in Expansion
-    ArmstrongPhase.POST_CRISIS: 0,    # Flat sonst
+    ArmstrongPhase.EXPANSION: 1,  # Long nur in Expansion
+    ArmstrongPhase.POST_CRISIS: 0,  # Flat sonst
     ArmstrongPhase.CONTRACTION: 0,
     ArmstrongPhase.PRE_CRISIS: 0,
     ArmstrongPhase.CRISIS: 0,
@@ -130,7 +131,7 @@ class ArmstrongCycleStrategy(BaseStrategy):
 
     # ECM-Konstanten (aus Armstrong-Literatur)
     DEFAULT_CYCLE_LENGTH = 3141  # Tage (≈ π × 1000)
-    DEFAULT_HALF_CYCLE = 1570    # Tage (≈ 4.3 Jahre)
+    DEFAULT_HALF_CYCLE = 1570  # Tage (≈ 4.3 Jahre)
     DEFAULT_REFERENCE_DATE = "2015-10-01"  # ECM 2015.75 Turning Point
 
     def __init__(
@@ -352,13 +353,9 @@ class ArmstrongCycleStrategy(BaseStrategy):
     def validate(self) -> None:
         """Validiert Parameter."""
         if self.cycle_length_days < 30:
-            raise ValueError(
-                f"cycle_length_days ({self.cycle_length_days}) muss >= 30 sein"
-            )
+            raise ValueError(f"cycle_length_days ({self.cycle_length_days}) muss >= 30 sein")
         if self.event_window_days < 1:
-            raise ValueError(
-                f"event_window_days ({self.event_window_days}) muss >= 1 sein"
-            )
+            raise ValueError(f"event_window_days ({self.event_window_days}) muss >= 1 sein")
         if self.event_window_days >= self.cycle_length_days // 2:
             raise ValueError(
                 f"event_window_days ({self.event_window_days}) muss < "
@@ -397,6 +394,7 @@ class ArmstrongCycleStrategy(BaseStrategy):
 # =============================================================================
 # LEGACY API (Falls benötigt für Backwards Compatibility)
 # =============================================================================
+
 
 def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """
