@@ -4,6 +4,7 @@ Base Broker Adapter Interface.
 
 Defines contract for broker integrations.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

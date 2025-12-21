@@ -19,6 +19,7 @@ Usage:
     # Mehr Ergebnisse
     python scripts/list_experiments.py --limit 50
 """
+
 from __future__ import annotations
 
 import sys
@@ -203,8 +204,22 @@ def main(argv: List[str] | None = None) -> None:
     print()
 
     # Kompakte tabellarische Ausgabe
-    print(f"{'RUN_ID':<36} | {'TYPE':<18} | {'STRATEGY':<15} | {'RETURN':>8} | {'SHARPE':>7} | {'TIMESTAMP':<20}")
-    print("-" * 36 + "-+-" + "-" * 18 + "-+-" + "-" * 15 + "-+-" + "-" * 8 + "-+-" + "-" * 7 + "-+-" + "-" * 20)
+    print(
+        f"{'RUN_ID':<36} | {'TYPE':<18} | {'STRATEGY':<15} | {'RETURN':>8} | {'SHARPE':>7} | {'TIMESTAMP':<20}"
+    )
+    print(
+        "-" * 36
+        + "-+-"
+        + "-" * 18
+        + "-+-"
+        + "-" * 15
+        + "-+-"
+        + "-" * 8
+        + "-+-"
+        + "-" * 7
+        + "-+-"
+        + "-" * 20
+    )
 
     for _, row in df.iterrows():
         run_id = str(row.get("run_id", "-"))[:36]
@@ -214,7 +229,9 @@ def main(argv: List[str] | None = None) -> None:
         sharpe = format_float(row.get("sharpe"))
         timestamp = str(row.get("timestamp", "-"))[:20]
 
-        print(f"{run_id:<36} | {run_type:<18} | {strategy:<15} | {total_return:>8} | {sharpe:>7} | {timestamp:<20}")
+        print(
+            f"{run_id:<36} | {run_type:<18} | {strategy:<15} | {total_return:>8} | {sharpe:>7} | {timestamp:<20}"
+        )
 
     print()
     print(f"Gefunden: {len(df)} Experiment(s)")

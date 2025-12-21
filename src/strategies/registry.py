@@ -4,6 +4,7 @@ Strategy-Registry für Peak_Trade.
 
 Zentrale Registry aller verfügbaren Strategien mit einheitlichem Zugriff.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -19,6 +20,7 @@ from .macd import MACDStrategy
 from .trend_following import TrendFollowingStrategy
 from .mean_reversion import MeanReversionStrategy
 from .my_strategy import MyStrategy
+
 # Phase 40: Strategy Library Erweiterungen
 from .breakout import BreakoutStrategy
 from .vol_regime_filter import VolRegimeFilter
@@ -59,7 +61,13 @@ class StrategySpec:
     description: str = ""
     is_live_ready: bool = True
     tier: str = "production"
-    allowed_environments: tuple[str, ...] = ("backtest", "offline_backtest", "paper", "live", "research")
+    allowed_environments: tuple[str, ...] = (
+        "backtest",
+        "offline_backtest",
+        "paper",
+        "live",
+        "research",
+    )
 
 
 # Zentrale Registry aller verfügbaren Strategien
@@ -246,10 +254,7 @@ def get_strategy_spec(key: str) -> StrategySpec:
     """
     if key not in _STRATEGY_REGISTRY:
         available = ", ".join(get_available_strategy_keys())
-        raise KeyError(
-            f"Strategie '{key}' nicht in Registry. "
-            f"Verfügbare Strategien: {available}"
-        )
+        raise KeyError(f"Strategie '{key}' nicht in Registry. Verfügbare Strategien: {available}")
     return _STRATEGY_REGISTRY[key]
 
 

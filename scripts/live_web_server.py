@@ -10,6 +10,7 @@ Usage:
     python scripts/live_web_server.py --host 0.0.0.0 --port 9000
     python scripts/live_web_server.py --base-runs-dir /path/to/runs
 """
+
 from __future__ import annotations
 
 import argparse
@@ -42,8 +43,8 @@ def main():
     """Main-Funktion."""
     parser = argparse.ArgumentParser(
         description="Start Peak_Trade Live Web Dashboard\n\n"
-                    "WICHTIG: Read-only Web-Dashboard für Shadow/Testnet-Runs.\n"
-                    "Keine Order-Erzeugung, kein Start/Stop aus dem Web UI.",
+        "WICHTIG: Read-only Web-Dashboard für Shadow/Testnet-Runs.\n"
+        "Keine Order-Erzeugung, kein Start/Stop aus dem Web UI.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -110,4 +111,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

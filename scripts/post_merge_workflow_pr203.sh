@@ -27,9 +27,9 @@ echo "==> Write merge log: docs/ops/PR_203_MERGE_LOG.md"
 cat > docs/ops/PR_203_MERGE_LOG.md <<'MD'
 # PR #203 – test(viz): skip matplotlib-based report/plot tests when matplotlib missing
 
-**Status:** ✅ MERGED (squash)  
-**Merge Commit:** `85c3c3e`  
-**Branch:** `test/viz-tests-optional-matplotlib` (deleted)  
+**Status:** ✅ MERGED (squash)
+**Merge Commit:** `85c3c3e`
+**Branch:** `test/viz-tests-optional-matplotlib` (deleted)
 **Intent:** Optionalisierung der Matplotlib-basierten Report/Plot-Tests, sodass Core-Installationen ohne `matplotlib` sauber durchlaufen.
 
 ---
@@ -114,14 +114,14 @@ uv run pytest -q
 
 ## 8) Ops / Merge Metadata
 
-**Author:** rauterfrank-ui  
-**Date:** 2025-12-21 (Europe/Berlin)  
-**Merge Method:** Squash  
+**Author:** rauterfrank-ui
+**Date:** 2025-12-21 (Europe/Berlin)
+**Merge Method:** Squash
 **Branch Cleanup:** ✅ Branch deleted after merge
 
 ---
 
-**Fazit:**  
+**Fazit:**
 PR #203 macht Matplotlib-basierte Viz-Tests optional via `viz` Extra. Core-Installationen bleiben schlank und lauffähig, Viz-Workflows funktionieren mit explizitem Extra-Install.
 MD
 
@@ -222,4 +222,3 @@ echo ""
 echo "=== ✅ DONE ==="
 echo "PR docs merged + main up-to-date"
 git log -1 --oneline
-

@@ -27,6 +27,7 @@ Usage:
     # Preset-Tiering validieren
     result = validate_preset_tiering_compliance("core_balanced", allowed_tiers=["core"])
 """
+
 from __future__ import annotations
 
 import logging
@@ -128,11 +129,7 @@ def get_strategies_by_tier(
 
     tiering = load_tiering_config(tiering_config_path)
 
-    return [
-        strategy_id
-        for strategy_id, info in tiering.items()
-        if info.tier == tier
-    ]
+    return [strategy_id for strategy_id, info in tiering.items() if info.tier == tier]
 
 
 def get_tiering_aware_strategies(

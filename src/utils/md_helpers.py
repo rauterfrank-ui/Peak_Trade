@@ -87,4 +87,3 @@ def ensure_section_insert_at_top(
     new_text = before + h2 + "\n" + insert + after.lstrip("\n")
     path.write_text(new_text, encoding="utf-8")
     print(f"[insert] entry in {path}")
-

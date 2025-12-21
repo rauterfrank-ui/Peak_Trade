@@ -28,6 +28,7 @@ Usage:
     # Export
     python scripts/experiments_explorer.py export --sweep-name ma_crossover_opt_v1 --csv out/export.csv
 """
+
 from __future__ import annotations
 
 import argparse
@@ -116,7 +117,9 @@ def print_experiments_table(experiments: List[ExperimentSummary]) -> None:
         sharpe = format_float(exp.metrics.get("sharpe"))
         timestamp = exp.created_at.strftime("%Y-%m-%d %H:%M") if exp.created_at else "-"
 
-        print(f"{run_id:<36} | {run_type:<15} | {strategy:<15} | {total_return:>8} | {sharpe:>7} | {timestamp:<16}")
+        print(
+            f"{run_id:<36} | {run_type:<15} | {strategy:<15} | {total_return:>8} | {sharpe:>7} | {timestamp:<16}"
+        )
 
     print()
     print(f"Gefunden: {len(experiments)} Experiment(s)")
@@ -142,7 +145,9 @@ def print_ranked_table(ranked: List[RankedExperiment], metric: str) -> None:
         total_return = format_percent(s.metrics.get("total_return"))
         max_dd = format_percent(s.metrics.get("max_drawdown"))
 
-        print(f"{r.rank:>4} | {run_id:<12} | {run_type:<12} | {strategy:<12} | {metric_val:>10} | {total_return:>8} | {max_dd:>8}")
+        print(
+            f"{r.rank:>4} | {run_id:<12} | {run_type:<12} | {strategy:<12} | {metric_val:>10} | {total_return:>8} | {max_dd:>8}"
+        )
 
     print()
 
@@ -578,26 +583,38 @@ def cmd_export(args: argparse.Namespace) -> int:
 
         with csv_path.open("w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow([
-                "rank", "run_id", "run_type", "strategy", "symbol",
-                "total_return", "sharpe", "max_drawdown", "cagr",
-                "sweep_name", "timestamp"
-            ])
+            writer.writerow(
+                [
+                    "rank",
+                    "run_id",
+                    "run_type",
+                    "strategy",
+                    "symbol",
+                    "total_return",
+                    "sharpe",
+                    "max_drawdown",
+                    "cagr",
+                    "sweep_name",
+                    "timestamp",
+                ]
+            )
             for r in ranked:
                 s = r.summary
-                writer.writerow([
-                    r.rank,
-                    s.experiment_id,
-                    s.run_type,
-                    s.strategy_name or "",
-                    s.symbol or "",
-                    s.metrics.get("total_return", ""),
-                    s.metrics.get("sharpe", ""),
-                    s.metrics.get("max_drawdown", ""),
-                    s.metrics.get("cagr", ""),
-                    s.sweep_name or "",
-                    s.created_at.isoformat() if s.created_at else "",
-                ])
+                writer.writerow(
+                    [
+                        r.rank,
+                        s.experiment_id,
+                        s.run_type,
+                        s.strategy_name or "",
+                        s.symbol or "",
+                        s.metrics.get("total_return", ""),
+                        s.metrics.get("sharpe", ""),
+                        s.metrics.get("max_drawdown", ""),
+                        s.metrics.get("cagr", ""),
+                        s.sweep_name or "",
+                        s.created_at.isoformat() if s.created_at else "",
+                    ]
+                )
 
         print(f"\nCSV exportiert: {csv_path}")
         print(f"  Anzahl Zeilen: {len(ranked)}")

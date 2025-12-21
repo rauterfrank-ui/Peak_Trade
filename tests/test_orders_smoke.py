@@ -11,6 +11,7 @@ Testet:
 - Mapping-Helpers (from_live_order_request, from_orders_csv_row)
 - Integration: Orders -> Executor -> Results
 """
+
 from __future__ import annotations
 
 import sys
@@ -28,6 +29,7 @@ if str(ROOT_DIR) not in sys.path:
 # =============================================================================
 # 1. Dataclass Tests
 # =============================================================================
+
 
 class TestOrderRequest:
     """Tests fuer OrderRequest Dataclass."""
@@ -195,6 +197,7 @@ class TestOrderExecutionResult:
 # =============================================================================
 # 2. PaperOrderExecutor Tests
 # =============================================================================
+
 
 class TestPaperMarketContext:
     """Tests fuer PaperMarketContext."""
@@ -404,9 +407,7 @@ class TestPaperOrderExecutor:
         """execute_orders verarbeitet mehrere Orders."""
         from src.orders import PaperMarketContext, PaperOrderExecutor, OrderRequest
 
-        ctx = PaperMarketContext(
-            prices={"BTC/EUR": 50000.0, "ETH/EUR": 3000.0}
-        )
+        ctx = PaperMarketContext(prices={"BTC/EUR": 50000.0, "ETH/EUR": 3000.0})
         executor = PaperOrderExecutor(ctx)
 
         orders = [
@@ -425,6 +426,7 @@ class TestPaperOrderExecutor:
 # =============================================================================
 # 3. Mapper Tests
 # =============================================================================
+
 
 class TestFromLiveOrderRequest:
     """Tests fuer from_live_order_request Mapper."""
@@ -557,6 +559,7 @@ class TestToOrderRequests:
 # 4. Integration Tests
 # =============================================================================
 
+
 class TestIntegration:
     """Integration-Tests fuer den gesamten Order-Layer."""
 
@@ -650,6 +653,7 @@ class TestIntegration:
 # =============================================================================
 # 5. ExchangeOrderExecutor Stub Test
 # =============================================================================
+
 
 class TestExchangeOrderExecutorStub:
     """Test dass ExchangeOrderExecutor nicht implementiert ist."""

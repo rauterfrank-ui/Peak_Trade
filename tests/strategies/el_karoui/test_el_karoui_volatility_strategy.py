@@ -8,6 +8,7 @@ Testet:
 - R&D-Safety-Flags
 - Tier-Gating-Mechanismus
 """
+
 import pytest
 import numpy as np
 import pandas as pd
@@ -330,9 +331,7 @@ class TestSignalGeneration:
         assert "is_research_stub" in signals.attrs
         assert signals.attrs["is_research_stub"] is True
 
-    def test_empty_dataframe_handling(
-        self, strategy_default: ElKarouiVolatilityStrategy
-    ) -> None:
+    def test_empty_dataframe_handling(self, strategy_default: ElKarouiVolatilityStrategy) -> None:
         """Prüft Handling von leerem DataFrame."""
         empty_df = pd.DataFrame(
             columns=["open", "high", "low", "close", "volume"],
@@ -367,9 +366,7 @@ class TestSignalGeneration:
 class TestSignalGenerationWithDifferentConfigs:
     """Tests für Signal-Generierung mit verschiedenen Configs."""
 
-    def test_conservative_generates_more_flat(
-        self, dummy_ohlcv_data: pd.DataFrame
-    ) -> None:
+    def test_conservative_generates_more_flat(self, dummy_ohlcv_data: pd.DataFrame) -> None:
         """Prüft, dass conservative mehr Flat-Signale generiert."""
         strategy_default = ElKarouiVolatilityStrategy(
             regime_position_map="default",
@@ -391,9 +388,7 @@ class TestSignalGenerationWithDifferentConfigs:
 
         assert flat_conservative >= flat_default
 
-    def test_vol_scaling_affects_metadata(
-        self, dummy_ohlcv_data: pd.DataFrame
-    ) -> None:
+    def test_vol_scaling_affects_metadata(self, dummy_ohlcv_data: pd.DataFrame) -> None:
         """Prüft, dass Vol-Scaling die Scaling-Faktoren beeinflusst."""
         strategy_with_scaling = ElKarouiVolatilityStrategy(
             use_vol_scaling=True,
@@ -445,9 +440,7 @@ class TestHelperMethods:
 
         assert isinstance(regime, VolRegime)
 
-    def test_get_position_for_regime(
-        self, strategy_default: ElKarouiVolatilityStrategy
-    ) -> None:
+    def test_get_position_for_regime(self, strategy_default: ElKarouiVolatilityStrategy) -> None:
         """Prüft get_position_for_regime Methode."""
         pos_low = strategy_default.get_position_for_regime(VolRegime.LOW)
         pos_high = strategy_default.get_position_for_regime(VolRegime.HIGH)
@@ -455,9 +448,7 @@ class TestHelperMethods:
         assert pos_low in [0, 1]
         assert pos_high in [0, 1]
 
-    def test_get_strategy_info(
-        self, strategy_default: ElKarouiVolatilityStrategy
-    ) -> None:
+    def test_get_strategy_info(self, strategy_default: ElKarouiVolatilityStrategy) -> None:
         """Prüft get_strategy_info Methode."""
         info = strategy_default.get_strategy_info()
 
@@ -671,6 +662,3 @@ class TestSmoke:
         # Aber wegen rolling percentile kann das variieren, also prüfen wir nur, dass es funktioniert
         assert isinstance(regime_low, VolRegime)
         assert isinstance(regime_high, VolRegime)
-
-
-

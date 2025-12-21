@@ -261,15 +261,15 @@ Die Datei `config/scheduler/jobs.toml` enthält mehrere autonome Workflows:
 1. **autonomous_morning_analysis** (08:15)
    - Morgendliche Marktanalyse
    - Auto-Workflow-Typ
-   
+
 2. **autonomous_midday_check** (12:00)
    - Mittags-Check
    - Signal- und Risk-Validierung
-   
+
 3. **autonomous_evening_review** (20:00)
    - Tages-Review
    - Portfolio-Analyse
-   
+
 4. **autonomous_hourly_monitor** (jede Stunde, optional)
    - Kontinuierliches Monitoring
    - Standardmäßig deaktiviert
@@ -293,7 +293,7 @@ python scripts/run_autonomous_workflow.py [OPTIONS]
 
 Options:
   --config PATH              Pfad zur Config (default: config/config.toml)
-  --workflow-type TYPE       Workflow-Typ (signal_analysis, risk_check, 
+  --workflow-type TYPE       Workflow-Typ (signal_analysis, risk_check,
                             market_scan, portfolio_analysis, auto)
   --symbol SYMBOL           Trading-Symbol (default: BTC/EUR)
   --strategy STRATEGY       Strategie (default: ma_crossover)
@@ -438,7 +438,7 @@ if decision.should_execute:
 
 ### "No workflow executed"
 **Ursache:** Confidence-Score zu niedrig, Kriterien nicht erfüllt.
-**Lösung:** 
+**Lösung:**
 - `--verbose` nutzen um Decision-Details zu sehen
 - Metriken mit `--dry-run` prüfen
 - Kriterien-Thresholds anpassen
@@ -473,7 +473,7 @@ if decision.should_execute:
 1. **Custom Workflow Types**
    - Eigene Workflow-Typen definieren
    - Spezifische Decision-Criteria
-   
+
 2. **External Data Sources**
    - News-Feeds
    - Sentiment-Analysen

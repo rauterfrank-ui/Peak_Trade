@@ -1,6 +1,7 @@
 """
 Tests for Data Contract Gate (Wave A - Stability Plan)
 """
+
 import pandas as pd
 import pytest
 

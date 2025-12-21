@@ -15,6 +15,7 @@ WICHTIG: Phase 74 - Read-Only
     - Keine echten Orders
     - Keine Token-Werte exportieren (nur Boolean-Präsenz)
 """
+
 from __future__ import annotations
 
 import logging
@@ -172,8 +173,7 @@ def build_live_audit_snapshot(
     # Gating-Status
     effective_mode = safety_guard.get_effective_mode()
     confirm_token_present = (
-        env_config.confirm_token is not None
-        and env_config.confirm_token == LIVE_CONFIRM_TOKEN
+        env_config.confirm_token is not None and env_config.confirm_token == LIVE_CONFIRM_TOKEN
     )
 
     gating = LiveAuditGatingState(
@@ -336,7 +336,9 @@ def live_audit_snapshot_to_markdown(snapshot: LiveAuditSnapshot) -> str:
     lines.append(f"- **enable_live_trading (Gate 1):** {snapshot.gating.enable_live_trading}")
     lines.append(f"- **live_mode_armed (Gate 2 - Phase 71):** {snapshot.gating.live_mode_armed}")
     lines.append(f"- **live_dry_run_mode (Technisches Gate):** {snapshot.gating.live_dry_run_mode}")
-    lines.append(f"- **confirm_token_present:** {snapshot.gating.confirm_token_present} (Wert nicht exportiert)")
+    lines.append(
+        f"- **confirm_token_present:** {snapshot.gating.confirm_token_present} (Wert nicht exportiert)"
+    )
     lines.append(f"- **require_confirm_token:** {snapshot.gating.require_confirm_token}")
     lines.append("")
 
@@ -387,16 +389,10 @@ def live_audit_snapshot_to_markdown(snapshot: LiveAuditSnapshot) -> str:
     # Footer
     lines.append("---")
     lines.append("")
-    lines.append("**Note:** This snapshot is read-only. No config changes, no state changes, no real orders.")
+    lines.append(
+        "**Note:** This snapshot is read-only. No config changes, no state changes, no real orders."
+    )
     lines.append("**Phase 71-74:** Live-Execution-Path exists as design/Dry-Run only.")
     lines.append("**v1.0:** Research/Testnet system - no real live orders possible.")
 
     return "\n".join(lines)
-
-
-
-
-
-
-
-

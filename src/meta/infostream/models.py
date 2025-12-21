@@ -55,7 +55,7 @@ class IntelEvent:
         links: Liste von relevanten Links/Pfaden
         tags: Freie Tags, z.B. ["test_health", "nightly"]
         status: Lebenszyklus-Status ("new", "evaluated", "logged")
-        
+
         # Legacy-Felder für Rückwärtskompatibilität
         topic: Kurzer Titel (deprecated, use summary)
         importance: 1=low, 5=kritisch (deprecated, use severity)
@@ -67,28 +67,28 @@ class IntelEvent:
 
     # Wer liefert die Info?
     source: str = "unknown"
-    
+
     # Kategorie
     category: str = "general"
-    
+
     # Severity-Level
     severity: SeverityLevel = "info"
 
     # Worum geht es?
     summary: str = ""
-    
+
     # Details als Liste
     details: List[str] = field(default_factory=list)
-    
+
     # Relevante Links
     links: List[str] = field(default_factory=list)
 
     # Freie Tags
     tags: List[str] = field(default_factory=list)
-    
+
     # Status im Lebenszyklus
     status: EventStatus = "new"
-    
+
     # Legacy-Felder
     topic: str = ""
     importance: int = 3
@@ -115,9 +115,9 @@ class IntelEvent:
 class IntelEval:
     """
     KI-Auswertung eines IntelEvents (EVAL_PACKAGE).
-    
+
     Enthält die strukturierte Bewertung durch das KI-Modell.
-    
+
     Attributes:
         event_id: Referenz zum ursprünglichen Event
         short_eval: Kurze Bewertung (1-2 Sätze)
@@ -127,7 +127,7 @@ class IntelEval:
         risk_notes: Erläuterungen zur Risiko-Einschätzung
         tags_out: Tags, die das KI-Modell vorschlägt
     """
-    
+
     event_id: str = ""
     short_eval: str = ""
     key_findings: List[str] = field(default_factory=list)
@@ -135,11 +135,11 @@ class IntelEval:
     risk_level: RiskLevel = "none"
     risk_notes: str = ""
     tags_out: List[str] = field(default_factory=list)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """JSON-freundliche Repräsentation."""
         return asdict(self)
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> IntelEval:
         """Rekonstruiert ein IntelEval aus einem Dict."""
@@ -236,7 +236,7 @@ class LearningSnippet:
     # Primary: event_id + lines für Learning-Log
     event_id: str = ""
     lines: List[str] = field(default_factory=list)
-    
+
     # Auto-generated
     snippet_id: str = field(default_factory=lambda: _generate_id("learn"))
     created_at: datetime = field(default_factory=_now_utc)
@@ -262,16 +262,18 @@ class LearningSnippet:
     def to_markdown_block(self) -> str:
         """
         Erzeugt einen Markdown-Block für das Learning-Log.
-        
+
         Returns:
             str: Formatierter Markdown-Block
-            
+
         Beispiel:
             ### INF-20251211_143920_daily_quick
             - Punkt 1
             - Punkt 2
         """
-        lines_md = "\n".join(f"- {line}" for line in self.lines) if self.lines else "- (keine Learnings)"
+        lines_md = (
+            "\n".join(f"- {line}" for line in self.lines) if self.lines else "- (keine Learnings)"
+        )
         return f"### {self.event_id}\n{lines_md}\n"
 
     def to_dict(self) -> Dict[str, Any]:

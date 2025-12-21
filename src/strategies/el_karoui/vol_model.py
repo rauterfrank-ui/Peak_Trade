@@ -22,6 +22,7 @@ Warnung:
 - Regime-Wechsel können schnell erfolgen und schwer zu timen sein
 - Nutze dieses Modell nur für explorative Analysen
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -99,38 +100,30 @@ class ElKarouiVolConfig:
     # Risk-Multiplier pro Regime (für Position-Sizing)
     regime_multipliers: Dict[str, float] = field(
         default_factory=lambda: {
-            "low": 1.0,      # Volles Exposure bei niedriger Vol
+            "low": 1.0,  # Volles Exposure bei niedriger Vol
             "medium": 0.75,  # Reduziertes Exposure bei mittlerer Vol
-            "high": 0.50,    # Stark reduziertes Exposure bei hoher Vol
+            "high": 0.50,  # Stark reduziertes Exposure bei hoher Vol
         }
     )
 
     def __post_init__(self) -> None:
         """Validierung nach Initialisierung."""
         if self.vol_window < 2:
-            raise ValueError(
-                f"vol_window ({self.vol_window}) muss >= 2 sein"
-            )
+            raise ValueError(f"vol_window ({self.vol_window}) muss >= 2 sein")
         if self.lookback_window < self.vol_window:
             raise ValueError(
                 f"lookback_window ({self.lookback_window}) muss >= vol_window ({self.vol_window}) sein"
             )
         if not 0 < self.low_threshold < 1:
-            raise ValueError(
-                f"low_threshold ({self.low_threshold}) muss zwischen 0 und 1 sein"
-            )
+            raise ValueError(f"low_threshold ({self.low_threshold}) muss zwischen 0 und 1 sein")
         if not 0 < self.high_threshold < 1:
-            raise ValueError(
-                f"high_threshold ({self.high_threshold}) muss zwischen 0 und 1 sein"
-            )
+            raise ValueError(f"high_threshold ({self.high_threshold}) muss zwischen 0 und 1 sein")
         if self.low_threshold >= self.high_threshold:
             raise ValueError(
                 f"low_threshold ({self.low_threshold}) muss < high_threshold ({self.high_threshold}) sein"
             )
         if self.vol_target <= 0:
-            raise ValueError(
-                f"vol_target ({self.vol_target}) muss > 0 sein"
-            )
+            raise ValueError(f"vol_target ({self.vol_target}) muss > 0 sein")
 
     @classmethod
     def default(cls) -> "ElKarouiVolConfig":
@@ -420,9 +413,7 @@ class ElKarouiVolModel:
         vol = self.calculate_realized_vol(returns)
         percentiles = self.calculate_vol_percentile(vol)
 
-        regimes = percentiles.apply(
-            lambda x: self.regime_for_percentile(x).value
-        )
+        regimes = percentiles.apply(lambda x: self.regime_for_percentile(x).value)
 
         return regimes
 
@@ -675,6 +666,3 @@ __all__ = [
     "get_vol_regime",
     "get_vol_scaling_factor",
 ]
-
-
-

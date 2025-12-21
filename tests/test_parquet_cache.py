@@ -1,6 +1,7 @@
 """
 Tests for ParquetCache with atomic write operations (Wave A - Stability Plan)
 """
+
 import os
 import signal
 import tempfile
@@ -258,9 +259,7 @@ def test_crash_during_write_leaves_no_corruption(cache, sample_ohlcv_df, temp_ca
             # Verify it's the correct data
             pd.testing.assert_frame_equal(loaded_df, sample_ohlcv_df)
         except Exception as e:
-            pytest.fail(
-                f"Atomic write failed: cache file exists but is corrupted after crash: {e}"
-            )
+            pytest.fail(f"Atomic write failed: cache file exists but is corrupted after crash: {e}")
     else:
         # File doesn't exist - this is OK (write didn't complete)
         pass

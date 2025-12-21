@@ -4,6 +4,7 @@ Simulated Broker Adapter for Paper/Backtest.
 
 Provides instant fills with configurable slippage and fees.
 """
+
 from __future__ import annotations
 
 from ..types import ExecutionContext, Fill, Order, OrderSide

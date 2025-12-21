@@ -582,10 +582,10 @@ class DataFetcher:
     def __init__(self):
         self.circuit_breaker = create_module_circuit_breaker("data", "fetch")
         self.rate_limiter = create_module_rate_limiter("data", "api")
-        
+
         # Register health check
         health_check.register("data_fetcher", self._health_check)
-    
+
     @with_resilience("data", "fetch", use_rate_limiter=True)
     def fetch_market_data(self, symbol: str):
         """Fetch market data with full resilience."""
@@ -598,7 +598,7 @@ class DataFetcher:
             logger.error(f"Failed to fetch data for {symbol}: {e}")
             # Try cache as fallback
             return self._get_cached_data(symbol)
-    
+
     def _health_check(self):
         """Health check for data fetcher."""
         try:
@@ -607,11 +607,11 @@ class DataFetcher:
             return True, "Data fetcher operational"
         except Exception as e:
             return False, f"Data fetcher error: {e}"
-    
+
     def _fetch_from_api(self, symbol: str):
         # Actual API call
         pass
-    
+
     def _get_cached_data(self, symbol: str):
         # Fallback to cache
         pass

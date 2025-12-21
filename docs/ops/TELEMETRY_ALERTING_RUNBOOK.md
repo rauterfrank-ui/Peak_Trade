@@ -31,7 +31,7 @@ python scripts/telemetry_alerts.py
 # 🚨 2 alert(s) triggered:
 #   🔴 CRITICAL: 1
 #   ⚠️  WARN: 1
-# 
+#
 # ⚠️  [WARN] Telemetry Health Degradation Detected
 #   Source: rule:degradation_detected
 #   ...

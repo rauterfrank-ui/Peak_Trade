@@ -18,6 +18,7 @@ Usage:
     python scripts/live_operator_status.py
     python scripts/live_operator_status.py --config config/config.toml
 """
+
 from __future__ import annotations
 
 import argparse
@@ -76,12 +77,16 @@ def generate_live_status_report(
     lines.append("Gating Status:")
     lines.append(f"  enable_live_trading:    {env_config.enable_live_trading}")
     lines.append(f"  live_mode_armed:        {env_config.live_mode_armed} (Gate 2 - Phase 71)")
-    lines.append(f"  live_dry_run_mode:      {env_config.live_dry_run_mode} (Phase 71: Technisches Gate)")
+    lines.append(
+        f"  live_dry_run_mode:      {env_config.live_dry_run_mode} (Phase 71: Technisches Gate)"
+    )
     lines.append(f"  require_confirm_token:  {env_config.require_confirm_token}")
     if env_config.confirm_token:
         # Token-Präsenz anzeigen, aber nicht den Wert loggen (Security)
         token_valid = env_config.confirm_token == LIVE_CONFIRM_TOKEN
-        lines.append(f"  confirm_token:          {'SET (valid)' if token_valid else 'SET (invalid)'}")
+        lines.append(
+            f"  confirm_token:          {'SET (valid)' if token_valid else 'SET (invalid)'}"
+        )
     else:
         lines.append(f"  confirm_token:          NOT SET")
     lines.append("")
@@ -97,7 +102,9 @@ def generate_live_status_report(
     if not allowed:
         lines.append("Blocking Gates:")
         if env_config.environment != TradingEnvironment.LIVE:
-            lines.append(f"  ✗ Environment ist nicht LIVE (aktuell: {env_config.environment.value})")
+            lines.append(
+                f"  ✗ Environment ist nicht LIVE (aktuell: {env_config.environment.value})"
+            )
         if env_config.environment == TradingEnvironment.LIVE:
             if not env_config.enable_live_trading:
                 lines.append("  ✗ Gate 1: enable_live_trading = False")
@@ -124,11 +131,15 @@ def generate_live_status_report(
         lines.append("")
         lines.append("Live-Specific Limits (Phase 71: Design):")
         if cfg.max_live_notional_per_order is not None:
-            lines.append(f"  max_live_notional_per_order: {cfg.max_live_notional_per_order:.2f} {cfg.base_currency}")
+            lines.append(
+                f"  max_live_notional_per_order: {cfg.max_live_notional_per_order:.2f} {cfg.base_currency}"
+            )
         else:
             lines.append(f"  max_live_notional_per_order: NOT SET")
         if cfg.max_live_notional_total is not None:
-            lines.append(f"  max_live_notional_total:     {cfg.max_live_notional_total:.2f} {cfg.base_currency}")
+            lines.append(
+                f"  max_live_notional_total:     {cfg.max_live_notional_total:.2f} {cfg.base_currency}"
+            )
         else:
             lines.append(f"  max_live_notional_total:     NOT SET")
         if cfg.live_trade_min_size is not None:
@@ -242,17 +253,10 @@ def main() -> int:
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
         import traceback
+
         traceback.print_exc()
         return 1
 
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
-
-
-
-
-
-

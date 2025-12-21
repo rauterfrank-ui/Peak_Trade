@@ -28,6 +28,7 @@ See also:
     - docs/PHASE_81_LIVE_SESSION_REGISTRY.md
     - docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md
 """
+
 from __future__ import annotations
 
 import logging
@@ -92,9 +93,7 @@ class LiveSessionSummary(BaseModel):
     started_at: datetime = Field(..., description="Start-Zeitpunkt")
     ended_at: Optional[datetime] = Field(None, description="Ende-Zeitpunkt")
     mode: str = Field(..., description="shadow, testnet, paper, live")
-    environment: str = Field(
-        "", description="Environment-Info (Exchange + Symbol)"
-    )
+    environment: str = Field("", description="Environment-Info (Exchange + Symbol)")
     status: Literal["started", "completed", "failed", "aborted"] = Field(
         ..., description="Session-Status"
     )
@@ -154,7 +153,7 @@ class LiveSessionDetail(BaseModel):
     )
     risk_limit_details: List[dict] = Field(
         default_factory=list,
-        description="Limit-Check-Details [{name, value, limit, ratio, severity}]"
+        description="Limit-Check-Details [{name, value, limit, ratio, severity}]",
     )
 
     # Detail-Felder (Phase 85)
@@ -280,7 +279,9 @@ def _extract_risk_status_from_metrics(metrics: dict) -> tuple:
             risk_severity = sev
             # Status ableiten falls nicht gesetzt
             if "risk_status" not in metrics:
-                risk_status = {"ok": "green", "warning": "yellow", "breach": "red"}.get(sev, "green")
+                risk_status = {"ok": "green", "warning": "yellow", "breach": "red"}.get(
+                    sev, "green"
+                )
 
     # Aus risk_check Sub-Dict
     risk_check = metrics.get("risk_check", {})
@@ -289,7 +290,9 @@ def _extract_risk_status_from_metrics(metrics: dict) -> tuple:
             sev = risk_check["severity"]
             if sev in ("ok", "warning", "breach"):
                 risk_severity = sev
-                risk_status = {"ok": "green", "warning": "yellow", "breach": "red"}.get(sev, "green")
+                risk_status = {"ok": "green", "warning": "yellow", "breach": "red"}.get(
+                    sev, "green"
+                )
 
     return risk_status, risk_severity
 
@@ -512,9 +515,7 @@ def get_filtered_sessions(
             LiveSessionRecord,
         )
     except ImportError as e:
-        logger.warning(
-            "Could not import live_session_registry: %s - returning empty list", e
-        )
+        logger.warning("Could not import live_session_registry: %s - returning empty list", e)
         return []
 
     try:
@@ -586,9 +587,7 @@ def get_session_by_id(
             LiveSessionRecord,
         )
     except ImportError as e:
-        logger.warning(
-            "Could not import live_session_registry: %s", e
-        )
+        logger.warning("Could not import live_session_registry: %s", e)
         return None
 
     try:
@@ -659,6 +658,7 @@ def get_session_stats(
 
         # Mode-Verteilung berechnen (nicht in get_session_summary enthalten)
         from src.experiments.live_session_registry import list_session_records
+
         records = list_session_records(**kwargs)
         mode_counts: Dict[str, int] = {}
         for r in records:

@@ -28,6 +28,7 @@ Verwendung:
     trading_client = build_trading_client_from_config(cfg)
     order_id = trading_client.place_order("BTC/EUR", "buy", 0.01, "market")
 """
+
 from __future__ import annotations
 
 from .base import (

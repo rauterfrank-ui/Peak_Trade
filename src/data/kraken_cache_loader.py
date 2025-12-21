@@ -36,6 +36,7 @@ Usage:
     else:
         print(f"Data-Problem: {health.status} - {health.notes}")
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -69,6 +70,7 @@ class KrakenDataHealth:
         file_path: Pfad zur Quelldatei (fuer Debugging)
         lookback_days_actual: Tatsaechlicher Zeitraum in Tagen
     """
+
     status: HealthStatus
     num_bars: int = 0
     start_ts: Optional[pd.Timestamp] = None
@@ -210,7 +212,9 @@ def load_kraken_cache_window(
     # 1. Existenzcheck
     if not cache_path.exists():
         # Versuche alternative Namenskonventionen
-        alt_candidates = list(Path(base_path).glob(f"{market.replace('/', '_')}_{timeframe}*.parquet"))
+        alt_candidates = list(
+            Path(base_path).glob(f"{market.replace('/', '_')}_{timeframe}*.parquet")
+        )
         if alt_candidates:
             cache_path = alt_candidates[0]
             file_path_str = str(cache_path)

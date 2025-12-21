@@ -105,19 +105,19 @@ jobs:
           echo "======================================================================"
           echo "🏥 Test Health Automation - Profile: ${{ github.event.inputs.profile }}"
           echo "======================================================================"
-          
+
           # Command zusammenbauen
           CMD="python scripts/run_test_health_profile.py --profile ${{ github.event.inputs.profile }} --no-slack"
-          
+
           # Optional: Coverage-Checks überspringen
           if [ "${{ github.event.inputs.skip_coverage_checks }}" == "true" ]; then
             CMD="$CMD --no-strategy-coverage --no-switch-sanity"
             echo "ℹ️  Strategy-Coverage und Switch-Sanity übersprungen"
           fi
-          
+
           echo "📋 Command: $CMD"
           echo ""
-          
+
           # Ausführen
           if [ "${{ github.event.inputs.fail_on_violations }}" == "true" ]; then
             # Hart fehlschlagen bei Exit != 0
@@ -144,22 +144,22 @@ jobs:
           echo "======================================================================"
           echo "📋 Test Health Report Summary"
           echo "======================================================================"
-          
+
           # Finde letzten Report
           LATEST_DIR=$(ls -t reports/test_health/ 2>/dev/null | grep -v history.json | head -1)
-          
+
           if [ -n "$LATEST_DIR" ] && [ -f "reports/test_health/${LATEST_DIR}/summary.json" ]; then
             SUMMARY_JSON="reports/test_health/${LATEST_DIR}/summary.json"
-            
+
             HEALTH_SCORE=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(f\"{d['health_score']:.1f}\")")
             PASSED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['passed_checks'])")
             FAILED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['failed_checks'])")
-            
+
             echo "📄 Report: reports/test_health/${LATEST_DIR}/"
             echo "🏥 Health Score: ${HEALTH_SCORE} / 100.0"
             echo "✅ Passed: ${PASSED}"
             echo "❌ Failed: ${FAILED}"
-            
+
             # Markdown-Report anzeigen
             if [ -f "reports/test_health/${LATEST_DIR}/summary.md" ]; then
               echo ""
@@ -176,14 +176,14 @@ jobs:
           echo "======================================================================"
           echo "📦 InfoStream: Generating INFO_PACKET"
           echo "======================================================================"
-          
+
           # Generiere INFO_PACKET aus dem letzten TestHealth-Report
           python scripts/generate_infostream_packet.py \
             --source test_health \
             --latest \
             --output reports/infostream/events/ \
             || echo "⚠️  InfoStream-Paket konnte nicht generiert werden"
-          
+
           # Zeige das generierte Paket
           if [ -d "reports/infostream/events/" ]; then
             LATEST_PACKET=$(ls -t reports/infostream/events/*.txt 2>/dev/null | head -1)
@@ -239,7 +239,7 @@ jobs:
       - name: 🏥 Run Health Profile (${{ matrix.profile }})
         run: |
           echo "🏥 Running profile: ${{ matrix.profile }}"
-          
+
           # Skip Coverage-Checks für CI (vermeidet false-positive Fails)
           python scripts/run_test_health_profile.py \
             --profile ${{ matrix.profile }} \
@@ -290,12 +290,12 @@ jobs:
           echo "======================================================================"
           echo "Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           echo ""
-          
+
           # Ergebnis-Tracking
           TOTAL_PROFILES=0
           PASSED_PROFILES=0
           FAILED_PROFILES=0
-          
+
           # Liste der stabilen Profile für Nightly
           PROFILES=(
             "daily_quick"
@@ -305,15 +305,15 @@ jobs:
             "portfolio_core_eur_smoke"
             "portfolio_core_usdt_smoke"
           )
-          
+
           for PROFILE in "${PROFILES[@]}"; do
             echo ""
             echo "======================================================================"
             echo "🏥 Running: $PROFILE"
             echo "======================================================================"
-            
+
             TOTAL_PROFILES=$((TOTAL_PROFILES + 1))
-            
+
             # Run mit Skip-Flags (Coverage-Violations ignorieren)
             if python scripts/run_test_health_profile.py \
                 --profile "$PROFILE" \
@@ -340,7 +340,7 @@ jobs:
               fi
             fi
           done
-          
+
           echo ""
           echo "======================================================================"
           echo "📊 Nightly Summary"
@@ -349,12 +349,12 @@ jobs:
           echo "Passed:          $PASSED_PROFILES"
           echo "Failed:          $FAILED_PROFILES"
           echo "======================================================================"
-          
+
           # Speichere für Summary
           echo "total=$TOTAL_PROFILES" >> $GITHUB_OUTPUT
           echo "passed=$PASSED_PROFILES" >> $GITHUB_OUTPUT
           echo "failed=$FAILED_PROFILES" >> $GITHUB_OUTPUT
-          
+
           # Fail wenn mehr als 1 Profil fehlschlägt
           if [ "$FAILED_PROFILES" -gt 1 ]; then
             echo "❌ Nightly Suite FAILED: $FAILED_PROFILES profiles with failures"
@@ -391,7 +391,7 @@ jobs:
           echo "======================================================================"
           echo "📦 InfoStream: Generating INFO_PACKET for Nightly Suite"
           echo "======================================================================"
-          
+
           # Generiere INFO_PACKET aus dem letzten TestHealth-Report
           python scripts/generate_infostream_packet.py \
             --source test_health \
@@ -445,7 +445,7 @@ jobs:
         run: |
           echo "🧪 Running R&D Experimental Profile"
           echo "ℹ️  Hinweis: R&D-Tests dürfen fehlschlagen (experimentell)"
-          
+
           python scripts/run_test_health_profile.py \
             --profile r_and_d_experimental \
             --no-slack \

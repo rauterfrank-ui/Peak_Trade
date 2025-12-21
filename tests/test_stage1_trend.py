@@ -14,7 +14,7 @@ from src.obs.stage1.trend import compute_trend_from_summaries, load_trend
 def test_compute_trend_from_summaries_empty():
     """Test trend computation with no summaries."""
     trend = compute_trend_from_summaries([], days=7)
-    
+
     assert trend is not None
     assert len(trend.series) == 0
     assert trend.rollups.new_alerts_total == 0
@@ -26,8 +26,8 @@ def test_compute_trend_from_summaries_go_status():
     summaries = [
         Stage1Summary(
             schema_version=1,
-            date=f"2025-12-{20-i:02d}",
-            created_at_utc=f"2025-12-{20-i:02d}T10:00:00+00:00",
+            date=f"2025-12-{20 - i:02d}",
+            created_at_utc=f"2025-12-{20 - i:02d}T10:00:00+00:00",
             report_dir="/tmp",
             metrics=Stage1Metrics(
                 new_alerts=0,
@@ -40,9 +40,9 @@ def test_compute_trend_from_summaries_go_status():
         )
         for i in range(7)
     ]
-    
+
     trend = compute_trend_from_summaries(summaries, days=7)
-    
+
     assert len(trend.series) == 7
     assert trend.rollups.new_alerts_total == 0
     assert trend.rollups.critical_days == 0
@@ -55,8 +55,8 @@ def test_compute_trend_from_summaries_no_go_critical():
     summaries = [
         Stage1Summary(
             schema_version=1,
-            date=f"2025-12-{20-i:02d}",
-            created_at_utc=f"2025-12-{20-i:02d}T10:00:00+00:00",
+            date=f"2025-12-{20 - i:02d}",
+            created_at_utc=f"2025-12-{20 - i:02d}T10:00:00+00:00",
             report_dir="/tmp",
             metrics=Stage1Metrics(
                 new_alerts=0,
@@ -69,9 +69,9 @@ def test_compute_trend_from_summaries_no_go_critical():
         )
         for i in range(7)
     ]
-    
+
     trend = compute_trend_from_summaries(summaries, days=7)
-    
+
     assert trend.rollups.critical_days == 1
     assert trend.rollups.go_no_go == "NO_GO"
     assert any("critical alerts" in r for r in trend.rollups.reasons)
@@ -82,8 +82,8 @@ def test_compute_trend_from_summaries_hold_high_alerts():
     summaries = [
         Stage1Summary(
             schema_version=1,
-            date=f"2025-12-{20-i:02d}",
-            created_at_utc=f"2025-12-{20-i:02d}T10:00:00+00:00",
+            date=f"2025-12-{20 - i:02d}",
+            created_at_utc=f"2025-12-{20 - i:02d}T10:00:00+00:00",
             report_dir="/tmp",
             metrics=Stage1Metrics(
                 new_alerts=2,  # Total will be 14 over 7 days
@@ -96,9 +96,9 @@ def test_compute_trend_from_summaries_hold_high_alerts():
         )
         for i in range(7)
     ]
-    
+
     trend = compute_trend_from_summaries(summaries, days=7)
-    
+
     assert trend.rollups.new_alerts_total == 14
     assert trend.rollups.go_no_go == "HOLD"
     assert any("new_alerts_total" in r for r in trend.rollups.reasons)
@@ -109,8 +109,8 @@ def test_compute_trend_from_summaries_averages():
     summaries = [
         Stage1Summary(
             schema_version=1,
-            date=f"2025-12-{20-i:02d}",
-            created_at_utc=f"2025-12-{20-i:02d}T10:00:00+00:00",
+            date=f"2025-12-{20 - i:02d}",
+            created_at_utc=f"2025-12-{20 - i:02d}T10:00:00+00:00",
             report_dir="/tmp",
             metrics=Stage1Metrics(
                 new_alerts=i,  # 0,1,2,3,4,5,6 = 21 total
@@ -123,9 +123,9 @@ def test_compute_trend_from_summaries_averages():
         )
         for i in range(7)
     ]
-    
+
     trend = compute_trend_from_summaries(summaries, days=7)
-    
+
     assert trend.rollups.new_alerts_total == 21
     assert trend.rollups.new_alerts_avg == 3.0  # 21/7
     assert trend.rollups.operator_action_days == 4
@@ -143,7 +143,7 @@ def test_load_trend_from_json_file(tmp_path):
         },
         "series": [
             {
-                "date": f"2025-12-{14+i}",
+                "date": f"2025-12-{14 + i}",
                 "new_alerts": 0,
                 "critical_alerts": 0,
                 "parse_errors": 0,
@@ -161,12 +161,12 @@ def test_load_trend_from_json_file(tmp_path):
             "reasons": ["all checks passed"],
         },
     }
-    
+
     trend_path = tmp_path / "stage1_trend.json"
     trend_path.write_text(json.dumps(trend_data))
-    
+
     result = load_trend(tmp_path, days=14)
-    
+
     assert result is not None
     assert result.range.days == 7
     assert len(result.series) == 7
@@ -179,8 +179,8 @@ def test_load_trend_computes_when_no_json(tmp_path):
     for i in range(3):
         summary_data = {
             "schema_version": 1,
-            "date": f"2025-12-{20-i:02d}",
-            "created_at_utc": f"2025-12-{20-i:02d}T10:00:00+00:00",
+            "date": f"2025-12-{20 - i:02d}",
+            "created_at_utc": f"2025-12-{20 - i:02d}T10:00:00+00:00",
             "report_dir": str(tmp_path),
             "metrics": {
                 "new_alerts": 0,
@@ -191,11 +191,11 @@ def test_load_trend_computes_when_no_json(tmp_path):
             },
             "notes": [],
         }
-        summary_path = tmp_path / f"2025-12-{20-i:02d}_summary.json"
+        summary_path = tmp_path / f"2025-12-{20 - i:02d}_summary.json"
         summary_path.write_text(json.dumps(summary_data))
-    
+
     result = load_trend(tmp_path, days=7)
-    
+
     assert result is not None
     assert len(result.series) == 3  # Only 3 summaries available
     assert result.rollups.go_no_go == "GO"
@@ -205,4 +205,3 @@ def test_load_trend_nonexistent_dir():
     """Test loading trend from non-existent directory."""
     result = load_trend(Path("/nonexistent/path"), days=7)
     assert result is None
-

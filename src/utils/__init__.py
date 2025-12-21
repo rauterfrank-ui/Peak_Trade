@@ -6,4 +6,3 @@ __all__ = [
     "pick_first_existing",
     "ensure_section_insert_at_top",
 ]
-

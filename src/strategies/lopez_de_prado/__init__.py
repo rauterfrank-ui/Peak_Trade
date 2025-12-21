@@ -19,9 +19,7 @@ Referenzen:
 - "Advances in Financial Machine Learning" (Marcos López de Prado)
 - "Machine Learning for Asset Managers" (Marcos López de Prado)
 """
+
 from .meta_labeling_strategy import MetaLabelingStrategy
 
 __all__ = ["MetaLabelingStrategy"]
-
-
-

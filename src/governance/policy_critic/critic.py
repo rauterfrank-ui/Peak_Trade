@@ -64,8 +64,7 @@ class PolicyCritic:
         if all_violations:
             severity_order = {Severity.INFO: 0, Severity.WARN: 1, Severity.BLOCK: 2}
             max_severity = max(
-                (v.severity for v in all_violations),
-                key=lambda s: severity_order[s]
+                (v.severity for v in all_violations), key=lambda s: severity_order[s]
             )
 
         # Determine recommended action
@@ -91,7 +90,7 @@ class PolicyCritic:
         )
 
         # G3: Attach policy pack metadata if present
-        if hasattr(self, '_policy_pack'):
+        if hasattr(self, "_policy_pack"):
             pack = self._policy_pack
             result.policy_pack_id = pack.pack_id
             result.policy_pack_version = pack.version
@@ -131,8 +130,7 @@ class PolicyCritic:
             # Keep highest severity
             severity_order = {Severity.INFO: 0, Severity.WARN: 1, Severity.BLOCK: 2}
             highest_severity = max(
-                (v.severity for v in group_violations),
-                key=lambda s: severity_order[s]
+                (v.severity for v in group_violations), key=lambda s: severity_order[s]
             )
 
             # Combine all evidence (dedupe by file_path)
@@ -163,7 +161,9 @@ class PolicyCritic:
 
         return deduped
 
-    def _determine_action(self, max_severity: Severity, violations: List[Violation]) -> RecommendedAction:
+    def _determine_action(
+        self, max_severity: Severity, violations: List[Violation]
+    ) -> RecommendedAction:
         """Determine recommended action based on severity and violations."""
         if max_severity == Severity.BLOCK:
             return RecommendedAction.AUTO_APPLY_DENY
@@ -182,7 +182,9 @@ class PolicyCritic:
 
         return RecommendedAction.ALLOW
 
-    def _generate_test_plan(self, changed_files: List[str], violations: List[Violation]) -> List[str]:
+    def _generate_test_plan(
+        self, changed_files: List[str], violations: List[Violation]
+    ) -> List[str]:
         """Generate minimum test plan suggestions."""
         test_plan = []
 
@@ -215,7 +217,9 @@ class PolicyCritic:
         if context is None or not context.justification:
             risk_violations = [v for v in violations if "RISK_LIMIT" in v.rule_id]
             if risk_violations:
-                questions.append("Why are risk limits being changed? What data/metrics support this?")
+                questions.append(
+                    "Why are risk limits being changed? What data/metrics support this?"
+                )
 
         # Check for execution changes
         execution_violations = [v for v in violations if "EXECUTION" in v.rule_id]

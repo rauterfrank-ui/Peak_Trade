@@ -10,6 +10,7 @@ Testet:
 - Aggregation von Severities
 - UI-Status-Mapping (green/yellow/red)
 """
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -40,7 +41,7 @@ def base_risk_config() -> LiveRiskConfig:
         enabled=True,
         base_currency="EUR",
         max_daily_loss_abs=500.0,  # 500 EUR
-        max_daily_loss_pct=5.0,    # 5%
+        max_daily_loss_pct=5.0,  # 5%
         max_total_exposure_notional=10000.0,
         max_symbol_exposure_notional=5000.0,
         max_open_positions=5,

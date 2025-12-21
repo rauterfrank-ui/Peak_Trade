@@ -4,6 +4,7 @@ Execution Gates - Policy & Safety Checks.
 
 Gates validate orders before execution and can block or modify orders.
 """
+
 from __future__ import annotations
 
 import math

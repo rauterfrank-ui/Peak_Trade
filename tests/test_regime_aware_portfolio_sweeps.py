@@ -4,6 +4,7 @@ Peak_Trade Regime-Aware Portfolio Sweeps Tests
 ==============================================
 Unit-Tests für Regime-Aware Portfolio Sweep-Presets.
 """
+
 import pytest
 
 from src.experiments.regime_aware_portfolio_sweeps import (
@@ -219,17 +220,9 @@ class TestPredefinedRegimeAwareSweeps:
         """Test: Sweep kann zu ExperimentConfig konvertiert werden."""
         sweep = get_predefined_sweep("regime_aware_portfolio_conservative")
 
-        exp_config = sweep.to_experiment_config(
-            start_date="2024-01-01",
-            end_date="2024-12-01"
-        )
+        exp_config = sweep.to_experiment_config(start_date="2024-01-01", end_date="2024-12-01")
 
         assert exp_config.strategy_name == "regime_aware_portfolio"
         assert len(exp_config.param_sweeps) > 0
         assert exp_config.start_date == "2024-01-01"
         assert exp_config.end_date == "2024-12-01"
-
-
-
-
-

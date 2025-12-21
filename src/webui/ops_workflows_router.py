@@ -40,6 +40,7 @@ _TEMPLATES: Optional[Jinja2Templates] = None
 @dataclass
 class WorkflowScript:
     """Metadata for an ops workflow script."""
+
     id: str
     title: str
     description: str
@@ -54,7 +55,7 @@ class WorkflowScript:
 def set_workflows_config(repo_root: Path, templates: Jinja2Templates) -> None:
     """
     Configure Workflows router with paths.
-    
+
     Args:
         repo_root: Path to repository root
         templates: Jinja2Templates instance
@@ -82,7 +83,7 @@ def get_templates() -> Jinja2Templates:
 def _get_workflow_definitions() -> List[Dict[str, Any]]:
     """
     Define the 4 core ops workflow scripts.
-    
+
     Returns:
         List of workflow definitions (without filesystem metadata).
     """
@@ -157,24 +158,24 @@ def _get_workflow_definitions() -> List[Dict[str, Any]]:
 def _enrich_with_filesystem_metadata(workflows: List[Dict[str, Any]]) -> List[WorkflowScript]:
     """
     Enrich workflow definitions with filesystem metadata.
-    
+
     Args:
         workflows: List of workflow definitions
-        
+
     Returns:
         List of WorkflowScript objects with filesystem metadata
     """
     repo_root = get_repo_root()
     enriched = []
-    
+
     for wf in workflows:
         script_path = repo_root / wf["script_path"]
-        
+
         # Check existence and metadata
         exists = script_path.exists()
         size_bytes = None
         last_modified = None
-        
+
         if exists:
             try:
                 stat = script_path.stat()
@@ -182,7 +183,7 @@ def _enrich_with_filesystem_metadata(workflows: List[Dict[str, Any]]) -> List[Wo
                 last_modified = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
             except Exception as e:
                 logger.warning(f"Failed to get metadata for {script_path}: {e}")
-        
+
         enriched.append(
             WorkflowScript(
                 id=wf["id"],
@@ -196,7 +197,7 @@ def _enrich_with_filesystem_metadata(workflows: List[Dict[str, Any]]) -> List[Wo
                 last_modified=last_modified,
             )
         )
-    
+
     return enriched
 
 
@@ -209,13 +210,13 @@ def _enrich_with_filesystem_metadata(workflows: List[Dict[str, Any]]) -> List[Wo
 async def get_workflows_json() -> List[Dict[str, Any]]:
     """
     JSON API: Get list of workflow scripts with metadata.
-    
+
     Returns:
         List of workflow objects (id, title, description, script_path, commands, docs_refs, exists, size_bytes, last_modified).
     """
     workflow_defs = _get_workflow_definitions()
     workflows = _enrich_with_filesystem_metadata(workflow_defs)
-    
+
     return [asdict(wf) for wf in workflows]
 
 
@@ -228,20 +229,19 @@ async def get_workflows_json() -> List[Dict[str, Any]]:
 async def workflows_dashboard(request: Request) -> Any:
     """
     HTML Dashboard: Ops Workflow Hub.
-    
+
     Lists all ops workflow scripts with metadata and copy-paste commands.
     """
     workflow_defs = _get_workflow_definitions()
     workflows = _enrich_with_filesystem_metadata(workflow_defs)
-    
+
     templates = get_templates()
     repo_root = get_repo_root()
-    
+
     context = {
         "request": request,
         "workflows": workflows,
         "repo_root": str(repo_root),
     }
-    
-    return templates.TemplateResponse(request, "ops_workflows.html", context)
 
+    return templates.TemplateResponse(request, "ops_workflows.html", context)

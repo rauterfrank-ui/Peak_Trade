@@ -42,4 +42,3 @@ EOF
         exit 2
         ;;
 esac
-

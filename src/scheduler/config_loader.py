@@ -4,6 +4,7 @@ Peak_Trade Scheduler – Config Loader
 =====================================
 Lädt Job-Definitionen aus TOML-Dateien.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -113,6 +114,8 @@ def validate_job_config(job: JobDefinition) -> List[str]:
             if not (0 <= hour <= 23 and 0 <= minute <= 59):
                 raise ValueError("Ungültige Zeit")
         except (ValueError, IndexError):
-            warnings.append(f"Job '{job.name}' hat ungültiges daily_time: {job.schedule.daily_time}")
+            warnings.append(
+                f"Job '{job.name}' hat ungültiges daily_time: {job.schedule.daily_time}"
+            )
 
     return warnings

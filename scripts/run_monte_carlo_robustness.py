@@ -34,6 +34,7 @@ Output:
     - reports/monte_carlo/{sweep_name}/{config_id}_monte_carlo_YYYYMMDD.md
     - reports/monte_carlo/{sweep_name}/{config_id}_monte_carlo_YYYYMMDD.html
 """
+
 from __future__ import annotations
 
 import argparse
@@ -82,7 +83,7 @@ def create_dummy_returns(n_bars: int = 500, seed: int = 42) -> pd.Series:
     """
     np.random.seed(seed)
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Simuliere Returns (leicht positiv mit Volatilität)
     returns = np.random.normal(0.0005, 0.02, n_bars)  # ~0.05% pro Stunde, 2% Vol
@@ -157,7 +158,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Pflicht-Argumente
     parser.add_argument(
-        "--sweep-name", "-s",
+        "--sweep-name",
+        "-s",
         type=str,
         required=True,
         help="Name des Sweeps (z.B. rsi_reversion_basic)",
@@ -171,7 +173,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Top-N Optionen
     parser.add_argument(
-        "--top-n", "-n",
+        "--top-n",
+        "-n",
         type=int,
         default=1,
         help="Anzahl Top-Konfigurationen aus dem Sweep (default: 1)",
@@ -232,7 +235,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Weitere Optionen
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -327,11 +331,13 @@ def run_from_args(args: argparse.Namespace) -> int:
                 format=args.format,
             )
             logger.info(f"Report gespeichert: {config_output_dir}")
-            results_summary.append({
-                "config_id": config_id,
-                "rank": config.get("rank", i),
-                "paths": paths,
-            })
+            results_summary.append(
+                {
+                    "config_id": config_id,
+                    "rank": config.get("rank", i),
+                    "paths": paths,
+                }
+            )
         except Exception as e:
             logger.error(f"Fehler beim Erstellen des Reports für {config_id}: {e}")
             continue
@@ -359,4 +365,3 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

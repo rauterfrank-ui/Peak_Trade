@@ -28,7 +28,7 @@
           </nav>
         </div>
       </header>
-      
+
       <main class="pb-12">
 <div class="max-w-6xl mx-auto px-4 py-6">
   <!-- Header -->
@@ -132,7 +132,7 @@
         {{ trend.range.start }} → {{ trend.range.end }}
       </div>
     </div>
-    
+
     <!-- Rollup Stats -->
     {% if trend.rollups %}
     <div class="px-4 py-3 bg-slate-900/80 border-b border-slate-800">
@@ -206,7 +206,7 @@
   <!-- Auto-Refresh Info -->
   <div class="mt-6 text-center">
     <p class="text-xs text-slate-500">
-      🔄 Auto-Refresh aktiv (30s) · 
+      🔄 Auto-Refresh aktiv (30s) ·
       <a href="/ops/stage1" class="text-blue-400 hover:text-blue-300">Neu laden</a>
     </p>
   </div>
@@ -228,7 +228,7 @@
       if (latestRes.ok && trendRes.ok) {
         const latest = await latestRes.json();
         const trend = await trendRes.json();
-        
+
         // Simple reload if data changed (date changed)
         const currentDate = document.querySelector('[data-latest-date]')?.textContent;
         if (currentDate && latest.date !== currentDate) {
@@ -257,4 +257,3 @@
     </div>
   </body>
 </html>
-

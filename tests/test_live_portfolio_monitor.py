@@ -8,6 +8,7 @@ Tests für:
 - LivePortfolioSnapshot
 - LivePortfolioMonitor
 """
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -110,8 +111,12 @@ def test_live_portfolio_snapshot_aggregation(
     # Prüfe Symbol-Notional
     assert "BTC/EUR" in snapshot.symbol_notional
     assert "ETH/EUR" in snapshot.symbol_notional
-    assert snapshot.symbol_notional["BTC/EUR"] == pytest.approx(sample_position_1.notional, abs=0.01)
-    assert snapshot.symbol_notional["ETH/EUR"] == pytest.approx(sample_position_2.notional, abs=0.01)
+    assert snapshot.symbol_notional["BTC/EUR"] == pytest.approx(
+        sample_position_1.notional, abs=0.01
+    )
+    assert snapshot.symbol_notional["ETH/EUR"] == pytest.approx(
+        sample_position_2.notional, abs=0.01
+    )
 
 
 def test_live_portfolio_snapshot_empty():
@@ -209,24 +214,26 @@ def test_live_portfolio_monitor_with_dataframe_positions(fake_exchange_client: M
     """Testet LivePortfolioMonitor mit DataFrame-Positionen."""
     import pandas as pd
 
-    df = pd.DataFrame([
-        {
-            "symbol": "BTC/EUR",
-            "side": "long",
-            "size": 0.5,
-            "entry_price": 28000.0,
-            "mark_price": 29500.0,
-            "unrealized_pnl": 750.0,
-        },
-        {
-            "symbol": "ETH/EUR",
-            "side": "short",
-            "size": 2.0,
-            "entry_price": 1800.0,
-            "mark_price": 1750.0,
-            "unrealized_pnl": 100.0,
-        },
-    ])
+    df = pd.DataFrame(
+        [
+            {
+                "symbol": "BTC/EUR",
+                "side": "long",
+                "size": 0.5,
+                "entry_price": 28000.0,
+                "mark_price": 29500.0,
+                "unrealized_pnl": 750.0,
+            },
+            {
+                "symbol": "ETH/EUR",
+                "side": "short",
+                "size": 2.0,
+                "entry_price": 1800.0,
+                "mark_price": 1750.0,
+                "unrealized_pnl": 100.0,
+            },
+        ]
+    )
 
     fake_exchange_client.fetch_positions.return_value = df
 
@@ -242,41 +249,42 @@ def test_live_portfolio_monitor_parse_position_variants():
     monitor = LivePortfolioMonitor(Mock(spec=BaseBrokerClient))
 
     # Variante 1: Standard-Format
-    pos1 = monitor._parse_position({
-        "symbol": "BTC/EUR",
-        "side": "long",
-        "size": 0.5,
-        "entry_price": 28000.0,
-        "mark_price": 29500.0,
-    })
+    pos1 = monitor._parse_position(
+        {
+            "symbol": "BTC/EUR",
+            "side": "long",
+            "size": 0.5,
+            "entry_price": 28000.0,
+            "mark_price": 29500.0,
+        }
+    )
     assert pos1 is not None
     assert pos1.symbol == "BTC/EUR"
     assert pos1.side == "long"
 
     # Variante 2: PaperBroker-Format (qty statt size)
-    pos2 = monitor._parse_position({
-        "symbol": "ETH/EUR",
-        "qty": 2.0,
-        "avg_price": 1800.0,
-        "last_price": 1750.0,
-    })
+    pos2 = monitor._parse_position(
+        {
+            "symbol": "ETH/EUR",
+            "qty": 2.0,
+            "avg_price": 1800.0,
+            "last_price": 1750.0,
+        }
+    )
     assert pos2 is not None
     assert pos2.symbol == "ETH/EUR"
     assert pos2.size == pytest.approx(2.0, abs=0.001)
 
     # Variante 3: Side aus size ableiten
-    pos3 = monitor._parse_position({
-        "symbol": "LTC/EUR",
-        "size": -1.0,  # Negative size = short
-    })
+    pos3 = monitor._parse_position(
+        {
+            "symbol": "LTC/EUR",
+            "size": -1.0,  # Negative size = short
+        }
+    )
     assert pos3 is not None
     assert pos3.side == "short"
 
     # Variante 4: Ungültige Position (kein Symbol)
     pos4 = monitor._parse_position({})
     assert pos4 is None
-
-
-
-
-

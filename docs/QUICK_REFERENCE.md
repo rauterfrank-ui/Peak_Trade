@@ -190,7 +190,7 @@ class TestMyClass:
     def test_init(self):
         obj = MyClass()
         assert obj is not None
-    
+
     def test_method(self):
         obj = MyClass()
         result = obj.method()

@@ -12,6 +12,7 @@ Testet:
 
 WICHTIG: Diese Tests verifizieren, dass KEINE echten Orders gesendet werden.
 """
+
 import pytest
 from datetime import datetime, timezone
 
@@ -423,9 +424,7 @@ class TestSafetyGuard:
         assert testnet_guard.get_effective_mode() == "dry_run"
 
         # Phase 71: Live mit Default live_dry_run_mode=True gibt "live_dry_run"
-        live_guard = SafetyGuard(
-            env_config=EnvironmentConfig(environment=TradingEnvironment.LIVE)
-        )
+        live_guard = SafetyGuard(env_config=EnvironmentConfig(environment=TradingEnvironment.LIVE))
         assert live_guard.get_effective_mode() == "live_dry_run"
 
         # Live mit live_dry_run_mode=False gibt "blocked"
@@ -628,7 +627,7 @@ class TestLiveOrderExecutor:
         """LiveOrderExecutor im Dry-Run-Modus führt simuliert aus."""
         # Phase 71: Dry-Run statt Exception
         result = live_executor.execute_order(sample_order)
-        
+
         assert result.status == "filled"
         assert result.metadata["dry_run"] is True
         assert result.metadata["mode"] == "live_dry_run"
@@ -637,7 +636,7 @@ class TestLiveOrderExecutor:
         """execute_orders() führt mehrere Orders im Dry-Run aus."""
         orders = [OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.1)]
         results = live_executor.execute_orders(orders)
-        
+
         assert len(results) == 1
         assert results[0].metadata["dry_run"] is True
 

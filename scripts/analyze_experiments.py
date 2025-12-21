@@ -28,6 +28,7 @@ Usage:
     # Markdown-Report schreiben
     python scripts/analyze_experiments.py --mode summary --run-type backtest --write-report reports/strategy_summary.md
 """
+
 from __future__ import annotations
 
 import argparse
@@ -167,8 +168,22 @@ def format_float(value, decimals: int = 2) -> str:
 def print_strategy_summaries(summaries: List[StrategySummary]) -> None:
     """Druckt Strategie-Übersicht tabellarisch."""
     print()
-    print(f"{'STRATEGY':<20} | {'RUNS':>5} | {'AVG RETURN':>10} | {'AVG SHARPE':>10} | {'AVG MAX DD':>10} | {'BEST RUN':<12}")
-    print("-" * 20 + "-+-" + "-" * 5 + "-+-" + "-" * 10 + "-+-" + "-" * 10 + "-+-" + "-" * 10 + "-+-" + "-" * 12)
+    print(
+        f"{'STRATEGY':<20} | {'RUNS':>5} | {'AVG RETURN':>10} | {'AVG SHARPE':>10} | {'AVG MAX DD':>10} | {'BEST RUN':<12}"
+    )
+    print(
+        "-" * 20
+        + "-+-"
+        + "-" * 5
+        + "-+-"
+        + "-" * 10
+        + "-+-"
+        + "-" * 10
+        + "-+-"
+        + "-" * 10
+        + "-+-"
+        + "-" * 12
+    )
 
     for s in summaries:
         avg_ret = format_percent(s.avg_total_return)
@@ -176,7 +191,9 @@ def print_strategy_summaries(summaries: List[StrategySummary]) -> None:
         avg_dd = format_percent(s.avg_max_drawdown)
         best_id = s.best_run_id[:12] if s.best_run_id else "-"
 
-        print(f"{s.strategy_key:<20} | {s.run_count:>5} | {avg_ret:>10} | {avg_sh:>10} | {avg_dd:>10} | {best_id:<12}")
+        print(
+            f"{s.strategy_key:<20} | {s.run_count:>5} | {avg_ret:>10} | {avg_sh:>10} | {avg_dd:>10} | {best_id:<12}"
+        )
 
     print()
 
@@ -184,8 +201,22 @@ def print_strategy_summaries(summaries: List[StrategySummary]) -> None:
 def print_portfolio_summaries(summaries: List[PortfolioSummary]) -> None:
     """Druckt Portfolio-Übersicht tabellarisch."""
     print()
-    print(f"{'PORTFOLIO':<20} | {'RUNS':>5} | {'AVG RETURN':>10} | {'AVG SHARPE':>10} | {'AVG MAX DD':>10} | {'BEST RUN':<12}")
-    print("-" * 20 + "-+-" + "-" * 5 + "-+-" + "-" * 10 + "-+-" + "-" * 10 + "-+-" + "-" * 10 + "-+-" + "-" * 12)
+    print(
+        f"{'PORTFOLIO':<20} | {'RUNS':>5} | {'AVG RETURN':>10} | {'AVG SHARPE':>10} | {'AVG MAX DD':>10} | {'BEST RUN':<12}"
+    )
+    print(
+        "-" * 20
+        + "-+-"
+        + "-" * 5
+        + "-+-"
+        + "-" * 10
+        + "-+-"
+        + "-" * 10
+        + "-+-"
+        + "-" * 10
+        + "-+-"
+        + "-" * 12
+    )
 
     for s in summaries:
         avg_ret = format_percent(s.avg_total_return)
@@ -193,7 +224,9 @@ def print_portfolio_summaries(summaries: List[PortfolioSummary]) -> None:
         avg_dd = format_percent(s.avg_max_drawdown)
         best_id = s.best_run_id[:12] if s.best_run_id else "-"
 
-        print(f"{s.portfolio_name:<20} | {s.run_count:>5} | {avg_ret:>10} | {avg_sh:>10} | {avg_dd:>10} | {best_id:<12}")
+        print(
+            f"{s.portfolio_name:<20} | {s.run_count:>5} | {avg_ret:>10} | {avg_sh:>10} | {avg_dd:>10} | {best_id:<12}"
+        )
 
     print()
 
@@ -201,8 +234,24 @@ def print_portfolio_summaries(summaries: List[PortfolioSummary]) -> None:
 def print_top_runs(df: pd.DataFrame, metric: str) -> None:
     """Druckt Top-Runs tabellarisch."""
     print()
-    print(f"{'RANK':>4} | {'RUN_ID':<12} | {'TYPE':<18} | {'STRATEGY':<15} | {'RETURN':>8} | {'SHARPE':>7} | {'MAX DD':>8}")
-    print("-" * 4 + "-+-" + "-" * 12 + "-+-" + "-" * 18 + "-+-" + "-" * 15 + "-+-" + "-" * 8 + "-+-" + "-" * 7 + "-+-" + "-" * 8)
+    print(
+        f"{'RANK':>4} | {'RUN_ID':<12} | {'TYPE':<18} | {'STRATEGY':<15} | {'RETURN':>8} | {'SHARPE':>7} | {'MAX DD':>8}"
+    )
+    print(
+        "-" * 4
+        + "-+-"
+        + "-" * 12
+        + "-+-"
+        + "-" * 18
+        + "-+-"
+        + "-" * 15
+        + "-+-"
+        + "-" * 8
+        + "-+-"
+        + "-" * 7
+        + "-+-"
+        + "-" * 8
+    )
 
     for rank, (_, row) in enumerate(df.iterrows(), 1):
         run_id = str(row.get("run_id", "-"))[:12]
@@ -212,7 +261,9 @@ def print_top_runs(df: pd.DataFrame, metric: str) -> None:
         sharpe = format_float(row.get("sharpe"))
         max_dd = format_percent(row.get("max_drawdown"))
 
-        print(f"{rank:>4} | {run_id:<12} | {run_type:<18} | {strategy:<15} | {total_ret:>8} | {sharpe:>7} | {max_dd:>8}")
+        print(
+            f"{rank:>4} | {run_id:<12} | {run_type:<18} | {strategy:<15} | {total_ret:>8} | {sharpe:>7} | {max_dd:>8}"
+        )
 
     print()
 
@@ -220,8 +271,22 @@ def print_top_runs(df: pd.DataFrame, metric: str) -> None:
 def print_comparison(df: pd.DataFrame) -> None:
     """Druckt Strategie-Vergleich tabellarisch."""
     print()
-    print(f"{'STRATEGY':<20} | {'RUNS':>5} | {'AVG RETURN':>10} | {'STD RETURN':>10} | {'AVG SHARPE':>10} | {'STD SHARPE':>10}")
-    print("-" * 20 + "-+-" + "-" * 5 + "-+-" + "-" * 10 + "-+-" + "-" * 10 + "-+-" + "-" * 10 + "-+-" + "-" * 10)
+    print(
+        f"{'STRATEGY':<20} | {'RUNS':>5} | {'AVG RETURN':>10} | {'STD RETURN':>10} | {'AVG SHARPE':>10} | {'STD SHARPE':>10}"
+    )
+    print(
+        "-" * 20
+        + "-+-"
+        + "-" * 5
+        + "-+-"
+        + "-" * 10
+        + "-+-"
+        + "-" * 10
+        + "-+-"
+        + "-" * 10
+        + "-+-"
+        + "-" * 10
+    )
 
     for _, row in df.iterrows():
         strat = str(row.get("strategy_key", "-"))[:20]
@@ -231,7 +296,9 @@ def print_comparison(df: pd.DataFrame) -> None:
         avg_sh = format_float(row.get("avg_sharpe"))
         std_sh = format_float(row.get("std_sharpe"))
 
-        print(f"{strat:<20} | {runs:>5} | {avg_ret:>10} | {std_ret:>10} | {avg_sh:>10} | {std_sh:>10}")
+        print(
+            f"{strat:<20} | {runs:>5} | {avg_ret:>10} | {std_ret:>10} | {avg_sh:>10} | {std_sh:>10}"
+        )
 
     print()
 

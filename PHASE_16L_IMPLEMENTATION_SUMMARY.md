@@ -317,4 +317,3 @@ PEAK_REPORTS_DIR=/tmp/custom_reports python -c "from src.utils.report_paths impo
 **Risiko:** 🟢 Niedrig (umfangreiche Mitigations)
 
 **Status:** ✅ Ready for Review & Merge
-

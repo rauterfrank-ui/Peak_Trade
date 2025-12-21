@@ -14,6 +14,7 @@ Konzept:
 Diese Strategie eignet sich für seitwärts laufende (ranging) Märkte
 und nutzt die Tendenz von Preisen, zu ihrem Mittelwert zurückzukehren.
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -189,15 +190,12 @@ class MeanReversionChannelStrategy(BaseStrategy):
         # Validierung
         if self.price_col not in data.columns:
             raise ValueError(
-                f"Spalte '{self.price_col}' nicht in DataFrame. "
-                f"Verfügbar: {list(data.columns)}"
+                f"Spalte '{self.price_col}' nicht in DataFrame. Verfügbar: {list(data.columns)}"
             )
 
         min_bars = self.window + 10
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mind. {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {min_bars} Bars, habe nur {len(data)}")
 
         # Bänder berechnen
         middle, upper, lower = self._compute_bands(data)
@@ -306,18 +304,18 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
 
 def get_strategy_description(params: Dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
-    max_hold = params.get('max_holding_bars', 'unbegrenzt')
+    max_hold = params.get("max_holding_bars", "unbegrenzt")
     return f"""
 Mean Reversion Channel Strategy (Bollinger-ähnlich)
 ===================================================
-Window:            {params.get('window', 20)} Bars
-Num Std:           {params.get('num_std', 2.0)}x
-Exit at Mean:      {'Ja' if params.get('exit_at_mean', True) else 'Nein'}
+Window:            {params.get("window", 20)} Bars
+Num Std:           {params.get("num_std", 2.0)}x
+Exit at Mean:      {"Ja" if params.get("exit_at_mean", True) else "Nein"}
 Max Holding Bars:  {max_hold}
-Price Column:      {params.get('price_col', 'close')}
+Price Column:      {params.get("price_col", "close")}
 
 Konzept:
-- Entry Long:  Close < MA - {params.get('num_std', 2.0)} * Std (überverkauft)
-- Entry Short: Close > MA + {params.get('num_std', 2.0)} * Std (überkauft)
-- Exit:        Rückkehr zum {'Mean' if params.get('exit_at_mean', True) else 'Kanal'}
+- Entry Long:  Close < MA - {params.get("num_std", 2.0)} * Std (überverkauft)
+- Entry Short: Close > MA + {params.get("num_std", 2.0)} * Std (überkauft)
+- Exit:        Rückkehr zum {"Mean" if params.get("exit_at_mean", True) else "Kanal"}
 """

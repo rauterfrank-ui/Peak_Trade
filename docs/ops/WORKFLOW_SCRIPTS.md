@@ -10,7 +10,7 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 - `gh` (GitHub CLI) installiert & authentifiziert:
   ```bash
   gh auth status
-  
+
   # Falls nicht authentifiziert:
   gh auth login
   ```
@@ -378,4 +378,3 @@ docs/ops/
 **Erstellt:** 2025-12-21  
 **Version:** 1.0  
 **Maintainer:** Peak_Trade Ops Team
-

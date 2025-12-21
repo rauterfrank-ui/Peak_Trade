@@ -81,7 +81,7 @@ def main():
     critical_days = sum(1 for r in rows if (r.get("critical_alerts") or 0) > 0)
     parse_error_days = 0  # not tracked yet
     operator_action_days = sum(1 for r in rows if (r.get("operator_actions") or 0) > 0)
-    
+
     print()
     print("## Quick signal")
     if new_alerts_sum == 0:
@@ -94,7 +94,7 @@ def main():
     # Phase 16K: Compute go_no_go heuristic
     go_no_go = "GO"
     reasons = []
-    
+
     if critical_days > 0:
         go_no_go = "NO_GO"
         reasons.append(f"critical alerts on {critical_days} days")
@@ -104,7 +104,7 @@ def main():
     elif parse_error_days > 0:
         go_no_go = "HOLD"
         reasons.append(f"parse_error_days={parse_error_days}")
-    
+
     if not reasons:
         reasons.append("all checks passed")
 
@@ -138,7 +138,7 @@ def main():
             "reasons": reasons,
         },
     }
-    
+
     json_out_path = d / "stage1_trend.json"
     json_out_path.write_text(json.dumps(json_trend, indent=2), encoding="utf-8")
     print()

@@ -61,4 +61,3 @@ Local:
 
 - PR #209: https://github.com/rauterfrank-ui/Peak_Trade/pull/209
 - Squash commit: 24cc6fa
-

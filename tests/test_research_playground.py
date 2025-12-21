@@ -9,6 +9,7 @@ Testet:
 - Parameter-Kombinations-Generierung
 - Sweep-Batch-Execution (synthetisch)
 """
+
 from __future__ import annotations
 
 import pytest
@@ -32,6 +33,7 @@ from src.experiments.research_playground import (
 # =============================================================================
 # ParamConstraint Tests
 # =============================================================================
+
 
 class TestParamConstraint:
     """Tests für ParamConstraint."""
@@ -104,6 +106,7 @@ class TestParamConstraint:
 # =============================================================================
 # StrategySweepConfig Tests
 # =============================================================================
+
 
 class TestStrategySweepConfig:
     """Tests für StrategySweepConfig."""
@@ -254,6 +257,7 @@ class TestStrategySweepConfig:
 # Predefined Sweeps Registry Tests
 # =============================================================================
 
+
 class TestPredefinedSweeps:
     """Tests für vordefinierte Sweeps."""
 
@@ -335,6 +339,7 @@ class TestPredefinedSweeps:
 # Helper Functions Tests
 # =============================================================================
 
+
 class TestHelperFunctions:
     """Tests für Helper-Funktionen."""
 
@@ -380,6 +385,7 @@ class TestHelperFunctions:
 # Integration Tests
 # =============================================================================
 
+
 class TestIntegration:
     """Integrations-Tests für komplexere Szenarien."""
 
@@ -391,8 +397,9 @@ class TestIntegration:
 
         for combo in combos:
             if "oversold_level" in combo and "overbought_level" in combo:
-                assert combo["oversold_level"] < combo["overbought_level"], \
+                assert combo["oversold_level"] < combo["overbought_level"], (
                     f"Ungültige Kombination: {combo}"
+                )
 
     def test_breakout_sweep_has_sl_params(self):
         """Breakout Sweeps enthalten Stop-Loss Parameter."""

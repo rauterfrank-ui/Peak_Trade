@@ -10,6 +10,7 @@ Stellt konsistente Helper-Funktionen bereit für:
 
 Diese Funktionen werden von allen Live-/Paper-Scripts verwendet.
 """
+
 from __future__ import annotations
 
 import sys
@@ -182,9 +183,7 @@ def _print_risk_check_summary(result: LiveRiskCheckResult) -> None:
 
     print(f"   Anzahl Orders:        {result.metrics.get('n_orders', 0)}")
     print(f"   Anzahl Symbole:       {result.metrics.get('n_symbols', 0)}")
-    print(
-        f"   Total Notional:       {result.metrics.get('total_notional', 0.0):.2f} {base_ccy}"
-    )
+    print(f"   Total Notional:       {result.metrics.get('total_notional', 0.0):.2f} {base_ccy}")
     print(
         f"   Max Order Notional:   {result.metrics.get('max_order_notional', 0.0):.2f} {base_ccy}"
     )

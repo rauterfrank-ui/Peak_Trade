@@ -4,6 +4,7 @@ Tests for Execution Telemetry (Phase 16B).
 
 Tests event emission, JSONL logging, and pipeline integration.
 """
+
 import json
 from datetime import datetime
 from pathlib import Path
@@ -177,7 +178,7 @@ def test_pipeline_emits_expected_event_sequence():
     from src.execution.telemetry import NullEmitter
 
     emitter = NullEmitter()
-    
+
     # In real usage:
     # pipeline = ExecutionPipeline(executor=..., emitter=emitter)
     # result = pipeline.submit_order(intent)

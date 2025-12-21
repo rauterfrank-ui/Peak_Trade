@@ -16,6 +16,7 @@ Jede Strategie KANN überschreiben:
 - prepare(data: pd.DataFrame) -> None
 - validate() -> None
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -43,6 +44,7 @@ class StrategyMetadata:
         regime: Für welches Marktregime geeignet ("trending", "ranging", "any")
         tags: Optionale Tags für Kategorisierung
     """
+
     name: str
     description: str = ""
     version: str = "0.1.0"
@@ -84,9 +86,7 @@ class BaseStrategy(ABC):
         metadata: Optional[StrategyMetadata] = None,
     ) -> None:
         self.config: Dict[str, Any] = config or {}
-        self.meta: StrategyMetadata = metadata or StrategyMetadata(
-            name=self.__class__.__name__
-        )
+        self.meta: StrategyMetadata = metadata or StrategyMetadata(name=self.__class__.__name__)
 
     @property
     def key(self) -> str:

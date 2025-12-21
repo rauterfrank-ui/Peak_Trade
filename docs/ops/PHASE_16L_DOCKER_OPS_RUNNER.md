@@ -189,7 +189,7 @@ PEAK_REPORTS_DIR=/var/peak/reports ./scripts/obs/run_stage1_snapshot_docker.sh
 - name: Run Stage1 Snapshot
   run: |
     docker compose -f docker-compose.obs.yml run --rm peaktrade-ops stage1-snapshot
-    
+
 - name: Upload Reports
   uses: actions/upload-artifact@v3
   with:
@@ -261,4 +261,3 @@ PEAK_REPORTS_DIR=/var/peak/reports ./scripts/obs/run_stage1_snapshot_docker.sh
 - **Related Docs:**
   - `docs/ops/README.md` - Operations Guide
   - `ADR_0001_Peak_Tool_Stack.md` - Tool stack decisions
-

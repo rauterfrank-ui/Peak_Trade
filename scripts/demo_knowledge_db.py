@@ -116,9 +116,7 @@ def demo_timeseries_db():
     print("=" * 80)
 
     # Initialize Time-Series DB
-    ts_db = TimeSeriesDBFactory.create(
-        "parquet", config={"base_path": "./data/timeseries_demo"}
-    )
+    ts_db = TimeSeriesDBFactory.create("parquet", config={"base_path": "./data/timeseries_demo"})
 
     # Create sample portfolio history
     dates = pd.date_range(start="2024-01-01", end="2024-12-31", freq="D")
@@ -132,16 +130,12 @@ def demo_timeseries_db():
     )
 
     print("\n📊 Writing portfolio history to time-series database...")
-    ts_db.write_portfolio_history(
-        portfolio_data, tags={"portfolio": "demo", "strategy": "multi"}
-    )
+    ts_db.write_portfolio_history(portfolio_data, tags={"portfolio": "demo", "strategy": "multi"})
     print("✅ Successfully written 365 days of portfolio history")
 
     # Query portfolio history
     print("\n📈 Querying portfolio history for Q4 2024...")
-    results = ts_db.query_portfolio_history(
-        start_time="2024-10-01", end_time="2024-12-31"
-    )
+    results = ts_db.query_portfolio_history(start_time="2024-10-01", end_time="2024-12-31")
 
     print(f"   Retrieved {len(results)} records")
     print(f"   Start equity: ${results.iloc[0]['equity']:.2f}")

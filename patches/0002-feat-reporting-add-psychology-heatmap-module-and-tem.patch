@@ -260,11 +260,11 @@ index 0000000..660a599
 +            # ...
 +        },
 +    ]
-+    
++
 +    # Processing
 +    rows = build_psychology_heatmap_rows(psychology_raw)
 +    serialized = serialize_psychology_heatmap_rows(rows)
-+    
++
 +    return {
 +        "psychology_heatmap_rows": serialized,
 +        # ... restlicher Context
@@ -280,7 +280,7 @@ index 0000000..660a599
 +    rows = build_psychology_heatmap_rows(data)
 +    serialized = serialize_psychology_heatmap_rows(rows)
 +    stats = calculate_cluster_statistics(rows)
-+    
++
 +    return render_template(
 +        "trigger_training_psychology.html",
 +        heatmap_rows=serialized,
@@ -400,8 +400,8 @@ index 0000000..660a599
 +
 +---
 +
-+**Version**: 1.0  
-+**Datum**: Dezember 2025  
++**Version**: 1.0
++**Datum**: Dezember 2025
 +**Status**: ✅ Production-Ready
 +
 +🧠 **Viel Erfolg beim Trigger-Training!**
@@ -511,7 +511,7 @@ index 0000000..ebde560
 +
 +def build_trigger_training_report(stats):
 +    """Erweitere bestehenden Report mit Psychologie-Heatmap."""
-+    
++
 +    # Scores aus deinen Stats extrahieren
 +    psychology_raw_rows = [
 +        {
@@ -524,14 +524,14 @@ index 0000000..ebde560
 +        },
 +        # ... weitere Cluster
 +    ]
-+    
++
 +    # Rows bauen und serialisieren
 +    rows = build_psychology_heatmap_rows(psychology_raw_rows)
 +    heatmap_ctx = serialize_psychology_heatmap_rows(rows)
-+    
++
 +    # Statistiken berechnen (optional)
 +    stats_ctx = calculate_cluster_statistics(rows)
-+    
++
 +    return {
 +        # ... dein bisheriger Context
 +        "psychology_heatmap_rows": heatmap_ctx,
@@ -552,15 +552,15 @@ index 0000000..ebde560
 +@app.route("/trigger_training/psychology")
 +def trigger_training_psychology():
 +    """Zeigt die vollständige Psychologie-Analyse."""
-+    
++
 +    # 1. Daten aus DB / Stats laden
 +    raw_data = load_psychology_data_from_db()
-+    
++
 +    # 2. Processing
 +    rows = build_psychology_heatmap_rows(raw_data)
 +    serialized_rows = serialize_psychology_heatmap_rows(rows)
 +    stats = calculate_cluster_statistics(rows)
-+    
++
 +    # 3. Meta-Informationen
 +    meta = {
 +        "from_date": "2025-01-01",
@@ -568,7 +568,7 @@ index 0000000..ebde560
 +        "total_sessions": 42,
 +        "total_events": 1337,
 +    }
-+    
++
 +    # 4. Render Template
 +    return render_template(
 +        "trigger_training_psychology.html",
@@ -722,24 +722,24 @@ index 0000000..ebde560
 +        "hesitation": 0.0,
 +        "rule_break": 0.0,
 +    })
-+    
++
 +    for event in events:
 +        cluster = determine_cluster(event)
-+        
++
 +        # FOMO: Trade nach starker Bewegung ohne Setup
 +        if event.outcome == "FOMO":
 +            scores[cluster]["fomo"] += 0.5
-+        
++
 +        # Impulsivität: Sehr schnelle Reaktion
 +        if event.reaction_delay_s < 1.0:
 +            scores[cluster]["impulsivity"] += 0.2
-+        
++
 +        # Zögern: Signal verpasst
 +        if event.outcome == "MISSED":
 +            scores[cluster]["hesitation"] += 0.5
-+        
++
 +        # ... weitere Logik
-+    
++
 +    return scores
 +```
 +
@@ -904,8 +904,8 @@ index 0000000..ebde560
 +
 +Teil des **Peak_Trade** Systems.
 +
-+**Version**: 1.0  
-+**Datum**: Dezember 2025  
++**Version**: 1.0
++**Datum**: Dezember 2025
 +**Status**: Production-Ready
 +
 +---
@@ -1008,21 +1008,21 @@ index 0000000..b7f3e1e
 +def generate_standalone_psychology_report(output_dir: Path) -> Path:
 +    """
 +    Generiert einen eigenständigen Psychologie-Report als HTML.
-+    
++
 +    Dies wäre z.B. für einen wöchentlichen Review-Report nützlich.
 +    """
 +    print("📊 Generiere Standalone Psychology Report...")
-+    
++
 +    # 1. Daten vorbereiten (hier: Beispiel-Daten)
 +    raw_data = build_example_psychology_heatmap_data()
-+    
++
 +    # 2. Rows bauen und serialisieren
 +    rows = build_psychology_heatmap_rows(raw_data)
 +    serialized_rows = serialize_psychology_heatmap_rows(rows)
-+    
++
 +    # 3. Statistiken berechnen
 +    stats = calculate_cluster_statistics(rows)
-+    
++
 +    # 4. Template-Context zusammenstellen
 +    context = {
 +        "heatmap_rows": serialized_rows,
@@ -1035,15 +1035,15 @@ index 0000000..b7f3e1e
 +        },
 +        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
 +    }
-+    
++
 +    # 5. Render Template (in echtem Code würde man Jinja2 verwenden)
 +    # Für dieses Beispiel simulieren wir es
 +    output_file = output_dir / "psychology_report_standalone.html"
-+    
++
 +    print(f"  ✓ Report generiert: {output_file}")
 +    print(f"  ✓ Analysierte Cluster: {stats['total_clusters']}")
 +    print(f"  ✓ Problem-Cluster: {len(stats['problem_clusters'])}")
-+    
++
 +    return output_file
 +
 +
@@ -1055,7 +1055,7 @@ index 0000000..b7f3e1e
 +    """
 +    Integriert die Psychologie-Heatmap in einen bestehenden
 +    Trigger-Training-Report.
-+    
++
 +    Args:
 +        stats: Ein Objekt mit aggregierten Trigger-Training-Statistiken.
 +              Sollte Attribute wie:
@@ -1063,12 +1063,12 @@ index 0000000..b7f3e1e
 +              - trend_loss_fear_score
 +              - breakout_fomo_score
 +              etc. haben.
-+    
++
 +    Returns:
 +        Dictionary mit Report-Context inkl. Heatmap-Daten
 +    """
 +    print("📊 Baue Report-Context mit Psychologie-Heatmap...")
-+    
++
 +    # Cluster-Scores aus den Stats extrahieren
 +    psychology_raw_rows = [
 +        {
@@ -1112,16 +1112,16 @@ index 0000000..b7f3e1e
 +            "rule_break": getattr(stats, "reentry_rule_break_score", 0.0),
 +        },
 +    ]
-+    
++
 +    # Rows bauen und serialisieren
 +    rows = build_psychology_heatmap_rows(psychology_raw_rows)
 +    heatmap_ctx = serialize_psychology_heatmap_rows(rows)
-+    
++
 +    # Statistiken
 +    stats_ctx = calculate_cluster_statistics(rows)
-+    
++
 +    print(f"  ✓ Heatmap-Rows generiert: {len(heatmap_ctx)}")
-+    
++
 +    return {
 +        # Existing context fields...
 +        "psychology_heatmap_rows": heatmap_ctx,
@@ -1136,9 +1136,9 @@ index 0000000..b7f3e1e
 +def example_flask_route_handler():
 +    """
 +    Beispiel für eine Flask-Route, die die Psychologie-Seite rendert.
-+    
++
 +    In einer echten Flask-App würde das so aussehen:
-+    
++
 +    @app.route("/trigger_training/psychology")
 +    def trigger_training_psychology():
 +        # ... Daten aus DB laden ...
@@ -1146,15 +1146,15 @@ index 0000000..b7f3e1e
 +        return render_template("trigger_training_psychology.html", **context)
 +    """
 +    print("🌐 Simuliere Flask-Route für Psychology Dashboard...")
-+    
++
 +    # 1. Daten aus Datenbank / Stats laden (hier: Beispiel)
 +    raw_data = build_example_psychology_heatmap_data()
-+    
++
 +    # 2. Processing
 +    rows = build_psychology_heatmap_rows(raw_data)
 +    serialized_rows = serialize_psychology_heatmap_rows(rows)
 +    stats = calculate_cluster_statistics(rows)
-+    
++
 +    # 3. Context für Template
 +    context = {
 +        "heatmap_rows": serialized_rows,
@@ -1167,13 +1167,13 @@ index 0000000..b7f3e1e
 +        },
 +        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
 +    }
-+    
++
 +    print(f"  ✓ Context vorbereitet")
 +    print(f"  ✓ Problem-Cluster: {len(stats['problem_clusters'])}")
-+    
++
 +    # In echtem Code:
 +    # return render_template("trigger_training_psychology.html", **context)
-+    
++
 +    return context
 +
 +
@@ -1183,7 +1183,7 @@ index 0000000..b7f3e1e
 +
 +class MockTriggerTrainingStats:
 +    """Mock-Klasse für Trigger-Training-Statistiken."""
-+    
++
 +    def __init__(self):
 +        # Trend-Folge Scores
 +        self.trend_fomo_score = 2.0
@@ -1191,28 +1191,28 @@ index 0000000..b7f3e1e
 +        self.trend_impulsivity_score = 1.0
 +        self.trend_hesitation_score = 0.5
 +        self.trend_rule_break_score = 1.0
-+        
++
 +        # Counter-Trend Scores
 +        self.counter_fomo_score = 1.0
 +        self.counter_loss_fear_score = 3.0
 +        self.counter_impulsivity_score = 2.0
 +        self.counter_hesitation_score = 1.0
 +        self.counter_rule_break_score = 2.0
-+        
++
 +        # Breakout Scores
 +        self.breakout_fomo_score = 3.0
 +        self.breakout_loss_fear_score = 2.0
 +        self.breakout_impulsivity_score = 2.0
 +        self.breakout_hesitation_score = 1.0
 +        self.breakout_rule_break_score = 2.0
-+        
++
 +        # Exit Scores
 +        self.exit_fomo_score = 1.0
 +        self.exit_loss_fear_score = 2.0
 +        self.exit_impulsivity_score = 1.0
 +        self.exit_hesitation_score = 2.0
 +        self.exit_rule_break_score = 1.0
-+        
++
 +        # Re-Entry Scores
 +        self.reentry_fomo_score = 2.0
 +        self.reentry_loss_fear_score = 1.0
@@ -1228,28 +1228,28 @@ index 0000000..b7f3e1e
 +    print("\n" + "="*80)
 +    print("🧠 Vollständiges Psychologie-Heatmap Beispiel")
 +    print("="*80 + "\n")
-+    
++
 +    # 1. Mock-Stats erstellen (in echt: aus DB / Aggregation)
 +    stats = MockTriggerTrainingStats()
-+    
++
 +    # 2. Report-Context bauen
 +    context = build_report_context_from_trigger_training_stats(stats)
-+    
++
 +    # 3. Ausgabe
 +    print("\n📊 Report-Context:")
 +    print(f"  - Anzahl Rows: {len(context['psychology_heatmap_rows'])}")
 +    print(f"  - Problem-Cluster: {len(context['psychology_statistics']['problem_clusters'])}")
-+    
++
 +    if context['psychology_statistics']['problem_clusters']:
 +        print("\n⚠️  Problem-Cluster (Score >= 2.5):")
 +        for cluster in context['psychology_statistics']['problem_clusters']:
 +            print(f"    - {cluster['name']}: {cluster['max_score']:.1f}")
-+    
++
 +    print("\n📈 Durchschnittswerte:")
 +    for metric, value in context['psychology_statistics']['avg_scores'].items():
 +        emoji = "🔴" if value >= 2.5 else "🟡" if value >= 1.5 else "🟢"
 +        print(f"    {emoji} {metric.replace('_', ' ').title()}: {value:.2f}")
-+    
++
 +    print("\n✅ Integration erfolgreich!\n")
 +
 +
@@ -1259,37 +1259,37 @@ index 0000000..b7f3e1e
 +
 +def main():
 +    """Hauptfunktion mit verschiedenen Beispielen."""
-+    
++
 +    print("\n" + "="*80)
 +    print("🧠 Psychology Heatmap Integration Examples")
 +    print("="*80 + "\n")
-+    
++
 +    # Setup
 +    output_dir = Path("output/psychology_reports")
 +    output_dir.mkdir(parents=True, exist_ok=True)
-+    
++
 +    # Scenario 1: Standalone Report
 +    print("\n--- Scenario 1: Standalone Report ---")
 +    generate_standalone_psychology_report(output_dir)
-+    
++
 +    # Scenario 2: Integration in bestehenden Report
 +    print("\n--- Scenario 2: Integration in Trigger-Training-Report ---")
 +    mock_stats = MockTriggerTrainingStats()
 +    context = build_report_context_from_trigger_training_stats(mock_stats)
 +    print(f"✓ Context erstellt mit {len(context['psychology_heatmap_rows'])} Rows")
-+    
++
 +    # Scenario 3: Flask Route
 +    print("\n--- Scenario 3: Flask/Dashboard Route ---")
 +    flask_context = example_flask_route_handler()
 +    print(f"✓ Flask-Context bereit")
-+    
++
 +    # Scenario 4: Full Integration
 +    example_full_integration()
-+    
++
 +    print("\n" + "="*80)
 +    print("✅ Alle Beispiele erfolgreich durchgeführt!")
 +    print("="*80 + "\n")
-+    
++
 +    # Tipps
 +    print("💡 Nächste Schritte:")
 +    print("  1. Integriere die Funktionen in deine bestehende Reporting-Pipeline")
@@ -1308,7 +1308,7 @@ index c55be95..eed7404 100644
 @@ -132,6 +132,17 @@ from .trigger_training_report import (
      build_trigger_training_report,
  )
- 
+
 +# Psychology Heatmap
 +from .psychology_heatmap import (
 +    PsychologyHeatmapCell,
@@ -1374,7 +1374,7 @@ index 0000000..16a3d21
 +@dataclass
 +class PsychologyHeatmapCell:
 +    """Einzelne Zelle in der Heatmap."""
-+    
++
 +    value: float  # Rohwert (0-3+)
 +    heat_level: int  # Diskrete Heat-Level: 0, 1, 2, 3
 +    display_value: str  # Formatierter Wert für Anzeige
@@ -1384,7 +1384,7 @@ index 0000000..16a3d21
 +@dataclass
 +class PsychologyHeatmapRow:
 +    """Eine Zeile in der Heatmap (ein Trading-Cluster)."""
-+    
++
 +    name: str  # z.B. "Trend-Folge Einstiege"
 +    fomo: PsychologyHeatmapCell
 +    loss_fear: PsychologyHeatmapCell
@@ -1396,7 +1396,7 @@ index 0000000..16a3d21
 +def _score_to_heat_level(score: float) -> int:
 +    """
 +    Konvertiert einen kontinuierlichen Score in ein diskretes Heat-Level (0-3).
-+    
++
 +    Mapping:
 +    - 0.0 - 0.4: Level 0 (kein Thema)
 +    - 0.5 - 1.4: Level 1 (leicht)
@@ -1416,13 +1416,13 @@ index 0000000..16a3d21
 +def _create_heatmap_cell(value: float) -> PsychologyHeatmapCell:
 +    """Erstellt eine Heatmap-Zelle aus einem Rohwert."""
 +    heat_level = _score_to_heat_level(value)
-+    
++
 +    # Wert runden für Anzeige
 +    display_value = str(round(value))
-+    
++
 +    # CSS-Klasse
 +    css_class = f"heat-{heat_level}"
-+    
++
 +    return PsychologyHeatmapCell(
 +        value=value,
 +        heat_level=heat_level,
@@ -1436,7 +1436,7 @@ index 0000000..16a3d21
 +) -> List[PsychologyHeatmapRow]:
 +    """
 +    Baut strukturierte Heatmap-Rows aus Roh-Daten.
-+    
++
 +    Args:
 +        raw_rows: Liste von Dictionaries mit folgenden Keys:
 +            - name: str (Name des Clusters)
@@ -1445,10 +1445,10 @@ index 0000000..16a3d21
 +            - impulsivity: float (0-3+)
 +            - hesitation: float (0-3+)
 +            - rule_break: float (0-3+)
-+    
++
 +    Returns:
 +        Liste von PsychologyHeatmapRow-Objekten
-+    
++
 +    Beispiel:
 +        >>> raw = [
 +        ...     {
@@ -1467,7 +1467,7 @@ index 0000000..16a3d21
 +        2
 +    """
 +    result = []
-+    
++
 +    for raw_row in raw_rows:
 +        row = PsychologyHeatmapRow(
 +            name=raw_row["name"],
@@ -1478,7 +1478,7 @@ index 0000000..16a3d21
 +            rule_break=_create_heatmap_cell(raw_row.get("rule_break", 0.0)),
 +        )
 +        result.append(row)
-+    
++
 +    return result
 +
 +
@@ -1487,16 +1487,16 @@ index 0000000..16a3d21
 +) -> List[Dict[str, Any]]:
 +    """
 +    Serialisiert Heatmap-Rows für Template-Rendering.
-+    
++
 +    Konvertiert die strukturierten Row-Objekte in einfache Dictionaries,
 +    die direkt im Jinja2-Template verwendet werden können.
-+    
++
 +    Args:
 +        rows: Liste von PsychologyHeatmapRow-Objekten
-+    
++
 +    Returns:
 +        Liste von Dictionaries mit serialisierten Daten
-+    
++
 +    Beispiel:
 +        >>> rows = build_psychology_heatmap_rows([...])
 +        >>> serialized = serialize_psychology_heatmap_rows(rows)
@@ -1506,7 +1506,7 @@ index 0000000..16a3d21
 +        'heat-2'
 +    """
 +    result = []
-+    
++
 +    for row in rows:
 +        serialized = {
 +            "name": row.name,
@@ -1517,14 +1517,14 @@ index 0000000..16a3d21
 +            "rule_break": asdict(row.rule_break),
 +        }
 +        result.append(serialized)
-+    
++
 +    return result
 +
 +
 +def build_example_psychology_heatmap_data() -> List[Dict[str, Any]]:
 +    """
 +    Erzeugt Beispieldaten für die Heatmap (zu Testzwecken).
-+    
++
 +    Returns:
 +        Liste von Dictionaries mit Beispiel-Scores
 +    """
@@ -1577,10 +1577,10 @@ index 0000000..16a3d21
 +) -> Dict[str, Any]:
 +    """
 +    Berechnet aggregierte Statistiken über alle Cluster hinweg.
-+    
++
 +    Args:
 +        rows: Liste von PsychologyHeatmapRow-Objekten
-+    
++
 +    Returns:
 +        Dictionary mit aggregierten Metriken:
 +        - total_clusters: Anzahl der Cluster
@@ -1595,14 +1595,14 @@ index 0000000..16a3d21
 +            "max_scores": {},
 +            "problem_clusters": [],
 +        }
-+    
++
 +    # Sammle alle Werte
 +    fomo_values = [row.fomo.value for row in rows]
 +    loss_fear_values = [row.loss_fear.value for row in rows]
 +    impulsivity_values = [row.impulsivity.value for row in rows]
 +    hesitation_values = [row.hesitation.value for row in rows]
 +    rule_break_values = [row.rule_break.value for row in rows]
-+    
++
 +    avg_scores = {
 +        "fomo": sum(fomo_values) / len(fomo_values),
 +        "loss_fear": sum(loss_fear_values) / len(loss_fear_values),
@@ -1610,7 +1610,7 @@ index 0000000..16a3d21
 +        "hesitation": sum(hesitation_values) / len(hesitation_values),
 +        "rule_break": sum(rule_break_values) / len(rule_break_values),
 +    }
-+    
++
 +    max_scores = {
 +        "fomo": max(fomo_values),
 +        "loss_fear": max(loss_fear_values),
@@ -1618,7 +1618,7 @@ index 0000000..16a3d21
 +        "hesitation": max(hesitation_values),
 +        "rule_break": max(rule_break_values),
 +    }
-+    
++
 +    # Finde Problem-Cluster (mindestens ein Score >= 2.5)
 +    problem_clusters = []
 +    for row in rows:
@@ -1634,7 +1634,7 @@ index 0000000..16a3d21
 +                "name": row.name,
 +                "max_score": max_value_in_row,
 +            })
-+    
++
 +    return {
 +        "total_clusters": len(rows),
 +        "avg_scores": avg_scores,
@@ -1652,21 +1652,21 @@ index 0000000..16a3d21
 +) -> Dict[str, Dict[str, float]]:
 +    """
 +    Extrahiert Psychologie-Scores aus Trigger-Training-Events.
-+    
++
 +    Diese Funktion analysiert die Tags und Outcomes der Events und berechnet
 +    aggregierte Scores für verschiedene Trading-Cluster.
-+    
++
 +    Args:
 +        events: Liste von TriggerTrainingEvent-Objekten
-+    
++
 +    Returns:
 +        Dictionary mit Cluster-Namen als Keys und Score-Dicts als Values
-+    
++
 +    Beispiel:
 +        >>> scores = extract_psychology_scores_from_events(events)
 +        >>> scores["trend_follow"]["fomo"]
 +        2.0
-+    
++
 +    Hinweis:
 +        Dies ist eine vereinfachte Implementierung. In der Praxis sollte hier
 +        eine ausgefeilte Analyse der Event-Daten stattfinden, die z.B.:
@@ -1677,9 +1677,9 @@ index 0000000..16a3d21
 +    """
 +    # TODO: Implementiere echte Analyse-Logik
 +    # Für jetzt: Dummy-Implementation als Platzhalter
-+    
++
 +    from collections import defaultdict
-+    
++
 +    cluster_scores = defaultdict(lambda: {
 +        "fomo": 0.0,
 +        "loss_fear": 0.0,
@@ -1687,12 +1687,12 @@ index 0000000..16a3d21
 +        "hesitation": 0.0,
 +        "rule_break": 0.0,
 +    })
-+    
++
 +    # Beispiel-Analyse: Zähle bestimmte Outcomes und Tags
 +    for event in events:
 +        # Vereinfachte Cluster-Zuordnung basierend auf Tags
 +        cluster = _determine_cluster_from_tags(event.tags)
-+        
++
 +        # Erhöhe Scores basierend auf Outcome
 +        if hasattr(event, 'outcome'):
 +            if event.outcome.value == "FOMO":
@@ -1703,12 +1703,12 @@ index 0000000..16a3d21
 +                cluster_scores[cluster]["hesitation"] += 0.3
 +            elif event.outcome.value == "RULE_BREAK":
 +                cluster_scores[cluster]["rule_break"] += 0.5
-+        
++
 +        # Impulsivität basierend auf Reaktionszeit
 +        if hasattr(event, 'reaction_delay_s'):
 +            if event.reaction_delay_s < 1.0:  # Sehr schnelle Reaktion
 +                cluster_scores[cluster]["impulsivity"] += 0.2
-+    
++
 +    # Normalisiere Scores auf 0-3 Skala
 +    for cluster in cluster_scores:
 +        for metric in cluster_scores[cluster]:
@@ -1716,14 +1716,14 @@ index 0000000..16a3d21
 +            cluster_scores[cluster][metric] = min(
 +                cluster_scores[cluster][metric], 3.0
 +            )
-+    
++
 +    return dict(cluster_scores)
 +
 +
 +def _determine_cluster_from_tags(tags: List[str]) -> str:
 +    """Bestimmt den Trading-Cluster basierend auf Tags."""
 +    tags_lower = [t.lower() for t in tags]
-+    
++
 +    if any(t in tags_lower for t in ["trend", "trend_follow", "with_trend"]):
 +        return "trend_follow"
 +    elif any(t in tags_lower for t in ["counter", "reversal", "against_trend"]):
@@ -1746,14 +1746,14 @@ index 0000000..15fa908
 +<!--
 +  Psychologie-Heatmap Macro
 +  =========================
-+  
++
 +  Wiederverwendbare Jinja2-Macro für die Psychologie-Heatmap.
 +  Kann in verschiedenen Templates eingebunden werden.
-+  
++
 +  Verwendung:
 +    {% from 'psychology_heatmap_macro.html' import psychology_heatmap %}
 +    {{ psychology_heatmap(heatmap_rows, show_legend=True, show_notes=True) }}
-+  
++
 +  Parameter:
 +    - heatmap_rows: Liste von serialisierten Heatmap-Rows
 +    - show_legend: Boolean, ob Legende angezeigt werden soll (default: True)
@@ -1762,7 +1762,7 @@ index 0000000..15fa908
 +
 +{% macro psychology_heatmap(heatmap_rows, show_legend=True, show_notes=True) %}
 +<section class="bg-gradient-to-br from-slate-900/80 via-slate-900/60 to-slate-900/80 rounded-2xl border border-slate-800 p-6">
-+  
++
 +  {# Header #}
 +  <div class="mb-4">
 +    <div class="flex items-center gap-3 mb-2">
@@ -1836,9 +1836,9 @@ index 0000000..15fa908
 +          <td class="py-2.5 px-3 font-medium text-slate-200 bg-slate-900/40 sticky left-0 z-10">
 +            {{ row.name }}
 +          </td>
-+          
++
 +          {# FOMO Cell #}
-+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
++          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
 +            {% if row.fomo.heat_level == 0 %}bg-slate-950 text-slate-400
 +            {% elif row.fomo.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
 +            {% elif row.fomo.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -1846,9 +1846,9 @@ index 0000000..15fa908
 +            {% endif %}">
 +            {{ row.fomo.display_value }}
 +          </td>
-+          
++
 +          {# Loss Fear Cell #}
-+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
++          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
 +            {% if row.loss_fear.heat_level == 0 %}bg-slate-950 text-slate-400
 +            {% elif row.loss_fear.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
 +            {% elif row.loss_fear.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -1856,9 +1856,9 @@ index 0000000..15fa908
 +            {% endif %}">
 +            {{ row.loss_fear.display_value }}
 +          </td>
-+          
++
 +          {# Impulsivity Cell #}
-+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
++          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
 +            {% if row.impulsivity.heat_level == 0 %}bg-slate-950 text-slate-400
 +            {% elif row.impulsivity.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
 +            {% elif row.impulsivity.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -1866,9 +1866,9 @@ index 0000000..15fa908
 +            {% endif %}">
 +            {{ row.impulsivity.display_value }}
 +          </td>
-+          
++
 +          {# Hesitation Cell #}
-+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
++          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
 +            {% if row.hesitation.heat_level == 0 %}bg-slate-950 text-slate-400
 +            {% elif row.hesitation.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
 +            {% elif row.hesitation.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -1876,9 +1876,9 @@ index 0000000..15fa908
 +            {% endif %}">
 +            {{ row.hesitation.display_value }}
 +          </td>
-+          
++
 +          {# Rule Break Cell #}
-+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
++          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
 +            {% if row.rule_break.heat_level == 0 %}bg-slate-950 text-slate-400
 +            {% elif row.rule_break.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
 +            {% elif row.rule_break.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -1925,7 +1925,7 @@ index 0000000..15fa908
 +  <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-3">
 +    <span>🧠</span> Psychologie-Muster
 +  </h3>
-+  
++
 +  <div class="space-y-2">
 +    {% for row in heatmap_rows %}
 +    <div class="flex items-center gap-2">
@@ -1947,7 +1947,7 @@ index 0000000..15fa908
 +    </div>
 +    {% endfor %}
 +  </div>
-+  
++
 +  <div class="mt-3 pt-3 border-t border-slate-800/50 flex justify-between items-center text-xs">
 +    <span class="text-slate-500">
 +      <span class="inline-block w-2 h-2 rounded-full bg-slate-700 mr-1"></span> 0
@@ -1971,9 +1971,9 @@ index 0000000..b0e2210
 +<!--
 +  Trigger Training Psychology Dashboard
 +  ======================================
-+  
++
 +  Detaillierte Ansicht der psychologischen Muster im Trigger-Training.
-+  
++
 +  Features:
 +  - Vollständige Psychologie-Heatmap
 +  - Aggregierte Statistiken
@@ -2015,7 +2015,7 @@ index 0000000..b0e2210
 +        </p>
 +      </div>
 +    </div>
-+    
++
 +    {% if meta %}
 +    <div class="text-right">
 +      <div class="text-xs text-slate-500 mb-1">Zeitraum</div>
@@ -2035,7 +2035,7 @@ index 0000000..b0e2210
 +{# =========================================================================== #}
 +{% if statistics %}
 +<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-+  
++
 +  {# Total Clusters #}
 +  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
 +    <div class="flex items-center gap-2 mb-1">
@@ -2044,7 +2044,7 @@ index 0000000..b0e2210
 +    </div>
 +    <p class="text-2xl font-bold text-slate-100">{{ statistics.total_clusters }}</p>
 +  </div>
-+  
++
 +  {# Highest Average Score #}
 +  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
 +    <div class="flex items-center gap-2 mb-1">
@@ -2052,7 +2052,7 @@ index 0000000..b0e2210
 +      <p class="text-xs uppercase tracking-wide text-slate-500 font-medium">Höchster Ø-Score</p>
 +    </div>
 +    {% set max_avg_category = statistics.avg_scores.items() | sort(attribute='1', reverse=True) | first %}
-+    <p class="text-2xl font-bold 
++    <p class="text-2xl font-bold
 +      {% if max_avg_category[1] >= 2.5 %}text-rose-400
 +      {% elif max_avg_category[1] >= 1.5 %}text-amber-400
 +      {% else %}text-emerald-300
@@ -2061,7 +2061,7 @@ index 0000000..b0e2210
 +    </p>
 +    <p class="text-xs text-slate-500 mt-1">{{ max_avg_category[0] | replace('_', ' ') | title }}</p>
 +  </div>
-+  
++
 +  {# Problem Clusters #}
 +  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
 +    <div class="flex items-center gap-2 mb-1">
@@ -2071,7 +2071,7 @@ index 0000000..b0e2210
 +    <p class="text-2xl font-bold text-rose-400">{{ statistics.problem_clusters|length }}</p>
 +    <p class="text-xs text-slate-500 mt-1">mit Score ≥ 2.5</p>
 +  </div>
-+  
++
 +  {# Training Focus #}
 +  <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-4">
 +    <div class="flex items-center gap-2 mb-1">
@@ -2086,7 +2086,7 @@ index 0000000..b0e2210
 +    <p class="text-sm text-emerald-300 mt-2">Alle Bereiche OK ✓</p>
 +    {% endif %}
 +  </div>
-+  
++
 +</div>
 +{% endif %}
 +
@@ -2106,7 +2106,7 @@ index 0000000..b0e2210
 +    <span class="text-2xl">🔥</span>
 +    <h2 class="text-lg font-bold text-slate-100">Problem-Cluster: Hohe Aufmerksamkeit erforderlich</h2>
 +  </div>
-+  
++
 +  <div class="bg-rose-950/30 rounded-xl border border-rose-500/20 p-4 mb-4">
 +    <p class="text-sm text-rose-200 leading-relaxed">
 +      Diese Cluster zeigen mindestens einen Score von <strong>2.5 oder höher</strong>.
@@ -2114,7 +2114,7 @@ index 0000000..b0e2210
 +      identifizierten Triggern zu arbeiten.
 +    </p>
 +  </div>
-+  
++
 +  <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
 +    {% for cluster in statistics.problem_clusters %}
 +    <div class="bg-slate-950/60 rounded-lg border border-rose-500/20 p-4">
@@ -2124,7 +2124,7 @@ index 0000000..b0e2210
 +          Score: {{ "%.1f"|format(cluster.max_score) }}
 +        </span>
 +      </div>
-+      
++
 +      {# Empfehlungen basierend auf Cluster #}
 +      <div class="mt-3 pt-3 border-t border-slate-800/50">
 +        <p class="text-xs text-slate-400 font-semibold mb-1.5">Empfohlene Drills:</p>
@@ -2150,7 +2150,7 @@ index 0000000..b0e2210
 +    </div>
 +    {% endfor %}
 +  </div>
-+  
++
 +</section>
 +{% endif %}
 +
@@ -2163,7 +2163,7 @@ index 0000000..b0e2210
 +    <span class="text-2xl">📊</span>
 +    <h2 class="text-lg font-bold text-slate-100">Durchschnittswerte über alle Cluster</h2>
 +  </div>
-+  
++
 +  <div class="space-y-3">
 +    {% for category, avg_value in statistics.avg_scores.items() %}
 +    <div>
@@ -2185,7 +2185,7 @@ index 0000000..b0e2210
 +          {{ "%.2f"|format(avg_value) }}
 +        </span>
 +      </div>
-+      
++
 +      {# Progress Bar #}
 +      <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
 +        {% set pct = (avg_value / 3 * 100) | int %}
@@ -2200,7 +2200,7 @@ index 0000000..b0e2210
 +    </div>
 +    {% endfor %}
 +  </div>
-+  
++
 +  <div class="mt-4 pt-4 border-t border-slate-800/50 text-xs text-slate-500">
 +    <p>
 +      💡 <strong>Interpretation:</strong> Durchschnittswerte unter 1.5 sind unkritisch.
@@ -2218,9 +2218,9 @@ index 0000000..b0e2210
 +    <span class="text-2xl">🎯</span>
 +    <h2 class="text-lg font-bold text-slate-100">Nächste Schritte & Drill-Empfehlungen</h2>
 +  </div>
-+  
++
 +  <div class="grid gap-4 md:grid-cols-2">
-+    
++
 +    {# Sofort-Maßnahmen #}
 +    <div class="bg-slate-950/60 rounded-xl border border-slate-700 p-4">
 +      <h3 class="text-sm font-semibold text-emerald-300 mb-3 flex items-center gap-2">
@@ -2245,7 +2245,7 @@ index 0000000..b0e2210
 +        </li>
 +      </ul>
 +    </div>
-+    
++
 +    {# Mittel- bis langfristig #}
 +    <div class="bg-slate-950/60 rounded-xl border border-slate-700 p-4">
 +      <h3 class="text-sm font-semibold text-sky-300 mb-3 flex items-center gap-2">
@@ -2270,9 +2270,9 @@ index 0000000..b0e2210
 +        </li>
 +      </ul>
 +    </div>
-+    
++
 +  </div>
-+  
++
 +  {# Call-to-Action #}
 +  <div class="mt-6 bg-gradient-to-r from-purple-950/40 to-pink-950/40 rounded-xl border border-purple-500/30 p-4">
 +    <div class="flex items-start gap-3">
@@ -2295,7 +2295,7 @@ index 0000000..b0e2210
 +      </div>
 +    </div>
 +  </div>
-+  
++
 +</section>
 +
 +{# =========================================================================== #}
@@ -2339,24 +2339,24 @@ index 0000000..a944e74
 +
 +class TestScoreToHeatLevel:
 +    """Tests für die Score-zu-Heat-Level-Konvertierung."""
-+    
++
 +    def test_level_0_boundary(self):
 +        """Test für Level 0 (kein Thema)."""
 +        assert _score_to_heat_level(0.0) == 0
 +        assert _score_to_heat_level(0.4) == 0
-+    
++
 +    def test_level_1_boundary(self):
 +        """Test für Level 1 (leicht)."""
 +        assert _score_to_heat_level(0.5) == 1
 +        assert _score_to_heat_level(1.0) == 1
 +        assert _score_to_heat_level(1.4) == 1
-+    
++
 +    def test_level_2_boundary(self):
 +        """Test für Level 2 (mittel)."""
 +        assert _score_to_heat_level(1.5) == 2
 +        assert _score_to_heat_level(2.0) == 2
 +        assert _score_to_heat_level(2.4) == 2
-+    
++
 +    def test_level_3_boundary(self):
 +        """Test für Level 3 (stark)."""
 +        assert _score_to_heat_level(2.5) == 3
@@ -2366,7 +2366,7 @@ index 0000000..a944e74
 +
 +class TestCreateHeatmapCell:
 +    """Tests für die Heatmap-Cell-Erstellung."""
-+    
++
 +    def test_create_cell_level_0(self):
 +        """Test für Cell mit Level 0."""
 +        cell = _create_heatmap_cell(0.3)
@@ -2374,7 +2374,7 @@ index 0000000..a944e74
 +        assert cell.heat_level == 0
 +        assert cell.display_value == "0"
 +        assert cell.css_class == "heat-0"
-+    
++
 +    def test_create_cell_level_1(self):
 +        """Test für Cell mit Level 1."""
 +        cell = _create_heatmap_cell(1.0)
@@ -2382,7 +2382,7 @@ index 0000000..a944e74
 +        assert cell.heat_level == 1
 +        assert cell.display_value == "1"
 +        assert cell.css_class == "heat-1"
-+    
++
 +    def test_create_cell_level_2(self):
 +        """Test für Cell mit Level 2."""
 +        cell = _create_heatmap_cell(2.0)
@@ -2390,7 +2390,7 @@ index 0000000..a944e74
 +        assert cell.heat_level == 2
 +        assert cell.display_value == "2"
 +        assert cell.css_class == "heat-2"
-+    
++
 +    def test_create_cell_level_3(self):
 +        """Test für Cell mit Level 3."""
 +        cell = _create_heatmap_cell(3.0)
@@ -2398,7 +2398,7 @@ index 0000000..a944e74
 +        assert cell.heat_level == 3
 +        assert cell.display_value == "3"
 +        assert cell.css_class == "heat-3"
-+    
++
 +    def test_create_cell_rounding(self):
 +        """Test für Rundung der Display-Werte."""
 +        cell = _create_heatmap_cell(2.7)
@@ -2407,7 +2407,7 @@ index 0000000..a944e74
 +
 +class TestBuildPsychologyHeatmapRows:
 +    """Tests für build_psychology_heatmap_rows."""
-+    
++
 +    def test_build_single_row(self):
 +        """Test für einzelne Row."""
 +        raw_rows = [
@@ -2420,9 +2420,9 @@ index 0000000..a944e74
 +                "rule_break": 0.0,
 +            }
 +        ]
-+        
++
 +        rows = build_psychology_heatmap_rows(raw_rows)
-+        
++
 +        assert len(rows) == 1
 +        assert rows[0].name == "Test Cluster"
 +        assert rows[0].fomo.heat_level == 2
@@ -2430,7 +2430,7 @@ index 0000000..a944e74
 +        assert rows[0].impulsivity.heat_level == 1
 +        assert rows[0].hesitation.heat_level == 3
 +        assert rows[0].rule_break.heat_level == 0
-+    
++
 +    def test_build_multiple_rows(self):
 +        """Test für mehrere Rows."""
 +        raw_rows = [
@@ -2451,13 +2451,13 @@ index 0000000..a944e74
 +                "rule_break": 2.0,
 +            }
 +        ]
-+        
++
 +        rows = build_psychology_heatmap_rows(raw_rows)
-+        
++
 +        assert len(rows) == 2
 +        assert rows[0].name == "Cluster A"
 +        assert rows[1].name == "Cluster B"
-+    
++
 +    def test_build_missing_values(self):
 +        """Test für fehlende Werte (sollten auf 0.0 defaulten)."""
 +        raw_rows = [
@@ -2470,9 +2470,9 @@ index 0000000..a944e74
 +                # rule_break fehlt
 +            }
 +        ]
-+        
++
 +        rows = build_psychology_heatmap_rows(raw_rows)
-+        
++
 +        assert len(rows) == 1
 +        assert rows[0].fomo.heat_level == 1
 +        assert rows[0].loss_fear.heat_level == 0
@@ -2483,7 +2483,7 @@ index 0000000..a944e74
 +
 +class TestSerializePsychologyHeatmapRows:
 +    """Tests für serialize_psychology_heatmap_rows."""
-+    
++
 +    def test_serialize_single_row(self):
 +        """Test für Serialisierung einer einzelnen Row."""
 +        raw_rows = [
@@ -2496,29 +2496,29 @@ index 0000000..a944e74
 +                "rule_break": 0.0,
 +            }
 +        ]
-+        
++
 +        rows = build_psychology_heatmap_rows(raw_rows)
 +        serialized = serialize_psychology_heatmap_rows(rows)
-+        
++
 +        assert len(serialized) == 1
 +        assert serialized[0]["name"] == "Test Cluster"
 +        assert serialized[0]["fomo"]["heat_level"] == 2
 +        assert serialized[0]["fomo"]["css_class"] == "heat-2"
 +        assert serialized[0]["fomo"]["display_value"] == "2"
-+    
++
 +    def test_serialize_preserves_all_fields(self):
 +        """Test dass alle Felder erhalten bleiben."""
 +        raw_rows = [{"name": "Test", "fomo": 1.0, "loss_fear": 1.0, "impulsivity": 1.0, "hesitation": 1.0, "rule_break": 1.0}]
 +        rows = build_psychology_heatmap_rows(raw_rows)
 +        serialized = serialize_psychology_heatmap_rows(rows)
-+        
++
 +        assert "name" in serialized[0]
 +        assert "fomo" in serialized[0]
 +        assert "loss_fear" in serialized[0]
 +        assert "impulsivity" in serialized[0]
 +        assert "hesitation" in serialized[0]
 +        assert "rule_break" in serialized[0]
-+        
++
 +        # Jedes Metric-Dict sollte alle Cell-Felder haben
 +        for metric in ["fomo", "loss_fear", "impulsivity", "hesitation", "rule_break"]:
 +            assert "value" in serialized[0][metric]
@@ -2529,14 +2529,14 @@ index 0000000..a944e74
 +
 +class TestBuildExamplePsychologyHeatmapData:
 +    """Tests für build_example_psychology_heatmap_data."""
-+    
++
 +    def test_example_data_structure(self):
 +        """Test dass Beispiel-Daten die richtige Struktur haben."""
 +        data = build_example_psychology_heatmap_data()
-+        
++
 +        assert isinstance(data, list)
 +        assert len(data) > 0
-+        
++
 +        for row in data:
 +            assert "name" in row
 +            assert "fomo" in row
@@ -2544,11 +2544,11 @@ index 0000000..a944e74
 +            assert "impulsivity" in row
 +            assert "hesitation" in row
 +            assert "rule_break" in row
-+    
++
 +    def test_example_data_values_in_range(self):
 +        """Test dass alle Beispiel-Werte im Bereich 0-3 liegen."""
 +        data = build_example_psychology_heatmap_data()
-+        
++
 +        for row in data:
 +            for metric in ["fomo", "loss_fear", "impulsivity", "hesitation", "rule_break"]:
 +                assert 0.0 <= row[metric] <= 3.0
@@ -2556,17 +2556,17 @@ index 0000000..a944e74
 +
 +class TestCalculateClusterStatistics:
 +    """Tests für calculate_cluster_statistics."""
-+    
++
 +    def test_statistics_empty_rows(self):
 +        """Test für leere Row-Liste."""
 +        rows = []
 +        stats = calculate_cluster_statistics(rows)
-+        
++
 +        assert stats["total_clusters"] == 0
 +        assert stats["avg_scores"] == {}
 +        assert stats["max_scores"] == {}
 +        assert stats["problem_clusters"] == []
-+    
++
 +    def test_statistics_single_row(self):
 +        """Test für einzelne Row."""
 +        raw_rows = [
@@ -2579,23 +2579,23 @@ index 0000000..a944e74
 +                "rule_break": 3.0,
 +            }
 +        ]
-+        
++
 +        rows = build_psychology_heatmap_rows(raw_rows)
 +        stats = calculate_cluster_statistics(rows)
-+        
++
 +        assert stats["total_clusters"] == 1
 +        assert stats["avg_scores"]["fomo"] == 2.0
 +        assert stats["avg_scores"]["loss_fear"] == 1.0
 +        assert stats["avg_scores"]["impulsivity"] == 0.5
 +        assert stats["avg_scores"]["hesitation"] == 2.5
 +        assert stats["avg_scores"]["rule_break"] == 3.0
-+        
++
 +        assert stats["max_scores"]["rule_break"] == 3.0
-+        
++
 +        # Sollte als Problem-Cluster erkannt werden (rule_break >= 2.5)
 +        assert len(stats["problem_clusters"]) == 1
 +        assert stats["problem_clusters"][0]["name"] == "Test Cluster"
-+    
++
 +    def test_statistics_multiple_rows(self):
 +        """Test für mehrere Rows."""
 +        raw_rows = [
@@ -2616,22 +2616,22 @@ index 0000000..a944e74
 +                "rule_break": 2.0,
 +            }
 +        ]
-+        
++
 +        rows = build_psychology_heatmap_rows(raw_rows)
 +        stats = calculate_cluster_statistics(rows)
-+        
++
 +        assert stats["total_clusters"] == 2
-+        
++
 +        # Durchschnitt von 1.0 und 3.0
 +        assert stats["avg_scores"]["fomo"] == 2.0
-+        
++
 +        # Max von 3.0
 +        assert stats["max_scores"]["fomo"] == 3.0
-+        
++
 +        # Cluster B sollte als Problem erkannt werden (fomo=3.0, impulsivity=2.5)
 +        assert len(stats["problem_clusters"]) == 1
 +        assert stats["problem_clusters"][0]["name"] == "Cluster B"
-+    
++
 +    def test_statistics_no_problem_clusters(self):
 +        """Test für Rows ohne Problem-Cluster."""
 +        raw_rows = [
@@ -2644,47 +2644,47 @@ index 0000000..a944e74
 +                "rule_break": 1.5,
 +            }
 +        ]
-+        
++
 +        rows = build_psychology_heatmap_rows(raw_rows)
 +        stats = calculate_cluster_statistics(rows)
-+        
++
 +        # Alle Werte < 2.5, also keine Problem-Cluster
 +        assert len(stats["problem_clusters"]) == 0
 +
 +
 +class TestIntegration:
 +    """Integrations-Tests für komplette Workflows."""
-+    
++
 +    def test_full_workflow_example_data(self):
 +        """Test kompletter Workflow mit Beispiel-Daten."""
 +        # 1. Beispiel-Daten generieren
 +        raw_data = build_example_psychology_heatmap_data()
-+        
++
 +        # 2. Rows bauen
 +        rows = build_psychology_heatmap_rows(raw_data)
-+        
++
 +        # 3. Serialisieren
 +        serialized = serialize_psychology_heatmap_rows(rows)
-+        
++
 +        # 4. Statistiken berechnen
 +        stats = calculate_cluster_statistics(rows)
-+        
++
 +        # Assertions
 +        assert len(serialized) == len(raw_data)
 +        assert stats["total_clusters"] == len(raw_data)
 +        assert len(stats["problem_clusters"]) > 0  # Beispiel-Daten haben Problem-Cluster
-+    
++
 +    def test_template_context_structure(self):
 +        """Test dass der generierte Context die richtige Struktur für Templates hat."""
 +        raw_data = build_example_psychology_heatmap_data()
 +        rows = build_psychology_heatmap_rows(raw_data)
 +        serialized = serialize_psychology_heatmap_rows(rows)
-+        
++
 +        # Simuliere Template-Context
 +        context = {
 +            "heatmap_rows": serialized,
 +        }
-+        
++
 +        # Stelle sicher, dass Template-Zugriffe funktionieren würden
 +        for row in context["heatmap_rows"]:
 +            assert isinstance(row["name"], str)
@@ -2695,6 +2695,5 @@ index 0000000..a944e74
 +
 +if __name__ == "__main__":
 +    pytest.main([__file__, "-v"])
--- 
+--
 2.50.1 (Apple Git-155)
-

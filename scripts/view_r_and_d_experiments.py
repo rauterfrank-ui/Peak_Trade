@@ -27,6 +27,7 @@ Verwendung:
     # JSON-Output
     python scripts/view_r_and_d_experiments.py --output json --limit 10
 """
+
 from __future__ import annotations
 
 import argparse

@@ -31,6 +31,7 @@ Usage:
     result = run_armstrong_elkaroui_combi_experiment(config)
     print(result.combo_stats)
 """
+
 from __future__ import annotations
 
 import json
@@ -59,9 +60,10 @@ ALLOWED_ENVIRONMENTS = ["offline_backtest", "research"]
 # ENUMS / LABEL-TYPEN
 # =============================================================================
 
+
 class ArmstrongEventState:
     """Armstrong Event-States für Label-Klassifikation."""
-    
+
     NONE = "NONE"
     PRE_EVENT = "PRE_EVENT"
     EVENT = "EVENT"
@@ -70,7 +72,7 @@ class ArmstrongEventState:
 
 class ElKarouiRegime:
     """El-Karoui Volatilitäts-Regime."""
-    
+
     LOW = "LOW"
     MEDIUM = "MEDIUM"
     HIGH = "HIGH"
@@ -79,6 +81,7 @@ class ElKarouiRegime:
 # =============================================================================
 # CONFIG DATACLASS
 # =============================================================================
+
 
 @dataclass
 class ArmstrongElKarouiCombiConfig:
@@ -104,18 +107,22 @@ class ArmstrongElKarouiCombiConfig:
     timeframe: str
     start_date: datetime
     end_date: datetime
-    armstrong_params: Dict[str, Any] = field(default_factory=lambda: {
-        "cycle_length_days": 3141,
-        "event_window_days": 90,
-        "reference_date": "2015-10-01",
-    })
-    elkaroui_params: Dict[str, Any] = field(default_factory=lambda: {
-        "vol_window": 20,
-        "vol_threshold_low": 0.3,
-        "vol_threshold_high": 0.7,
-        "use_ewm": True,
-        "annualization_factor": 252.0,
-    })
+    armstrong_params: Dict[str, Any] = field(
+        default_factory=lambda: {
+            "cycle_length_days": 3141,
+            "event_window_days": 90,
+            "reference_date": "2015-10-01",
+        }
+    )
+    elkaroui_params: Dict[str, Any] = field(
+        default_factory=lambda: {
+            "vol_window": 20,
+            "vol_threshold_low": 0.3,
+            "vol_threshold_high": 0.7,
+            "use_ewm": True,
+            "annualization_factor": 252.0,
+        }
+    )
     environment: str = "offline_backtest"
     run_type: str = RUN_TYPE_ARMSTRONG_ELKAROUI_COMBI
     tier: str = "r_and_d"
@@ -131,9 +138,7 @@ class ArmstrongElKarouiCombiConfig:
                 f"Erlaubt: {ALLOWED_ENVIRONMENTS}"
             )
         if self.tier != "r_and_d":
-            raise ValueError(
-                f"Tier muss 'r_and_d' sein für dieses Experiment, nicht '{self.tier}'"
-            )
+            raise ValueError(f"Tier muss 'r_and_d' sein für dieses Experiment, nicht '{self.tier}'")
 
     def to_dict(self) -> Dict[str, Any]:
         """Konvertiert zu Dictionary."""
@@ -155,6 +160,7 @@ class ArmstrongElKarouiCombiConfig:
 # =============================================================================
 # RESULT DATACLASS
 # =============================================================================
+
 
 @dataclass
 class CombiExperimentResult:
@@ -238,6 +244,7 @@ class CombiExperimentResult:
 # HELPER FUNKTIONEN FÜR LABEL-GENERIERUNG
 # =============================================================================
 
+
 def compute_armstrong_event_labels(
     data: pd.DataFrame,
     armstrong_params: Dict[str, Any],
@@ -265,9 +272,9 @@ def compute_armstrong_event_labels(
     # Handle timezone-aware vs naive datetime
     index_for_calc = data.index
     ref_date = reference_date
-    if hasattr(index_for_calc, 'tz') and index_for_calc.tz is not None:
+    if hasattr(index_for_calc, "tz") and index_for_calc.tz is not None:
         index_for_calc = index_for_calc.tz_localize(None)
-    if hasattr(ref_date, 'tz') and ref_date.tz is not None:
+    if hasattr(ref_date, "tz") and ref_date.tz is not None:
         ref_date = ref_date.tz_localize(None)
 
     # Berechne Tage seit Referenz-Datum
@@ -284,8 +291,10 @@ def compute_armstrong_event_labels(
 
     # Klassifiziere Events
     for i, idx in enumerate(data.index):
-        d_to_next = days_to_next.iloc[i] if hasattr(days_to_next, 'iloc') else days_to_next[i]
-        d_since_last = days_since_last.iloc[i] if hasattr(days_since_last, 'iloc') else days_since_last[i]
+        d_to_next = days_to_next.iloc[i] if hasattr(days_to_next, "iloc") else days_to_next[i]
+        d_since_last = (
+            days_since_last.iloc[i] if hasattr(days_since_last, "iloc") else days_since_last[i]
+        )
 
         # PRE_EVENT: Kurz vor dem Turning-Point
         if d_to_next <= pre_event_days:
@@ -342,9 +351,9 @@ def compute_elkaroui_regime_labels(
     if lookback_window < vol_window:
         lookback_window = vol_window
 
-    vol_quantiles = vol_annualized.rolling(
-        window=lookback_window, min_periods=vol_window
-    ).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1], raw=False)
+    vol_quantiles = vol_annualized.rolling(window=lookback_window, min_periods=vol_window).apply(
+        lambda x: pd.Series(x).rank(pct=True).iloc[-1], raw=False
+    )
 
     # Klassifiziere Regime
     labels = pd.Series(ElKarouiRegime.MEDIUM, index=data.index)
@@ -401,6 +410,7 @@ def create_combo_state_labels(
 # =============================================================================
 # AGGREGATION FUNKTIONEN
 # =============================================================================
+
 
 def compute_combo_stats(
     labels_df: pd.DataFrame,
@@ -462,6 +472,7 @@ def compute_combo_stats(
 # HAUPTFUNKTION
 # =============================================================================
 
+
 def run_armstrong_elkaroui_combi_experiment(
     config: ArmstrongElKarouiCombiConfig,
     data: Optional[pd.DataFrame] = None,
@@ -517,11 +528,13 @@ def run_armstrong_elkaroui_combi_experiment(
         forward_returns = compute_forward_returns(data, config.forward_return_windows)
 
         # 6. Labels-DataFrame zusammenstellen
-        labels_df = pd.DataFrame({
-            "armstrong_state": armstrong_labels,
-            "elkaroui_regime": elkaroui_labels,
-            "combo_state": combo_labels,
-        })
+        labels_df = pd.DataFrame(
+            {
+                "armstrong_state": armstrong_labels,
+                "elkaroui_regime": elkaroui_labels,
+                "combo_state": combo_labels,
+            }
+        )
         labels_df = pd.concat([labels_df, forward_returns], axis=1)
 
         # 7. Aggregierte Statistiken berechnen
@@ -663,6 +676,7 @@ def _generate_dummy_data(config: ArmstrongElKarouiCombiConfig) -> pd.DataFrame:
 # REPORT GENERATOR
 # =============================================================================
 
+
 def generate_armstrong_elkaroui_combi_report(
     result: CombiExperimentResult,
     output_dir: Optional[str] = None,
@@ -712,31 +726,37 @@ def generate_armstrong_elkaroui_combi_report(
     for k, v in result.config.armstrong_params.items():
         lines.append(f"| {k} | {v} |")
 
-    lines.extend([
-        "",
-        "### El-Karoui-Parameter",
-        "",
-        "| Parameter | Wert |",
-        "|-----------|------|",
-    ])
+    lines.extend(
+        [
+            "",
+            "### El-Karoui-Parameter",
+            "",
+            "| Parameter | Wert |",
+            "|-----------|------|",
+        ]
+    )
 
     for k, v in result.config.elkaroui_params.items():
         lines.append(f"| {k} | {v} |")
 
-    lines.extend([
-        "",
-        "---",
-        "",
-        "## 2. Kombi-State-Statistiken",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## 2. Kombi-State-Statistiken",
+            "",
+        ]
+    )
 
     if result.combo_stats:
         # Tabelle der Kombi-States
-        lines.extend([
-            "| Kombi-State | Anzahl Bars | Avg Ret 1d | Avg Ret 3d | Avg Ret 7d | P(Big Move) |",
-            "|-------------|-------------|------------|------------|------------|-------------|",
-        ])
+        lines.extend(
+            [
+                "| Kombi-State | Anzahl Bars | Avg Ret 1d | Avg Ret 3d | Avg Ret 7d | P(Big Move) |",
+                "|-------------|-------------|------------|------------|------------|-------------|",
+            ]
+        )
 
         # Sortiere nach avg_ret_3d_fwd
         sorted_states = sorted(
@@ -755,62 +775,72 @@ def generate_armstrong_elkaroui_combi_report(
                 f"| {state} | {count} | {avg_1d:+.2f}% | {avg_3d:+.2f}% | {avg_7d:+.2f}% | {p_big:.1f}% |"
             )
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            "## 3. Label-Verteilung",
-            "",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## 3. Label-Verteilung",
+                "",
+            ]
+        )
 
         # Armstrong-Verteilung
         if "armstrong_state_distribution" in result.metadata:
-            lines.extend([
-                "### Armstrong Event-States",
-                "",
-                "| State | Anzahl |",
-                "|-------|--------|",
-            ])
+            lines.extend(
+                [
+                    "### Armstrong Event-States",
+                    "",
+                    "| State | Anzahl |",
+                    "|-------|--------|",
+                ]
+            )
             for state, count in result.metadata["armstrong_state_distribution"].items():
                 lines.append(f"| {state} | {count} |")
 
         # El-Karoui-Verteilung
         if "elkaroui_regime_distribution" in result.metadata:
-            lines.extend([
-                "",
-                "### El-Karoui Regime",
-                "",
-                "| Regime | Anzahl |",
-                "|--------|--------|",
-            ])
+            lines.extend(
+                [
+                    "",
+                    "### El-Karoui Regime",
+                    "",
+                    "| Regime | Anzahl |",
+                    "|--------|--------|",
+                ]
+            )
             for regime, count in result.metadata["elkaroui_regime_distribution"].items():
                 lines.append(f"| {regime} | {count} |")
 
     else:
         lines.append("*Keine Statistiken verfügbar.*")
 
-    lines.extend([
-        "",
-        "---",
-        "",
-        "## 4. Metadaten",
-        "",
-        f"- **Anzahl Bars:** {result.metadata.get('num_bars', 'N/A')}",
-        f"- **Datenstart:** {result.metadata.get('start_date', 'N/A')}",
-        f"- **Datenende:** {result.metadata.get('end_date', 'N/A')}",
-        f"- **Anzahl Kombi-States:** {result.metadata.get('num_combo_states', 'N/A')}",
-        "",
-    ])
-
-    if result.error_message:
-        lines.extend([
+    lines.extend(
+        [
+            "",
             "---",
             "",
-            "## ⚠️ Fehler",
+            "## 4. Metadaten",
             "",
-            f"```\n{result.error_message}\n```",
+            f"- **Anzahl Bars:** {result.metadata.get('num_bars', 'N/A')}",
+            f"- **Datenstart:** {result.metadata.get('start_date', 'N/A')}",
+            f"- **Datenende:** {result.metadata.get('end_date', 'N/A')}",
+            f"- **Anzahl Kombi-States:** {result.metadata.get('num_combo_states', 'N/A')}",
             "",
-        ])
+        ]
+    )
+
+    if result.error_message:
+        lines.extend(
+            [
+                "---",
+                "",
+                "## ⚠️ Fehler",
+                "",
+                f"```\n{result.error_message}\n```",
+                "",
+            ]
+        )
 
     # Report schreiben
     with open(report_file, "w") as f:
@@ -819,6 +849,3 @@ def generate_armstrong_elkaroui_combi_report(
     logger.info(f"Report generiert: {report_file}")
 
     return str(report_file)
-
-
-

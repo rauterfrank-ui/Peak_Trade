@@ -131,4 +131,3 @@ git diff HEAD~1 HEAD --stat
 ---
 
 **Status:** ✅ Merged and verified. Codebase now fully compliant with Ruff linting rules.
-

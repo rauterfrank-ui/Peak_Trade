@@ -4,6 +4,7 @@ Execution Pipeline - Core Orchestrator.
 
 Orchestrates order generation, gate validation, and execution.
 """
+
 from __future__ import annotations
 
 from typing import Optional

@@ -116,10 +116,10 @@ Each snapshot captures:
   ```bash
   # Check disk usage
   du -sh logs/execution
-  
+
   # Apply retention
   python scripts/ops/telemetry_retention.py --apply
-  
+
   # If critical, use aggressive policy
   python scripts/ops/telemetry_retention.py --apply \
     --max-age-days 7 \
@@ -136,7 +136,7 @@ Each snapshot captures:
   ```bash
   # Check recent sessions
   python scripts/view_execution_telemetry.py --limit 10
-  
+
   # Check retention status
   ls -lh logs/execution/.last_retention_run
   ```
@@ -157,7 +157,7 @@ Each snapshot captures:
   ```bash
   # Find problematic sessions
   python scripts/view_execution_telemetry.py --json 2>&1 | grep -i error
-  
+
   # Check disk space
   df -h
   ```
@@ -193,7 +193,7 @@ Each snapshot captures:
   # Review trend
   curl "http://127.0.0.1:8000/api/telemetry/health/trends?days=30" | \
     python -m json.tool | grep -A 3 "disk_mb"
-  
+
   # Plan capacity: lower retention threshold or add storage
   ```
 

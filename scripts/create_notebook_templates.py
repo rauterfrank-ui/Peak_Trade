@@ -13,6 +13,7 @@ Erstellt drei vorkonfigurierte Jupyter-Notebooks im notebooks/ Verzeichnis:
 Usage:
     python scripts/create_notebook_templates.py
 """
+
 from __future__ import annotations
 
 import json

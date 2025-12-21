@@ -53,10 +53,10 @@ engine = BacktestEngine(initial_cash=10000)
 
 for name in get_active_strategies():
     cfg = get_strategy_config(name)
-    
+
     # Strategie-Instanz erstellen
     strategy = create_strategy(name, **cfg.params)
-    
+
     # Backtest durchführen
     results = engine.run(
         strategy=strategy,
@@ -65,7 +65,7 @@ for name in get_active_strategies():
         take_profit_pct=cfg.get("take_profit_pct"),
         position_fraction=cfg.get("position_fraction")
     )
-    
+
     print(f"✅ {name}: Sharpe={results.sharpe:.2f}")
 ```
 
@@ -202,13 +202,13 @@ from src.core.config_registry import get_strategies_by_regime, get_strategy_conf
 def rebalance_portfolio(market_regime: str):
     """Passt Portfolio an Marktregime an."""
     suitable = get_strategies_by_regime(market_regime)
-    
+
     # Nur aktive Strategien
     active_suitable = [
         name for name in suitable
         if get_strategy_config(name).active
     ]
-    
+
     # Capital-Allokation
     weights = {name: 1.0 / len(active_suitable) for name in active_suitable}
     return weights
@@ -282,12 +282,12 @@ from src.core.config_registry import reset_config, get_strategy_config
 def test_strategy_defaults_merge():
     """Test: Defaults werden korrekt gemerged."""
     reset_config()  # Cache leeren
-    
+
     cfg = get_strategy_config("ma_crossover")
-    
+
     # Strategie-spezifisch
     assert cfg.get("fast_period") == 10
-    
+
     # Aus defaults
     assert cfg.get("take_profit_pct") == 0.05
     assert cfg.get("position_fraction") == 0.25
@@ -319,7 +319,7 @@ def test_strategy_defaults_merge():
 
 **Problem:** `FileNotFoundError: Config nicht gefunden`
 
-**Lösung:** 
+**Lösung:**
 ```bash
 # Setze Environment Variable
 export PEAK_TRADE_CONFIG=/path/to/config.toml

@@ -7,6 +7,7 @@ Testet das Audit-Snapshot-System für Governance, Audits und "Proof of Safety".
 
 Phase 74: Read-Only, keine Config-Änderungen, keine Token-Werte exportieren.
 """
+
 from __future__ import annotations
 
 import json
@@ -80,7 +81,10 @@ class TestLiveAuditSnapshot:
         assert snapshot_valid.gating.confirm_token_present is True
         # Prüfe, dass kein Token-Wert im Snapshot ist
         snapshot_dict = live_audit_snapshot_to_dict(snapshot_valid)
-        assert "confirm_token" not in str(snapshot_dict).lower() or "present" in str(snapshot_dict).lower()
+        assert (
+            "confirm_token" not in str(snapshot_dict).lower()
+            or "present" in str(snapshot_dict).lower()
+        )
         assert snapshot_dict["gating"]["confirm_token_present"] is True
 
         # Token nicht gesetzt
@@ -167,7 +171,10 @@ class TestLiveAuditSnapshot:
         allowed, reason = is_live_execution_allowed(env)
         assert snapshot.safety.is_live_execution_allowed == allowed
         assert len(snapshot.safety.reasons) > 0
-        assert "Dry-Run" in snapshot.safety.safety_guarantee_v1_0 or "no real orders" in snapshot.safety.safety_guarantee_v1_0.lower()
+        assert (
+            "Dry-Run" in snapshot.safety.safety_guarantee_v1_0
+            or "no real orders" in snapshot.safety.safety_guarantee_v1_0.lower()
+        )
 
     def test_build_live_audit_snapshot_environment_id(self):
         """Test: environment_id wird korrekt gesetzt."""
@@ -287,7 +294,9 @@ class TestLiveAuditSnapshot:
         # Testnet
         env_testnet = EnvironmentConfig(environment=TradingEnvironment.TESTNET)
         guard_testnet = SafetyGuard(env_config=env_testnet)
-        snapshot_testnet = build_live_audit_snapshot(env_testnet, guard_testnet, live_risk_limits=None)
+        snapshot_testnet = build_live_audit_snapshot(
+            env_testnet, guard_testnet, live_risk_limits=None
+        )
         assert snapshot_testnet.gating.mode == "testnet"
 
         # Live
@@ -295,8 +304,3 @@ class TestLiveAuditSnapshot:
         guard_live = SafetyGuard(env_config=env_live)
         snapshot_live = build_live_audit_snapshot(env_live, guard_live, live_risk_limits=None)
         assert snapshot_live.gating.mode == "live"
-
-
-
-
-

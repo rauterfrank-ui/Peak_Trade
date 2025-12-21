@@ -266,10 +266,7 @@ class TestVolRegimeFilter:
         df = create_ohlcv_data(200)
 
         # Fake Trading-Signale
-        trading_signals = pd.Series(
-            np.random.choice([-1, 0, 1], size=len(df)),
-            index=df.index
-        )
+        trading_signals = pd.Series(np.random.choice([-1, 0, 1], size=len(df)), index=df.index)
 
         filter = VolRegimeFilter(
             vol_window=14,
@@ -407,11 +404,7 @@ class TestVolRegimeNewFeatures:
         """Test: Low-Vol-Threshold erkennt Low-Vol-Regime."""
         df = create_low_volatility_data(200)
 
-        filter_regime = VolRegimeFilter(
-            vol_window=14,
-            low_vol_threshold=50.0,
-            regime_mode=True
-        )
+        filter_regime = VolRegimeFilter(vol_window=14, low_vol_threshold=50.0, regime_mode=True)
 
         signals = filter_regime.generate_signals(df)
 
@@ -420,17 +413,13 @@ class TestVolRegimeNewFeatures:
         assert len(signals) == len(df)
         # Nach min_bars sollten wir einige 1-Signale haben
         if len(signals) > filter_regime.min_bars:
-            assert 1 in signals.iloc[filter_regime.min_bars:].values
+            assert 1 in signals.iloc[filter_regime.min_bars :].values
 
     def test_high_vol_threshold(self):
         """Test: High-Vol-Threshold erkennt High-Vol-Regime."""
         df = create_high_volatility_data(200)
 
-        filter_regime = VolRegimeFilter(
-            vol_window=14,
-            high_vol_threshold=200.0,
-            regime_mode=True
-        )
+        filter_regime = VolRegimeFilter(vol_window=14, high_vol_threshold=200.0, regime_mode=True)
 
         signals = filter_regime.generate_signals(df)
 
@@ -439,24 +428,24 @@ class TestVolRegimeNewFeatures:
         assert len(signals) == len(df)
         # Nach min_bars sollten wir einige -1-Signale haben
         if len(signals) > filter_regime.min_bars:
-            assert -1 in signals.iloc[filter_regime.min_bars:].values
+            assert -1 in signals.iloc[filter_regime.min_bars :].values
 
     def test_regime_classification(self):
         """Test: Regime-Klassifikation (1/-1/0)."""
         df = create_mixed_volatility_data(200)
-        
+
         filter_regime = VolRegimeFilter(
             vol_window=14,
             low_vol_threshold=30.0,
             high_vol_threshold=300.0,
             min_bars=20,
-            regime_mode=True
+            regime_mode=True,
         )
-        
+
         signals = filter_regime.generate_signals(df)
-        
+
         # Signale sollten 1, -1 oder 0 sein
-        unique_values = set(signals.values[filter_regime.min_bars:])
+        unique_values = set(signals.values[filter_regime.min_bars :])
         assert unique_values.issubset({-1, 0, 1}), f"Unerwartete Werte: {unique_values}"
 
     def test_min_bars_respect(self):
@@ -469,7 +458,7 @@ class TestVolRegimeNewFeatures:
             low_vol_threshold=50.0,
             min_bars=30,
             lookback_percentile=50,  # Reduziert auf 50 für diesen Test
-            regime_mode=True
+            regime_mode=True,
         )
 
         signals = filter_regime.generate_signals(df)
@@ -480,16 +469,13 @@ class TestVolRegimeNewFeatures:
     def test_range_vol_method(self):
         """Test: Range-Volatilitäts-Methode funktioniert."""
         df = create_ohlcv_data(200)
-        
+
         filter_range = VolRegimeFilter(
-            vol_window=14,
-            vol_method="range",
-            low_vol_threshold=100.0,
-            regime_mode=True
+            vol_window=14, vol_method="range", low_vol_threshold=100.0, regime_mode=True
         )
-        
+
         signals = filter_range.generate_signals(df)
-        
+
         assert signals is not None
         assert len(signals) == len(df)
 
@@ -497,59 +483,53 @@ class TestVolRegimeNewFeatures:
         """Test: Validation für neue Parameter."""
         with pytest.raises(ValueError, match="vol_method"):
             VolRegimeFilter(vol_method="invalid")
-        
+
         with pytest.raises(ValueError, match="min_bars"):
             VolRegimeFilter(min_bars=0)
-        
+
         with pytest.raises(ValueError, match="low_vol_threshold.*high_vol_threshold"):
             VolRegimeFilter(low_vol_threshold=100.0, high_vol_threshold=50.0)
 
     def test_regime_vs_filter_mode(self):
         """Test: Unterschied zwischen Regime-Mode und Filter-Mode."""
         df = create_ohlcv_data(200)
-        
+
         # Filter-Mode (1/0)
-        filter_filter = VolRegimeFilter(
-            vol_window=14,
-            regime_mode=False
-        )
-        
+        filter_filter = VolRegimeFilter(vol_window=14, regime_mode=False)
+
         # Regime-Mode (1/-1/0)
         filter_regime = VolRegimeFilter(
-            vol_window=14,
-            low_vol_threshold=50.0,
-            high_vol_threshold=500.0,
-            regime_mode=True
+            vol_window=14, low_vol_threshold=50.0, high_vol_threshold=500.0, regime_mode=True
         )
-        
+
         signals_filter = filter_filter.generate_signals(df)
         signals_regime = filter_regime.generate_signals(df)
-        
+
         # Filter-Mode sollte nur 0 oder 1 haben
         assert set(signals_filter.unique()).issubset({0, 1})
-        
+
         # Regime-Mode kann -1, 0, 1 haben
         assert set(signals_regime.unique()).issubset({-1, 0, 1})
 
     def test_neutral_zone(self):
         """Test: Neutral-Zone zwischen Thresholds."""
         df = create_ohlcv_data(200)
-        
+
         # Thresholds so setzen, dass viele Werte in der Neutral-Zone sind
         filter_regime = VolRegimeFilter(
             vol_window=14,
             low_vol_threshold=10.0,
             high_vol_threshold=10000.0,
             min_bars=20,
-            regime_mode=True
+            regime_mode=True,
         )
-        
+
         signals = filter_regime.generate_signals(df)
-        
+
         # Die meisten sollten neutral (0) sein
         assert signals is not None
         # Nach min_bars sollte es eine Mischung geben
-        unique_values = set(signals.values[filter_regime.min_bars:])
+        unique_values = set(signals.values[filter_regime.min_bars :])
         assert len(unique_values) >= 1
 
     def test_auto_regime_mode_detection(self):
@@ -560,7 +540,7 @@ class TestVolRegimeNewFeatures:
             low_vol_threshold=50.0,
             # regime_mode nicht explizit gesetzt
         )
-        
+
         # from_config sollte regime_mode=True setzen wenn Thresholds vorhanden
         # Hier testen wir nur die Instanz
         assert filter_auto.low_vol_threshold == 50.0

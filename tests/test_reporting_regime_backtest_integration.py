@@ -3,9 +3,11 @@
 Integrationstests für Regime-Aware Backtest-Reports
 ===================================================
 """
+
 from __future__ import annotations
 
 import pytest
+
 pytest.importorskip("matplotlib")
 
 import pandas as pd
@@ -75,8 +77,14 @@ class TestRegimeBacktestIntegration:
 
             # Prüfe dass Regime-Section Contribution & Time-Share enthält
             regime_section = regime_sections[0]
-            assert "Contribution" in regime_section.content_markdown or "contribution" in regime_section.content_markdown.lower()
-            assert "Bars [%]" in regime_section.content_markdown or "Time Share" in regime_section.content_markdown
+            assert (
+                "Contribution" in regime_section.content_markdown
+                or "contribution" in regime_section.content_markdown.lower()
+            )
+            assert (
+                "Bars [%]" in regime_section.content_markdown
+                or "Time Share" in regime_section.content_markdown
+            )
 
     def test_backtest_report_without_regimes(self):
         """Test Backtest-Report ohne Regime-Daten (sollte normal funktionieren)."""
@@ -144,6 +152,7 @@ class TestRegimeBacktestIntegration:
             regime_sections = [s for s in report.sections if "Regime" in s.title]
             if len(regime_sections) > 0:
                 # Wenn Section vorhanden, sollte sie einen Fehler-Hinweis enthalten
-                assert "konnte nicht" in regime_sections[0].content_markdown.lower() or \
-                       "nicht erstellt" in regime_sections[0].content_markdown.lower()
-
+                assert (
+                    "konnte nicht" in regime_sections[0].content_markdown.lower()
+                    or "nicht erstellt" in regime_sections[0].content_markdown.lower()
+                )

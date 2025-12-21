@@ -17,9 +17,9 @@ logger = logging.getLogger(__name__)
 
 class RuleType(str, Enum):
     """Types of alert rules."""
-    
+
     HEALTH_CHECK = "health_check"  # Triggered by health check results
-    DEGRADATION = "degradation"    # Triggered by degradation detection
+    DEGRADATION = "degradation"  # Triggered by degradation detection
     LEADING_INDICATOR = "leading_indicator"  # Triggered by leading indicator breach
 
 
@@ -27,7 +27,7 @@ class RuleType(str, Enum):
 class AlertRule:
     """
     Alert rule definition.
-    
+
     Attributes:
         rule_id: Unique rule identifier
         enabled: Whether rule is active
@@ -40,7 +40,7 @@ class AlertRule:
         dedupe_window_seconds: Time window for deduplication
         labels: Static labels to attach to alerts
     """
-    
+
     rule_id: str
     enabled: bool
     rule_type: RuleType
@@ -48,43 +48,43 @@ class AlertRule:
     title_template: str
     body_template: str
     predicate: Callable[[Dict[str, Any]], bool]
-    
+
     cooldown_seconds: int = 300  # 5 minutes default
     dedupe_window_seconds: int = 900  # 15 minutes default
     labels: Dict[str, str] = None
-    
+
     def __post_init__(self):
         """Initialize defaults."""
         if self.labels is None:
             self.labels = {}
-        
+
         # Ensure types
         if isinstance(self.rule_type, str):
             self.rule_type = RuleType(self.rule_type)
         if isinstance(self.severity, str):
             self.severity = AlertSeverity(self.severity)
-    
+
     def evaluate(self, context: Dict[str, Any]) -> Optional[AlertEvent]:
         """
         Evaluate rule against context.
-        
+
         Args:
             context: Evaluation context (health_report, trend_report, etc.)
-        
+
         Returns:
             AlertEvent if rule fires, None otherwise
         """
         if not self.enabled:
             return None
-        
+
         try:
             if not self.predicate(context):
                 return None
-            
+
             # Rule fired - create alert
             title = self.title_template.format(**context)
             body = self.body_template.format(**context)
-            
+
             alert = AlertEvent(
                 source=f"rule:{self.rule_id}",
                 severity=self.severity,
@@ -98,9 +98,9 @@ class AlertRule:
                 dedupe_key=f"{self.rule_id}:{title}",
                 sample_payload={"context": context},
             )
-            
+
             return alert
-        
+
         except Exception as e:
             logger.error(f"Error evaluating rule {self.rule_id}: {e}", exc_info=True)
             return None
@@ -110,12 +110,13 @@ class AlertRule:
 # BUILT-IN RULES
 # =============================================================================
 
+
 def rule_health_check_critical(context: Dict[str, Any]) -> bool:
     """Rule: Health check critical status."""
     health_report = context.get("health_report")
     if not health_report:
         return False
-    
+
     # Check if overall status is critical
     status = health_report.get("status", "ok")
     return status == "critical"
@@ -126,7 +127,7 @@ def rule_degradation_detected(context: Dict[str, Any]) -> bool:
     degradation = context.get("degradation")
     if not degradation:
         return False
-    
+
     return degradation.get("degrading", False)
 
 
@@ -135,9 +136,9 @@ def rule_leading_indicator_disk_growth(context: Dict[str, Any]) -> bool:
     degradation = context.get("degradation")
     if not degradation:
         return False
-    
+
     reasons = degradation.get("reasons", [])
-    
+
     # Check if any reason mentions disk usage increasing
     return any("disk usage increasing" in str(r).lower() for r in reasons)
 
@@ -147,15 +148,15 @@ def rule_parse_error_rate_high(context: Dict[str, Any]) -> bool:
     health_report = context.get("health_report")
     if not health_report:
         return False
-    
+
     checks = health_report.get("checks", [])
-    
+
     for check in checks:
         if check.get("name") == "parse_error_rate":
             value = check.get("value", 0.0)
             # Alert if parse error rate > 5%
             return value > 5.0
-    
+
     return False
 
 

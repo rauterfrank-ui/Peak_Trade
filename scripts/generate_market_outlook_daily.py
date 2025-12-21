@@ -30,6 +30,7 @@ Environment Variables:
 
 Stand: Dezember 2024
 """
+
 from __future__ import annotations
 
 import argparse
@@ -134,8 +135,7 @@ def main() -> int:
 
     if args.skip_llm:
         logger.warning(
-            "LLM-Aufruf wird übersprungen. "
-            "Report enthält Platzhalter statt echter Analyse."
+            "LLM-Aufruf wird übersprungen. Report enthält Platzhalter statt echter Analyse."
         )
 
     # Führe Daily Market Outlook aus

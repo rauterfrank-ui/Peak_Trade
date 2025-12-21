@@ -38,9 +38,9 @@ from src.backtest.engine import BacktestEngine
 
 def demo_1_config_system():
     """Demo 1: Config-System mit TOML."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 1: Config-System")
-    print("="*70)
+    print("=" * 70)
 
     # Config laden
     config = get_config()
@@ -68,9 +68,9 @@ def demo_1_config_system():
 
 def demo_2_position_sizing():
     """Demo 2: Position Sizing mit Fixed Fractional und Kelly."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 2: Position Sizing")
-    print("="*70)
+    print("=" * 70)
 
     capital = 10_000
     entry_price = 50_000
@@ -82,7 +82,7 @@ def demo_2_position_sizing():
     config_ff = PositionSizerConfig(
         method="fixed_fractional",
         risk_pct=1.0,  # 1%
-        max_position_pct=25.0  # 25%
+        max_position_pct=25.0,  # 25%
     )
     sizer_ff = PositionSizer(config_ff)
     size_ff = sizer_ff.size_position(capital, stop_distance)
@@ -94,27 +94,24 @@ def demo_2_position_sizing():
     print(f"  Risk per Trade: {config_ff.risk_pct}%")
     print(f"  → Position Size: {size_ff:.4f} BTC")
     print(f"  → Position Value: ${value_ff:,.2f}")
-    print(f"  → Risk Amount: ${capital * (config_ff.risk_pct/100):,.2f}")
+    print(f"  → Risk Amount: ${capital * (config_ff.risk_pct / 100):,.2f}")
 
     # Kelly Criterion
     print("\n🎲 Kelly Criterion Method:")
     config_kelly = PositionSizerConfig(
         method="kelly",
         max_position_pct=25.0,
-        kelly_scaling=0.5  # Konservativ
+        kelly_scaling=0.5,  # Konservativ
     )
     sizer_kelly = PositionSizer(config_kelly)
 
     # Beispiel-Stats (normalerweise aus Backtest)
     win_rate = 0.55  # 55% Win-Rate
-    avg_win = 200    # Durchschnittlicher Gewinn
-    avg_loss = 100   # Durchschnittlicher Verlust
+    avg_win = 200  # Durchschnittlicher Gewinn
+    avg_loss = 100  # Durchschnittlicher Verlust
 
     size_kelly = sizer_kelly.size_position(
-        capital, stop_distance,
-        win_rate=win_rate,
-        avg_win=avg_win,
-        avg_loss=avg_loss
+        capital, stop_distance, win_rate=win_rate, avg_win=avg_win, avg_loss=avg_loss
     )
     value_kelly = size_kelly * entry_price
 
@@ -131,16 +128,16 @@ def demo_2_position_sizing():
 
 def demo_3_risk_limits():
     """Demo 3: Portfolio Risk Limits."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 3: Portfolio Risk Limits")
-    print("="*70)
+    print("=" * 70)
 
     # Risk Limits Config
     config = RiskLimitsConfig(
-        max_daily_loss=0.03,      # 3%
-        max_drawdown=0.20,        # 20%
+        max_daily_loss=0.03,  # 3%
+        max_drawdown=0.20,  # 20%
         max_positions=2,
-        max_total_exposure=0.75   # 75%
+        max_total_exposure=0.75,  # 75%
     )
     checker = RiskLimitChecker(config)
 
@@ -158,7 +155,7 @@ def demo_3_risk_limits():
         daily_start_equity=10_200,
         open_positions=1,
         total_exposure=2_000,
-        current_date=date.today()
+        current_date=date.today(),
     )
 
     result_ok = checker.check_limits(state_ok, proposed_position_value=2_000)
@@ -177,7 +174,7 @@ def demo_3_risk_limits():
         daily_start_equity=10_000,
         open_positions=1,
         total_exposure=2_000,
-        current_date=date.today()
+        current_date=date.today(),
     )
 
     result_loss = checker.check_limits(state_loss, proposed_position_value=2_000)
@@ -194,7 +191,7 @@ def demo_3_risk_limits():
         daily_start_equity=10_200,
         open_positions=2,  # Limit erreicht
         total_exposure=4_000,
-        current_date=date.today()
+        current_date=date.today(),
     )
 
     result_positions = checker.check_limits(state_positions, proposed_position_value=2_000)
@@ -206,9 +203,9 @@ def demo_3_risk_limits():
 
 def demo_4_kraken_pipeline():
     """Demo 4: Kraken Data Pipeline."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 4: Kraken Data Pipeline")
-    print("="*70)
+    print("=" * 70)
 
     print("\n⚠️  HINWEIS: Dieses Demo benötigt eine Internetverbindung zu Kraken.")
     print("Falls keine Verbindung besteht, wird ein Fehler angezeigt.")
@@ -216,6 +213,7 @@ def demo_4_kraken_pipeline():
     try:
         # Test Kraken-Verbindung
         from src.data import test_kraken_connection
+
         print("\n🔌 Teste Kraken-Verbindung...")
 
         if not test_kraken_connection():
@@ -229,11 +227,7 @@ def demo_4_kraken_pipeline():
 
         # Daten holen
         print("\n📥 Hole BTC/USD 1h Daten (100 Bars)...")
-        df = pipeline.fetch_and_prepare(
-            symbol="BTC/USD",
-            timeframe="1h",
-            limit=100
-        )
+        df = pipeline.fetch_and_prepare(symbol="BTC/USD", timeframe="1h", limit=100)
 
         print(f"\n✅ Daten erfolgreich geladen:")
         print(f"  Bars:      {len(df)}")
@@ -260,7 +254,7 @@ def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
     np.random.seed(42)
 
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h', tz='UTC')
+    dates = pd.date_range(start, periods=n_bars, freq="1h", tz="UTC")
 
     # Preis-Simulation
     base_price = 50000
@@ -270,13 +264,16 @@ def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
 
     close_prices = base_price + trend + cycle + noise
 
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * 0.002),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars).astype(float)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars).astype(float),
+        },
+        index=dates,
+    )
 
     print(f"  ✅ {len(df)} Dummy-Bars erstellt")
     return df
@@ -284,9 +281,9 @@ def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
 
 def demo_5_complete_backtest(df: pd.DataFrame):
     """Demo 5: Vollständiger Backtest mit allem."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("DEMO 5: Kompletter Backtest")
-    print("="*70)
+    print("=" * 70)
 
     config = get_config()
 
@@ -296,11 +293,7 @@ def demo_5_complete_backtest(df: pd.DataFrame):
     print(f"  Max Position:     {config.risk.max_position_size:.0%}")
 
     # Strategie-Parameter
-    strategy_params = {
-        'fast_period': 10,
-        'slow_period': 30,
-        'stop_pct': 0.02
-    }
+    strategy_params = {"fast_period": 10, "slow_period": 30, "stop_pct": 0.02}
 
     print(f"\n📈 Strategie: MA Crossover")
     print(f"  Fast Period:      {strategy_params['fast_period']}")
@@ -316,15 +309,13 @@ def demo_5_complete_backtest(df: pd.DataFrame):
 
     try:
         result = engine.run_realistic(
-            df=df,
-            strategy_signal_fn=generate_signals,
-            strategy_params=strategy_params
+            df=df, strategy_signal_fn=generate_signals, strategy_params=strategy_params
         )
 
         # Ergebnisse anzeigen
-        print("\n" + "="*70)
+        print("\n" + "=" * 70)
         print("BACKTEST ERGEBNISSE")
-        print("="*70)
+        print("=" * 70)
 
         start_equity = result.equity_curve.iloc[0]
         end_equity = result.equity_curve.iloc[-1]
@@ -349,8 +340,12 @@ def demo_5_complete_backtest(df: pd.DataFrame):
             for i, trade in enumerate(result.trades[:3], 1):
                 pnl_pct = (trade.pnl / (trade.size * trade.entry_price)) if trade.size > 0 else 0
                 print(f"\n  Trade {i}:")
-                print(f"    Entry:  {trade.entry_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.entry_price:,.2f}")
-                print(f"    Exit:   {trade.exit_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.exit_price:,.2f}")
+                print(
+                    f"    Entry:  {trade.entry_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.entry_price:,.2f}"
+                )
+                print(
+                    f"    Exit:   {trade.exit_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.exit_price:,.2f}"
+                )
                 print(f"    Size:   {trade.size:.4f} BTC")
                 print(f"    P&L:    ${trade.pnl:+,.2f} ({pnl_pct:+.2%})")
                 print(f"    Reason: {trade.exit_reason}")
@@ -360,14 +355,15 @@ def demo_5_complete_backtest(df: pd.DataFrame):
     except Exception as e:
         print(f"\n❌ Backtest-Fehler: {e}")
         import traceback
+
         traceback.print_exc()
 
 
 def main():
     """Hauptfunktion - führt alle Demos durch."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("PEAK_TRADE COMPLETE PIPELINE DEMO")
-    print("="*70)
+    print("=" * 70)
     print("\nDieses Demo zeigt:")
     print("  1. Config-System (TOML)")
     print("  2. Position Sizing (Fixed Fractional + Kelly)")
@@ -391,9 +387,9 @@ def main():
         # Demo 5: Kompletter Backtest
         demo_5_complete_backtest(df)
 
-        print("\n" + "="*70)
+        print("\n" + "=" * 70)
         print("✅ ALLE DEMOS ERFOLGREICH ABGESCHLOSSEN!")
-        print("="*70)
+        print("=" * 70)
 
         print("\n📚 Weitere Infos:")
         print("  - Risk-Layer:      src/risk/position_sizer.py + limits.py")
@@ -406,6 +402,7 @@ def main():
     except Exception as e:
         print(f"\n\n❌ Fehler: {e}")
         import traceback
+
         traceback.print_exc()
 
 

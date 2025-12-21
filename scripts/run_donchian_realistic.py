@@ -37,7 +37,7 @@ def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
 
     # Start-Zeitpunkt
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation mit Trend und Breakouts
     base_price = 50000
@@ -54,13 +54,16 @@ def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
     close_prices = base_price + trend + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * 0.002),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
@@ -68,13 +71,13 @@ def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
 def print_report(result):
     """Druckt Performance-Report."""
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("BACKTEST PERFORMANCE REPORT")
-    print("="*70)
+    print("=" * 70)
 
     # Equity-Metriken
     print("\n📊 EQUITY METRIKEN")
-    print("-"*70)
+    print("-" * 70)
     start_equity = result.equity_curve.iloc[0]
     end_equity = result.equity_curve.iloc[-1]
     print(f"Start Equity:      ${start_equity:,.2f}")
@@ -84,12 +87,12 @@ def print_report(result):
 
     # Risk-Adjusted
     print("\n📈 RISK-ADJUSTED METRIKEN")
-    print("-"*70)
+    print("-" * 70)
     print(f"Sharpe Ratio:      {result.stats['sharpe']:>7.2f}")
 
     # Trade-Stats
     print("\n🎯 TRADE STATISTIKEN")
-    print("-"*70)
+    print("-" * 70)
     print(f"Total Trades:      {result.stats['total_trades']:>7}")
     print(f"Win Rate:          {result.stats['win_rate']:>7.2%}")
     print(f"Profit Factor:     {result.stats['profit_factor']:>7.2f}")
@@ -97,7 +100,7 @@ def print_report(result):
 
     # Live-Trading-Validierung
     print("\n🔒 LIVE-TRADING-VALIDIERUNG")
-    print("-"*70)
+    print("-" * 70)
 
     passed, warnings = validate_for_live_trading(result.stats)
 
@@ -108,14 +111,14 @@ def print_report(result):
         for w in warnings:
             print(f"  - {w}")
 
-    print("\n" + "="*70 + "\n")
+    print("\n" + "=" * 70 + "\n")
 
 
 def main():
     """Main-Funktion."""
 
     print("\n🚀 Peak_Trade Donchian Breakout Backtest (OOP Version)")
-    print("="*70)
+    print("=" * 70)
 
     # Config laden
     print("\n⚙️  Lade Konfiguration...")
@@ -150,7 +153,9 @@ price_col = "close"
         print(f"  - Price Column: '{strategy.price_col}'")
     except Exception as e:
         print(f"\n❌ FEHLER beim Erstellen der Strategie: {e}")
-        print("\nBitte stelle sicher, dass config.toml eine [strategy.breakout_donchian] Sektion hat.")
+        print(
+            "\nBitte stelle sicher, dass config.toml eine [strategy.breakout_donchian] Sektion hat."
+        )
         return
 
     # Daten erstellen (später: von Kraken holen)
@@ -196,14 +201,9 @@ price_col = "close"
         "stop_pct": stop_pct,
     }
 
-    engine = BacktestEngine(
-        core_position_sizer=position_sizer,
-        risk_manager=risk_manager
-    )
+    engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
-        df=df,
-        strategy_signal_fn=strategy_signal_fn,
-        strategy_params=strategy_params
+        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
     )
 
     # Report drucken
@@ -212,10 +212,14 @@ price_col = "close"
     # Sample Trades anzeigen
     if result.trades:
         print("📋 Sample Trades (erste 5):")
-        print("-"*70)
+        print("-" * 70)
         for i, trade in enumerate(result.trades[:5], 1):
-            print(f"{i}. Entry: {trade.entry_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.entry_price:,.2f}")
-            print(f"   Exit:  {trade.exit_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.exit_price:,.2f}")
+            print(
+                f"{i}. Entry: {trade.entry_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.entry_price:,.2f}"
+            )
+            print(
+                f"   Exit:  {trade.exit_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.exit_price:,.2f}"
+            )
             print(f"   PnL:   ${trade.pnl:,.2f} ({trade.exit_reason})")
             print()
     else:

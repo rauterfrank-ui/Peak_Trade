@@ -47,6 +47,7 @@ Verwendung:
     for tick in feed.generate_ticks():
         print(tick)
 """
+
 from __future__ import annotations
 
 import uuid
@@ -203,14 +204,12 @@ class OfflineRealtimeFeedV0Config:
         # Transition Matrix validieren
         if len(self.transition_matrix) != n_regimes:
             raise ValueError(
-                f"transition_matrix hat {len(self.transition_matrix)} Zeilen, "
-                f"erwartet {n_regimes}"
+                f"transition_matrix hat {len(self.transition_matrix)} Zeilen, erwartet {n_regimes}"
             )
         for i, row in enumerate(self.transition_matrix):
             if len(row) != n_regimes:
                 raise ValueError(
-                    f"transition_matrix Zeile {i} hat {len(row)} Spalten, "
-                    f"erwartet {n_regimes}"
+                    f"transition_matrix Zeile {i} hat {len(row)} Spalten, erwartet {n_regimes}"
                 )
             if not np.isclose(sum(row), 1.0, atol=1e-6):
                 raise ValueError(

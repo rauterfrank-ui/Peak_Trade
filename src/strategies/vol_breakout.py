@@ -13,6 +13,7 @@ Konzept (Coiled Spring):
 Diese Strategie eignet sich besonders für Märkte mit klaren
 Konsolidierungs- und Ausbruchsphasen.
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -120,7 +121,9 @@ class VolBreakoutStrategy(BaseStrategy):
         if self.vol_window < 2:
             raise ValueError(f"vol_window ({self.vol_window}) muss >= 2 sein")
         if not (0 <= self.vol_percentile <= 100):
-            raise ValueError(f"vol_percentile ({self.vol_percentile}) muss zwischen 0 und 100 liegen")
+            raise ValueError(
+                f"vol_percentile ({self.vol_percentile}) muss zwischen 0 und 100 liegen"
+            )
         if self.atr_multiple <= 0:
             raise ValueError(f"atr_multiple ({self.atr_multiple}) muss > 0 sein")
         if self.side not in ("long", "short", "both"):
@@ -192,13 +195,19 @@ class VolBreakoutStrategy(BaseStrategy):
             (upper_level, lower_level) als pd.Series
         """
         # Rolling High/Low (exklusive aktuelle Bar)
-        upper_level = data["high"].shift(1).rolling(
-            window=self.lookback_breakout, min_periods=self.lookback_breakout
-        ).max()
+        upper_level = (
+            data["high"]
+            .shift(1)
+            .rolling(window=self.lookback_breakout, min_periods=self.lookback_breakout)
+            .max()
+        )
 
-        lower_level = data["low"].shift(1).rolling(
-            window=self.lookback_breakout, min_periods=self.lookback_breakout
-        ).min()
+        lower_level = (
+            data["low"]
+            .shift(1)
+            .rolling(window=self.lookback_breakout, min_periods=self.lookback_breakout)
+            .min()
+        )
 
         return upper_level, lower_level
 
@@ -220,15 +229,12 @@ class VolBreakoutStrategy(BaseStrategy):
         for col in required_cols:
             if col not in data.columns:
                 raise ValueError(
-                    f"Spalte '{col}' nicht in DataFrame. "
-                    f"Verfügbar: {list(data.columns)}"
+                    f"Spalte '{col}' nicht in DataFrame. Verfügbar: {list(data.columns)}"
                 )
 
         min_bars = max(self.lookback_breakout, self.vol_window) + 10
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mind. {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {min_bars} Bars, habe nur {len(data)}")
 
         # ATR berechnen
         atr = self._compute_atr(data)
@@ -273,7 +279,7 @@ class VolBreakoutStrategy(BaseStrategy):
 
         # State-Logik: Position halten bis Gegenrichtung
         # Fix für Pandas FutureWarning
-        state = signals.replace(0, float('nan'))
+        state = signals.replace(0, float("nan"))
         state = state.ffill()
         state = state.fillna(0).astype(int)
 
@@ -315,14 +321,14 @@ def get_strategy_description(params: Dict) -> str:
     return f"""
 Volatility Breakout Strategy
 ============================
-Lookback Breakout: {params.get('lookback_breakout', 20)} Bars
-Vol Window (ATR):  {params.get('vol_window', 14)} Bars
-Vol Percentile:    {params.get('vol_percentile', 50.0)}%
-ATR Multiple:      {params.get('atr_multiple', 1.5)}x
-Side:              {params.get('side', 'both')}
+Lookback Breakout: {params.get("lookback_breakout", 20)} Bars
+Vol Window (ATR):  {params.get("vol_window", 14)} Bars
+Vol Percentile:    {params.get("vol_percentile", 50.0)}%
+ATR Multiple:      {params.get("atr_multiple", 1.5)}x
+Side:              {params.get("side", "both")}
 
 Konzept:
-- Entry Long:  Close > {params.get('lookback_breakout', 20)}-Bar High + Vol-Filter
-- Entry Short: Close < {params.get('lookback_breakout', 20)}-Bar Low + Vol-Filter
-- Vol-Filter:  ATR im {params.get('vol_percentile', 50.0)}. Perzentil
+- Entry Long:  Close > {params.get("lookback_breakout", 20)}-Bar High + Vol-Filter
+- Entry Short: Close < {params.get("lookback_breakout", 20)}-Bar Low + Vol-Filter
+- Vol-Filter:  ATR im {params.get("vol_percentile", 50.0)}. Perzentil
 """

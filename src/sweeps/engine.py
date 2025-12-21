@@ -16,6 +16,7 @@ Safety:
 - Keine Live- oder Testnet-Orders
 - SafetyGuard und TradingEnvironment bleiben unverändert
 """
+
 from __future__ import annotations
 
 import itertools
@@ -94,8 +95,7 @@ class SweepConfig:
         available = get_available_strategy_keys()
         if self.strategy_key not in available:
             raise ValueError(
-                f"Unbekannte Strategie '{self.strategy_key}'. "
-                f"Verfügbar: {', '.join(available)}"
+                f"Unbekannte Strategie '{self.strategy_key}'. Verfügbar: {', '.join(available)}"
             )
 
     @property
@@ -295,9 +295,7 @@ def validate_param_grid(grid: Dict[str, List[Any]]) -> None:
         if not isinstance(key, str):
             raise ValueError(f"Parameter-Key muss string sein, nicht {type(key)}")
         if not isinstance(values, (list, tuple)):
-            raise ValueError(
-                f"Parameter-Werte für '{key}' müssen Liste sein, nicht {type(values)}"
-            )
+            raise ValueError(f"Parameter-Werte für '{key}' müssen Liste sein, nicht {type(values)}")
         if len(values) == 0:
             raise ValueError(f"Parameter '{key}' hat keine Werte")
 
@@ -486,7 +484,9 @@ class SweepEngine:
             print(f"        Erfolgreich: {summary.successful_runs}/{summary.runs_executed}")
             if best_result:
                 print(f"        Bestes Ergebnis: {best_result.params}")
-                print(f"        Sharpe: {best_result.sharpe:.2f}, Return: {best_result.total_return:.2%}")
+                print(
+                    f"        Sharpe: {best_result.sharpe:.2f}, Return: {best_result.total_return:.2%}"
+                )
 
         return summary
 
@@ -558,11 +558,7 @@ class SweepEngine:
                 return float("-inf") if not ascending else float("inf")
             return float(val)
 
-        return (
-            min(results, key=get_metric)
-            if ascending
-            else max(results, key=get_metric)
-        )
+        return min(results, key=get_metric) if ascending else max(results, key=get_metric)
 
 
 # =============================================================================

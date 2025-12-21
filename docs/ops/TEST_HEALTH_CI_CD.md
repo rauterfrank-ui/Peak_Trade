@@ -115,7 +115,7 @@ health-report-{profile}-{run_number}/
 │           └── summary.html
 ```
 
-**Download**: 
+**Download**:
 - Gehe zu `Actions` → Workflow-Run → `Artifacts` Section
 - Klicke auf Artifact-Name zum Download
 

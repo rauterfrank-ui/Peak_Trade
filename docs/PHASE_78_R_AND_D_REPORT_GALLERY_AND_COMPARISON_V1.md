@@ -201,34 +201,34 @@ GET /api/r_and_d/experiments/batch?run_ids=id1,id2,id3
 async def get_experiments_batch(run_ids: str = Query(...)):
     """
     Batch-Abfrage für mehrere Experimente.
-    
+
     Args:
         run_ids: Komma-separierte Liste von Run-IDs (2-10 IDs)
-    
+
     Returns:
         BatchExperimentsResponse mit allen gefundenen Experimenten
     """
     ids = [id.strip() for id in run_ids.split(",") if id.strip()]
-    
+
     if len(ids) < 2:
         raise HTTPException(400, "Mindestens 2 Run-IDs erforderlich")
     if len(ids) > 10:
         raise HTTPException(400, "Maximal 10 Run-IDs erlaubt")
-    
+
     # Reuse Detail-Serialisierung aus Phase 77
     experiments = []
     not_found = []
-    
+
     for run_id in ids:
         exp = find_experiment_by_id(run_id)
         if exp:
             experiments.append(serialize_experiment_detail(exp))
         else:
             not_found.append(run_id)
-    
+
     if not experiments:
         raise HTTPException(404, "Keine gültigen Experimente gefunden")
-    
+
     return {
         "experiments": experiments,
         "requested_ids": ids,
@@ -345,7 +345,7 @@ Die R&D-API wurde um ein zentralisiertes Helper-Set erweitert, das konsistentes 
 
 ```mermaid
 flowchart LR
-    A[Lookup Layer<br/>load_experiment_json()<br/>load_experiments_from_dir()] 
+    A[Lookup Layer<br/>load_experiment_json()<br/>load_experiments_from_dir()]
         --> B[Transform Layer<br/>extract_flat_fields()<br/>determine_status()<br/>find_report_links()]
     B --> C[Aggregation Layer<br/>compute_summary()<br/>compute_preset_stats()<br/>compute_best_metrics()]
     C --> D[Validation Layer<br/>parse_and_validate_run_ids()]

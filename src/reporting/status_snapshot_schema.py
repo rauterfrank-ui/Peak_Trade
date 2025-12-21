@@ -22,6 +22,7 @@ Usage:
         ]
     )
 """
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -51,6 +52,7 @@ class PanelSnapshot(BaseModel):
         status: Panel status ("ok", "warn", "error", "unknown")
         details: Freeform dict with panel-specific data (deterministically sorted)
     """
+
     id: str = Field(..., description="Unique panel identifier")
     title: str = Field(..., description="Human-readable panel title")
     status: str = Field(..., description="Panel status (ok/warn/error/unknown)")
@@ -59,6 +61,7 @@ class PanelSnapshot(BaseModel):
     if PYDANTIC_V2:
         model_config = {"extra": "forbid"}
     else:
+
         class Config:
             extra = "forbid"
 
@@ -73,6 +76,7 @@ class LiveStatusSnapshot(BaseModel):
         panels: List of panel snapshots (deterministically sorted)
         meta: Optional freeform metadata (e.g., config_path, tag)
     """
+
     version: str = Field(default="0.1", description="Schema version")
     generated_at: str = Field(..., description="ISO 8601 timestamp (UTC)")
     panels: List[PanelSnapshot] = Field(default_factory=list, description="List of panels")
@@ -81,6 +85,7 @@ class LiveStatusSnapshot(BaseModel):
     if PYDANTIC_V2:
         model_config = {"extra": "forbid"}
     else:
+
         class Config:
             extra = "forbid"
 
@@ -199,5 +204,5 @@ def create_default_system_panel() -> PanelSnapshot:
         details={
             "message": "No providers configured",
             "note": "Snapshot builder initialized without panel providers",
-        }
+        },
     )

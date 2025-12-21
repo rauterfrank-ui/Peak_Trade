@@ -134,10 +134,10 @@ def ingest_source_data():
     """Ingest data from <source_name>."""
     api_manager = APIManager()
     vector_db = VectorDBFactory.create("chroma", api_manager.get_db_config("chroma"))
-    
+
     # Load data
     documents = load_data_from_source()
-    
+
     # Add metadata
     metadatas = [
         {
@@ -148,7 +148,7 @@ def ingest_source_data():
         }
         for _ in documents
     ]
-    
+
     # Ingest
     vector_db.add_documents(documents=documents, metadatas=metadatas)
 ```
@@ -390,7 +390,7 @@ vector_db = VectorDBFactory.create("chroma", api_manager.get_db_config("chroma")
 paper_text = """
 Title: Machine Learning for Momentum Trading
 Abstract: This paper explores ML techniques for momentum strategies...
-Key Findings: 
+Key Findings:
 - LSTM models outperform traditional momentum indicators
 - Regime-detection improves Sharpe ratio by 15%
 ...
@@ -420,7 +420,7 @@ vector_db.add_documents(
 
 ### Q: Wie gehe ich mit Rate-Limits um?
 
-**A:** 
+**A:**
 1. Rate-Limits in `APIManager` konfigurieren
 2. Exponential Backoff implementieren
 3. Caching nutzen (Time-Series-DB)

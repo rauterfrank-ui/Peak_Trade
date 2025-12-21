@@ -12,6 +12,7 @@ Konzept:
 Der ADX misst die Stärke eines Trends (unabhängig von der Richtung),
 während +DI/-DI die Trendrichtung anzeigen.
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -185,12 +186,18 @@ class TrendFollowingStrategy(BaseStrategy):
 
         # Nur positive Werte behalten
         plus_dm = plus_dm.where((plus_dm > minus_dm) & (plus_dm > 0), 0.0)
-        minus_dm = minus_dm.where((minus_dm > plus_dm.where(plus_dm != 0, -1)) & (minus_dm > 0), 0.0)
+        minus_dm = minus_dm.where(
+            (minus_dm > plus_dm.where(plus_dm != 0, -1)) & (minus_dm > 0), 0.0
+        )
 
         # Smoothed Averages (Wilder-Smoothing)
-        atr = tr.ewm(alpha=1/self.adx_period, min_periods=self.adx_period, adjust=False).mean()
-        smoothed_plus_dm = plus_dm.ewm(alpha=1/self.adx_period, min_periods=self.adx_period, adjust=False).mean()
-        smoothed_minus_dm = minus_dm.ewm(alpha=1/self.adx_period, min_periods=self.adx_period, adjust=False).mean()
+        atr = tr.ewm(alpha=1 / self.adx_period, min_periods=self.adx_period, adjust=False).mean()
+        smoothed_plus_dm = plus_dm.ewm(
+            alpha=1 / self.adx_period, min_periods=self.adx_period, adjust=False
+        ).mean()
+        smoothed_minus_dm = minus_dm.ewm(
+            alpha=1 / self.adx_period, min_periods=self.adx_period, adjust=False
+        ).mean()
 
         # +DI / -DI
         plus_di = 100 * smoothed_plus_dm / atr.replace(0, np.nan)
@@ -200,7 +207,7 @@ class TrendFollowingStrategy(BaseStrategy):
         di_sum = plus_di + minus_di
         di_diff = abs(plus_di - minus_di)
         dx = 100 * di_diff / di_sum.replace(0, np.nan)
-        adx = dx.ewm(alpha=1/self.adx_period, min_periods=self.adx_period, adjust=False).mean()
+        adx = dx.ewm(alpha=1 / self.adx_period, min_periods=self.adx_period, adjust=False).mean()
 
         return adx, plus_di, minus_di
 
@@ -222,15 +229,12 @@ class TrendFollowingStrategy(BaseStrategy):
         for col in required_cols:
             if col not in data.columns:
                 raise ValueError(
-                    f"Spalte '{col}' nicht in DataFrame. "
-                    f"Verfügbar: {list(data.columns)}"
+                    f"Spalte '{col}' nicht in DataFrame. Verfügbar: {list(data.columns)}"
                 )
 
         min_bars = max(self.adx_period * 2, self.ma_period) + 10
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mind. {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {min_bars} Bars, habe nur {len(data)}")
 
         # ADX und DI berechnen
         adx, plus_di, minus_di = self._compute_adx(data)
@@ -305,13 +309,13 @@ def get_strategy_description(params: Dict) -> str:
     return f"""
 Trend Following Strategy (ADX-basiert)
 =======================================
-ADX-Periode:       {params.get('adx_period', 14)} Bars
-ADX-Threshold:     {params.get('adx_threshold', 25.0)}
-Exit-Threshold:    {params.get('exit_threshold', 20.0)}
-MA-Periode:        {params.get('ma_period', 50)} Bars
-MA-Filter:         {'Aktiv' if params.get('use_ma_filter', True) else 'Inaktiv'}
+ADX-Periode:       {params.get("adx_period", 14)} Bars
+ADX-Threshold:     {params.get("adx_threshold", 25.0)}
+Exit-Threshold:    {params.get("exit_threshold", 20.0)}
+MA-Periode:        {params.get("ma_period", 50)} Bars
+MA-Filter:         {"Aktiv" if params.get("use_ma_filter", True) else "Inaktiv"}
 
 Konzept:
-- Entry: ADX > {params.get('adx_threshold', 25.0)} UND +DI > -DI (starker Trend)
-- Exit: ADX < {params.get('exit_threshold', 20.0)} ODER Trendwechsel
+- Entry: ADX > {params.get("adx_threshold", 25.0)} UND +DI > -DI (starker Trend)
+- Exit: ADX < {params.get("exit_threshold", 20.0)} ODER Trendwechsel
 """

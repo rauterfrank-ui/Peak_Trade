@@ -31,4 +31,3 @@ def test_build_offline_paper_trade_report(tmp_path: Path) -> None:
     content = report_path.read_text(encoding="utf-8")
     assert "Offline Paper Trade Report" in content
     assert "TEST_SESSION" in content
-

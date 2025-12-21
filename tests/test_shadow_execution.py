@@ -401,9 +401,7 @@ class TestCreateShadowExecutor:
         """Factory mit Preisen funktioniert."""
         from src.orders.shadow import create_shadow_executor
 
-        executor = create_shadow_executor(
-            prices={"BTC/EUR": 50000.0, "ETH/EUR": 3000.0}
-        )
+        executor = create_shadow_executor(prices={"BTC/EUR": 50000.0, "ETH/EUR": 3000.0})
 
         assert executor.get_price("BTC/EUR") == 50000.0
         assert executor.get_price("ETH/EUR") == 3000.0
@@ -685,13 +683,11 @@ class TestShadowExecutionIntegration:
         executor = ShadowOrderExecutor(market_context=ctx)
 
         # Viele Orders ausführen (würde bei echten Calls langsam sein)
-        orders = [
-            OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.01)
-            for _ in range(100)
-        ]
+        orders = [OrderRequest(symbol="BTC/EUR", side="buy", quantity=0.01) for _ in range(100)]
 
         # Sollte schnell sein (< 1 Sekunde)
         import time
+
         start = time.time()
         results = executor.execute_orders(orders)
         elapsed = time.time() - start

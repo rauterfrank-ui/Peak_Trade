@@ -5,6 +5,7 @@ Execution Event Schema for Telemetry & Live-Track Bridge.
 Phase 16B: Execution Pipeline emits structured events for observability,
 monitoring, and live-track integration.
 """
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field

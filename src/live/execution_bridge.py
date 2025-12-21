@@ -5,6 +5,7 @@ Execution Bridge for Live-Track Integration.
 Phase 16B: Reads execution events from JSONL logs and maps them to
 Live-Track timeline format for monitoring and visualization.
 """
+
 from __future__ import annotations
 
 import json

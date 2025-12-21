@@ -5,6 +5,7 @@ Tests für scripts/check_live_readiness.py (Phase 39)
 
 Testet das Live-Readiness-Check-Script.
 """
+
 from __future__ import annotations
 
 import sys
@@ -87,19 +88,21 @@ initial_cash = 10000.0
 @pytest.fixture
 def mock_peak_config() -> PeakConfig:
     """Mock PeakConfig mit sinnvollen Defaults."""
-    return PeakConfig(raw={
-        "live_risk": {
-            "max_order_notional": 1000.0,
-            "max_daily_loss_abs": 500.0,
-        },
-        "shadow": {
-            "enabled": True,
-            "fee_rate": 0.0005,
-        },
-        "exchange": {
-            "default_type": "dummy",
-        },
-    })
+    return PeakConfig(
+        raw={
+            "live_risk": {
+                "max_order_notional": 1000.0,
+                "max_daily_loss_abs": 500.0,
+            },
+            "shadow": {
+                "enabled": True,
+                "fee_rate": 0.0005,
+            },
+            "exchange": {
+                "default_type": "dummy",
+            },
+        }
+    )
 
 
 # =============================================================================
@@ -204,9 +207,7 @@ class TestCheckRiskLimits:
 
     def test_partial_risk_limits(self):
         """Teilweise Risk-Limits -> passed."""
-        cfg = PeakConfig(raw={
-            "live_risk": {"max_order_notional": 1000.0}
-        })
+        cfg = PeakConfig(raw={"live_risk": {"max_order_notional": 1000.0}})
         result = check_risk_limits(cfg)
         assert result.passed is True
 
@@ -317,12 +318,14 @@ class TestCheckLiveRiskConfigLoadable:
 
     def test_live_with_valid_live_risk(self):
         """Live: Mit gültiger [live_risk]-Config -> passed."""
-        cfg = PeakConfig(raw={
-            "live_risk": {
-                "max_order_notional": 500.0,
-                "max_daily_loss_abs": 100.0,
-            },
-        })
+        cfg = PeakConfig(
+            raw={
+                "live_risk": {
+                    "max_order_notional": 500.0,
+                    "max_daily_loss_abs": 100.0,
+                },
+            }
+        )
         result = check_live_risk_config_loadable(cfg, "live")
         assert result.passed is True
 
@@ -354,6 +357,7 @@ class TestCheckDocumentationExists:
         """Warnung für fehlende Dokumentation."""
         # Temporär ROOT_DIR auf tmp_path setzen
         import scripts.check_live_readiness as script_module
+
         monkeypatch.setattr(script_module, "ROOT_DIR", tmp_path)
 
         # docs-Verzeichnis existiert nicht
@@ -368,6 +372,7 @@ class TestCheckDocumentationExists:
     def test_no_warnings_when_docs_exist(self, tmp_path: Path, monkeypatch):
         """Keine Warnungen wenn alle Dokumente existieren."""
         import scripts.check_live_readiness as script_module
+
         monkeypatch.setattr(script_module, "ROOT_DIR", tmp_path)
 
         # docs-Verzeichnis und Dateien erstellen
@@ -388,6 +393,7 @@ class TestCheckDocumentationExists:
     def test_warning_for_empty_file(self, tmp_path: Path, monkeypatch):
         """Warnung für leere Dokumentationsdatei."""
         import scripts.check_live_readiness as script_module
+
         monkeypatch.setattr(script_module, "ROOT_DIR", tmp_path)
 
         # docs-Verzeichnis und leere Datei erstellen
@@ -407,6 +413,7 @@ class TestCheckDocumentationExists:
     def test_warning_for_very_short_file(self, tmp_path: Path, monkeypatch):
         """Warnung für sehr kurze Dokumentationsdatei (<100 Bytes)."""
         import scripts.check_live_readiness as script_module
+
         monkeypatch.setattr(script_module, "ROOT_DIR", tmp_path)
 
         # docs-Verzeichnis und kurze Datei erstellen
@@ -440,7 +447,7 @@ class TestReadinessReportWithWarnings:
             warnings=[
                 WarningResult(name="W1", message="Warning 1"),
                 WarningResult(name="W2", message="Warning 2"),
-            ]
+            ],
         )
         assert report.warning_count == 2
 
@@ -470,7 +477,7 @@ class TestReadinessReport:
             checks=[
                 CheckResult(name="Test1", passed=True, message="OK"),
                 CheckResult(name="Test2", passed=True, message="OK"),
-            ]
+            ],
         )
         assert report.all_passed is True
         assert report.passed_count == 2
@@ -483,7 +490,7 @@ class TestReadinessReport:
             checks=[
                 CheckResult(name="Test1", passed=True, message="OK"),
                 CheckResult(name="Test2", passed=False, message="Failed"),
-            ]
+            ],
         )
         assert report.all_passed is False
         assert report.passed_count == 1
@@ -623,6 +630,7 @@ default_type = "dummy"
     def test_valid_config_testnet(self, valid_live_risk_config: Path):
         """Gültige Config für Testnet -> passed."""
         from src.core.peak_config import load_config
+
         cfg = load_config(valid_live_risk_config)
         result = check_live_risk_config_loadable(cfg, "testnet")
         assert result.passed is True
@@ -631,6 +639,7 @@ default_type = "dummy"
     def test_valid_config_live(self, valid_live_risk_config: Path):
         """Gültige Config für Live -> passed."""
         from src.core.peak_config import load_config
+
         cfg = load_config(valid_live_risk_config)
         result = check_live_risk_config_loadable(cfg, "live")
         assert result.passed is True
@@ -638,6 +647,7 @@ default_type = "dummy"
     def test_valid_config_shadow(self, valid_live_risk_config: Path):
         """Gültige Config für Shadow -> passed (optional)."""
         from src.core.peak_config import load_config
+
         cfg = load_config(valid_live_risk_config)
         result = check_live_risk_config_loadable(cfg, "shadow")
         assert result.passed is True
@@ -645,6 +655,7 @@ default_type = "dummy"
     def test_missing_live_risk_block_testnet(self, missing_live_risk_config: Path):
         """Fehlender [live_risk]-Block für Testnet -> failed."""
         from src.core.peak_config import load_config
+
         cfg = load_config(missing_live_risk_config)
         result = check_live_risk_config_loadable(cfg, "testnet")
         assert result.passed is False
@@ -653,6 +664,7 @@ default_type = "dummy"
     def test_missing_live_risk_block_live(self, missing_live_risk_config: Path):
         """Fehlender [live_risk]-Block für Live -> failed."""
         from src.core.peak_config import load_config
+
         cfg = load_config(missing_live_risk_config)
         result = check_live_risk_config_loadable(cfg, "live")
         assert result.passed is False
@@ -661,6 +673,7 @@ default_type = "dummy"
     def test_missing_live_risk_block_shadow(self, missing_live_risk_config: Path):
         """Fehlender [live_risk]-Block für Shadow -> passed (nicht blockierend)."""
         from src.core.peak_config import load_config
+
         cfg = load_config(missing_live_risk_config)
         result = check_live_risk_config_loadable(cfg, "shadow")
         # Für Shadow ist es NICHT blockierend
@@ -669,6 +682,7 @@ default_type = "dummy"
     def test_has_details_on_success(self, valid_live_risk_config: Path):
         """Bei Erfolg werden Details zu den geladenen Limits ausgegeben."""
         from src.core.peak_config import load_config
+
         cfg = load_config(valid_live_risk_config)
         result = check_live_risk_config_loadable(cfg, "testnet")
         assert result.passed is True
@@ -678,6 +692,7 @@ default_type = "dummy"
     def test_has_details_on_failure(self, missing_live_risk_config: Path):
         """Bei Fehler werden hilfreiche Details ausgegeben."""
         from src.core.peak_config import load_config
+
         cfg = load_config(missing_live_risk_config)
         result = check_live_risk_config_loadable(cfg, "testnet")
         assert result.passed is False
@@ -697,7 +712,9 @@ class TestCheckDocumentationExists:
     """Tests für check_documentation_exists (Soft-Check)."""
 
     # Inhalt > 100 Bytes für gültige Dateien
-    VALID_DOC_CONTENT = "# Dokumentation\n\n" + "Dies ist ein Platzhalter für die Dokumentation. " * 5
+    VALID_DOC_CONTENT = (
+        "# Dokumentation\n\n" + "Dies ist ein Platzhalter für die Dokumentation. " * 5
+    )
 
     def test_all_docs_exist_no_warnings(self, tmp_path: Path, monkeypatch):
         """Wenn alle Doku-Dateien existieren und Inhalt haben -> keine Warnungen."""
@@ -712,6 +729,7 @@ class TestCheckDocumentationExists:
 
         # ROOT_DIR mocken
         import scripts.check_live_readiness as module
+
         monkeypatch.setattr(module, "ROOT_DIR", tmp_path)
 
         warnings = check_documentation_exists()
@@ -728,6 +746,7 @@ class TestCheckDocumentationExists:
         # LIVE_READINESS_CHECKLISTS.md fehlt!
 
         import scripts.check_live_readiness as module
+
         monkeypatch.setattr(module, "ROOT_DIR", tmp_path)
 
         warnings = check_documentation_exists()
@@ -745,6 +764,7 @@ class TestCheckDocumentationExists:
         (docs_dir / "LIVE_READINESS_CHECKLISTS.md").write_text(self.VALID_DOC_CONTENT)
 
         import scripts.check_live_readiness as module
+
         monkeypatch.setattr(module, "ROOT_DIR", tmp_path)
 
         warnings = check_documentation_exists()
@@ -762,6 +782,7 @@ class TestCheckDocumentationExists:
         (docs_dir / "LIVE_READINESS_CHECKLISTS.md").write_text("Hi")  # Nur 2 Bytes
 
         import scripts.check_live_readiness as module
+
         monkeypatch.setattr(module, "ROOT_DIR", tmp_path)
 
         warnings = check_documentation_exists()
@@ -778,29 +799,33 @@ class TestCheckDocumentationExists:
         # Die anderen beiden fehlen
 
         import scripts.check_live_readiness as module
+
         monkeypatch.setattr(module, "ROOT_DIR", tmp_path)
 
         warnings = check_documentation_exists()
         assert len(warnings) == 2
 
-    def test_warnings_do_not_block_readiness(self, valid_config_path: Path, tmp_path: Path, monkeypatch):
+    def test_warnings_do_not_block_readiness(
+        self, valid_config_path: Path, tmp_path: Path, monkeypatch
+    ):
         """Warnungen blockieren die Readiness NICHT."""
         # docs-Verzeichnis ohne alle Dateien
         docs_dir = tmp_path / "docs"
         docs_dir.mkdir()
         # Nur eine Datei
         (docs_dir / "LIVE_DEPLOYMENT_PLAYBOOK.md").write_text("# Playbook\nContent here...")
-        
+
         import scripts.check_live_readiness as module
+
         monkeypatch.setattr(module, "ROOT_DIR", tmp_path)
-        
+
         # run_readiness_checks mit der valid_config_path
         report = run_readiness_checks(
             stage="shadow",
             config_path=valid_config_path,
             run_tests=False,
         )
-        
+
         # Es gibt Warnungen
         assert report.warning_count >= 1
         # Aber Readiness sollte trotzdem bestehen (wenn alle harten Checks OK)
@@ -899,11 +924,9 @@ default_type = "dummy"
             config_path=config_file,
             run_tests=False,
         )
-        
+
         # Live-Risk-Config-Check finden
-        live_risk_check = next(
-            (c for c in report.checks if "Live-Risk" in c.name), None
-        )
+        live_risk_check = next((c for c in report.checks if "Live-Risk" in c.name), None)
         assert live_risk_check is not None
         assert live_risk_check.passed is True
 
@@ -922,14 +945,12 @@ default_type = "dummy"
             config_path=config_file,
             run_tests=False,
         )
-        
+
         # Live-Risk-Config-Check finden
-        live_risk_check = next(
-            (c for c in report.checks if "Live-Risk" in c.name), None
-        )
+        live_risk_check = next((c for c in report.checks if "Live-Risk" in c.name), None)
         assert live_risk_check is not None
         assert live_risk_check.passed is False
-        
+
         # Gesamtreport sollte failed sein
         assert report.all_passed is False
 
@@ -948,11 +969,9 @@ default_type = "kraken_live"
             config_path=config_file,
             run_tests=False,
         )
-        
+
         # Live-Risk-Config-Check sollte failed sein
-        live_risk_check = next(
-            (c for c in report.checks if "Live-Risk" in c.name), None
-        )
+        live_risk_check = next((c for c in report.checks if "Live-Risk" in c.name), None)
         assert live_risk_check is not None
         assert live_risk_check.passed is False
 
