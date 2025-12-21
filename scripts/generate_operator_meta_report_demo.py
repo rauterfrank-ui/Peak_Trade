@@ -8,6 +8,7 @@ einen aggregierten Meta-Report erstellt.
 Usage:
     python scripts/generate_operator_meta_report_demo.py
 """
+
 from pathlib import Path
 
 import pandas as pd
@@ -203,7 +204,7 @@ def main():
 
     # 2. Sessions im Store speichern (optional, für Demo-Zwecke)
     from src.trigger_training.session_store import save_session_to_store
-    
+
     store_path = Path("live_runs/trigger_training_sessions_demo.jsonl")
     for session_id, events in sessions:
         save_session_to_store(session_id, events, store_path)

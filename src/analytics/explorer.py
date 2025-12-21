@@ -34,6 +34,7 @@ Usage:
     # Sweep-Auswertung
     overview = explorer.summarize_sweep("my_strategy_opt_v1", metric="sharpe", top_n=10)
 """
+
 from __future__ import annotations
 
 import json
@@ -475,9 +476,7 @@ class ExperimentExplorer:
             return None
 
         # Nur Sweep-Runs mit passendem sweep_name
-        sweep_df = df[
-            (df["run_type"] == "sweep") & (df["sweep_name"] == sweep_name)
-        ].copy()
+        sweep_df = df[(df["run_type"] == "sweep") & (df["sweep_name"] == sweep_name)].copy()
 
         if sweep_df.empty:
             return None
@@ -693,13 +692,23 @@ class ExperimentExplorer:
 
             for r in ranked:
                 s = r.summary
-                ret = f"{s.metrics.get('total_return', 0)*100:.1f}%" if s.metrics.get("total_return") else "-"
+                ret = (
+                    f"{s.metrics.get('total_return', 0) * 100:.1f}%"
+                    if s.metrics.get("total_return")
+                    else "-"
+                )
                 sharpe = f"{s.metrics.get('sharpe', 0):.2f}" if s.metrics.get("sharpe") else "-"
-                dd = f"{s.metrics.get('max_drawdown', 0)*100:.1f}%" if s.metrics.get("max_drawdown") else "-"
+                dd = (
+                    f"{s.metrics.get('max_drawdown', 0) * 100:.1f}%"
+                    if s.metrics.get("max_drawdown")
+                    else "-"
+                )
                 run_id = s.experiment_id[:12]
                 strategy = s.strategy_name or "-"
 
-                lines.append(f"| {r.rank} | {run_id} | {s.run_type} | {strategy} | {ret} | {sharpe} | {dd} |")
+                lines.append(
+                    f"| {r.rank} | {run_id} | {s.run_type} | {strategy} | {ret} | {sharpe} | {dd} |"
+                )
 
         else:
             lines.append("*Keine Experimente gefunden.*")

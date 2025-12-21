@@ -13,17 +13,17 @@ Backends:
 
 Usage:
     from src.knowledge.timeseries_db import TimeSeriesDBFactory
-    
+
     db = TimeSeriesDBFactory.create("influxdb", config={
         "url": "http://localhost:8086",
         "token": "your-token",
         "org": "peak_trade",
         "bucket": "market_data"
     })
-    
+
     # Write tick data
     db.write_ticks("BTC/USD", ticks_df)
-    
+
     # Query portfolio history
     history = db.query_portfolio_history(
         start_time="2024-01-01",
@@ -110,9 +110,7 @@ class InfluxDBAdapter(TimeSeriesDBInterface):
         self.write_api = self.client.write_api(write_options=SYNCHRONOUS)
         self.query_api = self.client.query_api()
 
-        logger.info(
-            f"InfluxDB initialized: {self.bucket} at {self.url} (org: {self.org})"
-        )
+        logger.info(f"InfluxDB initialized: {self.bucket} at {self.url} (org: {self.org})")
 
     def write_ticks(
         self, symbol: str, data: pd.DataFrame, tags: Optional[Dict[str, str]] = None
@@ -229,7 +227,7 @@ class ParquetAdapter(TimeSeriesDBInterface):
 
         # Copy data to avoid mutating the original DataFrame
         data = data.copy()
-        
+
         # Add tags as columns if provided
         if tags:
             for key, value in tags.items():
@@ -246,7 +244,7 @@ class ParquetAdapter(TimeSeriesDBInterface):
 
         # Copy data to avoid mutating the original DataFrame
         data = data.copy()
-        
+
         # Add tags as columns if provided
         if tags:
             for key, value in tags.items():
@@ -280,9 +278,7 @@ class ParquetAdapter(TimeSeriesDBInterface):
         # Filter by time
         if "timestamp" in data.columns:
             data["timestamp"] = pd.to_datetime(data["timestamp"])
-            data = data[
-                (data["timestamp"] >= start_time) & (data["timestamp"] <= end_time)
-            ]
+            data = data[(data["timestamp"] >= start_time) & (data["timestamp"] <= end_time)]
 
         logger.info(f"Queried {len(data)} tick records for {symbol}")
         return data
@@ -302,9 +298,7 @@ class ParquetAdapter(TimeSeriesDBInterface):
         # Filter by time
         if "timestamp" in data.columns:
             data["timestamp"] = pd.to_datetime(data["timestamp"])
-            data = data[
-                (data["timestamp"] >= start_time) & (data["timestamp"] <= end_time)
-            ]
+            data = data[(data["timestamp"] >= start_time) & (data["timestamp"] <= end_time)]
 
         logger.info(f"Queried {len(data)} portfolio history records")
         return data
@@ -332,8 +326,7 @@ class TimeSeriesDBFactory:
         """
         if db_type not in cls._adapters:
             raise ValueError(
-                f"Unknown database type: {db_type}. "
-                f"Available: {list(cls._adapters.keys())}"
+                f"Unknown database type: {db_type}. Available: {list(cls._adapters.keys())}"
             )
 
         adapter_class = cls._adapters[db_type]

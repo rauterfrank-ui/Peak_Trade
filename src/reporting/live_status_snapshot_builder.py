@@ -26,6 +26,7 @@ Usage:
     # Without providers (fallback)
     snapshot = build_live_status_snapshot()  # Returns default system panel
 """
+
 from __future__ import annotations
 
 import logging
@@ -120,7 +121,7 @@ def build_live_status_snapshot(
                 details={
                     "error": f"{type(exc).__name__}: {str(exc)}",
                     "note": "Provider failed during invocation",
-                }
+                },
             )
             panels.append(error_panel)
 
@@ -231,6 +232,7 @@ def _try_load_live_providers() -> Optional[Dict[str, PanelProvider]]:
         # Try importing from live module (if exists)
         # This is a best-effort import - if the module doesn't exist, we gracefully degrade
         from src.live.status_providers import get_default_panel_providers
+
         providers = get_default_panel_providers()
         if providers:
             logger.debug(f"Loaded {len(providers)} panel providers from src.live.status_providers")

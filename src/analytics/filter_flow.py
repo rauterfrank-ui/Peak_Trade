@@ -48,9 +48,7 @@ class SelectionPolicy:
             min_total_runs=int(cfg.get("filter_flow.min_total_runs", 10)),
             min_forward_eval_runs=int(cfg.get("filter_flow.min_forward_eval_runs", 3)),
             min_forward_sharpe=float(cfg.get("filter_flow.min_forward_sharpe", 0.0)),
-            min_forward_total_return=float(
-                cfg.get("filter_flow.min_forward_total_return", -0.5)
-            ),
+            min_forward_total_return=float(cfg.get("filter_flow.min_forward_total_return", -0.5)),
         )
 
 
@@ -105,9 +103,7 @@ def _classify_selection(row: pd.Series, policy: SelectionPolicy) -> Tuple[Select
             if fwd_tr < policy.min_forward_total_return:
                 if status == "APPROVED":
                     status = "WATCH"
-                reasons.append(
-                    f"forward_total_return<{policy.min_forward_total_return:.3f}"
-                )
+                reasons.append(f"forward_total_return<{policy.min_forward_total_return:.3f}")
 
     if not reasons:
         reasons.append("all_criteria_passed")
@@ -170,9 +166,7 @@ def build_strategy_selection(
     # n_total_runs
     if "strategy_key" in df_runs.columns:
         total_counts = df_runs.groupby("strategy_key").size().rename("n_total_runs")
-        df_sel = df_sel.merge(
-            total_counts.to_frame(), on="strategy_key", how="left"
-        )
+        df_sel = df_sel.merge(total_counts.to_frame(), on="strategy_key", how="left")
     else:
         df_sel["n_total_runs"] = 0
 
@@ -191,22 +185,16 @@ def build_strategy_selection(
         )
         if "sharpe" in df_fwd.columns:
             fwd_sh_mean = (
-                df_fwd.groupby("strategy_key")["sharpe"]
-                .mean()
-                .rename("forward_sharpe_mean")
+                df_fwd.groupby("strategy_key")["sharpe"].mean().rename("forward_sharpe_mean")
             )
         else:
             fwd_sh_mean = pd.Series(dtype=float, name="forward_sharpe_mean")
 
-        df_sel = df_sel.merge(
-            fwd_counts.to_frame(), on="strategy_key", how="left"
-        ).merge(
+        df_sel = df_sel.merge(fwd_counts.to_frame(), on="strategy_key", how="left").merge(
             fwd_tr_mean.to_frame(), on="strategy_key", how="left"
         )
         if not fwd_sh_mean.empty:
-            df_sel = df_sel.merge(
-                fwd_sh_mean.to_frame(), on="strategy_key", how="left"
-            )
+            df_sel = df_sel.merge(fwd_sh_mean.to_frame(), on="strategy_key", how="left")
         else:
             df_sel["forward_sharpe_mean"] = np.nan
     else:

@@ -18,6 +18,7 @@ Usage:
     python scripts/export_live_audit_snapshot.py --output-json audit/live_audit_2025-12-07.json
     python scripts/export_live_audit_snapshot.py --output-markdown audit/live_audit_2025-12-07.md
 """
+
 from __future__ import annotations
 
 import argparse
@@ -192,4 +193,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

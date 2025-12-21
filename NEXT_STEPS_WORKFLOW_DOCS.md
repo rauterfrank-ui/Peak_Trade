@@ -153,4 +153,3 @@ Die vollständige Dokumentation ist jetzt verfügbar unter:
 ---
 
 **Nächster Schritt:** Führe `bash scripts/finalize_workflow_docs_pr.sh` aus! 🚀
-

@@ -14,6 +14,7 @@ Usage:
     path = save_line_plot(equity_series, "reports/equity.png", title="Equity Curve")
     path = save_heatmap(pivot_df, "reports/heatmap.png", title="Sharpe by Parameters")
 """
+
 from __future__ import annotations
 
 import os
@@ -620,8 +621,8 @@ def save_equity_with_regime_overlay(
 
     # Regime-Farben für numerische Werte
     regime_colors = {
-        1: "#c8e6c9",   # light green (Risk-On)
-        0: "#e0e0e0",   # light gray (Neutral)
+        1: "#c8e6c9",  # light green (Risk-On)
+        0: "#e0e0e0",  # light gray (Neutral)
         -1: "#ffcdd2",  # light red (Risk-Off)
     }
     regime_labels = {
@@ -756,7 +757,14 @@ def save_regime_contribution_bars(
     if not labels:
         # Wenn nichts sinnvoll geplottet werden kann, erstelle leeren Plot mit Hinweis
         fig, ax = plt.subplots(figsize=(8, 4))
-        ax.text(0.5, 0.5, "No contribution data available", ha="center", va="center", transform=ax.transAxes)
+        ax.text(
+            0.5,
+            0.5,
+            "No contribution data available",
+            ha="center",
+            va="center",
+            transform=ax.transAxes,
+        )
         ax.set_title(title or "Return Contribution by Regime")
         plt.tight_layout()
         plt.savefig(output_path, dpi=dpi, bbox_inches="tight")

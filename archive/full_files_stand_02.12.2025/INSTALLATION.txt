@@ -10,7 +10,7 @@
    peak_trade_phase1_phase2.tar.gz
 
 2. In dein Projektverzeichnis extrahieren:
-   
+
    cd ~/Peak_Trade
    tar -xzf ~/Downloads/peak_trade_phase1_phase2.tar.gz
    mv peak_trade_export/* .
@@ -20,21 +20,21 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 3. Virtuelle Umgebung aktivieren:
-   
+
    source .venv/bin/activate
 
 4. Dependencies installieren:
-   
+
    pip install -r requirements.txt
 
 📊 TESTEN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 5. Demo-Scripts ausführen:
-   
+
    # Basic Portfolio-Backtest
    python demo_basic.py
-   
+
    # Risk-Management Demo
    python demo_risk.py
 
@@ -42,11 +42,11 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 6. Teste Import:
-   
+
    python -c "from src.backtest.engine import BacktestEngine; print('✓ Import erfolgreich')"
 
 7. Teste Strategy-Registry:
-   
+
    python -c "from src.strategies.registry import get_strategy; print('✓ Strategien verfügbar:', list(get_strategy.__globals__['_REGISTRY'].keys()))"
 
 📁 PROJEKTSTRUKTUR

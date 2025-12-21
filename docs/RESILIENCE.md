@@ -572,7 +572,7 @@ is_healthy = health_check.is_system_healthy()
 # 4. Recover if unhealthy
 if not is_healthy:
     print("🚨 System unhealthy, initiating recovery...")
-    
+
     # Get most recent successful backup
     backups = recovery.list_backups()
     if backups:
@@ -582,7 +582,7 @@ if not is_healthy:
             restore_config=True,
             restore_data=True
         )
-        
+
         if success:
             print("✅ Recovery successful")
             # Create post-recovery backup
@@ -651,16 +651,16 @@ def check_recent_backup():
     backups = recovery.list_backups()
     if not backups:
         return False, "No backups found"
-    
+
     latest = backups[0]
     # Check if backup is recent (within 24 hours)
     from datetime import datetime, timedelta
     backup_time = datetime.fromisoformat(latest.created_at.replace('Z', '+00:00'))
     age = datetime.now(backup_time.tzinfo) - backup_time
-    
+
     if age > timedelta(hours=24):
         return False, f"Latest backup is {age.total_seconds()/3600:.1f} hours old"
-    
+
     return True, f"Latest backup: {age.total_seconds()/3600:.1f} hours ago"
 
 health_check.register("backups", check_recent_backup)
@@ -867,15 +867,15 @@ class CircuitBreaker:
         expected_exception: Type[Exception] = Exception,
         name: str = "circuit_breaker"
     )
-    
+
     @property
     def state(self) -> CircuitState
-    
+
     @property
     def stats(self) -> CircuitBreakerStats
-    
+
     def call(self, func: Callable) -> Callable
-    
+
     def reset(self) -> None
 ```
 
@@ -903,11 +903,11 @@ def retry_with_backoff(
 ```python
 class HealthCheck:
     def register(self, name: str, check_func: Callable) -> None
-    
+
     def run_all(self) -> Dict[str, HealthCheckResult]
-    
+
     def is_system_healthy(self) -> bool
-    
+
     def get_status(self) -> Dict[str, Any]
 ```
 
@@ -922,16 +922,16 @@ from src.data.exchange_client import ResilientExchangeClient
 class DataPipeline:
     def __init__(self):
         self.client = ResilientExchangeClient("kraken")
-        
+
         # Register pipeline health check
         health_check.register("data_pipeline", self._health_check)
-    
+
     @circuit_breaker(failure_threshold=5, recovery_timeout=60)
     @retry_with_backoff(max_attempts=3, base_delay=2.0)
     def fetch_market_data(self, symbol: str):
         """Fetch market data with full resilience."""
         return self.client.fetch_ohlcv(symbol, "1h", limit=100)
-    
+
     def _health_check(self):
         """Check if pipeline is operational."""
         try:
@@ -949,18 +949,18 @@ from src.core.resilience import health_check
 
 def setup_backtest_health_check():
     """Register backtest engine health check."""
-    
+
     def check_backtest_engine():
         try:
             from src.backtest.engine import BacktestEngine
             from src.core.peak_config import load_config
-            
+
             cfg = load_config()
             # Verify engine can be instantiated
             return True, "Backtest engine is available"
         except Exception as e:
             return False, f"Backtest engine check failed: {e}"
-    
+
     health_check.register("backtest_engine", check_backtest_engine)
 ```
 

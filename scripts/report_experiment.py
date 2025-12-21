@@ -19,6 +19,7 @@ Usage:
     # Nur Text-Summary ohne HTML
     python scripts/report_experiment.py --id abc12345 --text-only
 """
+
 from __future__ import annotations
 
 import argparse

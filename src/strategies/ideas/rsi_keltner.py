@@ -7,6 +7,7 @@ TODO: Beschreibe hier deine Strategie-Idee:
 - Welche Indikatoren/Signale nutzt du?
 - Welche Parameter sind wichtig?
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -127,15 +128,12 @@ class RsiKeltnerStrategy(BaseStrategy):
         # Validierung
         if self.price_col not in data.columns:
             raise ValueError(
-                f"Spalte '{self.price_col}' nicht in DataFrame. "
-                f"Verfügbar: {list(data.columns)}"
+                f"Spalte '{self.price_col}' nicht in DataFrame. Verfügbar: {list(data.columns)}"
             )
 
         min_bars = self.param1  # Beispiel: Mindestens param1 Bars benötigt
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mindestens {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mindestens {min_bars} Bars, habe nur {len(data)}")
 
         # Kopie für Berechnungen
         df = data.copy()
@@ -186,6 +184,7 @@ class RsiKeltnerStrategy(BaseStrategy):
 # ============================================================================
 # HELPER (Optional)
 # ============================================================================
+
 
 def create_strategy_from_params(**kwargs) -> RsiKeltnerStrategy:
     """

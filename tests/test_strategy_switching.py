@@ -5,6 +5,7 @@ Tests fuer Strategy Switching (Phase 28)
 
 Testet SimpleRegimeMappingPolicy und Konfiguration.
 """
+
 import pytest
 from typing import Dict, List
 
@@ -20,6 +21,7 @@ from src.regime import (
 # ============================================================================
 # TEST FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def default_config() -> StrategySwitchingConfig:
@@ -55,6 +57,7 @@ def available_strategies() -> List[str]:
 # ============================================================================
 # SIMPLE REGIME MAPPING POLICY TESTS
 # ============================================================================
+
 
 class TestSimpleRegimeMappingPolicy:
     """Tests fuer SimpleRegimeMappingPolicy."""
@@ -101,9 +104,7 @@ class TestSimpleRegimeMappingPolicy:
         assert abs(decision.weights.get("mean_reversion_channel", 0) - 0.6) < 0.01
         assert abs(decision.weights.get("rsi_reversion", 0) - 0.4) < 0.01
 
-    def test_weights_are_normalized(
-        self, available_strategies: List[str]
-    ):
+    def test_weights_are_normalized(self, available_strategies: List[str]):
         """Gewichte werden normalisiert."""
         config = StrategySwitchingConfig(
             enabled=True,
@@ -118,9 +119,7 @@ class TestSimpleRegimeMappingPolicy:
         total_weight = sum(decision.weights.values())
         assert abs(total_weight - 1.0) < 0.001
 
-    def test_filter_unavailable_strategies(
-        self, default_config: StrategySwitchingConfig
-    ):
+    def test_filter_unavailable_strategies(self, default_config: StrategySwitchingConfig):
         """Nicht verfuegbare Strategien werden gefiltert."""
         # Nur vol_breakout verfuegbar
         limited_strategies = ["vol_breakout"]
@@ -130,11 +129,11 @@ class TestSimpleRegimeMappingPolicy:
 
         # ranging mappt auf mean_reversion_channel und rsi_reversion,
         # aber keine davon ist verfuegbar -> Fallback auf default
-        assert "ma_crossover" not in decision.active_strategies or len(decision.active_strategies) > 0
+        assert (
+            "ma_crossover" not in decision.active_strategies or len(decision.active_strategies) > 0
+        )
 
-    def test_fallback_to_default_strategies(
-        self, default_config: StrategySwitchingConfig
-    ):
+    def test_fallback_to_default_strategies(self, default_config: StrategySwitchingConfig):
         """Fallback auf default_strategies wenn keine gemappt."""
         # Keine der gemappten Strategien verfuegbar
         limited_strategies = ["ma_crossover"]
@@ -173,6 +172,7 @@ class TestSimpleRegimeMappingPolicy:
 # STRATEGY SWITCH DECISION TESTS
 # ============================================================================
 
+
 class TestStrategySwitchDecision:
     """Tests fuer StrategySwitchDecision Dataclass."""
 
@@ -196,8 +196,8 @@ class TestStrategySwitchDecision:
             weights=None,
         )
 
-        assert abs(decision.get_weight("a") - 1/3) < 0.001
-        assert abs(decision.get_weight("b") - 1/3) < 0.001
+        assert abs(decision.get_weight("a") - 1 / 3) < 0.001
+        assert abs(decision.get_weight("b") - 1 / 3) < 0.001
 
     def test_is_single_strategy(self):
         """is_single_strategy Property."""
@@ -247,6 +247,7 @@ class TestStrategySwitchDecision:
 # FACTORY FUNCTION TESTS
 # ============================================================================
 
+
 class TestMakeSwitchingPolicy:
     """Tests fuer make_switching_policy Factory."""
 
@@ -289,6 +290,7 @@ class TestMakeSwitchingPolicy:
 # ============================================================================
 # CONFIG TESTS
 # ============================================================================
+
 
 class TestStrategySwitchingConfig:
     """Tests fuer StrategySwitchingConfig."""
@@ -338,6 +340,7 @@ class TestStrategySwitchingConfig:
 
     def test_from_peak_config(self):
         """from_peak_config() liest aus PeakConfig."""
+
         # Mock PeakConfig
         class MockConfig:
             def get(self, path: str, default=None):

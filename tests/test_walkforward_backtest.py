@@ -4,6 +4,7 @@ Tests für src/backtest/walkforward.py
 
 Testet Walk-Forward-Backtesting-Funktionalität.
 """
+
 import sys
 from pathlib import Path
 
@@ -61,13 +62,16 @@ def create_test_data(n_bars: int = 500, seed: int = 42, freq: str = "1d") -> pd.
     close_prices = base_price + trend + cycle + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * 0.002),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
@@ -114,7 +118,7 @@ class TestSplitTrainTestWindows:
 
             # Anchored mode: nächstes Train-Fenster startet exakt am Ende des aktuellen Test-Fensters
             assert train_start_next == test_end_current, (
-                f"Fenster {i} -> {i+1}: train_start_next ({train_start_next}) "
+                f"Fenster {i} -> {i + 1}: train_start_next ({train_start_next}) "
                 f"sollte == test_end_current ({test_end_current}) sein"
             )
 
@@ -154,7 +158,7 @@ class TestSplitTrainTestWindows:
         config = WalkForwardConfig(
             train_window="90d",
             test_window="30d",
-            step_size="60d"  # Rolling: train_start verschiebt sich um 60d
+            step_size="60d",  # Rolling: train_start verschiebt sich um 60d
         )
 
         windows = split_train_test_windows(start, end, config)
@@ -380,13 +384,15 @@ class TestRunWalkforwardForConfig:
 
     def test_run_walkforward_invalid_datetime_index_raises(self):
         """DataFrame ohne DatetimeIndex sollte ValueError werfen."""
-        df = pd.DataFrame({
-            'open': [100, 101, 102],
-            'high': [101, 102, 103],
-            'low': [99, 100, 101],
-            'close': [100, 101, 102],
-            'volume': [10, 11, 12],
-        })
+        df = pd.DataFrame(
+            {
+                "open": [100, 101, 102],
+                "high": [101, 102, 103],
+                "low": [99, 100, 101],
+                "close": [100, 101, 102],
+                "volume": [10, 11, 12],
+            }
+        )
         # Kein DatetimeIndex
         config = WalkForwardConfig(
             train_window="90d",
@@ -471,8 +477,3 @@ class TestWalkforwardTopNIntegration:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
-
-
-
-
-

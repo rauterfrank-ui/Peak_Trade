@@ -12,37 +12,37 @@
         header h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
         header .subtitle { opacity: 0.9; font-size: 14px; }
         .content { padding: 30px; }
-        
+
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; }
         .stat-card .label { font-size: 12px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
         .stat-card .value { font-size: 24px; font-weight: 600; color: #2d3748; }
-        
+
         .filters { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .filters label { font-size: 14px; color: #4a5568; font-weight: 500; }
         .filters select, .filters input { padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 14px; }
         .filters button { background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; }
         .filters button:hover { background: #5568d3; }
-        
+
         .timeline-table { width: 100%; border-collapse: collapse; }
         .timeline-table thead { background: #f7fafc; border-bottom: 2px solid #e2e8f0; }
         .timeline-table th { text-align: left; padding: 12px; font-size: 12px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
         .timeline-table tbody tr { border-bottom: 1px solid #e2e8f0; transition: background 0.15s; }
         .timeline-table tbody tr:hover { background: #f7fafc; }
         .timeline-table td { padding: 12px; font-size: 14px; color: #2d3748; }
-        
+
         .kind-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
         .kind-intent { background: #bee3f8; color: #2c5282; }
         .kind-order { background: #c6f6d5; color: #276749; }
         .kind-fill { background: #fed7d7; color: #742a2a; }
         .kind-gate { background: #feebc8; color: #7c2d12; }
         .kind-error { background: #feb2b2; color: #742a2a; }
-        
+
         .details { font-family: monospace; font-size: 12px; color: #4a5568; background: #f7fafc; padding: 8px; border-radius: 4px; margin-top: 4px; max-width: 500px; overflow-x: auto; white-space: pre-wrap; }
-        
+
         .empty-state { text-align: center; padding: 60px 20px; color: #a0aec0; }
         .empty-state svg { width: 64px; height: 64px; margin-bottom: 20px; opacity: 0.3; }
-        
+
         .back-link { display: inline-block; margin-bottom: 20px; color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500; }
         .back-link:hover { text-decoration: underline; }
     </style>
@@ -53,10 +53,10 @@
             <h1>📊 Execution Timeline</h1>
             <div class="subtitle">Session: {{ session_id }}</div>
         </header>
-        
+
         <div class="content">
             <a href="/" class="back-link">← Zurück zum Dashboard</a>
-            
+
             {% if summary.found %}
             <div class="stats-grid">
                 <div class="stat-card">
@@ -71,7 +71,7 @@
                 {% endfor %}
             </div>
             {% endif %}
-            
+
             <div class="filters">
                 <label>Filter:</label>
                 <select id="kindFilter" onchange="applyFilter()">
@@ -82,13 +82,13 @@
                     <option value="gate" {% if filters.kind == 'gate' %}selected{% endif %}>Gate</option>
                     <option value="error" {% if filters.kind == 'error' %}selected{% endif %}>Error</option>
                 </select>
-                
+
                 <label>Limit:</label>
                 <input type="number" id="limitInput" value="{{ filters.limit or 200 }}" min="1" max="1000" style="width: 100px;">
-                
+
                 <button onclick="applyFilter()">Apply</button>
             </div>
-            
+
             {% if timeline %}
             <table class="timeline-table">
                 <thead>
@@ -129,7 +129,7 @@
             {% endif %}
         </div>
     </div>
-    
+
     <script>
         function applyFilter() {
             const kind = document.getElementById('kindFilter').value;

@@ -21,8 +21,8 @@ Deine Aufgabe:
 - Bewerte deren Auswirkungen auf Crypto-Märkte (BTC, ETH, Altcoins)
 - Erstelle strukturierte INFO_PACKETs für den InfoStream
 
-Du erhältst Informationen über aktuelle Events (z.B. Zinsentscheidungen, 
-Regulierungen, geopolitische Spannungen) und sollst diese für das 
+Du erhältst Informationen über aktuelle Events (z.B. Zinsentscheidungen,
+Regulierungen, geopolitische Spannungen) und sollst diese für das
 Trading-System aufbereiten.
 
 ## Ausgabe-Format
@@ -105,7 +105,7 @@ severity: warning
 created_at: 2025-12-11T16:00:00+01:00
 
 summary:
-  FED erhöht Zinsen um 25bp mit hawkisher Guidance. Kurzfristig bearish für 
+  FED erhöht Zinsen um 25bp mit hawkisher Guidance. Kurzfristig bearish für
   Risk-Assets inkl. Crypto, aber Reaktion teilweise eingepreist.
 
 details:

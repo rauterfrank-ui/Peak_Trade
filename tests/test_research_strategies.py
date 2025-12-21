@@ -10,6 +10,7 @@ Diese Tests verifizieren:
 
 Phase: Research-Track Integration
 """
+
 from __future__ import annotations
 
 import pytest
@@ -22,6 +23,7 @@ from typing import Dict, Any
 # Check if FastAPI is available for web-related tests
 try:
     import fastapi
+
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
@@ -391,8 +393,7 @@ class TestAllRnDStrategiesInTiering:
             row = next((r for r in tiering["rows"] if r["id"] == strategy_id), None)
             assert row is not None, f"Strategie '{strategy_id}' nicht gefunden"
             assert row.get("owner") == "research", (
-                f"Strategie '{strategy_id}' hat owner='{row.get('owner')}', "
-                f"erwartet: 'research'"
+                f"Strategie '{strategy_id}' hat owner='{row.get('owner')}', erwartet: 'research'"
             )
 
     def test_all_rnd_strategies_have_tags(self):
@@ -425,10 +426,7 @@ class TestAllRnDStrategiesInTiering:
 
         tiering = load_strategy_tiering(include_research=True)
 
-        r_and_d_tier = next(
-            (t for t in tiering.get("tiers", []) if t["tier"] == "r_and_d"),
-            None
-        )
+        r_and_d_tier = next((t for t in tiering.get("tiers", []) if t["tier"] == "r_and_d"), None)
         assert r_and_d_tier is not None, "R&D-Tier nicht gefunden"
         assert "by_category" in r_and_d_tier, "R&D-Tier hat keine by_category Gruppierung"
 
@@ -472,7 +470,9 @@ class TestStrategyTieringAPI:
 
         # Prüfe, dass R&D-Strategien enthalten sind
         r_and_d_strategies = [r for r in tiering.get("rows", []) if r["tier"] == "r_and_d"]
-        assert len(r_and_d_strategies) >= 2, "Mindestens Armstrong und El-Karoui sollten vorhanden sein"
+        assert len(r_and_d_strategies) >= 2, (
+            "Mindestens Armstrong und El-Karoui sollten vorhanden sein"
+        )
 
         # Prüfe spezifische Strategien
         strategy_ids = [r["id"] for r in r_and_d_strategies]
@@ -553,13 +553,17 @@ class TestResearchStrategySafety:
         el_karoui = ElKarouiVolModelStrategy()
 
         # Prüfe Metadata
-        assert "NICHT FÜR LIVE" in armstrong.meta.description.upper() or \
-               "NOT FOR LIVE" in armstrong.meta.description.upper() or \
-               "RESEARCH" in armstrong.meta.description.upper()
+        assert (
+            "NICHT FÜR LIVE" in armstrong.meta.description.upper()
+            or "NOT FOR LIVE" in armstrong.meta.description.upper()
+            or "RESEARCH" in armstrong.meta.description.upper()
+        )
 
-        assert "NICHT FÜR LIVE" in el_karoui.meta.description.upper() or \
-               "NOT FOR LIVE" in el_karoui.meta.description.upper() or \
-               "RESEARCH" in el_karoui.meta.description.upper()
+        assert (
+            "NICHT FÜR LIVE" in el_karoui.meta.description.upper()
+            or "NOT FOR LIVE" in el_karoui.meta.description.upper()
+            or "RESEARCH" in el_karoui.meta.description.upper()
+        )
 
 
 # =============================================================================

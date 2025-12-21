@@ -7,6 +7,7 @@ Testet die Safety-First Logik:
 - Synthetische Daten sind erlaubt für: Backtest, Research, Paper-Trading
 - Reale und historische Daten sind grundsätzlich erlaubt
 """
+
 from __future__ import annotations
 
 import pytest

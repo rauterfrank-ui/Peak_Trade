@@ -39,9 +39,9 @@ def test_no_overlays_behaves_like_base():
 
     # Test mehrere Signale
     test_cases = [
-        (1, 50000.0, 10000.0, 10.0),   # Long
+        (1, 50000.0, 10000.0, 10.0),  # Long
         (-1, 50000.0, 10000.0, -10.0),  # Short
-        (0, 50000.0, 10000.0, 0.0),    # Flat
+        (0, 50000.0, 10000.0, 0.0),  # Flat
     ]
 
     for signal, price, equity, expected in test_cases:
@@ -49,7 +49,9 @@ def test_no_overlays_behaves_like_base():
         composite_units = composite.get_target_position(signal, price, equity)
 
         assert base_units == expected, f"Base-Sizer falsch: {base_units} != {expected}"
-        assert composite_units == expected, f"Composite-Sizer falsch: {composite_units} != {expected}"
+        assert composite_units == expected, (
+            f"Composite-Sizer falsch: {composite_units} != {expected}"
+        )
         assert base_units == composite_units, "Composite weicht von Base ab ohne Overlays!"
 
 
@@ -92,14 +94,12 @@ def test_rnd_overlay_requires_allow_flag():
                 "vol_regime_overlay": {
                     "day_vol_budget": 0.02,
                 }
-            }
+            },
         },
         "research": {
             "allow_r_and_d_overlays": False  # WICHTIG: False!
         },
-        "environment": {
-            "mode": "offline_backtest"
-        }
+        "environment": {"mode": "offline_backtest"},
     }
 
     with pytest.raises(ValueError, match="TIER=r_and_d.*ist deaktiviert"):
@@ -118,14 +118,12 @@ def test_rnd_overlay_works_with_allow_flag():
                     "day_vol_budget": 0.02,
                     "vol_window_bars": 20,
                 }
-            }
+            },
         },
         "research": {
             "allow_r_and_d_overlays": True  # ✅
         },
-        "environment": {
-            "mode": "offline_backtest"
-        }
+        "environment": {"mode": "offline_backtest"},
     }
 
     sizer = build_position_sizer_from_config(cfg)
@@ -156,14 +154,12 @@ def test_overlay_blocks_in_live():
                 "vol_regime_overlay": {
                     "day_vol_budget": 0.02,
                 }
-            }
+            },
         },
-        "research": {
-            "allow_r_and_d_overlays": True
-        },
+        "research": {"allow_r_and_d_overlays": True},
         "environment": {
             "mode": "live"  # ❌
-        }
+        },
     }
 
     with pytest.raises(ValueError, match="NICHT für Live-Trading zugelassen"):
@@ -181,14 +177,12 @@ def test_overlay_allowed_in_offline_backtest():
                 "vol_regime_overlay": {
                     "day_vol_budget": 0.02,
                 }
-            }
+            },
         },
-        "research": {
-            "allow_r_and_d_overlays": True
-        },
+        "research": {"allow_r_and_d_overlays": True},
         "environment": {
             "mode": "offline_backtest"  # ✅
-        }
+        },
     }
 
     sizer = build_position_sizer_from_config(cfg)
@@ -206,14 +200,12 @@ def test_overlay_allowed_in_research():
                 "vol_regime_overlay": {
                     "day_vol_budget": 0.02,
                 }
-            }
+            },
         },
-        "research": {
-            "allow_r_and_d_overlays": True
-        },
+        "research": {"allow_r_and_d_overlays": True},
         "environment": {
             "mode": "research"  # ✅
-        }
+        },
     }
 
     sizer = build_position_sizer_from_config(cfg)
@@ -228,7 +220,7 @@ def test_overlay_allowed_in_research():
 @pytest.mark.xfail(
     strict=True,
     reason="Aspirational: vol-targeting/DD-throttle belongs to VolRegimeOverlaySizer. "
-           "VolRegimeOverlay is intentionally lightweight (no vol/DD logic in apply()).",
+    "VolRegimeOverlay is intentionally lightweight (no vol/DD logic in apply()).",
 )
 def test_vol_regime_overlay_scales_units():
     """
@@ -318,7 +310,7 @@ def test_vol_regime_overlay_scales_units():
 @pytest.mark.xfail(
     strict=True,
     reason="Aspirational: no-lookahead shock behavior is specified for an extended overlay. "
-           "Current design keeps logic in VolRegimeOverlaySizer, not in lightweight overlay apply().",
+    "Current design keeps logic in VolRegimeOverlaySizer, not in lightweight overlay apply().",
 )
 def test_no_lookahead_shock():
     """
@@ -453,10 +445,7 @@ def test_composite_with_multiple_overlays():
     overlay1 = DummyOverlay1()
     overlay2 = DummyOverlay2()
 
-    composite = CompositePositionSizer(
-        base_sizer=base,
-        overlays=[overlay1, overlay2]
-    )
+    composite = CompositePositionSizer(base_sizer=base, overlays=[overlay1, overlay2])
 
     signal = 1
     price = 50000.0
@@ -490,20 +479,17 @@ def test_backward_compat_vol_regime_overlay_key():
                 "base_units": 10.0,
                 "day_vol_budget": 0.02,
                 "vol_window_bars": 20,
-            }
+            },
         },
-        "research": {
-            "allow_r_and_d_overlays": True
-        },
-        "environment": {
-            "mode": "offline_backtest"
-        }
+        "research": {"allow_r_and_d_overlays": True},
+        "environment": {"mode": "offline_backtest"},
     }
 
     sizer = build_position_sizer_from_config(cfg)
 
     # Sollte VolRegimeOverlaySizer sein (alte Implementierung)
     from src.core.position_sizing import VolRegimeOverlaySizer
+
     assert isinstance(sizer, VolRegimeOverlaySizer)
 
 
@@ -560,7 +546,7 @@ def test_vol_regime_overlay_warmup():
 @pytest.mark.xfail(
     strict=True,
     reason="Aspirational: dd-throttle specified for extended overlay. "
-           "Current design keeps DD logic in canonical sizer (VolRegimeOverlaySizer).",
+    "Current design keeps DD logic in canonical sizer (VolRegimeOverlaySizer).",
 )
 def test_dd_throttle():
     """
@@ -649,14 +635,10 @@ def test_config_with_overlays_list():
                     "day_vol_budget": 0.02,
                     "vol_window_bars": 20,
                 }
-            }
+            },
         },
-        "research": {
-            "allow_r_and_d_overlays": True
-        },
-        "environment": {
-            "mode": "offline_backtest"
-        }
+        "research": {"allow_r_and_d_overlays": True},
+        "environment": {"mode": "offline_backtest"},
     }
 
     sizer = build_position_sizer_from_config(cfg)
@@ -677,9 +659,7 @@ def test_config_with_empty_overlays_list():
             "units": 10.0,
             "overlays": [],  # Leer
         },
-        "environment": {
-            "mode": "offline_backtest"
-        }
+        "environment": {"mode": "offline_backtest"},
     }
 
     sizer = build_position_sizer_from_config(cfg)

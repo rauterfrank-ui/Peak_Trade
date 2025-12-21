@@ -5,6 +5,7 @@ Tests fuer Regime Detection (Phase 28)
 
 Testet VolatilityRegimeDetector und RangeCompressionRegimeDetector.
 """
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -23,6 +24,7 @@ from src.regime import (
 # ============================================================================
 # TEST DATA FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def sample_ohlcv_data() -> pd.DataFrame:
@@ -43,13 +45,16 @@ def sample_ohlcv_data() -> pd.DataFrame:
     open_prices = prices * (1 + np.random.normal(0, 0.002, n_bars))
     volume = np.random.randint(100, 1000, n_bars)
 
-    df = pd.DataFrame({
-        "open": open_prices,
-        "high": high,
-        "low": low,
-        "close": prices,
-        "volume": volume,
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": open_prices,
+            "high": high,
+            "low": low,
+            "close": prices,
+            "volume": volume,
+        },
+        index=dates,
+    )
 
     return df
 
@@ -71,23 +76,26 @@ def high_volatility_data() -> pd.DataFrame:
     for i in range(1, n_bars):
         if i < 100:
             # Niedrige Volatilitaet
-            prices[i] = prices[i-1] * (1 + np.random.normal(0, 0.002))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0, 0.002))
         else:
             # Hohe Volatilitaet
-            prices[i] = prices[i-1] * (1 + np.random.normal(0.001, 0.03))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0.001, 0.03))
 
     high = prices * 1.01
     low = prices * 0.99
     open_prices = prices * 1.001
     volume = np.random.randint(100, 1000, n_bars)
 
-    df = pd.DataFrame({
-        "open": open_prices,
-        "high": high,
-        "low": low,
-        "close": prices,
-        "volume": volume,
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": open_prices,
+            "high": high,
+            "low": low,
+            "close": prices,
+            "volume": volume,
+        },
+        index=dates,
+    )
 
     return df
 
@@ -110,13 +118,16 @@ def low_volatility_data() -> pd.DataFrame:
     open_prices = prices + np.random.normal(0, 10, n_bars)
     volume = np.random.randint(100, 1000, n_bars)
 
-    df = pd.DataFrame({
-        "open": open_prices,
-        "high": high,
-        "low": low,
-        "close": prices,
-        "volume": volume,
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": open_prices,
+            "high": high,
+            "low": low,
+            "close": prices,
+            "volume": volume,
+        },
+        index=dates,
+    )
 
     return df
 
@@ -138,6 +149,7 @@ def default_config() -> RegimeDetectorConfig:
 # ============================================================================
 # VOLATILITY REGIME DETECTOR TESTS
 # ============================================================================
+
 
 class TestVolatilityRegimeDetector:
     """Tests fuer VolatilityRegimeDetector."""
@@ -197,13 +209,16 @@ class TestVolatilityRegimeDetector:
     def test_detect_regimes_insufficient_history(self, default_config: RegimeDetectorConfig):
         """Bei zu wenig Historie werden alle Bars als 'unknown' markiert."""
         # Nur 50 Bars (weniger als min_history_bars=100)
-        short_data = pd.DataFrame({
-            "open": [100] * 50,
-            "high": [101] * 50,
-            "low": [99] * 50,
-            "close": [100] * 50,
-            "volume": [1000] * 50,
-        }, index=pd.date_range("2024-01-01", periods=50, freq="1h"))
+        short_data = pd.DataFrame(
+            {
+                "open": [100] * 50,
+                "high": [101] * 50,
+                "low": [99] * 50,
+                "close": [100] * 50,
+                "volume": [1000] * 50,
+            },
+            index=pd.date_range("2024-01-01", periods=50, freq="1h"),
+        )
 
         detector = VolatilityRegimeDetector(default_config)
         regimes = detector.detect_regimes(short_data)
@@ -228,10 +243,13 @@ class TestVolatilityRegimeDetector:
 
     def test_missing_columns_raises_error(self, default_config: RegimeDetectorConfig):
         """Fehlende Spalten loesen ValueError aus."""
-        invalid_data = pd.DataFrame({
-            "close": [100, 101, 102],
-            "volume": [1000, 1000, 1000],
-        }, index=pd.date_range("2024-01-01", periods=3, freq="1h"))
+        invalid_data = pd.DataFrame(
+            {
+                "close": [100, 101, 102],
+                "volume": [1000, 1000, 1000],
+            },
+            index=pd.date_range("2024-01-01", periods=3, freq="1h"),
+        )
 
         detector = VolatilityRegimeDetector(default_config)
 
@@ -242,6 +260,7 @@ class TestVolatilityRegimeDetector:
 # ============================================================================
 # RANGE COMPRESSION DETECTOR TESTS
 # ============================================================================
+
 
 class TestRangeCompressionRegimeDetector:
     """Tests fuer RangeCompressionRegimeDetector."""
@@ -284,6 +303,7 @@ class TestRangeCompressionRegimeDetector:
 # ============================================================================
 # FACTORY FUNCTION TESTS
 # ============================================================================
+
 
 class TestMakeRegimeDetector:
     """Tests fuer make_regime_detector Factory."""
@@ -344,6 +364,7 @@ class TestMakeRegimeDetector:
 # CONFIG TESTS
 # ============================================================================
 
+
 class TestRegimeDetectorConfig:
     """Tests fuer RegimeDetectorConfig."""
 
@@ -368,6 +389,7 @@ class TestRegimeDetectorConfig:
 
     def test_from_peak_config(self):
         """from_peak_config() liest aus PeakConfig."""
+
         # Mock PeakConfig
         class MockConfig:
             def get(self, path: str, default=None):

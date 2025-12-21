@@ -32,13 +32,16 @@ def create_test_ohlcv_data(
     returns = np.random.normal(trend, volatility, n_bars)
     prices = start_price * np.cumprod(1 + returns)
 
-    df = pd.DataFrame({
-        "open": prices * (1 + np.random.uniform(-0.005, 0.005, n_bars)),
-        "high": prices * (1 + np.abs(np.random.normal(0, 0.01, n_bars))),
-        "low": prices * (1 - np.abs(np.random.normal(0, 0.01, n_bars))),
-        "close": prices,
-        "volume": np.random.uniform(1000, 10000, n_bars),
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": prices * (1 + np.random.uniform(-0.005, 0.005, n_bars)),
+            "high": prices * (1 + np.abs(np.random.normal(0, 0.01, n_bars))),
+            "low": prices * (1 - np.abs(np.random.normal(0, 0.01, n_bars))),
+            "close": prices,
+            "volume": np.random.uniform(1000, 10000, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
@@ -151,8 +154,8 @@ class TestPortfolioContext:
 
         # Gewichte werden in __post_init__ berechnet
         assert context.current_weights is not None
-        assert abs(context.current_weights["BTC/EUR"] - 5000/8000) < 0.001
-        assert abs(context.current_weights["ETH/EUR"] - 3000/8000) < 0.001
+        assert abs(context.current_weights["BTC/EUR"] - 5000 / 8000) < 0.001
+        assert abs(context.current_weights["ETH/EUR"] - 3000 / 8000) < 0.001
 
     def test_context_helper_methods(self):
         """Test: Helper-Methoden."""
@@ -211,10 +214,12 @@ class TestPortfolioStrategyWithData:
         # Returns berechnen
         btc_returns = btc_data["close"].pct_change().dropna()
         eth_returns = eth_data["close"].pct_change().dropna()
-        returns_history = pd.DataFrame({
-            "BTC/EUR": btc_returns.values,
-            "ETH/EUR": eth_returns.values,
-        })
+        returns_history = pd.DataFrame(
+            {
+                "BTC/EUR": btc_returns.values,
+                "ETH/EUR": eth_returns.values,
+            }
+        )
 
         config = PortfolioConfig(
             enabled=True,
@@ -253,10 +258,12 @@ class TestPortfolioStrategyWithData:
             btc_vol = 0.02 + 0.001 * i
             eth_vol = 0.02
 
-            returns = pd.DataFrame({
-                "BTC/EUR": np.random.normal(0, btc_vol, i),
-                "ETH/EUR": np.random.normal(0, eth_vol, i),
-            })
+            returns = pd.DataFrame(
+                {
+                    "BTC/EUR": np.random.normal(0, btc_vol, i),
+                    "ETH/EUR": np.random.normal(0, eth_vol, i),
+                }
+            )
 
             context = PortfolioContext(
                 timestamp=pd.Timestamp("2024-01-01") + pd.Timedelta(hours=i),

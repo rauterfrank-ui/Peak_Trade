@@ -8,18 +8,18 @@ Supports multiple vector database backends:
 
 Usage:
     from src.knowledge.vector_db import VectorDBFactory
-    
+
     db = VectorDBFactory.create("chroma", config={
         "persist_directory": "./data/chroma_db"
     })
-    
+
     # Add documents
     db.add_documents(
         documents=["Market analysis...", "Trading strategy..."],
         metadatas=[{"source": "research"}, {"source": "strategy"}],
         ids=["doc1", "doc2"]
     )
-    
+
     # Search
     results = db.search("What is the best momentum strategy?", top_k=5)
 """
@@ -82,20 +82,14 @@ class ChromaDBAdapter(VectorDBInterface):
         try:
             import chromadb
         except ImportError:
-            raise ImportError(
-                "chromadb not installed. Install with: pip install chromadb"
-            )
+            raise ImportError("chromadb not installed. Install with: pip install chromadb")
 
         self.persist_directory = config.get("persist_directory", "./data/chroma_db")
         self.collection_name = config.get("collection_name", "peak_trade")
 
         self.client = chromadb.PersistentClient(path=self.persist_directory)
-        self.collection = self.client.get_or_create_collection(
-            name=self.collection_name
-        )
-        logger.info(
-            f"ChromaDB initialized: {self.collection_name} at {self.persist_directory}"
-        )
+        self.collection = self.client.get_or_create_collection(name=self.collection_name)
+        logger.info(f"ChromaDB initialized: {self.collection_name} at {self.persist_directory}")
 
     def add_documents(
         self,
@@ -114,20 +108,14 @@ class ChromaDBAdapter(VectorDBInterface):
         self, query: str, top_k: int = 5, filter_dict: Optional[Dict[str, Any]] = None
     ) -> List[Tuple[str, float, Dict[str, Any]]]:
         """Search ChromaDB for similar documents."""
-        results = self.collection.query(
-            query_texts=[query], n_results=top_k, where=filter_dict
-        )
+        results = self.collection.query(query_texts=[query], n_results=top_k, where=filter_dict)
 
         # Format results
         formatted_results = []
         if results["documents"] and len(results["documents"]) > 0:
             for i, doc in enumerate(results["documents"][0]):
-                score = (
-                    results["distances"][0][i] if results["distances"] else 0.0
-                )
-                metadata = (
-                    results["metadatas"][0][i] if results["metadatas"] else {}
-                )
+                score = results["distances"][0][i] if results["distances"] else 0.0
+                metadata = results["metadatas"][0][i] if results["metadatas"] else {}
                 formatted_results.append((doc, score, metadata))
 
         return formatted_results
@@ -205,9 +193,7 @@ class QdrantAdapter(VectorDBInterface):
         """Delete documents from Qdrant."""
         from qdrant_client.models import PointIdsList
 
-        self.client.delete(
-            collection_name=self.collection_name, points_selector=PointIdsList(ids)
-        )
+        self.client.delete(collection_name=self.collection_name, points_selector=PointIdsList(ids))
         logger.info(f"Deleted {len(ids)} documents from Qdrant")
 
     def clear(self) -> None:
@@ -247,9 +233,7 @@ class PineconeAdapter(VectorDBInterface):
 
         # Create index if it doesn't exist
         if self.index_name not in pinecone.list_indexes():
-            pinecone.create_index(
-                name=self.index_name, dimension=384, metric="cosine"
-            )
+            pinecone.create_index(name=self.index_name, dimension=384, metric="cosine")
 
         self.index = pinecone.Index(self.index_name)
         logger.info(f"Pinecone initialized: {self.index_name}")
@@ -307,8 +291,7 @@ class VectorDBFactory:
         """
         if db_type not in cls._adapters:
             raise ValueError(
-                f"Unknown database type: {db_type}. "
-                f"Available: {list(cls._adapters.keys())}"
+                f"Unknown database type: {db_type}. Available: {list(cls._adapters.keys())}"
             )
 
         adapter_class = cls._adapters[db_type]

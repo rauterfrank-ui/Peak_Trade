@@ -165,4 +165,3 @@ Siehe **`docs/ops/WORKFLOW_SCRIPTS.md`** für:
 ---
 
 _Dokumentiert am 2025-12-21 als Teil des Ops-Automation-Infrastruktur-Buildouts._
-

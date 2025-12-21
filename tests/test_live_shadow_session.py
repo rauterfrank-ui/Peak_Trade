@@ -15,6 +15,7 @@ Test-Kategorien:
 
 WICHTIG: Alle Tests laufen ohne Netzwerk-Zugriff.
 """
+
 from __future__ import annotations
 
 import pytest
@@ -434,11 +435,16 @@ class TestShadowPaperSession:
         pipeline = ExecutionPipeline.for_shadow()
         risk_limits = LiveRiskLimits(
             LiveRiskConfig(
-                enabled=False, base_currency="EUR",
-                max_daily_loss_abs=None, max_daily_loss_pct=None,
-                max_total_exposure_notional=None, max_symbol_exposure_notional=None,
-                max_open_positions=None, max_order_notional=None,
-                block_on_violation=True, use_experiments_for_daily_pnl=False,
+                enabled=False,
+                base_currency="EUR",
+                max_daily_loss_abs=None,
+                max_daily_loss_pct=None,
+                max_total_exposure_notional=None,
+                max_symbol_exposure_notional=None,
+                max_open_positions=None,
+                max_order_notional=None,
+                block_on_violation=True,
+                use_experiments_for_daily_pnl=False,
             )
         )
 
@@ -468,11 +474,16 @@ class TestShadowPaperSession:
         pipeline = ExecutionPipeline.for_shadow()
         risk_limits = LiveRiskLimits(
             LiveRiskConfig(
-                enabled=False, base_currency="EUR",
-                max_daily_loss_abs=None, max_daily_loss_pct=None,
-                max_total_exposure_notional=None, max_symbol_exposure_notional=None,
-                max_open_positions=None, max_order_notional=None,
-                block_on_violation=True, use_experiments_for_daily_pnl=False,
+                enabled=False,
+                base_currency="EUR",
+                max_daily_loss_abs=None,
+                max_daily_loss_pct=None,
+                max_total_exposure_notional=None,
+                max_symbol_exposure_notional=None,
+                max_open_positions=None,
+                max_order_notional=None,
+                block_on_violation=True,
+                use_experiments_for_daily_pnl=False,
             )
         )
 
@@ -506,11 +517,16 @@ class TestShadowPaperSession:
         pipeline = ExecutionPipeline.for_shadow()
         risk_limits = LiveRiskLimits(
             LiveRiskConfig(
-                enabled=False, base_currency="EUR",
-                max_daily_loss_abs=None, max_daily_loss_pct=None,
-                max_total_exposure_notional=None, max_symbol_exposure_notional=None,
-                max_open_positions=None, max_order_notional=None,
-                block_on_violation=True, use_experiments_for_daily_pnl=False,
+                enabled=False,
+                base_currency="EUR",
+                max_daily_loss_abs=None,
+                max_daily_loss_pct=None,
+                max_total_exposure_notional=None,
+                max_symbol_exposure_notional=None,
+                max_open_positions=None,
+                max_order_notional=None,
+                block_on_violation=True,
+                use_experiments_for_daily_pnl=False,
             )
         )
 
@@ -540,11 +556,16 @@ class TestShadowPaperSession:
         pipeline = ExecutionPipeline.for_shadow()
         risk_limits = LiveRiskLimits(
             LiveRiskConfig(
-                enabled=False, base_currency="EUR",
-                max_daily_loss_abs=None, max_daily_loss_pct=None,
-                max_total_exposure_notional=None, max_symbol_exposure_notional=None,
-                max_open_positions=None, max_order_notional=None,
-                block_on_violation=True, use_experiments_for_daily_pnl=False,
+                enabled=False,
+                base_currency="EUR",
+                max_daily_loss_abs=None,
+                max_daily_loss_pct=None,
+                max_total_exposure_notional=None,
+                max_symbol_exposure_notional=None,
+                max_open_positions=None,
+                max_order_notional=None,
+                block_on_violation=True,
+                use_experiments_for_daily_pnl=False,
             )
         )
 
@@ -722,11 +743,16 @@ class TestSignalToOrderFlow:
         pipeline = ExecutionPipeline.for_shadow()
         risk_limits = LiveRiskLimits(
             LiveRiskConfig(
-                enabled=False, base_currency="EUR",
-                max_daily_loss_abs=None, max_daily_loss_pct=None,
-                max_total_exposure_notional=None, max_symbol_exposure_notional=None,
-                max_open_positions=None, max_order_notional=None,
-                block_on_violation=True, use_experiments_for_daily_pnl=False,
+                enabled=False,
+                base_currency="EUR",
+                max_daily_loss_abs=None,
+                max_daily_loss_pct=None,
+                max_total_exposure_notional=None,
+                max_symbol_exposure_notional=None,
+                max_open_positions=None,
+                max_order_notional=None,
+                block_on_violation=True,
+                use_experiments_for_daily_pnl=False,
             )
         )
 
@@ -763,11 +789,16 @@ class TestSignalToOrderFlow:
         pipeline = ExecutionPipeline.for_shadow()
         risk_limits = LiveRiskLimits(
             LiveRiskConfig(
-                enabled=False, base_currency="EUR",
-                max_daily_loss_abs=None, max_daily_loss_pct=None,
-                max_total_exposure_notional=None, max_symbol_exposure_notional=None,
-                max_open_positions=None, max_order_notional=None,
-                block_on_violation=True, use_experiments_for_daily_pnl=False,
+                enabled=False,
+                base_currency="EUR",
+                max_daily_loss_abs=None,
+                max_daily_loss_pct=None,
+                max_total_exposure_notional=None,
+                max_symbol_exposure_notional=None,
+                max_open_positions=None,
+                max_order_notional=None,
+                block_on_violation=True,
+                use_experiments_for_daily_pnl=False,
             )
         )
 
@@ -806,11 +837,16 @@ class TestCallbacks:
         pipeline = ExecutionPipeline.for_shadow()
         risk_limits = LiveRiskLimits(
             LiveRiskConfig(
-                enabled=False, base_currency="EUR",
-                max_daily_loss_abs=None, max_daily_loss_pct=None,
-                max_total_exposure_notional=None, max_symbol_exposure_notional=None,
-                max_open_positions=None, max_order_notional=None,
-                block_on_violation=True, use_experiments_for_daily_pnl=False,
+                enabled=False,
+                base_currency="EUR",
+                max_daily_loss_abs=None,
+                max_daily_loss_pct=None,
+                max_total_exposure_notional=None,
+                max_symbol_exposure_notional=None,
+                max_open_positions=None,
+                max_order_notional=None,
+                block_on_violation=True,
+                use_experiments_for_daily_pnl=False,
             )
         )
 
@@ -857,11 +893,16 @@ class TestEdgeCases:
         pipeline = ExecutionPipeline.for_shadow()
         risk_limits = LiveRiskLimits(
             LiveRiskConfig(
-                enabled=False, base_currency="EUR",
-                max_daily_loss_abs=None, max_daily_loss_pct=None,
-                max_total_exposure_notional=None, max_symbol_exposure_notional=None,
-                max_open_positions=None, max_order_notional=None,
-                block_on_violation=True, use_experiments_for_daily_pnl=False,
+                enabled=False,
+                base_currency="EUR",
+                max_daily_loss_abs=None,
+                max_daily_loss_pct=None,
+                max_total_exposure_notional=None,
+                max_symbol_exposure_notional=None,
+                max_open_positions=None,
+                max_order_notional=None,
+                block_on_violation=True,
+                use_experiments_for_daily_pnl=False,
             )
         )
 
@@ -892,11 +933,16 @@ class TestEdgeCases:
         pipeline = ExecutionPipeline.for_shadow()
         risk_limits = LiveRiskLimits(
             LiveRiskConfig(
-                enabled=False, base_currency="EUR",
-                max_daily_loss_abs=None, max_daily_loss_pct=None,
-                max_total_exposure_notional=None, max_symbol_exposure_notional=None,
-                max_open_positions=None, max_order_notional=None,
-                block_on_violation=True, use_experiments_for_daily_pnl=False,
+                enabled=False,
+                base_currency="EUR",
+                max_daily_loss_abs=None,
+                max_daily_loss_pct=None,
+                max_total_exposure_notional=None,
+                max_symbol_exposure_notional=None,
+                max_open_positions=None,
+                max_order_notional=None,
+                block_on_violation=True,
+                use_experiments_for_daily_pnl=False,
             )
         )
 

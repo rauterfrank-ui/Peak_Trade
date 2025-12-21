@@ -7,6 +7,7 @@ Tests für:
 - LiveRiskLimits.evaluate_portfolio()
 - Portfolio-Level Risk-Checks
 """
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -199,7 +200,9 @@ def test_evaluate_portfolio_ok_case(
     result = risk_limits.evaluate_portfolio(sample_portfolio_snapshot)
 
     assert result.allowed is True
-    assert len(result.reasons) == 0 or all("exceeded" not in r and "reached" not in r for r in result.reasons)
+    assert len(result.reasons) == 0 or all(
+        "exceeded" not in r and "reached" not in r for r in result.reasons
+    )
 
     # Prüfe Metrics
     assert result.metrics["portfolio_total_notional"] == pytest.approx(18250.0, abs=0.01)
@@ -315,8 +318,3 @@ def test_evaluate_portfolio_empty_portfolio():
     assert result.allowed is True
     assert result.metrics["portfolio_num_open_positions"] == 0
     assert result.metrics["portfolio_total_notional"] == 0.0
-
-
-
-
-

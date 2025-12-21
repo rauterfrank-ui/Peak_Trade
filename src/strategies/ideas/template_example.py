@@ -10,6 +10,7 @@ Workflow:
 4. Iterieren bis zufrieden
 5. Optional: in die Haupt-Registry übernehmen
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -124,15 +125,12 @@ class IdeaExampleStrategy(BaseStrategy):
         # Validierung
         if self.price_col not in data.columns:
             raise ValueError(
-                f"Spalte '{self.price_col}' nicht in DataFrame. "
-                f"Verfügbar: {list(data.columns)}"
+                f"Spalte '{self.price_col}' nicht in DataFrame. Verfügbar: {list(data.columns)}"
             )
 
         min_bars = self.param1  # Beispiel: Mindestens param1 Bars benötigt
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mindestens {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mindestens {min_bars} Bars, habe nur {len(data)}")
 
         # Kopie für Berechnungen
         df = data.copy()
@@ -183,6 +181,7 @@ class IdeaExampleStrategy(BaseStrategy):
 # ============================================================================
 # HELPER (Optional)
 # ============================================================================
+
 
 def create_strategy_from_params(**kwargs) -> IdeaExampleStrategy:
     """

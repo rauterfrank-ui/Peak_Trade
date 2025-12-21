@@ -189,11 +189,11 @@ def build_trigger_training_report(stats):
             # ...
         },
     ]
-    
+
     # Processing
     rows = build_psychology_heatmap_rows(psychology_raw)
     serialized = serialize_psychology_heatmap_rows(rows)
-    
+
     return {
         "psychology_heatmap_rows": serialized,
         # ... restlicher Context
@@ -209,7 +209,7 @@ def psychology():
     rows = build_psychology_heatmap_rows(data)
     serialized = serialize_psychology_heatmap_rows(rows)
     stats = calculate_cluster_statistics(rows)
-    
+
     return render_template(
         "trigger_training_psychology.html",
         heatmap_rows=serialized,

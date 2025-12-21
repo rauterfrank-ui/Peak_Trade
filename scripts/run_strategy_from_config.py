@@ -49,7 +49,7 @@ def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
 
     # Start-Zeitpunkt
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation mit Trend, Oszillation und Noise
     base_price = 50000
@@ -66,13 +66,16 @@ def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
     close_prices = base_price + trend + cycle + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * 0.002),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
@@ -80,13 +83,13 @@ def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
 def print_report(result, strategy_name: str):
     """Druckt Performance-Report."""
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(f"BACKTEST PERFORMANCE REPORT - {strategy_name.upper()}")
-    print("="*70)
+    print("=" * 70)
 
     # Equity-Metriken
     print("\n📊 EQUITY METRIKEN")
-    print("-"*70)
+    print("-" * 70)
     start_equity = result.equity_curve.iloc[0]
     end_equity = result.equity_curve.iloc[-1]
     print(f"Start Equity:      ${start_equity:,.2f}")
@@ -96,23 +99,23 @@ def print_report(result, strategy_name: str):
 
     # Risk-Adjusted (inkl. CAGR)
     print("\n📈 RISK-ADJUSTED METRIKEN")
-    print("-"*70)
-    if 'cagr' in result.stats:
+    print("-" * 70)
+    if "cagr" in result.stats:
         print(f"CAGR:              {result.stats['cagr']:>7.2%}")
     print(f"Sharpe Ratio:      {result.stats['sharpe']:>7.2f}")
 
     # Trade-Stats
     print("\n🎯 TRADE STATISTIKEN")
-    print("-"*70)
+    print("-" * 70)
     print(f"Total Trades:      {result.stats['total_trades']:>7}")
     print(f"Win Rate:          {result.stats['win_rate']:>7.2%}")
     print(f"Profit Factor:     {result.stats['profit_factor']:>7.2f}")
-    blocked_trades = result.stats.get('blocked_trades', result.metadata.get('blocked_trades', 0))
+    blocked_trades = result.stats.get("blocked_trades", result.metadata.get("blocked_trades", 0))
     print(f"Blocked Trades:    {blocked_trades:>7}")
 
     # Live-Trading-Validierung
     print("\n🔒 LIVE-TRADING-VALIDIERUNG")
-    print("-"*70)
+    print("-" * 70)
 
     passed, warnings = validate_for_live_trading(result.stats)
 
@@ -123,7 +126,7 @@ def print_report(result, strategy_name: str):
         for w in warnings:
             print(f"  - {w}")
 
-    print("\n" + "="*70 + "\n")
+    print("\n" + "=" * 70 + "\n")
 
 
 def parse_args():
@@ -144,40 +147,36 @@ Examples:
 
   # List all available strategies
   python scripts/run_strategy_from_config.py --list-strategies
-        """
+        """,
     )
 
     parser.add_argument(
         "--strategy",
         type=str,
         default=None,
-        help="Strategy key (overrides config.toml). Use --list-strategies to see available options."
+        help="Strategy key (overrides config.toml). Use --list-strategies to see available options.",
     )
 
     parser.add_argument(
         "--bars",
         type=int,
         default=200,
-        help="Number of bars to generate for backtest (default: 200)"
+        help="Number of bars to generate for backtest (default: 200)",
     )
 
     parser.add_argument(
-        "--list-strategies",
-        action="store_true",
-        help="List all available strategies and exit"
+        "--list-strategies", action="store_true", help="List all available strategies and exit"
     )
 
     parser.add_argument(
         "--run-name",
         type=str,
         default=None,
-        help="Optional name for this backtest run (for reports)"
+        help="Optional name for this backtest run (for reports)",
     )
 
     parser.add_argument(
-        "--no-report",
-        action="store_true",
-        help="If set, no report files will be written"
+        "--no-report", action="store_true", help="If set, no report files will be written"
     )
 
     return parser.parse_args()
@@ -192,12 +191,12 @@ def main():
     # List strategies if requested
     if args.list_strategies:
         print("\n🚀 Peak_Trade Strategy Registry")
-        print("="*70)
+        print("=" * 70)
         list_strategies(verbose=True)
         return
 
     print("\n🚀 Peak_Trade Generic Strategy Runner")
-    print("="*70)
+    print("=" * 70)
 
     # Config laden
     print("\n⚙️  Lade Konfiguration...")
@@ -282,14 +281,9 @@ def main():
         "stop_pct": stop_pct,
     }
 
-    engine = BacktestEngine(
-        core_position_sizer=position_sizer,
-        risk_manager=risk_manager
-    )
+    engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
-        df=df,
-        strategy_signal_fn=strategy_signal_fn,
-        strategy_params=strategy_params
+        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
     )
 
     # Report drucken
@@ -298,15 +292,21 @@ def main():
     # Sample Trades anzeigen
     if result.trades is not None and len(result.trades) > 0:
         print("📋 Sample Trades (erste 5):")
-        print("-"*70)
+        print("-" * 70)
         for i, row in result.trades.head(5).iterrows():
-            print(f"{i+1}. Entry: {row['entry_time'].strftime('%Y-%m-%d %H:%M')} @ ${row['entry_price']:,.2f}")
-            print(f"   Exit:  {row['exit_time'].strftime('%Y-%m-%d %H:%M')} @ ${row['exit_price']:,.2f}")
+            print(
+                f"{i + 1}. Entry: {row['entry_time'].strftime('%Y-%m-%d %H:%M')} @ ${row['entry_price']:,.2f}"
+            )
+            print(
+                f"   Exit:  {row['exit_time'].strftime('%Y-%m-%d %H:%M')} @ ${row['exit_price']:,.2f}"
+            )
             print(f"   PnL:   ${row['pnl']:,.2f} ({row['exit_reason']})")
             print()
     else:
         print("📋 Keine Trades generiert")
-        blocked_trades = result.stats.get('blocked_trades', result.metadata.get('blocked_trades', 0))
+        blocked_trades = result.stats.get(
+            "blocked_trades", result.metadata.get("blocked_trades", 0)
+        )
         print(f"   (Blocked Trades: {blocked_trades})")
 
     # Reports speichern (falls nicht deaktiviert)

@@ -4,6 +4,7 @@ Tests fuer scripts/report_live_sessions.py CLI (Phase 81)
 
 Testet die CLI zum Generieren von Live-Session-Reports.
 """
+
 from __future__ import annotations
 
 import json
@@ -108,9 +109,7 @@ def test_cli_default_args():
 
     # Wir testen indirekt durch Mocking
     with patch("sys.argv", ["report_live_sessions.py", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             mock_list.return_value = []
             result = main()
             # Sollte erfolgreich durchlaufen (keine Sessions gefunden ist OK)
@@ -131,11 +130,13 @@ def test_cli_run_type_filter(sample_records: List[LiveSessionRecord]):
     """Test: --run-type Filter wird korrekt angewendet."""
     from scripts.report_live_sessions import main
 
-    with patch("sys.argv", ["report_live_sessions.py", "--run-type", "live_session_shadow", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
-            mock_list.return_value = [r for r in sample_records if r.run_type == "live_session_shadow"]
+    with patch(
+        "sys.argv", ["report_live_sessions.py", "--run-type", "live_session_shadow", "--stdout"]
+    ):
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
+            mock_list.return_value = [
+                r for r in sample_records if r.run_type == "live_session_shadow"
+            ]
             result = main()
             assert result == 0
             mock_list.assert_called_once_with(
@@ -150,9 +151,7 @@ def test_cli_status_filter(sample_records: List[LiveSessionRecord]):
     from scripts.report_live_sessions import main
 
     with patch("sys.argv", ["report_live_sessions.py", "--status", "completed", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             mock_list.return_value = [r for r in sample_records if r.status == "completed"]
             result = main()
             assert result == 0
@@ -168,9 +167,7 @@ def test_cli_limit_filter(sample_records: List[LiveSessionRecord]):
     from scripts.report_live_sessions import main
 
     with patch("sys.argv", ["report_live_sessions.py", "--limit", "2", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             mock_list.return_value = sample_records[:2]
             result = main()
             assert result == 0
@@ -187,11 +184,18 @@ def test_cli_combined_filters(sample_records: List[LiveSessionRecord]):
 
     with patch(
         "sys.argv",
-        ["report_live_sessions.py", "--run-type", "live_session_shadow", "--status", "completed", "--limit", "5", "--stdout"],
+        [
+            "report_live_sessions.py",
+            "--run-type",
+            "live_session_shadow",
+            "--status",
+            "completed",
+            "--limit",
+            "5",
+            "--stdout",
+        ],
     ):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             mock_list.return_value = [sample_records[0]]
             result = main()
             assert result == 0
@@ -207,14 +211,14 @@ def test_cli_combined_filters(sample_records: List[LiveSessionRecord]):
 # =============================================================================
 
 
-def test_cli_output_format_markdown(sample_records: List[LiveSessionRecord], tmp_path: Path, capsys):
+def test_cli_output_format_markdown(
+    sample_records: List[LiveSessionRecord], tmp_path: Path, capsys
+):
     """Test: --output-format markdown generiert Markdown."""
     from scripts.report_live_sessions import main
 
     with patch("sys.argv", ["report_live_sessions.py", "--output-format", "markdown", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             with patch(
                 "src.experiments.live_session_registry.render_sessions_markdown"
             ) as mock_render:
@@ -233,12 +237,8 @@ def test_cli_output_format_html(sample_records: List[LiveSessionRecord], capsys)
     from scripts.report_live_sessions import main
 
     with patch("sys.argv", ["report_live_sessions.py", "--output-format", "html", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
-            with patch(
-                "src.experiments.live_session_registry.render_sessions_html"
-            ) as mock_render:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
+            with patch("src.experiments.live_session_registry.render_sessions_html") as mock_render:
                 mock_list.return_value = sample_records
                 mock_render.return_value = "<html><body>Test HTML</body></html>"
                 result = main()
@@ -255,14 +255,16 @@ def test_cli_output_format_both(sample_records: List[LiveSessionRecord], temp_ou
 
     with patch(
         "sys.argv",
-        ["report_live_sessions.py", "--output-format", "both", "--output-dir", str(temp_output_dir)],
+        [
+            "report_live_sessions.py",
+            "--output-format",
+            "both",
+            "--output-dir",
+            str(temp_output_dir),
+        ],
     ):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
-            with patch(
-                "src.experiments.live_session_registry.render_sessions_markdown"
-            ) as mock_md:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
+            with patch("src.experiments.live_session_registry.render_sessions_markdown") as mock_md:
                 with patch(
                     "src.experiments.live_session_registry.render_sessions_html"
                 ) as mock_html:
@@ -291,12 +293,8 @@ def test_cli_summary_only_markdown(sample_records: List[LiveSessionRecord], caps
     from scripts.report_live_sessions import main
 
     with patch("sys.argv", ["report_live_sessions.py", "--summary-only", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
-            with patch(
-                "src.experiments.live_session_registry.get_session_summary"
-            ) as mock_summary:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
+            with patch("src.experiments.live_session_registry.get_session_summary") as mock_summary:
                 mock_list.return_value = sample_records
                 mock_summary.return_value = {
                     "num_sessions": 3,
@@ -317,13 +315,12 @@ def test_cli_summary_only_html(sample_records: List[LiveSessionRecord], capsys):
     """Test: --summary-only mit HTML-Format."""
     from scripts.report_live_sessions import main
 
-    with patch("sys.argv", ["report_live_sessions.py", "--summary-only", "--output-format", "html", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
-            with patch(
-                "src.experiments.live_session_registry.get_session_summary"
-            ) as mock_summary:
+    with patch(
+        "sys.argv",
+        ["report_live_sessions.py", "--summary-only", "--output-format", "html", "--stdout"],
+    ):
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
+            with patch("src.experiments.live_session_registry.get_session_summary") as mock_summary:
                 mock_list.return_value = sample_records
                 mock_summary.return_value = {
                     "num_sessions": 3,
@@ -350,9 +347,7 @@ def test_cli_output_dir(sample_records: List[LiveSessionRecord], temp_output_dir
         "sys.argv",
         ["report_live_sessions.py", "--output-dir", str(temp_output_dir)],
     ):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             with patch(
                 "src.experiments.live_session_registry.render_sessions_markdown"
             ) as mock_render:
@@ -378,9 +373,7 @@ def test_cli_output_dir_creates_if_missing(sample_records: List[LiveSessionRecor
         "sys.argv",
         ["report_live_sessions.py", "--output-dir", str(new_dir), "--stdout"],
     ):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             with patch(
                 "src.experiments.live_session_registry.render_sessions_markdown"
             ) as mock_render:
@@ -403,9 +396,7 @@ def test_cli_no_sessions_found(capsys):
     from scripts.report_live_sessions import main
 
     with patch("sys.argv", ["report_live_sessions.py", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             mock_list.return_value = []
             result = main()
             assert result == 0
@@ -422,9 +413,7 @@ def test_cli_no_sessions_writes_empty_report(temp_output_dir: Path):
         "sys.argv",
         ["report_live_sessions.py", "--output-dir", str(temp_output_dir)],
     ):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             mock_list.return_value = []
             result = main()
             assert result == 0
@@ -581,9 +570,7 @@ def test_cli_log_level_debug():
     from scripts.report_live_sessions import main
 
     with patch("sys.argv", ["report_live_sessions.py", "--log-level", "DEBUG", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             mock_list.return_value = []
             result = main()
             assert result == 0
@@ -594,9 +581,7 @@ def test_cli_log_level_warning():
     from scripts.report_live_sessions import main
 
     with patch("sys.argv", ["report_live_sessions.py", "--log-level", "WARNING", "--stdout"]):
-        with patch(
-            "src.experiments.live_session_registry.list_session_records"
-        ) as mock_list:
+        with patch("src.experiments.live_session_registry.list_session_records") as mock_list:
             mock_list.return_value = []
             result = main()
             assert result == 0

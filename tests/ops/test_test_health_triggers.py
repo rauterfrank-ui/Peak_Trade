@@ -199,9 +199,7 @@ class TestEvaluateTriggers:
 
         violations = evaluate_triggers(triggers, stats)
         # Nur min_total_runs-Violation (falls konfiguriert), keine fail_rate
-        fail_rate_violations = [
-            v for v in violations if v.trigger_name == "max_fail_rate"
-        ]
+        fail_rate_violations = [v for v in violations if v.trigger_name == "max_fail_rate"]
         assert len(fail_rate_violations) == 0
 
 

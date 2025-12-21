@@ -24,6 +24,7 @@ Usage:
     # Nur bestimmte Tags
     python scripts/run_scheduler.py --config config/scheduler/jobs.toml --include-tags daily,prod
 """
+
 from __future__ import annotations
 
 import argparse
@@ -51,12 +52,14 @@ from src.scheduler.runner import update_job_schedule_after_run
 # Optionale Imports für Registry & Notifications
 try:
     from src.core.experiments import log_scheduler_job_run
+
     REGISTRY_AVAILABLE = True
 except ImportError:
     REGISTRY_AVAILABLE = False
 
 try:
     from src.notifications import Alert, ConsoleNotifier, FileNotifier, CombinedNotifier
+
     NOTIFICATIONS_AVAILABLE = True
 except ImportError:
     NOTIFICATIONS_AVAILABLE = False
@@ -91,72 +94,51 @@ Examples:
 
   # Nur daily-Jobs
   python scripts/run_scheduler.py --include-tags daily
-        """
+        """,
     )
 
     parser.add_argument(
         "--config",
         type=str,
         default="config/scheduler/jobs.toml",
-        help="Pfad zur Job-Config (default: config/scheduler/jobs.toml)"
+        help="Pfad zur Job-Config (default: config/scheduler/jobs.toml)",
     )
 
     parser.add_argument(
         "--poll-interval",
         type=int,
         default=30,
-        help="Zeit in Sekunden zwischen Checks (default: 30)"
+        help="Zeit in Sekunden zwischen Checks (default: 30)",
     )
 
     parser.add_argument(
-        "--once",
-        action="store_true",
-        help="Nur einmal fällige Jobs ausführen, dann beenden"
+        "--once", action="store_true", help="Nur einmal fällige Jobs ausführen, dann beenden"
     )
 
     parser.add_argument(
         "--include-tags",
         type=str,
         default=None,
-        help="Nur Jobs mit diesen Tags ausführen (komma-separiert)"
+        help="Nur Jobs mit diesen Tags ausführen (komma-separiert)",
     )
 
     parser.add_argument(
         "--exclude-tags",
         type=str,
         default=None,
-        help="Jobs mit diesen Tags ausschließen (komma-separiert)"
+        help="Jobs mit diesen Tags ausschließen (komma-separiert)",
     )
 
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Nur anzeigen was ausgeführt würde"
-    )
+    parser.add_argument("--dry-run", action="store_true", help="Nur anzeigen was ausgeführt würde")
+
+    parser.add_argument("--verbose", "-v", action="store_true", help="Ausführliche Ausgabe")
+
+    parser.add_argument("--no-registry", action="store_true", help="Kein Logging in die Registry")
+
+    parser.add_argument("--no-alerts", action="store_true", help="Keine Alerts senden")
 
     parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Ausführliche Ausgabe"
-    )
-
-    parser.add_argument(
-        "--no-registry",
-        action="store_true",
-        help="Kein Logging in die Registry"
-    )
-
-    parser.add_argument(
-        "--no-alerts",
-        action="store_true",
-        help="Keine Alerts senden"
-    )
-
-    parser.add_argument(
-        "--alert-log",
-        type=str,
-        default="logs/scheduler_alerts.log",
-        help="Pfad zur Alert-Logdatei"
+        "--alert-log", type=str, default="logs/scheduler_alerts.log", help="Pfad zur Alert-Logdatei"
     )
 
     return parser.parse_args(argv)

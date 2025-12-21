@@ -109,9 +109,7 @@ class TestTimeSeriesDB:
         ts_db.write_ticks("BTC/USD", data, tags={"source": "test"})
 
         # Query ticks
-        results = ts_db.query_ticks(
-            "BTC/USD", start_time="2024-01-01", end_time="2024-01-02"
-        )
+        results = ts_db.query_ticks("BTC/USD", start_time="2024-01-01", end_time="2024-01-02")
         assert len(results) > 0
         assert "price" in results.columns
         assert "volume" in results.columns
@@ -135,9 +133,7 @@ class TestTimeSeriesDB:
         ts_db.write_portfolio_history(data, tags={"portfolio": "test"})
 
         # Query portfolio history
-        results = ts_db.query_portfolio_history(
-            start_time="2024-01-01", end_time="2024-01-10"
-        )
+        results = ts_db.query_portfolio_history(start_time="2024-01-01", end_time="2024-01-10")
         assert len(results) > 0
         assert "equity" in results.columns
 
@@ -204,9 +200,7 @@ class TestRAGPipeline:
 
             # Get recommendation
             market_conditions = {"regime": "ranging", "volatility": "low"}
-            recommendation = strategy_rag.recommend_strategy(
-                market_conditions, top_k=1
-            )
+            recommendation = strategy_rag.recommend_strategy(market_conditions, top_k=1)
 
             assert "market_conditions" in recommendation
             assert "recommendations" in recommendation

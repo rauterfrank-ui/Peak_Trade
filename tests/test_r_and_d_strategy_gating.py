@@ -13,6 +13,7 @@ Testet außerdem Stub-Verhalten der Research-Strategien:
 - VolRegimeOverlay: generate_signals() → NotImplementedError
 - BouchaudMicrostructure: generate_signals() → NotImplementedError
 """
+
 from __future__ import annotations
 
 import pandas as pd

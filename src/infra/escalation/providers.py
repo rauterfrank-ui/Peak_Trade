@@ -7,6 +7,7 @@ Provider-Implementierungen für Eskalations-Dienste.
 
 Phase 85: Nur Stubs, keine echten API-Calls by default.
 """
+
 from __future__ import annotations
 
 import json
@@ -159,8 +160,7 @@ class PagerDutyLikeProviderStub:
         self.sent_payloads.append(payload)
 
         self._logger.info(
-            f"[PAGERDUTY-STUB] Would send to '{target.name}': "
-            f"[{event.severity}] {event.summary}"
+            f"[PAGERDUTY-STUB] Would send to '{target.name}': [{event.severity}] {event.summary}"
         )
         self._logger.debug(f"[PAGERDUTY-STUB] Payload: {json.dumps(payload, indent=2)}")
 
@@ -172,9 +172,7 @@ class PagerDutyLikeProviderStub:
             # Hier würde in späteren Phasen der echte HTTP-Call erfolgen
             # self._send_http(payload)
 
-    def _build_payload(
-        self, event: EscalationEvent, target: EscalationTarget
-    ) -> Dict[str, Any]:
+    def _build_payload(self, event: EscalationEvent, target: EscalationTarget) -> Dict[str, Any]:
         """
         Baut PagerDuty Events API v2 kompatiblen Payload.
 
@@ -237,9 +235,7 @@ def get_provider(provider_name: str, config: Optional[Dict[str, Any]] = None) ->
     config = config or {}
 
     if provider_name == "null":
-        return NullEscalationProvider(
-            log_would_escalate=config.get("log_would_escalate", True)
-        )
+        return NullEscalationProvider(log_would_escalate=config.get("log_would_escalate", True))
     elif provider_name in ("pagerduty_stub", "pagerduty"):
         return PagerDutyLikeProviderStub(
             api_url=config.get("api_url"),
@@ -248,6 +244,3 @@ def get_provider(provider_name: str, config: Optional[Dict[str, Any]] = None) ->
     else:
         logger.warning(f"Unknown escalation provider '{provider_name}', using null")
         return NullEscalationProvider()
-
-
-

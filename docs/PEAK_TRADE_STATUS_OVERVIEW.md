@@ -981,7 +981,7 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
     - Live-Track UI Smoke-Test über `uvicorn "src.webui.app:create_app" --factory --reload --port 8000`
     - Keine Breaking Changes: Live-Track-Flow bleibt kompatibel, Severity-Logik ist ein Add-on-Layer über den bestehenden Risk-Limits.
 
-    **Details:** 
+    **Details:**
     - [`docs/PHASE_81_LIVE_SESSION_REGISTRY.md`](PHASE_81_LIVE_SESSION_REGISTRY.md)
     - [`docs/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md`](PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md)
 
@@ -1029,7 +1029,7 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
 Der Live Alerts & Incident Runbooks Cluster (Phasen 82–85) ist vollständig implementiert und bildet die **operative Baseline für den 2026-Betrieb**:
 
 - **Alert-Pipeline (Phase 82):** Automatische Benachrichtigungen via Slack/E-Mail bei Risk-Events (GREEN→YELLOW→RED), Limit-Breaches und System-Problemen. Severity-basiertes Routing (INFO/WARN/CRITICAL) an konfigurierbare Channels.
-  
+
 - **Alert-Historie & Dashboard (Phase 83):** Persistierte Alerts sind über das `/alerts` Dashboard einsehbar. Filterung nach Severity, Category, Zeitfenster. API-Endpoint `/api/live/alerts` für programmatischen Zugriff.
 
 - **Incident Runbook Integration (Phase 84):** Alerts werden automatisch mit passenden Runbooks angereichert basierend auf `category`, `source` und `severity`. Runbooks erscheinen in Slack-Messages, E-Mails und im Dashboard als klickbare Links.
@@ -1136,7 +1136,7 @@ Die Phasen 80/81/83/84/85 bilden zusammen den Live-Track-Stack v1 inkl. Web-Dash
 - **Use-Cases:** Realistisches Testen, Monitoring, Reviews, Drills & Demos im Shadow-/Testnet-Mode sind voll unterstützt.
 
 **Kurz-Fazit:**  
-Der Live-Track-Stack v1 ist für Shadow-/Testnet-Betrieb operativ bereit („operator-ready"), 
+Der Live-Track-Stack v1 ist für Shadow-/Testnet-Betrieb operativ bereit („operator-ready"),
 während echte Live-Orders weiterhin bewusst nicht freigegeben sind.
 
 ---

@@ -3,9 +3,11 @@
 Tests für Regime-Aware Experiment-Reports
 =========================================
 """
+
 from __future__ import annotations
 
 import pytest
+
 pytest.importorskip("matplotlib")
 
 import pandas as pd
@@ -25,14 +27,16 @@ class TestRegimeExperimentReport:
         data = []
         for neutral_scale in [0.3, 0.5, 0.7]:
             for risk_off_scale in [0.0, 0.1, 0.2]:
-                data.append({
-                    "param_neutral_scale": neutral_scale,
-                    "param_risk_off_scale": risk_off_scale,
-                    "param_risk_on_scale": 1.0,
-                    "metric_sharpe": np.random.uniform(0.5, 2.0),
-                    "metric_total_return": np.random.uniform(0.05, 0.20),
-                    "metric_max_drawdown": np.random.uniform(-0.15, -0.05),
-                })
+                data.append(
+                    {
+                        "param_neutral_scale": neutral_scale,
+                        "param_risk_off_scale": risk_off_scale,
+                        "param_risk_on_scale": 1.0,
+                        "metric_sharpe": np.random.uniform(0.5, 2.0),
+                        "metric_total_return": np.random.uniform(0.05, 0.20),
+                        "metric_max_drawdown": np.random.uniform(-0.15, -0.05),
+                    }
+                )
 
         df = pd.DataFrame(data)
 
@@ -65,11 +69,13 @@ class TestRegimeExperimentReport:
         data = []
         for param1 in [10, 20, 30]:
             for param2 in [5, 10, 15]:
-                data.append({
-                    "param_fast_period": param1,
-                    "param_slow_period": param2,
-                    "metric_sharpe": np.random.uniform(0.5, 2.0),
-                })
+                data.append(
+                    {
+                        "param_fast_period": param1,
+                        "param_slow_period": param2,
+                        "metric_sharpe": np.random.uniform(0.5, 2.0),
+                    }
+                )
 
         df = pd.DataFrame(data)
 
@@ -96,11 +102,13 @@ class TestRegimeExperimentReport:
         data = []
         for neutral_scale in [0.4, 0.5, 0.6]:
             for risk_off_scale in [0.0, 0.1]:
-                data.append({
-                    "param_neutral_scale": neutral_scale,
-                    "param_risk_off_scale": risk_off_scale,
-                    "metric_sharpe": np.random.uniform(1.0, 2.0),
-                })
+                data.append(
+                    {
+                        "param_neutral_scale": neutral_scale,
+                        "param_risk_off_scale": risk_off_scale,
+                        "metric_sharpe": np.random.uniform(1.0, 2.0),
+                    }
+                )
 
         df = pd.DataFrame(data)
 
@@ -123,8 +131,3 @@ class TestRegimeExperimentReport:
             regime_heatmaps = list(output_dir.glob("regime_heatmap_*.png"))
             # Kann 0 sein wenn Pivot nicht möglich, aber sollte nicht abstürzen
             assert report is not None
-
-
-
-
-

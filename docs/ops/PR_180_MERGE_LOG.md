@@ -245,4 +245,3 @@ pytest tests/test_backtest_smoke.py -v
 ---
 
 **Status:** ✅ Merged and operational. Error taxonomy is now the standard for all new code and recommended for opportunistic migration of existing code.
-

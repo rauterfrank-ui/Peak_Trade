@@ -220,7 +220,7 @@ Regime-Daten müssen als `pd.Series` mit numerischen Werten vorliegen:
 1. **Vol-Regime-Filter** mit `regime_mode=True`:
    ```python
    from src.strategies.vol_regime_filter import VolRegimeFilter
-   
+
    filter = VolRegimeFilter(
        regime_mode=True,
        low_vol_threshold=0.5,
@@ -232,7 +232,7 @@ Regime-Daten müssen als `pd.Series` mit numerischen Werten vorliegen:
 2. **Regime-Aware Portfolio**:
    ```python
    from src.strategies.regime_aware_portfolio import RegimeAwarePortfolioStrategy
-   
+
    strategy = RegimeAwarePortfolioStrategy(...)
    regimes = strategy.get_regime_signals(data)  # 1/0/-1
    ```
@@ -379,4 +379,3 @@ pytest tests/test_reporting_regime_experiment_report.py
 - **Regime-Aware Strategien**: `docs/PHASE_REGIME_AWARE_PORTFOLIOS.md`
 - **Regime-Aware Sweeps**: `docs/PHASE_REGIME_AWARE_SWEEPS_AND_PRESETS.md`
 - **Reporting-Infrastruktur**: `docs/PHASE_30_REPORTING_AND_VISUALIZATION.md`
-

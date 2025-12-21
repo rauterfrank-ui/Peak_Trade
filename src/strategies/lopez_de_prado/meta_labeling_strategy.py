@@ -34,6 +34,7 @@ Warnung:
 - Sorgfältiges Feature Engineering erforderlich
 - Nur für explorative Research-Analysen verwenden
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -210,7 +211,9 @@ class MetaLabelingStrategy(BaseStrategy):
             take_profit=self.config.get("take_profit", take_profit),
             stop_loss=self.config.get("stop_loss", stop_loss),
             vertical_barrier_bars=self.config.get("vertical_barrier_bars", vertical_barrier_bars),
-            prediction_horizon_bars=self.config.get("prediction_horizon_bars", prediction_horizon_bars),
+            prediction_horizon_bars=self.config.get(
+                "prediction_horizon_bars", prediction_horizon_bars
+            ),
             use_triple_barrier=self.config.get("use_triple_barrier", use_triple_barrier),
             meta_model_type=self.config.get("meta_model_type", meta_model_type),
             min_confidence=self.config.get("min_confidence", min_confidence),
@@ -299,9 +302,7 @@ class MetaLabelingStrategy(BaseStrategy):
         """
         # Validierung
         if "close" not in data.columns:
-            raise ValueError(
-                f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}"
-            )
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
         # =====================================================================
         # TODO: Meta-Labeling-Pipeline implementieren
@@ -386,13 +387,9 @@ class MetaLabelingStrategy(BaseStrategy):
     def validate(self) -> None:
         """Validiert Parameter."""
         if self.cfg.take_profit is not None and self.cfg.take_profit <= 0:
-            raise ValueError(
-                f"take_profit ({self.cfg.take_profit}) muss > 0 sein"
-            )
+            raise ValueError(f"take_profit ({self.cfg.take_profit}) muss > 0 sein")
         if self.cfg.stop_loss is not None and self.cfg.stop_loss <= 0:
-            raise ValueError(
-                f"stop_loss ({self.cfg.stop_loss}) muss > 0 sein"
-            )
+            raise ValueError(f"stop_loss ({self.cfg.stop_loss}) muss > 0 sein")
         if self.cfg.vertical_barrier_bars < 1:
             raise ValueError(
                 f"vertical_barrier_bars ({self.cfg.vertical_barrier_bars}) muss >= 1 sein"
@@ -416,6 +413,7 @@ class MetaLabelingStrategy(BaseStrategy):
 # LEGACY API (Falls benötigt für Backwards Compatibility)
 # =============================================================================
 
+
 def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """
     Legacy-Funktion für Backwards Compatibility.
@@ -432,6 +430,3 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """
     strategy = MetaLabelingStrategy(config=params)
     return strategy.generate_signals(df)
-
-
-

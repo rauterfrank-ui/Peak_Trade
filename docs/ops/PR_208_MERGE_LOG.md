@@ -113,4 +113,3 @@ uv run uvicorn src.webui.app:app --reload --port 8000
 **Merge Operator:** Frank Rauter  
 **Merge Date:** 2025-12-21  
 **CI Status:** ✅ All Checks Passed
-

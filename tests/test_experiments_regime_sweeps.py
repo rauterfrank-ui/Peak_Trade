@@ -6,6 +6,7 @@ Tests für src/experiments/regime_sweeps.py (Phase 29)
 Testet die vordefinierten Parameter-Sweeps für Regime-Detection
 und Strategy-Switching.
 """
+
 import pytest
 from typing import List
 
@@ -27,6 +28,7 @@ from src.experiments.regime_sweeps import (
 # ============================================================================
 # VOLATILITY DETECTOR SWEEPS TESTS
 # ============================================================================
+
 
 class TestVolatilityDetectorSweeps:
     """Tests für VolatilityRegimeDetector Sweeps."""
@@ -72,6 +74,7 @@ class TestVolatilityDetectorSweeps:
 # RANGE COMPRESSION DETECTOR SWEEPS TESTS
 # ============================================================================
 
+
 class TestRangeCompressionDetectorSweeps:
     """Tests für RangeCompressionRegimeDetector Sweeps."""
 
@@ -94,6 +97,7 @@ class TestRangeCompressionDetectorSweeps:
 # ============================================================================
 # GET REGIME DETECTOR SWEEPS TESTS
 # ============================================================================
+
 
 class TestGetRegimeDetectorSweeps:
     """Tests für get_regime_detector_sweeps()."""
@@ -130,6 +134,7 @@ class TestGetRegimeDetectorSweeps:
 # GET ALL REGIME DETECTOR SWEEPS TESTS
 # ============================================================================
 
+
 class TestGetAllRegimeDetectorSweeps:
     """Tests für get_all_regime_detector_sweeps()."""
 
@@ -154,6 +159,7 @@ class TestGetAllRegimeDetectorSweeps:
 # STRATEGY SWITCHING SWEEPS TESTS
 # ============================================================================
 
+
 class TestStrategySwitchingSweeps:
     """Tests für Strategy-Switching Sweeps."""
 
@@ -176,6 +182,7 @@ class TestStrategySwitchingSweeps:
 # ============================================================================
 # REGIME MAPPING VARIANTS TESTS
 # ============================================================================
+
 
 class TestRegimeMappingVariants:
     """Tests für Regime-Mapping-Varianten."""
@@ -211,6 +218,7 @@ class TestRegimeMappingVariants:
 # WEIGHT VARIANTS TESTS
 # ============================================================================
 
+
 class TestWeightVariants:
     """Tests für Weight-Varianten."""
 
@@ -234,6 +242,7 @@ class TestWeightVariants:
 # ============================================================================
 # COMBINED SWEEPS TESTS
 # ============================================================================
+
 
 class TestCombinedSweeps:
     """Tests für kombinierte Sweeps."""
@@ -270,6 +279,7 @@ class TestCombinedSweeps:
 # REGISTRY TESTS
 # ============================================================================
 
+
 class TestRegimeSweepRegistry:
     """Tests für REGIME_SWEEP_REGISTRY."""
 
@@ -295,6 +305,7 @@ class TestRegimeSweepRegistry:
 # ============================================================================
 # VALIDATION TESTS
 # ============================================================================
+
 
 class TestRegimeSweepValidation:
     """Tests für Sweep-Validierung."""

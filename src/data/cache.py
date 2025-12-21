@@ -1,6 +1,7 @@
 """
 Data Cache: Parquet-basierter Cache für normalisierte OHLCV-Daten.
 """
+
 import glob
 import os
 import re
@@ -85,8 +86,7 @@ class ParquetCache:
         cache_path = self._get_cache_path(key)
         if not os.path.exists(cache_path):
             raise FileNotFoundError(
-                f"Cache nicht gefunden für Key: '{key}'. "
-                f"Erwarteter Pfad: {cache_path}"
+                f"Cache nicht gefunden für Key: '{key}'. Erwarteter Pfad: {cache_path}"
             )
         return atomic_read(cache_path, verify_checksum=False)
 

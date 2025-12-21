@@ -70,22 +70,23 @@ def create_synthetic_data(
     returns = np.random.normal(trend, volatility, n_bars)
     prices = start_price * np.cumprod(1 + returns)
 
-    df = pd.DataFrame({
-        "open": prices * (1 + np.random.uniform(-0.005, 0.005, n_bars)),
-        "high": prices * (1 + np.abs(np.random.normal(0, 0.01, n_bars))),
-        "low": prices * (1 - np.abs(np.random.normal(0, 0.01, n_bars))),
-        "close": prices,
-        "volume": np.random.uniform(1000, 10000, n_bars),
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": prices * (1 + np.random.uniform(-0.005, 0.005, n_bars)),
+            "high": prices * (1 + np.abs(np.random.normal(0, 0.01, n_bars))),
+            "low": prices * (1 - np.abs(np.random.normal(0, 0.01, n_bars))),
+            "close": prices,
+            "volume": np.random.uniform(1000, 10000, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
 
 def main():
     """Haupt-Demo-Funktion."""
-    parser = argparse.ArgumentParser(
-        description="Demo: Portfolio Strategy Backtest (Phase 26)"
-    )
+    parser = argparse.ArgumentParser(description="Demo: Portfolio Strategy Backtest (Phase 26)")
     parser.add_argument(
         "--strategy",
         type=str,
@@ -225,7 +226,9 @@ def main():
     print("  Performance pro Symbol:")
     for symbol, equity in result.symbol_equities.items():
         if len(equity) > 1:
-            symbol_return = (equity.iloc[-1] - equity.iloc[1]) / equity.iloc[1] if equity.iloc[1] > 0 else 0
+            symbol_return = (
+                (equity.iloc[-1] - equity.iloc[1]) / equity.iloc[1] if equity.iloc[1] > 0 else 0
+            )
             trades = len(result.trades_per_symbol.get(symbol, []))
             print(f"    {symbol}:".ljust(20) + f"Return: {symbol_return:>8.2%}, Trades: {trades}")
     print()

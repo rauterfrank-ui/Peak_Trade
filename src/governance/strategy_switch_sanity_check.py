@@ -26,9 +26,7 @@ else:
     try:
         import tomli as tomllib  # type: ignore
     except ImportError:
-        raise ImportError(
-            "Python <3.11 benötigt 'tomli' package: pip install tomli"
-        )
+        raise ImportError("Python <3.11 benötigt 'tomli' package: pip install tomli")
 
 
 # ============================================================================
@@ -107,6 +105,7 @@ def _get_registry_strategy_keys() -> List[str]:
     """
     try:
         from src.strategies.registry import get_available_strategy_keys
+
         return get_available_strategy_keys()
     except ImportError:
         # Fallback wenn Registry nicht verfügbar
@@ -143,8 +142,7 @@ def _build_strategy_meta_from_config(
         tier = strategy_cfg.get("tier", "core")
         is_live_ready = strategy_cfg.get("is_live_ready", True)
         allowed_envs = strategy_cfg.get(
-            "allowed_environments",
-            ["live", "testnet", "paper", "offline_backtest"]
+            "allowed_environments", ["live", "testnet", "paper", "offline_backtest"]
         )
 
         # Override für bekannte R&D-Strategien
@@ -321,8 +319,7 @@ def run_strategy_switch_sanity_check(
 
     if r_and_d_strategies:
         messages.append(
-            f"R&D- oder nicht-live-ready-Strategien in allowed: "
-            f"{', '.join(r_and_d_strategies)}"
+            f"R&D- oder nicht-live-ready-Strategien in allowed: {', '.join(r_and_d_strategies)}"
         )
         hard_fail = True
 

@@ -9,6 +9,7 @@ Tests:
 
 Alle Tests sind deterministisch (kein Random, feste Daten).
 """
+
 import pytest
 import math
 from src.core.position_sizing import (
@@ -26,6 +27,7 @@ from src.core.position_sizing import (
 
 class DictConfig:
     """Wrapper um Dict mit .get(path) Interface wie PeakConfig."""
+
     def __init__(self, data: dict):
         self._data = data
 
@@ -68,6 +70,7 @@ def generate_synthetic_prices(
     Returns:
         Liste von Preisen
     """
+
     # Deterministischer "random" generator (einfache LCG)
     def lcg(x):
         # Linear Congruential Generator (Park-Miller)
@@ -110,21 +113,23 @@ def generate_synthetic_prices(
 
 def test_overlay_blocks_without_research_flag():
     """Gate 2: Ohne research.allow_r_and_d_overlays -> ValueError"""
-    cfg = DictConfig({
-        "position_sizing": {
-            "type": "vol_regime_overlay",
-            "vol_regime_overlay": {
-                "base_sizer_key": "fixed_size",
-                "base_units": 0.01,
+    cfg = DictConfig(
+        {
+            "position_sizing": {
+                "type": "vol_regime_overlay",
+                "vol_regime_overlay": {
+                    "base_sizer_key": "fixed_size",
+                    "base_units": 0.01,
+                },
             },
-        },
-        "research": {
-            "allow_r_and_d_overlays": False,  # NICHT aktiviert
-        },
-        "environment": {
-            "mode": "offline_backtest",
-        },
-    })
+            "research": {
+                "allow_r_and_d_overlays": False,  # NICHT aktiviert
+            },
+            "environment": {
+                "mode": "offline_backtest",
+            },
+        }
+    )
 
     with pytest.raises(ValueError, match="VolRegimeOverlaySizer ist deaktiviert"):
         build_position_sizer_from_config(cfg)
@@ -132,21 +137,23 @@ def test_overlay_blocks_without_research_flag():
 
 def test_overlay_blocks_in_live_env():
     """Gate 1: environment.mode='live' -> ValueError"""
-    cfg = DictConfig({
-        "position_sizing": {
-            "type": "vol_regime_overlay",
-            "vol_regime_overlay": {
-                "base_sizer_key": "fixed_size",
-                "base_units": 0.01,
+    cfg = DictConfig(
+        {
+            "position_sizing": {
+                "type": "vol_regime_overlay",
+                "vol_regime_overlay": {
+                    "base_sizer_key": "fixed_size",
+                    "base_units": 0.01,
+                },
             },
-        },
-        "research": {
-            "allow_r_and_d_overlays": True,  # Aktiviert
-        },
-        "environment": {
-            "mode": "live",  # NICHT erlaubt!
-        },
-    })
+            "research": {
+                "allow_r_and_d_overlays": True,  # Aktiviert
+            },
+            "environment": {
+                "mode": "live",  # NICHT erlaubt!
+            },
+        }
+    )
 
     with pytest.raises(ValueError, match="NICHT für Live-Trading zugelassen"):
         build_position_sizer_from_config(cfg)
@@ -154,23 +161,25 @@ def test_overlay_blocks_in_live_env():
 
 def test_overlay_allows_offline_backtest_with_flag():
     """Erfolgreicher Build mit korrekter Config"""
-    cfg = DictConfig({
-        "position_sizing": {
-            "type": "vol_regime_overlay",
-            "vol_regime_overlay": {
-                "base_sizer_key": "fixed_size",
-                "base_units": 0.01,
-                "day_vol_budget": 0.02,
-                "vol_window_bars": 20,
+    cfg = DictConfig(
+        {
+            "position_sizing": {
+                "type": "vol_regime_overlay",
+                "vol_regime_overlay": {
+                    "base_sizer_key": "fixed_size",
+                    "base_units": 0.01,
+                    "day_vol_budget": 0.02,
+                    "vol_window_bars": 20,
+                },
             },
-        },
-        "research": {
-            "allow_r_and_d_overlays": True,
-        },
-        "environment": {
-            "mode": "offline_backtest",
-        },
-    })
+            "research": {
+                "allow_r_and_d_overlays": True,
+            },
+            "environment": {
+                "mode": "offline_backtest",
+            },
+        }
+    )
 
     sizer = build_position_sizer_from_config(cfg)
     assert isinstance(sizer, VolRegimeOverlaySizer)
@@ -360,9 +369,7 @@ def test_dd_throttle_when_equity_available():
 
     # Phase 2: Drawdown auf 9600 (20% DD von 12000)
     target_dd_equity = 12000.0 * (1 - 0.20)  # 9600
-    units_at_dd = overlay.get_target_position(
-        signal=signal, price=price, equity=target_dd_equity
-    )
+    units_at_dd = overlay.get_target_position(signal=signal, price=price, equity=target_dd_equity)
 
     # Erwartung: units sollten reduziert sein
     # DD = 20%, dd_soft_start = 10%, max_drawdown = 25%
@@ -428,21 +435,23 @@ def test_dd_throttle_disabled_by_default():
 
 def test_config_parsing_with_defaults():
     """Teste dass Factory mit minimaler Config funktioniert."""
-    cfg = DictConfig({
-        "position_sizing": {
-            "type": "vol_regime_overlay",
-            "vol_regime_overlay": {
-                "base_sizer_key": "noop",
-                # Alle anderen: defaults
+    cfg = DictConfig(
+        {
+            "position_sizing": {
+                "type": "vol_regime_overlay",
+                "vol_regime_overlay": {
+                    "base_sizer_key": "noop",
+                    # Alle anderen: defaults
+                },
             },
-        },
-        "research": {
-            "allow_r_and_d_overlays": True,
-        },
-        "environment": {
-            "mode": "offline_backtest",
-        },
-    })
+            "research": {
+                "allow_r_and_d_overlays": True,
+            },
+            "environment": {
+                "mode": "offline_backtest",
+            },
+        }
+    )
 
     sizer = build_position_sizer_from_config(cfg)
     assert isinstance(sizer, VolRegimeOverlaySizer)
@@ -453,20 +462,22 @@ def test_config_parsing_with_defaults():
 
 def test_config_parsing_prevents_infinite_loop():
     """Teste dass base_sizer_key='vol_regime_overlay' verhindert wird."""
-    cfg = DictConfig({
-        "position_sizing": {
-            "type": "vol_regime_overlay",
-            "vol_regime_overlay": {
-                "base_sizer_key": "vol_regime_overlay",  # Endlosschleife!
+    cfg = DictConfig(
+        {
+            "position_sizing": {
+                "type": "vol_regime_overlay",
+                "vol_regime_overlay": {
+                    "base_sizer_key": "vol_regime_overlay",  # Endlosschleife!
+                },
             },
-        },
-        "research": {
-            "allow_r_and_d_overlays": True,
-        },
-        "environment": {
-            "mode": "offline_backtest",
-        },
-    })
+            "research": {
+                "allow_r_and_d_overlays": True,
+            },
+            "environment": {
+                "mode": "offline_backtest",
+            },
+        }
+    )
 
     with pytest.raises(ValueError, match="Endlosschleife"):
         build_position_sizer_from_config(cfg)

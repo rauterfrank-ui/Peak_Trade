@@ -34,6 +34,7 @@ Example:
     >>> # Regime-Parameter separat sweepen
     >>> regime_sweeps = get_volatility_detector_sweeps("medium")
 """
+
 from __future__ import annotations
 
 from typing import Callable, Dict, List, Literal, Optional
@@ -48,6 +49,7 @@ Granularity = Literal["coarse", "medium", "fine"]
 # ============================================================================
 # VOLATILITY REGIME DETECTOR SWEEPS
 # ============================================================================
+
 
 def get_volatility_detector_sweeps(
     granularity: Granularity = "medium",
@@ -71,68 +73,76 @@ def get_volatility_detector_sweeps(
     sweeps = []
 
     if granularity == "coarse":
-        sweeps.append(ParamSweep(
-            f"{prefix}vol_window",
-            [10, 20, 30],
-            "ATR/Volatilitäts-Fenster"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}vol_percentile_breakout",
-            [0.7, 0.8, 0.9],
-            "Perzentil für Breakout-Klassifikation"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}vol_percentile_ranging",
-            [0.2, 0.3, 0.4],
-            "Perzentil für Ranging-Klassifikation"
-        ))
+        sweeps.append(ParamSweep(f"{prefix}vol_window", [10, 20, 30], "ATR/Volatilitäts-Fenster"))
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}vol_percentile_breakout",
+                [0.7, 0.8, 0.9],
+                "Perzentil für Breakout-Klassifikation",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}vol_percentile_ranging",
+                [0.2, 0.3, 0.4],
+                "Perzentil für Ranging-Klassifikation",
+            )
+        )
     elif granularity == "medium":
-        sweeps.append(ParamSweep(
-            f"{prefix}vol_window",
-            [10, 14, 20, 25, 30],
-            "ATR/Volatilitäts-Fenster"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}vol_percentile_breakout",
-            [0.65, 0.7, 0.75, 0.8, 0.85],
-            "Perzentil für Breakout-Klassifikation"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}vol_percentile_ranging",
-            [0.15, 0.2, 0.25, 0.3, 0.35],
-            "Perzentil für Ranging-Klassifikation"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}lookback_window",
-            [30, 50, 75, 100],
-            "Lookback für Perzentil-Berechnung"
-        ))
+        sweeps.append(
+            ParamSweep(f"{prefix}vol_window", [10, 14, 20, 25, 30], "ATR/Volatilitäts-Fenster")
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}vol_percentile_breakout",
+                [0.65, 0.7, 0.75, 0.8, 0.85],
+                "Perzentil für Breakout-Klassifikation",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}vol_percentile_ranging",
+                [0.15, 0.2, 0.25, 0.3, 0.35],
+                "Perzentil für Ranging-Klassifikation",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}lookback_window", [30, 50, 75, 100], "Lookback für Perzentil-Berechnung"
+            )
+        )
     else:  # fine
-        sweeps.append(ParamSweep.from_range(
-            f"{prefix}vol_window",
-            8, 40, 4,
-            "ATR/Volatilitäts-Fenster"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}vol_percentile_breakout",
-            [0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9],
-            "Perzentil für Breakout-Klassifikation"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}vol_percentile_ranging",
-            [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4],
-            "Perzentil für Ranging-Klassifikation"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}lookback_window",
-            [20, 30, 50, 75, 100, 150],
-            "Lookback für Perzentil-Berechnung"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}trending_slope_threshold",
-            [0.001, 0.002, 0.003, 0.005, 0.01],
-            "Slope-Threshold für Trending-Erkennung"
-        ))
+        sweeps.append(
+            ParamSweep.from_range(f"{prefix}vol_window", 8, 40, 4, "ATR/Volatilitäts-Fenster")
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}vol_percentile_breakout",
+                [0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9],
+                "Perzentil für Breakout-Klassifikation",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}vol_percentile_ranging",
+                [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4],
+                "Perzentil für Ranging-Klassifikation",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}lookback_window",
+                [20, 30, 50, 75, 100, 150],
+                "Lookback für Perzentil-Berechnung",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}trending_slope_threshold",
+                [0.001, 0.002, 0.003, 0.005, 0.01],
+                "Slope-Threshold für Trending-Erkennung",
+            )
+        )
 
     return sweeps
 
@@ -140,6 +150,7 @@ def get_volatility_detector_sweeps(
 # ============================================================================
 # RANGE COMPRESSION DETECTOR SWEEPS
 # ============================================================================
+
 
 def get_range_compression_detector_sweeps(
     granularity: Granularity = "medium",
@@ -158,48 +169,56 @@ def get_range_compression_detector_sweeps(
     sweeps = []
 
     if granularity == "coarse":
-        sweeps.append(ParamSweep(
-            f"{prefix}range_compression_window",
-            [10, 20, 30],
-            "Fenster für Range-Berechnung"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}compression_threshold",
-            [0.2, 0.3, 0.4],
-            "Threshold für Kompression"
-        ))
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}range_compression_window", [10, 20, 30], "Fenster für Range-Berechnung"
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}compression_threshold", [0.2, 0.3, 0.4], "Threshold für Kompression"
+            )
+        )
     elif granularity == "medium":
-        sweeps.append(ParamSweep(
-            f"{prefix}range_compression_window",
-            [10, 15, 20, 25, 30],
-            "Fenster für Range-Berechnung"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}compression_threshold",
-            [0.15, 0.2, 0.25, 0.3, 0.35, 0.4],
-            "Threshold für Kompression"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}lookback_window",
-            [30, 50, 75, 100],
-            "Lookback für Perzentil-Berechnung"
-        ))
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}range_compression_window",
+                [10, 15, 20, 25, 30],
+                "Fenster für Range-Berechnung",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}compression_threshold",
+                [0.15, 0.2, 0.25, 0.3, 0.35, 0.4],
+                "Threshold für Kompression",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}lookback_window", [30, 50, 75, 100], "Lookback für Perzentil-Berechnung"
+            )
+        )
     else:  # fine
-        sweeps.append(ParamSweep.from_range(
-            f"{prefix}range_compression_window",
-            5, 40, 5,
-            "Fenster für Range-Berechnung"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}compression_threshold",
-            [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5],
-            "Threshold für Kompression"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}lookback_window",
-            [20, 30, 50, 75, 100, 150],
-            "Lookback für Perzentil-Berechnung"
-        ))
+        sweeps.append(
+            ParamSweep.from_range(
+                f"{prefix}range_compression_window", 5, 40, 5, "Fenster für Range-Berechnung"
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}compression_threshold",
+                [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5],
+                "Threshold für Kompression",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}lookback_window",
+                [20, 30, 50, 75, 100, 150],
+                "Lookback für Perzentil-Berechnung",
+            )
+        )
 
     return sweeps
 
@@ -207,6 +226,7 @@ def get_range_compression_detector_sweeps(
 # ============================================================================
 # COMBINED REGIME DETECTOR SWEEPS
 # ============================================================================
+
 
 def get_regime_detector_sweeps(
     detector_name: str = "volatility_breakout",
@@ -264,6 +284,7 @@ def get_all_regime_detector_sweeps(
 # STRATEGY SWITCHING SWEEPS
 # ============================================================================
 
+
 def get_strategy_switching_sweeps(
     granularity: Granularity = "medium",
     prefix: str = "switching_",
@@ -288,38 +309,46 @@ def get_strategy_switching_sweeps(
     # Weight-Kombinationen für Multi-Strategy Regimes
     if granularity == "coarse":
         # Einfache Weight-Verhältnisse
-        sweeps.append(ParamSweep(
-            f"{prefix}primary_weight",
-            [0.5, 0.6, 0.7],
-            "Gewicht für primäre Strategie"
-        ))
+        sweeps.append(
+            ParamSweep(f"{prefix}primary_weight", [0.5, 0.6, 0.7], "Gewicht für primäre Strategie")
+        )
     elif granularity == "medium":
-        sweeps.append(ParamSweep(
-            f"{prefix}primary_weight",
-            [0.4, 0.5, 0.6, 0.7, 0.8],
-            "Gewicht für primäre Strategie"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}min_confidence",
-            [0.5, 0.6, 0.7, 0.8],
-            "Mindest-Confidence für Regime-Switch"
-        ))
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}primary_weight",
+                [0.4, 0.5, 0.6, 0.7, 0.8],
+                "Gewicht für primäre Strategie",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}min_confidence",
+                [0.5, 0.6, 0.7, 0.8],
+                "Mindest-Confidence für Regime-Switch",
+            )
+        )
     else:  # fine
-        sweeps.append(ParamSweep(
-            f"{prefix}primary_weight",
-            [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-            "Gewicht für primäre Strategie"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}min_confidence",
-            [0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-            "Mindest-Confidence für Regime-Switch"
-        ))
-        sweeps.append(ParamSweep(
-            f"{prefix}regime_persistence_bars",
-            [1, 3, 5, 10],
-            "Bars bevor Regime-Wechsel greift"
-        ))
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}primary_weight",
+                [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                "Gewicht für primäre Strategie",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}min_confidence",
+                [0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                "Mindest-Confidence für Regime-Switch",
+            )
+        )
+        sweeps.append(
+            ParamSweep(
+                f"{prefix}regime_persistence_bars",
+                [1, 3, 5, 10],
+                "Bars bevor Regime-Wechsel greift",
+            )
+        )
 
     return sweeps
 
@@ -401,6 +430,7 @@ def get_weight_variants() -> List[Dict[str, Dict[str, float]]]:
 # ============================================================================
 # COMBINED REGIME + STRATEGY SWEEPS
 # ============================================================================
+
 
 def get_combined_regime_strategy_sweeps(
     strategy_name: str,

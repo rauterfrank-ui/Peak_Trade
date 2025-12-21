@@ -4,6 +4,7 @@ Peak_Trade Scheduler – Runner
 ==============================
 Ausführungslogik für Jobs.
 """
+
 from __future__ import annotations
 
 import subprocess

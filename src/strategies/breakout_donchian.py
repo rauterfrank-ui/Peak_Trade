@@ -81,7 +81,7 @@ class DonchianBreakoutStrategy(BaseStrategy):
 
         # State-Logik: 0 => halte vorige Position
         # Fix für Pandas FutureWarning: verwende numpy NaN statt pd.NA
-        state = raw.replace(0, float('nan'))
+        state = raw.replace(0, float("nan"))
         state = state.ffill()
         state = state.fillna(0).astype(int)
 

@@ -33,4 +33,3 @@
 
 ## Notes / Follow-ups
 - Matplotlib-Failures separat behandeln (Optionalisierung/Extras, headless backend, eigener CI-Job)
-

@@ -9,9 +9,11 @@ Testet:
 - build_experiment_report
 - Plot-Funktionen (Heatmap, Histogram)
 """
+
 from __future__ import annotations
 
 import pytest
+
 pytest.importorskip("matplotlib")
 
 from pathlib import Path
@@ -57,16 +59,18 @@ def sample_sweep_df() -> pd.DataFrame:
         base_sharpe = 0.5 + (rsi_window / 100) + np.random.normal(0, 0.3)
         base_return = 0.05 + (threshold / 200) + np.random.normal(0, 0.05)
 
-        data.append({
-            "run_id": f"run_{i:04d}",
-            "param_rsi_window": rsi_window,
-            "param_lower_threshold": threshold,
-            "param_upper_threshold": 100 - threshold,
-            "metric_sharpe": base_sharpe,
-            "metric_total_return": base_return,
-            "metric_max_drawdown": -abs(np.random.normal(0.1, 0.03)),
-            "metric_win_rate": 0.45 + np.random.normal(0, 0.1),
-        })
+        data.append(
+            {
+                "run_id": f"run_{i:04d}",
+                "param_rsi_window": rsi_window,
+                "param_lower_threshold": threshold,
+                "param_upper_threshold": 100 - threshold,
+                "metric_sharpe": base_sharpe,
+                "metric_total_return": base_return,
+                "metric_max_drawdown": -abs(np.random.normal(0.1, 0.03)),
+                "metric_win_rate": 0.45 + np.random.normal(0, 0.1),
+            }
+        )
 
     return pd.DataFrame(data)
 
@@ -74,12 +78,14 @@ def sample_sweep_df() -> pd.DataFrame:
 @pytest.fixture
 def minimal_sweep_df() -> pd.DataFrame:
     """Minimales Sweep-DataFrame für einfache Tests."""
-    return pd.DataFrame({
-        "param_fast": [5, 10, 15],
-        "param_slow": [50, 100, 150],
-        "metric_sharpe": [1.0, 1.5, 0.8],
-        "metric_return": [0.10, 0.15, 0.05],
-    })
+    return pd.DataFrame(
+        {
+            "param_fast": [5, 10, 15],
+            "param_slow": [50, 100, 150],
+            "metric_sharpe": [1.0, 1.5, 0.8],
+            "metric_return": [0.10, 0.15, 0.05],
+        }
+    )
 
 
 # =============================================================================

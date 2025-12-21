@@ -41,7 +41,7 @@
 
 #### OfflineSynthSession
 - **Quelle**: `scripts/run_offline_realtime_ma_crossover.py`
-- **Klassen**: 
+- **Klassen**:
   - `OfflineSynthSessionConfig` (Lines 92-108)
   - `OfflineSynthSessionResult` (Lines 111-127)
   - `run_offline_synth_session()` (Lines 130-207)
@@ -102,7 +102,7 @@ python3 scripts/automation/run_offline_daily_suite.py --no-pytest
 
 **Erwartete Laufzeit**: ~5-10 Minuten
 
-**Output**: 
+**Output**:
 - JSON-Log: `reports/automation/daily/automation_daily_<YYYYMMDD_HHMMSS>.json`
 - Trigger-Reports: `reports/automation/daily/trigger_training/<SESSION_ID>/`
 
@@ -124,11 +124,11 @@ python3 scripts/automation/run_offline_weekly_suite.py --dry-run
 python3 scripts/automation/run_offline_weekly_suite.py --quick-mode
 ```
 
-**Erwartete Laufzeit**: 
+**Erwartete Laufzeit**:
 - Standard: ~30-60 Minuten
 - Quick-Mode: ~10-15 Minuten
 
-**Output**: 
+**Output**:
 - JSON-Log: `reports/automation/weekly/automation_weekly_<YYYYMMDD_HHMMSS>.json`
 - Markdown-Summary: `reports/automation/weekly/automation_weekly_<YYYYMMDD_HHMMSS>.md`
 - Trigger-Reports: `reports/automation/weekly/trigger_training_<SCENARIO>/`

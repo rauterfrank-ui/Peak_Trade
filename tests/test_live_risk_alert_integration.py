@@ -9,6 +9,7 @@ Tests für:
 - Enabled=False → kein Alert
 - Webhook-Integration (Phase 50)
 """
+
 from __future__ import annotations
 
 import json
@@ -339,6 +340,7 @@ def test_risk_violation_triggers_webhook(monkeypatch):
         called_urls.append(req.full_url)
         payload = json.loads(req.data.decode("utf-8"))
         called_payloads.append(payload)
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -414,6 +416,7 @@ def test_risk_violation_triggers_slack_webhook(monkeypatch):
         called_urls.append(req.full_url)
         payload = json.loads(req.data.decode("utf-8"))
         called_payloads.append(payload)
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -483,6 +486,7 @@ def test_portfolio_violation_triggers_webhook(monkeypatch):
 
     def fake_urlopen(req, timeout=0):
         called_urls.append(req.full_url)
+
         class DummyResp:
             def __enter__(self):
                 return self
@@ -538,4 +542,3 @@ def test_portfolio_violation_triggers_webhook(monkeypatch):
     assert result.allowed is False
     assert len(called_urls) == 1
     assert called_urls[0] == "https://example.com/alert"
-

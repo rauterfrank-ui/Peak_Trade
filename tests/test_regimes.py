@@ -8,6 +8,7 @@ Testbereiche:
 3. Regime-Analyse
 4. CLI-Sanity
 """
+
 from __future__ import annotations
 
 import subprocess
@@ -238,9 +239,7 @@ class TestRegimeDetection:
         # Mindestens 60% sollten downtrend sein
         assert trend_counts.get("downtrend", 0) > len(result) * 0.6
 
-    def test_high_vol_prices_classified_as_high_vol(
-        self, high_vol_prices: pd.DataFrame
-    ):
+    def test_high_vol_prices_classified_as_high_vol(self, high_vol_prices: pd.DataFrame):
         """Hochvolatile Preise werden als high_vol erkannt."""
         # Niedrigere Schwellen für den Test
         cfg = RegimeConfig(
@@ -254,9 +253,7 @@ class TestRegimeDetection:
         # Sollte high_vol oder mid_vol enthalten (nicht nur low_vol)
         assert "high_vol" in vol_counts.index or "mid_vol" in vol_counts.index
 
-    def test_detect_regimes_raises_on_missing_column(
-        self, default_config: RegimeConfig
-    ):
+    def test_detect_regimes_raises_on_missing_column(self, default_config: RegimeConfig):
         """KeyError bei fehlender Preis-Spalte."""
         df = pd.DataFrame({"other_col": [1, 2, 3]})
         with pytest.raises(KeyError):
@@ -279,16 +276,12 @@ class TestRegimeDetection:
 class TestRegimeDistribution:
     """Tests für Regime-Verteilung."""
 
-    def test_get_regime_distribution_returns_dict(
-        self, sample_regimes: pd.DataFrame
-    ):
+    def test_get_regime_distribution_returns_dict(self, sample_regimes: pd.DataFrame):
         """get_regime_distribution gibt Dict zurück."""
         dist = get_regime_distribution(sample_regimes)
         assert isinstance(dist, dict)
 
-    def test_regime_distribution_sums_to_one(
-        self, sample_regimes: pd.DataFrame
-    ):
+    def test_regime_distribution_sums_to_one(self, sample_regimes: pd.DataFrame):
         """Verteilung summiert sich zu ~1.0."""
         dist = get_regime_distribution(sample_regimes)
         total = sum(dist.values())
@@ -339,9 +332,7 @@ class TestRegimeAnalysis:
         total_weight = sum(s.weight for s in stats)
         assert abs(total_weight - 1.0) < 0.01
 
-    def test_empty_equity_returns_empty_list(
-        self, sample_regimes: pd.DataFrame
-    ):
+    def test_empty_equity_returns_empty_list(self, sample_regimes: pd.DataFrame):
         """Leere Equity gibt leere Liste."""
         empty_equity = pd.Series(dtype=float)
         stats = analyze_regimes_from_equity(empty_equity, sample_regimes)
@@ -349,13 +340,10 @@ class TestRegimeAnalysis:
 
     def test_mismatched_indices_handled(self):
         """Nicht überlappende Indices werden behandelt."""
-        equity = pd.Series(
-            [100, 101, 102],
-            index=pd.date_range("2024-01-01", periods=3)
-        )
+        equity = pd.Series([100, 101, 102], index=pd.date_range("2024-01-01", periods=3))
         regimes = pd.DataFrame(
             {"regime": ["a", "b", "c"]},
-            index=pd.date_range("2024-06-01", periods=3)  # Andere Zeitperiode
+            index=pd.date_range("2024-06-01", periods=3),  # Andere Zeitperiode
         )
         stats = analyze_regimes_from_equity(equity, regimes)
         assert stats == []

@@ -22,6 +22,7 @@ Usage:
     python scripts/demo_order_pipeline_backtest.py --fee-bps 10 --slippage-bps 5
     python scripts/demo_order_pipeline_backtest.py --bars 500 --tag order-layer-demo
 """
+
 from __future__ import annotations
 
 import sys
@@ -259,7 +260,7 @@ def main(argv: Optional[List[str]] = None) -> None:
             exit_p = trade.get("exit_price", 0)
             pnl = trade.get("pnl", 0)
             print(
-                f"   {i+1}. {side.upper():5s} | "
+                f"   {i + 1}. {side.upper():5s} | "
                 f"Entry: {entry:10.2f} | Exit: {exit_p:10.2f} | "
                 f"PnL: {pnl:+10.2f} EUR"
             )
@@ -278,9 +279,15 @@ def main(argv: Optional[List[str]] = None) -> None:
         )
 
         print(f"\n                    Order-Layer     Legacy")
-        print(f"   Total Return:    {result.stats['total_return']:+8.2%}     {legacy_result.stats['total_return']:+8.2%}")
-        print(f"   Sharpe Ratio:    {result.stats['sharpe']:+8.2f}     {legacy_result.stats['sharpe']:+8.2f}")
-        print(f"   Total Trades:    {result.stats['total_trades']:8d}     {legacy_result.stats['total_trades']:8d}")
+        print(
+            f"   Total Return:    {result.stats['total_return']:+8.2%}     {legacy_result.stats['total_return']:+8.2%}"
+        )
+        print(
+            f"   Sharpe Ratio:    {result.stats['sharpe']:+8.2f}     {legacy_result.stats['sharpe']:+8.2f}"
+        )
+        print(
+            f"   Total Trades:    {result.stats['total_trades']:8d}     {legacy_result.stats['total_trades']:8d}"
+        )
 
     # 7. Execution-Results anzeigen
     if engine.execution_results:
@@ -293,9 +300,13 @@ def main(argv: Optional[List[str]] = None) -> None:
             qty = exec_result.request.quantity
             if exec_result.fill:
                 price = exec_result.fill.price
-                print(f"   {i+1}. [{status.upper():8s}] {side.upper():4s} {symbol} qty={qty:.6f} @ {price:.2f}")
+                print(
+                    f"   {i + 1}. [{status.upper():8s}] {side.upper():4s} {symbol} qty={qty:.6f} @ {price:.2f}"
+                )
             else:
-                print(f"   {i+1}. [{status.upper():8s}] {side.upper():4s} {symbol} qty={qty:.6f} (rejected)")
+                print(
+                    f"   {i + 1}. [{status.upper():8s}] {side.upper():4s} {symbol} qty={qty:.6f} (rejected)"
+                )
 
     print("\n" + "=" * 70)
     print("✅ Order-Pipeline-Backtest Demo abgeschlossen!")

@@ -39,6 +39,7 @@ Usage:
     # Vergleichsmodus (beide Modi nebeneinander)
     python -m scripts.demo_execution_backtest --compare
 """
+
 from __future__ import annotations
 
 import argparse
@@ -70,6 +71,7 @@ from src.reporting.execution_reports import (
 # =============================================================================
 # Strategy Loader
 # =============================================================================
+
 
 def get_strategy_fn(name: str) -> Callable[[pd.DataFrame, Dict[str, Any]], pd.Series]:
     """
@@ -152,6 +154,7 @@ def get_default_strategy_params(name: str) -> Dict[str, Any]:
 # Data Generation
 # =============================================================================
 
+
 def generate_sample_data(
     symbol: str,
     start: Optional[str] = None,
@@ -233,6 +236,7 @@ def generate_sample_data(
 # =============================================================================
 # CLI Parser
 # =============================================================================
+
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     """Parst CLI-Argumente."""
@@ -350,6 +354,7 @@ Beispiele:
 # Output Formatting
 # =============================================================================
 
+
 def print_header(
     symbol: str,
     mode: str,
@@ -433,7 +438,7 @@ def print_detailed_execution_stats(engine: BacktestEngine, result: BacktestResul
     Nutzt das neue Reporting-Modul fuer aggregierte Statistiken.
     """
     # Versuche zuerst aus execution_results (detaillierter)
-    if hasattr(engine, 'execution_results') and engine.execution_results:
+    if hasattr(engine, "execution_results") and engine.execution_results:
         stats = from_execution_results(engine.execution_results)
         source = "execution_results"
     else:
@@ -444,8 +449,8 @@ def print_detailed_execution_stats(engine: BacktestEngine, result: BacktestResul
 
     # Hit-Rate aus Backtest-Result uebernehmen
     if result.stats:
-        stats.hit_rate = result.stats.get('win_rate', 0.0)
-        n_trades = result.stats.get('total_trades', 0)
+        stats.hit_rate = result.stats.get("win_rate", 0.0)
+        n_trades = result.stats.get("total_trades", 0)
         stats.n_winning_trades = int(n_trades * stats.hit_rate)
         stats.n_losing_trades = n_trades - stats.n_winning_trades
 
@@ -459,7 +464,9 @@ def print_sample_trades(result: BacktestResult, max_trades: int = 5) -> None:
         print("  (keine Trades generiert)")
         return
 
-    print(f"\n[Sample-Trades] (erste {min(max_trades, len(result.trades))} von {len(result.trades)})")
+    print(
+        f"\n[Sample-Trades] (erste {min(max_trades, len(result.trades))} von {len(result.trades)})"
+    )
     print("-" * 70)
 
     for i, (_, trade) in enumerate(result.trades.head(max_trades).iterrows(), 1):
@@ -501,10 +508,16 @@ def print_comparison(
 
     print("\n                        ExecutionPipeline     Legacy")
     print("-" * 60)
-    print(f"  Total Return:         {ep.get('total_return', 0):+12.2%}    {lg.get('total_return', 0):+12.2%}")
-    print(f"  Max Drawdown:         {ep.get('max_drawdown', 0):12.2%}    {lg.get('max_drawdown', 0):12.2%}")
+    print(
+        f"  Total Return:         {ep.get('total_return', 0):+12.2%}    {lg.get('total_return', 0):+12.2%}"
+    )
+    print(
+        f"  Max Drawdown:         {ep.get('max_drawdown', 0):12.2%}    {lg.get('max_drawdown', 0):12.2%}"
+    )
     print(f"  Sharpe Ratio:         {ep.get('sharpe', 0):12.2f}    {lg.get('sharpe', 0):12.2f}")
-    print(f"  Total Trades:         {ep.get('total_trades', 0):12d}    {lg.get('total_trades', 0):12d}")
+    print(
+        f"  Total Trades:         {ep.get('total_trades', 0):12d}    {lg.get('total_trades', 0):12d}"
+    )
     print(f"  Win Rate:             {ep.get('win_rate', 0):12.1%}    {lg.get('win_rate', 0):12.1%}")
 
     if "total_orders" in ep:
@@ -517,6 +530,7 @@ def print_comparison(
 # =============================================================================
 # Plot Functions (Phase 16D)
 # =============================================================================
+
 
 def _save_execution_plots(
     engine: BacktestEngine,
@@ -565,7 +579,7 @@ def _save_execution_plots(
     plots_created = 0
 
     # Slippage-Histogram
-    if hasattr(engine, 'execution_results') and engine.execution_results:
+    if hasattr(engine, "execution_results") and engine.execution_results:
         slippages = extract_slippages_from_results(engine.execution_results)
         if slippages:
             plot_slippage_histogram(
@@ -620,6 +634,7 @@ def _save_execution_plots(
 # =============================================================================
 # Main Functions
 # =============================================================================
+
 
 def run_backtest(
     df: pd.DataFrame,

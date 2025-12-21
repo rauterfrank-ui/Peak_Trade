@@ -232,9 +232,3 @@ echo "  1. Reports analysieren und Ergebnisse in der Case-Study ergänzen."
 echo "  2. Bei positiver Validierung: Governance-Review anstoßen."
 echo "  3. Shadow-Mode-Tests mit optimierten Parametern planen."
 echo ""
-
-
-
-
-
-

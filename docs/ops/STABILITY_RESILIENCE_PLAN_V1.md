@@ -373,7 +373,7 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 3. **Add circuit breaker protection:**
    ```python
    from src.core.resilience import circuit_breaker
-   
+
    @circuit_breaker(failure_threshold=3, recovery_timeout=60)
    def external_api_call():
        # Your code here
@@ -383,7 +383,7 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 4. **Add retry logic:**
    ```python
    from src.core.resilience import retry_with_backoff
-   
+
    @retry_with_backoff(max_attempts=3, base_delay=1.0)
    def transient_operation():
        # Your code here
@@ -393,17 +393,17 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 5. **Register health checks:**
    ```python
    from src.core.resilience import health_check
-   
+
    def check_my_service():
        return True, "Service is healthy"
-   
+
    health_check.register("my_service", check_my_service)
    ```
 
 6. **Mark smoke tests:**
    ```python
    import pytest
-   
+
    @pytest.mark.smoke
    def test_critical_feature():
        """Fast test for critical functionality."""
@@ -421,7 +421,7 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 | C    | ✅ Complete | `copilot/complete-circuit-breaker-implementation` | This PR | 36 passed | This doc + `docs/RESILIENCE.md` + `docs/SMOKE_TESTS.md` |
 
 **Total Tests Added:** 147 tests (all passing)
-**Documentation:** 
+**Documentation:**
 - `docs/ops/STABILITY_RESILIENCE_PLAN_V1.md` (this document)
 - `docs/RESILIENCE.md` (comprehensive resilience guide)
 - `docs/SMOKE_TESTS.md` (smoke test documentation)
@@ -459,7 +459,7 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 
 - **Bugs/Issues:** Create GitHub issue with `stability` or `resilience` label
 - **Questions:** Tag `@staff-engineer` in Slack/Discord
-- **Documentation:** 
+- **Documentation:**
   - This file (`docs/ops/STABILITY_RESILIENCE_PLAN_V1.md`)
   - `docs/RESILIENCE.md` (detailed resilience guide)
   - `docs/SMOKE_TESTS.md` (smoke test guide)
