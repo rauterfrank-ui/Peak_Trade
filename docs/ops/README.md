@@ -502,6 +502,21 @@ The trend analysis includes a simple readiness assessment:
 
 Vollautomatisierter Workflow zur Erstellung von Merge-Logs für bereits gemergte PRs.
 
+#### Depth=1 Policy: No Merge-Logs for Merge-Log PRs
+
+**Warum:** Merge-Log PRs sind reine Dokumentations-PRs. Sie selbst noch einmal zu dokumentieren würde eine rekursive Kette erzeugen.
+
+**Verhalten:**
+- Wenn du versuchst, einen Merge-Log für einen Merge-Log PR zu erstellen (Titel-Pattern: `^docs\(ops\): add PR #[0-9]+ merge log`), wird der Workflow mit einer klaren Fehlermeldung abbrechen.
+- **Override:** Falls du diese Policy wirklich umgehen musst (z.B. für Tests):
+  ```bash
+  ALLOW_RECURSIVE=1 make mlog-auto PR=123
+  ```
+
+**Test Coverage:**
+- `tests/test_ops_merge_log_workflow_wrapper.py` enthält Tests für die Depth=1 Policy
+- Pattern-Matching, Override-Verhalten, und Fehler-Cases sind abgedeckt
+
 #### Quick Commands (via Makefile)
 
 ```bash

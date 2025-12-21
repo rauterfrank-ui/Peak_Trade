@@ -113,6 +113,10 @@ mlflow-smoke:
 
 .PHONY: mlog mlog-auto mlog-review mlog-no-web mlog-manual
 
+# Depth=1 policy: refuse merge-logs for merge-log PRs (unless ALLOW_RECURSIVE=1)
+ALLOW_RECURSIVE ?= 0
+export ALLOW_RECURSIVE
+
 # Generic target with MODE parameter
 mlog:
 	@if [ -z "$(PR)" ]; then \
@@ -122,6 +126,9 @@ mlog:
 		echo "  or: make mlog-review PR=<NUM>"; \
 		echo "  or: make mlog-no-web PR=<NUM>"; \
 		echo "  or: make mlog-manual PR=<NUM>"; \
+		echo ""; \
+		echo "Depth=1 policy: Merge-log PRs cannot have their own merge logs."; \
+		echo "  Override: ALLOW_RECURSIVE=1 make mlog-auto PR=<NUM>"; \
 		exit 2; \
 	fi
 	@MODE=$${MODE:-auto}; \
