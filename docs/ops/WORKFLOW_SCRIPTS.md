@@ -25,6 +25,9 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 | `scripts/post_merge_workflow_pr203.sh` | All-in-One: Docs erstellen + PR-Flow | PR #203 Merge-Log vollautomatisch |
 | `scripts/quick_pr_merge.sh` | Quick PR-Merge | Wenn Docs bereits committet sind |
 | `scripts/post_merge_workflow.sh` | Generisches Post-Merge Verification | Hygiene + Verification nach jedem Merge |
+| `scripts/workflows/merge_and_format_sweep.sh` | PR Merge + Format-Sweep + Large-PR Test | Automated merge + format sweep workflow |
+
+**Siehe auch:** [WORKFLOW_MERGE_AND_FORMAT_SWEEP.md](WORKFLOW_MERGE_AND_FORMAT_SWEEP.md) — Comprehensive ops runbook für Merge + Format Sweep Workflow (inkl. CI Large-PR Handling, Quickstart, Scenarios, Troubleshooting).
 
 ---
 
