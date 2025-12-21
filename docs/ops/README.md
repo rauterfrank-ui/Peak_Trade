@@ -335,7 +335,7 @@ reports/obs/stage1/
 ## Guides
 - Labeling Guide → LABELING_GUIDE.md
 - Workflow Scripts → WORKFLOW_SCRIPTS.md
-- Merge + Format Sweep Workflow → WORKFLOW_MERGE_AND_FORMAT_SWEEP.md
+- **Merge + Format Sweep Workflow → [WORKFLOW_MERGE_AND_FORMAT_SWEEP.md](WORKFLOW_MERGE_AND_FORMAT_SWEEP.md)** — Standardisierter Merge-Prozess + optionaler Format-Sweep, inkl. Large-PR Handling Simulation
 
 ## Utilities
 
