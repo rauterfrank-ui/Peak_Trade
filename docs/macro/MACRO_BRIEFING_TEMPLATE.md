@@ -103,4 +103,3 @@ rationale = "[Begründung]"
 | Datum | Änderung |
 |-------|----------|
 | YYYY-MM-DD | Initial |
-

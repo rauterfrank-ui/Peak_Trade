@@ -259,25 +259,25 @@ Peak_Trade/
 ```python
 class BaseStrategy(ABC):
     """Basis-Interface für alle Strategien."""
-    
+
     @abstractmethod
     def generate_signals(self, df: pd.DataFrame) -> pd.Series:
         """
         Generiert Trading-Signale.
-        
+
         Args:
             df: OHLCV DataFrame mit DatetimeIndex
-            
+
         Returns:
             pd.Series mit Signalen: -1 (Short), 0 (Flat), +1 (Long)
         """
         pass
-    
+
     @property
     def name(self) -> str:
         """Strategie-Name für Logging/Reports."""
         return self.__class__.__name__
-    
+
     @property
     def params(self) -> Dict[str, Any]:
         """Aktuelle Parameter der Strategie."""
@@ -599,7 +599,7 @@ session = ShadowPaperSession(
 # Bar-by-Bar Simulation
 for bar in live_data_feed:
     session.step(bar)
-    
+
 # Ergebnisse
 print(session.get_summary())
 ```

@@ -47,6 +47,7 @@ Usage:
     python scripts/run_sweep_strategy.py --strategy ma_crossover \\
         --grid config/sweeps/ma_crossover.toml --dry-run
 """
+
 from __future__ import annotations
 
 import argparse
@@ -214,7 +215,8 @@ Examples:
         help="Nur Kombinationen anzeigen, keine Backtests ausführen",
     )
     output_group.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe",
     )
@@ -268,9 +270,7 @@ def load_parameter_grid(grid_arg: str) -> Dict[str, List[Any]]:
     try:
         return json.loads(grid_arg)
     except json.JSONDecodeError as e:
-        raise ValueError(
-            f"Konnte Grid nicht laden. Weder gültige Datei noch JSON-String: {e}"
-        )
+        raise ValueError(f"Konnte Grid nicht laden. Weder gültige Datei noch JSON-String: {e}")
 
 
 def parse_cli_params(params: List[str]) -> Dict[str, List[Any]]:
@@ -290,7 +290,9 @@ def parse_cli_params(params: List[str]) -> Dict[str, List[Any]]:
     grid = {}
     for param in params:
         if "=" not in param:
-            raise ValueError(f"Ungültiges Parameter-Format: {param}. Erwartet: KEY=VALUE1,VALUE2,...")
+            raise ValueError(
+                f"Ungültiges Parameter-Format: {param}. Erwartet: KEY=VALUE1,VALUE2,..."
+            )
 
         key, values_str = param.split("=", 1)
         key = key.strip()
@@ -412,9 +414,9 @@ def print_summary_table(
         print("\nKeine erfolgreichen Ergebnisse.")
         return
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"TOP {len(top_results)} ERGEBNISSE (sortiert nach {sort_by})")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
 
     header = f"{'#':>3} {'Return':>10} {'Sharpe':>8} {'MaxDD':>10} {'Trades':>7} | Parameter"
     print(header)
@@ -431,9 +433,7 @@ def print_summary_table(
         if len(param_str) > 35:
             param_str = param_str[:32] + "..."
 
-        print(
-            f"{i:>3} {total_ret:>10.2%} {sharpe:>8.2f} {max_dd:>10.2%} {trades:>7} | {param_str}"
-        )
+        print(f"{i:>3} {total_ret:>10.2%} {sharpe:>8.2f} {max_dd:>10.2%} {trades:>7} | {param_str}")
 
 
 def export_results(summary: SweepSummary, export_path: str) -> None:
@@ -572,15 +572,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"\nFEHLER beim Sweep: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
     print()  # Newline nach Fortschrittsanzeige
 
     # Zusammenfassung
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("SWEEP ABGESCHLOSSEN")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
     print(f"  Strategie:     {summary.strategy_key}")
     print(f"  Symbol:        {summary.symbol}")
     print(f"  Timeframe:     {summary.timeframe}")
@@ -602,9 +603,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     # Bestes Ergebnis
     if summary.best_result:
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("BESTES ERGEBNIS")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         best = summary.best_result
         print(f"  Parameter:     {best.params}")
         print(f"  Total Return:  {best.total_return:.2%}")
@@ -621,7 +622,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
         print("\nNächste Schritte:")
         print(f"  python scripts/list_experiments.py --run-type sweep")
-        print(f"  python scripts/analyze_experiments.py --mode top-runs --run-type sweep --metric {args.sort_by}")
+        print(
+            f"  python scripts/analyze_experiments.py --mode top-runs --run-type sweep --metric {args.sort_by}"
+        )
 
     # Export
     if args.export:

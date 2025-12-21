@@ -1,0 +1,52 @@
+# Execution Telemetry - Retention & Compression Configuration
+# Phase 16E - Automated log lifecycle management
+
+[execution_telemetry.retention]
+# Master switch for automatic retention/cleanup
+enabled = true
+
+# Age-based retention (days)
+# Logs older than this will be deleted (unless protected by keep_last_n_sessions)
+max_age_days = 30
+
+# Session-count protection
+# Always keep the last N sessions, even if they exceed max_age_days
+# Set to 0 to disable session-count protection
+keep_last_n_sessions = 200
+
+# Total size limit (MB)
+# If total log size exceeds this, delete oldest logs first (respecting keep_last_n_sessions)
+# Set to 0 to disable size limit
+max_total_mb = 2048
+
+# Compression settings
+# Compress logs older than N days using gzip (.jsonl -> .jsonl.gz)
+# Compressed logs are ~10-20% of original size
+# Set to 0 to disable compression
+compress_after_days = 7
+
+# Protect recent sessions from compression
+# If true, logs in keep_last_n_sessions will NOT be compressed (even if old enough)
+# If false, all logs older than compress_after_days will be compressed
+protect_keep_last_from_compress = false
+
+# Example scenarios:
+#
+# Scenario 1: Keep last 30 days, compress after 7 days
+#   max_age_days = 30
+#   compress_after_days = 7
+#   Result: Logs 0-7 days: raw .jsonl
+#           Logs 7-30 days: .jsonl.gz
+#           Logs > 30 days: deleted
+#
+# Scenario 2: Keep last 200 sessions forever, compress old ones
+#   max_age_days = 365  # effectively disabled
+#   keep_last_n_sessions = 200
+#   compress_after_days = 7
+#   Result: Last 200 sessions kept, old ones (>7d) compressed
+#
+# Scenario 3: Aggressive cleanup, no compression
+#   max_age_days = 7
+#   keep_last_n_sessions = 50
+#   compress_after_days = 0  # disabled
+#   Result: Keep max 7 days or 50 sessions (whichever is larger), no compression

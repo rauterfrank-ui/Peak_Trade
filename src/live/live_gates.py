@@ -29,6 +29,7 @@ Usage:
     result = check_portfolio_live_eligibility("core_balanced")
     print(result)
 """
+
 from __future__ import annotations
 
 import logging
@@ -473,9 +474,7 @@ def check_portfolio_live_eligibility(
             ineligible_strategies.append(strategy_id)
 
     if ineligible_strategies:
-        reasons.append(
-            f"Portfolio contains ineligible strategies: {ineligible_strategies}"
-        )
+        reasons.append(f"Portfolio contains ineligible strategies: {ineligible_strategies}")
         details["ineligible_strategies"] = ineligible_strategies
 
     # Check 3: Konzentrations-Check
@@ -524,9 +523,7 @@ def assert_strategy_eligible(
     """
     result = check_strategy_live_eligibility(strategy_id, policies=policies)
     if not result.is_eligible:
-        raise ValueError(
-            f"Strategy '{strategy_id}' is not live-eligible: {result.reasons}"
-        )
+        raise ValueError(f"Strategy '{strategy_id}' is not live-eligible: {result.reasons}")
 
 
 def assert_portfolio_eligible(
@@ -554,9 +551,7 @@ def assert_portfolio_eligible(
         policies=policies,
     )
     if not result.is_eligible:
-        raise ValueError(
-            f"Portfolio '{portfolio_id}' is not live-eligible: {result.reasons}"
-        )
+        raise ValueError(f"Portfolio '{portfolio_id}' is not live-eligible: {result.reasons}")
 
 
 def get_eligibility_summary() -> Dict[str, Any]:

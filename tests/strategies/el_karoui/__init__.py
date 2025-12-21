@@ -8,6 +8,3 @@ Diese Tests validieren:
 - ElKarouiVolModel (Vol-Berechnung, Regime-Klassifikation)
 - ElKarouiVolatilityStrategy (Signal-Generierung, Tier-Gating)
 """
-
-
-

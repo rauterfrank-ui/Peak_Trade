@@ -25,6 +25,7 @@ Usage:
     )
     result = run_walkforward_for_config("config_1", config)
 """
+
 from __future__ import annotations
 
 import logging
@@ -317,13 +318,16 @@ def run_walkforward_for_config(
             raise ValueError("Entweder strategy_name oder strategy_params muss angegeben werden")
         try:
             from ..core.config_registry import get_strategy_cfg
+
             strategy_params = get_strategy_cfg(strategy_name)
             logger.info(f"Strategie-Parameter aus config geladen: {strategy_name}")
         except KeyError as e:
             raise ValueError(f"Strategie '{strategy_name}' nicht in config gefunden: {e}") from e
     else:
         if strategy_name is None:
-            strategy_name = wf_config.sweep_name.split("_")[0] if wf_config.sweep_name else "unknown"
+            strategy_name = (
+                wf_config.sweep_name.split("_")[0] if wf_config.sweep_name else "unknown"
+            )
             logger.warning(f"strategy_name nicht angegeben, verwende: {strategy_name}")
 
     if strategy_signal_fn is None:
@@ -653,4 +657,3 @@ def run_walkforward_for_top_n_from_sweep(
     )
 
     return results
-

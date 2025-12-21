@@ -1,238 +1,460 @@
-# Operations Guide
+# Peak_Trade – Ops PR Tools
 
-Quick reference for Peak_Trade operational tasks.
+Zwei Bash-Skripte zur Verwaltung und Analyse von Pull Requests im Peak_Trade Repository.
 
 ---
 
-## Audit System
+## 📋 Übersicht
 
-### Quick Commands
+| Skript | Zweck | Output | Network | Safe Default |
+|--------|-------|--------|---------|--------------|
+| `pr_inventory_full.sh` | Vollständiges PR-Inventar + Analyse | JSON/CSV/Markdown | ✅ Read-only | ✅ Ja |
+| `label_merge_log_prs.sh` | Automatisches Labeln von Merge-Log-PRs | GitHub Labels | ✅ Write | ✅ DRY_RUN=1 |
+
+---
+
+## 🔍 PR Inventory (vollständig)
+
+Generiert ein vollständiges PR-Inventar inkl. Analyse, CSV-Export und Markdown-Report.
+
+### Verwendung
 
 ```bash
-# Run full audit (local)
-make audit
+# Standard (alle Defaults)
+./scripts/ops/pr_inventory_full.sh
 
-# Or directly
-./scripts/run_audit.sh
+# Mit custom Repository
+REPO=owner/name ./scripts/ops/pr_inventory_full.sh
+
+# Mit custom Output-Verzeichnis
+OUT_ROOT=$HOME/Peak_Trade/reports/ops ./scripts/ops/pr_inventory_full.sh
+
+# Mit Limit
+LIMIT=500 ./scripts/ops/pr_inventory_full.sh
+
+# Alle Optionen kombiniert
+REPO=rauterfrank-ui/Peak_Trade \
+LIMIT=1000 \
+OUT_ROOT=/tmp \
+./scripts/ops/pr_inventory_full.sh
+
+# Help anzeigen
+./scripts/ops/pr_inventory_full.sh --help
 ```
 
-**Exit Codes:**
-- `0` - All critical checks passed (GREEN)
-- `1` - Warnings/findings but no hard failures (YELLOW)
-- `2` - Critical failure - failing tests or secrets detected (RED)
+### Output-Struktur
 
-**Output Location:**
-- Timestamped: `reports/audit/YYYY-MM-DD_HHMM/`
-- Latest (symlink): `reports/audit/latest/`
-- Machine-readable: `reports/audit/latest/summary.json`
+```
+/tmp/peak_trade_pr_inventory_<timestamp>/
+├── open.json              # Alle offenen PRs
+├── closed_all.json        # Alle geschlossenen PRs (inkl. merged)
+├── merged.json            # Nur gemergte PRs
+├── merge_logs.csv         # Merge-Log-PRs als CSV
+└── PR_INVENTORY_REPORT.md # Zusammenfassung + Statistiken
+```
 
-### CI/CD Integration
+### Report-Inhalt
 
-**GitHub Actions:**
-- Workflow: `.github/workflows/audit.yml`
-- Schedule: Weekly (Mondays 06:00 UTC)
-- Manual trigger: Actions → Audit → Run workflow
-- Artifacts: Download from workflow run
+Der `PR_INVENTORY_REPORT.md` enthält:
 
-**Accessing Artifacts:**
-1. Go to `https://github.com/rauterfrank-ui/Peak_Trade/actions`
-2. Click on latest "Audit" workflow run
-3. Download `audit-artifacts.zip`
-4. Extract and review `summary.md` and `summary.json`
+- **Totals**: Open, Closed, Merged, Closed (unmerged)
+- **Category Counts**:
+  - `merge_log` – PRs mit Pattern `^docs\(ops\): add PR #\d+ merge log`
+  - `ops_infra` – Ops/Workflow/CI/Audit/Runbook-PRs
+  - `format_sweep` – Format/Lint/Pre-commit-PRs
+  - `other` – Alle anderen
+- **Latest merge-log PRs**: Top 25 mit Links
 
-## CI Fast Lane
+### Konfiguration
 
-- **Pull Requests (Fast Lane):** nur **Python 3.11** (schnelles Feedback, typ. ~3–4 min)
-- **main (Full Matrix):** **Python 3.9 / 3.10 / 3.11** (vollständige Kompatibilitätsprüfung nach Merge)
-- **Manuell & geplant:** Full Matrix via `workflow_dispatch` und `schedule`
-- **Hardening:**
-  - `fail-fast: false` (Matrix läuft vollständig durch, auch bei Fehlern)
-  - `concurrency` mit `cancel-in-progress` (alte Runs werden abgebrochen)
-  - **Timeouts:** `tests=20min`, `strategy-smoke=10min`
+| Variable | Default | Beschreibung |
+|----------|---------|--------------|
+| `REPO` | `rauterfrank-ui/Peak_Trade` | GitHub Repository |
+| `LIMIT` | `1000` | Max. PRs pro Abfrage |
+| `OUT_ROOT` | `/tmp` | Output-Verzeichnis |
 
-**Siehe auch:** `docs/ops/PR_45_FINAL_REPORT.md` (Audit/Verification Log zu PR #45)
+### Beispiel-Output
 
-### Audit Checks
+```markdown
+# Peak_Trade – PR Inventory Report
 
-The audit system runs:
+- Generated: 2025-12-21 14:30:00
 
-1. **Repository Health**
-   - Git status, commit history, branch info
-   - Disk usage analysis
-   - Git maintenance recommendations
+## Totals
 
-2. **Security Scans**
-   - Secrets detection (API keys, tokens, private keys)
-   - Live trading gate verification (~340 safety gates)
+- Open PRs: **3**
+- Closed (all): **215**
+- Merged: **198**
+- Closed (unmerged): **17**
 
-3. **Code Quality** (optional tools)
-   - `ruff` - Fast Python linter
-   - `black` - Code formatting check
-   - `mypy` - Type checking
-   - `bandit` - Security issue detection
-   - `pip-audit` - Dependency vulnerability scan
+## Category counts (closed_all)
 
-4. **Testing**
-   - `pytest` - Full test suite
-   - `todo-board-check` - TODO board validation
+- merge_log: **147**
+- ops_infra: **23**
+- format_sweep: **8**
+- other: **37**
 
-### Install Optional Tools
+## Latest merge-log PRs (top 25)
+
+- PR #208 — docs(ops): add PR #207 merge log (2025-12-20T10:15:00Z)
+  - https://github.com/rauterfrank-ui/Peak_Trade/pull/208
+...
+```
+
+---
+
+## 🏷️ Label Merge-Log PRs
+
+Findet alle Merge-Log-PRs und labelt sie automatisch (mit DRY_RUN-Protection).
+
+### Verwendung
 
 ```bash
-# Show install commands
-make audit-tools
+# DRY RUN (Standard): Nur anzeigen, keine Änderungen
+./scripts/ops/label_merge_log_prs.sh
 
-# Install all at once
-pip install ruff black mypy pip-audit bandit
-brew install ripgrep  # macOS only
+# DRY RUN mit custom Label
+LABEL="documentation/merge-log" ./scripts/ops/label_merge_log_prs.sh
+
+# ECHT: Labels wirklich anwenden
+DRY_RUN=0 ./scripts/ops/label_merge_log_prs.sh
+
+# Mit Label-Auto-Creation
+ENSURE_LABEL=1 DRY_RUN=0 ./scripts/ops/label_merge_log_prs.sh
+
+# Alle Optionen kombiniert
+REPO=rauterfrank-ui/Peak_Trade \
+LABEL="ops/merge-log" \
+LIMIT=1000 \
+ENSURE_LABEL=1 \
+DRY_RUN=0 \
+./scripts/ops/label_merge_log_prs.sh
+
+# Help anzeigen
+./scripts/ops/label_merge_log_prs.sh --help
 ```
 
-### Interpreting Results
+### Konfiguration
 
-**Green (Exit 0):**
-- All critical checks passed
-- Safe to deploy/merge
+| Variable | Default | Beschreibung |
+|----------|---------|--------------|
+| `REPO` | `rauterfrank-ui/Peak_Trade` | GitHub Repository |
+| `LABEL` | `ops/merge-log` | Label-Name |
+| `LIMIT` | `1000` | Max. PRs pro Abfrage |
+| `DRY_RUN` | `1` | 1 = nur anzeigen, 0 = wirklich labeln |
+| `ENSURE_LABEL` | `0` | 1 = Label erstellen falls nicht vorhanden |
 
-**Yellow (Exit 1):**
-- Warnings present (e.g., todo-board issues, high secrets hits)
-- Review `summary.md` for details
-- Not a blocker, but investigate
+### Pattern-Matching
 
-**Red (Exit 2):**
-- Critical failure (tests failing)
-- **DO NOT DEPLOY**
-- Fix issues before proceeding
+Das Skript findet PRs mit folgendem Titel-Pattern (case-insensitive):
 
-### Machine-Readable Output
+```
+^docs\(ops\): add PR #\d+ merge log
+```
+
+**Beispiele:**
+- ✅ `docs(ops): add PR #207 merge log`
+- ✅ `Docs(ops): Add PR #123 Merge Log`
+- ❌ `feat: add merge log for PR #123`
+- ❌ `docs(ops): update merge log`
+
+### Output
 
 ```bash
-# Parse latest audit with jq
-cat reports/audit/latest/summary.json | jq '.status.audit_exit_code'
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏷️  Peak_Trade: Label merge-log PRs
+Repo: rauterfrank-ui/Peak_Trade | Label: ops/merge-log | DRY_RUN=1
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Found merge-log PRs: 147
+List: /tmp/peak_trade_merge_log_prs.txt
 
-# Check pytest status
-cat reports/audit/latest/summary.json | jq '.exit_codes.pytest'
+DRY RUN (no changes). First 30 PRs:
+ - PR #208
+ - PR #206
+ - PR #204
+ ...
 
-# Get findings count
-cat reports/audit/latest/summary.json | jq '.findings'
-```
-
-**JSON Schema (v1.1):**
-```json
-{
-  "audit_version": "1.1",
-  "timestamp": "YYYY-MM-DD_HHMM",
-  "timestamp_iso": "ISO 8601 timestamp",
-  "repo": {
-    "branch": "branch-name",
-    "commit_sha": "full-sha",
-    "commit_short": "short-sha"
-  },
-  "tool_availability": { "tool": true|false },
-  "exit_codes": {
-    "pytest": "0|SKIPPED|exit_code",
-    "todo_board": "0|SKIPPED|exit_code"
-  },
-  "findings": {
-    "secrets_hits": 123,
-    "live_gating_hits": 456
-  },
-  "status": {
-    "overall": "GREEN|YELLOW|RED",
-    "audit_exit_code": 0
-  }
-}
+To actually apply labels:
+  DRY_RUN=0 LABEL="ops/merge-log" scripts/ops/label_merge_log_prs.sh
 ```
 
 ---
 
-## Git Maintenance
+## 🛡️ Sicherheitsfeatures
+
+### Beide Skripte
+
+- ✅ `set -euo pipefail` für strikte Fehlerbehandlung
+- ✅ Preflight-Checks für `gh` CLI und Python
+- ✅ `gh auth status` Validierung
+- ✅ Help-Text (`--help`, `-h`)
+- ✅ Auto-Detection von `python3` / `python`
+
+### `label_merge_log_prs.sh` spezifisch
+
+- ✅ **DRY_RUN=1** als Standard (keine versehentlichen Änderungen)
+- ✅ Empty-Result-Check (Exit wenn keine PRs gefunden)
+- ✅ Optional: Label-Auto-Creation mit `ENSURE_LABEL=1`
+
+---
+
+## 📦 Voraussetzungen
+
+### System-Tools
 
 ```bash
-# Pack git objects (safe)
-make gc
+# GitHub CLI
+brew install gh
+gh auth login
 
-# Preview ignored files to clean
-git clean -ndX
-
-# Remove ignored files (CAUTION: irreversible!)
-git clean -fdX
+# Python (3.x bevorzugt)
+python3 --version
+# oder
+python --version
 ```
 
----
+### Python-Module
 
-## Audit Logs (Ops)
-Konvention:
-- Dateien: `docs/ops/PR_<NN>_FINAL_REPORT.md` (Verification Log pro PR)
-- Regel: Wenn ein Ops-PR einen auditierbaren Verification Log erzeugt, hier verlinken.
-- **Automation Runbook**: [PR_REPORT_AUTOMATION_RUNBOOK.md](PR_REPORT_AUTOMATION_RUNBOOK.md) – Generate, validate, and CI guard PR reports
-
-- PR #45 – CI Fast Lane Verification Log: `docs/ops/PR_45_FINAL_REPORT.md`
-- PR #51 – Live Session Evaluation CLI: `docs/ops/PR_51_FINAL_REPORT.md`
-- PR #53 – Final Closeout Report: `docs/ops/PR_53_FINAL_REPORT.md`
-- PR #59 – Final Report: `docs/ops/PR_59_FINAL_REPORT.md`
-- PR #61 – Final Report: `docs/ops/PR_61_FINAL_REPORT.md`
-- PR #62 – Final Report: `docs/ops/PR_62_FINAL_REPORT.md`
-- PR #63 – Final Report: `docs/ops/PR_63_FINAL_REPORT.md`
-- PR #66 – Final Report: `docs/ops/PR_66_FINAL_REPORT.md`
-- PR #70 – Final Report: `docs/ops/PR_70_FINAL_REPORT.md`
-- PR #73 – Final Report: `docs/ops/PR_73_FINAL_REPORT.md`
-- PR #74 – Final Report: `docs/ops/PR_74_FINAL_REPORT.md`
+Beide Skripte verwenden nur Standard-Library-Module:
+- `json`
+- `re`
+- `csv`
+- `pathlib`
+- `datetime`
+- `sys`
 
 ---
 
-## Merge Logs (Ops)
-Post-merge documentation logs for operational PRs.
+## 🔄 Workflow-Beispiele
 
-- PR #76 – Merge Log: `docs/ops/PR_76_MERGE_LOG.md`
-- PR #85 – Merge Log: `docs/ops/PR_85_MERGE_LOG.md`
-- PR #87 – Merge Log: `docs/ops/PR_87_MERGE_LOG.md`
-- PR #90 – chore(ops): add git state + post-merge verification scripts – `docs/ops/PR_90_MERGE_LOG.md`
-- PR #92 – Merge Log: `docs/ops/PR_92_MERGE_LOG.md`
-- PR #93 – Merge Log: `docs/ops/PR_93_MERGE_LOG.md`
-- PR #110 – feat(reporting): Quarto smoke report – `docs/ops/PR_110_MERGE_LOG.md`
-- PR #112 – fix(reporting): make Quarto smoke report no-exec – `docs/ops/PR_112_MERGE_LOG.md`
-- PR #114 – fix(reporting): make Quarto smoke report truly no-exec – `docs/ops/PR_114_MERGE_LOG.md`
-- PR #116 – Merge Log: `docs/ops/PR_116_MERGE_LOG.md`
-- PR #121 – chore(ops): default expected head in post-merge verify – `docs/ops/PR_121_MERGE_LOG.md`
-- PR #136 – feat(stability): wave A contracts, cache integrity, errors, reproducibility – `docs/ops/PR_136_MERGE_LOG.md`
-- PR #150 – feat(dev): add local MLflow via docker compose + make targets – `docs/ops/PR_150_MERGE_LOG.md` (2025-12-18 23:50:42 UTC)
-
----
-- PR #80 – Merge Log: `docs/ops/PR_80_MERGE_LOG.md`
-## Live Session Evaluation
-
-Offline tool for analyzing live trading sessions from `fills.csv`.
+### 1. Vollständige PR-Analyse
 
 ```bash
-# Evaluate session
-python scripts/evaluate_live_session.py --session-dir /path/to/session
+# Step 1: Inventory generieren
+./scripts/ops/pr_inventory_full.sh
 
-# Generate JSON report
-python scripts/evaluate_live_session.py \
-  --session-dir /path/to/session \
-  --write-report
+# Step 2: Report öffnen
+code /tmp/peak_trade_pr_inventory_$(date +%Y%m%d)*/PR_INVENTORY_REPORT.md
+
+# Step 3: CSV analysieren
+open /tmp/peak_trade_pr_inventory_$(date +%Y%m%d)*/merge_logs.csv
 ```
 
-**Key Features:**
-- FIFO PnL calculation per symbol
-- VWAP (overall + per symbol)
-- Side breakdown (buy/sell stats)
-- Offline only (no exchange/API calls)
+### 2. Merge-Log-PRs labeln (sicher)
 
-**See:** `docs/ops/LIVE_SESSION_EVALUATION.md` for detailed runbook
+```bash
+# Step 1: DRY RUN (was würde passieren?)
+./scripts/ops/label_merge_log_prs.sh
+
+# Step 2: Review der gefundenen PRs
+cat /tmp/peak_trade_merge_log_prs.txt
+
+# Step 3: Label erstellen (falls nötig) + anwenden
+ENSURE_LABEL=1 DRY_RUN=0 ./scripts/ops/label_merge_log_prs.sh
+```
+
+### 3. Batch-Processing (beide Skripte)
+
+```bash
+#!/usr/bin/env bash
+# ops_pr_maintenance.sh
+
+# 1) Inventory
+echo "=== Generating PR Inventory ==="
+OUT_ROOT=$HOME/Peak_Trade/reports/ops ./scripts/ops/pr_inventory_full.sh
+
+# 2) Labeling
+echo ""
+echo "=== Labeling Merge-Log PRs ==="
+ENSURE_LABEL=1 DRY_RUN=0 ./scripts/ops/label_merge_log_prs.sh
+
+echo ""
+echo "✅ PR Maintenance complete"
+```
 
 ---
 
-## Related Documentation
+## 🐛 Troubleshooting
 
-- `scripts/run_audit.sh` - Audit script implementation
-- `docs/ops/PYTHON_VERSION_PLAN.md` - Python upgrade roadmap
-- `docs/ops/AUDIT_VALIDATION_NOTES.md` - Baseline validation findings
-- `GIT_STATE_VALIDATION.md` – Git state validation utilities and usage
-- `docs/ops/LIVE_SESSION_EVALUATION.md` - Live session evaluation runbook
-- `docs/ops/WORKTREE_POLICY.md` - Git worktree management policy
-- `Makefile` - All available make targets
+### Error: `gh CLI fehlt`
+
+```bash
+brew install gh
+gh auth login
+```
+
+### Error: `gh ist nicht authentifiziert`
+
+```bash
+gh auth login
+gh auth status
+```
+
+### Error: `python fehlt`
+
+```bash
+# macOS
+brew install python3
+
+# Ubuntu/Debian
+sudo apt install python3
+```
+
+### Label existiert nicht
+
+```bash
+# Option 1: Auto-Create
+ENSURE_LABEL=1 DRY_RUN=0 ./scripts/label_merge_log_prs.sh
+
+# Option 2: Manuell erstellen
+gh label create "ops/merge-log" \
+  --description "Merge-log documentation PRs" \
+  --color "ededed"
+```
+
+### DRY_RUN deaktivieren funktioniert nicht
+
+```bash
+# Richtig:
+DRY_RUN=0 ./scripts/label_merge_log_prs.sh
+
+# Falsch (String wird als truthy interpretiert):
+DRY_RUN=false ./scripts/label_merge_log_prs.sh
+```
 
 ---
 
-*Operations guide for Peak_Trade repository health and maintenance.*
+## 📝 Logging & Debugging
+
+### Temporäre Dateien
+
+```bash
+# PR Nummern (label_merge_log_prs.sh)
+cat /tmp/peak_trade_merge_log_prs.txt
+
+# Inventory Output (pr_inventory_full.sh)
+ls -lh /tmp/peak_trade_pr_inventory_*/
+```
+
+### Debug-Modus aktivieren
+
+```bash
+# Bash Debug-Output
+bash -x ./scripts/ops/pr_inventory_full.sh
+
+# Mit set -x im Skript
+# Füge nach der shebang-Zeile hinzu:
+# set -x
+```
+
+---
+
+## 🧪 Tests
+
+Beide Skripte haben entsprechende Tests im `tests/`-Verzeichnis.
+
+### Relevante Test-Dateien
+
+```bash
+# Workflow-Tests
+tests/test_ops_merge_log_workflow_wrapper.py
+
+# Integration-Tests (falls vorhanden)
+tests/integration/test_ops_pr_tools.py
+```
+
+### Test-Ausführung
+
+```bash
+# Einzelner Test
+pytest tests/test_ops_merge_log_workflow_wrapper.py -v
+
+# Alle Ops-Tests
+pytest tests/ -k "ops" -v
+```
+
+---
+
+## 📚 Verwandte Dokumentation
+
+- [Peak_Trade Tooling & Evidence Chain Runbook](../Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
+- [CI Large PR Implementation Report](../CI_LARGE_PR_IMPLEMENTATION_REPORT.md)
+- [Merge Log Workflow](../docs/ops/PR_208_MERGE_LOG.md)
+
+---
+
+## 🔮 Zukünftige Erweiterungen
+
+### Geplant
+
+- [ ] GitHub Actions Integration (automatisches Labeling bei PR-Creation)
+- [ ] Slack/Discord-Benachrichtigungen bei Labeling
+- [ ] Extended Report mit Contributor-Statistiken
+- [ ] CSV-Export für alle Kategorien (nicht nur merge_logs)
+- [ ] Label-Bulk-Removal-Skript (Reversal-Tool)
+
+### Nice-to-Have
+
+- [ ] Web-UI für PR-Inventory (Quarto Dashboard)
+- [ ] Automatische PR-Cleanup-Empfehlungen
+- [ ] Integration mit `knowledge_db` (AI-gestütztes Tagging)
+- [ ] Time-Series-Analyse (PR-Volume über Zeit)
+
+---
+
+## 💡 Tipps & Best Practices
+
+### Performance
+
+```bash
+# Für große Repos: Limit reduzieren
+LIMIT=500 ./scripts/ops/pr_inventory_full.sh
+
+# Parallele Ausführung (wenn mehrere Repos)
+for repo in repo1 repo2 repo3; do
+  REPO="owner/$repo" ./scripts/ops/pr_inventory_full.sh &
+done
+wait
+```
+
+### Sicherheit
+
+```bash
+# Immer zuerst DRY_RUN
+./scripts/ops/label_merge_log_prs.sh
+
+# Label-Creation separat testen
+ENSURE_LABEL=1 DRY_RUN=1 ./scripts/ops/label_merge_log_prs.sh
+```
+
+### Maintenance
+
+```bash
+# Alte Inventory-Outputs aufräumen (älter als 30 Tage)
+find /tmp -name "peak_trade_pr_inventory_*" -type d -mtime +30 -exec rm -rf {} +
+
+# Cleanup-Skript erstellen
+cat > scripts/ops/cleanup_old_inventories.sh <<'EOF'
+#!/usr/bin/env bash
+find /tmp -name "peak_trade_pr_inventory_*" -type d -mtime +30 -print -exec rm -rf {} +
+EOF
+chmod +x scripts/ops/cleanup_old_inventories.sh
+```
+
+---
+
+## 📁 Datei-Struktur
+
+```
+/Users/frnkhrz/Peak_Trade/scripts/
+├── ops/
+│   ├── pr_inventory_full.sh       # ✅ PR Inventory + Analyse
+│   └── label_merge_log_prs.sh     # ✅ Automatisches Labeln
+└── OPS_PR_TOOLS_README.md         # ✅ Diese Dokumentation
+```
+
+---
+
+**Version:** 1.0.0  
+**Letzte Aktualisierung:** 2025-12-21  
+**Maintainer:** Peak_Trade Ops Team

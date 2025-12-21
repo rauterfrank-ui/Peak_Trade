@@ -29,7 +29,7 @@ def test_compute_metrics_single_fill():
             symbol="BTC/USD",
             side="buy",
             qty=0.1,
-            fill_price=50000.0
+            fill_price=50000.0,
         )
     ]
 
@@ -53,21 +53,21 @@ def test_compute_metrics_fifo_pnl_simple():
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
-            fill_price=100.0
+            fill_price=100.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
-            fill_price=110.0
+            fill_price=110.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 10, 0, tzinfo=timezone.utc),
             symbol="BTC/USD",
             side="sell",
             qty=1.5,
-            fill_price=120.0
+            fill_price=120.0,
         ),
     ]
 
@@ -89,14 +89,14 @@ def test_compute_metrics_fifo_pnl_exact_match():
             symbol="ETH/USD",
             side="buy",
             qty=2.0,
-            fill_price=3000.0
+            fill_price=3000.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
             symbol="ETH/USD",
             side="sell",
             qty=2.0,
-            fill_price=3100.0
+            fill_price=3100.0,
         ),
     ]
 
@@ -116,14 +116,14 @@ def test_compute_metrics_fifo_pnl_multiple_symbols():
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
-            fill_price=50000.0
+            fill_price=50000.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
             symbol="BTC/USD",
             side="sell",
             qty=1.0,
-            fill_price=51000.0
+            fill_price=51000.0,
         ),
         # ETH trades
         Fill(
@@ -131,14 +131,14 @@ def test_compute_metrics_fifo_pnl_multiple_symbols():
             symbol="ETH/USD",
             side="buy",
             qty=2.0,
-            fill_price=3000.0
+            fill_price=3000.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 15, 0, tzinfo=timezone.utc),
             symbol="ETH/USD",
             side="sell",
             qty=2.0,
-            fill_price=2900.0
+            fill_price=2900.0,
         ),
     ]
 
@@ -160,14 +160,14 @@ def test_compute_metrics_fifo_pnl_loss():
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
-            fill_price=50000.0
+            fill_price=50000.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
             symbol="BTC/USD",
             side="sell",
             qty=1.0,
-            fill_price=49000.0
+            fill_price=49000.0,
         ),
     ]
 
@@ -185,21 +185,21 @@ def test_compute_metrics_side_breakdown():
             symbol="BTC/USD",
             side="buy",
             qty=0.5,
-            fill_price=50000.0
+            fill_price=50000.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
             symbol="BTC/USD",
             side="buy",
             qty=0.3,
-            fill_price=51000.0
+            fill_price=51000.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 10, 0, tzinfo=timezone.utc),
             symbol="ETH/USD",
             side="sell",
             qty=2.0,
-            fill_price=3000.0
+            fill_price=3000.0,
         ),
     ]
 
@@ -224,14 +224,14 @@ def test_compute_metrics_vwap():
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
-            fill_price=50000.0
+            fill_price=50000.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
             symbol="BTC/USD",
             side="buy",
             qty=2.0,
-            fill_price=51000.0
+            fill_price=51000.0,
         ),
     ]
 
@@ -249,14 +249,14 @@ def test_compute_metrics_excess_sell_strict_mode():
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
-            fill_price=50000.0
+            fill_price=50000.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
             symbol="BTC/USD",
             side="sell",
             qty=2.0,  # Selling more than bought
-            fill_price=51000.0
+            fill_price=51000.0,
         ),
     ]
 
@@ -272,14 +272,14 @@ def test_compute_metrics_excess_sell_best_effort():
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
-            fill_price=50000.0
+            fill_price=50000.0,
         ),
         Fill(
             ts=datetime(2025, 1, 15, 10, 5, 0, tzinfo=timezone.utc),
             symbol="BTC/USD",
             side="sell",
             qty=2.0,  # Selling more than bought
-            fill_price=51000.0
+            fill_price=51000.0,
         ),
     ]
 
@@ -299,7 +299,7 @@ def test_fill_validation():
         symbol="BTC/USD",
         side="buy",
         qty=1.0,
-        fill_price=50000.0
+        fill_price=50000.0,
     )
     assert fill.side == "buy"
 
@@ -310,7 +310,7 @@ def test_fill_validation():
             symbol="BTC/USD",
             side="invalid",
             qty=1.0,
-            fill_price=50000.0
+            fill_price=50000.0,
         )
 
     # Invalid quantity
@@ -320,7 +320,7 @@ def test_fill_validation():
             symbol="BTC/USD",
             side="buy",
             qty=-1.0,
-            fill_price=50000.0
+            fill_price=50000.0,
         )
 
     # Invalid price
@@ -330,5 +330,5 @@ def test_fill_validation():
             symbol="BTC/USD",
             side="buy",
             qty=1.0,
-            fill_price=-100.0
+            fill_price=-100.0,
         )

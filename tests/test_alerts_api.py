@@ -12,6 +12,7 @@ Tests für:
 Run:
     pytest tests/test_alerts_api.py -v
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -309,7 +310,7 @@ class TestGetAlertsForUiWithRunbooks:
 class TestAlertsApiIncludesRunbooksForKnownAlertType:
     """
     API-Level Integration-Test: Alerts mit bekanntem Alert-Type enthalten Runbooks.
-    
+
     Dieser Test validiert den vollständigen Flow:
     1. Alert mit kategorie/source wird erstellt und persistiert (wie Live-Stack)
     2. API-Endpoint wird abgefragt
@@ -371,8 +372,12 @@ class TestAlertsApiIncludesRunbooksForKnownAlertType:
 
         # Assert: Erwartete Runbooks für RISK + live_risk_severity vorhanden
         runbook_ids = [rb.id for rb in test_alert.runbooks]
-        assert "live_risk_severity" in runbook_ids, "live_risk_severity Runbook sollte enthalten sein"
-        assert "live_alert_pipeline" in runbook_ids, "live_alert_pipeline Runbook sollte enthalten sein"
+        assert "live_risk_severity" in runbook_ids, (
+            "live_risk_severity Runbook sollte enthalten sein"
+        )
+        assert "live_alert_pipeline" in runbook_ids, (
+            "live_alert_pipeline Runbook sollte enthalten sein"
+        )
 
         # Cleanup
         reset_default_storage()
@@ -414,7 +419,7 @@ class TestAlertsApiIncludesRunbooksForKnownAlertType:
         response = get_alerts_for_ui(limit=10, hours=24)
 
         assert len(response.alerts) >= 1
-        
+
         critical_alert = response.alerts[0]
         runbook_ids = [rb.id for rb in critical_alert.runbooks]
 
@@ -479,9 +484,7 @@ class TestRunbookEdgeCases:
 
         reset_default_storage()
 
-    def test_runbooks_preserved_through_storage_roundtrip(
-        self, temp_alerts_dir: Path, monkeypatch
-    ):
+    def test_runbooks_preserved_through_storage_roundtrip(self, temp_alerts_dir: Path, monkeypatch):
         """Testet dass Runbooks nach Storage-Roundtrip erhalten bleiben."""
         from src.live.alert_storage import AlertStorage, reset_default_storage
         from src.webui.alerts_api import get_alerts_for_ui
@@ -533,6 +536,3 @@ __all__ = [
     "TestAlertsApiIncludesRunbooksForKnownAlertType",
     "TestRunbookEdgeCases",
 ]
-
-
-

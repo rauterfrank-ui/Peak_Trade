@@ -44,6 +44,7 @@ class TestPortfolioBacktestConstants:
     def test_run_type_in_valid_types(self):
         """Test: portfolio_backtest ist in VALID_RUN_TYPES."""
         from src.core.experiments import VALID_RUN_TYPES
+
         assert RUN_TYPE_PORTFOLIO_BACKTEST in VALID_RUN_TYPES
 
 
@@ -146,8 +147,21 @@ class TestLogPortfolioBacktestResult:
 
         # Equity-Curve mit bekanntem Return
         idx = pd.date_range("2025-01-01", periods=10, freq="1h", tz="UTC")
-        equity_curve = pd.Series([10000.0, 10100.0, 10200.0, 10300.0, 10400.0,
-                                   10500.0, 10600.0, 10700.0, 10800.0, 11000.0], index=idx)
+        equity_curve = pd.Series(
+            [
+                10000.0,
+                10100.0,
+                10200.0,
+                10300.0,
+                10400.0,
+                10500.0,
+                10600.0,
+                10700.0,
+                10800.0,
+                11000.0,
+            ],
+            index=idx,
+        )
 
         component_runs = []
 
@@ -268,8 +282,7 @@ class TestEndToEndPortfolioBacktest:
         for asset in assets:
             returns = np.random.normal(0.0002, 0.01, 100)
             equity_curves[asset] = pd.Series(
-                initial_capital * weights[asset] * np.exp(np.cumsum(returns)),
-                index=idx
+                initial_capital * weights[asset] * np.exp(np.cumsum(returns)), index=idx
             )
 
         # 2. Portfolio-Equity aggregieren
@@ -280,12 +293,14 @@ class TestEndToEndPortfolioBacktest:
         for asset in assets:
             eq = equity_curves[asset]
             total_return = (eq.iloc[-1] / eq.iloc[0]) - 1.0
-            component_runs.append({
-                "symbol": asset,
-                "strategy_key": "ma_crossover",
-                "weight": weights[asset],
-                "total_return": total_return,
-            })
+            component_runs.append(
+                {
+                    "symbol": asset,
+                    "strategy_key": "ma_crossover",
+                    "weight": weights[asset],
+                    "total_return": total_return,
+                }
+            )
 
         # 4. Portfolio-Stats berechnen
         portfolio_stats = {

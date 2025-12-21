@@ -11,6 +11,7 @@ Usage:
     python scripts/report_paper_kpis.py
     python scripts/report_paper_kpis.py --top 10 --output-dir reports/paper
 """
+
 from __future__ import annotations
 
 import argparse
@@ -84,16 +85,12 @@ def _load_paper_runs() -> pd.DataFrame:
     df = pd.read_csv(EXPERIMENTS_CSV)
 
     if "run_type" not in df.columns:
-        raise SystemExit(
-            f"Experiment-Registry {EXPERIMENTS_CSV} enthaelt keine Spalte 'run_type'."
-        )
+        raise SystemExit(f"Experiment-Registry {EXPERIMENTS_CSV} enthaelt keine Spalte 'run_type'.")
 
     df_paper = df[df["run_type"] == "paper_trade"].copy()
 
     if df_paper.empty:
-        raise SystemExit(
-            "Keine paper_trade-Runs in der Experiment-Registry gefunden."
-        )
+        raise SystemExit("Keine paper_trade-Runs in der Experiment-Registry gefunden.")
 
     return df_paper
 
@@ -200,7 +197,9 @@ def aggregate_by_strategy(df_paper: pd.DataFrame) -> pd.DataFrame:
         total_notional = float(grp["total_notional"].apply(lambda x: _safe_float(x, 0)).sum())
         avg_notional_per_run = total_notional / n_runs if n_runs > 0 else 0.0
         total_fees = float(grp["total_fees"].apply(lambda x: _safe_float(x, 0)).sum())
-        realized_pnl_total = float(grp["realized_pnl_total"].apply(lambda x: _safe_float(x, 0)).sum())
+        realized_pnl_total = float(
+            grp["realized_pnl_total"].apply(lambda x: _safe_float(x, 0)).sum()
+        )
         realized_pnl_net = float(grp["realized_pnl_net"].apply(lambda x: _safe_float(x, 0)).sum())
 
         # Slippage: gewichteter Durchschnitt basierend auf notional
@@ -210,8 +209,7 @@ def aggregate_by_strategy(df_paper: pd.DataFrame) -> pd.DataFrame:
 
         if valid_mask.any():
             avg_slippage_bps = float(
-                (slippages[valid_mask] * notionals[valid_mask]).sum()
-                / notionals[valid_mask].sum()
+                (slippages[valid_mask] * notionals[valid_mask]).sum() / notionals[valid_mask].sum()
             )
         else:
             avg_slippage_bps = float("nan")
@@ -278,9 +276,13 @@ def build_html_leaderboard(
 
     # Summary-Stats
     total_strategies = len(df_kpis)
-    total_pnl_net = df_kpis["realized_pnl_net"].sum() if "realized_pnl_net" in df_kpis.columns else 0.0
+    total_pnl_net = (
+        df_kpis["realized_pnl_net"].sum() if "realized_pnl_net" in df_kpis.columns else 0.0
+    )
     total_fees_all = df_kpis["total_fees"].sum() if "total_fees" in df_kpis.columns else 0.0
-    total_notional_all = df_kpis["total_notional"].sum() if "total_notional" in df_kpis.columns else 0.0
+    total_notional_all = (
+        df_kpis["total_notional"].sum() if "total_notional" in df_kpis.columns else 0.0
+    )
 
     pnl_class = "highlight-good" if total_pnl_net >= 0 else "highlight-bad"
 
@@ -362,7 +364,7 @@ def build_html_leaderboard(
 
     <div class="meta">
         <p><strong>Base Currency:</strong> {base_currency}</p>
-        <p><strong>Sort By:</strong> {sort_by} ({'ascending' if ascending else 'descending'})</p>
+        <p><strong>Sort By:</strong> {sort_by} ({"ascending" if ascending else "descending"})</p>
         <p><strong>Generated at (UTC):</strong> {ts_now}</p>
     </div>
 
@@ -451,7 +453,9 @@ def main(argv: List[str] | None = None) -> None:
         "total_fees": float(df_kpis["total_fees"].sum()),
         "total_notional": float(df_kpis["total_notional"].sum()),
         "top_strategy": str(df_kpis.iloc[0]["strategy_key"]) if not df_kpis.empty else "n/a",
-        "top_strategy_pnl_net": float(df_kpis.iloc[0]["realized_pnl_net"]) if not df_kpis.empty else 0.0,
+        "top_strategy_pnl_net": float(df_kpis.iloc[0]["realized_pnl_net"])
+        if not df_kpis.empty
+        else 0.0,
     }
 
     log_generic_experiment(

@@ -12,7 +12,9 @@ from src.reporting.trigger_training_report import (
 )
 
 
-def test_generate_reports_for_offline_paper_trade_without_trigger_events(tmp_path: Path, monkeypatch) -> None:
+def test_generate_reports_for_offline_paper_trade_without_trigger_events(
+    tmp_path: Path, monkeypatch
+) -> None:
     # Wir überschreiben das base_reports_dir, damit alles in tmp_path landet.
     trades = pd.DataFrame(
         {
@@ -98,4 +100,3 @@ def test_generate_reports_for_offline_paper_trade_with_trigger_events(tmp_path: 
     assert "Trigger Training Report" in trigger_content
     assert "SESSION_WITH_TRIGGER" in trigger_content
     assert "unit_test" in trigger_content
-

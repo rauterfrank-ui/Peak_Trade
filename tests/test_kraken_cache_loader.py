@@ -14,6 +14,7 @@ Test-Kategorien:
 Usage:
     pytest tests/test_kraken_cache_loader.py -v
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -27,6 +28,7 @@ import numpy as np
 # ============================================================================
 # FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def kraken_cache_fixture(tmp_path) -> Path:
@@ -116,6 +118,7 @@ def empty_cache_fixture(tmp_path) -> Path:
 # TEST 1: HAPPY PATH
 # ============================================================================
 
+
 class TestKrakenCacheLoaderHappyPath:
     """Tests fuer erfolgreiche Daten-Ladung."""
 
@@ -202,6 +205,7 @@ class TestKrakenCacheLoaderHappyPath:
 # TEST 2: MISSING FILE
 # ============================================================================
 
+
 class TestKrakenCacheLoaderMissingFile:
     """Tests fuer fehlende Dateien."""
 
@@ -249,6 +253,7 @@ class TestKrakenCacheLoaderMissingFile:
 # TEST 3: TOO FEW BARS
 # ============================================================================
 
+
 class TestKrakenCacheLoaderTooFewBars:
     """Tests fuer zu wenige Bars."""
 
@@ -293,6 +298,7 @@ class TestKrakenCacheLoaderTooFewBars:
 # TEST 4: EMPTY FILE
 # ============================================================================
 
+
 class TestKrakenCacheLoaderEmptyFile:
     """Tests fuer leere Dateien."""
 
@@ -315,6 +321,7 @@ class TestKrakenCacheLoaderEmptyFile:
 # ============================================================================
 # TEST 5: CONFIG
 # ============================================================================
+
 
 class TestKrakenCacheConfig:
     """Tests fuer Config-Loading."""
@@ -375,6 +382,7 @@ class TestKrakenCacheConfig:
 # TEST 6: CHECK DATA HEALTH ONLY
 # ============================================================================
 
+
 class TestCheckDataHealthOnly:
     """Tests fuer check_data_health_only Funktion."""
 
@@ -411,6 +419,7 @@ class TestCheckDataHealthOnly:
 # ============================================================================
 # TEST 7: EDGE CASES
 # ============================================================================
+
 
 class TestKrakenCacheLoaderEdgeCases:
     """Edge-Case-Tests."""
@@ -459,6 +468,7 @@ class TestKrakenCacheLoaderEdgeCases:
 # TEST 8: INTEGRATION WITH DIAGNOSTICS
 # ============================================================================
 
+
 class TestKrakenCacheIntegration:
     """Integration-Tests mit diagnostics.py."""
 
@@ -477,7 +487,7 @@ default_timeframe = "1h"
 min_bars = 200
 
 [data]
-data_dir = "{tmp_path / 'data'}"
+data_dir = "{tmp_path / "data"}"
 """
         config_path.write_text(config_content)
 
@@ -515,7 +525,7 @@ base_path = "{cache_dir}"
 min_bars = 100
 
 [data]
-data_dir = "{tmp_path / 'data'}"
+data_dir = "{tmp_path / "data"}"
 """
         config_path.write_text(config_content)
 

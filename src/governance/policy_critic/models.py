@@ -11,6 +11,7 @@ from typing import List, Optional
 
 class Severity(str, Enum):
     """Severity levels for policy violations."""
+
     INFO = "INFO"
     WARN = "WARN"
     BLOCK = "BLOCK"
@@ -18,6 +19,7 @@ class Severity(str, Enum):
 
 class RecommendedAction(str, Enum):
     """Recommended actions for the change under review."""
+
     ALLOW = "ALLOW"
     REVIEW_REQUIRED = "REVIEW_REQUIRED"
     AUTO_APPLY_DENY = "AUTO_APPLY_DENY"
@@ -26,6 +28,7 @@ class RecommendedAction(str, Enum):
 @dataclass
 class Evidence:
     """Evidence for a policy violation."""
+
     file_path: str
     line_range: Optional[str] = None  # e.g., "42-45" or "123"
     snippet: Optional[str] = None
@@ -35,6 +38,7 @@ class Evidence:
 @dataclass
 class Violation:
     """A single policy violation."""
+
     rule_id: str
     severity: Severity
     message: str
@@ -45,6 +49,7 @@ class Violation:
 @dataclass
 class ReviewContext:
     """Optional context for the review."""
+
     justification: Optional[str] = None
     test_plan: Optional[str] = None
     author: Optional[str] = None
@@ -54,6 +59,7 @@ class ReviewContext:
 @dataclass
 class PolicyCriticInput:
     """Input for the policy critic."""
+
     diff: str
     changed_files: List[str]
     context: Optional[ReviewContext] = None
@@ -62,6 +68,7 @@ class PolicyCriticInput:
 @dataclass
 class PolicyCriticResult:
     """Result of a policy review."""
+
     max_severity: Severity
     recommended_action: RecommendedAction
     violations: List[Violation] = field(default_factory=list)

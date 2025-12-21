@@ -13,6 +13,7 @@ WICHTIG: Diese Strukturen sind unabhaengig vom konkreten Executor.
          Sie koennen sowohl fuer Paper-/Sandbox- als auch fuer
          zukuenftige Live-Executors verwendet werden.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -125,9 +126,7 @@ class OrderExecutor(Protocol):
              Keine echten Live-Orders werden unterstuetzt.
     """
 
-    def execute_orders(
-        self, orders: Sequence[OrderRequest]
-    ) -> List[OrderExecutionResult]:
+    def execute_orders(self, orders: Sequence[OrderRequest]) -> List[OrderExecutionResult]:
         """
         Fuehrt eine Liste von Orders aus.
 

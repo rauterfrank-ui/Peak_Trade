@@ -34,6 +34,7 @@ Example:
     >>> results = runner.run(config)
     >>> print(results.to_dataframe())
 """
+
 from __future__ import annotations
 
 from .base import (

@@ -229,7 +229,9 @@ class TestPolicyCriticOrchestration:
         result = critic.review(input_data)
 
         assert len(result.operator_questions) > 0
-        assert any("shadow" in q.lower() or "rollback" in q.lower() for q in result.operator_questions)
+        assert any(
+            "shadow" in q.lower() or "rollback" in q.lower() for q in result.operator_questions
+        )
 
     def test_summary_reflects_severity(self):
         """Summary should reflect the severity level."""

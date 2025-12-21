@@ -8,6 +8,7 @@ Testet:
 - Regime-Switching Verhalten
 - GARCH Volatilitäts-Modell
 """
+
 from __future__ import annotations
 
 from typing import List

@@ -5,6 +5,7 @@ Klassische Moving-Average-Crossover-Strategie:
 - Long Entry: Fast MA kreuzt über Slow MA
 - Exit: Fast MA kreuzt unter Slow MA
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -139,25 +140,22 @@ class MACrossoverStrategy(BaseStrategy):
         # Validierung
         if self.price_col not in data.columns:
             raise ValueError(
-                f"Spalte '{self.price_col}' nicht in DataFrame. "
-                f"Verfügbar: {list(data.columns)}"
+                f"Spalte '{self.price_col}' nicht in DataFrame. Verfügbar: {list(data.columns)}"
             )
 
         if len(data) < self.slow_window:
-            raise ValueError(
-                f"Brauche mind. {self.slow_window} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {self.slow_window} Bars, habe nur {len(data)}")
 
         # Kopie für Berechnungen
         df = data.copy()
 
         # MAs berechnen
-        df["fast_ma"] = df[self.price_col].rolling(
-            self.fast_window, min_periods=self.fast_window
-        ).mean()
-        df["slow_ma"] = df[self.price_col].rolling(
-            self.slow_window, min_periods=self.slow_window
-        ).mean()
+        df["fast_ma"] = (
+            df[self.price_col].rolling(self.fast_window, min_periods=self.fast_window).mean()
+        )
+        df["slow_ma"] = (
+            df[self.price_col].rolling(self.slow_window, min_periods=self.slow_window).mean()
+        )
 
         # Crossover-Logik
         ma_diff = df["fast_ma"] - df["slow_ma"]
@@ -188,8 +186,10 @@ class MACrossoverStrategy(BaseStrategy):
 # TYPE HINTS
 # ============================================================================
 
+
 class PeakConfigLike:
     """Typ-Hint für Config-Objekte (vermeidet Zirkularimporte)."""
+
     def get(self, path: str, default: Any = None) -> Any:  # pragma: no cover
         ...
 
@@ -197,6 +197,7 @@ class PeakConfigLike:
 # ============================================================================
 # LEGACY API (Backwards Compatibility)
 # ============================================================================
+
 
 def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """

@@ -19,6 +19,7 @@ Usage:
     python scripts/automation/run_offline_daily_suite.py --no-pytest
     python scripts/automation/run_offline_daily_suite.py --only-trigger
 """
+
 from __future__ import annotations
 
 import argparse
@@ -56,10 +57,11 @@ logger = logging.getLogger(__name__)
 # Job Result Model
 # =============================================================================
 
+
 @dataclass
 class JobResult:
     """Ergebnis eines einzelnen Jobs."""
-    
+
     job_name: str
     status: str  # "ok", "failed", "skipped"
     duration_sec: float
@@ -70,7 +72,7 @@ class JobResult:
 @dataclass
 class SuiteResult:
     """Ergebnis der gesamten Suite."""
-    
+
     run_id: str
     run_type: str  # "daily_suite"
     started_at: datetime
@@ -84,15 +86,16 @@ class SuiteResult:
 # Job Implementations
 # =============================================================================
 
+
 def job_pytest_fast(dry_run: bool = False) -> JobResult:
     """
     Job 1: Pytest-Run (schnelle Tests).
-    
+
     Führt Pytest mit `-q` (quiet) und optional einem Marker wie `-m "offline_fast"` aus.
     """
     job_name = "pytest_fast"
     logger.info(f"[JOB] {job_name}: Starting...")
-    
+
     if dry_run:
         logger.info(f"[JOB] {job_name}: DRY-RUN – skipped")
         return JobResult(
@@ -101,9 +104,9 @@ def job_pytest_fast(dry_run: bool = False) -> JobResult:
             duration_sec=0.0,
             extra={"reason": "dry_run"},
         )
-    
+
     start_time = time.perf_counter()
-    
+
     try:
         # Pytest-Kommando (anpassen je nach vorhandenen Markern)
         # Versuche erst mit Marker, falls nicht vorhanden, ohne Marker
@@ -114,9 +117,9 @@ def job_pytest_fast(dry_run: bool = False) -> JobResult:
             text=True,
             timeout=120,  # 2 Minuten Timeout
         )
-        
+
         duration = time.perf_counter() - start_time
-        
+
         if result.returncode == 0:
             logger.info(f"[JOB] {job_name}: OK ({duration:.2f}s)")
             return JobResult(
@@ -137,7 +140,7 @@ def job_pytest_fast(dry_run: bool = False) -> JobResult:
                 extra={"returncode": result.returncode},
                 error_msg=result.stderr[:500] if result.stderr else None,
             )
-    
+
     except subprocess.TimeoutExpired:
         duration = time.perf_counter() - start_time
         logger.error(f"[JOB] {job_name}: TIMEOUT")
@@ -147,7 +150,7 @@ def job_pytest_fast(dry_run: bool = False) -> JobResult:
             duration_sec=duration,
             error_msg="Pytest timeout after 120s",
         )
-    
+
     except Exception as e:
         duration = time.perf_counter() - start_time
         logger.exception(f"[JOB] {job_name}: ERROR: {e}")
@@ -166,7 +169,7 @@ def job_offline_synth_session(
 ) -> JobResult:
     """
     Job 2/3: OfflineSynthSession.
-    
+
     Args:
         n_steps: Anzahl der Synth-Steps
         job_suffix: Suffix für Job-Name (z.B. "small", "medium")
@@ -174,7 +177,7 @@ def job_offline_synth_session(
     """
     job_name = f"offline_synth_{job_suffix}" if job_suffix else f"offline_synth_{n_steps}"
     logger.info(f"[JOB] {job_name}: Starting (n_steps={n_steps})...")
-    
+
     if dry_run:
         logger.info(f"[JOB] {job_name}: DRY-RUN – skipped")
         return JobResult(
@@ -183,29 +186,26 @@ def job_offline_synth_session(
             duration_sec=0.0,
             extra={"reason": "dry_run", "n_steps": n_steps},
         )
-    
+
     start_time = time.perf_counter()
-    
+
     try:
         config = OfflineSynthSessionConfig(
             n_steps=n_steps,
             n_regimes=3,
             seed=42,
         )
-        
+
         result = run_offline_synth_session(
             config=config,
             symbol="BTCEUR",
         )
-        
+
         duration = time.perf_counter() - start_time
         ticks_per_sec = n_steps / duration if duration > 0 else 0
-        
-        logger.info(
-            f"[JOB] {job_name}: OK ({duration:.2f}s, "
-            f"{ticks_per_sec:.1f} ticks/s)"
-        )
-        
+
+        logger.info(f"[JOB] {job_name}: OK ({duration:.2f}s, {ticks_per_sec:.1f} ticks/s)")
+
         return JobResult(
             job_name=job_name,
             status="ok",
@@ -217,7 +217,7 @@ def job_offline_synth_session(
                 "run_id": result.run_id,
             },
         )
-    
+
     except Exception as e:
         duration = time.perf_counter() - start_time
         logger.exception(f"[JOB] {job_name}: ERROR: {e}")
@@ -239,7 +239,7 @@ def job_offline_realtime_feed(
 ) -> JobResult:
     """
     Job 4/5: OfflineRealtimeFeed.
-    
+
     Args:
         symbol: Trading-Symbol (z.B. "BTC/EUR")
         strategy_label: Label für die Strategie (z.B. "baseline", "r_and_d")
@@ -250,10 +250,9 @@ def job_offline_realtime_feed(
     """
     job_name = f"offline_realtime_{strategy_label}"
     logger.info(
-        f"[JOB] {job_name}: Starting (symbol={symbol}, "
-        f"fast={fast_window}, slow={slow_window})..."
+        f"[JOB] {job_name}: Starting (symbol={symbol}, fast={fast_window}, slow={slow_window})..."
     )
-    
+
     if dry_run:
         logger.info(f"[JOB] {job_name}: DRY-RUN – skipped")
         return JobResult(
@@ -262,14 +261,14 @@ def job_offline_realtime_feed(
             duration_sec=0.0,
             extra={"reason": "dry_run", "symbol": symbol},
         )
-    
+
     start_time = time.perf_counter()
-    
+
     try:
         # Erstelle ein Namespace-Objekt wie bei argparse
         class Args:
             pass
-        
+
         args = Args()
         args.symbol = symbol
         args.n_steps = n_steps
@@ -280,10 +279,10 @@ def job_offline_realtime_feed(
         args.playback_mode = "fast_forward"
         args.speed_factor = 10.0
         args.output_dir = None
-        
+
         # Pipeline bauen
         components = build_offline_ma_crossover_pipeline(args)
-        
+
         # Pipeline ausführen
         perf_metrics = run_ma_crossover_pipeline(
             pipeline=components["pipeline"],
@@ -291,15 +290,15 @@ def job_offline_realtime_feed(
             feed=components["feed"],
             symbol=components["internal_symbol"],
         )
-        
+
         duration = time.perf_counter() - start_time
-        
+
         logger.info(
             f"[JOB] {job_name}: OK ({duration:.2f}s, "
             f"{perf_metrics['n_orders']} orders, "
             f"{perf_metrics['n_trades']} trades)"
         )
-        
+
         return JobResult(
             job_name=job_name,
             status="ok",
@@ -314,7 +313,7 @@ def job_offline_realtime_feed(
                 "run_id": components["run_id"],
             },
         )
-    
+
     except Exception as e:
         duration = time.perf_counter() - start_time
         logger.exception(f"[JOB] {job_name}: ERROR: {e}")
@@ -329,7 +328,7 @@ def job_offline_realtime_feed(
 def job_trigger_training_drill(dry_run: bool = False) -> JobResult:
     """
     Job 6: Trigger-Training Drill.
-    
+
     Führt einen Trigger-Training-Drill aus und generiert:
     - Offline-Paper-Report
     - Trigger-Training-Report
@@ -337,7 +336,7 @@ def job_trigger_training_drill(dry_run: bool = False) -> JobResult:
     """
     job_name = "trigger_training_drill"
     logger.info(f"[JOB] {job_name}: Starting...")
-    
+
     if dry_run:
         logger.info(f"[JOB] {job_name}: DRY-RUN – skipped")
         return JobResult(
@@ -346,37 +345,42 @@ def job_trigger_training_drill(dry_run: bool = False) -> JobResult:
             duration_sec=0.0,
             extra={"reason": "dry_run"},
         )
-    
+
     start_time = time.perf_counter()
-    
+
     try:
         # Trigger-Training-Script als Subprocess ausführen
         session_id = f"DAILY_DRILL_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
-        
+
         result = subprocess.run(
             [
                 sys.executable,
                 str(project_root / "scripts" / "run_offline_trigger_training_drill_example.py"),
-                "--session-id", session_id,
-                "--symbol", "BTCEUR",
-                "--timeframe", "1m",
-                "--environment", "offline_paper_trade",
-                "--reports-dir", "reports/automation/daily/trigger_training",
+                "--session-id",
+                session_id,
+                "--symbol",
+                "BTCEUR",
+                "--timeframe",
+                "1m",
+                "--environment",
+                "offline_paper_trade",
+                "--reports-dir",
+                "reports/automation/daily/trigger_training",
             ],
             cwd=project_root,
             capture_output=True,
             text=True,
             timeout=300,  # 5 Minuten Timeout
         )
-        
+
         duration = time.perf_counter() - start_time
-        
+
         # Parse Output für Stats (falls vorhanden)
         extra = {
             "session_id": session_id,
             "returncode": result.returncode,
         }
-        
+
         # Versuche, Reaktionszeit-Stats aus dem Output zu extrahieren
         if "Total Signale:" in result.stdout:
             lines = result.stdout.splitlines()
@@ -392,7 +396,7 @@ def job_trigger_training_drill(dry_run: bool = False) -> JobResult:
                         )
                     except ValueError:
                         pass
-        
+
         if result.returncode == 0:
             logger.info(f"[JOB] {job_name}: OK ({duration:.2f}s)")
             return JobResult(
@@ -410,7 +414,7 @@ def job_trigger_training_drill(dry_run: bool = False) -> JobResult:
                 extra=extra,
                 error_msg=result.stderr[:500] if result.stderr else None,
             )
-    
+
     except subprocess.TimeoutExpired:
         duration = time.perf_counter() - start_time
         logger.error(f"[JOB] {job_name}: TIMEOUT")
@@ -420,7 +424,7 @@ def job_trigger_training_drill(dry_run: bool = False) -> JobResult:
             duration_sec=duration,
             error_msg="Trigger-Training timeout after 300s",
         )
-    
+
     except Exception as e:
         duration = time.perf_counter() - start_time
         logger.exception(f"[JOB] {job_name}: ERROR: {e}")
@@ -436,19 +440,20 @@ def job_trigger_training_drill(dry_run: bool = False) -> JobResult:
 # Suite Runner
 # =============================================================================
 
+
 def run_daily_suite(args: argparse.Namespace) -> SuiteResult:
     """
     Führt die Daily-Suite aus.
-    
+
     Args:
         args: CLI-Argumente
-    
+
     Returns:
         SuiteResult mit allen Job-Ergebnissen
     """
     run_id = f"daily_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
     started_at = datetime.now(timezone.utc)
-    
+
     logger.info("=" * 80)
     logger.info("PEAK_TRADE OFFLINE DAILY SUITE")
     logger.info("=" * 80)
@@ -456,14 +461,14 @@ def run_daily_suite(args: argparse.Namespace) -> SuiteResult:
     logger.info(f"Started: {started_at.strftime('%Y-%m-%d %H:%M:%S UTC')}")
     logger.info(f"Dry-Run: {args.dry_run}")
     logger.info("=" * 80)
-    
+
     # Job-Liste definieren
     jobs: List[JobResult] = []
-    
+
     # Job 1: Pytest
     if not args.no_pytest and not args.only_trigger:
         jobs.append(job_pytest_fast(dry_run=args.dry_run))
-    
+
     # Job 2: OfflineSynthSession (klein)
     if not args.only_trigger:
         jobs.append(
@@ -473,7 +478,7 @@ def run_daily_suite(args: argparse.Namespace) -> SuiteResult:
                 dry_run=args.dry_run,
             )
         )
-    
+
     # Job 3: OfflineSynthSession (mittel)
     if not args.only_trigger:
         jobs.append(
@@ -483,7 +488,7 @@ def run_daily_suite(args: argparse.Namespace) -> SuiteResult:
                 dry_run=args.dry_run,
             )
         )
-    
+
     # Job 4: OfflineRealtimeFeed (Baseline)
     if not args.only_trigger:
         jobs.append(
@@ -496,7 +501,7 @@ def run_daily_suite(args: argparse.Namespace) -> SuiteResult:
                 dry_run=args.dry_run,
             )
         )
-    
+
     # Job 5: OfflineRealtimeFeed (R&D)
     if not args.only_trigger:
         jobs.append(
@@ -509,14 +514,14 @@ def run_daily_suite(args: argparse.Namespace) -> SuiteResult:
                 dry_run=args.dry_run,
             )
         )
-    
+
     # Job 6: Trigger-Training Drill
     if not args.no_trigger:
         jobs.append(job_trigger_training_drill(dry_run=args.dry_run))
-    
+
     finished_at = datetime.now(timezone.utc)
     duration = (finished_at - started_at).total_seconds()
-    
+
     # Summary erstellen
     summary = {
         "total_jobs": len(jobs),
@@ -524,7 +529,7 @@ def run_daily_suite(args: argparse.Namespace) -> SuiteResult:
         "jobs_failed": sum(1 for j in jobs if j.status == "failed"),
         "jobs_skipped": sum(1 for j in jobs if j.status == "skipped"),
     }
-    
+
     logger.info("=" * 80)
     logger.info("SUITE COMPLETED")
     logger.info("=" * 80)
@@ -534,7 +539,7 @@ def run_daily_suite(args: argparse.Namespace) -> SuiteResult:
     logger.info(f"  Skipped:  {summary['jobs_skipped']}")
     logger.info(f"Duration: {duration:.2f}s")
     logger.info("=" * 80)
-    
+
     return SuiteResult(
         run_id=run_id,
         run_type="daily_suite",
@@ -549,19 +554,19 @@ def run_daily_suite(args: argparse.Namespace) -> SuiteResult:
 def write_suite_log(result: SuiteResult, output_dir: Path) -> Path:
     """
     Schreibt ein JSON-Log für die Suite.
-    
+
     Args:
         result: SuiteResult
         output_dir: Output-Verzeichnis
-    
+
     Returns:
         Pfad zum JSON-Log
     """
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     log_filename = f"automation_daily_{result.started_at.strftime('%Y%m%d_%H%M%S')}.json"
     log_path = output_dir / log_filename
-    
+
     # Konvertiere zu Dict mit datetime-Serialisierung
     log_data = {
         "run_id": result.run_id,
@@ -581,16 +586,17 @@ def write_suite_log(result: SuiteResult, output_dir: Path) -> Path:
             for j in result.jobs
         ],
     }
-    
+
     log_path.write_text(json.dumps(log_data, indent=2), encoding="utf-8")
     logger.info(f"[LOG] Suite-Log geschrieben: {log_path}")
-    
+
     return log_path
 
 
 # =============================================================================
 # CLI Parser
 # =============================================================================
+
 
 def parse_args() -> argparse.Namespace:
     """Parsed CLI-Argumente."""
@@ -601,55 +607,55 @@ def parse_args() -> argparse.Namespace:
 Examples:
   # Standard-Run (alle Jobs)
   python scripts/automation/run_offline_daily_suite.py
-  
+
   # Dry-Run (nur anzeigen, was laufen würde)
   python scripts/automation/run_offline_daily_suite.py --dry-run
-  
+
   # Ohne Pytest
   python scripts/automation/run_offline_daily_suite.py --no-pytest
-  
+
   # Nur Trigger-Training
   python scripts/automation/run_offline_daily_suite.py --only-trigger
         """,
     )
-    
+
     parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Dry-Run-Modus: Zeigt nur an, welche Jobs laufen würden",
     )
-    
+
     parser.add_argument(
         "--no-pytest",
         action="store_true",
         help="Überspringt Pytest-Run",
     )
-    
+
     parser.add_argument(
         "--no-trigger",
         action="store_true",
         help="Überspringt Trigger-Training-Drill",
     )
-    
+
     parser.add_argument(
         "--only-trigger",
         action="store_true",
         help="Führt nur Trigger-Training-Drill aus (überspringt alle anderen Jobs)",
     )
-    
+
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=None,
         help="Output-Verzeichnis für Logs (Standard: reports/automation/daily)",
     )
-    
+
     parser.add_argument(
         "--verbose",
         action="store_true",
         help="Aktiviert verbose Logging",
     )
-    
+
     return parser.parse_args()
 
 
@@ -657,15 +663,16 @@ Examples:
 # Main
 # =============================================================================
 
+
 def main() -> int:
     """
     Main-Einstiegspunkt.
-    
+
     Returns:
         Exit-Code (0 = Erfolg, 1 = Fehler)
     """
     args = parse_args()
-    
+
     # Logging konfigurieren
     log_level = logging.DEBUG if args.verbose else logging.INFO
     logging.basicConfig(
@@ -673,28 +680,28 @@ def main() -> int:
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
-    
+
     try:
         # Suite ausführen
         result = run_daily_suite(args)
-        
+
         # Log schreiben
         if args.output_dir:
             output_dir = args.output_dir
         else:
             output_dir = project_root / "reports" / "automation" / "daily"
-        
+
         log_path = write_suite_log(result, output_dir)
-        
+
         logger.info(f"✓ Daily Suite abgeschlossen: {log_path}")
-        
+
         # Exit-Code basierend auf Job-Ergebnissen
         if result.summary["jobs_failed"] > 0:
             logger.warning(f"⚠️  {result.summary['jobs_failed']} Job(s) failed")
             return 1
-        
+
         return 0
-    
+
     except Exception as e:
         logger.exception(f"[MAIN] Fehler: {e}")
         return 1

@@ -228,7 +228,7 @@ def build_risk_manager_from_config(
     """
 
     # Config-Zugriff: Unterstützt PeakConfig und Dict
-    if hasattr(cfg, 'get'):
+    if hasattr(cfg, "get"):
         get_fn = cfg.get
     elif isinstance(cfg, dict):
         # Fallback für plain dict

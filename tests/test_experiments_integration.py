@@ -5,6 +5,7 @@ Integration Tests für src/experiments/ (Phase 29)
 
 Testet das Zusammenspiel aller Experiment-Komponenten.
 """
+
 import pytest
 from datetime import datetime
 from typing import Dict, Any
@@ -28,6 +29,7 @@ from src.experiments import (
 # ============================================================================
 # INTEGRATION TESTS
 # ============================================================================
+
 
 class TestExperimentWorkflow:
     """Tests für den kompletten Experiment-Workflow."""
@@ -152,6 +154,7 @@ class TestExperimentWorkflow:
 
     def test_best_results_ranking(self):
         """Best-Results werden korrekt gerankt."""
+
         def predictable_backtest(strategy_name, params, *args, **kwargs):
             # Higher fast_period = higher return
             return {
@@ -213,6 +216,7 @@ class TestStrategySpecificSweeps:
     @pytest.mark.parametrize("strategy_name", list(STRATEGY_SWEEP_REGISTRY.keys()))
     def test_strategy_sweeps_work(self, strategy_name):
         """Alle registrierten Strategien können gesweept werden."""
+
         def simple_backtest(*args, **kwargs):
             return {"total_return": 0.1, "sharpe_ratio": 1.0}
 
@@ -237,6 +241,7 @@ class TestRegimeSweepsIntegration:
 
     def test_combined_sweeps_work(self):
         """Kombinierte Strategy+Regime Sweeps funktionieren."""
+
         def simple_backtest(*args, **kwargs):
             return {"total_return": 0.1, "sharpe_ratio": 1.0}
 
@@ -265,6 +270,7 @@ class TestOutputFormats:
 
     def test_csv_export(self):
         """CSV-Export funktioniert."""
+
         def simple_backtest(*args, **kwargs):
             return {"total_return": 0.1}
 

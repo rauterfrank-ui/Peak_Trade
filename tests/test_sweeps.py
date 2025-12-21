@@ -9,6 +9,7 @@ Testet:
 - Registry-Integration (mit skip_registry)
 - CLI-Script Struktur
 """
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -75,6 +76,7 @@ class TestExpandParameterGrid:
     def test_import(self):
         """Funktion kann importiert werden."""
         from src.sweeps import expand_parameter_grid
+
         assert expand_parameter_grid is not None
 
     def test_single_param(self):
@@ -148,6 +150,7 @@ class TestSweepConfig:
     def test_import(self):
         """SweepConfig kann importiert werden."""
         from src.sweeps import SweepConfig
+
         assert SweepConfig is not None
 
     def test_basic_instantiation(self, simple_param_grid):
@@ -252,6 +255,7 @@ class TestSweepResult:
     def test_import(self):
         """SweepResult kann importiert werden."""
         from src.sweeps.engine import SweepResult
+
         assert SweepResult is not None
 
     def test_basic_instantiation(self):
@@ -315,6 +319,7 @@ class TestSweepEngine:
     def test_import(self):
         """SweepEngine kann importiert werden."""
         from src.sweeps import SweepEngine
+
         assert SweepEngine is not None
 
     def test_instantiation(self):
@@ -439,6 +444,7 @@ class TestRunStrategySweep:
     def test_import(self):
         """Funktion kann importiert werden."""
         from src.sweeps.engine import run_strategy_sweep
+
         assert run_strategy_sweep is not None
 
     def test_basic_usage(self, sample_ohlcv_data, minimal_param_grid):
@@ -467,6 +473,7 @@ class TestGenerateSweepId:
     def test_import(self):
         """Funktion kann importiert werden."""
         from src.sweeps import generate_sweep_id
+
         assert generate_sweep_id is not None
 
     def test_generates_unique_ids(self):

@@ -16,6 +16,7 @@ Usage:
       --pnl-drop-threshold-pct 5.0 \
       --no-events-max-minutes 10
 """
+
 from __future__ import annotations
 
 import argparse
@@ -46,8 +47,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="live_alerts",
         description="Peak_Trade Live Alerts CLI\n\n"
-                    "WICHTIG: Alert-System für Shadow/Testnet-Runs.\n"
-                    "Sendet nur Notifications, keine Trading-Operationen.",
+        "WICHTIG: Alert-System für Shadow/Testnet-Runs.\n"
+        "Sendet nur Notifications, keine Trading-Operationen.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Beispiele:
@@ -164,7 +165,9 @@ def cmd_run_rules(args: argparse.Namespace, config: PeakConfig) -> int:
         # PnL-Drop-Check
         if args.pnl_drop_threshold_pct is not None:
             window = timedelta(hours=args.pnl_drop_window_hours)
-            print(f"  ✓ PnL-Drop-Check (Threshold: {args.pnl_drop_threshold_pct}%, Window: {window})")
+            print(
+                f"  ✓ PnL-Drop-Check (Threshold: {args.pnl_drop_threshold_pct}%, Window: {window})"
+            )
             if check_pnl_drop(
                 run_id=args.run_id,
                 threshold_pct=args.pnl_drop_threshold_pct,
@@ -195,7 +198,9 @@ def cmd_run_rules(args: argparse.Namespace, config: PeakConfig) -> int:
         # Error-Spike-Check
         if args.error_spike_max_errors is not None:
             window = timedelta(minutes=args.error_spike_window_minutes)
-            print(f"  ✓ Error-Spike-Check (Max Errors: {args.error_spike_max_errors}, Window: {window})")
+            print(
+                f"  ✓ Error-Spike-Check (Max Errors: {args.error_spike_max_errors}, Window: {window})"
+            )
             if check_error_spike(
                 run_id=args.run_id,
                 max_errors=args.error_spike_max_errors,
@@ -239,4 +244,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

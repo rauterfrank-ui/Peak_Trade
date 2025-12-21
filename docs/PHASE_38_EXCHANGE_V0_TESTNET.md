@@ -266,7 +266,3 @@ PEAK_TRADE_EXCHANGE_TESTS=1 pytest tests/test_exchange_smoke.py -v
 ---
 
 *Phase 38 abgeschlossen – Exchange v0 ist bereit für Testnet-Integration.*
-
-
-
-

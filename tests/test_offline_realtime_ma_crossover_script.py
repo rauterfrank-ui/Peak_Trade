@@ -4,6 +4,7 @@ Tests für scripts/run_offline_realtime_ma_crossover.py
 
 Testet die Offline-Realtime MA-Crossover Pipeline.
 """
+
 from __future__ import annotations
 
 import sys
@@ -241,6 +242,7 @@ class TestPipelineBuilder:
 
     def test_build_pipeline_basic(self):
         """Test: Pipeline-Erstellung."""
+
         # Simuliere CLI-Args
         class Args:
             symbol = "BTC/EUR"
@@ -272,6 +274,7 @@ class TestPipelineBuilder:
 
     def test_build_pipeline_different_symbols(self):
         """Test: Pipeline mit verschiedenen Symbolen."""
+
         class Args:
             n_steps = 50
             n_regimes = 2
@@ -304,6 +307,7 @@ class TestPipelineExecution:
 
     def test_run_pipeline_basic(self):
         """Test: Pipeline-Ausführung."""
+
         # Pipeline-Komponenten bauen
         class Args:
             symbol = "BTC/EUR"
@@ -341,6 +345,7 @@ class TestPipelineExecution:
 
     def test_run_pipeline_different_ma_windows(self):
         """Test: Pipeline mit verschiedenen MA-Fenstern."""
+
         class Args:
             symbol = "BTC/EUR"
             n_steps = 200
@@ -393,6 +398,7 @@ class TestIntegration:
 
     def test_full_pipeline_run(self, tmp_path):
         """Test: Kompletter Pipeline-Run von Args bis Report."""
+
         # CLI-Args simulieren
         class Args:
             symbol = "BTC/EUR"
@@ -453,4 +459,3 @@ class TestIntegration:
         assert "ma_crossover" in content
         assert str(perf_metrics["n_ticks"]) in content
         assert components["run_id"] in content  # Run-ID sollte im Report-Content sein
-

@@ -24,6 +24,7 @@ Usage:
         --n-bars 500 \\
         --no-report
 """
+
 from __future__ import annotations
 
 import sys
@@ -123,7 +124,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
 
     # Start-Zeitpunkt
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation mit symbol-spezifischen Eigenschaften
     # BTC: höherer Preis, ETH: mittlerer Preis, LTC: niedriger Preis
@@ -152,17 +153,20 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     close_prices = base_price + trend + cycle + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * volatility),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     # Sicherstellen dass High/Low korrekt sind
-    df['high'] = df[['open', 'close', 'high']].max(axis=1)
-    df['low'] = df[['open', 'close', 'low']].min(axis=1)
+    df["high"] = df[["open", "close", "high"]].max(axis=1)
+    df["low"] = df[["open", "close", "low"]].min(axis=1)
 
     return df
 
@@ -210,7 +214,8 @@ def resolve_strategy_class(module_name: str, class_name: str | None = None) -> t
     except AttributeError:
         # Versuche alle Klassen im Modul zu finden
         available_classes = [
-            name for name in dir(module)
+            name
+            for name in dir(module)
             if isinstance(getattr(module, name), type)
             and issubclass(getattr(module, name), BaseStrategy)
             and name != "BaseStrategy"
@@ -282,14 +287,9 @@ def run_idea_backtest(
 
     # Backtest ausführen
     print(f"\n🔬 Führe Backtest aus...")
-    engine = BacktestEngine(
-        core_position_sizer=position_sizer,
-        risk_manager=risk_manager
-    )
+    engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
-        df=df,
-        strategy_signal_fn=strategy_signal_fn,
-        strategy_params=strategy_params
+        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
     )
 
     # Stats ausgeben
@@ -305,7 +305,7 @@ def run_idea_backtest(
     print(f"  Profit Factor:  {stats.get('profit_factor', 0.0):>10.2f}")
 
     # Regime-Distribution falls vorhanden
-    regime_dist = result.metadata.get('regime_distribution', {})
+    regime_dist = result.metadata.get("regime_distribution", {})
     if regime_dist:
         print(f"\n  Regime-Distribution:")
         for regime, pct in regime_dist.items():
@@ -316,7 +316,9 @@ def run_idea_backtest(
         if run_name is None:
             # Auto-generiere run_name
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            run_name = f"idea_{strategy_class.__name__.lower()}_{symbol.replace('/', '_')}_{timestamp}"
+            run_name = (
+                f"idea_{strategy_class.__name__.lower()}_{symbol.replace('/', '_')}_{timestamp}"
+            )
 
         report_dir = Path("reports") / "ideas" / run_name
         report_dir.mkdir(parents=True, exist_ok=True)
@@ -377,6 +379,7 @@ def main(argv: List[str] | None = None) -> None:
     except Exception as e:
         print(f"\n❌ Fehler beim Backtest: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

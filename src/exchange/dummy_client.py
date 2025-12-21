@@ -23,6 +23,7 @@ Verwendung:
     >>> status = client.get_order_status(order_id)
     >>> print(status.status)  # ExchangeOrderStatus.FILLED
 """
+
 from __future__ import annotations
 
 import logging
@@ -387,7 +388,8 @@ class DummyExchangeClient:
     def get_open_orders(self) -> List[DummyOrderInfo]:
         """Gibt alle offenen Orders zurück."""
         return [
-            o for o in self._orders.values()
+            o
+            for o in self._orders.values()
             if o.status in (ExchangeOrderStatus.PENDING, ExchangeOrderStatus.OPEN)
         ]
 
@@ -425,7 +427,3 @@ class DummyExchangeClient:
             f"orders={len(self._orders)}, "
             f"fee_bps={self._fee_bps})>"
         )
-
-
-
-

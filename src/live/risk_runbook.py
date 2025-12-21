@@ -43,6 +43,7 @@ Usage:
     entry = get_runbook_for_status("yellow")
     print(format_runbook_for_operator(entry))
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -516,12 +517,9 @@ def format_runbook_for_operator(
     if include_checklist and entry.checklist:
         lines.append("CHECKLISTE:")
         for item in entry.checklist:
-            priority_icon = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(
-                item.priority, "⚪"
-            )
+            priority_icon = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(item.priority, "⚪")
             lines.append(
-                f"  {priority_icon} [ ] {item.item} "
-                f"({item.estimated_time}, {item.responsible})"
+                f"  {priority_icon} [ ] {item.item} ({item.estimated_time}, {item.responsible})"
             )
         lines.append("")
 

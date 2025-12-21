@@ -8,11 +8,17 @@ Tests für:
 - Runbook-Registry
 - resolve_runbooks_for_alert() Funktion
 """
+
 from __future__ import annotations
 
 import pytest
 
-from src.infra.runbooks import RunbookLink, resolve_runbooks_for_alert, get_all_runbooks, RUNBOOK_REGISTRY
+from src.infra.runbooks import (
+    RunbookLink,
+    resolve_runbooks_for_alert,
+    get_all_runbooks,
+    RUNBOOK_REGISTRY,
+)
 from src.infra.runbooks.registry import get_runbook_by_id
 
 

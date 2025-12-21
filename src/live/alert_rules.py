@@ -10,6 +10,7 @@ Regeln:
 - No-Events: Erkennt ausbleibende Events (Data-Gaps)
 - Error-Spike: Erkennt gehäufte Fehler/Order-Rejects
 """
+
 from __future__ import annotations
 
 import logging
@@ -187,7 +188,9 @@ def check_no_events(
 
         if silence_duration > max_silence:
             # Alert auslösen
-            severity = AlertLevel.CRITICAL if silence_duration > max_silence * 2 else AlertLevel.WARNING
+            severity = (
+                AlertLevel.CRITICAL if silence_duration > max_silence * 2 else AlertLevel.WARNING
+            )
 
             if severity == AlertLevel.CRITICAL:
                 alert_manager.critical(
@@ -296,11 +299,13 @@ def check_error_spike(
 
             if has_error:
                 error_count += 1
-                error_details.append({
-                    "step": event.get("step"),
-                    "ts": ts_str,
-                    "reason": error_reason,
-                })
+                error_details.append(
+                    {
+                        "step": event.get("step"),
+                        "ts": ts_str,
+                        "reason": error_reason,
+                    }
+                )
 
         if error_count > max_errors:
             # Alert auslösen
@@ -342,11 +347,3 @@ def check_error_spike(
     except Exception as e:
         logger.error(f"Fehler beim Error-Spike-Check für Run {run_id}: {e}", exc_info=True)
         return False
-
-
-
-
-
-
-
-

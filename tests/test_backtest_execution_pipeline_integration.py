@@ -15,6 +15,7 @@ Tests fuer:
 
 WICHTIG: Keine echten Orders - alles Paper/Sandbox.
 """
+
 from __future__ import annotations
 
 import sys
@@ -83,6 +84,7 @@ def _simple_signal_fn(df: pd.DataFrame, params: dict) -> pd.Series:
 # ============================================================================
 # BacktestEngine Integration Tests (Phase 16B)
 # ============================================================================
+
 
 class TestBacktestEngineExecutionPipelineFlag:
     """Tests fuer use_execution_pipeline Flag."""
@@ -440,6 +442,7 @@ class TestResultMetadata:
 # ============================================================================
 # Edge Cases
 # ============================================================================
+
 
 class TestEdgeCases:
     """Edge-Case Tests."""

@@ -32,6 +32,7 @@ Example:
     ...     param_sweeps=get_ma_crossover_sweeps(granularity="fine"),
     ... )
 """
+
 from __future__ import annotations
 
 from typing import Callable, Dict, List, Literal, Optional
@@ -46,6 +47,7 @@ Granularity = Literal["coarse", "medium", "fine"]
 # ============================================================================
 # MA CROSSOVER SWEEPS
 # ============================================================================
+
 
 def get_ma_crossover_sweeps(
     granularity: Granularity = "medium",
@@ -88,6 +90,7 @@ def get_ma_crossover_sweeps(
 # BOLLINGER BANDS SWEEPS
 # ============================================================================
 
+
 def get_bollinger_sweeps(
     granularity: Granularity = "medium",
 ) -> List[ParamSweep]:
@@ -110,7 +113,11 @@ def get_bollinger_sweeps(
         sweeps.append(ParamSweep("num_std", [1.5, 1.75, 2.0, 2.25, 2.5], "Standardabweichungen"))
     else:  # fine
         sweeps.append(ParamSweep.from_range("period", 10, 40, 5, "BB Periode"))
-        sweeps.append(ParamSweep("num_std", [1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0], "Standardabweichungen"))
+        sweeps.append(
+            ParamSweep(
+                "num_std", [1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0], "Standardabweichungen"
+            )
+        )
 
     return sweeps
 
@@ -118,6 +125,7 @@ def get_bollinger_sweeps(
 # ============================================================================
 # MACD SWEEPS
 # ============================================================================
+
 
 def get_macd_sweeps(
     granularity: Granularity = "medium",
@@ -153,6 +161,7 @@ def get_macd_sweeps(
 # MOMENTUM SWEEPS
 # ============================================================================
 
+
 def get_momentum_sweeps(
     granularity: Granularity = "medium",
 ) -> List[ParamSweep]:
@@ -175,7 +184,9 @@ def get_momentum_sweeps(
         sweeps.append(ParamSweep("threshold", [0.0, 0.005, 0.01, 0.015, 0.02], "Entry-Threshold"))
     else:  # fine
         sweeps.append(ParamSweep.from_range("lookback", 5, 60, 5, "Momentum Lookback"))
-        sweeps.append(ParamSweep("threshold", [0.0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03], "Entry-Threshold"))
+        sweeps.append(
+            ParamSweep("threshold", [0.0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03], "Entry-Threshold")
+        )
 
     return sweeps
 
@@ -183,6 +194,7 @@ def get_momentum_sweeps(
 # ============================================================================
 # TREND FOLLOWING SWEEPS
 # ============================================================================
+
 
 def get_trend_following_sweeps(
     granularity: Granularity = "medium",
@@ -224,6 +236,7 @@ def get_trend_following_sweeps(
 # VOLATILITY BREAKOUT SWEEPS
 # ============================================================================
 
+
 def get_vol_breakout_sweeps(
     granularity: Granularity = "medium",
 ) -> List[ParamSweep]:
@@ -248,7 +261,9 @@ def get_vol_breakout_sweeps(
         sweeps.append(ParamSweep("lookback_period", [10, 15, 20, 25, 30], "Lookback"))
     else:  # fine
         sweeps.append(ParamSweep.from_range("atr_period", 8, 26, 3, "ATR Periode"))
-        sweeps.append(ParamSweep("atr_multiplier", [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5], "ATR Multiplier"))
+        sweeps.append(
+            ParamSweep("atr_multiplier", [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5], "ATR Multiplier")
+        )
         sweeps.append(ParamSweep.from_range("lookback_period", 5, 40, 5, "Lookback"))
 
     return sweeps
@@ -257,6 +272,7 @@ def get_vol_breakout_sweeps(
 # ============================================================================
 # MEAN REVERSION SWEEPS
 # ============================================================================
+
 
 def get_mean_reversion_sweeps(
     granularity: Granularity = "medium",
@@ -282,8 +298,12 @@ def get_mean_reversion_sweeps(
         sweeps.append(ParamSweep("exit_z_score", [0.0, 0.25, 0.5, 0.75, 1.0], "Exit Z-Score"))
     else:  # fine
         sweeps.append(ParamSweep.from_range("lookback", 5, 50, 5, "Lookback Periode"))
-        sweeps.append(ParamSweep("entry_z_score", [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5], "Entry Z-Score"))
-        sweeps.append(ParamSweep("exit_z_score", [-0.5, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25], "Exit Z-Score"))
+        sweeps.append(
+            ParamSweep("entry_z_score", [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5], "Entry Z-Score")
+        )
+        sweeps.append(
+            ParamSweep("exit_z_score", [-0.5, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25], "Exit Z-Score")
+        )
 
     return sweeps
 
@@ -291,6 +311,7 @@ def get_mean_reversion_sweeps(
 # ============================================================================
 # RSI REVERSION SWEEPS
 # ============================================================================
+
 
 def get_rsi_reversion_sweeps(
     granularity: Granularity = "medium",
@@ -326,6 +347,7 @@ def get_rsi_reversion_sweeps(
 # BREAKOUT SWEEPS (Phase 41)
 # ============================================================================
 
+
 def get_breakout_sweeps(
     granularity: Granularity = "medium",
     include_sl_tp: bool = True,
@@ -356,16 +378,26 @@ def get_breakout_sweeps(
     else:  # fine
         sweeps.append(ParamSweep.from_range("lookback_breakout", 10, 100, 10, "Breakout Lookback"))
         if include_sl_tp:
-            sweeps.append(ParamSweep("stop_loss_pct", [0.01, 0.02, 0.03, 0.04, 0.05], "Stop-Loss %"))
-            sweeps.append(ParamSweep("take_profit_pct", [0.03, 0.05, 0.08, 0.10, 0.15], "Take-Profit %"))
+            sweeps.append(
+                ParamSweep("stop_loss_pct", [0.01, 0.02, 0.03, 0.04, 0.05], "Stop-Loss %")
+            )
+            sweeps.append(
+                ParamSweep("take_profit_pct", [0.03, 0.05, 0.08, 0.10, 0.15], "Take-Profit %")
+            )
 
     if include_trailing:
         if granularity == "coarse":
             sweeps.append(ParamSweep("trailing_stop_pct", [0.02, 0.05], "Trailing-Stop %"))
         elif granularity == "medium":
-            sweeps.append(ParamSweep("trailing_stop_pct", [0.02, 0.03, 0.05, 0.08], "Trailing-Stop %"))
+            sweeps.append(
+                ParamSweep("trailing_stop_pct", [0.02, 0.03, 0.05, 0.08], "Trailing-Stop %")
+            )
         else:  # fine
-            sweeps.append(ParamSweep("trailing_stop_pct", [0.01, 0.02, 0.03, 0.05, 0.08, 0.10], "Trailing-Stop %"))
+            sweeps.append(
+                ParamSweep(
+                    "trailing_stop_pct", [0.01, 0.02, 0.03, 0.05, 0.08, 0.10], "Trailing-Stop %"
+                )
+            )
 
     return sweeps
 
@@ -373,6 +405,7 @@ def get_breakout_sweeps(
 # ============================================================================
 # VOL REGIME FILTER SWEEPS (Phase 41)
 # ============================================================================
+
 
 def get_vol_regime_filter_sweeps(
     granularity: Granularity = "medium",
@@ -405,8 +438,12 @@ def get_vol_regime_filter_sweeps(
         sweeps.append(ParamSweep.from_range("vol_window", 8, 30, 4, "Vol Window"))
         sweeps.append(ParamSweep("vol_method", ["atr", "std", "realized"], "Vol Method"))
         if include_percentile:
-            sweeps.append(ParamSweep("vol_percentile_low", [5, 10, 15, 20, 25, 30], "Vol Percentile Low"))
-            sweeps.append(ParamSweep("vol_percentile_high", [70, 75, 80, 85, 90, 95], "Vol Percentile High"))
+            sweeps.append(
+                ParamSweep("vol_percentile_low", [5, 10, 15, 20, 25, 30], "Vol Percentile Low")
+            )
+            sweeps.append(
+                ParamSweep("vol_percentile_high", [70, 75, 80, 85, 90, 95], "Vol Percentile High")
+            )
         sweeps.append(ParamSweep("lookback_percentile", [50, 100, 200], "Lookback Percentile"))
 
     return sweeps
@@ -415,6 +452,7 @@ def get_vol_regime_filter_sweeps(
 # ============================================================================
 # DONCHIAN CHANNEL SWEEPS
 # ============================================================================
+
 
 def get_donchian_sweeps(
     granularity: Granularity = "medium",
@@ -512,10 +550,7 @@ def get_strategy_sweeps(
         return STRATEGY_SWEEP_REGISTRY[aliases[name_lower]](granularity)
 
     available = ", ".join(sorted(STRATEGY_SWEEP_REGISTRY.keys()))
-    raise ValueError(
-        f"Unbekannte Strategie: '{strategy_name}'. "
-        f"Verfügbar: {available}"
-    )
+    raise ValueError(f"Unbekannte Strategie: '{strategy_name}'. Verfügbar: {available}")
 
 
 def list_available_strategies() -> List[str]:
@@ -540,7 +575,4 @@ def get_all_strategy_sweeps(
     Returns:
         Dict {strategy_name -> sweeps}
     """
-    return {
-        name: func(granularity)
-        for name, func in STRATEGY_SWEEP_REGISTRY.items()
-    }
+    return {name: func(granularity) for name, func in STRATEGY_SWEEP_REGISTRY.items()}

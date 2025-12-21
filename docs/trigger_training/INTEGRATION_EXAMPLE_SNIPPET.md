@@ -17,7 +17,7 @@ In der `main()`-Funktion, nach dem Parsen der CLI-Args:
 ```python
 def main():
     args = parse_args()
-    
+
     # Session-ID für Trigger-Training-Store
     session_id = (
         f"OFFLINE_REALTIME_MA_CROSSOVER"
@@ -25,7 +25,7 @@ def main():
         f"_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     )
     logger.info(f"[SESSION] ID: {session_id}")
-    
+
     # ... rest der main() ...
 ```
 
@@ -36,7 +36,7 @@ Am Ende der `main()`-Funktion, nachdem `trigger_training_events` erstellt wurde:
 ```python
 def main():
     # ... Pipeline-Ausführung ...
-    
+
     # Trigger-Training-Events erstellen (bereits vorhanden im Script)
     if hook_config.enabled and len(tracker.signals_log) > 0:
         trigger_training_events = build_trigger_training_events_from_dfs(
@@ -44,7 +44,7 @@ def main():
             decisions_df=decisions_df,
             pnl_window=hook_config.pnl_window,
         )
-        
+
         # NEU: Im Store speichern
         if trigger_training_events:
             store_path = Path("live_runs/trigger_training_sessions.jsonl")
@@ -54,7 +54,7 @@ def main():
                 store_path=store_path,
             )
             logger.info(f"[SESSION] Gespeichert in Store: {store_path} ({len(trigger_training_events)} Events)")
-        
+
         # Report generieren (bereits vorhanden)
         report_path = build_trigger_training_report(
             events=trigger_training_events,
@@ -93,11 +93,11 @@ PYTHONPATH=. python3 scripts/generate_operator_meta_report.py --limit 5
  from src.orders.paper import PaperOrderExecutor, PaperMarketContext
  from src.execution.pipeline import ExecutionPipeline, ExecutionPipelineConfig
 +from src.trigger_training import save_session_to_store
- 
+
 @@ -800,6 +801,14 @@ def main():
      args = parse_args()
      setup_logging(args.log_level)
-     
+
 +    # Session-ID für Trigger-Training-Store
 +    session_id = (
 +        f"OFFLINE_REALTIME_MA_CROSSOVER"
@@ -105,14 +105,14 @@ PYTHONPATH=. python3 scripts/generate_operator_meta_report.py --limit 5
 +        f"_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 +    )
 +    logger.info(f"[SESSION] ID: {session_id}")
-+    
++  
      logger.info("=" * 70)
      logger.info("Offline-Realtime MA-Crossover Pipeline")
      logger.info("=" * 70)
 @@ -900,6 +909,17 @@ def main():
              pnl_window=hook_config.pnl_window,
          )
-         
+
 +        # NEU: Im Store speichern
 +        if trigger_training_events:
 +            store_path = Path("live_runs/trigger_training_sessions.jsonl")
@@ -124,7 +124,7 @@ PYTHONPATH=. python3 scripts/generate_operator_meta_report.py --limit 5
 +            logger.info(
 +                f"[SESSION] Gespeichert in Store: {store_path} ({len(trigger_training_events)} Events)"
 +            )
-+        
++  
          # Trigger-Training-Report generieren
          report_path = build_trigger_training_report(
              events=trigger_training_events,
@@ -203,4 +203,3 @@ Ausführen via Cron:
 ```cron
 0 0 * * * /path/to/Peak_Trade/scripts/backup_session_store.sh
 ```
-

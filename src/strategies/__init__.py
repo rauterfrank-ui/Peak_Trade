@@ -8,10 +8,10 @@ Alle Strategien werden hier registriert.
 STRATEGY_REGISTRY = {
     "ma_crossover": "ma_crossover",
     "momentum_1h": "momentum",  # Strategie-Name != Modul-Name
-    "rsi_strategy": "rsi",      # Strategie-Name != Modul-Name
+    "rsi_strategy": "rsi",  # Strategie-Name != Modul-Name
     "bollinger_bands": "bollinger",  # Strategie-Name != Modul-Name
     "macd": "macd",
-    "ecm_cycle": "ecm",         # Strategie-Name != Modul-Name
+    "ecm_cycle": "ecm",  # Strategie-Name != Modul-Name
     # Phase 18: Research Playground Baselines
     "trend_following": "trend_following",
     "mean_reversion": "mean_reversion",
@@ -35,13 +35,16 @@ STRATEGY_REGISTRY = {
     "vol_regime_overlay": "gatheral_cont.vol_regime_overlay_strategy",
 }
 
+
 def load_strategy(strategy_name: str):
     """
     Lädt die Strategie dynamisch.
     Erwartet: Modul hat eine Funktion generate_signals(df, params)
     """
     if strategy_name not in STRATEGY_REGISTRY:
-        raise ValueError(f"Unbekannte Strategie '{strategy_name}'. Verfügbar: {list(STRATEGY_REGISTRY.keys())}")
+        raise ValueError(
+            f"Unbekannte Strategie '{strategy_name}'. Verfügbar: {list(STRATEGY_REGISTRY.keys())}"
+        )
 
     module_name = STRATEGY_REGISTRY[strategy_name]
 

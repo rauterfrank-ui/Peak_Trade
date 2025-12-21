@@ -35,6 +35,7 @@ Output:
     - reports/walkforward/{sweep_name}/{config_id}_walkforward_YYYYMMDD.md
     - reports/walkforward/{sweep_name}/comparison_YYYYMMDD.md (Multi-Config)
 """
+
 from __future__ import annotations
 
 import argparse
@@ -86,7 +87,7 @@ def create_dummy_data(n_bars: int = 1000) -> pd.DataFrame:
 
     # Start-Zeitpunkt
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation
     base_price = 50000
@@ -97,13 +98,16 @@ def create_dummy_data(n_bars: int = 1000) -> pd.DataFrame:
     close_prices = base_price + trend + cycle + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * 0.002),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
@@ -129,7 +133,7 @@ def load_data_from_file(filepath: Path) -> pd.DataFrame:
         raise ValueError(f"Unsupported file format: {filepath.suffix}")
 
     # Validierung
-    required_cols = ['open', 'high', 'low', 'close', 'volume']
+    required_cols = ["open", "high", "low", "close", "volume"]
     missing = [c for c in required_cols if c not in df.columns]
     if missing:
         raise ValueError(f"Fehlende Spalten: {missing}")
@@ -150,7 +154,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Sweep-Auswahl
     parser.add_argument(
-        "--sweep-name", "-s",
+        "--sweep-name",
+        "-s",
         type=str,
         required=True,
         help="Name des Sweeps (z.B. rsi_reversion_basic)",
@@ -158,13 +163,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Walk-Forward-Konfiguration
     parser.add_argument(
-        "--top-n", "-n",
+        "--top-n",
+        "-n",
         type=int,
         default=3,
         help="Anzahl der Top-Konfigurationen (default: 3)",
     )
     parser.add_argument(
-        "--train-window", "-t",
+        "--train-window",
+        "-t",
         type=str,
         required=True,
         help="Trainingsfenster-Dauer (z.B. 180d, 6M)",
@@ -185,7 +192,8 @@ def build_parser() -> argparse.ArgumentParser:
     # Daten-Optionen
     data_group = parser.add_mutually_exclusive_group()
     data_group.add_argument(
-        "--data-file", "-d",
+        "--data-file",
+        "-d",
         type=str,
         help="Pfad zur OHLCV-Datei (CSV oder Parquet)",
     )
@@ -234,7 +242,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Fallback-Metrik (default: metric_total_return)",
     )
     parser.add_argument(
-        "--output-dir", "-o",
+        "--output-dir",
+        "-o",
         type=str,
         default="reports/walkforward",
         help="Ausgabe-Verzeichnis (default: reports/walkforward)",
@@ -242,7 +251,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Logging
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -257,10 +267,10 @@ def parse_args() -> argparse.Namespace:
 
 def run_from_args(args: argparse.Namespace) -> int:
     """Führt Walk-Forward-Backtest basierend auf Argumenten aus.
-    
+
     Args:
         args: Parsed command-line arguments
-        
+
     Returns:
         Exit code (0 = success, 1 = error)
     """
@@ -300,7 +310,9 @@ def run_from_args(args: argparse.Namespace) -> int:
         )
 
         # 3. Walk-Forward ausführen
-        logger.info(f"Starte Walk-Forward-Analyse für Top-{args.top_n} aus Sweep: {args.sweep_name}")
+        logger.info(
+            f"Starte Walk-Forward-Analyse für Top-{args.top_n} aus Sweep: {args.sweep_name}"
+        )
         results = run_walkforward_for_top_n_from_sweep(
             sweep_name=args.sweep_name,
             wf_config=wf_config,
@@ -337,7 +349,9 @@ def run_from_args(args: argparse.Namespace) -> int:
                 results,
                 sweep_name=args.sweep_name,
             )
-            comparison_path = output_dir / args.sweep_name / f"comparison_{datetime.now().strftime('%Y%m%d')}.md"
+            comparison_path = (
+                output_dir / args.sweep_name / f"comparison_{datetime.now().strftime('%Y%m%d')}.md"
+            )
             comparison_path.parent.mkdir(parents=True, exist_ok=True)
             with open(comparison_path, "w", encoding="utf-8") as f:
                 f.write(comparison_report.to_markdown())
@@ -399,4 +413,3 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

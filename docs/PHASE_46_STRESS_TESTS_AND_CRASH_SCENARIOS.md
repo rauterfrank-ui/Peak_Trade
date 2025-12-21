@@ -378,4 +378,3 @@ Phase 46 implementiert **Stress-Tests & Crash-Szenarien** als Ergänzung zu Walk
 - Portfolio-Level-Analysen
 
 **Fazit:** Stress-Tests identifizieren Schwachstellen unter extremen Bedingungen und helfen, robuste Strategien zu entwickeln.
-

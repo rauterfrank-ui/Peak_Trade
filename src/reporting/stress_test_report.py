@@ -21,6 +21,7 @@ Usage:
         format="both",
     )
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -194,10 +195,12 @@ def build_stress_test_report(
         "Dieser Report vergleicht Baseline-Kennzahlen mit Stress-Szenario-Ergebnissen. ",
         "Negative Differenzen (rot markiert) zeigen Verschlechterungen unter Stress.",
     ]
-    report.add_section(ReportSection(
-        title="Overview",
-        content_markdown="\n".join(overview_lines),
-    ))
+    report.add_section(
+        ReportSection(
+            title="Overview",
+            content_markdown="\n".join(overview_lines),
+        )
+    )
 
     # 2. Baseline Metrics Section
     baseline_content = dict_to_markdown_table(
@@ -206,10 +209,12 @@ def build_stress_test_report(
         value_header="Baseline Value",
         float_format=".4f",
     )
-    report.add_section(ReportSection(
-        title="Baseline Metrics",
-        content_markdown=baseline_content,
-    ))
+    report.add_section(
+        ReportSection(
+            title="Baseline Metrics",
+            content_markdown=baseline_content,
+        )
+    )
 
     # 3. Scenario Comparison Table
     if suite.scenario_results:
@@ -218,9 +223,7 @@ def build_stress_test_report(
 
         # W�hle wichtige Metriken f�r die �bersicht
         key_metrics = ["sharpe", "max_drawdown", "total_return", "cagr", "volatility"]
-        available_key_metrics = [
-            m for m in key_metrics if m in suite.baseline_metrics
-        ]
+        available_key_metrics = [m for m in key_metrics if m in suite.baseline_metrics]
 
         for result in suite.scenario_results:
             row: Dict[str, Any] = {
@@ -238,10 +241,12 @@ def build_stress_test_report(
         if comparison_data:
             df_comparison = pd.DataFrame(comparison_data)
             comparison_content = df_to_markdown(df_comparison, float_format=".4f")
-            report.add_section(ReportSection(
-                title="Scenario Comparison (� = Stressed - Baseline)",
-                content_markdown=comparison_content,
-            ))
+            report.add_section(
+                ReportSection(
+                    title="Scenario Comparison (� = Stressed - Baseline)",
+                    content_markdown=comparison_content,
+                )
+            )
 
     # 4. Detailed Scenario Results
     detailed_lines: List[str] = []
@@ -263,12 +268,14 @@ def build_stress_test_report(
             stressed_val = result.stressed_metrics.get(metric, 0.0)
             diff_val = result.diff_metrics.get(metric, 0.0)
 
-            table_data.append({
-                "Metric": metric,
-                "Baseline": f"{baseline_val:.4f}",
-                "Stressed": f"{stressed_val:.4f}",
-                "� (Diff)": _format_metric_value(diff_val, metric),
-            })
+            table_data.append(
+                {
+                    "Metric": metric,
+                    "Baseline": f"{baseline_val:.4f}",
+                    "Stressed": f"{stressed_val:.4f}",
+                    "� (Diff)": _format_metric_value(diff_val, metric),
+                }
+            )
 
         if table_data:
             df_detail = pd.DataFrame(table_data)
@@ -276,10 +283,12 @@ def build_stress_test_report(
             detailed_lines.append("")
 
     if detailed_lines:
-        report.add_section(ReportSection(
-            title="Detailed Scenario Results",
-            content_markdown="\n".join(detailed_lines),
-        ))
+        report.add_section(
+            ReportSection(
+                title="Detailed Scenario Results",
+                content_markdown="\n".join(detailed_lines),
+            )
+        )
 
     # 5. Visualizations (optional)
     charts_content: List[str] = []
@@ -295,9 +304,7 @@ def build_stress_test_report(
             plot_path = output_dir / plot_name
 
             # Wende Szenario erneut an f�r Plot
-            stressed_returns = apply_stress_scenario_to_returns(
-                suite.returns, result.scenario
-            )
+            stressed_returns = apply_stress_scenario_to_returns(suite.returns, result.scenario)
 
             saved_path = _create_equity_comparison_plot(
                 suite.returns,
@@ -314,10 +321,12 @@ def build_stress_test_report(
                 )
 
     if charts_content:
-        report.add_section(ReportSection(
-            title="Equity Curve Comparisons",
-            content_markdown="\n\n".join(charts_content),
-        ))
+        report.add_section(
+            ReportSection(
+                title="Equity Curve Comparisons",
+                content_markdown="\n\n".join(charts_content),
+            )
+        )
 
     # 6. Interpretation Section
     interpretation_lines = [
@@ -339,10 +348,12 @@ def build_stress_test_report(
         "- CAGR wird negativ",
     ]
 
-    report.add_section(ReportSection(
-        title="Interpretation",
-        content_markdown="\n".join(interpretation_lines),
-    ))
+    report.add_section(
+        ReportSection(
+            title="Interpretation",
+            content_markdown="\n".join(interpretation_lines),
+        )
+    )
 
     # Speichere Report
     paths: Dict[str, Path] = {}
@@ -358,10 +369,3 @@ def build_stress_test_report(
         paths["html"] = html_path
 
     return paths
-
-
-
-
-
-
-

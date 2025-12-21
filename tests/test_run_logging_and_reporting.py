@@ -9,6 +9,7 @@ Tests für:
 - LiveRunMetadata (Metadaten)
 - build_live_run_report (Report-Generierung)
 """
+
 import json
 import os
 import tempfile
@@ -235,7 +236,9 @@ class TestLiveRunLogger:
         assert logger.run_id == sample_metadata.run_id
         assert not logger.is_initialized
 
-    def test_initialize_creates_directory(self, temp_run_dir, sample_logging_config, sample_metadata):
+    def test_initialize_creates_directory(
+        self, temp_run_dir, sample_logging_config, sample_metadata
+    ):
         """Test: Initialisierung erstellt Verzeichnis."""
         sample_logging_config.base_dir = str(temp_run_dir)
 
@@ -288,7 +291,9 @@ class TestLiveRunLogger:
             meta = json.load(f)
         assert meta["ended_at"] is not None
 
-    def test_context_manager(self, temp_run_dir, sample_logging_config, sample_metadata, sample_events):
+    def test_context_manager(
+        self, temp_run_dir, sample_logging_config, sample_metadata, sample_events
+    ):
         """Test: Kontext-Manager-Nutzung."""
         sample_logging_config.base_dir = str(temp_run_dir)
 
@@ -329,7 +334,9 @@ class TestHelperFunctions:
         loaded_meta = load_run_metadata(logger.run_dir)
         assert loaded_meta.run_id == sample_metadata.run_id
 
-    def test_load_run_events(self, temp_run_dir, sample_logging_config, sample_metadata, sample_events):
+    def test_load_run_events(
+        self, temp_run_dir, sample_logging_config, sample_metadata, sample_events
+    ):
         """Test: Events laden."""
         sample_logging_config.base_dir = str(temp_run_dir)
 
@@ -360,7 +367,9 @@ class TestHelperFunctions:
 class TestReportGeneration:
     """Tests für Report-Generierung."""
 
-    def test_build_live_run_report(self, temp_run_dir, sample_logging_config, sample_metadata, sample_events):
+    def test_build_live_run_report(
+        self, temp_run_dir, sample_logging_config, sample_metadata, sample_events
+    ):
         """Test: Report erstellen."""
         sample_logging_config.base_dir = str(temp_run_dir)
 
@@ -376,7 +385,9 @@ class TestReportGeneration:
         assert "Summary" in [s.title for s in report.sections]
         assert report.title == f"Live Run Report: {sample_metadata.run_id}"
 
-    def test_load_and_build_report(self, temp_run_dir, sample_logging_config, sample_metadata, sample_events):
+    def test_load_and_build_report(
+        self, temp_run_dir, sample_logging_config, sample_metadata, sample_events
+    ):
         """Test: Report aus Verzeichnis erstellen."""
         sample_logging_config.base_dir = str(temp_run_dir)
 
@@ -387,7 +398,9 @@ class TestReportGeneration:
         report = load_and_build_report(logger.run_dir)
         assert len(report.sections) > 0
 
-    def test_report_to_markdown(self, temp_run_dir, sample_logging_config, sample_metadata, sample_events):
+    def test_report_to_markdown(
+        self, temp_run_dir, sample_logging_config, sample_metadata, sample_events
+    ):
         """Test: Report als Markdown."""
         sample_logging_config.base_dir = str(temp_run_dir)
 
@@ -401,7 +414,9 @@ class TestReportGeneration:
         assert "# Live Run Report" in markdown
         assert "## Summary" in markdown
 
-    def test_report_to_html(self, temp_run_dir, sample_logging_config, sample_metadata, sample_events):
+    def test_report_to_html(
+        self, temp_run_dir, sample_logging_config, sample_metadata, sample_events
+    ):
         """Test: Report als HTML."""
         sample_logging_config.base_dir = str(temp_run_dir)
 
@@ -448,7 +463,12 @@ class TestSessionIntegration:
         """Test: Session mit Run-Logger erstellen."""
         from src.live.shadow_session import ShadowPaperSession
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.data.kraken_live import ShadowPaperConfig, LiveExchangeConfig, FakeCandleSource, LiveCandle
+        from src.data.kraken_live import (
+            ShadowPaperConfig,
+            LiveExchangeConfig,
+            FakeCandleSource,
+            LiveCandle,
+        )
         from src.execution.pipeline import ExecutionPipeline
         from src.orders.shadow import ShadowMarketContext
         from src.live.risk_limits import LiveRiskLimits, LiveRiskConfig
@@ -498,6 +518,7 @@ class TestSessionIntegration:
 
             def generate_signals(self, df):
                 import pandas as pd
+
                 return pd.Series([0] * len(df), index=df.index)
 
         strategy = DummyStrategy()

@@ -34,6 +34,7 @@ Usage:
     # Als Markdown exportieren
     profile.to_markdown("docs/strategy_profiles/RSI_REVERSION_PROFILE_v1.md")
 """
+
 from __future__ import annotations
 
 import json
@@ -720,13 +721,9 @@ def generate_markdown_profile(profile: StrategyProfile) -> str:
         lines.append("")
 
         if profile.regimes.dominant_regime:
-            lines.append(
-                f"**Dominantes Regime:** {profile.regimes.dominant_regime}"
-            )
+            lines.append(f"**Dominantes Regime:** {profile.regimes.dominant_regime}")
         if profile.regimes.weakest_regime:
-            lines.append(
-                f"**Schwächstes Regime:** {profile.regimes.weakest_regime}"
-            )
+            lines.append(f"**Schwächstes Regime:** {profile.regimes.weakest_regime}")
 
         lines.append("")
 
@@ -886,9 +883,7 @@ class StrategyProfileBuilder:
                 setattr(self.performance, key, value)
         return self
 
-    def set_performance_from_stats(
-        self, stats: Dict[str, Any]
-    ) -> "StrategyProfileBuilder":
+    def set_performance_from_stats(self, stats: Dict[str, Any]) -> "StrategyProfileBuilder":
         """Setzt Performance aus Backtest-Stats."""
         self.performance = PerformanceMetrics.from_backtest_stats(stats)
         return self

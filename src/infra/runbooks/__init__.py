@@ -18,6 +18,7 @@ Usage:
     for rb in runbooks:
         print(f"{rb.title}: {rb.url}")
 """
+
 from .models import RunbookLink
 from .registry import resolve_runbooks_for_alert, get_all_runbooks, RUNBOOK_REGISTRY
 

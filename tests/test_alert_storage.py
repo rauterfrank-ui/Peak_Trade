@@ -9,6 +9,7 @@ Tests für:
 - Integration mit AlertPipelineManager
 - Convenience-Funktionen
 """
+
 from __future__ import annotations
 
 import json
@@ -188,7 +189,9 @@ class TestAlertStorage:
         alerts = storage.list_alerts()
         assert alerts == []
 
-    def test_list_alerts_returns_stored(self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]):
+    def test_list_alerts_returns_stored(
+        self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]
+    ):
         """Testet dass gespeicherte Alerts zurückgegeben werden."""
         storage.store(sample_alert_dict)
         storage.store(sample_alert_dict)
@@ -260,15 +263,19 @@ class TestAlertStorage:
         now = datetime.now(timezone.utc)
 
         # Alert vor 2 Stunden
-        storage.store({
-            "title": "Recent",
-            "timestamp": (now - timedelta(hours=1)).isoformat(),
-        })
+        storage.store(
+            {
+                "title": "Recent",
+                "timestamp": (now - timedelta(hours=1)).isoformat(),
+            }
+        )
         # Alert vor 48 Stunden
-        storage.store({
-            "title": "Old",
-            "timestamp": (now - timedelta(hours=48)).isoformat(),
-        })
+        storage.store(
+            {
+                "title": "Old",
+                "timestamp": (now - timedelta(hours=48)).isoformat(),
+            }
+        )
 
         recent = storage.list_alerts(hours=24)
         assert len(recent) == 1
@@ -334,6 +341,7 @@ class TestConvenienceFunctions:
 
         # Patche den Default-Pfad
         import src.live.alert_storage as storage_module
+
         monkeypatch.setattr(storage_module, "_DEFAULT_ALERTS_DIR", tmp_path / "alerts")
 
         # Store Alert
@@ -350,6 +358,7 @@ class TestConvenienceFunctions:
         reset_default_storage()
 
         import src.live.alert_storage as storage_module
+
         monkeypatch.setattr(storage_module, "_DEFAULT_ALERTS_DIR", tmp_path / "alerts")
 
         # Store some alerts
@@ -368,6 +377,7 @@ class TestConvenienceFunctions:
         reset_default_storage()
 
         import src.live.alert_storage as storage_module
+
         monkeypatch.setattr(storage_module, "_DEFAULT_ALERTS_DIR", tmp_path / "alerts")
 
         # Store some alerts
@@ -494,13 +504,15 @@ class TestEdgeCases:
 
         with open(file_path, "w") as f:
             f.write('{"title": "Valid"}\n')
-            f.write('invalid json line\n')
+            f.write("invalid json line\n")
             f.write('{"title": "Also Valid"}\n')
 
         alerts = storage.list_alerts()
         assert len(alerts) == 2
 
-    def test_max_alerts_per_query_respected(self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]):
+    def test_max_alerts_per_query_respected(
+        self, storage: AlertStorage, sample_alert_dict: Dict[str, Any]
+    ):
         """Testet dass max_alerts_per_query nicht überschritten wird."""
         storage._max_alerts_per_query = 5
 
@@ -521,8 +533,16 @@ class TestEdgeCases:
             "source": "live_risk_severity",
             "context": {
                 "runbooks": [
-                    {"id": "live_risk_severity", "title": "Risk Severity Runbook", "url": "https://example.com/rb1"},
-                    {"id": "live_alert_pipeline", "title": "Alert Pipeline Runbook", "url": "https://example.com/rb2"},
+                    {
+                        "id": "live_risk_severity",
+                        "title": "Risk Severity Runbook",
+                        "url": "https://example.com/rb1",
+                    },
+                    {
+                        "id": "live_alert_pipeline",
+                        "title": "Alert Pipeline Runbook",
+                        "url": "https://example.com/rb2",
+                    },
                 ]
             },
         }

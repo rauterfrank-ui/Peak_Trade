@@ -10,12 +10,21 @@ Diese Tests verifizieren:
 
 Phase: Research-Track Integration (Bouchaud Microstructure + Gatheral/Cont Vol-Regime)
 """
+
 from __future__ import annotations
 
 import pytest
 import pandas as pd
 import numpy as np
 from typing import Dict, Any
+
+# Check if FastAPI is available for web-related tests
+try:
+    import fastapi
+
+    FASTAPI_AVAILABLE = True
+except ImportError:
+    FASTAPI_AVAILABLE = False
 
 
 # =============================================================================
@@ -90,9 +99,11 @@ class TestBouchaudMicrostructureStrategy:
             strategy.generate_signals(data)
 
         # Prüfe, dass die Fehlermeldung informativ ist
-        assert "Platzhalter-Skelett" in str(exc_info.value) or \
-               "Tick-/Orderbuch-Daten" in str(exc_info.value) or \
-               "RESEARCH-ONLY" in str(exc_info.value)
+        assert (
+            "Platzhalter-Skelett" in str(exc_info.value)
+            or "Tick-/Orderbuch-Daten" in str(exc_info.value)
+            or "RESEARCH-ONLY" in str(exc_info.value)
+        )
 
     def test_bouchaud_config_dataclass(self):
         """Test: BouchaudMicrostructureConfig funktioniert korrekt."""
@@ -130,10 +141,10 @@ class TestBouchaudMicrostructureStrategy:
         desc_upper = strategy.meta.description.upper()
 
         assert (
-            "SKELETON" in desc_upper or
-            "PLATZHALTER" in desc_upper or
-            "NICHT FÜR LIVE" in desc_upper or
-            "RESEARCH" in desc_upper
+            "SKELETON" in desc_upper
+            or "PLATZHALTER" in desc_upper
+            or "NICHT FÜR LIVE" in desc_upper
+            or "RESEARCH" in desc_upper
         )
 
 
@@ -212,9 +223,11 @@ class TestVolRegimeOverlayStrategy:
             strategy.generate_signals(data)
 
         # Prüfe, dass die Fehlermeldung informativ ist
-        assert "Meta-Layer" in str(exc_info.value) or \
-               "kein Signal-Generator" in str(exc_info.value) or \
-               "RESEARCH-ONLY" in str(exc_info.value)
+        assert (
+            "Meta-Layer" in str(exc_info.value)
+            or "kein Signal-Generator" in str(exc_info.value)
+            or "RESEARCH-ONLY" in str(exc_info.value)
+        )
 
     def test_vol_regime_overlay_get_regime_state_raises_not_implemented(self):
         """Test: get_regime_state wirft NotImplementedError."""
@@ -272,10 +285,10 @@ class TestVolRegimeOverlayStrategy:
         desc_upper = strategy.meta.description.upper()
 
         assert (
-            "SKELETON" in desc_upper or
-            "PLATZHALTER" in desc_upper or
-            "NICHT FÜR LIVE" in desc_upper or
-            "META" in desc_upper
+            "SKELETON" in desc_upper
+            or "PLATZHALTER" in desc_upper
+            or "NICHT FÜR LIVE" in desc_upper
+            or "META" in desc_upper
         )
 
 
@@ -296,7 +309,11 @@ class TestStrategyRegistry:
 
         spec = get_strategy_spec("bouchaud_microstructure")
         assert spec.key == "bouchaud_microstructure"
-        assert "R&D" in spec.description or "Skeleton" in spec.description or "Bouchaud" in spec.description
+        assert (
+            "R&D" in spec.description
+            or "Skeleton" in spec.description
+            or "Bouchaud" in spec.description
+        )
 
     def test_vol_regime_overlay_registered_in_registry(self):
         """Test: VolRegimeOverlay ist in der Registry registriert."""
@@ -307,7 +324,11 @@ class TestStrategyRegistry:
 
         spec = get_strategy_spec("vol_regime_overlay")
         assert spec.key == "vol_regime_overlay"
-        assert "R&D" in spec.description or "Skeleton" in spec.description or "Gatheral" in spec.description
+        assert (
+            "R&D" in spec.description
+            or "Skeleton" in spec.description
+            or "Gatheral" in spec.description
+        )
 
 
 # =============================================================================
@@ -344,6 +365,8 @@ class TestStrategyTiering:
 # =============================================================================
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestStrategyTieringAPI:
     """Tests für API-Integration der Skeleton-Strategien."""
 
@@ -424,19 +447,18 @@ class TestResearchStrategySafety:
 # =============================================================================
 
 
+@pytest.mark.web
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 class TestFastAPIEndpoints:
     """Integration-Tests für FastAPI-Endpoints mit Skeleton-Strategien."""
 
     @pytest.fixture
     def client(self):
         """FastAPI TestClient."""
-        try:
-            from fastapi.testclient import TestClient
-            from src.webui.app import app
+        from fastapi.testclient import TestClient
+        from src.webui.app import app
 
-            return TestClient(app)
-        except ImportError:
-            pytest.skip("fastapi.testclient nicht verfügbar")
+        return TestClient(app)
 
     def test_api_includes_bouchaud_with_research_flag(self, client):
         """Test: API inkludiert Bouchaud mit include_research=true."""

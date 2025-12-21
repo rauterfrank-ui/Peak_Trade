@@ -232,14 +232,10 @@ def main(argv: List[str] | None = None) -> None:
         "n_runs_analyzed": int(len(df_runs)),
         "n_strategies_analyzed": int(len(df_strat)),
         "n_portfolios_analyzed": int(len(df_port)),
-        "n_blocked_strategies": int(
-            (df_strat["risk_status_group"] == "BLOCKED").sum()
-        )
+        "n_blocked_strategies": int((df_strat["risk_status_group"] == "BLOCKED").sum())
         if not df_strat.empty
         else 0,
-        "n_watch_strategies": int(
-            (df_strat["risk_status_group"] == "WATCH").sum()
-        )
+        "n_watch_strategies": int((df_strat["risk_status_group"] == "WATCH").sum())
         if not df_strat.empty
         else 0,
     }

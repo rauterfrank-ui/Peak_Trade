@@ -14,6 +14,7 @@ Tests fuer die Governance-Integration:
 
 WICHTIG: Keine echten Orders - alles Paper/Sandbox.
 """
+
 from __future__ import annotations
 
 import sys
@@ -39,6 +40,7 @@ if str(ROOT_DIR) not in sys.path:
 @dataclass
 class FakeLiveRiskCheckResult:
     """Fake LiveRiskCheckResult fuer Tests."""
+
     allowed: bool
     reasons: List[str]
     metrics: dict
@@ -59,6 +61,7 @@ class FakeSafetyGuard:
             raise self.raise_exception
         if not self.allow_orders:
             from src.live.safety import SafetyBlockedError
+
             raise SafetyBlockedError("Fake SafetyGuard blockiert Orders")
 
 
@@ -140,7 +143,9 @@ class TestExecutionPipelineGovernance:
         with pytest.raises(LiveExecutionLockedError) as exc_info:
             pipeline.submit_order(intent, raise_on_governance_violation=True)
 
-        assert "governance" in str(exc_info.value).lower() or "locked" in str(exc_info.value).lower()
+        assert (
+            "governance" in str(exc_info.value).lower() or "locked" in str(exc_info.value).lower()
+        )
 
     def test_live_env_returns_blocked_result_without_raise(self):
         """

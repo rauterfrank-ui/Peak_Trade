@@ -582,10 +582,10 @@ assert result.risk_violation_details is not None  # Details zur Violation
    ```bash
    # Governance-Status prüfen
    grep -n "live_order_execution" src/governance/go_no_go.py
-   
+
    # Aktuelle Config prüfen
    cat config/config.toml | grep -A5 "\[execution\]"
-   
+
    # Tests ausführen
    pytest -v tests/test_execution_pipeline_governance.py
    ```

@@ -15,6 +15,7 @@ Storage-Format:
 Standard-Pfad:
     live_runs/trigger_training_sessions.jsonl
 """
+
 from __future__ import annotations
 
 import json
@@ -32,7 +33,7 @@ def save_session_to_store(
     store_path: Path | str = "live_runs/trigger_training_sessions.jsonl",
 ) -> None:
     """Speichert eine Trigger-Training-Session im Store.
-    
+
     Parameters
     ----------
     session_id:
@@ -44,12 +45,14 @@ def save_session_to_store(
     """
     store_path = Path(store_path)
     store_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Events zu Dicts konvertieren
     event_dicts = []
     for ev in events:
         event_dict = {
-            "timestamp": ev.timestamp.isoformat() if hasattr(ev.timestamp, 'isoformat') else str(ev.timestamp),
+            "timestamp": ev.timestamp.isoformat()
+            if hasattr(ev.timestamp, "isoformat")
+            else str(ev.timestamp),
             "symbol": ev.symbol,
             "signal_state": ev.signal_state,
             "recommended_action": ev.recommended_action,
@@ -61,7 +64,7 @@ def save_session_to_store(
             "note": ev.note,
         }
         event_dicts.append(event_dict)
-    
+
     # Session-Record erstellen
     session_record = {
         "session_id": session_id,
@@ -69,7 +72,7 @@ def save_session_to_store(
         "n_events": len(events),
         "events": event_dicts,
     }
-    
+
     # Append to JSONL file
     with store_path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(session_record, ensure_ascii=False) + "\n")
@@ -81,7 +84,7 @@ def load_sessions_from_store(
     session_ids: List[str] | None = None,
 ) -> List[Tuple[str, List[TriggerTrainingEvent]]]:
     """Lädt Trigger-Training-Sessions aus dem Store.
-    
+
     Parameters
     ----------
     store_path:
@@ -90,37 +93,37 @@ def load_sessions_from_store(
         Optional: Maximale Anzahl an Sessions zu laden (neueste zuerst).
     session_ids:
         Optional: Nur diese Session-IDs laden (falls None, alle laden).
-    
+
     Returns
     -------
     List[Tuple[str, List[TriggerTrainingEvent]]]
         Liste von (session_id, events)-Tupeln.
     """
     store_path = Path(store_path)
-    
+
     if not store_path.exists():
         return []
-    
+
     all_sessions = []
-    
+
     with store_path.open("r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
-            
+
             record = json.loads(line)
             session_id = record["session_id"]
-            
+
             # Filter nach session_ids
             if session_ids is not None and session_id not in session_ids:
                 continue
-            
+
             # Events rekonstruieren
             events = []
             for ev_dict in record["events"]:
                 import pandas as pd
-                
+
                 event = TriggerTrainingEvent(
                     timestamp=pd.Timestamp(ev_dict["timestamp"]),
                     symbol=ev_dict["symbol"],
@@ -134,13 +137,13 @@ def load_sessions_from_store(
                     note=ev_dict.get("note", ""),
                 )
                 events.append(event)
-            
+
             all_sessions.append((session_id, events))
-    
+
     # Limit anwenden (neueste zuerst)
     if limit is not None:
         all_sessions = all_sessions[-limit:]
-    
+
     return all_sessions
 
 
@@ -148,32 +151,31 @@ def list_session_ids(
     store_path: Path | str = "live_runs/trigger_training_sessions.jsonl",
 ) -> List[str]:
     """Listet alle Session-IDs im Store auf.
-    
+
     Parameters
     ----------
     store_path:
         Pfad zur JSON-Lines-Datei.
-    
+
     Returns
     -------
     List[str]
         Liste von Session-IDs (chronologisch sortiert).
     """
     store_path = Path(store_path)
-    
+
     if not store_path.exists():
         return []
-    
+
     session_ids = []
-    
+
     with store_path.open("r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
-            
+
             record = json.loads(line)
             session_ids.append(record["session_id"])
-    
-    return session_ids
 
+    return session_ids

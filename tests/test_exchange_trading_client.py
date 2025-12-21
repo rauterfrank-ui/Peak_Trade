@@ -11,6 +11,7 @@ Diese Tests prüfen:
 
 WICHTIG: Alle Tests sind Offline-Tests ohne Netzwerkzugriff!
 """
+
 from __future__ import annotations
 
 import pytest
@@ -511,7 +512,3 @@ class TestIntegration:
 
         assert dummy_client.get_order_count() == 3
         assert len(dummy_client.get_filled_orders()) == 3
-
-
-
-

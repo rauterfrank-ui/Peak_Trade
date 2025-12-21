@@ -16,6 +16,7 @@ Usage:
     ])
     notifier.send(alert)  # Sendet an Console und File
 """
+
 from __future__ import annotations
 
 from typing import Sequence
@@ -79,6 +80,7 @@ class CombinedNotifier:
             except Exception as e:
                 # Fehler loggen aber nicht weitergeben
                 import sys
+
                 print(
                     f"[NOTIFIER ERROR] {type(notifier).__name__}: {e}",
                     file=sys.stderr,

@@ -7,6 +7,7 @@ Testet:
 - ArmstrongCycleConfig Dataclass
 - ArmstrongCycleModel (phase_for_date, risk_multiplier_for_date)
 """
+
 import pytest
 from datetime import date, timedelta
 
@@ -181,9 +182,7 @@ class TestArmstrongPhaseForDate:
         phase = model_test.phase_for_date(date(2020, 1, 1))
         assert phase == ArmstrongPhase.POST_CRISIS
 
-    def test_different_dates_different_phases(
-        self, model_test: ArmstrongCycleModel
-    ) -> None:
+    def test_different_dates_different_phases(self, model_test: ArmstrongCycleModel) -> None:
         """Prüft, dass verschiedene Daten verschiedene Phasen ergeben können."""
         ref = date(2020, 1, 1)
         phases = []
@@ -224,9 +223,7 @@ class TestArmstrongPhaseForDate:
         phase_50 = model_test.phase_for_date(ref + timedelta(days=50))
 
         # Phase am Tag 50 + ein voller Zyklus sollte gleich sein
-        phase_50_plus_cycle = model_test.phase_for_date(
-            ref + timedelta(days=50 + cycle_length)
-        )
+        phase_50_plus_cycle = model_test.phase_for_date(ref + timedelta(days=50 + cycle_length))
 
         assert phase_50 == phase_50_plus_cycle
 
@@ -244,9 +241,7 @@ class TestArmstrongRiskMultiplier:
 
             assert 0.0 <= mult <= 1.0, f"Multiplier {mult} außerhalb Bereich für Tag {i}"
 
-    def test_risk_multiplier_deterministic(
-        self, model_test: ArmstrongCycleModel
-    ) -> None:
+    def test_risk_multiplier_deterministic(self, model_test: ArmstrongCycleModel) -> None:
         """Prüft, dass Risk-Multiplier deterministisch ist."""
         test_date = date(2020, 5, 10)
 
@@ -255,9 +250,7 @@ class TestArmstrongRiskMultiplier:
 
         assert mult1 == mult2
 
-    def test_risk_multiplier_consistent_with_phase(
-        self, model_test: ArmstrongCycleModel
-    ) -> None:
+    def test_risk_multiplier_consistent_with_phase(self, model_test: ArmstrongCycleModel) -> None:
         """Prüft Konsistenz zwischen Phase und Risk-Multiplier."""
         ref = date(2020, 1, 1)
 
@@ -274,9 +267,7 @@ class TestArmstrongRiskMultiplier:
 class TestArmstrongCycleInfo:
     """Tests für get_cycle_info Methode."""
 
-    def test_cycle_info_contains_expected_keys(
-        self, model_test: ArmstrongCycleModel
-    ) -> None:
+    def test_cycle_info_contains_expected_keys(self, model_test: ArmstrongCycleModel) -> None:
         """Prüft, dass get_cycle_info alle erwarteten Keys enthält."""
         info = model_test.get_cycle_info(date(2020, 6, 15))
 
@@ -303,9 +294,7 @@ class TestArmstrongCycleInfo:
 
             assert 0.0 <= info["cycle_position"] < 1.0
 
-    def test_next_turning_point_in_future(
-        self, model_test: ArmstrongCycleModel
-    ) -> None:
+    def test_next_turning_point_in_future(self, model_test: ArmstrongCycleModel) -> None:
         """Prüft, dass next_turning_point in der Zukunft liegt."""
         test_date = date(2020, 6, 15)
         info = model_test.get_cycle_info(test_date)
@@ -368,15 +357,10 @@ class TestConvenienceFunctions:
 class TestModelRepr:
     """Tests für __repr__ Methode."""
 
-    def test_model_repr_contains_key_info(
-        self, model_test: ArmstrongCycleModel
-    ) -> None:
+    def test_model_repr_contains_key_info(self, model_test: ArmstrongCycleModel) -> None:
         """Prüft, dass __repr__ wichtige Infos enthält."""
         repr_str = repr(model_test)
 
         assert "ArmstrongCycleModel" in repr_str
         assert "RESEARCH-ONLY" in repr_str
         assert "100" in repr_str  # cycle_length
-
-
-

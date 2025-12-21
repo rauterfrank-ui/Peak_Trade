@@ -26,6 +26,7 @@ Verwendung:
     ... )
     >>> signals = composite.generate_signals(df)
 """
+
 from __future__ import annotations
 
 import logging
@@ -178,22 +179,16 @@ class CompositeStrategy(BaseStrategy):
                         self.strategies.append(strategy)
                         self.weights.append(float(weight))
                     else:
-                        raise ValueError(
-                            f"Erwarte BaseStrategy, bekommen: {type(strategy)}"
-                        )
+                        raise ValueError(f"Erwarte BaseStrategy, bekommen: {type(strategy)}")
                 else:
-                    raise ValueError(
-                        f"Erwarte (strategy, weight) Tupel, bekommen: {item}"
-                    )
+                    raise ValueError(f"Erwarte (strategy, weight) Tupel, bekommen: {item}")
         else:
             # Format: [strategy1, strategy2, ...]
             for strategy in strategies:
                 if isinstance(strategy, BaseStrategy):
                     self.strategies.append(strategy)
                 else:
-                    raise ValueError(
-                        f"Erwarte BaseStrategy, bekommen: {type(strategy)}"
-                    )
+                    raise ValueError(f"Erwarte BaseStrategy, bekommen: {type(strategy)}")
 
             # Weights verarbeiten
             if weights is not None:
@@ -212,16 +207,10 @@ class CompositeStrategy(BaseStrategy):
         if self.weights:
             total = sum(self.weights)
             if abs(total - 1.0) > 0.01:
-                logger.debug(
-                    f"Normalisiere Gewichte von Summe {total:.3f} auf 1.0"
-                )
+                logger.debug(f"Normalisiere Gewichte von Summe {total:.3f} auf 1.0")
                 self.weights = [w / total for w in self.weights]
 
-    def add_strategy(
-        self,
-        strategy: BaseStrategy,
-        weight: Optional[float] = None
-    ) -> None:
+    def add_strategy(self, strategy: BaseStrategy, weight: Optional[float] = None) -> None:
         """
         Fügt eine Strategie zur Composite hinzu.
 
@@ -327,10 +316,7 @@ class CompositeStrategy(BaseStrategy):
             filter_strategy=filter_strategy,
         )
 
-    def _aggregate_signals_weighted(
-        self,
-        signal_matrix: pd.DataFrame
-    ) -> pd.Series:
+    def _aggregate_signals_weighted(self, signal_matrix: pd.DataFrame) -> pd.Series:
         """
         Aggregiert Signale via gewichtetes Mittel.
 
@@ -346,10 +332,7 @@ class CompositeStrategy(BaseStrategy):
 
         return weighted_sum
 
-    def _aggregate_signals_voting(
-        self,
-        signal_matrix: pd.DataFrame
-    ) -> pd.Series:
+    def _aggregate_signals_voting(self, signal_matrix: pd.DataFrame) -> pd.Series:
         """
         Aggregiert Signale via Mehrheitsentscheidung.
 
@@ -371,10 +354,7 @@ class CompositeStrategy(BaseStrategy):
 
         return result
 
-    def _aggregate_signals_unanimous(
-        self,
-        signal_matrix: pd.DataFrame
-    ) -> pd.Series:
+    def _aggregate_signals_unanimous(self, signal_matrix: pd.DataFrame) -> pd.Series:
         """
         Aggregiert Signale: Alle müssen übereinstimmen.
 
@@ -394,11 +374,7 @@ class CompositeStrategy(BaseStrategy):
 
         return result
 
-    def _aggregate_signals_any(
-        self,
-        signal_matrix: pd.DataFrame,
-        direction: str
-    ) -> pd.Series:
+    def _aggregate_signals_any(self, signal_matrix: pd.DataFrame, direction: str) -> pd.Series:
         """
         Aggregiert: Long/Short wenn mindestens eine Strategie das Signal gibt.
 
@@ -452,9 +428,7 @@ class CompositeStrategy(BaseStrategy):
                 signal_dict[f"strategy_{i}_{strategy.key}"] = signals
                 valid_strategies += 1
             except Exception as e:
-                logger.warning(
-                    f"Strategie {strategy.key} konnte keine Signale generieren: {e}"
-                )
+                logger.warning(f"Strategie {strategy.key} konnte keine Signale generieren: {e}")
                 if self.require_all_valid:
                     raise ValueError(
                         f"require_all_valid=True aber Strategie {strategy.key} fehlgeschlagen: {e}"
@@ -476,12 +450,8 @@ class CompositeStrategy(BaseStrategy):
 
             # Threshold anwenden
             final_signals = pd.Series(0, index=data.index, dtype=int)
-            final_signals = final_signals.where(
-                ~(aggregated > self.signal_threshold), 1
-            )
-            final_signals = final_signals.where(
-                ~(aggregated < -self.signal_threshold), -1
-            )
+            final_signals = final_signals.where(~(aggregated > self.signal_threshold), 1)
+            final_signals = final_signals.where(~(aggregated < -self.signal_threshold), -1)
 
         elif self.aggregation == "voting":
             final_signals = self._aggregate_signals_voting(signal_matrix)
@@ -509,10 +479,7 @@ class CompositeStrategy(BaseStrategy):
         final_signals.name = "signal"
         return final_signals
 
-    def get_component_signals(
-        self,
-        data: pd.DataFrame
-    ) -> Dict[str, pd.Series]:
+    def get_component_signals(self, data: pd.DataFrame) -> Dict[str, pd.Series]:
         """
         Gibt Signale aller Komponenten-Strategien zurück.
 
@@ -585,7 +552,7 @@ Composite Strategy (Phase 40)
 ==============================
 Aggregation:       {aggregation}
 Signal Threshold:  {threshold}
-Komponenten:       {', '.join(strategy_names) if strategy_names else 'Keine'}
+Komponenten:       {", ".join(strategy_names) if strategy_names else "Keine"}
 
 Konzept:
 - Kombiniert {len(strategies)} Strategien
