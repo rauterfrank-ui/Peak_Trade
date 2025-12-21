@@ -123,6 +123,11 @@ from .ops_stage1_router import (
     router as stage1_router,
     set_stage1_config,
 )
+# Ops Workflows Hub
+from .ops_workflows_router import (
+    router as workflows_router,
+    set_workflows_config,
+)
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -358,6 +363,20 @@ def create_app() -> FastAPI:
     stage1_report_root = BASE_DIR / "reports" / "obs" / "stage1"
     set_stage1_config(stage1_report_root, templates)
     app.include_router(stage1_router)
+    
+    # Ops Workflows Hub
+    set_workflows_config(BASE_DIR, templates)
+    app.include_router(workflows_router)
+    
+    # JSON API Alias für /api/ops/workflows
+    @app.get("/api/ops/workflows")
+    async def api_ops_workflows() -> List[Dict[str, Any]]:
+        """JSON API Alias: Get list of workflow scripts."""
+        from .ops_workflows_router import _get_workflow_definitions, _enrich_with_filesystem_metadata
+        from dataclasses import asdict
+        workflow_defs = _get_workflow_definitions()
+        workflows = _enrich_with_filesystem_metadata(workflow_defs)
+        return [asdict(wf) for wf in workflows]
 
     # =========================================================================
     # HTML Dashboard Endpoints
