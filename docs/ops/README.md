@@ -492,6 +492,7 @@ The trend analysis includes a simple readiness assessment:
 
 ## Merge Logs
 
+- [PR #228](PR_228_MERGE_LOG.md) — chore/ops convenience pack 2025 12 21 ee67053 (merged 2025-12-21) <!-- PR-228-MERGE-LOG -->
 ### Templates
 
 - [MERGE_LOG_TEMPLATE_COMPACT](MERGE_LOG_TEMPLATE_COMPACT.md) — Standardvorlage (kompakt, fokussiert)
