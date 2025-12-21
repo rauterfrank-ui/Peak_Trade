@@ -287,4 +287,3 @@ Siehe auch [`docs/OBSERVABILITY_AND_MONITORING_PLAN.md`](OBSERVABILITY_AND_MONIT
 ---
 
 **Built with ❤️ and safety-first architecture**
-

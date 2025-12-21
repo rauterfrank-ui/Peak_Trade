@@ -46,6 +46,7 @@ Verfügbare Strategien (aus Registry):
 
 Zum Beenden: Ctrl+C (SIGINT) oder SIGTERM
 """
+
 from __future__ import annotations
 
 import argparse
@@ -422,9 +423,7 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
         # Metrics aus Runner extrahieren
         if hasattr(runner, "metrics") and runner.metrics:
             runner_metrics = (
-                runner.metrics.to_dict()
-                if hasattr(runner.metrics, "to_dict")
-                else runner.metrics
+                runner.metrics.to_dict() if hasattr(runner.metrics, "to_dict") else runner.metrics
             )
             metrics.update(
                 {

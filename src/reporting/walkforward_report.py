@@ -18,6 +18,7 @@ Usage:
     report = build_walkforward_report(result, sweep_name="rsi_reversion_basic")
     save_walkforward_report(report, output_path)
 """
+
 from __future__ import annotations
 
 import logging
@@ -164,7 +165,9 @@ def _build_aggregate_metrics_section(result: Any) -> ReportSection:
             elif "sharpe" in key:
                 formatted = f"{value:.2f}"
             else:
-                formatted = str(int(value) if isinstance(value, float) and value.is_integer() else value)
+                formatted = str(
+                    int(value) if isinstance(value, float) and value.is_integer() else value
+                )
             table_lines.append(f"| {label} | {formatted} |")
 
     return ReportSection(title="Aggregate Metrics", content_markdown="\n".join(table_lines))
@@ -324,7 +327,9 @@ def save_walkforward_report(
     """
     # Bestimme vollständigen Pfad
     # Prüfe ob output_path ein Verzeichnispfad ist (kein .md Suffix) oder bereits existiert als Dir
-    is_directory_path = output_path.is_dir() or (not output_path.suffix and not output_path.is_file())
+    is_directory_path = output_path.is_dir() or (
+        not output_path.suffix and not output_path.is_file()
+    )
 
     if is_directory_path:
         # Verzeichnisstruktur: reports/walkforward/{sweep_name}/{config_id}_walkforward_YYYYMMDD.md
@@ -348,11 +353,3 @@ def save_walkforward_report(
 
     logger.info(f"Walk-Forward-Report gespeichert: {output_path}")
     return output_path
-
-
-
-
-
-
-
-

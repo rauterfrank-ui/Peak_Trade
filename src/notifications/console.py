@@ -15,6 +15,7 @@ Usage:
     notifier = ConsoleNotifier()
     notifier.send(alert)
 """
+
 from __future__ import annotations
 
 import sys

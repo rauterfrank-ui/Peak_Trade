@@ -227,9 +227,7 @@ def _aggregate_group_risk(
                 "total_return_mean": float(grp["total_return"].mean())
                 if "total_return" in grp.columns
                 else np.nan,
-                "sharpe_mean": float(grp["sharpe"].mean())
-                if "sharpe" in grp.columns
-                else np.nan,
+                "sharpe_mean": float(grp["sharpe"].mean()) if "sharpe" in grp.columns else np.nan,
                 "max_drawdown_mean": float(grp["max_drawdown"].mean())
                 if "max_drawdown" in grp.columns
                 else np.nan,

@@ -27,7 +27,7 @@ def test_discover_stage1_days_with_summaries(tmp_path):
     # Create some summary files
     (tmp_path / "2025-12-20_summary.json").write_text("{}")
     (tmp_path / "2025-12-19_summary.json").write_text("{}")
-    
+
     result = discover_stage1_days(tmp_path)
     assert len(result) > 0
 
@@ -54,12 +54,12 @@ def test_load_stage1_summary_valid(tmp_path):
         },
         "notes": ["test note"],
     }
-    
+
     summary_path = tmp_path / "2025-12-20_summary.json"
     summary_path.write_text(json.dumps(summary_data))
-    
+
     result = load_stage1_summary(tmp_path, date="2025-12-20")
-    
+
     assert result is not None
     assert isinstance(result, Stage1Summary)
     assert result.date == "2025-12-20"
@@ -72,7 +72,7 @@ def test_load_stage1_summary_invalid_json(tmp_path):
     """Test loading invalid JSON."""
     summary_path = tmp_path / "2025-12-20_summary.json"
     summary_path.write_text("not valid json")
-    
+
     result = load_stage1_summary(tmp_path, date="2025-12-20")
     assert result is None
 
@@ -103,9 +103,9 @@ def test_load_latest_summary_picks_newest(tmp_path):
         }
         summary_path = tmp_path / f"{date}_summary.json"
         summary_path.write_text(json.dumps(summary_data))
-    
+
     result = load_latest_summary(tmp_path)
-    
+
     assert result is not None
     assert result.date == "2025-12-20"  # Newest
     assert result.metrics.new_alerts == 20  # Day number
@@ -132,11 +132,10 @@ def test_load_all_summaries_with_limit(tmp_path):
         }
         summary_path = tmp_path / f"{date}_summary.json"
         summary_path.write_text(json.dumps(summary_data))
-    
+
     result = load_all_summaries(tmp_path, limit=2)
-    
+
     assert len(result) == 2
     # Should be newest first
     assert result[0].date == "2025-12-21"
     assert result[1].date == "2025-12-20"
-

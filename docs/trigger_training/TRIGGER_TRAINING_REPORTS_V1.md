@@ -657,4 +657,3 @@ Bei Fragen oder Feature-Requests:
 
 **Version**: v0 (2025-12-10)  
 **Next Review**: Nach 10 Offline-Realtime-Sessions mit Operator-Feedback
-

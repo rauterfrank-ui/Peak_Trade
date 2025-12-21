@@ -5,6 +5,7 @@ Peak_Trade – Phase 16L: Report Path Utilities
 Provides robust, Docker-friendly path resolution for reports output.
 Respects ENV PEAK_REPORTS_DIR for container/CI use cases.
 """
+
 from __future__ import annotations
 
 import os
@@ -32,19 +33,19 @@ def get_repo_root() -> Path:
 def get_reports_root(default_rel: str = "reports") -> Path:
     """
     Determine the reports root directory.
-    
+
     Priority:
     1. ENV PEAK_REPORTS_DIR (absolute or relative to repo root)
     2. default_rel relative to repo root
-    
+
     Args:
         default_rel: Default relative path from repo root (e.g. "reports")
-        
+
     Returns:
         Absolute Path to reports root
     """
     repo_root = get_repo_root()
-    
+
     env_override = os.environ.get("PEAK_REPORTS_DIR", "").strip()
     if env_override:
         p = Path(env_override)
@@ -52,20 +53,19 @@ def get_reports_root(default_rel: str = "reports") -> Path:
             return p
         else:
             return (repo_root / p).resolve()
-    
+
     return (repo_root / default_rel).resolve()
 
 
 def ensure_dir(p: Path) -> Path:
     """
     Ensure directory exists (mkdir -p equivalent).
-    
+
     Args:
         p: Path to create
-        
+
     Returns:
         The same Path (for chaining)
     """
     p.mkdir(parents=True, exist_ok=True)
     return p
-

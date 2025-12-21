@@ -28,7 +28,7 @@ from .test_health_runner import TestHealthSummary
 @dataclass
 class HealthHistoryEntry:
     """Einzelner Eintrag in der Health-Historie."""
-    
+
     profile_name: str
     timestamp: str  # ISO format
     health_score: float
@@ -258,9 +258,9 @@ def print_history_summary(
     """
     stats = get_history_stats(profile_name, days, history_path)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"📊 Health History: {profile_name} (letzte {days} Tage)")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     if stats["count"] == 0:
         print("Keine Daten vorhanden.")
@@ -286,4 +286,4 @@ def print_history_summary(
     print(f"Avg Duration:   {stats['avg_duration_seconds']:.2f}s")
     print(f"Total Passed:   {stats['total_passed']}")
     print(f"Total Failed:   {stats['total_failed']}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")

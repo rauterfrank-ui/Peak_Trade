@@ -4,6 +4,7 @@ Peak_Trade Regime-Aware Portfolio Strategy Tests
 ================================================
 Unit-Tests für die Regime-Aware Portfolio-Strategie.
 """
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -81,7 +82,7 @@ class TestRegimeAwarePortfolioStrategy:
         strategy = RegimeAwarePortfolioStrategy(
             components=["breakout_basic", "rsi_reversion"],
             base_weights={"breakout_basic": 0.6, "rsi_reversion": 0.4},
-            regime_strategy="vol_regime_basic"
+            regime_strategy="vol_regime_basic",
         )
 
         assert strategy is not None
@@ -104,7 +105,7 @@ class TestRegimeAwarePortfolioStrategy:
             risk_on_scale=1.0,
             neutral_scale=0.3,
             risk_off_scale=0.0,
-            signal_threshold=0.25
+            signal_threshold=0.25,
         )
 
         assert strategy.mode == "filter"
@@ -116,7 +117,7 @@ class TestRegimeAwarePortfolioStrategy:
         strategy = RegimeAwarePortfolioStrategy(
             components=["breakout_basic", "rsi_reversion"],
             base_weights={"breakout_basic": 0.6, "rsi_reversion": 0.4},
-            regime_strategy="vol_regime_basic"
+            regime_strategy="vol_regime_basic",
         )
 
         # Gewichte sollten normalisiert sein (Summe = 1.0)
@@ -128,7 +129,7 @@ class TestRegimeAwarePortfolioStrategy:
         strategy = RegimeAwarePortfolioStrategy(
             components=["breakout_basic", "rsi_reversion", "ma_crossover"],
             base_weights={},  # Leer
-            regime_strategy="vol_regime_basic"
+            regime_strategy="vol_regime_basic",
         )
 
         # Alle Komponenten sollten Gewichte haben
@@ -136,34 +137,26 @@ class TestRegimeAwarePortfolioStrategy:
         assert all(component in strategy.base_weights for component in strategy.components)
         # Alle sollten etwa gleich gewichtet sein
         weights = list(strategy.base_weights.values())
-        assert all(abs(w - 1/3) < 0.01 for w in weights)
+        assert all(abs(w - 1 / 3) < 0.01 for w in weights)
 
     def test_validation_errors(self):
         """Test: Validation wirft Fehler bei ungültigen Parametern."""
         with pytest.raises(ValueError, match="components darf nicht leer sein"):
-            RegimeAwarePortfolioStrategy(
-                components=[],
-                regime_strategy="vol_regime_basic"
-            )
+            RegimeAwarePortfolioStrategy(components=[], regime_strategy="vol_regime_basic")
 
         with pytest.raises(ValueError, match="regime_strategy muss gesetzt sein"):
-            RegimeAwarePortfolioStrategy(
-                components=["breakout_basic"],
-                regime_strategy=""
-            )
+            RegimeAwarePortfolioStrategy(components=["breakout_basic"], regime_strategy="")
 
         with pytest.raises(ValueError, match="mode.*scale.*filter"):
             RegimeAwarePortfolioStrategy(
-                components=["breakout_basic"],
-                regime_strategy="vol_regime_basic",
-                mode="invalid"
+                components=["breakout_basic"], regime_strategy="vol_regime_basic", mode="invalid"
             )
 
         with pytest.raises(ValueError, match="signal_threshold"):
             RegimeAwarePortfolioStrategy(
                 components=["breakout_basic"],
                 regime_strategy="vol_regime_basic",
-                signal_threshold=1.5
+                signal_threshold=1.5,
             )
 
     def test_regime_scale_mapping(self):
@@ -174,11 +167,11 @@ class TestRegimeAwarePortfolioStrategy:
             regime_strategy="vol_regime_basic",
             risk_on_scale=1.0,
             neutral_scale=0.5,
-            risk_off_scale=0.0
+            risk_off_scale=0.0,
         )
 
-        assert strategy._get_regime_scale(1) == 1.0   # Risk-On
-        assert strategy._get_regime_scale(0) == 0.5   # Neutral
+        assert strategy._get_regime_scale(1) == 1.0  # Risk-On
+        assert strategy._get_regime_scale(0) == 0.5  # Neutral
         assert strategy._get_regime_scale(-1) == 0.0  # Risk-Off
 
     def test_generate_signals_structure(self):
@@ -188,7 +181,7 @@ class TestRegimeAwarePortfolioStrategy:
         strategy = RegimeAwarePortfolioStrategy(
             components=["breakout_basic"],
             base_weights={"breakout_basic": 1.0},
-            regime_strategy="vol_regime_basic"
+            regime_strategy="vol_regime_basic",
         )
 
         # Sollte ValueError werfen wenn Strategien nicht geladen werden können
@@ -242,7 +235,7 @@ class TestRegimeAwarePortfolioIntegration:
             regime_strategy="mock_regime",
             risk_on_scale=1.0,
             neutral_scale=0.5,
-            risk_off_scale=0.0
+            risk_off_scale=0.0,
         )
         strategy._component_strategies = [mock_component]
         strategy._regime_strategy = mock_regime
@@ -271,7 +264,7 @@ class TestRegimeAwarePortfolioIntegration:
             regime_strategy="mock_regime",
             risk_on_scale=1.0,
             neutral_scale=0.5,
-            risk_off_scale=0.0
+            risk_off_scale=0.0,
         )
         strategy._component_strategies = [mock_component]
         strategy._regime_strategy = mock_regime
@@ -303,7 +296,7 @@ class TestRegimeAwarePortfolioIntegration:
             risk_on_scale=1.0,
             neutral_scale=0.5,
             risk_off_scale=0.0,
-            signal_threshold=0.3
+            signal_threshold=0.3,
         )
         strategy._component_strategies = [mock_component]
         strategy._regime_strategy = mock_regime
@@ -330,7 +323,7 @@ class TestRegimeAwarePortfolioIntegration:
             base_weights={"mock_component": 1.0},
             regime_strategy="mock_regime",
             mode="filter",
-            risk_off_scale=0.0
+            risk_off_scale=0.0,
         )
         strategy._component_strategies = [mock_component]
         strategy._regime_strategy = mock_regime
@@ -358,7 +351,7 @@ class TestRegimeAwarePortfolioIntegration:
             components=["mock1", "mock2"],
             base_weights={"mock1": 0.6, "mock2": 0.4},
             regime_strategy="mock_regime",
-            risk_on_scale=1.0
+            risk_on_scale=1.0,
         )
         strategy._component_strategies = [mock1, mock2]
         strategy._regime_strategy = mock_regime
@@ -385,7 +378,7 @@ class TestRegimeAwarePortfolioIntegration:
         strategy = RegimeAwarePortfolioStrategy(
             components=["mock1", "mock2"],
             base_weights={"mock1": 0.5, "mock2": 0.5},
-            regime_strategy="mock_regime"
+            regime_strategy="mock_regime",
         )
         strategy._component_strategies = [mock1, mock2]
         strategy._regime_strategy = mock_regime
@@ -403,16 +396,14 @@ class TestRegimeAwarePortfolioIntegration:
 
         # Erstelle Regime-Signale mit korrekter Länge
         regime_pattern = [1, 0, -1] * (len(df) // 3 + 1)
-        regime_signals = pd.Series(regime_pattern[:len(df)], index=df.index, dtype=int)
+        regime_signals = pd.Series(regime_pattern[: len(df)], index=df.index, dtype=int)
         mock_regime = MockStrategy(regime_signals)
 
         # Mock-Komponente
         mock_component = MockStrategy(pd.Series(1, index=df.index, dtype=int))
 
         strategy = RegimeAwarePortfolioStrategy(
-            components=["mock1"],
-            base_weights={"mock1": 1.0},
-            regime_strategy="mock_regime"
+            components=["mock1"], base_weights={"mock1": 1.0}, regime_strategy="mock_regime"
         )
         # Setze beide Mocks um _load_strategies zu umgehen
         strategy._component_strategies = [mock_component]
@@ -423,8 +414,3 @@ class TestRegimeAwarePortfolioIntegration:
         assert regime is not None
         assert len(regime) == len(df)
         assert set(regime.unique()).issubset({-1, 0, 1})
-
-
-
-
-

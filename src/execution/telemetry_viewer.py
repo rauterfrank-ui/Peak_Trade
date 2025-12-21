@@ -5,6 +5,7 @@ Telemetry Viewer - Read-only queries for execution event logs.
 Phase 16C: Operator tools for reading, filtering, and analyzing
 execution telemetry without modifying logs.
 """
+
 from __future__ import annotations
 
 import json
@@ -235,9 +236,7 @@ def summarize_events(events: Iterable[Dict[str, Any]]) -> Dict[str, Any]:
     return summary
 
 
-def build_timeline(
-    events: Iterable[Dict[str, Any]], max_items: int = 200
-) -> List[Dict[str, Any]]:
+def build_timeline(events: Iterable[Dict[str, Any]], max_items: int = 200) -> List[Dict[str, Any]]:
     """
     Build compact timeline view for dashboard.
 

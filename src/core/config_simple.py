@@ -81,7 +81,7 @@ def load_config(config_path: str | Path | None = None) -> dict[str, Any]:
         )
 
     # TOML laden
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(path, "r", encoding="utf-8") as f:
         config = toml.load(f)
 
     return config
@@ -107,17 +107,17 @@ def get_strategy_config(config: dict[str, Any], strategy_name: str) -> dict[str,
         >>> print(strat_cfg['fast_period'])
         10
     """
-    if 'strategy' not in config:
+    if "strategy" not in config:
         raise KeyError("Keine Strategien in Config definiert (fehlt [strategy] Sektion)")
 
-    if strategy_name not in config['strategy']:
-        available = ", ".join(sorted(config['strategy'].keys()))
+    if strategy_name not in config["strategy"]:
+        available = ", ".join(sorted(config["strategy"].keys()))
         raise KeyError(
             f"Strategie '{strategy_name}' nicht in Config gefunden. "
             f"Verfügbare Strategien: {available}"
         )
 
-    return config['strategy'][strategy_name]
+    return config["strategy"][strategy_name]
 
 
 def list_strategies(config: dict[str, Any]) -> list[str]:
@@ -136,7 +136,7 @@ def list_strategies(config: dict[str, Any]) -> list[str]:
         >>> print(strategies)
         ['ma_crossover', 'momentum_1h', 'rsi_strategy']
     """
-    if 'strategy' not in config:
+    if "strategy" not in config:
         return []
 
-    return sorted(config['strategy'].keys())
+    return sorted(config["strategy"].keys())

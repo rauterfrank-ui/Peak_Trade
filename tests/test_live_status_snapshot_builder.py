@@ -16,6 +16,7 @@ Tests:
 Run:
     pytest tests/test_live_status_snapshot_builder.py -v
 """
+
 from __future__ import annotations
 
 import pytest
@@ -39,21 +40,24 @@ from src.reporting.status_snapshot_schema import (
 # =============================================================================
 
 
-@pytest.mark.parametrize("input_status,expected", [
-    ("ok", "ok"),
-    ("OK", "ok"),
-    ("warn", "warn"),
-    ("WARNING", "warn"),
-    ("error", "error"),
-    ("FAIL", "error"),
-    ("unknown", "unknown"),
-    (True, "ok"),
-    (False, "error"),
-    (0, "ok"),
-    (1, "warn"),
-    (2, "error"),
-    (None, "unknown"),
-])
+@pytest.mark.parametrize(
+    "input_status,expected",
+    [
+        ("ok", "ok"),
+        ("OK", "ok"),
+        ("warn", "warn"),
+        ("WARNING", "warn"),
+        ("error", "error"),
+        ("FAIL", "error"),
+        ("unknown", "unknown"),
+        (True, "ok"),
+        (False, "error"),
+        (0, "ok"),
+        (1, "warn"),
+        (2, "error"),
+        (None, "unknown"),
+    ],
+)
 def test_normalize_status(input_status, expected):
     """Test status normalization for various inputs."""
     assert normalize_status(input_status) == expected
@@ -125,6 +129,7 @@ def test_build_snapshot_generated_at_iso():
 
 def test_provider_returns_dict():
     """Test provider returning dict is converted to PanelSnapshot."""
+
     def provider():
         return {"id": "test", "title": "Test", "status": "ok", "details": {"key": "value"}}
 
@@ -140,6 +145,7 @@ def test_provider_returns_dict():
 
 def test_provider_returns_tuple():
     """Test provider returning tuple (status, title, details)."""
+
     def provider():
         return ("ok", "Test Title", {"metric": 42})
 
@@ -155,12 +161,10 @@ def test_provider_returns_tuple():
 
 def test_provider_returns_panel_snapshot():
     """Test provider returning PanelSnapshot is passed through."""
+
     def provider():
         return PanelSnapshot(
-            id="direct",
-            title="Direct Panel",
-            status="warn",
-            details={"alert": "check this"}
+            id="direct", title="Direct Panel", status="warn", details={"alert": "check this"}
         )
 
     snapshot = build_live_status_snapshot(panel_providers={"direct": provider})
@@ -179,6 +183,7 @@ def test_provider_returns_panel_snapshot():
 
 def test_provider_exception_creates_error_panel():
     """Test that provider exceptions create error panels (no crash)."""
+
     def failing_provider():
         raise ValueError("Provider crashed!")
 
@@ -194,6 +199,7 @@ def test_provider_exception_creates_error_panel():
 
 def test_multiple_providers_one_fails():
     """Test that one failing provider doesn't break others."""
+
     def good_provider():
         return {"status": "ok", "details": {"healthy": True}}
 
@@ -226,6 +232,7 @@ def test_multiple_providers_one_fails():
 
 def test_panels_sorted_by_id():
     """Test that panels are sorted by ID for deterministic output."""
+
     def provider_z():
         return {"status": "ok"}
 
@@ -249,6 +256,7 @@ def test_panels_sorted_by_id():
 
 def test_details_keys_sorted():
     """Test that panel details have sorted keys."""
+
     def provider():
         return {"status": "ok", "details": {"z": 1, "a": 2, "m": 3}}
 
@@ -300,12 +308,7 @@ def test_panel_from_dict_minimal():
 
 def test_panel_from_dict_full():
     """Test _panel_from_dict with all fields."""
-    data = {
-        "id": "custom_id",
-        "title": "Custom Title",
-        "status": "warn",
-        "details": {"metric": 42}
-    }
+    data = {"id": "custom_id", "title": "Custom Title", "status": "warn", "details": {"metric": 42}}
 
     panel = _panel_from_dict("fallback_id", data)
 
@@ -317,6 +320,7 @@ def test_panel_from_dict_full():
 
 def test_invoke_provider_safely_dict():
     """Test _invoke_provider_safely with dict return."""
+
     def provider():
         return {"status": "ok", "details": {"test": True}}
 
@@ -329,6 +333,7 @@ def test_invoke_provider_safely_dict():
 
 def test_invoke_provider_safely_tuple():
     """Test _invoke_provider_safely with tuple return."""
+
     def provider():
         return ("warn", "Warning Title", {"reason": "low memory"})
 
@@ -342,13 +347,9 @@ def test_invoke_provider_safely_tuple():
 
 def test_invoke_provider_safely_panel_snapshot():
     """Test _invoke_provider_safely with PanelSnapshot return."""
+
     def provider():
-        return PanelSnapshot(
-            id="direct",
-            title="Direct",
-            status="error",
-            details={"code": 500}
-        )
+        return PanelSnapshot(id="direct", title="Direct", status="error", details={"code": 500})
 
     panel = _invoke_provider_safely("should_be_ignored", provider)
 
@@ -360,6 +361,7 @@ def test_invoke_provider_safely_panel_snapshot():
 
 def test_invoke_provider_safely_invalid_type():
     """Test _invoke_provider_safely with invalid return type raises error."""
+
     def provider():
         return "invalid string return"
 
@@ -392,12 +394,10 @@ def test_model_dump_helper():
 
 def test_full_scenario_multiple_providers():
     """Integration test with multiple providers, different formats."""
+
     def system_provider():
         return PanelSnapshot(
-            id="system",
-            title="System Health",
-            status="ok",
-            details={"cpu": 25.5, "memory": 60.2}
+            id="system", title="System Health", status="ok", details={"cpu": 25.5, "memory": 60.2}
         )
 
     def portfolio_provider():
@@ -405,7 +405,7 @@ def test_full_scenario_multiple_providers():
             "id": "portfolio",
             "title": "Portfolio Status",
             "status": "warn",
-            "details": {"positions": 5, "exposure": 12500}
+            "details": {"positions": 5, "exposure": 12500},
         }
 
     def risk_provider():
@@ -449,7 +449,10 @@ def test_snapshot_json_serializable():
     import json
 
     def provider():
-        return {"status": "ok", "details": {"number": 42, "text": "test", "nested": {"key": "value"}}}
+        return {
+            "status": "ok",
+            "details": {"number": 42, "text": "test", "nested": {"key": "value"}},
+        }
 
     snapshot = build_live_status_snapshot(panel_providers={"test": provider})
     snapshot_dict = model_dump_helper(snapshot)

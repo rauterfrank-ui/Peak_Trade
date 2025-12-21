@@ -4,7 +4,7 @@ set -euo pipefail
 # ============================================================
 # Peak_Trade - Stage 1 Monitoring (Daily Routine)
 # ============================================================
-# 
+#
 # Führt täglich aus:
 #   1) Daily Snapshot (analysiert letzte 24h)
 #   2) Trend Report (zeigt Go/No-Go Signal)

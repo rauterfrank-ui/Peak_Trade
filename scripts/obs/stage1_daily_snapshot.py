@@ -69,7 +69,7 @@ def main():
     args = ap.parse_args()
 
     repo = pathlib.Path(args.repo).resolve()
-    
+
     # Phase 16L: Support --reports-root for Docker/CI use
     if args.reports_root:
         # Explicit override via CLI flag
@@ -235,13 +235,13 @@ def main():
         },
         "notes": [],
     }
-    
+
     # Add notes based on context
     if new_alerts_24 == 0:
         json_summary["notes"].append("no new alerts")
     if total_lines == 0:
         json_summary["notes"].append("baseline - no data found")
-    
+
     json_out_path = out_dir / f"{date_str}_summary.json"
     json_out_path.write_text(json.dumps(json_summary, indent=2), encoding="utf-8")
 

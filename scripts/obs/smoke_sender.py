@@ -2,6 +2,7 @@
 
 Requires: pip install -e '.[otel]'
 """
+
 import os
 import time
 
@@ -10,6 +11,7 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
 
 def main() -> int:
     endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4317")
@@ -31,6 +33,7 @@ def main() -> int:
     provider.shutdown()
     print(f"✅ Sent span to {endpoint} (service={service_name})")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -23,9 +23,9 @@ from src.data import (
 
 def main():
     """Hauptfunktion."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("KRAKEN DATA PIPELINE DEMO")
-    print("="*70)
+    print("=" * 70)
 
     # 1. Verbindung testen
     print("\n🔌 Teste Kraken-Verbindung...")
@@ -40,11 +40,7 @@ def main():
 
     # 3. Daten holen (wird gecacht)
     print("\n📥 Hole BTC/USD 1h Daten (100 Bars)...")
-    df = pipeline.fetch_and_prepare(
-        symbol="BTC/USD",
-        timeframe="1h",
-        limit=100
-    )
+    df = pipeline.fetch_and_prepare(symbol="BTC/USD", timeframe="1h", limit=100)
 
     print(f"\n✅ Daten geladen:")
     print(f"  Bars:      {len(df)}")
@@ -59,11 +55,7 @@ def main():
 
     # 4. Nochmal holen (sollte aus Cache kommen)
     print("\n📦 Hole nochmal (sollte aus Cache kommen)...")
-    df2 = pipeline.fetch_and_prepare(
-        symbol="BTC/USD",
-        timeframe="1h",
-        limit=100
-    )
+    df2 = pipeline.fetch_and_prepare(symbol="BTC/USD", timeframe="1h", limit=100)
 
     print(f"  ✅ Aus Cache: {len(df2)} Bars")
     print(f"  Identisch: {df.equals(df2)}")
@@ -74,7 +66,7 @@ def main():
         symbol="BTC/USD",
         source_timeframe="1h",
         target_timeframe="4h",
-        limit=200  # 200 Stunden = ~50 4h-Bars
+        limit=200,  # 200 Stunden = ~50 4h-Bars
     )
 
     print(f"  ✅ Resampled: {len(df_4h)} Bars (4h)")
@@ -86,9 +78,9 @@ def main():
     df_quick = fetch_kraken_data("ETH/USD", "1h", limit=50)
     print(f"  ✅ ETH/USD geladen: {len(df_quick)} Bars")
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("✅ KRAKEN-PIPELINE DEMO ABGESCHLOSSEN!")
-    print("="*70)
+    print("=" * 70)
 
     print("\n📝 Verwendung im Code:")
     print("""
@@ -114,4 +106,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n\n❌ Fehler: {e}")
         import traceback
+
         traceback.print_exc()

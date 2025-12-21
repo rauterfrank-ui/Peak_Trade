@@ -4,6 +4,7 @@ Execution Pipeline Builder - Config Integration.
 
 Builds ExecutionPipeline from TOML config.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -57,8 +58,7 @@ def build_execution_pipeline_from_config(cfg: Any) -> ExecutionPipeline:
     except ValueError:
         valid_modes = [m.value for m in ExecutionMode]
         raise ValueError(
-            f"Invalid execution mode: '{mode_str}'. "
-            f"Must be one of: {', '.join(valid_modes)}"
+            f"Invalid execution mode: '{mode_str}'. Must be one of: {', '.join(valid_modes)}"
         )
 
     # Build gates in order:

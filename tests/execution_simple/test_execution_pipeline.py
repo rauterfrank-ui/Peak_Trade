@@ -4,6 +4,7 @@ Tests for Simplified Execution Pipeline.
 
 Tests gates, adapters, and pipeline orchestration.
 """
+
 from datetime import datetime
 
 import pytest

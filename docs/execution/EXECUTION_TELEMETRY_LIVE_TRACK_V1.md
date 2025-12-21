@@ -288,7 +288,7 @@ from src.execution.events import ExecutionEvent
 
 class PrometheusEmitter(ExecutionEventEmitter):
     """Emit events to Prometheus."""
-    
+
     def emit(self, event: ExecutionEvent) -> None:
         # Emit to Prometheus
         counter = prometheus_client.Counter(

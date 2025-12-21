@@ -9,6 +9,7 @@ Testet die Web-API und Dashboard:
 - Tail-Events
 - Alerts
 """
+
 from __future__ import annotations
 
 import json
@@ -239,9 +240,17 @@ class TestSnapshotEndpoint:
         data = response.json()
 
         expected_fields = [
-            "run_id", "mode", "strategy_name", "symbol", "timeframe",
-            "total_steps", "total_orders", "total_blocked_orders",
-            "equity", "realized_pnl", "unrealized_pnl",
+            "run_id",
+            "mode",
+            "strategy_name",
+            "symbol",
+            "timeframe",
+            "total_steps",
+            "total_orders",
+            "total_blocked_orders",
+            "equity",
+            "realized_pnl",
+            "unrealized_pnl",
         ]
         for field in expected_fields:
             assert field in data
@@ -312,8 +321,14 @@ class TestTailEndpoint:
         row = data[0]
 
         expected_fields = [
-            "ts_bar", "equity", "realized_pnl", "unrealized_pnl",
-            "position_size", "orders_count", "risk_allowed", "risk_reasons",
+            "ts_bar",
+            "equity",
+            "realized_pnl",
+            "unrealized_pnl",
+            "position_size",
+            "orders_count",
+            "risk_allowed",
+            "risk_reasons",
         ]
         for field in expected_fields:
             assert field in row

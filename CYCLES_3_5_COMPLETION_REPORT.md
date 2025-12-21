@@ -116,7 +116,7 @@
 
 **Vorgeschlagene Aktion:**
 ```
-Option A (empfohlen): 
+Option A (empfohlen):
 - In Test-Environment übernehmen
 - 5-10 weitere Backtests durchführen
 - Bei positiver Validation: Live freigeben

@@ -169,7 +169,7 @@ python scripts/obs/stage1_trend_report.py
 - name: Stage1 Daily Snapshot (Docker)
   run: |
     docker compose -f docker-compose.obs.yml run --rm peaktrade-ops stage1-snapshot
-    
+
 - name: Upload Reports
   uses: actions/upload-artifact@v3
   with:
@@ -308,4 +308,3 @@ Phase 16L is **intentionally scoped** to Stage1 Monitoring only.
 ---
 
 *Phase 16L (Docker Ops Runner) is now live on `main` branch.*
-

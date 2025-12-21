@@ -17,6 +17,7 @@ Example:
     >>> app = create_app()
     >>> # Start with: uvicorn src.live.web.app:app --host 127.0.0.1 --port 8000
 """
+
 from __future__ import annotations
 
 import json
@@ -59,6 +60,7 @@ class WebUIConfig:
         base_runs_dir: Basis-Verzeichnis für Runs
         auto_refresh_seconds: Auto-Refresh-Intervall im Browser
     """
+
     enabled: bool = True
     host: str = "127.0.0.1"
     port: int = 8000
@@ -166,6 +168,7 @@ def _calculate_orders_count(events: List[Dict[str, Any]]) -> Dict[str, int]:
 
 class RunMetadataResponse(BaseModel):
     """API Response für Run-Metadaten."""
+
     run_id: str
     mode: str
     strategy_name: str
@@ -177,6 +180,7 @@ class RunMetadataResponse(BaseModel):
 
 class RunSnapshotResponse(BaseModel):
     """API Response für Run-Snapshot."""
+
     run_id: str
     mode: str
     strategy_name: str
@@ -192,6 +196,7 @@ class RunSnapshotResponse(BaseModel):
 
 class TailRowResponse(BaseModel):
     """API Response für Tail-Row."""
+
     ts_bar: Optional[str] = None
     equity: Optional[float] = None
     realized_pnl: Optional[float] = None
@@ -204,6 +209,7 @@ class TailRowResponse(BaseModel):
 
 class AlertResponse(BaseModel):
     """API Response für Alert."""
+
     rule_id: str
     severity: str
     message: str
@@ -213,6 +219,7 @@ class AlertResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     """API Response für Health-Check."""
+
     status: str
 
 
@@ -226,7 +233,7 @@ def _generate_dashboard_html(
     auto_refresh_seconds: int,
 ) -> str:
     """Generiert das Dashboard-HTML."""
-    return f'''<!DOCTYPE html>
+    return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -612,7 +619,7 @@ def _generate_dashboard_html(
     </script>
 </body>
 </html>
-'''
+"""
 
 
 # =============================================================================
@@ -661,15 +668,19 @@ def create_app(
 
             for snapshot in snapshots[:50]:  # Max 50 Runs
                 try:
-                    result.append(RunMetadataResponse(
-                        run_id=snapshot.run_id,
-                        mode=snapshot.mode,
-                        strategy_name=snapshot.strategy or "",
-                        symbol=snapshot.symbol or "",
-                        timeframe=snapshot.timeframe or "",
-                        started_at=snapshot.started_at.isoformat() if snapshot.started_at else None,
-                        ended_at=snapshot.ended_at.isoformat() if snapshot.ended_at else None,
-                    ))
+                    result.append(
+                        RunMetadataResponse(
+                            run_id=snapshot.run_id,
+                            mode=snapshot.mode,
+                            strategy_name=snapshot.strategy or "",
+                            symbol=snapshot.symbol or "",
+                            timeframe=snapshot.timeframe or "",
+                            started_at=snapshot.started_at.isoformat()
+                            if snapshot.started_at
+                            else None,
+                            ended_at=snapshot.ended_at.isoformat() if snapshot.ended_at else None,
+                        )
+                    )
                 except Exception as e:
                     logger.warning(f"Error converting snapshot {snapshot.run_id}: {e}")
                     continue
@@ -684,7 +695,7 @@ def create_app(
         """Lädt Snapshot für einen Run."""
         try:
             snapshot = get_run_snapshot(run_id, base_dir=runs_dir)
-            
+
             # Events laden für Order-Statistiken
             events = tail_events(run_id, limit=10000, base_dir=runs_dir)
             order_stats = _calculate_orders_count(events)
@@ -724,16 +735,18 @@ def create_app(
                 orders_generated = event.get("orders_generated", 0) or 0
                 orders_count = orders_filled if orders_filled > 0 else orders_generated
 
-                result.append(TailRowResponse(
-                    ts_bar=event.get("ts_bar"),
-                    equity=event.get("equity"),
-                    realized_pnl=event.get("realized_pnl"),
-                    unrealized_pnl=event.get("unrealized_pnl"),
-                    position_size=event.get("position_size"),
-                    orders_count=orders_count,
-                    risk_allowed=event.get("risk_allowed", True),
-                    risk_reasons=event.get("risk_reasons", "") or "",
-                ))
+                result.append(
+                    TailRowResponse(
+                        ts_bar=event.get("ts_bar"),
+                        equity=event.get("equity"),
+                        realized_pnl=event.get("realized_pnl"),
+                        unrealized_pnl=event.get("unrealized_pnl"),
+                        position_size=event.get("position_size"),
+                        orders_count=orders_count,
+                        risk_allowed=event.get("risk_allowed", True),
+                        risk_reasons=event.get("risk_reasons", "") or "",
+                    )
+                )
 
             return result
         except RunNotFoundError:
@@ -758,13 +771,15 @@ def create_app(
             result: List[AlertResponse] = []
 
             for alert in alerts:
-                result.append(AlertResponse(
-                    rule_id=alert.get("rule_id", ""),
-                    severity=alert.get("severity", "info"),
-                    message=alert.get("message", ""),
-                    run_id=alert.get("run_id", run_id),
-                    timestamp=alert.get("timestamp", ""),
-                ))
+                result.append(
+                    AlertResponse(
+                        rule_id=alert.get("rule_id", ""),
+                        severity=alert.get("severity", "info"),
+                        message=alert.get("message", ""),
+                        run_id=alert.get("run_id", run_id),
+                        timestamp=alert.get("timestamp", ""),
+                    )
+                )
 
             return result
         except Exception as e:

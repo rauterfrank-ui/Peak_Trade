@@ -174,11 +174,7 @@ def build_trigger_training_events_from_dfs(
         else:
             a_df["timestamp"] = pd.to_datetime(a_df["timestamp"])
             # erste Aktion pro signal_id
-            a_df = (
-                a_df.sort_values("timestamp")
-                .groupby("signal_id", as_index=False)
-                .first()
-            )
+            a_df = a_df.sort_values("timestamp").groupby("signal_id", as_index=False).first()
     else:
         a_df = None
 
@@ -242,13 +238,13 @@ def build_trigger_training_events_from_dfs(
 
         # Tags: Kombiniere aus DataFrame (falls vorhanden) und automatisch generierte Tags
         tags: List[str] = []
-        
+
         # Tags aus DataFrame übernehmen (z.B. scenario_psych_tags)
         tags_from_df = row.get("scenario_psych_tags", "")
         if tags_from_df and not pd.isna(tags_from_df):
             tags_list = [t.strip() for t in str(tags_from_df).split(",") if t.strip()]
             tags.extend(tags_list)
-        
+
         # Automatisch generierte Tags basierend auf Outcome
         if outcome == TriggerOutcome.MISSED and pnl_after > config.pain_threshold:
             tags.append("missed_opportunity")

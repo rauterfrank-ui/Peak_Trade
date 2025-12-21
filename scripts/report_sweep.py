@@ -19,6 +19,7 @@ Usage:
     # Nur Text-Summary ohne HTML
     python scripts/report_sweep.py --sweep-name ma_opt_v1 --text-only
 """
+
 from __future__ import annotations
 
 import argparse
@@ -140,7 +141,9 @@ def print_text_summary(
             else:
                 params_str = "-"
 
-            print(f"{r.rank:>4} | {run_id:<12} | {metric_val:>10} | {ret:>8} | {dd:>8} | {params_str:<30}")
+            print(
+                f"{r.rank:>4} | {run_id:<12} | {metric_val:>10} | {ret:>8} | {dd:>8} | {params_str:<30}"
+            )
 
     print()
 

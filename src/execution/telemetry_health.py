@@ -106,7 +106,7 @@ def get_directory_size_mb(path: Path) -> float:
     """Calculate total size of directory in MB."""
     if not path.exists():
         return 0.0
-    
+
     total = 0
     try:
         for item in path.rglob("*"):
@@ -115,13 +115,11 @@ def get_directory_size_mb(path: Path) -> float:
     except (OSError, PermissionError) as e:
         logger.warning(f"Error calculating directory size: {e}")
         return 0.0
-    
+
     return total / (1024 * 1024)  # Convert to MB
 
 
-def check_disk_usage(
-    telemetry_root: Path, thresholds: HealthThresholds
-) -> HealthCheckResult:
+def check_disk_usage(telemetry_root: Path, thresholds: HealthThresholds) -> HealthCheckResult:
     """Check telemetry directory disk usage."""
     size_mb = get_directory_size_mb(telemetry_root)
 
@@ -151,16 +149,16 @@ def check_retention_staleness(
     """Check if retention hasn't run recently."""
     # Look for marker file or recent .jsonl.gz files
     marker_file = telemetry_root / ".last_retention_run"
-    
+
     last_run: Optional[datetime] = None
-    
+
     if marker_file.exists():
         try:
             mtime = marker_file.stat().st_mtime
             last_run = datetime.fromtimestamp(mtime, tz=timezone.utc)
         except OSError:
             pass
-    
+
     # Fallback: check for recent compressed files
     if last_run is None and telemetry_root.exists():
         try:
@@ -170,7 +168,7 @@ def check_retention_staleness(
                 last_run = datetime.fromtimestamp(most_recent_mtime, tz=timezone.utc)
         except OSError:
             pass
-    
+
     if last_run is None:
         # No retention evidence found
         return HealthCheckResult(
@@ -179,9 +177,9 @@ def check_retention_staleness(
             message="No retention history found (first run or no logs)",
             value=None,
         )
-    
+
     age_hours = (datetime.now(timezone.utc) - last_run).total_seconds() / 3600
-    
+
     if age_hours >= thresholds.retention_critical_hours:
         status = "critical"
         msg = f"Retention hasn't run in {age_hours:.1f} hours (critical)"
@@ -191,7 +189,7 @@ def check_retention_staleness(
     else:
         status = "ok"
         msg = f"Retention last run {age_hours:.1f} hours ago (ok)"
-    
+
     return HealthCheckResult(
         name="retention_staleness",
         status=status,
@@ -214,21 +212,21 @@ def check_compression_failures(
             message="No telemetry logs found",
             value=0.0,
         )
-    
+
     try:
         all_jsonl = list(telemetry_root.glob("*.jsonl"))
         all_gz = list(telemetry_root.glob("*.jsonl.gz"))
         tmp_files = list(telemetry_root.glob("*.tmp"))
-        
+
         # Heuristic: orphaned .tmp files indicate failed compressions
         total_compress_candidates = len(all_jsonl) + len(all_gz)
         failed_count = len(tmp_files)
-        
+
         if total_compress_candidates == 0:
             failure_rate = 0.0
         else:
             failure_rate = (failed_count / total_compress_candidates) * 100
-        
+
         if failure_rate >= thresholds.compress_critical_rate:
             status = "critical"
             msg = f"Compression failure rate {failure_rate:.1f}% (critical)"
@@ -238,7 +236,7 @@ def check_compression_failures(
         else:
             status = "ok"
             msg = f"Compression failure rate {failure_rate:.1f}% (ok)"
-        
+
         return HealthCheckResult(
             name="compression_failures",
             status=status,
@@ -267,11 +265,11 @@ def check_parse_error_rate(
             message="No telemetry logs found",
             value=0.0,
         )
-    
+
     try:
         import gzip
         import json
-        
+
         # Sample most recent .jsonl or .jsonl.gz files
         jsonl_files = sorted(
             telemetry_root.glob("*.jsonl"), key=lambda p: p.stat().st_mtime, reverse=True
@@ -279,9 +277,9 @@ def check_parse_error_rate(
         gz_files = sorted(
             telemetry_root.glob("*.jsonl.gz"), key=lambda p: p.stat().st_mtime, reverse=True
         )
-        
+
         all_files = jsonl_files[:3] + gz_files[:3]  # Sample up to 6 recent files
-        
+
         if not all_files:
             return HealthCheckResult(
                 name="parse_error_rate",
@@ -289,16 +287,16 @@ def check_parse_error_rate(
                 message="No log files to check",
                 value=0.0,
             )
-        
+
         total_lines = 0
         error_lines = 0
-        
+
         for file_path in all_files:
             if file_path.suffix == ".gz":
                 opener = gzip.open(file_path, "rt", encoding="utf-8")
             else:
                 opener = open(file_path, "r", encoding="utf-8")
-            
+
             try:
                 with opener as f:
                     for i, line in enumerate(f):
@@ -312,12 +310,12 @@ def check_parse_error_rate(
             except Exception as e:
                 logger.warning(f"Error reading {file_path}: {e}")
                 continue
-        
+
         if total_lines == 0:
             error_rate = 0.0
         else:
             error_rate = (error_lines / total_lines) * 100
-        
+
         if error_rate >= thresholds.parse_critical_rate:
             status = "critical"
             msg = f"Parse error rate {error_rate:.1f}% ({error_lines}/{total_lines} lines)"
@@ -327,7 +325,7 @@ def check_parse_error_rate(
         else:
             status = "ok"
             msg = f"Parse error rate {error_rate:.1f}% ({error_lines}/{total_lines} lines sampled)"
-        
+
         return HealthCheckResult(
             name="parse_error_rate",
             status=status,
@@ -352,13 +350,13 @@ def run_health_checks(
     """Run all health checks and return aggregate report."""
     if thresholds is None:
         thresholds = HealthThresholds()
-    
+
     report = HealthReport()
-    
+
     # Run checks
     report.checks.append(check_disk_usage(telemetry_root, thresholds))
     report.checks.append(check_retention_staleness(telemetry_root, thresholds))
     report.checks.append(check_compression_failures(telemetry_root, thresholds))
     report.checks.append(check_parse_error_rate(telemetry_root, thresholds))
-    
+
     return report

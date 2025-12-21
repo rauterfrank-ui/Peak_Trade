@@ -124,7 +124,8 @@ Beispiele:
         help="Optionaler Tag für Registry-Logging (z.B. 'dev-test')",
     )
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe",
     )
@@ -292,7 +293,9 @@ def print_summary(
     print("=" * 70)
 
     # Zeitraum
-    print(f"\nZeitraum:   {df.index[0].strftime('%Y-%m-%d')} bis {df.index[-1].strftime('%Y-%m-%d')}")
+    print(
+        f"\nZeitraum:   {df.index[0].strftime('%Y-%m-%d')} bis {df.index[-1].strftime('%Y-%m-%d')}"
+    )
     print(f"Strategie:  {strategy_name}")
     print(f"Bars:       {len(df)}")
 
@@ -352,7 +355,10 @@ def main() -> int:
     args = parse_args()
 
     # P1 Evidence Chain: Generate run_id
-    run_id = args.run_id or f"backtest_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+    run_id = (
+        args.run_id
+        or f"backtest_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+    )
 
     print("\n" + "=" * 70)
     print("  Peak_Trade Backtest Runner")
@@ -447,6 +453,7 @@ def main() -> int:
         print(f"\nFEHLER beim Backtest: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -505,11 +512,15 @@ def main() -> int:
     # 2. Get git SHA (if in git repo)
     git_sha = None
     try:
-        git_sha = subprocess.check_output(
-            ["git", "rev-parse", "HEAD"],
-            cwd=PROJECT_ROOT,
-            stderr=subprocess.DEVNULL,
-        ).decode("utf-8").strip()[:8]
+        git_sha = (
+            subprocess.check_output(
+                ["git", "rev-parse", "HEAD"],
+                cwd=PROJECT_ROOT,
+                stderr=subprocess.DEVNULL,
+            )
+            .decode("utf-8")
+            .strip()[:8]
+        )
     except Exception:
         pass  # Not in git repo or git not available
 
@@ -536,10 +547,12 @@ def main() -> int:
     print(f"  ✓ {stats_path.name}")
 
     # 5. Write equity.csv
-    equity_data = pd.DataFrame({
-        "timestamp": result.equity_curve.index.strftime("%Y-%m-%dT%H:%M:%S"),
-        "equity": result.equity_curve.values,
-    })
+    equity_data = pd.DataFrame(
+        {
+            "timestamp": result.equity_curve.index.strftime("%Y-%m-%dT%H:%M:%S"),
+            "equity": result.equity_curve.values,
+        }
+    )
     equity_path = write_equity_csv(run_dir, equity_data)
     print(f"  ✓ {equity_path.name}")
 

@@ -200,11 +200,11 @@ def calc_position_size(
     """
     Berechnet Positionsgröße so, dass maximal
     risk_per_trade * equity bis zum Stop verloren wird.
-    
+
     Formel:
         risk_amount = equity * risk_per_trade
         size = risk_amount / |entry_price - stop_price|
-    
+
     Validierungen:
     - Stop muss unter Entry liegen (Long)
     - Stop-Distanz >= 0.5%
@@ -249,11 +249,11 @@ def fetch_ohlcv_df(
 ) -> pd.DataFrame:
     """
     Holt OHLCV-Daten von Kraken.
-    
+
     Returns:
         DataFrame mit UTC-DatetimeIndex
         Spalten: [open, high, low, close, volume]
-    
+
     Features:
     - Parquet-Caching für schnellere Wiederholungen
     - Automatisches Error-Handling
@@ -289,7 +289,7 @@ class BacktestEngine:
     ) -> BacktestResult:
         """
         Bar-für-Bar mit echtem Risk-Management.
-        
+
         Execution-Loop:
         1. STOP-LOSS CHECK (vor allem!)
         2. Mark-to-Market (Unrealized PnL)
@@ -312,7 +312,7 @@ class BacktestEngine:
 def run_vectorized(self, df: pd.DataFrame) -> BacktestResult:
     """
     ⚠️ WARNUNG: Kein Risk-Management! Immer 100% investiert!
-    
+
     Nur für:
     - Schnelle Experimente
     - Parameter-Grids
@@ -345,7 +345,7 @@ def compute_trade_stats(trades_df: pd.DataFrame) -> dict:
     """Win Rate, Profit Factor, Avg Win/Loss, etc."""
     wins = trades_df[trades_df["pnl"] > 0]
     losses = trades_df[trades_df["pnl"] < 0]
-    
+
     return {
         "total_trades": len(trades_df),
         "win_rate": len(wins) / len(trades_df),
@@ -358,7 +358,7 @@ def compute_trade_stats(trades_df: pd.DataFrame) -> dict:
 def validate_for_live_trading(stats: dict) -> tuple[bool, list[str]]:
     """
     Prüft, ob Strategie für Live-Trading bereit ist.
-    
+
     Mindestanforderungen:
     - Sharpe Ratio >= 1.5
     - Max Drawdown <= -15%
@@ -381,7 +381,7 @@ def validate_for_live_trading(stats: dict) -> tuple[bool, list[str]]:
 def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     Generiert Handelssignale basierend auf MA-Crossover.
-    
+
     Returns:
         Series mit Werten:
         - 0 = neutral/flat
@@ -390,10 +390,10 @@ def generate_signals(df: pd.DataFrame, params: dict) -> pd.Series:
     """
     fast = df["close"].rolling(params["fast_period"]).mean()
     slow = df["close"].rolling(params["slow_period"]).mean()
-    
+
     signals = pd.Series(0, index=df.index)
     signals[fast > slow] = 1
-    
+
     return signals
 ```
 
@@ -607,7 +607,7 @@ if position_size > 0 and bar["low"] <= stop_price:
 **Verwende diesen Prompt, wenn du einen neuen Chat startest:**
 
 ```
-Du bist mein Lead Engineer für das Projekt „Peak_Trade": 
+Du bist mein Lead Engineer für das Projekt „Peak_Trade":
 ein KI-unterstütztes, risikokontrolliertes Trading-Framework.
 
 WICHTIGE REGELN:

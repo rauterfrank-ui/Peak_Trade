@@ -26,6 +26,7 @@ Usage:
     except Exception as e:
         raise chain_error(e, "Failed to load strategy", hint="Check configuration")
 """
+
 from typing import Any, Dict, Optional
 import pandas as pd
 
@@ -53,11 +54,11 @@ class PeakTradeError(Exception):
         self.hint = hint
         self.context = context or {}
         self.cause = cause
-        
+
         # Preserve exception chaining for proper stack traces
         if cause is not None:
             self.__cause__ = cause
-        
+
         # Call parent __init__ with formatted message
         super().__init__(self._format_message())
 
@@ -71,7 +72,7 @@ class PeakTradeError(Exception):
         if self.cause:
             parts.append(f"Caused by: {type(self.cause).__name__}: {str(self.cause)}")
         return "\n".join(parts)
-    
+
     def __str__(self) -> str:
         """Return formatted error message, regenerated on each call."""
         return self._format_message()
@@ -142,7 +143,7 @@ class CacheError(PeakTradeError):
         - Cache read failures
         - Cache access permission issues
         - Cache directory creation failures
-    
+
     Note:
         Use CacheCorruptionError for data integrity issues.
     """
@@ -236,9 +237,7 @@ def add_backtest_context(
     return error
 
 
-def chain_error(
-    original: Exception, new_message: str, **kwargs
-) -> PeakTradeError:
+def chain_error(original: Exception, new_message: str, **kwargs) -> PeakTradeError:
     """
     Chain exceptions with context preservation.
 

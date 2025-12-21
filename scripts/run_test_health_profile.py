@@ -94,20 +94,20 @@ Beispiele:
         default="reports/test_health",
         help="Basis-Verzeichnis für Reports (default: reports/test_health)",
     )
-    
+
     # v1: Neue Optionen
     parser.add_argument(
         "--no-strategy-coverage",
         action="store_true",
         help="v1: Strategy-Coverage-Check überspringen",
     )
-    
+
     parser.add_argument(
         "--no-switch-sanity",
         action="store_true",
         help="v1: Strategy-Switch Sanity Check überspringen",
     )
-    
+
     parser.add_argument(
         "--no-slack",
         action="store_true",
@@ -138,9 +138,7 @@ def load_default_profile(config_path: Path) -> str:
         try:
             import tomli as tomllib  # type: ignore
         except ImportError:
-            raise ImportError(
-                "Python <3.11 benötigt 'tomli' package: pip install tomli"
-            )
+            raise ImportError("Python <3.11 benötigt 'tomli' package: pip install tomli")
 
     with open(config_path, "rb") as f:
         config = tomllib.load(f)
@@ -148,8 +146,7 @@ def load_default_profile(config_path: Path) -> str:
     default_profile = config.get("default_profile")
     if not default_profile:
         raise ValueError(
-            "Kein 'default_profile' in config definiert. "
-            "Bitte --profile explizit angeben."
+            "Kein 'default_profile' in config definiert. Bitte --profile explizit angeben."
         )
 
     return default_profile
@@ -187,7 +184,7 @@ def main() -> int:
     print(f"Profil:       {profile_name}")
     print(f"Config:       {config_path}")
     print(f"Report-Root:  {report_root}")
-    
+
     # v1: Zeige aktivierte Features
     features = []
     if not args.no_strategy_coverage:
@@ -203,6 +200,7 @@ def main() -> int:
     # v1: Slack temporär deaktivieren wenn --no-slack
     # Wir setzen die ENV-Variable temporär auf leer
     import os
+
     original_slack_env = None
     if args.no_slack:
         original_slack_env = os.environ.get("PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH")
@@ -252,23 +250,23 @@ def main() -> int:
         ampel = "🔴 Rot (kritisch)"
 
     print(f"Ampel:           {ampel}")
-    
+
     # v1: Trigger-Violations
     if summary.has_trigger_violations():
         print(f"\n⚠️  Trigger-Violations: {len(summary.trigger_violations)}")
-    
+
     # v1: Strategy-Coverage
     if summary.strategy_coverage and summary.strategy_coverage.enabled:
         coverage = summary.strategy_coverage
         status = "✅ OK" if coverage.is_healthy else f"❌ {len(coverage.all_violations)} Violations"
         print(f"Strategy-Coverage: {status}")
-    
+
     # v1: Switch-Sanity
     if summary.switch_sanity and summary.switch_sanity.enabled:
         sanity = summary.switch_sanity
         status = "✅ OK" if sanity.is_ok else f"❌ {len(sanity.violations)} Violations"
         print(f"Switch-Sanity:     {status}")
-    
+
     print()
     print(f"Reports:         {report_dir}")
     print("=" * 70)
@@ -287,7 +285,7 @@ def main() -> int:
             issues.append("Strategy-Coverage-Violations")
         if summary.has_switch_sanity_violations():
             issues.append("Switch-Sanity-Violations")
-        
+
         print(f"\n❌ Probleme: {', '.join(issues)}")
         return 1
 

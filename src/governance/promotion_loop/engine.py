@@ -81,12 +81,12 @@ def filter_candidates_for_live(
     - Reject candidates with P0 violations for bounded_auto
     - Reject candidates not marked as eligible_for_live
     - Extra sanity checks (Leverage-Hardlimit)
-    
+
     Args:
         candidates: Promotion candidates to filter
         safety_config: Safety configuration (P0/P1 settings)
         mode: Promotion mode (manual_only, bounded_auto, disabled)
-    
+
     Returns:
         List of promotion decisions
     """
@@ -100,7 +100,7 @@ def filter_candidates_for_live(
         # Apply P0 safety filters
         if safety_config:
             apply_safety_filters(candidate, safety_config, mode)
-        
+
         # Check eligibility
         if not candidate.eligible_for_live:
             reasons.append("candidate not marked as eligible_for_live")
@@ -110,11 +110,11 @@ def filter_candidates_for_live(
                 reasons=reasons,
             )
             decisions.append(decision)
-            
+
             # P1: Write audit log
             if safety_config:
                 write_audit_log_entry(candidate, decision, mode, safety_config)
-            
+
             continue
 
         # Check for P0 violations
@@ -127,11 +127,11 @@ def filter_candidates_for_live(
                 reasons=reasons,
             )
             decisions.append(decision)
-            
+
             # P1: Write audit log
             if safety_config:
                 write_audit_log_entry(candidate, decision, mode, safety_config)
-            
+
             continue
 
         # Legacy sanity check: Leverage hard limit
@@ -148,11 +148,11 @@ def filter_candidates_for_live(
                     reasons=reasons,
                 )
                 decisions.append(decision)
-                
+
                 # P1: Write audit log
                 if safety_config:
                     write_audit_log_entry(candidate, decision, mode, safety_config)
-                
+
                 continue
 
         # Accepted
@@ -162,7 +162,7 @@ def filter_candidates_for_live(
             reasons=reasons,
         )
         decisions.append(decision)
-        
+
         # P1: Write audit log
         if safety_config:
             write_audit_log_entry(candidate, decision, mode, safety_config)
@@ -353,11 +353,10 @@ def _build_operator_checklist_md(proposal: PromotionProposal) -> str:
     lines.append(f"- Generated at: {proposal.meta.get('generated_at', 'n/a')}")
     lines.append(f"- Number of accepted candidates: {len(proposal.decisions)}")
     lines.append("")
-    
+
     # Check for P0 violations
     has_p0 = any(
-        any(f.startswith("P0_") for f in d.candidate.safety_flags)
-        for d in proposal.decisions
+        any(f.startswith("P0_") for f in d.candidate.safety_flags) for d in proposal.decisions
     )
     if has_p0:
         lines.append("## ⚠️ Safety Warnings")
@@ -366,7 +365,7 @@ def _build_operator_checklist_md(proposal: PromotionProposal) -> str:
         lines.append("These candidates CANNOT be auto-promoted in bounded_auto mode.")
         lines.append("Manual review and approval is required.")
         lines.append("")
-    
+
     lines.append("## Checklist")
     lines.append("- [ ] Review each patch and confirm it is safe for live.")
     lines.append("- [ ] Verify that no R&D strategies are being promoted.")
@@ -379,18 +378,22 @@ def _build_operator_checklist_md(proposal: PromotionProposal) -> str:
     for idx, decision in enumerate(proposal.decisions, start=1):
         patch = decision.candidate.patch
         candidate = decision.candidate
-        
+
         lines.append(f"### Patch {idx}: {patch.id}")
         lines.append(f"- Target: `{patch.target}`")
         lines.append(f"- Old value: `{patch.old_value}`")
         lines.append(f"- New value: `{patch.new_value}`")
-        lines.append(f"- Confidence: `{patch.confidence_score:.3f}`" if patch.confidence_score else "- Confidence: N/A")
+        lines.append(
+            f"- Confidence: `{patch.confidence_score:.3f}`"
+            if patch.confidence_score
+            else "- Confidence: N/A"
+        )
         lines.append(f"- Tags: {', '.join(candidate.tags) or '(none)'}")
-        
+
         # Show safety flags if present
         if candidate.safety_flags:
             lines.append(f"- **Safety Flags:** {', '.join(candidate.safety_flags)}")
-        
+
         if decision.reasons:
             lines.append(f"- Decision notes: {', '.join(decision.reasons)}")
         lines.append("")

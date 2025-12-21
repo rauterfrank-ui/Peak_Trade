@@ -20,6 +20,7 @@ Usage:
     # Summary only
     python scripts/view_execution_telemetry.py --summary --session session_123
 """
+
 import argparse
 import json
 import sys
@@ -115,7 +116,7 @@ def print_timeline(timeline: list, limit: int = 20) -> None:
         else:
             desc = "(unknown event type)"
 
-        print(f"{i+1:3d}. {ts} | {kind:6s} | {symbol:10s} | {desc}")
+        print(f"{i + 1:3d}. {ts} | {kind:6s} | {symbol:10s} | {desc}")
 
 
 def main():
@@ -132,9 +133,7 @@ def main():
         default="logs/execution",
         help="Base path for telemetry logs (default: logs/execution)",
     )
-    parser.add_argument(
-        "--session", type=str, help="Filter by session ID"
-    )
+    parser.add_argument("--session", type=str, help="Filter by session ID")
     parser.add_argument(
         "--type",
         type=str,
@@ -145,9 +144,7 @@ def main():
     parser.add_argument(
         "--from", dest="ts_from", type=str, help="Filter events after ISO timestamp"
     )
-    parser.add_argument(
-        "--to", dest="ts_to", type=str, help="Filter events before ISO timestamp"
-    )
+    parser.add_argument("--to", dest="ts_to", type=str, help="Filter events before ISO timestamp")
     parser.add_argument(
         "--limit", type=int, default=2000, help="Maximum events to load (default: 2000)"
     )
@@ -164,9 +161,7 @@ def main():
         default=True,
         help="Show summary statistics (default: true)",
     )
-    parser.add_argument(
-        "--no-summary", dest="summary", action="store_false", help="Skip summary"
-    )
+    parser.add_argument("--no-summary", dest="summary", action="store_false", help="Skip summary")
     parser.add_argument(
         "--timeline",
         type=int,
@@ -200,9 +195,7 @@ def main():
         # All sessions
         paths = find_session_logs(base_path)
         if not paths:
-            print(
-                f"❌ Error: No telemetry logs found in {base_path}", file=sys.stderr
-            )
+            print(f"❌ Error: No telemetry logs found in {base_path}", file=sys.stderr)
             return 2  # No logs found
 
     print(f"📂 Reading {len(paths)} log file(s)...", file=sys.stderr)

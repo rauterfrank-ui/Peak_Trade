@@ -7,6 +7,7 @@ Testet die Status-Report-Generierung für die Live-Operator-Konsole.
 
 Phase 72: Read-Only Status-CLI, keine State-Änderungen.
 """
+
 from __future__ import annotations
 
 import pytest
@@ -103,7 +104,9 @@ class TestLiveOperatorStatus:
         guard_valid = SafetyGuard(env_config=env_valid)
         report_valid = generate_live_status_report(env_valid, guard_valid, live_risk_limits=None)
 
-        assert "confirm_token:          SET (valid)" in report_valid or "SET (valid)" in report_valid
+        assert (
+            "confirm_token:          SET (valid)" in report_valid or "SET (valid)" in report_valid
+        )
 
         # Token gesetzt aber ungültig
         env_invalid = EnvironmentConfig(
@@ -111,7 +114,9 @@ class TestLiveOperatorStatus:
             confirm_token="WRONG_TOKEN",
         )
         guard_invalid = SafetyGuard(env_config=env_invalid)
-        report_invalid = generate_live_status_report(env_invalid, guard_invalid, live_risk_limits=None)
+        report_invalid = generate_live_status_report(
+            env_invalid, guard_invalid, live_risk_limits=None
+        )
 
         assert "SET (invalid)" in report_invalid or "invalid" in report_invalid.lower()
 
@@ -236,8 +241,3 @@ class TestLiveOperatorStatus:
         # (außer in Hinweisen/Empfehlungen)
         assert "Phase 71/72" in report
         # Report sollte nur Status zeigen, keine Schreiboperationen vorschlagen
-
-
-
-
-

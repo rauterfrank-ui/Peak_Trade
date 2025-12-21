@@ -26,6 +26,7 @@ Hinweis:
     Es liest nur Daten aus der Experiment-Registry und erzeugt Statistiken.
     Keine Änderungen an Order-/Execution-/Safety-Komponenten.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -205,9 +206,7 @@ def print_robustness_result(result: SweepRobustnessResult) -> None:
     if result.regime_consistency:
         print()
         print("--- REGIME KONSISTENZ (Runs mit Sharpe > 0) ---")
-        for regime, count in sorted(
-            result.regime_consistency.items(), key=lambda x: -x[1]
-        ):
+        for regime, count in sorted(result.regime_consistency.items(), key=lambda x: -x[1]):
             print(f"  {regime:<25} {count}/{result.run_count}")
 
 
@@ -353,7 +352,7 @@ def cmd_strategy(args: argparse.Namespace) -> int:
     results: List[RegimeAnalysisResult] = []
     for i, exp in enumerate(experiments):
         if args.verbose:
-            print(f"\n[{i+1}/{len(experiments)}] Analysiere {exp.experiment_id[:12]}...")
+            print(f"\n[{i + 1}/{len(experiments)}] Analysiere {exp.experiment_id[:12]}...")
 
         equity = _create_synthetic_equity(prices)
         result = analyze_experiment_regimes(
@@ -377,7 +376,9 @@ def cmd_strategy(args: argparse.Namespace) -> int:
                 regime_sharpes.setdefault(rs.regime, []).append(rs.sharpe)
 
     print()
-    header = f"{'Regime':<25} {'Count':>6} {'Sharpe (mean)':>14} {'Sharpe (std)':>13} {'Sharpe > 0':>11}"
+    header = (
+        f"{'Regime':<25} {'Count':>6} {'Sharpe (mean)':>14} {'Sharpe (std)':>13} {'Sharpe > 0':>11}"
+    )
     print(header)
     print("-" * len(header))
 
@@ -387,13 +388,7 @@ def cmd_strategy(args: argparse.Namespace) -> int:
         std = np.std(sharpes)
         positive = sum(1 for s in sharpes if s > 0)
 
-        print(
-            f"{regime:<25} "
-            f"{count:>6} "
-            f"{mean:>14.2f} "
-            f"{std:>13.2f} "
-            f"{positive:>7}/{count:<3}"
-        )
+        print(f"{regime:<25} {count:>6} {mean:>14.2f} {std:>13.2f} {positive:>7}/{count:<3}")
 
     # Export
     if args.export_csv:
@@ -445,7 +440,7 @@ def cmd_sweep(args: argparse.Namespace) -> int:
     for i, r in enumerate(ranked):
         exp = r.summary
         if args.verbose:
-            print(f"\n[{i+1}/{len(ranked)}] Rank {r.rank}: {args.metric}={r.sort_value:.3f}")
+            print(f"\n[{i + 1}/{len(ranked)}] Rank {r.rank}: {args.metric}={r.sort_value:.3f}")
 
         equity = _create_synthetic_equity(prices)
         result = analyze_experiment_regimes(
@@ -465,7 +460,7 @@ def cmd_sweep(args: argparse.Namespace) -> int:
     print()
     print("--- TOP 3 RUNS DETAILS ---")
     for i, (r, result) in enumerate(zip(ranked[:3], results[:3])):
-        print(f"\n  [{i+1}] Rank {r.rank}: {args.metric}={r.sort_value:.3f}")
+        print(f"\n  [{i + 1}] Rank {r.rank}: {args.metric}={r.sort_value:.3f}")
         print(f"      Run-ID: {r.summary.experiment_id[:12]}...")
         for rs in result.regimes[:3]:  # Top 3 Regimes
             sharpe_str = f"{rs.sharpe:.2f}" if rs.sharpe is not None else "-"
@@ -510,7 +505,8 @@ Hinweis:
     )
 
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )

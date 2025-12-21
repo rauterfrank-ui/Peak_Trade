@@ -4,6 +4,7 @@ Tests for Execution Bridge (Phase 16B).
 
 Tests loading events from JSONL and mapping to Live-Track timeline.
 """
+
 import json
 from datetime import datetime
 from pathlib import Path

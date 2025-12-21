@@ -14,6 +14,7 @@ Environments:
 WICHTIG: In Phase 17 werden KEINE echten Orders gesendet.
          Testnet/Live sind nur als Architektur vorbereitet.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -172,9 +173,7 @@ def get_environment_from_config(peak_config: PeakConfig) -> EnvironmentConfig:
     return EnvironmentConfig(
         environment=environment,
         enable_live_trading=peak_config.get("environment.enable_live_trading", False),
-        require_confirm_token=peak_config.get(
-            "environment.require_confirm_token", True
-        ),
+        require_confirm_token=peak_config.get("environment.require_confirm_token", True),
         confirm_token=peak_config.get("environment.confirm_token", None),
         testnet_dry_run=peak_config.get("environment.testnet_dry_run", True),
         log_all_orders=peak_config.get("environment.log_all_orders", True),
@@ -184,9 +183,7 @@ def get_environment_from_config(peak_config: PeakConfig) -> EnvironmentConfig:
         max_live_notional_per_order=peak_config.get(
             "environment.max_live_notional_per_order", None
         ),
-        max_live_notional_total=peak_config.get(
-            "environment.max_live_notional_total", None
-        ),
+        max_live_notional_total=peak_config.get("environment.max_live_notional_total", None),
         live_trade_min_size=peak_config.get("environment.live_trade_min_size", None),
     )
 

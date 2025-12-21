@@ -332,7 +332,7 @@ stop_pct = 0.03                 # 3% Stop-Loss
 # mode: "scale" (Gewichte skalieren) oder "filter" (Risk-Off = Flat)
 #
 # Regime-Skalierung:
-#   - risk_on_scale:  Faktor für Risk-On-Regime (hohe Vol) 
+#   - risk_on_scale:  Faktor für Risk-On-Regime (hohe Vol)
 #   - neutral_scale:  Faktor für Neutral-Regime
 #   - risk_off_scale: Faktor für Risk-Off-Regime (niedrige Vol) → 0.0 = komplett Flat
 components = ["breakout_donchian", "ma_crossover"]

@@ -18,4 +18,3 @@ docker compose -f docker-compose.obs.yml run --rm peaktrade-ops stage1-snapshot 
 
 echo ""
 echo "✅ Reports written to: $REPO_ROOT/reports/obs/stage1/"
-

@@ -32,9 +32,7 @@ class TestPickFirstExisting:
 
         assert result == file2
 
-    def test_returns_first_as_fallback_when_none_exist(
-        self, tmp_path: pathlib.Path
-    ) -> None:
+    def test_returns_first_as_fallback_when_none_exist(self, tmp_path: pathlib.Path) -> None:
         """When no candidates exist, return candidate[0] as fallback."""
         file1 = tmp_path / "missing1.txt"
         file2 = tmp_path / "missing2.txt"
@@ -71,9 +69,7 @@ class TestPickFirstExisting:
 class TestEnsureSectionInsertAtTop:
     """Tests for ensure_section_insert_at_top() function."""
 
-    def test_creates_file_and_parent_dir_when_missing(
-        self, tmp_path: pathlib.Path
-    ) -> None:
+    def test_creates_file_and_parent_dir_when_missing(self, tmp_path: pathlib.Path) -> None:
         """File and parent directories are created when they don't exist."""
         nested_path = tmp_path / "sub" / "deep" / "doc.md"
         entry = "### Entry 1\n- Detail A"
@@ -84,9 +80,7 @@ class TestEnsureSectionInsertAtTop:
         assert nested_path.exists()
         assert nested_path.parent.exists()
 
-    def test_creates_file_with_section_and_entry_when_new(
-        self, tmp_path: pathlib.Path
-    ) -> None:
+    def test_creates_file_with_section_and_entry_when_new(self, tmp_path: pathlib.Path) -> None:
         """When file doesn't exist, creates it with header, section, and entry."""
         doc_path = tmp_path / "doc.md"
         signature = "2025-12-20-PR195"
@@ -100,9 +94,7 @@ class TestEnsureSectionInsertAtTop:
         assert entry in content
         assert signature in content
 
-    def test_creates_section_when_missing_in_existing_file(
-        self, tmp_path: pathlib.Path
-    ) -> None:
+    def test_creates_section_when_missing_in_existing_file(self, tmp_path: pathlib.Path) -> None:
         """When file exists but section doesn't, section is created and entry inserted."""
         doc_path = tmp_path / "doc.md"
         doc_path.write_text("# My Doc\n\n## Other Section\nSome content\n")
@@ -117,9 +109,7 @@ class TestEnsureSectionInsertAtTop:
         assert entry in content
         assert "## Other Section" in content  # Original content preserved
 
-    def test_inserts_entry_at_top_of_existing_section(
-        self, tmp_path: pathlib.Path
-    ) -> None:
+    def test_inserts_entry_at_top_of_existing_section(self, tmp_path: pathlib.Path) -> None:
         """When section exists, entry is inserted at the top (right after header)."""
         doc_path = tmp_path / "doc.md"
         initial = "# Doc\n\n## Updates\n\n### Old Entry\n- Old detail\n"
@@ -165,7 +155,7 @@ class TestEnsureSectionInsertAtTop:
         doc_path = tmp_path / "doc.md"
         # Pre-create file with existing content to avoid triple newline from header
         doc_path.write_text("# Doc\n\n## Updates\n\nExisting entry\n")
-        
+
         signature = "sig-1"
         entry_with_newline = f"### New Entry ({signature})\n- Detail\n"
 
@@ -176,9 +166,7 @@ class TestEnsureSectionInsertAtTop:
         # Should not have excessive newlines between entries
         assert "\n\n\n\n" not in content
 
-    def test_handles_entry_without_trailing_newline(
-        self, tmp_path: pathlib.Path
-    ) -> None:
+    def test_handles_entry_without_trailing_newline(self, tmp_path: pathlib.Path) -> None:
         """Entry without trailing newline gets one added."""
         doc_path = tmp_path / "doc.md"
         entry_no_newline = "### Entry\n- Detail"
@@ -195,14 +183,7 @@ class TestEnsureSectionInsertAtTop:
     def test_preserves_content_in_other_sections(self, tmp_path: pathlib.Path) -> None:
         """Content in other sections is preserved unchanged."""
         doc_path = tmp_path / "doc.md"
-        initial = (
-            "# Doc\n\n"
-            "## Section A\n"
-            "Content A1\n"
-            "Content A2\n\n"
-            "## Section B\n"
-            "Content B1\n"
-        )
+        initial = "# Doc\n\n## Section A\nContent A1\nContent A2\n\n## Section B\nContent B1\n"
         doc_path.write_text(initial)
 
         entry = "### New in A"
@@ -245,9 +226,7 @@ class TestEnsureSectionInsertAtTop:
         a1_idx = content.index("Entry A1")
         assert a2_idx < a1_idx
 
-    def test_console_output_messages(
-        self, tmp_path: pathlib.Path, capsys
-    ) -> None:
+    def test_console_output_messages(self, tmp_path: pathlib.Path, capsys) -> None:
         """Correct console messages are printed for different scenarios."""
         doc_path = tmp_path / "doc.md"
 
@@ -293,20 +272,15 @@ class TestEnsureSectionInsertAtTop:
         signature_195 = "2025-12-20-PR195"
 
         # First PR
-        ensure_section_insert_at_top(
-            status_doc, "Recent Merges", pr195_entry, signature_195
-        )
+        ensure_section_insert_at_top(status_doc, "Recent Merges", pr195_entry, signature_195)
 
         # Simulate another PR
         pr196_entry = (
-            "### 2025-12-21 — PR #196 merged (abc1234) — Fix Bug\n"
-            "- ✅ Fixed critical bug\n"
+            "### 2025-12-21 — PR #196 merged (abc1234) — Fix Bug\n- ✅ Fixed critical bug\n"
         )
         signature_196 = "2025-12-21-PR196"
 
-        ensure_section_insert_at_top(
-            status_doc, "Recent Merges", pr196_entry, signature_196
-        )
+        ensure_section_insert_at_top(status_doc, "Recent Merges", pr196_entry, signature_196)
 
         content = status_doc.read_text(encoding="utf-8")
 
@@ -318,4 +292,3 @@ class TestEnsureSectionInsertAtTop:
         pr196_idx = content.index("PR #196")
         pr195_idx = content.index("PR #195")
         assert pr196_idx < pr195_idx
-

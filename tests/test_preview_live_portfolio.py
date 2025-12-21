@@ -7,6 +7,7 @@ Tests für:
 - CLI-Argument-Parsing
 - Hauptfunktion mit Mock-Exchange-Client
 """
+
 from __future__ import annotations
 
 import sys
@@ -67,13 +68,17 @@ def test_parse_args_defaults():
 
 def test_parse_args_custom():
     """Testet Custom-Argumente."""
-    args = preview_script.parse_args([
-        "--config", "custom.toml",
-        "--no-risk",
-        "--json",
-        "--starting-cash", "20000.0",
-        "--verbose",
-    ])
+    args = preview_script.parse_args(
+        [
+            "--config",
+            "custom.toml",
+            "--no-risk",
+            "--json",
+            "--starting-cash",
+            "20000.0",
+            "--verbose",
+        ]
+    )
 
     assert args.config_path == "custom.toml"
     assert args.no_risk is True
@@ -291,8 +296,3 @@ def test_format_portfolio_snapshot():
     assert "Live Portfolio Snapshot" in output
     assert "BTC/EUR" in output
     assert "14750" in output or "14750.0" in output
-
-
-
-
-

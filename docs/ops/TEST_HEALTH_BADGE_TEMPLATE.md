@@ -58,7 +58,7 @@ Kopiere diese Snippets in dein `README.md`:
 - name: Update Health Badge
   run: |
     HEALTH_SCORE=$(python -c "import json; data=json.load(open('reports/test_health/${LATEST_DIR}/summary.json')); print(int(data['health_score']))")
-    
+
     # Farbe bestimmen
     if [ "$HEALTH_SCORE" -ge 80 ]; then
       COLOR="brightgreen"
@@ -67,7 +67,7 @@ Kopiere diese Snippets in dein `README.md`:
     else
       COLOR="red"
     fi
-    
+
     # JSON erstellen
     cat > health-badge.json <<EOF
     {
@@ -77,7 +77,7 @@ Kopiere diese Snippets in dein `README.md`:
       "color": "${COLOR}"
     }
     EOF
-    
+
     git add health-badge.json
     git commit -m "chore: update health badge [skip ci]"
     git push

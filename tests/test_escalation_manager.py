@@ -10,6 +10,7 @@ Tests für:
 - EscalationManager
 - build_escalation_manager_from_config
 """
+
 from __future__ import annotations
 
 import logging
@@ -279,16 +280,12 @@ class TestPagerDutyLikeProviderStub:
         assert provider.sent_payloads[-1]["payload"]["severity"] == "critical"
 
         # WARN → warning
-        event = EscalationEvent(
-            alert_id="2", severity="WARN", alert_type="RISK", summary="Test"
-        )
+        event = EscalationEvent(alert_id="2", severity="WARN", alert_type="RISK", summary="Test")
         provider.send(event, target)
         assert provider.sent_payloads[-1]["payload"]["severity"] == "warning"
 
         # INFO → info
-        event = EscalationEvent(
-            alert_id="3", severity="INFO", alert_type="RISK", summary="Test"
-        )
+        event = EscalationEvent(alert_id="3", severity="INFO", alert_type="RISK", summary="Test")
         provider.send(event, target)
         assert provider.sent_payloads[-1]["payload"]["severity"] == "info"
 
@@ -723,6 +720,3 @@ class TestPhase85AcceptanceCriteria:
         # Eskalation fehlgeschlagen, aber keine Exception
         assert result is False
         provider.send.assert_called_once()
-
-
-

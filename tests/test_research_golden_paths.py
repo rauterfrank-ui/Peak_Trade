@@ -7,6 +7,7 @@ Testet:
 - Golden-Path-Dokumentation existiert und ist vollständig
 - Helper-Funktionen funktionieren korrekt
 """
+
 import pytest
 import subprocess
 import sys

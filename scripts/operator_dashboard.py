@@ -26,6 +26,7 @@ Usage:
     # JSON-Output
     python scripts/operator_dashboard.py --format json
 """
+
 from __future__ import annotations
 
 import argparse
@@ -243,57 +244,69 @@ def collect_alerts(
     for s in strategies:
         # Stale Profile
         if s.is_profile_stale:
-            alerts.append(Alert(
-                level="warning",
-                category="profile",
-                message=f"Profile is {s.profile_age_days} days old (max: {PROFILE_MAX_AGE_DAYS})",
-                entity_id=s.strategy_id,
-            ))
+            alerts.append(
+                Alert(
+                    level="warning",
+                    category="profile",
+                    message=f"Profile is {s.profile_age_days} days old (max: {PROFILE_MAX_AGE_DAYS})",
+                    entity_id=s.strategy_id,
+                )
+            )
 
         # Missing Profile für Core/Aux
         if not s.has_profile and s.tier in ["core", "aux"]:
-            alerts.append(Alert(
-                level="warning",
-                category="profile",
-                message=f"No profile found for {s.tier}-tier strategy",
-                entity_id=s.strategy_id,
-            ))
+            alerts.append(
+                Alert(
+                    level="warning",
+                    category="profile",
+                    message=f"No profile found for {s.tier}-tier strategy",
+                    entity_id=s.strategy_id,
+                )
+            )
 
         # Not eligible trotz Core-Tier
         if not s.is_eligible and s.tier == "core":
-            alerts.append(Alert(
-                level="error",
-                category="eligibility",
-                message=f"Core strategy is NOT eligible: {s.eligibility_reasons}",
-                entity_id=s.strategy_id,
-            ))
+            alerts.append(
+                Alert(
+                    level="error",
+                    category="eligibility",
+                    message=f"Core strategy is NOT eligible: {s.eligibility_reasons}",
+                    entity_id=s.strategy_id,
+                )
+            )
 
     # Portfolio Alerts
     for p in portfolios:
         if not p.is_compliant:
-            alerts.append(Alert(
-                level="error",
-                category="compliance",
-                message=f"Portfolio not compliant: {p.compliance_violations}",
-                entity_id=p.portfolio_id,
-            ))
+            alerts.append(
+                Alert(
+                    level="error",
+                    category="compliance",
+                    message=f"Portfolio not compliant: {p.compliance_violations}",
+                    entity_id=p.portfolio_id,
+                )
+            )
 
         if not p.is_eligible:
-            alerts.append(Alert(
-                level="warning",
-                category="eligibility",
-                message=f"Portfolio not eligible: {p.eligibility_reasons}",
-                entity_id=p.portfolio_id,
-            ))
+            alerts.append(
+                Alert(
+                    level="warning",
+                    category="eligibility",
+                    message=f"Portfolio not eligible: {p.eligibility_reasons}",
+                    entity_id=p.portfolio_id,
+                )
+            )
 
     # Config Alerts
     policies = load_live_policies()
     if policies.allow_legacy:
-        alerts.append(Alert(
-            level="warning",
-            category="config",
-            message="allow_legacy is TRUE in live_policies.toml - Legacy strategies could go live!",
-        ))
+        alerts.append(
+            Alert(
+                level="warning",
+                category="config",
+                message="allow_legacy is TRUE in live_policies.toml - Legacy strategies could go live!",
+            )
+        )
 
     return alerts
 
@@ -437,23 +450,23 @@ def print_summary_view(summary: Dict[str, Any]) -> None:
 
     print(f"""
   Strategies:
-    Total:        {summary['total_strategies']}
-    Core:         {summary['strategies_by_tier']['core']}
-    Aux:          {summary['strategies_by_tier']['aux']}
-    Legacy:       {summary['strategies_by_tier']['legacy']}
-    Eligible:     {summary['strategies_eligible']}
-    With Profile: {summary['strategies_with_profiles']}
-    Stale:        {summary['strategies_with_stale_profiles']}
+    Total:        {summary["total_strategies"]}
+    Core:         {summary["strategies_by_tier"]["core"]}
+    Aux:          {summary["strategies_by_tier"]["aux"]}
+    Legacy:       {summary["strategies_by_tier"]["legacy"]}
+    Eligible:     {summary["strategies_eligible"]}
+    With Profile: {summary["strategies_with_profiles"]}
+    Stale:        {summary["strategies_with_stale_profiles"]}
 
   Portfolios:
-    Total:        {summary['total_portfolios']}
-    Eligible:     {summary['portfolios_eligible']}
-    Compliant:    {summary['portfolios_compliant']}
+    Total:        {summary["total_portfolios"]}
+    Eligible:     {summary["portfolios_eligible"]}
+    Compliant:    {summary["portfolios_compliant"]}
 
   Alerts:
-    Errors:       {summary['alerts_error']}
-    Warnings:     {summary['alerts_warning']}
-    Info:         {summary['alerts_info']}
+    Errors:       {summary["alerts_error"]}
+    Warnings:     {summary["alerts_warning"]}
+    Info:         {summary["alerts_info"]}
 """)
 
 

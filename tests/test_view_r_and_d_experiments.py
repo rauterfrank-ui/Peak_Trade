@@ -4,6 +4,7 @@ Tests für view_r_and_d_experiments.py CLI-Tool.
 
 Testet das Laden, Filtern und Formatieren von R&D-Experiment-Reports.
 """
+
 from __future__ import annotations
 
 import json
@@ -335,11 +336,16 @@ class TestCLI:
 
     def test_main_with_preset_filter(self, temp_experiments_dir, capsys):
         """CLI mit Preset-Filter."""
-        exit_code = main([
-            "--dir", str(temp_experiments_dir),
-            "--preset", "test_preset_v1",
-            "--output", "json",
-        ])
+        exit_code = main(
+            [
+                "--dir",
+                str(temp_experiments_dir),
+                "--preset",
+                "test_preset_v1",
+                "--output",
+                "json",
+            ]
+        )
         assert exit_code == 0
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -348,10 +354,14 @@ class TestCLI:
 
     def test_main_with_run_id(self, temp_experiments_dir, capsys):
         """CLI mit Run-ID für Detail-Ansicht."""
-        exit_code = main([
-            "--dir", str(temp_experiments_dir),
-            "--run-id", "20241208_120000",
-        ])
+        exit_code = main(
+            [
+                "--dir",
+                str(temp_experiments_dir),
+                "--run-id",
+                "20241208_120000",
+            ]
+        )
         assert exit_code == 0
         captured = capsys.readouterr()
         # Sollte gültiges JSON sein (Detail-Ansicht)
@@ -374,11 +384,16 @@ class TestCLI:
 
     def test_main_with_limit(self, temp_experiments_dir, capsys):
         """CLI mit Limit."""
-        exit_code = main([
-            "--dir", str(temp_experiments_dir),
-            "--limit", "1",
-            "--output", "json",
-        ])
+        exit_code = main(
+            [
+                "--dir",
+                str(temp_experiments_dir),
+                "--limit",
+                "1",
+                "--output",
+                "json",
+            ]
+        )
         assert exit_code == 0
         captured = capsys.readouterr()
         data = json.loads(captured.out)
@@ -386,11 +401,15 @@ class TestCLI:
 
     def test_main_with_trades_filter(self, temp_experiments_dir, capsys):
         """CLI mit --with-trades Filter."""
-        exit_code = main([
-            "--dir", str(temp_experiments_dir),
-            "--with-trades",
-            "--output", "json",
-        ])
+        exit_code = main(
+            [
+                "--dir",
+                str(temp_experiments_dir),
+                "--with-trades",
+                "--output",
+                "json",
+            ]
+        )
         assert exit_code == 0
         captured = capsys.readouterr()
         data = json.loads(captured.out)

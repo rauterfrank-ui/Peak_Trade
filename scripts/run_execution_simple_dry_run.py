@@ -4,6 +4,7 @@ Simplified Execution Pipeline Dry-Run Demo.
 
 Demonstrates the simplified execution pipeline (src/execution_simple).
 """
+
 import argparse
 import sys
 from datetime import datetime
@@ -25,12 +26,8 @@ def main():
     parser = argparse.ArgumentParser(description="Simplified Execution Pipeline Dry-Run")
     parser.add_argument("--config", type=str, default="config.toml", help="Config file path")
     parser.add_argument("--symbol", type=str, required=True, help="Trading symbol (e.g., BTC-USD)")
-    parser.add_argument(
-        "--target", type=float, required=True, help="Target position in units"
-    )
-    parser.add_argument(
-        "--current", type=float, required=True, help="Current position in units"
-    )
+    parser.add_argument("--target", type=float, required=True, help="Target position in units")
+    parser.add_argument("--current", type=float, required=True, help="Current position in units")
     parser.add_argument("--price", type=float, required=True, help="Current market price")
     parser.add_argument(
         "--mode",

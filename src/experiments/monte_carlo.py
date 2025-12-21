@@ -22,6 +22,7 @@ Usage:
     summary = run_monte_carlo_from_returns(returns, config)
     print(f"Sharpe p50: {summary.metric_quantiles['sharpe']['p50']:.2f}")
 """
+
 from __future__ import annotations
 
 import logging

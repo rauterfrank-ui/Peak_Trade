@@ -20,6 +20,7 @@ Komponenten:
 
 Stand: Dezember 2024
 """
+
 from __future__ import annotations
 
 import logging
@@ -642,7 +643,7 @@ def build_llm_messages(
     # Horizonte formatieren
     horizons_str = ", ".join(config.horizons)
 
-    user_message = f"""# Daily Market Outlook – {datetime.now().strftime('%Y-%m-%d %H:%M')}
+    user_message = f"""# Daily Market Outlook – {datetime.now().strftime("%Y-%m-%d %H:%M")}
 
 ## Marktdaten (Feature-Snapshots)
 
@@ -741,8 +742,7 @@ def call_llm(
             from openai import OpenAI
         except ImportError:
             raise ImportError(
-                "openai-Paket nicht installiert. "
-                "Bitte installiere mit: pip install openai"
+                "openai-Paket nicht installiert. Bitte installiere mit: pip install openai"
             )
 
         client = OpenAI(api_key=api_key)
@@ -826,7 +826,7 @@ def write_markdown_report(
     report_content = f"""# Daily Market Outlook – MarketSentinel v0
 
 > **Report-ID:** {result.config.report_id}
-> **Erstellt:** {result.created_at.strftime('%Y-%m-%d %H:%M:%S')}
+> **Erstellt:** {result.created_at.strftime("%Y-%m-%d %H:%M:%S")}
 > **Horizonte:** {horizons_str}
 > **Märkte:** {markets_str}
 
@@ -847,7 +847,7 @@ def write_markdown_report(
 ## Technische Hinweise
 
 - **Generator:** MarketSentinel v0 (Peak_Trade)
-- **Datenquellen:** {', '.join(set(s.data_source for s in result.snapshots))}
+- **Datenquellen:** {", ".join(set(s.data_source for s in result.snapshots))}
 - **Disclaimer:** Dies ist keine Anlageberatung. Szenarien sind analytische Denkwerkzeuge, keine Prognosen oder Empfehlungen.
 
 ---
@@ -909,10 +909,7 @@ def run_daily_market_outlook(
     try:
         # 1. Config laden
         config = load_daily_outlook_config(config_path)
-        logger.info(
-            f"Config geladen: {len(config.markets)} Märkte, "
-            f"Horizonte: {config.horizons}"
-        )
+        logger.info(f"Config geladen: {len(config.markets)} Märkte, Horizonte: {config.horizons}")
 
         # 2. Für alle Märkte: Daten laden & Features berechnen
         snapshots: list[MarketFeatureSnapshot] = []

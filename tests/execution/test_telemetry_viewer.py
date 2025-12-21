@@ -5,6 +5,7 @@ Tests for Telemetry Viewer (Phase 16C).
 Tests read-only querying, filtering, and summarization of
 execution telemetry events.
 """
+
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -80,9 +81,24 @@ def test_iter_events_filter_by_type():
         log_path = Path(tmpdir) / "test_session.jsonl"
 
         events = [
-            {"ts": "2025-01-01T12:00:00+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "intent"},
-            {"ts": "2025-01-01T12:00:01+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "order"},
-            {"ts": "2025-01-01T12:00:02+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "fill"},
+            {
+                "ts": "2025-01-01T12:00:00+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "intent",
+            },
+            {
+                "ts": "2025-01-01T12:00:01+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "order",
+            },
+            {
+                "ts": "2025-01-01T12:00:02+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
         ]
         create_test_log(log_path, events)
 
@@ -101,9 +117,24 @@ def test_iter_events_filter_by_symbol():
         log_path = Path(tmpdir) / "test_session.jsonl"
 
         events = [
-            {"ts": "2025-01-01T12:00:00+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "fill"},
-            {"ts": "2025-01-01T12:00:01+00:00", "session_id": "test", "symbol": "ETH-USD", "kind": "fill"},
-            {"ts": "2025-01-01T12:00:02+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "fill"},
+            {
+                "ts": "2025-01-01T12:00:00+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
+            {
+                "ts": "2025-01-01T12:00:01+00:00",
+                "session_id": "test",
+                "symbol": "ETH-USD",
+                "kind": "fill",
+            },
+            {
+                "ts": "2025-01-01T12:00:02+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
         ]
         create_test_log(log_path, events)
 
@@ -122,9 +153,24 @@ def test_iter_events_filter_by_session():
         log_path = Path(tmpdir) / "test_session.jsonl"
 
         events = [
-            {"ts": "2025-01-01T12:00:00+00:00", "session_id": "session_1", "symbol": "BTC-USD", "kind": "fill"},
-            {"ts": "2025-01-01T12:00:01+00:00", "session_id": "session_2", "symbol": "BTC-USD", "kind": "fill"},
-            {"ts": "2025-01-01T12:00:02+00:00", "session_id": "session_1", "symbol": "BTC-USD", "kind": "fill"},
+            {
+                "ts": "2025-01-01T12:00:00+00:00",
+                "session_id": "session_1",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
+            {
+                "ts": "2025-01-01T12:00:01+00:00",
+                "session_id": "session_2",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
+            {
+                "ts": "2025-01-01T12:00:02+00:00",
+                "session_id": "session_1",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
         ]
         create_test_log(log_path, events)
 
@@ -143,10 +189,30 @@ def test_iter_events_timestamp_filter():
         log_path = Path(tmpdir) / "test_session.jsonl"
 
         events = [
-            {"ts": "2025-01-01T11:59:00+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "fill"},
-            {"ts": "2025-01-01T12:00:00+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "fill"},
-            {"ts": "2025-01-01T12:01:00+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "fill"},
-            {"ts": "2025-01-01T12:02:00+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "fill"},
+            {
+                "ts": "2025-01-01T11:59:00+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
+            {
+                "ts": "2025-01-01T12:00:00+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
+            {
+                "ts": "2025-01-01T12:01:00+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
+            {
+                "ts": "2025-01-01T12:02:00+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            },
         ]
         create_test_log(log_path, events)
 
@@ -169,7 +235,12 @@ def test_iter_events_limit():
 
         # Create 100 events
         events = [
-            {"ts": f"2025-01-01T12:00:{i:02d}+00:00", "session_id": "test", "symbol": "BTC-USD", "kind": "fill"}
+            {
+                "ts": f"2025-01-01T12:00:{i:02d}+00:00",
+                "session_id": "test",
+                "symbol": "BTC-USD",
+                "kind": "fill",
+            }
             for i in range(100)
         ]
         create_test_log(log_path, events)
@@ -190,9 +261,9 @@ def test_iter_events_handles_invalid_lines():
         # Mix valid and invalid lines
         with log_path.open("w") as f:
             f.write('{"ts": "2025-01-01T12:00:00+00:00", "kind": "fill"}\n')
-            f.write('invalid json line\n')
+            f.write("invalid json line\n")
             f.write('{"ts": "2025-01-01T12:00:01+00:00", "kind": "fill"}\n')
-            f.write('{broken json\n')
+            f.write("{broken json\n")
             f.write('{"ts": "2025-01-01T12:00:02+00:00", "kind": "fill"}\n')
 
         query = TelemetryQuery(limit=100)
@@ -208,10 +279,30 @@ def test_iter_events_handles_invalid_lines():
 def test_summarize_events():
     """Test event summarization."""
     events = [
-        {"ts": "2025-01-01T12:00:00+00:00", "session_id": "s1", "symbol": "BTC-USD", "kind": "intent"},
-        {"ts": "2025-01-01T12:00:01+00:00", "session_id": "s1", "symbol": "BTC-USD", "kind": "order"},
-        {"ts": "2025-01-01T12:00:02+00:00", "session_id": "s1", "symbol": "BTC-USD", "kind": "fill"},
-        {"ts": "2025-01-01T12:00:03+00:00", "session_id": "s2", "symbol": "ETH-USD", "kind": "fill"},
+        {
+            "ts": "2025-01-01T12:00:00+00:00",
+            "session_id": "s1",
+            "symbol": "BTC-USD",
+            "kind": "intent",
+        },
+        {
+            "ts": "2025-01-01T12:00:01+00:00",
+            "session_id": "s1",
+            "symbol": "BTC-USD",
+            "kind": "order",
+        },
+        {
+            "ts": "2025-01-01T12:00:02+00:00",
+            "session_id": "s1",
+            "symbol": "BTC-USD",
+            "kind": "fill",
+        },
+        {
+            "ts": "2025-01-01T12:00:03+00:00",
+            "session_id": "s2",
+            "symbol": "ETH-USD",
+            "kind": "fill",
+        },
     ]
 
     summary = summarize_events(events)
@@ -280,7 +371,12 @@ def test_build_timeline():
 def test_build_timeline_respects_max_items():
     """Test timeline max_items limit."""
     events = [
-        {"ts": f"2025-01-01T12:00:{i:02d}+00:00", "symbol": "BTC-USD", "kind": "fill", "payload": {}}
+        {
+            "ts": f"2025-01-01T12:00:{i:02d}+00:00",
+            "symbol": "BTC-USD",
+            "kind": "fill",
+            "payload": {},
+        }
         for i in range(100)
     ]
 

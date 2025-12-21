@@ -5,6 +5,7 @@ Tests für scripts/generate_live_status_report.py (Phase 57)
 
 Testet das CLI-Verhalten des Live-Status-Report-Generators.
 """
+
 from __future__ import annotations
 
 import json
@@ -266,7 +267,9 @@ def test_generate_live_status_report_with_notes(tmp_path: Path, monkeypatch: pyt
         sys.argv = original_argv
 
 
-def test_generate_live_status_report_missing_config(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+def test_generate_live_status_report_missing_config(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
     """Testet, dass fehlende Config-Datei korrekt behandelt wird."""
     monkeypatch.setattr(subprocess, "run", fake_subprocess_run)
 
@@ -294,8 +297,3 @@ def test_generate_live_status_report_missing_config(tmp_path: Path, monkeypatch:
 
     finally:
         sys.argv = original_argv
-
-
-
-
-

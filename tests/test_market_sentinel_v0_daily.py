@@ -7,6 +7,7 @@ Smoke-Tests und Unit-Tests für das Daily Market Outlook System.
 
 Stand: Dezember 2024
 """
+
 from __future__ import annotations
 
 import tempfile
@@ -95,9 +96,7 @@ llm:
   model: "gpt-4o-mini"
   max_tokens: 2000
 """
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".yaml", delete=False
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
         f.write(config_content)
         return Path(f.name)
 
@@ -277,9 +276,7 @@ class TestGenerateDummyOhlcv:
 class TestLoadOhlcvForMarket:
     """Tests für load_ohlcv_for_market."""
 
-    def test_load_generates_dummy_when_no_csv(
-        self, sample_market_config: MarketConfig
-    ) -> None:
+    def test_load_generates_dummy_when_no_csv(self, sample_market_config: MarketConfig) -> None:
         """Test: Dummy-Daten werden generiert wenn keine CSV vorhanden."""
         df, source = load_ohlcv_for_market(
             sample_market_config,
@@ -339,15 +336,11 @@ class TestComputeFeatureSnapshot:
     def test_compute_with_empty_df(self, sample_market_config: MarketConfig) -> None:
         """Test: Leeres DataFrame gibt Snapshot mit None-Werten."""
         empty_df = pd.DataFrame()
-        snapshot = compute_feature_snapshot(
-            empty_df, sample_market_config, data_source="test"
-        )
+        snapshot = compute_feature_snapshot(empty_df, sample_market_config, data_source="test")
         assert snapshot.last_price is None
         assert snapshot.change_1d is None
 
-    def test_compute_with_insufficient_data(
-        self, sample_market_config: MarketConfig
-    ) -> None:
+    def test_compute_with_insufficient_data(self, sample_market_config: MarketConfig) -> None:
         """Test: Zu wenig Daten → einige Features sind None."""
         # Nur 5 Tage Daten
         df = _generate_dummy_ohlcv(days=5, start_price=100.0)
@@ -358,9 +351,7 @@ class TestComputeFeatureSnapshot:
         assert snapshot.change_20d is None
         assert snapshot.realized_vol_20d is None
 
-    def test_change_calculations_are_correct(
-        self, sample_market_config: MarketConfig
-    ) -> None:
+    def test_change_calculations_are_correct(self, sample_market_config: MarketConfig) -> None:
         """Test: Change-Berechnungen sind mathematisch korrekt."""
         # Konstruiere DataFrame mit bekannten Werten
         dates = pd.date_range(end="2024-01-10", periods=10, freq="D")
@@ -442,9 +433,7 @@ class TestBuildLlmMessages:
 class TestWriteMarkdownReport:
     """Tests für write_markdown_report."""
 
-    def test_write_creates_file(
-        self, sample_daily_config: DailyMarketOutlookConfig
-    ) -> None:
+    def test_write_creates_file(self, sample_daily_config: DailyMarketOutlookConfig) -> None:
         """Test: Report-Datei wird erstellt."""
         snapshot = MarketFeatureSnapshot(
             market=sample_daily_config.markets[0],

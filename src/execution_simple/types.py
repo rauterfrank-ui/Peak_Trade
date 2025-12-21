@@ -4,6 +4,7 @@ Execution Pipeline Types & Data Structures.
 
 Defines core types for order execution, gates, and results.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

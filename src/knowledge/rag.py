@@ -5,16 +5,16 @@ Combines vector database search with AI prompts for knowledge-augmented response
 
 Usage:
     from src.knowledge.rag import RAGPipeline
-    
+
     # Initialize with vector DB
     rag = RAGPipeline(vector_db=my_vector_db)
-    
+
     # Add knowledge documents
     rag.add_documents([
         "RSI strategy works best in ranging markets...",
         "Momentum strategies perform well in trending markets..."
     ])
-    
+
     # Query with context
     response = rag.query(
         "What strategy should I use for a ranging market?",
@@ -94,9 +94,7 @@ accurately and provide actionable insights."""
         logger.info(f"Retrieved {len(results)} context documents for query")
         return results
 
-    def format_context(
-        self, results: List[Tuple[str, float, Dict[str, Any]]]
-    ) -> str:
+    def format_context(self, results: List[Tuple[str, float, Dict[str, Any]]]) -> str:
         """
         Format retrieved documents into context string.
 
@@ -241,15 +239,11 @@ Always consider:
             Dict with recommended strategies and reasoning
         """
         # Build query from market conditions
-        condition_str = ", ".join(
-            [f"{k}={v}" for k, v in market_conditions.items()]
-        )
+        condition_str = ", ".join([f"{k}={v}" for k, v in market_conditions.items()])
         query = f"Recommend trading strategies for: {condition_str}"
 
         # Query with strategy metadata filter
-        response = self.query(
-            query=query, top_k=top_k, filter_dict={"type": "strategy"}
-        )
+        response = self.query(query=query, top_k=top_k, filter_dict={"type": "strategy"})
 
         return {
             "market_conditions": market_conditions,
@@ -276,9 +270,7 @@ Focus on:
 3. Risk factors
 4. Potential opportunities"""
 
-    def analyze_regime(
-        self, current_metrics: Dict[str, float], top_k: int = 5
-    ) -> Dict[str, Any]:
+    def analyze_regime(self, current_metrics: Dict[str, float], top_k: int = 5) -> Dict[str, Any]:
         """
         Analyze current market regime based on metrics.
 
@@ -294,9 +286,7 @@ Focus on:
         query = f"Analyze market regime with metrics: {metrics_str}"
 
         # Query with regime metadata filter
-        response = self.query(
-            query=query, top_k=top_k, filter_dict={"type": "regime_analysis"}
-        )
+        response = self.query(query=query, top_k=top_k, filter_dict={"type": "regime_analysis"})
 
         return {
             "current_metrics": current_metrics,

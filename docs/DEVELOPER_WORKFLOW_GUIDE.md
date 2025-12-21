@@ -328,22 +328,22 @@ test(portfolio): add edge case tests
    ```markdown
    ## Description
    Brief description of changes
-   
+
    ## Type of Change
    - [ ] Bug fix
    - [ ] New feature
    - [ ] Breaking change
    - [ ] Documentation update
-   
+
    ## Testing
    - [ ] Tests pass
    - [ ] Coverage maintained/improved
    - [ ] Manual testing performed
-   
+
    ## Documentation
    - [ ] Documentation updated
    - [ ] Examples added
-   
+
    ## Checklist
    - [ ] Code follows style guidelines
    - [ ] Self-review completed
@@ -422,7 +422,7 @@ pytest tests/ -n auto
    ```bash
    # Run with debugger
    python -m pdb scripts/<script_name>.py
-   
+
    # Or in test
    pytest tests/test_module.py --pdb
    ```
@@ -430,11 +430,11 @@ pytest tests/ -n auto
 4. **Performance Profiling:**
    ```python
    from src.core.performance import performance_monitor
-   
+
    with performance_monitor.measure("operation"):
        # Your code here
        pass
-   
+
    performance_monitor.print_summary()
    ```
 
@@ -453,12 +453,12 @@ pytest tests/ -n auto
    ```python
    import cProfile
    import pstats
-   
+
    profiler = cProfile.Profile()
    profiler.enable()
-   
+
    # Your code here
-   
+
    profiler.disable()
    stats = pstats.Stats(profiler)
    stats.sort_stats('cumulative')

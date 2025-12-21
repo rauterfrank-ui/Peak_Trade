@@ -24,9 +24,7 @@ except ImportError:
     try:
         import tomli as tomllib
     except ImportError:
-        raise ImportError(
-            "Benötigt Python 3.11+ (tomllib) oder 'pip install tomli'"
-        )
+        raise ImportError("Benötigt Python 3.11+ (tomllib) oder 'pip install tomli'")
 
 from .errors import ConfigError
 
@@ -39,7 +37,7 @@ DEFAULT_CONFIG_PATH = Path("config.toml")
 class StrategyConfig:
     """
     Merged Strategie-Config: Defaults + Strategie-spezifische Parameter.
-    
+
     Attributes:
         name: Strategie-Name
         active: Ist in strategies.active?
@@ -47,12 +45,13 @@ class StrategyConfig:
         defaults: Default-Parameter
         metadata: Optional Metadata-Dict
     """
+
     name: str
     active: bool
     params: Dict[str, Any]
     defaults: Dict[str, Any]
     metadata: Optional[Dict[str, Any]] = None
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """
         Holt Parameter mit Fallback-Logik:
@@ -65,7 +64,7 @@ class StrategyConfig:
         if key in self.defaults:
             return self.defaults[key]
         return default
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Merged Dict aller Parameter."""
         return {**self.defaults, **self.params}
@@ -75,7 +74,7 @@ class ConfigRegistry:
     """
     Zentrale Config-Verwaltung mit Registry-Support.
     """
-    
+
     def __init__(self, config_path: Optional[Path] = None):
         """
         Args:
@@ -83,23 +82,23 @@ class ConfigRegistry:
         """
         self.config_path = config_path or self._resolve_config_path()
         self._raw_config: Optional[Dict[str, Any]] = None
-    
+
     def _resolve_config_path(self) -> Path:
         """Bestimmt Config-Pfad (env var > default)."""
         env_path = os.getenv("PEAK_TRADE_CONFIG")
         if env_path:
             return Path(env_path)
         return DEFAULT_CONFIG_PATH
-    
+
     def _load_config(self) -> Dict[str, Any]:
         """Lädt config.toml."""
         if not self.config_path.exists():
             raise ConfigError(
                 f"Configuration file not found: {self.config_path}",
                 hint="Create config.toml in project root or set PEAK_TRADE_CONFIG environment variable",
-                context={"config_path": str(self.config_path)}
+                context={"config_path": str(self.config_path)},
             )
-        
+
         try:
             with open(self.config_path, "rb") as f:
                 return tomllib.load(f)
@@ -108,46 +107,46 @@ class ConfigRegistry:
                 f"Failed to parse configuration file: {self.config_path}",
                 hint="Verify TOML syntax is valid. Use a TOML validator or check for common errors (missing quotes, brackets, etc.)",
                 context={"config_path": str(self.config_path)},
-                cause=e
+                cause=e,
             )
-    
+
     @property
     def config(self) -> Dict[str, Any]:
         """Lazy Loading der Config (Caching)."""
         if self._raw_config is None:
             self._raw_config = self._load_config()
         return self._raw_config
-    
+
     def reload(self):
         """Erzwingt Neuladen der Config."""
         self._raw_config = None
-    
+
     def get_active_strategies(self) -> List[str]:
         """Liste der aktiven Strategien."""
         return self.config.get("strategies", {}).get("active", [])
-    
+
     def get_available_strategies(self) -> List[str]:
         """Liste aller verfügbaren Strategien."""
         return self.config.get("strategies", {}).get("available", [])
-    
+
     def list_strategies(self) -> List[str]:
         """Liste aller definierten Strategien (aus [strategy.*])."""
         return sorted(self.config.get("strategy", {}).keys())
-    
+
     def get_strategy_defaults(self) -> Dict[str, Any]:
         """Holt Strategie-Defaults."""
         return self.config.get("strategies", {}).get("defaults", {})
-    
+
     def get_strategy_config(self, name: str) -> StrategyConfig:
         """
         Lädt Strategie-Config mit Defaults-Merging.
-        
+
         Args:
             name: Strategie-Name
-        
+
         Returns:
             StrategyConfig mit merged Parameters
-        
+
         Raises:
             ConfigError: Wenn Strategie nicht definiert
         """
@@ -160,45 +159,37 @@ class ConfigRegistry:
                 context={
                     "requested_strategy": name,
                     "available_strategies": available,
-                    "config_path": str(self.config_path)
-                }
+                    "config_path": str(self.config_path),
+                },
             )
-        
+
         defaults = self.get_strategy_defaults()
         strategy_params = self.config["strategy"][name]
-        metadata = (
-            self.config.get("strategies", {})
-            .get("metadata", {})
-            .get(name)
-        )
+        metadata = self.config.get("strategies", {}).get("metadata", {}).get(name)
         active = name in self.get_active_strategies()
-        
+
         return StrategyConfig(
-            name=name,
-            active=active,
-            params=strategy_params,
-            defaults=defaults,
-            metadata=metadata
+            name=name, active=active, params=strategy_params, defaults=defaults, metadata=metadata
         )
-    
+
     def get_strategies_by_regime(self, regime: str) -> List[str]:
         """
         Filtert Strategien nach Marktregime.
-        
+
         Args:
             regime: "trending", "ranging", "any"
-        
+
         Returns:
             Liste von Strategie-Namen
         """
         result = []
         metadata_dict = self.config.get("strategies", {}).get("metadata", {})
-        
+
         for name in self.get_available_strategies():
             meta = metadata_dict.get(name, {})
             if meta.get("best_market_regime") in [regime, "any"]:
                 result.append(name)
-        
+
         return result
 
 
@@ -208,20 +199,20 @@ _GLOBAL_REGISTRY: Optional[ConfigRegistry] = None
 def get_registry(force_reload: bool = False) -> ConfigRegistry:
     """
     Gibt globale ConfigRegistry-Instanz zurück (Singleton).
-    
+
     Args:
         force_reload: Config neu laden?
-    
+
     Returns:
         ConfigRegistry-Instanz
     """
     global _GLOBAL_REGISTRY
-    
+
     if _GLOBAL_REGISTRY is None:
         _GLOBAL_REGISTRY = ConfigRegistry()
     elif force_reload:
         _GLOBAL_REGISTRY.reload()
-    
+
     return _GLOBAL_REGISTRY
 
 

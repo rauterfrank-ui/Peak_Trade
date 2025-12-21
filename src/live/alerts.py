@@ -31,6 +31,7 @@ Usage:
     )
     sink.send(alert)
 """
+
 from __future__ import annotations
 
 import json
@@ -236,9 +237,7 @@ class WebhookAlertSink:
                     pass
             except Exception as exc:
                 # Keine Exception nach außen – nur loggen
-                self._logger.exception(
-                    "Failed to send alert to webhook %r: %s", url, exc
-                )
+                self._logger.exception("Failed to send alert to webhook %r: %s", url, exc)
 
     def _build_payload(self, alert: AlertEvent) -> dict[str, Any]:
         """
@@ -318,9 +317,7 @@ class SlackWebhookAlertSink:
                 with urllib.request.urlopen(req, timeout=self._timeout_seconds):
                     pass
             except Exception as exc:
-                self._logger.exception(
-                    "Failed to send alert to Slack webhook %r: %s", url, exc
-                )
+                self._logger.exception("Failed to send alert to Slack webhook %r: %s", url, exc)
 
     def _build_text(self, alert: AlertEvent) -> str:
         """
@@ -503,9 +500,7 @@ def build_alert_sink_from_config(cfg: LiveAlertsConfig) -> AlertSink | None:
                     "live_alerts.sinks includes 'slack_webhook' but no slack_webhook_urls are configured"
                 )
         else:
-            base_logger.warning(
-                "Unknown alert sink name %r in live_alerts.sinks", sink_name
-            )
+            base_logger.warning("Unknown alert sink name %r in live_alerts.sinks", sink_name)
 
     if not built_sinks:
         return None

@@ -15,4 +15,3 @@ services:
     volumes:
       - ./reports:/reports
     # No default command - user must specify (stage1-snapshot, stage1-trends, etc.)
-

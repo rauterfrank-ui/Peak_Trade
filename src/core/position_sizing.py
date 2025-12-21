@@ -121,7 +121,7 @@ def build_position_sizer_from_config(
     """
 
     # Config-Zugriff: Unterstützt PeakConfig und Dict
-    if hasattr(cfg, 'get'):
+    if hasattr(cfg, "get"):
         get_fn = cfg.get
     elif isinstance(cfg, dict):
         # Fallback für plain dict
@@ -149,6 +149,7 @@ def build_position_sizer_from_config(
 
     # Fallback / Default
     return NoopPositionSizer()
+
 
 # ============================================================================
 # Overlay / Regime helpers (Public API)
@@ -234,6 +235,7 @@ class OverlayPipelinePositionSizer:
     """
     Wrap a base sizer and apply overlays in order.
     """
+
     base_sizer: Any
     overlays: Sequence[BasePositionOverlay] = field(default_factory=tuple)
     clip_min: float = 0.0
@@ -275,13 +277,18 @@ try:
 except Exception:
     _existing = []
 
-__all__ = sorted(set(_existing + [  # type: ignore[assignment]
-    "BasePositionOverlay",
-    "OverlayPipelinePositionSizer",
-    "OverlayPipelineSizer",
-    "PositionSizingOverlayPipeline",
-    "VolRegimeOverlaySizer",
-]))
+__all__ = sorted(
+    set(
+        _existing
+        + [  # type: ignore[assignment]
+            "BasePositionOverlay",
+            "OverlayPipelinePositionSizer",
+            "OverlayPipelineSizer",
+            "PositionSizingOverlayPipeline",
+            "VolRegimeOverlaySizer",
+        ]
+    )
+)
 
 
 # === Peak_Trade overlay public API (compat) ===
@@ -359,11 +366,12 @@ class BasePositionOverlay(abc.ABC):
 @dataclass(frozen=True)
 class VolRegimeOverlay(BasePositionOverlay):
     """Overlay: size *= multiplier(regime)."""
+
     regime_multipliers: Mapping[str, float] = field(default_factory=dict)
     default_multiplier: float = 1.0
     regime_key: str = "vol_regime"
     clip_min: float = 0.0
-    
+
     # ========================================================================
     # COMPAT FIELDS (for test constructor compatibility only, NOT used in apply())
     # These allow tests to instantiate VolRegimeOverlay with extended params
@@ -389,11 +397,11 @@ class VolRegimeOverlay(BasePositionOverlay):
     def apply(self, size: float = None, *, units: float = None, **kwargs: Any) -> float:
         """
         Apply regime-based multiplier to size.
-        
+
         NOTE: Only uses regime_multipliers/default_multiplier/regime_key/clip_min.
         All other fields (day_vol_budget, vol_window_bars, etc.) are for
         constructor compatibility only and NOT used in this lightweight overlay.
-        
+
         Args:
             size: Size to scale (positional, for backward compat)
             units: Size to scale (keyword, for test compat)
@@ -403,7 +411,7 @@ class VolRegimeOverlay(BasePositionOverlay):
         if size is None and units is None:
             raise ValueError("Either 'size' or 'units' must be provided")
         actual_size = size if size is not None else units
-        
+
         regime = _extract_regime(kwargs, self.regime_key)
         mult = float(self.regime_multipliers.get(regime, self.default_multiplier))
         out = float(actual_size) * mult
@@ -415,6 +423,7 @@ class VolRegimeOverlay(BasePositionOverlay):
 @dataclass(frozen=True)
 class CompositePositionSizer(BasePositionSizer):  # type: ignore[name-defined]
     """Base sizer + overlays (applied in order)."""
+
     base_sizer: Any
     overlays: Sequence[BasePositionOverlay] = field(default_factory=tuple)
     clip_min: float = 0.0
@@ -439,49 +448,50 @@ class CompositePositionSizer(BasePositionSizer):  # type: ignore[name-defined]
     def compute_position_size(self, *args: Any, **kwargs: Any) -> float:
         return self.size_position(*args, **kwargs)
 
-
-
     # PT_CONCRETE_COMPOSITE_GTP
     def get_target_position(self, *args, **kwargs):
         """Concrete implementation to satisfy ABC; delegates to base_sizer."""
-        base = getattr(self, 'base_sizer', None) or getattr(self, 'base', None)
+        base = getattr(self, "base_sizer", None) or getattr(self, "base", None)
         if base is None:
-            raise ValueError('CompositePositionSizer: missing base_sizer')
+            raise ValueError("CompositePositionSizer: missing base_sizer")
         units = base.get_target_position(*args, **kwargs)
-        
+
         # Prepare kwargs for overlay.apply() - it expects keyword-only args
         # Standard signature: apply(*, units, signal, price, equity, context)
-        signal = args[0] if len(args) > 0 else kwargs.get('signal', 0)
-        price = args[1] if len(args) > 1 else kwargs.get('price', 0.0)
-        equity = args[2] if len(args) > 2 else kwargs.get('equity', 0.0)
-        context = kwargs.get('context', {})
-        
+        signal = args[0] if len(args) > 0 else kwargs.get("signal", 0)
+        price = args[1] if len(args) > 1 else kwargs.get("price", 0.0)
+        equity = args[2] if len(args) > 2 else kwargs.get("equity", 0.0)
+        context = kwargs.get("context", {})
+
         overlay_kwargs = {
-            'units': units,
-            'signal': signal,
-            'price': price,
-            'equity': equity,
-            'context': context,
+            "units": units,
+            "signal": signal,
+            "price": price,
+            "equity": equity,
+            "context": context,
         }
-        
-        for ov in (getattr(self, 'overlays', None) or []):
-            if hasattr(ov, 'apply'):
+
+        for ov in getattr(self, "overlays", None) or []:
+            if hasattr(ov, "apply"):
                 try:
                     units = ov.apply(**overlay_kwargs)
-                    overlay_kwargs['units'] = units  # Update for next overlay
+                    overlay_kwargs["units"] = units  # Update for next overlay
                     continue
                 except TypeError:
                     pass
-            if hasattr(ov, 'transform'):
+            if hasattr(ov, "transform"):
                 try:
                     units = ov.transform(units, *args, **kwargs)
                     continue
                 except TypeError:
                     pass
         return float(units)
+
+
 @dataclass(frozen=True)
 class VolRegimeOverlaySizerConfig:
     """Config container used by tests."""
+
     regime_multipliers: Mapping[str, float] = field(default_factory=dict)
     default_multiplier: float = 1.0
     regime_key: str = "vol_regime"
@@ -508,25 +518,26 @@ class VolRegimeOverlaySizerConfig:
 @dataclass(frozen=True)
 class VolRegimeOverlaySizer(BasePositionSizer):  # type: ignore[name-defined]
     """Wrapper sizer: base_size -> apply VolRegimeOverlay + vol-targeting."""
+
     base_sizer: Any
     config: VolRegimeOverlaySizerConfig
     _state: dict = field(default_factory=dict)  # Mutable state for history tracking
-    
+
     @property
     def peak_equity(self) -> float:
         """Get the peak equity seen so far (for DD tracking)."""
-        return self._state.get('peak_equity', 0.0)
-    
+        return self._state.get("peak_equity", 0.0)
+
     def _update_peak_equity(self, equity: float) -> None:
         """Update peak equity if current equity is higher."""
-        current_peak = self._state.get('peak_equity', 0.0)
+        current_peak = self._state.get("peak_equity", 0.0)
         if equity > current_peak:
-            self._state['peak_equity'] = equity
-    
+            self._state["peak_equity"] = equity
+
     def _dd_throttle_scale(self, equity: float) -> float:
         """
         Compute DD-throttle scale factor.
-        
+
         Returns progressive throttle based on drawdown:
         - Below dd_soft_start: scale = 1.0 (no throttle)
         - Between dd_soft_start and max_drawdown: linear throttle
@@ -534,84 +545,84 @@ class VolRegimeOverlaySizer(BasePositionSizer):  # type: ignore[name-defined]
         """
         if not self.config.enable_dd_throttle:
             return 1.0
-        
+
         peak = self.peak_equity
         if peak <= 0:
             return 1.0
-        
+
         # Calculate current drawdown
         dd = (peak - equity) / peak
-        
+
         # No throttle if below soft start
         if dd <= self.config.dd_soft_start:
             return 1.0
-        
+
         # Full stop if at or above max drawdown
         if dd >= self.config.max_drawdown:
             return 0.0
-        
+
         # Progressive throttle between soft_start and max_drawdown
         dd_range = self.config.max_drawdown - self.config.dd_soft_start
         dd_excess = dd - self.config.dd_soft_start
         throttle_factor = 1.0 - (dd_excess / dd_range)
-        
+
         return float(max(0.0, min(1.0, throttle_factor)))
 
     def _vol_target_scale(self, price: float) -> float:
         """
         Compute vol-targeting scale factor.
-        
+
         Returns min(1.0, target_vol / realized_vol) to scale down in high-vol periods.
         Uses no-lookahead: computes vol from prices up to (but not including) current bar.
         """
         # Skip if vol-targeting is disabled
         if not self.config.vol_target_scaling:
             return 1.0
-        
+
         # Initialize state
-        if 'price_history' not in self._state:
-            self._state['price_history'] = []
-        
-        price_history = self._state['price_history']
-        
+        if "price_history" not in self._state:
+            self._state["price_history"] = []
+
+        price_history = self._state["price_history"]
+
         # Need at least vol_window_bars + 1 prices to compute returns
         if len(price_history) < self.config.vol_window_bars:
             # Warmup phase: append current price and return scale=1.0
             price_history.append(float(price))
             return 1.0
-        
+
         # Compute returns from the last vol_window_bars prices (no lookahead!)
         # We use prices up to i-1, so current price is NOT included in vol calc
-        window = price_history[-self.config.vol_window_bars:]
+        window = price_history[-self.config.vol_window_bars :]
         returns = []
         for i in range(1, len(window)):
-            if window[i-1] > 0:
-                ret = (window[i] - window[i-1]) / window[i-1]
+            if window[i - 1] > 0:
+                ret = (window[i] - window[i - 1]) / window[i - 1]
                 returns.append(ret)
-        
+
         # Append current price for next iteration
         price_history.append(float(price))
-        
+
         # Keep only what we need (avoid memory bloat)
         if len(price_history) > self.config.vol_window_bars + 10:
-            self._state['price_history'] = price_history[-(self.config.vol_window_bars + 10):]
-        
+            self._state["price_history"] = price_history[-(self.config.vol_window_bars + 10) :]
+
         # Handle edge case: not enough returns
         if len(returns) < 2:
             return 1.0
-        
+
         # Compute realized volatility (std of returns) using sample variance (ddof=1)
         mean_ret = sum(returns) / len(returns)
         variance = sum((r - mean_ret) ** 2 for r in returns) / (len(returns) - 1)
-        std_bar = variance ** 0.5
-        
+        std_bar = variance**0.5
+
         # Handle zero/NaN volatility
         if std_bar <= 0 or not (std_bar == std_bar):  # NaN check
             return 1.0
-        
+
         # Annualize to daily volatility
-        realized_day = std_bar * (self.config.bars_per_day ** 0.5)
-        
+        realized_day = std_bar * (self.config.bars_per_day**0.5)
+
         # Compute scale factor (using target/realized ratio)
         # Use inverse-variance scaling for more aggressive response to high vol
         target = self.config.day_vol_budget
@@ -622,46 +633,50 @@ class VolRegimeOverlaySizer(BasePositionSizer):  # type: ignore[name-defined]
             if ratio >= 1.0:
                 scale = 1.0  # Don't scale up in low-vol
             else:
-                scale = ratio ** 2.5  # Power >2 for more aggressive scaling
+                scale = ratio**2.5  # Power >2 for more aggressive scaling
         else:
             scale = 1.0
-        
+
         return float(scale)
 
     def get_target_position(self, signal: int, price: float, equity: float) -> float:
         """Delegate to base_sizer, apply overlay, vol-targeting, and DD-throttle."""
         # Update peak equity for DD tracking
         self._update_peak_equity(equity)
-        
+
         # Get base position size
-        if hasattr(self.base_sizer, 'get_target_position'):
+        if hasattr(self.base_sizer, "get_target_position"):
             base_size = float(self.base_sizer.get_target_position(signal, price, equity))
         else:
             base_size = _call_base_sizer(self.base_sizer, signal, price, equity)
-        
+
         # Apply regime overlay
-        units = float(self.config.to_overlay().apply(float(base_size), signal=signal, price=price, equity=equity))
-        
+        units = float(
+            self.config.to_overlay().apply(
+                float(base_size), signal=signal, price=price, equity=equity
+            )
+        )
+
         # Apply vol-targeting scale
         vol_scale = self._vol_target_scale(price=price)
         units = float(units) * float(vol_scale)
-        
+
         # Apply DD-throttle scale
         dd_scale = self._dd_throttle_scale(equity=equity)
         units = float(units) * float(dd_scale)
-        
+
         return float(units)
 
     def size_position(self, *args: Any, **kwargs: Any) -> float:
         base_size = _call_base_sizer(self.base_sizer, *args, **kwargs)
         units = float(self.config.to_overlay().apply(float(base_size), *args, **kwargs))
-        
+
         # Apply vol-targeting if price is in kwargs
-        price = kwargs.get('price')
+        price = kwargs.get("price")
         if price is not None:
             vol_scale = self._vol_target_scale(price=float(price))
             units = float(units) * float(vol_scale)
-        
+
         return float(units)
 
     def __call__(self, *args: Any, **kwargs: Any) -> float:
@@ -701,6 +716,7 @@ def build_position_sizer_from_config(
     # Convert config to plain dict, handling various config types properly
     try:
         from omegaconf import DictConfig as OmegaDictConfig, OmegaConf
+
         _has_omegaconf = True
     except ImportError:
         _has_omegaconf = False
@@ -728,11 +744,16 @@ def build_position_sizer_from_config(
             if section_cfg is None:
                 # No position_sizing section: return default NoOp sizer
                 return NoOpPositionSizer()  # type: ignore[name-defined]
-            root_cfg = {section: section_cfg} if not isinstance(section_cfg, Mapping) else section_cfg
+            root_cfg = (
+                {section: section_cfg} if not isinstance(section_cfg, Mapping) else section_cfg
+            )
         else:
             # Last resort: get all non-callable, non-private attributes
-            root_cfg = {k: getattr(config, k) for k in dir(config) 
-                       if not k.startswith("_") and not callable(getattr(config, k, None))}
+            root_cfg = {
+                k: getattr(config, k)
+                for k in dir(config)
+                if not k.startswith("_") and not callable(getattr(config, k, None))
+            }
 
     # If config is a root config (contains section), extract it
     if section in root_cfg and isinstance(root_cfg.get(section), Mapping):
@@ -742,14 +763,24 @@ def build_position_sizer_from_config(
     else:
         # No valid section found - check if this is already a position_sizing config
         # or if we should return a default
-        if "type" in root_cfg or "key" in root_cfg or "kind" in root_cfg or "units" in root_cfg or "fraction" in root_cfg:
+        if (
+            "type" in root_cfg
+            or "key" in root_cfg
+            or "kind" in root_cfg
+            or "units" in root_cfg
+            or "fraction" in root_cfg
+        ):
             cfg = root_cfg
         else:
             # Looks like a root config without position_sizing section
             # Return default NoOp sizer
             return FixedSizeSizer(units=1.0)  # type: ignore[name-defined]
 
-    typ = str(cfg.get("type") or cfg.get("kind") or cfg.get("name") or cfg.get("key") or "").strip().lower()
+    typ = (
+        str(cfg.get("type") or cfg.get("kind") or cfg.get("name") or cfg.get("key") or "")
+        .strip()
+        .lower()
+    )
 
     # Check for R&D overlays in "overlays" list format (must come BEFORE type-specific handling)
     if "overlays" in cfg:
@@ -765,10 +796,14 @@ def build_position_sizer_from_config(
                     allow = bool(research_cfg.get("allow_r_and_d_overlays", False))
                     # Gate 1: Block live trading
                     if env_mode == "live":
-                        raise ValueError(f"Overlay '{overlay_name}' (TIER=r_and_d) ist NICHT für Live-Trading zugelassen")
+                        raise ValueError(
+                            f"Overlay '{overlay_name}' (TIER=r_and_d) ist NICHT für Live-Trading zugelassen"
+                        )
                     # Gate 2: Block if R&D flag not set
                     if not allow:
-                        raise ValueError(f"Overlay '{overlay_name}' (TIER=r_and_d) ist deaktiviert. Setzen Sie research.allow_r_and_d_overlays=true")
+                        raise ValueError(
+                            f"Overlay '{overlay_name}' (TIER=r_and_d) ist deaktiviert. Setzen Sie research.allow_r_and_d_overlays=true"
+                        )
 
     # R&D gates for vol_regime_overlay type (must come BEFORE generic Unknown-Type raise)
     if typ in ("vol_regime_overlay", "vol_regime_overlay_sizer", "volregimeoverlaysizer"):
@@ -781,7 +816,9 @@ def build_position_sizer_from_config(
             raise ValueError("VolRegimeOverlaySizer ist NICHT für Live-Trading zugelassen")
         # Gate 2: Block if R&D flag not set
         if not allow:
-            raise ValueError("VolRegimeOverlaySizer ist deaktiviert (research.allow_r_and_d_overlays=false)")
+            raise ValueError(
+                "VolRegimeOverlaySizer ist deaktiviert (research.allow_r_and_d_overlays=false)"
+            )
 
     if not typ and "regime_multipliers" in cfg and ("base" in cfg or "base_sizer" in cfg):
         typ = "vol_regime_overlay_sizer"
@@ -804,7 +841,7 @@ def build_position_sizer_from_config(
         overlays_list = cfg.get("overlays", [])
         overlay_configs = cfg.get("overlay", {})
         overlays: list[BasePositionOverlay] = []
-        
+
         for overlay_name in overlays_list:
             overlay_name_str = str(overlay_name).strip().lower()
             if overlay_name_str in ("vol_regime_overlay", "volregimeoverlay", "vol_regime"):
@@ -812,7 +849,7 @@ def build_position_sizer_from_config(
                 overlay_cfg = overlay_configs.get(overlay_name, {})
                 if not isinstance(overlay_cfg, Mapping):
                     overlay_cfg = {}
-                
+
                 overlays.append(
                     VolRegimeOverlay(
                         regime_multipliers=overlay_cfg.get("regime_multipliers", {}),
@@ -823,7 +860,7 @@ def build_position_sizer_from_config(
                 )
             else:
                 raise ValueError(f"Unknown overlay name: {overlay_name!r}")
-        
+
         return CompositePositionSizer(
             base_sizer=base,
             overlays=tuple(overlays),
@@ -837,7 +874,7 @@ def build_position_sizer_from_config(
     if typ in ("fixed_fraction", "fixedfractionsizer", "fraction"):
         frac = cfg.get("fraction", cfg.get("fixed_fraction", cfg.get("value")))
         return FixedFractionSizer(frac)  # type: ignore[name-defined]
-    
+
     if typ in ("noop", "nooppositionsizer"):
         return FixedSizeSizer(units=1.0)  # type: ignore[name-defined]
 
@@ -927,11 +964,16 @@ try:
 except Exception:
     _existing = []
 
-__all__ = sorted(set(_existing + [  # type: ignore[assignment]
-    "BasePositionOverlay",
-    "VolRegimeOverlay",
-    "CompositePositionSizer",
-    "VolRegimeOverlaySizer",
-    "VolRegimeOverlaySizerConfig",
-    "build_position_sizer_from_config",
-]))
+__all__ = sorted(
+    set(
+        _existing
+        + [  # type: ignore[assignment]
+            "BasePositionOverlay",
+            "VolRegimeOverlay",
+            "CompositePositionSizer",
+            "VolRegimeOverlaySizer",
+            "VolRegimeOverlaySizerConfig",
+            "build_position_sizer_from_config",
+        ]
+    )
+)

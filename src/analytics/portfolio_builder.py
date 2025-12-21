@@ -15,6 +15,7 @@ Usage:
         write_portfolio_candidate_to_toml,
     )
 """
+
 from __future__ import annotations
 
 import json
@@ -78,7 +79,9 @@ class PortfolioCandidate:
     components: List[PortfolioComponentCandidate]
     allocation_method: str = "equal"
     initial_equity: float = 10000.0
-    created_at: str = field(default_factory=lambda: datetime.utcnow().isoformat(timespec="seconds") + "Z")
+    created_at: str = field(
+        default_factory=lambda: datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    )
     source_tag: Optional[str] = None
 
 

@@ -3,6 +3,7 @@ DEMO: Basic Portfolio Backtest (Phase 1)
 
 Zeigt grundlegende Nutzung ohne Risk-Module.
 """
+
 import pandas as pd
 import numpy as np
 from src.backtest.engine import BacktestEngine
@@ -18,7 +19,7 @@ df = pd.DataFrame({"close": prices}, index=dates)
 # Engine initialisieren
 engine = BacktestEngine(
     commission_perc=0.0005,  # 5 bps
-    slippage_perc=0.0002,    # 2 bps
+    slippage_perc=0.0002,  # 2 bps
 )
 
 # Portfolio-Manager erstellen
@@ -52,9 +53,9 @@ result = pm.run_portfolio(
 )
 
 # Ergebnisse ausgeben
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("PORTFOLIO BACKTEST RESULTS")
-print("="*60)
+print("=" * 60)
 
 print("\n--- STATS ---")
 for key, value in result.stats.items():

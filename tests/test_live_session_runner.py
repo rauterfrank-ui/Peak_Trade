@@ -15,6 +15,7 @@ Tests für die Strategy-to-Execution Bridge:
 WICHTIG: Alle Tests verwenden Fake/Stub-Komponenten.
          Es werden KEINE echten API-Calls gemacht.
 """
+
 from __future__ import annotations
 
 import subprocess
@@ -665,8 +666,10 @@ class TestExecutionSessionCLI:
             [
                 sys.executable,
                 "scripts/run_execution_session.py",
-                "--strategy", "ma_crossover",
-                "--symbol", "BTC/EUR",
+                "--strategy",
+                "ma_crossover",
+                "--symbol",
+                "BTC/EUR",
                 "--dry-run",
             ],
             capture_output=True,
@@ -687,8 +690,10 @@ class TestExecutionSessionCLI:
             [
                 sys.executable,
                 "scripts/run_execution_session.py",
-                "--mode", "live",  # NICHT ERLAUBT
-                "--strategy", "ma_crossover",
+                "--mode",
+                "live",  # NICHT ERLAUBT
+                "--strategy",
+                "ma_crossover",
                 "--dry-run",
             ],
             capture_output=True,
@@ -756,4 +761,3 @@ class TestLiveSessionPipelineIntegration:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
-

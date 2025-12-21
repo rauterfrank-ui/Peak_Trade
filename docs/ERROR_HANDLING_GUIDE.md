@@ -377,13 +377,13 @@ def test_invalid_config_raises_error():
     """Test that invalid config raises ConfigError."""
     with pytest.raises(ConfigError) as exc_info:
         load_config(invalid_path)
-    
+
     # Check error message
     assert "not found" in str(exc_info.value)
-    
+
     # Check hint is present
     assert exc_info.value.hint is not None
-    
+
     # Check context
     assert "config_path" in exc_info.value.context
 ```
@@ -419,7 +419,7 @@ To add a new error type:
 class MyNewError(PeakTradeError):
     """
     Raised when something specific happens.
-    
+
     Examples:
         - Situation 1
         - Situation 2
