@@ -189,6 +189,7 @@ To actually apply labels:
 - ✅ `gh auth status` Validierung
 - ✅ Help-Text (`--help`, `-h`)
 - ✅ Auto-Detection von `python3` / `python`
+- ✅ Shared helpers (`run_helpers.sh`) für konsistentes Error-Handling
 
 ### `label_merge_log_prs.sh` spezifisch
 
@@ -222,6 +223,22 @@ Beide Skripte verwenden nur Standard-Library-Module:
 - `pathlib`
 - `datetime`
 - `sys`
+
+### Bash Helpers
+
+Die Ops-Skripte nutzen `scripts/ops/run_helpers.sh` für konsistentes Error-Handling:
+
+```bash
+# Automatisch gesourced in pr_inventory_full.sh und label_merge_log_prs.sh
+# Bietet: pt_run_required(), pt_run_optional(), pt_require_cmd(), pt_log(), etc.
+
+# Modes:
+# - PT_MODE=strict (default): Fehler → Abort
+# - PT_MODE=robust: Fehler → Warn + Continue
+
+# Beispiel (robust mode):
+PT_MODE=robust bash scripts/ops/pr_inventory_full.sh
+```
 
 ---
 
