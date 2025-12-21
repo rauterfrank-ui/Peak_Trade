@@ -6,6 +6,10 @@ set -euo pipefail
 # Output: /tmp/peak_trade_pr_inventory_YYYYmmdd_HHMMSS/
 # ─────────────────────────────────────────────────────────────
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=run_helpers.sh
+source "${SCRIPT_DIR}/run_helpers.sh"
+
 REPO="${REPO:-rauterfrank-ui/Peak_Trade}"
 LIMIT="${LIMIT:-1000}"
 OUT_ROOT="${OUT_ROOT:-/tmp}"
@@ -32,8 +36,8 @@ echo "Repo: $REPO | Limit: $LIMIT"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Preflight
-command -v gh >/dev/null || { echo "❌ gh CLI fehlt. Installiere GitHub CLI und logge dich ein."; exit 1; }
-command -v python3 >/dev/null || command -v python >/dev/null || { echo "❌ python fehlt."; exit 1; }
+pt_require_cmd gh
+pt_require_cmd python3 || pt_require_cmd python
 
 PYBIN="python3"
 command -v python3 >/dev/null || PYBIN="python"
@@ -49,7 +53,7 @@ mkdir -p "$OUT"
 echo "✅ Output dir: $OUT"
 
 # Optional: default repo setzen (still safe)
-gh repo set-default "$REPO" >/dev/null 2>&1 || true
+pt_run_optional "Set default repo" gh repo set-default "$REPO"
 
 FIELDS="number,title,state,createdAt,closedAt,mergedAt,author,url,headRefName,baseRefName,labels"
 
