@@ -56,13 +56,16 @@ if [[ "$ENSURE_LABEL" == "1" ]]; then
 fi
 
 TMP="/tmp/peak_trade_merge_log_prs.txt"
-rm -f "$TMP"
+TMP_JSON="/tmp/peak_trade_prs.json"
+rm -f "$TMP" "$TMP_JSON"
 
 # PR Nummern extrahieren (closed, full)
-gh pr list --state closed --limit "$LIMIT" --json number,title \
-| "$PYBIN" - <<'PY' > "$TMP"
+gh pr list --state closed --limit "$LIMIT" --json number,title > "$TMP_JSON"
+
+"$PYBIN" - <<'PY' > "$TMP"
 import json, re, sys
-data = json.load(sys.stdin)
+from pathlib import Path
+data = json.loads(Path("/tmp/peak_trade_prs.json").read_text())
 rx = re.compile(r"^docs\(ops\): add PR #\d+ merge log", re.I)
 nums = [str(pr["number"]) for pr in data if rx.search(pr.get("title",""))]
 print("\n".join(nums))

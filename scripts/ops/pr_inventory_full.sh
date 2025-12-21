@@ -66,12 +66,13 @@ echo " - $OUT/merged.json"
 
 echo ""
 echo "🧠 Analyse + Reports..."
+export PR_INVENTORY_OUT="$OUT"
 "$PYBIN" - <<'PY'
-import json, re, csv
+import json, re, csv, os
 from pathlib import Path
 from datetime import datetime
 
-out = Path(r"""'"$OUT"'''""")
+out = Path(os.environ["PR_INVENTORY_OUT"])
 
 open_p  = json.loads((out/"open.json").read_text(encoding="utf-8"))
 closed  = json.loads((out/"closed_all.json").read_text(encoding="utf-8"))
