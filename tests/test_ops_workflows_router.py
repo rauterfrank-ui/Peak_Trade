@@ -49,7 +49,7 @@ def test_workflows_json_endpoint():
 
     data = response.json()
     assert isinstance(data, list)
-    assert len(data) >= 4
+    assert len(data) >= 5
 
     # Check structure of first workflow
     wf = data[0]
@@ -72,7 +72,7 @@ def test_api_workflows_alias():
 
     data = response.json()
     assert isinstance(data, list)
-    assert len(data) >= 4
+    assert len(data) >= 5
 
 
 def test_workflow_filesystem_metadata():
@@ -96,8 +96,8 @@ def test_workflow_filesystem_metadata():
     workflow_defs = _get_workflow_definitions()
     workflows = _enrich_with_filesystem_metadata(workflow_defs)
 
-    # All 4 workflows should exist
-    assert len(workflows) == 4
+    # All 5 workflows should exist
+    assert len(workflows) == 5
 
     # Check that at least one workflow exists on filesystem
     exists_count = sum(1 for wf in workflows if wf.exists)
