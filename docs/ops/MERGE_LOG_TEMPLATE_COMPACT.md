@@ -1,59 +1,55 @@
-# MERGE LOG TEMPLATE (COMPACT)
+# MERGE LOG — PR #{{PR_NUMBER}} — {{TYPE}}({{SCOPE}}): {{TITLE}}
 
-> Standard: kompakt + fokussiert.  
-> Extended Notes nur bei komplexen/riskanteren PRs (Risk != 🟢, Live/Governance/CI-Behavior, große Flächenänderung).
+**PR:** {{PR_URL}}  
+**Merged:** {{MERGE_DATE_YYYY_MM_DD}}  
+**Merge Commit:** {{MERGE_COMMIT_SHA}}  
+**Branch:** {{BRANCH_NAME}} ({{BRANCH_STATUS}})
 
-# PR #<NUM> — MERGE LOG
+---
 
-## Summary
-PR #<NUM> <kurzer Titel/Outcome in 1 Satz>.
+## Zusammenfassung
+- {{ONE_LINE_WHAT_CHANGED}}
+- {{ONE_LINE_IMPACT_OR_USER_VALUE}}
 
-- PR: #<NUM> — <PR Title>
-- Merged commit (main): `<sha>`
-- Date: <YYYY-MM-DD>
-- Chain context (optional):
-  - PR #<A> (`<shaA>`) — <1-liner>
-  - PR #<B> (`<shaB>`) — <1-liner>
+## Warum
+- {{ROOT_CAUSE_OR_CONTEXT}}
+- {{WHY_NOW_OR_WHAT_BROKE}}
 
-## Motivation / Why
-- <Warum war das nötig?>
-- <Operator/Dev Nutzen in 1–2 bullets>
+## Änderungen
+**Geändert**
+- `{{path/to/file.ext}}` — {{SHORT_CHANGE_DESC}}
+- `{{path/to/file.ext}}` — {{SHORT_CHANGE_DESC}}
 
-## Changes
-### Added/Updated
-- <Bullet>
-- <Bullet>
+**Neu**
+- `{{path/to/new_file.ext}}` — {{SHORT_DESC}}
 
-### Touched files (optional)
-- `<path>` — <1-liner>
-- `<path>` — <1-liner>
+## Verifikation
+**CI**
+- {{CHECK_NAME}} — {{PASS/FAIL}} ({{DURATION_IF_KNOWN}})
+- {{CHECK_NAME}} — {{PASS/FAIL}} ({{DURATION_IF_KNOWN}})
 
-## Verification
-- `<command>` ✅
-- `<command>` ✅
-- Notes: <z.B. docs-only / targeted tests / CI checks>
+**Lokal**
+- {{COMMAND_1}}
+- {{RESULT_1}}
+- {{OPTIONAL_NOTE}}
 
-## Risk Assessment
-🟢 **Low** / 🟡 **Medium** / 🔴 **High**
-- <1–3 bullets warum>
+## Risiko
+**Risk:** 🟢 Minimal / 🟡 Medium / 🔴 High  
+**Begründung**
+- {{WHY_LOW_OR_MEDIUM_OR_HIGH}}
+- {{WHAT_COULD_GO_WRONG}}
 
 ## Operator How-To
-### Do this
-- <Konkreter Schritt 1>
-- <Konkreter Schritt 2>
+- {{STEP_1}}
+- {{STEP_2}}
+- {{STEP_3}}
 
-### Quick commands (optional)
-- `<cmd>`
-- `<cmd>`
+## Referenzen
+- PR: {{PR_URL}}
+- Commit: {{MERGE_COMMIT_URL_OR_SHA}}
+- Related: {{LINKS_IF_ANY}}
 
-## Follow-Up Tasks (optional)
-- [ ] <konkretes optionales follow-up>
-- [ ] <konkretes optionales follow-up>
+---
 
-## References
-- PR #<NUM> — <title>
-- Related docs: `<path>`, `<path>`
-
-## Extended Notes (optional)
-Nur ausfüllen, wenn nötig (Risk != 🟢, Live/Governance/CI-Behavior, viele Module betroffen):
-- <Edge cases / Rollback / Operator warnings / Migration notes>
+### Extended (optional)
+> Nur bei komplexen/riskanten PRs: Deep-Dive, Rollback, Edge-Cases, Migrationshinweise.

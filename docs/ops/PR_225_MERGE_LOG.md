@@ -1,63 +1,53 @@
-# PR #225 — MERGE LOG
+# MERGE LOG — PR #225 — fix(quarto): make backtest report template no-exec
 
-## Summary
-PR #225 merged: **fix(quarto): make backtest report template no-exec**
+**PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/225  
+**Merged:** 2025-12-21  
+**Merge Commit:** 6b01a8d  
+**Branch:** fix/quarto-backtest-report-noexec (deleted)
 
-- PR: #225 — fix(quarto): make backtest report template no-exec
-- Merged commit (main): `6b01a8d`
-- Date: 2025-12-21
-- Merge type: Squash merge
+---
 
-## Motivation / Why
-- Der CI-Check **Render Quarto Smoke Report** war rot (nicht-blockierend), aber als Signal wichtig
-- Ursache: Template enthielt 5 ausführbare Code-Chunks (`{python}`), wodurch der Guard `scripts/ci/check_quarto_no_exec.sh` fehlschlug
-- Operator-Nutzen: Stabiler CI, keine falsch-positiven Failures mehr
+## Zusammenfassung
+- Quarto-Backtest-Report-Template ist jetzt **wirklich "no-exec"** und triggert keine ausführbaren Chunks mehr.
+- Der **Quarto Smoke Report** in CI läuft dadurch stabil durch.
 
-## Changes
-### Added/Updated
-- Geändert: `{python}` → `python` (5 Stellen) – non-executable Chunks für Smoke-Kontext
-- YAML Frontmatter bereits korrekt: `execute.enabled: false`
+## Warum
+- CI/Quarto-Smoke hat executable chunks im Template erkannt und dadurch den Smoke-Check gebrochen.
+- Ziel war: Template bleibt als Beispiel/Report-Layout nutzbar, aber **ohne Code-Ausführung**.
 
-### Touched files
-- `templates/quarto/backtest_report.qmd` — Alle executable Python chunks zu non-executable konvertiert (+5, -6)
+## Änderungen
+**Geändert**
+- `templates/quarto/backtest_report.qmd` — 5 Code-Chunks von `{python}` → `python` umgestellt (nicht-executable), YAML `execute.enabled: false` bleibt gesetzt.
 
-## Verification
-- `quarto render templates/quarto/backtest_report.qmd --to html` ✅
-- CI: Render Quarto Smoke Report — 21s ✅
-- CI: audit — 2m20s ✅
-- CI: tests (3.11) — 4m10s ✅
-- CI: strategy-smoke — 50s ✅
-- CI: CI Health Gate — 42s ✅
-- Notes: Template-only change, keine Code-Logik betroffen
+## Verifikation
+**CI**
+- CI Health Gate — ✅ PASS (42s)
+- Render Quarto Smoke Report — ✅ PASS (21s)
+- audit — ✅ PASS (2m20s)
+- strategy-smoke — ✅ PASS (50s)
+- tests (3.11) — ✅ PASS (4m10s)
 
-## Risk Assessment
-🟢 **Low**
-- Nur Template-Änderung (non-executable display)
-- CI vollständig grün, Quarto Smoke Test jetzt stabil
-- Bei Bedarf kann execute.enabled nach Copy wieder aktiviert werden
+**Lokal**
+- `quarto render templates/quarto/backtest_report.qmd --to html`
+- ✅ Output erstellt: `backtest_report.html`
+- ⚠️ Hinweis: *Unknown meta key "date"* (nicht kritisch)
+
+## Risiko
+**Risk:** 🟢 Minimal  
+**Begründung**
+- Nur Template-Anpassung; kein Einfluss auf Core-Logic oder Trading-Pfade.
+- Änderung reduziert CI-Flakiness / Smoke-Failures statt neue Risiken einzuführen.
 
 ## Operator How-To
-### Do this
-1. Template ist bereits gemerged in main
-2. Zukünftige Backtest-Reports nutzen automatisch das no-exec Template
-3. Falls Code-Execution gewünscht: Nach Copy `execute.enabled: true` setzen
+- Wenn du im Quarto-Template Beispiele ergänzt:
+  - Nutze `python` (plain) statt `{python}`, damit keine ausführbaren Chunks "detektiert" werden.
+  - Lass `execute.enabled: false` im YAML aktiv.
+- Sanity lokal:
+  - `quarto render templates/quarto/backtest_report.qmd --to html`
+- Wenn die Warnung "Unknown meta key date" nervt:
+  - Prüfe YAML-Metadaten oder entferne/normalisiere `date:` (optional, kein Muss).
 
-### Quick commands
-```bash
-# Template lokal testen
-quarto render templates/quarto/backtest_report.qmd --to html
-
-# Guard-Check lokal ausführen
-bash scripts/ci/check_quarto_no_exec.sh
-```
-
-## Follow-Up Tasks
-- [x] CI Quarto Smoke Test stabilisiert
-- [x] Template-Syntax korrigiert
-- [ ] Optional: Weitere Quarto-Templates auf no-exec prüfen (falls vorhanden)
-
-## References
-- PR #225 — fix(quarto): make backtest report template no-exec
-- Related docs: `templates/quarto/backtest_report.qmd`
-- CI Guard: `scripts/ci/check_quarto_no_exec.sh`
-- Merged commit: `6b01a8d`
+## Referenzen
+- PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/225
+- Template: `templates/quarto/backtest_report.qmd`
+- Ops-Docs Standard: `docs/ops/MERGE_LOG_TEMPLATE_COMPACT.md`
