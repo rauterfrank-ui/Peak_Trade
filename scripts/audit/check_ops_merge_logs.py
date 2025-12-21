@@ -35,6 +35,39 @@ class Violation:
         return {"code": self.code, "message": self.message, "severity": self.severity}
 
 
+def check_required_sections(filepath: Path) -> List[str]:
+    """
+    Prüft, welche erforderlichen Sektionen in einem Merge Log fehlen.
+
+    Args:
+        filepath: Pfad zum Merge Log
+
+    Returns:
+        Liste der fehlenden Sektionen (Namen ohne "## " Präfix)
+    """
+    try:
+        content = filepath.read_text()
+    except Exception:
+        return []
+
+    # Deutsche Section-Namen für Tests
+    required_sections = {
+        "Zusammenfassung": "## Zusammenfassung",
+        "Warum": "## Warum",
+        "Änderungen": "## Änderungen",
+        "Verifikation": "## Verifikation",
+        "Risiko": "## Risiko",
+        "Operator How-To": "## Operator How-To",
+    }
+
+    missing = []
+    for name, section_header in required_sections.items():
+        if section_header not in content:
+            missing.append(name)
+
+    return missing
+
+
 def check_merge_log(filepath: Path) -> Tuple[bool, List[Violation]]:
     """
     Überprüft ein einzelnes Merge Log auf Compliance.
