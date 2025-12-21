@@ -291,6 +291,34 @@ bash scripts/quick_pr_merge.sh
 
 ---
 
+## CI Smoke Guard
+
+Peak_Trade enthält einen minimalen Pytest-Smoke-Test, der sicherstellt:
+- Die 4 Ops-Workflow-Scripts existieren
+- Ihre Bash-Syntax korrekt ist (`bash -n` Check)
+- CI-sicher: Bei fehlendem `bash` wird der Test sauber übersprungen
+
+**Wichtig:** Der Test führt die Scripts **nicht aus** – kein `gh`, keine Auth, keine Side-Effects. Nur Syntaxprüfung.
+
+### Lokal ausführen
+
+```bash
+# Targeted Test (nur Workflow-Scripts)
+uv run pytest -q tests/test_ops_workflow_scripts_syntax.py
+
+# Oder im Full-Suite enthalten
+uv run pytest -q
+```
+
+### Geprüfte Scripts
+
+- `scripts/post_merge_workflow_pr203.sh`
+- `scripts/quick_pr_merge.sh`
+- `scripts/post_merge_workflow.sh`
+- `scripts/finalize_workflow_docs_pr.sh`
+
+---
+
 ## Best Practices
 
 ### 1. Immer auf aktuellem main starten
