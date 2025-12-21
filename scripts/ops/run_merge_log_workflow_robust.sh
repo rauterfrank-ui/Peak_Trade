@@ -138,7 +138,7 @@ gh pr view "$PR" --json number,state,mergedAt,title,url | jq .
 
 echo ""
 echo "🚀 Running: create_and_open_merge_log_pr.sh for PR #${PR}..."
-bash scripts/ops/create_and_open_merge_log_pr.sh --pr "$PR" "${MODE_ARGS[@]}"
+bash scripts/ops/create_and_open_merge_log_pr.sh --pr "$PR" ${MODE_ARGS[@]+"${MODE_ARGS[@]}"}
 
 # ─────────────────────────────────────────────────────────────
 # Ultra-Robust PR Detection
