@@ -12,6 +12,7 @@ SCRIPTS = [
     Path("scripts/quick_pr_merge.sh"),
     Path("scripts/post_merge_workflow.sh"),
     Path("scripts/finalize_workflow_docs_pr.sh"),
+    Path("scripts/workflows/pr_merge_with_ops_audit.sh"),
 ]
 
 
