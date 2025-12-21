@@ -666,6 +666,7 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
 * `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`
 * `docs/LIVE_READINESS_CHECKLISTS.md`
 * `docs/LIVE_TESTNET_TRACK_STATUS.md`
+* `docs/ops/WORKFLOW_MERGE_AND_FORMAT_SWEEP.md` – Ops Runbook für Merge + Format-Sweep Workflow
 * Diverse Phasen-Dokumente (`docs/PHASE_XX_*.md`)
 
 **Kernkomponenten (Auszug):**
