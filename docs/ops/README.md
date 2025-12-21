@@ -326,6 +326,7 @@ reports/obs/stage1/
 
 ## Guides
 - Labeling Guide → LABELING_GUIDE.md
+- Workflow Scripts → WORKFLOW_SCRIPTS.md
 
 ## Utilities
 
