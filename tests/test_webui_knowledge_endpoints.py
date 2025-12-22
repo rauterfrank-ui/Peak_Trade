@@ -17,6 +17,18 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 from fastapi.testclient import TestClient
 
+# Check if chromadb is available
+try:
+    import chromadb  # noqa: F401
+
+    CHROMADB_AVAILABLE = True
+except ImportError:
+    CHROMADB_AVAILABLE = False
+
+skip_if_no_chromadb = pytest.mark.skipif(
+    not CHROMADB_AVAILABLE, reason="chromadb not installed (graceful degradation - returns 501)"
+)
+
 
 # =============================================================================
 # Fixtures
@@ -178,6 +190,7 @@ def test_post_snippet_blocked_by_web_write_disabled(client, mock_knowledge_servi
     assert "WebUI write" in data["detail"]["error"]
 
 
+@skip_if_no_chromadb
 def test_post_snippet_success_when_both_flags_enabled(client, mock_knowledge_service):
     """Test POST snippet succeeds when both flags are enabled."""
     os.environ["KNOWLEDGE_READONLY"] = "false"
