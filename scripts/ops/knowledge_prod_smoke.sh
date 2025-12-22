@@ -188,9 +188,11 @@ http_request() {
     curl_args+=(-H "Authorization: Bearer $TOKEN")
   fi
 
-  for header in "${EXTRA_HEADERS[@]}"; do
-    curl_args+=(-H "$header")
-  done
+  if [[ ${#EXTRA_HEADERS[@]} -gt 0 ]]; then
+    for header in "${EXTRA_HEADERS[@]}"; do
+      curl_args+=(-H "$header")
+    done
+  fi
 
   if [[ -n "$body" ]]; then
     curl_args+=(-H "Content-Type: application/json")
