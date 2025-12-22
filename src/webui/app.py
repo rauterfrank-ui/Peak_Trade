@@ -57,6 +57,14 @@ R&D Dashboard (Phase 76/77/78):
 - GET /api/r_and_d/strategies (Aggregation nach Strategy)
 - GET /api/r_and_d/stats (Globale Statistiken)
 
+Knowledge DB (v1.0):
+- GET  /api/knowledge/snippets (Liste Dokumente)
+- POST /api/knowledge/snippets (Dokument hinzufügen - gated)
+- GET  /api/knowledge/strategies (Liste Strategien)
+- POST /api/knowledge/strategies (Strategie hinzufügen - gated)
+- GET  /api/knowledge/search (Semantische Suche)
+- GET  /api/knowledge/stats (Statistiken)
+
 System:
 - GET /api/health (Health-Check)
 """
@@ -74,6 +82,7 @@ from fastapi.templating import Jinja2Templates
 
 logger = logging.getLogger(__name__)
 
+from .knowledge_api import router as knowledge_router
 from .live_track import (
     LiveSessionSummary,
     LiveSessionDetail,
@@ -374,6 +383,9 @@ def create_app() -> FastAPI:
     # Ops Workflows Hub
     set_workflows_config(BASE_DIR, templates)
     app.include_router(workflows_router)
+
+    # Knowledge DB API (v1.0)
+    app.include_router(knowledge_router)
 
     # JSON API Alias für /api/ops/workflows
     @app.get("/api/ops/workflows")
