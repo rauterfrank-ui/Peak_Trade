@@ -147,3 +147,6 @@ mlog-no-web:
 
 mlog-manual:
 	@$(MAKE) mlog PR=$(PR) MODE=manual
+
+deps-sync-check:
+	./scripts/ops/check_requirements_synced_with_uv.sh
