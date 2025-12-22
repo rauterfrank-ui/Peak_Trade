@@ -521,3 +521,5 @@ chmod +x scripts/ops/cleanup_old_inventories.sh
 **Version:** 1.0.0  
 **Letzte Aktualisierung:** 2025-12-21  
 **Maintainer:** Peak_Trade Ops Team
+
+- [PR #246](PR_246_MERGE_LOG.md) — chore(ops): add knowledge deployment drill e2e + fix prod smoke headers (merged 2025-12-22T21:52:11Z)
