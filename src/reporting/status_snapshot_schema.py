@@ -192,17 +192,17 @@ def normalize_status(status: Any) -> str:
 
 def create_default_system_panel() -> PanelSnapshot:
     """
-    Creates a default system panel for when no providers are configured.
+    Creates a default system panel (built-in fallback provider).
 
     Returns:
-        PanelSnapshot with fallback message
+        PanelSnapshot with basic system info
     """
     return PanelSnapshot(
         id="system",
         title="System Status",
-        status="unknown",
+        status="ok",
         details={
-            "message": "No providers configured",
-            "note": "Snapshot builder initialized without panel providers",
+            "message": "Default system panel (no custom providers loaded)",
+            "note": "To add custom panels, create src.live.status_providers.get_live_panel_providers()",
         },
     )
