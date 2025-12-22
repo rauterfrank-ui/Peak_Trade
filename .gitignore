@@ -94,3 +94,5 @@ reports/obs/stage1/*_snapshot.md
 reports/obs/stage1/*trend*.md
 logs/obs/
 logs/launchd/
+venv_pip_check/
+.venv/
