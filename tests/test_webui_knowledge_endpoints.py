@@ -382,8 +382,8 @@ def test_get_stats_includes_env_flags(client, mock_knowledge_service):
 
     assert response.status_code == 200
     data = response.json()
-    assert data["environment"]["KNOWLEDGE_READONLY"] == "true"
-    assert data["environment"]["KNOWLEDGE_WEB_WRITE_ENABLED"] == "false"
+    assert data["environment"]["KNOWLEDGE_READONLY"] is True
+    assert data["environment"]["KNOWLEDGE_WEB_WRITE_ENABLED"] is False
 
 
 # =============================================================================

@@ -82,37 +82,51 @@ class SearchQuery(BaseModel):
 # =============================================================================
 
 
-def require_write_enabled() -> None:
+def _env_bool(name: str, default: bool = False) -> bool:
+    """Parse boolean from environment variable."""
+    v = os.getenv(name)
+    if v is None:
+        return default
+    return v.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def require_write_allowed() -> None:
     """
-    Check if write operations are enabled.
+    Check if Knowledge DB writes are allowed (global panic-lock).
+
+    This function can be used by CLI/scripts and WebUI.
 
     Raises:
         HTTPException(403): If KNOWLEDGE_READONLY=true
-        HTTPException(403): If KNOWLEDGE_WEB_WRITE_ENABLED!=true
     """
-    # Check 1: KNOWLEDGE_READONLY flag
-    readonly = os.environ.get("KNOWLEDGE_READONLY", "false").lower() in (
-        "true",
-        "1",
-        "yes",
-    )
-    if readonly:
+    if _env_bool("KNOWLEDGE_READONLY", default=False):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={
-                "error": "Knowledge DB is in readonly mode",
+                "error": "Knowledge DB is readonly",
                 "message": "Write operations are blocked by KNOWLEDGE_READONLY flag",
                 "solution": "Set KNOWLEDGE_READONLY=false to enable writes",
             },
         )
 
-    # Check 2: KNOWLEDGE_WEB_WRITE_ENABLED flag
-    web_write_enabled = os.environ.get("KNOWLEDGE_WEB_WRITE_ENABLED", "false").lower() in (
-        "true",
-        "1",
-        "yes",
-    )
-    if not web_write_enabled:
+
+def require_webui_write_allowed() -> None:
+    """
+    Check if WebUI write operations are allowed.
+
+    This enforces two-level gating:
+    1. Global readonly check (KNOWLEDGE_READONLY)
+    2. WebUI-specific write access (KNOWLEDGE_WEB_WRITE_ENABLED)
+
+    Raises:
+        HTTPException(403): If KNOWLEDGE_READONLY=true
+        HTTPException(403): If KNOWLEDGE_WEB_WRITE_ENABLED!=true
+    """
+    # First: Check global panic-lock
+    require_write_allowed()
+
+    # Second: Check WebUI-specific write access
+    if not _env_bool("KNOWLEDGE_WEB_WRITE_ENABLED", default=False):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={
@@ -216,7 +230,7 @@ async def create_snippet(snippet: SnippetCreate) -> Dict[str, Any]:
         Created snippet with ID
     """
     # Access control checks
-    require_write_enabled()
+    require_webui_write_allowed()
     require_backend_available()
 
     service = get_knowledge_service()
@@ -318,7 +332,7 @@ async def create_strategy(strategy: StrategyCreate) -> Dict[str, Any]:
         Created strategy with ID
     """
     # Access control checks
-    require_write_enabled()
+    require_webui_write_allowed()
     require_backend_available()
 
     service = get_knowledge_service()
@@ -433,10 +447,10 @@ async def get_stats() -> Dict[str, Any]:
     service = get_knowledge_service()
     stats = service.get_stats()
 
-    # Add environment flags
+    # Add environment flags (as booleans for consistency)
     stats["environment"] = {
-        "KNOWLEDGE_READONLY": os.environ.get("KNOWLEDGE_READONLY", "false"),
-        "KNOWLEDGE_WEB_WRITE_ENABLED": os.environ.get("KNOWLEDGE_WEB_WRITE_ENABLED", "false"),
+        "KNOWLEDGE_READONLY": _env_bool("KNOWLEDGE_READONLY", default=False),
+        "KNOWLEDGE_WEB_WRITE_ENABLED": _env_bool("KNOWLEDGE_WEB_WRITE_ENABLED", default=False),
     }
 
     return stats
