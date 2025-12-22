@@ -401,6 +401,43 @@ pytest tests/ -k "ops" -v
 
 ---
 
+## 🧪 Knowledge DB Ops Scripts
+
+| Script | Zweck | Use Case |
+|--------|-------|----------|
+| `knowledge_smoke_runner.sh` | Manual smoke tests (server restart required) | Lokale Entwicklung |
+| `knowledge_smoke_runner_auto.sh` | Auto smoke tests (all 3 modes) | Lokale Entwicklung, vollständiger Test |
+| `knowledge_prod_smoke.sh` | Remote production smoke tests | Post-Deployment, Staging/Prod, CI/CD |
+
+### knowledge_prod_smoke.sh — Production Deployment Drill
+
+Remote smoke tests gegen live deployments ohne Server-Restart.
+
+**Verwendung:**
+
+```bash
+# Basic
+BASE_URL=https://prod.example.com ./scripts/ops/knowledge_prod_smoke.sh
+
+# With auth
+./scripts/ops/knowledge_prod_smoke.sh https://prod.example.com --token "$TOKEN"
+
+# Strict mode
+./scripts/ops/knowledge_prod_smoke.sh https://prod.example.com --strict
+
+# Custom prefix
+./scripts/ops/knowledge_prod_smoke.sh https://prod.example.com --prefix /v1/knowledge
+```
+
+**Exit Codes:**
+- 0 = All checks passed
+- 1 = One or more checks failed
+- 2 = Degraded in strict mode
+
+**Runbook:** [Knowledge Production Deployment Drill](../runbooks/KNOWLEDGE_PRODUCTION_DEPLOYMENT_DRILL.md)
+
+---
+
 ## 📋 Merge Logs
 
 - [PR #237](PR_237_MERGE_LOG.md) — chore(ops): add shared bash run helpers (strict/robust) (merged 2025-12-21)
