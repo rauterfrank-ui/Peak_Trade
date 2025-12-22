@@ -20,11 +20,15 @@ Usage:
         "What strategy should I use for a ranging market?",
         top_k=3
     )
+
+Readonly Mode:
+    Set KNOWLEDGE_READONLY=true in environment to block add_documents and clear operations.
+    Query operations remain available.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
 import logging
-from .vector_db import VectorDBInterface
+from .vector_db import VectorDBInterface, ReadonlyModeError, _check_readonly
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +76,11 @@ accurately and provide actionable insights."""
             documents: List of document texts
             metadatas: Optional metadata for each document
             ids: Optional IDs for each document
+
+        Raises:
+            ReadonlyModeError: If KNOWLEDGE_READONLY is enabled
         """
+        _check_readonly()
         self.vector_db.add_documents(documents=documents, metadatas=metadatas, ids=ids)
         logger.info(f"Added {len(documents)} documents to knowledge base")
 
@@ -201,7 +209,13 @@ accurately and provide actionable insights."""
         return response
 
     def clear_knowledge_base(self) -> None:
-        """Clear all documents from the knowledge base."""
+        """
+        Clear all documents from the knowledge base.
+
+        Raises:
+            ReadonlyModeError: If KNOWLEDGE_READONLY is enabled
+        """
+        _check_readonly()
         self.vector_db.clear()
         logger.info("Cleared knowledge base")
 

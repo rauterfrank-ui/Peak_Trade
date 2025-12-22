@@ -22,13 +22,34 @@ Usage:
 
     # Search
     results = db.search("What is the best momentum strategy?", top_k=5)
+
+Readonly Mode:
+    Set KNOWLEDGE_READONLY=true in environment to block all write operations.
+    Read operations (search) remain available.
 """
 
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 import logging
+import os
 
 logger = logging.getLogger(__name__)
+
+
+class ReadonlyModeError(Exception):
+    """Raised when write operation is attempted in readonly mode."""
+
+    pass
+
+
+def _check_readonly() -> None:
+    """Check if Knowledge DB is in readonly mode and raise if true."""
+    readonly = os.environ.get("KNOWLEDGE_READONLY", "false").lower() in ("true", "1", "yes")
+    if readonly:
+        raise ReadonlyModeError(
+            "Knowledge DB is in READONLY mode. Write operations are blocked. "
+            "Set KNOWLEDGE_READONLY=false to enable writes."
+        )
 
 
 class VectorDBInterface(ABC):
@@ -98,6 +119,7 @@ class ChromaDBAdapter(VectorDBInterface):
         ids: Optional[List[str]] = None,
     ) -> None:
         """Add documents to ChromaDB."""
+        _check_readonly()
         if ids is None:
             ids = [f"doc_{i}" for i in range(len(documents))]
 
@@ -122,11 +144,13 @@ class ChromaDBAdapter(VectorDBInterface):
 
     def delete(self, ids: List[str]) -> None:
         """Delete documents from ChromaDB."""
+        _check_readonly()
         self.collection.delete(ids=ids)
         logger.info(f"Deleted {len(ids)} documents from ChromaDB")
 
     def clear(self) -> None:
         """Clear all documents from ChromaDB."""
+        _check_readonly()
         self.client.delete_collection(name=self.collection_name)
         self.collection = self.client.create_collection(name=self.collection_name)
         logger.info("Cleared ChromaDB collection")
@@ -177,6 +201,7 @@ class QdrantAdapter(VectorDBInterface):
         ids: Optional[List[str]] = None,
     ) -> None:
         """Add documents to Qdrant (requires embedding function)."""
+        _check_readonly()
         raise NotImplementedError(
             "Qdrant adapter requires custom embedding function. Use ChromaDB for simplicity."
         )
@@ -191,6 +216,7 @@ class QdrantAdapter(VectorDBInterface):
 
     def delete(self, ids: List[str]) -> None:
         """Delete documents from Qdrant."""
+        _check_readonly()
         from qdrant_client.models import PointIdsList
 
         self.client.delete(collection_name=self.collection_name, points_selector=PointIdsList(ids))
@@ -198,6 +224,7 @@ class QdrantAdapter(VectorDBInterface):
 
     def clear(self) -> None:
         """Clear all documents from Qdrant."""
+        _check_readonly()
         self.client.delete_collection(collection_name=self.collection_name)
         logger.info("Cleared Qdrant collection")
 
@@ -245,6 +272,7 @@ class PineconeAdapter(VectorDBInterface):
         ids: Optional[List[str]] = None,
     ) -> None:
         """Add documents to Pinecone (requires embedding function)."""
+        _check_readonly()
         raise NotImplementedError(
             "Pinecone adapter requires custom embedding function. Use ChromaDB for simplicity."
         )
@@ -259,11 +287,13 @@ class PineconeAdapter(VectorDBInterface):
 
     def delete(self, ids: List[str]) -> None:
         """Delete documents from Pinecone."""
+        _check_readonly()
         self.index.delete(ids=ids)
         logger.info(f"Deleted {len(ids)} documents from Pinecone")
 
     def clear(self) -> None:
         """Clear all documents from Pinecone."""
+        _check_readonly()
         self.index.delete(delete_all=True)
         logger.info("Cleared Pinecone index")
 
