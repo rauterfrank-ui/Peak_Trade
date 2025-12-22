@@ -38,6 +38,7 @@ from src.knowledge.vector_db import (
 from src.knowledge.timeseries_db import (
     TimeSeriesDBInterface,
     ParquetAdapter,
+    ReadonlyModeError as TimeSeriesReadonlyModeError,
 )
 from src.knowledge.rag import RAGPipeline
 
@@ -232,7 +233,7 @@ def test_parquet_write_ticks_blocked_in_readonly(parquet_db):
         }
     )
 
-    with pytest.raises(ReadonlyModeError, match="READONLY mode"):
+    with pytest.raises(TimeSeriesReadonlyModeError, match="READONLY mode"):
         parquet_db.write_ticks("BTC/USD", df)
 
 
@@ -250,7 +251,7 @@ def test_parquet_write_portfolio_blocked_in_readonly(parquet_db):
         }
     )
 
-    with pytest.raises(ReadonlyModeError, match="READONLY mode"):
+    with pytest.raises(TimeSeriesReadonlyModeError, match="READONLY mode"):
         parquet_db.write_portfolio_history(df)
 
 
