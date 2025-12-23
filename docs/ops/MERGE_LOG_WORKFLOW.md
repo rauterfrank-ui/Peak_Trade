@@ -5,7 +5,87 @@
 
 ---
 
-## 📋 Workflow-Schritte
+## ⚡ Quick Start — One-Block Workflow
+
+Für erfahrene Operators: Kompletter Workflow in einem Block.
+
+**Du editierst nur zwei Variablen:** `PR` und `TOPIC`
+
+```bash
+set -euo pipefail
+cd ~/Peak_Trade
+
+# ========================================
+# EDIT THESE TWO VARIABLES
+# ========================================
+PR=261
+TOPIC="stash triage helper"
+# ========================================
+
+git checkout main
+git pull --ff-only
+git checkout -b "docs/merge-log-$PR"
+
+cat > "docs/ops/PR_${PR}_MERGE_LOG.md" <<EOF
+# PR #${PR} — Merge Log
+
+## Summary
+PR #${PR} wurde gemerged. Thema: ${TOPIC}.
+
+- Squash-Commit: **<hash>**
+- Änderungen: **N Dateien**, **+X / -Y**
+- Ziel: <kurze-beschreibung>
+
+## Why
+- Warum diese Änderung notwendig ist.
+- Problem X wurde gelöst.
+
+## Changes
+### New
+- \`<file>\` — <beschreibung>
+
+### Updated
+- \`<file>\` — <beschreibung>
+
+## Verification
+### CI (X/Y passed)
+- ✅ <check-name>
+
+### Post-Merge Checks (lokal)
+- \`<command>\` ✅
+
+## Risk
+<Niedrig|Mittel|Hoch>.
+- Einschätzung + Mitigations.
+
+## Operator How-To
+\\\`\\\`\\\`bash
+# wichtigste Operator-Kommandos
+\\\`\\\`\\\`
+
+## References
+- PR: #${PR}
+- Commit: <hash>
+EOF
+
+# README-Link setzen (öffnet Editor; alternativ automatisieren mit sed/rg)
+\${EDITOR:-vi} docs/ops/README.md
+
+git add "docs/ops/PR_${PR}_MERGE_LOG.md" docs/ops/README.md
+git commit -m "docs(ops): add compact merge log for PR #${PR}"
+git push -u origin "docs/merge-log-$PR"
+
+gh pr create \
+  --title "docs(ops): add merge log for PR #${PR} (${TOPIC})" \
+  --body "Adds compact merge log for PR #${PR} and links it from ops README." \
+  --label ops
+```
+
+**Hinweis:** Die generierte Datei ist ein Minimal-Template. Für vollständige Merge-Logs siehe detaillierte Workflow-Schritte unten.
+
+---
+
+## 📋 Workflow-Schritte (detailliert)
 
 ### 1) Datei anlegen (kompakt)
 
