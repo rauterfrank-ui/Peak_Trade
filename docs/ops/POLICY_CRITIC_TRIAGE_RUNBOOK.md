@@ -362,6 +362,10 @@ gh issue create \
 
 ## Safety Fix: False-Positives reduzieren, ohne Safety zu verlieren
 
+> **⚡ Status:** ✅ **Implemented** (CI-Guardrail aktiv)  
+> **Implementation:** `scripts/ops/verify_format_only_pr.sh` + GitHub Actions `format-only-verifier` job  
+> **Siehe:** [ops README – Format-Only Guardrail](README.md#format-only-guardrail-ci-implementation)
+
 **Problem:** Wenn Policy Critic bei *format-only* PRs (Black/Ruff) blockiert, entsteht schnell *Bypass-Kultur* (`--admin`) und damit sinkt die reale Sicherheitswirkung des Critic.
 
 **Ziel:** Schneller Merge für echte Format-PRs **ohne** den Safety-Layer zu entwerten.
