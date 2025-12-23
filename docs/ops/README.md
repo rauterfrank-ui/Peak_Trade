@@ -16,6 +16,10 @@ scripts/ops/ops_center.sh doctor
 scripts/ops/ops_center.sh merge-log
 ```
 
+### PR Full Workflow Runbook
+
+Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation steht jetzt ein detailliertes Runbook zur Verfügung. Siehe [PR_FULL_WORKFLOW_RUNBOOK.md](PR_FULL_WORKFLOW_RUNBOOK.md) im gleichen Verzeichnis.
+
 **Commands:**
 - `status` — Repository-Status (git + gh)
 - `pr <NUM>` — PR reviewen (safe, kein Merge)
