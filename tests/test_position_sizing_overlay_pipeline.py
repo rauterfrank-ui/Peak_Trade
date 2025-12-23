@@ -49,9 +49,9 @@ def test_no_overlays_behaves_like_base():
         composite_units = composite.get_target_position(signal, price, equity)
 
         assert base_units == expected, f"Base-Sizer falsch: {base_units} != {expected}"
-        assert composite_units == expected, (
-            f"Composite-Sizer falsch: {composite_units} != {expected}"
-        )
+        assert (
+            composite_units == expected
+        ), f"Composite-Sizer falsch: {composite_units} != {expected}"
         assert base_units == composite_units, "Composite weicht von Base ab ohne Overlays!"
 
 
@@ -445,9 +445,9 @@ def test_composite_with_multiple_overlays():
 
     expected = 10.0 * 0.5 * 0.8  # = 4.0
 
-    assert abs(final_units - expected) < 1e-6, (
-        f"Sequenzielle Overlays falsch: {final_units} != {expected}"
-    )
+    assert (
+        abs(final_units - expected) < 1e-6
+    ), f"Sequenzielle Overlays falsch: {final_units} != {expected}"
 
 
 # ============================================================================
@@ -520,9 +520,9 @@ def test_vol_regime_overlay_warmup():
         )
 
         # Während Warmup: scaled_units == base_units
-        assert scaled_units == base_units, (
-            f"Warmup-Phase verletzt: Bar {i}, scaled_units={scaled_units} != {base_units}"
-        )
+        assert (
+            scaled_units == base_units
+        ), f"Warmup-Phase verletzt: Bar {i}, scaled_units={scaled_units} != {base_units}"
 
     # Nach Warmup (Bar 22+): scale kann != 1 sein
     # (Aber braucht regime_lookback für Regime-Klassifizierung, also defaulted zu mid-regime)
@@ -589,9 +589,9 @@ def test_dd_throttle():
     print(f"Base units: {base_units}")
     print(f"Units with DD (15%): {units_with_dd:.4f}")
 
-    assert units_with_dd < base_units, (
-        f"DD-Throttle funktioniert nicht: units_with_dd ({units_with_dd:.4f}) >= base_units ({base_units})"
-    )
+    assert (
+        units_with_dd < base_units
+    ), f"DD-Throttle funktioniert nicht: units_with_dd ({units_with_dd:.4f}) >= base_units ({base_units})"
 
     # Genauere Berechnung:
     # dd = 15%, dd_soft_start=10%, max_dd=25%
@@ -601,9 +601,9 @@ def test_dd_throttle():
     # units = 10 * 0.50 = 5.0
 
     expected_units_approx = 10.0 * 0.75 * 0.667  # ~ 5.0
-    assert abs(units_with_dd - expected_units_approx) < 1.0, (
-        f"DD-Throttle-Berechnung falsch: {units_with_dd:.4f} != {expected_units_approx:.4f} (approx)"
-    )
+    assert (
+        abs(units_with_dd - expected_units_approx) < 1.0
+    ), f"DD-Throttle-Berechnung falsch: {units_with_dd:.4f} != {expected_units_approx:.4f} (approx)"
 
 
 # ============================================================================

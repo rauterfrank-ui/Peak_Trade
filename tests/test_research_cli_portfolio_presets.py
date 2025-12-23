@@ -381,9 +381,9 @@ def test_phase53_all_new_recipes_exist():
         assert recipe_key in recipes, f"Rezept {recipe_key} nicht gefunden"
         recipe = recipes[recipe_key]
         assert recipe.strategies is not None, f"Rezept {recipe_key} hat keine strategies"
-        assert len(recipe.strategies) == len(recipe.weights), (
-            f"Rezept {recipe_key}: weights Länge stimmt nicht"
-        )
+        assert len(recipe.strategies) == len(
+            recipe.weights
+        ), f"Rezept {recipe_key}: weights Länge stimmt nicht"
         assert recipe.risk_profile in [
             "conservative",
             "moderate",

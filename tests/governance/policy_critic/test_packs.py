@@ -288,9 +288,9 @@ class TestPackAwareCritic:
             result = critic.review(input_data)
 
             # Invariant: live unlock always blocks
-            assert result.max_severity == Severity.BLOCK, (
-                f"Pack {pack_id} failed to block live unlock"
-            )
+            assert (
+                result.max_severity == Severity.BLOCK
+            ), f"Pack {pack_id} failed to block live unlock"
             assert result.recommended_action == RecommendedAction.AUTO_APPLY_DENY
 
     def test_result_includes_pack_metadata(self):
