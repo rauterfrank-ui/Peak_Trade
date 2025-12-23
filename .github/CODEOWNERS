@@ -1,8 +1,8 @@
 # Peak Trade CODEOWNERS
-# 
+#
 # ⚠️ ACTION REQUIRED: Replace placeholder team handles below with actual GitHub usernames or team names
 # Format: @username or @org/team-name
-# 
+#
 # This file defines code ownership for critical paths in the repository.
 # Changes to these paths will require review from designated code owners.
 #
@@ -11,25 +11,25 @@
 
 # Governance and Policy Rules
 # Critical: Trading policies, risk rules, compliance checks
-/src/governance/ @rauterfrank-ui/governance-reviewers
+/src/governance/ @rauterfrank-ui
 
 # Risk Management
 # Critical: Risk models, position sizing, drawdown protection
-/src/risk/ @rauterfrank-ui/risk-reviewers
+/src/risk/ @rauterfrank-ui
 
 # Live Trading
 # Critical: Real money execution, live strategy deployment
-/src/live/ @rauterfrank-ui/live-trading-reviewers
+/src/live/ @rauterfrank-ui
 
 # Execution Engine
 # Critical: Order execution, exchange integration
-/src/execution/ @rauterfrank-ui/execution-reviewers
+/src/execution/ @rauterfrank-ui
 
 # Operations Scripts
 # Critical: Production operations, deployment, live system management
-/scripts/ops/ @rauterfrank-ui/ops-reviewers
+/scripts/ops/ @rauterfrank-ui
 
 # Note: Replace the team handles above with actual GitHub teams or individual usernames
 # Example:
-#   @rauterfrank-ui/governance-reviewers  ->  @username1 @username2
+#   @rauterfrank-ui  ->  @username1 @username2
 #   or use GitHub teams if they exist
