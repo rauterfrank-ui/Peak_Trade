@@ -106,6 +106,40 @@ PR=259 ./scripts/ops/pr_review_merge_workflow_template.sh
 
 ---
 
+## 📝 PR Description Templates
+
+Kompakte, operator-zentrierte PR-Beschreibungs-Skeletons für Copy/Paste in GitHub.
+
+### Quick Start
+
+```bash
+# Copy/Paste direkt in GitHub PR Description
+cat docs/ops/PR_DESCRIPTION_SKELETONS.md
+
+# gh CLI mit Skeleton A (Code PR)
+gh pr create --title "feat: ..." --body-file <(sed -n '/^## Skeleton A/,/^## Skeleton B/p' docs/ops/PR_DESCRIPTION_SKELETONS.md | tail -n +3)
+```
+
+### Verfügbare Skeletons
+
+| Skeleton | Use Case | Key Sections |
+|----------|----------|--------------|
+| **A: Feature/Code PR** | Core, Strategies, Execution, Risk, Governance | Safety/Governance + Verification + Risk + Rollback + Operator How-To |
+| **B: Docs/Ops PR** | Runbooks, Tooling-Docs, Merge-Logs | Reader Impact + Verification (Links/Commands) |
+
+### Features
+
+- ✅ Direkt als GitHub PR Description nutzbar
+- ✅ Kompakt, operator-zentriert, keine Floskeln
+- ✅ Safety/Governance-Checklisten (Policy Critic, Guardrails)
+- ✅ Verification Gates (CI + Local Commands)
+- ✅ Risk Assessment + Rollback Plan
+- ✅ Operator How-To für neue Workflows
+
+**Vollständige Dokumentation:** [PR_DESCRIPTION_SKELETONS.md](PR_DESCRIPTION_SKELETONS.md) ⭐
+
+---
+
 ## 📋 Übersicht – PR Tools
 
 | Skript | Zweck | Output | Network | Safe Default |
@@ -806,3 +840,171 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 
 ## 📋 Merge Logs → Workflow
 - PR #262 — Merge Log (meta: merge-log workflow standard): `PR_262_MERGE_LOG.md`
+
+---
+
+<!-- OPS_MERGE_BOTH_PRS_FAIL_FAST -->
+## 🔀 Merge Both PRs (DOCS → FEATURE) — Fail-Fast Helper
+
+**Script:** `scripts/ops/merge_both_prs.sh`
+
+### What it does (safe-by-default)
+
+✅ **Fail-Fast Checks:**
+- `state == OPEN` (nicht CLOSED/MERGED)
+- `isDraft == false` (blockiert Draft-PRs)
+- `baseRefName == BASE_BRANCH` (z.B. main)
+- `mergeable == MERGEABLE` (keine Konflikte)
+- `reviewDecision == APPROVED` (optional, `REQUIRE_APPROVAL=true`)
+
+✅ **Workflow:**
+1. Watch CI für DOCS PR (`gh pr checks --watch`)
+2. Merge DOCS PR (squash + delete-branch)
+3. Update local main
+4. Watch CI für FEATURE PR
+5. Merge FEATURE PR (squash + delete-branch)
+6. Update local main
+7. Post-merge sanity: `python -m pytest -q`
+
+✅ **Safety:**
+- Working tree muss clean sein (keine uncommitted changes)
+- Mergeable-Retry-Logic (GitHub API kann "UNKNOWN" zurückgeben)
+- gh auth status check vor Start
+- DRY_RUN mode für Testing
+
+### Usage
+
+```bash
+# Standard (alle Defaults)
+DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+
+# DRY_RUN (nur Checks, kein Merge)
+DRY_RUN=true DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+
+# Ohne Approval-Check (für persönliche Repos)
+REQUIRE_APPROVAL=false DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+
+<!-- BEGIN MERGE_BOTH_PRS_DRYRUN_WORKFLOW -->
+
+### Workflow: DRY_RUN → Real Merge
+
+```bash
+# Step 1: Test erst (DRY_RUN)
+DRY_RUN=true DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+
+# Falls Output: "✅ Done. Both PRs processed."
+# → Alle Checks grün!
+
+# Step 2: Echtes Merge
+DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+```
+
+**Warum DRY_RUN?**
+- ✅ Testet alle Fail-Fast-Checks (state, draft, base, mergeable, reviewDecision)
+- ✅ Kein Merge, keine Git-State-Changes
+- ✅ Safe-by-default Testing vor echtem Merge
+
+<!-- END MERGE_BOTH_PRS_DRYRUN_WORKFLOW -->
+
+# Custom Base-Branch
+BASE_BRANCH=feat/my-branch DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+
+# Ohne CI-Watch (wenn schon grün)
+WATCH_CHECKS=false DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+```
+
+### Configuration Knobs
+
+| Env-Var | Default | Beschreibung |
+|---------|---------|--------------|
+| `REQUIRE_APPROVAL` | `true` | Erfordert `reviewDecision=APPROVED` |
+| `FAIL_ON_DRAFT` | `true` | Aborted wenn PR ein Draft ist |
+| `BASE_BRANCH` | `main` | Erwarteter Target-Branch |
+| `MERGE_METHOD` | `squash` | `squash` / `merge` / `rebase` |
+| `DELETE_BRANCH` | `true` | Löscht Branch nach Merge |
+| `WATCH_CHECKS` | `true` | Watched CI vor Merge |
+| `UPDATE_MAIN` | `true` | Updated local main nach Merge |
+| `RUN_PYTEST` | `true` | Führt pytest nach Merges aus |
+| `DRY_RUN` | `false` | Nur Checks, kein Merge |
+
+### Error Scenarios
+
+**PR not mergeable:**
+```bash
+ERROR: PR #123 is not mergeable (mergeable=CONFLICTING). Resolve conflicts / rebase.
+```
+
+**Fix:** Rebase auf main, Konflikte lösen, force-push
+
+**PR not approved:**
+```bash
+ERROR: PR #123 not approved (reviewDecision=null). Get approval or set REQUIRE_APPROVAL=false.
+```
+
+**Fix:** `gh pr review 123 --approve` oder `REQUIRE_APPROVAL=false` Override
+
+**Working tree dirty:**
+```bash
+ERROR: Working tree not clean. Commit/stash first.
+```
+
+**Fix:** `git stash push -u -m "temp"` oder commit changes
+
+### Best Practices
+
+1. **DRY_RUN erst:** Test Checks ohne Merge
+   ```bash
+   DRY_RUN=true DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+   ```
+
+2. **CI manuell prüfen:** Falls CI schon grün → `WATCH_CHECKS=false` (schneller)
+
+3. **Approval-Workflow:** Self-approve als Maintainer
+   ```bash
+   gh pr review 123 --approve
+   gh pr review 124 --approve
+   DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+   ```
+
+**Related:**
+- Split Mixed PRs: `scripts/ops/split_mixed_pr.sh`
+- Generate PR Bodies: `scripts/ops/generate_pr_bodies.sh`
+- PR Management Toolkit: [PR_MANAGEMENT_TOOLKIT.md](PR_MANAGEMENT_TOOLKIT.md)
+
+<!-- MERGE_BOTH_PRS_QUICK_REFERENCE -->
+### Quick Reference
+
+**Cheat-Sheet:** [MERGE_BOTH_PRS_CHEATSHEET.md](pr_bodies/MERGE_BOTH_PRS_CHEATSHEET.md) ⭐
+
+```bash
+# Standard
+DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+
+# DRY_RUN
+DRY_RUN=true DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+
+# Personal Repo
+REQUIRE_APPROVAL=false DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+
+<!-- BEGIN MERGE_BOTH_PRS_DRYRUN_WORKFLOW -->
+
+### Workflow: DRY_RUN → Real Merge
+
+```bash
+# Step 1: Test erst (DRY_RUN)
+DRY_RUN=true DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+
+# Falls Output: "✅ Done. Both PRs processed."
+# → Alle Checks grün!
+
+# Step 2: Echtes Merge
+DOCS_PR=123 FEAT_PR=124 ./scripts/ops/merge_both_prs.sh
+```
+
+**Warum DRY_RUN?**
+- ✅ Testet alle Fail-Fast-Checks (state, draft, base, mergeable, reviewDecision)
+- ✅ Kein Merge, keine Git-State-Changes
+- ✅ Safe-by-default Testing vor echtem Merge
+
+<!-- END MERGE_BOTH_PRS_DRYRUN_WORKFLOW -->
+```
