@@ -20,6 +20,8 @@ on:
       - 'scripts/**/*.py'
       - 'pyproject.toml'
       - '.github/workflows/lint.yml'
+  merge_group:
+    branches: [main]
 
 jobs:
   lint:

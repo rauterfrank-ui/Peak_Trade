@@ -10,6 +10,8 @@ on:
     paths:
       - ".gitignore"
       - "reports/**"
+  merge_group:
+    branches: ["main"]
 
 jobs:
   guard-reports-ignored:
