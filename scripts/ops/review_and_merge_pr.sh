@@ -105,8 +105,8 @@ gh pr view "$PR" --json number,title,author,labels,baseRefName,headRefName,merge
   --jq '{number,title,author:.author.login,base:.baseRefName,head:.headRefName,mergeable,reviewDecision,labels:[.labels[].name]}' | cat
 echo ""
 
-ok "Diff stat:"
-gh pr diff "$PR" --stat
+ok "Diff files:"
+gh pr diff "$PR" --name-only
 echo ""
 
 # Hard guard (only blocks when actually merging): GitHub-side mergeability
