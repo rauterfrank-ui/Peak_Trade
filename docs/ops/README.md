@@ -4,6 +4,31 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 
 ---
 
+## 🎯 Ops Operator Center – Zentraler Einstiegspunkt
+
+**Ein Command für alle Operator-Workflows.**
+
+```bash
+# Quick Start
+scripts/ops/ops_center.sh status
+scripts/ops/ops_center.sh pr 263
+scripts/ops/ops_center.sh doctor
+scripts/ops/ops_center.sh merge-log
+```
+
+**Commands:**
+- `status` — Repository-Status (git + gh)
+- `pr <NUM>` — PR reviewen (safe, kein Merge)
+- `doctor` — Health-Checks
+- `merge-log` — Merge-Log Quick Reference
+- `help` — Hilfe
+
+**Dokumentation:** [OPS_OPERATOR_CENTER.md](OPS_OPERATOR_CENTER.md) ⭐
+
+**Design:** Safe-by-default, robust, konsistent.
+
+---
+
 ## 🏥 Ops Doctor – Repository Health Check
 
 Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON- und Human-Readable-Output.
