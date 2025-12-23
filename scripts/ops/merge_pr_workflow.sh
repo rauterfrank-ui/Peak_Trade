@@ -45,8 +45,8 @@ echo "🔎 PR view..."
 gh pr view "${PR}"
 
 echo ""
-echo "📊 Diff stat..."
-gh pr diff "${PR}" --stat
+echo "📊 Changed files..."
+gh pr diff "${PR}" --name-only
 
 # 4) Watch checks
 echo ""
