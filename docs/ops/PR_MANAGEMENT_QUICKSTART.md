@@ -198,3 +198,5 @@ MERGEABLE_RETRIES=10 MERGEABLE_SLEEP_SEC=5 \
 
 **Version:** 1.0.0  
 **Letzte Aktualisierung:** 2025-12-23
+
+<!-- toolkit-smoke: 2025-12-23 -->
