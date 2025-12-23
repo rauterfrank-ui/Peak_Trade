@@ -128,11 +128,13 @@ def main():
     except FileNotFoundError as e:
         print(f"\n❌ FEHLER: {e}")
         print("\nBitte erstelle eine config.toml im Projekt-Root mit:")
-        print("""
+        print(
+            """
 [strategy.breakout_donchian]
 lookback = 20
 price_col = "close"
-        """)
+        """
+        )
         return
 
     # Basis-Config anzeigen

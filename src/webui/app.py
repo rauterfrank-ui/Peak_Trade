@@ -1443,26 +1443,32 @@ def create_app() -> FastAPI:
 
                     trends_summary = {
                         "available": True,
-                        "last_24h": {
-                            "count": len(snapshots_24h),
-                            "worst_severity": rollup_24h.worst_severity
-                            if rollup_24h
-                            else "unknown",
-                            "critical_count": rollup_24h.critical_count if rollup_24h else 0,
-                            "warn_count": rollup_24h.warn_count if rollup_24h else 0,
-                        }
-                        if snapshots_24h
-                        else None,
-                        "last_7d": {
-                            "count": len(snapshots_7d),
-                            "worst_severity": rollup_7d.worst_severity if rollup_7d else "unknown",
-                            "critical_count": rollup_7d.critical_count if rollup_7d else 0,
-                            "warn_count": rollup_7d.warn_count if rollup_7d else 0,
-                            "disk_avg": rollup_7d.disk_avg if rollup_7d else 0.0,
-                            "disk_max": rollup_7d.disk_max if rollup_7d else 0.0,
-                        }
-                        if snapshots_7d
-                        else None,
+                        "last_24h": (
+                            {
+                                "count": len(snapshots_24h),
+                                "worst_severity": (
+                                    rollup_24h.worst_severity if rollup_24h else "unknown"
+                                ),
+                                "critical_count": rollup_24h.critical_count if rollup_24h else 0,
+                                "warn_count": rollup_24h.warn_count if rollup_24h else 0,
+                            }
+                            if snapshots_24h
+                            else None
+                        ),
+                        "last_7d": (
+                            {
+                                "count": len(snapshots_7d),
+                                "worst_severity": (
+                                    rollup_7d.worst_severity if rollup_7d else "unknown"
+                                ),
+                                "critical_count": rollup_7d.critical_count if rollup_7d else 0,
+                                "warn_count": rollup_7d.warn_count if rollup_7d else 0,
+                                "disk_avg": rollup_7d.disk_avg if rollup_7d else 0.0,
+                                "disk_max": rollup_7d.disk_max if rollup_7d else 0.0,
+                            }
+                            if snapshots_7d
+                            else None
+                        ),
                         "last_30d": {
                             "count": len(snapshots_30d),
                             "worst_severity": rollup_30d.worst_severity,
@@ -1597,22 +1603,26 @@ def create_app() -> FastAPI:
                         "max": rollup.parse_error_max,
                     },
                 },
-                "last_24h": {
-                    "snapshots": len(last_24h),
-                    "worst_severity": rollup_24h.worst_severity if rollup_24h else "unknown",
-                    "warn_count": rollup_24h.warn_count if rollup_24h else 0,
-                    "critical_count": rollup_24h.critical_count if rollup_24h else 0,
-                }
-                if last_24h
-                else None,
-                "last_7d": {
-                    "snapshots": len(last_7d),
-                    "worst_severity": rollup_7d.worst_severity if rollup_7d else "unknown",
-                    "warn_count": rollup_7d.warn_count if rollup_7d else 0,
-                    "critical_count": rollup_7d.critical_count if rollup_7d else 0,
-                }
-                if last_7d
-                else None,
+                "last_24h": (
+                    {
+                        "snapshots": len(last_24h),
+                        "worst_severity": rollup_24h.worst_severity if rollup_24h else "unknown",
+                        "warn_count": rollup_24h.warn_count if rollup_24h else 0,
+                        "critical_count": rollup_24h.critical_count if rollup_24h else 0,
+                    }
+                    if last_24h
+                    else None
+                ),
+                "last_7d": (
+                    {
+                        "snapshots": len(last_7d),
+                        "worst_severity": rollup_7d.worst_severity if rollup_7d else "unknown",
+                        "warn_count": rollup_7d.warn_count if rollup_7d else 0,
+                        "critical_count": rollup_7d.critical_count if rollup_7d else 0,
+                    }
+                    if last_7d
+                    else None
+                ),
                 "degradation": degradation,
                 "time_series": time_series,
             }

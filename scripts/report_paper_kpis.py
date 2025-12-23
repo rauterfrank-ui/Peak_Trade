@@ -453,9 +453,9 @@ def main(argv: List[str] | None = None) -> None:
         "total_fees": float(df_kpis["total_fees"].sum()),
         "total_notional": float(df_kpis["total_notional"].sum()),
         "top_strategy": str(df_kpis.iloc[0]["strategy_key"]) if not df_kpis.empty else "n/a",
-        "top_strategy_pnl_net": float(df_kpis.iloc[0]["realized_pnl_net"])
-        if not df_kpis.empty
-        else 0.0,
+        "top_strategy_pnl_net": (
+            float(df_kpis.iloc[0]["realized_pnl_net"]) if not df_kpis.empty else 0.0
+        ),
     }
 
     log_generic_experiment(

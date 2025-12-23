@@ -761,13 +761,13 @@ def log_sweep_run(
         strategy_key=strategy_key,
         symbol=symbol,
         sweep_name=sweep_name,
-        total_return=float(stats.get("total_return"))
-        if stats.get("total_return") is not None
-        else None,
+        total_return=(
+            float(stats.get("total_return")) if stats.get("total_return") is not None else None
+        ),
         cagr=float(stats.get("cagr")) if stats.get("cagr") is not None else None,
-        max_drawdown=float(stats.get("max_drawdown"))
-        if stats.get("max_drawdown") is not None
-        else None,
+        max_drawdown=(
+            float(stats.get("max_drawdown")) if stats.get("max_drawdown") is not None else None
+        ),
         sharpe=float(stats.get("sharpe")) if stats.get("sharpe") is not None else None,
         params_json=json.dumps(params, ensure_ascii=False),
         stats_json=json.dumps(stats, ensure_ascii=False),
@@ -871,16 +871,20 @@ def log_market_scan_result(
         strategy_key=strategy_key,
         symbol=symbol,
         scan_name=scan_name,
-        total_return=float(result_stats.get("total_return"))
-        if result_stats.get("total_return") is not None
-        else None,
+        total_return=(
+            float(result_stats.get("total_return"))
+            if result_stats.get("total_return") is not None
+            else None
+        ),
         cagr=float(result_stats.get("cagr")) if result_stats.get("cagr") is not None else None,
-        max_drawdown=float(result_stats.get("max_drawdown"))
-        if result_stats.get("max_drawdown") is not None
-        else None,
-        sharpe=float(result_stats.get("sharpe"))
-        if result_stats.get("sharpe") is not None
-        else None,
+        max_drawdown=(
+            float(result_stats.get("max_drawdown"))
+            if result_stats.get("max_drawdown") is not None
+            else None
+        ),
+        sharpe=(
+            float(result_stats.get("sharpe")) if result_stats.get("sharpe") is not None else None
+        ),
         params_json=json.dumps({}, ensure_ascii=False),
         stats_json=json.dumps(result_stats, ensure_ascii=False),
         metadata_json=json.dumps(metadata, ensure_ascii=False),
@@ -1056,16 +1060,20 @@ def log_shadow_run(
         timestamp=datetime.utcnow().isoformat(timespec="seconds") + "Z",
         strategy_key=strategy_key,
         symbol=symbol,
-        total_return=float(result_stats.get("total_return"))
-        if result_stats.get("total_return") is not None
-        else None,
+        total_return=(
+            float(result_stats.get("total_return"))
+            if result_stats.get("total_return") is not None
+            else None
+        ),
         cagr=float(result_stats.get("cagr")) if result_stats.get("cagr") is not None else None,
-        max_drawdown=float(result_stats.get("max_drawdown"))
-        if result_stats.get("max_drawdown") is not None
-        else None,
-        sharpe=float(result_stats.get("sharpe"))
-        if result_stats.get("sharpe") is not None
-        else None,
+        max_drawdown=(
+            float(result_stats.get("max_drawdown"))
+            if result_stats.get("max_drawdown") is not None
+            else None
+        ),
+        sharpe=(
+            float(result_stats.get("sharpe")) if result_stats.get("sharpe") is not None else None
+        ),
         params_json=json.dumps({}, ensure_ascii=False),
         stats_json=json.dumps(result_stats, ensure_ascii=False),
         metadata_json=json.dumps(metadata, ensure_ascii=False),

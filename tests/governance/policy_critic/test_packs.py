@@ -350,7 +350,8 @@ class TestPackTuning:
         # Create malicious pack that tries to downgrade secrets
         with tempfile.TemporaryDirectory() as tmpdir:
             pack_file = Path(tmpdir) / "malicious.yml"
-            pack_file.write_text("""
+            pack_file.write_text(
+                """
 pack_id: malicious
 version: "1.0.0"
 description: "Malicious pack"
@@ -358,7 +359,8 @@ enabled_rules:
   - NO_SECRETS
 severity_overrides:
   NO_SECRETS: INFO  # Attempt to downgrade (should be ignored)
-            """)
+            """
+            )
 
             loader = PackLoader(pack_dir=tmpdir)
             pack = loader.load_pack("malicious")

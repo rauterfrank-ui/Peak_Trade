@@ -83,9 +83,9 @@ def build_monte_carlo_report(
         metadata={
             "num_runs": summary.num_runs,
             "method": summary.config.method,
-            "block_size": summary.config.block_size
-            if summary.config.method == "block_bootstrap"
-            else None,
+            "block_size": (
+                summary.config.block_size if summary.config.method == "block_bootstrap" else None
+            ),
             "seed": summary.config.seed,
         },
     )

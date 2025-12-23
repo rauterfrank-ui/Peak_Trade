@@ -384,6 +384,8 @@ def test_phase53_all_new_recipes_exist():
         assert len(recipe.strategies) == len(recipe.weights), (
             f"Rezept {recipe_key}: weights Länge stimmt nicht"
         )
-        assert recipe.risk_profile in ["conservative", "moderate", "aggressive"], (
-            f"Rezept {recipe_key}: ungültiges risk_profile"
-        )
+        assert recipe.risk_profile in [
+            "conservative",
+            "moderate",
+            "aggressive",
+        ], f"Rezept {recipe_key}: ungültiges risk_profile"

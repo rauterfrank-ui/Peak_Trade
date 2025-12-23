@@ -448,7 +448,8 @@ def print_summary_view(summary: Dict[str, Any]) -> None:
     """Druckt Summary-Ansicht."""
     print_header("SUMMARY")
 
-    print(f"""
+    print(
+        f"""
   Strategies:
     Total:        {summary["total_strategies"]}
     Core:         {summary["strategies_by_tier"]["core"]}
@@ -467,7 +468,8 @@ def print_summary_view(summary: Dict[str, Any]) -> None:
     Errors:       {summary["alerts_error"]}
     Warnings:     {summary["alerts_warning"]}
     Info:         {summary["alerts_info"]}
-""")
+"""
+    )
 
 
 def print_full_dashboard(data: DashboardData) -> None:

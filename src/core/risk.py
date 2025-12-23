@@ -241,6 +241,7 @@ def build_risk_manager_from_config(
                 else:
                     return default
             return node
+
     else:
         raise TypeError(f"Unsupported config type: {type(cfg)}")
 

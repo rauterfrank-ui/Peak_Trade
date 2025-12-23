@@ -96,9 +96,7 @@ def test_rnd_overlay_requires_allow_flag():
                 }
             },
         },
-        "research": {
-            "allow_r_and_d_overlays": False  # WICHTIG: False!
-        },
+        "research": {"allow_r_and_d_overlays": False},  # WICHTIG: False!
         "environment": {"mode": "offline_backtest"},
     }
 
@@ -120,9 +118,7 @@ def test_rnd_overlay_works_with_allow_flag():
                 }
             },
         },
-        "research": {
-            "allow_r_and_d_overlays": True  # ✅
-        },
+        "research": {"allow_r_and_d_overlays": True},  # ✅
         "environment": {"mode": "offline_backtest"},
     }
 
@@ -157,9 +153,7 @@ def test_overlay_blocks_in_live():
             },
         },
         "research": {"allow_r_and_d_overlays": True},
-        "environment": {
-            "mode": "live"  # ❌
-        },
+        "environment": {"mode": "live"},  # ❌
     }
 
     with pytest.raises(ValueError, match="NICHT für Live-Trading zugelassen"):
@@ -180,9 +174,7 @@ def test_overlay_allowed_in_offline_backtest():
             },
         },
         "research": {"allow_r_and_d_overlays": True},
-        "environment": {
-            "mode": "offline_backtest"  # ✅
-        },
+        "environment": {"mode": "offline_backtest"},  # ✅
     }
 
     sizer = build_position_sizer_from_config(cfg)
@@ -203,9 +195,7 @@ def test_overlay_allowed_in_research():
             },
         },
         "research": {"allow_r_and_d_overlays": True},
-        "environment": {
-            "mode": "research"  # ✅
-        },
+        "environment": {"mode": "research"},  # ✅
     }
 
     sizer = build_position_sizer_from_config(cfg)

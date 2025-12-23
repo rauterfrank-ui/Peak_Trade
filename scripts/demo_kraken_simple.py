@@ -83,7 +83,8 @@ def main():
     print("=" * 70)
 
     print("\n📝 Verwendung im Code:")
-    print("""
+    print(
+        """
     from src.data import fetch_kraken_data
 
     # Einfach:
@@ -95,7 +96,8 @@ def main():
     pipeline = KrakenDataPipeline()
     df = pipeline.fetch_and_prepare("BTC/USD", "1h", limit=720)
     df_4h = pipeline.fetch_and_resample("BTC/USD", "1h", "4h", limit=1000)
-    """)
+    """
+    )
 
 
 if __name__ == "__main__":
