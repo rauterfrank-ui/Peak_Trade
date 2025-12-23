@@ -560,3 +560,7 @@ chmod +x scripts/ops/cleanup_old_inventories.sh
 **Maintainer:** Peak_Trade Ops Team
 
 - [PR #246](PR_246_MERGE_LOG.md) — chore(ops): add knowledge deployment drill e2e + fix prod smoke headers (merged 2025-12-22T21:52:11Z)
+
+## 🧯 Known CI Issues
+
+- [CI Audit Known Issues](CI_AUDIT_KNOWN_ISSUES.md) — Pre-existing Black formatting issue (non-blocking)
