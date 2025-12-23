@@ -774,3 +774,6 @@ scripts/ops/stash_triage.sh --export-all --drop-after-export --confirm-drop
 **Export-Ablage:** `docs/ops/stash_refs/`
 
 Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automation-Sektion.
+
+## 📋 Merge Logs → Workflow
+- PR #262 — Merge Log (meta: merge-log workflow standard): `PR_262_MERGE_LOG.md`
