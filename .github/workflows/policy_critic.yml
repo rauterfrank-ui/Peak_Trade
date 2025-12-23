@@ -314,6 +314,41 @@ jobs:
           echo "Files to analyze (count: $(echo "${FILES}" | tr ',' '\n' | wc -l)):"
           echo "${FILES}" | tr ',' '\n' | head -20
 
+      - name: Extract justification from PR/commits
+        id: extract_context
+        if: needs.format-only-verifier.outputs.format_only != 'true' && steps.pr_mode.outputs.mode != 'FAIL_TOO_LARGE' && steps.pr_mode.outputs.mode != 'FAIL_SENSITIVE'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Try to extract justification from PR body or commit messages
+          PR_BODY=$(gh pr view ${{ github.event.pull_request.number }} --json body --jq .body || echo "")
+          COMMITS=$(git log --pretty=format:"%B" origin/${{ github.event.pull_request.base.ref }}..${{ github.sha }})
+
+          # Look for RISK_LIMIT_JUSTIFICATION or similar markers
+          JUSTIFICATION=""
+          if echo "$PR_BODY" | grep -q "RISK.*JUSTIFICATION"; then
+            JUSTIFICATION=$(echo "$PR_BODY" | grep -A 10 "RISK.*JUSTIFICATION" | head -20)
+          elif echo "$COMMITS" | grep -q "RISK_LIMIT_JUSTIFICATION:"; then
+            JUSTIFICATION=$(echo "$COMMITS" | grep -A 10 "RISK_LIMIT_JUSTIFICATION:" | head -20)
+          fi
+
+          # Create context.json if justification found
+          if [ -n "$JUSTIFICATION" ]; then
+            echo "Found justification, creating context.json"
+            JUST_JSON=$(echo "$JUSTIFICATION" | jq -Rs .)
+            PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+            PR_NUM="${{ github.event.pull_request.number }}"
+            jq -n \
+              --arg just "$JUSTIFICATION" \
+              --arg author "$PR_AUTHOR" \
+              --arg issue "PR-$PR_NUM" \
+              '{justification: $just, author: $author, related_issue: $issue}' > context.json
+            echo "has_context=true" >> $GITHUB_OUTPUT
+          else
+            echo "No justification found"
+            echo "has_context=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Run Policy Critic
         id: critic
         if: needs.format-only-verifier.outputs.format_only != 'true' && steps.pr_mode.outputs.mode != 'FAIL_TOO_LARGE' && steps.pr_mode.outputs.mode != 'FAIL_SENSITIVE'
@@ -322,11 +357,16 @@ jobs:
         run: |
           set +e  # Don't exit on error - we need to capture exit code
 
+          # Build command with optional context
+          CMD="python3 scripts/run_policy_critic.py --diff-file pr.diff --changed-files \"${{ steps.file_list.outputs.files }}\""
+          if [ -f context.json ]; then
+            echo "Using context.json for justification"
+            CMD="$CMD --context-json context.json"
+          fi
+          CMD="$CMD --json-only"
+
           # Run with stderr visible for debugging
-          python3 scripts/run_policy_critic.py \
-            --diff-file pr.diff \
-            --changed-files "${{ steps.file_list.outputs.files }}" \
-            --json-only > policy_result.json
+          eval "$CMD" > policy_result.json
 
           EXIT_CODE=$?
           echo "exit_code=${EXIT_CODE}" >> $GITHUB_OUTPUT
