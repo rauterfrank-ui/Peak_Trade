@@ -492,3 +492,6 @@ def create_safety_guard(env_config: Optional[EnvironmentConfig] = None) -> Safet
         env_config = create_default_environment()
 
     return SafetyGuard(env_config=env_config)
+
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)

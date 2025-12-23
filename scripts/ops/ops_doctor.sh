@@ -34,3 +34,5 @@ else
     echo "❌ Error: Neither python nor python3 found in PATH" >&2
     exit 1
 fi
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)
