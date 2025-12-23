@@ -41,11 +41,15 @@ repos:
       - id: check-added-large-files
         args: [--maxkb=1024]
 
-  # OPTIONAL (empfohlen): Ruff als pre-commit Hook (Lint + Format).
-  # Wenn du nur EOF-Noise fixen willst: diesen Block einfach auskommentieren.
+  # Ruff for linting (kept)
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.14.10
     hooks:
       - id: ruff-check
         args: [--fix]
-      - id: ruff-format
+
+  # Black for formatting (matches CI audit)
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 24.10.0
+    hooks:
+      - id: black

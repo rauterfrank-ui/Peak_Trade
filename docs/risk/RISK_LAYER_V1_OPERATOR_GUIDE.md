@@ -476,4 +476,3 @@ Bei Fragen:
 1. Check `docs/risk_layer_v1.md` (Technical Guide)
 2. Check Tests in `tests/risk/` (Usage Examples)
 3. Run `pytest tests/risk/ -v` (Smoke-Tests)
-

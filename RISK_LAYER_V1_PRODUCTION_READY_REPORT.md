@@ -414,4 +414,3 @@ print(f"Sharpe: {result.stats['sharpe']:.2f}")
 **Next:** Merge in main + Smoke-Tests + Dokumentation verlinken
 
 🚀 **Risk Layer v1 ist bereit für Production-Backtests!**
-
