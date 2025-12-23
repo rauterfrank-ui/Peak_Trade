@@ -1,5 +1,8 @@
 # Peak Trade CODEOWNERS
 # 
+# ⚠️ ACTION REQUIRED: Replace placeholder team handles below with actual GitHub usernames or team names
+# Format: @username or @org/team-name
+# 
 # This file defines code ownership for critical paths in the repository.
 # Changes to these paths will require review from designated code owners.
 #

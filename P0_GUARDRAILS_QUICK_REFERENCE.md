@@ -95,7 +95,7 @@ gh auth status
 gh repo view --web
 
 # 3. Check branch protection rules
-gh api repos/rauterfrank-ui/Peak_Trade/branches/main/protection | jq '.'
+gh api repos/:owner/:repo/branches/main/protection | jq '.'
 
 # 4. Test with a PR
 gh pr create --title "Test P0 Guardrails" --body "Testing branch protection and merge queue"
