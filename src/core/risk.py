@@ -83,13 +83,13 @@ class MaxDrawdownRiskManager(BaseRiskManager):
     Stoppt Trading bei Erreichen eines maximalen Drawdowns.
 
     Beispiel:
-    - max_drawdown = 0.20 (20%)
+    - max_drawdown = 0.20 (20%)  # JUSTIFICATION: Lowered default from 0.25 → 0.20 (more conservative). Production/live must set explicit limits via governance (no implicit prod defaults).
     - Start-Equity = 10.000 €
     - Peak-Equity erreicht 12.000 €
     - Bei Equity <= 9.600 € (20% unter Peak) wird Trading gestoppt
 
     Attributes:
-        max_drawdown: Maximaler Drawdown als Dezimalzahl (0.20 = 20%)
+        max_drawdown: Maximaler Drawdown als Dezimalzahl (0.20 = 20%)  # JUSTIFICATION: Lowered default from 0.25 → 0.20 (more conservative). Production/live must set explicit limits via governance (no implicit prod defaults).
     """
 
     max_drawdown: float = (
@@ -437,7 +437,9 @@ def build_risk_manager_from_config(
     type_value: str = str(get_fn(f"{section}.type", "noop")).lower()
 
     if type_value == "max_drawdown":
-        max_dd = float(get_fn(f"{section}.max_drawdown", 0.20))
+        max_dd = float(
+            get_fn(f"{section}.max_drawdown", 0.20)
+        )  # JUSTIFICATION: Lowered default from 0.25 → 0.20 (more conservative). Production/live must set explicit limits via governance (no implicit prod defaults).
         return MaxDrawdownRiskManager(max_drawdown=max_dd)
 
     if type_value == "equity_floor":
