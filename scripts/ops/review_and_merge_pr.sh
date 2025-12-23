@@ -181,9 +181,13 @@ fi
 
 is_allowed_fail() {
   local name="$1"
+  local name_lower
   local a
+  local a_lower
+  name_lower="$(echo "$name" | tr '[:upper:]' '[:lower:]')"
   for a in "${ALLOW_FAIL[@]:-}"; do
-    if [ "${a,,}" = "${name,,}" ]; then
+    a_lower="$(echo "$a" | tr '[:upper:]' '[:lower:]')"
+    if [ "$a_lower" = "$name_lower" ]; then
       return 0
     fi
   done
