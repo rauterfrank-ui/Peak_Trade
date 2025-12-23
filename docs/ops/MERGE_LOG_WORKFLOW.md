@@ -98,6 +98,7 @@ gh pr create \
 - **Verification** — CI-Status + Post-Merge Checks
 - **Risk** — Risikoeinschätzung
 - **Operator How-To** — Praxis-Beispiele
+- PR #262 — merge-log workflow standard + template (Meta-Beispiel): `docs/ops/PR_262_MERGE_LOG.md`
 - **Follow-Up Actions** — Optional nächste Schritte
 - **References** — Links zu Policy, Tool, Tests
 
