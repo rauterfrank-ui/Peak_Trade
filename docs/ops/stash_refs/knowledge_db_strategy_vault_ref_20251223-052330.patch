@@ -1,0 +1,390 @@
+diff --git a/src/reporting/live_status_snapshot_builder.py b/src/reporting/live_status_snapshot_builder.py
+index 06542b7..28c4daa 100644
+--- a/src/reporting/live_status_snapshot_builder.py
++++ b/src/reporting/live_status_snapshot_builder.py
+@@ -12,9 +12,14 @@ Design:
+ - Flexible: Providers can return dict/tuple/PanelSnapshot
+
+ Usage:
+-    from src.reporting.live_status_snapshot_builder import build_live_status_snapshot
++    from src.reporting.live_status_snapshot_builder import build_live_status_snapshot_auto
+
+-    # With custom providers
++    # Auto-discovery (recommended)
++    snapshot = build_live_status_snapshot_auto(
++        meta={"config_path": "config/config.toml", "tag": "daily"}
++    )
++
++    # With custom providers (advanced)
+     def get_system_panel():
+         return {"id": "system", "title": "System", "status": "ok", "details": {"health": "OK"}}
+
+@@ -22,9 +27,6 @@ Usage:
+         panel_providers={"system": get_system_panel},
+         meta={"config_path": "config/config.toml", "tag": "daily"}
+     )
+-
+-    # Without providers (fallback)
+-    snapshot = build_live_status_snapshot()  # Returns default system panel
+ """
+
+ from __future__ import annotations
+@@ -63,7 +65,7 @@ PanelProvider = Callable[[], PanelProviderReturn]
+
+
+ def build_live_status_snapshot(
+-    panel_providers: Optional[Dict[str, PanelProvider]] = None,
++    panel_providers: Dict[str, PanelProvider],
+     *,
+     meta: Optional[Dict[str, Any]] = None,
+ ) -> LiveStatusSnapshot:
+@@ -73,7 +75,6 @@ def build_live_status_snapshot(
+     Defensive Implementation:
+     - Each provider is wrapped in try/except
+     - Provider failures result in error panel (no exception propagation)
+-    - No providers -> fallback to default system panel
+
+     Deterministic:
+     - Panels sorted by panel.id
+@@ -81,7 +82,7 @@ def build_live_status_snapshot(
+     - Generated timestamp in UTC ISO format
+
+     Args:
+-        panel_providers: Dict of {panel_id: provider_callable}
++        panel_providers: Dict of {panel_id: provider_callable} (required)
+                         Provider returns dict/tuple/PanelSnapshot
+         meta: Optional metadata dict (e.g., config_path, tag)
+
+@@ -94,17 +95,7 @@ def build_live_status_snapshot(
+     # Normalize meta
+     normalized_meta = normalize_details(meta or {})
+
+-    # No providers -> fallback
+-    if not panel_providers:
+-        logger.debug("No panel providers configured, using default system panel")
+-        return LiveStatusSnapshot(
+-            version="0.1",
+-            generated_at=generated_at,
+-            panels=[create_default_system_panel()],
+-            meta=normalized_meta,
+-        )
+-
+-    # Collect panels
++    # Collect panels (providers should always be provided now)
+     panels: list[PanelSnapshot] = []
+
+     for panel_id, provider in panel_providers.items():
+@@ -217,13 +208,13 @@ def _panel_from_dict(fallback_id: str, data: Dict[str, Any]) -> PanelSnapshot:
+
+
+ # =============================================================================
+-# Optional Live-Track Provider Registry Integration
++# Provider Discovery & Registry Integration
+ # =============================================================================
+
+
+-def _try_load_live_providers() -> Optional[Dict[str, PanelProvider]]:
++def get_auto_panel_providers() -> Optional[Dict[str, PanelProvider]]:
+     """
+-    Best-effort attempt to load panel providers from live-track modules.
++    Auto-discovery: attempts to load panel providers from live-track modules.
+
+     Returns:
+         Dict of {panel_id: provider} if found, else None
+@@ -231,20 +222,37 @@ def _try_load_live_providers() -> Optional[Dict[str, PanelProvider]]:
+     try:
+         # Try importing from live module (if exists)
+         # This is a best-effort import - if the module doesn't exist, we gracefully degrade
+-        from src.live.status_providers import get_default_panel_providers
++        from src.live.status_providers import get_live_panel_providers
+
+-        providers = get_default_panel_providers()
++        providers = get_live_panel_providers()
+         if providers:
+             logger.debug(f"Loaded {len(providers)} panel providers from src.live.status_providers")
+             return providers
+     except ImportError:
+-        logger.debug("No src.live.status_providers module found, using fallback")
++        logger.debug("No src.live.status_providers module found, trying fallback")
+     except Exception as exc:
+         logger.warning(f"Failed to load live providers: {exc}")
+
+     return None
+
+
++def get_default_panel_providers() -> Dict[str, PanelProvider]:
++    """
++    Default fallback: returns minimal built-in panel providers.
++
++    Returns:
++        Dict with at least a system health panel
++    """
++    logger.debug("Using default panel providers (system only)")
++
++    def system_panel() -> PanelSnapshot:
++        return create_default_system_panel()
++
++    return {
++        "system": system_panel,
++    }
++
++
+ def build_live_status_snapshot_auto(
+     *,
+     meta: Optional[Dict[str, Any]] = None,
+@@ -252,7 +260,9 @@ def build_live_status_snapshot_auto(
+     """
+     Builds a live status snapshot with automatic provider discovery.
+
+-    Tries to load providers from live-track modules, falls back to default if not found.
++    Fallback hierarchy:
++    1. Auto-discovery from src.live.status_providers (if exists)
++    2. Default built-in providers (system panel)
+
+     Args:
+         meta: Optional metadata dict
+@@ -260,5 +270,5 @@ def build_live_status_snapshot_auto(
+     Returns:
+         LiveStatusSnapshot
+     """
+-    providers = _try_load_live_providers()
++    providers = get_auto_panel_providers() or get_default_panel_providers()
+     return build_live_status_snapshot(panel_providers=providers, meta=meta)
+diff --git a/src/webui/health_endpoint.py b/src/webui/health_endpoint.py
+index 9be3734..ec9f4ad 100644
+--- a/src/webui/health_endpoint.py
++++ b/src/webui/health_endpoint.py
+@@ -19,10 +19,10 @@ import logging
+ from typing import Dict, Any
+ from datetime import datetime
+ from fastapi import APIRouter, status
+-from fastapi.responses import JSONResponse
++from fastapi.responses import JSONResponse, Response
+
+-from src.core.resilience import health_check
+-from src.core.metrics import metrics
++from core.resilience import health_check
++from core.metrics import metrics
+
+ logger = logging.getLogger(__name__)
+
+@@ -77,34 +77,37 @@ async def health_basic() -> JSONResponse:
+ @router.get("/detailed")
+ async def health_detailed() -> JSONResponse:
+     """
+-    Detailed health check endpoint with diagnostics.
++    Detailed health check endpoint with diagnostics and panel status.
+
+     Returns comprehensive health information including:
+     - Individual check results
+     - System metrics summary
++    - Panel status (alerts, sessions, telemetry, positions, portfolio, risk)
++    - Overall status (ok/degraded/blocked)
+     - Check statistics
+
++    Overall Status Logic:
++    - blocked: If any panel status is "blocked" → 503
++    - degraded: If any panel status is "unknown" or "warning" → 200
++    - ok: All panels ok → 200
++
+     Returns:
+         JSON response with detailed health diagnostics
+
+     Example Response:
+         {
+             "healthy": true,
++            "overall_status": "ok",
+             "timestamp": "2024-12-20T05:47:00.000Z",
+-            "checks": {
+-                "database": {
+-                    "healthy": true,
+-                    "message": "Database is operational",
+-                    "timestamp": "2024-12-20T05:47:00.000Z"
+-                }
++            "panels": {
++                "alerts": {"status": "ok", "message": "380 alerts"},
++                "live_sessions": {"status": "ok", "message": "0 active"}
+             },
++            "checks": {...},
+             "summary": {
+                 "total": 5,
+                 "passed": 5,
+                 "failed": 0
+-            },
+-            "metrics": {
+-                ...
+             }
+         }
+     """
+@@ -112,6 +115,11 @@ async def health_detailed() -> JSONResponse:
+         # Get comprehensive health status
+         health_status = health_check.get_status()
+
++        # Add panel status
++        panel_status = _get_panel_status()
++        health_status["panels"] = panel_status["panels"]
++        health_status["overall_status"] = panel_status["overall_status"]
++
+         # Add metrics summary if available
+         try:
+             metrics_summary = metrics.get_summary()
+@@ -127,16 +135,29 @@ async def health_detailed() -> JSONResponse:
+             "rate_limiters_active": _count_rate_limiters(),
+         }
+
+-        status_code = (
+-            status.HTTP_200_OK if health_status["healthy"] else status.HTTP_503_SERVICE_UNAVAILABLE
+-        )
++        # Determine HTTP status code based on overall_status
++        # blocked → 503, degraded/ok → 200
++        if panel_status["overall_status"] == "blocked":
++            status_code = status.HTTP_503_SERVICE_UNAVAILABLE
++            health_status["healthy"] = False
++        else:
++            # degraded or ok → 200
++            status_code = status.HTTP_200_OK
++            # Keep original healthy status from health_check, but note degradation
++            if panel_status["overall_status"] == "degraded":
++                health_status["degradation_reason"] = "One or more panels are degraded"
+
+         return JSONResponse(content=health_status, status_code=status_code)
+
+     except Exception as e:
+         logger.error(f"Detailed health check failed: {e}", exc_info=True)
+         return JSONResponse(
+-            content={"healthy": False, "error": str(e), "timestamp": get_utc_now().isoformat()},
++            content={
++                "healthy": False,
++                "overall_status": "blocked",
++                "error": str(e),
++                "timestamp": get_utc_now().isoformat(),
++            },
+             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+         )
+
+@@ -182,7 +203,7 @@ async def health_prometheus():
+     try:
+         content, content_type = metrics.export_prometheus()
+
+-        return JSONResponse(
++        return Response(
+             content=content.decode("utf-8") if isinstance(content, bytes) else content,
+             media_type=content_type,
+             status_code=status.HTTP_200_OK,
+@@ -190,23 +211,114 @@ async def health_prometheus():
+
+     except Exception as e:
+         logger.error(f"Failed to export Prometheus metrics: {e}", exc_info=True)
+-        return JSONResponse(
++        return Response(
+             content=f"# Error exporting metrics: {str(e)}\n",
+             media_type="text/plain; charset=utf-8",
+             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+         )
+
+
++def _get_panel_status() -> Dict[str, Any]:
++    """
++    Get status of all panels from status providers.
++
++    Returns:
++        Dict with:
++        - overall_status: ok/degraded/blocked
++        - panels: Dict of panel_id -> {status, message}
++
++    Logic:
++    - blocked: If any panel has status "error" or "blocked"
++    - degraded: If any panel has status "unknown" or "warning"
++    - ok: All panels ok or active
++    """
++    panels_info = {}
++    has_blocked = False
++    has_degraded = False
++
++    try:
++        # Import panel providers
++        from src.live.status_providers import get_live_panel_providers
++
++        providers = get_live_panel_providers()
++
++        for panel_id, provider in providers.items():
++            try:
++                panel_data = provider()
++                panel_status = panel_data.get("status", "unknown")
++                details = panel_data.get("details", {})
++
++                # Extract message from details
++                if isinstance(details, dict):
++                    if "_fallback" in details:
++                        message = details.get("message", "Fallback mode")
++                    elif "total" in details:
++                        message = f"{details['total']} items"
++                    elif "total_sessions" in details:
++                        active = details.get("active_sessions", 0)
++                        total = details.get("total_sessions", 0)
++                        message = f"{active} active / {total} total"
++                    elif "open_positions" in details:
++                        positions = details.get("open_positions", 0)
++                        message = f"{positions} open positions"
++                    elif "status" in details:
++                        message = f"Status: {details['status']}"
++                    else:
++                        message = "OK"
++                else:
++                    message = str(details)
++
++                panels_info[panel_id] = {
++                    "status": panel_status,
++                    "message": message,
++                }
++
++                # Check for blocked/degraded
++                if panel_status in ("error", "blocked"):
++                    has_blocked = True
++                elif panel_status in ("unknown", "warning"):
++                    has_degraded = True
++
++            except Exception as e:
++                logger.warning(f"Error getting panel status for {panel_id}: {e}")
++                panels_info[panel_id] = {
++                    "status": "unknown",
++                    "message": f"Error: {str(e)}",
++                }
++                has_degraded = True
++
++    except Exception as e:
++        logger.error(f"Error loading panel providers: {e}")
++        panels_info["error"] = {
++            "status": "unknown",
++            "message": f"Failed to load panels: {str(e)}",
++        }
++        has_degraded = True
++
++    # Determine overall status
++    if has_blocked:
++        overall_status = "blocked"
++    elif has_degraded:
++        overall_status = "degraded"
++    else:
++        overall_status = "ok"
++
++    return {
++        "overall_status": overall_status,
++        "panels": panels_info,
++    }
++
++
+ def _count_circuit_breakers() -> int:
+     """Count active circuit breakers."""
+-    from ..core.resilience_helpers import get_all_circuit_breakers
++    from core.resilience_helpers import get_all_circuit_breakers
+
+     return len(get_all_circuit_breakers())
+
+
+ def _count_rate_limiters() -> int:
+     """Count active rate limiters."""
+-    from ..core.resilience_helpers import get_all_rate_limiters
++    from core.resilience_helpers import get_all_rate_limiters
+
+     return len(get_all_rate_limiters())
