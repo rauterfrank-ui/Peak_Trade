@@ -5,6 +5,7 @@ on:
     paths:
       - ".gitignore"
       - "reports/**"
+  merge_group:
   push:
     branches: ["main"]
     paths:

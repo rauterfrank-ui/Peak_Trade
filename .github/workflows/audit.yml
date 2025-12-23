@@ -5,6 +5,7 @@ on:
   schedule:
     - cron: "0 6 * * 1"   # Mo 06:00 UTC (Berlin i.d.R. 07:00/08:00)
   pull_request: {}
+  merge_group:
   push:
     branches: [ main ]
 
