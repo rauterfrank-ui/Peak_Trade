@@ -15,6 +15,9 @@ Phase 17: KEINE echten Orders werden implementiert!
 HINWEIS: Safety-Module werden lazy importiert, um zirkuläre
          Abhängigkeiten zu vermeiden. Direkter Import:
          >>> from src.live.safety import SafetyGuard
+
+P0 Guardrails Drill Test: Live trading module changes require review
+This comment verifies that src/live/ changes trigger CODEOWNERS and all required checks.
 """
 
 from .orders import (

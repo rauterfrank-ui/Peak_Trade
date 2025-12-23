@@ -1,4 +1,8 @@
-"""Governance module for feature approval, go/no-go decisions, sanity checks, and policy review."""
+"""Governance module for feature approval, go/no-go decisions, sanity checks, and policy review.
+
+P0 Guardrails Drill Test: CODEOWNERS enforcement
+This comment verifies that changes to src/governance/ trigger required reviews.
+"""
 
 from .go_no_go import (
     GovernanceStatus,

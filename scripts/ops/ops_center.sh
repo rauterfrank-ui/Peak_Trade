@@ -10,6 +10,9 @@
 #   ops_center.sh doctor               Run ops_doctor health checks
 #
 # Safe-by-default: No destructive actions, no merges without explicit flags.
+#
+# P0 Guardrails Drill Test: Ops scripts changes trigger required checks
+# This comment verifies that scripts/ops/ changes require proper validation.
 
 set -euo pipefail
 

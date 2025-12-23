@@ -27,6 +27,9 @@ Phase 16A V2 (Governance-aware):
 
 WICHTIG: Es werden KEINE echten Live-Orders an Boersen gesendet!
          live_order_execution ist governance-seitig gesperrt.
+
+P0 Guardrails Drill Test: Execution module changes trigger policy critic.
+This comment verifies that src/execution/ changes require governance review.
 """
 
 from __future__ import annotations

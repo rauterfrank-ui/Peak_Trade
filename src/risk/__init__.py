@@ -2,6 +2,9 @@
 Peak_Trade Risk Module
 =======================
 Position Sizing, Stop-Loss-Management, Risk-Limits.
+
+P0 Guardrails Drill Test: Risk module changes trigger required checks
+This comment verifies that src/risk/ changes require proper review and testing.
 """
 
 from .position_sizer import (
