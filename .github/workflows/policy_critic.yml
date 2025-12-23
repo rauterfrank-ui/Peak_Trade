@@ -10,6 +10,7 @@ on:
       - 'config/**'
       - 'docs/governance/**'
       - '.github/workflows/policy_critic.yml'
+  merge_group:
 
 permissions:
   contents: read

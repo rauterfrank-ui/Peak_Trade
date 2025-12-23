@@ -1,0 +1,43 @@
+# CODEOWNERS für Peak_Trade
+# Definiert, wer für welche Teile des Codes verantwortlich ist
+# Siehe: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# === Default Owner ===
+# Alle Dateien, die nicht spezifisch zugewiesen sind
+* @rauterfrank-ui
+
+# === Core Infrastructure ===
+/.github/ @rauterfrank-ui
+/docker/ @rauterfrank-ui
+/scripts/ops/ @rauterfrank-ui
+Makefile @rauterfrank-ui
+
+# === Configuration ===
+/config/ @rauterfrank-ui
+pyproject.toml @rauterfrank-ui
+requirements.txt @rauterfrank-ui
+uv.lock @rauterfrank-ui
+
+# === Core Trading Logic ===
+/src/strategies/ @rauterfrank-ui
+/src/execution/ @rauterfrank-ui
+/src/risk/ @rauterfrank-ui
+/src/portfolio/ @rauterfrank-ui
+
+# === Live Trading ===
+/src/live/ @rauterfrank-ui
+/src/orders/ @rauterfrank-ui
+
+# === Governance & Compliance ===
+/src/governance/ @rauterfrank-ui
+/policy_packs/ @rauterfrank-ui
+
+# === Documentation ===
+/docs/ @rauterfrank-ui
+*.md @rauterfrank-ui
+
+# === Tests ===
+/tests/ @rauterfrank-ui
+
+# === CI/CD Workflows ===
+/.github/workflows/ @rauterfrank-ui
