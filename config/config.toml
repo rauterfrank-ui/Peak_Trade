@@ -2,6 +2,7 @@
 # Peak_Trade Konfiguration
 # ============================================================================
 # Stand: Dezember 2024
+# Dry-run: format-only guardrail validation
 # WICHTIG: Keine Secrets hier! API-Keys gehören in .env oder Umgebungsvariablen
 # ============================================================================
 
