@@ -26,9 +26,10 @@ def test_install_shortcuts_dry_run():
     )
 
     # Exit code 0 (success) or 1 (no Desktop dir on non-macOS) is acceptable for dry-run
-    assert result.returncode in [0, 1], (
-        f"Unexpected exit code: {result.returncode}\n{result.stderr}"
-    )
+    assert result.returncode in [
+        0,
+        1,
+    ], f"Unexpected exit code: {result.returncode}\n{result.stderr}"
 
     if result.returncode == 0:
         assert "Would create:" in result.stdout, "Dry run should show what would be created"

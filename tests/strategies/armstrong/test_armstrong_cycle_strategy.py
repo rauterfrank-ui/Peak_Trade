@@ -317,9 +317,9 @@ class TestSignalGenerationWithDifferentConfigs:
         # Research-stub mode: only flat signals (0) for safety
         # Real signal generation is disabled until explicitly approved
         unique_values = set(signals.unique())
-        assert unique_values == {0}, (
-            f"Expected only flat signals in research-stub mode, got {unique_values}"
-        )
+        assert unique_values == {
+            0
+        }, f"Expected only flat signals in research-stub mode, got {unique_values}"
         assert signals.attrs["is_research_stub"] is True
 
     def test_conservative_only_long_or_flat(self, dummy_ohlcv_data: pd.DataFrame) -> None:

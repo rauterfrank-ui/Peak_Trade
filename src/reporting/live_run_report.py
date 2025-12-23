@@ -258,18 +258,20 @@ def _build_order_stats_section(events_df: pd.DataFrame) -> ReportSection:
 
     stats = {
         "Events with Orders": len(order_events),
-        "Total Orders Generated": int(events_df["orders_generated"].sum())
-        if "orders_generated" in events_df.columns
-        else 0,
-        "Total Filled": int(events_df["orders_filled"].sum())
-        if "orders_filled" in events_df.columns
-        else 0,
-        "Total Rejected": int(events_df["orders_rejected"].sum())
-        if "orders_rejected" in events_df.columns
-        else 0,
-        "Total Blocked (Risk)": int(events_df["orders_blocked"].sum())
-        if "orders_blocked" in events_df.columns
-        else 0,
+        "Total Orders Generated": (
+            int(events_df["orders_generated"].sum())
+            if "orders_generated" in events_df.columns
+            else 0
+        ),
+        "Total Filled": (
+            int(events_df["orders_filled"].sum()) if "orders_filled" in events_df.columns else 0
+        ),
+        "Total Rejected": (
+            int(events_df["orders_rejected"].sum()) if "orders_rejected" in events_df.columns else 0
+        ),
+        "Total Blocked (Risk)": (
+            int(events_df["orders_blocked"].sum()) if "orders_blocked" in events_df.columns else 0
+        ),
     }
 
     return ReportSection(

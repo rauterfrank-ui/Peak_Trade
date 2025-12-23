@@ -128,7 +128,8 @@ def main():
     except FileNotFoundError as e:
         print(f"\n❌ FEHLER: {e}")
         print("\nBitte erstelle eine config.toml im Projekt-Root mit:")
-        print("""
+        print(
+            """
 [general]
 base_currency = "EUR"
 starting_capital = 10_000.0
@@ -141,7 +142,8 @@ fast_window = 20
 slow_window = 50
 price_col = "close"
 position_size = 0.1
-        """)
+        """
+        )
         return
 
     # Basis-Config anzeigen
@@ -164,12 +166,14 @@ position_size = 0.1
     except Exception as e:
         print(f"\n❌ FEHLER beim Erstellen der Strategie: {e}")
         print("\nBitte stelle sicher, dass config.toml eine [strategy.ma_crossover] Sektion hat:")
-        print("""
+        print(
+            """
 [strategy.ma_crossover]
 fast_window = 20
 slow_window = 50
 price_col = "close"
-        """)
+        """
+        )
         return
 
     # Daten erstellen (später: von Kraken holen)

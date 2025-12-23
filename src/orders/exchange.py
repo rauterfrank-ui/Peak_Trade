@@ -780,9 +780,11 @@ class ExchangeOrderExecutor:
             status=mapped_status,
             request=order,
             fill=fill,
-            reason=None
-            if mapped_status in ("filled", "pending", "partially_filled")
-            else f"status_{exchange_result.status.value}",
+            reason=(
+                None
+                if mapped_status in ("filled", "pending", "partially_filled")
+                else f"status_{exchange_result.status.value}"
+            ),
             metadata={
                 "execution_id": self._execution_count,
                 "mode": f"trading_client_{client_name}",

@@ -98,14 +98,16 @@ def demo_vol_breakout(df: pd.DataFrame) -> None:
     print("\n" + "=" * 70)
     print("1. VOLATILITY BREAKOUT STRATEGY")
     print("=" * 70)
-    print("""
+    print(
+        """
 Konzept:
 - Identifiziere Breakouts über n-Bar Hoch/Tief
 - Nutze ATR-Perzentil als Volatilitäts-Filter
 - Nur Breakouts bei erhöhter Volatilität
 
 Ideal für: Märkte mit klaren Konsolidierungs- und Ausbruchsphasen
-""")
+"""
+    )
 
     # Default-Parameter
     strategy = VolBreakoutStrategy(
@@ -128,7 +130,8 @@ def demo_mean_reversion_channel(df: pd.DataFrame) -> None:
     print("\n" + "=" * 70)
     print("2. MEAN REVERSION CHANNEL STRATEGY")
     print("=" * 70)
-    print("""
+    print(
+        """
 Konzept:
 - Berechne Bollinger-ähnliche Bänder (MA ± k*Std)
 - Long wenn Preis unter unterem Band (überverkauft)
@@ -136,7 +139,8 @@ Konzept:
 - Exit bei Rückkehr zum Mean oder Kanal
 
 Ideal für: Seitwärtsmärkte (Ranging Markets)
-""")
+"""
+    )
 
     # Default-Parameter
     strategy = MeanReversionChannelStrategy(
@@ -162,7 +166,8 @@ def demo_rsi_reversion(df: pd.DataFrame) -> None:
     print("\n" + "=" * 70)
     print("3. RSI REVERSION STRATEGY (Phase 27 Enhanced)")
     print("=" * 70)
-    print("""
+    print(
+        """
 Konzept:
 - RSI < lower → Long (überverkauft, erwarte Reversion nach oben)
 - RSI > upper → Short (überkauft, erwarte Reversion nach unten)
@@ -174,7 +179,8 @@ Neue Features (Phase 27):
 - Konfigurierbare Exit-Levels
 
 Ideal für: Seitwärtsmärkte mit Übertreibungen
-""")
+"""
+    )
 
     # Default (mit Wilder-Smoothing)
     strategy = RsiReversionStrategy(
@@ -227,7 +233,8 @@ def main() -> None:
     print("\n" + "=" * 70)
     print("ZUSAMMENFASSUNG")
     print("=" * 70)
-    print("""
+    print(
+        """
 Phase 27 Strategy Research Track implementiert:
 
 1. VolBreakoutStrategy (vol_breakout)
@@ -252,7 +259,8 @@ Alle Strategien:
 Config: config.toml unter [strategy.vol_breakout], [strategy.mean_reversion_channel], [strategy.rsi_reversion]
 
 WICHTIG: Nur für Research/Backtest/Shadow - NICHT für Live-Trading!
-""")
+"""
+    )
 
 
 if __name__ == "__main__":

@@ -297,7 +297,8 @@ def main():
         print("=" * 70)
 
         print("\n📝 Verwendung im Code:")
-        print("""
+        print(
+            """
 from src.risk import RiskLimits, RiskLimitsConfig
 
 # Config erstellen
@@ -322,7 +323,8 @@ if not ok:
 else:
     # Trade ausführen
     pass
-        """)
+        """
+        )
 
     except Exception as e:
         print(f"\n\n❌ Fehler: {e}")

@@ -261,9 +261,9 @@ class TestLabelGeneration:
         }
 
         unique_values = set(labels.unique())
-        assert unique_values.issubset(allowed_values), (
-            f"Unerlaubte Werte: {unique_values - allowed_values}"
-        )
+        assert unique_values.issubset(
+            allowed_values
+        ), f"Unerlaubte Werte: {unique_values - allowed_values}"
 
     def test_elkaroui_labels_have_correct_values(self, sample_ohlcv_data):
         """El-Karoui-Labels haben nur erlaubte Werte."""
@@ -289,9 +289,9 @@ class TestLabelGeneration:
         }
 
         unique_values = set(labels.dropna().unique())
-        assert unique_values.issubset(allowed_values), (
-            f"Unerlaubte Werte: {unique_values - allowed_values}"
-        )
+        assert unique_values.issubset(
+            allowed_values
+        ), f"Unerlaubte Werte: {unique_values - allowed_values}"
 
     def test_combo_labels_format(self, sample_ohlcv_data):
         """Kombi-Labels haben das richtige Format (STATE_REGIME)."""
