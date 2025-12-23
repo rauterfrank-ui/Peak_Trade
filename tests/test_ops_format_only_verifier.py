@@ -1,4 +1,5 @@
 """Tests for scripts/ops/verify_format_only_pr.sh"""
+# Dry-run: format-only guardrail validation
 
 from __future__ import annotations
 
