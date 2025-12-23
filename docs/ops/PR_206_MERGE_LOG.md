@@ -60,4 +60,3 @@ Reasoning:
 Optional:
 - Extend smoke guard with "shellcheck" when available (skip if missing).
 - Consider adding a small doc snippet listing how to run all ops-related smoke checks.
-
