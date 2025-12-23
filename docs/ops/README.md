@@ -40,6 +40,43 @@ Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON-
 
 ---
 
+## 🚀 PR Management Toolkit
+
+Vollständiges Toolkit für sicheres PR-Review und Merge mit Safe-by-Default-Design.
+
+### Quick Start
+
+```bash
+# Review-only (safe default)
+scripts/ops/review_and_merge_pr.sh --pr 259
+
+# Review + Merge (2-step, empfohlen)
+scripts/ops/review_and_merge_pr.sh --pr 259 --watch --allow-fail audit
+scripts/ops/review_and_merge_pr.sh --pr 259 --merge --update-main
+
+# One-Shot Workflow
+PR=259 ./scripts/ops/pr_review_merge_workflow_template.sh
+```
+
+### Features
+
+- ✅ **Safe-by-Default**: Review-only ohne `--merge` Flag
+- ✅ **Multi-Layer Validation**: Working Tree, Mergeable Status, Review Decision, CI Checks
+- ✅ **Intelligent Retry Logic**: Automatische Retries bei `UNKNOWN` Mergeable-Status
+- ✅ **Selective Allow-Fail**: Für bekannte Flaky-Checks (z.B. audit)
+- ✅ **Watch Mode**: Wartet automatisch auf CI-Check-Completion
+- ✅ **Dry-Run Support**: Test-Modus ohne echte Änderungen
+
+### Dokumentation
+
+- **Quick Start**: [PR_MANAGEMENT_QUICKSTART.md](PR_MANAGEMENT_QUICKSTART.md) ⭐
+- **Vollständige Dokumentation**: [PR_MANAGEMENT_TOOLKIT.md](PR_MANAGEMENT_TOOLKIT.md)
+- **Basis-Tool**: `scripts/ops/review_and_merge_pr.sh`
+- **One-Shot Workflow**: `scripts/ops/pr_review_merge_workflow.sh`
+- **Template Workflow**: `scripts/ops/pr_review_merge_workflow_template.sh`
+
+---
+
 ## 📋 Übersicht – PR Tools
 
 | Skript | Zweck | Output | Network | Safe Default |
