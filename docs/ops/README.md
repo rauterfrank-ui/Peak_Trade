@@ -1,10 +1,46 @@
-# Peak_Trade – Ops PR Tools
+# Peak_Trade – Ops Tools
 
-Zwei Bash-Skripte zur Verwaltung und Analyse von Pull Requests im Peak_Trade Repository.
+Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse im Peak_Trade Repository.
 
 ---
 
-## 📋 Übersicht
+## 🏥 Ops Doctor – Repository Health Check
+
+Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON- und Human-Readable-Output.
+
+### Quick Start
+
+```bash
+# Alle Checks ausführen
+./scripts/ops/ops_doctor.sh
+
+# JSON-Output
+./scripts/ops/ops_doctor.sh --json
+
+# Spezifische Checks
+./scripts/ops/ops_doctor.sh --check repo.git_root --check deps.uv_lock
+
+# Demo
+./scripts/ops/demo_ops_doctor.sh
+```
+
+### Features
+
+- ✅ 9 Repository-Health-Checks (Git, Dependencies, Config, Docs, Tests, CI/CD)
+- ✅ JSON- und Human-Readable-Output
+- ✅ Spezifische Check-Ausführung
+- ✅ Exit-Codes für CI/CD-Integration
+- ✅ Umfassende Dokumentation
+
+### Dokumentation
+
+- **Vollständige Dokumentation**: [OPS_DOCTOR_README.md](OPS_DOCTOR_README.md)
+- **Beispiel-Output**: [ops_doctor_example_output.txt](ops_doctor_example_output.txt)
+- **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](../../OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
+
+---
+
+## 📋 Übersicht – PR Tools
 
 | Skript | Zweck | Output | Network | Safe Default |
 |--------|-------|--------|---------|--------------|
