@@ -71,23 +71,27 @@ class RegimeBucketMetrics:
         """Konvertiert zu Dictionary für Tabellen."""
         return {
             "Regime": self.name,
-            "Bars [%]": f"{self.time_share_pct:.1f}%"
-            if self.time_share_pct is not None
-            else f"{self.time_fraction:.1%}",
+            "Bars [%]": (
+                f"{self.time_share_pct:.1f}%"
+                if self.time_share_pct is not None
+                else f"{self.time_fraction:.1%}"
+            ),
             "Time Fraction": f"{self.time_fraction:.1%}",
             "Total Return": format_metric(self.return_total, "return"),
-            "Return Contribution [%]": f"{self.return_contribution_pct:.1f}%"
-            if self.return_contribution_pct is not None
-            else "N/A",
-            "Annualized Return": format_metric(self.return_annualized, "return")
-            if self.return_annualized
-            else "N/A",
+            "Return Contribution [%]": (
+                f"{self.return_contribution_pct:.1f}%"
+                if self.return_contribution_pct is not None
+                else "N/A"
+            ),
+            "Annualized Return": (
+                format_metric(self.return_annualized, "return") if self.return_annualized else "N/A"
+            ),
             "Sharpe": f"{self.sharpe:.2f}" if self.sharpe is not None else "N/A",
             "Max Drawdown": format_metric(self.max_drawdown, "drawdown"),
             "Trades": str(self.num_trades),
-            "Win Rate": format_metric(self.win_rate, "win_rate")
-            if self.win_rate is not None
-            else "N/A",
+            "Win Rate": (
+                format_metric(self.win_rate, "win_rate") if self.win_rate is not None else "N/A"
+            ),
         }
 
 
@@ -272,9 +276,9 @@ def compute_regime_stats(
             name=regime_names.get(regime_val, f"Regime {regime_val}"),
             time_fraction=time_fraction,
             return_total=regime_return,
-            return_annualized=regime_return_annualized
-            if regime_return_annualized is not None
-            else 0.0,
+            return_annualized=(
+                regime_return_annualized if regime_return_annualized is not None else 0.0
+            ),
             sharpe=sharpe,
             max_drawdown=max_dd,
             num_trades=num_trades,
@@ -395,9 +399,11 @@ def build_regime_report_section(regime_stats: RegimeStatsSummary) -> ReportSecti
             "",
             "### Zusammenfassung",
             "",
-            "\n".join(summary_lines)
-            if summary_lines
-            else "*Keine zusätzlichen Informationen verfügbar*",
+            (
+                "\n".join(summary_lines)
+                if summary_lines
+                else "*Keine zusätzlichen Informationen verfügbar*"
+            ),
         ]
     )
 

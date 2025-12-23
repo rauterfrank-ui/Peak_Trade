@@ -736,7 +736,8 @@ def main() -> None:
     print("\n" + "=" * 70)
     print("  ✅ Analyse-Template abgeschlossen!")
     print("=" * 70)
-    print("""
+    print(
+        """
     Nächste Schritte:
     -----------------
     1. Eigene Filter hinzufügen (z.B. nach spezifischen Presets/Tags)
@@ -745,7 +746,8 @@ def main() -> None:
     4. In Jupyter Notebook überführen:
        → Sektionen als einzelne Zellen kopieren
        → %matplotlib inline hinzufügen
-    """)
+    """
+    )
 
 
 # =============================================================================

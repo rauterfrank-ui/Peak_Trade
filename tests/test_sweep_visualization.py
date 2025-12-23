@@ -527,6 +527,6 @@ class TestDrawdownHeatmapIntegration:
 
             # Sollte keine Drawdown-Heatmap enthalten
             drawdown_heatmaps = [k for k in plots.keys() if "drawdown" in k.lower()]
-            assert len(drawdown_heatmaps) == 0, (
-                "Keine Drawdown-Heatmap sollte erstellt werden wenn max_drawdown fehlt"
-            )
+            assert (
+                len(drawdown_heatmaps) == 0
+            ), "Keine Drawdown-Heatmap sollte erstellt werden wenn max_drawdown fehlt"

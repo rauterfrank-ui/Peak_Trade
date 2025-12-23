@@ -35,12 +35,14 @@ def example_1_basic_backup_restore():
 
         # Create a config file
         config_file = workspace / "config.toml"
-        config_file.write_text("""
+        config_file.write_text(
+            """
 [settings]
 trading_enabled = true
 max_position_size = 10000
 risk_level = "moderate"
-""")
+"""
+        )
 
         print("\n1. Original configuration:")
         print(f"   {config_file.read_text().strip()}")

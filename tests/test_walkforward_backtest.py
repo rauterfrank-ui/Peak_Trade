@@ -173,9 +173,9 @@ class TestSplitTrainTestWindows:
             train_start_second, _, _, _ = windows[1]
             step = train_start_second - train_start_first
             # Schritt sollte exakt step_size sein
-            assert step == pd.Timedelta("60d"), (
-                f"step zwischen train_starts sollte 60d sein, ist aber {step}"
-            )
+            assert step == pd.Timedelta(
+                "60d"
+            ), f"step zwischen train_starts sollte 60d sein, ist aber {step}"
 
     def test_split_windows_too_short_raises(self):
         """Zu kurzer Zeitraum sollte ValueError werfen."""

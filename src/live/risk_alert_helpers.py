@@ -678,7 +678,9 @@ def trigger_risk_pipeline_alert(
                 }
                 for d in result.limit_details
                 if d.severity.value != "ok"
-            ][:5]  # Max 5 Einträge
+            ][
+                :5
+            ]  # Max 5 Einträge
 
         if extra_context:
             context.update(extra_context)

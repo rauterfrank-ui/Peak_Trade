@@ -501,11 +501,7 @@ class ExperimentResult:
             key=lambda x: (
                 0
                 if x in ["experiment_id", "run_id", "strategy_name", "symbol", "timeframe"]
-                else 1
-                if x.startswith("param_")
-                else 2
-                if x.startswith("metric_")
-                else 3
+                else 1 if x.startswith("param_") else 2 if x.startswith("metric_") else 3
             ),
         )
         return df[cols]

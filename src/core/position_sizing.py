@@ -134,6 +134,7 @@ def build_position_sizer_from_config(
                 else:
                     return default
             return node
+
     else:
         raise TypeError(f"Unsupported config type: {type(cfg)}")
 

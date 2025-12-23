@@ -38,11 +38,7 @@ def test_momentum_signals_basic():
 
 def test_momentum_calculation():
     """Test: Momentum wird korrekt berechnet."""
-    df = pd.DataFrame(
-        {
-            "close": [100, 110, 120]  # +10% pro Bar
-        }
-    )
+    df = pd.DataFrame({"close": [100, 110, 120]})  # +10% pro Bar
 
     params = {"lookback_period": 1}
 

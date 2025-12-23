@@ -132,13 +132,15 @@ def main():
     except KeyError as e:
         print(f"\n❌ FEHLER: {e}")
         print("\nBitte füge folgende Konfiguration zu config.toml hinzu:")
-        print("""
+        print(
+            """
 [strategy.momentum_1h]
 lookback_period = 20
 entry_threshold = 0.02
 exit_threshold = -0.01
 stop_pct = 0.025
-        """)
+        """
+        )
         return
 
     # Strategie-Beschreibung anzeigen

@@ -690,9 +690,11 @@ class ExecutionPipeline:
                         side="buy",
                         quantity=abs(current_position),
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol)
-                        if self._config.generate_client_ids
-                        else None,
+                        client_id=(
+                            self._generate_client_id(event.symbol)
+                            if self._config.generate_client_ids
+                            else None
+                        ),
                         metadata={**metadata, "order_reason": "close_short"},
                     )
                 )
@@ -705,9 +707,11 @@ class ExecutionPipeline:
                         side="buy",
                         quantity=position_size,
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol)
-                        if self._config.generate_client_ids
-                        else None,
+                        client_id=(
+                            self._generate_client_id(event.symbol)
+                            if self._config.generate_client_ids
+                            else None
+                        ),
                         metadata={**metadata, "order_reason": "entry_long"},
                     )
                 )
@@ -721,9 +725,11 @@ class ExecutionPipeline:
                         side="sell",
                         quantity=current_position,
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol)
-                        if self._config.generate_client_ids
-                        else None,
+                        client_id=(
+                            self._generate_client_id(event.symbol)
+                            if self._config.generate_client_ids
+                            else None
+                        ),
                         metadata={**metadata, "order_reason": "exit_long"},
                     )
                 )
@@ -738,9 +744,11 @@ class ExecutionPipeline:
                         side="sell",
                         quantity=current_position,
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol)
-                        if self._config.generate_client_ids
-                        else None,
+                        client_id=(
+                            self._generate_client_id(event.symbol)
+                            if self._config.generate_client_ids
+                            else None
+                        ),
                         metadata={**metadata, "order_reason": "close_long"},
                     )
                 )
@@ -753,9 +761,11 @@ class ExecutionPipeline:
                         side="sell",
                         quantity=position_size,
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol)
-                        if self._config.generate_client_ids
-                        else None,
+                        client_id=(
+                            self._generate_client_id(event.symbol)
+                            if self._config.generate_client_ids
+                            else None
+                        ),
                         metadata={**metadata, "order_reason": "entry_short"},
                     )
                 )
@@ -769,9 +779,11 @@ class ExecutionPipeline:
                         side="buy",
                         quantity=abs(current_position),
                         order_type="market",
-                        client_id=self._generate_client_id(event.symbol)
-                        if self._config.generate_client_ids
-                        else None,
+                        client_id=(
+                            self._generate_client_id(event.symbol)
+                            if self._config.generate_client_ids
+                            else None
+                        ),
                         metadata={**metadata, "order_reason": "exit_short"},
                     )
                 )
@@ -1388,9 +1400,11 @@ class ExecutionPipeline:
                     orders_filled=1 if result.is_filled else 0,
                     orders_rejected=1 if result.is_rejected else 0,
                     risk_allowed=risk_result.allowed if risk_result else True,
-                    risk_reasons="; ".join(risk_result.reasons)
-                    if risk_result and risk_result.reasons
-                    else "",
+                    risk_reasons=(
+                        "; ".join(risk_result.reasons)
+                        if risk_result and risk_result.reasons
+                        else ""
+                    ),
                     extra={
                         "order_symbol": result.request.symbol,
                         "order_side": result.request.side,
