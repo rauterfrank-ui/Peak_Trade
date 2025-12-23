@@ -218,7 +218,9 @@ def parametric_cvar(returns: pd.Series, alpha: float = 0.05) -> float:
     phi_z = _normal_pdf(z_alpha)
 
     # CVaR = -mean + std * phi(z_alpha) / alpha
-    cvar = -(mean + std * phi_z / alpha)
+    # Note: z_alpha ist negativ, phi_z ist positiv, also phi_z/alpha > 0
+    # CVaR = std * phi(z_alpha) / alpha - mean
+    cvar = (std * phi_z / alpha) - mean
 
     return max(cvar, 0.0)
 
