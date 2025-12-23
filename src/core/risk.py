@@ -83,16 +83,18 @@ class MaxDrawdownRiskManager(BaseRiskManager):
     Stoppt Trading bei Erreichen eines maximalen Drawdowns.
 
     Beispiel:
-    - max_drawdown = 0.25 (25%)
+    - max_drawdown = 0.20 (20%)
     - Start-Equity = 10.000 €
     - Peak-Equity erreicht 12.000 €
-    - Bei Equity <= 9.000 € (25% unter Peak) wird Trading gestoppt
+    - Bei Equity <= 9.600 € (20% unter Peak) wird Trading gestoppt
 
     Attributes:
-        max_drawdown: Maximaler Drawdown als Dezimalzahl (0.25 = 25%)
+        max_drawdown: Maximaler Drawdown als Dezimalzahl (0.20 = 20%)
     """
 
-    max_drawdown: float = 0.25
+    max_drawdown: float = (
+        0.20  # Conservative default; production must be explicitly configured via governance
+    )
 
     def __post_init__(self) -> None:
         self.peak_equity: float = 0.0
@@ -395,7 +397,7 @@ def build_risk_manager_from_config(
 
     [risk]
     type = "noop"                     # oder "max_drawdown", "equity_floor", "portfolio_var_stress"
-    max_drawdown = 0.25               # für type="max_drawdown"
+    max_drawdown = 0.20               # für type="max_drawdown"
     equity_floor = 5000.0             # für type="equity_floor"
 
     # Für type="portfolio_var_stress":
@@ -435,7 +437,7 @@ def build_risk_manager_from_config(
     type_value: str = str(get_fn(f"{section}.type", "noop")).lower()
 
     if type_value == "max_drawdown":
-        max_dd = float(get_fn(f"{section}.max_drawdown", 0.25))
+        max_dd = float(get_fn(f"{section}.max_drawdown", 0.20))
         return MaxDrawdownRiskManager(max_drawdown=max_dd)
 
     if type_value == "equity_floor":
