@@ -561,6 +561,47 @@ chmod +x scripts/ops/cleanup_old_inventories.sh
 
 - [PR #246](PR_246_MERGE_LOG.md) — chore(ops): add knowledge deployment drill e2e + fix prod smoke headers (merged 2025-12-22T21:52:11Z)
 
+## 🛡️ Policy Critic & Governance Triage
+
+### Policy Critic False-Positive Runbook
+
+Operator-Runbook für Format-only PRs, die vom Policy Critic fälschlicherweise blockiert werden.
+
+**Use Case:** Ein PR ändert nur Formatting (Black, Ruff, Import-Sorting), wird aber vom Policy Critic blockiert.
+
+**Runbook:** [POLICY_CRITIC_TRIAGE_RUNBOOK.md](POLICY_CRITIC_TRIAGE_RUNBOOK.md)
+
+**Key Features:**
+- ✅ Format-Only Definition + Beispiele
+- ✅ Preflight-Checks (gh pr diff/view)
+- ✅ Decision Tree für Admin-Bypass
+- ✅ Audit-Trail Template (Accountability)
+- ✅ Post-Merge Sanity-Checks (ruff/black/pytest)
+- ✅ Do-NOT-Bypass Criteria (Execution/Risk/Config/Deps)
+- ✅ Rollback-Plan bei Fehlern
+
+**Quick Start:**
+
+```bash
+# 1) Preflight-Checks
+gh pr view <PR_NUMBER> --json files
+gh pr diff <PR_NUMBER> --stat
+
+# 2) Audit-Kommentar (siehe Runbook)
+gh pr comment <PR_NUMBER> --body "<AUDIT_TEMPLATE>"
+
+# 3) Admin-Bypass (nur bei format-only!)
+gh pr merge <PR_NUMBER> --admin --squash
+
+# 4) Post-Merge Sanity
+git pull --ff-only
+ruff check . && black --check .
+```
+
+**⚠️ WICHTIG:** Kein Bypass bei Execution/Risk/Config/Deps/Governance Changes!
+
+---
+
 ## 🧯 Known CI Issues
 
 - [CI Audit Known Issues](CI_AUDIT_KNOWN_ISSUES.md) — Pre-existing Black formatting issue (non-blocking)
