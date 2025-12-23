@@ -431,11 +431,38 @@ class BacktestEngine:
 
                     # Risk Manager: Adjust target position (kann auf 0 reduzieren)
                     if self.risk_manager is not None:
+                        # Erweiterte kwargs für v1 Risk-Layer (backward-compatible)
+                        risk_kwargs = {
+                            "symbol": symbol,
+                            "last_return": (
+                                self.equity_curve[-1] / self.equity_curve[-2] - 1
+                                if len(self.equity_curve) >= 2
+                                else 0.0
+                            ),
+                        }
+
+                        # Aktuelle Position als PositionSnapshot (falls vorhanden)
+                        if current_trade is not None:
+                            try:
+                                from ..risk import PositionSnapshot
+
+                                risk_kwargs["positions"] = [
+                                    PositionSnapshot(
+                                        symbol=symbol,
+                                        units=current_trade.size,
+                                        price=bar["close"],
+                                        timestamp=trade_dt,
+                                    )
+                                ]
+                            except ImportError:
+                                pass  # Fallback: keine positions
+
                         target_units = self.risk_manager.adjust_target_position(
                             target_units=target_units,
                             price=entry_price,
                             equity=equity,
                             timestamp=trade_dt,
+                            **risk_kwargs,
                         )
 
                     # Calculate position value and size
