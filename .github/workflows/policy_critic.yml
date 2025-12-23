@@ -16,9 +16,12 @@ permissions:
   pull-requests: write
 
 jobs:
-  policy-review:
-    name: Policy Critic Review
+  format-only-verifier:
+    name: Format-Only Verifier
     runs-on: ubuntu-latest
+    outputs:
+      format_only: ${{ steps.verify.outputs.format_only }}
+      label_present: ${{ steps.check_label.outputs.label_present }}
 
     steps:
       - name: Checkout code
@@ -26,17 +29,139 @@ jobs:
         with:
           fetch-depth: 0  # Need full history for diff
 
+      - name: Check for ops/format-only label
+        id: check_label
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LABEL_CHECK=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name' | grep -x "ops/format-only" || echo "")
+          LABEL_PRESENT=$([[ -n "$LABEL_CHECK" ]] && echo "true" || echo "false")
+          echo "label_present=${LABEL_PRESENT}" >> $GITHUB_OUTPUT
+          echo "Label 'ops/format-only' present: ${LABEL_PRESENT}"
+
+      - name: Verify format-only (if label present)
+        id: verify
+        if: steps.check_label.outputs.label_present == 'true'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "Running format-only verification..."
+          echo "Base SHA: ${BASE_SHA}"
+          echo "Head SHA: ${HEAD_SHA}"
+          echo ""
+
+          # Run verifier script
+          if ./scripts/ops/verify_format_only_pr.sh "${BASE_SHA}" "${HEAD_SHA}"; then
+            echo "format_only=true" >> $GITHUB_OUTPUT
+            RESULT="✅ FORMAT-ONLY CONFIRMED"
+            EXIT_STATUS=0
+          else
+            echo "format_only=false" >> $GITHUB_OUTPUT
+            RESULT="❌ NOT FORMAT-ONLY"
+            EXIT_STATUS=1
+          fi
+
+          # Write to step summary
+          echo "# Format-Only Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Label:** \`ops/format-only\` (present)" >> $GITHUB_STEP_SUMMARY
+          echo "**Base SHA:** \`${BASE_SHA:0:8}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Head SHA:** \`${HEAD_SHA:0:8}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Result:** ${RESULT}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ $EXIT_STATUS -eq 0 ]; then
+            echo "✅ **Guardrail satisfied:** Policy Critic will be skipped (no-op)." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Guardrail NOT satisfied:** Label should be removed. Policy Critic will run normally." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Action Required:**" >> $GITHUB_STEP_SUMMARY
+            echo "1. Remove label \`ops/format-only\` from PR" >> $GITHUB_STEP_SUMMARY
+            echo "2. Policy Critic will run with full checks" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          exit $EXIT_STATUS
+
+      - name: Skip verification (label not present)
+        if: steps.check_label.outputs.label_present == 'false'
+        run: |
+          echo "format_only=false" >> $GITHUB_OUTPUT
+          echo "Label 'ops/format-only' not present. Verification skipped."
+          echo ""
+          echo "# Format-Only Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Label:** \`ops/format-only\` (not present)" >> $GITHUB_STEP_SUMMARY
+          echo "**Result:** No verification needed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Policy Critic will run normally." >> $GITHUB_STEP_SUMMARY
+
+  policy-review:
+    needs: format-only-verifier
+    name: Policy Critic Review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Format-Only No-Op (Guardrail Satisfied)
+        if: needs.format-only-verifier.outputs.format_only == 'true'
+        run: |
+          echo "════════════════════════════════════════════════════════════════════════"
+          echo "🛡️ Policy Critic: NO-OP (Format-Only Guardrail Satisfied)"
+          echo "════════════════════════════════════════════════════════════════════════"
+          echo ""
+          echo "Label: ops/format-only ✅"
+          echo "Verifier: PASS ✅"
+          echo ""
+          echo "The format-only-verifier confirmed that this PR contains ONLY formatting"
+          echo "changes. Policy Critic analysis is skipped (no-op) per Safety Fix guardrail."
+          echo ""
+          echo "This is NOT a bypass - the required verifier ensures safety."
+          echo ""
+          echo "════════════════════════════════════════════════════════════════════════"
+          echo "# Policy Critic Review: NO-OP (Format-Only)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Format-Only Guardrail Satisfied**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Label:** \`ops/format-only\` (present)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Verifier:** PASS ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- **Action:** Policy Critic skipped (no-op)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Rationale:** The format-only-verifier (required check) confirmed that" >> $GITHUB_STEP_SUMMARY
+          echo "this PR contains ONLY formatting changes. No logic, config, or semantic" >> $GITHUB_STEP_SUMMARY
+          echo "changes detected. Policy Critic analysis is not needed." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Evidence:** See format-only-verifier job for tree hash comparison." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "**Audit Trail:**" >> $GITHUB_STEP_SUMMARY
+          echo "- PR: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Workflow Run: ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🛡️ **This is not a bypass.** The skip is only allowed because a blocking" >> $GITHUB_STEP_SUMMARY
+          echo "verifier (format-only-verifier) confirmed format-only status." >> $GITHUB_STEP_SUMMARY
+
+      - name: Checkout code
+        if: needs.format-only-verifier.outputs.format_only != 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for diff
+
       - name: Set up Python
+        if: needs.format-only-verifier.outputs.format_only != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
       - name: Install dependencies
+        if: needs.format-only-verifier.outputs.format_only != 'true'
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install pyyaml tomli
 
       - name: Generate diff and changed files
+        if: needs.format-only-verifier.outputs.format_only != 'true'
         id: diff
         run: |
           # Get base branch (usually main)
@@ -62,6 +187,7 @@ jobs:
           echo "Changed files: ${CHANGED_FILES}"
 
       - name: Determine PR Size Mode
+        if: needs.format-only-verifier.outputs.format_only != 'true'
         id: pr_mode
         env:
           CHANGED_FILES_COUNT: ${{ steps.diff.outputs.changed_files_count }}
@@ -129,7 +255,7 @@ jobs:
           echo "Has sensitive files: ${HAS_SENSITIVE_FILES}"
 
       - name: Check if PR should be split
-        if: steps.pr_mode.outputs.mode == 'FAIL_TOO_LARGE' || steps.pr_mode.outputs.mode == 'FAIL_SENSITIVE'
+        if: needs.format-only-verifier.outputs.format_only != 'true' && (steps.pr_mode.outputs.mode == 'FAIL_TOO_LARGE' || steps.pr_mode.outputs.mode == 'FAIL_SENSITIVE')
         run: |
           if [ "${{ steps.pr_mode.outputs.mode }}" = "FAIL_SENSITIVE" ]; then
             echo "::error::PR too large (${{ steps.diff.outputs.changed_files_count }} files > 1200) with sensitive path changes."
@@ -145,7 +271,7 @@ jobs:
 
       - name: Prepare file list for Policy Critic
         id: file_list
-        if: steps.pr_mode.outputs.mode != 'FAIL_TOO_LARGE' && steps.pr_mode.outputs.mode != 'FAIL_SENSITIVE'
+        if: needs.format-only-verifier.outputs.format_only != 'true' && steps.pr_mode.outputs.mode != 'FAIL_TOO_LARGE' && steps.pr_mode.outputs.mode != 'FAIL_SENSITIVE'
         env:
           MODE: ${{ steps.pr_mode.outputs.mode }}
           MAX_FILES: ${{ steps.pr_mode.outputs.max_files }}
@@ -190,7 +316,7 @@ jobs:
 
       - name: Run Policy Critic
         id: critic
-        if: steps.pr_mode.outputs.mode != 'FAIL_TOO_LARGE' && steps.pr_mode.outputs.mode != 'FAIL_SENSITIVE'
+        if: needs.format-only-verifier.outputs.format_only != 'true' && steps.pr_mode.outputs.mode != 'FAIL_TOO_LARGE' && steps.pr_mode.outputs.mode != 'FAIL_SENSITIVE'
         env:
           MODE: ${{ steps.pr_mode.outputs.mode }}
         run: |
@@ -347,14 +473,14 @@ jobs:
           echo "- **Sensitive paths:** Always analyzed, cannot be bypassed for very large PRs" >> $GITHUB_STEP_SUMMARY
 
       - name: Block PR on BLOCK severity
-        if: steps.critic.outputs.exit_code == '2'
+        if: needs.format-only-verifier.outputs.format_only != 'true' && steps.critic.outputs.exit_code == '2'
         run: |
           echo "::error::Policy Critic returned BLOCK (exit code 2). Merge is DENIED."
           echo "::error::See job summary for violation details."
           exit 2
 
       - name: Success
-        if: steps.critic.outputs.exit_code == '0'
+        if: needs.format-only-verifier.outputs.format_only != 'true' && steps.critic.outputs.exit_code == '0'
         env:
           MODE: ${{ steps.pr_mode.outputs.mode }}
         run: |
