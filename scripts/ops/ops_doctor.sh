@@ -9,6 +9,8 @@ set -euo pipefail
 #   ./scripts/ops/ops_doctor.sh                    # Alle Checks
 #   ./scripts/ops/ops_doctor.sh --json             # JSON-Output
 #   ./scripts/ops/ops_doctor.sh --check repo.git_root --check deps.uv_lock
+#
+# P0 Guardrails: This file is protected by CODEOWNERS (ops review required).
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"

@@ -18,6 +18,8 @@ Exceptions:
 
 WICHTIG: In Phase 17 blockt der SafetyGuard ALLE echten Orders.
          Es gibt keine Implementierung für Live-Order-Calls.
+
+P0 Guardrails: This file is protected by CODEOWNERS (live trading review required).
 """
 
 from __future__ import annotations

@@ -13,6 +13,8 @@ Checks:
 - Retention staleness (last retention run age)
 - Compression failures (recent failure rate)
 - Parse error rate (JSONL validity)
+
+P0 Guardrails: This file is protected by CODEOWNERS (execution review required).
 """
 
 import logging
