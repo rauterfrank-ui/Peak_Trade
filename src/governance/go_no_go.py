@@ -88,3 +88,6 @@ def is_feature_approved_for_year(feature_key: str, year: int) -> bool:
         return year == approved_year
 
     return False
+
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)

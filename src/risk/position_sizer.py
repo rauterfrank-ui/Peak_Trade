@@ -371,3 +371,6 @@ def calc_position_size(
         rejected=False,
         reason="OK",
     )
+
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)
