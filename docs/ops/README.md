@@ -709,3 +709,6 @@ format-only-verifier (required check)
 ## 🧯 Known CI Issues
 
 - [CI Audit Known Issues](CI_AUDIT_KNOWN_ISSUES.md) — Pre-existing Black formatting issue (non-blocking)
+
+## Stash Hygiene
+- `docs/ops/STASH_HYGIENE_POLICY.md` — Policy & Ablauf (Keyword-based drop, Export-before-delete)
