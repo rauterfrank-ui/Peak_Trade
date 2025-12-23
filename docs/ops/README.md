@@ -602,6 +602,73 @@ ruff check . && black --check .
 
 ---
 
+### Format-Only Guardrail (CI Implementation)
+
+**Status:** ✅ Active (ab PR #XXX)
+
+Die im Runbook dokumentierte "Safety Fix" Mechanik ist jetzt als **CI-Guardrail** implementiert.
+
+**Komponenten:**
+
+1. **Verifier Script:** `scripts/ops/verify_format_only_pr.sh`
+   - Deterministischer Format-Only Check via git worktree + tree hash comparison
+   - Exit 0 = Format-only confirmed, Exit 1 = Not format-only
+
+2. **GitHub Actions Job:** `format-only-verifier` (required check)
+   - Läuft auf allen PRs
+   - Prüft Label `ops/format-only`
+   - Führt Verifier Script aus (wenn Label gesetzt)
+   - **FAIL** wenn Label gesetzt aber Verifier FAIL → verhindert Merge
+
+3. **Policy Critic No-Op:** Conditional skip
+   - Policy Critic läuft als no-op **nur wenn:**
+     - Label `ops/format-only` gesetzt **UND**
+     - `format-only-verifier` PASS ✅
+   - Sonst: Policy Critic läuft normal (blockierend)
+
+**Operator How-To:**
+
+```bash
+# 1) Label setzen (nur nach manual preflight!)
+gh pr edit <PR> --add-label "ops/format-only"
+
+# 2) CI prüfen: format-only-verifier muss grün sein
+gh pr checks <PR>
+
+# 3) Falls Verifier FAIL:
+#    - Label entfernen
+#    - PR fixen (non-format changes entfernen)
+#    - Oder: regulärer Review-Prozess
+gh pr edit <PR> --remove-label "ops/format-only"
+```
+
+**Warum das funktioniert:**
+
+- ✅ Kein "Bypass" – Skip nur mit blockierendem Verifier
+- ✅ Reduziert False-Positive Friction (Format-PRs laufen durch)
+- ✅ Verhindert Bypass-Kultur (kein `--admin` mehr nötig)
+- ✅ Erhält Safety Layer (echte PRs triggern weiterhin Policy Critic)
+- ✅ Saubere Evidence Chain (Label + Verifier Logs + Audit Trail)
+
+**Workflow:**
+
+```
+PR mit Label "ops/format-only"
+  │
+  ▼
+format-only-verifier (required check)
+  │
+  ├─ Label nicht gesetzt? → SUCCESS (no-op), Policy Critic läuft normal
+  │
+  ├─ Label gesetzt + Verifier PASS? → SUCCESS, Policy Critic no-op ✅
+  │
+  └─ Label gesetzt + Verifier FAIL? → FAIL ❌ (PR blockiert, Label entfernen)
+```
+
+**Siehe auch:** [Policy Critic Triage Runbook](POLICY_CRITIC_TRIAGE_RUNBOOK.md) (Safety Fix Sektion)
+
+---
+
 ## 🧯 Known CI Issues
 
 - [CI Audit Known Issues](CI_AUDIT_KNOWN_ISSUES.md) — Pre-existing Black formatting issue (non-blocking)
