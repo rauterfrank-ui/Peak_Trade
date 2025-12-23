@@ -710,5 +710,45 @@ format-only-verifier (required check)
 
 - [CI Audit Known Issues](CI_AUDIT_KNOWN_ISSUES.md) — Pre-existing Black formatting issue (non-blocking)
 
-## Stash Hygiene
-- `docs/ops/STASH_HYGIENE_POLICY.md` — Policy & Ablauf (Keyword-based drop, Export-before-delete)
+## 🗂️ Stash Hygiene & Triage
+
+### Stash Hygiene Policy
+
+Best Practices für sicheres Stash-Management:
+
+- **Policy & Ablauf:** [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md)
+  - Keyword-based drop (keine index-basierten Drops)
+  - Export-before-delete Workflow
+  - Recovery-Branch-Strategie
+
+### Stash Triage Tool
+
+Automatisiertes Stash-Management mit Safe-by-Default-Design:
+
+- **Tool:** [`scripts/ops/stash_triage.sh`](../../scripts/ops/stash_triage.sh)
+- **Tests:** [`tests/ops/test_stash_triage_script.py`](../../tests/ops/test_stash_triage_script.py)
+
+**Quick Start:**
+
+```bash
+# List all stashes
+scripts/ops/stash_triage.sh --list
+
+# Export all stashes (safe, no deletion)
+scripts/ops/stash_triage.sh --export-all
+
+# Export + drop (requires explicit confirmation)
+scripts/ops/stash_triage.sh --export-all --drop-after-export --confirm-drop
+```
+
+**Features:**
+
+- ✅ Safe-by-Default (no deletion without explicit flags)
+- ✅ Keyword-Filter für selektiven Export
+- ✅ Strukturierter Export (Patch + Metadata)
+- ✅ Session Report mit Triage-Übersicht
+- ✅ Exit 2 bei unsicherer Nutzung (Drop ohne Confirm)
+
+**Export-Ablage:** `docs/ops/stash_refs/`
+
+Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automation-Sektion.
