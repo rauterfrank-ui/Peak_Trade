@@ -783,12 +783,14 @@ class HtmlReportBuilder:
                     elif not positive_is_good and value < 0:
                         css_class = "negative"
 
-                metric_cards.append(f"""
+                metric_cards.append(
+                    f"""
                 <div class="metric-card">
                     <div class="label">{label}</div>
                     <div class="value {css_class}">{value_str}</div>
                 </div>
-                """)
+                """
+                )
 
         extra_html = f'<div class="metrics-grid">{"".join(metric_cards)}</div>'
 
@@ -808,12 +810,14 @@ class HtmlReportBuilder:
 
         param_items = []
         for key, value in params.items():
-            param_items.append(f"""
+            param_items.append(
+                f"""
             <div class="param-item">
                 <span class="key">{_html_escape(key)}:</span>
                 <span class="value">{_html_escape(str(value))}</span>
             </div>
-            """)
+            """
+            )
 
         extra_html = f'<div class="params-list">{"".join(param_items)}</div>'
 

@@ -321,11 +321,13 @@ class TestRunSwitchSanityCheck:
     def test_empty_allowed_violation(self, tmp_path):
         """Test: Leere allowed-Liste → Violation."""
         config_path = tmp_path / "config.toml"
-        config_path.write_text("""
+        config_path.write_text(
+            """
 [live_profile.strategy_switch]
 active_strategy_id = "ma_crossover"
 allowed = []
-""")
+"""
+        )
 
         config = SwitchSanityConfig(
             enabled=True,
@@ -340,11 +342,13 @@ allowed = []
     def test_active_not_in_allowed_violation(self, tmp_path):
         """Test: active_strategy_id nicht in allowed → Violation."""
         config_path = tmp_path / "config.toml"
-        config_path.write_text("""
+        config_path.write_text(
+            """
 [live_profile.strategy_switch]
 active_strategy_id = "unknown_strategy"
 allowed = ["ma_crossover", "rsi_reversion"]
-""")
+"""
+        )
 
         config = SwitchSanityConfig(
             enabled=True,
@@ -359,11 +363,13 @@ allowed = ["ma_crossover", "rsi_reversion"]
     def test_r_and_d_in_allowed_violation(self, tmp_path):
         """Test: R&D-Strategie in allowed → Violation."""
         config_path = tmp_path / "config.toml"
-        config_path.write_text("""
+        config_path.write_text(
+            """
 [live_profile.strategy_switch]
 active_strategy_id = "ma_crossover"
 allowed = ["ma_crossover", "armstrong_cycle"]
-""")
+"""
+        )
 
         config = SwitchSanityConfig(
             enabled=True,

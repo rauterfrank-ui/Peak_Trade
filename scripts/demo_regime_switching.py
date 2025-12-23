@@ -361,7 +361,8 @@ def run_demo(
     print("=" * 60)
 
     if use_regime_layer:
-        print("""
+        print(
+            """
 Mit aktiviertem Regime-Layer:
 - Der Detector erkennt Marktphasen basierend auf Volatilitaet
 - Die Switching-Policy waehlt passende Strategien je Regime:
@@ -374,14 +375,17 @@ Vorteile:
 - Strategien werden nur in passenden Marktphasen eingesetzt
 - Reduziert False Signals in ungeeigneten Phasen
 - Ermooglicht Multi-Strategy-Portfolios mit intelligenter Rotation
-""")
+"""
+        )
     else:
-        print("""
+        print(
+            """
 Ohne Regime-Layer (klassischer Modus):
 - Alle Strategien werden unabhaengig von der Marktphase verwendet
 - Keine automatische Strategy-Rotation
 - Bisheriges Verhalten bleibt erhalten (enabled=false in config.toml)
-""")
+"""
+        )
 
     print("=" * 60)
     print("Demo abgeschlossen!")

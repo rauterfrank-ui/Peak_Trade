@@ -675,9 +675,9 @@ def create_app(
                             strategy_name=snapshot.strategy or "",
                             symbol=snapshot.symbol or "",
                             timeframe=snapshot.timeframe or "",
-                            started_at=snapshot.started_at.isoformat()
-                            if snapshot.started_at
-                            else None,
+                            started_at=(
+                                snapshot.started_at.isoformat() if snapshot.started_at else None
+                            ),
                             ended_at=snapshot.ended_at.isoformat() if snapshot.ended_at else None,
                         )
                     )

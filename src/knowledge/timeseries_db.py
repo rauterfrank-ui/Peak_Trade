@@ -193,12 +193,12 @@ class InfluxDBAdapter(TimeSeriesDBInterface):
         filters: Optional[Dict[str, Any]] = None,
     ) -> pd.DataFrame:
         """Query tick data from InfluxDB."""
-        query = f'''
+        query = f"""
         from(bucket: "{self.bucket}")
             |> range(start: {start_time}, stop: {end_time})
             |> filter(fn: (r) => r["_measurement"] == "tick")
             |> filter(fn: (r) => r["symbol"] == "{symbol}")
-        '''
+        """
 
         result = self.query_api.query_data_frame(query, org=self.org)
         logger.info(f"Queried {len(result)} tick records for {symbol}")
@@ -208,11 +208,11 @@ class InfluxDBAdapter(TimeSeriesDBInterface):
         self, start_time: str, end_time: str, filters: Optional[Dict[str, Any]] = None
     ) -> pd.DataFrame:
         """Query portfolio history from InfluxDB."""
-        query = f'''
+        query = f"""
         from(bucket: "{self.bucket}")
             |> range(start: {start_time}, stop: {end_time})
             |> filter(fn: (r) => r["_measurement"] == "portfolio")
-        '''
+        """
 
         result = self.query_api.query_data_frame(query, org=self.org)
         logger.info(f"Queried {len(result)} portfolio history records")

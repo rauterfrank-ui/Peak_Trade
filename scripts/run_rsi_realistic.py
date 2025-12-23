@@ -125,13 +125,15 @@ def main():
     except FileNotFoundError as e:
         print(f"\n❌ FEHLER: {e}")
         print("\nBitte erstelle eine config.toml im Projekt-Root mit:")
-        print("""
+        print(
+            """
 [strategy.rsi_reversion]
 rsi_window = 14
 lower = 30.0
 upper = 70.0
 price_col = "close"
-        """)
+        """
+        )
         return
 
     # Basis-Config anzeigen
