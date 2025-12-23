@@ -234,27 +234,15 @@ def format_report(
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Peak_Trade Risk Layer v1 - Stress-Testing Report"
-    )
+    parser = argparse.ArgumentParser(description="Peak_Trade Risk Layer v1 - Stress-Testing Report")
     parser.add_argument(
         "--config", type=str, default="config/config.toml", help="Path to config.toml"
     )
-    parser.add_argument(
-        "--symbol", type=str, default="BTC/EUR", help="Trading symbol"
-    )
-    parser.add_argument(
-        "--days", type=int, default=365, help="Number of days to load"
-    )
-    parser.add_argument(
-        "--alpha", type=float, default=0.05, help="VaR/CVaR alpha (default: 0.05)"
-    )
-    parser.add_argument(
-        "--output", type=str, default=None, help="Output CSV path (optional)"
-    )
-    parser.add_argument(
-        "--verbose", action="store_true", help="Verbose output"
-    )
+    parser.add_argument("--symbol", type=str, default="BTC/EUR", help="Trading symbol")
+    parser.add_argument("--days", type=int, default=365, help="Number of days to load")
+    parser.add_argument("--alpha", type=float, default=0.05, help="VaR/CVaR alpha (default: 0.05)")
+    parser.add_argument("--output", type=str, default=None, help="Output CSV path (optional)")
+    parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     args = parser.parse_args()
 
@@ -329,4 +317,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
