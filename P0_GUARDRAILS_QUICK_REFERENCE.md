@@ -19,8 +19,13 @@ Critical paths now require review from designated code owners:
 - `.github/workflows/ci.yml`
 - `.github/workflows/lint.yml`
 - `.github/workflows/policy_critic.yml`
+- `.github/workflows/audit.yml`
+- `.github/workflows/deps_sync_guard.yml`
+- `.github/workflows/test_health.yml`
+- `.github/workflows/guard-reports-ignored.yml`
+- `.github/workflows/policy_tracked_reports_guard.yml`
 
-All critical workflows now support the `merge_group` trigger, which is required for GitHub Merge Queue functionality.
+All critical workflows (8 total) now support the `merge_group` trigger, which is required for GitHub Merge Queue functionality.
 
 ### ✅ 3. Setup Documentation
 **File:** `docs/GITHUB_P0_GUARDRAILS_SETUP.md`
@@ -48,6 +53,10 @@ For `main` branch, configure:
   - `strategy-smoke`
   - `policy-review`
   - `format-only-verifier`
+  - `audit` (recommended)
+  - `guard-no-tracked-reports` (recommended)
+  - `deps_sync_guard` (recommended)
+  - `test_health` (optional)
 - ✅ Require branches to be up to date before merging
 - ✅ Require conversation resolution before merging
 - ⚠️ (Optional) Restrict who can push to main
@@ -107,7 +116,7 @@ Manual verification:
 | Component | Status | Notes |
 |-----------|--------|-------|
 | CODEOWNERS | ✅ Created | Team handles need updating with real usernames |
-| Workflow merge_group | ✅ Added | ci.yml, lint.yml, policy_critic.yml |
+| Workflow merge_group | ✅ Added | 8 workflows updated (ci, lint, policy_critic, audit, deps_sync, test_health, guards) |
 | Setup Guide | ✅ Created | See docs/GITHUB_P0_GUARDRAILS_SETUP.md |
 | Branch Protection | ⏳ Pending | Requires GitHub UI configuration |
 | Merge Queue | ⏳ Pending | Requires GitHub UI configuration |
