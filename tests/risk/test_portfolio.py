@@ -245,4 +245,3 @@ class TestPortfolioReturns:
         # Normiert: 2/5*BTC + 3/5*ETH = 0.4*0.01 + 0.6*0.02 = 0.016
         expected = pd.Series([0.016])
         pd.testing.assert_series_equal(port_ret, expected, check_names=False)
-

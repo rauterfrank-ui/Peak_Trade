@@ -261,9 +261,7 @@ class TestRiskManagerState:
 
     def test_reset_clears_state(self):
         """reset() sollte Returns-History leeren"""
-        risk_manager = PortfolioVaRStressRiskManager(
-            alpha=0.05, window=10, max_var=0.05
-        )
+        risk_manager = PortfolioVaRStressRiskManager(alpha=0.05, window=10, max_var=0.05)
 
         # Fülle Returns-History
         risk_manager._update_returns_history(0.01)
@@ -291,7 +289,9 @@ class TestRiskManagerState:
     def test_trading_stopped_persists(self):
         """trading_stopped sollte persistent bleiben nach Breach"""
         risk_manager = PortfolioVaRStressRiskManager(
-            alpha=0.05, window=5, max_var=0.01  # Sehr niedrig
+            alpha=0.05,
+            window=5,
+            max_var=0.01,  # Sehr niedrig
         )
 
         # Simuliere hohe Losses
@@ -324,4 +324,3 @@ class TestRiskManagerState:
         )
 
         assert target_units_2 == 0.0
-

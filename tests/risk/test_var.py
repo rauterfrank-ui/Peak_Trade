@@ -185,4 +185,3 @@ class TestVaRInvariants:
         assert cvar_hist >= 0
         assert var_param >= 0
         assert cvar_param >= 0
-

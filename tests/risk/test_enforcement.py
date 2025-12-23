@@ -259,9 +259,7 @@ class TestRiskEnforcerEdgeCases:
 
     def test_zero_equity_breach(self):
         """Equity <= 0 sollte HARD breach erzeugen"""
-        snapshot = PortfolioSnapshot(
-            equity=0, positions=[PositionSnapshot("BTC/EUR", 1, 50000)]
-        )
+        snapshot = PortfolioSnapshot(equity=0, positions=[PositionSnapshot("BTC/EUR", 1, 50000)])
         limits = RiskLimitsV2(max_gross_exposure=1.5)
 
         enforcer = RiskEnforcer()
@@ -325,18 +323,14 @@ class TestRiskDecisionHelpers:
 
     def test_has_hard_breach_true(self):
         """has_hard_breach() sollte True bei HARD breach"""
-        breach = RiskBreach(
-            code="MAX_VAR", message="VaR exceeded", severity=BreachSeverity.HARD
-        )
+        breach = RiskBreach(code="MAX_VAR", message="VaR exceeded", severity=BreachSeverity.HARD)
         decision = RiskDecision(allowed=False, action="HALT", breaches=[breach])
 
         assert decision.has_hard_breach() is True
 
     def test_has_hard_breach_false(self):
         """has_hard_breach() sollte False bei nur Warnings"""
-        breach = RiskBreach(
-            code="INFO", message="Info", severity=BreachSeverity.WARNING
-        )
+        breach = RiskBreach(code="INFO", message="Info", severity=BreachSeverity.WARNING)
         decision = RiskDecision(allowed=True, action="ALLOW", breaches=[breach])
 
         assert decision.has_hard_breach() is False
@@ -350,9 +344,7 @@ class TestRiskDecisionHelpers:
 
     def test_get_breach_summary_with_breaches(self):
         """get_breach_summary() mit Breaches"""
-        breach1 = RiskBreach(
-            code="MAX_VAR", message="VaR exceeded", severity=BreachSeverity.HARD
-        )
+        breach1 = RiskBreach(code="MAX_VAR", message="VaR exceeded", severity=BreachSeverity.HARD)
         breach2 = RiskBreach(
             code="MAX_POS", message="Position too large", severity=BreachSeverity.HARD
         )
@@ -362,4 +354,3 @@ class TestRiskDecisionHelpers:
         assert "Total breaches: 2" in summary
         assert "MAX_VAR" in summary
         assert "MAX_POS" in summary
-

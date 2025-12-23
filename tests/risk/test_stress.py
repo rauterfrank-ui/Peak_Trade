@@ -67,9 +67,7 @@ class TestApplyScenarioVolSpike:
         returns = pd.Series(np.random.normal(0, 0.01, 100))
         original_std = returns.std()
 
-        scenario = StressScenario(
-            name="vol_spike", kind="vol_spike", params={"multiplier": 3.0}
-        )
+        scenario = StressScenario(name="vol_spike", kind="vol_spike", params={"multiplier": 3.0})
 
         stressed = apply_scenario_to_returns(returns, scenario)
         stressed_std = stressed.std()
@@ -288,4 +286,3 @@ class TestScenarioEdgeCases:
 
         # Sollte unverändert bleiben
         pd.testing.assert_series_equal(stressed, returns, check_names=False)
-
