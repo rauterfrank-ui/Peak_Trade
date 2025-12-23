@@ -513,6 +513,27 @@ BASE_URL=https://prod.example.com ./scripts/ops/knowledge_prod_smoke.sh
 
 ## 📋 Merge Logs
 
+### Workflow
+
+**Standard Process:** Jeder Merge-Log wird als eigener PR erstellt (Review + CI + Audit-Trail).
+
+- **Vollständige Dokumentation:** [MERGE_LOG_WORKFLOW.md](MERGE_LOG_WORKFLOW.md)
+- **Template:** [templates/ops/merge_log_template.md](../../templates/ops/merge_log_template.md)
+
+**Quick Start:**
+
+```bash
+PR=<NUM>
+git checkout -b docs/merge-log-$PR
+# Erstelle docs/ops/PR_${PR}_MERGE_LOG.md + link in README
+git add docs/ops/PR_${PR}_MERGE_LOG.md docs/ops/README.md
+git commit -m "docs(ops): add compact merge log for PR #${PR}"
+git push -u origin docs/merge-log-$PR
+gh pr create --title "docs(ops): add merge log for PR #${PR}" --body "..."
+```
+
+### Liste
+
 - [PR #261](PR_261_MERGE_LOG.md) — chore(ops): add stash triage helper (export-first, safe-by-default) (merged 2025-12-23)
 - [PR #250](PR_250_MERGE_LOG.md) — feat(ops): add ops_doctor repo health check tool (merged 2025-12-23)
 - [PR #237](PR_237_MERGE_LOG.md) — chore(ops): add shared bash run helpers (strict/robust) (merged 2025-12-21)
