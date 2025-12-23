@@ -95,6 +95,8 @@ class BacktestEngine:
         log_executions: bool = False,
         # Backward-compatibility alias
         use_order_layer: Optional[bool] = None,
+        # vNext: Tracking Hook (Phase: Strategy Layer vNext)
+        tracker: Optional[Any] = None,
     ):
         """
         Initialisiert Backtest-Engine mit Risk-Layer.
@@ -110,6 +112,9 @@ class BacktestEngine:
             log_executions: Wenn True, werden Execution-Summaries gesammelt und in
                            _execution_logs gespeichert. Default: False
             use_order_layer: DEPRECATED - Alias fuer use_execution_pipeline (backward compat)
+            tracker: Optional Tracker-Instanz für Experiment-Logging (vNext).
+                    Wenn None, wird kein Tracking durchgeführt.
+                    Siehe: src.core.tracking.Tracker Protocol
         """
         self.config = get_config()
 
@@ -152,6 +157,9 @@ class BacktestEngine:
 
         # DataFrame-Referenz für Regime-Berechnung
         self.data: Optional[pd.DataFrame] = None
+
+        # vNext: Experiment Tracking (Phase: Strategy Layer vNext)
+        self.tracker = tracker
 
     def _register_trade_pnl(self, trade_dt: pd.Timestamp, pnl_pct: float) -> None:
         """
@@ -656,6 +664,35 @@ class BacktestEngine:
 
         logger.info(f"Backtest abgeschlossen: {len(trades)} Trades, {blocked_trades} blockiert")
 
+        # vNext: Experiment Tracking (optional, minimal)
+        if self.tracker is not None:
+            try:
+                # Log Params (Config-Snapshot)
+                params_to_log = {
+                    **strategy_params,
+                    "initial_cash": self.config["backtest"]["initial_cash"],
+                    "risk_per_trade": self.config["risk"].get("risk_per_trade", 0.01),
+                    "max_position_size": self.config["risk"].get("max_position_size", 0.25),
+                }
+                self.tracker.log_params(params_to_log)
+
+                # Log Metrics (Key-Metriken)
+                self.tracker.log_metrics(
+                    {
+                        "total_return": stats["total_return"],
+                        "sharpe": stats["sharpe"],
+                        "max_drawdown": stats["max_drawdown"],
+                        "win_rate": stats["win_rate"],
+                        "profit_factor": stats["profit_factor"],
+                        "total_trades": stats["total_trades"],
+                    }
+                )
+
+                logger.debug("Tracking erfolgt")
+            except Exception as e:
+                logger.warning(f"Tracking fehlgeschlagen: {e}")
+                # Kein Fehler werfen - Tracking ist optional
+        
         # Metadata zusammenführen
         metadata = {
             "mode": "realistic_with_risk_management",
@@ -664,6 +701,7 @@ class BacktestEngine:
         }
         metadata.update(regime_meta)
 
+        # BacktestResult erstellen
         return BacktestResult(
             equity_curve=equity_series,
             drawdown=drawdown_series,
@@ -1047,6 +1085,39 @@ class BacktestEngine:
                 summary=exec_summary,
             )
 
+        # vNext: Experiment Tracking (optional, minimal)
+        if self.tracker is not None:
+            try:
+                # Log Params
+                params_to_log = {
+                    **strategy_params,
+                    "initial_cash": self.config["backtest"]["initial_cash"],
+                    "symbol": symbol,
+                    "fee_bps": fee_bps,
+                    "slippage_bps": slippage_bps,
+                }
+                self.tracker.log_params(params_to_log)
+
+                # Log Metrics
+                self.tracker.log_metrics(
+                    {
+                        "total_return": stats["total_return"],
+                        "sharpe": stats["sharpe"],
+                        "max_drawdown": stats["max_drawdown"],
+                        "win_rate": stats["win_rate"],
+                        "profit_factor": stats["profit_factor"],
+                        "total_trades": stats["total_trades"],
+                        "total_orders": stats["total_orders"],
+                        "filled_orders": stats["filled_orders"],
+                    }
+                )
+
+                logger.debug("Tracking erfolgt")
+            except Exception as e:
+                logger.warning(f"Tracking fehlgeschlagen: {e}")
+                # Kein Fehler werfen - Tracking ist optional
+
+        # BacktestResult erstellen
         return BacktestResult(
             equity_curve=equity_series,
             drawdown=drawdown_series,
