@@ -1,0 +1,32 @@
+# Peak Trade CODEOWNERS
+# 
+# This file defines code ownership for critical paths in the repository.
+# Changes to these paths will require review from designated code owners.
+#
+# For more information, see:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Governance and Policy Rules
+# Critical: Trading policies, risk rules, compliance checks
+/src/governance/ @rauterfrank-ui/governance-reviewers
+
+# Risk Management
+# Critical: Risk models, position sizing, drawdown protection
+/src/risk/ @rauterfrank-ui/risk-reviewers
+
+# Live Trading
+# Critical: Real money execution, live strategy deployment
+/src/live/ @rauterfrank-ui/live-trading-reviewers
+
+# Execution Engine
+# Critical: Order execution, exchange integration
+/src/execution/ @rauterfrank-ui/execution-reviewers
+
+# Operations Scripts
+# Critical: Production operations, deployment, live system management
+/scripts/ops/ @rauterfrank-ui/ops-reviewers
+
+# Note: Replace the team handles above with actual GitHub teams or individual usernames
+# Example:
+#   @rauterfrank-ui/governance-reviewers  ->  @username1 @username2
+#   or use GitHub teams if they exist
