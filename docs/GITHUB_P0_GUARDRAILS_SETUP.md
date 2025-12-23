@@ -173,7 +173,7 @@ This means these workflows will run when PRs are added to the merge queue, not j
 ### Recommended Settings:
 
 1. **Allow merge commits** ❌ (Optional - disable if you want squash-only)
-   
+
 2. **Allow squash merging** ✅ **RECOMMENDED**
    - Default commit message: `Pull request title and description`
    - This is the recommended merge method for clean history
@@ -286,6 +286,117 @@ Before going live with P0 Guardrails, confirm:
 
 ---
 
+
+<!-- SOLO_MODE_SECTION_START -->
+## Solo Mode (1 Maintainer) — kein Self-Approval Deadlock
+
+Wenn du **allein** am Repo arbeitest, kann ein PR-Autor seinen eigenen PR **nicht** als Approval zählen lassen.
+Ein Setup mit „Require approvals" + „Require review from Code Owners" führt deshalb zu einem **Deadlock**.
+
+### Empfohlene Guardrails für Solo-Workflow
+
+Behalte die **harten** Schutzmechanismen bei, die solo wirklich zählen:
+
+- ✅ **PR-Workflow erzwingen** (kein Direct Push auf `main`)
+- ✅ **Required Status Checks** als Merge-Blocker (inkl. automatisierter Policy-Checks)
+- ✅ **Admin Enforcement** aktiv
+- ✅ **Force Pushes** verboten
+- ✅ **Branch Deletions** verboten
+
+Und deaktiviere die manuellen Review-Gates, die solo nicht erfüllbar sind:
+
+- ✅ `required_approving_review_count: 0`
+- ✅ `require_code_owner_reviews: false`
+- (optional) `dismiss_stale_reviews: false` (weil keine Reviews erforderlich)
+
+> **Hinweis zu CODEOWNERS:**  
+> In Solo Mode dient `.github/CODEOWNERS` als **Ownership-Markierung / Dokumentation** (kritische Pfade sind sichtbar),
+> aber nicht als manuelles Merge-Gate.
+
+### Empfohlene Required Status Checks (Solo Mode)
+
+Verwende **nur** Checks, die bei jedem PR laufen (ohne Path-Filter):
+
+```json
+{
+  "required_status_checks": {
+    "strict": false,
+    "contexts": [
+      "CI Health Gate (weekly_core)",
+      "Guard tracked files in reports directories",
+      "audit",
+      "tests (3.11)",
+      "strategy-smoke"
+    ]
+  }
+}
+```
+
+⚠️ **Wichtig:** Checks mit Path-Filtern (z.B. `Policy Critic Review`, `lint`) sollten NICHT als Required gesetzt werden,
+da sie bei Docs-only PRs nicht laufen und den Merge blockieren würden.
+
+### Source of Truth / Verifikation (CLI)
+
+Branch-Protection-Status:
+```bash
+gh api repos/OWNER/REPO/branches/main/protection
+```
+
+Required Status Checks:
+```bash
+gh api repos/OWNER/REPO/branches/main/protection/required_status_checks
+```
+
+Pull Request Reviews:
+```bash
+gh api repos/OWNER/REPO/branches/main/protection/required_pull_request_reviews
+```
+
+### Beispiel: Branch Protection via API setzen (Solo Mode)
+
+```bash
+OWNER="your-username"
+REPO="your-repo"
+BRANCH="main"
+
+gh api -X PUT "repos/$OWNER/$REPO/branches/$BRANCH/protection" --input - <<'JSON'
+{
+  "required_status_checks": {
+    "strict": false,
+    "contexts": [
+      "CI Health Gate (weekly_core)",
+      "Guard tracked files in reports directories",
+      "audit",
+      "tests (3.11)",
+      "strategy-smoke"
+    ]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 0,
+    "require_code_owner_reviews": false,
+    "dismiss_stale_reviews": false
+  },
+  "restrictions": null,
+  "allow_force_pushes": false,
+  "allow_deletions": false
+}
+JSON
+```
+
+### Validierung
+
+Nach dem Setup sollte ein Test-PR:
+1. ✅ Direkten Push auf `main` blockieren
+2. ✅ Alle Required Status Checks durchlaufen
+3. ✅ Ohne manuelle Approval mergbar sein (wenn alle Checks grün)
+4. ✅ Admin-Regeln durchsetzen (auch für Admins gültig)
+
+Siehe auch: `docs/ENFORCEMENT_DRILL_REPORT.md` für ein vollständiges Validierungsbeispiel.
+
+<!-- SOLO_MODE_SECTION_END -->
+
+---
 ## Additional Resources
 
 - [GitHub Branch Protection Rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)

@@ -83,6 +83,72 @@ For `main` branch, configure:
 
 ---
 
+
+<!-- SOLO_MODE_QUICK_START -->
+## Solo Mode Quick Start
+
+**Für Einzelentwickler:** Verhindere Self-Approval-Deadlocks, aber behalte automatisierte Guardrails.
+
+### Kern-Einstellung (Branch Protection API)
+
+```bash
+# Setze Branch Protection für Solo-Workflow
+gh api -X PUT "repos/OWNER/REPO/branches/main/protection" --input - <<'JSON'
+{
+  "required_status_checks": {
+    "strict": false,
+    "contexts": [
+      "CI Health Gate (weekly_core)",
+      "Guard tracked files in reports directories",
+      "audit",
+      "tests (3.11)",
+      "strategy-smoke"
+    ]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 0,
+    "require_code_owner_reviews": false,
+    "dismiss_stale_reviews": false
+  },
+  "restrictions": null,
+  "allow_force_pushes": false,
+  "allow_deletions": false
+}
+JSON
+```
+
+### Was du bekommst (Solo Mode)
+
+✅ **Aktiv:**
+- PR-Workflow erzwungen (kein Direct Push)
+- Automatisierte Status Checks (Tests, Audit, etc.)
+- Admin Enforcement
+- Keine Force Pushes
+- Keine Branch Deletions
+
+❌ **Deaktiviert:**
+- Manuelle Approvals (würden zu Deadlock führen)
+- CODEOWNERS-Reviews (dokumentativ, nicht blockierend)
+
+### Unterschied zu Team Mode
+
+| Einstellung | Team Mode | Solo Mode |
+|-------------|-----------|-----------|
+| PR-Workflow | ✅ Erzwungen | ✅ Erzwungen |
+| Status Checks | ✅ Required | ✅ Required |
+| Manual Approvals | ✅ 1-2 Reviews | ❌ 0 Reviews |
+| Code Owner Reviews | ✅ Enforced | ❌ Dokumentativ |
+| Admin Enforcement | ✅ Aktiv | ✅ Aktiv |
+
+### Siehe auch
+
+- **Setup Details:** `docs/GITHUB_P0_GUARDRAILS_SETUP.md` → Solo Mode Sektion
+- **Validierung:** `docs/ENFORCEMENT_DRILL_REPORT.md`
+
+<!-- SOLO_MODE_QUICK_END -->
+
+---
 ## Verification Checklist
 
 After configuring GitHub UI settings:
