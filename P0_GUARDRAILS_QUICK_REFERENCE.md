@@ -102,7 +102,9 @@ gh api -X PUT "repos/OWNER/REPO/branches/main/protection" --input - <<'JSON'
       "Guard tracked files in reports directories",
       "audit",
       "tests (3.11)",
-      "strategy-smoke"
+      "strategy-smoke",
+      "Policy Critic Gate",
+      "Lint Gate"
     ]
   },
   "enforce_admins": true,
@@ -117,6 +119,18 @@ gh api -X PUT "repos/OWNER/REPO/branches/main/protection" --input - <<'JSON'
 }
 JSON
 ```
+
+### Gate Pattern (Wichtig!)
+
+**Problem:** Path-filtered Checks blocken Docs-only PRs.
+
+**Lösung:** Always-run "Gate" Workflows:
+- **Policy Critic Gate** (`.github/workflows/policy_critic_gate.yml`)
+  - Läuft immer, prüft nur bei policy-relevanten Änderungen
+- **Lint Gate** (`.github/workflows/lint_gate.yml`)
+  - Läuft immer, prüft nur bei `*.py` Änderungen
+
+✅ Alle Required Checks laufen IMMER → keine Merge-Blockierung bei Docs-only PRs.
 
 ### Was du bekommst (Solo Mode)
 

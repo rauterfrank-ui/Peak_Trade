@@ -326,14 +326,39 @@ Verwende **nur** Checks, die bei jedem PR laufen (ohne Path-Filter):
       "Guard tracked files in reports directories",
       "audit",
       "tests (3.11)",
-      "strategy-smoke"
+      "strategy-smoke",
+      "Policy Critic Gate",
+      "Lint Gate"
     ]
   }
 }
 ```
 
-⚠️ **Wichtig:** Checks mit Path-Filtern (z.B. `Policy Critic Review`, `lint`) sollten NICHT als Required gesetzt werden,
-da sie bei Docs-only PRs nicht laufen und den Merge blockieren würden.
+### Gate Pattern: Always-Run Required Checks
+
+⚠️ **Problem mit path-filtered Checks:** Checks mit Path-Filtern (z.B. traditionelle `Policy Critic Review`, `lint`)
+laufen nur bei relevanten Dateiänderungen und werden bei Docs-only PRs übersprungen. Als Required Checks würden sie den Merge blockieren.
+
+✅ **Lösung: Gate Pattern** - Workflows die IMMER laufen, aber intern prüfen ob sie relevant sind:
+
+**Neue Gate-Workflows:**
+- `.github/workflows/policy_critic_gate.yml` - **Policy Critic Gate**
+  - Läuft IMMER (kein `paths`-Filter im Trigger)
+  - Prüft intern: Wurden policy-sensitive Pfade geändert? (`src/live/`, `src/execution/`, etc.)
+  - Wenn JA → führe Policy Critic Analyse aus
+  - Wenn NEIN → exit 0 (success, "not applicable")
+
+- `.github/workflows/lint_gate.yml` - **Lint Gate**
+  - Läuft IMMER (kein `paths`-Filter im Trigger)
+  - Prüft intern: Wurden `*.py` Dateien geändert?
+  - Wenn JA → führe ruff check/format aus
+  - Wenn NEIN → exit 0 (success, "not applicable")
+
+**Vorteile:**
+- ✅ Check-Run wird IMMER erstellt (gleichbleibender Name)
+- ✅ Branch Protection kann sie als Required konfigurieren
+- ✅ Docs-only PRs werden nicht blockiert
+- ✅ Relevante Änderungen werden trotzdem geprüft
 
 ### Source of Truth / Verifikation (CLI)
 
