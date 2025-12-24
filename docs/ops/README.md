@@ -561,6 +561,43 @@ git push -u origin docs/merge-log-$PR
 gh pr create --title "docs(ops): add merge log for PR #${PR}" --body "..."
 ```
 
+### Merge Logs (Batch)
+
+Automatisierte Generierung von Merge-Logs für mehrere PRs gleichzeitig.
+
+**Tool:** `scripts/ops/generate_merge_logs_batch.sh` (oder via Ops Center)
+
+**Verwendung:**
+
+```bash
+# Via Ops Center (empfohlen)
+scripts/ops/ops_center.sh merge-logs 281
+
+# Mehrere PRs gleichzeitig (batch)
+scripts/ops/ops_center.sh merge-logs 278 279 280
+
+# Direkt (equivalent)
+scripts/ops/generate_merge_logs_batch.sh 281
+scripts/ops/generate_merge_logs_batch.sh 278 279 280
+```
+
+**Requirements:**
+- `gh` CLI installiert + authentifiziert (`gh auth login`)
+- PRs müssen bereits gemerged sein
+
+**Output:**
+- Erstellt `docs/ops/PR_<NUM>_MERGE_LOG.md` für jedes PR
+- Updated automatisch `docs/ops/README.md` + `docs/ops/MERGE_LOG_WORKFLOW.md`
+
+**Validierung:**
+
+```bash
+# Setup validieren (offline, <1s)
+scripts/ops/validate_merge_logs_setup.sh
+```
+
+**Siehe auch:** [MERGE_LOG_WORKFLOW.md](MERGE_LOG_WORKFLOW.md)
+
 ### Liste
 
 - [PR #261](PR_261_MERGE_LOG.md) — chore(ops): add stash triage helper (export-first, safe-by-default) (merged 2025-12-23)

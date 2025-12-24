@@ -7,6 +7,7 @@
 #   ops_center.sh status               Show repo status
 #   ops_center.sh pr <NUM>             Review PR (no merge)
 #   ops_center.sh merge-log            Show merge log quick reference
+#   ops_center.sh merge-logs <PR>...   Generate merge logs (batch)
 #   ops_center.sh doctor               Run ops_doctor health checks
 #
 # Safe-by-default: No destructive actions, no merges without explicit flags.
@@ -34,6 +35,7 @@ COMMANDS:
   status              Show repo status (git + gh)
   pr <NUM>            Review PR (safe, no merge)
   merge-log           Show merge log quick reference
+  merge-logs <PR>...  Generate merge logs (batch)
   doctor              Run ops_doctor health checks
 
 EXAMPLES:
@@ -45,6 +47,12 @@ EXAMPLES:
 
   # Get merge log quick links
   ops_center.sh merge-log
+
+  # Generate merge log for single PR
+  ops_center.sh merge-logs 281
+
+  # Generate merge logs for multiple PRs (batch)
+  ops_center.sh merge-logs 278 279 280
 
   # Run full health check
   ops_center.sh doctor
@@ -197,6 +205,75 @@ cmd_merge_log() {
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Merge Logs (Batch Generator)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+cmd_merge_logs() {
+  # No args → show usage + examples
+  if [[ "$#" -eq 0 ]]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📋 Merge Logs — Batch Generator"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "USAGE:"
+    echo "  ops_center.sh merge-logs <PR> [<PR> ...]"
+    echo ""
+    echo "EXAMPLES:"
+    echo "  # Single PR"
+    echo "  ops_center.sh merge-logs 281"
+    echo ""
+    echo "  # Multiple PRs (batch)"
+    echo "  ops_center.sh merge-logs 278 279 280"
+    echo ""
+    echo "REQUIREMENTS:"
+    echo "  - gh CLI installed + authenticated"
+    echo "  - PRs must be merged"
+    echo ""
+    echo "OUTPUT:"
+    echo "  - docs/ops/PR_<NUM>_MERGE_LOG.md (per PR)"
+    echo "  - Updates docs/ops/README.md + MERGE_LOG_WORKFLOW.md"
+    echo ""
+    echo "DOCS:"
+    echo "  docs/ops/MERGE_LOG_WORKFLOW.md"
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    exit 0
+  fi
+
+  # With args → pre-flight checks + delegate
+  local script="$SCRIPT_DIR/generate_merge_logs_batch.sh"
+
+  if [[ ! -x "$script" ]]; then
+    echo "❌ Error: Script not found or not executable: $script"
+    echo "ℹ️  Expected location: scripts/ops/generate_merge_logs_batch.sh"
+    exit 1
+  fi
+
+  # Check for gh CLI
+  if ! command -v gh &>/dev/null; then
+    echo "❌ Error: gh CLI not found"
+    echo "ℹ️  Install: brew install gh"
+    echo "ℹ️  Docs: https://cli.github.com/"
+    exit 1
+  fi
+
+  # Check gh auth
+  if ! gh auth status &>/dev/null; then
+    echo "❌ Error: gh not authenticated"
+    echo "ℹ️  Run: gh auth login"
+    exit 1
+  fi
+
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📋 Generating Merge Logs"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+  echo "PRs: $*"
+  echo ""
+
+  "$script" "$@"
+}
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Doctor
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 cmd_doctor() {
@@ -235,6 +312,9 @@ main() {
       ;;
     merge-log)
       cmd_merge_log "$@"
+      ;;
+    merge-logs)
+      cmd_merge_logs "$@"
       ;;
     doctor)
       cmd_doctor "$@"
