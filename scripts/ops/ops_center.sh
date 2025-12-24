@@ -34,7 +34,7 @@ COMMANDS:
   status              Show repo status (git + gh)
   pr <NUM>            Review PR (safe, no merge)
   merge-log           Show merge log quick reference
-  doctor              Run ops_doctor health checks
+  doctor [--quick]    Run ops_doctor health checks (+ merge-log validation)
 
 EXAMPLES:
   # Check repo status
@@ -46,8 +46,11 @@ EXAMPLES:
   # Get merge log quick links
   ops_center.sh merge-log
 
-  # Run full health check
+  # Run full health check (includes merge-log tests)
   ops_center.sh doctor
+
+  # Quick health check (skip merge-log tests)
+  ops_center.sh doctor --quick
 
 SAFE-BY-DEFAULT:
   - No destructive actions
@@ -247,6 +250,17 @@ cmd_merge_log() {
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 cmd_doctor() {
   local script="$SCRIPT_DIR/ops_doctor.sh"
+  local quick_mode=0
+  local doctor_args=()
+
+  # Parse --quick flag (ours only, not passed to Python doctor)
+  for arg in "$@"; do
+    if [[ "$arg" == "--quick" ]]; then
+      quick_mode=1
+    else
+      doctor_args+=("$arg")
+    fi
+  done
 
   if [[ ! -x "$script" ]]; then
     echo "⚠️  Script not found or not executable: $script"
@@ -259,7 +273,67 @@ cmd_doctor() {
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo ""
 
-  "$script" "$@"
+  # Run main doctor checks (without --quick flag)
+  local doctor_exit=0
+  if [[ "${#doctor_args[@]}" -gt 0 ]]; then
+    "$script" "${doctor_args[@]}" || doctor_exit=$?
+  else
+    "$script" || doctor_exit=$?
+  fi
+
+  # Merge-Log Health Checks
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📋 Merge-Log Health"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local validator="$SCRIPT_DIR/validate_merge_logs_setup.sh"
+  local tests="$SCRIPT_DIR/tests/test_generate_merge_logs_batch.sh"
+  local merge_log_exit=0
+
+  # 1) Validator (always run, fast)
+  if [[ -x "$validator" ]]; then
+    echo "🔍 Validator: validate_merge_logs_setup.sh"
+    if "$validator" >/dev/null 2>&1; then
+      echo "   ✅ PASS - Setup validated"
+    else
+      echo "   ❌ FAIL - Setup validation failed"
+      echo "   Details: Run 'scripts/ops/validate_merge_logs_setup.sh' for details"
+      merge_log_exit=1
+    fi
+  else
+    echo "⚠️  Validator not found: $validator"
+    merge_log_exit=1
+  fi
+
+  # 2) Tests (skip in --quick mode or if not present)
+  if [[ "$quick_mode" -eq 1 ]]; then
+    echo "⏭️  Tests: SKIP (--quick mode)"
+  elif [[ -x "$tests" ]]; then
+    echo "🧪 Tests: test_generate_merge_logs_batch.sh"
+    if "$tests" >/dev/null 2>&1; then
+      echo "   ✅ PASS - All offline tests passed"
+    else
+      echo "   ⚠️  FAIL - Some tests failed"
+      echo "   Details: Run 'scripts/ops/tests/test_generate_merge_logs_batch.sh'"
+      merge_log_exit=1
+    fi
+  else
+    echo "ℹ️  Tests: SKIP (not present)"
+  fi
+
+  echo ""
+
+  # Exit with non-zero if either doctor or merge-log checks failed
+  local final_exit=$((doctor_exit | merge_log_exit))
+  if [[ $final_exit -ne 0 ]]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "❌ Health checks failed (exit $final_exit)"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  fi
+
+  return $final_exit
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -67,6 +67,27 @@ Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON-
 - **Beispiel-Output**: [ops_doctor_example_output.txt](ops_doctor_example_output.txt)
 - **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](../../OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
 
+### Merge-Log Health Integration
+
+`ops doctor` prüft automatisch die Merge-Log-Infrastruktur:
+
+```bash
+# Volle Prüfung (Validator + Tests, ~10s)
+ops doctor
+
+# Schnellmodus (nur Validator, <1s)
+ops doctor --quick
+```
+
+**Geprüft wird:**
+- ✅ Merge-Log Generator (executable + markers)
+- ✅ Dokumentation (marker format)
+- 🧪 Offline Tests (falls `--quick` nicht gesetzt)
+
+**Exit Codes:**
+- `0` = Alle Checks bestanden
+- `!= 0` = Mindestens ein Check fehlgeschlagen
+
 ---
 
 ## 🚀 PR Management Toolkit
