@@ -807,3 +807,9 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 
 ## 📋 Merge Logs → Workflow
 - PR #262 — Merge Log (meta: merge-log workflow standard): `PR_262_MERGE_LOG.md`
+
+<!-- MERGE_LOG_EXAMPLES:START -->
+- PR #278 — merge log for PR #123 + ops references: docs/ops/PR_278_MERGE_LOG.md
+- PR #279 — salvage untracked docs/ops assets: docs/ops/PR_279_MERGE_LOG.md
+- PR #280 — archive session reports to worklogs: docs/ops/PR_280_MERGE_LOG.md
+<!-- MERGE_LOG_EXAMPLES:END -->
