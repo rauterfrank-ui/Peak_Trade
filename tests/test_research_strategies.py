@@ -392,9 +392,9 @@ class TestAllRnDStrategiesInTiering:
         for strategy_id in self.EXPECTED_RND_STRATEGIES:
             row = next((r for r in tiering["rows"] if r["id"] == strategy_id), None)
             assert row is not None, f"Strategie '{strategy_id}' nicht gefunden"
-            assert (
-                row.get("owner") == "research"
-            ), f"Strategie '{strategy_id}' hat owner='{row.get('owner')}', erwartet: 'research'"
+            assert row.get("owner") == "research", (
+                f"Strategie '{strategy_id}' hat owner='{row.get('owner')}', erwartet: 'research'"
+            )
 
     def test_all_rnd_strategies_have_tags(self):
         """Test: Alle R&D-Strategien haben Tags (nicht leer)."""
@@ -470,9 +470,9 @@ class TestStrategyTieringAPI:
 
         # Prüfe, dass R&D-Strategien enthalten sind
         r_and_d_strategies = [r for r in tiering.get("rows", []) if r["tier"] == "r_and_d"]
-        assert (
-            len(r_and_d_strategies) >= 2
-        ), "Mindestens Armstrong und El-Karoui sollten vorhanden sein"
+        assert len(r_and_d_strategies) >= 2, (
+            "Mindestens Armstrong und El-Karoui sollten vorhanden sein"
+        )
 
         # Prüfe spezifische Strategien
         strategy_ids = [r["id"] for r in r_and_d_strategies]

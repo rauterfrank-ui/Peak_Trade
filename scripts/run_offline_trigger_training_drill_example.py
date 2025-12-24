@@ -253,9 +253,9 @@ def load_data_for_session(
     return _generate_demo_data()
 
 
-def _generate_demo_data() -> (
-    Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp]
-):
+def _generate_demo_data() -> Tuple[
+    pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp
+]:
     """
     Generiert synthetische Demo-Daten für Testing.
 
