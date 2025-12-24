@@ -249,15 +249,31 @@ else
   skip_check "12_ruff" "ruff not installed (pip install ruff)"
 fi
 
-if [[ "$(get_tool black)" == "true" ]]; then
-  run_check "13_black" black --check .
-  BLACK_EXIT=$(grep "^13_black=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
-  if [[ "$BLACK_EXIT" != "0" && "$BLACK_EXIT" != "SKIPPED" ]]; then
+# FORMAT check: ruff format is the source of truth (replaces black)
+# Check if ruff is available (either as command or via python -m ruff)
+RUFF_AVAILABLE=false
+if [[ "$(get_tool ruff)" == "true" ]]; then
+  RUFF_AVAILABLE=true
+elif command -v python3 &>/dev/null && python3 -m ruff --version &>/dev/null; then
+  RUFF_AVAILABLE=true
+fi
+
+if [[ "$RUFF_AVAILABLE" == "true" ]]; then
+  # Prefer python -m ruff for robustness (works even if ruff command is not in PATH)
+  if command -v python3 &>/dev/null && python3 -m ruff --version &>/dev/null; then
+    run_check "13_format" python3 -m ruff format --check .
+  else
+    run_check "13_format" ruff format --check .
+  fi
+  FORMAT_EXIT=$(grep "^13_format=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
+  if [[ "$FORMAT_EXIT" != "0" && "$FORMAT_EXIT" != "SKIPPED" ]]; then
     FINDINGS_COUNT=$((FINDINGS_COUNT + 1))
-    log "FINDING: black check failed (exit $BLACK_EXIT)"
+    log "FINDING: ruff format check failed (exit $FORMAT_EXIT)"
   fi
 else
-  skip_check "13_black" "black not installed (pip install black)"
+  # ruff missing is a HARD-FAIL (formatter is required)
+  log "HARD-FAIL: ruff not available for format check (required: pip install ruff)"
+  HARD_FAIL_COUNT=$((HARD_FAIL_COUNT + 1))
 fi
 
 if [[ "$(get_tool mypy)" == "true" ]]; then
