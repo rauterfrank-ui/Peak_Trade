@@ -325,8 +325,34 @@ cmd_doctor() {
 
   echo ""
 
-  # Exit with non-zero if either doctor or merge-log checks failed
-  local final_exit=$((doctor_exit | merge_log_exit))
+  # Formatter Policy Health Check
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🛡️  Formatter Policy Health"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local formatter_check="$SCRIPT_DIR/check_no_black_enforcement.sh"
+  local formatter_exit=0
+
+  # Always run (fast, offline check)
+  if [[ -x "$formatter_check" ]]; then
+    echo "🔍 Check: no black enforcement in workflows/scripts"
+    if "$formatter_check" >/dev/null 2>&1; then
+      echo "   ✅ PASS - Formatter policy enforced (ruff format)"
+    else
+      echo "   ❌ FAIL - black enforcement detected"
+      echo "   Details: Run 'scripts/ops/check_no_black_enforcement.sh'"
+      formatter_exit=1
+    fi
+  else
+    echo "⚠️  Formatter policy check not found: $formatter_check"
+    formatter_exit=1
+  fi
+
+  echo ""
+
+  # Exit with non-zero if any checks failed
+  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit))
   if [[ $final_exit -ne 0 ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "❌ Health checks failed (exit $final_exit)"
