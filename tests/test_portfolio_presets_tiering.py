@@ -450,9 +450,9 @@ class TestTieringConfigRobustness:
         """Core-Strategien haben eine empfohlene Config."""
         for strategy_id, info in tiering_config.items():
             if info.tier == "core":
-                assert (
-                    info.recommended_config_id is not None
-                ), f"Core strategy {strategy_id} should have recommended_config_id"
+                assert info.recommended_config_id is not None, (
+                    f"Core strategy {strategy_id} should have recommended_config_id"
+                )
 
 
 # =============================================================================

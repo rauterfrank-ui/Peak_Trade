@@ -372,12 +372,12 @@ class TestAlertsApiIncludesRunbooksForKnownAlertType:
 
         # Assert: Erwartete Runbooks für RISK + live_risk_severity vorhanden
         runbook_ids = [rb.id for rb in test_alert.runbooks]
-        assert (
-            "live_risk_severity" in runbook_ids
-        ), "live_risk_severity Runbook sollte enthalten sein"
-        assert (
-            "live_alert_pipeline" in runbook_ids
-        ), "live_alert_pipeline Runbook sollte enthalten sein"
+        assert "live_risk_severity" in runbook_ids, (
+            "live_risk_severity Runbook sollte enthalten sein"
+        )
+        assert "live_alert_pipeline" in runbook_ids, (
+            "live_alert_pipeline Runbook sollte enthalten sein"
+        )
 
         # Cleanup
         reset_default_storage()
@@ -424,12 +424,12 @@ class TestAlertsApiIncludesRunbooksForKnownAlertType:
         runbook_ids = [rb.id for rb in critical_alert.runbooks]
 
         # CRITICAL Alerts sollten Incident-Drills enthalten
-        assert (
-            "incident_drills" in runbook_ids
-        ), "CRITICAL Alerts sollten incident_drills Runbook enthalten"
-        assert (
-            "live_risk_limits" in runbook_ids
-        ), "Risk-Limits Alerts sollten live_risk_limits Runbook enthalten"
+        assert "incident_drills" in runbook_ids, (
+            "CRITICAL Alerts sollten incident_drills Runbook enthalten"
+        )
+        assert "live_risk_limits" in runbook_ids, (
+            "Risk-Limits Alerts sollten live_risk_limits Runbook enthalten"
+        )
 
         # Cleanup
         reset_default_storage()
