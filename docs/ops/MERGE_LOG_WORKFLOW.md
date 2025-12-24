@@ -337,3 +337,9 @@ Würde automatisch:
 **Version:** 1.0.0  
 **Letzte Aktualisierung:** 2025-12-23  
 **Maintainer:** Peak_Trade Ops Team
+
+<!-- MERGE_LOG_EXAMPLES:START -->
+- PR #278 — merge log for PR #123 + ops references: docs/ops/PR_278_MERGE_LOG.md
+- PR #279 — salvage untracked docs/ops assets: docs/ops/PR_279_MERGE_LOG.md
+- PR #280 — archive session reports to worklogs: docs/ops/PR_280_MERGE_LOG.md
+<!-- MERGE_LOG_EXAMPLES:END -->
