@@ -397,9 +397,9 @@ class TestIntegration:
 
         for combo in combos:
             if "oversold_level" in combo and "overbought_level" in combo:
-                assert (
-                    combo["oversold_level"] < combo["overbought_level"]
-                ), f"Ungültige Kombination: {combo}"
+                assert combo["oversold_level"] < combo["overbought_level"], (
+                    f"Ungültige Kombination: {combo}"
+                )
 
     def test_breakout_sweep_has_sl_params(self):
         """Breakout Sweeps enthalten Stop-Loss Parameter."""

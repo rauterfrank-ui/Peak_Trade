@@ -216,9 +216,9 @@ class TestStrategyEligibilityNegative:
             policies=strict_policies,
         )
 
-        assert (
-            not result.is_eligible
-        ), "Strategy without allow_live should fail with strict policies"
+        assert not result.is_eligible, (
+            "Strategy without allow_live should fail with strict policies"
+        )
         assert any("allow_live" in r.lower() for r in result.reasons)
 
     def test_strategy_with_weak_profile_not_eligible(self, default_policies, weak_strategy_profile):

@@ -124,9 +124,9 @@ def test_script_validates_base_url(script_path: Path) -> None:
 
     # Should check if BASE_URL is empty
     assert "BASE_URL" in content, "Script should use BASE_URL"
-    assert (
-        "-z" in content or "empty" in content.lower()
-    ), "Script should validate that BASE_URL is not empty"
+    assert "-z" in content or "empty" in content.lower(), (
+        "Script should validate that BASE_URL is not empty"
+    )
 
 
 def test_script_has_summary_output(script_path: Path) -> None:
@@ -194,9 +194,9 @@ def test_script_has_write_gating_check(script_path: Path) -> None:
     content = script_path.read_text()
 
     # Check for write test
-    assert (
-        "write" in content.lower() or "post" in content.lower()
-    ), "Script should test write operations"
+    assert "write" in content.lower() or "post" in content.lower(), (
+        "Script should test write operations"
+    )
 
     # Check for 403 expectation (write blocked)
     assert "403" in content, "Script should expect 403 for blocked writes"
@@ -212,6 +212,6 @@ def test_script_handles_graceful_degradation(script_path: Path) -> None:
     assert "501" in content, "Script should handle 501 (Not Implemented)"
 
     # Check for degradation logic
-    assert (
-        "EXPECT_501_OK" in content or "degraded" in content.lower()
-    ), "Script should have logic for handling degraded state"
+    assert "EXPECT_501_OK" in content or "degraded" in content.lower(), (
+        "Script should have logic for handling degraded state"
+    )
