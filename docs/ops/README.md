@@ -88,6 +88,30 @@ ops doctor --quick
 - `0` = Alle Checks bestanden
 - `!= 0` = Mindestens ein Check fehlgeschlagen
 
+### Formatter Policy Guardrail
+
+`ops doctor` prüft automatisch, dass keine `black --check` Enforcement in Workflows/Scripts existiert:
+
+```bash
+# Formatter Policy Check (immer aktiv, auch bei --quick)
+ops doctor
+ops doctor --quick
+```
+
+**Source of Truth:**
+- ✅ `ruff format --check` (CI + Ops)
+- ❌ `black --check` (nicht erlaubt)
+
+**Geprüft wird:**
+- ✅ .github/workflows (keine black enforcement)
+- ✅ scripts (keine black enforcement)
+
+**Bei Verstößen:**
+```bash
+# Manueller Check
+scripts/ops/check_no_black_enforcement.sh
+```
+
 ---
 
 ## 🚀 PR Management Toolkit
