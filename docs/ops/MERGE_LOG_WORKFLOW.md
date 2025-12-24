@@ -339,7 +339,6 @@ Würde automatisch:
 **Maintainer:** Peak_Trade Ops Team
 
 <!-- MERGE_LOG_EXAMPLES:START -->
-- PR #278 — merge log for PR #123 + ops references: docs/ops/PR_278_MERGE_LOG.md
-- PR #279 — salvage untracked docs/ops assets: docs/ops/PR_279_MERGE_LOG.md
-- PR #280 — archive session reports to worklogs: docs/ops/PR_280_MERGE_LOG.md
+- PR #284 — docs(ops): merge-log UX hardening v2 (dry-run, keep-going, docs + tests): docs/ops/PR_284_MERGE_LOG.md
+- PR #285 — style: apply ruff formatting to fix Lint Gate (pre-existing drift): docs/ops/PR_285_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
