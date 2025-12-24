@@ -96,3 +96,9 @@ logs/obs/
 logs/launchd/
 venv_pip_check/
 .venv/
+
+# Guard: prevent accidental session reports in repo root
+/*_REPORT.md
+/*_SUMMARY.md
+/PR_X*_*.md
+/STRATEGY_LAYER_VNEXT_*_REPORT.md
