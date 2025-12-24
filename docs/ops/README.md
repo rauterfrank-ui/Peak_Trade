@@ -612,9 +612,10 @@ Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
 **Format:**
 ```html
 <!-- MERGE_LOG_EXAMPLES:START -->
-- PR #XXX — description: docs/ops/PR_XXX_MERGE_LOG.md
-- PR #YYY — description: docs/ops/PR_YYY_MERGE_LOG.md
+- PR #284 — docs(ops): merge-log UX hardening v2 (dry-run, keep-going, docs + tests): docs/ops/PR_284_MERGE_LOG.md
+- PR #285 — style: apply ruff formatting to fix Lint Gate (pre-existing drift): docs/ops/PR_285_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
+
 ```
 
 Das Batch-Tool ersetzt den Inhalt zwischen den Markern idempotent.
