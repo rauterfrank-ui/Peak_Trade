@@ -273,6 +273,7 @@ Eine Merge-Log-Template-Datei findest du in: `templates/ops/merge_log_template.m
 - [PR #261](PR_261_MERGE_LOG.md) — Stash Triage Helper
 - [PR #250](PR_250_MERGE_LOG.md) — Ops Doctor
 - [PR #237](PR_237_MERGE_LOG.md) — Bash Run Helpers
+- [PR #123](PR_123_MERGE_LOG.md) — Core Architecture & Workflow Documentation
 
 ---
 
