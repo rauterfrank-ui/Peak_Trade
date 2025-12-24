@@ -4,25 +4,32 @@ set -euo pipefail
 # Flags
 DRY_RUN=0
 KEEP_GOING=0
+PRS=()
 
 usage() {
-  cat <<USAGE
+  cat <<'USAGE'
 Usage:
-  scripts/ops/generate_merge_logs_batch.sh [OPTIONS] <PR> [<PR> ...]
+  scripts/ops/generate_merge_logs_batch.sh [--dry-run] [--keep-going] <PR> [<PR> ...]
 
-Options:
-  --dry-run       Preview mode: generate to temp files, show diffs, no writes
-  --keep-going    Continue on failures, summarize at end (exit 1 if any failed)
-  --help          Show this help
+Flags:
+  --dry-run      Preview only. Generate outputs into temp files and show diffs.
+                 Does NOT modify the working tree.
+  --keep-going   Continue on per-PR failures, summarize at end, exit 1 if any failed.
+  -h, --help     Show this help.
+  --             End of flags; remaining arguments are PR numbers.
 
 Examples:
+  scripts/ops/generate_merge_logs_batch.sh 281
   scripts/ops/generate_merge_logs_batch.sh 278 279 280
   scripts/ops/generate_merge_logs_batch.sh --dry-run 281
-  scripts/ops/generate_merge_logs_batch.sh --keep-going 278 279 999
+  scripts/ops/generate_merge_logs_batch.sh --keep-going 278 279 999999
+  scripts/ops/generate_merge_logs_batch.sh -- 281 282 283
 USAGE
 }
 
 die() { echo "ERROR: $*" >&2; exit 1; }
+
+is_int() { [[ "${1:-}" =~ ^[0-9]+$ ]]; }
 
 require_gh() {
   command -v gh >/dev/null 2>&1 || die "gh CLI not found"
@@ -221,9 +228,8 @@ update_ops_docs_links() {
 }
 
 main() {
-  # Parse flags
-  local prs=()
-  while [[ "$#" -gt 0 ]]; do
+  # Parse flags (bash-safe)
+  while [[ $# -gt 0 ]]; do
     case "$1" in
       --dry-run)
         DRY_RUN=1
@@ -233,29 +239,40 @@ main() {
         KEEP_GOING=1
         shift
         ;;
-      --help|-h)
+      -h|--help)
         usage
         exit 0
         ;;
+      --)
+        shift
+        while [[ $# -gt 0 ]]; do
+          PRS+=("$1")
+          shift
+        done
+        ;;
       -*)
-        echo "ERROR: unknown option: $1" >&2
-        usage >&2
-        exit 2
+        die "Unknown flag: $1 (try --help)"
         ;;
       *)
-        prs+=("$1")
+        PRS+=("$1")
         shift
         ;;
     esac
   done
 
+  # Validate args
+  if [[ "${#PRS[@]}" -eq 0 ]]; then
+    usage
+    die "No PR numbers provided"
+  fi
+
+  # Normalize / validate PR numbers
+  for pr in "${PRS[@]}"; do
+    is_int "$pr" || die "Invalid PR number: '$pr' (must be an integer)"
+  done
+
   require_gh
   repo_root >/dev/null
-
-  if [ "${#prs[@]}" -lt 1 ]; then
-    usage
-    exit 2
-  fi
 
   [[ "$DRY_RUN" -eq 1 ]] && echo "[DRY-RUN] Preview mode: no files will be written"
   echo ""
@@ -263,13 +280,7 @@ main() {
   local failures=()
 
   # Generate logs
-  for pr in "${prs[@]}"; do
-    if [[ ! "$pr" =~ ^[0-9]+$ ]]; then
-      echo "ERROR: invalid PR number: $pr" >&2
-      failures+=("$pr (invalid number)")
-      [[ "$KEEP_GOING" -eq 0 ]] && exit 1
-      continue
-    fi
+  for pr in "${PRS[@]}"; do
 
     if write_merge_log_md "$pr"; then
       [[ "$DRY_RUN" -eq 1 ]] || echo "✅ Wrote docs/ops/PR_${pr}_MERGE_LOG.md"
@@ -283,7 +294,7 @@ main() {
   # Update docs links (idempotent block)
   if [[ "${#failures[@]}" -eq 0 ]] || [[ "$KEEP_GOING" -eq 1 ]]; then
     local successful_prs=()
-    for pr in "${prs[@]}"; do
+    for pr in "${PRS[@]}"; do
       # Only include successfully processed PRs
       local failed=0
       if [[ "${#failures[@]}" -gt 0 ]]; then
@@ -310,7 +321,7 @@ main() {
   echo ""
   if [[ "${#failures[@]}" -gt 0 ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "❌ Failures (${#failures[@]}/${#prs[@]}):"
+    echo "❌ Failures (${#failures[@]}/${#PRS[@]}):"
     for fail in "${failures[@]}"; do
       echo "   - $fail"
     done
@@ -318,7 +329,7 @@ main() {
     exit 1
   else
     [[ "$DRY_RUN" -eq 1 ]] && echo "[DRY-RUN] Preview complete. No changes made."
-    echo "✅ Success: processed ${#prs[@]} PR(s)"
+    echo "✅ Success: processed ${#PRS[@]} PR(s)"
   fi
 }
 
