@@ -165,35 +165,81 @@ cmd_pr() {
 # Merge Log Quick Reference
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 cmd_merge_log() {
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "📋 Merge Log Quick Reference"
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo ""
-  echo "🔹 Workflow:"
-  echo "   docs/ops/MERGE_LOG_WORKFLOW.md"
-  echo ""
-  echo "🔹 Template:"
-  echo "   templates/ops/merge_log_template.md"
-  echo ""
-  echo "🔹 Examples:"
-
-  local logs_dir="$REPO_ROOT/docs/ops"
-  if ls "$logs_dir"/PR_*_MERGE_LOG.md &>/dev/null; then
+  # No args → show quick reference
+  if [[ "$#" -eq 0 ]]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📋 Merge Log Quick Reference"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-    ls -1 "$logs_dir"/PR_*_MERGE_LOG.md | while read -r f; do
-      local bn
-      bn="$(basename "$f")"
-      echo "   - $bn"
-    done
-  else
-    echo "   (no merge logs found yet)"
+    echo "🔹 Workflow:"
+    echo "   docs/ops/MERGE_LOG_WORKFLOW.md"
+    echo ""
+    echo "🔹 Template:"
+    echo "   templates/ops/merge_log_template.md"
+    echo ""
+    echo "🔹 Examples:"
+
+    local logs_dir="$REPO_ROOT/docs/ops"
+    if ls "$logs_dir"/PR_*_MERGE_LOG.md &>/dev/null; then
+      echo ""
+      ls -1 "$logs_dir"/PR_*_MERGE_LOG.md | while read -r f; do
+        local bn
+        bn="$(basename "$f")"
+        echo "   - $bn"
+      done
+    else
+      echo "   (no merge logs found yet)"
+    fi
+
+    echo ""
+    echo "🔹 Batch Generator:"
+    echo "   ops_center.sh merge-log <PR> [<PR> ...]"
+    echo ""
+    echo "   Examples:"
+    echo "     ops_center.sh merge-log 281"
+    echo "     ops_center.sh merge-log 278 279 280"
+    echo "     ops_center.sh merge-log --dry-run 281"
+    echo "     ops_center.sh merge-log --keep-going 278 279 999"
+    echo ""
+    echo "🔹 Quick Start:"
+    echo "   scripts/ops/create_and_open_merge_log_pr.sh"
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    return 0
   fi
 
-  echo ""
-  echo "🔹 Quick Start:"
-  echo "   scripts/ops/create_and_open_merge_log_pr.sh"
-  echo ""
+  # With args → delegate to batch generator
+  local script="$SCRIPT_DIR/generate_merge_logs_batch.sh"
+
+  if [[ ! -x "$script" ]]; then
+    echo "❌ Error: Script not found or not executable: $script"
+    echo "ℹ️  Expected location: scripts/ops/generate_merge_logs_batch.sh"
+    exit 1
+  fi
+
+  # Check for gh CLI
+  if ! command -v gh &>/dev/null; then
+    echo "❌ Error: gh CLI not found"
+    echo "ℹ️  Install: brew install gh"
+    echo "ℹ️  Docs: https://cli.github.com/"
+    exit 1
+  fi
+
+  # Check gh auth
+  if ! gh auth status &>/dev/null; then
+    echo "❌ Error: gh not authenticated"
+    echo "ℹ️  Run: gh auth login"
+    exit 1
+  fi
+
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📋 Generating Merge Logs"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+  echo "PRs: $*"
+  echo ""
+
+  "$script" "$@"
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
