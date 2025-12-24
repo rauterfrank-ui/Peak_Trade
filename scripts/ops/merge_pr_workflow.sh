@@ -77,12 +77,12 @@ git pull --ff-only
 # 7) Post-merge sanity
 if [[ "${RUN_FORMAT_CHECKS}" == "1" ]]; then
   echo ""
-  echo "✅ Post-merge checks: ruff + black..."
+  echo "✅ Post-merge checks: ruff format + ruff check..."
+  uv run ruff format --check .
   uv run ruff check .
-  uv run black --check .
 else
   echo ""
-  echo "ℹ️ RUN_FORMAT_CHECKS=0 → skipping ruff/black checks."
+  echo "ℹ️ RUN_FORMAT_CHECKS=0 → skipping ruff format/check."
 fi
 
 # 8) Issue state (optional)
