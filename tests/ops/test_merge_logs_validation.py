@@ -96,5 +96,6 @@ def test_validate_checks_all_components():
     # Should check ops_center integration
     assert "ops_center.sh" in result.stdout
 
-    # Should check for markers
+    # Should check for markers and batch support
     assert "Markers present" in result.stdout or "MERGE_LOG_EXAMPLES" in result.stdout
+    assert "batch support" in result.stdout or "merge-log" in result.stdout

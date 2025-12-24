@@ -73,18 +73,18 @@ for DOC in "docs/ops/README.md" "docs/ops/MERGE_LOG_WORKFLOW.md"; do
 done
 
 # ──────────────────────────────────────────────────────────
-# 3) Check ops_center.sh has merge-logs subcommand
+# 3) Check ops_center.sh has merge-log subcommand with batch support
 # ──────────────────────────────────────────────────────────
 OPS_CENTER="scripts/ops/ops_center.sh"
 
 if [[ ! -f "$OPS_CENTER" ]]; then
   check_fail "$OPS_CENTER: File not found"
-elif ! grep -qF "cmd_merge_logs()" "$OPS_CENTER"; then
-  check_fail "$OPS_CENTER: Missing cmd_merge_logs() function"
-elif ! grep -qF "merge-logs)" "$OPS_CENTER"; then
-  check_fail "$OPS_CENTER: Missing 'merge-logs)' case branch"
+elif ! grep -qF "cmd_merge_log()" "$OPS_CENTER"; then
+  check_fail "$OPS_CENTER: Missing cmd_merge_log() function"
+elif ! grep -qF "generate_merge_logs_batch.sh" "$OPS_CENTER"; then
+  check_fail "$OPS_CENTER: Missing batch generator integration"
 else
-  check_pass "$OPS_CENTER: merge-logs subcommand present"
+  check_pass "$OPS_CENTER: merge-log subcommand with batch support present"
 fi
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

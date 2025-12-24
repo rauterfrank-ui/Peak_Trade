@@ -571,10 +571,10 @@ Automatisierte Generierung von Merge-Logs für mehrere PRs gleichzeitig.
 
 ```bash
 # Via Ops Center (empfohlen)
-scripts/ops/ops_center.sh merge-logs 281
+scripts/ops/ops_center.sh merge-log 281
 
 # Mehrere PRs gleichzeitig (batch)
-scripts/ops/ops_center.sh merge-logs 278 279 280
+scripts/ops/ops_center.sh merge-log 278 279 280
 
 # Direkt (equivalent)
 scripts/ops/generate_merge_logs_batch.sh 281

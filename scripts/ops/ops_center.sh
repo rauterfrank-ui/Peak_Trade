@@ -6,8 +6,7 @@
 #   ops_center.sh help                 Show this help
 #   ops_center.sh status               Show repo status
 #   ops_center.sh pr <NUM>             Review PR (no merge)
-#   ops_center.sh merge-log            Show merge log quick reference
-#   ops_center.sh merge-logs <PR>...   Generate merge logs (batch)
+#   ops_center.sh merge-log [<PR>...]  Show quick reference or generate merge logs
 #   ops_center.sh doctor               Run ops_doctor health checks
 #
 # Safe-by-default: No destructive actions, no merges without explicit flags.
@@ -34,8 +33,7 @@ COMMANDS:
   help                Show this help
   status              Show repo status (git + gh)
   pr <NUM>            Review PR (safe, no merge)
-  merge-log           Show merge log quick reference
-  merge-logs <PR>...  Generate merge logs (batch)
+  merge-log [<PR>...] Show quick reference or generate merge logs
   doctor              Run ops_doctor health checks
 
 EXAMPLES:
@@ -49,10 +47,10 @@ EXAMPLES:
   ops_center.sh merge-log
 
   # Generate merge log for single PR
-  ops_center.sh merge-logs 281
+  ops_center.sh merge-log 281
 
   # Generate merge logs for multiple PRs (batch)
-  ops_center.sh merge-logs 278 279 280
+  ops_center.sh merge-log 278 279 280
 
   # Run full health check
   ops_center.sh doctor
@@ -170,76 +168,51 @@ cmd_pr() {
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Merge Log Quick Reference
+# Merge Log (Quick Reference or Batch Generator)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 cmd_merge_log() {
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "📋 Merge Log Quick Reference"
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo ""
-  echo "🔹 Workflow:"
-  echo "   docs/ops/MERGE_LOG_WORKFLOW.md"
-  echo ""
-  echo "🔹 Template:"
-  echo "   templates/ops/merge_log_template.md"
-  echo ""
-  echo "🔹 Examples:"
-
-  local logs_dir="$REPO_ROOT/docs/ops"
-  if ls "$logs_dir"/PR_*_MERGE_LOG.md &>/dev/null; then
-    echo ""
-    ls -1 "$logs_dir"/PR_*_MERGE_LOG.md | while read -r f; do
-      local bn
-      bn="$(basename "$f")"
-      echo "   - $bn"
-    done
-  else
-    echo "   (no merge logs found yet)"
-  fi
-
-  echo ""
-  echo "🔹 Quick Start:"
-  echo "   scripts/ops/create_and_open_merge_log_pr.sh"
-  echo ""
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-}
-
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Merge Logs (Batch Generator)
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-cmd_merge_logs() {
-  # No args → show usage + examples
+  # No args → show quick reference
   if [[ "$#" -eq 0 ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "📋 Merge Logs — Batch Generator"
+    echo "📋 Merge Log Quick Reference"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-    echo "USAGE:"
-    echo "  ops_center.sh merge-logs <PR> [<PR> ...]"
+    echo "🔹 Workflow:"
+    echo "   docs/ops/MERGE_LOG_WORKFLOW.md"
     echo ""
-    echo "EXAMPLES:"
-    echo "  # Single PR"
-    echo "  ops_center.sh merge-logs 281"
+    echo "🔹 Template:"
+    echo "   templates/ops/merge_log_template.md"
     echo ""
-    echo "  # Multiple PRs (batch)"
-    echo "  ops_center.sh merge-logs 278 279 280"
+    echo "🔹 Examples:"
+
+    local logs_dir="$REPO_ROOT/docs/ops"
+    if ls "$logs_dir"/PR_*_MERGE_LOG.md &>/dev/null; then
+      echo ""
+      ls -1 "$logs_dir"/PR_*_MERGE_LOG.md | while read -r f; do
+        local bn
+        bn="$(basename "$f")"
+        echo "   - $bn"
+      done
+    else
+      echo "   (no merge logs found yet)"
+    fi
+
     echo ""
-    echo "REQUIREMENTS:"
-    echo "  - gh CLI installed + authenticated"
-    echo "  - PRs must be merged"
+    echo "🔹 Batch Generator:"
+    echo "   ops_center.sh merge-log <PR> [<PR> ...]"
     echo ""
-    echo "OUTPUT:"
-    echo "  - docs/ops/PR_<NUM>_MERGE_LOG.md (per PR)"
-    echo "  - Updates docs/ops/README.md + MERGE_LOG_WORKFLOW.md"
+    echo "   Examples:"
+    echo "     ops_center.sh merge-log 281"
+    echo "     ops_center.sh merge-log 278 279 280"
     echo ""
-    echo "DOCS:"
-    echo "  docs/ops/MERGE_LOG_WORKFLOW.md"
+    echo "🔹 Quick Start:"
+    echo "   scripts/ops/create_and_open_merge_log_pr.sh"
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    exit 0
+    return 0
   fi
 
-  # With args → pre-flight checks + delegate
+  # With args → delegate to batch generator
   local script="$SCRIPT_DIR/generate_merge_logs_batch.sh"
 
   if [[ ! -x "$script" ]]; then
@@ -272,6 +245,7 @@ cmd_merge_logs() {
 
   "$script" "$@"
 }
+
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Doctor
@@ -312,9 +286,6 @@ main() {
       ;;
     merge-log)
       cmd_merge_log "$@"
-      ;;
-    merge-logs)
-      cmd_merge_logs "$@"
       ;;
     doctor)
       cmd_doctor "$@"
