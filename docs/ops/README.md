@@ -657,8 +657,9 @@ Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
 **Format:**
 ```html
 <!-- MERGE_LOG_EXAMPLES:START -->
-- PR #288 — feat(ops): add merge-log health checks to ops doctor: docs/ops/PR_288_MERGE_LOG.md
+- PR #290 — chore(ops): guard against black enforcement drift: docs/ops/PR_290_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
+
 
 
 
