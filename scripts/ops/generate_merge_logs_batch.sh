@@ -1,16 +1,35 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Flags
+DRY_RUN=0
+KEEP_GOING=0
+PRS=()
+
 usage() {
-  cat <<USAGE
+  cat <<'USAGE'
 Usage:
-  scripts/ops/generate_merge_logs_batch.sh <PR> [<PR> ...]
-Example:
+  scripts/ops/generate_merge_logs_batch.sh [--dry-run] [--keep-going] <PR> [<PR> ...]
+
+Flags:
+  --dry-run      Preview only. Generate outputs into temp files and show diffs.
+                 Does NOT modify the working tree.
+  --keep-going   Continue on per-PR failures, summarize at end, exit 1 if any failed.
+  -h, --help     Show this help.
+  --             End of flags; remaining arguments are PR numbers.
+
+Examples:
+  scripts/ops/generate_merge_logs_batch.sh 281
   scripts/ops/generate_merge_logs_batch.sh 278 279 280
+  scripts/ops/generate_merge_logs_batch.sh --dry-run 281
+  scripts/ops/generate_merge_logs_batch.sh --keep-going 278 279 999999
+  scripts/ops/generate_merge_logs_batch.sh -- 281 282 283
 USAGE
 }
 
 die() { echo "ERROR: $*" >&2; exit 1; }
+
+is_int() { [[ "${1:-}" =~ ^[0-9]+$ ]]; }
 
 require_gh() {
   command -v gh >/dev/null 2>&1 || die "gh CLI not found"
@@ -41,19 +60,17 @@ write_merge_log_md() {
   local pr="$1"
   local out="docs/ops/PR_${pr}_MERGE_LOG.md"
 
-  mkdir -p docs/ops
-
   # meta (fetch as JSON)
   local meta title merged_at merge_oid merge_short
-  meta="$(fetch_pr_meta "$pr")"
+  meta="$(fetch_pr_meta "$pr")" || return 1
   title="$(echo "$meta" | jq -r '.title')"
   merged_at="$(echo "$meta" | jq -r '.mergedAt')"
   merge_oid="$(echo "$meta" | jq -r '.mergeCommit.oid')"
   merge_short="${merge_oid:0:7}"
 
-  [ -n "$title" ] || die "could not parse title for PR #$pr"
-  [ -n "$merged_at" ] || die "PR #$pr has no mergedAt"
-  [ -n "$merge_oid" ] || die "PR #$pr has no mergeCommit"
+  [ -n "$title" ] || { echo "ERROR: could not parse title for PR #$pr" >&2; return 1; }
+  [ -n "$merged_at" ] || { echo "ERROR: PR #$pr has no mergedAt" >&2; return 1; }
+  [ -n "$merge_oid" ] || { echo "ERROR: PR #$pr has no mergeCommit" >&2; return 1; }
 
   # checks (plain text)
   local checks
@@ -76,7 +93,8 @@ write_merge_log_md() {
       ;;
   esac
 
-  cat > "$out" <<MD
+  local content
+  content=$(cat <<MD
 # PR #${pr} — ${title}
 
 ## Summary
@@ -116,16 +134,45 @@ Low — docs/ops only.
 - PR: #${pr}
 - Merge-Commit: ${merge_oid}
 MD
+)
+
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    # Dry-run: write to temp and show diff
+    local tmp
+    tmp="$(mktemp)"
+    echo "$content" > "$tmp"
+
+    echo "[DRY-RUN] Would write: $out"
+
+    if [[ -f "$out" ]]; then
+      echo "Diff vs existing:"
+      diff -u "$out" "$tmp" || true
+    else
+      echo "(new file, $(wc -l < "$tmp") lines)"
+    fi
+
+    rm -f "$tmp"
+    return 0
+  fi
+
+  # Real write
+  mkdir -p docs/ops
+  echo "$content" > "$out"
 }
 
 replace_or_append_block() {
   local file="$1"
   local block="$2"
 
-  [ -f "$file" ] || die "file not found: $file"
+  [ -f "$file" ] || { echo "ERROR: file not found: $file" >&2; return 1; }
 
   local start="<!-- MERGE_LOG_EXAMPLES:START -->"
   local end="<!-- MERGE_LOG_EXAMPLES:END -->"
+
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    echo "[DRY-RUN] Would update markers in: $file"
+    return 0
+  fi
 
   if grep -qF "$start" "$file" && grep -qF "$end" "$file"; then
     # Replace between markers using Python (portable)
@@ -181,26 +228,109 @@ update_ops_docs_links() {
 }
 
 main() {
+  # Parse flags (bash-safe)
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --dry-run)
+        DRY_RUN=1
+        shift
+        ;;
+      --keep-going)
+        KEEP_GOING=1
+        shift
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      --)
+        shift
+        while [[ $# -gt 0 ]]; do
+          PRS+=("$1")
+          shift
+        done
+        ;;
+      -*)
+        die "Unknown flag: $1 (try --help)"
+        ;;
+      *)
+        PRS+=("$1")
+        shift
+        ;;
+    esac
+  done
+
+  # Validate args
+  if [[ "${#PRS[@]}" -eq 0 ]]; then
+    usage
+    die "No PR numbers provided"
+  fi
+
+  # Normalize / validate PR numbers
+  for pr in "${PRS[@]}"; do
+    is_int "$pr" || die "Invalid PR number: '$pr' (must be an integer)"
+  done
+
   require_gh
   repo_root >/dev/null
 
-  if [ "$#" -lt 1 ]; then
-    usage
-    exit 2
-  fi
+  [[ "$DRY_RUN" -eq 1 ]] && echo "[DRY-RUN] Preview mode: no files will be written"
+  echo ""
 
-  local prs=("$@")
+  local failures=()
 
   # Generate logs
-  for pr in "${prs[@]}"; do
-    [[ "$pr" =~ ^[0-9]+$ ]] || die "invalid PR number: $pr"
-    write_merge_log_md "$pr"
-    echo "Wrote docs/ops/PR_${pr}_MERGE_LOG.md"
+  for pr in "${PRS[@]}"; do
+
+    if write_merge_log_md "$pr"; then
+      [[ "$DRY_RUN" -eq 1 ]] || echo "✅ Wrote docs/ops/PR_${pr}_MERGE_LOG.md"
+    else
+      echo "❌ Failed: PR #$pr" >&2
+      failures+=("$pr")
+      [[ "$KEEP_GOING" -eq 0 ]] && exit 1
+    fi
   done
 
   # Update docs links (idempotent block)
-  update_ops_docs_links "${prs[@]}"
-  echo "Updated docs/ops/MERGE_LOG_WORKFLOW.md + docs/ops/README.md"
+  if [[ "${#failures[@]}" -eq 0 ]] || [[ "$KEEP_GOING" -eq 1 ]]; then
+    local successful_prs=()
+    for pr in "${PRS[@]}"; do
+      # Only include successfully processed PRs
+      local failed=0
+      if [[ "${#failures[@]}" -gt 0 ]]; then
+        for fail in "${failures[@]}"; do
+          if [[ "$fail" == "$pr"* ]]; then
+            failed=1
+            break
+          fi
+        done
+      fi
+      [[ "$failed" -eq 0 ]] && successful_prs+=("$pr")
+    done
+
+    if [[ "${#successful_prs[@]}" -gt 0 ]]; then
+      if update_ops_docs_links "${successful_prs[@]}"; then
+        [[ "$DRY_RUN" -eq 1 ]] || echo "✅ Updated docs/ops/MERGE_LOG_WORKFLOW.md + docs/ops/README.md"
+      else
+        echo "⚠️  Warning: could not update docs links" >&2
+      fi
+    fi
+  fi
+
+  # Summary
+  echo ""
+  if [[ "${#failures[@]}" -gt 0 ]]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "❌ Failures (${#failures[@]}/${#PRS[@]}):"
+    for fail in "${failures[@]}"; do
+      echo "   - $fail"
+    done
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    exit 1
+  else
+    [[ "$DRY_RUN" -eq 1 ]] && echo "[DRY-RUN] Preview complete. No changes made."
+    echo "✅ Success: processed ${#PRS[@]} PR(s)"
+  fi
 }
 
 main "$@"

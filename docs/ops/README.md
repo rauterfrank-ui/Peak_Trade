@@ -561,6 +561,71 @@ git push -u origin docs/merge-log-$PR
 gh pr create --title "docs(ops): add merge log for PR #${PR}" --body "..."
 ```
 
+### Batch Generator (Automatisiert)
+
+Für mehrere PRs gleichzeitig oder single-PR mit Auto-Update der docs.
+
+**Tool:** `scripts/ops/generate_merge_logs_batch.sh`
+
+**Verwendung:**
+
+```bash
+# Single PR
+ops merge-log 281
+
+# Mehrere PRs (batch)
+ops merge-log 278 279 280
+
+# Preview Mode (dry-run, keine Änderungen)
+ops merge-log --dry-run 281
+
+# Batch mit best-effort (sammelt Fehler, läuft weiter)
+ops merge-log --keep-going 278 279 999
+```
+
+**Requirements:**
+- `gh` CLI installiert + authentifiziert (`gh auth login`)
+- PRs müssen bereits gemerged sein
+
+**Output:**
+- Erstellt `docs/ops/PR_<NUM>_MERGE_LOG.md` für jedes PR
+- Updates automatisch `docs/ops/README.md` + `docs/ops/MERGE_LOG_WORKFLOW.md` (via Marker)
+
+**Flags:**
+- `--dry-run` — Preview Mode: zeigt Änderungen, schreibt nichts
+- `--keep-going` — Best-Effort: läuft bei Fehlern weiter, Exit 1 am Ende falls welche
+- `--help` — Zeigt Usage
+
+**Validierung:**
+
+```bash
+# Setup validieren (offline, <1s)
+scripts/ops/validate_merge_logs_setup.sh
+```
+
+#### Marker Format (MERGE_LOG_EXAMPLES)
+
+Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
+- `docs/ops/README.md`
+- `docs/ops/MERGE_LOG_WORKFLOW.md`
+
+**Format:**
+```html
+<!-- MERGE_LOG_EXAMPLES:START -->
+- PR #XXX — description: docs/ops/PR_XXX_MERGE_LOG.md
+- PR #YYY — description: docs/ops/PR_YYY_MERGE_LOG.md
+<!-- MERGE_LOG_EXAMPLES:END -->
+```
+
+Das Batch-Tool ersetzt den Inhalt zwischen den Markern idempotent.
+
+**Validator:** `scripts/ops/validate_merge_logs_setup.sh` prüft:
+- Generator ist executable
+- Marker sind vorhanden in beiden Dateien
+- `ops_center.sh` hat die Integration
+
+**Siehe auch:** [MERGE_LOG_WORKFLOW.md](MERGE_LOG_WORKFLOW.md)
+
 ### Liste
 
 - [PR #261](PR_261_MERGE_LOG.md) — chore(ops): add stash triage helper (export-first, safe-by-default) (merged 2025-12-23)
