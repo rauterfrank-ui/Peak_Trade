@@ -126,6 +126,41 @@ scripts/ops/ops_center.sh doctor
 
 **Use Case:** Verhindert kaputte Referenzen z.B. nach Datei-Umbenennungen oder -Verschiebungen.
 
+## Docs Reference Targets Guardrail — Supported Formats
+
+Der Check `docs-reference-targets-gate` stellt sicher, dass in Docs referenzierte **Repo-Targets** (Dateien) existieren, ohne typische Markdown-/Shell-False-Positives zu triggern.
+
+### Unterstützte Referenzen (werden geprüft)
+- **Plain paths** relativ zum Repo-Root, z.B. `docs/ops/README.md`, `scripts/ops/ops_center.sh`
+- **Markdown-Links**: `[Text](docs/ops/README.md)`
+- **Anchors** werden ignoriert (nur Datei wird geprüft): `docs/risk/RISK_LAYER_ROADMAP.md#overview`
+- **Query-Parameter** werden ignoriert: `docs/ops/README.md?plain=1`
+- **Relative Pfade in Docs** werden korrekt resolved (relativ zur jeweiligen Markdown-Datei):
+  - `./RISK_LAYER_ROADMAP.md`
+  - `../ops/README.md`
+
+### Ignorierte Muster (werden NICHT als Repo-Targets gezählt)
+- **URLs**: `http://…`, `https://…`, z.B. `<https://example.com/docs/ops/README.md>`
+- **Globs/Wildcards**: `*`, `?`, `[]`, `< >` (z.B. `docs/*.md`, `docs/**/README.md`)
+- **Commands mit Spaces** (z.B. `./scripts/ops/ops_center.sh doctor`)
+- **Directories mit trailing slash** (z.B. `docs/ops/`)
+- **Referenzen innerhalb von Bash-Codeblöcken**:
+  ```bash
+  # Alles innerhalb dieses Blocks wird NICHT als Target gecheckt
+  cat docs/ops/__fixture_missing_target__nope.md
+  ```
+
+### Golden Corpus Tests
+Das Verhalten ist durch ein "Golden Corpus" an Fixtures abgedeckt (Regressionssicherheit):
+- `tests/fixtures/docs_reference_targets/pass/` — Valide Referenzen + ignorierte Muster
+- `tests/fixtures/docs_reference_targets/fail/` — Fehlende Targets (muss detected werden)
+- `tests/fixtures/docs_reference_targets/relative_repo/` — Isolated Fixture-Repo für relative Pfade
+
+**Pytest Tests:**
+```bash
+pytest -q tests/ops/test_verify_docs_reference_targets_script.py
+```
+
 ---
 
 Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs/*` erkennt und **den Merge blockiert**.
