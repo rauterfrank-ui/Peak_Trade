@@ -159,7 +159,11 @@ def check_links(root: Path, paths: Sequence[str]) -> List[BrokenLink]:
             # In-page anchor only
             if path_part == "" and anchor_part:
                 if anchor_part not in anchor_cache[src]:
-                    broken.append(BrokenLink(src_rel, raw_target, f"anchor '#{anchor_part}' not found in {src_rel}"))
+                    broken.append(
+                        BrokenLink(
+                            src_rel, raw_target, f"anchor '#{anchor_part}' not found in {src_rel}"
+                        )
+                    )
                 continue
 
             # If path is empty and no anchor -> ignore (edge)
@@ -171,26 +175,42 @@ def check_links(root: Path, paths: Sequence[str]) -> List[BrokenLink]:
 
             # Allow links to directories? (rare) -> treat as broken
             if not ref_path.exists():
-                broken.append(BrokenLink(src_rel, raw_target, f"target file does not exist: {path_part}"))
+                broken.append(
+                    BrokenLink(src_rel, raw_target, f"target file does not exist: {path_part}")
+                )
                 continue
 
             # If it's a directory, broken (we expect a file)
             if ref_path.is_dir():
-                broken.append(BrokenLink(src_rel, raw_target, f"target is a directory, expected file: {path_part}"))
+                broken.append(
+                    BrokenLink(
+                        src_rel, raw_target, f"target is a directory, expected file: {path_part}"
+                    )
+                )
                 continue
 
             # If anchor present, validate anchors in referenced file (only for .md)
             if anchor_part:
                 if ref_path.suffix.lower() != ".md":
-                    broken.append(BrokenLink(src_rel, raw_target, f"anchor used but target is not .md: {path_part}"))
+                    broken.append(
+                        BrokenLink(
+                            src_rel, raw_target, f"anchor used but target is not .md: {path_part}"
+                        )
+                    )
                     continue
 
                 if ref_path not in anchor_cache:
-                    anchor_cache[ref_path] = _collect_anchors(_strip_code_fences(_read_text(ref_path)))
+                    anchor_cache[ref_path] = _collect_anchors(
+                        _strip_code_fences(_read_text(ref_path))
+                    )
 
                 if anchor_part not in anchor_cache[ref_path]:
                     ref_rel = str(ref_path.relative_to(root))
-                    broken.append(BrokenLink(src_rel, raw_target, f"anchor '#{anchor_part}' not found in {ref_rel}"))
+                    broken.append(
+                        BrokenLink(
+                            src_rel, raw_target, f"anchor '#{anchor_part}' not found in {ref_rel}"
+                        )
+                    )
 
     return broken
 

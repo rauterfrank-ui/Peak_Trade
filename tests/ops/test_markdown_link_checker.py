@@ -38,9 +38,7 @@ def test_check_links_detects_broken(tmp_path: Path):
 
     a = root / "docs" / "ops" / "a.md"
     a.write_text(
-        "# A\n\n"
-        "Broken file: [x](missing.md)\n"
-        "Broken anchor: [y](a.md#nope)\n",
+        "# A\n\nBroken file: [x](missing.md)\nBroken anchor: [y](a.md#nope)\n",
         encoding="utf-8",
     )
 
