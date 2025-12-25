@@ -63,8 +63,9 @@ if [[ "$CHANGED_ONLY" == "1" ]]; then
   git fetch --quiet --prune origin >/dev/null 2>&1 || true
 
   # Use triple-dot to diff against merge-base
+  # Exclude test fixtures (tests/fixtures/) to avoid false positives
   while IFS= read -r f; do
-    [[ -n "$f" ]] && md_files+=("$f")
+    [[ -n "$f" ]] && [[ "$f" != tests/fixtures/* ]] && md_files+=("$f")
   done < <(git diff --name-only "${BASE_REF}...HEAD" -- '*.md' || true)
 else
   # Determine docs_root relative to repo_root for git ls-files
