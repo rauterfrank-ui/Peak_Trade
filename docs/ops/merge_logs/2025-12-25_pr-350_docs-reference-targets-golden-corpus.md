@@ -41,11 +41,11 @@ LOW (Docs/Tests + robustere Target-Normalisierung). Keine Trading-/Risk-/Executi
 
 ## Operator How-To
 - Lokal:
-  - `./scripts/ops/verify_docs_reference_targets.sh`
+  - `scripts/ops/verify_docs_reference_targets.sh`
 - Golden Corpus (Regression):
-  - `./scripts/ops/verify_docs_reference_targets.sh --docs-root tests/fixtures/docs_reference_targets/pass`
-  - `./scripts/ops/verify_docs_reference_targets.sh --repo-root tests/fixtures/docs_reference_targets/relative_repo --docs-root tests/fixtures/docs_reference_targets/relative_repo/docs`
-  - `pytest -q tests/ops/test_verify_docs_reference_targets_script.py`
+  - `scripts/ops/verify_docs_reference_targets.sh --docs-root tests/fixtures/docs_reference_targets/pass`
+  - `scripts/ops/verify_docs_reference_targets.sh --repo-root tests/fixtures/docs_reference_targets/relative_repo --docs-root tests/fixtures/docs_reference_targets/relative_repo/docs`
+  - `tests/ops/test_verify_docs_reference_targets_script.py`
 
 ## References
 - PR #350 (merged)
