@@ -28,6 +28,80 @@ The Kill Switch evaluates three categories of risk metrics:
 - **Default threshold**: `None` (disabled by default)
 - **Triggers when**: `realized_vol_pct >= max_volatility_pct` (if configured)
 
+## Canonical Metrics Schema
+
+The Kill Switch uses a **canonical metrics schema** for consistency and stability across the system.
+
+### Supported Context Layouts
+
+The metrics extraction is **tolerant** and supports multiple context layouts:
+
+**1. Nested under `metrics` (recommended):**
+```python
+context = {
+    "metrics": {
+        "daily_pnl_pct": -0.05,
+        "current_drawdown_pct": 0.10,
+        "realized_vol_pct": 0.25
+    }
+}
+```
+
+**2. Nested under `risk.metrics`:**
+```python
+context = {
+    "risk": {
+        "metrics": {
+            "daily_pnl_pct": -0.05,
+            "current_drawdown_pct": 0.10
+        }
+    }
+}
+```
+
+**3. Direct keys in context:**
+```python
+context = {
+    "daily_pnl_pct": -0.05,
+    "current_drawdown_pct": 0.10
+}
+```
+
+**Priority order:** `context["metrics"]` > `context["risk"]["metrics"]` > direct keys
+
+### Canonical Keys
+
+All metrics use these canonical field names:
+- `daily_pnl_pct`: Daily PnL as percentage (decimal, e.g., -0.06 = -6%)
+- `current_drawdown_pct`: Current drawdown from peak (decimal, e.g., 0.21 = 21%)
+- `realized_vol_pct`: Realized volatility (decimal, optional)
+- `timestamp_utc`: ISO8601 timestamp (string, optional)
+
+### Audit Log Structure
+
+The audit log always includes a stable `metrics_snapshot` with canonical keys in deterministic order:
+
+```json
+{
+  "kill_switch": {
+    "enabled": true,
+    "status": {
+      "armed": false,
+      "severity": "OK",
+      "reason": "All thresholds within limits",
+      "triggered_by": [],
+      "timestamp_utc": "2025-12-25T12:00:00Z"
+    },
+    "metrics_snapshot": {
+      "daily_pnl_pct": -0.02,
+      "current_drawdown_pct": 0.05,
+      "realized_vol_pct": null,
+      "timestamp_utc": null
+    }
+  }
+}
+```
+
 ## Safe Defaults: Missing Data Behavior
 
 **Important**: Missing or `None` metrics do **NOT** trigger the kill switch.

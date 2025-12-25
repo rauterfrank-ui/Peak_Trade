@@ -13,6 +13,7 @@ from typing import Any
 from src.core.peak_config import PeakConfig
 from src.risk_layer.audit_log import AuditLogWriter
 from src.risk_layer.kill_switch import KillSwitchLayer, to_violations
+from src.risk_layer.metrics import extract_risk_metrics, metrics_to_dict
 from src.risk_layer.models import RiskDecision, RiskResult, Violation
 
 
@@ -60,9 +61,9 @@ class RiskGate:
             context = {}
 
         # Evaluate kill switch first
-        # Extract metrics from context (tolerant: can be nested or direct)
-        metrics = context.get("metrics", context)
-        kill_switch_status = self._kill_switch.evaluate(metrics)
+        # Extract metrics using canonical extractor (tolerant: nested/direct)
+        risk_metrics = extract_risk_metrics(context)
+        kill_switch_status = self._kill_switch.evaluate(risk_metrics)
 
         # If kill switch is armed, block immediately
         if kill_switch_status.armed:
@@ -170,10 +171,15 @@ class RiskGate:
                 for v in decision.violations
             ],
             "kill_switch": {
-                "armed": kill_switch_status.armed,
-                "reason": kill_switch_status.reason,
-                "triggered_by": kill_switch_status.triggered_by,
-                "timestamp_utc": kill_switch_status.timestamp_utc,
+                "enabled": self._kill_switch.enabled,
+                "status": {
+                    "armed": kill_switch_status.armed,
+                    "severity": kill_switch_status.severity,
+                    "reason": kill_switch_status.reason,
+                    "triggered_by": kill_switch_status.triggered_by,
+                    "timestamp_utc": kill_switch_status.timestamp_utc,
+                },
+                "metrics_snapshot": kill_switch_status.metrics_snapshot,
             },
             "order": sanitized_order,
             "context": context or {},
@@ -249,9 +255,9 @@ class RiskGate:
             )
 
         if context is not None:
-            # Evaluate with fresh metrics
-            metrics = context.get("metrics", context)
-            return self._kill_switch.evaluate(metrics)
+            # Evaluate with fresh metrics using canonical extractor
+            risk_metrics = extract_risk_metrics(context)
+            return self._kill_switch.evaluate(risk_metrics)
 
         # Return last known status
         if self._kill_switch._last_status is not None:

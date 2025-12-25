@@ -19,6 +19,7 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from src.core.peak_config import PeakConfig
+from src.risk_layer.metrics import RiskMetrics, metrics_to_dict
 from src.risk_layer.models import Violation
 
 
@@ -77,12 +78,12 @@ class KillSwitchLayer:
         self._armed = False
         self._last_status: KillSwitchStatus | None = None
 
-    def evaluate(self, metrics: dict) -> KillSwitchStatus:
+    def evaluate(self, metrics: RiskMetrics | dict) -> KillSwitchStatus:
         """
         Evaluate metrics against thresholds.
 
         Args:
-            metrics: Dict with risk metrics
+            metrics: RiskMetrics instance or dict with risk metrics
                 - daily_pnl_pct (float): Daily PnL as percentage (e.g., -0.06 for -6%)
                 - current_drawdown_pct (float): Current drawdown as percentage (e.g., 0.21 for 21%)
                 - realized_vol_pct (float, optional): Realized volatility as percentage
@@ -92,6 +93,19 @@ class KillSwitchLayer:
         """
         timestamp = datetime.now(timezone.utc).isoformat()
 
+        # Convert to dict for snapshot (stable order)
+        if isinstance(metrics, RiskMetrics):
+            metrics_snapshot = metrics_to_dict(metrics)
+            daily_pnl_pct = metrics.daily_pnl_pct
+            current_drawdown_pct = metrics.current_drawdown_pct
+            realized_vol_pct = metrics.realized_vol_pct
+        else:
+            # Legacy dict support (backwards compatibility)
+            metrics_snapshot = dict(metrics) if metrics else {}
+            daily_pnl_pct = metrics.get("daily_pnl_pct") if metrics else None
+            current_drawdown_pct = metrics.get("current_drawdown_pct") if metrics else None
+            realized_vol_pct = metrics.get("realized_vol_pct") if metrics else None
+
         # If disabled, always return OK
         if not self.enabled:
             status = KillSwitchStatus(
@@ -99,7 +113,7 @@ class KillSwitchLayer:
                 severity="OK",
                 reason="Kill switch disabled",
                 triggered_by=[],
-                metrics_snapshot=metrics.copy(),
+                metrics_snapshot=metrics_snapshot,
                 timestamp_utc=timestamp,
             )
             self._last_status = status
@@ -112,7 +126,7 @@ class KillSwitchLayer:
                 severity="BLOCK",
                 reason=self._last_status.reason if self._last_status else "Armed",
                 triggered_by=(self._last_status.triggered_by if self._last_status else []),
-                metrics_snapshot=metrics.copy(),
+                metrics_snapshot=metrics_snapshot,
                 timestamp_utc=timestamp,
             )
             self._last_status = status
@@ -123,7 +137,6 @@ class KillSwitchLayer:
         reasons: list[str] = []
 
         # Daily loss check
-        daily_pnl_pct = metrics.get("daily_pnl_pct")
         if daily_pnl_pct is not None:
             if daily_pnl_pct <= -self.daily_loss_limit_pct:
                 triggered_by.append("daily_loss_limit")
@@ -132,7 +145,6 @@ class KillSwitchLayer:
                 )
 
         # Drawdown check
-        current_drawdown_pct = metrics.get("current_drawdown_pct")
         if current_drawdown_pct is not None:
             if current_drawdown_pct >= self.max_drawdown_pct:
                 triggered_by.append("max_drawdown")
@@ -142,7 +154,6 @@ class KillSwitchLayer:
 
         # Volatility check (optional)
         if self.max_volatility_pct is not None:
-            realized_vol_pct = metrics.get("realized_vol_pct")
             if realized_vol_pct is not None:
                 if realized_vol_pct >= self.max_volatility_pct:
                     triggered_by.append("max_volatility")
@@ -158,7 +169,7 @@ class KillSwitchLayer:
                 severity="BLOCK",
                 reason="; ".join(reasons),
                 triggered_by=triggered_by,
-                metrics_snapshot=metrics.copy(),
+                metrics_snapshot=metrics_snapshot,
                 timestamp_utc=timestamp,
             )
         else:
@@ -167,7 +178,7 @@ class KillSwitchLayer:
                 severity="OK",
                 reason="All thresholds within limits",
                 triggered_by=[],
-                metrics_snapshot=metrics.copy(),
+                metrics_snapshot=metrics_snapshot,
                 timestamp_utc=timestamp,
             )
 

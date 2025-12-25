@@ -196,8 +196,10 @@ def test_risk_gate_includes_kill_switch_in_audit(test_config: PeakConfig, tmp_pa
     event = json.loads(lines[0])
 
     assert "kill_switch" in event
-    assert event["kill_switch"]["armed"] is True
-    assert "daily_loss_limit" in event["kill_switch"]["triggered_by"]
+    assert event["kill_switch"]["enabled"] is True
+    assert event["kill_switch"]["status"]["armed"] is True
+    assert "daily_loss_limit" in event["kill_switch"]["status"]["triggered_by"]
+    assert "metrics_snapshot" in event["kill_switch"]
 
 
 def test_risk_gate_allows_when_metrics_ok(test_config: PeakConfig) -> None:
@@ -229,8 +231,9 @@ def test_risk_gate_audit_includes_unarmed_kill_switch(
     event = json.loads(lines[0])
 
     assert "kill_switch" in event
-    assert event["kill_switch"]["armed"] is False
-    assert len(event["kill_switch"]["triggered_by"]) == 0
+    assert event["kill_switch"]["status"]["armed"] is False
+    assert len(event["kill_switch"]["status"]["triggered_by"]) == 0
+    assert "metrics_snapshot" in event["kill_switch"]
 
 
 def test_risk_gate_tolerates_missing_metrics(test_config: PeakConfig) -> None:
@@ -353,8 +356,9 @@ def test_risk_gate_audit_includes_kill_switch_when_disabled(tmp_path) -> None:
 
     # kill_switch section should always be present
     assert "kill_switch" in event
-    assert event["kill_switch"]["armed"] is False
-    assert "disabled" in event["kill_switch"]["reason"].lower()
+    assert event["kill_switch"]["enabled"] is False
+    assert event["kill_switch"]["status"]["armed"] is False
+    assert "disabled" in event["kill_switch"]["status"]["reason"].lower()
 
 
 def test_risk_gate_reset_when_disabled(tmp_path) -> None:
@@ -391,3 +395,102 @@ def test_risk_gate_get_status_when_disabled(tmp_path) -> None:
     status = gate.get_kill_switch_status()
     assert not status.armed
     assert "disabled" in status.reason.lower()
+
+
+# ============================================================================
+# Metrics Extraction Tests (PR5: Metrics Plumbing)
+# ============================================================================
+
+
+def test_risk_gate_tolerates_nested_metrics(test_config: PeakConfig) -> None:
+    """Test that RiskGate extracts metrics from context["metrics"]."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"metrics": {"daily_pnl_pct": -0.06}}  # Nested
+
+    result = gate.evaluate(order, context)
+
+    # Should trigger kill switch
+    assert not result.decision.allowed
+    assert "kill switch" in result.decision.reason.lower()
+
+
+def test_risk_gate_tolerates_direct_metrics_keys(test_config: PeakConfig) -> None:
+    """Test that RiskGate extracts metrics from direct context keys."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"daily_pnl_pct": -0.06}  # Direct keys
+
+    result = gate.evaluate(order, context)
+
+    # Should trigger kill switch
+    assert not result.decision.allowed
+    assert "kill switch" in result.decision.reason.lower()
+
+
+def test_risk_gate_tolerates_risk_nested_metrics(test_config: PeakConfig) -> None:
+    """Test that RiskGate extracts metrics from context["risk"]["metrics"]."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"risk": {"metrics": {"daily_pnl_pct": -0.06}}}
+
+    result = gate.evaluate(order, context)
+
+    # Should trigger kill switch
+    assert not result.decision.allowed
+    assert "kill switch" in result.decision.reason.lower()
+
+
+def test_risk_gate_audit_metrics_snapshot_stable(test_config: PeakConfig, tmp_path: Path) -> None:
+    """Test that audit log contains stable metrics_snapshot."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"metrics": {"daily_pnl_pct": -0.02, "current_drawdown_pct": 0.05}}
+
+    result = gate.evaluate(order, context)
+
+    # Check audit log
+    audit_path = Path(test_config.get("risk.audit_log.path"))
+    lines = audit_path.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    # Check metrics_snapshot has canonical keys in order
+    snapshot = event["kill_switch"]["metrics_snapshot"]
+    snapshot_keys = list(snapshot.keys())
+    expected_keys = [
+        "daily_pnl_pct",
+        "current_drawdown_pct",
+        "realized_vol_pct",
+        "timestamp_utc",
+    ]
+    assert snapshot_keys == expected_keys
+    assert snapshot["daily_pnl_pct"] == -0.02
+    assert snapshot["current_drawdown_pct"] == 0.05
+    assert snapshot["realized_vol_pct"] is None
+
+
+def test_risk_gate_audit_metrics_snapshot_with_missing_metrics(
+    test_config: PeakConfig, tmp_path: Path
+) -> None:
+    """Test that audit log contains metrics_snapshot even with missing metrics."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {}  # No metrics
+
+    result = gate.evaluate(order, context)
+
+    # Check audit log
+    audit_path = Path(test_config.get("risk.audit_log.path"))
+    lines = audit_path.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    # metrics_snapshot should exist but have None values
+    snapshot = event["kill_switch"]["metrics_snapshot"]
+    assert snapshot["daily_pnl_pct"] is None
+    assert snapshot["current_drawdown_pct"] is None
+    assert snapshot["realized_vol_pct"] is None
