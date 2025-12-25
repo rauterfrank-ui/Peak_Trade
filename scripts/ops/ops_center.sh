@@ -332,6 +332,7 @@ cmd_doctor() {
   echo ""
 
   local formatter_check="$SCRIPT_DIR/check_no_black_enforcement.sh"
+bash scripts/ops/check_formatter_policy_ci_enforced.sh
   local formatter_exit=0
 
   # Always run (fast, offline check)

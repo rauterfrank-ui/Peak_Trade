@@ -90,6 +90,7 @@ ops doctor --quick
 
 ### Formatter Policy Guardrail
 
+- Zusätzlich verifiziert `ops doctor`, dass das CI-Enforcement aktiv ist (Lint Gate enthält den Drift-Guard-Step).
 `ops doctor` prüft automatisch, dass keine `black --check` Enforcement in Workflows/Scripts existiert:
 
 ```bash
