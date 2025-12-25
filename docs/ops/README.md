@@ -945,3 +945,8 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 - Workflow: `.github/workflows/ops_doctor_dashboard.yml` (manual + scheduled)
 - Output artifacts: `ops-doctor-dashboard` (HTML + JSON)
 - Local generation: `bash scripts/ops/generate_ops_doctor_dashboard.sh`
+
+### Ops Doctor Dashboard (CI + Pages)
+- Workflow: `.github/workflows/ops_doctor_pages.yml` (manual + scheduled)
+- Run artifacts: `ops-doctor-dashboard` (index.html + index.json)
+- Pages: Settings → Pages → Source = GitHub Actions (einmalig aktivieren)
