@@ -158,3 +158,106 @@ def test_risk_gate_uses_default_audit_path_if_not_configured(tmp_path: Path) -> 
 
     # Should use default path
     assert gate.audit_log.path == Path("./logs/risk_audit.jsonl")
+
+
+# ============================================================================
+# Kill Switch Integration Tests (PR3)
+# ============================================================================
+
+
+def test_risk_gate_blocks_when_kill_switch_armed(test_config: PeakConfig) -> None:
+    """Test that RiskGate blocks orders when kill switch is armed."""
+    gate = RiskGate(test_config)
+
+    # Valid order but metrics trigger kill switch
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"metrics": {"daily_pnl_pct": -0.06}}  # Exceeds 5% limit
+
+    result = gate.evaluate(order, context)
+
+    assert not result.decision.allowed
+    assert result.decision.severity == "BLOCK"
+    assert "kill switch" in result.decision.reason.lower()
+    assert any(v.code == "KILL_SWITCH_ARMED" for v in result.decision.violations)
+
+
+def test_risk_gate_includes_kill_switch_in_audit(test_config: PeakConfig, tmp_path: Path) -> None:
+    """Test that audit events include kill switch status."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"metrics": {"daily_pnl_pct": -0.06}}
+
+    result = gate.evaluate(order, context)
+
+    # Check audit log
+    audit_path = Path(test_config.get("risk.audit_log.path"))
+    lines = audit_path.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    assert "kill_switch" in event
+    assert event["kill_switch"]["armed"] is True
+    assert "daily_loss_limit" in event["kill_switch"]["triggered_by"]
+
+
+def test_risk_gate_allows_when_metrics_ok(test_config: PeakConfig) -> None:
+    """Test that RiskGate allows orders when metrics are within limits."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"metrics": {"daily_pnl_pct": -0.02, "current_drawdown_pct": 0.05}}
+
+    result = gate.evaluate(order, context)
+
+    assert result.decision.allowed
+    assert result.decision.severity == "OK"
+
+
+def test_risk_gate_audit_includes_unarmed_kill_switch(
+    test_config: PeakConfig, tmp_path: Path
+) -> None:
+    """Test that audit log includes kill switch status even when not armed."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"metrics": {"daily_pnl_pct": -0.02}}
+
+    result = gate.evaluate(order, context)
+
+    audit_path = Path(test_config.get("risk.audit_log.path"))
+    lines = audit_path.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    assert "kill_switch" in event
+    assert event["kill_switch"]["armed"] is False
+    assert len(event["kill_switch"]["triggered_by"]) == 0
+
+
+def test_risk_gate_tolerates_missing_metrics(test_config: PeakConfig) -> None:
+    """Test that missing metrics don't trigger kill switch."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {}  # No metrics
+
+    result = gate.evaluate(order, context)
+
+    # Should pass - no metrics means no trigger
+    assert result.decision.allowed
+
+
+def test_risk_gate_kill_switch_overrides_order_validation(test_config: PeakConfig) -> None:
+    """Test that kill switch takes precedence over order validation."""
+    gate = RiskGate(test_config)
+
+    # Invalid order (missing qty) but kill switch armed
+    order = {"symbol": "BTCUSDT"}  # Missing qty
+    context = {"metrics": {"daily_pnl_pct": -0.10}}
+
+    result = gate.evaluate(order, context)
+
+    assert not result.decision.allowed
+    # Kill switch violation should be present
+    assert any(v.code == "KILL_SWITCH_ARMED" for v in result.decision.violations)
+    # Order validation violations should not run when kill switch armed
+    assert not any(v.code == "MISSING_QTY" for v in result.decision.violations)
