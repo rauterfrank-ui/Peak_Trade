@@ -30,7 +30,7 @@ CI verhält sich "graceful", wenn `gh auth` nicht verfügbar ist (keine CI-Fails
 - **Added:** `scripts/ops/tests/test_verify_required_checks_drift.sh` — Unit tests
 
 ### Documentation
-- **Added:** `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` — Operator handbook (Repo-Root)
+- **Added:** `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` — Operator handbook (Repo-Root)
 - **Added:** `docs/ops/DRIFT_GUARD_QUICK_START.md` — Quick start guide
 - **Added:** `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_PR_WORKFLOW.md` — PR workflow docs
 
@@ -97,5 +97,5 @@ CI verhält sich "graceful", wenn `gh auth` nicht verfügbar ist (keine CI-Fails
 - **GitHub PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/323
 - **Main Script:** `scripts/ops/verify_required_checks_drift.sh`
 - **Quick Start:** `docs/ops/DRIFT_GUARD_QUICK_START.md`
-- **Operator Notes:** `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md`
+- **Operator Notes:** `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md`
 - **One-Liner:** `scripts/ops/DRIFT_GUARD_ONE_LINER.sh`

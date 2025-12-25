@@ -35,6 +35,7 @@ COMMANDS:
   pr <NUM>            Review PR (safe, no merge)
   merge-log           Show merge log quick reference
   doctor [--quick]    Run ops_doctor health checks (+ merge-log validation)
+  risk <subcmd>       Risk analytics commands (component-var, ...)
 
 EXAMPLES:
   # Check repo status
@@ -407,6 +408,67 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Risk Commands
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+cmd_risk() {
+  local subcmd="${1:-help}"
+  shift || true
+
+  case "$subcmd" in
+    component-var)
+      cmd_risk_component_var "$@"
+      ;;
+    help|--help|-h)
+      cat <<'HELP'
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Risk Analytics Commands
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+USAGE:
+  ops_center.sh risk <subcommand> [args...]
+
+SUBCOMMANDS:
+  component-var    Generate Component VaR report
+
+EXAMPLES:
+  # Generate report with fixtures
+  ops_center.sh risk component-var --use-fixtures
+
+  # Generate report with custom data
+  ops_center.sh risk component-var --returns data.csv --alpha 0.95
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HELP
+      ;;
+    *)
+      echo "❌ Unknown risk subcommand: $subcmd"
+      echo ""
+      cmd_risk help
+      exit 1
+      ;;
+  esac
+}
+
+cmd_risk_component_var() {
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📊 Component VaR Report Generator"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  cd "$REPO_ROOT"
+
+  # Check if Python script exists
+  local script="$REPO_ROOT/scripts/run_component_var_report.py"
+  if [[ ! -f "$script" ]]; then
+    echo "❌ Script not found: $script"
+    exit 1
+  fi
+
+  # Run the Python script with all arguments
+  python3 "$script" "$@"
+}
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Main
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 main() {
@@ -428,6 +490,9 @@ main() {
       ;;
     doctor)
       cmd_doctor "$@"
+      ;;
+    risk)
+      cmd_risk "$@"
       ;;
     *)
       echo "❌ Unknown command: $cmd"
