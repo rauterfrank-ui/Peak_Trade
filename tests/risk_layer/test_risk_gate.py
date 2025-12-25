@@ -679,3 +679,266 @@ def test_risk_gate_var_gate_audit_structure(test_config: PeakConfig, tmp_path: P
     assert "method" in result
     assert "inputs_available" in result
     assert "timestamp_utc" in result
+
+
+# ============================================================================
+# Stress Gate Integration Tests
+# ============================================================================
+
+
+def test_risk_gate_includes_stress_gate_in_audit(test_config: PeakConfig, tmp_path: Path) -> None:
+    """Test that audit events include stress gate status."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    gate.evaluate(order)
+
+    # Check audit log
+    audit_path = Path(test_config.get("risk.audit_log.path"))
+    lines = audit_path.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    assert "stress_gate" in event
+    assert event["stress_gate"]["enabled"] is True
+    assert "result" in event["stress_gate"]
+    assert "scenarios_meta" in event["stress_gate"]
+
+
+def test_risk_gate_stress_gate_disabled_safe(tmp_path: Path) -> None:
+    """Test that disabled stress gate is safe (allows orders)."""
+    audit_path = tmp_path / "audit.jsonl"
+    cfg = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "stress_gate": {"enabled": False},
+            }
+        }
+    )
+    gate = RiskGate(cfg)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    result = gate.evaluate(order)
+
+    assert result.decision.allowed
+    assert result.decision.severity == "OK"
+
+
+def test_risk_gate_stress_gate_missing_data_safe(test_config: PeakConfig) -> None:
+    """Test that stress gate with missing data is safe."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {}  # No returns/weights
+
+    result = gate.evaluate(order, context)
+
+    assert result.decision.allowed
+    assert result.decision.severity == "OK"
+
+
+def test_risk_gate_stress_gate_blocks_high_stress(tmp_path: Path) -> None:
+    """Test that stress gate blocks orders with high stress loss."""
+    import pandas as pd
+
+    audit_path = tmp_path / "audit.jsonl"
+    cfg = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "stress_gate": {
+                    "enabled": True,
+                    "max_stress_loss_pct": 0.04,  # 4% block threshold
+                    "scenarios": [
+                        {
+                            "name": "severe_shock",
+                            "description": "10% down",
+                            "shock_type": "return_shift",
+                            "shock_params": {"shift": -0.10},
+                        }
+                    ],
+                },
+            }
+        }
+    )
+    gate = RiskGate(cfg)
+
+    # Portfolio with positive returns but will fail under shock
+    returns_df = pd.DataFrame({"BTC": [0.02, 0.02, 0.02]})
+    weights = {"BTC": 1.0}
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"returns_df": returns_df, "weights": weights}
+
+    result = gate.evaluate(order, context)
+
+    # Should block: 0.02 - 0.10 = -0.08 (exceeds -0.04 threshold)
+    assert not result.decision.allowed
+    assert result.decision.severity == "BLOCK"
+    assert "stress" in result.decision.reason.lower()
+    assert any(v.code == "STRESS_LIMIT_EXCEEDED" for v in result.decision.violations)
+
+
+def test_risk_gate_stress_gate_warns_near_limit(tmp_path: Path) -> None:
+    """Test that stress gate warns when near limit."""
+    import pandas as pd
+
+    audit_path = tmp_path / "audit.jsonl"
+    cfg = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "stress_gate": {
+                    "enabled": True,
+                    "max_stress_loss_pct": 0.05,  # 5% block
+                    "warn_stress_loss_pct": 0.035,  # 3.5% warn
+                    "scenarios": [
+                        {
+                            "name": "moderate_shock",
+                            "description": "4% down",
+                            "shock_type": "return_shift",
+                            "shock_params": {"shift": -0.04},
+                        }
+                    ],
+                },
+            }
+        }
+    )
+    gate = RiskGate(cfg)
+
+    # Portfolio with small positive returns
+    returns_df = pd.DataFrame({"BTC": [0.005, 0.005, 0.005]})
+    weights = {"BTC": 1.0}
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"returns_df": returns_df, "weights": weights}
+
+    result = gate.evaluate(order, context)
+
+    # Should warn: 0.005 - 0.04 = -0.035 (at warn threshold)
+    assert result.decision.allowed
+    assert result.decision.severity == "WARN"
+    assert any(v.code == "STRESS_NEAR_LIMIT" for v in result.decision.violations)
+
+
+def test_risk_gate_stress_gate_audit_structure(test_config: PeakConfig, tmp_path: Path) -> None:
+    """Test that stress_gate audit section has stable structure."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    gate.evaluate(order)
+
+    # Check audit log
+    audit_path = Path(test_config.get("risk.audit_log.path"))
+    lines = audit_path.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    # Check stress_gate structure
+    stress_gate = event["stress_gate"]
+    assert "enabled" in stress_gate
+    assert "result" in stress_gate
+    assert "scenarios_meta" in stress_gate
+
+    result = stress_gate["result"]
+    assert "severity" in result
+    assert "reason" in result
+    assert "worst_case_loss_pct" in result
+    assert "threshold_block" in result
+    assert "threshold_warn" in result
+    assert "triggered_scenarios" in result
+    assert "scenarios_evaluated" in result
+    assert "inputs_available" in result
+    assert "timestamp_utc" in result
+
+    scenarios_meta = stress_gate["scenarios_meta"]
+    assert "count" in scenarios_meta
+    assert "names" in scenarios_meta
+
+
+def test_risk_gate_evaluation_order(tmp_path: Path) -> None:
+    """Test that gates are evaluated in correct order: KillSwitch → VaR → Stress → Order."""
+    import pandas as pd
+
+    audit_path = tmp_path / "audit.jsonl"
+    cfg = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "kill_switch": {"enabled": True},
+                "var_gate": {"enabled": True},
+                "stress_gate": {"enabled": True},
+            }
+        }
+    )
+    gate = RiskGate(cfg)
+
+    # Valid order with good metrics
+    returns_df = pd.DataFrame({"BTC": [0.01, 0.01, 0.01]})
+    weights = {"BTC": 1.0}
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {
+        "metrics": {"daily_pnl_pct": -0.02},  # Safe
+        "returns_df": returns_df,
+        "weights": weights,
+    }
+
+    result = gate.evaluate(order, context)
+
+    # Check audit log contains all gate evaluations
+    audit_path_obj = Path(audit_path)
+    lines = audit_path_obj.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    # All gates should be evaluated and present in audit
+    assert "kill_switch" in event
+    assert "var_gate" in event
+    assert "stress_gate" in event
+    assert event["kill_switch"]["status"]["armed"] is False
+    assert event["var_gate"]["result"]["severity"] in ["OK", "WARN", "BLOCK"]
+    assert event["stress_gate"]["result"]["severity"] in ["OK", "WARN", "BLOCK"]
+
+
+def test_risk_gate_kill_switch_blocks_before_other_gates(tmp_path: Path) -> None:
+    """Test that kill switch blocks immediately, but other gates still evaluated for audit."""
+    import pandas as pd
+
+    audit_path = tmp_path / "audit.jsonl"
+    cfg = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "kill_switch": {"enabled": True},
+                "var_gate": {"enabled": True},
+                "stress_gate": {"enabled": True},
+            }
+        }
+    )
+    gate = RiskGate(cfg)
+
+    # Metrics that trigger kill switch
+    returns_df = pd.DataFrame({"BTC": [0.01, 0.01, 0.01]})
+    weights = {"BTC": 1.0}
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {
+        "metrics": {"daily_pnl_pct": -0.10},  # Triggers kill switch (-10%)
+        "returns_df": returns_df,
+        "weights": weights,
+    }
+
+    result = gate.evaluate(order, context)
+
+    # Should block due to kill switch
+    assert not result.decision.allowed
+    assert result.decision.severity == "BLOCK"
+    assert "kill switch" in result.decision.reason.lower()
+
+    # But audit should include all gates
+    audit_path_obj = Path(audit_path)
+    lines = audit_path_obj.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    assert event["kill_switch"]["status"]["armed"] is True
+    assert "var_gate" in event
+    assert "stress_gate" in event
