@@ -396,3 +396,6 @@ main() {
 }
 
 main "$@"
+
+# NOTE: dashboard generator
+# scripts/ops/generate_ops_doctor_dashboard.sh [out]

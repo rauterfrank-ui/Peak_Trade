@@ -936,3 +936,7 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 
 ### Policy Guard Pattern
 - Template: docs/ops/POLICY_GUARD_PATTERN_TEMPLATE.md
+
+### Ops Doctor Dashboard
+- Generate: scripts/ops/generate_ops_doctor_dashboard.sh
+- Output: reports/ops/ops_doctor_dashboard.html
