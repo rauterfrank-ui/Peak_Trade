@@ -72,6 +72,30 @@ Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON-
   - `scripts/ops/verify_required_checks_drift.sh` (offline)
   - `scripts/ops/ops_center.sh doctor` → zeigt Drift-Guard/Health-Status (falls eingebunden)
 
+### Docs Navigation Health (Link Guard)
+
+**Zweck:** Verhindert kaputte interne Links und Anchors in der Ops-Dokumentation, Root README und Status Overview.
+
+**Quick Start:**
+```bash
+# Standalone Check
+scripts/ops/check_ops_docs_navigation.sh
+
+# Als Teil von ops doctor
+scripts/ops/ops_center.sh doctor
+```
+
+**Features:**
+- Prüft interne Markdown-Links (Format: `[text](path)`) auf existierende Zieldateien
+- Validiert Anchor-Links (Format: `[text](file.md#heading)`) gegen tatsächliche Überschriften
+- Ignoriert externe Links (http://, https://, mailto:)
+- Schnell und offline (keine Netzwerk-Anfragen)
+
+**Scope:** `README.md`, `docs/ops/*`, `docs/PEAK_TRADE_STATUS_OVERVIEW.md`
+
+**Tip:** Vor großen Docs-Refactorings einmal laufen lassen, um kaputte Links zu vermeiden.
+
+---
 
 Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs/*` erkennt und **den Merge blockiert**.
 

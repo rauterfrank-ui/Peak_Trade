@@ -353,6 +353,34 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
 
   echo ""
 
+  # Docs Navigation Health (Link Guard)
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📚 Docs Navigation Health"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local docs_link_check="$SCRIPT_DIR/check_ops_docs_navigation.sh"
+  local docs_link_exit=0
+
+  # Always run (fast, offline check)
+  # NOTE: Currently warn-only mode (exit 0) until existing broken links are fixed
+  if [[ -x "$docs_link_check" ]]; then
+    echo "🔍 Check: Ops docs internal links + anchors (warn-only)"
+    if "$docs_link_check" >/dev/null 2>&1; then
+      echo "   ✅ PASS - No broken internal links found"
+    else
+      echo "   ⚠️  WARN - Broken internal links detected (not blocking)"
+      echo "   Details: Run 'scripts/ops/check_ops_docs_navigation.sh'"
+      echo "   Note: This check will be enforced after existing links are fixed"
+      # docs_link_exit=1  # Disabled until broken links are fixed
+    fi
+  else
+    echo "⚠️  Docs link check not found: $docs_link_check"
+    # Not critical if the script is missing
+  fi
+
+  echo ""
+
   # Required Checks Drift Guard
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "🧭 Required Checks Drift Guard"
@@ -397,6 +425,7 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
   echo ""
 
   # Exit with non-zero if any checks failed
+  # Note: docs_link_exit is currently 0 (warn-only mode) until existing broken links are fixed
   local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | drift_exit))
   if [[ $final_exit -ne 0 ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
