@@ -940,3 +940,8 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 ### Ops Doctor Dashboard
 - Generate: scripts/ops/generate_ops_doctor_dashboard.sh
 - Output: reports/ops/ops_doctor_dashboard.html
+
+### Ops Doctor Dashboard (CI)
+- Workflow: `.github/workflows/ops_doctor_dashboard.yml` (manual + scheduled)
+- Output artifacts: `ops-doctor-dashboard` (HTML + JSON)
+- Local generation: `bash scripts/ops/generate_ops_doctor_dashboard.sh`

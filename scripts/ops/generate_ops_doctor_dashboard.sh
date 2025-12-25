@@ -2,6 +2,8 @@
 set -euo pipefail
 
 OUT="${1:-reports/ops/ops_doctor_dashboard.html}"
+JSON_OUT="${OUT%.html}.json"
+
 mkdir -p "$(dirname "$OUT")"
 
 TMP="$(mktemp)"
@@ -40,6 +42,25 @@ cat >"$OUT" <<HTML
 </body>
 </html>
 HTML
+
+
+# JSON export (minimal; useful for tooling)
+# Fields: generated_at_utc, exit_code, html_path, json_path, output
+RAW_OUT="$(cat "$TMP")"
+ESC_OUT="$(printf "%s" "$RAW_OUT" | python3 - <<'PY2'
+import json,sys
+print(json.dumps(sys.stdin.read()))
+PY2
+)"
+cat >"$JSON_OUT" <<JSON
+{
+  "generated_at_utc": "${TS}",
+  "exit_code": ${CODE},
+  "html_path": "${OUT}",
+  "json_path": "${JSON_OUT}",
+  "output": ${ESC_OUT}
+}
+JSON
 
 echo "✅ Wrote: $OUT (exit code: $CODE)"
 exit 0
