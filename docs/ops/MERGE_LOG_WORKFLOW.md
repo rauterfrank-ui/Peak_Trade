@@ -342,3 +342,4 @@ Würde automatisch:
 - PR #290 — chore(ops): guard against black enforcement drift: docs/ops/PR_290_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 - PR #292 — merge-log: docs/ops/PR_292_MERGE_LOG.md
+- PR #295 — merge-log: docs/ops/PR_295_MERGE_LOG.md
