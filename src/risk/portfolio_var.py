@@ -253,9 +253,7 @@ def estimate_cov(returns_df: pd.DataFrame) -> np.ndarray:
     clean_df = returns_df.dropna()
 
     if len(clean_df) < 2:
-        raise ValueError(
-            f"Need at least 2 rows for covariance estimation, got {len(clean_df)}"
-        )
+        raise ValueError(f"Need at least 2 rows for covariance estimation, got {len(clean_df)}")
 
     return clean_df.cov().values
 
@@ -439,8 +437,8 @@ def historical_var(
     else:
         # Rolling compounded returns over horizon
         # (1+r_1) * (1+r_2) * ... * (1+r_h) - 1
-        rolling_prod = (1 + portfolio_returns).rolling(window=horizon_days).apply(
-            lambda x: x.prod(), raw=True
+        rolling_prod = (
+            (1 + portfolio_returns).rolling(window=horizon_days).apply(lambda x: x.prod(), raw=True)
         )
         agg_returns = rolling_prod - 1
         agg_returns = agg_returns.dropna()
@@ -499,9 +497,7 @@ def binom_p_value(
     return _binom_p_value_fallback(k, n, p, alternative)
 
 
-def _binom_p_value_fallback(
-    k: int, n: int, p: float, alternative: str = "two-sided"
-) -> float:
+def _binom_p_value_fallback(k: int, n: int, p: float, alternative: str = "two-sided") -> float:
     """
     Fallback implementation for binomial p-value (no scipy).
 
@@ -517,9 +513,7 @@ def _binom_p_value_fallback(
     if alternative == "two-sided":
         # Two-sided: sum all outcomes with pmf <= pmf(k)
         pmf_k = binom_pmf(k, n, p)
-        p_value = sum(
-            binom_pmf(i, n, p) for i in range(n + 1) if binom_pmf(i, n, p) <= pmf_k
-        )
+        p_value = sum(binom_pmf(i, n, p) for i in range(n + 1) if binom_pmf(i, n, p) <= pmf_k)
     elif alternative == "greater":
         # P(X >= k)
         p_value = sum(binom_pmf(i, n, p) for i in range(k, n + 1))
@@ -530,4 +524,3 @@ def _binom_p_value_fallback(
         raise ValueError(f"Invalid alternative: {alternative}")
 
     return min(max(p_value, 0.0), 1.0)  # Clamp to [0, 1]
-
