@@ -9,28 +9,38 @@
 - Label: documentation
 
 ## Summary
-Dokumentations-PR: Fügt einen kompakten Merge-Log für PR #341 hinzu und verlinkt die Risk Gate Runbooks zentral aus dem Ops Hub (README).
+Docs-only PR: Fügt einen kompakten Merge-Log für PR #341 hinzu und verlinkt die Risk Gate Runbooks zentral aus dem Ops Hub (README).
 
 ## Why
-Operator:innen sollen die Risk-Gates (VaR/Stress/Liquidity) schnell finden und PR #341 (Liquidity Gate v1) ist im Ops-Hub sauber nachvollziehbar dokumentiert.
+Operator:innen sollen die Risk-Gates (VaR/Stress/Liquidity) schnell finden; außerdem ist PR #341 (Liquidity Gate v1) im Ops-Hub nachvollziehbar dokumentiert.
 
 ## Changes
 - ADD: `docs/ops/merge_logs/2025-12-25_pr-341_liquidity-gate-v1.md`
-- UPDATE: `docs/ops/README.md` — Abschnitt „Risk & Safety Gates (Operator Hub)" + Links + Rollout-Hinweis
+  - Kompakter Merge-Log für PR #341 (Summary/Why/Changes/Verification/Risk/Operator How-To/Refs)
+- UPDATE: `docs/ops/README.md`
+  - Neuer Abschnitt „Risk & Safety Gates (Operator Hub)" mit Links:
+    - VaR Gate Runbook
+    - Stress Gate Runbook
+    - Liquidity Gate Runbook
+    - Risk Layer Roadmap
+  - Hinweis auf disabled-by-default Rollout (Paper/Shadow → Monitoring → Live)
 
 ## Verification
 - GitHub CI: 13 checks passed (docs-only Änderungen).
 
 ## Risk
-LOW (Docs-only)
+LOW
+- Docs-only (keine Code-/Runtime-Änderungen)
+- Verbessert Auffindbarkeit & Operator-Workflow, keine Systemverhaltensänderung
 
 ## Operator How-To
-1) `docs/ops/README.md` → „Risk & Safety Gates (Operator Hub)"
-2) Runbooks öffnen (VaR/Stress/Liquidity)
-3) PR #341 Merge-Log lesen: `docs/ops/merge_logs/2025-12-25_pr-341_liquidity-gate-v1.md`
+1) Ops Hub öffnen: `docs/ops/README.md` → Abschnitt „Risk & Safety Gates (Operator Hub)"
+2) Runbooks direkt aufrufen (VaR/Stress/Liquidity)
+3) Merge-Log für Liquidity Gate v1 nachlesen:
+   `docs/ops/merge_logs/2025-12-25_pr-341_liquidity-gate-v1.md`
 
 ## References
-- PR #342 (merged)
-- PR #341
+- PR #342 (merged) — docs(ops): risk hub links + PR341 merge log
+- PR #341 — Liquidity Gate v1
 - Runbooks: `docs/risk/VAR_GATE_RUNBOOK.md`, `docs/risk/STRESS_GATE_RUNBOOK.md`, `docs/risk/LIQUIDITY_GATE_RUNBOOK.md`
 - Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
