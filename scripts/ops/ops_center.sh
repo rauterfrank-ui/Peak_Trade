@@ -353,6 +353,32 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
 
   echo ""
 
+  # Docs Navigation Health (Link Guard)
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📚 Docs Navigation Health"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local docs_link_check="$SCRIPT_DIR/check_ops_docs_navigation.sh"
+  local docs_link_exit=0
+
+  # Always run (fast, offline check)
+  if [[ -x "$docs_link_check" ]]; then
+    echo "🔍 Check: Ops docs internal links + anchors"
+    if "$docs_link_check" >/dev/null 2>&1; then
+      echo "   ✅ PASS - No broken internal links found"
+    else
+      echo "   ❌ FAIL - Broken internal links detected"
+      echo "   Details: Run 'scripts/ops/check_ops_docs_navigation.sh'"
+      docs_link_exit=1
+    fi
+  else
+    echo "⚠️  Docs link check not found: $docs_link_check"
+    docs_link_exit=1
+  fi
+
+  echo ""
+
   # Required Checks Drift Guard
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "🧭 Required Checks Drift Guard"
@@ -397,7 +423,7 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
   echo ""
 
   # Exit with non-zero if any checks failed
-  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | drift_exit))
+  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | docs_link_exit | drift_exit))
   if [[ $final_exit -ne 0 ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "❌ Health checks failed (exit $final_exit)"
