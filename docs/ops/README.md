@@ -106,6 +106,10 @@ ops doctor --quick
 - ✅ .github/workflows (keine black enforcement)
 - ✅ scripts (keine black enforcement)
 
+**Enforcement:**
+- 🏥 **ops doctor** (lokal, immer aktiv)
+- 🛡️ **CI Lint Gate** (automatisch bei jedem PR, auch docs-only)
+
 **Bei Verstößen:**
 ```bash
 # Manueller Check
