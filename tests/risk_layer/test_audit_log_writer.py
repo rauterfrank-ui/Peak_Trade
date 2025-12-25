@@ -60,7 +60,7 @@ def test_audit_log_writer_writes_multiple_events(tmp_path: Path) -> None:
     # Verify each line is valid JSON
     for i, line in enumerate(lines):
         parsed = json.loads(line)
-        assert parsed["event"] == f"order_{i+1}"
+        assert parsed["event"] == f"order_{i + 1}"
 
 
 def test_audit_log_writer_preserves_timestamp_if_present(tmp_path: Path) -> None:
@@ -96,4 +96,3 @@ def test_audit_log_writer_raises_on_invalid_path() -> None:
     # This will fail during mkdir in __init__
     with pytest.raises((OSError, NotADirectoryError)):
         AuditLogWriter("/dev/null/invalid/audit.jsonl")
-

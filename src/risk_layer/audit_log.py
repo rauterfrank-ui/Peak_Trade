@@ -50,4 +50,3 @@ class AuditLogWriter:
                 f.flush()
         except OSError as e:
             raise OSError(f"Failed to write audit log to {self.path}: {e}") from e
-

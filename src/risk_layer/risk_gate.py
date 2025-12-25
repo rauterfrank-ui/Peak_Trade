@@ -106,9 +106,7 @@ class RiskGate:
 
         return RiskResult(decision=decision, audit_event=audit_event)
 
-    def _build_audit_event(
-        self, order: dict, decision: RiskDecision, context: dict | None
-    ) -> dict:
+    def _build_audit_event(self, order: dict, decision: RiskDecision, context: dict | None) -> dict:
         """
         Build audit event dict.
 
@@ -159,4 +157,3 @@ class RiskGate:
         # For now, just return a copy
         # Future: remove sensitive fields like API keys
         return dict(order)
-

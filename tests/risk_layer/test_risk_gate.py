@@ -105,9 +105,7 @@ def test_risk_gate_writes_audit_log(test_config: PeakConfig, tmp_path: Path) -> 
     assert "timestamp_utc" in event
 
 
-def test_risk_gate_audit_log_contains_violations(
-    test_config: PeakConfig, tmp_path: Path
-) -> None:
+def test_risk_gate_audit_log_contains_violations(test_config: PeakConfig, tmp_path: Path) -> None:
     """Test that violations are included in audit log."""
     gate = RiskGate(test_config)
 
@@ -123,9 +121,7 @@ def test_risk_gate_audit_log_contains_violations(
     assert any(v["code"] == "MISSING_SYMBOL" for v in event["violations"])
 
 
-def test_risk_gate_includes_context_in_audit(
-    test_config: PeakConfig, tmp_path: Path
-) -> None:
+def test_risk_gate_includes_context_in_audit(test_config: PeakConfig, tmp_path: Path) -> None:
     """Test that context is included in audit log."""
     gate = RiskGate(test_config)
 
@@ -162,4 +158,3 @@ def test_risk_gate_uses_default_audit_path_if_not_configured(tmp_path: Path) -> 
 
     # Should use default path
     assert gate.audit_log.path == Path("./logs/risk_audit.jsonl")
-

@@ -57,4 +57,3 @@ class RiskResult:
 
     decision: RiskDecision
     audit_event: dict
-
