@@ -14,6 +14,14 @@ CODE=0
 
 TS="$(date -u +"%Y-%m-%d %H:%M:%S UTC")"
 
+STATUS_LABEL="PASS"
+STATUS_CLASS="pass"
+if [[ "${CODE}" -ne 0 ]]; then
+  STATUS_LABEL="FAIL"
+  STATUS_CLASS="fail"
+fi
+
+
 cat >"$OUT" <<HTML
 <!doctype html>
 <html lang="en">
@@ -26,11 +34,16 @@ cat >"$OUT" <<HTML
     .card { border: 1px solid #3333; border-radius: 16px; padding: 16px; margin-bottom: 16px; }
     .kpi { font-size: 18px; font-weight: 700; }
     pre { white-space: pre-wrap; word-break: break-word; padding: 12px; border-radius: 12px; border: 1px solid #3333; }
+.row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.badge { display:inline-block; padding: 4px 10px; border-radius: 999px; font-weight: 800; letter-spacing: .02em; border: 1px solid #3333; }
+.badge.pass { border-color: #16a34a66; background: #16a34a22; }
+.badge.fail { border-color: #dc262666; background: #dc262622; }
+
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="kpi">Ops Doctor Dashboard (v0)</div>
+    <div class="row"><div class="kpi">Ops Doctor Dashboard (v1)</div><div class="badge ${STATUS_CLASS}">${STATUS_LABEL}</div></div>
     <div>Generated: ${TS}</div>
     <div>Exit code: ${CODE}</div>
   </div>
