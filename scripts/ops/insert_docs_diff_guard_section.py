@@ -9,6 +9,7 @@ Usage:
   python3 insert_docs_diff_guard_section.py --dry-run
   python3 insert_docs_diff_guard_section.py --anchors "## Quick Start,## Toolkit"
 """
+
 from __future__ import annotations
 
 import argparse
@@ -107,17 +108,13 @@ def insert_into_file(
             after = s[insert_at:]
             sep_before = "\n" if not before.endswith("\n\n") else ""
             sep_after = (
-                "\n"
-                if not snippet_block.endswith("\n\n") and not after.startswith("\n")
-                else ""
+                "\n" if not snippet_block.endswith("\n\n") and not after.startswith("\n") else ""
             )
             s2 = before + sep_before + snippet_block + sep_after + after
 
             if not dry_run:
                 p.write_text(s2, encoding="utf-8")
-            print(
-                f"✅ Inserted into: {p} (anchor: {a}){' [dry-run]' if dry_run else ''}"
-            )
+            print(f"✅ Inserted into: {p} (anchor: {a}){' [dry-run]' if dry_run else ''}")
             return Result(path=p, changed=True, mode="inserted")
 
     # Fallback: append at end
@@ -170,9 +167,7 @@ def main() -> int:
     anchor_list = anchors if anchors else list(DEFAULT_ANCHORS)
 
     if not target_paths:
-        print(
-            "❌ No target files specified. Use --files or set DEFAULT_TARGET_FILES in script."
-        )
+        print("❌ No target files specified. Use --files or set DEFAULT_TARGET_FILES in script.")
         return 1
 
     print("🧩 Insert Section")
