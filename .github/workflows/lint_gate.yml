@@ -24,6 +24,12 @@ jobs:
         with:
           fetch-depth: 0  # Need full history for diff
 
+      - name: Formatter policy drift guard (no black enforcement)
+        run: |
+          set -euo pipefail
+          echo "🛡️  Checking formatter policy (no black enforcement)..."
+          bash scripts/ops/check_no_black_enforcement.sh
+
       - name: Detect Python file changes
         id: detect
         run: |
