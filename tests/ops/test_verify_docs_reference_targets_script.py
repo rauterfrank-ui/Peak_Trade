@@ -30,8 +30,10 @@ def run_verify_script(docs_root: Path, repo_root: Path) -> subprocess.CompletedP
     result = subprocess.run(
         [
             str(script_path),
-            "--docs-root", str(docs_root),
-            "--repo-root", str(repo_root),
+            "--docs-root",
+            str(docs_root),
+            "--repo-root",
+            str(repo_root),
         ],
         capture_output=True,
         text=True,
@@ -60,8 +62,7 @@ def test_fixtures_pass():
         print("STDERR:", result.stderr)
 
     assert result.returncode == 0, (
-        f"Expected exit code 0 for pass fixtures, got {result.returncode}. "
-        f"Output: {result.stdout}"
+        f"Expected exit code 0 for pass fixtures, got {result.returncode}. Output: {result.stdout}"
     )
 
 
