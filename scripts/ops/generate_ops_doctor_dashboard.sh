@@ -16,10 +16,15 @@ TS="$(date -u +"%Y-%m-%d %H:%M:%S UTC")"
 
 STATUS_LABEL="PASS"
 STATUS_CLASS="pass"
-if [[ "${CODE}" -ne 0 ]]; then
+if [[ "${CODE}" -eq 2 ]]; then
+  STATUS_LABEL="WARN"
+  STATUS_CLASS="warn"
+elif [[ "${CODE}" -ne 0 ]]; then
   STATUS_LABEL="FAIL"
   STATUS_CLASS="fail"
 fi
+
+
 
 
 cat >"$OUT" <<HTML
@@ -38,6 +43,8 @@ cat >"$OUT" <<HTML
 .badge { display:inline-block; padding: 4px 10px; border-radius: 999px; font-weight: 800; letter-spacing: .02em; border: 1px solid #3333; }
 .badge.pass { border-color: #16a34a66; background: #16a34a22; }
 .badge.fail { border-color: #dc262666; background: #dc262622; }
+.badge.warn { border-color: #f59e0b66; background: #f59e0b22; }
+
 
   </style>
 </head>
