@@ -15,7 +15,10 @@ from src.risk_layer.audit_log import AuditLogWriter
 from src.risk_layer.kill_switch import KillSwitchLayer, to_violations
 from src.risk_layer.metrics import extract_risk_metrics, metrics_to_dict
 from src.risk_layer.models import RiskDecision, RiskResult, Violation
-from src.risk_layer.var_gate import VaRGate, status_to_dict
+from src.risk_layer.var_gate import VaRGate
+from src.risk_layer.var_gate import status_to_dict as var_status_to_dict
+from src.risk_layer.stress_gate import StressGate
+from src.risk_layer.stress_gate import status_to_dict as stress_status_to_dict
 
 
 class RiskGate:
@@ -45,6 +48,9 @@ class RiskGate:
 
         # Initialize VaR gate
         self._var_gate = VaRGate(cfg)
+
+        # Initialize Stress gate
+        self._stress_gate = StressGate(cfg)
 
     def evaluate(self, order: dict, context: dict | None = None) -> RiskResult:
         """
@@ -78,14 +84,16 @@ class RiskGate:
                 reason=f"Kill switch armed: {kill_switch_status.reason}",
                 violations=kill_switch_violations,
             )
-            # Evaluate VaR gate for audit (even if blocked)
+            # Evaluate VaR gate and Stress gate for audit (even if blocked)
             var_gate_status = self._var_gate.evaluate(context)
+            stress_gate_status = self._stress_gate.evaluate(context)
         else:
-            # Evaluate VaR gate (after kill switch, before order validation)
+            # Evaluate VaR gate (after kill switch, before stress gate)
             var_gate_status = self._var_gate.evaluate(context)
 
-            # If VaR gate blocks, stop here
+            # If VaR gate blocks, evaluate stress gate for audit but stop here
             if var_gate_status.severity == "BLOCK":
+                stress_gate_status = self._stress_gate.evaluate(context)
                 violations.append(
                     Violation(
                         code="VAR_LIMIT_EXCEEDED",
@@ -105,24 +113,64 @@ class RiskGate:
                     reason=f"VaR limit exceeded: {var_gate_status.reason}",
                     violations=violations,
                 )
-            elif var_gate_status.severity == "WARN":
-                # Add warning violation but continue
-                violations.append(
-                    Violation(
-                        code="VAR_NEAR_LIMIT",
-                        message=var_gate_status.reason,
-                        severity="WARNING",
-                        details={
-                            "var_pct": var_gate_status.var_pct,
-                            "threshold_warn": var_gate_status.threshold_warn,
-                            "threshold_block": var_gate_status.threshold_block,
-                        },
+            else:
+                # VaR gate passed (OK or WARN), continue with Stress gate
+                if var_gate_status.severity == "WARN":
+                    # Add warning violation but continue
+                    violations.append(
+                        Violation(
+                            code="VAR_NEAR_LIMIT",
+                            message=var_gate_status.reason,
+                            severity="WARNING",
+                            details={
+                                "var_pct": var_gate_status.var_pct,
+                                "threshold_warn": var_gate_status.threshold_warn,
+                                "threshold_block": var_gate_status.threshold_block,
+                            },
+                        )
                     )
-                )
 
-            # Continue with normal order validation (if not blocked by VaR)
-            # Only do order validation if not already blocked by VaR
-            if var_gate_status.severity != "BLOCK":
+                # Evaluate Stress gate (after VaR gate, before order validation)
+                stress_gate_status = self._stress_gate.evaluate(context)
+
+                # If Stress gate blocks, stop here
+                if stress_gate_status.severity == "BLOCK":
+                    violations.append(
+                        Violation(
+                            code="STRESS_LIMIT_EXCEEDED",
+                            message=stress_gate_status.reason,
+                            severity="CRITICAL",
+                            details={
+                                "worst_case_loss_pct": stress_gate_status.worst_case_loss_pct,
+                                "threshold": stress_gate_status.threshold_block,
+                                "triggered_scenarios": stress_gate_status.triggered_scenarios,
+                            },
+                        )
+                    )
+                    decision = RiskDecision(
+                        allowed=False,
+                        severity="BLOCK",
+                        reason=f"Stress limit exceeded: {stress_gate_status.reason}",
+                        violations=violations,
+                    )
+                elif stress_gate_status.severity == "WARN":
+                    # Add warning violation but continue
+                    violations.append(
+                        Violation(
+                            code="STRESS_NEAR_LIMIT",
+                            message=stress_gate_status.reason,
+                            severity="WARNING",
+                            details={
+                                "worst_case_loss_pct": stress_gate_status.worst_case_loss_pct,
+                                "threshold_warn": stress_gate_status.threshold_warn,
+                                "threshold_block": stress_gate_status.threshold_block,
+                            },
+                        )
+                    )
+
+            # Continue with normal order validation (if not blocked by VaR or Stress)
+            # Only do order validation if not already blocked
+            if var_gate_status.severity != "BLOCK" and stress_gate_status.severity != "BLOCK":
                 # Basic validation: order must be a dict
                 if not isinstance(order, dict):
                     violations.append(
@@ -157,15 +205,33 @@ class RiskGate:
 
                 # Determine decision
                 if violations:
-                    decision = RiskDecision(
-                        allowed=False,
-                        severity="BLOCK",
-                        reason="Order validation failed",
-                        violations=violations,
-                    )
+                    # Check if any CRITICAL violations (order validation failures)
+                    critical_violations = [v for v in violations if v.severity == "CRITICAL"]
+                    if critical_violations:
+                        decision = RiskDecision(
+                            allowed=False,
+                            severity="BLOCK",
+                            reason="Order validation failed",
+                            violations=violations,
+                        )
+                    else:
+                        # Only WARN violations
+                        decision = RiskDecision(
+                            allowed=True,
+                            severity="WARN",
+                            reason="Order passed with warnings",
+                            violations=violations,
+                        )
                 else:
                     # All checks passed
-                    severity = "WARN" if var_gate_status.severity == "WARN" else "OK"
+                    severity = (
+                        "WARN"
+                        if (
+                            var_gate_status.severity == "WARN"
+                            or stress_gate_status.severity == "WARN"
+                        )
+                        else "OK"
+                    )
                     decision = RiskDecision(
                         allowed=True,
                         severity=severity,
@@ -175,7 +241,7 @@ class RiskGate:
 
         # Build audit event
         audit_event = self._build_audit_event(
-            order, decision, context, kill_switch_status, var_gate_status
+            order, decision, context, kill_switch_status, var_gate_status, stress_gate_status
         )
 
         # Write to audit log
@@ -190,6 +256,7 @@ class RiskGate:
         context: dict | None,
         kill_switch_status,
         var_gate_status,
+        stress_gate_status,
     ) -> dict:
         """
         Build audit event dict.
@@ -236,7 +303,15 @@ class RiskGate:
             },
             "var_gate": {
                 "enabled": self._var_gate.enabled,
-                "result": status_to_dict(var_gate_status),
+                "result": var_status_to_dict(var_gate_status),
+            },
+            "stress_gate": {
+                "enabled": self._stress_gate.enabled,
+                "result": stress_status_to_dict(stress_gate_status),
+                "scenarios_meta": {
+                    "count": len(self._stress_gate.scenarios),
+                    "names": [s.name for s in self._stress_gate.scenarios],
+                },
             },
             "order": sanitized_order,
             "context": self._sanitize_context(context or {}),
