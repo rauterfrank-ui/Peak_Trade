@@ -5,7 +5,7 @@ PR #292 enforces the formatter policy drift guard in CI by running `scripts/ops/
 in the always-run Lint Gate workflow. This prevents reintroduction of `black --check` enforcement in workflows/scripts.
 
 - PR: #292
-- Merge commit: MERGE_COMMIT_SHA
+- Merge commit: 6b45a1fc126c423d78adc4fc9b41da5d308c6a0b
 - Branch: chore/ci-enforce-formatter-policy-guard → main
 
 ## Why
