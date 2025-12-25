@@ -135,9 +135,13 @@ Der Check `docs-reference-targets-gate` stellt sicher, dass in Docs referenziert
 - **Markdown-Links**: `[Text](docs/ops/README.md)`
 - **Anchors** werden ignoriert (nur Datei wird geprüft): `RISK_LAYER_ROADMAP.md#overview`
 - **Query-Parameter** werden ignoriert: `docs/ops/README.md?plain=1`
-- **Relative Pfade in Docs** werden korrekt resolved (relativ zur jeweiligen Markdown-Datei):
-  - `./README.md`
-  - `../README.md`
+- **Relative Pfade in Docs** werden korrekt resolved (relativ zur jeweiligen Markdown-Datei)
+
+**Beispiele (konzeptionell):**
+```
+./README.md      # Same directory
+../risk/README.md # Parent directory
+```
 
 ### Ignorierte Muster (werden NICHT als Repo-Targets gezählt)
 - **URLs**: `http://…`, `https://…`, z.B. `<https://example.com/docs/ops/README.md>`
