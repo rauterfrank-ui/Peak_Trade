@@ -261,3 +261,133 @@ def test_risk_gate_kill_switch_overrides_order_validation(test_config: PeakConfi
     assert any(v.code == "KILL_SWITCH_ARMED" for v in result.decision.violations)
     # Order validation violations should not run when kill switch armed
     assert not any(v.code == "MISSING_QTY" for v in result.decision.violations)
+
+
+# ============================================================================
+# Kill Switch API Tests (PR4: Ops Pack)
+# ============================================================================
+
+
+def test_risk_gate_reset_kill_switch(test_config: PeakConfig) -> None:
+    """Test RiskGate.reset_kill_switch() delegates to layer."""
+    gate = RiskGate(test_config)
+
+    # Arm kill switch
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"metrics": {"daily_pnl_pct": -0.10}}
+    result1 = gate.evaluate(order, context)
+    assert not result1.decision.allowed
+
+    # Reset via gate
+    reset_status = gate.reset_kill_switch("incident_resolved")
+    assert not reset_status.armed
+    assert reset_status.severity == "OK"
+    assert "incident_resolved" in reset_status.reason
+
+    # Verify trading can resume
+    context_good = {"metrics": {"daily_pnl_pct": -0.02}}
+    result2 = gate.evaluate(order, context_good)
+    assert result2.decision.allowed
+
+
+def test_risk_gate_get_kill_switch_status_with_context(test_config: PeakConfig) -> None:
+    """Test RiskGate.get_kill_switch_status() with fresh metrics."""
+    gate = RiskGate(test_config)
+
+    # Get status with good metrics
+    context_good = {"metrics": {"daily_pnl_pct": -0.02}}
+    status1 = gate.get_kill_switch_status(context_good)
+    assert not status1.armed
+    assert status1.severity == "OK"
+
+    # Get status with bad metrics (should arm)
+    context_bad = {"metrics": {"daily_pnl_pct": -0.10}}
+    status2 = gate.get_kill_switch_status(context_bad)
+    assert status2.armed
+    assert status2.severity == "BLOCK"
+    assert "daily_loss_limit" in status2.triggered_by
+
+
+def test_risk_gate_get_kill_switch_status_without_context(test_config: PeakConfig) -> None:
+    """Test RiskGate.get_kill_switch_status() returns last known status."""
+    gate = RiskGate(test_config)
+
+    # Before any evaluation, returns default unarmed status
+    status1 = gate.get_kill_switch_status()
+    assert not status1.armed
+    assert "not yet evaluated" in status1.reason.lower()
+
+    # After evaluation, returns last status
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"metrics": {"daily_pnl_pct": -0.10}}
+    gate.evaluate(order, context)
+
+    status2 = gate.get_kill_switch_status()
+    assert status2.armed
+    assert "daily_loss_limit" in status2.triggered_by
+
+
+def test_risk_gate_audit_includes_kill_switch_when_disabled(tmp_path) -> None:
+    """Test that audit events include kill_switch section even when disabled."""
+    # Config with kill switch disabled
+    audit_path = tmp_path / "audit.jsonl"
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "kill_switch": {"enabled": False},
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Evaluate order
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    gate.evaluate(order)
+
+    # Check audit log
+    import json
+
+    lines = audit_path.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    # kill_switch section should always be present
+    assert "kill_switch" in event
+    assert event["kill_switch"]["armed"] is False
+    assert "disabled" in event["kill_switch"]["reason"].lower()
+
+
+def test_risk_gate_reset_when_disabled(tmp_path) -> None:
+    """Test that reset_kill_switch() handles disabled kill switch gracefully."""
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(tmp_path / "audit.jsonl")},
+                "kill_switch": {"enabled": False},
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Reset should work even when disabled
+    status = gate.reset_kill_switch("test_reset")
+    assert not status.armed
+    assert "disabled" in status.reason.lower()
+
+
+def test_risk_gate_get_status_when_disabled(tmp_path) -> None:
+    """Test that get_kill_switch_status() handles disabled kill switch."""
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(tmp_path / "audit.jsonl")},
+                "kill_switch": {"enabled": False},
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Get status should return unarmed with disabled reason
+    status = gate.get_kill_switch_status()
+    assert not status.armed
+    assert "disabled" in status.reason.lower()

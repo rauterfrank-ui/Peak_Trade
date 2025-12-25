@@ -269,3 +269,69 @@ def test_is_armed_property(default_config: PeakConfig) -> None:
     # Reset
     ks.reset()
     assert not ks.is_armed
+
+
+def test_reset_clears_state_completely(default_config: PeakConfig) -> None:
+    """Test that reset clears all kill switch state."""
+    ks = KillSwitchLayer(default_config)
+
+    # Arm with multiple triggers
+    metrics = {"daily_pnl_pct": -0.10, "current_drawdown_pct": 0.25}
+    status_armed = ks.evaluate(metrics)
+    assert status_armed.armed
+    assert len(status_armed.triggered_by) == 2
+    assert status_armed.severity == "BLOCK"
+
+    # Reset
+    status_reset = ks.reset("post_incident_review")
+    assert not status_reset.armed
+    assert status_reset.severity == "OK"
+    assert len(status_reset.triggered_by) == 0
+    assert "post_incident_review" in status_reset.reason
+
+    # Verify internal state cleared
+    assert not ks.is_armed
+
+
+def test_last_status_property(default_config: PeakConfig) -> None:
+    """Test the last_status property."""
+    ks = KillSwitchLayer(default_config)
+
+    # Initially None (not evaluated yet)
+    assert ks.last_status is None
+
+    # After evaluation, last_status is set
+    metrics = {"daily_pnl_pct": -0.02}
+    status1 = ks.evaluate(metrics)
+    assert ks.last_status is not None
+    assert ks.last_status.armed == status1.armed
+    assert ks.last_status.reason == status1.reason
+
+    # After arming, last_status reflects armed state
+    metrics_bad = {"daily_pnl_pct": -0.10}
+    status2 = ks.evaluate(metrics_bad)
+    assert ks.last_status is not None
+    assert ks.last_status.armed is True
+    assert "daily_loss_limit" in ks.last_status.triggered_by
+
+    # After reset, last_status reflects reset
+    status_reset = ks.reset("test_reset")
+    assert ks.last_status is not None
+    assert ks.last_status.armed is False
+    assert "test_reset" in ks.last_status.reason
+
+
+def test_reset_preserves_reason_parameter(default_config: PeakConfig) -> None:
+    """Test that reset includes the provided reason."""
+    ks = KillSwitchLayer(default_config)
+
+    # Arm it
+    ks.evaluate({"daily_pnl_pct": -0.10})
+    assert ks.is_armed
+
+    # Reset with custom reason
+    custom_reason = "incident_resolved_by_operator"
+    status = ks.reset(custom_reason)
+
+    assert not status.armed
+    assert custom_reason in status.reason
