@@ -134,6 +134,13 @@ done
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 preflight_check() {
   local errors=0
+  local warnings=0
+
+  # Detect CI environment
+  local in_ci=0
+  if [[ "${CI:-}" == "true" ]] || [[ "${GITHUB_ACTIONS:-}" == "true" ]] || [[ -n "${GITHUB_WORKFLOW:-}" ]]; then
+    in_ci=1
+  fi
 
   # Check gh CLI
   if ! command -v gh &>/dev/null; then
@@ -141,9 +148,18 @@ preflight_check() {
     echo "   Install: brew install gh"
     errors=$((errors + 1))
   elif ! gh auth status &>/dev/null 2>&1; then
-    echo "❌ gh not authenticated"
-    echo "   Run: gh auth login"
-    errors=$((errors + 1))
+    if [[ $in_ci -eq 1 ]]; then
+      # In CI: graceful skip instead of hard error
+      echo "⚠️  gh not authenticated (CI environment)"
+      echo "   → Skipping live check (expected in CI)"
+      echo ""
+      echo "✅ SKIP - gh auth not available in CI"
+      exit 0
+    else
+      echo "❌ gh not authenticated"
+      echo "   Run: gh auth login"
+      errors=$((errors + 1))
+    fi
   fi
 
   # Check jq
