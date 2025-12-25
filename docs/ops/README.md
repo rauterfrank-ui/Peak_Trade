@@ -955,3 +955,18 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 ### Ops Doctor Dashboard Badge
 
 - Badge semantics: PASS (exit 0), WARN (exit 2), FAIL (any other non-zero)
+
+## Branch Hygiene (origin/main)
+Um zu verhindern, dass versehentlich lokale (unpushed) Commits in einen PR rutschen, erstelle neue Branches **immer von `origin/main`**:
+
+```bash
+git checkout main
+scripts/ops/new_branch_from_origin_main.sh feat/my-change
+```
+
+Das Script prüft:
+- ✅ Working tree ist clean
+- ✅ Lokaler `main` ist NICHT ahead von `origin/main` (verhindert unpushed commits)
+- ✅ Erstellt Branch explizit von `origin/main`
+
+**Warum?** Siehe PR #305: Branch wurde vom lokalen `main` abgezweigt, der 2 unpushte Commits hatte → 4 Dateien statt 1 im PR.
