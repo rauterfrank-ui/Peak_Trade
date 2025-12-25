@@ -6,6 +6,7 @@ import pytest
 
 from src.core.peak_config import PeakConfig
 from src.risk_layer.kill_switch import KillSwitchLayer, to_violations
+from src.risk_layer.metrics import RiskMetrics
 
 
 @pytest.fixture
@@ -335,3 +336,81 @@ def test_reset_preserves_reason_parameter(default_config: PeakConfig) -> None:
 
     assert not status.armed
     assert custom_reason in status.reason
+
+
+# ============================================================================
+# RiskMetrics Integration Tests (PR5: Metrics Plumbing)
+# ============================================================================
+
+
+def test_kill_switch_accepts_risk_metrics_instance(default_config: PeakConfig) -> None:
+    """Test that KillSwitch can evaluate RiskMetrics instances."""
+    ks = KillSwitchLayer(default_config)
+
+    # Use RiskMetrics instance
+    metrics = RiskMetrics(daily_pnl_pct=-0.06, current_drawdown_pct=0.10)
+    status = ks.evaluate(metrics)
+
+    assert status.armed
+    assert "daily_loss_limit" in status.triggered_by
+
+
+def test_kill_switch_risk_metrics_snapshot_stable_order(default_config: PeakConfig) -> None:
+    """Test that metrics_snapshot has stable key order with RiskMetrics."""
+    ks = KillSwitchLayer(default_config)
+
+    metrics = RiskMetrics(daily_pnl_pct=-0.02, current_drawdown_pct=0.05)
+    status = ks.evaluate(metrics)
+
+    # Check snapshot has canonical keys in order
+    snapshot_keys = list(status.metrics_snapshot.keys())
+    expected_keys = [
+        "daily_pnl_pct",
+        "current_drawdown_pct",
+        "realized_vol_pct",
+        "timestamp_utc",
+    ]
+    assert snapshot_keys == expected_keys
+
+
+def test_kill_switch_backwards_compat_dict_input(default_config: PeakConfig) -> None:
+    """Test backwards compatibility: dict input still works."""
+    ks = KillSwitchLayer(default_config)
+
+    # Old-style dict input
+    metrics_dict = {"daily_pnl_pct": -0.06}
+    status = ks.evaluate(metrics_dict)
+
+    assert status.armed
+    assert "daily_loss_limit" in status.triggered_by
+    assert "metrics_snapshot" in status.__dict__
+
+
+def test_kill_switch_metrics_snapshot_preserves_none(default_config: PeakConfig) -> None:
+    """Test that None values in metrics_snapshot are preserved."""
+    ks = KillSwitchLayer(default_config)
+
+    metrics = RiskMetrics(daily_pnl_pct=-0.02)  # Other fields None
+    status = ks.evaluate(metrics)
+
+    assert status.metrics_snapshot["daily_pnl_pct"] == -0.02
+    assert status.metrics_snapshot["current_drawdown_pct"] is None
+    assert status.metrics_snapshot["realized_vol_pct"] is None
+
+
+def test_kill_switch_dict_and_risk_metrics_equivalent(default_config: PeakConfig) -> None:
+    """Test that dict and RiskMetrics produce same results."""
+    ks1 = KillSwitchLayer(default_config)
+    ks2 = KillSwitchLayer(default_config)
+
+    # Same metrics as dict and RiskMetrics
+    metrics_dict = {"daily_pnl_pct": -0.06, "current_drawdown_pct": 0.15}
+    metrics_obj = RiskMetrics(daily_pnl_pct=-0.06, current_drawdown_pct=0.15)
+
+    status1 = ks1.evaluate(metrics_dict)
+    status2 = ks2.evaluate(metrics_obj)
+
+    # Should produce same decision
+    assert status1.armed == status2.armed
+    assert status1.triggered_by == status2.triggered_by
+    assert status1.severity == status2.severity
