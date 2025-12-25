@@ -932,3 +932,4 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 - PR #280 — archive session reports to worklogs: docs/ops/PR_280_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 - PR #292 — formatter policy drift guard enforced in CI (Merge-Log): docs/ops/PR_292_MERGE_LOG.md
+- PR #295 — guard the guardrail (CI enforcement presence) (Merge-Log): docs/ops/PR_295_MERGE_LOG.md
