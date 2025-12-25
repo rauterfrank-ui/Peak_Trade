@@ -5,6 +5,7 @@ CI Policy: Enforce Docs Diff Guard section in key ops docs.
 Checks that the "Docs Diff Guard (auto beim Merge)" marker is present
 in required documentation files when relevant files change.
 """
+
 from __future__ import annotations
 
 import subprocess
