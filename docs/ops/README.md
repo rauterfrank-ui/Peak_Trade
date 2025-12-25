@@ -133,11 +133,15 @@ Der Check `docs-reference-targets-gate` stellt sicher, dass in Docs referenziert
 ### Unterstützte Referenzen (werden geprüft)
 - **Plain paths** relativ zum Repo-Root, z.B. `docs/ops/README.md`, `scripts/ops/ops_center.sh`
 - **Markdown-Links**: `[Text](docs/ops/README.md)`
-- **Anchors** werden ignoriert (nur Datei wird geprüft): `docs/risk/RISK_LAYER_ROADMAP.md#overview`
+- **Anchors** werden ignoriert (nur Datei wird geprüft): `RISK_LAYER_ROADMAP.md#overview`
 - **Query-Parameter** werden ignoriert: `docs/ops/README.md?plain=1`
-- **Relative Pfade in Docs** werden korrekt resolved (relativ zur jeweiligen Markdown-Datei):
-  - `./RISK_LAYER_ROADMAP.md`
-  - `../ops/README.md`
+- **Relative Pfade in Docs** werden korrekt resolved (relativ zur jeweiligen Markdown-Datei)
+
+**Beispiele (konzeptionell):**
+```
+./README.md      # Same directory
+../risk/README.md # Parent directory
+```
 
 ### Ignorierte Muster (werden NICHT als Repo-Targets gezählt)
 - **URLs**: `http://…`, `https://…`, z.B. `<https://example.com/docs/ops/README.md>`
@@ -691,9 +695,9 @@ pytest tests/ -k "ops" -v
 
 ## 📚 Verwandte Dokumentation
 
-- [Peak_Trade Tooling & Evidence Chain Runbook](../Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
-- [CI Large PR Implementation Report](../CI_LARGE_PR_IMPLEMENTATION_REPORT.md)
-- [Merge Log Workflow](../docs/ops/PR_208_MERGE_LOG.md)
+- [Peak_Trade Tooling & Evidence Chain Runbook](../../Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
+- [CI Large PR Implementation Report](../../CI_LARGE_PR_IMPLEMENTATION_REPORT.md)
+- [Merge Log Workflow](PR_208_MERGE_LOG.md)
 
 ---
 
