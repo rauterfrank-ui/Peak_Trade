@@ -1113,3 +1113,28 @@ Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 - Risk Layer Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).
+
+---
+
+## Merge-Log Amendment Policy (Immutable History)
+
+**Prinzip:** Merge-Logs sind **immutable**. Nachträgliche Änderungen an bereits gemergten Merge-Logs erfolgen **nicht** durch direktes Editieren in `main`, sondern **immer** über einen **separaten Docs-only PR**.
+
+### Wann ist ein Amendment erlaubt?
+- **Klarheit/Lesbarkeit:** bessere Summary/Why/Changes-Struktur, präzisere Operator-Schritte
+- **Fehlende Referenzen:** Runbook-/PR-/Issue-Links nachtragen
+- **Korrekturen ohne Semantik-Änderung:** Tippfehler, Formatierung, eindeutige Faktenkorrektur (z.B. PR-Nummer/Dateiname)
+
+### Wie wird amended?
+1. **Neuer Branch** von `main` (Docs-only)
+2. Änderung am Merge-Log durchführen **oder** (empfohlen) einen kleinen „Amendment"-Zusatz/Follow-up Log hinzufügen
+3. **Commit + PR** (Label: `documentation`)
+4. Optional: **Auto-Merge** aktivieren, wenn alle Required Checks grün
+
+### Was ist *nicht* erlaubt?
+- Rewriting von technischen Entscheidungen oder Risiko-Semantik, wenn dadurch die ursprüngliche historische Darstellung „umgebogen" wird  
+  → In dem Fall: **Follow-up PR + neues Merge-Log** oder „Incident/Correction Note" mit Verweis.
+
+### Empfehlung (Ops-Workflow)
+- Große Korrekturen: **neues** kurzes Dokument `docs/ops/merge_logs/<date>_amendment_<ref>.md` mit Verweis auf das Original
+- Kleine Korrekturen: PR gegen das betroffene Merge-Log mit klarer PR-Body-Begründung (Docs-only)
