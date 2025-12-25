@@ -974,3 +974,19 @@ Das Script prüft:
 - ✅ Erstellt Branch explizit von `origin/main`
 
 **Warum?** Siehe PR #305: Branch wurde vom lokalen `main` abgezweigt, der 2 unpushte Commits hatte → 4 Dateien statt 1 im PR.
+
+## Docs Diff Guard (Mass-Deletion Schutz)
+Wenn ein PR versehentlich massive Docs-Deletions enthält (z.B. README „-972"), ist das eine Red-Flag.
+Vor Merge kann man das lokal hart prüfen:
+
+```bash
+scripts/ops/docs_diff_guard.sh --base origin/main --threshold 200
+```
+
+Das Script:
+- Zählt Deletions pro File unter `docs/`
+- Fails bei >= 200 Deletions per File
+- `--warn-only` zum Testen ohne Exit 1
+- `--threshold <n>` zum Anpassen
+
+**Use-Case:** PR #310 hatte ursprünglich `-972` in README.md → wäre erkannt worden.
