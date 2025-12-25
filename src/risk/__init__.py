@@ -8,6 +8,7 @@ v1 Risk Layer:
 - VaR / CVaR (Historical + Parametric)
 - Stress-Testing (Szenarien-Engine)
 - Risk-Limit Enforcement (Hard limits + Circuit Breaker)
+- Component VaR (Parametric Attribution via Euler Allocation)
 """
 
 # Legacy Position Sizing & Limits
@@ -52,6 +53,23 @@ from .enforcement import (
     RiskEnforcer,
 )
 
+# Component VaR (Parametric Attribution)
+from .covariance import (
+    CovarianceEstimator,
+    CovarianceEstimatorConfig,
+    CovarianceMethod,
+)
+from .parametric_var import (
+    ParametricVaR,
+    ParametricVaRConfig,
+    z_score,
+    portfolio_sigma_from_cov,
+)
+from .component_var import (
+    ComponentVaRCalculator,
+    ComponentVaRResult,
+)
+
 __all__ = [
     # Legacy Position Sizing
     "PositionSizer",
@@ -87,4 +105,14 @@ __all__ = [
     # v1 Enforcement
     "RiskLimitsV2",
     "RiskEnforcer",
+    # Component VaR
+    "CovarianceEstimator",
+    "CovarianceEstimatorConfig",
+    "CovarianceMethod",
+    "ParametricVaR",
+    "ParametricVaRConfig",
+    "z_score",
+    "portfolio_sigma_from_cov",
+    "ComponentVaRCalculator",
+    "ComponentVaRResult",
 ]

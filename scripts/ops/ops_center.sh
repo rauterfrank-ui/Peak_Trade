@@ -352,8 +352,51 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
 
   echo ""
 
+  # Required Checks Drift Guard
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🧭 Required Checks Drift Guard"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local drift_check="$SCRIPT_DIR/verify_required_checks_drift.sh"
+  local drift_exit=0
+
+  if [[ -x "$drift_check" ]]; then
+    echo "🔍 Check: Branch Protection Required Checks (doc vs live)"
+
+    # Run in warn-only mode (exit 2 on drift, not 1)
+    local drift_output
+    local drift_status=0
+    drift_output="$("$drift_check" --warn-only 2>&1)" || drift_status=$?
+
+    if [[ $drift_status -eq 0 ]]; then
+      # No drift
+      echo "   ✅ PASS - Doc matches live state"
+    elif [[ $drift_status -eq 2 ]]; then
+      # Drift detected (warn-only mode)
+      echo "   ⚠️  WARN - Drift detected between doc and live"
+      echo ""
+      echo "$drift_output" | sed 's/^/      /'
+      echo ""
+      echo "   📖 Details: scripts/ops/verify_required_checks_drift.sh"
+      drift_exit=1
+    else
+      # Hard error (preflight failure, etc.)
+      echo "   ❌ FAIL - Check failed to run"
+      echo ""
+      echo "$drift_output" | sed 's/^/      /'
+      echo ""
+      drift_exit=1
+    fi
+  else
+    echo "⚠️  Required Checks Drift Guard not found: $drift_check"
+    drift_exit=1
+  fi
+
+  echo ""
+
   # Exit with non-zero if any checks failed
-  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit))
+  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | drift_exit))
   if [[ $final_exit -ne 0 ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "❌ Health checks failed (exit $final_exit)"

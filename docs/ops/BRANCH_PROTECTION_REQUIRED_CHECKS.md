@@ -61,6 +61,61 @@ gh api -H "Accept: application/vnd.github+json" \
 
 ---
 
+## Automated Drift Guard
+
+### What is it?
+
+The **Required Checks Drift Guard** automatically verifies that the documented list of required checks (above) matches the live state on GitHub. This prevents documentation drift and ensures branch protection stays in sync.
+
+### How to Use
+
+**Quick check:**
+```bash
+scripts/ops/verify_required_checks_drift.sh
+```
+
+**Integrated check (part of ops_doctor):**
+```bash
+ops_center.sh doctor
+```
+
+### Exit Codes
+
+- `0` = No drift (doc matches live)
+- `1` = Drift detected (hard fail)
+- `2` = Drift detected (warn-only mode)
+
+### Interpreting Results
+
+**✅ PASS:** Doc and live state match perfectly.
+
+**⚠️ WARN:** Drift detected. The script will show:
+- **Missing from Live:** Checks documented but not configured on GitHub
+- **Extra in Live:** Checks configured on GitHub but not documented
+
+**Action Required:**
+1. Review the diff output
+2. Update documentation if live state is correct
+3. Or adjust branch protection if doc is correct
+
+### Troubleshooting
+
+**"gh not authenticated":**
+```bash
+gh auth login
+```
+
+**"jq not found":**
+```bash
+brew install jq
+```
+
+**"No checks found in doc":**
+- Verify the "Current Required Checks (main)" section exists
+- Check numbering format: `1. **Check Name**`
+
+---
+
 ## Why This Matters
 
 ### Docs Diff Guard Policy Gate
