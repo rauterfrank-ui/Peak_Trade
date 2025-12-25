@@ -665,6 +665,7 @@ Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
 - PR #290 — chore(ops): guard against black enforcement drift: docs/ops/PR_290_MERGE_LOG.md
 - PR #307 — docs(ops): document README_REGISTRY guardrail for ops doctor: docs/ops/PR_307_MERGE_LOG.md
 - PR #309 — feat(ops): add branch hygiene script (origin/main enforcement): docs/ops/PR_309_MERGE_LOG.md
+- PR #311 — feat(ops): add docs diff guard (mass-deletion protection): docs/ops/PR_311_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 
 
@@ -934,6 +935,7 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 - PR #280 — archive session reports to worklogs: docs/ops/PR_280_MERGE_LOG.md
 - PR #307 — docs(ops): document README_REGISTRY guardrail for ops doctor: docs/ops/PR_307_MERGE_LOG.md
 - PR #309 — feat(ops): add branch hygiene script (origin/main enforcement): docs/ops/PR_309_MERGE_LOG.md
+- PR #311 — feat(ops): add docs diff guard (mass-deletion protection): docs/ops/PR_311_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 - PR #292 — formatter policy drift guard enforced in CI (Merge-Log): docs/ops/PR_292_MERGE_LOG.md
 - PR #295 — guard the guardrail (CI enforcement presence) (Merge-Log): docs/ops/PR_295_MERGE_LOG.md
@@ -976,16 +978,46 @@ Das Script prüft:
 **Warum?** Siehe PR #305: Branch wurde vom lokalen `main` abgezweigt, der 2 unpushte Commits hatte → 4 Dateien statt 1 im PR.
 
 ## Docs Diff Guard (Mass-Deletion Schutz)
+
 Wenn ein PR versehentlich massive Docs-Deletions enthält (z.B. README „-972"), ist das eine Red-Flag.
-Vor Merge kann man das lokal hart prüfen:
+
+### Automatische Integration (seit PR #311)
+
+Der Docs Diff Guard ist **automatisch in `review_and_merge_pr.sh` integriert** und läuft vor jedem `--merge`:
 
 ```bash
-scripts/ops/docs_diff_guard.sh --base origin/main --threshold 200
+# Default: Guard läuft automatisch (Threshold: 200 Deletions/File unter docs/)
+scripts/ops/review_and_merge_pr.sh --pr 123 --merge
+
+# Override: Custom Threshold
+scripts/ops/review_and_merge_pr.sh --pr 123 --merge --docs-guard-threshold 500
+
+# Override: Warn-only (kein Fail)
+scripts/ops/review_and_merge_pr.sh --pr 123 --merge --docs-guard-warn-only
+
+# Override: Guard überspringen (NOT RECOMMENDED)
+scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 ```
 
-Das Script:
-- Zählt Deletions pro File unter `docs/`
-- Fails bei >= 200 Deletions per File
+### Standalone (manuelle Pre-Merge Check)
+
+Alternativ kann das Script auch manuell für lokale Checks genutzt werden:
+
+```bash
+# Standard: fail bei Violations
+scripts/ops/docs_diff_guard.sh --base origin/main --threshold 200
+
+# Warn-only (ohne Exit 1)
+scripts/ops/docs_diff_guard.sh --warn-only
+
+# Custom Threshold
+scripts/ops/docs_diff_guard.sh --threshold 500
+```
+
+### Wie es funktioniert
+
+- Zählt Deletions pro File unter `docs/` (via GitHub PR Files API oder `git diff --numstat`)
+- Fails bei >= 200 Deletions per File (default)
 - `--warn-only` zum Testen ohne Exit 1
 - `--threshold <n>` zum Anpassen
 
