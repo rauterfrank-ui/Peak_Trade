@@ -15,6 +15,7 @@ from src.risk_layer.audit_log import AuditLogWriter
 from src.risk_layer.kill_switch import KillSwitchLayer, to_violations
 from src.risk_layer.metrics import extract_risk_metrics, metrics_to_dict
 from src.risk_layer.models import RiskDecision, RiskResult, Violation
+from src.risk_layer.var_gate import VaRGate, status_to_dict
 
 
 class RiskGate:
@@ -41,6 +42,9 @@ class RiskGate:
 
         # Initialize kill switch
         self._kill_switch = KillSwitchLayer(cfg)
+
+        # Initialize VaR gate
+        self._var_gate = VaRGate(cfg)
 
     def evaluate(self, order: dict, context: dict | None = None) -> RiskResult:
         """
@@ -74,58 +78,105 @@ class RiskGate:
                 reason=f"Kill switch armed: {kill_switch_status.reason}",
                 violations=kill_switch_violations,
             )
+            # Evaluate VaR gate for audit (even if blocked)
+            var_gate_status = self._var_gate.evaluate(context)
         else:
-            # Continue with normal order validation
-            # Basic validation: order must be a dict
-            if not isinstance(order, dict):
+            # Evaluate VaR gate (after kill switch, before order validation)
+            var_gate_status = self._var_gate.evaluate(context)
+
+            # If VaR gate blocks, stop here
+            if var_gate_status.severity == "BLOCK":
                 violations.append(
                     Violation(
-                        code="INVALID_ORDER_TYPE",
-                        message="Order must be a dict",
+                        code="VAR_LIMIT_EXCEEDED",
+                        message=var_gate_status.reason,
                         severity="CRITICAL",
-                        details={"order_type": type(order).__name__},
+                        details={
+                            "var_pct": var_gate_status.var_pct,
+                            "threshold": var_gate_status.threshold_block,
+                            "method": var_gate_status.method,
+                            "confidence": var_gate_status.confidence,
+                        },
                     )
                 )
-
-            # Check required fields
-            if "symbol" not in order:
-                violations.append(
-                    Violation(
-                        code="MISSING_SYMBOL",
-                        message="Order missing required field: symbol",
-                        severity="CRITICAL",
-                        details={},
-                    )
-                )
-
-            if "qty" not in order:
-                violations.append(
-                    Violation(
-                        code="MISSING_QTY",
-                        message="Order missing required field: qty",
-                        severity="CRITICAL",
-                        details={},
-                    )
-                )
-
-            # Determine decision
-            if violations:
                 decision = RiskDecision(
                     allowed=False,
                     severity="BLOCK",
-                    reason="Order validation failed",
+                    reason=f"VaR limit exceeded: {var_gate_status.reason}",
                     violations=violations,
                 )
-            else:
-                decision = RiskDecision(
-                    allowed=True,
-                    severity="OK",
-                    reason="Order passed basic validation",
-                    violations=[],
+            elif var_gate_status.severity == "WARN":
+                # Add warning violation but continue
+                violations.append(
+                    Violation(
+                        code="VAR_NEAR_LIMIT",
+                        message=var_gate_status.reason,
+                        severity="WARNING",
+                        details={
+                            "var_pct": var_gate_status.var_pct,
+                            "threshold_warn": var_gate_status.threshold_warn,
+                            "threshold_block": var_gate_status.threshold_block,
+                        },
+                    )
                 )
 
+            # Continue with normal order validation (if not blocked by VaR)
+            # Only do order validation if not already blocked by VaR
+            if var_gate_status.severity != "BLOCK":
+                # Basic validation: order must be a dict
+                if not isinstance(order, dict):
+                    violations.append(
+                        Violation(
+                            code="INVALID_ORDER_TYPE",
+                            message="Order must be a dict",
+                            severity="CRITICAL",
+                            details={"order_type": type(order).__name__},
+                        )
+                    )
+
+                # Check required fields
+                if "symbol" not in order:
+                    violations.append(
+                        Violation(
+                            code="MISSING_SYMBOL",
+                            message="Order missing required field: symbol",
+                            severity="CRITICAL",
+                            details={},
+                        )
+                    )
+
+                if "qty" not in order:
+                    violations.append(
+                        Violation(
+                            code="MISSING_QTY",
+                            message="Order missing required field: qty",
+                            severity="CRITICAL",
+                            details={},
+                        )
+                    )
+
+                # Determine decision
+                if violations:
+                    decision = RiskDecision(
+                        allowed=False,
+                        severity="BLOCK",
+                        reason="Order validation failed",
+                        violations=violations,
+                    )
+                else:
+                    # All checks passed
+                    severity = "WARN" if var_gate_status.severity == "WARN" else "OK"
+                    decision = RiskDecision(
+                        allowed=True,
+                        severity=severity,
+                        reason="Order passed all risk checks",
+                        violations=violations,  # May include WARN violations
+                    )
+
         # Build audit event
-        audit_event = self._build_audit_event(order, decision, context, kill_switch_status)
+        audit_event = self._build_audit_event(
+            order, decision, context, kill_switch_status, var_gate_status
+        )
 
         # Write to audit log
         self.audit_log.write(audit_event)
@@ -138,6 +189,7 @@ class RiskGate:
         decision: RiskDecision,
         context: dict | None,
         kill_switch_status,
+        var_gate_status,
     ) -> dict:
         """
         Build audit event dict.
@@ -147,6 +199,7 @@ class RiskGate:
             decision: The risk decision
             context: Optional context
             kill_switch_status: KillSwitchStatus from evaluation
+            var_gate_status: VaRGateStatus from evaluation
 
         Returns:
             Dict containing the audit event
@@ -181,8 +234,12 @@ class RiskGate:
                 },
                 "metrics_snapshot": kill_switch_status.metrics_snapshot,
             },
+            "var_gate": {
+                "enabled": self._var_gate.enabled,
+                "result": status_to_dict(var_gate_status),
+            },
             "order": sanitized_order,
-            "context": context or {},
+            "context": self._sanitize_context(context or {}),
         }
 
     def _sanitize_order(self, order: Any) -> dict:
@@ -201,6 +258,44 @@ class RiskGate:
         # For now, just return a copy
         # Future: remove sensitive fields like API keys
         return dict(order)
+
+    def _sanitize_context(self, context: dict) -> dict:
+        """
+        Sanitize context for audit log.
+
+        Removes non-JSON-serializable objects like DataFrames.
+
+        Args:
+            context: Context dict to sanitize
+
+        Returns:
+            Sanitized context dict
+        """
+        import pandas as pd
+
+        sanitized = {}
+        for key, value in context.items():
+            # Skip DataFrames and other non-serializable objects
+            if isinstance(value, pd.DataFrame):
+                sanitized[key] = {
+                    "_type": "DataFrame",
+                    "shape": value.shape,
+                    "columns": list(value.columns),
+                }
+            elif isinstance(value, (list, tuple)) and len(value) > 0:
+                # Check if it's a list of non-serializable objects
+                if isinstance(value[0], pd.DataFrame):
+                    sanitized[key] = {"_type": "list[DataFrame]", "length": len(value)}
+                else:
+                    sanitized[key] = value
+            elif isinstance(value, dict):
+                # Recursively sanitize nested dicts
+                sanitized[key] = self._sanitize_context(value)
+            else:
+                # Keep primitive types
+                sanitized[key] = value
+
+        return sanitized
 
     def reset_kill_switch(self, reason: str = "manual_reset"):
         """
