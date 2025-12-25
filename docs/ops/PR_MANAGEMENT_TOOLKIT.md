@@ -142,6 +142,45 @@ Environment Variables:
 └─────────────────────────────────────────┘
 ```
 
+### Docs Diff Guard (auto beim Merge)
+
+Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs/*` erkennt und **den Merge blockiert**.
+
+**Default-Verhalten (enabled):**
+```bash
+scripts/ops/review_and_merge_pr.sh --pr 123 --merge
+# → 🛡️ Docs Diff Guard (PR #123 via GitHub API)
+#   Scope:     docs/*
+#   Threshold: -200 deletions per file
+#   ✅ OK: no large doc deletions detected.
+```
+
+**Override-Optionen:**
+```bash
+# Custom Threshold (z.B. bei beabsichtigter Restrukturierung)
+scripts/ops/review_and_merge_pr.sh --pr 123 --merge --docs-guard-threshold 500
+
+# Warn-only (kein Fail, nur Warnung)
+scripts/ops/review_and_merge_pr.sh --pr 123 --merge --docs-guard-warn-only
+
+# Guard komplett überspringen (NOT RECOMMENDED)
+scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
+```
+
+**Wie es funktioniert:**
+- Nutzt GitHub PR Files API für präzise Per-File Deletion Counts
+- Default Threshold: 200 Deletions/File unter `docs/`
+- Bei Violation: ❌ FAIL mit klarer Fehlermeldung + Override-Hinweis
+- Safe-by-Default: immer aktiv, außer explizit deaktiviert
+
+**Use-Case:**
+PR #310 hatte ursprünglich `-972` Deletions in `docs/ops/README.md` → wäre automatisch erkannt und geblockt worden.
+
+**Siehe auch:**
+- Standalone Script: `scripts/ops/docs_diff_guard.sh` (für manuelle Pre-Merge Checks)
+- Dokumentation: `docs/ops/README.md` (Abschnitt "Docs Diff Guard")
+- Merge-Log: `docs/ops/PR_311_MERGE_LOG.md`
+
 ---
 
 ## 🎯 2. One-Shot Workflow: `pr_review_merge_workflow.sh`
