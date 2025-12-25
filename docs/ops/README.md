@@ -664,6 +664,7 @@ Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
 <!-- MERGE_LOG_EXAMPLES:START -->
 - PR #290 — chore(ops): guard against black enforcement drift: docs/ops/PR_290_MERGE_LOG.md
 - PR #307 — docs(ops): document README_REGISTRY guardrail for ops doctor: docs/ops/PR_307_MERGE_LOG.md
+- PR #309 — feat(ops): add branch hygiene script (origin/main enforcement): docs/ops/PR_309_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 
 
@@ -932,6 +933,7 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 - PR #279 — salvage untracked docs/ops assets: docs/ops/PR_279_MERGE_LOG.md
 - PR #280 — archive session reports to worklogs: docs/ops/PR_280_MERGE_LOG.md
 - PR #307 — docs(ops): document README_REGISTRY guardrail for ops doctor: docs/ops/PR_307_MERGE_LOG.md
+- PR #309 — feat(ops): add branch hygiene script (origin/main enforcement): docs/ops/PR_309_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 - PR #292 — formatter policy drift guard enforced in CI (Merge-Log): docs/ops/PR_292_MERGE_LOG.md
 - PR #295 — guard the guardrail (CI enforcement presence) (Merge-Log): docs/ops/PR_295_MERGE_LOG.md
