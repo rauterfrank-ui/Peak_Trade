@@ -1102,3 +1102,14 @@ scripts/ops/docs_diff_guard.sh --threshold 500
 - `--threshold <n>` zum Anpassen
 
 **Use-Case:** PR #310 hatte ursprünglich `-972` in README.md → wäre erkannt worden.
+
+## Risk & Safety Gates (Operator Hub)
+
+Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
+
+- VaR Gate Runbook: `docs/risk/VAR_GATE_RUNBOOK.md`
+- Stress Gate Runbook: `docs/risk/STRESS_GATE_RUNBOOK.md`
+- Liquidity Gate Runbook: `docs/risk/LIQUIDITY_GATE_RUNBOOK.md`
+- Risk Layer Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
+
+Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).
