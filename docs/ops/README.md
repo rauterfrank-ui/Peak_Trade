@@ -930,3 +930,4 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 - PR #279 — salvage untracked docs/ops assets: docs/ops/PR_279_MERGE_LOG.md
 - PR #280 — archive session reports to worklogs: docs/ops/PR_280_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
+- PR #292 — formatter policy drift guard enforced in CI (Merge-Log): docs/ops/PR_292_MERGE_LOG.md
