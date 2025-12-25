@@ -19,6 +19,8 @@ from src.risk_layer.var_gate import VaRGate
 from src.risk_layer.var_gate import status_to_dict as var_status_to_dict
 from src.risk_layer.stress_gate import StressGate
 from src.risk_layer.stress_gate import status_to_dict as stress_status_to_dict
+from src.risk_layer.liquidity_gate import LiquidityGate, LiquidityGateConfig, LiquiditySeverity
+from src.risk_layer.liquidity_gate import liquidity_gate_status_to_dict
 
 
 class RiskGate:
@@ -52,6 +54,41 @@ class RiskGate:
         # Initialize Stress gate
         self._stress_gate = StressGate(cfg)
 
+        # Initialize Liquidity gate
+        self._liquidity_gate = self._init_liquidity_gate(cfg)
+
+    def _init_liquidity_gate(self, cfg: PeakConfig) -> LiquidityGate:
+        """
+        Initialize liquidity gate from config.
+
+        Args:
+            cfg: PeakConfig instance
+
+        Returns:
+            LiquidityGate instance
+        """
+        config = LiquidityGateConfig(
+            enabled=cfg.get("risk.liquidity_gate.enabled", False),
+            require_micro_metrics=cfg.get("risk.liquidity_gate.require_micro_metrics", False),
+            max_spread_pct=cfg.get("risk.liquidity_gate.max_spread_pct", 0.005),
+            warn_spread_pct=cfg.get("risk.liquidity_gate.warn_spread_pct", None),
+            max_slippage_estimate_pct=cfg.get(
+                "risk.liquidity_gate.max_slippage_estimate_pct", 0.01
+            ),
+            warn_slippage_estimate_pct=cfg.get(
+                "risk.liquidity_gate.warn_slippage_estimate_pct", None
+            ),
+            min_book_depth_multiple=cfg.get("risk.liquidity_gate.min_book_depth_multiple", 1.5),
+            max_order_to_adv_pct=cfg.get("risk.liquidity_gate.max_order_to_adv_pct", 0.02),
+            strict_for_market_orders=cfg.get("risk.liquidity_gate.strict_for_market_orders", True),
+            allow_limit_orders_when_spread_wide=cfg.get(
+                "risk.liquidity_gate.allow_limit_orders_when_spread_wide", True
+            ),
+            profile_name=cfg.get("risk.liquidity_gate.profile_name", "default"),
+            notes=cfg.get("risk.liquidity_gate.notes", ""),
+        )
+        return LiquidityGate(config)
+
     def evaluate(self, order: dict, context: dict | None = None) -> RiskResult:
         """
         Evaluate an order against risk rules.
@@ -84,16 +121,18 @@ class RiskGate:
                 reason=f"Kill switch armed: {kill_switch_status.reason}",
                 violations=kill_switch_violations,
             )
-            # Evaluate VaR gate and Stress gate for audit (even if blocked)
+            # Evaluate VaR gate, Stress gate, and Liquidity gate for audit (even if blocked)
             var_gate_status = self._var_gate.evaluate(context)
             stress_gate_status = self._stress_gate.evaluate(context)
+            liquidity_gate_status = self._liquidity_gate.evaluate(order, context)
         else:
             # Evaluate VaR gate (after kill switch, before stress gate)
             var_gate_status = self._var_gate.evaluate(context)
 
-            # If VaR gate blocks, evaluate stress gate for audit but stop here
+            # If VaR gate blocks, evaluate remaining gates for audit but stop here
             if var_gate_status.severity == "BLOCK":
                 stress_gate_status = self._stress_gate.evaluate(context)
+                liquidity_gate_status = self._liquidity_gate.evaluate(order, context)
                 violations.append(
                     Violation(
                         code="VAR_LIMIT_EXCEEDED",
@@ -133,8 +172,9 @@ class RiskGate:
                 # Evaluate Stress gate (after VaR gate, before order validation)
                 stress_gate_status = self._stress_gate.evaluate(context)
 
-                # If Stress gate blocks, stop here
+                # If Stress gate blocks, evaluate liquidity gate for audit but stop here
                 if stress_gate_status.severity == "BLOCK":
+                    liquidity_gate_status = self._liquidity_gate.evaluate(order, context)
                     violations.append(
                         Violation(
                             code="STRESS_LIMIT_EXCEEDED",
@@ -168,9 +208,76 @@ class RiskGate:
                         )
                     )
 
-            # Continue with normal order validation (if not blocked by VaR or Stress)
+                # Evaluate Liquidity gate (after Stress, before Order Validation)
+                # Only evaluate if not already blocked
+                if stress_gate_status.severity != "BLOCK":
+                    liquidity_gate_status = self._liquidity_gate.evaluate(order, context)
+
+                    # Handle liquidity gate results
+                    if liquidity_gate_status.severity == LiquiditySeverity.BLOCK:
+                        # Map triggered_by to specific violation codes
+                        for trigger in liquidity_gate_status.triggered_by:
+                            if trigger == "spread":
+                                violations.append(
+                                    Violation(
+                                        code="LIQUIDITY_SPREAD_TOO_WIDE",
+                                        message="Bid-ask spread too wide",
+                                        severity="CRITICAL",
+                                        details={"reason": liquidity_gate_status.reason},
+                                    )
+                                )
+                            elif trigger == "slippage":
+                                violations.append(
+                                    Violation(
+                                        code="LIQUIDITY_SLIPPAGE_TOO_HIGH",
+                                        message="Slippage estimate too high",
+                                        severity="CRITICAL",
+                                        details={"reason": liquidity_gate_status.reason},
+                                    )
+                                )
+                            elif trigger == "depth":
+                                violations.append(
+                                    Violation(
+                                        code="LIQUIDITY_INSUFFICIENT_DEPTH",
+                                        message="Insufficient order book depth",
+                                        severity="CRITICAL",
+                                        details={"reason": liquidity_gate_status.reason},
+                                    )
+                                )
+                            elif trigger == "order_to_adv":
+                                violations.append(
+                                    Violation(
+                                        code="LIQUIDITY_ORDER_TOO_LARGE_FOR_ADV",
+                                        message="Order too large relative to average daily volume",
+                                        severity="CRITICAL",
+                                        details={"reason": liquidity_gate_status.reason},
+                                    )
+                                )
+
+                        decision = RiskDecision(
+                            allowed=False,
+                            severity="BLOCK",
+                            reason=f"Liquidity gate blocked: {liquidity_gate_status.reason}",
+                            violations=violations,
+                        )
+                    elif liquidity_gate_status.severity == LiquiditySeverity.WARN:
+                        # Add warning violation
+                        violations.append(
+                            Violation(
+                                code="LIQUIDITY_NEAR_LIMIT",
+                                message=liquidity_gate_status.reason,
+                                severity="WARNING",
+                                details={"triggered_by": liquidity_gate_status.triggered_by},
+                            )
+                        )
+
+            # Continue with normal order validation (if not blocked by VaR, Stress, or Liquidity)
             # Only do order validation if not already blocked
-            if var_gate_status.severity != "BLOCK" and stress_gate_status.severity != "BLOCK":
+            if (
+                var_gate_status.severity != "BLOCK"
+                and stress_gate_status.severity != "BLOCK"
+                and liquidity_gate_status.severity != LiquiditySeverity.BLOCK
+            ):
                 # Basic validation: order must be a dict
                 if not isinstance(order, dict):
                     violations.append(
@@ -229,6 +336,7 @@ class RiskGate:
                         if (
                             var_gate_status.severity == "WARN"
                             or stress_gate_status.severity == "WARN"
+                            or liquidity_gate_status.severity == LiquiditySeverity.WARN
                         )
                         else "OK"
                     )
@@ -241,7 +349,13 @@ class RiskGate:
 
         # Build audit event
         audit_event = self._build_audit_event(
-            order, decision, context, kill_switch_status, var_gate_status, stress_gate_status
+            order,
+            decision,
+            context,
+            kill_switch_status,
+            var_gate_status,
+            stress_gate_status,
+            liquidity_gate_status,
         )
 
         # Write to audit log
@@ -257,6 +371,7 @@ class RiskGate:
         kill_switch_status,
         var_gate_status,
         stress_gate_status,
+        liquidity_gate_status,
     ) -> dict:
         """
         Build audit event dict.
@@ -267,6 +382,8 @@ class RiskGate:
             context: Optional context
             kill_switch_status: KillSwitchStatus from evaluation
             var_gate_status: VaRGateStatus from evaluation
+            stress_gate_status: StressGateStatus from evaluation
+            liquidity_gate_status: LiquidityGateStatus from evaluation
 
         Returns:
             Dict containing the audit event
@@ -312,6 +429,10 @@ class RiskGate:
                     "count": len(self._stress_gate.scenarios),
                     "names": [s.name for s in self._stress_gate.scenarios],
                 },
+            },
+            "liquidity_gate": {
+                "enabled": self._liquidity_gate.config.enabled,
+                "result": liquidity_gate_status_to_dict(liquidity_gate_status),
             },
             "order": sanitized_order,
             "context": self._sanitize_context(context or {}),

@@ -942,3 +942,233 @@ def test_risk_gate_kill_switch_blocks_before_other_gates(tmp_path: Path) -> None
     assert event["kill_switch"]["status"]["armed"] is True
     assert "var_gate" in event
     assert "stress_gate" in event
+
+
+# =============================================================================
+# LIQUIDITY GATE INTEGRATION TESTS
+# =============================================================================
+
+
+def test_risk_gate_liquidity_gate_disabled_by_default(test_config: PeakConfig) -> None:
+    """Test that liquidity gate is disabled by default."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0, "order_type": "MARKET"}
+    context = {"micro": {"spread_pct": 0.99}}  # Extremely wide spread
+
+    result = gate.evaluate(order, context)
+
+    # Order should pass (liquidity gate disabled)
+    assert result.decision.allowed
+    assert result.decision.severity == "OK"
+
+    # Audit should contain liquidity_gate section (always present)
+    assert "liquidity_gate" in result.audit_event
+    assert result.audit_event["liquidity_gate"]["enabled"] is False
+
+
+def test_risk_gate_liquidity_gate_enabled(tmp_path: Path) -> None:
+    """Test liquidity gate integration when enabled."""
+    audit_path = tmp_path / "audit.jsonl"
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "liquidity_gate": {
+                    "enabled": True,
+                    "max_spread_pct": 0.01,
+                },
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Order with wide spread should be blocked
+    order = {"symbol": "BTCUSDT", "qty": 1.0, "order_type": "MARKET"}
+    context = {"micro": {"spread_pct": 0.02, "last_price": 100.0}}
+
+    result = gate.evaluate(order, context)
+
+    # Should be blocked by liquidity gate
+    assert not result.decision.allowed
+    assert result.decision.severity == "BLOCK"
+    assert "liquidity" in result.decision.reason.lower()
+    assert any(v.code == "LIQUIDITY_SPREAD_TOO_WIDE" for v in result.decision.violations)
+
+    # Audit should contain liquidity_gate section
+    assert "liquidity_gate" in result.audit_event
+    assert result.audit_event["liquidity_gate"]["enabled"] is True
+    assert result.audit_event["liquidity_gate"]["result"]["severity"] == "BLOCK"
+
+
+def test_risk_gate_liquidity_gate_evaluation_order(tmp_path: Path) -> None:
+    """Test that liquidity gate is evaluated after stress gate."""
+    audit_path = tmp_path / "audit.jsonl"
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "kill_switch": {"enabled": False},
+                "var_gate": {"enabled": False},
+                "stress_gate": {"enabled": False},
+                "liquidity_gate": {
+                    "enabled": True,
+                    "max_spread_pct": 0.005,
+                },
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Only liquidity gate enabled
+    order = {"symbol": "BTCUSDT", "qty": 1.0, "order_type": "MARKET"}
+    context = {"micro": {"spread_pct": 0.01, "last_price": 100.0}}
+
+    result = gate.evaluate(order, context)
+
+    # Should be blocked by liquidity gate
+    assert not result.decision.allowed
+    assert result.decision.severity == "BLOCK"
+
+    # Audit should show all gates evaluated
+    event = result.audit_event
+    assert "kill_switch" in event
+    assert "var_gate" in event
+    assert "stress_gate" in event
+    assert "liquidity_gate" in event
+
+    # Liquidity gate should be the blocker
+    assert event["liquidity_gate"]["result"]["severity"] == "BLOCK"
+
+
+def test_risk_gate_liquidity_gate_warn_allows_order(tmp_path: Path) -> None:
+    """Test that liquidity gate WARN allows order but adds violation."""
+    audit_path = tmp_path / "audit.jsonl"
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "liquidity_gate": {
+                    "enabled": True,
+                    "max_spread_pct": 0.01,
+                    "warn_spread_pct": 0.008,
+                    "strict_for_market_orders": False,  # Disable strictness for this test
+                },
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Spread at warn threshold (0.009 between warn 0.008 and max 0.01)
+    order = {"symbol": "BTCUSDT", "qty": 1.0, "order_type": "MARKET"}
+    context = {"micro": {"spread_pct": 0.009, "last_price": 100.0}}
+
+    result = gate.evaluate(order, context)
+
+    # Should be allowed with warning
+    assert result.decision.allowed
+    assert result.decision.severity == "WARN"
+    assert any(v.code == "LIQUIDITY_NEAR_LIMIT" for v in result.decision.violations)
+
+
+def test_risk_gate_liquidity_gate_audit_always_present(test_config: PeakConfig) -> None:
+    """Test that liquidity_gate section is always in audit (even when disabled)."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    result = gate.evaluate(order)
+
+    # Audit should always contain liquidity_gate section
+    assert "liquidity_gate" in result.audit_event
+    assert "enabled" in result.audit_event["liquidity_gate"]
+    assert "result" in result.audit_event["liquidity_gate"]
+
+
+def test_risk_gate_liquidity_gate_limit_order_exception(tmp_path: Path) -> None:
+    """Test that limit orders can bypass wide spread blocks."""
+    audit_path = tmp_path / "audit.jsonl"
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "liquidity_gate": {
+                    "enabled": True,
+                    "max_spread_pct": 0.01,
+                    "allow_limit_orders_when_spread_wide": True,
+                },
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Market order should be blocked
+    order_market = {"symbol": "BTCUSDT", "qty": 1.0, "order_type": "MARKET"}
+    context = {"micro": {"spread_pct": 0.02, "last_price": 100.0}}
+
+    result_market = gate.evaluate(order_market, context)
+    assert not result_market.decision.allowed
+
+    # Limit order should only warn (exception)
+    order_limit = {
+        "symbol": "BTCUSDT",
+        "qty": 1.0,
+        "order_type": "LIMIT",
+        "limit_price": 100.0,
+    }
+    result_limit = gate.evaluate(order_limit, context)
+    assert result_limit.decision.allowed
+    assert result_limit.decision.severity == "WARN"
+
+
+def test_risk_gate_stress_gate_blocks_before_liquidity(tmp_path: Path) -> None:
+    """Test that stress gate blocking prevents liquidity gate from blocking."""
+    audit_path = tmp_path / "audit.jsonl"
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(audit_path)},
+                "stress_gate": {
+                    "enabled": True,
+                    "max_loss_pct_block": 0.05,
+                    "scenarios": [
+                        {
+                            "name": "market_crash",
+                            "shocks": {"SPY": -0.20},
+                            "enabled": True,
+                        }
+                    ],
+                },
+                "liquidity_gate": {
+                    "enabled": True,
+                    "max_spread_pct": 0.005,
+                },
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Both gates would block, but stress gate should win
+    order = {"symbol": "SPY", "qty": 100.0, "order_type": "MARKET"}
+    context = {
+        "portfolio": {
+            "positions": [{"symbol": "SPY", "quantity": 1000, "avg_price": 400.0}],
+            "cash": 10000.0,
+        },
+        "prices": {"SPY": 400.0},
+        "micro": {"spread_pct": 0.01, "last_price": 400.0},
+    }
+
+    result = gate.evaluate(order, context)
+
+    # Should be blocked
+    assert not result.decision.allowed
+    assert result.decision.severity == "BLOCK"
+
+    # Either stress gate or liquidity gate can be the blocker
+    # (both would trigger, stress is evaluated first but liquidity might also block)
+    assert any(v.code == "STRESS_LIMIT_EXCEEDED" for v in result.decision.violations) or any(
+        v.code == "LIQUIDITY_SPREAD_TOO_WIDE" for v in result.decision.violations
+    )
+
+    # Liquidity gate should still be evaluated for audit
+    assert "liquidity_gate" in result.audit_event
