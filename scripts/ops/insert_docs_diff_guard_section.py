@@ -114,14 +114,14 @@ def insert_into_file(
 
             if not dry_run:
                 p.write_text(s2, encoding="utf-8")
-            print(f"✅ Inserted into: {p} (anchor: {a}){' [dry-run]' if dry_run else ''}")
+            print(f"✅ Inserted: {p} (anchor: {a}){' [dry-run]' if dry_run else ''}")
             return Result(path=p, changed=True, mode="inserted")
 
     # Fallback: append at end
     s2 = s.rstrip() + "\n\n" + snippet_block
     if not dry_run:
         p.write_text(s2, encoding="utf-8")
-    print(f"✅ Appended to end: {p}{' [dry-run]' if dry_run else ''}")
+    print(f"✅ Appended:  {p}{' [dry-run]' if dry_run else ''}")
     return Result(path=p, changed=True, mode="appended")
 
 
