@@ -95,6 +95,37 @@ scripts/ops/ops_center.sh doctor
 
 **Tip:** Vor großen Docs-Refactorings einmal laufen lassen, um kaputte Links zu vermeiden.
 
+### Docs Reference Targets
+
+**Zweck:** Validiert, dass alle referenzierten Repo-Pfade in Markdown-Docs (Config/Scripts/Docs) tatsächlich existieren.
+
+**Quick Start:**
+```bash
+# Standalone Check (nur geänderte Markdown-Dateien)
+scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
+
+# Alle Docs scannen
+scripts/ops/verify_docs_reference_targets.sh
+
+# Als Teil von ops doctor (warn-only)
+scripts/ops/ops_center.sh doctor
+```
+
+**Features:**
+- Findet referenzierte Pfade in Markdown-Links (`[text](path)`), Inline-Code (`` `path` ``), und Bare-Pfaden
+- Validiert Existenz von: `config/*.toml`, `docs/*.md`, `scripts/*.sh`, `src/*.py`, `.github/*.yml`
+- Ignoriert externe URLs (http/https) und Anchor-Only-Links
+- Exit 0 = OK/nicht anwendbar, Exit 1 = FAIL (CI), Exit 2 = WARN (ops doctor)
+
+**CI Integration:**
+- Läuft automatisch bei PRs via `.github/workflows/docs_reference_targets_gate.yml`
+- Exit 0 wenn keine Markdown-Dateien geändert wurden (not applicable)
+- Exit 1 bei fehlenden Targets (blockiert Merge)
+
+**Scope:** Alle `*.md` Dateien (im --changed Mode: nur geänderte Dateien)
+
+**Use Case:** Verhindert kaputte Referenzen z.B. nach Datei-Umbenennungen oder -Verschiebungen.
+
 ---
 
 Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs/*` erkennt und **den Merge blockiert**.
@@ -1110,6 +1141,6 @@ Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 - VaR Gate Runbook: `docs/risk/VAR_GATE_RUNBOOK.md`
 - Stress Gate Runbook: `docs/risk/STRESS_GATE_RUNBOOK.md`
 - Liquidity Gate Runbook: `docs/risk/LIQUIDITY_GATE_RUNBOOK.md`
-- Risk Layer Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
+- Risk Layer Roadmap: `RISK_LAYER_ROADMAP.md`
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).

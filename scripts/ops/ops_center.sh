@@ -381,6 +381,49 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
 
   echo ""
 
+  # Docs Reference Targets
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🔗 Docs Reference Targets"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local ref_targets_check="$SCRIPT_DIR/verify_docs_reference_targets.sh"
+  local ref_targets_exit=0
+
+  if [[ -x "$ref_targets_check" ]]; then
+    echo "🔍 Check: Referenced repo paths in markdown docs (warn-only)"
+
+    # Run in warn-only mode (exit 2 on missing targets)
+    local ref_output
+    local ref_status=0
+    ref_output="$("$ref_targets_check" --changed --base origin/main --warn-only 2>&1)" || ref_status=$?
+
+    if [[ $ref_status -eq 0 ]]; then
+      # All targets exist or not applicable
+      echo "   ✅ PASS - All referenced targets exist (or no markdown changes)"
+    elif [[ $ref_status -eq 2 ]]; then
+      # Missing targets (warn-only mode)
+      echo "   ⚠️  WARN - Missing referenced targets detected"
+      echo ""
+      echo "$ref_output" | sed 's/^/      /'
+      echo ""
+      echo "   📖 Details: scripts/ops/verify_docs_reference_targets.sh --changed"
+      ref_targets_exit=1
+    else
+      # Hard error (script failure)
+      echo "   ❌ FAIL - Check failed to run"
+      echo ""
+      echo "$ref_output" | sed 's/^/      /'
+      echo ""
+      ref_targets_exit=1
+    fi
+  else
+    echo "⚠️  Docs Reference Targets check not found: $ref_targets_check"
+    ref_targets_exit=1
+  fi
+
+  echo ""
+
   # Required Checks Drift Guard
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "🧭 Required Checks Drift Guard"
@@ -426,7 +469,7 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
 
   # Exit with non-zero if any checks failed
   # Note: docs_link_exit is currently 0 (warn-only mode) until existing broken links are fixed
-  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | drift_exit))
+  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | ref_targets_exit | drift_exit))
   if [[ $final_exit -ne 0 ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "❌ Health checks failed (exit $final_exit)"
