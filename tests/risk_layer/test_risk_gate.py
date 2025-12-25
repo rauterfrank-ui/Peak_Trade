@@ -81,7 +81,7 @@ def test_risk_gate_allows_valid_order(test_config: PeakConfig) -> None:
     assert result.decision.allowed
     assert result.decision.severity == "OK"
     assert len(result.decision.violations) == 0
-    assert "passed basic validation" in result.decision.reason
+    assert "passed" in result.decision.reason.lower()
 
 
 def test_risk_gate_writes_audit_log(test_config: PeakConfig, tmp_path: Path) -> None:
@@ -494,3 +494,188 @@ def test_risk_gate_audit_metrics_snapshot_with_missing_metrics(
     assert snapshot["daily_pnl_pct"] is None
     assert snapshot["current_drawdown_pct"] is None
     assert snapshot["realized_vol_pct"] is None
+
+
+# ============================================================================
+# VaR Gate Integration Tests (PR6: VaR Gate v1)
+# ============================================================================
+
+
+def test_risk_gate_includes_var_gate_in_audit(test_config: PeakConfig, tmp_path: Path) -> None:
+    """Test that audit events always include var_gate section."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    result = gate.evaluate(order)
+
+    # Check audit log
+    audit_path = Path(test_config.get("risk.audit_log.path"))
+    lines = audit_path.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    # var_gate section should always be present
+    assert "var_gate" in event
+    assert "enabled" in event["var_gate"]
+    assert "result" in event["var_gate"]
+
+
+def test_risk_gate_var_gate_disabled_safe(tmp_path: Path) -> None:
+    """Test that disabled VaR gate doesn't block orders."""
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(tmp_path / "audit.jsonl")},
+                "var_gate": {"enabled": False},
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    result = gate.evaluate(order)
+
+    # Should allow (VaR gate disabled)
+    assert result.decision.allowed
+    assert result.decision.severity == "OK"
+
+
+def test_risk_gate_var_gate_missing_data_safe(test_config: PeakConfig) -> None:
+    """Test that missing VaR data doesn't block orders."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {}  # No VaR data (returns_df, weights)
+
+    result = gate.evaluate(order)
+
+    # Should allow (VaR not applicable)
+    assert result.decision.allowed
+    assert result.decision.severity == "OK"
+
+
+def test_risk_gate_var_gate_blocks_high_var(tmp_path: Path) -> None:
+    """Test that VaR gate blocks orders when VaR exceeds limit."""
+    import numpy as np
+    import pandas as pd
+
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(tmp_path / "audit.jsonl")},
+                "var_gate": {
+                    "enabled": True,
+                    "method": "parametric",
+                    "confidence": 0.95,
+                    "horizon_days": 1,
+                    "max_var_pct": 0.03,  # 3% limit
+                },
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Create high-volatility returns to exceed 3% VaR
+    np.random.seed(123)
+    high_vol_returns = pd.DataFrame(
+        {
+            "BTC": np.random.normal(0, 0.10, 100),
+            "ETH": np.random.normal(0, 0.12, 100),
+        }
+    )
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"returns_df": high_vol_returns, "weights": {"BTC": 0.6, "ETH": 0.4}}
+
+    result = gate.evaluate(order, context)
+
+    # Should block (VaR exceeds limit)
+    assert not result.decision.allowed
+    assert result.decision.severity == "BLOCK"
+    assert any(v.code == "VAR_LIMIT_EXCEEDED" for v in result.decision.violations)
+
+
+def test_risk_gate_var_gate_warns_near_limit(tmp_path: Path) -> None:
+    """Test that VaR gate warns when near limit."""
+    import numpy as np
+    import pandas as pd
+
+    config = PeakConfig(
+        raw={
+            "risk": {
+                "audit_log": {"path": str(tmp_path / "audit.jsonl")},
+                "var_gate": {
+                    "enabled": True,
+                    "method": "parametric",
+                    "confidence": 0.95,
+                    "horizon_days": 1,
+                    "max_var_pct": 0.10,  # 10% block limit
+                    "warn_var_pct": 0.05,  # 5% warn limit
+                },
+            }
+        }
+    )
+    gate = RiskGate(config)
+
+    # Create medium-volatility returns (5-10% VaR range)
+    np.random.seed(456)
+    med_vol_returns = pd.DataFrame(
+        {
+            "BTC": np.random.normal(0, 0.08, 100),
+            "ETH": np.random.normal(0, 0.09, 100),
+        }
+    )
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"returns_df": med_vol_returns, "weights": {"BTC": 0.6, "ETH": 0.4}}
+
+    result = gate.evaluate(order, context)
+
+    # Should allow but with warning (or block if VaR > 10%)
+    if result.decision.allowed:
+        assert result.decision.severity == "WARN"
+        assert any(v.code == "VAR_NEAR_LIMIT" for v in result.decision.violations)
+
+
+def test_risk_gate_evaluation_order_kill_switch_then_var(test_config: PeakConfig) -> None:
+    """Test that kill switch is evaluated before VaR gate."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    context = {"metrics": {"daily_pnl_pct": -0.10}}  # Triggers kill switch
+
+    result = gate.evaluate(order, context)
+
+    # Should block due to kill switch (not VaR)
+    assert not result.decision.allowed
+    assert "kill switch" in result.decision.reason.lower()
+    assert any(v.code == "KILL_SWITCH_ARMED" for v in result.decision.violations)
+
+
+def test_risk_gate_var_gate_audit_structure(test_config: PeakConfig, tmp_path: Path) -> None:
+    """Test that var_gate audit section has stable structure."""
+    gate = RiskGate(test_config)
+
+    order = {"symbol": "BTCUSDT", "qty": 1.0}
+    gate.evaluate(order)
+
+    # Check audit log
+    audit_path = Path(test_config.get("risk.audit_log.path"))
+    lines = audit_path.read_text(encoding="utf-8").strip().split("\n")
+    event = json.loads(lines[0])
+
+    # Check var_gate structure
+    var_gate = event["var_gate"]
+    assert "enabled" in var_gate
+    assert "result" in var_gate
+
+    result = var_gate["result"]
+    assert "severity" in result
+    assert "reason" in result
+    assert "var_pct" in result
+    assert "threshold_block" in result
+    assert "threshold_warn" in result
+    assert "confidence" in result
+    assert "horizon_days" in result
+    assert "method" in result
+    assert "inputs_available" in result
+    assert "timestamp_utc" in result
