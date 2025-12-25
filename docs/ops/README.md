@@ -33,6 +33,30 @@ Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation st
 
 ---
 
+## 📊 Risk Analytics – Component VaR Reporting
+
+**Operator-Reports für Component VaR Analyse (Phase 2A)**
+
+```bash
+# Quick Start mit Fixtures
+scripts/ops/ops_center.sh risk component-var --use-fixtures
+
+# Mit eigenen Daten
+scripts/ops/ops_center.sh risk component-var --returns data.csv --alpha 0.99
+```
+
+**Output:** HTML + JSON + CSV Reports in `results/risk/component_var/<run_id>/`
+
+**Dokumentation:** [../risk/COMPONENT_VAR_PHASE2A_REPORTING.md](../risk/COMPONENT_VAR_PHASE2A_REPORTING.md) ⭐
+
+**Features:**
+- Multi-Format Output (HTML/JSON/CSV)
+- Automatische Sanity Checks (Euler property, weights normalization)
+- Top-Contributors-Analyse
+- Deterministisch und reproduzierbar
+
+---
+
 ## 🏥 Ops Doctor – Repository Health Check
 
 Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON- und Human-Readable-Output.
