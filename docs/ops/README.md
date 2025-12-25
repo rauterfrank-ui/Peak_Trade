@@ -65,6 +65,14 @@ Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON-
 
 ## Docs Diff Guard (auto beim Merge)
 
+### Required Checks Drift Guard (v1)
+
+- Operator Notes: `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md`
+- Quick Commands:
+  - `scripts/ops/verify_required_checks_drift.sh` (offline)
+  - `scripts/ops/ops_center.sh doctor` → zeigt Drift-Guard/Health-Status (falls eingebunden)
+
+
 Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs/*` erkennt und **den Merge blockiert**.
 
 ### Override-Optionen
