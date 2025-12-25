@@ -189,13 +189,13 @@ Das ist **kein Fehler**, sondern eine Warnung. Du hast zwei Optionen:
 1. **Dokumentation aktualisieren** (falls Live-State korrekt ist)
 2. **Branch Protection anpassen** (falls Doc korrekt ist)
 
-Siehe: `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md`
+Siehe: `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md`
 
 ---
 
 ## Related Documentation
 
-- `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` — Operator Guide
+- `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` — Operator Guide
 - `docs/ops/OPS_OPERATOR_CENTER.md` — Ops Center Overview
 - `scripts/ops/verify_required_checks_drift.sh` — Core Drift Check Script
 - `scripts/ops/tests/test_verify_required_checks_drift.sh` — Smoke Tests
