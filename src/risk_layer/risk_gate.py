@@ -195,3 +195,74 @@ class RiskGate:
         # For now, just return a copy
         # Future: remove sensitive fields like API keys
         return dict(order)
+
+    def reset_kill_switch(self, reason: str = "manual_reset"):
+        """
+        Reset the kill switch (disarm).
+
+        This delegates to the underlying KillSwitchLayer.reset() method.
+        Only use after proper incident review (see KILL_SWITCH_RUNBOOK.md).
+
+        Args:
+            reason: Reason for reset (for audit trail)
+
+        Returns:
+            KillSwitchStatus after reset (armed=False)
+        """
+        from src.risk_layer.kill_switch import KillSwitchStatus
+
+        if not self._kill_switch.enabled:
+            # Kill switch is disabled, return unarmed status
+            return KillSwitchStatus(
+                armed=False,
+                severity="OK",
+                reason="Kill switch disabled",
+                triggered_by=[],
+                metrics_snapshot={},
+                timestamp_utc=datetime.now(timezone.utc).isoformat(),
+            )
+
+        return self._kill_switch.reset(reason)
+
+    def get_kill_switch_status(self, context: dict | None = None):
+        """
+        Get current kill switch status.
+
+        Args:
+            context: Optional context dict with metrics
+                     If provided, evaluates kill switch with fresh metrics
+                     If None, returns last known status
+
+        Returns:
+            KillSwitchStatus object with current status
+        """
+        from src.risk_layer.kill_switch import KillSwitchStatus
+
+        if not self._kill_switch.enabled:
+            return KillSwitchStatus(
+                armed=False,
+                severity="OK",
+                reason="Kill switch disabled",
+                triggered_by=[],
+                metrics_snapshot={},
+                timestamp_utc=datetime.now(timezone.utc).isoformat(),
+            )
+
+        if context is not None:
+            # Evaluate with fresh metrics
+            metrics = context.get("metrics", context)
+            return self._kill_switch.evaluate(metrics)
+
+        # Return last known status
+        if self._kill_switch._last_status is not None:
+            return self._kill_switch._last_status
+
+        # No status available, return default unarmed
+        return KillSwitchStatus(
+            armed=False,
+            severity="OK",
+            reason="No status available (not yet evaluated)",
+            triggered_by=[],
+            metrics_snapshot={},
+            timestamp_utc=datetime.now(timezone.utc).isoformat(),
+        )

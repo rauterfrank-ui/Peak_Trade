@@ -203,6 +203,16 @@ class KillSwitchLayer:
         """Check if kill switch is currently armed."""
         return self._armed
 
+    @property
+    def last_status(self) -> KillSwitchStatus | None:
+        """
+        Get the last known kill switch status.
+
+        Returns:
+            Last KillSwitchStatus from evaluate() or reset(), or None if not yet evaluated
+        """
+        return self._last_status
+
 
 def to_violations(status: KillSwitchStatus) -> list[Violation]:
     """
