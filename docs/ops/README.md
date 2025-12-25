@@ -933,3 +933,6 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 <!-- MERGE_LOG_EXAMPLES:END -->
 - PR #292 — formatter policy drift guard enforced in CI (Merge-Log): docs/ops/PR_292_MERGE_LOG.md
 - PR #295 — guard the guardrail (CI enforcement presence) (Merge-Log): docs/ops/PR_295_MERGE_LOG.md
+
+### Policy Guard Pattern
+- Template: docs/ops/POLICY_GUARD_PATTERN_TEMPLATE.md
