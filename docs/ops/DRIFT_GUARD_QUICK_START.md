@@ -77,7 +77,7 @@ docs/ops/
 ├── REQUIRED_CHECKS_DRIFT_GUARD_PR_WORKFLOW.md # ✅ Existing (detailed)
 └── DRIFT_GUARD_QUICK_START.md                # 🆕 This file
 
-REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md # ✅ Existing (root)
+docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md # ✅ Existing (root)
 ```
 
 ---
@@ -208,7 +208,7 @@ git status
 
 - `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD.md` — Main Guide
 - `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_PR_WORKFLOW.md` — Detailed PR Workflow
-- `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` — Operator Notes
+- `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` — Operator Notes
 - `docs/ops/OPS_OPERATOR_CENTER.md` — Ops Center Overview
 
 ---
