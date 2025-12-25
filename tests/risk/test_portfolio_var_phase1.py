@@ -240,7 +240,9 @@ class TestParametricVar:
 
     def test_parametric_var_horizon_scaling(self):
         """VaR scales with sqrt(horizon)"""
-        returns_df = pd.DataFrame({"BTC": [0.01, -0.01, 0.02, -0.02], "ETH": [0.02, -0.01, 0.01, -0.02]})
+        returns_df = pd.DataFrame(
+            {"BTC": [0.01, -0.01, 0.02, -0.02], "ETH": [0.02, -0.01, 0.01, -0.02]}
+        )
 
         weights = {"BTC": 0.6, "ETH": 0.4}
 
@@ -291,7 +293,10 @@ class TestHistoricalVar:
     def test_historical_var_horizon_days_aggregation(self):
         """Historical VaR with horizon_days > 1"""
         returns_df = pd.DataFrame(
-            {"BTC": [0.01, -0.01, 0.02, -0.02, 0.01, 0.01], "ETH": [0.02, -0.02, 0.01, -0.01, 0.02, 0.01]}
+            {
+                "BTC": [0.01, -0.01, 0.02, -0.02, 0.01, 0.01],
+                "ETH": [0.02, -0.02, 0.01, -0.01, 0.02, 0.01],
+            }
         )
 
         weights = {"BTC": 0.5, "ETH": 0.5}
@@ -312,7 +317,9 @@ class TestHistoricalVar:
 
     def test_historical_var_symbol_mode_base(self):
         """Symbol normalization works in historical VaR"""
-        returns_df = pd.DataFrame({"BTC": [0.01, -0.01, 0.02, -0.02], "ETH": [0.02, -0.02, 0.01, -0.01]})
+        returns_df = pd.DataFrame(
+            {"BTC": [0.01, -0.01, 0.02, -0.02], "ETH": [0.02, -0.02, 0.01, -0.01]}
+        )
 
         weights = {"BTC/EUR": 0.7, "ETH/EUR": 0.3}
 
@@ -420,4 +427,3 @@ class TestEdgeCases:
         # VaR should be 0 or very small (no losses)
         assert var >= 0
         assert var < 0.01  # Should be close to 0
-
