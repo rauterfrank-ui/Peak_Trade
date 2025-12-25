@@ -315,7 +315,7 @@ class ComponentVaRReportGenerator:
         </table>
 
         <h2>Sanity Checks</h2>
-        <div class="sanity-check {'sanity-warning' if not data.sanity_checks.get('all_pass', False) else ''}">
+        <div class="sanity-check {"sanity-warning" if not data.sanity_checks.get("all_pass", False) else ""}">
             <strong>{sanity_status}</strong>
             <ul>
                 {"".join([f"<li>{detail}</li>" for detail in sanity_details])}
