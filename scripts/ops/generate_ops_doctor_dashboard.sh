@@ -59,21 +59,32 @@ HTML
 
 # JSON export (minimal; useful for tooling)
 # Fields: generated_at_utc, exit_code, html_path, json_path, output
-RAW_OUT="$(cat "$TMP")"
-ESC_OUT="$(printf "%s" "$RAW_OUT" | python3 - <<'PY2'
-import json,sys
-print(json.dumps(sys.stdin.read()))
-PY2
-)"
-cat >"$JSON_OUT" <<JSON
-{
-  "generated_at_utc": "${TS}",
-  "exit_code": ${CODE},
-  "html_path": "${OUT}",
-  "json_path": "${JSON_OUT}",
-  "output": ${ESC_OUT}
+# Use python to read file directly (more robust than pipe for large outputs)
+python3 - <<'PY2' "$TMP" "$TS" "$CODE" "$OUT" "$JSON_OUT"
+import json, sys
+from pathlib import Path
+
+tmp_file = sys.argv[1]
+ts = sys.argv[2]
+code = sys.argv[3]
+html_path = sys.argv[4]
+json_path = sys.argv[5]
+
+try:
+    output = Path(tmp_file).read_text(encoding='utf-8', errors='replace')
+except Exception as e:
+    output = f"Error reading output: {e}"
+
+data = {
+    "generated_at_utc": ts,
+    "exit_code": int(code),
+    "html_path": html_path,
+    "json_path": json_path,
+    "output": output
 }
-JSON
+
+Path(json_path).write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+PY2
 
 echo "✅ Wrote: $OUT (exit code: $CODE)"
 exit 0
