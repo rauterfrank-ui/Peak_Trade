@@ -9,6 +9,7 @@ Usage:
   python3 insert_docs_diff_guard_section.py --dry-run
   python3 insert_docs_diff_guard_section.py --anchors "## Quick Start,## Toolkit"
 """
+
 from __future__ import annotations
 
 import argparse
@@ -163,11 +164,7 @@ def main() -> int:
         return 1
 
     # Parse anchors
-    anchors = (
-        [a.strip() for a in args.anchors.split(",")]
-        if args.anchors
-        else DEFAULT_ANCHORS
-    )
+    anchors = [a.strip() for a in args.anchors.split(",")] if args.anchors else DEFAULT_ANCHORS
 
     # Process files
     if args.dry_run:
