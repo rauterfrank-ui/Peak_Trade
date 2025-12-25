@@ -92,3 +92,45 @@ def test_fixtures_fail_detects_missing_target():
         "Expected missing target '__fixture_missing_target__347__nope.md' "
         f"to be mentioned in output. Output: {output}"
     )
+
+
+def test_relative_paths_pass_in_fixture_repo():
+    """
+    Test that relative paths are correctly resolved in the fixture repo.
+
+    The relative_repo fixture contains:
+    - Relative paths with ../ (parent directory)
+    - Relative paths with ./ (same directory)
+    - Anchors and queries on relative paths
+    """
+    main_repo_root = get_repo_root()
+    fixture_repo_root = (
+        main_repo_root / "tests" / "fixtures" / "docs_reference_targets" / "relative_repo"
+    )
+    docs_root = fixture_repo_root / "docs"
+
+    # Use the script from the main repo
+    script_path = main_repo_root / "scripts" / "ops" / "verify_docs_reference_targets.sh"
+
+    result = subprocess.run(
+        [
+            str(script_path),
+            "--docs-root",
+            str(docs_root),
+            "--repo-root",
+            str(fixture_repo_root),
+        ],
+        capture_output=True,
+        text=True,
+        cwd=str(main_repo_root),
+    )
+
+    # Print output for debugging if test fails
+    if result.returncode != 0:
+        print("STDOUT:", result.stdout)
+        print("STDERR:", result.stderr)
+
+    assert result.returncode == 0, (
+        f"Expected exit code 0 for relative path fixtures, got {result.returncode}. "
+        f"Output: {result.stdout}"
+    )

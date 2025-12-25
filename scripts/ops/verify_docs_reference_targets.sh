@@ -49,9 +49,15 @@ if [[ -z "$REPO_ROOT" ]]; then
   REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 fi
 
+# Make REPO_ROOT absolute
+REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
+
 if [[ -z "$DOCS_ROOT" ]]; then
   DOCS_ROOT="$REPO_ROOT/docs"
 fi
+
+# Make DOCS_ROOT absolute
+DOCS_ROOT="$(cd "$DOCS_ROOT" 2>/dev/null && pwd || echo "$DOCS_ROOT")"
 
 cd "$REPO_ROOT"
 
@@ -72,8 +78,14 @@ else
   docs_root_abs="$(cd "$DOCS_ROOT" 2>/dev/null && pwd || echo "$DOCS_ROOT")"
   repo_root_abs="$(pwd)"
 
-  # Check if docs_root is under repo_root and git is available
-  if [[ "$docs_root_abs" == "$repo_root_abs"* ]] && git rev-parse --git-dir >/dev/null 2>&1; then
+  # Check if repo_root itself is the git root (not just inside a git repo)
+  git_root=""
+  if git rev-parse --show-toplevel >/dev/null 2>&1; then
+    git_root="$(git rev-parse --show-toplevel)"
+  fi
+
+  # Check if docs_root is under repo_root and repo_root is a git root
+  if [[ "$docs_root_abs" == "$repo_root_abs"* ]] && [[ "$repo_root_abs" == "$git_root" ]]; then
     # Calculate relative path from repo root to docs root
     docs_root_rel="${docs_root_abs#$repo_root_abs/}"
     [[ "$docs_root_rel" == "$docs_root_abs" ]] && docs_root_rel="."
@@ -130,9 +142,8 @@ def is_url(s: str) -> bool:
 def normalize_target(raw: str) -> str | None:
     t = raw.strip()
 
-    # drop surrounding angle brackets used in some markdown: (<path>)
-    if t.startswith("<") and t.endswith(">"):
-        t = t[1:-1].strip()
+    # strip leading/trailing punctuation that commonly wraps paths
+    t = t.strip().lstrip("(<\"'").rstrip(")>\"'.,;:]")
 
     # ignore anchors-only
     if t.startswith("#"):
@@ -142,22 +153,17 @@ def normalize_target(raw: str) -> str | None:
     if is_url(t):
         return None
 
-    # strip trailing punctuation that commonly clings to paths
-    t = t.strip().rstrip(").,;:]\"'")
-
     # strip anchor fragments: file.md#section
     if "#" in t:
         t = t.split("#", 1)[0].strip()
 
+    # strip query parameters: file.md?plain=1
+    if "?" in t:
+        t = t.split("?", 1)[0].strip()
+
     # ignore empty
     if not t:
         return None
-
-    # normalize leading ./ and leading /
-    if t.startswith("./"):
-        t = t[2:]
-    if t.startswith("/"):
-        t = t[1:]
 
     # ignore wildcards and globs (*, ?, [, ], <>)
     if any(c in t for c in ("*", "?", "[", "]", "<", ">")):
@@ -172,9 +178,16 @@ def normalize_target(raw: str) -> str | None:
     if t.endswith("/"):
         return None
 
-    # quick filter: we only validate repo-ish paths (not e.g. "foo/bar" without known roots)
+    # check if this is a relative path
+    is_relative = t.startswith("./") or t.startswith("../")
+
+    # normalize leading / for absolute repo paths
+    if t.startswith("/"):
+        t = t[1:]
+
+    # quick filter: we only validate repo-ish paths or relative paths
     roots = ("config/", "docs/", "src/", "scripts/", ".github/")
-    if not t.startswith(roots):
+    if not is_relative and not t.startswith(roots):
         return None
 
     return t
@@ -185,6 +198,32 @@ def safe_is_within(p: Path, root: Path) -> bool:
         return str(rp).startswith(str(root))
     except Exception:
         return False
+
+def resolve_target(target: str, doc_file: Path, repo_root: Path) -> Path | None:
+    """Resolve a target path to an absolute path.
+
+    Args:
+        target: The target path (can be relative or absolute)
+        doc_file: The markdown file containing the reference
+        repo_root: The repository root
+
+    Returns:
+        Resolved absolute Path, or None if outside repo
+    """
+    # Handle relative paths
+    if target.startswith("./") or target.startswith("../"):
+        # Resolve relative to the markdown file's directory
+        doc_dir = doc_file.parent
+        resolved = (doc_dir / target).resolve()
+    else:
+        # Treat as repo-relative path
+        resolved = (repo_root / target).resolve()
+
+    # Ensure the resolved path is within the repo root
+    if not safe_is_within(resolved, repo_root):
+        return None
+
+    return resolved
 
 refs = []  # (doc_file, line_no, target)
 for f in files:
@@ -234,12 +273,16 @@ for r in refs:
 
 missing = []
 for doc, line_no, target in deduped:
-    p = (root / target)
-    # don't allow escaping repo root
-    if not safe_is_within(p, root):
+    doc_path = Path(doc)
+    resolved = resolve_target(target, doc_path, root)
+
+    # Check if resolution failed (outside repo)
+    if resolved is None:
         missing.append((doc, line_no, target))
         continue
-    if not p.exists() or not p.is_file():
+
+    # Check if the target exists and is a file
+    if not resolved.exists() or not resolved.is_file():
         missing.append((doc, line_no, target))
 
 print(f"Docs Reference Targets: scanned {len(files)} md file(s), found {len(deduped)} reference(s).")
