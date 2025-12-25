@@ -950,3 +950,8 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 - Workflow: `.github/workflows/ops_doctor_pages.yml` (manual + scheduled)
 - Run artifacts: `ops-doctor-dashboard` (index.html + index.json)
 - Pages: Settings → Pages → Source = GitHub Actions (einmalig aktivieren)
+
+
+### Ops Doctor Dashboard Badge
+
+- Badge semantics: PASS (exit 0), WARN (exit 2), FAIL (any other non-zero)
