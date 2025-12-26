@@ -406,13 +406,12 @@ Der `PR_INVENTORY_REPORT.md` enthält:
 
 ## 🚨 Incidents & Post-Mortems
 
-Dokumentierte Incidents und deren Root-Cause-Analysis für zukünftige Referenz.
+* **2025-12-26 — Formatter Drift (Audit) → Tool Alignment**
 
-### 2025-12-26: Formatter Drift → Tool Alignment
-**Incident:** Audit-Failures durch Black/Ruff-Formatter-Konflikt  
-**Impact:** 4 PRs (#259, #269, #283, #303)  
-**Resolution:** Tool-Alignment (PR #354), Single Source of Truth = RUFF  
-**Documentation:** [incidents/2025-12-26_formatter_drift_audit_alignment.md](incidents/2025-12-26_formatter_drift_audit_alignment.md)
+  * **Root Cause:** Repo nutzt `ruff format`, Legacy/Drift führte zu Audit-Failures (detected by `ruff format --check`).
+  * **Fix:** **#354** merged → `black` entfernt, **Single Source of Truth = RUFF**; Guardrail `check_no_black_enforcement.sh` ✅
+  * **Campaign:** #283/#303 auto-merge pending; #269 closed (superseded); #259 merge via Web-UI (fehlender OAuth `workflow` scope).
+  * **RCA:** `incidents/2025-12-26_formatter_drift_audit_alignment.md`
 
 ---
 
