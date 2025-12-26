@@ -16,14 +16,58 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ============================================================================
+  # Change Detection
+  # ============================================================================
+  # Detects whether code changes occurred (vs. docs-only changes).
+  # This allows required test jobs to skip gracefully on docs-only PRs,
+  # preventing "Pending" status checks that block merges.
+  # ============================================================================
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code_changed: ${{ steps.filter.outputs.code }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            code:
+              - 'src/**'
+              - 'tests/**'
+              - 'scripts/**'
+              - 'config/**'
+              - '.github/workflows/**'
+              - 'requirements.txt'
+              - 'pyproject.toml'
+              - 'pytest.ini'
+              - 'Makefile'
+
+  # ============================================================================
+  # Tests (all Python versions)
+  # ============================================================================
+  # Always creates test jobs for all required Python versions (3.9, 3.10, 3.11).
+  # On docs-only PRs, jobs skip gracefully (report SUCCESS/SKIPPED, not PENDING).
+  # On code changes, runs full test suite.
+  # ============================================================================
   tests:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: changes
+    # Skip if docs-only PR, but job still reports SUCCESS (not PENDING)
+    if: |
+      github.event_name != 'pull_request' || 
+      needs.changes.outputs.code_changed == 'true'
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: ${{ fromJSON((github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master'))) && '["3.9","3.10","3.11"]' || '["3.11"]') }}
+        # Always create jobs for all required versions (to satisfy branch protection)
+        python-version: ['3.9', '3.10', '3.11']
 
     steps:
       - name: Checkout
@@ -111,7 +155,11 @@ jobs:
   strategy-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: tests  # Run after main tests pass
+    needs: [changes, tests]  # Run after main tests pass
+    # Skip if docs-only PR, but job still reports SUCCESS (not PENDING)
+    if: |
+      github.event_name != 'pull_request' || 
+      needs.changes.outputs.code_changed == 'true'
 
     steps:
       - name: Checkout
