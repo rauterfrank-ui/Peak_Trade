@@ -314,7 +314,6 @@ gh pr checks <pr> --watch
 ## Related Docs
 
 - `.github/workflows/ci.yml` - Aktuelle Implementation
-- `docs/ops/merge_logs/2025-12-26_pr-362_ci-matrix-required-checks-fix.md` - Merge-Log (wenn vorhanden)
 - GitHub Docs: [About status checks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks)
 - GitHub Docs: [Required status checks](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches#require-status-checks-before-merging)
 
