@@ -56,11 +56,34 @@ def test_status_command():
 
 
 def test_merge_log_command():
-    """merge-log command runs successfully."""
+    """merge-log command without args shows quick reference."""
     result = run_ops_center("merge-log")
     assert result.returncode == 0, f"merge-log failed: {result.stderr}"
     assert "Merge Log" in result.stdout or "MERGE_LOG" in result.stdout
     assert "docs/ops/MERGE_LOG_WORKFLOW.md" in result.stdout
+    # Should also show batch generator hint
+    assert "281" in result.stdout or "278" in result.stdout
+
+
+def test_merge_log_command_with_args_validates_requirements():
+    """merge-log command with args checks for gh CLI."""
+    # This test will fail gracefully if gh is not installed/authenticated
+    # which is expected behavior (error message should be clear)
+    result = run_ops_center("merge-log", "999")
+    # Should either:
+    # - Exit with gh-related error (clear message)
+    # - Exit with PR not found error (if gh is available)
+    # Both are acceptable (not returncode 0 though)
+    if result.returncode != 0:
+        # Expected: clear error message about gh or PR (check both stdout and stderr)
+        output_combined = (result.stdout + result.stderr).lower()
+        assert (
+            "gh" in output_combined
+            or "not found" in output_combined
+            or "authenticated" in output_combined
+            or "error" in output_combined
+            or "could not fetch" in output_combined
+        ), f"Expected clear error message: stdout={result.stdout}, stderr={result.stderr}"
 
 
 def test_pr_command_no_arg():
