@@ -1,0 +1,1342 @@
+--- COMPONENT_VAR_ROADMAP.md
++++ COMPONENT_VAR_ROADMAP.md
+@@ -12,7 +12,12 @@
+
+ **Was ist Component VaR?**
+
+-Component VaR (CVaR) misst den **Risikobeitrag jeder Position zum Gesamtportfolio-Risiko**. Anders als Standalone-VaR berücksichtigt es Korrelationen zwischen Assets und zeigt, welche Position am meisten zum Portfolio-Drawdown beiträgt.
++⚠️ **Terminologie-Hinweis:** In der Literatur steht **CVaR** meist für **Conditional VaR / Expected Shortfall (ES)**. Um Verwechslungen zu vermeiden, benutzt Peak_Trade in dieser Roadmap:
++- **CompVaR** = *Component VaR* (Risikobeitrag pro Position)
++- **ES (CVaR)** = *Expected Shortfall* (Conditional VaR) – **nicht** Teil dieses MVP
++
++
++Component VaR (CompVaR) misst den **Risikobeitrag jeder Position zum Gesamtportfolio-Risiko**. Anders als Standalone-VaR berücksichtigt es Korrelationen zwischen Assets und zeigt, welche Position am meisten zum Portfolio-Drawdown beiträgt.
+
+ **Warum kritisch für Peak_Trade?**
+
+@@ -37,11 +42,11 @@
+
+ ```
+ Portfolio:
+-  - BTC: 60% Allokation, CVaR = 8.5% (dominiert Risiko!)
+-  - ETH: 30% Allokation, CVaR = 4.2%
+-  - SOL: 10% Allokation, CVaR = 2.1%
++  - BTC: 60% Allokation, CompVaR = 8.5% (dominiert Risiko!)
++  - ETH: 30% Allokation, CompVaR = 4.2%
++  - SOL: 10% Allokation, CompVaR = 2.1%
+
+-Σ CVaR = 14.8% = Total Portfolio VaR
++Σ CompVaR = 14.8% = Total Portfolio VaR
+
+ ➡️ BTC trägt 8.5/14.8 = 57.4% zum Risiko bei (nicht 60%)!
+ ➡️ Action: BTC-Allokation reduzieren oder Hedge hinzufügen
+@@ -67,6 +72,13 @@
+ - **Effort:** S (1-3d) | M (3-7d) | L (7-14d)
+ - **Komplexität:** Low | Medium | High
+
++
++### ⚡ MVP-Cut (empfohlen)
++Wenn du schnell *realen Nutzen* willst (Attribution + Sizing-Input + Safety-Gates), ist der sinnvollste erste Slice:
++- **Phase 1 (Covariance)** + **Phase 2 (Parametric VaR aus Σ)** + **Phase 3 (CompVaR + Euler-Check)**
++- **Ohne** Historical/Monte-Carlo Attribution (die braucht Finite-Difference / spezielle Attribution)
++→ Ergebnis nach ~5–8 Tagen: belastbare, mathematisch konsistente Risikobeiträge (CompVaR) mit harten Tests.
++
+ ---
+
+ ## 🚀 Phase 0: Setup & Research (1-2 Tage)
+@@ -80,7 +92,7 @@
+ ```
+ docs/risk/COMPONENT_VAR_THEORY.md          # Mathematik, Literatur, Beispiele
+ docs/risk/COVARIANCE_METHODS.md            # Shrinkage, Ledoit-Wolf, etc.
+-config/risk.toml                           # CVaR Config Section
++config/risk.toml                           # CompVaR Config Section
+ requirements/risk_extras.txt               # scipy, statsmodels
+ tests/risk/fixtures/sample_returns.csv     # Test-Daten (3 Assets, 252 Days)
+ ```
+@@ -91,7 +103,7 @@
+
+ ```bash
+ # Research Topics
+-- [x] VaR vs CVaR vs Marginal VaR (Definitionen)
++- [x] VaR vs CompVaR vs Marginal VaR (Definitionen)
+ - [x] Covariance Estimation (Sample, Shrinkage, Ledoit-Wolf)
+ - [x] Correlation Breakdown (Regime Shifts)
+ - [x] Portfolio Beta Calculation
+@@ -132,10 +144,10 @@
+ [risk.component_var.covariance]
+ method = "ledoit_wolf"             # sample|ledoit_wolf|shrinkage
+ min_history = 60                   # Mindestens 60 Tage für Covariance
+-rebalance_threshold = 0.05         # 5% CVaR-Shift triggert Alert
++rebalance_threshold = 0.05         # 5% CompVaR-Shift triggert Alert
+
+ [risk.component_var.limits]
+-max_single_cvar_pct = 0.40         # Keine Position darf >40% vom Total VaR
++max_single_compvar_pct = 0.40         # Keine Position darf >40% vom Total VaR
+ max_total_var_pct = 0.15           # Portfolio-VaR max 15% des Kapitals
+ ```
+
+@@ -185,25 +197,24 @@
+ ## Mathematik
+
+ ### 1. Portfolio VaR (Parametric)
+-VaR_portfolio = z_α * σ_portfolio * V
++VaR_portfolio = z_α * σ_portfolio * sqrt(h) * V
+
+ z_α: Z-Score (95% ≈ 1.645)
+ σ_portfolio: Portfolio-Volatilität
+ V: Portfolio Value
++h: Horizont in Tagen (z.B. 1), Skalierung via sqrt(h)
+
+ ### 2. Marginal VaR (einzelne Position)
+-MVaR_i = ∂VaR_portfolio / ∂w_i
+-       = β_i * σ_portfolio * z_α
+-
+-β_i = Cov(R_i, R_portfolio) / Var(R_portfolio)
+-
+-### 3. Component VaR (Risikobeitrag)
+-CVaR_i = MVaR_i * w_i * V
+-       = β_i * σ_portfolio * w_i * V * z_α
++MarginalVaR_i(abs) = ∂VaR_portfolio / ∂w_i
++                = z_α * ( (Σ w)_i / σ_portfolio ) * sqrt(h) * V
++
++(Σ w)_i = Cov(R_i, R_portfolio)
++
++### 3. CompVaR (Risikobeitrag)
++CompVaR_i(abs) = w_i * MarginalVaR_i(abs)
+
+ ### 4. Validation Check
+-Σ CVaR_i = VaR_portfolio  (Euler Allocation)
+-```
++Σ CompVaR_i = VaR_portfolio  (Euler Allocation)
+
+ ### Success Metrics
+
+@@ -535,141 +546,125 @@
+ # src/risk/var_calculator.py
+ from dataclasses import dataclass
+ from enum import Enum
++from statistics import NormalDist
++from typing import Optional
++
+ import numpy as np
+ import pandas as pd
+-from scipy import stats
+-from typing import Optional
++
+
+ class VaRMethod(Enum):
+-    PARAMETRIC = "parametric"      # Assume Normal Distribution
+-    HISTORICAL = "historical"      # Empirical Quantile
+-    MONTE_CARLO = "monte_carlo"    # Simulation
++    PARAMETRIC = "parametric"      # Gaussian assumption, VaR aus Σ
++    HISTORICAL = "historical"      # Empirical quantile
++    MONTE_CARLO = "monte_carlo"    # Bootstrap simulation (Compounding)
++
+
+ @dataclass
+ class VaRCalculatorConfig:
+     method: VaRMethod = VaRMethod.PARAMETRIC
+-    confidence_level: float = 0.95          # 95% VaR
+-    lookback_days: int = 252                # 1 Jahr
+-    mc_simulations: int = 10000             # Nur für Monte Carlo
++    confidence_level: float = 0.95      # 95% VaR
++    lookback_days: int = 252            # 1 Jahr (Trading Days)
++    horizon_days: int = 1               # VaR-Horizont (Tage)
++    mc_simulations: int = 10_000        # Nur für Monte Carlo
++
+
+ class VaRCalculator:
++    """Berechnet Portfolio Value-at-Risk (VaR) auf Portfolio-Level.
++
++    Hinweis:
++    - Für PARAMETRIC wird σ_portfolio aus der Kovarianzmatrix Σ berechnet:
++      σ = sqrt(wᵀ Σ w). Das hält die Mathematik konsistent zu Component-VaR/Euler.
++    - horizon_days wird via sqrt(h) (parametric) bzw. via Compounding (hist/MC) berücksichtigt.
+     """
+-    Berechnet Portfolio Value-at-Risk.
+-
+-    Methoden:
+-    - Parametric: Assume Gaussian, use z-score
+-    - Historical: Empirical quantile
+-    - Monte Carlo: Bootstrap simulation
+-
+-    Usage:
+-        calculator = VaRCalculator(config)
+-        var_pct = calculator.calculate_var(returns_df, weights)
+-        var_dollar = var_pct * portfolio_value
+-    """
+-
+-    def __init__(self, config: VaRCalculatorConfig):
+-        self.config = config
+-
++
++    def __init__(self, config: Optional[VaRCalculatorConfig] = None):
++        self.config = config or VaRCalculatorConfig()
++
++    def _z_score(self) -> float:
++        """Z-Score für confidence_level; SciPy optional."""
++        try:
++            from scipy.stats import norm  # type: ignore
++            return float(norm.ppf(self.config.confidence_level))
++        except Exception:
++            return float(NormalDist().inv_cdf(self.config.confidence_level))
++
+     def calculate_var(
+         self,
+         returns: pd.DataFrame,
+         weights: np.ndarray,
+-        portfolio_value: float = 1.0
++        portfolio_value: float = 1.0,
+     ) -> float:
+-        """
+-        Berechnet Portfolio VaR.
+-
+-        Args:
+-            returns: Asset returns (DataFrame, rows=days)
+-            weights: Portfolio weights (sum=1.0)
+-            portfolio_value: Total portfolio value (default 1.0 für %-VaR)
+-
+-        Returns:
+-            VaR in absoluten Units (Dollar/Euro/etc.)
+-        """
++        """Returns: VaR als *positive* absolute Größe (z.B. EUR)."""
++        # lookback
++        if len(returns) > self.config.lookback_days:
++            returns = returns.tail(self.config.lookback_days)
++
+         if self.config.method == VaRMethod.PARAMETRIC:
+             return self._parametric_var(returns, weights, portfolio_value)
+-        elif self.config.method == VaRMethod.HISTORICAL:
++        if self.config.method == VaRMethod.HISTORICAL:
+             return self._historical_var(returns, weights, portfolio_value)
+-        elif self.config.method == VaRMethod.MONTE_CARLO:
++        if self.config.method == VaRMethod.MONTE_CARLO:
+             return self._monte_carlo_var(returns, weights, portfolio_value)
+-        else:
+-            raise ValueError(f"Unknown method: {self.config.method}")
+-
++        raise ValueError(f"Unknown method: {self.config.method}")
++
+     def _parametric_var(
+         self,
+         returns: pd.DataFrame,
+         weights: np.ndarray,
+-        portfolio_value: float
++        portfolio_value: float,
+     ) -> float:
+-        """
+-        Parametric VaR (Gaussian assumption).
+-
+-        Formula:
+-            VaR = z_α * σ_portfolio * V
+-
+-        z_α: Z-Score für confidence_level (95% ≈ 1.645)
+-        σ_portfolio: Portfolio-Volatilität (aus Covariance)
+-        V: Portfolio Value
+-        """
+-        # Portfolio returns
+-        portfolio_returns = (returns * weights).sum(axis=1)
+-
+-        # Portfolio volatility (daily)
+-        sigma_portfolio = portfolio_returns.std()
+-
+-        # Z-Score für confidence level
+-        z_alpha = stats.norm.ppf(self.config.confidence_level)
+-
+-        # VaR (absolute)
+-        var_absolute = z_alpha * sigma_portfolio * portfolio_value
+-
+-        return var_absolute
+-
++        # Covariance → σ_portfolio
++        cov = returns.cov().values
++        sigma = float(np.sqrt(weights @ cov @ weights))
++        if sigma <= 0:
++            raise ValueError("σ_portfolio <= 0 (covariance/weights prüfen)")
++
++        z = self._z_score()
++        h = float(self.config.horizon_days)
++        var_abs = z * sigma * np.sqrt(h) * float(portfolio_value)
++        return float(var_abs)
++
+     def _historical_var(
+         self,
+         returns: pd.DataFrame,
+         weights: np.ndarray,
+-        portfolio_value: float
++        portfolio_value: float,
+     ) -> float:
+-        """Historical VaR (empirical quantile)."""
+-        # Portfolio returns
+-        portfolio_returns = (returns * weights).sum(axis=1)
+-
+-        # Quantile
+-        var_pct = portfolio_returns.quantile(1 - self.config.confidence_level)
+-
+-        # Absolute (negative für Loss)
+-        var_absolute = -var_pct * portfolio_value
+-
+-        return var_absolute
+-
++        port_daily = (returns * weights).sum(axis=1)
++
++        h = int(self.config.horizon_days)
++        if h == 1:
++            path = port_daily
++        else:
++            # h‑Tage Return via Compounding (robuster als simples Summieren)
++            path = (1.0 + port_daily).rolling(h).apply(np.prod, raw=True) - 1.0
++            path = path.dropna()
++
++        q = float(np.quantile(path, 1.0 - self.config.confidence_level))
++        return float(-q * float(portfolio_value))
++
+     def _monte_carlo_var(
+         self,
+         returns: pd.DataFrame,
+         weights: np.ndarray,
+-        portfolio_value: float
++        portfolio_value: float,
+     ) -> float:
+-        """Monte Carlo VaR (bootstrap simulation)."""
+-        n_sims = self.config.mc_simulations
+-
+-        # Bootstrap: Resample mit Replacement
+-        n_days = len(returns)
+-        simulated_returns = []
+-
+-        for _ in range(n_sims):
+-            idx = np.random.choice(n_days, size=n_days, replace=True)
+-            sim_returns = returns.iloc[idx]
+-            portfolio_return = (sim_returns * weights).sum(axis=1).sum()
+-            simulated_returns.append(portfolio_return)
+-
+-        # Quantile
+-        var_pct = np.percentile(simulated_returns, (1 - self.config.confidence_level) * 100)
+-
+-        # Absolute
+-        var_absolute = -var_pct * portfolio_value
+-
+-        return var_absolute
++        # Bootstrap auf Portfolio‑Daily‑Returns
++        port_daily = (returns * weights).sum(axis=1).to_numpy()
++        n = len(port_daily)
++        if n < 2:
++            raise ValueError("Zu wenig Daten für Monte Carlo VaR")
++
++        h = int(self.config.horizon_days)
++        n_sims = int(self.config.mc_simulations)
++        sims = np.empty(n_sims, dtype=float)
++
++        for i in range(n_sims):
++            idx = np.random.randint(0, n, size=h)  # horizon‑Sample
++            sims[i] = float(np.prod(1.0 + port_daily[idx]) - 1.0)
++
++        q = float(np.percentile(sims, (1.0 - self.config.confidence_level) * 100.0))
++        return float(-q * float(portfolio_value))
+ ```
+
+ **2.2 Unit Tests (1d)**
+@@ -777,12 +772,15 @@
+
+ Marginal Contribution & Risk Attribution implementieren.
+
++**Scope (MVP):** *Parametric* CompVaR aus Σ + Euler-Validation.
++**Nicht im MVP:** Historical/Monte‑Carlo *Attribution* (benötigt Finite-Difference oder spezielle Attribution).
++
+ ### Deliverables
+
+ ```
+ src/risk/component_var.py                  # ComponentVaRCalculator
+ tests/risk/test_component_var.py           # Unit Tests (10+ Tests)
+-tests/risk/test_euler_allocation.py        # Euler-Test (Σ CVaR = Total VaR)
++tests/risk/test_euler_allocation.py        # Euler-Test (Σ CompVaR = Total VaR)
+ docs/risk/COMPONENT_VAR_MATH.md            # Formeln + Validation
+ ```
+
+@@ -793,144 +791,111 @@
+ ```python
+ # src/risk/component_var.py
+ from dataclasses import dataclass
++from typing import Dict
++
+ import numpy as np
+ import pandas as pd
+-from typing import Dict, Tuple
++
+ from src.risk.covariance import CovarianceEstimator, CovarianceEstimatorConfig
+-from src.risk.var_calculator import VaRCalculator, VaRCalculatorConfig
++from src.risk.var_calculator import VaRCalculator, VaRCalculatorConfig, VaRMethod
++
+
+ @dataclass
+ class ComponentVaRResult:
+-    """Result Container für Component VaR Berechnung."""
+-    total_var: float                       # Portfolio VaR (absolut)
+-    marginal_var: Dict[str, float]         # Marginal VaR pro Asset
+-    component_var: Dict[str, float]        # Component VaR pro Asset
+-    contribution_pct: Dict[str, float]     # CVaR / Total VaR
++    """Result Container für CompVaR (Component VaR) Berechnung."""
++
++    total_var: float                       # Portfolio VaR (absolut, positive Größe)
++    marginal_var: Dict[str, float]         # Marginal VaR pro Asset (absolut)
++    component_var: Dict[str, float]        # CompVaR pro Asset (absolut)
++    contribution_pct: Dict[str, float]     # CompVaR / Total VaR (%)
+     weights: Dict[str, float]              # Portfolio Weights
+-
++
+     def to_dataframe(self) -> pd.DataFrame:
+         """Convert to DataFrame für einfache Analyse."""
+-        return pd.DataFrame({
+-            "Weight": self.weights,
+-            "Marginal_VaR": self.marginal_var,
+-            "Component_VaR": self.component_var,
+-            "Contribution_%": self.contribution_pct,
+-        })
++        return pd.DataFrame(
++            {
++                "Weight": self.weights,
++                "Marginal_VaR": self.marginal_var,
++                "Component_VaR": self.component_var,
++                "Contribution_%": self.contribution_pct,
++            }
++        )
++
+
+ class ComponentVaRCalculator:
++    """Berechnet CompVaR (Component VaR) + Euler-Validation.
++
++    Mathematik (parametric, konsistent aus Σ):
++        σ_portfolio = sqrt(wᵀ Σ w)
++        VaR_total   = z_α * σ_portfolio * sqrt(h) * V
++
++        MarginalVaR_i(abs) = z_α * ( (Σ w)_i / σ_portfolio ) * sqrt(h) * V
++        CompVaR_i(abs)     = w_i * MarginalVaR_i(abs)
++
++        Euler: Σ CompVaR_i == VaR_total
+     """
+-    Berechnet Component VaR (Marginal Contribution).
+-
+-    Mathematik:
+-        1. Portfolio VaR = z_α * σ_portfolio * V
+-        2. Marginal VaR_i = β_i * σ_portfolio * z_α
+-        3. Component VaR_i = MVaR_i * w_i * V
+-        4. Validation: Σ CVaR_i = VaR_portfolio (Euler Allocation)
+-
+-    Usage:
+-        calculator = ComponentVaRCalculator(cov_config, var_config)
+-        result = calculator.calculate(returns_df, weights, portfolio_value)
+-        print(result.to_dataframe())
+-    """
+-
+-    def __init__(
+-        self,
+-        cov_config: CovarianceEstimatorConfig,
+-        var_config: VaRCalculatorConfig
+-    ):
++
++    def __init__(self, cov_config: CovarianceEstimatorConfig, var_config: VaRCalculatorConfig):
+         self.cov_estimator = CovarianceEstimator(cov_config)
+         self.var_calculator = VaRCalculator(var_config)
+-
++
+     def calculate(
+         self,
+         returns: pd.DataFrame,
+         weights: Dict[str, float],
+         portfolio_value: float,
+-        validate_euler: bool = True
++        validate_euler: bool = True,
++        euler_rtol: float = 1e-3,
+     ) -> ComponentVaRResult:
+-        """
+-        Berechnet Component VaR für Portfolio.
+-
+-        Args:
+-            returns: Asset returns (DataFrame, cols=Assets)
+-            weights: {asset: weight} (muss sum=1.0)
+-            portfolio_value: Total portfolio value
+-            validate_euler: Falls True, prüfe Euler Allocation
+-
+-        Returns:
+-            ComponentVaRResult mit MVaR, CVaR, Contributions
+-
+-        Raises:
+-            ValueError: Wenn Euler Validation fehlschlägt
+-        """
++        # MVP: Euler‑Attribution sauber nur für PARAMETRIC
++        if self.var_calculator.config.method != VaRMethod.PARAMETRIC:
++            raise NotImplementedError(
++                "CompVaR/Euler im MVP nur für PARAMETRIC. "
++                "Für historical/MC später Finite‑Difference Attribution ergänzen."
++            )
++
+         # Validate weights
+-        weight_sum = sum(weights.values())
++        weight_sum = float(sum(weights.values()))
+         if not np.isclose(weight_sum, 1.0):
+-            raise ValueError(f"Weights must sum to 1.0, got {weight_sum}")
+-
+-        # Convert weights to array (same order as returns.columns)
++            raise ValueError(f"Weights must sum to 1.0, got {weight_sum:.6f}")
++
++        # Align weights to returns.columns
+         asset_names = list(returns.columns)
+-        w = np.array([weights[asset] for asset in asset_names])
+-
+-        # 1. Covariance Matrix
+-        cov_matrix = self.cov_estimator.estimate(returns)
+-
+-        # 2. Portfolio Variance
+-        portfolio_var = w @ cov_matrix @ w
+-        portfolio_std = np.sqrt(portfolio_var)
+-
+-        # 3. Portfolio VaR (total)
+-        total_var = self.var_calculator.calculate_var(
+-            returns, w, portfolio_value
+-        )
+-
+-        # 4. Marginal VaR (per asset)
+-        # MVaR_i = β_i * σ_portfolio * z_α
+-        # β_i = Cov(R_i, R_portfolio) / Var(R_portfolio)
+-
+-        # Cov(R_i, R_portfolio) = (Σ * w)_i
+-        cov_with_portfolio = cov_matrix @ w
+-
+-        # β_i
+-        betas = cov_with_portfolio / portfolio_var
+-
+-        # Z-Score
+-        from scipy import stats
+-        z_alpha = stats.norm.ppf(self.var_calculator.config.confidence_level)
+-
+-        # MVaR_i (in %-terms)
+-        marginal_var_pct = betas * portfolio_std * z_alpha
+-
+-        # MVaR_i (absolute)
+-        marginal_var_abs = {
+-            asset: marginal_var_pct[i] * portfolio_value
+-            for i, asset in enumerate(asset_names)
+-        }
+-
+-        # 5. Component VaR
+-        # CVaR_i = MVaR_i * w_i
+-        component_var_abs = {
+-            asset: marginal_var_abs[asset] * weights[asset]
+-            for asset in asset_names
+-        }
+-
+-        # 6. Contribution %
+-        contribution_pct = {
+-            asset: (component_var_abs[asset] / total_var) * 100
+-            for asset in asset_names
+-        }
+-
+-        # 7. Euler Allocation Check
++        w = np.array([weights[a] for a in asset_names], dtype=float)
++
++        # 1) Covariance
++        cov = self.cov_estimator.estimate(returns)
++
++        # 2) σ_portfolio
++        sigma = float(np.sqrt(w @ cov @ w))
++        if sigma <= 0:
++            raise ValueError("σ_portfolio <= 0 (covariance/weights prüfen)")
++
++        # 3) Total VaR (aus derselben Σ!)
++        z = float(self.var_calculator._z_score())
++        h = float(np.sqrt(self.var_calculator.config.horizon_days))
++        total_var = z * sigma * h * float(portfolio_value)
++
++        # 4) Marginal VaR + CompVaR
++        cov_with_portfolio = cov @ w  # (Σ w)
++        marginal_abs_arr = (z * (cov_with_portfolio / sigma) * h) * float(portfolio_value)
++        component_abs_arr = w * marginal_abs_arr
++
++        marginal_var_abs = {a: float(marginal_abs_arr[i]) for i, a in enumerate(asset_names)}
++        component_var_abs = {a: float(component_abs_arr[i]) for i, a in enumerate(asset_names)}
++        contribution_pct = {a: float(component_var_abs[a] / total_var * 100.0) for a in asset_names}
++
++        # 5) Euler Allocation Check
+         if validate_euler:
+-            cvar_sum = sum(component_var_abs.values())
+-            if not np.isclose(cvar_sum, total_var, rtol=1e-3):
++            compvar_sum = float(sum(component_var_abs.values()))
++            if not np.isclose(compvar_sum, total_var, rtol=euler_rtol):
+                 raise ValueError(
+-                    f"Euler Allocation failed: Σ CVaR = {cvar_sum:.2f}, "
+-                    f"Total VaR = {total_var:.2f}"
++                    f"Euler Allocation failed: Σ CompVaR = {compvar_sum:.6f}, "
++                    f"Total VaR = {total_var:.6f} (rtol={euler_rtol})"
+                 )
+-
++
+         return ComponentVaRResult(
+-            total_var=total_var,
++            total_var=float(total_var),
+             marginal_var=marginal_var_abs,
+             component_var=component_var_abs,
+             contribution_pct=contribution_pct,
+@@ -976,16 +941,16 @@
+     # Total VaR > 0
+     assert result.total_var > 0
+
+-    # CVaR für beide Assets vorhanden
++    # CompVaR für beide Assets vorhanden
+     assert "BTC" in result.component_var
+     assert "ETH" in result.component_var
+
+-    # CVaR > 0
++    # CompVaR > 0
+     assert result.component_var["BTC"] > 0
+     assert result.component_var["ETH"] > 0
+
+ def test_euler_allocation_holds(simple_portfolio):
+-    """Test: Σ CVaR = Total VaR (Euler Allocation)."""
++    """Test: Σ CompVaR = Total VaR (Euler Allocation)."""
+     returns, weights, portfolio_value = simple_portfolio
+
+     cov_config = CovarianceEstimatorConfig(method=CovarianceMethod.LEDOIT_WOLF)
+@@ -994,11 +959,11 @@
+     calculator = ComponentVaRCalculator(cov_config, var_config)
+     result = calculator.calculate(returns, weights, portfolio_value, validate_euler=True)
+
+-    # Σ CVaR
+-    cvar_sum = sum(result.component_var.values())
++    # Σ CompVaR
++    compvar_sum = sum(result.component_var.values())
+
+     # Sollte ≈ Total VaR sein (innerhalb 0.1% Toleranz)
+-    assert np.isclose(cvar_sum, result.total_var, rtol=1e-3)
++    assert np.isclose(compvar_sum, result.total_var, rtol=1e-3)
+
+ def test_contribution_pct_sums_to_100(simple_portfolio):
+     """Test: Σ Contribution% = 100%."""
+@@ -1015,11 +980,11 @@
+
+     assert np.isclose(total_contribution, 100.0, rtol=1e-2)
+
+-def test_higher_weight_not_always_higher_cvar():
++def test_higher_weight_not_always_higher_compvar():
+     """
+-    Test: CVaR ≠ Weight (wegen Correlation!).
+-
+-    Asset mit höherem Weight kann KLEINEREN CVaR haben,
++    Test: CompVaR ≠ Weight (wegen Correlation!).
++
++    Asset mit höherem Weight kann KLEINEREN CompVaR haben,
+     wenn es negativ korreliert mit Rest.
+     """
+     # BTC-ETH stark korreliert, SOL uncorrelated
+@@ -1040,7 +1005,7 @@
+     calculator = ComponentVaRCalculator(cov_config, var_config)
+     result = calculator.calculate(returns, weights, 100000)
+
+-    # BTC hat 60% Weight, aber könnte <60% CVaR haben (wegen Diversification)
++    # BTC hat 60% Weight, aber könnte <60% CompVaR haben (wegen Diversification)
+     btc_contrib = result.contribution_pct["BTC"]
+
+     # Test: BTC Contribution ist plausibel (nicht exakt 60%)
+@@ -1076,8 +1041,8 @@
+     result = calculator.calculate(returns, weights, 100000, validate_euler=True)
+
+     # Explicit check
+-    cvar_sum = sum(result.component_var.values())
+-    assert np.isclose(cvar_sum, result.total_var, rtol=1e-3)
++    compvar_sum = sum(result.component_var.values())
++    assert np.isclose(compvar_sum, result.total_var, rtol=1e-3)
+
+ def test_euler_allocation_fails_on_broken_implementation():
+     """Test: Euler Check detected fehlerhaften Code."""
+@@ -1112,14 +1077,14 @@
+ MVaR_i = β_i * σ_portfolio * z_α
+
+ ### 5. Component VaR (total contribution)
+-CVaR_i = MVaR_i * w_i * V
++CompVaR_i = MVaR_i * w_i * V
+
+ ### 6. Euler Allocation (Validation)
+-Σ CVaR_i = VaR_portfolio
++Σ CompVaR_i = VaR_portfolio
+
+ **Interpretation:**
+-- CVaR_i > 0: Asset erhöht Portfolio-Risiko
+-- CVaR_i < 0: Asset hedged Portfolio (möglich bei neg. Correlation!)
++- CompVaR_i > 0: Asset erhöht Portfolio-Risiko
++- CompVaR_i < 0: Asset hedged Portfolio (möglich bei neg. Correlation!)
+
+ ## Beispiel
+
+@@ -1141,22 +1106,22 @@
+ 3. VaR_total (95%) = 1.645 * 3.8% * $46,910 ≈ $2,930
+
+ **Component VaR:**
+-- CVaR_BTC = $1,680 → 57.3% Contribution (trotz 60% Weight!)
+-- CVaR_ETH = $820 → 28.0%
+-- CVaR_SOL = $430 → 14.7%
+-
+-Σ CVaR = $2,930 ✅ (Euler OK)
++- CompVaR_BTC = $1,680 → 57.3% Contribution (trotz 60% Weight!)
++- CompVaR_ETH = $820 → 28.0%
++- CompVaR_SOL = $430 → 14.7%
++
++Σ CompVaR = $2,930 ✅ (Euler OK)
+
+ **Insights:**
+ - BTC dominiert Risiko (57.3% vs 60% Weight)
+-- SOL hat niedrigsten CVaR trotz höchster Vol (nur 10% Weight)
++- SOL hat niedrigsten CompVaR trotz höchster Vol (nur 10% Weight)
+ - Diversification funktioniert (Total VaR < Σ Standalone VaRs)
+ ```
+
+ ### Success Metrics
+
+ - [x] ComponentVaRCalculator implementiert
+-- [x] Euler Allocation validiert (Σ CVaR = Total VaR)
++- [x] Euler Allocation validiert (Σ CompVaR = Total VaR)
+ - [x] 10+ Unit Tests (alle passing)
+ - [x] Mathematik dokumentiert mit Beispiel
+
+@@ -1172,7 +1137,7 @@
+
+ ```
+ src/risk/portfolio_optimizer.py            # RiskBudgetOptimizer
+-src/risk/position_sizer.py                 # CVaR-based Position Sizing
++src/risk/position_sizer.py                 # CompVaR-based Position Sizing
+ tests/risk/test_portfolio_optimizer.py     # Unit Tests
+ docs/risk/RISK_BUDGETING.md                # Theorie + Usage
+ ```
+@@ -1192,30 +1157,30 @@
+ @dataclass
+ class RiskBudget:
+     """Risk Budget Constraints."""
+-    max_single_cvar_pct: float = 0.40      # Max 40% vom Total VaR
++    max_single_compvar_pct: float = 0.40      # Max 40% vom Total VaR
+     max_total_var_pct: float = 0.15        # Max 15% vom Portfolio Value
+-    target_cvar_distribution: Optional[Dict[str, float]] = None
++    target_compvar_distribution: Optional[Dict[str, float]] = None
+
+ class RiskBudgetOptimizer:
+     """
+     Optimiert Weights um Risk Budget zu erfüllen.
+
+     Objectives:
+-    1. Equal Risk Contribution (ERC): Alle CVaR_i gleich
+-    2. Target Risk Distribution: CVaR_i = target_i * Total VaR
++    1. Equal Risk Contribution (ERC): Alle CompVaR_i gleich
++    2. Target Risk Distribution: CompVaR_i = target_i * Total VaR
+     3. Min Total VaR: Minimize Total VaR subject to constraints
+
+     Usage:
+-        optimizer = RiskBudgetOptimizer(cvar_calculator, risk_budget)
++        optimizer = RiskBudgetOptimizer(compvar_calculator, risk_budget)
+         optimal_weights = optimizer.optimize_erc(returns)
+     """
+
+     def __init__(
+         self,
+-        cvar_calculator: ComponentVaRCalculator,
++        compvar_calculator: ComponentVaRCalculator,
+         risk_budget: RiskBudget
+     ):
+-        self.cvar_calculator = cvar_calculator
++        self.compvar_calculator = compvar_calculator
+         self.risk_budget = risk_budget
+
+     def optimize_erc(
+@@ -1224,7 +1189,7 @@
+         portfolio_value: float
+     ) -> Dict[str, float]:
+         """
+-        Equal Risk Contribution: Alle CVaR_i = Total VaR / N.
++        Equal Risk Contribution: Alle CompVaR_i = Total VaR / N.
+
+         Returns:
+             Optimale Weights {asset: weight}
+@@ -1232,18 +1197,18 @@
+         n_assets = len(returns.columns)
+         asset_names = list(returns.columns)
+
+-        # Objective: Minimize Variance von CVaR Contributions
++        # Objective: Minimize Variance von CompVaR Contributions
+         def objective(w):
+             weights_dict = {asset: w[i] for i, asset in enumerate(asset_names)}
+-            result = self.cvar_calculator.calculate(
++            result = self.compvar_calculator.calculate(
+                 returns, weights_dict, portfolio_value, validate_euler=False
+             )
+
+-            cvars = np.array(list(result.component_var.values()))
++            compvars = np.array(list(result.component_var.values()))
+
+-            # Target: Alle CVaR gleich
+-            target_cvar = result.total_var / n_assets
+-            return np.sum((cvars - target_cvar) ** 2)
++            # Target: Alle CompVaR gleich
++            target_compvar = result.total_var / n_assets
++            return np.sum((compvars - target_compvar) ** 2)
+
+         # Constraints
+         constraints = [
+@@ -1287,10 +1252,10 @@
+         """
+         checks = {}
+
+-        # Check 1: Max Single CVaR %
++        # Check 1: Max Single CompVaR %
+         max_contrib = max(result.contribution_pct.values())
+-        checks["max_single_cvar"] = (
+-            max_contrib <= self.risk_budget.max_single_cvar_pct * 100
++        checks["max_single_compvar"] = (
++            max_contrib <= self.risk_budget.max_single_compvar_pct * 100
+         )
+
+         # Check 2: Max Total VaR %
+@@ -1311,28 +1276,28 @@
+
+ @dataclass
+ class PositionSizingConfig:
+-    max_position_cvar_pct: float = 0.05    # Max 5% Portfolio Value pro Position
++    max_position_compvar_pct: float = 0.05    # Max 5% Portfolio Value pro Position
+     risk_per_trade_pct: float = 0.02       # 2% Risk per Trade
+
+ class PositionSizer:
+     """
+-    CVaR-basiertes Position Sizing.
++    CompVaR-basiertes Position Sizing.
+
+     Nutzt Marginal VaR um Position Size zu bestimmen:
+         Position Size = Risk Budget / MVaR_i
+
+     Usage:
+-        sizer = PositionSizer(config, cvar_calculator)
++        sizer = PositionSizer(config, compvar_calculator)
+         size = sizer.calculate_position_size("BTC", portfolio_value, current_weights)
+     """
+
+     def __init__(
+         self,
+         config: PositionSizingConfig,
+-        cvar_calculator: ComponentVaRCalculator
++        compvar_calculator: ComponentVaRCalculator
+     ):
+         self.config = config
+-        self.cvar_calculator = cvar_calculator
++        self.compvar_calculator = compvar_calculator
+
+     def calculate_position_size(
+         self,
+@@ -1353,8 +1318,8 @@
+         Returns:
+             Max Position Value (in $)
+         """
+-        # Calculate CVaR für current weights
+-        result = self.cvar_calculator.calculate(
++        # Calculate CompVaR für current weights
++        result = self.compvar_calculator.calculate(
+             returns, current_weights, portfolio_value
+         )
+
+@@ -1368,8 +1333,8 @@
+         # (vereinfacht – echte Implementierung würde Stop-Loss berücksichtigen)
+         position_size = risk_budget / (mvar / portfolio_value)
+
+-        # Cap bei max_position_cvar_pct
+-        max_position = portfolio_value * self.config.max_position_cvar_pct
++        # Cap bei max_position_compvar_pct
++        max_position = portfolio_value * self.config.max_position_compvar_pct
+
+         return min(position_size, max_position)
+ ```
+@@ -1392,13 +1357,13 @@
+     return pd.read_csv(path, index_col=0, parse_dates=True)
+
+ def test_erc_optimization(crypto_returns):
+-    """Test: ERC liefert ausgeglichene CVaR Contributions."""
++    """Test: ERC liefert ausgeglichene CompVaR Contributions."""
+     cov_config = CovarianceEstimatorConfig()
+     var_config = VaRCalculatorConfig()
+-    cvar_calc = ComponentVaRCalculator(cov_config, var_config)
++    compvar_calc = ComponentVaRCalculator(cov_config, var_config)
+
+     risk_budget = RiskBudget()
+-    optimizer = RiskBudgetOptimizer(cvar_calc, risk_budget)
++    optimizer = RiskBudgetOptimizer(compvar_calc, risk_budget)
+
+     optimal_weights = optimizer.optimize_erc(crypto_returns, 100000)
+
+@@ -1406,21 +1371,21 @@
+     assert all(0 <= w <= 1 for w in optimal_weights.values())
+     assert np.isclose(sum(optimal_weights.values()), 1.0)
+
+-    # CVaR Contributions sollten ähnlich sein
+-    result = cvar_calc.calculate(crypto_returns, optimal_weights, 100000)
+-    cvars = list(result.component_var.values())
+-
+-    # Variance von CVaRs sollte kleiner sein als bei Equal Weights
+-    variance_cvars = np.var(cvars)
++    # CompVaR Contributions sollten ähnlich sein
++    result = compvar_calc.calculate(crypto_returns, optimal_weights, 100000)
++    compvars = list(result.component_var.values())
++
++    # Variance von CompVaRs sollte kleiner sein als bei Equal Weights
++    variance_compvars = np.var(compvars)
+
+     # (Lower variance = mehr ausgeglichen)
+-    assert variance_cvars < 1000000  # Plausibility check
++    assert variance_compvars < 1000000  # Plausibility check
+ ```
+
+ ### Success Metrics
+
+ - [x] RiskBudgetOptimizer (ERC)
+-- [x] PositionSizer (CVaR-based)
++- [x] PositionSizer (CompVaR-based)
+ - [x] Tests zeigen ausgeglichene Risk Contributions
+ - [x] Dokumentation mit Beispiel
+
+@@ -1437,7 +1402,7 @@
+ ```
+ src/risk/__init__.py                       # Exports (ComponentVaR API)
+ tests/risk/test_component_var_e2e.py       # End-to-End Test
+-tests/risk/benchmark_cvar.py               # Performance Benchmark
++tests/risk/benchmark_compvar.py               # Performance Benchmark
+ scripts/risk/demo_component_var.py         # Demo-Script
+ docs/risk/QUICKSTART_COMPONENT_VAR.md      # Operator-Guide
+ ```
+@@ -1508,14 +1473,14 @@
+
+ def test_full_workflow():
+     """
+-    Test: Kompletter Workflow von Returns → CVaR → Optimization.
++    Test: Kompletter Workflow von Returns → CompVaR → Optimization.
+
+     Workflow:
+     1. Load Returns
+     2. Calculate Component VaR
+     3. Check Risk Budget
+     4. Optimize Weights (ERC)
+-    5. Recalculate CVaR
++    5. Recalculate CompVaR
+     6. Validate Euler Allocation
+     """
+     # 1. Load Data
+@@ -1526,37 +1491,37 @@
+     weights_initial = {"BTC": 0.33, "ETH": 0.33, "SOL": 0.34}
+     portfolio_value = 100000
+
+-    # 3. Calculate CVaR
++    # 3. Calculate CompVaR
+     cov_config = CovarianceEstimatorConfig()
+     var_config = VaRCalculatorConfig()
+-    cvar_calc = ComponentVaRCalculator(cov_config, var_config)
+-
+-    result_initial = cvar_calc.calculate(returns, weights_initial, portfolio_value)
++    compvar_calc = ComponentVaRCalculator(cov_config, var_config)
++
++    result_initial = compvar_calc.calculate(returns, weights_initial, portfolio_value)
+
+     print("\n=== Initial Portfolio ===")
+     print(result_initial.to_dataframe())
+
+     # 4. Optimize (ERC)
+     risk_budget = RiskBudget()
+-    optimizer = RiskBudgetOptimizer(cvar_calc, risk_budget)
++    optimizer = RiskBudgetOptimizer(compvar_calc, risk_budget)
+
+     weights_optimized = optimizer.optimize_erc(returns, portfolio_value)
+
+-    # 5. Recalculate CVaR
+-    result_optimized = cvar_calc.calculate(returns, weights_optimized, portfolio_value)
++    # 5. Recalculate CompVaR
++    result_optimized = compvar_calc.calculate(returns, weights_optimized, portfolio_value)
+
+     print("\n=== Optimized Portfolio (ERC) ===")
+     print(result_optimized.to_dataframe())
+
+     # 6. Validate
+-    cvars_optimized = list(result_optimized.component_var.values())
+-    variance_cvars = np.var(cvars_optimized)
+-
+-    # ERC sollte CVaR Variance reduzieren
+-    cvars_initial = list(result_initial.component_var.values())
+-    variance_initial = np.var(cvars_initial)
+-
+-    assert variance_cvars < variance_initial
++    compvars_optimized = list(result_optimized.component_var.values())
++    variance_compvars = np.var(compvars_optimized)
++
++    # ERC sollte CompVaR Variance reduzieren
++    compvars_initial = list(result_initial.component_var.values())
++    variance_initial = np.var(compvars_initial)
++
++    assert variance_compvars < variance_initial
+ ```
+
+ **5.3 Demo-Script (1d)**
+@@ -1604,7 +1569,7 @@
+         confidence_level=0.95
+     )
+
+-    # 3. Calculate CVaR
++    # 3. Calculate CompVaR
+     calculator = ComponentVaRCalculator(cov_config, var_config)
+
+     weights = {"BTC": 0.60, "ETH": 0.30, "SOL": 0.10}
+@@ -1631,10 +1596,10 @@
+
+     print()
+     print("✅ Euler Allocation Check:")
+-    cvar_sum = sum(result.component_var.values())
+-    print(f"   Σ CVaR = ${cvar_sum:,.2f}")
++    compvar_sum = sum(result.component_var.values())
++    print(f"   Σ CompVaR = ${compvar_sum:,.2f}")
+     print(f"   Total VaR = ${result.total_var:,.2f}")
+-    print(f"   Difference: ${abs(cvar_sum - result.total_var):.2f}")
++    print(f"   Difference: ${abs(compvar_sum - result.total_var):.2f}")
+
+ if __name__ == "__main__":
+     main()
+@@ -1643,7 +1608,7 @@
+ **5.4 Performance Benchmark (0.5d)**
+
+ ```python
+-# tests/risk/benchmark_cvar.py
++# tests/risk/benchmark_compvar.py
+ import time
+ import pandas as pd
+ import numpy as np
+@@ -1655,7 +1620,7 @@
+ )
+
+ def benchmark():
+-    """Benchmark: Wie lange dauert CVaR Calculation?"""
++    """Benchmark: Wie lange dauert CompVaR Calculation?"""
+     # Load Data
+     path = Path(__file__).parent / "fixtures" / "sample_returns.csv"
+     returns = pd.read_csv(path, index_col=0, parse_dates=True)
+@@ -1736,7 +1701,7 @@
+ from src.risk import RiskBudgetOptimizer, RiskBudget
+
+ risk_budget = RiskBudget(
+-    max_single_cvar_pct=0.40,   # Max 40% vom Total VaR
++    max_single_compvar_pct=0.40,   # Max 40% vom Total VaR
+     max_total_var_pct=0.15       # Max 15% vom Portfolio
+ )
+
+@@ -1757,7 +1722,7 @@
+ ### Success Metrics
+
+ - [x] API Exports in src/risk/__init__.py
+-- [x] E2E Test (Returns → CVaR → Optimization)
++- [x] E2E Test (Returns → CompVaR → Optimization)
+ - [x] Demo-Script funktioniert
+ - [x] Performance <50ms median (für 3 Assets, 252 Days)
+ - [x] Quickstart dokumentiert
+@@ -1768,54 +1733,54 @@
+
+ ### Ziel
+
+-CVaR-Monitoring in Backtests + Alerts bei Risk Budget Violation.
++CompVaR-Monitoring in Backtests + Alerts bei Risk Budget Violation.
+
+ ### Deliverables
+
+ ```
+-src/risk/cvar_monitor.py                   # CVaRMonitor Klasse
+-src/backtest/cvar_integration.py           # Backtest Integration
+-tests/risk/test_cvar_monitor.py            # Unit Tests
++src/risk/compvar_monitor.py                   # CompVaRMonitor Klasse
++src/backtest/compvar_integration.py           # Backtest Integration
++tests/risk/test_compvar_monitor.py            # Unit Tests
+ docs/risk/MONITORING_ALERTS.md             # Alert-Konfiguration
+ ```
+
+ ### Tasks
+
+-**6.1 CVaRMonitor (1d)**
++**6.1 CompVaRMonitor (1d)**
+
+ ```python
+-# src/risk/cvar_monitor.py
++# src/risk/compvar_monitor.py
+ from dataclasses import dataclass, field
+ from typing import List, Dict
+ from datetime import datetime
+ import pandas as pd
+
+ @dataclass
+-class CVaRAlert:
++class CompVaRAlert:
+     timestamp: datetime
+-    alert_type: str                        # "max_single_cvar", "total_var", etc.
++    alert_type: str                        # "max_single_compvar", "total_var", etc.
+     asset: str
+     current_value: float
+     threshold: float
+     message: str
+
+ @dataclass
+-class CVaRMonitorConfig:
++class CompVaRMonitorConfig:
+     enabled: bool = False                  # Default: OFF
+     check_interval_bars: int = 24          # Check every 24 bars (daily)
+     alert_threshold_pct: float = 0.05      # Alert bei 5% Überschreitung
+
+-class CVaRMonitor:
++class CompVaRMonitor:
+     """
+     Monitored Component VaR während Backtests.
+
+     Features:
+-    - Periodic CVaR Checks (alle N Bars)
++    - Periodic CompVaR Checks (alle N Bars)
+     - Alerts bei Risk Budget Violations
+-    - Historical CVaR Tracking
++    - Historical CompVaR Tracking
+
+     Usage:
+-        monitor = CVaRMonitor(config, cvar_calculator, risk_budget)
++        monitor = CompVaRMonitor(config, compvar_calculator, risk_budget)
+
+         # In Backtest-Loop:
+         for bar in bars:
+@@ -1826,14 +1791,14 @@
+
+     def __init__(
+         self,
+-        config: CVaRMonitorConfig,
+-        cvar_calculator: ComponentVaRCalculator,
++        config: CompVaRMonitorConfig,
++        compvar_calculator: ComponentVaRCalculator,
+         risk_budget: RiskBudget
+     ):
+         self.config = config
+-        self.cvar_calculator = cvar_calculator
++        self.compvar_calculator = compvar_calculator
+         self.risk_budget = risk_budget
+-        self.alerts: List[CVaRAlert] = []
++        self.alerts: List[CompVaRAlert] = []
+         self.history: List[ComponentVaRResult] = []
+         self._last_check_bar = 0
+
+@@ -1843,9 +1808,9 @@
+         returns: pd.DataFrame,
+         weights: Dict[str, float],
+         portfolio_value: float
+-    ) -> List[CVaRAlert]:
++    ) -> List[CompVaRAlert]:
+         """
+-        Prüft CVaR und gibt Alerts zurück.
++        Prüft CompVaR und gibt Alerts zurück.
+
+         Returns:
+             Liste von Alerts (leer wenn alles OK)
+@@ -1859,28 +1824,28 @@
+
+         self._last_check_bar = current_bar
+
+-        # Calculate CVaR
+-        result = self.cvar_calculator.calculate(returns, weights, portfolio_value)
++        # Calculate CompVaR
++        result = self.compvar_calculator.calculate(returns, weights, portfolio_value)
+         self.history.append(result)
+
+         # Check Risk Budget
+         alerts = []
+
+-        # Check 1: Max Single CVaR %
++        # Check 1: Max Single CompVaR %
+         max_contrib_asset = max(result.contribution_pct, key=result.contribution_pct.get)
+         max_contrib_value = result.contribution_pct[max_contrib_asset]
+
+-        threshold = self.risk_budget.max_single_cvar_pct * 100
++        threshold = self.risk_budget.max_single_compvar_pct * 100
+
+         if max_contrib_value > threshold * (1 + self.config.alert_threshold_pct):
+-            alert = CVaRAlert(
++            alert = CompVaRAlert(
+                 timestamp=datetime.now(),
+-                alert_type="max_single_cvar",
++                alert_type="max_single_compvar",
+                 asset=max_contrib_asset,
+                 current_value=max_contrib_value,
+                 threshold=threshold,
+                 message=(
+-                    f"⚠️  {max_contrib_asset} CVaR Contribution {max_contrib_value:.1f}% "
++                    f"⚠️  {max_contrib_asset} CompVaR Contribution {max_contrib_value:.1f}% "
+                     f"exceeds threshold {threshold:.1f}%"
+                 )
+             )
+@@ -1889,15 +1854,15 @@
+
+         return alerts
+
+-    def get_cvar_history_df(self) -> pd.DataFrame:
+-        """Gibt CVaR History als DataFrame zurück."""
++    def get_compvar_history_df(self) -> pd.DataFrame:
++        """Gibt CompVaR History als DataFrame zurück."""
+         records = []
+         for i, result in enumerate(self.history):
+-            for asset, cvar in result.component_var.items():
++            for asset, compvar in result.component_var.items():
+                 records.append({
+                     "check_index": i,
+                     "asset": asset,
+-                    "component_var": cvar,
++                    "component_var": compvar,
+                     "contribution_pct": result.contribution_pct[asset],
+                 })
+
+@@ -1907,20 +1872,20 @@
+ **6.2 Backtest Integration (1d)**
+
+ ```python
+-# src/backtest/cvar_integration.py
++# src/backtest/compvar_integration.py
+ """
+ Integration von Component VaR in BacktestEngine.
+
+ Usage:
+-    from src.backtest.cvar_integration import enable_cvar_monitoring
++    from src.backtest.compvar_integration import enable_compvar_monitoring
+
+     engine = BacktestEngine(...)
+-    monitor = enable_cvar_monitoring(engine, cvar_config, risk_budget_config)
++    monitor = enable_compvar_monitoring(engine, compvar_config, risk_budget_config)
+
+     result = engine.run_realistic(...)
+
+     # Nach Backtest:
+-    print(monitor.get_cvar_history_df())
++    print(monitor.get_compvar_history_df())
+ """
+
+ from src.risk import (
+@@ -1928,49 +1893,49 @@
+     CovarianceEstimatorConfig,
+     VaRCalculatorConfig,
+ )
+-from src.risk.cvar_monitor import CVaRMonitor, CVaRMonitorConfig
++from src.risk.compvar_monitor import CompVaRMonitor, CompVaRMonitorConfig
+ from src.risk.portfolio_optimizer import RiskBudget
+
+-def enable_cvar_monitoring(
++def enable_compvar_monitoring(
+     backtest_engine,
+-    cvar_config: dict,
++    compvar_config: dict,
+     risk_budget_config: dict
+-) -> CVaRMonitor:
++) -> CompVaRMonitor:
+     """
+-    Aktiviert CVaR Monitoring in BacktestEngine.
++    Aktiviert CompVaR Monitoring in BacktestEngine.
+
+     Args:
+         backtest_engine: BacktestEngine Instance
+-        cvar_config: Config Dict für CVaR (aus config.toml)
++        compvar_config: Config Dict für CompVaR (aus config.toml)
+         risk_budget_config: Risk Budget Config
+
+     Returns:
+-        CVaRMonitor Instance (für Post-Analysis)
++        CompVaRMonitor Instance (für Post-Analysis)
+     """
+     # Setup Calculator
+     cov_config = CovarianceEstimatorConfig(
+-        method=cvar_config.get("covariance", {}).get("method", "ledoit_wolf")
++        method=compvar_config.get("covariance", {}).get("method", "ledoit_wolf")
+     )
+
+     var_config = VaRCalculatorConfig(
+-        confidence_level=cvar_config.get("confidence_level", 0.95)
++        confidence_level=compvar_config.get("confidence_level", 0.95)
+     )
+
+-    cvar_calculator = ComponentVaRCalculator(cov_config, var_config)
++    compvar_calculator = ComponentVaRCalculator(cov_config, var_config)
+
+     # Setup Risk Budget
+     risk_budget = RiskBudget(
+-        max_single_cvar_pct=risk_budget_config.get("max_single_cvar_pct", 0.40),
++        max_single_compvar_pct=risk_budget_config.get("max_single_compvar_pct", 0.40),
+         max_total_var_pct=risk_budget_config.get("max_total_var_pct", 0.15)
+     )
+
+     # Setup Monitor
+-    monitor_config = CVaRMonitorConfig(
+-        enabled=cvar_config.get("enabled", False),
+-        check_interval_bars=cvar_config.get("check_interval_bars", 24)
++    monitor_config = CompVaRMonitorConfig(
++        enabled=compvar_config.get("enabled", False),
++        check_interval_bars=compvar_config.get("check_interval_bars", 24)
+     )
+
+-    monitor = CVaRMonitor(monitor_config, cvar_calculator, risk_budget)
++    monitor = CompVaRMonitor(monitor_config, compvar_calculator, risk_budget)
+
+     # Hook in BacktestEngine (würde Custom Callback benötigen)
+     # Placeholder: In echter Implementierung würde man on_bar Callback nutzen
+@@ -1981,9 +1946,9 @@
+ **6.3 Tests + Docs (0.5d)**
+
+ ```python
+-# tests/risk/test_cvar_monitor.py
++# tests/risk/test_compvar_monitor.py
+ import pytest
+-from src.risk.cvar_monitor import CVaRMonitor, CVaRMonitorConfig
++from src.risk.compvar_monitor import CompVaRMonitor, CompVaRMonitorConfig
+ from src.risk import ComponentVaRCalculator, CovarianceEstimatorConfig, VaRCalculatorConfig
+ from src.risk.portfolio_optimizer import RiskBudget
+
+@@ -1992,17 +1957,17 @@
+     # Setup
+     cov_config = CovarianceEstimatorConfig()
+     var_config = VaRCalculatorConfig()
+-    cvar_calc = ComponentVaRCalculator(cov_config, var_config)
+-
+-    risk_budget = RiskBudget(max_single_cvar_pct=0.30)  # Strict: Max 30%
+-
+-    monitor_config = CVaRMonitorConfig(
++    compvar_calc = ComponentVaRCalculator(cov_config, var_config)
++
++    risk_budget = RiskBudget(max_single_compvar_pct=0.30)  # Strict: Max 30%
++
++    monitor_config = CompVaRMonitorConfig(
+         enabled=True,
+         check_interval_bars=1,     # Check every bar
+         alert_threshold_pct=0.05
+     )
+
+-    monitor = CVaRMonitor(monitor_config, cvar_calc, risk_budget)
++    monitor = CompVaRMonitor(monitor_config, compvar_calc, risk_budget)
+
+     # Load Data
+     from pathlib import Path
+@@ -2021,14 +1986,14 @@
+         portfolio_value=100000
+     )
+
+-    # Sollte Alert haben (BTC >30% CVaR)
++    # Sollte Alert haben (BTC >30% CompVaR)
+     assert len(alerts) > 0
+     assert alerts[0].asset == "BTC"
+ ```
+
+ ### Success Metrics
+
+-- [x] CVaRMonitor mit Alert System
++- [x] CompVaRMonitor mit Alert System
+ - [x] Backtest Integration (Hook)
+ - [x] Tests zeigen Alerts bei Violations
+ - [x] Dokumentation mit Alert-Konfiguration
+@@ -2141,7 +2106,7 @@
+ - [ ] Quickstart dokumentiert
+
+ ### Phase 6: Monitoring
+-- [ ] CVaRMonitor implementiert
++- [ ] CompVaRMonitor implementiert
+ - [ ] Backtest Integration
+ - [ ] Alert Tests
+ - [ ] Dokumentation

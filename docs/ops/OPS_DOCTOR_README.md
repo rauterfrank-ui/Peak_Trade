@@ -393,3 +393,12 @@ pip install tomli
 **Autor**: Peak_Trade Ops Team  
 **Stand**: Dezember 2024  
 **Version**: v1.0
+
+## README_REGISTRY Guardrail (ops doctor)
+Der Ops-Doctor-Registry-Check erwartet, dass `README_REGISTRY.md` **mindestens eine Referenz mit dem Pattern** `*_README.md` enthält.
+Wenn `README_REGISTRY.md` auf anderen Inhalt (z.B. Strategien-Registry) zurückgesetzt wird und **keine** `*_README.md`-Referenzen enthält, resultiert das in einem dauerhaften WARN.
+
+Beispiel: Ein gültiger Minimalzustand referenziert z.B.:
+- `OPS_DOCTOR_README.md`
+- `PSYCHOLOGY_HEURISTICS_README.md`
+- `PSYCHOLOGY_HEATMAP_README.md`

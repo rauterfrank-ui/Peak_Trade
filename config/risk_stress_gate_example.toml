@@ -1,0 +1,240 @@
+# Stress Gate Configuration Examples
+# ===================================
+#
+# Scenario-based stress testing gate for portfolio risk assessment.
+#
+# Position in Risk Layer: KillSwitch → VaR Gate → Stress Gate → Order Validation
+#
+# See docs/risk/STRESS_GATE_RUNBOOK.md for detailed documentation.
+
+# ==============================================================================
+# PROFILE: CONSERVATIVE (Low Risk Tolerance)
+# ==============================================================================
+# - Block threshold: -2% worst-case loss
+# - Warn threshold: -1.5% worst-case loss
+# - Scenarios: Mild to moderate shocks
+# - Use case: Capital preservation, low volatility strategies
+
+[risk.stress_gate.conservative]
+enabled = true
+max_stress_loss_pct = 0.02      # BLOCK if worst-case loss exceeds -2%
+warn_stress_loss_pct = 0.015    # WARN if worst-case loss exceeds -1.5%
+
+[[risk.stress_gate.conservative.scenarios]]
+name = "equity_down_3pct"
+description = "3% equity market decline"
+shock_type = "return_shift"
+shock_params = { shift = -0.03 }
+
+[[risk.stress_gate.conservative.scenarios]]
+name = "equity_down_5pct"
+description = "5% equity market decline"
+shock_type = "return_shift"
+shock_params = { shift = -0.05 }
+
+[[risk.stress_gate.conservative.scenarios]]
+name = "vol_spike_15x"
+description = "1.5x volatility spike"
+shock_type = "vol_spike"
+shock_params = { multiplier = 1.5 }
+
+
+# ==============================================================================
+# PROFILE: MODERATE (Balanced Risk)
+# ==============================================================================
+# - Block threshold: -4% worst-case loss
+# - Warn threshold: -3% worst-case loss
+# - Scenarios: Standard market stress tests
+# - Use case: Balanced strategies, normal market conditions
+
+[risk.stress_gate.moderate]
+enabled = true
+max_stress_loss_pct = 0.04      # BLOCK if worst-case loss exceeds -4%
+warn_stress_loss_pct = 0.03     # WARN if worst-case loss exceeds -3%
+
+[[risk.stress_gate.moderate.scenarios]]
+name = "equity_down_5pct"
+description = "5% equity market decline"
+shock_type = "return_shift"
+shock_params = { shift = -0.05 }
+
+[[risk.stress_gate.moderate.scenarios]]
+name = "equity_down_10pct"
+description = "10% equity market decline"
+shock_type = "return_shift"
+shock_params = { shift = -0.10 }
+
+[[risk.stress_gate.moderate.scenarios]]
+name = "vol_spike_2x"
+description = "2x volatility spike"
+shock_type = "vol_spike"
+shock_params = { multiplier = 2.0 }
+
+
+# ==============================================================================
+# PROFILE: AGGRESSIVE (High Risk Tolerance)
+# ==============================================================================
+# - Block threshold: -8% worst-case loss
+# - Warn threshold: -6% worst-case loss
+# - Scenarios: Severe market stress tests
+# - Use case: High-risk strategies, experienced operators
+
+[risk.stress_gate.aggressive]
+enabled = true
+max_stress_loss_pct = 0.08      # BLOCK if worst-case loss exceeds -8%
+warn_stress_loss_pct = 0.06     # WARN if worst-case loss exceeds -6%
+
+[[risk.stress_gate.aggressive.scenarios]]
+name = "equity_down_10pct"
+description = "10% equity market decline"
+shock_type = "return_shift"
+shock_params = { shift = -0.10 }
+
+[[risk.stress_gate.aggressive.scenarios]]
+name = "equity_down_15pct"
+description = "15% equity market decline"
+shock_type = "return_shift"
+shock_params = { shift = -0.15 }
+
+[[risk.stress_gate.aggressive.scenarios]]
+name = "vol_spike_3x"
+description = "3x volatility spike"
+shock_type = "vol_spike"
+shock_params = { multiplier = 3.0 }
+
+
+# ==============================================================================
+# PROFILE: CRYPTO-SPECIFIC (High Volatility Assets)
+# ==============================================================================
+# - Block threshold: -10% worst-case loss (crypto volatility adjusted)
+# - Warn threshold: -7.5% worst-case loss
+# - Scenarios: Crypto-specific shocks
+# - Use case: Cryptocurrency trading strategies
+
+[risk.stress_gate.crypto]
+enabled = true
+max_stress_loss_pct = 0.10      # BLOCK if worst-case loss exceeds -10%
+warn_stress_loss_pct = 0.075    # WARN if worst-case loss exceeds -7.5%
+
+[[risk.stress_gate.crypto.scenarios]]
+name = "crypto_crash_15pct"
+description = "15% crypto market crash"
+shock_type = "return_shift"
+shock_params = { shift = -0.15 }
+
+[[risk.stress_gate.crypto.scenarios]]
+name = "crypto_crash_25pct"
+description = "25% crypto market crash (Black Swan)"
+shock_type = "return_shift"
+shock_params = { shift = -0.25 }
+
+[[risk.stress_gate.crypto.scenarios]]
+name = "vol_spike_4x"
+description = "4x volatility spike (crypto panic)"
+shock_type = "vol_spike"
+shock_params = { multiplier = 4.0 }
+
+
+# ==============================================================================
+# PROFILE: RESEARCH (Development & Testing)
+# ==============================================================================
+# - Block threshold: -20% (very permissive for R&D)
+# - No warn threshold
+# - Scenarios: Extreme stress tests for edge case detection
+# - Use case: Strategy development, backtesting
+
+[risk.stress_gate.research]
+enabled = true
+max_stress_loss_pct = 0.20      # BLOCK only on extreme losses
+# warn_stress_loss_pct not set (no warnings)
+
+[[risk.stress_gate.research.scenarios]]
+name = "extreme_crash_30pct"
+description = "30% market crash (stress test)"
+shock_type = "return_shift"
+shock_params = { shift = -0.30 }
+
+[[risk.stress_gate.research.scenarios]]
+name = "extreme_crash_50pct"
+description = "50% market crash (black swan)"
+shock_type = "return_shift"
+shock_params = { shift = -0.50 }
+
+[[risk.stress_gate.research.scenarios]]
+name = "vol_spike_10x"
+description = "10x volatility spike (extreme)"
+shock_type = "vol_spike"
+shock_params = { multiplier = 10.0 }
+
+
+# ==============================================================================
+# PROFILE: DISABLED (No Stress Testing)
+# ==============================================================================
+# - Use case: Emergency override, debugging
+# - WARNING: Only use temporarily for troubleshooting
+
+[risk.stress_gate.disabled]
+enabled = false
+max_stress_loss_pct = 0.04
+# No scenarios needed when disabled
+
+
+# ==============================================================================
+# CUSTOM SCENARIO EXAMPLES
+# ==============================================================================
+
+# Example: Asset-specific shock
+# [[risk.stress_gate.custom.scenarios]]
+# name = "btc_flash_crash"
+# description = "Bitcoin 20% flash crash"
+# shock_type = "return_shift"
+# shock_params = { shift = -0.20, assets = ["BTC", "BTC-USD"] }
+
+# Example: Correlation breakdown
+# [[risk.stress_gate.custom.scenarios]]
+# name = "correlation_breakdown"
+# description = "All correlations → 1.0 (systemic risk)"
+# shock_type = "correlation_shock"
+# shock_params = { target_correlation = 1.0 }
+
+# Example: Historical scenario replay
+# [[risk.stress_gate.custom.scenarios]]
+# name = "2020_march_crash"
+# description = "March 2020 COVID crash replay"
+# shock_type = "historical_replay"
+# shock_params = { start_date = "2020-03-12", end_date = "2020-03-16" }
+
+
+# ==============================================================================
+# USAGE NOTES
+# ==============================================================================
+#
+# 1. SELECTING A PROFILE
+#    Copy the desired profile section to your main config.toml:
+#
+#    [risk.stress_gate]
+#    enabled = true
+#    max_stress_loss_pct = 0.04
+#    warn_stress_loss_pct = 0.03
+#    # ... scenarios ...
+#
+# 2. SCENARIO TYPES
+#    - return_shift: Add fixed shift to all returns
+#    - vol_spike: Scale volatility by multiplier
+#
+# 3. THRESHOLD GUIDELINES
+#    - Conservative: 2-3% block threshold
+#    - Moderate: 4-5% block threshold
+#    - Aggressive: 6-8% block threshold
+#    - Crypto: 8-12% block threshold (higher volatility)
+#
+# 4. TESTING NEW CONFIGS
+#    Always test with:
+#    pytest tests/risk_layer/test_stress_gate.py -v
+#
+# 5. MONITORING
+#    - Check audit logs: logs/risk_audit.jsonl
+#    - Alert on high block rates (>5% of orders)
+#    - Review triggered_scenarios to identify portfolio biases
+#
+# ==============================================================================

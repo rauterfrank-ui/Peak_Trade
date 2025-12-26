@@ -713,6 +713,13 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
 
 ## 10. Developer Experience & Tooling (~90%)
 
+### Docs-Navigation (Ops UX) — PRs #325–#329
+
+- Ops-Doku konsolidiert: Drift Guard Operator Notes nach `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` verschoben (inkl. Redirect/Referenz-Updates).
+- Traceability verbessert: Merge-Log als Artefakt ergänzt: `docs/ops/PR_325_MERGE_LOG.md` und im Workflow verlinkt (`docs/ops/MERGE_LOG_WORKFLOW.md`).
+- Einstiegspunkte geschärft: `docs/ops/README.md` verlinkt Drift Guard Notes + Quick Commands; Root `README.md` verlinkt jetzt explizit den Ops/Operator Hub (`docs/ops/README.md`).
+
+
 **Relevante Doku & Artefakte:**
 
 * **Architektur & Developer-Guides (Phase 52):**

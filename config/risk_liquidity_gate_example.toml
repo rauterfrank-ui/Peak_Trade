@@ -1,0 +1,285 @@
+# =============================================================================
+# LIQUIDITY GATE CONFIGURATION EXAMPLES
+# =============================================================================
+#
+# Pre-Trade Microstructure Guards (P2)
+# Protects against wide spreads, high slippage, insufficient depth, and oversized orders.
+#
+# Profiles:
+# - equity_conservative: Tight thresholds for liquid equities
+# - equity_moderate: Moderate thresholds for standard equities
+# - crypto_moderate: Crypto-friendly (wider spreads/slippage tolerated)
+# - crypto_aggressive: Very wide thresholds for illiquid crypto
+# - research_loose: Permissive for research/backtesting
+#
+# Usage:
+#   Copy desired profile to config.toml under [risk.liquidity_gate]
+#
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# PROFILE 1: EQUITY CONSERVATIVE
+# -----------------------------------------------------------------------------
+# Use case: Liquid large-cap equities (AAPL, MSFT, SPY, etc.)
+# Characteristics: Very tight spreads expected, low slippage tolerance
+# Risk: False positives if applied to small-cap or illiquid stocks
+
+[equity_conservative]
+enabled = true
+profile_name = "equity_conservative"
+notes = "Conservative profile for liquid large-cap equities (S&P 500)"
+
+# Spread Protection
+max_spread_pct = 0.005              # 0.5% BLOCK threshold
+warn_spread_pct = 0.003             # 0.3% WARN threshold
+
+# Slippage Protection
+max_slippage_estimate_pct = 0.01    # 1.0% BLOCK threshold
+warn_slippage_estimate_pct = 0.007  # 0.7% WARN threshold
+
+# Depth Protection
+min_book_depth_multiple = 1.5       # Require 1.5x order size in depth
+
+# Order Size vs ADV
+max_order_to_adv_pct = 0.02         # Max 2% of average daily volume
+
+# Order Type Policy
+strict_for_market_orders = true     # Market orders use 0.7x thresholds (stricter)
+allow_limit_orders_when_spread_wide = true  # Limit orders downgrade BLOCK→WARN on wide spreads
+
+# Metrics Handling
+require_micro_metrics = false       # OK if metrics missing (safe default)
+
+
+# -----------------------------------------------------------------------------
+# PROFILE 2: EQUITY MODERATE
+# -----------------------------------------------------------------------------
+# Use case: Standard equities with moderate liquidity (mid-cap)
+# Characteristics: Slightly wider spreads tolerated, moderate slippage
+# Risk: May allow slightly adverse execution conditions
+
+[equity_moderate]
+enabled = true
+profile_name = "equity_moderate"
+notes = "Moderate profile for mid-cap equities and standard liquid stocks"
+
+# Spread Protection
+max_spread_pct = 0.01               # 1.0% BLOCK threshold
+warn_spread_pct = 0.007             # 0.7% WARN threshold
+
+# Slippage Protection
+max_slippage_estimate_pct = 0.02    # 2.0% BLOCK threshold
+warn_slippage_estimate_pct = 0.015  # 1.5% WARN threshold
+
+# Depth Protection
+min_book_depth_multiple = 1.3       # Require 1.3x order size in depth
+
+# Order Size vs ADV
+max_order_to_adv_pct = 0.03         # Max 3% of average daily volume
+
+# Order Type Policy
+strict_for_market_orders = true
+allow_limit_orders_when_spread_wide = true
+
+# Metrics Handling
+require_micro_metrics = false
+
+
+# -----------------------------------------------------------------------------
+# PROFILE 3: CRYPTO MODERATE
+# -----------------------------------------------------------------------------
+# Use case: Mainstream crypto (BTC, ETH, major pairs on Binance/Coinbase)
+# Characteristics: Wider spreads expected, higher slippage tolerance
+# Risk: May miss some adverse conditions unique to crypto volatility
+
+[crypto_moderate]
+enabled = true
+profile_name = "crypto_moderate"
+notes = "Moderate profile for mainstream crypto assets (BTC, ETH, major pairs)"
+
+# Spread Protection
+max_spread_pct = 0.02               # 2.0% BLOCK threshold (crypto has wider spreads)
+warn_spread_pct = 0.015             # 1.5% WARN threshold
+
+# Slippage Protection
+max_slippage_estimate_pct = 0.03    # 3.0% BLOCK threshold
+warn_slippage_estimate_pct = 0.02   # 2.0% WARN threshold
+
+# Depth Protection
+min_book_depth_multiple = 1.2       # Require 1.2x order size (less strict)
+
+# Order Size vs ADV
+max_order_to_adv_pct = 0.05         # Max 5% of average daily volume
+
+# Order Type Policy
+strict_for_market_orders = true
+allow_limit_orders_when_spread_wide = true
+
+# Metrics Handling
+require_micro_metrics = false
+
+
+# -----------------------------------------------------------------------------
+# PROFILE 4: CRYPTO AGGRESSIVE
+# -----------------------------------------------------------------------------
+# Use case: Illiquid crypto, altcoins, new listings
+# Characteristics: Very wide spreads expected, high slippage inevitable
+# Risk: Minimal protection; only catches extreme cases
+
+[crypto_aggressive]
+enabled = true
+profile_name = "crypto_aggressive"
+notes = "Aggressive profile for illiquid crypto and altcoins (high risk tolerance)"
+
+# Spread Protection
+max_spread_pct = 0.05               # 5.0% BLOCK threshold (very wide)
+warn_spread_pct = 0.03              # 3.0% WARN threshold
+
+# Slippage Protection
+max_slippage_estimate_pct = 0.05    # 5.0% BLOCK threshold
+warn_slippage_estimate_pct = 0.035  # 3.5% WARN threshold
+
+# Depth Protection
+min_book_depth_multiple = 1.0       # Require only 1.0x order size (minimal)
+
+# Order Size vs ADV
+max_order_to_adv_pct = 0.10         # Max 10% of average daily volume
+
+# Order Type Policy
+strict_for_market_orders = true
+allow_limit_orders_when_spread_wide = true
+
+# Metrics Handling
+require_micro_metrics = false
+
+
+# -----------------------------------------------------------------------------
+# PROFILE 5: RESEARCH LOOSE
+# -----------------------------------------------------------------------------
+# Use case: Research, backtesting, paper trading
+# Characteristics: Very permissive, minimal blocking
+# Risk: No real protection; for testing only
+
+[research_loose]
+enabled = true  # Can be disabled entirely for pure research
+profile_name = "research_loose"
+notes = "Loose profile for research and backtesting (minimal protection)"
+
+# Spread Protection
+max_spread_pct = 0.10               # 10.0% BLOCK threshold (extreme)
+warn_spread_pct = 0.05              # 5.0% WARN threshold
+
+# Slippage Protection
+max_slippage_estimate_pct = 0.10    # 10.0% BLOCK threshold
+warn_slippage_estimate_pct = 0.05   # 5.0% WARN threshold
+
+# Depth Protection
+min_book_depth_multiple = 0.5       # Only require 0.5x order size (very loose)
+
+# Order Size vs ADV
+max_order_to_adv_pct = 0.20         # Max 20% of average daily volume
+
+# Order Type Policy
+strict_for_market_orders = false    # No special strictness for market orders
+allow_limit_orders_when_spread_wide = true
+
+# Metrics Handling
+require_micro_metrics = false
+
+
+# =============================================================================
+# USAGE EXAMPLES
+# =============================================================================
+#
+# Example 1: Apply equity_conservative profile to live config
+# ------------------------------------------------------------
+# [risk.liquidity_gate]
+# enabled = true
+# profile_name = "equity_conservative"
+# max_spread_pct = 0.005
+# warn_spread_pct = 0.003
+# max_slippage_estimate_pct = 0.01
+# # ... (copy all fields from profile above)
+#
+#
+# Example 2: Customize a profile
+# -------------------------------
+# [risk.liquidity_gate]
+# enabled = true
+# profile_name = "equity_conservative_custom"
+# max_spread_pct = 0.007  # Slightly wider than standard (0.5% → 0.7%)
+# warn_spread_pct = 0.004
+# # ... (keep rest of equity_conservative)
+#
+#
+# Example 3: Disable for research
+# --------------------------------
+# [risk.liquidity_gate]
+# enabled = false  # Completely disabled, no checks
+#
+#
+# Example 4: Warn-only mode (no blocking)
+# ----------------------------------------
+# [risk.liquidity_gate]
+# enabled = true
+# require_micro_metrics = true  # WARN if metrics missing
+# max_spread_pct = 0.99  # Extreme threshold (effectively disabled)
+# warn_spread_pct = 0.01  # But WARN at 1%
+# # Use this to collect data without blocking orders
+#
+# =============================================================================
+
+
+# =============================================================================
+# FIELD REFERENCE
+# =============================================================================
+#
+# enabled (bool)
+#   - true: Gate is active (evaluate and potentially block)
+#   - false: Gate is disabled (always OK, but still in audit)
+#
+# profile_name (string)
+#   - Descriptive name for audit trails and config management
+#
+# notes (string)
+#   - Human-readable description of profile use case
+#
+# max_spread_pct (float)
+#   - BLOCK threshold for bid-ask spread (as fraction, 0.01 = 1%)
+#   - For market orders: effective threshold = max_spread_pct * 0.7 (if strict_for_market_orders=true)
+#
+# warn_spread_pct (float, optional)
+#   - WARN threshold (must be < max_spread_pct)
+#   - If null/missing: No WARN level (only OK or BLOCK)
+#
+# max_slippage_estimate_pct (float)
+#   - BLOCK threshold for pre-trade slippage estimate
+#   - For market orders: effective threshold = max_slippage_estimate_pct * 0.7 (if strict)
+#
+# warn_slippage_estimate_pct (float, optional)
+#   - WARN threshold (must be < max_slippage_estimate_pct)
+#
+# min_book_depth_multiple (float)
+#   - Required depth as multiple of order notional
+#   - Example: 1.5 means depth must be >= 1.5x order size
+#   - Typical range: 1.0 (loose) to 2.0 (conservative)
+#
+# max_order_to_adv_pct (float)
+#   - Maximum order size as fraction of Average Daily Volume
+#   - Example: 0.02 means order can be up to 2% of daily volume
+#   - Typical range: 0.01 (1%, conservative) to 0.10 (10%, aggressive)
+#
+# strict_for_market_orders (bool)
+#   - true: Market orders use 0.7x thresholds (stricter)
+#   - false: Market and limit orders use same thresholds
+#
+# allow_limit_orders_when_spread_wide (bool)
+#   - true: Limit orders downgrade BLOCK→WARN when spread is wide
+#   - false: Limit orders treated same as market orders (BLOCK remains BLOCK)
+#
+# require_micro_metrics (bool)
+#   - true: WARN if microstructure metrics are missing
+#   - false: OK if metrics missing (safe default)
+#
+# =============================================================================
