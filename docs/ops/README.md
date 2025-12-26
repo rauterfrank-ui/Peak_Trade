@@ -404,6 +404,18 @@ Der `PR_INVENTORY_REPORT.md` enthält:
 
 ---
 
+## 🚨 Incidents & Post-Mortems
+
+Dokumentierte Incidents und deren Root-Cause-Analysis für zukünftige Referenz.
+
+### 2025-12-26: Formatter Drift → Tool Alignment
+**Incident:** Audit-Failures durch Black/Ruff-Formatter-Konflikt  
+**Impact:** 4 PRs (#259, #269, #283, #303)  
+**Resolution:** Tool-Alignment (PR #354), Single Source of Truth = RUFF  
+**Documentation:** [incidents/2025-12-26_formatter_drift_audit_alignment.md](incidents/2025-12-26_formatter_drift_audit_alignment.md)
+
+---
+
 ## 🏷️ Label Merge-Log PRs
 
 Findet alle Merge-Log-PRs und labelt sie automatisch (mit DRY_RUN-Protection).
