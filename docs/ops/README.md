@@ -1,4 +1,9 @@
 # Test README
+
+## PR Inventory
+
+Tools for managing PR inventory and merge logs with automatic labeling.
+
 <!-- MERGE_LOG_EXAMPLES:START -->
 - PR #281 — Test PR 281: docs/ops/PR_281_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
