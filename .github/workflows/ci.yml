@@ -48,6 +48,25 @@ jobs:
               - 'Makefile'
 
   # ============================================================================
+  # CI Required Contexts Contract
+  # ============================================================================
+  # Validates that the CI workflow follows the required checks naming contract:
+  # - Matrix jobs must have explicit names (e.g., tests (${{ matrix.python-version }}))
+  # - No job-level if: conditions on required checks (would skip check creation)
+  # This prevents PRs from being blocked by missing required check contexts.
+  # See: docs/ops/ci_required_checks_matrix_naming_contract.md
+  # ============================================================================
+  ci-required-contexts-contract:
+    name: ci-required-contexts-contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate CI Required Contexts Contract
+        run: ./scripts/ops/check_required_ci_contexts_present.sh
+
+  # ============================================================================
   # Tests (all Python versions)
   # ============================================================================
   # Always creates test jobs for all required Python versions (3.9, 3.10, 3.11).
