@@ -38,9 +38,9 @@ def test_verifier_script_bash_syntax() -> None:
         text=True,
         check=False,
     )
-    assert (
-        proc.returncode == 0
-    ), f"Bash syntax error in {VERIFIER_SCRIPT}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}\n"
+    assert proc.returncode == 0, (
+        f"Bash syntax error in {VERIFIER_SCRIPT}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}\n"
+    )
 
 
 def test_verifier_script_usage_without_args() -> None:
