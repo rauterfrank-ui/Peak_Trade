@@ -60,6 +60,6 @@ def test_pr_management_toolkit_script_bash_syntax(script):
         text=True,
     )
 
-    assert result.returncode == 0, (
-        f"Bash syntax error in {script.name}:\nstdout: {result.stdout}\nstderr: {result.stderr}"
-    )
+    assert (
+        result.returncode == 0
+    ), f"Bash syntax error in {script.name}:\nstdout: {result.stdout}\nstderr: {result.stderr}"
