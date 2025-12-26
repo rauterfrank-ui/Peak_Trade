@@ -65,9 +65,9 @@ class TestScenarioDirectory:
 
     def test_has_at_least_three_scenarios(self, all_scenario_files):
         """Mindestens 3 Szenarien sind definiert."""
-        assert (
-            len(all_scenario_files) >= 3
-        ), f"Expected at least 3 scenarios, found {len(all_scenario_files)}"
+        assert len(all_scenario_files) >= 3, (
+            f"Expected at least 3 scenarios, found {len(all_scenario_files)}"
+        )
 
     def test_required_scenarios_exist(self, scenarios_dir):
         """Erforderliche Standard-Szenarien existieren."""
@@ -97,9 +97,9 @@ class TestScenarioConfigStructure:
         for name, config in scenario_configs.items():
             assert "category" in config["scenario"], f"{name}: missing scenario.category"
             category = config["scenario"]["category"]
-            assert (
-                category in valid_categories
-            ), f"{name}: invalid category '{category}', expected one of {valid_categories}"
+            assert category in valid_categories, (
+                f"{name}: invalid category '{category}', expected one of {valid_categories}"
+            )
 
     def test_all_scenarios_have_severity(self, scenario_configs):
         """Alle Szenarien haben einen Severity-Wert."""
@@ -111,16 +111,16 @@ class TestScenarioConfigStructure:
     def test_all_scenarios_have_market_conditions(self, scenario_configs):
         """Alle Szenarien haben Marktbedingungen definiert."""
         for name, config in scenario_configs.items():
-            assert "market_conditions" in config.get(
-                "scenario", {}
-            ), f"{name}: missing scenario.market_conditions"
+            assert "market_conditions" in config.get("scenario", {}), (
+                f"{name}: missing scenario.market_conditions"
+            )
 
     def test_all_scenarios_have_test_expectations(self, scenario_configs):
         """Alle Szenarien haben Test-Erwartungen definiert."""
         for name, config in scenario_configs.items():
-            assert "test_expectations" in config.get(
-                "scenario", {}
-            ), f"{name}: missing scenario.test_expectations"
+            assert "test_expectations" in config.get("scenario", {}), (
+                f"{name}: missing scenario.test_expectations"
+            )
 
 
 # =============================================================================
@@ -243,9 +243,9 @@ class TestScenarioLoader:
         """Szenario-Namen stimmen mit Dateinamen überein."""
         for filename, config in scenario_configs.items():
             scenario_name = config["scenario"]["name"]
-            assert (
-                scenario_name == filename
-            ), f"Scenario name '{scenario_name}' doesn't match filename '{filename}'"
+            assert scenario_name == filename, (
+                f"Scenario name '{scenario_name}' doesn't match filename '{filename}'"
+            )
 
 
 # =============================================================================
@@ -259,9 +259,9 @@ class TestScenarioE2EWorkflow:
     def test_scenario_applicable_strategies_defined(self, scenario_configs):
         """Alle Szenarien definieren anwendbare Strategien."""
         for name, config in scenario_configs.items():
-            assert "applicable_strategies" in config.get(
-                "scenario", {}
-            ), f"{name}: missing scenario.applicable_strategies"
+            assert "applicable_strategies" in config.get("scenario", {}), (
+                f"{name}: missing scenario.applicable_strategies"
+            )
 
             applicable = config["scenario"]["applicable_strategies"]
             assert "primary" in applicable, f"{name}: missing applicable_strategies.primary"
@@ -270,9 +270,9 @@ class TestScenarioE2EWorkflow:
         """Alle Szenarien haben Drawdown-Limits."""
         for name, config in scenario_configs.items():
             expectations = config["scenario"]["test_expectations"]
-            assert (
-                "max_acceptable_drawdown" in expectations
-            ), f"{name}: missing max_acceptable_drawdown in test_expectations"
+            assert "max_acceptable_drawdown" in expectations, (
+                f"{name}: missing max_acceptable_drawdown in test_expectations"
+            )
 
             max_dd = expectations["max_acceptable_drawdown"]
             assert max_dd < 0, f"{name}: max_acceptable_drawdown should be negative"
@@ -287,9 +287,9 @@ class TestScenarioE2EWorkflow:
             if "baseline_max_portfolio_drawdown" in expectations:
                 baseline_dd = expectations["baseline_max_portfolio_drawdown"]
                 max_dd = expectations["max_acceptable_drawdown"]
-                assert (
-                    baseline_dd >= max_dd
-                ), f"{name}: baseline_max_portfolio_drawdown ({baseline_dd}) should be >= max_acceptable_drawdown ({max_dd})"
+                assert baseline_dd >= max_dd, (
+                    f"{name}: baseline_max_portfolio_drawdown ({baseline_dd}) should be >= max_acceptable_drawdown ({max_dd})"
+                )
 
 
 # =============================================================================
@@ -308,9 +308,9 @@ class TestScenarioRegressionDetection:
                 max_dd = config["scenario"]["test_expectations"]["max_acceptable_drawdown"]
 
                 # Höhere Severity = mehr erlaubter Drawdown
-                assert (
-                    max_dd <= -20
-                ), f"Stress scenario {name} should have max_dd <= -20%, got {max_dd}"
+                assert max_dd <= -20, (
+                    f"Stress scenario {name} should have max_dd <= -20%, got {max_dd}"
+                )
 
     def test_regime_scenarios_have_expected_behavior(self, scenario_configs):
         """Regime-Szenarien definieren erwartetes Verhalten."""
@@ -323,9 +323,9 @@ class TestScenarioRegressionDetection:
                 has_losers = "expected_losers" in expectations
 
                 # Mindestens eine Liste sollte vorhanden sein
-                assert (
-                    has_winners or has_losers
-                ), f"Regime scenario {name} should define expected_winners or expected_losers"
+                assert has_winners or has_losers, (
+                    f"Regime scenario {name} should define expected_winners or expected_losers"
+                )
 
 
 # =============================================================================
@@ -348,9 +348,9 @@ class TestScenarioIntegration:
             for category in ["primary", "secondary"]:
                 strategies = applicable.get(category, [])
                 for strat in strategies:
-                    assert (
-                        strat in valid_strategies
-                    ), f"Scenario {name} references unknown strategy: {strat}"
+                    assert strat in valid_strategies, (
+                        f"Scenario {name} references unknown strategy: {strat}"
+                    )
 
     def test_scenarios_match_tiering_expectations(self, scenario_configs):
         """Szenarien-Erwartungen sind konsistent mit Tiering."""
@@ -386,6 +386,6 @@ class TestScenarioDocumentation:
             description = notes.get("description", "")
 
             # Beschreibung sollte nicht zu kurz sein
-            assert (
-                len(description) >= 50
-            ), f"{name}: notes.description too short ({len(description)} chars)"
+            assert len(description) >= 50, (
+                f"{name}: notes.description too short ({len(description)} chars)"
+            )

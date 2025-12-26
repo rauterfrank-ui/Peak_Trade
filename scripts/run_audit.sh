@@ -118,7 +118,7 @@ for cmd in git python3 bash; do
 done
 
 # Optional tools
-for cmd in rg ruff black mypy pip-audit bandit make gh; do
+for cmd in rg ruff mypy pip-audit bandit make gh; do
   if have_cmd "$cmd"; then
     record_tool "$cmd" "true"
     log "  [OK] $cmd"
@@ -132,8 +132,7 @@ done
 echo ""
 log "=== Install Hints for Missing Tools ==="
 [[ "$(get_tool rg)" != "true" ]] && log "  rg (ripgrep): brew install ripgrep"
-[[ "$(get_tool ruff)" != "true" ]] && log "  ruff: pip install ruff"
-[[ "$(get_tool black)" != "true" ]] && log "  black: pip install black"
+[[ "$(get_tool ruff)" != "true" ]] && log "  ruff: pip install ruff (used for linting AND formatting)"
 [[ "$(get_tool mypy)" != "true" ]] && log "  mypy: pip install mypy"
 [[ "$(get_tool pip-audit)" != "true" ]] && log "  pip-audit: pip install pip-audit"
 [[ "$(get_tool bandit)" != "true" ]] && log "  bandit: pip install bandit"
@@ -235,7 +234,6 @@ GATING_HITS=$((GATING_HITS - 1))
 
 # 8) Linting (optional tools)
 RUFF_EXIT="SKIPPED"
-BLACK_EXIT="SKIPPED"
 MYPY_EXIT="SKIPPED"
 
 if [[ "$(get_tool ruff)" == "true" ]]; then
@@ -249,15 +247,31 @@ else
   skip_check "12_ruff" "ruff not installed (pip install ruff)"
 fi
 
-if [[ "$(get_tool black)" == "true" ]]; then
-  run_check "13_black" black --check .
-  BLACK_EXIT=$(grep "^13_black=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
-  if [[ "$BLACK_EXIT" != "0" && "$BLACK_EXIT" != "SKIPPED" ]]; then
+# FORMAT check: ruff format is the source of truth (replaces black)
+# Check if ruff is available (either as command or via python -m ruff)
+RUFF_AVAILABLE=false
+if [[ "$(get_tool ruff)" == "true" ]]; then
+  RUFF_AVAILABLE=true
+elif command -v python3 &>/dev/null && python3 -m ruff --version &>/dev/null; then
+  RUFF_AVAILABLE=true
+fi
+
+if [[ "$RUFF_AVAILABLE" == "true" ]]; then
+  # Prefer python -m ruff for robustness (works even if ruff command is not in PATH)
+  if command -v python3 &>/dev/null && python3 -m ruff --version &>/dev/null; then
+    run_check "13_format" python3 -m ruff format --check .
+  else
+    run_check "13_format" ruff format --check .
+  fi
+  FORMAT_EXIT=$(grep "^13_format=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
+  if [[ "$FORMAT_EXIT" != "0" && "$FORMAT_EXIT" != "SKIPPED" ]]; then
     FINDINGS_COUNT=$((FINDINGS_COUNT + 1))
-    log "FINDING: black check failed (exit $BLACK_EXIT)"
+    log "FINDING: ruff format check failed (exit $FORMAT_EXIT)"
   fi
 else
-  skip_check "13_black" "black not installed (pip install black)"
+  # ruff missing is a HARD-FAIL (formatter is required)
+  log "HARD-FAIL: ruff not available for format check (required: pip install ruff)"
+  HARD_FAIL_COUNT=$((HARD_FAIL_COUNT + 1))
 fi
 
 if [[ "$(get_tool mypy)" == "true" ]]; then
@@ -352,7 +366,6 @@ cat > "$AUDIT_DIR/summary.json" <<EOF
     "python3": $(get_tool python3),
     "rg": $(get_tool rg),
     "ruff": $(get_tool ruff),
-    "black": $(get_tool black),
     "mypy": $(get_tool mypy),
     "pip-audit": $(get_tool pip-audit),
     "bandit": $(get_tool bandit),
@@ -362,7 +375,7 @@ cat > "$AUDIT_DIR/summary.json" <<EOF
   "exit_codes": {
     "pytest": "$PYTEST_EXIT",
     "ruff": "$RUFF_EXIT",
-    "black": "$BLACK_EXIT",
+    "ruff_format": "$FORMAT_EXIT",
     "mypy": "$MYPY_EXIT",
     "pip_audit": "$PIP_AUDIT_EXIT",
     "bandit": "$BANDIT_EXIT"
@@ -412,8 +425,7 @@ cat > "$AUDIT_DIR/summary.md" <<EOF
 | Tool | Available |
 |------|-----------|
 | rg (ripgrep) | $(if [[ "$(get_tool rg)" == "true" ]]; then echo "YES"; else echo "NO - brew install ripgrep"; fi) |
-| ruff | $(if [[ "$(get_tool ruff)" == "true" ]]; then echo "YES"; else echo "NO - pip install ruff"; fi) |
-| black | $(if [[ "$(get_tool black)" == "true" ]]; then echo "YES"; else echo "NO - pip install black"; fi) |
+| ruff | $(if [[ "$(get_tool ruff)" == "true" ]]; then echo "YES (linting + formatting)"; else echo "NO - pip install ruff"; fi) |
 | mypy | $(if [[ "$(get_tool mypy)" == "true" ]]; then echo "YES"; else echo "NO - pip install mypy"; fi) |
 | pip-audit | $(if [[ "$(get_tool pip-audit)" == "true" ]]; then echo "YES"; else echo "NO - pip install pip-audit"; fi) |
 | bandit | $(if [[ "$(get_tool bandit)" == "true" ]]; then echo "YES"; else echo "NO - pip install bandit"; fi) |
@@ -432,7 +444,7 @@ $(git count-objects -vH 2>/dev/null || echo "Unable to get git stats")
 ## Next Steps
 
 1. Review \`08_secrets_scan.txt\` for any real secrets (most hits are env var references)
-2. Install missing tools if needed: \`pip install ruff black mypy pip-audit bandit\`
+2. Install missing tools if needed: \`pip install ruff mypy pip-audit bandit\`
 3. $(if [[ "$PYTEST_EXIT" != "0" && "$PYTEST_EXIT" != "SKIPPED" ]]; then echo "Fix failing tests"; else echo "Tests passing"; fi)
 
 ---

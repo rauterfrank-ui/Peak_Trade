@@ -399,9 +399,9 @@ class TestRegimeSwitching:
         regime_ids = {tick.regime_id for tick in ticks}
 
         # Bei 5000 Ticks und 10% Übergangswahrscheinlichkeit sollten beide Regimes vorkommen
-        assert (
-            len(regime_ids) >= 2
-        ), f"Erwartet mindestens 2 verschiedene Regimes, gefunden: {regime_ids}"
+        assert len(regime_ids) >= 2, (
+            f"Erwartet mindestens 2 verschiedene Regimes, gefunden: {regime_ids}"
+        )
 
 
 class TestVolatilityModel:

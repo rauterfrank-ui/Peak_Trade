@@ -303,6 +303,8 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 ## Dokumentation – Einstiegspunkte
 
+- **Ops / Operator Hub:** `docs/ops/README.md`
+
 - **Vollständige v1.0-Übersicht**  
   [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](docs/PEAK_TRADE_V1_OVERVIEW_FULL.md)
 

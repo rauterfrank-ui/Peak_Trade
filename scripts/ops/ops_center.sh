@@ -34,7 +34,8 @@ COMMANDS:
   status              Show repo status (git + gh)
   pr <NUM>            Review PR (safe, no merge)
   merge-log [<PR>...] Show quick reference or generate merge logs
-  doctor              Run ops_doctor health checks
+  doctor [--quick]    Run ops_doctor health checks (+ merge-log validation)
+  risk <subcmd>       Risk analytics commands (component-var, ...)
 
 EXAMPLES:
   # Check repo status
@@ -52,8 +53,11 @@ EXAMPLES:
   # Generate merge logs for multiple PRs (batch)
   ops_center.sh merge-log 278 279 280
 
-  # Run full health check
+  # Run full health check (includes merge-log tests)
   ops_center.sh doctor
+
+  # Quick health check (skip merge-log tests)
+  ops_center.sh doctor --quick
 
 SAFE-BY-DEFAULT:
   - No destructive actions
@@ -204,6 +208,8 @@ cmd_merge_log() {
     echo "   Examples:"
     echo "     ops_center.sh merge-log 281"
     echo "     ops_center.sh merge-log 278 279 280"
+    echo "     ops_center.sh merge-log --dry-run 281"
+    echo "     ops_center.sh merge-log --keep-going 278 279 999"
     echo ""
     echo "🔹 Quick Start:"
     echo "   scripts/ops/create_and_open_merge_log_pr.sh"
@@ -252,6 +258,17 @@ cmd_merge_log() {
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 cmd_doctor() {
   local script="$SCRIPT_DIR/ops_doctor.sh"
+  local quick_mode=0
+  local doctor_args=()
+
+  # Parse --quick flag (ours only, not passed to Python doctor)
+  for arg in "$@"; do
+    if [[ "$arg" == "--quick" ]]; then
+      quick_mode=1
+    else
+      doctor_args+=("$arg")
+    fi
+  done
 
   if [[ ! -x "$script" ]]; then
     echo "⚠️  Script not found or not executable: $script"
@@ -264,7 +281,270 @@ cmd_doctor() {
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo ""
 
-  "$script" "$@"
+  # Run main doctor checks (without --quick flag)
+  local doctor_exit=0
+  if [[ "${#doctor_args[@]}" -gt 0 ]]; then
+    "$script" "${doctor_args[@]}" || doctor_exit=$?
+  else
+    "$script" || doctor_exit=$?
+  fi
+
+  # Merge-Log Health Checks
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📋 Merge-Log Health"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local validator="$SCRIPT_DIR/validate_merge_logs_setup.sh"
+  local tests="$SCRIPT_DIR/tests/test_generate_merge_logs_batch.sh"
+  local merge_log_exit=0
+
+  # 1) Validator (always run, fast)
+  if [[ -x "$validator" ]]; then
+    echo "🔍 Validator: validate_merge_logs_setup.sh"
+    if "$validator" >/dev/null 2>&1; then
+      echo "   ✅ PASS - Setup validated"
+    else
+      echo "   ❌ FAIL - Setup validation failed"
+      echo "   Details: Run 'scripts/ops/validate_merge_logs_setup.sh' for details"
+      merge_log_exit=1
+    fi
+  else
+    echo "⚠️  Validator not found: $validator"
+    merge_log_exit=1
+  fi
+
+  # 2) Tests (skip in --quick mode or if not present)
+  if [[ "$quick_mode" -eq 1 ]]; then
+    echo "⏭️  Tests: SKIP (--quick mode)"
+  elif [[ -x "$tests" ]]; then
+    echo "🧪 Tests: test_generate_merge_logs_batch.sh"
+    if "$tests" >/dev/null 2>&1; then
+      echo "   ✅ PASS - All offline tests passed"
+    else
+      echo "   ⚠️  FAIL - Some tests failed"
+      echo "   Details: Run 'scripts/ops/tests/test_generate_merge_logs_batch.sh'"
+      merge_log_exit=1
+    fi
+  else
+    echo "ℹ️  Tests: SKIP (not present)"
+  fi
+
+  echo ""
+
+  # Formatter Policy Health Check
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🛡️  Formatter Policy Health"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local formatter_check="$SCRIPT_DIR/check_no_black_enforcement.sh"
+bash scripts/ops/check_formatter_policy_ci_enforced.sh
+  local formatter_exit=0
+
+  # Always run (fast, offline check)
+  if [[ -x "$formatter_check" ]]; then
+    echo "🔍 Check: no black enforcement in workflows/scripts"
+    if "$formatter_check" >/dev/null 2>&1; then
+      echo "   ✅ PASS - Formatter policy enforced (ruff format)"
+    else
+      echo "   ❌ FAIL - black enforcement detected"
+      echo "   Details: Run 'scripts/ops/check_no_black_enforcement.sh'"
+      formatter_exit=1
+    fi
+  else
+    echo "⚠️  Formatter policy check not found: $formatter_check"
+    formatter_exit=1
+  fi
+
+  echo ""
+
+  # Docs Navigation Health (Link Guard)
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📚 Docs Navigation Health"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local docs_link_check="$SCRIPT_DIR/check_ops_docs_navigation.sh"
+  local docs_link_exit=0
+
+  # Always run (fast, offline check)
+  # NOTE: Currently warn-only mode (exit 0) until existing broken links are fixed
+  if [[ -x "$docs_link_check" ]]; then
+    echo "🔍 Check: Ops docs internal links + anchors (warn-only)"
+    if "$docs_link_check" >/dev/null 2>&1; then
+      echo "   ✅ PASS - No broken internal links found"
+    else
+      echo "   ⚠️  WARN - Broken internal links detected (not blocking)"
+      echo "   Details: Run 'scripts/ops/check_ops_docs_navigation.sh'"
+      echo "   Note: This check will be enforced after existing links are fixed"
+      # docs_link_exit=1  # Disabled until broken links are fixed
+    fi
+  else
+    echo "⚠️  Docs link check not found: $docs_link_check"
+    # Not critical if the script is missing
+  fi
+
+  echo ""
+
+  # Docs Reference Targets
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🔗 Docs Reference Targets"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local ref_targets_check="$SCRIPT_DIR/verify_docs_reference_targets.sh"
+  local ref_targets_exit=0
+
+  if [[ -x "$ref_targets_check" ]]; then
+    echo "🔍 Check: Referenced repo paths in markdown docs (warn-only)"
+
+    # Run in warn-only mode (exit 2 on missing targets)
+    local ref_output
+    local ref_status=0
+    ref_output="$("$ref_targets_check" --changed --base origin/main --warn-only 2>&1)" || ref_status=$?
+
+    if [[ $ref_status -eq 0 ]]; then
+      # All targets exist or not applicable
+      echo "   ✅ PASS - All referenced targets exist (or no markdown changes)"
+    elif [[ $ref_status -eq 2 ]]; then
+      # Missing targets (warn-only mode)
+      echo "   ⚠️  WARN - Missing referenced targets detected"
+      echo ""
+      echo "$ref_output" | sed 's/^/      /'
+      echo ""
+      echo "   📖 Details: scripts/ops/verify_docs_reference_targets.sh --changed"
+      ref_targets_exit=1
+    else
+      # Hard error (script failure)
+      echo "   ❌ FAIL - Check failed to run"
+      echo ""
+      echo "$ref_output" | sed 's/^/      /'
+      echo ""
+      ref_targets_exit=1
+    fi
+  else
+    echo "⚠️  Docs Reference Targets check not found: $ref_targets_check"
+    ref_targets_exit=1
+  fi
+
+  echo ""
+
+  # Required Checks Drift Guard
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🧭 Required Checks Drift Guard"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local drift_check="$SCRIPT_DIR/verify_required_checks_drift.sh"
+  local drift_exit=0
+
+  if [[ -x "$drift_check" ]]; then
+    echo "🔍 Check: Branch Protection Required Checks (doc vs live)"
+
+    # Run in warn-only mode (exit 2 on drift, not 1)
+    local drift_output
+    local drift_status=0
+    drift_output="$("$drift_check" --warn-only 2>&1)" || drift_status=$?
+
+    if [[ $drift_status -eq 0 ]]; then
+      # No drift
+      echo "   ✅ PASS - Doc matches live state"
+    elif [[ $drift_status -eq 2 ]]; then
+      # Drift detected (warn-only mode)
+      echo "   ⚠️  WARN - Drift detected between doc and live"
+      echo ""
+      echo "$drift_output" | sed 's/^/      /'
+      echo ""
+      echo "   📖 Details: scripts/ops/verify_required_checks_drift.sh"
+      drift_exit=1
+    else
+      # Hard error (preflight failure, etc.)
+      echo "   ❌ FAIL - Check failed to run"
+      echo ""
+      echo "$drift_output" | sed 's/^/      /'
+      echo ""
+      drift_exit=1
+    fi
+  else
+    echo "⚠️  Required Checks Drift Guard not found: $drift_check"
+    drift_exit=1
+  fi
+
+  echo ""
+
+  # Exit with non-zero if any checks failed
+  # Note: docs_link_exit is currently 0 (warn-only mode) until existing broken links are fixed
+  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | ref_targets_exit | drift_exit))
+  if [[ $final_exit -ne 0 ]]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "❌ Health checks failed (exit $final_exit)"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  fi
+
+  return $final_exit
+}
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Risk Commands
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+cmd_risk() {
+  local subcmd="${1:-help}"
+  shift || true
+
+  case "$subcmd" in
+    component-var)
+      cmd_risk_component_var "$@"
+      ;;
+    help|--help|-h)
+      cat <<'HELP'
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Risk Analytics Commands
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+USAGE:
+  ops_center.sh risk <subcommand> [args...]
+
+SUBCOMMANDS:
+  component-var    Generate Component VaR report
+
+EXAMPLES:
+  # Generate report with fixtures
+  ops_center.sh risk component-var --use-fixtures
+
+  # Generate report with custom data
+  ops_center.sh risk component-var --returns data.csv --alpha 0.95
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HELP
+      ;;
+    *)
+      echo "❌ Unknown risk subcommand: $subcmd"
+      echo ""
+      cmd_risk help
+      exit 1
+      ;;
+  esac
+}
+
+cmd_risk_component_var() {
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📊 Component VaR Report Generator"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  cd "$REPO_ROOT"
+
+  # Check if Python script exists
+  local script="$REPO_ROOT/scripts/run_component_var_report.py"
+  if [[ ! -f "$script" ]]; then
+    echo "❌ Script not found: $script"
+    exit 1
+  fi
+
+  # Run the Python script with all arguments
+  python3 "$script" "$@"
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -290,6 +570,9 @@ main() {
     doctor)
       cmd_doctor "$@"
       ;;
+    risk)
+      cmd_risk "$@"
+      ;;
     *)
       echo "❌ Unknown command: $cmd"
       echo ""
@@ -300,3 +583,6 @@ main() {
 }
 
 main "$@"
+
+# NOTE: dashboard generator
+# scripts/ops/generate_ops_doctor_dashboard.sh [out]

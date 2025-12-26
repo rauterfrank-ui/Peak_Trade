@@ -115,9 +115,9 @@ def test_required_keys_present(golden_ok_path: Path):
         # Type checks
         assert isinstance(event["kind"], str), f"kind should be string: {event['kind']}"
         assert isinstance(event["ts"], str), f"ts should be string: {event['ts']}"
-        assert isinstance(
-            event["session_id"], str
-        ), f"session_id should be string: {event['session_id']}"
+        assert isinstance(event["session_id"], str), (
+            f"session_id should be string: {event['session_id']}"
+        )
 
 
 def test_timestamp_parseable(golden_ok_path: Path):
@@ -175,9 +175,9 @@ def test_monotonic_time_latency_session(golden_latency_path: Path):
 
     # Check monotonicity
     for i in range(1, len(timestamps)):
-        assert (
-            timestamps[i] >= timestamps[i - 1]
-        ), f"Timestamp not monotonic at index {i}: {timestamps[i - 1]} -> {timestamps[i]}"
+        assert timestamps[i] >= timestamps[i - 1], (
+            f"Timestamp not monotonic at index {i}: {timestamps[i - 1]} -> {timestamps[i]}"
+        )
 
 
 # ==============================================================================
@@ -197,9 +197,9 @@ def test_id_consistency_order_ids(golden_ok_path: Path):
     for event in order_events:
         payload = event.get("payload", {})
         if "order_id" in payload:
-            assert isinstance(
-                payload["order_id"], str
-            ), f"order_id should be string: {payload['order_id']}"
+            assert isinstance(payload["order_id"], str), (
+                f"order_id should be string: {payload['order_id']}"
+            )
 
 
 def test_id_consistency_intent_ids(golden_ok_path: Path):
@@ -214,9 +214,9 @@ def test_id_consistency_intent_ids(golden_ok_path: Path):
     for event in intent_events:
         payload = event.get("payload", {})
         if "intent_id" in payload:
-            assert isinstance(
-                payload["intent_id"], str
-            ), f"intent_id should be string: {payload['intent_id']}"
+            assert isinstance(payload["intent_id"], str), (
+                f"intent_id should be string: {payload['intent_id']}"
+            )
 
 
 # ==============================================================================
@@ -251,9 +251,9 @@ def test_latency_no_negative(golden_latency_path: Path):
             t2 = parse_iso_ts(chain_sorted[i]["ts"])
             delta_ms = (t2 - t1).total_seconds() * 1000
 
-            assert (
-                delta_ms >= 0
-            ), f"Negative latency in chain {intent_id}: {delta_ms}ms between events {i - 1} and {i}"
+            assert delta_ms >= 0, (
+                f"Negative latency in chain {intent_id}: {delta_ms}ms between events {i - 1} and {i}"
+            )
 
 
 def test_latency_suspicious_flag(golden_latency_path: Path):
@@ -383,9 +383,9 @@ def test_filter_by_session(golden_ok_path: Path):
 
     assert len(events) == 10, f"Expected 10 events for session, got {len(events)}"
     for event in events:
-        assert (
-            event["session_id"] == "golden_ok_001"
-        ), f"Expected session_id=golden_ok_001, got {event['session_id']}"
+        assert event["session_id"] == "golden_ok_001", (
+            f"Expected session_id=golden_ok_001, got {event['session_id']}"
+        )
 
 
 # ==============================================================================

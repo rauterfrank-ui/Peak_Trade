@@ -39,6 +39,6 @@ def test_ops_workflow_script_bash_syntax_ok(script_path: Path) -> None:
         text=True,
         check=False,
     )
-    assert (
-        proc.returncode == 0
-    ), f"Bash syntax error in {script_path}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}\n"
+    assert proc.returncode == 0, (
+        f"Bash syntax error in {script_path}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}\n"
+    )

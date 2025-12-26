@@ -99,6 +99,7 @@ gh pr create \
 - **Risk** — Risikoeinschätzung
 - **Operator How-To** — Praxis-Beispiele
 - PR #262 — merge-log workflow standard + template (Meta-Beispiel): `docs/ops/PR_262_MERGE_LOG.md`
+- PR #325 — merge log: docs/ops/PR_325_MERGE_LOG.md
 - **Follow-Up Actions** — Optional nächste Schritte
 - **References** — Links zu Policy, Tool, Tests
 
@@ -339,7 +340,7 @@ Würde automatisch:
 **Maintainer:** Peak_Trade Ops Team
 
 <!-- MERGE_LOG_EXAMPLES:START -->
-- PR #278 — merge log for PR #123 + ops references: docs/ops/PR_278_MERGE_LOG.md
-- PR #279 — salvage untracked docs/ops assets: docs/ops/PR_279_MERGE_LOG.md
-- PR #280 — archive session reports to worklogs: docs/ops/PR_280_MERGE_LOG.md
+- PR #290 — chore(ops): guard against black enforcement drift: docs/ops/PR_290_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
+- PR #292 — merge-log: docs/ops/PR_292_MERGE_LOG.md
+- PR #295 — merge-log: docs/ops/PR_295_MERGE_LOG.md

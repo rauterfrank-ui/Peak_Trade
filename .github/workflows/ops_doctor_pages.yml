@@ -1,0 +1,82 @@
+name: Ops Doctor Dashboard (Pages)
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "15 6 * * 1"  # Mondays 06:15 UTC (07:15 Berlin winter time)
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies (best-effort)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f uv.lock ]]; then
+            uv sync --frozen
+          elif [[ -f pyproject.toml ]]; then
+            uv sync
+          elif [[ -f requirements.txt ]]; then
+            uv pip install -r requirements.txt
+          else
+            echo "No dependency manifest found; continuing."
+          fi
+
+      - name: Generate dashboard site (index.html + index.json)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site
+          bash scripts/ops/generate_ops_doctor_dashboard.sh site/index.html
+
+      - name: Upload run artifacts (HTML + JSON)
+        uses: actions/upload-artifact@v6
+        with:
+          name: ops-doctor-dashboard
+          path: |
+            site/index.html
+            site/index.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
