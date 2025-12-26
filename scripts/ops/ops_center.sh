@@ -6,7 +6,7 @@
 #   ops_center.sh help                 Show this help
 #   ops_center.sh status               Show repo status
 #   ops_center.sh pr <NUM>             Review PR (no merge)
-#   ops_center.sh merge-log            Show merge log quick reference
+#   ops_center.sh merge-log [<PR>...]  Show quick reference or generate merge logs
 #   ops_center.sh doctor               Run ops_doctor health checks
 #
 # Safe-by-default: No destructive actions, no merges without explicit flags.
@@ -33,7 +33,7 @@ COMMANDS:
   help                Show this help
   status              Show repo status (git + gh)
   pr <NUM>            Review PR (safe, no merge)
-  merge-log           Show merge log quick reference
+  merge-log [<PR>...] Show quick reference or generate merge logs
   doctor [--quick]    Run ops_doctor health checks (+ merge-log validation)
   risk <subcmd>       Risk analytics commands (component-var, ...)
 
@@ -46,6 +46,12 @@ EXAMPLES:
 
   # Get merge log quick links
   ops_center.sh merge-log
+
+  # Generate merge log for single PR
+  ops_center.sh merge-log 281
+
+  # Generate merge logs for multiple PRs (batch)
+  ops_center.sh merge-log 278 279 280
 
   # Run full health check (includes merge-log tests)
   ops_center.sh doctor
@@ -166,7 +172,7 @@ cmd_pr() {
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Merge Log Quick Reference
+# Merge Log (Quick Reference or Batch Generator)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 cmd_merge_log() {
   # No args → show quick reference
@@ -245,6 +251,7 @@ cmd_merge_log() {
 
   "$script" "$@"
 }
+
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Doctor
