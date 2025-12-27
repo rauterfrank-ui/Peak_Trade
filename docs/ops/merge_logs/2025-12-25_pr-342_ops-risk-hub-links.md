@@ -43,4 +43,4 @@ LOW
 - PR #342 (merged) — docs(ops): risk hub links + PR341 merge log
 - PR #341 — Liquidity Gate v1
 - Runbooks: `docs/risk/VAR_GATE_RUNBOOK.md`, `docs/risk/STRESS_GATE_RUNBOOK.md`, `docs/risk/LIQUIDITY_GATE_RUNBOOK.md`
-- Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
+- Roadmap: `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md`

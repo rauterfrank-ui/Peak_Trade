@@ -1,1 +1,6 @@
-"""Tests for risk_layer module."""
+"""
+Risk Layer Tests
+================
+
+Test suite for risk layer components.
+"""

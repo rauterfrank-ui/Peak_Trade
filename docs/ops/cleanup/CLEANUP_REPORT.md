@@ -369,7 +369,7 @@ Alle in `docs/ops/cleanup/`:
    - Neue Docs hinzugefügt (architecture/, dev/, features/)
 
 2. **`docs/ops/README.md`**
-   - `RISK_LAYER_ROADMAP.md` → `docs/risk/RISK_LAYER_ROADMAP.md`
+   - `RISK_LAYER_ROADMAP.md` → `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md`
 
 ### Automatische Updates durch git mv
 
@@ -517,7 +517,7 @@ Siehe `README_REGISTRY.md` für vollständige Liste.
 
 **Wichtigste Änderungen:**
 - `P0_GUARDRAILS_QUICK_REFERENCE.md` → `docs/ops/P0_GUARDRAILS_QUICK_REFERENCE.md`
-- `RISK_LAYER_ROADMAP.md` → `docs/risk/RISK_LAYER_ROADMAP.md`
+- `RISK_LAYER_ROADMAP.md` → `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md`
 - `scripts/ops/run_audit.sh` → `scripts/ops/run_audit.sh`
 - `scripts/run/run_smoke_tests.sh` → `scripts/run/run_smoke_tests.sh`
 
