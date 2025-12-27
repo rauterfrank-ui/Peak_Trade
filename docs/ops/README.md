@@ -4,6 +4,16 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 
 ---
 
+## Closeouts & Playbooks
+- `docs/ops/merge_logs/2025-12-27_mass_docs_pr_closeout.md` — Mass PR Wave Closeout (2025-12-27)
+- `docs/ops/CASCADING_MERGES_AND_RERERE_PLAYBOOK.md` — Cascading merges & git rerere Operator Playbook
+
+## Closeout Automation
+- `scripts/ops/run_closeout_2025_12_27.sh` — Runner (Safety Gates + Auto-Merge Workflow)
+- `scripts/ops/create_closeout_2025_12_27.sh` — Generator (Docs + PR scaffold)
+
+---
+
 ## 🎯 Ops Operator Center – Zentraler Einstiegspunkt
 
 **Ein Command für alle Operator-Workflows.**
