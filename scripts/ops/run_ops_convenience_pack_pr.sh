@@ -90,6 +90,13 @@ echo ""
 echo "🧾 Staged files:"
 git diff --cached --name-only
 
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
+
 # Commit message via heredoc (no quoting issues)
 git commit -F - <<'EOF'
 chore(ops): add merge-log workflow convenience + tests
