@@ -14,20 +14,27 @@ set -euo pipefail
 #   # phase2 (no letter)
 #   PHASE_TAG=phase2 SLUG=latest-report-convenience ./templates/bash/gh_pr_flow.sh
 #
+# Branch naming defaults:
+#   - Shadow pipeline PRs (SCOPE_PREFIX=shadow + PHASE_TAG set):
+#       feat/shadow-${PHASE_TAG}-${SLUG}
+#       e.g. feat/shadow-phase2e-ops-center-ux
+#   - Non-shadow PRs:
+#       <kind>/${SLUG}  where <kind> inferred from PR_COMMIT_MSG/PR_TITLE (feat|fix|docs|chore|...)
+#       e.g. chore/gh-pr-flow-existing-pr
+#
 # Notes:
-# - Branch naming: feat/shadow-${PHASE_TAG}-${SLUG}  (e.g., feat/shadow-phase2e-ops-center-ux)
 # - VERIFY_CMD is allowed to fail without aborting the script (if you include "|| true").
 # - No temp files; PR body uses heredoc.
 # -----------------------------------------------------------------------------
 
 # --- Config (override via env) ------------------------------------------------
-PHASE_TAG="${PHASE_TAG:-phase2e}"          # e.g. phase2, phase2d, phase2e (NO dash between 2 and letter)
+PHASE_TAG="${PHASE_TAG:-}"                 # e.g. phase2, phase2d, phase2e (NO dash between 2 and letter)
 SLUG="${SLUG:-change-me}"                  # short descriptive slug, e.g. ops-center-ux
-SCOPE_PREFIX="${SCOPE_PREFIX:-shadow}"     # e.g. shadow, ops, risk, docs
-BRANCH="${BRANCH:-feat/${SCOPE_PREFIX}-${PHASE_TAG}-${SLUG}}"
+SCOPE_PREFIX="${SCOPE_PREFIX:-}"           # e.g. shadow, ops, risk, docs
 
-PR_TITLE="${PR_TITLE:-feat(${SCOPE_PREFIX}): ${SLUG}}"
-PR_COMMIT_MSG="${PR_COMMIT_MSG:-feat(${SCOPE_PREFIX}): ${SLUG}}"
+PR_TITLE="${PR_TITLE:-feat: ${SLUG}}"
+PR_COMMIT_MSG="${PR_COMMIT_MSG:-feat: ${SLUG}}"
+BRANCH_KIND="${BRANCH_KIND:-}"             # optional explicit kind for non-shadow branches (e.g. chore|docs|fix|feat)
 
 # What to add/commit:
 FILES_TO_ADD="${FILES_TO_ADD:-.}"          # "." means all changes; set to a path list if you prefer
@@ -44,6 +51,27 @@ DELETE_BRANCH="${DELETE_BRANCH:-1}"        # 1 = delete branch on merge (if supp
 
 # --- Helpers ------------------------------------------------------------------
 die() { echo "❌ $*" >&2; exit 1; }
+
+infer_kind_from_msg() {
+  # Accepts: "chore(ops): ..." -> "chore"
+  # Accepts: "docs: ..."      -> "docs"
+  # Returns empty string if no match.
+  local msg="${1:-}"
+  if [[ "$msg" =~ ^([a-zA-Z]+)(\(|:) ]]; then
+    echo "${BASH_REMATCH[1],,}"
+    return 0
+  fi
+  echo ""
+}
+
+normalize_kind() {
+  # Whitelist common conventional-commit kinds; fallback to "feat".
+  local k="${1:-}"
+  case "$k" in
+    feat|fix|docs|chore|refactor|test|ci|perf|build|style) echo "$k" ;;
+    *) echo "feat" ;;
+  esac
+}
 
 need_cmd() {
   command -v "$1" >/dev/null 2>&1 || die "Command not found: $1"
@@ -68,8 +96,34 @@ checkout_branch() {
   git checkout -b "$BRANCH"
 }
 
+# Resolve default branch name (unless explicitly provided via BRANCH=...).
+resolve_branch_name() {
+  if [[ -n "${BRANCH:-}" ]]; then
+    return 0
+  fi
+
+  # Shadow pipeline naming stays stable and explicit.
+  if [[ "${SCOPE_PREFIX:-}" == "shadow" && -n "${PHASE_TAG:-}" ]]; then
+    BRANCH="feat/${SCOPE_PREFIX}-${PHASE_TAG}-${SLUG}"
+    return 0
+  fi
+
+  # Non-shadow: infer branch kind from commit/title, unless BRANCH_KIND is provided.
+  local inferred="${BRANCH_KIND:-}"
+  if [[ -z "$inferred" ]]; then
+    inferred="$(infer_kind_from_msg "$PR_COMMIT_MSG")"
+  fi
+  if [[ -z "$inferred" ]]; then
+    inferred="$(infer_kind_from_msg "$PR_TITLE")"
+  fi
+  inferred="$(normalize_kind "$inferred")"
+  BRANCH="${inferred}/${SLUG}"
+}
+
 # --- Main ---------------------------------------------------------------------
 need_cmd git
+
+resolve_branch_name
 
 echo "🔧 Branch: $BRANCH"
 echo "🧾 Title:  $PR_TITLE"
