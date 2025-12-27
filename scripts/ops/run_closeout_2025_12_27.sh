@@ -27,6 +27,12 @@ echo "== 3) Post-run sanity (was hat sich geändert?) =="
 git status
 git diff --stat
 
+# Safety: Exit gracefully if no changes (e.g., re-run on main)
+if [[ -z "$(git status --porcelain)" ]]; then
+  echo "ℹ️ No changes to commit (already on main). Exiting 0."
+  exit 0
+fi
+
 echo "== 4) Fast local gates (best effort) =="
 if [[ -f scripts/ops/ops_center.sh ]]; then
   bash scripts/ops/ops_center.sh doctor
