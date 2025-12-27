@@ -14,7 +14,6 @@ NO NETWORK: Komplett offline mit Beispiel-Daten.
 from __future__ import annotations
 
 import sys
-from datetime import datetime
 from pathlib import Path
 
 # Add project root to path
@@ -22,7 +21,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.data.shadow.ohlcv_builder import OHLCVBuilder
 from src.data.shadow.quality_monitor import DataQualityMonitor
-from src.data.shadow.quality_report import render_quality_html_report
 from src.data.shadow.tick_normalizer import normalize_ticks_from_messages
 
 
@@ -118,6 +116,7 @@ def main() -> int:
         cfg = {
             "shadow": {
                 "quality": {
+                    "enabled": True,
                     "gap_severity": "WARN",
                     "spike_severity": "WARN",
                     "max_abs_log_return": 0.10,
@@ -139,44 +138,8 @@ def main() -> int:
         gap_events = [e for e in events if e.kind == "GAP"]
         assert len(gap_events) >= 1, "Expected at least 1 GAP event"
 
-        # 5) Generate HTML Quality Report
-        print("\n5️⃣  Generating HTML Quality Report...")
-
-        # Build summary structure
-        summary = {
-            "run_timestamp": datetime.utcnow(),
-            "symbol": "XBT/EUR",
-            "timeframe": "1m",
-            "tick_count": len(ticks),
-            "bar_count": len(bars),
-            "quality_events": [
-                {
-                    "kind": e.kind,
-                    "severity": e.severity,
-                    "ts_ms": e.ts_ms,
-                    "details": e.details,
-                }
-                for e in events
-            ],
-        }
-
-        # Render HTML
-        html_content = render_quality_html_report(summary)
-
-        # Write to reports/shadow/quality/
-        project_root = Path(__file__).parent.parent
-        report_dir = project_root / "reports" / "shadow" / "quality"
-        report_dir.mkdir(parents=True, exist_ok=True)
-
-        timestamp_str = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        report_path = report_dir / f"quality_report_{timestamp_str}.html"
-
-        report_path.write_text(html_content, encoding="utf-8")
-        print(f"   ✅ Report written to: {report_path}")
-
         print("\n" + "━" * 60)
         print("✅ Alle Smoke-Tests bestanden!")
-        print(f"📊 Report: {report_path}")
         print("━" * 60)
         return 0
 

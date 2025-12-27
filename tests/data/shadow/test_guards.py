@@ -26,9 +26,9 @@ def test_import_guard_passes_without_env(monkeypatch):
 
 
 def test_import_guard_blocks_live_mode_1(monkeypatch):
-    """Import Guard blockiert wenn live mode env var auf 1 gesetzt ist."""
+    """Import Guard blockiert bei PEAK_TRADE_LIVE_MODE=1."""
     monkeypatch.setenv("PEAK_TRADE_LIVE_MODE", "1")
-    with pytest.raises(ShadowLiveForbidden, match="Live mode environment variable is active"):
+    with pytest.raises(ShadowLiveForbidden, match="PEAK_TRADE_LIVE_MODE ist aktiv"):
         check_import_guard()
 
 
@@ -54,9 +54,9 @@ def test_runtime_guard_passes_safe_config(monkeypatch):
 
 
 def test_runtime_guard_blocks_live_enabled():
-    """Runtime Guard blockiert wenn live config flag aktiv ist."""
+    """Runtime Guard blockiert bei live.enabled=true."""
     cfg = {"live": {"enabled": True}}
-    with pytest.raises(ShadowLiveForbidden, match="Live mode config flag is active"):
+    with pytest.raises(ShadowLiveForbidden, match="live.enabled=true"):
         check_runtime_guard(cfg)
 
 
@@ -77,7 +77,7 @@ def test_config_guard_passes_when_enabled():
 def test_config_guard_blocks_when_disabled():
     """Config Guard blockiert wenn pipeline disabled."""
     cfg = {"shadow": {"pipeline": {"enabled": False}}}
-    with pytest.raises(ShadowPipelineDisabled, match="Explicit opt-in required"):
+    with pytest.raises(ShadowPipelineDisabled, match="Pipeline ist disabled"):
         check_config_guard(cfg)
 
 

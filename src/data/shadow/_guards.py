@@ -35,8 +35,8 @@ def check_import_guard() -> None:
     live_mode_env = os.environ.get("PEAK_TRADE_LIVE_MODE", "").lower()
     if live_mode_env in ("1", "true", "yes"):
         raise ShadowLiveForbidden(
-            "SHADOW PIPELINE ERROR: Live mode environment variable is active! "
-            "Shadow mode is blocked from running in live mode."
+            "SHADOW PIPELINE ERROR: PEAK_TRADE_LIVE_MODE ist aktiv! "
+            "Shadow-Modus darf NIEMALS im Live-Mode laufen."
         )
 
 
@@ -48,7 +48,7 @@ def check_runtime_guard(cfg: dict[str, Any]) -> None:
         cfg: Config-Dict (nested, z.B. {"live": {"enabled": false}})
 
     Raises:
-        ShadowLiveForbidden: If live mode config flag is active
+        ShadowLiveForbidden: Wenn live.enabled=true
     """
     # Check ENV nochmal (double-check)
     check_import_guard()
@@ -57,8 +57,8 @@ def check_runtime_guard(cfg: dict[str, Any]) -> None:
     live_enabled = cfg.get("live", {}).get("enabled", False)
     if live_enabled:
         raise ShadowLiveForbidden(
-            "SHADOW PIPELINE ERROR: Live mode config flag is active! "
-            "Shadow mode is blocked from running in live mode."
+            "SHADOW PIPELINE ERROR: live.enabled=true in Config! "
+            "Shadow-Modus darf NIEMALS im Live-Mode laufen."
         )
 
 
@@ -70,10 +70,10 @@ def check_config_guard(cfg: dict[str, Any]) -> None:
         cfg: Config-Dict
 
     Raises:
-        ShadowPipelineDisabled: If shadow pipeline is not explicitly opted-in
+        ShadowPipelineDisabled: Wenn shadow.pipeline.enabled != true
     """
     pipeline_enabled = cfg.get("shadow", {}).get("pipeline", {}).get("enabled", False)
     if not pipeline_enabled:
         raise ShadowPipelineDisabled(
-            "Shadow Pipeline is disabled. Explicit opt-in required in config."
+            "Shadow Pipeline ist disabled. Setze shadow.pipeline.enabled=true in Config."
         )

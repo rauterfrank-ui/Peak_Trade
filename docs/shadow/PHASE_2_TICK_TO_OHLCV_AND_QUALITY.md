@@ -14,7 +14,7 @@ Phase 2 baut die Data Pipeline für Shadow Trading:
 2. **OHLCV Building** — Tick Aggregation zu Bars (1m/5m/1h)
 3. **Data Quality Monitoring** — Gap Detection, Spike Alerts
 
-**CRITICAL:** Blocked from running in live mode. Defense-in-depth via config, runtime and import guards enforces this.
+**KRITISCH:** NIEMALS im Live-Mode laufen lassen. Defense in Depth via Config, Runtime und Import Guards.
 
 ---
 
@@ -49,33 +49,35 @@ Kraken WS Trade Messages
 
 ---
 
-## 🔐 Sicherheitsprinzipien (Defense in Depth)
+## 🔐 Sicherheitsprinzipien (NEVER LIVE)
 
 ### Defense in Depth (3 Ebenen)
 
 **1. Import Guard** — prüft bei Modul-Load
 ```python
 # In src/data/shadow/__init__.py
-check_import_guard()  # Blocks if live mode env var is active
+check_import_guard()  # Blockiert wenn PEAK_TRADE_LIVE_MODE=1
 ```
 
 **2. Runtime Guard** — prüft zur Laufzeit
 ```python
-check_runtime_guard(cfg)  # Blocks if live mode config flag is active
+check_runtime_guard(cfg)  # Blockiert wenn live.enabled=true
 ```
 
 **3. Config Guard** — prüft Pipeline-Aktivierung
 ```python
-check_config_guard(cfg)  # Blocks if shadow pipeline is not explicitly opted-in
+check_config_guard(cfg)  # Blockiert wenn shadow.pipeline.enabled != true
 ```
 
 ### Environment Variable
 
 ```bash
-# The live mode environment variable will block shadow imports if present
-# Import Guard triggers immediately on import:
+# NIEMALS setzen:
+export PEAK_TRADE_LIVE_MODE=1
+
+# Import Guard triggert sofort beim Import:
 # >>> from src.data.shadow import Tick
-# ShadowLiveForbidden: Live mode environment variable is active!
+# ShadowLiveForbidden: PEAK_TRADE_LIVE_MODE ist aktiv!
 ```
 
 ---
@@ -86,23 +88,23 @@ check_config_guard(cfg)  # Blocks if shadow pipeline is not explicitly opted-in
 
 ```toml
 [shadow.pipeline]
-enabled = false  # SAFE DEFAULT (requires governance approval for activation)
+enabled = false  # SAFE DEFAULT
 
 [shadow.quality]
-enabled = false  # Example; requires governance approval for activation
+enabled = true
 gap_severity = "WARN"
 spike_severity = "WARN"
 max_abs_log_return = 0.10  # 10% threshold
 volume_spike_factor = 10.0
 
 [shadow.logging]
-enabled = false  # Example; requires governance approval
+enabled = true
 path = "reports/shadow_quality_events.jsonl"
 max_bytes = 1000000
 backup_count = 5
 
 [live]
-enabled = false  # CRITICAL: MUST stay false (runtime guard enforced)
+enabled = false  # KRITISCH: NIEMALS true wenn shadow.pipeline.enabled
 ```
 
 ---
@@ -193,8 +195,7 @@ bars = builder.finalize()  # → List[Bar], sorted by start_ts_ms
 ```python
 from src.data.shadow.quality_monitor import DataQualityMonitor
 
-# Example config dict (not actual usage)
-cfg = {"shadow": {"quality": {"gap_severity": "WARN", ...}}}
+cfg = {"shadow": {"quality": {"enabled": True, ...}}}
 monitor = DataQualityMonitor(cfg)
 events = monitor.check_bars(bars)
 # → List[QualityEvent]: GAP, SPIKE (price/volume)
