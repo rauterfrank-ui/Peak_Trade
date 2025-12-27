@@ -79,6 +79,13 @@ bash -n scripts/ops/pr_toolkit_deploy_workflow.sh
 
 uv run pytest -q tests/ops/test_pr_management_toolkit_scripts.py
 
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
+
 # ─────────────────────────────────────────────────────────────
 # 4) Commit + Push
 # ─────────────────────────────────────────────────────────────

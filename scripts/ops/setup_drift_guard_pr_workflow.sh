@@ -720,8 +720,14 @@ echo "📦 7) Commit changes"
 
 git add -A
 
-if ! git diff --cached --quiet; then
-  git commit -m "feat(ops): add Required Checks Drift Guard PR workflow
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
+
+git commit -m "feat(ops): add Required Checks Drift Guard PR workflow
 
 - Add --dry-run and --offline-only flags
 - Create smoke tests for PR workflow
@@ -734,10 +740,7 @@ Components:
 - scripts/ops/tests/test_drift_guard_pr_workflow.sh (new)
 - docs/ops/REQUIRED_CHECKS_DRIFT_GUARD.md (new)
 "
-  echo "   ✅ Changes committed"
-else
-  echo "   ℹ️  No changes to commit"
-fi
+echo "   ✅ Changes committed"
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 8) Summary

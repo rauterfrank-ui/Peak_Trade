@@ -217,6 +217,13 @@ git add "$LOGFILE"
 [ -f docs/ops/README.md ] && git add docs/ops/README.md
 [ -f docs/PEAK_TRADE_STATUS_OVERVIEW.md ] && git add docs/PEAK_TRADE_STATUS_OVERVIEW.md
 
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
+
 git commit -m "docs(ops): add PR #${PR} merge log"
 
 echo "🚀 Pushing branch..."
