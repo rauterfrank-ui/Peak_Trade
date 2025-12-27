@@ -1192,3 +1192,29 @@ Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 - Risk Layer Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).
+
+## GitHub Auth & Token Helper
+
+Peak_Trade bevorzugt GitHub CLI (`gh`). Wenn ein Script einen Token braucht, nutze den zentralen Helper:
+
+- Safe Debug (zeigt nur Prefix + Länge, kein Leak):
+  - `scripts/utils/get_github_token.sh --debug`
+- Validierung (Exit != 0 wenn kein gültiger Token gefunden wird):
+  - `scripts/utils/get_github_token.sh --check`
+- Verwendung in Scripts:
+  - `TOKEN="$(scripts/utils/get_github_token.sh)"`
+
+Unterstützte Token-Formate:
+- `gho_*`  (GitHub CLI OAuth Token)
+- `ghp_*`  (Classic PAT)
+- `github_pat_*` (Fine-grained PAT)
+
+Token-Quellen (Priorität):
+`GITHUB_TOKEN` → `GH_TOKEN` → macOS Clipboard (`pbpaste`) → `gh auth token`
+
+Empfohlenes Setup:
+- `gh auth login --web`
+- Danach laufen Scripts ohne PAT-Erstellen/Löschen.
+
+Security:
+- Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
