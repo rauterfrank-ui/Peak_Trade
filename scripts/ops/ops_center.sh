@@ -631,6 +631,22 @@ cmd_shadow() {
       echo ""
       cd "$REPO_ROOT"
       python3 scripts/shadow_run_tick_to_ohlcv_smoke.py "$@"
+      local exit_code=$?
+
+      # Print stable report paths if smoke run succeeded
+      if [ $exit_code -eq 0 ]; then
+        local latest_path="reports/shadow/quality/latest.html"
+        local index_path="reports/shadow/quality/index.html"
+
+        if [ -f "$latest_path" ] || [ -f "$index_path" ]; then
+          echo ""
+          echo "📂 Stable Report Paths:"
+          [ -f "$latest_path" ] && echo "   Latest: $latest_path"
+          [ -f "$index_path" ]  && echo "   Index:  $index_path"
+        fi
+      fi
+
+      return $exit_code
       ;;
     help|--help|-h)
       echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -643,6 +659,7 @@ cmd_shadow() {
       echo "SUBCOMMANDS:"
       echo "  smoke     Run Shadow Pipeline Phase 2 smoke test (Tick→OHLCV→Quality)"
       echo "            Produces HTML quality report in reports/shadow/quality/"
+      echo "            Prints stable report paths (latest.html, index.html) on success"
       echo "  help      Show this help"
       echo ""
       echo "EXAMPLES:"

@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# -----------------------------------------------------------------------------
+# gh_pr_flow.sh — reusable PR workflow helper (git + gh)
+#
+# Usage (examples):
+#   PHASE_TAG=phase2e SLUG=ops-center-ux \
+#     PR_TITLE="feat(ops): print stable shadow report paths after successful smoke run" \
+#     PR_COMMIT_MSG="feat(ops): print stable shadow report paths after successful smoke run" \
+#     VERIFY_CMD='bash scripts/ops/ops_center.sh shadow smoke || true' \
+#     ./templates/bash/gh_pr_flow.sh
+#
+#   # phase2 (no letter)
+#   PHASE_TAG=phase2 SLUG=latest-report-convenience ./templates/bash/gh_pr_flow.sh
+#
+# Notes:
+# - Branch naming: feat/shadow-${PHASE_TAG}-${SLUG}  (e.g., feat/shadow-phase2e-ops-center-ux)
+# - VERIFY_CMD is allowed to fail without aborting the script (if you include "|| true").
+# - No temp files; PR body uses heredoc.
+# -----------------------------------------------------------------------------
+
+# --- Config (override via env) ------------------------------------------------
+PHASE_TAG="${PHASE_TAG:-phase2e}"          # e.g. phase2, phase2d, phase2e (NO dash between 2 and letter)
+SLUG="${SLUG:-change-me}"                  # short descriptive slug, e.g. ops-center-ux
+SCOPE_PREFIX="${SCOPE_PREFIX:-shadow}"     # e.g. shadow, ops, risk, docs
+BRANCH="${BRANCH:-feat/${SCOPE_PREFIX}-${PHASE_TAG}-${SLUG}}"
+
+PR_TITLE="${PR_TITLE:-feat(${SCOPE_PREFIX}): ${SLUG}}"
+PR_COMMIT_MSG="${PR_COMMIT_MSG:-feat(${SCOPE_PREFIX}): ${SLUG}}"
+
+# What to add/commit:
+FILES_TO_ADD="${FILES_TO_ADD:-.}"          # "." means all changes; set to a path list if you prefer
+
+# Verification (optional):
+RUN_VERIFY="${RUN_VERIFY:-1}"              # 1 = run VERIFY_CMD, 0 = skip
+VERIFY_CMD="${VERIFY_CMD:-:}"              # ":" = no-op; example: 'bash scripts/ops/ops_center.sh shadow smoke || true'
+
+# PR options (optional):
+PR_LABELS="${PR_LABELS:-}"                 # e.g. "documentation,feat" (comma-separated)
+ENABLE_AUTO_MERGE="${ENABLE_AUTO_MERGE:-0}" # 1 = enable --auto merge (requires GH settings)
+MERGE_METHOD="${MERGE_METHOD:-squash}"     # squash|merge|rebase
+DELETE_BRANCH="${DELETE_BRANCH:-1}"        # 1 = delete branch on merge (if supported)
+
+# --- Helpers ------------------------------------------------------------------
+die() { echo "❌ $*" >&2; exit 1; }
+
+need_cmd() {
+  command -v "$1" >/dev/null 2>&1 || die "Command not found: $1"
+}
+
+git_clean_check() {
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    return 0
+  fi
+  return 1
+}
+
+checkout_branch() {
+  if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+    git checkout "$BRANCH"
+    return 0
+  fi
+  if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
+    git checkout -t "origin/$BRANCH"
+    return 0
+  fi
+  git checkout -b "$BRANCH"
+}
+
+# --- Main ---------------------------------------------------------------------
+need_cmd git
+
+echo "🔧 Branch: $BRANCH"
+echo "🧾 Title:  $PR_TITLE"
+
+# Ensure we're inside a git repo
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "Not inside a git repository."
+
+# Make sure there is something to commit (optional, but helps avoid empty PRs)
+if ! git_clean_check; then
+  echo "⚠️  Working tree looks clean (no staged/unstaged diffs)."
+  echo "    If that's unexpected, make changes first, then rerun."
+fi
+
+# 1) Branch
+checkout_branch
+
+# 2) Optional verify step (allowed to fail if user includes '|| true' in VERIFY_CMD)
+if [[ "$RUN_VERIFY" == "1" ]]; then
+  echo "🧪 Verify: $VERIFY_CMD"
+  bash -lc "$VERIFY_CMD"
+else
+  echo "⏭️  Verify skipped (RUN_VERIFY=0)"
+fi
+
+# 3) Commit
+echo "➕ git add $FILES_TO_ADD"
+git add $FILES_TO_ADD
+
+# Avoid failing on empty commits
+if git diff --cached --quiet; then
+  echo "⚠️  Nothing staged; skipping commit."
+else
+  echo "✅ Commit: $PR_COMMIT_MSG"
+  git commit -m "$PR_COMMIT_MSG"
+fi
+
+# 4) Push
+echo "⬆️  Push: origin $BRANCH"
+git push -u origin "$BRANCH"
+
+# 5) Create PR (requires gh)
+if command -v gh >/dev/null 2>&1; then
+  PR_BODY="$(cat <<'EOF'
+## Summary
+<fill me>
+
+## Why
+<fill me>
+
+## Changes
+- <fill me>
+
+## Verification
+- <fill me>
+
+## Risk
+LOW — <fill me>
+EOF
+)"
+
+  echo "🧷 Creating PR via gh..."
+  GH_ARGS=(pr create --title "$PR_TITLE" --body "$PR_BODY")
+
+  if [[ -n "$PR_LABELS" ]]; then
+    # Create first, then label (more reliable across gh versions)
+    gh "${GH_ARGS[@]}"
+    IFS=',' read -ra labels <<< "$PR_LABELS"
+    for lbl in "${labels[@]}"; do
+      lbl_trim="$(echo "$lbl" | xargs)"
+      [[ -n "$lbl_trim" ]] && gh pr edit --add-label "$lbl_trim" || true
+    done
+  else
+    gh "${GH_ARGS[@]}"
+  fi
+
+  if [[ "$ENABLE_AUTO_MERGE" == "1" ]]; then
+    echo "🤖 Enabling auto-merge ($MERGE_METHOD)..."
+    AM_ARGS=(pr merge --auto "--$MERGE_METHOD")
+    [[ "$DELETE_BRANCH" == "1" ]] && AM_ARGS+=(--delete-branch)
+    gh "${AM_ARGS[@]}"
+  else
+    echo "ℹ️  Auto-merge not enabled (ENABLE_AUTO_MERGE=0)."
+  fi
+else
+  echo "ℹ️  gh not found; PR not created automatically."
+  echo "    Install gh or create the PR via GitHub Web UI."
+fi
+
+echo "✅ Done."
