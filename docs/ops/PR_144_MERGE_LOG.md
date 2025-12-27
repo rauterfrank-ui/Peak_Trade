@@ -12,8 +12,8 @@
 - Diffstat: +3 / -3 (files changed: 3)
 
 ## Summary
-- Move `docs/reports/REPORTING_QUICKSTART.md` → `docs/reporting/REPORTING_QUICKSTART.md`
-- Update `scripts/research_el_karoui_vol_model.py`: `REPORT_PATH` from `docs/reports` → `docs/research`
+- Move `docs&sol;reports&sol;REPORTING_QUICKSTART.md (planned)` → `docs/reporting/REPORTING_QUICKSTART.md`
+- Update `scripts/research_el_karoui_vol_model.py`: `REPORT_PATH` from `docs&sol;reports` (planned directory) → `docs&sol;research` (planned directory)
 - Update `tests/research/test_research_el_karoui_vol_model.py`: adjust assertion for new path
 - Ensure no tracked files under `docs/reports/` (gitignored directory)
 
@@ -24,7 +24,7 @@
 
 ## Changes
 - **Moved:**
-  - `docs/reports/REPORTING_QUICKSTART.md` → `docs/reporting/REPORTING_QUICKSTART.md`
+  - `docs&sol;reports&sol;REPORTING_QUICKSTART.md (planned)` → `docs/reporting/REPORTING_QUICKSTART.md`
 
 - **Modified:**
   - `scripts/research_el_karoui_vol_model.py` – `REPORT_PATH = "docs/research"`
@@ -38,5 +38,5 @@
 - Quarto rendering + artifact chain integrity confirmed
 
 ## Notes / Follow-ups
-- Consider documenting "docs/reports is ignored" policy in `docs/reporting/README.md`
+- Consider documenting "docs/reports is ignored" policy in `docs&sol;reporting&sol;README.md` (planned)
 - Reporting docs now centralized under `docs/reporting/`

@@ -18,7 +18,7 @@ scripts/ops/ops_center.sh merge-log
 
 ### PR Full Workflow Runbook
 
-Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation steht jetzt ein detailliertes Runbook zur Verfügung. Siehe [PR_FULL_WORKFLOW_RUNBOOK.md](PR_FULL_WORKFLOW_RUNBOOK.md) im gleichen Verzeichnis.
+Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation steht jetzt ein detailliertes Runbook zur Verfügung. Siehe [OPS_OPERATOR_CENTER.md](OPS_OPERATOR_CENTER.md) ⭐
 
 **Commands:**
 - `status` — Repository-Status (git + gh)
@@ -26,8 +26,6 @@ Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation st
 - `doctor` — Health-Checks
 - `merge-log` — Merge-Log Quick Reference
 - `help` — Hilfe
-
-**Dokumentation:** [OPS_OPERATOR_CENTER.md](OPS_OPERATOR_CENTER.md) ⭐
 
 **Design:** Safe-by-default, robust, konsistent.
 
@@ -86,14 +84,84 @@ scripts/ops/ops_center.sh doctor
 ```
 
 **Features:**
-- Prüft interne Markdown-Links (Format: `[text](path)`) auf existierende Zieldateien
-- Validiert Anchor-Links (Format: `[text](file.md#heading)`) gegen tatsächliche Überschriften
+- Prüft interne Markdown-Links (Format: `[text]\(path\)`) auf existierende Zieldateien
+- Validiert Anchor-Links (Format: `[text]\(file.md#heading\)`) gegen tatsächliche Überschriften
 - Ignoriert externe Links (http://, https://, mailto:)
 - Schnell und offline (keine Netzwerk-Anfragen)
 
 **Scope:** `README.md`, `docs/ops/*`, `docs/PEAK_TRADE_STATUS_OVERVIEW.md`
 
 **Tip:** Vor großen Docs-Refactorings einmal laufen lassen, um kaputte Links zu vermeiden.
+
+### Docs Reference Targets
+
+**Zweck:** Validiert, dass alle referenzierten Repo-Pfade in Markdown-Docs (Config/Scripts/Docs) tatsächlich existieren.
+
+**Quick Start:**
+```bash
+# Standalone Check (nur geänderte Markdown-Dateien)
+scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
+
+# Alle Docs scannen
+scripts/ops/verify_docs_reference_targets.sh
+
+# Als Teil von ops doctor (warn-only)
+scripts/ops/ops_center.sh doctor
+```
+
+**Features:**
+- Findet referenzierte Pfade in Markdown-Links (`[text]\(path\)`), Inline-Code (`` `path` ``), und Bare-Pfaden
+- Validiert Existenz von: `config/*.toml`, `docs/*.md`, `scripts/*.sh`, `src/*.py`, `.github/*.yml`
+- Ignoriert externe URLs (http/https) und Anchor-Only-Links
+- Exit 0 = OK/nicht anwendbar, Exit 1 = FAIL (CI), Exit 2 = WARN (ops doctor)
+
+**CI Integration:**
+- Läuft automatisch bei PRs via `.github/workflows/docs_reference_targets_gate.yml`
+- Exit 0 wenn keine Markdown-Dateien geändert wurden (not applicable)
+- Exit 1 bei fehlenden Targets (blockiert Merge)
+
+**Scope:** Alle `*.md` Dateien (im --changed Mode: nur geänderte Dateien)
+
+**Use Case:** Verhindert kaputte Referenzen z.B. nach Datei-Umbenennungen oder -Verschiebungen.
+
+## Docs Reference Targets Guardrail — Supported Formats
+
+Der Check `docs-reference-targets-gate` stellt sicher, dass in Docs referenzierte **Repo-Targets** (Dateien) existieren, ohne typische Markdown-/Shell-False-Positives zu triggern.
+
+### Unterstützte Referenzen (werden geprüft)
+- **Plain paths** relativ zum Repo-Root, z.B. `docs/ops/README.md`, `scripts/ops/ops_center.sh`
+- **Markdown-Links**: `[Text]\(docs/ops/README.md\)`
+- **Anchors** werden ignoriert (nur Datei wird geprüft): `RISK_LAYER_ROADMAP.md#overview`
+- **Query-Parameter** werden ignoriert: `docs/ops/README.md?plain=1`
+- **Relative Pfade in Docs** werden korrekt resolved (relativ zur jeweiligen Markdown-Datei)
+
+**Beispiele (konzeptionell):**
+```
+./README.md      # Same directory
+../risk/README.md # Parent directory
+```
+
+### Ignorierte Muster (werden NICHT als Repo-Targets gezählt)
+- **URLs**: `http://…`, `https://…`, z.B. `<https://example.com/docs/ops/README.md>`
+- **Globs/Wildcards**: `*`, `?`, `[]`, `< >` (z.B. `docs/*.md`, `docs/**/README.md`)
+- **Commands mit Spaces** (z.B. `./scripts/ops/ops_center.sh doctor`)
+- **Directories mit trailing slash** (z.B. `docs/ops/`)
+- **Referenzen innerhalb von Bash-Codeblöcken**:
+  ```bash
+  # Alles innerhalb dieses Blocks wird NICHT als Target gecheckt
+  cat docs/ops/__fixture_missing_target__nope.md
+  ```
+
+### Golden Corpus Tests
+Das Verhalten ist durch ein "Golden Corpus" an Fixtures abgedeckt (Regressionssicherheit):
+- `tests/fixtures/docs_reference_targets/pass/` — Valide Referenzen + ignorierte Muster
+- `tests/fixtures/docs_reference_targets/fail/` — Fehlende Targets (muss detected werden)
+- `tests/fixtures/docs_reference_targets/relative_repo/` — Isolated Fixture-Repo für relative Pfade
+
+**Pytest Tests:**
+```bash
+pytest -q tests/ops/test_verify_docs_reference_targets_script.py
+```
 
 ---
 
@@ -143,7 +211,7 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 
 - **Vollständige Dokumentation**: [OPS_DOCTOR_README.md](OPS_DOCTOR_README.md)
 - **Beispiel-Output**: [ops_doctor_example_output.txt](ops_doctor_example_output.txt)
-- **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](../../OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
+- **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](reports/OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
 
 ### Merge-Log Health Integration
 
@@ -331,6 +399,17 @@ Der `PR_INVENTORY_REPORT.md` enthält:
   - https://github.com/rauterfrank-ui/Peak_Trade/pull/208
 ...
 ```
+
+---
+
+## 🚨 Incidents & Post-Mortems
+
+* **2025-12-26 — Formatter Drift (Audit) → Tool Alignment**
+
+  * **Root Cause:** Repo nutzt `ruff format`, Legacy/Drift führte zu Audit-Failures (detected by `ruff format --check`).
+  * **Fix:** **#354** merged → `black` entfernt, **Single Source of Truth = RUFF**; Guardrail `check_no_black_enforcement.sh` ✅
+  * **Campaign:** #283/#303 auto-merge pending; #269 closed (superseded); #259 merge via Web-UI (fehlender OAuth `workflow` scope).
+  * **RCA:** `incidents/2025-12-26_formatter_drift_audit_alignment.md`
 
 ---
 
@@ -625,9 +704,9 @@ pytest tests/ -k "ops" -v
 
 ## 📚 Verwandte Dokumentation
 
-- [Peak_Trade Tooling & Evidence Chain Runbook](../Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
-- [CI Large PR Implementation Report](../CI_LARGE_PR_IMPLEMENTATION_REPORT.md)
-- [Merge Log Workflow](../docs/ops/PR_208_MERGE_LOG.md)
+- [Peak_Trade Tooling & Evidence Chain Runbook](Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
+- [CI Large PR Implementation Report](reports/CI_LARGE_PR_IMPLEMENTATION_REPORT.md)
+- [Merge Log Workflow](PR_208_MERGE_LOG.md)
 
 ---
 
@@ -1113,3 +1192,29 @@ Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 - Risk Layer Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).
+
+## GitHub Auth & Token Helper
+
+Peak_Trade bevorzugt GitHub CLI (`gh`). Wenn ein Script einen Token braucht, nutze den zentralen Helper:
+
+- Safe Debug (zeigt nur Prefix + Länge, kein Leak):
+  - `scripts/utils/get_github_token.sh --debug`
+- Validierung (Exit != 0 wenn kein gültiger Token gefunden wird):
+  - `scripts/utils/get_github_token.sh --check`
+- Verwendung in Scripts:
+  - `TOKEN="$(scripts/utils/get_github_token.sh)"`
+
+Unterstützte Token-Formate:
+- `gho_*`  (GitHub CLI OAuth Token)
+- `ghp_*`  (Classic PAT)
+- `github_pat_*` (Fine-grained PAT)
+
+Token-Quellen (Priorität):
+`GITHUB_TOKEN` → `GH_TOKEN` → macOS Clipboard (`pbpaste`) → `gh auth token`
+
+Empfohlenes Setup:
+- `gh auth login --web`
+- Danach laufen Scripts ohne PAT-Erstellen/Löschen.
+
+Security:
+- Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.

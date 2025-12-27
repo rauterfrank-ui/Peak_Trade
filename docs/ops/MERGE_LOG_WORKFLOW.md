@@ -105,7 +105,7 @@ gh pr create \
 
 **Verlinkung:**
 - In `docs/ops/README.md` verlinken (Merge-Logs Sektion)
-- Format: `- [PR #<NUM>](PR_<NUM>_MERGE_LOG.md) — <title> (merged YYYY-MM-DD)`
+- Format: `- [PR #<NUM>]\(PR_<NUM>_MERGE_LOG.md\) — <title> (merged YYYY-MM-DD)`
 
 ---
 

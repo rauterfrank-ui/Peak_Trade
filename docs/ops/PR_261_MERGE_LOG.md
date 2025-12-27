@@ -146,7 +146,7 @@ docs/ops/stash_refs/
 - **Policy:** [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md)
 - **Tool:** [scripts/ops/stash_triage.sh](../../scripts/ops/stash_triage.sh)
 - **Tests:** [tests/ops/test_stash_triage_script.py](../../tests/ops/test_stash_triage_script.py)
-- **Ops README:** [README.md](README.md#-stash-hygiene--triage)
+- **Ops README:** [README.md](README.md)
 
 ---
 
