@@ -642,6 +642,7 @@ cmd_shadow() {
       echo ""
       echo "SUBCOMMANDS:"
       echo "  smoke     Run Shadow Pipeline Phase 2 smoke test (Tick→OHLCV→Quality)"
+      echo "            Produces HTML quality report in reports/shadow/quality/"
       echo "  help      Show this help"
       echo ""
       echo "EXAMPLES:"

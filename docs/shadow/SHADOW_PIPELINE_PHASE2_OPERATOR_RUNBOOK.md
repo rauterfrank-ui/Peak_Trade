@@ -75,7 +75,12 @@ python scripts/shadow_run_tick_to_ohlcv_smoke.py
    ✅ 1 Quality Events gefunden
       - GAP: WARN @ 1735347660000
 
+5️⃣  Generating HTML Quality Report...
+   ✅ Report written to: reports/shadow/quality/quality_report_20251227_153045.html
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ Alle Smoke-Tests bestanden!
+📊 Report: reports/shadow/quality/quality_report_20251227_153045.html
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -83,6 +88,54 @@ python scripts/shadow_run_tick_to_ohlcv_smoke.py
 
 - **0** = Success (all smoke tests passed)
 - **1** = Failure (one or more tests failed)
+
+---
+
+## Report Output
+
+Each smoke run generates an HTML quality report.
+
+### Location
+
+```
+reports/shadow/quality/quality_report_<timestamp>.html
+```
+
+**Example:**
+```
+reports/shadow/quality/quality_report_20251227_153045.html
+```
+
+### Contents
+
+The report includes:
+- Run metadata (timestamp, symbol, timeframe)
+- Processing statistics (tick count, bar count)
+- Quality events table with:
+  - Event type (GAP, SPIKE)
+  - Severity level (ERROR, WARN, INFO)
+  - Timestamp
+  - Details
+
+### How to Open
+
+**Local viewing:**
+```bash
+# macOS
+open reports/shadow/quality/quality_report_<timestamp>.html
+
+# Linux
+xdg-open reports/shadow/quality/quality_report_<timestamp>.html
+
+# Or use your browser directly
+firefox reports/shadow/quality/quality_report_<timestamp>.html
+```
+
+The report is a standalone HTML file and requires no external dependencies or server.
+
+### Note
+
+Report generation is skipped when the pipeline is blocked (e.g., when live mode is detected). In such cases, the script exits early and no report file is created.
 
 ---
 
@@ -95,6 +148,7 @@ python scripts/shadow_run_tick_to_ohlcv_smoke.py
 | `src/data/shadow/tick_normalizer.py` | Kraken WS Parser |
 | `src/data/shadow/ohlcv_builder.py` | OHLCV Aggregation |
 | `src/data/shadow/quality_monitor.py` | Gap/Spike Detection |
+| `src/data/shadow/quality_report.py` | HTML Quality Report Generator |
 | `src/data/shadow/jsonl_logger.py` | Rotating JSONL Logger |
 
 ---
