@@ -49,30 +49,30 @@ Kraken WS Trade Messages
 
 ---
 
-## 🔐 Sicherheitsprinzipien (NEVER LIVE)
+## 🔐 Sicherheitsprinzipien (Defense in Depth)
 
 ### Defense in Depth (3 Ebenen)
 
 **1. Import Guard** — prüft bei Modul-Load
 ```python
 # In src/data/shadow/__init__.py
-check_import_guard()  # Blockiert wenn PEAK_TRADE_LIVE_MODE=1
+check_import_guard()  # Blocks if live mode env var is active
 ```
 
 **2. Runtime Guard** — prüft zur Laufzeit
 ```python
-check_runtime_guard(cfg)  # Blockiert wenn live.enabled=true
+check_runtime_guard(cfg)  # Blocks if live mode config flag is active
 ```
 
 **3. Config Guard** — prüft Pipeline-Aktivierung
 ```python
-check_config_guard(cfg)  # Blockiert wenn shadow.pipeline.enabled != true
+check_config_guard(cfg)  # Blocks if shadow pipeline is not explicitly opted-in
 ```
 
 ### Environment Variable
 
 ```bash
-# Environment variable PEAK_TRADE_LIVE_MODE (if set to 1) will block shadow imports
+# The live mode environment variable will block shadow imports if present
 # Import Guard triggers immediately on import:
 # >>> from src.data.shadow import Tick
 # ShadowLiveForbidden: Live mode environment variable is active!
@@ -86,10 +86,10 @@ check_config_guard(cfg)  # Blockiert wenn shadow.pipeline.enabled != true
 
 ```toml
 [shadow.pipeline]
-enabled = false  # SAFE DEFAULT (requires governance to enable)
+enabled = false  # SAFE DEFAULT (requires governance approval for activation)
 
 [shadow.quality]
-enabled = false  # Example; requires governance approval
+enabled = false  # Example; requires governance approval for activation
 gap_severity = "WARN"
 spike_severity = "WARN"
 max_abs_log_return = 0.10  # 10% threshold
@@ -193,7 +193,8 @@ bars = builder.finalize()  # → List[Bar], sorted by start_ts_ms
 ```python
 from src.data.shadow.quality_monitor import DataQualityMonitor
 
-cfg = {"shadow": {"quality": {"enabled": True, ...}}}
+# Example config dict (not actual usage)
+cfg = {"shadow": {"quality": {"gap_severity": "WARN", ...}}}
 monitor = DataQualityMonitor(cfg)
 events = monitor.check_bars(bars)
 # → List[QualityEvent]: GAP, SPIKE (price/volume)
