@@ -347,7 +347,6 @@ gh issue create \
 ## 🔗 Verwandte Dokumentation
 
 - [CI Large PR Handling](CI_LARGE_PR_HANDLING.md)
-- [Policy Packs](../../policy_packs/)
 - [Merge Log Template](MERGE_LOG_TEMPLATE_COMPACT.md)
 - [PR Report Automation Runbook](PR_REPORT_AUTOMATION_RUNBOOK.md)
 
@@ -364,7 +363,7 @@ gh issue create \
 
 > **⚡ Status:** ✅ **Implemented** (CI-Guardrail aktiv)  
 > **Implementation:** `scripts/ops/verify_format_only_pr.sh` + GitHub Actions `format-only-verifier` job  
-> **Siehe:** [ops README – Format-Only Guardrail](README.md#format-only-guardrail-ci-implementation)
+> **Siehe:** [ops README](README.md)
 
 **Problem:** Wenn Policy Critic bei *format-only* PRs (Black/Ruff) blockiert, entsteht schnell *Bypass-Kultur* (`--admin`) und damit sinkt die reale Sicherheitswirkung des Critic.
 

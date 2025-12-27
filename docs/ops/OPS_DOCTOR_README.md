@@ -385,8 +385,8 @@ pip install tomli
 ## 📚 Weitere Dokumentation
 
 - [Developer Workflow Guide](../DEVELOPER_WORKFLOW_GUIDE.md)
-- [Peak_Trade Tooling & Evidence Chain Runbook](../../Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
-- [Knowledge Smoke Tests](../scripts/ops/KNOWLEDGE_SMOKE_README.md)
+- [Peak_Trade Tooling & Evidence Chain Runbook](Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
+- [Knowledge Smoke Tests](../../scripts/ops/KNOWLEDGE_SMOKE_README.md)
 
 ---
 

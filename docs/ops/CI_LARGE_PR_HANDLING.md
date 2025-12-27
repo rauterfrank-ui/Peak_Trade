@@ -432,7 +432,7 @@ Wenn neue kritische Module hinzukommen:
 
 - [Policy Critic Charter](../governance/LLM_POLICY_CRITIC_CHARTER.md)
 - [Policy Critic Status](../governance/POLICY_CRITIC_STATUS.md)
-- [ADR: Tool Stack](../../ADR_0001_Peak_Tool_Stack.md)
+- [ADR: Tool Stack](../adr/ADR_0001_Peak_Tool_Stack.md)
 - [PR 208 Merge Log](PR_208_MERGE_LOG.md)
 
 ---
