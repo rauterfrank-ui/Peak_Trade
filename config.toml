@@ -143,6 +143,18 @@ initial_cash = 10_000.0
 results_dir = "results"
 
 # ============================================================================
+# INVARIANT CHECKING (Formal validation of backtest engine state)
+# ============================================================================
+# invariant_check_mode: When to check invariants
+#   - "always": Check after every operation (slow, maximum safety)
+#   - "start_end": Check only at start and end of backtest (default, minimal overhead)
+#   - "never": Disable invariant checking (not recommended)
+# enable_custom_invariants: Allow user-defined invariants
+# ============================================================================
+invariant_check_mode = "start_end"  # always, start_end, never
+enable_custom_invariants = true
+
+# ============================================================================
 # VALIDATION (Mindestanforderungen für Live-Trading)
 # ============================================================================
 [validation]
