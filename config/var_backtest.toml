@@ -1,0 +1,54 @@
+# Peak_Trade VaR Backtest Konfiguration
+# ========================================
+#
+# WICHTIG: Dieses Modul ist NUR für Research und Backtesting gedacht.
+# Es ist NICHT für Live-Trading-Validierung konzipiert.
+#
+# Status: Research/Backtest Only
+# Safe by default: enabled=false
+
+[var_backtest]
+# Enable/Disable VaR Backtesting
+# WICHTIG: Dies aktiviert nur die Backtest-Berechnungen für Forschungszwecke.
+# Es hat KEINEN Einfluss auf Live-Trading-Systeme.
+enabled = false
+
+# VaR Parameter
+confidence_level = 0.99          # VaR-Konfidenzniveau (99%)
+significance_level = 0.05        # Signifikanzniveau für Tests (5%)
+min_observations = 250           # Minimum für validen Test (Basel: 250 Tage)
+
+# VaR Methode (für Metadata)
+# Options: "historical", "parametric", "monte_carlo"
+var_method = "historical"
+
+[var_backtest.kupiec]
+# Kupiec POF Test Einstellungen
+enabled = true
+
+# Warning thresholds (informational only)
+warning_threshold = 1.5          # Warnung wenn violation_ratio > 1.5x
+critical_threshold = 2.0         # Kritisch wenn violation_ratio > 2.0x
+
+[var_backtest.output]
+# Report-Einstellungen
+format = "json"                  # "json" oder "console"
+output_dir = "reports/var_backtest"
+include_violation_details = true
+
+# Beispiel-Symbole für Backtesting
+[[var_backtest.symbols]]
+symbol = "BTC-EUR"
+enabled = false
+
+[[var_backtest.symbols]]
+symbol = "ETH-EUR"
+enabled = false
+
+# HINWEISE:
+# =========
+# 1. Dieses Modul führt KEINE Live-Validierung durch
+# 2. Es ist ausschließlich für historische Analyse und Forschung
+# 3. enabled=false ist safe by default
+# 4. Alle Backtests sollten auf historischen Daten durchgeführt werden
+# 5. Für Live-Trading siehe risk_layer/var_gate.py
