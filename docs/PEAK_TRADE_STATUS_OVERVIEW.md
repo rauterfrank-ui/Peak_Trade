@@ -1386,6 +1386,7 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 
 ## Changelog
 - 2025-12-22 — PR #246 merged: added knowledge deployment drill e2e script and fixed prod smoke script (empty EXTRA_HEADERS under set -u).
+- 2025-12-22 — PR #243 merged: feat(webui): knowledge API endpoints + readonly/web-write gating + smoke runners (6 MVP endpoints, zweistufiges Gating, 105 Tests, 15 Smoke-Checks).
 - 2025-12-21 — PR #240 merged: test(ops): add run_helpers adoption guard.
 - 2025-12-21 — PR #237 merged: chore(ops): add shared bash run helpers (strict/robust).
 - 2025-12-21 — PR #235 merged: fix(ops): improve label_merge_log_prs.sh to find open PRs.
