@@ -93,7 +93,7 @@ Wir führen einen **inkrementellen Tool-Stack** ein, in 3 PR-Stufen:
   - `results/<run_id>/stats.json`, `equity.csv` (optional trades.*)
 - `reports/quarto/backtest_report.qmd`
 - `docs/reports/REPORTING_QUICKSTART.md`
-- Convenience Script: `scripts/render_last_report.sh` (oder python)
+- Convenience Script: `scripts/utils/render_last_report.sh` (oder python)
 - Minimal Tests: NullTracker + results-writer smoke
 
 ### P2 Scope
