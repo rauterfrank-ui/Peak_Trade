@@ -2,7 +2,6 @@
 
 **PR:** #376 — *fix(ops): accept gh OAuth tokens in clipboard token check* ([GitHub][1])  
 **Merged:** 2025-12-27T05:29:52Z (into `main`)  
-**Branch:** `feat/github-oauth-token-support`  
 **Commit:** `bde5639` (squash) — **Merged commit:** `ca281d5` ([GitHub][1])
 
 ## Summary

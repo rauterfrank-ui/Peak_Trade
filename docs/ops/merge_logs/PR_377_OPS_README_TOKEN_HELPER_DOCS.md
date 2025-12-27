@@ -2,7 +2,6 @@
 
 **PR:** #377 — *docs(ops): document GitHub token helper usage* ([GitHub][1])  
 **Merged:** 2025-12-27T05:35:08Z (into `main`)  
-**Branch:** `docs/ops-github-token-helper`  
 **Commit:** `882244a` (squash) — **Merged commit:** `8b3ffc8` ([GitHub][1])
 
 ## Summary
