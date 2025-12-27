@@ -24,7 +24,7 @@
 
 1. **Domain-Code erzeugt `LearningSignal`:**
 
-   * via `src/meta/learning_loop/bridge.py`
+   * via `src&sol;meta&sol;learning_loop&sol;bridge.py` (planned)
    * Beispiele:
      * `build_test_health_leverage_signal`
      * `build_trigger_timing_signal`
@@ -32,7 +32,7 @@
 
 2. **Speicherung als JSON:**
 
-   * via `src/meta/learning_loop/emitter.py` →
+   * via `src&sol;meta&sol;learning_loop&sol;emitter.py` (planned) →
    * `reports/learning_snippets/*.json`
 
 3. **Learning Loop laufen lassen:**
@@ -394,7 +394,7 @@ cat reports/live_promotion/latest/proposal_meta.json | jq .
 cat config/live_overrides/auto.toml
 
 # Config-Diff
-python scripts/demo_live_overrides.py
+python `scripts&sol;demo_live_overrides.py` (planned)
 ```
 
 ### 7.4 Console Output
@@ -524,8 +524,8 @@ policy = AutoApplyPolicy(
 
 * **Learning Loop:**
   * `src/meta/learning_loop/models.py` - ConfigPatch, PatchStatus
-  * `src/meta/learning_loop/bridge.py` - Signal-Builder (TODO)
-  * `src/meta/learning_loop/emitter.py` - Signal-Emitter (TODO)
+  * `src&sol;meta&sol;learning_loop&sol;bridge.py` (planned) - Signal-Builder (TODO)
+  * `src&sol;meta&sol;learning_loop&sol;emitter.py` (planned) - Signal-Emitter (TODO)
 
 * **Promotion Loop:**
   * `src/governance/promotion_loop/models.py` - PromotionCandidate, Decision, Proposal
@@ -538,7 +538,7 @@ policy = AutoApplyPolicy(
 
 ### Scripts
 
-* **`scripts/run_learning_apply_cycle.py`** - Learning Loop (TODO)
+* **`scripts&sol;run_learning_apply_cycle.py` (planned)** - Learning Loop (TODO)
 * **`scripts/run_promotion_proposal_cycle.py`** - Promotion Loop ✅
 * **`scripts&sol;demo_live_overrides.py (planned)`** - Demo & Testing ✅
 

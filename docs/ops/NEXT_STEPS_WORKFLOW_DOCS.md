@@ -2,7 +2,7 @@
 
 ## 📋 Status
 
-✅ **Branch erstellt:** `docs/ops-workflow-scripts-docs`  
+✅ **Branch erstellt:** `docs&sol;ops-workflow-scripts-docs` (planned directory)  
 ✅ **Commits:** 2 Commits (Dokumentation + Index/Changelog-Updates)  
 ⏳ **Push:** Noch nicht gepusht (SSH-Key-Probleme im Sandbox)  
 ⏳ **PR:** Noch nicht erstellt

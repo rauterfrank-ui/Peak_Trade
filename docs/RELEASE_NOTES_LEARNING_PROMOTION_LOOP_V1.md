@@ -112,10 +112,10 @@ python scripts/generate_infostream_packet.py
 
 ```bash
 # Dry-Run (Preview ohne Änderungen)
-python scripts/run_learning_apply_cycle.py --dry-run
+python `scripts&sol;run_learning_apply_cycle.py` (planned) --dry-run
 
 # Tatsächliche Anwendung
-python scripts/run_learning_apply_cycle.py
+python `scripts&sol;run_learning_apply_cycle.py` (planned)
 ```
 
 **Output:**
@@ -161,7 +161,7 @@ reports/live_promotion/<proposal_id>/
 cat reports/live_promotion/<latest>/OPERATOR_CHECKLIST.md
 
 # Config-Diff anschauen
-python scripts/demo_live_overrides.py
+python `scripts&sol;demo_live_overrides.py` (planned)
 ```
 
 **Checkliste prüfen:**
