@@ -22,7 +22,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.data.shadow.ohlcv_builder import OHLCVBuilder
 from src.data.shadow.quality_monitor import DataQualityMonitor
-from src.data.shadow.quality_report import render_quality_html_report
+from src.data.shadow.quality_report import (
+    render_quality_html_report,
+    update_latest_and_index,
+)
 from src.data.shadow.tick_normalizer import normalize_ticks_from_messages
 
 
@@ -174,9 +177,17 @@ def main() -> int:
         report_path.write_text(html_content, encoding="utf-8")
         print(f"   ✅ Report written to: {report_path}")
 
+        # 6) Update latest.html and index.html
+        print("\n6️⃣  Updating convenience files (latest.html, index.html)...")
+        result = update_latest_and_index(report_dir, report_path, max_entries=20)
+        print(f"   ✅ latest.html: {result['latest_path']}")
+        print(f"   ✅ index.html: {result['index_path']} ({result['report_count']} reports)")
+
         print("\n" + "━" * 60)
         print("✅ Alle Smoke-Tests bestanden!")
         print(f"📊 Report: {report_path}")
+        print(f"📊 Latest: {result['latest_path']}")
+        print(f"📊 Index: {result['index_path']}")
         print("━" * 60)
         return 0
 
