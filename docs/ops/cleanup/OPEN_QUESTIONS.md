@@ -8,14 +8,13 @@
 
 ## 1) Delete-Entscheidungen
 
-### Geplante Deletes (4 Dateien)
+### Geplante Deletes (3 Dateien) — Status: ✅ Ausgeführt in PR #367
 
-| Datei | Grund | Evidenz |
-|-------|-------|---------|
-| `run_regime_experiments.sh` | Dublette (existiert in `archive/legacy_scripts/`) | rg: 6 hits (nur docs/archive refs) |
-| `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` | Dublette (docs/ops/ ist source of truth) | rg: 20 hits → konsolidieren |
-| `gitignore` | Obsolet (`.gitignore` existiert) | rg: 0 hits |
-| `scripts/cleanup_repo.sh` | Obsolet/Test-Script | rg: 5 hits (nur self-refs) |
+| Datei | Grund | Evidenz | Status |
+|-------|-------|---------|--------|
+| `run_regime_experiments.sh` | Dublette (existiert in `archive/legacy_scripts/`) | rg: 6 hits (nur docs/archive refs) | ✅ Deleted |
+| `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` | Dublette (docs/ops/ ist source of truth) | rg: 20 hits → konsolidieren | ✅ Deleted |
+| `gitignore` | Obsolet (`.gitignore` existiert) | rg: 0 hits | ✅ Deleted |
 
 **Fragen:**
 - [ ] Sind alle Deletes eindeutig unreferenziert und durch bessere Source-of-Truth ersetzt?
