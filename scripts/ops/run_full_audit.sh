@@ -37,20 +37,45 @@ fi
 echo "== 3) Dependency Vulnerability Audit (pip-audit) =="
 # pip-audit scannt das aktuelle Environment (kompatibel mit uv)
 echo "-- pip-audit (installed packages) --"
+AUDIT_EXIT=0
 uv run pip-audit --desc || {
-  echo "⚠️  pip-audit fehlgeschlagen - installiere pip-audit falls nicht vorhanden"
-  uv pip install pip-audit
-  uv run pip-audit --desc
+  AUDIT_EXIT=$?
+  if [[ $AUDIT_EXIT -eq 127 ]]; then
+    echo "⚠️  pip-audit nicht gefunden - installiere pip-audit"
+    uv pip install pip-audit
+    AUDIT_EXIT=0
+    uv run pip-audit --desc || AUDIT_EXIT=$?
+  fi
 }
+echo "pip-audit exit code: $AUDIT_EXIT"
+[[ $AUDIT_EXIT -eq 0 ]] && echo "✅ Keine Vulnerabilities gefunden" || echo "⚠️  Vulnerabilities gefunden (siehe oben)"
 
 echo "== 4) Optional: SBOM Export (CycloneDX) =="
 # Nützlich für Supply-Chain/Compliance Scans
 uv export --format cyclonedx1.5 --output-file "$OUT_DIR/sbom.json"
 
 echo "== 5) Lint/Format/Tests (CI-ähnlich) =="
-uv run ruff format --check .
-uv run ruff check .
-uv run pytest -q
+LINT_EXIT=0
+uv run ruff format --check . || LINT_EXIT=$?
+uv run ruff check . || LINT_EXIT=$((LINT_EXIT + $?))
+
+TEST_EXIT=0
+uv run pytest -q || TEST_EXIT=$?
 
 echo
-echo "✅ FULL AUDIT DONE: deps (pip-audit), repo-health, sbom.json, lint + tests"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📊 AUDIT SUMMARY"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Log:     $LOG"
+echo "SBOM:    $OUT_DIR/sbom.json"
+echo "pip-audit:   $([ $AUDIT_EXIT -eq 0 ] && echo '✅ PASS' || echo '⚠️  VULNERABILITIES FOUND')"
+echo "Lint/Format: $([ $LINT_EXIT -eq 0 ] && echo '✅ PASS' || echo '❌ FAIL')"
+echo "Tests:       $([ $TEST_EXIT -eq 0 ] && echo '✅ PASS' || echo '❌ FAIL')"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+FINAL_EXIT=0
+[[ $AUDIT_EXIT -ne 0 ]] && FINAL_EXIT=1
+[[ $LINT_EXIT -ne 0 ]] && FINAL_EXIT=1
+[[ $TEST_EXIT -ne 0 ]] && FINAL_EXIT=1
+
+exit $FINAL_EXIT
