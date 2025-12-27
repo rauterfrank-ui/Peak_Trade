@@ -30,22 +30,22 @@
 
 ### 2. Dokumentation erstellt/aktualisiert
 
-- ✅ **[LEARNING_PROMOTION_LOOP_INDEX.md](docs/LEARNING_PROMOTION_LOOP_INDEX.md)**
+- ✅ **[LEARNING_PROMOTION_LOOP_INDEX.md](../../../LEARNING_PROMOTION_LOOP_INDEX.md)**
   - Stabilisierungsphase-Sektion hinzugefügt
   - bounded_auto Readiness Check hinzugefügt
 
-- ✅ **[OPERATOR_DECISION_LOG.md](docs/learning_promotion/OPERATOR_DECISION_LOG.md)**
+- ✅ **[OPERATOR_DECISION_LOG.md](../../../learning_promotion/OPERATOR_DECISION_LOG.md)**
   - Cycles #3-5 dokumentiert
   - Mini-Review nach Cycle #5 erstellt
   - Fortschritt zur bounded_auto aktualisiert
 
-- ✅ **[STABILIZATION_PHASE_CYCLES_1_5_SUMMARY.md](docs/learning_promotion/STABILIZATION_PHASE_CYCLES_1_5_SUMMARY.md)**
+- ✅ **[STABILIZATION_PHASE_CYCLES_1_5_SUMMARY.md](../../../learning_promotion/STABILIZATION_PHASE_CYCLES_1_5_SUMMARY.md)**
   - Umfassende Analyse aller 5 Cycles
   - Pattern-Erkennung
   - Lessons Learned
   - Nächste Schritte detailliert
 
-- ✅ **[promotion_loop_review_log.md](docs/promotion_loop_review_log.md)**
+- ✅ **[promotion_loop_review_log.md](../../../promotion_loop_review_log.md)**
   - Aktualisiert mit Cycles #3-5
   - Fortschritt dokumentiert
 
@@ -311,9 +311,9 @@ Readiness-Score: 30% (3/10 Kriterien erfüllt)
 ## 📞 Kontakt & Support
 
 **Dokumentation:**
-- Hauptindex: [LEARNING_PROMOTION_LOOP_INDEX.md](docs/LEARNING_PROMOTION_LOOP_INDEX.md)
-- Operator-Log: [OPERATOR_DECISION_LOG.md](docs/learning_promotion/OPERATOR_DECISION_LOG.md)
-- Executive Summary: [STABILIZATION_PHASE_CYCLES_1_5_SUMMARY.md](docs/learning_promotion/STABILIZATION_PHASE_CYCLES_1_5_SUMMARY.md)
+- Hauptindex: [LEARNING_PROMOTION_LOOP_INDEX.md](../../../LEARNING_PROMOTION_LOOP_INDEX.md)
+- Operator-Log: [OPERATOR_DECISION_LOG.md](../../../learning_promotion/OPERATOR_DECISION_LOG.md)
+- Executive Summary: [STABILIZATION_PHASE_CYCLES_1_5_SUMMARY.md](../../../learning_promotion/STABILIZATION_PHASE_CYCLES_1_5_SUMMARY.md)
 
 **Nächster Cycle starten:**
 ```bash
@@ -345,7 +345,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 **Timeline-Klarstellung:** Cycles dürfen zeitlich komprimiert werden (mehrere pro Tag OK).
 Die Wochen-Timeline ist für späteren Realbetrieb, nicht für Stabilisierung.
-→ [docs/learning_promotion/TIMELINE_CLARIFICATION.md](docs/learning_promotion/TIMELINE_CLARIFICATION.md)
+→ [docs/learning_promotion/TIMELINE_CLARIFICATION.md](../../../learning_promotion/TIMELINE_CLARIFICATION.md)
 
 **Empfehlung:** Fortsetzung der Stabilisierungsphase mit Fokus auf **Datenvielfalt** und **Learning-Loop-Integration**
 
