@@ -127,7 +127,9 @@ class EmailChannel(AlertChannel):
 
         # Subject with severity prefix
         severity_emoji = self._get_severity_emoji(event.severity)
-        msg["Subject"] = f"{severity_emoji} [{event.severity.value.upper()}] {event.source}: {event.message[:50]}"
+        msg["Subject"] = (
+            f"{severity_emoji} [{event.severity.value.upper()}] {event.source}: {event.message[:50]}"
+        )
         msg["From"] = self.from_address
         msg["To"] = ", ".join(self.to_addresses)
 
@@ -231,8 +233,8 @@ class EmailChannel(AlertChannel):
         if event.context:
             html += '<div class="context"><strong>Context:</strong><br/>'
             for key, value in event.context.items():
-                html += f'<div>&nbsp;&nbsp;{key}: {value}</div>'
-            html += '</div>'
+                html += f"<div>&nbsp;&nbsp;{key}: {value}</div>"
+            html += "</div>"
 
         html += f"""
                 </div>

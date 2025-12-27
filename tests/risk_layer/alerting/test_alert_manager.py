@@ -254,9 +254,7 @@ class TestAlertManager:
             message="Risk2",
         )
 
-        events = manager.get_recent_events(
-            categories=[AlertCategory.RISK_LIMIT]
-        )
+        events = manager.get_recent_events(categories=[AlertCategory.RISK_LIMIT])
         assert len(events) == 2
         assert all(e.category == AlertCategory.RISK_LIMIT for e in events)
 

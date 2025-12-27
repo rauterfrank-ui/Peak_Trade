@@ -52,6 +52,7 @@ class TestTelegramChannel:
     def test_send_failure(self, mock_urlopen, telegram_config, event_error):
         """Test handling of send failure."""
         from urllib.error import URLError
+
         mock_urlopen.side_effect = URLError("Connection failed")
 
         channel = TelegramChannel(telegram_config)
@@ -151,11 +152,12 @@ class TestTelegramChannelEdgeCases:
     """Test edge cases and error handling."""
 
     @patch("src.risk_layer.alerting.channels.telegram_channel.request.urlopen")
-    def test_telegram_api_error_handled(self, mock_urlopen, telegram_config, event_warning, mock_http_response):
+    def test_telegram_api_error_handled(
+        self, mock_urlopen, telegram_config, event_warning, mock_http_response
+    ):
         """Test Telegram API error response is handled."""
         mock_urlopen.return_value = mock_http_response(
-            status=200,
-            body='{"ok":false,"description":"Chat not found"}'
+            status=200, body='{"ok":false,"description":"Chat not found"}'
         )
 
         channel = TelegramChannel(telegram_config)

@@ -100,6 +100,7 @@ class ConsoleChannel(AlertChannel):
     def _format_json(self, event: AlertEvent) -> str:
         """Format as JSON (one line per event)."""
         import json
+
         return json.dumps(event.to_dict())
 
     def health_check(self) -> ChannelHealth:

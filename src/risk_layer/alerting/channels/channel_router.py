@@ -104,19 +104,13 @@ class ChannelRouter:
         self._dispatch_count += 1
 
         # Find applicable channels
-        applicable_channels = [
-            ch for ch in self._channels.values()
-            if ch.should_send(event)
-        ]
+        applicable_channels = [ch for ch in self._channels.values() if ch.should_send(event)]
 
         if not applicable_channels:
             return {}
 
         # Dispatch to all channels in parallel
-        tasks = [
-            self._dispatch_with_fallback(ch, event)
-            for ch in applicable_channels
-        ]
+        tasks = [self._dispatch_with_fallback(ch, event) for ch in applicable_channels]
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
 

@@ -23,9 +23,11 @@ from src.risk_layer.alerting.alert_types import AlertCategory, AlertSeverity
 # Event Factories
 # ============================================================================
 
+
 @pytest.fixture
 def event_factory():
     """Factory to create alert events with custom attributes."""
+
     def _factory(
         severity=AlertSeverity.INFO,
         category=AlertCategory.SYSTEM_HEALTH,
@@ -40,6 +42,7 @@ def event_factory():
             message=message,
             context=context or {},
         )
+
     return _factory
 
 
@@ -101,9 +104,11 @@ def event_critical(event_factory):
 # Mock Helpers
 # ============================================================================
 
+
 @pytest.fixture
 def mock_http_response():
     """Factory for mock HTTP responses."""
+
     def _factory(status=200, body=None):
         response = Mock()
         response.status = status
@@ -112,12 +117,14 @@ def mock_http_response():
         response.__enter__ = Mock(return_value=response)
         response.__exit__ = Mock(return_value=False)
         return response
+
     return _factory
 
 
 @pytest.fixture
 def mock_smtp_server():
     """Factory for mock SMTP servers."""
+
     def _factory():
         server = Mock()
         server.starttls = Mock()
@@ -126,12 +133,14 @@ def mock_smtp_server():
         server.__enter__ = Mock(return_value=server)
         server.__exit__ = Mock(return_value=False)
         return server
+
     return _factory
 
 
 # ============================================================================
 # Channel Configs
 # ============================================================================
+
 
 @pytest.fixture
 def console_config():
@@ -207,6 +216,7 @@ def telegram_config():
 # Channel Introspection
 # ============================================================================
 
+
 def find_channel_class(module):
     """
     Find the AlertChannel subclass in a module.
@@ -218,11 +228,7 @@ def find_channel_class(module):
 
     for name in dir(module):
         obj = getattr(module, name)
-        if (
-            isinstance(obj, type) and
-            issubclass(obj, AlertChannel) and
-            obj is not AlertChannel
-        ):
+        if isinstance(obj, type) and issubclass(obj, AlertChannel) and obj is not AlertChannel:
             return obj
     raise ValueError(f"No AlertChannel subclass found in {module}")
 

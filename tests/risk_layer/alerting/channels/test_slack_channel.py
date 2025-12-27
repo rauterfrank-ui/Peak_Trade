@@ -44,6 +44,7 @@ class TestSlackChannel:
     def test_send_failure(self, mock_urlopen, slack_config, event_error):
         """Test handling of send failure."""
         from urllib.error import URLError
+
         mock_urlopen.side_effect = URLError("Connection failed")
 
         channel = SlackChannel(slack_config)

@@ -44,6 +44,7 @@ class TestWebhookChannel:
     def test_send_failure(self, mock_urlopen, webhook_config, event_error):
         """Test handling of webhook failure."""
         from urllib.error import URLError
+
         mock_urlopen.side_effect = URLError("Connection failed")
 
         channel = WebhookChannel(webhook_config)
@@ -72,7 +73,9 @@ class TestWebhookChannel:
         assert "Bearer secret123" in request.headers["Authorization"]
 
     @patch("src.risk_layer.alerting.channels.webhook_channel.request.urlopen")
-    def test_send_includes_custom_headers(self, mock_urlopen, webhook_config, event_info, mock_http_response):
+    def test_send_includes_custom_headers(
+        self, mock_urlopen, webhook_config, event_info, mock_http_response
+    ):
         """Test custom headers are included."""
         mock_urlopen.return_value = mock_http_response(status=200)
 
@@ -87,7 +90,9 @@ class TestWebhookChannel:
         assert headers_lower["x-test"] == "value"
 
     @patch("src.risk_layer.alerting.channels.webhook_channel.request.urlopen")
-    def test_payload_is_json(self, mock_urlopen, webhook_config, event_critical, mock_http_response):
+    def test_payload_is_json(
+        self, mock_urlopen, webhook_config, event_critical, mock_http_response
+    ):
         """Test payload is sent as JSON."""
         mock_urlopen.return_value = mock_http_response(status=200)
 
@@ -154,7 +159,9 @@ class TestWebhookChannelEdgeCases:
     """Test edge cases and error handling."""
 
     @patch("src.risk_layer.alerting.channels.webhook_channel.request.urlopen")
-    def test_http_non_2xx_is_failure(self, mock_urlopen, webhook_config, event_info, mock_http_response):
+    def test_http_non_2xx_is_failure(
+        self, mock_urlopen, webhook_config, event_info, mock_http_response
+    ):
         """Test non-2xx status codes are treated as failures."""
         mock_urlopen.return_value = mock_http_response(status=500)
 

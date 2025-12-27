@@ -162,9 +162,7 @@ class TestAlertEvent:
         )
 
         # Matches
-        assert event.matches_filter(
-            categories=[AlertCategory.DATA_QUALITY, AlertCategory.OTHER]
-        )
+        assert event.matches_filter(categories=[AlertCategory.DATA_QUALITY, AlertCategory.OTHER])
         assert event.matches_filter(categories=[AlertCategory.DATA_QUALITY])
 
         # Does not match

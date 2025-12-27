@@ -88,7 +88,7 @@ def _substitute_env_vars(value: Any) -> Any:
     """
     if isinstance(value, str):
         # Find all ${VAR_NAME} patterns
-        pattern = re.compile(r'\$\{([A-Z_][A-Z0-9_]*)\}')
+        pattern = re.compile(r"\$\{([A-Z_][A-Z0-9_]*)\}")
 
         def replacer(match: re.Match) -> str:
             var_name = match.group(1)

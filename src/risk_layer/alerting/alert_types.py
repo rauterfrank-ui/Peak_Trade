@@ -14,6 +14,7 @@ class AlertSeverity(str, Enum):
 
     Higher severity indicates more critical issues requiring urgent attention.
     """
+
     DEBUG = "debug"
     INFO = "info"
     WARNING = "warning"
@@ -55,6 +56,7 @@ class AlertCategory(str, Enum):
     Categories help organize alerts by functional domain
     and enable targeted routing to appropriate channels.
     """
+
     RISK_LIMIT = "risk_limit"
     POSITION_VIOLATION = "position_violation"
     EXECUTION_ERROR = "execution_error"

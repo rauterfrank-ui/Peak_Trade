@@ -82,7 +82,8 @@ class TelegramChannel(AlertChannel):
                 "chat_id": self.chat_id,
                 "text": text,
                 "parse_mode": self.parse_mode,
-                "disable_notification": self.disable_notification and event.severity < AlertSeverity.WARNING,
+                "disable_notification": self.disable_notification
+                and event.severity < AlertSeverity.WARNING,
             }
 
             # Send HTTP POST request

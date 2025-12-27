@@ -32,7 +32,7 @@ class TestConsoleChannel:
         channel = ConsoleChannel(console_config, min_severity=AlertSeverity.WARNING)
 
         assert not channel.should_send(event_info)  # INFO < WARNING
-        assert channel.should_send(event_warning)    # WARNING >= WARNING
+        assert channel.should_send(event_warning)  # WARNING >= WARNING
 
     def test_send_to_stdout(self, console_config, event_info, capsys):
         """Test INFO/DEBUG go to stdout."""

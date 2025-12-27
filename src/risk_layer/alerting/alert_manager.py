@@ -116,7 +116,8 @@ class AlertManager:
         # Apply filters
         if min_severity or categories or sources:
             events = [
-                e for e in events
+                e
+                for e in events
                 if e.matches_filter(
                     min_severity=min_severity,
                     categories=categories,

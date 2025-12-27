@@ -39,11 +39,11 @@ class SlackChannel(AlertChannel):
 
     # Severity to color mapping
     SEVERITY_COLORS = {
-        AlertSeverity.DEBUG: "#8B8B8B",      # Gray
-        AlertSeverity.INFO: "#36A64F",       # Green
-        AlertSeverity.WARNING: "#FFA500",    # Orange
-        AlertSeverity.ERROR: "#E01E5A",      # Red
-        AlertSeverity.CRITICAL: "#8B0000",   # Dark Red
+        AlertSeverity.DEBUG: "#8B8B8B",  # Gray
+        AlertSeverity.INFO: "#36A64F",  # Green
+        AlertSeverity.WARNING: "#FFA500",  # Orange
+        AlertSeverity.ERROR: "#E01E5A",  # Red
+        AlertSeverity.CRITICAL: "#8B0000",  # Dark Red
     }
 
     def __init__(
@@ -123,53 +123,56 @@ class SlackChannel(AlertChannel):
                     "type": "plain_text",
                     "text": f"🚨 {event.severity.value.upper()} Alert",
                     "emoji": True,
-                }
+                },
             },
             {
                 "type": "section",
                 "fields": [
                     {"type": "mrkdwn", "text": f"*Source:*\n{event.source}"},
                     {"type": "mrkdwn", "text": f"*Category:*\n{event.category.value}"},
-                ]
+                ],
             },
             {
                 "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": f"{mention_text}*Message:*\n{event.message}"
-                }
+                "text": {"type": "mrkdwn", "text": f"{mention_text}*Message:*\n{event.message}"},
             },
         ]
 
         # Add context if present
         if event.context:
             context_lines = [f"• *{k}*: `{v}`" for k, v in event.context.items()]
-            blocks.append({
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Context:*\n" + "\n".join(context_lines[:5])  # Limit to 5 items
+            blocks.append(
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Context:*\n" + "\n".join(context_lines[:5]),  # Limit to 5 items
+                    },
                 }
-            })
+            )
 
         # Add footer with timestamp and event ID
-        blocks.append({
-            "type": "context",
-            "elements": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"<!date^{int(event.timestamp.timestamp())}^{{date_short_pretty}} {{time}}|{event.timestamp.isoformat()}> | Event ID: `{event.event_id[:8]}`"
-                }
-            ]
-        })
+        blocks.append(
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"<!date^{int(event.timestamp.timestamp())}^{{date_short_pretty}} {{time}}|{event.timestamp.isoformat()}> | Event ID: `{event.event_id[:8]}`",
+                    }
+                ],
+            }
+        )
 
         payload = {
             "username": self.username,
             "blocks": blocks,
-            "attachments": [{
-                "color": self.SEVERITY_COLORS.get(event.severity, "#CCCCCC"),
-                "fallback": f"[{event.severity.value.upper()}] {event.source}: {event.message}"
-            }]
+            "attachments": [
+                {
+                    "color": self.SEVERITY_COLORS.get(event.severity, "#CCCCCC"),
+                    "fallback": f"[{event.severity.value.upper()}] {event.source}: {event.message}",
+                }
+            ],
         }
 
         # Override channel if configured

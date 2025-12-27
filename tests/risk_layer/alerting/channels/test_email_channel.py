@@ -67,6 +67,7 @@ class TestEmailChannel:
     def test_send_failure(self, mock_smtp_class, email_config, event_critical):
         """Test handling of SMTP failure."""
         from smtplib import SMTPException
+
         mock_server = Mock()
         mock_server.__enter__ = Mock(side_effect=SMTPException("Connection failed"))
         mock_smtp_class.return_value = mock_server

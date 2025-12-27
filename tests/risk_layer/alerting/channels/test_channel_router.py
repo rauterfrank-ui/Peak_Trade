@@ -103,10 +103,7 @@ class TestChannelRouter:
         # Console as fallback
         fallback = ConsoleChannel(console_config)
 
-        router = ChannelRouter(
-            channels=[failing, fallback],
-            fallback_chain={"file": "console"}
-        )
+        router = ChannelRouter(channels=[failing, fallback], fallback_chain={"file": "console"})
 
         results = asyncio.run(router.route_event(event_warning))
 
@@ -181,10 +178,7 @@ class TestChannelRouterEdgeCases:
     def test_fallback_to_nonexistent_channel(self, file_config, event_warning):
         """Test fallback to channel that doesn't exist."""
         channel = FileChannel(file_config)
-        router = ChannelRouter(
-            channels=[channel],
-            fallback_chain={"file": "nonexistent"}
-        )
+        router = ChannelRouter(channels=[channel], fallback_chain={"file": "nonexistent"})
 
         # Should handle gracefully (no crash)
         results = asyncio.run(router.route_event(event_warning))

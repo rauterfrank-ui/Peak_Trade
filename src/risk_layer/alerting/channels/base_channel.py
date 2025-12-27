@@ -18,6 +18,7 @@ from src.risk_layer.alerting.alert_types import AlertSeverity
 
 class ChannelStatus(str, Enum):
     """Health status of a channel."""
+
     HEALTHY = "healthy"
     DEGRADED = "degraded"
     FAILED = "failed"
@@ -27,6 +28,7 @@ class ChannelStatus(str, Enum):
 @dataclass
 class ChannelHealth:
     """Health check result for a channel."""
+
     status: ChannelStatus
     last_check: datetime
     message: str

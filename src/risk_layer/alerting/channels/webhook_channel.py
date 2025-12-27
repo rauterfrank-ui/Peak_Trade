@@ -78,7 +78,7 @@ class WebhookChannel(AlertChannel):
             headers = {
                 "Content-Type": "application/json",
                 "User-Agent": "Peak_Trade-Alerting/2.0",
-                **self.headers
+                **self.headers,
             }
 
             # Add auth token if configured
