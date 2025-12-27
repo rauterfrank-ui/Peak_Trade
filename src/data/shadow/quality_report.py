@@ -54,9 +54,7 @@ def render_quality_html_report(summary: dict[str, Any]) -> str:
             details = event.get("details", {})
 
             # Format timestamp
-            event_ts = datetime.utcfromtimestamp(ts_ms / 1000.0).strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
+            event_ts = datetime.utcfromtimestamp(ts_ms / 1000.0).strftime("%Y-%m-%d %H:%M:%S")
 
             # Format details as key-value
             details_str = ", ".join(f"{k}={v}" for k, v in details.items())
