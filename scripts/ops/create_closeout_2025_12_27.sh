@@ -7,7 +7,7 @@ DATE="2025-12-27"
 
 echo "== 0) Preflight =="
 gh auth status
-git status --porcelain | wc -l | grep -q '^0$' || { echo "❌ Working tree nicht clean"; git status; exit 1; }
+[[ -z "$(git status --porcelain)" ]] || { echo "❌ Working tree nicht clean"; git status; exit 1; }
 
 echo "== 1) Branch =="
 git checkout main
