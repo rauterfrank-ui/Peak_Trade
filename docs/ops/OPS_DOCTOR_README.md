@@ -228,7 +228,7 @@ python -m src.ops.doctor
 **Was wird geprüft**: CI/CD-Konfiguration
 
 **Erwartete Files**:
-- `.github/workflows`
+- `.github/workflows/` (directory)
 - `Makefile`
 - `policy_packs/ci.yml`
 
@@ -245,6 +245,70 @@ python -m src.ops.doctor
 | `0` | Alle Checks OK |
 | `1` | Mindestens ein Check mit Status `fail` |
 | `2` | Mindestens ein Check mit Status `warn` (aber keine `fail`) |
+
+## 🎯 Noise-Free Standard
+
+### Zielbild
+
+Ops Doctor gilt als **Noise-Free**, wenn:
+- Alle **Core Checks**: ✅ OK (0 WARN / 0 FAIL)
+- Checks mit **optionalen Live-Dependencies** (z.B. `gh` + Auth) zeigen bei fehlenden Dependencies **⏭️ SKIP** (nicht ❌ FAIL).
+- "Warn-only" Bereiche (z.B. Docs Navigation) sind idealerweise ✅ PASS, damit kein Output-Noise entsteht.
+- Fix-Hints sind **canonical** (entsprechen exakt der vom Check erwarteten Commandline).
+
+### Status-Semantik
+
+| Status | Bedeutung | Operator-Aktion |
+|--------|-----------|-----------------|
+| ✅ **OK** | Check erfolgreich | Keine Aktion nötig |
+| ⚠️ **WARN** | Warnung, aber nicht kritisch | Optional beheben (empfohlen) |
+| ❌ **FAIL** | Kritischer Fehler | **Sofort beheben** |
+| ⏭️ **SKIP** | Check konnte nicht ausgeführt werden (fehlende Abhängigkeiten, Offline-Modus) | Keine Aktion nötig (nicht als Fehler interpretieren) |
+
+**Kernprinzip**: Optionale Live-Dependency-Checks sollten **SKIP** zeigen, wenn sie nicht laufen können (z.B. `gh` CLI nicht authentifiziert), **nicht FAIL**. Dies verhindert "Hint-Drift" und Operator-Verwirrung.
+
+### Operator Workflow Checklist
+
+**1. Ops Doctor ausführen**:
+```bash
+scripts/ops/ops_center.sh doctor
+```
+
+**2. Output interpretieren**:
+- **❌ FAIL**: Sofort beheben (blockiert weitere Arbeit)
+- **⚠️ WARN**: Optional beheben (empfohlen, aber nicht blockierend)
+- **⏭️ SKIP**: Ignorieren (externe Abhängigkeiten fehlen, z.B. Offline-Modus)
+
+**3. Häufige Fixes**:
+
+#### `deps.requirements_sync` (WARN)
+
+**Canonical Fix**:
+```bash
+# Sync requirements.txt from uv.lock (canonical flags: all extras/groups, locked, no hashes)
+uv export --format requirements.txt --all-extras --all-groups --locked --no-hashes -o requirements.txt
+```
+
+**Wann nötig**: Nach `uv.lock` Updates (z.B. nach `uv add`, `uv lock`)
+
+**Verification**:
+```bash
+scripts/ops/ops_center.sh doctor
+```
+
+#### `required_checks_drift` (SKIP)
+
+**Ursache**: `gh` CLI nicht authentifiziert oder nicht installiert
+
+**Canonical Fix (Live-Check aktivieren)**:
+```bash
+# GitHub CLI einmalig authentifizieren
+gh auth login
+```
+
+**Wann SKIP OK ist**: Offline-Entwicklung, CI-Umgebungen ohne GitHub-Token
+
+**Wann Live-Check nötig**: Vor Branch Protection Updates (Änderungen an `.github/workflows/`)
 
 ## 🔧 Integration
 
@@ -385,11 +449,20 @@ pip install tomli
 ## 📚 Weitere Dokumentation
 
 - [Developer Workflow Guide](../DEVELOPER_WORKFLOW_GUIDE.md)
-- [Peak_Trade Tooling & Evidence Chain Runbook](../../Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
-- [Knowledge Smoke Tests](../scripts/ops/KNOWLEDGE_SMOKE_README.md)
+- [Peak_Trade Tooling & Evidence Chain Runbook](Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
+- [Knowledge Smoke Tests](../../scripts/ops/KNOWLEDGE_SMOKE_README.md)
 
 ---
 
 **Autor**: Peak_Trade Ops Team  
 **Stand**: Dezember 2024  
 **Version**: v1.0
+
+## README_REGISTRY Guardrail (ops doctor)
+Der Ops-Doctor-Registry-Check erwartet, dass `README_REGISTRY.md` **mindestens eine Referenz mit dem Pattern** `*_README.md` enthält.
+Wenn `README_REGISTRY.md` auf anderen Inhalt (z.B. Strategien-Registry) zurückgesetzt wird und **keine** `*_README.md`-Referenzen enthält, resultiert das in einem dauerhaften WARN.
+
+Beispiel: Ein gültiger Minimalzustand referenziert z.B.:
+- `OPS_DOCTOR_README.md`
+- `PSYCHOLOGY_HEURISTICS_README.md`
+- `PSYCHOLOGY_HEATMAP_README.md`

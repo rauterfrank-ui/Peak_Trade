@@ -99,12 +99,13 @@ gh pr create \
 - **Risk** — Risikoeinschätzung
 - **Operator How-To** — Praxis-Beispiele
 - PR #262 — merge-log workflow standard + template (Meta-Beispiel): `docs/ops/PR_262_MERGE_LOG.md`
+- PR #325 — merge log: docs/ops/PR_325_MERGE_LOG.md
 - **Follow-Up Actions** — Optional nächste Schritte
 - **References** — Links zu Policy, Tool, Tests
 
 **Verlinkung:**
 - In `docs/ops/README.md` verlinken (Merge-Logs Sektion)
-- Format: `- [PR #<NUM>](PR_<NUM>_MERGE_LOG.md) — <title> (merged YYYY-MM-DD)`
+- Format: `- [PR #<NUM>]\(PR_<NUM>_MERGE_LOG.md\) — <title> (merged YYYY-MM-DD)`
 
 ---
 

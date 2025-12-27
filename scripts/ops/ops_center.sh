@@ -6,7 +6,7 @@
 #   ops_center.sh help                 Show this help
 #   ops_center.sh status               Show repo status
 #   ops_center.sh pr <NUM>             Review PR (no merge)
-#   ops_center.sh merge-log            Show merge log quick reference
+#   ops_center.sh merge-log [<PR>...]  Show quick reference or generate merge logs
 #   ops_center.sh doctor               Run ops_doctor health checks
 #
 # Safe-by-default: No destructive actions, no merges without explicit flags.
@@ -33,8 +33,9 @@ COMMANDS:
   help                Show this help
   status              Show repo status (git + gh)
   pr <NUM>            Review PR (safe, no merge)
-  merge-log           Show merge log quick reference
+  merge-log [<PR>...] Show quick reference or generate merge logs
   doctor [--quick]    Run ops_doctor health checks (+ merge-log validation)
+  risk <subcmd>       Risk analytics commands (component-var, ...)
 
 EXAMPLES:
   # Check repo status
@@ -45,6 +46,12 @@ EXAMPLES:
 
   # Get merge log quick links
   ops_center.sh merge-log
+
+  # Generate merge log for single PR
+  ops_center.sh merge-log 281
+
+  # Generate merge logs for multiple PRs (batch)
+  ops_center.sh merge-log 278 279 280
 
   # Run full health check (includes merge-log tests)
   ops_center.sh doctor
@@ -165,7 +172,7 @@ cmd_pr() {
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Merge Log Quick Reference
+# Merge Log (Quick Reference or Batch Generator)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 cmd_merge_log() {
   # No args → show quick reference
@@ -244,6 +251,7 @@ cmd_merge_log() {
 
   "$script" "$@"
 }
+
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Doctor
@@ -352,8 +360,157 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
 
   echo ""
 
+  # Docs Navigation Health (Link Guard)
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📚 Docs Navigation Health"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local docs_link_check="$SCRIPT_DIR/check_ops_docs_navigation.sh"
+  local docs_link_exit=0
+
+  # Always run (fast, offline check)
+  # NOTE: Currently warn-only mode (exit 0) until existing broken links are fixed
+  if [[ -x "$docs_link_check" ]]; then
+    echo "🔍 Check: Ops docs internal links + anchors (warn-only)"
+    if "$docs_link_check" >/dev/null 2>&1; then
+      echo "   ✅ PASS - No broken internal links found"
+    else
+      echo "   ⚠️  WARN - Broken internal links detected (not blocking)"
+      echo "   Details: Run 'scripts/ops/check_ops_docs_navigation.sh'"
+      echo "   Note: This check will be enforced after existing links are fixed"
+      # docs_link_exit=1  # Disabled until broken links are fixed
+    fi
+  else
+    echo "⚠️  Docs link check not found: $docs_link_check"
+    # Not critical if the script is missing
+  fi
+
+  echo ""
+
+  # Docs Reference Targets
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🔗 Docs Reference Targets"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local ref_targets_check="$SCRIPT_DIR/verify_docs_reference_targets.sh"
+  local ref_targets_exit=0
+
+  if [[ -x "$ref_targets_check" ]]; then
+    echo "🔍 Check: Referenced repo paths in markdown docs (warn-only)"
+
+    # Run in warn-only mode (exit 2 on missing targets)
+    local ref_output
+    local ref_status=0
+    ref_output="$("$ref_targets_check" --changed --base origin/main --warn-only 2>&1)" || ref_status=$?
+
+    if [[ $ref_status -eq 0 ]]; then
+      # All targets exist or not applicable
+      echo "   ✅ PASS - All referenced targets exist (or no markdown changes)"
+    elif [[ $ref_status -eq 2 ]]; then
+      # Missing targets (warn-only mode)
+      echo "   ⚠️  WARN - Missing referenced targets detected"
+      echo ""
+      echo "$ref_output" | sed 's/^/      /'
+      echo ""
+      echo "   📖 Details: scripts/ops/verify_docs_reference_targets.sh --changed"
+      ref_targets_exit=1
+    else
+      # Hard error (script failure)
+      echo "   ❌ FAIL - Check failed to run"
+      echo ""
+      echo "$ref_output" | sed 's/^/      /'
+      echo ""
+      ref_targets_exit=1
+    fi
+  else
+    echo "⚠️  Docs Reference Targets check not found: $ref_targets_check"
+    ref_targets_exit=1
+  fi
+
+  echo ""
+
+  # Required Checks Drift Guard
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🧭 Required Checks Drift Guard"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local drift_check="$SCRIPT_DIR/verify_required_checks_drift.sh"
+  local drift_exit=0
+
+  if [[ -x "$drift_check" ]]; then
+    echo "🔍 Check: Branch Protection Required Checks (doc vs live)"
+
+    # Run in warn-only mode (exit 2 on drift, not 1)
+    local drift_output
+    local drift_status=0
+    drift_output="$("$drift_check" --warn-only 2>&1)" || drift_status=$?
+
+    if [[ $drift_status -eq 0 ]]; then
+      # No drift
+      echo "   ✅ PASS - Doc matches live state"
+    elif [[ $drift_status -eq 2 ]]; then
+      # Drift detected (warn-only mode)
+      echo "   ⚠️  WARN - Drift detected between doc and live"
+      echo ""
+      echo "$drift_output" | sed 's/^/      /'
+      echo ""
+      echo "   📖 Details: scripts/ops/verify_required_checks_drift.sh"
+      drift_exit=1
+    elif [[ $drift_status -eq 3 ]]; then
+      # Cannot run (missing dependencies)
+      echo "   ⏭️  SKIP - Dependencies not available (gh CLI or auth)"
+      echo ""
+      echo "$drift_output" | sed 's/^/      /'
+      # Don't count as failure
+      drift_exit=0
+    else
+      # Hard error (preflight failure, etc.)
+      echo "   ❌ FAIL - Check failed to run"
+      echo ""
+      echo "$drift_output" | sed 's/^/      /'
+      echo ""
+      drift_exit=1
+    fi
+  else
+    echo "⚠️  Required Checks Drift Guard not found: $drift_check"
+    drift_exit=1
+  fi
+
+  echo ""
+
+  # CI Required Contexts Contract
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🛡️  CI Required Contexts Contract"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local ci_contract_check="$SCRIPT_DIR/check_required_ci_contexts_present.sh"
+  local ci_contract_exit=0
+
+  # Always run (fast, offline check)
+  if [[ -x "$ci_contract_check" ]]; then
+    echo "🔍 Check: CI matrix job naming + no job-level if:"
+    if "$ci_contract_check" >/dev/null 2>&1; then
+      echo "   ✅ PASS - CI required contexts contract OK"
+    else
+      echo "   ❌ FAIL - CI contract violated"
+      echo "   Details: Run 'scripts/ops/check_required_ci_contexts_present.sh'"
+      echo "   📖 Doc: docs/ops/ci_required_checks_matrix_naming_contract.md"
+      ci_contract_exit=1
+    fi
+  else
+    echo "⚠️  CI contract check not found: $ci_contract_check"
+    ci_contract_exit=1
+  fi
+
+  echo ""
+
   # Exit with non-zero if any checks failed
-  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit))
+  # Note: docs_link_exit is currently 0 (warn-only mode) until existing broken links are fixed
+  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | ref_targets_exit | drift_exit | ci_contract_exit))
   if [[ $final_exit -ne 0 ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "❌ Health checks failed (exit $final_exit)"
@@ -361,6 +518,67 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
   fi
 
   return $final_exit
+}
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Risk Commands
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+cmd_risk() {
+  local subcmd="${1:-help}"
+  shift || true
+
+  case "$subcmd" in
+    component-var)
+      cmd_risk_component_var "$@"
+      ;;
+    help|--help|-h)
+      cat <<'HELP'
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Risk Analytics Commands
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+USAGE:
+  ops_center.sh risk <subcommand> [args...]
+
+SUBCOMMANDS:
+  component-var    Generate Component VaR report
+
+EXAMPLES:
+  # Generate report with fixtures
+  ops_center.sh risk component-var --use-fixtures
+
+  # Generate report with custom data
+  ops_center.sh risk component-var --returns data.csv --alpha 0.95
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HELP
+      ;;
+    *)
+      echo "❌ Unknown risk subcommand: $subcmd"
+      echo ""
+      cmd_risk help
+      exit 1
+      ;;
+  esac
+}
+
+cmd_risk_component_var() {
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📊 Component VaR Report Generator"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  cd "$REPO_ROOT"
+
+  # Check if Python script exists
+  local script="$REPO_ROOT/scripts/run_component_var_report.py"
+  if [[ ! -f "$script" ]]; then
+    echo "❌ Script not found: $script"
+    exit 1
+  fi
+
+  # Run the Python script with all arguments
+  python3 "$script" "$@"
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -385,6 +603,9 @@ main() {
       ;;
     doctor)
       cmd_doctor "$@"
+      ;;
+    risk)
+      cmd_risk "$@"
       ;;
     *)
       echo "❌ Unknown command: $cmd"

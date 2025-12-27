@@ -24,7 +24,7 @@ Ziel:
 
 ## Wie du den v1.0 Status liest
 
-- **Schnell-Modus (5 Minuten):** Lies die Tabelle in [1. Gesamtstatus in Prozent](#1-gesamtstatus-in-prozent) für den High-Level-Überblick. Für den v1.0-Gesamtsnapshot mit Kennzahlen siehe den Abschnitt **„Hall of Fame – Peak_Trade v1.0 Snapshot"** in [`PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md).
+- **Schnell-Modus (5 Minuten):** Lies die Tabelle in [Projektstatus – Gesamtüberblick](#projektstatus-gesamtberblick-stand-2025-12-09) für den High-Level-Überblick. Für den v1.0-Gesamtsnapshot mit Kennzahlen siehe den Abschnitt **„Hall of Fame – Peak_Trade v1.0 Snapshot"** in [`PEAK_TRADE_V1_OVERVIEW_FULL.md`](PEAK_TRADE_V1_OVERVIEW_FULL.md).
 
 - **Status-Interpretation:** Prozentwerte sind **qualitative Reifegrade** (Architektur, Codequalität, Tests, Doku, Operational Readiness) – nicht als „100% = fertig für immer" zu verstehen. Kommentare in den Tabellen erläutern den jeweiligen Stand.
 
@@ -422,8 +422,8 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 * Preset-Dokumentation: [`PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md`](PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md)
 * Preset-Konfiguration: `config/r_and_d_presets.toml`
 * Status: 🔬 Experimente definiert, Ready for Execution
-* **Run-Logs:** Siehe Abschnitt [„R&D-Experiment-Welle W2 (2025-12-08) – Run-Log"](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md#61-rd-experiment-welle-w2-2025-12-08--run-log) für dokumentierte Läufe
-* **Operator-View:** Abschnitt 8 in [`PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md`](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md#8-rd-wave-v1--operator-view-strategy-profile--experiments-viewer--dashboard) beschreibt den praktischen Operator-Workflow (Strategy-Profile → Experiments-Viewer → Dashboard)
+* **Run-Logs:** Siehe Abschnitt [„R&D-Experiment-Welle W2 (2025-12-08) – Run-Log"](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md#61-rd-experiment-welle-w2-2025-12-08-run-log) für dokumentierte Läufe
+* **Operator-View:** Abschnitt 8 in [`PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md`](PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md#8-rd-wave-v1-operator-view-strategy-profile-experiments-viewer-dashboard) beschreibt den praktischen Operator-Workflow (Strategy-Profile → Experiments-Viewer → Dashboard)
 * **R&D Experiments Viewer CLI:** `scripts/view_r_and_d_experiments.py` – zentrales Tool zur Sichtung aller R&D-Experimente (Filter nach Preset, Tag, Strategy, Datum, Trades; Detail- und JSON-Output)
 * **Notebook-Template:** `notebooks/r_and_d_experiment_analysis_template.py` – DataFrame-basierte Analyse mit Filtern, Aggregationen und Plots
 
@@ -712,6 +712,13 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
 ---
 
 ## 10. Developer Experience & Tooling (~90%)
+
+### Docs-Navigation (Ops UX) — PRs #325–#329
+
+- Ops-Doku konsolidiert: Drift Guard Operator Notes nach `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` verschoben (inkl. Redirect/Referenz-Updates).
+- Traceability verbessert: Merge-Log als Artefakt ergänzt: `docs/ops/PR_325_MERGE_LOG.md` und im Workflow verlinkt (`docs/ops/MERGE_LOG_WORKFLOW.md`).
+- Einstiegspunkte geschärft: `docs/ops/README.md` verlinkt Drift Guard Notes + Quick Commands; Root `README.md` verlinkt jetzt explizit den Ops/Operator Hub (`docs/ops/README.md`).
+
 
 **Relevante Doku & Artefakte:**
 

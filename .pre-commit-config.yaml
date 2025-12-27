@@ -54,3 +54,17 @@ repos:
   #   rev: 24.10.0
   #   hooks:
   #     - id: black
+
+  # Local repository hooks (custom scripts)
+  - repo: local
+    hooks:
+      # CI Required Contexts Contract Guard
+      # Validates that CI workflow follows the matrix naming contract.
+      # Prevents PRs from being blocked by missing required check contexts.
+      # Only runs when CI workflow or guard script is modified.
+      - id: ci-required-contexts-contract
+        name: CI Required Contexts Contract (matrix required checks)
+        entry: scripts/ops/check_required_ci_contexts_present.sh
+        language: system
+        pass_filenames: false
+        files: ^(\.github/workflows/ci\.yml|scripts/ops/check_required_ci_contexts_present\.sh)$

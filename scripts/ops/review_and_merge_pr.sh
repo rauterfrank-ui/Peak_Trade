@@ -6,6 +6,15 @@
 
 set -euo pipefail
 
+# ----------------------------
+# Docs Diff Guard (PR files)
+# ----------------------------
+# Default: enabled when --merge is used
+DOCS_GUARD_ENABLED=1
+DOCS_GUARD_THRESHOLD=200     # per-file deletions threshold under docs/
+DOCS_GUARD_WARN_ONLY=0       # 1 = warn-only, do not fail
+DOCS_GUARD_PREFIX="docs/"    # guard scope (prefix match)
+
 # Optional shared helpers (if present in repo)
 if [ -f "$(dirname "$0")/run_helpers.sh" ]; then
   # shellcheck disable=SC1091
@@ -31,6 +40,9 @@ Options:
   --allow-fail <name>     Allow a specific check to fail (repeatable), e.g. --allow-fail audit
   --dirty-ok              Do not require clean working tree.
   --dry-run               Print actions but do not merge/update.
+  --skip-docs-guard       Skip docs diff guard (not recommended).
+  --docs-guard-threshold N  Per-file deletions threshold under docs/ (default: 200).
+  --docs-guard-warn-only  Do not fail on violations (warn only).
   -h, --help              Show help.
 
 Environment Variables:
@@ -65,6 +77,9 @@ while [ $# -gt 0 ]; do
     --allow-fail) ALLOW_FAIL+=("${2:-}"); shift 2 ;;
     --dirty-ok) DIRTY_OK=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
+    --skip-docs-guard) DOCS_GUARD_ENABLED=0; shift ;;
+    --docs-guard-threshold) DOCS_GUARD_THRESHOLD="${2:-}"; shift 2 ;;
+    --docs-guard-warn-only) DOCS_GUARD_WARN_ONLY=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) die "Unknown arg: $1 (use --help)" ;;
   esac
@@ -86,6 +101,10 @@ gh auth status >/dev/null 2>&1 || die "gh auth not available. Run: gh auth login
 
 REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)
 [ -n "$REPO" ] || die "Could not resolve repo via gh (are you in the right repo?)"
+
+# Extract OWNER and REPO_NAME for docs diff guard API calls
+OWNER="$(echo "$REPO" | cut -d/ -f1)"
+REPO_NAME="$(echo "$REPO" | cut -d/ -f2)"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "🔎 Peak_Trade – PR Review & Merge Helper"
@@ -194,6 +213,61 @@ is_allowed_fail() {
   return 1
 }
 
+docs_diff_guard_pr_files() {
+  local pr="$1"
+  local threshold="$2"
+  local warn_only="$3"
+  local prefix="$4"
+
+  echo "🛡️ Docs Diff Guard (PR #$pr via GitHub API)"
+  echo "  Scope:     ${prefix}*"
+  echo "  Threshold: -${threshold} deletions per file"
+  echo ""
+
+  local page=1
+  local violations=0
+  local total_del=0
+  while :; do
+    # returns lines: additions<TAB>deletions<TAB>filename
+    local lines
+    lines="$(gh api "repos/${OWNER}/${REPO_NAME}/pulls/${pr}/files?per_page=100&page=${page}" \
+      --jq '.[] | "\(.additions)\t\(.deletions)\t\(.filename)"' 2>/dev/null || true)"
+
+    [[ -z "$lines" ]] && break
+
+    while IFS=$'\t' read -r add del file; do
+      [[ -z "${file:-}" ]] && continue
+      [[ "$file" != "$prefix"* ]] && continue
+      # del should be an int
+      total_del=$((total_del + del))
+      if (( del >= threshold )); then
+        violations=$((violations + 1))
+        echo "🚨 Large deletion: -$del  $file"
+      fi
+    done <<< "$lines"
+
+    page=$((page + 1))
+  done
+
+  echo ""
+  echo "Total deletions under ${prefix}*: $total_del"
+  echo "Violations (per-file >= $threshold): $violations"
+  echo ""
+
+  if (( violations > 0 )); then
+    if (( warn_only == 1 )); then
+      echo "⚠️ WARN-ONLY: violations detected but continuing."
+      return 0
+    fi
+    echo "❌ FAIL: docs deletions exceed threshold."
+    echo "   If intentional: use --docs-guard-warn-only, --docs-guard-threshold <n>, or --skip-docs-guard."
+    return 1
+  fi
+
+  echo "✅ OK: no large doc deletions detected."
+  return 0
+}
+
 BAD=()
 PENDING=()
 
@@ -242,6 +316,22 @@ if [ "$DO_MERGE" -eq 0 ]; then
   ok "Review-only complete. Re-run with --merge to merge."
   exit 0
 fi
+
+# Run Docs Diff Guard BEFORE merge (safe-by-default)
+if [ "$DOCS_GUARD_ENABLED" -eq 1 ]; then
+  # If threshold is empty or non-numeric, fail fast
+  if ! [[ "${DOCS_GUARD_THRESHOLD}" =~ ^[0-9]+$ ]]; then
+    die "--docs-guard-threshold must be an integer (got: '${DOCS_GUARD_THRESHOLD}')"
+  fi
+  if [ "$DRY_RUN" -eq 1 ]; then
+    info "DRY-RUN: would run docs diff guard for PR #$PR (threshold=$DOCS_GUARD_THRESHOLD, warn_only=$DOCS_GUARD_WARN_ONLY)"
+  else
+    docs_diff_guard_pr_files "$PR" "$DOCS_GUARD_THRESHOLD" "$DOCS_GUARD_WARN_ONLY" "$DOCS_GUARD_PREFIX"
+  fi
+else
+  info "⚠️ Docs Diff Guard skipped (--skip-docs-guard)."
+fi
+echo ""
 
 # Merge
 MERGE_ARGS=(--"${METHOD}")
