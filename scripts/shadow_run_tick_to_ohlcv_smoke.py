@@ -116,7 +116,6 @@ def main() -> int:
         cfg = {
             "shadow": {
                 "quality": {
-                    "enabled": True,
                     "gap_severity": "WARN",
                     "spike_severity": "WARN",
                     "max_abs_log_return": 0.10,

@@ -49,7 +49,6 @@ class DataQualityMonitor:
         """
         quality_cfg = cfg.get("shadow", {}).get("quality", {})
 
-        self.enabled = quality_cfg.get("enabled", True)
         self.gap_severity = quality_cfg.get("gap_severity", "WARN")
         self.spike_severity = quality_cfg.get("spike_severity", "WARN")
         self.max_abs_log_return = quality_cfg.get("max_abs_log_return", 0.10)
@@ -65,9 +64,6 @@ class DataQualityMonitor:
         Returns:
             List[QualityEvent]: Gefundene Events
         """
-        if not self.enabled:
-            return []
-
         events: list[QualityEvent] = []
 
         # Sort (sicherheitshalber)

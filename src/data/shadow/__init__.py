@@ -1,7 +1,7 @@
 """
 Shadow Trading Data Pipeline — Phase 2: Tick→OHLCV + Quality Monitoring.
 
-KRITISCH: NIEMALS im Live-Modus laufen lassen.
+CRITICAL: Blocked from running in live mode.
 Defense in Depth: Config, Runtime, Import Guards.
 """
 
