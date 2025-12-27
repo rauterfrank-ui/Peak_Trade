@@ -1,0 +1,37 @@
+# Shadow Pipeline Configuration Example
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# KRITISCH: Live Mode ist NIEMALS erlaubt für Shadow Pipeline!
+#           Defense in Depth: Config + Runtime + Import Guards
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[shadow.pipeline]
+# Shadow Pipeline aktivieren (default: false = safe)
+# NUR für Offline-Testing/Simulation aktivieren
+enabled = false
+
+[shadow.quality]
+# Data Quality Monitoring
+enabled = true
+
+# Gap Detection: fehlende Bars in Sequenz
+gap_severity = "WARN"  # "WARN" | "BLOCK"
+
+# Spike Detection: Preis/Volume Anomalien
+spike_severity = "WARN"
+max_abs_log_return = 0.10  # 10% absolute log-return threshold
+volume_spike_factor = 10.0  # Volume > 10x median = Spike
+
+[shadow.logging]
+# Quality Event Logging (JSONL)
+enabled = true
+path = "reports/shadow_quality_events.jsonl"
+max_bytes = 1000000  # 1 MB vor Rotation
+backup_count = 5     # Anzahl Backups
+
+[live]
+# KRITISCH: Live Mode muss IMMER false sein für Shadow!
+enabled = false
+
+# NIEMALS diese Kombination verwenden:
+# live.enabled = true + shadow.pipeline.enabled = true
+# → Runtime Guard blockiert dies automatisch
