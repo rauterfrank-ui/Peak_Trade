@@ -130,6 +130,13 @@ echo
 
 git diff --cached --quiet && die "DOCS branch: Nichts staged. Stage files/hunks und starte erneut oder passe Patterns an."
 
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
+
 git commit -m "docs(ops): split docs/ops changes from mixed set"
 git push -u origin HEAD
 
@@ -169,6 +176,13 @@ git diff --cached --stat || true
 echo
 
 git diff --cached --quiet && die "FEATURE branch: Nichts staged. Stage files/hunks und starte erneut oder passe Patterns an."
+
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
 
 git commit -m "feat: split feature/code changes from mixed set"
 git push -u origin HEAD

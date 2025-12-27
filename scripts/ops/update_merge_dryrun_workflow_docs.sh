@@ -106,6 +106,13 @@ echo "==> Staged changes:"
 git add docs/ops/README.md docs/ops/pr_bodies/MERGE_BOTH_PRS_CHEATSHEET.md
 git diff --cached --stat
 
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
+
 echo ""
 echo "==> Committing..."
 git commit -m "docs(ops): add DRY_RUN → Real Merge workflow to merge_both_prs docs

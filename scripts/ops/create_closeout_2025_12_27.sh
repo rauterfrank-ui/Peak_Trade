@@ -497,6 +497,14 @@ EOF
 echo "== 4) Stage & Commit =="
 git add docs/ops/merge_logs/"${DATE}_mass_docs_pr_closeout.md"
 git add docs/ops/CASCADING_MERGES_AND_RERERE_PLAYBOOK.md
+
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
+
 git commit -m "docs(ops): closeout + playbook for 2025-12-27 mass PR wave
 
 - Add merge log for 10 cascading docs PRs

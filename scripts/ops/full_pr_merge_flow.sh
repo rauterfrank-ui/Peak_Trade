@@ -253,6 +253,14 @@ uv run pytest -q tests/ops -q
 echo ""
 echo "💾 Step 7: Commit + Push + Open merge-log PR"
 git add "$MERGE_LOG_PATH" docs/ops/README.md docs/PEAK_TRADE_STATUS_OVERVIEW.md
+
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
+
 git commit -m "docs(ops): add PR #${PR_NUM} merge log"
 git push -u origin "$BR"
 

@@ -89,6 +89,13 @@ uv run pytest -q tests/ops/test_pr_management_toolkit_scripts.py
 # Optional (fast-ish): all ops tests
 # uv run pytest -q tests/ops/.
 
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
+fi
+# --- /Idempotency ---
+
 # 5) Commit
 echo
 echo "💾 Commit..."

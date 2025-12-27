@@ -117,13 +117,16 @@ fi
 # ──────────────────────────────────────────────────────────────────────────────
 echo "== 3) Commit + push + PR =="
 
-# Commit nur wenn es Änderungen gibt
-if ! git diff --quiet || ! git diff --cached --quiet; then
-  git add -A
-  git commit -m "$COMMIT_MSG"
-else
-  echo "ℹ️ Working tree clean – kein Commit nötig."
+git add -A
+
+# --- Idempotency: exit cleanly if generator produced no changes ---
+if git diff --quiet && git diff --cached --quiet; then
+  echo "ℹ️ No changes to commit (already up-to-date). Exiting 0."
+  exit 0
 fi
+# --- /Idempotency ---
+
+git commit -m "$COMMIT_MSG"
 
 git push -u origin HEAD
 
