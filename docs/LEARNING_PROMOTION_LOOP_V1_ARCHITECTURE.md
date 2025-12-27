@@ -7,7 +7,7 @@
 
 ## 1. Architektur in einem Satz
 
-> Daten aus Backtests / Automation → Learning Loop (System 1) → ConfigPatches → Promotion Loop (System 2) → `config/live_overrides/auto.toml` → Live-/Shadow-/Paper-Config.
+> Daten aus Backtests / Automation → Learning Loop (System 1) → ConfigPatches → Promotion Loop (System 2) → `config&sol;live_overrides&sol;auto.toml (planned)` → Live-/Shadow-/Paper-Config.
 
 ---
 
@@ -279,7 +279,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 
 **Output:**
 * Proposals in `reports/live_promotion/<proposal_id>/`
-* Live-Overrides in `config/live_overrides/auto.toml` (wenn bounded_auto)
+* Live-Overrides in `config&sol;live_overrides&sol;auto.toml (planned)` (wenn bounded_auto)
 
 ### 5.4 Review Phase
 
@@ -540,7 +540,7 @@ policy = AutoApplyPolicy(
 
 * **`scripts/run_learning_apply_cycle.py`** - Learning Loop (TODO)
 * **`scripts/run_promotion_proposal_cycle.py`** - Promotion Loop ✅
-* **`scripts/demo_live_overrides.py`** - Demo & Testing ✅
+* **`scripts&sol;demo_live_overrides.py (planned)`** - Demo & Testing ✅
 
 ### Tests
 

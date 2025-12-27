@@ -82,7 +82,7 @@ Wir führen einen **inkrementellen Tool-Stack** ein, in 3 PR-Stufen:
 - `pyproject.toml`: ruff config (konservativ)
 - `.github/workflows/lint.yml`: ruff CI job (minimal)
 - `.pre-commit-config.yaml`: ruff hooks
-- `docs/dev/UV_QUICKSTART.md`, `docs/dev/PRECOMMIT.md`
+- `docs&sol;dev&sol;UV_QUICKSTART.md (planned)`, `docs&sol;dev&sol;PRECOMMIT.md (planned)`
 
 ### P1 Scope
 - `src/experiments/tracking/`:
@@ -92,15 +92,15 @@ Wir führen einen **inkrementellen Tool-Stack** ein, in 3 PR-Stufen:
   - `results/<run_id>/config_snapshot.*`
   - `results/<run_id>/stats.json`, `equity.csv` (optional trades.*)
 - `reports/quarto/backtest_report.qmd`
-- `docs/reports/REPORTING_QUICKSTART.md`
+- `docs&sol;reports&sol;REPORTING_QUICKSTART.md (planned)`
 - Convenience Script: `scripts/utils/render_last_report.sh` (oder python)
 - Minimal Tests: NullTracker + results-writer smoke
 
 ### P2 Scope
 - `src/data/lake/`:
   - `lake_writer.py`, `duckdb_client.py`
-- `scripts/query_lake.py`
-- `docs/data/LAKE_GUIDE.md`
+- `scripts&sol;query_lake.py (planned)`
+- `docs&sol;data&sol;LAKE_GUIDE.md (planned)`
 - `src/obs/otel.py` + edge instrumentation
 - `ops/observability/docker-compose.yml` + `README.md`
 
@@ -167,7 +167,7 @@ Wir führen einen **inkrementellen Tool-Stack** ein, in 3 PR-Stufen:
 
 ## 10) Follow-ups (separat zu tracken)
 
-1. **Master-Runbook**: `docs/ops/TOOLING_AND_EVIDENCE_CHAIN.md` (1-command flows + troubleshooting)
+1. **Master-Runbook**: `docs&sol;ops&sol;TOOLING_AND_EVIDENCE_CHAIN.md (planned)` (1-command flows + troubleshooting)
 2. **Retention Policy**: results/ & lake cleanup schedule (optional automation)
 3. **Data Contracts**: OHLCV + Trades Schema (Pandera first)
 4. **Correlation IDs**: run_id in logs/traces konsequent überall
