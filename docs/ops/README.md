@@ -34,10 +34,101 @@ Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation st
 - `status` — Repository-Status (git + gh)
 - `pr <NUM>` — PR reviewen (safe, kein Merge)
 - `doctor` — Health-Checks
+- `audit` — Full Security & Quality Audit
 - `merge-log` — Merge-Log Quick Reference
 - `help` — Hilfe
 
 **Design:** Safe-by-default, robust, konsistent.
+
+---
+
+## 🔒 Full Security & Quality Audit
+
+**Umfassendes Audit-System für Security-Scanning, Dependency-Checks und Code-Qualität.**
+
+### Quick Start
+
+```bash
+# Manuelles Audit ausführen
+scripts/ops/ops_center.sh audit
+
+# Oder direkt
+./scripts/ops/run_full_audit.sh
+```
+
+### Was wird geprüft?
+
+1. **Security Scanning** (`pip-audit`)
+   - Scannt alle installierten Packages auf bekannte Vulnerabilities (CVEs)
+   - Nutzt PyPI Advisory Database
+   - Blockiert bei Findings (Exit != 0)
+
+2. **SBOM Export** (Software Bill of Materials)
+   - CycloneDX 1.5 Format
+   - Vollständige Dependency-Liste mit Versionen und Hashes
+   - Für Supply Chain Security & Compliance-Audits
+
+3. **Repo Health** (`ops_center.sh doctor`)
+   - Git-Status, Config-Validierung
+   - Docs-Integrität, CI-Setup
+
+4. **Code Quality**
+   - `ruff format --check` (Format-Compliance)
+   - `ruff check` (Linting)
+
+5. **Test Suite**
+   - `pytest -q` (Quick-Run aller Tests)
+
+### Output & Artefakte
+
+Alle Audit-Runs erzeugen versionierte Artefakte:
+
+```
+reports/audit/YYYYMMDD_HHMMSS/
+├── full_audit.log    # Vollständiges Audit-Log
+└── sbom.json         # Software Bill of Materials (CycloneDX 1.5)
+```
+
+**SBOM Use Cases:**
+- Supply Chain Security: Identifikation aller Dependencies
+- Compliance: SBOM-Anforderungen (z.B. Executive Order 14028)
+- Vulnerability Tracking: Schnelle Prüfung ob betroffene Packages im Einsatz sind
+
+### CI Integration
+
+**Automatisches Weekly Audit:**
+- Workflow: `.github/workflows/full_audit_weekly.yml`
+- Schedule: Montags 06:00 UTC
+- Manueller Trigger: `workflow_dispatch`
+- Artifacts: 90 Tage (SBOM: 365 Tage)
+
+**Failure-Verhalten:**
+- Hard Fail bei pip-audit findings
+- Hard Fail bei Lint-Errors
+- Hard Fail bei Test-Failures
+
+### Troubleshooting
+
+**Q: Audit failed - wo finde ich Details?**
+```bash
+# Letztes Audit-Log finden
+ls -lt reports/audit/ | head -5
+
+# Log lesen
+tail -100 reports/audit/TIMESTAMP/full_audit.log
+```
+
+**Q: SBOM für Compliance-Check benötigt?**
+```bash
+# Letztes SBOM exportieren
+ls -t reports/audit/**/sbom.json | head -1
+```
+
+**Q: Nur Security-Scan ohne Tests?**
+```bash
+# pip-audit direkt ausführen
+uv run pip-audit --desc
+```
 
 ---
 

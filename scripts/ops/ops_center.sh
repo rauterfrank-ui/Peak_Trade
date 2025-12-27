@@ -35,6 +35,7 @@ COMMANDS:
   pr <NUM>            Review PR (safe, no merge)
   merge-log [<PR>...] Show quick reference or generate merge logs
   doctor [--quick]    Run ops_doctor health checks (+ merge-log validation)
+  audit               Run full security & quality audit (pip-audit, SBOM, tests)
   risk <subcmd>       Risk analytics commands (component-var, ...)
 
 EXAMPLES:
@@ -58,6 +59,9 @@ EXAMPLES:
 
   # Quick health check (skip merge-log tests)
   ops_center.sh doctor --quick
+
+  # Run full security audit
+  ops_center.sh audit
 
 SAFE-BY-DEFAULT:
   - No destructive actions
@@ -582,6 +586,33 @@ cmd_risk_component_var() {
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Audit
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+cmd_audit() {
+  local script="$SCRIPT_DIR/run_full_audit.sh"
+
+  if [[ ! -x "$script" ]]; then
+    echo "❌ Script not found or not executable: $script"
+    echo "ℹ️  Expected location: scripts/ops/run_full_audit.sh"
+    exit 1
+  fi
+
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🔒 Running Full Security & Quality Audit"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  cd "$REPO_ROOT"
+
+  # Run audit script and pass through exit code
+  local audit_exit=0
+  "$script" "$@" || audit_exit=$?
+
+  # Script already prints artifact location, so just pass through
+  exit $audit_exit
+}
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Main
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 main() {
@@ -603,6 +634,9 @@ main() {
       ;;
     doctor)
       cmd_doctor "$@"
+      ;;
+    audit)
+      cmd_audit "$@"
       ;;
     risk)
       cmd_risk "$@"
