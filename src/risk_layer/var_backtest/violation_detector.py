@@ -87,9 +87,7 @@ def detect_violations(
         1
     """
     # Alignment und NaN-Handling
-    aligned = pd.DataFrame(
-        {"returns": returns, "var": var_estimates}
-    ).dropna()
+    aligned = pd.DataFrame({"returns": returns, "var": var_estimates}).dropna()
 
     # Violation: Return unterschreitet VaR (beide negativ!)
     # Mathematisch: return < var

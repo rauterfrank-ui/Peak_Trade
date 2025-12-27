@@ -50,9 +50,7 @@ class TestVaRBacktestRunnerSmoke:
         returns = pd.Series([-0.01] * 99 + [-0.03] * 1, index=dates)
         var_estimates = pd.Series([-0.02] * 100, index=dates)
 
-        runner = VaRBacktestRunner(
-            confidence_level=0.99, min_observations=250
-        )
+        runner = VaRBacktestRunner(confidence_level=0.99, min_observations=250)
 
         result = runner.run(returns, var_estimates, symbol="SHORT/EUR")
 
@@ -136,9 +134,7 @@ class TestVaRBacktestRunnerConfiguration:
         returns = pd.Series([-0.01] * 247 + [-0.03] * 3, index=dates)
         var_estimates = pd.Series([-0.02] * 250, index=dates)
 
-        runner = VaRBacktestRunner(
-            confidence_level=0.99, var_method="parametric"
-        )
+        runner = VaRBacktestRunner(confidence_level=0.99, var_method="parametric")
         result = runner.run(returns, var_estimates)
 
         assert result.var_method == "parametric"

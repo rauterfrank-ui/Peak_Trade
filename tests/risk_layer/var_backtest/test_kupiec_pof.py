@@ -249,9 +249,7 @@ class TestKupiecStatistics:
     def test_critical_value_consistent(self):
         """Kritischer Wert sollte konsistent mit significance_level sein."""
         violations = [False] * 250
-        result = kupiec_pof_test(
-            violations, confidence_level=0.99, significance_level=0.05
-        )
+        result = kupiec_pof_test(violations, confidence_level=0.99, significance_level=0.05)
 
         # Für df=1, alpha=0.05: critical value ≈ 3.84
         assert abs(result.critical_value - 3.84) < 0.05

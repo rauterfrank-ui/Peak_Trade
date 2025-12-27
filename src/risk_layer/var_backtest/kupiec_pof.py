@@ -95,13 +95,9 @@ def kupiec_pof_test(
     """
     # Input Validation
     if not 0 < confidence_level < 1:
-        raise ValueError(
-            f"confidence_level muss in (0,1) liegen: {confidence_level}"
-        )
+        raise ValueError(f"confidence_level muss in (0,1) liegen: {confidence_level}")
     if not 0 < significance_level < 1:
-        raise ValueError(
-            f"significance_level muss in (0,1) liegen: {significance_level}"
-        )
+        raise ValueError(f"significance_level muss in (0,1) liegen: {significance_level}")
 
     T = len(violations)
     N = sum(violations)
@@ -323,8 +319,6 @@ def quick_kupiec_check(
     Returns:
         True wenn Modell valide (H₀ nicht abgelehnt)
     """
-    violations = [True] * n_violations + [False] * (
-        n_observations - n_violations
-    )
+    violations = [True] * n_violations + [False] * (n_observations - n_violations)
     result = kupiec_pof_test(violations, confidence_level=confidence_level)
     return result.is_valid
