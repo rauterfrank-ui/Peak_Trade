@@ -11,6 +11,7 @@ Testet realistische Trading-Szenarien:
 Diese Tests sind leichtgewichtig, aber realistisch genug,
 um die Logik klar zu validieren.
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -419,10 +420,7 @@ class TestOverExposureScenario:
         limits = LiveRiskLimits(realistic_risk_config)
 
         # 7 verschiedene Positionen > 5 Limit
-        positions = [
-            make_position(f"COIN{i}/EUR", 1000.0)
-            for i in range(7)
-        ]
+        positions = [make_position(f"COIN{i}/EUR", 1000.0) for i in range(7)]
 
         snapshot = make_snapshot(positions=positions, equity=12000.0)
 

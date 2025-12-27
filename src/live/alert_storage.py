@@ -35,6 +35,7 @@ Usage:
         category=[AlertCategory.RISK],
     )
 """
+
 from __future__ import annotations
 
 import json
@@ -314,9 +315,7 @@ class AlertStorage:
         alerts.sort(key=lambda a: a.timestamp, reverse=True)
         return alerts[:limit]
 
-    def _get_relevant_files(
-        self, since: datetime, until: datetime
-    ) -> List[Path]:
+    def _get_relevant_files(self, since: datetime, until: datetime) -> List[Path]:
         """
         Findet relevante Alert-Dateien für einen Zeitraum.
 
@@ -333,9 +332,7 @@ class AlertStorage:
             # Parse Datum aus Dateiname
             try:
                 date_str = file_path.stem.replace("alerts_", "")
-                file_date = datetime.strptime(date_str, "%Y-%m-%d").replace(
-                    tzinfo=timezone.utc
-                )
+                file_date = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
 
                 # Prüfe ob File im relevanten Zeitraum
                 if file_date.date() >= since.date() and file_date.date() <= until.date():
@@ -456,9 +453,7 @@ class AlertStorage:
         for file_path in self._storage_dir.glob("alerts_*.jsonl"):
             try:
                 date_str = file_path.stem.replace("alerts_", "")
-                file_date = datetime.strptime(date_str, "%Y-%m-%d").replace(
-                    tzinfo=timezone.utc
-                )
+                file_date = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
 
                 if file_date < cutoff:
                     file_path.unlink()
@@ -589,6 +584,3 @@ __all__ = [
     "list_recent_alerts",
     "get_alert_stats",
 ]
-
-
-

@@ -6,6 +6,7 @@ Tests für src/experiments/base.py (Phase 29)
 Testet ParamSweep, ExperimentConfig, SweepResultRow,
 ExperimentResult und ExperimentRunner.
 """
+
 import pytest
 from datetime import datetime
 from typing import Any, Dict, List, Optional
@@ -25,6 +26,7 @@ from src.experiments.base import (
 # ============================================================================
 # PARAM SWEEP TESTS
 # ============================================================================
+
 
 class TestParamSweep:
     """Tests für ParamSweep."""
@@ -95,6 +97,7 @@ class TestParamSweep:
 # ============================================================================
 # EXPERIMENT CONFIG TESTS
 # ============================================================================
+
 
 class TestExperimentConfig:
     """Tests für ExperimentConfig."""
@@ -216,6 +219,7 @@ class TestExperimentConfig:
 # SWEEP RESULT ROW TESTS
 # ============================================================================
 
+
 class TestSweepResultRow:
     """Tests für SweepResultRow."""
 
@@ -295,6 +299,7 @@ class TestSweepResultRow:
 # EXPERIMENT RESULT TESTS
 # ============================================================================
 
+
 class TestExperimentResult:
     """Tests für ExperimentResult."""
 
@@ -363,7 +368,7 @@ class TestExperimentResult:
 
         assert result.num_successful == 2
         assert result.num_failed == 1
-        assert abs(result.success_rate - 2/3) < 0.01
+        assert abs(result.success_rate - 2 / 3) < 0.01
 
     def test_to_dataframe(self, sample_config, sample_results):
         """to_dataframe() gibt korrekten DataFrame."""
@@ -426,6 +431,7 @@ class TestExperimentResult:
 # EXPERIMENT RUNNER TESTS
 # ============================================================================
 
+
 class TestExperimentRunner:
     """Tests für ExperimentRunner."""
 
@@ -437,6 +443,7 @@ class TestExperimentRunner:
 
     def test_custom_backtest_fn(self):
         """Custom backtest_fn wird verwendet."""
+
         def custom_fn(*args, **kwargs):
             return {"total_return": 0.5, "sharpe_ratio": 2.0}
 
@@ -565,11 +572,13 @@ class TestExperimentRunner:
 # INTEGRATION TESTS
 # ============================================================================
 
+
 class TestExperimentRunnerIntegration:
     """Integrationstests für ExperimentRunner."""
 
     def test_full_workflow(self):
         """Kompletter Workflow von Config bis Result."""
+
         # Setup
         def mock_backtest(strategy_name, params, symbol, timeframe, *args, **kwargs):
             # Simuliere dass größere Perioden besser sind

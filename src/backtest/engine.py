@@ -33,6 +33,7 @@ from ..core.regime import (
     summarize_regime_distribution,
 )
 from ..core.peak_config import PeakConfig, load_config
+from ..core.errors import BacktestError, BacktestInvariantError, add_backtest_context
 from ..strategies import load_strategy
 from ..risk import (
     PositionSizer,
@@ -56,6 +57,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class Trade:
     """Einzelner Trade mit allen Details."""
+
     entry_time: datetime
     entry_price: float
     size: float
@@ -368,7 +370,7 @@ class BacktestEngine:
         self.daily_returns_pct = {}
         trades: List[Trade] = []
         blocked_trades = 0
-        
+
         # DataFrame speichern für spätere Regime-Berechnung
         self.data = df
 
@@ -424,18 +426,43 @@ class BacktestEngine:
                 if self.core_position_sizer is not None:
                     # New OOP API: get_target_position returns units directly
                     target_units = self.core_position_sizer.get_target_position(
-                        signal=int(signal),
-                        price=entry_price,
-                        equity=equity
+                        signal=int(signal), price=entry_price, equity=equity
                     )
 
                     # Risk Manager: Adjust target position (kann auf 0 reduzieren)
                     if self.risk_manager is not None:
+                        # Erweiterte kwargs für v1 Risk-Layer (backward-compatible)
+                        risk_kwargs = {
+                            "symbol": symbol,
+                            "last_return": (
+                                self.equity_curve[-1] / self.equity_curve[-2] - 1
+                                if len(self.equity_curve) >= 2
+                                else 0.0
+                            ),
+                        }
+
+                        # Aktuelle Position als PositionSnapshot (falls vorhanden)
+                        if current_trade is not None:
+                            try:
+                                from ..risk import PositionSnapshot
+
+                                risk_kwargs["positions"] = [
+                                    PositionSnapshot(
+                                        symbol=symbol,
+                                        units=current_trade.size,
+                                        price=bar["close"],
+                                        timestamp=trade_dt,
+                                    )
+                                ]
+                            except ImportError:
+                                pass  # Fallback: keine positions
+
                         target_units = self.risk_manager.adjust_target_position(
                             target_units=target_units,
                             price=entry_price,
                             equity=equity,
-                            timestamp=trade_dt
+                            timestamp=trade_dt,
+                            **risk_kwargs,
                         )
 
                     # Calculate position value and size
@@ -586,6 +613,7 @@ class BacktestEngine:
 
         # Trade Stats
         from .stats import compute_trade_stats
+
         trade_stats = compute_trade_stats([t.__dict__ for t in trades])
 
         stats = {
@@ -601,35 +629,33 @@ class BacktestEngine:
             trades_df = pd.DataFrame([t.__dict__ for t in trades])
         else:
             trades_df = None
-        
+
         # Regime-Infos berechnen (optional, falls Config verfügbar)
         regime_meta: Dict[str, Any] = {}
         try:
             peak_cfg = load_config("config.toml")
             regime_cfg = build_regime_config_from_config(peak_cfg)
-            
+
             # Regime-Labels berechnen
             trend_labels = label_trend_regime(self.data, regime_cfg)
             vol_labels = label_vol_regime(self.data, regime_cfg)
             combined_labels = label_combined_regime(trend_labels, vol_labels)
-            
+
             # Verteilung berechnen
             dist = summarize_regime_distribution(combined_labels)
-            
+
             regime_meta = {
                 "regime_distribution": dist,
                 "regime_config": regime_cfg.to_dict(),
             }
-            
+
             logger.debug(f"Regime-Verteilung: {dist}")
         except Exception as e:
             logger.debug(f"Regime-Berechnung fehlgeschlagen: {e}")
             # Kein Fehler werfen, einfach ohne Regime-Infos fortfahren
 
-        logger.info(
-            f"Backtest abgeschlossen: {len(trades)} Trades, {blocked_trades} blockiert"
-        )
-        
+        logger.info(f"Backtest abgeschlossen: {len(trades)} Trades, {blocked_trades} blockiert")
+
         # Metadata zusammenführen
         metadata = {
             "mode": "realistic_with_risk_management",
@@ -768,6 +794,7 @@ class BacktestEngine:
             BacktestResult mit Equity-Curve, Trades (als OrderFills), Stats
         """
         import uuid
+
         run_id = f"backtest_{uuid.uuid4().hex[:8]}"
 
         # Init
@@ -810,7 +837,7 @@ class BacktestEngine:
             bar = df.iloc[i]
             # Verwende .iloc[0] wenn Series, sonst direkt int()
             sig_val = signals.iloc[i]
-            signal = int(sig_val.iloc[0]) if hasattr(sig_val, 'iloc') else int(sig_val)
+            signal = int(sig_val.iloc[0]) if hasattr(sig_val, "iloc") else int(sig_val)
             bar_time = bar.name
             close_price = float(bar["close"])
 
@@ -823,7 +850,9 @@ class BacktestEngine:
 
             # SignalEvent erstellen
             event = SignalEvent(
-                timestamp=bar_time.to_pydatetime() if hasattr(bar_time, "to_pydatetime") else bar_time,
+                timestamp=(
+                    bar_time.to_pydatetime() if hasattr(bar_time, "to_pydatetime") else bar_time
+                ),
                 symbol=symbol,
                 signal=signal,
                 price=close_price,
@@ -861,18 +890,24 @@ class BacktestEngine:
                             if current_position < 0:
                                 # Short schliessen
                                 pnl = abs(current_position) * (entry_price - fill.price) - fee
-                                trades_data.append({
-                                    "entry_time": entry_time,
-                                    "entry_price": entry_price,
-                                    "exit_time": fill.timestamp,
-                                    "exit_price": fill.price,
-                                    "size": abs(current_position),
-                                    "side": "short",
-                                    "pnl": pnl,
-                                    "pnl_pct": (pnl / (entry_price * abs(current_position))) * 100 if entry_price > 0 else 0,
-                                    "fee": fee,
-                                    "exit_reason": "signal",
-                                })
+                                trades_data.append(
+                                    {
+                                        "entry_time": entry_time,
+                                        "entry_price": entry_price,
+                                        "exit_time": fill.timestamp,
+                                        "exit_price": fill.price,
+                                        "size": abs(current_position),
+                                        "side": "short",
+                                        "pnl": pnl,
+                                        "pnl_pct": (
+                                            (pnl / (entry_price * abs(current_position))) * 100
+                                            if entry_price > 0
+                                            else 0
+                                        ),
+                                        "fee": fee,
+                                        "exit_reason": "signal",
+                                    }
+                                )
                                 equity += pnl
                                 current_position = 0.0
 
@@ -883,18 +918,24 @@ class BacktestEngine:
                             if current_position > 0:
                                 # Long schliessen
                                 pnl = current_position * (fill.price - entry_price) - fee
-                                trades_data.append({
-                                    "entry_time": entry_time,
-                                    "entry_price": entry_price,
-                                    "exit_time": fill.timestamp,
-                                    "exit_price": fill.price,
-                                    "size": current_position,
-                                    "side": "long",
-                                    "pnl": pnl,
-                                    "pnl_pct": (pnl / (entry_price * current_position)) * 100 if entry_price > 0 else 0,
-                                    "fee": fee,
-                                    "exit_reason": "signal",
-                                })
+                                trades_data.append(
+                                    {
+                                        "entry_time": entry_time,
+                                        "entry_price": entry_price,
+                                        "exit_time": fill.timestamp,
+                                        "exit_price": fill.price,
+                                        "size": current_position,
+                                        "side": "long",
+                                        "pnl": pnl,
+                                        "pnl_pct": (
+                                            (pnl / (entry_price * current_position)) * 100
+                                            if entry_price > 0
+                                            else 0
+                                        ),
+                                        "fee": fee,
+                                        "exit_reason": "signal",
+                                    }
+                                )
                                 equity += pnl
                                 current_position = 0.0
                             elif current_position <= 0:
@@ -926,34 +967,44 @@ class BacktestEngine:
             if current_position > 0:
                 # Long schliessen
                 pnl = current_position * (close_price - entry_price)
-                trades_data.append({
-                    "entry_time": entry_time,
-                    "entry_price": entry_price,
-                    "exit_time": last_bar.name,
-                    "exit_price": close_price,
-                    "size": current_position,
-                    "side": "long",
-                    "pnl": pnl,
-                    "pnl_pct": (pnl / (entry_price * current_position)) * 100 if entry_price > 0 else 0,
-                    "fee": 0.0,
-                    "exit_reason": "end_of_data",
-                })
+                trades_data.append(
+                    {
+                        "entry_time": entry_time,
+                        "entry_price": entry_price,
+                        "exit_time": last_bar.name,
+                        "exit_price": close_price,
+                        "size": current_position,
+                        "side": "long",
+                        "pnl": pnl,
+                        "pnl_pct": (
+                            (pnl / (entry_price * current_position)) * 100 if entry_price > 0 else 0
+                        ),
+                        "fee": 0.0,
+                        "exit_reason": "end_of_data",
+                    }
+                )
                 equity += pnl
             else:
                 # Short schliessen
                 pnl = abs(current_position) * (entry_price - close_price)
-                trades_data.append({
-                    "entry_time": entry_time,
-                    "entry_price": entry_price,
-                    "exit_time": last_bar.name,
-                    "exit_price": close_price,
-                    "size": abs(current_position),
-                    "side": "short",
-                    "pnl": pnl,
-                    "pnl_pct": (pnl / (entry_price * abs(current_position))) * 100 if entry_price > 0 else 0,
-                    "fee": 0.0,
-                    "exit_reason": "end_of_data",
-                })
+                trades_data.append(
+                    {
+                        "entry_time": entry_time,
+                        "entry_price": entry_price,
+                        "exit_time": last_bar.name,
+                        "exit_price": close_price,
+                        "size": abs(current_position),
+                        "side": "short",
+                        "pnl": pnl,
+                        "pnl_pct": (
+                            (pnl / (entry_price * abs(current_position))) * 100
+                            if entry_price > 0
+                            else 0
+                        ),
+                        "fee": 0.0,
+                        "exit_reason": "end_of_data",
+                    }
+                )
                 equity += pnl
 
         # Stats berechnen
@@ -963,6 +1014,7 @@ class BacktestEngine:
 
         # Trade-Stats
         from .stats import compute_trade_stats
+
         trade_stats = compute_trade_stats(trades_data) if trades_data else None
 
         # Execution-Summary
@@ -1016,6 +1068,7 @@ class BacktestEngine:
 # REGISTRY-BASIERTE ENTRY-POINTS
 # ============================================================================
 
+
 def run_single_strategy_from_registry(
     df: pd.DataFrame,
     strategy_name: str,
@@ -1027,30 +1080,30 @@ def run_single_strategy_from_registry(
 ) -> BacktestResult:
     """
     Führt Backtest für EINE Strategie aus der Registry aus.
-    
+
     Workflow:
     1. Lädt Strategie-Config aus Registry (mit Defaults-Merging)
     2. Override mit custom_params (falls angegeben)
     3. Lädt Strategie-Funktion via load_strategy()
     4. Führt run_realistic() aus
-    
+
     Args:
         df: OHLCV-DataFrame
         strategy_name: Name der Strategie (muss in config.toml definiert sein)
         custom_params: Optional Params die Config überschreiben
         position_sizer: Optional custom PositionSizer
         risk_limits: Optional custom RiskLimits
-    
+
     Returns:
         BacktestResult mit strategy_name gesetzt
-    
+
     Raises:
         KeyError: Wenn Strategie nicht in Registry
         ValueError: Wenn Strategie-Funktion fehlerhaft
-    
+
     Example:
         >>> from src.backtest.engine import run_single_strategy_from_registry
-        >>> 
+        >>>
         >>> result = run_single_strategy_from_registry(
         ...     df=df,
         ...     strategy_name="ma_crossover",
@@ -1060,22 +1113,20 @@ def run_single_strategy_from_registry(
     """
     # 1. Config aus Registry laden
     strategy_cfg = get_strategy_config(strategy_name)
-    
+
     # 2. Merged Params (Defaults + Strategy-Specific)
     params = strategy_cfg.to_dict()
-    
+
     # 3. Custom Params überschreiben
     if custom_params:
         params.update(custom_params)
-    
+
     # 4. Strategie-Funktion laden
     try:
         strategy_fn = load_strategy(strategy_name)
     except Exception as e:
-        raise ValueError(
-            f"Konnte Strategie '{strategy_name}' nicht laden: {e}"
-        )
-    
+        raise ValueError(f"Konnte Strategie '{strategy_name}' nicht laden: {e}")
+
     # 5. Engine initialisieren
     engine = BacktestEngine(
         position_sizer=position_sizer,
@@ -1083,27 +1134,27 @@ def run_single_strategy_from_registry(
         core_position_sizer=core_position_sizer,
         risk_manager=risk_manager,
     )
-    
+
     # 6. Backtest ausführen
     logger.info(f"Starte Backtest für Strategie '{strategy_name}'")
     logger.debug(f"Merged Params: {params}")
-    
+
     result = engine.run_realistic(
         df=df,
         strategy_signal_fn=strategy_fn,
         strategy_params=params,
     )
-    
+
     # 7. Strategy-Name setzen
     result.strategy_name = strategy_name
-    
+
     logger.info(
         f"Backtest '{strategy_name}' abgeschlossen: "
         f"Return={result.stats['total_return']:.2%}, "
         f"Sharpe={result.stats['sharpe']:.2f}, "
         f"Trades={result.stats['total_trades']}"
     )
-    
+
     return result
 
 
@@ -1111,13 +1162,14 @@ def run_single_strategy_from_registry(
 class PortfolioResult:
     """
     Multi-Strategy Portfolio-Backtest-Ergebnis.
-    
+
     Attributes:
         combined_equity: Kombinierte Equity-Curve aller Strategien
         strategy_results: Dict[strategy_name → BacktestResult]
         portfolio_stats: Aggregierte Portfolio-Stats
         allocation: Dict[strategy_name → Kapital-Allocation in %]
     """
+
     combined_equity: pd.Series
     strategy_results: Dict[str, BacktestResult]
     portfolio_stats: Dict[str, float]
@@ -1137,7 +1189,7 @@ def run_portfolio_from_config(
 ) -> PortfolioResult:
     """
     Führt Portfolio-Backtest mit mehreren Strategien aus.
-    
+
     Workflow:
     1. Lädt aktive Strategien aus Registry
     2. Optional: Filtert nach regime_filter oder strategy_filter
@@ -1145,7 +1197,7 @@ def run_portfolio_from_config(
     4. Führt Backtests für jede Strategie parallel aus
     5. Kombiniert Equity-Curves basierend auf Allocation
     6. Berechnet Portfolio-Stats
-    
+
     Args:
         df: OHLCV-DataFrame
         cfg: Optional Config-Dict (default: lädt aus config.toml)
@@ -1154,53 +1206,51 @@ def run_portfolio_from_config(
         regime_filter: Optional Marktregime-Filter ("trending", "ranging", "any")
         position_sizer: Optional custom PositionSizer für alle Strategien
         risk_limits: Optional custom RiskLimits für alle Strategien
-    
+
     Returns:
         PortfolioResult mit kombinierter Equity und Individual-Results
-    
+
     Example:
         >>> from src.backtest.engine import run_portfolio_from_config
-        >>> 
+        >>>
         >>> # Alle aktiven Strategien
         >>> result = run_portfolio_from_config(df)
-        >>> 
+        >>>
         >>> # Nur Trending-Strategien
         >>> result = run_portfolio_from_config(df, regime_filter="trending")
-        >>> 
+        >>>
         >>> # Custom Strategie-Liste
         >>> result = run_portfolio_from_config(
-        ...     df, 
+        ...     df,
         ...     strategy_filter=["ma_crossover", "momentum_1h"]
         ... )
     """
     # 1. Config laden
     if cfg is None:
         cfg = get_config()
-    
+
     portfolio_cfg = cfg.get("portfolio", {})
-    
+
     if not portfolio_cfg.get("enabled", False):
         raise ValueError(
-            "Portfolio-Mode ist deaktiviert. "
-            "Setze portfolio.enabled=true in config.toml"
+            "Portfolio-Mode ist deaktiviert. Setze portfolio.enabled=true in config.toml"
         )
-    
+
     # 2. Strategien bestimmen
     if strategy_filter:
         strategies = strategy_filter
     elif regime_filter:
         from ..core.config_registry import get_strategies_by_regime
+
         strategies = get_strategies_by_regime(regime_filter)
         if not strategies:
-            raise ValueError(
-                f"Keine Strategien für Regime '{regime_filter}' gefunden"
-            )
+            raise ValueError(f"Keine Strategien für Regime '{regime_filter}' gefunden")
     else:
         strategies = get_active_strategies()
-    
+
     if not strategies:
         raise ValueError("Keine Strategien zum Backtesten ausgewählt")
-    
+
     # 3. Max Strategies Limit prüfen
     max_strategies = portfolio_cfg.get("max_strategies_active", 3)
     if len(strategies) > max_strategies:
@@ -1210,37 +1260,36 @@ def run_portfolio_from_config(
             f"Nutze erste {max_strategies}."
         )
         strategies = strategies[:max_strategies]
-    
+
     logger.info(
-        f"Starte Portfolio-Backtest mit {len(strategies)} Strategien: "
-        f"{', '.join(strategies)}"
+        f"Starte Portfolio-Backtest mit {len(strategies)} Strategien: {', '.join(strategies)}"
     )
-    
+
     # 4. Capital Allocation bestimmen
     total_capital = portfolio_cfg.get("total_capital", cfg["backtest"]["initial_cash"])
     allocation_method = portfolio_cfg.get("allocation_method", "equal")
-    
+
     allocation = _calculate_allocation(
         strategies=strategies,
         method=allocation_method,
         manual_weights=portfolio_cfg.get("weights", {}),
         total_capital=total_capital,
     )
-    
+
     logger.info(f"Capital Allocation ({allocation_method}): {allocation}")
-    
+
     # 5. Backtests für jede Strategie ausführen
     strategy_results: Dict[str, BacktestResult] = {}
-    
+
     for strategy_name in strategies:
         # Capital für diese Strategie
         strategy_capital = allocation[strategy_name] * total_capital
-        
+
         # Backtest mit angepasstem Initial Capital
         # WICHTIG: Wir müssen initial_cash temporär überschreiben
         original_cash = cfg["backtest"]["initial_cash"]
         cfg["backtest"]["initial_cash"] = strategy_capital
-        
+
         try:
             result = run_single_strategy_from_registry(
                 df=df,
@@ -1252,9 +1301,7 @@ def run_portfolio_from_config(
             )
             strategy_results[strategy_name] = result
         except Exception as e:
-            logger.error(
-                f"Fehler beim Backtest von '{strategy_name}': {e}"
-            )
+            logger.error(f"Fehler beim Backtest von '{strategy_name}': {e}")
             # Bei Fehler: Dummy-Result mit 0 Equity
             strategy_results[strategy_name] = _create_dummy_result(
                 strategy_name, df, strategy_capital
@@ -1262,35 +1309,35 @@ def run_portfolio_from_config(
         finally:
             # Initial Cash zurücksetzen
             cfg["backtest"]["initial_cash"] = original_cash
-    
+
     # 6. Equity-Curves kombinieren
     combined_equity = _combine_equity_curves(
         strategy_results=strategy_results,
         allocation=allocation,
     )
-    
+
     # 7. Portfolio-Stats berechnen
     from .stats import compute_basic_stats, compute_sharpe_ratio
-    
+
     portfolio_stats = {
         **compute_basic_stats(combined_equity),
         "sharpe": compute_sharpe_ratio(combined_equity),
         "num_strategies": len(strategies),
         "allocation_method": allocation_method,
     }
-    
+
     # Individual Stats hinzufügen
     for name, result in strategy_results.items():
         portfolio_stats[f"{name}_return"] = result.stats["total_return"]
         portfolio_stats[f"{name}_sharpe"] = result.stats["sharpe"]
         portfolio_stats[f"{name}_trades"] = result.stats["total_trades"]
-    
+
     logger.info(
         f"Portfolio-Backtest abgeschlossen: "
         f"Return={portfolio_stats['total_return']:.2%}, "
         f"Sharpe={portfolio_stats['sharpe']:.2f}"
     )
-    
+
     return PortfolioResult(
         combined_equity=combined_equity,
         strategy_results=strategy_results,
@@ -1303,6 +1350,7 @@ def run_portfolio_from_config(
 # HELPER FUNCTIONS
 # ============================================================================
 
+
 def _calculate_allocation(
     strategies: List[str],
     method: str,
@@ -1311,65 +1359,55 @@ def _calculate_allocation(
 ) -> Dict[str, float]:
     """
     Berechnet Capital Allocation für Portfolio.
-    
+
     Methods:
     - "equal": Gleichverteilung (1/N)
     - "manual": Nutzt portfolio.weights aus Config
     - "risk_parity": NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (gleiches Risk-Level pro Strategie)
     - "sharpe_weighted": NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (basierend auf historischer Sharpe)
-    
+
     Args:
         strategies: Liste von Strategie-Namen
         method: Allocation-Methode
         manual_weights: Dict mit manuellen Weights
         total_capital: Gesamt-Kapital
-    
+
     Returns:
         Dict[strategy_name → fraction] (Summe = 1.0)
     """
     n = len(strategies)
-    
+
     if method == "equal":
         return {name: 1.0 / n for name in strategies}
-    
+
     elif method == "manual":
         # Nutze manual_weights, fallback auf equal
         allocation = {}
         for name in strategies:
             weight = manual_weights.get(name)
             if weight is None:
-                logger.warning(
-                    f"Kein Weight für '{name}' in portfolio.weights, "
-                    f"nutze equal weight"
-                )
+                logger.warning(f"Kein Weight für '{name}' in portfolio.weights, nutze equal weight")
                 weight = 1.0 / n
             allocation[name] = weight
-        
+
         # Normalisieren (Summe = 1.0)
         total = sum(allocation.values())
         if abs(total - 1.0) > 0.01:
-            logger.warning(
-                f"Weights summieren zu {total:.3f} statt 1.0, "
-                f"normalisiere..."
-            )
+            logger.warning(f"Weights summieren zu {total:.3f} statt 1.0, normalisiere...")
             allocation = {k: v / total for k, v in allocation.items()}
-        
+
         return allocation
-    
+
     elif method == "risk_parity":
         # TODO: Implementierung basierend auf Volatility/Sharpe
-        logger.warning(
-            "risk_parity noch nicht implementiert, nutze equal weight"
-        )
+        logger.warning("risk_parity noch nicht implementiert, nutze equal weight")
         return {name: 1.0 / n for name in strategies}
-    
+
     elif method == "sharpe_weighted":
         # TODO: Benötigt historische Backtests
-        logger.warning(
-            "sharpe_weighted noch nicht implementiert, nutze equal weight"
-        )
+        logger.warning("sharpe_weighted noch nicht implementiert, nutze equal weight")
         return {name: 1.0 / n for name in strategies}
-    
+
     else:
         raise ValueError(
             f"Unbekannte Allocation-Methode: '{method}'. "
@@ -1383,26 +1421,26 @@ def _combine_equity_curves(
 ) -> pd.Series:
     """
     Kombiniert Equity-Curves mehrerer Strategien basierend auf Allocation.
-    
+
     Args:
         strategy_results: Dict[strategy_name → BacktestResult]
         allocation: Dict[strategy_name → fraction]
-    
+
     Returns:
         Kombinierte Equity-Curve (pd.Series)
     """
     if not strategy_results:
         raise ValueError("Keine Strategy-Results zum Kombinieren")
-    
+
     # Alle Equity-Curves sammeln
     equity_curves = {}
     for name, result in strategy_results.items():
         weight = allocation[name]
         equity_curves[name] = result.equity_curve * weight
-    
+
     # Kombinieren (Summe)
     combined = sum(equity_curves.values())
-    
+
     return combined
 
 
@@ -1448,6 +1486,7 @@ def _create_dummy_result(
 # PORTFOLIO STRATEGY LAYER INTEGRATION (Phase 26)
 # ============================================================================
 
+
 @dataclass
 class PortfolioStrategyResult:
     """
@@ -1467,6 +1506,7 @@ class PortfolioStrategyResult:
         portfolio_strategy_name: Name der verwendeten Portfolio-Strategie
         metadata: Zusätzliche Informationen
     """
+
     combined_equity: pd.Series
     symbol_equities: Dict[str, pd.Series]
     target_weights_history: pd.DataFrame
@@ -1558,13 +1598,10 @@ def run_portfolio_strategy_backtest(
 
     if portfolio_strategy is None:
         raise ValueError(
-            "Portfolio-Layer ist deaktiviert. "
-            "Setze portfolio.enabled=true in config.toml"
+            "Portfolio-Layer ist deaktiviert. Setze portfolio.enabled=true in config.toml"
         )
 
-    logger.info(
-        f"Portfolio-Strategy-Backtest mit {portfolio_strategy.name} gestartet"
-    )
+    logger.info(f"Portfolio-Strategy-Backtest mit {portfolio_strategy.name} gestartet")
 
     # 3. Daten validieren und synchronisieren
     symbols = list(data_dict.keys())
@@ -1636,7 +1673,7 @@ def run_portfolio_strategy_backtest(
         if bar_idx >= portfolio_config.vol_lookback and portfolio_config.name == "vol_target":
             returns_dict = {}
             for symbol in symbols:
-                symbol_prices = data_dict[symbol].loc[common_index[:bar_idx+1], "close"]
+                symbol_prices = data_dict[symbol].loc[common_index[: bar_idx + 1], "close"]
                 returns_dict[symbol] = symbol_prices.pct_change().dropna()
             returns_history = pd.DataFrame(returns_dict)
 
@@ -1656,8 +1693,8 @@ def run_portfolio_strategy_backtest(
         target_weights_list.append(target_weights)
 
         # Rebalancing-Check
-        should_rebalance = (bar_idx % rebalance_interval == 0)
-        weights_changed = (target_weights != prev_target_weights)
+        should_rebalance = bar_idx % rebalance_interval == 0
+        weights_changed = target_weights != prev_target_weights
 
         if should_rebalance or weights_changed:
             # Positionen anpassen
@@ -1693,15 +1730,21 @@ def run_portfolio_strategy_backtest(
                         # Trade abschließen wenn Position geschlossen
                         if positions[symbol] <= 0 and symbol in entry_prices:
                             pnl = (prices[symbol] - entry_prices[symbol]) * abs(current_position)
-                            all_trades[symbol].append({
-                                "entry_time": entry_times.get(symbol),
-                                "entry_price": entry_prices.get(symbol),
-                                "exit_time": timestamp,
-                                "exit_price": prices[symbol],
-                                "size": abs(current_position),
-                                "pnl": pnl,
-                                "pnl_pct": (pnl / (entry_prices[symbol] * abs(current_position))) * 100 if entry_prices.get(symbol) else 0,
-                            })
+                            all_trades[symbol].append(
+                                {
+                                    "entry_time": entry_times.get(symbol),
+                                    "entry_price": entry_prices.get(symbol),
+                                    "exit_time": timestamp,
+                                    "exit_price": prices[symbol],
+                                    "size": abs(current_position),
+                                    "pnl": pnl,
+                                    "pnl_pct": (
+                                        (pnl / (entry_prices[symbol] * abs(current_position))) * 100
+                                        if entry_prices.get(symbol)
+                                        else 0
+                                    ),
+                                }
+                            )
                             entry_prices.pop(symbol, None)
                             entry_times.pop(symbol, None)
 
@@ -1713,16 +1756,22 @@ def run_portfolio_strategy_backtest(
         if positions[symbol] > 0 and symbol in entry_prices:
             last_price = float(data_dict[symbol].loc[last_timestamp, "close"])
             pnl = (last_price - entry_prices[symbol]) * positions[symbol]
-            all_trades[symbol].append({
-                "entry_time": entry_times.get(symbol),
-                "entry_price": entry_prices.get(symbol),
-                "exit_time": last_timestamp,
-                "exit_price": last_price,
-                "size": positions[symbol],
-                "pnl": pnl,
-                "pnl_pct": (pnl / (entry_prices[symbol] * positions[symbol])) * 100 if entry_prices.get(symbol) else 0,
-                "exit_reason": "end_of_data",
-            })
+            all_trades[symbol].append(
+                {
+                    "entry_time": entry_times.get(symbol),
+                    "entry_price": entry_prices.get(symbol),
+                    "exit_time": last_timestamp,
+                    "exit_price": last_price,
+                    "size": positions[symbol],
+                    "pnl": pnl,
+                    "pnl_pct": (
+                        (pnl / (entry_prices[symbol] * positions[symbol])) * 100
+                        if entry_prices.get(symbol)
+                        else 0
+                    ),
+                    "exit_reason": "end_of_data",
+                }
+            )
 
     # 8. Ergebnisse aufbereiten
     equity_series = pd.Series(equity_curve, index=[common_index[0]] + list(common_index))
@@ -1739,8 +1788,7 @@ def run_portfolio_strategy_backtest(
 
     # Trades als DataFrames
     trades_per_symbol = {
-        s: pd.DataFrame(all_trades[s]) if all_trades[s] else pd.DataFrame()
-        for s in symbols
+        s: pd.DataFrame(all_trades[s]) if all_trades[s] else pd.DataFrame() for s in symbols
     }
 
     # Portfolio-Stats berechnen

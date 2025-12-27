@@ -17,6 +17,7 @@ Usage:
     python scripts/live_ops.py portfolio --config config/config.toml
     python scripts/live_ops.py health --config config/config.toml
 """
+
 from __future__ import annotations
 
 import argparse
@@ -47,6 +48,7 @@ from src.live.orders import (
     LiveOrderRequest,
     side_from_direction,
 )
+
 # noqa: E402 - imports after sys.path modification
 import pandas as pd
 import numpy as np
@@ -302,7 +304,9 @@ def run_orders_command(args: argparse.Namespace) -> int:
             default_notional = cfg.get("live.max_notional_per_order", 1000.0)
 
         if not json_mode:
-            print(f"\n💰 Notional pro Order: {default_notional:.2f} {cfg.get('general.base_currency', 'EUR')}")
+            print(
+                f"\n💰 Notional pro Order: {default_notional:.2f} {cfg.get('general.base_currency', 'EUR')}"
+            )
 
         # Preview-Name
         preview_name = f"preview_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
@@ -312,7 +316,16 @@ def run_orders_command(args: argparse.Namespace) -> int:
 
         if not orders:
             if json_mode:
-                print(json.dumps({"error": "No orders generated", "num_signals": len(df_signals), "num_orders": 0}, indent=2))
+                print(
+                    json.dumps(
+                        {
+                            "error": "No orders generated",
+                            "num_signals": len(df_signals),
+                            "num_orders": 0,
+                        },
+                        indent=2,
+                    )
+                )
             else:
                 print("\n⚠️  Keine Orders generiert (alle Signale haben direction=0).")
             return 0
@@ -415,6 +428,7 @@ def run_orders_command(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"❌ Fehler: {e}", file=sys.stderr)
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -443,14 +457,18 @@ def format_portfolio_snapshot(snapshot: LivePortfolioSnapshot) -> str:
     """Formatiert Portfolio-Snapshot als Text-Tabelle."""
     lines = []
     lines.append("=" * 70)
-    lines.append(f"=== Live Portfolio Snapshot ({snapshot.as_of.strftime('%Y-%m-%d %H:%M:%S')} UTC) ===")
+    lines.append(
+        f"=== Live Portfolio Snapshot ({snapshot.as_of.strftime('%Y-%m-%d %H:%M:%S')} UTC) ==="
+    )
     lines.append("=" * 70)
     lines.append("")
 
     if snapshot.positions:
         lines.append("Positions:")
         lines.append("-" * 70)
-        lines.append(f"{'symbol':<12} {'side':<6} {'size':>10} {'entry':>12} {'mark':>12} {'notional':>12} {'unreal_pnl':>12}")
+        lines.append(
+            f"{'symbol':<12} {'side':<6} {'size':>10} {'entry':>12} {'mark':>12} {'notional':>12} {'unreal_pnl':>12}"
+        )
         lines.append("-" * 70)
 
         for pos in snapshot.positions:
@@ -620,6 +638,7 @@ def run_portfolio_command(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"❌ Fehler: {e}", file=sys.stderr)
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -676,7 +695,9 @@ def run_health_command(args: argparse.Namespace) -> int:
                 create_exchange_client(cfg)
                 health_result["exchange_ok"] = True
             except Exception as e:
-                health_result["exchange_errors"].append(f"Exchange-Client-Initialisierung fehlgeschlagen: {e}")
+                health_result["exchange_errors"].append(
+                    f"Exchange-Client-Initialisierung fehlgeschlagen: {e}"
+                )
 
         # 3. Alert-System-Konfiguration
         if health_result["config_ok"]:
@@ -698,12 +719,17 @@ def run_health_command(args: argparse.Namespace) -> int:
                                 health_result["alert_config_warnings"].append(
                                     "sinks enthält 'webhook', aber keine webhook_urls konfiguriert"
                                 )
-                            if "slack_webhook" in alerts_cfg.sinks and not alerts_cfg.slack_webhook_urls:
+                            if (
+                                "slack_webhook" in alerts_cfg.sinks
+                                and not alerts_cfg.slack_webhook_urls
+                            ):
                                 health_result["alert_config_warnings"].append(
                                     "sinks enthält 'slack_webhook', aber keine slack_webhook_urls konfiguriert"
                                 )
             except Exception as e:
-                health_result["alert_config_warnings"].append(f"Fehler beim Laden der Alert-Config: {e}")
+                health_result["alert_config_warnings"].append(
+                    f"Fehler beim Laden der Alert-Config: {e}"
+                )
 
         # 4. Live-Risk-Limits – Konsistenzcheck
         if health_result["config_ok"]:
@@ -718,7 +744,10 @@ def run_health_command(args: argparse.Namespace) -> int:
                     if risk_cfg.max_total_exposure_notional <= 0:
                         warnings.append("max_total_exposure_notional <= 0")
                     if risk_cfg.max_symbol_exposure_notional is not None:
-                        if risk_cfg.max_symbol_exposure_notional > risk_cfg.max_total_exposure_notional:
+                        if (
+                            risk_cfg.max_symbol_exposure_notional
+                            > risk_cfg.max_total_exposure_notional
+                        ):
                             warnings.append(
                                 "max_symbol_exposure_notional > max_total_exposure_notional"
                             )
@@ -727,7 +756,9 @@ def run_health_command(args: argparse.Namespace) -> int:
                 health_result["live_risk_ok"] = len(warnings) == 0
 
             except Exception as e:
-                health_result["live_risk_warnings"].append(f"Fehler beim Laden der Risk-Config: {e}")
+                health_result["live_risk_warnings"].append(
+                    f"Fehler beim Laden der Risk-Config: {e}"
+                )
 
         # Overall-Status bestimmen
         if not health_result["config_ok"] or not health_result["exchange_ok"]:
@@ -771,7 +802,9 @@ def run_health_command(args: argparse.Namespace) -> int:
                 "DEGRADED": "⚠️",
                 "FAIL": "❌",
             }
-            print(f"Overall Status: {status_emoji.get(health_result['overall_status'], '?')} {health_result['overall_status']}")
+            print(
+                f"Overall Status: {status_emoji.get(health_result['overall_status'], '?')} {health_result['overall_status']}"
+            )
             print()
 
         # Exit-Code basierend auf Overall-Status
@@ -785,6 +818,7 @@ def run_health_command(args: argparse.Namespace) -> int:
     except Exception as e:
         print(f"❌ Fehler beim Health-Check: {e}", file=sys.stderr)
         import traceback
+
         traceback.print_exc()
         return 1
 
@@ -815,4 +849,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

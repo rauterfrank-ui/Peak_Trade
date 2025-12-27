@@ -79,8 +79,7 @@ class FixedWeightsPortfolioStrategy(BasePortfolioStrategy):
         # Validiere dass fixed_weights existiert
         if not config.fixed_weights:
             logger.warning(
-                f"{self.name}: Keine fixed_weights in Config definiert, "
-                "fallback auf Equal-Weight"
+                f"{self.name}: Keine fixed_weights in Config definiert, fallback auf Equal-Weight"
             )
             self._use_fallback = True
         else:
@@ -88,13 +87,9 @@ class FixedWeightsPortfolioStrategy(BasePortfolioStrategy):
             self._fixed_weights = config.fixed_weights.copy()
 
             # Log die konfigurierten Gewichte
-            logger.info(
-                f"{self.name}: Konfigurierte Gewichte: {self._fixed_weights}"
-            )
+            logger.info(f"{self.name}: Konfigurierte Gewichte: {self._fixed_weights}")
 
-    def _compute_raw_weights(
-        self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    def _compute_raw_weights(self, context: PortfolioContext) -> Dict[str, float]:
         """
         Gibt feste Gewichte für verfügbare Symbole zurück.
 
@@ -121,21 +116,15 @@ class FixedWeightsPortfolioStrategy(BasePortfolioStrategy):
             if symbol in self._fixed_weights:
                 weights[symbol] = self._fixed_weights[symbol]
             else:
-                logger.debug(
-                    f"{self.name}: {symbol} hat kein definiertes Gewicht, ignoriere"
-                )
+                logger.debug(f"{self.name}: {symbol} hat kein definiertes Gewicht, ignoriere")
 
         if not weights:
-            logger.warning(
-                f"{self.name}: Keine Symbole mit definierten Gewichten gefunden"
-            )
+            logger.warning(f"{self.name}: Keine Symbole mit definierten Gewichten gefunden")
             return {}
 
         # Log wenn nicht alle Config-Symbole im Context sind
         missing = set(self._fixed_weights.keys()) - set(universe)
         if missing:
-            logger.debug(
-                f"{self.name}: Symbole aus Config nicht im Context: {missing}"
-            )
+            logger.debug(f"{self.name}: Symbole aus Config nicht im Context: {missing}")
 
         return weights

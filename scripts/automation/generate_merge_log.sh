@@ -4,26 +4,37 @@ set -euo pipefail
 usage() {
   cat <<'USAGE'
 Usage:
-  bash scripts/automation/generate_merge_log.sh <PR_NUMBER> [--update-readme] [--skip-guards]
+  bash scripts/automation/generate_merge_log.sh <PR_NUMBER> [--update-readme] [--force-index] [--skip-guards]
 
 Generates:
   docs/ops/PR_<N>_MERGE_LOG.md
 
 Options:
   --update-readme   Also index the merge log in docs/ops/README.md under "Merge Logs (Ops)" (idempotent)
+  --force-index     Override safety guard that blocks indexing for PRs that look like merge-log/index/README meta PRs
   --skip-guards     Skip optional guards (unicode guard)
 USAGE
 }
+
+# Check for help first
+for arg in "$@"; do
+  if [[ "$arg" == "-h" || "$arg" == "--help" ]]; then
+    usage
+    exit 0
+  fi
+done
 
 if [[ $# -lt 1 ]]; then usage; exit 2; fi
 
 PR_NUM="$1"; shift
 UPDATE_README="false"
+FORCE_INDEX="false"
 SKIP_GUARDS="false"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --update-readme) UPDATE_README="true"; shift ;;
+    --force-index)   FORCE_INDEX="true"; shift ;;
     --skip-guards)   SKIP_GUARDS="true"; shift ;;
     -h|--help)       usage; exit 0 ;;
     *) echo "Unknown arg: $1"; usage; exit 2 ;;
@@ -39,7 +50,14 @@ gh pr view "$PR_NUM" \
   --json number,title,state,mergedAt,mergeCommit,headRefName,baseRefName,url,author,commits,additions,deletions,files \
   > "$TMP_JSON"
 
-# verify merged
+# Verify merged + extract title
+PR_TITLE="$(python3 - <<PY
+import json
+d=json.load(open("${TMP_JSON}","r",encoding="utf-8"))
+print(d.get("title") or "")
+PY
+)"
+
 python3 - <<PY
 import json, sys
 d=json.load(open("${TMP_JSON}","r",encoding="utf-8"))
@@ -47,6 +65,19 @@ if not d.get("mergedAt"):
     print("ERROR: PR #{} is not merged (mergedAt is null).".format(d.get("number")))
     sys.exit(1)
 PY
+
+# Safety guard: prevent recursive index churn (merge-log / index / README meta PRs)
+if [[ "$UPDATE_README" == "true" && "$FORCE_INDEX" != "true" ]]; then
+  # Case-insensitive match for meta PR titles (tune if needed)
+  if echo "$PR_TITLE" | grep -Eiq '(merge[ -]?log|index|readme)'; then
+    echo "STOP: Refusing to --update-readme for PR #${PR_NUM} because the PR title looks like a meta PR:"
+    echo "      \"$PR_TITLE\""
+    echo "      This prevents recursive index/merge-log churn."
+    echo ""
+    echo "      Run WITHOUT --update-readme, or override with --force-index if you really want to index it."
+    exit 3
+  fi
+fi
 
 export TMP_JSON_PATH="$TMP_JSON"
 
@@ -86,7 +117,6 @@ lines.append(f"- **Title:** {title}")
 lines.append(f"- **State:** {state}")
 lines.append(f"- **Merged At (UTC):** {merged_at}")
 lines.append(f"- **Merge Commit:** `{merge_commit}`")
-lines.append(f"- **Base → Head:** `{base}` ← `{head}`")
 lines.append(f"- **Author:** `{author}`")
 lines.append(f"- **Diffstat:** +{add} / −{dele}")
 lines.append(f"- **Log Generated (UTC):** {now_utc}")

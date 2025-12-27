@@ -24,6 +24,7 @@ Usage:
     )
     notifier.send(alert)
 """
+
 from __future__ import annotations
 
 from src.notifications.base import Alert, AlertLevel, Notifier

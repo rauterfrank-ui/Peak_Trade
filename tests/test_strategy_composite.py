@@ -77,9 +77,7 @@ class TestCompositeStrategy:
         strategy1 = RsiReversionStrategy()
         strategy2 = BreakoutStrategy()
 
-        composite = CompositeStrategy(
-            strategies=[strategy1, strategy2]
-        )
+        composite = CompositeStrategy(strategies=[strategy1, strategy2])
 
         assert composite is not None
         assert isinstance(composite, BaseStrategy)

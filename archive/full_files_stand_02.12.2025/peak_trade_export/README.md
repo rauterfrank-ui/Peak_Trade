@@ -98,10 +98,10 @@ result = engine.run_realistic(
 
 1. **ma_crossover**: Moving-Average-Crossover
    - Parameter: `fast`, `slow`
-   
+
 2. **rsi_reversion**: RSI Mean-Reversion
    - Parameter: `period`, `upper`, `lower`
-   
+
 3. **bollinger_band**: Bollinger-Bands
    - Parameter: `window`, `num_std`
 

@@ -8,6 +8,7 @@ Testet:
 - Core-Presets enthalten keine Legacy-Strategien
 - Core+Aux-Presets enthalten nur Core und Aux
 """
+
 import pytest
 from pathlib import Path
 
@@ -32,6 +33,7 @@ from src.experiments.strategy_profiles import load_tiering_config
 # FIXTURES
 # =============================================================================
 
+
 @pytest.fixture
 def tiering_config_path():
     """Pfad zur Tiering-Config."""
@@ -53,6 +55,7 @@ def tiering_config(tiering_config_path):
 # =============================================================================
 # TESTS: TIERING HELPERS
 # =============================================================================
+
 
 class TestGetStrategiesByTier:
     """Tests für get_strategies_by_tier."""
@@ -179,6 +182,7 @@ class TestGetStrategyTier:
 # TESTS: PRESET VALIDATION
 # =============================================================================
 
+
 class TestValidatePresetTieringCompliance:
     """Tests für validate_preset_tiering_compliance."""
 
@@ -281,6 +285,7 @@ class TestValidateAllPresetsTiering:
 # TESTS: CORE PRESETS CONTAIN NO LEGACY
 # =============================================================================
 
+
 class TestCorePresetsNoLegacy:
     """Kritischer Test: Core-Presets dürfen keine Legacy-Strategien enthalten."""
 
@@ -334,6 +339,7 @@ class TestCorePresetsNoLegacy:
 # TESTS: PRESET LOADING
 # =============================================================================
 
+
 class TestLoadTieredPreset:
     """Tests für load_tiered_preset."""
 
@@ -361,6 +367,7 @@ class TestLoadTieredPreset:
 # =============================================================================
 # TESTS: PRESET BUILDERS
 # =============================================================================
+
 
 class TestBuildCoreOnlyPreset:
     """Tests für build_core_only_preset."""
@@ -419,6 +426,7 @@ class TestBuildCorePlusAuxPreset:
 # TESTS: TIERING CONFIG ROBUSTNESS
 # =============================================================================
 
+
 class TestTieringConfigRobustness:
     """Tests für die Robustheit der Tiering-Config."""
 
@@ -442,13 +450,15 @@ class TestTieringConfigRobustness:
         """Core-Strategien haben eine empfohlene Config."""
         for strategy_id, info in tiering_config.items():
             if info.tier == "core":
-                assert info.recommended_config_id is not None, \
+                assert info.recommended_config_id is not None, (
                     f"Core strategy {strategy_id} should have recommended_config_id"
+                )
 
 
 # =============================================================================
 # INTEGRATION TESTS
 # =============================================================================
+
 
 class TestTieringIntegration:
     """Integration Tests für das Tiering-System."""

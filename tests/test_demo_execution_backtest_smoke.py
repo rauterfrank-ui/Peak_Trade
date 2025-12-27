@@ -9,6 +9,7 @@ Testet:
 - main() mit Test-Argumenten (ohne echte CLI)
 - ExecutionPipeline vs. Legacy-Modus
 """
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -47,15 +48,23 @@ class TestDemoScriptImports:
         """parse_args verarbeitet Custom-Argumente."""
         from scripts.demo_execution_backtest import parse_args
 
-        args = parse_args([
-            "--symbol", "ETH/EUR",
-            "--strategy", "macd",
-            "--timeframe", "4h",
-            "--bars", "100",
-            "--fee-bps", "15.0",
-            "--slippage-bps", "8.0",
-            "--use-legacy",
-        ])
+        args = parse_args(
+            [
+                "--symbol",
+                "ETH/EUR",
+                "--strategy",
+                "macd",
+                "--timeframe",
+                "4h",
+                "--bars",
+                "100",
+                "--fee-bps",
+                "15.0",
+                "--slippage-bps",
+                "8.0",
+                "--use-legacy",
+            ]
+        )
 
         assert args.symbol == "ETH/EUR"
         assert args.strategy == "macd"

@@ -1915,7 +1915,7 @@ NACH ABGESCHLOSSENER SESSION:
    - Incident-Referenz in der Session-Notiz ergänzen (falls vorhanden).
 
 **Erwartetes Ergebnis:**  
-Die Shadow-/Testnet-Session ist im Web-Dashboard v1 vollständig und konsistent zur Registry dargestellt. 
+Die Shadow-/Testnet-Session ist im Web-Dashboard v1 vollständig und konsistent zur Registry dargestellt.
 Bei Abweichungen wird ein Incident erfasst und gemäß Incident-Runbook weiterbearbeitet.
 
 ---
@@ -1987,7 +1987,3 @@ Bei Abweichungen wird ein Incident erfasst und gemäß Incident-Runbook weiterbe
 ---
 
 *Diese Runbooks sind lebende Dokumente. Bei Änderungen an Prozessen oder Architektur sollten sie aktualisiert werden.*
-
-
-
-

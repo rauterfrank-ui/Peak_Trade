@@ -18,7 +18,10 @@ Exceptions:
 
 WICHTIG: In Phase 17 blockt der SafetyGuard ALLE echten Orders.
          Es gibt keine Implementierung für Live-Order-Calls.
+
+P0 Guardrails: This file is protected by CODEOWNERS (live trading review required).
 """
+
 from __future__ import annotations
 
 import logging
@@ -217,9 +220,7 @@ class SafetyGuard:
                 )
             # Selbst wenn dry_run=False, ist echtes Testnet in Phase 17 nicht implementiert
             reason = "Testnet-Orders nicht implementiert (Phase 17)"
-            self._log_audit(
-                action, False, reason, "Echte Testnet-Integration folgt später"
-            )
+            self._log_audit(action, False, reason, "Echte Testnet-Integration folgt später")
             raise LiveNotImplementedError(
                 f"Echte Testnet-Orders sind in Phase 17 nicht implementiert. "
                 f"Nutze testnet_dry_run=True für Dry-Run-Logging."
@@ -280,8 +281,7 @@ class SafetyGuard:
                 reason = f"Live-Execution blockiert: {reason_detail}"
                 self._log_audit(action, False, reason)
                 raise LiveNotImplementedError(
-                    f"Live-Trading ist in Phase 71 nicht implementiert. "
-                    f"Grund: {reason_detail}"
+                    f"Live-Trading ist in Phase 71 nicht implementiert. Grund: {reason_detail}"
                 )
 
             # Falls alle Kriterien erfüllt wären (sollte in Phase 71 nicht vorkommen):
@@ -343,8 +343,7 @@ class SafetyGuard:
             reason = "Confirm-Token ungültig"
             self._log_audit(action, False, reason)
             raise ConfirmTokenInvalidError(
-                f"Der Bestätigungs-Token ist ungültig oder fehlt. "
-                f"Erwartet: '{LIVE_CONFIRM_TOKEN}'"
+                f"Der Bestätigungs-Token ist ungültig oder fehlt. Erwartet: '{LIVE_CONFIRM_TOKEN}'"
             )
 
         self._log_audit(action, True, "Token validiert")
@@ -493,3 +492,6 @@ def create_safety_guard(env_config: Optional[EnvironmentConfig] = None) -> Safet
         env_config = create_default_environment()
 
     return SafetyGuard(env_config=env_config)
+
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)

@@ -41,6 +41,7 @@ Exit Codes:
     1 = Mindestens eine Strategie FAIL
     2 = Fehler beim Ausfuehren des Tools
 """
+
 from __future__ import annotations
 
 import argparse
@@ -135,7 +136,8 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
         help="Verbose-Modus mit mehr Details",
     )
@@ -319,16 +321,18 @@ def save_md_report(
     if data_notes:
         lines.append(f"- **Data-Notes:** {data_notes}")
 
-    lines.extend([
-        "",
-        "## Zusammenfassung",
-        "",
-        f"- **Gesamt:** {summary['total']}",
-        f"- **OK:** {summary['ok']}",
-        f"- **FAIL:** {summary['fail']}",
-        f"- **Dauer:** {summary['total_duration_ms']:.0f} ms",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Zusammenfassung",
+            "",
+            f"- **Gesamt:** {summary['total']}",
+            f"- **OK:** {summary['ok']}",
+            f"- **FAIL:** {summary['fail']}",
+            f"- **Dauer:** {summary['total_duration_ms']:.0f} ms",
+            "",
+        ]
+    )
 
     if summary["fail"] > 0:
         lines.append(f"**Fehlgeschlagen:** {', '.join(summary['failed_strategies'])}")
@@ -445,7 +449,11 @@ def run_data_qc_only(args) -> int:
     print(f"  Num-Bars:    {health.num_bars}")
     print(f"  Start-TS:    {health.start_ts}")
     print(f"  End-TS:      {health.end_ts}")
-    print(f"  Lookback:    {health.lookback_days_actual:.1f} Tage" if health.lookback_days_actual else "  Lookback:    N/A")
+    print(
+        f"  Lookback:    {health.lookback_days_actual:.1f} Tage"
+        if health.lookback_days_actual
+        else "  Lookback:    N/A"
+    )
     print(f"  File-Path:   {health.file_path}")
     if health.notes:
         print(f"  Notes:       {health.notes}")
@@ -530,6 +538,7 @@ def main() -> int:
         print(f"Fehler beim Ausfuehren der Smoke-Tests: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 2
 
@@ -543,7 +552,9 @@ def main() -> int:
     # Optional: JSON-Output
     if args.output_json:
         save_json_report(
-            results, summary, args.output_json,
+            results,
+            summary,
+            args.output_json,
             data_source=args.data_source,
             market=args.market,
             timeframe=args.timeframe,
@@ -552,7 +563,9 @@ def main() -> int:
     # Optional: Markdown-Output
     if args.output_md:
         save_md_report(
-            results, summary, args.output_md,
+            results,
+            summary,
+            args.output_md,
             data_source=args.data_source,
             market=args.market,
             timeframe=args.timeframe,

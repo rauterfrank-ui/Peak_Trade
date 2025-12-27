@@ -13,6 +13,7 @@ Usage:
     python scripts/evaluate_forward_signals.py reports/forward/forward_demo_signals.csv --horizon-bars 1
     python scripts/evaluate_forward_signals.py reports/forward/forward_demo_signals.csv --horizon-bars 5 --output-dir reports/forward
 """
+
 from __future__ import annotations
 
 import sys
@@ -84,7 +85,7 @@ def load_price_data(symbol: str, n_bars: int = 200) -> pd.DataFrame:
 
     # Start-Zeitpunkt
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation
     if "BTC" in symbol:
@@ -106,16 +107,19 @@ def load_price_data(symbol: str, n_bars: int = 200) -> pd.DataFrame:
 
     close_prices = base_price + trend + cycle + noise
 
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * volatility),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
-    df['high'] = df[['open', 'close', 'high']].max(axis=1)
-    df['low'] = df[['open', 'close', 'low']].min(axis=1)
+    df["high"] = df[["open", "close", "high"]].max(axis=1)
+    df["low"] = df[["open", "close", "low"]].min(axis=1)
 
     return df
 
@@ -201,17 +205,19 @@ def evaluate_signals_for_symbol(
         )
 
     if not rows:
-        return pd.DataFrame(columns=[
-            "symbol",
-            "as_of",
-            "direction",
-            "entry_ts",
-            "exit_ts",
-            "entry_price",
-            "exit_price",
-            "horizon_bars",
-            "return",
-        ])
+        return pd.DataFrame(
+            columns=[
+                "symbol",
+                "as_of",
+                "direction",
+                "entry_ts",
+                "exit_ts",
+                "entry_price",
+                "exit_price",
+                "horizon_bars",
+                "return",
+            ]
+        )
 
     return pd.DataFrame(rows)
 
@@ -282,11 +288,11 @@ def main(argv: List[str] | None = None) -> None:
         print(f"  Trades:        {stats['n_trades']}")
         print(f"  Total Return:  {stats['total_return']:.4f}")
         print(f"  Avg Return:    {stats['avg_return']:.6f}")
-        if stats['winrate'] is not None:
+        if stats["winrate"] is not None:
             print(f"  Winrate:       {stats['winrate']:.2%}")
         else:
             print(f"  Winrate:       n/a")
-        if stats['sharpe'] is not None:
+        if stats["sharpe"] is not None:
             print(f"  Sharpe-like:   {stats['sharpe']:.4f}")
         else:
             print(f"  Sharpe-like:   n/a")
@@ -316,11 +322,11 @@ def main(argv: List[str] | None = None) -> None:
     print(f"  Trades:        {overall_stats['n_trades']}")
     print(f"  Total Return:  {overall_stats['total_return']:.4f}")
     print(f"  Avg Return:    {overall_stats['avg_return']:.6f}")
-    if overall_stats['winrate'] is not None:
+    if overall_stats["winrate"] is not None:
         print(f"  Winrate:       {overall_stats['winrate']:.2%}")
     else:
         print(f"  Winrate:       n/a")
-    if overall_stats['sharpe'] is not None:
+    if overall_stats["sharpe"] is not None:
         print(f"  Sharpe-like:   {overall_stats['sharpe']:.4f}")
     else:
         print(f"  Sharpe-like:   n/a")

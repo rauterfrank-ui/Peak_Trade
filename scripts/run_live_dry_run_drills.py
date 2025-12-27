@@ -18,6 +18,7 @@ Usage:
     python scripts/run_live_dry_run_drills.py --scenario "A - Voll gebremst"
     python scripts/run_live_dry_run_drills.py --format json
 """
+
 from __future__ import annotations
 
 import argparse
@@ -190,9 +191,7 @@ def main() -> int:
         # Szenarien filtern (wenn --scenario angegeben)
         scenarios = all_scenarios
         if args.scenario:
-            scenarios = [
-                s for s in all_scenarios if args.scenario.lower() in s.name.lower()
-            ]
+            scenarios = [s for s in all_scenarios if args.scenario.lower() in s.name.lower()]
             if not scenarios:
                 print(
                     f"ERROR: Kein Drill gefunden mit Name '{args.scenario}'",
@@ -229,11 +228,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
-
-
-
-
-
-

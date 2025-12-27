@@ -122,6 +122,7 @@ def main() -> int:
         for profile in profiles:
             if args.json:
                 import json
+
                 stats = get_history_stats(profile, args.days, history_path)
                 print(json.dumps(stats, indent=2))
             else:
@@ -131,6 +132,7 @@ def main() -> int:
         # Einzelnes Profil
         if args.json:
             import json
+
             stats = get_history_stats(args.profile, args.days, history_path)
             print(json.dumps(stats, indent=2))
         else:

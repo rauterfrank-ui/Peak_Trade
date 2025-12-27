@@ -77,4 +77,3 @@ def test_build_trigger_training_events_from_dfs_basic() -> None:
     assert "missed_opportunity" in second.tags
     # PnL nach 1 Bar: von 101 auf 102 -> +1
     assert second.pnl_after_bars == 1.0
-

@@ -23,6 +23,7 @@ Usage:
     report_path = builder.build_experiment_report(summary)
     print(f"Report: {report_path}")
 """
+
 from __future__ import annotations
 
 import json
@@ -36,9 +37,11 @@ import pandas as pd
 
 try:
     import matplotlib
-    matplotlib.use('Agg')  # Non-interactive backend
+
+    matplotlib.use("Agg")  # Non-interactive backend
     import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
+
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
@@ -63,6 +66,7 @@ class ReportFigure:
         description: Optionale Beschreibung
         image_path: Relativer Pfad zum PNG (relativ zum HTML-Report)
     """
+
     title: str
     description: Optional[str] = None
     image_path: str = ""
@@ -79,6 +83,7 @@ class ReportTable:
         headers: Liste der Spaltenüberschriften
         rows: Liste von Zeilen (jede Zeile ist eine Liste von String-Werten)
     """
+
     title: str
     description: Optional[str] = None
     headers: List[str] = field(default_factory=list)
@@ -97,6 +102,7 @@ class ReportSection:
         tables: Liste von ReportTable-Objekten
         extra_html: Optionaler zusätzlicher HTML-Code
     """
+
     title: str
     description: Optional[str] = None
     figures: List[ReportFigure] = field(default_factory=list)
@@ -117,6 +123,7 @@ class HtmlReport:
         sections: Liste von ReportSection-Objekten
         metadata: Zusätzliche Metadaten
     """
+
     title: str
     experiment_id: Optional[str] = None
     sweep_name: Optional[str] = None
@@ -382,48 +389,50 @@ def _format_float(value: Optional[float], decimals: int = 2) -> str:
 def _render_table(table: ReportTable) -> str:
     """Rendert eine ReportTable als HTML."""
     lines = []
-    lines.append(f'<h3>{_html_escape(table.title)}</h3>')
+    lines.append(f"<h3>{_html_escape(table.title)}</h3>")
     if table.description:
-        lines.append(f'<p>{_html_escape(table.description)}</p>')
+        lines.append(f"<p>{_html_escape(table.description)}</p>")
 
-    lines.append('<table>')
-    lines.append('<thead><tr>')
+    lines.append("<table>")
+    lines.append("<thead><tr>")
     for header in table.headers:
-        lines.append(f'<th>{_html_escape(header)}</th>')
-    lines.append('</tr></thead>')
+        lines.append(f"<th>{_html_escape(header)}</th>")
+    lines.append("</tr></thead>")
 
-    lines.append('<tbody>')
+    lines.append("<tbody>")
     for row in table.rows:
-        lines.append('<tr>')
+        lines.append("<tr>")
         for cell in row:
-            lines.append(f'<td>{_html_escape(cell)}</td>')
-        lines.append('</tr>')
-    lines.append('</tbody>')
-    lines.append('</table>')
+            lines.append(f"<td>{_html_escape(cell)}</td>")
+        lines.append("</tr>")
+    lines.append("</tbody>")
+    lines.append("</table>")
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def _render_figure(figure: ReportFigure) -> str:
     """Rendert eine ReportFigure als HTML."""
     lines = []
     lines.append('<div class="figure-container">')
-    lines.append(f'<img src="{_html_escape(figure.image_path)}" alt="{_html_escape(figure.title)}">')
+    lines.append(
+        f'<img src="{_html_escape(figure.image_path)}" alt="{_html_escape(figure.title)}">'
+    )
     caption_parts = [figure.title]
     if figure.description:
         caption_parts.append(figure.description)
     lines.append(f'<div class="caption">{_html_escape(" - ".join(caption_parts))}</div>')
-    lines.append('</div>')
-    return '\n'.join(lines)
+    lines.append("</div>")
+    return "\n".join(lines)
 
 
 def _render_section(section: ReportSection) -> str:
     """Rendert eine ReportSection als HTML."""
     lines = []
-    lines.append('<section>')
-    lines.append(f'<h2>{_html_escape(section.title)}</h2>')
+    lines.append("<section>")
+    lines.append(f"<h2>{_html_escape(section.title)}</h2>")
     if section.description:
-        lines.append(f'<p>{_html_escape(section.description)}</p>')
+        lines.append(f"<p>{_html_escape(section.description)}</p>")
 
     for figure in section.figures:
         lines.append(_render_figure(figure))
@@ -434,50 +443,54 @@ def _render_section(section: ReportSection) -> str:
     if section.extra_html:
         lines.append(section.extra_html)
 
-    lines.append('</section>')
-    return '\n'.join(lines)
+    lines.append("</section>")
+    return "\n".join(lines)
 
 
 def _render_html_report(report: HtmlReport) -> str:
     """Rendert einen kompletten HtmlReport als HTML-String."""
     lines = []
-    lines.append('<!DOCTYPE html>')
+    lines.append("<!DOCTYPE html>")
     lines.append('<html lang="en">')
-    lines.append('<head>')
+    lines.append("<head>")
     lines.append('<meta charset="UTF-8">')
     lines.append('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
-    lines.append(f'<title>{_html_escape(report.title)}</title>')
-    lines.append(f'<style>{_CSS_STYLES}</style>')
-    lines.append('</head>')
-    lines.append('<body>')
+    lines.append(f"<title>{_html_escape(report.title)}</title>")
+    lines.append(f"<style>{_CSS_STYLES}</style>")
+    lines.append("</head>")
+    lines.append("<body>")
     lines.append('<div class="container">')
 
     # Header
-    lines.append('<header>')
-    lines.append(f'<h1>{_html_escape(report.title)}</h1>')
+    lines.append("<header>")
+    lines.append(f"<h1>{_html_escape(report.title)}</h1>")
     lines.append('<div class="meta">')
     if report.experiment_id:
-        lines.append(f'<span><strong>Experiment:</strong> {_html_escape(report.experiment_id[:12])}...</span>')
+        lines.append(
+            f"<span><strong>Experiment:</strong> {_html_escape(report.experiment_id[:12])}...</span>"
+        )
     if report.sweep_name:
-        lines.append(f'<span><strong>Sweep:</strong> {_html_escape(report.sweep_name)}</span>')
-    lines.append(f'<span><strong>Generated:</strong> {report.created_at.strftime("%Y-%m-%d %H:%M:%S")}</span>')
-    lines.append('</div>')
-    lines.append('</header>')
+        lines.append(f"<span><strong>Sweep:</strong> {_html_escape(report.sweep_name)}</span>")
+    lines.append(
+        f"<span><strong>Generated:</strong> {report.created_at.strftime('%Y-%m-%d %H:%M:%S')}</span>"
+    )
+    lines.append("</div>")
+    lines.append("</header>")
 
     # Sections
     for section in report.sections:
         lines.append(_render_section(section))
 
     # Footer
-    lines.append('<footer>')
-    lines.append('<p>Generated by Peak_Trade Reporting v2</p>')
-    lines.append('</footer>')
+    lines.append("<footer>")
+    lines.append("<p>Generated by Peak_Trade Reporting v2</p>")
+    lines.append("</footer>")
 
-    lines.append('</div>')
-    lines.append('</body>')
-    lines.append('</html>')
+    lines.append("</div>")
+    lines.append("</body>")
+    lines.append("</html>")
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 # =============================================================================
@@ -508,28 +521,28 @@ def plot_equity_curve(
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    ax.plot(equity.index, equity.values, color='#0d6efd', linewidth=1.5, label='Equity')
-    ax.fill_between(equity.index, equity.values, alpha=0.1, color='#0d6efd')
+    ax.plot(equity.index, equity.values, color="#0d6efd", linewidth=1.5, label="Equity")
+    ax.fill_between(equity.index, equity.values, alpha=0.1, color="#0d6efd")
 
     # Start-Linie
-    ax.axhline(equity.iloc[0], color='gray', linestyle='--', linewidth=1, alpha=0.5, label='Start')
+    ax.axhline(equity.iloc[0], color="gray", linestyle="--", linewidth=1, alpha=0.5, label="Start")
 
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Equity')
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Equity")
     ax.set_title(title)
-    ax.legend(loc='upper left')
+    ax.legend(loc="upper left")
     ax.grid(True, alpha=0.3)
 
     # X-Achse formatieren
     if isinstance(equity.index, pd.DatetimeIndex):
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
         plt.xticks(rotation=45)
 
     plt.tight_layout()
 
     if output_path:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.savefig(output_path, dpi=150, bbox_inches="tight")
         plt.close(fig)
         return output_path
 
@@ -564,26 +577,26 @@ def plot_drawdown(
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    ax.fill_between(drawdown.index, drawdown.values, 0, color='#dc3545', alpha=0.3)
-    ax.plot(drawdown.index, drawdown.values, color='#dc3545', linewidth=1)
+    ax.fill_between(drawdown.index, drawdown.values, 0, color="#dc3545", alpha=0.3)
+    ax.plot(drawdown.index, drawdown.values, color="#dc3545", linewidth=1)
 
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Drawdown')
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Drawdown")
     ax.set_title(title)
     ax.grid(True, alpha=0.3)
 
     # Y-Achse als Prozent formatieren
-    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:.0%}'))
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y:.0%}"))
 
     if isinstance(drawdown.index, pd.DatetimeIndex):
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
         plt.xticks(rotation=45)
 
     plt.tight_layout()
 
     if output_path:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.savefig(output_path, dpi=150, bbox_inches="tight")
         plt.close(fig)
         return output_path
 
@@ -618,14 +631,14 @@ def plot_metric_distribution(
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    ax.hist(values, bins=bins, edgecolor='black', alpha=0.7, color='#0d6efd')
+    ax.hist(values, bins=bins, edgecolor="black", alpha=0.7, color="#0d6efd")
 
     # Durchschnitt einzeichnen
     avg = np.mean(values)
-    ax.axvline(avg, color='#dc3545', linestyle='--', linewidth=2, label=f'Mean: {avg:.3f}')
+    ax.axvline(avg, color="#dc3545", linestyle="--", linewidth=2, label=f"Mean: {avg:.3f}")
 
     ax.set_xlabel(xlabel)
-    ax.set_ylabel('Frequency')
+    ax.set_ylabel("Frequency")
     ax.set_title(title)
     ax.legend()
     ax.grid(True, alpha=0.3)
@@ -634,7 +647,7 @@ def plot_metric_distribution(
 
     if output_path:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.savefig(output_path, dpi=150, bbox_inches="tight")
         plt.close(fig)
         return output_path
 
@@ -671,7 +684,7 @@ def plot_sweep_scatter(
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    ax.scatter(x_values, y_values, alpha=0.6, c='#0d6efd', s=50, edgecolors='black', linewidth=0.5)
+    ax.scatter(x_values, y_values, alpha=0.6, c="#0d6efd", s=50, edgecolors="black", linewidth=0.5)
 
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
@@ -682,7 +695,7 @@ def plot_sweep_scatter(
 
     if output_path:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.savefig(output_path, dpi=150, bbox_inches="tight")
         plt.close(fig)
         return output_path
 
@@ -770,12 +783,14 @@ class HtmlReportBuilder:
                     elif not positive_is_good and value < 0:
                         css_class = "negative"
 
-                metric_cards.append(f'''
+                metric_cards.append(
+                    f"""
                 <div class="metric-card">
                     <div class="label">{label}</div>
                     <div class="value {css_class}">{value_str}</div>
                 </div>
-                ''')
+                """
+                )
 
         extra_html = f'<div class="metrics-grid">{"".join(metric_cards)}</div>'
 
@@ -795,12 +810,14 @@ class HtmlReportBuilder:
 
         param_items = []
         for key, value in params.items():
-            param_items.append(f'''
+            param_items.append(
+                f"""
             <div class="param-item">
                 <span class="key">{_html_escape(key)}:</span>
                 <span class="value">{_html_escape(str(value))}</span>
             </div>
-            ''')
+            """
+            )
 
         extra_html = f'<div class="params-list">{"".join(param_items)}</div>'
 
@@ -848,13 +865,18 @@ class HtmlReportBuilder:
                 ["Run Name", summary.run_name],
                 ["Strategy", summary.strategy_name or "-"],
                 ["Symbol", summary.symbol or "-"],
-                ["Created", summary.created_at.strftime("%Y-%m-%d %H:%M:%S") if summary.created_at else "-"],
+                [
+                    "Created",
+                    summary.created_at.strftime("%Y-%m-%d %H:%M:%S") if summary.created_at else "-",
+                ],
             ],
         )
-        report.sections.append(ReportSection(
-            title="Overview",
-            tables=[overview_table],
-        ))
+        report.sections.append(
+            ReportSection(
+                title="Overview",
+                tables=[overview_table],
+            )
+        )
 
         # Metrics-Sektion
         if summary.metrics:
@@ -871,26 +893,32 @@ class HtmlReportBuilder:
             # Equity-Plot
             equity_path = figures_dir / "equity_curve.png"
             if plot_equity_curve(equity_curve, "Equity Curve", equity_path):
-                figures.append(ReportFigure(
-                    title="Equity Curve",
-                    description="Portfolio value over time",
-                    image_path=f"{self.figures_subdir}/equity_curve.png",
-                ))
+                figures.append(
+                    ReportFigure(
+                        title="Equity Curve",
+                        description="Portfolio value over time",
+                        image_path=f"{self.figures_subdir}/equity_curve.png",
+                    )
+                )
 
             # Drawdown-Plot
             dd_path = figures_dir / "drawdown.png"
             if plot_drawdown(equity_curve, "Drawdown", dd_path):
-                figures.append(ReportFigure(
-                    title="Drawdown",
-                    description="Drawdown from peak",
-                    image_path=f"{self.figures_subdir}/drawdown.png",
-                ))
+                figures.append(
+                    ReportFigure(
+                        title="Drawdown",
+                        description="Drawdown from peak",
+                        image_path=f"{self.figures_subdir}/drawdown.png",
+                    )
+                )
 
             if figures:
-                report.sections.append(ReportSection(
-                    title="Charts",
-                    figures=figures,
-                ))
+                report.sections.append(
+                    ReportSection(
+                        title="Charts",
+                        figures=figures,
+                    )
+                )
 
         # Extra-Sektionen hinzufügen
         if extra_sections:
@@ -944,10 +972,12 @@ class HtmlReportBuilder:
                 ["Total Runs", str(overview.run_count)],
             ],
         )
-        report.sections.append(ReportSection(
-            title="Overview",
-            tables=[overview_table],
-        ))
+        report.sections.append(
+            ReportSection(
+                title="Overview",
+                tables=[overview_table],
+            )
+        )
 
         # Metric Statistics
         if overview.metric_stats:
@@ -963,10 +993,12 @@ class HtmlReportBuilder:
                     ["Std Dev", _format_float(stats.get("std"))],
                 ],
             )
-            report.sections.append(ReportSection(
-                title="Metric Statistics",
-                tables=[stats_table],
-            ))
+            report.sections.append(
+                ReportSection(
+                    title="Metric Statistics",
+                    tables=[stats_table],
+                )
+            )
 
         # Parameter Ranges
         if overview.param_ranges:
@@ -985,34 +1017,40 @@ class HtmlReportBuilder:
                 headers=["Parameter", "Values"],
                 rows=param_rows,
             )
-            report.sections.append(ReportSection(
-                title="Parameter Space",
-                tables=[param_table],
-            ))
+            report.sections.append(
+                ReportSection(
+                    title="Parameter Space",
+                    tables=[param_table],
+                )
+            )
 
         # Top Runs
         if top_runs:
             top_rows = []
             for r in top_runs:
                 s = r.summary
-                top_rows.append([
-                    str(r.rank),
-                    s.experiment_id[:12] + "...",
-                    _format_float(r.sort_value, 4),
-                    _format_percent(s.metrics.get("total_return")),
-                    _format_percent(s.metrics.get("max_drawdown")),
-                    json.dumps(s.params) if s.params else "-",
-                ])
+                top_rows.append(
+                    [
+                        str(r.rank),
+                        s.experiment_id[:12] + "...",
+                        _format_float(r.sort_value, 4),
+                        _format_percent(s.metrics.get("total_return")),
+                        _format_percent(s.metrics.get("max_drawdown")),
+                        json.dumps(s.params) if s.params else "-",
+                    ]
+                )
 
             top_table = ReportTable(
                 title=f"Top {len(top_runs)} Runs by {metric.capitalize()}",
                 headers=["Rank", "Run ID", metric.capitalize(), "Return", "Max DD", "Parameters"],
                 rows=top_rows,
             )
-            report.sections.append(ReportSection(
-                title="Best Runs",
-                tables=[top_table],
-            ))
+            report.sections.append(
+                ReportSection(
+                    title="Best Runs",
+                    tables=[top_table],
+                )
+            )
 
         # Charts
         figures = []
@@ -1028,17 +1066,21 @@ class HtmlReportBuilder:
                     metric.capitalize(),
                     dist_path,
                 ):
-                    figures.append(ReportFigure(
-                        title=f"{metric.capitalize()} Distribution",
-                        description="Distribution of metric across sweep runs",
-                        image_path=f"{self.figures_subdir}/{metric}_distribution.png",
-                    ))
+                    figures.append(
+                        ReportFigure(
+                            title=f"{metric.capitalize()} Distribution",
+                            description="Distribution of metric across sweep runs",
+                            image_path=f"{self.figures_subdir}/{metric}_distribution.png",
+                        )
+                    )
 
         if figures:
-            report.sections.append(ReportSection(
-                title="Charts",
-                figures=figures,
-            ))
+            report.sections.append(
+                ReportSection(
+                    title="Charts",
+                    figures=figures,
+                )
+            )
 
         # Extra-Sektionen hinzufügen
         if extra_sections:

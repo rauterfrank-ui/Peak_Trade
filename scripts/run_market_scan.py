@@ -28,6 +28,7 @@ Usage:
     python scripts/run_market_scan.py --strategy ma_crossover --symbols BTC/EUR,ETH/EUR,LTC/EUR \\
         --max-symbols 2 --mode backtest-lite
 """
+
 from __future__ import annotations
 
 import argparse
@@ -142,7 +143,8 @@ Examples:
     )
 
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe",
     )
@@ -320,9 +322,9 @@ def print_scan_results(
         print("\nKeine Ergebnisse.")
         return
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"SCAN ERGEBNISSE ({mode.upper()})")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
 
     if mode == "forward":
         header = f"{'Symbol':<12} {'Signal':>10} {'Preis':>12} | Status"
@@ -482,9 +484,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     successful = [r for r in results if "error" not in r]
     failed = [r for r in results if "error" in r]
 
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("SCAN ABGESCHLOSSEN")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
     print(f"  Strategie:   {args.strategy}")
     print(f"  Modus:       {args.mode}")
     print(f"  Timeframe:   {args.timeframe}")

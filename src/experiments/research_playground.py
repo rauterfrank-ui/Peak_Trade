@@ -35,6 +35,7 @@ Usage:
         constraints=[("oversold_level", "<", "overbought_level")],
     )
 """
+
 from __future__ import annotations
 
 import logging
@@ -166,9 +167,7 @@ class StrategySweepConfig:
     name: str
     strategy_name: str
     param_grid: Dict[str, List[Any]] = field(default_factory=dict)
-    constraints: List[Union[ParamConstraint, Tuple[str, str, Any]]] = field(
-        default_factory=list
-    )
+    constraints: List[Union[ParamConstraint, Tuple[str, str, Any]]] = field(default_factory=list)
     base_params: Dict[str, Any] = field(default_factory=dict)
     description: Optional[str] = None
     tags: List[str] = field(default_factory=list)
@@ -287,9 +286,7 @@ class StrategySweepConfig:
             "name": self.name,
             "strategy_name": self.strategy_name,
             "param_grid": self.param_grid,
-            "constraints": [
-                (c.left_param, c.operator, c.right) for c in self.constraints
-            ],
+            "constraints": [(c.left_param, c.operator, c.right) for c in self.constraints],
             "base_params": self.base_params,
             "description": self.description,
             "tags": self.tags,
@@ -329,9 +326,7 @@ def get_predefined_sweep(name: str) -> StrategySweepConfig:
     """
     if name not in _PREDEFINED_SWEEPS:
         available = ", ".join(sorted(_PREDEFINED_SWEEPS.keys()))
-        raise KeyError(
-            f"Sweep '{name}' nicht gefunden. Verfügbar: {available}"
-        )
+        raise KeyError(f"Sweep '{name}' nicht gefunden. Verfügbar: {available}")
     return _PREDEFINED_SWEEPS[name]
 
 
@@ -945,11 +940,7 @@ def get_sweeps_for_strategy(strategy_name: str) -> List[StrategySweepConfig]:
     Returns:
         Liste von StrategySweepConfig
     """
-    return [
-        sweep
-        for sweep in _PREDEFINED_SWEEPS.values()
-        if sweep.strategy_name == strategy_name
-    ]
+    return [sweep for sweep in _PREDEFINED_SWEEPS.values() if sweep.strategy_name == strategy_name]
 
 
 def get_sweeps_by_tag(tag: str) -> List[StrategySweepConfig]:
@@ -962,9 +953,7 @@ def get_sweeps_by_tag(tag: str) -> List[StrategySweepConfig]:
     Returns:
         Liste von StrategySweepConfig
     """
-    return [
-        sweep for sweep in _PREDEFINED_SWEEPS.values() if tag in sweep.tags
-    ]
+    return [sweep for sweep in _PREDEFINED_SWEEPS.values() if tag in sweep.tags]
 
 
 def print_sweep_catalog() -> str:

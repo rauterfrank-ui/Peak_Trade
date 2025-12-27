@@ -5,6 +5,7 @@ Tests für src/live/monitoring.py (Phase 65)
 
 Tests für Monitoring-Funktionen für Shadow- und Testnet-Runs.
 """
+
 from __future__ import annotations
 
 import sys
@@ -78,7 +79,11 @@ def sample_metadata() -> LiveRunMetadata:
 
 
 @pytest.fixture
-def sample_run_with_events(temp_run_dir: Path, sample_logging_config: ShadowPaperLoggingConfig, sample_metadata: LiveRunMetadata) -> str:
+def sample_run_with_events(
+    temp_run_dir: Path,
+    sample_logging_config: ShadowPaperLoggingConfig,
+    sample_metadata: LiveRunMetadata,
+) -> str:
     """Erstellt einen Test-Run mit Events."""
     run_dir = temp_run_dir / sample_metadata.run_id
     run_dir.mkdir(parents=True)
@@ -96,8 +101,8 @@ def sample_run_with_events(temp_run_dir: Path, sample_logging_config: ShadowPape
         pnl = i * 50.0
         event = {
             "step": i + 1,
-            "ts_event": (datetime.now(timezone.utc) - timedelta(minutes=10-i)).isoformat(),
-            "ts_bar": (datetime.now(timezone.utc) - timedelta(minutes=10-i)).isoformat(),
+            "ts_event": (datetime.now(timezone.utc) - timedelta(minutes=10 - i)).isoformat(),
+            "ts_bar": (datetime.now(timezone.utc) - timedelta(minutes=10 - i)).isoformat(),
             "equity": equity,
             "realized_pnl": pnl,
             "unrealized_pnl": 0.0,

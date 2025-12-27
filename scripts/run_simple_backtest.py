@@ -141,23 +141,25 @@ def main():
 
     # Position Sizer aus Config
     position_sizer_config = PositionSizerConfig(
-        method=cfg['risk']['position_sizing_method'],
-        risk_pct=cfg['risk']['risk_per_trade'] * 100,  # Dezimal -> Prozent
-        max_position_pct=cfg['risk']['max_position_size'] * 100,
+        method=cfg["risk"]["position_sizing_method"],
+        risk_pct=cfg["risk"]["risk_per_trade"] * 100,  # Dezimal -> Prozent
+        max_position_pct=cfg["risk"]["max_position_size"] * 100,
     )
     position_sizer = PositionSizer(position_sizer_config)
     print(f"✅ PositionSizer: {position_sizer_config.method}")
 
     # Risk Limits aus Config
     risk_limits_config = RiskLimitsConfig(
-        max_drawdown_pct=cfg['risk']['max_drawdown_pct'],
-        max_position_pct=cfg['risk']['max_position_pct'],
-        daily_loss_limit_pct=cfg['risk']['daily_loss_limit_pct'],
+        max_drawdown_pct=cfg["risk"]["max_drawdown_pct"],
+        max_position_pct=cfg["risk"]["max_position_pct"],
+        daily_loss_limit_pct=cfg["risk"]["daily_loss_limit_pct"],
     )
     risk_limits = RiskLimits(risk_limits_config)
-    print(f"✅ RiskLimits: DD={risk_limits_config.max_drawdown_pct}%, "
-          f"Pos={risk_limits_config.max_position_pct}%, "
-          f"Daily={risk_limits_config.daily_loss_limit_pct}%")
+    print(
+        f"✅ RiskLimits: DD={risk_limits_config.max_drawdown_pct}%, "
+        f"Pos={risk_limits_config.max_position_pct}%, "
+        f"Daily={risk_limits_config.daily_loss_limit_pct}%"
+    )
 
     # ========================================================================
     # 4. BACKTEST-ENGINE INITIALISIEREN
@@ -167,10 +169,7 @@ def main():
     print("-" * 70)
 
     # Engine mit Risk-Layer
-    engine = BacktestEngine(
-        position_sizer=position_sizer,
-        risk_limits=risk_limits
-    )
+    engine = BacktestEngine(position_sizer=position_sizer, risk_limits=risk_limits)
     print("✅ BacktestEngine mit Risk-Layer erstellt")
 
     # ========================================================================
@@ -192,9 +191,7 @@ def main():
     print("-" * 70)
 
     result = engine.run_realistic(
-        df=df,
-        strategy_signal_fn=generate_signals,
-        strategy_params=strategy_config
+        df=df, strategy_signal_fn=generate_signals, strategy_params=strategy_config
     )
 
     print("✅ Backtest abgeschlossen!")
@@ -227,8 +224,12 @@ def main():
         print("-" * 70)
         for i, trade in enumerate(result.trades[:5], 1):
             print(f"\nTrade {i}:")
-            print(f"  Entry:  {trade.entry_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.entry_price:,.2f}")
-            print(f"  Exit:   {trade.exit_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.exit_price:,.2f}")
+            print(
+                f"  Entry:  {trade.entry_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.entry_price:,.2f}"
+            )
+            print(
+                f"  Exit:   {trade.exit_time.strftime('%Y-%m-%d %H:%M')} @ ${trade.exit_price:,.2f}"
+            )
             print(f"  Size:   {trade.size:.4f} BTC")
             print(f"  P&L:    ${trade.pnl:+,.2f} ({trade.pnl_pct:+.2f}%)")
             print(f"  Reason: {trade.exit_reason}")
@@ -236,8 +237,12 @@ def main():
         print(f"\n⚠️  Keine Trades ausgeführt!")
         print(f"   Alle {result.blocked_trades} Trades wurden durch Risk-Limits blockiert.")
         print(f"\n   Mögliche Gründe:")
-        print(f"   - Position zu klein (min_position_value = ${cfg['risk']['min_position_value']:.0f})")
-        print(f"   - Max Position zu niedrig (max_position_pct = {cfg['risk']['max_position_pct']:.0%})")
+        print(
+            f"   - Position zu klein (min_position_value = ${cfg['risk']['min_position_value']:.0f})"
+        )
+        print(
+            f"   - Max Position zu niedrig (max_position_pct = {cfg['risk']['max_position_pct']:.0%})"
+        )
         print(f"   - Stop-Distanz zu eng")
 
     print("\n" + "=" * 70)

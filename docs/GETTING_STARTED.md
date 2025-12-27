@@ -294,4 +294,3 @@ Siehe [`docs/CLI_CHEATSHEET.md`](CLI_CHEATSHEET.md)
 ---
 
 **Built with ❤️ and safety-first architecture**
-

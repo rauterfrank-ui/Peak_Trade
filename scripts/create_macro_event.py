@@ -132,10 +132,10 @@ def create_macro_info_packet(
     tags: Optional[list[str]] = None,
 ) -> str:
     """Erstellt ein INFO_PACKET für ein Makro-Event."""
-    
+
     event_id = generate_event_id(event.split()[0].lower()[:10])
     created_at = datetime.now().astimezone().isoformat()
-    
+
     # Summary generieren wenn nicht angegeben
     if not summary:
         impact_text = {
@@ -145,7 +145,7 @@ def create_macro_info_packet(
             "uncertain": "unsichere Auswirkungen auf Crypto",
         }.get(impact, "")
         summary = f"{event}. {impact_text.capitalize()}."
-    
+
     # Details
     details = [
         f"Event: {event}",
@@ -155,13 +155,13 @@ def create_macro_info_packet(
         f"Time-Horizon: {horizon.replace('_', '-')}",
         f"Confidence: {confidence}",
     ]
-    
+
     if indicators:
         details.append(f"Key Indicators: {indicators}")
-    
+
     if precedent:
         details.append(f"Historical Precedent: {precedent}")
-    
+
     # Tags
     if not tags:
         tags = ["macro", region, impact]
@@ -171,16 +171,16 @@ def create_macro_info_packet(
             tags.append("inflation")
         if "regulat" in event.lower():
             tags.append("regulation")
-    
+
     # Links
     if not links:
         links = ["[Quelle hier einfügen]"]
-    
+
     # Formatieren
     details_str = "\n".join(f"  - {d}" for d in details)
     links_str = "\n".join(f"  - {link}" for link in links)
     tags_str = "\n".join(f"  - {tag}" for tag in tags)
-    
+
     packet = f"""=== INFO_PACKET ===
 source: macro_georisk_specialist
 event_id: {event_id}
@@ -202,7 +202,7 @@ tags:
 
 status: new
 === /INFO_PACKET ==="""
-    
+
     return packet
 
 
@@ -211,62 +211,62 @@ def interactive_mode() -> dict:
     print("\n" + "=" * 60)
     print("🌍 Makro/GeoRisk Event Creator (Interaktiv)")
     print("=" * 60)
-    
+
     # Event-Beschreibung
     event = input("\n📋 Event-Beschreibung: ").strip()
     if not event:
         event = "Unbekanntes Makro-Event"
-    
+
     # Region
     print(f"\n🌐 Region: {', '.join(VALID_REGIONS)}")
     region = input("   Auswahl [global]: ").strip().lower() or "global"
     if region not in VALID_REGIONS:
         region = "global"
-    
+
     # Impact
     print(f"\n📈 Impact: {', '.join(VALID_IMPACTS)}")
     impact = input("   Auswahl [uncertain]: ").strip().lower() or "uncertain"
     if impact not in VALID_IMPACTS:
         impact = "uncertain"
-    
+
     # Severity
     print(f"\n⚠️  Severity: {', '.join(VALID_SEVERITIES)}")
     severity = input("   Auswahl [warning]: ").strip().lower() or "warning"
     if severity not in VALID_SEVERITIES:
         severity = "warning"
-    
+
     # Assets
     print(f"\n💰 Assets: {', '.join(VALID_ASSETS)}")
     assets = input("   Auswahl [all]: ").strip().lower() or "all"
     if assets not in VALID_ASSETS:
         assets = "all"
-    
+
     # Horizon
     print(f"\n⏱️  Time-Horizon: {', '.join(VALID_HORIZONS)}")
     horizon = input("   Auswahl [short_term]: ").strip().lower() or "short_term"
     if horizon not in VALID_HORIZONS:
         horizon = "short_term"
-    
+
     # Confidence
     print(f"\n🎯 Confidence: {', '.join(VALID_CONFIDENCE)}")
     confidence = input("   Auswahl [medium]: ").strip().lower() or "medium"
     if confidence not in VALID_CONFIDENCE:
         confidence = "medium"
-    
+
     # Optional: Erweiterte Details
     print("\n--- Optionale Details (Enter zum Überspringen) ---")
-    
+
     summary = input("📝 Custom Summary: ").strip() or None
     indicators = input("📊 Key Indicators: ").strip() or None
     precedent = input("📜 Historical Precedent: ").strip() or None
-    
+
     tags_input = input("🏷️  Zusätzliche Tags (kommagetrennt): ").strip()
     extra_tags = [t.strip() for t in tags_input.split(",") if t.strip()]
-    
+
     # Basis-Tags
     tags = ["macro", region, impact]
     tags.extend(extra_tags)
-    
+
     return {
         "event": event,
         "region": region,
@@ -288,24 +288,24 @@ def quick_mode(template_name: str) -> dict:
         print(f"❌ Unbekanntes Template: {template_name}")
         print(f"   Verfügbar: {', '.join(QUICK_TEMPLATES.keys())}")
         sys.exit(1)
-    
+
     template = QUICK_TEMPLATES[template_name].copy()
-    
+
     # Ergänze Standard-Werte
     template.setdefault("horizon", "short_term")
     template.setdefault("confidence", "medium")
     template.setdefault("summary", None)
     template.setdefault("indicators", None)
     template.setdefault("precedent", None)
-    
+
     print(f"📋 Quick-Template geladen: {template_name}")
     print(f"   Event: {template['event']}")
-    
+
     # Optionale Anpassung
     custom_event = input("   Anpassen? (Enter für Standard): ").strip()
     if custom_event:
         template["event"] = custom_event
-    
+
     return template
 
 
@@ -315,7 +315,7 @@ def main() -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""
 Quick-Templates:
-  {', '.join(QUICK_TEMPLATES.keys())}
+  {", ".join(QUICK_TEMPLATES.keys())}
 
 Beispiele:
   # Interaktiv
@@ -329,12 +329,14 @@ Beispiele:
   python scripts/create_macro_event.py \\
       --event "FED erhöht Zinsen um 25bp" \\
       --region us --impact bearish --severity warning
-        """
+        """,
     )
-    
+
     parser.add_argument("--interactive", "-i", action="store_true", help="Interaktiver Modus")
-    parser.add_argument("--quick", "-q", choices=list(QUICK_TEMPLATES.keys()), help="Quick-Template verwenden")
-    
+    parser.add_argument(
+        "--quick", "-q", choices=list(QUICK_TEMPLATES.keys()), help="Quick-Template verwenden"
+    )
+
     parser.add_argument("--event", "-e", help="Event-Beschreibung")
     parser.add_argument("--region", "-r", choices=VALID_REGIONS, default="global")
     parser.add_argument("--impact", choices=VALID_IMPACTS, default="uncertain")
@@ -342,15 +344,15 @@ Beispiele:
     parser.add_argument("--assets", "-a", choices=VALID_ASSETS, default="all")
     parser.add_argument("--horizon", choices=VALID_HORIZONS, default="short_term")
     parser.add_argument("--confidence", choices=VALID_CONFIDENCE, default="medium")
-    
+
     parser.add_argument("--summary", help="Custom Summary")
     parser.add_argument("--indicators", help="Key Indicators")
     parser.add_argument("--tags", help="Tags (kommagetrennt)")
-    
+
     parser.add_argument("--output", "-o", help="Output-Verzeichnis")
-    
+
     args = parser.parse_args()
-    
+
     # Modus bestimmen
     if args.interactive:
         params = interactive_mode()
@@ -360,7 +362,7 @@ Beispiele:
         tags = None
         if args.tags:
             tags = [t.strip() for t in args.tags.split(",")]
-        
+
         params = {
             "event": args.event,
             "region": args.region,
@@ -377,27 +379,27 @@ Beispiele:
         parser.print_help()
         print("\n⚠️  Bitte --interactive, --quick oder --event angeben")
         return 1
-    
+
     # INFO_PACKET erstellen
     packet = create_macro_info_packet(**params)
-    
+
     # Output
     if args.output:
         output_dir = Path(args.output)
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         event_id = generate_event_id(params["event"].split()[0].lower()[:10])
         filepath = output_dir / f"{event_id}.txt"
         filepath.write_text(packet, encoding="utf-8")
         print(f"\n✓ INFO_PACKET gespeichert: {filepath}")
-    
+
     print("\n" + "=" * 60)
     print(packet)
     print("=" * 60)
-    
+
     if not args.output:
         print("\nTipp: Mit --output reports/infostream/events/ speichern")
-    
+
     return 0
 
 

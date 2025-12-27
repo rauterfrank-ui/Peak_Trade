@@ -14,6 +14,7 @@ Tests für:
 - SeverityTransitionTracker
 - build_alert_pipeline_from_config
 """
+
 from __future__ import annotations
 
 import json
@@ -299,7 +300,9 @@ class TestSlackAlertChannel:
         channel = SlackAlertChannel(config)
         assert channel.is_enabled is False
 
-    def test_build_payload_structure(self, mock_slack_channel: SlackAlertChannel, sample_alert_warn: AlertMessage):
+    def test_build_payload_structure(
+        self, mock_slack_channel: SlackAlertChannel, sample_alert_warn: AlertMessage
+    ):
         """Testet dass Payload korrekt strukturiert ist."""
         payload = mock_slack_channel._build_payload(sample_alert_warn)
 
@@ -320,7 +323,9 @@ class TestSlackAlertChannel:
         assert payload.get("username") == "test-bot"
         assert payload.get("icon_emoji") == ":test:"
 
-    def test_severity_filtering(self, mock_slack_channel: SlackAlertChannel, sample_alert_info: AlertMessage):
+    def test_severity_filtering(
+        self, mock_slack_channel: SlackAlertChannel, sample_alert_info: AlertMessage
+    ):
         """Testet dass Alerts unter min_severity ignoriert werden."""
         with patch.object(mock_slack_channel, "_send_webhook") as mock_send:
             # INFO < WARN (min_severity), sollte nicht gesendet werden
@@ -328,7 +333,12 @@ class TestSlackAlertChannel:
             mock_send.assert_not_called()
 
     @patch("urllib.request.urlopen")
-    def test_send_success(self, mock_urlopen, mock_slack_channel: SlackAlertChannel, sample_alert_critical: AlertMessage):
+    def test_send_success(
+        self,
+        mock_urlopen,
+        mock_slack_channel: SlackAlertChannel,
+        sample_alert_critical: AlertMessage,
+    ):
         """Testet erfolgreichen Alert-Versand."""
         mock_response = MagicMock()
         mock_response.status = 200
@@ -340,7 +350,12 @@ class TestSlackAlertChannel:
         mock_urlopen.assert_called_once()
 
     @patch("urllib.request.urlopen")
-    def test_send_failure_does_not_raise(self, mock_urlopen, mock_slack_channel: SlackAlertChannel, sample_alert_critical: AlertMessage):
+    def test_send_failure_does_not_raise(
+        self,
+        mock_urlopen,
+        mock_slack_channel: SlackAlertChannel,
+        sample_alert_critical: AlertMessage,
+    ):
         """Testet dass Fehler beim Senden keine Exception werfen."""
         mock_urlopen.side_effect = Exception("Network error")
 
@@ -384,7 +399,9 @@ class TestEmailAlertChannel:
         channel = EmailAlertChannel(config)
         assert channel.is_enabled is False
 
-    def test_build_email_structure(self, mock_email_channel: EmailAlertChannel, sample_alert_critical: AlertMessage):
+    def test_build_email_structure(
+        self, mock_email_channel: EmailAlertChannel, sample_alert_critical: AlertMessage
+    ):
         """Testet dass E-Mail korrekt strukturiert ist."""
         msg = mock_email_channel._build_email(sample_alert_critical)
 
@@ -398,7 +415,9 @@ class TestEmailAlertChannel:
         parts = msg.get_payload()
         assert len(parts) == 2
 
-    def test_severity_filtering(self, mock_email_channel: EmailAlertChannel, sample_alert_warn: AlertMessage):
+    def test_severity_filtering(
+        self, mock_email_channel: EmailAlertChannel, sample_alert_warn: AlertMessage
+    ):
         """Testet dass Alerts unter min_severity ignoriert werden."""
         with patch.object(mock_email_channel, "_send_email") as mock_send:
             # WARN < CRITICAL (min_severity), sollte nicht gesendet werden
@@ -406,7 +425,9 @@ class TestEmailAlertChannel:
             mock_send.assert_not_called()
 
     @patch("smtplib.SMTP")
-    def test_send_success(self, mock_smtp, mock_email_channel: EmailAlertChannel, sample_alert_critical: AlertMessage):
+    def test_send_success(
+        self, mock_smtp, mock_email_channel: EmailAlertChannel, sample_alert_critical: AlertMessage
+    ):
         """Testet erfolgreichen E-Mail-Versand."""
         mock_server = MagicMock()
         mock_smtp.return_value.__enter__ = MagicMock(return_value=mock_server)
@@ -420,7 +441,9 @@ class TestEmailAlertChannel:
         mock_server.sendmail.assert_called_once()
 
     @patch("smtplib.SMTP")
-    def test_send_failure_does_not_raise(self, mock_smtp, mock_email_channel: EmailAlertChannel, sample_alert_critical: AlertMessage):
+    def test_send_failure_does_not_raise(
+        self, mock_smtp, mock_email_channel: EmailAlertChannel, sample_alert_critical: AlertMessage
+    ):
         """Testet dass Fehler beim Senden keine Exception werfen."""
         mock_smtp.side_effect = Exception("SMTP error")
 
@@ -1185,7 +1208,11 @@ class TestPhase84RunbookIntegration:
             source="live_risk_severity",
             context={
                 "runbooks": [
-                    {"id": "test_rb", "title": "Test Runbook", "url": "https://example.com/runbook"},
+                    {
+                        "id": "test_rb",
+                        "title": "Test Runbook",
+                        "url": "https://example.com/runbook",
+                    },
                 ]
             },
         )
@@ -1213,7 +1240,11 @@ class TestPhase84RunbookIntegration:
             source="live_risk_severity",
             context={
                 "runbooks": [
-                    {"id": "test_rb", "title": "Test Runbook", "url": "https://example.com/runbook"},
+                    {
+                        "id": "test_rb",
+                        "title": "Test Runbook",
+                        "url": "https://example.com/runbook",
+                    },
                 ]
             },
         )

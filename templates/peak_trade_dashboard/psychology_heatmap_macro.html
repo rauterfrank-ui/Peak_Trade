@@ -2,14 +2,14 @@
 <!--
   Psychologie-Heatmap Macro
   =========================
-  
+
   Wiederverwendbare Jinja2-Macro für die Psychologie-Heatmap.
   Kann in verschiedenen Templates eingebunden werden.
-  
+
   Verwendung:
     {% from 'psychology_heatmap_macro.html' import psychology_heatmap %}
     {{ psychology_heatmap(heatmap_rows, show_legend=True, show_notes=True) }}
-  
+
   Parameter:
     - heatmap_rows: Liste von serialisierten Heatmap-Rows
     - show_legend: Boolean, ob Legende angezeigt werden soll (default: True)
@@ -18,7 +18,7 @@
 
 {% macro psychology_heatmap(heatmap_rows, show_legend=True, show_notes=True) %}
 <section class="bg-gradient-to-br from-slate-900/80 via-slate-900/60 to-slate-900/80 rounded-2xl border border-slate-800 p-6">
-  
+
   {# Header #}
   <div class="mb-4">
     <div class="flex items-center gap-3 mb-2">
@@ -92,9 +92,9 @@
           <td class="py-2.5 px-3 font-medium text-slate-200 bg-slate-900/40 sticky left-0 z-10">
             {{ row.name }}
           </td>
-          
+
           {# FOMO Cell #}
-          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
             {% if row.fomo.heat_level == 0 %}bg-slate-950 text-slate-400
             {% elif row.fomo.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
             {% elif row.fomo.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -102,9 +102,9 @@
             {% endif %}">
             {{ row.fomo.display_value }}
           </td>
-          
+
           {# Loss Fear Cell #}
-          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
             {% if row.loss_fear.heat_level == 0 %}bg-slate-950 text-slate-400
             {% elif row.loss_fear.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
             {% elif row.loss_fear.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -112,9 +112,9 @@
             {% endif %}">
             {{ row.loss_fear.display_value }}
           </td>
-          
+
           {# Impulsivity Cell #}
-          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
             {% if row.impulsivity.heat_level == 0 %}bg-slate-950 text-slate-400
             {% elif row.impulsivity.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
             {% elif row.impulsivity.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -122,9 +122,9 @@
             {% endif %}">
             {{ row.impulsivity.display_value }}
           </td>
-          
+
           {# Hesitation Cell #}
-          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
             {% if row.hesitation.heat_level == 0 %}bg-slate-950 text-slate-400
             {% elif row.hesitation.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
             {% elif row.hesitation.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -132,9 +132,9 @@
             {% endif %}">
             {{ row.hesitation.display_value }}
           </td>
-          
+
           {# Rule Break Cell #}
-          <td class="py-2.5 px-3 text-center font-semibold tabular-nums 
+          <td class="py-2.5 px-3 text-center font-semibold tabular-nums
             {% if row.rule_break.heat_level == 0 %}bg-slate-950 text-slate-400
             {% elif row.rule_break.heat_level == 1 %}bg-blue-950/70 text-blue-200 border-l border-r border-blue-800/50
             {% elif row.rule_break.heat_level == 2 %}bg-amber-950/70 text-amber-100 border-l border-r border-amber-700/50
@@ -181,7 +181,7 @@
   <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-3">
     <span>🧠</span> Psychologie-Muster
   </h3>
-  
+
   <div class="space-y-2">
     {% for row in heatmap_rows %}
     <div class="flex items-center gap-2">
@@ -203,7 +203,7 @@
     </div>
     {% endfor %}
   </div>
-  
+
   <div class="mt-3 pt-3 border-t border-slate-800/50 flex justify-between items-center text-xs">
     <span class="text-slate-500">
       <span class="inline-block w-2 h-2 rounded-full bg-slate-700 mr-1"></span> 0

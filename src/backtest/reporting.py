@@ -7,7 +7,8 @@ from pathlib import Path
 from typing import Any, TYPE_CHECKING
 
 import matplotlib
-matplotlib.use('Agg')  # Non-interactive backend für Server/CI
+
+matplotlib.use("Agg")  # Non-interactive backend für Server/CI
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -97,25 +98,22 @@ def save_regime_distribution(
 ) -> None:
     """
     Speichert Regime-Verteilung als separate CSV (optional).
-    
+
     Args:
         result: BacktestResult-Objekt
         output_dir: Output-Verzeichnis
         run_name: Name des Runs
     """
-    regime_dist = result.metadata.get('regime_distribution', {})
+    regime_dist = result.metadata.get("regime_distribution", {})
     if not regime_dist:
         return
-    
+
     out_dir = ensure_dir(output_dir)
     regime_path = out_dir / f"{run_name}_regime_distribution.csv"
-    
+
     # Als DataFrame speichern
-    df = pd.DataFrame([
-        {'regime': k, 'percentage': v}
-        for k, v in regime_dist.items()
-    ])
-    df = df.sort_values('percentage', ascending=False)
+    df = pd.DataFrame([{"regime": k, "percentage": v} for k, v in regime_dist.items()])
+    df = df.sort_values("percentage", ascending=False)
     df.to_csv(regime_path, index=False)
 
 
@@ -149,7 +147,7 @@ def save_plots(
     # Drawdown
     dd_fig_path = out_dir / f"{run_name}_drawdown.png"
     plt.figure(figsize=(12, 6))
-    result.drawdown.plot(color='red')
+    result.drawdown.plot(color="red")
     plt.title(f"Drawdown – {run_name}")
     plt.xlabel("Time")
     plt.ylabel("Drawdown")
@@ -207,27 +205,26 @@ def generate_html_report(
     drawdown_png = f"{run_name}_drawdown.png"
 
     # Stats-HTML-Tabelle
-    stats_rows = "".join(
-        f"<tr><td>{key}</td><td>{value}</td></tr>"
-        for key, value in stats.items()
-    )
+    stats_rows = "".join(f"<tr><td>{key}</td><td>{value}</td></tr>" for key, value in stats.items())
 
     # Params-HTML-Tabelle
-    params_rows = "".join(
-        f"<tr><td>{key}</td><td>{value}</td></tr>"
-        for key, value in params.items()
-    ) or "<tr><td colspan='2'><em>Keine expliziten Strategy-Parameter in metadata['params'] hinterlegt.</em></td></tr>"
+    params_rows = (
+        "".join(f"<tr><td>{key}</td><td>{value}</td></tr>" for key, value in params.items())
+        or "<tr><td colspan='2'><em>Keine expliziten Strategy-Parameter in metadata['params'] hinterlegt.</em></td></tr>"
+    )
 
     # Regime-Distribution-Tabelle
-    regime_rows = "".join(
-        f"<tr><td>{regime}</td><td>{frac:.2%}</td></tr>"
-        for regime, frac in regime_dist.items()
-    ) or "<tr><td colspan='2'><em>Keine Regime-Informationen verfügbar.</em></td></tr>"
+    regime_rows = (
+        "".join(
+            f"<tr><td>{regime}</td><td>{frac:.2%}</td></tr>" for regime, frac in regime_dist.items()
+        )
+        or "<tr><td colspan='2'><em>Keine Regime-Informationen verfügbar.</em></td></tr>"
+    )
 
-    regime_cfg_rows = "".join(
-        f"<tr><td>{key}</td><td>{value}</td></tr>"
-        for key, value in regime_cfg.items()
-    ) or "<tr><td colspan='2'><em>Keine Regime-Konfiguration in metadata['regime_config'] hinterlegt.</em></td></tr>"
+    regime_cfg_rows = (
+        "".join(f"<tr><td>{key}</td><td>{value}</td></tr>" for key, value in regime_cfg.items())
+        or "<tr><td colspan='2'><em>Keine Regime-Konfiguration in metadata['regime_config'] hinterlegt.</em></td></tr>"
+    )
 
     html = f"""<!DOCTYPE html>
 <html lang="en">

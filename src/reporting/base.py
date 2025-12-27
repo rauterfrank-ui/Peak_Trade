@@ -20,6 +20,7 @@ Usage:
     report = Report(title="Backtest Report", sections=[section])
     print(report.to_markdown())
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -134,7 +135,7 @@ class Report:
             "<!DOCTYPE html>",
             "<html>",
             "<head>",
-            "<meta charset=\"UTF-8\">",
+            '<meta charset="UTF-8">',
             f"<title>{_escape_html(self.title)}</title>",
             "<style>",
             "body { font-family: sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }",
@@ -156,7 +157,7 @@ class Report:
 
         # Metadaten
         if self.metadata:
-            lines.append("<div class=\"meta\">")
+            lines.append('<div class="meta">')
             lines.append("<p><strong>Report Metadata:</strong></p>")
             lines.append("<ul>")
             for key, value in self.metadata.items():
@@ -164,7 +165,9 @@ class Report:
             lines.append("</ul>")
             lines.append("</div>")
 
-        lines.append(f"<p class=\"meta\"><em>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</em></p>")
+        lines.append(
+            f'<p class="meta"><em>Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</em></p>'
+        )
         lines.append("<hr>")
 
         # Sections
@@ -245,6 +248,7 @@ def _markdown_to_html(markdown: str) -> str:
 
         # Bilder: ![alt](src)
         import re
+
         line = re.sub(
             r"!\[([^\]]*)\]\(([^)]+)\)",
             r'<img src="\2" alt="\1" style="max-width: 100%;">',

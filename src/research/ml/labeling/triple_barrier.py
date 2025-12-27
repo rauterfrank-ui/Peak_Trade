@@ -21,6 +21,7 @@ Labels:
 Referenz:
 - "Advances in Financial Machine Learning" (López de Prado), Chapter 3
 """
+
 from __future__ import annotations
 
 from typing import Optional, Tuple
@@ -150,6 +151,3 @@ def apply_pnl_stop_loss(
     """
     # Placeholder
     return pd.Series(index=events.index, dtype="datetime64[ns]")
-
-
-

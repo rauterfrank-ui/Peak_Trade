@@ -463,7 +463,7 @@ risk_profile = "conservative"
 tags = ["rsi", "reversion", "conservative"]
 ```
 
-**Wichtig:** 
+**Wichtig:**
 - Entweder `strategies` (Phase 53) **oder** `sweep_name` + `top_n` (Legacy) muss gesetzt sein
 - `weights` Länge muss mit `len(strategies)` übereinstimmen
 - `risk_profile` sollte eines von `conservative`, `moderate`, `aggressive` sein
@@ -494,4 +494,3 @@ Dieses Playbook beschreibt:
 ---
 
 **Built with ❤️ and reusable configurations**
-

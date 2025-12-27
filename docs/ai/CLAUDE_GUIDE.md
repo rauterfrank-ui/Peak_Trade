@@ -253,8 +253,8 @@ Die Developer-Guides (`DEV_GUIDE_*.md`) können als Kontext für AI-Tools verwen
 **Beispiel-Prompt für AI-Tools:**
 
 ```
-Ich möchte eine neue Strategie hinzufügen. Bitte nutze 
-docs/DEV_GUIDE_ADD_STRATEGY.md als Referenz und folge 
+Ich möchte eine neue Strategie hinzufügen. Bitte nutze
+docs/DEV_GUIDE_ADD_STRATEGY.md als Referenz und folge
 den Schritt-für-Schritt-Anweisungen.
 ```
 
@@ -283,11 +283,3 @@ den Schritt-für-Schritt-Anweisungen.
 ---
 
 **Built with ❤️ and AI-assistance**
-
-
-
-
-
-
-
-

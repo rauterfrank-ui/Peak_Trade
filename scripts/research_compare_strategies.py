@@ -30,6 +30,7 @@ Usage:
     # Ergebnis als CSV exportieren
     python scripts/research_compare_strategies.py --all --export results/comparison.csv
 """
+
 from __future__ import annotations
 
 import argparse
@@ -136,7 +137,14 @@ Beispiele:
         "--sort-by",
         type=str,
         default="total_return",
-        choices=["total_return", "sharpe", "max_drawdown", "win_rate", "profit_factor", "total_trades"],
+        choices=[
+            "total_return",
+            "sharpe",
+            "max_drawdown",
+            "win_rate",
+            "profit_factor",
+            "total_trades",
+        ],
         help="Sortiermetrik (default: total_return)",
     )
     parser.add_argument(
@@ -168,7 +176,8 @@ Beispiele:
         help="Keine Registry-Logs schreiben",
     )
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe",
     )
@@ -347,16 +356,18 @@ def print_comparison_table(
     # DataFrame erstellen
     data = []
     for r in results:
-        data.append({
-            "Strategy": r["strategy"],
-            "Return": r["total_return"],
-            "MaxDD": r["max_drawdown"],
-            "Sharpe": r["sharpe"],
-            "WinRate": r["win_rate"],
-            "PF": r["profit_factor"],
-            "Trades": r["total_trades"],
-            "Live": "OK" if r["live_ready"] else "NO",
-        })
+        data.append(
+            {
+                "Strategy": r["strategy"],
+                "Return": r["total_return"],
+                "MaxDD": r["max_drawdown"],
+                "Sharpe": r["sharpe"],
+                "WinRate": r["win_rate"],
+                "PF": r["profit_factor"],
+                "Trades": r["total_trades"],
+                "Live": "OK" if r["live_ready"] else "NO",
+            }
+        )
 
     df = pd.DataFrame(data)
 
@@ -378,7 +389,9 @@ def print_comparison_table(
     print("=" * 90)
 
     # Header
-    print(f"\n{'Strategy':<20} {'Return':>10} {'MaxDD':>10} {'Sharpe':>8} {'WinRate':>8} {'PF':>8} {'Trades':>7} {'Live':>6}")
+    print(
+        f"\n{'Strategy':<20} {'Return':>10} {'MaxDD':>10} {'Sharpe':>8} {'WinRate':>8} {'PF':>8} {'Trades':>7} {'Live':>6}"
+    )
     print("-" * 90)
 
     # Zeilen
@@ -388,10 +401,12 @@ def print_comparison_table(
         sharpe_str = f"{row['Sharpe']:.2f}"
         winrate_str = f"{row['WinRate']:.1%}"
         pf_str = f"{row['PF']:.2f}"
-        trades_str = str(int(row['Trades']))
-        live_str = row['Live']
+        trades_str = str(int(row["Trades"]))
+        live_str = row["Live"]
 
-        print(f"{row['Strategy']:<20} {return_str:>10} {maxdd_str:>10} {sharpe_str:>8} {winrate_str:>8} {pf_str:>8} {trades_str:>7} {live_str:>6}")
+        print(
+            f"{row['Strategy']:<20} {return_str:>10} {maxdd_str:>10} {sharpe_str:>8} {winrate_str:>8} {pf_str:>8} {trades_str:>7} {live_str:>6}"
+        )
 
     print("-" * 90)
 
@@ -402,7 +417,9 @@ def print_comparison_table(
     print(f"Schlechtester:     {df.loc[worst_idx, 'Strategy']} ({df.loc[worst_idx, 'Return']:.2%})")
 
     best_sharpe_idx = df["Sharpe"].idxmax()
-    print(f"Bester (Sharpe):   {df.loc[best_sharpe_idx, 'Strategy']} ({df.loc[best_sharpe_idx, 'Sharpe']:.2f})")
+    print(
+        f"Bester (Sharpe):   {df.loc[best_sharpe_idx, 'Strategy']} ({df.loc[best_sharpe_idx, 'Sharpe']:.2f})"
+    )
 
     print("\n" + "=" * 90 + "\n")
 

@@ -18,6 +18,7 @@ Verwendung:
     # Alle Presets auflisten
     presets = list_r_and_d_presets()
 """
+
 from __future__ import annotations
 
 # Python 3.11+ hat tomllib, davor brauchen wir tomli oder toml
@@ -34,7 +35,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 # Standard-Pfad zur R&D-Presets-Datei
-DEFAULT_R_AND_D_PRESETS_PATH = Path(__file__).parent.parent.parent / "config" / "r_and_d_presets.toml"
+DEFAULT_R_AND_D_PRESETS_PATH = (
+    Path(__file__).parent.parent.parent / "config" / "r_and_d_presets.toml"
+)
 
 
 @dataclass
@@ -58,6 +61,7 @@ class RnDPresetConfig:
         default_from: Default-Startdatum
         default_to: Default-Enddatum
     """
+
     preset_id: str
     description: str = ""
     strategy: str = ""
@@ -108,7 +112,7 @@ def _load_presets_toml(path: Optional[Path] = None) -> Dict[str, Any]:
     preset_path = path or DEFAULT_R_AND_D_PRESETS_PATH
     if not preset_path.exists():
         raise FileNotFoundError(f"R&D-Presets-Datei nicht gefunden: {preset_path}")
-    
+
     # tomllib (Python 3.11+) und tomli brauchen binary mode
     # toml (legacy) braucht text mode
     try:

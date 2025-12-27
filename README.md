@@ -6,8 +6,46 @@ Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit konsequ
 
 ## Schnelleinstieg
 
+### 🚀 Quick Start: Ersten Backtest in 5 Minuten
+
+```bash
+# 1. Dependencies installieren (einmalig)
+pip install -e .
+
+# 2. Ersten Backtest laufen lassen
+python scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
+
+# 3. Tests ausführen
+pytest -m smoke -q  # Schnelle Smoke-Tests (~1 Sekunde)
+pytest -q           # Full Suite (~70 Sekunden)
+
+# 4. Optionale Web-UI Dependencies (für Dashboard/API Tests)
+uv sync --extra web  # oder: pip install -e ".[web]"
+pytest -m web        # Web-UI Tests ausführen
+```
+
+**Hinweis:** Web-UI Tests werden automatisch übersprungen, wenn FastAPI nicht installiert ist. Core-Tests laufen ohne Web-Stack.
+
+**Nächste Schritte:**
+- 📖 **Architektur & Überblick:** [`docs/PEAK_TRADE_OVERVIEW.md`](docs/PEAK_TRADE_OVERVIEW.md)
+- 🔬 **Backtest Engine Details:** [`docs/BACKTEST_ENGINE.md`](docs/BACKTEST_ENGINE.md)
+- 🎯 **Eigene Strategien entwickeln:** [`docs/STRATEGY_DEV_GUIDE.md`](docs/STRATEGY_DEV_GUIDE.md)
+
+### 📚 Ausführliche Guides
+
 - 📖 **Vollständige v1.0-Übersicht:** [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](docs/PEAK_TRADE_V1_OVERVIEW_FULL.md)
 - 🚀 **Onboarding „First 7 Days":** [`docs/PEAK_TRADE_FIRST_7_DAYS.md`](docs/PEAK_TRADE_FIRST_7_DAYS.md)
+
+---
+
+## Core Architecture & Development
+
+Für Entwickler, die mit Peak_Trade arbeiten oder Strategien entwickeln:
+
+- 📐 **[System Overview](docs/PEAK_TRADE_OVERVIEW.md)** – Architektur-Überblick, Kernkonzepte, Quickstart
+- 🔧 **[Backtest Engine](docs/BACKTEST_ENGINE.md)** – Detaillierte Engine-Dokumentation
+- 🎯 **[Strategy Development Guide](docs/STRATEGY_DEV_GUIDE.md)** – Schritt-für-Schritt-Anleitung zum Entwickeln eigener Strategien
+- 📝 **[Workflow Notes](docs/WORKFLOW_NOTES.md)** – Aktueller technischer Stand & gemeinsamer Workflow
 
 ---
 
@@ -23,14 +61,71 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   Übersicht über Projektstruktur, Module, typische Commands und Einstiegspunkte:
   [`docs/ai/CLAUDE_GUIDE.md`](docs/ai/CLAUDE_GUIDE.md)
 
+- 🚀 **AI Workflow Guide (Praktische Workflows & Templates)**
+  Konkrete Workflows und Prompt-Templates für effiziente AI-Nutzung:
+  [`docs/ai/AI_WORKFLOW_GUIDE.md`](docs/ai/AI_WORKFLOW_GUIDE.md)
+
+---
+
+## Developer Experience & Productivity
+
+- ⚡ **Developer Workflow Guide**
+  Streamlined workflows und Automation-Tools für produktive Entwicklung:
+  [`docs/DEVELOPER_WORKFLOW_GUIDE.md`](docs/DEVELOPER_WORKFLOW_GUIDE.md)
+
+- 📚 **Knowledge Base Index**
+  Zentraler Dokumentations-Hub mit Navigation und Lernpfaden:
+  [`docs/KNOWLEDGE_BASE_INDEX.md`](docs/KNOWLEDGE_BASE_INDEX.md)
+
+- 🎯 **Quick Reference Card**
+  Schnellreferenz für häufige Commands und Patterns:
+  [`docs/QUICK_REFERENCE.md`](docs/QUICK_REFERENCE.md)
+
+- 🛠️ **Developer Workflow Script**
+  Automatisierung häufiger Entwicklungsaufgaben:
+  ```bash
+  python scripts/dev_workflow.py --help
+  python scripts/dev_workflow.py setup    # Environment setup
+  python scripts/dev_workflow.py test     # Run tests
+  python scripts/dev_workflow.py health   # Health check
+  ```
+
+---
+
+## Modulare Architektur
+
+Peak_Trade ist **strikt modular** aufgebaut. Jede Komponente ist austauschbar und testbar:
+
+```text
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
+│   DATA   │ → │ STRATEGY │ → │  SIZING  │ → │   RISK   │
+│  Feeds   │   │ Registry │   │ Overlay  │   │  Limits  │
+└──────────┘   └──────────┘   └──────────┘   └──────────┘
+                                                    │
+                              ┌─────────────────────┘
+                              ▼
+                        ┌──────────┐   ┌──────────┐
+                        │ BACKTEST │ → │ REPORTING│
+                        │  Runner  │   │  & Stats │
+                        └──────────┘   └──────────┘
+```
+
+**Strategy Registry:** Alle Strategien zentral registriert, austauschbar per Config
+**Position Sizing:** Fixed-Fraction, Vol-Regime-Overlay, Trend-Strength-Overlay
+**Risk Management:** Max-Drawdown, Equity-Floor, Position-Limits
+**Runner:** Backtest, Walk-Forward, Monte-Carlo, Live-Session
+
+→ Details: [`docs/PEAK_TRADE_OVERVIEW.md`](docs/PEAK_TRADE_OVERVIEW.md)
+
 ---
 
 ## Key Features
 
 - 🧠 **Research & Strategy-Engine**
-  - Backtest-Engine mit Portfolio-Support
+  - Backtest-Engine mit Portfolio-Support & No-Lookahead-Garantie
   - Research-Pipeline v2 (Sweeps, Walk-Forward, Monte-Carlo, Stress-Tests)
   - Strategy- & Portfolio-Library mit vordefinierten Presets (inkl. Risk-Profilen)
+  - **Strategy Registry:** 15+ Production-Ready Strategien, 6+ R&D-Strategien
 
 - 📊 **Portfolio-Level Robustness**
   - Portfolio-Robustness-Module
@@ -41,6 +136,28 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   - Live-Risk-Limits (Order- und Portfolio-Level)
   - Governance- & Safety-Doku (Checklisten, Readiness, Runbooks)
   - Incident-Drills & Drill-Log
+  - **Comprehensive Error Handling:** Structured error taxonomy with actionable hints
+    - 9 specialized error types (DataContractError, ConfigError, ProviderError, etc.)
+    - Consistent message/hint/context/cause pattern for all errors
+    - Exception chaining for root cause analysis
+    - **Default:** All new code uses `src.core.errors` taxonomy
+    - **Quick Usage:**
+      ```python
+      # Raise with hint + context
+      raise DataContractError("Invalid OHLCV", hint="Check columns", context={"cols": df.columns})
+      # Chain exceptions
+      raise ConfigError("Load failed", hint="Check syntax", cause=original_error)
+      ```
+    - **Documentation:** [Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md)
+    - **Audit Tool:** `python scripts/audit/check_error_taxonomy_adoption.py`
+
+- 🔄 **Resilience & Stability**
+  - Circuit Breaker Pattern für alle kritischen Module
+  - Rate Limiting für externe APIs und Datenquellen
+  - Prometheus-Metriken für System-Monitoring
+  - Health Check API (`/health`, `/health/detailed`)
+  - Konfigurierbare Resilience-Settings pro Modul
+  - **Dokumentation:** [`docs/resilience_guide.md`](docs/resilience_guide.md)
 
 - 🛰️ **Live-/Testnet-Track**
   - Live-Ops CLI (`live_ops`) mit Health, Orders, Portfolio
@@ -52,6 +169,19 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
   - `docs/ai/CLAUDE_GUIDE.md` als Guide für Coding-Assistants
   - Playbooks & Docs so strukturiert, dass sie leicht als Prompt-Kontext dienen
 
+- 🧠 **Knowledge Databases & AI Research**
+  - Vector-DB-Integration (Chroma, Pinecone, Qdrant) für semantische Suche
+  - Time-Series-DB für Ticks und Portfolio-Historien
+  - RAG (Retrieval-Augmented Generation) für KI-gestützte Research-Entscheidungen
+  - API-Security & Key-Management mit Rotation-Tracking
+  - **Governance Playbook:** Systematische Prüfung externer Wissensquellen ([Playbook](docs/KNOWLEDGE_SOURCES_GOVERNANCE_PLAYBOOK.md))
+
+- 🤖 **Autonomer KI-gesteuerter Workflow**
+  - Intelligente Entscheidungsfindung basierend auf Markt-, Signal- und Performance-Metriken
+  - Automatisierte Workflow-Ausführung mit AI-enhanced Decision Engine
+  - Integration mit Scheduler für kontinuierliches Monitoring
+  - Details: [`docs/AUTONOMOUS_AI_WORKFLOW.md`](docs/AUTONOMOUS_AI_WORKFLOW.md)
+
 ---
 
 ## Architektur-Snapshot
@@ -59,9 +189,11 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
 Peak_Trade ist in mehrere Layer strukturiert:
 
 - **Data-Layer** (`src/data/`) – Daten-Loading, Caching, Exchange-Integration
+- **Knowledge-Layer** (`src/knowledge/`) – Vector-DB, Time-Series-DB, RAG-Pipeline für AI-Research
 - **Backtest- & Research-Layer** (`src/backtest/`, `scripts/research_cli.py`) – Backtest-Engine, Research-Pipeline
 - **Strategy- & Portfolio-Layer** (`src/strategies/`, `config/config.toml`, `config/portfolio_recipes.toml`) – Strategien, Portfolio-Recipes
 - **Live-/Testnet-Layer** (`src/live/`, `scripts/live_ops.py`) – Live-Ops, Alerts, Risk-Limits
+- **Autonomous Workflow-Layer** (`src/autonomous/`, `scripts/run_autonomous_workflow.py`) – AI-gesteuerter autonomer Workflow, Decision Engine
 - **Reporting & Status-Reports** (`src/reporting/`, `scripts/generate_live_status_report.py`) – Reports, Visualisierung
 - **Governance, Safety & Runbooks** (`docs/*.md`) – Dokumentation, Prozesse, Drills
 
@@ -105,6 +237,18 @@ python scripts/generate_live_status_report.py \
   --output-dir reports/live_status \
   --format markdown \
   --tag daily
+```
+
+### 5. Autonomer KI-gesteuerter Workflow ausführen
+
+```bash
+# Einmalige Ausführung mit automatischer Entscheidung
+python scripts/run_autonomous_workflow.py --once --dry-run
+
+# Mit Scheduler: Täglich automatisch
+python scripts/run_scheduler.py \
+  --config config/scheduler/jobs.toml \
+  --include-tags autonomous
 ```
 
 > Für einen Schritt-für-Schritt-Flow (inkl. Screenshots/Details) siehe:  
@@ -159,6 +303,8 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 ## Dokumentation – Einstiegspunkte
 
+- **Ops / Operator Hub:** `docs/ops/README.md`
+
 - **Vollständige v1.0-Übersicht**  
   [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](docs/PEAK_TRADE_V1_OVERVIEW_FULL.md)
 
@@ -187,6 +333,11 @@ python scripts/report_live_sessions.py --summary-only --stdout
 
 - **Governance & Safety**  
   [`docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`](docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md)
+
+- **Knowledge Databases & AI Research**  
+  - [`docs/KNOWLEDGE_DB_ARCHITECTURE.md`](docs/KNOWLEDGE_DB_ARCHITECTURE.md)  
+  - [`docs/KNOWLEDGE_SOURCES_GOVERNANCE_PLAYBOOK.md`](docs/KNOWLEDGE_SOURCES_GOVERNANCE_PLAYBOOK.md)  
+  - [`docs/KNOWLEDGE_SOURCES_REGISTRY.md`](docs/KNOWLEDGE_SOURCES_REGISTRY.md)
 
 - **AI-Assistenz (z.B. Claude, ChatGPT, Cursor)**  
   [`docs/ai/CLAUDE_GUIDE.md`](docs/ai/CLAUDE_GUIDE.md)

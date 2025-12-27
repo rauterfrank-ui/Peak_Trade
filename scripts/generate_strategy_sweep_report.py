@@ -26,6 +26,7 @@ Output:
     - reports/sweeps/images/{sweep_name}_heatmap.png
     - reports/sweeps/images/{sweep_name}_distribution.png
 """
+
 from __future__ import annotations
 
 import argparse
@@ -73,26 +74,30 @@ def build_parser() -> argparse.ArgumentParser:
     # Input-Optionen
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument(
-        "--sweep-name", "-s",
+        "--sweep-name",
+        "-s",
         type=str,
         help="Name des Sweeps (sucht nach passenden Ergebnis-Dateien)",
     )
     input_group.add_argument(
-        "--input", "-i",
+        "--input",
+        "-i",
         type=str,
         help="Pfad zur Ergebnis-Datei (CSV oder Parquet)",
     )
 
     # Report-Optionen
     parser.add_argument(
-        "--format", "-f",
+        "--format",
+        "-f",
         type=str,
         choices=["markdown", "html", "both"],
         default="markdown",
         help="Output-Format (default: markdown)",
     )
     parser.add_argument(
-        "--output-dir", "-o",
+        "--output-dir",
+        "-o",
         type=str,
         default="reports/sweeps",
         help="Ausgabe-Verzeichnis (default: reports/sweeps)",
@@ -131,7 +136,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Logging
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -144,7 +150,9 @@ def parse_args() -> argparse.Namespace:
     return build_parser().parse_args()
 
 
-def find_sweep_results(sweep_name: str, experiments_dir: str = "reports/experiments") -> Optional[Path]:
+def find_sweep_results(
+    sweep_name: str, experiments_dir: str = "reports/experiments"
+) -> Optional[Path]:
     """
     Sucht nach der neuesten Ergebnis-Datei für einen Sweep.
 
@@ -195,17 +203,44 @@ def normalize_column_names(df: pd.DataFrame) -> pd.DataFrame:
     """
     # Bekannte Parameter-Namen (ohne Prefix)
     known_params = [
-        "fast_period", "slow_period", "rsi_period", "oversold_level", "overbought_level",
-        "lookback_breakout", "stop_loss_pct", "take_profit_pct", "trailing_stop_pct",
-        "vol_window", "vol_percentile_low", "vol_percentile_high", "entry_period",
-        "exit_period", "lookback", "threshold", "period", "num_std", "atr_period",
-        "atr_multiplier", "adx_period", "adx_threshold", "entry_z_score", "exit_z_score",
+        "fast_period",
+        "slow_period",
+        "rsi_period",
+        "oversold_level",
+        "overbought_level",
+        "lookback_breakout",
+        "stop_loss_pct",
+        "take_profit_pct",
+        "trailing_stop_pct",
+        "vol_window",
+        "vol_percentile_low",
+        "vol_percentile_high",
+        "entry_period",
+        "exit_period",
+        "lookback",
+        "threshold",
+        "period",
+        "num_std",
+        "atr_period",
+        "atr_multiplier",
+        "adx_period",
+        "adx_threshold",
+        "entry_z_score",
+        "exit_z_score",
     ]
 
     # Bekannte Metrik-Namen (ohne Prefix)
     known_metrics = [
-        "total_return", "sharpe_ratio", "sharpe", "max_drawdown", "win_rate",
-        "num_trades", "profit_factor", "cagr", "sortino_ratio", "calmar_ratio",
+        "total_return",
+        "sharpe_ratio",
+        "sharpe",
+        "max_drawdown",
+        "win_rate",
+        "num_trades",
+        "profit_factor",
+        "cagr",
+        "sortino_ratio",
+        "calmar_ratio",
     ]
 
     rename_map = {}
@@ -327,8 +362,12 @@ def build_recommendations_section(
             for metric_name in ["sharpe_ratio", "total_return", "max_drawdown", "win_rate"]:
                 if metric_name in best["metrics"]:
                     val = best["metrics"][metric_name]
-                    if "return" in metric_name or "drawdown" in metric_name or "rate" in metric_name:
-                        lines.append(f"- {metric_name}: {val*100:.2f}%")
+                    if (
+                        "return" in metric_name
+                        or "drawdown" in metric_name
+                        or "rate" in metric_name
+                    ):
+                        lines.append(f"- {metric_name}: {val * 100:.2f}%")
                     else:
                         lines.append(f"- {metric_name}: {val:.3f}")
 
@@ -358,10 +397,10 @@ def build_recommendations_section(
 
 def run_from_args(args: argparse.Namespace) -> int:
     """Generiert einen Sweep-Report basierend auf Argumenten.
-    
+
     Args:
         args: Parsed command-line arguments
-        
+
     Returns:
         Exit code (0 = success, 1 = error)
     """
@@ -409,7 +448,9 @@ def run_from_args(args: argparse.Namespace) -> int:
         for alt in alternatives:
             if alt in df.columns:
                 sort_metric = alt
-                logger.warning(f"Metrik '{args.sort_metric}' nicht gefunden, verwende: {sort_metric}")
+                logger.warning(
+                    f"Metrik '{args.sort_metric}' nicht gefunden, verwende: {sort_metric}"
+                )
                 break
         else:
             print(f"Fehler: Keine gültige Sort-Metrik gefunden")
@@ -470,7 +511,7 @@ def run_from_args(args: argparse.Namespace) -> int:
         try:
             # Extrahiere Parameter-Spalten
             param_cols = [c.replace("param_", "") for c in df.columns if c.startswith("param_")]
-            
+
             # Erzeuge Plots
             plots = generate_default_sweep_plots(
                 df=df,
@@ -484,13 +525,18 @@ def run_from_args(args: argparse.Namespace) -> int:
             # Füge Visualisierungen zum Report hinzu
             if plots:
                 plots_content = []
-                
+
                 # 1D-Plots
                 for plot_name, plot_path in plots.items():
                     if plot_name.startswith("param_") and plot_name.endswith("_vs_metric"):
                         # Relativer Pfad vom Report-Verzeichnis
                         rel_path = plot_path.relative_to(output_dir)
-                        param_display = plot_name.replace("param_", "").replace("_vs_metric", "").replace("_", " ").title()
+                        param_display = (
+                            plot_name.replace("param_", "")
+                            .replace("_vs_metric", "")
+                            .replace("_", " ")
+                            .title()
+                        )
                         plots_content.append(f"### {param_display} vs Metrik")
                         plots_content.append(f"![{param_display} vs Metrik]({rel_path})")
                         plots_content.append("")
@@ -503,7 +549,11 @@ def run_from_args(args: argparse.Namespace) -> int:
                     plots_content.append("")
 
                 # Drawdown-Heatmaps
-                drawdown_heatmaps = {k: v for k, v in plots.items() if "drawdown" in k.lower() and "heatmap" in k.lower()}
+                drawdown_heatmaps = {
+                    k: v
+                    for k, v in plots.items()
+                    if "drawdown" in k.lower() and "heatmap" in k.lower()
+                }
                 if drawdown_heatmaps:
                     plots_content.append("### Drawdown-Heatmaps (Max-Drawdown über Parameter-Raum)")
                     plots_content.append("")
@@ -512,7 +562,9 @@ def run_from_args(args: argparse.Namespace) -> int:
                         # Extrahiere Parameter-Namen aus dem Plot-Namen
                         # Format: drawdown_heatmap_{param_x}_vs_{param_y}
                         if "drawdown_heatmap_" in plot_name:
-                            param_part = plot_name.replace("drawdown_heatmap_", "").replace("_vs_", " × ")
+                            param_part = plot_name.replace("drawdown_heatmap_", "").replace(
+                                "_vs_", " × "
+                            )
                             title = f"Drawdown-Heatmap: {param_part.replace('_', ' ').title()}"
                         else:
                             title = "Drawdown-Heatmap"
@@ -534,7 +586,9 @@ def run_from_args(args: argparse.Namespace) -> int:
                         report.sections[existing_viz_idx].content_markdown = (
                             existing_content + "\n\n" + "\n".join(plots_content)
                         )
-                        logger.info(f"{len(plots)} Visualisierungen zur bestehenden Section hinzugefügt")
+                        logger.info(
+                            f"{len(plots)} Visualisierungen zur bestehenden Section hinzugefügt"
+                        )
                     else:
                         # Neue Section hinzufügen
                         visualization_section = ReportSection(

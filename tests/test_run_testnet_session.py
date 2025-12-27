@@ -9,6 +9,7 @@ und keine unerwarteten Fehler auftreten.
 
 WICHTIG: Diese Tests machen KEINE echten API-Calls!
 """
+
 from __future__ import annotations
 
 import pytest
@@ -380,10 +381,12 @@ class TestTestnetSession:
 
         # Fuege Preis-Buffer hinzu (fuer Signal-Generierung)
         for i in range(25):
-            mock_session._price_buffer.append({
-                "timestamp": None,
-                "close": 50000.0 + i * 10,
-            })
+            mock_session._price_buffer.append(
+                {
+                    "timestamp": None,
+                    "close": 50000.0 + i * 10,
+                }
+            )
 
         result = mock_session.step_once()
 

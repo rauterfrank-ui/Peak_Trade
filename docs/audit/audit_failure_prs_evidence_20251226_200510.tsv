@@ -1,0 +1,11 @@
+pr	state	merged_at	merged_by	merge_sha	audit_conclusion_at_merge	failed_checks_at_merge
+38	MERGED	2025-12-13T17:33:37Z	rauterfrank-ui	9ede5aca0918d2778e07f0ec6f2fa9a3a18e5865	FAILURE	Policy Critic Review:FAILURE,audit:FAILURE,tests (3.11):FAILURE,tests (3.9):FAILURE
+160	MERGED	2025-12-19T11:51:50Z	rauterfrank-ui	81315589617527b0b881a5452b8200caf0323e26	FAILURE	audit:FAILURE,tests (3.11):FAILURE
+161	MERGED	2025-12-19T11:51:48Z	rauterfrank-ui	f047347b5006d2e03c2fece740106a77fd3696be	FAILURE	audit:FAILURE,tests (3.10):FAILURE,tests (3.11):FAILURE,tests (3.9):FAILURE
+164	MERGED	2025-12-20T06:24:39Z	rauterfrank-ui	a4ad0993e2181bb5fd131f5452fc90ab20dc8804	FAILURE	audit:FAILURE,tests (3.10):FAILURE,tests (3.11):FAILURE,tests (3.9):FAILURE
+166	MERGED	2025-12-20T06:19:54Z	rauterfrank-ui	230098ca479cdac1feb5019f6ffd4025e4040328	FAILURE	audit:FAILURE
+168	MERGED	2025-12-20T06:23:41Z	rauterfrank-ui	466a4e8449beff59ab2648ad5917c40fdbb0b6da	FAILURE	audit:FAILURE
+207	MERGED	2025-12-21T16:21:20Z	rauterfrank-ui	1395b31a7d1e6ec9eb6517a3f21213bacf73b8f7	FAILURE	audit:FAILURE,tests (3.10):FAILURE,tests (3.11):FAILURE,tests (3.9):FAILURE
+57	OPEN		n/a		n/a	
+60	OPEN		n/a		n/a	
+117	OPEN		n/a		n/a	

@@ -1,0 +1,26 @@
+name: Policy Guard - No Tracked Reports
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  merge_group:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  guard-no-tracked-reports:
+    name: Guard tracked files in reports directories
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run policy guard
+        shell: bash
+        run: |
+          bash scripts/ci/guard_no_tracked_reports.sh

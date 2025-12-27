@@ -38,7 +38,7 @@ def main() -> int:
     """
     parser = argparse.ArgumentParser(
         description="Run Strategy-Switch Sanity Check for live_profile.",
-        epilog="Exit-Codes: 0=OK, 1=FAIL, 2=WARN"
+        epilog="Exit-Codes: 0=OK, 1=FAIL, 2=WARN",
     )
     parser.add_argument(
         "--config",

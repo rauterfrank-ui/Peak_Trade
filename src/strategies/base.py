@@ -16,6 +16,7 @@ Jede Strategie KANN überschreiben:
 - prepare(data: pd.DataFrame) -> None
 - validate() -> None
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -23,6 +24,8 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 import pandas as pd
+
+from ..core.errors import StrategyError
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -41,6 +44,7 @@ class StrategyMetadata:
         regime: Für welches Marktregime geeignet ("trending", "ranging", "any")
         tags: Optionale Tags für Kategorisierung
     """
+
     name: str
     description: str = ""
     version: str = "0.1.0"
@@ -82,9 +86,7 @@ class BaseStrategy(ABC):
         metadata: Optional[StrategyMetadata] = None,
     ) -> None:
         self.config: Dict[str, Any] = config or {}
-        self.meta: StrategyMetadata = metadata or StrategyMetadata(
-            name=self.__class__.__name__
-        )
+        self.meta: StrategyMetadata = metadata or StrategyMetadata(name=self.__class__.__name__)
 
     @property
     def key(self) -> str:
@@ -126,7 +128,7 @@ class BaseStrategy(ABC):
             - 0 = Flat (keine Position)
 
         Raises:
-            ValueError: Bei fehlenden Spalten oder zu wenig Daten
+            StrategyError: Bei fehlenden Spalten oder zu wenig Daten
         """
         raise NotImplementedError
 
@@ -146,7 +148,7 @@ class BaseStrategy(ABC):
         Kann von Subklassen überschrieben werden.
 
         Raises:
-            ValueError: Bei ungültigen Parametern
+            StrategyError: Bei ungültigen Parametern
         """
         return
 

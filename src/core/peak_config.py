@@ -22,6 +22,7 @@ Config-Pfad-Prioritaet:
     2. Environment Variable PEAK_TRADE_CONFIG_PATH
     3. Default: config/config.toml relativ zum Projekt-Root
 """
+
 from __future__ import annotations
 
 import os
@@ -56,6 +57,7 @@ class PeakConfig:
     Zugriff per Punkt-Notation:
     cfg.get("strategy.ma_crossover.fast_window", 20)
     """
+
     raw: dict
 
     def get(self, path: str, default: Any = None) -> Any:

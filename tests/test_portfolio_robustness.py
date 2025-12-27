@@ -10,6 +10,7 @@ Tests für:
 - run_portfolio_stress_tests
 - run_portfolio_robustness
 """
+
 from __future__ import annotations
 
 import pytest
@@ -176,6 +177,7 @@ def test_build_portfolio_returns_single_component(sample_returns_loader):
 
 def test_build_portfolio_returns_no_valid_returns(sample_portfolio_components):
     """Testet build_portfolio_returns mit fehlenden Returns."""
+
     def empty_loader(strategy_name: str, config_id: str) -> Optional[pd.Series]:
         return None
 
@@ -298,7 +300,9 @@ def test_run_portfolio_robustness_baseline_only(sample_portfolio_components, sam
     assert result.stress_results is None
 
 
-def test_run_portfolio_robustness_with_monte_carlo(sample_portfolio_components, sample_returns_loader):
+def test_run_portfolio_robustness_with_monte_carlo(
+    sample_portfolio_components, sample_returns_loader
+):
     """Testet run_portfolio_robustness mit Monte-Carlo."""
     components = sample_portfolio_components
     portfolio = PortfolioDefinition(name="test_portfolio", components=components)
@@ -315,7 +319,9 @@ def test_run_portfolio_robustness_with_monte_carlo(sample_portfolio_components, 
     assert result.mc_results["num_runs"] == 100
 
 
-def test_run_portfolio_robustness_with_stress_tests(sample_portfolio_components, sample_returns_loader):
+def test_run_portfolio_robustness_with_stress_tests(
+    sample_portfolio_components, sample_returns_loader
+):
     """Testet run_portfolio_robustness mit Stress-Tests."""
     components = sample_portfolio_components
     portfolio = PortfolioDefinition(name="test_portfolio", components=components)
@@ -349,8 +355,3 @@ def test_run_portfolio_robustness_full(sample_portfolio_components, sample_retur
 
     assert result.mc_results is not None
     assert result.stress_results is not None
-
-
-
-
-

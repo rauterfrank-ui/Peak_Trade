@@ -91,7 +91,7 @@ class TestLoadTestHealthProfile:
         assert checks[0].weight == 3
         assert checks[1].id == "fail_check"
         assert checks[1].weight == 2
-        
+
         # Triggers sollten Default-Werte haben (da nicht in Fixture konfiguriert)
         assert triggers.min_total_runs == 0
         assert triggers.max_fail_rate == 1.0
@@ -167,7 +167,7 @@ class TestRunSingleCheck:
         check = TestCheckConfig(
             id="test_output",
             name="Test Output Capture",
-            cmd='python3 -c "import sys; print(\'STDOUT_TEST\'); print(\'STDERR_TEST\', file=sys.stderr); sys.exit(1)"',
+            cmd="python3 -c \"import sys; print('STDOUT_TEST'); print('STDERR_TEST', file=sys.stderr); sys.exit(1)\"",
             weight=1,
             category="tests",
         )
@@ -192,7 +192,7 @@ class TestAggregateHealth:
     def test_all_pass(self):
         """Test: Alle Checks erfolgreich → Health-Score 100."""
         import datetime as dt
-        
+
         results = [
             TestCheckResult(
                 id="check1",
@@ -229,7 +229,7 @@ class TestAggregateHealth:
     def test_mixed_results(self):
         """Test: Gemischte Ergebnisse → Health-Score korrekt berechnet."""
         import datetime as dt
-        
+
         results = [
             TestCheckResult(
                 id="check1",
@@ -374,7 +374,7 @@ class TestReportWriters:
 
         assert md_path.exists()
         content = md_path.read_text()
-        
+
         # Prüfe ob fehlgeschlagener Check detailliert dargestellt wird
         assert "❌ Fehlgeschlagene Checks (Details)" in content
         assert "Failed Test" in content
@@ -497,12 +497,14 @@ class TestHealthHistory:
 
         history_path = tmp_path / "history.json"
 
-        # Erstelle mehrere Einträge
-        for i, score in enumerate([70.0, 75.0, 80.0, 85.0]):
+        # Erstelle mehrere Einträge mit aktuellem Datum (innerhalb des 14-Tage-Fensters)
+        # Scores in umgekehrter Reihenfolge, sodass der neueste Eintrag (i=0) 85.0 ist
+        base_time = dt.datetime.utcnow()
+        for i, score in enumerate([85.0, 80.0, 75.0, 70.0]):
             summary = TestHealthSummary(
                 profile_name="test_profile",
-                started_at=dt.datetime(2025, 12, 10, 14, i, 0),
-                finished_at=dt.datetime(2025, 12, 10, 14, i, 30),
+                started_at=base_time - dt.timedelta(days=i, minutes=30),
+                finished_at=base_time - dt.timedelta(days=i),
                 checks=[],
                 health_score=score,
                 passed_checks=3,
