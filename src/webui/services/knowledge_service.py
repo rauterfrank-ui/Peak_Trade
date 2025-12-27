@@ -75,6 +75,10 @@ class KnowledgeService:
         self.vector_db = None
         self.rag_pipeline = None
 
+        # In-memory fallback store (when chromadb not available)
+        self._in_memory_snippets: Dict[str, Dict[str, Any]] = {}
+        self._in_memory_strategies: Dict[str, Dict[str, Any]] = {}
+
         # Try to initialize (graceful failure)
         self._init_backends()
 
@@ -105,8 +109,12 @@ class KnowledgeService:
             self.rag_pipeline = None
 
     def is_available(self) -> bool:
-        """Check if Knowledge Service is available."""
-        return self.vector_db is not None
+        """
+        Check if Knowledge Service is available.
+
+        Returns True if either vector DB is available OR in-memory fallback is active.
+        """
+        return True  # Always available (with in-memory fallback)
 
     # =========================================================================
     # Snippets (Generic Documents)
@@ -119,7 +127,7 @@ class KnowledgeService:
         tag: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """
-        List document snippets from vector DB.
+        List document snippets from vector DB or in-memory store.
 
         Args:
             limit: Maximum number of snippets to return
@@ -129,8 +137,17 @@ class KnowledgeService:
         Returns:
             List of snippet dicts with metadata
         """
-        if not self.is_available():
-            return []
+        # Use in-memory store if vector DB not available
+        if self.vector_db is None:
+            snippets = list(self._in_memory_snippets.values())
+
+            # Apply filters
+            if category:
+                snippets = [s for s in snippets if s.get("category") == category]
+            if tag:
+                snippets = [s for s in snippets if tag in s.get("tags", [])]
+
+            return snippets[:limit]
 
         # For now, return mock data (vector DB doesn't have a "list all" method)
         # In production, you'd maintain a separate index or use DB-specific queries
@@ -161,7 +178,7 @@ class KnowledgeService:
         tags: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
-        Add a document snippet to vector DB.
+        Add a document snippet to vector DB or in-memory store.
 
         Args:
             content: Document content
@@ -173,22 +190,35 @@ class KnowledgeService:
             Created snippet dict with ID
 
         Raises:
-            RuntimeError: If Knowledge Service is not available
             ReadonlyModeError: If KNOWLEDGE_READONLY is enabled
         """
-        if not self.is_available():
-            raise RuntimeError("Knowledge Service not available")
-
         # Generate ID
         import uuid
+        from datetime import datetime
 
         snippet_id = f"snippet_{uuid.uuid4().hex[:8]}"
 
-        # Build metadata
+        # Build snippet object
+        snippet = {
+            "id": snippet_id,
+            "title": title or "Untitled",
+            "content": content,
+            "category": category or "general",
+            "tags": tags or [],
+            "created_at": datetime.utcnow().isoformat() + "Z",
+        }
+
+        # Use in-memory store if vector DB not available
+        if self.vector_db is None:
+            self._in_memory_snippets[snippet_id] = snippet
+            logger.info(f"Added snippet to in-memory store: {snippet_id}")
+            return snippet
+
+        # Build metadata for vector DB
         metadata = {
             "type": "snippet",
-            "title": title or "Untitled",
-            "category": category or "general",
+            "title": snippet["title"],
+            "category": snippet["category"],
             "tags": ",".join(tags) if tags else "",
         }
 
@@ -199,16 +229,8 @@ class KnowledgeService:
             ids=[snippet_id],
         )
 
-        logger.info(f"Added snippet: {snippet_id}")
-
-        return {
-            "id": snippet_id,
-            "title": metadata["title"],
-            "content": content,
-            "category": metadata["category"],
-            "tags": tags or [],
-            "created_at": "2024-12-22T00:00:00Z",  # Mock timestamp
-        }
+        logger.info(f"Added snippet to vector DB: {snippet_id}")
+        return snippet
 
     # =========================================================================
     # Strategies (Strategy Documents)
@@ -221,7 +243,7 @@ class KnowledgeService:
         name: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """
-        List strategy documents from vector DB.
+        List strategy documents from vector DB or in-memory store.
 
         Args:
             limit: Maximum number to return
@@ -231,8 +253,17 @@ class KnowledgeService:
         Returns:
             List of strategy dicts
         """
-        if not self.is_available():
-            return []
+        # Use in-memory store if vector DB not available
+        if self.vector_db is None:
+            strategies = list(self._in_memory_strategies.values())
+
+            # Apply filters
+            if status:
+                strategies = [s for s in strategies if s.get("status") == status]
+            if name:
+                strategies = [s for s in strategies if name.lower() in s.get("name", "").lower()]
+
+            return strategies[:limit]
 
         # Mock data for now
         strategies = [
@@ -270,7 +301,7 @@ class KnowledgeService:
         tier: str = "experimental",
     ) -> Dict[str, Any]:
         """
-        Add a strategy document to vector DB.
+        Add a strategy document to vector DB or in-memory store.
 
         Args:
             name: Strategy name
@@ -282,16 +313,30 @@ class KnowledgeService:
             Created strategy dict with ID
 
         Raises:
-            RuntimeError: If Knowledge Service is not available
             ReadonlyModeError: If KNOWLEDGE_READONLY is enabled
         """
-        if not self.is_available():
-            raise RuntimeError("Knowledge Service not available")
-
         # Generate ID
+        from datetime import datetime
+
         strategy_id = f"strategy_{name.lower().replace(' ', '_')}"
 
-        # Build metadata
+        # Build strategy object
+        strategy = {
+            "id": strategy_id,
+            "name": name,
+            "description": description,
+            "status": status,
+            "tier": tier,
+            "created_at": datetime.utcnow().isoformat() + "Z",
+        }
+
+        # Use in-memory store if vector DB not available
+        if self.vector_db is None:
+            self._in_memory_strategies[strategy_id] = strategy
+            logger.info(f"Added strategy to in-memory store: {strategy_id}")
+            return strategy
+
+        # Build metadata for vector DB
         metadata = {
             "type": "strategy",
             "name": name,
@@ -306,16 +351,8 @@ class KnowledgeService:
             ids=[strategy_id],
         )
 
-        logger.info(f"Added strategy: {strategy_id}")
-
-        return {
-            "id": strategy_id,
-            "name": name,
-            "description": description,
-            "status": status,
-            "tier": tier,
-            "created_at": "2024-12-22T00:00:00Z",
-        }
+        logger.info(f"Added strategy to vector DB: {strategy_id}")
+        return strategy
 
     # =========================================================================
     # Semantic Search
@@ -328,7 +365,7 @@ class KnowledgeService:
         filter_type: Optional[str] = None,
     ) -> List[Tuple[str, float, Dict[str, Any]]]:
         """
-        Perform semantic search over knowledge base.
+        Perform semantic search over knowledge base or in-memory store.
 
         Args:
             query: Search query
@@ -337,12 +374,44 @@ class KnowledgeService:
 
         Returns:
             List of tuples: (document_text, similarity_score, metadata)
-
-        Raises:
-            RuntimeError: If Knowledge Service is not available
         """
-        if not self.is_available():
-            raise RuntimeError("Knowledge Service not available")
+        # Use in-memory store if vector DB not available (simple keyword matching)
+        if self.vector_db is None:
+            results = []
+            query_lower = query.lower()
+
+            # Search in snippets
+            if filter_type is None or filter_type == "snippet":
+                for snippet in self._in_memory_snippets.values():
+                    if (
+                        query_lower in snippet.get("content", "").lower()
+                        or query_lower in snippet.get("title", "").lower()
+                    ):
+                        results.append(
+                            (
+                                snippet.get("content", ""),
+                                0.9,  # Mock score
+                                {"type": "snippet", **snippet},
+                            )
+                        )
+
+            # Search in strategies
+            if filter_type is None or filter_type == "strategy":
+                for strategy in self._in_memory_strategies.values():
+                    if (
+                        query_lower in strategy.get("description", "").lower()
+                        or query_lower in strategy.get("name", "").lower()
+                    ):
+                        results.append(
+                            (
+                                strategy.get("description", ""),
+                                0.9,  # Mock score
+                                {"type": "strategy", **strategy},
+                            )
+                        )
+
+            logger.info(f"Search query (in-memory): '{query}' returned {len(results)} results")
+            return results[:top_k]
 
         filter_dict = {"type": filter_type} if filter_type else None
 
@@ -367,12 +436,26 @@ class KnowledgeService:
             Dict with stats (document counts, backend info, etc.)
         """
         stats = {
-            "backend": self.vector_db_type,
+            "backend": self.vector_db_type if self.vector_db else "in-memory",
             "available": self.is_available(),
             "persist_directory": str(self.persist_directory),
         }
 
-        if self.is_available():
+        # Use in-memory counts if vector DB not available
+        if self.vector_db is None:
+            snippet_count = len(self._in_memory_snippets)
+            strategy_count = len(self._in_memory_strategies)
+            stats.update(
+                {
+                    "total_documents": snippet_count + strategy_count,
+                    "snippets": snippet_count,
+                    "strategies": strategy_count,
+                    "readonly_mode": os.environ.get("KNOWLEDGE_READONLY", "false").lower()
+                    in ("true", "1", "yes"),
+                    "mode": "in-memory (chromadb not installed)",
+                }
+            )
+        else:
             # Mock counts for now
             stats.update(
                 {
@@ -381,15 +464,7 @@ class KnowledgeService:
                     "strategies": 17,
                     "readonly_mode": os.environ.get("KNOWLEDGE_READONLY", "false").lower()
                     in ("true", "1", "yes"),
-                }
-            )
-        else:
-            stats.update(
-                {
-                    "total_documents": 0,
-                    "snippets": 0,
-                    "strategies": 0,
-                    "error": "Backend not available (chromadb not installed)",
+                    "mode": "vector-db",
                 }
             )
 

@@ -224,24 +224,22 @@ def test_post_snippet_success_when_both_flags_enabled(client, mock_knowledge_ser
 
 
 def test_post_snippet_backend_unavailable(client):
-    """Test POST snippet returns 501 if backend unavailable."""
+    """Test POST snippet works with in-memory fallback (chromadb optional)."""
     os.environ["KNOWLEDGE_READONLY"] = "false"
     os.environ["KNOWLEDGE_WEB_WRITE_ENABLED"] = "true"
 
-    with patch("src.webui.knowledge_api.is_vector_db_available") as mock_available:
-        mock_available.return_value = False
+    # No longer returns 501 - uses in-memory fallback
+    response = client.post(
+        "/api/knowledge/snippets",
+        json={
+            "content": "Test content",
+            "title": "Test",
+        },
+    )
 
-        response = client.post(
-            "/api/knowledge/snippets",
-            json={
-                "content": "Test content",
-                "title": "Test",
-            },
-        )
-
-        assert response.status_code == 501
-        data = response.json()
-        assert "not available" in data["detail"]["error"].lower()
+    assert response.status_code == 201
+    data = response.json()
+    assert data["success"] is True
 
 
 # =============================================================================
@@ -354,15 +352,14 @@ def test_search_success(client, mock_knowledge_service):
 
 
 def test_search_backend_unavailable(client):
-    """Test search returns 501 if backend unavailable."""
-    with patch("src.webui.knowledge_api.is_vector_db_available") as mock_available:
-        mock_available.return_value = False
+    """Test search works with in-memory fallback (chromadb optional)."""
+    # No longer returns 501 - uses in-memory fallback
+    response = client.get("/api/knowledge/search?q=test")
 
-        response = client.get("/api/knowledge/search?q=test")
-
-        assert response.status_code == 501
-        data = response.json()
-        assert "not available" in data["detail"]["error"].lower()
+    assert response.status_code == 200
+    data = response.json()
+    assert "query" in data
+    assert "results" in data
 
 
 def test_search_with_type_filter(client, mock_knowledge_service):

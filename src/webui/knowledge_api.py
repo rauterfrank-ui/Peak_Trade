@@ -141,29 +141,11 @@ def require_backend_available() -> None:
     """
     Check if Knowledge DB backend is available.
 
-    Raises:
-        HTTPException(501): If backend is not available
+    Note: With in-memory fallback, this always succeeds.
+    Kept for API compatibility.
     """
-    if not is_vector_db_available():
-        raise HTTPException(
-            status_code=status.HTTP_501_NOT_IMPLEMENTED,
-            detail={
-                "error": "Knowledge DB backend not available",
-                "message": "Vector database backend (chromadb) is not installed",
-                "solution": "Install with: pip install chromadb",
-            },
-        )
-
-    service = get_knowledge_service()
-    if not service.is_available():
-        raise HTTPException(
-            status_code=status.HTTP_501_NOT_IMPLEMENTED,
-            detail={
-                "error": "Knowledge Service initialization failed",
-                "message": "Could not initialize Knowledge DB service",
-                "solution": "Check logs for details",
-            },
-        )
+    # Service now has in-memory fallback, so always available
+    pass
 
 
 # =============================================================================
