@@ -35,7 +35,7 @@ class RegimeConfig:
     trend_threshold: float = 0.002  # ~0.2% über trend_window
 
     vol_window: int = 50
-    vol_threshold: float = 0.02     # ~2% Volatilität
+    vol_threshold: float = 0.02  # ~2% Volatilität
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -116,8 +116,7 @@ def label_trend_regime(
     """
     if cfg.price_col not in data.columns:
         raise KeyError(
-            f"Spalte {cfg.price_col!r} nicht im DataFrame. "
-            f"Vorhandene Spalten: {list(data.columns)}"
+            f"Spalte {cfg.price_col!r} nicht im DataFrame. Vorhandene Spalten: {list(data.columns)}"
         )
 
     price = data[cfg.price_col].astype(float)
@@ -142,8 +141,7 @@ def label_vol_regime(
     """
     if cfg.price_col not in data.columns:
         raise KeyError(
-            f"Spalte {cfg.price_col!r} nicht im DataFrame. "
-            f"Vorhandene Spalten: {list(data.columns)}"
+            f"Spalte {cfg.price_col!r} nicht im DataFrame. Vorhandene Spalten: {list(data.columns)}"
         )
 
     price = data[cfg.price_col].astype(float)

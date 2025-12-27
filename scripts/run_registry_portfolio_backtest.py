@@ -249,9 +249,7 @@ def print_config_summary(args: argparse.Namespace, cfg: dict):
     print("-" * 70 + "\n")
 
 
-def load_market_data(
-    symbol: str, timeframe: str, limit: int, use_cache: bool
-) -> pd.DataFrame:
+def load_market_data(symbol: str, timeframe: str, limit: int, use_cache: bool) -> pd.DataFrame:
     """
     Lädt Marktdaten von Kraken.
 
@@ -270,20 +268,13 @@ def load_market_data(
     logger.info(f"🌐 Lade Daten von Kraken: {symbol} {timeframe} (limit={limit})")
 
     try:
-        df = fetch_kraken_data(
-            symbol=symbol, timeframe=timeframe, limit=limit, use_cache=use_cache
-        )
+        df = fetch_kraken_data(symbol=symbol, timeframe=timeframe, limit=limit, use_cache=use_cache)
 
-        logger.info(
-            f"✅ Daten geladen: {len(df)} Bars "
-            f"({df.index[0]} bis {df.index[-1]})"
-        )
+        logger.info(f"✅ Daten geladen: {len(df)} Bars ({df.index[0]} bis {df.index[-1]})")
 
         # Validierung
         if len(df) < 100:
-            logger.warning(
-                f"⚠️  Nur {len(df)} Bars - zu wenig für sinnvollen Backtest!"
-            )
+            logger.warning(f"⚠️  Nur {len(df)} Bars - zu wenig für sinnvollen Backtest!")
 
         return df
 

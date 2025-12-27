@@ -14,6 +14,8 @@ Formel (Fixed Fractional):
 Formel (Kelly):
     kelly_fraction = win_rate - (1 - win_rate) / (avg_win / avg_loss)
     position_size = equity * kelly_fraction * kelly_scaling
+
+P0 Guardrails: This file is protected by CODEOWNERS (risk management review required).
 """
 
 from dataclasses import dataclass
@@ -29,31 +31,32 @@ class PositionSizerConfig:
     Konfiguration für PositionSizer.
     Alle Prozente werden als Prozentwerte übergeben (z.B. 1.0 für 1%).
     """
+
     method: PositionSizingMethod = "fixed_fractional"
-    risk_pct: float = 1.0           # Risiko pro Trade in %
+    risk_pct: float = 1.0  # Risiko pro Trade in %
     max_position_pct: float = 10.0  # Maximaler Kapital-Einsatz pro Trade in %
-    kelly_scaling: float = 0.5      # Kelly-Faktor (typisch < 1.0)
+    kelly_scaling: float = 0.5  # Kelly-Faktor (typisch < 1.0)
 
 
 @dataclass
 class PositionRequest:
     """Anfrage für Position-Sizing-Berechnung."""
 
-    equity: float           # Aktuelles Kontovermögen
-    entry_price: float      # Geplanter Entry-Preis
-    stop_price: float       # Stop-Loss-Preis
-    risk_per_trade: float   # z.B. 0.01 = 1%
+    equity: float  # Aktuelles Kontovermögen
+    entry_price: float  # Geplanter Entry-Preis
+    stop_price: float  # Stop-Loss-Preis
+    risk_per_trade: float  # z.B. 0.01 = 1%
 
 
 @dataclass
 class PositionResult:
     """Ergebnis der Position-Sizing-Berechnung."""
 
-    size: float                    # Anzahl Units (z.B. BTC)
-    value: float                   # Positionswert in USD
-    risk_amount: float             # Risikobetrag in USD
-    risk_percent: float            # Risiko in %
-    stop_distance_percent: float   # Stop-Distanz in %
+    size: float  # Anzahl Units (z.B. BTC)
+    value: float  # Positionswert in USD
+    risk_amount: float  # Risikobetrag in USD
+    risk_percent: float  # Risiko in %
+    stop_distance_percent: float  # Stop-Distanz in %
     rejected: bool = False
     reason: str = ""
 
@@ -259,12 +262,8 @@ class PositionSizer:
         """
         if self.config.method == "kelly":
             if win_rate is None or avg_win is None or avg_loss is None:
-                raise ValueError(
-                    "Kelly-Methode benötigt win_rate, avg_win und avg_loss Parameter"
-                )
-            return self.size_position_kelly(
-                capital, stop_distance, win_rate, avg_win, avg_loss
-            )
+                raise ValueError("Kelly-Methode benötigt win_rate, avg_win und avg_loss Parameter")
+            return self.size_position_kelly(capital, stop_distance, win_rate, avg_win, avg_loss)
         else:
             return self.size_position_fixed_fractional(capital, stop_distance)
 
@@ -273,7 +272,7 @@ def calc_position_size(
     req: PositionRequest,
     max_position_pct: float = 0.25,
     min_position_value: float = 50.0,
-    min_stop_distance: float = 0.005
+    min_stop_distance: float = 0.005,
 ) -> PositionResult:
     """
     Berechnet optimale Positionsgröße basierend auf Risk-per-Trade.
@@ -308,10 +307,13 @@ def calc_position_size(
     # 1. Validierung: Stop unter Entry
     if req.stop_price >= req.entry_price:
         return PositionResult(
-            size=0, value=0, risk_amount=0, risk_percent=0,
+            size=0,
+            value=0,
+            risk_amount=0,
+            risk_percent=0,
             stop_distance_percent=0,
             rejected=True,
-            reason="Stop-Loss muss unter Entry liegen (Long)"
+            reason="Stop-Loss muss unter Entry liegen (Long)",
         )
 
     # 2. Stop-Distanz berechnen
@@ -320,10 +322,13 @@ def calc_position_size(
 
     if stop_distance_pct < min_stop_distance:
         return PositionResult(
-            size=0, value=0, risk_amount=0, risk_percent=0,
+            size=0,
+            value=0,
+            risk_amount=0,
+            risk_percent=0,
             stop_distance_percent=stop_distance_pct,
             rejected=True,
-            reason=f"Stop-Distanz {stop_distance_pct:.2%} < {min_stop_distance:.2%}"
+            reason=f"Stop-Distanz {stop_distance_pct:.2%} < {min_stop_distance:.2%}",
         )
 
     # 3. Risk-Amount berechnen
@@ -337,21 +342,25 @@ def calc_position_size(
     max_value = req.equity * max_position_pct
     if value > max_value:
         return PositionResult(
-            size=0, value=value, risk_amount=risk_amount,
+            size=0,
+            value=value,
+            risk_amount=risk_amount,
             risk_percent=req.risk_per_trade,
             stop_distance_percent=stop_distance_pct,
             rejected=True,
-            reason=f"Position {value:.2f} USD > {max_position_pct:.0%} Limit ({max_value:.2f} USD)"
+            reason=f"Position {value:.2f} USD > {max_position_pct:.0%} Limit ({max_value:.2f} USD)",
         )
 
     # 6. Validierung: Position zu klein?
     if value < min_position_value:
         return PositionResult(
-            size=0, value=value, risk_amount=risk_amount,
+            size=0,
+            value=value,
+            risk_amount=risk_amount,
             risk_percent=req.risk_per_trade,
             stop_distance_percent=stop_distance_pct,
             rejected=True,
-            reason=f"Position {value:.2f} USD < Min {min_position_value:.2f} USD"
+            reason=f"Position {value:.2f} USD < Min {min_position_value:.2f} USD",
         )
 
     # 7. Alles OK!
@@ -362,5 +371,8 @@ def calc_position_size(
         risk_percent=req.risk_per_trade,
         stop_distance_percent=stop_distance_pct,
         rejected=False,
-        reason="OK"
+        reason="OK",
     )
+
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)

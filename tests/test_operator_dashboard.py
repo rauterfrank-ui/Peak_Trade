@@ -8,6 +8,7 @@ Testet:
 - JSON-Output ist valide
 - Alerts werden korrekt generiert
 """
+
 import pytest
 import subprocess
 import sys

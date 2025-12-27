@@ -18,6 +18,7 @@ Outputs:
     - Console-Output mit Backtest-Ergebnissen
     - Optional: Markdown-Report in reports/
 """
+
 from __future__ import annotations
 
 import argparse
@@ -44,8 +45,7 @@ from src.strategies.ma_crossover import MACrossoverStrategy
 
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -133,7 +133,9 @@ def run_breakout_backtest(
     )
 
     logger.info(f"Strategie: {strategy.meta.name}")
-    logger.info(f"Parameter: lookback={strategy.lookback_breakout}, SL={strategy.stop_loss_pct}, TP={strategy.take_profit_pct}")
+    logger.info(
+        f"Parameter: lookback={strategy.lookback_breakout}, SL={strategy.stop_loss_pct}, TP={strategy.take_profit_pct}"
+    )
 
     # Signale generieren
     signals = strategy.generate_signals(df)
@@ -357,21 +359,23 @@ def generate_markdown_report(
             f"{stats.get('win_rate', 0):.1%} |"
         )
 
-    lines.extend([
-        "\n## Strategien\n",
-        "### Breakout Strategy",
-        "- Trend-Following basierend auf N-Bar High/Low Breakouts",
-        "- Stop-Loss und Take-Profit integriert",
-        "- Geeignet für trending markets\n",
-        "### RSI + Vol Filter",
-        "- Mean-Reversion basierend auf RSI",
-        "- Vol-Regime-Filter blockiert Trades bei extremer Volatilität",
-        "- Kombination von Trading-Strategie und Filter\n",
-        "### Composite (Portfolio)",
-        "- Kombiniert RSI, Breakout und MA Crossover",
-        "- Weighted Aggregation der Signale",
-        "- Diversifikation über mehrere Strategien\n",
-    ])
+    lines.extend(
+        [
+            "\n## Strategien\n",
+            "### Breakout Strategy",
+            "- Trend-Following basierend auf N-Bar High/Low Breakouts",
+            "- Stop-Loss und Take-Profit integriert",
+            "- Geeignet für trending markets\n",
+            "### RSI + Vol Filter",
+            "- Mean-Reversion basierend auf RSI",
+            "- Vol-Regime-Filter blockiert Trades bei extremer Volatilität",
+            "- Kombination von Trading-Strategie und Filter\n",
+            "### Composite (Portfolio)",
+            "- Kombiniert RSI, Breakout und MA Crossover",
+            "- Weighted Aggregation der Signale",
+            "- Diversifikation über mehrere Strategien\n",
+        ]
+    )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text("\n".join(lines))
@@ -385,9 +389,7 @@ def generate_markdown_report(
 
 def main() -> None:
     """Hauptfunktion."""
-    parser = argparse.ArgumentParser(
-        description="Peak_Trade Phase 40 - Strategy Library Demo"
-    )
+    parser = argparse.ArgumentParser(description="Peak_Trade Phase 40 - Strategy Library Demo")
     parser.add_argument(
         "--config",
         type=str,

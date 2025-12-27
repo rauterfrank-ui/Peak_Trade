@@ -5,6 +5,7 @@ Tests für scripts/smoke_test_testnet_stack.py (Phase 39)
 
 Testet das Testnet-Stack Smoke-Test-Script.
 """
+
 from __future__ import annotations
 
 import sys
@@ -42,7 +43,8 @@ from scripts.smoke_test_testnet_stack import (
 def valid_config_path(tmp_path: Path) -> Path:
     """Erstellt eine gültige Test-Config."""
     config_file = tmp_path / "config.toml"
-    config_file.write_text("""
+    config_file.write_text(
+        """
 [backtest]
 initial_cash = 10000.0
 
@@ -64,7 +66,8 @@ default_type = "dummy"
 simulated_prices = { "BTC/EUR" = 50000.0, "ETH/EUR" = 3000.0 }
 fee_bps = 10.0
 slippage_bps = 5.0
-""")
+"""
+    )
     return config_file
 
 
@@ -72,13 +75,15 @@ slippage_bps = 5.0
 def config_without_prices(tmp_path: Path) -> Path:
     """Config ohne simulierte Preise."""
     config_file = tmp_path / "no_prices.toml"
-    config_file.write_text("""
+    config_file.write_text(
+        """
 [backtest]
 initial_cash = 10000.0
 
 [exchange]
 default_type = "dummy"
-""")
+"""
+    )
     return config_file
 
 
@@ -363,7 +368,3 @@ class TestSmokeTestIntegration:
         assert "Order-Platzierung" in test_names
         assert "Executor-Order" in test_names
         assert "Order-Cancel" in test_names
-
-
-
-

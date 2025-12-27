@@ -22,6 +22,7 @@ HINWEIS: Exchange-Module (Testnet/Live Executors) werden lazy importiert,
          >>> from src.orders.exchange import TestnetOrderExecutor
          >>> from src.orders.shadow import ShadowOrderExecutor
 """
+
 from __future__ import annotations
 
 from .base import (
@@ -69,6 +70,7 @@ def __getattr__(name: str):
     }
     if name in _exchange_exports:
         from . import exchange
+
         return getattr(exchange, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 

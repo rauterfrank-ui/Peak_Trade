@@ -12,6 +12,7 @@ Konventionen:
 - run_name: Freier Name für den Run (z.B. "ma_crossover_dev_test")
 - timestamp: ISO-Format UTC (z.B. "2024-01-15T14:30:00Z")
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
@@ -88,9 +89,9 @@ class ExperimentRecord:
     """
 
     run_id: str
-    run_type: str           # z.B. "single_backtest", "market_scan", "sweep", "portfolio"
+    run_type: str  # z.B. "single_backtest", "market_scan", "sweep", "portfolio"
     run_name: str
-    timestamp: str          # ISO-String in UTC
+    timestamp: str  # ISO-String in UTC
 
     strategy_key: Optional[str] = None
     symbol: Optional[str] = None
@@ -103,12 +104,12 @@ class ExperimentRecord:
     max_drawdown: Optional[float] = None
     sharpe: Optional[float] = None
 
-    report_dir: Optional[str] = None      # z.B. "reports" oder "reports/portfolio"
-    report_prefix: Optional[str] = None   # z.B. "ma_crossover_run1", "portfolio_core_ma"
+    report_dir: Optional[str] = None  # z.B. "reports" oder "reports/portfolio"
+    report_prefix: Optional[str] = None  # z.B. "ma_crossover_run1", "portfolio_core_ma"
 
-    params_json: str = ""     # JSON-String mit Strategy-Params
-    stats_json: str = ""      # JSON-String mit allen Stats
-    metadata_json: str = ""   # JSON-String mit vollstaendiger metadata
+    params_json: str = ""  # JSON-String mit Strategy-Params
+    stats_json: str = ""  # JSON-String mit allen Stats
+    metadata_json: str = ""  # JSON-String mit vollstaendiger metadata
 
     def to_row(self) -> Dict[str, Any]:
         return asdict(self)
@@ -291,6 +292,7 @@ def log_generic_experiment(
 # =============================================================================
 # CONVENIENCE HELPER FUNKTIONEN
 # =============================================================================
+
 
 def log_backtest_result(
     result: BacktestResult,
@@ -592,9 +594,7 @@ def log_portfolio_backtest_result(
         returns = equity_curve.pct_change().dropna()
         if len(returns) > 0 and returns.std() > 0:
             # Annualisierter Sharpe (angenommen hourly data)
-            portfolio_stats["sharpe"] = float(
-                returns.mean() / returns.std() * (252 * 24) ** 0.5
-            )
+            portfolio_stats["sharpe"] = float(returns.mean() / returns.std() * (252 * 24) ** 0.5)
         else:
             portfolio_stats["sharpe"] = 0.0
 
@@ -761,9 +761,13 @@ def log_sweep_run(
         strategy_key=strategy_key,
         symbol=symbol,
         sweep_name=sweep_name,
-        total_return=float(stats.get("total_return")) if stats.get("total_return") is not None else None,
+        total_return=(
+            float(stats.get("total_return")) if stats.get("total_return") is not None else None
+        ),
         cagr=float(stats.get("cagr")) if stats.get("cagr") is not None else None,
-        max_drawdown=float(stats.get("max_drawdown")) if stats.get("max_drawdown") is not None else None,
+        max_drawdown=(
+            float(stats.get("max_drawdown")) if stats.get("max_drawdown") is not None else None
+        ),
         sharpe=float(stats.get("sharpe")) if stats.get("sharpe") is not None else None,
         params_json=json.dumps(params, ensure_ascii=False),
         stats_json=json.dumps(stats, ensure_ascii=False),
@@ -867,10 +871,20 @@ def log_market_scan_result(
         strategy_key=strategy_key,
         symbol=symbol,
         scan_name=scan_name,
-        total_return=float(result_stats.get("total_return")) if result_stats.get("total_return") is not None else None,
+        total_return=(
+            float(result_stats.get("total_return"))
+            if result_stats.get("total_return") is not None
+            else None
+        ),
         cagr=float(result_stats.get("cagr")) if result_stats.get("cagr") is not None else None,
-        max_drawdown=float(result_stats.get("max_drawdown")) if result_stats.get("max_drawdown") is not None else None,
-        sharpe=float(result_stats.get("sharpe")) if result_stats.get("sharpe") is not None else None,
+        max_drawdown=(
+            float(result_stats.get("max_drawdown"))
+            if result_stats.get("max_drawdown") is not None
+            else None
+        ),
+        sharpe=(
+            float(result_stats.get("sharpe")) if result_stats.get("sharpe") is not None else None
+        ),
         params_json=json.dumps({}, ensure_ascii=False),
         stats_json=json.dumps(result_stats, ensure_ascii=False),
         metadata_json=json.dumps(metadata, ensure_ascii=False),
@@ -1046,10 +1060,20 @@ def log_shadow_run(
         timestamp=datetime.utcnow().isoformat(timespec="seconds") + "Z",
         strategy_key=strategy_key,
         symbol=symbol,
-        total_return=float(result_stats.get("total_return")) if result_stats.get("total_return") is not None else None,
+        total_return=(
+            float(result_stats.get("total_return"))
+            if result_stats.get("total_return") is not None
+            else None
+        ),
         cagr=float(result_stats.get("cagr")) if result_stats.get("cagr") is not None else None,
-        max_drawdown=float(result_stats.get("max_drawdown")) if result_stats.get("max_drawdown") is not None else None,
-        sharpe=float(result_stats.get("sharpe")) if result_stats.get("sharpe") is not None else None,
+        max_drawdown=(
+            float(result_stats.get("max_drawdown"))
+            if result_stats.get("max_drawdown") is not None
+            else None
+        ),
+        sharpe=(
+            float(result_stats.get("sharpe")) if result_stats.get("sharpe") is not None else None
+        ),
         params_json=json.dumps({}, ensure_ascii=False),
         stats_json=json.dumps(result_stats, ensure_ascii=False),
         metadata_json=json.dumps(metadata, ensure_ascii=False),
@@ -1062,6 +1086,7 @@ def log_shadow_run(
 # =============================================================================
 # ANALYSE-FUNKTIONEN (Lesen aus Registry)
 # =============================================================================
+
 
 def load_experiments_df() -> "pd.DataFrame":
     """

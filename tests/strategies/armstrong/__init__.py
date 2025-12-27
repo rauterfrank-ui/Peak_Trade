@@ -7,6 +7,3 @@ Diese Tests validieren:
 - ArmstrongCycleStrategy (Signal-Generierung, Tier-Gating)
 - R&D-Safety-Flags (IS_LIVE_READY, TIER, ALLOWED_ENVIRONMENTS)
 """
-
-
-

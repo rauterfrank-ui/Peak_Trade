@@ -97,7 +97,8 @@ Beispiele:
         help="Anzahl OHLCV-Candles oder Märkte. Default: 20",
     )
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe",
     )
@@ -126,6 +127,7 @@ def print_ticker(ticker, symbol: str) -> None:
 
     if ticker.timestamp:
         from datetime import datetime
+
         ts = datetime.utcfromtimestamp(ticker.timestamp / 1000)
         print(f"  Timestamp: {ts.isoformat()}Z")
 
@@ -181,10 +183,7 @@ def print_balance(balance) -> None:
     for asset in sorted(assets):
         info = balance.get_asset(asset)
         print(
-            f"  {asset:<10} "
-            f"{info['free']:>15,.8f} "
-            f"{info['used']:>15,.8f} "
-            f"{info['total']:>15,.8f}"
+            f"  {asset:<10} {info['free']:>15,.8f} {info['used']:>15,.8f} {info['total']:>15,.8f}"
         )
 
     print("  " + "-" * 58)
@@ -323,6 +322,7 @@ def main() -> int:
         print(f"\nFEHLER beim Abrufen der Daten: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 

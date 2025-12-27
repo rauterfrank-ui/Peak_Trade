@@ -15,6 +15,7 @@ class Leaderboards:
     """
     Container fuer verschiedene Standard-Leaderboards.
     """
+
     df_all: pd.DataFrame
     df_global_top: pd.DataFrame
     df_per_symbol: pd.DataFrame

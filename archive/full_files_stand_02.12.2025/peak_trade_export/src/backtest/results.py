@@ -1,6 +1,7 @@
 """
 BacktestResult: Standardisiertes Ergebnisobjekt für Backtests.
 """
+
 from dataclasses import dataclass
 from typing import Any, Dict
 import pandas as pd
@@ -10,7 +11,7 @@ import pandas as pd
 class BacktestResult:
     """
     Enthält alle Ergebnisse eines Backtests.
-    
+
     Attributes:
         equity_curve: Zeitreihe des Portfoliowerts
         trades: DataFrame mit allen ausgeführten Trades
@@ -19,6 +20,7 @@ class BacktestResult:
         daily_returns: Tagesrenditen (resampled)
         metadata: Zusätzliche Infos (Strategy-Name, Params etc.)
     """
+
     equity_curve: pd.Series
     trades: pd.DataFrame
     stats: Dict[str, Any]

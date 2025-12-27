@@ -14,6 +14,7 @@ Verwendung:
 1. Als standalone Filter für Signal-Modifikation
 2. Als Komponente in CompositeStrategy
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -180,12 +181,10 @@ class VolRegimeFilter(BaseStrategy):
             raise ValueError(
                 f"vol_method ({self.vol_method}) muss 'atr', 'std', 'realized' oder 'range' sein"
             )
-        
+
         if self.min_bars < 1:
-            raise ValueError(
-                f"min_bars ({self.min_bars}) muss >= 1 sein"
-            )
-        
+            raise ValueError(f"min_bars ({self.min_bars}) muss >= 1 sein")
+
         if self.low_vol_threshold is not None and self.high_vol_threshold is not None:
             if self.low_vol_threshold >= self.high_vol_threshold:
                 raise ValueError(
@@ -209,9 +208,11 @@ class VolRegimeFilter(BaseStrategy):
                     f"vol_percentile_high ({self.vol_percentile_high}) muss zwischen 0 und 100 liegen"
                 )
 
-        if (self.vol_percentile_low is not None and
-            self.vol_percentile_high is not None and
-            self.vol_percentile_low >= self.vol_percentile_high):
+        if (
+            self.vol_percentile_low is not None
+            and self.vol_percentile_high is not None
+            and self.vol_percentile_low >= self.vol_percentile_high
+        ):
             raise ValueError(
                 f"vol_percentile_low ({self.vol_percentile_low}) muss < vol_percentile_high ({self.vol_percentile_high}) sein"
             )
@@ -245,9 +246,11 @@ class VolRegimeFilter(BaseStrategy):
         lookback_percentile = cfg.get(f"{section}.lookback_percentile", 100)
         invert = cfg.get(f"{section}.invert", False)
         regime_mode = cfg.get(f"{section}.regime_mode", False)
-        
+
         # Auto-detect regime_mode wenn Thresholds gesetzt sind
-        if regime_mode is False and (low_vol_threshold is not None or high_vol_threshold is not None):
+        if regime_mode is False and (
+            low_vol_threshold is not None or high_vol_threshold is not None
+        ):
             regime_mode = True
 
         return cls(
@@ -331,13 +334,17 @@ class VolRegimeFilter(BaseStrategy):
         if "high" not in data.columns or "low" not in data.columns:
             # Fallback zu Close-Range
             close = data["close"]
-            return (close.rolling(window=self.vol_window).max() - 
-                    close.rolling(window=self.vol_window).min())
-        
+            return (
+                close.rolling(window=self.vol_window).max()
+                - close.rolling(window=self.vol_window).min()
+            )
+
         high = data["high"]
         low = data["low"]
-        range_vol = (high.rolling(window=self.vol_window, min_periods=self.vol_window).max() - 
-                     low.rolling(window=self.vol_window, min_periods=self.vol_window).min())
+        range_vol = (
+            high.rolling(window=self.vol_window, min_periods=self.vol_window).max()
+            - low.rolling(window=self.vol_window, min_periods=self.vol_window).min()
+        )
         return range_vol
 
     def _compute_volatility(self, data: pd.DataFrame) -> pd.Series:
@@ -380,36 +387,33 @@ class VolRegimeFilter(BaseStrategy):
             ValueError: Wenn zu wenig Daten oder Spalte fehlt
         """
         if "close" not in data.columns:
-            raise ValueError(
-                f"Spalte 'close' nicht in DataFrame. "
-                f"Verfügbar: {list(data.columns)}"
-            )
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
         min_bars = max(self.vol_window, self.lookback_percentile, self.min_bars) + 5
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mind. {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {min_bars} Bars, habe nur {len(data)}")
 
         # Volatilität berechnen
         vol = self._compute_volatility(data)
 
         # Threshold-basierte Regime-Klassifikation
-        if self.regime_mode and (self.low_vol_threshold is not None or self.high_vol_threshold is not None):
+        if self.regime_mode and (
+            self.low_vol_threshold is not None or self.high_vol_threshold is not None
+        ):
             # Regime-Mode: 1=Low-Vol, -1=High-Vol, 0=Neutral
             regime_signal = pd.Series(0, index=data.index, dtype=int)
-            
+
             # Vor min_bars: Neutral (0)
             for i in range(len(data)):
                 if i < self.min_bars:
                     regime_signal.iloc[i] = 0
                     continue
-                
+
                 current_vol = vol.iloc[i]
                 if pd.isna(current_vol):
                     regime_signal.iloc[i] = 0
                     continue
-                
+
                 # Low-Vol: Risk-On (1)
                 if self.low_vol_threshold is not None and current_vol < self.low_vol_threshold:
                     regime_signal.iloc[i] = 1
@@ -419,7 +423,7 @@ class VolRegimeFilter(BaseStrategy):
                 # Neutral (0) - zwischen den Thresholds oder außerhalb
                 else:
                     regime_signal.iloc[i] = 0
-            
+
             regime_signal.name = "vol_regime"
             return regime_signal
 
@@ -431,24 +435,16 @@ class VolRegimeFilter(BaseStrategy):
         if self.vol_percentile_low is not None or self.vol_percentile_high is not None:
             # Rolling Perzentil berechnen
             vol_percentile = vol.rolling(
-                window=self.lookback_percentile,
-                min_periods=self.vol_window
-            ).apply(
-                lambda x: pd.Series(x).rank(pct=True).iloc[-1] * 100,
-                raw=False
-            )
+                window=self.lookback_percentile, min_periods=self.vol_window
+            ).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1] * 100, raw=False)
 
             if self.vol_percentile_low is not None:
                 # Blockiere wenn Vol-Perzentil unter dem Minimum
-                filter_signal = filter_signal.where(
-                    vol_percentile >= self.vol_percentile_low, 0
-                )
+                filter_signal = filter_signal.where(vol_percentile >= self.vol_percentile_low, 0)
 
             if self.vol_percentile_high is not None:
                 # Blockiere wenn Vol-Perzentil über dem Maximum
-                filter_signal = filter_signal.where(
-                    vol_percentile <= self.vol_percentile_high, 0
-                )
+                filter_signal = filter_signal.where(vol_percentile <= self.vol_percentile_high, 0)
 
         # Absoluter Schwellwert-Filter
         if self.min_vol is not None:
@@ -475,17 +471,13 @@ class VolRegimeFilter(BaseStrategy):
         # Vor min_bars: Blockieren
         for i in range(min(self.min_bars, len(data))):
             filter_signal.iloc[i] = 0
-        
+
         filter_signal = filter_signal.fillna(0).astype(int)
 
         filter_signal.name = "vol_filter"
         return filter_signal
 
-    def apply_to_signals(
-        self,
-        data: pd.DataFrame,
-        signals: pd.Series
-    ) -> pd.Series:
+    def apply_to_signals(self, data: pd.DataFrame, signals: pd.Series) -> pd.Series:
         """
         Wendet den Filter auf existierende Trading-Signale an.
 
@@ -562,13 +554,13 @@ def get_strategy_description(params: Dict) -> str:
     return f"""
 Volatility Regime Filter (Phase 40)
 ====================================
-Vol Window:         {params.get('vol_window', 20)} Bars
+Vol Window:         {params.get("vol_window", 20)} Bars
 Vol Method:         {method.upper()}
-Min Vol:            {min_vol if min_vol else 'Deaktiviert'}
-Max Vol:            {max_vol if max_vol else 'Deaktiviert'}
-Percentile Low:     {p_low if p_low else 'Deaktiviert'}
-Percentile High:    {p_high if p_high else 'Deaktiviert'}
-Invert:             {'Ja' if params.get('invert', False) else 'Nein'}
+Min Vol:            {min_vol if min_vol else "Deaktiviert"}
+Max Vol:            {max_vol if max_vol else "Deaktiviert"}
+Percentile Low:     {p_low if p_low else "Deaktiviert"}
+Percentile High:    {p_high if p_high else "Deaktiviert"}
+Invert:             {"Ja" if params.get("invert", False) else "Nein"}
 
 Konzept:
 - Berechnet Volatilität via {method.upper()}

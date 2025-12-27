@@ -7,6 +7,7 @@ Testet:
 - TestnetOrchestrator
 - CLI-Funktionen (mit Mocks)
 """
+
 from __future__ import annotations
 
 import tempfile
@@ -227,7 +228,9 @@ class TestTestnetOrchestrator:
             mock_cfg = MagicMock()
             mock_cfg.get.return_value = None
 
-            with patch("scripts.orchestrate_testnet_runs.load_testnet_profiles", return_value=profiles):
+            with patch(
+                "scripts.orchestrate_testnet_runs.load_testnet_profiles", return_value=profiles
+            ):
                 orchestrator = TestnetOrchestrator(
                     cfg=mock_cfg,
                     limits_controller=controller,

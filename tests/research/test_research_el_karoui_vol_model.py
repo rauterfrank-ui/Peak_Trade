@@ -11,6 +11,7 @@ Testet:
 - Markdown-Report-Generierung
 - CLI-Argument-Parsing
 """
+
 from __future__ import annotations
 
 import sys
@@ -186,9 +187,7 @@ class TestRunConfigGeneration:
         )
 
         expected_count = (
-            len(DEFAULT_SYMBOLS)
-            * len(DEFAULT_DATE_RANGES)
-            * len(DEFAULT_MAPPING_VARIANTS)
+            len(DEFAULT_SYMBOLS) * len(DEFAULT_DATE_RANGES) * len(DEFAULT_MAPPING_VARIANTS)
         )
         assert len(configs) == expected_count
 
@@ -206,9 +205,7 @@ class TestBacktestRunConfig:
         with pytest.raises(AttributeError):
             sample_config.symbol = "QQQ"  # type: ignore[misc]
 
-    def test_backtest_run_config_date_range_label(
-        self, sample_config: BacktestRunConfig
-    ) -> None:
+    def test_backtest_run_config_date_range_label(self, sample_config: BacktestRunConfig) -> None:
         """Prüft date_range_label Property."""
         assert sample_config.date_range_label == "2020-01-01 – 2024-01-01"
 
@@ -293,9 +290,7 @@ class TestMarkdownReport:
 
         assert "# R&D Report – El Karoui Volatility Model v1" in markdown
 
-    def test_results_to_markdown_contains_setup(
-        self, sample_results: list[BacktestResult]
-    ) -> None:
+    def test_results_to_markdown_contains_setup(self, sample_results: list[BacktestResult]) -> None:
         """Prüft, dass der Report das Experiment-Setup enthält."""
         symbols = ["SPY", "QQQ"]
         markdown = results_to_markdown(
@@ -501,7 +496,7 @@ class TestSmoke:
     def test_report_path_constant(self) -> None:
         """Prüft, dass REPORT_PATH korrekt gesetzt ist."""
         assert REPORT_PATH.name == "R_AND_D_EL_KAROUI_VOL_MODEL_V1.md"
-        assert "reports" in str(REPORT_PATH)
+        assert "docs/research" in str(REPORT_PATH)
 
     def test_defaults_are_valid(self) -> None:
         """Prüft, dass alle Default-Werte gültig sind."""

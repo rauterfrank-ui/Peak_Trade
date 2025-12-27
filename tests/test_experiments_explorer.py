@@ -11,6 +11,7 @@ Unit-Tests für:
 Run:
     pytest tests/test_experiments_explorer.py -v
 """
+
 from __future__ import annotations
 
 import csv
@@ -544,6 +545,7 @@ class TestConvenienceFunctions:
         """Test: quick_list Funktion."""
         # Monkey-patch den Default-Pfad
         from src.analytics import explorer as explorer_module
+
         monkeypatch.setattr(explorer_module, "EXPERIMENTS_CSV", temp_experiments_csv)
 
         experiments = quick_list(run_type="backtest", limit=10)
@@ -554,6 +556,7 @@ class TestConvenienceFunctions:
     def test_quick_rank(self, temp_experiments_csv: Path, monkeypatch):
         """Test: quick_rank Funktion."""
         from src.analytics import explorer as explorer_module
+
         monkeypatch.setattr(explorer_module, "EXPERIMENTS_CSV", temp_experiments_csv)
 
         ranked = quick_rank(metric="sharpe", top_n=5)
@@ -562,6 +565,7 @@ class TestConvenienceFunctions:
     def test_quick_sweep_summary(self, temp_experiments_csv: Path, monkeypatch):
         """Test: quick_sweep_summary Funktion."""
         from src.analytics import explorer as explorer_module
+
         monkeypatch.setattr(explorer_module, "EXPERIMENTS_CSV", temp_experiments_csv)
 
         overview = quick_sweep_summary("ma_opt_v1", metric="sharpe")

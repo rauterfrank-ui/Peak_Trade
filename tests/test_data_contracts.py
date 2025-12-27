@@ -1,6 +1,7 @@
 """
 Tests for Data Contract Gate (Wave A - Stability Plan)
 """
+
 import pandas as pd
 import pytest
 
@@ -22,11 +23,13 @@ def valid_ohlcv_df():
     )
 
 
+@pytest.mark.smoke
 def test_validate_ohlcv_valid_strict(valid_ohlcv_df):
     """Valid OHLCV passes strict validation."""
     validate_ohlcv(valid_ohlcv_df, strict=True, require_tz=True)  # Should not raise
 
 
+@pytest.mark.smoke
 def test_validate_ohlcv_missing_columns(valid_ohlcv_df):
     """Missing OHLCV columns raises DataContractError."""
     df = valid_ohlcv_df.drop(columns=["volume"])

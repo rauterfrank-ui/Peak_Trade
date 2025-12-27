@@ -10,6 +10,7 @@ Dieses Modul misst die technische Ausführungslatenz von Orders:
 
 Alle Metriken sind rein offline / paper / drill – keine Live-Order-Execution.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -22,7 +23,7 @@ import numpy as np
 @dataclass
 class ExecutionLatencyTimestamps:
     """Rohe Timestamps für eine Order.
-    
+
     Attributes
     ----------
     session_id : str
@@ -54,6 +55,7 @@ class ExecutionLatencyTimestamps:
     avg_fill_price : Optional[float]
         Durchschnittlicher Fill-Preis
     """
+
     session_id: str
     order_id: str
     symbol: str
@@ -73,7 +75,7 @@ class ExecutionLatencyTimestamps:
 @dataclass
 class ExecutionLatencyMeasures:
     """Berechnete Latenz-Metriken für eine Order.
-    
+
     Attributes
     ----------
     order_id : str
@@ -94,6 +96,7 @@ class ExecutionLatencyMeasures:
         (Avg Fill Price - Reference Price) * Direction
         Positiv = ungünstiger Fill, Negativ = besserer Fill
     """
+
     order_id: str
     symbol: str
     trigger_delay_ms: Optional[float] = None
@@ -107,7 +110,7 @@ class ExecutionLatencyMeasures:
 @dataclass
 class ExecutionLatencySummary:
     """Aggregierte Execution-Latenz-Statistiken über mehrere Orders.
-    
+
     Attributes
     ----------
     count_orders : int
@@ -155,6 +158,7 @@ class ExecutionLatencySummary:
     median_slippage : Optional[float]
         Median Slippage
     """
+
     count_orders: int = 0
     mean_trigger_delay_ms: Optional[float] = None
     median_trigger_delay_ms: Optional[float] = None
@@ -179,21 +183,19 @@ class ExecutionLatencySummary:
     median_slippage: Optional[float] = None
 
 
-def compute_latency_measures(
-    timestamps: ExecutionLatencyTimestamps
-) -> ExecutionLatencyMeasures:
+def compute_latency_measures(timestamps: ExecutionLatencyTimestamps) -> ExecutionLatencyMeasures:
     """Berechnet Latenz-Metriken aus rohen Timestamps.
-    
+
     Parameters
     ----------
     timestamps : ExecutionLatencyTimestamps
         Rohe Timestamp-Daten
-    
+
     Returns
     -------
     ExecutionLatencyMeasures
         Berechnete Latenz-Metriken
-    
+
     Examples
     --------
     >>> ts = ExecutionLatencyTimestamps(
@@ -217,35 +219,33 @@ def compute_latency_measures(
     if timestamps.signal_timestamp is not None:
         delta = timestamps.order_sent_timestamp - timestamps.signal_timestamp
         trigger_delay_ms = delta.total_seconds() * 1000.0
-    
+
     send_to_ack_ms: Optional[float] = None
     if timestamps.exchange_ack_timestamp is not None:
         delta = timestamps.exchange_ack_timestamp - timestamps.order_sent_timestamp
         send_to_ack_ms = delta.total_seconds() * 1000.0
-    
+
     send_to_first_fill_ms: Optional[float] = None
     if timestamps.first_fill_timestamp is not None:
         delta = timestamps.first_fill_timestamp - timestamps.order_sent_timestamp
         send_to_first_fill_ms = delta.total_seconds() * 1000.0
-    
+
     send_to_last_fill_ms: Optional[float] = None
     if timestamps.last_fill_timestamp is not None:
         delta = timestamps.last_fill_timestamp - timestamps.order_sent_timestamp
         send_to_last_fill_ms = delta.total_seconds() * 1000.0
-    
+
     total_delay_ms: Optional[float] = None
-    if (timestamps.signal_timestamp is not None and 
-        timestamps.last_fill_timestamp is not None):
+    if timestamps.signal_timestamp is not None and timestamps.last_fill_timestamp is not None:
         delta = timestamps.last_fill_timestamp - timestamps.signal_timestamp
         total_delay_ms = delta.total_seconds() * 1000.0
-    
+
     slippage: Optional[float] = None
-    if (timestamps.reference_price is not None and 
-        timestamps.avg_fill_price is not None):
+    if timestamps.reference_price is not None and timestamps.avg_fill_price is not None:
         # Slippage: Positiv = ungünstiger Fill
         direction = 1.0 if timestamps.side.upper() == "BUY" else -1.0
         slippage = (timestamps.avg_fill_price - timestamps.reference_price) * direction
-    
+
     return ExecutionLatencyMeasures(
         order_id=timestamps.order_id,
         symbol=timestamps.symbol,
@@ -258,21 +258,19 @@ def compute_latency_measures(
     )
 
 
-def summarize_latency(
-    measures: List[ExecutionLatencyMeasures]
-) -> ExecutionLatencySummary:
+def summarize_latency(measures: List[ExecutionLatencyMeasures]) -> ExecutionLatencySummary:
     """Aggregiert Latenz-Metriken über mehrere Orders.
-    
+
     Parameters
     ----------
     measures : List[ExecutionLatencyMeasures]
         Liste von Latenz-Metriken
-    
+
     Returns
     -------
     ExecutionLatencySummary
         Aggregierte Statistiken
-    
+
     Examples
     --------
     >>> measures = [...]  # Liste von ExecutionLatencyMeasures
@@ -284,7 +282,7 @@ def summarize_latency(
     """
     if not measures:
         return ExecutionLatencySummary()
-    
+
     def _safe_stats(values: List[float]) -> Dict[str, Optional[float]]:
         """Helper: Berechnet Stats nur wenn Werte vorhanden."""
         if not values:
@@ -303,11 +301,11 @@ def summarize_latency(
             "p95": float(np.percentile(arr, 95)),
             "p99": float(np.percentile(arr, 99)),
         }
-    
+
     # Trigger-Delay
     trigger_delays = [m.trigger_delay_ms for m in measures if m.trigger_delay_ms is not None]
     trigger_stats = _safe_stats(trigger_delays)
-    
+
     # Send-to-Ack
     send_to_ack = [m.send_to_ack_ms for m in measures if m.send_to_ack_ms is not None]
     ack_stats = {"mean": None, "median": None}
@@ -317,11 +315,13 @@ def summarize_latency(
             "mean": float(np.mean(arr)),
             "median": float(np.median(arr)),
         }
-    
+
     # Send-to-First-Fill
-    send_to_first = [m.send_to_first_fill_ms for m in measures if m.send_to_first_fill_ms is not None]
+    send_to_first = [
+        m.send_to_first_fill_ms for m in measures if m.send_to_first_fill_ms is not None
+    ]
     first_fill_stats = _safe_stats(send_to_first)
-    
+
     # Send-to-Last-Fill
     send_to_last = [m.send_to_last_fill_ms for m in measures if m.send_to_last_fill_ms is not None]
     last_fill_stats = {"mean": None, "median": None}
@@ -331,11 +331,11 @@ def summarize_latency(
             "mean": float(np.mean(arr)),
             "median": float(np.median(arr)),
         }
-    
+
     # Total-Delay
     total_delays = [m.total_delay_ms for m in measures if m.total_delay_ms is not None]
     total_stats = _safe_stats(total_delays)
-    
+
     # Slippage
     slippages = [m.slippage for m in measures if m.slippage is not None]
     slippage_stats = {"mean": None, "median": None}
@@ -345,7 +345,7 @@ def summarize_latency(
             "mean": float(np.mean(arr)),
             "median": float(np.median(arr)),
         }
-    
+
     return ExecutionLatencySummary(
         count_orders=len(measures),
         mean_trigger_delay_ms=trigger_stats["mean"],
@@ -372,54 +372,59 @@ def summarize_latency(
     )
 
 
-def latency_measures_to_df(
-    measures: List[ExecutionLatencyMeasures]
-) -> pd.DataFrame:
+def latency_measures_to_df(measures: List[ExecutionLatencyMeasures]) -> pd.DataFrame:
     """Konvertiert Latenz-Metriken in ein pandas DataFrame.
-    
+
     Parameters
     ----------
     measures : List[ExecutionLatencyMeasures]
         Liste von Latenz-Metriken
-    
+
     Returns
     -------
     pd.DataFrame
         DataFrame mit allen Measure-Feldern
     """
     if not measures:
-        return pd.DataFrame(columns=[
-            "order_id", "symbol", "trigger_delay_ms",
-            "send_to_ack_ms", "send_to_first_fill_ms",
-            "send_to_last_fill_ms", "total_delay_ms", "slippage"
-        ])
-    
+        return pd.DataFrame(
+            columns=[
+                "order_id",
+                "symbol",
+                "trigger_delay_ms",
+                "send_to_ack_ms",
+                "send_to_first_fill_ms",
+                "send_to_last_fill_ms",
+                "total_delay_ms",
+                "slippage",
+            ]
+        )
+
     data = []
     for m in measures:
-        data.append({
-            "order_id": m.order_id,
-            "symbol": m.symbol,
-            "trigger_delay_ms": m.trigger_delay_ms,
-            "send_to_ack_ms": m.send_to_ack_ms,
-            "send_to_first_fill_ms": m.send_to_first_fill_ms,
-            "send_to_last_fill_ms": m.send_to_last_fill_ms,
-            "total_delay_ms": m.total_delay_ms,
-            "slippage": m.slippage,
-        })
-    
+        data.append(
+            {
+                "order_id": m.order_id,
+                "symbol": m.symbol,
+                "trigger_delay_ms": m.trigger_delay_ms,
+                "send_to_ack_ms": m.send_to_ack_ms,
+                "send_to_first_fill_ms": m.send_to_first_fill_ms,
+                "send_to_last_fill_ms": m.send_to_last_fill_ms,
+                "total_delay_ms": m.total_delay_ms,
+                "slippage": m.slippage,
+            }
+        )
+
     return pd.DataFrame(data)
 
 
-def latency_summary_to_dict(
-    summary: ExecutionLatencySummary
-) -> Dict[str, Any]:
+def latency_summary_to_dict(summary: ExecutionLatencySummary) -> Dict[str, Any]:
     """Konvertiert ExecutionLatencySummary in ein Dictionary (für JSON/HTML).
-    
+
     Parameters
     ----------
     summary : ExecutionLatencySummary
         Summary-Objekt
-    
+
     Returns
     -------
     Dict[str, Any]
@@ -457,10 +462,10 @@ def create_latency_timestamps_from_trades_and_signals(
     session_id: str = "default",
 ) -> List[ExecutionLatencyTimestamps]:
     """Convenience-Funktion: Erstellt LatencyTimestamps aus Trades & Signals DataFrames.
-    
+
     Diese Funktion ist besonders nützlich für Offline/Paper-Trade-Sessions,
     wo keine echten Exchange-Acks existieren.
-    
+
     Parameters
     ----------
     trades_df : pd.DataFrame
@@ -476,12 +481,12 @@ def create_latency_timestamps_from_trades_and_signals(
         - optional: symbol, recommended_action
     session_id : str
         Session-Identifikator
-    
+
     Returns
     -------
     List[ExecutionLatencyTimestamps]
         Liste von Timestamp-Objekten (vereinfacht für Offline-Drill)
-    
+
     Notes
     -----
     - Für Offline/Paper: Wir setzen order_sent_timestamp ≈ trade_timestamp
@@ -490,13 +495,13 @@ def create_latency_timestamps_from_trades_and_signals(
     """
     if trades_df.empty:
         return []
-    
+
     trades = trades_df.copy()
     trades["timestamp"] = pd.to_datetime(trades["timestamp"])
-    
+
     # Sortiere nach timestamp für korrekte Gruppierung
     trades = trades.sort_values("timestamp")
-    
+
     # Optional: Signals mergen (falls vorhanden)
     signal_map = {}
     if signals_df is not None and not signals_df.empty:
@@ -506,9 +511,9 @@ def create_latency_timestamps_from_trades_and_signals(
             sig_id = sig.get("signal_id")
             if sig_id is not None:
                 signal_map[sig_id] = sig
-    
+
     timestamps_list: List[ExecutionLatencyTimestamps] = []
-    
+
     for idx, trade in trades.iterrows():
         # Order-ID generieren (falls nicht vorhanden)
         order_id = trade.get("order_id")
@@ -516,36 +521,36 @@ def create_latency_timestamps_from_trades_and_signals(
             order_id = f"ORDER_{idx}"
         else:
             order_id = str(order_id)
-        
+
         # Symbol
         symbol = trade.get("symbol")
         if pd.isna(symbol):
             symbol = "UNKNOWN"
         else:
             symbol = str(symbol)
-        
+
         # Side & Qty
         qty = float(trade["qty"])
         side = "BUY" if qty > 0 else "SELL"
-        
+
         # Timestamps (vereinfacht für Offline)
         trade_ts = pd.to_datetime(trade["timestamp"])
         order_sent_ts = trade_ts  # Offline: Order-Sent ≈ Fill-Time
-        
+
         # Signal-Timestamp (falls Signal vorhanden)
         signal_id = trade.get("signal_id")
         signal_ts = None
         reference_price = None
-        
+
         if signal_id is not None and signal_id in signal_map:
             sig = signal_map[signal_id]
             signal_ts = pd.to_datetime(sig["timestamp"])
             # Reference-Price = Signal-Price (falls vorhanden, sonst Trade-Price)
             reference_price = trade.get("price")
-        
+
         # Fill-Price
         avg_fill_price = float(trade["price"])
-        
+
         timestamps_list.append(
             ExecutionLatencyTimestamps(
                 session_id=session_id,
@@ -563,5 +568,5 @@ def create_latency_timestamps_from_trades_and_signals(
                 signal_id=int(signal_id) if signal_id is not None else None,
             )
         )
-    
+
     return timestamps_list

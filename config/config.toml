@@ -1361,3 +1361,138 @@ enable_real_calls = false
 [escalation.providers.null]
 # Null-Provider für Tests/Non-Live
 log_would_escalate = true
+
+# ============================================================================
+# KNOWLEDGE DATABASES & AI INTEGRATION
+# ============================================================================
+# Integration von externen Wissensdatenbanken für KI-basierte Research- und
+# Entscheidungsprozesse. Siehe docs/KNOWLEDGE_SOURCES_GOVERNANCE_PLAYBOOK.md
+# ============================================================================
+
+[knowledge]
+# Globale Aktivierung
+enabled = true
+
+# Standard Vector-DB-Backend ("chroma", "qdrant", "pinecone")
+vector_db_backend = "chroma"
+
+# Standard Time-Series-DB-Backend ("parquet", "influxdb")
+timeseries_db_backend = "parquet"
+
+# RAG (Retrieval-Augmented Generation) aktivieren
+rag_enabled = true
+
+# API-Sicherheit: Key-Rotation-Intervall (Tage)
+api_key_rotation_interval_days = 90
+
+# API Rate-Limit (Requests pro Stunde)
+api_rate_limit_per_hour = 1000
+
+# ============================================================================
+# VECTOR DATABASE CONFIGURATION
+# ============================================================================
+
+[knowledge.vector_db]
+# ChromaDB (lokale Embedding-Suche)
+[knowledge.vector_db.chroma]
+persist_directory = "./data/chroma_db"
+collection_name = "peak_trade"
+# Keine API-Keys nötig für lokale Instanz
+
+# Pinecone (Cloud-basiert, optional)
+[knowledge.vector_db.pinecone]
+# API-Key via Umgebungsvariable: PINECONE_API_KEY
+environment = "us-west1-gcp"
+index_name = "peak-trade"
+# Kosten: ~$70/Monat für Starter Plan
+
+# Qdrant (lokal/cloud, optional)
+[knowledge.vector_db.qdrant]
+# API-Key via Umgebungsvariable: QDRANT_API_KEY (für Cloud)
+url = ":memory:"  # ":memory:" für In-Memory, oder "http://localhost:6333" für Server
+collection_name = "peak_trade"
+
+# ============================================================================
+# TIME-SERIES DATABASE CONFIGURATION
+# ============================================================================
+
+[knowledge.timeseries_db]
+# Parquet (einfache Datei-basierte Lösung, kein Setup nötig)
+[knowledge.timeseries_db.parquet]
+base_path = "./data/timeseries"
+
+# InfluxDB (professionelle Time-Series-DB, optional)
+[knowledge.timeseries_db.influxdb]
+# Token via Umgebungsvariable: INFLUXDB_TOKEN
+url = "http://localhost:8086"
+org = "peak_trade"
+bucket = "market_data"
+
+# ============================================================================
+# RAG (Retrieval-Augmented Generation) CONFIGURATION
+# ============================================================================
+
+[knowledge.rag]
+# Maximale Kontext-Länge für RAG-Queries
+max_context_length = 3000
+
+# Anzahl der Top-K Dokumente für Kontext-Retrieval
+default_top_k = 5
+
+# System-Prompts für verschiedene RAG-Typen
+[knowledge.rag.prompts]
+# Standard Trading-Assistant
+default = "You are a trading strategy assistant for Peak_Trade with access to a knowledge base of strategies, market analysis, and performance data."
+
+# Strategy-Recommendations
+strategy = "You are a trading strategy expert. Provide data-driven recommendations based on historical performance, risk metrics, and market conditions."
+
+# Market-Analysis
+market_analysis = "You are a market analysis expert. Provide insights based on historical patterns, regime changes, and correlation studies."
+
+# ============================================================================
+# KNOWLEDGE SOURCES CONFIGURATION
+# ============================================================================
+# Registrierte Wissensquellen (siehe docs/KNOWLEDGE_SOURCES_REGISTRY.md)
+# ============================================================================
+
+[knowledge.sources]
+# Interne Backtest-Reports
+[knowledge.sources.backtest_reports]
+enabled = true
+category = "internal"
+trust_level = "high"
+update_frequency = "on_demand"  # Nach jedem Research-Run
+source_path = "results/"
+
+# Portfolio-Performance-Historien
+[knowledge.sources.portfolio_history]
+enabled = true
+category = "internal"
+trust_level = "high"
+update_frequency = "daily"
+source_module = "src.portfolio"
+
+# Strategie-Metadaten & Beschreibungen
+[knowledge.sources.strategy_docs]
+enabled = true
+category = "internal"
+trust_level = "high"
+update_frequency = "on_change"
+source_path = "src/strategies/"
+
+# Externe Marktdaten (geplant)
+[knowledge.sources.market_data]
+enabled = false
+category = "market_data"
+trust_level = "medium_high"
+update_frequency = "hourly"
+# API-Keys via Umgebungsvariablen
+
+# Research Papers (geplant)
+[knowledge.sources.research_papers]
+enabled = false
+category = "research"
+trust_level = "medium"
+update_frequency = "monthly"
+# Manuelle Selektion & Review erforderlich

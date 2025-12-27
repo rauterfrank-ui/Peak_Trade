@@ -13,6 +13,7 @@ Konzept:
 Diese Strategie funktioniert am besten in Seitwärtsmärkten (Ranging)
 und kann in starken Trends Verluste produzieren.
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -207,9 +208,7 @@ class MeanReversionStrategy(BaseStrategy):
 
         # Expanding Percentile der Volatilität
         vol_percentile = vol.expanding().apply(
-            lambda x: (x.iloc[-1:].values[0] <= x).mean() * 100
-            if len(x) > 0 else 50,
-            raw=False
+            lambda x: (x.iloc[-1:].values[0] <= x).mean() * 100 if len(x) > 0 else 50, raw=False
         )
 
         # Filter: Nur wenn Volatilität unter Schwelle
@@ -230,16 +229,11 @@ class MeanReversionStrategy(BaseStrategy):
         """
         # Validierung
         if "close" not in data.columns:
-            raise ValueError(
-                f"Spalte 'close' nicht in DataFrame. "
-                f"Verfügbar: {list(data.columns)}"
-            )
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
         min_bars = max(self.lookback, self.vol_window) + 10
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mind. {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {min_bars} Bars, habe nur {len(data)}")
 
         # Z-Score berechnen
         zscore = self._compute_zscore(data["close"])
@@ -339,14 +333,14 @@ def get_strategy_description(params: Dict) -> str:
     return f"""
 Mean Reversion Strategy (Z-Score)
 ==================================
-Lookback:          {params.get('lookback', 20)} Bars
-Entry-Threshold:   {params.get('entry_threshold', -2.0)} Std
-Exit-Threshold:    {params.get('exit_threshold', 0.0)} Std
-Vol-Filter:        {'Aktiv' if params.get('use_vol_filter', False) else 'Inaktiv'}
+Lookback:          {params.get("lookback", 20)} Bars
+Entry-Threshold:   {params.get("entry_threshold", -2.0)} Std
+Exit-Threshold:    {params.get("exit_threshold", 0.0)} Std
+Vol-Filter:        {"Aktiv" if params.get("use_vol_filter", False) else "Inaktiv"}
 
 Konzept:
-- Entry: Z-Score < {params.get('entry_threshold', -2.0)} (überverkauft)
-- Exit: Z-Score > {params.get('exit_threshold', 0.0)} (zurück zum Mittel)
+- Entry: Z-Score < {params.get("entry_threshold", -2.0)} (überverkauft)
+- Exit: Z-Score > {params.get("exit_threshold", 0.0)} (zurück zum Mittel)
 
 Geeignet für: Seitwärtsmärkte (Ranging)
 Nicht geeignet für: Starke Trends

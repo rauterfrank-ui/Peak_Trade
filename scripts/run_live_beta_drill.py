@@ -28,6 +28,7 @@ Usage:
     python scripts/run_live_beta_drill.py --format json
     python scripts/run_live_beta_drill.py --all
 """
+
 from __future__ import annotations
 
 import argparse
@@ -136,8 +137,7 @@ def run_preflight_drill() -> List[DrillCheckResult]:
 
         passed = total > 0 and core_count > 0
         details = (
-            f"Tiering: {core_count} core, {aux_count} aux, {legacy_count} legacy "
-            f"(total: {total})"
+            f"Tiering: {core_count} core, {aux_count} aux, {legacy_count} legacy (total: {total})"
         )
         results.append(
             DrillCheckResult(
@@ -219,7 +219,9 @@ def run_preflight_drill() -> List[DrillCheckResult]:
         available_presets = get_available_presets()
         preset_count = len(available_presets)
         passed = preset_count >= 3
-        details = f"Tiered Presets: {preset_count} available ({', '.join(available_presets.keys())})"
+        details = (
+            f"Tiered Presets: {preset_count} available ({', '.join(available_presets.keys())})"
+        )
         results.append(
             DrillCheckResult(
                 check_name="Tiered Presets Available",
@@ -379,9 +381,8 @@ def run_eligibility_drill() -> List[DrillCheckResult]:
             weights=preset.get("weights", []),
         )
         passed = result.is_eligible
-        details = (
-            f"core_balanced: {'ELIGIBLE' if passed else 'NOT ELIGIBLE'}"
-            + (f" - Reasons: {result.reasons}" if not passed else "")
+        details = f"core_balanced: {'ELIGIBLE' if passed else 'NOT ELIGIBLE'}" + (
+            f" - Reasons: {result.reasons}" if not passed else ""
         )
 
         results.append(
@@ -432,7 +433,11 @@ def run_shadow_gates_drill() -> List[DrillCheckResult]:
                     details=(
                         f"Mode: {drill_result.effective_mode}, "
                         f"Allowed: {drill_result.is_live_execution_allowed}"
-                        + (f", Violations: {drill_result.violations}" if drill_result.violations else "")
+                        + (
+                            f", Violations: {drill_result.violations}"
+                            if drill_result.violations
+                            else ""
+                        )
                     ),
                     category="gates",
                     severity="info" if drill_result.passed else "error",
@@ -622,9 +627,13 @@ def run_all_drills() -> LiveBetaDrillResult:
     # Recommendations
     recommendations = []
     if any(c.category == "gates" and not c.passed for c in all_checks):
-        recommendations.append("Review Gate-Drills - some safety gates may not be correctly configured")
+        recommendations.append(
+            "Review Gate-Drills - some safety gates may not be correctly configured"
+        )
     if any(c.category == "eligibility" and not c.passed for c in all_checks):
-        recommendations.append("Review Eligibility - some strategies/portfolios may not be live-ready")
+        recommendations.append(
+            "Review Eligibility - some strategies/portfolios may not be live-ready"
+        )
     if failed == 0:
         recommendations.append("System is ready for Phase 86 (Research v1.0 Freeze)")
 
@@ -662,7 +671,9 @@ def format_drill_report_text(result: LiveBetaDrillResult) -> str:
     lines.append("  SUMMARY")
     lines.append("=" * 70)
     status_icon = "✅" if result.all_passed else "❌"
-    lines.append(f"  Status:         {status_icon} {'ALL PASSED' if result.all_passed else 'ISSUES FOUND'}")
+    lines.append(
+        f"  Status:         {status_icon} {'ALL PASSED' if result.all_passed else 'ISSUES FOUND'}"
+    )
     lines.append(f"  Total Checks:   {result.total_checks}")
     lines.append(f"  Passed:         {result.passed_checks}")
     lines.append(f"  Failed:         {result.failed_checks}")
@@ -859,6 +870,7 @@ def main() -> int:
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
         import traceback
+
         traceback.print_exc()
         return 1
 

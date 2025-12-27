@@ -33,6 +33,7 @@ Warnung:
 - Regime-Wechsel können abrupt erfolgen
 - Nutze diese Strategie nur für explorative Analysen
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -55,23 +56,23 @@ from .vol_model import (
 
 # Default Mapping: Regime → Zielposition (1=long, 0=flat)
 DEFAULT_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
-    VolRegime.LOW: 1,      # Long bei niedriger Volatilität
-    VolRegime.MEDIUM: 1,   # Long bei mittlerer Volatilität (reduziert durch Scaling)
-    VolRegime.HIGH: 0,     # Flat bei hoher Volatilität (Risk-Off)
+    VolRegime.LOW: 1,  # Long bei niedriger Volatilität
+    VolRegime.MEDIUM: 1,  # Long bei mittlerer Volatilität (reduziert durch Scaling)
+    VolRegime.HIGH: 0,  # Flat bei hoher Volatilität (Risk-Off)
 }
 
 # Konservatives Mapping: Nur in LOW-Vol long
 CONSERVATIVE_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
-    VolRegime.LOW: 1,      # Long nur bei niedriger Vol
-    VolRegime.MEDIUM: 0,   # Flat bei mittlerer Vol
-    VolRegime.HIGH: 0,     # Flat bei hoher Vol
+    VolRegime.LOW: 1,  # Long nur bei niedriger Vol
+    VolRegime.MEDIUM: 0,  # Flat bei mittlerer Vol
+    VolRegime.HIGH: 0,  # Flat bei hoher Vol
 }
 
 # Aggressives Mapping: Immer long, nur Scaling unterschiedlich
 AGGRESSIVE_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
-    VolRegime.LOW: 1,      # Long bei niedriger Vol
-    VolRegime.MEDIUM: 1,   # Long bei mittlerer Vol
-    VolRegime.HIGH: 1,     # Long auch bei hoher Vol (reduziert durch Scaling)
+    VolRegime.LOW: 1,  # Long bei niedriger Vol
+    VolRegime.MEDIUM: 1,  # Long bei mittlerer Vol
+    VolRegime.HIGH: 1,  # Long auch bei hoher Vol (reduziert durch Scaling)
 }
 
 
@@ -330,9 +331,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
         """
         # Validierung
         if "close" not in data.columns:
-            raise ValueError(
-                f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}"
-            )
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
         if len(data) == 0:
             return pd.Series([], dtype=int)
@@ -410,21 +409,15 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
     def validate(self) -> None:
         """Validiert Parameter."""
         if self.vol_window < 2:
-            raise ValueError(
-                f"vol_window ({self.vol_window}) muss >= 2 sein"
-            )
+            raise ValueError(f"vol_window ({self.vol_window}) muss >= 2 sein")
         if self.lookback_window < self.vol_window:
             raise ValueError(
                 f"lookback_window ({self.lookback_window}) muss >= vol_window ({self.vol_window}) sein"
             )
         if not 0 < self.low_threshold < 1:
-            raise ValueError(
-                f"low_threshold ({self.low_threshold}) muss zwischen 0 und 1 sein"
-            )
+            raise ValueError(f"low_threshold ({self.low_threshold}) muss zwischen 0 und 1 sein")
         if not 0 < self.high_threshold < 1:
-            raise ValueError(
-                f"high_threshold ({self.high_threshold}) muss zwischen 0 und 1 sein"
-            )
+            raise ValueError(f"high_threshold ({self.high_threshold}) muss zwischen 0 und 1 sein")
         if self.low_threshold >= self.high_threshold:
             raise ValueError(
                 f"low_threshold ({self.low_threshold}) muss < high_threshold ({self.high_threshold}) sein"

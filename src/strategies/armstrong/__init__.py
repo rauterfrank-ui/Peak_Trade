@@ -13,6 +13,7 @@ Module:
 
 Siehe: docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md
 """
+
 from .cycle_model import (
     ArmstrongPhase,
     ArmstrongCycleConfig,

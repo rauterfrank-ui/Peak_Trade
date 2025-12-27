@@ -99,7 +99,7 @@ def run_monte_carlo_from_returns(
 ) -> MonteCarloSummaryResult:
     """
     Führt Monte-Carlo-Simulationen auf einer Serie von Returns durch.
-    
+
     Returns:
         MonteCarloSummaryResult mit Verteilungen + Quantilen
     """
@@ -379,4 +379,3 @@ Phase 45 implementiert **Monte-Carlo-Robustness-Analysen** als Ergänzung zu Wal
 - Portfolio-Level-Analysen
 
 **Fazit:** Monte-Carlo quantifiziert die statistische Unsicherheit in Backtest-Ergebnissen und hilft, robuste Strategien zu identifizieren.
-

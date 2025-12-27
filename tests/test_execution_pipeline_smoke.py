@@ -16,6 +16,7 @@ Tests fuer:
 
 WICHTIG: Keine echten Orders - alles Paper/Sandbox.
 """
+
 from __future__ import annotations
 
 import sys
@@ -35,6 +36,7 @@ if str(ROOT_DIR) not in sys.path:
 # ============================================================================
 # ExecutionPipeline Tests
 # ============================================================================
+
 
 class TestSignalEvent:
     """Tests fuer SignalEvent Dataclass."""
@@ -500,6 +502,7 @@ class TestExecutionPipelineExecuteFromSignals:
 # BacktestEngine Integration Tests
 # ============================================================================
 
+
 class TestBacktestEngineOrderLayerIntegration:
     """Tests fuer BacktestEngine mit Order-Layer."""
 
@@ -608,6 +611,7 @@ class TestBacktestEngineOrderLayerIntegration:
 # Demo-Script Test
 # ============================================================================
 
+
 class TestDemoScript:
     """Tests fuer das Demo-Script."""
 
@@ -655,6 +659,7 @@ class TestDemoScript:
 # ============================================================================
 # Edge Cases
 # ============================================================================
+
 
 class TestEdgeCases:
     """Edge-Case Tests."""

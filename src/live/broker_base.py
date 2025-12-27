@@ -169,7 +169,11 @@ class PaperBroker(BaseBrokerClient):
         Berechnet die Fee fuer einen Trade auf Basis von bp + Mindestfee.
         """
         variable_fee = abs(notional) * (self.fee_bps / 10000.0) if self.fee_bps != 0.0 else 0.0
-        fee = max(variable_fee, self.fee_min_per_order) if self.fee_min_per_order > 0 else variable_fee
+        fee = (
+            max(variable_fee, self.fee_min_per_order)
+            if self.fee_min_per_order > 0
+            else variable_fee
+        )
         return float(fee)
 
     def _apply_fill(

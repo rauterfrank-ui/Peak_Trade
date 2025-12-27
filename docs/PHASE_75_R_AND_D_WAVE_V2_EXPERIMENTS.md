@@ -541,11 +541,11 @@ reports/r_and_d_experiments/
 
 > **⚠️ 0 Trades in allen Experimenten:**  
 > Dies ist **erwartetes Verhalten** und kein Fehler:
-> 
+>
 > 1. **Dummy-Daten:** Alle Läufe nutzten synthetische/Dummy-Daten (`--use-dummy-data`)
 > 2. **Prototyp-Status:** Die R&D-Strategien (Armstrong, Ehlers, López, El Karoui) sind noch Prototypen ohne vollständig implementierte Signal-/Trade-Logik
 > 3. **Fokus:** Ziel der Welle W2 war die **CLI-/Pipeline-Validierung**, nicht die Generierung von Trades
-> 
+>
 > **→ Trades werden generiert, sobald die Strategien vollständig implementiert sind und echte Marktdaten verwendet werden.**
 
 #### Nächste Schritte

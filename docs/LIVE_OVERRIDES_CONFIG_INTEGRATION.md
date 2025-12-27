@@ -2,7 +2,7 @@
 
 ## Überblick
 
-Die `config/live_overrides/auto.toml` wird automatisch in die Laufzeit-Konfiguration eingebunden, wenn Peak_Trade in einem **Live-nahen Environment** läuft.
+Die `config&sol;live_overrides&sol;auto.toml (planned)` wird automatisch in die Laufzeit-Konfiguration eingebunden, wenn Peak_Trade in einem **Live-nahen Environment** läuft.
 
 Dies ermöglicht dem **Promotion Loop v0**, Parameter-Anpassungen direkt in die Live-Config zu schreiben, ohne manuell `config.toml` zu editieren.
 

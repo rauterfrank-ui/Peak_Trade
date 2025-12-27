@@ -23,6 +23,7 @@ Usage:
     # Custom Output-Pfad
     python scripts/generate_operator_meta_report.py --output reports/custom_meta_report.html
 """
+
 import argparse
 import sys
 from pathlib import Path
@@ -82,7 +83,7 @@ def main():
         if not session_ids:
             print(f"[INFO] Keine Sessions im Store gefunden: {args.store_path}")
             return
-        
+
         print(f"[INFO] {len(session_ids)} Sessions im Store:")
         for sid in session_ids:
             print(f"  - {sid}")
@@ -116,4 +117,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

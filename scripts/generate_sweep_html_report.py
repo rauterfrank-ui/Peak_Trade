@@ -36,7 +36,7 @@ Examples:
 
   # Kombination
   python scripts/generate_sweep_html_report.py reports/sweeps/sweep_ma_crossover_demo.csv --sort-by total_return --max-rows 20
-        """
+        """,
     )
     parser.add_argument(
         "csv_path",
@@ -66,7 +66,7 @@ def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
 
     print("\n📊 Peak_Trade – Sweep HTML Report Generator")
-    print("="*70)
+    print("=" * 70)
 
     csv_path = Path(args.csv_path)
     if not csv_path.is_file():

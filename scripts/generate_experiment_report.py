@@ -46,6 +46,7 @@ Examples:
         --sort-metric metric_total_return \\
         --ascending
 """
+
 from __future__ import annotations
 
 import argparse
@@ -148,7 +149,9 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def validate_columns(df: pd.DataFrame, sort_metric: str, heatmap_params: Tuple[str, str] | None) -> None:
+def validate_columns(
+    df: pd.DataFrame, sort_metric: str, heatmap_params: Tuple[str, str] | None
+) -> None:
     """Validiert, dass benötigte Spalten existieren."""
     # Check sort metric
     if sort_metric not in df.columns:
@@ -158,7 +161,9 @@ def validate_columns(df: pd.DataFrame, sort_metric: str, heatmap_params: Tuple[s
             print(f"Warning: '{sort_metric}' not found, did you mean: {possible}?")
         else:
             print(f"Warning: Sort metric '{sort_metric}' not found in data")
-            print(f"  Available metric columns: {[c for c in df.columns if c.startswith('metric_')]}")
+            print(
+                f"  Available metric columns: {[c for c in df.columns if c.startswith('metric_')]}"
+            )
 
     # Check heatmap params
     if heatmap_params:
@@ -169,7 +174,9 @@ def validate_columns(df: pd.DataFrame, sort_metric: str, heatmap_params: Tuple[s
                     print(f"Warning: '{param}' not found, did you mean: {possible}?")
                 else:
                     print(f"Warning: Heatmap parameter '{param}' not found in data")
-                    print(f"  Available param columns: {[c for c in df.columns if c.startswith('param_')]}")
+                    print(
+                        f"  Available param columns: {[c for c in df.columns if c.startswith('param_')]}"
+                    )
 
 
 def print_data_overview(df: pd.DataFrame) -> None:
@@ -189,7 +196,9 @@ def print_data_overview(df: pd.DataFrame) -> None:
     print(f"\nMetric columns ({len(metric_cols)}):")
     for col in metric_cols[:10]:
         if df[col].dtype in ["float64", "int64"]:
-            print(f"  {col}: min={df[col].min():.4f}, max={df[col].max():.4f}, mean={df[col].mean():.4f}")
+            print(
+                f"  {col}: min={df[col].min():.4f}, max={df[col].max():.4f}, mean={df[col].mean():.4f}"
+            )
         else:
             print(f"  {col}: {df[col].dtype}")
     if len(metric_cols) > 10:
@@ -267,7 +276,9 @@ def main() -> int:
     print(f"\nReport saved to: {output_path}")
 
     # Summary
-    summary = summarize_experiment_results(df, top_n=args.top_n, sort_metric=args.sort_metric, ascending=args.ascending)
+    summary = summarize_experiment_results(
+        df, top_n=args.top_n, sort_metric=args.sort_metric, ascending=args.ascending
+    )
 
     print("\n--- Report Summary ---")
     print(f"Title: {title}")

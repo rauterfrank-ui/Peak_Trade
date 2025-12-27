@@ -1,0 +1,23 @@
+name: Docs Diff Guard Policy Gate
+
+on:
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+jobs:
+  docs_diff_guard_policy_gate:
+    name: Docs Diff Guard Policy Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run docs diff guard policy
+        run: |
+          python3 scripts/ci/check_docs_diff_guard_section.py

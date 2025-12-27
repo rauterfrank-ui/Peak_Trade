@@ -8,6 +8,7 @@ Testet:
 - Report Konstruktion und to_markdown() / to_html()
 - Helper-Funktionen (df_to_markdown, dict_to_markdown_table, format_metric)
 """
+
 from __future__ import annotations
 
 import pandas as pd
@@ -140,7 +141,9 @@ class TestReport:
         report = Report(
             title="HTML Test",
             sections=[
-                ReportSection("Summary", "| Metric | Value |\n|--------|-------|\n| Sharpe | 1.5 |"),
+                ReportSection(
+                    "Summary", "| Metric | Value |\n|--------|-------|\n| Sharpe | 1.5 |"
+                ),
             ],
         )
         html = report.to_html()
@@ -168,10 +171,12 @@ class TestDfToMarkdown:
 
     def test_basic_dataframe(self) -> None:
         """Test: Einfaches DataFrame."""
-        df = pd.DataFrame({
-            "Metric": ["Sharpe", "Return"],
-            "Value": [1.5, 0.15],
-        })
+        df = pd.DataFrame(
+            {
+                "Metric": ["Sharpe", "Return"],
+                "Value": [1.5, 0.15],
+            }
+        )
         md = df_to_markdown(df)
 
         assert "| Metric | Value |" in md

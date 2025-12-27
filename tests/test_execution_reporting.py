@@ -10,6 +10,7 @@ Testet:
 - from_backtest_result()
 - format_execution_stats()
 """
+
 import pytest
 from datetime import datetime, timedelta
 from typing import Dict, Any, List
@@ -141,15 +142,17 @@ class TestFromExecutionLogs:
         """Einzelner Log wird korrekt verarbeitet."""
         from src.reporting.execution_reports import from_execution_logs
 
-        logs = [{
-            "total_orders": 10,
-            "filled_orders": 8,
-            "rejected_orders": 2,
-            "total_fees": 5.0,
-            "total_notional": 1000.0,
-            "symbol": "BTC/EUR",
-            "run_id": "test123",
-        }]
+        logs = [
+            {
+                "total_orders": 10,
+                "filled_orders": 8,
+                "rejected_orders": 2,
+                "total_fees": 5.0,
+                "total_notional": 1000.0,
+                "symbol": "BTC/EUR",
+                "run_id": "test123",
+            }
+        ]
 
         stats = from_execution_logs(logs)
 
@@ -195,11 +198,13 @@ class TestFromExecutionLogs:
         """Timestamps aus Logs werden korrekt geparst."""
         from src.reporting.execution_reports import from_execution_logs
 
-        logs = [{
-            "total_orders": 5,
-            "filled_orders": 5,
-            "timestamp": "2024-01-15T10:30:00",
-        }]
+        logs = [
+            {
+                "total_orders": 5,
+                "filled_orders": 5,
+                "timestamp": "2024-01-15T10:30:00",
+            }
+        ]
 
         stats = from_execution_logs(logs)
 
@@ -212,10 +217,12 @@ class TestFromExecutionLogs:
         """Fehlende Felder werden graceful behandelt."""
         from src.reporting.execution_reports import from_execution_logs
 
-        logs = [{
-            "total_orders": 5,
-            # filled_orders fehlt
-        }]
+        logs = [
+            {
+                "total_orders": 5,
+                # filled_orders fehlt
+            }
+        ]
 
         stats = from_execution_logs(logs)
 
@@ -298,13 +305,15 @@ class TestFromExecutionResults:
         """Einzelnes gefuelltes Result wird korrekt verarbeitet."""
         from src.reporting.execution_reports import from_execution_results
 
-        results = [self._create_mock_result(
-            symbol="BTC/EUR",
-            side="buy",
-            quantity=0.01,
-            price=50000.0,
-            fee=0.5,
-        )]
+        results = [
+            self._create_mock_result(
+                symbol="BTC/EUR",
+                side="buy",
+                quantity=0.01,
+                price=50000.0,
+                fee=0.5,
+            )
+        ]
 
         stats = from_execution_results(results)
 
@@ -348,7 +357,7 @@ class TestFromExecutionResults:
         assert stats.n_orders == 3
         assert stats.n_fills == 1
         assert stats.n_rejected == 2
-        assert stats.fill_rate == pytest.approx(1/3)
+        assert stats.fill_rate == pytest.approx(1 / 3)
 
     def test_notional_statistics(self):
         """Notional-Statistiken werden korrekt berechnet."""
@@ -500,7 +509,7 @@ class TestFormatExecutionStats:
 
         assert "Buy/Sell" in output
         assert "12" in output  # n_buys
-        assert "8" in output   # n_sells
+        assert "8" in output  # n_sells
 
 
 class TestExecutionPlotsModule:

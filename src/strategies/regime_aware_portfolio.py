@@ -26,6 +26,7 @@ Verwendung:
     ... )
     >>> signals = strategy.generate_signals(df)
 """
+
 from __future__ import annotations
 
 import logging
@@ -165,9 +166,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         if self.base_weights:
             total = sum(abs(w) for w in self.base_weights.values())
             if total > 0:
-                self.base_weights = {
-                    k: w / total for k, w in self.base_weights.items()
-                }
+                self.base_weights = {k: w / total for k, w in self.base_weights.items()}
 
         # Fehlende Komponenten bekommen equal weights
         if len(self.base_weights) < len(self.components):
@@ -236,26 +235,23 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
                 strategy = create_strategy_from_config(component_name, cfg)
                 self._component_strategies.append(strategy)
             except Exception as e:
-                logger.error(
-                    f"Konnte Komponente '{component_name}' nicht laden: {e}"
-                )
-                raise ValueError(
-                    f"Komponente '{component_name}' konnte nicht geladen werden: {e}"
-                )
+                logger.error(f"Konnte Komponente '{component_name}' nicht laden: {e}")
+                raise ValueError(f"Komponente '{component_name}' konnte nicht geladen werden: {e}")
 
         # Lade Regime-Strategie
         try:
             self._regime_strategy = create_strategy_from_config(self.regime_strategy_name, cfg)
             # Prüfe ob Regime-Mode aktiviert ist
-            if hasattr(self._regime_strategy, 'regime_mode') and not self._regime_strategy.regime_mode:
+            if (
+                hasattr(self._regime_strategy, "regime_mode")
+                and not self._regime_strategy.regime_mode
+            ):
                 logger.warning(
                     f"Regime-Strategie '{self.regime_strategy_name}' hat regime_mode=False. "
                     f"Erwarte regime_mode=True für korrekte Regime-Signale (1/-1/0)."
                 )
         except Exception as e:
-            logger.error(
-                f"Konnte Regime-Strategie '{self.regime_strategy_name}' nicht laden: {e}"
-            )
+            logger.error(f"Konnte Regime-Strategie '{self.regime_strategy_name}' nicht laden: {e}")
             raise ValueError(
                 f"Regime-Strategie '{self.regime_strategy_name}' konnte nicht geladen werden: {e}"
             )
@@ -320,9 +316,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
                     f"Komponente '{component_name}' konnte keine Signale generieren: {e}"
                 )
                 # Fülle mit Nullen
-                component_signals[component_name] = pd.Series(
-                    0, index=data.index, dtype=int
-                )
+                component_signals[component_name] = pd.Series(0, index=data.index, dtype=int)
 
         # 2. Kombiniere Signale mit Basisgewichten
         combined_signals = pd.Series(0.0, index=data.index, dtype=float)
@@ -345,14 +339,14 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
 
         for i in range(len(data)):
             regime_value = regime_signals.iloc[i]
-            
+
             # Prüfe ob gültiger Wert (nicht NaN)
             if pd.isna(regime_value):
                 regime_value = 0  # Default zu Neutral
 
             # Hole Skalierungsfaktor
             scale = self._get_regime_scale(int(regime_value))
-            
+
             # Skaliere kombiniertes Signal
             if self.mode == "filter":
                 # Filter-Mode: 0 wenn Risk-Off, sonst normal
@@ -366,20 +360,13 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
 
         # 5. Wende Threshold an für finale Long/Short-Entscheidung
         final_signals = pd.Series(0, index=data.index, dtype=int)
-        final_signals = final_signals.where(
-            ~(regime_scaled_signals > self.signal_threshold), 1
-        )
-        final_signals = final_signals.where(
-            ~(regime_scaled_signals < -self.signal_threshold), -1
-        )
+        final_signals = final_signals.where(~(regime_scaled_signals > self.signal_threshold), 1)
+        final_signals = final_signals.where(~(regime_scaled_signals < -self.signal_threshold), -1)
 
         final_signals.name = "signal"
         return final_signals
 
-    def get_component_signals(
-        self,
-        data: pd.DataFrame
-    ) -> Dict[str, pd.Series]:
+    def get_component_signals(self, data: pd.DataFrame) -> Dict[str, pd.Series]:
         """
         Gibt Signale aller Komponenten-Strategien zurück.
 
@@ -405,10 +392,7 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
 
         return result
 
-    def get_regime_signals(
-        self,
-        data: pd.DataFrame
-    ) -> pd.Series:
+    def get_regime_signals(self, data: pd.DataFrame) -> pd.Series:
         """
         Gibt Regime-Signale zurück.
 
@@ -457,4 +441,3 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
 
     strategy = RegimeAwarePortfolioStrategy(config=config)
     return strategy.generate_signals(df)
-

@@ -35,6 +35,7 @@ Output:
     - reports/experiments/{sweep_name}_{id}_{timestamp}.parquet
     - reports/experiments/{sweep_name}_{id}_{timestamp}_summary.json
 """
+
 from __future__ import annotations
 
 import argparse
@@ -82,7 +83,8 @@ def build_parser() -> argparse.ArgumentParser:
     # Sweep-Auswahl
     sweep_group = parser.add_mutually_exclusive_group()
     sweep_group.add_argument(
-        "--sweep-name", "-s",
+        "--sweep-name",
+        "-s",
         type=str,
         help="Name eines vordefinierten Sweeps (z.B. rsi_reversion_basic, breakout_fine)",
     )
@@ -94,7 +96,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Granularität (für --strategy)
     parser.add_argument(
-        "--granularity", "-g",
+        "--granularity",
+        "-g",
         type=str,
         choices=["coarse", "medium", "fine"],
         default="medium",
@@ -109,7 +112,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Trading-Symbol (default: BTC/EUR)",
     )
     parser.add_argument(
-        "--timeframe", "-t",
+        "--timeframe",
+        "-t",
         type=str,
         default="1h",
         help="Zeitrahmen (default: 1h)",
@@ -144,12 +148,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Nur Kombinationen anzeigen, keine Backtests",
     )
     parser.add_argument(
-        "--parallel", "-p",
+        "--parallel",
+        "-p",
         action="store_true",
         help="Parallel ausführen",
     )
     parser.add_argument(
-        "--workers", "-w",
+        "--workers",
+        "-w",
         type=int,
         default=4,
         help="Anzahl paralleler Worker (default: 4)",
@@ -157,7 +163,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Output-Optionen
     parser.add_argument(
-        "--output-dir", "-o",
+        "--output-dir",
+        "-o",
         type=str,
         default="reports/experiments",
         help="Ausgabe-Verzeichnis (default: reports/experiments)",
@@ -206,7 +213,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Logging
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -289,7 +297,7 @@ def show_sweep_params(sweep: StrategySweepConfig) -> None:
 
     print("\nErste 15 Kombinationen:")
     for i, combo in enumerate(combos[:15]):
-        print(f"  {i+1:3d}. {combo}")
+        print(f"  {i + 1:3d}. {combo}")
 
     if len(combos) > 15:
         print(f"  ... und {len(combos) - 15} weitere")
@@ -314,8 +322,7 @@ def create_progress_callback():
         bar = "=" * filled + ">" + "." * (bar_width - filled - 1)
 
         print(
-            f"\r[{bar}] {pct:5.1f}% | {current}/{total} | "
-            f"ETA: {eta:.0f}s | {message[:35]:35s}",
+            f"\r[{bar}] {pct:5.1f}% | {current}/{total} | ETA: {eta:.0f}s | {message[:35]:35s}",
             end="",
             flush=True,
         )
@@ -328,10 +335,10 @@ def create_progress_callback():
 
 def run_from_args(args: argparse.Namespace) -> int:
     """Führt einen Strategy-Sweep basierend auf Argumenten aus.
-    
+
     Args:
         args: Parsed command-line arguments
-        
+
     Returns:
         Exit code (0 = success, 1 = error)
     """
@@ -368,6 +375,7 @@ def run_from_args(args: argparse.Namespace) -> int:
         # Automatischer Sweep aus Strategy-Sweeps
         try:
             from src.experiments import ParamSweep
+
             param_sweeps = get_strategy_sweeps(args.strategy, args.granularity)
 
             # Konvertiere ParamSweeps zu param_grid
@@ -431,7 +439,7 @@ def run_from_args(args: argparse.Namespace) -> int:
 
     if args.max_runs and len(combinations) > args.max_runs:
         logger.info(f"Limitiere auf {args.max_runs} von {len(combinations)} Kombinationen")
-        combinations = combinations[:args.max_runs]
+        combinations = combinations[: args.max_runs]
 
     # Experiment-Info ausgeben
     print("\n" + "=" * 70)
@@ -459,6 +467,7 @@ def run_from_args(args: argparse.Namespace) -> int:
         logger.error(f"Sweep fehlgeschlagen: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -479,7 +488,7 @@ def run_from_args(args: argparse.Namespace) -> int:
         for i, r in enumerate(best_sharpe, 1):
             sharpe = r.metrics.get("sharpe_ratio", float("nan"))
             ret = r.metrics.get("total_return", float("nan"))
-            print(f"  {i}. Sharpe: {sharpe:7.3f}, Return: {ret*100:6.1f}%")
+            print(f"  {i}. Sharpe: {sharpe:7.3f}, Return: {ret * 100:6.1f}%")
             # Kompakte Parameter-Anzeige
             params_str = ", ".join(f"{k}={v}" for k, v in list(r.params.items())[:4])
             print(f"     {params_str}")
@@ -490,7 +499,9 @@ def run_from_args(args: argparse.Namespace) -> int:
             sharpe = r.metrics.get("sharpe_ratio", float("nan"))
             ret = r.metrics.get("total_return", float("nan"))
             max_dd = r.metrics.get("max_drawdown", float("nan"))
-            print(f"  {i}. Return: {ret*100:6.1f}%, Sharpe: {sharpe:7.3f}, MaxDD: {max_dd*100:6.1f}%")
+            print(
+                f"  {i}. Return: {ret * 100:6.1f}%, Sharpe: {sharpe:7.3f}, MaxDD: {max_dd * 100:6.1f}%"
+            )
 
         print("\n--- Top 5 nach niedrigstem Max Drawdown ---")
         best_dd = result.get_best_by_metric("max_drawdown", ascending=False, top_n=5)
@@ -498,13 +509,20 @@ def run_from_args(args: argparse.Namespace) -> int:
             sharpe = r.metrics.get("sharpe_ratio", float("nan"))
             ret = r.metrics.get("total_return", float("nan"))
             max_dd = r.metrics.get("max_drawdown", float("nan"))
-            print(f"  {i}. MaxDD: {max_dd*100:6.1f}%, Return: {ret*100:6.1f}%, Sharpe: {sharpe:7.3f}")
+            print(
+                f"  {i}. MaxDD: {max_dd * 100:6.1f}%, Return: {ret * 100:6.1f}%, Sharpe: {sharpe:7.3f}"
+            )
 
     # Summary Stats
     summary = result.get_summary_stats()
     if summary:
         print("\n--- Summary Statistics ---")
-        for key in ["sharpe_ratio_mean", "sharpe_ratio_max", "total_return_mean", "max_drawdown_mean"]:
+        for key in [
+            "sharpe_ratio_mean",
+            "sharpe_ratio_max",
+            "total_return_mean",
+            "max_drawdown_mean",
+        ]:
             if key in summary:
                 print(f"  {key}: {summary[key]:.4f}")
 

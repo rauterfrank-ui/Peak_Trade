@@ -9,6 +9,7 @@ Testet die Web-API und Dashboard:
 - Tail-Events
 - Alerts
 """
+
 from __future__ import annotations
 
 import json
@@ -20,25 +21,14 @@ from typing import Any, Dict, List
 import pandas as pd
 import pytest
 
-# FastAPI TestClient importieren
-try:
-    from fastapi.testclient import TestClient
-    FASTAPI_AVAILABLE = True
-except ImportError:
-    FASTAPI_AVAILABLE = False
-    TestClient = None
+# Skip if FastAPI not installed - must be done before any FastAPI imports
+pytest.importorskip("fastapi")
 
+from fastapi.testclient import TestClient
 from src.live.web.app import create_app, WebUIConfig
 
-
-# =============================================================================
-# Skip if FastAPI not available
-# =============================================================================
-
-pytestmark = pytest.mark.skipif(
-    not FASTAPI_AVAILABLE,
-    reason="FastAPI not installed"
-)
+# Mark all tests in this module as web tests
+pytestmark = pytest.mark.web
 
 
 # =============================================================================
@@ -250,9 +240,17 @@ class TestSnapshotEndpoint:
         data = response.json()
 
         expected_fields = [
-            "run_id", "mode", "strategy_name", "symbol", "timeframe",
-            "total_steps", "total_orders", "total_blocked_orders",
-            "equity", "realized_pnl", "unrealized_pnl",
+            "run_id",
+            "mode",
+            "strategy_name",
+            "symbol",
+            "timeframe",
+            "total_steps",
+            "total_orders",
+            "total_blocked_orders",
+            "equity",
+            "realized_pnl",
+            "unrealized_pnl",
         ]
         for field in expected_fields:
             assert field in data
@@ -323,8 +321,14 @@ class TestTailEndpoint:
         row = data[0]
 
         expected_fields = [
-            "ts_bar", "equity", "realized_pnl", "unrealized_pnl",
-            "position_size", "orders_count", "risk_allowed", "risk_reasons",
+            "ts_bar",
+            "equity",
+            "realized_pnl",
+            "unrealized_pnl",
+            "position_size",
+            "orders_count",
+            "risk_allowed",
+            "risk_reasons",
         ]
         for field in expected_fields:
             assert field in row

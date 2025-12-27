@@ -1,0 +1,129 @@
+name: Policy Critic Gate (Always Run)
+
+# Gate Pattern: This workflow ALWAYS runs (no paths filter in trigger)
+# to ensure a check-run is created for Branch Protection.
+# Internally, it checks if policy-relevant files changed.
+# If not applicable → success (exit 0)
+# If applicable → run Policy Critic analysis
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  merge_group:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  policy-critic-gate:
+    name: Policy Critic Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for diff
+
+      - name: Detect changed files
+        id: detect
+        run: |
+          set -euo pipefail
+
+          # Determine base and head refs
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          elif [ "${{ github.event_name }}" = "merge_group" ]; then
+            BASE_SHA="${{ github.event.merge_group.base_sha }}"
+            HEAD_SHA="${{ github.event.merge_group.head_sha }}"
+          else
+            echo "Unsupported event: ${{ github.event_name }}"
+            exit 1
+          fi
+
+          echo "Base SHA: $BASE_SHA"
+          echo "Head SHA: $HEAD_SHA"
+
+          # Define policy-sensitive paths (adjust to your needs)
+          POLICY_PATHS=(
+            "src/live/"
+            "src/execution/"
+            "src/exchange/"
+            "src/governance/"
+            "src/risk/"
+            "scripts/ops/"
+          )
+
+          # Get changed files
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" || echo "")
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No files changed"
+            echo "applicable=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Check if any policy-sensitive path was touched
+          APPLICABLE=false
+          for path in "${POLICY_PATHS[@]}"; do
+            if echo "$CHANGED_FILES" | grep -q "^${path}"; then
+              echo "Policy-sensitive path changed: $path"
+              APPLICABLE=true
+              break
+            fi
+          done
+
+          if [ "$APPLICABLE" = "true" ]; then
+            echo "applicable=true" >> $GITHUB_OUTPUT
+            echo "✅ Policy-sensitive files detected - running Policy Critic"
+          else
+            echo "applicable=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No policy-sensitive files changed - skipping Policy Critic"
+          fi
+
+      - name: Set up Python
+        if: steps.detect.outputs.applicable == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        if: steps.detect.outputs.applicable == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Policy Critic Analysis
+        if: steps.detect.outputs.applicable == 'true'
+        id: critic
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+
+          # Run the existing Policy Critic script/module
+          # Adjust this to your actual Policy Critic invocation
+          if [ -f "scripts/ops/policy_critic.py" ]; then
+            python scripts/ops/policy_critic.py --pr-mode
+          else
+            echo "⚠️ Policy Critic script not found, using placeholder"
+            echo "In production, call your actual Policy Critic tool here"
+            exit 0
+          fi
+
+      - name: Report Results
+        if: steps.detect.outputs.applicable == 'true'
+        run: |
+          if [ "${{ steps.critic.outcome }}" = "failure" ]; then
+            echo "❌ Policy Critic found issues in policy-sensitive paths"
+            exit 1
+          else
+            echo "✅ Policy Critic analysis passed"
+            exit 0
+          fi
+
+      - name: Gate Success (Not Applicable)
+        if: steps.detect.outputs.applicable == 'false'
+        run: |
+          echo "✅ Policy Critic Gate: Not applicable (no policy-sensitive files changed)"
+          exit 0

@@ -15,6 +15,7 @@ Konzept:
 Diese Strategie eignet sich für Trending-Märkte und nutzt
 Breakouts aus Konsolidierungsphasen.
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -157,7 +158,7 @@ class BreakoutStrategy(BaseStrategy):
         self.take_profit_pct = self.config.get("take_profit_pct")
         self.trailing_stop_pct = self.config.get("trailing_stop_pct")
         self.price_col = str(self.config.get("price_col", "close"))
-        
+
         # Legacy: side -> risk_mode Mapping
         legacy_side = self.config.get("side")
         if legacy_side and self.risk_mode == "symmetric":
@@ -174,7 +175,7 @@ class BreakoutStrategy(BaseStrategy):
             self.lookback_high = self.lookback_breakout
         else:
             self.lookback_high = int(self.lookback_high)
-        
+
         if self.lookback_low is None:
             self.lookback_low = self.lookback_breakout
         else:
@@ -196,41 +197,27 @@ class BreakoutStrategy(BaseStrategy):
     def validate(self) -> None:
         """Validiert Parameter."""
         if self.lookback_breakout < 2:
-            raise ValueError(
-                f"lookback_breakout ({self.lookback_breakout}) muss >= 2 sein"
-            )
+            raise ValueError(f"lookback_breakout ({self.lookback_breakout}) muss >= 2 sein")
         if self.lookback_high < 2:
-            raise ValueError(
-                f"lookback_high ({self.lookback_high}) muss >= 2 sein"
-            )
+            raise ValueError(f"lookback_high ({self.lookback_high}) muss >= 2 sein")
         if self.lookback_low < 2:
-            raise ValueError(
-                f"lookback_low ({self.lookback_low}) muss >= 2 sein"
-            )
+            raise ValueError(f"lookback_low ({self.lookback_low}) muss >= 2 sein")
         if self.risk_mode not in ("symmetric", "long_only", "short_only"):
             raise ValueError(
                 f"risk_mode ({self.risk_mode}) muss 'symmetric', 'long_only' oder 'short_only' sein"
             )
         if self.atr_lookback < 2:
-            raise ValueError(
-                f"atr_lookback ({self.atr_lookback}) muss >= 2 sein"
-            )
+            raise ValueError(f"atr_lookback ({self.atr_lookback}) muss >= 2 sein")
         if self.use_atr_filter and self.atr_multiplier is not None and self.atr_multiplier <= 0:
             raise ValueError(
                 f"atr_multiplier ({self.atr_multiplier}) muss > 0 sein wenn use_atr_filter=True"
             )
         if self.stop_loss_pct is not None and self.stop_loss_pct <= 0:
-            raise ValueError(
-                f"stop_loss_pct ({self.stop_loss_pct}) muss > 0 sein"
-            )
+            raise ValueError(f"stop_loss_pct ({self.stop_loss_pct}) muss > 0 sein")
         if self.take_profit_pct is not None and self.take_profit_pct <= 0:
-            raise ValueError(
-                f"take_profit_pct ({self.take_profit_pct}) muss > 0 sein"
-            )
+            raise ValueError(f"take_profit_pct ({self.take_profit_pct}) muss > 0 sein")
         if self.trailing_stop_pct is not None and self.trailing_stop_pct <= 0:
-            raise ValueError(
-                f"trailing_stop_pct ({self.trailing_stop_pct}) muss > 0 sein"
-            )
+            raise ValueError(f"trailing_stop_pct ({self.trailing_stop_pct}) muss > 0 sein")
 
     @classmethod
     def from_config(
@@ -261,7 +248,7 @@ class BreakoutStrategy(BaseStrategy):
         take_profit = cfg.get(f"{section}.take_profit_pct", None)
         trailing = cfg.get(f"{section}.trailing_stop_pct", None)
         price = cfg.get(f"{section}.price_col", "close")
-        
+
         # Legacy: side -> risk_mode
         if risk_mode is None:
             if side == "long":
@@ -302,11 +289,13 @@ class BreakoutStrategy(BaseStrategy):
         if "high" not in data.columns or "low" not in data.columns:
             # Fallback: verwende Close-Volatilität
             close = data[self.price_col]
-            return close.diff().abs().rolling(
-                window=self.atr_lookback,
-                min_periods=self.atr_lookback
-            ).mean()
-        
+            return (
+                close.diff()
+                .abs()
+                .rolling(window=self.atr_lookback, min_periods=self.atr_lookback)
+                .mean()
+            )
+
         high = data["high"]
         low = data["low"]
         close = data[self.price_col]
@@ -318,16 +307,12 @@ class BreakoutStrategy(BaseStrategy):
 
         # Wilder-Smoothing (EMA mit alpha=1/n)
         atr = tr.ewm(
-            alpha=1/self.atr_lookback,
-            min_periods=self.atr_lookback,
-            adjust=False
+            alpha=1 / self.atr_lookback, min_periods=self.atr_lookback, adjust=False
         ).mean()
 
         return atr
 
-    def _compute_breakout_levels(
-        self, data: pd.DataFrame
-    ) -> tuple[pd.Series, pd.Series]:
+    def _compute_breakout_levels(self, data: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
         """
         Berechnet Breakout-Levels (N-Bar Hoch und Tief).
 
@@ -347,15 +332,13 @@ class BreakoutStrategy(BaseStrategy):
 
         # Rolling High/Low mit separaten Lookbacks
         # (exklusive aktuelle Bar für sauberes Signal)
-        upper_level = high.shift(1).rolling(
-            window=self.lookback_high,
-            min_periods=self.lookback_high
-        ).max()
+        upper_level = (
+            high.shift(1).rolling(window=self.lookback_high, min_periods=self.lookback_high).max()
+        )
 
-        lower_level = low.shift(1).rolling(
-            window=self.lookback_low,
-            min_periods=self.lookback_low
-        ).min()
+        lower_level = (
+            low.shift(1).rolling(window=self.lookback_low, min_periods=self.lookback_low).min()
+        )
 
         return upper_level, lower_level
 
@@ -381,22 +364,19 @@ class BreakoutStrategy(BaseStrategy):
         # Validierung
         if self.price_col not in data.columns:
             raise ValueError(
-                f"Spalte '{self.price_col}' nicht in DataFrame. "
-                f"Verfügbar: {list(data.columns)}"
+                f"Spalte '{self.price_col}' nicht in DataFrame. Verfügbar: {list(data.columns)}"
             )
 
         # Mindestanzahl Bars berechnen
         min_bars = max(self.lookback_high, self.lookback_low, self.atr_lookback) + 5
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mind. {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {min_bars} Bars, habe nur {len(data)}")
 
         close = data[self.price_col].astype(float)
 
         # Breakout-Levels berechnen
         upper_level, lower_level = self._compute_breakout_levels(data)
-        
+
         # ATR für Filter berechnen (falls aktiviert)
         atr = None
         atr_baseline = None
@@ -405,8 +385,7 @@ class BreakoutStrategy(BaseStrategy):
             if self.atr_multiplier is not None:
                 # ATR-Baseline als Rolling-Mean der ATR
                 atr_baseline = atr.rolling(
-                    window=self.atr_lookback * 2,
-                    min_periods=self.atr_lookback
+                    window=self.atr_lookback * 2, min_periods=self.atr_lookback
                 ).mean()
 
         # Für Stop-Loss/Take-Profit brauchen wir low/high
@@ -596,21 +575,21 @@ def get_strategy_description(params: Dict) -> str:
     tp = params.get("take_profit_pct")
     ts = params.get("trailing_stop_pct")
 
-    sl_str = f"{sl*100:.1f}%" if sl else "Deaktiviert"
-    tp_str = f"{tp*100:.1f}%" if tp else "Deaktiviert"
-    ts_str = f"{ts*100:.1f}%" if ts else "Deaktiviert"
+    sl_str = f"{sl * 100:.1f}%" if sl else "Deaktiviert"
+    tp_str = f"{tp * 100:.1f}%" if tp else "Deaktiviert"
+    ts_str = f"{ts * 100:.1f}%" if ts else "Deaktiviert"
 
     return f"""
 Breakout/Momentum Strategy (Phase 40)
 ======================================
-Lookback Breakout: {params.get('lookback_breakout', 20)} Bars
+Lookback Breakout: {params.get("lookback_breakout", 20)} Bars
 Stop-Loss:         {sl_str}
 Take-Profit:       {tp_str}
 Trailing-Stop:     {ts_str}
-Side:              {params.get('side', 'both')}
+Side:              {params.get("side", "both")}
 
 Konzept:
-- Entry Long:  Close > {params.get('lookback_breakout', 20)}-Bar High
-- Entry Short: Close < {params.get('lookback_breakout', 20)}-Bar Low
+- Entry Long:  Close > {params.get("lookback_breakout", 20)}-Bar High
+- Entry Short: Close < {params.get("lookback_breakout", 20)}-Bar Low
 - Exit:        Stop-Loss, Take-Profit oder Trailing-Stop
 """

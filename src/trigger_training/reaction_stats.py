@@ -11,6 +11,7 @@ im Offline Trigger Training. Es kategorisiert Reaktionen in:
 
 Alle Metriken sind rein offline / paper / drill – keine Live-Order-Execution.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -23,17 +24,18 @@ import numpy as np
 
 class TriggerReactionCategory(str, Enum):
     """Kategorien der Trigger-Reaktionsgeschwindigkeit."""
-    IMPULSIVE = "IMPULSIVE"     # Sehr schnelle Reaktion (< 200-300 ms)
-    ON_TIME = "ON_TIME"         # Normale Reaktionszeit (0.3-3 s)
-    LATE = "LATE"               # Zu späte Reaktion (> 3 s)
-    MISSED = "MISSED"           # Keine Aktion erfolgt
-    SKIPPED = "SKIPPED"         # Bewusst übersprungen
+
+    IMPULSIVE = "IMPULSIVE"  # Sehr schnelle Reaktion (< 200-300 ms)
+    ON_TIME = "ON_TIME"  # Normale Reaktionszeit (0.3-3 s)
+    LATE = "LATE"  # Zu späte Reaktion (> 3 s)
+    MISSED = "MISSED"  # Keine Aktion erfolgt
+    SKIPPED = "SKIPPED"  # Bewusst übersprungen
 
 
 @dataclass
 class TriggerReactionConfig:
     """Konfiguration für Trigger-Reaktions-Analyse.
-    
+
     Attributes
     ----------
     impulsive_threshold_ms : int
@@ -43,6 +45,7 @@ class TriggerReactionConfig:
     consider_skipped : bool
         Ob SKIPPED-Actions als eigene Kategorie behandelt werden (Default: True)
     """
+
     impulsive_threshold_ms: int = 300
     late_threshold_ms: int = 3000
     consider_skipped: bool = True
@@ -51,7 +54,7 @@ class TriggerReactionConfig:
 @dataclass
 class TriggerReactionRecord:
     """Ein einzelner Trigger-Reaktions-Datensatz.
-    
+
     Attributes
     ----------
     signal_id : int
@@ -73,6 +76,7 @@ class TriggerReactionRecord:
     symbol : Optional[str]
         Trading-Symbol
     """
+
     signal_id: int
     session_id: str
     signal_timestamp: pd.Timestamp
@@ -87,7 +91,7 @@ class TriggerReactionRecord:
 @dataclass
 class TriggerReactionSummary:
     """Aggregierte Trigger-Reaktions-Statistiken.
-    
+
     Attributes
     ----------
     count_total : int
@@ -121,6 +125,7 @@ class TriggerReactionSummary:
     max_reaction_ms : Optional[float]
         Maximale Reaktionszeit
     """
+
     count_total: int = 0
     count_impulsive: int = 0
     count_on_time: int = 0
@@ -145,10 +150,10 @@ def compute_reaction_records(
     session_id: str = "default",
 ) -> List[TriggerReactionRecord]:
     """Berechnet Trigger-Reaktions-Records aus Signals und Actions DataFrames.
-    
+
     Diese Funktion matcht jedes Signal mit der ersten relevanten Aktion und
     kategorisiert die Reaktionsgeschwindigkeit.
-    
+
     Parameters
     ----------
     signals_df : pd.DataFrame
@@ -166,18 +171,18 @@ def compute_reaction_records(
         Konfiguration (Default: TriggerReactionConfig())
     session_id : str
         Session-Identifikator (Default: "default")
-    
+
     Returns
     -------
     List[TriggerReactionRecord]
         Liste von Reaktions-Records
-    
+
     Notes
     -----
     - "Relevante" Aktionen = EXECUTED, SKIPPED (keine reinen Info-Events)
     - Zeitdifferenzen werden in Millisekunden berechnet
     - SKIPPED-Actions werden separat kategorisiert (falls config.consider_skipped=True)
-    
+
     Examples
     --------
     >>> signals_df = pd.DataFrame({
@@ -203,90 +208,79 @@ def compute_reaction_records(
     """
     if config is None:
         config = TriggerReactionConfig()
-    
+
     if signals_df.empty:
         return []
-    
+
     # Kopie erstellen, um Original nicht zu verändern
     signals = signals_df.copy()
     signals["timestamp"] = pd.to_datetime(signals["timestamp"])
-    
+
     # signal_id sicherstellen
     if "signal_id" not in signals.columns:
         signals = signals.reset_index().rename(columns={"index": "signal_id"})
-    
+
     # Actions vorbereiten
     if actions_df.empty:
         actions = pd.DataFrame(columns=["signal_id", "timestamp", "user_action"])
     else:
         actions = actions_df.copy()
         actions["timestamp"] = pd.to_datetime(actions["timestamp"])
-        
+
         # Erste relevante Aktion pro Signal
         # Sortiere nach timestamp und nimm erste Aktion
-        actions = (
-            actions.sort_values("timestamp")
-            .groupby("signal_id", as_index=False)
-            .first()
-        )
-    
+        actions = actions.sort_values("timestamp").groupby("signal_id", as_index=False).first()
+
     # Merge Signals + Actions
-    merged = signals.merge(
-        actions, 
-        on="signal_id", 
-        how="left", 
-        suffixes=("_signal", "_action")
-    )
-    
+    merged = signals.merge(actions, on="signal_id", how="left", suffixes=("_signal", "_action"))
+
     records: List[TriggerReactionRecord] = []
-    
+
     for _, row in merged.iterrows():
         signal_id = int(row["signal_id"])
-        
+
         # Timestamps extrahieren
-        ts_signal = pd.to_datetime(
-            row.get("timestamp_signal", row.get("timestamp"))
-        )
-        
+        ts_signal = pd.to_datetime(row.get("timestamp_signal", row.get("timestamp")))
+
         ts_action_val = row.get("timestamp_action")
         if pd.isna(ts_action_val):
             ts_action = None
         else:
             ts_action = pd.to_datetime(ts_action_val)
-        
+
         # User-Action extrahieren
         user_action_val = row.get("user_action")
         if pd.isna(user_action_val):
             user_action = None
         else:
             user_action = str(user_action_val)
-        
+
         # Reaktionszeit berechnen
         reaction_ms: Optional[float] = None
         if ts_action is not None:
             reaction_td = ts_action - ts_signal
             reaction_ms = reaction_td.total_seconds() * 1000.0
-        
+
         # Kategorie bestimmen
         category = _determine_category(
             user_action=user_action,
             reaction_ms=reaction_ms,
             config=config,
         )
-        
+
         # Optional: Symbol, Signal-Typ
         signal_type = row.get("recommended_action")
         if pd.isna(signal_type):
             signal_type = None
         else:
             signal_type = str(signal_type)
-        
+
         symbol = row.get("symbol")
         if pd.isna(symbol):
             symbol = None
         else:
             symbol = str(symbol)
-        
+
         records.append(
             TriggerReactionRecord(
                 signal_id=signal_id,
@@ -300,7 +294,7 @@ def compute_reaction_records(
                 symbol=symbol,
             )
         )
-    
+
     return records
 
 
@@ -310,7 +304,7 @@ def _determine_category(
     config: TriggerReactionConfig,
 ) -> TriggerReactionCategory:
     """Bestimmt Reaktions-Kategorie basierend auf Aktion und Reaktionszeit.
-    
+
     Parameters
     ----------
     user_action : Optional[str]
@@ -319,7 +313,7 @@ def _determine_category(
         Reaktionszeit in Millisekunden
     config : TriggerReactionConfig
         Konfiguration mit Schwellenwerten
-    
+
     Returns
     -------
     TriggerReactionCategory
@@ -328,11 +322,11 @@ def _determine_category(
     # Keine Aktion -> MISSED
     if user_action is None or reaction_ms is None:
         return TriggerReactionCategory.MISSED
-    
+
     # SKIPPED-Action
     if config.consider_skipped and "SKIPPED" in user_action.upper():
         return TriggerReactionCategory.SKIPPED
-    
+
     # Geschwindigkeits-basierte Kategorisierung
     if reaction_ms < config.impulsive_threshold_ms:
         return TriggerReactionCategory.IMPULSIVE
@@ -342,21 +336,19 @@ def _determine_category(
         return TriggerReactionCategory.ON_TIME
 
 
-def summarize_reaction_records(
-    records: List[TriggerReactionRecord]
-) -> TriggerReactionSummary:
+def summarize_reaction_records(records: List[TriggerReactionRecord]) -> TriggerReactionSummary:
     """Aggregiert Reaktions-Records zu einer Summary-Statistik.
-    
+
     Parameters
     ----------
     records : List[TriggerReactionRecord]
         Liste von Reaktions-Records
-    
+
     Returns
     -------
     TriggerReactionSummary
         Aggregierte Statistiken
-    
+
     Examples
     --------
     >>> records = [...]  # Liste von TriggerReactionRecord
@@ -368,17 +360,17 @@ def summarize_reaction_records(
     """
     if not records:
         return TriggerReactionSummary()
-    
+
     # Kategorie-Zählung
     count_impulsive = sum(1 for r in records if r.category == TriggerReactionCategory.IMPULSIVE)
     count_on_time = sum(1 for r in records if r.category == TriggerReactionCategory.ON_TIME)
     count_late = sum(1 for r in records if r.category == TriggerReactionCategory.LATE)
     count_missed = sum(1 for r in records if r.category == TriggerReactionCategory.MISSED)
     count_skipped = sum(1 for r in records if r.category == TriggerReactionCategory.SKIPPED)
-    
+
     # Reaktionszeiten (nur nicht-None-Werte)
     reaction_times = [r.reaction_ms for r in records if r.reaction_ms is not None]
-    
+
     # Statistiken berechnen
     mean_ms = None
     median_ms = None
@@ -389,7 +381,7 @@ def summarize_reaction_records(
     p99_ms = None
     min_ms = None
     max_ms = None
-    
+
     if reaction_times:
         arr = np.array(reaction_times)
         mean_ms = float(np.mean(arr))
@@ -401,7 +393,7 @@ def summarize_reaction_records(
         p99_ms = float(np.percentile(arr, 99))
         min_ms = float(np.min(arr))
         max_ms = float(np.max(arr))
-    
+
     return TriggerReactionSummary(
         count_total=len(records),
         count_impulsive=count_impulsive,
@@ -421,21 +413,19 @@ def summarize_reaction_records(
     )
 
 
-def reaction_records_to_df(
-    records: List[TriggerReactionRecord]
-) -> pd.DataFrame:
+def reaction_records_to_df(records: List[TriggerReactionRecord]) -> pd.DataFrame:
     """Konvertiert Reaktions-Records in ein pandas DataFrame.
-    
+
     Parameters
     ----------
     records : List[TriggerReactionRecord]
         Liste von Reaktions-Records
-    
+
     Returns
     -------
     pd.DataFrame
         DataFrame mit allen Record-Feldern
-    
+
     Examples
     --------
     >>> df = reaction_records_to_df(records)
@@ -443,39 +433,47 @@ def reaction_records_to_df(
     Index(['signal_id', 'session_id', 'signal_timestamp', ...])
     """
     if not records:
-        return pd.DataFrame(columns=[
-            "signal_id", "session_id", "signal_timestamp",
-            "first_action_timestamp", "reaction_ms", "category",
-            "signal_type", "user_action", "symbol"
-        ])
-    
+        return pd.DataFrame(
+            columns=[
+                "signal_id",
+                "session_id",
+                "signal_timestamp",
+                "first_action_timestamp",
+                "reaction_ms",
+                "category",
+                "signal_type",
+                "user_action",
+                "symbol",
+            ]
+        )
+
     data = []
     for rec in records:
-        data.append({
-            "signal_id": rec.signal_id,
-            "session_id": rec.session_id,
-            "signal_timestamp": rec.signal_timestamp,
-            "first_action_timestamp": rec.first_action_timestamp,
-            "reaction_ms": rec.reaction_ms,
-            "category": rec.category.value,
-            "signal_type": rec.signal_type,
-            "user_action": rec.user_action,
-            "symbol": rec.symbol,
-        })
-    
+        data.append(
+            {
+                "signal_id": rec.signal_id,
+                "session_id": rec.session_id,
+                "signal_timestamp": rec.signal_timestamp,
+                "first_action_timestamp": rec.first_action_timestamp,
+                "reaction_ms": rec.reaction_ms,
+                "category": rec.category.value,
+                "signal_type": rec.signal_type,
+                "user_action": rec.user_action,
+                "symbol": rec.symbol,
+            }
+        )
+
     return pd.DataFrame(data)
 
 
-def reaction_summary_to_dict(
-    summary: TriggerReactionSummary
-) -> Dict[str, Any]:
+def reaction_summary_to_dict(summary: TriggerReactionSummary) -> Dict[str, Any]:
     """Konvertiert TriggerReactionSummary in ein Dictionary (für JSON/HTML).
-    
+
     Parameters
     ----------
     summary : TriggerReactionSummary
         Summary-Objekt
-    
+
     Returns
     -------
     Dict[str, Any]

@@ -7,6 +7,7 @@ Testet das Drill-System für Sicherheits-Validierung im Dry-Run-Modus.
 
 Phase 73: Read-Only Simulation, keine echten Orders.
 """
+
 from __future__ import annotations
 
 import pytest
@@ -169,7 +170,9 @@ class TestLiveDrillRunner:
         # Alle Drills sollten bestanden werden (Standard-Szenarien sind korrekt definiert)
         # Falls nicht, ist das ein Hinweis auf ein Problem in den Szenarien
         passed_count = sum(1 for r in results if r.passed)
-        assert passed_count == len(scenarios), f"Erwartet: alle {len(scenarios)} Drills bestanden, tatsächlich: {passed_count}"
+        assert passed_count == len(scenarios), (
+            f"Erwartet: alle {len(scenarios)} Drills bestanden, tatsächlich: {passed_count}"
+        )
 
     def test_run_scenario_with_violation(self):
         """Test: Runner erkennt Violations korrekt."""
@@ -288,8 +291,3 @@ class TestLiveDrillSafety:
             # Wenn nicht erlaubt, sollte Reason erklären warum
             if not result.is_live_execution_allowed:
                 assert len(result.reason) > 10  # Mindestens eine Erklärung
-
-
-
-
-

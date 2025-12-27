@@ -119,9 +119,7 @@ class TestEvaluatePolicyCriticBeforeApply:
         # This would normally cause an error in a real scenario
         # For now, just verify the parameter is respected
         diff = "+++ b/test.py\n+# test"
-        decision = evaluate_policy_critic_before_apply(
-            diff, ["test.py"], fail_closed=True
-        )
+        decision = evaluate_policy_critic_before_apply(diff, ["test.py"], fail_closed=True)
 
         assert decision is not None
 

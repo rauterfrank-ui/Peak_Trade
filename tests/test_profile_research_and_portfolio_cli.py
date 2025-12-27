@@ -1,6 +1,7 @@
 """
 Tests für scripts/profile_research_and_portfolio.py (Phase 61)
 """
+
 from __future__ import annotations
 
 import subprocess
@@ -33,9 +34,18 @@ def fake_subprocess_run(
     Prüft, dass der Command sinnvoll aussieht (z.B. enthält "scripts/research_cli.py").
     """
     # Prüfe, dass es ein Python-Command ist
-    assert command[0] == sys.executable or command[0].endswith("python") or command[0].endswith("python3")
+    assert (
+        command[0] == sys.executable
+        or command[0].endswith("python")
+        or command[0].endswith("python3")
+    )
     # Prüfe, dass ein Script-Pfad enthalten ist
-    assert any("scripts/" in str(arg) or "research_cli.py" in str(arg) or "run_portfolio_robustness.py" in str(arg) for arg in command)
+    assert any(
+        "scripts/" in str(arg)
+        or "research_cli.py" in str(arg)
+        or "run_portfolio_robustness.py" in str(arg)
+        for arg in command
+    )
 
     return DummyCompletedProcess(returncode=0)
 
@@ -65,7 +75,10 @@ def test_profile_script_runs_scenarios(mock_run: MagicMock):
     from scripts.profile_research_and_portfolio import main
 
     # Simuliere --scenario Argument
-    with patch("sys.argv", ["profile_research_and_portfolio.py", "--scenario", "portfolio_multi_style_moderate"]):
+    with patch(
+        "sys.argv",
+        ["profile_research_and_portfolio.py", "--scenario", "portfolio_multi_style_moderate"],
+    ):
         result = main()
 
     # Prüfe, dass subprocess.run aufgerufen wurde
@@ -89,9 +102,14 @@ def test_profile_script_handles_failure(mock_run: MagicMock):
     from scripts.profile_research_and_portfolio import main
 
     # Simuliere --scenario Argument
-    with patch("sys.argv", ["profile_research_and_portfolio.py", "--scenario", "portfolio_multi_style_moderate"]):
+    with patch(
+        "sys.argv",
+        ["profile_research_and_portfolio.py", "--scenario", "portfolio_multi_style_moderate"],
+    ):
         # subprocess.run sollte check=True haben, daher wird CalledProcessError geworfen
-        mock_run.side_effect = subprocess.CalledProcessError(1, ["python", "scripts/research_cli.py"])
+        mock_run.side_effect = subprocess.CalledProcessError(
+            1, ["python", "scripts/research_cli.py"]
+        )
 
         result = main()
 
@@ -102,7 +120,12 @@ def test_profile_script_handles_failure(mock_run: MagicMock):
 def test_profile_script_invalid_scenario():
     """Test: Script behandelt ungültige Szenario-Namen korrekt."""
     result = subprocess.run(
-        [sys.executable, "scripts/profile_research_and_portfolio.py", "--scenario", "invalid_scenario"],
+        [
+            sys.executable,
+            "scripts/profile_research_and_portfolio.py",
+            "--scenario",
+            "invalid_scenario",
+        ],
         capture_output=True,
         text=True,
         cwd=project_root,
@@ -134,8 +157,3 @@ def test_profile_script_output_format(mock_run: MagicMock, capsys):
     output_md = format_table(results, markdown=True)
     assert "| Scenario |" in output_md
     assert "scenario_1" in output_md
-
-
-
-
-

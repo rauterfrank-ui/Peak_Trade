@@ -30,7 +30,7 @@ Phase 71 modelliert den **Live-Execution-Path als Design**, ohne echte Live-Orde
 @dataclass
 class EnvironmentConfig:
     # ... bestehende Felder ...
-    
+
     # Phase 71: Live-Execution-Design
     live_mode_armed: bool = False              # Zweistufiges Gating: Gate 2
     live_dry_run_mode: bool = True             # Phase 71: Immer True
@@ -81,7 +81,7 @@ def create_order_executor(
 ) -> OrderExecutor:
     """
     Erstellt den passenden OrderExecutor basierend auf EnvironmentConfig.
-    
+
     - PAPER/Shadow → PaperOrderExecutor
     - TESTNET → TestnetOrderExecutor (Dry-Run)
     - LIVE → LiveOrderExecutor (Dry-Run in Phase 71)
@@ -102,7 +102,7 @@ def create_order_executor(
 @dataclass
 class LiveRiskConfig:
     # ... bestehende Felder ...
-    
+
     # Phase 71: Live-spezifische Limits (Design)
     max_live_notional_per_order: Optional[float] = None
     max_live_notional_total: Optional[float] = None
@@ -308,4 +308,3 @@ Das System **weiß**, wie ein Live-Execution-Path aussehen würde, aber er ist t
 ---
 
 **Built with ❤️ and safety-first architecture**
-

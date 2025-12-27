@@ -1,6 +1,7 @@
 """
 Peak_Trade Strategien
 """
+
 from .base import BaseStrategy
 from .registry import register_strategy, get_strategy
 

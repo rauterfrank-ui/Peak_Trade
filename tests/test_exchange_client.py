@@ -9,6 +9,7 @@ Verwendet Mocking um API-Responses zu simulieren.
 WICHTIG: Diese Tests machen KEINE echten API-Calls!
          Alle Netzwerk-Operationen werden gemockt.
 """
+
 from __future__ import annotations
 
 import base64
@@ -388,7 +389,7 @@ class TestMockedAPICalls:
                     "c": ["50000.00", "0.1"],  # last
                     "b": ["49990.00", "0.5"],  # bid
                     "a": ["50010.00", "0.3"],  # ask
-                    "v": ["100.0", "500.0"],   # volume
+                    "v": ["100.0", "500.0"],  # volume
                 },
             },
         }

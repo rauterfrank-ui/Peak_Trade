@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>Stage1 Ops Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-950 text-slate-100">
+    <div class="min-h-screen">
+      <header class="border-b border-slate-800 bg-slate-900/70 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <a href="/" class="text-xl font-semibold tracking-tight hover:text-slate-200 transition-colors">
+              Peak_Trade Dashboard
+            </a>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+              Stage1 Ops
+            </span>
+          </div>
+          <nav class="flex items-center gap-4">
+            <a href="/" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Dashboard
+            </a>
+            <a href="/ops/stage1" class="text-xs text-emerald-400">
+              Stage1
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="pb-12">
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold mb-2">🔍 Stage1 Ops Dashboard</h1>
+    <p class="text-sm text-slate-400">
+      Real-time monitoring für Stage1 (DRY-RUN) Alerts & Events
+      <span class="ml-2 text-xs text-slate-500">Reports: {{ report_root }}</span>
+    </p>
+  </div>
+
+  {% if not has_data %}
+  <!-- Empty State -->
+  <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-8 text-center">
+    <div class="text-4xl mb-3">📭</div>
+    <h2 class="text-lg font-semibold mb-2">Keine Stage1 Reports gefunden</h2>
+    <p class="text-sm text-slate-400 mb-4">
+      Führe <code class="px-2 py-1 bg-slate-800 rounded text-xs">scripts/obs/stage1_daily_snapshot.py</code> aus,
+      um die ersten Reports zu generieren.
+    </p>
+    <p class="text-xs text-slate-500">Report Root: {{ report_root }}</p>
+  </div>
+  {% else %}
+
+  <!-- Status Badge -->
+  {% if trend and trend.rollups %}
+  <div class="mb-6">
+    <div class="inline-flex items-center gap-3 px-4 py-3 rounded-lg border
+                {% if trend.rollups.go_no_go == 'GO' %}
+                  bg-emerald-500/10 border-emerald-500/30 text-emerald-300
+                {% elif trend.rollups.go_no_go == 'HOLD' %}
+                  bg-amber-500/10 border-amber-500/30 text-amber-300
+                {% else %}
+                  bg-red-500/10 border-red-500/30 text-red-300
+                {% endif %}">
+      <div class="text-3xl">
+        {% if trend.rollups.go_no_go == 'GO' %}✅{% elif trend.rollups.go_no_go == 'HOLD' %}⏸️{% else %}🛑{% endif %}
+      </div>
+      <div>
+        <div class="text-lg font-semibold">{{ trend.rollups.go_no_go }}</div>
+        <div class="text-xs opacity-75">
+          {% for reason in trend.rollups.reasons %}
+            {{ reason }}{% if not loop.last %} · {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Latest Measurement -->
+  {% if latest %}
+  <div class="mb-6 bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+    <h2 class="text-sm font-semibold mb-3 text-slate-300">📊 Neueste Messung</h2>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div>
+        <div class="text-xs text-slate-400 mb-1">Datum</div>
+        <div class="text-lg font-mono">{{ latest.date }}</div>
+      </div>
+      <div>
+        <div class="text-xs text-slate-400 mb-1">New Alerts (24h)</div>
+        <div class="text-lg font-mono {% if latest.metrics.new_alerts > 0 %}text-amber-400{% else %}text-emerald-400{% endif %}">
+          {{ latest.metrics.new_alerts }}
+        </div>
+      </div>
+      <div>
+        <div class="text-xs text-slate-400 mb-1">Critical Alerts</div>
+        <div class="text-lg font-mono {% if latest.metrics.critical_alerts > 0 %}text-red-400{% else %}text-slate-500{% endif %}">
+          {{ latest.metrics.critical_alerts }}
+        </div>
+      </div>
+      <div>
+        <div class="text-xs text-slate-400 mb-1">Parse Errors</div>
+        <div class="text-lg font-mono {% if latest.metrics.parse_errors > 0 %}text-amber-400{% else %}text-slate-500{% endif %}">
+          {{ latest.metrics.parse_errors }}
+        </div>
+      </div>
+      <div>
+        <div class="text-xs text-slate-400 mb-1">Operator Actions</div>
+        <div class="text-lg font-mono text-blue-400">
+          {{ latest.metrics.operator_actions }}
+        </div>
+      </div>
+    </div>
+    {% if latest.notes %}
+    <div class="mt-3 pt-3 border-t border-slate-800">
+      <div class="text-xs text-slate-500">
+        Notes: {{ latest.notes | join(', ') }}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Trend Table -->
+  {% if trend and trend.series %}
+  <div class="bg-slate-900/50 border border-slate-800 rounded-lg overflow-hidden">
+    <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+      <h2 class="text-sm font-semibold text-slate-300">📈 Trend ({{ trend.range.days }} Tage)</h2>
+      <div class="text-xs text-slate-500">
+        {{ trend.range.start }} → {{ trend.range.end }}
+      </div>
+    </div>
+
+    <!-- Rollup Stats -->
+    {% if trend.rollups %}
+    <div class="px-4 py-3 bg-slate-900/80 border-b border-slate-800">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
+        <div>
+          <span class="text-slate-400">Total New Alerts:</span>
+          <span class="ml-1 font-mono font-semibold">{{ trend.rollups.new_alerts_total }}</span>
+        </div>
+        <div>
+          <span class="text-slate-400">Avg/Day:</span>
+          <span class="ml-1 font-mono font-semibold">{{ "%.1f"|format(trend.rollups.new_alerts_avg) }}</span>
+        </div>
+        <div>
+          <span class="text-slate-400">Critical Days:</span>
+          <span class="ml-1 font-mono font-semibold {% if trend.rollups.critical_days > 0 %}text-red-400{% endif %}">
+            {{ trend.rollups.critical_days }}
+          </span>
+        </div>
+        <div>
+          <span class="text-slate-400">Parse Error Days:</span>
+          <span class="ml-1 font-mono font-semibold {% if trend.rollups.parse_error_days > 0 %}text-amber-400{% endif %}">
+            {{ trend.rollups.parse_error_days }}
+          </span>
+        </div>
+        <div>
+          <span class="text-slate-400">Operator Action Days:</span>
+          <span class="ml-1 font-mono font-semibold text-blue-400">{{ trend.rollups.operator_action_days }}</span>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Series Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-900/80 text-xs uppercase text-slate-400 border-b border-slate-800">
+          <tr>
+            <th class="px-4 py-3 text-left">Datum</th>
+            <th class="px-4 py-3 text-right">New Alerts</th>
+            <th class="px-4 py-3 text-right">Critical</th>
+            <th class="px-4 py-3 text-right">Parse Errors</th>
+            <th class="px-4 py-3 text-right">Operator Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/50">
+          {% for point in trend.series | reverse %}
+          <tr class="hover:bg-slate-800/30 transition-colors">
+            <td class="px-4 py-2 font-mono text-slate-300">{{ point.date }}</td>
+            <td class="px-4 py-2 text-right font-mono {% if point.new_alerts > 0 %}text-amber-400{% else %}text-slate-500{% endif %}">
+              {{ point.new_alerts }}
+            </td>
+            <td class="px-4 py-2 text-right font-mono {% if point.critical_alerts > 0 %}text-red-400{% else %}text-slate-500{% endif %}">
+              {{ point.critical_alerts }}
+            </td>
+            <td class="px-4 py-2 text-right font-mono {% if point.parse_errors > 0 %}text-amber-400{% else %}text-slate-500{% endif %}">
+              {{ point.parse_errors }}
+            </td>
+            <td class="px-4 py-2 text-right font-mono text-blue-400">
+              {{ point.operator_actions }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  {% endif %}
+
+  <!-- Auto-Refresh Info -->
+  <div class="mt-6 text-center">
+    <p class="text-xs text-slate-500">
+      🔄 Auto-Refresh aktiv (30s) ·
+      <a href="/ops/stage1" class="text-blue-400 hover:text-blue-300">Neu laden</a>
+    </p>
+  </div>
+</div>
+
+<!-- Auto-Refresh Script -->
+<script>
+  // Refresh data every 30 seconds
+  let refreshTimer;
+
+  async function refreshData() {
+    try {
+      // Fetch latest and trend
+      const [latestRes, trendRes] = await Promise.all([
+        fetch('/ops/stage1/latest'),
+        fetch('/ops/stage1/trend?days={{ days }}')
+      ]);
+
+      if (latestRes.ok && trendRes.ok) {
+        const latest = await latestRes.json();
+        const trend = await trendRes.json();
+
+        // Simple reload if data changed (date changed)
+        const currentDate = document.querySelector('[data-latest-date]')?.textContent;
+        if (currentDate && latest.date !== currentDate) {
+          console.log('Stage1 data updated, reloading...');
+          window.location.reload();
+        }
+      }
+    } catch (err) {
+      console.warn('Stage1 refresh failed:', err);
+    }
+  }
+
+  // Start auto-refresh
+  refreshTimer = setInterval(refreshData, 30000);
+
+  // Stop on page hide
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      clearInterval(refreshTimer);
+    } else {
+      refreshTimer = setInterval(refreshData, 30000);
+    }
+  });
+</script>
+      </main>
+    </div>
+  </body>
+</html>

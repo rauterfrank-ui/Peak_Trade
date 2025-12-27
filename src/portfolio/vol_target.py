@@ -89,13 +89,10 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
         self.annualization_factor = np.sqrt(252)
 
         logger.info(
-            f"{self.name}: vol_lookback={self.vol_lookback}, "
-            f"vol_target={self.vol_target:.1%}"
+            f"{self.name}: vol_lookback={self.vol_lookback}, vol_target={self.vol_target:.1%}"
         )
 
-    def _compute_raw_weights(
-        self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    def _compute_raw_weights(self, context: PortfolioContext) -> Dict[str, float]:
         """
         Berechnet inverse-volatilitäts-gewichtete Gewichte.
 
@@ -115,10 +112,7 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
         volatilities = self._compute_volatilities(context, universe)
 
         if not volatilities:
-            logger.warning(
-                f"{self.name}: Keine Volatilitäten verfügbar, "
-                "fallback auf Equal-Weight"
-            )
+            logger.warning(f"{self.name}: Keine Volatilitäten verfügbar, fallback auf Equal-Weight")
             n = len(universe)
             return {symbol: 1.0 / n for symbol in universe}
 
@@ -155,9 +149,7 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
 
             for symbol in universe:
                 if symbol not in returns_df.columns:
-                    logger.debug(
-                        f"{self.name}: {symbol} nicht in returns_history"
-                    )
+                    logger.debug(f"{self.name}: {symbol} nicht in returns_history")
                     continue
 
                 # Rolling Volatility berechnen
@@ -171,7 +163,7 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
                     continue
 
                 # Letzten vol_lookback Returns nehmen
-                recent_returns = symbol_returns.iloc[-self.vol_lookback:]
+                recent_returns = symbol_returns.iloc[-self.vol_lookback :]
                 daily_vol = recent_returns.std()
 
                 # Annualisieren
@@ -181,9 +173,7 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
                     volatilities[symbol] = annual_vol
 
             if volatilities:
-                logger.debug(
-                    f"{self.name}: Berechnete Volatilitäten: {volatilities}"
-                )
+                logger.debug(f"{self.name}: Berechnete Volatilitäten: {volatilities}")
                 return volatilities
 
         # Option 2: Volatilitäten aus Context
@@ -193,16 +183,12 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
                     volatilities[symbol] = context.volatilities[symbol]
 
             if volatilities:
-                logger.debug(
-                    f"{self.name}: Volatilitäten aus Context: {volatilities}"
-                )
+                logger.debug(f"{self.name}: Volatilitäten aus Context: {volatilities}")
                 return volatilities
 
         return {}
 
-    def _inverse_vol_weights(
-        self, volatilities: Dict[str, float]
-    ) -> Dict[str, float]:
+    def _inverse_vol_weights(self, volatilities: Dict[str, float]) -> Dict[str, float]:
         """
         Berechnet Inverse-Volatilitäts-Gewichte.
 
@@ -230,17 +216,12 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
 
         # Normalisieren (Summe = 1)
         total_inv_vol = sum(inv_vols.values())
-        weights = {
-            symbol: inv_vol / total_inv_vol
-            for symbol, inv_vol in inv_vols.items()
-        }
+        weights = {symbol: inv_vol / total_inv_vol for symbol, inv_vol in inv_vols.items()}
 
         # Optional: Skalierung auf Ziel-Volatilität
         # (Für jetzt nur Inverse-Vol-Weighting ohne Leverage-Adjustment)
 
-        logger.debug(
-            f"{self.name}: Inverse-Vol-Gewichte: {weights}"
-        )
+        logger.debug(f"{self.name}: Inverse-Vol-Gewichte: {weights}")
 
         return weights
 
@@ -292,7 +273,6 @@ class VolTargetPortfolioStrategy(BasePortfolioStrategy):
         else:
             # Vereinfachte Berechnung (Annahme: unkorreliert)
             portfolio_var = sum(
-                weights.get(s, 0) ** 2 * volatilities.get(s, 0) ** 2
-                for s in symbols
+                weights.get(s, 0) ** 2 * volatilities.get(s, 0) ** 2 for s in symbols
             )
             return np.sqrt(portfolio_var)

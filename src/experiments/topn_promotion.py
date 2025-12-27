@@ -28,6 +28,7 @@ Usage:
     df_top = select_top_n(df, config)
     output_path = export_top_n(df_top, config)
 """
+
 from __future__ import annotations
 
 import logging
@@ -114,7 +115,9 @@ def find_sweep_results(sweep_name: str, experiments_dir: Path) -> Optional[Path]
     if len(parts) >= 2:
         strategy_name = "_".join(parts[:-1])
         pattern = f"*{strategy_name}*.csv"
-        matches = sorted(experiments_dir.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
+        matches = sorted(
+            experiments_dir.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True
+        )
         if matches:
             return matches[0]
 
@@ -163,9 +166,7 @@ def load_sweep_results(config: TopNPromotionConfig) -> pd.DataFrame:
 # =============================================================================
 
 
-def select_top_n(
-    df: pd.DataFrame, config: TopNPromotionConfig
-) -> Tuple[pd.DataFrame, str]:
+def select_top_n(df: pd.DataFrame, config: TopNPromotionConfig) -> Tuple[pd.DataFrame, str]:
     """
     Wählt Top-N Konfigurationen nach Metrik aus.
 
@@ -198,9 +199,7 @@ def select_top_n(
     df_valid = df[df[metric_used].notna()].copy()
 
     if len(df_valid) == 0:
-        raise ValueError(
-            f"Keine gültigen Runs mit Metrik '{metric_used}' gefunden (alle NaN)"
-        )
+        raise ValueError(f"Keine gültigen Runs mit Metrik '{metric_used}' gefunden (alle NaN)")
 
     logger.info(f"Verwende Metrik: {metric_used} ({len(df_valid)} gültige Runs)")
 
@@ -219,9 +218,7 @@ def select_top_n(
 # =============================================================================
 
 
-def export_top_n(
-    df_top: pd.DataFrame, config: TopNPromotionConfig
-) -> Path:
+def export_top_n(df_top: pd.DataFrame, config: TopNPromotionConfig) -> Path:
     """
     Exportiert Top-N Konfigurationen in TOML-Format.
 
@@ -415,7 +412,9 @@ def _load_configs_from_toml(toml_file: Path, n: int) -> List[Dict[str, Any]]:
             "config_id": config_id,
             "strategy_name": strategy_name,
             "params": candidate.get("params", {}),
-            "metrics": {k: v for k, v in candidate.items() if k not in ["rank", "experiment_id", "params"]},
+            "metrics": {
+                k: v for k, v in candidate.items() if k not in ["rank", "experiment_id", "params"]
+            },
             "rank": candidate.get("rank", i),
         }
         configs.append(config)
@@ -454,6 +453,7 @@ def _parse_string_value(val: Any) -> Any:
     if val_stripped.startswith("[") and val_stripped.endswith("]"):
         try:
             import ast
+
             return ast.literal_eval(val_stripped)
         except (ValueError, SyntaxError):
             return val
@@ -462,6 +462,7 @@ def _parse_string_value(val: Any) -> Any:
     if val_stripped.startswith("{") and val_stripped.endswith("}"):
         try:
             import ast
+
             return ast.literal_eval(val_stripped)
         except (ValueError, SyntaxError):
             return val
@@ -470,6 +471,7 @@ def _parse_string_value(val: Any) -> Any:
     if val_stripped.startswith("(") and val_stripped.endswith(")"):
         try:
             import ast
+
             return ast.literal_eval(val_stripped)
         except (ValueError, SyntaxError):
             return val
@@ -552,7 +554,17 @@ def _extract_strategy_name(sweep_name: str) -> str:
     parts = sweep_name.split("_")
     if len(parts) >= 2:
         # Versuche, Suffix zu erkennen
-        known_suffixes = ["basic", "medium", "large", "small", "full", "conservative", "aggressive", "fine", "coarse"]
+        known_suffixes = [
+            "basic",
+            "medium",
+            "large",
+            "small",
+            "full",
+            "conservative",
+            "aggressive",
+            "fine",
+            "coarse",
+        ]
         if parts[-1] in known_suffixes:
             return "_".join(parts[:-1])
     return sweep_name
@@ -561,6 +573,7 @@ def _extract_strategy_name(sweep_name: str) -> str:
 # =============================================================================
 # POLICY CRITIC INTEGRATION EXAMPLE (Phase G2)
 # =============================================================================
+
 
 def export_top_n_with_policy_check(
     df_top: pd.DataFrame,
@@ -664,4 +677,3 @@ def export_top_n_with_policy_check(
             }
 
     return output_path, governance_report
-

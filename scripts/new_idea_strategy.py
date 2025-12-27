@@ -12,6 +12,7 @@ Usage:
     python scripts/new_idea_strategy.py --name rsi_keltner
     python scripts/new_idea_strategy.py --name rsi_keltner --title "RSI + Keltner Reversion"
 """
+
 from __future__ import annotations
 
 import sys
@@ -78,9 +79,7 @@ def sanitize_name(name: str) -> str:
 
     # Nur alphanumerisch und Underscores erlauben
     if not all(c.isalnum() or c == "_" for c in name):
-        raise ValueError(
-            f"Name darf nur Buchstaben, Zahlen und Underscores enthalten: {name!r}"
-        )
+        raise ValueError(f"Name darf nur Buchstaben, Zahlen und Underscores enthalten: {name!r}")
 
     # Darf nicht mit Ziffer beginnen
     if name and name[0].isdigit():

@@ -17,6 +17,7 @@ Usage:
     notifier = FileNotifier(Path("logs/alerts.log"))
     notifier.send(alert)
 """
+
 from __future__ import annotations
 
 import json

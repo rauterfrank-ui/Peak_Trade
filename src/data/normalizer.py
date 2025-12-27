@@ -1,6 +1,7 @@
 """
 Data Normalizer: Konvertiert rohe Daten in Peak_Trade-Standard-Format.
 """
+
 from typing import Dict, Optional
 
 import pandas as pd
@@ -32,9 +33,7 @@ class DataNormalizer:
         df = df.copy()
 
         if not isinstance(df.index, pd.DatetimeIndex):
-            raise ValueError(
-                f"Index muss DatetimeIndex sein, ist aber: {type(df.index).__name__}"
-            )
+            raise ValueError(f"Index muss DatetimeIndex sein, ist aber: {type(df.index).__name__}")
 
         if ensure_utc:
             if df.index.tz is None:
@@ -77,16 +76,12 @@ def resample_ohlcv(
     """
     if not isinstance(df.index, pd.DatetimeIndex):
         raise ValueError(
-            "Index muss DatetimeIndex sein für Resampling, ist aber: "
-            f"{type(df.index).__name__}"
+            f"Index muss DatetimeIndex sein für Resampling, ist aber: {type(df.index).__name__}"
         )
 
     missing_cols = set(REQUIRED_OHLCV_COLUMNS) - set(df.columns)
     if missing_cols:
-        raise ValueError(
-            "DataFrame muss OHLCV-Spalten enthalten. "
-            f"Fehlend: {sorted(missing_cols)}"
-        )
+        raise ValueError(f"DataFrame muss OHLCV-Spalten enthalten. Fehlend: {sorted(missing_cols)}")
 
     resampler = df.resample(freq, label=label, closed=closed)
 
@@ -100,7 +95,5 @@ def resample_ohlcv(
         }
     )
 
-    df_resampled = df_resampled.dropna(
-        how="all", subset=["open", "high", "low", "close"]
-    )
+    df_resampled = df_resampled.dropna(how="all", subset=["open", "high", "low", "close"])
     return df_resampled

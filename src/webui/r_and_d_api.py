@@ -32,6 +32,7 @@ v1.1 Änderungen:
 
 Basis: reports/r_and_d_experiments/, view_r_and_d_experiments.py, Notebook-Template
 """
+
 from __future__ import annotations
 
 import json
@@ -61,10 +62,11 @@ BATCH_MAX_RUN_IDS: int = 10
 class BestMetricsDict(TypedDict, total=False):
     """
     Typisierung für Best-Metrics-Ergebnis (v1.3 / Phase 78).
-    
+
     total=False bedeutet, dass alle Felder optional sind.
     Felder werden nur gesetzt, wenn mindestens ein gültiger Wert existiert.
     """
+
     total_return: float
     sharpe: float
     max_drawdown: float
@@ -131,6 +133,7 @@ def get_r_and_d_dir() -> Path:
 
 class RnDExperimentSummary(BaseModel):
     """Zusammenfassung eines R&D-Experiments für Listen-Ansicht (v1.1)."""
+
     filename: str
     run_id: str
     timestamp: str
@@ -155,6 +158,7 @@ class RnDExperimentSummary(BaseModel):
 
 class RnDReportLink(BaseModel):
     """Report-Link für ein R&D-Experiment (v1.2)."""
+
     type: str  # html, markdown, json, png
     label: str
     path: str
@@ -164,6 +168,7 @@ class RnDReportLink(BaseModel):
 
 class RnDExperimentDetail(BaseModel):
     """Vollständige Details eines R&D-Experiments (v1.2)."""
+
     filename: str
     run_id: str
     experiment: Dict[str, Any]
@@ -183,6 +188,7 @@ class RnDExperimentDetail(BaseModel):
 
 class RnDSummary(BaseModel):
     """Aggregierte Summary über alle R&D-Experimente."""
+
     total_experiments: int
     experiments_with_trades: int
     experiments_with_dummy_data: int
@@ -193,6 +199,7 @@ class RnDSummary(BaseModel):
 
 class RnDPresetStats(BaseModel):
     """Statistiken für ein einzelnes Preset."""
+
     preset_id: str
     experiment_count: int
     experiments_with_trades: int
@@ -205,6 +212,7 @@ class RnDPresetStats(BaseModel):
 
 class RnDStrategyStats(BaseModel):
     """Statistiken für eine einzelne Strategy."""
+
     strategy: str
     experiment_count: int
     experiments_with_trades: int
@@ -216,6 +224,7 @@ class RnDStrategyStats(BaseModel):
 
 class RnDGlobalStats(BaseModel):
     """Globale R&D-Statistiken."""
+
     total_experiments: int
     unique_presets: int
     unique_strategies: int
@@ -230,6 +239,7 @@ class RnDGlobalStats(BaseModel):
 
 class RnDBatchResponse(BaseModel):
     """Response für Batch-Abfrage mehrerer Experimente (v1.3)."""
+
     experiments: List[Dict[str, Any]]
     requested_ids: List[str]
     found_ids: List[str]
@@ -475,13 +485,15 @@ def find_report_links(run_id: str, experiment: Dict[str, Any]) -> List[Dict[str,
                 if report_path.exists() and str(report_path) not in found_paths:
                     found_paths.add(str(report_path))
                     rel_path = report_path.relative_to(base_dir)
-                    report_links.append({
-                        "type": rtype,
-                        "label": label,
-                        "path": str(rel_path),
-                        "url": f"/static/{rel_path}",
-                        "exists": True,
-                    })
+                    report_links.append(
+                        {
+                            "type": rtype,
+                            "label": label,
+                            "path": str(rel_path),
+                            "url": f"/static/{rel_path}",
+                            "exists": True,
+                        }
+                    )
 
                 # Auch in Unterverzeichnissen suchen (z.B. ideas/idea_*/...)
                 for subdir in report_dir.iterdir():
@@ -490,13 +502,15 @@ def find_report_links(run_id: str, experiment: Dict[str, Any]) -> List[Dict[str,
                         if sub_report.exists() and str(sub_report) not in found_paths:
                             found_paths.add(str(sub_report))
                             rel_path = sub_report.relative_to(base_dir)
-                            report_links.append({
-                                "type": rtype,
-                                "label": f"{label} ({subdir.name})",
-                                "path": str(rel_path),
-                                "url": f"/static/{rel_path}",
-                                "exists": True,
-                            })
+                            report_links.append(
+                                {
+                                    "type": rtype,
+                                    "label": f"{label} ({subdir.name})",
+                                    "path": str(rel_path),
+                                    "url": f"/static/{rel_path}",
+                                    "exists": True,
+                                }
+                            )
 
     # Meta-Links aus dem Experiment selbst (falls vorhanden)
     meta = experiment.get("meta", {})
@@ -505,13 +519,15 @@ def find_report_links(run_id: str, experiment: Dict[str, Any]) -> List[Dict[str,
         if report_path.exists():
             suffix = report_path.suffix.lower()
             rtype = {"html": "html", ".md": "markdown", ".json": "json"}.get(suffix, "file")
-            report_links.append({
-                "type": rtype,
-                "label": f"📎 Meta Report ({report_path.name})",
-                "path": str(report_path),
-                "url": f"/static/{report_path.relative_to(base_dir)}",
-                "exists": True,
-            })
+            report_links.append(
+                {
+                    "type": rtype,
+                    "label": f"📎 Meta Report ({report_path.name})",
+                    "path": str(report_path),
+                    "url": f"/static/{report_path.relative_to(base_dir)}",
+                    "exists": True,
+                }
+            )
 
     return report_links
 
@@ -566,39 +582,38 @@ def format_duration(seconds: float) -> str:
 
 
 def find_experiment_by_run_id(
-    experiments: List[Dict[str, Any]], 
-    run_id: str
+    experiments: List[Dict[str, Any]], run_id: str
 ) -> Optional[Dict[str, Any]]:
     """
     Findet ein Experiment anhand der Run-ID (v1.3).
-    
+
     Zentralisierte Lookup-Logik für konsistentes Matching.
-    
+
     Args:
         experiments: Liste aller Experimente
         run_id: Gesuchte Run-ID
-        
+
     Returns:
         Experiment-Dict oder None wenn nicht gefunden
     """
     if not run_id or not run_id.strip():
         return None
-    
+
     run_id = run_id.strip()
-    
+
     for exp in experiments:
         filename = exp.get("_filename", "")
         exp_run_id = filename.replace(".json", "") if filename else ""
-        
+
         # Exakter Match auf Run-ID oder Filename (präferiert)
         if run_id == exp_run_id or run_id == filename:
             return exp
-        
+
         # Match auf Timestamp nur wenn exakte Übereinstimmung
         timestamp = exp.get("experiment", {}).get("timestamp", "")
         if timestamp and run_id == timestamp:
             return exp
-    
+
     return None
 
 
@@ -763,16 +778,18 @@ def compute_preset_stats(experiments: List[Dict[str, Any]]) -> List[Dict[str, An
         drawdowns = [e["max_drawdown"] for e in exps]
         win_rates = [e["win_rate"] for e in exps]
 
-        result.append({
-            "preset_id": preset_id,
-            "experiment_count": n,
-            "experiments_with_trades": with_trades,
-            "avg_return": sum(returns) / n if n > 0 else 0.0,
-            "avg_sharpe": sum(sharpes) / n if n > 0 else 0.0,
-            "avg_max_drawdown": sum(drawdowns) / n if n > 0 else 0.0,
-            "avg_win_rate": sum(win_rates) / n if n > 0 else 0.0,
-            "total_trades": total_trades,
-        })
+        result.append(
+            {
+                "preset_id": preset_id,
+                "experiment_count": n,
+                "experiments_with_trades": with_trades,
+                "avg_return": sum(returns) / n if n > 0 else 0.0,
+                "avg_sharpe": sum(sharpes) / n if n > 0 else 0.0,
+                "avg_max_drawdown": sum(drawdowns) / n if n > 0 else 0.0,
+                "avg_win_rate": sum(win_rates) / n if n > 0 else 0.0,
+                "total_trades": total_trades,
+            }
+        )
 
     return result
 
@@ -797,15 +814,17 @@ def compute_strategy_stats(experiments: List[Dict[str, Any]]) -> List[Dict[str, 
         sharpes = [e["sharpe"] for e in exps]
         drawdowns = [e["max_drawdown"] for e in exps]
 
-        result.append({
-            "strategy": strategy,
-            "experiment_count": n,
-            "experiments_with_trades": with_trades,
-            "avg_return": sum(returns) / n if n > 0 else 0.0,
-            "avg_sharpe": sum(sharpes) / n if n > 0 else 0.0,
-            "avg_max_drawdown": sum(drawdowns) / n if n > 0 else 0.0,
-            "total_trades": total_trades,
-        })
+        result.append(
+            {
+                "strategy": strategy,
+                "experiment_count": n,
+                "experiments_with_trades": with_trades,
+                "avg_return": sum(returns) / n if n > 0 else 0.0,
+                "avg_sharpe": sum(sharpes) / n if n > 0 else 0.0,
+                "avg_max_drawdown": sum(drawdowns) / n if n > 0 else 0.0,
+                "total_trades": total_trades,
+            }
+        )
 
     return result
 
@@ -980,22 +999,22 @@ def parse_and_validate_run_ids(
 def build_experiment_detail(exp: Dict[str, Any]) -> Dict[str, Any]:
     """
     Baut ein vollständiges Experiment-Detail-Dict (v1.3).
-    
+
     Zentralisierte Logik für Detail- und Batch-Endpoints.
-    
+
     Args:
         exp: Raw-Experiment-Dict aus JSON
-        
+
     Returns:
         Aufbereitetes Detail-Dict
     """
     filename = exp.get("_filename", "")
     exp_run_id = filename.replace(".json", "") if filename else ""
-    
+
     flat = extract_flat_fields(exp)
     report_links = find_report_links(exp_run_id, exp)
     duration_info = compute_duration_info(exp)
-    
+
     return {
         "filename": filename,
         "run_id": exp_run_id,
@@ -1067,35 +1086,35 @@ async def get_experiments_batch(
         unique_ids = parse_and_validate_run_ids(run_ids)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
+
     # Lade alle Experimente
     all_experiments = load_experiments_from_dir()
-    
+
     # Suche nach den angeforderten IDs
     found_experiments: List[Dict[str, Any]] = []
     found_ids: List[str] = []
     not_found_ids: List[str] = []
-    
+
     for requested_id in unique_ids:
         exp = find_experiment_by_run_id(all_experiments, requested_id)
-        
+
         if exp:
             experiment_data = build_experiment_detail(exp)
             found_experiments.append(experiment_data)
             found_ids.append(requested_id)
         else:
             not_found_ids.append(requested_id)
-    
+
     # Wenn keine Experimente gefunden: 404
     if not found_experiments:
         raise HTTPException(
             status_code=404,
             detail=f"Keine gültigen Experimente gefunden für: {', '.join(unique_ids)}",
         )
-    
+
     # Berechne Best-Metrics für Highlighting
     best_metrics = compute_best_metrics(found_experiments)
-    
+
     return RnDBatchResponse(
         experiments=found_experiments,
         requested_ids=unique_ids,
@@ -1134,18 +1153,18 @@ async def get_experiment_detail(run_id: str) -> Dict[str, Any]:
         HTTPException 404: Wenn Experiment nicht gefunden
     """
     experiments = load_experiments_from_dir()
-    
+
     # Zentralisierte Lookup-Logik
     exp = find_experiment_by_run_id(experiments, run_id)
-    
+
     if exp is None:
         raise HTTPException(status_code=404, detail=f"Experiment not found: {run_id}")
-    
+
     # Baue Detail-Response
     detail = build_experiment_detail(exp)
     # Füge raw hinzu (nur im Detail-Endpoint)
     detail["raw"] = exp
-    
+
     return detail
 
 
@@ -1276,8 +1295,7 @@ async def get_today_experiments(
     response_model=Dict[str, Any],
     summary="Aktuell laufende Experimente (v1.1)",
     description=(
-        "Liefert Experimente, die aktuell noch laufen. "
-        "Für 'Was läuft gerade?' Übersicht."
+        "Liefert Experimente, die aktuell noch laufen. Für 'Was läuft gerade?' Übersicht."
     ),
 )
 async def get_running_experiments() -> Dict[str, Any]:

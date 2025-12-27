@@ -5,6 +5,7 @@ Tests für Portfolio-Preset-Integration in run_portfolio_robustness.py
 
 Testet die Merge-Logik: Preset + CLI-Argumente
 """
+
 from __future__ import annotations
 
 import argparse
@@ -165,8 +166,7 @@ def test_run_from_args_with_preset_and_overrides(
     """Testet run_from_args mit Preset + Overrides: CLI-Argumente überschreiben Preset."""
     # Mock Setup
     mock_load_topn.return_value = [
-        {"config_id": f"config_{i+1}", "rank": i+1}
-        for i in range(5)
+        {"config_id": f"config_{i + 1}", "rank": i + 1} for i in range(5)
     ]
     mock_run_robustness.return_value = MagicMock()
     mock_report.return_value = {"md": Path("test.md")}
@@ -208,13 +208,20 @@ def test_build_parser_has_preset_args():
     parser = portfolio_script.build_parser()
 
     # Parse mit Preset
-    args = parser.parse_args([
-        "--portfolio-preset", "test_preset",
-        "--recipes-config", "custom_recipes.toml",
-        "--sweep-name", "test_sweep",
-        "--config", "config/config.toml",
-        "--portfolio-name", "test_portfolio",
-    ])
+    args = parser.parse_args(
+        [
+            "--portfolio-preset",
+            "test_preset",
+            "--recipes-config",
+            "custom_recipes.toml",
+            "--sweep-name",
+            "test_sweep",
+            "--config",
+            "config/config.toml",
+            "--portfolio-name",
+            "test_portfolio",
+        ]
+    )
 
     assert args.portfolio_preset == "test_preset"
     assert args.recipes_config == "custom_recipes.toml"
@@ -313,7 +320,10 @@ def test_phase53_recipe_loading(phase53_recipe_toml: Path):
     recipe1 = recipes["rsi_reversion_conservative"]
     assert recipe1.strategies is not None
     assert len(recipe1.strategies) == 2
-    assert recipe1.strategies == ["rsi_reversion_btc_conservative", "rsi_reversion_eth_conservative"]
+    assert recipe1.strategies == [
+        "rsi_reversion_btc_conservative",
+        "rsi_reversion_eth_conservative",
+    ]
     assert recipe1.weights == [0.6, 0.4]
     assert recipe1.risk_profile == "conservative"
 
@@ -371,7 +381,11 @@ def test_phase53_all_new_recipes_exist():
         assert recipe_key in recipes, f"Rezept {recipe_key} nicht gefunden"
         recipe = recipes[recipe_key]
         assert recipe.strategies is not None, f"Rezept {recipe_key} hat keine strategies"
-        assert len(recipe.strategies) == len(recipe.weights), f"Rezept {recipe_key}: weights Länge stimmt nicht"
-        assert recipe.risk_profile in ["conservative", "moderate", "aggressive"], \
-            f"Rezept {recipe_key}: ungültiges risk_profile"
-
+        assert len(recipe.strategies) == len(recipe.weights), (
+            f"Rezept {recipe_key}: weights Länge stimmt nicht"
+        )
+        assert recipe.risk_profile in [
+            "conservative",
+            "moderate",
+            "aggressive",
+        ], f"Rezept {recipe_key}: ungültiges risk_profile"

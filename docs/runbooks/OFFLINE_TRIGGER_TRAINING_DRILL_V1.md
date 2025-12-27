@@ -556,4 +556,3 @@ Bei Fragen oder Problemen:
 - **Slack**: `#peak-trade-reporting` oder `#ops-training`
 - **Issues**: GitHub Issues mit Label `runbook` + `trigger-training`
 - **Docs**: `docs/trigger_training/TRIGGER_TRAINING_REPORTS_V1.md` (technische Details)
-

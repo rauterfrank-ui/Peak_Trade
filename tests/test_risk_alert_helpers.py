@@ -11,6 +11,7 @@ Testet:
 - trigger_risk_alert() Alert-Trigger-Logik
 - RiskAlertFormatter Terminal-/Compact-Formatierung
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone

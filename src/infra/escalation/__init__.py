@@ -32,6 +32,7 @@ Usage:
     )
     manager.maybe_escalate(event)
 """
+
 from .models import EscalationEvent, EscalationTarget
 from .providers import (
     EscalationProvider,
@@ -52,6 +53,3 @@ __all__ = [
     "EscalationManager",
     "build_escalation_manager_from_config",
 ]
-
-
-
