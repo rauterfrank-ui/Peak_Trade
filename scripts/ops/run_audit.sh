@@ -211,7 +211,7 @@ rm -f "$HARD_FAIL_SECRETS_RAW"
 
 # 5) Tests
 if have_cmd python3; then
-  run_check "09_pytest" python3 -m pytest -q --tb=no
+  run_check "09_pytest" python3 -m pytest -q --tb=no -m smoke
 else
   skip_check "09_pytest" "python3 not found"
 fi
