@@ -40,8 +40,8 @@ jobs:
           OPENAI_API_KEY: "DUMMY_CI_VALUE"
           LIVE_CONFIRM_TOKEN: "DUMMY_CI_VALUE"
         run: |
-          chmod +x scripts/run_audit.sh
-          ./scripts/run_audit.sh
+          chmod +x scripts/ops/run_audit.sh
+          ./scripts/ops/run_audit.sh
 
       - name: Ops Merge Log Guard (non-blocking for legacy)
         run: |

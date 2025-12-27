@@ -8,14 +8,14 @@ import pytest
 
 
 SCRIPTS = [
-    Path("scripts/post_merge_workflow_pr203.sh"),
-    Path("scripts/quick_pr_merge.sh"),
-    Path("scripts/post_merge_workflow.sh"),
-    Path("scripts/finalize_workflow_docs_pr.sh"),
+    Path("scripts/workflows/post_merge_workflow_pr203.sh"),
+    Path("scripts/workflows/quick_pr_merge.sh"),
+    Path("scripts/workflows/post_merge_workflow.sh"),
+    Path("scripts/workflows/finalize_workflow_docs_pr.sh"),
     Path("scripts/workflows/pr_merge_with_ops_audit.sh"),
     Path("scripts/ops/run_ops_convenience_pack_pr.sh"),
     Path("scripts/ops/verify_format_only_pr.sh"),
-    Path("scripts/git_push_and_pr.sh"),
+    Path("scripts/workflows/git_push_and_pr.sh"),
 ]
 
 
