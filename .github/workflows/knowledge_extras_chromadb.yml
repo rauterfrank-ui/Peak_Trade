@@ -1,0 +1,61 @@
+name: Knowledge Extras (ChromaDB Tests)
+
+# Optional workflow to test chromadb-backed Knowledge DB
+# Not required for merge - provides additional signal
+
+on:
+  schedule:
+    - cron: '30 6 * * 1' # Every Monday at 06:30 UTC
+  workflow_dispatch: # Manual trigger
+    inputs:
+      reason:
+        description: 'Reason for running chromadb tests'
+        required: false
+        default: 'Manual trigger'
+
+jobs:
+  chromadb-tests:
+    name: Test Knowledge DB with ChromaDB
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python & uv
+        uses: astral-sh/setup-uv@v1
+        with:
+          python-version: '3.11'
+          cache-key: ${{ runner.os }}-uv-chromadb-${{ hashFiles('uv.lock') }}
+
+      - name: 📦 Install dependencies + chromadb
+        run: |
+          set -euo pipefail
+          echo "Installing base dependencies..."
+          uv sync
+
+          echo "Installing chromadb (optional dependency)..."
+          uv pip install chromadb
+
+          echo "Verifying chromadb installation..."
+          uv run python -c "import chromadb; print(f'chromadb {chromadb.__version__} installed')"
+
+      - name: 🧪 Run ChromaDB-backed Knowledge Tests
+        run: |
+          set -euo pipefail
+          echo "Running chromadb-dependent tests..."
+          uv run pytest -q tests/test_knowledge_readonly_gating.py -vv --tb=short
+
+          echo "Running knowledge endpoints with chromadb available..."
+          uv run pytest -q tests/test_webui_knowledge_endpoints.py -vv --tb=short
+
+      - name: 📊 Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chromadb-test-results-${{ github.run_number }}
+          path: |
+            .pytest_cache/
+            reports/
+          retention-days: 30

@@ -172,6 +172,26 @@ reports/audit/YYYYMMDD_HHMMSS/
 - Compliance: SBOM-Anforderungen (z.B. Executive Order 14028)
 - Vulnerability Tracking: Schnelle Prüfung ob betroffene Packages im Einsatz sind
 
+### Knowledge DB In-Memory Fallback (Dev/Prod Hardening)
+
+**Config Flag:** `WEBUI_KNOWLEDGE_ALLOW_FALLBACK`
+
+Die Knowledge Service API kann mit oder ohne ChromaDB (Vector DB) laufen:
+
+- **Dev/Test (Default):** `WEBUI_KNOWLEDGE_ALLOW_FALLBACK=true`
+  - In-Memory Fallback aktiv wenn chromadb fehlt
+  - API liefert 200/201 mit einfachem Keyword-Matching
+  - **Use Case:** CI/lokale Dev ohne chromadb-Installation
+
+- **Prod (Hardening):** `WEBUI_KNOWLEDGE_ALLOW_FALLBACK=false`
+  - Kein Fallback erlaubt
+  - API liefert **503 Service Unavailable** wenn chromadb fehlt
+  - **Use Case:** Prod-Env wo Vector Search explizit required ist
+
+**Empfehlung:**
+- Dev/CI: Fallback enabled (Convenience)
+- Prod: Fallback disabled + chromadb explizit installiert (Qualität)
+
 ### CI Integration
 
 **Automatisches Weekly Audit:**
@@ -184,6 +204,13 @@ reports/audit/YYYYMMDD_HHMMSS/
 - Hard Fail bei pip-audit findings
 - Hard Fail bei Lint-Errors
 - Hard Fail bei Test-Failures
+
+**Optional: ChromaDB Extras Workflow:**
+- Workflow: `.github/workflows/knowledge_extras_chromadb.yml`
+- Trigger: Jeden Montag 06:30 UTC + manuell via `workflow_dispatch`
+- **Zweck:** Zusätzliches Signal für chromadb-backed Knowledge DB Tests
+- **Status:** NICHT required für Merge (optional extra validation)
+- Installiert chromadb und führt `tests/test_knowledge_readonly_gating.py` aus
 
 ### Troubleshooting
 
