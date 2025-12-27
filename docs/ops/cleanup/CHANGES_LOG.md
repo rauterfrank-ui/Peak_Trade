@@ -125,7 +125,7 @@ mkdir -p scripts/utils
 | `run_regime_experiments.sh` | Dublette (existiert in archive/legacy_scripts/) | ✅ rg: 6 hits (nur docs/archive refs) |
 | `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` | Dublette (docs/ops/ ist source of truth) | ✅ Consolidated to docs/ops/ |
 | `gitignore` | Obsolet (`.gitignore` existiert) | ✅ No code refs |
-| `scripts/cleanup_repo.sh` | Obsolet/Test-Script | ✅ rg: 5 hits (nur self-refs) |
+| ~~`scripts&sol;cleanup_repo.sh`~~ | Obsolet/Test-Script | ✅ rg: 5 hits (nur self-refs) |
 
 **Total:** 4 files deleted
 
