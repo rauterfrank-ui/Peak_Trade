@@ -1,0 +1,62 @@
+name: Full Security & Quality Audit (Weekly)
+
+on:
+  # Wöchentlich Montags um 06:00 UTC (07:00 CET)
+  schedule:
+    - cron: '0 6 * * 1'
+
+  # Manueller Trigger
+  workflow_dispatch:
+
+jobs:
+  full-audit:
+    name: Full Audit (Security + Quality)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: 🐍 Set up Python 3.11
+        run: uv python install 3.11
+
+      - name: 📦 Sync dependencies
+        run: uv sync
+
+      - name: 🔒 Run Full Audit
+        id: audit
+        run: |
+          set +e  # Don't fail immediately, capture exit code
+          ./scripts/ops/run_full_audit.sh
+          AUDIT_EXIT=$?
+          echo "audit_exit=$AUDIT_EXIT" >> $GITHUB_OUTPUT
+          exit $AUDIT_EXIT
+
+      - name: 📊 Upload Audit Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()  # Upload auch bei Failure
+        with:
+          name: full-audit-report-${{ github.run_number }}
+          path: reports/audit/**/
+          retention-days: 90
+
+      - name: 📈 Upload SBOM
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sbom-${{ github.run_number }}
+          path: reports/audit/**/sbom.json
+          retention-days: 365  # SBOM länger behalten für Compliance
+
+      - name: ❌ Fail if audit failed
+        if: steps.audit.outputs.audit_exit != '0'
+        run: |
+          echo "❌ Audit failed with exit code ${{ steps.audit.outputs.audit_exit }}"
+          echo "Check artifacts for detailed logs and SBOM"
+          exit 1
