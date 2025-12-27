@@ -18,7 +18,7 @@ scripts/ops/ops_center.sh merge-log
 
 ### PR Full Workflow Runbook
 
-Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation steht jetzt ein detailliertes Runbook zur Verfügung. Siehe [PR_FULL_WORKFLOW_RUNBOOK.md](PR_FULL_WORKFLOW_RUNBOOK.md) im gleichen Verzeichnis.
+Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation steht jetzt ein detailliertes Runbook zur Verfügung. Siehe [OPS_OPERATOR_CENTER.md](OPS_OPERATOR_CENTER.md) ⭐
 
 **Commands:**
 - `status` — Repository-Status (git + gh)
@@ -26,8 +26,6 @@ Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation st
 - `doctor` — Health-Checks
 - `merge-log` — Merge-Log Quick Reference
 - `help` — Hilfe
-
-**Dokumentation:** [OPS_OPERATOR_CENTER.md](OPS_OPERATOR_CENTER.md) ⭐
 
 **Design:** Safe-by-default, robust, konsistent.
 
@@ -86,8 +84,8 @@ scripts/ops/ops_center.sh doctor
 ```
 
 **Features:**
-- Prüft interne Markdown-Links (Format: `[text](path)`) auf existierende Zieldateien
-- Validiert Anchor-Links (Format: `[text](file.md#heading)`) gegen tatsächliche Überschriften
+- Prüft interne Markdown-Links (Format: `[text]\(path\)`) auf existierende Zieldateien
+- Validiert Anchor-Links (Format: `[text]\(file.md#heading\)`) gegen tatsächliche Überschriften
 - Ignoriert externe Links (http://, https://, mailto:)
 - Schnell und offline (keine Netzwerk-Anfragen)
 
@@ -112,7 +110,7 @@ scripts/ops/ops_center.sh doctor
 ```
 
 **Features:**
-- Findet referenzierte Pfade in Markdown-Links (`[text](path)`), Inline-Code (`` `path` ``), und Bare-Pfaden
+- Findet referenzierte Pfade in Markdown-Links (`[text]\(path\)`), Inline-Code (`` `path` ``), und Bare-Pfaden
 - Validiert Existenz von: `config/*.toml`, `docs/*.md`, `scripts/*.sh`, `src/*.py`, `.github/*.yml`
 - Ignoriert externe URLs (http/https) und Anchor-Only-Links
 - Exit 0 = OK/nicht anwendbar, Exit 1 = FAIL (CI), Exit 2 = WARN (ops doctor)
@@ -132,7 +130,7 @@ Der Check `docs-reference-targets-gate` stellt sicher, dass in Docs referenziert
 
 ### Unterstützte Referenzen (werden geprüft)
 - **Plain paths** relativ zum Repo-Root, z.B. `docs/ops/README.md`, `scripts/ops/ops_center.sh`
-- **Markdown-Links**: `[Text](docs/ops/README.md)`
+- **Markdown-Links**: `[Text]\(docs/ops/README.md\)`
 - **Anchors** werden ignoriert (nur Datei wird geprüft): `RISK_LAYER_ROADMAP.md#overview`
 - **Query-Parameter** werden ignoriert: `docs/ops/README.md?plain=1`
 - **Relative Pfade in Docs** werden korrekt resolved (relativ zur jeweiligen Markdown-Datei)
