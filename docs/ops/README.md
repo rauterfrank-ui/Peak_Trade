@@ -845,6 +845,7 @@ Das Batch-Tool ersetzt den Inhalt zwischen den Markern idempotent.
 - [PR #323](PR_323_MERGE_LOG.md) — feat(ops): Required Checks Drift Guard v1 (merged 2025-12-25)
 - [PR #261](PR_261_MERGE_LOG.md) — chore(ops): add stash triage helper (export-first, safe-by-default) (merged 2025-12-23)
 - [PR #250](PR_250_MERGE_LOG.md) — feat(ops): add ops_doctor repo health check tool (merged 2025-12-23)
+- [PR #243](PR_243_MERGE_LOG.md) — feat(webui): knowledge API endpoints + readonly/web-write gating + smoke runners (merged 2025-12-22)
 - [PR #237](PR_237_MERGE_LOG.md) — chore(ops): add shared bash run helpers (strict/robust) (merged 2025-12-21)
 - [PR #235](PR_235_MERGE_LOG.md) — fix(ops): improve label_merge_log_prs.sh to find open PRs (merged 2025-12-21)
 - [PR #234](PR_234_MERGE_LOG.md) — chore(ops): PR inventory + merge-log labeling scripts (merged 2025-12-21)
@@ -970,6 +971,17 @@ ruff check . && black --check .
 **⚠️ WICHTIG:** Kein Bypass bei Execution/Risk/Config/Deps/Governance Changes!
 
 ---
+
+## Stability & Resilience
+
+- **Stability & Resilience Plan v1**: [STABILITY_RESILIENCE_PLAN_V1.md](STABILITY_RESILIENCE_PLAN_V1.md)
+  - Production-readiness initiative (data contracts, atomic cache, error taxonomy, reproducibility, config validation, observability, CI smoke gates)
+  - Milestone: [Stability & Resilience v1](https://github.com/rauterfrank-ui/Peak_Trade/milestone/1)
+  - Issues: [#124](https://github.com/rauterfrank-ui/Peak_Trade/issues/124) - [#134](https://github.com/rauterfrank-ui/Peak_Trade/issues/134)
+
+---
+
+## Related Documentation
 
 ### Format-Only Guardrail (CI Implementation)
 
