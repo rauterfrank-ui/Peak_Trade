@@ -276,7 +276,7 @@ class Doctor:
                 else:
                     check.status = "warn"
                     check.message = "requirements.txt out of sync"
-                    check.fix_hint = "Run: uv export --no-dev > requirements.txt"
+                    check.fix_hint = "Run: uv export --format requirements.txt --all-extras --all-groups --locked --no-hashes -o requirements.txt"
                     check.evidence.append(result.stdout.strip())
 
             except (subprocess.TimeoutExpired, FileNotFoundError) as e:
@@ -290,7 +290,7 @@ class Doctor:
             if req_mtime < lock_mtime:
                 check.status = "warn"
                 check.message = "requirements.txt older than uv.lock"
-                check.fix_hint = "Run: uv export --no-dev > requirements.txt"
+                check.fix_hint = "Run: uv export --format requirements.txt --all-extras --all-groups --locked --no-hashes -o requirements.txt"
             else:
                 check.status = "ok"
                 check.message = "requirements.txt appears up to date"
