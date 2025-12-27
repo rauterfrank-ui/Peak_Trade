@@ -246,6 +246,59 @@ python -m src.ops.doctor
 | `1` | Mindestens ein Check mit Status `fail` |
 | `2` | Mindestens ein Check mit Status `warn` (aber keine `fail`) |
 
+## 🎯 Noise-Free Standard
+
+Der Ops Doctor ist am nützlichsten, wenn sein Output **actionable und low-noise** ist:
+
+### Was bedeutet "Noise-Free"?
+
+| Status | Bedeutung | Operator-Aktion |
+|--------|-----------|-----------------|
+| ✅ **OK** | Check erfolgreich | Keine Aktion nötig |
+| ⚠️ **WARN** | Warnung, aber nicht kritisch | Optional beheben (empfohlen) |
+| ❌ **FAIL** | Kritischer Fehler | **Sofort beheben** |
+| ⏭️ **SKIP** | Check konnte nicht ausgeführt werden (fehlende Abhängigkeiten, Offline-Modus) | Keine Aktion nötig (nicht als Fehler interpretieren) |
+
+**Kernprinzip**: Optionale Live-Dependency-Checks sollten **SKIP** zeigen, wenn sie nicht laufen können (z.B. `gh` CLI nicht authentifiziert), **nicht FAIL**. Dies verhindert "Hint-Drift" und Operator-Verwirrung.
+
+### Operator Workflow Checklist
+
+**1. Ops Doctor ausführen**:
+```bash
+scripts/ops/ops_center.sh doctor
+```
+
+**2. Output interpretieren**:
+- **❌ FAIL**: Sofort beheben (blockiert weitere Arbeit)
+- **⚠️ WARN**: Optional beheben (empfohlen, aber nicht blockierend)
+- **⏭️ SKIP**: Ignorieren (externe Abhängigkeiten fehlen, z.B. Offline-Modus)
+
+**3. Häufige Fixes**:
+
+#### `deps.requirements_sync` (WARN)
+
+**Canonical Fix**:
+```bash
+# Sync requirements.txt from uv.lock (no dev deps, no hashes, no annotations)
+uv export --no-dev --no-hashes --no-emit-project > requirements.txt
+```
+
+**Wann nötig**: Nach `uv.lock` Updates (z.B. nach `uv add`, `uv lock`)
+
+#### `required_checks_drift` (SKIP)
+
+**Ursache**: `gh` CLI nicht authentifiziert oder nicht installiert
+
+**Canonical Fix (Live-Check aktivieren)**:
+```bash
+# GitHub CLI einmalig authentifizieren
+gh auth login
+```
+
+**Wann SKIP OK ist**: Offline-Entwicklung, CI-Umgebungen ohne GitHub-Token
+
+**Wann Live-Check nötig**: Vor Branch Protection Updates (Änderungen an `.github/workflows/`)
+
 ## 🔧 Integration
 
 ### Pre-Commit Hook
