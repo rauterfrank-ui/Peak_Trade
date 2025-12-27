@@ -238,60 +238,60 @@ git mv CHANGELOG_LEARNING_PROMOTION_LOOP.md docs/learning_promotion/
 
 | Script | Ziel | Begründung |
 |--------|------|------------|
-| `scripts/run_audit.sh` | `scripts/ops/` | Ops Tool |
-| `scripts/pr_audit_scan.sh` | `scripts/ops/` | Ops Tool |
-| `scripts/run_smoke_tests.sh` | `scripts/run/` | Runner |
-| `scripts/run_phase3_robustness.sh` | `scripts/run/` | Runner |
-| `scripts/run_regime_btcusdt_experiments.sh` | `scripts/run/` | Runner |
-| `scripts/render_last_report.sh` | `scripts/utils/` | Utility |
-| `scripts/slice_from_backup.sh` | `scripts/utils/` | Utility |
-| `scripts/install_desktop_shortcuts.sh` | `scripts/utils/` | Utility |
-| `scripts/check_claude_code_ready.sh` | `scripts/utils/` | Utility |
-| `scripts/claude_code_auth_reset.sh` | `scripts/utils/` | Utility |
-| `scripts/quick_pr_merge.sh` | `scripts/workflows/` | Workflow |
-| `scripts/finalize_workflow_docs_pr.sh` | `scripts/workflows/` | Workflow |
-| `scripts/git_push_and_pr.sh` | `scripts/workflows/` | Workflow |
-| `scripts/post_merge_workflow.sh` | `scripts/workflows/` | Workflow |
-| `scripts/post_merge_workflow_pr203.sh` | `scripts/workflows/` | Workflow |
-| `scripts/validate_git_state.sh` | `scripts/ci/` | CI Tool |
-| `scripts/add_issues_to_project.sh` | `scripts/automation/` | Automation |
-| `scripts/update_pr_final_report_post_merge.sh` | `scripts/automation/` | Automation |
-| `scripts/test_knowledge_api_smoke.sh` | `scripts/dev/` | Dev Test |
+| `scripts/ops/run_audit.sh` | `scripts/ops/` | Ops Tool |
+| `scripts/ops/pr_audit_scan.sh` | `scripts/ops/` | Ops Tool |
+| `scripts/run/run_smoke_tests.sh` | `scripts/run/` | Runner |
+| `scripts/run/run_phase3_robustness.sh` | `scripts/run/` | Runner |
+| `scripts/run/run_regime_btcusdt_experiments.sh` | `scripts/run/` | Runner |
+| `scripts/utils/render_last_report.sh` | `scripts/utils/` | Utility |
+| `scripts/utils/slice_from_backup.sh` | `scripts/utils/` | Utility |
+| `scripts/utils/install_desktop_shortcuts.sh` | `scripts/utils/` | Utility |
+| `scripts/utils/check_claude_code_ready.sh` | `scripts/utils/` | Utility |
+| `scripts/utils/claude_code_auth_reset.sh` | `scripts/utils/` | Utility |
+| `scripts/workflows/quick_pr_merge.sh` | `scripts/workflows/` | Workflow |
+| `scripts/workflows/finalize_workflow_docs_pr.sh` | `scripts/workflows/` | Workflow |
+| `scripts/workflows/git_push_and_pr.sh` | `scripts/workflows/` | Workflow |
+| `scripts/workflows/post_merge_workflow.sh` | `scripts/workflows/` | Workflow |
+| `scripts/workflows/post_merge_workflow_pr203.sh` | `scripts/workflows/` | Workflow |
+| `scripts/ci/validate_git_state.sh` | `scripts/ci/` | CI Tool |
+| `scripts/automation/add_issues_to_project.sh` | `scripts/automation/` | Automation |
+| `scripts/automation/update_pr_final_report_post_merge.sh` | `scripts/automation/` | Automation |
+| `scripts/dev/test_knowledge_api_smoke.sh` | `scripts/dev/` | Dev Test |
 
 **Commands:**
 ```bash
 # Ops
-git mv scripts/run_audit.sh scripts/ops/
-git mv scripts/pr_audit_scan.sh scripts/ops/
+git mv scripts/ops/run_audit.sh scripts/ops/
+git mv scripts/ops/pr_audit_scan.sh scripts/ops/
 
 # Run
-git mv scripts/run_smoke_tests.sh scripts/run/
-git mv scripts/run_phase3_robustness.sh scripts/run/
-git mv scripts/run_regime_btcusdt_experiments.sh scripts/run/
+git mv scripts/run/run_smoke_tests.sh scripts/run/
+git mv scripts/run/run_phase3_robustness.sh scripts/run/
+git mv scripts/run/run_regime_btcusdt_experiments.sh scripts/run/
 
 # Utils
-git mv scripts/render_last_report.sh scripts/utils/
-git mv scripts/slice_from_backup.sh scripts/utils/
-git mv scripts/install_desktop_shortcuts.sh scripts/utils/
-git mv scripts/check_claude_code_ready.sh scripts/utils/
-git mv scripts/claude_code_auth_reset.sh scripts/utils/
+git mv scripts/utils/render_last_report.sh scripts/utils/
+git mv scripts/utils/slice_from_backup.sh scripts/utils/
+git mv scripts/utils/install_desktop_shortcuts.sh scripts/utils/
+git mv scripts/utils/check_claude_code_ready.sh scripts/utils/
+git mv scripts/utils/claude_code_auth_reset.sh scripts/utils/
 
 # Workflows
-git mv scripts/quick_pr_merge.sh scripts/workflows/
-git mv scripts/finalize_workflow_docs_pr.sh scripts/workflows/
-git mv scripts/git_push_and_pr.sh scripts/workflows/
-git mv scripts/post_merge_workflow.sh scripts/workflows/
-git mv scripts/post_merge_workflow_pr203.sh scripts/workflows/
+git mv scripts/workflows/quick_pr_merge.sh scripts/workflows/
+git mv scripts/workflows/finalize_workflow_docs_pr.sh scripts/workflows/
+git mv scripts/workflows/git_push_and_pr.sh scripts/workflows/
+git mv scripts/workflows/post_merge_workflow.sh scripts/workflows/
+git mv scripts/workflows/post_merge_workflow_pr203.sh scripts/workflows/
 
 # CI
-git mv scripts/validate_git_state.sh scripts/ci/
+git mv scripts/ci/validate_git_state.sh scripts/ci/
 
 # Automation
-git mv scripts/add_issues_to_project.sh scripts/automation/
-git mv scripts/update_pr_final_report_post_merge.sh scripts/automation/
+git mv scripts/automation/add_issues_to_project.sh scripts/automation/
+git mv scripts/automation/update_pr_final_report_post_merge.sh scripts/automation/
 
 # Dev
-git mv scripts/test_knowledge_api_smoke.sh scripts/dev/
+git mv scripts/dev/test_knowledge_api_smoke.sh scripts/dev/
 ```
 
 ### Phase 4: Config & Patch Consolidation

@@ -287,37 +287,37 @@ Keine Dateien archiviert (alle Moves waren in aktive Struktur).
 ### Scripts (19 files)
 
 **Ops (2):**
-- `scripts/run_audit.sh` → `scripts/ops/`
-- `scripts/pr_audit_scan.sh` → `scripts/ops/`
+- `scripts/ops/run_audit.sh` → `scripts/ops/`
+- `scripts/ops/pr_audit_scan.sh` → `scripts/ops/`
 
 **Run (3):**
-- `scripts/run_smoke_tests.sh` → `scripts/run/`
-- `scripts/run_phase3_robustness.sh` → `scripts/run/`
-- `scripts/run_regime_btcusdt_experiments.sh` → `scripts/run/`
+- `scripts/run/run_smoke_tests.sh` → `scripts/run/`
+- `scripts/run/run_phase3_robustness.sh` → `scripts/run/`
+- `scripts/run/run_regime_btcusdt_experiments.sh` → `scripts/run/`
 
 **Utils (5):**
-- `scripts/render_last_report.sh` → `scripts/utils/`
-- `scripts/slice_from_backup.sh` → `scripts/utils/`
-- `scripts/install_desktop_shortcuts.sh` → `scripts/utils/`
-- `scripts/check_claude_code_ready.sh` → `scripts/utils/`
-- `scripts/claude_code_auth_reset.sh` → `scripts/utils/`
+- `scripts/utils/render_last_report.sh` → `scripts/utils/`
+- `scripts/utils/slice_from_backup.sh` → `scripts/utils/`
+- `scripts/utils/install_desktop_shortcuts.sh` → `scripts/utils/`
+- `scripts/utils/check_claude_code_ready.sh` → `scripts/utils/`
+- `scripts/utils/claude_code_auth_reset.sh` → `scripts/utils/`
 
 **Workflows (5):**
-- `scripts/quick_pr_merge.sh` → `scripts/workflows/`
-- `scripts/finalize_workflow_docs_pr.sh` → `scripts/workflows/`
-- `scripts/git_push_and_pr.sh` → `scripts/workflows/`
-- `scripts/post_merge_workflow.sh` → `scripts/workflows/`
-- `scripts/post_merge_workflow_pr203.sh` → `scripts/workflows/`
+- `scripts/workflows/quick_pr_merge.sh` → `scripts/workflows/`
+- `scripts/workflows/finalize_workflow_docs_pr.sh` → `scripts/workflows/`
+- `scripts/workflows/git_push_and_pr.sh` → `scripts/workflows/`
+- `scripts/workflows/post_merge_workflow.sh` → `scripts/workflows/`
+- `scripts/workflows/post_merge_workflow_pr203.sh` → `scripts/workflows/`
 
 **CI (1):**
-- `scripts/validate_git_state.sh` → `scripts/ci/`
+- `scripts/ci/validate_git_state.sh` → `scripts/ci/`
 
 **Automation (2):**
-- `scripts/add_issues_to_project.sh` → `scripts/automation/`
-- `scripts/update_pr_final_report_post_merge.sh` → `scripts/automation/`
+- `scripts/automation/add_issues_to_project.sh` → `scripts/automation/`
+- `scripts/automation/update_pr_final_report_post_merge.sh` → `scripts/automation/`
 
 **Dev (1):**
-- `scripts/test_knowledge_api_smoke.sh` → `scripts/dev/`
+- `scripts/dev/test_knowledge_api_smoke.sh` → `scripts/dev/`
 
 ### Config & Patches (2 files)
 
@@ -518,8 +518,8 @@ Siehe `README_REGISTRY.md` für vollständige Liste.
 **Wichtigste Änderungen:**
 - `P0_GUARDRAILS_QUICK_REFERENCE.md` → `docs/ops/P0_GUARDRAILS_QUICK_REFERENCE.md`
 - `RISK_LAYER_ROADMAP.md` → `docs/risk/RISK_LAYER_ROADMAP.md`
-- `scripts/run_audit.sh` → `scripts/ops/run_audit.sh`
-- `scripts/run_smoke_tests.sh` → `scripts/run/run_smoke_tests.sh`
+- `scripts/ops/run_audit.sh` → `scripts/ops/run_audit.sh`
+- `scripts/run/run_smoke_tests.sh` → `scripts/run/run_smoke_tests.sh`
 
 **Bookmarks aktualisieren:**
 - Wenn du Bookmarks/Links zu Dateien hast, aktualisiere sie
