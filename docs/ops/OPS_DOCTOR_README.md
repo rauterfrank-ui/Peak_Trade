@@ -228,7 +228,7 @@ python -m src.ops.doctor
 **Was wird geprüft**: CI/CD-Konfiguration
 
 **Erwartete Files**:
-- `.github/workflows`
+- `.github/workflows/` (directory)
 - `Makefile`
 - `policy_packs/ci.yml`
 

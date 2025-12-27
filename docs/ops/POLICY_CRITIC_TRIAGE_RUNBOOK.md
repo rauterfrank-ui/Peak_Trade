@@ -222,7 +222,7 @@ gh run list --branch main --limit 1
 
 - [ ] **Tests:** Neue/geänderte Assertions, Fixtures, Test-Logic
 - [ ] **CI/CD:** `.github/workflows/`, `docker/`, `Makefile` (Logic)
-- [ ] **Schema:** `src/data/schema.py`, DB Migrations
+- [ ] **Schema:** Data schemas, DB Migrations
 - [ ] **Telemetry:** `src/obs/`, `config/telemetry_alerting.toml`
 - [ ] **Macro Regimes:** `config/macro_regimes/`, `src/macro_regimes/`
 
