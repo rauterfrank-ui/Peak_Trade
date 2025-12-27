@@ -29,22 +29,24 @@ def extract_tier_a_scripts(index_path: Path) -> List[str]:
     content = index_path.read_text()
 
     # Find Tier A section (actual table section, not definition)
-    tier_a_match = re.search(r'## Tier A \(Canonical Runner Set\).*?(?=## Tier B|$)', content, re.DOTALL)
+    tier_a_match = re.search(
+        r"## Tier A \(Canonical Runner Set\).*?(?=## Tier B|$)", content, re.DOTALL
+    )
     if not tier_a_match:
         return []
 
     tier_a_section = tier_a_match.group(0)
 
     # Extract all scripts/*.py paths (handle backticks)
-    scripts = re.findall(r'scripts/[a-zA-Z0-9_/]+\.py', tier_a_section)
+    scripts = re.findall(r"scripts/[a-zA-Z0-9_/]+\.py", tier_a_section)
     # Also try without word boundaries for backtick cases
     if not scripts:
         # Remove backticks and try again
-        clean_section = tier_a_section.replace('`', '')
-        scripts = re.findall(r'scripts/[a-zA-Z0-9_/]+\.py', clean_section)
+        clean_section = tier_a_section.replace("`", "")
+        scripts = re.findall(r"scripts/[a-zA-Z0-9_/]+\.py", clean_section)
 
     # Exclude dev tools (self-referential)
-    scripts = [s for s in scripts if not s.startswith('scripts/dev/')]
+    scripts = [s for s in scripts if not s.startswith("scripts/dev/")]
 
     return sorted(set(scripts))
 
@@ -53,10 +55,7 @@ def try_help(script_path: Path) -> Optional[str]:
     """Versuche --help auszuführen"""
     try:
         result = subprocess.run(
-            ["python3", str(script_path), "--help"],
-            capture_output=True,
-            text=True,
-            timeout=5
+            ["python3", str(script_path), "--help"], capture_output=True, text=True, timeout=5
         )
         if result.returncode == 0:
             return result.stdout
@@ -79,7 +78,9 @@ def extract_docstring(script_path: Path) -> Optional[str]:
             return docstring_match.group(1).strip()
 
         # Try ArgumentParser description
-        parser_match = re.search(r'ArgumentParser\(.*?description=["\']([^"\']+)["\']', content, re.DOTALL)
+        parser_match = re.search(
+            r'ArgumentParser\(.*?description=["\']([^"\']+)["\']', content, re.DOTALL
+        )
         if parser_match:
             return parser_match.group(1).strip()
 
@@ -97,14 +98,14 @@ def static_scan_tokens(script_path: Path) -> Dict[str, bool]:
         content = script_path.read_text()
 
         return {
-            "has_results_path": bool(re.search(r'results[/\\]', content)),
-            "has_run_id": bool(re.search(r'\brun_id\b', content)),
-            "has_results_writer": bool(re.search(r'ResultsWriter', content)),
-            "has_mlflow": bool(re.search(r'\bmlflow\b', content)),
-            "has_quarto": bool(re.search(r'\bquarto\b', content)),
-            "has_config_snapshot": bool(re.search(r'config_snapshot', content)),
-            "has_stats_json": bool(re.search(r'stats\.json', content)),
-            "has_equity_csv": bool(re.search(r'equity\.csv', content)),
+            "has_results_path": bool(re.search(r"results[/\\]", content)),
+            "has_run_id": bool(re.search(r"\brun_id\b", content)),
+            "has_results_writer": bool(re.search(r"ResultsWriter", content)),
+            "has_mlflow": bool(re.search(r"\bmlflow\b", content)),
+            "has_quarto": bool(re.search(r"\bquarto\b", content)),
+            "has_config_snapshot": bool(re.search(r"config_snapshot", content)),
+            "has_stats_json": bool(re.search(r"stats\.json", content)),
+            "has_equity_csv": bool(re.search(r"equity\.csv", content)),
         }
     except Exception:
         return {}
@@ -117,12 +118,14 @@ def determine_readiness(tokens: Dict[str, bool]) -> str:
         return "READY"
 
     # PARTIAL: mindestens eines der Signale
-    if any([
-        tokens.get("has_results_path"),
-        tokens.get("has_run_id"),
-        tokens.get("has_results_writer"),
-        tokens.get("has_mlflow")
-    ]):
+    if any(
+        [
+            tokens.get("has_results_path"),
+            tokens.get("has_run_id"),
+            tokens.get("has_results_writer"),
+            tokens.get("has_mlflow"),
+        ]
+    ):
         return "PARTIAL"
 
     return "TODO"
@@ -151,20 +154,24 @@ def extract_purpose_from_help(help_text: Optional[str], docstring: Optional[str]
     # Versuche aus --help
     if help_text:
         # Erste Zeile nach usage
-        lines = [l.strip() for l in help_text.split('\n') if l.strip()]
+        lines = [l.strip() for l in help_text.split("\n") if l.strip()]
         for line in lines:
-            if not line.startswith('usage:') and not line.startswith('positional') and len(line) > 20:
+            if (
+                not line.startswith("usage:")
+                and not line.startswith("positional")
+                and len(line) > 20
+            ):
                 purpose = line[:120]
-                if not purpose.endswith('.'):
-                    purpose += '...'
+                if not purpose.endswith("."):
+                    purpose += "..."
                 return purpose
 
     # Fallback: docstring
     if docstring:
-        first_line = docstring.split('\n')[0].strip()
+        first_line = docstring.split("\n")[0].strip()
         purpose = first_line[:120]
-        if not purpose.endswith('.'):
-            purpose += '...'
+        if not purpose.endswith("."):
+            purpose += "..."
         return purpose
 
     return "unknown"
@@ -174,12 +181,12 @@ def extract_example_command(script_path: str, help_text: Optional[str]) -> str:
     """Extrahiere Beispiel-Command"""
     if help_text:
         # Check ob required args existieren
-        if 'required' not in help_text.lower() or '--help' in help_text:
+        if "required" not in help_text.lower() or "--help" in help_text:
             # Einfach --help zeigen
             return f"python {script_path} --help"
         else:
             # Zeige usage line wenn möglich
-            usage_match = re.search(r'usage:\s+(.+)', help_text)
+            usage_match = re.search(r"usage:\s+(.+)", help_text)
             if usage_match:
                 return usage_match.group(1).strip()
 
@@ -278,14 +285,10 @@ def determine_p1_priority(runners: List[Dict]) -> List[Dict]:
 def main():
     parser = argparse.ArgumentParser(description="Curate Runner Index (Tier A)")
     parser.add_argument(
-        "--index",
-        default="docs/dev/RUNNER_INDEX.md",
-        help="Path to RUNNER_INDEX.md"
+        "--index", default="docs/dev/RUNNER_INDEX.md", help="Path to RUNNER_INDEX.md"
     )
     parser.add_argument(
-        "--output",
-        default="results/dev/runner_index_curation.json",
-        help="Output JSON path"
+        "--output", default="results/dev/runner_index_curation.json", help="Output JSON path"
     )
     args = parser.parse_args()
 
@@ -328,7 +331,7 @@ def main():
             "todo": sum(1 for r in runners if r["readiness"] == "TODO"),
             "p1_must": [r["script_name"] for r in runners if r["priority"] == "MUST"],
             "p1_should": [r["script_name"] for r in runners if r["priority"] == "SHOULD"],
-        }
+        },
     }
 
     # Write output
@@ -340,10 +343,10 @@ def main():
     print(f"  PARTIAL: {output_data['summary']['partial']}")
     print(f"  TODO: {output_data['summary']['todo']}")
     print(f"\nP1 MUST integrate first:")
-    for script in output_data['summary']['p1_must']:
+    for script in output_data["summary"]["p1_must"]:
         print(f"  - {script}")
     print(f"\nP1 SHOULD integrate next:")
-    for script in output_data['summary']['p1_should']:
+    for script in output_data["summary"]["p1_should"]:
         print(f"  - {script}")
     print(f"\nResults saved to: {output_path}")
 
