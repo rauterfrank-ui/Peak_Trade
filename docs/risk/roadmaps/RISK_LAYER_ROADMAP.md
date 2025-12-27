@@ -24,6 +24,22 @@ Der Risk Layer ist das **kritische Fundament** von Peak_Trade. Ohne 100% Complet
 
 ---
 
+## 🔒 Governance & Safety
+
+**⚠️ CRITICAL: Risk Layer MUST remain disabled by default.**
+
+Enabling the Risk Layer (`[risk_layer] enabled = true`) requires:
+
+1. **Governance Approval:** Formal Go/No-Go decision documented
+2. **Operator Runbook:** Step-by-step manual procedures for enable/disable
+3. **Shadow/Testnet First:** Complete validation in non-live environment
+4. **Manual-Only Operation:** No automated enable; requires explicit human action
+5. **Rollback Plan:** Pre-defined revert process
+
+**Default State:** `enabled = false` — This is NOT negotiable without governance review.
+
+---
+
 ## 🎯 Phasen-Übersicht
 
 | Phase | Name | Dauer | Status | Kritikalität |
@@ -135,7 +151,7 @@ Der Risk Layer ist das **kritische Fundament** von Peak_Trade. Ohne 100% Complet
 
 Mit Phase 0 abgeschlossen können wir direkt in Phase 1 starten:
 - Types sind definiert → nur noch Implementierung hinzufügen
-- Config ist bereit → nur `enabled = true` setzen
+- Config ist bereit → remains `enabled = false` (requires governance approval to enable)
 - Tests laufen → nur Business Logic Tests ergänzen
 
 **Phase 1 startet mit:**
@@ -239,6 +255,7 @@ def calculate_portfolio_var(
 
 ```toml
 # config/risk_limits.toml
+# NOTE: Example config only. Production requires governance approval.
 
 [var]
 confidence_level = 0.95           # 95% VaR
@@ -247,7 +264,7 @@ lookback_days = 252               # 1 Jahr
 min_observations = 60             # Mindestens 60 Tage
 
 [cvar]
-enabled = true
+enabled = false  # Example shows true; production requires governance
 threshold_percent = 5.0           # Alarm bei >5% CVaR
 
 [portfolio]
@@ -920,23 +937,24 @@ class RiskEngine:
 
 ```toml
 # config/defense_in_depth.toml
+# NOTE: Example config only. All layers require governance approval for production.
 
 [layer1_pre_trade]
-enabled = true
+enabled = false  # Example; requires governance
 allowed_pairs = ["BTC/EUR", "ETH/EUR", "LTC/EUR"]
 min_order_value_eur = 10.0
 max_order_value_eur = 10000.0
 rate_limit_orders_per_minute = 10
 
 [layer2_position]
-enabled = true
+enabled = false  # Example; requires governance
 max_position_pct = 25.0           # Max 25% in einer Position
 stop_loss_mandatory = true
 max_stop_loss_pct = 5.0           # Stop max 5% vom Entry
 position_var_limit_pct = 3.0      # Max 3% Position-VaR
 
 [layer3_portfolio]
-enabled = true
+enabled = false  # Example; requires governance
 max_portfolio_var_pct = 2.0
 max_portfolio_cvar_pct = 3.0
 max_drawdown_pct = 15.0
@@ -944,7 +962,7 @@ daily_loss_limit_pct = 1.0
 max_concentration_pct = 40.0      # Kein Asset > 40%
 
 [layer4_kill_switch]
-enabled = true
+enabled = false  # Example; requires governance
 auto_trigger_drawdown_pct = 20.0  # Auto-Kill bei -20%
 auto_trigger_daily_loss_pct = 3.0 # Auto-Kill bei -3% am Tag
 reset_code = "PEAK_RESET_2025"    # Für Reset erforderlich
