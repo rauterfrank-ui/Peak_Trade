@@ -26,6 +26,7 @@ Exit Codes:
     0 = Smoke-Test bestanden
     1 = Smoke-Test fehlgeschlagen
 """
+
 from __future__ import annotations
 
 import argparse
@@ -53,6 +54,7 @@ from src.core.environment import EnvironmentConfig, TradingEnvironment
 @dataclass
 class SmokeTestResult:
     """Ergebnis eines einzelnen Smoke-Tests."""
+
     name: str
     passed: bool
     message: str
@@ -63,17 +65,18 @@ class SmokeTestResult:
 @dataclass
 class SmokeTestReport:
     """Gesamtbericht aller Smoke-Tests."""
+
     tests: List[SmokeTestResult]
     total_duration_ms: float = 0.0
-    
+
     @property
     def all_passed(self) -> bool:
         return all(t.passed for t in self.tests)
-    
+
     @property
     def passed_count(self) -> int:
         return sum(1 for t in self.tests if t.passed)
-    
+
     @property
     def failed_count(self) -> int:
         return sum(1 for t in self.tests if not t.passed)
@@ -90,12 +93,12 @@ def smoke_test_config_load(config_path: Path) -> SmokeTestResult:
     try:
         cfg = load_config(config_path)
         duration = (time.perf_counter() - start) * 1000
-        
+
         # Basis-Checks
         details = [
             f"exchange.default_type: {cfg.get('exchange.default_type', 'N/A')}",
         ]
-        
+
         return SmokeTestResult(
             name="Config laden",
             passed=True,
@@ -118,25 +121,25 @@ def smoke_test_dummy_client(config_path: Path) -> SmokeTestResult:
     start = time.perf_counter()
     try:
         from src.exchange.dummy_client import DummyExchangeClient
-        
+
         cfg = load_config(config_path)
-        
+
         # Preise aus Config oder Defaults
         prices = cfg.get("exchange.dummy.simulated_prices", {})
         if not prices:
             prices = {"BTC/EUR": 50000.0, "ETH/EUR": 3000.0}
-        
+
         fee_bps = cfg.get("exchange.dummy.fee_bps", 10.0)
         slippage_bps = cfg.get("exchange.dummy.slippage_bps", 5.0)
-        
+
         client = DummyExchangeClient(
             simulated_prices=prices,
             fee_bps=fee_bps,
             slippage_bps=slippage_bps,
         )
-        
+
         duration = (time.perf_counter() - start) * 1000
-        
+
         return SmokeTestResult(
             name="DummyExchangeClient",
             passed=True,
@@ -163,17 +166,17 @@ def smoke_test_safety_guard(config_path: Path) -> SmokeTestResult:
     start = time.perf_counter()
     try:
         from src.live.safety import SafetyGuard
-        
+
         cfg = load_config(config_path)
         env_config = EnvironmentConfig(
             environment=TradingEnvironment.TESTNET,
             enable_live_trading=False,
         )
-        
+
         guard = SafetyGuard(env_config=env_config)
-        
+
         duration = (time.perf_counter() - start) * 1000
-        
+
         return SmokeTestResult(
             name="SafetyGuard",
             passed=True,
@@ -197,24 +200,24 @@ def smoke_test_exchange_executor(config_path: Path) -> SmokeTestResult:
         from src.exchange.dummy_client import DummyExchangeClient
         from src.orders.exchange import ExchangeOrderExecutor
         from src.live.safety import SafetyGuard
-        
+
         cfg = load_config(config_path)
         env_config = EnvironmentConfig(
             environment=TradingEnvironment.TESTNET,
             enable_live_trading=False,
         )
         guard = SafetyGuard(env_config=env_config)
-        
+
         prices = cfg.get("exchange.dummy.simulated_prices", {"BTC/EUR": 50000.0})
         client = DummyExchangeClient(simulated_prices=prices)
-        
+
         executor = ExchangeOrderExecutor(
             safety_guard=guard,
             trading_client=client,
         )
-        
+
         duration = (time.perf_counter() - start) * 1000
-        
+
         return SmokeTestResult(
             name="ExchangeOrderExecutor",
             passed=True,
@@ -238,12 +241,12 @@ def smoke_test_order_placement(config_path: Path) -> SmokeTestResult:
     try:
         from src.exchange.dummy_client import DummyExchangeClient
         from src.exchange.base import ExchangeOrderStatus
-        
+
         cfg = load_config(config_path)
         prices = cfg.get("exchange.dummy.simulated_prices", {"BTC/EUR": 50000.0})
-        
+
         client = DummyExchangeClient(simulated_prices=prices)
-        
+
         # Market-Order platzieren
         symbol = list(prices.keys())[0] if prices else "BTC/EUR"
         order_id = client.place_order(
@@ -252,12 +255,12 @@ def smoke_test_order_placement(config_path: Path) -> SmokeTestResult:
             quantity=0.001,
             order_type="market",
         )
-        
+
         # Status prüfen
         status = client.get_order_status(order_id)
-        
+
         duration = (time.perf_counter() - start) * 1000
-        
+
         if status.status == ExchangeOrderStatus.FILLED:
             return SmokeTestResult(
                 name="Order-Platzierung",
@@ -296,22 +299,22 @@ def smoke_test_executor_order(config_path: Path) -> SmokeTestResult:
         from src.orders.exchange import ExchangeOrderExecutor
         from src.orders.base import OrderRequest
         from src.live.safety import SafetyGuard
-        
+
         cfg = load_config(config_path)
         env_config = EnvironmentConfig(
             environment=TradingEnvironment.TESTNET,
             enable_live_trading=False,
         )
         guard = SafetyGuard(env_config=env_config)
-        
+
         prices = cfg.get("exchange.dummy.simulated_prices", {"BTC/EUR": 50000.0})
         client = DummyExchangeClient(simulated_prices=prices)
-        
+
         executor = ExchangeOrderExecutor(
             safety_guard=guard,
             trading_client=client,
         )
-        
+
         # Order erstellen
         symbol = list(prices.keys())[0] if prices else "BTC/EUR"
         order = OrderRequest(
@@ -320,12 +323,12 @@ def smoke_test_executor_order(config_path: Path) -> SmokeTestResult:
             quantity=0.001,
             order_type="market",
         )
-        
+
         # Ausführen
         result = executor.execute_order(order)
-        
+
         duration = (time.perf_counter() - start) * 1000
-        
+
         if result.status == "filled":
             return SmokeTestResult(
                 name="Executor-Order",
@@ -362,12 +365,12 @@ def smoke_test_order_cancel(config_path: Path) -> SmokeTestResult:
     try:
         from src.exchange.dummy_client import DummyExchangeClient
         from src.exchange.base import ExchangeOrderStatus
-        
+
         cfg = load_config(config_path)
         prices = cfg.get("exchange.dummy.simulated_prices", {"BTC/EUR": 50000.0})
-        
+
         client = DummyExchangeClient(simulated_prices=prices)
-        
+
         # Limit-Order platzieren (bleibt offen)
         symbol = list(prices.keys())[0] if prices else "BTC/EUR"
         order_id = client.place_order(
@@ -377,15 +380,15 @@ def smoke_test_order_cancel(config_path: Path) -> SmokeTestResult:
             order_type="limit",
             limit_price=40000.0,  # Unter aktuellem Preis
         )
-        
+
         # Stornieren
         cancelled = client.cancel_order(order_id)
-        
+
         # Status prüfen
         status = client.get_order_status(order_id)
-        
+
         duration = (time.perf_counter() - start) * 1000
-        
+
         if cancelled and status.status == ExchangeOrderStatus.CANCELLED:
             return SmokeTestResult(
                 name="Order-Cancel",
@@ -419,16 +422,16 @@ def smoke_test_order_cancel(config_path: Path) -> SmokeTestResult:
 def run_smoke_tests(config_path: Path) -> SmokeTestReport:
     """
     Führt alle Smoke-Tests aus.
-    
+
     Args:
         config_path: Pfad zur Config-Datei
-    
+
     Returns:
         SmokeTestReport mit allen Ergebnissen
     """
     total_start = time.perf_counter()
     tests: List[SmokeTestResult] = []
-    
+
     # Tests ausführen
     tests.append(smoke_test_config_load(config_path))
     tests.append(smoke_test_dummy_client(config_path))
@@ -437,9 +440,9 @@ def run_smoke_tests(config_path: Path) -> SmokeTestReport:
     tests.append(smoke_test_order_placement(config_path))
     tests.append(smoke_test_executor_order(config_path))
     tests.append(smoke_test_order_cancel(config_path))
-    
+
     total_duration = (time.perf_counter() - total_start) * 1000
-    
+
     return SmokeTestReport(tests=tests, total_duration_ms=total_duration)
 
 
@@ -471,63 +474,67 @@ Beispiele:
   python scripts/smoke_test_testnet_stack.py --config config/config.test.toml
         """,
     )
-    
+
     parser.add_argument(
         "--config",
         dest="config_path",
         default=None,
         help="Pfad zur Config-Datei (Default: config/config.toml)",
     )
-    
+
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe mit Details",
     )
-    
+
     parser.add_argument(
-        "--quiet", "-q",
+        "--quiet",
+        "-q",
         action="store_true",
         help="Nur Ergebnis (PASSED/FAILED) ausgeben",
     )
-    
+
     return parser.parse_args(argv)
 
 
 def print_report(report: SmokeTestReport, verbose: bool, quiet: bool) -> None:
     """Gibt den Report aus."""
-    
+
     if quiet:
         if report.all_passed:
             print("PASSED")
         else:
             print("FAILED")
         return
-    
+
     # Header
     print()
     print("=" * 70)
     print("  Peak_Trade Testnet-Stack Smoke-Test")
     print("=" * 70)
     print()
-    
+
     # Tests
     for test in report.tests:
         icon = "✅" if test.passed else "❌"
         time_str = f"({test.duration_ms:.1f}ms)" if test.duration_ms else ""
         print(f"  {icon} {test.name}: {test.message} {time_str}")
-        
+
         if verbose and test.details:
             for detail in test.details:
                 print(f"      └─ {detail}")
-    
+
     # Summary
     print()
     print("-" * 70)
     if report.all_passed:
         print(f"  ✅ Smoke-Test BESTANDEN ({report.passed_count}/{len(report.tests)} Tests)")
     else:
-        print(f"  ❌ Smoke-Test FEHLGESCHLAGEN ({report.failed_count} von {len(report.tests)} Tests fehlgeschlagen)")
+        print(
+            f"  ❌ Smoke-Test FEHLGESCHLAGEN ({report.failed_count} von {len(report.tests)} Tests fehlgeschlagen)"
+        )
     print(f"  ⏱  Gesamtzeit: {report.total_duration_ms:.1f}ms")
     print()
 
@@ -535,31 +542,30 @@ def print_report(report: SmokeTestReport, verbose: bool, quiet: bool) -> None:
 def main(argv: Optional[List[str]] = None) -> int:
     """
     Hauptfunktion.
-    
+
     Returns:
         Exit-Code: 0 = alle Tests bestanden, 1 = mindestens ein Test fehlgeschlagen
     """
     args = parse_args(argv)
-    
+
     # Logging reduzieren
     logging.getLogger("src").setLevel(logging.WARNING)
     logging.getLogger("src.exchange").setLevel(logging.WARNING)
-    
+
     # Config-Pfad bestimmen
     if args.config_path:
         config_path = Path(args.config_path)
     else:
         config_path = ROOT_DIR / "config" / "config.toml"
-    
+
     # Smoke-Tests ausführen
     report = run_smoke_tests(config_path)
-    
+
     # Report ausgeben
     print_report(report, verbose=args.verbose, quiet=args.quiet)
-    
+
     return 0 if report.all_passed else 1
 
 
 if __name__ == "__main__":
     sys.exit(main())
-

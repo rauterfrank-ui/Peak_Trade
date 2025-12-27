@@ -21,6 +21,7 @@ Usage:
     )
     section = build_regime_report_section(regime_stats)
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -70,15 +71,27 @@ class RegimeBucketMetrics:
         """Konvertiert zu Dictionary für Tabellen."""
         return {
             "Regime": self.name,
-            "Bars [%]": f"{self.time_share_pct:.1f}%" if self.time_share_pct is not None else f"{self.time_fraction:.1%}",
+            "Bars [%]": (
+                f"{self.time_share_pct:.1f}%"
+                if self.time_share_pct is not None
+                else f"{self.time_fraction:.1%}"
+            ),
             "Time Fraction": f"{self.time_fraction:.1%}",
             "Total Return": format_metric(self.return_total, "return"),
-            "Return Contribution [%]": f"{self.return_contribution_pct:.1f}%" if self.return_contribution_pct is not None else "N/A",
-            "Annualized Return": format_metric(self.return_annualized, "return") if self.return_annualized else "N/A",
+            "Return Contribution [%]": (
+                f"{self.return_contribution_pct:.1f}%"
+                if self.return_contribution_pct is not None
+                else "N/A"
+            ),
+            "Annualized Return": (
+                format_metric(self.return_annualized, "return") if self.return_annualized else "N/A"
+            ),
             "Sharpe": f"{self.sharpe:.2f}" if self.sharpe is not None else "N/A",
             "Max Drawdown": format_metric(self.max_drawdown, "drawdown"),
             "Trades": str(self.num_trades),
-            "Win Rate": format_metric(self.win_rate, "win_rate") if self.win_rate is not None else "N/A",
+            "Win Rate": (
+                format_metric(self.win_rate, "win_rate") if self.win_rate is not None else "N/A"
+            ),
         }
 
 
@@ -139,7 +152,9 @@ def compute_regime_stats(
         )
 
     # Aligniere Indizes
-    common_index = equity_series.index.intersection(returns_series.index).intersection(regime_series.index)
+    common_index = equity_series.index.intersection(returns_series.index).intersection(
+        regime_series.index
+    )
     if len(common_index) == 0:
         raise ValueError("Keine gemeinsamen Indizes zwischen Series gefunden")
 
@@ -148,7 +163,11 @@ def compute_regime_stats(
     regime_aligned = regime_series.reindex(common_index).fillna(0).astype(int)
 
     # Gesamt-Metriken
-    overall_return = float((equity_aligned.iloc[-1] / equity_aligned.iloc[0]) - 1.0) if len(equity_aligned) > 0 else 0.0
+    overall_return = (
+        float((equity_aligned.iloc[-1] / equity_aligned.iloc[0]) - 1.0)
+        if len(equity_aligned) > 0
+        else 0.0
+    )
 
     # Sharpe-Ratio (annualisiert, falls möglich)
     overall_sharpe = None
@@ -201,7 +220,9 @@ def compute_regime_stats(
             time_span_days = (regime_returns.index[-1] - regime_returns.index[0]).days
             if time_span_days > 0:
                 periods_per_year = (len(regime_returns) / time_span_days) * 365.25
-                regime_return_annualized = float((1.0 + regime_return) ** (periods_per_year / len(regime_returns)) - 1.0)
+                regime_return_annualized = float(
+                    (1.0 + regime_return) ** (periods_per_year / len(regime_returns)) - 1.0
+                )
 
         # Sharpe-Ratio
         sharpe = None
@@ -246,14 +267,18 @@ def compute_regime_stats(
 
         # Warnung bei sehr kurzem Sample
         if time_fraction < 0.05:
-            notes.append(f"{regime_names.get(regime_val, f'Regime {regime_val}')} hat nur {time_fraction:.1%} der Zeit - Metriken möglicherweise unzuverlässig")
+            notes.append(
+                f"{regime_names.get(regime_val, f'Regime {regime_val}')} hat nur {time_fraction:.1%} der Zeit - Metriken möglicherweise unzuverlässig"
+            )
 
         bucket = RegimeBucketMetrics(
             regime_value=regime_val,
             name=regime_names.get(regime_val, f"Regime {regime_val}"),
             time_fraction=time_fraction,
             return_total=regime_return,
-            return_annualized=regime_return_annualized if regime_return_annualized is not None else 0.0,
+            return_annualized=(
+                regime_return_annualized if regime_return_annualized is not None else 0.0
+            ),
             sharpe=sharpe,
             max_drawdown=max_dd,
             num_trades=num_trades,
@@ -277,7 +302,11 @@ def compute_regime_stats(
             bucket.return_contribution_pct = float((bucket.return_total / total_return_sum) * 100.0)
         elif overall_return != 0.0:
             # Fallback: Nutze overall_return wenn total_return_sum 0 ist
-            bucket.return_contribution_pct = float((bucket.return_total / overall_return) * 100.0) if overall_return != 0.0 else None
+            bucket.return_contribution_pct = (
+                float((bucket.return_total / overall_return) * 100.0)
+                if overall_return != 0.0
+                else None
+            )
         else:
             bucket.return_contribution_pct = None
 
@@ -329,7 +358,11 @@ def build_regime_report_section(regime_stats: RegimeStatsSummary) -> ReportSecti
     neutral_bucket = next((b for b in regime_stats.buckets if b.regime_value == 0), None)
 
     if risk_on_bucket:
-        contribution_pct = (risk_on_bucket.return_total / regime_stats.overall_return * 100) if regime_stats.overall_return != 0 else 0
+        contribution_pct = (
+            (risk_on_bucket.return_total / regime_stats.overall_return * 100)
+            if regime_stats.overall_return != 0
+            else 0
+        )
         summary_lines.append(
             f"- **Risk-On** trägt {contribution_pct:.1f}% zur Gesamtrendite bei "
             f"({risk_on_bucket.time_fraction:.1%} der Zeit, {risk_on_bucket.num_trades} Trades)"
@@ -358,18 +391,23 @@ def build_regime_report_section(regime_stats: RegimeStatsSummary) -> ReportSecti
         for note in regime_stats.notes:
             summary_lines.append(f"- {note}")
 
-    content = "\n\n".join([
-        "### Regime-Performance Übersicht",
-        "",
-        table_md,
-        "",
-        "### Zusammenfassung",
-        "",
-        "\n".join(summary_lines) if summary_lines else "*Keine zusätzlichen Informationen verfügbar*",
-    ])
+    content = "\n\n".join(
+        [
+            "### Regime-Performance Übersicht",
+            "",
+            table_md,
+            "",
+            "### Zusammenfassung",
+            "",
+            (
+                "\n".join(summary_lines)
+                if summary_lines
+                else "*Keine zusätzlichen Informationen verfügbar*"
+            ),
+        ]
+    )
 
     return ReportSection(
         title="Regime-Analyse",
         content_markdown=content,
     )
-

@@ -390,7 +390,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 * bounded_auto darf erst aktiviert werden, wenn **alle oben relevanten Checkboxen** bewusst abgehakt wurden
   und der Operator die Freigabe explizit erteilt.
 
-→ Siehe auch: 
+→ Siehe auch:
 - **[config/promotion_loop_config.toml](../config/promotion_loop_config.toml)** - Sektion "UMSCHALTEN AUF bounded_auto"
 - **[PROMOTION_LOOP_SAFETY_FEATURES.md](./PROMOTION_LOOP_SAFETY_FEATURES.md)** - P0/P1 Safety Details
 

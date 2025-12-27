@@ -488,40 +488,40 @@ Phase 41 ist **rein Research/Backtest-fokussiert**:
 
 ### Aktuelle Einschränkungen
 
-1. **Metrik-Namen-Varianten**: 
+1. **Metrik-Namen-Varianten**:
    - Beim Report-Generieren kann es zu Warnungen kommen, wenn `metric_sharpe_ratio` nicht gefunden wird
    - Automatischer Fallback auf `metric_total_return` funktioniert zuverlässig
    - Nicht kritisch, aber Metrik-Namen könnten konsistenter sein
 
-2. **Pandas FutureWarnings**: 
+2. **Pandas FutureWarnings**:
    - In Tests erscheinen ~134 FutureWarnings bezüglich `.fillna()` Downcasting
    - Betrifft nicht die Sweep-Funktionalität, nur Test-Output
    - Kann in zukünftigen Pandas-Versionen behoben werden
 
-3. **Sharpe-Ratio-Berechnung**: 
+3. **Sharpe-Ratio-Berechnung**:
    - Bei sehr kurzen Backtest-Perioden oder geringer Varianz kann Sharpe-Ratio `NaN` sein
    - Report verwendet dann automatisch `total_return` als Sort-Metrik
 
 ### Mögliche zukünftige Erweiterungen
 
-1. **Weitere Sweeps**: 
+1. **Weitere Sweeps**:
    - Zusätzliche vordefinierte Sweeps für weitere Strategien
    - Portfolio-Sweeps mit mehr Kombinationen
 
-2. **Automatisches Top-N-Promoten**: 
+2. **Automatisches Top-N-Promoten**:
    - Beste Konfigurationen automatisch in Config-Registry übernehmen
    - Integration mit Strategy-Registry für "Production-Ready"-Strategien
 
-3. **Erweiterte Visualisierung**: 
+3. **Erweiterte Visualisierung**:
    - Interaktive Dashboards (z.B. Plotly)
    - Parameter-Sensitivity-Analysen
    - Walk-Forward-Heatmaps
 
-4. **Performance-Optimierung**: 
+4. **Performance-Optimierung**:
    - Caching von Backtest-Ergebnissen
    - Parallele Execution für große Sweeps (bereits implementiert, aber erweiterbar)
 
-5. **Integration mit Live-System**: 
+5. **Integration mit Live-System**:
    - Beste Parameter automatisch in Testnet/Live übernehmen
    - Monitoring der Live-Performance vs. Backtest-Performance
 

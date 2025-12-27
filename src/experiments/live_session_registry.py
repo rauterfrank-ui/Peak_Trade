@@ -52,6 +52,7 @@ See also:
     - src/execution/live_session.py (LiveSessionRunner, LiveSessionConfig)
     - src/experiments/base.py (SweepResultRow, ExperimentResult pattern)
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -209,12 +210,8 @@ def _ensure_dir(base_dir: Path) -> None:
 def _build_session_filename(record: LiveSessionRecord) -> str:
     """Erzeugt einen stabilen Dateinamen für eine Session-JSON-Datei."""
     ts = record.started_at.strftime("%Y%m%dT%H%M%S")
-    safe_session_id = (
-        record.session_id.replace("/", "_").replace(":", "_").replace(" ", "_")
-    )
-    safe_run_type = (
-        record.run_type.replace("/", "_").replace(":", "_").replace(" ", "_")
-    )
+    safe_session_id = record.session_id.replace("/", "_").replace(":", "_").replace(" ", "_")
+    safe_run_type = record.run_type.replace("/", "_").replace(":", "_").replace(" ", "_")
     return f"{ts}_{safe_run_type}_{safe_session_id}.json"
 
 
@@ -377,13 +374,9 @@ def get_session_summary(
     status_counter = Counter(r.status for r in records)
     tier_counter = Counter(r.strategy_tier or "unclassified" for r in records)
 
-    total_realized_pnl = sum(
-        float(r.metrics.get("realized_pnl", 0.0)) for r in records
-    )
+    total_realized_pnl = sum(float(r.metrics.get("realized_pnl", 0.0)) for r in records)
     dd_values = [
-        float(r.metrics.get("max_drawdown", 0.0))
-        for r in records
-        if "max_drawdown" in r.metrics
+        float(r.metrics.get("max_drawdown", 0.0)) for r in records if "max_drawdown" in r.metrics
     ]
     avg_max_drawdown = sum(dd_values) / len(dd_values) if dd_values else 0.0
 
@@ -400,12 +393,10 @@ def get_session_summary(
     # R&D-Summary wenn R&D-Sessions vorhanden
     r_and_d_records = [r for r in records if r.strategy_tier == "r_and_d"]
     if r_and_d_records:
-        r_and_d_pnl = sum(
-            float(r.metrics.get("realized_pnl", 0.0)) for r in r_and_d_records
+        r_and_d_pnl = sum(float(r.metrics.get("realized_pnl", 0.0)) for r in r_and_d_records)
+        r_and_d_strategies = list(
+            set(r.config.get("strategy_name", "unknown") for r in r_and_d_records)
         )
-        r_and_d_strategies = list(set(
-            r.config.get("strategy_name", "unknown") for r in r_and_d_records
-        ))
         result["r_and_d_summary"] = {
             "num_sessions": len(r_and_d_records),
             "total_realized_pnl": r_and_d_pnl,

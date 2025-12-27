@@ -12,6 +12,7 @@ Verfuegbare Detectors:
 Factory:
 - make_regime_detector(): Erstellt Detector aus Config
 """
+
 from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
@@ -37,6 +38,7 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # VOLATILITY REGIME DETECTOR
 # ============================================================================
+
 
 class VolatilityRegimeDetector:
     """
@@ -90,7 +92,9 @@ class VolatilityRegimeDetector:
         tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
 
         # ATR (EMA des True Range)
-        atr = tr.ewm(span=self.config.vol_window, min_periods=self.config.vol_window, adjust=False).mean()
+        atr = tr.ewm(
+            span=self.config.vol_window, min_periods=self.config.vol_window, adjust=False
+        ).mean()
 
         return atr
 
@@ -147,7 +151,9 @@ class VolatilityRegimeDetector:
         required_cols = ["high", "low", "close"]
         for col in required_cols:
             if col not in df.columns:
-                raise ValueError(f"Spalte '{col}' nicht in DataFrame. Verfuegbar: {list(df.columns)}")
+                raise ValueError(
+                    f"Spalte '{col}' nicht in DataFrame. Verfuegbar: {list(df.columns)}"
+                )
 
         n_bars = len(df)
 
@@ -221,6 +227,7 @@ class VolatilityRegimeDetector:
 # ============================================================================
 # RANGE COMPRESSION REGIME DETECTOR
 # ============================================================================
+
 
 class RangeCompressionRegimeDetector:
     """
@@ -313,7 +320,9 @@ class RangeCompressionRegimeDetector:
         required_cols = ["high", "low", "close"]
         for col in required_cols:
             if col not in df.columns:
-                raise ValueError(f"Spalte '{col}' nicht in DataFrame. Verfuegbar: {list(df.columns)}")
+                raise ValueError(
+                    f"Spalte '{col}' nicht in DataFrame. Verfuegbar: {list(df.columns)}"
+                )
 
         n_bars = len(df)
 
@@ -333,8 +342,7 @@ class RangeCompressionRegimeDetector:
 
         # Perzentile der Range-Ratio
         ratio_percentile = range_ratio.rolling(
-            window=self.config.lookback_window,
-            min_periods=self.config.range_compression_window
+            window=self.config.lookback_window, min_periods=self.config.range_compression_window
         ).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1], raw=False)
 
         # Regime-Klassifikation
@@ -388,6 +396,7 @@ class RangeCompressionRegimeDetector:
 # FACTORY FUNCTION
 # ============================================================================
 
+
 def make_regime_detector(
     config: RegimeDetectorConfig,
 ) -> Optional[RegimeSeriesDetector]:
@@ -420,7 +429,9 @@ def make_regime_detector(
         return VolatilityRegimeDetector(config)
 
     elif detector_name in ("range_compression", "range", "compression"):
-        logger.info(f"Erstelle RangeCompressionRegimeDetector mit window={config.range_compression_window}")
+        logger.info(
+            f"Erstelle RangeCompressionRegimeDetector mit window={config.range_compression_window}"
+        )
         return RangeCompressionRegimeDetector(config)
 
     else:

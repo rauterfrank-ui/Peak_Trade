@@ -14,6 +14,7 @@ Environments:
 WICHTIG: In Phase 17 werden KEINE echten Orders gesendet.
          Testnet/Live sind nur als Architektur vorbereitet.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -62,6 +63,8 @@ class EnvironmentConfig:
         max_live_notional_per_order: Max. Notional pro einzelner Live-Order (Phase 71: Design)
         max_live_notional_total: Max. Gesamt-Notional für Live-Orders (Phase 71: Design)
         live_trade_min_size: Min. Order-Größe für Live-Trades (Phase 71: Design)
+        knowledge_readonly: Wenn True, blockiert alle Schreibzugriffe auf Knowledge DB
+                           (Vector DB, Time-Series DB, RAG add_documents)
 
     Safety-Hinweise:
         - enable_live_trading = False blockt alle echten Orders
@@ -83,6 +86,8 @@ class EnvironmentConfig:
     max_live_notional_per_order: Optional[float] = None
     max_live_notional_total: Optional[float] = None
     live_trade_min_size: Optional[float] = None
+    # Knowledge DB Access Control
+    knowledge_readonly: bool = False
 
     def __post_init__(self) -> None:
         """Validierung und Typ-Konvertierung nach Initialisierung."""
@@ -172,9 +177,7 @@ def get_environment_from_config(peak_config: PeakConfig) -> EnvironmentConfig:
     return EnvironmentConfig(
         environment=environment,
         enable_live_trading=peak_config.get("environment.enable_live_trading", False),
-        require_confirm_token=peak_config.get(
-            "environment.require_confirm_token", True
-        ),
+        require_confirm_token=peak_config.get("environment.require_confirm_token", True),
         confirm_token=peak_config.get("environment.confirm_token", None),
         testnet_dry_run=peak_config.get("environment.testnet_dry_run", True),
         log_all_orders=peak_config.get("environment.log_all_orders", True),
@@ -184,10 +187,9 @@ def get_environment_from_config(peak_config: PeakConfig) -> EnvironmentConfig:
         max_live_notional_per_order=peak_config.get(
             "environment.max_live_notional_per_order", None
         ),
-        max_live_notional_total=peak_config.get(
-            "environment.max_live_notional_total", None
-        ),
+        max_live_notional_total=peak_config.get("environment.max_live_notional_total", None),
         live_trade_min_size=peak_config.get("environment.live_trade_min_size", None),
+        knowledge_readonly=peak_config.get("environment.knowledge_readonly", False),
     )
 
 
@@ -213,6 +215,7 @@ def create_default_environment() -> EnvironmentConfig:
         max_live_notional_per_order=None,
         max_live_notional_total=None,
         live_trade_min_size=None,
+        knowledge_readonly=False,
     )
 
 

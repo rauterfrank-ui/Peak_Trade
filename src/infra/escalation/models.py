@@ -5,6 +5,7 @@ Peak_Trade: Escalation Models (Phase 85)
 
 Datenmodelle für die Eskalations-Integration.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -122,6 +123,3 @@ class EscalationTarget:
             f"EscalationTarget(name={self.name!r}, "
             f"provider={self.provider!r}, min_severity={self.min_severity!r})"
         )
-
-
-

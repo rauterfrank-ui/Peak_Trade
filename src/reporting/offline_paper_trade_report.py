@@ -8,8 +8,10 @@ import pandas as pd
 
 try:
     import matplotlib
+
     matplotlib.use("Agg")  # Non-interactive backend
     import matplotlib.pyplot as plt
+
     HAS_MATPLOTLIB = True
 except ImportError:
     HAS_MATPLOTLIB = False
@@ -185,4 +187,3 @@ def build_offline_paper_trade_report(
 
     report_path.write_text("".join(html_parts), encoding="utf-8")
     return report_path
-

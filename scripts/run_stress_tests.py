@@ -36,6 +36,7 @@ Output:
     - reports/stress/{sweep_name}/config_1/stress_test_report.md
     - reports/stress/{sweep_name}/config_1/stress_test_report.html
 """
+
 from __future__ import annotations
 
 import argparse
@@ -87,8 +88,9 @@ def create_dummy_returns(n_bars: int = 500, seed: int = 42) -> pd.Series:
     """
     np.random.seed(seed)
     from datetime import datetime, timedelta
+
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Simuliere Returns (leicht positiv mit Volatilität)
     returns = np.random.normal(0.0005, 0.02, n_bars)  # ~0.05% pro Stunde, 2% Vol
@@ -104,6 +106,7 @@ def build_stats_fn() -> callable:
     Returns:
         Funktion, die aus Returns Kennzahlen berechnet
     """
+
     def stats_fn(returns_series: pd.Series) -> dict[str, float]:
         # Konvertiere Returns zu Equity-Curve für compute_basic_stats
         equity = (1 + returns_series).cumprod() * 10000  # Startkapital = 10000
@@ -200,7 +203,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Anzahl Bars für Dummy-Daten (default: 500)",
     )
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output",
     )
@@ -248,8 +252,7 @@ def run_from_args(args: argparse.Namespace) -> int:
             if args.use_dummy_data:
                 logger.info("Erstelle Dummy-Konfigurationen für Tests...")
                 top_configs = [
-                    {"config_id": f"dummy_config_{i+1}", "rank": i+1}
-                    for i in range(args.top_n)
+                    {"config_id": f"dummy_config_{i + 1}", "rank": i + 1} for i in range(args.top_n)
                 ]
             else:
                 return 1
@@ -354,11 +357,3 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-
-
-
-
-
-
-

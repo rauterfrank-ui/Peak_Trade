@@ -8,6 +8,7 @@ Testet:
 - Profile-Loader aus Config
 - Profile-Hilfsfunktionen
 """
+
 from __future__ import annotations
 
 from pathlib import Path

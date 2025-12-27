@@ -3,6 +3,7 @@
 Tests für Regime-Aware Reporting (Phase - Regime-Aware Reporting)
 ==================================================================
 """
+
 from __future__ import annotations
 
 import pytest
@@ -49,7 +50,7 @@ class TestComputeRegimeStats:
         """Test grundlegende Regime-Statistik-Berechnung."""
         # Erstelle synthetische Daten
         dates = pd.date_range(start="2023-01-01", periods=100, freq="D")
-        
+
         # Equity: Start bei 10000, steigt in Risk-On, fällt in Risk-Off
         equity = pd.Series(10000.0, index=dates)
         equity.iloc[0:50] = np.linspace(10000, 11000, 50)  # Risk-On: +10%
@@ -94,10 +95,12 @@ class TestComputeRegimeStats:
         regimes = pd.Series([1] * 25 + [0] * 25, index=dates)
 
         # Erstelle Trades
-        trades = pd.DataFrame({
-            "entry_time": [dates[5], dates[15], dates[30], dates[40]],
-            "pnl": [100, -50, 75, -25],
-        })
+        trades = pd.DataFrame(
+            {
+                "entry_time": [dates[5], dates[15], dates[30], dates[40]],
+                "pnl": [100, -50, 75, -25],
+            }
+        )
 
         stats = compute_regime_stats(equity, returns, regimes, trades=trades)
 
@@ -193,7 +196,7 @@ class TestBuildRegimeReportSection:
         """Test Contribution & Time-Share Berechnung."""
         # Erstelle synthetische Daten mit klaren Regime-Phasen
         dates = pd.date_range(start="2023-01-01", periods=6, freq="D")
-        
+
         # Equity: Start bei 10000
         equity = pd.Series(10000.0, index=dates)
         # Returns: Risk-Off: [0.01, -0.01], Neutral: [0.02, 0.00], Risk-On: [0.03, 0.01]
@@ -201,8 +204,8 @@ class TestBuildRegimeReportSection:
         # Equity berechnen
         equity.iloc[0] = 10000.0
         for i in range(1, len(equity)):
-            equity.iloc[i] = equity.iloc[i-1] * (1.0 + returns.iloc[i])
-        
+            equity.iloc[i] = equity.iloc[i - 1] * (1.0 + returns.iloc[i])
+
         # Regime: 2 Risk-Off, 2 Neutral, 2 Risk-On
         regimes = pd.Series([-1, -1, 0, 0, 1, 1], index=dates)
 
@@ -223,7 +226,7 @@ class TestBuildRegimeReportSection:
         # Risk-Off: (1.01 * 0.99 - 1) ≈ -0.0001 ≈ 0%
         # Neutral: (1.02 * 1.00 - 1) = 0.02 = 2%
         # Risk-On: (1.03 * 1.01 - 1) ≈ 0.0403 = 4.03%
-        
+
         risk_off = next((b for b in stats.buckets if b.regime_value == -1), None)
         neutral = next((b for b in stats.buckets if b.regime_value == 0), None)
         risk_on = next((b for b in stats.buckets if b.regime_value == 1), None)
@@ -249,19 +252,18 @@ class TestBuildRegimeReportSection:
         # Equity berechnen
         equity.iloc[0] = 10000.0
         for i in range(1, len(equity)):
-            equity.iloc[i] = equity.iloc[i-1] * (1.0 + returns.iloc[i])
-        
+            equity.iloc[i] = equity.iloc[i - 1] * (1.0 + returns.iloc[i])
+
         regimes = pd.Series([1] * 5 + [-1] * 5, index=dates)
 
         stats = compute_regime_stats(equity, returns, regimes)
 
         # Summe der Contributions sollte ~100% sein
         contrib_sum = sum(
-            b.return_contribution_pct 
-            for b in stats.buckets 
+            b.return_contribution_pct
+            for b in stats.buckets
             if b.return_contribution_pct is not None
         )
-        
+
         # Toleranz: ±5% (wegen Rundungsfehlern)
         assert abs(contrib_sum - 100.0) < 5.0 or contrib_sum == 0.0  # 0% wenn total_return_sum = 0
-

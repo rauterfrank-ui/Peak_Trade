@@ -12,6 +12,7 @@ Usage:
     python scripts/preview_live_portfolio.py --config config/config.toml --no-risk
     python scripts/preview_live_portfolio.py --config config/config.toml --json
 """
+
 from __future__ import annotations
 
 import argparse
@@ -69,7 +70,8 @@ Beispiele:
         help="Starting Cash für prozentuale Daily-Loss-Limits (Default: aus config).",
     )
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Verbose Output.",
     )
@@ -120,7 +122,9 @@ def format_portfolio_snapshot(snapshot: LivePortfolioSnapshot) -> str:
     """
     lines = []
     lines.append("=" * 70)
-    lines.append(f"=== Live Portfolio Snapshot ({snapshot.as_of.strftime('%Y-%m-%d %H:%M:%S')} UTC) ===")
+    lines.append(
+        f"=== Live Portfolio Snapshot ({snapshot.as_of.strftime('%Y-%m-%d %H:%M:%S')} UTC) ==="
+    )
     lines.append("=" * 70)
     lines.append("")
 
@@ -128,7 +132,9 @@ def format_portfolio_snapshot(snapshot: LivePortfolioSnapshot) -> str:
     if snapshot.positions:
         lines.append("Positions:")
         lines.append("-" * 70)
-        lines.append(f"{'symbol':<12} {'side':<6} {'size':>10} {'entry':>12} {'mark':>12} {'notional':>12} {'unreal_pnl':>12}")
+        lines.append(
+            f"{'symbol':<12} {'side':<6} {'size':>10} {'entry':>12} {'mark':>12} {'notional':>12} {'unreal_pnl':>12}"
+        )
         lines.append("-" * 70)
 
         for pos in snapshot.positions:
@@ -335,12 +341,12 @@ def main(argv: list[str] | None = None) -> int:
         return 130
     except Exception as e:
         print(f"❌ Fehler: {e}", file=sys.stderr)
-        if args.verbose if 'args' in locals() else False:
+        if args.verbose if "args" in locals() else False:
             import traceback
+
             traceback.print_exc()
         return 1
 
 
 if __name__ == "__main__":
     sys.exit(main())
-

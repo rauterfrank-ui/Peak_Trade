@@ -10,6 +10,7 @@ import pytest
 def test_can_import_src():
     """Test: src-Paket ist importierbar."""
     import src
+
     assert hasattr(src, "__version__")
 
 

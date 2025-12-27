@@ -44,6 +44,7 @@ except ImportError:
 # Psychology Helper (inline für Standalone-Betrieb)
 # ============================================================================
 
+
 def derive_psychology(
     total_return_pct: float,
     max_drawdown_pct: float,
@@ -51,11 +52,11 @@ def derive_psychology(
 ) -> Dict[str, Any]:
     """
     Leitet Psychologie-Annotation aus Portfolio-Metriken ab.
-    
+
     Returns dict mit: level, level_emoji, notes, und Metriken.
     """
     notes: List[str] = []
-    
+
     # Basis-Level anhand Max-Drawdown
     if max_drawdown_pct <= 30:
         level = "CALM"
@@ -67,40 +68,29 @@ def derive_psychology(
             f"Hoher Max-Drawdown ({max_drawdown_pct:.1f}%) – "
             "psychologisch anspruchsvoll, nur für erfahrene Operatoren."
         )
-    
+
     # Extrem gute Performance → Overconfidence-Risiko
     if total_return_pct >= 150:
         notes.append(
-            f"Sehr hohe Performance ({total_return_pct:.1f}%) – "
-            "Gefahr von Overconfidence."
+            f"Sehr hohe Performance ({total_return_pct:.1f}%) – Gefahr von Overconfidence."
         )
     elif total_return_pct >= 100:
         notes.append(
-            f"Starke Performance ({total_return_pct:.1f}%) – "
-            "nicht als Normalfall interpretieren."
+            f"Starke Performance ({total_return_pct:.1f}%) – nicht als Normalfall interpretieren."
         )
-    
+
     # Extrem schlechte Performance → Panic-Risiko
     if total_return_pct <= -40:
-        notes.append(
-            f"Starke Verluste ({total_return_pct:.1f}%) – "
-            "Gefahr von Panic-Reaktionen."
-        )
+        notes.append(f"Starke Verluste ({total_return_pct:.1f}%) – Gefahr von Panic-Reaktionen.")
         if level == "CALM":
             level = "MEDIUM"
-    
+
     # Trade-Anzahl
     if trades_count < 3:
-        notes.append(
-            f"Sehr wenige Trades ({trades_count}) – "
-            "psychologische Aussagekraft begrenzt."
-        )
+        notes.append(f"Sehr wenige Trades ({trades_count}) – psychologische Aussagekraft begrenzt.")
     elif trades_count > 100:
-        notes.append(
-            f"Viele Trades ({trades_count}) – "
-            "Gefahr von Overtrading & Decision-Fatigue."
-        )
-    
+        notes.append(f"Viele Trades ({trades_count}) – Gefahr von Overtrading & Decision-Fatigue.")
+
     # Default-Notes
     if not notes:
         if level == "CALM":
@@ -109,9 +99,9 @@ def derive_psychology(
             notes.append("Mittlere Schwankungen – bewusstes Risikomanagement nötig.")
         else:
             notes.append("Spicy Profil – nur für erfahrene Operatoren geeignet.")
-    
+
     level_emoji = {"CALM": "🧘", "MEDIUM": "⚠️", "SPICY": "🔥"}.get(level, "❓")
-    
+
     return {
         "level": level,
         "level_emoji": level_emoji,
@@ -126,31 +116,33 @@ def derive_psychology(
 # Expectations Configuration
 # ============================================================================
 
+
 @dataclass
 class PortfolioExpectations:
     """
     Health-Expectations für Portfolio-Smoketests.
-    
+
     Konservative Defaults für Stabilität (keine Outperformance-Optimierung).
     """
+
     # Runtime
-    max_runtime_warn: float = 90.0      # Sekunden
+    max_runtime_warn: float = 90.0  # Sekunden
     max_runtime_fail: float = 150.0
-    
+
     # Trades
-    min_trades_warn: int = 3            # weniger als 3 = WARN
-    min_trades_fail: int = 1            # 0 Trades = FAIL
-    
+    min_trades_warn: int = 3  # weniger als 3 = WARN
+    min_trades_fail: int = 1  # 0 Trades = FAIL
+
     # Returns (in %)
-    min_return_warn: float = -40.0      # schlechter als -40% = WARN
-    min_return_fail: float = -80.0      # schlechter als -80% = FAIL
-    max_return_warn: float = 150.0      # mehr als +150% = WARN
-    max_return_fail: float = 500.0      # mehr als +500% = FAIL
-    
+    min_return_warn: float = -40.0  # schlechter als -40% = WARN
+    min_return_fail: float = -80.0  # schlechter als -80% = FAIL
+    max_return_warn: float = 150.0  # mehr als +150% = WARN
+    max_return_fail: float = 500.0  # mehr als +500% = FAIL
+
     # Drawdown (in %, als positive Zahl)
-    max_drawdown_warn: float = 60.0     # >60% DD = WARN
-    max_drawdown_fail: float = 80.0     # >80% DD = FAIL
-    
+    max_drawdown_warn: float = 60.0  # >60% DD = WARN
+    max_drawdown_fail: float = 80.0  # >80% DD = FAIL
+
     # Exceptions
     allow_exceptions: bool = False
 
@@ -162,6 +154,7 @@ DEFAULT_EXPECTATIONS = PortfolioExpectations()
 # ============================================================================
 # Core Functions
 # ============================================================================
+
 
 def parse_args() -> argparse.Namespace:
     """Parse CLI-Argumente."""
@@ -178,7 +171,7 @@ Beispiele:
 
   # Nur Validierung (kein Backtest)
   python scripts/run_portfolio_smoke.py --portfolio-id PORTFOLIO_CORE_EUR_V1 --validate-only
-  
+
   # Mit custom Expectations
   python scripts/run_portfolio_smoke.py --portfolio-id PORTFOLIO_CORE_EUR_V1 --min-trades 5 --max-runtime 120
 
@@ -186,47 +179,45 @@ Exit Codes:
   0 = PASS (alle Expectations erfüllt)
   1 = FAIL (harte Expectation verletzt oder Exception)
   2 = WARN (weiche Expectation verletzt)
-        """
+        """,
     )
 
     parser.add_argument(
-        "--portfolio-id",
-        type=str,
-        required=True,
-        help="Portfolio-ID (z.B. PORTFOLIO_CORE_EUR_V1)"
+        "--portfolio-id", type=str, required=True, help="Portfolio-ID (z.B. PORTFOLIO_CORE_EUR_V1)"
     )
 
     parser.add_argument(
         "--validate-only",
         action="store_true",
-        help="Nur Config validieren, keinen Backtest durchführen"
+        help="Nur Config validieren, keinen Backtest durchführen",
     )
 
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Verbose Output"
-    )
+    parser.add_argument("--verbose", action="store_true", help="Verbose Output")
 
     parser.add_argument(
         "--lookback-days",
         type=int,
         default=None,
-        help="Lookback-Tage für Backtest (überschreibt Config-Default)"
+        help="Lookback-Tage für Backtest (überschreibt Config-Default)",
     )
 
     # Expectations (CLI-Override)
     exp_group = parser.add_argument_group("Expectations (optional)")
-    exp_group.add_argument("--max-runtime", type=float, default=None,
-                           help="Max. Runtime in Sekunden (Fail-Schwelle)")
-    exp_group.add_argument("--min-trades", type=int, default=None,
-                           help="Min. Trades (Fail-Schwelle)")
-    exp_group.add_argument("--min-return", type=float, default=None,
-                           help="Min. Return %% (Fail-Schwelle)")
-    exp_group.add_argument("--max-return", type=float, default=None,
-                           help="Max. Return %% (Fail-Schwelle)")
-    exp_group.add_argument("--max-drawdown", type=float, default=None,
-                           help="Max. Drawdown %% (Fail-Schwelle)")
+    exp_group.add_argument(
+        "--max-runtime", type=float, default=None, help="Max. Runtime in Sekunden (Fail-Schwelle)"
+    )
+    exp_group.add_argument(
+        "--min-trades", type=int, default=None, help="Min. Trades (Fail-Schwelle)"
+    )
+    exp_group.add_argument(
+        "--min-return", type=float, default=None, help="Min. Return %% (Fail-Schwelle)"
+    )
+    exp_group.add_argument(
+        "--max-return", type=float, default=None, help="Max. Return %% (Fail-Schwelle)"
+    )
+    exp_group.add_argument(
+        "--max-drawdown", type=float, default=None, help="Max. Drawdown %% (Fail-Schwelle)"
+    )
 
     return parser.parse_args()
 
@@ -278,10 +269,10 @@ def validate_portfolio_config(config: Dict[str, Any], verbose: bool = False) -> 
         total_weight = 0.0
         for i, asset in enumerate(assets):
             if not asset.get("symbol"):
-                errors.append(f"Asset #{i+1}: symbol fehlt")
+                errors.append(f"Asset #{i + 1}: symbol fehlt")
             weight = asset.get("weight", 0)
             if not isinstance(weight, (int, float)) or weight <= 0:
-                errors.append(f"Asset #{i+1}: ungültiges weight={weight}")
+                errors.append(f"Asset #{i + 1}: ungültiges weight={weight}")
             total_weight += weight
 
         if abs(total_weight - 1.0) > 0.01:
@@ -295,6 +286,7 @@ def validate_portfolio_config(config: Dict[str, Any], verbose: bool = False) -> 
             for yaml_file in universe_path.glob("*.yaml"):
                 try:
                     import yaml
+
                     with open(yaml_file, "r") as f:
                         universe = yaml.safe_load(f)
                     if universe.get("universe_id") == universe_id:
@@ -313,13 +305,11 @@ def validate_portfolio_config(config: Dict[str, Any], verbose: bool = False) -> 
 
 
 def run_mini_backtest(
-    config: Dict[str, Any],
-    lookback_days: int = 30,
-    verbose: bool = False
+    config: Dict[str, Any], lookback_days: int = 30, verbose: bool = False
 ) -> Dict[str, Any]:
     """
     Führt einen minimalen Backtest mit Dummy-Daten durch.
-    
+
     Erweitert um: Trade-Counting, Drawdown-Berechnung, detaillierte Metriken.
     """
     import numpy as np
@@ -336,7 +326,7 @@ def run_mini_backtest(
         "max_drawdown_pct": 0.0,
         "success": True,
         "errors": [],
-        "exceptions": []
+        "exceptions": [],
     }
 
     n_bars = lookback_days * 24  # Hourly data
@@ -354,11 +344,7 @@ def run_mini_backtest(
 
         try:
             # Dummy-Daten generieren
-            dates = pd.date_range(
-                end=datetime.now(),
-                periods=n_bars,
-                freq="1h"
-            )
+            dates = pd.date_range(end=datetime.now(), periods=n_bars, freq="1h")
 
             base_price = 1000 if "BTC" not in symbol else 50000
             if "ETH" in symbol:
@@ -370,19 +356,22 @@ def run_mini_backtest(
             returns = np.random.randn(n_bars) * 0.01
             prices = base_price * np.exp(np.cumsum(returns))
 
-            df = pd.DataFrame({
-                "open": prices * (1 + np.random.randn(n_bars) * 0.001),
-                "high": prices * (1 + abs(np.random.randn(n_bars)) * 0.005),
-                "low": prices * (1 - abs(np.random.randn(n_bars)) * 0.005),
-                "close": prices,
-                "volume": np.random.randint(100, 10000, n_bars)
-            }, index=dates)
+            df = pd.DataFrame(
+                {
+                    "open": prices * (1 + np.random.randn(n_bars) * 0.001),
+                    "high": prices * (1 + abs(np.random.randn(n_bars)) * 0.005),
+                    "low": prices * (1 - abs(np.random.randn(n_bars)) * 0.005),
+                    "close": prices,
+                    "volume": np.random.randint(100, 10000, n_bars),
+                },
+                index=dates,
+            )
 
             # Simple MA-Crossover Signal
             df["sma_fast"] = df["close"].rolling(10).mean()
             df["sma_slow"] = df["close"].rolling(30).mean()
             df["signal"] = (df["sma_fast"] > df["sma_slow"]).astype(int)
-            
+
             # Trade-Counting (Signal-Wechsel)
             df["signal_change"] = df["signal"].diff().abs()
             asset_trades = int(df["signal_change"].sum())
@@ -390,23 +379,25 @@ def run_mini_backtest(
             # Strategy Returns
             df["strategy_return"] = df["signal"].shift(1) * df["close"].pct_change()
             df["equity"] = (1 + df["strategy_return"]).cumprod()
-            
+
             # Asset Return
             asset_return = (df["equity"].iloc[-1] - 1) * 100  # in %
-            
+
             # Drawdown für dieses Asset
             df["rolling_max"] = df["equity"].expanding().max()
             df["drawdown"] = (df["equity"] - df["rolling_max"]) / df["rolling_max"] * 100
             asset_max_dd = abs(df["drawdown"].min())
 
-            results["assets_tested"].append({
-                "symbol": symbol,
-                "weight": weight,
-                "return_pct": float(asset_return),
-                "trades": asset_trades,
-                "max_drawdown_pct": float(asset_max_dd),
-                "n_bars": n_bars
-            })
+            results["assets_tested"].append(
+                {
+                    "symbol": symbol,
+                    "weight": weight,
+                    "return_pct": float(asset_return),
+                    "trades": asset_trades,
+                    "max_drawdown_pct": float(asset_max_dd),
+                    "n_bars": n_bars,
+                }
+            )
 
             # Aggregieren (gewichtet)
             results["total_return_pct"] += asset_return * weight
@@ -414,7 +405,9 @@ def run_mini_backtest(
             results["max_drawdown_pct"] = max(results["max_drawdown_pct"], asset_max_dd)
 
             if verbose:
-                print(f"    ✓ Return: {asset_return:+.2f}% | Trades: {asset_trades} | MaxDD: {asset_max_dd:.1f}%")
+                print(
+                    f"    ✓ Return: {asset_return:+.2f}% | Trades: {asset_trades} | MaxDD: {asset_max_dd:.1f}%"
+                )
 
         except Exception as e:
             results["success"] = False
@@ -430,11 +423,11 @@ def evaluate_expectations(
     results: Dict[str, Any],
     runtime_seconds: float,
     expectations: PortfolioExpectations,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> Tuple[str, List[Dict[str, Any]]]:
     """
     Evaluiert die Backtest-Ergebnisse gegen Expectations.
-    
+
     Returns:
         Tuple von (status, violations)
         status: "PASS", "WARN", "FAIL"
@@ -446,94 +439,116 @@ def evaluate_expectations(
 
     # 1. Exceptions
     if results.get("exceptions") and not expectations.allow_exceptions:
-        violations.append({
-            "type": "exception",
-            "severity": "FAIL",
-            "message": f"Exceptions aufgetreten: {results['exceptions']}"
-        })
+        violations.append(
+            {
+                "type": "exception",
+                "severity": "FAIL",
+                "message": f"Exceptions aufgetreten: {results['exceptions']}",
+            }
+        )
         has_fail = True
 
     # 2. Runtime
     if runtime_seconds > expectations.max_runtime_fail:
-        violations.append({
-            "type": "runtime",
-            "severity": "FAIL",
-            "message": f"Runtime {runtime_seconds:.1f}s > Fail-Schwelle {expectations.max_runtime_fail}s"
-        })
+        violations.append(
+            {
+                "type": "runtime",
+                "severity": "FAIL",
+                "message": f"Runtime {runtime_seconds:.1f}s > Fail-Schwelle {expectations.max_runtime_fail}s",
+            }
+        )
         has_fail = True
     elif runtime_seconds > expectations.max_runtime_warn:
-        violations.append({
-            "type": "runtime",
-            "severity": "WARN",
-            "message": f"Runtime {runtime_seconds:.1f}s > Warn-Schwelle {expectations.max_runtime_warn}s"
-        })
+        violations.append(
+            {
+                "type": "runtime",
+                "severity": "WARN",
+                "message": f"Runtime {runtime_seconds:.1f}s > Warn-Schwelle {expectations.max_runtime_warn}s",
+            }
+        )
         has_warn = True
 
     # 3. Trades
     total_trades = results.get("total_trades", 0)
     if total_trades < expectations.min_trades_fail:
-        violations.append({
-            "type": "trades",
-            "severity": "FAIL",
-            "message": f"Trades {total_trades} < Fail-Schwelle {expectations.min_trades_fail}"
-        })
+        violations.append(
+            {
+                "type": "trades",
+                "severity": "FAIL",
+                "message": f"Trades {total_trades} < Fail-Schwelle {expectations.min_trades_fail}",
+            }
+        )
         has_fail = True
     elif total_trades < expectations.min_trades_warn:
-        violations.append({
-            "type": "trades",
-            "severity": "WARN",
-            "message": f"Trades {total_trades} < Warn-Schwelle {expectations.min_trades_warn}"
-        })
+        violations.append(
+            {
+                "type": "trades",
+                "severity": "WARN",
+                "message": f"Trades {total_trades} < Warn-Schwelle {expectations.min_trades_warn}",
+            }
+        )
         has_warn = True
 
     # 4. Returns (Min)
     total_return = results.get("total_return_pct", 0)
     if total_return < expectations.min_return_fail:
-        violations.append({
-            "type": "return_min",
-            "severity": "FAIL",
-            "message": f"Return {total_return:.1f}% < Fail-Schwelle {expectations.min_return_fail}%"
-        })
+        violations.append(
+            {
+                "type": "return_min",
+                "severity": "FAIL",
+                "message": f"Return {total_return:.1f}% < Fail-Schwelle {expectations.min_return_fail}%",
+            }
+        )
         has_fail = True
     elif total_return < expectations.min_return_warn:
-        violations.append({
-            "type": "return_min",
-            "severity": "WARN",
-            "message": f"Return {total_return:.1f}% < Warn-Schwelle {expectations.min_return_warn}%"
-        })
+        violations.append(
+            {
+                "type": "return_min",
+                "severity": "WARN",
+                "message": f"Return {total_return:.1f}% < Warn-Schwelle {expectations.min_return_warn}%",
+            }
+        )
         has_warn = True
 
     # 5. Returns (Max)
     if total_return > expectations.max_return_fail:
-        violations.append({
-            "type": "return_max",
-            "severity": "FAIL",
-            "message": f"Return {total_return:.1f}% > Fail-Schwelle {expectations.max_return_fail}% (verdächtig hoch)"
-        })
+        violations.append(
+            {
+                "type": "return_max",
+                "severity": "FAIL",
+                "message": f"Return {total_return:.1f}% > Fail-Schwelle {expectations.max_return_fail}% (verdächtig hoch)",
+            }
+        )
         has_fail = True
     elif total_return > expectations.max_return_warn:
-        violations.append({
-            "type": "return_max",
-            "severity": "WARN",
-            "message": f"Return {total_return:.1f}% > Warn-Schwelle {expectations.max_return_warn}% (ungewöhnlich)"
-        })
+        violations.append(
+            {
+                "type": "return_max",
+                "severity": "WARN",
+                "message": f"Return {total_return:.1f}% > Warn-Schwelle {expectations.max_return_warn}% (ungewöhnlich)",
+            }
+        )
         has_warn = True
 
     # 6. Drawdown
     max_dd = results.get("max_drawdown_pct", 0)
     if max_dd > expectations.max_drawdown_fail:
-        violations.append({
-            "type": "drawdown",
-            "severity": "FAIL",
-            "message": f"Drawdown {max_dd:.1f}% > Fail-Schwelle {expectations.max_drawdown_fail}%"
-        })
+        violations.append(
+            {
+                "type": "drawdown",
+                "severity": "FAIL",
+                "message": f"Drawdown {max_dd:.1f}% > Fail-Schwelle {expectations.max_drawdown_fail}%",
+            }
+        )
         has_fail = True
     elif max_dd > expectations.max_drawdown_warn:
-        violations.append({
-            "type": "drawdown",
-            "severity": "WARN",
-            "message": f"Drawdown {max_dd:.1f}% > Warn-Schwelle {expectations.max_drawdown_warn}%"
-        })
+        violations.append(
+            {
+                "type": "drawdown",
+                "severity": "WARN",
+                "message": f"Drawdown {max_dd:.1f}% > Warn-Schwelle {expectations.max_drawdown_warn}%",
+            }
+        )
         has_warn = True
 
     # Status bestimmen
@@ -663,6 +678,7 @@ def main():
 
     # 9. JSON-Summary für maschinelle Verarbeitung (in stdout, markiert)
     import json
+
     json_summary = {
         "portfolio_id": results["portfolio_id"],
         "status": status,

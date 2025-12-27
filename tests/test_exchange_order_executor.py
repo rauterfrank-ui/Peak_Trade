@@ -8,6 +8,7 @@ Prueft Environment-Guards, Risk-Integration und Order-Handling.
 
 WICHTIG: Diese Tests machen KEINE echten API-Calls!
 """
+
 from __future__ import annotations
 
 import pytest

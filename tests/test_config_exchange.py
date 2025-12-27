@@ -8,6 +8,7 @@ Tests für:
 2. default_type hat den erwarteten Wert
 3. build_trading_client_from_config() gibt richtigen Client zurück
 """
+
 from __future__ import annotations
 
 import pytest
@@ -213,7 +214,3 @@ class TestConfigIntegration:
         status = client.get_order_status(order_id)
 
         assert status.status.value == "filled"
-
-
-
-

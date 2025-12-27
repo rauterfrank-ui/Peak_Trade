@@ -5,6 +5,7 @@ Tests für src/reporting/live_status_report.py (Phase 57)
 
 Testet die Formatter-Funktionen für Live-Status-Reports.
 """
+
 from __future__ import annotations
 
 import sys
@@ -298,8 +299,3 @@ def test_build_html_report_without_notes():
 
     assert "<h2>4. Notes (Operator)</h2>" in html_text
     assert "<em>(Optionaler Freitext" in html_text
-
-
-
-
-

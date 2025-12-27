@@ -13,6 +13,7 @@ Konzept:
 Diese Strategie eignet sich für seitwärts laufende (ranging) Märkte
 und nutzt Übertreibungen (Oversold/Overbought) für Einstiege.
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -201,14 +202,10 @@ class RsiReversionStrategy(BaseStrategy):
         if self.use_wilder:
             # Wilder-Smoothing (EMA mit alpha=1/n)
             avg_gain = gain.ewm(
-                alpha=1/self.rsi_window,
-                min_periods=self.rsi_window,
-                adjust=False
+                alpha=1 / self.rsi_window, min_periods=self.rsi_window, adjust=False
             ).mean()
             avg_loss = loss.ewm(
-                alpha=1/self.rsi_window,
-                min_periods=self.rsi_window,
-                adjust=False
+                alpha=1 / self.rsi_window, min_periods=self.rsi_window, adjust=False
             ).mean()
         else:
             # Simple Rolling Mean
@@ -235,15 +232,12 @@ class RsiReversionStrategy(BaseStrategy):
         """
         if self.price_col not in data.columns:
             raise ValueError(
-                f"Spalte '{self.price_col}' nicht im DataFrame. "
-                f"Verfügbar: {list(data.columns)}"
+                f"Spalte '{self.price_col}' nicht im DataFrame. Verfügbar: {list(data.columns)}"
             )
 
         min_bars = max(self.rsi_window, self.trend_ma_window if self.use_trend_filter else 0) + 5
         if len(data) < min_bars:
-            raise ValueError(
-                f"Brauche mind. {min_bars} Bars, habe nur {len(data)}"
-            )
+            raise ValueError(f"Brauche mind. {min_bars} Bars, habe nur {len(data)}")
 
         price = data[self.price_col].astype(float)
         rsi = self._compute_rsi(price)
@@ -335,21 +329,21 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
 
 def get_strategy_description(params: Dict) -> str:
     """Gibt Strategie-Beschreibung zurück."""
-    trend_filter = "Aktiv" if params.get('use_trend_filter', False) else "Inaktiv"
+    trend_filter = "Aktiv" if params.get("use_trend_filter", False) else "Inaktiv"
     return f"""
 RSI Mean-Reversion Strategy (Phase 27)
 ======================================
-RSI Window:        {params.get('rsi_window', 14)} Bars
-Lower (Oversold):  {params.get('lower', 30.0)}
-Upper (Overbought):{params.get('upper', 70.0)}
-Exit Lower:        {params.get('exit_lower', 50.0)}
-Exit Upper:        {params.get('exit_upper', 50.0)}
+RSI Window:        {params.get("rsi_window", 14)} Bars
+Lower (Oversold):  {params.get("lower", 30.0)}
+Upper (Overbought):{params.get("upper", 70.0)}
+Exit Lower:        {params.get("exit_lower", 50.0)}
+Exit Upper:        {params.get("exit_upper", 50.0)}
 Trend-Filter:      {trend_filter}
-Trend-MA Window:   {params.get('trend_ma_window', 50)} Bars
-Wilder-Smoothing:  {'Ja' if params.get('use_wilder', True) else 'Nein'}
+Trend-MA Window:   {params.get("trend_ma_window", 50)} Bars
+Wilder-Smoothing:  {"Ja" if params.get("use_wilder", True) else "Nein"}
 
 Konzept:
-- Entry Long:  RSI < {params.get('lower', 30.0)} (überverkauft)
-- Entry Short: RSI > {params.get('upper', 70.0)} (überkauft)
+- Entry Long:  RSI < {params.get("lower", 30.0)} (überverkauft)
+- Entry Short: RSI > {params.get("upper", 70.0)} (überkauft)
 - Exit:        RSI zurück in neutralen Bereich
 """

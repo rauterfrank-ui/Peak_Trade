@@ -57,6 +57,78 @@ base_currency = "EUR"
 starting_capital = 10_000.0
 
 # ============================================================================
+# RESILIENCE & STABILITY (Circuit Breaker, Rate Limiting)
+# ============================================================================
+# Konfiguration für Circuit Breaker Pattern und Rate Limiting
+# zur Erhöhung der Systemstabilität und Resilienz gegen externe Fehler.
+#
+# Circuit Breaker:
+#   - Verhindert kaskadierte Fehler durch automatisches Öffnen bei wiederholten Fehlern
+#   - Ermöglicht automatische Recovery nach Timeout
+#
+# Rate Limiting:
+#   - Begrenzt Request-Rate an externe Services (APIs, Datenquellen)
+#   - Verhindert Überlastung und API-Bans
+#
+# Health Checks:
+#   - Überwacht System-Komponenten auf Verfügbarkeit
+#   - Ermöglicht proaktive Fehlerbehandlung
+# ============================================================================
+[resilience]
+# Global Circuit Breaker Settings
+circuit_breaker_threshold = 5           # Anzahl Fehler bis Circuit öffnet
+circuit_breaker_timeout = 60            # Sekunden bis Recovery-Versuch
+circuit_breaker_enabled = true          # Master-Schalter für alle Circuit Breakers
+
+# Global Rate Limiting Settings
+rate_limit_requests = 100               # Max Requests pro Zeitfenster
+rate_limit_window = 60                  # Zeitfenster in Sekunden
+rate_limit_enabled = true               # Master-Schalter für Rate Limiting
+
+# Health Check Settings
+health_check_enabled = true             # Health Checks aktivieren
+health_check_interval = 60              # Intervall für automatische Checks (Sekunden)
+
+# Metrics Collection
+metrics_enabled = true                  # Prometheus Metriken sammeln
+metrics_namespace = "peak_trade"        # Namespace für Metriken
+
+# Module-Specific Settings
+[resilience.backtest]
+circuit_breaker_enabled = true
+circuit_breaker_threshold = 5
+circuit_breaker_timeout = 60
+rate_limit_requests = 50
+rate_limit_window = 60
+
+[resilience.portfolio]
+circuit_breaker_enabled = true
+circuit_breaker_threshold = 3
+circuit_breaker_timeout = 30
+rate_limit_requests = 100
+rate_limit_window = 60
+
+[resilience.risk]
+circuit_breaker_enabled = true
+circuit_breaker_threshold = 3
+circuit_breaker_timeout = 30
+fail_safe_defaults = true               # Fail-Safe Werte bei Ausfall
+
+[resilience.live]
+circuit_breaker_enabled = true
+circuit_breaker_threshold = 2           # Strenger für Live-Trading
+circuit_breaker_timeout = 120           # Längerer Timeout für Live
+rate_limit_requests = 30                # Konservativ für Live-Orders
+rate_limit_window = 60
+
+[resilience.data]
+circuit_breaker_enabled = true
+circuit_breaker_threshold = 5
+circuit_breaker_timeout = 60
+rate_limit_requests = 200               # Höher für Datenzugriffe
+rate_limit_window = 60
+
+# ============================================================================
 # ACTIVE STRATEGY
 # ============================================================================
 # Global aktive Strategie (kann per CLI überschrieben werden)
@@ -260,7 +332,7 @@ stop_pct = 0.03                 # 3% Stop-Loss
 # mode: "scale" (Gewichte skalieren) oder "filter" (Risk-Off = Flat)
 #
 # Regime-Skalierung:
-#   - risk_on_scale:  Faktor für Risk-On-Regime (hohe Vol) 
+#   - risk_on_scale:  Faktor für Risk-On-Regime (hohe Vol)
 #   - neutral_scale:  Faktor für Neutral-Regime
 #   - risk_off_scale: Faktor für Risk-Off-Regime (niedrige Vol) → 0.0 = komplett Flat
 components = ["breakout_donchian", "ma_crossover"]

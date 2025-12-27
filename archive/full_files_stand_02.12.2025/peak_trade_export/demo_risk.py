@@ -3,6 +3,7 @@ DEMO: Risk-Module in Action (Phase 2)
 
 Zeigt Nutzung von Position-Sizing und Risk-Guards.
 """
+
 import pandas as pd
 import numpy as np
 from src.backtest.engine import BacktestEngine
@@ -25,10 +26,8 @@ engine = BacktestEngine(
 risk_modules = [
     # 1. Position-Sizing: 1% Kapital pro 1.0 Exposure
     FixedFractionalPositionSizer(risk_fraction=0.01),
-    
     # 2. Max-Drawdown-Guard: Stop bei -20%
     MaxDrawdownGuard(max_drawdown=0.20),
-    
     # 3. Daily-Loss-Guard: Stop bei -5% Tagesverlust
     DailyLossGuard(max_daily_loss=0.05),
 ]
@@ -44,9 +43,9 @@ result = engine.run_realistic(
 )
 
 # Ergebnisse ausgeben
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("BACKTEST WITH RISK MANAGEMENT")
-print("="*60)
+print("=" * 60)
 
 print("\n--- STATS ---")
 for key, value in result.stats.items():

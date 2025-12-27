@@ -40,6 +40,7 @@ Usage:
         # Run starten...
         controller.register_run_consumption(notional=480.0, trades=18)
 """
+
 from __future__ import annotations
 
 import json
@@ -69,6 +70,7 @@ class TestnetRunLimits:
         max_trades_per_run: Maximale Anzahl Trades pro Run
         max_duration_minutes: Maximale Laufzeit pro Run in Minuten
     """
+
     max_notional_per_run: Optional[float] = None
     max_trades_per_run: Optional[int] = None
     max_duration_minutes: Optional[int] = None
@@ -87,6 +89,7 @@ class TestnetDailyLimits:
         max_notional_per_day: Maximales Gesamt-Notional pro Tag
         max_trades_per_day: Maximale Anzahl Trades pro Tag
     """
+
     max_notional_per_day: Optional[float] = None
     max_trades_per_day: Optional[int] = None
 
@@ -103,6 +106,7 @@ class TestnetSymbolPolicy:
     Attributes:
         allowed_symbols: Menge der erlaubten Symbole (z.B. {"BTC/EUR", "ETH/EUR"})
     """
+
     allowed_symbols: Set[str] = field(default_factory=lambda: {"BTC/EUR", "ETH/EUR"})
 
     def is_allowed(self, symbol: str) -> bool:
@@ -128,6 +132,7 @@ class TestnetUsageState:
         trades_executed: Bisher ausgefuehrte Trades
         runs_completed: Anzahl abgeschlossener Runs
     """
+
     day: date
     notional_used: float = 0.0
     trades_executed: int = 0
@@ -177,6 +182,7 @@ class TestnetCheckResult:
         current_usage: Aktueller Nutzungsstand
         limits_info: Informationen zu den Limits
     """
+
     allowed: bool
     reasons: List[str] = field(default_factory=list)
     current_usage: Optional[Dict[str, Any]] = None
@@ -453,8 +459,7 @@ class TestnetLimitsController:
             and planned_trades > limits.max_trades_per_run
         ):
             reasons.append(
-                f"run_trades_exceeded(planned={planned_trades}, "
-                f"max={limits.max_trades_per_run})"
+                f"run_trades_exceeded(planned={planned_trades}, max={limits.max_trades_per_run})"
             )
 
         # Duration pruefen

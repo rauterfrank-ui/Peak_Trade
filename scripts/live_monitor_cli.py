@@ -17,6 +17,7 @@ Usage:
     python scripts/live_monitor_cli.py run --run-id shadow_20251207_120000_abc123
     python scripts/live_monitor_cli.py follow --run-id shadow_20251207_120000_abc123 --refresh-interval 2.0
 """
+
 from __future__ import annotations
 
 import argparse
@@ -50,8 +51,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="live_monitor",
         description="Peak_Trade Live Monitor CLI\n\n"
-                    "WICHTIG: Read-only Monitoring-Tool für Shadow/Testnet-Runs.\n"
-                    "Keine Order-Erzeugung oder Run-Steuerung.",
+        "WICHTIG: Read-only Monitoring-Tool für Shadow/Testnet-Runs.\n"
+        "Keine Order-Erzeugung oder Run-Steuerung.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Beispiele:
@@ -181,7 +182,7 @@ def format_equity(equity: Optional[float]) -> str:
     if equity is None:
         return "N/A"
     if equity >= 1000:
-        return f"{equity/1000:.1f}k"
+        return f"{equity / 1000:.1f}k"
     return f"{equity:.0f}"
 
 
@@ -197,7 +198,7 @@ def format_drawdown(dd: Optional[float]) -> str:
     """Formatiert Drawdown-Wert."""
     if dd is None:
         return "N/A"
-    return f"{dd*100:.1f}%"
+    return f"{dd * 100:.1f}%"
 
 
 def cmd_overview(args: argparse.Namespace, config: PeakConfig) -> int:
@@ -231,7 +232,9 @@ def cmd_overview(args: argparse.Namespace, config: PeakConfig) -> int:
             return 0
 
         # Tabelle ausgeben
-        print(f"\n{'Run-ID':<40} {'Mode':<10} {'Strategy':<20} {'Symbol':<12} {'TF':<6} {'Active':<8} {'Last Event':<20} {'Equity':<10} {'PnL':<10} {'DD':<10}")
+        print(
+            f"\n{'Run-ID':<40} {'Mode':<10} {'Strategy':<20} {'Symbol':<12} {'TF':<6} {'Active':<8} {'Last Event':<20} {'Equity':<10} {'PnL':<10} {'DD':<10}"
+        )
         print("-" * 150)
 
         for run in runs:
@@ -241,12 +244,16 @@ def cmd_overview(args: argparse.Namespace, config: PeakConfig) -> int:
             symbol = (run.symbol or "N/A")[:10]
             timeframe = run.timeframe or "N/A"
             active = "yes" if run.is_active else "no"
-            last_event = run.last_event_time.strftime("%Y-%m-%d %H:%M:%S") if run.last_event_time else "N/A"
+            last_event = (
+                run.last_event_time.strftime("%Y-%m-%d %H:%M:%S") if run.last_event_time else "N/A"
+            )
             equity = format_equity(run.equity)
             pnl = format_pnl(run.pnl)
             dd = format_drawdown(run.drawdown)
 
-            print(f"{run_id_short:<40} {mode:<10} {strategy:<20} {symbol:<12} {timeframe:<6} {active:<8} {last_event:<20} {equity:<10} {pnl:<10} {dd:<10}")
+            print(
+                f"{run_id_short:<40} {mode:<10} {strategy:<20} {symbol:<12} {timeframe:<6} {active:<8} {last_event:<20} {equity:<10} {pnl:<10} {dd:<10}"
+            )
 
         print()
         return 0
@@ -278,18 +285,22 @@ def cmd_run(args: argparse.Namespace, config: PeakConfig) -> int:
             return 0
 
         # Run-Zusammenfassung
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print(f"Run: {snapshot.run_id}")
-        print(f"{'='*80}")
+        print(f"{'=' * 80}")
         print(f"Mode:           {snapshot.mode}")
         print(f"Strategy:       {snapshot.strategy or 'N/A'}")
         print(f"Symbol:         {snapshot.symbol or 'N/A'}")
         print(f"Timeframe:      {snapshot.timeframe or 'N/A'}")
         print(f"Active:         {'yes' if snapshot.is_active else 'no'}")
-        print(f"Started:        {snapshot.started_at.isoformat() if snapshot.started_at else 'N/A'}")
+        print(
+            f"Started:        {snapshot.started_at.isoformat() if snapshot.started_at else 'N/A'}"
+        )
         if snapshot.ended_at:
             print(f"Ended:          {snapshot.ended_at.isoformat()}")
-        print(f"Last Event:     {snapshot.last_event_time.isoformat() if snapshot.last_event_time else 'N/A'}")
+        print(
+            f"Last Event:     {snapshot.last_event_time.isoformat() if snapshot.last_event_time else 'N/A'}"
+        )
         print(f"Events:         {snapshot.num_events}")
         print()
         print(f"Equity:         {format_equity(snapshot.equity)}")
@@ -305,7 +316,9 @@ def cmd_run(args: argparse.Namespace, config: PeakConfig) -> int:
         if events:
             print(f"\nLetzte {len(events)} Events:")
             print("-" * 80)
-            print(f"{'Step':<6} {'Time':<20} {'Signal':<8} {'Equity':<12} {'PnL':<12} {'Orders':<10}")
+            print(
+                f"{'Step':<6} {'Time':<20} {'Signal':<8} {'Equity':<12} {'PnL':<12} {'Orders':<10}"
+            )
             print("-" * 80)
 
             for event in events[-20:]:  # Zeige nur letzte 20
@@ -358,7 +371,9 @@ def cmd_follow(args: argparse.Namespace, config: PeakConfig) -> int:
 
                 # Aktueller Status
                 print(f"[{datetime.now().strftime('%H:%M:%S')}] Run: {snapshot.run_id[:30]}...")
-                print(f"  Active: {snapshot.is_active} | Events: {snapshot.num_events} | Equity: {format_equity(snapshot.equity)} | PnL: {format_pnl(snapshot.pnl)} | DD: {format_drawdown(snapshot.drawdown)}")
+                print(
+                    f"  Active: {snapshot.is_active} | Events: {snapshot.num_events} | Equity: {format_equity(snapshot.equity)} | PnL: {format_pnl(snapshot.pnl)} | DD: {format_drawdown(snapshot.drawdown)}"
+                )
 
                 # Neue Events
                 if len(events) > last_event_count:
@@ -372,7 +387,9 @@ def cmd_follow(args: argparse.Namespace, config: PeakConfig) -> int:
                         equity = format_equity(event.get("equity"))
                         pnl = format_pnl(event.get("realized_pnl") or event.get("pnl"))
 
-                        print(f"  Step {step} | {ts} | Signal: {signal} | Equity: {equity} | PnL: {pnl}")
+                        print(
+                            f"  Step {step} | {ts} | Signal: {signal} | Equity: {equity} | PnL: {pnl}"
+                        )
 
                 last_event_count = len(events)
 
@@ -416,4 +433,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

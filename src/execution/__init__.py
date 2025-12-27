@@ -28,6 +28,7 @@ Phase 16A V2 (Governance-aware):
 WICHTIG: Es werden KEINE echten Live-Orders an Boersen gesendet!
          live_order_execution ist governance-seitig gesperrt.
 """
+
 from __future__ import annotations
 
 from .pipeline import (

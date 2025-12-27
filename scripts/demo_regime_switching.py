@@ -25,6 +25,7 @@ Usage:
 
 WICHTIG: Nur fuer Research/Backtest/Shadow, NICHT fuer Live-Trading!
 """
+
 from __future__ import annotations
 
 import argparse
@@ -63,6 +64,7 @@ logger = logging.getLogger(__name__)
 # SYNTHETIC DATA GENERATION
 # ============================================================================
 
+
 def generate_synthetic_market_data(
     n_bars: int = 500,
     base_price: float = 50000.0,
@@ -99,16 +101,16 @@ def generate_synthetic_market_data(
 
         if phase == 0:
             # Ranging: niedrige Vol, kein Trend
-            prices[i] = prices[i-1] * (1 + np.random.normal(0, 0.002))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0, 0.002))
         elif phase == 1:
             # Breakout: hohe Vol, starke Moves
-            prices[i] = prices[i-1] * (1 + np.random.normal(0.003, 0.025))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0.003, 0.025))
         elif phase == 2:
             # Trending: mittlere Vol, positiver Trend
-            prices[i] = prices[i-1] * (1 + np.random.normal(0.0015, 0.01))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0.0015, 0.01))
         else:
             # Ranging wieder
-            prices[i] = prices[i-1] * (1 + np.random.normal(0, 0.003))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0, 0.003))
 
     # OHLCV erstellen
     high = prices * (1 + np.abs(np.random.normal(0, 0.004, n_bars)))
@@ -120,13 +122,16 @@ def generate_synthetic_market_data(
     high = np.maximum(high, prices)
     low = np.minimum(low, prices)
 
-    df = pd.DataFrame({
-        "open": open_prices,
-        "high": high,
-        "low": low,
-        "close": prices,
-        "volume": volume,
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": open_prices,
+            "high": high,
+            "low": low,
+            "close": prices,
+            "volume": volume,
+        },
+        index=dates,
+    )
 
     return df
 
@@ -134,6 +139,7 @@ def generate_synthetic_market_data(
 # ============================================================================
 # REGIME ANALYSIS
 # ============================================================================
+
 
 def analyze_regime_distribution(regimes: pd.Series) -> Dict[str, Any]:
     """
@@ -195,6 +201,7 @@ def print_regime_stats(stats: Dict[str, Any]) -> None:
 # ============================================================================
 # STRATEGY SWITCHING SIMULATION
 # ============================================================================
+
 
 def simulate_switching_decisions(
     regimes: pd.Series,
@@ -271,6 +278,7 @@ def print_switching_stats(stats: Dict[str, Any]) -> None:
 # MAIN DEMO
 # ============================================================================
 
+
 def run_demo(
     use_regime_layer: bool = True,
     symbol: str = "BTC/EUR",
@@ -344,9 +352,7 @@ def run_demo(
     )
 
     available_strategies = list(STRATEGY_REGISTRY.keys())
-    switching_stats = simulate_switching_decisions(
-        regimes, switching_config, available_strategies
-    )
+    switching_stats = simulate_switching_decisions(regimes, switching_config, available_strategies)
     print_switching_stats(switching_stats)
 
     # 4. Zusammenfassung
@@ -355,7 +361,8 @@ def run_demo(
     print("=" * 60)
 
     if use_regime_layer:
-        print("""
+        print(
+            """
 Mit aktiviertem Regime-Layer:
 - Der Detector erkennt Marktphasen basierend auf Volatilitaet
 - Die Switching-Policy waehlt passende Strategien je Regime:
@@ -368,14 +375,17 @@ Vorteile:
 - Strategien werden nur in passenden Marktphasen eingesetzt
 - Reduziert False Signals in ungeeigneten Phasen
 - Ermooglicht Multi-Strategy-Portfolios mit intelligenter Rotation
-""")
+"""
+        )
     else:
-        print("""
+        print(
+            """
 Ohne Regime-Layer (klassischer Modus):
 - Alle Strategien werden unabhaengig von der Marktphase verwendet
 - Keine automatische Strategy-Rotation
 - Bisheriges Verhalten bleibt erhalten (enabled=false in config.toml)
-""")
+"""
+        )
 
     print("=" * 60)
     print("Demo abgeschlossen!")
@@ -385,6 +395,7 @@ Ohne Regime-Layer (klassischer Modus):
 # ============================================================================
 # CLI INTERFACE
 # ============================================================================
+
 
 def main() -> None:
     """CLI Entry Point."""

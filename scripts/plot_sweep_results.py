@@ -14,7 +14,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use('Agg')  # Non-interactive backend
+
+matplotlib.use("Agg")  # Non-interactive backend
 import matplotlib.pyplot as plt
 
 
@@ -51,7 +52,7 @@ def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
 
     print("\n📊 Peak_Trade Sweep Plot Generator")
-    print("="*70)
+    print("=" * 70)
 
     csv_path = Path(args.csv_path)
     if not csv_path.is_file():
@@ -69,7 +70,9 @@ def main(argv: List[str] | None = None) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     if metric not in df.columns:
-        raise ValueError(f"Metrik-Spalte {metric!r} nicht in CSV vorhanden. Spalten: {list(df.columns)}")
+        raise ValueError(
+            f"Metrik-Spalte {metric!r} nicht in CSV vorhanden. Spalten: {list(df.columns)}"
+        )
 
     if x_param not in df.columns:
         raise ValueError(f"x-Parameter-Spalte {x_param!r} nicht in CSV vorhanden.")
@@ -109,7 +112,9 @@ def main(argv: List[str] | None = None) -> None:
         plt.figure(figsize=(12, 8))
         im = plt.imshow(pivot.values, aspect="auto", origin="lower", cmap="viridis")
         plt.colorbar(im, label=metric)
-        plt.xticks(ticks=np.arange(len(pivot.columns)), labels=pivot.columns, rotation=45, ha="right")
+        plt.xticks(
+            ticks=np.arange(len(pivot.columns)), labels=pivot.columns, rotation=45, ha="right"
+        )
         plt.yticks(ticks=np.arange(len(pivot.index)), labels=pivot.index)
         plt.xlabel(x_param, fontsize=12)
         plt.ylabel(y_param, fontsize=12)

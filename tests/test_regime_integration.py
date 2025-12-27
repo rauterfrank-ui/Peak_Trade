@@ -7,6 +7,7 @@ End-to-End-Tests fuer den gesamten Regime-Layer:
 - RegimeDetector + StrategySwitchingPolicy zusammen
 - Simulation eines Backtests mit Regime-basiertem Switching
 """
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -29,6 +30,7 @@ from src.regime import (
 # TEST DATA FIXTURES
 # ============================================================================
 
+
 @pytest.fixture
 def synthetic_market_data() -> pd.DataFrame:
     """
@@ -50,16 +52,16 @@ def synthetic_market_data() -> pd.DataFrame:
     for i in range(1, n_bars):
         if i < 50:
             # Phase 1: Ranging (niedrige Vol)
-            prices[i] = prices[i-1] * (1 + np.random.normal(0, 0.001))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0, 0.001))
         elif i < 100:
             # Phase 2: Breakout (hohe Vol)
-            prices[i] = prices[i-1] * (1 + np.random.normal(0.002, 0.025))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0.002, 0.025))
         elif i < 150:
             # Phase 3: Trending (mittlere Vol, klarer Trend)
-            prices[i] = prices[i-1] * (1 + np.random.normal(0.001, 0.008))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0.001, 0.008))
         else:
             # Phase 4: Ranging wieder
-            prices[i] = prices[i-1] * (1 + np.random.normal(0, 0.002))
+            prices[i] = prices[i - 1] * (1 + np.random.normal(0, 0.002))
 
     # Realistische OHLCV
     high = prices * (1 + np.abs(np.random.normal(0, 0.003, n_bars)))
@@ -71,13 +73,16 @@ def synthetic_market_data() -> pd.DataFrame:
     high = np.maximum(high, prices)
     low = np.minimum(low, prices)
 
-    df = pd.DataFrame({
-        "open": open_prices,
-        "high": high,
-        "low": low,
-        "close": prices,
-        "volume": volume,
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": open_prices,
+            "high": high,
+            "low": low,
+            "close": prices,
+            "volume": volume,
+        },
+        index=dates,
+    )
 
     return df
 
@@ -130,6 +135,7 @@ def available_strategies() -> List[str]:
 # ============================================================================
 # INTEGRATION TESTS
 # ============================================================================
+
 
 class TestRegimeIntegration:
     """End-to-End Integration Tests."""
@@ -418,13 +424,16 @@ class TestEdgeCases:
         detector = VolatilityRegimeDetector(detector_config)
 
         # Nur 10 Bars
-        short_data = pd.DataFrame({
-            "open": [100] * 10,
-            "high": [101] * 10,
-            "low": [99] * 10,
-            "close": [100] * 10,
-            "volume": [1000] * 10,
-        }, index=pd.date_range("2024-01-01", periods=10, freq="1h"))
+        short_data = pd.DataFrame(
+            {
+                "open": [100] * 10,
+                "high": [101] * 10,
+                "low": [99] * 10,
+                "close": [100] * 10,
+                "volume": [1000] * 10,
+            },
+            index=pd.date_range("2024-01-01", periods=10, freq="1h"),
+        )
 
         regimes = detector.detect_regimes(short_data)
 
@@ -441,13 +450,16 @@ class TestEdgeCases:
         detector = VolatilityRegimeDetector(detector_config)
 
         # Konstante Preise
-        const_data = pd.DataFrame({
-            "open": [100.0] * 100,
-            "high": [100.01] * 100,
-            "low": [99.99] * 100,
-            "close": [100.0] * 100,
-            "volume": [1000] * 100,
-        }, index=pd.date_range("2024-01-01", periods=100, freq="1h"))
+        const_data = pd.DataFrame(
+            {
+                "open": [100.0] * 100,
+                "high": [100.01] * 100,
+                "low": [99.99] * 100,
+                "close": [100.0] * 100,
+                "volume": [1000] * 100,
+            },
+            index=pd.date_range("2024-01-01", periods=100, freq="1h"),
+        )
 
         regimes = detector.detect_regimes(const_data)
 

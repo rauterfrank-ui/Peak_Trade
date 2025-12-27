@@ -21,6 +21,7 @@ Usage:
         format="both",
     )
 """
+
 from __future__ import annotations
 
 import os
@@ -82,7 +83,9 @@ def build_monte_carlo_report(
         metadata={
             "num_runs": summary.num_runs,
             "method": summary.config.method,
-            "block_size": summary.config.block_size if summary.config.method == "block_bootstrap" else None,
+            "block_size": (
+                summary.config.block_size if summary.config.method == "block_bootstrap" else None
+            ),
             "seed": summary.config.seed,
         },
     )
@@ -94,9 +97,7 @@ def build_monte_carlo_report(
     ]
     if summary.config.method == "block_bootstrap":
         overview_lines.append(f"- **Block-Größe:** {summary.config.block_size}")
-    overview_lines.append(
-        f"- **Analysierte Metriken:** {len(summary.metric_distributions)}"
-    )
+    overview_lines.append(f"- **Analysierte Metriken:** {len(summary.metric_distributions)}")
     overview_lines.append("")
     overview_lines.append(
         "Diese Analyse basiert auf Bootstrap-Resampling der originalen Returns. "
@@ -108,29 +109,35 @@ def build_monte_carlo_report(
     # 2. Metric Summary Table
     metric_data: list[Dict[str, any]] = []
     for metric_name, quantiles in summary.metric_quantiles.items():
-        metric_data.append({
-            "Metric": metric_name,
-            "Mean": quantiles["mean"],
-            "Std": quantiles["std"],
-            "p5": quantiles["p5"],
-            "p25": quantiles["p25"],
-            "p50": quantiles["p50"],
-            "p75": quantiles["p75"],
-            "p95": quantiles["p95"],
-        })
+        metric_data.append(
+            {
+                "Metric": metric_name,
+                "Mean": quantiles["mean"],
+                "Std": quantiles["std"],
+                "p5": quantiles["p5"],
+                "p25": quantiles["p25"],
+                "p50": quantiles["p50"],
+                "p75": quantiles["p75"],
+                "p95": quantiles["p95"],
+            }
+        )
 
     if metric_data:
         df_metrics = pd.DataFrame(metric_data)
         # Format für bessere Lesbarkeit
         for col in ["Mean", "Std", "p5", "p25", "p50", "p75", "p95"]:
             if col in df_metrics.columns:
-                df_metrics[col] = df_metrics[col].apply(lambda x: f"{x:.4f}" if pd.notna(x) else "-")
+                df_metrics[col] = df_metrics[col].apply(
+                    lambda x: f"{x:.4f}" if pd.notna(x) else "-"
+                )
 
         content = df_to_markdown(df_metrics, float_format=".4f")
-        report.add_section(ReportSection(
-            title="Metric Summary (Quantiles)",
-            content_markdown=content,
-        ))
+        report.add_section(
+            ReportSection(
+                title="Metric Summary (Quantiles)",
+                content_markdown=content,
+            )
+        )
 
     # 3. Visualizations
     charts_content: list[str] = []
@@ -160,10 +167,12 @@ def build_monte_carlo_report(
                     pass
 
     if charts_content:
-        report.add_section(ReportSection(
-            title="Distributions",
-            content_markdown="\n\n".join(charts_content),
-        ))
+        report.add_section(
+            ReportSection(
+                title="Distributions",
+                content_markdown="\n\n".join(charts_content),
+            )
+        )
 
     # 4. Interpretation Section
     interpretation_lines = [
@@ -179,10 +188,12 @@ def build_monte_carlo_report(
         "- Positive p5-Werte für Return-Metriken haben",
     ]
 
-    report.add_section(ReportSection(
-        title="Interpretation",
-        content_markdown="\n".join(interpretation_lines),
-    ))
+    report.add_section(
+        ReportSection(
+            title="Interpretation",
+            content_markdown="\n".join(interpretation_lines),
+        )
+    )
 
     # Speichere Report
     paths: Dict[str, Path] = {}
@@ -198,11 +209,3 @@ def build_monte_carlo_report(
         paths["html"] = html_path
 
     return paths
-
-
-
-
-
-
-
-

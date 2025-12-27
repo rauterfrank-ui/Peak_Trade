@@ -7,7 +7,7 @@ on:
     - cron: '0 6 * * *'
     # Wöchentlich Sonntags um 03:00 UTC (04:00 CET)
     - cron: '0 3 * * 0'
-  
+
   # Manueller Trigger
   workflow_dispatch:
     inputs:
@@ -22,11 +22,13 @@ on:
           - full_suite
           - r_and_d_experimental
           - demo_simple
-  
+
   # CI-Gate: Bei Pull Requests und Push auf main
   push:
     branches: [ main ]
   pull_request:
+    branches: [ main ]
+  merge_group:
     branches: [ main ]
 
 jobs:
@@ -42,32 +44,32 @@ jobs:
     runs-on: ubuntu-latest
     # Nur bei Push/PR triggern, nicht bei Schedules
     if: github.event_name == 'push' || github.event_name == 'pull_request'
-    
+
     timeout-minutes: 20
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-      
+
       - name: 🐍 Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pandas numpy
-      
+
       - name: 🏥 Run Test Health Profile (weekly_core)
         id: health_check
         run: |
           set -e  # Fail-fast bei Fehler
           python scripts/run_test_health_profile.py --profile weekly_core
         # WICHTIG: Kein continue-on-error! Job soll hart fehlschlagen.
-      
+
       - name: 📊 Upload Test Health Report (Artifacts)
         uses: actions/upload-artifact@v4
         if: always()  # Auch bei Failure Reports hochladen
@@ -75,37 +77,37 @@ jobs:
           name: ci-health-report-${{ github.run_number }}
           path: reports/test_health/
           retention-days: 30
-      
+
       - name: 📈 Display Health Summary
         if: always()
         run: |
           echo "======================================================================"
           echo "📋 Test Health Report Summary"
           echo "======================================================================"
-          
+
           # Finde letzten Report
           LATEST_DIR=$(ls -t reports/test_health/ | grep -v history.json | head -1)
-          
+
           if [ -d "reports/test_health/${LATEST_DIR}" ]; then
             # JSON-Summary parsen
             SUMMARY_JSON="reports/test_health/${LATEST_DIR}/summary.json"
-            
+
             if [ -f "$SUMMARY_JSON" ]; then
               echo "📄 Report Path: reports/test_health/${LATEST_DIR}/"
               echo ""
-              
+
               # Health-Score und Check-Zahlen extrahieren
               HEALTH_SCORE=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(f\"{d['health_score']:.1f}\")")
               PASSED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['passed_checks'])")
               FAILED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['failed_checks'])")
               SKIPPED=$(python -c "import json; d=json.load(open('${SUMMARY_JSON}')); print(d['skipped_checks'])")
-              
+
               echo "🏥 Health Score:    ${HEALTH_SCORE} / 100.0"
               echo "✅ Passed Checks:   ${PASSED}"
               echo "❌ Failed Checks:   ${FAILED}"
               echo "⏭️  Skipped Checks:  ${SKIPPED}"
               echo ""
-              
+
               # Ampel-Logik
               if (( $(echo "$HEALTH_SCORE >= 80" | bc -l) )); then
                 echo "🟢 Status: HEALTHY (Score >= 80)"
@@ -114,13 +116,13 @@ jobs:
               else
                 echo "🔴 Status: CRITICAL (Score < 50)"
               fi
-              
+
               echo ""
               echo "📄 Full Report: siehe CI-Artefakte (ci-health-report-${{ github.run_number }})"
             else
               echo "⚠️  summary.json nicht gefunden"
             fi
-            
+
             # Markdown-Summary anzeigen (falls vorhanden)
             SUMMARY_MD="reports/test_health/${LATEST_DIR}/summary.md"
             if [ -f "$SUMMARY_MD" ]; then
@@ -133,7 +135,7 @@ jobs:
           else
             echo "⚠️  Kein Report-Verzeichnis gefunden"
           fi
-          
+
           echo "======================================================================"
 
   daily-health-check:
@@ -141,29 +143,29 @@ jobs:
     runs-on: ubuntu-latest
     # Nur bei täglichem Schedule (nicht bei PR/Push)
     if: github.event.schedule == '0 6 * * *'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt || true
           # Core dependencies für Tests
           pip install pytest pandas numpy
-      
+
       - name: Run Daily Quick Health Check
         run: |
           python scripts/run_test_health_profile.py --profile daily_quick
         continue-on-error: true
-      
+
       - name: Upload Daily Health Report
         uses: actions/upload-artifact@v4
         if: always()
@@ -171,14 +173,14 @@ jobs:
           name: daily-health-report-${{ github.run_number }}
           path: reports/test_health/
           retention-days: 30
-      
+
       - name: Check Health Score
         run: |
           # Lese letzten Report
           LATEST_DIR=$(ls -t reports/test_health/ | grep -v history.json | head -1)
           HEALTH_SCORE=$(python -c "import json; data=json.load(open('reports/test_health/${LATEST_DIR}/summary.json')); print(data['health_score'])")
           echo "Health Score: ${HEALTH_SCORE}"
-          
+
           # Fail wenn Score < 80 (für daily_quick sollte es 100 sein)
           if (( $(echo "$HEALTH_SCORE < 80" | bc -l) )); then
             echo "❌ Health Score too low: ${HEALTH_SCORE} < 80"
@@ -191,28 +193,28 @@ jobs:
     name: Weekly Core Health Check
     runs-on: ubuntu-latest
     if: github.event.schedule == '0 3 * * 0'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt || true
           pip install pytest pandas numpy
-      
+
       - name: Run Weekly Core Health Check
         run: |
           python scripts/run_test_health_profile.py --profile weekly_core
         continue-on-error: true
-      
+
       - name: Upload Weekly Health Report
         uses: actions/upload-artifact@v4
         if: always()
@@ -220,7 +222,7 @@ jobs:
           name: weekly-health-report-${{ github.run_number }}
           path: reports/test_health/
           retention-days: 90
-      
+
       - name: Show Health History
         run: |
           python scripts/show_test_health_history.py --profile weekly_core
@@ -229,28 +231,28 @@ jobs:
     name: Manual Health Check
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt || true
           pip install pytest pandas numpy
-      
+
       - name: Run Health Check (${{ github.event.inputs.profile }})
         run: |
           python scripts/run_test_health_profile.py --profile ${{ github.event.inputs.profile }}
         continue-on-error: true
-      
+
       - name: Upload Health Report
         uses: actions/upload-artifact@v4
         if: always()
@@ -258,7 +260,7 @@ jobs:
           name: health-report-${{ github.event.inputs.profile }}-${{ github.run_number }}
           path: reports/test_health/
           retention-days: 30
-      
+
       - name: Show History
         run: |
           python scripts/show_test_health_history.py --all
@@ -267,28 +269,28 @@ jobs:
     name: R&D Experimental Health Check (Weekly)
     runs-on: ubuntu-latest
     if: github.event.schedule == '0 3 * * 0'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt || true
           pip install pytest pandas numpy
-      
+
       - name: Run R&D Health Check
         run: |
           python scripts/run_test_health_profile.py --profile r_and_d_experimental
         continue-on-error: true
-      
+
       - name: Upload R&D Health Report
         uses: actions/upload-artifact@v4
         if: always()
@@ -296,13 +298,13 @@ jobs:
           name: r-and-d-health-report-${{ github.run_number }}
           path: reports/test_health/
           retention-days: 90
-      
+
       - name: Check R&D Health Score
         run: |
           LATEST_DIR=$(ls -t reports/test_health/ | grep -v history.json | head -1)
           HEALTH_SCORE=$(python -c "import json; data=json.load(open('reports/test_health/${LATEST_DIR}/summary.json')); print(data['health_score'])")
           echo "R&D Health Score: ${HEALTH_SCORE}"
-          
+
           # R&D erlaubt niedrigeren Score (70%)
           if (( $(echo "$HEALTH_SCORE < 70" | bc -l) )); then
             echo "⚠️ R&D Health Score below threshold: ${HEALTH_SCORE} < 70"

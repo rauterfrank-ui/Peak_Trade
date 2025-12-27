@@ -52,7 +52,7 @@ Examples:
 
   # Anzahl getesteter Kombinationen limitieren
   python scripts/sweep_parameters.py --max-runs 10
-        """
+        """,
     )
     parser.add_argument(
         "-s",
@@ -120,7 +120,7 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
 
     # Start-Zeitpunkt
     start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq='1h')
+    dates = pd.date_range(start, periods=n_bars, freq="1h")
 
     # Preis-Simulation mit symbol-spezifischen Eigenschaften
     if "BTC" in symbol:
@@ -148,13 +148,16 @@ def load_data_for_symbol(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     close_prices = base_price + trend + cycle + noise
 
     # OHLC generieren
-    df = pd.DataFrame({
-        'open': close_prices * (1 + np.random.randn(n_bars) * volatility),
-        'high': close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'low': close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
-        'close': close_prices,
-        'volume': np.random.randint(10, 100, n_bars)
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": close_prices * (1 + np.random.randn(n_bars) * volatility),
+            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * volatility * 1.5),
+            "close": close_prices,
+            "volume": np.random.randint(10, 100, n_bars),
+        },
+        index=dates,
+    )
 
     return df
 
@@ -252,14 +255,9 @@ def run_backtest_for_params(
     strategy_params = {"stop_pct": stop_pct}
 
     # Backtest durchf�hren
-    engine = BacktestEngine(
-        core_position_sizer=position_sizer,
-        risk_manager=risk_manager
-    )
+    engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
-        df=data,
-        strategy_signal_fn=strategy_signal_fn,
-        strategy_params=strategy_params
+        df=data, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
     )
 
     # Metadaten anreichern
@@ -275,9 +273,9 @@ def run_backtest_for_params(
 
 def print_sweep_table(df: pd.DataFrame, param_names: List[str], n_top: int = 10):
     """Druckt formatierte Sweep-Ergebnis-Tabelle."""
-    print("\n" + "="*100)
+    print("\n" + "=" * 100)
     print(f"PARAMETER SWEEP RESULTS (Top {min(n_top, len(df))})")
-    print("="*100)
+    print("=" * 100)
 
     if len(df) == 0:
         print("Keine Ergebnisse verf�gbar.")
@@ -285,9 +283,9 @@ def print_sweep_table(df: pd.DataFrame, param_names: List[str], n_top: int = 10)
 
     # Spalten f�r Tabelle
     cols_to_show = (
-        ["symbol"] +
-        param_names +
-        ["total_return", "sharpe", "max_drawdown", "total_trades", "profit_factor", "win_rate"]
+        ["symbol"]
+        + param_names
+        + ["total_return", "sharpe", "max_drawdown", "total_trades", "profit_factor", "win_rate"]
     )
 
     # Nur vorhandene Spalten anzeigen
@@ -296,7 +294,7 @@ def print_sweep_table(df: pd.DataFrame, param_names: List[str], n_top: int = 10)
     df_display = df[cols_to_show].head(n_top)
 
     print(df_display.to_string(index=False))
-    print("="*100 + "\n")
+    print("=" * 100 + "\n")
 
 
 def main(argv: List[str] | None = None) -> None:
@@ -304,7 +302,7 @@ def main(argv: List[str] | None = None) -> None:
     args = parse_args(argv)
 
     print("\n=, Peak_Trade Parameter Sweep")
-    print("="*70)
+    print("=" * 70)
 
     # Config laden
     print("\n�  Lade Konfiguration...")
@@ -363,7 +361,7 @@ def main(argv: List[str] | None = None) -> None:
 
     # Sweeps durchf�hren
     print(f"\n=� Starte Sweep mit {len(combos)} Kombinationen...")
-    print("-"*70)
+    print("-" * 70)
 
     rows: List[Dict[str, Any]] = []
     results: List[BacktestResult] = []
@@ -388,9 +386,11 @@ def main(argv: List[str] | None = None) -> None:
             continue
 
         # Kurze Zusammenfassung
-        print(f"   Return: {result.stats.get('total_return', 0.0):>7.2%} | "
-              f"Sharpe: {result.stats.get('sharpe', 0.0):>6.2f} | "
-              f"Trades: {result.stats.get('total_trades', 0):>4}")
+        print(
+            f"   Return: {result.stats.get('total_return', 0.0):>7.2%} | "
+            f"Sharpe: {result.stats.get('sharpe', 0.0):>6.2f} | "
+            f"Trades: {result.stats.get('total_trades', 0):>4}"
+        )
 
         # Experiment-Record für diese Parameter-Kombi loggen
         param_dict = {name: value for name, value in zip(param_names, combo)}
@@ -481,8 +481,7 @@ def main(argv: List[str] | None = None) -> None:
             for res in results:
                 res_params = res.metadata.get("params", {})
                 if all(
-                    res_params.get(name) == value
-                    for name, value in zip(param_names, params_combo)
+                    res_params.get(name) == value for name, value in zip(param_names, params_combo)
                 ):
                     match = res
                     break
@@ -513,8 +512,9 @@ def main(argv: List[str] | None = None) -> None:
     best = df.iloc[0]
     for name in param_names:
         print(f"     {name} = {best[name]}")
-    print(f"   Performance: {best['total_return']:.2%} Return, "
-          f"Sharpe {best.get('sharpe', 0.0):.2f}")
+    print(
+        f"   Performance: {best['total_return']:.2%} Return, Sharpe {best.get('sharpe', 0.0):.2f}"
+    )
     print()
 
 

@@ -100,9 +100,7 @@ class PortfolioStrategy(Protocol):
         ...         return {"BTC/EUR": 0.5, "ETH/EUR": 0.5}
     """
 
-    def generate_target_weights(
-        self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    def generate_target_weights(self, context: PortfolioContext) -> Dict[str, float]:
         """
         Generiert Zielgewichte für das Portfolio.
 
@@ -144,9 +142,7 @@ class BasePortfolioStrategy(ABC):
         self.name = self.__class__.__name__
 
     @abstractmethod
-    def _compute_raw_weights(
-        self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    def _compute_raw_weights(self, context: PortfolioContext) -> Dict[str, float]:
         """
         Berechnet rohe (nicht-normalisierte) Gewichte.
 
@@ -160,9 +156,7 @@ class BasePortfolioStrategy(ABC):
         """
         raise NotImplementedError
 
-    def generate_target_weights(
-        self, context: PortfolioContext
-    ) -> Dict[str, float]:
+    def generate_target_weights(self, context: PortfolioContext) -> Dict[str, float]:
         """
         Generiert Zielgewichte mit Normalisierung und Constraints.
 
@@ -194,15 +188,12 @@ class BasePortfolioStrategy(ABC):
             final_weights = constrained
 
         logger.debug(
-            f"{self.name}: Generated weights for {len(final_weights)} symbols: "
-            f"{final_weights}"
+            f"{self.name}: Generated weights for {len(final_weights)} symbols: {final_weights}"
         )
 
         return final_weights
 
-    def _apply_constraints(
-        self, weights: Dict[str, float]
-    ) -> Dict[str, float]:
+    def _apply_constraints(self, weights: Dict[str, float]) -> Dict[str, float]:
         """
         Wendet Constraints auf Gewichte an.
 
@@ -240,9 +231,7 @@ class BasePortfolioStrategy(ABC):
 
         return constrained
 
-    def _normalize_weights(
-        self, weights: Dict[str, float]
-    ) -> Dict[str, float]:
+    def _normalize_weights(self, weights: Dict[str, float]) -> Dict[str, float]:
         """
         Normalisiert Gewichte auf Summe 1.0.
 

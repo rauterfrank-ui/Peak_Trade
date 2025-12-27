@@ -43,6 +43,7 @@ Verwendung:
     for tick in feed:
         print(tick)
 """
+
 from __future__ import annotations
 
 import uuid
@@ -171,14 +172,12 @@ class OfflineRealtimeFeedConfig:
         for i, row in enumerate(self.transition_matrix):
             if len(row) != n_regimes:
                 raise ValueError(
-                    f"transition_matrix Zeile {i} hat {len(row)} Spalten, "
-                    f"erwartet {n_regimes}"
+                    f"transition_matrix Zeile {i} hat {len(row)} Spalten, erwartet {n_regimes}"
                 )
             row_sum = sum(row)
             if not np.isclose(row_sum, 1.0, atol=1e-6):
                 raise ValueError(
-                    f"transition_matrix Zeile {i} summiert sich zu {row_sum}, "
-                    f"erwartet 1.0"
+                    f"transition_matrix Zeile {i} summiert sich zu {row_sum}, erwartet 1.0"
                 )
 
         if self.student_df <= 2:

@@ -9,6 +9,7 @@ Tests für:
 - get_portfolio_recipe
 - Validierung
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -421,12 +422,18 @@ def test_load_phase53_recipes_with_strategies(phase53_recipe_toml: Path):
     recipe1 = recipes["rsi_reversion_conservative"]
     assert recipe1.id == "rsi_reversion_conservative"
     assert recipe1.portfolio_name == "RSI Reversion Conservative"
-    assert recipe1.strategies == ["rsi_reversion_btc_conservative", "rsi_reversion_eth_conservative"]
+    assert recipe1.strategies == [
+        "rsi_reversion_btc_conservative",
+        "rsi_reversion_eth_conservative",
+    ]
     assert recipe1.weights == [0.6, 0.4]
     assert len(recipe1.strategies) == len(recipe1.weights)
     assert recipe1.risk_profile == "conservative"
     # Description kann deutsch oder englisch sein
-    assert "konservativ" in recipe1.description.lower() or "conservative" in recipe1.description.lower()
+    assert (
+        "konservativ" in recipe1.description.lower()
+        or "conservative" in recipe1.description.lower()
+    )
 
     # Prüfe zweites Rezept
     recipe2 = recipes["multi_style_moderate"]
@@ -480,7 +487,9 @@ weights = [0.5, 0.5]
     recipe_file = tmp_path / "invalid.toml"
     recipe_file.write_text(toml_content)
 
-    with pytest.raises(ValueError, match="Either 'strategies' or both 'sweep_name' and 'top_n' must be set"):
+    with pytest.raises(
+        ValueError, match="Either 'strategies' or both 'sweep_name' and 'top_n' must be set"
+    ):
         load_portfolio_recipes(recipe_file)
 
 
@@ -491,8 +500,10 @@ def test_phase53_recipe_risk_profile_in_description(phase53_recipe_toml: Path):
     conservative_recipe = recipes["rsi_reversion_conservative"]
     assert conservative_recipe.risk_profile == "conservative"
     # Prüfe, dass description das Keyword enthält (optional, aber gut für Dokumentation)
-    assert "conservative" in conservative_recipe.description.lower() or conservative_recipe.risk_profile == "conservative"
+    assert (
+        "conservative" in conservative_recipe.description.lower()
+        or conservative_recipe.risk_profile == "conservative"
+    )
 
     moderate_recipe = recipes["multi_style_moderate"]
     assert moderate_recipe.risk_profile == "moderate"
-

@@ -1,0 +1,117 @@
+name: Lint Gate (Always Run)
+
+# Gate Pattern: This workflow ALWAYS runs (no paths filter in trigger)
+# to ensure a check-run is created for Branch Protection.
+# Internally, it checks if Python files changed.
+# If not applicable → success (exit 0)
+# If applicable → run linter (ruff)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-gate:
+    name: Lint Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for diff
+
+      - name: Formatter policy drift guard (no black enforcement)
+        run: |
+          set -euo pipefail
+          echo "🛡️  Checking formatter policy (no black enforcement)..."
+          bash scripts/ops/check_no_black_enforcement.sh
+
+      - name: Detect Python file changes
+        id: detect
+        run: |
+          set -euo pipefail
+
+          # Determine base and head refs
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          elif [ "${{ github.event_name }}" = "merge_group" ]; then
+            BASE_SHA="${{ github.event.merge_group.base_sha }}"
+            HEAD_SHA="${{ github.event.merge_group.head_sha }}"
+          else
+            echo "Unsupported event: ${{ github.event_name }}"
+            exit 1
+          fi
+
+          echo "Base SHA: $BASE_SHA"
+          echo "Head SHA: $HEAD_SHA"
+
+          # Get changed Python files
+          CHANGED_PY_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep '\.py$' || echo "")
+
+          if [ -z "$CHANGED_PY_FILES" ]; then
+            echo "No Python files changed"
+            echo "applicable=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Python files changed:"
+          echo "$CHANGED_PY_FILES"
+
+          echo "applicable=true" >> $GITHUB_OUTPUT
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_PY_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        if: steps.detect.outputs.applicable == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ruff
+        if: steps.detect.outputs.applicable == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+
+      - name: Run ruff check
+        if: steps.detect.outputs.applicable == 'true'
+        run: |
+          set -euo pipefail
+
+          echo "Running ruff on changed Python files..."
+
+          # Run ruff on all Python code (repository-wide for consistency)
+          # Alternative: Only check changed files with --files option
+          ruff check src/ tests/ scripts/ || {
+            echo "❌ Ruff found linting issues"
+            exit 1
+          }
+
+          echo "✅ Ruff check passed"
+
+      - name: Run ruff format check
+        if: steps.detect.outputs.applicable == 'true'
+        run: |
+          set -euo pipefail
+
+          echo "Checking code formatting with ruff..."
+
+          ruff format --check src/ tests/ scripts/ || {
+            echo "❌ Code formatting issues found"
+            echo "Run 'ruff format src/ tests/ scripts/' locally to fix"
+            exit 1
+          }
+
+          echo "✅ Code formatting check passed"
+
+      - name: Gate Success (Not Applicable)
+        if: steps.detect.outputs.applicable == 'false'
+        run: |
+          echo "✅ Lint Gate: Not applicable (no Python files changed)"
+          exit 0

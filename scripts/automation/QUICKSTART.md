@@ -41,11 +41,11 @@ python3 scripts/automation/run_offline_weekly_suite.py --quick-mode
 python3 scripts/automation/run_offline_weekly_suite.py --dry-run
 ```
 
-**Erwartete Laufzeit**: 
+**Erwartete Laufzeit**:
 - Standard: ~30-60 Minuten
 - Quick-Mode: ~10-15 Minuten
 
-**Output**: 
+**Output**:
 - JSON: `reports/automation/weekly/automation_weekly_<TIMESTAMP>.json`
 - Markdown: `reports/automation/weekly/automation_weekly_<TIMESTAMP>.md`
 
@@ -121,7 +121,7 @@ cat reports/automation/weekly/automation_weekly_*.md
    ```bash
    # Test OfflineSynthSession
    python3 scripts/run_offline_realtime_ma_crossover.py --n-steps 100
-   
+
    # Test Trigger-Training
    python3 scripts/run_offline_trigger_training_drill_example.py
    ```

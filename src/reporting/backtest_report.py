@@ -22,6 +22,7 @@ Usage:
     )
     report_md = report.to_markdown()
 """
+
 from __future__ import annotations
 
 import os
@@ -31,7 +32,13 @@ from typing import Any, Dict, List, Optional, Union
 import pandas as pd
 
 from .base import Report, ReportSection, dict_to_markdown_table, df_to_markdown, format_metric
-from .plots import save_equity_plot, save_drawdown_plot, save_equity_with_regimes, save_equity_with_regime_overlay, save_regime_contribution_bars
+from .plots import (
+    save_equity_plot,
+    save_drawdown_plot,
+    save_equity_with_regimes,
+    save_equity_with_regime_overlay,
+    save_regime_contribution_bars,
+)
 from .regime_reporting import compute_regime_stats, build_regime_report_section
 
 
@@ -291,7 +298,10 @@ def build_backtest_report(
             try:
                 # Versuche numerische Regime-Werte (1/0/-1)
                 regime_numeric = regimes.astype(float)
-                if regime_numeric.isin([1.0, 0.0, -1.0]).all() or regime_numeric.isin([1, 0, -1]).all():
+                if (
+                    regime_numeric.isin([1.0, 0.0, -1.0]).all()
+                    or regime_numeric.isin([1, 0, -1]).all()
+                ):
                     save_equity_with_regime_overlay(equity_curve, regimes, equity_path)
                 else:
                     # Fallback zu String-Labels
@@ -300,7 +310,9 @@ def build_backtest_report(
                 # Fallback zu String-Labels
                 save_equity_with_regimes(equity_curve, regimes, equity_path)
             rel_path = os.path.relpath(equity_path, output_dir.parent)
-            charts_content.append(f"### Equity Curve with Regimes\n\n![Equity with Regimes]({rel_path})")
+            charts_content.append(
+                f"### Equity Curve with Regimes\n\n![Equity with Regimes]({rel_path})"
+            )
         else:
             # Standard Equity Plot
             equity_path = output_dir / "equity_curve.png"
@@ -324,7 +336,12 @@ def build_backtest_report(
 
     # 5. Regime-Analyse (wenn Regime-Daten vorhanden)
     regime_stats = None
-    if regimes is not None and len(regimes) > 0 and equity_curve is not None and len(equity_curve) > 0:
+    if (
+        regimes is not None
+        and len(regimes) > 0
+        and equity_curve is not None
+        and len(equity_curve) > 0
+    ):
         try:
             # Berechne Returns aus Equity
             returns_series = equity_curve.pct_change().fillna(0)
@@ -339,7 +356,7 @@ def build_backtest_report(
                     regime_series=regimes,
                     trades=trades if trades else None,
                 )
-                
+
                 # Erstelle Contribution-Plot
                 contribution_plot_path = output_dir / "regime_contribution.png"
                 try:
@@ -348,12 +365,16 @@ def build_backtest_report(
                         output_path=contribution_plot_path,
                         title="Return Contribution by Regime",
                     )
-                    rel_contribution_path = os.path.relpath(contribution_plot_path, output_dir.parent)
-                    charts_content.append(f"### Return Contribution by Regime\n\n![Regime Contribution]({rel_contribution_path})")
+                    rel_contribution_path = os.path.relpath(
+                        contribution_plot_path, output_dir.parent
+                    )
+                    charts_content.append(
+                        f"### Return Contribution by Regime\n\n![Regime Contribution]({rel_contribution_path})"
+                    )
                 except Exception as plot_error:
                     # Plot-Fehler nicht kritisch, nur loggen
                     pass
-                
+
                 # Füge Regime-Section hinzu
                 report.add_section(build_regime_report_section(regime_stats))
         except Exception as e:

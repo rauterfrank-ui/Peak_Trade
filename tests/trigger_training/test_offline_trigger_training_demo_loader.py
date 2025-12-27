@@ -165,44 +165,53 @@ def test_load_real_session_from_store(tmp_path):
     start_ts = pd.Timestamp("2025-01-20T12:00:00Z")
     periods = 20
     idx = pd.date_range(start_ts, periods=periods, freq="1min", tz="UTC")
-    
-    prices_df = pd.DataFrame({
-        "timestamp": idx,
-        "symbol": "ETHEUR",
-        "close": 2000.0 + pd.Series(range(periods)) * 5.0,
-    })
-    
-    signals_df = pd.DataFrame({
-        "signal_id": [101, 102, 103],
-        "timestamp": [idx[3], idx[10], idx[17]],
-        "symbol": ["ETHEUR", "ETHEUR", "ETHEUR"],
-        "signal_state": [1, -1, 1],
-        "recommended_action": ["ENTER_LONG", "ENTER_SHORT", "ENTER_LONG"],
-    })
-    
-    actions_df = pd.DataFrame({
-        "signal_id": [101, 102],
-        "timestamp": [idx[3] + pd.Timedelta(seconds=3), idx[10] + pd.Timedelta(seconds=8)],
-        "user_action": ["EXECUTED", "EXECUTED"],
-        "note": ["Good timing", "Delayed entry"],
-    })
-    
-    trades_df = pd.DataFrame({
-        "timestamp": [idx[3], idx[10]],
-        "price": [2015.0, 2050.0],
-        "qty": [0.1, -0.1],
-        "pnl": [100.0, -50.0],
-        "fees": [1.0, 1.0],
-    })
-    
+
+    prices_df = pd.DataFrame(
+        {
+            "timestamp": idx,
+            "symbol": "ETHEUR",
+            "close": 2000.0 + pd.Series(range(periods)) * 5.0,
+        }
+    )
+
+    signals_df = pd.DataFrame(
+        {
+            "signal_id": [101, 102, 103],
+            "timestamp": [idx[3], idx[10], idx[17]],
+            "symbol": ["ETHEUR", "ETHEUR", "ETHEUR"],
+            "signal_state": [1, -1, 1],
+            "recommended_action": ["ENTER_LONG", "ENTER_SHORT", "ENTER_LONG"],
+        }
+    )
+
+    actions_df = pd.DataFrame(
+        {
+            "signal_id": [101, 102],
+            "timestamp": [idx[3] + pd.Timedelta(seconds=3), idx[10] + pd.Timedelta(seconds=8)],
+            "user_action": ["EXECUTED", "EXECUTED"],
+            "note": ["Good timing", "Delayed entry"],
+        }
+    )
+
+    trades_df = pd.DataFrame(
+        {
+            "timestamp": [idx[3], idx[10]],
+            "price": [2015.0, 2050.0],
+            "qty": [0.1, -0.1],
+            "pnl": [100.0, -50.0],
+            "fees": [1.0, 1.0],
+        }
+    )
+
     # Speichere Session im temporären Verzeichnis
     # WICHTIG: Wir müssen temporär den DEFAULT_SESSIONS_BASE_DIR überschreiben
     # oder einen benutzerdefinierten Store-Pfad verwenden
-    
+
     # Für diesen Test verwenden wir den echten Store, aber eine eindeutige Session-ID
     import uuid
+
     unique_session_id = f"TEST_{uuid.uuid4().hex[:8]}"
-    
+
     save_session_data(
         session_id=unique_session_id,
         prices_df=prices_df,
@@ -215,30 +224,31 @@ def test_load_real_session_from_store(tmp_path):
         timeframe="1m",
         strategy="test_strategy",
     )
-    
+
     try:
         # Lade die Session mit load_data_for_session()
         loaded_trades, loaded_signals, loaded_actions, loaded_prices, loaded_start, loaded_end = (
             load_data_for_session(unique_session_id)
         )
-        
+
         # Vergleiche geladene Daten
         assert len(loaded_signals) == 3, f"Erwarte 3 Signale, habe {len(loaded_signals)}"
         assert len(loaded_trades) == 2, f"Erwarte 2 Trades, habe {len(loaded_trades)}"
         assert len(loaded_actions) == 2, f"Erwarte 2 Actions, habe {len(loaded_actions)}"
         assert len(loaded_prices) == 20, f"Erwarte 20 Preis-Bars, habe {len(loaded_prices)}"
-        
+
         # Prüfe Signal-IDs
         assert set(loaded_signals["signal_id"]) == {101, 102, 103}
-        
+
         # Prüfe Symbol
         assert loaded_signals["symbol"].iloc[0] == "ETHEUR"
-        
+
         print(f"✅ test_load_real_session_from_store passed (Session: {unique_session_id})")
-    
+
     finally:
         # Cleanup: Entferne Test-Session
         import shutil
+
         session_dir = DEFAULT_SESSIONS_BASE_DIR / unique_session_id
         if session_dir.exists():
             shutil.rmtree(session_dir)

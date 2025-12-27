@@ -232,14 +232,14 @@ print(f"Max acceptable drawdown: {max_dd}%")
 def check_regression(strategy_results: dict, scenario: dict) -> bool:
     """Prüft, ob Strategie-Ergebnisse die Szenario-Erwartungen erfüllen."""
     expectations = scenario["scenario"]["test_expectations"]
-    
+
     actual_dd = strategy_results.get("max_drawdown", 0)
     max_acceptable = expectations["max_acceptable_drawdown"]
-    
+
     if actual_dd < max_acceptable:
         print(f"❌ REGRESSION: Drawdown {actual_dd}% exceeds limit {max_acceptable}%")
         return False
-    
+
     print(f"✅ PASSED: Drawdown {actual_dd}% within limit {max_acceptable}%")
     return True
 ```

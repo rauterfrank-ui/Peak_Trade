@@ -14,6 +14,7 @@ Features:
 WICHTIG: Diese Library nutzt die bestehende Run-Logging-Struktur.
          Keine neue Persistenz wird erstellt.
 """
+
 from __future__ import annotations
 
 import logging
@@ -30,6 +31,7 @@ from .run_logging import (
     list_runs as list_run_ids,
     LiveRunMetadata,
 )
+from ..core.resilience_helpers import with_resilience
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +54,7 @@ class RunMetricPoint:
         drawdown: Aktueller Drawdown (negativ)
         exposure: Gesamt-Exposure
     """
+
     timestamp: datetime
     equity: Optional[float] = None
     pnl: Optional[float] = None
@@ -94,6 +97,7 @@ class RunSnapshot:
         last_error: Letzter Fehler (falls vorhanden)
         run_dir: Pfad zum Run-Verzeichnis
     """
+
     run_id: str
     mode: str
     strategy: Optional[str] = None
@@ -140,6 +144,7 @@ class RunSnapshot:
 
 class RunNotFoundError(Exception):
     """Wird geworfen wenn ein Run nicht gefunden wird."""
+
     pass
 
 
@@ -168,13 +173,13 @@ def _calculate_drawdown(equity_series: pd.Series) -> Optional[float]:
 
     # Running Maximum
     running_max = equity_clean.expanding().max()
-    
+
     # Drawdown
     drawdown = (equity_clean - running_max) / running_max
-    
+
     # Aktueller Drawdown (letzter Wert)
     current_dd = drawdown.iloc[-1]
-    
+
     return float(current_dd) if not pd.isna(current_dd) else None
 
 
@@ -456,7 +461,7 @@ def get_run_timeseries(
             # Drawdown (berechnen aus Equity-Serie bis zu diesem Punkt)
             drawdown = None
             if equity is not None and "equity" in events_df.columns:
-                equity_series = events_df.loc[:row.name, "equity"].dropna()
+                equity_series = events_df.loc[: row.name, "equity"].dropna()
                 if len(equity_series) > 0:
                     drawdown = _calculate_drawdown(equity_series)
 

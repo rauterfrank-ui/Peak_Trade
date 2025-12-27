@@ -26,6 +26,7 @@ Usage:
     python scripts/preview_live_orders.py --signals ... --enforce-live-risk
     python scripts/preview_live_orders.py --signals ... --skip-live-risk
 """
+
 from __future__ import annotations
 
 import sys

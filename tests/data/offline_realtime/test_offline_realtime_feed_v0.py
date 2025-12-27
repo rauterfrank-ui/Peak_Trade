@@ -10,6 +10,7 @@ Testet:
 WICHTIG: Diese Tests sind für Offline-Simulation.
          Niemals für Live-Trading verwenden!
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone

@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 class ApplyMode(str, Enum):
     """Apply modes for changes."""
+
     AUTO = "auto"  # Automated apply allowed
     MANUAL_ONLY = "manual_only"  # Requires manual operator action
     BLOCKED = "blocked"  # Completely blocked (hard violation)
@@ -35,6 +36,7 @@ class AutoApplyDecision:
     This is the output of the policy critic gate that controls
     whether automated changes can proceed.
     """
+
     allowed: bool
     mode: ApplyMode
     reason: str

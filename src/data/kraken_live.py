@@ -29,6 +29,7 @@ Example:
     ...         process(candle)
     ...     time.sleep(60)
 """
+
 from __future__ import annotations
 
 import logging
@@ -115,6 +116,7 @@ class LiveCandle:
         volume: Handelsvolumen
         is_complete: Ob die Candle abgeschlossen ist
     """
+
     timestamp: datetime
     open: float
     high: float
@@ -125,13 +127,16 @@ class LiveCandle:
 
     def to_series(self) -> pd.Series:
         """Konvertiert zu pandas Series."""
-        return pd.Series({
-            "open": self.open,
-            "high": self.high,
-            "low": self.low,
-            "close": self.close,
-            "volume": self.volume,
-        }, name=self.timestamp)
+        return pd.Series(
+            {
+                "open": self.open,
+                "high": self.high,
+                "low": self.low,
+                "close": self.close,
+                "volume": self.volume,
+            },
+            name=self.timestamp,
+        )
 
     def to_dict(self) -> Dict[str, Any]:
         """Konvertiert zu Dictionary."""
@@ -159,6 +164,7 @@ class LiveExchangeConfig:
         max_retries: Maximale Retry-Versuche
         retry_delay_seconds: Wartezeit zwischen Retries
     """
+
     name: str = "kraken"
     use_sandbox: bool = True
     base_url: str = "https://api.kraken.com"
@@ -184,6 +190,7 @@ class ShadowPaperConfig:
         fee_rate: Fee-Rate für Simulation
         slippage_bps: Slippage in Basispunkten
     """
+
     enabled: bool = True
     mode: str = "paper"
     symbol: str = "BTC/EUR"
@@ -294,9 +301,7 @@ class KrakenLiveCandleSource:
 
         # Session für Connection-Pooling
         self._session = session or requests.Session()
-        self._session.headers.update({
-            "User-Agent": "PeakTrade/1.0 (Shadow-Paper-Session)"
-        })
+        self._session.headers.update({"User-Agent": "PeakTrade/1.0 (Shadow-Paper-Session)"})
 
         # Interner Buffer
         self._buffer: List[LiveCandle] = []
@@ -442,7 +447,7 @@ class KrakenLiveCandleSource:
 
             # Auf warmup_candles begrenzen (neueste behalten)
             if len(candles) > self.warmup_candles:
-                candles = candles[-self.warmup_candles:]
+                candles = candles[-self.warmup_candles :]
 
             # Buffer aktualisieren
             self._buffer = candles
@@ -499,7 +504,7 @@ class KrakenLiveCandleSource:
 
             # Buffer-Größe begrenzen
             if len(self._buffer) > self.max_buffer_size:
-                self._buffer = self._buffer[-self.max_buffer_size:]
+                self._buffer = self._buffer[-self.max_buffer_size :]
 
             logger.debug(
                 f"[KRAKEN LIVE] Neue Candle: {latest_candle.timestamp}, "

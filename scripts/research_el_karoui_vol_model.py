@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Sequence
 
 # Standard-Pfad für den Report (aus Repo-Root ausgeführt)
-REPORT_PATH = Path("docs/reports/R_AND_D_EL_KAROUI_VOL_MODEL_V1.md")
+REPORT_PATH = Path("docs/research/R_AND_D_EL_KAROUI_VOL_MODEL_V1.md")
 
 # Defaults – bei Bedarf anpassen
 DEFAULT_SYMBOLS: list[str] = ["SPY", "QQQ", "EURUSD"]
@@ -64,8 +64,7 @@ def parse_date_range(range_str: str) -> tuple[date, date]:
         start_str, end_str = range_str.split(":", 1)
     except ValueError as exc:
         raise ValueError(
-            f"Ungültiges Date-Range-Format '{range_str}', "
-            "erwartet 'YYYY-MM-DD:YYYY-MM-DD'."
+            f"Ungültiges Date-Range-Format '{range_str}', erwartet 'YYYY-MM-DD:YYYY-MM-DD'."
         ) from exc
 
     start = datetime.strptime(start_str.strip(), "%Y-%m-%d").date()
@@ -326,10 +325,7 @@ def _parse_cli_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--output-path",
         type=str,
         default=str(REPORT_PATH),
-        help=(
-            "Pfad für den generierten Markdown-Report "
-            f"(Default: {REPORT_PATH.as_posix()})"
-        ),
+        help=(f"Pfad für den generierten Markdown-Report (Default: {REPORT_PATH.as_posix()})"),
     )
     parser.add_argument(
         "--dry-run",
@@ -350,9 +346,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     symbols = [s.strip() for s in args.symbols.split(",") if s.strip()]
     date_ranges = [dr.strip() for dr in args.date_ranges.split(",") if dr.strip()]
-    mapping_variants = [
-        mv.strip() for mv in args.mapping_variants.split(",") if mv.strip()
-    ]
+    mapping_variants = [mv.strip() for mv in args.mapping_variants.split(",") if mv.strip()]
     output_path = Path(args.output_path)
 
     print("=" * 70)

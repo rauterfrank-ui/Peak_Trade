@@ -50,7 +50,7 @@ class ExecutionPipeline:
         run_logger: Optional[LiveRunLogger] = None,
     ) -> None:
         ...
-    
+
     def execute_with_safety(
         self,
         orders: Sequence[OrderRequest],
@@ -58,7 +58,7 @@ class ExecutionPipeline:
     ) -> ExecutionResult:
         """
         Führt Orders mit vollständigen Safety- und Risk-Checks aus.
-        
+
         Returns:
             ExecutionResult mit Risk-Check-Ergebnis, executed_orders, rejected-Flag
         """
@@ -255,9 +255,3 @@ Phase 16A stellt eine **stabile, getestete ExecutionPipeline** bereit, die:
 - ✅ Später ohne Breaking Changes für Live erweitert werden kann
 
 Die Pipeline ist das zentrale Rückgrat zwischen Strategie/Portfolio und Executor und stellt sicher, dass alle Orders durch die Safety- und Risk-Layer laufen, bevor sie ausgeführt werden.
-
-
-
-
-
-

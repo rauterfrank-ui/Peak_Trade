@@ -14,6 +14,7 @@ Tests für die neue execute_with_safety() Methode:
 
 WICHTIG: Keine echten Orders - alles Paper/Sandbox.
 """
+
 from __future__ import annotations
 
 import sys
@@ -38,6 +39,7 @@ if str(ROOT_DIR) not in sys.path:
 @dataclass
 class FakeLiveRiskCheckResult:
     """Fake LiveRiskCheckResult für Tests."""
+
     allowed: bool
     reasons: List[str]
     metrics: dict
@@ -58,6 +60,7 @@ class FakeSafetyGuard:
             raise self.raise_exception
         if not self.allow_orders:
             from src.live.safety import SafetyBlockedError
+
             raise SafetyBlockedError("Fake SafetyGuard blockiert Orders")
 
 
@@ -321,6 +324,3 @@ class TestExecutionPipelineWithSafety:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
-
-
-

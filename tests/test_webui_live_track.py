@@ -20,6 +20,7 @@ Testet (Phase 85 - Session Explorer):
 Run:
     pytest tests/test_webui_live_track.py -v
 """
+
 from __future__ import annotations
 
 import json
@@ -28,6 +29,12 @@ from pathlib import Path
 from typing import Any, Dict
 
 import pytest
+
+# Skip if FastAPI not installed - all tests in this module require web stack
+pytest.importorskip("fastapi")
+
+# Mark all tests in this module as web tests
+pytestmark = pytest.mark.web
 
 
 # =============================================================================
@@ -178,14 +185,10 @@ class TestGetRecentLiveSessions:
         """Test: Nicht existierendes Verzeichnis gibt leere Liste zurück."""
         from src.webui.live_track import get_recent_live_sessions
 
-        sessions = get_recent_live_sessions(
-            limit=10, base_dir=tmp_path / "nonexistent"
-        )
+        sessions = get_recent_live_sessions(limit=10, base_dir=tmp_path / "nonexistent")
         assert sessions == []
 
-    def test_loads_sessions_from_registry(
-        self, temp_sessions_dir, sample_session_data
-    ):
+    def test_loads_sessions_from_registry(self, temp_sessions_dir, sample_session_data):
         """Test: Sessions werden aus der Registry geladen."""
         from src.webui.live_track import get_recent_live_sessions
 
@@ -200,9 +203,7 @@ class TestGetRecentLiveSessions:
         assert sessions[0].status == "completed"
         assert sessions[0].realized_pnl == 150.0
 
-    def test_respects_limit_parameter(
-        self, temp_sessions_dir, sample_session_data
-    ):
+    def test_respects_limit_parameter(self, temp_sessions_dir, sample_session_data):
         """Test: Limit-Parameter wird respektiert."""
         from src.webui.live_track import get_recent_live_sessions
 
@@ -215,9 +216,7 @@ class TestGetRecentLiveSessions:
         sessions = get_recent_live_sessions(limit=3, base_dir=temp_sessions_dir)
         assert len(sessions) == 3
 
-    def test_sorted_by_ended_at_descending(
-        self, temp_sessions_dir, sample_session_data
-    ):
+    def test_sorted_by_ended_at_descending(self, temp_sessions_dir, sample_session_data):
         """Test: Sessions sind nach ended_at sortiert (neueste zuerst)."""
         from src.webui.live_track import get_recent_live_sessions
 
@@ -263,9 +262,7 @@ class TestGetRecentLiveSessions:
         assert sessions[0].realized_pnl is None
         assert sessions[0].max_drawdown is None
 
-    def test_skips_corrupted_json_files(
-        self, temp_sessions_dir, sample_session_data
-    ):
+    def test_skips_corrupted_json_files(self, temp_sessions_dir, sample_session_data):
         """Test: Beschädigte JSON-Dateien werden übersprungen."""
         from src.webui.live_track import get_recent_live_sessions
 
@@ -281,9 +278,7 @@ class TestGetRecentLiveSessions:
         assert len(sessions) == 1
         assert sessions[0].session_id == "session_20251208_test_001"
 
-    def test_environment_built_from_env_and_symbol(
-        self, temp_sessions_dir, sample_session_data
-    ):
+    def test_environment_built_from_env_and_symbol(self, temp_sessions_dir, sample_session_data):
         """Test: Environment wird aus env_name und symbol zusammengebaut."""
         from src.webui.live_track import get_recent_live_sessions
 
@@ -375,8 +370,7 @@ class TestDashboardRendering:
         response = test_client.get("/")
         # Entweder Sessions vorhanden oder "Keine Live-Sessions gefunden"
         assert (
-            "Session(s) geladen" in response.text
-            or "Keine Live-Sessions gefunden" in response.text
+            "Session(s) geladen" in response.text or "Keine Live-Sessions gefunden" in response.text
         )
 
 
@@ -388,9 +382,7 @@ class TestDashboardRendering:
 class TestIntegrationWithRegistry:
     """Integrationstests mit der echten Live-Session-Registry."""
 
-    def test_uses_registry_list_session_records(
-        self, temp_sessions_dir, sample_session_data
-    ):
+    def test_uses_registry_list_session_records(self, temp_sessions_dir, sample_session_data):
         """Test: get_recent_live_sessions verwendet list_session_records."""
         from src.experiments.live_session_registry import (
             LiveSessionRecord,
@@ -586,9 +578,7 @@ class TestGetFilteredSessions:
         create_session_file(temp_sessions_dir, testnet_data, index=1)
 
         # Nur Shadow filtern
-        sessions = get_filtered_sessions(
-            limit=10, mode_filter="shadow", base_dir=temp_sessions_dir
-        )
+        sessions = get_filtered_sessions(limit=10, mode_filter="shadow", base_dir=temp_sessions_dir)
 
         assert len(sessions) == 1
         assert sessions[0].mode == "shadow"
@@ -617,9 +607,7 @@ class TestGetFilteredSessions:
         assert len(sessions) == 1
         assert sessions[0].status == "failed"
 
-    def test_filter_combined_mode_and_status(
-        self, temp_sessions_dir, sample_session_data
-    ):
+    def test_filter_combined_mode_and_status(self, temp_sessions_dir, sample_session_data):
         """Test: Kombinierter Filter (Mode + Status)."""
         from src.webui.live_track import get_filtered_sessions
 
@@ -683,9 +671,7 @@ class TestGetSessionById:
 
         create_session_file(temp_sessions_dir, sample_session_data)
 
-        detail = get_session_by_id(
-            "session_20251208_test_001", base_dir=temp_sessions_dir
-        )
+        detail = get_session_by_id("session_20251208_test_001", base_dir=temp_sessions_dir)
 
         assert detail is not None
         assert detail.session_id == "session_20251208_test_001"
@@ -700,17 +686,13 @@ class TestGetSessionById:
 
         assert detail is None
 
-    def test_detail_includes_all_fields(
-        self, temp_sessions_dir, sample_session_data
-    ):
+    def test_detail_includes_all_fields(self, temp_sessions_dir, sample_session_data):
         """Test: Detail enthält alle Felder."""
         from src.webui.live_track import get_session_by_id
 
         create_session_file(temp_sessions_dir, sample_session_data)
 
-        detail = get_session_by_id(
-            "session_20251208_test_001", base_dir=temp_sessions_dir
-        )
+        detail = get_session_by_id("session_20251208_test_001", base_dir=temp_sessions_dir)
 
         assert detail.run_type == "live_session_shadow"
         assert detail.env_name == "kraken_futures_testnet"
@@ -728,9 +710,7 @@ class TestGetSessionById:
 
         create_session_file(temp_sessions_dir, sample_session_data)
 
-        detail = get_session_by_id(
-            "session_20251208_test_001", base_dir=temp_sessions_dir
-        )
+        detail = get_session_by_id("session_20251208_test_001", base_dir=temp_sessions_dir)
 
         # 1 Stunde = 3600 Sekunden
         assert detail.duration_seconds == 3600
@@ -817,9 +797,7 @@ class TestPhase85ApiEndpoints:
 
     def test_filter_endpoint_combined(self, test_client):
         """Test: /api/live_sessions akzeptiert beide Parameter."""
-        response = test_client.get(
-            "/api/live_sessions?mode=shadow&status=completed&limit=5"
-        )
+        response = test_client.get("/api/live_sessions?mode=shadow&status=completed&limit=5")
         assert response.status_code == 200
 
     def test_stats_endpoint(self, test_client):

@@ -57,9 +57,18 @@ R&D Dashboard (Phase 76/77/78):
 - GET /api/r_and_d/strategies (Aggregation nach Strategy)
 - GET /api/r_and_d/stats (Globale Statistiken)
 
+Knowledge DB (v1.0):
+- GET  /api/knowledge/snippets (Liste Dokumente)
+- POST /api/knowledge/snippets (Dokument hinzufügen - gated)
+- GET  /api/knowledge/strategies (Liste Strategien)
+- POST /api/knowledge/strategies (Strategie hinzufügen - gated)
+- GET  /api/knowledge/search (Semantische Suche)
+- GET  /api/knowledge/stats (Statistiken)
+
 System:
 - GET /api/health (Health-Check)
 """
+
 from __future__ import annotations
 
 import logging
@@ -73,6 +82,7 @@ from fastapi.templating import Jinja2Templates
 
 logger = logging.getLogger(__name__)
 
+from .knowledge_api import router as knowledge_router
 from .live_track import (
     LiveSessionSummary,
     LiveSessionDetail,
@@ -101,6 +111,39 @@ from .alerts_api import (
     get_alerts_for_ui,
     get_alert_statistics,
     get_alerts_template_context,
+)
+
+# Phase 16F: Telemetry Health & Console
+try:
+    from src.execution.telemetry_retention import (
+        discover_sessions as discover_telemetry_sessions,
+        RetentionPolicy,
+    )
+    from src.execution.telemetry_health import run_health_checks, HealthThresholds
+
+    TELEMETRY_AVAILABLE = True
+except ImportError:
+    discover_telemetry_sessions = None
+    RetentionPolicy = None
+    run_health_checks = None
+    HealthThresholds = None
+    TELEMETRY_AVAILABLE = False
+
+from .health_endpoint import (
+    router as health_router,
+    register_standard_checks,
+)
+
+# Phase 16K: Stage1 Ops Dashboard
+from .ops_stage1_router import (
+    router as stage1_router,
+    set_stage1_config,
+)
+
+# Ops Workflows Hub
+from .ops_workflows_router import (
+    router as workflows_router,
+    set_workflows_config,
 )
 
 
@@ -277,8 +320,7 @@ def load_strategy_tiering(include_research: bool = False) -> Dict[str, Any]:
 
     # Kategorien-Liste für UI-Filter
     categories_list = [
-        {"id": cat, "label": category_labels.get(cat, cat)}
-        for cat in sorted(categories_set)
+        {"id": cat, "label": category_labels.get(cat, cat)} for cat in sorted(categories_set)
     ]
 
     return {
@@ -329,6 +371,36 @@ def create_app() -> FastAPI:
     set_r_and_d_base_dir(BASE_DIR)
     app.include_router(r_and_d_router)
 
+    # Health Check API: Registriere Health Check Router
+    app.include_router(health_router)
+    register_standard_checks()
+
+    # Phase 16K: Stage1 Ops Dashboard API
+    stage1_report_root = BASE_DIR / "reports" / "obs" / "stage1"
+    set_stage1_config(stage1_report_root, templates)
+    app.include_router(stage1_router)
+
+    # Ops Workflows Hub
+    set_workflows_config(BASE_DIR, templates)
+    app.include_router(workflows_router)
+
+    # Knowledge DB API (v1.0)
+    app.include_router(knowledge_router)
+
+    # JSON API Alias für /api/ops/workflows
+    @app.get("/api/ops/workflows")
+    async def api_ops_workflows() -> List[Dict[str, Any]]:
+        """JSON API Alias: Get list of workflow scripts."""
+        from .ops_workflows_router import (
+            _get_workflow_definitions,
+            _enrich_with_filesystem_metadata,
+        )
+        from dataclasses import asdict
+
+        workflow_defs = _get_workflow_definitions()
+        workflows = _enrich_with_filesystem_metadata(workflow_defs)
+        return [asdict(wf) for wf in workflows]
+
     # =========================================================================
     # HTML Dashboard Endpoints
     # =========================================================================
@@ -337,7 +409,9 @@ def create_app() -> FastAPI:
     async def index(
         request: Request,
         mode: Optional[str] = Query(None, description="Filter: shadow, testnet, paper, live"),
-        status: Optional[str] = Query(None, description="Filter: completed, failed, aborted, started"),
+        status: Optional[str] = Query(
+            None, description="Filter: completed, failed, aborted, started"
+        ),
         include_research: bool = Query(False, description="Zeige auch R&D/Research-Strategien"),
     ) -> Any:
         """HTML Dashboard mit Projekt-Status, Strategy-Tiering und Live-Track."""
@@ -423,7 +497,8 @@ def create_app() -> FastAPI:
         # Zusätzlicher Run-Type Filter (v1.1)
         if run_type:
             filtered_experiments = [
-                exp for exp in filtered_experiments
+                exp
+                for exp in filtered_experiments
                 if extract_flat_fields(exp).get("run_type") == run_type
             ]
 
@@ -438,7 +513,9 @@ def create_app() -> FastAPI:
 
         # v1.1: Daily Summary Stats (heute fertig, laufend)
         today_str = date.today().strftime("%Y-%m-%d")
-        today_experiments = [e for e in all_flat if e.get("date_str") == today_str and e.get("status") != "running"]
+        today_experiments = [
+            e for e in all_flat if e.get("date_str") == today_str and e.get("status") != "running"
+        ]
         running_experiments = [e for e in all_flat if e.get("status") == "running"]
 
         stats["today_date"] = today_str
@@ -484,7 +561,7 @@ def create_app() -> FastAPI:
         - Report-Links (HTML, Markdown, Charts)
         - Status-/Run-Type-Badges
         - Raw JSON (collapsible)
-        
+
         v1.1: Refactored - nutzt zentralisierte Helper-Funktionen aus r_and_d_api.py
         """
         proj_status = get_project_status()
@@ -574,7 +651,7 @@ def create_app() -> FastAPI:
         - Kern-Metriken mit Best-Metric-Hervorhebung
         - Links zu Einzelansichten
         - Status-/Run-Type-Badges
-        
+
         v1.1: Refactored - nutzt zentralisierte Helper-Funktionen aus r_and_d_api.py
         """
         proj_status = get_project_status()
@@ -614,7 +691,7 @@ def create_app() -> FastAPI:
 
         for requested_id in unique_ids:
             exp = find_experiment_by_run_id(all_experiments, requested_id)
-            
+
             if exp:
                 experiment_data = build_experiment_detail(exp)
                 found_experiments.append(experiment_data)
@@ -796,28 +873,46 @@ def create_app() -> FastAPI:
             html_lines.append("<html lang='en'>")
             html_lines.append("<head>")
             html_lines.append("  <meta charset='UTF-8'>")
-            html_lines.append("  <meta name='viewport' content='width=device-width, initial-scale=1.0'>")
+            html_lines.append(
+                "  <meta name='viewport' content='width=device-width, initial-scale=1.0'>"
+            )
             html_lines.append("  <title>Peak_Trade Live Status Snapshot</title>")
             html_lines.append("  <style>")
-            html_lines.append("    body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }")
-            html_lines.append("    .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }")
-            html_lines.append("    h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }")
-            html_lines.append("    .meta { background: #ecf0f1; padding: 10px; border-radius: 4px; margin: 15px 0; font-size: 0.9em; }")
-            html_lines.append("    .panel { margin: 20px 0; border: 1px solid #ddd; border-radius: 4px; padding: 15px; }")
+            html_lines.append(
+                "    body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }"
+            )
+            html_lines.append(
+                "    .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }"
+            )
+            html_lines.append(
+                "    h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }"
+            )
+            html_lines.append(
+                "    .meta { background: #ecf0f1; padding: 10px; border-radius: 4px; margin: 15px 0; font-size: 0.9em; }"
+            )
+            html_lines.append(
+                "    .panel { margin: 20px 0; border: 1px solid #ddd; border-radius: 4px; padding: 15px; }"
+            )
             html_lines.append("    .panel h2 { margin: 0 0 10px 0; font-size: 1.2em; }")
             html_lines.append("    .status-ok { color: #27ae60; font-weight: bold; }")
             html_lines.append("    .status-warn { color: #f39c12; font-weight: bold; }")
             html_lines.append("    .status-error { color: #e74c3c; font-weight: bold; }")
             html_lines.append("    .status-unknown { color: #95a5a6; font-weight: bold; }")
-            html_lines.append("    .details { background: #f9f9f9; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.85em; white-space: pre-wrap; }")
+            html_lines.append(
+                "    .details { background: #f9f9f9; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.85em; white-space: pre-wrap; }"
+            )
             html_lines.append("  </style>")
             html_lines.append("</head>")
             html_lines.append("<body>")
             html_lines.append("  <div class='container'>")
             html_lines.append("    <h1>Peak_Trade Live Status Snapshot</h1>")
             html_lines.append(f"    <div class='meta'>")
-            html_lines.append(f"      <strong>Version:</strong> {_html_escape(snapshot.version)}<br>")
-            html_lines.append(f"      <strong>Generated:</strong> {_html_escape(snapshot.generated_at)}")
+            html_lines.append(
+                f"      <strong>Version:</strong> {_html_escape(snapshot.version)}<br>"
+            )
+            html_lines.append(
+                f"      <strong>Generated:</strong> {_html_escape(snapshot.generated_at)}"
+            )
             html_lines.append(f"    </div>")
 
             # Render panels
@@ -826,13 +921,18 @@ def create_app() -> FastAPI:
                 html_lines.append(f"    <div class='panel'>")
                 html_lines.append(f"      <h2>{_html_escape(panel.title)}</h2>")
                 html_lines.append(f"      <p><strong>ID:</strong> {_html_escape(panel.id)}</p>")
-                html_lines.append(f"      <p><strong>Status:</strong> <span class='{status_class}'>{_html_escape(panel.status.upper())}</span></p>")
+                html_lines.append(
+                    f"      <p><strong>Status:</strong> <span class='{status_class}'>{_html_escape(panel.status.upper())}</span></p>"
+                )
 
                 # Render details (XSS-safe)
                 if panel.details:
                     import json
+
                     details_json = json.dumps(panel.details, indent=2, sort_keys=True)
-                    html_lines.append(f"      <div class='details'>{_html_escape(details_json)}</div>")
+                    html_lines.append(
+                        f"      <div class='details'>{_html_escape(details_json)}</div>"
+                    )
 
                 html_lines.append(f"    </div>")
 
@@ -899,6 +999,120 @@ def create_app() -> FastAPI:
             AlertStats mit aggregierten Daten
         """
         return get_alert_statistics(hours=hours)
+
+    # =========================================================================
+    # Phase 16B: Execution Timeline API Endpoints
+    # =========================================================================
+
+    @app.get(
+        "/api/live/execution/{session_id}",
+        summary="Execution Timeline für Session",
+        description="Liefert Execution-Events für eine Session (Phase 16B).",
+        tags=["execution"],
+    )
+    async def api_execution_timeline(
+        session_id: str,
+        limit: int = Query(200, ge=1, le=1000, description="Max. Anzahl Events"),
+        kind: Optional[str] = Query(
+            None, description="Filter nach Event-Kind (intent/order/fill/gate)"
+        ),
+    ) -> Dict[str, Any]:
+        """
+        API-Endpoint für Execution Timeline (Phase 16B).
+
+        Returns:
+            Dict mit timeline, summary, filters
+        """
+        from src.live.execution_bridge import get_execution_timeline, get_execution_summary
+
+        # Load timeline
+        timeline_rows = get_execution_timeline(session_id, limit=limit)
+
+        # Filter by kind if specified
+        if kind:
+            timeline_rows = [row for row in timeline_rows if row.kind == kind]
+
+        # Convert to dicts for JSON
+        timeline = [
+            {
+                "ts": row.ts.isoformat(),
+                "kind": row.kind,
+                "symbol": row.symbol,
+                "description": row.description,
+                "details": row.details,
+            }
+            for row in timeline_rows
+        ]
+
+        # Get summary
+        summary = get_execution_summary(session_id)
+
+        return {
+            "session_id": session_id,
+            "timeline": timeline,
+            "summary": summary,
+            "filters": {"kind": kind, "limit": limit},
+            "count": len(timeline),
+        }
+
+    @app.get(
+        "/live/execution/{session_id}",
+        response_class=HTMLResponse,
+        summary="Execution Timeline View (HTML)",
+        description="HTML-View für Execution-Timeline einer Session (Phase 16B).",
+    )
+    async def execution_timeline_page(
+        request: Request,
+        session_id: str,
+        limit: int = Query(200, ge=1, le=1000, description="Max. Anzahl Events"),
+        kind: Optional[str] = Query(None, description="Filter nach Event-Kind"),
+    ) -> Any:
+        """
+        HTML-View für Execution Timeline (Phase 16B).
+
+        Zeigt:
+        - Execution-Events in Tabelle
+        - Filter nach Kind (intent/order/fill/gate)
+        - Summary-Stats
+        """
+        from src.live.execution_bridge import get_execution_timeline, get_execution_summary
+
+        proj_status = get_project_status()
+
+        # Load timeline
+        timeline_rows = get_execution_timeline(session_id, limit=limit)
+
+        # Filter by kind if specified
+        if kind:
+            timeline_rows = [row for row in timeline_rows if row.kind == kind]
+
+        # Get summary
+        summary = get_execution_summary(session_id)
+
+        # Prepare timeline for template
+        timeline = [
+            {
+                "ts": row.ts.strftime("%Y-%m-%d %H:%M:%S"),
+                "kind": row.kind,
+                "symbol": row.symbol,
+                "description": row.description,
+                "details": row.details,
+            }
+            for row in timeline_rows
+        ]
+
+        return templates.TemplateResponse(
+            request,
+            "execution_timeline.html",
+            {
+                "status": proj_status,
+                "session_id": session_id,
+                "timeline": timeline,
+                "summary": summary,
+                "filters": {"kind": kind, "limit": limit},
+                "count": len(timeline),
+            },
+        )
 
     # =========================================================================
     # Strategy-Tiering API Endpoints
@@ -993,6 +1207,473 @@ def create_app() -> FastAPI:
             status_code=404,
             detail=f"Strategy '{strategy_id}' nicht gefunden oder R&D-Strategie (setze include_research=true)",
         )
+
+    # ========================================================================
+    # PHASE 16C: TELEMETRY VIEWER API
+    # ========================================================================
+
+    @app.get("/api/telemetry", response_model=None)
+    def get_telemetry_data(
+        request: Request,
+        session_id: Optional[str] = Query(None, description="Filter by session ID"),
+        type: Optional[str] = Query(None, description="Filter by event type"),
+        symbol: Optional[str] = Query(None, description="Filter by symbol"),
+        from_ts: Optional[str] = Query(
+            None, alias="from", description="Filter events after ISO timestamp"
+        ),
+        to_ts: Optional[str] = Query(
+            None, alias="to", description="Filter events before ISO timestamp"
+        ),
+        limit: int = Query(200, le=2000, description="Maximum events to return"),
+        format: str = Query(
+            "json", regex="^(json|csv)$", description="Response format (json or csv)"
+        ),
+    ):
+        """
+        Query telemetry events (Phase 16C+16D).
+
+        Returns:
+            JSON (default):
+            {
+                "summary": {...},
+                "timeline": [...],
+                "query": {...},
+                "stats": {...}
+            }
+
+            CSV (format=csv): timeline as CSV download
+        """
+        from pathlib import Path
+        from src.execution.telemetry_viewer import (
+            TelemetryQuery,
+            build_timeline,
+            find_session_logs,
+            iter_events,
+            summarize_events,
+        )
+
+        # Build query
+        query = TelemetryQuery(
+            session_id=session_id,
+            event_type=type,
+            symbol=symbol,
+            ts_from=from_ts,
+            ts_to=to_ts,
+            limit=limit,
+        )
+
+        # Find log files
+        base_path = Path("logs/execution")
+        if session_id:
+            log_path = base_path / f"{session_id}.jsonl"
+            if not log_path.exists():
+                raise HTTPException(status_code=404, detail=f"Session log not found: {session_id}")
+            paths = [log_path]
+        else:
+            paths = find_session_logs(base_path)
+            if not paths:
+                raise HTTPException(status_code=404, detail="No telemetry logs found")
+
+        # Read events
+        event_iter, stats = iter_events(paths, query)
+        events_list = list(event_iter)
+
+        if not events_list:
+            return {
+                "summary": {"total_events": 0, "counts_by_type": {}},
+                "timeline": [],
+                "query": {
+                    "session_id": session_id,
+                    "type": type,
+                    "symbol": symbol,
+                    "from": from_ts,
+                    "to": to_ts,
+                    "limit": limit,
+                },
+                "stats": {
+                    "total_lines": stats.total_lines,
+                    "valid_events": stats.valid_events,
+                    "invalid_lines": stats.invalid_lines,
+                    "error_rate": stats.error_rate,
+                },
+            }
+
+        # Generate summary and timeline
+        summary = summarize_events(events_list)
+        timeline = build_timeline(events_list, max_items=limit)
+
+        # CSV export (Phase 16D)
+        if format == "csv":
+            import csv
+            import io
+            from fastapi.responses import StreamingResponse
+
+            output = io.StringIO()
+            writer = csv.DictWriter(
+                output,
+                fieldnames=["ts", "kind", "symbol", "session_id", "description", "details"],
+                extrasaction="ignore",
+            )
+            writer.writeheader()
+
+            for item in timeline:
+                # Flatten nested details for CSV
+                details_str = ""
+                if "details" in item and isinstance(item["details"], dict):
+                    details_str = "; ".join(f"{k}={v}" for k, v in item["details"].items())
+
+                writer.writerow(
+                    {
+                        "ts": item.get("ts", ""),
+                        "kind": item.get("kind", ""),
+                        "symbol": item.get("symbol", ""),
+                        "session_id": item.get("session_id", ""),
+                        "description": item.get("description", ""),
+                        "details": details_str,
+                    }
+                )
+
+            output.seek(0)
+            filename = f"telemetry_{session_id or 'all'}_{type or 'all'}.csv"
+            return StreamingResponse(
+                iter([output.getvalue()]),
+                media_type="text/csv",
+                headers={"Content-Disposition": f"attachment; filename={filename}"},
+            )
+
+        # JSON response (default)
+        return {
+            "summary": summary,
+            "timeline": timeline,
+            "query": {
+                "session_id": session_id,
+                "type": type,
+                "symbol": symbol,
+                "from": from_ts,
+                "to": to_ts,
+                "limit": limit,
+            },
+            "stats": {
+                "total_lines": stats.total_lines,
+                "valid_events": stats.valid_events,
+                "invalid_lines": stats.invalid_lines,
+                "error_rate": stats.error_rate,
+            },
+        }
+
+    # ========================================================================
+    # PHASE 16F: Telemetry Console & Health Endpoints
+    # ========================================================================
+
+    @app.get("/live/telemetry", response_class=HTMLResponse, tags=["Phase 16F"])
+    async def telemetry_console_page(request: Request):
+        """Telemetry Console - Session overview + health status (Phase 16F)."""
+        if not TELEMETRY_AVAILABLE:
+            return templates.TemplateResponse(
+                "error.html",
+                {
+                    "request": request,
+                    "error": "Telemetry module not available",
+                    "details": "Phase 16F telemetry health module not imported",
+                },
+                status_code=503,
+            )
+
+        # Discover sessions
+        telemetry_root = Path("logs/execution")
+        sessions = []
+        total_size_mb = 0.0
+
+        if telemetry_root.exists():
+            try:
+                sessions_meta = discover_telemetry_sessions(telemetry_root, include_compressed=True)
+                # Sort by mtime (newest first)
+                sessions_meta.sort(key=lambda s: s.mtime, reverse=True)
+
+                for s in sessions_meta[:50]:  # Limit to 50 most recent
+                    sessions.append(
+                        {
+                            "session_id": s.session_id,
+                            "size_mb": s.size_mb,
+                            "age_days": s.age_days,
+                            "is_compressed": s.is_compressed,
+                            "mtime": s.mtime.isoformat(),
+                            "path": str(s.path),
+                        }
+                    )
+                    total_size_mb += s.size_mb
+            except Exception as e:
+                logger.warning(f"Error discovering sessions: {e}")
+
+        # Run health checks
+        health_report = None
+        try:
+            health_report = run_health_checks(telemetry_root)
+        except Exception as e:
+            logger.warning(f"Error running health checks: {e}")
+
+        # Load health trends (Phase 16H)
+        trends_summary = None
+        try:
+            from src.execution.telemetry_health_trends import load_snapshots, compute_rollup
+            from datetime import datetime, timedelta, timezone
+
+            snapshots_path = Path("logs/telemetry_health_snapshots.jsonl")
+            if snapshots_path.exists():
+                now = datetime.now(timezone.utc)
+
+                # Load snapshots for different time windows
+                snapshots_24h = load_snapshots(
+                    snapshots_path,
+                    since_ts=now - timedelta(hours=24),
+                )
+                snapshots_7d = load_snapshots(
+                    snapshots_path,
+                    since_ts=now - timedelta(days=7),
+                )
+                snapshots_30d = load_snapshots(
+                    snapshots_path,
+                    since_ts=now - timedelta(days=30),
+                )
+
+                if snapshots_30d:
+                    rollup_24h = compute_rollup(snapshots_24h) if snapshots_24h else None
+                    rollup_7d = compute_rollup(snapshots_7d) if snapshots_7d else None
+                    rollup_30d = compute_rollup(snapshots_30d)
+
+                    trends_summary = {
+                        "available": True,
+                        "last_24h": (
+                            {
+                                "count": len(snapshots_24h),
+                                "worst_severity": (
+                                    rollup_24h.worst_severity if rollup_24h else "unknown"
+                                ),
+                                "critical_count": rollup_24h.critical_count if rollup_24h else 0,
+                                "warn_count": rollup_24h.warn_count if rollup_24h else 0,
+                            }
+                            if snapshots_24h
+                            else None
+                        ),
+                        "last_7d": (
+                            {
+                                "count": len(snapshots_7d),
+                                "worst_severity": (
+                                    rollup_7d.worst_severity if rollup_7d else "unknown"
+                                ),
+                                "critical_count": rollup_7d.critical_count if rollup_7d else 0,
+                                "warn_count": rollup_7d.warn_count if rollup_7d else 0,
+                                "disk_avg": rollup_7d.disk_avg if rollup_7d else 0.0,
+                                "disk_max": rollup_7d.disk_max if rollup_7d else 0.0,
+                            }
+                            if snapshots_7d
+                            else None
+                        ),
+                        "last_30d": {
+                            "count": len(snapshots_30d),
+                            "worst_severity": rollup_30d.worst_severity,
+                            "critical_count": rollup_30d.critical_count,
+                            "warn_count": rollup_30d.warn_count,
+                            "disk_avg": rollup_30d.disk_avg,
+                            "disk_max": rollup_30d.disk_max,
+                        },
+                    }
+        except Exception as e:
+            logger.warning(f"Error loading health trends: {e}")
+
+        # Retention policy (default)
+        retention_policy = {
+            "enabled": True,
+            "max_age_days": 30,
+            "keep_last_n_sessions": 200,
+            "max_total_mb": 2048,
+            "compress_after_days": 7,
+        }
+
+        return templates.TemplateResponse(
+            "peak_trade_dashboard/telemetry_console.html",
+            {
+                "request": request,
+                "sessions": sessions,
+                "total_sessions": len(sessions),
+                "total_size_mb": round(total_size_mb, 2),
+                "health_report": health_report,
+                "retention_policy": retention_policy,
+                "telemetry_root": str(telemetry_root),
+                "trends_summary": trends_summary,
+            },
+        )
+
+    @app.get("/api/telemetry/health", tags=["Phase 16F"])
+    async def telemetry_health_api(
+        root: str = Query("logs/execution", description="Telemetry root directory"),
+    ):
+        """Get telemetry health status (Phase 16F)."""
+        if not TELEMETRY_AVAILABLE:
+            raise HTTPException(
+                status_code=503,
+                detail="Telemetry health module not available",
+            )
+
+        telemetry_root = Path(root)
+
+        try:
+            report = run_health_checks(telemetry_root)
+            return report.to_dict()
+        except Exception as e:
+            logger.error(f"Error running health checks: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Health check failed: {str(e)}",
+            )
+
+    @app.get("/api/telemetry/health/trends", tags=["Phase 16H"])
+    async def telemetry_health_trends_api(
+        days: int = Query(30, ge=1, le=365, description="Number of days to analyze"),
+        snapshots_path: str = Query(
+            "logs/telemetry_health_snapshots.jsonl", description="Path to snapshots file"
+        ),
+    ):
+        """Get telemetry health trends over time (Phase 16H)."""
+        try:
+            from src.execution.telemetry_health_trends import (
+                load_snapshots,
+                compute_rollup,
+                detect_degradation,
+            )
+            from datetime import datetime, timedelta, timezone
+
+            path = Path(snapshots_path)
+
+            # Load snapshots for requested period
+            since_ts = datetime.now(timezone.utc) - timedelta(days=days)
+            snapshots = load_snapshots(path, since_ts=since_ts)
+
+            if not snapshots:
+                return {
+                    "period_days": days,
+                    "snapshots_found": 0,
+                    "message": "No health snapshots found for requested period",
+                    "hint": "Run 'python scripts/telemetry_health_snapshot.py' to start collecting data",
+                }
+
+            # Compute overall rollup
+            rollup = compute_rollup(snapshots)
+
+            # Compute rollups for different time windows
+            now = datetime.now(timezone.utc)
+            last_24h = [s for s in snapshots if s.ts_utc >= now - timedelta(hours=24)]
+            last_7d = [s for s in snapshots if s.ts_utc >= now - timedelta(days=7)]
+
+            rollup_24h = compute_rollup(last_24h) if last_24h else None
+            rollup_7d = compute_rollup(last_7d) if last_7d else None
+
+            # Detect degradation
+            degradation = detect_degradation(snapshots, window_size=min(10, len(snapshots)))
+
+            # Build time series (simplified: just timestamps + severity)
+            time_series = [
+                {
+                    "ts": s.ts_utc.isoformat(),
+                    "severity": s.severity,
+                    "disk_mb": s.disk_usage_mb,
+                    "parse_error_rate": s.parse_error_rate,
+                }
+                for s in snapshots
+            ]
+
+            return {
+                "period_days": days,
+                "snapshots_found": len(snapshots),
+                "period_start": rollup.period_start.isoformat(),
+                "period_end": rollup.period_end.isoformat(),
+                "overall": {
+                    "worst_severity": rollup.worst_severity,
+                    "ok_count": rollup.ok_count,
+                    "warn_count": rollup.warn_count,
+                    "critical_count": rollup.critical_count,
+                    "disk_mb": {
+                        "min": rollup.disk_min,
+                        "avg": rollup.disk_avg,
+                        "max": rollup.disk_max,
+                    },
+                    "parse_error_rate": {
+                        "min": rollup.parse_error_min,
+                        "avg": rollup.parse_error_avg,
+                        "max": rollup.parse_error_max,
+                    },
+                },
+                "last_24h": (
+                    {
+                        "snapshots": len(last_24h),
+                        "worst_severity": rollup_24h.worst_severity if rollup_24h else "unknown",
+                        "warn_count": rollup_24h.warn_count if rollup_24h else 0,
+                        "critical_count": rollup_24h.critical_count if rollup_24h else 0,
+                    }
+                    if last_24h
+                    else None
+                ),
+                "last_7d": (
+                    {
+                        "snapshots": len(last_7d),
+                        "worst_severity": rollup_7d.worst_severity if rollup_7d else "unknown",
+                        "warn_count": rollup_7d.warn_count if rollup_7d else 0,
+                        "critical_count": rollup_7d.critical_count if rollup_7d else 0,
+                    }
+                    if last_7d
+                    else None
+                ),
+                "degradation": degradation,
+                "time_series": time_series,
+            }
+
+        except ImportError:
+            raise HTTPException(
+                status_code=503,
+                detail="Telemetry health trends module not available",
+            )
+        except Exception as e:
+            logger.error(f"Error loading health trends: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to load trends: {str(e)}",
+            )
+
+    @app.get("/api/telemetry/alerts/latest", tags=["Phase 16I"])
+    async def telemetry_alerts_latest_api(
+        limit: int = Query(50, ge=1, le=500, description="Maximum alerts to return"),
+        severity: Optional[str] = Query(
+            None, description="Filter by severity (info/warn/critical)"
+        ),
+    ):
+        """Get latest alerts (Phase 16I)."""
+        try:
+            from src.execution.alerting.persistence import get_global_alert_store
+
+            store = get_global_alert_store()
+
+            if severity:
+                alerts = store.get_by_severity(severity, limit=limit)
+            else:
+                alerts = store.get_latest(limit=limit)
+
+            return {
+                "alerts": [a.to_dict() for a in alerts],
+                "count": len(alerts),
+                "severity_filter": severity,
+            }
+
+        except ImportError:
+            raise HTTPException(
+                status_code=503,
+                detail="Telemetry alerting module not available",
+            )
+        except Exception as e:
+            logger.error(f"Error loading alerts: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to load alerts: {str(e)}",
+            )
 
     return app
 

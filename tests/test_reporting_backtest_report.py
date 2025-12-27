@@ -10,7 +10,12 @@ Testet:
 - build_backtest_report
 - Plot-Funktionen (mit tmp_path)
 """
+
 from __future__ import annotations
+
+import pytest
+
+pytest.importorskip("matplotlib")
 
 import os
 from pathlib import Path

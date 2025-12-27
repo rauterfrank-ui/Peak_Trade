@@ -10,6 +10,7 @@ WICHTIG: Phase 85 - Shadow/Testnet Only
     - Keine Live-Kapital-Risiken
     - Alle Tests sind Simulationen
 """
+
 from __future__ import annotations
 
 import json
@@ -151,18 +152,14 @@ class TestPreflightDrill:
     def test_preflight_drill_checks_tiering(self):
         """Test: Pre-flight prüft Tiering-System."""
         results = run_preflight_drill()
-        tiering_check = next(
-            (r for r in results if "Tiering" in r.check_name), None
-        )
+        tiering_check = next((r for r in results if "Tiering" in r.check_name), None)
         assert tiering_check is not None
         assert tiering_check.category == "preflight"
 
     def test_preflight_drill_checks_policies(self):
         """Test: Pre-flight prüft Live-Policies."""
         results = run_preflight_drill()
-        policies_check = next(
-            (r for r in results if "Policies" in r.check_name), None
-        )
+        policies_check = next((r for r in results if "Policies" in r.check_name), None)
         assert policies_check is not None
         assert policies_check.category == "preflight"
 
@@ -185,18 +182,14 @@ class TestEligibilityDrill:
     def test_eligibility_drill_checks_core(self):
         """Test: Eligibility prüft Core-Strategien."""
         results = run_eligibility_drill()
-        core_check = next(
-            (r for r in results if "Core" in r.check_name), None
-        )
+        core_check = next((r for r in results if "Core" in r.check_name), None)
         assert core_check is not None
         assert core_check.category == "eligibility"
 
     def test_eligibility_drill_checks_legacy(self):
         """Test: Eligibility prüft Legacy-Strategien."""
         results = run_eligibility_drill()
-        legacy_check = next(
-            (r for r in results if "Legacy" in r.check_name), None
-        )
+        legacy_check = next((r for r in results if "Legacy" in r.check_name), None)
         assert legacy_check is not None
         assert legacy_check.category == "eligibility"
 
@@ -219,9 +212,7 @@ class TestShadowGatesDrill:
     def test_shadow_gates_drill_has_summary(self):
         """Test: Shadow-Gates hat Summary-Check."""
         results = run_shadow_gates_drill()
-        summary_check = next(
-            (r for r in results if "Summary" in r.check_name), None
-        )
+        summary_check = next((r for r in results if "Summary" in r.check_name), None)
         assert summary_check is not None
 
     def test_shadow_gates_drill_all_have_category(self):
@@ -243,17 +234,13 @@ class TestIncidentSimulationDrill:
     def test_incident_drill_checks_data_gap(self):
         """Test: Incident-Sim prüft Data-Gap."""
         results = run_incident_simulation_drill()
-        data_gap_check = next(
-            (r for r in results if "Data-Gap" in r.check_name), None
-        )
+        data_gap_check = next((r for r in results if "Data-Gap" in r.check_name), None)
         assert data_gap_check is not None
 
     def test_incident_drill_checks_risk_limit(self):
         """Test: Incident-Sim prüft Risk-Limit."""
         results = run_incident_simulation_drill()
-        risk_check = next(
-            (r for r in results if "Risk-Limit" in r.check_name), None
-        )
+        risk_check = next((r for r in results if "Risk-Limit" in r.check_name), None)
         assert risk_check is not None
 
     def test_incident_drill_all_have_category(self):

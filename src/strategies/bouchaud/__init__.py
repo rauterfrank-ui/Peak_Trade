@@ -20,9 +20,7 @@ Referenzen:
 - "Trades, Quotes and Prices" (Bouchaud, Bonart, Donier, Gould)
 - "Theory of Financial Risk and Derivative Pricing" (Bouchaud, Potters)
 """
+
 from .bouchaud_microstructure_strategy import BouchaudMicrostructureStrategy
 
 __all__ = ["BouchaudMicrostructureStrategy"]
-
-
-

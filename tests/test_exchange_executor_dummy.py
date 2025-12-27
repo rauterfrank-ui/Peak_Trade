@@ -12,6 +12,7 @@ Diese Tests prüfen:
 3. Kompatibilität mit bestehendem Dry-Run-Modus
 4. Factory-Methode from_config()
 """
+
 from __future__ import annotations
 
 import pytest
@@ -414,7 +415,3 @@ class TestIntegration:
 
         # Preise sollten unterschiedlich sein
         assert btc_result.fill.price > eth_result.fill.price  # BTC teurer als ETH
-
-
-
-

@@ -65,7 +65,10 @@ def main():
     suspicious = scan_file(filepath)
 
     if suspicious:
-        print(f"ERROR: Found {len(suspicious)} suspicious Unicode character(s) in {filepath}", file=sys.stderr)
+        print(
+            f"ERROR: Found {len(suspicious)} suspicious Unicode character(s) in {filepath}",
+            file=sys.stderr,
+        )
         print("", file=sys.stderr)
 
         # Show first 200 occurrences

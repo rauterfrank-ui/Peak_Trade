@@ -15,6 +15,7 @@ Features:
 WICHTIG: Dieser Orchestrator sendet NIEMALS echte Orders!
          Nur Shadow- und Testnet-Modi sind erlaubt.
 """
+
 from __future__ import annotations
 
 import logging
@@ -42,6 +43,7 @@ logger = logging.getLogger(__name__)
 
 class RunState(str, Enum):
     """Zustand eines Runs."""
+
     PENDING = "pending"
     RUNNING = "running"
     STOPPING = "stopping"
@@ -57,6 +59,7 @@ class RunState(str, Enum):
 @dataclass
 class RunInfo:
     """Informationen über einen aktiven Run."""
+
     run_id: str
     mode: str  # "shadow" oder "testnet"
     strategy_name: str
@@ -95,21 +98,25 @@ class RunInfo:
 
 class OrchestratorError(Exception):
     """Basis-Exception für Orchestrator-Fehler."""
+
     pass
 
 
 class ReadinessCheckFailedError(OrchestratorError):
     """Readiness-Check ist fehlgeschlagen."""
+
     pass
 
 
 class RunNotFoundError(OrchestratorError):
     """Run-ID nicht gefunden."""
+
     pass
 
 
 class InvalidModeError(OrchestratorError):
     """Ungültiger Mode (z.B. 'live' nicht erlaubt)."""
+
     pass
 
 
@@ -168,9 +175,7 @@ class TestnetOrchestrator:
 
         # Mode-Validierung
         if mode not in ("shadow", "testnet"):
-            raise InvalidModeError(
-                f"Ungültiger Mode: '{mode}'. Erlaubt: 'shadow', 'testnet'"
-            )
+            raise InvalidModeError(f"Ungültiger Mode: '{mode}'. Erlaubt: 'shadow', 'testnet'")
 
         # Config-Validierung
         if self._config is None:
@@ -178,7 +183,7 @@ class TestnetOrchestrator:
 
         # Environment-Validierung
         env_config = get_environment_from_config(self._config)
-        
+
         if mode == "shadow":
             # Shadow erfordert PAPER-Mode
             if env_config.environment != TradingEnvironment.PAPER:
@@ -196,7 +201,7 @@ class TestnetOrchestrator:
 
         # Safety-Guard prüfen
         safety_guard = SafetyGuard(env_config=env_config)
-        
+
         # Sicherstellen, dass kein Live-Mode aktiv ist
         if env_config.is_live:
             raise ReadinessCheckFailedError(
@@ -207,6 +212,7 @@ class TestnetOrchestrator:
         # Risk-Limits prüfen (optional, aber empfohlen)
         try:
             from .risk_limits import LiveRiskLimits
+
             risk_limits = LiveRiskLimits.from_config(self._config)
             if not risk_limits.config.enabled:
                 logger.warning("[ORCHESTRATOR] Live-Risk-Limits sind deaktiviert")
@@ -328,6 +334,7 @@ class TestnetOrchestrator:
             try:
                 # Run-Logger erstellen
                 from .run_logging import create_run_logger_from_config
+
                 run_logger = create_run_logger_from_config(
                     cfg=self._config,
                     mode="shadow",
@@ -371,7 +378,9 @@ class TestnetOrchestrator:
                         session.warmup()
                         session.run_forever()
                     except KeyboardInterrupt:
-                        logger.info(f"[ORCHESTRATOR] Shadow-Run gestoppt (KeyboardInterrupt): {run_id}")
+                        logger.info(
+                            f"[ORCHESTRATOR] Shadow-Run gestoppt (KeyboardInterrupt): {run_id}"
+                        )
                         run_info.state = RunState.STOPPED
                         run_info.stopped_at = datetime.now(timezone.utc)
                     except Exception as e:
@@ -430,6 +439,7 @@ class TestnetOrchestrator:
             try:
                 # Run-Logger erstellen
                 from .run_logging import create_run_logger_from_config
+
                 run_logger = create_run_logger_from_config(
                     cfg=self._config,
                     mode="testnet",
@@ -474,7 +484,9 @@ class TestnetOrchestrator:
                         session.warmup()
                         session.run_forever()
                     except KeyboardInterrupt:
-                        logger.info(f"[ORCHESTRATOR] Testnet-Run gestoppt (KeyboardInterrupt): {run_id}")
+                        logger.info(
+                            f"[ORCHESTRATOR] Testnet-Run gestoppt (KeyboardInterrupt): {run_id}"
+                        )
                         run_info.state = RunState.STOPPED
                         run_info.stopped_at = datetime.now(timezone.utc)
                     except Exception as e:
@@ -590,12 +602,15 @@ class TestnetOrchestrator:
 
             try:
                 from .run_logging import load_run_events
+
                 events_df = load_run_events(run_info.run_logger.run_dir)
 
                 # Sortiere nach Step (neueste zuerst) und limitiere
                 if len(events_df) > 0:
                     events_df = events_df.sort_values("step", ascending=False).head(limit)
-                    events_df = events_df.sort_values("step", ascending=True)  # Zurück sortieren für chronologische Reihenfolge
+                    events_df = events_df.sort_values(
+                        "step", ascending=True
+                    )  # Zurück sortieren für chronologische Reihenfolge
                     return events_df.to_dict("records")
                 else:
                     return []
@@ -603,11 +618,3 @@ class TestnetOrchestrator:
             except Exception as e:
                 logger.error(f"[ORCHESTRATOR] Fehler beim Laden der Events: {run_id}, {e}")
                 return []
-
-
-
-
-
-
-
-

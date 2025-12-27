@@ -34,6 +34,7 @@ Usage:
     # Mit Custom-Parametern (überschreiben Config)
     python scripts/research_run_strategy.py --strategy ma_crossover --param fast_window=10 --param slow_window=30
 """
+
 from __future__ import annotations
 
 import argparse
@@ -165,7 +166,8 @@ Beispiele:
         help="Wenn gesetzt, wird Run NICHT in Registry geloggt",
     )
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
         help="Ausführliche Ausgabe",
     )
@@ -354,7 +356,9 @@ def print_summary(
             print(f"  - {k}: {v}")
 
     # Zeitraum
-    print(f"\nZeitraum:   {df.index[0].strftime('%Y-%m-%d %H:%M')} bis {df.index[-1].strftime('%Y-%m-%d %H:%M')}")
+    print(
+        f"\nZeitraum:   {df.index[0].strftime('%Y-%m-%d %H:%M')} bis {df.index[-1].strftime('%Y-%m-%d %H:%M')}"
+    )
     print(f"Bars:       {len(df)}")
 
     # Kennzahlen
@@ -521,6 +525,7 @@ def main() -> int:
         print(f"\nFEHLER beim Backtest: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
