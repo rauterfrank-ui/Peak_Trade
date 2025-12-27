@@ -112,7 +112,7 @@ Enabling the Risk Layer (`[risk_layer] enabled = true`) requires:
 
 #### ✅ **Entscheidung 4: Docs Reference Kompatibilität**
 - **Regel:** Nur repo-relative Pfade in Dokumentation
-- **Format:** Relative paths like `../../src/module/file.py` (not actual links in examples)
+- **Format:** Use relative markdown links with `[text](path)` syntax
 - **Verboten:** Absolute Paths oder externe Links ohne Context ❌
 - **Grund:** Docs-Reference-Targets-Gate Kompatibilität
 
