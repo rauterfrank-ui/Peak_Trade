@@ -34,28 +34,14 @@ else
   echo "(skip) scripts/ops/ops_center.sh nicht gefunden"
 fi
 
-echo "== 3) Dependency Vulnerability Audit (pip-audit via uvx) =="
-# pip-audit kann Requirements-Dateien auditieren: `pip-audit -r requirements.txt`
-# uv kann aus uv.lock u.a. requirements.txt exportieren (stdout oder --output-file).
-REQ_RUNTIME="$(mktemp -t peak_trade_requirements_runtime.XXXXXX.txt)"
-uv export --format requirements.txt --output-file "$REQ_RUNTIME"  # runtime deps
-
-echo "-- pip-audit runtime deps --"
-uvx pip-audit@latest -r "$REQ_RUNTIME"  # uvx = tool-runner
-
-# Optional: dev/test dependency-groups (best effort; falls Gruppen nicht existieren -> skip)
-for grp in dev test; do
-  REQ_GRP="$(mktemp -t peak_trade_requirements_${grp}.XXXXXX.txt)"
-  if uv export --format requirements.txt --group "$grp" --output-file "$REQ_GRP" 2>/dev/null; then
-    echo "-- pip-audit group: $grp --"
-    uvx pip-audit@latest -r "$REQ_GRP"
-  else
-    echo "(skip) uv dependency-group '$grp' nicht vorhanden"
-  fi
-  rm -f "$REQ_GRP"
-done
-
-rm -f "$REQ_RUNTIME"
+echo "== 3) Dependency Vulnerability Audit (pip-audit) =="
+# pip-audit scannt das aktuelle Environment (kompatibel mit uv)
+echo "-- pip-audit (installed packages) --"
+uv run pip-audit --desc || {
+  echo "⚠️  pip-audit fehlgeschlagen - installiere pip-audit falls nicht vorhanden"
+  uv pip install pip-audit
+  uv run pip-audit --desc
+}
 
 echo "== 4) Optional: SBOM Export (CycloneDX) =="
 # Nützlich für Supply-Chain/Compliance Scans
