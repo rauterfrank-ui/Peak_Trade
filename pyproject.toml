@@ -100,6 +100,8 @@ constraint-dependencies = [
 [dependency-groups]
 dev = [
     "fastapi>=0.124.4",
+    "httpx>=0.28.1",
+    "pip-audit>=2.9.0",
     "pre-commit>=4.3.0",
     "pytest>=8.4.2",
     "pytest-cov>=7.0.0",
