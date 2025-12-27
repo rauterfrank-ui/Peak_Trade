@@ -190,7 +190,6 @@ This stash was triaged on 23. Dezember 2025:
 ## Related
 
 - Triage report: [STASH_TRIAGE_SESSION_20251223-051920.md](../STASH_TRIAGE_SESSION_20251223-051920.md)
-- Patch file: [`knowledge_db_strategy_vault_ref_20251223-052351.patch`](./knowledge_db_strategy_vault_ref_20251223-052351.patch)
 
 ---
 **Export method:** Selective patch export (threshold: >= 50 lines changed)

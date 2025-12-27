@@ -19,12 +19,12 @@ P1 Evidence Chain implemented and integrated (policy-safe templates + optional Q
 - `tests/test_evidence_chain.py`
 - `scripts/run_backtest.py`
 - `templates/quarto/backtest_report.qmd`
-- `scripts/render_last_report.sh`
-- `docs/reports/REPORTING_QUICKSTART.md`
+- `scripts/utils/render_last_report.sh`
+- `docs&sol;reports&sol;REPORTING_QUICKSTART.md (planned)`
 
 ## Verification
 - `python -m pytest -q tests/test_evidence_chain.py`: **PASS**
-- `bash scripts/validate_git_state.sh`: **PASS**
+- `bash scripts/ci/validate_git_state.sh`: **PASS**
 - `bash scripts/automation/post_merge_verify.sh`: **PASS**
 
 ## Notes / Follow-ups

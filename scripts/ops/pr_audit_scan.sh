@@ -63,4 +63,3 @@ if [[ -n "$first_bad" ]]; then
 else
   echo "Keine Auffälligkeiten in PR $START..$END."
 fi
-

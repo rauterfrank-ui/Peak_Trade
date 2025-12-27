@@ -21,6 +21,7 @@
 #   0 - Match (no drift)
 #   1 - Drift detected (or hard error)
 #   2 - Drift detected in warn-only mode
+#   3 - Cannot run (missing dependencies: gh CLI or auth)
 #
 # Requirements:
 #   - gh CLI (authenticated)
@@ -70,6 +71,7 @@ EXIT CODES:
   0 - Match (no drift)
   1 - Drift detected (or hard error)
   2 - Drift detected in warn-only mode
+  3 - Cannot run (missing dependencies)
 
 EXAMPLES:
   # Quick check
@@ -144,29 +146,26 @@ preflight_check() {
 
   # Check gh CLI
   if ! command -v gh &>/dev/null; then
-    echo "❌ gh CLI not found"
+    echo "⚠️  gh CLI not found"
     echo "   Install: brew install gh"
-    errors=$((errors + 1))
+    echo ""
+    echo "⏭️  SKIP - gh CLI required for live check"
+    exit 3
   elif ! gh auth status &>/dev/null 2>&1; then
-    if [[ $in_ci -eq 1 ]]; then
-      # In CI: graceful skip instead of hard error
-      echo "⚠️  gh not authenticated (CI environment)"
-      echo "   → Skipping live check (expected in CI)"
-      echo ""
-      echo "✅ SKIP - gh auth not available in CI"
-      exit 0
-    else
-      echo "❌ gh not authenticated"
-      echo "   Run: gh auth login"
-      errors=$((errors + 1))
-    fi
+    echo "⚠️  gh not authenticated"
+    echo "   Run: gh auth login"
+    echo ""
+    echo "⏭️  SKIP - gh auth required for live check"
+    exit 3
   fi
 
   # Check jq
   if ! command -v jq &>/dev/null; then
-    echo "❌ jq not found"
+    echo "⚠️  jq not found"
     echo "   Install: brew install jq"
-    errors=$((errors + 1))
+    echo ""
+    echo "⏭️  SKIP - jq required for live check"
+    exit 3
   fi
 
   # Check doc file

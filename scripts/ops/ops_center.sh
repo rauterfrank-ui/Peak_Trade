@@ -459,6 +459,13 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
       echo ""
       echo "   📖 Details: scripts/ops/verify_required_checks_drift.sh"
       drift_exit=1
+    elif [[ $drift_status -eq 3 ]]; then
+      # Cannot run (missing dependencies)
+      echo "   ⏭️  SKIP - Dependencies not available (gh CLI or auth)"
+      echo ""
+      echo "$drift_output" | sed 's/^/      /'
+      # Don't count as failure
+      drift_exit=0
     else
       # Hard error (preflight failure, etc.)
       echo "   ❌ FAIL - Check failed to run"
@@ -474,9 +481,36 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
 
   echo ""
 
+  # CI Required Contexts Contract
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "🛡️  CI Required Contexts Contract"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+
+  local ci_contract_check="$SCRIPT_DIR/check_required_ci_contexts_present.sh"
+  local ci_contract_exit=0
+
+  # Always run (fast, offline check)
+  if [[ -x "$ci_contract_check" ]]; then
+    echo "🔍 Check: CI matrix job naming + no job-level if:"
+    if "$ci_contract_check" >/dev/null 2>&1; then
+      echo "   ✅ PASS - CI required contexts contract OK"
+    else
+      echo "   ❌ FAIL - CI contract violated"
+      echo "   Details: Run 'scripts/ops/check_required_ci_contexts_present.sh'"
+      echo "   📖 Doc: docs/ops/ci_required_checks_matrix_naming_contract.md"
+      ci_contract_exit=1
+    fi
+  else
+    echo "⚠️  CI contract check not found: $ci_contract_check"
+    ci_contract_exit=1
+  fi
+
+  echo ""
+
   # Exit with non-zero if any checks failed
   # Note: docs_link_exit is currently 0 (warn-only mode) until existing broken links are fixed
-  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | ref_targets_exit | drift_exit))
+  local final_exit=$((doctor_exit | merge_log_exit | formatter_exit | ref_targets_exit | drift_exit | ci_contract_exit))
   if [[ $final_exit -ne 0 ]]; then
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "❌ Health checks failed (exit $final_exit)"

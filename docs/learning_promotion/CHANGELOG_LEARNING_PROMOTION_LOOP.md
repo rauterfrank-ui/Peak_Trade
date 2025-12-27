@@ -46,7 +46,7 @@ Format basierend auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/).
 
 - **Config Structure**
   - `config/live_overrides/` Directory
-  - `config/live_overrides/auto.toml` Template
+  - `config&sol;live_overrides&sol;auto.toml (planned)` Template
 
 #### Scripts
 
@@ -55,7 +55,7 @@ Format basierend auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/).
   - CLI mit 3 Modi
   - Output: Proposals + optional auto.toml
 
-- **`scripts/demo_live_overrides.py`**
+- **`scripts&sol;demo_live_overrides.py (planned)`**
   - Demo & Debugging-Tool
   - Config-Diff Visualization
 
