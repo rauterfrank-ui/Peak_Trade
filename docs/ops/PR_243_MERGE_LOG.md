@@ -38,7 +38,7 @@
 - ✅ ruff check — All checks passed
 
 **Lokal**
-- ✅ `./scripts/ops/knowledge_smoke_runner_auto.sh` — 15/15 Checks passed (3 Modes × 5 Checks)
+- ✅ `scripts/ops/knowledge_smoke_runner_auto.sh` — 15/15 Checks passed (3 Modes × 5 Checks)
   - Production (READONLY=true): POST blocked (403) ✓
   - Development (READONLY=false, WEB_WRITE=true): POST allowed (201) ✓
   - Research (READONLY=false, WEB_WRITE=false): POST blocked (403) ✓
