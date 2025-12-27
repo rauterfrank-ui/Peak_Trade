@@ -92,7 +92,7 @@ class VaRResult:
 
 class VaRCalculator(ABC):
     """Abstrakte Basisklasse für VaR-Berechnungen."""
-    
+
     @abstractmethod
     def calculate(
         self,
@@ -109,14 +109,14 @@ class VaRCalculator(ABC):
 # src/risk/var/parametric_var.py
 class ParametricVaR(VaRCalculator):
     """Varianz-Kovarianz VaR (Delta-Normal)."""
-    
+
     def __init__(self, distribution: str = "normal"):
         """
         Args:
             distribution: "normal" oder "t" (Student-t)
         """
         self.distribution = distribution
-    
+
     def calculate(
         self,
         returns: pd.DataFrame,
@@ -126,11 +126,11 @@ class ParametricVaR(VaRCalculator):
     ) -> VaRResult:
         # Portfolio Returns
         portfolio_returns = returns @ weights
-        
+
         # Statistiken
         mu = portfolio_returns.mean()
         sigma = portfolio_returns.std()
-        
+
         # Z-Score basierend auf Verteilung
         if self.distribution == "normal":
             from scipy.stats import norm
@@ -140,11 +140,11 @@ class ParametricVaR(VaRCalculator):
             # Degrees of freedom schätzen
             df = max(4, len(portfolio_returns) - 1)
             z = t.ppf(1 - confidence_level, df)
-        
+
         # VaR (negativ, da Verlust)
         var_1d = -(mu + z * sigma)
         var_nd = var_1d * np.sqrt(horizon_days)
-        
+
         return VaRResult(
             value=var_nd,
             confidence_level=confidence_level,
@@ -217,29 +217,29 @@ def kupiec_pof_test(
 ) -> KupiecResult:
     """
     Kupiec Proportion of Failures Test.
-    
+
     Testet, ob die Anzahl der VaR-Verletzungen statistisch
     mit dem erwarteten Niveau übereinstimmt.
-    
+
     Args:
         breaches: Anzahl der VaR-Verletzungen
         observations: Gesamtzahl der Beobachtungen
         confidence_level: VaR Confidence Level (z.B. 0.95)
         significance: Signifikanzniveau für Test (z.B. 0.05)
-    
+
     Returns:
         KupiecResult mit Test-Statistiken
     """
     from scipy.stats import chi2
     import numpy as np
-    
+
     # Erwartete Breach-Rate
     p_expected = 1 - confidence_level
     expected_breaches = observations * p_expected
-    
+
     # Tatsächliche Breach-Rate
     p_actual = breaches / observations if observations > 0 else 0
-    
+
     # Likelihood Ratio Statistik
     if breaches == 0:
         lr_stat = -2 * observations * np.log(1 - p_expected)
@@ -250,10 +250,10 @@ def kupiec_pof_test(
             np.log((1 - p_expected) ** (observations - breaches) * p_expected ** breaches) -
             np.log((1 - p_actual) ** (observations - breaches) * p_actual ** breaches)
         )
-    
+
     # P-Wert (Chi-Quadrat mit 1 Freiheitsgrad)
     p_value = 1 - chi2.cdf(lr_stat, df=1)
-    
+
     return KupiecResult(
         breaches=breaches,
         observations=observations,
@@ -282,12 +282,12 @@ def classify_traffic_light(
 ) -> TrafficLight:
     """
     Basel Traffic Light Klassifikation.
-    
+
     Basierend auf 250 Trading Days bei 99% VaR:
     - GREEN:  0-4 Breaches (akzeptabel)
     - YELLOW: 5-9 Breaches (Warnung, erhöhte Kapitalanforderung)
     - RED:    10+ Breaches (inakzeptabel, Modell überarbeiten)
-    
+
     NOTE: Scaling auf 250 Tage ist heuristisch; Basel Cutoffs sind exakt
     für 250D bei 99% VaR. Bei anderen Perioden/Confidence Levels ist die
     Klassifikation approximativ.
@@ -295,9 +295,9 @@ def classify_traffic_light(
     # Skaliere auf 250 Tage (robust gegen Division durch 0)
     if observations <= 0:
         raise ValueError("observations must be > 0")
-    
+
     scaled_breaches = breaches * (250.0 / observations)
-    
+
     if scaled_breaches < 5:
         return TrafficLight.GREEN
     elif scaled_breaches < 10:
@@ -418,7 +418,7 @@ class StressTestResult:
 
 class StressTestRunner:
     """Führt Stress-Tests auf Portfolio aus."""
-    
+
     def __init__(self, portfolio_value: float, stress_limit: float = 0.30):
         """
         Args:
@@ -427,7 +427,7 @@ class StressTestRunner:
         """
         self.portfolio_value = portfolio_value
         self.stress_limit = stress_limit
-    
+
     def run_scenario(
         self,
         scenario: StressScenario,
@@ -435,24 +435,24 @@ class StressTestRunner:
     ) -> StressTestResult:
         """
         Führt einzelnes Szenario aus.
-        
+
         NOTE: correlation_shock ist aktuell informational/reserved.
         Zukünftig könnte es für covariance overlay genutzt werden.
         """
         position_impacts = {}
         total_impact = 0.0
-        
+
         for asset, value in positions.items():
             shock = scenario.shocks.get(asset, 0.0)
             impact = value * shock
             position_impacts[asset] = impact
             total_impact += impact
-        
+
         # TODO: correlation_shock wird noch nicht angewendet
         # Zukünftig: covariance matrix adjustment basierend auf correlation_shock
-        
+
         impact_pct = total_impact / self.portfolio_value
-        
+
         return StressTestResult(
             scenario_name=scenario.name,
             portfolio_impact=total_impact,
@@ -460,7 +460,7 @@ class StressTestRunner:
             position_impacts=position_impacts,
             survives_limit=abs(impact_pct) <= self.stress_limit,
         )
-    
+
     def run_all_scenarios(
         self,
         scenarios: Dict[str, StressScenario],
@@ -592,7 +592,7 @@ class RiskDecision:
     details: dict = field(default_factory=dict)
     timestamp: datetime = field(default_factory=datetime.utcnow)
 
-@dataclass 
+@dataclass
 class Order:
     """Order für Risk-Validierung."""
     symbol: str                     # z.B. "BTC/EUR"
@@ -604,13 +604,13 @@ class Order:
 
 class RiskLayer(ABC):
     """Abstrakte Basisklasse für Risk-Layer."""
-    
+
     @property
     @abstractmethod
     def name(self) -> str:
         """Name des Layers."""
         pass
-    
+
     @abstractmethod
     def validate(self, order: Order, context: dict) -> RiskDecision:
         """Validiert eine Order."""
@@ -637,20 +637,20 @@ class GateResult:
 class RiskGate:
     """
     Orchestriert alle 4 Risk-Layer.
-    
+
     Jeder Layer kann unabhängig REJECT. Alle müssen APPROVE
     für eine erfolgreiche Validierung.
     """
-    
+
     def __init__(self, cfg: PeakConfig):
         """
         Args:
             cfg: PeakConfig instance
         """
         from src.core.config import PeakConfig
-        
+
         self.cfg = cfg
-        
+
         # Layer initialisieren
         self.layers: List[RiskLayer] = [
             PreTradeLayer(cfg),
@@ -658,36 +658,36 @@ class RiskGate:
             PortfolioRiskLayer(cfg),
             KillSwitchLayer(cfg),
         ]
-        
+
         # Audit Log
         self.audit_log = AuditLog(cfg.get("risk.audit_log.path", "./logs/risk_audit.jsonl"))
-    
+
     def validate_order(self, order: Order, context: dict) -> GateResult:
         """
         Validiert Order durch alle Layer.
-        
+
         Args:
             order: Die zu validierende Order
             context: Zusätzlicher Kontext (Portfolio, Marktdaten, etc.)
-        
+
         Returns:
             GateResult mit allen Entscheidungen
         """
         decisions: List[RiskDecision] = []
         blocking_decision: Optional[RiskDecision] = None
-        
+
         for layer in self.layers:
             decision = layer.validate(order, context)
             decisions.append(decision)
-            
+
             # REJECT oder HALT blockiert sofort
             if decision.action in (RiskAction.REJECT, RiskAction.HALT):
                 blocking_decision = decision
                 break
-        
+
         # Audit Log (IMMER, auch bei APPROVE)
         self.audit_log.log(order, decisions)
-        
+
         return GateResult(
             approved=blocking_decision is None,
             decisions=decisions,
@@ -712,31 +712,31 @@ class KillSwitchState:
 class KillSwitchLayer(RiskLayer):
     """
     Layer 4: Emergency Kill Switch.
-    
+
     Stoppt ALLEN Handel bei kritischen Ereignissen.
     """
-    
+
     def __init__(self, cfg: PeakConfig):
         """
         Args:
             cfg: PeakConfig instance
         """
         from src.core.config import PeakConfig
-        
+
         self.cfg = cfg
         self.state = KillSwitchState()
-        
+
         # Limits aus Config
         self.daily_loss_limit = cfg.get("risk.kill_switch.daily_loss_limit", 0.05)  # 5%
         self.max_drawdown_limit = cfg.get("risk.kill_switch.max_drawdown", 0.10)    # 10%
-    
+
     @property
     def name(self) -> str:
         return "kill_switch"
-    
+
     def validate(self, order: Order, context: dict) -> RiskDecision:
         """Prüft, ob Kill Switch aktiv ist."""
-        
+
         # Manual Override aktiv?
         if self.state.is_active:
             return RiskDecision(
@@ -745,12 +745,12 @@ class KillSwitchLayer(RiskLayer):
                 reason=f"Kill Switch aktiv: {self.state.reason}",
                 details={"triggered_at": self.state.triggered_at.isoformat()},
             )
-        
+
         # Daily Loss prüfen
         daily_pnl = context.get("daily_pnl", 0.0)
         portfolio_value = context.get("portfolio_value", 1.0)
         daily_loss_pct = abs(min(0, daily_pnl)) / portfolio_value
-        
+
         if daily_loss_pct >= self.daily_loss_limit:
             self._activate("daily_loss", f"Daily Loss {daily_loss_pct:.1%} >= {self.daily_loss_limit:.1%}")
             return RiskDecision(
@@ -759,10 +759,10 @@ class KillSwitchLayer(RiskLayer):
                 reason=f"Daily Loss Limit erreicht: {daily_loss_pct:.1%}",
                 details={"daily_loss_pct": daily_loss_pct, "limit": self.daily_loss_limit},
             )
-        
+
         # Max Drawdown prüfen
         current_drawdown = context.get("current_drawdown", 0.0)
-        
+
         if current_drawdown >= self.max_drawdown_limit:
             self._activate("max_dd", f"Drawdown {current_drawdown:.1%} >= {self.max_drawdown_limit:.1%}")
             return RiskDecision(
@@ -771,13 +771,13 @@ class KillSwitchLayer(RiskLayer):
                 reason=f"Max Drawdown erreicht: {current_drawdown:.1%}",
                 details={"drawdown": current_drawdown, "limit": self.max_drawdown_limit},
             )
-        
+
         return RiskDecision(
             layer=self.name,
             action=RiskAction.APPROVE,
             reason="Kill Switch nicht aktiv",
         )
-    
+
     def _activate(self, triggered_by: str, reason: str):
         """Aktiviert den Kill Switch."""
         self.state = KillSwitchState(
@@ -786,16 +786,16 @@ class KillSwitchLayer(RiskLayer):
             reason=reason,
             triggered_by=triggered_by,
         )
-    
+
     def reset(self, manual_confirmation: bool = False):
         """
         Setzt den Kill Switch zurück.
-        
+
         ACHTUNG: Erfordert explizite Bestätigung!
         """
         if not manual_confirmation:
             raise ValueError("Kill Switch Reset erfordert explizite Bestätigung!")
-        
+
         self.state = KillSwitchState()
 ```
 
@@ -882,23 +882,23 @@ class RiskMetrics:
     """Aktuelle Risk-Metriken."""
     timestamp: datetime
     portfolio_value: float
-    
+
     # VaR Metrics
     var_95: float
     var_99: float
     cvar_95: float
     var_utilization: float  # Aktuelles VaR / VaR Limit
-    
+
     # Drawdown Metrics
     current_drawdown: float
     max_drawdown: float
     drawdown_duration_days: int
-    
+
     # Exposure Metrics
     gross_exposure: float
     net_exposure: float
     concentration: Dict[str, float]  # Asset -> Anteil
-    
+
     # PnL Metrics
     daily_pnl: float
     daily_pnl_pct: float
@@ -907,17 +907,17 @@ class RiskMetrics:
 
 class RiskMonitor:
     """Real-time Risk Monitoring."""
-    
+
     def __init__(self, cfg: PeakConfig):
         """
         Args:
             cfg: PeakConfig instance
         """
         from src.core.config import PeakConfig
-        
+
         self.cfg = cfg
         self.alert_manager = AlertManager(cfg)
-    
+
     def calculate_metrics(
         self,
         portfolio: "Portfolio",
@@ -926,7 +926,7 @@ class RiskMonitor:
         """Berechnet aktuelle Risk-Metriken."""
         # ... Implementation
         pass
-    
+
     def check_alerts(self, metrics: RiskMetrics) -> List["Alert"]:
         """Prüft Metriken gegen Alert-Thresholds."""
         return self.alert_manager.check(metrics)
@@ -953,14 +953,14 @@ class Alert:
 
 class AlertManager:
     """Threshold-basiertes Alert-System."""
-    
+
     def __init__(self, cfg: PeakConfig):
         """
         Args:
             cfg: PeakConfig instance
         """
         from src.core.config import PeakConfig
-        
+
         self.thresholds = {
             "var_utilization": {
                 "warning": cfg.get("risk.alerts.var_warning", 0.80),
@@ -978,15 +978,15 @@ class AlertManager:
                 "comparator": "<=",  # value <= threshold (negative losses)
             },
         }
-    
+
     def check(self, metrics: RiskMetrics) -> List[Alert]:
         """Prüft alle Metriken gegen Thresholds."""
         alerts = []
-        
+
         for metric_name, thresholds in self.thresholds.items():
             value = getattr(metrics, metric_name)
             comparator = thresholds["comparator"]
-            
+
             # Comparator-basierte Prüfung
             if comparator == ">=":
                 critical_triggered = value >= thresholds["critical"]
@@ -994,7 +994,7 @@ class AlertManager:
             else:  # "<="
                 critical_triggered = value <= thresholds["critical"]
                 warning_triggered = value <= thresholds["warning"]
-            
+
             if critical_triggered:
                 alerts.append(Alert(
                     level=AlertLevel.CRITICAL,
@@ -1011,7 +1011,7 @@ class AlertManager:
                     threshold=thresholds["warning"],
                     message=f"WARNING: {metric_name} = {value:.2%} (Limit: {thresholds['warning']:.2%})",
                 ))
-        
+
         return alerts
 ```
 
@@ -1076,45 +1076,45 @@ from src.backtest import BacktestEngine
 
 class TestRiskLayerIntegration:
     """End-to-End Tests für Risk Layer."""
-    
+
     def test_full_validation_pipeline(self):
         """Test: Order durchläuft alle 4 Layer."""
         # Setup
         config = load_config("config/risk.toml")
         gate = RiskGate(config)
-        
+
         # Valid Order
         order = Order(symbol="BTC/EUR", side="buy", amount=0.1, stop_loss=40000)
         context = {"portfolio_value": 10000, "daily_pnl": 0, "current_drawdown": 0}
-        
+
         result = gate.validate_order(order, context)
-        
+
         assert result.approved
         assert len(result.decisions) == 4  # Alle Layer durchlaufen
-    
+
     def test_kill_switch_blocks_all(self):
         """Test: Kill Switch blockiert alle Orders."""
         config = load_config("config/risk.toml")
         gate = RiskGate(config)
-        
+
         # Trigger Kill Switch
         context = {
             "portfolio_value": 10000,
             "daily_pnl": -600,  # 6% Verlust
             "current_drawdown": 0.06,
         }
-        
+
         order = Order(symbol="BTC/EUR", side="buy", amount=0.1)
         result = gate.validate_order(order, context)
-        
+
         assert not result.approved
         assert result.blocking_decision.layer == "kill_switch"
-    
+
     def test_var_integration_with_backtest(self):
         """Test: VaR-Berechnung mit Backtest-Daten."""
         # Load historical data
         data = pd.read_parquet("tests/fixtures/btc_eur_1h.parquet")
-        
+
         # Run VaR
         var_calc = HistoricalVaR()
         result = var_calc.calculate(
@@ -1122,7 +1122,7 @@ class TestRiskLayerIntegration:
             weights=np.array([1.0]),
             confidence_level=0.95,
         )
-        
+
         assert result.value > 0
         assert result.method == "historical"
 ```
