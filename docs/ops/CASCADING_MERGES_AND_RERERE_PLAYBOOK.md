@@ -366,5 +366,6 @@ git revert <bad-merge-commit>
 - **gh CLI PR Commands**: `gh pr --help`
 
 ### Related Playbooks
-- **Merge-Log Amendment Policy**: `docs/ops/merge_logs/2025-12-27_merge_log_amendment_policy.md`
-- **Ops Script Template**: `docs/ops/ops_script_template.md`
+- **Merge-Log Workflow**: `docs/ops/MERGE_LOG_WORKFLOW.md`
+- **Merge-Log Template**: `docs/ops/MERGE_LOG_TEMPLATE_COMPACT.md`
+- **Ops Script Guide**: `docs/ops/OPS_SCRIPT_TEMPLATE_GUIDE.md`
