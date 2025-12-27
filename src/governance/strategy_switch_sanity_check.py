@@ -386,3 +386,4 @@ def print_result(result: StrategySwitchSanityResult) -> None:
             print(f"  • {msg}")
 
     print()
+

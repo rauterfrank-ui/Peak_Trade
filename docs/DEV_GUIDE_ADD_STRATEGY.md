@@ -394,3 +394,4 @@ def test_my_new_strategy_backtest_integration():
 - `src/strategies/base.py` – BaseStrategy-Klasse
 - `src/strategies/__init__.py` – Strategy-Registry
 - `PEAK_TRADE_STATUS_OVERVIEW.md` – Projekt-Status
+

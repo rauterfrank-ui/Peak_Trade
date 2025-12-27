@@ -393,3 +393,4 @@ pip install tomli
 **Autor**: Peak_Trade Ops Team  
 **Stand**: Dezember 2024  
 **Version**: v1.0
+

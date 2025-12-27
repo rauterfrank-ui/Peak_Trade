@@ -666,3 +666,4 @@ __all__ = [
     "get_vol_regime",
     "get_vol_scaling_factor",
 ]
+

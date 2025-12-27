@@ -187,3 +187,4 @@ def build_offline_paper_trade_report(
 
     report_path.write_text("".join(html_parts), encoding="utf-8")
     return report_path
+

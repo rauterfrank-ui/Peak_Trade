@@ -364,3 +364,4 @@ class TestModelRepr:
         assert "ArmstrongCycleModel" in repr_str
         assert "RESEARCH-ONLY" in repr_str
         assert "100" in repr_str  # cycle_length
+

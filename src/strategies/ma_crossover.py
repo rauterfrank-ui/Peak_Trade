@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
+from .parameters import Param
 
 
 class MACrossoverStrategy(BaseStrategy):
@@ -88,6 +89,28 @@ class MACrossoverStrategy(BaseStrategy):
 
         # Validierung
         self.validate()
+
+    @property
+    def parameter_schema(self) -> list:
+        """Parameter-Schema für Optimization."""
+        return [
+            Param(
+                name="fast_window",
+                kind="int",
+                default=20,
+                low=5,
+                high=50,
+                description="Fast MA period",
+            ),
+            Param(
+                name="slow_window",
+                kind="int",
+                default=50,
+                low=20,
+                high=200,
+                description="Slow MA period",
+            ),
+        ]
 
     def validate(self) -> None:
         """Validiert Parameter."""

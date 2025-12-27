@@ -53,3 +53,25 @@ rsi_period = 14
 oversold = 30
 overbought = 70
 stop_pct = 0.02
+
+# ============================================================================
+# Tracking & Experiment Management (Strategy Layer vNext)
+# ============================================================================
+# Tracking für Backtest-Runs, Strategy-Optimization, etc.
+# Nur für R&D! NICHT für Live-Trading!
+
+[tracking]
+# Tracking aktivieren/deaktivieren
+enabled = false
+
+# Backend: "noop" (kein Tracking) oder "mlflow" (MLflow-Tracking)
+# Falls "mlflow" gewählt, aber mlflow nicht installiert ist: Fallback zu "noop"
+backend = "noop"
+
+# MLflow-spezifische Einstellungen (nur relevant wenn backend = "mlflow")
+[tracking.mlflow]
+# URI zum MLflow-Backend (lokal oder remote)
+tracking_uri = "./mlruns"
+
+# Name des MLflow-Experiments
+experiment_name = "strategy_optimization"

@@ -359,3 +359,4 @@ class LivePortfolioMonitor:
             logger.debug(f"Fehler beim Abrufen von Cash via cash-Attribut: {e}")
 
         return None
+

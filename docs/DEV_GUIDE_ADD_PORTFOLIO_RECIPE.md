@@ -253,3 +253,4 @@ python scripts/research_cli.py portfolio \
 - `docs/PORTFOLIO_RECIPES_AND_PRESETS.md` – Portfolio-Rezepte-Doku
 - `docs/PHASE_47_*.md` – Portfolio-Robustness
 - `scripts/research_cli.py` – Research-CLI
+

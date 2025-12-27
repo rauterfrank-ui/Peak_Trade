@@ -662,3 +662,4 @@ class TestSmoke:
         # Aber wegen rolling percentile kann das variieren, also prüfen wir nur, dass es funktioniert
         assert isinstance(regime_low, VolRegime)
         assert isinstance(regime_high, VolRegime)
+

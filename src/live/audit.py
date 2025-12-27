@@ -396,3 +396,4 @@ def live_audit_snapshot_to_markdown(snapshot: LiveAuditSnapshot) -> str:
     lines.append("**v1.0:** Research/Testnet system - no real live orders possible.")
 
     return "\n".join(lines)
+

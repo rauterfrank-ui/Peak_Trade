@@ -6,6 +6,7 @@ from typing import Any, Dict, Optional
 import pandas as pd
 
 from .base import BaseStrategy, StrategyMetadata
+from .parameters import Param
 
 
 class DonchianBreakoutStrategy(BaseStrategy):
@@ -43,6 +44,20 @@ class DonchianBreakoutStrategy(BaseStrategy):
 
         self.lookback = int(self.config["lookback"])
         self.price_col = str(self.config["price_col"])
+
+    @property
+    def parameter_schema(self) -> list:
+        """Parameter-Schema für Optimization."""
+        return [
+            Param(
+                name="lookback",
+                kind="int",
+                default=20,
+                low=10,
+                high=60,
+                description="Donchian Channel lookback period",
+            ),
+        ]
 
     @classmethod
     def from_config(

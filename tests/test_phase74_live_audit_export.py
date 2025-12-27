@@ -304,3 +304,4 @@ class TestLiveAuditSnapshot:
         guard_live = SafetyGuard(env_config=env_live)
         snapshot_live = build_live_audit_snapshot(env_live, guard_live, live_risk_limits=None)
         assert snapshot_live.gating.mode == "live"
+

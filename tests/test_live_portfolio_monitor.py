@@ -288,3 +288,4 @@ def test_live_portfolio_monitor_parse_position_variants():
     # Variante 4: Ungültige Position (kein Symbol)
     pos4 = monitor._parse_position({})
     assert pos4 is None
+

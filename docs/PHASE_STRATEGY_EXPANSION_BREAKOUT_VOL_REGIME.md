@@ -292,3 +292,4 @@ Diese Phase erweitert die Strategy-Library um zwei mächtige Bausteine:
 Beide Strategien sind vollständig kompatibel mit der bestehenden Backtest-Engine und Research-Pipeline. Sie können in Sweeps, Backtests und Reports verwendet werden.
 
 **Wichtig:** Diese Erweiterungen sind **Research-/Backtest-/Shadow-Only**. Keine Änderungen am Live-/Testnet-/Execution-Code.
+

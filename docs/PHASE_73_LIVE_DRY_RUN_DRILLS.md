@@ -317,3 +317,4 @@ Operatoren haben jetzt ein **systematisches Tool** zur Validierung der Gating- u
 ---
 
 **Built with ❤️ and safety-first architecture**
+

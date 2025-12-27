@@ -22,6 +22,7 @@ import pandas as pd
 import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
+from .parameters import Param
 
 
 class RsiReversionStrategy(BaseStrategy):
@@ -129,6 +130,42 @@ class RsiReversionStrategy(BaseStrategy):
 
         # Validierung
         self.validate()
+
+    @property
+    def parameter_schema(self) -> list:
+        """Parameter-Schema für Optimization."""
+        return [
+            Param(
+                name="rsi_window",
+                kind="int",
+                default=14,
+                low=7,
+                high=28,
+                description="RSI period",
+            ),
+            Param(
+                name="lower",
+                kind="float",
+                default=30.0,
+                low=20.0,
+                high=40.0,
+                description="Oversold level (long entry)",
+            ),
+            Param(
+                name="upper",
+                kind="float",
+                default=70.0,
+                low=60.0,
+                high=80.0,
+                description="Overbought level (short entry)",
+            ),
+            Param(
+                name="use_trend_filter",
+                kind="bool",
+                default=False,
+                description="Use MA trend filter",
+            ),
+        ]
 
     def validate(self) -> None:
         """Validiert Parameter."""

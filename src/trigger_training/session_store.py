@@ -181,3 +181,4 @@ def list_session_ids(
             session_ids.append(record["session_id"])
 
     return session_ids
+

@@ -408,3 +408,4 @@ def test_check_error_spike_no_alert(
 
         assert result is False
         assert len(fake_sink.alerts) == 0
+

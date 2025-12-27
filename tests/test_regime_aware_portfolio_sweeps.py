@@ -226,3 +226,4 @@ class TestPredefinedRegimeAwareSweeps:
         assert len(exp_config.param_sweeps) > 0
         assert exp_config.start_date == "2024-01-01"
         assert exp_config.end_date == "2024-12-01"
+

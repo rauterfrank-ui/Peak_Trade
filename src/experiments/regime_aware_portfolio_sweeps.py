@@ -345,3 +345,4 @@ def get_regime_aware_sweep(
 
     available = ", ".join(sorted(REGIME_AWARE_PORTFOLIO_SWEEP_REGISTRY.keys()))
     raise ValueError(f"Unbekannter Regime-Aware Portfolio-Sweep: '{name}'. Verfügbar: {available}")
+

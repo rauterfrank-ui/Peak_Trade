@@ -29,6 +29,7 @@ from datetime import datetime, timedelta
 from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
+from src.core.tracking import build_tracker_from_config
 from src.core.experiments import log_experiment_from_result
 from src.strategies.registry import (
     get_available_strategy_keys,
@@ -266,6 +267,11 @@ def main():
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
     print(f"✅ {risk_manager}")
 
+    # Tracker erstellen (optional, default: None)
+    tracker = build_tracker_from_config(cfg)
+    if tracker:
+        print("\n📊 Tracker aktiviert")
+
     # Backtest durchführen
     print("\n⚙️  Führe Realistic Backtest durch...")
 
@@ -281,10 +287,25 @@ def main():
         "stop_pct": stop_pct,
     }
 
-    engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
-    result = engine.run_realistic(
-        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
+    engine = BacktestEngine(
+        core_position_sizer=position_sizer, 
+        risk_manager=risk_manager,
+        tracker=tracker
     )
+    
+    # Tracker: Start Run
+    if tracker:
+        run_name = f"{strategy_key}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        tracker.start_run(run_name=run_name, tags={"strategy": strategy_key, "env": "dev"})
+    
+    try:
+        result = engine.run_realistic(
+            df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
+        )
+    finally:
+        # Tracker: End Run (auch bei Exception)
+        if tracker:
+            tracker.end_run(status="FINISHED")
 
     # Report drucken
     print_report(result, strategy_key)

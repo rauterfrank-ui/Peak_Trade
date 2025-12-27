@@ -563,3 +563,4 @@ class TestLimitCheckDetail:
             severity=RiskCheckSeverity.OK,
         )
         assert detail.ratio == 0.0
+

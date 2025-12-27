@@ -288,3 +288,4 @@ else
   echo "  - PR awaiting review/merge"
   echo "  - Current branch: ${MERGE_LOG_BRANCH}"
 fi
+

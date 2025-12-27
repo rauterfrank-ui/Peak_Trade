@@ -283,3 +283,4 @@ den Schritt-für-Schritt-Anweisungen.
 ---
 
 **Built with ❤️ and AI-assistance**
+

@@ -93,6 +93,30 @@ class BaseStrategy(ABC):
         """Eindeutiger Registry-Key der Strategie."""
         return self.KEY or self.__class__.__name__.lower()
 
+    @property
+    def parameter_schema(self) -> List[Any]:
+        """
+        Parameter-Schema für Optimization/Tuning.
+        
+        Returns:
+            Liste von Param-Objekten (leer wenn kein Schema definiert)
+        
+        Note:
+            Optional: Strategien MÜSSEN kein Schema definieren.
+            Wird verwendet für Optuna-Studies (Research).
+        
+        Example:
+            >>> from src.strategies.parameters import Param
+            >>> 
+            >>> @property
+            >>> def parameter_schema(self):
+            ...     return [
+            ...         Param(name="fast_window", kind="int", default=20, low=5, high=50),
+            ...         Param(name="slow_window", kind="int", default=50, low=20, high=200),
+            ...     ]
+        """
+        return []  # Default: kein Schema
+
     @classmethod
     @abstractmethod
     def from_config(cls, cfg: Any, section: str) -> "BaseStrategy":

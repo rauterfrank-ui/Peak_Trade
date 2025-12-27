@@ -306,3 +306,4 @@ def build_escalation_manager_from_config(
         critical_severities=critical_severities,
         current_environment=environment,
     )
+

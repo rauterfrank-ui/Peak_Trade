@@ -849,3 +849,4 @@ def generate_armstrong_elkaroui_combi_report(
     logger.info(f"Report generiert: {report_file}")
 
     return str(report_file)
+

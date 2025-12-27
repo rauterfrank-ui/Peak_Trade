@@ -225,3 +225,4 @@ class TestSendTestHealthSlackNotification:
                 report_path="test",
                 webhook_env_var="TEST_WEBHOOK",
             )
+

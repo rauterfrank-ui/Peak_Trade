@@ -297,3 +297,4 @@ def test_generate_live_status_report_missing_config(
 
     finally:
         sys.argv = original_argv
+

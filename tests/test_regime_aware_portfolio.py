@@ -414,3 +414,4 @@ class TestRegimeAwarePortfolioIntegration:
         assert regime is not None
         assert len(regime) == len(df)
         assert set(regime.unique()).issubset({-1, 0, 1})
+

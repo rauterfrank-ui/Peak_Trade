@@ -209,3 +209,4 @@ def build_monte_carlo_report(
         paths["html"] = html_path
 
     return paths
+

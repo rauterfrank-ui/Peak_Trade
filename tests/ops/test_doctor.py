@@ -299,3 +299,4 @@ def test_doctor_smoke():
 
         assert len(report.checks) > 0
         assert report.exit_code() in [0, 1, 2]
+

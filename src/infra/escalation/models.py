@@ -123,3 +123,4 @@ class EscalationTarget:
             f"EscalationTarget(name={self.name!r}, "
             f"provider={self.provider!r}, min_severity={self.min_severity!r})"
         )
+

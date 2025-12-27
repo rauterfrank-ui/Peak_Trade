@@ -65,3 +65,4 @@ echo "📚 Weitere Informationen:"
 echo "   - Dokumentation: docs/ops/OPS_DOCTOR_README.md"
 echo "   - Tests: python3 -m pytest tests/ops/test_doctor.py -v"
 echo "   - Hilfe: ./scripts/ops/ops_doctor.sh --help"
+

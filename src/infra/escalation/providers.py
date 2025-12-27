@@ -244,3 +244,4 @@ def get_provider(provider_name: str, config: Optional[Dict[str, Any]] = None) ->
     else:
         logger.warning(f"Unknown escalation provider '{provider_name}', using null")
         return NullEscalationProvider()
+

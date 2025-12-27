@@ -90,6 +90,14 @@ from .performance import (
     performance_timer,
 )
 
+# Tracking (vNext - Strategy Layer)
+from .tracking import (
+    Tracker,
+    NoopTracker,
+    MLflowTracker,
+    build_tracker_from_config,
+)
+
 __all__ = [
     # Wave A (Stability): Error Taxonomy
     "PeakTradeError",
@@ -149,4 +157,9 @@ __all__ = [
     "MetricSummary",
     "performance_monitor",
     "performance_timer",
+    # Tracking (vNext - Strategy Layer)
+    "Tracker",
+    "NoopTracker",
+    "MLflowTracker",
+    "build_tracker_from_config",
 ]

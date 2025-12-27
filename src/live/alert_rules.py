@@ -347,3 +347,4 @@ def check_error_spike(
     except Exception as e:
         logger.error(f"Fehler beim Error-Spike-Check für Run {run_id}: {e}", exc_info=True)
         return False
+

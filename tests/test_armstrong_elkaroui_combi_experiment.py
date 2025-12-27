@@ -510,3 +510,4 @@ class TestCLIIntegration:
             pass
         except ImportError:
             pytest.skip("CLI nicht importierbar")
+

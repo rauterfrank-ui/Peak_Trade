@@ -344,3 +344,4 @@ def build_portfolio_robustness_report(
         paths["html"] = html_path
 
     return paths
+

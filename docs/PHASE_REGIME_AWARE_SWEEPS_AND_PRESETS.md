@@ -390,3 +390,4 @@ Diese Phase stellt **Sweep-Presets für Regime-Aware Portfolios** bereit:
 **Wichtig:** Diese Implementierung ist **Research-/Backtest-/Shadow-Only**. Keine Änderungen am Live-/Testnet-/Execution-Code.
 
 Die Presets können direkt für systematische Untersuchungen von Regime-Aware Portfolios verwendet werden und integrieren sich nahtlos in die bestehende Research-Pipeline.
+

@@ -495,3 +495,4 @@ class TestModelRepr:
         assert "window=" in repr_str
         assert "thresholds=" in repr_str
         assert "target=" in repr_str
+

@@ -365,3 +365,4 @@ Kurze Beschreibung der My Exchange-Integration.
 - `src/data/kraken.py` – Kraken-Data-Adapter als Referenz
 - `src/orders/exchange.py` – Exchange-Order-Execution
 - `docs/LIVE_TESTNET_PREPARATION.md` – Live-/Testnet-Vorbereitung
+

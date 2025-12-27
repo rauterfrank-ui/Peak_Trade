@@ -353,3 +353,4 @@ def save_walkforward_report(
 
     logger.info(f"Walk-Forward-Report gespeichert: {output_path}")
     return output_path
+

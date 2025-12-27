@@ -430,3 +430,4 @@ def generate_signals(df: pd.DataFrame, params: Dict) -> pd.Series:
     """
     strategy = MetaLabelingStrategy(config=params)
     return strategy.generate_signals(df)
+

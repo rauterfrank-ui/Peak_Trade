@@ -365,3 +365,4 @@ class TestIntegrationWithRealConfig:
         assert result.status in ("OK", "WARN", "FAIL")
         assert isinstance(result.allowed, list)
         assert isinstance(result.messages, list)
+

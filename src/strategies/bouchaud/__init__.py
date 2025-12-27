@@ -24,3 +24,4 @@ Referenzen:
 from .bouchaud_microstructure_strategy import BouchaudMicrostructureStrategy
 
 __all__ = ["BouchaudMicrostructureStrategy"]
+
