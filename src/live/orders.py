@@ -152,20 +152,20 @@ def load_orders_csv(path: Path | str) -> List[LiveOrderRequest]:
                 symbol=str(row.get("symbol")),
                 side=str(row.get("side")),
                 order_type=str(row.get("order_type") or "MARKET"),
-                quantity=float(quantity)
-                if quantity is not None and not pd.isna(quantity)
-                else None,
-                notional=float(notional)
-                if notional is not None and not pd.isna(notional)
-                else None,
+                quantity=(
+                    float(quantity) if quantity is not None and not pd.isna(quantity) else None
+                ),
+                notional=(
+                    float(notional) if notional is not None and not pd.isna(notional) else None
+                ),
                 time_in_force=str(row.get("time_in_force") or "GTC"),
-                strategy_key=str(row.get("strategy_key"))
-                if row.get("strategy_key") is not None
-                else None,
+                strategy_key=(
+                    str(row.get("strategy_key")) if row.get("strategy_key") is not None else None
+                ),
                 run_name=str(row.get("run_name")) if row.get("run_name") is not None else None,
-                signal_as_of=str(row.get("signal_as_of"))
-                if row.get("signal_as_of") is not None
-                else None,
+                signal_as_of=(
+                    str(row.get("signal_as_of")) if row.get("signal_as_of") is not None else None
+                ),
                 comment=str(row.get("comment")) if row.get("comment") is not None else None,
                 extra=extra,
             )

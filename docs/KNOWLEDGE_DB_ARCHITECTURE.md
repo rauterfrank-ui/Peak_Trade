@@ -52,6 +52,38 @@ Die Knowledge Database Integration ermöglicht die Nutzung externer Wissensdaten
 3. **Response:** Context + AI Prompt → Augmented Answer
 4. **Monitoring:** API Manager → Usage Logs → Security Reports
 
+### 1.3 Access Control & Readonly Mode
+
+**KNOWLEDGE_READONLY Environment Flag:**
+
+Das System unterstützt einen globalen Readonly-Modus für alle Knowledge DB Operationen:
+
+```bash
+export KNOWLEDGE_READONLY=true  # Blockiert alle Schreibzugriffe
+export KNOWLEDGE_READONLY=false # Erlaubt Schreibzugriffe (Default)
+```
+
+**Access Matrix:**
+
+| Context      | GET (Read) | WRITE (Add/Delete) |
+|--------------|------------|-------------------|
+| dashboard    | ✅ YES     | ❌ NO             |
+| research     | ✅ YES     | ✅ YES            |
+| live_track   | ✅ YES     | ❌ NO             |
+| admin        | ✅ YES     | ✅ YES            |
+| **READONLY=true** | ✅ YES | ❌ NO (enforced) |
+
+**Implementierung:**
+- Alle Write-Operationen prüfen `KNOWLEDGE_READONLY` via `_check_readonly()`
+- Bei `READONLY=true` wird `ReadonlyModeError` geworfen
+- Read-Operationen (search, query) bleiben verfügbar
+- Context-spezifische Gating (dashboard/live_track) erfolgt auf API-Layer-Ebene
+
+**Betroffene Operationen:**
+- Vector DB: `add_documents()`, `delete()`, `clear()`
+- Time-Series DB: `write_ticks()`, `write_portfolio_history()`
+- RAG Pipeline: `add_documents()`, `clear_knowledge_base()`
+
 ---
 
 ## 2. Module-Referenz
@@ -68,19 +100,24 @@ Die Knowledge Database Integration ermöglicht die Nutzung externer Wissensdaten
 **Beispiel:**
 ```python
 from src.knowledge import VectorDBFactory, APIManager
+from src.knowledge.vector_db import ReadonlyModeError
+import os
 
 api_manager = APIManager()
 config = api_manager.get_db_config("chroma")
 vector_db = VectorDBFactory.create("chroma", config)
 
-# Add documents
-vector_db.add_documents(
-    documents=["RSI strategy works in ranging markets"],
-    metadatas=[{"source": "strategy_docs", "category": "strategy"}],
-    ids=["rsi_strategy"]
-)
+# Add documents (nur wenn nicht readonly)
+try:
+    vector_db.add_documents(
+        documents=["RSI strategy works in ranging markets"],
+        metadatas=[{"source": "strategy_docs", "category": "strategy"}],
+        ids=["rsi_strategy"]
+    )
+except ReadonlyModeError:
+    print("Write blocked: KNOWLEDGE_READONLY is enabled")
 
-# Search
+# Search (funktioniert immer)
 results = vector_db.search("strategy for ranging market", top_k=3)
 for doc, score, metadata in results:
     print(f"Score: {score:.4f} - {doc[:100]}")

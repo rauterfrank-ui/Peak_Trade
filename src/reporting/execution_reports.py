@@ -158,9 +158,9 @@ class ExecutionStats:
             "hit_rate": self.hit_rate,
             "n_winning_trades": self.n_winning_trades,
             "n_losing_trades": self.n_losing_trades,
-            "first_trade_time": self.first_trade_time.isoformat()
-            if self.first_trade_time
-            else None,
+            "first_trade_time": (
+                self.first_trade_time.isoformat() if self.first_trade_time else None
+            ),
             "last_trade_time": self.last_trade_time.isoformat() if self.last_trade_time else None,
             "trading_period_days": self.trading_period_days,
             "symbol": self.symbol,

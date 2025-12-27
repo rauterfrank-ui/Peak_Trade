@@ -96,14 +96,16 @@ def test_pr_inventory_checks_gh_cli():
     """PR inventory script checks for gh CLI."""
     script = Path("scripts/ops/pr_inventory_full.sh")
     content = script.read_text()
-    assert "command -v gh" in content, "Missing gh CLI check"
+    # Now uses pt_require_cmd from run_helpers.sh
+    assert "pt_require_cmd gh" in content, "Missing gh CLI check (pt_require_cmd)"
 
 
 def test_label_merge_log_checks_gh_cli():
     """Label merge-log script checks for gh CLI."""
     script = Path("scripts/ops/label_merge_log_prs.sh")
     content = script.read_text()
-    assert "command -v gh" in content, "Missing gh CLI check"
+    # Now uses pt_require_cmd from run_helpers.sh
+    assert "pt_require_cmd gh" in content, "Missing gh CLI check (pt_require_cmd)"
 
 
 def test_pr_inventory_checks_gh_auth():

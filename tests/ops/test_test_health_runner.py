@@ -497,12 +497,14 @@ class TestHealthHistory:
 
         history_path = tmp_path / "history.json"
 
-        # Erstelle mehrere Einträge
-        for i, score in enumerate([70.0, 75.0, 80.0, 85.0]):
+        # Erstelle mehrere Einträge mit aktuellem Datum (innerhalb des 14-Tage-Fensters)
+        # Scores in umgekehrter Reihenfolge, sodass der neueste Eintrag (i=0) 85.0 ist
+        base_time = dt.datetime.utcnow()
+        for i, score in enumerate([85.0, 80.0, 75.0, 70.0]):
             summary = TestHealthSummary(
                 profile_name="test_profile",
-                started_at=dt.datetime(2025, 12, 10, 14, i, 0),
-                finished_at=dt.datetime(2025, 12, 10, 14, i, 30),
+                started_at=base_time - dt.timedelta(days=i, minutes=30),
+                finished_at=base_time - dt.timedelta(days=i),
                 checks=[],
                 health_score=score,
                 passed_checks=3,

@@ -7,6 +7,10 @@ set -euo pipefail
 # Action: gh pr edit <n> --add-label <LABEL>
 # ─────────────────────────────────────────────────────────────
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=run_helpers.sh
+source "${SCRIPT_DIR}/run_helpers.sh"
+
 REPO="${REPO:-rauterfrank-ui/Peak_Trade}"
 LABEL="${LABEL:-ops/merge-log}"
 LIMIT="${LIMIT:-1000}"
@@ -32,8 +36,8 @@ echo "🏷️  Peak_Trade: Label merge-log PRs"
 echo "Repo: $REPO | Label: $LABEL | DRY_RUN=$DRY_RUN"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-command -v gh >/dev/null || { echo "❌ gh CLI fehlt."; exit 1; }
-command -v python3 >/dev/null || command -v python >/dev/null || { echo "❌ python fehlt."; exit 1; }
+pt_require_cmd gh
+pt_require_cmd python3 || pt_require_cmd python
 
 PYBIN="python3"
 command -v python3 >/dev/null || PYBIN="python"
@@ -43,7 +47,7 @@ if ! gh auth status >/dev/null 2>&1; then
   exit 1
 fi
 
-gh repo set-default "$REPO" >/dev/null 2>&1 || true
+pt_run_optional "Set default repo" gh repo set-default "$REPO"
 
 # Optional: ensure label exists
 if [[ "$ENSURE_LABEL" == "1" ]]; then

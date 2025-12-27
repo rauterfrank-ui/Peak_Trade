@@ -29,6 +29,10 @@ Usage:
         start_time="2024-01-01",
         end_time="2024-12-31"
     )
+
+Readonly Mode:
+    Set KNOWLEDGE_READONLY=true in environment to block all write operations.
+    Read operations (query) remain available.
 """
 
 from abc import ABC, abstractmethod
@@ -36,8 +40,25 @@ from typing import Any, Dict, List, Optional
 import logging
 import pandas as pd
 from pathlib import Path
+import os
 
 logger = logging.getLogger(__name__)
+
+
+class ReadonlyModeError(Exception):
+    """Raised when write operation is attempted in readonly mode."""
+
+    pass
+
+
+def _check_readonly() -> None:
+    """Check if Knowledge DB is in readonly mode and raise if true."""
+    readonly = os.environ.get("KNOWLEDGE_READONLY", "false").lower() in ("true", "1", "yes")
+    if readonly:
+        raise ReadonlyModeError(
+            "Knowledge DB is in READONLY mode. Write operations are blocked. "
+            "Set KNOWLEDGE_READONLY=false to enable writes."
+        )
 
 
 class TimeSeriesDBInterface(ABC):
@@ -116,6 +137,7 @@ class InfluxDBAdapter(TimeSeriesDBInterface):
         self, symbol: str, data: pd.DataFrame, tags: Optional[Dict[str, str]] = None
     ) -> None:
         """Write tick data to InfluxDB."""
+        _check_readonly()
         from influxdb_client import Point
 
         points = []
@@ -141,6 +163,7 @@ class InfluxDBAdapter(TimeSeriesDBInterface):
         self, data: pd.DataFrame, tags: Optional[Dict[str, str]] = None
     ) -> None:
         """Write portfolio history to InfluxDB."""
+        _check_readonly()
         from influxdb_client import Point
 
         points = []
@@ -170,12 +193,12 @@ class InfluxDBAdapter(TimeSeriesDBInterface):
         filters: Optional[Dict[str, Any]] = None,
     ) -> pd.DataFrame:
         """Query tick data from InfluxDB."""
-        query = f'''
+        query = f"""
         from(bucket: "{self.bucket}")
             |> range(start: {start_time}, stop: {end_time})
             |> filter(fn: (r) => r["_measurement"] == "tick")
             |> filter(fn: (r) => r["symbol"] == "{symbol}")
-        '''
+        """
 
         result = self.query_api.query_data_frame(query, org=self.org)
         logger.info(f"Queried {len(result)} tick records for {symbol}")
@@ -185,11 +208,11 @@ class InfluxDBAdapter(TimeSeriesDBInterface):
         self, start_time: str, end_time: str, filters: Optional[Dict[str, Any]] = None
     ) -> pd.DataFrame:
         """Query portfolio history from InfluxDB."""
-        query = f'''
+        query = f"""
         from(bucket: "{self.bucket}")
             |> range(start: {start_time}, stop: {end_time})
             |> filter(fn: (r) => r["_measurement"] == "portfolio")
-        '''
+        """
 
         result = self.query_api.query_data_frame(query, org=self.org)
         logger.info(f"Queried {len(result)} portfolio history records")
@@ -222,6 +245,7 @@ class ParquetAdapter(TimeSeriesDBInterface):
         self, symbol: str, data: pd.DataFrame, tags: Optional[Dict[str, str]] = None
     ) -> None:
         """Write tick data to Parquet."""
+        _check_readonly()
         safe_symbol = symbol.replace("/", "_")
         file_path = self.ticks_path / f"{safe_symbol}.parquet"
 
@@ -240,6 +264,7 @@ class ParquetAdapter(TimeSeriesDBInterface):
         self, data: pd.DataFrame, tags: Optional[Dict[str, str]] = None
     ) -> None:
         """Write portfolio history to Parquet."""
+        _check_readonly()
         file_path = self.portfolio_path / "history.parquet"
 
         # Copy data to avoid mutating the original DataFrame

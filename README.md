@@ -38,6 +38,17 @@ pytest -m web        # Web-UI Tests ausführen
 
 ---
 
+## Core Architecture & Development
+
+Für Entwickler, die mit Peak_Trade arbeiten oder Strategien entwickeln:
+
+- 📐 **[System Overview](docs/PEAK_TRADE_OVERVIEW.md)** – Architektur-Überblick, Kernkonzepte, Quickstart
+- 🔧 **[Backtest Engine](docs/BACKTEST_ENGINE.md)** – Detaillierte Engine-Dokumentation
+- 🎯 **[Strategy Development Guide](docs/STRATEGY_DEV_GUIDE.md)** – Schritt-für-Schritt-Anleitung zum Entwickeln eigener Strategien
+- 📝 **[Workflow Notes](docs/WORKFLOW_NOTES.md)** – Aktueller technischer Stand & gemeinsamer Workflow
+
+---
+
 ## AI-Unterstützung & Guides
 
 Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entwickeln, Refactoren und Dokumentieren helfen können – unter klaren Spielregeln (Safety-First, Tests respektieren, Doku mitpflegen).
@@ -291,6 +302,8 @@ python scripts/report_live_sessions.py --summary-only --stdout
 ---
 
 ## Dokumentation – Einstiegspunkte
+
+- **Ops / Operator Hub:** `docs/ops/README.md`
 
 - **Vollständige v1.0-Übersicht**  
   [`docs/PEAK_TRADE_V1_OVERVIEW_FULL.md`](docs/PEAK_TRADE_V1_OVERVIEW_FULL.md)

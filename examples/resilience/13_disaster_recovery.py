@@ -354,7 +354,8 @@ def example_recovery_best_practices():
     print(" Disaster Recovery Best Practices ".center(70))
     print("=" * 70)
 
-    print("""
+    print(
+        """
 1. BACKUP STRATEGY
    • Create backups before major changes
    • Schedule regular automatic backups
@@ -396,7 +397,8 @@ def example_recovery_best_practices():
    • Measure recovery time objective (RTO)
    • Measure recovery point objective (RPO)
    • Update procedures based on tests
-    """)
+    """
+    )
 
     print("=" * 70)
 

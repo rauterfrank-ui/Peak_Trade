@@ -6,6 +6,8 @@ die programmgesteuerte Prüfung, ob ein Feature für ein bestimmtes Jahr
 freigegeben ist.
 
 Referenz: docs/GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md
+
+P0 Guardrails: This file is protected by CODEOWNERS (governance review required).
 """
 
 from __future__ import annotations
@@ -88,3 +90,6 @@ def is_feature_approved_for_year(feature_key: str, year: int) -> bool:
         return year == approved_year
 
     return False
+
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)

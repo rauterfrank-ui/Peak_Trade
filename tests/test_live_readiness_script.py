@@ -48,7 +48,8 @@ from src.core.peak_config import PeakConfig
 def valid_config_path(tmp_path: Path) -> Path:
     """Erstellt eine gültige Test-Config."""
     config_file = tmp_path / "config.toml"
-    config_file.write_text("""
+    config_file.write_text(
+        """
 [backtest]
 initial_cash = 10000.0
 
@@ -70,7 +71,8 @@ default_type = "dummy"
 simulated_prices = { "BTC/EUR" = 50000.0 }
 fee_bps = 10.0
 slippage_bps = 5.0
-""")
+"""
+    )
     return config_file
 
 
@@ -78,10 +80,12 @@ slippage_bps = 5.0
 def minimal_config_path(tmp_path: Path) -> Path:
     """Erstellt eine minimale Test-Config ohne alle Sektionen."""
     config_file = tmp_path / "minimal.toml"
-    config_file.write_text("""
+    config_file.write_text(
+        """
 [backtest]
 initial_cash = 10000.0
-""")
+"""
+    )
     return config_file
 
 
@@ -580,7 +584,8 @@ class TestCheckLiveRiskConfigLoadable:
     def valid_live_risk_config(self, tmp_path: Path) -> Path:
         """Config mit gültigem [live_risk]-Block."""
         config_file = tmp_path / "valid_live_risk.toml"
-        config_file.write_text("""
+        config_file.write_text(
+            """
 [backtest]
 initial_cash = 10000.0
 
@@ -594,27 +599,31 @@ max_open_positions = 3
 
 [exchange]
 default_type = "dummy"
-""")
+"""
+        )
         return config_file
 
     @pytest.fixture
     def missing_live_risk_config(self, tmp_path: Path) -> Path:
         """Config OHNE [live_risk]-Block."""
         config_file = tmp_path / "no_live_risk.toml"
-        config_file.write_text("""
+        config_file.write_text(
+            """
 [backtest]
 initial_cash = 10000.0
 
 [exchange]
 default_type = "dummy"
-""")
+"""
+        )
         return config_file
 
     @pytest.fixture
     def invalid_types_config(self, tmp_path: Path) -> Path:
         """Config mit ungültigen Typen in [live_risk]."""
         config_file = tmp_path / "invalid_types.toml"
-        config_file.write_text("""
+        config_file.write_text(
+            """
 [backtest]
 initial_cash = 10000.0
 
@@ -624,7 +633,8 @@ max_daily_loss_abs = true
 
 [exchange]
 default_type = "dummy"
-""")
+"""
+        )
         return config_file
 
     def test_valid_config_testnet(self, valid_live_risk_config: Path):
@@ -908,7 +918,8 @@ class TestReadinessIntegrationWithNewChecks:
     def test_testnet_with_valid_live_risk_config(self, tmp_path: Path):
         """Testnet mit gültigem [live_risk] -> passed."""
         config_file = tmp_path / "config.toml"
-        config_file.write_text("""
+        config_file.write_text(
+            """
 [backtest]
 initial_cash = 10000.0
 
@@ -918,7 +929,8 @@ max_daily_loss_abs = 500.0
 
 [exchange]
 default_type = "dummy"
-""")
+"""
+        )
         report = run_readiness_checks(
             stage="testnet",
             config_path=config_file,
@@ -933,13 +945,15 @@ default_type = "dummy"
     def test_testnet_without_live_risk_config_fails(self, tmp_path: Path):
         """Testnet ohne [live_risk] -> failed."""
         config_file = tmp_path / "config.toml"
-        config_file.write_text("""
+        config_file.write_text(
+            """
 [backtest]
 initial_cash = 10000.0
 
 [exchange]
 default_type = "dummy"
-""")
+"""
+        )
         report = run_readiness_checks(
             stage="testnet",
             config_path=config_file,
@@ -957,13 +971,15 @@ default_type = "dummy"
     def test_live_without_live_risk_config_fails(self, tmp_path: Path):
         """Live ohne [live_risk] -> failed."""
         config_file = tmp_path / "config.toml"
-        config_file.write_text("""
+        config_file.write_text(
+            """
 [backtest]
 initial_cash = 10000.0
 
 [exchange]
 default_type = "kraken_live"
-""")
+"""
+        )
         report = run_readiness_checks(
             stage="live",
             config_path=config_file,

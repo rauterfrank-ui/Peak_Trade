@@ -41,11 +41,30 @@ repos:
       - id: check-added-large-files
         args: [--maxkb=1024]
 
-  # OPTIONAL (empfohlen): Ruff als pre-commit Hook (Lint + Format).
-  # Wenn du nur EOF-Noise fixen willst: diesen Block einfach auskommentieren.
+  # Ruff for linting (kept)
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.14.10
     hooks:
       - id: ruff-check
         args: [--fix]
-      - id: ruff-format
+
+  # Black for formatting (matches CI audit) - DISABLED: conflicts with ruff format
+  # See: https://docs.astral.sh/ruff/formatter/#black-compatibility
+  # - repo: https://github.com/psf/black-pre-commit-mirror
+  #   rev: 24.10.0
+  #   hooks:
+  #     - id: black
+
+  # Local repository hooks (custom scripts)
+  - repo: local
+    hooks:
+      # CI Required Contexts Contract Guard
+      # Validates that CI workflow follows the matrix naming contract.
+      # Prevents PRs from being blocked by missing required check contexts.
+      # Only runs when CI workflow or guard script is modified.
+      - id: ci-required-contexts-contract
+        name: CI Required Contexts Contract (matrix required checks)
+        entry: scripts/ops/check_required_ci_contexts_present.sh
+        language: system
+        pass_filenames: false
+        files: ^(\.github/workflows/ci\.yml|scripts/ops/check_required_ci_contexts_present\.sh)$

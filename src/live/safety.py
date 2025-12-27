@@ -18,6 +18,8 @@ Exceptions:
 
 WICHTIG: In Phase 17 blockt der SafetyGuard ALLE echten Orders.
          Es gibt keine Implementierung für Live-Order-Calls.
+
+P0 Guardrails: This file is protected by CODEOWNERS (live trading review required).
 """
 
 from __future__ import annotations
@@ -490,3 +492,6 @@ def create_safety_guard(env_config: Optional[EnvironmentConfig] = None) -> Safet
         env_config = create_default_environment()
 
     return SafetyGuard(env_config=env_config)
+
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)
