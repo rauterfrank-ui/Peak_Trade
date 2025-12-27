@@ -130,26 +130,39 @@ LOW — <fill me>
 EOF
 )"
 
+  PR_NUM=""
   echo "🧷 Creating PR via gh..."
   GH_ARGS=(pr create --title "$PR_TITLE" --body "$PR_BODY")
 
-  if [[ -n "$PR_LABELS" ]]; then
-    # Create first, then label (more reliable across gh versions)
+  # If an open PR already exists for this head branch, update it instead of failing.
+  existing_pr_num="$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' 2>/dev/null || true)"
+  if [[ -n "${existing_pr_num:-}" && "${existing_pr_num:-}" != "null" ]]; then
+    PR_NUM="$existing_pr_num"
+    echo "✅ PR already exists (#$PR_NUM). Updating title/body..."
+    gh pr edit "$PR_NUM" --title "$PR_TITLE" --body "$PR_BODY"
+  else
     gh "${GH_ARGS[@]}"
+    PR_NUM="$(gh pr view --json number --jq '.number' 2>/dev/null || true)"
+  fi
+
+  # Apply labels (for both new and existing PR)
+  if [[ -n "$PR_LABELS" ]]; then
     IFS=',' read -ra labels <<< "$PR_LABELS"
     for lbl in "${labels[@]}"; do
       lbl_trim="$(echo "$lbl" | xargs)"
-      [[ -n "$lbl_trim" ]] && gh pr edit --add-label "$lbl_trim" || true
+      [[ -n "$lbl_trim" ]] && gh pr edit "${PR_NUM:-}" --add-label "$lbl_trim" || true
     done
-  else
-    gh "${GH_ARGS[@]}"
   fi
 
   if [[ "$ENABLE_AUTO_MERGE" == "1" ]]; then
     echo "🤖 Enabling auto-merge ($MERGE_METHOD)..."
     AM_ARGS=(pr merge --auto "--$MERGE_METHOD")
     [[ "$DELETE_BRANCH" == "1" ]] && AM_ARGS+=(--delete-branch)
-    gh "${AM_ARGS[@]}"
+    if [[ -n "${PR_NUM:-}" ]]; then
+      gh pr merge "$PR_NUM" --auto "--$MERGE_METHOD" $([[ "$DELETE_BRANCH" == "1" ]] && echo "--delete-branch" || true)
+    else
+      gh "${AM_ARGS[@]}"
+    fi
   else
     echo "ℹ️  Auto-merge not enabled (ENABLE_AUTO_MERGE=0)."
   fi
