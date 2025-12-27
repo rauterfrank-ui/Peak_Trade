@@ -91,8 +91,8 @@ Foundations legen: Literatur, Dependencies, mathematische Validierung.
 
 ```
 docs/risk/COMPONENT_VAR_THEORY.md          # Mathematik, Literatur, Beispiele
-docs/risk/COVARIANCE_METHODS.md            # Shrinkage, Ledoit-Wolf, etc.
-config/risk.toml                           # CompVaR Config Section
+`docs&sol;risk&sol;COVARIANCE_METHODS.md (planned)`            # Shrinkage, Ledoit-Wolf, etc.
+`config&sol;risk.toml (planned)`                           # CompVaR Config Section
 requirements/risk_extras.txt               # scipy, statsmodels
 tests/risk/fixtures/sample_returns.csv     # Test-Daten (3 Assets, 252 Days)
 ```
@@ -134,7 +134,7 @@ risk = ["scipy>=1.11.0", "statsmodels>=0.14.0"]
 **1.3 Config-Struktur definieren (2h)**
 
 ```toml
-# config/risk.toml (neue Section)
+# `config&sol;risk.toml (planned)` (neue Section)
 [risk.component_var]
 enabled = false                    # Default: OFF (opt-in)
 method = "parametric"              # parametric|historical|monte_carlo
@@ -237,7 +237,7 @@ Robuste Covariance-Matrix-Berechnung mit Shrinkage (Ledoit-Wolf).
 src/risk/covariance.py                     # CovarianceEstimator Klasse
 tests/risk/test_covariance.py              # Unit Tests (6+ Tests)
 tests/risk/test_covariance_integration.py  # Integration mit echten Daten
-docs/risk/COVARIANCE_METHODS.md            # Implementierungs-Details
+`docs&sol;risk&sol;COVARIANCE_METHODS.md (planned)`            # Implementierungs-Details
 ```
 
 ### Tasks
@@ -478,7 +478,7 @@ def test_correlation_realistic_values(real_returns):
 **1.4 Dokumentation (0.5d)**
 
 ```markdown
-# docs/risk/COVARIANCE_METHODS.md
+# `docs&sol;risk&sol;COVARIANCE_METHODS.md (planned)`
 
 ## Warum Covariance Shrinkage?
 
@@ -533,9 +533,9 @@ Portfolio-Level VaR (nicht Component VaR yet, erst Gesamt-VaR).
 ### Deliverables
 
 ```
-src/risk/var_calculator.py                 # VaRCalculator Klasse
+`src&sol;risk&sol;var_calculator.py (planned)`                 # VaRCalculator Klasse
 tests/risk/test_var_calculator.py          # Unit Tests
-docs/risk/VAR_METHODS.md                   # Parametric vs Historical vs Monte Carlo
+`docs&sol;risk&sol;VAR_METHODS.md (planned)`                   # Parametric vs Historical vs Monte Carlo
 ```
 
 ### Tasks
@@ -543,7 +543,7 @@ docs/risk/VAR_METHODS.md                   # Parametric vs Historical vs Monte C
 **2.1 VaRCalculator Klasse (1d)**
 
 ```python
-# src/risk/var_calculator.py
+# `src&sol;risk&sol;var_calculator.py (planned)`
 from dataclasses import dataclass
 from enum import Enum
 from statistics import NormalDist
@@ -781,7 +781,7 @@ Marginal Contribution & Risk Attribution implementieren.
 src/risk/component_var.py                  # ComponentVaRCalculator
 tests/risk/test_component_var.py           # Unit Tests (10+ Tests)
 tests/risk/test_euler_allocation.py        # Euler-Test (Σ CompVaR = Total VaR)
-docs/risk/COMPONENT_VAR_MATH.md            # Formeln + Validation
+`docs&sol;risk&sol;COMPONENT_VAR_MATH.md (planned)`            # Formeln + Validation
 ```
 
 ### Tasks
@@ -1056,7 +1056,7 @@ def test_euler_allocation_fails_on_broken_implementation():
 **3.4 Dokumentation (1d)**
 
 ```markdown
-# docs/risk/COMPONENT_VAR_MATH.md
+# `docs&sol;risk&sol;COMPONENT_VAR_MATH.md (planned)`
 
 ## Formeln
 
@@ -1136,10 +1136,10 @@ Risk Budgeting & Position Sizing basierend auf Component VaR.
 ### Deliverables
 
 ```
-src/risk/portfolio_optimizer.py            # RiskBudgetOptimizer
+`src&sol;risk&sol;portfolio_optimizer.py (planned)`            # RiskBudgetOptimizer
 src/risk/position_sizer.py                 # CompVaR-based Position Sizing
 tests/risk/test_portfolio_optimizer.py     # Unit Tests
-docs/risk/RISK_BUDGETING.md                # Theorie + Usage
+`docs&sol;risk&sol;RISK_BUDGETING.md (planned)`                # Theorie + Usage
 ```
 
 ### Tasks
@@ -1147,7 +1147,7 @@ docs/risk/RISK_BUDGETING.md                # Theorie + Usage
 **4.1 RiskBudgetOptimizer (2d)**
 
 ```python
-# src/risk/portfolio_optimizer.py
+# `src&sol;risk&sol;portfolio_optimizer.py (planned)`
 from dataclasses import dataclass
 from typing import Dict, Optional
 import numpy as np
@@ -1404,7 +1404,7 @@ src/risk/__init__.py                       # Exports (ComponentVaR API)
 tests/risk/test_component_var_e2e.py       # End-to-End Test
 tests/risk/benchmark_compvar.py               # Performance Benchmark
 scripts/risk/demo_component_var.py         # Demo-Script
-docs/risk/QUICKSTART_COMPONENT_VAR.md      # Operator-Guide
+`docs&sol;risk&sol;QUICKSTART_COMPONENT_VAR.md (planned)`      # Operator-Guide
 ```
 
 ### Tasks
@@ -1654,7 +1654,7 @@ if __name__ == "__main__":
 **5.5 Operator-Guide (1d)**
 
 ```markdown
-# docs/risk/QUICKSTART_COMPONENT_VAR.md
+# `docs&sol;risk&sol;QUICKSTART_COMPONENT_VAR.md (planned)`
 
 ## Component VaR Quickstart
 
@@ -1738,10 +1738,10 @@ CompVaR-Monitoring in Backtests + Alerts bei Risk Budget Violation.
 ### Deliverables
 
 ```
-src/risk/compvar_monitor.py                   # CompVaRMonitor Klasse
-src/backtest/compvar_integration.py           # Backtest Integration
+`src&sol;risk&sol;compvar_monitor.py (planned)`                   # CompVaRMonitor Klasse
+`src&sol;backtest&sol;compvar_integration.py (planned)`           # Backtest Integration
 tests/risk/test_compvar_monitor.py            # Unit Tests
-docs/risk/MONITORING_ALERTS.md             # Alert-Konfiguration
+`docs&sol;risk&sol;MONITORING_ALERTS.md (planned)`             # Alert-Konfiguration
 ```
 
 ### Tasks
@@ -1749,7 +1749,7 @@ docs/risk/MONITORING_ALERTS.md             # Alert-Konfiguration
 **6.1 CompVaRMonitor (1d)**
 
 ```python
-# src/risk/compvar_monitor.py
+# `src&sol;risk&sol;compvar_monitor.py (planned)`
 from dataclasses import dataclass, field
 from typing import List, Dict
 from datetime import datetime
@@ -1872,7 +1872,7 @@ class CompVaRMonitor:
 **6.2 Backtest Integration (1d)**
 
 ```python
-# src/backtest/compvar_integration.py
+# `src&sol;backtest&sol;compvar_integration.py (planned)`
 """
 Integration von Component VaR in BacktestEngine.
 
@@ -2010,7 +2010,7 @@ git checkout -b feature/component-var
 
 # Phase 0: Setup
 python tests/risk/fixtures/generate_sample_returns.py
-cat config/risk.toml  # Review config
+cat `config&sol;risk.toml (planned)`  # Review config
 
 # Phase 1: Covariance
 # Implementiere src/risk/covariance.py

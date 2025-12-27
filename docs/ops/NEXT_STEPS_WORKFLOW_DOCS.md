@@ -2,7 +2,7 @@
 
 ## 📋 Status
 
-✅ **Branch erstellt:** `docs/ops-workflow-scripts-docs`  
+✅ **Branch erstellt:** `docs&sol;ops-workflow-scripts-docs` (planned directory)  
 ✅ **Commits:** 2 Commits (Dokumentation + Index/Changelog-Updates)  
 ⏳ **Push:** Noch nicht gepusht (SSH-Key-Probleme im Sandbox)  
 ⏳ **PR:** Noch nicht erstellt
@@ -15,7 +15,7 @@
 
 ```bash
 # Script ausführen (macht alles: Push + PR + Merge)
-bash scripts/finalize_workflow_docs_pr.sh
+bash scripts/workflows/finalize_workflow_docs_pr.sh
 
 # Script macht:
 # 1. Branch pushen
@@ -62,15 +62,15 @@ git pull --ff-only
    - Verwendung von `post_merge_workflow.sh`
    - Workflow-Patterns, Troubleshooting, Best Practices
 
-2. **scripts/post_merge_workflow_pr203.sh**
+2. **scripts/workflows/post_merge_workflow_pr203.sh**
    - All-in-One: Docs erstellen + PR-Flow
    - Automatisiert PR #203 Merge-Log-Workflow
 
-3. **scripts/quick_pr_merge.sh**
+3. **scripts/workflows/quick_pr_merge.sh**
    - Quick PR-Merge (wenn Docs bereits committet sind)
    - Generisch verwendbar für beliebige PRs
 
-4. **scripts/finalize_workflow_docs_pr.sh**
+4. **scripts/workflows/finalize_workflow_docs_pr.sh**
    - Finalisiert diesen Workflow-Docs-PR
    - Push + PR + Merge in einem Rutsch
 
@@ -99,21 +99,21 @@ Nach erfolgreichem Merge kannst du die Scripts verwenden:
 
 ### PR #203 Merge-Log (All-in-One)
 ```bash
-bash scripts/post_merge_workflow_pr203.sh
+bash scripts/workflows/post_merge_workflow_pr203.sh
 # → Erstellt Docs + PR + Merge für PR #203
 ```
 
 ### Beliebiger PR (Quick-Merge)
 ```bash
 # Auf deinem Feature-Branch
-bash scripts/quick_pr_merge.sh
+bash scripts/workflows/quick_pr_merge.sh
 # → PR erstellen + Merge (Docs bereits vorhanden)
 ```
 
 ### Post-Merge Verification
 ```bash
 # Nach jedem Merge
-bash scripts/post_merge_workflow.sh
+bash scripts/workflows/post_merge_workflow.sh
 # → Repo-Hygiene + Tests + Optional: Stage1-Monitoring
 ```
 
@@ -152,4 +152,4 @@ Die vollständige Dokumentation ist jetzt verfügbar unter:
 
 ---
 
-**Nächster Schritt:** Führe `bash scripts/finalize_workflow_docs_pr.sh` aus! 🚀
+**Nächster Schritt:** Führe `bash scripts/workflows/finalize_workflow_docs_pr.sh` aus! 🚀
