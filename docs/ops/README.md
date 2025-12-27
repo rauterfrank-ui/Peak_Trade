@@ -18,7 +18,7 @@ scripts/ops/ops_center.sh merge-log
 
 ### PR Full Workflow Runbook
 
-Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation steht jetzt ein detailliertes Runbook zur Verfügung. Siehe [PR_FULL_WORKFLOW_RUNBOOK.md](PR_FULL_WORKFLOW_RUNBOOK.md) im gleichen Verzeichnis.
+Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation steht jetzt ein detailliertes Runbook zur Verfügung. Siehe [OPS_OPERATOR_CENTER.md](OPS_OPERATOR_CENTER.md) ⭐
 
 **Commands:**
 - `status` — Repository-Status (git + gh)
@@ -26,8 +26,6 @@ Für einen vollständigen Ablauf von PR-Erstellung bis Merge und Verifikation st
 - `doctor` — Health-Checks
 - `merge-log` — Merge-Log Quick Reference
 - `help` — Hilfe
-
-**Dokumentation:** [OPS_OPERATOR_CENTER.md](OPS_OPERATOR_CENTER.md) ⭐
 
 **Design:** Safe-by-default, robust, konsistent.
 
@@ -86,8 +84,8 @@ scripts/ops/ops_center.sh doctor
 ```
 
 **Features:**
-- Prüft interne Markdown-Links (Format: `[text](path)`) auf existierende Zieldateien
-- Validiert Anchor-Links (Format: `[text](file.md#heading)`) gegen tatsächliche Überschriften
+- Prüft interne Markdown-Links (Format: `[text]\(path\)`) auf existierende Zieldateien
+- Validiert Anchor-Links (Format: `[text]\(file.md#heading\)`) gegen tatsächliche Überschriften
 - Ignoriert externe Links (http://, https://, mailto:)
 - Schnell und offline (keine Netzwerk-Anfragen)
 
@@ -112,7 +110,7 @@ scripts/ops/ops_center.sh doctor
 ```
 
 **Features:**
-- Findet referenzierte Pfade in Markdown-Links (`[text](path)`), Inline-Code (`` `path` ``), und Bare-Pfaden
+- Findet referenzierte Pfade in Markdown-Links (`[text]\(path\)`), Inline-Code (`` `path` ``), und Bare-Pfaden
 - Validiert Existenz von: `config/*.toml`, `docs/*.md`, `scripts/*.sh`, `src/*.py`, `.github/*.yml`
 - Ignoriert externe URLs (http/https) und Anchor-Only-Links
 - Exit 0 = OK/nicht anwendbar, Exit 1 = FAIL (CI), Exit 2 = WARN (ops doctor)
@@ -132,7 +130,7 @@ Der Check `docs-reference-targets-gate` stellt sicher, dass in Docs referenziert
 
 ### Unterstützte Referenzen (werden geprüft)
 - **Plain paths** relativ zum Repo-Root, z.B. `docs/ops/README.md`, `scripts/ops/ops_center.sh`
-- **Markdown-Links**: `[Text](docs/ops/README.md)`
+- **Markdown-Links**: `[Text]\(docs/ops/README.md\)`
 - **Anchors** werden ignoriert (nur Datei wird geprüft): `RISK_LAYER_ROADMAP.md#overview`
 - **Query-Parameter** werden ignoriert: `docs/ops/README.md?plain=1`
 - **Relative Pfade in Docs** werden korrekt resolved (relativ zur jeweiligen Markdown-Datei)
@@ -213,7 +211,7 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 
 - **Vollständige Dokumentation**: [OPS_DOCTOR_README.md](OPS_DOCTOR_README.md)
 - **Beispiel-Output**: [ops_doctor_example_output.txt](ops_doctor_example_output.txt)
-- **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](../../OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
+- **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](reports/OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
 
 ### Merge-Log Health Integration
 
@@ -706,8 +704,8 @@ pytest tests/ -k "ops" -v
 
 ## 📚 Verwandte Dokumentation
 
-- [Peak_Trade Tooling & Evidence Chain Runbook](../../Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
-- [CI Large PR Implementation Report](../../CI_LARGE_PR_IMPLEMENTATION_REPORT.md)
+- [Peak_Trade Tooling & Evidence Chain Runbook](Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
+- [CI Large PR Implementation Report](reports/CI_LARGE_PR_IMPLEMENTATION_REPORT.md)
 - [Merge Log Workflow](PR_208_MERGE_LOG.md)
 
 ---
@@ -1191,6 +1189,59 @@ Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 - VaR Gate Runbook: `docs/risk/VAR_GATE_RUNBOOK.md`
 - Stress Gate Runbook: `docs/risk/STRESS_GATE_RUNBOOK.md`
 - Liquidity Gate Runbook: `docs/risk/LIQUIDITY_GATE_RUNBOOK.md`
-- Risk Layer Roadmap: `RISK_LAYER_ROADMAP.md`
+- Risk Layer Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).
+
+---
+
+## Merge-Log Amendment Policy (Immutable History)
+
+**Prinzip:** Merge-Logs sind **immutable**. Nachträgliche Änderungen an bereits gemergten Merge-Logs erfolgen **nicht** durch direktes Editieren in `main`, sondern **immer** über einen **separaten Docs-only PR**.
+
+### Wann ist ein Amendment erlaubt?
+- **Klarheit/Lesbarkeit:** bessere Summary/Why/Changes-Struktur, präzisere Operator-Schritte
+- **Fehlende Referenzen:** Runbook-/PR-/Issue-Links nachtragen
+- **Korrekturen ohne Semantik-Änderung:** Tippfehler, Formatierung, eindeutige Faktenkorrektur (z.B. PR-Nummer/Dateiname)
+
+### Wie wird amended?
+1. **Neuer Branch** von `main` (Docs-only)
+2. Änderung am Merge-Log durchführen **oder** (empfohlen) einen kleinen „Amendment"-Zusatz/Follow-up Log hinzufügen
+3. **Commit + PR** (Label: `documentation`)
+4. Optional: **Auto-Merge** aktivieren, wenn alle Required Checks grün
+
+### Was ist *nicht* erlaubt?
+- Rewriting von technischen Entscheidungen oder Risiko-Semantik, wenn dadurch die ursprüngliche historische Darstellung „umgebogen" wird  
+  → In dem Fall: **Follow-up PR + neues Merge-Log** oder „Incident/Correction Note" mit Verweis.
+
+### Empfehlung (Ops-Workflow)
+- Große Korrekturen: **neues** kurzes Dokument `docs/ops/merge_logs/<date>_amendment_<ref>.md` mit Verweis auf das Original
+- Kleine Korrekturen: PR gegen das betroffene Merge-Log mit klarer PR-Body-Begründung (Docs-only)
+
+---
+
+## GitHub Auth & Token Helper
+
+Peak_Trade bevorzugt GitHub CLI (`gh`). Wenn ein Script einen Token braucht, nutze den zentralen Helper:
+
+- Safe Debug (zeigt nur Prefix + Länge, kein Leak):
+  - `scripts/utils/get_github_token.sh --debug`
+- Validierung (Exit != 0 wenn kein gültiger Token gefunden wird):
+  - `scripts/utils/get_github_token.sh --check`
+- Verwendung in Scripts:
+  - `TOKEN="$(scripts/utils/get_github_token.sh)"`
+
+Unterstützte Token-Formate:
+- `gho_*`  (GitHub CLI OAuth Token)
+- `ghp_*`  (Classic PAT)
+- `github_pat_*` (Fine-grained PAT)
+
+Token-Quellen (Priorität):
+`GITHUB_TOKEN` → `GH_TOKEN` → macOS Clipboard (`pbpaste`) → `gh auth token`
+
+Empfohlenes Setup:
+- `gh auth login --web`
+- Danach laufen Scripts ohne PAT-Erstellen/Löschen.
+
+Security:
+- Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.

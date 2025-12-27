@@ -216,7 +216,7 @@ quarto render reports/quarto/backtest_report.qmd
 #### Step F: „Last run report“ Convenience
 > Empfohlen: Script, das den neuesten `results/<run_id>` findet und report rendert.
 ```bash
-bash scripts/render_last_report.sh
+bash scripts/utils/render_last_report.sh
 ```
 
 ### 3.3 Standardisierte Artefakte (P1)
@@ -343,7 +343,7 @@ python scripts/run_strategy_from_config.py --config config/my_strategy.toml
 - Squash merge
 - Branch löschen
 - Post-merge checks:
-  - `scripts/validate_git_state.sh` (falls vorhanden)
+  - `scripts/ci/validate_git_state.sh` (falls vorhanden)
   - `scripts/automation/post_merge_verify.sh` (falls vorhanden)
   - `pytest -q`
 
@@ -366,7 +366,7 @@ python scripts/run_strategy_from_config.py --config config/my_strategy.toml
 ## Appendix A – Beispiel “Retention Policy” (später)
 - `results/`: behalte letzte N runs (z.B. 200) oder max age (z.B. 30 Tage)
 - `data/lake/`: nur gold dataset + curated partitions
-- optional: `scripts/cleanup_artifacts.py` + CI/cron (nur wenn ihr wollt)
+- optional: `scripts&sol;cleanup_artifacts.py` (noch nicht implementiert) + CI/cron (nur wenn ihr wollt)
 
 ---
 

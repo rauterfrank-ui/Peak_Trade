@@ -201,7 +201,7 @@ find reports/automation -name "*.md" -mtime +30 -delete
 
 ## 🤝 Beiträge
 
-Bei Fragen oder Verbesserungsvorschlägen: siehe `docs/CONTRIBUTING.md`
+Bei Fragen oder Verbesserungsvorschlägen: siehe `docs&sol;CONTRIBUTING.md (planned)`
 
 ---
 

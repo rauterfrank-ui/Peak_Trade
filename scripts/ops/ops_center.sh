@@ -459,6 +459,13 @@ bash scripts/ops/check_formatter_policy_ci_enforced.sh
       echo ""
       echo "   📖 Details: scripts/ops/verify_required_checks_drift.sh"
       drift_exit=1
+    elif [[ $drift_status -eq 3 ]]; then
+      # Cannot run (missing dependencies)
+      echo "   ⏭️  SKIP - Dependencies not available (gh CLI or auth)"
+      echo ""
+      echo "$drift_output" | sed 's/^/      /'
+      # Don't count as failure
+      drift_exit=0
     else
       # Hard error (preflight failure, etc.)
       echo "   ❌ FAIL - Check failed to run"

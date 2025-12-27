@@ -2,7 +2,7 @@
 
 **Repository:** `rauterfrank-ui/Peak_Trade`  
 **Branch:** `main`  
-**Last Updated:** 2025-12-25
+**Last Updated:** 2025-12-27
 
 ---
 
@@ -18,8 +18,9 @@ The following status checks are **required** and must pass before any PR can be 
 6. **Policy Critic Gate**
 7. **Lint Gate**
 8. **Docs Diff Guard Policy Gate** ⭐ (Added: 2025-12-25)
+9. **docs-reference-targets-gate** ⭐ (Added: 2025-12-27) — Validates that file paths/targets referenced in docs resolve to existing files, preventing broken internal navigation.
 
-**Total:** 8 required checks  
+**Total:** 9 required checks  
 **Strict Mode:** `false` (PRs do not need to be up-to-date with base branch)
 
 ---
@@ -243,7 +244,7 @@ The command is idempotent - running it multiple times with the same check name w
 - **PR Management Toolkit:** `docs/ops/PR_MANAGEMENT_TOOLKIT.md`
 - **CI Policy Script:** `scripts/ci/check_docs_diff_guard_section.py`
 - **Workflow:** `.github/workflows/docs_diff_guard_policy_gate.yml`
-- **Merge Logs:** `docs/ops/PR_311_MERGE_LOG.md` through `docs/ops/PR_317_MERGE_LOG.md`
+- **Merge Logs:** Docs Diff Guard implementation series (PR #311-317)
 
 ---
 

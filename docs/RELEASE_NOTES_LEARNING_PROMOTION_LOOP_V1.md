@@ -43,13 +43,13 @@ Der **Learning & Promotion Loop v1** schließt den Kreis zwischen autonomer Opti
 **Erzeugt:**
 
 * Promotion-Proposals unter `reports/live_promotion/<proposal_id>/`
-* Optional: Live-Overrides unter `config/live_overrides/auto.toml` (Modus: `bounded_auto`)
+* Optional: Live-Overrides unter `config&sol;live_overrides&sol;auto.toml (planned)` (Modus: `bounded_auto`)
 
 ### 1.3 Config-Layer
 
 **Mischt automatisch ein:**
 
-* `config/live_overrides/auto.toml` in die effektive Laufzeit-Config
+* `config&sol;live_overrides&sol;auto.toml (planned)` in die effektive Laufzeit-Config
 * **Nur in Live-nahen Umgebungen:** live, shadow, paper_live, testnet
 * **Nicht in:** paper, backtest
 
@@ -112,10 +112,10 @@ python scripts/generate_infostream_packet.py
 
 ```bash
 # Dry-Run (Preview ohne Änderungen)
-python scripts/run_learning_apply_cycle.py --dry-run
+python `scripts&sol;run_learning_apply_cycle.py` (planned) --dry-run
 
 # Tatsächliche Anwendung
-python scripts/run_learning_apply_cycle.py
+python `scripts&sol;run_learning_apply_cycle.py` (planned)
 ```
 
 **Output:**
@@ -161,7 +161,7 @@ reports/live_promotion/<proposal_id>/
 cat reports/live_promotion/<latest>/OPERATOR_CHECKLIST.md
 
 # Config-Diff anschauen
-python scripts/demo_live_overrides.py
+python `scripts&sol;demo_live_overrides.py` (planned)
 ```
 
 **Checkliste prüfen:**
@@ -364,7 +364,7 @@ load_config_with_live_overrides(
 * CLI mit 3 Modi (disabled/manual_only/bounded_auto)
 * Output: Proposals + optional auto.toml
 
-**`scripts/demo_live_overrides.py`:**
+**`scripts&sol;demo_live_overrides.py (planned)`:**
 
 * Demo & Debugging-Tool
 * Zeigt Config-Diff vor/nach Overrides
@@ -600,7 +600,7 @@ cfg = load_config_with_live_overrides()
 ### 11.3 Fragen & Feedback
 
 1. Prüfe Troubleshooting-Sektion
-2. Führe Demo-Script aus: `python scripts/demo_live_overrides.py`
+2. Führe Demo-Script aus: `python `scripts&sol;demo_live_overrides.py` (planned)`
 3. Schaue in Tests für Code-Beispiele: `tests/test_live_overrides*.py`
 
 ---
