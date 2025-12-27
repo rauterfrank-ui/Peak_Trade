@@ -29,6 +29,9 @@ from pathlib import Path
 import tempfile
 import shutil
 
+# Check if chromadb is available
+pytest.importorskip("chromadb", reason="chromadb not installed (optional dependency)")
+
 from src.knowledge.vector_db import (
     VectorDBInterface,
     ChromaDBAdapter,

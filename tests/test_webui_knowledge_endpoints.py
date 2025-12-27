@@ -71,7 +71,9 @@ def reset_env_flags():
 @pytest.fixture
 def mock_knowledge_service():
     """Mock Knowledge Service to avoid chromadb dependency."""
-    with patch("src.webui.knowledge_api.get_knowledge_service") as mock:
+    # Mock both the availability check and the service itself
+    with patch("src.webui.knowledge_api.is_vector_db_available", return_value=True), \
+         patch("src.webui.knowledge_api.get_knowledge_service") as mock:
         service = Mock()
         service.is_available.return_value = True
         service.list_snippets.return_value = [
