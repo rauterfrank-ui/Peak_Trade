@@ -78,6 +78,34 @@ max_positions = 2
 # Maximales Gesamt-Exposure (Summe aller Positionswerte / Equity)
 max_total_exposure = 0.75
 
+# ============================================================================
+# RISK LAYER (Advanced Risk Management)
+# ============================================================================
+# Phase 0: Architecture Alignment (Config Anchor)
+# Future Phases: VaR/CVaR, Stress Testing, Monte Carlo, Validation
+# ============================================================================
+[risk_layer]
+# Master-Switch für Advanced Risk Layer
+# WICHTIG: false = nur Basic Risk (siehe [risk]), true = Full Risk Layer
+enabled = false
+
+# VaR/CVaR Configuration (Phase R1)
+var_confidence = 0.95
+var_horizon_days = 1
+cvar_enabled = false
+
+# Stress Testing (Phase R3)
+stress_testing_enabled = false
+stress_scenarios = []
+
+# Validation & Backtesting (Phase R2)
+validation_frequency_days = 7
+kupiec_test_enabled = false
+
+# Monitoring & Alerting (Phase R5)
+alert_threshold_utilization = 0.80
+alert_channels = ["log"]
+
 [data]
 # Standard-Timeframe für OHLCV-Daten
 default_timeframe = "1h"
