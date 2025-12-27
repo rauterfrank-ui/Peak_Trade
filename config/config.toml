@@ -86,7 +86,11 @@ max_total_exposure = 0.75
 # ============================================================================
 [risk_layer]
 # Master-Switch für Advanced Risk Layer
-# WICHTIG: false = nur Basic Risk (siehe [risk]), true = Full Risk Layer
+# WICHTIG: MUST remain false by default. Enabling requires:
+#   - Governance Go/No-Go approval
+#   - Operator runbook + manual-only operation
+#   - Shadow/testnet validation first (never enable in live without review)
+# false = nur Basic Risk (siehe [risk]), true = Full Risk Layer (requires governance)
 enabled = false
 
 # VaR/CVaR Configuration (Phase R1)
