@@ -156,6 +156,37 @@ scripts/ops/ops_center.sh risk component-var --returns data.csv --alpha 0.99
 
 ---
 
+## 🎭 Shadow Pipeline – Data Quality & OHLCV
+
+**Shadow Pipeline Phase 2: Tick→OHLCV→Quality Monitoring**
+
+```bash
+# Quick Smoke Test
+scripts/ops/ops_center.sh shadow smoke
+
+# Direct Execution
+python scripts/shadow_run_tick_to_ohlcv_smoke.py
+
+# Run Tests
+pytest tests/data/shadow/ -q
+```
+
+**Features:**
+- Tick Normalization (Kraken WebSocket → standardized ticks)
+- OHLCV Bar Building (1m/5m/1h aggregation)
+- Data Quality Monitoring (gap detection, spike alerts)
+- Defense-in-depth Guards (Import, Runtime, Config)
+
+**Dokumentation:**
+- **Quickstart:** [../shadow/SHADOW_PIPELINE_PHASE2_QUICKSTART.md](../shadow/SHADOW_PIPELINE_PHASE2_QUICKSTART.md) ⭐
+- **Operator Runbook:** [../shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md](../shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md)
+- **Technical Spec:** [../shadow/PHASE_2_TICK_TO_OHLCV_AND_QUALITY.md](../shadow/PHASE_2_TICK_TO_OHLCV_AND_QUALITY.md)
+- **Config Example:** `config/shadow_pipeline_example.toml`
+
+**Safety:** Shadow pipeline is blocked when live mode is active. Safe for dev/testnet contexts only.
+
+---
+
 ## 🏥 Ops Doctor – Repository Health Check
 
 Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON- und Human-Readable-Output.

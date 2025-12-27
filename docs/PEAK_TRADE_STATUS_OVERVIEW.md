@@ -109,31 +109,53 @@ Ziel:
 
 * **Frühe Phasen 1–5** – Data-Layer-Aufbau, Loader/Normalizer/Cache
 * **Data-/Market-Access-Feinschliff** – sukzessive in späteren Phasen integriert
+* **Shadow Pipeline Phase 2** – Tick→OHLCV→Quality Monitoring (2025-12-27)
 
 **Kernkomponenten:**
 
 * `src/data/loader.py`, `normalizer.py`, `cache.py`, `kraken.py`
-* Demo-/Pipeline-Skripte (z.B. `demo_data_pipeline.py`)
+* **Shadow Pipeline** (`src/data/shadow/`):
+  * `_guards.py` – Defense-in-depth safety guards
+  * `models.py` – Tick/Bar dataclasses
+  * `tick_normalizer.py` – Kraken WebSocket parser
+  * `ohlcv_builder.py` – OHLCV aggregation
+  * `quality_monitor.py` – Gap/spike detection
+  * `jsonl_logger.py` – Rotating JSONL logger
+* Demo-/Pipeline-Skripte (z.B. `demo_data_pipeline.py`, `shadow_run_tick_to_ohlcv_smoke.py`)
 * Nutzung von `pandas`, `numpy`, `pyarrow`, Parquet etc.
 * Saubere Trennung zwischen:
 
   * Rohdaten-Load
   * Normalisierung / Cleaning
   * Caching / Persistenz
+  * Quality Monitoring
 
 **Stärken:**
 
 * Stabile Data-Pipeline für Research & Backtests.
 * Kraken-/Market-Access als Referenz-Exchange implementiert.
 * Data-Layer fügt sich gut in Registry, Backtest & Research-Pipeline ein.
+* **Shadow Pipeline** mit production-grade quality monitoring und safety guards.
 
 **Offene/optionale Themen:**
 
 * Weitere Exchanges / Feeds (z.B. CME, weitere Crypto-Exchanges).
 * Mehr Data-Quality-Checks, Outlier-Handling, Holiday-Kalender, etc.
 * Fortgeschrittene Features wie Regime-Erkennung im Data-Layer (später).
+* Shadow Pipeline Phase 3 (Signal Processing & Validation).
 
-> **Reifegrad:** **ca. 95%** – der Data-Layer ist produktionsnah und kann als Referenz gelten.
+**Shadow Pipeline Phase 2 (NEW):**
+
+* **Status:** ✅ Implemented (2025-12-27)
+* **Docs:**
+  * Quickstart: `docs/shadow/SHADOW_PIPELINE_PHASE2_QUICKSTART.md`
+  * Operator Runbook: `docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md`
+  * Technical Spec: `docs/shadow/PHASE_2_TICK_TO_OHLCV_AND_QUALITY.md`
+* **Quick Start:** `scripts/ops/ops_center.sh shadow smoke`
+* **Tests:** 35+ tests (`pytest tests/data/shadow/ -v`)
+* **Safety:** Blocked in live mode, safe for dev/testnet contexts
+
+> **Reifegrad:** **ca. 95%** – der Data-Layer ist produktionsnah und kann als Referenz gelten. Shadow Pipeline Phase 2 erweitert die Data-Quality-Capabilities signifikant.
 
 ---
 
