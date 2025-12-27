@@ -64,7 +64,8 @@ def test_load_with_env_var(tmp_path):
     """Test: Config wird aus env var-Pfad geladen."""
     # Minimale Test-Config erstellen
     test_config = tmp_path / "test_config.toml"
-    test_config.write_text("""
+    test_config.write_text(
+        """
 [backtest]
 initial_cash = 5000.0
 results_dir = "test_results"
@@ -84,7 +85,8 @@ max_drawdown = -0.15
 min_trades = 50
 min_profit_factor = 1.3
 min_backtest_months = 6
-""")
+"""
+    )
 
     # Env var setzen
     os.environ[DEFAULT_CONFIG_ENV_VAR] = str(test_config)

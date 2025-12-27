@@ -13,6 +13,8 @@ Checks:
 - Retention staleness (last retention run age)
 - Compression failures (recent failure rate)
 - Parse error rate (JSONL validity)
+
+P0 Guardrails: This file is protected by CODEOWNERS (execution review required).
 """
 
 import logging
@@ -360,3 +362,6 @@ def run_health_checks(
     report.checks.append(check_parse_error_rate(telemetry_root, thresholds))
 
     return report
+
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)

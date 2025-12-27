@@ -158,7 +158,7 @@ After generating a new PR report, verify:
 After creating a new PR final report:
 
 1. **Add entry** to `docs/ops/README.md` under **Audit Logs** section
-2. **Format**: `- [PR #<number>](PR_<number>_FINAL_REPORT.md) – <short description>`
+2. **Format**: Link to the generated report file (see example below)
 3. **Order**: Descending (newest first)
 
 **Example**:

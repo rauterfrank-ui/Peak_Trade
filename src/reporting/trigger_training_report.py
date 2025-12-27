@@ -605,7 +605,8 @@ def _build_psychology_heatmap_html(
     html_parts = []
 
     # Styles für Heatmap
-    html_parts.append("""
+    html_parts.append(
+        """
     <style>
         .psychology-heatmap {
             margin: 20px 0;
@@ -667,7 +668,8 @@ def _build_psychology_heatmap_html(
             color: #856404;
         }
     </style>
-    """)
+    """
+    )
 
     # Heatmap-Container
     html_parts.append('<div class="psychology-heatmap">')

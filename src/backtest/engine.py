@@ -431,11 +431,38 @@ class BacktestEngine:
 
                     # Risk Manager: Adjust target position (kann auf 0 reduzieren)
                     if self.risk_manager is not None:
+                        # Erweiterte kwargs für v1 Risk-Layer (backward-compatible)
+                        risk_kwargs = {
+                            "symbol": symbol,
+                            "last_return": (
+                                self.equity_curve[-1] / self.equity_curve[-2] - 1
+                                if len(self.equity_curve) >= 2
+                                else 0.0
+                            ),
+                        }
+
+                        # Aktuelle Position als PositionSnapshot (falls vorhanden)
+                        if current_trade is not None:
+                            try:
+                                from ..risk import PositionSnapshot
+
+                                risk_kwargs["positions"] = [
+                                    PositionSnapshot(
+                                        symbol=symbol,
+                                        units=current_trade.size,
+                                        price=bar["close"],
+                                        timestamp=trade_dt,
+                                    )
+                                ]
+                            except ImportError:
+                                pass  # Fallback: keine positions
+
                         target_units = self.risk_manager.adjust_target_position(
                             target_units=target_units,
                             price=entry_price,
                             equity=equity,
                             timestamp=trade_dt,
+                            **risk_kwargs,
                         )
 
                     # Calculate position value and size
@@ -823,9 +850,9 @@ class BacktestEngine:
 
             # SignalEvent erstellen
             event = SignalEvent(
-                timestamp=bar_time.to_pydatetime()
-                if hasattr(bar_time, "to_pydatetime")
-                else bar_time,
+                timestamp=(
+                    bar_time.to_pydatetime() if hasattr(bar_time, "to_pydatetime") else bar_time
+                ),
                 symbol=symbol,
                 signal=signal,
                 price=close_price,
@@ -872,10 +899,11 @@ class BacktestEngine:
                                         "size": abs(current_position),
                                         "side": "short",
                                         "pnl": pnl,
-                                        "pnl_pct": (pnl / (entry_price * abs(current_position)))
-                                        * 100
-                                        if entry_price > 0
-                                        else 0,
+                                        "pnl_pct": (
+                                            (pnl / (entry_price * abs(current_position))) * 100
+                                            if entry_price > 0
+                                            else 0
+                                        ),
                                         "fee": fee,
                                         "exit_reason": "signal",
                                     }
@@ -899,9 +927,11 @@ class BacktestEngine:
                                         "size": current_position,
                                         "side": "long",
                                         "pnl": pnl,
-                                        "pnl_pct": (pnl / (entry_price * current_position)) * 100
-                                        if entry_price > 0
-                                        else 0,
+                                        "pnl_pct": (
+                                            (pnl / (entry_price * current_position)) * 100
+                                            if entry_price > 0
+                                            else 0
+                                        ),
                                         "fee": fee,
                                         "exit_reason": "signal",
                                     }
@@ -946,9 +976,9 @@ class BacktestEngine:
                         "size": current_position,
                         "side": "long",
                         "pnl": pnl,
-                        "pnl_pct": (pnl / (entry_price * current_position)) * 100
-                        if entry_price > 0
-                        else 0,
+                        "pnl_pct": (
+                            (pnl / (entry_price * current_position)) * 100 if entry_price > 0 else 0
+                        ),
                         "fee": 0.0,
                         "exit_reason": "end_of_data",
                     }
@@ -966,9 +996,11 @@ class BacktestEngine:
                         "size": abs(current_position),
                         "side": "short",
                         "pnl": pnl,
-                        "pnl_pct": (pnl / (entry_price * abs(current_position))) * 100
-                        if entry_price > 0
-                        else 0,
+                        "pnl_pct": (
+                            (pnl / (entry_price * abs(current_position))) * 100
+                            if entry_price > 0
+                            else 0
+                        ),
                         "fee": 0.0,
                         "exit_reason": "end_of_data",
                     }
@@ -1707,11 +1739,10 @@ def run_portfolio_strategy_backtest(
                                     "size": abs(current_position),
                                     "pnl": pnl,
                                     "pnl_pct": (
-                                        pnl / (entry_prices[symbol] * abs(current_position))
-                                    )
-                                    * 100
-                                    if entry_prices.get(symbol)
-                                    else 0,
+                                        (pnl / (entry_prices[symbol] * abs(current_position))) * 100
+                                        if entry_prices.get(symbol)
+                                        else 0
+                                    ),
                                 }
                             )
                             entry_prices.pop(symbol, None)
@@ -1733,9 +1764,11 @@ def run_portfolio_strategy_backtest(
                     "exit_price": last_price,
                     "size": positions[symbol],
                     "pnl": pnl,
-                    "pnl_pct": (pnl / (entry_prices[symbol] * positions[symbol])) * 100
-                    if entry_prices.get(symbol)
-                    else 0,
+                    "pnl_pct": (
+                        (pnl / (entry_prices[symbol] * positions[symbol])) * 100
+                        if entry_prices.get(symbol)
+                        else 0
+                    ),
                     "exit_reason": "end_of_data",
                 }
             )

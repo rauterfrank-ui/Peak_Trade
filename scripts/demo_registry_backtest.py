@@ -228,7 +228,8 @@ def demo_portfolio_custom_list():
 
 def main():
     """Hauptfunktion."""
-    print("""
+    print(
+        """
 ╔══════════════════════════════════════════════════════════════════╗
 ║                                                                  ║
 ║     Peak_Trade Registry-Backtest Demo                           ║
@@ -237,7 +238,8 @@ def main():
 ║     Zeigt neue Registry-basierte Entry-Points                    ║
 ║                                                                  ║
 ╚══════════════════════════════════════════════════════════════════╝
-""")
+"""
+    )
 
     try:
         # Demo 1: Single Strategy

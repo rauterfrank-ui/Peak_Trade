@@ -16,11 +16,11 @@ Quick reference guide for diagnosing and responding to execution telemetry incid
 
 | Symptom | Likely Cause | First Action |
 |---------|--------------|--------------|
-| Missing fills after orders | Order execution failed | [Check missing fills](#missing-fills-after-orders) |
-| High error rate in logs | Invalid JSON / corrupted lines | [Check parse errors](#high-error-rate-invalid-lines) |
-| Latency spikes | Network/broker delays | [Analyze latency](#latency-spikes-summary) |
-| No events for session | Wrong session_id / logs not created | [Find session logs](#find-session-logs) |
-| Timestamps out of order | Clock skew / concurrency | [Check monotonicity](#timestamp-ordering-issues) |
+| Missing fills after orders | Order execution failed | [Check missing fills](#3-missing-fills-after-orders) |
+| High error rate in logs | Invalid JSON / corrupted lines | [Check parse errors](#5-high-error-rate-invalid-lines) |
+| Latency spikes | Network/broker delays | [Analyze latency](#4-latency-spikes-summary) |
+| No events for session | Wrong session_id / logs not created | [Find session logs](#6-find-session-logs) |
+| Timestamps out of order | Clock skew / concurrency | [Check monotonicity](#7-timestamp-ordering-issues) |
 
 ---
 

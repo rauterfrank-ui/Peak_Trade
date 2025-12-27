@@ -139,7 +139,8 @@ def demo_merged_config():
 
 def main():
     """Hauptfunktion."""
-    print("""
+    print(
+        """
 ╔══════════════════════════════════════════════════════════════════╗
 ║                                                                  ║
 ║     Peak_Trade Strategien-Registry Demo                         ║
@@ -148,7 +149,8 @@ def main():
 ║     Zeigt die neue Registry-Funktionalität                       ║
 ║                                                                  ║
 ╚══════════════════════════════════════════════════════════════════╝
-""")
+"""
+    )
 
     try:
         demo_basic_config()

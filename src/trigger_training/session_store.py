@@ -50,9 +50,11 @@ def save_session_to_store(
     event_dicts = []
     for ev in events:
         event_dict = {
-            "timestamp": ev.timestamp.isoformat()
-            if hasattr(ev.timestamp, "isoformat")
-            else str(ev.timestamp),
+            "timestamp": (
+                ev.timestamp.isoformat()
+                if hasattr(ev.timestamp, "isoformat")
+                else str(ev.timestamp)
+            ),
             "symbol": ev.symbol,
             "signal_state": ev.signal_state,
             "recommended_action": ev.recommended_action,

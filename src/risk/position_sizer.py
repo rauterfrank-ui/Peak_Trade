@@ -14,6 +14,8 @@ Formel (Fixed Fractional):
 Formel (Kelly):
     kelly_fraction = win_rate - (1 - win_rate) / (avg_win / avg_loss)
     position_size = equity * kelly_fraction * kelly_scaling
+
+P0 Guardrails: This file is protected by CODEOWNERS (risk management review required).
 """
 
 from dataclasses import dataclass
@@ -371,3 +373,6 @@ def calc_position_size(
         rejected=False,
         reason="OK",
     )
+
+
+# P0 Drill: CODEOWNERS+MergeQueue enforcement (2025-12-23T17:37:04)
