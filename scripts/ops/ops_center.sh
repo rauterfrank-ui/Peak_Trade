@@ -37,6 +37,7 @@ COMMANDS:
   doctor [--quick]    Run ops_doctor health checks (+ merge-log validation)
   audit               Run full security & quality audit (pip-audit, SBOM, tests)
   risk <subcmd>       Risk analytics commands (component-var, ...)
+  shadow <subcmd>     Shadow pipeline commands (smoke, ...)
 
 EXAMPLES:
   # Check repo status
@@ -62,6 +63,9 @@ EXAMPLES:
 
   # Run full security audit
   ops_center.sh audit
+
+  # Run shadow pipeline smoke test
+  ops_center.sh shadow smoke
 
 SAFE-BY-DEFAULT:
   - No destructive actions
@@ -613,6 +617,51 @@ cmd_audit() {
 }
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Shadow Pipeline
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+cmd_shadow() {
+  local subcmd="${1:-help}"
+  shift || true
+
+  case "$subcmd" in
+    smoke)
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo "🎭 Shadow Pipeline Smoke Test"
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo ""
+      cd "$REPO_ROOT"
+      python3 scripts/shadow_run_tick_to_ohlcv_smoke.py "$@"
+      ;;
+    help|--help|-h)
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo "🎭 Shadow Pipeline Commands"
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo ""
+      echo "USAGE:"
+      echo "  ops_center.sh shadow <subcmd>"
+      echo ""
+      echo "SUBCOMMANDS:"
+      echo "  smoke     Run Shadow Pipeline Phase 2 smoke test (Tick→OHLCV→Quality)"
+      echo "  help      Show this help"
+      echo ""
+      echo "EXAMPLES:"
+      echo "  ops_center.sh shadow smoke"
+      echo ""
+      echo "DOCUMENTATION:"
+      echo "  Quickstart: docs/shadow/SHADOW_PIPELINE_PHASE2_QUICKSTART.md"
+      echo "  Runbook:    docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md"
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      ;;
+    *)
+      echo "❌ Unknown shadow subcommand: $subcmd"
+      echo ""
+      echo "Run: ops_center.sh shadow help"
+      exit 1
+      ;;
+  esac
+}
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Main
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 main() {
@@ -640,6 +689,9 @@ main() {
       ;;
     risk)
       cmd_risk "$@"
+      ;;
+    shadow)
+      cmd_shadow "$@"
       ;;
     *)
       echo "❌ Unknown command: $cmd"
