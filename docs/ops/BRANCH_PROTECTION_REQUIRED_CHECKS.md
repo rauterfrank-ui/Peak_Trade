@@ -18,7 +18,7 @@ The following status checks are **required** and must pass before any PR can be 
 6. **Policy Critic Gate**
 7. **Lint Gate**
 8. **Docs Diff Guard Policy Gate** ⭐ (Added: 2025-12-25)
-9. **docs-reference-targets-gate** ⭐ (Added: 2025-12-26)
+9. **docs-reference-targets-gate** ⭐ (Added: 2025-12-27) — Validates that file paths/targets referenced in docs resolve to existing files, preventing broken internal navigation.
 
 **Total:** 9 required checks  
 **Strict Mode:** `false` (PRs do not need to be up-to-date with base branch)
