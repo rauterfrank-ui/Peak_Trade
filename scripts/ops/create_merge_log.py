@@ -86,7 +86,6 @@ def _generate_minimal_template() -> str:
 **PR:** {{PR_URL}}
 **Merged:** {{MERGE_DATE_YYYY_MM_DD}}
 **Merge Commit:** {{MERGE_COMMIT_SHA}}
-**Branch:** {{BRANCH_NAME}} ({{BRANCH_STATUS}})
 
 ---
 
