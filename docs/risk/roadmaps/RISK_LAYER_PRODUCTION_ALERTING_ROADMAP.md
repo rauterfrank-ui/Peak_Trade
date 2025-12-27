@@ -1008,10 +1008,11 @@ Dashboard:   Aktiviert (Auth + VPN + 2FA)
 
 ## 📚 Referenzen
 
-- [Defense in Depth Architecture](../docs/risk/DEFENSE_IN_DEPTH.md)
-- [Kill Switch Specification](../docs/risk/KILL_SWITCH_SPEC.md)
-- [Shadow Trading Requirements](../docs/shadow/SHADOW_TRADING_REQS.md)
-- [Compliance Requirements](../docs/compliance/RISK_COMPLIANCE.md)
+- [Alerting Architecture](../ALERTING_ARCHITECTURE.md)
+- Defense in Depth Architecture (TBD)
+- Kill Switch Specification (TBD)
+- Shadow Trading Requirements (TBD)
+- Compliance Requirements (TBD)
 
 ---
 
@@ -1035,6 +1036,6 @@ Dashboard:   Aktiviert (Auth + VPN + 2FA)
 
 ---
 
-**Status:** 📋 **ROADMAP READY FOR REVIEW**
+**Status:** ✅ **Phase 1 & 3 COMPLETE**
 
-**Nächster Schritt:** Phase 1 starten mit `src/risk/alerting/__init__.py`
+**Implementiert:** `src/risk_layer/alerting/` - Alert Framework + Notification Channels
