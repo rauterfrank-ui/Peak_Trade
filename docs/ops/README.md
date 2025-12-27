@@ -213,7 +213,7 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 
 - **Vollständige Dokumentation**: [OPS_DOCTOR_README.md](OPS_DOCTOR_README.md)
 - **Beispiel-Output**: [ops_doctor_example_output.txt](ops_doctor_example_output.txt)
-- **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](../../OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
+- **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](reports/OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
 
 ### Merge-Log Health Integration
 
@@ -706,8 +706,8 @@ pytest tests/ -k "ops" -v
 
 ## 📚 Verwandte Dokumentation
 
-- [Peak_Trade Tooling & Evidence Chain Runbook](../../Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
-- [CI Large PR Implementation Report](../../CI_LARGE_PR_IMPLEMENTATION_REPORT.md)
+- [Peak_Trade Tooling & Evidence Chain Runbook](Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md)
+- [CI Large PR Implementation Report](reports/CI_LARGE_PR_IMPLEMENTATION_REPORT.md)
 - [Merge Log Workflow](PR_208_MERGE_LOG.md)
 
 ---
@@ -1191,6 +1191,6 @@ Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 - VaR Gate Runbook: `docs/risk/VAR_GATE_RUNBOOK.md`
 - Stress Gate Runbook: `docs/risk/STRESS_GATE_RUNBOOK.md`
 - Liquidity Gate Runbook: `docs/risk/LIQUIDITY_GATE_RUNBOOK.md`
-- Risk Layer Roadmap: `RISK_LAYER_ROADMAP.md`
+- Risk Layer Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).

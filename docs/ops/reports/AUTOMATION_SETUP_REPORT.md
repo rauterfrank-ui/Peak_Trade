@@ -494,7 +494,7 @@ python3 scripts/automation/run_offline_daily_suite.py --no-pytest
 
 ---
 
-**Fragen? Issues?** → Siehe `docs/CONTRIBUTING.md` oder öffne ein GitHub Issue.
+**Fragen? Issues?** → Siehe `docs&sol;CONTRIBUTING.md (planned)` oder öffne ein GitHub Issue.
 
 **Zuletzt aktualisiert**: 2025-12-10  
 **Maintainer**: Peak_Trade Team
