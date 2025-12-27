@@ -206,7 +206,7 @@ scripts/
 ### Communication Plan
 
 - [ ] PR-Review mit Team (walk through CLEANUP_PLAN.md)
-- [ ] Neue Struktur vorstellen (docs/architecture/REPO_STRUCTURE.md)
+- [ ] Neue Struktur vorstellen (REPO_STRUCTURE (wird in PR2 erzeugt))
 - [ ] Bookmarks aktualisieren lassen
 - [ ] Wiki-Links aktualisieren (falls vorhanden)
 
@@ -236,7 +236,7 @@ scripts/
 
 ### New Docs Created
 
-- `docs/architecture/REPO_STRUCTURE.md` (400+ Zeilen)
+- `REPO_STRUCTURE (wird in PR2 erzeugt)` (400+ Zeilen)
 - `archive/README.md`
 - `config/README.md`
 

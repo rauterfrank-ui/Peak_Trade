@@ -360,7 +360,7 @@ Nach Moves müssen folgende Referenzen aktualisiert werden:
 
 ## New Documentation to Create
 
-### 1. docs/architecture/REPO_STRUCTURE.md
+### 1. REPO_STRUCTURE (wird in PR2 erzeugt)
 Erklärt die Repo-Organisation:
 - Was ist wo und warum
 - Konventionen (wo neue Dateien hin)
@@ -505,7 +505,7 @@ Update links and paths in:
 # Commit 7: Add new documentation
 git commit -m "docs: add cleanup documentation and structure guides
 
-- docs/architecture/REPO_STRUCTURE.md: explain repo organization
+- REPO_STRUCTURE (wird in PR2 erzeugt): explain repo organization
 - archive/README.md: index of archived content
 - config/README.md: config template guide
 - docs/README.md: update navigation
