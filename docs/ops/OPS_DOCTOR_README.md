@@ -248,9 +248,15 @@ python -m src.ops.doctor
 
 ## 🎯 Noise-Free Standard
 
-Der Ops Doctor ist am nützlichsten, wenn sein Output **actionable und low-noise** ist:
+### Zielbild
 
-### Was bedeutet "Noise-Free"?
+Ops Doctor gilt als **Noise-Free**, wenn:
+- Alle **Core Checks**: ✅ OK (0 WARN / 0 FAIL)
+- Checks mit **optionalen Live-Dependencies** (z.B. `gh` + Auth) zeigen bei fehlenden Dependencies **⏭️ SKIP** (nicht ❌ FAIL).
+- "Warn-only" Bereiche (z.B. Docs Navigation) sind idealerweise ✅ PASS, damit kein Output-Noise entsteht.
+- Fix-Hints sind **canonical** (entsprechen exakt der vom Check erwarteten Commandline).
+
+### Status-Semantik
 
 | Status | Bedeutung | Operator-Aktion |
 |--------|-----------|-----------------|
@@ -279,11 +285,16 @@ scripts/ops/ops_center.sh doctor
 
 **Canonical Fix**:
 ```bash
-# Sync requirements.txt from uv.lock (no dev deps, no hashes, no annotations)
-uv export --no-dev --no-hashes --no-emit-project > requirements.txt
+# Sync requirements.txt from uv.lock (canonical flags: all extras/groups, locked, no hashes)
+uv export --format requirements.txt --all-extras --all-groups --locked --no-hashes -o requirements.txt
 ```
 
 **Wann nötig**: Nach `uv.lock` Updates (z.B. nach `uv add`, `uv lock`)
+
+**Verification**:
+```bash
+scripts/ops/ops_center.sh doctor
+```
 
 #### `required_checks_drift` (SKIP)
 
