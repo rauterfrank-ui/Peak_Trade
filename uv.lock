@@ -3823,6 +3823,7 @@ web = [
 dev = [
     { name = "fastapi" },
     { name = "httpx" },
+    { name = "jinja2" },
     { name = "pip-audit", version = "2.9.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "pip-audit", version = "2.10.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pre-commit", version = "4.3.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
@@ -3864,6 +3865,7 @@ provides-extras = ["dev", "web", "viz", "otel", "knowledge", "monitoring"]
 dev = [
     { name = "fastapi", specifier = ">=0.124.4" },
     { name = "httpx", specifier = ">=0.28.1" },
+    { name = "jinja2", specifier = ">=3.1.6" },
     { name = "pip-audit", specifier = ">=2.9.0" },
     { name = "pre-commit", specifier = ">=4.3.0" },
     { name = "pytest", specifier = ">=8.4.2" },
