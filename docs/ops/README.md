@@ -17,10 +17,11 @@ scripts/ops/ops_center.sh merge-log
 ```
 
 **Commands:**
-- `status` — Repository-Status (git + gh)
+- `status [--json]` — Repository-Status (git + gh), optional als JSON
 - `pr <NUM>` — PR reviewen (safe, kein Merge)
 - `doctor` — Health-Checks
 - `merge-log` — Merge-Log Quick Reference
+- `selftest` — Ops Center Smoke-Tests (v1.1+)
 - `help` — Hilfe
 
 **Dokumentation:** [OPS_OPERATOR_CENTER.md](OPS_OPERATOR_CENTER.md) ⭐

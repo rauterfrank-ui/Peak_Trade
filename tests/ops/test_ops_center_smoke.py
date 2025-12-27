@@ -88,3 +88,99 @@ def test_doctor_command_if_available():
     # If ops_doctor.sh exists, should show doctor help/output
     # If not, should show warning
     assert "Doctor" in result.stdout or "not found" in result.stdout or "Check" in result.stdout
+
+
+def test_status_json_flag():
+    """status --json returns valid JSON."""
+    result = run_ops_center("status", "--json")
+    assert result.returncode == 0, f"status --json failed: {result.stderr}"
+
+    # Parse JSON
+    import json
+
+    try:
+        data = json.loads(result.stdout)
+    except json.JSONDecodeError as e:
+        raise AssertionError(f"Invalid JSON output: {e}\nOutput: {result.stdout}")
+
+    # Check required keys
+    required_keys = [
+        "repo_root",
+        "branch",
+        "working_tree_clean",
+        "untracked_count",
+        "modified_count",
+        "ahead",
+        "behind",
+        "remote",
+        "recent_commits",
+        "gh_available",
+        "gh_authenticated",
+    ]
+    for key in required_keys:
+        assert key in data, f"Missing key in JSON output: {key}"
+
+    # Type checks
+    assert isinstance(data["repo_root"], str)
+    assert isinstance(data["branch"], str)
+    assert isinstance(data["working_tree_clean"], bool)
+    assert isinstance(data["untracked_count"], int)
+    assert isinstance(data["modified_count"], int)
+    assert isinstance(data["ahead"], int)
+    assert isinstance(data["behind"], int)
+    assert data["remote"] is None or isinstance(data["remote"], str)
+    assert isinstance(data["recent_commits"], list)
+    assert isinstance(data["gh_available"], bool)
+    assert data["gh_authenticated"] in (True, False, None)
+
+
+def test_status_json_no_ansi():
+    """status --json output contains no ANSI codes or emojis."""
+    result = run_ops_center("status", "--json")
+    assert result.returncode == 0, f"status --json failed: {result.stderr}"
+
+    # Check for ANSI escape sequences (basic check)
+    assert "\x1b[" not in result.stdout, "ANSI codes found in JSON output"
+
+    # Check for common emojis (basic check)
+    emojis = ["📊", "🔹", "✅", "⚠️", "❌", "🎯"]
+    for emoji in emojis:
+        assert emoji not in result.stdout, f"Emoji {emoji} found in JSON output"
+
+
+def test_status_json_single_object():
+    """status --json outputs exactly one JSON object (no extra lines)."""
+    result = run_ops_center("status", "--json")
+    assert result.returncode == 0, f"status --json failed: {result.stderr}"
+
+    # Should be parseable as single JSON object
+    import json
+
+    lines = result.stdout.strip().split("\n")
+
+    # Join all lines and parse
+    full_output = "\n".join(lines)
+    data = json.loads(full_output)
+
+    # Should be a dict (object)
+    assert isinstance(data, dict), "JSON output is not an object"
+
+
+def test_selftest_command():
+    """selftest command runs and reports results."""
+    result = run_ops_center("selftest")
+    # Should exit 0 if all tests pass, or 1 if any fail
+    assert result.returncode in (0, 1), f"selftest unexpected exit code: {result.returncode}"
+
+    # Should contain test output
+    assert "Selftest" in result.stdout or "Test:" in result.stdout
+
+    # Should show pass/fail indicators
+    assert "PASS" in result.stdout or "FAIL" in result.stdout
+
+
+def test_status_invalid_flag():
+    """status with invalid flag fails gracefully."""
+    result = run_ops_center("status", "--invalid-flag")
+    assert result.returncode == 1, "status with invalid flag should fail"
+    assert "Unknown flag" in result.stderr or "Usage" in result.stderr

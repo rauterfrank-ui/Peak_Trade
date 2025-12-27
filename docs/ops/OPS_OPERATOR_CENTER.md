@@ -74,6 +74,84 @@ f8d3ceb docs(ops): add merge log for PR #262 (meta: workflow standard) (#263)
 
 ---
 
+### `status --json` (Machine-Readable Status)
+
+**Version:** v1.1+
+
+Gibt Repository-Status als **valides JSON-Objekt** auf stdout aus. Keine ANSI-Codes, keine Emojis, keine zusätzlichen Zeilen.
+
+**Verwendung:**
+- CI/CD-Pipelines
+- Monitoring-Tools
+- Automatisierte Workflows
+- Dashboard-Integration
+
+**Beispiel:**
+```bash
+scripts/ops/ops_center.sh status --json
+```
+
+**Output (Beispiel):**
+```json
+{
+  "repo_root": "/Users/operator/Peak_Trade",
+  "branch": "main",
+  "working_tree_clean": true,
+  "untracked_count": 0,
+  "modified_count": 0,
+  "ahead": 0,
+  "behind": 0,
+  "remote": "origin/main",
+  "recent_commits": [
+    {"sha": "b521b79", "subject": "docs(ops): add PR #262 as merge log workflow example (#264)"},
+    {"sha": "f8d3ceb", "subject": "docs(ops): add merge log for PR #262 (meta: workflow standard) (#263)"}
+  ],
+  "gh_available": true,
+  "gh_authenticated": true
+}
+```
+
+**JSON Schema:**
+| Field | Type | Beschreibung |
+|-------|------|--------------|
+| `repo_root` | string | Absoluter Pfad zum Repository-Root |
+| `branch` | string | Aktueller Branch-Name |
+| `working_tree_clean` | boolean | `true` wenn keine uncommitted Änderungen |
+| `untracked_count` | integer | Anzahl untracked Files |
+| `modified_count` | integer | Anzahl modified/staged Files |
+| `ahead` | integer | Commits ahead von Remote |
+| `behind` | integer | Commits behind von Remote |
+| `remote` | string\|null | Upstream-Branch (z.B. `"origin/main"`) oder `null` |
+| `recent_commits` | array | Letzte 5 Commits (je `{sha, subject}`) |
+| `gh_available` | boolean | `true` wenn `gh` CLI installiert |
+| `gh_authenticated` | boolean\|null | `true`/`false`/`null` (wenn `gh` nicht verfügbar) |
+
+**Robustheit:**
+- **Ohne `gh` CLI:** `"gh_available": false`, `"gh_authenticated": null`
+- **Außerhalb git repo:** Exit 1 + `{"error": "not a git repository"}` auf stderr
+- **Kein Remote konfiguriert:** `"remote": null`, `"ahead": 0`, `"behind": 0`
+
+**Beispiel-Integration:**
+```bash
+# Parse mit jq
+STATUS=$(scripts/ops/ops_center.sh status --json)
+BRANCH=$(echo "$STATUS" | jq -r '.branch')
+CLEAN=$(echo "$STATUS" | jq -r '.working_tree_clean')
+
+if [[ "$CLEAN" == "true" ]]; then
+  echo "✅ Working tree clean on branch: $BRANCH"
+fi
+
+# Python
+import json, subprocess
+result = subprocess.run(["scripts/ops/ops_center.sh", "status", "--json"],
+                       capture_output=True, text=True)
+status = json.loads(result.stdout)
+print(f"Branch: {status['branch']}, Clean: {status['working_tree_clean']}")
+```
+
+---
+
 ### `pr <NUM>`
 Ruft `review_and_merge_pr.sh` im **Review-Only-Modus** auf.
 
@@ -154,6 +232,70 @@ Zeigt Hilfe & Command-Übersicht.
 ```bash
 scripts/ops/ops_center.sh help
 ```
+
+---
+
+### `selftest` (Smoke Tests)
+
+**Version:** v1.1+
+
+Führt integrierte Smoke-Tests für `ops_center.sh` selbst aus. Validiert kritische Funktionalität ohne externe Dependencies (abgesehen von Python3 für JSON-Validierung).
+
+**Tests:**
+1. `ops_center.sh help` → exit 0
+2. `ops_center.sh status` → exit 0
+3. `ops_center.sh status --json` → exit 0 + valides JSON
+4. `pytest tests/ops/test_ops_center_smoke.py` (wenn verfügbar)
+
+**Beispiel:**
+```bash
+scripts/ops/ops_center.sh selftest
+```
+
+**Output (Erfolg):**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧪 Ops Center Selftest
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔹 Test: ops_center.sh help
+   ✅ PASS
+🔹 Test: ops_center.sh status
+   ✅ PASS
+🔹 Test: ops_center.sh status --json
+   ✅ PASS (valid JSON)
+🔹 Test: pytest smoke tests
+   ✅ PASS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ All tests passed
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Output (Fehler):**
+```
+🔹 Test: ops_center.sh status --json
+   ❌ FAIL (invalid JSON)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❌ 1 test(s) failed
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Exit Codes:**
+- `0` → Alle Tests erfolgreich
+- `1` → Mindestens ein Test fehlgeschlagen
+
+**Verwendung:**
+- **Pre-deployment Check:** Validierung vor Rollout
+- **CI/CD:** Automatisierte Regression-Tests
+- **Debugging:** Schnelle Diagnose bei Problemen
+- **Post-upgrade:** Verification nach Upgrade (z.B. v1.0 → v1.1)
+
+**Robustheit:**
+- Funktioniert auch ohne `pytest` (skips Test 4)
+- Funktioniert auch ohne `uv` (fallback auf `pytest`)
+- Keine destruktiven Aktionen (read-only checks)
 
 ---
 
@@ -244,8 +386,14 @@ Siehe: [OPS_DOCTOR_README.md](OPS_DOCTOR_README.md)
 ## 🎯 Operator Workflow (Empfohlen)
 
 ```bash
+# 0) Selftest (einmalig nach Upgrade/Installation)
+scripts/ops/ops_center.sh selftest
+
 # 1) Status-Check (vor jedem Task)
 scripts/ops/ops_center.sh status
+
+# 1b) Machine-readable Status (für Automation)
+scripts/ops/ops_center.sh status --json | jq '.branch'
 
 # 2) PR reviewen
 scripts/ops/ops_center.sh pr 265
@@ -273,12 +421,16 @@ scripts/ops/create_and_open_merge_log_pr.sh  # → Workflow ausführen
 ## 🧪 Testing
 
 ```bash
-# Smoke-Tests
+# Integrierter Selftest (empfohlen)
+scripts/ops/ops_center.sh selftest
+
+# Externe Smoke-Tests
 pytest -q tests/ops/test_ops_center_smoke.py
 
 # Manuell
 scripts/ops/ops_center.sh help
 scripts/ops/ops_center.sh status
+scripts/ops/ops_center.sh status --json | jq
 ```
 
 ---
