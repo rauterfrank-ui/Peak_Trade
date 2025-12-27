@@ -210,11 +210,10 @@ fi
 rm -f "$HARD_FAIL_SECRETS_RAW"
 
 # 5) Tests
-if have_cmd python3; then
-  run_check "09_pytest" python3 -m pytest -q --tb=no -m smoke
-else
-  skip_check "09_pytest" "python3 not found"
-fi
+# Note: Full test suite is covered by CI workflow (tests job)
+# Audit check focuses on repository health, not test coverage
+skip_check "09_pytest" "Tests covered by CI workflow"
+
 
 # 6) Live Gating Scan
 log "Running live gating scan..."
