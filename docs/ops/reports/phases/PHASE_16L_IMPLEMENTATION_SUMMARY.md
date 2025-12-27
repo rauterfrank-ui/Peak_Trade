@@ -39,7 +39,7 @@ Phase 16L wurde erfolgreich implementiert: Stage1 Monitoring (Daily Snapshot + W
 
 4. **`docker-compose.obs.yml`** (18 Zeilen)
    - Service: `peaktrade-ops`
-   - Volume: `./reports:/reports` (Docker mount example)
+   - Volume: `.&sol;reports:/reports` (Docker mount syntax, not a file reference)
    - ENV: `PEAK_REPORTS_DIR=/reports`
 
 5. **`scripts/obs/run_stage1_snapshot_docker.sh`** (21 Zeilen, executable)

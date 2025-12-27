@@ -600,7 +600,7 @@ cfg = load_config_with_live_overrides()
 ### 11.3 Fragen & Feedback
 
 1. Prüfe Troubleshooting-Sektion
-2. Führe Demo-Script aus: `python scripts/demo_live_overrides.py`
+2. Führe Demo-Script aus: `python `scripts&sol;demo_live_overrides.py` (planned)`
 3. Schaue in Tests für Code-Beispiele: `tests/test_live_overrides*.py`
 
 ---
