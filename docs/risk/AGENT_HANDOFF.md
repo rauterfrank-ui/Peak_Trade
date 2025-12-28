@@ -76,9 +76,8 @@ Agent A0 hat die Architektur-Entscheidungen getroffen und das Scaffold für Risk
 
 | Datei | Status | Aufgabe |
 |-------|--------|---------|
-| `src/risk/monte_carlo.py` | ⭐ PLACEHOLDER | Implementiere Monte Carlo VaR |
-| `tests/risk/test_monte_carlo.py` | 🆕 NEU | Unit Tests für MC VaR |
-| `docs/risk/MONTE_CARLO_VAR.md` | 🆕 NEU | Dokumentation |
+| `src/risk/monte_carlo.py` | ✅ DONE | Monte Carlo VaR (bootstrap, normal, student_t) |
+| `tests/risk/test_monte_carlo.py` | ✅ DONE | Unit Tests für MC VaR (27 tests) |
 
 **Implementierungs-Details:**
 

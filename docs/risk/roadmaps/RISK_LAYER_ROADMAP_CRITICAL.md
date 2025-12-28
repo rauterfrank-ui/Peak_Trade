@@ -93,15 +93,15 @@ Stress Testing ──────────┘
 ### Dateien
 ```
 src/risk/
-├── var_calculator.py          # Haupt-VaR-Modul
-├── cvar_calculator.py         # CVaR/Expected Shortfall
-├── covariance_estimator.py    # Kovarianz-Schätzer
+├── var.py                     # Haupt-VaR-Modul (VaR + CVaR)
+├── covariance.py              # Kovarianz-Schätzer
+├── component_var.py           # Component VaR
 └── __init__.py                # Exports aktualisieren
 
 tests/risk/
-├── test_var_calculator.py     # Unit Tests VaR
-├── test_cvar_calculator.py    # Unit Tests CVaR
-└── test_covariance.py         # Unit Tests Kovarianz
+├── test_var.py                # Unit Tests VaR + CVaR
+├── test_covariance.py         # Unit Tests Kovarianz
+└── test_component_var.py      # Unit Tests Component VaR
 
 config/
 └── risk.toml                  # Risk-Parameter (erweitern)
@@ -110,7 +110,7 @@ config/
 ### Klassen-Signaturen
 
 ```python
-# src/risk/var_calculator.py
+# src/risk/var.py
 
 from dataclasses import dataclass
 from enum import Enum
@@ -1813,9 +1813,9 @@ def chi2_cdf(x: float, df: int) -> float:
 # ✅ Next Actions
 
 ## Sofort (heute)
-1. ❑ Roadmap reviewen und Feedback geben
-2. ❑ Feature Branch erstellen: `feature/risk-layer-v1`
-3. ❑ Phase 1 starten: `src/risk/var_calculator.py` anlegen
+1. ✅ Roadmap reviewed
+2. ✅ Feature Branch erstellt: `feat/risk-layer-v1-complete`
+3. ✅ Phase 1 abgeschlossen: `src/risk/var.py` implementiert
 
 ## Diese Woche
 - ❑ Phase 1 abschließen (VaR/CVaR)

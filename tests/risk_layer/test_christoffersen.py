@@ -133,9 +133,7 @@ class TestChristoffersenConditionalCoverage:
         np.random.seed(42)
         violations = list(np.random.random(100) < 0.05)
 
-        result = christoffersen_conditional_coverage_test(
-            violations, alpha=0.05, var_alpha=0.05
-        )
+        result = christoffersen_conditional_coverage_test(violations, alpha=0.05, var_alpha=0.05)
 
         assert isinstance(result, ChristoffersenResult)
         assert result.test_name == "Christoffersen Conditional Coverage Test"
@@ -148,9 +146,7 @@ class TestChristoffersenConditionalCoverage:
         # 95% VaR but 20% violations (way too many)
         violations = [False] * 80 + [True] * 20
 
-        result = christoffersen_conditional_coverage_test(
-            violations, alpha=0.05, var_alpha=0.05
-        )
+        result = christoffersen_conditional_coverage_test(violations, alpha=0.05, var_alpha=0.05)
 
         # Should likely fail (low p-value)
         assert result.p_value >= 0
@@ -161,9 +157,7 @@ class TestChristoffersenConditionalCoverage:
         # Correct rate but clustered
         violations = [False] * 90 + [True] * 10
 
-        result = christoffersen_conditional_coverage_test(
-            violations, alpha=0.05, var_alpha=0.10
-        )
+        result = christoffersen_conditional_coverage_test(violations, alpha=0.05, var_alpha=0.10)
 
         # Should likely fail due to clustering
         assert result.p_value >= 0
@@ -172,9 +166,7 @@ class TestChristoffersenConditionalCoverage:
         """Small sample should still work."""
         violations = [False, True, False, False, True]
 
-        result = christoffersen_conditional_coverage_test(
-            violations, alpha=0.05, var_alpha=0.20
-        )
+        result = christoffersen_conditional_coverage_test(violations, alpha=0.05, var_alpha=0.20)
 
         assert result.n_observations == 5
         assert result.p_value >= 0
@@ -234,12 +226,8 @@ class TestDeterminism:
         """Same input should give same output."""
         violations = [False, True, True, False, True, False] * 10
 
-        result1 = christoffersen_conditional_coverage_test(
-            violations, alpha=0.05, var_alpha=0.10
-        )
-        result2 = christoffersen_conditional_coverage_test(
-            violations, alpha=0.05, var_alpha=0.10
-        )
+        result1 = christoffersen_conditional_coverage_test(violations, alpha=0.05, var_alpha=0.10)
+        result2 = christoffersen_conditional_coverage_test(violations, alpha=0.05, var_alpha=0.10)
 
         assert result1.lr_statistic == result2.lr_statistic
         assert result1.p_value == result2.p_value

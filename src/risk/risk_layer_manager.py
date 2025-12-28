@@ -138,9 +138,7 @@ class RiskLayerManager:
         self._set_feature_flags()
         self._initialize_components()
 
-        logger.info(
-            f"RiskLayerManager initialized with features: {self.enabled_features}"
-        )
+        logger.info(f"RiskLayerManager initialized with features: {self.enabled_features}")
 
     def _parse_config(self):
         """Parse config and set flags."""
@@ -171,19 +169,23 @@ class RiskLayerManager:
         self.enabled = bool(enabled_value)
 
         # Feature flags
-        self.var_enabled = bool(self.get_fn("risk_layer_v1.var.enabled", True)) if self.enabled else False
-        self.component_var_enabled = bool(
-            self.get_fn("risk_layer_v1.component_var.enabled", False)
-        ) if self.enabled else False
-        self.monte_carlo_enabled = bool(
-            self.get_fn("risk_layer_v1.monte_carlo.enabled", False)
-        ) if self.enabled else False
-        self.stress_test_enabled = bool(
-            self.get_fn("risk_layer_v1.stress_test.enabled", False)
-        ) if self.enabled else False
-        self.backtest_enabled = bool(
-            self.get_fn("risk_layer_v1.backtest.enabled", False)
-        ) if self.enabled else False
+        self.var_enabled = (
+            bool(self.get_fn("risk_layer_v1.var.enabled", True)) if self.enabled else False
+        )
+        self.component_var_enabled = (
+            bool(self.get_fn("risk_layer_v1.component_var.enabled", False))
+            if self.enabled
+            else False
+        )
+        self.monte_carlo_enabled = (
+            bool(self.get_fn("risk_layer_v1.monte_carlo.enabled", False)) if self.enabled else False
+        )
+        self.stress_test_enabled = (
+            bool(self.get_fn("risk_layer_v1.stress_test.enabled", False)) if self.enabled else False
+        )
+        self.backtest_enabled = (
+            bool(self.get_fn("risk_layer_v1.backtest.enabled", False)) if self.enabled else False
+        )
 
         # Collect enabled features
         self.enabled_features = []
@@ -202,12 +204,18 @@ class RiskLayerManager:
     def _get_or_create_cov_estimator(self):
         """Get or create the central covariance estimator (lazy init, DRY)."""
         if self._cov_estimator is None:
-            from src.risk.covariance import CovarianceEstimator, CovarianceEstimatorConfig, CovarianceMethod
+            from src.risk.covariance import (
+                CovarianceEstimator,
+                CovarianceEstimatorConfig,
+                CovarianceMethod,
+            )
 
-            cov_method_str = self._get_from_dict("risk_layer_v1.component_var.covariance_method", "sample")
+            cov_method_str = self._get_from_dict(
+                "risk_layer_v1.component_var.covariance_method", "sample"
+            )
             cov_config = CovarianceEstimatorConfig(
                 method=CovarianceMethod(cov_method_str),
-                min_history=self._get_from_dict("risk_layer_v1.component_var.min_history", 60)
+                min_history=self._get_from_dict("risk_layer_v1.component_var.min_history", 60),
             )
             self._cov_estimator = CovarianceEstimator(cov_config)
             logger.debug("Central CovarianceEstimator created")
@@ -220,7 +228,7 @@ class RiskLayerManager:
 
             var_config = ParametricVaRConfig(
                 confidence_level=self._get_from_dict("risk_layer_v1.var.confidence_level", 0.95),
-                horizon_days=self._get_from_dict("risk_layer_v1.var.horizon_days", 1)
+                horizon_days=self._get_from_dict("risk_layer_v1.var.horizon_days", 1),
             )
             self._parametric_var_engine = ParametricVaR(var_config)
             logger.debug("Central ParametricVaR engine created")
@@ -301,11 +309,15 @@ class RiskLayerManager:
 
                 # Check if scenarios loaded successfully
                 if not self.stress_tester.scenarios:
-                    logger.warning(f"No scenarios loaded from {scenarios_dir}, disabling stress testing")
+                    logger.warning(
+                        f"No scenarios loaded from {scenarios_dir}, disabling stress testing"
+                    )
                     self.stress_tester = None
                     self.stress_test_enabled = False
                 else:
-                    logger.debug(f"Stress Tester initialized with {len(self.stress_tester.scenarios)} scenarios")
+                    logger.debug(
+                        f"Stress Tester initialized with {len(self.stress_tester.scenarios)} scenarios"
+                    )
             except Exception as e:
                 logger.warning(f"Stress Tester initialization failed: {e}")
                 self.stress_tester = None
@@ -364,8 +376,7 @@ class RiskLayerManager:
         if not self.enabled:
             logger.info("Risk Layer v1.0 disabled in config")
             return RiskAssessmentResult(
-                warnings=["Risk Layer v1.0 disabled in config"],
-                enabled_features=[]
+                warnings=["Risk Layer v1.0 disabled in config"], enabled_features=[]
             )
 
         result = RiskAssessmentResult(enabled_features=self.enabled_features)
@@ -417,12 +428,12 @@ class RiskLayerManager:
                     confidence_level=float(
                         self.get_fn("risk_layer_v1.monte_carlo.confidence_level", 0.95)
                     ),
-                    horizon_days=int(
-                        self.get_fn("risk_layer_v1.monte_carlo.horizon_days", 1)
-                    ),
+                    horizon_days=int(self.get_fn("risk_layer_v1.monte_carlo.horizon_days", 1)),
                 )
                 mc_calc = self.monte_carlo_calculator_class(returns_df, mc_config)
-                result.monte_carlo = mc_calc.calculate(weights=weights, portfolio_value=portfolio_value)
+                result.monte_carlo = mc_calc.calculate(
+                    weights=weights, portfolio_value=portfolio_value
+                )
             except Exception as e:
                 logger.error(f"Monte Carlo VaR calculation failed: {e}")
                 result.warnings.append(f"Monte Carlo VaR failed: {e}")
@@ -431,8 +442,7 @@ class RiskLayerManager:
         if self.stress_test_enabled and self.stress_tester:
             try:
                 result.stress_test = self.stress_tester.run_all_scenarios(
-                    portfolio_weights=weights,
-                    portfolio_value=portfolio_value
+                    portfolio_weights=weights, portfolio_value=portfolio_value
                 )
             except Exception as e:
                 logger.error(f"Stress testing failed: {e}")
@@ -440,7 +450,9 @@ class RiskLayerManager:
 
         # 5. VaR Backtesting (requires historical violation data, skip for now)
         if self.backtest_enabled:
-            result.warnings.append("VaR Backtesting requires historical violation data (not implemented in full_risk_assessment)")
+            result.warnings.append(
+                "VaR Backtesting requires historical violation data (not implemented in full_risk_assessment)"
+            )
 
         return result
 
@@ -483,7 +495,9 @@ class RiskLayerManager:
             lines.append("")
             for method, value in assessment.var.items():
                 cvar = assessment.cvar.get(method, 0)
-                lines.append(f"- **{method.capitalize()}:** VaR = ${value:,.2f}, CVaR = ${cvar:,.2f}")
+                lines.append(
+                    f"- **{method.capitalize()}:** VaR = ${value:,.2f}, CVaR = ${cvar:,.2f}"
+                )
             lines.append("")
 
         # Component VaR
@@ -501,7 +515,9 @@ class RiskLayerManager:
             lines.append("")
             lines.append(f"- VaR: ${assessment.monte_carlo.var:,.2f}")
             lines.append(f"- CVaR: ${assessment.monte_carlo.cvar:,.2f}")
-            lines.append(f"- Method: {assessment.monte_carlo.simulation_metadata.get('method', 'unknown')}")
+            lines.append(
+                f"- Method: {assessment.monte_carlo.simulation_metadata.get('method', 'unknown')}"
+            )
             lines.append("")
 
         # Stress Testing
@@ -510,7 +526,9 @@ class RiskLayerManager:
             lines.append("")
             for result in assessment.stress_test:
                 lines.append(f"### {result.scenario_name}")
-                lines.append(f"- Loss: {result.portfolio_loss_pct:.2%} (${result.portfolio_loss_abs:,.2f})")
+                lines.append(
+                    f"- Loss: {result.portfolio_loss_pct:.2%} (${result.portfolio_loss_abs:,.2f})"
+                )
                 lines.append(f"- Largest Contributor: {result.largest_contributor}")
                 lines.append("")
 
@@ -540,12 +558,12 @@ class RiskLayerManager:
 </head>
 <body>
     <h1>Risk Assessment Report</h1>
-    <p><strong>Enabled Features:</strong> {', '.join(assessment.enabled_features)}</p>
+    <p><strong>Enabled Features:</strong> {", ".join(assessment.enabled_features)}</p>
     <div class="feature">
         <h2>Summary</h2>
         <p>VaR Methods: {len(assessment.var)}</p>
-        <p>Component VaR: {'Yes' if assessment.component_var else 'No'}</p>
-        <p>Monte Carlo: {'Yes' if assessment.monte_carlo else 'No'}</p>
+        <p>Component VaR: {"Yes" if assessment.component_var else "No"}</p>
+        <p>Monte Carlo: {"Yes" if assessment.monte_carlo else "No"}</p>
         <p>Stress Tests: {len(assessment.stress_test) if assessment.stress_test else 0}</p>
     </div>
 </body>

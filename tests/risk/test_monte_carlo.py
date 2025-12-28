@@ -102,9 +102,7 @@ class TestBootstrapSimulation:
                 "ETH": np.random.randn(100) * 0.03,
             }
         )
-        config = MonteCarloVaRConfig(
-            n_simulations=1000, method=MonteCarloMethod.BOOTSTRAP, seed=42
-        )
+        config = MonteCarloVaRConfig(n_simulations=1000, method=MonteCarloMethod.BOOTSTRAP, seed=42)
         calc = MonteCarloVaRCalculator(returns, config)
 
         weights = {"BTC": 0.6, "ETH": 0.4}
@@ -136,9 +134,7 @@ class TestBootstrapSimulation:
 
         assert result1.var == result2.var
         assert result1.cvar == result2.cvar
-        np.testing.assert_array_equal(
-            result1.simulated_returns, result2.simulated_returns
-        )
+        np.testing.assert_array_equal(result1.simulated_returns, result2.simulated_returns)
 
 
 class TestNormalSimulation:
@@ -153,9 +149,7 @@ class TestNormalSimulation:
                 "ETH": np.random.randn(100) * 0.03,
             }
         )
-        config = MonteCarloVaRConfig(
-            n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=42
-        )
+        config = MonteCarloVaRConfig(n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=42)
         calc = MonteCarloVaRCalculator(returns, config)
 
         weights = {"BTC": 0.6, "ETH": 0.4}
@@ -176,9 +170,7 @@ class TestNormalSimulation:
         )
 
         # Monte Carlo VaR
-        config = MonteCarloVaRConfig(
-            n_simulations=50000, method=MonteCarloMethod.NORMAL, seed=42
-        )
+        config = MonteCarloVaRConfig(n_simulations=50000, method=MonteCarloMethod.NORMAL, seed=42)
         calc = MonteCarloVaRCalculator(returns, config)
         weights = {"BTC": 0.6, "ETH": 0.4}
         mc_result = calc.calculate(weights, portfolio_value=100000, alpha=0.05)
@@ -189,9 +181,9 @@ class TestNormalSimulation:
 
         # Should be close (within 20% relative error)
         relative_error = abs(mc_result.var - parametric_var_value) / parametric_var_value
-        assert (
-            relative_error < 0.2
-        ), f"MC VaR {mc_result.var:.2f} vs Parametric {parametric_var_value:.2f}, error={relative_error:.2%}"
+        assert relative_error < 0.2, (
+            f"MC VaR {mc_result.var:.2f} vs Parametric {parametric_var_value:.2f}, error={relative_error:.2%}"
+        )
 
     def test_normal_determinism(self):
         """Same seed should give same results."""
@@ -203,22 +195,16 @@ class TestNormalSimulation:
         )
         weights = {"BTC": 0.5, "ETH": 0.5}
 
-        config1 = MonteCarloVaRConfig(
-            n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=456
-        )
+        config1 = MonteCarloVaRConfig(n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=456)
         calc1 = MonteCarloVaRCalculator(returns, config1)
         result1 = calc1.calculate(weights, portfolio_value=100000)
 
-        config2 = MonteCarloVaRConfig(
-            n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=456
-        )
+        config2 = MonteCarloVaRConfig(n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=456)
         calc2 = MonteCarloVaRCalculator(returns, config2)
         result2 = calc2.calculate(weights, portfolio_value=100000)
 
         assert result1.var == result2.var
-        np.testing.assert_array_almost_equal(
-            result1.simulated_returns, result2.simulated_returns
-        )
+        np.testing.assert_array_almost_equal(result1.simulated_returns, result2.simulated_returns)
 
 
 class TestStudentTSimulation:
@@ -304,9 +290,7 @@ class TestStudentTSimulation:
         result2 = calc2.calculate(weights, portfolio_value=100000)
 
         assert result1.var == result2.var
-        np.testing.assert_array_almost_equal(
-            result1.simulated_returns, result2.simulated_returns
-        )
+        np.testing.assert_array_almost_equal(result1.simulated_returns, result2.simulated_returns)
 
 
 class TestCorrelationStress:
@@ -410,9 +394,9 @@ class TestHorizonScaling:
         actual_ratio = result_10d.var / result_1d.var
 
         # Allow 30% tolerance (MC simulation has variance)
-        assert (
-            0.7 * expected_ratio < actual_ratio < 1.3 * expected_ratio
-        ), f"Expected ratio ~{expected_ratio:.2f}, got {actual_ratio:.2f}"
+        assert 0.7 * expected_ratio < actual_ratio < 1.3 * expected_ratio, (
+            f"Expected ratio ~{expected_ratio:.2f}, got {actual_ratio:.2f}"
+        )
 
 
 class TestEquityPathSimulation:
@@ -524,9 +508,7 @@ class TestPercentiles:
                 "ETH": np.random.randn(100) * 0.03,
             }
         )
-        config = MonteCarloVaRConfig(
-            n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=42
-        )
+        config = MonteCarloVaRConfig(n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=42)
         calc = MonteCarloVaRCalculator(returns, config)
 
         weights = {"BTC": 0.5, "ETH": 0.5}
@@ -548,9 +530,7 @@ class TestPercentiles:
                 "ETH": np.random.randn(200) * 0.03,
             }
         )
-        config = MonteCarloVaRConfig(
-            n_simulations=5000, method=MonteCarloMethod.NORMAL, seed=42
-        )
+        config = MonteCarloVaRConfig(n_simulations=5000, method=MonteCarloMethod.NORMAL, seed=42)
         calc = MonteCarloVaRCalculator(returns, config)
 
         weights = {"BTC": 0.5, "ETH": 0.5}
@@ -613,9 +593,7 @@ class TestCVaRInvariant:
                 "ETH": np.random.randn(100) * 0.03,
             }
         )
-        config = MonteCarloVaRConfig(
-            n_simulations=1000, method=MonteCarloMethod.BOOTSTRAP, seed=42
-        )
+        config = MonteCarloVaRConfig(n_simulations=1000, method=MonteCarloMethod.BOOTSTRAP, seed=42)
         calc = MonteCarloVaRCalculator(returns, config)
 
         weights = {"BTC": 0.6, "ETH": 0.4}
@@ -632,9 +610,7 @@ class TestCVaRInvariant:
                 "ETH": np.random.randn(100) * 0.03,
             }
         )
-        config = MonteCarloVaRConfig(
-            n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=42
-        )
+        config = MonteCarloVaRConfig(n_simulations=1000, method=MonteCarloMethod.NORMAL, seed=42)
         calc = MonteCarloVaRCalculator(returns, config)
 
         weights = {"BTC": 0.6, "ETH": 0.4}
@@ -651,9 +627,7 @@ class TestCVaRInvariant:
                 "ETH": np.random.randn(100) * 0.03,
             }
         )
-        config = MonteCarloVaRConfig(
-            n_simulations=1000, method=MonteCarloMethod.STUDENT_T, seed=42
-        )
+        config = MonteCarloVaRConfig(n_simulations=1000, method=MonteCarloMethod.STUDENT_T, seed=42)
         calc = MonteCarloVaRCalculator(returns, config)
 
         weights = {"BTC": 0.6, "ETH": 0.4}

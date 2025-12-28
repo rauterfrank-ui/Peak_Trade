@@ -223,12 +223,8 @@ class StressTester:
         # Validate weights
         weights_sum = sum(portfolio_weights.values())
         if abs(weights_sum - 1.0) > 1e-3:
-            logger.warning(
-                f"Weights sum to {weights_sum:.4f}, not 1.0. Normalizing..."
-            )
-            portfolio_weights = {
-                k: v / weights_sum for k, v in portfolio_weights.items()
-            }
+            logger.warning(f"Weights sum to {weights_sum:.4f}, not 1.0. Normalizing...")
+            portfolio_weights = {k: v / weights_sum for k, v in portfolio_weights.items()}
 
         # Select scenario
         if scenario_name:
@@ -326,9 +322,7 @@ class StressTester:
         weights_sum = sum(portfolio_weights.values())
         if abs(weights_sum - 1.0) > 1e-3:
             logger.warning(f"Weights sum to {weights_sum:.4f}, normalizing...")
-            portfolio_weights = {
-                k: v / weights_sum for k, v in portfolio_weights.items()
-            }
+            portfolio_weights = {k: v / weights_sum for k, v in portfolio_weights.items()}
             weights_sum = 1.0
 
         # Uniform shock (all assets shocked equally)
@@ -368,9 +362,7 @@ class StressTester:
                 return scenario
         return None
 
-    def _assess_probability(
-        self, target_loss_pct: float
-    ) -> tuple[str, List[str]]:
+    def _assess_probability(self, target_loss_pct: float) -> tuple[str, List[str]]:
         """
         Assess probability of target loss based on historical scenarios.
 
@@ -385,9 +377,7 @@ class StressTester:
 
         for scenario in self.scenarios:
             # Calculate average shock magnitude for this scenario
-            avg_shock = abs(
-                sum(scenario.asset_shocks.values()) / len(scenario.asset_shocks)
-            )
+            avg_shock = abs(sum(scenario.asset_shocks.values()) / len(scenario.asset_shocks))
 
             # If target loss is within 20% of average shock
             if abs(target_loss_pct - avg_shock) < 0.20:
@@ -443,8 +433,12 @@ class StressTester:
             lines.append("")
             lines.append(f"- **Portfolio Value:** ${result.portfolio_value:,.2f}")
             lines.append(f"- **Stressed Value:** ${result.stressed_value:,.2f}")
-            lines.append(f"- **Loss:** {result.portfolio_loss_pct:.2%} (${result.portfolio_loss_abs:,.2f})")
-            lines.append(f"- **Largest Contributor:** {result.largest_contributor} (${abs(result.asset_losses[result.largest_contributor]):,.2f})")
+            lines.append(
+                f"- **Loss:** {result.portfolio_loss_pct:.2%} (${result.portfolio_loss_abs:,.2f})"
+            )
+            lines.append(
+                f"- **Largest Contributor:** {result.largest_contributor} (${abs(result.asset_losses[result.largest_contributor]):,.2f})"
+            )
             lines.append("")
 
         return "\n".join(lines)

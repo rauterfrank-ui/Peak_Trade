@@ -82,9 +82,7 @@ class MonteCarloVaRConfig:
         if self.n_simulations <= 0:
             raise ValueError(f"n_simulations must be > 0, got {self.n_simulations}")
         if not 0 < self.confidence_level < 1:
-            raise ValueError(
-                f"confidence_level must be in (0, 1), got {self.confidence_level}"
-            )
+            raise ValueError(f"confidence_level must be in (0, 1), got {self.confidence_level}")
         if self.horizon_days <= 0:
             raise ValueError(f"horizon_days must be > 0, got {self.horizon_days}")
         if self.student_t_df <= 0:
@@ -206,9 +204,7 @@ class MonteCarloVaRCalculator:
         for i in range(n):
             for j in range(n):
                 if i != j:
-                    stressed_corr[i, j] = np.clip(
-                        self._corr[i, j] * multiplier, -1.0, 1.0
-                    )
+                    stressed_corr[i, j] = np.clip(self._corr[i, j] * multiplier, -1.0, 1.0)
 
         # Ensure PSD by adding jitter to diagonal if needed
         stressed_corr = self._ensure_psd(stressed_corr)
@@ -299,17 +295,11 @@ class MonteCarloVaRCalculator:
 
         # Simulate returns
         if self.config.method == MonteCarloMethod.BOOTSTRAP:
-            simulated_returns = self._simulate_bootstrap(
-                weights_array, self.config.n_simulations
-            )
+            simulated_returns = self._simulate_bootstrap(weights_array, self.config.n_simulations)
         elif self.config.method == MonteCarloMethod.NORMAL:
-            simulated_returns = self._simulate_normal(
-                weights_array, self.config.n_simulations
-            )
+            simulated_returns = self._simulate_normal(weights_array, self.config.n_simulations)
         elif self.config.method == MonteCarloMethod.STUDENT_T:
-            simulated_returns = self._simulate_student_t(
-                weights_array, self.config.n_simulations
-            )
+            simulated_returns = self._simulate_student_t(weights_array, self.config.n_simulations)
         else:
             raise ValueError(f"Unknown method: {self.config.method}")
 
@@ -562,9 +552,7 @@ def build_monte_carlo_var_from_config(
     horizon = int(get_fn(f"{section}.horizon_days", 1))
     seed = int(get_fn(f"{section}.seed", 42))
     student_t_df = int(get_fn(f"{section}.student_t_df", 5))
-    correlation_stress = float(
-        get_fn(f"{section}.correlation_stress_multiplier", 1.0)
-    )
+    correlation_stress = float(get_fn(f"{section}.correlation_stress_multiplier", 1.0))
 
     # Parse method enum
     try:

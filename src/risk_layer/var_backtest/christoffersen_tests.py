@@ -78,10 +78,7 @@ class ChristoffersenResult:
 
     def __repr__(self) -> str:
         status = "✅ PASS" if self.passed else "❌ FAIL"
-        return (
-            f"<{self.test_name}: LR={self.lr_statistic:.4f}, "
-            f"p={self.p_value:.4f}, {status}>"
-        )
+        return f"<{self.test_name}: LR={self.lr_statistic:.4f}, p={self.p_value:.4f}, {status}>"
 
 
 def christoffersen_independence_test(
@@ -314,9 +311,7 @@ def _compute_independence_lr(
         pi_11 = 1 - EPS
 
     # Restricted likelihood (H0: π₀₁ = π₁₁ = π)
-    log_L_restricted = (
-        (n00 + n10) * math.log(1 - pi) + (n01 + n11) * math.log(pi)
-    )
+    log_L_restricted = (n00 + n10) * math.log(1 - pi) + (n01 + n11) * math.log(pi)
 
     # Unrestricted likelihood (H1: π₀₁ ≠ π₁₁)
     log_L_unrestricted = 0.0
@@ -504,9 +499,7 @@ def run_full_var_backtest(violations: List[bool], alpha: float = 0.05) -> dict:
 
     # Check if all passed
     all_passed = (
-        kupiec_result.is_valid
-        and independence_result.passed
-        and conditional_coverage_result.passed
+        kupiec_result.is_valid and independence_result.passed and conditional_coverage_result.passed
     )
 
     return {

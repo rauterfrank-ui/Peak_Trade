@@ -414,9 +414,7 @@ def calculate_incremental_var(
     else:
         # Renormalisiere Gewichte (sum = 1)
         weight_sum_without = sum(weights_without.values())
-        weights_without_normalized = {
-            k: v / weight_sum_without for k, v in weights_without.items()
-        }
+        weights_without_normalized = {k: v / weight_sum_without for k, v in weights_without.items()}
 
         # Entferne Asset aus returns
         returns_without = returns_df[[col for col in returns_df.columns if col != asset_name]]
@@ -514,9 +512,7 @@ def calculate_diversification_benefit(
             standalone_vars[i] = standalone_var
         except (ValueError, ZeroDivisionError) as e:
             # Asset hat zero variance oder andere Probleme
-            logger.warning(
-                f"Could not calculate standalone VaR for {asset}: {e}. Using 0."
-            )
+            logger.warning(f"Could not calculate standalone VaR for {asset}: {e}. Using 0.")
             standalone_vars[i] = 0.0
 
     # 3. Weighted Standalone VaRs

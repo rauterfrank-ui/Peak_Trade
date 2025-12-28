@@ -216,8 +216,9 @@ class TestCornishFisherVaR:
         param_var = parametric_var(returns, alpha=0.05)
 
         # Sollten ähnlich sein (Toleranz 20%)
-        assert abs(cf_var - param_var) / param_var < 0.20, \
+        assert abs(cf_var - param_var) / param_var < 0.20, (
             f"CF-VaR ({cf_var:.4f}) sollte ≈ Parametric VaR ({param_var:.4f}) bei Normal-Dist"
+        )
 
     def test_cornish_fisher_var_with_skew(self):
         """CF-VaR sollte Skewness berücksichtigen"""
@@ -316,8 +317,9 @@ class TestEWMAVaR:
         param = parametric_var(returns, alpha=0.05)
 
         # Sollten in gleicher Größenordnung sein (innerhalb Faktor 2)
-        assert 0.5 * param <= ewma <= 2.0 * param, \
+        assert 0.5 * param <= ewma <= 2.0 * param, (
             f"EWMA ({ewma:.4f}) sollte in ähnlicher Größenordnung wie Parametric ({param:.4f}) sein"
+        )
 
     def test_ewma_var_lambda_effect(self):
         """Höheres Lambda (langsamer Decay) sollte andere VaR ergeben"""

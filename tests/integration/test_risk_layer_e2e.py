@@ -146,9 +146,7 @@ class TestFullRiskAssessment:
         assert assessment.stress_test is not None
         assert len(assessment.stress_test) == 5  # 5 historical scenarios
 
-    def test_full_assessment_disabled(
-        self, config_disabled, synthetic_returns, portfolio_weights
-    ):
+    def test_full_assessment_disabled(self, config_disabled, synthetic_returns, portfolio_weights):
         """Full assessment when Risk Layer is disabled."""
         manager = RiskLayerManager(config_disabled)
 
@@ -221,9 +219,7 @@ class TestCVaRInvariant:
 class TestStressTestIntegration:
     """Test stress testing integration."""
 
-    def test_stress_test_scenarios(
-        self, config_all_enabled, synthetic_returns, portfolio_weights
-    ):
+    def test_stress_test_scenarios(self, config_all_enabled, synthetic_returns, portfolio_weights):
         """Stress test should run all scenarios."""
         manager = RiskLayerManager(config_all_enabled)
 
@@ -316,9 +312,7 @@ class TestReportGeneration:
         assert "Value at Risk" in report
         assert "$" in report
 
-    def test_generate_html_report(
-        self, config_all_enabled, synthetic_returns, portfolio_weights
-    ):
+    def test_generate_html_report(self, config_all_enabled, synthetic_returns, portfolio_weights):
         """HTML report should be generated."""
         manager = RiskLayerManager(config_all_enabled)
 
@@ -333,9 +327,7 @@ class TestReportGeneration:
         assert "<!DOCTYPE html>" in report
         assert "<h1>Risk Assessment Report</h1>" in report
 
-    def test_generate_json_report(
-        self, config_all_enabled, synthetic_returns, portfolio_weights
-    ):
+    def test_generate_json_report(self, config_all_enabled, synthetic_returns, portfolio_weights):
         """JSON report should be generated."""
         manager = RiskLayerManager(config_all_enabled)
 
@@ -357,9 +349,7 @@ class TestReportGeneration:
 class TestAssessmentSummary:
     """Test RiskAssessmentResult.summary()."""
 
-    def test_summary_format(
-        self, config_all_enabled, synthetic_returns, portfolio_weights
-    ):
+    def test_summary_format(self, config_all_enabled, synthetic_returns, portfolio_weights):
         """Summary should return formatted dict."""
         manager = RiskLayerManager(config_all_enabled)
 

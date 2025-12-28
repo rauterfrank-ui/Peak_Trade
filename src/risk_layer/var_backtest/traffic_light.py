@@ -178,9 +178,7 @@ def basel_traffic_light(
     )
 
 
-def compute_zone_thresholds(
-    n_observations: int, alpha: float = 0.01
-) -> tuple[int, int]:
+def compute_zone_thresholds(n_observations: int, alpha: float = 0.01) -> tuple[int, int]:
     """
     Compute zone thresholds for Basel Traffic Light.
 

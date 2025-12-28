@@ -280,9 +280,7 @@ def test_incremental_var_basic(sample_returns_from_fixtures, default_calculator)
     portfolio_value = 100_000.0
 
     # Calculate incremental VaR for SOL
-    result = calculate_incremental_var(
-        default_calculator, returns, weights, "SOL", portfolio_value
-    )
+    result = calculate_incremental_var(default_calculator, returns, weights, "SOL", portfolio_value)
 
     assert isinstance(result, IncrementalVaRResult)
     assert result.asset_name == "SOL"
@@ -303,9 +301,7 @@ def test_incremental_var_positive_for_volatile_asset(
     weights = {"BTC": 0.7, "ETH": 0.25, "SOL": 0.05}
     portfolio_value = 100_000.0
 
-    result = calculate_incremental_var(
-        default_calculator, returns, weights, "SOL", portfolio_value
-    )
+    result = calculate_incremental_var(default_calculator, returns, weights, "SOL", portfolio_value)
 
     # Adding SOL should increase VaR (assuming positive correlation)
     # This is not always guaranteed, but for typical crypto portfolios it should be true
@@ -325,9 +321,7 @@ def test_incremental_var_single_asset_portfolio(default_calculator):
     weights = {"BTC": 1.0}
     portfolio_value = 100_000.0
 
-    result = calculate_incremental_var(
-        default_calculator, returns, weights, "BTC", portfolio_value
-    )
+    result = calculate_incremental_var(default_calculator, returns, weights, "BTC", portfolio_value)
 
     # Portfolio without BTC = empty = 0 VaR
     assert result.portfolio_var_without == 0.0
@@ -347,9 +341,7 @@ def test_incremental_var_missing_asset_raises_error(
     portfolio_value = 100_000.0
 
     with pytest.raises(ValueError, match="not found in weights"):
-        calculate_incremental_var(
-            default_calculator, returns, weights, "DOGE", portfolio_value
-        )
+        calculate_incremental_var(default_calculator, returns, weights, "DOGE", portfolio_value)
 
 
 def test_incremental_var_str(sample_returns_from_fixtures, default_calculator):
@@ -359,9 +351,7 @@ def test_incremental_var_str(sample_returns_from_fixtures, default_calculator):
     weights = {"BTC": 0.5, "ETH": 0.3, "SOL": 0.2}
     portfolio_value = 100_000.0
 
-    result = calculate_incremental_var(
-        default_calculator, returns, weights, "SOL", portfolio_value
-    )
+    result = calculate_incremental_var(default_calculator, returns, weights, "SOL", portfolio_value)
 
     result_str = str(result)
     assert "Incremental VaR" in result_str
@@ -468,9 +458,7 @@ def test_diversification_benefit_uncorrelated_assets():
     assert result.diversification_ratio < 0.9  # Significant diversification
 
 
-def test_diversification_benefit_to_dataframe(
-    sample_returns_from_fixtures, default_calculator
-):
+def test_diversification_benefit_to_dataframe(sample_returns_from_fixtures, default_calculator):
     """Test DiversificationBenefitResult to_dataframe()."""
     returns = sample_returns_from_fixtures
 
