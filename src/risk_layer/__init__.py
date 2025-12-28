@@ -14,7 +14,7 @@ risk models are implemented in separate modules.
 """
 
 from src.risk_layer.audit_log import AuditLogWriter
-from src.risk_layer.kill_switch import KillSwitchLayer, KillSwitchStatus
+from src.risk_layer.kill_switch import KillSwitch, KillSwitchState, ExecutionGate
 from src.risk_layer.models import RiskDecision, RiskResult, Violation
 from src.risk_layer.risk_gate import RiskGate
 
@@ -22,12 +22,20 @@ from src.risk_layer.risk_gate import RiskGate
 # Import available but not exported in __all__ to keep core API minimal
 # Use: from src.risk_layer.alerting import AlertManager, AlertSeverity, etc.
 
+# Legacy aliases for backwards compatibility
+KillSwitchLayer = KillSwitch
+KillSwitchStatus = KillSwitchState
+
 __all__ = [
     "Violation",
     "RiskDecision",
     "RiskResult",
     "AuditLogWriter",
     "RiskGate",
+    "KillSwitch",
+    "KillSwitchState",
+    "ExecutionGate",
+    # Legacy aliases
     "KillSwitchLayer",
     "KillSwitchStatus",
 ]
