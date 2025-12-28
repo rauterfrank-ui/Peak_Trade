@@ -72,6 +72,10 @@ from .parametric_var import (
 from .component_var import (
     ComponentVaRCalculator,
     ComponentVaRResult,
+    IncrementalVaRResult,
+    DiversificationBenefitResult,
+    calculate_incremental_var,
+    calculate_diversification_benefit,
 )
 
 # Monte Carlo VaR (Risk Layer v1.0)
@@ -133,6 +137,10 @@ __all__ = [
     "portfolio_sigma_from_cov",
     "ComponentVaRCalculator",
     "ComponentVaRResult",
+    "IncrementalVaRResult",
+    "DiversificationBenefitResult",
+    "calculate_incremental_var",
+    "calculate_diversification_benefit",
     # Monte Carlo VaR (Risk Layer v1.0)
     "MonteCarloVaRCalculator",
     "MonteCarloVaRConfig",
