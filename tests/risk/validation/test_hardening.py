@@ -48,8 +48,9 @@ class TestKupiecPropertyInvariants:
         for breaches, obs, conf in test_cases:
             result = kupiec_pof_test(breaches, obs, conf)
             if not math.isnan(result.p_value):
-                assert 0.0 <= result.p_value <= 1.0, \
+                assert 0.0 <= result.p_value <= 1.0, (
                     f"p_value={result.p_value} out of [0,1] for breaches={breaches}, obs={obs}"
+                )
 
     def test_lr_statistic_always_non_negative(self):
         """LR statistic must always be >= 0."""
@@ -66,8 +67,9 @@ class TestKupiecPropertyInvariants:
         for breaches, obs, conf in test_cases:
             result = kupiec_pof_test(breaches, obs, conf)
             if not math.isnan(result.test_statistic):
-                assert result.test_statistic >= 0.0, \
+                assert result.test_statistic >= 0.0, (
                     f"lr_statistic={result.test_statistic} < 0 for breaches={breaches}, obs={obs}"
+                )
 
     def test_breaches_never_exceed_observations(self):
         """Breaches cannot exceed observations (enforced by validation)."""
@@ -153,7 +155,7 @@ class TestKupiecNumericalStability:
         """Chi-square p-value computation stability."""
         # Test edge cases
         assert chi2_p_value(-1.0) == 1.0  # Negative lr
-        assert chi2_p_value(0.0) == 1.0   # Zero lr
+        assert chi2_p_value(0.0) == 1.0  # Zero lr
         assert 0 <= chi2_p_value(0.1) <= 1.0
         assert 0 <= chi2_p_value(100.0) <= 1.0
         assert 0 <= chi2_p_value(1000.0) <= 1.0
@@ -241,7 +243,7 @@ class TestBacktestBreachDetectionPrecision:
 
     def test_exact_breach_timestamps(self):
         """Breach detection should return exact timestamps."""
-        dates = pd.date_range('2020-01-01', periods=10)
+        dates = pd.date_range("2020-01-01", periods=10)
 
         # Create returns with specific breaches
         returns = pd.Series([0.01] * 10, index=dates)
@@ -285,9 +287,16 @@ class TestReportOutputValidation:
 
         # Verify all expected keys
         expected_keys = {
-            "p_value", "test_statistic", "breaches", "observations",
-            "expected_breaches", "breach_rate", "expected_rate",
-            "is_valid", "confidence_level", "alpha"
+            "p_value",
+            "test_statistic",
+            "breaches",
+            "observations",
+            "expected_breaches",
+            "breach_rate",
+            "expected_rate",
+            "is_valid",
+            "confidence_level",
+            "alpha",
         }
         assert set(json_dict.keys()) == expected_keys
 
@@ -310,8 +319,12 @@ class TestReportOutputValidation:
         assert isinstance(json_str, str)
 
         expected_keys = {
-            "color", "breaches", "observations",
-            "green_threshold", "yellow_threshold", "breach_rate"
+            "color",
+            "breaches",
+            "observations",
+            "green_threshold",
+            "yellow_threshold",
+            "breach_rate",
         }
         assert set(json_dict.keys()) == expected_keys
 
@@ -372,12 +385,14 @@ class TestTrafficLightPropertyInvariants:
 
         for breaches, obs in test_cases:
             result = basel_traffic_light(breaches, obs, 0.99)
-            assert result.color in {'green', 'yellow', 'red'}
+            assert result.color in {"green", "yellow", "red"}
 
     def test_thresholds_monotonic(self):
         """Yellow threshold must be > green threshold."""
-        green, yellow = basel_traffic_light(5, 250, 0.99).green_threshold, \
-                        basel_traffic_light(5, 250, 0.99).yellow_threshold
+        green, yellow = (
+            basel_traffic_light(5, 250, 0.99).green_threshold,
+            basel_traffic_light(5, 250, 0.99).yellow_threshold,
+        )
 
         assert yellow > green
 

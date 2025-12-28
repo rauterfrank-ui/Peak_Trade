@@ -28,6 +28,7 @@ class KupiecResult:
         confidence_level: VaR confidence level used
         alpha: Significance level used (default 0.05)
     """
+
     p_value: float
     test_statistic: float
     breaches: int
@@ -74,7 +75,7 @@ class KupiecResult:
 | Confidence Level | {self.confidence_level:.1%} |
 | Significance Level | {self.alpha:.1%} |
 
-**Interpretation:** {'The VaR model is calibrated correctly.' if self.is_valid else 'The VaR model is mis-calibrated.'}
+**Interpretation:** {"The VaR model is calibrated correctly." if self.is_valid else "The VaR model is mis-calibrated."}
 """
 
 
@@ -126,8 +127,8 @@ def kupiec_pof_test(
     if observations == 0:
         # No observations -> cannot test
         return KupiecResult(
-            p_value=float('nan'),
-            test_statistic=float('nan'),
+            p_value=float("nan"),
+            test_statistic=float("nan"),
             breaches=0,
             observations=0,
             expected_breaches=0.0,

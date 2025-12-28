@@ -26,6 +26,7 @@ class BacktestResult:
         traffic_light: Basel traffic light result
         breach_analysis: Detailed breach analysis (optional)
     """
+
     breaches: int
     observations: int
     breach_rate: float
@@ -190,10 +191,12 @@ def detect_breaches(
         >>> breach_count = breach_mask.sum()
     """
     # Align by index (inner join)
-    aligned = pd.DataFrame({
-        'returns': returns,
-        'var': var_series,
-    }).dropna()
+    aligned = pd.DataFrame(
+        {
+            "returns": returns,
+            "var": var_series,
+        }
+    ).dropna()
 
     if len(aligned) == 0:
         # No valid data points
@@ -203,8 +206,8 @@ def detect_breaches(
             pd.Series(dtype=float),
         )
 
-    aligned_returns = aligned['returns']
-    aligned_var = aligned['var']
+    aligned_returns = aligned["returns"]
+    aligned_var = aligned["var"]
 
     # Compute realized losses (negative return = positive loss)
     realized_loss = -aligned_returns

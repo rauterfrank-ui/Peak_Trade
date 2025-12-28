@@ -21,7 +21,8 @@ class TrafficLightResult:
         green_threshold: Maximum breaches for green zone
         yellow_threshold: Maximum breaches for yellow zone
     """
-    color: Literal['green', 'yellow', 'red']
+
+    color: Literal["green", "yellow", "red"]
     breaches: int
     observations: int
     green_threshold: int
@@ -100,17 +101,15 @@ def basel_traffic_light(
         raise ValueError(f"confidence_level must be in (0, 1), got {confidence_level}")
 
     # Get thresholds
-    green_threshold, yellow_threshold = get_traffic_light_thresholds(
-        observations, confidence_level
-    )
+    green_threshold, yellow_threshold = get_traffic_light_thresholds(observations, confidence_level)
 
     # Classify
     if breaches <= green_threshold:
-        color = 'green'
+        color = "green"
     elif breaches <= yellow_threshold:
-        color = 'yellow'
+        color = "yellow"
     else:
-        color = 'red'
+        color = "red"
 
     return TrafficLightResult(
         color=color,

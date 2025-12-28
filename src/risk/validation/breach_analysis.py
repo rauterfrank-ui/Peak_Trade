@@ -23,6 +23,7 @@ class BreachAnalysis:
         total_breaches: Total number of breaches
         total_observations: Total number of observations
     """
+
     max_consecutive: int
     avg_gap: Optional[float]
     gaps: list[int]
@@ -55,8 +56,8 @@ class BreachAnalysis:
 | Max Consecutive | {self.max_consecutive} |
 | Average Gap | {self.avg_gap:.1f} obs if self.avg_gap is not None else 'N/A' |
 | Number of Streaks | {len(self.streaks)} |
-| First Breach | {self.first_breach if self.first_breach is not None else 'N/A'} |
-| Last Breach | {self.last_breach if self.last_breach is not None else 'N/A'} |
+| First Breach | {self.first_breach if self.first_breach is not None else "N/A"} |
+| Last Breach | {self.last_breach if self.last_breach is not None else "N/A"} |
 
 **Interpretation:**
 - Max consecutive breaches: {self.max_consecutive} (clustering indicator)

@@ -37,10 +37,12 @@ class TestDetectBreaches:
 
     def test_detect_breaches_alignment(self):
         """Test index alignment."""
-        dates = pd.date_range('2020-01-01', periods=5)
+        dates = pd.date_range("2020-01-01", periods=5)
 
         # Returns missing index 2
-        returns = pd.Series([-0.01, -0.02, -0.04, -0.05], index=[dates[0], dates[1], dates[3], dates[4]])
+        returns = pd.Series(
+            [-0.01, -0.02, -0.04, -0.05], index=[dates[0], dates[1], dates[3], dates[4]]
+        )
 
         # VaR has all dates
         var_series = pd.Series([0.03] * 5, index=dates)
@@ -172,7 +174,7 @@ class TestBreachAnalysis:
         """Test analysis with multiple breach streaks."""
         breach_mask = pd.Series([False] * 100)
         breach_mask.iloc[10:12] = True  # 2 consecutive
-        breach_mask.iloc[50] = True     # 1 isolated
+        breach_mask.iloc[50] = True  # 1 isolated
         breach_mask.iloc[80:84] = True  # 4 consecutive
 
         analysis = analyze_breaches(breach_mask)

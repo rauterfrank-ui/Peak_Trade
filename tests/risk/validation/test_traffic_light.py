@@ -16,34 +16,34 @@ class TestTrafficLightClassification:
         """Test boundary of green zone (0-4 breaches for 250 obs)."""
         # 4 breaches -> green
         result = basel_traffic_light(4, 250, 0.99)
-        assert result.color == 'green'
+        assert result.color == "green"
 
         # 5 breaches -> yellow
         result = basel_traffic_light(5, 250, 0.99)
-        assert result.color == 'yellow'
+        assert result.color == "yellow"
 
     def test_yellow_zone_boundary(self):
         """Test boundary of yellow zone (5-9 breaches for 250 obs)."""
         # 9 breaches -> yellow
         result = basel_traffic_light(9, 250, 0.99)
-        assert result.color == 'yellow'
+        assert result.color == "yellow"
 
         # 10 breaches -> red
         result = basel_traffic_light(10, 250, 0.99)
-        assert result.color == 'red'
+        assert result.color == "red"
 
     def test_red_zone(self):
         """Test red zone (>=10 breaches for 250 obs)."""
         result = basel_traffic_light(15, 250, 0.99)
-        assert result.color == 'red'
+        assert result.color == "red"
 
         result = basel_traffic_light(50, 250, 0.99)
-        assert result.color == 'red'
+        assert result.color == "red"
 
     def test_zero_breaches(self):
         """Test with zero breaches (should be green)."""
         result = basel_traffic_light(0, 250, 0.99)
-        assert result.color == 'green'
+        assert result.color == "green"
 
 
 class TestTrafficLightThresholds:
@@ -88,7 +88,7 @@ class TestTrafficLightEdgeCases:
     def test_all_breaches(self):
         """Test when all observations are breaches (should be red)."""
         result = basel_traffic_light(250, 250, 0.99)
-        assert result.color == 'red'
+        assert result.color == "red"
 
 
 class TestTrafficLightSerialization:
