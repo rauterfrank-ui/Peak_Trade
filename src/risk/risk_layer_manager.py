@@ -120,6 +120,16 @@ class RiskLayerManager:
         """
         # Store config as instance variable
         self._config = config
+
+        # Initialize component placeholders
+        self.component_var_calculator = None
+        self.monte_carlo_calculator_class = None
+        self.monte_carlo_config_class = None
+        self.monte_carlo_method_enum = None
+        self.stress_tester = None
+        self.var_functions = {}
+        self.cvar_functions = {}
+
         self._parse_config()
         self._set_feature_flags()
         self._initialize_components()
@@ -191,8 +201,11 @@ class RiskLayerManager:
         if not self.enabled:
             return
 
+        # We'll rebuild enabled_features after initialization
+        self.enabled_features = []
+
         # Import conditionally to avoid circular imports
-        from src.risk import (
+        from src.risk.var import (
             historical_var,
             historical_cvar,
             parametric_var,
@@ -217,23 +230,45 @@ class RiskLayerManager:
         if self.component_var_enabled:
             try:
                 from src.risk import ComponentVaRCalculator
+                from src.risk.covariance import CovarianceEstimator, CovarianceEstimatorConfig, CovarianceMethod
+                from src.risk.parametric_var import ParametricVaR, ParametricVaRConfig
 
-                self.component_var_calculator = ComponentVaRCalculator
+                # Create covariance estimator
+                cov_method_str = self._get_from_dict("risk_layer_v1.component_var.covariance_method", "sample")
+                cov_config = CovarianceEstimatorConfig(
+                    method=CovarianceMethod(cov_method_str),
+                    min_history=self._get_from_dict("risk_layer_v1.component_var.min_history", 60)
+                )
+                cov_estimator = CovarianceEstimator(cov_config)
+
+                # Create VaR engine
+                var_config = ParametricVaRConfig(
+                    confidence_level=self._get_from_dict("risk_layer_v1.var.confidence_level", 0.95),
+                    horizon_days=self._get_from_dict("risk_layer_v1.var.horizon_days", 1)
+                )
+                var_engine = ParametricVaR(var_config)
+
+                # Create ComponentVaRCalculator
+                self.component_var_calculator = ComponentVaRCalculator(cov_estimator, var_engine)
                 logger.debug("Component VaR initialized")
-            except ImportError as e:
-                logger.warning(f"Component VaR import failed: {e}")
+            except Exception as e:
+                logger.warning(f"Component VaR initialization failed: {e}")
+                self.component_var_calculator = None
                 self.component_var_enabled = False
 
         # Monte Carlo VaR
         if self.monte_carlo_enabled:
             try:
-                from src.risk import MonteCarloVaRCalculator, MonteCarloVaRConfig
+                from src.risk import MonteCarloVaRCalculator, MonteCarloVaRConfig, MonteCarloMethod
 
-                self.monte_carlo_calculator = MonteCarloVaRCalculator
+                # Store classes for later instantiation (needs returns data)
+                self.monte_carlo_calculator_class = MonteCarloVaRCalculator
                 self.monte_carlo_config_class = MonteCarloVaRConfig
+                self.monte_carlo_method_enum = MonteCarloMethod
                 logger.debug("Monte Carlo VaR initialized")
             except ImportError as e:
                 logger.warning(f"Monte Carlo VaR import failed: {e}")
+                self.monte_carlo_calculator_class = None
                 self.monte_carlo_enabled = False
 
         # Stress Tester
@@ -245,9 +280,17 @@ class RiskLayerManager:
                     self.get_fn("risk_layer_v1.stress_test.scenarios_dir", "data/scenarios")
                 )
                 self.stress_tester = StressTester(scenarios_dir=scenarios_dir)
-                logger.debug(f"Stress Tester initialized with {len(self.stress_tester.scenarios)} scenarios")
+
+                # Check if scenarios loaded successfully
+                if not self.stress_tester.scenarios:
+                    logger.warning(f"No scenarios loaded from {scenarios_dir}, disabling stress testing")
+                    self.stress_tester = None
+                    self.stress_test_enabled = False
+                else:
+                    logger.debug(f"Stress Tester initialized with {len(self.stress_tester.scenarios)} scenarios")
             except Exception as e:
                 logger.warning(f"Stress Tester initialization failed: {e}")
+                self.stress_tester = None
                 self.stress_test_enabled = False
 
         # VaR Backtester
@@ -260,6 +303,18 @@ class RiskLayerManager:
             except ImportError as e:
                 logger.warning(f"VaR Backtester import failed: {e}")
                 self.backtest_enabled = False
+
+        # Rebuild enabled_features based on actual initialization
+        if self.var_enabled and self.var_functions:
+            self.enabled_features.append("var")
+        if self.component_var_enabled and self.component_var_calculator:
+            self.enabled_features.append("component_var")
+        if self.monte_carlo_enabled and self.monte_carlo_calculator_class:
+            self.enabled_features.append("monte_carlo")
+        if self.stress_test_enabled and self.stress_tester:
+            self.enabled_features.append("stress_test")
+        if self.backtest_enabled:
+            self.enabled_features.append("backtest")
 
     def full_risk_assessment(
         self,
@@ -317,42 +372,49 @@ class RiskLayerManager:
                         result.warnings.append(f"VaR ({method}) failed: {e}")
 
         # 2. Component VaR
-        if self.component_var_enabled:
+        if self.component_var_enabled and self.component_var_calculator:
             try:
-                calc = self.component_var_calculator()
-                result.component_var = calc.calculate(
-                    returns=returns_df,
+                result.component_var = self.component_var_calculator.calculate(
+                    returns_df=returns_df,
                     weights=weights,
                     portfolio_value=portfolio_value,
-                    alpha=alpha,
                 )
             except Exception as e:
                 logger.error(f"Component VaR calculation failed: {e}")
                 result.warnings.append(f"Component VaR failed: {e}")
 
         # 3. Monte Carlo VaR
-        if self.monte_carlo_enabled:
+        if self.monte_carlo_enabled and self.monte_carlo_calculator_class:
             try:
+                # Parse method enum
+                method_str = str(self.get_fn("risk_layer_v1.monte_carlo.method", "normal"))
+                mc_method = self.monte_carlo_method_enum(method_str)
+
                 mc_config = self.monte_carlo_config_class(
                     n_simulations=int(
                         self.get_fn("risk_layer_v1.monte_carlo.n_simulations", 10000)
                     ),
-                    method=str(
-                        self.get_fn("risk_layer_v1.monte_carlo.method", "normal")
-                    ),
+                    method=mc_method,
                     seed=int(self.get_fn("risk_layer_v1.monte_carlo.seed", 42)),
+                    confidence_level=float(
+                        self.get_fn("risk_layer_v1.monte_carlo.confidence_level", 0.95)
+                    ),
+                    horizon_days=int(
+                        self.get_fn("risk_layer_v1.monte_carlo.horizon_days", 1)
+                    ),
                 )
-                mc_calc = self.monte_carlo_calculator(returns_df, mc_config)
-                result.monte_carlo = mc_calc.calculate(weights, portfolio_value, alpha=alpha)
+                mc_calc = self.monte_carlo_calculator_class(returns_df, mc_config)
+                result.monte_carlo = mc_calc.calculate(weights=weights, portfolio_value=portfolio_value)
             except Exception as e:
                 logger.error(f"Monte Carlo VaR calculation failed: {e}")
                 result.warnings.append(f"Monte Carlo VaR failed: {e}")
 
         # 4. Stress Testing
-        if self.stress_test_enabled:
+        if self.stress_test_enabled and self.stress_tester:
             try:
                 result.stress_test = self.stress_tester.run_all_scenarios(
-                    weights, portfolio_value
+                    portfolio_weights=weights,
+                    portfolio_value=portfolio_value
                 )
             except Exception as e:
                 logger.error(f"Stress testing failed: {e}")
@@ -410,10 +472,9 @@ class RiskLayerManager:
         if assessment.component_var:
             lines.append("## Component VaR")
             lines.append("")
-            lines.append(f"- Portfolio VaR: ${assessment.component_var.portfolio_var:,.2f}")
-            lines.append("- Top Contributors:")
-            for asset, contrib in assessment.component_var.component_var.items():
-                lines.append(f"  - {asset}: ${contrib:,.2f}")
+            lines.append(f"- Total VaR: ${assessment.component_var.total_var:,.2f}")
+            component_sum = assessment.component_var.component_var.sum()
+            lines.append(f"- Sum of Component VaRs: ${component_sum:,.2f}")
             lines.append("")
 
         # Monte Carlo VaR
