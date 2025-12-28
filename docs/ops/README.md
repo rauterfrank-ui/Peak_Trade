@@ -984,6 +984,7 @@ Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
 - PR #307 — docs(ops): document README_REGISTRY guardrail for ops doctor: docs/ops/PR_307_MERGE_LOG.md
 - PR #309 — feat(ops): add branch hygiene script (origin/main enforcement): docs/ops/PR_309_MERGE_LOG.md
 - PR #311 — feat(ops): add docs diff guard (mass-deletion protection): docs/ops/PR_311_MERGE_LOG.md
+- PR #409 — fix(kill-switch): stabilize tests + add legacy adapter for risk-gate: docs/ops/PR_409_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 
 
@@ -1268,6 +1269,7 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 - PR #307 — docs(ops): document README_REGISTRY guardrail for ops doctor: docs/ops/PR_307_MERGE_LOG.md
 - PR #309 — feat(ops): add branch hygiene script (origin/main enforcement): docs/ops/PR_309_MERGE_LOG.md
 - PR #311 — feat(ops): add docs diff guard (mass-deletion protection): docs/ops/PR_311_MERGE_LOG.md
+- PR #409 — fix(kill-switch): stabilize tests + add legacy adapter for risk-gate: docs/ops/PR_409_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
 - PR #292 — formatter policy drift guard enforced in CI (Merge-Log): docs/ops/PR_292_MERGE_LOG.md
 - PR #295 — guard the guardrail (CI enforcement presence) (Merge-Log): docs/ops/PR_295_MERGE_LOG.md
