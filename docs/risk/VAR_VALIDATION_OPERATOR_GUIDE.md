@@ -292,7 +292,6 @@ with open("var_validation_param.md", "w") as f:
 - **Kupiec POF Test:** Kupiec, P. (1995). "Techniques for Verifying the Accuracy of Risk Measurement Models"
 - **Basel Traffic Light:** Basel Committee on Banking Supervision (1996)
 - **Implementation:** Phase 2 VaR Validation (PR #413)
-- **Integration Guide:** [docs/risk/INTEGRATION_GUIDE.md](INTEGRATION_GUIDE.md)
 
 ---
 

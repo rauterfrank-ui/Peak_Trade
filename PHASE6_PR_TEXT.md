@@ -205,7 +205,7 @@ print(f"Traffic Light: {result.traffic_light.color.upper()}")
 - **Phase 2 (VaR Validation):** PR #413 (merged 2025-12-28)
 - **Roadmap:** Phase 6 Integration Testing & Documentation
 - **Tests:** 93 total (81 validation + 12 integration)
-- **Integration Guide:** [docs/risk/INTEGRATION_GUIDE.md](docs/risk/INTEGRATION_GUIDE.md)
+- **Operator Guide:** [docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md](docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md)
 
 ---
 
