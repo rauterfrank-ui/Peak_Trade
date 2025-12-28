@@ -161,8 +161,8 @@ print(f"Traffic Light: {result.traffic_light.color.upper()}")
 ### Dokumentation
 
 - **Operator Guide:** `docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md`
-- **Roadmap:** `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md` (Phase 6)
-- **Related:** `docs/risk/roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md`
+- **Roadmap:** `docs/risk/roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md` (Phase 6)
+- **Related:** `docs/risk/roadmaps/RISK_LAYER_ROADMAP_CRITICAL.md`
 
 ### PRs
 

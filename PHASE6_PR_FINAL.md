@@ -147,7 +147,7 @@ print(result.to_markdown())
 - **Branch:** `feat/risk-layer-phase6-integration-clean`
 - **Commit:** `664ac90` (docs: fix broken doc references)
 - **Phase 2 (VaR Validation):** PR #413 (merged 2025-12-28)
-- **Roadmap:** `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md` (Phase 6 Integration / Integration Tests gate)
+- **Roadmap:** `docs/risk/roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md` (Phase 6 Integration / Integration Tests gate)
 - **Related:**
   - `src/risk/validation/*` (Phase 2 VaR Backtesting & Validation deliverables)
   - `tests/risk/validation/*` (81 unit tests)
