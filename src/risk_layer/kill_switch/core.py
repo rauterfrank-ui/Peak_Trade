@@ -55,6 +55,9 @@ class KillSwitch:
         self._config = config
         self._logger = logger or logging.getLogger(__name__)
 
+        # Compatibility: Override flag for enabled property (does NOT mutate config)
+        self._enabled_override: Optional[bool] = None
+
         # Check if disabled (backtest mode)
         if config.get("mode") == "disabled":
             self._state = KillSwitchState.DISABLED
@@ -98,6 +101,48 @@ class KillSwitch:
     def is_active(self) -> bool:
         """True if trading is allowed."""
         return self.state == KillSwitchState.ACTIVE
+
+    @property
+    def enabled(self) -> bool:
+        """Check if Kill Switch is enabled.
+
+        Compatibility property for legacy KillSwitchLayer API.
+
+        Priority:
+            1. Override flag (if set via setter)
+            2. Config "enabled" key
+            3. Default: True
+
+        Returns:
+            True if enabled, False if disabled
+        """
+        # Check override first (set via setter)
+        if self._enabled_override is not None:
+            return bool(self._enabled_override)
+
+        # Check config
+        cfg = getattr(self, "_config", None)
+        if cfg is None:
+            return True
+
+        # Support both dict and object configs
+        if isinstance(cfg, dict):
+            return bool(cfg.get("enabled", True))
+
+        return bool(getattr(cfg, "enabled", True))
+
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        """Set enabled override.
+
+        Does NOT mutate config - uses override flag instead.
+
+        Args:
+            value: True to enable, False to disable
+        """
+        with self._lock:
+            self._enabled_override = bool(value)
+            self._logger.debug(f"Kill Switch enabled override set to: {value}")
 
     @property
     def is_disabled(self) -> bool:

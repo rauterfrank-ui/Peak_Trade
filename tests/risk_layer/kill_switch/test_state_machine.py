@@ -228,3 +228,49 @@ class TestStatus:
 
         assert "cooldown_remaining_seconds" in status
         assert status["cooldown_remaining_seconds"] > 0
+
+
+class TestEnabledProperty:
+    """Tests for enabled property (API compatibility)."""
+
+    def test_enabled_default_true(self):
+        """enabled should default to True when no config provided."""
+        # Empty config
+        ks = KillSwitch({})
+        assert ks.enabled is True
+
+    def test_enabled_reads_config_dict(self):
+        """enabled should read from config dict."""
+        # Enabled in config
+        ks1 = KillSwitch({"enabled": True})
+        assert ks1.enabled is True
+
+        # Disabled in config
+        ks2 = KillSwitch({"enabled": False})
+        assert ks2.enabled is False
+
+    def test_enabled_override_setter(self):
+        """enabled setter should override config."""
+        # Start with enabled config
+        ks = KillSwitch({"enabled": True})
+        assert ks.enabled is True
+
+        # Disable via setter
+        ks.enabled = False
+        assert ks.enabled is False
+
+        # Enable via setter
+        ks.enabled = True
+        assert ks.enabled is True
+
+    def test_enabled_override_does_not_mutate_config(self):
+        """enabled setter should NOT mutate config."""
+        config = {"enabled": True}
+        ks = KillSwitch(config)
+
+        # Disable via setter
+        ks.enabled = False
+
+        # Config should be unchanged
+        assert config["enabled"] is True
+        assert ks.enabled is False  # But override is active
