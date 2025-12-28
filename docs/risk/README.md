@@ -22,6 +22,9 @@ Diese Dokumentation beschreibt das Risk-Management-System von Peak_Trade, einsch
 - **[Integration Guide](INTEGRATION_GUIDE.md)** 🆕  
   How to use multiple Risk Layer components together - Workflows, Examples, Best Practices
 
+- **[VaR Validation Operator Guide](VAR_VALIDATION_OPERATOR_GUIDE.md)** 🆕  
+  Quick-start guide for operators: When to run, how to interpret results, troubleshooting
+
 ### Roadmaps
 
 - **[Portfolio VaR Roadmap](roadmaps/PORTFOLIO_VAR_ROADMAP.md)**  
