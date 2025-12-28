@@ -1424,5 +1424,3 @@ Security:
 ## Verified Merge Logs
 - **PR #409 (Kill Switch Legacy Adapter, verified)** → `docs/ops/PR_409_MERGE_LOG.md`
 - **PR #418 (Kupiec POF Phase-7 convenience API, verified)** → `docs/ops/PR_418_MERGE_LOG.md`
-- **PR #421 (Kupiec POF dedup: single engine + legacy wrapper, verified)** → `docs/ops/PR_421_MERGE_LOG.md`
-- **PR #422 (Christoffersen IND/CC VaR backtests, verified)** → `docs/ops/PR_422_MERGE_LOG.md`
