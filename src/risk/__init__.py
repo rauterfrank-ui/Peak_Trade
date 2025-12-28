@@ -52,6 +52,12 @@ from .stress import (
     apply_scenario_to_returns,
     run_stress_suite,
 )
+from .stress_tester import (
+    StressTester,
+    StressScenarioData,
+    StressTestResult,
+    ReverseStressResult,
+)
 from .enforcement import (
     RiskLimitsV2,
     RiskEnforcer,
@@ -125,6 +131,11 @@ __all__ = [
     "StressScenario",
     "apply_scenario_to_returns",
     "run_stress_suite",
+    # Portfolio Stress Testing (Risk Layer v1.0)
+    "StressTester",
+    "StressScenarioData",
+    "StressTestResult",
+    "ReverseStressResult",
     # v1 Enforcement
     "RiskLimitsV2",
     "RiskEnforcer",
