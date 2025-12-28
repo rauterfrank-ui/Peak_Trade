@@ -34,8 +34,7 @@ class TestVarValidationIntegration:
         returns = pd.Series(
             [0.01] * 100  # 100 days of 1% gains
             + [-0.02] * 148  # 148 days of -2% losses (within VaR)
-            + [-0.05, -0.06]  # 2 days of large losses (breaches VaR=0.04)
-            ,
+            + [-0.05, -0.06],  # 2 days of large losses (breaches VaR=0.04)
             index=dates,
         )
 
