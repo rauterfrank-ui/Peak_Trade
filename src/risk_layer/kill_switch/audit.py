@@ -175,8 +175,43 @@ class AuditTrail:
         Returns:
             Latest event dict or None
         """
-        events = self.get_events(limit=1)
-        return events[0] if events else None
+        # Find all audit files (regular and compressed) in reverse order (newest first)
+        audit_files = sorted(self.audit_dir.glob("kill_switch_audit_*.jsonl"), reverse=True)
+        gz_files = sorted(self.audit_dir.glob("kill_switch_audit_*.jsonl.gz"), reverse=True)
+
+        all_files = []
+        # Merge files by modification time, newest first
+        for f in list(audit_files) + list(gz_files):
+            all_files.append((f.stat().st_mtime, f))
+        all_files.sort(reverse=True, key=lambda x: x[0])
+
+        # Read last line from newest file
+        for _, audit_file in all_files:
+            try:
+                # Open regular or gzipped file
+                if audit_file.suffix == ".gz":
+                    file_obj = gzip.open(audit_file, "rt")
+                else:
+                    file_obj = open(audit_file, "r")
+
+                with file_obj as f:
+                    lines = f.readlines()
+                    if not lines:
+                        continue
+
+                    # Try lines from bottom up (in case last line is corrupt)
+                    for line in reversed(lines):
+                        try:
+                            event = json.loads(line.strip())
+                            return event
+                        except (json.JSONDecodeError, ValueError):
+                            continue
+
+            except Exception as e:
+                self._logger.warning(f"Error reading {audit_file}: {e}")
+                continue
+
+        return None
 
     def _maybe_rotate(self):
         """Rotate log file if needed."""

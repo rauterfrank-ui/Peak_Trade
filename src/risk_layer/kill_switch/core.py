@@ -180,6 +180,13 @@ class KillSwitch:
             False if not in KILLED state or validation failed
         """
         with self._lock:
+            # Idempotent: if already RECOVERING, return True
+            if self._state == KillSwitchState.RECOVERING:
+                self._logger.info(
+                    f"Already RECOVERING (idempotent request by {approved_by})"
+                )
+                return True
+
             if self._state != KillSwitchState.KILLED:
                 self._logger.warning(
                     f"Recovery only possible from KILLED state, "

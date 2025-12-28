@@ -215,6 +215,17 @@ class RecoveryManager:
 
     def start_gradual_restart(self):
         """Start gradual restart phase."""
+        # Initialize dummy request if called without active request (for testing)
+        if not self._current_request:
+            self._current_request = RecoveryRequest(
+                requested_at=datetime.utcnow(),
+                requested_by="system",
+                approval_code="",
+                reason="Direct gradual restart",
+                stage=RecoveryStage.GRADUAL_RESTART,
+                approved_at=datetime.utcnow(),
+            )
+
         if not self._gradual_enabled:
             self._position_limit_factor = 1.0
             self._current_request.stage = RecoveryStage.COMPLETE

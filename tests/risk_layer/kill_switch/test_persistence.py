@@ -113,18 +113,26 @@ class TestStatePersistence:
 
     def test_list_backups(self, tmp_path):
         """list_backups should return backup files."""
+        import time
+
         state_file = tmp_path / "state.json"
         backup_dir = tmp_path / "backups"
         persistence = StatePersistence(str(state_file), str(backup_dir))
 
         # Create multiple saves to generate backups
+        # First save creates state file (no backup)
         persistence.save(KillSwitchState.KILLED)
-        persistence.save(KillSwitchState.RECOVERING)
-        persistence.save(KillSwitchState.ACTIVE)
+
+        # Ensure unique timestamps (backup filenames have 1-second granularity)
+        time.sleep(1.1)
+        persistence.save(KillSwitchState.RECOVERING)  # Creates backup #1
+
+        time.sleep(1.1)
+        persistence.save(KillSwitchState.ACTIVE)  # Creates backup #2
 
         backups = persistence.list_backups()
 
-        assert len(backups) == 2  # 2 backups from 3 saves
+        assert len(backups) == 2, f"Expected 2 backups, got {len(backups)}"
 
     def test_restore_from_backup(self, tmp_path):
         """restore_from_backup should restore from backup file."""
