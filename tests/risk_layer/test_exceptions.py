@@ -30,7 +30,9 @@ def test_insufficient_data_error():
 
 def test_insufficient_data_error_with_message():
     """Test InsufficientDataError mit zusätzlicher Message."""
-    error = InsufficientDataError(required=250, actual=100, message="VaR calculation requires 250 days")
+    error = InsufficientDataError(
+        required=250, actual=100, message="VaR calculation requires 250 days"
+    )
 
     assert "VaR calculation" in str(error)
 

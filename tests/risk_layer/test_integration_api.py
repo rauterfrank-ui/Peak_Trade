@@ -152,7 +152,9 @@ def test_var_decomposition_to_dataframe():
     )
 
     decomp = VaRDecomposition(
-        portfolio_var=100.0, components={"BTC-EUR": comp1, "ETH-EUR": comp2}, diversification_ratio=1.3
+        portfolio_var=100.0,
+        components={"BTC-EUR": comp1, "ETH-EUR": comp2},
+        diversification_ratio=1.3,
     )
 
     df = decomp.to_dataframe()
