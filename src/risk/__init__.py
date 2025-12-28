@@ -70,6 +70,16 @@ from .component_var import (
     ComponentVaRResult,
 )
 
+# Monte Carlo VaR (Risk Layer v1.0)
+from .monte_carlo import (
+    MonteCarloVaRCalculator,
+    MonteCarloVaRConfig,
+    MonteCarloVaRResult,
+    MonteCarloMethod,
+    CopulaType,
+    build_monte_carlo_var_from_config,
+)
+
 __all__ = [
     # Legacy Position Sizing
     "PositionSizer",
@@ -115,4 +125,11 @@ __all__ = [
     "portfolio_sigma_from_cov",
     "ComponentVaRCalculator",
     "ComponentVaRResult",
+    # Monte Carlo VaR (Risk Layer v1.0)
+    "MonteCarloVaRCalculator",
+    "MonteCarloVaRConfig",
+    "MonteCarloVaRResult",
+    "MonteCarloMethod",
+    "CopulaType",
+    "build_monte_carlo_var_from_config",
 ]
