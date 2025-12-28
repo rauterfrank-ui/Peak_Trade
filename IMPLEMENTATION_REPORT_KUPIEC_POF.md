@@ -3,7 +3,7 @@
 **Datum:** 2024-12-27  
 **Branch:** `feat/risk-kupiec-pof-backtest`  
 **Commit:** `29690e5`  
-**Status:** ✅ COMPLETED (Phase 1+2)
+**Status:** ✅ COMPLETED (Phase 1+2+7)
 
 ---
 
@@ -15,6 +15,7 @@ Das **Kupiec Proportion of Failures (POF) VaR Backtest Modul** wurde erfolgreich
 
 - ✅ **Phase 1: Foundation** - Kernlogik mit stdlib-only chi-square
 - ✅ **Phase 2: Integration** - VaR Runner und Violation Detection
+- ✅ **Phase 7: Convenience API** - Direct n/x/alpha interface + exceedances helper
 - ✅ **Bonus:** CLI Interface, Config Template, Comprehensive Tests, Dokumentation
 
 ### Key Highlights
@@ -49,13 +50,14 @@ Das **Kupiec Proportion of Failures (POF) VaR Backtest Modul** wurde erfolgreich
 | `test_violation_detector.py` | 225 | 16 tests für violation detection |
 | `test_runner_smoke.py` | 230 | 15 tests für end-to-end flows |
 
-**Total Tests:** ~715 LOC, **56 Tests**, alle bestanden ✅
+**Total Tests:** ~950 LOC, **81 Tests**, alle bestanden ✅
 
 ### CLI & Config
 
 | Datei | Lines | Beschreibung |
 |-------|-------|--------------|
 | `scripts/risk/run_var_backtest.py` | 282 | CLI entry point mit CI support |
+| `scripts/run_kupiec_pof.py` | 127 | Phase 7 minimal CLI (n/x/alpha interface) |
 | `config/var_backtest.toml` | 48 | Config template (enabled=false) |
 
 ### Dokumentation
@@ -229,8 +231,12 @@ MODEL VALID:      True
 | Runner Edge Cases | 4 | ✅ PASS |
 | Runner Metadata | 2 | ✅ PASS |
 | Runner Realistic Scenarios | 2 | ✅ PASS |
+| **Phase 7: Direct n/x/alpha API** | 10 | ✅ PASS |
+| **Phase 7: Exceedances Helper** | 6 | ✅ PASS |
+| **Phase 7: Wrapper Equivalence** | 4 | ✅ PASS |
+| **Phase 7: Sanity Checks** | 5 | ✅ PASS |
 
-**Total: 56 Tests, 100% PASS**
+**Total: 81 Tests, 100% PASS** (56 original + 25 Phase 7)
 
 ### Getestete Edge Cases
 
@@ -445,6 +451,32 @@ def _generate_synthetic_data(...):
 - [x] Config Template (safe by default)
 - [x] Operator Guide
 - [x] Theorie-Dokumentation
+
+---
+
+## 📝 Phase 7 Update (2025-12-28)
+
+**Added:** Direct n/x/alpha convenience API
+
+### New Features
+
+- `kupiec_lr_uc(n, x, alpha)` - Direct interface ohne violations array
+- `kupiec_from_exceedances(exceedances, alpha)` - Helper für boolean series
+- `KupiecLRResult` - Lightweight result dataclass
+- `scripts/run_kupiec_pof.py` - Minimal CLI für n/x/alpha interface
+
+### Tests
+
+- 25 neue Tests für Phase 7 API
+- Wrapper equivalence tests (neue API ≈ alte API)
+- Alle 81 Tests bestehen ✅
+
+### Backward Compatibility
+
+- ✅ Keine Breaking Changes
+- ✅ Alte API (`kupiec_pof_test`) unverändert
+- ✅ Alle 56 originalen Tests bestehen weiterhin
+- ✅ Neue API nutzt bestehende Engine (keine Code-Duplikation)
 
 ---
 
