@@ -322,3 +322,167 @@ def quick_kupiec_check(
     violations = [True] * n_violations + [False] * (n_observations - n_violations)
     result = kupiec_pof_test(violations, confidence_level=confidence_level)
     return result.is_valid
+
+
+# ============================================================================
+# Phase 7: Direct n/x/alpha Convenience API
+# ============================================================================
+
+
+@dataclass(frozen=True)
+class KupiecLRResult:
+    """
+    Phase 7 convenience result for direct n/x/alpha interface.
+
+    Attributes:
+        n: Total observations
+        x: Number of exceedances/violations
+        alpha: Exceedance probability (e.g., 0.01 for 99% VaR)
+        phat: Observed exceedance rate (x/n)
+        lr_uc: Likelihood Ratio statistic (unconditional coverage)
+        p_value: p-value from chi²(df=1)
+        verdict: "PASS" if p_value >= p_threshold, else "FAIL"
+        notes: Additional context or warnings
+    """
+
+    n: int
+    x: int
+    alpha: float
+    phat: float
+    lr_uc: float
+    p_value: float
+    verdict: str
+    notes: str
+
+    def to_dict(self) -> dict:
+        """Export to dictionary."""
+        return {
+            "n": self.n,
+            "x": self.x,
+            "alpha": self.alpha,
+            "phat": self.phat,
+            "lr_uc": self.lr_uc,
+            "p_value": self.p_value,
+            "verdict": self.verdict,
+            "notes": self.notes,
+        }
+
+
+def kupiec_lr_uc(
+    n: int,
+    x: int,
+    alpha: float,
+    *,
+    p_threshold: float = 0.05,
+) -> KupiecLRResult:
+    """
+    Phase 7: Direct Kupiec Unconditional Coverage (LR-UC) test.
+
+    Compute Kupiec test using raw counts (n observations, x exceedances)
+    without building a full violations series.
+
+    Args:
+        n: Total number of observations (must be > 0)
+        x: Number of exceedances/violations (0 <= x <= n)
+        alpha: Expected exceedance rate (e.g., 0.01 for 99% VaR)
+        p_threshold: Significance level for verdict (default 0.05)
+
+    Returns:
+        KupiecLRResult with test statistics and verdict
+
+    Raises:
+        ValueError: If inputs are invalid (n<=0, x<0, x>n, alpha not in (0,1))
+
+    Example:
+        >>> result = kupiec_lr_uc(n=1000, x=10, alpha=0.01)
+        >>> print(result.verdict)  # "PASS"
+        >>> print(result.p_value)  # ~0.92
+
+    Notes:
+        - Uses existing internal engine (_compute_lr_statistic, chi2_df1_sf)
+        - Numerically stable for edge cases (x=0, x=n)
+        - Verdict: PASS if p_value >= p_threshold, else FAIL
+    """
+    # Validation
+    if n <= 0:
+        raise ValueError(f"n must be > 0, got {n}")
+    if x < 0:
+        raise ValueError(f"x must be >= 0, got {x}")
+    if x > n:
+        raise ValueError(f"x ({x}) cannot exceed n ({n})")
+    if not 0 < alpha < 1:
+        raise ValueError(f"alpha must be in (0, 1), got {alpha}")
+    if not 0 < p_threshold < 1:
+        raise ValueError(f"p_threshold must be in (0, 1), got {p_threshold}")
+
+    # Observed exceedance rate with numerical safety
+    phat = x / n if n > 0 else 0.0
+
+    # Compute LR statistic using existing internal engine
+    # _compute_lr_statistic(T, N, p_star) where T=n, N=x, p_star=alpha
+    lr_uc = _compute_lr_statistic(n, x, alpha)
+
+    # Compute p-value using existing chi² survival function
+    p_value = chi2_df1_sf(lr_uc)
+
+    # Verdict
+    if p_value >= p_threshold:
+        verdict = "PASS"
+        notes = f"Model calibration acceptable (p={p_value:.4f} >= {p_threshold})"
+    else:
+        verdict = "FAIL"
+        notes = f"Model calibration rejected (p={p_value:.4f} < {p_threshold})"
+
+    return KupiecLRResult(
+        n=n,
+        x=x,
+        alpha=alpha,
+        phat=phat,
+        lr_uc=lr_uc,
+        p_value=p_value,
+        verdict=verdict,
+        notes=notes,
+    )
+
+
+def kupiec_from_exceedances(
+    exceedances: Sequence[bool],
+    alpha: float,
+    *,
+    p_threshold: float = 0.05,
+) -> KupiecLRResult:
+    """
+    Phase 7: Kupiec test from exceedances boolean series.
+
+    Convenience wrapper that extracts n/x from exceedances list
+    and calls kupiec_lr_uc().
+
+    Args:
+        exceedances: Boolean sequence (True = exceedance occurred)
+        alpha: Expected exceedance rate (e.g., 0.01 for 99% VaR)
+        p_threshold: Significance level for verdict (default 0.05)
+
+    Returns:
+        KupiecLRResult with test statistics and verdict
+
+    Raises:
+        ValueError: If inputs are invalid
+
+    Example:
+        >>> exceedances = [False] * 990 + [True] * 10
+        >>> result = kupiec_from_exceedances(exceedances, alpha=0.01)
+        >>> print(result.verdict)  # "PASS"
+        >>> assert result.n == 1000
+        >>> assert result.x == 10
+
+    Notes:
+        - Efficiently counts True values without copying
+        - Delegates to kupiec_lr_uc() for computation
+    """
+    if not isinstance(exceedances, (list, tuple)) and not hasattr(exceedances, "__len__"):
+        raise ValueError("exceedances must be a sequence (list, tuple, or array-like)")
+
+    n = len(exceedances)
+    x = sum(exceedances)
+
+    return kupiec_lr_uc(n=n, x=x, alpha=alpha, p_threshold=p_threshold)

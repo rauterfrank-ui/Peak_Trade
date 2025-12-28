@@ -17,6 +17,10 @@ from src.risk_layer.var_backtest.kupiec_pof import (
     KupiecResult,
     kupiec_pof_test,
     quick_kupiec_check,
+    # Phase 7: Direct n/x/alpha API
+    KupiecLRResult,
+    kupiec_lr_uc,
+    kupiec_from_exceedances,
 )
 from src.risk_layer.var_backtest.var_backtest_runner import (
     VaRBacktestResult,
@@ -49,6 +53,10 @@ __all__ = [
     "KupiecPOFOutput",
     "kupiec_pof_test",
     "quick_kupiec_check",
+    # Phase 7: Direct n/x/alpha API
+    "KupiecLRResult",
+    "kupiec_lr_uc",
+    "kupiec_from_exceedances",
     # Violation Detection
     "ViolationSeries",
     "detect_violations",
