@@ -1,6 +1,6 @@
-# Risk Layer v1.0 - Architecture Overview
+# Risk Layer v1.1 - Architecture Overview
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Date:** 2025-12-28  
 **Agent:** A6 (Integration & Documentation)
 
@@ -8,12 +8,18 @@
 
 ## Executive Summary
 
-Risk Layer v1.0 is a comprehensive, modular risk management framework for Peak_Trade, providing:
+Risk Layer v1.1 is a comprehensive, modular risk management framework for Peak_Trade, providing:
 
-- **5 Core Components:** VaR/CVaR, Component VaR, Monte Carlo VaR, VaR Backtesting, Stress Testing
+- **6 Core Components:** VaR/CVaR, VaR Validation 🆕, Component VaR, Monte Carlo VaR, Stress Testing, Kill Switch
 - **Config-Driven:** All features controlled via `config.toml`
 - **Graceful Degradation:** Components can be enabled/disabled independently
-- **Battle-Tested:** 140+ unit tests, 100% pass rate
+- **Battle-Tested:** 177+ unit tests, 100% pass rate (96 core + 81 validation)
+
+**What's New in v1.1:**
+- ✅ Phase 2: VaR Validation (Kupiec POF Test + Basel Traffic Light)
+- ✅ Pure Python chi-square (no SciPy dependency)
+- ✅ Integration Guide with workflows
+- ✅ 81 comprehensive validation tests
 
 ---
 
@@ -23,19 +29,24 @@ Risk Layer v1.0 is a comprehensive, modular risk management framework for Peak_T
 
 ```
 src/risk/                           # Risk calculations
-├── var.py                          # VaR/CVaR methods
-├── component_var.py                # Risk attribution
+├── var.py                          # VaR/CVaR methods (Historical, Parametric, EWMA, CF)
+├── parametric_var.py               # Parametric VaR engine
+├── covariance.py                   # Covariance estimators
+├── component_var.py                # Risk attribution & decomposition
 ├── monte_carlo.py                  # MC simulation
 ├── stress_tester.py                # Stress testing
-└── risk_layer_manager.py           # Integration (Agent A6)
+└── validation/                     # 🆕 VaR validation (Phase 2)
+    ├── __init__.py
+    ├── kupiec_pof.py               # Kupiec POF test (pure Python)
+    ├── traffic_light.py            # Basel Traffic Light System
+    ├── backtest_runner.py          # Full backtest workflow
+    └── breach_analysis.py          # Breach pattern analysis
 
 src/risk_layer/                     # Enforcement layer
-└── var_backtest/                   # VaR validation
-    ├── kupiec_pof.py               # Kupiec POF test
-    ├── christoffersen_tests.py     # Christoffersen tests
-    └── traffic_light.py            # Basel Traffic Light
+├── kill_switch/                    # Kill Switch system
+└── alerting/                       # Alerting channels
 
-data/scenarios/                     # Historical scenarios
+data/scenarios/                     # Historical stress scenarios
 ├── covid_crash_2020.json
 ├── china_ban_2021.json
 ├── luna_collapse_2022.json
