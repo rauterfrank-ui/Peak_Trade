@@ -28,6 +28,7 @@ from typing import Any, Dict, Optional, Iterable, List
 @dataclass
 class KillSwitchStatus:
     """Legacy-kompatibles Status-Objekt (KillSwitchLayer API)."""
+
     armed: bool
     reason: str = ""
     enabled: bool = True
@@ -240,7 +241,10 @@ class KillSwitchAdapter:
         # Check daily PnL (< -5%)
         daily_pnl = metrics.get("daily_pnl_pct")
         if daily_pnl is not None and daily_pnl < -0.05:
-            return ("daily_loss_limit", f"Daily PnL threshold exceeded: {daily_pnl:.2%} (limit: -5%)")
+            return (
+                "daily_loss_limit",
+                f"Daily PnL threshold exceeded: {daily_pnl:.2%} (limit: -5%)",
+            )
 
         # Check drawdown (> 10%)
         drawdown = metrics.get("current_drawdown_pct")
@@ -250,7 +254,10 @@ class KillSwitchAdapter:
         # Check realized vol (> 50%)
         realized_vol = metrics.get("realized_vol_pct")
         if realized_vol is not None and realized_vol > 0.50:
-            return ("volatility_limit", f"Realized volatility threshold exceeded: {realized_vol:.2%} (limit: 50%)")
+            return (
+                "volatility_limit",
+                f"Realized volatility threshold exceeded: {realized_vol:.2%} (limit: 50%)",
+            )
 
         return ("", "")
 
@@ -321,6 +328,7 @@ class KillSwitchAdapter:
 
         # Add event to history
         from .state import KillSwitchEvent
+
         events = getattr(self._kill_switch, "_events", None)
         if events is not None and isinstance(events, list):
             event = KillSwitchEvent(
