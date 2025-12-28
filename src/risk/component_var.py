@@ -263,3 +263,279 @@ def build_component_var_calculator_from_config(
     var_engine = build_parametric_var_from_config(var_cfg)
 
     return ComponentVaRCalculator(cov_estimator, var_engine)
+
+
+# =============================================================================
+# Phase 2 Extensions: Incremental VaR & Diversification (Agent A2)
+# =============================================================================
+
+
+@dataclass
+class IncrementalVaRResult:
+    """
+    Ergebnis einer Incremental VaR Berechnung.
+
+    Incremental VaR misst die Veränderung des Portfolio-VaR beim Hinzufügen
+    oder Entfernen eines Assets.
+
+    Attributes:
+        asset_name: Name des betrachteten Assets
+        portfolio_var_without: Portfolio VaR OHNE das Asset
+        portfolio_var_with: Portfolio VaR MIT dem Asset
+        incremental_var: Differenz (portfolio_var_with - portfolio_var_without)
+        incremental_pct: Prozentuale Veränderung (incremental_var / portfolio_var_without)
+        asset_weight: Gewicht des Assets im Portfolio MIT dem Asset
+    """
+
+    asset_name: str
+    portfolio_var_without: float
+    portfolio_var_with: float
+    incremental_var: float
+    incremental_pct: float
+    asset_weight: float
+
+    def __str__(self) -> str:
+        return (
+            f"Incremental VaR: {self.asset_name}\n"
+            f"===================================\n"
+            f"Portfolio VaR (without): {self.portfolio_var_without:,.2f}\n"
+            f"Portfolio VaR (with):    {self.portfolio_var_with:,.2f}\n"
+            f"Incremental VaR:         {self.incremental_var:,.2f} "
+            f"({self.incremental_pct:+.2%})\n"
+            f"Asset Weight:            {self.asset_weight:.2%}"
+        )
+
+
+@dataclass
+class DiversificationBenefitResult:
+    """
+    Ergebnis einer Diversification Benefit Berechnung.
+
+    Diversification Benefit misst die Risikoreduktion durch Diversifikation.
+
+    Attributes:
+        portfolio_var: Tatsächlicher Portfolio VaR
+        standalone_vars: Standalone VaR jedes Assets (bei 100% Allokation)
+        weighted_standalone_vars: Standalone VaR * Gewicht jedes Assets
+        sum_weighted_standalone: Summe der gewichteten Standalone VaRs
+        diversification_benefit: Risikoreduktion (sum_weighted_standalone - portfolio_var)
+        diversification_ratio: Portfolio VaR / Sum Weighted Standalone (1.0 = keine Div)
+        asset_names: Namen der Assets
+        weights: Gewichte der Assets
+    """
+
+    portfolio_var: float
+    standalone_vars: np.ndarray
+    weighted_standalone_vars: np.ndarray
+    sum_weighted_standalone: float
+    diversification_benefit: float
+    diversification_ratio: float
+    asset_names: list[str]
+    weights: np.ndarray
+
+    def to_dataframe(self) -> pd.DataFrame:
+        """Konvertiert zu DataFrame."""
+        return pd.DataFrame(
+            {
+                "asset": self.asset_names,
+                "weight": self.weights,
+                "standalone_var": self.standalone_vars,
+                "weighted_standalone_var": self.weighted_standalone_vars,
+            }
+        )
+
+    def __str__(self) -> str:
+        df = self.to_dataframe()
+        return (
+            f"Diversification Benefit Analysis\n"
+            f"=================================\n"
+            f"Portfolio VaR:               {self.portfolio_var:,.2f}\n"
+            f"Sum Weighted Standalone VaR: {self.sum_weighted_standalone:,.2f}\n"
+            f"Diversification Benefit:     {self.diversification_benefit:,.2f}\n"
+            f"Diversification Ratio:       {self.diversification_ratio:.4f}\n\n"
+            f"{df.to_string(index=False)}"
+        )
+
+
+def calculate_incremental_var(
+    calculator: ComponentVaRCalculator,
+    returns_df: pd.DataFrame,
+    weights: Mapping[str, float],
+    asset_name: str,
+    portfolio_value: float,
+) -> IncrementalVaRResult:
+    """
+    Berechnet Incremental VaR für ein Asset.
+
+    Incremental VaR = Portfolio VaR (mit Asset) - Portfolio VaR (ohne Asset)
+
+    Args:
+        calculator: ComponentVaRCalculator instance
+        returns_df: DataFrame mit Returns
+        weights: Gewichte als Dict (inkl. asset_name)
+        asset_name: Name des Assets für das Incremental VaR berechnet wird
+        portfolio_value: Portfolio-Wert
+
+    Returns:
+        IncrementalVaRResult
+
+    Raises:
+        ValueError: Wenn asset_name nicht in weights/returns
+
+    Example:
+        >>> result = calculate_incremental_var(
+        ...     calculator, returns_df,
+        ...     {"BTC": 0.5, "ETH": 0.3, "SOL": 0.2},
+        ...     "SOL", 100000
+        ... )
+        >>> print(f"Adding SOL increases VaR by {result.incremental_var:.2f}")
+    """
+    if asset_name not in weights:
+        raise ValueError(f"Asset '{asset_name}' not found in weights")
+
+    if asset_name not in returns_df.columns:
+        raise ValueError(f"Asset '{asset_name}' not found in returns DataFrame")
+
+    # 1. Portfolio VaR MIT dem Asset (original)
+    portfolio_var_with = calculator.calculate(
+        returns_df,
+        weights,
+        portfolio_value,
+        validate_euler=False,  # Skip validation for speed
+    ).total_var
+
+    # 2. Portfolio VaR OHNE das Asset
+    # Entferne Asset aus weights und renormalisiere
+    weights_without = {k: v for k, v in weights.items() if k != asset_name}
+
+    if not weights_without:
+        # Portfolio besteht nur aus dem einen Asset -> VaR ohne = 0
+        portfolio_var_without = 0.0
+    else:
+        # Renormalisiere Gewichte (sum = 1)
+        weight_sum_without = sum(weights_without.values())
+        weights_without_normalized = {k: v / weight_sum_without for k, v in weights_without.items()}
+
+        # Entferne Asset aus returns
+        returns_without = returns_df[[col for col in returns_df.columns if col != asset_name]]
+
+        portfolio_var_without = calculator.calculate(
+            returns_without,
+            weights_without_normalized,
+            portfolio_value,
+            validate_euler=False,
+        ).total_var
+
+    # 3. Incremental VaR
+    incremental_var = portfolio_var_with - portfolio_var_without
+
+    # 4. Incremental %
+    if portfolio_var_without > 0:
+        incremental_pct = incremental_var / portfolio_var_without
+    else:
+        incremental_pct = float("inf") if incremental_var > 0 else 0.0
+
+    return IncrementalVaRResult(
+        asset_name=asset_name,
+        portfolio_var_without=portfolio_var_without,
+        portfolio_var_with=portfolio_var_with,
+        incremental_var=incremental_var,
+        incremental_pct=incremental_pct,
+        asset_weight=weights[asset_name],
+    )
+
+
+def calculate_diversification_benefit(
+    calculator: ComponentVaRCalculator,
+    returns_df: pd.DataFrame,
+    weights: Mapping[str, float],
+    portfolio_value: float,
+) -> DiversificationBenefitResult:
+    """
+    Berechnet Diversification Benefit für ein Portfolio.
+
+    Diversification Benefit = Σ(Standalone VaR_i * w_i) - Portfolio VaR
+
+    Misst die Risikoreduktion durch Diversifikation. Ein höherer Wert bedeutet
+    stärkere Diversifikationseffekte.
+
+    Args:
+        calculator: ComponentVaRCalculator instance
+        returns_df: DataFrame mit Returns
+        weights: Gewichte als Dict
+        portfolio_value: Portfolio-Wert
+
+    Returns:
+        DiversificationBenefitResult
+
+    Notes:
+        - Standalone VaR_i = VaR wenn 100% in Asset i investiert wäre
+        - Weighted Standalone VaR_i = Standalone VaR_i * w_i
+        - Diversification Ratio = Portfolio VaR / Σ(Weighted Standalone VaR)
+          → Ratio < 1.0 = Diversifikationseffekt
+          → Ratio = 1.0 = keine Diversifikation (perfekte Korrelation)
+
+    Example:
+        >>> result = calculate_diversification_benefit(
+        ...     calculator, returns_df,
+        ...     {"BTC": 0.5, "ETH": 0.3, "SOL": 0.2},
+        ...     100000
+        ... )
+        >>> print(f"Diversification Benefit: {result.diversification_benefit:.2f}")
+        >>> print(f"Ratio: {result.diversification_ratio:.4f}")
+    """
+    asset_names = list(weights.keys())
+
+    # 1. Portfolio VaR (actual)
+    portfolio_var = calculator.calculate(
+        returns_df,
+        weights,
+        portfolio_value,
+        validate_euler=False,
+    ).total_var
+
+    # 2. Standalone VaR jedes Assets (bei 100% Allokation)
+    standalone_vars = np.zeros(len(asset_names))
+
+    for i, asset in enumerate(asset_names):
+        # VaR wenn 100% in diesem Asset
+        standalone_weights = {asset: 1.0}
+        standalone_returns = returns_df[[asset]]
+
+        try:
+            standalone_var = calculator.calculate(
+                standalone_returns,
+                standalone_weights,
+                portfolio_value,
+                validate_euler=False,
+            ).total_var
+            standalone_vars[i] = standalone_var
+        except (ValueError, ZeroDivisionError) as e:
+            # Asset hat zero variance oder andere Probleme
+            logger.warning(f"Could not calculate standalone VaR for {asset}: {e}. Using 0.")
+            standalone_vars[i] = 0.0
+
+    # 3. Weighted Standalone VaRs
+    weights_array = np.array([weights[asset] for asset in asset_names])
+    weighted_standalone_vars = standalone_vars * weights_array
+    sum_weighted_standalone = weighted_standalone_vars.sum()
+
+    # 4. Diversification Benefit
+    diversification_benefit = sum_weighted_standalone - portfolio_var
+
+    # 5. Diversification Ratio
+    if sum_weighted_standalone > 0:
+        diversification_ratio = portfolio_var / sum_weighted_standalone
+    else:
+        diversification_ratio = 1.0  # No diversification possible
+
+    return DiversificationBenefitResult(
+        portfolio_var=portfolio_var,
+        standalone_vars=standalone_vars,
+        weighted_standalone_vars=weighted_standalone_vars,
+        sum_weighted_standalone=sum_weighted_standalone,
+        diversification_benefit=diversification_benefit,
+        diversification_ratio=diversification_ratio,
+        asset_names=asset_names,
+        weights=weights_array,
+    )
