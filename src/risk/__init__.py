@@ -95,6 +95,13 @@ from .monte_carlo import (
     build_monte_carlo_var_from_config,
 )
 
+# Risk Layer Manager v1.0 (Integration)
+from .risk_layer_manager import (
+    RiskLayerManager,
+    RiskAssessmentResult,
+    build_risk_layer_manager_from_config,
+)
+
 __all__ = [
     # Legacy Position Sizing
     "PositionSizer",
@@ -161,4 +168,8 @@ __all__ = [
     "MonteCarloMethod",
     "CopulaType",
     "build_monte_carlo_var_from_config",
+    # Risk Layer Manager v1.0 (Integration)
+    "RiskLayerManager",
+    "RiskAssessmentResult",
+    "build_risk_layer_manager_from_config",
 ]
