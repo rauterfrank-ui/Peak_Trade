@@ -34,7 +34,12 @@ Examples:
     # Direct n/x/alpha interface
     parser.add_argument("--n", type=int, help="Total observations")
     parser.add_argument("--x", type=int, help="Number of exceedances")
-    parser.add_argument("--alpha", type=float, required=True, help="Expected exceedance rate (e.g., 0.01 for 99%% VaR)")
+    parser.add_argument(
+        "--alpha",
+        type=float,
+        required=True,
+        help="Expected exceedance rate (e.g., 0.01 for 99%% VaR)",
+    )
 
     # Alternative: CSV input
     parser.add_argument(
@@ -69,7 +74,10 @@ def load_exceedances_csv(path: Path) -> list[bool]:
             elif line in ("false", "0", "no"):
                 exceedances.append(False)
             else:
-                print(f"WARNING: Invalid value at line {line_num}: {line!r} (skipping)", file=sys.stderr)
+                print(
+                    f"WARNING: Invalid value at line {line_num}: {line!r} (skipping)",
+                    file=sys.stderr,
+                )
 
     return exceedances
 
@@ -81,8 +89,8 @@ def print_report(result):
     print("=" * 60)
     print(f"Observations (n):      {result.n}")
     print(f"Exceedances (x):       {result.x}")
-    print(f"Expected Rate (alpha): {result.alpha:.4f} ({result.alpha*100:.2f}%)")
-    print(f"Observed Rate (phat):  {result.phat:.4f} ({result.phat*100:.2f}%)")
+    print(f"Expected Rate (alpha): {result.alpha:.4f} ({result.alpha * 100:.2f}%)")
+    print(f"Observed Rate (phat):  {result.phat:.4f} ({result.phat * 100:.2f}%)")
     print()
     print("Test Statistics:")
     print(f"  LR Statistic:        {result.lr_uc:.4f}")
@@ -104,14 +112,18 @@ def main():
             # Load from CSV
             exceedances = load_exceedances_csv(args.exceedances_csv)
             print(f"Loaded {len(exceedances)} exceedances from {args.exceedances_csv}")
-            result = kupiec_from_exceedances(exceedances, alpha=args.alpha, p_threshold=args.p_threshold)
+            result = kupiec_from_exceedances(
+                exceedances, alpha=args.alpha, p_threshold=args.p_threshold
+            )
         else:
             # Direct n/x/alpha
             if args.n is None or args.x is None:
                 print("ERROR: Must provide either --n/--x OR --exceedances-csv", file=sys.stderr)
                 sys.exit(1)
 
-            result = kupiec_lr_uc(n=args.n, x=args.x, alpha=args.alpha, p_threshold=args.p_threshold)
+            result = kupiec_lr_uc(
+                n=args.n, x=args.x, alpha=args.alpha, p_threshold=args.p_threshold
+            )
 
         # Print report
         print_report(result)
