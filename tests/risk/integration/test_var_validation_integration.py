@@ -126,9 +126,10 @@ class TestVarValidationIntegration:
         # Should be reasonable (not too many)
         assert result.kupiec.is_valid is True
 
-        # Basel traffic light at 95%: green <= 4, yellow 5-9, red >= 10
-        # With 10 breaches, should be RED
-        assert result.traffic_light.color == "red"
+        # Basel traffic light at 95%: uses binomial-based thresholds
+        # For 250 obs, 95% VaR: green 0-18, yellow 19-24, red >24
+        # With 10 breaches (< expected 12.5), should be GREEN
+        assert result.traffic_light.color == "green"
 
     def test_integration_no_breaches(self):
         """
