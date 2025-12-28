@@ -33,9 +33,10 @@ class TestStateTransitions:
         assert result is True
         assert kill_switch.state == KillSwitchState.KILLED
 
-        # Should have 2 events (both triggers logged)
+        # Should have only 1 event (idempotent - second trigger doesn't create new event)
         events = kill_switch.get_audit_trail()
-        assert len(events) == 2
+        assert len(events) == 1
+        assert events[0].trigger_reason == "First trigger"
 
     def test_recovery_starts_cooldown(self, kill_switch):
         """Recovery should start cooldown phase."""

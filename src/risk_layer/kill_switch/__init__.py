@@ -34,11 +34,36 @@ __author__ = "Peak_Trade Risk Team"
 from .config import load_config, get_approval_code
 from .core import KillSwitch, TradingBlockedError
 from .state import KillSwitchEvent, KillSwitchState, StateTransitionError
+from .execution_gate import ExecutionGate
+
+
+# Legacy compatibility stubs for old risk_gate integration
+def to_violations(kill_switch_status):
+    """Convert kill switch status to violations (legacy compatibility stub)."""
+    from src.risk_layer.models import Violation
+
+    if hasattr(kill_switch_status, "armed") and kill_switch_status.armed:
+        return [
+            Violation(
+                code="KILL_SWITCH_ARMED",
+                message=getattr(kill_switch_status, "reason", "Kill switch is armed"),
+                severity="CRITICAL",
+                details={}
+            )
+        ]
+    return []
+
+
+# Legacy aliases for backwards compatibility with old code
+KillSwitchLayer = KillSwitch
+KillSwitchStatus = KillSwitchState
+
 
 __all__ = [
     # Core
     "KillSwitch",
     "TradingBlockedError",
+    "ExecutionGate",
     # State
     "KillSwitchState",
     "KillSwitchEvent",
@@ -46,4 +71,8 @@ __all__ = [
     # Config
     "load_config",
     "get_approval_code",
+    # Legacy compatibility
+    "to_violations",
+    "KillSwitchLayer",
+    "KillSwitchStatus",
 ]
