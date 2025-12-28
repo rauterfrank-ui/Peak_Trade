@@ -1,0 +1,125 @@
+# Peak_Trade Emergency Kill Switch Configuration
+# Version: 1.0
+# Dokumentation: docs/risk/KILL_SWITCH_ARCHITECTURE.md
+
+[kill_switch]
+# Core Settings
+enabled = true
+mode = "active"  # Options: "active" | "disabled" (nur für Backtest)
+
+# Recovery Settings
+recovery_cooldown_seconds = 300  # 5 Minuten Cooldown nach Recovery-Request
+require_approval_code = true
+approval_code_env = "KILL_SWITCH_APPROVAL_CODE"  # Name der Umgebungsvariable
+
+# Persistence
+persist_state = true
+state_file = "data/kill_switch/state.json"
+audit_dir = "data/kill_switch/audit"
+audit_retention_days = 90
+
+# Logging
+log_level = "INFO"  # DEBUG | INFO | WARNING | ERROR | CRITICAL
+
+# =============================================================================
+# TRIGGER CONFIGURATION
+# =============================================================================
+
+# Drawdown Trigger: -15% Portfolio Drawdown
+[kill_switch.triggers.drawdown]
+enabled = true
+type = "threshold"
+metric = "portfolio_drawdown"
+threshold = -0.15  # -15%
+operator = "lt"    # less than
+cooldown_seconds = 0  # Sofort triggern, kein Cooldown
+
+# Daily Loss Trigger: -5% Tagesverlust
+[kill_switch.triggers.daily_loss]
+enabled = true
+type = "threshold"
+metric = "daily_pnl"
+threshold = -0.05  # -5%
+operator = "lt"
+cooldown_seconds = 0
+
+# Volatility Spike Trigger: >10% stündliche Volatilität
+[kill_switch.triggers.volatility_spike]
+enabled = false  # Disabled per default (kann zu False Positives führen)
+type = "threshold"
+metric = "realized_volatility_1h"
+threshold = 0.10  # 10%
+operator = "gt"    # greater than
+cooldown_seconds = 3600  # 1 Stunde Cooldown nach Trigger
+
+# System Health Watchdog
+[kill_switch.triggers.system_health]
+enabled = true
+type = "watchdog"
+heartbeat_interval_seconds = 60
+max_missed_heartbeats = 3
+memory_threshold_percent = 90  # Trigger bei >90% Memory Usage
+cpu_threshold_percent = 95     # Trigger bei >95% CPU Usage
+
+# Exchange Disconnect Trigger
+[kill_switch.triggers.exchange_disconnect]
+enabled = true
+type = "external"
+check_interval_seconds = 30
+max_consecutive_failures = 3  # 3 aufeinanderfolgende Fehler → Trigger
+
+# =============================================================================
+# RECOVERY CONFIGURATION
+# =============================================================================
+
+[kill_switch.recovery]
+# Basis-Einstellungen
+cooldown_seconds = 300           # 5 Minuten Cooldown
+require_approval_code = true
+require_health_check = true
+require_trigger_clear = true     # Trigger muss "clear" sein vor Recovery
+
+# Gradual Restart
+gradual_restart_enabled = true
+initial_position_limit_factor = 0.5  # Start bei 50% Position Size
+escalation_intervals = [3600, 7200]  # Nach 1h, nach 2h (in Sekunden)
+escalation_factors = [0.75, 1.0]     # Dann 75%, dann 100%
+
+# Health Check Requirements
+min_memory_available_mb = 512
+max_cpu_percent = 80
+require_exchange_connection = true
+require_price_feed = true
+
+# Dual Approval (für Production, aktuell disabled)
+require_dual_approval = false
+second_approver_required = false
+
+# =============================================================================
+# NOTIFICATIONS (Optional)
+# =============================================================================
+
+[kill_switch.notifications]
+enabled = false  # Aktuell disabled, später mit Slack/Email Integration
+
+# Email Settings (später)
+# email_enabled = false
+# email_recipients = ["ops@peak-trade.com"]
+# email_smtp_host = "smtp.example.com"
+
+# Slack Settings (später)
+# slack_enabled = false
+# slack_webhook_url_env = "KILL_SWITCH_SLACK_WEBHOOK"
+
+# =============================================================================
+# MONITORING (Optional)
+# =============================================================================
+
+[kill_switch.monitoring]
+# Prometheus Metrics (optional, later)
+prometheus_enabled = false
+prometheus_port = 9090
+
+# Custom Metrics Export
+export_metrics = false
+metrics_file = "data/kill_switch/metrics.json"
