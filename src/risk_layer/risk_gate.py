@@ -12,7 +12,7 @@ from typing import Any
 
 from src.core.peak_config import PeakConfig
 from src.risk_layer.audit_log import AuditLogWriter
-from src.risk_layer.kill_switch import KillSwitchLayer, to_violations
+from src.risk_layer.kill_switch import KillSwitch, KillSwitchAdapter, to_violations
 from src.risk_layer.metrics import extract_risk_metrics, metrics_to_dict
 from src.risk_layer.models import RiskDecision, RiskResult, Violation
 from src.risk_layer.var_gate import VaRGate
@@ -45,8 +45,9 @@ class RiskGate:
         audit_path = cfg.get("risk.audit_log.path", "./logs/risk_audit.jsonl")
         self.audit_log = AuditLogWriter(audit_path)
 
-        # Initialize kill switch
-        self._kill_switch = KillSwitchLayer(cfg)
+        # Initialize kill switch (wrapped in adapter for legacy API compatibility)
+        kill_switch_config = cfg.get("risk.kill_switch", {})
+        self._kill_switch = KillSwitchAdapter(KillSwitch(kill_switch_config))
 
         # Initialize VaR gate
         self._var_gate = VaRGate(cfg)
