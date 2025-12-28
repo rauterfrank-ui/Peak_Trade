@@ -1420,3 +1420,6 @@ Empfohlenes Setup:
 
 Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
+
+## Verified Merge Logs
+- **PR #409 (Kill Switch Legacy Adapter, verified)** → `docs/ops/PR_409_MERGE_LOG.md`
