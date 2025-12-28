@@ -962,9 +962,11 @@ class WatchdogTrigger(BaseTrigger):
 | Datei | Beschreibung |
 |-------|--------------|
 | `src/risk_layer/kill_switch/recovery.py` | Recovery Manager |
-| `src/risk_layer/kill_switch/gradual_restart.py` | Gradual Restart Logic |
 | `src/risk_layer/kill_switch/health_check.py` | Pre-Recovery Health Checks |
 | `tests/risk_layer/kill_switch/test_recovery.py` | Recovery Tests |
+
+**Geplant (TODO):**
+- gradual_restart.py - Gradual Restart Logic
 
 ### 3.3 Recovery-Konfiguration
 
@@ -1251,9 +1253,11 @@ class RecoveryManager:
 |-------|--------------|
 | `src/risk_layer/kill_switch/persistence.py` | State Persistence |
 | `src/risk_layer/kill_switch/audit.py` | Audit Trail Logger |
-| `src/risk_layer/kill_switch/notifications.py` | Alert/Notification System |
 | `tests/risk_layer/kill_switch/test_persistence.py` | Persistence Tests |
-| `tests/risk_layer/kill_switch/test_audit.py` | Audit Tests |
+
+**Geplant (TODO):**
+- notifications.py - Alert/Notification System
+- test_audit.py - Audit Tests
 
 ### 4.3 Implementierung
 
@@ -1588,11 +1592,13 @@ class AuditTrail:
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `src/risk_layer/kill_switch/integration.py` | Integration mit Risk Layer |
 | `src/risk_layer/kill_switch/cli.py` | CLI Commands |
-| `src/risk_layer/kill_switch/api.py` | REST API (optional) |
-| `src/live/execution_gate.py` | Kill Switch Gate für Execution |
-| `scripts/ops/kill_switch_ctl.sh` | Operator Control Script |
+
+**Geplant (TODO):**
+- integration.py - Integration mit Risk Layer
+- api.py - REST API (optional)
+- execution_gate.py - Kill Switch Gate für Execution
+- kill_switch_ctl.sh - Operator Control Script
 
 ### 5.3 CLI Interface
 
@@ -1740,8 +1746,10 @@ class ExecutionGate:
 | `tests/risk_layer/kill_switch/test_recovery.py` | Recovery Unit Tests |
 | `tests/risk_layer/kill_switch/test_persistence.py` | Persistence Unit Tests |
 | `tests/risk_layer/kill_switch/test_integration.py` | Integration Tests |
-| `tests/risk_layer/kill_switch/test_chaos.py` | Chaos Engineering Tests |
-| `scripts/ops/kill_switch_chaos_test.sh` | Chaos Test Runner |
+
+**Geplant (TODO):**
+- test_chaos.py - Chaos Engineering Tests
+- kill_switch_chaos_test.sh - Chaos Test Runner
 
 ### 6.3 Chaos Engineering Szenarien
 
