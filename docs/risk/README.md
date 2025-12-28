@@ -29,6 +29,12 @@ Diese Dokumentation beschreibt das Risk-Management-System von Peak_Trade, einsch
   Complete guide for VaR backtest suite: Duration diagnostics, rolling evaluation, snapshot runner  
   Operator-friendly workflows + API reference + troubleshooting
 
+- **[Kupiec POF Theory](KUPIEC_POF_THEORY.md)** 🆕 Phase 8A  
+  Theory and implementation details for Kupiec POF (Proportion of Failures) test
+
+- **[Christoffersen Tests Guide](CHRISTOFFERSEN_TESTS_GUIDE.md)** 🆕 Phase 8B  
+  Independence (LR-IND) & Conditional Coverage (LR-CC) VaR backtests - Theory, API, CLI, Best Practices
+
 ### Roadmaps
 
 - **[Portfolio VaR Roadmap](roadmaps/PORTFOLIO_VAR_ROADMAP.md)**  

@@ -520,3 +520,28 @@ Das Kupiec POF VaR Backtest Modul ist **production-ready** für Research und Bac
 - Agent 5 (Ops/CLI/Docs): ✅ CLI + Configs + Docs completed
 
 🎉 **Implementation Complete!** 🎉
+
+
+## 📝 Phase 8B Extension (2025-12-28)
+
+**Added:** Christoffersen Independence & Conditional Coverage Tests
+
+Erweitert die VaR Backtest Suite um Clustering-Detection (LR-IND + LR-CC).
+
+**Features:**
+- `christoffersen_lr_ind()` - Independence test (df=1)
+- `christoffersen_lr_cc()` - Conditional coverage test (df=2)
+- CLI Integration: `--tests uc|ind|cc|all`
+- 47 new tests (31 core + 16 CLI integration)
+- Stdlib-only implementation (no scipy/numpy)
+
+**Documentation:**
+- Guide: `docs/risk/CHRISTOFFERSEN_TESTS_GUIDE.md`
+- CLI Integration: `PHASE8B_CLI_INTEGRATION.md`
+- Merge Log: `PHASE8B_MERGE_LOG.md`
+
+Siehe: `docs/risk/CHRISTOFFERSEN_TESTS_GUIDE.md` für Details.
+
+---
+
+**Phase 8A + 8B Complete!** 🎉

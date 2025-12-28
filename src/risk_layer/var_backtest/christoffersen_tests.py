@@ -5,7 +5,7 @@ Christoffersen Independence & Conditional Coverage Tests
 Statistical tests for VaR model validation, focusing on independence
 of violations and conditional coverage.
 
-Agent A3 Implementation: Full Christoffersen tests with optional scipy.
+**Phase 8B:** Stdlib-only implementation (no scipy, no numpy).
 
 References:
 -----------
@@ -24,82 +24,155 @@ Tests:
    - H0: Model has correct unconditional coverage AND violations are independent
    - Combines Kupiec POF + Independence Test
    - LR_cc ~ χ²(2)
+
+Implementation Notes:
+---------------------
+- Pure stdlib (math.erfc, math.exp)
+- No scipy dependency (chi²(1) via erfc, chi²(2) via exp)
+- No numpy dependency (transition matrix as tuple)
+- Numerically stable for edge cases (zero counts, eps clamping)
 """
 
-import logging
+from __future__ import annotations
+
 import math
 from dataclasses import dataclass
-from typing import List, Optional
-
-import numpy as np
-
-logger = logging.getLogger(__name__)
-
-# Optional scipy import
-try:
-    from scipy.stats import chi2 as scipy_chi2
-
-    SCIPY_AVAILABLE = True
-except ImportError:
-    scipy_chi2 = None
-    SCIPY_AVAILABLE = False
-    logger.debug("scipy not available. Using math-based chi2 fallbacks.")
+from typing import Sequence
 
 # Epsilon for numerical stability
 EPS = 1e-12
 
 
-@dataclass
-class ChristoffersenResult:
+@dataclass(frozen=True)
+class ChristoffersenIndResult:
     """
-    Result of a Christoffersen test.
+    Result of Christoffersen Independence Test.
+
+    Phase 8B: Lightweight dataclass following Phase 7 style.
 
     Attributes:
-        test_name: Name of the test (Independence or Conditional Coverage)
-        lr_statistic: Likelihood Ratio test statistic
-        p_value: p-value of the test
-        passed: Whether the test passed (p_value > significance level)
-        critical_value: Critical value (chi-squared)
-        degrees_of_freedom: Degrees of freedom for chi-squared distribution
-        n_violations: Number of violations
-        n_observations: Total number of observations
-        transition_matrix: 2x2 transition matrix (for Independence Test)
+        n: Total observations
+        x: Number of exceedances/violations
+        n00: Transitions from no-violation to no-violation
+        n01: Transitions from no-violation to violation
+        n10: Transitions from violation to no-violation
+        n11: Transitions from violation to violation
+        pi_01: Transition probability P(violation | no-violation)
+        pi_11: Transition probability P(violation | violation)
+        lr_ind: Likelihood Ratio statistic (independence test)
+        p_value: p-value from chi²(df=1)
+        verdict: "PASS" if p_value >= p_threshold, else "FAIL"
+        notes: Additional context or warnings
     """
 
-    test_name: str
-    lr_statistic: float
+    n: int
+    x: int
+    n00: int
+    n01: int
+    n10: int
+    n11: int
+    pi_01: float
+    pi_11: float
+    lr_ind: float
     p_value: float
-    passed: bool
-    critical_value: float
-    degrees_of_freedom: int
-    n_violations: int
-    n_observations: int
-    transition_matrix: Optional[np.ndarray] = None
+    verdict: str
+    notes: str
 
-    def __repr__(self) -> str:
-        status = "✅ PASS" if self.passed else "❌ FAIL"
-        return f"<{self.test_name}: LR={self.lr_statistic:.4f}, p={self.p_value:.4f}, {status}>"
+    def to_dict(self) -> dict:
+        """Export to dictionary."""
+        return {
+            "n": self.n,
+            "x": self.x,
+            "transition_matrix": {
+                "n00": self.n00,
+                "n01": self.n01,
+                "n10": self.n10,
+                "n11": self.n11,
+            },
+            "transition_probabilities": {
+                "pi_01": self.pi_01,
+                "pi_11": self.pi_11,
+            },
+            "lr_ind": self.lr_ind,
+            "p_value": self.p_value,
+            "verdict": self.verdict,
+            "notes": self.notes,
+        }
 
 
-def christoffersen_independence_test(
-    violations: List[bool], alpha: float = 0.05
-) -> ChristoffersenResult:
+@dataclass(frozen=True)
+class ChristoffersenCCResult:
     """
-    Christoffersen Independence Test (LR_ind).
+    Result of Christoffersen Conditional Coverage Test.
+
+    Phase 8B: Combines Kupiec UC + Independence test.
+
+    Attributes:
+        n: Total observations
+        x: Number of exceedances/violations
+        alpha: Expected exceedance rate
+        lr_uc: Kupiec unconditional coverage statistic
+        lr_ind: Independence test statistic
+        lr_cc: Conditional coverage statistic (lr_uc + lr_ind)
+        p_value: p-value from chi²(df=2)
+        verdict: "PASS" if p_value >= p_threshold, else "FAIL"
+        notes: Additional context or warnings
+    """
+
+    n: int
+    x: int
+    alpha: float
+    lr_uc: float
+    lr_ind: float
+    lr_cc: float
+    p_value: float
+    verdict: str
+    notes: str
+
+    def to_dict(self) -> dict:
+        """Export to dictionary."""
+        return {
+            "n": self.n,
+            "x": self.x,
+            "alpha": self.alpha,
+            "lr_uc": self.lr_uc,
+            "lr_ind": self.lr_ind,
+            "lr_cc": self.lr_cc,
+            "p_value": self.p_value,
+            "verdict": self.verdict,
+            "notes": self.notes,
+        }
+
+
+# ============================================================================
+# Christoffersen Independence Test (LR-IND)
+# ============================================================================
+
+
+def christoffersen_lr_ind(
+    exceedances: Sequence[bool],
+    *,
+    p_threshold: float = 0.05,
+) -> ChristoffersenIndResult:
+    """
+    Christoffersen Independence Test (LR-IND).
 
     Tests the null hypothesis that VaR violations are independent over time.
     Rejection indicates violations are clustered (model is mis-specified).
 
     Args:
-        violations: Boolean list of violations (True = violation, False = no violation)
-        alpha: Significance level for the test (default: 0.05)
+        exceedances: Boolean sequence (True = exceedance occurred)
+        p_threshold: Significance level for verdict (default 0.05)
 
     Returns:
-        ChristoffersenResult with test statistics
+        ChristoffersenIndResult with test statistics and verdict
+
+    Raises:
+        ValueError: If inputs are invalid (n < 2)
 
     Theory:
     -------
-    The test computes a 2x2 transition matrix:
+    Compute 2x2 transition matrix:
         T = [[n00, n01],
              [n10, n11]]
     where:
@@ -116,79 +189,113 @@ def christoffersen_independence_test(
     H1: Violations are NOT independent (π₀₁ ≠ π₁₁)
 
     Example:
-        >>> violations = [False, False, True, False, True, True, False]
-        >>> result = christoffersen_independence_test(violations)
-        >>> print(result.passed)
+        >>> exceedances = [False, False, True, False, True, True, False]
+        >>> result = christoffersen_lr_ind(exceedances)
+        >>> print(result.verdict)  # "PASS" or "FAIL"
     """
-    if len(violations) < 2:
-        raise ValueError("Need at least 2 observations for independence test")
+    # Validation
+    n = len(exceedances)
+    if n < 2:
+        raise ValueError(f"Need at least 2 observations for independence test, got {n}")
+
+    if not 0 < p_threshold < 1:
+        raise ValueError(f"p_threshold must be in (0, 1), got {p_threshold}")
+
+    x = sum(exceedances)
 
     # Compute transition matrix
-    transition_matrix = _compute_transition_matrix(violations)
-    n00, n01 = transition_matrix[0]
-    n10, n11 = transition_matrix[1]
-
-    T = len(violations)
-    N = sum(violations)
+    n00, n01, n10, n11 = _compute_transition_counts(exceedances)
 
     # Calculate transition probabilities
-    # π₀₁ = P(violation_t | no_violation_{t-1})
-    # π₁₁ = P(violation_t | violation_{t-1})
     n0 = n00 + n01  # Total transitions from no-violation
     n1 = n10 + n11  # Total transitions from violation
 
-    # Handle edge cases
+    # Handle edge cases: not enough transitions from one state
     if n0 == 0 or n1 == 0:
-        # Not enough data for independence test
-        lr_statistic = 0.0
-        p_value = 1.0
+        # Cannot test independence without transitions from both states
+        pi_01 = 0.0 if n0 == 0 else n01 / n0
+        pi_11 = 0.0 if n1 == 0 else n11 / n1
+
+        return ChristoffersenIndResult(
+            n=n,
+            x=x,
+            n00=n00,
+            n01=n01,
+            n10=n10,
+            n11=n11,
+            pi_01=pi_01,
+            pi_11=pi_11,
+            lr_ind=0.0,
+            p_value=1.0,
+            verdict="PASS",
+            notes=f"Insufficient transitions (n0={n0}, n1={n1}). Test inconclusive.",
+        )
+
+    # Transition probabilities
+    pi_01 = n01 / n0  # P(violation | no-violation)
+    pi_11 = n11 / n1  # P(violation | violation)
+
+    # Unconditional probability (under H0)
+    pi = x / n if n > 0 else 0.0
+
+    # Compute LR statistic
+    lr_ind = _compute_independence_lr(n00, n01, n10, n11, pi_01, pi_11, pi)
+
+    # p-value from χ²(1) using stdlib
+    p_value = chi2_df1_sf(lr_ind)
+
+    # Verdict
+    if p_value >= p_threshold:
+        verdict = "PASS"
+        notes = f"Violations are independent (p={p_value:.4f} >= {p_threshold})"
     else:
-        pi_01 = n01 / n0 if n0 > 0 else 0.0
-        pi_11 = n11 / n1 if n1 > 0 else 0.0
+        verdict = "FAIL"
+        notes = f"Violations show clustering (p={p_value:.4f} < {p_threshold})"
 
-        # Unconditional probability (under H0)
-        pi = N / T if T > 0 else 0.0
-
-        # Compute LR statistic
-        lr_statistic = _compute_independence_lr(n00, n01, n10, n11, pi_01, pi_11, pi)
-        p_value = chi2_sf(lr_statistic, df=1)
-
-    # Critical value for chi2(1)
-    critical_value = chi2_ppf(1 - alpha, df=1)
-
-    # Test decision
-    passed = p_value > alpha
-
-    return ChristoffersenResult(
-        test_name="Christoffersen Independence Test",
-        lr_statistic=lr_statistic,
+    return ChristoffersenIndResult(
+        n=n,
+        x=x,
+        n00=n00,
+        n01=n01,
+        n10=n10,
+        n11=n11,
+        pi_01=pi_01,
+        pi_11=pi_11,
+        lr_ind=lr_ind,
         p_value=p_value,
-        passed=passed,
-        critical_value=critical_value,
-        degrees_of_freedom=1,
-        n_violations=N,
-        n_observations=T,
-        transition_matrix=transition_matrix,
+        verdict=verdict,
+        notes=notes,
     )
 
 
-def christoffersen_conditional_coverage_test(
-    violations: List[bool], alpha: float = 0.05, var_alpha: float = 0.05
-) -> ChristoffersenResult:
+# ============================================================================
+# Christoffersen Conditional Coverage Test (LR-CC)
+# ============================================================================
+
+
+def christoffersen_lr_cc(
+    exceedances: Sequence[bool],
+    alpha: float,
+    *,
+    p_threshold: float = 0.05,
+) -> ChristoffersenCCResult:
     """
-    Christoffersen Conditional Coverage Test (LR_cc).
+    Christoffersen Conditional Coverage Test (LR-CC).
 
     Tests the joint hypothesis of:
     1. Correct unconditional coverage (Kupiec POF)
     2. Independence of violations (Christoffersen Independence)
 
     Args:
-        violations: Boolean list of violations (True = violation, False = no violation)
-        alpha: Significance level for the test (default: 0.05)
-        var_alpha: VaR significance level (e.g., 0.05 for 95% VaR)
+        exceedances: Boolean sequence (True = exceedance occurred)
+        alpha: Expected exceedance rate (e.g., 0.01 for 99% VaR)
+        p_threshold: Significance level for verdict (default 0.05)
 
     Returns:
-        ChristoffersenResult with test statistics
+        ChristoffersenCCResult with test statistics and verdict
+
+    Raises:
+        ValueError: If inputs are invalid
 
     Theory:
     -------
@@ -203,72 +310,83 @@ def christoffersen_conditional_coverage_test(
     H1: Model fails on coverage OR independence (or both)
 
     Example:
-        >>> violations = [False] * 95 + [True] * 5
-        >>> result = christoffersen_conditional_coverage_test(violations, var_alpha=0.05)
-        >>> print(result.passed)
+        >>> exceedances = [False] * 95 + [True] * 5
+        >>> result = christoffersen_lr_cc(exceedances, alpha=0.05)
+        >>> print(result.verdict)  # "PASS" or "FAIL"
     """
-    if len(violations) < 2:
-        raise ValueError("Need at least 2 observations for conditional coverage test")
+    # Validation
+    n = len(exceedances)
+    if n < 2:
+        raise ValueError(f"Need at least 2 observations for conditional coverage test, got {n}")
 
-    T = len(violations)
-    N = sum(violations)
+    if not 0 < alpha < 1:
+        raise ValueError(f"alpha must be in (0, 1), got {alpha}")
+
+    if not 0 < p_threshold < 1:
+        raise ValueError(f"p_threshold must be in (0, 1), got {p_threshold}")
+
+    x = sum(exceedances)
 
     # 1. Compute Kupiec POF LR statistic (LR_uc)
     from src.risk_layer.var_backtest.kupiec_pof import _compute_lr_statistic
 
-    p_star = var_alpha  # Expected violation rate
-    lr_uc = _compute_lr_statistic(T, N, p_star)
+    lr_uc = _compute_lr_statistic(n, x, alpha)
 
     # 2. Compute Independence LR statistic (LR_ind)
-    independence_result = christoffersen_independence_test(violations, alpha=alpha)
-    lr_ind = independence_result.lr_statistic
+    independence_result = christoffersen_lr_ind(exceedances, p_threshold=p_threshold)
+    lr_ind = independence_result.lr_ind
 
     # 3. Conditional Coverage LR statistic
     lr_cc = lr_uc + lr_ind
 
-    # p-value from χ²(2)
-    p_value = chi2_sf(lr_cc, df=2)
+    # p-value from χ²(2) using stdlib
+    p_value = chi2_df2_sf(lr_cc)
 
-    # Critical value for chi2(2)
-    critical_value = chi2_ppf(1 - alpha, df=2)
+    # Verdict
+    if p_value >= p_threshold:
+        verdict = "PASS"
+        notes = f"Model has correct coverage and independent violations (p={p_value:.4f} >= {p_threshold})"
+    else:
+        verdict = "FAIL"
+        notes = f"Model fails conditional coverage (p={p_value:.4f} < {p_threshold})"
 
-    # Test decision
-    passed = p_value > alpha
-
-    return ChristoffersenResult(
-        test_name="Christoffersen Conditional Coverage Test",
-        lr_statistic=lr_cc,
+    return ChristoffersenCCResult(
+        n=n,
+        x=x,
+        alpha=alpha,
+        lr_uc=lr_uc,
+        lr_ind=lr_ind,
+        lr_cc=lr_cc,
         p_value=p_value,
-        passed=passed,
-        critical_value=critical_value,
-        degrees_of_freedom=2,
-        n_violations=N,
-        n_observations=T,
-        transition_matrix=independence_result.transition_matrix,
+        verdict=verdict,
+        notes=notes,
     )
 
 
-def _compute_transition_matrix(violations: List[bool]) -> np.ndarray:
+# ============================================================================
+# Internal Helpers
+# ============================================================================
+
+
+def _compute_transition_counts(exceedances: Sequence[bool]) -> tuple[int, int, int, int]:
     """
-    Compute 2x2 transition matrix for violations.
+    Compute 2x2 transition matrix counts for exceedances.
 
     Args:
-        violations: Boolean list of violations
+        exceedances: Boolean sequence
 
     Returns:
-        2x2 numpy array: [[n00, n01], [n10, n11]]
-
-    where:
-        n00 = # of (no violation → no violation)
-        n01 = # of (no violation → violation)
-        n10 = # of (violation → no violation)
-        n11 = # of (violation → violation)
+        Tuple (n00, n01, n10, n11) where:
+            n00 = # of (no violation → no violation)
+            n01 = # of (no violation → violation)
+            n10 = # of (violation → no violation)
+            n11 = # of (violation → violation)
     """
     n00 = n01 = n10 = n11 = 0
 
-    for i in range(len(violations) - 1):
-        curr = violations[i]
-        next_val = violations[i + 1]
+    for i in range(len(exceedances) - 1):
+        curr = exceedances[i]
+        next_val = exceedances[i + 1]
 
         if not curr and not next_val:
             n00 += 1
@@ -279,11 +397,17 @@ def _compute_transition_matrix(violations: List[bool]) -> np.ndarray:
         elif curr and next_val:
             n11 += 1
 
-    return np.array([[n00, n01], [n10, n11]], dtype=int)
+    return n00, n01, n10, n11
 
 
 def _compute_independence_lr(
-    n00: int, n01: int, n10: int, n11: int, pi_01: float, pi_11: float, pi: float
+    n00: int,
+    n01: int,
+    n10: int,
+    n11: int,
+    pi_01: float,
+    pi_11: float,
+    pi: float,
 ) -> float:
     """
     Compute Likelihood Ratio statistic for Independence Test.
@@ -295,20 +419,18 @@ def _compute_independence_lr(
         pi: Unconditional violation probability
 
     Returns:
-        LR_ind statistic
+        LR_ind statistic (non-negative)
+
+    Notes:
+        Handles edge cases with eps clamping to avoid log(0).
     """
-    # Avoid log(0)
+    # Avoid log(0) by clamping
     if pi <= EPS or pi >= 1 - EPS:
         return 0.0
 
-    if pi_01 < EPS:
-        pi_01 = EPS
-    if pi_11 < EPS:
-        pi_11 = EPS
-    if pi_01 > 1 - EPS:
-        pi_01 = 1 - EPS
-    if pi_11 > 1 - EPS:
-        pi_11 = 1 - EPS
+    # Clamp transition probabilities
+    pi_01 = max(EPS, min(1 - EPS, pi_01))
+    pi_11 = max(EPS, min(1 - EPS, pi_11))
 
     # Restricted likelihood (H0: π₀₁ = π₁₁ = π)
     log_L_restricted = (n00 + n10) * math.log(1 - pi) + (n01 + n11) * math.log(pi)
@@ -323,89 +445,42 @@ def _compute_independence_lr(
     # LR statistic
     lr = -2 * (log_L_restricted - log_L_unrestricted)
 
-    return max(0.0, lr)  # Can't be negative
+    return max(0.0, lr)  # Cannot be negative
 
 
 # ============================================================================
-# Chi-Square Distribution Functions (with optional scipy fallback)
-# ============================================================================
-
-
-def chi2_sf(x: float, df: int) -> float:
-    """
-    Chi-square survival function (1 - CDF).
-
-    Args:
-        x: Chi-square statistic (non-negative)
-        df: Degrees of freedom (1 or 2)
-
-    Returns:
-        Survival function value (p-value)
-    """
-    if SCIPY_AVAILABLE:
-        return float(scipy_chi2.sf(x, df))
-
-    # Fallback implementation
-    if df == 1:
-        return chi2_df1_sf(x)
-    elif df == 2:
-        return chi2_df2_sf(x)
-    else:
-        raise ValueError(f"Fallback only supports df=1 or df=2, got df={df}")
-
-
-def chi2_ppf(p: float, df: int) -> float:
-    """
-    Chi-square percent point function (inverse CDF).
-
-    Args:
-        p: Probability (must be in (0, 1))
-        df: Degrees of freedom (1 or 2)
-
-    Returns:
-        Critical value x where CDF(x) = p
-    """
-    if SCIPY_AVAILABLE:
-        return float(scipy_chi2.ppf(p, df))
-
-    # Fallback implementation
-    if df == 1:
-        return chi2_df1_ppf(p)
-    elif df == 2:
-        return chi2_df2_ppf(p)
-    else:
-        raise ValueError(f"Fallback only supports df=1 or df=2, got df={df}")
-
-
-# ============================================================================
-# Chi-Square df=1 (from kupiec_pof.py)
+# Chi-Square Distribution Functions (stdlib-only)
 # ============================================================================
 
 
 def chi2_df1_sf(x: float) -> float:
-    """Chi-square survival function for df=1."""
+    """
+    Chi-square survival function (1 - CDF) for df=1.
+
+    Uses the relationship between chi-square(1) and standard normal:
+    If Z ~ N(0,1), then Z² ~ χ²(1)
+
+    CDF(x) = erf(sqrt(x/2))
+    SF(x) = 1 - CDF(x) = erfc(sqrt(x/2))
+
+    Args:
+        x: Chi-square statistic (non-negative)
+
+    Returns:
+        Survival function value (p-value)
+    """
     if x < 0:
         return 1.0
     if x == 0:
         return 1.0
+
+    # Use erfc for better numerical stability at large x
     return math.erfc(math.sqrt(x / 2))
-
-
-def chi2_df1_ppf(p: float) -> float:
-    """Chi-square percent point function for df=1."""
-    from src.risk_layer.var_backtest.kupiec_pof import chi2_df1_ppf as kupiec_ppf
-
-    return kupiec_ppf(p)
-
-
-# ============================================================================
-# Chi-Square df=2 (Agent A3 Implementation)
-# ============================================================================
 
 
 def chi2_df2_sf(x: float) -> float:
     """
-    Chi-square survival function for df=2.
+    Chi-square survival function (1 - CDF) for df=2.
 
     For df=2, the chi-square distribution is exponential:
     CDF(x) = 1 - exp(-x/2)
@@ -415,18 +490,135 @@ def chi2_df2_sf(x: float) -> float:
         x: Chi-square statistic (non-negative)
 
     Returns:
-        Survival function value
+        Survival function value (p-value)
     """
     if x < 0:
         return 1.0
     if x == 0:
         return 1.0
+
     return math.exp(-x / 2)
+
+
+# ============================================================================
+# Legacy API Compatibility (for existing code)
+# ============================================================================
+
+
+@dataclass
+class ChristoffersenResult:
+    """
+    Legacy result type for backward compatibility.
+
+    Maintained for existing code that uses the old API.
+    New code should use ChristoffersenIndResult or ChristoffersenCCResult.
+    """
+
+    test_name: str
+    lr_statistic: float
+    p_value: float
+    passed: bool
+    critical_value: float
+    degrees_of_freedom: int
+    n_violations: int
+    n_observations: int
+    transition_matrix: tuple[tuple[int, int], tuple[int, int]] | None = None
+
+    def __repr__(self) -> str:
+        status = "✅ PASS" if self.passed else "❌ FAIL"
+        return f"<{self.test_name}: LR={self.lr_statistic:.4f}, p={self.p_value:.4f}, {status}>"
+
+
+def christoffersen_independence_test(
+    violations: Sequence[bool],
+    alpha: float = 0.05,
+) -> ChristoffersenResult:
+    """
+    Legacy API: Christoffersen Independence Test.
+
+    This function maintains backward compatibility with existing code.
+    New code should use christoffersen_lr_ind() for Phase 8B API.
+
+    Args:
+        violations: Boolean list of violations (True = violation)
+        alpha: Significance level for the test (default: 0.05)
+
+    Returns:
+        ChristoffersenResult with test statistics
+    """
+    result = christoffersen_lr_ind(violations, p_threshold=alpha)
+
+    # Map to legacy result type
+    transition_matrix = (
+        (result.n00, result.n01),
+        (result.n10, result.n11),
+    )
+
+    # Compute critical value for chi2(1)
+    from src.risk_layer.var_backtest.kupiec_pof import chi2_df1_ppf
+
+    critical_value = chi2_df1_ppf(1 - alpha)
+
+    return ChristoffersenResult(
+        test_name="Christoffersen Independence Test",
+        lr_statistic=result.lr_ind,
+        p_value=result.p_value,
+        passed=(result.verdict == "PASS"),
+        critical_value=critical_value,
+        degrees_of_freedom=1,
+        n_violations=result.x,
+        n_observations=result.n,
+        transition_matrix=transition_matrix,
+    )
+
+
+def christoffersen_conditional_coverage_test(
+    violations: Sequence[bool],
+    alpha: float = 0.05,
+    var_alpha: float = 0.05,
+) -> ChristoffersenResult:
+    """
+    Legacy API: Christoffersen Conditional Coverage Test.
+
+    This function maintains backward compatibility with existing code.
+    New code should use christoffersen_lr_cc() for Phase 8B API.
+
+    Args:
+        violations: Boolean list of violations (True = violation)
+        alpha: Significance level for the test (default: 0.05)
+        var_alpha: VaR significance level (e.g., 0.05 for 95% VaR)
+
+    Returns:
+        ChristoffersenResult with test statistics
+    """
+    result = christoffersen_lr_cc(violations, alpha=var_alpha, p_threshold=alpha)
+
+    # Get transition matrix from independence test
+    ind_result = christoffersen_lr_ind(violations, p_threshold=alpha)
+    transition_matrix = (
+        (ind_result.n00, ind_result.n01),
+        (ind_result.n10, ind_result.n11),
+    )
+
+    # Compute critical value for chi2(2)
+    critical_value = chi2_df2_ppf(1 - alpha)
+
+    return ChristoffersenResult(
+        test_name="Christoffersen Conditional Coverage Test",
+        lr_statistic=result.lr_cc,
+        p_value=result.p_value,
+        passed=(result.verdict == "PASS"),
+        critical_value=critical_value,
+        degrees_of_freedom=2,
+        n_violations=result.x,
+        n_observations=result.n,
+        transition_matrix=transition_matrix,
+    )
 
 
 def chi2_df2_ppf(p: float) -> float:
     """
-    Chi-square percent point function for df=2.
+    Chi-square percent point function (inverse CDF) for df=2.
 
     For df=2:
     CDF(x) = 1 - exp(-x/2)
@@ -449,14 +641,12 @@ def chi2_df2_ppf(p: float) -> float:
     return -2 * math.log(1 - p)
 
 
-# ============================================================================
-# Convenience Functions
-# ============================================================================
-
-
-def run_full_var_backtest(violations: List[bool], alpha: float = 0.05) -> dict:
+def run_full_var_backtest(
+    violations: Sequence[bool],
+    alpha: float = 0.05,
+) -> dict:
     """
-    Run full VaR backtest suite (Kupiec + Christoffersen).
+    Legacy API: Run full VaR backtest suite (Kupiec + Christoffersen).
 
     Convenience wrapper that runs all three tests:
     - Kupiec POF (unconditional coverage)
@@ -470,31 +660,28 @@ def run_full_var_backtest(violations: List[bool], alpha: float = 0.05) -> dict:
     Returns:
         Dictionary with all test results:
         {
-            "kupiec": KupiecResult,
+            "kupiec": KupiecPOFOutput,
             "independence": ChristoffersenResult,
             "conditional_coverage": ChristoffersenResult,
             "all_passed": bool
         }
-
-    Example:
-        >>> results = run_full_var_backtest(violations, alpha=0.05)
-        >>> if results["all_passed"]:
-        ...     print("✅ VaR model passed all tests")
-        >>> else:
-        ...     print(f"❌ Failed tests: {[k for k, v in results.items() if hasattr(v, 'passed') and not v.passed]}")
     """
     from src.risk_layer.var_backtest.kupiec_pof import kupiec_pof_test
 
     # Kupiec POF Test (use 1-alpha for confidence level)
     confidence_level = 1 - alpha
     kupiec_result = kupiec_pof_test(
-        violations, confidence_level=confidence_level, significance_level=0.05
+        violations,
+        confidence_level=confidence_level,
+        significance_level=0.05,
     )
 
     # Christoffersen Tests
     independence_result = christoffersen_independence_test(violations, alpha=0.05)
     conditional_coverage_result = christoffersen_conditional_coverage_test(
-        violations, alpha=0.05, var_alpha=alpha
+        violations,
+        alpha=0.05,
+        var_alpha=alpha,
     )
 
     # Check if all passed
