@@ -1,0 +1,20 @@
+{
+  "name": "COVID-19 Crash March 2020",
+  "date": "2020-03-12",
+  "description": "Global pandemic declaration caused massive market selloff. Bitcoin dropped 50% in a single day (Black Thursday), altcoins fell even harder. Traditional correlation with equities spiked dramatically.",
+  "asset_shocks": {
+    "BTC-EUR": -0.50,
+    "BTC-USDT": -0.50,
+    "ETH-EUR": -0.60,
+    "ETH-USDT": -0.60,
+    "XRP-EUR": -0.45,
+    "XRP-USDT": -0.45,
+    "ADA-EUR": -0.55,
+    "ADA-USDT": -0.55,
+    "SOL-EUR": -0.65,
+    "SOL-USDT": -0.65,
+    "default": -0.40
+  },
+  "probability": "extreme",
+  "historical_frequency": "once_per_decade"
+}

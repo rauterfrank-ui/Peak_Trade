@@ -42,11 +42,21 @@ from .var import (
     historical_cvar,
     parametric_var,
     parametric_cvar,
+    cornish_fisher_var,
+    cornish_fisher_cvar,
+    ewma_var,
+    ewma_cvar,
 )
 from .stress import (
     StressScenario,
     apply_scenario_to_returns,
     run_stress_suite,
+)
+from .stress_tester import (
+    StressTester,
+    StressScenarioData,
+    StressTestResult,
+    ReverseStressResult,
 )
 from .enforcement import (
     RiskLimitsV2,
@@ -68,6 +78,28 @@ from .parametric_var import (
 from .component_var import (
     ComponentVaRCalculator,
     ComponentVaRResult,
+    IncrementalVaRResult,
+    DiversificationBenefitResult,
+    calculate_incremental_var,
+    calculate_diversification_benefit,
+)
+
+# Monte Carlo VaR (Risk Layer v1.0)
+from .monte_carlo import (
+    MonteCarloVaRCalculator,
+    MonteCarloVaRConfig,
+    MonteCarloVaRResult,
+    EquityPathResult,
+    MonteCarloMethod,
+    CopulaType,
+    build_monte_carlo_var_from_config,
+)
+
+# Risk Layer Manager v1.0 (Integration)
+from .risk_layer_manager import (
+    RiskLayerManager,
+    RiskAssessmentResult,
+    build_risk_layer_manager_from_config,
 )
 
 __all__ = [
@@ -98,10 +130,19 @@ __all__ = [
     "historical_cvar",
     "parametric_var",
     "parametric_cvar",
+    "cornish_fisher_var",
+    "cornish_fisher_cvar",
+    "ewma_var",
+    "ewma_cvar",
     # v1 Stress Testing
     "StressScenario",
     "apply_scenario_to_returns",
     "run_stress_suite",
+    # Portfolio Stress Testing (Risk Layer v1.0)
+    "StressTester",
+    "StressScenarioData",
+    "StressTestResult",
+    "ReverseStressResult",
     # v1 Enforcement
     "RiskLimitsV2",
     "RiskEnforcer",
@@ -115,4 +156,20 @@ __all__ = [
     "portfolio_sigma_from_cov",
     "ComponentVaRCalculator",
     "ComponentVaRResult",
+    "IncrementalVaRResult",
+    "DiversificationBenefitResult",
+    "calculate_incremental_var",
+    "calculate_diversification_benefit",
+    # Monte Carlo VaR (Risk Layer v1.0)
+    "MonteCarloVaRCalculator",
+    "MonteCarloVaRConfig",
+    "MonteCarloVaRResult",
+    "EquityPathResult",
+    "MonteCarloMethod",
+    "CopulaType",
+    "build_monte_carlo_var_from_config",
+    # Risk Layer Manager v1.0 (Integration)
+    "RiskLayerManager",
+    "RiskAssessmentResult",
+    "build_risk_layer_manager_from_config",
 ]
