@@ -42,6 +42,10 @@ from .var import (
     historical_cvar,
     parametric_var,
     parametric_cvar,
+    cornish_fisher_var,
+    cornish_fisher_cvar,
+    ewma_var,
+    ewma_cvar,
 )
 from .stress import (
     StressScenario,
@@ -108,6 +112,10 @@ __all__ = [
     "historical_cvar",
     "parametric_var",
     "parametric_cvar",
+    "cornish_fisher_var",
+    "cornish_fisher_cvar",
+    "ewma_var",
+    "ewma_cvar",
     # v1 Stress Testing
     "StressScenario",
     "apply_scenario_to_returns",

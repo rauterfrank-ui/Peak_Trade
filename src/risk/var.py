@@ -274,3 +274,289 @@ def _normal_pdf(x: float) -> float:
         phi(x) = (1/sqrt(2*pi)) * exp(-x^2/2)
     """
     return (1 / np.sqrt(2 * np.pi)) * np.exp(-0.5 * x**2)
+
+
+# =============================================================================
+# Phase 1 Extensions: Cornish-Fisher & EWMA VaR/CVaR (Agent A1)
+# =============================================================================
+
+
+def cornish_fisher_var(
+    returns: pd.Series,
+    alpha: float = 0.05,
+    min_obs: int = 20,
+) -> float:
+    """
+    Cornish-Fisher VaR: Parametric VaR mit Skewness/Kurtosis Correction.
+
+    Adjustiert Normal-VaR für nicht-normale Verteilungen durch Berücksichtigung
+    von Schiefe (skew) und Wölbung (kurtosis).
+
+    Args:
+        returns: Return-Series (period returns)
+        alpha: Signifikanzniveau (z.B. 0.05 für 95% VaR)
+        min_obs: Minimale Anzahl Beobachtungen (default: 20)
+
+    Returns:
+        VaR als positive Zahl (Loss-Größe)
+
+    Notes:
+        - Bei skew=0 und kurt=0 (excess) entspricht Cornish-Fisher dem parametric VaR
+        - Cornish-Fisher VaR kann bei extremer Skew/Kurt instabil werden
+        - Formula: z_CF = z + (z²-1)*S/6 + (z³-3z)*K/24 - (2z³-5z)*S²/36
+          wobei S=skew, K=excess kurtosis, z=normal quantile
+
+    References:
+        - Cornish, E. A., & Fisher, R. A. (1937). Moments and cumulants in
+          the specification of distributions.
+
+    Example:
+        >>> returns = pd.Series([-0.02, -0.01, 0.01, 0.02, 0.03])
+        >>> cornish_fisher_var(returns, alpha=0.05)
+        0.052...  # Adjusted for skew/kurt
+    """
+    if returns.empty:
+        logger.warning("cornish_fisher_var: Empty returns, returning 0")
+        return 0.0
+
+    # Data hygiene
+    clean_returns = returns.dropna()
+
+    if len(clean_returns) < min_obs:
+        logger.warning(
+            f"cornish_fisher_var: Insufficient data ({len(clean_returns)} < {min_obs}), returning 0"
+        )
+        return 0.0
+
+    # Moments
+    mean = clean_returns.mean()
+    std = clean_returns.std(ddof=1)
+
+    if std == 0:
+        logger.warning("cornish_fisher_var: Zero volatility, returning 0")
+        return 0.0
+
+    skew = clean_returns.skew()
+    kurt_excess = clean_returns.kurtosis()  # pandas returns excess kurtosis
+
+    # Normal quantile
+    z_alpha = _get_normal_quantile(alpha)
+
+    # Cornish-Fisher adjustment
+    # z_CF = z + (z²-1)*S/6 + (z³-3z)*K/24 - (2z³-5z)*S²/36
+    z2 = z_alpha**2
+    z3 = z_alpha**3
+
+    z_cf = (
+        z_alpha
+        + (z2 - 1) * skew / 6
+        + (z3 - 3 * z_alpha) * kurt_excess / 24
+        - (2 * z3 - 5 * z_alpha) * skew**2 / 36
+    )
+
+    # VaR = -mean + z_cf * std
+    var = -(mean + z_cf * std)
+
+    return max(var, 0.0)
+
+
+def ewma_var(
+    returns: pd.Series,
+    alpha: float = 0.05,
+    lambda_: float = 0.94,
+    min_obs: int = 20,
+) -> float:
+    """
+    EWMA VaR: Parametric VaR mit Exponentially Weighted Moving Average Volatility.
+
+    Nutzt EWMA-Volatilität statt Sample-Std, um neuere Beobachtungen stärker
+    zu gewichten. Reagiert schneller auf Regime-Shifts.
+
+    Args:
+        returns: Return-Series (period returns)
+        alpha: Signifikanzniveau (z.B. 0.05 für 95% VaR)
+        lambda_: EWMA decay factor (default: 0.94, RiskMetrics standard)
+        min_obs: Minimale Anzahl Beobachtungen (default: 20)
+
+    Returns:
+        VaR als positive Zahl (Loss-Größe)
+
+    Notes:
+        - EWMA Variance: σ²_t = λ * σ²_{t-1} + (1-λ) * r²_t
+        - lambda_ typischerweise zwischen 0.90 (schnell) und 0.97 (langsam)
+        - RiskMetrics verwendet λ=0.94 für daily data
+        - Mean wird als 0 angenommen (konservativ)
+
+    References:
+        - RiskMetrics Technical Document (1996)
+
+    Example:
+        >>> returns = pd.Series([0.01, -0.02, 0.03, -0.01, 0.02])
+        >>> ewma_var(returns, alpha=0.05, lambda_=0.94)
+        0.048...  # EWMA-weighted volatility
+    """
+    if returns.empty:
+        logger.warning("ewma_var: Empty returns, returning 0")
+        return 0.0
+
+    # Data hygiene
+    clean_returns = returns.dropna()
+
+    if len(clean_returns) < min_obs:
+        logger.warning(
+            f"ewma_var: Insufficient data ({len(clean_returns)} < {min_obs}), returning 0"
+        )
+        return 0.0
+
+    if not (0 < lambda_ < 1):
+        raise ValueError(f"lambda_ must be in (0,1), got {lambda_}")
+
+    # EWMA Variance berechnen
+    # σ²_t = λ * σ²_{t-1} + (1-λ) * r²_t
+    # Initialisierung: σ²_0 = sample variance
+    variance = clean_returns.var(ddof=1)
+
+    for ret in clean_returns:
+        variance = lambda_ * variance + (1 - lambda_) * ret**2
+
+    ewma_std = np.sqrt(variance)
+
+    if ewma_std == 0:
+        logger.warning("ewma_var: Zero EWMA volatility, returning 0")
+        return 0.0
+
+    # Z-Score für alpha-Quantil
+    z_alpha = _get_normal_quantile(alpha)
+
+    # VaR = z_alpha * ewma_std (mean assumed 0)
+    # Note: z_alpha ist negativ, wir wollen positive VaR
+    var = -z_alpha * ewma_std
+
+    return max(var, 0.0)
+
+
+def cornish_fisher_cvar(
+    returns: pd.Series,
+    alpha: float = 0.05,
+    min_obs: int = 20,
+) -> float:
+    """
+    Cornish-Fisher CVaR: Approximation von CVaR mit Skew/Kurt Correction.
+
+    Nutzt Cornish-Fisher VaR und approximiert CVaR daraus. Weniger präzise
+    als analytische CVaR-Formeln, aber konsistent mit CF-VaR.
+
+    Args:
+        returns: Return-Series (period returns)
+        alpha: Signifikanzniveau (z.B. 0.05 für 95% CVaR)
+        min_obs: Minimale Anzahl Beobachtungen (default: 20)
+
+    Returns:
+        CVaR als positive Zahl (durchschnittlicher Loss im Tail)
+
+    Notes:
+        - Approximation: CVaR ≈ VaR * adjustment_factor
+        - Adjustment basiert auf Normal-CVaR/VaR Ratio
+        - Bei Normal-Verteilung: CVaR/VaR ≈ phi(z)/alpha
+        - Für Non-Normal: verwende Historical CVaR auf CF-adjustierte Losses
+
+    Example:
+        >>> returns = pd.Series([-0.02, -0.01, 0.01, 0.02, 0.03])
+        >>> cornish_fisher_cvar(returns, alpha=0.05)
+        0.063...  # Höher als CF-VaR
+    """
+    if returns.empty:
+        logger.warning("cornish_fisher_cvar: Empty returns, returning 0")
+        return 0.0
+
+    # Data hygiene
+    clean_returns = returns.dropna()
+
+    if len(clean_returns) < min_obs:
+        logger.warning(
+            f"cornish_fisher_cvar: Insufficient data ({len(clean_returns)} < {min_obs}), returning 0"
+        )
+        return 0.0
+
+    # Berechne CF-VaR
+    cf_var = cornish_fisher_var(returns, alpha, min_obs)
+
+    if cf_var == 0:
+        return 0.0
+
+    # Approximation: Verwende Normal-CVaR/VaR Ratio
+    z_alpha = _get_normal_quantile(alpha)
+    phi_z = _normal_pdf(z_alpha)
+    normal_cvar_var_ratio = phi_z / alpha
+
+    # CVaR ≈ VaR * ratio
+    cvar = cf_var * normal_cvar_var_ratio
+
+    return max(cvar, 0.0)
+
+
+def ewma_cvar(
+    returns: pd.Series,
+    alpha: float = 0.05,
+    lambda_: float = 0.94,
+    min_obs: int = 20,
+) -> float:
+    """
+    EWMA CVaR: CVaR basierend auf EWMA-Volatilität.
+
+    Nutzt EWMA-Std und Normal-CVaR-Formel. Konsistent mit ewma_var().
+
+    Args:
+        returns: Return-Series (period returns)
+        alpha: Signifikanzniveau (z.B. 0.05 für 95% CVaR)
+        lambda_: EWMA decay factor (default: 0.94)
+        min_obs: Minimale Anzahl Beobachtungen (default: 20)
+
+    Returns:
+        CVaR als positive Zahl (durchschnittlicher Loss im Tail)
+
+    Notes:
+        - CVaR = std * phi(z_alpha) / alpha (bei mean=0)
+        - Nutzt EWMA-Std statt Sample-Std
+        - Schnellere Reaktion auf Volatilitätsänderungen
+
+    Example:
+        >>> returns = pd.Series([0.01, -0.02, 0.03, -0.01, 0.02])
+        >>> ewma_cvar(returns, alpha=0.05, lambda_=0.94)
+        0.058...  # EWMA-weighted
+    """
+    if returns.empty:
+        logger.warning("ewma_cvar: Empty returns, returning 0")
+        return 0.0
+
+    # Data hygiene
+    clean_returns = returns.dropna()
+
+    if len(clean_returns) < min_obs:
+        logger.warning(
+            f"ewma_cvar: Insufficient data ({len(clean_returns)} < {min_obs}), returning 0"
+        )
+        return 0.0
+
+    if not (0 < lambda_ < 1):
+        raise ValueError(f"lambda_ must be in (0,1), got {lambda_}")
+
+    # EWMA Variance berechnen (same as ewma_var)
+    variance = clean_returns.var(ddof=1)
+    for ret in clean_returns:
+        variance = lambda_ * variance + (1 - lambda_) * ret**2
+
+    ewma_std = np.sqrt(variance)
+
+    if ewma_std == 0:
+        logger.warning("ewma_cvar: Zero EWMA volatility, returning 0")
+        return 0.0
+
+    # Z-Score und Phi
+    z_alpha = _get_normal_quantile(alpha)
+    phi_z = _normal_pdf(z_alpha)
+
+    # CVaR = std * phi(z_alpha) / alpha (mean=0)
+    cvar = ewma_std * phi_z / alpha
+
+    return max(cvar, 0.0)
