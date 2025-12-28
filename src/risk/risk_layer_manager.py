@@ -130,6 +130,10 @@ class RiskLayerManager:
         self.var_functions = {}
         self.cvar_functions = {}
 
+        # Central portfolio VaR components (shared across features)
+        self._cov_estimator = None
+        self._parametric_var_engine = None
+
         self._parse_config()
         self._set_feature_flags()
         self._initialize_components()
@@ -195,6 +199,33 @@ class RiskLayerManager:
             if self.backtest_enabled:
                 self.enabled_features.append("backtest")
 
+    def _get_or_create_cov_estimator(self):
+        """Get or create the central covariance estimator (lazy init, DRY)."""
+        if self._cov_estimator is None:
+            from src.risk.covariance import CovarianceEstimator, CovarianceEstimatorConfig, CovarianceMethod
+
+            cov_method_str = self._get_from_dict("risk_layer_v1.component_var.covariance_method", "sample")
+            cov_config = CovarianceEstimatorConfig(
+                method=CovarianceMethod(cov_method_str),
+                min_history=self._get_from_dict("risk_layer_v1.component_var.min_history", 60)
+            )
+            self._cov_estimator = CovarianceEstimator(cov_config)
+            logger.debug("Central CovarianceEstimator created")
+        return self._cov_estimator
+
+    def _get_or_create_parametric_var_engine(self):
+        """Get or create the central parametric VaR engine (lazy init, DRY)."""
+        if self._parametric_var_engine is None:
+            from src.risk.parametric_var import ParametricVaR, ParametricVaRConfig
+
+            var_config = ParametricVaRConfig(
+                confidence_level=self._get_from_dict("risk_layer_v1.var.confidence_level", 0.95),
+                horizon_days=self._get_from_dict("risk_layer_v1.var.horizon_days", 1)
+            )
+            self._parametric_var_engine = ParametricVaR(var_config)
+            logger.debug("Central ParametricVaR engine created")
+        return self._parametric_var_engine
+
     def _initialize_components(self):
         """Initialize enabled components."""
         # Only initialize if Risk Layer is enabled
@@ -230,27 +261,14 @@ class RiskLayerManager:
         if self.component_var_enabled:
             try:
                 from src.risk import ComponentVaRCalculator
-                from src.risk.covariance import CovarianceEstimator, CovarianceEstimatorConfig, CovarianceMethod
-                from src.risk.parametric_var import ParametricVaR, ParametricVaRConfig
 
-                # Create covariance estimator
-                cov_method_str = self._get_from_dict("risk_layer_v1.component_var.covariance_method", "sample")
-                cov_config = CovarianceEstimatorConfig(
-                    method=CovarianceMethod(cov_method_str),
-                    min_history=self._get_from_dict("risk_layer_v1.component_var.min_history", 60)
-                )
-                cov_estimator = CovarianceEstimator(cov_config)
+                # Reuse central covariance estimator and parametric VaR engine (DRY)
+                cov_estimator = self._get_or_create_cov_estimator()
+                var_engine = self._get_or_create_parametric_var_engine()
 
-                # Create VaR engine
-                var_config = ParametricVaRConfig(
-                    confidence_level=self._get_from_dict("risk_layer_v1.var.confidence_level", 0.95),
-                    horizon_days=self._get_from_dict("risk_layer_v1.var.horizon_days", 1)
-                )
-                var_engine = ParametricVaR(var_config)
-
-                # Create ComponentVaRCalculator
+                # Create ComponentVaRCalculator with shared instances
                 self.component_var_calculator = ComponentVaRCalculator(cov_estimator, var_engine)
-                logger.debug("Component VaR initialized")
+                logger.debug("Component VaR initialized (reusing central cov + var engine)")
             except Exception as e:
                 logger.warning(f"Component VaR initialization failed: {e}")
                 self.component_var_calculator = None
