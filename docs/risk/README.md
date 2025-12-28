@@ -19,6 +19,12 @@ Diese Dokumentation beschreibt das Risk-Management-System von Peak_Trade, einsch
 - **[Risk Layer v1 - Change Justification](RISK_LAYER_V1_CHANGE_JUSTIFICATION.md)**  
   Begründung für Design-Entscheidungen und Architektur-Choices
 
+- **[Integration Guide](INTEGRATION_GUIDE.md)** 🆕  
+  How to use multiple Risk Layer components together - Workflows, Examples, Best Practices
+
+- **[VaR Validation Operator Guide](VAR_VALIDATION_OPERATOR_GUIDE.md)** 🆕  
+  Quick-start guide for operators: When to run, how to interpret results, troubleshooting
+
 ### Roadmaps
 
 - **[Portfolio VaR Roadmap](roadmaps/PORTFOLIO_VAR_ROADMAP.md)**  
@@ -28,17 +34,21 @@ Diese Dokumentation beschreibt das Risk-Management-System von Peak_Trade, einsch
 
 ## Quick Links
 
-### Current Implementation (Risk Layer v1)
+### Current Implementation (Risk Layer v1 + v1.1)
 
 **Status:** ✅ Production-Ready (Backtests)
 
 **Features:**
 - Portfolio-Level Risk Management (Exposures, Weights)
-- VaR/CVaR (Historical + Parametric)
-- Stress-Testing (5 Scenario-Types)
+- VaR/CVaR (Historical, Parametric, EWMA, Cornish-Fisher)
+- **🆕 VaR Validation (Kupiec POF Test, Basel Traffic Light)** - Phase 2
+- Component VaR (Risk Attribution & Decomposition)
+- Monte Carlo VaR (Simulation-based risk estimation)
+- Stress-Testing (5 Historical Crypto Scenarios)
 - Risk-Limit Enforcement (Circuit-Breaker)
 
-**Tests:** 96/96 passed (100%)
+**Tests:** 177/177 passed (100%)  
+_(96 core + 81 validation tests)_
 
 **Config Example:**
 ```toml
@@ -65,6 +75,51 @@ risk_manager = build_risk_manager_from_config(cfg)
 engine = BacktestEngine(risk_manager=risk_manager)
 result = engine.run_realistic(df, strategy_fn, params)
 ```
+
+---
+
+### Phase 2: VaR Validation 🆕
+
+**Status:** ✅ Live on main (PR #413 merged 2025-12-28)
+
+**Features:**
+- **Kupiec POF Test** - Statistical validation of VaR breach rate
+- **Basel Traffic Light System** - Regulatory classification (Green/Yellow/Red zones)
+- **Full Backtest Runner** - Automated VaR validation workflow
+- **Breach Analysis** - Pattern detection (clustering, gaps, streaks)
+
+**Pure Python Implementation:**
+- ✅ No SciPy dependency
+- ✅ Chi-square p-value via `math.erfc()`
+- ✅ Deterministic & CI-safe
+
+**Tests:** 81/81 passed (100%)
+
+**Usage:**
+```python
+from src.risk.var import historical_var
+from src.risk.validation import run_var_backtest
+
+# Calculate VaR
+var_value = historical_var(returns_train, alpha=0.05)
+
+# Run backtest
+var_series = pd.Series(var_value, index=returns_test.index)
+result = run_var_backtest(
+    returns=returns_test,
+    var_series=var_series,
+    confidence_level=0.95
+)
+
+print(f"Kupiec Test: {result.kupiec.result}")
+print(f"Basel Traffic Light: {result.traffic_light.color}")
+print(result.to_markdown())  # Generate report
+```
+
+**Documentation:**
+- [Phase 2 Implementation Report](AGENT_C_PHASE2_VALIDATION_REPORT.md)
+- [Phase 2 Test Hardening Report](AGENT_QA_PHASE2_HARDENING_REPORT.md)
+- [Integration Guide](INTEGRATION_GUIDE.md) - Workflows & Examples
 
 ---
 
@@ -133,6 +188,15 @@ python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stres
 
 ## Changelog
 
+### 2025-12-28: Phase 2 - VaR Validation 🆕
+- **81 new tests** for VaR validation (100% pass)
+- Kupiec POF Test (pure Python, no SciPy)
+- Basel Traffic Light System
+- Full backtest runner with breach analysis
+- JSON & Markdown report generation
+- Integration Guide with workflows
+- PR #413 merged to main
+
 ### 2025-12-25: Portfolio VaR Roadmap
 - Added 5-Phase Roadmap for Portfolio-VaR Evolution
 - Safety-First approach with staged rollout
@@ -154,5 +218,4 @@ python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stres
 
 ---
 
-**Last Updated:** 2025-12-25
-
+**Last Updated:** 2025-12-28

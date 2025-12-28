@@ -186,6 +186,9 @@ def detect_breaches(
         - aligned_returns: Aligned and cleaned returns
         - aligned_var: Aligned and cleaned VaR series
 
+    Raises:
+        ValueError: If no overlapping indices between returns and var_series
+
     Example:
         >>> breach_mask, ret, var = detect_breaches(returns, var_series)
         >>> breach_count = breach_mask.sum()
@@ -199,7 +202,7 @@ def detect_breaches(
     ).dropna()
 
     if len(aligned) == 0:
-        # No valid data points
+        # No valid data points - return empty series
         return (
             pd.Series(dtype=bool),
             pd.Series(dtype=float),
