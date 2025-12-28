@@ -77,13 +77,10 @@ class KillSwitch:
         self._recovery_started_at: Optional[datetime] = None
 
         # Cooldown configuration
-        self._recovery_cooldown = timedelta(
-            seconds=config.get("recovery_cooldown_seconds", 300)
-        )
+        self._recovery_cooldown = timedelta(seconds=config.get("recovery_cooldown_seconds", 300))
 
         self._logger.info(
-            f"KillSwitch initialized: state={self._state.name}, "
-            f"cooldown={self._recovery_cooldown}"
+            f"KillSwitch initialized: state={self._state.name}, cooldown={self._recovery_cooldown}"
         )
 
     @property
@@ -170,9 +167,7 @@ class KillSwitch:
         """
         with self._lock:
             if self._state == KillSwitchState.DISABLED:
-                self._logger.warning(
-                    "⚠️  Kill Switch is DISABLED (Backtest Mode) - Trigger ignored"
-                )
+                self._logger.warning("⚠️  Kill Switch is DISABLED (Backtest Mode) - Trigger ignored")
                 return False
 
             if self._state == KillSwitchState.KILLED:
@@ -196,8 +191,7 @@ class KillSwitch:
             self._events.append(event)
 
             self._logger.critical(
-                f"🚨 KILL SWITCH TRIGGERED: {reason} "
-                f"(by={triggered_by}, from={previous.name})"
+                f"🚨 KILL SWITCH TRIGGERED: {reason} (by={triggered_by}, from={previous.name})"
             )
 
             # Execute callbacks (outside lock to avoid deadlocks)
@@ -227,15 +221,12 @@ class KillSwitch:
         with self._lock:
             # Idempotent: if already RECOVERING, return True
             if self._state == KillSwitchState.RECOVERING:
-                self._logger.info(
-                    f"Already RECOVERING (idempotent request by {approved_by})"
-                )
+                self._logger.info(f"Already RECOVERING (idempotent request by {approved_by})")
                 return True
 
             if self._state != KillSwitchState.KILLED:
                 self._logger.warning(
-                    f"Recovery only possible from KILLED state, "
-                    f"currently: {self._state.name}"
+                    f"Recovery only possible from KILLED state, currently: {self._state.name}"
                 )
                 return False
 
@@ -373,9 +364,7 @@ class KillSwitch:
                 "is_active": self.is_active,
                 "killed_at": self._killed_at.isoformat() if self._killed_at else None,
                 "recovery_started_at": (
-                    self._recovery_started_at.isoformat()
-                    if self._recovery_started_at
-                    else None
+                    self._recovery_started_at.isoformat() if self._recovery_started_at else None
                 ),
                 "event_count": len(self._events),
             }

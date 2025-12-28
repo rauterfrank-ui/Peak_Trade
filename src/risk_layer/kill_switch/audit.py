@@ -312,10 +312,6 @@ class AuditTrail:
             "total_files": len(files),
             "total_size_mb": total_size / (1024 * 1024),
             "total_events": total_events,
-            "oldest_file": (
-                min(f.stat().st_mtime for f in files) if files else None
-            ),
-            "newest_file": (
-                max(f.stat().st_mtime for f in files) if files else None
-            ),
+            "oldest_file": (min(f.stat().st_mtime for f in files) if files else None),
+            "newest_file": (max(f.stat().st_mtime for f in files) if files else None),
         }

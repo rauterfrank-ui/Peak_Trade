@@ -21,10 +21,10 @@ class KillSwitchState(Enum):
         DISABLED (no transitions, backtest only)
     """
 
-    ACTIVE = auto()      # Normal operation, trading allowed
-    KILLED = auto()      # Emergency stop, no trading
+    ACTIVE = auto()  # Normal operation, trading allowed
+    KILLED = auto()  # Emergency stop, no trading
     RECOVERING = auto()  # Cooldown after recovery request
-    DISABLED = auto()    # Disabled (backtest mode only)
+    DISABLED = auto()  # Disabled (backtest mode only)
 
 
 @dataclass(frozen=True)
@@ -65,9 +65,7 @@ class StateTransitionError(Exception):
     def __init__(self, current: KillSwitchState, requested: KillSwitchState):
         self.current = current
         self.requested = requested
-        super().__init__(
-            f"Invalid state transition: {current.name} → {requested.name}"
-        )
+        super().__init__(f"Invalid state transition: {current.name} → {requested.name}")
 
 
 def validate_transition(

@@ -49,7 +49,7 @@ def to_violations(kill_switch_status):
                 code="KILL_SWITCH_ARMED",
                 message=getattr(kill_switch_status, "reason", "Kill switch is armed"),
                 severity="CRITICAL",
-                details={}
+                details={},
             )
         ]
     return []

@@ -177,8 +177,7 @@ class TestConcurrency:
 
         # Launch 10 concurrent triggers
         threads = [
-            threading.Thread(target=trigger_worker, args=(f"Trigger-{i}",))
-            for i in range(10)
+            threading.Thread(target=trigger_worker, args=(f"Trigger-{i}",)) for i in range(10)
         ]
 
         for t in threads:
@@ -212,6 +211,7 @@ class TestConcurrency:
 
     def test_concurrent_trigger_and_recovery(self, kill_switch):
         """Concurrent trigger and recovery should be safe."""
+
         def trigger_loop():
             for i in range(10):
                 kill_switch.trigger(f"Trigger-{i}")
@@ -287,10 +287,7 @@ class TestChaosEngineering:
                 errors.append((thread_id, str(e)))
 
         # Launch 20 threads hammering triggers
-        threads = [
-            threading.Thread(target=hammer_trigger, args=(i,))
-            for i in range(20)
-        ]
+        threads = [threading.Thread(target=hammer_trigger, args=(i,)) for i in range(20)]
 
         start_time = time.time()
         for t in threads:
@@ -350,11 +347,7 @@ class TestChaosEngineering:
             assert ks1.is_killed
 
             # Save state
-            persistence1.save(
-                ks1.state,
-                killed_at=ks1._killed_at,
-                trigger_reason="Crash test"
-            )
+            persistence1.save(ks1.state, killed_at=ks1._killed_at, trigger_reason="Crash test")
             audit1.log_event(ks1.get_audit_trail()[0])
 
             # Phase 2: Simulate crash and restart
@@ -474,7 +467,9 @@ class TestChaosEngineering:
             tmppath = Path(tmpdir)
             audit_dir = tmppath / "audit"
 
-            audit = AuditTrail(audit_dir, max_file_size_mb=0.01)  # Small but not too small to avoid excessive rotation
+            audit = AuditTrail(
+                audit_dir, max_file_size_mb=0.01
+            )  # Small but not too small to avoid excessive rotation
 
             config = {
                 "enabled": True,

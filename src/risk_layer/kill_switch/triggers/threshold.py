@@ -29,12 +29,12 @@ class ThresholdTrigger(BaseTrigger):
     """
 
     OPERATORS: Dict[str, Callable] = {
-        "lt": op.lt,      # less than
-        "le": op.le,      # less or equal
-        "gt": op.gt,      # greater than
-        "ge": op.ge,      # greater or equal
-        "eq": op.eq,      # equal
-        "ne": op.ne,      # not equal
+        "lt": op.lt,  # less than
+        "le": op.le,  # less or equal
+        "gt": op.gt,  # greater than
+        "ge": op.ge,  # greater or equal
+        "eq": op.eq,  # equal
+        "ne": op.ne,  # not equal
     }
 
     def __init__(self, name: str, config: dict):
@@ -68,16 +68,13 @@ class ThresholdTrigger(BaseTrigger):
             TriggerResult indicating if threshold exceeded
         """
         if not self.enabled:
-            return TriggerResult(
-                should_trigger=False,
-                reason=f"Trigger '{self.name}' disabled"
-            )
+            return TriggerResult(should_trigger=False, reason=f"Trigger '{self.name}' disabled")
 
         if self.is_on_cooldown():
             return TriggerResult(
                 should_trigger=False,
                 reason=f"Trigger '{self.name}' on cooldown "
-                       f"({self.get_cooldown_remaining():.0f}s remaining)"
+                f"({self.get_cooldown_remaining():.0f}s remaining)",
             )
 
         # Get metric from context
@@ -85,8 +82,7 @@ class ThresholdTrigger(BaseTrigger):
 
         if metric_value is None:
             return TriggerResult(
-                should_trigger=False,
-                reason=f"Metric '{self.metric_name}' not found in context"
+                should_trigger=False, reason=f"Metric '{self.metric_name}' not found in context"
             )
 
         # Check threshold
@@ -97,8 +93,7 @@ class ThresholdTrigger(BaseTrigger):
             return TriggerResult(
                 should_trigger=True,
                 reason=(
-                    f"{self.metric_name}={metric_value:.4f} "
-                    f"{self.operator_name} {self.threshold}"
+                    f"{self.metric_name}={metric_value:.4f} {self.operator_name} {self.threshold}"
                 ),
                 metric_value=metric_value,
                 threshold=self.threshold,
@@ -106,7 +101,7 @@ class ThresholdTrigger(BaseTrigger):
                     "trigger_name": self.name,
                     "trigger_type": "threshold",
                     "operator": self.operator_name,
-                }
+                },
             )
 
         return TriggerResult(

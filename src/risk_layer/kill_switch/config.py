@@ -14,9 +14,7 @@ except ImportError:
     try:
         import tomli  # Python 3.10 fallback
     except ImportError:
-        raise ImportError(
-            "No TOML library found. Install tomli: pip install tomli"
-        )
+        raise ImportError("No TOML library found. Install tomli: pip install tomli")
 
 
 logger = logging.getLogger(__name__)
@@ -103,17 +101,12 @@ def get_approval_code(config: dict) -> Optional[str]:
     Returns:
         Approval code or None if not set
     """
-    env_var = config.get("kill_switch", {}).get(
-        "approval_code_env",
-        "KILL_SWITCH_APPROVAL_CODE"
-    )
+    env_var = config.get("kill_switch", {}).get("approval_code_env", "KILL_SWITCH_APPROVAL_CODE")
 
     code = os.getenv(env_var)
 
     if not code and config.get("kill_switch", {}).get("require_approval_code"):
-        logger.warning(
-            f"Approval code required but {env_var} not set in environment"
-        )
+        logger.warning(f"Approval code required but {env_var} not set in environment")
 
     return code
 

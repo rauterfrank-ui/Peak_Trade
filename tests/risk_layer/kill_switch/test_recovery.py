@@ -101,11 +101,7 @@ class TestRecoveryRequest:
 
     def test_request_created_with_timestamp(self, recovery_manager):
         """Recovery request should have timestamp."""
-        request = recovery_manager.request_recovery(
-            "operator",
-            "TEST_CODE",
-            "Test recovery"
-        )
+        request = recovery_manager.request_recovery("operator", "TEST_CODE", "Test recovery")
 
         assert isinstance(request.requested_at, datetime)
         assert request.requested_by == "operator"
@@ -115,11 +111,7 @@ class TestRecoveryRequest:
 
     def test_request_to_dict(self, recovery_manager):
         """Recovery request should serialize to dict."""
-        request = recovery_manager.request_recovery(
-            "operator",
-            "CODE",
-            "Test"
-        )
+        request = recovery_manager.request_recovery("operator", "CODE", "Test")
 
         data = request.to_dict()
 
@@ -134,11 +126,7 @@ class TestRecoveryManager:
 
     def test_request_recovery_creates_request(self, recovery_manager):
         """request_recovery should create recovery request."""
-        request = recovery_manager.request_recovery(
-            "operator",
-            "TEST_CODE",
-            "Test recovery"
-        )
+        request = recovery_manager.request_recovery("operator", "TEST_CODE", "Test recovery")
 
         assert isinstance(request, RecoveryRequest)
         assert recovery_manager.current_request == request
@@ -287,11 +275,7 @@ class TestRecoveryWorkflow:
     def test_full_recovery_workflow(self, recovery_manager):
         """Test complete recovery from request to complete."""
         # 1. Request recovery
-        request = recovery_manager.request_recovery(
-            "operator",
-            "TEST_CODE",
-            "System fixed"
-        )
+        request = recovery_manager.request_recovery("operator", "TEST_CODE", "System fixed")
         assert request.stage == RecoveryStage.PENDING
 
         # 2. Validate approval

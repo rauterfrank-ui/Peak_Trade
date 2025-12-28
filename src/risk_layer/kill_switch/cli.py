@@ -234,7 +234,9 @@ def main():
 
     # Audit command
     audit_parser = subparsers.add_parser("audit", help="Show audit trail")
-    audit_parser.add_argument("--since", help="Events since (ISO date or relative like '24h', '7d')")
+    audit_parser.add_argument(
+        "--since", help="Events since (ISO date or relative like '24h', '7d')"
+    )
     audit_parser.add_argument("--limit", type=int, default=50, help="Max events to show")
 
     # Health command

@@ -285,6 +285,7 @@ class TestTriggerRegistry:
 
     def test_error_in_trigger_does_not_crash(self, trigger_registry, test_context):
         """Error in one trigger should not crash check_all."""
+
         class BrokenTrigger:
             enabled = True
 

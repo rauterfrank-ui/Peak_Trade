@@ -41,15 +41,13 @@ class ManualTrigger(BaseTrigger):
         """
         if not self.enabled:
             return TriggerResult(
-                should_trigger=False,
-                reason=f"Manual trigger '{self.name}' disabled"
+                should_trigger=False, reason=f"Manual trigger '{self.name}' disabled"
             )
 
         # Manual trigger doesn't auto-trigger
         # It's activated directly via KillSwitch.trigger()
         return TriggerResult(
-            should_trigger=False,
-            reason="Manual trigger waiting for operator action"
+            should_trigger=False, reason="Manual trigger waiting for operator action"
         )
 
     def request_trigger(self, reason: str) -> TriggerResult:
@@ -65,8 +63,7 @@ class ManualTrigger(BaseTrigger):
         """
         if not self.enabled:
             return TriggerResult(
-                should_trigger=False,
-                reason=f"Manual trigger '{self.name}' disabled"
+                should_trigger=False, reason=f"Manual trigger '{self.name}' disabled"
             )
 
         self._manual_triggered = True
@@ -80,7 +77,7 @@ class ManualTrigger(BaseTrigger):
                 "trigger_name": self.name,
                 "trigger_type": "manual",
                 "manual_reason": reason,
-            }
+            },
         )
 
     def reset(self):

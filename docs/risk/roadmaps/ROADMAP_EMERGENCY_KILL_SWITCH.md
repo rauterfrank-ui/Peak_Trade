@@ -69,16 +69,16 @@ Der **Emergency Kill Switch** ist die letzte Verteidigungslinie im 4-Layer Defen
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `src/risk/kill_switch/state.py` | State Machine Enum + Transitions |
-| `src/risk/kill_switch/core.py` | KillSwitch Hauptklasse |
-| `src/risk/kill_switch/__init__.py` | Public API Exports |
-| `tests/risk/kill_switch/test_state_machine.py` | State Transition Tests |
+| `src/risk_layer/kill_switch/state.py` | State Machine Enum + Transitions |
+| `src/risk_layer/kill_switch/core.py` | KillSwitch Hauptklasse |
+| `src/risk_layer/kill_switch/__init__.py` | Public API Exports |
+| `tests/risk_layer/kill_switch/test_state_machine.py` | State Transition Tests |
 | `config/risk/kill_switch.toml` | Konfiguration |
 
 ### 1.3 Implementierung
 
 ```python
-# src/risk/kill_switch/state.py
+# src/risk_layer/kill_switch/state.py
 """Kill Switch State Machine für Peak_Trade."""
 
 from enum import Enum, auto
@@ -112,7 +112,7 @@ class StateTransitionError(Exception):
 ```
 
 ```python
-# src/risk/kill_switch/core.py
+# src/risk_layer/kill_switch/core.py
 """Kill Switch Core Implementation."""
 
 from datetime import datetime, timedelta
@@ -425,7 +425,7 @@ state_file = "data/kill_switch_state.json"
 ### 1.6 Tests
 
 ```python
-# tests/risk/kill_switch/test_state_machine.py
+# tests/risk_layer/kill_switch/test_state_machine.py
 
 import pytest
 from src.risk.kill_switch import KillSwitch, KillSwitchState
@@ -590,13 +590,13 @@ class TestCheckAndBlock:
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `src/risk/kill_switch/triggers/__init__.py` | Trigger Module |
-| `src/risk/kill_switch/triggers/base.py` | Abstract Base Trigger |
-| `src/risk/kill_switch/triggers/threshold.py` | Threshold-basierte Trigger |
-| `src/risk/kill_switch/triggers/manual.py` | Manuelle Trigger |
-| `src/risk/kill_switch/triggers/watchdog.py` | System Watchdog |
-| `src/risk/kill_switch/triggers/external.py` | Externe Trigger (Exchange, Network) |
-| `tests/risk/kill_switch/test_triggers.py` | Trigger Tests |
+| `src/risk_layer/kill_switch/triggers/__init__.py` | Trigger Module |
+| `src/risk_layer/kill_switch/triggers/base.py` | Abstract Base Trigger |
+| `src/risk_layer/kill_switch/triggers/threshold.py` | Threshold-basierte Trigger |
+| `src/risk_layer/kill_switch/triggers/manual.py` | Manuelle Trigger |
+| `src/risk_layer/kill_switch/triggers/watchdog.py` | System Watchdog |
+| `src/risk_layer/kill_switch/triggers/external.py` | Externe Trigger (Exchange, Network) |
+| `tests/risk_layer/kill_switch/test_triggers.py` | Trigger Tests |
 
 ### 2.3 Threshold-Trigger Konfiguration
 
@@ -645,7 +645,7 @@ cpu_threshold_percent = 95
 ### 2.4 Implementierung
 
 ```python
-# src/risk/kill_switch/triggers/base.py
+# src/risk_layer/kill_switch/triggers/base.py
 """Base Trigger Interface."""
 
 from abc import ABC, abstractmethod
@@ -704,7 +704,7 @@ class BaseTrigger(ABC):
 ```
 
 ```python
-# src/risk/kill_switch/triggers/threshold.py
+# src/risk_layer/kill_switch/triggers/threshold.py
 """Threshold-basierte Trigger."""
 
 from typing import Callable, Dict, Any
@@ -791,7 +791,7 @@ class ThresholdTrigger(BaseTrigger):
 ```
 
 ```python
-# src/risk/kill_switch/triggers/watchdog.py
+# src/risk_layer/kill_switch/triggers/watchdog.py
 """System Watchdog Trigger."""
 
 import psutil
@@ -961,10 +961,10 @@ class WatchdogTrigger(BaseTrigger):
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `src/risk/kill_switch/recovery.py` | Recovery Manager |
-| `src/risk/kill_switch/gradual_restart.py` | Gradual Restart Logic |
-| `src/risk/kill_switch/health_check.py` | Pre-Recovery Health Checks |
-| `tests/risk/kill_switch/test_recovery.py` | Recovery Tests |
+| `src/risk_layer/kill_switch/recovery.py` | Recovery Manager |
+| `src/risk_layer/kill_switch/gradual_restart.py` | Gradual Restart Logic |
+| `src/risk_layer/kill_switch/health_check.py` | Pre-Recovery Health Checks |
+| `tests/risk_layer/kill_switch/test_recovery.py` | Recovery Tests |
 
 ### 3.3 Recovery-Konfiguration
 
@@ -998,7 +998,7 @@ second_approver_required = false
 ### 3.4 Implementierung
 
 ```python
-# src/risk/kill_switch/recovery.py
+# src/risk_layer/kill_switch/recovery.py
 """Recovery Manager für Kill Switch."""
 
 from dataclasses import dataclass
@@ -1249,16 +1249,16 @@ class RecoveryManager:
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `src/risk/kill_switch/persistence.py` | State Persistence |
-| `src/risk/kill_switch/audit.py` | Audit Trail Logger |
-| `src/risk/kill_switch/notifications.py` | Alert/Notification System |
-| `tests/risk/kill_switch/test_persistence.py` | Persistence Tests |
-| `tests/risk/kill_switch/test_audit.py` | Audit Tests |
+| `src/risk_layer/kill_switch/persistence.py` | State Persistence |
+| `src/risk_layer/kill_switch/audit.py` | Audit Trail Logger |
+| `src/risk_layer/kill_switch/notifications.py` | Alert/Notification System |
+| `tests/risk_layer/kill_switch/test_persistence.py` | Persistence Tests |
+| `tests/risk_layer/kill_switch/test_audit.py` | Audit Tests |
 
 ### 4.3 Implementierung
 
 ```python
-# src/risk/kill_switch/persistence.py
+# src/risk_layer/kill_switch/persistence.py
 """State Persistence für Kill Switch."""
 
 import json
@@ -1370,7 +1370,7 @@ class StatePersistence:
 ```
 
 ```python
-# src/risk/kill_switch/audit.py
+# src/risk_layer/kill_switch/audit.py
 """Audit Trail für Kill Switch Events."""
 
 import json
@@ -1588,9 +1588,9 @@ class AuditTrail:
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `src/risk/kill_switch/integration.py` | Integration mit Risk Layer |
-| `src/risk/kill_switch/cli.py` | CLI Commands |
-| `src/risk/kill_switch/api.py` | REST API (optional) |
+| `src/risk_layer/kill_switch/integration.py` | Integration mit Risk Layer |
+| `src/risk_layer/kill_switch/cli.py` | CLI Commands |
+| `src/risk_layer/kill_switch/api.py` | REST API (optional) |
 | `src/live/execution_gate.py` | Kill Switch Gate für Execution |
 | `scripts/ops/kill_switch_ctl.sh` | Operator Control Script |
 
@@ -1735,18 +1735,18 @@ class ExecutionGate:
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `tests/risk/kill_switch/test_state_machine.py` | State Machine Unit Tests |
-| `tests/risk/kill_switch/test_triggers.py` | Trigger Unit Tests |
-| `tests/risk/kill_switch/test_recovery.py` | Recovery Unit Tests |
-| `tests/risk/kill_switch/test_persistence.py` | Persistence Unit Tests |
-| `tests/risk/kill_switch/test_integration.py` | Integration Tests |
-| `tests/risk/kill_switch/test_chaos.py` | Chaos Engineering Tests |
+| `tests/risk_layer/kill_switch/test_state_machine.py` | State Machine Unit Tests |
+| `tests/risk_layer/kill_switch/test_triggers.py` | Trigger Unit Tests |
+| `tests/risk_layer/kill_switch/test_recovery.py` | Recovery Unit Tests |
+| `tests/risk_layer/kill_switch/test_persistence.py` | Persistence Unit Tests |
+| `tests/risk_layer/kill_switch/test_integration.py` | Integration Tests |
+| `tests/risk_layer/kill_switch/test_chaos.py` | Chaos Engineering Tests |
 | `scripts/ops/kill_switch_chaos_test.sh` | Chaos Test Runner |
 
 ### 6.3 Chaos Engineering Szenarien
 
 ```python
-# tests/risk/kill_switch/test_chaos.py
+# tests/risk_layer/kill_switch/test_chaos.py
 """Chaos Engineering Tests für Kill Switch."""
 
 import pytest

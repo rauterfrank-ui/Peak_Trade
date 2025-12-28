@@ -12,6 +12,7 @@ from .base import BaseTrigger, TriggerResult
 # Optional dependency: psutil
 try:
     import psutil
+
     PSUTIL_AVAILABLE = True
 except ImportError:
     PSUTIL_AVAILABLE = False
@@ -60,9 +61,7 @@ class WatchdogTrigger(BaseTrigger):
             )
             self.enabled = False
 
-        self.heartbeat_interval = timedelta(
-            seconds=config.get("heartbeat_interval_seconds", 60)
-        )
+        self.heartbeat_interval = timedelta(seconds=config.get("heartbeat_interval_seconds", 60))
         self.max_missed = config.get("max_missed_heartbeats", 3)
         self.memory_threshold = config.get("memory_threshold_percent", 90)
         self.cpu_threshold = config.get("cpu_threshold_percent", 95)
@@ -91,7 +90,7 @@ class WatchdogTrigger(BaseTrigger):
         if not self.enabled or not PSUTIL_AVAILABLE:
             return TriggerResult(
                 should_trigger=False,
-                reason=f"Watchdog '{self.name}' disabled or psutil not available"
+                reason=f"Watchdog '{self.name}' disabled or psutil not available",
             )
 
         issues = []
@@ -115,10 +114,7 @@ class WatchdogTrigger(BaseTrigger):
             metadata["memory_percent"] = memory.percent
 
             if memory.percent > self.memory_threshold:
-                issues.append(
-                    f"Memory critical: {memory.percent:.1f}% > "
-                    f"{self.memory_threshold}%"
-                )
+                issues.append(f"Memory critical: {memory.percent:.1f}% > {self.memory_threshold}%")
         except Exception as e:
             logger.warning(f"Failed to check memory: {e}")
 
@@ -128,9 +124,7 @@ class WatchdogTrigger(BaseTrigger):
             metadata["cpu_percent"] = cpu
 
             if cpu > self.cpu_threshold:
-                issues.append(
-                    f"CPU critical: {cpu:.1f}% > {self.cpu_threshold}%"
-                )
+                issues.append(f"CPU critical: {cpu:.1f}% > {self.cpu_threshold}%")
         except Exception as e:
             logger.warning(f"Failed to check CPU: {e}")
 
@@ -143,7 +137,7 @@ class WatchdogTrigger(BaseTrigger):
                     "trigger_name": self.name,
                     "trigger_type": "watchdog",
                     **metadata,
-                }
+                },
             )
 
         return TriggerResult(

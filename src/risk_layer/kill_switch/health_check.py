@@ -11,6 +11,7 @@ from typing import List, Optional
 # Optional dependency: psutil
 try:
     import psutil
+
     PSUTIL_AVAILABLE = True
 except ImportError:
     PSUTIL_AVAILABLE = False
@@ -85,9 +86,7 @@ class HealthChecker:
         self.require_price_feed = config.get("require_price_feed", True)
 
         if not PSUTIL_AVAILABLE:
-            self._logger.warning(
-                "psutil not available - memory/CPU checks will be skipped"
-            )
+            self._logger.warning("psutil not available - memory/CPU checks will be skipped")
 
     def check_all(self, context: Optional[dict] = None) -> HealthCheckResult:
         """Run all health checks.
@@ -166,9 +165,7 @@ class HealthChecker:
         if is_healthy:
             self._logger.info(f"✅ Health check PASSED ({passed} checks)")
         else:
-            self._logger.warning(
-                f"❌ Health check FAILED: {failed} issues - {', '.join(issues)}"
-            )
+            self._logger.warning(f"❌ Health check FAILED: {failed} issues - {', '.join(issues)}")
 
         return result
 
@@ -196,7 +193,7 @@ class HealthChecker:
                 return (
                     False,
                     f"Insufficient memory: {available_mb:.0f}MB < {self.min_memory_mb}MB",
-                    metadata
+                    metadata,
                 )
 
         except Exception as e:
@@ -225,7 +222,7 @@ class HealthChecker:
                 return (
                     False,
                     f"High CPU usage: {cpu_percent:.1f}% > {self.max_cpu_percent}%",
-                    metadata
+                    metadata,
                 )
 
         except Exception as e:

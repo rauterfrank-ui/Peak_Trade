@@ -15,11 +15,11 @@ from .health_check import HealthCheckResult, HealthChecker
 class RecoveryStage(Enum):
     """Recovery stages."""
 
-    PENDING = auto()          # Waiting for approval
-    VALIDATING = auto()       # Running health checks
-    COOLDOWN = auto()         # Cooldown phase
+    PENDING = auto()  # Waiting for approval
+    VALIDATING = auto()  # Running health checks
+    COOLDOWN = auto()  # Cooldown phase
     GRADUAL_RESTART = auto()  # Limited restart
-    COMPLETE = auto()         # Fully recovered
+    COMPLETE = auto()  # Fully recovered
 
 
 @dataclass
@@ -53,9 +53,7 @@ class RecoveryRequest:
             "stage": self.stage.name,
             "approved_at": self.approved_at.isoformat() if self.approved_at else None,
             "health_check_passed": (
-                self.health_check_result.is_healthy
-                if self.health_check_result
-                else None
+                self.health_check_result.is_healthy if self.health_check_result else None
             ),
         }
 
@@ -132,9 +130,7 @@ class RecoveryManager:
             reason=reason,
         )
 
-        self._logger.info(
-            f"Recovery requested by {requested_by}: {reason}"
-        )
+        self._logger.info(f"Recovery requested by {requested_by}: {reason}")
 
         return self._current_request
 
@@ -235,9 +231,7 @@ class RecoveryManager:
         self._position_limit_factor = self._initial_factor
         self._current_request.stage = RecoveryStage.GRADUAL_RESTART
 
-        self._logger.info(
-            f"Gradual restart started: position_limit_factor={self._initial_factor}"
-        )
+        self._logger.info(f"Gradual restart started: position_limit_factor={self._initial_factor}")
 
     def update_gradual_restart(self) -> float:
         """Update gradual restart based on time elapsed.

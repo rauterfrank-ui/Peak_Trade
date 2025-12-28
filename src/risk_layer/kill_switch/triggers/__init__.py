@@ -96,21 +96,18 @@ class TriggerRegistry:
                 results.append(result)
 
                 if result.should_trigger:
-                    logger.warning(
-                        f"🚨 Trigger '{name}' FIRED: {result.reason}"
-                    )
+                    logger.warning(f"🚨 Trigger '{name}' FIRED: {result.reason}")
 
             except Exception as e:
-                logger.error(
-                    f"Error checking trigger '{name}': {e}",
-                    exc_info=True
-                )
+                logger.error(f"Error checking trigger '{name}': {e}", exc_info=True)
                 # Don't propagate trigger errors - fail safe
-                results.append(TriggerResult(
-                    should_trigger=False,
-                    reason=f"Trigger check failed: {e}",
-                    metadata={"error": str(e), "trigger_name": name}
-                ))
+                results.append(
+                    TriggerResult(
+                        should_trigger=False,
+                        reason=f"Trigger check failed: {e}",
+                        metadata={"error": str(e), "trigger_name": name},
+                    )
+                )
 
         return results
 
@@ -190,14 +187,10 @@ class TriggerRegistry:
                 registry.register(trigger_name, trigger)
 
             except Exception as e:
-                logger.error(
-                    f"Failed to create trigger '{trigger_name}': {e}",
-                    exc_info=True
-                )
+                logger.error(f"Failed to create trigger '{trigger_name}': {e}", exc_info=True)
 
         logger.info(
-            f"Loaded {len(registry._triggers)} triggers: "
-            f"{', '.join(registry.list_triggers())}"
+            f"Loaded {len(registry._triggers)} triggers: {', '.join(registry.list_triggers())}"
         )
 
         return registry

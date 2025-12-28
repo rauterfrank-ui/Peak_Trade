@@ -188,6 +188,7 @@ class TestCallbacks:
 
     def test_callback_exceptions_are_caught(self, kill_switch):
         """Callback exceptions should not crash the system."""
+
         def bad_callback(event):
             raise ValueError("Callback error")
 

@@ -20,9 +20,7 @@ class TestStatePersistence:
         persistence = StatePersistence(str(state_file))
 
         persistence.save(
-            KillSwitchState.KILLED,
-            killed_at=datetime.utcnow(),
-            trigger_reason="Test trigger"
+            KillSwitchState.KILLED, killed_at=datetime.utcnow(), trigger_reason="Test trigger"
         )
 
         assert state_file.exists()
@@ -71,11 +69,7 @@ class TestStatePersistence:
 
         # Save
         killed_at = datetime.utcnow()
-        persistence.save(
-            KillSwitchState.KILLED,
-            killed_at=killed_at,
-            trigger_reason="Test"
-        )
+        persistence.save(KillSwitchState.KILLED, killed_at=killed_at, trigger_reason="Test")
 
         # Load
         result = persistence.load()
@@ -168,7 +162,7 @@ class TestStatePersistence:
             KillSwitchState.RECOVERING,
             killed_at=killed_at,
             trigger_reason="Emergency",
-            recovery_started_at=recovery_started
+            recovery_started_at=recovery_started,
         )
 
         data = persistence.load()
@@ -193,7 +187,7 @@ class TestAuditTrail:
             new_state=KillSwitchState.KILLED,
             trigger_reason="Test",
             triggered_by="manual",
-            metadata={}
+            metadata={},
         )
 
         audit.log_event(event)
@@ -213,7 +207,7 @@ class TestAuditTrail:
             new_state=KillSwitchState.KILLED,
             trigger_reason="First",
             triggered_by="manual",
-            metadata={}
+            metadata={},
         )
 
         event2 = KillSwitchEvent(
@@ -222,7 +216,7 @@ class TestAuditTrail:
             new_state=KillSwitchState.RECOVERING,
             trigger_reason="Second",
             triggered_by="manual",
-            metadata={}
+            metadata={},
         )
 
         audit.log_event(event1)
@@ -248,7 +242,7 @@ class TestAuditTrail:
                 new_state=KillSwitchState.KILLED,
                 trigger_reason=f"Event {i}",
                 triggered_by="manual",
-                metadata={}
+                metadata={},
             )
             audit.log_event(event)
 
@@ -271,7 +265,7 @@ class TestAuditTrail:
             new_state=KillSwitchState.KILLED,
             trigger_reason="Old",
             triggered_by="manual",
-            metadata={}
+            metadata={},
         )
 
         recent_event = KillSwitchEvent(
@@ -280,7 +274,7 @@ class TestAuditTrail:
             new_state=KillSwitchState.KILLED,
             trigger_reason="Recent",
             triggered_by="manual",
-            metadata={}
+            metadata={},
         )
 
         audit.log_event(old_event)
@@ -306,7 +300,7 @@ class TestAuditTrail:
                 new_state=KillSwitchState.KILLED,
                 trigger_reason=f"Event {i}",
                 triggered_by="manual",
-                metadata={}
+                metadata={},
             )
             audit.log_event(event)
 
@@ -326,7 +320,7 @@ class TestAuditTrail:
             new_state=KillSwitchState.KILLED,
             trigger_reason="Killed",
             triggered_by="manual",
-            metadata={}
+            metadata={},
         )
 
         active_event = KillSwitchEvent(
@@ -335,7 +329,7 @@ class TestAuditTrail:
             new_state=KillSwitchState.ACTIVE,
             trigger_reason="Recovered",
             triggered_by="manual",
-            metadata={}
+            metadata={},
         )
 
         audit.log_event(killed_event)
@@ -359,7 +353,7 @@ class TestAuditTrail:
                 new_state=KillSwitchState.KILLED,
                 trigger_reason=f"Event {i}",
                 triggered_by="manual",
-                metadata={}
+                metadata={},
             )
             audit.log_event(event)
 
@@ -381,7 +375,7 @@ class TestAuditTrail:
                 new_state=KillSwitchState.KILLED,
                 trigger_reason=f"Event {i}",
                 triggered_by="manual",
-                metadata={}
+                metadata={},
             )
             audit.log_event(event)
 
@@ -404,7 +398,7 @@ class TestAuditTrail:
             new_state=KillSwitchState.KILLED,
             trigger_reason="Valid",
             triggered_by="manual",
-            metadata={}
+            metadata={},
         )
         audit.log_event(event)
 

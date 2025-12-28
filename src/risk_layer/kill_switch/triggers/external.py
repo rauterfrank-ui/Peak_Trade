@@ -61,8 +61,7 @@ class ExternalTrigger(BaseTrigger):
         """
         if not self.enabled:
             return TriggerResult(
-                should_trigger=False,
-                reason=f"External trigger '{self.name}' disabled"
+                should_trigger=False, reason=f"External trigger '{self.name}' disabled"
             )
 
         # Check if we should check (rate limiting)
@@ -72,7 +71,7 @@ class ExternalTrigger(BaseTrigger):
             if elapsed < self.check_interval:
                 return TriggerResult(
                     should_trigger=False,
-                    reason=f"Check interval not reached ({elapsed:.0f}s < {self.check_interval}s)"
+                    reason=f"Check interval not reached ({elapsed:.0f}s < {self.check_interval}s)",
                 )
 
         self._last_check = now
@@ -87,8 +86,7 @@ class ExternalTrigger(BaseTrigger):
         if not exchange_connected:
             self._consecutive_failures += 1
             issues.append(
-                f"Exchange disconnected "
-                f"({self._consecutive_failures} consecutive failures)"
+                f"Exchange disconnected ({self._consecutive_failures} consecutive failures)"
             )
         else:
             self._consecutive_failures = 0
@@ -101,9 +99,7 @@ class ExternalTrigger(BaseTrigger):
 
             # If price data is >5 minutes old, that's a problem
             if stale_seconds > 300:
-                issues.append(
-                    f"Stale price data: {stale_seconds:.0f}s old"
-                )
+                issues.append(f"Stale price data: {stale_seconds:.0f}s old")
 
         # Check API errors
         api_errors = context.get("api_errors", 0)
@@ -123,7 +119,7 @@ class ExternalTrigger(BaseTrigger):
                     "trigger_type": "external",
                     "consecutive_failures": self._consecutive_failures,
                     **metadata,
-                }
+                },
             )
 
         if issues:
@@ -131,7 +127,7 @@ class ExternalTrigger(BaseTrigger):
             return TriggerResult(
                 should_trigger=False,
                 reason=f"External issues detected: {'; '.join(issues)} "
-                       f"(failures: {self._consecutive_failures}/{self.max_failures})",
+                f"(failures: {self._consecutive_failures}/{self.max_failures})",
                 metadata=metadata,
             )
 

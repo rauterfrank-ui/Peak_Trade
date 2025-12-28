@@ -54,11 +54,7 @@ class StatePersistence:
             logger_instance: Optional logger instance
         """
         self.state_file = Path(state_file)
-        self.backup_dir = (
-            Path(backup_dir)
-            if backup_dir
-            else self.state_file.parent / "backups"
-        )
+        self.backup_dir = Path(backup_dir) if backup_dir else self.state_file.parent / "backups"
         self._logger = logger_instance or logger
 
         # Create directories
