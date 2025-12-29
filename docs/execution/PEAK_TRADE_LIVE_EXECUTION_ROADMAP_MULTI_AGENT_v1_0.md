@@ -32,7 +32,7 @@ Wir bauen **Work Packages (WPs)** so, dass:
 ### 1.2 File‑Ownership Regeln
 - Jeder WP hat einen **Ownership‑Block** (Pfadpattern).
 - **No drive‑by refactors** außerhalb der Ownership.
-- Shared‑Files (z.B. `config.toml`, zentrale `src/core/config.py`) werden **nur** vom Integrator geändert oder nach explizitem “Lock”.
+- Shared‑Files (z.B. `config.toml`, zentrale src/core/config.py planned) werden **nur** vom Integrator geändert oder nach explizitem "Lock".
 
 ### 1.3 Branching / Merge‑Taktik
 Empfohlen für Cursor Multi‑Agents:
@@ -156,7 +156,7 @@ reports/risk/
 
 ## WP0C — Governance & Config Hardening
 **Agent:** Gov‑Agent  
-**Ownership:** `src/governance/live_mode_gate.py`, config‑validation module, `tests/governance/*`, ggf. minimal `src/core/config.py` (nur wenn Integrator freigibt).
+**Ownership:** src/governance/live_mode_gate.py (planned), config‑validation module, `tests/governance/*`, ggf. minimal src/core/config.py (planned, nur wenn Integrator freigibt).
 
 **DoD:**
 - Startup fail‑fast bei invalid config (Schema validation).
