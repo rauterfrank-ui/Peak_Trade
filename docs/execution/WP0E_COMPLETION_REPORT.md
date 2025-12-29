@@ -95,6 +95,8 @@ Implemented stable contracts and interfaces for the execution system, establishi
 
 **Total:** 6 new files, ~2,067 lines
 
+**Note:** `reports/execution/contracts_smoke.json` is generated (gitignored, not tracked)
+
 ---
 
 ## ✅ How to Test
@@ -129,8 +131,8 @@ PYTHONPATH=/Users/frnkhrz/Peak_Trade uv run python scripts/execution/generate_co
 
 ## 📊 Evidence Files
 
-### contracts_smoke.json (Generated, not tracked)
-**Location:** `reports/execution/contracts_smoke.json` (gitignored)
+### contracts_smoke.json (Generated artifact, gitignored)
+**Location:** `reports/execution/contracts_smoke.json` (NOT tracked in git)
 
 **Contains:**
 - Deterministic snapshots of all contract types
@@ -140,9 +142,11 @@ PYTHONPATH=/Users/frnkhrz/Peak_Trade uv run python scripts/execution/generate_co
 - ReconDiff (with divergence)
 - RiskResult (with decision)
 
-**Purpose:** Verify serialization stability (CI-friendly)
+**Purpose:** Verify serialization stability (CI-friendly, generated on-demand)
 
 **Generator:** `scripts/execution/generate_contracts_smoke.py`
+
+**Note:** This file is generated locally for verification but is not committed to the repository per CI policy (reports/ directory should not contain tracked files).
 
 ---
 
