@@ -1832,7 +1832,7 @@ def chi2_cdf(x: float, df: int) -> float:
 - `extract_exceedance_durations()` - Duration computation
 - `format_duration_diagnostic()` - Human-readable output
 
-**Documentation:** [PHASE9A_IMPLEMENTATION_SUMMARY.md](../../../PHASE9A_IMPLEMENTATION_SUMMARY.md)
+**Implementation:** Phase 9A (Duration Diagnostic)
 
 ---
 
@@ -1853,7 +1853,7 @@ def chi2_cdf(x: float, df: int) -> float:
 - `get_worst_window()` - Find critical window
 - `format_rolling_summary()` - Human-readable output
 
-**Documentation:** [PHASE9B_IMPLEMENTATION_SUMMARY.md](../../../PHASE9B_IMPLEMENTATION_SUMMARY.md)
+**Implementation:** Phase 9B (Rolling Evaluation)
 
 ---
 
@@ -1881,7 +1881,7 @@ python scripts/risk/run_var_backtest_suite_snapshot.py \
   --rolling-window-size 250
 ```
 
-**Documentation:** [PHASE10_IMPLEMENTATION_SUMMARY.md](../../../PHASE10_IMPLEMENTATION_SUMMARY.md)
+**Implementation:** Phase 10 (Snapshot Runner)
 
 ---
 

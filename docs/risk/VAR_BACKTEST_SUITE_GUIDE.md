@@ -454,7 +454,7 @@ class RollingSummary:
 
 **Beispiel:** Autocorrelation-basierte Diagnostic
 
-1. **Erstelle neues Modul:** `src/risk_layer/var_backtest/autocorr_diagnostic.py`
+1. **Erstelle neues Modul:** z.B. `autocorr_diagnostic.py`
 2. **Implementiere Hauptfunktion:**
 
 ```python

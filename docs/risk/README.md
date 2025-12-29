@@ -98,9 +98,6 @@ result = engine.run_realistic(df, strategy_fn, params)
 
 **Documentation:**
 - [VaR Backtest Suite Guide](VAR_BACKTEST_SUITE_GUIDE.md) - Complete operator guide
-- [Duration Diagnostic Implementation](../../PHASE9A_IMPLEMENTATION_SUMMARY.md)
-- [Rolling Evaluation Implementation](../../PHASE9B_IMPLEMENTATION_SUMMARY.md)
-- [Snapshot Runner Implementation](../../PHASE10_IMPLEMENTATION_SUMMARY.md)
 
 **Usage:**
 ```bash
