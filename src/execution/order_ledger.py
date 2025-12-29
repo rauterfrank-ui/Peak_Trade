@@ -241,5 +241,7 @@ class OrderLedger:
         return {
             "total_orders": self._total_orders,
             "active_orders": len(self.get_active_orders()),
-            "state_counts": {state.value: count for state, count in self.get_state_counts().items()},
+            "state_counts": {
+                state.value: count for state, count in self.get_state_counts().items()
+            },
         }

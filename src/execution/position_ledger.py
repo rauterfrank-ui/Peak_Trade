@@ -175,7 +175,9 @@ class PositionLedger:
                     # Full cover or flip to long
                     # Realize PnL from short cover
                     covered_quantity = min(fill.quantity, abs(position.quantity))
-                    position.realized_pnl += (position.avg_entry_price - fill.price) * covered_quantity
+                    position.realized_pnl += (
+                        position.avg_entry_price - fill.price
+                    ) * covered_quantity
 
                     if new_quantity > 0:
                         # Flip to long
@@ -195,7 +197,7 @@ class PositionLedger:
             position.total_buys += fill.quantity
 
             # Update cash (spend)
-            self._cash -= (fill_notional + fill.fee)
+            self._cash -= fill_notional + fill.fee
 
         else:  # OrderSide.SELL
             # SELL: decrease position
@@ -215,7 +217,9 @@ class PositionLedger:
                     # Full close or flip to short
                     # Realize PnL from long close
                     closed_quantity = min(fill.quantity, position.quantity)
-                    position.realized_pnl += (fill.price - position.avg_entry_price) * closed_quantity
+                    position.realized_pnl += (
+                        fill.price - position.avg_entry_price
+                    ) * closed_quantity
 
                     if new_quantity < 0:
                         # Flip to short
@@ -235,7 +239,7 @@ class PositionLedger:
             position.total_sells += fill.quantity
 
             # Update cash (receive)
-            self._cash += (fill_notional - fill.fee)
+            self._cash += fill_notional - fill.fee
 
         # Update fees
         position.total_fees += fill.fee

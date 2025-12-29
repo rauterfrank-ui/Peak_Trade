@@ -27,15 +27,15 @@ import json
 class OrderState(str, Enum):
     """Order lifecycle states (deterministic state machine)"""
 
-    CREATED = "CREATED"           # Order object created, not yet submitted
-    SUBMITTED = "SUBMITTED"       # Sent to exchange, awaiting acknowledgment
+    CREATED = "CREATED"  # Order object created, not yet submitted
+    SUBMITTED = "SUBMITTED"  # Sent to exchange, awaiting acknowledgment
     ACKNOWLEDGED = "ACKNOWLEDGED"  # Exchange confirmed receipt
     PARTIALLY_FILLED = "PARTIALLY_FILLED"  # Some fills received
-    FILLED = "FILLED"             # Fully filled
-    CANCELLED = "CANCELLED"       # User or system cancelled
-    REJECTED = "REJECTED"         # Exchange rejected
-    EXPIRED = "EXPIRED"           # Time-in-force expired
-    FAILED = "FAILED"             # System/network failure
+    FILLED = "FILLED"  # Fully filled
+    CANCELLED = "CANCELLED"  # User or system cancelled
+    REJECTED = "REJECTED"  # Exchange rejected
+    EXPIRED = "EXPIRED"  # Time-in-force expired
+    FAILED = "FAILED"  # System/network failure
 
     def is_terminal(self) -> bool:
         """Check if this state is terminal (no further transitions)"""
@@ -58,12 +58,14 @@ class OrderState(str, Enum):
 
 class OrderSide(str, Enum):
     """Order side (BUY or SELL)"""
+
     BUY = "BUY"
     SELL = "SELL"
 
 
 class OrderType(str, Enum):
     """Order type"""
+
     MARKET = "MARKET"
     LIMIT = "LIMIT"
     STOP = "STOP"
@@ -72,6 +74,7 @@ class OrderType(str, Enum):
 
 class TimeInForce(str, Enum):
     """Time-in-force specification"""
+
     GTC = "GTC"  # Good Till Cancelled
     IOC = "IOC"  # Immediate Or Cancel
     FOK = "FOK"  # Fill Or Kill

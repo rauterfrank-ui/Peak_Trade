@@ -114,7 +114,9 @@ def test_doctor_command_if_available():
     has_only_warnings = "WARN" in result.stdout and "Missing referenced targets" in result.stdout
     acceptable_exit = result.returncode == 0 or (result.returncode == 1 and has_only_warnings)
 
-    assert acceptable_exit, f"doctor failed: exit={result.returncode}, stderr={result.stderr}, warnings_only={has_only_warnings}"
+    assert acceptable_exit, (
+        f"doctor failed: exit={result.returncode}, stderr={result.stderr}, warnings_only={has_only_warnings}"
+    )
 
     # If ops_doctor.sh exists, should show doctor help/output
     # If not, should show warning

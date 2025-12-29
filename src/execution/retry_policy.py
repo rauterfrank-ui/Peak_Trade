@@ -25,9 +25,9 @@ from enum import Enum
 class ErrorClass(str, Enum):
     """Error classification for retry decisions"""
 
-    RETRYABLE = "RETRYABLE"          # Transient error, safe to retry
+    RETRYABLE = "RETRYABLE"  # Transient error, safe to retry
     NON_RETRYABLE = "NON_RETRYABLE"  # Permanent error, do not retry
-    FATAL = "FATAL"                   # Fatal error, abort immediately
+    FATAL = "FATAL"  # Fatal error, abort immediately
 
 
 # Common retryable errors
@@ -86,9 +86,9 @@ class RetryConfig:
 
     max_retries: int = 3
     initial_delay: float = 1.0  # seconds
-    max_delay: float = 30.0     # seconds
+    max_delay: float = 30.0  # seconds
     exponential_base: float = 2.0
-    jitter: bool = True         # Add random jitter
+    jitter: bool = True  # Add random jitter
     jitter_factor: float = 0.1  # 10% jitter
 
 
@@ -123,7 +123,7 @@ class RetryPolicy:
             Delay in seconds
         """
         # Exponential backoff
-        delay = self.config.initial_delay * (self.config.exponential_base ** attempt)
+        delay = self.config.initial_delay * (self.config.exponential_base**attempt)
 
         # Cap at max_delay
         delay = min(delay, self.config.max_delay)
@@ -258,32 +258,38 @@ class RetryPolicy:
 
 def create_default_retry_policy() -> RetryPolicy:
     """Create default retry policy"""
-    return RetryPolicy(RetryConfig(
-        max_retries=3,
-        initial_delay=1.0,
-        max_delay=30.0,
-        exponential_base=2.0,
-        jitter=True,
-    ))
+    return RetryPolicy(
+        RetryConfig(
+            max_retries=3,
+            initial_delay=1.0,
+            max_delay=30.0,
+            exponential_base=2.0,
+            jitter=True,
+        )
+    )
 
 
 def create_aggressive_retry_policy() -> RetryPolicy:
     """Create aggressive retry policy (more retries, longer delays)"""
-    return RetryPolicy(RetryConfig(
-        max_retries=5,
-        initial_delay=2.0,
-        max_delay=60.0,
-        exponential_base=2.0,
-        jitter=True,
-    ))
+    return RetryPolicy(
+        RetryConfig(
+            max_retries=5,
+            initial_delay=2.0,
+            max_delay=60.0,
+            exponential_base=2.0,
+            jitter=True,
+        )
+    )
 
 
 def create_fast_retry_policy() -> RetryPolicy:
     """Create fast retry policy (fewer retries, shorter delays)"""
-    return RetryPolicy(RetryConfig(
-        max_retries=2,
-        initial_delay=0.5,
-        max_delay=5.0,
-        exponential_base=1.5,
-        jitter=True,
-    ))
+    return RetryPolicy(
+        RetryConfig(
+            max_retries=2,
+            initial_delay=0.5,
+            max_delay=5.0,
+            exponential_base=1.5,
+            jitter=True,
+        )
+    )

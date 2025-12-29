@@ -36,13 +36,13 @@ VALID_TRANSITIONS: Dict[OrderState, List[OrderState]] = {
     OrderState.CREATED: [
         OrderState.SUBMITTED,
         OrderState.CANCELLED,  # Cancel before submission
-        OrderState.FAILED,     # Validation failed
+        OrderState.FAILED,  # Validation failed
     ],
     OrderState.SUBMITTED: [
         OrderState.ACKNOWLEDGED,
-        OrderState.REJECTED,    # Exchange rejected
-        OrderState.FAILED,      # Network/system failure
-        OrderState.CANCELLED,   # Cancel in-flight
+        OrderState.REJECTED,  # Exchange rejected
+        OrderState.FAILED,  # Network/system failure
+        OrderState.CANCELLED,  # Cancel in-flight
     ],
     OrderState.ACKNOWLEDGED: [
         OrderState.PARTIALLY_FILLED,
@@ -182,12 +182,14 @@ class OrderStateMachine:
         # Generate ledger entry
         ledger_entries = []
         if self.enable_audit:
-            ledger_entries.append(self._create_ledger_entry(
-                order=order,
-                event_type="ORDER_CREATED",
-                old_state=None,
-                new_state=OrderState.CREATED,
-            ))
+            ledger_entries.append(
+                self._create_ledger_entry(
+                    order=order,
+                    event_type="ORDER_CREATED",
+                    old_state=None,
+                    new_state=OrderState.CREATED,
+                )
+            )
 
         return StateMachineResult(
             success=True,
@@ -329,7 +331,9 @@ class OrderStateMachine:
         else:
             new_state = OrderState.PARTIALLY_FILLED
             event_type = "ORDER_PARTIALLY_FILLED"
-            message = f"Order {order.client_order_id} partially filled ({fill.quantity}/{order.quantity})"
+            message = (
+                f"Order {order.client_order_id} partially filled ({fill.quantity}/{order.quantity})"
+            )
 
         # Transition
         return self._transition(
@@ -479,13 +483,15 @@ class OrderStateMachine:
         # Generate ledger entry
         ledger_entries = []
         if self.enable_audit:
-            ledger_entries.append(self._create_ledger_entry(
-                order=order,
-                event_type=event_type,
-                old_state=old_state,
-                new_state=new_state,
-                details=metadata or {},
-            ))
+            ledger_entries.append(
+                self._create_ledger_entry(
+                    order=order,
+                    event_type=event_type,
+                    old_state=old_state,
+                    new_state=new_state,
+                    details=metadata or {},
+                )
+            )
 
         return StateMachineResult(
             success=True,
