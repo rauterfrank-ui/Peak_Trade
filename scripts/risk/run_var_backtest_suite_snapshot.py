@@ -260,7 +260,10 @@ def generate_synthetic_data(
 
     # Generate returns (mostly small losses, some large violations)
     returns_list = [-0.01] * (n_observations - n_violations) + [-0.03] * n_violations
-    np.random.shuffle(returns_list)
+
+    # Use fixed seed for deterministic output in tests
+    rng = np.random.default_rng(42)
+    rng.shuffle(returns_list)
 
     # Generate VaR estimates (constant)
     var_estimates_list = [-0.02] * n_observations
