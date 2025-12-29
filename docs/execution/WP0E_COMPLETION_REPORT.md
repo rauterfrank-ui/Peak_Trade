@@ -90,7 +90,7 @@ Implemented stable contracts and interfaces for the execution system, establishi
 | `src/execution/risk_hook.py` | NEW | +288 | Risk hook interface |
 | `tests/execution/test_contracts_types.py` | NEW | +428 | Contract tests |
 | `tests/execution/test_contracts_risk_hook.py` | NEW | +432 | Risk hook tests |
-| `scripts/risk/generate_contracts_smoke.py` | NEW | +36 | Evidence generator |
+| `scripts/execution/generate_contracts_smoke.py` | NEW | +36 | Evidence generator |
 | `docs/execution/PEAK_TRADE_LIVE_EXECUTION_ROADMAP_MULTI_AGENT_v1_0.md` | NEW | +336 | Multi-agent roadmap |
 
 **Total:** 6 new files, ~2,067 lines
@@ -120,7 +120,7 @@ uv run pytest tests/execution/test_contracts_types.py \
 
 ### Evidence Generation
 ```bash
-PYTHONPATH=/Users/frnkhrz/Peak_Trade uv run python scripts/risk/generate_contracts_smoke.py
+PYTHONPATH=/Users/frnkhrz/Peak_Trade uv run python scripts/execution/generate_contracts_smoke.py
 ```
 
 **Result:** ✅ contracts_smoke.json generated in reports/execution/ (gitignored)
@@ -142,7 +142,7 @@ PYTHONPATH=/Users/frnkhrz/Peak_Trade uv run python scripts/risk/generate_contrac
 
 **Purpose:** Verify serialization stability (CI-friendly)
 
-**Generator:** `scripts/risk/generate_contracts_smoke.py`
+**Generator:** `scripts/execution/generate_contracts_smoke.py`
 
 ---
 
