@@ -47,6 +47,15 @@ from src.risk_layer.var_backtest.traffic_light import (
     traffic_light_recommendation,
 )
 
+# Phase 9A: Duration-Based Independence Diagnostic
+from src.risk_layer.var_backtest.duration_diagnostics import (
+    DurationDiagnosticResult,
+    ExponentialTestResult,
+    extract_exceedance_durations,
+    duration_independence_diagnostic,
+    format_duration_diagnostic,
+)
+
 __all__ = [
     # Kupiec POF Test
     "KupiecResult",
@@ -75,4 +84,10 @@ __all__ = [
     "basel_traffic_light",
     "compute_zone_thresholds",
     "traffic_light_recommendation",
+    # Phase 9A: Duration-Based Independence Diagnostic
+    "DurationDiagnosticResult",
+    "ExponentialTestResult",
+    "extract_exceedance_durations",
+    "duration_independence_diagnostic",
+    "format_duration_diagnostic",
 ]
