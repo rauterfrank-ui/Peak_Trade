@@ -298,3 +298,94 @@ def is_live_allowed(gate: LiveModeGate) -> bool:
     Convenience function for simple checks.
     """
     return gate.get_state().is_allowed()
+
+
+class LiveModeViolationError(Exception):
+    """Exception raised when live mode gate rules are violated."""
+    pass
+
+
+def enforce_live_mode_gate(config: Dict[str, Any], env: str) -> None:
+    """
+    Enforce live mode gate rules (fail-fast).
+
+    Raises LiveModeViolationError if any rule is violated.
+
+    Rules:
+    1. live.enabled defaults to False
+    2. If live.enabled is True:
+       - env must be "prod" (or "live")
+       - operator_ack_token must be present and match expected value
+       - risk_runtime must be importable (basic check)
+
+    Args:
+        config: Configuration dict with structure:
+            {
+                "live": {
+                    "enabled": bool,
+                    "operator_ack": str,  # Must be "I_UNDERSTAND_LIVE_TRADING"
+                },
+                "env": str,  # Optional, can also be passed as arg
+                ...
+            }
+        env: Environment name (overrides config["env"] if present)
+
+    Raises:
+        LiveModeViolationError: If live mode rules are violated
+
+    Example:
+        >>> config = {
+        ...     "live": {
+        ...         "enabled": True,
+        ...         "operator_ack": "I_UNDERSTAND_LIVE_TRADING",
+        ...     },
+        ...     "session_id": "test",
+        ...     "strategy_id": "ma_crossover",
+        ...     "risk_limits": {"max_position_size": 1000},
+        ... }
+        >>> enforce_live_mode_gate(config, env="prod")  # OK
+        >>> enforce_live_mode_gate(config, env="dev")   # Raises!
+    """
+    # 1. Check if live mode is enabled
+    live_config = config.get("live", {})
+    live_enabled = live_config.get("enabled", False)  # Default: False
+
+    if not live_enabled:
+        # Live mode disabled => always safe
+        return
+
+    # 2. Live mode is enabled => enforce strict rules
+    errors = []
+
+    # Rule 2.1: env must be "prod" or "live"
+    valid_live_envs = {"prod", "live"}
+    if env not in valid_live_envs:
+        errors.append(
+            f"Live mode enabled but env is '{env}'. "
+            f"Live mode requires env to be one of: {valid_live_envs}"
+        )
+
+    # Rule 2.2: operator_ack_token must be present and correct
+    expected_ack = "I_UNDERSTAND_LIVE_TRADING"
+    operator_ack = live_config.get("operator_ack", "")
+    if operator_ack != expected_ack:
+        errors.append(
+            f"Live mode enabled but operator_ack is missing or incorrect. "
+            f"Required: operator_ack = '{expected_ack}'"
+        )
+
+    # Rule 2.3: risk_runtime must be importable (basic sanity check)
+    try:
+        import src.execution.risk_runtime  # noqa: F401
+    except ImportError as e:
+        errors.append(
+            f"Live mode enabled but risk_runtime module cannot be imported: {e}"
+        )
+
+    # If any errors, raise with all violations listed
+    if errors:
+        raise LiveModeViolationError(
+            "Live mode gate violation(s):\n" + "\n".join(f"  - {err}" for err in errors)
+        )
+
+    # All checks passed => live mode allowed

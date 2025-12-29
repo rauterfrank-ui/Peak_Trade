@@ -19,6 +19,13 @@ from .live_mode_gate import (
     ValidationResult,
     create_gate,
     is_live_allowed,
+    LiveModeViolationError,
+    enforce_live_mode_gate,
+)
+from .config_validation import (
+    ConfigValidationError,
+    validate_execution_config,
+    validate_execution_config_strict,
 )
 
 # Policy Critic is available as a submodule: governance.policy_critic
@@ -41,4 +48,10 @@ __all__ = [
     "ValidationResult",
     "create_gate",
     "is_live_allowed",
+    "LiveModeViolationError",
+    "enforce_live_mode_gate",
+    # Config Validation (Phase 0 WP0C)
+    "ConfigValidationError",
+    "validate_execution_config",
+    "validate_execution_config_strict",
 ]
