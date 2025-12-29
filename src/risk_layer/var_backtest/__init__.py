@@ -56,6 +56,17 @@ from src.risk_layer.var_backtest.duration_diagnostics import (
     format_duration_diagnostic,
 )
 
+# Phase 9B: Rolling-Window Evaluation
+from src.risk_layer.var_backtest.rolling_evaluation import (
+    RollingEvaluationResult,
+    RollingSummary,
+    RollingWindowResult,
+    rolling_evaluation,
+    format_rolling_summary,
+    get_failing_windows,
+    get_worst_window,
+)
+
 __all__ = [
     # Kupiec POF Test
     "KupiecResult",
@@ -90,4 +101,12 @@ __all__ = [
     "extract_exceedance_durations",
     "duration_independence_diagnostic",
     "format_duration_diagnostic",
+    # Phase 9B: Rolling-Window Evaluation
+    "RollingEvaluationResult",
+    "RollingSummary",
+    "RollingWindowResult",
+    "rolling_evaluation",
+    "format_rolling_summary",
+    "get_failing_windows",
+    "get_worst_window",
 ]
