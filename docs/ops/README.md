@@ -1422,6 +1422,7 @@ Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
 ## Verified Merge Logs
+- **PR #426** → `docs/ops/PR_426_MERGE_LOG.md`
 - **PR #424** → `docs/ops/PR_424_MERGE_LOG.md`
 - **PR #409 (Kill Switch Legacy Adapter, verified)** → `docs/ops/PR_409_MERGE_LOG.md`
 - **PR #418 (Kupiec POF Phase-7 convenience API, verified)** → `docs/ops/PR_418_MERGE_LOG.md`
