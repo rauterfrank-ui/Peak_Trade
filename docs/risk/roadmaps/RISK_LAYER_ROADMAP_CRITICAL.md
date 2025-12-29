@@ -1810,6 +1810,101 @@ def chi2_cdf(x: float, df: int) -> float:
 
 ---
 
+# ✅ DONE: Phase 9A/9B/10 - VaR Backtest Suite Extensions
+
+**Status:** ✅ COMPLETED (merged 2025-12-29)  
+**Duration:** ~5 Tage  
+**Team:** Agent C (Implementation), Agent D (Docs/UX)
+
+## Phase 9A: Duration-Based Independence Diagnostic
+
+**Module:** `src/risk_layer/var_backtest/duration_diagnostics.py`
+
+**Deliverables:**
+- ✅ Duration extraction (time between VaR violations)
+- ✅ Duration ratio computation (observed vs. expected)
+- ✅ Clustering detection heuristic
+- ✅ Optional exponential goodness-of-fit test (stdlib-only)
+- ✅ Tests: `tests/risk_layer/var_backtest/test_duration_diagnostics.py`
+
+**Key Functions:**
+- `duration_independence_diagnostic()` - Main entry point
+- `extract_exceedance_durations()` - Duration computation
+- `format_duration_diagnostic()` - Human-readable output
+
+**Documentation:** [PHASE9A_IMPLEMENTATION_SUMMARY.md](../../../PHASE9A_IMPLEMENTATION_SUMMARY.md)
+
+---
+
+## Phase 9B: Rolling-Window Evaluation
+
+**Module:** `src/risk_layer/var_backtest/rolling_evaluation.py`
+
+**Deliverables:**
+- ✅ Rolling-window UC/IND/CC tests
+- ✅ Pass-rate metrics (per test and overall)
+- ✅ Worst p-value tracking
+- ✅ Verdict stability score
+- ✅ Tests: `tests/risk_layer/var_backtest/test_rolling_evaluation.py`
+
+**Key Functions:**
+- `rolling_evaluation()` - Main entry point
+- `get_failing_windows()` - Extract failed windows
+- `get_worst_window()` - Find critical window
+- `format_rolling_summary()` - Human-readable output
+
+**Documentation:** [PHASE9B_IMPLEMENTATION_SUMMARY.md](../../../PHASE9B_IMPLEMENTATION_SUMMARY.md)
+
+---
+
+## Phase 10: Operator Snapshot Runner
+
+**Script:** `scripts/risk/run_var_backtest_suite_snapshot.py`
+
+**Deliverables:**
+- ✅ Single-command CLI for backtest snapshots
+- ✅ Argparse with `--help` support
+- ✅ Optional Phase 9A/9B diagnostics (flags)
+- ✅ Markdown report generation
+- ✅ Console summary output
+- ✅ Exit codes (0=pass, 1=fail, 2=error)
+- ✅ Tests: `tests/scripts/test_run_var_backtest_suite_snapshot.py`
+
+**Usage:**
+```bash
+python scripts/risk/run_var_backtest_suite_snapshot.py \
+  --returns-file data/returns.csv \
+  --var-file data/var.csv \
+  --confidence 0.99 \
+  --enable-duration-diagnostic \
+  --enable-rolling \
+  --rolling-window-size 250
+```
+
+**Documentation:** [PHASE10_IMPLEMENTATION_SUMMARY.md](../../../PHASE10_IMPLEMENTATION_SUMMARY.md)
+
+---
+
+## Phase 11: VaR Backtest Suite UX & Docs (This Phase)
+
+**Focus:** Operator experience + documentation wiring
+
+**Deliverables:**
+- ✅ [VaR Backtest Suite Guide](../VAR_BACKTEST_SUITE_GUIDE.md) - Complete operator guide
+- ✅ Updated [Risk README](../README.md) - Links to suite guide
+- ✅ Updated this Roadmap - Phases 9A/9B/10/11 marked as DONE
+- ✅ Public API refinement (via `__init__.py` exports)
+
+**Key Improvements:**
+- 30-second docs entry path (from README to Guide)
+- 3 quickstart paths (Library, CLI, Tests)
+- Design notes (determinism, failure modes, extensions)
+- Decision tree (when to use which diagnostic)
+
+**Documentation:** This section
+
+---
+
 # ✅ Next Actions
 
 ## Sofort (heute)

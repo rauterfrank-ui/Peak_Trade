@@ -25,6 +25,10 @@ Diese Dokumentation beschreibt das Risk-Management-System von Peak_Trade, einsch
 - **[VaR Validation Operator Guide](VAR_VALIDATION_OPERATOR_GUIDE.md)** 🆕  
   Quick-start guide for operators: When to run, how to interpret results, troubleshooting
 
+- **[VaR Backtest Suite Guide](VAR_BACKTEST_SUITE_GUIDE.md)** 🆕 *(Phase 9A/9B/10)*  
+  Complete guide for VaR backtest suite: Duration diagnostics, rolling evaluation, snapshot runner  
+  Operator-friendly workflows + API reference + troubleshooting
+
 ### Roadmaps
 
 - **[Portfolio VaR Roadmap](roadmaps/PORTFOLIO_VAR_ROADMAP.md)**  
@@ -74,6 +78,40 @@ cfg = load_config()
 risk_manager = build_risk_manager_from_config(cfg)
 engine = BacktestEngine(risk_manager=risk_manager)
 result = engine.run_realistic(df, strategy_fn, params)
+```
+
+---
+
+### Phases 9A/9B/10: VaR Backtest Suite 🆕
+
+**Status:** ✅ Live on main (merged 2025-12-29)
+
+**Features:**
+- **Phase 9A: Duration-Based Independence Diagnostic** - Detects temporal clustering in VaR violations
+- **Phase 9B: Rolling-Window Evaluation** - Tests model stability over time
+- **Phase 10: Operator Snapshot Runner** - Single-command CLI for backtest snapshots
+
+**Key Components:**
+- `duration_independence_diagnostic()` - Measures time between violations (stdlib-only)
+- `rolling_evaluation()` - Runs UC/IND/CC tests over multiple windows
+- `scripts/risk/run_var_backtest_suite_snapshot.py` - CLI tool with markdown reports
+
+**Documentation:**
+- [VaR Backtest Suite Guide](VAR_BACKTEST_SUITE_GUIDE.md) - Complete operator guide
+- [Duration Diagnostic Implementation](../../PHASE9A_IMPLEMENTATION_SUMMARY.md)
+- [Rolling Evaluation Implementation](../../PHASE9B_IMPLEMENTATION_SUMMARY.md)
+- [Snapshot Runner Implementation](../../PHASE10_IMPLEMENTATION_SUMMARY.md)
+
+**Usage:**
+```bash
+# Quick snapshot with all diagnostics
+python scripts/risk/run_var_backtest_suite_snapshot.py \
+  --returns-file data/returns.csv \
+  --var-file data/var.csv \
+  --confidence 0.99 \
+  --enable-duration-diagnostic \
+  --enable-rolling \
+  --rolling-window-size 250
 ```
 
 ---
