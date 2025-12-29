@@ -1426,3 +1426,10 @@ Security:
 - **PR #424** → `docs/ops/PR_424_MERGE_LOG.md`
 - **PR #409 (Kill Switch Legacy Adapter, verified)** → `docs/ops/PR_409_MERGE_LOG.md`
 - **PR #418 (Kupiec POF Phase-7 convenience API, verified)** → `docs/ops/PR_418_MERGE_LOG.md`
+
+
+## Merge Logs
+
+Post-merge documentation logs for operational PRs.
+
+- [PR #429](PR_429_MERGE_LOG.md) — docs(risk): Phase 11 – VaR Backtest Suite UX & Docs-Verkabelung (merged 2025-12-29) <!-- PR-429-MERGE-LOG -->
