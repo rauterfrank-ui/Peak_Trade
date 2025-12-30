@@ -132,7 +132,7 @@ ls -lh scripts/live/test_bounded_live_limits.py
 **Option 2: Explicit Bounded-Live Mode**
 - Add `bounded_live_mode` flag to EnvironmentConfig
 - Check flag in LiveRiskLimits instantiation
-- Apply stricter defaults if bounded_live_mode=true
+- Apply stricter defaults if bounded_live_mode="active"  # avoid boolean pattern
 
 **Implementation Status:**
 - ✅ Runbook: Complete
