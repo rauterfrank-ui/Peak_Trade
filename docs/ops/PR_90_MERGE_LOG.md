@@ -11,7 +11,7 @@
 ## Summary
 
 Adds three missing ops scripts that were previously referenced in documentation:
-- `scripts/validate_git_state.sh`
+- `scripts/ci/validate_git_state.sh`
 - `scripts/automation/post_merge_verify.sh`
 - `scripts/automation/format_merge_log_snippet.sh`
 
@@ -20,7 +20,7 @@ Adds three missing ops scripts that were previously referenced in documentation:
 ```
  scripts/automation/format_merge_log_snippet.sh |  94 ++++++++++++
  scripts/automation/post_merge_verify.sh        | 181 +++++++++++++++++++++++
- scripts/validate_git_state.sh                  | 144 +++++++++++++++++++
+ scripts/ci/validate_git_state.sh               | 144 +++++++++++++++++++
  3 files changed, 419 insertions(+)
 ```
 
@@ -28,7 +28,7 @@ Adds three missing ops scripts that were previously referenced in documentation:
 
 Three new operational automation scripts:
 
-### 1. scripts/validate_git_state.sh
+### 1. scripts/ci/validate_git_state.sh
 Git repository state validation tool.
 
 **Features:**
@@ -41,16 +41,16 @@ Git repository state validation tool.
 **Usage:**
 ```bash
 # Human-readable output
-scripts/validate_git_state.sh
+scripts/ci/validate_git_state.sh
 
 # JSON output
-scripts/validate_git_state.sh --json
+scripts/ci/validate_git_state.sh --json
 
 # Strict mode (warnings become failures)
-scripts/validate_git_state.sh --strict
+scripts/ci/validate_git_state.sh --strict
 
 # Custom branch/remote
-scripts/validate_git_state.sh --branch develop --remote upstream
+scripts/ci/validate_git_state.sh --branch develop --remote upstream
 ```
 
 ### 2. scripts/automation/post_merge_verify.sh

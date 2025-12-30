@@ -53,7 +53,7 @@ python -c "from src.core.repro import get_git_sha, stable_hash_dict; print('✅ 
 ### 4) Post-Deployment Verification
 ```bash
 # Run validation scripts
-bash scripts/validate_git_state.sh
+bash scripts/ci/validate_git_state.sh
 bash scripts/automation/post_merge_verify.sh --expected-head "$(git rev-parse HEAD)"
 ```
 

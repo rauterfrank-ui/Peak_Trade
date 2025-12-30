@@ -60,7 +60,7 @@ If you skipped the automatic report rendering (via `--no-report`), you can rende
 bash scripts/render_last_report.sh
 
 # Render specific run
-bash scripts/render_last_report.sh <run_id>
+bash scripts/utils/render_last_report.sh <run_id>
 ```
 
 Output: `results/<run_id>/report/backtest.html`
@@ -135,7 +135,7 @@ Edit `templates/quarto/backtest_report.qmd` to customize:
 ### Re-render
 
 ```bash
-bash scripts/render_last_report.sh <run_id>
+bash scripts/utils/render_last_report.sh <run_id>
 ```
 
 ## Integration with Other Runners
@@ -261,6 +261,6 @@ done
 
 ## Next Steps
 
-- 📖 Read [P1 Evidence Chain Spec](../../docs/stability/P1_EVIDENCE_CHAIN.md) for design details
+- 📖 Read P1 Evidence Chain Spec (see `docs&#47;reporting&#47;EVIDENCE_CHAIN_INTEGRATION.md`) for design details
 - 🧪 Check [tests/test_evidence_chain.py](../../tests/test_evidence_chain.py) for usage examples
 - 📊 Customize [templates/quarto/backtest_report.qmd](../../templates/quarto/backtest_report.qmd) for your needs

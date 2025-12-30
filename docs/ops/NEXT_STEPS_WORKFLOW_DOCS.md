@@ -30,7 +30,7 @@ bash scripts/workflows/finalize_workflow_docs_pr.sh
 
 ```bash
 # 1. Branch pushen
-git push -u origin docs/ops-workflow-scripts-docs
+git push -u origin docs&#47;ops-workflow-scripts-docs
 
 # 2. PR erstellen
 gh pr create \
@@ -129,7 +129,7 @@ ssh -T git@github.com
 
 # Falls nicht funktioniert: HTTPS verwenden
 git remote set-url origin https://github.com/user/Peak_Trade.git
-git push -u origin docs/ops-workflow-scripts-docs
+git push -u origin docs&#47;ops-workflow-scripts-docs
 ```
 
 ### "gh: command not found"
