@@ -9,10 +9,9 @@ Zielgruppe: Operator, Cursor Multi-Agent (A0–A5), Reviewer
 ## 0. Datei-Status und Ablageort (Repo-Anker)
 Diese Datei ist als **normatives Steuerdokument** gedacht. Lege sie im Repo ab unter:
 
-- **Empfohlen:** `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md`  
-- Alternativ: `docs/ops/runbooks/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md` (falls `docs/ops/` bereits voll ist)
+- **Pfad:** `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md`
 
-**Regel:** Im Repo gibt es **genau eine** “Front Door” für Cursor Multi-Agent. Alles andere sind Appendices/Referenzen.
+**Regel:** Im Repo gibt es **genau eine** "Front Door" für Cursor Multi-Agent. Alles andere sind Appendices/Referenzen.
 
 ---
 
@@ -227,8 +226,6 @@ candidates = [
   "docs/ops/README.md",
   "docs/risk/VAR_BACKTEST_SUITE_GUIDE.md",
   "scripts/risk/run_var_backtest_suite_snapshot.py",
-  "src/execution/risk_runtime/__init__.py",
-  "src/execution/risk_hook_impl.py",
   "src/data/shadow/quality_report.py",
   "scripts/shadow_run_tick_to_ohlcv_smoke.py",
   "docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md",
@@ -309,8 +306,6 @@ rg -n "shadow|tick_to_ohlcv|quality_report|quality report" src scripts docs || t
 - Ops Index / Verified Merge Logs: `docs/ops/README.md` (falls anders: korrigieren)
 - Risk Backtest Suite Guide: `docs/risk/VAR_BACKTEST_SUITE_GUIDE.md` (falls anders: korrigieren)
 - Snapshot Runner: `scripts/risk/run_var_backtest_suite_snapshot.py` (falls anders: korrigieren)
-- Risk Runtime Package: `src/execution/risk_runtime/` (falls anders: korrigieren)
-- Risk Hook Adapter: `src/execution/risk_hook_impl.py` (falls anders: korrigieren)
 - Shadow Quality Report: `src/data/shadow/quality_report.py` (falls anders: korrigieren)
 - Shadow Smoke Script: `scripts/shadow_run_tick_to_ohlcv_smoke.py` (falls anders: korrigieren)
 - Shadow Operator Runbook: `docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md` (falls anders: korrigieren)
