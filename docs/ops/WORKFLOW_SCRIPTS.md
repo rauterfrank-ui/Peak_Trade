@@ -23,8 +23,8 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 | Script | Zweck | Use-Case |
 |--------|-------|----------|
 | `scripts/workflows/post_merge_workflow_pr203.sh` | All-in-One: Docs erstellen + PR-Flow | PR #203 Merge-Log vollautomatisch |
-| `scripts/quick_pr_merge.sh` | Quick PR-Merge | Wenn Docs bereits committet sind |
-| `scripts/post_merge_workflow.sh` | Generisches Post-Merge Verification | Hygiene + Verification nach jedem Merge |
+| `scripts/workflows/quick_pr_merge.sh` | Quick PR-Merge | Wenn Docs bereits committet sind |
+| `scripts/workflows/post_merge_workflow.sh` | Generisches Post-Merge Verification | Hygiene + Verification nach jedem Merge |
 | `scripts/workflows/merge_and_format_sweep.sh` | PR Merge + Format-Sweep + Large-PR Test | Automated merge + format sweep workflow |
 | `scripts/workflows/pr_merge_with_ops_audit.sh` | PR Merge + Ops Merge-Log Audit | Safe merge with pre/post merge log validation |
 
@@ -123,7 +123,7 @@ Für andere PR-Nummern:
 
 ## 2. Quick PR Merge
 
-**Script:** `scripts/quick_pr_merge.sh`
+**Script:** `scripts/workflows/quick_pr_merge.sh`
 
 ### Wann nutzen
 
@@ -138,7 +138,7 @@ Für andere PR-Nummern:
 git checkout docs/ops-pr203-merge-log
 
 # Script ausführen
-bash scripts/quick_pr_merge.sh
+bash scripts/workflows/quick_pr_merge.sh
 
 # Script macht:
 # 1. Safety-Check (nicht auf main)
@@ -158,7 +158,7 @@ bash scripts/quick_pr_merge.sh
 
 ## 3. Generisches Post-Merge Verification
 
-**Script:** `scripts/post_merge_workflow.sh`
+**Script:** `scripts/workflows/post_merge_workflow.sh`
 
 ### Zweck
 
@@ -188,7 +188,7 @@ Hygiene + Verification nach **jedem** Merge (nicht nur Docs-PRs).
 
 ```bash
 # Nach jedem Merge auf main ausführen
-bash scripts/post_merge_workflow.sh
+bash scripts/workflows/post_merge_workflow.sh
 ```
 
 ### Hinweise
@@ -228,14 +228,14 @@ git commit -m "docs(ops): PR #999 merge log"
 git push -u origin docs/ops-pr999-merge-log
 
 # 4. Quick-Merge
-bash scripts/quick_pr_merge.sh
+bash scripts/workflows/quick_pr_merge.sh
 ```
 
 ### Pattern 3: "Nach Merge: Hygiene + Verification"
 
 ```bash
 # Nach erfolgreichem Merge (egal welcher PR)
-bash scripts/post_merge_workflow.sh
+bash scripts/workflows/post_merge_workflow.sh
 
 # → Prüft Repo + Tests + Optional: Stage1-Monitoring
 ```
@@ -283,7 +283,7 @@ git rebase --continue
 git push --force-with-lease
 
 # Script erneut ausführen
-bash scripts/quick_pr_merge.sh
+bash scripts/workflows/quick_pr_merge.sh
 ```
 
 ### "Script stoppt bei read -p"
@@ -317,9 +317,9 @@ uv run pytest -q
 ### Geprüfte Scripts
 
 - `scripts/workflows/post_merge_workflow_pr203.sh`
-- `scripts/quick_pr_merge.sh`
-- `scripts/post_merge_workflow.sh`
-- `scripts/finalize_workflow_docs_pr.sh`
+- `scripts/workflows/quick_pr_merge.sh`
+- `scripts/workflows/post_merge_workflow.sh`
+- `scripts/workflows/finalize_workflow_docs_pr.sh`
 - `scripts/workflows/pr_merge_with_ops_audit.sh`
 
 ---
