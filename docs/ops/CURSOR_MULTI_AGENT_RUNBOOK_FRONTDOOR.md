@@ -329,3 +329,16 @@ Du bist A3 (Docs & Operator-UX). Ziel: Repo-Anker stabilisieren.
 
 ## Änderungslog
 - v1.1: Repo-Anchoring Pass (Appendix E) + Existenz-Check (Appendix B.1) + konkrete Ankerliste (verifizieren und pflegen).
+
+---
+
+## Appendix: Maintenance / Ownership
+
+- Owner: Ops / Operator Tooling
+- Update triggers:
+  - Cursor Multi-Agent workflow changes (roles, protocol, handoffs)
+  - New operator runbooks or readiness gates
+  - CI policy changes affecting docs reference validation
+- Guardrails:
+  - Avoid repo-relative file paths for non-existent targets (docs-reference-targets-gate).
+  - Prefer discovery instructions (e.g., `rg`) when referencing evolving files.
