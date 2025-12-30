@@ -60,7 +60,7 @@ If you skipped the automatic report rendering (via `--no-report`), you can rende
 bash scripts/render_last_report.sh
 
 # Render specific run
-bash scripts/render_last_report.sh <run_id>
+bash scripts/utils/render_last_report.sh <run_id>
 ```
 
 Output: `results/<run_id>/report/backtest.html`
@@ -135,7 +135,7 @@ Edit `templates/quarto/backtest_report.qmd` to customize:
 ### Re-render
 
 ```bash
-bash scripts/render_last_report.sh <run_id>
+bash scripts/utils/render_last_report.sh <run_id>
 ```
 
 ## Integration with Other Runners

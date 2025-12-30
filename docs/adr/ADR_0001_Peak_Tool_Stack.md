@@ -71,7 +71,7 @@ results/<run_id>/
 
 **2. Reporting Ecosystem:**
 - **Templates:** `templates/quarto/backtest_report.qmd` (policy-compliant, no tracked `reports/`)
-- **Rendering:** `scripts/render_last_report.sh` (optional, writes to `results/<run_id>/report/`)
+- **Rendering:** `scripts/utils/render_last_report.sh` (optional, writes to `results/<run_id>/report/`)
 - **Integration:** Binds to existing `src/reporting/` modules (plots, stats, visualizations)
 
 **3. Optional Dependencies:**

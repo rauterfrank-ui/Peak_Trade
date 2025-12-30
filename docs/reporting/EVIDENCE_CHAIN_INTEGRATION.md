@@ -98,7 +98,7 @@ Quarto templates (`templates/quarto/`) render Evidence Chain artifacts into HTML
 **Flow:**
 1. Runner (e.g., `run_backtest.py`) calls Evidence Chain functions
 2. Evidence Chain writes artifacts to `results/<run_id>/`
-3. (Optional) Runner calls `scripts/render_last_report.sh`
+3. (Optional) Runner calls `scripts/utils/render_last_report.sh`
 4. Quarto loads artifacts from `results/<run_id>/` and renders HTML
 5. HTML output written to `results/<run_id>/report/backtest.html`
 
@@ -116,7 +116,7 @@ CI ensures Evidence Chain output never leaks into version control:
 |-------|----------|---------|
 | `.gitignore` | Root | Ignores `results/`, `reports/`, `*.html` |
 | Pre-commit hook | `scripts/ci/validate_git_state.sh` | Blocks commits with generated files |
-| GitHub Action | `.github/workflows/test.yml` | Verifies no tracked reports in PR diffs |
+| GitHub Action | `.github/workflows/ci.yml` | Verifies no tracked reports in PR diffs |
 
 ## Optional Dependencies Behavior
 
@@ -207,7 +207,7 @@ done
 
 # Render all reports after batch completes
 for run_dir in results/batch_*; do
-  bash scripts/render_last_report.sh $(basename $run_dir)
+  bash scripts/utils/render_last_report.sh $(basename $run_dir)
 done
 ```
 
@@ -223,7 +223,7 @@ done
 **Solutions:**
 1. Install Quarto: https://quarto.org/docs/get-started/
 2. Or skip report: `python scripts/run_backtest.py --no-report`
-3. Or render later: `bash scripts/render_last_report.sh <run_id>`
+3. Or render later: `bash scripts/utils/render_last_report.sh <run_id>`
 
 ### Problem: trades.parquet not created
 
@@ -334,7 +334,7 @@ with open(f"report_{run_id}.html", "w") as f:
 ```python
 # New code (Quarto templates)
 write_minimal_evidence_chain(run_dir, meta, stats)
-# Optionally: bash scripts/render_last_report.sh
+# Optionally: bash scripts/utils/render_last_report.sh
 ```
 
 **Benefits:**
