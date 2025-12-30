@@ -133,6 +133,7 @@ This document catalogs all evidence artifacts collected during the audit. Each e
 | EV-9003 | CI policy enforcement documentation | `docs/ci/CI_POLICY_ENFORCEMENT.md` | 2025-12-30 | FND-0004 |
 | EV-9004 | Risk module clarity (src/risk vs src/risk_layer) | `src/risk/README.md`, `src/risk_layer/README.md` | 2025-12-30 | FND-0002 |
 | EV-9005 | Execution module clarity (src/execution vs src/execution_simple) | `src/execution/README.md`, `src/execution_simple/README.md` | 2025-12-30 | FND-0003 |
+| EV-9006 | Audit remediation summary for PR #441 | `docs/audit/PR_441_AUDIT_REMEDIATION_SUMMARY.md` | 2025-12-30 | FND-0001–FND-0005 |
 
 ---
 
