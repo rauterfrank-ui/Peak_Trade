@@ -261,6 +261,6 @@ done
 
 ## Next Steps
 
-- 📖 Read [P1 Evidence Chain Spec](../../docs/stability/P1_EVIDENCE_CHAIN.md) for design details
+- 📖 Read P1 Evidence Chain Spec (see `docs&#47;reporting&#47;EVIDENCE_CHAIN_INTEGRATION.md`) for design details
 - 🧪 Check [tests/test_evidence_chain.py](../../tests/test_evidence_chain.py) for usage examples
 - 📊 Customize [templates/quarto/backtest_report.qmd](../../templates/quarto/backtest_report.qmd) for your needs

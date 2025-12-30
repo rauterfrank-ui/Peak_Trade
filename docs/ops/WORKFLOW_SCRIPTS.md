@@ -40,10 +40,10 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 
 1. **Branch-Setup:**
    - Checkout `main` + Pull
-   - Erstellt Branch `docs/ops-pr203-merge-log`
+   - Erstellt Branch `docs&#47;ops-pr203-merge-log`
 
 2. **Dokumentation erstellen:**
-   - `docs/ops/PR_203_MERGE_LOG.md` – Umfassender Merge Log
+   - `docs&#47;ops&#47;PR_203_MERGE_LOG.md` – Umfassender Merge Log
    - `docs/ops/README.md` – Index-Update (PR #203 hinzufügen)
    - `docs/PEAK_TRADE_STATUS_OVERVIEW.md` – Changelog-Eintrag
 
@@ -77,13 +77,13 @@ bash scripts/workflows/post_merge_workflow_pr203.sh
 ==> Update main
 Already on 'main'
 Already up to date.
-==> Create branch: docs/ops-pr203-merge-log
-Switched to a new branch 'docs/ops-pr203-merge-log'
-==> Write merge log: docs/ops/PR_203_MERGE_LOG.md
+==> Create branch: docs&#47;ops-pr203-merge-log
+Switched to a new branch 'docs&#47;ops-pr203-merge-log'
+==> Write merge log: docs&#47;ops&#47;PR_203_MERGE_LOG.md
 ==> Update docs/ops/README.md (add PR #203)
 ==> Update docs/PEAK_TRADE_STATUS_OVERVIEW.md (Changelog)
 ==> Commit
-[docs/ops-pr203-merge-log abc1234] docs(ops): add PR #203 merge log + update index
+[docs&#47;ops-pr203-merge-log abc1234] docs(ops): add PR #203 merge log + update index
  3 files changed, 120 insertions(+)
 ==> Push branch
 ...
@@ -113,11 +113,11 @@ Für andere PR-Nummern:
 
 2. **Suche & Ersetze:**
    - `203` → `999`
-   - Branch-Name: `docs/ops-pr203-merge-log` → `docs/ops-pr999-merge-log`
+   - Branch-Name: `docs&#47;ops-pr203-merge-log` → `docs&#47;ops-pr999-merge-log`
    - PR-Titel/Body anpassen
 
 3. **Merge Log Inhalt:**
-   - Template in `cat > docs/ops/PR_999_MERGE_LOG.md` anpassen
+   - Template in `cat > docs&#47;ops&#47;PR_999_MERGE_LOG.md` anpassen
 
 ---
 
@@ -135,7 +135,7 @@ Für andere PR-Nummern:
 
 ```bash
 # Auf deinem Feature-Branch ausführen
-git checkout docs/ops-pr203-merge-log
+git checkout docs&#47;ops-pr203-merge-log
 
 # Script ausführen
 bash scripts/workflows/quick_pr_merge.sh
@@ -215,17 +215,17 @@ bash scripts/workflows/post_merge_workflow_pr203.sh
 
 ```bash
 # 1. Branch erstellen
-git checkout -b docs/ops-pr999-merge-log
+git checkout -b docs&#47;ops-pr999-merge-log
 
 # 2. Docs manuell erstellen/editieren
-vim docs/ops/PR_999_MERGE_LOG.md
+vim docs&#47;ops&#47;PR_999_MERGE_LOG.md
 vim docs/ops/README.md
 vim docs/PEAK_TRADE_STATUS_OVERVIEW.md
 
 # 3. Commit + Push
 git add docs/
 git commit -m "docs(ops): PR #999 merge log"
-git push -u origin docs/ops-pr999-merge-log
+git push -u origin docs&#47;ops-pr999-merge-log
 
 # 4. Quick-Merge
 bash scripts/workflows/quick_pr_merge.sh
@@ -582,7 +582,7 @@ gh pr checks
 
 ### 3. Merge Logs konsistent halten
 
-- Nutze Template aus `docs/ops/PR_203_MERGE_LOG.md`
+- Nutze Template aus `docs&#47;ops&#47;PR_203_MERGE_LOG.md`
 - Struktur: Problem/Motivation → Änderungen → CI → Nutzung → Breaking Changes → Follow-ups
 - Metadaten: Status, Merge Commit, Branch, Intent
 

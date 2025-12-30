@@ -5,7 +5,7 @@
 - **Title:** docs(ops): finalize PR #62 final report
 - **URL:** https://github.com/rauterfrank-ui/Peak_Trade/pull/63
 - **State:** MERGED ✅
-- **Base → Head:** `main` ← `docs/pr-62-finalization`
+- **Base → Head:** `main` ← `docs&#47;pr-62-finalization`
 - **Merge Commit:** `719266c0d2e4fb328d1b6008af158f3475601b19`
 - **Merged At (ISO):** `2025-12-16T00:44:08Z`
 
