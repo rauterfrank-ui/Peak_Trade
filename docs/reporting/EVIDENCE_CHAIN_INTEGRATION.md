@@ -115,7 +115,7 @@ CI ensures Evidence Chain output never leaks into version control:
 | Guard | Location | Purpose |
 |-------|----------|---------|
 | `.gitignore` | Root | Ignores `results/`, `reports/`, `*.html` |
-| Pre-commit hook | `scripts/validate_git_state.sh` | Blocks commits with generated files |
+| Pre-commit hook | `scripts/ci/validate_git_state.sh` | Blocks commits with generated files |
 | GitHub Action | `.github/workflows/test.yml` | Verifies no tracked reports in PR diffs |
 
 ## Optional Dependencies Behavior

@@ -34,7 +34,7 @@ Mit PR #204 wurde eine **vollständige Ops-Automation-Infrastruktur** für Post-
 - `docs/ops/WORKFLOW_SCRIPTS.md` — vollständige Dokumentation aller Ops-Automation-Scripts (353 Zeilen)
 - `NEXT_STEPS_WORKFLOW_DOCS.md` — Schritt-für-Schritt Guide für den Ablauf
 - `scripts/finalize_workflow_docs_pr.sh` — Finalizer (Push → PR → Checks → Merge → main update)
-- `scripts/post_merge_workflow_pr203.sh` — All-in-One Post-Merge Workflow (spezifisch für PR #203 Merge-Log)
+- `scripts/workflows/post_merge_workflow_pr203.sh` — All-in-One Post-Merge Workflow (spezifisch für PR #203 Merge-Log)
 - `scripts/quick_pr_merge.sh` — Quick PR Merge Utility für bereits committete Docs/Changes
 
 **Aktualisiert**
@@ -59,7 +59,7 @@ CI Checks: ✅ alle grün
 
 ### PR #203 Merge-Log automatisiert erstellen
 ```bash
-bash scripts/post_merge_workflow_pr203.sh
+bash scripts/workflows/post_merge_workflow_pr203.sh
 # → Erstellt Branch + Docs + Commit + Push + PR + Merge für PR #203
 ```
 
@@ -107,7 +107,7 @@ Siehe **`docs/ops/WORKFLOW_SCRIPTS.md`** für:
 ## 8) Follow-ups
 
 ### Empfohlene nächste Schritte
-- ✅ PR #203 Merge-Log mit `scripts/post_merge_workflow_pr203.sh` erstellen
+- ✅ PR #203 Merge-Log mit `scripts/workflows/post_merge_workflow_pr203.sh` erstellen
 - ⏳ Optional: weitere PRs (#201, #202) analog dokumentieren
 - ⏳ Optional: Template für zukünftige PR-Merge-Logs erstellen
 - ⏳ Integration mit Post-Merge-Workflow: automatische Merge-Log-Generierung

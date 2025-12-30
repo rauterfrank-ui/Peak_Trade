@@ -22,7 +22,7 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 
 | Script | Zweck | Use-Case |
 |--------|-------|----------|
-| `scripts/post_merge_workflow_pr203.sh` | All-in-One: Docs erstellen + PR-Flow | PR #203 Merge-Log vollautomatisch |
+| `scripts/workflows/post_merge_workflow_pr203.sh` | All-in-One: Docs erstellen + PR-Flow | PR #203 Merge-Log vollautomatisch |
 | `scripts/quick_pr_merge.sh` | Quick PR-Merge | Wenn Docs bereits committet sind |
 | `scripts/post_merge_workflow.sh` | Generisches Post-Merge Verification | Hygiene + Verification nach jedem Merge |
 | `scripts/workflows/merge_and_format_sweep.sh` | PR Merge + Format-Sweep + Large-PR Test | Automated merge + format sweep workflow |
@@ -34,7 +34,7 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 
 ## 1. Post-Merge Workflow PR #203 (All-in-One)
 
-**Script:** `scripts/post_merge_workflow_pr203.sh`
+**Script:** `scripts/workflows/post_merge_workflow_pr203.sh`
 
 ### Was es macht
 
@@ -60,7 +60,7 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 
 ```bash
 # Einfach ausführen
-bash scripts/post_merge_workflow_pr203.sh
+bash scripts/workflows/post_merge_workflow_pr203.sh
 
 # Ablauf:
 # 1. Script erstellt Dateien + committet + pushed
@@ -108,7 +108,7 @@ Für andere PR-Nummern:
 
 1. **Kopiere das Script:**
    ```bash
-   cp scripts/post_merge_workflow_pr203.sh scripts/post_merge_workflow_pr999.sh
+   cp scripts/workflows/post_merge_workflow_pr203.sh scripts/workflows/post_merge_workflow_pr999.sh
    ```
 
 2. **Suche & Ersetze:**
@@ -206,7 +206,7 @@ bash scripts/post_merge_workflow.sh
 
 ```bash
 # Für PR #203 (All-in-One)
-bash scripts/post_merge_workflow_pr203.sh
+bash scripts/workflows/post_merge_workflow_pr203.sh
 
 # → Erstellt Docs + PR + Merge + main update
 ```
@@ -316,7 +316,7 @@ uv run pytest -q
 
 ### Geprüfte Scripts
 
-- `scripts/post_merge_workflow_pr203.sh`
+- `scripts/workflows/post_merge_workflow_pr203.sh`
 - `scripts/quick_pr_merge.sh`
 - `scripts/post_merge_workflow.sh`
 - `scripts/finalize_workflow_docs_pr.sh`

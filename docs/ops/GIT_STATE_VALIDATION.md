@@ -15,7 +15,7 @@ Primary use-cases:
 
 ### Scripts
 
-- `scripts/validate_git_state.sh` - General git state validation
+- `scripts/ci/validate_git_state.sh` - General git state validation
 - `scripts/automation/post_merge_verify.sh` - Post-merge verification
 - `scripts/automation/format_merge_log_snippet.sh` - Merge-log snippet generator
 - `scripts/validate_rl_v0_1.sh` - RL v0.1 validation (similar pattern)

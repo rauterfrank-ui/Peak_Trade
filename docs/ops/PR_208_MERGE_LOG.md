@@ -47,7 +47,7 @@ Jedes Workflow-Objekt enthält:
 
 ### Listed Workflows (Stand PR #208)
 - Post-Merge Workflow PR203  
-  `bash scripts/post_merge_workflow_pr203.sh`
+  `bash scripts/workflows/post_merge_workflow_pr203.sh`
 - Quick PR Merge  
   `bash scripts/quick_pr_merge.sh <PR_NUMBER>`
 - Post-Merge Workflow (Generic)  
