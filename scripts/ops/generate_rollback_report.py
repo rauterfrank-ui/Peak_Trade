@@ -11,6 +11,7 @@ Safety:
 
 Replace with a real implementation when the rollback reporting spec is defined.
 """
+
 from __future__ import annotations
 
 import sys
