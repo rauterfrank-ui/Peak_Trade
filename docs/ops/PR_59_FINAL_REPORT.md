@@ -12,13 +12,13 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 
 ## Scope
 
-- `scripts/inspect_offline_feed.py`
+- `scripts&#47;inspect_offline_feed.py`
   - nutzt `DataUsageContextKind.RESEARCH`
   - SafetyGate blockiert synthetic data für `LIVE_TRADE`
   - kein Netzwerk / keine Exchange-APIs
   - keine Imports von Live-Trading-Modulen
 
-> **⚠️ DEPRECATED:** `scripts/inspect_offline_feed.py` was removed from the repository. This reference is historical and should not be used for current workflows.
+> **⚠️ DEPRECATED:** `scripts&#47;inspect_offline_feed.py` was removed from the repository. This reference is historical and should not be used for current workflows.
 
 - Web Dashboard: `/offline-feed`
   - read-only Monitoring
@@ -27,7 +27,7 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
   - UI klar gelabelt: **"OFFLINE ONLY"**
   - Auto-Refresh
 
-- Runbook: `docs/ops/OFFLINE_REALTIME_FEED_RUNBOOK.md`
+- Runbook: `docs&#47;ops&#47;OFFLINE_REALTIME_FEED_RUNBOOK.md` (removed)
   - explizite OFFLINE ONLY Safety Notes
   - keine Anweisungen für Live-Usage
   - Betonung synthetische Daten-Trennung
@@ -125,7 +125,7 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 ## Operator Quick Commands
 
 - CLI Hilfe:
-  - `python3 scripts/inspect_offline_feed.py --help` **(⚠️ DEPRECATED: script removed)**
+  - `python3 scripts&#47;inspect_offline_feed.py --help` **(⚠️ DEPRECATED: script removed)**
 
 - Tests:
   - `pytest -q tests/test_inspect_offline_feed.py`
@@ -137,8 +137,8 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 
 ## Files / Artifacts
 
-- Runbook: `docs/ops/OFFLINE_REALTIME_FEED_RUNBOOK.md`
-- CLI: `scripts/inspect_offline_feed.py` **(⚠️ DEPRECATED: script removed)**
+- Runbook: `docs&#47;ops&#47;OFFLINE_REALTIME_FEED_RUNBOOK.md` (removed)
+- CLI: `scripts&#47;inspect_offline_feed.py` **(⚠️ DEPRECATED: script removed)**
 - Dashboard: `/offline-feed` Route (Web)
 - Tests: `tests/test_inspect_offline_feed.py`
 
