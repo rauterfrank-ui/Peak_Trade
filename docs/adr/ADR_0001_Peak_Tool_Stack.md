@@ -14,9 +14,9 @@ Implement observability and reproducibility infrastructure in three phases:
 **Scope:** Minimum viable production safety net
 
 **Components:**
-- Structured logging (`src/utils/logger.py`)
+- Structured logging (`src&#47;utils&#47;logger.py`)
 - CI/CD guards (pre-commit hooks, GitHub Actions)
-- Config validation (`src/config/registry.py`)
+- Config validation (`src&#47;config&#47;registry.py`)
 - Basic testing infrastructure
 
 **Status:** Production-ready, in use across all core modules.

@@ -5,7 +5,7 @@
 - **Title:** docs(ops): dedupe ops README audit entries for PR #61-63
 - **URL:** https://github.com/rauterfrank-ui/Peak_Trade/pull/66
 - **State:** MERGED ✅
-- **Base → Head:** `main` ← `docs/ops-readme-dedupe-pr61-63`
+- **Base → Head:** `main` ← `docs&#47;ops-readme-dedupe-pr61-63`
 - **Merge Commit:** `85b95a23371a25bb07dec622a55b3544e38511c2`
 - **Merged At (ISO):** `2025-12-16T01:27:34Z`
 

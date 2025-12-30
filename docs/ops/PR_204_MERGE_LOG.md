@@ -3,7 +3,7 @@
 **Status:** ✅ MERGED  
 **Merge Commit:** `a561574`  
 **PR:** #204  
-**Branch:** `docs/ops-workflow-scripts-docs` → deleted (squash merge)
+**Branch:** `docs&#47;ops-workflow-scripts-docs` → deleted (squash merge)
 
 ---
 
