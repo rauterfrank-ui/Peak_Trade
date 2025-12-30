@@ -197,15 +197,15 @@ Wenn irgendein Stop-Kriterium erfüllt ist, brich ab und schlage einen kleineren
 
 | Phase | Ziel | Kern-Deliverables | Repo-Anker (Beispiele; verifizieren) | Evidence | Gates |
 |---|---|---|---|---|---|
-| P0 | Baseline & Contracts | Contracts/Types, import-smokes | `src/execution/…` + `tests/…` | CI grün | Tests, Lint, Policy |
-| P1 | Shadow stabil | deterministic runs, quality reports | `src/data/shadow/…`, `scripts/shadow_…`, `docs/shadow/…` | HTML/JSON (untracked) | reports guard, docs targets |
-| P2 | Risk validation | VaR validation, backtest suite | `src/risk/…` oder `src/risk_layer/…`, `docs/risk/…`, `scripts/risk/…`, `tests/risk/…` | backtest suite report | tests, docs gate |
-| P3 | Risk runtime | runtime policies, audit logging | `src/execution/risk_runtime/…` | audit logs + tests | Policy Critic, tests |
-| P4 | Execution pipeline (paper/shadow) | routing skeleton, hooks | `src/execution/…` | e2e dry run logs | tests, policy |
-| P5 | Monitoring/alerting | dashboards, routing | `src/…/alerting…`, `docs/ops/…` | screenshots/logs | docs + tests |
-| P6 | Bounded auto (shadow) | gates, overrides | `src/governance/…` | go/no-go evidence | governance |
-| P7 | Canary | limited exposure config | `config/…`, `docs/ops/…` | canary logs | strict gates |
-| P8 | Incident drills | kill switch drills | `docs/ops/…`, `scripts/ops/…` | drill reports | ops evidence |
+| P0 | Baseline & Contracts | Contracts/Types, import-smokes | src/execution/, tests/ | CI grün | Tests, Lint, Policy |
+| P1 | Shadow stabil | deterministic runs, quality reports | src/data/shadow/, scripts/shadow_*, docs/shadow/ | HTML/JSON (untracked) | reports guard, docs targets |
+| P2 | Risk validation | VaR validation, backtest suite | src/risk/ oder src/risk_layer/, docs/risk/, scripts/risk/, tests/risk/ | backtest suite report | tests, docs gate |
+| P3 | Risk runtime | runtime policies, audit logging | src/execution/risk_runtime/ | audit logs + tests | Policy Critic, tests |
+| P4 | Execution pipeline (paper/shadow) | routing skeleton, hooks | src/execution/ | e2e dry run logs | tests, policy |
+| P5 | Monitoring/alerting | dashboards, routing | src/*/alerting*, docs/ops/ | screenshots/logs | docs + tests |
+| P6 | Bounded auto (shadow) | gates, overrides | src/governance/ | go/no-go evidence | governance |
+| P7 | Canary | limited exposure config | config/, docs/ops/ | canary logs | strict gates |
+| P8 | Incident drills | kill switch drills | docs/ops/, scripts/ops/ | drill reports | ops evidence |
 | P9 | Live readiness review | checklist approvals | `docs/ops/LIVE_READINESS_PHASE_TRACKER.md` | review artifacts | governance |
 | P10 | Live (manual enable) | operator-only enablement | runbooks + gating | signed evidence | final gates |
 
