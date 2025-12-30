@@ -474,7 +474,7 @@ jobs:
 resource "github_branch_protection" "main" {
   repository_id = "Peak_Trade"
   pattern       = "main"
-  
+
   required_status_checks {
     strict = true
     contexts = [
@@ -485,7 +485,7 @@ resource "github_branch_protection" "main" {
       // ... alle anderen
     ]
   }
-  
+
   enforce_admins = true
 }
 ```
@@ -579,4 +579,3 @@ Robuste, dauerhafte Branch Protection ✅
 **Status:** ✅ DELTA-ANALYSE ABGESCHLOSSEN  
 **Ergebnis:** PR #267 und heutige Remediation sind komplementär und bilden zusammen eine vollständige Protection-Chain.  
 **Nächster Schritt:** Drift Guard aktivieren + wöchentliche Verifikation
-

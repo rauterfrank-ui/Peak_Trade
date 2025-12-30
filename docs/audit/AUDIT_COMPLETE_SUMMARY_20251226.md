@@ -377,5 +377,3 @@ bash scripts/ops/check_and_fix_branch_protection.sh status
 ---
 
 **Status:** ✅ AUDIT ABGESCHLOSSEN - AWAITING ACTION
-
-
