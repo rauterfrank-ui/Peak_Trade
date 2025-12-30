@@ -10,5 +10,5 @@
 - Ensures generated outputs are not committed (templates versioned, outputs ignored)
 
 ## Verification
-- scripts/validate_git_state.sh: OK
+- scripts/ci/validate_git_state.sh: OK
 - scripts/automation/post_merge_verify.sh: OK (expected HEAD)

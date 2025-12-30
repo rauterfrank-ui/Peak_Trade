@@ -51,7 +51,7 @@
 
 - **ruff:** ⚠️ Minor (nur Import-Formatierung in Scripts, keine kritischen Fehler)
 
-- **scripts/validate_git_state.sh:** N/A (nicht im Repo)
+- **scripts/ci/validate_git_state.sh:** N/A (nicht im Repo)
 
 - **scripts/automation/post_merge_verify.sh:** N/A (nicht im Repo)
 

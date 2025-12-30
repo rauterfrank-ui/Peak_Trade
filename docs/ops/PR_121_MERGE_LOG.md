@@ -25,7 +25,7 @@
 ## Verification
 - CI: All PR checks green (tests, audit, strategy-smoke, health-gate)
 - Local: `scripts/automation/post_merge_verify.sh` (no args) → exit 0 + WARN visible
-- Post-merge: `scripts/validate_git_state.sh` → OK
+- Post-merge: `scripts/ci/validate_git_state.sh` → OK
 
 ## Testing
 ```bash

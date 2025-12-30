@@ -22,9 +22,9 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 
 | Script | Zweck | Use-Case |
 |--------|-------|----------|
-| `scripts/post_merge_workflow_pr203.sh` | All-in-One: Docs erstellen + PR-Flow | PR #203 Merge-Log vollautomatisch |
-| `scripts/quick_pr_merge.sh` | Quick PR-Merge | Wenn Docs bereits committet sind |
-| `scripts/post_merge_workflow.sh` | Generisches Post-Merge Verification | Hygiene + Verification nach jedem Merge |
+| `scripts/workflows/post_merge_workflow_pr203.sh` | All-in-One: Docs erstellen + PR-Flow | PR #203 Merge-Log vollautomatisch |
+| `scripts/workflows/quick_pr_merge.sh` | Quick PR-Merge | Wenn Docs bereits committet sind |
+| `scripts/workflows/post_merge_workflow.sh` | Generisches Post-Merge Verification | Hygiene + Verification nach jedem Merge |
 | `scripts/workflows/merge_and_format_sweep.sh` | PR Merge + Format-Sweep + Large-PR Test | Automated merge + format sweep workflow |
 | `scripts/workflows/pr_merge_with_ops_audit.sh` | PR Merge + Ops Merge-Log Audit | Safe merge with pre/post merge log validation |
 
@@ -34,16 +34,16 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 
 ## 1. Post-Merge Workflow PR #203 (All-in-One)
 
-**Script:** `scripts/post_merge_workflow_pr203.sh`
+**Script:** `scripts/workflows/post_merge_workflow_pr203.sh`
 
 ### Was es macht
 
 1. **Branch-Setup:**
    - Checkout `main` + Pull
-   - Erstellt Branch `docs/ops-pr203-merge-log`
+   - Erstellt Branch `docs&#47;ops-pr203-merge-log`
 
 2. **Dokumentation erstellen:**
-   - `docs/ops/PR_203_MERGE_LOG.md` – Umfassender Merge Log
+   - `docs&#47;ops&#47;PR_203_MERGE_LOG.md` – Umfassender Merge Log
    - `docs/ops/README.md` – Index-Update (PR #203 hinzufügen)
    - `docs/PEAK_TRADE_STATUS_OVERVIEW.md` – Changelog-Eintrag
 
@@ -60,7 +60,7 @@ Diese Datei dokumentiert die Peak_Trade Ops-Automations-Skripte für **Post-Merg
 
 ```bash
 # Einfach ausführen
-bash scripts/post_merge_workflow_pr203.sh
+bash scripts/workflows/post_merge_workflow_pr203.sh
 
 # Ablauf:
 # 1. Script erstellt Dateien + committet + pushed
@@ -77,13 +77,13 @@ bash scripts/post_merge_workflow_pr203.sh
 ==> Update main
 Already on 'main'
 Already up to date.
-==> Create branch: docs/ops-pr203-merge-log
-Switched to a new branch 'docs/ops-pr203-merge-log'
-==> Write merge log: docs/ops/PR_203_MERGE_LOG.md
+==> Create branch: docs&#47;ops-pr203-merge-log
+Switched to a new branch 'docs&#47;ops-pr203-merge-log'
+==> Write merge log: docs&#47;ops&#47;PR_203_MERGE_LOG.md
 ==> Update docs/ops/README.md (add PR #203)
 ==> Update docs/PEAK_TRADE_STATUS_OVERVIEW.md (Changelog)
 ==> Commit
-[docs/ops-pr203-merge-log abc1234] docs(ops): add PR #203 merge log + update index
+[docs&#47;ops-pr203-merge-log abc1234] docs(ops): add PR #203 merge log + update index
  3 files changed, 120 insertions(+)
 ==> Push branch
 ...
@@ -108,22 +108,22 @@ Für andere PR-Nummern:
 
 1. **Kopiere das Script:**
    ```bash
-   cp scripts/post_merge_workflow_pr203.sh scripts/post_merge_workflow_pr999.sh
+   cp scripts/workflows/post_merge_workflow_pr203.sh scripts/workflows/post_merge_workflow_pr999.sh
    ```
 
 2. **Suche & Ersetze:**
    - `203` → `999`
-   - Branch-Name: `docs/ops-pr203-merge-log` → `docs/ops-pr999-merge-log`
+   - Branch-Name: `docs&#47;ops-pr203-merge-log` → `docs&#47;ops-pr999-merge-log`
    - PR-Titel/Body anpassen
 
 3. **Merge Log Inhalt:**
-   - Template in `cat > docs/ops/PR_999_MERGE_LOG.md` anpassen
+   - Template in `cat > docs&#47;ops&#47;PR_999_MERGE_LOG.md` anpassen
 
 ---
 
 ## 2. Quick PR Merge
 
-**Script:** `scripts/quick_pr_merge.sh`
+**Script:** `scripts/workflows/quick_pr_merge.sh`
 
 ### Wann nutzen
 
@@ -135,10 +135,10 @@ Für andere PR-Nummern:
 
 ```bash
 # Auf deinem Feature-Branch ausführen
-git checkout docs/ops-pr203-merge-log
+git checkout docs&#47;ops-pr203-merge-log
 
 # Script ausführen
-bash scripts/quick_pr_merge.sh
+bash scripts/workflows/quick_pr_merge.sh
 
 # Script macht:
 # 1. Safety-Check (nicht auf main)
@@ -158,7 +158,7 @@ bash scripts/quick_pr_merge.sh
 
 ## 3. Generisches Post-Merge Verification
 
-**Script:** `scripts/post_merge_workflow.sh`
+**Script:** `scripts/workflows/post_merge_workflow.sh`
 
 ### Zweck
 
@@ -188,7 +188,7 @@ Hygiene + Verification nach **jedem** Merge (nicht nur Docs-PRs).
 
 ```bash
 # Nach jedem Merge auf main ausführen
-bash scripts/post_merge_workflow.sh
+bash scripts/workflows/post_merge_workflow.sh
 ```
 
 ### Hinweise
@@ -206,7 +206,7 @@ bash scripts/post_merge_workflow.sh
 
 ```bash
 # Für PR #203 (All-in-One)
-bash scripts/post_merge_workflow_pr203.sh
+bash scripts/workflows/post_merge_workflow_pr203.sh
 
 # → Erstellt Docs + PR + Merge + main update
 ```
@@ -215,27 +215,27 @@ bash scripts/post_merge_workflow_pr203.sh
 
 ```bash
 # 1. Branch erstellen
-git checkout -b docs/ops-pr999-merge-log
+git checkout -b docs&#47;ops-pr999-merge-log
 
 # 2. Docs manuell erstellen/editieren
-vim docs/ops/PR_999_MERGE_LOG.md
+vim docs&#47;ops&#47;PR_999_MERGE_LOG.md
 vim docs/ops/README.md
 vim docs/PEAK_TRADE_STATUS_OVERVIEW.md
 
 # 3. Commit + Push
 git add docs/
 git commit -m "docs(ops): PR #999 merge log"
-git push -u origin docs/ops-pr999-merge-log
+git push -u origin docs&#47;ops-pr999-merge-log
 
 # 4. Quick-Merge
-bash scripts/quick_pr_merge.sh
+bash scripts/workflows/quick_pr_merge.sh
 ```
 
 ### Pattern 3: "Nach Merge: Hygiene + Verification"
 
 ```bash
 # Nach erfolgreichem Merge (egal welcher PR)
-bash scripts/post_merge_workflow.sh
+bash scripts/workflows/post_merge_workflow.sh
 
 # → Prüft Repo + Tests + Optional: Stage1-Monitoring
 ```
@@ -283,7 +283,7 @@ git rebase --continue
 git push --force-with-lease
 
 # Script erneut ausführen
-bash scripts/quick_pr_merge.sh
+bash scripts/workflows/quick_pr_merge.sh
 ```
 
 ### "Script stoppt bei read -p"
@@ -316,10 +316,10 @@ uv run pytest -q
 
 ### Geprüfte Scripts
 
-- `scripts/post_merge_workflow_pr203.sh`
-- `scripts/quick_pr_merge.sh`
-- `scripts/post_merge_workflow.sh`
-- `scripts/finalize_workflow_docs_pr.sh`
+- `scripts/workflows/post_merge_workflow_pr203.sh`
+- `scripts/workflows/quick_pr_merge.sh`
+- `scripts/workflows/post_merge_workflow.sh`
+- `scripts/workflows/finalize_workflow_docs_pr.sh`
 - `scripts/workflows/pr_merge_with_ops_audit.sh`
 
 ---
@@ -582,7 +582,7 @@ gh pr checks
 
 ### 3. Merge Logs konsistent halten
 
-- Nutze Template aus `docs/ops/PR_203_MERGE_LOG.md`
+- Nutze Template aus `docs&#47;ops&#47;PR_203_MERGE_LOG.md`
 - Struktur: Problem/Motivation → Änderungen → CI → Nutzung → Breaking Changes → Follow-ups
 - Metadaten: Status, Merge Commit, Branch, Intent
 
