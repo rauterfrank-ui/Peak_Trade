@@ -1,0 +1,85 @@
+# Peak_Trade: Bounded-Live Configuration (Phase 1)
+# ================================================
+# CRITICAL: This config enforces strict limits for initial live trading rollout.
+#
+# Purpose: Safe transition from shadow/paper to live trading with real money
+# Phase: 1 (Initial Bounded-Live)
+# Max Risk: $100 daily loss, $500 total exposure
+#
+# DO NOT MODIFY without Risk Owner approval and documented justification.
+
+[bounded_live]
+enabled = true
+phase = 1
+description = "Phase 1: Initial bounded-live rollout with strict limits"
+
+# Risk Limits (MANDATORY)
+[bounded_live.limits]
+# Per-order limits
+max_order_notional = 50.0           # Max $50 per single order
+min_order_notional = 10.0           # Min $10 (avoid dust trades)
+
+# Total exposure limits
+max_total_notional = 500.0          # Max $500 total exposure across all positions
+max_open_positions = 2              # Max 2 different symbols
+
+# Daily loss limits
+max_daily_loss_abs = 100.0          # Max $100 absolute daily loss
+max_daily_loss_pct = 5.0            # Max 5% daily loss (if starting_cash provided)
+
+# Position size limits
+max_position_pct = 0.4              # Max 40% of capital per position
+
+# Enforcement (STRICT)
+[bounded_live.enforcement]
+enforce_limits = true               # MUST be true
+allow_override = false              # NO overrides in Phase 1
+require_operator_confirmation = true # Every session requires explicit confirmation
+block_on_violation = true           # Block orders if limits violated
+
+# Monitoring & Alerting
+[bounded_live.monitoring]
+alert_on_warning = true             # Alert at 80% of limit
+alert_on_breach = true              # Alert on limit breach
+continuous_monitoring = true        # Monitor every order
+log_all_checks = true               # Log every risk check
+
+# Alert thresholds
+warning_threshold_factor = 0.8      # Warning at 80% of limit
+
+# Safety Gates
+[bounded_live.safety]
+require_kill_switch_active = true   # Kill switch must be ACTIVE
+require_risk_limits_enabled = true  # Risk limits must be ENABLED
+disallow_manual_bypass = true       # Cannot bypass programmatically
+
+# Session Limits
+[bounded_live.session]
+max_session_duration_hours = 4      # Max 4 hours per session
+require_session_review = true       # Review after each session
+cooldown_between_sessions_hours = 1 # 1 hour cooldown between sessions
+
+# Phase Progression Criteria
+[bounded_live.phase_progression]
+# Criteria to move from Phase 1 → Phase 2
+min_days_in_phase1 = 7              # Minimum 7 days successful operation
+require_zero_kill_switch_triggers = true  # No kill switch triggers
+require_zero_risk_breaches = true   # No risk limit breaches
+require_formal_review = true        # Formal review meeting required
+require_sign_offs = true            # All stakeholders must sign off
+
+# Phase 2 Preview (for reference only)
+[bounded_live.phase2_preview]
+# These limits would apply in Phase 2 (after Phase 1 success)
+max_order_notional = 100.0          # Increased to $100
+max_total_notional = 1000.0         # Increased to $1,000
+max_open_positions = 3              # Increased to 3 positions
+max_daily_loss_abs = 200.0          # Increased to $200
+
+# Audit Trail
+[bounded_live.audit]
+log_all_decisions = true
+log_all_risk_checks = true
+log_all_limit_checks = true
+store_evidence = true
+evidence_retention_days = 365
