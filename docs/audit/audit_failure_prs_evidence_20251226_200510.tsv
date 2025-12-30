@@ -6,6 +6,6 @@ pr	state	merged_at	merged_by	merge_sha	audit_conclusion_at_merge	failed_checks_a
 166	MERGED	2025-12-20T06:19:54Z	rauterfrank-ui	230098ca479cdac1feb5019f6ffd4025e4040328	FAILURE	audit:FAILURE
 168	MERGED	2025-12-20T06:23:41Z	rauterfrank-ui	466a4e8449beff59ab2648ad5917c40fdbb0b6da	FAILURE	audit:FAILURE
 207	MERGED	2025-12-21T16:21:20Z	rauterfrank-ui	1395b31a7d1e6ec9eb6517a3f21213bacf73b8f7	FAILURE	audit:FAILURE,tests (3.10):FAILURE,tests (3.11):FAILURE,tests (3.9):FAILURE
-57	OPEN		n/a		n/a	
-60	OPEN		n/a		n/a	
-117	OPEN		n/a		n/a	
+57	OPEN		n/a		n/a
+60	OPEN		n/a		n/a
+117	OPEN		n/a		n/a
