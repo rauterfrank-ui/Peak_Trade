@@ -18,6 +18,8 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
   - kein Netzwerk / keine Exchange-APIs
   - keine Imports von Live-Trading-Modulen
 
+> **⚠️ DEPRECATED:** `scripts/inspect_offline_feed.py` was removed from the repository. This reference is historical and should not be used for current workflows.
+
 - Web Dashboard: `/offline-feed`
   - read-only Monitoring
   - nutzt RESEARCH context für SafetyGate
@@ -89,7 +91,7 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 ## Operator Quick Commands
 
 - CLI Hilfe:
-  - `python3 scripts/inspect_offline_feed.py --help`
+  - `python3 scripts/inspect_offline_feed.py --help` **(⚠️ DEPRECATED: script removed)**
 
 - Tests:
   - `pytest -q tests/test_inspect_offline_feed.py`
@@ -102,7 +104,7 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 ## Files / Artifacts
 
 - Runbook: `docs/ops/OFFLINE_REALTIME_FEED_RUNBOOK.md`
-- CLI: `scripts/inspect_offline_feed.py`
+- CLI: `scripts/inspect_offline_feed.py` **(⚠️ DEPRECATED: script removed)**
 - Dashboard: `/offline-feed` Route (Web)
 - Tests: `tests/test_inspect_offline_feed.py`
 
