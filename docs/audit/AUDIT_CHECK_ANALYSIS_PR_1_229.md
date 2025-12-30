@@ -178,7 +178,7 @@ Alle FAILURE-PRs sind entweder gemerged oder noch offen.
 
 **Scan-Befehl:**
 ```bash
-bash scripts/pr_audit_scan.sh 1 229
+bash scripts/ops/pr_audit_scan.sh 1 229
 ```
 
 ---

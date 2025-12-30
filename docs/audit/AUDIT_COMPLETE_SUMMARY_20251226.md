@@ -219,7 +219,7 @@ git checkout main
 #### 7. Monitoring Dashboard
 ```bash
 # Wöchentlicher Cron-Job:
-0 9 * * 1 bash scripts/pr_audit_scan.sh (existing) 1 latest | \
+0 9 * * 1 bash scripts/ops/pr_audit_scan.sh 1 latest | \
   scripts/ops/audit_report_generator.sh > reports/audit/weekly_$(date +%Y%m%d).md
 ```
 

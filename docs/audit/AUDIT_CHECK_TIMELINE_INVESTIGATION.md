@@ -249,7 +249,7 @@ Die Analyse wurde durchgeführt mit:
 scripts/audit_runs_export.sh  # -> reports/audit_runs_nonsuccess_*.tsv
 
 # 2. PR Audit-Status scannen
-scripts/pr_audit_scan.sh  # -> reports/pr_audit_scan_*.tsv
+scripts/ops/pr_audit_scan.sh  # -> reports/pr_audit_scan_*.tsv
 
 # 3. Merge-Time-Analyse für gemergte Failures
 scripts/audit_merge_time_analysis.sh  # -> reports/audit_merge_time_vs_latest_*.tsv

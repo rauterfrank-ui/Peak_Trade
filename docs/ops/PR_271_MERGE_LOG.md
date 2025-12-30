@@ -154,7 +154,9 @@ uv run black .
 
 ### CI/CD
 
-**Audit Workflow (`scripts/run_audit.sh`):**
+**Audit Workflow (`scripts/ops/run_audit.sh`):**
+> **Note:** Script path updated - originally located in root scripts/ directory, moved to scripts/ops/ subdirectory.
+
 - Nutzt weiterhin `black --check` als Formatter-Check
 - Sollte jetzt konsistent mit Pre-commit sein
 - Bei Failure: Echter Formatting-Fehler (kein Tool-Konflikt)
