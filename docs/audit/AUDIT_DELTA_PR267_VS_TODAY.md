@@ -572,7 +572,7 @@ Robuste, dauerhafte Branch Protection ✅
 
 ### Tools
 - `scripts/ops/check_and_fix_branch_protection.sh`
-- `scripts/pr_audit_scan.sh (existing)`
+- `scripts/ops/pr_audit_scan.sh`
 
 ---
 

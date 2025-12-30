@@ -327,7 +327,7 @@ git checkout main
 5. `reports/audit/AUDIT_COMPLETE_SUMMARY_20251226.md` (dieses Dokument)
 
 ### Tools & Scripts
-1. `scripts/pr_audit_scan.sh (existing)` (bestehend)
+1. `scripts/ops/pr_audit_scan.sh` (bestehend)
 2. `scripts/ops/check_and_fix_branch_protection.sh` (neu erstellt)
 
 ### Externe Links
