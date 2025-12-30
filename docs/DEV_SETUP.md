@@ -293,6 +293,22 @@ PEAK_TRADE_EXCHANGE_TESTS=1 pytest tests/test_exchange_smoke.py -v
 
 ---
 
+## EditorConfig (Pflicht für konsistente Diffs)
+
+Peak_Trade nutzt `.editorconfig`, um final newline (EOF), LF line endings und UTF-8 repo-weit zu standardisieren.
+
+**Cursor/VS Code**
+- Stellen Sie sicher, dass EditorConfig unterstützt/aktiv ist (Extension, falls erforderlich).
+- Vermeiden Sie manuelle "Format All"-Aktionen, wenn Sie große Whitespace-Diffs sehen — zuerst `.editorconfig`/Hooks prüfen.
+
+**Quick Check**
+```bash
+ls -la .editorconfig
+nl -ba .editorconfig
+```
+
+---
+
 ## Weiterführende Dokumentation
 
 - [README.md](../README.md) – Quickstart
