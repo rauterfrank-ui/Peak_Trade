@@ -25,9 +25,9 @@ def test_bounded_live_config() -> Tuple[bool, List[str]]:
     """Test bounded-live configuration."""
     errors = []
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("BOUNDED-LIVE CONFIGURATION TEST")
-    print("="*70 + "\n")
+    print("=" * 70 + "\n")
 
     # Load config
     try:
@@ -106,9 +106,9 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
     """Test LiveRiskLimits integration with bounded-live config."""
     errors = []
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("LIVE RISK LIMITS INTEGRATION TEST")
-    print("="*70 + "\n")
+    print("=" * 70 + "\n")
 
     try:
         config = load_config()
@@ -159,13 +159,17 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
     print("\nTest 3: Multiple orders ($40 + $40 = $80) - SHOULD PASS")
     print("-" * 50)
     orders_multi = [
-        LiveOrderRequest(symbol="BTC-EUR", side="buy", quantity=0.0008, price=50000.0, notional=40.0),
+        LiveOrderRequest(
+            symbol="BTC-EUR", side="buy", quantity=0.0008, price=50000.0, notional=40.0
+        ),
         LiveOrderRequest(symbol="ETH-EUR", side="buy", quantity=0.02, price=2000.0, notional=40.0),
     ]
     result_multi = limits.check_orders(orders_multi)
 
     if result_multi.allowed:
-        print(f"✅ Multiple orders ALLOWED (total: ${result_multi.metrics.get('total_notional', 0):.2f})")
+        print(
+            f"✅ Multiple orders ALLOWED (total: ${result_multi.metrics.get('total_notional', 0):.2f})"
+        )
     else:
         errors.append(f"Multiple orders BLOCKED (should pass): {result_multi.reasons}")
         print(f"❌ Multiple orders BLOCKED: {result_multi.reasons}")
@@ -174,14 +178,18 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
     print("\nTest 4: Excessive total exposure ($300 + $300 = $600) - SHOULD FAIL")
     print("-" * 50)
     orders_excessive = [
-        LiveOrderRequest(symbol="BTC-EUR", side="buy", quantity=0.006, price=50000.0, notional=300.0),
+        LiveOrderRequest(
+            symbol="BTC-EUR", side="buy", quantity=0.006, price=50000.0, notional=300.0
+        ),
         LiveOrderRequest(symbol="ETH-EUR", side="buy", quantity=0.15, price=2000.0, notional=300.0),
     ]
     result_excessive = limits.check_orders(orders_excessive)
 
     if not result_excessive.allowed:
         print(f"✅ Excessive exposure BLOCKED as expected")
-        print(f"   Reason: {result_excessive.reasons[0] if result_excessive.reasons else 'Unknown'}")
+        print(
+            f"   Reason: {result_excessive.reasons[0] if result_excessive.reasons else 'Unknown'}"
+        )
     else:
         errors.append("Excessive exposure ALLOWED (should fail)")
         print(f"❌ Excessive exposure ALLOWED (should be blocked!)")
@@ -191,9 +199,9 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
 
 def main():
     """Run all tests."""
-    print("\n" + "#"*70)
+    print("\n" + "#" * 70)
     print("# BOUNDED-LIVE LIMITS TEST SUITE")
-    print("#"*70)
+    print("#" * 70)
 
     all_passed = True
     all_errors = []
@@ -209,9 +217,9 @@ def main():
     all_errors.extend(errors)
 
     # Summary
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TEST SUMMARY")
-    print("="*70 + "\n")
+    print("=" * 70 + "\n")
 
     if all_passed:
         print("✅ ALL TESTS PASSED")
