@@ -263,4 +263,3 @@ Alle Skripte sind in `scripts/` verfügbar.
 ---
 
 **Ende des Reports**
-

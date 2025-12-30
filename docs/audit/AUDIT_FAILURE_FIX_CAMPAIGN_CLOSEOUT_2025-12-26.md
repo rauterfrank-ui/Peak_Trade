@@ -40,7 +40,7 @@
 ### 1. Tool Alignment (PR #354 — MERGED)
 - **Commit:** 16f0614
 - **Changes:**
-  - `black` aus `scripts/run_audit.sh` entfernt
+  - `black` aus `scripts/ops/run_audit.sh` entfernt
   - **Single Source of Truth: RUFF format**
   - Guardrail validated: `scripts/ops/check_no_black_enforcement.sh` ✅
 
@@ -148,4 +148,3 @@ git log -1 --oneline
 **Date:** 2025-12-26  
 **Duration:** ~4 hours (Analysis → Fix → Merge → Documentation)  
 **Status:** ✅ CLOSED
-

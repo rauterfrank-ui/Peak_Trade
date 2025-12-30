@@ -104,7 +104,7 @@ check_status() {
 
   if [[ "$has_required_checks" == "true" ]]; then
     echo -e "${GREEN}✓ Required Status Checks: AKTIVIERT${NC}"
-    
+
     local strict
     strict="$(jq -r '.required_status_checks.strict' <<<"$protection")"
     if [[ "$strict" == "true" ]]; then
@@ -117,7 +117,7 @@ check_status() {
     echo "  Erforderliche Checks:"
     local configured_checks
     configured_checks="$(jq -r '.required_status_checks.contexts[]' <<<"$protection" 2>/dev/null || true)"
-    
+
     if [[ -z "$configured_checks" ]]; then
       echo -e "    ${RED}✗ Keine Checks konfiguriert!${NC}"
     else
@@ -154,7 +154,7 @@ check_status() {
   # Admin Enforcement
   local enforce_admins
   enforce_admins="$(jq -r '.enforce_admins.enabled // false' <<<"$protection")"
-  
+
   if [[ "$enforce_admins" == "true" ]]; then
     echo -e "${GREEN}✓ Admin Enforcement: AKTIVIERT${NC}"
     echo "  → Admins können Branch Protection nicht umgehen"
@@ -241,7 +241,7 @@ fix_protection() {
     --field required_pull_request_reviews='{"required_approving_review_count":1}' \
     --field restrictions=null \
     >/dev/null 2>&1; then
-    
+
     echo -e "${GREEN}✓ Branch Protection erfolgreich gesetzt${NC}"
     echo
     echo "Verifiziere..."
@@ -286,4 +286,3 @@ case "$MODE" in
     exit 1
     ;;
 esac
-
