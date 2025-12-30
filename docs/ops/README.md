@@ -15,6 +15,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 ## Cursor Multi-Agent Runbooks
 - `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md` — Main entry point for Cursor Multi-Agent workflows
 - `docs/ops/CURSOR_MULTI_AGENT_WORKFLOW.md` — Canonical workflow definition (roles, protocol, recovery)
+- `docs/ops/CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md` — Phased runbook (P0-P10: research → shadow → live)
 - `docs/ops/LIVE_READINESS_PHASE_TRACKER.md` — Phase gates tracker (P0-P10: research → shadow → live)
 
 ---
