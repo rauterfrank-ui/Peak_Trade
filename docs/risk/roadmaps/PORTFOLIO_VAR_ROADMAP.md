@@ -104,16 +104,16 @@ def compute_portfolio_returns_from_positions(
 ) -> pd.Series:
     """
     Berechnet Portfolio-Returns aus Position-Snapshots und Price-History.
-    
+
     Returns:
         Series mit Portfolio-Returns über Zeit
     """
     # 1. Compute weights per position
     weights = compute_weights(positions, equity)
-    
+
     # 2. Compute asset returns from prices
     asset_returns = prices_history.pct_change().dropna()
-    
+
     # 3. Compute portfolio returns
     return portfolio_returns(asset_returns, weights)
 ```
@@ -131,25 +131,25 @@ class RiskEnforcer:
     ) -> List[RiskBreach]:
         """
         Prüft Correlation-Limits zwischen Assets.
-        
+
         Breaches:
         - MAX_CORRELATION: Pairwise correlation > limit
         - HIGH_CORRELATION_WARNING: Correlation > 0.90 (warning)
         """
         if limits.max_corr is None:
             return []
-        
+
         corr = correlation_matrix(returns_df)
         breaches = []
-        
+
         # Check all pairwise correlations
         for i, asset_i in enumerate(corr.columns):
             for j, asset_j in enumerate(corr.columns):
                 if i >= j:  # Skip diagonal and duplicates
                     continue
-                
+
                 corr_val = corr.loc[asset_i, asset_j]
-                
+
                 if abs(corr_val) > limits.max_corr:
                     breaches.append(
                         RiskBreach(
@@ -159,7 +159,7 @@ class RiskEnforcer:
                             metrics={"asset_i": asset_i, "asset_j": asset_j, "corr": corr_val},
                         )
                     )
-        
+
         return breaches
 ```
 
@@ -175,14 +175,14 @@ def covariance_var(
 ) -> float:
     """
     Variance-Covariance VaR (parametric, assumes Normal).
-    
+
     Formula: VaR = sqrt(w' * Σ * w) * z_alpha
-    
+
     Args:
         returns_df: DataFrame mit Asset-Returns (columns = assets)
         weights: Dict {asset: weight}
         alpha: Confidence level
-    
+
     Returns:
         VaR als positive Zahl
     """
@@ -190,22 +190,22 @@ def covariance_var(
     available = [col for col in returns_df.columns if col in weights]
     if not available:
         return 0.0
-    
+
     # 2. Build weight vector
     w = np.array([weights[asset] for asset in available])
     w = w / w.sum()  # Normalize
-    
+
     # 3. Compute covariance matrix
     cov = returns_df[available].cov()
-    
+
     # 4. Portfolio variance: w' * Σ * w
     portfolio_var = w @ cov @ w
     portfolio_std = np.sqrt(portfolio_var)
-    
+
     # 5. VaR = std * z_alpha
     z_alpha = _get_normal_quantile(alpha)
     var = -z_alpha * portfolio_std
-    
+
     return max(var, 0.0)
 ```
 
@@ -288,21 +288,21 @@ def student_t_var(
 ) -> float:
     """
     Parametric VaR mit Student-t-Distribution (Fat Tails).
-    
+
     Steps:
     1. MLE-Fit für degrees-of-freedom (df)
     2. Compute scale parameter
     3. VaR = t_alpha(df) * scale
     """
     from scipy.stats import t
-    
+
     # 1. Fit Student-t
     params = t.fit(returns.dropna())
     df, loc, scale = params
-    
+
     # 2. Quantil
     quantile = t.ppf(alpha, df, loc, scale)
-    
+
     # 3. VaR
     var = -quantile if quantile < 0 else 0.0
     return var
@@ -320,27 +320,27 @@ def garch_var(
 ) -> float:
     """
     GARCH(1,1)-based VaR with forecast.
-    
+
     Steps:
     1. Fit GARCH(1,1) model
     2. Forecast volatility (horizon steps)
     3. VaR = forecast_std * z_alpha
     """
     from arch import arch_model
-    
+
     # 1. Fit GARCH
     model = arch_model(returns * 100, vol='Garch', p=1, q=1)
     res = model.fit(disp='off')
-    
+
     # 2. Forecast
     forecast = res.forecast(horizon=horizon)
     forecast_var = forecast.variance.values[-1, -1]
     forecast_std = np.sqrt(forecast_var) / 100  # Back to decimal
-    
+
     # 3. VaR
     z_alpha = _get_normal_quantile(alpha)
     var = -z_alpha * forecast_std
-    
+
     return max(var, 0.0)
 ```
 
@@ -611,4 +611,3 @@ garch_q = 1
 
 **Status:** DRAFT - Awaiting Review  
 **Next:** Review Meeting → Approval → Phase 1 Kickoff
-

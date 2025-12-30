@@ -329,4 +329,3 @@ python scripts/run_smoke_tests.py
 **Status:** 🔴 KRITISCH - Sofortiges Handeln erforderlich  
 **Owner:** DevOps/Platform Team  
 **Review Date:** 2025-12-27
-
