@@ -22,7 +22,7 @@ Ergebnis: `ruff format --check` hat korrekt Drift gefunden und den PR blockiert.
 - ✅ 18:26 — Run #20527299199 (gleicher Branch)
   - Fix: Code mit **ruff format** reformatiert → Audit success
 - ✅ 18:36 — Tool-Alignment merged (PR #354, Commit 16f0614)
-  - Entfernt Legacy-`black` aus `scripts/run_audit.sh`
+  - Entfernt Legacy-`black` aus `scripts/ops/run_audit.sh`
   - Single Source of Truth: **RUFF**
 
 ## Root Cause
@@ -32,7 +32,7 @@ Branches mit black-formatierten Änderungen führen dann korrekt zu `ruff format
 
 ## Remediation
 - Sofort: Betroffene Branches via `uv run ruff format .` auf Repo-Standard gebracht.
-- Dauerhaft: PR #354 entfernte black-Legacy aus `scripts/run_audit.sh` und erzwingt ruff-only.
+- Dauerhaft: PR #354 entfernte black-Legacy aus `scripts/ops/run_audit.sh` und erzwingt ruff-only.
 
 ## Verification
 - Guardrail: `bash scripts/ops/check_no_black_enforcement.sh` ✅

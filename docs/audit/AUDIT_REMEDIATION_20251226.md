@@ -180,7 +180,7 @@ git push origin feature-branch --force-with-lease
 1. **Neue FAILURE-Merges:** Sollte 0 sein
    ```bash
    # Monitoring:
-   bash scripts/pr_audit_scan.sh 230 latest | grep FAILURE
+   bash scripts/ops/pr_audit_scan.sh 230 latest | grep FAILURE
    ```
 
 2. **Strict Mode Status:** Muss `true` bleiben

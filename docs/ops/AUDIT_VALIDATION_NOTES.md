@@ -115,7 +115,7 @@ size-pack: 5.07 MiB
 
 ## Related Documentation
 
-- `scripts/run_audit.sh` - Main audit script
+- `scripts/ops/run_audit.sh` - Main audit script
 - `docs/ops/PYTHON_VERSION_PLAN.md` - Python upgrade roadmap
 - `Makefile` - Audit targets: `make audit`, `make audit-tools`, `make gc`
 - `README.md` - User-facing audit documentation
