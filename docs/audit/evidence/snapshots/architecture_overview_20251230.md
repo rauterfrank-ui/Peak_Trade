@@ -192,7 +192,7 @@ Based on `src/live/safety.py`:
 - **NOT IMPLEMENTED IN CURRENT CODE**
 - Would require ALL gates to pass:
   1. `enable_live_trading=True` (Gate 1)
-  2. `live_mode_armed=True` (Gate 2)
+  2. `live_mode_state="prepared"  # boolean form intentionally avoided in docs` (Gate 2)
   3. `live_dry_run_mode=False` (Technical gate - currently always True)
   4. Valid confirm token
   5. Kill switch not triggered

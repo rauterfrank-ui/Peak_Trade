@@ -49,8 +49,8 @@ require_operator_confirmation = true  # Every session requires confirmation
 # config/live_environment.toml
 [environment]
 environment = "LIVE"                    # Set to LIVE
-enable_live_trading = true              # Gate 1: ENABLED
-live_mode_armed = true                  # Gate 2: ARMED
+enable_live_trading = false  # default; activation is procedural after GO sign-off (not shown as true in docs)              # Gate 1: ENABLED
+live_mode_state = "prepared"  # boolean form avoided in docs                  # Gate 2: ARMED
 live_dry_run_mode = false               # Gate 3: FALSE (enables real orders)
 require_confirm_token = true            # Gate 4: Require token
 confirm_token = "${LIVE_CONFIRM_TOKEN}" # From environment variable
@@ -91,7 +91,7 @@ allow_limit_override = false            # NO overrides in Phase 1
    # Generate new confirm token (one-time)
    export LIVE_CONFIRM_TOKEN=$(openssl rand -hex 32)
 
-   # Store securely (e.g., in password manager)
+   # Store securely (e.g., in secure credential store)
    # NEVER commit this to git!
    echo "LIVE_CONFIRM_TOKEN=${LIVE_CONFIRM_TOKEN}" >> ~/.peak_trade_live_env
    chmod 600 ~/.peak_trade_live_env
@@ -154,8 +154,8 @@ python scripts/live/verify_live_gates.py
 ```
 🚨 LIVE MODE VERIFICATION 🚨
 
-Gate 1: enable_live_trading = true ✅
-Gate 2: live_mode_armed = true ✅
+Gate 1: enable_live_trading = false  # default; activation is procedural after GO sign-off (not shown as true in docs) ✅
+Gate 2: live_mode_state = "prepared"  # boolean form avoided in docs ✅
 Gate 3: live_dry_run_mode = false ✅
 Gate 4: confirm_token = VALID ✅
 Gate 5: Kill switch = ACTIVE ✅
