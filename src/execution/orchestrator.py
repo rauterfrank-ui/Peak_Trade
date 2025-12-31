@@ -730,9 +730,7 @@ class ExecutionOrchestrator:
             )
 
         except Exception as e:
-            logger.error(
-                f"[STAGE 5: ADAPTER ERROR] correlation_id={correlation_id}, error={e}"
-            )
+            logger.error(f"[STAGE 5: ADAPTER ERROR] correlation_id={correlation_id}, error={e}")
 
             # Mark order as FAILED
             fail_result = self.state_machine.fail_order(order, reason=str(e))
@@ -820,9 +818,7 @@ class ExecutionOrchestrator:
             # Apply fill
             fill = execution_event.fill
             if fill is None:
-                logger.error(
-                    f"[STAGE 6: FILL EVENT WITHOUT FILL] correlation_id={correlation_id}"
-                )
+                logger.error(f"[STAGE 6: FILL EVENT WITHOUT FILL] correlation_id={correlation_id}")
                 return PipelineResult(
                     success=False,
                     order=order,
@@ -941,8 +937,7 @@ class ExecutionOrchestrator:
 
             except Exception as e:
                 logger.error(
-                    f"[STAGE 7: POSITION UPDATE FAILED] correlation_id={correlation_id}, "
-                    f"error={e}"
+                    f"[STAGE 7: POSITION UPDATE FAILED] correlation_id={correlation_id}, error={e}"
                 )
                 return PipelineResult(
                     success=False,
@@ -1027,7 +1022,9 @@ class ExecutionOrchestrator:
         """Get order ledger snapshot for reconciliation"""
         return self.order_ledger.to_dict()
 
-    def get_position_ledger_snapshot(self, mark_prices: Optional[Dict[str, Decimal]] = None) -> Dict[str, Any]:
+    def get_position_ledger_snapshot(
+        self, mark_prices: Optional[Dict[str, Decimal]] = None
+    ) -> Dict[str, Any]:
         """Get position ledger snapshot for reconciliation"""
         return self.position_ledger.to_dict(mark_prices=mark_prices)
 

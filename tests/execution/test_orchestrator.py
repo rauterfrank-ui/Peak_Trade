@@ -165,6 +165,7 @@ def test_failure_propagation_validation(orchestrator):
 
 def test_failure_propagation_risk_pause(sample_intent):
     """Test risk PAUSE decision propagates correctly"""
+
     # Orchestrator with risk hook that returns PAUSE
     class PauseRiskHook:
         def evaluate_order(self, order, context=None):
