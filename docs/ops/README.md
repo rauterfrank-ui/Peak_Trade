@@ -1428,6 +1428,9 @@ Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
 ## Verified Merge Logs
+- **PR #448 (Docs Reference Gate – Escape path separators, Phase 3)** → `docs/ops/PR_448_MERGE_LOG.md`
+- **PR #447 (Docs Reference Gate – Deprecate inspect_offline_feed, Phase 2)** → `docs/ops/PR_447_MERGE_LOG.md`
+- **PR #446 (Docs Reference Gate – Fix moved script paths, Phase 1)** → `docs/ops/PR_446_MERGE_LOG.md`
 - **PR #442 (Audit remediation summary for PR #441, verified)** → `docs/ops/PR_442_MERGE_LOG.md`
 - **PR #426** → `docs/ops/PR_426_MERGE_LOG.md`
 - **PR #424** → `docs/ops/PR_424_MERGE_LOG.md`
