@@ -85,7 +85,7 @@ WP0D implements the **LedgerEntry Mapping** and **Reconciliation Wiring** for th
 
 - **Default Execution Mode**: `ExecutionMode.PAPER` (simulated)
 - **LIVE_BLOCKED Enforcement**: Stage 4 (Route Selection) blocks live mode by default
-- **No Activation Strings**: No "enable_live_trading=true" examples in code or docs
+- **No Activation Strings**: No live-enablement examples in code or docs
 - **Phase 0 Scope**: External snapshot is mocked (no real exchange API)
 
 ### Deterministic Reconciliation
@@ -339,8 +339,8 @@ uv run ruff check src/execution/ledger_mapper.py \
 - `docs/execution/WP0D_COMPLETION_REPORT.md`
 
 **Scan Result**: ✅ **CLEAN**
-- No "enable_live_trading" strings
-- No "live_mode=true" examples
+- No live enablement triggers
+- No live mode activation examples
 - No API keys or secrets
 - No broken docs references
 
