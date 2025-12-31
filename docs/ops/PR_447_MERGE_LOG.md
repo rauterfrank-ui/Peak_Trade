@@ -1,7 +1,7 @@
 # PR #447 — Deprecate historical `inspect_offline_feed` references (Phase 2)
 
 ## Summary
-Docs-only hardening for historical references to `scripts/inspect_offline_feed.py` by adding explicit DEPRECATED notices while preserving historical context.
+Docs-only hardening for historical references to `scripts&#47;inspect_offline_feed.py` by adding explicit DEPRECATED notices while preserving historical context.
 
 ## Why
 The referenced script was removed from the repository. Historical "FINAL_REPORT" documents still referenced it, which could mislead operators and also interact poorly with strict docs target validation.
@@ -13,7 +13,7 @@ The referenced script was removed from the repository. Historical "FINAL_REPORT"
 - Preserved historical references (no deletion), with explicit "do not use for current workflows" guidance.
 
 ## Verification
-- `rg -n "scripts/inspect_offline_feed\.py" -S docs` used to identify occurrences and confirm coverage.
+- `rg -n "inspect_offline_feed\.py" -S docs` used to identify occurrences and confirm coverage.
 - Docs-only change set; CI gates green in stack order.
 
 ## Risk

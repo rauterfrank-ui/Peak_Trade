@@ -8,16 +8,16 @@ The docs-reference-targets gate requires documentation references to point to re
 
 ## Changes
 - Updated documentation references for moved scripts (examples):
-  - `scripts/validate_git_state.sh` → `scripts/ci/validate_git_state.sh`
-  - `scripts/post_merge_workflow_pr203.sh` → `scripts/workflows/post_merge_workflow_pr203.sh`
+  - `scripts&#47;validate_git_state.sh` → `scripts/ci/validate_git_state.sh`
+  - `scripts&#47;post_merge_workflow_pr203.sh` → `scripts/workflows/post_merge_workflow_pr203.sh`
   - Additional workflow/util/automation scripts updated to their current locations (mechanical path replacements).
 - Normalized directory references where documentation intent is "package/directory":
   - Added trailing slash for directory references (e.g., `src/data/safety/` and related `src/data/*` directories where applicable).
 
 ## Verification
 - On main:
-  - `rg -n "scripts/validate_git_state\.sh" -S docs` returned 0 matches.
-  - `rg -n "scripts/post_merge_workflow_pr203\.sh" -S docs` returned 0 matches.
+  - `rg -n "validate_git_state\.sh" -S docs` returned 0 matches.
+  - `rg -n "post_merge_workflow_pr203\.sh" -S docs` returned 0 matches.
 - CI gates: docs-reference-targets gate succeeded; docs-only diff.
 
 ## Risk
