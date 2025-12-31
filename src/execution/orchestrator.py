@@ -54,6 +54,8 @@ from src.execution.order_ledger import OrderLedger
 from src.execution.position_ledger import PositionLedger
 from src.execution.audit_log import AuditLog
 from src.execution.retry_policy import RetryPolicy, RetryConfig
+from src.execution.ledger_mapper import EventToLedgerMapper
+from src.execution.reconciliation import ReconciliationEngine
 
 logger = logging.getLogger(__name__)
 
@@ -318,6 +320,13 @@ class ExecutionOrchestrator:
         self.order_ledger = OrderLedger()
         self.position_ledger = PositionLedger()
         self.audit_log = AuditLog()
+
+        # WP0D: Ledger mapping & reconciliation
+        self.ledger_mapper = EventToLedgerMapper()
+        self.recon_engine = ReconciliationEngine(
+            position_ledger=self.position_ledger,
+            order_ledger=self.order_ledger,
+        )
 
         # Counters
         self._order_counter = 0
@@ -955,7 +964,7 @@ class ExecutionOrchestrator:
         """
         logger.info(f"[STAGE 7: POST-TRADE HOOKS] correlation_id={correlation_id}")
 
-        # If FILL event, update position ledger
+        # If FILL event, update position ledger and create ledger entries
         if execution_event.event_type == "FILL":
             # Get fill from execution event
             fill = execution_event.fill
@@ -973,12 +982,28 @@ class ExecutionOrchestrator:
                 )
 
             try:
+                # Update position ledger
                 position = self.position_ledger.apply_fill(fill)
 
                 logger.info(
                     f"[STAGE 7: POSITION UPDATED] correlation_id={correlation_id}, "
                     f"symbol={position.symbol}, qty={position.quantity}, "
                     f"realized_pnl={position.realized_pnl}"
+                )
+
+                # WP0D: Map ExecutionEvent to LedgerEntry for audit trail
+                ledger_entries = self.ledger_mapper.map_event_to_ledger_entries(
+                    execution_event=execution_event,
+                    correlation_id=correlation_id,
+                )
+
+                # Add ledger entries to audit log
+                for entry in ledger_entries:
+                    self.audit_log.add_entry(entry)
+
+                logger.info(
+                    f"[STAGE 7: LEDGER ENTRIES CREATED] correlation_id={correlation_id}, "
+                    f"count={len(ledger_entries)}"
                 )
 
             except Exception as e:
@@ -1009,6 +1034,8 @@ class ExecutionOrchestrator:
         - Order Ledger snapshot
         - Position Ledger snapshot
         - Audit Log snapshot
+        - Run reconciliation (Phase 0: mocked external data)
+        - Generate ReconDiff list
 
         Phase 0: Conceptual/smoke test (no real exchange data)
 
@@ -1033,6 +1060,33 @@ class ExecutionOrchestrator:
             f"total_orders={recon_data['order_ledger_snapshot']['total_orders']}, "
             f"total_positions={recon_data['position_ledger_snapshot']['total_positions']}"
         )
+
+        # WP0D: Run reconciliation (Phase 0: mocked external snapshot)
+        try:
+            recon_diffs = self.recon_engine.reconcile()
+
+            recon_data["recon_diffs"] = [d.to_dict() for d in recon_diffs]
+            recon_data["recon_summary"] = {
+                "total_diffs": len(recon_diffs),
+                "severity_counts": {
+                    "INFO": sum(1 for d in recon_diffs if d.severity == "INFO"),
+                    "WARN": sum(1 for d in recon_diffs if d.severity == "WARN"),
+                    "FAIL": sum(1 for d in recon_diffs if d.severity == "FAIL"),
+                },
+            }
+
+            logger.info(
+                f"[STAGE 8: RECON COMPLETED] correlation_id={correlation_id}, "
+                f"diffs={len(recon_diffs)}, "
+                f"severity={recon_data['recon_summary']['severity_counts']}"
+            )
+
+        except Exception as e:
+            logger.error(
+                f"[STAGE 8: RECON FAILED] correlation_id={correlation_id}, error={e}"
+            )
+            # Reconciliation failure is not critical (does not block order execution)
+            recon_data["recon_error"] = str(e)
 
         return PipelineResult(
             success=True,
