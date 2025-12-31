@@ -580,3 +580,22 @@ uv run ruff format --check .
 - Guardrails:
   - Avoid repo-relative file paths for non-existent targets (docs-reference-targets-gate).
   - Prefer discovery instructions (e.g., `rg`) when referencing evolving files.
+
+### CI: Docs Reference Targets Gate
+
+Wenn der CI-Check **Docs Reference Targets Gate** fehlschlägt, liegt das häufig an
+pfadähnlichen Tokens in Markdown (Links, Inline-Code oder „bare paths"), die der Gate
+als zu validierende Targets interpretiert.
+
+Verbindliche Regeln und robuste Schreibweisen findest du hier:
+- [Docs Reference Targets Gate – Style Guide](DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md)
+
+Pragmatische Sofort-Triage:
+```bash
+# Suche nach potenziellen "bare path" Kandidaten (Gate-Trigger)
+rg -n '(^|[^\\])(docs|src)\/' docs -S || true
+```
+
+Daumenregel:
+- Nur zu **existing** Targets verlinken.
+- **Future** Targets nur als Text erwähnen: in Anführungszeichen, mit `(future)` und Slashes escaped (z.B. `docs\/...`).
