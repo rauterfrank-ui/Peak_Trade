@@ -149,10 +149,7 @@ class ReconciliationEngine:
         diffs: List[ReconDiff] = []
 
         # Get internal positions
-        internal_positions = {
-            pos.symbol: pos
-            for pos in self.position_ledger.get_all_positions()
-        }
+        internal_positions = {pos.symbol: pos for pos in self.position_ledger.get_all_positions()}
 
         # Check for mismatches
         all_symbols = set(internal_positions.keys()) | set(external_snapshot.positions.keys())
@@ -165,8 +162,7 @@ class ReconciliationEngine:
 
             # Calculate tolerance
             tolerance = max(
-                self.quantity_tolerance_abs,
-                abs(external_qty) * self.quantity_tolerance_pct
+                self.quantity_tolerance_abs, abs(external_qty) * self.quantity_tolerance_pct
             )
 
             if delta > tolerance:

@@ -78,7 +78,7 @@ class EventToLedgerMapper:
                 "price": str(fill.price),
                 "fee": str(fill.fee),
                 "filled_at": fill.filled_at.isoformat(),
-            }
+            },
         )
 
         return [entry]
@@ -123,7 +123,7 @@ class EventToLedgerMapper:
                 "fee": str(fill.fee),
                 "notional": str(fill.quantity * fill.price),
                 "filled_at": fill.filled_at.isoformat(),
-            }
+            },
         )
 
     def create_fee_entry(
@@ -166,7 +166,7 @@ class EventToLedgerMapper:
                 "fee_asset": "EUR",  # Hardcoded for now, should come from config
                 "fee_amount": str(fill.fee),
                 "basis": f"commission for order {order_id}",
-            }
+            },
         )
 
     def reset_sequence(self):

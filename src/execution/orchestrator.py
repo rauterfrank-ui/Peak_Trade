@@ -1082,9 +1082,7 @@ class ExecutionOrchestrator:
             )
 
         except Exception as e:
-            logger.error(
-                f"[STAGE 8: RECON FAILED] correlation_id={correlation_id}, error={e}"
-            )
+            logger.error(f"[STAGE 8: RECON FAILED] correlation_id={correlation_id}, error={e}")
             # Reconciliation failure is not critical (does not block order execution)
             recon_data["recon_error"] = str(e)
 
