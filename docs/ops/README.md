@@ -1437,6 +1437,8 @@ Security:
 - **PR #409 (Kill Switch Legacy Adapter, verified)** → `docs/ops/PR_409_MERGE_LOG.md`
 - **PR #418 (Kupiec POF Phase-7 convenience API, verified)** → `docs/ops/PR_418_MERGE_LOG.md`
 
+**Style Guide:** [MERGE_LOGS_STYLE_GUIDE.md](MERGE_LOGS_STYLE_GUIDE.md) — Gate-safe formatting, de-pathify rules, Unicode hygiene
+
 
 ## Merge Logs
 
