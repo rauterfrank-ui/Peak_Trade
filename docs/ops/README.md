@@ -1428,6 +1428,7 @@ Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
 ## Verified Merge Logs
+- **PR #456 (Phase-0 A0 Integration Sweep, finalize status)** → `docs/ops/PR_456_MERGE_LOG.md`
 - **PR #454 (Docs Reference Targets Gate style guide)** → `docs/ops/PR_454_MERGE_LOG.md`
 - **PR #448 (Docs Reference Gate – Escape path separators, Phase 3)** → `docs/ops/PR_448_MERGE_LOG.md`
 - **PR #447 (Docs Reference Gate – Deprecate inspect_offline_feed, Phase 2)** → `docs/ops/PR_447_MERGE_LOG.md`
