@@ -283,6 +283,7 @@ class ExecutionOrchestrator:
         self,
         risk_hook: Optional[RiskHook] = None,
         adapter: Optional[OrderAdapter] = None,
+        adapter_registry: Optional[Any] = None,  # AdapterRegistry (avoid circular import)
         execution_mode: ExecutionMode = ExecutionMode.PAPER,
         retry_policy: Optional[RetryPolicy] = None,
         enable_audit: bool = True,
@@ -293,6 +294,10 @@ class ExecutionOrchestrator:
         Args:
             risk_hook: Risk evaluation hook (defaults to NullRiskHook)
             adapter: Order execution adapter (defaults to NullAdapter)
+                    Ignored if adapter_registry is provided.
+            adapter_registry: Adapter registry for mode-based routing (WP0C)
+                             If provided, adapters are selected via registry.get_adapter(mode).
+                             If None, uses fixed adapter parameter (backwards compatible).
             execution_mode: Execution mode (paper/shadow/testnet/live_blocked)
             retry_policy: Retry policy for transient failures
             enable_audit: Enable audit log generation
@@ -300,6 +305,7 @@ class ExecutionOrchestrator:
         # Components
         self.risk_hook = risk_hook or NullRiskHook()
         self.adapter = adapter or NullAdapter()
+        self.adapter_registry = adapter_registry  # WP0C: Optional registry for mode-based routing
         self.execution_mode = execution_mode
         self.retry_policy = retry_policy or RetryPolicy(RetryConfig(max_retries=3))
         self.enable_audit = enable_audit
@@ -606,11 +612,14 @@ class ExecutionOrchestrator:
 
         Select adapter based on execution mode and policy.
 
-        Phase 0 routing:
-        - PAPER → NullAdapter (or PaperAdapter if available)
-        - SHADOW → NullAdapter (or ShadowAdapter if available)
-        - TESTNET → NullAdapter (WP0C not implemented yet)
+        WP0C routing (if adapter_registry provided):
+        - PAPER → SimulatedVenueAdapter (from registry)
+        - SHADOW → SimulatedVenueAdapter (from registry)
+        - TESTNET → SimulatedVenueAdapter (from registry)
         - LIVE_BLOCKED → REJECT (governance block)
+
+        Legacy routing (if no adapter_registry):
+        - All modes → use fixed adapter from constructor (backwards compatible)
 
         Args:
             order: Order to route
@@ -652,18 +661,53 @@ class ExecutionOrchestrator:
                 ledger_entries=sm_result.ledger_entries if sm_result.success else [],
             )
 
-        # For paper/shadow/testnet: use configured adapter
-        logger.info(
-            f"[STAGE 4: ROUTE SELECTED] correlation_id={correlation_id}, "
-            f"adapter={type(self.adapter).__name__}"
-        )
+        # WP0C: Use adapter_registry if available
+        if self.adapter_registry is not None:
+            try:
+                selected_adapter = self.adapter_registry.get_adapter(self.execution_mode)
+                logger.info(
+                    f"[STAGE 4: ROUTE SELECTED (REGISTRY)] correlation_id={correlation_id}, "
+                    f"mode={self.execution_mode.value}, "
+                    f"adapter={type(selected_adapter).__name__}"
+                )
+                # Temporarily store selected adapter for Stage 5
+                self._selected_adapter = selected_adapter
+            except Exception as e:
+                logger.error(
+                    f"[STAGE 4: ROUTE FAILED] correlation_id={correlation_id}, "
+                    f"Adapter selection failed: {e}"
+                )
+
+                # Mark order as FAILED
+                sm_result = self.state_machine.fail_order(order, reason=str(e))
+                if sm_result.success:
+                    self.order_ledger.add_order(sm_result.order)
+                    self.audit_log.append_many(sm_result.ledger_entries)
+
+                return PipelineResult(
+                    success=False,
+                    order=sm_result.order,
+                    reason_code=ReasonCode.ADAPTER_ERROR,
+                    reason_detail=f"Adapter selection failed: {e}",
+                    stage_reached="STAGE_4_ROUTE_SELECTION",
+                    correlation_id=correlation_id,
+                    ledger_entries=sm_result.ledger_entries if sm_result.success else [],
+                )
+        else:
+            # Legacy: use fixed adapter (backwards compatible)
+            selected_adapter = self.adapter
+            self._selected_adapter = selected_adapter
+            logger.info(
+                f"[STAGE 4: ROUTE SELECTED (LEGACY)] correlation_id={correlation_id}, "
+                f"adapter={type(self.adapter).__name__}"
+            )
 
         return PipelineResult(
             success=True,
             order=order,
             stage_reached="STAGE_4_ROUTE_SELECTION",
             correlation_id=correlation_id,
-            metadata={"adapter": type(self.adapter).__name__},
+            metadata={"adapter": type(selected_adapter).__name__},
         )
 
     def _stage_5_adapter_dispatch(
@@ -710,12 +754,14 @@ class ExecutionOrchestrator:
         self.order_ledger.add_order(order)
         self.audit_log.append_many(sm_result.ledger_entries)
 
-        # Execute order via adapter
+        # Execute order via adapter (use selected adapter from Stage 4)
+        adapter = getattr(self, "_selected_adapter", self.adapter)  # WP0C: use selected adapter
         try:
-            execution_event = self.adapter.execute_order(order, idempotency_key)
+            execution_event = adapter.execute_order(order, idempotency_key)
 
             logger.info(
                 f"[STAGE 5: ADAPTER EXECUTED] correlation_id={correlation_id}, "
+                f"adapter={type(adapter).__name__}, "
                 f"event_type={execution_event.event_type}"
             )
 
