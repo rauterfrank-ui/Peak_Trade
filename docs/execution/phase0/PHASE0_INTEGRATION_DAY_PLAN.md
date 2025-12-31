@@ -32,7 +32,7 @@
 
 ### Step 1: A0 Initialization (COMPLETE)
 - [x] Create `docs/execution/phase0/` directory
-- [x] Create branch `docs/phase0-foundation-prep`
+- [x] Create branch "docs/phase0-foundation-prep"
 - [x] Initialize 3 shared-files:
   - `PHASE0_OWNERSHIP_MATRIX.md`
   - `PHASE0_INTEGRATION_DAY_PLAN.md` (this file)

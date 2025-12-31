@@ -3,7 +3,7 @@
 **Version:** 1.0 (TEMPLATE)  
 **Phase:** Phase 0 — Foundation (Docs-Only Preparation)  
 **Date:** YYYY-MM-DD *(fill on completion)*  
-**Branch/PR:** `docs/phase0-foundation-prep` / PR #XXX *(fill on PR creation)*  
+**Branch/PR:** "docs/phase0-foundation-prep" / PR #XXX *(fill on PR creation)*  
 **Integrator:** A0 (Orchestrator)  
 **Run Type:** Docs-Only (No Code Implementation)
 

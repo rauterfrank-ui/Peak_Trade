@@ -488,7 +488,7 @@ Order execution aborts → OSM state inconsistent → potential system instabili
   - Content: Measure OrderRouter latency (<1ms), AdapterFactory lookup (<1ms)
   - Purpose: Verify low overhead
 - [ ] **Completion Report:** WP0C implementation documentation
-  - Location pattern: `docs/execution/WP0C_IMPLEMENTATION_REPORT.md` (future)
+  - Location pattern: "docs/execution/WP0C_IMPLEMENTATION_REPORT.md" (future)
 
 ### Evidence Generation (Not in This Docs-Only Run)
 **Note:** Evidence artifacts generated during implementation run, not docs-only prep.
@@ -555,8 +555,8 @@ Order execution aborts → OSM state inconsistent → potential system instabili
 
 ### Conflict Avoidance
 **File Ownership (as per Ownership Matrix):**
-- **WP0C (A4) Owns:** `src/orders/router.py` (new), `src/orders/factory.py` (new), `src/orders/resilient_executor.py` (new), `tests/orders/test_router.py` (new)
-- **WP0A (A2) Owns:** `src/execution/order_state_machine.py`, `src/execution/execution_context.py`
+- **WP0C (A4) Owns:** "src/orders/router.py" (new), "src/orders/factory.py" (new), "src/orders/resilient_executor.py" (new), "tests/orders/test_router.py" (new)
+- **WP0A (A2) Owns:** "src/execution/order_state_machine.py", "src/execution/execution_context.py"
 - **Shared Files:** None (WP0C does NOT modify WP0A files)
 - **Integration Coordination:** A0 Integrator mediates WP0A ↔ WP0C interface agreement
 
@@ -583,21 +583,21 @@ Order execution aborts → OSM state inconsistent → potential system instabili
 ### Implementation Approach (Docs-Only Description)
 
 **Step 1: AdapterFactory Foundation (Day 1)**
-- Implement `src/orders/factory.py`:
+- Implement "src/orders/factory.py":
   - `AdapterFactory` class with `register(mode, builder)` and `get_executor(mode)` methods
   - Startup validation: fail-fast if required modes missing
   - Example registration: `factory.register("paper", lambda cfg: PaperOrderExecutor(...))`
 - Test: `tests/orders/test_factory.py` (registration, lookup, validation)
 
 **Step 2: OrderRouter Core (Day 1-2)**
-- Implement `src/orders/router.py`:
+- Implement "src/orders/router.py":
   - `OrderRouter` class with `route(order_request, execution_context) -> OrderExecutionResult`
   - Mode-based routing logic (paper → PaperOrderExecutor, shadow → ShadowOrderExecutor, etc.)
   - Fallback for unknown modes (status="rejected", reason="no_executor_for_mode")
 - Test: `tests/orders/test_router.py` (routing logic, fallback, mode coverage)
 
 **Step 3: ResilientOrderExecutor Wrapper (Day 2-3)**
-- Implement `src/orders/resilient_executor.py`:
+- Implement "src/orders/resilient_executor.py":
   - Wrap OrderExecutor with timeout (default 30s)
   - Retry logic (max 3, exponential backoff, transient errors only)
   - Exception → OrderExecutionResult conversion (status="rejected", reason populated)
@@ -629,7 +629,7 @@ Order execution aborts → OSM state inconsistent → potential system instabili
 - Run integration tests (WP0A + WP0C + WP0D) → pytest output
 - Generate timeout/retry simulation report
 - Performance benchmark: routing latency, factory lookup time
-- Write WP0C completion report: `docs/execution/WP0C_IMPLEMENTATION_REPORT.md` (future)
+- Write WP0C completion report: "docs/execution/WP0C_IMPLEMENTATION_REPORT.md" (future)
 
 ---
 
@@ -639,7 +639,7 @@ Order execution aborts → OSM state inconsistent → potential system instabili
 - [ ] WP0E contracts finalized (OrderExecutor protocol, OrderRequest, OrderExecutionResult)
 - [ ] WP0A ExecutionContext schema agreed (mode, strategy_id, session_id, timestamp)
 - [ ] WP0A client_id generation strategy agreed (UUID format)
-- [ ] Ownership Matrix consulted: WP0C owns `src/orders/router.py`, `factory.py`, `resilient_executor.py`
+- [ ] Ownership Matrix consulted: WP0C owns "src/orders/router.py", "factory.py", "resilient_executor.py"
 
 **Implementation Sequence:**
 - [ ] Implement AdapterFactory (registration + lookup + validation)
@@ -685,10 +685,10 @@ Order execution aborts → OSM state inconsistent → potential system instabili
 - [ ] Phase-0 Gate Report updated with WP0C status
 
 **Implementation Checklist:**
-- [ ] Implement routing/adapter in `src/execution/routing.py` or `src/orders/`
-- [ ] Write unit/integration tests in `tests/execution/` or `tests/orders/`
-- [ ] Generate evidence reports in `reports/execution/`
-- [ ] Create completion report: `docs/execution/WP0C_IMPLEMENTATION_REPORT.md` (future)
+- [ ] Implement routing/adapter in "src/execution/routing.py" or "src/orders/"
+- [ ] Write unit/integration tests in "tests/execution/" or "tests/orders/"
+- [ ] Generate evidence reports in "reports/execution/"
+- [ ] Create completion report: "docs/execution/WP0C_IMPLEMENTATION_REPORT.md" (future)
 
 ---
 

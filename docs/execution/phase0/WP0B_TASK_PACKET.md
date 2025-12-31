@@ -444,7 +444,7 @@ RECOVERING → ACTIVE (after cooldown, checks pass)
   - Coverage: RiskHook, kill switch, VaR, limits, Kupiec
   - Evidence: pytest output + coverage report
 - [ ] **Completion Report:** WP0B implementation documentation
-  - Location pattern: `docs/execution/WP0B_IMPLEMENTATION_REPORT.md` (future)
+  - Location pattern: "docs/execution/WP0B_IMPLEMENTATION_REPORT.md" (future)
 
 ### Evidence Generation (Not in This Docs-Only Run)
 **Note:** Evidence artifacts generated during implementation run, not docs-only prep.

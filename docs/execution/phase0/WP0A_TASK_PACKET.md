@@ -519,7 +519,7 @@ CREATED/SUBMITTED/ACKNOWLEDGED → FAILED (terminal)
   - Coverage: OSM (2 tests), Order Ledger (2), Position Ledger (2), Audit Log (2), Retry Policy (3), Integration (1+)
   - Evidence: pytest output + coverage report
 - [ ] **Completion Report:** Structured documentation of WP0A implementation
-  - Location pattern: `docs/execution/WP0A_IMPLEMENTATION_REPORT.md` (future)
+  - Location pattern: "docs/execution/WP0A_IMPLEMENTATION_REPORT.md" (future)
   - Content: DoD verification, files changed, test results, risks, integration notes
   - Status: Template exists (WP0A_COMPLETION_REPORT.md), reuse for implementation run
 
