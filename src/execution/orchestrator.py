@@ -998,8 +998,8 @@ class ExecutionOrchestrator:
                 )
 
                 # Add ledger entries to audit log
-                for entry in ledger_entries:
-                    self.audit_log.add_entry(entry)
+                if ledger_entries:
+                    self.audit_log.append_many(ledger_entries)
 
                 logger.info(
                     f"[STAGE 7: LEDGER ENTRIES CREATED] correlation_id={correlation_id}, "
