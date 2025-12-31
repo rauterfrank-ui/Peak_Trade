@@ -1,0 +1,1033 @@
+"""
+Execution Pipeline Orchestrator (WP0A - Phase 0 Foundation)
+
+Implements the 8-stage execution pipeline from Intent to Recon Hand-off.
+
+Pipeline Stages:
+1. Intent Intake - Receive trading decision from strategy
+2. Contract Validation - Validate order against WP0E invariants
+3. Pre-Trade Risk Gate - Risk evaluation via RiskHook
+4. Route Selection - Select adapter based on execution mode (paper/shadow/testnet/live_blocked)
+5. Adapter Dispatch - Execute order via selected adapter
+6. Execution Event Handling - Process ACK/REJECT/FILL events
+7. Post-Trade Hooks - Update ledgers, emit events
+8. Recon Hand-off - Prepare data for reconciliation
+
+Design Goals:
+- Stage sequencing with clear boundaries
+- Correlation tracking (correlation_id stable across all stages)
+- Idempotency enforcement (idempotency_key prevents duplicate processing)
+- Stop criteria enforcement (BLOCK → halt, TIMEOUT → controlled failure)
+- No live enablement (default blocked/gated)
+- Deterministic audit trail
+
+IMPORTANT: NO live execution. Default remains blocked/gated.
+           All live routing raises GovernanceViolationError.
+"""
+
+from __future__ import annotations
+
+import logging
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional, Protocol
+
+from decimal import Decimal
+
+from src.execution.contracts import (
+    Order,
+    OrderState,
+    OrderSide,
+    OrderType,
+    TimeInForce,
+    Fill,
+    LedgerEntry,
+    RiskResult,
+    RiskDecision,
+    validate_order,
+)
+from src.execution.risk_hook import RiskHook, NullRiskHook
+from src.execution.order_state_machine import OrderStateMachine, StateMachineResult
+from src.execution.order_ledger import OrderLedger
+from src.execution.position_ledger import PositionLedger
+from src.execution.audit_log import AuditLog
+from src.execution.retry_policy import RetryPolicy, RetryConfig
+
+logger = logging.getLogger(__name__)
+
+
+# ============================================================================
+# Execution Mode & Reason Codes
+# ============================================================================
+
+
+class ExecutionMode(str, Enum):
+    """
+    Execution mode for pipeline routing.
+
+    Values:
+        PAPER: Paper trading (simulated)
+        SHADOW: Shadow mode (dry-run, no real execution)
+        TESTNET: Testnet orders (sandbox environment)
+        LIVE_BLOCKED: Live mode (BLOCKED by governance - Phase 0 default)
+    """
+
+    PAPER = "paper"
+    SHADOW = "shadow"
+    TESTNET = "testnet"
+    LIVE_BLOCKED = "live_blocked"
+
+
+class ReasonCode(str, Enum):
+    """
+    Standardized reason codes for pipeline decisions.
+
+    Categories:
+    - VALIDATION_*: Contract validation failures
+    - RISK_*: Risk gate blocks
+    - POLICY_*: Governance/policy blocks
+    - ADAPTER_*: Adapter execution failures
+    - TIMEOUT_*: Timeout failures
+    """
+
+    # Validation
+    VALIDATION_INVALID_QUANTITY = "VALIDATION_INVALID_QUANTITY"
+    VALIDATION_INVALID_PRICE = "VALIDATION_INVALID_PRICE"
+    VALIDATION_INVALID_SYMBOL = "VALIDATION_INVALID_SYMBOL"
+    VALIDATION_MISSING_FIELD = "VALIDATION_MISSING_FIELD"
+
+    # Risk
+    RISK_LIMIT_EXCEEDED = "RISK_LIMIT_EXCEEDED"
+    RISK_KILL_SWITCH_ACTIVE = "RISK_KILL_SWITCH_ACTIVE"
+    RISK_EVALUATION_FAILED = "RISK_EVALUATION_FAILED"
+    RISK_BLOCKED = "RISK_BLOCKED"
+
+    # Policy/Governance
+    POLICY_BLOCKED = "POLICY_BLOCKED"
+    POLICY_LIVE_NOT_ENABLED = "POLICY_LIVE_NOT_ENABLED"
+    POLICY_NO_EXECUTOR = "POLICY_NO_EXECUTOR"
+
+    # Adapter
+    ADAPTER_REJECTED = "ADAPTER_REJECTED"
+    ADAPTER_TIMEOUT = "ADAPTER_TIMEOUT"
+    ADAPTER_ERROR = "ADAPTER_ERROR"
+
+    # Timeout
+    TIMEOUT_SUBMISSION = "TIMEOUT_SUBMISSION"
+    TIMEOUT_ACKNOWLEDGMENT = "TIMEOUT_ACKNOWLEDGMENT"
+
+
+# ============================================================================
+# Intent & Pipeline Result
+# ============================================================================
+
+
+@dataclass
+class OrderIntent:
+    """
+    Order intent (trading decision before order creation).
+
+    Represents strategy/operator intention before validation and risk checks.
+
+    Attributes:
+        symbol: Trading symbol (e.g., "BTC/EUR")
+        side: Order side (BUY/SELL)
+        quantity: Order quantity (Decimal)
+        order_type: Order type (MARKET/LIMIT)
+        limit_price: Limit price (required if LIMIT)
+        strategy_id: Strategy identifier
+        metadata: Additional metadata
+    """
+
+    symbol: str
+    side: OrderSide
+    quantity: Decimal
+    order_type: OrderType = OrderType.MARKET
+    limit_price: Optional[Decimal] = None
+    time_in_force: TimeInForce = TimeInForce.GTC
+    strategy_id: Optional[str] = None
+    session_id: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class PipelineResult:
+    """
+    Result of pipeline execution.
+
+    Attributes:
+        success: True if order successfully processed
+        order: Order object (may be in various states)
+        reason_code: Reason code if blocked/failed
+        reason_detail: Human-readable reason
+        stage_reached: Last stage reached in pipeline
+        correlation_id: Correlation ID for tracking
+        idempotency_key: Idempotency key
+        ledger_entries: Audit trail entries generated
+        metadata: Additional metadata
+    """
+
+    success: bool
+    order: Optional[Order] = None
+    reason_code: Optional[ReasonCode] = None
+    reason_detail: str = ""
+    stage_reached: str = ""
+    correlation_id: str = ""
+    idempotency_key: str = ""
+    ledger_entries: List[LedgerEntry] = field(default_factory=list)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+# ============================================================================
+# Adapter Protocol (WP0C placeholder)
+# ============================================================================
+
+
+class OrderAdapter(Protocol):
+    """
+    Protocol for order execution adapters (WP0C).
+
+    Adapters encapsulate external interaction (exchange API, paper simulation, etc.).
+    """
+
+    def execute_order(self, order: Order, idempotency_key: str) -> "ExecutionEvent":
+        """
+        Execute order and return execution event.
+
+        Args:
+            order: Order to execute
+            idempotency_key: Idempotency key (prevents duplicate submission)
+
+        Returns:
+            ExecutionEvent (ACK/REJECT/FILL)
+        """
+        ...
+
+
+@dataclass
+class ExecutionEvent:
+    """
+    Execution event from adapter (ACK/REJECT/FILL/CANCEL_ACK).
+
+    Attributes:
+        event_type: Event type (ACK/REJECT/FILL/CANCEL_ACK)
+        order_id: Client order ID
+        exchange_order_id: Exchange order ID (if ACK)
+        fill: Fill details (if FILL)
+        reject_reason: Rejection reason (if REJECT)
+        timestamp: Event timestamp
+    """
+
+    event_type: str  # ACK, REJECT, FILL, CANCEL_ACK
+    order_id: str
+    exchange_order_id: Optional[str] = None
+    fill: Optional[Fill] = None
+    reject_reason: Optional[str] = None
+    timestamp: datetime = field(default_factory=datetime.utcnow)
+
+
+# ============================================================================
+# Null Adapter (Default/Testing)
+# ============================================================================
+
+
+class NullAdapter:
+    """
+    Null adapter (no-op, for testing).
+
+    Always returns ACK immediately (simulates instant execution).
+    """
+
+    def execute_order(self, order: Order, idempotency_key: str) -> ExecutionEvent:
+        """Execute order (no-op, return ACK)"""
+        return ExecutionEvent(
+            event_type="ACK",
+            order_id=order.client_order_id,
+            exchange_order_id=f"null_exch_{order.client_order_id}",
+        )
+
+
+# ============================================================================
+# Execution Pipeline Orchestrator
+# ============================================================================
+
+
+class ExecutionOrchestrator:
+    """
+    Execution pipeline orchestrator (WP0A - Phase 0).
+
+    Orchestrates the 8-stage execution pipeline:
+    1. Intent Intake
+    2. Contract Validation
+    3. Pre-Trade Risk Gate
+    4. Route Selection
+    5. Adapter Dispatch
+    6. Execution Event Handling
+    7. Post-Trade Hooks
+    8. Recon Hand-off
+
+    Features:
+    - Stage sequencing with clear boundaries
+    - Correlation tracking (correlation_id)
+    - Idempotency enforcement (idempotency_key)
+    - Stop criteria enforcement (BLOCK → halt)
+    - Deterministic audit trail
+    - No live enablement (default blocked)
+
+    IMPORTANT: NO live execution. Default remains blocked/gated.
+    """
+
+    def __init__(
+        self,
+        risk_hook: Optional[RiskHook] = None,
+        adapter: Optional[OrderAdapter] = None,
+        execution_mode: ExecutionMode = ExecutionMode.PAPER,
+        retry_policy: Optional[RetryPolicy] = None,
+        enable_audit: bool = True,
+    ):
+        """
+        Initialize execution orchestrator.
+
+        Args:
+            risk_hook: Risk evaluation hook (defaults to NullRiskHook)
+            adapter: Order execution adapter (defaults to NullAdapter)
+            execution_mode: Execution mode (paper/shadow/testnet/live_blocked)
+            retry_policy: Retry policy for transient failures
+            enable_audit: Enable audit log generation
+        """
+        # Components
+        self.risk_hook = risk_hook or NullRiskHook()
+        self.adapter = adapter or NullAdapter()
+        self.execution_mode = execution_mode
+        self.retry_policy = retry_policy or RetryPolicy(RetryConfig(max_retries=3))
+        self.enable_audit = enable_audit
+
+        # State machines & ledgers
+        self.state_machine = OrderStateMachine(
+            risk_hook=self.risk_hook,
+            enable_audit=enable_audit,
+        )
+        self.order_ledger = OrderLedger()
+        self.position_ledger = PositionLedger()
+        self.audit_log = AuditLog()
+
+        # Counters
+        self._order_counter = 0
+
+    def submit_intent(self, intent: OrderIntent) -> PipelineResult:
+        """
+        Submit order intent through the 8-stage pipeline.
+
+        Pipeline stages:
+        1. Intent Intake - Generate correlation_id, idempotency_key
+        2. Contract Validation - Validate against WP0E invariants
+        3. Pre-Trade Risk Gate - Risk evaluation via RiskHook
+        4. Route Selection - Select adapter based on execution mode
+        5. Adapter Dispatch - Execute order via adapter
+        6. Execution Event Handling - Process ACK/REJECT/FILL
+        7. Post-Trade Hooks - Update ledgers, emit events
+        8. Recon Hand-off - Prepare data for reconciliation
+
+        Args:
+            intent: Order intent
+
+        Returns:
+            PipelineResult with success/failure and audit trail
+        """
+        # Stage 1: Intent Intake
+        correlation_id = self._generate_correlation_id()
+        idempotency_key = self._generate_idempotency_key(intent)
+
+        logger.info(
+            f"[STAGE 1: INTENT INTAKE] correlation_id={correlation_id}, "
+            f"symbol={intent.symbol}, side={intent.side.value}, qty={intent.quantity}"
+        )
+
+        # Stage 2: Contract Validation
+        validation_result = self._stage_2_contract_validation(intent, correlation_id)
+        if not validation_result.success:
+            return validation_result
+
+        order = validation_result.order
+        assert order is not None
+
+        # Stage 3: Pre-Trade Risk Gate
+        risk_result = self._stage_3_risk_gate(order, correlation_id)
+        if not risk_result.success:
+            return risk_result
+
+        # Stage 4: Route Selection
+        route_result = self._stage_4_route_selection(order, correlation_id)
+        if not route_result.success:
+            return route_result
+
+        # Stage 5: Adapter Dispatch
+        dispatch_result = self._stage_5_adapter_dispatch(order, idempotency_key, correlation_id)
+        if not dispatch_result.success:
+            return dispatch_result
+
+        execution_event = dispatch_result.metadata.get("execution_event")
+        assert execution_event is not None
+
+        # Stage 6: Execution Event Handling
+        event_result = self._stage_6_event_handling(order, execution_event, correlation_id)
+        if not event_result.success:
+            return event_result
+
+        # Stage 7: Post-Trade Hooks (pass event_result metadata for fill info)
+        post_trade_result = self._stage_7_post_trade_hooks(
+            order, execution_event, correlation_id, event_result.metadata
+        )
+        if not post_trade_result.success:
+            return post_trade_result
+
+        # Stage 8: Recon Hand-off
+        recon_result = self._stage_8_recon_handoff(order, correlation_id)
+        recon_result.idempotency_key = idempotency_key  # Add idempotency_key to final result
+
+        # Collect all ledger entries from all stages
+        all_ledger_entries = []
+        all_ledger_entries.extend(validation_result.ledger_entries)
+        all_ledger_entries.extend(dispatch_result.ledger_entries)
+        all_ledger_entries.extend(event_result.ledger_entries)
+        recon_result.ledger_entries = all_ledger_entries
+
+        logger.info(
+            f"[PIPELINE COMPLETE] correlation_id={correlation_id}, "
+            f"order_id={order.client_order_id}, state={order.state.value}"
+        )
+
+        return recon_result
+
+    def _stage_2_contract_validation(
+        self, intent: OrderIntent, correlation_id: str
+    ) -> PipelineResult:
+        """
+        Stage 2: Contract Validation.
+
+        Validate order against WP0E invariants:
+        - quantity > 0
+        - LIMIT → limit_price set
+        - symbol not empty
+        - etc.
+
+        Args:
+            intent: Order intent
+            correlation_id: Correlation ID
+
+        Returns:
+            PipelineResult
+        """
+        logger.info(f"[STAGE 2: CONTRACT VALIDATION] correlation_id={correlation_id}")
+
+        # Generate client_order_id
+        self._order_counter += 1
+        client_order_id = f"order_{self._order_counter:06d}_{uuid.uuid4().hex[:8]}"
+
+        # Create order from intent
+        order = Order(
+            client_order_id=client_order_id,
+            symbol=intent.symbol,
+            side=intent.side,
+            order_type=intent.order_type,
+            quantity=intent.quantity,
+            price=intent.limit_price,
+            time_in_force=intent.time_in_force,
+            state=OrderState.CREATED,
+            strategy_id=intent.strategy_id,
+            session_id=intent.session_id,
+            metadata=intent.metadata,
+        )
+
+        # Validate order
+        if not validate_order(order):
+            reason_code = ReasonCode.VALIDATION_MISSING_FIELD
+            reason_detail = "Order validation failed (check quantity, price, symbol)"
+
+            if order.quantity <= 0:
+                reason_code = ReasonCode.VALIDATION_INVALID_QUANTITY
+                reason_detail = f"Invalid quantity: {order.quantity} (must be > 0)"
+            elif order.order_type == OrderType.LIMIT and order.price is None:
+                reason_code = ReasonCode.VALIDATION_INVALID_PRICE
+                reason_detail = "LIMIT order requires limit_price"
+            elif not order.symbol:
+                reason_code = ReasonCode.VALIDATION_INVALID_SYMBOL
+                reason_detail = "Symbol is required"
+
+            logger.warning(
+                f"[STAGE 2: VALIDATION FAILED] correlation_id={correlation_id}, "
+                f"reason={reason_code.value}"
+            )
+
+            return PipelineResult(
+                success=False,
+                order=order,
+                reason_code=reason_code,
+                reason_detail=reason_detail,
+                stage_reached="STAGE_2_CONTRACT_VALIDATION",
+                correlation_id=correlation_id,
+            )
+
+        # Validation passed - create order via state machine to get ORDER_CREATED event
+        sm_result = self.state_machine.create_order(
+            client_order_id=client_order_id,
+            symbol=intent.symbol,
+            side=intent.side.value,
+            quantity=intent.quantity,
+            order_type=intent.order_type,
+            price=intent.limit_price,
+            time_in_force=intent.time_in_force,
+            strategy_id=intent.strategy_id,
+            session_id=intent.session_id,
+            metadata=intent.metadata,
+        )
+
+        if not sm_result.success:
+            return PipelineResult(
+                success=False,
+                order=sm_result.order,
+                reason_code=ReasonCode.VALIDATION_MISSING_FIELD,
+                reason_detail=sm_result.message,
+                stage_reached="STAGE_2_CONTRACT_VALIDATION",
+                correlation_id=correlation_id,
+            )
+
+        # Add to audit log
+        self.audit_log.append_many(sm_result.ledger_entries)
+
+        logger.info(
+            f"[STAGE 2: VALIDATION PASSED] correlation_id={correlation_id}, "
+            f"order_id={client_order_id}"
+        )
+
+        return PipelineResult(
+            success=True,
+            order=sm_result.order,
+            stage_reached="STAGE_2_CONTRACT_VALIDATION",
+            correlation_id=correlation_id,
+            ledger_entries=sm_result.ledger_entries,
+        )
+
+    def _stage_3_risk_gate(self, order: Order, correlation_id: str) -> PipelineResult:
+        """
+        Stage 3: Pre-Trade Risk Gate.
+
+        Call RiskHook.evaluate_order() to check if order is allowed.
+
+        Decision flow:
+        - ALLOW → proceed to Stage 4
+        - BLOCK → reject order, emit REJECTED event
+        - PAUSE → hold order, retry later (bounded retries)
+
+        Args:
+            order: Order to evaluate
+            correlation_id: Correlation ID
+
+        Returns:
+            PipelineResult
+        """
+        logger.info(f"[STAGE 3: RISK GATE] correlation_id={correlation_id}")
+
+        # Evaluate order via risk hook
+        risk_result: RiskResult = self.risk_hook.evaluate_order(order)
+
+        if risk_result.decision == RiskDecision.ALLOW:
+            logger.info(
+                f"[STAGE 3: RISK ALLOWED] correlation_id={correlation_id}, "
+                f"reason={risk_result.reason}"
+            )
+            return PipelineResult(
+                success=True,
+                order=order,
+                stage_reached="STAGE_3_RISK_GATE",
+                correlation_id=correlation_id,
+                metadata={"risk_result": risk_result.to_dict()},
+            )
+
+        elif risk_result.decision == RiskDecision.BLOCK:
+            logger.warning(
+                f"[STAGE 3: RISK BLOCKED] correlation_id={correlation_id}, "
+                f"reason={risk_result.reason}"
+            )
+
+            # Mark order as FAILED (CREATED → FAILED is valid transition)
+            # Note: REJECTED is only valid from SUBMITTED, so we use FAILED for pre-submission blocks
+            sm_result = self.state_machine.fail_order(order, reason=risk_result.reason)
+
+            if sm_result.success:
+                # Add to ledger (includes ORDER_CREATED from create_order in Stage 2)
+                self.order_ledger.add_order(sm_result.order)
+                # Append failure ledger entries
+                self.audit_log.append_many(sm_result.ledger_entries)
+
+            return PipelineResult(
+                success=False,
+                order=sm_result.order,  # Use updated order from state machine
+                reason_code=ReasonCode.RISK_BLOCKED,
+                reason_detail=risk_result.reason,
+                stage_reached="STAGE_3_RISK_GATE",
+                correlation_id=correlation_id,
+                ledger_entries=sm_result.ledger_entries if sm_result.success else [],
+                metadata={"risk_result": risk_result.to_dict()},
+            )
+
+        else:  # RiskDecision.PAUSE
+            logger.warning(
+                f"[STAGE 3: RISK PAUSED] correlation_id={correlation_id}, "
+                f"reason={risk_result.reason}"
+            )
+
+            # For Phase 0: treat PAUSE as BLOCK (no retry logic yet)
+            # Use FAILED state (CREATED → FAILED is valid transition)
+            sm_result = self.state_machine.fail_order(order, reason=risk_result.reason)
+
+            if sm_result.success:
+                # Add to ledger
+                self.order_ledger.add_order(sm_result.order)
+                # Append failure ledger entries
+                self.audit_log.append_many(sm_result.ledger_entries)
+
+            return PipelineResult(
+                success=False,
+                order=sm_result.order,  # Use updated order from state machine
+                reason_code=ReasonCode.RISK_BLOCKED,
+                reason_detail=f"Risk PAUSE (treated as BLOCK in Phase 0): {risk_result.reason}",
+                stage_reached="STAGE_3_RISK_GATE",
+                correlation_id=correlation_id,
+                ledger_entries=sm_result.ledger_entries if sm_result.success else [],
+                metadata={"risk_result": risk_result.to_dict()},
+            )
+
+    def _stage_4_route_selection(self, order: Order, correlation_id: str) -> PipelineResult:
+        """
+        Stage 4: Route Selection.
+
+        Select adapter based on execution mode and policy.
+
+        Phase 0 routing:
+        - PAPER → NullAdapter (or PaperAdapter if available)
+        - SHADOW → NullAdapter (or ShadowAdapter if available)
+        - TESTNET → NullAdapter (WP0C not implemented yet)
+        - LIVE_BLOCKED → REJECT (governance block)
+
+        Args:
+            order: Order to route
+            correlation_id: Correlation ID
+
+        Returns:
+            PipelineResult
+        """
+        logger.info(
+            f"[STAGE 4: ROUTE SELECTION] correlation_id={correlation_id}, "
+            f"mode={self.execution_mode.value}"
+        )
+
+        # Check if live mode is blocked (Phase 0 default)
+        if self.execution_mode == ExecutionMode.LIVE_BLOCKED:
+            logger.error(
+                f"[STAGE 4: LIVE BLOCKED] correlation_id={correlation_id}, "
+                f"Live execution is governance-blocked in Phase 0"
+            )
+
+            # Mark order as FAILED (CREATED → FAILED is valid transition)
+            sm_result = self.state_machine.fail_order(
+                order, reason="Live execution not enabled (Phase 0)"
+            )
+
+            if sm_result.success:
+                # Add to ledger
+                self.order_ledger.add_order(sm_result.order)
+                # Append failure ledger entries
+                self.audit_log.append_many(sm_result.ledger_entries)
+
+            return PipelineResult(
+                success=False,
+                order=sm_result.order,  # Use updated order from state machine
+                reason_code=ReasonCode.POLICY_LIVE_NOT_ENABLED,
+                reason_detail="Live execution is governance-blocked (Phase 0 default)",
+                stage_reached="STAGE_4_ROUTE_SELECTION",
+                correlation_id=correlation_id,
+                ledger_entries=sm_result.ledger_entries if sm_result.success else [],
+            )
+
+        # For paper/shadow/testnet: use configured adapter
+        logger.info(
+            f"[STAGE 4: ROUTE SELECTED] correlation_id={correlation_id}, "
+            f"adapter={type(self.adapter).__name__}"
+        )
+
+        return PipelineResult(
+            success=True,
+            order=order,
+            stage_reached="STAGE_4_ROUTE_SELECTION",
+            correlation_id=correlation_id,
+            metadata={"adapter": type(self.adapter).__name__},
+        )
+
+    def _stage_5_adapter_dispatch(
+        self, order: Order, idempotency_key: str, correlation_id: str
+    ) -> PipelineResult:
+        """
+        Stage 5: Adapter Dispatch.
+
+        Execute order via selected adapter.
+
+        Timeout: 30s default (configurable per adapter)
+        Idempotency: idempotency_key prevents duplicate submission on retry
+
+        Args:
+            order: Order to execute
+            idempotency_key: Idempotency key
+            correlation_id: Correlation ID
+
+        Returns:
+            PipelineResult with execution_event in metadata
+        """
+        logger.info(f"[STAGE 5: ADAPTER DISPATCH] correlation_id={correlation_id}")
+
+        # Submit order via state machine (CREATED → SUBMITTED)
+        sm_result = self.state_machine.submit_order(order)
+        if not sm_result.success:
+            logger.error(
+                f"[STAGE 5: SUBMIT FAILED] correlation_id={correlation_id}, "
+                f"reason={sm_result.message}"
+            )
+
+            return PipelineResult(
+                success=False,
+                order=order,
+                reason_code=ReasonCode.ADAPTER_ERROR,
+                reason_detail=sm_result.message,
+                stage_reached="STAGE_5_ADAPTER_DISPATCH",
+                correlation_id=correlation_id,
+                idempotency_key=idempotency_key,
+                ledger_entries=sm_result.ledger_entries,
+            )
+
+        # Add order to ledger
+        self.order_ledger.add_order(order)
+        self.audit_log.append_many(sm_result.ledger_entries)
+
+        # Execute order via adapter
+        try:
+            execution_event = self.adapter.execute_order(order, idempotency_key)
+
+            logger.info(
+                f"[STAGE 5: ADAPTER EXECUTED] correlation_id={correlation_id}, "
+                f"event_type={execution_event.event_type}"
+            )
+
+            return PipelineResult(
+                success=True,
+                order=order,
+                stage_reached="STAGE_5_ADAPTER_DISPATCH",
+                correlation_id=correlation_id,
+                idempotency_key=idempotency_key,
+                ledger_entries=sm_result.ledger_entries,
+                metadata={"execution_event": execution_event},
+            )
+
+        except Exception as e:
+            logger.error(f"[STAGE 5: ADAPTER ERROR] correlation_id={correlation_id}, error={e}")
+
+            # Mark order as FAILED
+            fail_result = self.state_machine.fail_order(order, reason=str(e))
+            if fail_result.success:
+                self.order_ledger.update_order(order, event="ORDER_FAILED")
+                self.audit_log.append_many(fail_result.ledger_entries)
+
+            return PipelineResult(
+                success=False,
+                order=order,
+                reason_code=ReasonCode.ADAPTER_ERROR,
+                reason_detail=str(e),
+                stage_reached="STAGE_5_ADAPTER_DISPATCH",
+                correlation_id=correlation_id,
+                idempotency_key=idempotency_key,
+                ledger_entries=fail_result.ledger_entries if fail_result.success else [],
+            )
+
+    def _stage_6_event_handling(
+        self, order: Order, execution_event: ExecutionEvent, correlation_id: str
+    ) -> PipelineResult:
+        """
+        Stage 6: Execution Event Handling.
+
+        Process execution event from adapter:
+        - ACK: Order accepted → SUBMITTED → ACKNOWLEDGED
+        - REJECT: Order rejected → REJECTED
+        - FILL: Order filled → PARTIALLY_FILLED or FILLED
+        - CANCEL_ACK: Order cancelled → CANCELLED
+
+        Args:
+            order: Order
+            execution_event: Execution event from adapter
+            correlation_id: Correlation ID
+
+        Returns:
+            PipelineResult
+        """
+        logger.info(
+            f"[STAGE 6: EVENT HANDLING] correlation_id={correlation_id}, "
+            f"event_type={execution_event.event_type}"
+        )
+
+        event_type = execution_event.event_type
+
+        if event_type == "ACK":
+            # Acknowledge order (SUBMITTED → ACKNOWLEDGED)
+            sm_result = self.state_machine.acknowledge_order(
+                order, exchange_order_id=execution_event.exchange_order_id or "unknown"
+            )
+
+            if sm_result.success:
+                self.order_ledger.update_order(order, event="ORDER_ACKNOWLEDGED")
+                self.audit_log.append_many(sm_result.ledger_entries)
+
+            return PipelineResult(
+                success=sm_result.success,
+                order=order,
+                stage_reached="STAGE_6_EVENT_HANDLING",
+                correlation_id=correlation_id,
+                ledger_entries=sm_result.ledger_entries,
+            )
+
+        elif event_type == "REJECT":
+            # Reject order
+            sm_result = self.state_machine.reject_order(
+                order, reason=execution_event.reject_reason or "Rejected by adapter"
+            )
+
+            if sm_result.success:
+                self.order_ledger.update_order(order, event="ORDER_REJECTED")
+                self.audit_log.append_many(sm_result.ledger_entries)
+
+            return PipelineResult(
+                success=False,
+                order=order,
+                reason_code=ReasonCode.ADAPTER_REJECTED,
+                reason_detail=execution_event.reject_reason or "Rejected by adapter",
+                stage_reached="STAGE_6_EVENT_HANDLING",
+                correlation_id=correlation_id,
+                ledger_entries=sm_result.ledger_entries,
+            )
+
+        elif event_type == "FILL":
+            # Apply fill
+            fill = execution_event.fill
+            if fill is None:
+                logger.error(f"[STAGE 6: FILL EVENT WITHOUT FILL] correlation_id={correlation_id}")
+                return PipelineResult(
+                    success=False,
+                    order=order,
+                    reason_code=ReasonCode.ADAPTER_ERROR,
+                    reason_detail="FILL event without fill details",
+                    stage_reached="STAGE_6_EVENT_HANDLING",
+                    correlation_id=correlation_id,
+                )
+
+            # If order is SUBMITTED, acknowledge it first (implicit ACK before FILL)
+            if order.state == OrderState.SUBMITTED:
+                ack_result = self.state_machine.acknowledge_order(
+                    order, exchange_order_id=execution_event.exchange_order_id or "unknown"
+                )
+                if ack_result.success:
+                    self.order_ledger.update_order(order, event="ORDER_ACKNOWLEDGED")
+                    self.audit_log.append_many(ack_result.ledger_entries)
+
+            # Now apply fill
+            sm_result = self.state_machine.apply_fill(order, fill)
+
+            if sm_result.success:
+                self.order_ledger.update_order(order, event="ORDER_FILLED")
+                self.audit_log.append_many(sm_result.ledger_entries)
+
+            return PipelineResult(
+                success=sm_result.success,
+                order=order,
+                stage_reached="STAGE_6_EVENT_HANDLING",
+                correlation_id=correlation_id,
+                ledger_entries=sm_result.ledger_entries,
+                metadata={"fill": fill.to_dict()},
+            )
+
+        elif event_type == "CANCEL_ACK":
+            # Cancel order
+            sm_result = self.state_machine.cancel_order(order, reason="Cancelled by adapter")
+
+            if sm_result.success:
+                self.order_ledger.update_order(order, event="ORDER_CANCELLED")
+                self.audit_log.append_many(sm_result.ledger_entries)
+
+            return PipelineResult(
+                success=sm_result.success,
+                order=order,
+                stage_reached="STAGE_6_EVENT_HANDLING",
+                correlation_id=correlation_id,
+                ledger_entries=sm_result.ledger_entries,
+            )
+
+        else:
+            logger.error(
+                f"[STAGE 6: UNKNOWN EVENT TYPE] correlation_id={correlation_id}, "
+                f"event_type={event_type}"
+            )
+            return PipelineResult(
+                success=False,
+                order=order,
+                reason_code=ReasonCode.ADAPTER_ERROR,
+                reason_detail=f"Unknown event type: {event_type}",
+                stage_reached="STAGE_6_EVENT_HANDLING",
+                correlation_id=correlation_id,
+            )
+
+    def _stage_7_post_trade_hooks(
+        self,
+        order: Order,
+        execution_event: ExecutionEvent,
+        correlation_id: str,
+        event_metadata: Optional[Dict[str, Any]] = None,
+    ) -> PipelineResult:
+        """
+        Stage 7: Post-Trade Hooks.
+
+        Process after ExecutionEvent received:
+        - Update Position Ledger (apply fill → position, PnL, cash)
+        - Emit Fill event to WP0D (Position Accounting Bridge)
+        - Generate Audit Log entry
+
+        Args:
+            order: Order
+            execution_event: Execution event
+            correlation_id: Correlation ID
+            event_metadata: Metadata from Stage 6 (may contain fill info)
+
+        Returns:
+            PipelineResult
+        """
+        logger.info(f"[STAGE 7: POST-TRADE HOOKS] correlation_id={correlation_id}")
+
+        # If FILL event, update position ledger
+        if execution_event.event_type == "FILL":
+            # Get fill from execution event
+            fill = execution_event.fill
+
+            if fill is None:
+                logger.warning(
+                    f"[STAGE 7: NO FILL] correlation_id={correlation_id}, "
+                    f"FILL event but no fill details"
+                )
+                return PipelineResult(
+                    success=True,
+                    order=order,
+                    stage_reached="STAGE_7_POST_TRADE_HOOKS",
+                    correlation_id=correlation_id,
+                )
+
+            try:
+                position = self.position_ledger.apply_fill(fill)
+
+                logger.info(
+                    f"[STAGE 7: POSITION UPDATED] correlation_id={correlation_id}, "
+                    f"symbol={position.symbol}, qty={position.quantity}, "
+                    f"realized_pnl={position.realized_pnl}"
+                )
+
+            except Exception as e:
+                logger.error(
+                    f"[STAGE 7: POSITION UPDATE FAILED] correlation_id={correlation_id}, error={e}"
+                )
+                return PipelineResult(
+                    success=False,
+                    order=order,
+                    reason_code=ReasonCode.ADAPTER_ERROR,
+                    reason_detail=f"Position ledger update failed: {e}",
+                    stage_reached="STAGE_7_POST_TRADE_HOOKS",
+                    correlation_id=correlation_id,
+                )
+
+        return PipelineResult(
+            success=True,
+            order=order,
+            stage_reached="STAGE_7_POST_TRADE_HOOKS",
+            correlation_id=correlation_id,
+        )
+
+    def _stage_8_recon_handoff(self, order: Order, correlation_id: str) -> PipelineResult:
+        """
+        Stage 8: Recon Hand-off.
+
+        Prepare data for WP0D ReconciliationEngine:
+        - Order Ledger snapshot
+        - Position Ledger snapshot
+        - Audit Log snapshot
+
+        Phase 0: Conceptual/smoke test (no real exchange data)
+
+        Args:
+            order: Order
+            correlation_id: Correlation ID
+
+        Returns:
+            PipelineResult
+        """
+        logger.info(f"[STAGE 8: RECON HAND-OFF] correlation_id={correlation_id}")
+
+        # Prepare recon data (snapshots)
+        recon_data = {
+            "order_ledger_snapshot": self.order_ledger.to_dict(),
+            "position_ledger_snapshot": self.position_ledger.to_dict(),
+            "audit_log_snapshot": self.audit_log.to_dict(),
+        }
+
+        logger.info(
+            f"[STAGE 8: RECON DATA PREPARED] correlation_id={correlation_id}, "
+            f"total_orders={recon_data['order_ledger_snapshot']['total_orders']}, "
+            f"total_positions={recon_data['position_ledger_snapshot']['total_positions']}"
+        )
+
+        return PipelineResult(
+            success=True,
+            order=order,
+            stage_reached="STAGE_8_RECON_HANDOFF",
+            correlation_id=correlation_id,
+            metadata={"recon_data": recon_data},
+        )
+
+    def _generate_correlation_id(self) -> str:
+        """Generate unique correlation ID"""
+        return f"corr_{uuid.uuid4().hex[:16]}"
+
+    def _generate_idempotency_key(self, intent: OrderIntent) -> str:
+        """
+        Generate idempotency key from intent.
+
+        Same intent → same key (prevents duplicate processing)
+        """
+        # Simple implementation: hash of intent fields
+        key_parts = [
+            intent.symbol,
+            intent.side.value,
+            str(intent.quantity),
+            intent.order_type.value,
+            str(intent.limit_price) if intent.limit_price else "None",
+            intent.strategy_id or "None",
+        ]
+        key_hash = hash(tuple(key_parts))
+        return f"idem_{abs(key_hash):016x}"
+
+    def get_order_ledger_snapshot(self) -> Dict[str, Any]:
+        """Get order ledger snapshot for reconciliation"""
+        return self.order_ledger.to_dict()
+
+    def get_position_ledger_snapshot(
+        self, mark_prices: Optional[Dict[str, Decimal]] = None
+    ) -> Dict[str, Any]:
+        """Get position ledger snapshot for reconciliation"""
+        return self.position_ledger.to_dict(mark_prices=mark_prices)
+
+    def get_audit_log_snapshot(self) -> Dict[str, Any]:
+        """Get audit log snapshot for reconciliation"""
+        return self.audit_log.to_dict()
