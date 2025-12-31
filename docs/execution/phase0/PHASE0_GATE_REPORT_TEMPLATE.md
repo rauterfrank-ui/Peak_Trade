@@ -9,6 +9,22 @@
 
 ---
 
+## 📋 How to Use This Template
+
+**Purpose:** This template structures the GO/NO-GO decision for Phase-0 docs-only readiness.
+
+**Instructions:**
+1. **Fill Date/Branch/PR** in header (lines 5-6) when creating actual gate report
+2. **Update Evidence Index** (section below) with actual file paths and verification status
+3. **Mark WP Status** (Work Package sections) as PASS/FAIL/DEFER for each acceptance criterion
+4. **Document Blockers** (if any) in respective WP sections with clear remediation steps
+5. **Finalize Decision** in "Decision & Sign-Off" section (default: NO-GO until all gates PASS)
+6. **Attach Evidence** links (reports, logs, CI runs) to support decision
+
+**Default Decision:** NO-GO (requires explicit GO decision with evidence)
+
+---
+
 ## Gate Header
 
 ### Scope
