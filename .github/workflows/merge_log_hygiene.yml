@@ -1,0 +1,74 @@
+name: Merge Log Hygiene Check
+
+on:
+  pull_request:
+    paths:
+      - 'docs/ops/PR_*_MERGE_LOG.md'
+      - 'docs/ops/MERGE_LOGS_STYLE_GUIDE.md'
+      - 'docs/ops/README.md'
+      - 'scripts/ops/check_merge_log_hygiene.py'
+  workflow_dispatch:
+
+# This workflow is informational only (not required)
+# It helps catch hygiene issues early but doesn't block merges
+
+jobs:
+  hygiene_check:
+    name: Check Merge Logs Hygiene
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check merge logs hygiene
+        run: |
+          set +e  # Don't fail the workflow, just report
+
+          # Find changed merge log files
+          changed_files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '^docs/ops/PR_[0-9]+_MERGE_LOG\.md$' || true)
+
+          if [ -z "$changed_files" ]; then
+            echo "ℹ️  No merge log files changed in this PR"
+            exit 0
+          fi
+
+          echo "📋 Checking merge log files:"
+          echo "$changed_files"
+          echo ""
+
+          # Run hygiene check
+          python3 scripts/ops/check_merge_log_hygiene.py $changed_files
+          exit_code=$?
+
+          if [ $exit_code -eq 0 ]; then
+            echo ""
+            echo "✅ All hygiene checks passed"
+          else
+            echo ""
+            echo "⚠️  Hygiene issues detected (informational only)"
+            echo "Please review the findings above and fix if appropriate."
+          fi
+
+          # Always succeed (informational only)
+          exit 0
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Merge Log Hygiene Check 🧹" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "This check is **informational only** and does not block merges." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "It scans merge logs for:" >> $GITHUB_STEP_SUMMARY
+          echo "- Forbidden local paths (\`/Users/\`, \`/home/\`, \`C:\\\`, \`~/\`)" >> $GITHUB_STEP_SUMMARY
+          echo "- Unicode hygiene issues (Bidi, Zero-Width, BOM, Surrogates)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See \`scripts/ops/check_merge_log_hygiene.py\` for details." >> $GITHUB_STEP_SUMMARY
