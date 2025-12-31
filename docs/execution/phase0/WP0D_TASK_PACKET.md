@@ -689,7 +689,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
   - Purpose: Verify cross-WP integration (A ↔ D)
 
 - [ ] **Completion Report:** WP0D implementation documentation
-  - Location pattern: "docs/execution/WP0D_IMPLEMENTATION_REPORT.md" (future)
+  - Location pattern: "docs\/execution\/WP0D_IMPLEMENTATION_REPORT.md" (future)
 
 ### Evidence Generation (Not in This Docs-Only Run)
 **Note:** Evidence artifacts generated during implementation run, not docs-only prep.
@@ -769,15 +769,15 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 
 ### Conflict Avoidance
 **File Ownership (as per Ownership Matrix):**
-- **WP0D (A5) Owns:** "src/execution/reconciliation.py" (new), "src/execution/metrics.py" (new), "src/observability/*" (new), "tests/execution/test_reconciliation.py" (new), "tests/observability/*" (new)
-- **WP0A (A2) Owns:** "src/execution/position_ledger.py" (existing), "src/execution/order_ledger.py" (existing)
-- **Shared Files:** "src/execution/position_ledger.py" (WP0A owns, WP0D extends) — Coordination required!
+- **WP0D (A5) Owns:** "src\/execution\/reconciliation.py" (new), "src\/execution\/metrics.py" (new), "src\/observability\/*" (new), "tests\/execution\/test_reconciliation.py" (new), "tests\/observability\/*" (new)
+- **WP0A (A2) Owns:** "src\/execution\/position_ledger.py" (existing), "src\/execution\/order_ledger.py" (existing)
+- **Shared Files:** "src\/execution\/position_ledger.py" (WP0A owns, WP0D extends) — Coordination required!
 - **Integration Coordination:** A0 Integrator mediates WP0A ↔ WP0D interface (Fill event schema, Position Ledger API)
 
 ### Open Questions / Coordination Needs
 **Q1: Position Ledger Ownership?**
 - **Issue:** Position Ledger already exists (WP0A created it), but WP0D extends it (reconciliation, metrics)
-- **Proposal:** WP0A owns "src/execution/position_ledger.py", WP0D adds "src/execution/position_bridge.py" (wrapper/extension)
+- **Proposal:** WP0A owns "src\/execution\/position_ledger.py", WP0D adds "src\/execution\/position_bridge.py" (wrapper/extension)
 - **Action:** Coordinate with WP0A (A2) on Position Ledger API (get/apply_fill methods)
 
 **Q2: Fill Event Emission Mechanism?**
@@ -805,7 +805,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 ### Implementation Approach (Docs-Only Description)
 
 **Step 1: Position Accounting Bridge (Day 1-2)**
-- Implement "src/execution/position_bridge.py":
+- Implement "src\/execution\/position_bridge.py":
   - `PositionAccountingBridge` class with `apply_fill(fill: Fill)` method
   - Fill validation logic (quantity > 0, price > 0, symbol valid)
   - Position update logic (BUY/SELL, position flip handling)
@@ -817,7 +817,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 - Test: `tests/execution/test_position_bridge.py` (fill application, PnL, invariants, idempotency)
 
 **Step 2: Metrics Collector (Day 2-3)**
-- Implement "src/execution/metrics.py":
+- Implement "src\/execution\/metrics.py":
   - `MetricsCollector` class with `record_order_submitted()`, `record_fill()`, `record_error()`, `record_latency()`
   - Counter metrics (orders_submitted_total, orders_filled_total, orders_rejected_total, reconnects_total)
   - Histogram metrics (order_submission_latency_ms, fill_latency_ms) with p50/p95/p99
@@ -827,7 +827,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 - Test: `tests/execution/test_metrics.py` (counters, histograms, percentiles, bounded buffers)
 
 **Step 3: Structured Logger (Day 3)**
-- Implement "src/observability/structured_logger.py":
+- Implement "src\/observability\/structured_logger.py":
   - `StructuredLogger` class wrapping standard logging with context injection
   - Log schema: timestamp, level, message, trace_id, session_id, strategy_id, order_id, context
   - JSONL format (one JSON object per line)
@@ -838,7 +838,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 - Test: `tests/observability/test_structured_logger.py` (schema, JSONL format, rotation, retention)
 
 **Step 4: ReconciliationEngine (Day 4-5)**
-- Implement "src/execution/reconciliation.py":
+- Implement "src\/execution\/reconciliation.py":
   - `ReconciliationEngine` class with `reconcile() -> List[ReconDiff]` method
   - Fetch internal snapshot (Order Ledger, Position Ledger)
   - Fetch external snapshot (mock/stub for Phase 0, real API later)
@@ -850,7 +850,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 - Test: `tests/execution/test_reconciliation.py` (matching, tolerance, diff generation, report export)
 
 **Step 5: Minimal Dashboard (Day 5)**
-- Implement "src/observability/dashboard.py":
+- Implement "src\/observability\/dashboard.py":
   - `DashboardExporter` class with `export_snapshot() -> Dict` method
   - Aggregate current state (positions, open orders, recent errors, metrics summary)
   - Export to JSON (`reports/observability/dashboard_snapshot_{timestamp}.json`)
@@ -875,7 +875,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 - Export position snapshot → `reports/execution/position_snapshot_*.json`
 - Export dashboard snapshot → `reports/observability/dashboard_snapshot_*.json`
 - Run invariant validation tests → `reports/execution/invariant_validation_*.md`
-- Write WP0D completion report: "docs/execution/WP0D_IMPLEMENTATION_REPORT.md" (future)
+- Write WP0D completion report: "docs\/execution\/WP0D_IMPLEMENTATION_REPORT.md" (future)
 
 ---
 
@@ -885,7 +885,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 - [ ] WP0E contracts finalized (Fill, LedgerEntry, ReconDiff types)
 - [ ] WP0A Fill event emission mechanism agreed (direct call vs pub/sub)
 - [ ] Position Ledger API agreed (WP0A owns, WP0D extends/queries)
-- [ ] Ownership Matrix consulted: WP0D owns "src/execution/reconciliation.py", "src/observability/*", etc.
+- [ ] Ownership Matrix consulted: WP0D owns "src\/execution\/reconciliation.py", "src\/observability\/*", etc.
 
 **Implementation Sequence:**
 - [ ] Implement Position Accounting Bridge (apply_fill, PnL, invariants, idempotency)
