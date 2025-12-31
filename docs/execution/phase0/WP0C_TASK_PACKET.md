@@ -488,7 +488,7 @@ Order execution aborts → OSM state inconsistent → potential system instabili
   - Content: Measure OrderRouter latency (<1ms), AdapterFactory lookup (<1ms)
   - Purpose: Verify low overhead
 - [ ] **Completion Report:** WP0C implementation documentation
-  - Location pattern: `docs/execution/WP0C_IMPLEMENTATION_REPORT.md`
+  - Location pattern: `docs/execution/WP0C_IMPLEMENTATION_REPORT.md` (future)
 
 ### Evidence Generation (Not in This Docs-Only Run)
 **Note:** Evidence artifacts generated during implementation run, not docs-only prep.
@@ -629,7 +629,7 @@ Order execution aborts → OSM state inconsistent → potential system instabili
 - Run integration tests (WP0A + WP0C + WP0D) → pytest output
 - Generate timeout/retry simulation report
 - Performance benchmark: routing latency, factory lookup time
-- Write WP0C completion report: `docs/execution/WP0C_IMPLEMENTATION_REPORT.md`
+- Write WP0C completion report: `docs/execution/WP0C_IMPLEMENTATION_REPORT.md` (future)
 
 ---
 
@@ -688,7 +688,7 @@ Order execution aborts → OSM state inconsistent → potential system instabili
 - [ ] Implement routing/adapter in `src/execution/routing.py` or `src/orders/`
 - [ ] Write unit/integration tests in `tests/execution/` or `tests/orders/`
 - [ ] Generate evidence reports in `reports/execution/`
-- [ ] Create completion report: `docs/execution/WP0C_IMPLEMENTATION_REPORT.md`
+- [ ] Create completion report: `docs/execution/WP0C_IMPLEMENTATION_REPORT.md` (future)
 
 ---
 

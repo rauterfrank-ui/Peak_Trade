@@ -461,7 +461,7 @@ WP0E defines these contract types (consumed by other WPs):
   - Method: Static analysis or import test
   - Expected: execution → contracts ← risk (no execution → risk)
 - [ ] **Completion Report:** Structured documentation of WP0E implementation
-  - Location pattern: `docs/execution/WP0E_IMPLEMENTATION_REPORT.md`
+  - Location pattern: `docs/execution/WP0E_IMPLEMENTATION_REPORT.md` (future)
   - Content: DoD verification, files changed, test results, risks, integration notes
   - Status: Template exists (WP0E_COMPLETION_REPORT.md), reuse for implementation run
 

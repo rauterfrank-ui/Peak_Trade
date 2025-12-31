@@ -689,7 +689,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
   - Purpose: Verify cross-WP integration (A ↔ D)
 
 - [ ] **Completion Report:** WP0D implementation documentation
-  - Location pattern: `docs/execution/WP0D_IMPLEMENTATION_REPORT.md`
+  - Location pattern: `docs/execution/WP0D_IMPLEMENTATION_REPORT.md` (future)
 
 ### Evidence Generation (Not in This Docs-Only Run)
 **Note:** Evidence artifacts generated during implementation run, not docs-only prep.
@@ -875,7 +875,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 - Export position snapshot → `reports/execution/position_snapshot_*.json`
 - Export dashboard snapshot → `reports/observability/dashboard_snapshot_*.json`
 - Run invariant validation tests → `reports/execution/invariant_validation_*.md`
-- Write WP0D completion report: `docs/execution/WP0D_IMPLEMENTATION_REPORT.md`
+- Write WP0D completion report: `docs/execution/WP0D_IMPLEMENTATION_REPORT.md` (future)
 
 ---
 
