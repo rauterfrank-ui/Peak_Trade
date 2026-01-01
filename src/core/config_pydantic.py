@@ -22,6 +22,8 @@ Config-Pfad-Prioritaet:
     3. Default: config/config.toml relativ zum Projekt-Root
 """
 
+from __future__ import annotations
+
 import os
 from pathlib import Path
 from typing import Optional, Dict, Any
