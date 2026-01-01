@@ -1460,6 +1460,7 @@ Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
 ## Verified Merge Logs
+- **PR #479 (Appendix A — Phase Runner Prompt Packs 0–3)** → docs/ops/PR_479_MERGE_LOG.md
 - **PR #470 (Recon Audit Gate Wrapper: pyenv-safe Python Runner)** → `docs/ops/PR_470_MERGE_LOG.md`
 - **PR #462 (WP0D LedgerEntry Mapping + Reconciliation Wiring, Phase-0 Integration Day)** → `docs/ops/PR_462_MERGE_LOG.md` | [Integration Report](integration_days/PHASE0_ID0_WP0D_INTEGRATION_DAY_REPORT.md)
 - **PR #458 (WP0E Contracts & Interfaces, Phase-0 Gate Report)** → `docs/ops/PR_458_MERGE_LOG.md`
