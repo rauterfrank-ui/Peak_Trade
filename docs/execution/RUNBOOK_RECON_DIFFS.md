@@ -115,6 +115,14 @@ bash scripts/execution/recon_audit_gate.sh gate
 - `2`: Findings vorhanden (Gate-Mode, **kein Fehler!**)
 - `1`: Script-Fehler
 
+**Python-Runner (pyenv-safe):**
+Wrapper nutzt standardmäßig `uv run python` (wenn verfügbar), sonst `python3`/`python`. Override via `PT_RECON_PYTHON_RUNNER` möglich:
+
+```bash
+# Beispiel: Custom Runner verwenden
+PT_RECON_PYTHON_RUNNER="python3.11" bash scripts/execution/recon_audit_gate.sh summary-json
+```
+
 **Use Case:** Vereinfachte Operator-Workflows, Shell-Scripting, CI/CD Integration.
 
 ---
