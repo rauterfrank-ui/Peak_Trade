@@ -4,7 +4,7 @@
 Standardizes the bg_job runner as operator tooling in the Cursor Multi-Agent workflow by adding dedicated sections to the Frontdoor, Phases V2, and Live Execution Roadmap runbooks. Provides discovery-first guidance, operator notation standards, and troubleshooting patterns.
 
 ## Why
-The bg_job runner (PR #486) addresses timeout-prone long-running tasks in multi-agent workflows (backtests, VaR suites, sweeps). Anchoring it in the standard runbooks ensures operators and agents use it consistently, with clear documentation patterns and gate-safe reference formats.
+The bg_job runner (delivered in PR #PR_TBD; PR #486 was gitignore-only prep) addresses timeout-prone long-running tasks in multi-agent workflows (backtests, VaR suites, sweeps). Anchoring it in the standard runbooks ensures operators and agents use it consistently, with clear documentation patterns and gate-safe reference formats.
 
 ## Changes
 - `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md`: Added Appendix B.3 with bg_job discovery command and gate-safety hint; added operator tooling reference in Section 9.
@@ -60,7 +60,8 @@ Document each bg_job run with:
 
 ## References
 - PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/488
-- Parent PRs: #486 (bg_job runner implementation), #487 (initial runbook integration)
+- Parent PRs: #486 (gitignore-only prep for bg_job), #487 (initial runbook integration)
+- bg_job runner actual delivery: PR #PR_TBD
 - Branch: docs/bg-job-execution-pattern
 - Merged at: 2026-01-01
 - Commit: 427de20, 8312cb9
