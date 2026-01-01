@@ -90,9 +90,7 @@ def show_summary(audit_log: AuditLog, query: ReconAuditQuery) -> None:
 
     # Filter by session if specified
     if query.session_id:
-        summaries = [
-            s for s in summaries if s.details.get("session_id") == query.session_id
-        ]
+        summaries = [s for s in summaries if s.details.get("session_id") == query.session_id]
 
     # Sort by timestamp (deterministic)
     summaries = sorted(summaries, key=lambda e: e.timestamp)
@@ -114,9 +112,7 @@ def show_summary(audit_log: AuditLog, query: ReconAuditQuery) -> None:
         print(f"Session:     {details.get('session_id', 'N/A')}")
         print(f"Strategy:    {details.get('strategy_id', 'N/A')}")
         print(f"Total Diffs: {details.get('total_diffs', 0)}")
-        print(
-            f"Severity:    {json.dumps(details.get('counts_by_severity', {}), sort_keys=True)}"
-        )
+        print(f"Severity:    {json.dumps(details.get('counts_by_severity', {}), sort_keys=True)}")
         print(f"Diff Types:  {json.dumps(details.get('counts_by_type', {}), sort_keys=True)}")
         print(f"Critical:    {details.get('has_critical', False)}")
         print(f"Fail:        {details.get('has_fail', False)}")
