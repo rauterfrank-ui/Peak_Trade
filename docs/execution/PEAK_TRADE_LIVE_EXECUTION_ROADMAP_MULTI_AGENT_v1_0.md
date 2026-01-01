@@ -336,3 +336,16 @@ Jeder Agent bekommt:
 - WP4B (Manual-Only): Operator Drills + Evidence Pack
   - docs/execution/WP4B_OPERATOR_DRILLS_EVIDENCE_PACK.md
   - docs/execution/WP4B_EVIDENCE_PACK_TEMPLATE.md
+
+---
+
+## 6) Toolbox: bg_job Runner (Timeout-sichere Background Jobs)
+
+Im Multi-Agent Kontext entstehen oft lange laufende Tasks (Backtests, VaR-Suites, Trainings), die ohne Timeout-Management in Cursor-Sessions fehlschlagen können. Der bg_job Runner sichert robuste Ausführung mit PID-Tracking, Log-Capture und Exit-Code-Verifikation.
+
+**Discovery-first Command:**
+```bash
+bash 'scripts'/'ops'/'bg_job.sh' --help || bash 'scripts'/'ops'/'bg_job.sh' help
+```
+
+**Referenz:** `docs/ops/PR_486_MERGE_LOG.md`

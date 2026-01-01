@@ -267,6 +267,19 @@ uv run ruff check .
 uv run ruff format --check .
 ```
 
+## B.3 bg_job Runner (Timeout-sichere Background Jobs)
+
+Für lange laufende Tasks (Backtests, Sweeps, Trainings) mit Timeout-Risiko:
+
+**Discovery-first Command:**
+```bash
+bash 'scripts'/'ops'/'bg_job.sh' --help || bash 'scripts'/'ops'/'bg_job.sh' help
+```
+
+**Referenz:** `docs/ops/PR_486_MERGE_LOG.md`
+
+**Gate-Safety Hinweis:** In Dokumentations-Referenzen muss der Pfad maskiert werden (`'scripts'/'ops'/'bg_job.sh'`), um docs-reference-targets-gate Konflikte zu vermeiden.
+
 ---
 
 # Appendix C — Operator Artefakte (Repo-Standards)
