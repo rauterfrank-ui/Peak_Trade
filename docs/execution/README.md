@@ -45,3 +45,7 @@ Dokumentation für Live-Execution, Telemetrie, Runbooks und operative Abläufe.
 - Operations Hub: [docs/ops/README.md](../ops/README.md)
 - Live Workflows: [LIVE_WORKFLOWS.md](../LIVE_WORKFLOWS.md)
 - Live Deployment: [LIVE_DEPLOYMENT_PLAYBOOK.md](../LIVE_DEPLOYMENT_PLAYBOOK.md)
+
+## WP4B — Operator Drills & Evidence Pack (Manual-Only)
+- WP4B Drill Catalog: docs/execution/WP4B_OPERATOR_DRILLS_EVIDENCE_PACK.md
+- Evidence Template: docs/execution/WP4B_EVIDENCE_PACK_TEMPLATE.md
