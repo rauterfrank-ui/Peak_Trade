@@ -12,7 +12,7 @@ This document describes the canonical risk metrics schema used across the Peak_T
 
 ### RiskMetrics
 
-The `RiskMetrics` dataclass (previously in `src/risk_layer/metrics.py`, now refactored) represents the canonical schema:
+The `RiskMetrics` dataclass (previously in `src\/risk_layer\/metrics.py`, now refactored) represents the canonical schema:
 
 ```python
 @dataclass(frozen=True)
