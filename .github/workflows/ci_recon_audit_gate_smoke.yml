@@ -8,6 +8,7 @@ on:
       - "src/execution/**"
       - "pyproject.toml"
       - "uv.lock"
+      - ".github/workflows/ci_recon_audit_gate_smoke.yml"
   push:
     branches: ["main"]
     paths:
@@ -16,6 +17,7 @@ on:
       - "src/execution/**"
       - "pyproject.toml"
       - "uv.lock"
+      - ".github/workflows/ci_recon_audit_gate_smoke.yml"
   workflow_dispatch: {}
 
 jobs:
