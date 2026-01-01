@@ -77,3 +77,40 @@ Nach den Priority-1 Fixes erwarten wir:
 - Reduzierung der Missing Targets um ca. 20-30 (Ops/Risk-Bereich)
 - Legacy-Bereich bleibt unverändert (~150 targets)
 - Verbleibende Missing Targets sind dokumentiert und akzeptiert
+
+---
+
+## Update 2026-01-01 (Ignore List Implementation)
+
+### Ignore Patterns Support Added
+Added configurable ignore list to `verify_docs_reference_targets.sh`:
+- **Ignore file**: `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
+- **Default patterns**: `docs/_worklogs/**`, `docs/archive/**`
+- **Inline marker**: `<!-- pt:ref-target-ignore -->` (skips references on that line)
+
+### Test Results
+
+**Full-Scan Mode (with ignore patterns):**
+```
+Docs Reference Targets: scanned 592 md file(s) (9 ignored), found 4226 reference(s).
+Missing targets: 189
+```
+
+- **Files ignored**: 9 (docs/_worklogs)
+- **References excluded**: ~103 (from ignored files)
+- **Reduction**: 239 → 189 missing targets (50 targets excluded via ignore patterns)
+
+**CI Mode (--changed --base origin/main):**
+```
+Docs Reference Targets: scanned 11 md file(s), found 130 reference(s).
+Missing targets: 63
+```
+
+- **No ignore patterns applied** (strict validation for changed files)
+- **CI parity preserved**: --changed mode behavior unchanged
+
+### Benefits
+1. **Cleaner full-scan reports**: Legacy content automatically filtered
+2. **CI safety**: Changed files always validated strictly
+3. **Flexible**: Easy to add new patterns as repo evolves
+4. **Documented**: Ignore patterns tracked in version control
