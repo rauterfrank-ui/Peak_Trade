@@ -71,12 +71,12 @@ fi
 case "${SUBCOMMAND}" in
     summary-text)
         # Text format (human-readable)
-        "${PY_RUN[@]}" "${CLI_TOOL}" summary
+        "${PY_RUN[@]}" "$SCRIPT_DIR/show_recon_audit.py" summary
         ;;
 
     summary-json)
         # JSON format (machine-readable)
-        "${PY_RUN[@]}" "${CLI_TOOL}" summary --format json
+        "${PY_RUN[@]}" "$SCRIPT_DIR/show_recon_audit.py" summary --format json
         ;;
 
     gate)
@@ -84,7 +84,7 @@ case "${SUBCOMMAND}" in
         # Note: Exit 2 means "findings detected", not "error"
         # This is intentional for CI/CD gates
         shift  # Remove 'gate' from args
-        "${PY_RUN[@]}" "${CLI_TOOL}" summary --format json --exit-on-findings "$@"
+        "${PY_RUN[@]}" "$SCRIPT_DIR/show_recon_audit.py" summary --format json --exit-on-findings "$@"
         ;;
 
     *)
