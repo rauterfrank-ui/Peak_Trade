@@ -1475,6 +1475,7 @@ Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
 ## Verified Merge Logs
+- **PR #489 (docs(ops): standardize bg_job execution pattern in Cursor multi-agent workflows)** → `docs/ops/PR_489_MERGE_LOG.md`
 - **PR #488 (docs(ops): standardize bg_job execution pattern in cursor phases runbook)** → `docs/ops/PR_488_MERGE_LOG.md`
 - **PR #486 (ops(scripts): add bg_job runner; exitcode capture)** → `docs/ops/PR_486_MERGE_LOG.md`
 - **PR #483 (Merge Logs for PR #481 and #482, docs-only)** → `docs/ops/PR_483_MERGE_LOG.md` (meta: references #481, #482)
