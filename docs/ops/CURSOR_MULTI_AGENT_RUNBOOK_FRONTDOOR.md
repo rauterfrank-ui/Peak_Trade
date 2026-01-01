@@ -25,6 +25,26 @@ Es ist bewusst **kurz, normativ und umsetzungsorientiert**. Detaillierte Inhalte
 
 ---
 
+## 1.1 Start in 60 Sekunden
+
+Schnelleinstieg für neue Cursor Multi-Agent Sessions:
+
+1. **Öffne dieses Frontdoor-Dokument** (du bist bereits hier)
+2. **Öffne den Phasen-Runbook**: [CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md](CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md)
+3. **Erstelle einen Session Runlog** aus dem Template: [CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md](CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md)
+
+**Phasen-Auswahl:**
+- **Phase 0** — Foundation / Contracts / Docs-First (siehe PHASES_V2, Abschnitt 5)
+- **Phase 1** — Shadow Trading (siehe PHASES_V2, Abschnitt 5)
+- **Phase 2** — Paper / Simulated Live (siehe PHASES_V2, Abschnitt 5)
+- **Phase 3** — Bounded Auto (siehe PHASES_V2, Abschnitt 5)
+- **Phase 4** — Live Readiness (siehe PHASES_V2, Abschnitt 5)
+- **Phase 5** — Final Live Trade (siehe PHASES_V2, Abschnitt 5)
+
+Für Details zu jeder Phase siehe das Phasen-Dokument oben.
+
+---
+
 ## 2. Betriebsprinzipien (nicht verhandelbar)
 1. **Safety-First / Governance-First:** Kein Schritt Richtung Live ohne explizite Gates (Risk, Policies, Tests, Evidence).
 2. **Kleine PR-Slices:** Multi-Agent arbeitet nur stabil, wenn PRs klein und eindeutig sind.
