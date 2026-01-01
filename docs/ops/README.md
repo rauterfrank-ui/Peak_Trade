@@ -1397,6 +1397,11 @@ bash scripts/execution/recon_audit_gate.sh gate
 **Troubleshooting:**
 - Bei Python-Runner-Mismatch (pyenv-Systeme) erzwingt der Wrapper pyenv-sichere Interpreter-Erkennung. Details siehe PR #470 Merge-Log.
 
+**CI Smoke:**
+- Path-filtered Check läuft bei Änderungen an wrapper/smoke/src/execution/pyproject/uv.lock
+- Lokale Ausführung: `bash scripts/ci/recon_audit_gate_smoke.sh`
+- Note: gate exit 2 = findings present (nicht als Fehler behandelt)
+
 **Referenz:** `docs/ops/PR_470_MERGE_LOG.md`
 
 ---
