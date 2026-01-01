@@ -1479,6 +1479,7 @@ Security:
 - **PR #489 (docs(ops): standardize bg_job execution pattern in Cursor multi-agent workflows)** → `docs/ops/PR_489_MERGE_LOG.md`
 - **PR #488 (docs(ops): standardize bg_job execution pattern in cursor phases runbook)** → `docs/ops/PR_488_MERGE_LOG.md`
 - **PR #486 (chore(gitignore): ignore .logs from bg jobs)** → `docs/ops/PR_486_MERGE_LOG.md`
+- **PR #485 (docs(ops): docs reference targets parity + ignore list + priority fixes)** → `docs/ops/PR_485_MERGE_LOG.md`
 - **PR #483 (Merge Logs for PR #481 and #482, docs-only)** → `docs/ops/PR_483_MERGE_LOG.md` (meta: references #481, #482)
 - **PR #482 (WP4B Operator Drills + Evidence Pack, Manual-Only)** → `docs/ops/PR_482_MERGE_LOG.md`
 - **PR #481 (Policy-Safe Hardening for Live Gating Docs + WP4A Templates)** → `docs/ops/PR_481_MERGE_LOG.md`
