@@ -102,3 +102,4 @@ venv_pip_check/
 /*_SUMMARY.md
 /PR_X*_*.md
 /STRATEGY_LAYER_VNEXT_*_REPORT.md
+.logs/
