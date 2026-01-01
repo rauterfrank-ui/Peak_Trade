@@ -595,7 +595,7 @@ disable = ["git_status", "tool_ruff"]
 ## Siehe auch
 
 - `docs/ops/README.md` - Ops-Dokumentation Overview
-- `scripts/ops/run_tests.sh` - Test-Runner
+- `scripts\/ops\/run_tests.sh` - Test-Runner
 - `.github/workflows/` - CI/CD Pipelines
 
 ---

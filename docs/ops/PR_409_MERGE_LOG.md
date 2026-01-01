@@ -84,7 +84,7 @@ No operational action required. No config migration required.
 * Key paths:
 
   * `src/risk_layer/kill_switch/adapter.py`
-  * `src/risk_layer/risk_gate.py`
+  * `src\/risk_layer\/risk_gate.py`
   * `src/risk_layer/kill_switch/core.py`
 * Documentation:
 
