@@ -185,6 +185,9 @@ A0 muss abbrechen und neu planen, wenn:
 6. **A5 macht Policy-Review** gegen PR-Contract.
 7. **A0 finalisiert PR Description + Evidence links** und fordert Review/Merge an.
 
+**Operator Tooling Standard:**
+- Für lange laufende Tasks (Backtests, Sweeps, VaR-Suites): siehe **bg_job Execution Pattern** in [CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md](CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md), Abschnitt 7.
+
 ---
 
 ## 10. Copy-Paste: A0 Orchestrator Prompt (Cursor Chat)
