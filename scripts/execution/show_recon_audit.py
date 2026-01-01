@@ -39,6 +39,8 @@ class ReconAuditQuery:
     session_id: Optional[str] = None
     severity: Optional[str] = None  # Filter by severity
     limit: int = 50  # Max results
+    format: str = "text"  # text, json
+    exit_on_findings: bool = False  # Exit 2 if findings present
 
 
 def load_audit_log(json_path: Optional[str] = None) -> AuditLog:
@@ -77,7 +79,7 @@ def load_audit_log(json_path: Optional[str] = None) -> AuditLog:
     return audit_log
 
 
-def show_summary(audit_log: AuditLog, query: ReconAuditQuery) -> None:
+def show_summary(audit_log: AuditLog, query: ReconAuditQuery) -> int:
     """
     Show reconciliation summary events.
 
@@ -85,6 +87,9 @@ def show_summary(audit_log: AuditLog, query: ReconAuditQuery) -> None:
     - Run ID, timestamp, session, strategy
     - Total diffs, severity counts
     - Critical/fail flags
+
+    Returns:
+        Exit code (0 or 2 based on exit_on_findings)
     """
     summaries = audit_log.get_entries_by_event_type("RECON_SUMMARY")
 
@@ -98,9 +103,47 @@ def show_summary(audit_log: AuditLog, query: ReconAuditQuery) -> None:
     # Apply limit
     summaries = summaries[: query.limit]
 
+    # JSON format
+    if query.format == "json":
+        items = []
+        for entry in summaries:
+            details = entry.details
+            items.append(
+                {
+                    "run_id": details.get("run_id", ""),
+                    "timestamp": entry.timestamp.isoformat(),
+                    "session_id": details.get("session_id", ""),
+                    "strategy_id": details.get("strategy_id", ""),
+                    "total_diffs": details.get("total_diffs", 0),
+                    "counts_by_severity": dict(
+                        sorted(details.get("counts_by_severity", {}).items())
+                    ),
+                    "counts_by_type": dict(sorted(details.get("counts_by_type", {}).items())),
+                    "has_critical": details.get("has_critical", False),
+                    "has_fail": details.get("has_fail", False),
+                    "max_severity": details.get("max_severity", "INFO"),
+                }
+            )
+
+        output = {
+            "event_type": "RECON_SUMMARY",
+            "count": len(summaries),
+            "items": items,
+        }
+        if not summaries:
+            output["notes"] = "No RECON_SUMMARY events found"
+
+        print(json.dumps(output, indent=2, sort_keys=True))
+
+        # Exit code logic
+        if query.exit_on_findings and len(summaries) > 0:
+            return 2
+        return 0
+
+    # Text format (original)
     if not summaries:
         print("No RECON_SUMMARY events found.")
-        return
+        return 0
 
     print(f"Found {len(summaries)} RECON_SUMMARY event(s)\n")
     print("=" * 80)
@@ -118,6 +161,11 @@ def show_summary(audit_log: AuditLog, query: ReconAuditQuery) -> None:
         print(f"Fail:        {details.get('has_fail', False)}")
         print(f"Max Severity: {details.get('max_severity', 'INFO')}")
         print("=" * 80)
+
+    # Exit code logic
+    if query.exit_on_findings and len(summaries) > 0:
+        return 2
+    return 0
 
 
 def show_diffs(audit_log: AuditLog, query: ReconAuditQuery) -> None:
@@ -196,12 +244,23 @@ def show_detailed(audit_log: AuditLog, query: ReconAuditQuery) -> None:
     # Show summary
     print("SUMMARY")
     print("=" * 80)
-    show_summary(audit_log, ReconAuditQuery(mode="summary", run_id=query.run_id))
+    show_summary(
+        audit_log,
+        ReconAuditQuery(
+            mode="summary",
+            run_id=query.run_id,
+            format=query.format,
+            exit_on_findings=False,  # Don't exit in detailed mode
+        ),
+    )
 
     # Show all diffs for this run
     print("\nDIFFS")
     print("=" * 80)
-    show_diffs(audit_log, ReconAuditQuery(mode="diffs", run_id=query.run_id, limit=1000))
+    show_diffs(
+        audit_log,
+        ReconAuditQuery(mode="diffs", run_id=query.run_id, limit=1000),
+    )
 
 
 def parse_args(args: List[str]) -> ReconAuditQuery:
@@ -223,11 +282,13 @@ def parse_args(args: List[str]) -> ReconAuditQuery:
         print("  detailed   Show detailed view for a specific run")
         print()
         print("Options:")
-        print("  --run-id <id>      Filter by run ID")
-        print("  --session-id <id>  Filter by session ID")
-        print("  --severity <sev>   Filter by severity (INFO/WARN/FAIL/CRITICAL)")
-        print("  --limit <n>        Max results (default: 50)")
-        print("  --json <path>      Load from JSON export")
+        print("  --run-id <id>          Filter by run ID")
+        print("  --session-id <id>      Filter by session ID")
+        print("  --severity <sev>       Filter by severity (INFO/WARN/FAIL/CRITICAL)")
+        print("  --limit <n>            Max results (default: 50)")
+        print("  --json <path>          Load from JSON export")
+        print("  --format <fmt>         Output format: text|json (default: text)")
+        print("  --exit-on-findings     Exit 2 if findings present, 0 otherwise")
         sys.exit(1)
 
     mode = args[0]
@@ -253,6 +314,16 @@ def parse_args(args: List[str]) -> ReconAuditQuery:
         elif arg == "--limit" and i + 1 < len(args):
             query.limit = int(args[i + 1])
             i += 2
+        elif arg == "--format" and i + 1 < len(args):
+            fmt = args[i + 1].lower()
+            if fmt not in ["text", "json"]:
+                print(f"Error: Invalid format '{fmt}'. Must be 'text' or 'json'")
+                sys.exit(1)
+            query.format = fmt
+            i += 2
+        elif arg == "--exit-on-findings":
+            query.exit_on_findings = True
+            i += 1
         elif arg == "--json" and i + 1 < len(args):
             # Store path for later (not in query dataclass)
             i += 2
@@ -278,12 +349,15 @@ def main():
     audit_log = load_audit_log(json_path)
 
     # Route to appropriate handler
+    exit_code = 0
     if query.mode == "summary":
-        show_summary(audit_log, query)
+        exit_code = show_summary(audit_log, query)
     elif query.mode == "diffs":
         show_diffs(audit_log, query)
     elif query.mode == "detailed":
         show_detailed(audit_log, query)
+
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,84 @@ Reconciliation Diffs (`ReconDiff`) zeigen Abweichungen zwischen internem Ledger-
 
 ---
 
+## Quickstart (CLI)
+
+Schneller Einstieg mit dem CLI-Tool `show_recon_audit.py`:
+
+### 1. Help anzeigen
+
+```bash
+python scripts/execution/show_recon_audit.py
+```
+
+Zeigt Usage, verfügbare Modi und Optionen.
+
+### 2. Empty State prüfen
+
+```bash
+python scripts/execution/show_recon_audit.py summary
+```
+
+**Output (text):** `"No RECON_SUMMARY events found."`
+
+**Use Case:** Baseline-Check, ob Audit-Log leer ist.
+
+### 3. JSON Output (maschinenlesbar)
+
+```bash
+python scripts/execution/show_recon_audit.py summary --format json
+```
+
+**Output:**
+```json
+{
+  "count": 0,
+  "event_type": "RECON_SUMMARY",
+  "items": [],
+  "notes": "No RECON_SUMMARY events found"
+}
+```
+
+**Use Case:** Integration mit Monitoring-Tools, Alerting-Pipelines.
+
+### 4. Gate-Mode (Exit-Code basiert)
+
+```bash
+python scripts/execution/show_recon_audit.py summary --format json --exit-on-findings
+echo "Exit code: $?"
+```
+
+**Exit-Codes:**
+- `0`: Keine Findings (OK)
+- `2`: Findings vorhanden (Action required)
+
+**Use Case:** CI/CD Gates, Automated Checks, Pre-Deployment Validation.
+
+**Beispiel CI-Gate:**
+```bash
+# Fail pipeline if recon findings present
+if ! python scripts/execution/show_recon_audit.py summary --exit-on-findings; then
+  echo "❌ Recon findings detected, blocking deployment"
+  exit 1
+fi
+```
+
+### 5. Von JSON-Export laden
+
+```bash
+# Export audit log to JSON first
+python -c "from src.execution.audit_log import AuditLog; \
+  log = AuditLog(); \
+  log.export_to_file('audit_export.json')"
+
+# Query from file
+python scripts/execution/show_recon_audit.py summary --json audit_export.json
+```
+
+**Use Case:** Offline-Analysen, Archiv-Queries, Debugging vergangener Runs.
+
+---
+
 ## Diff-Taxonomie
 
 ### 1. Severity Levels
