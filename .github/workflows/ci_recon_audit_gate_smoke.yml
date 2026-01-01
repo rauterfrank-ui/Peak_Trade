@@ -41,5 +41,13 @@ jobs:
             uv sync --dev
           fi
 
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Run shellcheck
+        run: |
+          shellcheck scripts/execution/recon_audit_gate.sh
+          shellcheck scripts/ci/recon_audit_gate_smoke.sh
+
       - name: Run wrapper smoke
         run: bash scripts/ci/recon_audit_gate_smoke.sh
