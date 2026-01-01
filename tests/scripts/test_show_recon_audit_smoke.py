@@ -6,10 +6,13 @@ Tests:
 - Output stability (deterministic)
 - Filtering (run_id, session_id, severity)
 - Error handling (missing run_id for detailed mode)
+- Bash wrapper functionality (pyenv-safe)
 """
 
 import sys
 import json
+import os
+import subprocess
 from pathlib import Path
 from datetime import datetime, timezone
 from io import StringIO
@@ -567,3 +570,72 @@ def test_parse_args_combined_new_flags():
     assert query.mode == "summary"
     assert query.format == "json"
     assert query.exit_on_findings is True
+
+
+# ============================================================================
+# Bash Wrapper Tests (pyenv-safe)
+# ============================================================================
+
+
+@pytest.mark.skipif(os.name == "nt", reason="Bash wrapper not available on Windows")
+def test_wrapper_summary_json():
+    """Test bash wrapper produces valid JSON output"""
+    repo_root = Path(__file__).parent.parent.parent
+    wrapper_script = repo_root / "scripts" / "execution" / "recon_audit_gate.sh"
+
+    # Skip if wrapper doesn't exist (shouldn't happen, but safe)
+    if not wrapper_script.exists():
+        pytest.skip("Wrapper script not found")
+
+    # Run wrapper
+    result = subprocess.run(
+        ["bash", str(wrapper_script), "summary-json"],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+    )
+
+    # Should succeed
+    assert result.returncode == 0, f"Wrapper failed: {result.stderr}"
+
+    # Should produce valid JSON
+    try:
+        data = json.loads(result.stdout)
+    except json.JSONDecodeError as e:
+        pytest.fail(f"Wrapper output is not valid JSON: {e}\nOutput: {result.stdout}")
+
+    # Should have expected structure
+    assert "event_type" in data
+    assert data["event_type"] == "RECON_SUMMARY"
+    assert "count" in data
+    assert "items" in data
+    assert isinstance(data["items"], list)
+
+    # Empty audit log should have no findings
+    assert data["count"] == 0
+    assert data["items"] == []
+
+
+@pytest.mark.skipif(os.name == "nt", reason="Bash wrapper not available on Windows")
+def test_wrapper_gate_mode():
+    """Test bash wrapper gate mode exit codes"""
+    repo_root = Path(__file__).parent.parent.parent
+    wrapper_script = repo_root / "scripts" / "execution" / "recon_audit_gate.sh"
+
+    if not wrapper_script.exists():
+        pytest.skip("Wrapper script not found")
+
+    # Run gate mode
+    result = subprocess.run(
+        ["bash", str(wrapper_script), "gate"],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+    )
+
+    # Empty audit log should exit 0 (no findings)
+    assert result.returncode == 0, f"Gate mode should exit 0 when no findings: {result.stderr}"
+
+    # Should produce valid JSON
+    data = json.loads(result.stdout)
+    assert data["count"] == 0

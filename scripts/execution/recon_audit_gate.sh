@@ -32,6 +32,20 @@ if [[ ! -f "${CLI_TOOL}" ]]; then
     exit 1
 fi
 
+# Choose Python runner (prefer uv)
+if [[ -n "${PT_RECON_PYTHON_RUNNER:-}" ]]; then
+  read -r -a PY_RUN <<< "${PT_RECON_PYTHON_RUNNER}"
+elif command -v uv >/dev/null 2>&1; then
+  PY_RUN=(uv run python)
+elif command -v python3 >/dev/null 2>&1; then
+  PY_RUN=(python3)
+elif command -v python >/dev/null 2>&1; then
+  PY_RUN=(python)
+else
+  echo "ERROR: No Python interpreter found (need uv, python3, or python)." >&2
+  exit 1
+fi
+
 # Parse subcommand
 SUBCOMMAND="${1:-}"
 
@@ -57,12 +71,12 @@ fi
 case "${SUBCOMMAND}" in
     summary-text)
         # Text format (human-readable)
-        python "${CLI_TOOL}" summary
+        "${PY_RUN[@]}" "$SCRIPT_DIR/show_recon_audit.py" summary
         ;;
 
     summary-json)
         # JSON format (machine-readable)
-        python "${CLI_TOOL}" summary --format json
+        "${PY_RUN[@]}" "$SCRIPT_DIR/show_recon_audit.py" summary --format json
         ;;
 
     gate)
@@ -70,7 +84,7 @@ case "${SUBCOMMAND}" in
         # Note: Exit 2 means "findings detected", not "error"
         # This is intentional for CI/CD gates
         shift  # Remove 'gate' from args
-        python "${CLI_TOOL}" summary --format json --exit-on-findings "$@"
+        "${PY_RUN[@]}" "$SCRIPT_DIR/show_recon_audit.py" summary --format json --exit-on-findings "$@"
         ;;
 
     *)
