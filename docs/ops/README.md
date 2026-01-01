@@ -1374,6 +1374,31 @@ Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).
 
+### Recon Audit Gate — Quick Commands
+
+Wrapper-basierter CLI-Zugriff auf Reconciliation-Audit-Prüfungen mit standardisierten Exit-Codes:
+
+```bash
+# Summary-Text (human-readable)
+bash scripts/execution/recon_audit_gate.sh summary-text
+
+# Summary-JSON (machine-readable)
+bash scripts/execution/recon_audit_gate.sh summary-json
+
+# Gate-Mode (Exit-Code-Semantik)
+bash scripts/execution/recon_audit_gate.sh gate
+```
+
+**Exit-Codes:**
+- 0: Success (gate-mode: keine Findings)
+- 2: Findings vorhanden (gate-mode; kein Fehler)
+- 1: Script-Fehler
+
+**Troubleshooting:**
+- Bei Python-Runner-Mismatch (pyenv-Systeme) erzwingt der Wrapper pyenv-sichere Interpreter-Erkennung. Details siehe PR #470 Merge-Log.
+
+**Referenz:** `docs/ops/PR_470_MERGE_LOG.md`
+
 ---
 
 ## Merge-Log Amendment Policy (Immutable History)
