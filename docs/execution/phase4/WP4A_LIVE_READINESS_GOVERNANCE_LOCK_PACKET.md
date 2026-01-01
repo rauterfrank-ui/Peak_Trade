@@ -169,7 +169,7 @@ Jedes Gate hat:
 - [ ] Drawdown Limits definiert (`max_daily_drawdown`, `max_total_drawdown`)
 - [ ] Kill-Switch konfiguriert (`config/kill_switch/`)
 - [ ] Risk-Layer Tests grün (`tests/risk/`)
-- [ ] LiveRiskLimits implementiert (`src/risk/live_risk_limits.py`)
+- [ ] LiveRiskLimits implementiert (`"src\/risk\/live_risk_limits.py" (future; placeholder target — not in repo yet)`)
 - [ ] Pre-Trade & Runtime Checks aktiv
 
 **Evidence:**
@@ -222,7 +222,7 @@ Jedes Gate hat:
 
 **Evidence:**
 - Dashboard Access (URL oder Screenshot)
-- Alert Test Log (`scripts/live/test_alert_dispatch.py`)
+- Alert Test Log (`"scripts\/live\/test_alert_dispatch.py" (future; placeholder target — not in repo yet)`)
 - Telemetry Sample Log (letzte 24h)
 
 **Sign-off:**
@@ -268,7 +268,7 @@ Jedes Gate hat:
 - [ ] Data-QC Tests grün (`tests/data/`)
 
 **Evidence:**
-- Market-Data Quality Report (`scripts/data/quality_check.py`)
+- Market-Data Quality Report (`"scripts\/data\/quality_check.py" (future; placeholder target — not in repo yet)`)
 - Reconciliation Test Log (`pytest tests/execution/test_reconciliation.py`)
 - Recon-Diffs Runbook Walkthrough (dokumentierter Test)
 
