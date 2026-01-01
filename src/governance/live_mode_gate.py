@@ -24,6 +24,7 @@ import os
 
 class ExecutionEnvironment(str, Enum):
     """Execution environment types."""
+
     DEV = "dev"
     SHADOW = "shadow"
     TESTNET = "testnet"
@@ -40,6 +41,7 @@ class ExecutionEnvironment(str, Enum):
 
 class LiveModeStatus(str, Enum):
     """Live mode status."""
+
     BLOCKED = "blocked"  # Default: live mode not allowed
     APPROVED = "approved"  # Explicitly approved for live execution
     SUSPENDED = "suspended"  # Temporarily suspended (after approval)
@@ -49,6 +51,7 @@ class LiveModeStatus(str, Enum):
 @dataclass
 class ValidationResult:
     """Result of config validation."""
+
     valid: bool
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
@@ -66,6 +69,7 @@ class ValidationResult:
 @dataclass
 class LiveModeGateState:
     """Current state of the live mode gate."""
+
     environment: ExecutionEnvironment
     status: LiveModeStatus
     approved_at: Optional[datetime] = None
@@ -87,7 +91,9 @@ class LiveModeGateState:
             "approved_by": self.approved_by,
             "reason": self.reason,
             "config_hash": self.config_hash,
-            "validation_result": self.validation_result.to_dict() if self.validation_result else None,
+            "validation_result": self.validation_result.to_dict()
+            if self.validation_result
+            else None,
             "metadata": self.metadata,
         }
 
@@ -195,11 +201,14 @@ class LiveModeGate:
         if not validation_result.valid:
             self._state.status = LiveModeStatus.FAILED_VALIDATION
             self._state.reason = f"Validation failed: {', '.join(validation_result.errors)}"
-            self._log_audit_event("approval_rejected", {
-                "requester": requester,
-                "reason": "Config validation failed",
-                "errors": validation_result.errors,
-            })
+            self._log_audit_event(
+                "approval_rejected",
+                {
+                    "requester": requester,
+                    "reason": "Config validation failed",
+                    "errors": validation_result.errors,
+                },
+            )
             return False
 
         # 2. Grant approval
@@ -209,12 +218,15 @@ class LiveModeGate:
         self._state.reason = reason or "Approved for live execution"
         self._state.config_hash = config_hash
 
-        self._log_audit_event("approval_granted", {
-            "requester": requester,
-            "reason": self._state.reason,
-            "config_hash": config_hash,
-            "warnings": validation_result.warnings,
-        })
+        self._log_audit_event(
+            "approval_granted",
+            {
+                "requester": requester,
+                "reason": self._state.reason,
+                "config_hash": config_hash,
+                "warnings": validation_result.warnings,
+            },
+        )
 
         return True
 
@@ -229,10 +241,13 @@ class LiveModeGate:
         self._state.status = LiveModeStatus.SUSPENDED
         self._state.reason = reason or "Live mode suspended"
 
-        self._log_audit_event("approval_revoked", {
-            "previous_status": prev_status.value,
-            "reason": self._state.reason,
-        })
+        self._log_audit_event(
+            "approval_revoked",
+            {
+                "previous_status": prev_status.value,
+                "reason": self._state.reason,
+            },
+        )
 
     def reset(self) -> None:
         """Reset gate to default blocked state."""
@@ -261,6 +276,7 @@ class LiveModeGate:
         if self.audit_log_path:
             # Write to audit log file (append-only)
             import json
+
             with open(self.audit_log_path, "a") as f:
                 f.write(json.dumps(audit_entry) + "\n")
 
@@ -302,6 +318,7 @@ def is_live_allowed(gate: LiveModeGate) -> bool:
 
 class LiveModeViolationError(Exception):
     """Exception raised when live mode gate rules are violated."""
+
     pass
 
 
@@ -378,9 +395,7 @@ def enforce_live_mode_gate(config: Dict[str, Any], env: str) -> None:
     try:
         import src.execution.risk_runtime  # noqa: F401
     except ImportError as e:
-        errors.append(
-            f"Live mode enabled but risk_runtime module cannot be imported: {e}"
-        )
+        errors.append(f"Live mode enabled but risk_runtime module cannot be imported: {e}")
 
     # If any errors, raise with all violations listed
     if errors:

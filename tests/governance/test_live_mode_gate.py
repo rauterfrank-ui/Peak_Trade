@@ -438,11 +438,14 @@ class TestEnvironmentSeparation:
     def test_each_env_has_independent_gate(self):
         """Each environment should have independent gate state."""
         gate_dev = create_gate("dev", config={"strategy_id": "test"})
-        gate_prod = create_gate("prod", config={
-            "session_id": "test_session_123",
-            "strategy_id": "test",
-            "risk_limits": {"max_position_size": 1000},
-        })
+        gate_prod = create_gate(
+            "prod",
+            config={
+                "session_id": "test_session_123",
+                "strategy_id": "test",
+                "risk_limits": {"max_position_size": 1000},
+            },
+        )
 
         # Approve dev
         gate_dev.request_approval(requester="dev-operator", reason="Dev approval")

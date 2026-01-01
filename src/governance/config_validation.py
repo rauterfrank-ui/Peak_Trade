@@ -10,6 +10,7 @@ from typing import Dict, Any, List
 
 class ConfigValidationError(Exception):
     """Exception raised when config validation fails."""
+
     pass
 
 
@@ -44,9 +45,7 @@ def validate_execution_config(config: Dict[str, Any]) -> List[str]:
     if not env:
         errors.append("Missing required field: 'env'")
     elif env not in valid_envs:
-        errors.append(
-            f"Invalid env '{env}'. Must be one of: {valid_envs}"
-        )
+        errors.append(f"Invalid env '{env}'. Must be one of: {valid_envs}")
 
     # 2. Session/Strategy ID validation (basic presence check)
     if not config.get("session_id"):

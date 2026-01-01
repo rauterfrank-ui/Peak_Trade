@@ -185,8 +185,7 @@ class PaperBroker:
         self._total_fees += fee
 
         logger.debug(
-            f"Paper fill: {fill.fill_id} @ {fill.price} "
-            f"(qty: {fill.quantity}, fee: {fill.fee})"
+            f"Paper fill: {fill.fill_id} @ {fill.price} (qty: {fill.quantity}, fee: {fill.fee})"
         )
 
         return [fill]
@@ -222,9 +221,7 @@ class PaperBroker:
             should_fill = True
 
         if not should_fill:
-            logger.debug(
-                f"Limit order not filled: market={current_price} limit={order.price}"
-            )
+            logger.debug(f"Limit order not filled: market={current_price} limit={order.price}")
             return []
 
         # Fill at limit price (no slippage for limit orders)

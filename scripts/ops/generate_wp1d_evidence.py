@@ -32,7 +32,9 @@ def generate_evidence():
     # Create alerts
     alerts = OperatorAlerts()
     alerts.raise_p2("DRIFT_HIGH", "High drift detected on BTC/USD", metadata={"drift": 0.12})
-    alerts.raise_p1("DATA_FEED_DOWN", "Connection lost to exchange", metadata={"exchange": "kraken"})
+    alerts.raise_p1(
+        "DATA_FEED_DOWN", "Connection lost to exchange", metadata={"exchange": "kraken"}
+    )
 
     # Build snapshot
     snapshot = {

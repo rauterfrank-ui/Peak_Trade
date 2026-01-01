@@ -142,9 +142,7 @@ class DriftComparator:
                 metrics.matched_signals += 1
 
                 # Calculate divergences
-                price_div = self._calculate_price_divergence(
-                    shadow_signal.price, match.price
-                )
+                price_div = self._calculate_price_divergence(shadow_signal.price, match.price)
                 qty_div = self._calculate_quantity_divergence(
                     shadow_signal.quantity, match.quantity
                 )
@@ -160,19 +158,13 @@ class DriftComparator:
 
         # Calculate aggregate metrics
         if metrics.total_signals_shadow > 0:
-            metrics.match_rate = (
-                metrics.matched_signals / metrics.total_signals_shadow
-            )
+            metrics.match_rate = metrics.matched_signals / metrics.total_signals_shadow
 
         if price_divergences:
-            metrics.avg_price_divergence = sum(price_divergences) / len(
-                price_divergences
-            )
+            metrics.avg_price_divergence = sum(price_divergences) / len(price_divergences)
 
         if quantity_divergences:
-            metrics.avg_quantity_divergence = sum(quantity_divergences) / len(
-                quantity_divergences
-            )
+            metrics.avg_quantity_divergence = sum(quantity_divergences) / len(quantity_divergences)
 
         # Additional details
         metrics.details = {
@@ -182,9 +174,7 @@ class DriftComparator:
 
         return metrics
 
-    def _build_signal_index(
-        self, signals: List[SignalEvent]
-    ) -> Dict[str, List[SignalEvent]]:
+    def _build_signal_index(self, signals: List[SignalEvent]) -> Dict[str, List[SignalEvent]]:
         """
         Build index of signals by symbol.
 
@@ -234,9 +224,7 @@ class DriftComparator:
                 continue
 
             # Check price tolerance
-            price_div = self._calculate_price_divergence(
-                shadow_signal.price, candidate.price
-            )
+            price_div = self._calculate_price_divergence(shadow_signal.price, candidate.price)
             if abs(price_div) > self.price_tolerance_pct:
                 continue
 
@@ -252,9 +240,7 @@ class DriftComparator:
 
         return None
 
-    def _calculate_price_divergence(
-        self, shadow_price: Decimal, backtest_price: Decimal
-    ) -> float:
+    def _calculate_price_divergence(self, shadow_price: Decimal, backtest_price: Decimal) -> float:
         """
         Calculate price divergence in percent.
 
@@ -270,9 +256,7 @@ class DriftComparator:
 
         return float((shadow_price - backtest_price) / backtest_price * 100)
 
-    def _calculate_quantity_divergence(
-        self, shadow_qty: Decimal, backtest_qty: Decimal
-    ) -> float:
+    def _calculate_quantity_divergence(self, shadow_qty: Decimal, backtest_qty: Decimal) -> float:
         """
         Calculate quantity divergence in percent.
 

@@ -117,15 +117,9 @@ class TestPaperExecutionEngineBasic:
         engine.update_market_price("ETH/USD", Decimal("3000"))
 
         # Submit 3 orders
-        engine.submit_order(
-            symbol="BTC/USD", side=OrderSide.BUY, quantity=Decimal("0.5")
-        )
-        engine.submit_order(
-            symbol="ETH/USD", side=OrderSide.BUY, quantity=Decimal("1.0")
-        )
-        engine.submit_order(
-            symbol="BTC/USD", side=OrderSide.SELL, quantity=Decimal("0.2")
-        )
+        engine.submit_order(symbol="BTC/USD", side=OrderSide.BUY, quantity=Decimal("0.5"))
+        engine.submit_order(symbol="ETH/USD", side=OrderSide.BUY, quantity=Decimal("1.0"))
+        engine.submit_order(symbol="BTC/USD", side=OrderSide.SELL, quantity=Decimal("0.2"))
 
         # Check order count
         stats = engine.get_stats()
@@ -204,9 +198,7 @@ class TestRiskIntegration:
         initial_positions = len(engine.get_positions())
 
         # Submit order (will be blocked)
-        engine.submit_order(
-            symbol="BTC/USD", side=OrderSide.BUY, quantity=Decimal("1.0")
-        )
+        engine.submit_order(symbol="BTC/USD", side=OrderSide.BUY, quantity=Decimal("1.0"))
 
         # Cash should not change
         assert engine.position_ledger.get_cash_balance() == initial_cash
@@ -280,12 +272,8 @@ class TestEngineStats:
         engine.update_market_price("BTC/USD", Decimal("50000"))
 
         # Submit orders
-        engine.submit_order(
-            symbol="BTC/USD", side=OrderSide.BUY, quantity=Decimal("1.0")
-        )
-        engine.submit_order(
-            symbol="BTC/USD", side=OrderSide.SELL, quantity=Decimal("0.5")
-        )
+        engine.submit_order(symbol="BTC/USD", side=OrderSide.BUY, quantity=Decimal("1.0"))
+        engine.submit_order(symbol="BTC/USD", side=OrderSide.SELL, quantity=Decimal("0.5"))
 
         stats = engine.get_stats()
 

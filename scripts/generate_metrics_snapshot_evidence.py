@@ -29,8 +29,26 @@ def generate_evidence_snapshot():
 
     # Latencies (simulate distribution)
     latencies = [
-        5.2, 7.3, 12.1, 8.9, 15.4, 6.7, 9.2, 11.3, 14.7, 7.8,
-        10.5, 13.2, 8.4, 16.9, 9.7, 12.8, 7.1, 11.9, 14.2, 6.3,
+        5.2,
+        7.3,
+        12.1,
+        8.9,
+        15.4,
+        6.7,
+        9.2,
+        11.3,
+        14.7,
+        7.8,
+        10.5,
+        13.2,
+        8.4,
+        16.9,
+        9.7,
+        12.8,
+        7.1,
+        11.9,
+        14.2,
+        6.3,
         # Add more for percentile calculation
         *[float(i) for i in range(15, 100, 2)],
     ]

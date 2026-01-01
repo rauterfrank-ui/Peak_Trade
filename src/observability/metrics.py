@@ -24,6 +24,7 @@ import statistics
 
 class MetricType(str, Enum):
     """Metric type identifiers."""
+
     COUNTER = "counter"  # Monotonic counter (errors, orders, reconnects)
     GAUGE = "gauge"  # Point-in-time value (queue size, active orders)
     HISTOGRAM = "histogram"  # Distribution (latency, size)
@@ -33,6 +34,7 @@ class MetricType(str, Enum):
 @dataclass
 class MetricValue:
     """Single metric value with timestamp."""
+
     value: float
     timestamp: datetime = field(default_factory=datetime.now)
     labels: Dict[str, str] = field(default_factory=dict)
@@ -48,6 +50,7 @@ class MetricValue:
 @dataclass
 class Metric:
     """Metric definition and values."""
+
     name: str
     type: MetricType
     description: str
@@ -217,9 +220,7 @@ class MetricsCollector:
         return {
             "timestamp": datetime.now().isoformat(),
             "uptime_seconds": time.time() - self.start_time,
-            "metrics": {
-                name: metric.to_dict() for name, metric in self.metrics.items()
-            },
+            "metrics": {name: metric.to_dict() for name, metric in self.metrics.items()},
             "derived": {
                 "orders_per_minute": self.get_orders_per_minute(),
                 "error_rate_per_minute": self.get_error_rate(),
@@ -227,9 +228,7 @@ class MetricsCollector:
                 "latency_p95_ms": self.get_latency_percentile(95),
                 "latency_p99_ms": self.get_latency_percentile(99),
                 "latency_avg_ms": (
-                    statistics.mean(self._latency_values)
-                    if self._latency_values
-                    else None
+                    statistics.mean(self._latency_values) if self._latency_values else None
                 ),
             },
         }

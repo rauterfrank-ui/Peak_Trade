@@ -135,9 +135,7 @@ class LiveFeedClient:
         Returns:
             True if connected, False otherwise
         """
-        logger.info(
-            f"Connecting to {self.config.exchange} feed (symbols: {self.config.symbols})"
-        )
+        logger.info(f"Connecting to {self.config.exchange} feed (symbols: {self.config.symbols})")
         self._set_state(ConnectionState.CONNECTING)
 
         # STUB: Simulate successful connection
@@ -182,9 +180,7 @@ class LiveFeedClient:
             return
 
         if self._reconnect_attempts >= self.config.reconnect_max_attempts:
-            logger.error(
-                f"Max reconnect attempts ({self.config.reconnect_max_attempts}) reached"
-            )
+            logger.error(f"Max reconnect attempts ({self.config.reconnect_max_attempts}) reached")
             self._set_state(ConnectionState.FAILED)
             self.metrics.record_error(error_type="reconnect_failed")
             return
@@ -206,9 +202,7 @@ class LiveFeedClient:
 
         if success:
             self.stats.reconnect_count += 1
-            self.metrics.record_reconnect(
-                labels={"exchange": self.config.exchange}
-            )
+            self.metrics.record_reconnect(labels={"exchange": self.config.exchange})
 
             # Trigger backfill
             if self.config.backfill_enabled:

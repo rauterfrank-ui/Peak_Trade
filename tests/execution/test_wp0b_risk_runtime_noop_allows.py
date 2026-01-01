@@ -32,6 +32,7 @@ def test_noop_policy_with_order():
     policy = NoopPolicy()
 
     from src.execution.risk_runtime.context import RiskContextSnapshot
+
     order = Order(
         client_order_id="test_001",
         symbol="BTC-EUR",

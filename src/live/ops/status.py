@@ -41,9 +41,7 @@ class SystemStatus:
                 self.last_reconnect_ts.isoformat() if self.last_reconnect_ts else None
             ),
             "last_drift_report_ts": (
-                self.last_drift_report_ts.isoformat()
-                if self.last_drift_report_ts
-                else None
+                self.last_drift_report_ts.isoformat() if self.last_drift_report_ts else None
             ),
             "metadata": self.metadata,
         }
@@ -110,13 +108,9 @@ class StatusOverview:
         """
         now = time.monotonic()
 
-        system_uptime = (
-            now - self._system_start_ts if self._system_start_ts else 0.0
-        )
+        system_uptime = now - self._system_start_ts if self._system_start_ts else 0.0
 
-        data_feed_uptime = (
-            now - self._data_feed_start_ts if self._data_feed_start_ts else 0.0
-        )
+        data_feed_uptime = now - self._data_feed_start_ts if self._data_feed_start_ts else 0.0
 
         return SystemStatus(
             data_feed_uptime_s=data_feed_uptime,

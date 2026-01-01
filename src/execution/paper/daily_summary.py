@@ -159,12 +159,12 @@ class DailySummaryGenerator:
 
 **Return on Capital:**
 ```
-Net PnL / Initial Capital = {(summary.net_pnl / summary.ending_cash * 100) if summary.ending_cash > 0 else Decimal('0'):.4f}%
+Net PnL / Initial Capital = {(summary.net_pnl / summary.ending_cash * 100) if summary.ending_cash > 0 else Decimal("0"):.4f}%
 ```
 
 **Fee Ratio:**
 ```
-Total Fees / Total Volume = {(summary.total_fees / summary.total_volume * 100) if summary.total_volume > 0 else Decimal('0'):.4f}%
+Total Fees / Total Volume = {(summary.total_fees / summary.total_volume * 100) if summary.total_volume > 0 else Decimal("0"):.4f}%
 ```
 
 ---

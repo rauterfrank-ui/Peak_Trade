@@ -189,9 +189,7 @@ class PaperExecutionEngine:
 
             elif risk_result.decision == RiskDecision.HALT:
                 # HALT: Emergency stop
-                logger.error(
-                    f"Order {order.client_order_id} HALTED by risk: {risk_result.reason}"
-                )
+                logger.error(f"Order {order.client_order_id} HALTED by risk: {risk_result.reason}")
 
                 order.state = OrderState.FAILED
                 self.order_ledger.update_order(order, event="RISK_HALTED")
@@ -249,8 +247,7 @@ class PaperExecutionEngine:
             )
 
         logger.info(
-            f"Order {order.client_order_id} submitted: "
-            f"state={order.state.value} fills={len(fills)}"
+            f"Order {order.client_order_id} submitted: state={order.state.value} fills={len(fills)}"
         )
 
         return (order, fills)

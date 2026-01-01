@@ -129,8 +129,8 @@ class DailyReportGenerator:
 
 ## 📝 Details
 
-**Shadow Symbols:** {', '.join(metrics.details.get('shadow_symbols', [])) or 'None'}
-**Backtest Symbols:** {', '.join(metrics.details.get('backtest_symbols', [])) or 'None'}
+**Shadow Symbols:** {", ".join(metrics.details.get("shadow_symbols", [])) or "None"}
+**Backtest Symbols:** {", ".join(metrics.details.get("backtest_symbols", [])) or "None"}
 
 ---
 
@@ -208,12 +208,8 @@ Shadow trading is significantly diverging from backtest expectations.
             )
 
         elif metrics.match_rate < 0.85:
-            recommendations.append(
-                "🔍 **Monitor drift closely** over next 24-48 hours."
-            )
-            recommendations.append(
-                "📊 **Review divergent signals** to identify patterns."
-            )
+            recommendations.append("🔍 **Monitor drift closely** over next 24-48 hours.")
+            recommendations.append("📊 **Review divergent signals** to identify patterns.")
 
         if metrics.avg_price_divergence > 2.0:
             recommendations.append(
@@ -229,11 +225,10 @@ Shadow trading is significantly diverging from backtest expectations.
 
         if metrics.divergent_signals > metrics.matched_signals:
             recommendations.append(
-                "⚠️ **More divergent signals than matched:** "
-                "Check signal generation logic."
+                "⚠️ **More divergent signals than matched:** Check signal generation logic."
             )
 
         if not recommendations:
             recommendations.append("✅ **No action required.** Continue monitoring.")
 
-        return "\n".join(f"{i+1}. {rec}" for i, rec in enumerate(recommendations))
+        return "\n".join(f"{i + 1}. {rec}" for i, rec in enumerate(recommendations))

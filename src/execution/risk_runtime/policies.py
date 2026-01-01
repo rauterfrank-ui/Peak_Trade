@@ -169,6 +169,7 @@ class MaxPositionSizePolicy:
 
         # Calculate new position after order
         from src.execution.contracts import OrderSide
+
         if order.side == OrderSide.BUY:
             new_position = current_position + order.quantity
         else:  # SELL
@@ -232,6 +233,7 @@ class MinCashBalancePolicy:
             return allow_directive(reason="No order to evaluate", policy=self.name)
 
         from src.execution.contracts import OrderSide
+
         order = snapshot.order
 
         if order.side == OrderSide.SELL:

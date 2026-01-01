@@ -39,9 +39,7 @@ class QualityIssue:
     details: dict
 
     def __str__(self) -> str:
-        return (
-            f"[{self.severity}] {self.kind} @ {self.ts_ms}: {self.symbol} - {self.details}"
-        )
+        return f"[{self.severity}] {self.kind} @ {self.ts_ms}: {self.symbol} - {self.details}"
 
 
 class LiveQualityChecker:

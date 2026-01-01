@@ -23,6 +23,7 @@ def test_max_open_orders_allows_within_limit():
 
     # Create snapshot with 3 open orders
     from src.execution.risk_runtime.context import RiskContextSnapshot
+
     snapshot = RiskContextSnapshot(open_orders_count=3)
 
     directive = policy.evaluate(snapshot)
@@ -37,6 +38,7 @@ def test_max_open_orders_rejects_at_limit():
 
     # Create snapshot with 5 open orders (at limit)
     from src.execution.risk_runtime.context import RiskContextSnapshot
+
     snapshot = RiskContextSnapshot(open_orders_count=5)
 
     directive = policy.evaluate(snapshot)
@@ -51,6 +53,7 @@ def test_max_open_orders_rejects_above_limit():
     policy = MaxOpenOrdersPolicy(max_open_orders=3)
 
     from src.execution.risk_runtime.context import RiskContextSnapshot
+
     snapshot = RiskContextSnapshot(open_orders_count=10)
 
     directive = policy.evaluate(snapshot)

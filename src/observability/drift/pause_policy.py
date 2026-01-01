@@ -118,10 +118,7 @@ class AutoPausePolicy:
             details["price_threshold"] = self.price_divergence_threshold
 
         # Check quantity divergence
-        if (
-            abs(metrics.avg_quantity_divergence)
-            > self.quantity_divergence_threshold
-        ):
+        if abs(metrics.avg_quantity_divergence) > self.quantity_divergence_threshold:
             reason_codes.append("HIGH_QUANTITY_DIVERGENCE")
             details["quantity_divergence"] = metrics.avg_quantity_divergence
             details["quantity_threshold"] = self.quantity_divergence_threshold
@@ -133,10 +130,7 @@ class AutoPausePolicy:
         should_pause = len(reason_codes) > 0
 
         if should_pause:
-            logger.warning(
-                f"Auto-pause recommended: severity={severity} "
-                f"reasons={reason_codes}"
-            )
+            logger.warning(f"Auto-pause recommended: severity={severity} reasons={reason_codes}")
 
         return PauseRecommendation(
             should_pause=should_pause,

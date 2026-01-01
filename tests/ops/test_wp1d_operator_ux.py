@@ -271,9 +271,7 @@ class TestOperatorAlerts:
         alerts.raise_p2("DRIFT_HIGH", "Test 2")
         alerts.raise_p1("DATA_FEED_DOWN", "Test 3")
 
-        p1_alerts = alerts.get_recent_alerts(
-            hours=24, priority_filter=AlertPriority.P1
-        )
+        p1_alerts = alerts.get_recent_alerts(hours=24, priority_filter=AlertPriority.P1)
 
         assert len(p1_alerts) == 2
         assert all(a.priority == AlertPriority.P1 for a in p1_alerts)

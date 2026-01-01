@@ -91,8 +91,8 @@ class RiskContextSnapshot:
 def build_context_snapshot(
     order: Optional[Order] = None,
     fill: Optional[Fill] = None,
-    order_ledger = None,  # Type: OrderLedger (avoid import)
-    position_ledger = None,  # Type: PositionLedger (avoid import)
+    order_ledger=None,  # Type: OrderLedger (avoid import)
+    position_ledger=None,  # Type: PositionLedger (avoid import)
     **metadata,
 ) -> RiskContextSnapshot:
     """
@@ -129,6 +129,7 @@ def build_context_snapshot(
 
         # Count open orders (CREATED/SUBMITTED/ACKNOWLEDGED)
         from src.execution.contracts import OrderState
+
         open_states = {OrderState.CREATED, OrderState.SUBMITTED, OrderState.ACKNOWLEDGED}
         open_orders = [o for o in order_ledger.get_all_orders() if o.state in open_states]
         snapshot.open_orders_count = len(open_orders)

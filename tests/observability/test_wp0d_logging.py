@@ -165,9 +165,7 @@ class TestConfigureLogging:
 
     def test_configure_logging_custom_format(self):
         """Should configure logging with custom format."""
-        configure_logging(
-            format_string="%(levelname)s - %(message)s"
-        )
+        configure_logging(format_string="%(levelname)s - %(message)s")
         # Should not raise
 
 

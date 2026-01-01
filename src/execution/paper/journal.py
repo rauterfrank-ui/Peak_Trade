@@ -122,9 +122,7 @@ class TradeJournal:
             for entry in self.entries:
                 f.write(entry.to_json() + "\n")
 
-        logger.info(
-            f"Journal written: {len(self.entries)} entries to {target_path}"
-        )
+        logger.info(f"Journal written: {len(self.entries)} entries to {target_path}")
 
     def get_summary(self) -> Dict[str, Any]:
         """
@@ -141,9 +139,7 @@ class TradeJournal:
                 "symbols": [],
             }
 
-        total_volume = sum(
-            entry.quantity * entry.avg_price for entry in self.entries
-        )
+        total_volume = sum(entry.quantity * entry.avg_price for entry in self.entries)
         total_fees = sum(entry.total_fee for entry in self.entries)
         symbols = sorted(set(entry.symbol for entry in self.entries))
 
