@@ -234,7 +234,7 @@ Stichprobe:
 ## 🔗 Relevante Links
 
 - [PR #267: Activate P0 Guardrails](https://github.com/rauterfrank-ui/Peak_Trade/pull/267)
-- [P0 Guardrails Setup Guide](docs/GITHUB_P0_GUARDRAILS_SETUP.md)
+- P0 Guardrails Setup Guide: `docs/GITHUB_P0_GUARDRAILS_SETUP.md`
 - [P0 Guardrails Quick Reference](P0_GUARDRAILS_QUICK_REFERENCE.md)
 - [Audit Workflow](.github/workflows/audit.yml)
 

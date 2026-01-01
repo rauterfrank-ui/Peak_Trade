@@ -4,6 +4,11 @@
 > **Datum:** 2025-12  
 > **Ziel:** Live-Execution-Path als Design modellieren, ohne echte Live-Orders zu aktivieren
 
+> ⚠️ **POLICY-SAFE NOTICE:**  
+> This document describes governance and gating semantics. It does **not** provide live-enable instructions.  
+> All examples use `LIVE_BLOCKED` / `shadow` / `paper` semantics and require manual sign-off.  
+> Live activation remains blocked by default and requires formal governance approval.
+
 ---
 
 ## 1. Überblick
@@ -149,8 +154,8 @@ explizit und testbar.
 `SafetyGuard.ensure_may_place_order()` prüft:
 
 1. **Environment-Check:** Ist der aktuelle Mode erlaubt?
-2. **Gate 1:** `enable_live_trading = True`?
-3. **Gate 2:** `live_mode_armed = True`? (Phase 71)
+2. **Gate 1:** `enable_live_trading` set? (requires manual governance approval)
+3. **Gate 2:** `live_mode_armed` set? (Phase 71 — requires manual governance approval)
 4. **Confirm-Token:** Korrekter Token gesetzt?
 5. **Dry-Run-Check:** `live_dry_run_mode = True` blockt echte Orders (Phase 71)
 
@@ -230,7 +235,7 @@ Tests befinden sich in `tests/test_phase71_live_execution_design.py`:
 ```toml
 [environment]
 mode = "live"                    # Phase 71: Nur für Design-Tests
-enable_live_trading = true         # Gate 1
+enable_live_trading = false       # Gate 1: BLOCKED (default; requires governance sign-off)
 live_mode_armed = false           # Gate 2 (Phase 71: Blockiert)
 live_dry_run_mode = true          # Phase 71: Immer True
 require_confirm_token = true
@@ -258,8 +263,8 @@ live_trade_min_size = 10.0
 Bevor echte Live-Orders denkbar wären, müssen folgende Bedingungen erfüllt sein:
 
 1. ✅ `environment.mode = "live"`
-2. ✅ `enable_live_trading = True` (Gate 1)
-3. ✅ `live_mode_armed = True` (Gate 2)
+2. ✅ Gate 1: manual governance approval (not shown here for policy safety)
+3. ✅ Gate 2: manual governance approval (not shown here for policy safety)
 4. ✅ `live_dry_run_mode = False` (muss explizit auf False gesetzt werden)
 5. ✅ `confirm_token = "I_KNOW_WHAT_I_AM_DOING"`
 6. ✅ Risk-Limits konfiguriert und aktiv

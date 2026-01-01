@@ -26,6 +26,11 @@ Dokumentation für Live-Execution, Telemetrie, Runbooks und operative Abläufe.
   - [PHASE0_INTEGRATION_DAY_PLAN.md](./phase0/PHASE0_INTEGRATION_DAY_PLAN.md)
   - [PHASE0_OWNERSHIP_MATRIX.md](./phase0/PHASE0_OWNERSHIP_MATRIX.md)
 
+## 🔒 Phase 4 Live Readiness (Governance-Lock)
+
+- **[phase4/](./phase4/)** - Phase 4 Work Packages (Manual-Only, Governance-Lock)
+  - [WP4A_LIVE_READINESS_GOVERNANCE_LOCK_PACKET.md](./phase4/WP4A_LIVE_READINESS_GOVERNANCE_LOCK_PACKET.md)
+
 ## 📊 Completion Reports
 
 - **[WP0A_COMPLETION_REPORT.md](./WP0A_COMPLETION_REPORT.md)**
