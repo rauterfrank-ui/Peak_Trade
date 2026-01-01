@@ -669,7 +669,7 @@ To actually apply labels:
 Für konsistente "fail-fast" vs "warn-only" Semantik in neuen Ops-Skripten nutzen wir:
 - `scripts/ops/run_helpers.sh` (Quelle der Wahrheit, inkl. Quick Reference im Header)
 
-**Default:** strict (fail fast)  
+**Default:** strict (fail fast)
 **Robust mode:** `PT_MODE=robust bash <script>.sh` (optional: `MODE=robust`)
 
 **Minimal usage (copy/paste):**
@@ -1110,8 +1110,8 @@ chmod +x scripts/ops/cleanup_old_inventories.sh
 
 ---
 
-**Version:** 1.0.0  
-**Letzte Aktualisierung:** 2025-12-21  
+**Version:** 1.0.0
+**Letzte Aktualisierung:** 2025-12-21
 **Maintainer:** Peak_Trade Ops Team
 
 - [PR #246](PR_246_MERGE_LOG.md) — chore(ops): add knowledge deployment drill e2e + fix prod smoke headers (merged 2025-12-22T21:52:11Z)
@@ -1439,7 +1439,7 @@ bash scripts/execution/recon_audit_gate.sh gate
 4. Optional: **Auto-Merge** aktivieren, wenn alle Required Checks grün
 
 ### Was ist *nicht* erlaubt?
-- Rewriting von technischen Entscheidungen oder Risiko-Semantik, wenn dadurch die ursprüngliche historische Darstellung „umgebogen" wird  
+- Rewriting von technischen Entscheidungen oder Risiko-Semantik, wenn dadurch die ursprüngliche historische Darstellung „umgebogen" wird
   → In dem Fall: **Follow-up PR + neues Merge-Log** oder „Incident/Correction Note" mit Verweis.
 
 ### Empfehlung (Ops-Workflow)
@@ -1482,6 +1482,7 @@ Security:
 - **PR #483 (Merge Logs for PR #481 and #482, docs-only)** → `docs/ops/PR_483_MERGE_LOG.md` (meta: references #481, #482)
 - **PR #482 (WP4B Operator Drills + Evidence Pack, Manual-Only)** → `docs/ops/PR_482_MERGE_LOG.md`
 - **PR #481 (Policy-Safe Hardening for Live Gating Docs + WP4A Templates)** → `docs/ops/PR_481_MERGE_LOG.md`
+- **PR #479 (Appendix A — Phase Runner Prompt Packs 0–3)** → docs/ops/PR_479_MERGE_LOG.md
 - **PR #470 (Recon Audit Gate Wrapper: pyenv-safe Python Runner)** → `docs/ops/PR_470_MERGE_LOG.md`
 - **PR #462 (WP0D LedgerEntry Mapping + Reconciliation Wiring, Phase-0 Integration Day)** → `docs/ops/PR_462_MERGE_LOG.md` | [Integration Report](integration_days/PHASE0_ID0_WP0D_INTEGRATION_DAY_REPORT.md)
 - **PR #458 (WP0E Contracts & Interfaces, Phase-0 Gate Report)** → `docs/ops/PR_458_MERGE_LOG.md`

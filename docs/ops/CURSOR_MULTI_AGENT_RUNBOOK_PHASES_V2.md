@@ -385,6 +385,292 @@ Evidence (Plain-Text-Pfade):
 ## Sign-off Readiness
 - Ready for governance Go/No-Go review: YES/NO
 - Blocking items:
+
+## Appendix A — Phase Runner Prompt Packs (Phase 0–3)
+
+Zweck: Pro Phase ein **copy/paste** Startprompt für Cursor Multi-Agent.
+Konzept: Jeder Prompt erzwingt denselben Ablauf: Scope → WP-Plan → Implement → Review → Verification → PR-Hygiene.
+
+### A.0 Pre-Flight (gilt für alle Phasen)
+Bevor du einen Phase-Runner startest:
+1) Erstelle ein Session-Runlog aus der Vorlage:
+   - `docs/ops/CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md`
+2) Setze **Mode** im Runlog korrekt:
+   - Docs-only oder Code+Docs
+3) Non-Negotiables (Safety / Governance):
+   - Keine Live-Aktivierung in Docs/Code-Beispielen.
+   - Default bleibt: **blocked / shadow / simulated** (je nach Phase).
+   - Keine Secrets / Credentials / Keys in Repo oder Doku.
+
+---
+
+### A.1 Phase 0 Runner — Foundation / Contracts / Docs-First (Docs-only)
+
+**Wo einfügen:** Cursor Chat (Multi-Agent)
+**Ziel:** Runbook/Contracts/Navigation robust machen; minimale Diffs; keine kaputten Links.
+
+```text
+ROLE: Cursor Multi-Agent Orchestrator — Phase 0 (Docs-only Foundation)
+
+SCOPE (NON-NEGOTIABLE)
+- Docs-only changes. No runtime code modifications.
+- Maintain policy: docs-reference-targets-gate. Only link to files that exist.
+- If a target might not exist: mention as plain text with (future) and escape slashes (docs\/...).
+
+INPUTS (fill in)
+- Roadmap reference (plain text): <name/path if it exists>
+- Operator goal (1 sentence):
+- Constraints (if any): minimal diff, no renames, etc.
+
+STEP 1 — DISCOVERY (no edits)
+- Identify current Phase-0 related docs in:
+  - docs/ops/
+  - docs/execution/
+  - docs/governance/ (if relevant)
+- Open key entry points:
+  - docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md
+  - docs/ops/README.md
+  - docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md
+- Confirm all referenced files exist before creating links.
+
+STEP 2 — WP PLAN (max 3 WPs, each with AC + risk)
+WP0.1 (Docs consolidation / clarity)
+- Files:
+- Acceptance Criteria:
+- Risk:
+
+WP0.2 (Navigation / Frontdoor updates)
+- Files:
+- Acceptance Criteria:
+- Risk:
+
+WP0.3 (Templates / operator workflow polish)
+- Files:
+- Acceptance Criteria:
+- Risk:
+
+STEP 3 — IMPLEMENT (minimal diffs)
+- Edit only the files in the WP plan.
+- Do not add new speculative links.
+- Keep language concise and operational.
+
+STEP 4 — REVIEW (policy-aware)
+- Check: no broken links
+- Check: no accidental "live enable" examples
+- Check: section order and consistency with Frontdoor
+
+STEP 5 — VERIFICATION (list commands, do not run unless asked)
+- `rg -n "CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2|SESSION_RUNLOG_TEMPLATE" docs/ops`
+- `rg -n "\]\(docs/" docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md`  (should be empty or strictly valid)
+- `git diff --stat`
+
+STEP 6 — COMPLETION REPORT (must output)
+- Files changed (added/modified)
+- Diffstat summary
+- Any non-linked (future) refs intentionally left as text
+- Suggested PR title + body outline (docs-only)
+```
+
+---
+
+### A.2 Phase 1 Runner — Shadow Trading (Dry / OfflineRealtimeFeed)
+
+**Wo einfügen:** Cursor Chat (Multi-Agent)
+**Ziel:** End-to-end Shadow-Modus Pipeline ohne echte Trades; Recon/Audit-Handoff; Incident-Readiness.
+
+```text
+ROLE: Cursor Multi-Agent Orchestrator — Phase 1 (Shadow Trading)
+
+SCOPE (NON-NEGOTIABLE SAFETY)
+- No real-money live trading enablement.
+- Shadow/dry/offline simulated execution only.
+- No secrets, no credentials, no exchange keys in docs or code.
+- Any config examples must keep "live" semantics disabled/blocked.
+
+INPUTS (fill in)
+- Shadow target: <what scenario to run or document>
+- Data source: <offline feed / recorded session / simulator>
+- Definition of "done": <evidence artifacts, runlog, recon summary>
+
+STEP 1 — DISCOVERY (no edits)
+- Locate Phase-1 relevant components:
+  - execution pipeline entry points
+  - recon/audit scripts or runbooks
+  - existing shadow runbooks and prior merge logs (if any)
+- Identify "operator visible" artifacts:
+  - session runlog
+  - recon/audit summary output location
+  - evidence index references (if used in project)
+
+STEP 2 — WP PLAN (max 4 WPs)
+WP1.1 Shadow session protocol
+- Files/code areas:
+- AC: A full "how to run shadow session" with runlog steps and expected outputs
+- Risk: accidental live semantics (must be blocked)
+
+WP1.2 Recon/Audit handoff
+- Files/code areas:
+- AC: clear post-run recon/audit checks + interpretation
+- Risk: fragile assumptions about file paths
+
+WP1.3 Failure modes / incident mini-runbook
+- Files:
+- AC: known failure modes + operator actions
+- Risk: over-prescriptive commands
+
+WP1.4 (Optional) Minimal tooling improvements
+- Only if clearly necessary and safe.
+- AC: measurable operator value
+
+STEP 3 — IMPLEMENT
+- Prioritize operator-facing docs/runbooks + minimal safe code changes if required.
+- Ensure "blocked/shadow" semantics remain default.
+- Keep diffs tight and testable.
+
+STEP 4 — REVIEW (safety-first)
+- Scan for any "enable live" patterns in docs/examples.
+- Ensure recon/audit steps are deterministic and do not depend on non-existent paths.
+
+STEP 5 — VERIFICATION (list commands, do not run unless asked)
+- `uv run ruff check .` (only if repo standard; otherwise list project's standard lint)
+- `pytest -q` (or targeted suite if documented)
+- `rg -n "live_mode|enable_live|armed" docs/` (ensure docs are safe and wording is blocked)
+- `git diff --stat`
+
+STEP 6 — COMPLETION REPORT
+- What is now possible end-to-end in shadow mode
+- Evidence artifacts produced (names/paths as plain text)
+- Remaining gaps to Phase 2
+- Suggested PR title/body + risk statement
+```
+
+---
+
+### A.3 Phase 2 Runner — Paper / Simulated Live (Exchange sandbox falls vorhanden)
+
+**Wo einfügen:** Cursor Chat (Multi-Agent)
+**Ziel:** Realistische Ausführung ohne Kapitalrisiko; klare Mode-Semantik; Operator-Observability; Regression-Safety.
+
+```text
+ROLE: Cursor Multi-Agent Orchestrator — Phase 2 (Paper / Simulated Live)
+
+SCOPE (NON-NEGOTIABLE SAFETY)
+- No real-money live trading.
+- Simulated/paper/sandbox only.
+- Default remains blocked unless an explicit safe sandbox mode exists.
+- No secrets/credentials in repo.
+
+INPUTS (fill in)
+- Simulation mode: paper | sandbox | replay | exchange-testnet (if exists)
+- Order execution fidelity goals: <latency, slippage model, fill rules>
+- Operator monitoring needs: <dashboards/logs>
+
+STEP 1 — DISCOVERY
+- Identify what "paper mode" means in this repo (docs + code).
+- Find current execution modes and any gating constructs.
+- Locate operator observability (logs/reports/dashboards).
+
+STEP 2 — WP PLAN (max 4 WPs)
+WP2.1 Mode semantics + guardrails
+- AC: paper/sim mode definition + explicit guardrails that prevent live
+- Risk: ambiguous config leading to unsafe assumptions
+
+WP2.2 End-to-end runbook (paper)
+- AC: pre-run checklist, run command(s), post-run recon/audit
+- Risk: non-deterministic outputs
+
+WP2.3 Observability / operator UX
+- AC: clear "what to look at" + where to find outputs
+- Risk: too many moving parts
+
+WP2.4 Regression safety
+- AC: tests or smoke checks covering paper path
+- Risk: slow CI
+
+STEP 3 — IMPLEMENT
+- Prefer docs + small safe changes over large refactors.
+- Keep mode selection explicit and safe-by-default.
+
+STEP 4 — REVIEW
+- Check docs for forbidden "live enable" examples.
+- Check all referenced paths exist or are marked (future) as plain text.
+
+STEP 5 — VERIFICATION (list commands)
+- Smoke run (if documented): `python -m ...` or `bash scripts/...` (only if known)
+- `rg -n "paper|sandbox|simulated" docs/ src/`
+- `git diff --stat`
+
+STEP 6 — COMPLETION REPORT
+- What an operator can do now in paper/sim mode
+- What evidence is generated per session
+- Clear delta to Phase 3 (bounded auto)
+```
+
+---
+
+### A.4 Phase 3 Runner — Bounded Auto (Strictly Bounded, Manual Override)
+
+**Wo einfügen:** Cursor Chat (Multi-Agent)
+**Ziel:** Begrenzte Automatisierung mit strikten Limits, Hard-Stops, Operator-Override; Governance-Gates; Incident-Drill-Readiness.
+
+```text
+ROLE: Cursor Multi-Agent Orchestrator — Phase 3 (Bounded Auto)
+
+SCOPE (NON-NEGOTIABLE SAFETY)
+- Bounded automation only: strict limits, hard stops, operator override.
+- No autonomous live trading without explicit governance gates.
+- No secrets in repo; configs must remain safe-by-default.
+
+INPUTS (fill in)
+- Proposed boundaries: <max size, max loss/day, max exposure, max orders>
+- Override mechanism: <manual stop / kill-switch / go-no-go gate>
+- Audit requirements: <what must be logged and reviewed>
+
+STEP 1 — DISCOVERY
+- Locate existing risk/runtime controls and any governance go/no-go mechanisms.
+- Identify where boundaries are configured and enforced.
+- Find incident/stop procedures and operator controls.
+
+STEP 2 — WP PLAN (max 5 WPs)
+WP3.1 Boundary spec (single source of truth)
+- AC: explicit boundary list + semantics + failure behavior
+- Risk: "soft limits" that don't actually stop
+
+WP3.2 Enforcement hooks
+- AC: boundaries enforced before order placement
+- Risk: bypass paths
+
+WP3.3 Operator override / kill-switch
+- AC: immediate stop path documented + tested/smoke checked
+- Risk: unclear operational steps
+
+WP3.4 Recon/audit per session
+- AC: post-run evidence; findings classification
+- Risk: noisy false positives
+
+WP3.5 Runbook + drills
+- AC: runbook for start/stop/incident drill
+- Risk: documentation drift
+
+STEP 3 — IMPLEMENT
+- Make boundaries explicit, centrally defined, and hard-enforced.
+- Keep operator controls first-class.
+- Avoid broad refactors; favor small, verifiable increments.
+
+STEP 4 — REVIEW (governance-aware)
+- Ensure default behavior remains safe/blocked unless properly gated.
+- Ensure all docs avoid "enable live" instructions.
+
+STEP 5 — VERIFICATION (list commands)
+- Targeted tests/smokes for boundary enforcement (repo standard)
+- `rg -n "bounded|limit|max_|kill|go_no_go" src/ docs/`
+- `git diff --stat`
+
+STEP 6 — COMPLETION REPORT
+- Boundaries implemented + where enforced
+- Operator override path (exact steps)
+- Evidence generated per session
+- Residual risks + recommended next gating to Phase 4
 ```
 
 ---
