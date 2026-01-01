@@ -9,6 +9,7 @@ Tests:
 """
 
 import sys
+import json
 from pathlib import Path
 from datetime import datetime, timezone
 from io import StringIO
@@ -393,3 +394,176 @@ def test_diffs_chronological_sorting():
     sorted_diffs = sorted(diffs, key=lambda e: e.timestamp)
     assert sorted_diffs[0].details["diff_id"] == "diff_001"
     assert sorted_diffs[1].details["diff_id"] == "diff_002"
+
+
+# ============================================================================
+# JSON Format Tests
+# ============================================================================
+
+
+def test_summary_json_format_empty(capsys):
+    """Test summary --format json with empty audit log"""
+    empty_log = AuditLog()
+    query = ReconAuditQuery(mode="summary", format="json")
+    exit_code = show_summary(empty_log, query)
+    captured = capsys.readouterr()
+
+    # Parse JSON output
+    output = json.loads(captured.out)
+
+    # Verify structure
+    assert output["event_type"] == "RECON_SUMMARY"
+    assert output["count"] == 0
+    assert output["items"] == []
+    assert "notes" in output
+    assert output["notes"] == "No RECON_SUMMARY events found"
+
+    # Exit code should be 0
+    assert exit_code == 0
+
+
+def test_summary_json_format_with_data(sample_audit_log, capsys):
+    """Test summary --format json with sample data"""
+    query = ReconAuditQuery(mode="summary", format="json")
+    exit_code = show_summary(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Parse JSON output
+    output = json.loads(captured.out)
+
+    # Verify structure
+    assert output["event_type"] == "RECON_SUMMARY"
+    assert output["count"] == 1
+    assert len(output["items"]) == 1
+
+    # Verify first item
+    item = output["items"][0]
+    assert item["run_id"] == "run_001"
+    assert item["session_id"] == "session_001"
+    assert item["strategy_id"] == "ma_crossover"
+    assert item["total_diffs"] == 2
+    assert item["has_fail"] is True
+    assert item["max_severity"] == "FAIL"
+
+    # Verify deterministic sorting of dicts
+    assert isinstance(item["counts_by_severity"], dict)
+    assert isinstance(item["counts_by_type"], dict)
+
+    # Exit code should be 0 (no exit_on_findings)
+    assert exit_code == 0
+
+
+def test_summary_json_deterministic_output(sample_audit_log, capsys):
+    """Test JSON output is deterministic (run twice)"""
+    query = ReconAuditQuery(mode="summary", format="json")
+
+    # Run 1
+    show_summary(sample_audit_log, query)
+    captured1 = capsys.readouterr()
+
+    # Run 2
+    show_summary(sample_audit_log, query)
+    captured2 = capsys.readouterr()
+
+    # Outputs should be identical
+    assert captured1.out == captured2.out
+
+    # Parse to verify it's valid JSON
+    output1 = json.loads(captured1.out)
+    output2 = json.loads(captured2.out)
+    assert output1 == output2
+
+
+# ============================================================================
+# Exit Code Tests
+# ============================================================================
+
+
+def test_exit_on_findings_false_with_data(sample_audit_log, capsys):
+    """Test exit_on_findings=False returns 0 even with findings"""
+    query = ReconAuditQuery(mode="summary", format="json", exit_on_findings=False)
+    exit_code = show_summary(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Parse JSON
+    output = json.loads(captured.out)
+    assert output["count"] == 1  # Has findings
+
+    # But exit code is 0
+    assert exit_code == 0
+
+
+def test_exit_on_findings_true_with_data(sample_audit_log, capsys):
+    """Test exit_on_findings=True returns 2 when findings present"""
+    query = ReconAuditQuery(mode="summary", format="json", exit_on_findings=True)
+    exit_code = show_summary(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Parse JSON
+    output = json.loads(captured.out)
+    assert output["count"] == 1  # Has findings
+
+    # Exit code should be 2
+    assert exit_code == 2
+
+
+def test_exit_on_findings_true_no_data(capsys):
+    """Test exit_on_findings=True returns 0 when no findings"""
+    empty_log = AuditLog()
+    query = ReconAuditQuery(mode="summary", format="json", exit_on_findings=True)
+    exit_code = show_summary(empty_log, query)
+    captured = capsys.readouterr()
+
+    # Parse JSON
+    output = json.loads(captured.out)
+    assert output["count"] == 0  # No findings
+
+    # Exit code should be 0
+    assert exit_code == 0
+
+
+def test_exit_on_findings_text_format(sample_audit_log, capsys):
+    """Test exit_on_findings works with text format too"""
+    query = ReconAuditQuery(mode="summary", format="text", exit_on_findings=True)
+    exit_code = show_summary(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Should have text output
+    assert "Found 1 RECON_SUMMARY" in captured.out
+
+    # Exit code should be 2 (has findings)
+    assert exit_code == 2
+
+
+# ============================================================================
+# Argument Parsing Tests (New Flags)
+# ============================================================================
+
+
+def test_parse_args_format_json():
+    """Test parsing --format json"""
+    query = parse_args(["summary", "--format", "json"])
+    assert query.mode == "summary"
+    assert query.format == "json"
+
+
+def test_parse_args_format_text():
+    """Test parsing --format text (explicit)"""
+    query = parse_args(["summary", "--format", "text"])
+    assert query.mode == "summary"
+    assert query.format == "text"
+
+
+def test_parse_args_exit_on_findings():
+    """Test parsing --exit-on-findings"""
+    query = parse_args(["summary", "--exit-on-findings"])
+    assert query.mode == "summary"
+    assert query.exit_on_findings is True
+
+
+def test_parse_args_combined_new_flags():
+    """Test parsing combined new flags"""
+    query = parse_args(["summary", "--format", "json", "--exit-on-findings"])
+    assert query.mode == "summary"
+    assert query.format == "json"
+    assert query.exit_on_findings is True
