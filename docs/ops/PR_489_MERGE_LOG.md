@@ -35,4 +35,4 @@ Low (docs-only).
 - PR #489 (merged, squash via auto-merge)
 - PR #486 (gitignore-only prep for bg_job)
 - PR #487 (initial integration)
-- bg_job runner actual delivery: PR #PR_TBD
+- bg_job runner actual delivery: PR #491

@@ -17,7 +17,7 @@ Background job runners (future tooling) generate runtime artifacts that should n
 None. Gitignore-only change.
 
 ## Erratum (2026-01-01)
-Earlier versions of this merge log incorrectly stated that `scripts/ops/bg_job.sh` was added in this PR. That was not accurate. PR #486 contained only the `.gitignore` change. The actual bg_job runner was delivered later in PR #PR_TBD.
+Earlier versions of this merge log incorrectly stated that `scripts/ops/bg_job.sh` was added in this PR. That was not accurate. PR #486 contained only the `.gitignore` change. The actual bg_job runner was delivered later in PR #491.
 
 ## References
 - PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/486
