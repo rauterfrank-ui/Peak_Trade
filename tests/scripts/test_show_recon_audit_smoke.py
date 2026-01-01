@@ -1,0 +1,395 @@
+"""
+Smoke tests for show_recon_audit.py CLI tool
+
+Tests:
+- Argument parsing
+- Output stability (deterministic)
+- Filtering (run_id, session_id, severity)
+- Error handling (missing run_id for detailed mode)
+"""
+
+import sys
+from pathlib import Path
+from datetime import datetime, timezone
+from io import StringIO
+
+import pytest
+
+# Add scripts to path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "execution"))
+
+from show_recon_audit import (
+    ReconAuditQuery,
+    parse_args,
+    show_summary,
+    show_diffs,
+    show_detailed,
+    load_audit_log,
+)
+
+from src.execution.audit_log import AuditLog
+from src.execution.contracts import LedgerEntry, ReconSummary, ReconDiff
+
+
+# ============================================================================
+# Fixtures
+# ============================================================================
+
+
+@pytest.fixture
+def sample_audit_log():
+    """Create audit log with sample recon events"""
+    audit_log = AuditLog()
+
+    # Create sample diffs
+    diff1 = ReconDiff(
+        diff_id="diff_001",
+        timestamp=datetime(2026, 1, 1, 10, 0, 0, tzinfo=timezone.utc),
+        client_order_id="order_123",
+        severity="WARN",
+        diff_type="POSITION",
+        description="Position mismatch: local=100, exchange=99",
+        details={"local_qty": 100, "exchange_qty": 99},
+    )
+
+    diff2 = ReconDiff(
+        diff_id="diff_002",
+        timestamp=datetime(2026, 1, 1, 10, 0, 1, tzinfo=timezone.utc),
+        client_order_id="order_456",
+        severity="FAIL",
+        diff_type="CASH",
+        description="Cash balance divergence",
+        details={"local_balance": 1000.0, "exchange_balance": 950.0},
+    )
+
+    # Create summary
+    summary = ReconSummary(
+        run_id="run_001",
+        timestamp=datetime(2026, 1, 1, 10, 0, 0, tzinfo=timezone.utc),
+        session_id="session_001",
+        strategy_id="ma_crossover",
+        total_diffs=2,
+        counts_by_severity={"WARN": 1, "FAIL": 1},
+        counts_by_type={"POSITION": 1, "CASH": 1},
+        top_diffs=[diff1, diff2],
+        has_critical=False,
+        has_fail=True,
+        max_severity="FAIL",
+    )
+
+    # Append to audit log
+    audit_log.append_recon_summary(summary)
+
+    return audit_log
+
+
+# ============================================================================
+# Argument Parsing Tests
+# ============================================================================
+
+
+def test_parse_args_summary_mode():
+    """Test parsing summary mode"""
+    query = parse_args(["summary"])
+    assert query.mode == "summary"
+    assert query.run_id is None
+    assert query.session_id is None
+    assert query.limit == 50
+
+
+def test_parse_args_diffs_with_filters():
+    """Test parsing diffs mode with filters"""
+    query = parse_args(["diffs", "--run-id", "run_123", "--severity", "FAIL", "--limit", "10"])
+    assert query.mode == "diffs"
+    assert query.run_id == "run_123"
+    assert query.severity == "FAIL"
+    assert query.limit == 10
+
+
+def test_parse_args_detailed_mode():
+    """Test parsing detailed mode"""
+    query = parse_args(["detailed", "--run-id", "run_456"])
+    assert query.mode == "detailed"
+    assert query.run_id == "run_456"
+
+
+def test_parse_args_invalid_mode():
+    """Test invalid mode exits"""
+    with pytest.raises(SystemExit):
+        parse_args(["invalid_mode"])
+
+
+def test_parse_args_no_args():
+    """Test no arguments shows usage and exits"""
+    with pytest.raises(SystemExit):
+        parse_args([])
+
+
+# ============================================================================
+# Output Stability Tests
+# ============================================================================
+
+
+def test_show_summary_output_deterministic(sample_audit_log, capsys):
+    """Test summary output is deterministic"""
+    query = ReconAuditQuery(mode="summary")
+
+    # Run twice
+    show_summary(sample_audit_log, query)
+    captured1 = capsys.readouterr()
+
+    show_summary(sample_audit_log, query)
+    captured2 = capsys.readouterr()
+
+    # Output should be identical
+    assert captured1.out == captured2.out
+    assert "run_001" in captured1.out
+    assert "session_001" in captured1.out
+    assert "Total Diffs: 2" in captured1.out
+
+
+def test_show_diffs_output_deterministic(sample_audit_log, capsys):
+    """Test diffs output is deterministic"""
+    query = ReconAuditQuery(mode="diffs", run_id="run_001")
+
+    # Run twice
+    show_diffs(sample_audit_log, query)
+    captured1 = capsys.readouterr()
+
+    show_diffs(sample_audit_log, query)
+    captured2 = capsys.readouterr()
+
+    # Output should be identical
+    assert captured1.out == captured2.out
+    assert "diff_001" in captured1.out
+    assert "diff_002" in captured1.out
+
+
+def test_show_summary_includes_all_fields(sample_audit_log, capsys):
+    """Test summary output includes all expected fields"""
+    query = ReconAuditQuery(mode="summary")
+    show_summary(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Check all key fields present
+    assert "Run ID:" in captured.out
+    assert "Timestamp:" in captured.out
+    assert "Session:" in captured.out
+    assert "Strategy:" in captured.out
+    assert "Total Diffs:" in captured.out
+    assert "Severity:" in captured.out
+    assert "Diff Types:" in captured.out
+    assert "Critical:" in captured.out
+    assert "Fail:" in captured.out
+    assert "Max Severity:" in captured.out
+
+
+def test_show_diffs_includes_all_fields(sample_audit_log, capsys):
+    """Test diffs output includes all expected fields"""
+    query = ReconAuditQuery(mode="diffs")
+    show_diffs(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Check all key fields present
+    assert "Diff ID:" in captured.out
+    assert "Run ID:" in captured.out
+    assert "Timestamp:" in captured.out
+    assert "Severity:" in captured.out
+    assert "Type:" in captured.out
+    assert "Order ID:" in captured.out
+    assert "Description:" in captured.out
+    assert "Resolved:" in captured.out
+
+
+# ============================================================================
+# Filtering Tests
+# ============================================================================
+
+
+def test_show_diffs_filter_by_severity(sample_audit_log, capsys):
+    """Test filtering diffs by severity"""
+    query = ReconAuditQuery(mode="diffs", severity="FAIL")
+    show_diffs(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Should only show FAIL diff
+    assert "diff_002" in captured.out
+    assert "FAIL" in captured.out
+    # Should not show WARN diff
+    assert "diff_001" not in captured.out
+
+
+def test_show_diffs_filter_by_run_id(sample_audit_log, capsys):
+    """Test filtering diffs by run_id"""
+    query = ReconAuditQuery(mode="diffs", run_id="run_001")
+    show_diffs(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Should show both diffs for this run
+    assert "run_001" in captured.out
+    assert "2 RECON_DIFF" in captured.out
+
+
+def test_show_summary_filter_by_session(sample_audit_log, capsys):
+    """Test filtering summary by session_id"""
+    query = ReconAuditQuery(mode="summary", session_id="session_001")
+    show_summary(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    assert "session_001" in captured.out
+    assert "1 RECON_SUMMARY" in captured.out
+
+
+def test_show_summary_no_results(capsys):
+    """Test summary with no matching events"""
+    empty_log = AuditLog()
+    query = ReconAuditQuery(mode="summary")
+    show_summary(empty_log, query)
+    captured = capsys.readouterr()
+
+    assert "No RECON_SUMMARY events found" in captured.out
+
+
+def test_show_diffs_no_results(capsys):
+    """Test diffs with no matching events"""
+    empty_log = AuditLog()
+    query = ReconAuditQuery(mode="diffs")
+    show_diffs(empty_log, query)
+    captured = capsys.readouterr()
+
+    assert "No RECON_DIFF events found" in captured.out
+
+
+# ============================================================================
+# Error Handling Tests
+# ============================================================================
+
+
+def test_show_detailed_requires_run_id(sample_audit_log, capsys):
+    """Test detailed mode requires run_id"""
+    query = ReconAuditQuery(mode="detailed")  # No run_id
+
+    with pytest.raises(SystemExit):
+        show_detailed(sample_audit_log, query)
+
+    captured = capsys.readouterr()
+    assert "run-id required" in captured.out
+
+
+def test_show_detailed_nonexistent_run(sample_audit_log, capsys):
+    """Test detailed mode with nonexistent run_id"""
+    query = ReconAuditQuery(mode="detailed", run_id="nonexistent_run")
+    show_detailed(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    assert "No RECON_SUMMARY found" in captured.out
+
+
+# ============================================================================
+# Integration Tests
+# ============================================================================
+
+
+def test_show_detailed_complete_flow(sample_audit_log, capsys):
+    """Test detailed mode shows summary + diffs"""
+    query = ReconAuditQuery(mode="detailed", run_id="run_001")
+    show_detailed(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Should show summary section
+    assert "SUMMARY" in captured.out
+    assert "run_001" in captured.out
+
+    # Should show diffs section
+    assert "DIFFS" in captured.out
+    assert "diff_001" in captured.out
+    assert "diff_002" in captured.out
+
+
+def test_load_audit_log_empty():
+    """Test loading empty audit log"""
+    audit_log = load_audit_log(json_path=None)
+    assert audit_log is not None
+    assert audit_log.get_entry_count() == 0
+
+
+def test_limit_parameter(sample_audit_log, capsys):
+    """Test limit parameter restricts output"""
+    query = ReconAuditQuery(mode="diffs", limit=1)
+    show_diffs(sample_audit_log, query)
+    captured = capsys.readouterr()
+
+    # Should only show 1 diff despite 2 available
+    assert "1 RECON_DIFF" in captured.out
+
+
+# ============================================================================
+# Sorting Tests (Determinism)
+# ============================================================================
+
+
+def test_summary_chronological_sorting():
+    """Test summaries are sorted chronologically"""
+    audit_log = AuditLog()
+
+    # Add summaries in reverse chronological order
+    summary2 = ReconSummary(
+        run_id="run_002",
+        timestamp=datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+        total_diffs=0,
+    )
+    summary1 = ReconSummary(
+        run_id="run_001",
+        timestamp=datetime(2026, 1, 1, 10, 0, 0, tzinfo=timezone.utc),
+        total_diffs=0,
+    )
+
+    audit_log.append_recon_summary(summary2)
+    audit_log.append_recon_summary(summary1)
+
+    # Get entries
+    summaries = audit_log.get_entries_by_event_type("RECON_SUMMARY")
+    assert len(summaries) == 2
+
+    # Verify chronological order (oldest first)
+    sorted_summaries = sorted(summaries, key=lambda e: e.timestamp)
+    assert sorted_summaries[0].details["run_id"] == "run_001"
+    assert sorted_summaries[1].details["run_id"] == "run_002"
+
+
+def test_diffs_chronological_sorting():
+    """Test diffs are sorted chronologically"""
+    audit_log = AuditLog()
+
+    diff2 = ReconDiff(
+        diff_id="diff_002",
+        timestamp=datetime(2026, 1, 1, 10, 1, 0, tzinfo=timezone.utc),
+        severity="INFO",
+        diff_type="POSITION",
+        description="Second diff",
+    )
+    diff1 = ReconDiff(
+        diff_id="diff_001",
+        timestamp=datetime(2026, 1, 1, 10, 0, 0, tzinfo=timezone.utc),
+        severity="INFO",
+        diff_type="POSITION",
+        description="First diff",
+    )
+
+    summary = ReconSummary(
+        run_id="run_001",
+        timestamp=datetime(2026, 1, 1, 10, 0, 0, tzinfo=timezone.utc),
+        total_diffs=2,
+        top_diffs=[diff2, diff1],  # Intentionally reversed
+    )
+
+    audit_log.append_recon_summary(summary)
+
+    # Get diffs
+    diffs = audit_log.get_entries_by_event_type("RECON_DIFF")
+    assert len(diffs) == 2
+
+    # Verify chronological order (oldest first)
+    sorted_diffs = sorted(diffs, key=lambda e: e.timestamp)
+    assert sorted_diffs[0].details["diff_id"] == "diff_001"
+    assert sorted_diffs[1].details["diff_id"] == "diff_002"

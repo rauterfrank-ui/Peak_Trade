@@ -244,6 +244,77 @@ for diff in run_diffs:
 
 ---
 
+### 4. CLI Tool (Quick Commands)
+
+**Tool:** `scripts/execution/show_recon_audit.py`
+
+Schneller Zugriff auf Recon-Events aus dem AuditLog ohne Python-Code zu schreiben.
+
+#### Beispiel 1: Alle Recon-Summaries anzeigen
+
+```bash
+python scripts/execution/show_recon_audit.py summary
+```
+
+**Output:**
+- Run ID, Timestamp, Session/Strategy
+- Total Diffs, Severity Counts, Diff Types
+- Critical/Fail Flags, Max Severity
+
+**Use Case:** Schneller Überblick über alle Recon-Runs (z.B. nach Live-Session)
+
+---
+
+#### Beispiel 2: Diffs mit Severity-Filter
+
+```bash
+python scripts/execution/show_recon_audit.py diffs --severity FAIL --limit 20
+```
+
+**Output:**
+- Nur Diffs mit Severity=FAIL
+- Diff ID, Timestamp, Type, Description
+- Order ID, Resolution Status
+
+**Use Case:** Kritische Diffs identifizieren für Incident-Investigation
+
+---
+
+#### Beispiel 3: Detaillierter Drill-Down für spezifischen Run
+
+```bash
+python scripts/execution/show_recon_audit.py detailed --run-id <run_id>
+```
+
+**Output:**
+- Summary-Übersicht für diesen Run
+- Alle Diffs für diesen Run (nicht nur Top-N)
+- Vollständiger Context für Debugging
+
+**Use Case:** Deep-Dive nach Alert (z.B. "Run XYZ hat 15 FAIL diffs")
+
+---
+
+#### Weitere Optionen
+
+```bash
+# Nach Session filtern
+python scripts/execution/show_recon_audit.py summary --session-id session_123
+
+# Nach Run filtern
+python scripts/execution/show_recon_audit.py diffs --run-id run_456
+
+# Output limitieren
+python scripts/execution/show_recon_audit.py diffs --limit 10
+
+# Von JSON-Export laden (für Archiv-Analysen)
+python scripts/execution/show_recon_audit.py summary --json path/to/audit_export.json
+```
+
+**Phase 0 Hinweis:** In Phase 0 arbeitet das Tool mit in-memory AuditLog oder JSON-Exporten. Keine Datenbank-Integration (kommt in Phase 1+).
+
+---
+
 ## Phase 1+ Roadmap
 
 **Was ändert sich bei echtem Exchange-API:**
