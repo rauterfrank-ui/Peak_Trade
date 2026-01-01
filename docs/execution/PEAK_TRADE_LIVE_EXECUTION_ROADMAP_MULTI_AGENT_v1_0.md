@@ -332,3 +332,7 @@ Jeder Agent bekommt:
 1) Integrator: Contracts (WP0E) finalisieren  
 2) Danach parallel: Execution (0A), Risk (0B), Governance (0C), Observability (0D)  
 3) Integration Day + Phase‑0 Gate evidence pack
+
+- WP4B (Manual-Only): Operator Drills + Evidence Pack
+  - docs/execution/WP4B_OPERATOR_DRILLS_EVIDENCE_PACK.md
+  - docs/execution/WP4B_EVIDENCE_PACK_TEMPLATE.md
