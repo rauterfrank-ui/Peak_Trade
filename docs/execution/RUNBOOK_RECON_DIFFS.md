@@ -264,5 +264,5 @@ for diff in run_diffs:
 
 **Bei Fragen/Issues:**
 - Slack: `#execution-alerts`
-- Incident Template: `docs/execution/INCIDENT_TEMPLATE.md`
+- Incident Runbooks: Siehe `docs/runbooks/` oder `docs/LIVE_OPERATIONAL_RUNBOOKS.md`
 - Escalation: Execution Team Lead
