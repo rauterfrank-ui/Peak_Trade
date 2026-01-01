@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 import tempfile
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -232,7 +232,7 @@ class TestTestnetUsageStore:
             store = TestnetUsageStore(base_dir=Path(tmpdir))
 
             today = date.today()
-            yesterday = date(today.year, today.month, today.day - 1) if today.day > 1 else today
+            yesterday = today - timedelta(days=1)
 
             # Heute speichern
             state_today = TestnetUsageState(day=today, notional_used=100.0)
