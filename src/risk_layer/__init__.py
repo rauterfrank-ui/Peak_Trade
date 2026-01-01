@@ -36,9 +36,12 @@ from src.risk_layer.exceptions import (
     RiskLayerError,
     RiskViolationError,
 )
-from src.risk_layer.kill_switch import KillSwitchLayer, KillSwitchStatus
-from src.risk_layer.models import RiskDecision, RiskResult, Violation
-from src.risk_layer.risk_gate import RiskGate
+
+# Phase-0 Scaffold: These modules will be implemented in future phases
+# from src.risk_layer.kill_switch import KillSwitchLayer, KillSwitchStatus
+# from src.risk_layer.models import RiskDecision, RiskResult, Violation
+# from src.risk_layer.risk_gate import RiskGate
+
 from src.risk_layer.types import (
     ComponentVaRResult,
     Order,
@@ -51,15 +54,8 @@ from src.risk_layer.types import (
 )
 
 __all__ = [
-    # Core Models
-    "Violation",
-    "RiskDecision",
-    "RiskResult",
-    # Infrastructure
+    # Infrastructure (Phase 0)
     "AuditLogWriter",
-    "RiskGate",
-    "KillSwitchLayer",
-    "KillSwitchStatus",
     # Type Definitions (Phase 0 Stubs)
     "PortfolioVaRResult",
     "ComponentVaRResult",
@@ -75,4 +71,7 @@ __all__ = [
     "RiskConfigError",
     "RiskCalculationError",
     "RiskViolationError",
+    # Future phases (commented out imports above):
+    # "Violation", "RiskDecision", "RiskResult",
+    # "RiskGate", "KillSwitchLayer", "KillSwitchStatus",
 ]
