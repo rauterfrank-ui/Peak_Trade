@@ -61,6 +61,6 @@ Document each bg_job run with:
 ## References
 - PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/488
 - Parent PRs: #486 (bg_job runner implementation), #487 (initial runbook integration)
-- Branch: `docs/bg-job-execution-pattern`
+- Branch: docs/bg-job-execution-pattern
 - Merged at: 2026-01-01
-- Commit: 427de20
+- Commit: 427de20, 8312cb9
