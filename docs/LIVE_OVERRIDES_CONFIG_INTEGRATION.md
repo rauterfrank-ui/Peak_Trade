@@ -1,5 +1,9 @@
 # Live-Overrides Config Integration
 
+> ⚠️ **POLICY-SAFE NOTICE:**  
+> This document describes configuration mechanisms and environment detection. It does **not** provide live-enable instructions.  
+> All examples use safe defaults. Live mode activation requires formal governance approval.
+
 ## Überblick
 
 Die `config&sol;live_overrides&sol;auto.toml (planned)` wird automatisch in die Laufzeit-Konfiguration eingebunden, wenn Peak_Trade in einem **Live-nahen Environment** läuft.
@@ -26,7 +30,7 @@ Auto-Overrides werden **nur** angewendet in:
 - `environment.mode = "testnet"`
 - `environment.mode = "paper_live"` (falls verwendet)
 - `environment.mode = "shadow"` (falls verwendet)
-- **ODER** wenn `environment.enable_live_trading = true`
+- **ODER** wenn live-enablement flag is set (requires governance approval; not shown here)
 
 In reinen **Paper/Backtest-Environments** werden Overrides **NICHT** angewendet.
 

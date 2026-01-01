@@ -18,6 +18,45 @@
 
 ---
 
+## Policy-Safe Configuration Examples
+
+### Quick Reference: Allowed vs. Disallowed Patterns
+
+| Pattern Type | ❌ DISALLOWED (triggers Policy Critic) | ✅ ALLOWED (policy-safe) |
+|--------------|---------------------------------------|--------------------------|
+| **Live Trading Flag** | `enable_live_trading = true` | `enable_live_trading = false` (default)<br>`enable_live_trading = <BLOCKED>` (governance gate) |
+| **Armed State** | `live_mode_armed = True`<br>`armed = true` | `live_mode_armed = false` (default)<br>`armed = <REQUIRES_APPROVAL>` |
+| **Execution Mode** | `mode = "live"` with enabled flags | `mode = "paper"`<br>`mode = "shadow"`<br>`execution_mode = "LIVE_BLOCKED"` |
+| **Narrative Language** | "turn on live", "enable live mode", "unlock live" | "manual sign-off required", "go/no-go decision", "governance approval gate" |
+| **Config Examples** | Showing literal true values for sensitive flags | Use `false`, `<BLOCKED>`, `<PLACEHOLDER>`, or `{value}` |
+
+### Standard Policy-Safe Config Snippets
+
+**✅ Safe Config Example (Paper/Shadow):**
+```toml
+[environment]
+mode = "paper"  # Safe default
+enable_live_trading = false  # Governance gate (blocked by default)
+```
+
+**✅ Safe Config Example (Live-Blocked Design):**
+```toml
+[environment]
+mode = "live"  # Design only
+enable_live_trading = false  # Default: BLOCKED (requires governance sign-off)
+live_mode_armed = false  # Gate 2: BLOCKED
+execution_mode = "LIVE_BLOCKED"  # Explicit governance block
+```
+
+**❌ Unsafe Config Example (DO NOT USE in docs):**
+```toml
+# This will trigger Policy Critic:
+enable_live_trading = true  # ⚠️ VIOLATION
+live_mode_armed = True  # ⚠️ VIOLATION
+```
+
+---
+
 ## Documentation-Safe Patterns
 
 ### ✅ Safe Patterns (Use These)

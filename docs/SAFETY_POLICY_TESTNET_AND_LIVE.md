@@ -4,6 +4,10 @@
 > **Scope:** Policy-Dokument für zukünftige Testnet-/Live-Szenarien
 > **Hinweis:** Diese Policy beschreibt Anforderungen, die erfüllt sein müssen, bevor Testnet/Live **jemals** aktiviert wird
 
+> ⚠️ **POLICY-SAFE NOTICE:**  
+> This document describes governance requirements and safety constraints. It does **not** provide live-enable instructions.  
+> All configuration examples use blocked/safe defaults. Live activation requires formal go/no-go decision and manual operator action.
+
 ---
 
 ## 1. Scope der Safety-Policy
@@ -105,7 +109,7 @@ Bevor `environment.mode = "live"` **überhaupt denkbar** ist, müssen folgende B
    ```toml
    [environment]
    mode = "live"
-   enable_live_trading = true
+   enable_live_trading = false  # Default: BLOCKED (requires governance sign-off)
    require_confirm_token = true
    confirm_token = "I_KNOW_WHAT_I_AM_DOING"
    ```
@@ -293,8 +297,8 @@ Diese Policy gilt für alle Nutzer und Entwickler von Peak_Trade, die an der Ent
    - Factory-Funktion `create_order_executor(env)` wählt automatisch
 
 3. **Zweistufiges Gating für Live:**
-   - Gate 1: `enable_live_trading = True`
-   - Gate 2: `live_mode_armed = True` (Phase 71: zusätzliches Gate)
+   - Gate 1: manual governance approval (not shown here for policy safety)
+   - Gate 2: manual governance approval (Phase 71: zusätzliches Gate, not shown here)
    - `live_dry_run_mode = True` blockt echte Orders (Phase 71: immer True)
    - Zentrale Helper-Funktion `is_live_execution_allowed()` definiert alle Kriterien
 
@@ -312,8 +316,8 @@ Diese Policy gilt für alle Nutzer und Entwickler von Peak_Trade, die an der Ent
 
 **Gates/Flags VOR einer echten Aktivierung:**
 1. `environment.mode = "live"`
-2. `enable_live_trading = True`
-3. `live_mode_armed = True` (zweites Gate)
+2. Gate 1: manual governance sign-off (not shown here for policy safety)
+3. Gate 2: manual governance sign-off (not shown here for policy safety)
 4. `live_dry_run_mode = False` (muss explizit auf False gesetzt werden)
 5. `confirm_token = "I_KNOW_WHAT_I_AM_DOING"`
 6. Risk-Limits konfiguriert und aktiv

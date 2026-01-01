@@ -89,13 +89,13 @@ python scripts/demo_registry_backtest.py
 ## Dokumentation
 
 📚 **Ausführliche API-Referenz:**  
-[docs/REGISTRY_BACKTEST_API.md](docs/REGISTRY_BACKTEST_API.md)
+`docs/REGISTRY_BACKTEST_API.md`
 
 🔧 **Implementierungs-Details:**  
-[docs/REGISTRY_BACKTEST_IMPLEMENTATION.md](docs/REGISTRY_BACKTEST_IMPLEMENTATION.md)
+`docs/REGISTRY_BACKTEST_IMPLEMENTATION.md`
 
 📖 **Config-Registry-Basics:**  
-[docs/CONFIG_REGISTRY_USAGE.md](docs/CONFIG_REGISTRY_USAGE.md)
+`docs/CONFIG_REGISTRY_USAGE.md`
 
 ---
 
@@ -154,7 +154,7 @@ allocation_method = "equal"  # "equal", "manual", "risk_parity", "sharpe_weighte
    ```
 
 2. **API-Dokumentation lesen:**  
-   [docs/REGISTRY_BACKTEST_API.md](docs/REGISTRY_BACKTEST_API.md)
+   `docs/REGISTRY_BACKTEST_API.md`
 
 3. **Eigene Strategien hinzufügen:**
    - Modul in `src/strategies/` erstellen
