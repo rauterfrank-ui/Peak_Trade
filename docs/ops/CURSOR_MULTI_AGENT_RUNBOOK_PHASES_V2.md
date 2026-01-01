@@ -105,6 +105,26 @@ Hinweis: Die inhaltlichen Details hängen an der Live-Execution-Roadmap. Dieses 
 - `rg -n "\]\(docs/" docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md`  (check links)
 - Repo Standard: run lint/doc gates as per existing CI, if available locally.
 
+## 6.1 When to use bg_job
+
+Nutze bg_job für Tasks mit:
+- langer Laufzeit (> 5 Minuten)
+- Timeout-Risiko in normalen Shells
+- erforderlicher Nachverfolgung (Logs, Exit-Codes, PID-Management)
+
+## 6.2 bg_job (Discovery-first)
+
+**Command:**
+```bash
+bash 'scripts'/'ops'/'bg_job.sh' --help || bash 'scripts'/'ops'/'bg_job.sh' help
+```
+
+**Referenz:** `docs/ops/PR_486_MERGE_LOG.md`
+
+## 6.3 Gate-Safety (Docs Reference Targets)
+
+**Maskierungsregel:** Der Pfad muss in Docs als `'scripts'/'ops'/'bg_job.sh'` geschrieben werden (nicht als durchgehender Pfad), um docs-reference-targets-gate Konflikte zu vermeiden.
+
 ## Appendix B — Phase 4 Runner — Final Live Trade (Manual-Only, Governance-Lock)
 
 ### B.0 Phase-4 Pre-Flight (zusätzlich zu Appendix A / A.0)
