@@ -334,13 +334,13 @@ print("✅ All manual smoke tests passed")
 
 - `docs/risk/KILL_SWITCH_RUNBOOK.md`: Kill Switch operator guide
 - `docs/risk/RISK_METRICS_SCHEMA.md`: Metrics schema reference
-- `src/risk_layer/var_gate.py`: VaR Gate implementation
+- `src/risk_layer/var_backtest/`: VaR validation and backtesting implementation
 - `src/risk/portfolio_var.py`: Underlying VaR calculations
 
 ## Support
 
 For questions or issues:
 1. Check this runbook
-2. Review test cases in `tests/risk_layer/test_var_gate.py`
+2. Review test cases in `tests/risk_layer/`
 3. Inspect audit logs: `logs/risk_audit.jsonl`
 4. Review code documentation in source files

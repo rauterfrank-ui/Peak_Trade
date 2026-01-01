@@ -29,6 +29,12 @@ Options:
   --base <ref>         Base ref for --changed mode (e.g. origin/main or origin/<base_branch>)
   --warn-only          Do not fail; instead return exit 2 if missing targets are found (for ops doctor)
   -h, --help           Show this help message
+
+Ignore Patterns:
+  Full-scan mode respects ignore patterns from: docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt
+  - Patterns support glob syntax (*, **)
+  - Inline marker: <!-- pt:ref-target-ignore --> skips references on that line
+  - CI mode (--changed) does NOT apply ignore patterns (strict validation)
 EOF
 }
 
@@ -108,16 +114,67 @@ if [[ ${#md_files[@]} -eq 0 ]]; then
 fi
 
 # Feed file list to python for robust parsing + line numbers
-python3 - "$REPO_ROOT" "$WARN_ONLY" <<'PY' "${md_files[@]}"
+python3 - "$REPO_ROOT" "$WARN_ONLY" "$CHANGED_ONLY" <<'PY' "${md_files[@]}"
 from __future__ import annotations
 import os, re, sys
 from pathlib import Path
 from typing import Optional
+import fnmatch
 
 root = Path(sys.argv[1]).resolve()
 warn_only = int(sys.argv[2])
+changed_only = int(sys.argv[3])
 
-files = [Path(p) for p in sys.argv[3:]]
+# Convert file paths to absolute paths
+files = []
+for p in sys.argv[4:]:
+    fp = Path(p)
+    if not fp.is_absolute():
+        fp = root / fp
+    files.append(fp.resolve())
+
+# Load ignore patterns (only in full-scan mode)
+ignore_patterns = []
+if not changed_only:
+    ignore_file = root / "docs" / "ops" / "DOCS_REFERENCE_TARGETS_IGNORE.txt"
+    if ignore_file.exists():
+        try:
+            for line in ignore_file.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                # Skip comments and empty lines
+                if line and not line.startswith("#"):
+                    ignore_patterns.append(line)
+        except Exception:
+            pass  # If we can't read ignore file, continue without it
+
+def should_ignore_file(file_path: Path, repo_root: Path) -> bool:
+    """Check if a file should be ignored based on patterns."""
+    if not ignore_patterns:
+        return False
+
+    # Get path relative to repo root for matching
+    try:
+        rel_path = file_path.relative_to(repo_root)
+        rel_path_str = str(rel_path)
+    except ValueError:
+        return False
+
+    # Check against each pattern
+    for pattern in ignore_patterns:
+        # Convert ** glob to fnmatch-compatible pattern
+        if "**" in pattern:
+            # For ** patterns, check if path starts with prefix
+            prefix = pattern.replace("/**", "").replace("**", "")
+            if rel_path_str.startswith(prefix):
+                return True
+        # Standard fnmatch
+        if fnmatch.fnmatch(rel_path_str, pattern):
+            return True
+
+    return False
+
+# Inline ignore marker
+IGNORE_MARKER = "<!-- pt:ref-target-ignore -->"
 
 # Patterns:
 #  - Markdown links: [text](relative/path.ext)
@@ -226,9 +283,16 @@ def resolve_target(target: str, doc_file: Path, repo_root: Path) -> Path | None:
     return resolved
 
 refs = []  # (doc_file, line_no, target)
+ignored_files = 0
 for f in files:
     if not f.exists():
         continue
+
+    # Check if file should be ignored (only in full-scan mode)
+    if not changed_only and should_ignore_file(f, root):
+        ignored_files += 1
+        continue
+
     try:
         lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
     except Exception:
@@ -245,6 +309,10 @@ for f in files:
 
         # Skip lines inside code blocks
         if in_code_block:
+            continue
+
+        # Skip lines with inline ignore marker
+        if IGNORE_MARKER in line:
             continue
 
         # markdown links
@@ -285,7 +353,11 @@ for doc, line_no, target in deduped:
     if not resolved.exists() or not resolved.is_file():
         missing.append((doc, line_no, target))
 
-print(f"Docs Reference Targets: scanned {len(files)} md file(s), found {len(deduped)} reference(s).")
+scanned_count = len(files) - ignored_files
+if ignored_files > 0:
+    print(f"Docs Reference Targets: scanned {scanned_count} md file(s) ({ignored_files} ignored), found {len(deduped)} reference(s).")
+else:
+    print(f"Docs Reference Targets: scanned {scanned_count} md file(s), found {len(deduped)} reference(s).")
 
 if missing:
     print(f"Missing targets: {len(missing)}")
