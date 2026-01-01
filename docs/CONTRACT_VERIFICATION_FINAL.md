@@ -35,7 +35,7 @@ Das Script hat bereits **vollständig** den Suite-Contract implementiert:
 - ✅ Zeile 21: `PROJECT_ROOT` korrekt für `scripts/ops/` Location
 - ✅ Zeilen 48-92: Erweiterte Hilfe mit exit-policy Dokumentation
 
-**Dokumentations-Check (`docs/OPS_INSPECTOR_FULL.md`):**
+**Dokumentations-Check (`docs/ops/OPS_INSPECTOR_FULL.md`):**
 - ✅ Zeilen 81-95: Suite-Contract JSON-Beispiel (standard)
 - ✅ Zeilen 103-113: Suite-Contract JSON-Beispiel (legacy)
 - ✅ Zeilen 122-143: TypeScript-Interface dokumentiert
@@ -51,7 +51,7 @@ Das Script hat bereits **vollständig** den Suite-Contract implementiert:
 - ✅ Script liegt in: `/mnt/project/scripts/ops/ops_doctor.sh`
 - ✅ `PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"` → korrekt für scripts/ops/
 - ✅ Alle Docs referenzieren: `scripts/ops/ops_doctor.sh`
-- ✅ Alle Beispiele nutzen: `scripts/ops/ops_doctor.sh`
+- ✅ Alle Beispiele nutzen: `./scripts/ops/ops_doctor.sh`
 
 **Ergebnis:** 🟢 **KORREKT**
 
@@ -122,7 +122,7 @@ $ python3 -m json.tool docs_reference_json_example.json >/dev/null
 ### Bereits committed (aus vorheriger Session):
 ```
 scripts/ops/ops_doctor.sh                 ✅ Suite-Contract implementiert
-docs/OPS_INSPECTOR_FULL.md               ✅ Suite-Contract dokumentiert
+docs/ops/OPS_INSPECTOR_FULL.md               ✅ Suite-Contract dokumentiert
 docs/ops/HARDENING_PATCH_SUMMARY.md          ✅ Phase 82A Summary
 docs_reference_json_example.json             ✅ Suite-Contract Beispiel
 scripts/ops/test_ops_inspector_smoke.sh      ✅ 6 Smoke-Tests (hängen bei full run)
@@ -155,7 +155,7 @@ Verified:
 - ✅ Suite-Contract (Option B) fully implemented in scripts/ops/ops_doctor.sh
 - ✅ JSON output: tool/mode/output_format + conditional exit_policy field
 - ✅ --exit-policy=standard|legacy flag working as designed
-- ✅ Documentation aligned (docs/OPS_INSPECTOR_FULL.md)
+- ✅ Documentation aligned (docs/ops/OPS_INSPECTOR_FULL.md)
 - ✅ All references use correct path (scripts/ops/ops_doctor.sh)
 - ✅ PROJECT_ROOT calculation correct for scripts/ops/ location
 
@@ -202,7 +202,7 @@ Status: PR-READY
 - ✅ Confirmed Suite-Contract implementation (tool/mode/output_format/exit_policy)
 - ✅ Validated --exit-policy=standard|legacy flag (lines 35-46)
 - ✅ Verified PROJECT_ROOT calculation for scripts/ops/ location (line 21)
-- ✅ Checked documentation alignment (docs/OPS_INSPECTOR_FULL.md)
+- ✅ Checked documentation alignment (docs/ops/OPS_INSPECTOR_FULL.md)
 
 **Smoke Tests Created:**
 - ✅ `test_ops_inspector_minimal.sh` with 3 functional tests
@@ -299,7 +299,7 @@ bash -n scripts/ops/ops_doctor.sh
 - [x] Suite-Contract confirmed in implementation (lines 442-462)
 - [x] --exit-policy flag verified (lines 35-46)
 - [x] PROJECT_ROOT calculation checked (line 21)
-- [x] Documentation alignment verified (docs/OPS_INSPECTOR_FULL.md)
+- [x] Documentation alignment verified (docs/ops/OPS_INSPECTOR_FULL.md)
 - [x] Smoke tests created and passing (3/3)
 - [x] Bash syntax validated
 - [x] JSON example validated
