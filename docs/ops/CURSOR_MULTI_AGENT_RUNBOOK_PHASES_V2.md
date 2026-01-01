@@ -126,7 +126,7 @@ bash 'scripts'/'ops'/'bg_job.sh' --help || bash 'scripts'/'ops'/'bg_job.sh' help
 
 Spekuliere nicht über Subcommands oder Flags. Nutze die Help-Ausgabe und die Referenzdokumentation.
 
-**Referenz (vollständig):** `docs/ops/PR_486_MERGE_LOG.md`
+**Referenz (vollständig):** `docs/ops/RUNBOOK_BACKGROUND_JOBS.md`
 
 ### 7.3 Operator-Notizen Standard
 
@@ -134,7 +134,7 @@ Jeder bg_job Run im Multi-Agent Workflow muss mindestens dokumentieren:
 
 1. **Zweck / Step-ID**: Welcher Phase/WP-Step (z.B. "WP0B Risk Suite", "Phase 1 Backtest")
 2. **Startzeit**: ISO-Format oder Operator-Timestamp
-3. **Status/Logs Location**: Wo findet Operator die Outputs (ohne konkrete Subcommands zu erfinden; verweise auf Help + PR_486 Merge Log)
+3. **Status/Logs Location**: Wo findet Operator die Outputs (ohne konkrete Subcommands zu erfinden; verweise auf Help + RUNBOOK_BACKGROUND_JOBS.md)
 4. **Exit-Code erwartung**: Was bedeutet Success (typisch: `0`)
 
 **Beispiel (Template für Session Runlog):**
@@ -144,7 +144,7 @@ Jeder bg_job Run im Multi-Agent Workflow muss mindestens dokumentieren:
 - **Zweck:** [kurze Beschreibung]
 - **Start:** [YYYY-MM-DD HH:MM:SS]
 - **Command:** [discovery-first: siehe Help]
-- **Status/Logs:** [prüfe via Runner-Mechanik, siehe PR_486_MERGE_LOG.md]
+- **Status/Logs:** [prüfe via Runner-Mechanik, siehe RUNBOOK_BACKGROUND_JOBS.md]
 - **Exit-Code:** [erwartet: 0]
 ```
 
@@ -159,11 +159,11 @@ Jeder bg_job Run im Multi-Agent Workflow muss mindestens dokumentieren:
 
 2. **Logs/Status via Runner-Mechanik nachschlagen:**
    - Keine Spekulation über interne Flags
-   - Folge der Dokumentation in `docs/ops/PR_486_MERGE_LOG.md`
+   - Folge der Dokumentation in `docs/ops/RUNBOOK_BACKGROUND_JOBS.md`
 
 3. **Exit-Code interpretieren:**
    - `0` = Success
-   - Non-zero = siehe Logs und PR_486 Merge Log für Details
+   - Non-zero = siehe Logs und RUNBOOK_BACKGROUND_JOBS.md für Details
 
 4. **Bei fortgesetzten Problemen:**
    - Operator-Review des vollständigen Logs

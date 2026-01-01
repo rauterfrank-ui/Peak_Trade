@@ -348,4 +348,4 @@ Im Multi-Agent Kontext entstehen oft lange laufende Tasks (Backtests, VaR-Suites
 bash 'scripts'/'ops'/'bg_job.sh' --help || bash 'scripts'/'ops'/'bg_job.sh' help
 ```
 
-**Referenz:** `docs/ops/PR_486_MERGE_LOG.md`
+**Referenz:** `docs/ops/RUNBOOK_BACKGROUND_JOBS.md`
