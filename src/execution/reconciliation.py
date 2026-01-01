@@ -16,8 +16,9 @@ from typing import List, Dict, Optional
 from datetime import datetime
 from decimal import Decimal
 from dataclasses import dataclass
+import uuid
 
-from src.execution.contracts import ReconDiff, OrderState
+from src.execution.contracts import ReconDiff, ReconSummary, OrderState
 from src.execution.position_ledger import PositionLedger, Position
 from src.execution.order_ledger import OrderLedger
 
@@ -177,6 +178,7 @@ class ReconciliationEngine:
                     local_state=None,
                     exchange_state=None,
                     severity=severity,
+                    diff_type="POSITION",
                     description=f"Position mismatch for {symbol}: internal={internal_qty}, external={external_qty}, delta={delta}",
                     details={
                         "symbol": symbol,
@@ -227,6 +229,7 @@ class ReconciliationEngine:
                 local_state=None,
                 exchange_state=None,
                 severity="FAIL",
+                diff_type="CASH",
                 description=f"Cash mismatch: internal={internal_cash}, external={external_cash}, delta={delta}",
                 details={
                     "internal_cash": str(internal_cash),
@@ -270,6 +273,72 @@ class ReconciliationEngine:
             return "WARN"
         else:
             return "FAIL"
+
+    def create_summary(
+        self,
+        diffs: List[ReconDiff],
+        session_id: str = "",
+        strategy_id: str = "",
+        top_n: int = 10,
+    ) -> ReconSummary:
+        """
+        Create structured reconciliation summary.
+
+        Design (WP0D Observability):
+        - Aggregate counts by severity and diff_type
+        - Select top-N diffs (deterministic ordering)
+        - Flag critical/fail conditions
+
+        Args:
+            diffs: List of ReconDiff
+            session_id: Session identifier
+            strategy_id: Strategy identifier
+            top_n: Number of top diffs to include
+
+        Returns:
+            ReconSummary with aggregated statistics
+        """
+        # Count by severity
+        counts_by_severity: Dict[str, int] = {}
+        for diff in diffs:
+            counts_by_severity[diff.severity] = counts_by_severity.get(diff.severity, 0) + 1
+
+        # Count by type
+        counts_by_type: Dict[str, int] = {}
+        for diff in diffs:
+            counts_by_type[diff.diff_type] = counts_by_type.get(diff.diff_type, 0) + 1
+
+        # Determine max severity (CRITICAL > FAIL > ERROR > WARN > INFO)
+        severity_order = ["CRITICAL", "FAIL", "ERROR", "WARN", "INFO"]
+        max_severity = "INFO"
+        for sev in severity_order:
+            if counts_by_severity.get(sev, 0) > 0:
+                max_severity = sev
+                break
+
+        # Sort diffs deterministically: severity (desc), timestamp (asc), diff_id (asc)
+        severity_rank = {s: i for i, s in enumerate(severity_order)}
+        sorted_diffs = sorted(
+            diffs,
+            key=lambda d: (severity_rank.get(d.severity, 99), d.timestamp, d.diff_id),
+        )
+
+        # Select top-N
+        top_diffs = sorted_diffs[:top_n]
+
+        return ReconSummary(
+            run_id=str(uuid.uuid4()),
+            timestamp=datetime.utcnow(),
+            session_id=session_id,
+            strategy_id=strategy_id,
+            total_diffs=len(diffs),
+            counts_by_severity=counts_by_severity,
+            counts_by_type=counts_by_type,
+            top_diffs=top_diffs,
+            has_critical=counts_by_severity.get("CRITICAL", 0) > 0,
+            has_fail=counts_by_severity.get("FAIL", 0) > 0,
+            max_severity=max_severity,
+        )
 
     def export_reconciliation_report(
         self,

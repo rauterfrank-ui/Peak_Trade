@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import json
 
-from src.execution.contracts import LedgerEntry
+from src.execution.contracts import LedgerEntry, ReconSummary
 
 
 # ============================================================================
@@ -138,6 +138,62 @@ class AuditLog:
         """
         with open(file_path, "w") as f:
             f.write(self.export_to_json())
+
+    def append_recon_summary(self, summary: ReconSummary) -> None:
+        """
+        Append reconciliation summary as audit event.
+
+        WP0D Observability: Emit structured recon summary to audit trail.
+        Each recon run generates 1 summary event + optional top-N diffs.
+
+        Args:
+            summary: ReconSummary to log
+        """
+        # Create summary audit entry
+        summary_entry = LedgerEntry(
+            entry_id=f"recon_summary_{summary.run_id}",
+            timestamp=summary.timestamp,
+            sequence=0,  # Will be set by append()
+            event_type="RECON_SUMMARY",
+            client_order_id="",
+            old_state=None,
+            new_state=None,
+            details={
+                "run_id": summary.run_id,
+                "session_id": summary.session_id,
+                "strategy_id": summary.strategy_id,
+                "total_diffs": summary.total_diffs,
+                "counts_by_severity": summary.counts_by_severity,
+                "counts_by_type": summary.counts_by_type,
+                "has_critical": summary.has_critical,
+                "has_fail": summary.has_fail,
+                "max_severity": summary.max_severity,
+            },
+        )
+
+        self.append(summary_entry)
+
+        # Append top-N diffs as individual entries (for queryability)
+        for i, diff in enumerate(summary.top_diffs):
+            diff_entry = LedgerEntry(
+                entry_id=f"recon_diff_{summary.run_id}_{i}",
+                timestamp=diff.timestamp,
+                sequence=0,  # Will be set by append()
+                event_type="RECON_DIFF",
+                client_order_id=diff.client_order_id,
+                old_state=None,
+                new_state=None,
+                details={
+                    "run_id": summary.run_id,
+                    "diff_id": diff.diff_id,
+                    "diff_type": diff.diff_type,
+                    "severity": diff.severity,
+                    "description": diff.description,
+                    "diff_details": diff.details,
+                    "resolved": diff.resolved,
+                },
+            )
+            self.append(diff_entry)
 
     def to_dict(self) -> Dict[str, Any]:
         """
