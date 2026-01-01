@@ -1428,6 +1428,7 @@ Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
 ## Verified Merge Logs
+- **PR #470 (Recon Audit Gate Wrapper: pyenv-safe Python Runner)** → `docs/ops/PR_470_MERGE_LOG.md`
 - **PR #462 (WP0D LedgerEntry Mapping + Reconciliation Wiring, Phase-0 Integration Day)** → `docs/ops/PR_462_MERGE_LOG.md` | [Integration Report](integration_days/PHASE0_ID0_WP0D_INTEGRATION_DAY_REPORT.md)
 - **PR #458 (WP0E Contracts & Interfaces, Phase-0 Gate Report)** → `docs/ops/PR_458_MERGE_LOG.md`
 - **PR #456 (Phase-0 A0 Integration Sweep, finalize status)** → `docs/ops/PR_456_MERGE_LOG.md`
@@ -1448,5 +1449,4 @@ Security:
 
 Post-merge documentation logs for operational PRs.
 
-- [PR #470](PR_470_MERGE_LOG.md) — fix(execution): Recon Audit Gate Wrapper pyenv-safe Python Runner (merged 2026-01-01)
 - [PR #429](PR_429_MERGE_LOG.md) — docs(risk): Phase 11 – VaR Backtest Suite UX & Docs-Verkabelung (merged 2025-12-29) <!-- PR-429-MERGE-LOG -->
