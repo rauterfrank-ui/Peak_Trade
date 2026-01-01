@@ -83,7 +83,7 @@ python scripts/run_scheduler.py \
 
 ## Dokumentation
 
-- **Hauptdokumentation**: [`docs/AUTONOMOUS_AI_WORKFLOW.md`](docs/AUTONOMOUS_AI_WORKFLOW.md)
+- **Hauptdokumentation**: `docs/AUTONOMOUS_AI_WORKFLOW.md`
 - **API-Dokumentation**: Siehe Module-Docstrings in `src/autonomous/`
 - **Tests**: `tests/test_autonomous_*.py`
 
@@ -216,7 +216,7 @@ Geplante Erweiterungen:
 ## Support & Feedback
 
 Bei Fragen oder Problemen:
-- Dokumentation: [`docs/AUTONOMOUS_AI_WORKFLOW.md`](docs/AUTONOMOUS_AI_WORKFLOW.md)
+- Dokumentation: `docs/AUTONOMOUS_AI_WORKFLOW.md`
 - Tests: `python -m pytest tests/test_autonomous_*.py -v`
 - Dry-Run: `python scripts/run_autonomous_workflow.py --help`
 
