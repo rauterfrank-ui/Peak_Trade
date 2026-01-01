@@ -23,7 +23,7 @@ Out of scope:
 - Exchange credential handling.
 
 ## Dependencies
-- WP4A: docs/execution/WP4A_LIVE_READINESS_GOVERNANCE_LOCK_PACKET.md
+- WP4A: docs/execution/phase4/WP4A_LIVE_READINESS_GOVERNANCE_LOCK_PACKET.md
 
 ## Definitions
 - Drill: A controlled, rtable procedure validating a safety or operability invariant.
