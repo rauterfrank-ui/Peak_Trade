@@ -105,25 +105,78 @@ Hinweis: Die inhaltlichen Details hängen an der Live-Execution-Roadmap. Dieses 
 - `rg -n "\]\(docs/" docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md`  (check links)
 - Repo Standard: run lint/doc gates as per existing CI, if available locally.
 
-## 6.1 When to use bg_job
+---
 
-Nutze bg_job für Tasks mit:
-- langer Laufzeit (> 5 Minuten)
-- Timeout-Risiko in normalen Shells
-- erforderlicher Nachverfolgung (Logs, Exit-Codes, PID-Management)
+## 7. bg_job Execution Pattern (Standard)
 
-## 6.2 bg_job (Discovery-first)
+### 7.1 Wann verwenden
 
-**Command:**
+Nutze bg_job für Multi-Agent Workflow Steps mit:
+- **Langer Laufzeit** (> 5 Minuten): Backtests, Sweeps, VaR-Suites, Trainings
+- **Timeout-Risiko**: normale Cursor/Shell-Sessions brechen bei langen Tasks ab
+- **CI-ähnliche Robustheit**: saubere Exit-Code-Erfassung, PID-Tracking, Log-Capture
+- **Nachverfolgung erforderlich**: Operator muss Status/Logs später prüfen können
+
+### 7.2 Discovery-first Einstieg
+
+**Starte immer mit:**
 ```bash
 bash 'scripts'/'ops'/'bg_job.sh' --help || bash 'scripts'/'ops'/'bg_job.sh' help
 ```
 
-**Referenz:** `docs/ops/PR_486_MERGE_LOG.md`
+Spekuliere nicht über Subcommands oder Flags. Nutze die Help-Ausgabe und die Referenzdokumentation.
 
-## 6.3 Gate-Safety (Docs Reference Targets)
+**Referenz (vollständig):** `docs/ops/PR_486_MERGE_LOG.md`
 
-**Maskierungsregel:** Der Pfad muss in Docs als `'scripts'/'ops'/'bg_job.sh'` geschrieben werden (nicht als durchgehender Pfad), um docs-reference-targets-gate Konflikte zu vermeiden.
+### 7.3 Operator-Notizen Standard
+
+Jeder bg_job Run im Multi-Agent Workflow muss mindestens dokumentieren:
+
+1. **Zweck / Step-ID**: Welcher Phase/WP-Step (z.B. "WP0B Risk Suite", "Phase 1 Backtest")
+2. **Startzeit**: ISO-Format oder Operator-Timestamp
+3. **Status/Logs Location**: Wo findet Operator die Outputs (ohne konkrete Subcommands zu erfinden; verweise auf Help + PR_486 Merge Log)
+4. **Exit-Code erwartung**: Was bedeutet Success (typisch: `0`)
+
+**Beispiel (Template für Session Runlog):**
+```markdown
+### bg_job Run — [Step-ID]
+
+- **Zweck:** [kurze Beschreibung]
+- **Start:** [YYYY-MM-DD HH:MM:SS]
+- **Command:** [discovery-first: siehe Help]
+- **Status/Logs:** [prüfe via Runner-Mechanik, siehe PR_486_MERGE_LOG.md]
+- **Exit-Code:** [erwartet: 0]
+```
+
+### 7.4 Troubleshooting-Minimum
+
+**Bei Problemen:**
+
+1. **Erst Help/Usage prüfen:**
+   ```bash
+   bash 'scripts'/'ops'/'bg_job.sh' --help
+   ```
+
+2. **Logs/Status via Runner-Mechanik nachschlagen:**
+   - Keine Spekulation über interne Flags
+   - Folge der Dokumentation in `docs/ops/PR_486_MERGE_LOG.md`
+
+3. **Exit-Code interpretieren:**
+   - `0` = Success
+   - Non-zero = siehe Logs und PR_486 Merge Log für Details
+
+4. **Bei fortgesetzten Problemen:**
+   - Operator-Review des vollständigen Logs
+   - Check: Permissions, Disk Space, Timeout-Settings
+
+### 7.5 Gate-Safety Reminder
+
+**Docs Reference Targets Gate:**
+- Schreibe Script-Pfad **niemals** als durchgehenden Pfad (roher Token)
+- Verwende **immer** die Maskierung: `'scripts'/'ops'/'bg_job.sh'`
+- Grund: verhindert docs-reference-targets-gate Konflikte
+
+---
 
 ## Appendix B — Phase 4 Runner — Final Live Trade (Manual-Only, Governance-Lock)
 
