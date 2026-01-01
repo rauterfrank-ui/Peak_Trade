@@ -1,3 +1,4 @@
+# Canary: exec override mechanism validation
 """
 Paper Execution - WP1B (Phase 1 Shadow Trading)
 
