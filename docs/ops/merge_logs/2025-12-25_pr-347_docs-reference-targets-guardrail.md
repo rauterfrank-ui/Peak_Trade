@@ -41,9 +41,11 @@ CI (Required Checks) grün:
 LOW (docs/ops tooling + CI only). Kein Einfluss auf Trading-Logic, Risk-Engine oder Execution.
 
 ## Operator How-To
-- Lokal:
-  - `./scripts/ops/verify_docs_reference_targets.sh`
+- Lokal (CI Parity - empfohlen):
+  - `./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
   - `./scripts/ops/ops_center.sh doctor`
+- Lokal (Full-Scan Audit - optional):
+  - `./scripts/ops/verify_docs_reference_targets.sh` <!-- pt:ref-target-ignore -->
 - CI:
   - Job `docs-reference-targets-gate` muss grün sein (Required Check)
 

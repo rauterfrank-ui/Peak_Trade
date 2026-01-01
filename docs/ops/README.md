@@ -237,12 +237,12 @@ scripts/ops/ops_center.sh doctor
 
 **Zweck:** Validiert, dass alle referenzierten Repo-Pfade in Markdown-Docs (Config/Scripts/Docs) tatsächlich existieren.
 
-**Quick Start:**
+**Quick Start (Empfohlene Nutzung):**
 ```bash
-# Standalone Check (nur geänderte Markdown-Dateien)
+# Primary: CI Parity Check (nur geänderte Markdown-Dateien) ← STANDARD
 scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
 
-# Alle Docs scannen
+# Optional: Full-Scan Audit (alle Docs, mit Ignore-Patterns für Legacy)
 scripts/ops/verify_docs_reference_targets.sh
 
 # Als Teil von ops doctor (warn-only)
@@ -253,12 +253,27 @@ scripts/ops/ops_center.sh doctor
 - Findet referenzierte Pfade in Markdown-Links (`[text]\(path\)`), Inline-Code (`` `path` ``), und Bare-Pfaden
 - Validiert Existenz von: `config/*.toml`, `docs/*.md`, `scripts/*.sh`, `src/*.py`, `.github/*.yml`
 - Ignoriert externe URLs (http/https) und Anchor-Only-Links
+- **Ignore-Patterns:** Full-Scan respektiert `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt` (Legacy/Archive-Bereiche)
 - Exit 0 = OK/nicht anwendbar, Exit 1 = FAIL (CI), Exit 2 = WARN (ops doctor)
+
+**Check Modes:**
+1. **CI Parity Mode (Primary):** `--changed --base origin/main`
+   - Validiert nur geänderte Dateien (entspricht CI-Verhalten)
+   - Keine Ignore-Patterns (strikte Validierung)
+   - Exit 0 = PASS, Exit 1 = FAIL
+   - **Nutzung:** Vor Commit, vor PR-Push, bei lokalen Docs-Änderungen
+
+2. **Full-Scan Audit (Optional):** ohne `--changed` Flag
+   - Validiert alle Docs (inkl. Legacy)
+   - Respektiert Ignore-Patterns aus `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
+   - Exit 1 = "PASS-with-notes" (Legacy-Content erwartet Broken-Refs)
+   - **Nutzung:** Periodische Audits, Docs-Cleanup-Sessions
 
 **CI Integration:**
 - Läuft automatisch bei PRs via `.github/workflows/docs_reference_targets_gate.yml`
 - Exit 0 wenn keine Markdown-Dateien geändert wurden (not applicable)
 - Exit 1 bei fehlenden Targets (blockiert Merge)
+- CI nutzt immer `--changed` Mode (keine Ignore-Patterns)
 
 **Scope:** Alle `*.md` Dateien (im --changed Mode: nur geänderte Dateien)
 

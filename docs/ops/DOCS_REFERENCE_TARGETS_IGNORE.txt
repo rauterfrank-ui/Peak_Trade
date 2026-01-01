@@ -1,0 +1,21 @@
+# Docs Reference Targets - Ignore Patterns
+# =========================================
+# This file defines patterns for markdown files/paths that should be excluded
+# from reference target validation in FULL-SCAN mode.
+#
+# Format:
+#   - One pattern per line
+#   - Lines starting with # are comments
+#   - Empty lines are ignored
+#   - Patterns are matched against file paths relative to repo root
+#   - Supports glob patterns (*, **)
+#
+# Note: These patterns are ONLY applied in full-scan mode.
+#       CI mode (--changed --base origin/main) is NOT affected.
+
+# Legacy worklogs - historical documentation, paths may be outdated
+docs/_worklogs/**
+
+# Archive directories - historical content not maintained
+docs/archive/**
+archive/**

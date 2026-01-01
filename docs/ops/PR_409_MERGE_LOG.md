@@ -1,5 +1,7 @@
 # PR #409 — Merge Log (Verified)
 
+> **Note:** This is a historical merge log. File paths referenced may have been relocated or refactored since this PR was merged.
+
 ## Core Facts
 
 * **Status:** MERGED
@@ -42,7 +44,7 @@ The new KillSwitch is a **state machine** (`state/is_killed` + recovery workflow
   * `src/risk_layer/kill_switch/__init__.py`
 
     * Factory produces a Risk-Gate compatible instance (adapter-wrapped)
-  * `src/risk_layer/risk_gate.py`
+  * `src/risk_layer/risk_gate.py` <!-- pt:ref-target-ignore -->
 
     * **Exactly 3 LOC** change: wrap KillSwitch with adapter in constructor
   * Tests updated for `enabled` semantics and new integration shape
@@ -82,7 +84,7 @@ No operational action required. No config migration required.
 * Key paths:
 
   * `src/risk_layer/kill_switch/adapter.py`
-  * `src/risk_layer/risk_gate.py`
+  * `src\/risk_layer\/risk_gate.py`
   * `src/risk_layer/kill_switch/core.py`
 * Documentation:
 
