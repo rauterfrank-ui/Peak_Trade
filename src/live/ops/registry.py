@@ -4,6 +4,8 @@ Session Registry - WP1D (Phase 1 Shadow Trading)
 Read-only wrapper around existing LiveSessionRegistry for operator UX.
 """
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from datetime import datetime

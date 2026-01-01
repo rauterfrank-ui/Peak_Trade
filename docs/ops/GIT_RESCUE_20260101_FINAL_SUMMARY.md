@@ -108,9 +108,9 @@ Für jeden recovered/* Branch:
 ### 2. Weitere Branches aus Top-20 reviewen
 
 Die nächsten Kandidaten (Rank 4-10):
-- `feat/strategy-layer-vnext-runner` (7 ahead, 2.6k lines)
-- `docs/docs-reference-targets-gate-cleanup` (6 ahead)
-- `docs/execution-wp4b-operator-drills-evidence-pack` (5 ahead, 1.6k lines)
+- Branch: `feat/strategy-layer-vnext-runner` (7 ahead, 2.6k lines)
+- Branch: `docs/docs-reference-targets-gate-cleanup` (6 ahead) <!-- pt:ref-target-ignore -->
+- Branch: `docs/execution-wp4b-operator-drills-evidence-pack` (5 ahead, 1.6k lines) <!-- pt:ref-target-ignore -->
 
 ### 3. Optional: Cleanup-Report erstellen
 
