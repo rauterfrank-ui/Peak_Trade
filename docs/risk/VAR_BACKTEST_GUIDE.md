@@ -25,7 +25,7 @@ Dieses Modul implementiert statistische Backtests für VaR-Modelle, insbesondere
 - Dynamische Positionsgrößenänderungen
 - Automatisierte Trading-Entscheidungen
 
-> **Für Live-Trading:** Siehe `src/risk_layer/var_gate.py`
+> **Für Live-Trading:** Siehe `src/live/live_gates.py` und risk enforcement modules
 
 ---
 

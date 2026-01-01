@@ -8,11 +8,11 @@
 
 ```bash
 # Standard Policy (default) - dokumentiertes Verhalten
-./scripts/ops/ops_inspector.sh
+./scripts/ops/ops_doctor.sh
 # Exit: 0=OK, 1=WARN, 2=FAIL
 
 # Legacy Policy - für bestehende Workflows
-./scripts/ops/ops_inspector.sh --exit-policy legacy
+./scripts/ops/ops_doctor.sh --exit-policy legacy
 # Exit: Bestehendes Verhalten beibehalten
 ```
 
@@ -37,7 +37,7 @@
 - JSON Contract: `{"tool":"ops_inspector","mode":"doctor",...}`
 
 **Änderungen**:
-- Script bleibt: `scripts/ops/ops_inspector.sh`
+- Script bleibt: `scripts/ops/ops_doctor.sh`
 - JSON `tool` field: `"ops_inspector"` (bereits implementiert)
 - Dokumentation entsprechend angepasst
 
@@ -96,7 +96,7 @@
 ```
 Peak_Trade/
 ├── scripts/ops/
-│   └── ops_inspector.sh          [GEÄNDERT] +80 Zeilen (Exit Policy, Sortierung)
+│   └── ops_doctor.sh          [GEÄNDERT] +80 Zeilen (Exit Policy, Sortierung)
 └── tests/ops/
     └── test_ops_inspector_smoke.py  [GEÄNDERT] +70 Zeilen (4 neue Tests)
 ```
@@ -109,14 +109,14 @@ Peak_Trade/
 
 ```bash
 # Standard Policy (default)
-./scripts/ops/ops_inspector.sh
-./scripts/ops/ops_inspector.sh --exit-policy standard
+./scripts/ops/ops_doctor.sh
+./scripts/ops/ops_doctor.sh --exit-policy standard
 
 # Legacy Policy (für bestehende CI-Workflows)
-./scripts/ops/ops_inspector.sh --exit-policy legacy
+./scripts/ops/ops_doctor.sh --exit-policy legacy
 
 # JSON mit Policy-Info
-./scripts/ops/ops_inspector.sh --json --exit-policy legacy | jq .exit_policy
+./scripts/ops/ops_doctor.sh --json --exit-policy legacy | jq .exit_policy
 # Output: "legacy"
 ```
 
@@ -124,7 +124,7 @@ Peak_Trade/
 
 ```bash
 # JSON: Checks alphabetisch nach ID
-./scripts/ops/ops_inspector.sh --json | jq '.checks[].id'
+./scripts/ops/ops_doctor.sh --json | jq '.checks[].id'
 # Output:
 # "git_root"
 # "git_status"
@@ -138,7 +138,7 @@ Peak_Trade/
 # "uv_lock"
 
 # Human-Readable: Gleiche Sortierung
-./scripts/ops/ops_inspector.sh
+./scripts/ops/ops_doctor.sh
 ```
 
 ### Tests laufen lassen
@@ -191,10 +191,10 @@ cd ~/Peak_Trade
 uv run pytest tests/ops/test_ops_inspector_smoke.py -v
 
 # 2. Sortierte Ausgabe prüfen
-./scripts/ops/ops_inspector.sh --json | jq '.checks[].id'
+./scripts/ops/ops_doctor.sh --json | jq '.checks[].id'
 
 # 3. Exit Policy testen
-./scripts/ops/ops_inspector.sh --exit-policy legacy
+./scripts/ops/ops_doctor.sh --exit-policy legacy
 ```
 
 ### Integration

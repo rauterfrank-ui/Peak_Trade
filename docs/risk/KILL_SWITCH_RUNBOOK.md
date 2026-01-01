@@ -372,8 +372,8 @@ print("✅ All manual smoke tests passed")
 
 ## Related Documentation
 
-- `src/risk_layer/kill_switch.py`: Kill switch implementation
-- `src/risk_layer/risk_gate.py`: Risk gate orchestrator
+- `src/risk_layer/kill_switch/`: Kill switch implementation (module)
+- `src/live/live_gates.py`: Live execution gates (includes risk enforcement)
 - `config/risk_kill_switch_example.toml`: Configuration example
 - `tests/risk_layer/`: Test suite
 

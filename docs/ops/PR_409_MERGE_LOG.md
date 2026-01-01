@@ -1,5 +1,7 @@
 # PR #409 — Merge Log (Verified)
 
+> **Note:** This is a historical merge log. File paths referenced may have been relocated or refactored since this PR was merged.
+
 ## Core Facts
 
 * **Status:** MERGED

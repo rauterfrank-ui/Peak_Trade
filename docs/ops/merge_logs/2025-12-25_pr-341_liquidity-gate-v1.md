@@ -1,5 +1,7 @@
 # Merge Log — PR #341 — Liquidity Gate v1
 
+> **Note:** This is a historical merge log. File paths referenced may have been relocated or refactored since this PR was merged.
+
 - PR: #341 — feat(risk): liquidity gate v1 (spread/slippage/depth guards + audit)
 - Merge: 2025-12-25 → main
 - Commit: 5b0c056

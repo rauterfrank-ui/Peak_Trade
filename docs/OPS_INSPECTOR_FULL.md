@@ -18,20 +18,20 @@ Der **Ops Inspector** ist Peak_Trades zentraler "Doctor"-Tool für automatisiert
 
 ```bash
 # Standard Health Check (human-readable)
-./scripts/ops/ops_inspector.sh
-./scripts/ops/ops_inspector.sh doctor  # equivalent
+./scripts/ops/ops_doctor.sh
+./scripts/ops/ops_doctor.sh doctor  # equivalent
 
 # JSON Output für CI/Automation
-./scripts/ops/ops_inspector.sh --json
+./scripts/ops/ops_doctor.sh --json
 
 # Extended Diagnostics (MVP: minimal extras)
-./scripts/ops/ops_inspector.sh --full
+./scripts/ops/ops_doctor.sh --full
 
 # Diagnostic Bundle erstellen
-./scripts/ops/ops_inspector.sh --dump-dir /tmp/peak_trade_debug
+./scripts/ops/ops_doctor.sh --dump-dir /tmp/peak_trade_debug
 
 # Hilfe anzeigen
-./scripts/ops/ops_inspector.sh --help
+./scripts/ops/ops_doctor.sh --help
 ```
 
 ---
@@ -51,7 +51,7 @@ Der Ops Inspector kommuniziert seinen Status über standardisierte Exit Codes:
 ```yaml
 # GitHub Actions Beispiel
 - name: Run Ops Inspector
-  run: ./scripts/ops/ops_inspector.sh --json
+  run: ./scripts/ops/ops_doctor.sh --json
   # Fails CI bei exit code 2, warnt bei exit code 1
 ```
 
@@ -281,7 +281,7 @@ interface Response {
 ### Verwendung
 
 ```bash
-./scripts/ops/ops_inspector.sh --dump-dir /tmp/peak_trade_debug
+./scripts/ops/ops_doctor.sh --dump-dir /tmp/peak_trade_debug
 ```
 
 ### Was wird geschrieben?
@@ -321,7 +321,7 @@ Error: Not in a git repository
 
 # Fix:
 cd ~/Peak_Trade
-./scripts/ops/ops_inspector.sh
+./scripts/ops/ops_doctor.sh
 ```
 
 #### uv.lock fehlt
@@ -374,7 +374,7 @@ Warning: Missing 2 key ops scripts
 → Consider adding missing operational scripts
 
 # Check welche fehlen:
-./scripts/ops/ops_inspector.sh --json | jq '.checks[] | select(.id=="ops_scripts") | .evidence'
+./scripts/ops/ops_doctor.sh --json | jq '.checks[] | select(.id=="ops_scripts") | .evidence'
 
 # Entscheidung:
 # - Scripts sind noch nicht implementiert → OK, Warning akzeptieren
@@ -400,12 +400,12 @@ Warning: Missing 2 key ops scripts
 
 **Fix**:
 1. Prüfe Exit Code: `echo $?` nach Script-Ausführung
-2. Teste lokal: `./scripts/ops/ops_inspector.sh --json | jq .`
-3. Validiere JSON: `./scripts/ops/ops_inspector.sh --json | python3 -m json.tool`
+2. Teste lokal: `./scripts/ops/ops_doctor.sh --json | jq .`
+3. Validiere JSON: `./scripts/ops/ops_doctor.sh --json | python3 -m json.tool`
 
 Bei reproduzierbaren Fehlern: Issue in Peak_Trade öffnen mit:
 ```bash
-./scripts/ops/ops_inspector.sh --dump-dir /tmp/bug_report
+./scripts/ops/ops_doctor.sh --dump-dir /tmp/bug_report
 # Bundle an Issue anhängen
 ```
 
@@ -420,7 +420,7 @@ Bei reproduzierbaren Fehlern: Issue in Peak_Trade öffnen mit:
 # .git/hooks/pre-commit
 
 echo "Running Ops Inspector..."
-./scripts/ops/ops_inspector.sh
+./scripts/ops/ops_doctor.sh
 
 EXIT_CODE=$?
 
@@ -452,7 +452,7 @@ jobs:
       - name: Run Ops Inspector
         id: doctor
         run: |
-          ./scripts/ops/ops_inspector.sh --json | tee ops_report.json
+          ./scripts/ops/ops_doctor.sh --json | tee ops_report.json
           echo "status=$(cat ops_report.json | jq -r '.summary.status')" >> $GITHUB_OUTPUT
           echo "exit_code=$(cat ops_report.json | jq -r '.summary.exit_code')" >> $GITHUB_OUTPUT
 
@@ -479,7 +479,7 @@ jobs:
       - name: Create Dump on Failure
         if: failure()
         run: |
-          ./scripts/ops/ops_inspector.sh --dump-dir /tmp/ops_dump
+          ./scripts/ops/ops_doctor.sh --dump-dir /tmp/ops_dump
 
       - name: Upload Dump
         if: failure()
@@ -494,13 +494,13 @@ jobs:
 ```bash
 # ~/.zshrc oder ~/.bashrc
 
-alias pt-doctor="cd ~/Peak_Trade && ./scripts/ops/ops_inspector.sh"
-alias pt-doctor-json="cd ~/Peak_Trade && ./scripts/ops/ops_inspector.sh --json | jq ."
+alias pt-doctor="cd ~/Peak_Trade && ./scripts/ops/ops_doctor.sh"
+alias pt-doctor-json="cd ~/Peak_Trade && ./scripts/ops/ops_doctor.sh --json | jq ."
 
 # Quick Status Check
 pt-status() {
   cd ~/Peak_Trade
-  STATUS=$(./scripts/ops/ops_inspector.sh --json | jq -r '.summary.status')
+  STATUS=$(./scripts/ops/ops_doctor.sh --json | jq -r '.summary.status')
   case "$STATUS" in
     healthy)  echo "🟢 HEALTHY" ;;
     degraded) echo "🟡 DEGRADED" ;;
@@ -518,7 +518,7 @@ pt-status() {
 **Zweck**: Pre-Deployment Validation mit erweiterten Checks
 
 ```bash
-./scripts/ops/ops_inspector.sh --preflight
+./scripts/ops/ops_doctor.sh --preflight
 ```
 
 **Zusätzliche Checks**:

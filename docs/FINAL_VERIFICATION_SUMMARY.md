@@ -10,7 +10,7 @@
 
 ### ✅ Phase 1: Konsistenz-Check Doku ↔ Implementierung
 
-**Implementierung (ops_inspector.sh):**
+**Implementierung (ops_doctor.sh):**
 - JSON-Output enthält: `timestamp`, `status`, `exit_code`, `checks`
 - JSON-Output enthält NICHT: `mode`, `output_format`, `exit_policy`
 - Severity/Status Werte: **UPPERCASE** (`INFO`, `WARN`, `FAIL`, `OK`, `SKIP`)
@@ -36,7 +36,7 @@
 **Implikation:** Test-Suite muss noch erstellt werden (Phase 82B geplant).
 
 **Workaround:** Manuelle Validierung durch:
-1. Bash-Syntax-Check: `bash -n ops_inspector.sh` → ✅ OK
+1. Bash-Syntax-Check: `bash -n ops_doctor.sh` → ✅ OK
 2. JSON-Struktur-Check: Python-basierte Validierung → ✅ OK
 3. Code-Review: Alle 11 Checks implementiert → ✅ OK
 
@@ -78,7 +78,7 @@ docs_reference_json_example.json    1.8K  # Validiertes JSON-Beispiel
 
 ### Im Repo vorhanden (unverändert):
 ```
-ops_inspector.sh                         # Implementierung (funktioniert korrekt)
+ops_doctor.sh                         # Implementierung (funktioniert korrekt)
 ```
 
 ### Nicht im Repo (nur Uploads):
@@ -97,7 +97,7 @@ HARDENING_PATCH_SUMMARY.md               # Wurde gepatcht, aber nicht committed
 docs(ops): add ops inspector verification and reference
 
 Add comprehensive verification report and canonical JSON reference
-for ops_inspector.sh implementation contract.
+for ops_doctor.sh implementation contract.
 
 Added:
 - VERIFICATION_REPORT.md: Code-to-contract analysis with TypeScript interface
@@ -175,7 +175,7 @@ Phase: 82A Documentation Hardening
 ### Verification
 - ✅ **JSON example validates:** `python3 -m json.tool` passes
 - ✅ **Structure checks pass:** All 11 checks with correct UPPERCASE casing
-- ✅ **Code syntax valid:** `bash -n ops_inspector.sh` clean
+- ✅ **Code syntax valid:** `bash -n ops_doctor.sh` clean
 - ✅ **No forbidden fields:** mode/output_format/exit_policy not present
 - ⚠️ **Tests pending:** Test suite creation planned for Phase 82B
 
@@ -189,8 +189,8 @@ Phase: 82A Documentation Hardening
   - **Option B:** Upload-Dateien nach `docs/ops/` kopieren + korrigieren + committen
 
 - [ ] **Script-Location klären:**
-  - Script liegt in `/mnt/project/ops_inspector.sh` (Root-Level)
-  - Code erwartet `scripts/ops/ops_inspector.sh` (siehe PROJECT_ROOT-Berechnung)
+  - Script liegt in `/mnt/project/ops_doctor.sh` (Root-Level)
+  - Code erwartet `scripts/ops/ops_doctor.sh` (siehe PROJECT_ROOT-Berechnung)
   - **Aktion:** Entweder Script verschieben oder PROJECT_ROOT-Logik anpassen
 
 ### Short-term (Post-Merge)
@@ -239,7 +239,7 @@ Phase: 82A Documentation Hardening
 ## 📊 Statistiken
 
 ### Code-Analyse
-- **Datei:** `ops_inspector.sh` (459 Zeilen)
+- **Datei:** `ops_doctor.sh` (459 Zeilen)
 - **Checks implementiert:** 11 (8 Haupt-Checks + 3 Tool-Version-Checks)
 - **Severity-Levels:** 3 (INFO, WARN, FAIL)
 - **Status-Werte:** 4 (OK, WARN, FAIL, SKIP)
@@ -316,7 +316,7 @@ git commit -F- << 'EOF'
 docs(ops): add ops inspector verification and reference
 
 Add comprehensive verification report and canonical JSON reference
-for ops_inspector.sh implementation contract.
+for ops_doctor.sh implementation contract.
 
 Added:
 - VERIFICATION_REPORT.md: Code-to-contract analysis with TypeScript interface
