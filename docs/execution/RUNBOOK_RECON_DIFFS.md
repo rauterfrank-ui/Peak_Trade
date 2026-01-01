@@ -97,7 +97,7 @@ python scripts/execution/show_recon_audit.py summary --json audit_export.json
 
 ### 6. Wrapper-Script (Operator-Friendly)
 
-Für häufige Workflows gibt es ein Wrapper-Script:
+Für häufige Workflows gibt es ein Wrapper-Script, das die gängigen CLI-Aufrufe standardisiert:
 
 ```bash
 # Text-Output (human-readable)
@@ -106,16 +106,39 @@ bash scripts/execution/recon_audit_gate.sh summary-text
 # JSON-Output (machine-readable)
 bash scripts/execution/recon_audit_gate.sh summary-json
 
-# Gate-Mode (CI/CD)
+# Gate-Mode (CI/CD): Exit-Code signalisiert Findings
 bash scripts/execution/recon_audit_gate.sh gate
 ```
 
-**Exit-Codes:**
-- `0`: Erfolg (oder keine Findings im Gate-Mode)
-- `2`: Findings vorhanden (Gate-Mode, **kein Fehler!**)
+**Exit-Codes**
+- `0`: Erfolg (im Gate-Mode: keine Findings)
+- `2`: Findings vorhanden (Gate-Mode, **kein Fehler**)
 - `1`: Script-Fehler
 
-**Use Case:** Vereinfachte Operator-Workflows, Shell-Scripting, CI/CD Integration.
+**Use Case**
+Vereinfachte Operator-Workflows, Shell-Scripting, CI/CD-Integration.
+
+#### Operator How-To (Wrapper: Python Runner / pyenv)
+
+Der Wrapper nutzt standardmäßig den **robustesten Python-Runner** in dieser Reihenfolge:
+1) `uv run python` (wenn `uv` verfügbar ist)  
+2) `python3`  
+3) `python`  
+
+Falls deine Umgebung (z.B. `pyenv`) kein `python` bereitstellt oder du explizit steuern willst, setze:
+- `PT_RECON_PYTHON_RUNNER` (Override für den verwendeten Runner)
+
+**Beispiele**
+```bash
+# Default (empfohlen): nutzt uv, falls vorhanden
+bash scripts/execution/recon_audit_gate.sh summary-json | python3 -m json.tool
+
+# Explizit python3 erzwingen (pyenv-sicher)
+PT_RECON_PYTHON_RUNNER="python3" bash scripts/execution/recon_audit_gate.sh summary-json
+
+# Explizit uv verwenden (wenn verfügbar)
+PT_RECON_PYTHON_RUNNER="uv run python" bash scripts/execution/recon_audit_gate.sh gate
+```
 
 ---
 
