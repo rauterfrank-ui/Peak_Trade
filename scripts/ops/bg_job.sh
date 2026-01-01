@@ -115,9 +115,9 @@ stty -echo 2>/dev/null || true
 # Prefer caffeinate on macOS, fallback silently if not available.
 if command -v caffeinate >/dev/null 2>&1; then
   # caffeinate runs the command and exits when the command exits
-  caffeinate -dimsu ${shell_bin} -lc 'set -e; ${cmdline}'
+  exec caffeinate -dimsu ${shell_bin} -lc 'set -e; ${cmdline}'
 else
-  ${shell_bin} -lc 'set -e; ${cmdline}'
+  exec ${shell_bin} -lc 'set -e; ${cmdline}'
 fi
 BASHJOB
 
