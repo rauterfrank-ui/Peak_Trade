@@ -1448,4 +1448,5 @@ Security:
 
 Post-merge documentation logs for operational PRs.
 
+- [PR #470](PR_470_MERGE_LOG.md) — fix(execution): Recon Audit Gate Wrapper pyenv-safe Python Runner (merged 2026-01-01)
 - [PR #429](PR_429_MERGE_LOG.md) — docs(risk): Phase 11 – VaR Backtest Suite UX & Docs-Verkabelung (merged 2025-12-29) <!-- PR-429-MERGE-LOG -->
