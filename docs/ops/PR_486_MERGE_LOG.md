@@ -1,15 +1,15 @@
 # PR #486 — ops(scripts): add bg_job runner (exitcode capture)
 
 ## Summary
-Adds a repository-native background job runner to avoid Cursor/terminal timeouts for long-running commands, with PID/log/exitcode tracking and macOS sleep prevention via `caffeinate`. Also ignores `.logs/` output artifacts.
+Adds a repository-native background job runner to avoid Cursor/terminal timeouts for long-running commands, with PID/log/exitcode tracking and macOS sleep prevention via `caffeinate`. Also ignores runtime job artifacts via `.gitignore`.
 
 ## Why
 Cursor and interactive terminals can time out or hang on long-running commands (full docs scans, long pytest runs, watch commands). A standardized background runner improves operator reliability and provides stable logs and exitcode capture.
 
 ## Changes
 - Added `scripts/ops/bg_job.sh`: background job runner supporting `run`, `follow`, `status`, `stop`, `latest`, `list`.
-- Ensured exitcode capture via `.logs/<label>_<ts>.exit` (trap-based).
-- Added `.logs/` to `.gitignore` to prevent accidental tracking of job artifacts.
+- Ensured exitcode capture via a per-job `.exit` marker file (generated at runtime).
+- Ignored runtime job artifacts via `.gitignore` to prevent accidental tracking.
 
 ## Verification
 Commands (local):
