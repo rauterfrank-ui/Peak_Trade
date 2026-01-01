@@ -44,7 +44,7 @@ The new KillSwitch is a **state machine** (`state/is_killed` + recovery workflow
   * `src/risk_layer/kill_switch/__init__.py`
 
     * Factory produces a Risk-Gate compatible instance (adapter-wrapped)
-  * `src/risk_layer/risk_gate.py`
+  * `src/risk_layer/risk_gate.py` <!-- pt:ref-target-ignore -->
 
     * **Exactly 3 LOC** change: wrap KillSwitch with adapter in constructor
   * Tests updated for `enabled` semantics and new integration shape
