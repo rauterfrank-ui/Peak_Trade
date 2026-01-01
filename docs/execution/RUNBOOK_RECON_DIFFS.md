@@ -95,6 +95,30 @@ python scripts/execution/show_recon_audit.py summary --json audit_export.json
 
 ---
 
+### 6. Wrapper-Script (Operator-Friendly)
+
+Für häufige Workflows gibt es ein Wrapper-Script:
+
+```bash
+# Text-Output (human-readable)
+bash scripts/execution/recon_audit_gate.sh summary-text
+
+# JSON-Output (machine-readable)
+bash scripts/execution/recon_audit_gate.sh summary-json
+
+# Gate-Mode (CI/CD)
+bash scripts/execution/recon_audit_gate.sh gate
+```
+
+**Exit-Codes:**
+- `0`: Erfolg (oder keine Findings im Gate-Mode)
+- `2`: Findings vorhanden (Gate-Mode, **kein Fehler!**)
+- `1`: Script-Fehler
+
+**Use Case:** Vereinfachte Operator-Workflows, Shell-Scripting, CI/CD Integration.
+
+---
+
 ## Diff-Taxonomie
 
 ### 1. Severity Levels
