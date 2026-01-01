@@ -15,7 +15,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import json
 
 
@@ -281,6 +281,7 @@ class ReconDiff:
     local_state: Optional[OrderState] = None
     exchange_state: Optional[str] = None
     severity: str = "WARN"  # INFO, WARN, ERROR, CRITICAL
+    diff_type: str = "UNKNOWN"  # POSITION, CASH, ORDER, FILL
 
     # Description
     description: str = ""
@@ -310,6 +311,66 @@ class ReconDiff:
         return (
             f"ReconDiff(diff_id={self.diff_id!r}, "
             f"severity={self.severity}, resolved={self.resolved})"
+        )
+
+
+@dataclass
+class ReconSummary:
+    """
+    Structured summary of reconciliation run.
+
+    Design:
+    - Aggregated counts by diff_type and severity
+    - Top-N diffs for observability
+    - Deterministic ordering (stable sort by severity, timestamp, diff_id)
+    - WP0D Observability: Enables audit trail and alerting
+
+    Phase 0: SIM/PAPER only (no live exchange data)
+    """
+
+    run_id: str
+    timestamp: datetime = field(default_factory=datetime.utcnow)
+    session_id: str = ""
+    strategy_id: str = ""
+
+    # Aggregate counts
+    total_diffs: int = 0
+    counts_by_severity: Dict[str, int] = field(default_factory=dict)
+    counts_by_type: Dict[str, int] = field(default_factory=dict)
+
+    # Top-N diffs (for audit emission)
+    top_diffs: List[ReconDiff] = field(default_factory=list)
+
+    # Summary flags
+    has_critical: bool = False
+    has_fail: bool = False
+    max_severity: str = "INFO"
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Deterministic dict conversion"""
+        return {
+            "run_id": self.run_id,
+            "timestamp": self.timestamp.isoformat(),
+            "session_id": self.session_id,
+            "strategy_id": self.strategy_id,
+            "total_diffs": self.total_diffs,
+            "counts_by_severity": dict(sorted(self.counts_by_severity.items())),
+            "counts_by_type": dict(sorted(self.counts_by_type.items())),
+            "top_diffs": [d.to_dict() for d in self.top_diffs],
+            "has_critical": self.has_critical,
+            "has_fail": self.has_fail,
+            "max_severity": self.max_severity,
+        }
+
+    def to_json(self) -> str:
+        """Deterministic JSON serialization"""
+        return json.dumps(self.to_dict(), sort_keys=True, indent=2)
+
+    def __repr__(self) -> str:
+        """Deterministic repr"""
+        return (
+            f"ReconSummary(run_id={self.run_id!r}, "
+            f"total_diffs={self.total_diffs}, max_severity={self.max_severity})"
         )
 
 
