@@ -29,7 +29,7 @@ We need a durable, reviewable, and reproducible record that:
   - Linked the canary validation doc for operator/audit navigation
 
 - **Bonus Fix:** Corrected pre-existing docs reference target issue
-  - Fixed: `docs/risk/RISK_LAYER_ROADMAP.md` → `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md`
+  - Fixed RISK_LAYER_ROADMAP path: wrong directory → correct subdirectory (roadmaps/)
 
 ## Verification
 
@@ -98,7 +98,7 @@ We need a durable, reviewable, and reproducible record that:
 
 - **Author:** rauterfrank-ui
 - **Reviewer(s):** CI automated checks (14/14 passed)
-- **Branch:** `docs/canary-exec-override-validation`
+- **Branch:** docs/canary-exec-override-validation (PR #497)
 - **Commits:** 4 total
   1. Initial artifact creation + README update
   2. Pre-commit auto-fix (EOF)
