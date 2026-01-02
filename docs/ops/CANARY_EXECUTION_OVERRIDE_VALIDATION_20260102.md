@@ -111,7 +111,7 @@ When working on PRs that modify execution-layer code:
    - Review job summary for override status
 
 5. **Manual Review & Merge**
-   - Follow runbook: `docs/ops/runbooks/policy_critic_execution_override.md`
+   - Follow [runbook](runbooks/policy_critic_execution_override.md)
    - Reviewer attestation required in evidence file
    - Manual merge (squash/merge per team practice)
 
@@ -120,8 +120,8 @@ When working on PRs that modify execution-layer code:
 ## References
 
 - **Override Mechanism Implementation:** PR #495
-- **Runbook:** [docs/ops/runbooks/policy_critic_execution_override.md](../runbooks/policy_critic_execution_override.md)
-- **Evidence Template:** [docs/ops/evidence/templates/EXECUTION_REVIEW_EVIDENCE_TEMPLATE.md](../evidence/templates/EXECUTION_REVIEW_EVIDENCE_TEMPLATE.md)
+- **Runbook:** [docs/ops/runbooks/policy_critic_execution_override.md](runbooks/policy_critic_execution_override.md)
+- **Evidence Template:** [docs/ops/evidence/templates/EXECUTION_REVIEW_EVIDENCE_TEMPLATE.md](evidence/templates/EXECUTION_REVIEW_EVIDENCE_TEMPLATE.md)
 - **Workflow:** `.github/workflows/policy_critic.yml`
 - **Telemetry:** `docs/governance/POLICY_CRITIC_TELEMETRY_G4.md` (PR #434 entry documents admin override precedent)
 
