@@ -1118,6 +1118,15 @@ chmod +x scripts/ops/cleanup_old_inventories.sh
 
 ## 🛡️ Policy Critic & Governance Triage
 
+### Governance Validation Artifacts
+
+Canary tests and validation evidence for governance mechanisms:
+
+- **PR #496 (Canary – Execution Override Validation)** → [CANARY_EXECUTION_OVERRIDE_VALIDATION_20260102.md](CANARY_EXECUTION_OVERRIDE_VALIDATION_20260102.md)
+  - Validates `ops/execution-reviewed` override mechanism
+  - Evidence requirement: Label + Evidence File + Auto-Merge disabled
+  - Result: 18/18 checks passed, override accepted
+
 ### Policy Critic False-Positive Runbook
 
 Operator-Runbook für Format-only PRs, die vom Policy Critic fälschlicherweise blockiert werden.
@@ -1387,7 +1396,7 @@ Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 - VaR Gate Runbook: `docs/risk/VAR_GATE_RUNBOOK.md`
 - Stress Gate Runbook: `docs/risk/STRESS_GATE_RUNBOOK.md`
 - Liquidity Gate Runbook: `docs/risk/LIQUIDITY_GATE_RUNBOOK.md`
-- Risk Layer Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
+- Risk Layer Roadmap: `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md`
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).
 
