@@ -20,6 +20,15 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - `docs/ops/CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md` — Phased runbook (P0-P10: research → shadow → live)
 - `docs/ops/LIVE_READINESS_PHASE_TRACKER.md` — Phase gates tracker (P0-P10: research → shadow → live)
 
+### Cursor Timeout / Hang Triage (Quick Start)
+- Wenn dein Terminal-Prompt `>` oder `dquote>` zeigt: **Ctrl-C** drücken (Shell-Continuation beenden), dann erneut.
+- Runbook öffnen: `docs/ops/CURSOR_TIMEOUT_TRIAGE.md`
+- Evidence Pack erzeugen (funktioniert auch ohne +x):
+  - `bash scripts/ops/collect_cursor_logs.sh`
+  - Output: `artifacts/cursor_logs_YYYYMMDD_HHMMSS.tgz`
+- Optional (bei harten Hangs): In der Runbook-Sektion "Advanced Diagnostics (macOS)" die Schritte `sample`, `spindump`, `fs_usage` nutzen (sudo + Privacy beachten).
+- Privacy: Logs/Snapshots vor externem Sharing auf sensitive Daten prüfen.
+
 ---
 
 ## 🎯 Ops Operator Center – Zentraler Einstiegspunkt
