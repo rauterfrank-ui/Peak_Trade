@@ -24,6 +24,25 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - 🗺️ **Legacy Roadmap:** [CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md](CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md) — Älterer Phasen-Runbook (P0–P10), siehe Frontdoor + PHASES_V2 für aktuelle Version
 - `docs/ops/LIVE_READINESS_PHASE_TRACKER.md` — Phase gates tracker (P0-P10: research → shadow → live)
 
+### Phase 5 NO-LIVE Drill Pack (Governance-Safe, Manual-Only)
+
+🚨 **NO-LIVE / Drill-Only** — Kein Live Trading, keine realen Funds, keine Exchange Connectivity
+
+**WP5A — Phase 5 NO-LIVE Drill Pack:**
+- 📖 **Operator Runbook:** [WP5A_PHASE5_NO_LIVE_DRILL_PACK.md](WP5A_PHASE5_NO_LIVE_DRILL_PACK.md) — End-to-End Workflow für NO-LIVE Operator Drills (5-Step Procedure, Evidence Pack, Hard Prohibitions)
+
+**Templates (Phase 5 NO-LIVE):**
+- 📋 Operator Checklist: [templates/phase5_no_live/PHASE5_NO_LIVE_OPERATOR_CHECKLIST.md](templates/phase5_no_live/PHASE5_NO_LIVE_OPERATOR_CHECKLIST.md)
+- ✅ Go/No-Go Record: [templates/phase5_no_live/PHASE5_NO_LIVE_GO_NO_GO_RECORD.md](templates/phase5_no_live/PHASE5_NO_LIVE_GO_NO_GO_RECORD.md)
+- 📦 Evidence Index: [templates/phase5_no_live/PHASE5_NO_LIVE_EVIDENCE_INDEX.md](templates/phase5_no_live/PHASE5_NO_LIVE_EVIDENCE_INDEX.md)
+- 📝 Post-Run Review: [templates/phase5_no_live/PHASE5_NO_LIVE_POST_RUN_REVIEW.md](templates/phase5_no_live/PHASE5_NO_LIVE_POST_RUN_REVIEW.md)
+
+**Key Deliverables:**
+- NO-LIVE Enforcement (Shadow/Paper/Drill-Only modes)
+- Hard Prohibitions (keys, funding, real orders verboten)
+- Operator Competency Validation (drill-safe)
+- Governance-Safe Evidence Chain (GO ≠ Live Authorization)
+
 ### Cursor Timeout / Hang Triage (Quick Start)
 - Wenn dein Terminal-Prompt `>` oder `dquote>` zeigt: **Ctrl-C** drücken (Shell-Continuation beenden), dann erneut.
 - Runbook öffnen: `docs/ops/CURSOR_TIMEOUT_TRIAGE.md`
