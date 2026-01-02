@@ -61,8 +61,7 @@ class Param:
         if self.kind in ["int", "float"]:
             if self.low is None or self.high is None:
                 raise ValueError(
-                    f"Parameter '{self.name}' (kind={self.kind}): "
-                    f"low und high müssen gesetzt sein"
+                    f"Parameter '{self.name}' (kind={self.kind}): low und high müssen gesetzt sein"
                 )
             if self.low >= self.high:
                 raise ValueError(
@@ -73,7 +72,7 @@ class Param:
         if self.kind == "choice":
             if self.choices is None or len(self.choices) == 0:
                 raise ValueError(
-                    f"Parameter '{self.name}' (kind=choice): " f"choices müssen gesetzt sein"
+                    f"Parameter '{self.name}' (kind=choice): choices müssen gesetzt sein"
                 )
             if self.default not in self.choices:
                 raise ValueError(
