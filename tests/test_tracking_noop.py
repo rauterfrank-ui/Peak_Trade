@@ -10,7 +10,7 @@ Stellt sicher, dass:
 import pandas as pd
 import pytest
 
-from src.core.tracking import (
+from core.tracking import (
     NoopTracker,
     build_tracker_from_config,
     log_backtest_metadata,
