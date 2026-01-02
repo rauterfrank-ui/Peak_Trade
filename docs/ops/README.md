@@ -1484,6 +1484,7 @@ Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
 ## Verified Merge Logs
+- **PR #499 (Cursor timeout triage runbook; self-contained + log collector)** → `docs/ops/PR_499_MERGE_LOG.md`
 - **PR #497 (Canary Execution Override Validation Artifact, docs-only)** → `docs/ops/PR_497_MERGE_LOG.md`
 - **PR #491 (bg_job runner delivery + truth corrections)** → `docs/ops/PR_491_MERGE_LOG.md`
 - **PR #489 (docs(ops): standardize bg_job execution pattern in Cursor multi-agent workflows)** → `docs/ops/PR_489_MERGE_LOG.md`
