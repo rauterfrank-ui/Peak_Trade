@@ -29,9 +29,9 @@
 
 | Artifact | Path (relative to repo root) | Description |
 |----------|-------------------------------|-------------|
-| Main Config | EXAMPLE: config/drill_test.toml | Primary config used (CONFIRM mode = shadow/paper) |
-| Strategy Config | EXAMPLE: config/strategies/ma_crossover_drill.toml | Strategy-specific parameters |
-| Risk Config | EXAMPLE: config/risk/drill_risk.toml | Risk limits for drill (if applicable) |
+| Main Config | EXAMPLE: `config/<drill_test>.toml` | Primary config used (CONFIRM mode = shadow/paper) |
+| Strategy Config | EXAMPLE: `config/strategies/<strategy_name>.toml` | Strategy-specific parameters |
+| Risk Config | EXAMPLE: `config/risk/<drill_risk>.toml` | Risk limits for drill (if applicable) |
 
 **Audit Note:** All configs verified to be NO-LIVE (no production API keys, no live mode enabled).
 
