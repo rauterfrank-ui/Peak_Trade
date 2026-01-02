@@ -1,7 +1,7 @@
 # Cursor Multi-Agent Runbook (Phasen) — V2
 
-Status: Draft (Docs-only)
-Last updated: 2026-01-01
+Status: Active (Docs-only)
+Last updated: 2026-01-02
 Owner: Ops / Operator Tooling
 
 ## 1. Zweck
@@ -90,15 +90,215 @@ Hinweis: Die inhaltlichen Details hängen an der Live-Execution-Roadmap. Dieses 
 - dashboards / operator visibility
 - recon/audit gates stabil
 
-### Phase 5 — Final Live Trade (Manual-Only initial)
-**Ziel:** Live-Trade nur nach explizitem Operator-Go.
-**Non-Negotiables:**
-- Default: LIVE bleibt gesperrt (blocked) bis Operator explizit freigibt
-- Jede Session: Pre-Trade Gate + Post-Trade Recon/Audit
-**Outputs:**
-- Live session runlog
-- Evidence index / audit trail
-- Clear rollback instructions
+### Phase 5 — Final Live Trade (Manual-Only)
+
+#### Intent
+Phase 5 ist die initiale Live-Trading-Phase unter strenger manueller Kontrolle. Jede Trading-Session wird explizit vom Operator genehmigt, überwacht und nachträglich auditiert. Das Ziel ist nicht Automatisierung, sondern kontrollierter Echtbetrieb mit vollständiger Nachvollziehbarkeit und sofortiger Stop-Fähigkeit. Der Default-Zustand bleibt "blocked" – Live-Trading muss für jede Session explizit freigegeben werden.
+
+#### Deliverables
+- **Pre-Trade Go/No-Go Checklist** — Pflicht vor jeder Live-Session (Risk Limits, Market Conditions, System Health)
+- **Live Session Runlog Template** — Strukturiertes Log-Format (Start/Stop Times, Operator, Parameters, Observations)
+- **Post-Trade Recon/Audit Report** — Automatisierte Reconciliation + manuelle Review-Checkliste
+- **Kill-Switch Runbook** — Sofort-Stop-Prozedur (Trigger-Kriterien, Eskalation, Rollback)
+- **Incident Response Playbook** — Kategorisierte Failure-Modes mit Operator-Aktionen
+- **Evidence Pack Standard** — Strukturierte Ablage aller Session-Artefakte (Logs, Metrics, Fills, Rejects)
+
+#### Entry Criteria
+- Phase 4 Gate bestanden (Live Readiness Review komplett)
+- Kill-Switch getestet und dokumentiert
+- Operator Drill erfolgreich durchgeführt (mindestens 1x end-to-end)
+- Monitoring/Alerting Baseline aktiv
+- Risk Limits finalisiert und in Config versioniert
+- Go/No-Go Packet von Governance genehmigt
+- Two-Person Rule etabliert (Operator + Reviewer/Approver)
+
+#### Exit Criteria
+- Mindestens 5 erfolgreiche Live-Sessions ohne kritische Incidents
+- Post-Trade Recon/Audit in allen Sessions grün (keine unklaren Findings)
+- Kill-Switch mindestens 1x erfolgreich getestet (in Live-Session oder Drill)
+- Incident Response Playbook mindestens 1x angewendet (auch bei Minor-Incidents)
+- Operator Confidence erreicht (dokumentierte Selbsteinschätzung)
+- Entscheidung: Übergang zu Phase 6 (Monitored Auto) ODER Verbleib in Manual-Only
+
+#### Operator How-To
+1. **Vorbereitung (T-1 Tag)**
+   - Pre-Trade Checklist ausfüllen (Risk Limits, Market Outlook, System Status)
+   - Change Window definieren (Start/Stop-Zeit, Duration)
+   - Reviewer/Approver identifizieren (Two-Person Rule)
+   - Session Runlog aus Template erstellen
+
+2. **Go/No-Go Gate (T-0)**
+   - Checklist Review mit Approver
+   - Explizites "Go" erforderlich (dokumentiert im Runlog)
+   - Falls "No-Go": Gründe dokumentieren, Session verschieben
+
+3. **Live Session (T-0 bis T+Duration)**
+   - Session Runlog kontinuierlich pflegen (Observations, Anomalies)
+   - Monitoring Dashboard beobachten (Alerts, Latencies, Reject Rates)
+   - Kill-Switch bereithalten (bei Red-Flag sofort nutzen)
+
+4. **Post-Session (T+Duration)**
+   - Trading stoppen (expliziter Stop-Command)
+   - Post-Trade Recon/Audit ausführen (automatisiert + manuelle Review)
+   - Findings klassifizieren (Green/Yellow/Red)
+   - Session Summary im Runlog vervollständigen
+
+5. **Evidence Pack (T+1 Tag)**
+   - Alle Artefakte konsolidieren (Logs, Metrics, Fills, Runlog, Recon Report)
+   - Evidence Pack in standardisiertem Format ablegen
+   - Lessons Learned dokumentieren (auch bei erfolgreichen Sessions)
+
+#### Evidence Pack
+Jede Live-Session muss folgende Artefakte erzeugen und ablegen:
+- **Session Runlog** (Markdown) — vollständig ausgefüllt, signiert von Operator + Reviewer
+- **Pre-Trade Checklist** (ausgefüllt, mit Go/No-Go Entscheidung)
+- **Execution Logs** (all orders, fills, rejects mit Timestamps und ReasonCodes)
+- **Post-Trade Recon Report** (JSON + Summary Markdown)
+- **Metrics Snapshot** (Latenzen, Throughput, Error Rates für Session-Duration)
+- **Alert Log** (alle Alerts während Session, auch cleared)
+- **Incident Log** (falls Incidents auftraten, auch Minor)
+- **Lessons Learned** (1-3 bullets, auch bei "grünen" Sessions)
+
+Ablage-Standard: `reports/live_sessions/YYYYMMDD_HHMMSS_<session_id>/` (nicht ins Repo committen)
+
+#### Risk Notes
+- **Residual Risk Hoch:** Menschlicher Fehler bei manueller Freigabe (Mitigation: Two-Person Rule, Checklist-Disziplin)
+- **Operational Risk:** Kill-Switch-Verzögerung in High-Stress-Situation (Mitigation: regelmäßige Drills)
+- **Data Risk:** Unvollständige Recon/Audit-Daten bei System-Ausfall (Mitigation: redundante Log-Capture)
+- **Governance Risk:** "Checklist Fatigue" nach mehreren Sessions (Mitigation: Lessons-Learned-Loop, Prozess-Optimierung erst in Phase 6)
+- **Policy-Safe Framing:** Alle Dokumentation muss "manual-only" Semantik bewahren; kein Wording, das autonome Execution impliziert
+
+---
+
+### Phase 6 — Monitored Auto (Conditional Enablement)
+
+#### Intent
+Phase 6 erweitert Phase 5 um kontrollierte Automatisierung unter strikten Bedingungen. Der Operator aktiviert Automatisierung nur für definierte Szenarien (z.B. "low-volatility window", "bounded replay mode") und behält jederzeit Override- und Stop-Fähigkeit. Ziel ist Effizienzgewinn ohne Kontrollverlust. Der Übergang von Phase 5 zu Phase 6 ist optional und erfordert explizite Governance-Freigabe.
+
+#### Deliverables
+- **Auto-Enablement Policy** — Definiert Bedingungen für automatisierten Betrieb (Market Regime, Risk Metrics, Time Windows)
+- **Conditional Gating Logic** — Runtime-Checks die Auto-Mode deaktivieren bei Policy-Violation
+- **Enhanced Monitoring Dashboards** — Real-Time Visibility in Auto-Decisions (Order Intent, Risk Checks, Rejections)
+- **Auto-Override Runbook** — Wie Operator Auto-Mode stoppt und zu Manual-Only zurückkehrt
+- **Elevated Alerting** — Schärfere Thresholds für Auto-Mode (schnellere Eskalation)
+- **Session Classification** — Klare Unterscheidung Auto vs Manual Sessions in Evidence Packs
+
+#### Entry Criteria
+- Phase 5 Exit Criteria erfüllt
+- Mindestens 10 erfolgreiche Manual-Only Sessions
+- Operator Team ausdrücklich bereit für Auto-Transition (dokumentiert)
+- Auto-Enablement Policy finalisiert und genehmigt
+- Enhanced Monitoring/Alerting getestet
+- Kill-Switch funktioniert auch im Auto-Mode (verifiziert durch Drill)
+
+#### Exit Criteria
+- Mindestens 20 Auto-Sessions ohne kritische Incidents
+- Auto-Override mindestens 2x erfolgreich genutzt (auch Drills zählen)
+- Conditional Gating hat mindestens 1x korrekt Auto-Mode deaktiviert (Policy-Violation detected)
+- Post-Trade Recon/Audit in Auto-Sessions gleiche Qualität wie Manual-Sessions
+- Entscheidung: Übergang zu Phase 7 (Full Operations) ODER Rückkehr zu Phase 5 bei erhöhtem Risk-Profil
+
+#### Operator How-To
+1. **Auto-Enablement Review**
+   - Auto-Enablement Policy prüfen (Bedingungen aktuell erfüllt?)
+   - Market Regime Check (Volatility, Liquidity innerhalb Safe-Bounds?)
+   - System Health Check (Latencies, Error Rates, Data Quality grün?)
+
+2. **Auto-Session Start**
+   - Explizite Auto-Mode Aktivierung (Flag + Logging)
+   - Conditional Gates verifizieren (Runtime-Checks aktiv?)
+   - Enhanced Monitoring Dashboard öffnen
+   - Auto-Override Runbook griffbereit
+
+3. **Während Auto-Session**
+   - Dashboard kontinuierlich beobachten
+   - Bei Yellow-Alerts: erhöhte Aufmerksamkeit
+   - Bei Red-Alerts oder Intuition: sofort Auto-Override nutzen
+   - Alle Operator-Interventionen im Runlog dokumentieren
+
+4. **Auto-Session Stop**
+   - Auto-Mode deaktivieren (expliziter Stop-Command)
+   - Post-Trade Recon/Audit (gleicher Standard wie Phase 5)
+   - Session klassifizieren (Auto-Duration, Manual-Overrides, Incidents)
+
+#### Evidence Pack
+Gleicher Standard wie Phase 5, plus:
+- **Auto-Enablement Log** — Wann/Warum Auto-Mode aktiviert/deaktiviert
+- **Conditional Gate Log** — Alle Runtime-Policy-Checks mit Outcomes
+- **Auto-Override Log** — Alle manuellen Interventionen (auch präventive)
+- **Session Classification** — Auto vs Manual Duration, Transition-Events
+
+#### Risk Notes
+- **Automation Risk:** "Set-and-Forget" Mentalität (Mitigation: Enhanced Alerting zwingt zu aktiver Überwachung)
+- **Policy Drift Risk:** Conditional Gates werden zu permissive angepasst (Mitigation: Policy-Änderungen erfordern Governance-Review)
+- **Complexity Risk:** Mehr Moving Parts = mehr Failure-Modes (Mitigation: Schrittweise Rollout, robuste Fallback zu Manual-Only)
+
+---
+
+### Phase 7 — Continuous Operations & Optimization
+
+#### Intent
+Phase 7 ist die "steady state" Operations-Phase. Trading läuft kontinuierlich (auto oder manual je nach Kontext), Operator-Fokus verschiebt sich von Session-by-Session-Control zu strategischer Überwachung, Policy-Refinement und Performance-Optimierung. Incident-Response ist etabliert, Post-Mortems werden systematisch durchgeführt, Lessons-Learned fließen in Policy-Updates und Runbook-Verbesserungen.
+
+#### Deliverables
+- **Ops Runbook Suite** — Konsolidierte Runbooks für alle Standard-Szenarien (Start/Stop, Incident, Policy-Update, Config-Change)
+- **Performance Baselines** — Etablierte Benchmarks (Latencies, Fill Rates, Slippage, P&L Attribution)
+- **Continuous Monitoring Dashboards** — Multi-Timeframe Views (Intraday, Daily, Weekly Trends)
+- **Policy Refinement Log** — Systematisches Tracking aller Policy-Änderungen mit Begründungen
+- **Incident Post-Mortem Template** — Strukturierte Root-Cause-Analysis + Corrective Actions
+- **Operator Rotation Plan** — Handoff-Procedures, Knowledge-Transfer, Backup-Operator-Readiness
+
+#### Entry Criteria
+- Phase 6 Exit Criteria erfüllt
+- Mindestens 50 kombinierte Sessions (Auto + Manual) ohne kritische Incidents
+- Operator Team kann vollständig autonom operieren (keine externe Eskalation nötig)
+- Performance Baselines etabliert (mindestens 4 Wochen Daten)
+- Incident Response Playbook mindestens 3x erfolgreich angewendet
+- Post-Mortem Kultur etabliert (auch für Near-Misses)
+
+#### Exit Criteria
+Phase 7 ist "steady state" — kein definiertes Exit. Evolution erfolgt durch:
+- **Policy-Updates** (basierend auf Lessons-Learned)
+- **Strategy-Changes** (neue Signale, Markets, Instruments)
+- **Platform-Upgrades** (Infra-Migrations, API-Updates)
+- **Scale-Ups** (höhere Limits, mehr Strategies)
+Jede größere Änderung kann temporär Rückkehr zu Phase 5/6 erfordern (Re-Gating).
+
+#### Operator How-To
+1. **Daily Operations**
+   - Morning: System Health Check, Market Regime Check
+   - Intraday: Dashboard Monitoring, Alert Response
+   - Evening: Daily Recon/Audit Review, Performance vs Baseline
+   - End-of-Week: Trend Analysis, Policy Drift Check
+
+2. **Incident Response**
+   - Immediate: Kill-Switch bei kritischen Problemen
+   - Short-Term: Incident Runbook befolgen, Session-Logs sichern
+   - Post-Incident: Post-Mortem innerhalb 48h, Corrective Actions definieren
+   - Follow-Up: Corrective Actions umsetzen, Effectiveness verifizieren
+
+3. **Policy Refinement**
+   - Trigger: Lessons-Learned aus Incidents oder Near-Misses
+   - Process: Policy-Change-Proposal, Governance-Review, Testing, Rollout
+   - Documentation: Policy Refinement Log aktualisieren
+
+4. **Knowledge Transfer**
+   - Onboarding neuer Operatoren: Runbook-Walkthrough, Shadow-Sessions
+   - Handoffs: Strukturierte Übergabe mit Status-Summary
+   - Backup-Readiness: Regelmäßige Drills für Backup-Operatoren
+
+#### Evidence Pack
+- **Daily Recon Reports** (aggregiert)
+- **Weekly Performance Reviews** (vs Baselines)
+- **Incident Post-Mortems** (alle Severity-Levels)
+- **Policy Refinement Log** (Change-History mit Rationales)
+- **Operator Rotation Logs** (Handoffs, Backup-Activations)
+
+#### Risk Notes
+- **Complacency Risk:** Routine führt zu reduzierter Wachsamkeit (Mitigation: regelmäßige Drills, Rotation)
+- **Knowledge Concentration Risk:** Single-Point-of-Knowledge bei Operator (Mitigation: Rotation Plan, Documentation)
+- **Policy Ossification Risk:** Policies veralten, werden aber nicht aktualisiert (Mitigation: mandatory Post-Mortem Culture)
+- **Scope Creep Risk:** Unbedachte Strategy-/Platform-Changes ohne Re-Gating (Mitigation: Change-Management-Discipline)
 
 ## 6. Verification Commands (Docs-only)
 - `rg -n "CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2|CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR" docs/ops`
@@ -675,9 +875,16 @@ STEP 6 — COMPLETION REPORT
 
 ---
 
-## 7. Maintenance
+## 8. Maintenance
 Update triggers:
 - Cursor workflow changes (roles/protocol)
 - Roadmap version bumps
 - CI policy changes affecting docs linking
-Owner: Ops
+- Phase-Struktur Änderungen (Entry/Exit Criteria, Deliverables)
+- Operator Feedback aus Live-Sessions (Phase 5–7)
+
+Owner: Ops / Operator Tooling
+
+**Version History:**
+- V2.0 (2026-01-01): Phase 5–7 detailliert ausgebaut (Intent, Deliverables, Entry/Exit Criteria, Operator How-To, Evidence Pack, Risk Notes)
+- V1.0 (2025-12-30): Initial version mit Phase 0–5 (rudimentär)
