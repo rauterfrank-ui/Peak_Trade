@@ -59,21 +59,27 @@ git status -sb
 
 ### Prozess-Analyse
 
-**Automatisch:**
+**Cursor Process Snapshot (No-Sudo):**
 ```bash
-./scripts/ops/triage_cursor_hang.sh
-```
+echo "=== Cursor Processes (CPU/Memory) ==="
+ps aux | grep -E "(Cursor|cursor|extension-host|pty-host|fileWatcher|gitWorker|pyright)" | grep -v grep || true
 
-**Manuell:**
-```bash
-# Cursor-relevante Prozesse (CPU/Memory/PID)
-ps aux | grep -E "(Cursor|extension-host|pty-host|fileWatcher|gitWorker|pyright)" | grep -v grep
+echo
+echo "=== Extension Host Detail ==="
+ps aux | grep -E "extension-host" | grep -v grep || true
 
-# Netzwerk-Verbindungen (Top 50)
-lsof -iTCP -sTCP:ESTABLISHED | head -50
+echo
+echo "=== Network Connections (best-effort) ==="
+lsof -iTCP -sTCP:ESTABLISHED 2>/dev/null | grep -i -E "cursor|Cursor" | head -n 30 || true
 
-# Speziell: Extension Host
-ps aux | grep extension-host | grep -v grep
+echo
+echo "=== System Load ==="
+uptime || true
+vm_stat | head -n 10 || true
+
+echo
+echo "=== Shell Continuation Check ==="
+echo "If your prompt shows >, dquote>, or heredoc>, press Ctrl-C before running other commands."
 ```
 
 **Interpretation:**
@@ -148,11 +154,6 @@ ps aux | grep extension-host | grep -v grep
 **Effekt:** Extension Host Restart, keine Cursor-App-Restart  
 **Dauer:** 2–5 Sekunden
 
-**Automatisch (mit Skript):**
-```bash
-SOFT_RESET_EXTENSION_HOST=1 ./scripts/ops/triage_cursor_hang.sh
-```
-
 ---
 
 ## Evidence Pack
@@ -160,9 +161,23 @@ SOFT_RESET_EXTENSION_HOST=1 ./scripts/ops/triage_cursor_hang.sh
 **Wenn du einen Issue/Chat-Post erstellst, sammle:**
 
 1. **Symptom-Beschreibung** (UI Freeze / Terminal blockiert / CPU Spike)
-2. **Prozess-Output**
+2. **Prozess-Output** (siehe "Prozess-Analyse" Sektion oben, Output in Datei speichern):
    ```bash
-   ./scripts/ops/triage_cursor_hang.sh > /tmp/cursor_triage_$(date +%Y%m%d_%H%M%S).txt
+   # Speichere Diagnose in Datei
+   {
+     echo "=== Cursor Processes (CPU/Memory) ==="
+     ps aux | grep -E "(Cursor|cursor|extension-host|pty-host|fileWatcher|gitWorker|pyright)" | grep -v grep || true
+     echo
+     echo "=== Extension Host Detail ==="
+     ps aux | grep -E "extension-host" | grep -v grep || true
+     echo
+     echo "=== Network Connections (best-effort) ==="
+     lsof -iTCP -sTCP:ESTABLISHED 2>/dev/null | grep -i -E "cursor|Cursor" | head -n 30 || true
+     echo
+     echo "=== System Load ==="
+     uptime || true
+     vm_stat | head -n 10 || true
+   } > /tmp/cursor_triage_$(date +%Y%m%d_%H%M%S).txt
    ```
 3. **Git State**
    ```bash
@@ -202,8 +217,70 @@ ptyhost.log           # Terminal/PTY
 
 ```bash
 ./scripts/ops/collect_cursor_logs.sh
-# Output: /tmp/cursor_logs_YYYYMMDD_HHMMSS.zip
+# Output: ./artifacts/cursor_logs_YYYYMMDD_HHMMSS.tgz (default)
+# Optional: Specify custom output directory as first argument
+# ./scripts/ops/collect_cursor_logs.sh /tmp/my_logs
 ```
+
+---
+
+## Advanced Diagnostics (macOS)
+
+**Wann verwenden:** UI komplett eingefroren, Extension Host hängt dauerhaft, normales Troubleshooting hilft nicht.
+
+**⚠️ Hinweise:**
+- Alle Commands erfordern `sudo` (Admin-Rechte)
+- macOS kann Security-Prompt zeigen ("System Events wants to access...")
+- `spindump` ist LANGSAM (5-10 Sekunden Freeze während Capture)
+- Nur verwenden, wenn du den Output für Bug-Report brauchst
+
+### Process Sampling (Profiling)
+
+**Step-by-Step:**
+
+```bash
+# 1) Find PID (example: extension-host)
+ps aux | grep -E "extension-host|Cursor" | grep -v grep
+
+# 2) SAMPLE (10 seconds, non-invasive)
+PID="<PUT_PID_HERE>"
+sudo sample "$PID" 10 -file "/tmp/cursor_hang_sample_$(date +%Y%m%d_%H%M%S).txt"
+```
+
+**Wann:** Extension Host zeigt dauerhaft hohe CPU, aber UI noch teilweise reaktiv  
+**Output:** Call Stack Profiling (zeigt, wo der Code "stuck" ist)
+
+### Spindump (System-weiter Hang)
+
+```bash
+# 3) SPINDUMP (use if UI is fully frozen; may take time)
+sudo spindump "Cursor" -o "/tmp/cursor_spindump_$(date +%Y%m%d_%H%M%S).txt"
+```
+
+**Wann:** Kompletter UI-Freeze, keine Interaktion mehr möglich  
+**⚠️ Warning:** Verursacht 5-10 Sekunden zusätzlichen Freeze während Capture  
+**Output:** System-weite Stack Traces aller Cursor-Prozesse
+
+### File System Activity
+
+```bash
+# 4) FS_USAGE (file system activity; useful for file-watcher suspicion)
+sudo fs_usage -f filesys "Cursor" | head -n 200 > "/tmp/cursor_fsusage_$(date +%Y%m%d_%H%M%S).txt"
+# Drücke Ctrl-C nach ca. 10 Sekunden
+```
+
+**Wann:** Verdacht auf Filewatcher-Loop oder excessive File I/O  
+**Output:** Real-time File System Calls (zeigt, welche Dateien/Dirs Cursor liest/schreibt)
+
+### Network Activity
+
+```bash
+# Cursor Network Connections (keine sudo nötig, aber detaillierter)
+sudo lsof -iTCP -sTCP:ESTABLISHED | grep -i cursor
+```
+
+**Wann:** Verdacht auf Network-Timeout oder Polling-Storm  
+**Output:** Alle offenen TCP-Verbindungen von Cursor
 
 ---
 
@@ -218,7 +295,7 @@ ptyhost.log           # Terminal/PTY
 
 **Was posten:**
 - Symptom-Beschreibung (siehe Evidence Pack)
-- Triage-Output (`triage_cursor_hang.sh`)
+- Prozess-Snapshot (siehe "Prozess-Analyse" oder "Evidence Pack" Sektionen)
 - Log-Sammlung (`collect_cursor_logs.sh`)
 - Git-State (Branch, HEAD, Status)
 - Cursor-Version (`Cmd+Shift+P → "About"`)
@@ -245,7 +322,6 @@ ptyhost.log           # Terminal/PTY
 
 ## Related
 
-- `scripts/ops/triage_cursor_hang.sh` — Automatische Diagnose
 - `scripts/ops/collect_cursor_logs.sh` — Log-Sammlung
 - `docs/ops/OPS_OPERATOR_CENTER.md` — Operator-Zentrum
 - `docs/ops/CLAUDE_CODE_AUTH_RUNBOOK.md` — gh auth Troubleshooting
