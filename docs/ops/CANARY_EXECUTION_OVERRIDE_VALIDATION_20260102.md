@@ -30,7 +30,7 @@ This canary test was performed after implementing the audited override mechanism
 
 ### Override Configuration
 - **Label:** `ops/execution-reviewed` ✅
-- **Evidence File:** `docs/ops/evidence/PR_496_EXECUTION_REVIEW.md` ✅
+- **Evidence File:** PR #496 included evidence file (deleted after PR closure) ✅
 - **Auto-Merge:** Disabled (verified) ✅
 - **Test Plan:** Embedded in evidence file ✅
 
@@ -52,7 +52,7 @@ This canary test was performed after implementing the audited override mechanism
 ### Policy Critic Behavior
 1. ✅ `EXECUTION_ENDPOINT_TOUCH` rule triggered (as expected)
 2. ✅ Label `ops/execution-reviewed` detected
-3. ✅ Evidence file validated (`docs/ops/evidence/PR_496_EXECUTION_REVIEW.md`)
+3. ✅ Evidence file validated (PR #496 included evidence file, deleted after closure)
 4. ✅ Auto-merge status verified (disabled)
 5. ✅ Job passed with override warnings in summary
 6. ✅ All other checks green
