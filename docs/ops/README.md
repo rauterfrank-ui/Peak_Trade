@@ -13,11 +13,15 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - `scripts/ops/create_closeout_2025_12_27.sh` — Generator (Docs + PR scaffold)
 
 ## Cursor Multi-Agent Runbooks
-- `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md` — Main entry point for Cursor Multi-Agent workflows
-- `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md` — Cursor Multi-Agent Runbook (Phasen) — V2
-- `docs/ops/CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md` — Cursor Multi-Agent Session Runlog Template
-- `docs/ops/CURSOR_MULTI_AGENT_WORKFLOW.md` — Canonical workflow definition (roles, protocol, recovery)
-- `docs/ops/CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md` — Phased runbook (P0-P10: research → shadow → live)
+
+**Quick Start:** Beginne mit der **Frontdoor** für Rollen, Task-Packets und Gates. Wähle dann deine **Phase** (0–7: Foundation → Live Operations) im Phasen-Runbook. Jede Session: erstelle ein **Runlog** aus dem Template. Die Frontdoor definiert *wie* wir liefern (Prozess), die Phasen definieren *was* wir liefern (Deliverables pro Phase).
+
+**Navigation:**
+- 🚪 **Start hier:** [CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md](CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md) — Rollen (A0–A5), Task-Packet-Format, PR-Contract, Gate-Index, Stop-Regeln
+- 📋 **Phasen-Guide:** [CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md](CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md) — Phase 0 (Foundation) → Phase 7 (Continuous Ops); Entry/Exit Criteria, Deliverables, Operator How-To
+- 📝 **Session Template:** [CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md](CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md) — Strukturiertes Log-Format für jede Multi-Agent Session
+- 🔄 **Workflow-Definition:** [CURSOR_MULTI_AGENT_WORKFLOW.md](CURSOR_MULTI_AGENT_WORKFLOW.md) — Canonical Workflow (Roles, Protocol, Recovery)
+- 🗺️ **Legacy Roadmap:** [CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md](CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md) — Älterer Phasen-Runbook (P0–P10), siehe Frontdoor + PHASES_V2 für aktuelle Version
 - `docs/ops/LIVE_READINESS_PHASE_TRACKER.md` — Phase gates tracker (P0-P10: research → shadow → live)
 
 ### Cursor Timeout / Hang Triage (Quick Start)
