@@ -1,7 +1,7 @@
 # PR #504 — Merge Log (WP5A Phase 5 NO-LIVE Drill Pack)
 
 **PR Number:** #504  
-**Branch:** `docs/wp5a-no-live-drill-pack`  
+**Branch:** `docs-wp5a-no-live-drill-pack` (deleted)  
 **Merge Type:** Squash and merge  
 **Merge Commit:** `7680c13`  
 **Merge Date:** 2026-01-02  
