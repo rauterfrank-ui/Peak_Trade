@@ -311,7 +311,7 @@ Use `docs/ops/templates/phase5_no_live/PHASE5_NO_LIVE_POST_RUN_REVIEW.md` to con
 
 ## References (Internal Only)
 
-- **Governance Policy:** `docs/governance/PT-GOV-AI-001` (AI autonomy decision framework)
+- **Governance Policy:** EXAMPLE: AI autonomy decision framework (governance policies)
 - **Ops Runbooks:** `docs/ops/README.md` (navigation hub)
 - **Config Examples:** `config/shadow_config.toml`, `config/shadow_pipeline_example.toml`
 - **Testing Guide:** `tests/README.md` (not drill-specific, but useful for troubleshooting)

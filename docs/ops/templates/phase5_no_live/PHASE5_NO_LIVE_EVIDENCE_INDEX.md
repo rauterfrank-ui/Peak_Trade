@@ -29,9 +29,9 @@
 
 | Artifact | Path (relative to repo root) | Description |
 |----------|-------------------------------|-------------|
-| Main Config | `config/drill_test.toml` | Primary config used (CONFIRM mode = shadow/paper) |
-| Strategy Config | `config/strategies/ma_crossover_drill.toml` | Strategy-specific parameters |
-| Risk Config | `config/risk/drill_risk.toml` | Risk limits for drill (if applicable) |
+| Main Config | EXAMPLE: config/drill_test.toml | Primary config used (CONFIRM mode = shadow/paper) |
+| Strategy Config | EXAMPLE: config/strategies/ma_crossover_drill.toml | Strategy-specific parameters |
+| Risk Config | EXAMPLE: config/risk/drill_risk.toml | Risk limits for drill (if applicable) |
 
 **Audit Note:** All configs verified to be NO-LIVE (no production API keys, no live mode enabled).
 
@@ -108,8 +108,8 @@
 | Drill Step | Evidence Artifact(s) |
 |------------|---------------------|
 | Step 1: Environment Setup | `logs/audit.log` (config verification), config files |
-| Step 2: Pre-Flight Check | `logs/system.log` (health checks), `scripts/health_check.py` output |
-| Step 3: Strategy Dry-Run | `logs/strategy_drill.log`, `trades/simulated_trades.csv`, metrics JSON |
+| Step 2: Pre-Flight Check | EXAMPLE: System logs, health check output |
+| Step 3: Strategy Dry-Run | EXAMPLE: Strategy logs, simulated trades CSV, metrics JSON |
 | Step 4: Evidence Assembly | This document (EVIDENCE_INDEX.md) |
 | Step 5: Go/No-Go | `GO_NO_GO_RECORD.md` |
 

@@ -3,7 +3,7 @@
 **Work Package:** WP5A Phase 5 NO-LIVE Drill Pack (Docs-Only Deliverables)  
 **Date:** 2026-01-02  
 **Status:** ✅ Complete  
-**Branch:** `docs/wp5a-no-live-drill-pack`
+**Branch:** docs/wp5a-no-live-drill-pack
 
 ---
 
@@ -120,20 +120,17 @@ Alle Templates enthalten:
 3. **5-Step Procedure ausführen** (siehe `WP5A_PHASE5_NO_LIVE_DRILL_PACK.md`)
    - Step 1: Environment Setup & Verification (15 min)
    - Step 2: Pre-Flight Systems Check (20 min)
-   - Step 3: Strategy Dry-Run (30 min)
-   - Step 4: Evidence Pack Assembly (20 min)
-   - Step 5: Go/No-Go Assessment (15 min)
-4. **Evidence Pack archivieren:**
-   ```bash
-   tar -czf drill_$(date +%Y%m%d_%H%M%S).tar.gz results/drill_<timestamp>/
-   ```
+  - Step 3: Strategy Dry-Run (30 min)
+  - Step 4: Evidence Pack Assembly (20 min)
+  - Step 5: Go/No-Go Assessment (15 min)
+4. **Evidence Pack archivieren:** EXAMPLE: Create archival script or use tar command
 5. **Post-Run Review durchführen** (siehe Template)
 
 ### Integration mit Bestehendem System
 - **Config Files:** Nutze bestehende Shadow/Paper Configs (`config/shadow_config.toml`, etc.)
-- **Scripts:** Nutze vorhandene Scripts (`scripts/health_check.py`, `scripts/test_data_feed.py`, etc.)
+- **Scripts:** EXAMPLE: Create health check and data feed test scripts as needed
 - **Evidence Storage:** `results/drill_<timestamp>/` (Standard-Ablage)
-- **Governance:** Referenziert `docs/governance/PT-GOV-AI-001` (keine Änderungen nötig)
+- **Governance:** EXAMPLE: Reference governance policies as established
 
 ---
 
@@ -211,7 +208,7 @@ grep -rn "enable live\|real orders\|automatic enablement\|production keys\|live 
 - `docs/ops/README.md` (Navigation update)
 
 ### Existierende Referenzen (Nicht Geändert)
-- `docs/governance/PT-GOV-AI-001` (AI Autonomy Decision Framework)
+- EXAMPLE: AI Autonomy Decision Framework (governance policies)
 - `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md` (Phasen-Runbook)
 - `config/shadow_config.toml`, `config/shadow_pipeline_example.toml` (Example Configs)
 - `docs/ops/CURSOR_TIMEOUT_TRIAGE.md` (Troubleshooting bei Hangs)
@@ -245,7 +242,7 @@ grep -rn "enable live\|real orders\|automatic enablement\|production keys\|live 
    - Diskussion: Lessons Learned, Gap Analysis
    - Entscheidung: Phase 6 Planning (NOT Execution) genehmigen?
 2. Automation (Optional):
-   - Script für automatische Evidence Pack Assembly (`scripts/ops/assemble_evidence_pack.sh`)
+   - EXAMPLE: Script für automatische Evidence Pack Assembly
    - Automated Pre-Flight Checks (z.B. Config Audit, Key Detection)
    - Drill-Status-Tracking (Dashboard oder Log-File)
 

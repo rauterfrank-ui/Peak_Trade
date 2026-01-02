@@ -49,13 +49,13 @@
 ## Step 2: Pre-Flight Systems Check
 
 - [ ] Health check script executed successfully
-  - Command: `python scripts/health_check.py --mode=shadow` (or equivalent)
+  - EXAMPLE Command: Run health check script (create as needed)
   - Exit code: [0 = success]
 - [ ] Telemetry pipeline verified active
   - Command: `ls -lht logs/ | head -5`
   - Recent log files present: [Y/N]
 - [ ] Market data feed tested (paper/shadow)
-  - Command: `python scripts/test_data_feed.py --symbol=BTC-EUR --mode=paper`
+  - EXAMPLE Command: Test data feed (create script as needed)
   - Result: [Data received / Timeout / Error]
 - [ ] Screenshots/logs captured as evidence
 - [ ] Timestamp logged: [HH:MM]
@@ -72,7 +72,7 @@
   - Path: `config/[filename].toml`
   - Key settings verified: [list 2-3 key params, e.g., window=50, mode=shadow]
 - [ ] Strategy execution command run:
-  - Command: [e.g., `python src/core/engine.py --config=config/drill_test.toml --duration=30m`]
+  - EXAMPLE Command: Run strategy engine with drill config (configure as needed)
   - Start time: [HH:MM]
   - End time: [HH:MM]
 - [ ] Logs monitored in real-time (no crashes)
