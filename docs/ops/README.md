@@ -1118,6 +1118,15 @@ chmod +x scripts/ops/cleanup_old_inventories.sh
 
 ## 🛡️ Policy Critic & Governance Triage
 
+### Governance Validation Artifacts
+
+Canary tests and validation evidence for governance mechanisms:
+
+- **PR #496 (Canary – Execution Override Validation)** → [CANARY_EXECUTION_OVERRIDE_VALIDATION_20260102.md](CANARY_EXECUTION_OVERRIDE_VALIDATION_20260102.md)
+  - Validates `ops/execution-reviewed` override mechanism
+  - Evidence requirement: Label + Evidence File + Auto-Merge disabled
+  - Result: 18/18 checks passed, override accepted
+
 ### Policy Critic False-Positive Runbook
 
 Operator-Runbook für Format-only PRs, die vom Policy Critic fälschlicherweise blockiert werden.
