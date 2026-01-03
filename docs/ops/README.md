@@ -1515,6 +1515,29 @@ Empfohlenes Setup:
 Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
+---
+
+## GitHub Branch Protection & Rulesets
+
+**Operator Runbooks für Branch Protection, Required Checks und Review-Workflows.**
+
+### Runbooks
+
+- **[GitHub Rulesets: PR-Pflicht vs. Approving Reviews (inkl. mergeable UNKNOWN Quickflow)](runbooks/github_rulesets_pr_reviews_policy.md)** ⭐
+  - Policy-Matrix: Solo-Dev vs. Team-Standard vs. Safety-Critical
+  - Operator Quickflow: `mergeable: UNKNOWN` troubleshooting (6-Step)
+  - UI-Klickpfade: Rulesets (modern) vs. Branch Protection Rules (legacy)
+  - Best Practices: Required Check Materialisierung, Concurrency-Isolation
+  - Referenz: PR #512 (CI required check robustness)
+
+### Verwandte Docs
+
+- CI Required Checks Naming Contract: [ci_required_checks_matrix_naming_contract.md](ci_required_checks_matrix_naming_contract.md)
+- Branch Protection Snapshot: [BRANCH_PROTECTION_REQUIRED_CHECKS.md](BRANCH_PROTECTION_REQUIRED_CHECKS.md)
+- Required Checks Drift Guard: [REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md](REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md)
+
+---
+
 ## Verified Merge Logs
 - **PR #509 (Optuna/MLflow Tracking + Parameter Schema Restore from BK1)** → `docs/ops/PR_509_MERGE_LOG.md`
 - **PR #504 (WP5A Phase 5 NO-LIVE Drill Pack, governance-safe docs)** → `docs/ops/PR_504_MERGE_LOG.md`
