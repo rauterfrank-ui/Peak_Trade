@@ -55,6 +55,7 @@ jobs:
   # - No job-level if: conditions on required checks (would skip check creation)
   # This prevents PRs from being blocked by missing required check contexts.
   # See: docs/ops/ci_required_checks_matrix_naming_contract.md
+  # Ops: mergeable UNKNOWN quickflow siehe docs/ops/runbooks/github_rulesets_pr_reviews_policy.md
   # ============================================================================
   ci-required-contexts-contract:
     name: ci-required-contexts-contract

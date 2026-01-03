@@ -451,6 +451,83 @@ jobs:
           echo "violation_count=${VIOLATION_COUNT}" >> $GITHUB_OUTPUT
           echo "summary=${SUMMARY}" >> $GITHUB_OUTPUT
 
+      - name: Check Execution Override (ops/execution-reviewed)
+        id: execution_override
+        if: always() && steps.critic.outputs.exit_code == '2'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          EVIDENCE_FILE="docs/ops/evidence/PR_${PR_NUMBER}_EXECUTION_REVIEW.md"
+
+          echo "# Execution Override Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check 1: Label present?
+          HAS_LABEL="false"
+          if gh pr view "${PR_NUMBER}" --json labels --jq '.labels[].name' | grep -qx "ops/execution-reviewed"; then
+            HAS_LABEL="true"
+            echo "✅ Label \`ops/execution-reviewed\` present" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Label \`ops/execution-reviewed\` NOT present" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "has_label=${HAS_LABEL}" >> $GITHUB_OUTPUT
+
+          # Check 2: Evidence file exists?
+          HAS_EVIDENCE_FILE="false"
+          if [ -f "${EVIDENCE_FILE}" ]; then
+            HAS_EVIDENCE_FILE="true"
+            echo "✅ Evidence file exists: \`${EVIDENCE_FILE}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Evidence file NOT found: \`${EVIDENCE_FILE}\`" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "has_evidence_file=${HAS_EVIDENCE_FILE}" >> $GITHUB_OUTPUT
+
+          # Check 3: Test plan in PR body?
+          HAS_TESTPLAN="false"
+          if gh pr view "${PR_NUMBER}" --json body --jq '.body' | grep -q "## Test Plan"; then
+            HAS_TESTPLAN="true"
+            echo "✅ PR body contains \`## Test Plan\` section" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ PR body does NOT contain \`## Test Plan\` section" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "has_testplan_in_body=${HAS_TESTPLAN}" >> $GITHUB_OUTPUT
+
+          # Check 4: Auto-merge status
+          AUTO_MERGE_ENABLED="false"
+          if gh pr view "${PR_NUMBER}" --json autoMergeRequest --jq '.autoMergeRequest' | grep -qv "null"; then
+            AUTO_MERGE_ENABLED="true"
+            echo "⚠️ **Auto-merge is ENABLED** (must be disabled for override)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Auto-merge is disabled" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "auto_merge_enabled=${AUTO_MERGE_ENABLED}" >> $GITHUB_OUTPUT
+
+          # Evaluate: Override OK?
+          OVERRIDE_OK="false"
+          if [ "${HAS_LABEL}" = "true" ] && ([ "${HAS_EVIDENCE_FILE}" = "true" ] || [ "${HAS_TESTPLAN}" = "true" ]) && [ "${AUTO_MERGE_ENABLED}" = "false" ]; then
+            OVERRIDE_OK="true"
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "## ✅ Override Valid" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Decision:** Policy Critic BLOCK can be overridden." >> $GITHUB_STEP_SUMMARY
+            echo "**Evidence Source:** $([ "${HAS_EVIDENCE_FILE}" = "true" ] && echo "Evidence file" || echo "PR body test plan")" >> $GITHUB_STEP_SUMMARY
+            echo "**Manual Merge Required:** YES (auto-merge disabled as required)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "## ❌ Override Invalid" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Requirements NOT met:**" >> $GITHUB_STEP_SUMMARY
+            [ "${HAS_LABEL}" = "false" ] && echo "- Missing label \`ops/execution-reviewed\`" >> $GITHUB_STEP_SUMMARY
+            [ "${HAS_EVIDENCE_FILE}" = "false" ] && [ "${HAS_TESTPLAN}" = "false" ] && echo "- No evidence (need file OR test plan in PR body)" >> $GITHUB_STEP_SUMMARY
+            [ "${AUTO_MERGE_ENABLED}" = "true" ] && echo "- Auto-merge must be disabled" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**See:** [\`docs/ops/runbooks/policy_critic_execution_override.md\`](../blob/main/docs/ops/runbooks/policy_critic_execution_override.md)" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "override_ok=${OVERRIDE_OK}" >> $GITHUB_OUTPUT
+
       - name: Upload results artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -562,12 +639,58 @@ jobs:
           echo "- **>1200 files:** Requires 'large-pr-approved' label or PR split" >> $GITHUB_STEP_SUMMARY
           echo "- **Sensitive paths:** Always analyzed, cannot be bypassed for very large PRs" >> $GITHUB_STEP_SUMMARY
 
+          # Execution Override Status (if applicable)
+          if [ "${{ steps.critic.outputs.exit_code }}" = "2" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "---" >> $GITHUB_STEP_SUMMARY
+            echo "### Execution Override Status" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            if [ "${{ steps.execution_override.outputs.override_ok }}" = "true" ]; then
+              echo "✅ **Override Applied:** \`ops/execution-reviewed\`" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**Evidence Source:** ${{ steps.execution_override.outputs.has_evidence_file == 'true' && 'Evidence file' || 'PR body test plan' }}" >> $GITHUB_STEP_SUMMARY
+              echo "**Auto-Merge:** Disabled (as required)" >> $GITHUB_STEP_SUMMARY
+              echo "**Merge Method:** Manual only" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "📖 **Runbook:** [\`policy_critic_execution_override.md\`](../blob/main/docs/ops/runbooks/policy_critic_execution_override.md)" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ steps.execution_override.outputs.has_label }}" = "true" ]; then
+              echo "❌ **Override Invalid:** Requirements not met" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "Label \`ops/execution-reviewed\` present, but:" >> $GITHUB_STEP_SUMMARY
+              [ "${{ steps.execution_override.outputs.has_evidence_file }}" = "false" ] && [ "${{ steps.execution_override.outputs.has_testplan_in_body }}" = "false" ] && echo "- ❌ No evidence (need file OR test plan)" >> $GITHUB_STEP_SUMMARY
+              [ "${{ steps.execution_override.outputs.auto_merge_enabled }}" = "true" ] && echo "- ❌ Auto-merge must be disabled" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "📖 **Runbook:** [\`policy_critic_execution_override.md\`](../blob/main/docs/ops/runbooks/policy_critic_execution_override.md)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "ℹ️ **Override Not Requested**" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "To override EXECUTION_ENDPOINT_TOUCH blocks:" >> $GITHUB_STEP_SUMMARY
+              echo "1. Create evidence file or add test plan to PR body" >> $GITHUB_STEP_SUMMARY
+              echo "2. Add label: \`ops/execution-reviewed\`" >> $GITHUB_STEP_SUMMARY
+              echo "3. Ensure auto-merge is disabled" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "📖 **Runbook:** [\`policy_critic_execution_override.md\`](../blob/main/docs/ops/runbooks/policy_critic_execution_override.md)" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
       - name: Block PR on BLOCK severity
-        if: steps.mode.outputs.format_only_ok != 'true' && steps.critic.outputs.exit_code == '2'
+        if: steps.mode.outputs.format_only_ok != 'true' && steps.critic.outputs.exit_code == '2' && steps.execution_override.outputs.override_ok != 'true'
         run: |
           echo "::error::Policy Critic returned BLOCK (exit code 2). Merge is DENIED."
           echo "::error::See job summary for violation details."
+          echo "::error::To override: see docs/ops/runbooks/policy_critic_execution_override.md"
           exit 2
+
+      - name: Override Applied (Manual Merge Only)
+        if: steps.mode.outputs.format_only_ok != 'true' && steps.critic.outputs.exit_code == '2' && steps.execution_override.outputs.override_ok == 'true'
+        run: |
+          echo "::warning::Policy Critic BLOCK overridden via ops/execution-reviewed label."
+          echo "::warning::Evidence validated. Manual merge required (auto-merge must stay disabled)."
+          echo "::warning::See job summary for override details."
+          echo ""
+          echo "✅ Override applied - job passes with warning."
+          echo "⚠️ Manual merge only - do not enable auto-merge."
 
       - name: Success
         if: steps.mode.outputs.format_only_ok != 'true' && steps.critic.outputs.exit_code == '0'

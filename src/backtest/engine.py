@@ -93,6 +93,7 @@ class BacktestEngine:
         risk_manager: Optional[BaseRiskManager] = None,
         use_execution_pipeline: bool = True,
         log_executions: bool = False,
+        tracker: Optional[object] = None,
         # Backward-compatibility alias
         use_order_layer: Optional[bool] = None,
     ):
@@ -113,6 +114,7 @@ class BacktestEngine:
         """
         self.config = get_config()
 
+        self.tracker = tracker
         # Risk-Layer initialisieren
         self.position_sizer = position_sizer or PositionSizer(PositionSizerConfig())
         self.risk_limits = risk_limits or RiskLimits(RiskLimitsConfig())
