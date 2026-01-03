@@ -31,7 +31,7 @@ try:
 except ImportError:
     MLFLOW_AVAILABLE = False
 
-from core.tracking import (
+from src.core.tracking import (
     MLflowTracker,
     build_tracker_from_config,
     log_backtest_artifacts,
