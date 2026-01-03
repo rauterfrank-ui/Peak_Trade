@@ -8,7 +8,7 @@
 **Status:** `## main...origin/main` (keine uncommitted changes)
 
 **Letzter Merge:**
-- PR #507 (squash-merged und Branch `docs/merge-log-pr506` gelöscht)
+- PR #507 (squash-merged und Branch [PR_506_MERGE_LOG](./PR_506_MERGE_LOG.md) gelöscht)
 - Neue Datei: `docs/ops/PR_506_MERGE_LOG.md` existiert in main
 - Merge-Commit und Pull erfolgreich abgeschlossen
 
@@ -22,7 +22,7 @@
 ## Was zuletzt erledigt wurde
 
 1. ✅ PR #507 squash-merged (enthielt PR #506 Merge-Log)
-2. ✅ Branch `docs/merge-log-pr506` nach Merge gelöscht
+2. ✅ Branch [PR_506_MERGE_LOG](./PR_506_MERGE_LOG.md) nach Merge gelöscht
 3. ✅ `git pull` durchgeführt, main ist clean
 4. ✅ Terminal-Timeout durch Pager-Env-Vars behoben
 5. ✅ Backup-Audit durchgeführt (3 Backup-Verzeichnisse gefunden)
