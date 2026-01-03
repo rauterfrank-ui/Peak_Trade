@@ -1683,3 +1683,9 @@ Security:
 Post-merge documentation logs for operational PRs.
 
 - [PR #429](PR_429_MERGE_LOG.md) — docs(risk): Phase 11 – VaR Backtest Suite UX & Docs-Verkabelung (merged 2025-12-29) <!-- PR-429-MERGE-LOG -->
+
+### Closeout Logs
+
+Documentation for PRs closed without merge (superseded, redundant, or obsolete).
+
+- [PR #321](PR_321_CLOSEOUT_LOG.md) — feat/risk: parametric Component VaR MVP (CLOSED / SUPERSEDED BY PR #408, 2026-01-03)
