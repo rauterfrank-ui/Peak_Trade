@@ -112,16 +112,6 @@ python -m pytest \
 
 **Result**: ✅ **167 passed** in 2.12s (3 warnings, non-blocking)
 
-**Breakdown**:
-- `test_execution_pipeline.py`: 8 tests
-- `test_research_strategies.py`: 39 tests
-- `test_live_session_runner.py`: 24 tests
-- `test_offline_realtime_feed.py`: 33 tests
-- `test_offline_realtime_feed_v0.py`: 39 tests
-- `test_data_safety_gate.py`: 24 tests
-
-**Expected Failure Clusters (A, B, C)**: All previously fixed; no failures observed.
-
 ### CI Status (PR #541)
 
 **Checks**: ✅ 13 successful, 4 skipped, 0 failed
@@ -132,23 +122,9 @@ python -m pytest \
 
 ### Repository Hygiene
 
-**Branch Refs**:
-```bash
-git show-ref --heads | egrep "(angry-shockley|awesome-hopper)"
-# Output: OK: no local branch refs
-```
-
-**Worktree Metadata**:
-```bash
-ls -1 .git/worktrees | egrep "(angry-shockley|awesome-hopper)"
-# Output: OK: no worktree metadata
-```
-
-**Prune Check**:
-```bash
-git worktree prune -n
-# Output: (empty) — no stale worktrees
-```
+- ✅ No branch refs remaining: `git show-ref --heads | grep <branches>` (empty)
+- ✅ No worktree metadata: `ls .git/worktrees/ | grep <branches>` (empty)
+- ✅ Prune check clean: `git worktree prune -n` (no output)
 
 ---
 
@@ -177,80 +153,39 @@ git worktree prune -n
 
 ## Operator How-To
 
-### Reproduce Similar Workflow
+### Key Commands
 
-#### 1. Rebase with Conflict Resolution
-
+**Rebase + Conflict Resolution**:
 ```bash
-# Checkout feature branch
-git checkout recovered/feat-data-offline-garch-feed-v2
-
-# Fetch latest main
 git fetch origin main
-
-# Rebase onto main
 git rebase origin/main
-
-# If conflicts:
-# - Resolve manually (e.g., remove conflict markers)
-# - Stage resolved files:
-git add <conflicted-file>
-git rebase --continue
-
-# If tests fail, amend last commit:
-git add <fixed-file>
-git commit --amend --no-edit
+# Resolve conflicts, then:
+git add <file> && git rebase --continue
 ```
 
-#### 2. Create and Analyze PR
-
+**Detect No-Op PR**:
 ```bash
-# Push branch
-git push -u origin <branch-name>
-
-# Create PR
-gh pr create --base main --head <branch-name> \
-  --title "..." --body "..."
-
-# Check PR files diff
 gh pr view <pr-number> --json files -q ".files[] | .path"
-
-# If files: [] → No-Op PR, consider closing
+# If empty → No-Op
 ```
 
-#### 3. Safe Branch Cleanup
-
+**Safe Branch Cleanup**:
 ```bash
-# Verify branch is in main
-git merge-base --is-ancestor <branch-name> main && echo "Safe to delete"
+# Verify merged
+git merge-base --is-ancestor <branch> main
 
-# If worktree exists, remove first
-git worktree list | grep <branch-name>
-git worktree remove /path/to/worktree --force
+# Remove worktree first (if exists)
+git worktree remove <path> --force
 
-# Delete local branch
-git branch -d <branch-name>  # Safe delete (checks merge status)
-git branch -D <branch-name>  # Force delete (if needed after verification)
-
-# Delete remote branch
-git push origin --delete <branch-name>
+# Delete branch
+git branch -d <branch>  # or -D after verification
+git push origin --delete <branch>
 ```
 
-#### 4. Worktree Hygiene
-
+**Worktree Hygiene**:
 ```bash
-# List all worktrees
-git worktree list
-
-# Dry-run prune (shows what would be removed)
-git worktree prune -n
-
-# Actually prune stale worktrees
-git worktree prune
-
-# Verify no references remain
-git show-ref --heads | grep <branch-name>
-ls .git/worktrees/ | grep <branch-name>
+git worktree prune -n  # Dry-run
+git worktree prune     # Actual cleanup
 ```
 
 ---
@@ -279,24 +214,4 @@ ls .git/worktrees/ | grep <branch-name>
 - `src/data/safety/__init__.py` (import formatting)
 
 ### Related Docs
-- Merge Log Template: (Inferred from Peak_Trade patterns)
 - Worktree Documentation: https://git-scm.com/docs/git-worktree
-
----
-
-## Lessons Learned
-
-1. **No-Op Detection**: GitHub's `files: []` is a reliable indicator of duplicate/redundant PRs. CI "docs-only" skip is correct behavior.
-
-2. **Worktree Safety**: Always audit worktrees for untracked files before deletion:
-   ```bash
-   git -C /path/to/worktree ls-files -o --exclude-standard
-   ```
-
-3. **Conflict Resolution Hygiene**: Python's implicit EOF newline can cause spurious conflicts. Tools like `git worktree prune` help maintain clean state.
-
-4. **Merge-Base Verification**: `git merge-base --is-ancestor <branch> main` is definitive proof of merge status before force-delete.
-
----
-
-**EOF**
