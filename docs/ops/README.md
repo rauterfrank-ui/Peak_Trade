@@ -1516,6 +1516,7 @@ Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
 ## Verified Merge Logs
+- **PR #512 (CI required checks hardening: fail-open changes + PR concurrency)** → `docs/ops/PR_512_MERGE_LOG.md`
 - **PR #509 (Optuna/MLflow Tracking + Parameter Schema Restore from BK1)** → `docs/ops/PR_509_MERGE_LOG.md`
 - **PR #504 (WP5A Phase 5 NO-LIVE Drill Pack, governance-safe docs)** → `docs/ops/PR_504_MERGE_LOG.md`
 - **PR #501 (Cursor Timeout / Hang Triage Quick Start — Frontdoor)** → `docs/ops/PR_501_MERGE_LOG.md`
