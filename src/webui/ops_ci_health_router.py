@@ -2,7 +2,7 @@
 Peak_Trade: CI & Governance Health API
 ======================================
 
-Ops Dashboard v0.2: CI & Governance Health Panel with Persistent Snapshots
+Ops Dashboard v0.2: CI & Governance Health Panel with Interactive Controls
 
 Führt lokale CI-Checks aus und zeigt Status als Ampel:
 - Contract Guard (check_required_ci_contexts_present.sh)
@@ -14,14 +14,20 @@ v0.2 Features:
   - Markdown: reports/ops/ci_health_latest.md
   - Atomic writes (temp file + rename)
   - Snapshot errors do NOT fail the API
+- Interactive "Run Now" Buttons (fetch-based, no page reload)
+  - POST /ops/ci-health/run (trigger checks)
+  - Auto-refresh toggle (15s)
+  - Running state + error handling
 
 Endpoints:
-- GET /ops/ci-health - HTML dashboard page
-- GET /ops/ci-health/status - JSON API für health checks
+- GET  /ops/ci-health        - HTML dashboard page (with interactive controls)
+- GET  /ops/ci-health/status - JSON API für health checks (read-only)
+- POST /ops/ci-health/run    - Trigger check execution (with lock)
 
 Safety:
 - Offline-lokal, keine externen Secrets
 - Read-only checks, keine destructive operations
+- In-memory lock prevents parallel runs (HTTP 409 on conflict)
 """
 
 from __future__ import annotations
@@ -30,12 +36,13 @@ import json
 import logging
 import os
 import subprocess
+import threading
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
@@ -47,6 +54,10 @@ router = APIRouter(prefix="/ops/ci-health", tags=["ops", "ci-health"])
 # Global config (set by app during initialization)
 _REPO_ROOT: Optional[Path] = None
 _TEMPLATES: Optional[Jinja2Templates] = None
+
+# In-memory lock for check execution (prevents parallel runs)
+_CHECK_LOCK = threading.Lock()
+_LAST_RUN_TIMESTAMP: Optional[datetime] = None
 
 
 @dataclass
@@ -455,6 +466,119 @@ async def get_ci_health_status() -> Dict[str, Any]:
         logger.warning(f"Snapshot write failed but API returns 200: {snapshot_error}")
 
     return response
+
+
+@router.post("/run")
+async def run_ci_health_checks() -> Dict[str, Any]:
+    """
+    JSON API: Trigger CI & Governance health checks (v0.2 interactive controls).
+
+    Executes health checks and returns results (same schema as GET /status).
+
+    Features:
+        - In-memory lock prevents parallel runs (HTTP 409 on conflict)
+        - Logs run start/end with duration
+        - Persists snapshot on success
+        - Idempotent: safe to call multiple times
+
+    Returns:
+        Dict with health check results and summary (same as GET /status)
+
+    Raises:
+        HTTPException 409: If another check run is already in progress
+    """
+    global _LAST_RUN_TIMESTAMP
+
+    # Try to acquire lock (non-blocking)
+    acquired = _CHECK_LOCK.acquire(blocking=False)
+
+    if not acquired:
+        # Another run is in progress
+        logger.warning("CI health check run rejected: lock held by another request")
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": "run_already_in_progress",
+                "message": "Another CI health check is already running. Please wait.",
+                "last_run": _LAST_RUN_TIMESTAMP.isoformat() if _LAST_RUN_TIMESTAMP else None,
+            },
+        )
+
+    try:
+        # Log run start
+        run_start = datetime.now(timezone.utc)
+        logger.info("CI health check run started")
+
+        # Execute checks
+        results = _run_all_checks()
+
+        # Compute summary
+        total = len(results)
+        ok_count = sum(1 for r in results if r.status == "OK")
+        warn_count = sum(1 for r in results if r.status == "WARN")
+        fail_count = sum(1 for r in results if r.status == "FAIL")
+        skip_count = sum(1 for r in results if r.status == "SKIP")
+
+        overall_status = "OK"
+        if fail_count > 0:
+            overall_status = "FAIL"
+        elif warn_count > 0:
+            overall_status = "WARN"
+
+        # Build response
+        response = {
+            "overall_status": overall_status,
+            "summary": {
+                "total": total,
+                "ok": ok_count,
+                "warn": warn_count,
+                "fail": fail_count,
+                "skip": skip_count,
+            },
+            "checks": [
+                {
+                    "check_id": r.check_id,
+                    "title": r.title,
+                    "description": r.description,
+                    "status": r.status,
+                    "exit_code": r.exit_code,
+                    "output": r.output,
+                    "error_excerpt": r.error_excerpt,
+                    "duration_ms": r.duration_ms,
+                    "timestamp": r.timestamp,
+                    "script_path": r.script_path,
+                    "docs_refs": r.docs_refs,
+                }
+                for r in results
+            ],
+            "generated_at": datetime.now().isoformat(),
+            "server_timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            "git_head_sha": _get_git_head_sha(),
+            "app_version": "0.2.0",
+            "run_triggered": True,  # Flag to indicate this was a triggered run
+        }
+
+        # Persist snapshot
+        snapshot_error = _persist_snapshot(response)
+        if snapshot_error:
+            response["snapshot_write_error"] = snapshot_error
+            logger.warning(f"Snapshot write failed but API returns 200: {snapshot_error}")
+
+        # Log run end
+        run_end = datetime.now(timezone.utc)
+        duration_ms = int((run_end - run_start).total_seconds() * 1000)
+        logger.info(
+            f"CI health check run completed: status={overall_status}, duration={duration_ms}ms"
+        )
+
+        # Update last run timestamp
+        _LAST_RUN_TIMESTAMP = run_end
+
+        return response
+
+    finally:
+        # Always release lock
+        _CHECK_LOCK.release()
 
 
 # =============================================================================

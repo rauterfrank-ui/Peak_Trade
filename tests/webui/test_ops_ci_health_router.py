@@ -62,7 +62,7 @@ def mock_templates(tmp_path: Path) -> Jinja2Templates:
     templates_dir = tmp_path / "templates"
     templates_dir.mkdir()
 
-    # Create minimal template
+    # Create minimal template (v0.2 with interactive controls)
     template_file = templates_dir / "ops_ci_health.html"
     template_file.write_text(
         """<!doctype html>
@@ -72,6 +72,28 @@ def mock_templates(tmp_path: Path) -> Jinja2Templates:
 <h1>CI & Governance Health</h1>
 <p>Status: {{ overall_status }}</p>
 <p>Total: {{ summary.total }}</p>
+
+<!-- v0.2 Interactive Controls -->
+<button id="run-checks-btn" onclick="runChecks()">Run checks now</button>
+<button id="refresh-btn" onclick="refreshStatus()">Refresh status</button>
+<input type="checkbox" id="auto-refresh-toggle" onchange="toggleAutoRefresh(this.checked)">
+
+<!-- Error Banner -->
+<div id="error-banner" class="hidden">
+  <div id="error-message"></div>
+  <button onclick="hideError()">Close</button>
+</div>
+
+<script>
+  async function runChecks() {
+    const response = await fetch('/ops/ci-health/run', { method: 'POST' });
+  }
+  async function refreshStatus() {
+    const response = await fetch('/ops/ci-health/status', { method: 'GET' });
+  }
+  function toggleAutoRefresh(enabled) {}
+  function hideError() {}
+</script>
 </body>
 </html>
 """
@@ -563,3 +585,153 @@ def test_ci_health_snapshot_directory_creation(tmp_path: Path, mock_templates: J
     assert reports_dir.exists()
     assert (reports_dir / "ci_health_latest.json").exists()
     assert (reports_dir / "ci_health_latest.md").exists()
+
+
+# =============================================================================
+# TESTS: v0.2 Run-Now Buttons & Interactive Controls
+# =============================================================================
+
+
+def test_ci_health_run_endpoint_returns_200(client: TestClient) -> None:
+    """Test that POST /run endpoint returns 200 with valid JSON."""
+    response = client.post("/ops/ci-health/run")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Validate structure (same as GET /status)
+    assert "overall_status" in data
+    assert "summary" in data
+    assert "checks" in data
+    assert "generated_at" in data
+    assert "server_timestamp_utc" in data
+    assert "git_head_sha" in data
+    assert "app_version" in data
+
+    # v0.2 run-specific field
+    assert "run_triggered" in data
+    assert data["run_triggered"] is True
+
+
+def test_ci_health_run_endpoint_executes_checks(client: TestClient) -> None:
+    """Test that POST /run actually executes checks."""
+    response = client.post("/ops/ci-health/run")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should have 2 checks
+    assert len(data["checks"]) == 2
+    assert data["summary"]["total"] == 2
+
+    # At least one check should have OK status (our mock scripts return 0)
+    statuses = [check["status"] for check in data["checks"]]
+    assert "OK" in statuses or "SKIP" in statuses
+
+
+def test_ci_health_run_parallel_returns_409(client: TestClient) -> None:
+    """Test that parallel run attempts return HTTP 409."""
+    import threading
+    import time
+
+    results = []
+
+    def run_check():
+        response = client.post("/ops/ci-health/run")
+        results.append(response)
+
+    # Start two threads simultaneously
+    thread1 = threading.Thread(target=run_check)
+    thread2 = threading.Thread(target=run_check)
+
+    thread1.start()
+    time.sleep(0.01)  # Small delay to ensure first thread acquires lock
+    thread2.start()
+
+    thread1.join()
+    thread2.join()
+
+    # One should succeed (200), one should fail (409)
+    status_codes = [r.status_code for r in results]
+
+    # At least one should be 409 (conflict)
+    assert 409 in status_codes, "Expected at least one 409 response for parallel run"
+
+    # Check 409 response structure
+    conflict_response = [r for r in results if r.status_code == 409][0]
+    data = conflict_response.json()
+
+    assert "detail" in data
+    assert "error" in data["detail"]
+    assert data["detail"]["error"] == "run_already_in_progress"
+    assert "message" in data["detail"]
+
+
+def test_ci_health_run_creates_snapshot(mock_repo_root: Path, client: TestClient) -> None:
+    """Test that POST /run creates snapshot files."""
+    # Call run endpoint
+    response = client.post("/ops/ci-health/run")
+    assert response.status_code == 200
+
+    # Check that snapshot files exist
+    snapshot_dir = mock_repo_root / "reports" / "ops"
+    json_file = snapshot_dir / "ci_health_latest.json"
+    md_file = snapshot_dir / "ci_health_latest.md"
+
+    assert json_file.exists(), "JSON snapshot should be created by /run"
+    assert md_file.exists(), "Markdown snapshot should be created by /run"
+
+
+def test_ci_health_dashboard_contains_buttons(client: TestClient) -> None:
+    """Test that HTML dashboard contains interactive control buttons."""
+    response = client.get("/ops/ci-health")
+
+    assert response.status_code == 200
+    html = response.text
+
+    # Check for button elements
+    assert "run-checks-btn" in html, "Run checks button should be present"
+    assert "refresh-btn" in html, "Refresh button should be present"
+    assert "auto-refresh-toggle" in html, "Auto-refresh toggle should be present"
+
+    # Check for JavaScript functions
+    assert "runChecks()" in html, "runChecks() function should be present"
+    assert "refreshStatus()" in html, "refreshStatus() function should be present"
+    assert "toggleAutoRefresh" in html, "toggleAutoRefresh() function should be present"
+
+    # Check for fetch API calls
+    assert "/ops/ci-health/run" in html, "POST /run endpoint should be referenced"
+    assert "/ops/ci-health/status" in html, "GET /status endpoint should be referenced"
+
+
+def test_ci_health_dashboard_has_error_banner(client: TestClient) -> None:
+    """Test that HTML dashboard has error banner element."""
+    response = client.get("/ops/ci-health")
+
+    assert response.status_code == 200
+    html = response.text
+
+    # Check for error banner
+    assert "error-banner" in html, "Error banner should be present"
+    assert "error-message" in html, "Error message element should be present"
+    assert "hideError()" in html, "hideError() function should be present"
+
+
+def test_ci_health_run_sequential_calls_work(client: TestClient) -> None:
+    """Test that sequential run calls work (lock is released)."""
+    # First call
+    response1 = client.post("/ops/ci-health/run")
+    assert response1.status_code == 200
+
+    # Second call (should also succeed since lock was released)
+    response2 = client.post("/ops/ci-health/run")
+    assert response2.status_code == 200
+
+    # Both should have valid data
+    data1 = response1.json()
+    data2 = response2.json()
+
+    assert "overall_status" in data1
+    assert "overall_status" in data2
+    assert data1["run_triggered"] is True
+    assert data2["run_triggered"] is True
