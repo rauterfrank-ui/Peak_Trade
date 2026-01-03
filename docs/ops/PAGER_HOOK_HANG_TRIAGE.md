@@ -21,7 +21,7 @@ In Cursor/Terminal können gefühlte "Hänger" auftreten, die keine echten Freez
 ## Quick Diagnosis Tool
 
 ```bash
-./scripts/ops/diag_terminal_hang.sh
+scripts/ops/diag_terminal_hang.sh
 ```
 
 Zeigt:

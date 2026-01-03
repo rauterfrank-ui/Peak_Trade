@@ -47,7 +47,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 
 **Quick Diagnosis Tool:**
 ```bash
-./scripts/ops/diag_terminal_hang.sh
+scripts/ops/diag_terminal_hang.sh
 ```
 
 **Was wird geprüft:**

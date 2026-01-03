@@ -52,7 +52,7 @@ export LESS='-FRX'
 
 **Usage:**
 ```bash
-./scripts/ops/diag_terminal_hang.sh
+scripts/ops/diag_terminal_hang.sh
 ```
 
 **Output:**
@@ -112,7 +112,7 @@ source ~/.zshrc
 Test the diagnostic tool:
 ```bash
 cd /Users/frnkhrz/Peak_Trade
-./scripts/ops/diag_terminal_hang.sh
+scripts/ops/diag_terminal_hang.sh
 ```
 
 Expected output when environment is correctly set:
@@ -149,7 +149,7 @@ LESS=-FRX
 ## Future Recommendations
 
 1. **If hangs persist:**
-   - Run `./scripts/ops/diag_terminal_hang.sh` to identify cause
+   - Run `scripts/ops/diag_terminal_hang.sh` to identify cause
    - Check Cursor terminal settings (restart may help)
    - Consider using external terminal (iTerm2/Terminal.app)
 
