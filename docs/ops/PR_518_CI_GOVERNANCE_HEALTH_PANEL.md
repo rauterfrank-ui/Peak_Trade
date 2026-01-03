@@ -255,8 +255,8 @@ Das Panel ist im Dashboard-Header verlinkt:
    - Automatische Aktualisierung alle 30s (wie Stage1 Panel)
 
 2. **Weitere Checks:**
-   - `scripts/ops/verify_policy_pack_coverage.sh`
-   - `scripts/ops/check_docs_freshness.sh`
+   - Policy Pack Coverage Check (geplant: `verify_policy_pack_coverage.sh`)
+   - Docs Freshness Check (geplant: `check_docs_freshness.sh`)
    - Custom checks via config
 
 3. **History:**
