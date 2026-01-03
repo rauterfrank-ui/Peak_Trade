@@ -128,6 +128,10 @@ class PositionLedger:
         # Fill history (for reconciliation)
         self._fills: List[Fill] = []
 
+        # Idempotency tracking (Phase 16A: duplicate fill guard)
+        self._seen_fill_keys: Dict[str, Fill] = {}
+        self.duplicate_fill_skipped_count: int = 0
+
     def apply_fill(self, fill: Fill) -> Position:
         """
         Apply fill to update position.
@@ -138,12 +142,52 @@ class PositionLedger:
         - Update avg_entry_price using FIFO/weighted average
         - Track realized PnL on position reductions
 
+        Idempotency (Phase 16A):
+        - If fill with same idempotency_key already seen AND payload equivalent: skip
+        - If fill with same key but different payload: raise DuplicateFillConflictError
+
         Args:
             fill: Fill to apply
 
         Returns:
             Updated position
+
+        Raises:
+            DuplicateFillConflictError: If duplicate fill with conflicting payload
         """
+        # Phase 16A: Idempotency guard
+        from src.execution.pipeline import DuplicateFillConflictError
+
+        fill_key = fill.get_idempotency_key()
+
+        if fill_key in self._seen_fill_keys:
+            original_fill = self._seen_fill_keys[fill_key]
+
+            # Check if payloads are equivalent (compare to_dict())
+            if original_fill.to_dict() == fill.to_dict():
+                # Idempotent duplicate: skip and increment counter
+                self.duplicate_fill_skipped_count += 1
+                return self._positions.get(
+                    fill.symbol,
+                    Position(symbol=fill.symbol, opened_at=fill.filled_at),
+                )
+            else:
+                # Conflict: same key, different payload
+                raise DuplicateFillConflictError(
+                    message=(
+                        f"Duplicate fill with conflicting payload detected. "
+                        f"idempotency_key={fill_key}, "
+                        f"original_fill_id={original_fill.fill_id}, "
+                        f"conflicting_fill_id={fill.fill_id}"
+                    ),
+                    idempotency_key=fill_key,
+                    original_fill=original_fill.to_dict(),
+                    conflicting_fill=fill.to_dict(),
+                )
+
+        # Mark fill as seen
+        self._seen_fill_keys[fill_key] = fill
+
         # Get or create position
         if fill.symbol not in self._positions:
             self._positions[fill.symbol] = Position(

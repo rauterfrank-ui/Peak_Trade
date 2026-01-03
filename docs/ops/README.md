@@ -13,12 +13,80 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - `scripts/ops/create_closeout_2025_12_27.sh` — Generator (Docs + PR scaffold)
 
 ## Cursor Multi-Agent Runbooks
-- `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md` — Main entry point for Cursor Multi-Agent workflows
-- `docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md` — Cursor Multi-Agent Runbook (Phasen) — V2
-- `docs/ops/CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md` — Cursor Multi-Agent Session Runlog Template
-- `docs/ops/CURSOR_MULTI_AGENT_WORKFLOW.md` — Canonical workflow definition (roles, protocol, recovery)
-- `docs/ops/CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md` — Phased runbook (P0-P10: research → shadow → live)
+
+**Quick Start:** Beginne mit der **Frontdoor** für Rollen, Task-Packets und Gates. Wähle dann deine **Phase** (0–7: Foundation → Live Operations) im Phasen-Runbook. Jede Session: erstelle ein **Runlog** aus dem Template. Die Frontdoor definiert *wie* wir liefern (Prozess), die Phasen definieren *was* wir liefern (Deliverables pro Phase).
+
+**Navigation:**
+- 🚪 **Start hier:** [CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md](CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md) — Rollen (A0–A5), Task-Packet-Format, PR-Contract, Gate-Index, Stop-Regeln
+- 📋 **Phasen-Guide:** [CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md](CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md) — Phase 0 (Foundation) → Phase 7 (Continuous Ops); Entry/Exit Criteria, Deliverables, Operator How-To
+- 📝 **Session Template:** [CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md](CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md) — Strukturiertes Log-Format für jede Multi-Agent Session
+- 🔄 **Workflow-Definition:** [CURSOR_MULTI_AGENT_WORKFLOW.md](CURSOR_MULTI_AGENT_WORKFLOW.md) — Canonical Workflow (Roles, Protocol, Recovery)
+- 🗺️ **Legacy Roadmap:** [CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md](CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md) — Älterer Phasen-Runbook (P0–P10), siehe Frontdoor + PHASES_V2 für aktuelle Version
 - `docs/ops/LIVE_READINESS_PHASE_TRACKER.md` — Phase gates tracker (P0-P10: research → shadow → live)
+
+### Phase 5 NO-LIVE Drill Pack (Governance-Safe, Manual-Only)
+
+🚨 **NO-LIVE / Drill-Only** — Kein Live Trading, keine realen Funds, keine Exchange Connectivity
+
+**WP5A — Phase 5 NO-LIVE Drill Pack:**
+- 📖 **Operator Runbook:** [WP5A_PHASE5_NO_LIVE_DRILL_PACK.md](WP5A_PHASE5_NO_LIVE_DRILL_PACK.md) — End-to-End Workflow für NO-LIVE Operator Drills (5-Step Procedure, Evidence Pack, Hard Prohibitions)
+
+**Templates (Phase 5 NO-LIVE):**
+- 📋 Operator Checklist: [templates/phase5_no_live/PHASE5_NO_LIVE_OPERATOR_CHECKLIST.md](templates/phase5_no_live/PHASE5_NO_LIVE_OPERATOR_CHECKLIST.md)
+- ✅ Go/No-Go Record: [templates/phase5_no_live/PHASE5_NO_LIVE_GO_NO_GO_RECORD.md](templates/phase5_no_live/PHASE5_NO_LIVE_GO_NO_GO_RECORD.md)
+- 📦 Evidence Index: [templates/phase5_no_live/PHASE5_NO_LIVE_EVIDENCE_INDEX.md](templates/phase5_no_live/PHASE5_NO_LIVE_EVIDENCE_INDEX.md)
+- 📝 Post-Run Review: [templates/phase5_no_live/PHASE5_NO_LIVE_POST_RUN_REVIEW.md](templates/phase5_no_live/PHASE5_NO_LIVE_POST_RUN_REVIEW.md)
+
+**Key Deliverables:**
+- NO-LIVE Enforcement (Shadow/Paper/Drill-Only modes)
+- Hard Prohibitions (keys, funding, real orders verboten)
+- Operator Competency Validation (drill-safe)
+- Governance-Safe Evidence Chain (GO ≠ Live Authorization)
+
+### Terminal Hang Diagnostics (Pager / Hook / Watch Blocking)
+
+**Quick Diagnosis Tool:**
+```bash
+scripts/ops/diag_terminal_hang.sh
+```
+
+**Was wird geprüft:**
+- Pager-Environment (PAGER, GH_PAGER, LESS)
+- Aktive Prozesse: less, git, gh, pre-commit, python
+- Shell/TTY Status und File Descriptors
+- Diagnose-Checkliste mit Quick Actions
+
+**Runbooks:**
+- **[PAGER_HOOK_HANG_TRIAGE.md](PAGER_HOOK_HANG_TRIAGE.md)** — Operator Runbook mit 5 häufigen Ursachen + Lösungen
+- **[TERMINAL_HANG_DIAGNOSTICS_SETUP.md](TERMINAL_HANG_DIAGNOSTICS_SETUP.md)** — Investigation Timeline + Setup-Dokumentation
+
+**Häufige Symptome:**
+- Terminal "steht", keine neue Prompt
+- Prompt zeigt `>`, `dquote>` oder `quote>` (heredoc/quote nicht geschlossen)
+- Keine Ausgabe, kein Fehler, kein CPU-Load
+
+**Quick Fixes:**
+- Pager wartet: `q` drücken
+- Prozess läuft: `Ctrl-C`
+- Heredoc offen: `Ctrl-C`
+- Background Job: `fg` dann `Ctrl-C`
+
+**Environment Setup (empfohlen):**
+```bash
+# In ~/.zshrc oder ~/.bashrc:
+export PAGER=cat
+export GH_PAGER=cat
+export LESS='-FRX'
+```
+
+### Cursor Timeout / Hang Triage (Advanced)
+- Wenn dein Terminal-Prompt `>` oder `dquote>` zeigt: **Ctrl-C** drücken (Shell-Continuation beenden), dann erneut.
+- Runbook öffnen: `docs/ops/CURSOR_TIMEOUT_TRIAGE.md`
+- Evidence Pack erzeugen (funktioniert auch ohne +x):
+  - `bash scripts/ops/collect_cursor_logs.sh`
+  - Output: `artifacts/cursor_logs_YYYYMMDD_HHMMSS.tgz`
+- Optional (bei harten Hangs): In der Runbook-Sektion "Advanced Diagnostics (macOS)" die Schritte `sample`, `spindump`, `fs_usage` nutzen (sudo + Privacy beachten).
+- Privacy: Logs/Snapshots vor externem Sharing auf sensitive Daten prüfen.
 
 ---
 
@@ -200,6 +268,75 @@ pytest tests/data/shadow/ -q
 Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON- und Human-Readable-Output.
 
 ### Quick Start
+
+## 🎛️ CI & Governance Health Panel (WebUI v0.2)
+
+**Offline-fähiges Dashboard für CI & Governance Health Monitoring mit persistenten Snapshots und interaktiven Controls.**
+
+### Features
+
+- ✅ **Persistent Snapshots:** JSON + Markdown snapshots bei jedem Status-Call (`reports/ops/ci_health_latest.{json,md}`)
+- ✅ **Interactive Controls:** "Run checks now" Button, "Refresh status" Button, Auto-refresh (15s toggle)
+- ✅ **Offline-fähig:** Snapshots bleiben verfügbar auch wenn WebUI offline ist
+- ✅ **Concurrency-safe:** In-memory lock verhindert parallele Runs (HTTP 409 bei Konflikt)
+- ✅ **XSS-protected:** HTML escaping für alle dynamischen Inhalte
+
+### Quick Start
+
+```bash
+# Start WebUI
+uvicorn src.webui.app:app --host 127.0.0.1 --port 8000
+
+# Open Dashboard
+open http://127.0.0.1:8000/ops/ci-health
+
+# View persistent snapshot (offline)
+cat reports/ops/ci_health_latest.md
+jq '.overall_status, .summary' reports/ops/ci_health_latest.json
+```
+
+### API Endpoints
+
+- `GET /ops/ci-health` — HTML Dashboard (interaktive UI)
+- `GET /ops/ci-health/status` — JSON Status + Snapshot-Persistenz
+- `POST /ops/ci-health/run` — Trigger manual check run (idempotent mit lock)
+
+### Operator How-To
+
+**Trigger Manual Check:**
+- Open: `http://127.0.0.1:8000/ops/ci-health`
+- Click: "▶️ Run checks now"
+- Observe: "⏳ Running..." → UI updates ohne page reload
+
+**Enable Auto-Refresh:**
+- Toggle: "Auto-refresh (15s)" checkbox
+- Dashboard aktualisiert sich automatisch alle 15 Sekunden
+
+**View Offline Status:**
+```bash
+# Human-readable summary (10-20 Zeilen)
+cat reports/ops/ci_health_latest.md
+
+# Machine-readable (full detail)
+jq . reports/ops/ci_health_latest.json
+```
+
+### Documentation
+
+- **v0.2 Snapshots:** [PR_518_CI_HEALTH_PANEL_V0_2.md](PR_518_CI_HEALTH_PANEL_V0_2.md) — Persistent snapshot feature
+- **v0.2 Buttons:** [PR_519_CI_HEALTH_BUTTONS_V0_2.md](PR_519_CI_HEALTH_BUTTONS_V0_2.md) — Interactive controls + auto-refresh
+- **Smoke Test:** `scripts/ops/smoke_ci_health_panel_v0_2.sh` — Quick validation script
+
+### Checks Performed
+
+- **Contract Guard:** Prüft required CI contexts (via `check_required_ci_contexts_present.sh`)
+- **Docs Reference Validation:** Validiert Docs-Referenzen (via `verify_docs_reference_targets.sh`)
+
+### Risk
+
+**Low.** Keine externen API-Calls, keine Secrets benötigt, ausschließlich lokale Checks. Snapshots sind deterministische Runtime-Artefakte (gitignored). In-memory Lock verhindert Race Conditions. Error isolation: Snapshot-Fehler failen API nicht.
+
+---
 
 ## Docs Diff Guard (auto beim Merge)
 
@@ -549,6 +686,9 @@ Der `PR_INVENTORY_REPORT.md` enthält:
 
 ## Latest merge-log PRs (top 25)
 
+- [PR #521](https://github.com/rauterfrank-ui/Peak_Trade/pull/521) — Ops WebUI: CI health run-now buttons (v0.2) (merged 2026-01-03)
+- [PR #519](https://github.com/rauterfrank-ui/Peak_Trade/pull/519) — Ops WebUI: CI health snapshots (v0.2) (merged 2026-01-03)
+- [PR #518](https://github.com/rauterfrank-ui/Peak_Trade/pull/518) — ops(dashboard): add CI & governance health panel (merged 2026-01-03)
 - [PR #240](PR_240_MERGE_LOG.md) — test(ops): add run_helpers adoption guard (merged 2025-12-21)
 - PR #208 — docs(ops): add PR #207 merge log (2025-12-20T10:15:00Z)
   - https://github.com/rauterfrank-ui/Peak_Trade/pull/208
@@ -669,7 +809,7 @@ To actually apply labels:
 Für konsistente "fail-fast" vs "warn-only" Semantik in neuen Ops-Skripten nutzen wir:
 - `scripts/ops/run_helpers.sh` (Quelle der Wahrheit, inkl. Quick Reference im Header)
 
-**Default:** strict (fail fast)  
+**Default:** strict (fail fast)
 **Robust mode:** `PT_MODE=robust bash <script>.sh` (optional: `MODE=robust`)
 
 **Minimal usage (copy/paste):**
@@ -1110,13 +1250,22 @@ chmod +x scripts/ops/cleanup_old_inventories.sh
 
 ---
 
-**Version:** 1.0.0  
-**Letzte Aktualisierung:** 2025-12-21  
+**Version:** 1.0.0
+**Letzte Aktualisierung:** 2025-12-21
 **Maintainer:** Peak_Trade Ops Team
 
 - [PR #246](PR_246_MERGE_LOG.md) — chore(ops): add knowledge deployment drill e2e + fix prod smoke headers (merged 2025-12-22T21:52:11Z)
 
 ## 🛡️ Policy Critic & Governance Triage
+
+### Governance Validation Artifacts
+
+Canary tests and validation evidence for governance mechanisms:
+
+- **PR #496 (Canary – Execution Override Validation)** → [CANARY_EXECUTION_OVERRIDE_VALIDATION_20260102.md](CANARY_EXECUTION_OVERRIDE_VALIDATION_20260102.md)
+  - Validates `ops/execution-reviewed` override mechanism
+  - Evidence requirement: Label + Evidence File + Auto-Merge disabled
+  - Result: 18/18 checks passed, override accepted
 
 ### Policy Critic False-Positive Runbook
 
@@ -1387,7 +1536,7 @@ Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 - VaR Gate Runbook: `docs/risk/VAR_GATE_RUNBOOK.md`
 - Stress Gate Runbook: `docs/risk/STRESS_GATE_RUNBOOK.md`
 - Liquidity Gate Runbook: `docs/risk/LIQUIDITY_GATE_RUNBOOK.md`
-- Risk Layer Roadmap: `docs/risk/RISK_LAYER_ROADMAP.md`
+- Risk Layer Roadmap: `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md`
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).
 
@@ -1439,7 +1588,7 @@ bash scripts/execution/recon_audit_gate.sh gate
 4. Optional: **Auto-Merge** aktivieren, wenn alle Required Checks grün
 
 ### Was ist *nicht* erlaubt?
-- Rewriting von technischen Entscheidungen oder Risiko-Semantik, wenn dadurch die ursprüngliche historische Darstellung „umgebogen" wird  
+- Rewriting von technischen Entscheidungen oder Risiko-Semantik, wenn dadurch die ursprüngliche historische Darstellung „umgebogen" wird
   → In dem Fall: **Follow-up PR + neues Merge-Log** oder „Incident/Correction Note" mit Verweis.
 
 ### Empfehlung (Ops-Workflow)
@@ -1474,11 +1623,44 @@ Empfohlenes Setup:
 Security:
 - Tokens niemals in Logs echo'en oder als "eigene Zeile" ins Terminal pasten.
 
+---
+
+## GitHub Branch Protection & Rulesets
+
+**Operator Runbooks für Branch Protection, Required Checks und Review-Workflows.**
+
+### Runbooks
+
+- **[GitHub Rulesets: PR-Pflicht vs. Approving Reviews (inkl. mergeable UNKNOWN Quickflow)](runbooks/github_rulesets_pr_reviews_policy.md)** ⭐
+  - Policy-Matrix: Solo-Dev vs. Team-Standard vs. Safety-Critical
+  - Operator Quickflow: `mergeable: UNKNOWN` troubleshooting (6-Step)
+  - UI-Klickpfade: Rulesets (modern) vs. Branch Protection Rules (legacy)
+  - Best Practices: Required Check Materialisierung, Concurrency-Isolation
+  - Referenz: PR #512 (CI required check robustness)
+
+### Verwandte Docs
+
+- CI Required Checks Naming Contract: [ci_required_checks_matrix_naming_contract.md](ci_required_checks_matrix_naming_contract.md)
+- Branch Protection Snapshot: [BRANCH_PROTECTION_REQUIRED_CHECKS.md](BRANCH_PROTECTION_REQUIRED_CHECKS.md)
+- Required Checks Drift Guard: [REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md](REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md)
+
+---
+
 ## Verified Merge Logs
-- **PR #486 (ops(scripts): add bg_job runner; exitcode capture)** → `docs/ops/PR_486_MERGE_LOG.md`
+- **PR #509 (Optuna/MLflow Tracking + Parameter Schema Restore from BK1)** → `docs/ops/PR_509_MERGE_LOG.md`
+- **PR #504 (WP5A Phase 5 NO-LIVE Drill Pack, governance-safe docs)** → `docs/ops/PR_504_MERGE_LOG.md`
+- **PR #501 (Cursor Timeout / Hang Triage Quick Start — Frontdoor)** → `docs/ops/PR_501_MERGE_LOG.md`
+- **PR #499 (Cursor timeout triage runbook; self-contained + log collector)** → `docs/ops/PR_499_MERGE_LOG.md`
+- **PR #497 (Canary Execution Override Validation Artifact, docs-only)** → `docs/ops/PR_497_MERGE_LOG.md`
+- **PR #491 (bg_job runner delivery + truth corrections)** → `docs/ops/PR_491_MERGE_LOG.md`
+- **PR #489 (docs(ops): standardize bg_job execution pattern in Cursor multi-agent workflows)** → `docs/ops/PR_489_MERGE_LOG.md`
+- **PR #488 (docs(ops): standardize bg_job execution pattern in cursor phases runbook)** → `docs/ops/PR_488_MERGE_LOG.md`
+- **PR #486 (chore(gitignore): ignore .logs from bg jobs)** → `docs/ops/PR_486_MERGE_LOG.md`
+- **PR #485 (docs(ops): docs reference targets parity + ignore list + priority fixes)** → `docs/ops/PR_485_MERGE_LOG.md`
 - **PR #483 (Merge Logs for PR #481 and #482, docs-only)** → `docs/ops/PR_483_MERGE_LOG.md` (meta: references #481, #482)
 - **PR #482 (WP4B Operator Drills + Evidence Pack, Manual-Only)** → `docs/ops/PR_482_MERGE_LOG.md`
 - **PR #481 (Policy-Safe Hardening for Live Gating Docs + WP4A Templates)** → `docs/ops/PR_481_MERGE_LOG.md`
+- **PR #479 (Appendix A — Phase Runner Prompt Packs 0–3)** → docs/ops/PR_479_MERGE_LOG.md
 - **PR #470 (Recon Audit Gate Wrapper: pyenv-safe Python Runner)** → `docs/ops/PR_470_MERGE_LOG.md`
 - **PR #462 (WP0D LedgerEntry Mapping + Reconciliation Wiring, Phase-0 Integration Day)** → `docs/ops/PR_462_MERGE_LOG.md` | [Integration Report](integration_days/PHASE0_ID0_WP0D_INTEGRATION_DAY_REPORT.md)
 - **PR #458 (WP0E Contracts & Interfaces, Phase-0 Gate Report)** → `docs/ops/PR_458_MERGE_LOG.md`
@@ -1501,3 +1683,9 @@ Security:
 Post-merge documentation logs for operational PRs.
 
 - [PR #429](PR_429_MERGE_LOG.md) — docs(risk): Phase 11 – VaR Backtest Suite UX & Docs-Verkabelung (merged 2025-12-29) <!-- PR-429-MERGE-LOG -->
+
+### Closeout Logs
+
+Documentation for PRs closed without merge (superseded, redundant, or obsolete).
+
+- [PR #321](PR_321_CLOSEOUT_LOG.md) — feat/risk: parametric Component VaR MVP (CLOSED / SUPERSEDED BY PR #408, 2026-01-03)

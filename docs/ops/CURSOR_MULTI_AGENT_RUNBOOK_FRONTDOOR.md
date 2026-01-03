@@ -185,6 +185,9 @@ A0 muss abbrechen und neu planen, wenn:
 6. **A5 macht Policy-Review** gegen PR-Contract.
 7. **A0 finalisiert PR Description + Evidence links** und fordert Review/Merge an.
 
+**Operator Tooling Standard:**
+- Für lange laufende Tasks (Backtests, Sweeps, VaR-Suites): siehe **bg_job Execution Pattern** in [CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md](CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md), Abschnitt 7.
+
 ---
 
 ## 10. Copy-Paste: A0 Orchestrator Prompt (Cursor Chat)
@@ -276,7 +279,7 @@ Für lange laufende Tasks (Backtests, Sweeps, Trainings) mit Timeout-Risiko:
 bash 'scripts'/'ops'/'bg_job.sh' --help || bash 'scripts'/'ops'/'bg_job.sh' help
 ```
 
-**Referenz:** `docs/ops/PR_486_MERGE_LOG.md`
+**Referenz:** `docs/ops/RUNBOOK_BACKGROUND_JOBS.md`
 
 **Gate-Safety Hinweis:** In Dokumentations-Referenzen muss der Pfad maskiert werden (`'scripts'/'ops'/'bg_job.sh'`), um docs-reference-targets-gate Konflikte zu vermeiden.
 

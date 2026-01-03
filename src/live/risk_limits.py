@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # src/live/risk_limits.py
 """
 Peak_Trade: Live-Risk-Limits für Order-Batches (Forward / Live / Paper).
@@ -56,8 +58,6 @@ Config-Beispiel (config.toml):
     use_experiments_for_daily_pnl = true
     warning_threshold_factor = 0.8  # Warning ab 80% des Limits
 """
-
-from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field

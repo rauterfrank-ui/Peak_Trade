@@ -103,3 +103,4 @@ venv_pip_check/
 /PR_X*_*.md
 /STRATEGY_LAYER_VNEXT_*_REPORT.md
 .logs/
+.tmp/

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # src/reporting/live_run_report.py
 """
 Peak_Trade: Live Run Report (Phase 32)
@@ -28,8 +30,6 @@ See also:
     - src/live/run_logging.py (LiveRunLogger, LiveRunMetadata, LiveRunEvent)
     - src/reporting/base.py (Report, ReportSection)
 """
-
-from __future__ import annotations
 
 import json
 from datetime import datetime, timedelta
