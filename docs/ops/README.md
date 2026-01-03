@@ -1483,6 +1483,40 @@ Das Script prüft:
 
 **Warum?** Siehe PR #305: Branch wurde vom lokalen `main` abgezweigt, der 2 unpushte Commits hatte → 4 Dateien statt 1 im PR.
 
+## Git Operations Runbooks
+
+### Rebase + Cleanup Workflow
+
+Wiederverwendbarer Operator-Workflow für Rebase, Conflict-Triage, Merge, und Branch/Worktree-Cleanup.
+
+**Runbook:** [runbooks/rebase_cleanup_workflow.md](runbooks/rebase_cleanup_workflow.md) ⭐
+
+**Quick Start:**
+
+```bash
+# Report-only (keine Löschungen, nur Empfehlungen)
+scripts/ops/report_worktrees_and_cleanup_candidates.sh
+```
+
+**Features:**
+- ✅ Pre-Flight Checks (pwd, git status, repo root)
+- ✅ Rebase Workflow (inkl. Konflikt-Resolution)
+- ✅ Verification (ruff, pytest, CI-Checks)
+- ✅ Safe Cleanup (Reachability-Check vor Branch-Deletion)
+- ✅ Restore-Demo (Branch aus SHA rekonstruieren)
+- ✅ Troubleshooting (Editor-Hangs, Conflict Markers, Stale Worktrees)
+
+**Golden Rules:**
+- Branch = Pointer, Commit bleibt
+- Löschen nur nach Reachability-Check (`git merge-base --is-ancestor`)
+- Worktrees zuerst, dann Branches
+- Dokumentation (Merge-Log) immer mit Link im Index
+
+**Use Cases:**
+- Feature-Branch vor Merge auf aktuellen `main` rebased
+- Worktrees/Branches nach erfolgreichem Merge aufräumen
+- Demonstration: Branch-Pointer kann aus SHA rekonstruiert werden
+
 ## Docs Diff Guard (Mass-Deletion Schutz)
 
 Wenn ein PR versehentlich massive Docs-Deletions enthält (z.B. README „-972"), ist das eine Red-Flag.
