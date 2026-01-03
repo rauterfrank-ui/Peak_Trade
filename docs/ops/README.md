@@ -233,6 +233,75 @@ Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON-
 
 ### Quick Start
 
+## 🎛️ CI & Governance Health Panel (WebUI v0.2)
+
+**Offline-fähiges Dashboard für CI & Governance Health Monitoring mit persistenten Snapshots und interaktiven Controls.**
+
+### Features
+
+- ✅ **Persistent Snapshots:** JSON + Markdown snapshots bei jedem Status-Call (`reports/ops/ci_health_latest.{json,md}`)
+- ✅ **Interactive Controls:** "Run checks now" Button, "Refresh status" Button, Auto-refresh (15s toggle)
+- ✅ **Offline-fähig:** Snapshots bleiben verfügbar auch wenn WebUI offline ist
+- ✅ **Concurrency-safe:** In-memory lock verhindert parallele Runs (HTTP 409 bei Konflikt)
+- ✅ **XSS-protected:** HTML escaping für alle dynamischen Inhalte
+
+### Quick Start
+
+```bash
+# Start WebUI
+uvicorn src.webui.app:app --host 127.0.0.1 --port 8000
+
+# Open Dashboard
+open http://127.0.0.1:8000/ops/ci-health
+
+# View persistent snapshot (offline)
+cat reports/ops/ci_health_latest.md
+jq '.overall_status, .summary' reports/ops/ci_health_latest.json
+```
+
+### API Endpoints
+
+- `GET /ops/ci-health` — HTML Dashboard (interaktive UI)
+- `GET /ops/ci-health/status` — JSON Status + Snapshot-Persistenz
+- `POST /ops/ci-health/run` — Trigger manual check run (idempotent mit lock)
+
+### Operator How-To
+
+**Trigger Manual Check:**
+- Open: `http://127.0.0.1:8000/ops/ci-health`
+- Click: "▶️ Run checks now"
+- Observe: "⏳ Running..." → UI updates ohne page reload
+
+**Enable Auto-Refresh:**
+- Toggle: "Auto-refresh (15s)" checkbox
+- Dashboard aktualisiert sich automatisch alle 15 Sekunden
+
+**View Offline Status:**
+```bash
+# Human-readable summary (10-20 Zeilen)
+cat reports/ops/ci_health_latest.md
+
+# Machine-readable (full detail)
+jq . reports/ops/ci_health_latest.json
+```
+
+### Documentation
+
+- **v0.2 Snapshots:** [PR_518_CI_HEALTH_PANEL_V0_2.md](PR_518_CI_HEALTH_PANEL_V0_2.md) — Persistent snapshot feature
+- **v0.2 Buttons:** [PR_519_CI_HEALTH_BUTTONS_V0_2.md](PR_519_CI_HEALTH_BUTTONS_V0_2.md) — Interactive controls + auto-refresh
+- **Smoke Test:** `scripts/ops/smoke_ci_health_panel_v0_2.sh` — Quick validation script
+
+### Checks Performed
+
+- **Contract Guard:** Prüft required CI contexts (via `check_required_ci_contexts_present.sh`)
+- **Docs Reference Validation:** Validiert Docs-Referenzen (via `verify_docs_reference_targets.sh`)
+
+### Risk
+
+**Low.** Keine externen API-Calls, keine Secrets benötigt, ausschließlich lokale Checks. Snapshots sind deterministische Runtime-Artefakte (gitignored). In-memory Lock verhindert Race Conditions. Error isolation: Snapshot-Fehler failen API nicht.
+
+---
+
 ## Docs Diff Guard (auto beim Merge)
 
 ### Required Checks Drift Guard (v1)
@@ -581,6 +650,9 @@ Der `PR_INVENTORY_REPORT.md` enthält:
 
 ## Latest merge-log PRs (top 25)
 
+- [PR #521](https://github.com/rauterfrank-ui/Peak_Trade/pull/521) — Ops WebUI: CI health run-now buttons (v0.2) (merged 2026-01-03)
+- [PR #519](https://github.com/rauterfrank-ui/Peak_Trade/pull/519) — Ops WebUI: CI health snapshots (v0.2) (merged 2026-01-03)
+- [PR #518](https://github.com/rauterfrank-ui/Peak_Trade/pull/518) — ops(dashboard): add CI & governance health panel (merged 2026-01-03)
 - [PR #240](PR_240_MERGE_LOG.md) — test(ops): add run_helpers adoption guard (merged 2025-12-21)
 - PR #208 — docs(ops): add PR #207 merge log (2025-12-20T10:15:00Z)
   - https://github.com/rauterfrank-ui/Peak_Trade/pull/208
