@@ -39,15 +39,54 @@
         <div class="max-w-6xl mx-auto px-4 py-6">
           <!-- Header -->
           <div class="mb-6">
-            <h1 class="text-2xl font-bold mb-2">🔧 CI & Governance Health</h1>
-            <p class="text-sm text-slate-400">
-              Lokale CI-Checks & Governance-Validierung
-              <span class="ml-2 text-xs text-slate-500">Generated: {{ generated_at }}</span>
-            </p>
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h1 class="text-2xl font-bold mb-2">🔧 CI & Governance Health</h1>
+                <p class="text-sm text-slate-400">
+                  Lokale CI-Checks & Governance-Validierung
+                  <span class="ml-2 text-xs text-slate-500" id="generated-at">Generated: {{ generated_at }}</span>
+                </p>
+              </div>
+              <!-- Control Buttons (v0.2) -->
+              <div class="flex items-center gap-3">
+                <button
+                  id="run-checks-btn"
+                  onclick="runChecks()"
+                  class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  ▶️ Run checks now
+                </button>
+                <button
+                  id="refresh-btn"
+                  onclick="refreshStatus()"
+                  class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  🔄 Refresh status
+                </button>
+                <label class="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="auto-refresh-toggle"
+                    onchange="toggleAutoRefresh(this.checked)"
+                    class="rounded border-slate-600 bg-slate-700 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0">
+                  <span>Auto-refresh (15s)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error Banner (hidden by default) -->
+          <div id="error-banner" class="hidden mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <div class="flex items-start gap-3">
+              <div class="text-red-400 text-xl">❌</div>
+              <div class="flex-1">
+                <div class="text-sm font-semibold text-red-300 mb-1">Error</div>
+                <div class="text-xs text-red-200" id="error-message"></div>
+              </div>
+              <button onclick="hideError()" class="text-red-400 hover:text-red-300 text-xl leading-none">&times;</button>
+            </div>
           </div>
 
           <!-- Overall Status Badge -->
-          <div class="mb-6">
+          <div class="mb-6" id="overall-status-container">
             <div class="inline-flex items-center gap-3 px-4 py-3 rounded-lg border
                         {% if overall_status == 'OK' %}
                           bg-emerald-500/10 border-emerald-500/30 text-emerald-300
@@ -55,13 +94,14 @@
                           bg-amber-500/10 border-amber-500/30 text-amber-300
                         {% else %}
                           bg-red-500/10 border-red-500/30 text-red-300
-                        {% endif %}">
-              <div class="text-3xl">
+                        {% endif %}"
+                 id="overall-status-badge">
+              <div class="text-3xl" id="overall-status-icon">
                 {% if overall_status == 'OK' %}✅{% elif overall_status == 'WARN' %}⚠️{% else %}❌{% endif %}
               </div>
               <div>
-                <div class="text-lg font-semibold">{{ overall_status }}</div>
-                <div class="text-xs opacity-75">
+                <div class="text-lg font-semibold" id="overall-status-text">{{ overall_status }}</div>
+                <div class="text-xs opacity-75" id="overall-status-summary">
                   {{ summary.ok }}/{{ summary.total }} Checks OK
                   {% if summary.warn > 0 %} · {{ summary.warn }} Warnings{% endif %}
                   {% if summary.fail > 0 %} · {{ summary.fail }} Failed{% endif %}
@@ -72,7 +112,7 @@
           </div>
 
           <!-- Health Checks Grid -->
-          <div class="grid gap-4">
+          <div class="grid gap-4" id="checks-container">
             {% for result in results %}
             <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-5">
               <!-- Check Header -->
@@ -198,10 +238,278 @@
 
           <!-- Footer -->
           <div class="mt-8 pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
-            <p>CI & Governance Health Panel v0.1 · Offline-lokal, keine Secrets · <code>{{ repo_root }}</code></p>
+            <p>CI & Governance Health Panel v0.2 · Offline-lokal, keine Secrets · <code>{{ repo_root }}</code></p>
           </div>
         </div>
       </main>
     </div>
+
+    <!-- JavaScript for Interactive Controls (v0.2) -->
+    <script>
+      let autoRefreshInterval = null;
+
+      // Run checks (POST /run)
+      async function runChecks() {
+        const runBtn = document.getElementById('run-checks-btn');
+        const refreshBtn = document.getElementById('refresh-btn');
+
+        try {
+          // Disable buttons and show running state
+          runBtn.disabled = true;
+          refreshBtn.disabled = true;
+          runBtn.textContent = '⏳ Running...';
+          hideError();
+
+          // Call API
+          const response = await fetch('/ops/ci-health/run', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (!response.ok) {
+            if (response.status === 409) {
+              const data = await response.json();
+              showError(data.detail?.message || 'Another check is already running');
+              return;
+            }
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          updateUI(data);
+
+        } catch (error) {
+          console.error('Run checks failed:', error);
+          showError(`Failed to run checks: ${error.message}`);
+        } finally {
+          // Re-enable buttons
+          runBtn.disabled = false;
+          refreshBtn.disabled = false;
+          runBtn.textContent = '▶️ Run checks now';
+        }
+      }
+
+      // Refresh status (GET /status)
+      async function refreshStatus() {
+        const refreshBtn = document.getElementById('refresh-btn');
+
+        try {
+          // Disable button and show refreshing state
+          refreshBtn.disabled = true;
+          refreshBtn.textContent = '⏳ Refreshing...';
+          hideError();
+
+          // Call API
+          const response = await fetch('/ops/ci-health/status', {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          updateUI(data);
+
+        } catch (error) {
+          console.error('Refresh failed:', error);
+          showError(`Failed to refresh: ${error.message}`);
+        } finally {
+          // Re-enable button
+          refreshBtn.disabled = false;
+          refreshBtn.textContent = '🔄 Refresh status';
+        }
+      }
+
+      // Update UI with new data
+      function updateUI(data) {
+        // Update timestamp
+        const generatedAt = document.getElementById('generated-at');
+        if (generatedAt && data.generated_at) {
+          const date = new Date(data.generated_at);
+          generatedAt.textContent = `Generated: ${date.toLocaleString('de-DE')}`;
+        }
+
+        // Update overall status badge
+        updateOverallStatus(data.overall_status, data.summary);
+
+        // Update checks
+        updateChecks(data.checks);
+      }
+
+      // Update overall status badge
+      function updateOverallStatus(status, summary) {
+        const badge = document.getElementById('overall-status-badge');
+        const icon = document.getElementById('overall-status-icon');
+        const text = document.getElementById('overall-status-text');
+        const summaryEl = document.getElementById('overall-status-summary');
+
+        if (!badge || !icon || !text || !summaryEl) return;
+
+        // Update icon
+        if (status === 'OK') {
+          icon.textContent = '✅';
+        } else if (status === 'WARN') {
+          icon.textContent = '⚠️';
+        } else {
+          icon.textContent = '❌';
+        }
+
+        // Update text
+        text.textContent = status;
+
+        // Update summary
+        let summaryText = `${summary.ok}/${summary.total} Checks OK`;
+        if (summary.warn > 0) summaryText += ` · ${summary.warn} Warnings`;
+        if (summary.fail > 0) summaryText += ` · ${summary.fail} Failed`;
+        if (summary.skip > 0) summaryText += ` · ${summary.skip} Skipped`;
+        summaryEl.textContent = summaryText;
+
+        // Update badge colors
+        badge.className = 'inline-flex items-center gap-3 px-4 py-3 rounded-lg border ';
+        if (status === 'OK') {
+          badge.className += 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
+        } else if (status === 'WARN') {
+          badge.className += 'bg-amber-500/10 border-amber-500/30 text-amber-300';
+        } else {
+          badge.className += 'bg-red-500/10 border-red-500/30 text-red-300';
+        }
+      }
+
+      // Update checks cards
+      function updateChecks(checks) {
+        const container = document.getElementById('checks-container');
+        if (!container) return;
+
+        // Rebuild checks HTML
+        container.innerHTML = checks.map(check => `
+          <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-5">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="text-base font-semibold">${escapeHtml(check.title)}</h3>
+                  <span class="text-xs px-2 py-0.5 rounded-full font-medium ${getStatusClass(check.status)}">
+                    ${escapeHtml(check.status)}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-400">${escapeHtml(check.description)}</p>
+              </div>
+              <div class="text-right text-xs text-slate-500">
+                <div>${check.duration_ms}ms</div>
+                <div class="text-[10px]">Exit: ${check.exit_code}</div>
+              </div>
+            </div>
+            <div class="mb-3 text-xs text-slate-500">
+              <code class="bg-slate-800/50 px-2 py-1 rounded">${escapeHtml(check.script_path)}</code>
+            </div>
+            ${check.status === 'FAIL' || check.status === 'WARN' ? `
+              <div class="mb-3">
+                <details class="group">
+                  <summary class="cursor-pointer text-xs text-slate-400 hover:text-slate-200 transition-colors mb-2">
+                    <span class="inline-block transform transition-transform group-open:rotate-90">▶</span>
+                    Fehlerausgabe (max. 20 Zeilen)
+                  </summary>
+                  <pre class="text-xs bg-slate-950/70 border border-red-900/30 rounded p-3 overflow-x-auto whitespace-pre-wrap"><code>${escapeHtml(check.error_excerpt)}</code></pre>
+                </details>
+              </div>
+            ` : ''}
+            ${check.output ? `
+              <div class="mb-3">
+                <details class="group">
+                  <summary class="cursor-pointer text-xs text-slate-400 hover:text-slate-200 transition-colors mb-2">
+                    <span class="inline-block transform transition-transform group-open:rotate-90">▶</span>
+                    Vollständige Ausgabe
+                  </summary>
+                  <pre class="text-xs bg-slate-950/70 border border-slate-800 rounded p-3 overflow-x-auto whitespace-pre-wrap"><code>${escapeHtml(check.output)}</code></pre>
+                </details>
+              </div>
+            ` : ''}
+            ${check.docs_refs && check.docs_refs.length > 0 ? `
+              <div class="flex flex-wrap gap-2 pt-3 border-t border-slate-800">
+                <span class="text-xs text-slate-500">📚 Docs:</span>
+                ${check.docs_refs.map(ref => `
+                  <a href="#"
+                     onclick="navigator.clipboard.writeText('${escapeHtml(ref)}'); this.textContent='Copied!'; setTimeout(() => this.textContent='${escapeHtml(ref)}', 1000); return false;"
+                     class="text-xs text-blue-400 hover:text-blue-300 hover:underline transition-colors"
+                     title="Click to copy path">
+                    ${escapeHtml(ref)}
+                  </a>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+      }
+
+      // Get status badge class
+      function getStatusClass(status) {
+        if (status === 'OK') {
+          return 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30';
+        } else if (status === 'WARN') {
+          return 'bg-amber-500/10 text-amber-300 border border-amber-500/30';
+        } else if (status === 'SKIP') {
+          return 'bg-slate-500/10 text-slate-400 border border-slate-500/30';
+        } else {
+          return 'bg-red-500/10 text-red-300 border border-red-500/30';
+        }
+      }
+
+      // Escape HTML to prevent XSS
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Show error banner
+      function showError(message) {
+        const banner = document.getElementById('error-banner');
+        const messageEl = document.getElementById('error-message');
+        if (banner && messageEl) {
+          messageEl.textContent = message;
+          banner.classList.remove('hidden');
+        }
+      }
+
+      // Hide error banner
+      function hideError() {
+        const banner = document.getElementById('error-banner');
+        if (banner) {
+          banner.classList.add('hidden');
+        }
+      }
+
+      // Toggle auto-refresh
+      function toggleAutoRefresh(enabled) {
+        if (enabled) {
+          // Start auto-refresh (15 seconds)
+          autoRefreshInterval = setInterval(() => {
+            console.log('Auto-refresh triggered');
+            refreshStatus();
+          }, 15000);
+          console.log('Auto-refresh enabled (15s)');
+        } else {
+          // Stop auto-refresh
+          if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+          }
+          console.log('Auto-refresh disabled');
+        }
+      }
+
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', () => {
+        if (autoRefreshInterval) {
+          clearInterval(autoRefreshInterval);
+        }
+      });
+    </script>
   </body>
 </html>
