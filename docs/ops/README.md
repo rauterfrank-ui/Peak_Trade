@@ -43,7 +43,43 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - Operator Competency Validation (drill-safe)
 - Governance-Safe Evidence Chain (GO ≠ Live Authorization)
 
-### Cursor Timeout / Hang Triage (Quick Start)
+### Terminal Hang Diagnostics (Pager / Hook / Watch Blocking)
+
+**Quick Diagnosis Tool:**
+```bash
+./scripts/ops/diag_terminal_hang.sh
+```
+
+**Was wird geprüft:**
+- Pager-Environment (PAGER, GH_PAGER, LESS)
+- Aktive Prozesse: less, git, gh, pre-commit, python
+- Shell/TTY Status und File Descriptors
+- Diagnose-Checkliste mit Quick Actions
+
+**Runbooks:**
+- **[PAGER_HOOK_HANG_TRIAGE.md](PAGER_HOOK_HANG_TRIAGE.md)** — Operator Runbook mit 5 häufigen Ursachen + Lösungen
+- **[TERMINAL_HANG_DIAGNOSTICS_SETUP.md](TERMINAL_HANG_DIAGNOSTICS_SETUP.md)** — Investigation Timeline + Setup-Dokumentation
+
+**Häufige Symptome:**
+- Terminal "steht", keine neue Prompt
+- Prompt zeigt `>`, `dquote>` oder `quote>` (heredoc/quote nicht geschlossen)
+- Keine Ausgabe, kein Fehler, kein CPU-Load
+
+**Quick Fixes:**
+- Pager wartet: `q` drücken
+- Prozess läuft: `Ctrl-C`
+- Heredoc offen: `Ctrl-C`
+- Background Job: `fg` dann `Ctrl-C`
+
+**Environment Setup (empfohlen):**
+```bash
+# In ~/.zshrc oder ~/.bashrc:
+export PAGER=cat
+export GH_PAGER=cat
+export LESS='-FRX'
+```
+
+### Cursor Timeout / Hang Triage (Advanced)
 - Wenn dein Terminal-Prompt `>` oder `dquote>` zeigt: **Ctrl-C** drücken (Shell-Continuation beenden), dann erneut.
 - Runbook öffnen: `docs/ops/CURSOR_TIMEOUT_TRIAGE.md`
 - Evidence Pack erzeugen (funktioniert auch ohne +x):
