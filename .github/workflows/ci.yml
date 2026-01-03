@@ -12,7 +12,7 @@ on:
     - cron: "0 3 * * 1"  # Monday 03:00 UTC
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -26,14 +26,17 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      code_changed: ${{ steps.filter.outputs.code }}
+      code_changed: ${{ steps.detect.outputs.code_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Detect changes
         uses: dorny/paths-filter@v3
         id: filter
+        continue-on-error: true
         with:
           filters: |
             code:
@@ -46,6 +49,21 @@ jobs:
               - 'pyproject.toml'
               - 'pytest.ini'
               - 'Makefile'
+
+      - name: Compute code_changed (safe default)
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.filter.outcome }}" != "success" ]; then
+            echo "paths-filter failed; defaulting code_changed=true (fail-open)"
+            echo "code_changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          val="${{ steps.filter.outputs.code }}"
+          if [ -z "$val" ]; then val="false"; fi
+          echo "code_changed=$val" >> "$GITHUB_OUTPUT"
+          echo "code_changed=$val"
 
   # ============================================================================
   # CI Required Contexts Contract
