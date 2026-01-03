@@ -12,7 +12,7 @@ This document describes the canonical risk metrics schema used across the Peak_T
 
 ### RiskMetrics
 
-The `RiskMetrics` dataclass (defined in `src/risk_layer/metrics.py`) represents the canonical schema:
+The `RiskMetrics` dataclass (previously in `src\/risk_layer\/metrics.py`, now refactored) represents the canonical schema:
 
 ```python
 @dataclass(frozen=True)
@@ -262,12 +262,12 @@ Potential additions for future versions:
 ## Related Documentation
 
 - `docs/risk/KILL_SWITCH_RUNBOOK.md`: Kill Switch operator guide
-- `src/risk_layer/metrics.py`: Implementation
-- `tests/risk_layer/test_metrics.py`: Test suite
+- `src/risk_layer/` (implementation refactored into multiple modules)
+- `tests/risk_layer/` (test suite)
 
 ## Support
 
 For questions or issues:
-1. Check tests: `tests/risk_layer/test_metrics.py`
-2. Review implementation: `src/risk_layer/metrics.py`
+1. Check tests in `tests/risk_layer/`
+2. Review risk layer implementation in `src/risk_layer/`
 3. See usage examples in this doc

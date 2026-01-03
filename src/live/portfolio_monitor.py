@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # src/live/portfolio_monitor.py
 """
 Peak_Trade: Live Portfolio Monitoring & Risk Bridge (Phase 48)
@@ -21,8 +23,6 @@ Usage:
     monitor = LivePortfolioMonitor(exchange_client)
     snapshot = monitor.snapshot()
 """
-
-from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field

@@ -24,6 +24,7 @@ set -euo pipefail
 # Determine script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+: "${REPO_ROOT}"  # keep (shellcheck SC2034)
 CLI_TOOL="${SCRIPT_DIR}/show_recon_audit.py"
 
 # Check if CLI tool exists

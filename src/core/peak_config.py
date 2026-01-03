@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # src/core/peak_config.py
 """
 Peak_Trade Config Loading (Phase 36 refactored)
@@ -22,8 +24,6 @@ Config-Pfad-Prioritaet:
     2. Environment Variable PEAK_TRADE_CONFIG_PATH
     3. Default: config/config.toml relativ zum Projekt-Root
 """
-
-from __future__ import annotations
 
 import os
 from copy import deepcopy

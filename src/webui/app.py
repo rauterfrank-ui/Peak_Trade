@@ -146,6 +146,12 @@ from .ops_workflows_router import (
     set_workflows_config,
 )
 
+# CI & Governance Health
+from .ops_ci_health_router import (
+    router as ci_health_router,
+    set_ci_health_config,
+)
+
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -383,6 +389,10 @@ def create_app() -> FastAPI:
     # Ops Workflows Hub
     set_workflows_config(BASE_DIR, templates)
     app.include_router(workflows_router)
+
+    # CI & Governance Health
+    set_ci_health_config(BASE_DIR, templates)
+    app.include_router(ci_health_router)
 
     # Knowledge DB API (v1.0)
     app.include_router(knowledge_router)

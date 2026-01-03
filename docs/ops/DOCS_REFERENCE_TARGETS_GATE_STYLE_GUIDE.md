@@ -86,6 +86,38 @@ Prefer naming the section in text rather than using an anchor when uncertain:
 
 If you do use anchors, ensure the header exists unchanged on the same branch.
 
+## Operator Checklist (Pre-Commit / Pre-PR)
+
+### Primary: CI Parity Check (Recommended)
+
+Run before commit/push to validate only your changed files (matches CI behavior):
+
+```bash
+./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
+```
+
+**Exit Codes:**
+- **Exit 0:** PASS (all changed references valid)
+- **Exit 1:** FAIL (missing targets in your changes) → Fix before commit
+
+**When to use:** Always, before committing docs changes.
+
+### Optional: Full-Scan Audit
+
+Validate all docs (includes legacy content with ignore patterns):
+
+```bash
+./scripts/ops/verify_docs_reference_targets.sh
+```
+
+**Exit Codes:**
+- **Exit 0:** PASS (no missing targets outside ignore patterns)
+- **Exit 1:** PASS-with-notes (legacy content may have broken refs; expected)
+
+**When to use:** Periodic cleanup sessions, comprehensive audits.
+
+---
+
 ## Quick Triage Checklist (when the gate fails)
 
 1) Locate the first failing line in the CI job log (usually the root cause).  
