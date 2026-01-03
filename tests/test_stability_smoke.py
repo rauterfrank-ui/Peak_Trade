@@ -22,6 +22,7 @@ Test Flow:
 5. Validate manifest
 6. Read back and verify determinism
 """
+
 import os
 import tempfile
 from pathlib import Path
@@ -164,6 +165,7 @@ def test_stability_smoke_cache_corruption_detection(temp_cache_dir, sample_ohlcv
     corrupted_df = sample_ohlcv * 2
     # Use pandas directly to corrupt, not atomic_write
     import pandas as pd
+
     corrupted_df.to_parquet(cache_file, compression="snappy", index=True)
 
     # Reading with checksum verification should fail
@@ -214,7 +216,7 @@ def test_stability_smoke_manifest_multi_file(temp_cache_dir, sample_ohlcv):
     for i in range(3):
         filepath = os.path.join(temp_cache_dir, f"data_{i}.parquet")
         atomic_write(sample_ohlcv, filepath, checksum=True)
-        manifest.add_file(filepath, schema_version=f"v{i+1}")
+        manifest.add_file(filepath, schema_version=f"v{i + 1}")
 
     manifest.save()
 
@@ -224,7 +226,7 @@ def test_stability_smoke_manifest_multi_file(temp_cache_dir, sample_ohlcv):
     # Verify
     assert len(manifest.files) == 3
     for i, entry in enumerate(manifest.files):
-        assert entry.schema_version == f"v{i+1}"
+        assert entry.schema_version == f"v{i + 1}"
 
 
 def test_stability_smoke_config_hash_stability():

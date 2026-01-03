@@ -2,6 +2,7 @@
 Tests for Cache Manifest System (Wave B)
 =========================================
 """
+
 import json
 import os
 import tempfile
@@ -334,14 +335,14 @@ class TestCacheManifest:
         for i in range(3):
             filepath = os.path.join(temp_dir, f"test_{i}.parquet")
             sample_df.to_parquet(filepath)
-            manifest.add_file(filepath, schema_version=f"v{i+1}")
+            manifest.add_file(filepath, schema_version=f"v{i + 1}")
 
         # Verify
         assert len(manifest.files) == 3
 
         for i, entry in enumerate(manifest.files):
             assert entry.path == f"test_{i}.parquet"
-            assert entry.schema_version == f"v{i+1}"
+            assert entry.schema_version == f"v{i + 1}"
 
         # Save and load
         manifest.save()
