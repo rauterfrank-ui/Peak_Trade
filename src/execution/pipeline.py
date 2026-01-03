@@ -136,6 +136,38 @@ class RiskCheckFailedError(ExecutionPipelineError):
         self.metrics = metrics
 
 
+class DuplicateFillConflictError(ExecutionPipelineError):
+    """
+    Duplicate fill detected with conflicting payload (Phase 16A).
+
+    Raised when:
+    - A fill with the same idempotency_key is seen twice
+    - BUT the payload differs (different price, quantity, etc.)
+
+    This indicates a data integrity issue (replay attack, corrupted data,
+    or exchange inconsistency).
+
+    Attributes:
+        idempotency_key: The conflicting key
+        original_fill: Dict representation of first fill
+        conflicting_fill: Dict representation of conflicting fill
+        message: Descriptive error message
+    """
+
+    def __init__(
+        self,
+        message: str,
+        idempotency_key: str,
+        original_fill: Dict[str, Any],
+        conflicting_fill: Dict[str, Any],
+    ):
+        super().__init__(message)
+        self.idempotency_key = idempotency_key
+        self.original_fill = original_fill
+        self.conflicting_fill = conflicting_fill
+        self.message = message
+
+
 # =============================================================================
 # Phase 16A V2: OrderIntent & Environment Types
 # =============================================================================
