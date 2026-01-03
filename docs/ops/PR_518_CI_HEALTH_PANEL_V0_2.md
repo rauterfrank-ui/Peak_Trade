@@ -387,9 +387,8 @@ uvicorn src.webui.app:app --reload
 **Neue Docs:**
 - ✅ `docs/ops/PR_518_CI_HEALTH_PANEL_V0_2.md` (dieses Dokument)
 
-**Zu aktualisieren:**
-- `docs/ops/README.md`: Erwähne v0.2 Snapshot-Feature
-- `docs/ops/runbooks/ops_webui_health_monitoring.md`: Operator-Guide für Snapshot-Nutzung
+**Zu aktualisieren (optional):**
+- `docs/ops/README.md`: Erwähne v0.2 Snapshot-Feature bei Bedarf
 
 ---
 
