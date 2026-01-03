@@ -159,6 +159,7 @@ class Fill:
     Design:
     - Multiple fills can reference the same order (partial fills)
     - fill_id is exchange-provided unique identifier
+    - idempotency_key: optional stable key for duplicate detection (Phase 16A)
     """
 
     fill_id: str
@@ -176,6 +177,9 @@ class Fill:
     # Timestamp
     filled_at: datetime = field(default_factory=datetime.utcnow)
 
+    # Idempotency (Phase 16A: live retry/replay safety)
+    idempotency_key: Optional[str] = None
+
     # Metadata
     metadata: Dict[str, Any] = field(default_factory=dict)
 
@@ -191,6 +195,37 @@ class Fill:
     def to_json(self) -> str:
         """Deterministic JSON serialization"""
         return json.dumps(self.to_dict(), sort_keys=True)
+
+    def get_idempotency_key(self) -> str:
+        """
+        Generate stable idempotency key for duplicate detection.
+
+        Returns explicit idempotency_key if set, otherwise derives stable key
+        from canonical fill attributes using SHA256 hash.
+
+        Canonical tuple: (client_order_id, symbol, side, quantity, price,
+                         filled_at ISO, fee, fee_currency)
+
+        Returns:
+            Stable idempotency key string
+        """
+        if self.idempotency_key:
+            return self.idempotency_key
+
+        # Derive stable key from canonical attributes
+        import hashlib
+
+        canonical = (
+            f"{self.client_order_id}|"
+            f"{self.symbol}|"
+            f"{self.side.value}|"
+            f"{self.quantity}|"
+            f"{self.price}|"
+            f"{self.filled_at.isoformat()}|"
+            f"{self.fee}|"
+            f"{self.fee_currency}"
+        )
+        return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
     def __repr__(self) -> str:
         """Deterministic repr"""
