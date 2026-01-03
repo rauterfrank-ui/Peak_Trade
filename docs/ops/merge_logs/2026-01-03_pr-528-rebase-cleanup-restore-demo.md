@@ -60,20 +60,23 @@ PR #528 beinhaltete wichtige Fixes für die Docs-Reference-Targets-Validierung u
 - Endgültiges Cleanup: Alle 14 Branches final gelöscht
 
 **Gelöschte Branches (14):**
-- `agitated-bhabha` (18ec93e)
-- `blissful-bartik` (374d1f6)
-- `cool-moser` (374d1f6)
-- `docs/pr-51-ops-finalization` (01f8b7d)
-- `gifted-cohen` (cb304d3)
-- `happy-shockley` (374d1f6)
-- `hopeful-heyrovsky` (a4a18f2)
-- `lucid-lehmann` (0cda81c)
-- `nice-lumiere` (d7134d9)
-- `romantic-albattani` (18ec93e)
-- `serene-jones` (374d1f6)
-- `trusting-engelbart` (374d1f6)
-- `trusting-hugle` (7acbdb2)
-- `wizardly-gould` (a4a18f2)
+
+```
+agitated-bhabha (18ec93e)
+blissful-bartik (374d1f6)
+cool-moser (374d1f6)
+docs/pr-51-ops-finalization (01f8b7d)
+gifted-cohen (cb304d3)
+happy-shockley (374d1f6)
+hopeful-heyrovsky (a4a18f2)
+lucid-lehmann (0cda81c)
+nice-lumiere (d7134d9)
+romantic-albattani (18ec93e)
+serene-jones (374d1f6)
+trusting-engelbart (374d1f6)
+trusting-hugle (7acbdb2)
+wizardly-gould (a4a18f2)
+```
 
 ## Verification
 
