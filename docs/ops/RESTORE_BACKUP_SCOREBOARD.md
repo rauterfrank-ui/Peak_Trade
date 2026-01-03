@@ -62,12 +62,12 @@
 | ~~**1**~~ | ~~`feat/stability-wave-b`~~ | ~~11~~ | ~~8f / +1280 / -7~~ | ~~Stability-Feature~~ | ✅ **PR #524** | ~~Restore → PR~~ | 🟢 DONE |
 | **2** | `fix/audit-urllib3-fastapi` | 8 | 4f / +470 / -12 | Dependency-Fix (urllib3/fastapi) | ⏳ Pending | **Restore → PR** | 🟢 Audit-Fix |
 | **3** | `feat/strategy-layer-vnext-runner` | 7 | 10f / +2614 / -31 | Strategy-Layer (Backtest) | ⏳ Pending | **Restore → Review → PR** | 🟡 Strategy-Code |
-| **4** | `docs/docs-reference-targets-gate-cleanup` | 6 | 21f / +105 / -99 | Docs-Gate-Cleanup | ⏳ Pending | **Park (evtl obsolet)** | 🟢 Docs-only |
-| **5** | `docs/ops/stability-plan-v1` | 6 | 1f / +11 / -0 | Stability-Plan Doku | ⏳ Pending | **Park** | 🟢 Docs-only |
-| **6** | `docs/execution-wp4b-operator-drills-evidence-pack` | 5 | 22f / +1592 / -18 | WP4B Operator-Docs | ⏳ Pending | **Review (bereits recovered?)** | 🟢 Docs+Scripts |
-| **7** | `docs/fix-moved-script-paths-comprehensive` | 5 | 20f / +84 / -78 | Script-Path-Fixes | ⏳ Pending | **Park (evtl obsolet)** | 🟢 Docs-only |
-| **8** | `docs/phase0-foundation-prep` | 5 | 8f / +4020 / -0 | Phase0-Prep-Docs | ⏳ Pending | **Park** | 🟢 Docs-only |
-| **9** | `docs/ops/merge-log-ux-hardening-v2` | 5 | 5f / +673 / -45 | Merge-Log UX | ⏳ Pending | **Park** | 🟢 Docs+Scripts |
+| **4** | `docs/docs-reference-targets-gate-cleanup` <!-- pt:ref-target-ignore --> | 6 | 21f / +105 / -99 | Docs-Gate-Cleanup | ⏳ Pending | **Park (evtl obsolet)** | 🟢 Docs-only |
+| **5** | `docs/ops/stability-plan-v1` <!-- pt:ref-target-ignore --> | 6 | 1f / +11 / -0 | Stability-Plan Doku | ⏳ Pending | **Park** | 🟢 Docs-only |
+| **6** | `docs/execution-wp4b-operator-drills-evidence-pack` <!-- pt:ref-target-ignore --> | 5 | 22f / +1592 / -18 | WP4B Operator-Docs | ⏳ Pending | **Review (bereits recovered?)** | 🟢 Docs+Scripts |
+| **7** | `docs/fix-moved-script-paths-comprehensive` <!-- pt:ref-target-ignore --> | 5 | 20f / +84 / -78 | Script-Path-Fixes | ⏳ Pending | **Park (evtl obsolet)** | 🟢 Docs-only |
+| **8** | `docs/phase0-foundation-prep` <!-- pt:ref-target-ignore --> | 5 | 8f / +4020 / -0 | Phase0-Prep-Docs | ⏳ Pending | **Park** | 🟢 Docs-only |
+| **9** | `docs/ops/merge-log-ux-hardening-v2` <!-- pt:ref-target-ignore --> | 5 | 5f / +673 / -45 | Merge-Log UX | ⏳ Pending | **Park** | 🟢 Docs+Scripts |
 | **10** | `fix/recon-audit-gate-python-runner` | 5 | 3f / +118 / -9 | Recon-Audit-Fix | ⏳ Pending | **Review → PR** | 🟡 Scripts+Tests |
 
 **Priorisierungs-Heuristik:**
@@ -229,7 +229,7 @@ gh pr list --head "recovered/<branch-name>"
 **Priorität 3: Welle 2** (Top 3 aus Queue restoren)
 - `fix/audit-urllib3-fastapi` (Queue #2)
 - `feat/strategy-layer-vnext-runner` (Queue #3)
-- `docs/docs-reference-targets-gate-cleanup` (Queue #4, evtl. park)
+- `docs/docs-reference-targets-gate-cleanup` <!-- pt:ref-target-ignore --> (Queue #4, evtl. park)
 
 **Priorität 4: Audit**
 - Cleanup-Candidates-Report auswerten → "park vs. restore" entscheiden
