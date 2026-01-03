@@ -65,7 +65,6 @@ def sample_ohlcv():
     return df
 
 
-@pytest.mark.smoke
 def test_stability_smoke_full_e2e(temp_cache_dir, sample_ohlcv):
     """
     Full E2E smoke test for Wave A+B stability features.
@@ -135,7 +134,6 @@ def test_stability_smoke_full_e2e(temp_cache_dir, sample_ohlcv):
     pd.testing.assert_frame_equal(df_loaded, sample_ohlcv, check_freq=False)
 
 
-@pytest.mark.smoke
 def test_stability_smoke_contract_violation():
     """Test that contract violations are caught."""
     # Create invalid OHLCV (missing column)
@@ -155,7 +153,6 @@ def test_stability_smoke_contract_violation():
     assert "missing required" in str(exc_info.value).lower()
 
 
-@pytest.mark.smoke
 def test_stability_smoke_cache_corruption_detection(temp_cache_dir, sample_ohlcv):
     """Test that cache corruption is detected via checksum."""
     from src.core.errors import CacheCorruptionError
@@ -178,7 +175,6 @@ def test_stability_smoke_cache_corruption_detection(temp_cache_dir, sample_ohlcv
     assert "checksum mismatch" in str(exc_info.value).lower()
 
 
-@pytest.mark.smoke
 def test_stability_smoke_deterministic_run():
     """Test that runs with same seed produce identical results."""
 
@@ -207,7 +203,6 @@ def test_stability_smoke_deterministic_run():
     assert result1 != result3
 
 
-@pytest.mark.smoke
 def test_stability_smoke_manifest_multi_file(temp_cache_dir, sample_ohlcv):
     """Test manifest with multiple files."""
     manifest = CacheManifest.load_or_create(
@@ -234,7 +229,6 @@ def test_stability_smoke_manifest_multi_file(temp_cache_dir, sample_ohlcv):
         assert entry.schema_version == f"v{i + 1}"
 
 
-@pytest.mark.smoke
 def test_stability_smoke_config_hash_stability():
     """Test that config hash is stable across runs."""
     config = {
@@ -266,7 +260,6 @@ def test_stability_smoke_config_hash_stability():
     assert hash1 == hash3
 
 
-@pytest.mark.smoke
 def test_stability_smoke_reproducibility_context_roundtrip():
     """Test ReproContext serialization roundtrip."""
     config = {"seed": 42, "strategy": "test"}
@@ -290,7 +283,6 @@ def test_stability_smoke_reproducibility_context_roundtrip():
 
 
 # === Performance Check ===
-@pytest.mark.smoke
 def test_stability_smoke_performance_check(temp_cache_dir, sample_ohlcv):
     """
     Performance check: full E2E should run in < 1 second.
