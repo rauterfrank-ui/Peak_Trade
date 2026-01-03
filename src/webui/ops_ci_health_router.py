@@ -2,11 +2,18 @@
 Peak_Trade: CI & Governance Health API
 ======================================
 
-Ops Dashboard v0.1: CI & Governance Health Panel
+Ops Dashboard v0.2: CI & Governance Health Panel with Persistent Snapshots
 
 Führt lokale CI-Checks aus und zeigt Status als Ampel:
 - Contract Guard (check_required_ci_contexts_present.sh)
 - Docs Reference Validation (verify_docs_reference_targets.sh --changed)
+
+v0.2 Features:
+- Persistent Last-Known-Health Snapshot
+  - JSON: reports/ops/ci_health_latest.json
+  - Markdown: reports/ops/ci_health_latest.md
+  - Atomic writes (temp file + rename)
+  - Snapshot errors do NOT fail the API
 
 Endpoints:
 - GET /ops/ci-health - HTML dashboard page
@@ -19,10 +26,12 @@ Safety:
 
 from __future__ import annotations
 
+import json
 import logging
+import os
 import subprocess
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -246,6 +255,133 @@ def _run_all_checks() -> List[HealthCheckResult]:
     return results
 
 
+def _get_git_head_sha() -> Optional[str]:
+    """
+    Get current git HEAD SHA.
+
+    Returns:
+        Git HEAD SHA (short) or None if not available
+    """
+    try:
+        repo_root = get_repo_root()
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except Exception as e:
+        logger.debug(f"Could not get git HEAD SHA: {e}")
+    return None
+
+
+def _persist_snapshot(status_data: Dict[str, Any]) -> Optional[str]:
+    """
+    Persist CI health status snapshot to disk (v0.2).
+
+    Writes:
+    - reports/ops/ci_health_latest.json (complete status)
+    - reports/ops/ci_health_latest.md (human-readable summary)
+
+    Uses atomic writes (temp file + rename) to prevent partial files.
+
+    Args:
+        status_data: Complete status dict from API response
+
+    Returns:
+        Error message if snapshot failed, None on success
+
+    Safety:
+        - Creates directory if missing
+        - Atomic writes via temp file
+        - Does NOT raise exceptions (logs errors only)
+    """
+    try:
+        repo_root = get_repo_root()
+        snapshot_dir = repo_root / "reports" / "ops"
+
+        # Create directory if missing
+        snapshot_dir.mkdir(parents=True, exist_ok=True)
+
+        json_path = snapshot_dir / "ci_health_latest.json"
+        md_path = snapshot_dir / "ci_health_latest.md"
+
+        # Atomic write: JSON
+        json_tmp = snapshot_dir / "ci_health_latest.json.tmp"
+        with open(json_tmp, "w", encoding="utf-8") as f:
+            json.dump(status_data, f, indent=2, ensure_ascii=False)
+        os.replace(json_tmp, json_path)
+
+        # Atomic write: Markdown
+        md_tmp = snapshot_dir / "ci_health_latest.md.tmp"
+        with open(md_tmp, "w", encoding="utf-8") as f:
+            _write_markdown_summary(f, status_data)
+        os.replace(md_tmp, md_path)
+
+        logger.info(f"CI health snapshot persisted: {json_path}, {md_path}")
+        return None
+
+    except Exception as e:
+        error_msg = f"Failed to persist snapshot: {str(e)}"
+        logger.error(error_msg, exc_info=True)
+        return error_msg
+
+
+def _write_markdown_summary(file, status_data: Dict[str, Any]) -> None:
+    """
+    Write human-readable Markdown summary (10-20 lines).
+
+    Args:
+        file: File handle to write to
+        status_data: Complete status dict
+    """
+    overall = status_data.get("overall_status", "UNKNOWN")
+    summary = status_data.get("summary", {})
+    checks = status_data.get("checks", [])
+    generated_at = status_data.get("generated_at", "unknown")
+    git_sha = status_data.get("git_head_sha", "unknown")
+
+    # Header
+    file.write("# CI & Governance Health Snapshot\n\n")
+    file.write(f"**Generated:** {generated_at}  \n")
+    file.write(f"**Git HEAD:** `{git_sha}`  \n")
+    file.write(f"**Overall Status:** **{overall}**  \n\n")
+
+    # Summary
+    file.write("## Summary\n\n")
+    file.write(f"- **Total Checks:** {summary.get('total', 0)}\n")
+    file.write(f"- **OK:** {summary.get('ok', 0)}\n")
+    file.write(f"- **WARN:** {summary.get('warn', 0)}\n")
+    file.write(f"- **FAIL:** {summary.get('fail', 0)}\n")
+    file.write(f"- **SKIP:** {summary.get('skip', 0)}\n\n")
+
+    # Checks
+    file.write("## Checks\n\n")
+    for check in checks:
+        status_badge = check.get("status", "UNKNOWN")
+        title = check.get("title", "Unknown")
+        duration = check.get("duration_ms", 0)
+        exit_code = check.get("exit_code", 0)
+
+        file.write(f"### {title} [{status_badge}]\n\n")
+        file.write(f"- **Check ID:** `{check.get('check_id', 'unknown')}`\n")
+        file.write(f"- **Duration:** {duration}ms\n")
+        file.write(f"- **Exit Code:** {exit_code}\n")
+
+        # Error excerpt (first 10 lines if present)
+        error_excerpt = check.get("error_excerpt", "")
+        if error_excerpt:
+            lines = error_excerpt.split("\n")[:10]
+            file.write("\n**Error Excerpt:**\n\n```\n")
+            file.write("\n".join(lines))
+            file.write("\n```\n")
+
+        file.write("\n")
+
+
 # =============================================================================
 # API ENDPOINTS
 # =============================================================================
@@ -254,10 +390,16 @@ def _run_all_checks() -> List[HealthCheckResult]:
 @router.get("/status")
 async def get_ci_health_status() -> Dict[str, Any]:
     """
-    JSON API: Get CI & Governance health status.
+    JSON API: Get CI & Governance health status (v0.2 with snapshot persistence).
 
     Returns:
         Dict with health check results and summary.
+
+    v0.2 Features:
+        - Persists snapshot to reports/ops/ci_health_latest.{json,md}
+        - Adds server_timestamp_utc, git_head_sha, app_version
+        - snapshot_write_error field if persistence failed
+        - Always returns 200 OK (even if snapshot write failed)
     """
     results = _run_all_checks()
 
@@ -274,7 +416,8 @@ async def get_ci_health_status() -> Dict[str, Any]:
     elif warn_count > 0:
         overall_status = "WARN"
 
-    return {
+    # Build response (v0.2: enriched with git/timestamp)
+    response = {
         "overall_status": overall_status,
         "summary": {
             "total": total,
@@ -300,7 +443,18 @@ async def get_ci_health_status() -> Dict[str, Any]:
             for r in results
         ],
         "generated_at": datetime.now().isoformat(),
+        "server_timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "git_head_sha": _get_git_head_sha(),
+        "app_version": "0.2.0",  # CI Health API version
     }
+
+    # v0.2: Persist snapshot (errors do NOT fail the API)
+    snapshot_error = _persist_snapshot(response)
+    if snapshot_error:
+        response["snapshot_write_error"] = snapshot_error
+        logger.warning(f"Snapshot write failed but API returns 200: {snapshot_error}")
+
+    return response
 
 
 # =============================================================================
