@@ -527,7 +527,9 @@ def test_ci_health_snapshot_multiple_calls(mock_repo_root: Path, client: TestCli
     assert snapshot2["generated_at"] == data2["generated_at"]
 
 
-def test_ci_health_snapshot_directory_creation(tmp_path: Path, mock_templates: Jinja2Templates) -> None:
+def test_ci_health_snapshot_directory_creation(
+    tmp_path: Path, mock_templates: Jinja2Templates
+) -> None:
     """Test that snapshot directory is created if missing."""
     # Create repo WITHOUT reports directory
     repo_root = tmp_path / "repo"
