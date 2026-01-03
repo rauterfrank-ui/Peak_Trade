@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>CI & Governance Health</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-950 text-slate-100">
+    <div class="min-h-screen">
+      <header class="border-b border-slate-800 bg-slate-900/70 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <a href="/" class="text-xl font-semibold tracking-tight hover:text-slate-200 transition-colors">
+              Peak_Trade Dashboard
+            </a>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/30">
+              CI & Governance
+            </span>
+          </div>
+          <nav class="flex items-center gap-4">
+            <a href="/" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Dashboard
+            </a>
+            <a href="/ops/stage1" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Stage1
+            </a>
+            <a href="/ops/workflows" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Workflows
+            </a>
+            <a href="/ops/ci-health" class="text-xs text-blue-400">
+              CI Health
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="pb-12">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+          <!-- Header -->
+          <div class="mb-6">
+            <h1 class="text-2xl font-bold mb-2">🔧 CI & Governance Health</h1>
+            <p class="text-sm text-slate-400">
+              Lokale CI-Checks & Governance-Validierung
+              <span class="ml-2 text-xs text-slate-500">Generated: {{ generated_at }}</span>
+            </p>
+          </div>
+
+          <!-- Overall Status Badge -->
+          <div class="mb-6">
+            <div class="inline-flex items-center gap-3 px-4 py-3 rounded-lg border
+                        {% if overall_status == 'OK' %}
+                          bg-emerald-500/10 border-emerald-500/30 text-emerald-300
+                        {% elif overall_status == 'WARN' %}
+                          bg-amber-500/10 border-amber-500/30 text-amber-300
+                        {% else %}
+                          bg-red-500/10 border-red-500/30 text-red-300
+                        {% endif %}">
+              <div class="text-3xl">
+                {% if overall_status == 'OK' %}✅{% elif overall_status == 'WARN' %}⚠️{% else %}❌{% endif %}
+              </div>
+              <div>
+                <div class="text-lg font-semibold">{{ overall_status }}</div>
+                <div class="text-xs opacity-75">
+                  {{ summary.ok }}/{{ summary.total }} Checks OK
+                  {% if summary.warn > 0 %} · {{ summary.warn }} Warnings{% endif %}
+                  {% if summary.fail > 0 %} · {{ summary.fail }} Failed{% endif %}
+                  {% if summary.skip > 0 %} · {{ summary.skip }} Skipped{% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Health Checks Grid -->
+          <div class="grid gap-4">
+            {% for result in results %}
+            <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-5">
+              <!-- Check Header -->
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <h3 class="text-base font-semibold">{{ result.title }}</h3>
+                    <span class="text-xs px-2 py-0.5 rounded-full font-medium
+                                {% if result.status == 'OK' %}
+                                  bg-emerald-500/10 text-emerald-300 border border-emerald-500/30
+                                {% elif result.status == 'WARN' %}
+                                  bg-amber-500/10 text-amber-300 border border-amber-500/30
+                                {% elif result.status == 'SKIP' %}
+                                  bg-slate-500/10 text-slate-400 border border-slate-500/30
+                                {% else %}
+                                  bg-red-500/10 text-red-300 border border-red-500/30
+                                {% endif %}">
+                      {{ result.status }}
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-400">{{ result.description }}</p>
+                </div>
+                <div class="text-right text-xs text-slate-500">
+                  <div>{{ result.duration_ms }}ms</div>
+                  <div class="text-[10px]">Exit: {{ result.exit_code }}</div>
+                </div>
+              </div>
+
+              <!-- Script Info -->
+              <div class="mb-3 text-xs text-slate-500">
+                <code class="bg-slate-800/50 px-2 py-1 rounded">{{ result.script_path }}</code>
+              </div>
+
+              <!-- Error Excerpt (if failed/warned) -->
+              {% if result.status in ['FAIL', 'WARN'] and result.error_excerpt %}
+              <div class="mb-3">
+                <details class="group">
+                  <summary class="cursor-pointer text-xs text-slate-400 hover:text-slate-200 transition-colors mb-2">
+                    <span class="inline-block transform transition-transform group-open:rotate-90">▶</span>
+                    Fehlerausgabe (max. 20 Zeilen)
+                  </summary>
+                  <pre class="text-xs bg-slate-950/70 border border-red-900/30 rounded p-3 overflow-x-auto whitespace-pre-wrap"><code>{{ result.error_excerpt }}</code></pre>
+                </details>
+              </div>
+              {% endif %}
+
+              <!-- Full Output (collapsed by default) -->
+              {% if result.output %}
+              <div class="mb-3">
+                <details class="group">
+                  <summary class="cursor-pointer text-xs text-slate-400 hover:text-slate-200 transition-colors mb-2">
+                    <span class="inline-block transform transition-transform group-open:rotate-90">▶</span>
+                    Vollständige Ausgabe
+                  </summary>
+                  <pre class="text-xs bg-slate-950/70 border border-slate-800 rounded p-3 overflow-x-auto whitespace-pre-wrap"><code>{{ result.output }}</code></pre>
+                </details>
+              </div>
+              {% endif %}
+
+              <!-- Documentation Links -->
+              {% if result.docs_refs %}
+              <div class="flex flex-wrap gap-2 pt-3 border-t border-slate-800">
+                <span class="text-xs text-slate-500">📚 Docs:</span>
+                {% for ref in result.docs_refs %}
+                <a href="#"
+                   onclick="navigator.clipboard.writeText('{{ ref }}'); this.textContent='Copied!'; setTimeout(() => this.textContent='{{ ref }}', 1000); return false;"
+                   class="text-xs text-blue-400 hover:text-blue-300 hover:underline transition-colors"
+                   title="Click to copy path">
+                  {{ ref }}
+                </a>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Legend -->
+          <div class="mt-8 pt-6 border-t border-slate-800">
+            <h2 class="text-sm font-semibold mb-3">📖 Legend</h2>
+            <div class="grid gap-3 text-xs text-slate-400">
+              <div>
+                <span class="inline-block w-16 text-emerald-400">✅ OK:</span>
+                Check erfolgreich, keine Probleme gefunden
+              </div>
+              <div>
+                <span class="inline-block w-16 text-amber-400">⚠️ WARN:</span>
+                Warnung, aber nicht kritisch (z.B. docs-only)
+              </div>
+              <div>
+                <span class="inline-block w-16 text-red-400">❌ FAIL:</span>
+                Check fehlgeschlagen, Aktion erforderlich
+              </div>
+              <div>
+                <span class="inline-block w-16 text-slate-400">⏭️ SKIP:</span>
+                Check übersprungen (Script nicht verfügbar)
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="mt-6 pt-6 border-t border-slate-800">
+            <h2 class="text-sm font-semibold mb-3">🔗 Quick Links</h2>
+            <div class="grid gap-2 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">→</span>
+                <button
+                  onclick="navigator.clipboard.writeText('docs/ops/runbooks/github_rulesets_pr_reviews_policy.md'); this.textContent='Copied!'; setTimeout(() => this.innerHTML='<span class=\'text-blue-400\'>GitHub Branch Protection & Rulesets Policy</span>', 1000);"
+                  class="text-blue-400 hover:text-blue-300 hover:underline transition-colors cursor-pointer bg-transparent border-0">
+                  <span class="text-blue-400">GitHub Branch Protection & Rulesets Policy</span>
+                </button>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">→</span>
+                <button
+                  onclick="navigator.clipboard.writeText('docs/ops/README.md'); this.textContent='Copied!'; setTimeout(() => this.innerHTML='<span class=\'text-blue-400\'>Ops README (GitHub Branch Protection Section)</span>', 1000);"
+                  class="text-blue-400 hover:text-blue-300 hover:underline transition-colors cursor-pointer bg-transparent border-0">
+                  <span class="text-blue-400">Ops README (GitHub Branch Protection Section)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="mt-8 pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
+            <p>CI & Governance Health Panel v0.1 · Offline-lokal, keine Secrets · <code>{{ repo_root }}</code></p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
