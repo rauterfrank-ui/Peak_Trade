@@ -6,29 +6,31 @@ Provides the foundational infrastructure for risk management:
 - Models for risk decisions and violations
 - Audit logging for all risk events
 - Risk gate orchestrator for order validation
-- Kill switch for emergency safety stops
+- Adapters for order normalization
 - Type definitions and protocols for future implementation
 - Custom exceptions for clear error semantics
 
-**Phase 0 (Architecture Alignment):**
-- Package structure established
-- Common types and exceptions defined
-- Config anchors set
-- Ready for VaR/CVaR implementation (Phase R1)
+**Current Implementation:**
+- Core risk gate with order validation
+- JSONL audit logging
+- Canonical order contract and adapters
 
-**Future Phases:**
-- R1: Portfolio VaR/CVaR implementation
-- R2: VaR Backtesting & Validation
-- R3: Stress Testing & Monte Carlo
-- R4: 4-Layer Validation Architecture
-- R5: Monitoring & Alerting
-- R6: Integration & Final Validation
+**Phase 0 Type Definitions (for future VaR/CVaR):**
+- PortfolioVaRResult, ComponentVaRResult
+- RiskValidationResult, StressTestResult
+- Ready for VaR/CVaR implementation
 
 This is the plumbing layer - VaR, stress testing, and advanced
 risk models are implemented in separate modules.
 """
 
+# Core Implementation (PR #334)
+from src.risk_layer.adapters import order_to_dict, to_order
 from src.risk_layer.audit_log import AuditLogWriter
+from src.risk_layer.models import RiskDecision, RiskResult, Violation
+from src.risk_layer.risk_gate import RiskGate
+
+# Type Definitions & Exceptions (Phase 0 Scaffold)
 from src.risk_layer.exceptions import (
     InsufficientDataError,
     RiskCalculationError,
@@ -36,12 +38,6 @@ from src.risk_layer.exceptions import (
     RiskLayerError,
     RiskViolationError,
 )
-
-# Phase-0 Scaffold: These modules will be implemented in future phases
-# from src.risk_layer.kill_switch import KillSwitchLayer, KillSwitchStatus
-# from src.risk_layer.models import RiskDecision, RiskResult, Violation
-# from src.risk_layer.risk_gate import RiskGate
-
 from src.risk_layer.types import (
     ComponentVaRResult,
     Order,
@@ -54,9 +50,15 @@ from src.risk_layer.types import (
 )
 
 __all__ = [
-    # Infrastructure (Phase 0)
+    # Core Implementation
+    "Violation",
+    "RiskDecision",
+    "RiskResult",
     "AuditLogWriter",
-    # Type Definitions (Phase 0 Stubs)
+    "RiskGate",
+    "to_order",
+    "order_to_dict",
+    # Type Definitions (Phase 0)
     "PortfolioVaRResult",
     "ComponentVaRResult",
     "RiskValidationResult",
@@ -71,7 +73,4 @@ __all__ = [
     "RiskConfigError",
     "RiskCalculationError",
     "RiskViolationError",
-    # Future phases (commented out imports above):
-    # "Violation", "RiskDecision", "RiskResult",
-    # "RiskGate", "KillSwitchLayer", "KillSwitchStatus",
 ]
