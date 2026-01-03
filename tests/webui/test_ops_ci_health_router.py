@@ -1,11 +1,12 @@
 """
 Tests for CI & Governance Health Router (ops_ci_health_router.py)
 
-Smoke tests for the CI Health Panel v0.1.
+Smoke tests for the CI Health Panel v0.2 (with snapshot persistence).
 """
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -358,3 +359,207 @@ def test_ci_health_full_workflow(client: TestClient) -> None:
     # 3. Verify consistency
     assert "overall_status" in data
     assert data["summary"]["total"] == 2
+
+
+# =============================================================================
+# TESTS: v0.2 Snapshot Persistence
+# =============================================================================
+
+
+def test_ci_health_status_includes_v02_fields(client: TestClient) -> None:
+    """Test that v0.2 fields are present in status response."""
+    response = client.get("/ops/ci-health/status")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # v0.2 fields
+    assert "server_timestamp_utc" in data
+    assert "git_head_sha" in data
+    assert "app_version" in data
+    assert data["app_version"] == "0.2.0"
+
+
+def test_ci_health_snapshot_files_created(mock_repo_root: Path, client: TestClient) -> None:
+    """Test that snapshot files are created on successful status call."""
+    # Call status endpoint
+    response = client.get("/ops/ci-health/status")
+    assert response.status_code == 200
+
+    # Check that snapshot files exist
+    snapshot_dir = mock_repo_root / "reports" / "ops"
+    json_file = snapshot_dir / "ci_health_latest.json"
+    md_file = snapshot_dir / "ci_health_latest.md"
+
+    assert json_file.exists(), "JSON snapshot file should be created"
+    assert md_file.exists(), "Markdown snapshot file should be created"
+
+
+def test_ci_health_snapshot_json_content(mock_repo_root: Path, client: TestClient) -> None:
+    """Test that JSON snapshot contains complete status data."""
+    # Call status endpoint
+    response = client.get("/ops/ci-health/status")
+    assert response.status_code == 200
+    api_data = response.json()
+
+    # Read snapshot file
+    snapshot_file = mock_repo_root / "reports" / "ops" / "ci_health_latest.json"
+    assert snapshot_file.exists()
+
+    with open(snapshot_file, "r", encoding="utf-8") as f:
+        snapshot_data = json.load(f)
+
+    # Verify structure matches API response
+    assert snapshot_data["overall_status"] == api_data["overall_status"]
+    assert snapshot_data["summary"] == api_data["summary"]
+    assert len(snapshot_data["checks"]) == len(api_data["checks"])
+    assert "server_timestamp_utc" in snapshot_data
+    assert "git_head_sha" in snapshot_data
+
+
+def test_ci_health_snapshot_md_content(mock_repo_root: Path, client: TestClient) -> None:
+    """Test that Markdown snapshot is human-readable."""
+    # Call status endpoint
+    response = client.get("/ops/ci-health/status")
+    assert response.status_code == 200
+
+    # Read markdown file
+    md_file = mock_repo_root / "reports" / "ops" / "ci_health_latest.md"
+    assert md_file.exists()
+
+    content = md_file.read_text(encoding="utf-8")
+
+    # Verify markdown structure
+    assert "# CI & Governance Health Snapshot" in content
+    assert "**Overall Status:**" in content
+    assert "## Summary" in content
+    assert "## Checks" in content
+    assert "**Total Checks:**" in content
+
+
+def test_ci_health_snapshot_atomic_write(mock_repo_root: Path, client: TestClient) -> None:
+    """Test that snapshot uses atomic writes (no .tmp files left behind)."""
+    # Call status endpoint
+    response = client.get("/ops/ci-health/status")
+    assert response.status_code == 200
+
+    # Check that no temp files exist
+    snapshot_dir = mock_repo_root / "reports" / "ops"
+    tmp_files = list(snapshot_dir.glob("*.tmp"))
+
+    assert len(tmp_files) == 0, "No temporary files should remain after atomic write"
+
+
+def test_ci_health_snapshot_error_handling(tmp_path: Path, mock_templates: Jinja2Templates) -> None:
+    """Test that snapshot write errors do NOT fail the API."""
+    # Create repo with unwritable reports directory
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    scripts_dir = repo_root / "scripts" / "ops"
+    scripts_dir.mkdir(parents=True)
+
+    # Create passing scripts
+    contract_guard = scripts_dir / "check_required_ci_contexts_present.sh"
+    contract_guard.write_text("#!/usr/bin/env bash\necho 'OK'\nexit 0\n")
+    contract_guard.chmod(0o755)
+
+    docs_check = scripts_dir / "verify_docs_reference_targets.sh"
+    docs_check.write_text("#!/usr/bin/env bash\necho 'OK'\nexit 0\n")
+    docs_check.chmod(0o755)
+
+    # Create reports dir but make it read-only
+    reports_dir = repo_root / "reports" / "ops"
+    reports_dir.mkdir(parents=True)
+    reports_dir.chmod(0o444)  # Read-only
+
+    app = FastAPI()
+    set_ci_health_config(repo_root, mock_templates)
+    app.include_router(ci_health_router)
+
+    client = TestClient(app)
+
+    try:
+        # Call status endpoint - should still return 200
+        response = client.get("/ops/ci-health/status")
+        assert response.status_code == 200
+
+        data = response.json()
+
+        # Should have snapshot_write_error field
+        assert "snapshot_write_error" in data
+        assert "Failed to persist snapshot" in data["snapshot_write_error"]
+
+        # But overall status should still be valid
+        assert "overall_status" in data
+        assert "checks" in data
+
+    finally:
+        # Cleanup: restore permissions
+        reports_dir.chmod(0o755)
+
+
+def test_ci_health_snapshot_multiple_calls(mock_repo_root: Path, client: TestClient) -> None:
+    """Test that multiple status calls overwrite snapshot (latest wins)."""
+    # First call
+    response1 = client.get("/ops/ci-health/status")
+    assert response1.status_code == 200
+    data1 = response1.json()
+
+    # Read first snapshot
+    json_file = mock_repo_root / "reports" / "ops" / "ci_health_latest.json"
+    with open(json_file, "r", encoding="utf-8") as f:
+        snapshot1 = json.load(f)
+
+    # Second call (should overwrite)
+    response2 = client.get("/ops/ci-health/status")
+    assert response2.status_code == 200
+    data2 = response2.json()
+
+    # Read second snapshot
+    with open(json_file, "r", encoding="utf-8") as f:
+        snapshot2 = json.load(f)
+
+    # Timestamps should differ
+    assert snapshot1["generated_at"] != snapshot2["generated_at"]
+
+    # File should contain latest data
+    assert snapshot2["generated_at"] == data2["generated_at"]
+
+
+def test_ci_health_snapshot_directory_creation(tmp_path: Path, mock_templates: Jinja2Templates) -> None:
+    """Test that snapshot directory is created if missing."""
+    # Create repo WITHOUT reports directory
+    repo_root = tmp_path / "repo"
+    repo_root.mkdir()
+
+    scripts_dir = repo_root / "scripts" / "ops"
+    scripts_dir.mkdir(parents=True)
+
+    # Create passing scripts
+    contract_guard = scripts_dir / "check_required_ci_contexts_present.sh"
+    contract_guard.write_text("#!/usr/bin/env bash\necho 'OK'\nexit 0\n")
+    contract_guard.chmod(0o755)
+
+    docs_check = scripts_dir / "verify_docs_reference_targets.sh"
+    docs_check.write_text("#!/usr/bin/env bash\necho 'OK'\nexit 0\n")
+    docs_check.chmod(0o755)
+
+    # Verify reports dir does NOT exist
+    reports_dir = repo_root / "reports" / "ops"
+    assert not reports_dir.exists()
+
+    app = FastAPI()
+    set_ci_health_config(repo_root, mock_templates)
+    app.include_router(ci_health_router)
+
+    client = TestClient(app)
+
+    # Call status endpoint
+    response = client.get("/ops/ci-health/status")
+    assert response.status_code == 200
+
+    # Directory should now exist
+    assert reports_dir.exists()
+    assert (reports_dir / "ci_health_latest.json").exists()
+    assert (reports_dir / "ci_health_latest.md").exists()
