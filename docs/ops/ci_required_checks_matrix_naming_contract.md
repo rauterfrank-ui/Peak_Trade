@@ -347,3 +347,35 @@ gh api repos/OWNER/REPO/branches/main/protection/required_status_checks --jq '.c
 ```
 
 **Fix:** Job-level `if:` → step-level `if:` + expliziter `name:` im Job.
+
+---
+
+## Automated Contract Verification
+
+**Guard Script:** `scripts/ops/check_required_ci_contexts_present.sh`
+
+Dieser CI-Guard läuft automatisch bei jedem PR und stellt sicher, dass die Required Context Contract-Regeln eingehalten werden:
+
+**Validierungen:**
+1. **Concurrency-Isolation:** Group muss PR-isoliert sein (`${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}`)
+2. **Matrix Naming:** `tests` Job muss expliziten Namen haben: `tests (${{ matrix.python-version }})`
+3. **No Job-Level If:** Kein `if:` auf Job-Ebene bei `tests` und `strategy-smoke`
+4. **Explicit Naming:** `strategy-smoke` Job muss expliziten Namen haben: `strategy-smoke`
+5. **Required Version:** Matrix muss `'3.11'` enthalten (für `tests (3.11)` context)
+
+**Verwendung:**
+```bash
+# Lokal testen
+./scripts/ops/check_required_ci_contexts_present.sh
+
+# CI: läuft automatisch im ci-required-contexts-contract Job
+```
+
+**Warum robust:**
+- Grep/regex-basiert (keine YAML-Parser-Dependency)
+- Deterministisch und schnell (< 1s)
+- Klare Fehlermeldungen zeigen exakte Fix-Schritte
+- Verhindert Drift von Required Contexts vs. Workflow
+- Schützt vor versehentlicher Regression durch Refactoring
+
+**Referenz:** PR #512 (fail-open changes + concurrency hardening)
