@@ -133,9 +133,34 @@ firefox reports/shadow/quality/quality_report_<timestamp>.html
 
 The report is a standalone HTML file and requires no external dependencies or server.
 
+### Convenience Files
+
+In addition to the timestamped report, each successful run also updates:
+
+**latest.html**
+```
+reports/shadow/quality/latest.html
+```
+Always points to the most recent smoke run result. Use this for quick access without needing to know the exact timestamp.
+
+**index.html**
+```
+reports/shadow/quality/index.html
+```
+Lists the last 20 reports with links, newest first. Provides an overview of recent runs and easy navigation.
+
+**Quick Access:**
+```bash
+# View latest report
+open reports/shadow/quality/latest.html
+
+# Browse all recent reports
+open reports/shadow/quality/index.html
+```
+
 ### Note
 
-Report generation is skipped when the pipeline is blocked (e.g., when live mode is detected). In such cases, the script exits early and no report file is created.
+Report generation is skipped when the pipeline is blocked (e.g., when live mode is detected). In such cases, the script exits early and no report files are created or updated.
 
 ---
 
