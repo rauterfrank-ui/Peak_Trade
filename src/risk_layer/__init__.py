@@ -9,6 +9,7 @@ It intentionally re-exports a minimal, side-effect-free surface:
 
 Keep this module import-safe (no runtime wiring, no environment access, no I/O).
 """
+
 from __future__ import annotations
 
 # Adapters (canonical Order contract)
