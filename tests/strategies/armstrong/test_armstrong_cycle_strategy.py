@@ -381,7 +381,7 @@ class TestHelperMethods:
         repr_str = repr(strategy_default)
 
         assert "ArmstrongCycleStrategy" in repr_str
-        assert "R&D-ONLY" in repr_str
+        assert "RESEARCH-ONLY" in repr_str
         assert "tier=r_and_d" in repr_str
 
 

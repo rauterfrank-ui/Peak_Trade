@@ -102,7 +102,7 @@ class TestVolRegime:
     def test_regime_values(self) -> None:
         """Prüft, dass alle erwarteten Regimes existieren."""
         assert VolRegime.LOW.value == "low"
-        assert VolRegime.MEDIUM.value == "medium"
+        assert VolRegime.MEDIUM.value == "normal"
         assert VolRegime.HIGH.value == "high"
 
     def test_regime_count(self) -> None:
@@ -112,7 +112,7 @@ class TestVolRegime:
     def test_regime_str(self) -> None:
         """Prüft String-Repräsentation."""
         assert str(VolRegime.LOW) == "low"
-        assert str(VolRegime.MEDIUM) == "medium"
+        assert str(VolRegime.MEDIUM) == "normal"
         assert str(VolRegime.HIGH) == "high"
 
 
@@ -347,7 +347,7 @@ class TestRegimeClassification:
         """Prüft, dass regime_series nur gültige Werte enthält."""
         regimes = model_test.regime_series(mixed_vol_returns)
 
-        valid_values = {"low", "medium", "high"}
+        valid_values = {"low", "normal", "high"}
         unique_regimes = set(regimes.dropna().unique())
         assert unique_regimes.issubset(valid_values)
 
