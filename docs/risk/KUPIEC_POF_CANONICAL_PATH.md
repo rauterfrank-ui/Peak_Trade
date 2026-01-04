@@ -196,7 +196,6 @@ pytest tests/risk/validation/test_kupiec_delegation.py -v
 
 - **Hauptreport:** [`IMPLEMENTATION_REPORT_KUPIEC_POF.md`](../../IMPLEMENTATION_REPORT_KUPIEC_POF.md)
 - **Roadmap:** [`docs/risk/roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md`](roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md)
-- **Christoffersen Tests:** [`docs/risk/CHRISTOFFERSEN_TESTS_GUIDE.md`](CHRISTOFFERSEN_TESTS_GUIDE.md)
 
 ---
 
