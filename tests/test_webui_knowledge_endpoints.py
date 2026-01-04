@@ -249,13 +249,21 @@ def test_post_snippet_fallback_disabled(client):
     os.environ["KNOWLEDGE_WEB_WRITE_ENABLED"] = "true"
     os.environ["WEBUI_KNOWLEDGE_ALLOW_FALLBACK"] = "false"  # Disable fallback
 
-    response = client.post(
-        "/api/knowledge/snippets",
-        json={
-            "content": "Test content",
-            "title": "Test",
-        },
-    )
+    # Mock service with unavailable backend (vector_db=None) to test fallback disabled behavior
+    from src.webui.services.knowledge_service import KnowledgeService
+
+    mock_service = KnowledgeService()
+    mock_service.vector_db = None  # Simulate chromadb not available
+    mock_service.rag_pipeline = None
+
+    with patch("src.webui.knowledge_api.get_knowledge_service", return_value=mock_service):
+        response = client.post(
+            "/api/knowledge/snippets",
+            json={
+                "content": "Test content",
+                "title": "Test",
+            },
+        )
 
     # When fallback disabled and chromadb not available → 503
     assert response.status_code == 503
