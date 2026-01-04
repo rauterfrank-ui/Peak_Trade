@@ -1236,7 +1236,7 @@ def create_app() -> FastAPI:
         ),
         limit: int = Query(200, le=2000, description="Maximum events to return"),
         format: str = Query(
-            "json", regex="^(json|csv)$", description="Response format (json or csv)"
+            "json", pattern="^(json|csv)$", description="Response format (json or csv)"
         ),
     ):
         """
