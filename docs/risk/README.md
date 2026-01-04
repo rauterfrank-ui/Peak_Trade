@@ -35,6 +35,10 @@ Diese Dokumentation beschreibt das Risk-Management-System von Peak_Trade, einsch
 - **[Christoffersen Tests Guide](CHRISTOFFERSEN_TESTS_GUIDE.md)** 🆕 Phase 8B  
   Independence (LR-IND) & Conditional Coverage (LR-CC) VaR backtests - Theory, API, CLI, Best Practices
 
+- **[VaR Backtest Suite Quick Start](VAR_BACKTEST_SUITE_QUICKSTART.md)** 🆕 Phase 8C  
+  Suite Runner & Report Formatter: Run all VaR backtests (Kupiec, Basel, Christoffersen) in one command  
+  Deterministic JSON + Markdown reports, regression-safe, operator-friendly
+
 ### Roadmaps
 
 - **[Portfolio VaR Roadmap](roadmaps/PORTFOLIO_VAR_ROADMAP.md)**  
@@ -229,6 +233,16 @@ python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stres
 
 ## Changelog
 
+### 2026-01-04: Phase 8C - VaR Backtest Suite Runner & Report Formatter 🆕
+- **Suite Runner:** Aggregates all VaR backtests (Kupiec POF, Basel, Christoffersen IND/CC) in one run
+- **Report Formatter:** Deterministic JSON + Markdown output (stable keys, 6-decimal precision)
+- **CLI Script:** `scripts/risk/run_var_backtest_suite.py` for operator convenience
+- **3 Test Modules:** Unit tests (suite_runner, report_formatter) + Golden/Snapshot tests
+- **Overall Result Logic:** PASS only if all tests green (else FAIL)
+- **Stdlib-only:** No external dependencies beyond pandas
+- **Operator Guide:** [VAR_BACKTEST_SUITE_QUICKSTART.md](VAR_BACKTEST_SUITE_QUICKSTART.md)
+- **Status:** ✅ Production-Ready (regression-safe, deterministic)
+
 ### 2026-01-04: Phase 8B - Christoffersen VaR Backtests 🆕
 - **47 new tests** for Christoffersen tests (100% pass)
 - Independence Test (LR-IND) - Detects violation clustering
@@ -269,4 +283,4 @@ python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stres
 
 ---
 
-**Last Updated:** 2025-12-28
+**Last Updated:** 2026-01-04
