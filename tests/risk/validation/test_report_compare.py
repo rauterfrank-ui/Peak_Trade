@@ -109,9 +109,7 @@ def test_compare_runs_with_known_regressions(
     known_regressions_baseline_dir, known_regressions_candidate_dir
 ):
     """Test run comparison with known regressions (negative testing)."""
-    comparison = compare_runs(
-        known_regressions_baseline_dir, known_regressions_candidate_dir
-    )
+    comparison = compare_runs(known_regressions_baseline_dir, known_regressions_candidate_dir)
 
     # Check structure
     assert comparison["schema_version"] == "1.0"
@@ -150,13 +148,9 @@ def test_compare_runs_with_known_regressions(
     assert overall_reg["severity"] == "HIGH"
 
 
-def test_render_compare_json(
-    known_regressions_baseline_dir, known_regressions_candidate_dir
-):
+def test_render_compare_json(known_regressions_baseline_dir, known_regressions_candidate_dir):
     """Test JSON rendering with known regressions."""
-    comparison = compare_runs(
-        known_regressions_baseline_dir, known_regressions_candidate_dir
-    )
+    comparison = compare_runs(known_regressions_baseline_dir, known_regressions_candidate_dir)
     json_output = render_compare_json(comparison)
 
     # Should be valid JSON
@@ -168,13 +162,9 @@ def test_render_compare_json(
     assert list(parsed.keys()) == sorted(parsed.keys())
 
 
-def test_render_compare_md(
-    known_regressions_baseline_dir, known_regressions_candidate_dir
-):
+def test_render_compare_md(known_regressions_baseline_dir, known_regressions_candidate_dir):
     """Test Markdown rendering with known regressions."""
-    comparison = compare_runs(
-        known_regressions_baseline_dir, known_regressions_candidate_dir
-    )
+    comparison = compare_runs(known_regressions_baseline_dir, known_regressions_candidate_dir)
     md_output = render_compare_md(comparison)
 
     # Check structure
@@ -190,13 +180,9 @@ def test_render_compare_md(
     assert "FAIL" in md_output
 
 
-def test_render_compare_html(
-    known_regressions_baseline_dir, known_regressions_candidate_dir
-):
+def test_render_compare_html(known_regressions_baseline_dir, known_regressions_candidate_dir):
     """Test HTML rendering with known regressions."""
-    comparison = compare_runs(
-        known_regressions_baseline_dir, known_regressions_candidate_dir
-    )
+    comparison = compare_runs(known_regressions_baseline_dir, known_regressions_candidate_dir)
     html_output = render_compare_html(comparison)
 
     # Check structure
@@ -260,13 +246,9 @@ def test_write_compare_json_only(tmp_path, baseline_dir, candidate_dir):
         assert len(data["regressions"]) == 0
 
 
-def test_deterministic_output(
-    known_regressions_baseline_dir, known_regressions_candidate_dir
-):
+def test_deterministic_output(known_regressions_baseline_dir, known_regressions_candidate_dir):
     """Test that comparison output is deterministic."""
-    comparison = compare_runs(
-        known_regressions_baseline_dir, known_regressions_candidate_dir
-    )
+    comparison = compare_runs(known_regressions_baseline_dir, known_regressions_candidate_dir)
 
     # Generate output twice
     json_output_1 = render_compare_json(comparison)
@@ -285,9 +267,7 @@ def test_regression_severity_ordering(
     known_regressions_baseline_dir, known_regressions_candidate_dir
 ):
     """Test that regressions are ordered by severity."""
-    comparison = compare_runs(
-        known_regressions_baseline_dir, known_regressions_candidate_dir
-    )
+    comparison = compare_runs(known_regressions_baseline_dir, known_regressions_candidate_dir)
     regressions = comparison["regressions"]
 
     # Should be sorted by severity (HIGH before MEDIUM)
