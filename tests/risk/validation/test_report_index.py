@@ -28,16 +28,18 @@ def test_discover_runs(fixtures_root):
     """Test run discovery from report root."""
     runs = discover_runs(fixtures_root)
 
-    # Should find 3 runs (sorted by run_id)
-    assert len(runs) == 3
+    # Should find 5 runs (sorted by run_id)
+    assert len(runs) == 5
     assert runs[0].run_id == "run_baseline"
     assert runs[1].run_id == "run_candidate"
-    assert runs[2].run_id == "run_pass_all"
+    assert runs[2].run_id == "run_known_regressions_baseline"
+    assert runs[3].run_id == "run_known_regressions_candidate"
+    assert runs[4].run_id == "run_pass_all"
 
-    # Check metrics extraction
+    # Check metrics extraction (run_baseline now has clean data)
     baseline = runs[0]
     assert baseline.metrics["observations"] == 250
-    assert baseline.metrics["breaches"] == 5
+    assert baseline.metrics["breaches"] == 3
     assert baseline.metrics["overall_result"] == "PASS"
     assert baseline.metrics["basel_traffic_light"] == "GREEN"
 
@@ -60,7 +62,7 @@ def test_build_index_payload(fixtures_root):
     payload = build_index_payload(runs)
 
     assert payload["schema_version"] == "1.0"
-    assert len(payload["runs"]) == 3
+    assert len(payload["runs"]) == 5
 
     # Check deterministic key ordering
     first_run = payload["runs"][0]
@@ -80,7 +82,7 @@ def test_render_index_json(fixtures_root):
     # Should be valid JSON
     parsed = json.loads(json_output)
     assert parsed["schema_version"] == "1.0"
-    assert len(parsed["runs"]) == 3
+    assert len(parsed["runs"]) == 5
 
     # Check determinism (keys should be sorted)
     assert list(parsed.keys()) == sorted(parsed.keys())
@@ -94,7 +96,7 @@ def test_render_index_md(fixtures_root):
 
     # Check structure
     assert "# VaR Backtest Suite Report Index" in md_output
-    assert "**Total Runs:** 3" in md_output
+    assert "**Total Runs:** 5" in md_output
     assert "| Run ID |" in md_output
 
     # Check run entries
@@ -152,7 +154,7 @@ def test_write_index_all_formats(tmp_path, fixtures_root):
     with open(test_root / "index.json") as f:
         data = json.load(f)
         assert data["schema_version"] == "1.0"
-        assert len(data["runs"]) == 3
+        assert len(data["runs"]) == 5
 
 
 def test_write_index_json_only(tmp_path, fixtures_root):
