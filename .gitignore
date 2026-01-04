@@ -104,3 +104,8 @@ venv_pip_check/
 /STRATEGY_LAYER_VNEXT_*_REPORT.md
 .logs/
 .tmp/
+
+# Local-only ops scratch (do not commit)
+.ops_local/
+PHASE8E_8F_PR_DESCRIPTION.md
+PHASE8E_8F_PR_GITHUB.md
