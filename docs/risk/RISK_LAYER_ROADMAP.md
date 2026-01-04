@@ -12,7 +12,7 @@
 | Phase | Beschreibung | Dauer | Tests | Status |
 |-------|--------------|-------|-------|--------|
 | R1 | Portfolio VaR/CVaR | 5d | 15+ | ⬜ |
-| R2 | VaR Backtesting & Validation | 4d | 20+ | ⬜ |
+| R2 | VaR Backtesting & Validation | 4d | 20+ | ✅ (Phase 8A/8B) |
 | R3 | Stress Testing | 5d | 15+ | ⬜ |
 | R4 | 4-Layer Validation Architecture | 6d | 25+ | ⬜ |
 | R5 | Monitoring & Alerting | 4d | 10+ | ⬜ |
@@ -166,9 +166,17 @@ class ParametricVaR(VaRCalculator):
 
 ## Phase R2: VaR Backtesting & Validation (Woche 2)
 
-**Status:** ⬜ TODO  
+**Status:** ✅ COMPLETED (Phase 8A: Kupiec POF, Phase 8B: Christoffersen IND/CC)  
 **Dauer:** 4 Tage  
 **Priorität:** 🔴 P0 (Critical Path)
+
+**Implementation:**
+- ✅ Phase 8A (2025-12-28): Kupiec POF Test + Basel Traffic Light (PR #413)
+- ✅ Phase 8B (2026-01-04): Christoffersen Independence + Conditional Coverage (PR #422)
+- ✅ 128 tests total (81 Phase 8A + 47 Phase 8B)
+- ✅ Stdlib-only implementation (no scipy/numpy)
+- ✅ CLI integration: `scripts/risk/run_var_backtest.py --tests uc|ind|cc|all`
+- ✅ Documentation: [CHRISTOFFERSEN_TESTS_GUIDE.md](CHRISTOFFERSEN_TESTS_GUIDE.md), [KUPIEC_POF_THEORY.md](KUPIEC_POF_THEORY.md)
 
 ### Deliverables
 

@@ -229,6 +229,16 @@ python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stres
 
 ## Changelog
 
+### 2026-01-04: Phase 8B - Christoffersen VaR Backtests 🆕
+- **47 new tests** for Christoffersen tests (100% pass)
+- Independence Test (LR-IND) - Detects violation clustering
+- Conditional Coverage Test (LR-CC) - Combined UC + IND
+- CLI Integration: `--tests uc|ind|cc|all`
+- Stdlib-only implementation (no scipy/numpy)
+- Comprehensive guide: [CHRISTOFFERSEN_TESTS_GUIDE.md](CHRISTOFFERSEN_TESTS_GUIDE.md)
+- PR #422 merged to main
+- Merge Log: [docs/ops/merge-logs/2026-01-04_feat-var-backtest-christoffersen-cc_merge_log.md](../ops/merge-logs/2026-01-04_feat-var-backtest-christoffersen-cc_merge_log.md)
+
 ### 2025-12-28: Phase 2 - VaR Validation 🆕
 - **81 new tests** for VaR validation (100% pass)
 - Kupiec POF Test (pure Python, no SciPy)
