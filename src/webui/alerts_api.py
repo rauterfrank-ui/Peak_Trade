@@ -21,7 +21,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # =============================================================================
@@ -53,8 +53,8 @@ class AlertSummary(BaseModel):
         default_factory=list, description="Verlinkte Runbooks (Phase 84)"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "alert_abc123",
                 "title": "Risk Severity changed: GREEN → YELLOW",
@@ -74,6 +74,7 @@ class AlertSummary(BaseModel):
                 ],
             }
         }
+    )
 
 
 class AlertStats(BaseModel):
