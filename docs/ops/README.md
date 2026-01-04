@@ -5,6 +5,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 ---
 
 ## Closeouts & Playbooks
+- `docs/ops/merge_logs/2026-01-04_feat-var-backtest-christoffersen-cc_merge_log.md` — Christoffersen VaR Backtests (PR #422, 2026-01-04)
 - `docs/ops/merge_logs/2025-12-27_mass_docs_pr_closeout.md` — Mass PR Wave Closeout (2025-12-27)
 - `docs/ops/CASCADING_MERGES_AND_RERERE_PLAYBOOK.md` — Cascading merges & git rerere Operator Playbook
 
