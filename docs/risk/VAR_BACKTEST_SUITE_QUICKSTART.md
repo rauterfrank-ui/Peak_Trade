@@ -1,7 +1,7 @@
 # VaR Backtest Suite – Quick Start Guide
 
-**Phase:** 8C  
-**Feature:** Suite Runner & Report Formatter  
+**Phase:** 8C + 8D  
+**Feature:** Suite Runner, Report Formatter, Index & Compare Tools  
 **Status:** ✅ Production-Ready  
 
 ---
@@ -270,6 +270,155 @@ diff /tmp/run1/suite_report.json /tmp/run2/suite_report.json
 
 ---
 
+## Phase 8D: Report Index & Run Comparison
+
+**New in 8D:** Tools für Report-Navigation und Run-Vergleiche (audit-ready, deterministisch).
+
+### Report Index Builder
+
+Generiert `index.{json,md,html}` für alle Runs in einem Report-Root:
+
+```bash
+python scripts/risk/var_suite_build_index.py \
+  --report-root results/var_suite/
+```
+
+**Output:**
+- `results/var_suite/index.json` — Maschinenlesbarer Index
+- `results/var_suite/index.md` — Markdown-Tabelle aller Runs
+- `results/var_suite/index.html` — HTML-Dashboard (öffnen in Browser)
+
+**Use Case:**
+- Übersicht über alle historischen VaR-Runs
+- Audit Trail (welche Runs existieren, wann erstellt, welches Ergebnis)
+- Schneller Zugriff auf einzelne Run-Reports
+
+**Beispiel HTML Output:**
+
+Open `results/var_suite/index.html` in Browser:
+- Tabelle mit allen Runs (run_id, observations, breaches, overall result)
+- Clickable Links zu JSON/MD Reports
+- Color-coded (PASS=grün, FAIL=rot)
+
+### Run Comparison Tool
+
+Vergleicht zwei Runs (baseline vs candidate) und identifiziert Regressions/Improvements:
+
+```bash
+python scripts/risk/var_suite_compare_runs.py \
+  --baseline results/var_suite/run_20260101/ \
+  --candidate results/var_suite/run_20260104/ \
+  --out results/var_suite/compare/
+```
+
+**Output:**
+- `results/var_suite/compare/compare.json` — Strukturierter Diff
+- `results/var_suite/compare/compare.md` — Markdown-Report
+- `results/var_suite/compare/compare.html` — HTML-Dashboard
+
+**Exit Code:**
+- `0` = No regressions (candidate is equal or better)
+- `1` = Regressions detected (see report)
+
+**Use Case:**
+- Model Update Validation: neues VaR-Modell vs altes Baseline
+- CI/CD Integration: automatische Regression-Checks
+- Audit: dokumentierte Änderungen zwischen Runs
+
+**Beispiel compare.md:**
+
+```markdown
+# VaR Backtest Suite Run Comparison
+
+## Summary
+**Baseline:** run_20260101 → PASS
+**Candidate:** run_20260104 → FAIL
+
+## ⚠️ Regressions
+- **overall_result**: PASS → FAIL (Severity: HIGH)
+- **christoffersen_cc**: PASS → FAIL (Severity: MEDIUM)
+- **basel_traffic_light**: GREEN → YELLOW (Severity: MEDIUM)
+
+## Detailed Metrics
+| Metric | Baseline | Candidate | Delta |
+|--------|----------|-----------|-------|
+| breaches | 5 | 8 | +3 |
+| kupiec_pof_pvalue | 0.65 | 0.12 | -0.53 |
+```
+
+### Index + Compare Workflow (Typical)
+
+**Step 1: Generate Runs**
+```bash
+# Baseline run
+python scripts/risk/run_var_backtest_suite.py \
+  --returns-file data/returns_2024.csv \
+  --var-file data/var_baseline_2024.csv \
+  --confidence 0.95 \
+  --output-dir results/var_suite/run_baseline_2024/
+
+# Candidate run (new model)
+python scripts/risk/run_var_backtest_suite.py \
+  --returns-file data/returns_2024.csv \
+  --var-file data/var_candidate_2024.csv \
+  --confidence 0.95 \
+  --output-dir results/var_suite/run_candidate_2024/
+```
+
+**Step 2: Compare Runs**
+```bash
+python scripts/risk/var_suite_compare_runs.py \
+  --baseline results/var_suite/run_baseline_2024/ \
+  --candidate results/var_suite/run_candidate_2024/ \
+  --out results/var_suite/compare_baseline_vs_candidate/
+
+# Opens compare.html in browser
+open results/var_suite/compare_baseline_vs_candidate/compare.html
+```
+
+**Step 3: Build Index**
+```bash
+python scripts/risk/var_suite_build_index.py \
+  --report-root results/var_suite/
+
+# Opens index.html in browser
+open results/var_suite/index.html
+```
+
+### CLI Options
+
+**Index Builder:**
+```bash
+# JSON only (no HTML)
+python scripts/risk/var_suite_build_index.py \
+  --report-root results/var_suite/ \
+  --json-only
+
+# Skip HTML
+python scripts/risk/var_suite_build_index.py \
+  --report-root results/var_suite/ \
+  --no-html
+```
+
+**Compare Tool:**
+```bash
+# JSON only (CI-friendly)
+python scripts/risk/var_suite_compare_runs.py \
+  --baseline run_baseline/ \
+  --candidate run_candidate/ \
+  --out compare/ \
+  --json-only
+
+# Skip HTML
+python scripts/risk/var_suite_compare_runs.py \
+  --baseline run_baseline/ \
+  --candidate run_candidate/ \
+  --out compare/ \
+  --no-html
+```
+
+---
+
 ## Troubleshooting
 
 ### Error: "must have same length"
@@ -328,9 +477,16 @@ print(f"Breaches: {breaches}, Expected: {expected:.1f}")
 ### Tests
 - **Unit Tests:** `tests/risk/validation/test_suite_runner.py`, `test_report_formatter.py`
 - **Golden Tests:** `tests/risk/validation/test_suite_golden.py`
+- **Phase 8D Tests:** `tests/risk/validation/test_report_index.py`, `test_report_compare.py`
+
+### Phase 8D Code
+- **Report Index:** `src/risk/validation/report_index.py`
+- **Report Compare:** `src/risk/validation/report_compare.py`
+- **Index Builder CLI:** `scripts/risk/var_suite_build_index.py`
+- **Compare Tool CLI:** `scripts/risk/var_suite_compare_runs.py`
 
 ---
 
 **Last Updated:** 2026-01-04  
-**Phase:** 8C  
+**Phase:** 8C + 8D  
 **Status:** ✅ Production-Ready Human: continue

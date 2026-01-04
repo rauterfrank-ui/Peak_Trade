@@ -1,10 +1,11 @@
-"""VaR Validation & Backtesting Module (Phase 2 + 8A/8B/8C).
+"""VaR Validation & Backtesting Module (Phase 2 + 8A/8B/8C/8D).
 
 This module provides VaR model validation tools including:
 - Kupiec POF Test (Phase 8A: with pure Python chi-square, no scipy)
 - Basel Traffic Light System (Phase 8A)
 - Christoffersen Independence + Conditional Coverage Tests (Phase 8B)
 - Suite Runner & Report Formatter (Phase 8C)
+- Report Index & Run Comparison Tools (Phase 8D)
 - Backtest Runner
 - Breach Analysis
 
@@ -77,6 +78,26 @@ from src.risk.validation.report_formatter import (
     format_suite_result_markdown,
 )
 
+from src.risk.validation.report_index import (
+    RunArtifact,
+    discover_runs,
+    build_index_payload,
+    render_index_json,
+    render_index_md,
+    render_index_html,
+    write_index,
+)
+
+from src.risk.validation.report_compare import (
+    RunSummary,
+    load_run,
+    compare_runs,
+    render_compare_json,
+    render_compare_md,
+    render_compare_html,
+    write_compare,
+)
+
 __all__ = [
     # Kupiec POF (Phase 8A)
     "KupiecResult",
@@ -105,4 +126,20 @@ __all__ = [
     "run_var_backtest_suite",
     "format_suite_result_json",
     "format_suite_result_markdown",
+    # Report Index (Phase 8D)
+    "RunArtifact",
+    "discover_runs",
+    "build_index_payload",
+    "render_index_json",
+    "render_index_md",
+    "render_index_html",
+    "write_index",
+    # Report Compare (Phase 8D)
+    "RunSummary",
+    "load_run",
+    "compare_runs",
+    "render_compare_json",
+    "render_compare_md",
+    "render_compare_html",
+    "write_compare",
 ]
