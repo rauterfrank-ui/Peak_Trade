@@ -452,7 +452,7 @@ class TestHelperMethods:
         """Prüft get_strategy_info Methode."""
         info = strategy_default.get_strategy_info()
 
-        assert info["id"] == "el_karoui_vol_v1"
+        assert info["id"] == "el_karoui_vol_model"
         assert info["tier"] == "r_and_d"
         assert info["category"] == "volatility"
         assert info["is_live_ready"] is False
@@ -462,7 +462,7 @@ class TestHelperMethods:
         repr_str = repr(strategy_default)
 
         assert "ElKarouiVolatilityStrategy" in repr_str
-        assert "R&D-ONLY" in repr_str
+        assert "RESEARCH-ONLY" in repr_str
         assert "tier=r_and_d" in repr_str
 
 

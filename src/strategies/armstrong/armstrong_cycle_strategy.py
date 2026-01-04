@@ -387,7 +387,7 @@ class ArmstrongCycleStrategy(BaseStrategy):
             f"cycle={self.cycle_length_days}d, "
             f"window={self.event_window_days}d, "
             f"ref={self.reference_date}) "
-            f"[RESEARCH-ONLY, R&D-ONLY, tier={self.TIER}]>"
+            f"[RESEARCH-ONLY, RESEARCH-ONLY, tier={self.TIER}]>"
         )
 
 

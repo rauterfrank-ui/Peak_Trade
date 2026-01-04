@@ -99,9 +99,10 @@ class TestArmstrongCycleStrategy:
         info = strategy.get_cycle_info(test_date)
 
         assert "cycle_phase" in info
+        assert "cycle_position" in info
         assert "is_near_turning_point" in info
         assert "next_turning_point" in info
-        assert 0 <= info["cycle_phase"] <= 1
+        assert 0 <= info["cycle_position"] <= 1
         assert isinstance(info["is_near_turning_point"], bool)
 
     def test_armstrong_repr_shows_research_only(self):

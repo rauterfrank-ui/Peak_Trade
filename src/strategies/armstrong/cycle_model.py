@@ -392,8 +392,8 @@ class ArmstrongCycleModel:
         return {
             "phase": phase,
             "phase_name": str(phase),
+            "cycle_phase": str(phase),  # Alias für backwards compatibility
             "cycle_position": position,
-            "cycle_phase": position,  # Alias für Backward Compatibility
             "days_since_reference": days,
             "days_in_current_cycle": days % cycle_length,
             "risk_multiplier": self.risk_multiplier_for_date(dt_date),

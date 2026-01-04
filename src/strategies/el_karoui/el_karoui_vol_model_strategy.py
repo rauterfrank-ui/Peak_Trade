@@ -272,7 +272,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
     def from_config(
         cls,
         cfg: Any,
-        section: str = "strategy.el_karoui_vol_v1",
+        section: str = "strategy.el_karoui_vol_model",
     ) -> "ElKarouiVolatilityStrategy":
         """
         Fabrikmethode für Config-basierte Instanziierung.
@@ -431,7 +431,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
             Dict mit Strategy-Info inkl. Tier
         """
         return {
-            "id": "el_karoui_vol_v1",
+            "id": "el_karoui_vol_model",
             "name": self.meta.name,
             "category": "volatility",
             "tier": self.TIER,

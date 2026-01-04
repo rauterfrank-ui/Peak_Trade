@@ -172,6 +172,16 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         tier="production",
         allowed_environments=("backtest", "paper", "live"),
     ),
+    # Alias für Backwards Compatibility
+    "el_karoui_vol_v1": StrategySpec(
+        key="el_karoui_vol_v1",
+        cls=ElKarouiVolModelStrategy,
+        config_section="strategy.el_karoui_vol_model",
+        description="El Karoui Vol Model (Alias für el_karoui_vol_model, R&D-Only)",
+        is_live_ready=True,
+        tier="production",
+        allowed_environments=("backtest", "paper", "live"),
+    ),
     "ehlers_cycle_filter": StrategySpec(
         key="ehlers_cycle_filter",
         cls=EhlersCycleFilterStrategy,
