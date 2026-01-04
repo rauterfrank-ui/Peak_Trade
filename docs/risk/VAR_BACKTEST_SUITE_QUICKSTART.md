@@ -18,6 +18,8 @@ Die **VaR Backtest Suite** aggregiert alle VaR-Validierungstests in einem einzig
 
 **Overall Result:** `PASS` wenn alle Tests grün, sonst `FAIL`.
 
+⚠️ **Note:** `src/risk/validation/christoffersen.py` ist aktuell ein **Stub/Placeholder**. Die Christoffersen Tests (IND/CC) liefern dummy-Werte und sind noch nicht vollständig implementiert. Vollständige Implementation folgt in PR #422.
+
 ---
 
 ## Quick Start
