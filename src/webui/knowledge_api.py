@@ -57,7 +57,7 @@ class SnippetCreate(BaseModel):
     content: str = Field(..., min_length=1, max_length=10000)
     title: Optional[str] = Field(None, max_length=200)
     category: Optional[str] = Field(None, max_length=50)
-    tags: Optional[List[str]] = Field(None, max_items=10)
+    tags: Optional[List[str]] = Field(None, max_length=10)
 
 
 class StrategyCreate(BaseModel):
