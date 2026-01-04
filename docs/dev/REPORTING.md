@@ -22,7 +22,7 @@ See: [REPORTING_SMOKE.md](REPORTING_SMOKE.md)
 - **Purpose:** Validate Quarto setup and rendering pipeline
 - **Format:** HTML (self-contained)
 - **Dependencies:** Quarto only
-- **Location:** `reports/quarto/smoke.qmd`
+- **Location:** `templates/quarto/smoke.qmd`
 - **Output:** `reports/quarto/_smoke/smoke.html`
 
 ### 2. Strategy Reports (Planned)
