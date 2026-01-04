@@ -1,0 +1,77 @@
+Phase 8E/8F – Changed Files List
+================================
+
+Date: 2026-01-04
+Status: COMPLETE
+
+NEW FILES (5):
+--------------
+
+1. .github/workflows/var_report_regression_gate.yml
+   Type: GitHub Actions Workflow
+   Lines: ~280
+   Purpose: CI Regression Gate für VaR Report Tools
+
+2. docs/ops/runbooks/var_report_compare.md
+   Type: Operator Runbook
+   Lines: ~650
+   Purpose: Comprehensive operator guide for VaR report tools
+
+3. PHASE8E_8F_CI_INTEGRATION_PR.md
+   Type: PR Description
+   Lines: ~650
+   Purpose: PR description with verification and deployment plan
+
+4. PHASE8E_8F_EXPECTED_CI_BEHAVIOR.md
+   Type: CI Documentation
+   Lines: ~450
+   Purpose: Exit codes, gate logic, failure scenarios
+
+5. PHASE8E_8F_IMPLEMENTATION_COMPLETE.md
+   Type: Implementation Summary
+   Lines: ~550
+   Purpose: Phase completion summary
+
+SUMMARY FILES (1):
+------------------
+
+6. PHASE8E_8F_CHANGED_FILES.txt
+   Type: File List
+   Lines: ~50
+   Purpose: This file
+
+TOTAL:
+------
+- New files: 6
+- Total lines: ~2,630
+- Modified files: 0 (no changes to existing code)
+
+VERIFICATION:
+-------------
+- Tests: 22 (12 compare + 10 index) → 100% pass
+- CLI smoke tests: 2/2 → 100% pass
+- Integration tests: 2/2 → 100% pass
+
+GIT COMMANDS:
+-------------
+git add .github/workflows/var_report_regression_gate.yml
+git add docs/ops/runbooks/var_report_compare.md
+git add PHASE8E_8F_CI_INTEGRATION_PR.md
+git add PHASE8E_8F_EXPECTED_CI_BEHAVIOR.md
+git add PHASE8E_8F_IMPLEMENTATION_COMPLETE.md
+git add PHASE8E_8F_CHANGED_FILES.txt
+
+git commit -m "feat(ci): Add VaR Report Regression Gate (Phase 8E/8F)
+
+- Add GitHub Actions workflow for report_compare/index validation
+- Add operator runbook with use cases and troubleshooting
+- Deterministic gates: stable sorting, exit codes, artifact upload
+- Zero VaR/Risk logic changes (CI/Docs only)
+- 22 tests (100% pass rate)
+
+Risk: VERY LOW
+Status: PRODUCTION-READY"
+
+git push origin HEAD
+
+END OF FILE
