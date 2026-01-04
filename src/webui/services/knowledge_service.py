@@ -42,6 +42,23 @@ def is_rag_available() -> bool:
     return is_vector_db_available()
 
 
+def is_fallback_allowed() -> bool:
+    """
+    Check if in-memory fallback is allowed when vector DB unavailable.
+
+    Controlled by WEBUI_KNOWLEDGE_ALLOW_FALLBACK env var.
+
+    Default behavior:
+    - Dev/Test: true (convenience for CI/local dev without chromadb)
+    - Prod: false (explicit opt-in required)
+
+    Returns:
+        True if fallback allowed, False if vector DB strictly required
+    """
+    env_val = os.environ.get("WEBUI_KNOWLEDGE_ALLOW_FALLBACK", "true").lower()
+    return env_val in ("true", "1", "yes")
+
+
 # =============================================================================
 # Knowledge DB Service
 # =============================================================================
@@ -112,9 +129,19 @@ class KnowledgeService:
         """
         Check if Knowledge Service is available.
 
-        Returns True if either vector DB is available OR in-memory fallback is active.
+        Returns:
+            True if either:
+            - Vector DB is available (chromadb installed), OR
+            - Vector DB is unavailable BUT in-memory fallback is allowed
+
+            False if:
+            - Vector DB is unavailable AND fallback is disallowed (prod hardening)
         """
-        return True  # Always available (with in-memory fallback)
+        if self.vector_db is not None:
+            return True  # Vector DB available
+
+        # Vector DB not available - check if fallback allowed
+        return is_fallback_allowed()
 
     # =========================================================================
     # Snippets (Generic Documents)

@@ -141,11 +141,23 @@ def require_backend_available() -> None:
     """
     Check if Knowledge DB backend is available.
 
-    Note: With in-memory fallback, this always succeeds.
-    Kept for API compatibility.
+    Behavior depends on WEBUI_KNOWLEDGE_ALLOW_FALLBACK:
+    - If fallback allowed (dev/test default): always succeeds (in-memory fallback)
+    - If fallback disallowed (prod hardening): raises 503 if vector DB unavailable
+
+    Raises:
+        HTTPException(503): If backend unavailable and fallback disallowed
     """
-    # Service now has in-memory fallback, so always available
-    pass
+    service = get_knowledge_service()
+    if not service.is_available():
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={
+                "error": "Knowledge DB backend unavailable",
+                "message": "Vector database (chromadb) not available and fallback disabled",
+                "solution": "Install chromadb or set WEBUI_KNOWLEDGE_ALLOW_FALLBACK=true",
+            },
+        )
 
 
 # =============================================================================
