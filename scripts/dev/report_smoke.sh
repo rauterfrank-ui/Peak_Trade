@@ -18,7 +18,7 @@ set -euo pipefail
 # ============================================================================
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-SMOKE_QMD="${REPO_ROOT}/reports/quarto/smoke.qmd"
+SMOKE_QMD="${REPO_ROOT}/templates/quarto/smoke.qmd"
 OUTPUT_DIR="${REPO_ROOT}/reports/quarto/_smoke"
 OUTPUT_HTML="${OUTPUT_DIR}/smoke.html"
 FALLBACK_QMD="${OUTPUT_DIR}/_smoke_report.qmd"
@@ -88,7 +88,7 @@ format:
 
 The committed smoke report was not found in this branch.
 
-Expected location: `reports/quarto/smoke.qmd`
+Expected location: `templates/quarto/smoke.qmd`
 
 ---
 

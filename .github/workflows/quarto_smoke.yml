@@ -4,12 +4,12 @@ on:
   push:
     branches: [main, nervous-wilbur]
     paths:
-      - 'reports/quarto/smoke.qmd'
+      - 'templates/quarto/smoke.qmd'
       - 'scripts/dev/report_smoke.sh'
       - '.github/workflows/quarto_smoke.yml'
   pull_request:
     paths:
-      - 'reports/quarto/smoke.qmd'
+      - 'templates/quarto/smoke.qmd'
       - 'scripts/dev/report_smoke.sh'
       - '.github/workflows/quarto_smoke.yml'
   workflow_dispatch:

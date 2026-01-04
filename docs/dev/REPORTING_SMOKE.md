@@ -14,7 +14,7 @@ The smoke report is a minimal Quarto document that tests the basic reporting pip
 
 **Committed smoke report:**
 ```
-reports/quarto/smoke.qmd
+templates/quarto/smoke.qmd
 ```
 
 This is the standard smoke test report that is committed to the repository.
@@ -36,7 +36,7 @@ make report-smoke
 
 This will:
 1. Check for Quarto installation
-2. Render `reports/quarto/smoke.qmd` to HTML
+2. Render `templates/quarto/smoke.qmd` to HTML
 3. Save output to `reports/quarto/_smoke/smoke.html`
 4. Display success message with output path
 
@@ -55,7 +55,7 @@ This will:
 
 ## Fallback Behavior
 
-If `reports/quarto/smoke.qmd` does not exist (e.g., in older branches), the script automatically creates a minimal fallback report. This ensures the smoke test always works, even in branches without the committed report.
+If `templates/quarto/smoke.qmd` does not exist (e.g., in older branches), the script automatically creates a minimal fallback report. This ensures the smoke test always works, even in branches without the committed report.
 
 ## Troubleshooting
 
