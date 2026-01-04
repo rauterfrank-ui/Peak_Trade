@@ -5,6 +5,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 ---
 
 ## Closeouts & Playbooks
+- `docs/ops/merge_logs/20260104_pr-544_var-backtest-suite-phase-8c.md` — Phase 8C: VaR Backtest Suite Runner & Report Formatter (PR #544, 2026-01-04)
 - `docs/ops/merge_logs/2026-01-04_feat-var-backtest-christoffersen-cc_merge_log.md` — Christoffersen VaR Backtests (PR #422, 2026-01-04)
 - `docs/ops/merge_logs/2025-12-27_mass_docs_pr_closeout.md` — Mass PR Wave Closeout (2025-12-27)
 - `docs/ops/CASCADING_MERGES_AND_RERERE_PLAYBOOK.md` — Cascading merges & git rerere Operator Playbook
@@ -1682,6 +1683,7 @@ Security:
 ---
 
 ## Verified Merge Logs
+- **PR #544 (Phase 8C: VaR Backtest Suite Runner & Report Formatter)** → `docs/ops/merge_logs/20260104_pr-544_var-backtest-suite-phase-8c.md`
 - **PR #528 (restore: docs/fix-reference-targets-priority1 — Rebase & Branch Cleanup Demo)** → `docs/ops/merge_logs/2026-01-03_pr-528-rebase-cleanup-restore-demo.md`
 - **PR #509 (Optuna/MLflow Tracking + Parameter Schema Restore from BK1)** → `docs/ops/PR_509_MERGE_LOG.md`
 - **PR #504 (WP5A Phase 5 NO-LIVE Drill Pack, governance-safe docs)** → `docs/ops/PR_504_MERGE_LOG.md`
