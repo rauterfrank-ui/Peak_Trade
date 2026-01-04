@@ -1710,8 +1710,9 @@ Security:
 - **PR #442 (Audit remediation summary for PR #441, verified)** → `docs/ops/PR_442_MERGE_LOG.md`
 - **PR #426** → `docs/ops/PR_426_MERGE_LOG.md`
 - **PR #424** → `docs/ops/PR_424_MERGE_LOG.md`
-- **PR #409 (Kill Switch Legacy Adapter, verified)** → `docs/ops/PR_409_MERGE_LOG.md`
 - **PR #418 (Kupiec POF Phase-7 convenience API, verified)** → `docs/ops/PR_418_MERGE_LOG.md`
+- **PR #413 (VaR Validation Phase 2 (Kupiec + Traffic Light), verified)** → `docs/ops/PR_413_MERGE_LOG.md`
+- **PR #409 (Kill Switch Legacy Adapter, verified)** → `docs/ops/PR_409_MERGE_LOG.md`
 
 **Style Guide:** [MERGE_LOGS_STYLE_GUIDE.md](MERGE_LOGS_STYLE_GUIDE.md) — Gate-safe formatting, de-pathify rules, Unicode hygiene
 
