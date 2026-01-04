@@ -1,0 +1,261 @@
+# ============================================================================
+# Peak_Trade – VaR Report Regression Gate (Phase 8E/8F)
+# ============================================================================
+# Stand: Januar 2026
+# Version: v1.0
+#
+# Zweck:
+#   - CI Regression Gate für Phase-8D report_compare/index Tools
+#   - Deterministisch: stabile Sortierung, stabile Outputs, Exit-Codes als Gate
+#   - Validiert report_compare und report_index mit fixtures
+#
+# SAFETY:
+#   - Keine Änderungen an VaR/Risk-Logik
+#   - Nur CI/Docs/Script-Wrapping/Validation utilities
+#   - Keine neuen Dependencies; stdlib-only
+# ============================================================================
+
+name: VaR Report Regression Gate
+
+on:
+  pull_request:
+    branches: ["main", "master"]
+    paths:
+      - "src/risk/validation/**"
+      - "tests/risk/validation/**"
+      - "tests/fixtures/var_suite_reports/**"
+      - "scripts/risk/var_suite_*.py"
+      - "docs/risk/**"
+      - "docs/ops/runbooks/var_*.md"
+      - ".github/workflows/var_report_regression_gate.yml"
+  push:
+    branches: ["main", "master"]
+    paths:
+      - "src/risk/validation/**"
+      - "tests/risk/validation/**"
+      - "tests/fixtures/var_suite_reports/**"
+      - "scripts/risk/var_suite_*.py"
+  workflow_dispatch:
+  merge_group:
+    branches: ["main", "master"]
+
+concurrency:
+  group: var-report-gate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ============================================================================
+  # VaR Report Tools Validation
+  # ============================================================================
+  var-report-tools:
+    name: VaR Report Tools (Compare + Index)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      # ========================================================================
+      # Test: report_compare and report_index modules
+      # ========================================================================
+      - name: 🧪 Run report_compare tests
+        id: test_compare
+        run: |
+          echo "::group::report_compare tests"
+          pytest tests/risk/validation/test_report_compare.py -v --tb=short
+          echo "::endgroup::"
+
+      - name: 🧪 Run report_index tests
+        id: test_index
+        run: |
+          echo "::group::report_index tests"
+          pytest tests/risk/validation/test_report_index.py -v --tb=short
+          echo "::endgroup::"
+
+      # ========================================================================
+      # Gate: Minimal deterministic compare (baseline vs candidate)
+      # ========================================================================
+      - name: 🔬 Run deterministic compare (Gate)
+        id: compare_gate
+        run: |
+          echo "::group::Deterministic compare gate"
+          set -euo pipefail
+
+          # Use existing fixtures
+          BASELINE="tests/fixtures/var_suite_reports/run_baseline"
+          CANDIDATE="tests/fixtures/var_suite_reports/run_candidate"
+          OUT_DIR="reports/var_suite/ci_compare"
+
+          echo "Running report_compare with fixtures..."
+          python scripts/risk/var_suite_compare_runs.py \
+            --baseline "$BASELINE" \
+            --candidate "$CANDIDATE" \
+            --out "$OUT_DIR"
+
+          # Verify output files exist
+          if [ ! -f "$OUT_DIR/compare.json" ]; then
+            echo "❌ ERROR: compare.json not generated"
+            exit 1
+          fi
+
+          if [ ! -f "$OUT_DIR/compare.md" ]; then
+            echo "❌ ERROR: compare.md not generated"
+            exit 1
+          fi
+
+          if [ ! -f "$OUT_DIR/compare.html" ]; then
+            echo "❌ ERROR: compare.html not generated"
+            exit 1
+          fi
+
+          echo "✅ All comparison files generated successfully"
+
+          # Verify JSON is valid
+          python3 -c "import json; json.load(open('$OUT_DIR/compare.json'))"
+          echo "✅ compare.json is valid JSON"
+
+          # Exit code: 0 = success (deterministic output generated)
+          echo "::endgroup::"
+          exit 0
+
+      # ========================================================================
+      # Gate: Minimal deterministic index
+      # ========================================================================
+      - name: 🔬 Run deterministic index (Gate)
+        id: index_gate
+        run: |
+          echo "::group::Deterministic index gate"
+          set -euo pipefail
+
+          # Use fixtures as report root
+          REPORT_ROOT="tests/fixtures/var_suite_reports"
+
+          echo "Running report_index with fixtures..."
+          python scripts/risk/var_suite_build_index.py \
+            --report-root "$REPORT_ROOT"
+
+          # Verify output files exist (written to report root)
+          if [ ! -f "$REPORT_ROOT/index.json" ]; then
+            echo "❌ ERROR: index.json not generated"
+            exit 1
+          fi
+
+          if [ ! -f "$REPORT_ROOT/index.md" ]; then
+            echo "❌ ERROR: index.md not generated"
+            exit 1
+          fi
+
+          if [ ! -f "$REPORT_ROOT/index.html" ]; then
+            echo "❌ ERROR: index.html not generated"
+            exit 1
+          fi
+
+          echo "✅ All index files generated successfully"
+
+          # Verify JSON is valid
+          python3 -c "import json; json.load(open('$REPORT_ROOT/index.json'))"
+          echo "✅ index.json is valid JSON"
+
+          # Verify deterministic run ordering (should be sorted by run_id)
+          python3 -c "import json; data = json.load(open('$REPORT_ROOT/index.json')); run_ids = [r['run_id'] for r in data['runs']]; assert run_ids == sorted(run_ids), f'Run IDs not sorted: {run_ids}'; print('✅ Run IDs are deterministically sorted')"
+
+          # Clean up generated files (fixtures should stay clean)
+          rm -f "$REPORT_ROOT/index.json" "$REPORT_ROOT/index.md" "$REPORT_ROOT/index.html"
+          echo "✅ Cleaned up generated index files"
+
+          # Exit code: 0 = success (deterministic output generated)
+          echo "::endgroup::"
+          exit 0
+
+      # ========================================================================
+      # Upload artifacts: compare HTML/JSON (optional)
+      # ========================================================================
+      - name: 📊 Upload comparison artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: var-report-compare-${{ github.run_number }}
+          path: |
+            reports/var_suite/ci_compare/compare.json
+            reports/var_suite/ci_compare/compare.md
+            reports/var_suite/ci_compare/compare.html
+          retention-days: 30
+          if-no-files-found: warn
+
+  # ============================================================================
+  # Smoke Test: CLI Entry Points
+  # ============================================================================
+  var-cli-smoke:
+    name: VaR CLI Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ========================================================================
+      # Smoke: var_suite_compare_runs.py --help
+      # ========================================================================
+      - name: "🚀 Smoke: var_suite_compare_runs.py --help"
+        run: |
+          python scripts/risk/var_suite_compare_runs.py --help
+
+      # ========================================================================
+      # Smoke: var_suite_build_index.py --help
+      # ========================================================================
+      - name: "🚀 Smoke: var_suite_build_index.py --help"
+        run: |
+          python scripts/risk/var_suite_build_index.py --help
+
+  # ============================================================================
+  # Status Summary
+  # ============================================================================
+  var-report-gate-summary:
+    name: VaR Report Gate Summary
+    runs-on: ubuntu-latest
+    needs: [var-report-tools, var-cli-smoke]
+    if: always()
+
+    steps:
+      - name: ✅ Summary
+        run: |
+          echo "## VaR Report Regression Gate Summary"
+          echo ""
+          echo "### Test Results"
+          echo "- report_compare tests: ${{ needs.var-report-tools.result }}"
+          echo "- report_index tests: ${{ needs.var-report-tools.result }}"
+          echo "- CLI smoke tests: ${{ needs.var-cli-smoke.result }}"
+          echo ""
+
+          if [ "${{ needs.var-report-tools.result }}" != "success" ] || [ "${{ needs.var-cli-smoke.result }}" != "success" ]; then
+            echo "❌ Gate FAILED"
+            exit 1
+          else
+            echo "✅ Gate PASSED"
+            exit 0
+          fi
