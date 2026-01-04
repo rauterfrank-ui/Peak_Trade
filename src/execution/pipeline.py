@@ -1046,7 +1046,7 @@ class ExecutionPipeline:
                 return (
                     False,
                     governance_status,
-                    f"live_order_execution is governance-locked",
+                    "live_mode_not_supported_in_phase_16a",
                 )
 
         # Fuer paper/shadow/testnet: Governance v1 nicht blockierend

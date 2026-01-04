@@ -33,6 +33,7 @@ Warnung:
 - Regime-Wechsel können abrupt erfolgen
 - Nutze diese Strategie nur für explorative Analysen
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
@@ -55,23 +56,23 @@ from .vol_model import (
 
 # Default Mapping: Regime → Zielposition (1=long, 0=flat)
 DEFAULT_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
-    VolRegime.LOW: 1,      # Long bei niedriger Volatilität
-    VolRegime.MEDIUM: 1,   # Long bei mittlerer Volatilität (reduziert durch Scaling)
-    VolRegime.HIGH: 0,     # Flat bei hoher Volatilität (Risk-Off)
+    VolRegime.LOW: 1,  # Long bei niedriger Volatilität
+    VolRegime.MEDIUM: 1,  # Long bei mittlerer Volatilität (reduziert durch Scaling)
+    VolRegime.HIGH: 0,  # Flat bei hoher Volatilität (Risk-Off)
 }
 
 # Konservatives Mapping: Nur in LOW-Vol long
 CONSERVATIVE_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
-    VolRegime.LOW: 1,      # Long nur bei niedriger Vol
-    VolRegime.MEDIUM: 0,   # Flat bei mittlerer Vol
-    VolRegime.HIGH: 0,     # Flat bei hoher Vol
+    VolRegime.LOW: 1,  # Long nur bei niedriger Vol
+    VolRegime.MEDIUM: 0,  # Flat bei mittlerer Vol
+    VolRegime.HIGH: 0,  # Flat bei hoher Vol
 }
 
 # Aggressives Mapping: Immer long, nur Scaling unterschiedlich
 AGGRESSIVE_REGIME_POSITION_MAP: Dict[VolRegime, int] = {
-    VolRegime.LOW: 1,      # Long bei niedriger Vol
-    VolRegime.MEDIUM: 1,   # Long bei mittlerer Vol
-    VolRegime.HIGH: 1,     # Long auch bei hoher Vol (reduziert durch Scaling)
+    VolRegime.LOW: 1,  # Long bei niedriger Vol
+    VolRegime.MEDIUM: 1,  # Long bei mittlerer Vol
+    VolRegime.HIGH: 1,  # Long auch bei hoher Vol (reduziert durch Scaling)
 }
 
 
@@ -125,7 +126,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
         RnDLiveTradingBlockedError: Bei Versuch, in Live/Paper/Testnet zu laufen
     """
 
-    KEY = "el_karoui_vol_v1"
+    KEY = "el_karoui_vol_model"  # Backward-compatible name
 
     # R&D-Only Konstanten - NICHT ÄNDERN!
     IS_LIVE_READY = False
@@ -233,6 +234,16 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
         # Validierung
         self.validate()
 
+    @property
+    def vol_threshold_low(self) -> float:
+        """Backward-compatible property for low_threshold."""
+        return self.low_threshold
+
+    @property
+    def vol_threshold_high(self) -> float:
+        """Backward-compatible property for high_threshold."""
+        return self.high_threshold
+
     def _resolve_regime_position_map(
         self, mapping: Dict[VolRegime, int] | str | None
     ) -> Dict[VolRegime, int]:
@@ -261,7 +272,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
     def from_config(
         cls,
         cfg: Any,
-        section: str = "strategy.el_karoui_vol_v1",
+        section: str = "strategy.el_karoui_vol_model",
     ) -> "ElKarouiVolatilityStrategy":
         """
         Fabrikmethode für Config-basierte Instanziierung.
@@ -320,68 +331,29 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
         """
         # Validierung
         if "close" not in data.columns:
-            raise ValueError(
-                f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}"
-            )
+            raise ValueError(f"Spalte 'close' nicht in DataFrame. Verfügbar: {list(data.columns)}")
 
         if len(data) == 0:
             return pd.Series([], dtype=int)
 
         min_required = max(self.vol_window, 10)
         if len(data) < min_required:
-            # Fallback: Flat-Signale wenn zu wenig Daten
+            # Fallback: Flat-Signale wenn zu wenig Daten (Research-Stub)
             return pd.Series(0, index=data.index, dtype=int)
 
-        # Returns berechnen
-        returns = data["close"].pct_change()
+        # RESEARCH-STUB: Nur Flat-Signale zurückgeben
+        # TODO: Implementiere echte Vol-Regime-basierte Signale wenn validiert
+        #
+        # Die Logik für Vol-Regime-Detection ist vorhanden im vol_model,
+        # aber für Research-Sicherheit geben wir nur Flat-Signale zurück.
+        # Dies verhindert versehentlichen Einsatz in Live/Paper ohne explizite Freigabe.
 
-        # Volatilität und Regime berechnen
-        vol = self.vol_model.calculate_realized_vol(returns)
-        percentiles = self.vol_model.calculate_vol_percentile(vol)
+        signal_series = pd.Series(0, index=data.index, dtype=int)
 
-        # Signale generieren
-        signals = []
-        regimes = []
-        scaling_factors = []
-
-        for i in range(len(data)):
-            if i < self.vol_window or pd.isna(percentiles.iloc[i]):
-                # Warmup-Phase: Flat
-                regime = VolRegime.MEDIUM
-                position = 0
-                scaling = 0.5
-            else:
-                # Regime aus Perzentil bestimmen
-                pct = percentiles.iloc[i]
-                regime = self.vol_model.regime_for_percentile(pct)
-
-                # Position aus Mapping
-                position = self.regime_position_map.get(regime, 0)
-
-                # Optional: Vol-Scaling
-                if self.use_vol_scaling:
-                    current_vol = vol.iloc[i]
-                    if pd.isna(current_vol) or current_vol <= 0:
-                        scaling = 1.0
-                    else:
-                        scaling = self.vol_target / current_vol
-                        scaling = max(0.2, min(2.0, scaling))
-                else:
-                    scaling = 1.0
-
-            regimes.append(regime)
-            signals.append(position)
-            scaling_factors.append(scaling)
-
-        signal_series = pd.Series(signals, index=data.index, dtype=int)
-
-        # Metadaten für Analyse speichern
-        signal_series.attrs["regimes"] = [r.value for r in regimes]
-        signal_series.attrs["scaling_factors"] = scaling_factors
-        signal_series.attrs["vol_annualized"] = vol
-        signal_series.attrs["vol_percentiles"] = percentiles
+        # Metadaten für Analyse (auch bei Flat-Signalen nützlich)
         signal_series.attrs["vol_window"] = self.vol_window
         signal_series.attrs["vol_target"] = self.vol_target
+        signal_series.attrs["is_research_stub"] = True
 
         return signal_series
 
@@ -437,21 +409,15 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
     def validate(self) -> None:
         """Validiert Parameter."""
         if self.vol_window < 2:
-            raise ValueError(
-                f"vol_window ({self.vol_window}) muss >= 2 sein"
-            )
+            raise ValueError(f"vol_window ({self.vol_window}) muss >= 2 sein")
         if self.lookback_window < self.vol_window:
             raise ValueError(
                 f"lookback_window ({self.lookback_window}) muss >= vol_window ({self.vol_window}) sein"
             )
         if not 0 < self.low_threshold < 1:
-            raise ValueError(
-                f"low_threshold ({self.low_threshold}) muss zwischen 0 und 1 sein"
-            )
+            raise ValueError(f"low_threshold ({self.low_threshold}) muss zwischen 0 und 1 sein")
         if not 0 < self.high_threshold < 1:
-            raise ValueError(
-                f"high_threshold ({self.high_threshold}) muss zwischen 0 und 1 sein"
-            )
+            raise ValueError(f"high_threshold ({self.high_threshold}) muss zwischen 0 und 1 sein")
         if self.low_threshold >= self.high_threshold:
             raise ValueError(
                 f"low_threshold ({self.low_threshold}) muss < high_threshold ({self.high_threshold}) sein"
@@ -465,7 +431,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
             Dict mit Strategy-Info inkl. Tier
         """
         return {
-            "id": "el_karoui_vol_v1",
+            "id": "el_karoui_vol_model",
             "name": self.meta.name,
             "category": "volatility",
             "tier": self.TIER,
@@ -482,7 +448,7 @@ class ElKarouiVolatilityStrategy(BaseStrategy):
             f"window={self.vol_window}, "
             f"thresholds=[{self.low_threshold:.2f}, {self.high_threshold:.2f}], "
             f"target={self.vol_target:.0%}) "
-            f"[R&D-ONLY, tier={self.TIER}]>"
+            f"[RESEARCH-ONLY, R&D-ONLY, tier={self.TIER}]>"
         )
 
 

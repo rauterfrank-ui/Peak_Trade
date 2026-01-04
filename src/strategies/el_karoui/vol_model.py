@@ -52,7 +52,7 @@ class VolRegime(Enum):
     """
 
     LOW = "low"
-    MEDIUM = "medium"
+    MEDIUM = "normal"
     HIGH = "high"
 
     def __str__(self) -> str:
@@ -558,6 +558,7 @@ class ElKarouiVolModel:
                 "current_vol": None,
                 "vol_percentile": None,
                 "regime": VolRegime.MEDIUM,
+                "vol_regime": VolRegime.MEDIUM.value,  # Alias für backwards compatibility
                 "regime_multiplier": self.multiplier_for_regime(VolRegime.MEDIUM),
                 "scaling_factor": 0.5,
                 "vol_target": self.config.vol_target,
@@ -577,6 +578,7 @@ class ElKarouiVolModel:
             "current_vol": current_vol,
             "vol_percentile": current_pct,
             "regime": regime,
+            "vol_regime": regime.value,  # Alias für backwards compatibility
             "regime_multiplier": regime_mult,
             "scaling_factor": scaling,
             "vol_target": self.config.vol_target,

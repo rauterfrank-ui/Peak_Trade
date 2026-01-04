@@ -18,6 +18,7 @@ Warnung:
 - Hindsight-Bias ist ein bekanntes Problem
 - Nutze dieses Modell nur für explorative Analysen
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -105,21 +106,19 @@ class ArmstrongCycleConfig:
     # Risk-Multiplier pro Phase (0.0 = kein Risiko, 1.0 = volles Risiko)
     risk_multipliers: Dict[str, float] = field(
         default_factory=lambda: {
-            "crisis": 0.3,           # Stark reduziert während Crisis
-            "post_crisis": 0.5,      # Vorsichtig in Erholungsphase
-            "expansion": 1.0,        # Volles Risiko in Expansion
-            "pre_crisis_mid": 0.7,   # Reduziert vor Mid-Cycle
-            "contraction": 0.6,      # Reduziert in Contraction
-            "pre_crisis": 0.4,       # Stark reduziert vor Peak
+            "crisis": 0.3,  # Stark reduziert während Crisis
+            "post_crisis": 0.5,  # Vorsichtig in Erholungsphase
+            "expansion": 1.0,  # Volles Risiko in Expansion
+            "pre_crisis_mid": 0.7,  # Reduziert vor Mid-Cycle
+            "contraction": 0.6,  # Reduziert in Contraction
+            "pre_crisis": 0.4,  # Stark reduziert vor Peak
         }
     )
 
     def __post_init__(self) -> None:
         """Validierung nach Initialisierung."""
         if self.cycle_length_days < 30:
-            raise ValueError(
-                f"cycle_length_days ({self.cycle_length_days}) muss >= 30 sein"
-            )
+            raise ValueError(f"cycle_length_days ({self.cycle_length_days}) muss >= 30 sein")
 
     @classmethod
     def default(cls) -> "ArmstrongCycleConfig":
@@ -272,9 +271,7 @@ class ArmstrongCycleModel:
 
         return position
 
-    def phase_for_date(
-        self, dt: Union[date, datetime, pd.Timestamp]
-    ) -> ArmstrongPhase:
+    def phase_for_date(self, dt: Union[date, datetime, pd.Timestamp]) -> ArmstrongPhase:
         """
         Bestimmt die Armstrong-Phase für ein gegebenes Datum.
 
@@ -319,9 +316,7 @@ class ArmstrongCycleModel:
         # Post-Crisis: 0-15% (Erholung nach Peak)
         return ArmstrongPhase.POST_CRISIS
 
-    def risk_multiplier_for_date(
-        self, dt: Union[date, datetime, pd.Timestamp]
-    ) -> float:
+    def risk_multiplier_for_date(self, dt: Union[date, datetime, pd.Timestamp]) -> float:
         """
         Gibt den Risk-Multiplier für ein Datum zurück.
 
@@ -363,9 +358,7 @@ class ArmstrongCycleModel:
 
         return multipliers.get("post_crisis", 0.5)
 
-    def get_cycle_info(
-        self, dt: Union[date, datetime, pd.Timestamp]
-    ) -> Dict[str, Any]:
+    def get_cycle_info(self, dt: Union[date, datetime, pd.Timestamp]) -> Dict[str, Any]:
         """
         Gibt umfassende Zyklus-Informationen für ein Datum zurück.
 
@@ -392,15 +385,22 @@ class ArmstrongCycleModel:
         days_to_next = cycle_length - (days % cycle_length)
         next_tp = dt_date + pd.Timedelta(days=days_to_next)
 
+        # Berechne Proximity zum Turning Point
+        window_days = 90  # Event-Window für Turning-Point-Proximity
+        is_near_tp = (days_to_next <= window_days) or ((days % cycle_length) <= window_days)
+
         return {
             "phase": phase,
             "phase_name": str(phase),
+            "cycle_phase": str(phase),  # Alias für backwards compatibility
             "cycle_position": position,
+            "cycle_phase": position,  # Alias für Backward Compatibility
             "days_since_reference": days,
             "days_in_current_cycle": days % cycle_length,
             "risk_multiplier": self.risk_multiplier_for_date(dt_date),
             "next_turning_point": next_tp,
             "cycle_length_days": cycle_length,
+            "is_near_turning_point": is_near_tp,
         }
 
     def __repr__(self) -> str:
@@ -482,6 +482,3 @@ __all__ = [
     "get_phase_for_date",
     "get_risk_multiplier_for_date",
 ]
-
-
-
