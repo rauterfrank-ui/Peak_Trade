@@ -1,76 +1,26 @@
 """
-Risk Layer Core Module
-=======================
+Risk Layer (Phase 0+)
 
-Provides the foundational infrastructure for risk management:
-- Models for risk decisions and violations
-- Audit logging for all risk events
-- Risk gate orchestrator for order validation
-- Adapters for order normalization
-- Type definitions and protocols for future implementation
-- Custom exceptions for clear error semantics
+This package is the canonical entry point for risk-related primitives and layers.
+It intentionally re-exports a minimal, side-effect-free surface:
 
-**Current Implementation:**
-- Core risk gate with order validation
-- JSONL audit logging
-- Canonical order contract and adapters
+- Adapters for Order <-> dict interop (introduced with the canonical Order contract work).
+- Kill Switch primitives for emergency stop / trading halt semantics.
 
-**Phase 0 Type Definitions (for future VaR/CVaR):**
-- PortfolioVaRResult, ComponentVaRResult
-- RiskValidationResult, StressTestResult
-- Ready for VaR/CVaR implementation
-
-This is the plumbing layer - VaR, stress testing, and advanced
-risk models are implemented in separate modules.
+Keep this module import-safe (no runtime wiring, no environment access, no I/O).
 """
 
-# Core Implementation (PR #334)
-from src.risk_layer.adapters import order_to_dict, to_order
-from src.risk_layer.audit_log import AuditLogWriter
-from src.risk_layer.models import RiskDecision, RiskResult, Violation
-from src.risk_layer.risk_gate import RiskGate
+from __future__ import annotations
 
-# Type Definitions & Exceptions (Phase 0 Scaffold)
-from src.risk_layer.exceptions import (
-    InsufficientDataError,
-    RiskCalculationError,
-    RiskConfigError,
-    RiskLayerError,
-    RiskViolationError,
-)
-from src.risk_layer.types import (
-    ComponentVaRResult,
-    Order,
-    Portfolio,
-    PortfolioVaRResult,
-    RiskConfig,
-    RiskMetrics,
-    RiskValidationResult,
-    StressTestResult,
-)
+# Adapters (canonical Order contract)
+from src.risk_layer.adapters import order_to_dict, to_order
+
+# Kill Switch (phase 0 governance / safety)
+from src.risk_layer.kill_switch import KillSwitchLayer, KillSwitchStatus
 
 __all__ = [
-    # Core Implementation
-    "Violation",
-    "RiskDecision",
-    "RiskResult",
-    "AuditLogWriter",
-    "RiskGate",
-    "to_order",
     "order_to_dict",
-    # Type Definitions (Phase 0)
-    "PortfolioVaRResult",
-    "ComponentVaRResult",
-    "RiskValidationResult",
-    "StressTestResult",
-    "RiskMetrics",
-    "RiskConfig",
-    "Order",
-    "Portfolio",
-    # Exceptions
-    "RiskLayerError",
-    "InsufficientDataError",
-    "RiskConfigError",
-    "RiskCalculationError",
-    "RiskViolationError",
+    "to_order",
+    "KillSwitchLayer",
+    "KillSwitchStatus",
 ]
