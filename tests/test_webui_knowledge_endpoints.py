@@ -227,6 +227,7 @@ def test_post_snippet_backend_unavailable(client):
     """Test POST snippet works with in-memory fallback (chromadb optional)."""
     os.environ["KNOWLEDGE_READONLY"] = "false"
     os.environ["KNOWLEDGE_WEB_WRITE_ENABLED"] = "true"
+    os.environ["WEBUI_KNOWLEDGE_ALLOW_FALLBACK"] = "true"  # Enable fallback
 
     # No longer returns 501 - uses in-memory fallback
     response = client.post(
@@ -240,6 +241,26 @@ def test_post_snippet_backend_unavailable(client):
     assert response.status_code == 201
     data = response.json()
     assert data["success"] is True
+
+
+def test_post_snippet_fallback_disabled(client):
+    """Test POST snippet returns 503 when fallback disabled (prod hardening)."""
+    os.environ["KNOWLEDGE_READONLY"] = "false"
+    os.environ["KNOWLEDGE_WEB_WRITE_ENABLED"] = "true"
+    os.environ["WEBUI_KNOWLEDGE_ALLOW_FALLBACK"] = "false"  # Disable fallback
+
+    response = client.post(
+        "/api/knowledge/snippets",
+        json={
+            "content": "Test content",
+            "title": "Test",
+        },
+    )
+
+    # When fallback disabled and chromadb not available → 503
+    assert response.status_code == 503
+    data = response.json()
+    assert "unavailable" in data["detail"]["error"].lower()
 
 
 # =============================================================================
@@ -353,6 +374,8 @@ def test_search_success(client, mock_knowledge_service):
 
 def test_search_backend_unavailable(client):
     """Test search works with in-memory fallback (chromadb optional)."""
+    os.environ["WEBUI_KNOWLEDGE_ALLOW_FALLBACK"] = "true"  # Enable fallback
+
     # No longer returns 501 - uses in-memory fallback
     response = client.get("/api/knowledge/search?q=test")
 
