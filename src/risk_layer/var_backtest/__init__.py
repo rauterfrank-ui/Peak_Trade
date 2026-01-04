@@ -31,8 +31,14 @@ from src.risk_layer.var_backtest.violation_detector import (
     detect_violations,
 )
 
-# Risk Layer v1.0 - Extended Backtesting
+# Risk Layer v1.0 - Extended Backtesting (Phase 8B)
 from src.risk_layer.var_backtest.christoffersen_tests import (
+    # Phase 8B: New lightweight API
+    ChristoffersenIndResult,
+    ChristoffersenCCResult,
+    christoffersen_lr_ind,
+    christoffersen_lr_cc,
+    # Legacy API (backward compatibility)
     ChristoffersenResult,
     christoffersen_independence_test,
     christoffersen_conditional_coverage_test,
@@ -83,7 +89,12 @@ __all__ = [
     # Backtest Runner
     "VaRBacktestRunner",
     "VaRBacktestResult",
-    # Christoffersen Tests (Risk Layer v1.0)
+    # Christoffersen Tests (Phase 8B)
+    "ChristoffersenIndResult",
+    "ChristoffersenCCResult",
+    "christoffersen_lr_ind",
+    "christoffersen_lr_cc",
+    # Legacy API
     "ChristoffersenResult",
     "christoffersen_independence_test",
     "christoffersen_conditional_coverage_test",
