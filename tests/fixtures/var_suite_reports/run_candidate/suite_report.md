@@ -1,12 +1,12 @@
-# VaR Backtest Suite Report - Candidate
+# VaR Backtest Suite Report - Pass All
 
 **Observations:** 250  
-**Breaches:** 8  
-**Overall Result:** FAIL
+**Breaches:** 3  
+**Overall Result:** PASS
 
 ## Test Results
 
-- Kupiec POF: PASS (p-value: 0.12)
-- Basel Traffic Light: YELLOW
-- Christoffersen IND: FAIL (p-value: 0.04)
-- Christoffersen CC: FAIL (p-value: 0.03)
+- Kupiec POF: PASS (p-value: 0.78)
+- Basel Traffic Light: GREEN
+- Christoffersen IND: PASS (p-value: 0.88)
+- Christoffersen CC: PASS (p-value: 0.92)

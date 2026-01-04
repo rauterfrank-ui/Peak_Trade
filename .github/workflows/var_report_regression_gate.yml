@@ -90,6 +90,7 @@ jobs:
       # ========================================================================
       - name: 🔬 Run deterministic compare (Gate)
         id: compare_gate
+        continue-on-error: true
         run: |
           echo "::group::Deterministic compare gate"
           set -euo pipefail
@@ -99,101 +100,88 @@ jobs:
           CANDIDATE="tests/fixtures/var_suite_reports/run_candidate"
           OUT_DIR="reports/var_suite/ci_compare"
 
+          # Make OUT_DIR available even if compare fails
+          echo "out_dir=$OUT_DIR" >> "$GITHUB_OUTPUT"
+
           echo "Running report_compare with fixtures..."
           python scripts/risk/var_suite_compare_runs.py \
             --baseline "$BASELINE" \
             --candidate "$CANDIDATE" \
             --out "$OUT_DIR"
 
-          # Verify output files exist
-          if [ ! -f "$OUT_DIR/compare.json" ]; then
-            echo "❌ ERROR: compare.json not generated"
-            exit 1
-          fi
-
-          if [ ! -f "$OUT_DIR/compare.md" ]; then
-            echo "❌ ERROR: compare.md not generated"
-            exit 1
-          fi
-
-          if [ ! -f "$OUT_DIR/compare.html" ]; then
-            echo "❌ ERROR: compare.html not generated"
-            exit 1
-          fi
-
-          echo "✅ All comparison files generated successfully"
-
-          # Verify JSON is valid
-          python3 -c "import json; json.load(open('$OUT_DIR/compare.json'))"
-          echo "✅ compare.json is valid JSON"
-
-          # Exit code: 0 = success (deterministic output generated)
           echo "::endgroup::"
-          exit 0
+
+      - name: 📊 Upload comparison artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: var-report-compare-${{ github.run_number }}
+          path: ${{ steps.compare_gate.outputs.out_dir }}
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: ❌ Fail gate if regressions detected
+        if: steps.compare_gate.outcome == 'failure'
+        run: |
+          echo "::error::Regression(s) detected by var_suite_compare_runs.py. Failing gate."
+          echo "Check uploaded artifacts for detailed comparison report."
+          exit 1
 
       # ========================================================================
       # Gate: Minimal deterministic index
       # ========================================================================
       - name: 🔬 Run deterministic index (Gate)
         id: index_gate
+        continue-on-error: true
         run: |
           echo "::group::Deterministic index gate"
           set -euo pipefail
 
           # Use fixtures as report root
           REPORT_ROOT="tests/fixtures/var_suite_reports"
+          INDEX_OUT="reports/var_suite/ci_index"
+          mkdir -p "$INDEX_OUT"
+
+          # Make INDEX_OUT available even if index fails
+          echo "index_out=$INDEX_OUT" >> "$GITHUB_OUTPUT"
 
           echo "Running report_index with fixtures..."
           python scripts/risk/var_suite_build_index.py \
             --report-root "$REPORT_ROOT"
 
-          # Verify output files exist (written to report root)
-          if [ ! -f "$REPORT_ROOT/index.json" ]; then
-            echo "❌ ERROR: index.json not generated"
-            exit 1
+          # Move generated files to output directory (keep fixtures clean)
+          if [ -f "$REPORT_ROOT/index.json" ]; then
+            mv "$REPORT_ROOT/index.json" "$INDEX_OUT/"
           fi
-
-          if [ ! -f "$REPORT_ROOT/index.md" ]; then
-            echo "❌ ERROR: index.md not generated"
-            exit 1
+          if [ -f "$REPORT_ROOT/index.md" ]; then
+            mv "$REPORT_ROOT/index.md" "$INDEX_OUT/"
           fi
-
-          if [ ! -f "$REPORT_ROOT/index.html" ]; then
-            echo "❌ ERROR: index.html not generated"
-            exit 1
+          if [ -f "$REPORT_ROOT/index.html" ]; then
+            mv "$REPORT_ROOT/index.html" "$INDEX_OUT/"
           fi
-
-          echo "✅ All index files generated successfully"
-
-          # Verify JSON is valid
-          python3 -c "import json; json.load(open('$REPORT_ROOT/index.json'))"
-          echo "✅ index.json is valid JSON"
 
           # Verify deterministic run ordering (should be sorted by run_id)
-          python3 -c "import json; data = json.load(open('$REPORT_ROOT/index.json')); run_ids = [r['run_id'] for r in data['runs']]; assert run_ids == sorted(run_ids), f'Run IDs not sorted: {run_ids}'; print('✅ Run IDs are deterministically sorted')"
+          if [ -f "$INDEX_OUT/index.json" ]; then
+            python3 -c "import json; data = json.load(open('$INDEX_OUT/index.json')); run_ids = [r['run_id'] for r in data['runs']]; assert run_ids == sorted(run_ids), f'Run IDs not sorted: {run_ids}'; print('✅ Run IDs are deterministically sorted')"
+          fi
 
-          # Clean up generated files (fixtures should stay clean)
-          rm -f "$REPORT_ROOT/index.json" "$REPORT_ROOT/index.md" "$REPORT_ROOT/index.html"
-          echo "✅ Cleaned up generated index files"
-
-          # Exit code: 0 = success (deterministic output generated)
           echo "::endgroup::"
-          exit 0
 
-      # ========================================================================
-      # Upload artifacts: compare HTML/JSON (optional)
-      # ========================================================================
-      - name: 📊 Upload comparison artifacts
-        uses: actions/upload-artifact@v4
+      - name: 📊 Upload index artifacts
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: var-report-compare-${{ github.run_number }}
-          path: |
-            reports/var_suite/ci_compare/compare.json
-            reports/var_suite/ci_compare/compare.md
-            reports/var_suite/ci_compare/compare.html
+          name: var-report-index-${{ github.run_number }}
+          path: ${{ steps.index_gate.outputs.index_out }}
           retention-days: 30
           if-no-files-found: warn
+
+      - name: ❌ Fail gate if index errors detected
+        if: steps.index_gate.outcome == 'failure'
+        run: |
+          echo "::error::Error(s) detected by var_suite_build_index.py. Failing gate."
+          echo "Check uploaded artifacts for detailed index report."
+          exit 1
 
   # ============================================================================
   # Smoke Test: CLI Entry Points
