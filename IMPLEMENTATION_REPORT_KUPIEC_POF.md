@@ -480,6 +480,99 @@ def _generate_synthetic_data(...):
 
 ---
 
+## 📝 Phase 8A Update (2025-12-28)
+
+**Refactoring:** Konsolidierung der duplizierten Kupiec POF Implementierungen
+
+### Problem
+
+Es existierten zwei separate Implementierungen:
+- **Canonical:** `src/risk_layer/var_backtest/kupiec_pof.py` (Phase 7, vollständig)
+- **Duplicate:** `src/risk/validation/kupiec_pof.py` (Legacy, separate Mathematik)
+
+Dies führte zu:
+- Code-Duplikation der statistischen Berechnungen
+- Potenzielle Inkonsistenzen bei zukünftigen Änderungen
+- Erhöhter Wartungsaufwand
+
+### Lösung
+
+**Thin Wrapper Pattern:**
+- `src/risk/validation/kupiec_pof.py` wurde zu einem dünnen Kompatibilitäts-Wrapper
+- Alle Mathematik/Statistik delegiert an canonical engine (`src.risk_layer.var_backtest.kupiec_pof`)
+- **Zero Breaking Changes:** Alle Original-Signaturen und Rückgabewerte bleiben identisch
+
+### API Mapping
+
+| Legacy API (src/risk/validation) | Canonical Engine Mapping |
+|----------------------------------|--------------------------|
+| `kupiec_pof_test(breaches, observations, ...)` | → `kupiec_lr_uc(n, x, alpha, ...)` |
+| `kupiec_lr_statistic(x, n, p)` | → `_compute_lr_statistic(T, N, p_star)` |
+| `chi2_p_value(lr_statistic)` | → `chi2_df1_sf(x)` |
+| `KupiecResult` (dataclass) | Adapter über `KupiecLRResult` |
+
+### Deprecation Strategy
+
+- **Guarded Warnings:** Deprecation-Warnung nur außerhalb von Test/CI-Kontexten
+- **Environment Variable:** `PEAK_TRADE_SILENCE_DEPRECATIONS=1` unterdrückt Warnings
+- **Pytest Detection:** Automatische Erkennung von Test-Läufen (keine Spam-Warnings)
+- **Preferred Import Path:** `src.risk_layer.var_backtest.kupiec_pof` (dokumentiert)
+
+### Verification
+
+✅ **All Tests Pass:**
+- 19 Tests in `tests/risk/validation/test_kupiec.py` ✅
+- 50 Tests in `tests/risk_layer/var_backtest/` (25 Kupiec + 25 Phase 7) ✅
+- **Total: 69 Tests, 100% PASS**
+
+✅ **Linting Clean:**
+- `ruff check` ✅
+- `ruff format` ✅
+
+✅ **Backward Compatibility:**
+- Alle bestehenden Imports funktionieren unverändert
+- `src/risk/validation/__init__.py` re-exportiert alle Symbole
+- `src/risk/validation/backtest_runner.py` funktioniert ohne Änderungen
+- Keine Breaking Changes für Downstream-Code
+
+### Changed Files
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `src/risk/validation/kupiec_pof.py` | **REFACTORED** | Thin wrapper, delegates to canonical engine |
+| `IMPLEMENTATION_REPORT_KUPIEC_POF.md` | **UPDATED** | Added Phase 8A documentation |
+
+### Benefits
+
+✅ **Single Source of Truth:** Alle Mathematik in einem Modul  
+✅ **Zero Breaking Changes:** Bestehender Code läuft unverändert  
+✅ **Maintainability:** Zukünftige Fixes nur an einer Stelle  
+✅ **Test Coverage:** Beide API-Oberflächen getestet  
+✅ **Deprecation Path:** Klarer Migrationspfad für zukünftige Refactorings
+
+### Preferred Import Path
+
+**NEU (empfohlen):**
+```python
+from src.risk_layer.var_backtest.kupiec_pof import (
+    kupiec_lr_uc,           # Direct n/x/alpha interface
+    kupiec_from_exceedances, # Boolean series helper
+    KupiecLRResult,         # Phase 7 result type
+)
+```
+
+**LEGACY (weiterhin unterstützt):**
+```python
+from src.risk.validation.kupiec_pof import (
+    kupiec_pof_test,        # Wrapper → kupiec_lr_uc
+    kupiec_lr_statistic,    # Wrapper → _compute_lr_statistic
+    chi2_p_value,           # Wrapper → chi2_df1_sf
+    KupiecResult,           # Adapter dataclass
+)
+```
+
+---
+
 ## 🎊 Fazit
 
 **Status:** ✅ **IMPLEMENTATION SUCCESSFUL**

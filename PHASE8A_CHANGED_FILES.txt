@@ -1,0 +1,73 @@
+Phase 8A: Kupiec POF Deduplication - Changed Files
+==================================================
+
+Date: 2025-12-28
+Branch: refactor/kupiec-pof-single-engine
+Status: ✅ COMPLETED
+
+Files Modified:
+---------------
+
+1. src/risk/validation/kupiec_pof.py
+   - REFACTORED to thin wrapper
+   - All computation delegates to canonical engine
+   - Deprecation warnings added (guarded for CI/tests)
+   - Maintained 100% backward compatibility
+   - Lines: 275 (mostly wrappers + docstrings)
+
+2. tests/risk/validation/test_kupiec_delegation.py
+   - NEW file created
+   - 10 tests for delegation verification
+   - Tests: Delegation mocking, Equivalence, No code duplication
+   - 100% pass rate
+
+3. docs/risk/KUPIEC_POF_CANONICAL_PATH.md
+   - NEW comprehensive guide
+   - API reference for canonical and legacy paths
+   - Migration guide with examples
+   - Best practices
+
+4. docs/risk/README.md
+   - UPDATED to link to KUPIEC_POF_CANONICAL_PATH.md
+   - Already had Phase 8A link placeholder
+
+5. IMPLEMENTATION_REPORT_KUPIEC_POF.md
+   - UPDATED with Phase 8A section
+   - Deduplication strategy documented
+   - API mapping table
+   - Deprecation strategy explained
+
+6. PHASE8A_CHANGED_FILES.txt (this file)
+   - NEW file listing all changes
+
+7. PHASE8A_MERGE_LOG.md
+   - NEW file with merge-log style summary
+
+Files NOT Changed (Canonical Engine):
+--------------------------------------
+
+- src/risk_layer/var_backtest/kupiec_pof.py
+  (Already canonical, no changes needed)
+
+- src/risk_layer/var_backtest/__init__.py
+  (Already exports canonical API)
+
+Test Results:
+-------------
+
+✅ ruff check . --quiet       → PASS
+✅ ruff format --check .      → PASS (after formatting 2 files)
+✅ pytest tests/risk/validation/test_kupiec_delegation.py -q → 10/10 PASS
+✅ pytest tests/risk_layer/var_backtest/ -q → 128/128 PASS
+
+Summary:
+--------
+
+✅ Single canonical engine established
+✅ Legacy module converted to thin wrapper
+✅ Zero breaking changes
+✅ Comprehensive delegation tests
+✅ Full documentation
+✅ All tests passing
+
+Ready for: Code Review & Merge

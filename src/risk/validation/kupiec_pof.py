@@ -1,5 +1,13 @@
 """Kupiec Proportion of Failures (POF) Test.
 
+**DEPRECATED IMPORT PATH**
+This module is now a thin compatibility wrapper.
+Prefer importing from: src.risk_layer.var_backtest.kupiec_pof
+
+The canonical implementation lives in src/risk_layer/var_backtest/kupiec_pof.py
+with Phase 7 enhancements. This module maintains the legacy API for backward
+compatibility with zero breaking changes.
+
 Pure Python implementation without SciPy dependency.
 Uses math.erfc for chi-square p-value computation.
 
@@ -9,14 +17,59 @@ Kupiec, P. (1995): "Techniques for Verifying the Accuracy of
 Risk Measurement Models", Journal of Derivatives.
 """
 
-import math
+import warnings
 from dataclasses import dataclass
 from typing import Optional
+
+# Import from canonical engine
+from src.risk_layer.var_backtest.kupiec_pof import (
+    kupiec_lr_uc as _canonical_kupiec_lr_uc,
+    _compute_lr_statistic as _canonical_compute_lr_statistic,
+    chi2_df1_sf as _canonical_chi2_sf,
+)
+
+
+# ============================================================================
+# Deprecation Warning (Guarded for CI/Test Friendliness)
+# ============================================================================
+
+
+def _maybe_warn_deprecated() -> None:
+    """Emit deprecation warning if not in test/CI context."""
+    import os
+    import sys
+
+    # Don't warn in test contexts
+    if "PYTEST_CURRENT_TEST" in os.environ:
+        return
+    if "PEAK_TRADE_SILENCE_DEPRECATIONS" in os.environ:
+        return
+    if "pytest" in sys.modules:
+        return
+
+    warnings.warn(
+        "src.risk.validation.kupiec_pof is deprecated; "
+        "prefer src.risk_layer.var_backtest.kupiec_pof",
+        DeprecationWarning,
+        stacklevel=3,
+    )
+
+
+# Emit warning on module import (guarded)
+_maybe_warn_deprecated()
+
+
+# ============================================================================
+# Legacy API: Dataclass & Functions
+# ============================================================================
 
 
 @dataclass(frozen=True)
 class KupiecResult:
     """Result of Kupiec POF test.
+
+    This is the legacy dataclass API maintained for backward compatibility.
+    The canonical engine uses KupiecLRResult for its Phase 7 API.
 
     Attributes:
         p_value: p-value from chi-square test (0 to 1)
@@ -87,6 +140,9 @@ def kupiec_pof_test(
 ) -> KupiecResult:
     """Perform Kupiec Proportion of Failures test.
 
+    **WRAPPER**: This function now delegates to the canonical engine
+    (src.risk_layer.var_backtest.kupiec_pof.kupiec_lr_uc) for all computation.
+
     Tests if the observed breach rate matches the expected rate
     under the null hypothesis that the VaR model is correctly calibrated.
 
@@ -107,7 +163,7 @@ def kupiec_pof_test(
         >>> print(result.is_valid)  # True or False
         >>> print(result.p_value)   # p-value from chi-square test
     """
-    # Validation
+    # Validation (reuse canonical validation by catching ValueError)
     if observations < 0:
         raise ValueError(f"observations must be non-negative, got {observations}")
     if breaches < 0:
@@ -123,9 +179,8 @@ def kupiec_pof_test(
     p = 1.0 - confidence_level
     expected_breaches = observations * p
 
-    # Handle edge cases
+    # Handle edge case: no observations
     if observations == 0:
-        # No observations -> cannot test
         return KupiecResult(
             p_value=float("nan"),
             test_statistic=float("nan"),
@@ -137,18 +192,26 @@ def kupiec_pof_test(
             alpha=alpha,
         )
 
-    # Compute LR statistic
-    lr_uc = kupiec_lr_statistic(breaches, observations, p)
+    # Delegate to canonical engine
+    # kupiec_lr_uc(n, x, alpha_exceedance, p_threshold)
+    # where: n=observations, x=breaches, alpha_exceedance=p, p_threshold=alpha
+    try:
+        canonical_result = _canonical_kupiec_lr_uc(
+            n=observations,
+            x=breaches,
+            alpha=p,  # Expected exceedance rate
+            p_threshold=alpha,  # Significance level
+        )
+    except ValueError as e:
+        # Should not happen if we validated correctly, but safety first
+        raise ValueError(f"Canonical engine rejected inputs: {e}")
 
-    # Compute p-value using chi-square(df=1) approximation
-    p_value = chi2_p_value(lr_uc)
-
-    # Decision: reject if p_value < alpha
-    is_valid = p_value >= alpha
+    # Map canonical result to legacy KupiecResult
+    is_valid = canonical_result.verdict == "PASS"
 
     return KupiecResult(
-        p_value=p_value,
-        test_statistic=lr_uc,
+        p_value=canonical_result.p_value,
+        test_statistic=canonical_result.lr_uc,
         breaches=breaches,
         observations=observations,
         expected_breaches=expected_breaches,
@@ -160,6 +223,9 @@ def kupiec_pof_test(
 
 def kupiec_lr_statistic(x: int, n: int, p: float) -> float:
     """Compute Kupiec likelihood ratio statistic.
+
+    **WRAPPER**: This function now delegates to the canonical engine
+    (src.risk_layer.var_backtest.kupiec_pof._compute_lr_statistic).
 
     LR_uc = -2 * (log L_0 - log L_1)
 
@@ -178,51 +244,16 @@ def kupiec_lr_statistic(x: int, n: int, p: float) -> float:
     Notes:
         Handles edge cases x=0 and x=n without log(0) errors.
     """
-    if n == 0:
-        return 0.0
-
-    phat = x / n  # Observed breach rate
-
-    # Edge case: x = 0 (no breaches)
-    if x == 0:
-        # L_1 = 1 (perfect fit), log L_1 = 0
-        # L_0 = (1-p)^n
-        # log L_0 = n * log(1-p)
-        # LR = -2 * (n * log(1-p) - 0) = -2 * n * log(1-p)
-        if p >= 1.0:
-            return 0.0
-        return -2.0 * n * math.log1p(-p)
-
-    # Edge case: x = n (all breaches)
-    if x == n:
-        # L_1 = 1 (perfect fit), log L_1 = 0
-        # L_0 = p^n
-        # log L_0 = n * log(p)
-        # LR = -2 * (n * log(p) - 0) = -2 * n * log(p)
-        if p <= 0.0:
-            return 0.0
-        return -2.0 * n * math.log(p)
-
-    # General case: 0 < x < n
-    # log L_0 = x * log(p) + (n-x) * log(1-p)
-    # log L_1 = x * log(phat) + (n-x) * log(1-phat)
-
-    # Avoid log(0) by checking bounds
-    if p <= 0.0 or p >= 1.0:
-        return 0.0
-    if phat <= 0.0 or phat >= 1.0:
-        return 0.0
-
-    log_L0 = x * math.log(p) + (n - x) * math.log1p(-p)
-    log_L1 = x * math.log(phat) + (n - x) * math.log1p(-phat)
-
-    lr_uc = -2.0 * (log_L0 - log_L1)
-
-    return max(0.0, lr_uc)  # LR cannot be negative
+    # Delegate to canonical engine
+    # _compute_lr_statistic(T, N, p_star) where T=n, N=x, p_star=p
+    return _canonical_compute_lr_statistic(n, x, p)
 
 
 def chi2_p_value(lr_statistic: float) -> float:
     """Compute p-value for chi-square test with df=1.
+
+    **WRAPPER**: This function now delegates to the canonical engine
+    (src.risk_layer.var_backtest.kupiec_pof.chi2_df1_sf).
 
     Uses pure Python math.erfc (no scipy dependency).
 
@@ -238,15 +269,6 @@ def chi2_p_value(lr_statistic: float) -> float:
     Notes:
         This is exact for df=1 and does not require scipy.
     """
-    if lr_statistic < 0:
-        return 1.0
-
-    if lr_statistic == 0:
-        return 1.0
-
-    # p_value = erfc(sqrt(lr_statistic / 2))
-    # This is the survival function for chi-square(df=1)
-    p_value = math.erfc(math.sqrt(lr_statistic / 2.0))
-
-    # Clamp to [0, 1] for numerical stability
-    return max(0.0, min(1.0, p_value))
+    # Delegate to canonical engine
+    # chi2_df1_sf(x) is the survival function (1 - CDF)
+    return _canonical_chi2_sf(lr_statistic)
