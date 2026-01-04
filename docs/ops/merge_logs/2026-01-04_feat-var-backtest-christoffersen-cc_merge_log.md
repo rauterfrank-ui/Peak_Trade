@@ -37,18 +37,21 @@ Ohne diese Tests könnte ein VaR-Modell "auf dem Papier" korrekt sein (richtige 
 
 ## Changes
 
-### New Files
+### Note
+This merge log documents PR #422 implementation. PR #543 (this PR) only adds documentation links and this merge log itself.
 
-- `src/risk/validation/christoffersen.py` – Independence + Conditional Coverage Tests
-- `docs/risk/CHRISTOFFERSEN_TESTS_GUIDE.md` – Operator-Guide (Theorie, API, CLI, Best Practices)
-- `tests/risk/validation/test_christoffersen.py` – 47 Tests für Christoffersen-Logik
+### New Files (from PR #422)
 
-### Modified Files
+- Independence + Conditional Coverage Tests (implementation)
+- Operator-Guide with Theory, API, CLI, Best Practices
+- 47 Tests für Christoffersen-Logik
 
-- `src/risk/validation/__init__.py` – Exports für Christoffersen-Funktionen
-- `scripts/risk/run_var_backtest.py` – CLI Flag `--tests` mit uc|ind|cc|all
-- `docs/risk/README.md` – Changelog + Quick Links
-- `docs/risk/RISK_LAYER_ROADMAP.md` – Phase R2 Status Update
+### Modified Files (from PR #422)
+
+- Exports für Christoffersen-Funktionen
+- CLI Flag `--tests` mit uc|ind|cc|all
+- Changelog + Quick Links  
+- Phase R2 Status Update
 
 ---
 
