@@ -1,8 +1,10 @@
-"""VaR Validation & Backtesting Module (Phase 2).
+"""VaR Validation & Backtesting Module (Phase 2 + 8A/8B/8C).
 
 This module provides VaR model validation tools including:
-- Kupiec POF Test (with pure Python chi-square, no scipy)
-- Basel Traffic Light System
+- Kupiec POF Test (Phase 8A: with pure Python chi-square, no scipy)
+- Basel Traffic Light System (Phase 8A)
+- Christoffersen Independence + Conditional Coverage Tests (Phase 8B)
+- Suite Runner & Report Formatter (Phase 8C)
 - Backtest Runner
 - Breach Analysis
 
@@ -10,6 +12,7 @@ API Design:
 -----------
 All functions are deterministic and handle edge cases robustly.
 No SciPy dependency - uses math.erfc for chi-square p-values.
+Stdlib-only implementation.
 
 Sign Convention:
 ---------------
@@ -18,16 +21,18 @@ Breach occurs when realized_loss = -return > var_value.
 
 Example:
 --------
->>> from src.risk.validation import kupiec_pof_test, run_var_backtest
+>>> from src.risk.validation import kupiec_pof_test, run_var_backtest_suite
 >>>
->>> # Kupiec test
+>>> # Kupiec test (Phase 8A)
 >>> result = kupiec_pof_test(breaches=5, observations=250, confidence_level=0.99)
 >>> print(result.is_valid)  # True or False
 >>>
->>> # Full backtest
->>> backtest_result = run_var_backtest(returns, var_series, confidence_level=0.99)
->>> print(backtest_result.kupiec.is_valid)
->>> print(backtest_result.traffic_light.color)
+>>> # Full suite (Phase 8C)
+>>> import pandas as pd
+>>> returns = pd.Series([...])
+>>> var_series = pd.Series([...])
+>>> suite_result = run_var_backtest_suite(returns, var_series, confidence_level=0.99)
+>>> print(suite_result.overall_result)  # PASS or FAIL
 """
 
 from src.risk.validation.kupiec_pof import (
@@ -55,13 +60,30 @@ from src.risk.validation.breach_analysis import (
     compute_breach_statistics,
 )
 
+from src.risk.validation.christoffersen import (
+    ChristoffersenIndependenceResult,
+    ChristoffersenConditionalCoverageResult,
+    independence_test,
+    conditional_coverage_test,
+)
+
+from src.risk.validation.suite_runner import (
+    VaRBacktestSuiteResult,
+    run_var_backtest_suite,
+)
+
+from src.risk.validation.report_formatter import (
+    format_suite_result_json,
+    format_suite_result_markdown,
+)
+
 __all__ = [
-    # Kupiec POF
+    # Kupiec POF (Phase 8A)
     "KupiecResult",
     "kupiec_pof_test",
     "kupiec_lr_statistic",
     "chi2_p_value",
-    # Traffic Light
+    # Traffic Light (Phase 8A)
     "TrafficLightResult",
     "basel_traffic_light",
     "get_traffic_light_thresholds",
@@ -73,4 +95,14 @@ __all__ = [
     "BreachAnalysis",
     "analyze_breaches",
     "compute_breach_statistics",
+    # Christoffersen Tests (Phase 8B)
+    "ChristoffersenIndependenceResult",
+    "ChristoffersenConditionalCoverageResult",
+    "independence_test",
+    "conditional_coverage_test",
+    # Suite Runner + Report Formatter (Phase 8C)
+    "VaRBacktestSuiteResult",
+    "run_var_backtest_suite",
+    "format_suite_result_json",
+    "format_suite_result_markdown",
 ]
