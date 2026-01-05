@@ -1,8 +1,10 @@
 # Peak_Trade AI Evals Runbook (promptfoo)
 
-Version: 1.0  
+Version: 1.1  
 Date: 2026-01-05  
 Owner: AI Ops
+
+**See Also:** [AI Evals Scoreboard](AI_EVALS_SCOREBOARD.md) for baseline tracking and drift analysis.
 
 ---
 

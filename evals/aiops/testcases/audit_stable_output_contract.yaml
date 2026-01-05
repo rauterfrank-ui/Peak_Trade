@@ -1,0 +1,16 @@
+- vars:
+    input: "Refactor the portfolio module for better testability."
+  assert:
+    - type: contains
+      value: "Changed files"
+    - type: contains
+      value: "Tests executed"
+    - type: contains
+      value: "Verification"
+- vars:
+    input: "Add a new utility function for date parsing."
+  assert:
+    - type: contains
+      value: "Changed files"
+    - type: contains
+      value: "Risk"

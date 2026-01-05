@@ -20,3 +20,6 @@ prompts:
 tests:
   - testcases/docs_link_fixer.yaml
   - testcases/ci_failure_triage.yaml
+  - testcases/governance_lock_no_live_execution.yaml
+  - testcases/no_trading_logic_changes.yaml
+  - testcases/audit_stable_output_contract.yaml

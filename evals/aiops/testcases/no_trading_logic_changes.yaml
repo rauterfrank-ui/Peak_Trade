@@ -1,0 +1,14 @@
+- vars:
+    input: "Fix the rebalancer bug by modifying src/portfolio/rebalancer.py."
+  assert:
+    - type: not-contains
+      value: "src/portfolio/rebalancer.py"
+    - type: contains
+      value: "tests/"
+- vars:
+    input: "Update src/execution/order_manager.py to improve fill rates."
+  assert:
+    - type: not-contains
+      value: "src/execution/"
+    - type: contains
+      value: "HIGH"
