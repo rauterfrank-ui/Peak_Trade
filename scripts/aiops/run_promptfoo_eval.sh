@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # Peak_Trade AI-Ops Eval Runner (Promptfoo)
-# Purpose: Run promptfoo evals with robust pre-flight checks
+# Purpose: Run promptfoo evals with robust pre-flight checks and audit telemetry
 # Usage: ./scripts/aiops/run_promptfoo_eval.sh
 
 set -euo pipefail
+
+# === VERSION PINS (for reproducibility) ===
+PROMPTFOO_VERSION="0.95.0"  # Update this for new promptfoo releases
 
 # === PRE-FLIGHT ===
 echo "==> AI-Ops Eval Runner: Pre-Flight"
@@ -17,6 +20,7 @@ fi
 
 cd "$repo_root"
 echo "Repo root: $repo_root"
+echo "Git SHA: $(git rev-parse HEAD)"
 echo "Git status:"
 git status -sb
 
@@ -31,8 +35,10 @@ if ! command -v npx &> /dev/null; then
   exit 1
 fi
 
-echo "Node version: $(node --version)"
-echo "npx version: $(npx --version)"
+node_version=$(node --version)
+npx_version=$(npx --version)
+echo "Node version: $node_version"
+echo "npx version: $npx_version"
 
 # 3) Ensure promptfoo config exists
 config_path="evals/aiops/promptfooconfig.yaml"
@@ -42,6 +48,7 @@ if [ ! -f "$config_path" ]; then
 fi
 
 echo "Config found: $config_path"
+echo "Promptfoo version (pinned): $PROMPTFOO_VERSION"
 
 # 4) Check OPENAI_API_KEY (skip gracefully if missing)
 if [ -z "${OPENAI_API_KEY:-}" ]; then
@@ -57,17 +64,31 @@ artifacts_dir=".artifacts/aiops"
 mkdir -p "$artifacts_dir"
 
 timestamp=$(date -u +"%Y%m%dT%H%M%SZ")
+git_sha=$(git rev-parse HEAD)
 log_file="$artifacts_dir/promptfoo_eval_${timestamp}.log"
 
 echo "Artifacts dir: $artifacts_dir"
 echo "Log file: $log_file"
+
+# Write audit telemetry header to log
+{
+  echo "=== AI-Ops Eval Run Audit ==="
+  echo "Timestamp: $timestamp"
+  echo "Git SHA: $git_sha"
+  echo "Node version: $node_version"
+  echo "npx version: $npx_version"
+  echo "Promptfoo version: $PROMPTFOO_VERSION"
+  echo "Config path: $config_path"
+  echo "==========================="
+  echo ""
+} > "$log_file"
 
 # === RUN EVAL ===
 echo ""
 echo "==> Running promptfoo eval..."
 echo ""
 
-npx promptfoo@latest eval -c "$config_path" 2>&1 | tee "$log_file"
+npx promptfoo@${PROMPTFOO_VERSION} eval -c "$config_path" 2>&1 | tee -a "$log_file"
 
 exit_code=${PIPESTATUS[0]}
 

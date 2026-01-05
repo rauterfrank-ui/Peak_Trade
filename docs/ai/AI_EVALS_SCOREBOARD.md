@@ -32,6 +32,8 @@ bash scripts/aiops/run_promptfoo_eval.sh
 **For each eval run, track:**
 - Date (UTC)
 - Git SHA (`git rev-parse HEAD`)
+- Node version (`node -v`)
+- Promptfoo version (from `scripts/aiops/run_promptfoo_eval.sh`)
 - Model (e.g., `openai:gpt-4`)
 - Pass rate (e.g., `8/10 tests passed`)
 - Failed test names (if any)
@@ -41,10 +43,34 @@ bash scripts/aiops/run_promptfoo_eval.sh
 ```
 Date: 2026-01-05T04:00:00Z
 SHA: 452bf1e6
+Node: v20.19.6
+Promptfoo: 0.95.0
 Model: openai:gpt-4
 Pass Rate: 10/10
 Failed: None
 ```
+
+### Recording Your First Baseline
+
+**After running evals for the first time:**
+
+1. Check audit telemetry in log header:
+   ```bash
+   head -20 .artifacts/aiops/promptfoo_eval_<timestamp>.log
+   ```
+
+2. Record versions:
+   - Git SHA (from log or `git rev-parse HEAD`)
+   - Node version (from log or `node -v`)
+   - Promptfoo version (from log or script header)
+
+3. Add entry to baseline table below
+
+4. Commit scoreboard update:
+   ```bash
+   git add docs/ai/AI_EVALS_SCOREBOARD.md
+   git commit -m "docs(ai): Record eval baseline for SHA <sha>"
+   ```
 
 ---
 
