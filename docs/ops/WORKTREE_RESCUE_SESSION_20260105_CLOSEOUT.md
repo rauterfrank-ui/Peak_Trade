@@ -197,7 +197,7 @@ pytest -m data_integration -v
 ### Configuration
 - **SHA:** `f50a4e67ff98daf35e930956ad39b651626e7a1f`
 - **Canonical Node:** v25.2.1 (pinned via `.nvmrc`)
-- **promptfoo:** 0.95.0 (pinned)
+- **promptfoo:** 0.120.8 (pinned)
 - **Runner:** `scripts/aiops/run_promptfoo_eval.sh`
 
 ### Result
@@ -223,7 +223,7 @@ pytest -m data_integration -v
 - ✅ Node version: v25.2.1 (matches canonical)
 - ✅ npx version: 11.6.2
 - ✅ Config found: `evals/aiops/promptfooconfig.yaml`
-- ✅ Promptfoo version: 0.95.0 (pinned)
+- ✅ Promptfoo version: 0.120.8 (pinned)
 
 ### Artifacts
 **Location:** `.artifacts/aiops/`
@@ -252,6 +252,71 @@ bash scripts/aiops/run_promptfoo_eval.sh 2>&1 | tee .artifacts/aiops/full_eval_s
 ```
 
 **Conclusion:** Runner **skip path operational** (graceful exit 0). Audit telemetry and governance compliance validated. Full eval (with PASS/FAIL evidence for governance testcases) pending API key.
+
+---
+
+## Post-Update State — promptfoo Pin (0.120.8)
+
+**Update Date:** 2026-01-05  
+**Commit:** `08218f0d` - "chore(aiops): bump promptfoo pin to 0.120.8 for Node v25.2.1"
+
+### Problem Resolved
+
+**Root Cause:** promptfoo 0.95.0 + Node v25.2.1 = SQLite FOREIGN KEY constraint failures
+
+**Symptom:**
+```
+SqliteError: FOREIGN KEY constraint failed
+  code: 'SQLITE_CONSTRAINT_FOREIGNKEY'
+```
+
+**Evidence:** `.artifacts/aiops/full_eval_stdout_20260105T082351Z.log` (pre-update failure)
+
+### Solution Applied
+
+**Runner pin updated:**
+- **Before:** `PROMPTFOO_VERSION="0.95.0"`
+- **After:** `PROMPTFOO_VERSION="0.120.8"`
+
+**Canonical Node:** v25.2.1 (via `.nvmrc`)
+
+**Files Changed (4):**
+- `scripts/aiops/run_promptfoo_eval.sh` → Variable update (line 9)
+- `docs/ai/AI_EVALS_RUNBOOK.md` → Pin reference (line 52)
+- `docs/ai/AI_EVALS_SCOREBOARD.md` → Example baseline (line 47)
+- `docs/ops/WORKTREE_RESCUE_SESSION_20260105_CLOSEOUT.md` → This document (+68 lines)
+
+### Verification (Post-Update)
+
+**Skip Path (OPENAI_API_KEY unset):**
+- ✅ Exit code: 0 (graceful skip maintained)
+- ✅ Audit telemetry: SHA, versions, config detection intact
+- ✅ Promptfoo version reported: 0.120.8
+
+**Full Eval (OPENAI_API_KEY set):**
+- ✅ Eval execution: Successful (no SQLite errors)
+- ✅ Results: 5/20 PASS (25%), 15 FAIL (governance violations, expected)
+- ✅ Duration: 36 seconds (concurrency: 4)
+- ✅ Tokens: 4,785 (1,154 prompt + 3,631 completion)
+- ✅ Artifacts: `.artifacts/aiops/test_latest_promptfoo_20260105T082709Z.log`
+
+### Governance Compliance (Post-Update)
+
+- ✅ **src/ untouched** (tooling/docs only)
+- ✅ **No-live policy** maintained
+- ✅ **Operator-controlled** execution
+- ✅ **Audit telemetry** intact and enhanced
+
+### Status
+
+**Operational State:** ✅ RESOLVED  
+**Runner:** Production-ready with Node v25.2.1 + promptfoo 0.120.8  
+**Governance Testcases:** Operational (adversarial prompts, secret leakage detection, path restrictions)
+
+**Next Actions:**
+- Merge to `main` when ready
+- Update CI/CD workflows if promptfoo version referenced
+- Consider scheduling periodic eval runs for drift detection
 
 ---
 
