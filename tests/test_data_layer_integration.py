@@ -18,6 +18,7 @@ Policy:
 - Deterministisch (feste Seeds, keine Time-Dependencies)
 - Schnell (<1s pro Test)
 """
+
 from __future__ import annotations
 
 import os
@@ -39,6 +40,7 @@ from src.data import (
 # ============================================================================
 # FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def test_ohlcv_data():
@@ -98,6 +100,7 @@ def raw_kraken_csv(tmp_path, test_ohlcv_data):
 # ============================================================================
 # TEST 1: PIPELINE FETCH-CACHE-NORMALIZE DETERMINISTIC
 # ============================================================================
+
 
 @pytest.mark.data_integration
 class TestPipelineFetchCacheNormalize:
@@ -167,14 +170,16 @@ class TestPipelineFetchCacheNormalize:
         n_bars = 100
         idx = pd.date_range("2025-01-01", periods=n_bars, freq="1h", tz="UTC")
 
-        df_custom = pd.DataFrame({
-            "timestamp": idx,
-            "Open": np.random.uniform(90000, 100000, n_bars),
-            "High": np.random.uniform(95000, 105000, n_bars),
-            "Low": np.random.uniform(85000, 95000, n_bars),
-            "Close": np.random.uniform(90000, 100000, n_bars),
-            "Vol": np.random.uniform(100, 1000, n_bars),
-        })
+        df_custom = pd.DataFrame(
+            {
+                "timestamp": idx,
+                "Open": np.random.uniform(90000, 100000, n_bars),
+                "High": np.random.uniform(95000, 105000, n_bars),
+                "Low": np.random.uniform(85000, 95000, n_bars),
+                "Close": np.random.uniform(90000, 100000, n_bars),
+                "Vol": np.random.uniform(100, 1000, n_bars),
+            }
+        )
         df_custom.to_csv(csv_path, index=False)
 
         # STEP 2: Load mit CsvLoader
@@ -231,6 +236,7 @@ class TestPipelineFetchCacheNormalize:
 # TEST 2: RESAMPLE INTEGRATION
 # ============================================================================
 
+
 @pytest.mark.data_integration
 class TestResampleIntegration:
     """Integration-Tests für Resample-Funktionalität."""
@@ -278,16 +284,17 @@ class TestResampleIntegration:
             row = df_4h.iloc[idx]
 
             # High sollte >= max(open, close) sein
-            assert row["high"] >= max(row["open"], row["close"]), \
+            assert row["high"] >= max(row["open"], row["close"]), (
                 f"High constraint verletzt bei {df_4h.index[idx]}"
+            )
 
             # Low sollte <= min(open, close) sein
-            assert row["low"] <= min(row["open"], row["close"]), \
+            assert row["low"] <= min(row["open"], row["close"]), (
                 f"Low constraint verletzt bei {df_4h.index[idx]}"
+            )
 
             # Volume sollte positiv sein
-            assert row["volume"] > 0, \
-                f"Volume sollte positiv sein bei {df_4h.index[idx]}"
+            assert row["volume"] > 0, f"Volume sollte positiv sein bei {df_4h.index[idx]}"
 
         # Verify Aggregation: Gesamtvolumen sollte erhalten bleiben
         assert df_4h["volume"].sum() == pytest.approx(df_1h["volume"].sum())
@@ -296,6 +303,7 @@ class TestResampleIntegration:
 # ============================================================================
 # TEST 3: CACHE ISOLATION
 # ============================================================================
+
 
 @pytest.mark.data_integration
 class TestCacheIsolation:
@@ -374,6 +382,7 @@ class TestCacheIsolation:
 # ============================================================================
 # TEST 4: PIPELINE TO BACKTEST SMOKE (Optional)
 # ============================================================================
+
 
 @pytest.mark.data_integration
 class TestPipelineToBacktestSmoke:

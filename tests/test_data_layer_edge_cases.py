@@ -17,6 +17,7 @@ Usage:
     pytest tests/test_data_layer_edge_cases.py -v
     pytest -m data_edge -v
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -37,6 +38,7 @@ from src.data import (
 # ============================================================================
 # TEST 1: EMPTY DATAFRAME BEHAVIOR
 # ============================================================================
+
 
 @pytest.mark.data_edge
 class TestEmptyDataFrameBehavior:
@@ -102,6 +104,7 @@ class TestEmptyDataFrameBehavior:
 # TEST 2: NaN VALUE HANDLING
 # ============================================================================
 
+
 @pytest.mark.data_edge
 class TestNaNValueHandling:
     """Tests für NaN-Handling im Data-Layer."""
@@ -115,13 +118,16 @@ class TestNaNValueHandling:
         Rationale: Normalizer ist für Format-Standardisierung, nicht für Daten-Qualität.
         """
         idx = pd.date_range("2025-01-01", periods=5, freq="1h", tz="UTC")
-        df = pd.DataFrame({
-            "open": [100, 101, np.nan, 103, 104],
-            "high": [102, 103, 104, 105, 106],
-            "low": [99, 100, 101, np.nan, 103],
-            "close": [101, 102, 103, 104, np.nan],
-            "volume": [1000, 1100, 1200, 1300, 1400],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [100, 101, np.nan, 103, 104],
+                "high": [102, 103, 104, 105, 106],
+                "low": [99, 100, 101, np.nan, 103],
+                "close": [101, 102, 103, 104, np.nan],
+                "volume": [1000, 1100, 1200, 1300, 1400],
+            },
+            index=idx,
+        )
 
         result = DataNormalizer.normalize(df, ensure_utc=True)
 
@@ -140,13 +146,16 @@ class TestNaNValueHandling:
         Policy: Spalten mit nur NaN sind technisch valid (Downstream-Filter-Verantwortung).
         """
         idx = pd.date_range("2025-01-01", periods=3, freq="1h", tz="UTC")
-        df = pd.DataFrame({
-            "open": [np.nan, np.nan, np.nan],
-            "high": [102, 103, 104],
-            "low": [99, 100, 101],
-            "close": [101, 102, 103],
-            "volume": [1000, 1100, 1200],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [np.nan, np.nan, np.nan],
+                "high": [102, 103, 104],
+                "low": [99, 100, 101],
+                "close": [101, 102, 103],
+                "volume": [1000, 1100, 1200],
+            },
+            index=idx,
+        )
 
         result = DataNormalizer.normalize(df)
 
@@ -163,13 +172,16 @@ class TestNaNValueHandling:
         cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
 
         idx = pd.date_range("2025-01-01", periods=3, freq="1h", tz="UTC")
-        df = pd.DataFrame({
-            "open": [100, np.nan, 102],
-            "high": [102, 103, 104],
-            "low": [99, 100, 101],
-            "close": [101, 102, np.nan],
-            "volume": [1000, 1100, 1200],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [100, np.nan, 102],
+                "high": [102, 103, 104],
+                "low": [99, 100, 101],
+                "close": [101, 102, np.nan],
+                "volume": [1000, 1100, 1200],
+            },
+            index=idx,
+        )
 
         cache.save(df, "nan_test")
         loaded = cache.load("nan_test")
@@ -186,6 +198,7 @@ class TestNaNValueHandling:
 # TEST 3: TIMEZONE-NAIVE TIMESTAMPS POLICY
 # ============================================================================
 
+
 @pytest.mark.data_edge
 class TestTimezoneNaiveTimestampsPolicy:
     """Tests für Timezone-naive Timestamps."""
@@ -199,13 +212,16 @@ class TestTimezoneNaiveTimestampsPolicy:
         """
         # Timezone-naive Index
         idx = pd.date_range("2025-01-01", periods=3, freq="1h", tz=None)
-        df = pd.DataFrame({
-            "open": [100, 101, 102],
-            "high": [102, 103, 104],
-            "low": [99, 100, 101],
-            "close": [101, 102, 103],
-            "volume": [1000, 1100, 1200],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [100, 101, 102],
+                "high": [102, 103, 104],
+                "low": [99, 100, 101],
+                "close": [101, 102, 103],
+                "volume": [1000, 1100, 1200],
+            },
+            index=idx,
+        )
 
         assert df.index.tz is None  # Startet ohne Timezone
 
@@ -228,13 +244,16 @@ class TestTimezoneNaiveTimestampsPolicy:
         """
         # Index mit Europe/Berlin Timezone
         idx = pd.date_range("2025-01-01 12:00:00", periods=3, freq="1h", tz="Europe/Berlin")
-        df = pd.DataFrame({
-            "open": [100, 101, 102],
-            "high": [102, 103, 104],
-            "low": [99, 100, 101],
-            "close": [101, 102, 103],
-            "volume": [1000, 1100, 1200],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [100, 101, 102],
+                "high": [102, 103, 104],
+                "low": [99, 100, 101],
+                "close": [101, 102, 103],
+                "volume": [1000, 1100, 1200],
+            },
+            index=idx,
+        )
 
         result = DataNormalizer.normalize(df, ensure_utc=True)
 
@@ -252,13 +271,16 @@ class TestTimezoneNaiveTimestampsPolicy:
         Policy: ensure_utc=False erlaubt naive Timestamps (für spezielle Anwendungsfälle).
         """
         idx = pd.date_range("2025-01-01", periods=3, freq="1h", tz=None)
-        df = pd.DataFrame({
-            "open": [100, 101, 102],
-            "high": [102, 103, 104],
-            "low": [99, 100, 101],
-            "close": [101, 102, 103],
-            "volume": [1000, 1100, 1200],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [100, 101, 102],
+                "high": [102, 103, 104],
+                "low": [99, 100, 101],
+                "close": [101, 102, 103],
+                "volume": [1000, 1100, 1200],
+            },
+            index=idx,
+        )
 
         result = DataNormalizer.normalize(df, ensure_utc=False)
 
@@ -269,6 +291,7 @@ class TestTimezoneNaiveTimestampsPolicy:
 # ============================================================================
 # TEST 4: INVALID OHLC RELATIONS
 # ============================================================================
+
 
 @pytest.mark.data_edge
 class TestInvalidOHLCRelations:
@@ -284,13 +307,16 @@ class TestInvalidOHLCRelations:
         Dieser Test dokumentiert das aktuelle Verhalten (keine Validierung).
         """
         idx = pd.date_range("2025-01-01", periods=3, freq="1h", tz="UTC")
-        df = pd.DataFrame({
-            "open": [100, 101, 102],
-            "high": [102, 99, 104],   # Bar 2: high (99) < low (100) - INVALID!
-            "low": [99, 100, 101],
-            "close": [101, 102, 103],
-            "volume": [1000, 1100, 1200],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [100, 101, 102],
+                "high": [102, 99, 104],  # Bar 2: high (99) < low (100) - INVALID!
+                "low": [99, 100, 101],
+                "close": [101, 102, 103],
+                "volume": [1000, 1100, 1200],
+            },
+            index=idx,
+        )
 
         # Normalizer sollte KEINE Validierung durchführen
         result = DataNormalizer.normalize(df)
@@ -307,13 +333,16 @@ class TestInvalidOHLCRelations:
         Rationale: Data-Quality-Checks gehören zu Downstream-Komponenten.
         """
         idx = pd.date_range("2025-01-01", periods=3, freq="1h", tz="UTC")
-        df = pd.DataFrame({
-            "open": [100, 101, 102],
-            "high": [102, 103, 104],
-            "low": [99, 100, 101],
-            "close": [101, 98, 103],  # Bar 2: close (98) < low (100) - INVALID!
-            "volume": [1000, 1100, 1200],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [100, 101, 102],
+                "high": [102, 103, 104],
+                "low": [99, 100, 101],
+                "close": [101, 98, 103],  # Bar 2: close (98) < low (100) - INVALID!
+                "volume": [1000, 1100, 1200],
+            },
+            index=idx,
+        )
 
         result = DataNormalizer.normalize(df)
 
@@ -328,13 +357,16 @@ class TestInvalidOHLCRelations:
         Policy: Keine Business-Logic-Validierung im Normalizer.
         """
         idx = pd.date_range("2025-01-01", periods=3, freq="1h", tz="UTC")
-        df = pd.DataFrame({
-            "open": [100, 101, 102],
-            "high": [102, 103, 104],
-            "low": [99, 100, 101],
-            "close": [101, 102, 103],
-            "volume": [1000, -500, 1200],  # Negative volume - INVALID!
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [100, 101, 102],
+                "high": [102, 103, 104],
+                "low": [99, 100, 101],
+                "close": [101, 102, 103],
+                "volume": [1000, -500, 1200],  # Negative volume - INVALID!
+            },
+            index=idx,
+        )
 
         result = DataNormalizer.normalize(df)
 
@@ -346,6 +378,7 @@ class TestInvalidOHLCRelations:
 # TEST 5: ADDITIONAL EDGE CASES
 # ============================================================================
 
+
 @pytest.mark.data_edge
 class TestAdditionalEdgeCases:
     """Weitere Edge-Cases."""
@@ -356,20 +389,26 @@ class TestAdditionalEdgeCases:
 
         Policy: Bei duplizierten Timestamps wird der letzte Wert behalten.
         """
-        idx = pd.DatetimeIndex([
-            "2025-01-01 00:00:00",
-            "2025-01-01 01:00:00",
-            "2025-01-01 01:00:00",  # Duplikat
-            "2025-01-01 02:00:00",
-        ], tz="UTC")
+        idx = pd.DatetimeIndex(
+            [
+                "2025-01-01 00:00:00",
+                "2025-01-01 01:00:00",
+                "2025-01-01 01:00:00",  # Duplikat
+                "2025-01-01 02:00:00",
+            ],
+            tz="UTC",
+        )
 
-        df = pd.DataFrame({
-            "open": [100, 101, 999, 102],   # 999 sollte 101 ersetzen
-            "high": [102, 103, 1000, 104],
-            "low": [99, 100, 998, 101],
-            "close": [101, 102, 999, 103],
-            "volume": [1000, 1100, 9999, 1200],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [100, 101, 999, 102],  # 999 sollte 101 ersetzen
+                "high": [102, 103, 1000, 104],
+                "low": [99, 100, 998, 101],
+                "close": [101, 102, 999, 103],
+                "volume": [1000, 1100, 9999, 1200],
+            },
+            index=idx,
+        )
 
         result = DataNormalizer.normalize(df)
 
@@ -386,19 +425,25 @@ class TestAdditionalEdgeCases:
 
         Policy: Timestamps werden immer aufsteigend sortiert.
         """
-        idx = pd.DatetimeIndex([
-            "2025-01-01 02:00:00",
-            "2025-01-01 00:00:00",  # Unsortiert
-            "2025-01-01 01:00:00",
-        ], tz="UTC")
+        idx = pd.DatetimeIndex(
+            [
+                "2025-01-01 02:00:00",
+                "2025-01-01 00:00:00",  # Unsortiert
+                "2025-01-01 01:00:00",
+            ],
+            tz="UTC",
+        )
 
-        df = pd.DataFrame({
-            "open": [102, 100, 101],
-            "high": [104, 102, 103],
-            "low": [101, 99, 100],
-            "close": [103, 101, 102],
-            "volume": [1200, 1000, 1100],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [102, 100, 101],
+                "high": [104, 102, 103],
+                "low": [101, 99, 100],
+                "close": [103, 101, 102],
+                "volume": [1200, 1000, 1100],
+            },
+            index=idx,
+        )
 
         result = DataNormalizer.normalize(df)
 
@@ -414,13 +459,16 @@ class TestAdditionalEdgeCases:
         Policy: Keine Range-Validierung im Normalizer.
         """
         idx = pd.date_range("2025-01-01", periods=3, freq="1h", tz="UTC")
-        df = pd.DataFrame({
-            "open": [1e10, 1e-10, 1e100],     # Extreme Werte
-            "high": [2e10, 2e-10, 2e100],
-            "low": [0.5e10, 0.5e-10, 0.5e100],
-            "close": [1.5e10, 1.5e-10, 1.5e100],
-            "volume": [1e20, 1e20, 1e20],
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": [1e10, 1e-10, 1e100],  # Extreme Werte
+                "high": [2e10, 2e-10, 2e100],
+                "low": [0.5e10, 0.5e-10, 0.5e100],
+                "close": [1.5e10, 1.5e-10, 1.5e100],
+                "volume": [1e20, 1e20, 1e20],
+            },
+            index=idx,
+        )
 
         result = DataNormalizer.normalize(df)
 

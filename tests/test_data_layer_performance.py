@@ -25,6 +25,7 @@ Policy:
 - Tests sollten deterministisch sein (kein Netzwerk)
 - Performance-Regressions-Detection, nicht Absolute-Benchmarks
 """
+
 from __future__ import annotations
 
 import os
@@ -51,6 +52,7 @@ from src.data import (
 # ============================================================================
 # FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def large_dataset():
@@ -101,6 +103,7 @@ def cache_with_data(tmp_path, large_dataset):
 # TEST 1: CACHE HIT PERFORMANCE
 # ============================================================================
 
+
 @pytest.mark.data_perf
 class TestCacheHitPerformance:
     """Tests für Cache-Hit-Performance."""
@@ -148,18 +151,20 @@ class TestCacheHitPerformance:
 
         # Alle sollten unter 100ms sein
         for i, t in enumerate(timings):
-            assert t < 100, f"Hit {i+1} dauerte {t:.1f}ms (Budget: 100ms)"
+            assert t < 100, f"Hit {i + 1} dauerte {t:.1f}ms (Budget: 100ms)"
 
         # Variance sollte gering sein (kein Outlier > 2x Median)
         median_time = sorted(timings)[len(timings) // 2]
         for i, t in enumerate(timings):
-            assert t < median_time * 2.5, \
-                f"Hit {i+1} ({t:.1f}ms) ist Outlier (Median: {median_time:.1f}ms)"
+            assert t < median_time * 2.5, (
+                f"Hit {i + 1} ({t:.1f}ms) ist Outlier (Median: {median_time:.1f}ms)"
+            )
 
 
 # ============================================================================
 # TEST 2: NORMALIZE THROUGHPUT
 # ============================================================================
+
 
 @pytest.mark.data_perf
 class TestNormalizeThroughput:
@@ -203,13 +208,16 @@ class TestNormalizeThroughput:
         idx_dupes = pd.DatetimeIndex(np.random.choice(idx_unique, n_dupes))
         idx_combined = idx_unique.append(idx_dupes)
 
-        df = pd.DataFrame({
-            "open": np.random.uniform(90000, 100000, len(idx_combined)),
-            "high": np.random.uniform(95000, 105000, len(idx_combined)),
-            "low": np.random.uniform(85000, 95000, len(idx_combined)),
-            "close": np.random.uniform(90000, 100000, len(idx_combined)),
-            "volume": np.random.uniform(100, 1000, len(idx_combined)),
-        }, index=idx_combined)
+        df = pd.DataFrame(
+            {
+                "open": np.random.uniform(90000, 100000, len(idx_combined)),
+                "high": np.random.uniform(95000, 105000, len(idx_combined)),
+                "low": np.random.uniform(85000, 95000, len(idx_combined)),
+                "close": np.random.uniform(90000, 100000, len(idx_combined)),
+                "volume": np.random.uniform(100, 1000, len(idx_combined)),
+            },
+            index=idx_combined,
+        )
 
         start_time = time.perf_counter()
         result = DataNormalizer.normalize(df)
@@ -217,7 +225,9 @@ class TestNormalizeThroughput:
 
         # Assertions
         assert len(result) == n_bars  # Duplikate entfernt
-        assert elapsed_ms < 100, f"Normalize mit Duplikaten dauerte {elapsed_ms:.1f}ms (Budget: 100ms)"
+        assert elapsed_ms < 100, (
+            f"Normalize mit Duplikaten dauerte {elapsed_ms:.1f}ms (Budget: 100ms)"
+        )
 
     def test_normalize_large_column_mapping_throughput(self, large_dataset):
         """
@@ -227,13 +237,15 @@ class TestNormalizeThroughput:
         """
         # Rename columns to non-standard names
         df = large_dataset.copy()
-        df = df.rename(columns={
-            "open": "Open",
-            "high": "High",
-            "low": "Low",
-            "close": "Close",
-            "volume": "Volume",
-        })
+        df = df.rename(
+            columns={
+                "open": "Open",
+                "high": "High",
+                "low": "Low",
+                "close": "Close",
+                "volume": "Volume",
+            }
+        )
 
         column_mapping = {
             "Open": "open",
@@ -255,6 +267,7 @@ class TestNormalizeThroughput:
 # ============================================================================
 # TEST 3: CACHE SAVE PERFORMANCE
 # ============================================================================
+
 
 @pytest.mark.data_perf
 class TestCacheSavePerformance:
@@ -293,13 +306,14 @@ class TestCacheSavePerformance:
 
         assert elapsed_ms < 300, f"Cache-Roundtrip dauerte {elapsed_ms:.1f}ms (Budget: 300ms)"
 
-        # Verify Daten identisch
-        pd.testing.assert_frame_equal(large_dataset, loaded)
+        # Verify Daten identisch (check_freq=False weil Parquet freq nicht erhält)
+        pd.testing.assert_frame_equal(large_dataset, loaded, check_freq=False)
 
 
 # ============================================================================
 # TEST 4: MEMORY EFFICIENCY (Optional)
 # ============================================================================
+
 
 @pytest.mark.data_perf
 class TestMemoryEfficiency:
@@ -315,21 +329,25 @@ class TestMemoryEfficiency:
         n_bars = 50_000  # Größeres Dataset für Memory-Test
         idx = pd.date_range("2020-01-01", periods=n_bars, freq="1h", tz="UTC")
 
-        df = pd.DataFrame({
-            "open": np.random.uniform(90000, 100000, n_bars),
-            "high": np.random.uniform(95000, 105000, n_bars),
-            "low": np.random.uniform(85000, 95000, n_bars),
-            "close": np.random.uniform(90000, 100000, n_bars),
-            "volume": np.random.uniform(100, 1000, n_bars),
-        }, index=idx)
+        df = pd.DataFrame(
+            {
+                "open": np.random.uniform(90000, 100000, n_bars),
+                "high": np.random.uniform(95000, 105000, n_bars),
+                "low": np.random.uniform(85000, 95000, n_bars),
+                "close": np.random.uniform(90000, 100000, n_bars),
+                "volume": np.random.uniform(100, 1000, n_bars),
+            },
+            index=idx,
+        )
 
         # Normalizer sollte unter 100ms bleiben auch für 50k Bars
         start_time = time.perf_counter()
         result = DataNormalizer.normalize(df)
         elapsed_ms = (time.perf_counter() - start_time) * 1000
 
-        assert elapsed_ms < 100, \
+        assert elapsed_ms < 100, (
             f"Normalize für 50k Bars dauerte {elapsed_ms:.1f}ms (Budget: 100ms)"
+        )
 
         # Verify korrekte Anzahl Rows
         assert len(result) == n_bars
