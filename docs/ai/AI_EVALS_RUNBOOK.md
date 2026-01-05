@@ -25,9 +25,36 @@ This runbook describes how to run AI agent evaluations using promptfoo for Peak_
 
 ## Prerequisites
 
-- Node.js ≥ 18
+- Node.js (version pinned in `.nvmrc` — currently Node 20 LTS)
 - OpenAI API key in environment: `OPENAI_API_KEY`
 - Peak_Trade workspace clean (`/pt-preflight`)
+
+### Node Version Alignment
+
+The repo pins Node.js version via `.nvmrc` for reproducibility.
+
+**Using nvm (recommended):**
+```bash
+# Install nvm if not present: https://github.com/nvm-sh/nvm
+nvm install  # Reads .nvmrc and installs/uses pinned version
+nvm use      # Switches to pinned version
+```
+
+**Manual alignment:**
+```bash
+cat .nvmrc   # Shows pinned major version (e.g., "20")
+node -v      # Check your current version
+# Install matching version via brew, nvm, or nodejs.org
+```
+
+### Promptfoo Version
+
+Promptfoo version is pinned in `scripts/aiops/run_promptfoo_eval.sh` (currently `0.95.0`).
+
+To update:
+1. Edit `PROMPTFOO_VERSION` variable at top of script
+2. Test locally
+3. Update this runbook with new version
 
 ---
 
