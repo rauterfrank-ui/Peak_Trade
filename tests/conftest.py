@@ -72,6 +72,16 @@ if _TEST_CONFIG_PATH.exists():
     os.environ["PEAK_TRADE_CONFIG_PATH"] = str(_TEST_CONFIG_PATH)
 
 
+def pytest_addoption(parser):
+    """Add command-line options."""
+    parser.addoption(
+        "--run-perf",
+        action="store_true",
+        default=False,
+        help="Run performance tests (otherwise skipped)",
+    )
+
+
 def pytest_configure(config):
     """
     Pytest Hook: Wird VOR Test-Collection ausgefuehrt.
