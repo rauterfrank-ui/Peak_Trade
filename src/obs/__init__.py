@@ -1,23 +1,31 @@
-"""Observability helpers (optional).
+"""
+Observability Module (P2.2)
+===========================
+Optional OpenTelemetry integration for tracing and metrics.
 
-This package is optional and designed for graceful degradation when dependencies
-are missing.
+Exports:
+    is_otel_available: Check if OTel deps are installed
+    init_otel: Initialize OpenTelemetry with specified exporter
+    get_tracer: Get a tracer instance (real or no-op)
+    instrument_lake: Add tracing to LakeClient operations
+    OTelHandle: Handle for managing OTel lifecycle
+    OTelNotAvailableError: Raised when OTel features are unavailable
 """
 
 from .otel import (
+    is_otel_available,
+    init_otel,
+    get_tracer,
+    instrument_lake,
     OTelHandle,
     OTelNotAvailableError,
-    get_tracer,
-    init_otel,
-    instrument_lake,
-    is_otel_available,
 )
 
 __all__ = [
+    "is_otel_available",
+    "init_otel",
+    "get_tracer",
+    "instrument_lake",
     "OTelHandle",
     "OTelNotAvailableError",
-    "get_tracer",
-    "init_otel",
-    "instrument_lake",
-    "is_otel_available",
 ]
