@@ -2,9 +2,9 @@
 
 **Session Date:** 2026-01-05  
 **Operator:** AI Assistant (Cursor/Claude)  
-**Status:** ✅ Complete  
-**Duration:** ~2 hours  
-**Result:** 4 PRs submitted, 4,276 net lines of production code rescued
+**Status:** ✅ Complete + Merged  
+**Duration:** ~2 hours (+ 1 hour CI fix)  
+**Result:** 5 PRs total (4 submitted, 1 merged same-day), 4,276+ net lines rescued
 
 ---
 
@@ -396,12 +396,58 @@ SqliteError: FOREIGN KEY constraint failed
 
 Worktree Rescue Session 2026-01-05 successfully rescued 4,276 net lines of high-value production code from Claude/Cursor tooling worktrees. All rescued code is tested, documented, and ready for review. Remaining candidates have clear recommendations (archive vs discard) and policy decisions (artifacts, .gitignore) are documented for future action.
 
-**Status:** ✅ Session Complete  
-**Outcome:** 4 PRs submitted (#555–#558)  
-**Next:** Review and merge PRs in recommended order
+**Status:** ✅ Session Complete + Follow-up Merged  
+**Outcome:** 5 PRs total (#555–#558 submitted, #569 merged same-day)  
+**Next:** Review and merge remaining PRs (#555–#558) in recommended order
+
+---
+
+## Post-Session Updates
+
+### PR #569 — MLflow CI Failures Fixed ✅
+
+**Date:** 2026-01-05 (Same Day)  
+**Status:** ✅ Merged to main  
+**Branch:** `restore/worktree-patches-20260105`
+
+#### Context
+After merging worktree-rescued code that added `mlflow>=3.0,<4` to `pyproject.toml`, CI began running previously-skipped MLflow integration tests. All 18 tests failed consistently across Python 3.9/3.10/3.11.
+
+#### Root Cause
+- `MLflowTracker` missing `_run_started` and `_run_id` attributes
+- `start_run()` didn't check for already-active runs → "already active" exceptions
+- No context manager support (`__enter__`/`__exit__`)
+- Tests lacked global cleanup → run state leakage between tests
+
+#### Fix Summary
+**`src/core/tracking.py`:**
+- Initialize `_run_started: bool = False` and `_run_id: Optional[str] = None`
+- `start_run()`: Check `mlflow.active_run()` before starting (idempotent)
+- `end_run()`: Only end if active, keep `_run_id` for post-run queries
+- `log_params()`: Flatten nested dicts via `_flatten()` helper
+- `log_artifact()`: Graceful error handling (no crash on missing files)
+- Add `__enter__`/`__exit__` for context manager support
+
+**`tests/test_tracking_mlflow_integration.py`:**
+- Autouse fixture `cleanup_mlflow_runs()` for deterministic test isolation
+- Fix test expectations (`_run_id` kept after `end_run()`)
+- Improve backtest integration tests (manual metrics, artifact checks)
+
+#### Verification
+- **Lokal:** 18/18 MLflow tests passed (was: 18/18 failed)
+- **CI Python 3.9:** ✅ PASSED (4m26s)
+- **CI Python 3.10:** ✅ PASSED (4m52s)
+- **CI Python 3.11:** ✅ PASSED (8m28s)
+- **All CI Checks:** 17 successful, 0 failing
+
+#### Result
+- **Merged:** Squash merge to main (`410feb3a`)
+- **Branch Deleted:** `restore/worktree-patches-20260105`
+- **Detailed Log:** `docs/ops/PR_569_MERGE_LOG.md`
 
 ---
 
 **Report Generated:** 2026-01-05  
+**Last Updated:** 2026-01-05 (PR #569 merged)  
 **Audit Trail:** All session commands and outputs available in local artifacts  
 **Verification:** Run `gh pr list --search "worktree OR rescue OR Phase 16C"` to list related PRs
