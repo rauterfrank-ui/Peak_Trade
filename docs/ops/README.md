@@ -5,6 +5,8 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 ---
 
 ## Closeouts & Playbooks
+- `docs/ops/PR_562_MERGE_LOG.md` — AI-Ops Toolchain v1.1: Evals Runner + CI + Scoreboard (PR #562, 2026-01-05)
+- `docs/ops/PR_560_MERGE_LOG.md` — Cursor Multi-Agent Integration V1 (PR #560, 2026-01-05)
 - `docs/ops/merge_logs/20260104_pr-544_var-backtest-suite-phase-8c.md` — Phase 8C: VaR Backtest Suite Runner & Report Formatter (PR #544, 2026-01-04)
 - `docs/ops/merge_logs/2026-01-04_feat-var-backtest-christoffersen-cc_merge_log.md` — Christoffersen VaR Backtests (PR #422, 2026-01-04)
 - `docs/ops/merge_logs/2025-12-27_mass_docs_pr_closeout.md` — Mass PR Wave Closeout (2025-12-27)
