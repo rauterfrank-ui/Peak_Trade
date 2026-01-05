@@ -43,7 +43,7 @@ bash scripts/aiops/run_promptfoo_eval.sh
 ```
 Date: 2026-01-05T04:00:00Z
 SHA: 452bf1e6
-Node: v20.19.6
+Node: v25.2.1 (canonical)
 Promptfoo: 0.95.0
 Model: openai:gpt-4
 Pass Rate: 10/10
