@@ -19,6 +19,7 @@ Examples:
     # Use custom results directory
     python scripts/dev/compare_runs.py --dir /path/to/results
 """
+
 import argparse
 import json
 import logging
@@ -144,17 +145,13 @@ def format_table(summaries: List[RunSummary], key_metrics: Optional[List[str]] =
     lines = []
 
     # Header
-    header_line = " | ".join(
-        str(h).ljust(w) for h, w in zip(header, col_widths)
-    )
+    header_line = " | ".join(str(h).ljust(w) for h, w in zip(header, col_widths))
     lines.append(header_line)
     lines.append("-" * len(header_line))
 
     # Rows
     for row in rows:
-        row_line = " | ".join(
-            str(cell).ljust(w) for cell, w in zip(row, col_widths)
-        )
+        row_line = " | ".join(str(cell).ljust(w) for cell, w in zip(row, col_widths))
         lines.append(row_line)
 
     return "\n".join(lines)
@@ -217,7 +214,7 @@ def format_diff(
 
         if base_val is not None and cand_val is not None:
             diff = cand_val - base_val
-            pct_change = (diff / abs(base_val) * 100) if base_val != 0 else float('inf')
+            pct_change = (diff / abs(base_val) * 100) if base_val != 0 else float("inf")
             changed_metrics.append((key, base_val, cand_val, diff, pct_change))
         elif base_val != cand_val:
             # One is None
@@ -225,7 +222,9 @@ def format_diff(
 
     if changed_metrics:
         lines.append("Metrics:")
-        lines.append(f"  {'Metric':<20} {'Baseline':<15} {'Candidate':<15} {'Diff':<15} {'% Change':<10}")
+        lines.append(
+            f"  {'Metric':<20} {'Baseline':<15} {'Candidate':<15} {'Diff':<15} {'% Change':<10}"
+        )
         lines.append("  " + "-" * 75)
 
         for item in changed_metrics:
@@ -245,9 +244,7 @@ def format_diff(
                 diff_str = "-"
                 pct_str = "-"
 
-            lines.append(
-                f"  {key:<20} {base_str:<15} {cand_str:<15} {diff_str:<15} {pct_str:<10}"
-            )
+            lines.append(f"  {key:<20} {base_str:<15} {cand_str:<15} {diff_str:<15} {pct_str:<10}")
 
     return "\n".join(lines)
 
@@ -296,7 +293,8 @@ def main():
     )
 
     parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
         help="Verbose logging",
     )

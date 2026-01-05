@@ -5,6 +5,7 @@ Tests for RunSummary Contract
 Fast, deterministic tests for the run summary contract.
 No network access, <0.5s total.
 """
+
 import json
 from datetime import datetime, timezone
 from pathlib import Path

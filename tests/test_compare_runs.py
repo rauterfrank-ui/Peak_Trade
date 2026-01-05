@@ -5,6 +5,7 @@ Tests for compare_runs CLI Tool
 Fast, deterministic tests for run comparison.
 No network access, <0.5s total.
 """
+
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from src.experiments.tracking.run_summary import RunSummary
 
 # Import functions from compare_runs script
 import sys
+
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dev"))
 
 from compare_runs import (
@@ -99,9 +101,9 @@ def test_load_summaries(sample_summaries):
 
     # Check each summary has expected attributes (duck typing test)
     for i, s in enumerate(summaries):
-        assert hasattr(s, 'run_id'), f"Summary {i} missing run_id"
-        assert hasattr(s, 'status'), f"Summary {i} missing status"
-        assert hasattr(s, 'metrics'), f"Summary {i} missing metrics"
+        assert hasattr(s, "run_id"), f"Summary {i} missing run_id"
+        assert hasattr(s, "status"), f"Summary {i} missing status"
+        assert hasattr(s, "metrics"), f"Summary {i} missing metrics"
 
     # Verify IDs match
     loaded_ids = {s.run_id for s in summaries}

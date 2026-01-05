@@ -7,6 +7,7 @@ Generates run summary JSON for local comparison and reporting.
 
 Configuration precedence: CLI args > ENV vars > defaults
 """
+
 from __future__ import annotations
 
 import logging
@@ -98,13 +99,13 @@ class PeakTradeRun:
         if self.enable_mlflow:
             try:
                 import mlflow
+
                 self.mlflow = mlflow
                 self.mlflow_available = True
                 logger.info("MLflow available for tracking")
             except ImportError:
                 logger.warning(
-                    "MLflow tracking requested but not installed. "
-                    "Falling back to null backend."
+                    "MLflow tracking requested but not installed. Falling back to null backend."
                 )
 
     def __enter__(self) -> PeakTradeRun:

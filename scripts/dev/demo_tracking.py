@@ -7,6 +7,7 @@ Demonstrates the full tracking workflow:
 1. Create runs with PeakTradeRun
 2. Compare runs with compare_runs.py
 """
+
 import sys
 import time
 from pathlib import Path
@@ -31,22 +32,26 @@ def demo_basic_tracking():
         tags={"strategy": "rsi", "phase": "demo"},
     ) as run:
         # Log parameters
-        run.log_params({
-            "fast_period": 10,
-            "slow_period": 20,
-            "threshold": 0.5,
-        })
+        run.log_params(
+            {
+                "fast_period": 10,
+                "slow_period": 20,
+                "threshold": 0.5,
+            }
+        )
 
         # Simulate backtest
         time.sleep(0.1)
 
         # Log metrics
-        run.log_metrics({
-            "sharpe_ratio": 1.5,
-            "total_return": 0.25,
-            "max_drawdown": -0.12,
-            "win_rate": 0.55,
-        })
+        run.log_metrics(
+            {
+                "sharpe_ratio": 1.5,
+                "total_return": 0.25,
+                "max_drawdown": -0.12,
+                "win_rate": 0.55,
+            }
+        )
 
     print(f"✓ Run completed: {run.run_id[:8]}")
 
@@ -57,20 +62,24 @@ def demo_basic_tracking():
         run_name="rsi_15_30",
         tags={"strategy": "rsi", "phase": "demo"},
     ) as run:
-        run.log_params({
-            "fast_period": 15,
-            "slow_period": 30,
-            "threshold": 0.6,
-        })
+        run.log_params(
+            {
+                "fast_period": 15,
+                "slow_period": 30,
+                "threshold": 0.6,
+            }
+        )
 
         time.sleep(0.1)
 
-        run.log_metrics({
-            "sharpe_ratio": 1.7,
-            "total_return": 0.30,
-            "max_drawdown": -0.10,
-            "win_rate": 0.58,
-        })
+        run.log_metrics(
+            {
+                "sharpe_ratio": 1.7,
+                "total_return": 0.30,
+                "max_drawdown": -0.10,
+                "win_rate": 0.58,
+            }
+        )
 
     print(f"✓ Run completed: {run.run_id[:8]}")
 
@@ -82,10 +91,12 @@ def demo_basic_tracking():
             run_name="rsi_broken",
             tags={"strategy": "rsi", "phase": "demo"},
         ) as run:
-            run.log_params({
-                "fast_period": 5,
-                "slow_period": 10,
-            })
+            run.log_params(
+                {
+                    "fast_period": 5,
+                    "slow_period": 10,
+                }
+            )
 
             # Simulate failure
             raise ValueError("Simulated backtest failure")

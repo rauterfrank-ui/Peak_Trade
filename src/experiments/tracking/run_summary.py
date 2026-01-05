@@ -5,6 +5,7 @@ Run Summary Contract
 Stable JSON contract for run metadata and results.
 Enables local comparison and reporting without MLflow dependency.
 """
+
 from __future__ import annotations
 
 import json
@@ -40,6 +41,7 @@ class RunSummary:
         hostname: Machine hostname where run executed
         tracking_backend: Which backend was used ("null" or "mlflow")
     """
+
     run_id: str
     started_at_utc: str
     finished_at_utc: str
@@ -155,9 +157,7 @@ class RunSummary:
         # Validate status values
         valid_statuses = {"FINISHED", "FAILED", "RUNNING", "KILLED"}
         if self.status not in valid_statuses:
-            errors.append(
-                f"status must be one of {valid_statuses}, got '{self.status}'"
-            )
+            errors.append(f"status must be one of {valid_statuses}, got '{self.status}'")
 
         # Validate ISO 8601 timestamps
         for field_name in ["started_at_utc", "finished_at_utc"]:
@@ -170,16 +170,14 @@ class RunSummary:
         valid_backends = {"null", "mlflow"}
         if self.tracking_backend not in valid_backends:
             errors.append(
-                f"tracking_backend must be one of {valid_backends}, "
-                f"got '{self.tracking_backend}'"
+                f"tracking_backend must be one of {valid_backends}, got '{self.tracking_backend}'"
             )
 
         if strict:
             # Strict mode: enforce type contracts
             if not isinstance(self.tags, dict):
                 errors.append("tags must be dict")
-            elif not all(isinstance(k, str) and isinstance(v, str)
-                        for k, v in self.tags.items()):
+            elif not all(isinstance(k, str) and isinstance(v, str) for k, v in self.tags.items()):
                 errors.append("all tags keys and values must be strings")
 
             if not isinstance(self.params, dict):
@@ -187,8 +185,7 @@ class RunSummary:
 
             if not isinstance(self.metrics, dict):
                 errors.append("metrics must be dict")
-            elif not all(isinstance(v, (int, float))
-                        for v in self.metrics.values()):
+            elif not all(isinstance(v, (int, float)) for v in self.metrics.values()):
                 errors.append("all metrics values must be numeric")
 
             if not isinstance(self.artifacts, list):
