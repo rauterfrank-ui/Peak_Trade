@@ -18,5 +18,5 @@ prompts:
       Output must include: likely root cause, minimal fix plan, and tests to run.
 
 tests:
-  - tests/testcases/docs_link_fixer.yaml
-  - tests/testcases/ci_failure_triage.yaml
+  - testcases/docs_link_fixer.yaml
+  - testcases/ci_failure_triage.yaml
