@@ -7,6 +7,7 @@ set -euo pipefail
 
 # === VERSION PINS (for reproducibility) ===
 PROMPTFOO_VERSION="0.95.0"  # Update this for new promptfoo releases
+CANONICAL_NODE_VERSION="v25.2.1"  # Canonical Node version (see .nvmrc)
 
 # === PRE-FLIGHT ===
 echo "==> AI-Ops Eval Runner: Pre-Flight"
@@ -39,6 +40,12 @@ node_version=$(node --version)
 npx_version=$(npx --version)
 echo "Node version: $node_version"
 echo "npx version: $npx_version"
+
+# Warn if Node version doesn't match canonical (non-failing)
+if [ "$node_version" != "$CANONICAL_NODE_VERSION" ]; then
+  echo "WARNING: Node version mismatch. Expected: $CANONICAL_NODE_VERSION, Got: $node_version"
+  echo "         For reproducible evals, align to .nvmrc: nvm use"
+fi
 
 # 3) Ensure promptfoo config exists
 config_path="evals/aiops/promptfooconfig.yaml"
