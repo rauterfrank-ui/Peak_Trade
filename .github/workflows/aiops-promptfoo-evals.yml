@@ -1,0 +1,40 @@
+name: AI-Ops Promptfoo Evals
+
+on:
+  pull_request:
+    paths:
+      - '.cursor/**'
+      - 'docs/ai/**'
+      - 'evals/aiops/**'
+      - 'scripts/aiops/**'
+  workflow_dispatch:
+
+jobs:
+  promptfoo-eval:
+    name: Run Promptfoo Evals
+    runs-on: ubuntu-latest
+    # Skip if OPENAI_API_KEY secret is not available
+    if: ${{ secrets.OPENAI_API_KEY != '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # LTS
+
+      - name: Run Promptfoo Eval
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          bash scripts/aiops/run_promptfoo_eval.sh
+
+      - name: Upload Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: promptfoo-eval-logs
+          path: .artifacts/aiops/
+          retention-days: 7
