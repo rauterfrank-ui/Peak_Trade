@@ -10,7 +10,7 @@ Operator-Workflow in Cursor standardisieren (Rules + Slash-Commands) und Eval-Sk
 - Cursor Rules: Governance + Delivery Contract (`.cursor/rules/peak-trade-*`)
 - Cursor Commands: `/pt-preflight`, `/pt-plan`, `/pt-split`, `/pt-verify`, `/pt-merge-log`, `/pt-eval`
 - Evals: `evals/aiops/` promptfoo Skeleton, `evals/aiops/testcases/` vereinheitlicht
-- Docs: Canonical Runbook unter `docs/ops/runbooks/…`, Redirect Stub in `docs/ai/…`
+- Docs: Canonical Runbook unter `docs/ops/runbooks/`, Redirect Stub in `docs/ai/`
 
 ## Verification
 - Cursor Restart → `/pt-` zeigt 6 Commands
