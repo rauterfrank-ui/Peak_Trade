@@ -51,6 +51,9 @@ knowledge = [
 monitoring = [
     "prometheus-client>=0.19.0",
 ]
+tracking = [
+    "mlflow>=3.0,<4",
+]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
