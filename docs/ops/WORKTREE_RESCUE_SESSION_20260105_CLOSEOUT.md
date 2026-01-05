@@ -187,6 +187,74 @@ pytest -m data_integration -v
 
 ---
 
+## Baseline (Operational Acceptance) — 2026-01-05 (SKIP: OPENAI_API_KEY missing)
+
+**Verification Date:** 2026-01-05  
+**Purpose:** Validate AI-Ops eval runner post-Node 25.2.1 migration
+
+**⚠️ SKIP-Path Validation:** This baseline validates the **graceful skip path** (exit code 0), **audit telemetry visibility** (SHA/node/npx/promptfoo/config path), and **governance compliance** (src untouched, no-live, operator-controlled). **No promptfoo evaluation was executed** because `OPENAI_API_KEY` was not set; therefore, **there is no PASS/FAIL evidence for governance testcases** in this baseline.
+
+### Configuration
+- **SHA:** `f50a4e67ff98daf35e930956ad39b651626e7a1f`
+- **Canonical Node:** v25.2.1 (pinned via `.nvmrc`)
+- **promptfoo:** 0.95.0 (pinned)
+- **Runner:** `scripts/aiops/run_promptfoo_eval.sh`
+
+### Result
+**Status:** ✅ SKIP (graceful exit, not a failure)  
+**Reason:** `OPENAI_API_KEY` not set  
+**Exit Code:** 0
+
+**What Was Validated:**
+- ✅ Graceful skip behavior (exit 0 when API key missing)
+- ✅ Audit telemetry (SHA, node version, npx, promptfoo, config detection)
+- ✅ Pre-flight checks (repo detection, version alignment, config presence)
+- ✅ Governance compliance (src untouched, operator-controlled, no-live)
+
+**What Was NOT Validated:**
+- ❌ Promptfoo evaluation execution (skipped)
+- ❌ Governance testcases PASS/FAIL (no eval run)
+- ❌ LLM interaction behavior (requires API key)
+
+### Pre-Flight Checks (All Passed)
+- ✅ Repository root detected: `/Users/frnkhrz/Peak_Trade`
+- ✅ Git SHA: `f50a4e67ff98daf35e930956ad39b651626e7a1f`
+- ✅ Git status: clean (branch `chore/aiops-node-25.2.1-audit-align`)
+- ✅ Node version: v25.2.1 (matches canonical)
+- ✅ npx version: 11.6.2
+- ✅ Config found: `evals/aiops/promptfooconfig.yaml`
+- ✅ Promptfoo version: 0.95.0 (pinned)
+
+### Artifacts
+**Location:** `.artifacts/aiops/`
+
+**Generated:**
+- `baseline_stdout_<UTC_TIMESTAMP>.log` (terminal capture via `tee`, operator-enabled)
+
+**NOT Generated (skip path):**
+- No promptfoo eval artifacts (`.json`, `.html`, etc.)
+- No testcase results or LLM interaction logs
+
+**Note:** The runner produces no promptfoo artifacts on skip. Terminal-captured stdout log may exist if operator enabled logging via `tee`.
+
+### Governance Compliance
+- ✅ `src/` untouched (no production code changes)
+- ✅ No-live policy maintained (paper-only evaluation design)
+- ✅ Operator-controlled execution (manual trigger, no automation)
+- ✅ Audit telemetry enabled (SHA, versions, timestamps captured in stdout)
+
+### Next Steps (For Full Validation)
+To validate governance testcases with actual promptfoo evaluation:
+
+```bash
+export OPENAI_API_KEY='sk-...'
+bash scripts/aiops/run_promptfoo_eval.sh 2>&1 | tee .artifacts/aiops/full_eval_stdout_$(date -u +%Y%m%d_%H%M%SZ).log
+```
+
+**Conclusion:** Runner **skip path operational** (graceful exit 0). Audit telemetry and governance compliance validated. Full eval (with PASS/FAIL evidence for governance testcases) pending API key.
+
+---
+
 ## Risk Assessment
 
 ### Low Risk (Safe to Merge)

@@ -49,7 +49,7 @@ node -v      # Check your current version
 
 ### Promptfoo Version
 
-Promptfoo version is pinned in `scripts/aiops/run_promptfoo_eval.sh` (currently `0.95.0`).
+Promptfoo version is pinned in `scripts/aiops/run_promptfoo_eval.sh` (currently `0.120.8`).
 
 To update:
 1. Edit `PROMPTFOO_VERSION` variable at top of script

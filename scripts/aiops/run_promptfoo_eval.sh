@@ -6,7 +6,7 @@
 set -euo pipefail
 
 # === VERSION PINS (for reproducibility) ===
-PROMPTFOO_VERSION="0.95.0"  # Update this for new promptfoo releases
+PROMPTFOO_VERSION="0.120.8"  # Update this for new promptfoo releases
 CANONICAL_NODE_VERSION="v25.2.1"  # Canonical Node version (see .nvmrc)
 
 # === PRE-FLIGHT ===
