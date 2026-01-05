@@ -162,7 +162,7 @@ npx promptfoo@latest eval -c evals/aiops/promptfooconfig.yaml
 ## CI Integration (P1, Future)
 
 **Planned:**
-- GitHub Action: `.github/workflows/aiops-evals.yml`
+- GitHub Action: `aiops-evals.yml` (in `.github/workflows/`)
 - Trigger: On PR to `main` if `.cursor/**` or `docs/ai/**` changed
 - Gate: PR blocked if evals fail
 
