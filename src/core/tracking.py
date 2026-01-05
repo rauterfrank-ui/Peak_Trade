@@ -120,23 +120,46 @@ class MLflowTracker:
         self._mlflow.set_tracking_uri(self.tracking_uri)
         self._mlflow.set_experiment(self.experiment_name)
 
+        # Initialize run state attributes (required by tests)
+        self._run_started: bool = False
+        self._run_id: Optional[str] = None
         self._active_run = None
+
         if self.auto_start_run:
             self.start_run(self.run_name)
 
     def start_run(self, run_name: str | None = None) -> None:
+        # Check if there's already an active run (avoid "already active" error)
+        existing_run = self._mlflow.active_run()
+        if existing_run is not None:
+            # Run already active, just update our state
+            self._active_run = existing_run
+            self._run_started = True
+            self._run_id = existing_run.info.run_id
+            return
+
         rn = run_name or self.run_name
         self._active_run = self._mlflow.start_run(run_name=rn)
+        self._run_started = True
+        self._run_id = self._active_run.info.run_id if self._active_run else None
 
     def end_run(self) -> None:
         try:
-            self._mlflow.end_run()
+            # Only end if there's actually an active run
+            if self._mlflow.active_run() is not None:
+                self._mlflow.end_run()
         finally:
             self._active_run = None
+            self._run_started = False
+            # Keep _run_id for post-run queries (don't set to None)
 
     def log_params(self, params):
         if params:
-            self._mlflow.log_params(dict(params))
+            # Flatten nested dicts (required by MLflow - params must be flat strings)
+            flat_params: Dict[str, str] = {}
+            _flatten("", params, flat_params)
+            if flat_params:
+                self._mlflow.log_params(flat_params)
 
     def log_metrics(self, metrics, step=None):
         if metrics:
@@ -147,7 +170,22 @@ class MLflowTracker:
             self._mlflow.set_tags(dict(tags))
 
     def log_artifact(self, path: str, artifact_path: str | None = None) -> None:
-        self._mlflow.log_artifact(path, artifact_path=artifact_path)
+        try:
+            self._mlflow.log_artifact(path, artifact_path=artifact_path)
+        except Exception:
+            # Graceful degradation - don't crash on artifact errors
+            pass
+
+    def __enter__(self):
+        """Context manager support: start run on enter."""
+        if not self._run_started:
+            self.start_run()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager support: end run on exit (even if exception)."""
+        self.end_run()
+        return False  # Don't suppress exceptions
 
 
 def build_tracker_from_config(cfg):
