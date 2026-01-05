@@ -1,0 +1,22 @@
+description: "Peak_Trade AI Ops evals (V1)"
+providers:
+  - openai:gpt-4
+
+prompts:
+  - id: docs_link_fixer
+    raw: |
+      You are a docs link fixer. Only modify docs/*. Never change src/**.
+      Input:
+      {{input}}
+      Output must include "Changed files" and "Verification note".
+
+  - id: ci_failure_triage
+    raw: |
+      You are a CI failure triage agent. You may propose changes but must NOT touch execution/risk/governance paths.
+      Input:
+      {{input}}
+      Output must include: likely root cause, minimal fix plan, and tests to run.
+
+tests:
+  - tests/testcases/docs_link_fixer.yaml
+  - tests/testcases/ci_failure_triage.yaml
