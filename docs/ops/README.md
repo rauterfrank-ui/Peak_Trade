@@ -5,6 +5,12 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 ---
 
 ## Closeouts & Playbooks
+
+### Session Closeouts
+- **[Session Closeout 2026-01-06](SESSION_CLOSEOUT_20260106_PEAK_TRADE_DOCS_OPS_INTEGRATION.md)** — Gap analysis & security fixes (PR #573, #574, #575, #576)
+- **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
+
+### PR Merge Logs
 - `docs/ops/PR_562_MERGE_LOG.md` — AI-Ops Toolchain v1.1: Evals Runner + CI + Scoreboard (PR #562, 2026-01-05)
 - `docs/ops/PR_560_MERGE_LOG.md` — Cursor Multi-Agent Integration V1 (PR #560, 2026-01-05)
 - `docs/ops/merge_logs/20260104_pr-544_var-backtest-suite-phase-8c.md` — Phase 8C: VaR Backtest Suite Runner & Report Formatter (PR #544, 2026-01-04)

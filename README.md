@@ -49,6 +49,14 @@ Für Entwickler, die mit Peak_Trade arbeiten oder Strategien entwickeln:
 
 ---
 
+## Security & Audit
+
+- 🔒 **[Security Notes](SECURITY_NOTES.md)** — Known vulnerabilities, Python version limitations, CVE tracking
+- 🔍 **[Audit Runbook](docs/audit/AUDIT_RUNBOOK_COMPLETE.md)** — Complete audit procedures (Security, Dependencies, Quality)
+- 🛡️ **[Governance & AI Autonomy](docs/governance/README.md)** — Governance-first guardrails, Policy Critic, Evidence Packs
+
+---
+
 ## AI-Unterstützung & Guides
 
 Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entwickeln, Refactoren und Dokumentieren helfen können – unter klaren Spielregeln (Safety-First, Tests respektieren, Doku mitpflegen).
