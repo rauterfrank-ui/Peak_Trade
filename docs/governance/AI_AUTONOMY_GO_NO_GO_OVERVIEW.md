@@ -213,8 +213,7 @@ Deep Research ist erlaubt für:
 - Dokumentations-/Policy-Synthese
 
 ### 11.2 Model Routing Dokument
-Die konkrete Modellzuordnung (welches Modell für welche Aufgabe) wird separat gepflegt:
-- `docs/governance/MODEL_PLACEMENT_AND_ROUTING.md`
+Die konkrete Modellzuordnung (welches Modell für welche Aufgabe) wird separat gepflegt (TBD: separate Datei in Vorbereitung).
 
 ---
 
