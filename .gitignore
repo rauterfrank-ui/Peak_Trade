@@ -104,6 +104,7 @@ venv_pip_check/
 /STRATEGY_LAYER_VNEXT_*_REPORT.md
 .logs/
 .tmp/
+.tmp_*/
 .artifacts/
 
 # Local-only ops scratch (do not commit)
