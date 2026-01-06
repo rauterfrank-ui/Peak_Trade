@@ -5,7 +5,7 @@ aiodns==3.6.1
     # via ccxt
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.13.2
+aiohttp==3.13.3
     # via ccxt
 aiosignal==1.4.0
     # via aiohttp
