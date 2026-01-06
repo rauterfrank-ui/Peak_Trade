@@ -20,3 +20,11 @@ Result: Repository clean; no open PRs; main synchronized.
 
 ## Notes
 This file is an audit artifact. It captures the final state after completion of the Wave2 restore queue.
+
+## Follow-up (Post-Closeout)
+Wave2 experience led to standardization work:
+- PR #582: MERGED (Wave Restore Runbook + Dashboard Script)
+
+**Resources:**
+- [RUNBOOK: Wave Restore](RUNBOOK_WAVE_RESTORE.md)
+- [Tool: wave_restore_status.sh](../../scripts/ops/wave_restore_status.sh)
