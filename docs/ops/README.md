@@ -6,6 +6,11 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 
 ## Closeouts & Playbooks
 
+### Wave Restore Tools
+- **[RUNBOOK: Wave Restore](RUNBOOK_WAVE_RESTORE.md)** — Standardized runbook for restore waves (naming, gates, workflow, commands)
+- **[Tool: wave_restore_status.sh](../../scripts/ops/wave_restore_status.sh)** — Dashboard for wave restore sessions (PR status, branches)
+- **[Wave2 Restore Closeout](WAVE2_RESTORE_CLOSEOUT_20260106_214505Z.md)** — Wave2 session outcomes (PRs #579, #580, #571, #581, #582)
+
 ### Session Closeouts
 - **[Session Closeout 2026-01-06](SESSION_CLOSEOUT_20260106_PEAK_TRADE_DOCS_OPS_INTEGRATION.md)** — Gap analysis & security fixes (PR #573, #574, #575, #576)
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
