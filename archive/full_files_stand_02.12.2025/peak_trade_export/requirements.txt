@@ -1,7 +1,0 @@
-# Core Dependencies
-pandas>=1.5.0
-numpy>=1.23.0
-
-# Optional (für erweiterte Features)
-matplotlib>=3.5.0
-scipy>=1.9.0
