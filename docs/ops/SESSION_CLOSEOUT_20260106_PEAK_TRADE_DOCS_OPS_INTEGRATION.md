@@ -47,7 +47,7 @@ Peak_Trade (Safety/Governance-first, DAY TRADING):
 ---
 
 ### PR #573: Governance/Audit Runbooks
-**Branch**: `docs/governance-audit-runbooks`  
+**Git Branch**: docs/governance-audit-runbooks  
 **Merged**: 2026-01-06 ~18:40 UTC  
 **Merge Commit**: `75722fee`
 
@@ -71,7 +71,7 @@ Peak_Trade (Safety/Governance-first, DAY TRADING):
 ---
 
 ### PR #574: Gap Analysis Report
-**Branch**: `docs/tools-peak-trade-gap-analysis`  
+**Git Branch**: docs/tools-peak-trade-gap-analysis  
 **Merged**: 2026-01-06 ~18:45 UTC  
 **Merge Commit**: (final)
 
@@ -239,7 +239,7 @@ gh pr merge <number> --squash --delete-branch
 ## 🗂️ Open Items
 
 ### Stash Inventory
-**Location**: `stash@{0}` on `docs/tools-peak-trade-gap-analysis` branch  
+**Location**: `stash@{0}` on Git branch: docs/tools-peak-trade-gap-analysis  
 **Content**: ~113 unrelated changes + untracked files  
 **Status**: Parked for future review
 
@@ -253,7 +253,7 @@ gh pr merge <number> --squash --delete-branch
 4. Discard if no longer relevant
 
 ### Potential Follow-ups
-- [ ] Create `docs/governance/MODEL_PLACEMENT_AND_ROUTING.md` (referenced but not yet created)
+- [ ] Create MODEL_PLACEMENT_AND_ROUTING.md in docs/governance/ directory (referenced in AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)
 - [ ] Archive tools_peak_trade repository externally (if desired)
 - [ ] Consider dropping Python 3.9 support (due to unfixable vulnerabilities)
 - [ ] Review and clean up remaining stash items
