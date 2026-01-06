@@ -111,3 +111,4 @@ venv_pip_check/
 .ops_local/
 PHASE8E_8F_PR_DESCRIPTION.md
 PHASE8E_8F_PR_GITHUB.md
+.tmp_backtest_artifacts/
