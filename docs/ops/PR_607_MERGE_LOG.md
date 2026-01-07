@@ -182,7 +182,7 @@ grep "| EV-2026010[67]" docs/ops/EVIDENCE_INDEX.md
 
 ## References
 
-- **PR:** [#607](https://github.com/rauterfrank-ui/Peak_Trade/pull/607)
+- **PR:** #607
 - **File:** `docs/ops/EVIDENCE_INDEX.md`
 - **Commit (squash):** a71e1e6b
 - **Branch:** `docs/evidence-index-v01-tier-b` (deleted after merge)
