@@ -1,0 +1,9 @@
+# PR 85 Merge Log (Reference Target Stub)
+
+Dieses Dokument existiert als **Reference-Target-Stabilisierung** für den Docs Reference Targets Gate.
+
+Hinweis:
+- Der Pfad wirkt wie ein Tippfehler (fehlendes `/` nach `ops`). Wir lassen ihn absichtlich bestehen, um den Gate sofort zu entstören.
+- Später ideal: Matrix-Link auf kanonischen Pfad umstellen (z.B. `docs/ops/PR_85_MERGE_LOG.md`) und diesen Stub entfernen.
+
+Status: Stub (CI/Gate-Target)

@@ -7,6 +7,12 @@ on:
       - 'docs/ai/**'
       - 'evals/aiops/**'
       - 'scripts/aiops/**'
+  push:
+    paths:
+      - '.cursor/**'
+      - 'docs/ai/**'
+      - 'evals/aiops/**'
+      - 'scripts/aiops/**'
   workflow_dispatch:
 
 jobs:
