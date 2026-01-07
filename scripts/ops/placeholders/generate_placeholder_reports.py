@@ -62,12 +62,12 @@ SKIP_DIRS = {
 
 # File patterns to skip
 SKIP_PATTERNS = [
-    r"\.lock$",      # uv.lock, package-lock.json, etc.
-    r"\.pyc$",       # Python bytecode
-    r"\.so$",        # Shared objects
-    r"\.dylib$",     # macOS dynamic libs
-    r"\.min\.js$",   # Minified JS
-    r"\.map$",       # Source maps
+    r"\.lock$",  # uv.lock, package-lock.json, etc.
+    r"\.pyc$",  # Python bytecode
+    r"\.so$",  # Shared objects
+    r"\.dylib$",  # macOS dynamic libs
+    r"\.min\.js$",  # Minified JS
+    r"\.map$",  # Source maps
 ]
 
 
@@ -187,7 +187,9 @@ def categorize_by_prefix(file_path: Path, repo_root: Path) -> str:
         return "other/"
 
 
-def generate_inventory_report(results: Dict[Path, Dict[str, int]], repo_root: Path, commit: str) -> str:
+def generate_inventory_report(
+    results: Dict[Path, Dict[str, int]], repo_root: Path, commit: str
+) -> str:
     """Generate the TODO_PLACEHOLDER_INVENTORY.md content."""
     lines = []
     lines.append("# TODO/Placeholder Inventory")
@@ -250,7 +252,9 @@ def generate_target_map_report(results: Dict[Path, Dict[str, int]], repo_root: P
     lines = []
     lines.append("# TODO/Placeholder Target Map (Inventory Addendum)")
     lines.append("")
-    lines.append("This file groups placeholder density by path-prefix and lists top files per marker type.")
+    lines.append(
+        "This file groups placeholder density by path-prefix and lists top files per marker type."
+    )
     lines.append("Inventory-only; local artifact under .ops_local (do not commit).")
     lines.append("")
 
@@ -310,6 +314,7 @@ def get_git_commit() -> str:
     """Get current git commit SHA (short)."""
     try:
         import subprocess
+
         result = subprocess.run(
             ["git", "rev-parse", "HEAD"],
             capture_output=True,
