@@ -23,12 +23,12 @@ Docs Reference Targets Gate CI workflow and link debt tracking system. Covers au
 ---
 
 ## Evidence / Source Links
-- [CI Workflow: docs-reference-targets-gate.yml](../../.github/workflows/docs_reference_targets_gate.yml)
+- [CI Workflow: docs-reference-targets-gate.yml](../../../.github/workflows/docs_reference_targets_gate.yml)
 - [Triage Report 2026-01-01](../DOCS_REFERENCE_TARGETS_TRIAGE_20260101.md)
 - [Debt Guide](../DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md)
 - [Gate Style Guide](../DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md)
 - [Baseline Snapshot](../DOCS_REFERENCE_TARGETS_BASELINE.json)
-- [Validator Script](../../scripts/ops/verify_docs_reference_targets.sh)
+- [Validator Script](../../../scripts/ops/verify_docs_reference_targets.sh)
 
 ---
 

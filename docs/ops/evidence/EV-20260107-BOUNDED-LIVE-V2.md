@@ -23,7 +23,7 @@ Bounded-Live Phase 1 configuration snapshot: Governance-enforced risk limits for
 ---
 
 ## Evidence / Source Links
-- [Config File: config/bounded_live.toml](../../config/bounded_live.toml)
+- [Config File: config/bounded_live.toml](../../../config/bounded_live.toml)
 - [PR #441: Bounded-live Phase 1 config](https://github.com/rauterfrank-ui/Peak_Trade/pull/441)
 - [Commit: 6e568152](https://github.com/rauterfrank-ui/Peak_Trade/commit/6e568152)
 - Related: Kill Switch Runbook, Risk Layer documentation

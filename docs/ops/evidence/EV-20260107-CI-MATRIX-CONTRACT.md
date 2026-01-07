@@ -24,8 +24,8 @@ CI Required Checks Matrix Naming Contract: Deterministic test discovery and auto
 
 ## Evidence / Source Links
 - [Matrix Naming Contract Doc](../ci_required_checks_matrix_naming_contract.md)
-- [CI Workflow: .github/workflows/ci.yml](../../.github/workflows/ci.yml)
-- [Contract Guard Script](../../scripts/ops/check_required_ci_contexts_present.sh)
+- [CI Workflow: .github/workflows/ci.yml](../../../.github/workflows/ci.yml)
+- [Contract Guard Script](../../../scripts/ops/check_required_ci_contexts_present.sh)
 - [PR #362: Matrix naming fix](https://github.com/rauterfrank-ui/Peak_Trade/pull/362)
 - [PR #512: Fail-open + concurrency hardening](https://github.com/rauterfrank-ui/Peak_Trade/pull/512)
 
@@ -33,7 +33,7 @@ CI Required Checks Matrix Naming Contract: Deterministic test discovery and auto
 
 ## Verification Steps
 1. Check contract doc: `cat docs/ops/ci_required_checks_matrix_naming_contract.md | grep -A 5 "Contract"`
-2. Verify guard script: `./scripts/ops/check_required_ci_contexts_present.sh`
+2. Verify guard script: `../../../scripts/ops/check_required_ci_contexts_present.sh`
 3. Inspect CI workflow: `grep -A 10 'name: tests' .github/workflows/ci.yml`
 4. Test docs-only PR: Create PR with only markdown changes, verify `tests (3.11)` check appears
 5. Expected: Guard script exits 0, matrix checks always created, auto-merge works on docs-only PRs
