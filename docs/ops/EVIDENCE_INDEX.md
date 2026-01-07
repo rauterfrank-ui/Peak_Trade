@@ -7,6 +7,20 @@
 
 ---
 
+## Fast Path (Quick Commands)
+
+**Generate new entry:**
+```bash
+python scripts/ops/generate_evidence_entry.py --tag <TAG> --category "<CATEGORY>" --title "<TITLE>"
+```
+
+**Validate Index:**
+```bash
+python scripts/ops/validate_evidence_index.py
+```
+
+---
+
 ## How to Add Evidence
 
 **What is Evidence?**
