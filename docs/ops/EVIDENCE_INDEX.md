@@ -68,15 +68,19 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20260103-CI-HARDENING** — CI required checks hardening session (PRs #512, #514, #515)
 - **EV-20260107-PR518** — CI Health Panel v0.2 - Persistent snapshots
 - **EV-20260107-PR519** — CI Health Panel v0.2 - Run-Now buttons
+- **EV-20260107-DOCS-REF-GATE** — Docs Reference Targets Gate (link validation, baseline tracking, triage)
+- **EV-20260107-CI-MATRIX-CONTRACT** — CI Required Checks Matrix Naming Contract (deterministic test discovery)
 
 ### Drill / Operator Evidence
 - **EV-20260107-P0-BASELINE** — Phase 0 Multi-Agent Roleplay baseline verification
+- **EV-20260107-WP5A-DRILL** — Phase 5 NO-LIVE Drill Pack (operator readiness templates)
 
 ### Incident / RCA Evidence
 - **EV-20260107-EXEC-TELEM-RUNBOOK** — Execution telemetry incident runbook (Phase 16D, PR #370)
 
 ### Config Snapshot Evidence
 - **EV-20260107-BOUNDED-LIVE-CONFIG** — Bounded-live Phase 1 config (PR #441, commit 6e568152)
+- **EV-20260107-BOUNDED-LIVE-V2** — Bounded-live Phase 1 config snapshot v2 (governance limits, phase progression criteria)
 
 ### Test / Refactor Evidence
 - **EV-20251228-PHASE8A** — Phase 8A: Kupiec POF deduplication (138/138 tests)
@@ -99,5 +103,5 @@ Evidence items are operational artifacts that document system behavior, process 
 **Version:** v0.1  
 **Maintained by:** ops  
 **Last Updated:** 2026-01-07  
-**Total Entries:** 9 (1 seed + 8 operational)  
+**Total Entries:** 13 (1 seed + 12 operational)  
 **Next Review:** [TBD] (recommend quarterly or pre-phase-gate)
