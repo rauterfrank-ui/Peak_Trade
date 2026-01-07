@@ -174,7 +174,7 @@ grep -A 10 "Audit Artefakte" docs/ops/README.md
 
 - **PR #599:** https://github.com/rauterfrank-ui/Peak_Trade/pull/599
 - **Merge Commit:** `a3a1a37a782660d5064e1cf774e969d9aa85fd17`
-- **Branch:** `docs/ops-audit-artifacts-v0` (deleted after merge)
+- **Branch:** docs/ops-audit-artifacts-v0 (deleted after merge)
 - **Placeholder Policy:** [PLACEHOLDER_POLICY.md](PLACEHOLDER_POLICY.md)
 
 ---
