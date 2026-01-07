@@ -1,12 +1,12 @@
 {
-  "generated_at_utc": "2026-01-07T03:41:33.102850+00:00",
-  "git_sha": "33973670050540f8d3b18f77809f42683610c707",
+  "generated_at_utc": "2026-01-07T03:58:19.660364+00:00",
+  "git_sha": "8fcd76b01fd91bdb28d528865453ad76922b015f",
   "tool_version": "1.0.0",
   "scan_stats": {
-    "total_markdown_files": 699,
+    "total_markdown_files": 700,
     "ignored_files": 9,
-    "scanned_files": 690,
-    "total_references": 8463
+    "scanned_files": 691,
+    "total_references": 8473
   },
   "missing_count": 167,
   "missing_items": [

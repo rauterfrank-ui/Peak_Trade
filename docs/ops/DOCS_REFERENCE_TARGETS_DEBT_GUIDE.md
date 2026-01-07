@@ -121,7 +121,7 @@ git commit -m "docs: update reference targets baseline (debt reduced)"
 
 Your PR documents a planned feature that doesn't exist yet.
 
-**Example:** Adding docs for `src/trading/advanced_orders.py` before implementing it.
+**Example:** Adding docs for `src/trading/advanced_orders.py` <!-- pt:ref-target-ignore --> before implementing it.
 
 **What happens:**
 1. ❌ Changed-Files Gate: FAIL (new broken link)
@@ -503,9 +503,9 @@ See `src/new_feature.py` for implementation details. <!-- pt:ref-target-ignore -
 
 ## Related Documentation
 
-- [Docs Reference Targets Gate (Changed Files)](../../scripts/ops/verify_docs_reference_targets.sh)
-- [Required Contexts Contract](../ops/REQUIRED_CHECKS_DRIFT_GUARD.md)
-- [Policy Critic Gate](../ops/POLICY_CRITIC_GATE.md)
+- Docs Reference Targets Gate (Changed Files): `scripts/ops/verify_docs_reference_targets.sh`
+- Drift Guard Documentation: `docs/ops/DRIFT_GUARD_QUICK_START.md`
+- Policy Critic Documentation: `docs/governance/POLICY_CRITIC_STATUS.md`
 
 ---
 
