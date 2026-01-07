@@ -1,9 +1,9 @@
-# Peak_Trade – Evidence Index (v0.1)
+# Peak_Trade – Evidence Index (v0.2)
 
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.1 (Operational - 16 entries)
+**Status:** v0.2 (Operational - 20 entries)
 
 ---
 
@@ -64,6 +64,11 @@ Evidence items are operational artifacts that document system behavior, process 
 | EV-20260107-WP5A-DRILL | 2026-01-07 | ops | [docs/ops/WP5A_PHASE5_NO_LIVE_DRILL_PACK.md](WP5A_PHASE5_NO_LIVE_DRILL_PACK.md) + [templates/phase5_no_live/](templates/phase5_no_live/) | Phase 5 NO-LIVE Drill Pack: 5-step operator procedure (Environment Setup, Systems Check, Strategy Dry-Run, Evidence Assembly, Go/No-Go), 8 templates (checklists, evidence, postmortem) | PR #504 (merged), NO-LIVE banner in all templates, hard prohibitions (no API keys, no real orders), GO = drill passed (NOT live authorization), two-person rule enforced | Operator readiness framework, risk: LOW (docs-only, no runtime code), 100 min estimated drill duration |
 | EV-20260107-CI-MATRIX-CONTRACT | 2026-01-07 | ops | [.github/workflows/ci.yml](../../.github/workflows/ci.yml#L40-L89) | CI Required Checks Matrix Naming Contract: Deterministic test discovery via `tests (${{ matrix.python-version }})` format, Python 3.11 guaranteed, job-level `if:` prohibited on required jobs | Guard job `ci-required-contexts-contract` blocks drift, checks: explicit names, matrix variables in names, Python 3.11 in matrix, PR-isolated concurrency | Ensures `tests (3.11)` and `strategy-smoke` materialize on every PR (docs-only or code-changes), fail-open safe |
 | EV-20260107-DOCS-REF-GATE | 2026-01-07 | ops | [scripts/ops/collect_docs_reference_targets_fullscan.py](../../scripts/ops/collect_docs_reference_targets_fullscan.py) | Docs Reference Targets Gate: Link validation (3229 links, 3079 valid), baseline tracking (3229_valid_links.txt), triage workflow for new stale links | Scans `docs/`, `templates/`, `*.md` files; detects dead paths, broken references; CI integration via `make docs-reference-targets-check`; triage protocol: accept, fix, or defer stale links | Prevents documentation drift, evidence: baseline commit, gate pass/fail status in CI logs |
+| EV-20260107-EXEC-PIPELINE-RUNBOOK | 2026-01-07 | ops | [docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md](../runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md) | ExecutionPipeline Governance & Risk Runbook v1.1 (Phase 16A V2): Live-order-execution permanently locked via `_FEATURE_STATUS_MAP["live_order_execution"] = "locked"`, NO executor dispatch to live env until governance sign-off, operator diagnostic procedures for BLOCKED_BY_GOVERNANCE/BLOCKED_BY_RISK/KILLED/INVALID statuses | Runbook references governance feature lock (src/governance/go_no_go.py), ExecutionStatus enum (BLOCKED_BY_GOVERNANCE), pipeline safety principles (no executor call if governance-locked), verification: `grep "live_order_execution" src/governance/go_no_go.py` should show "locked" | Governance-critical: Hard lock prevents live orders until multi-stakeholder approval; runbook version v1.1 (2026-ready), scope: Paper/Shadow/Testnet only, NO live routing |
+| EV-20251230-KILL-SWITCH-DRILL | 2025-12-30 | ops | [docs/runbooks/KILL_SWITCH_DRILL_PROCEDURE.md](../runbooks/KILL_SWITCH_DRILL_PROCEDURE.md) | Kill Switch Drill Procedure v1.0: Monthly operator drill protocol (Scenario 1: Manual Trigger, Scenario 2: Recovery, Scenario 3: Multiple Systems), pre-drill checklist (test env ready, no real trading), drill documentation template, post-drill review requirements | Drill commands: `python -m src.risk_layer.kill_switch.cli status/trigger/reset`, success criteria: kill switch triggers within 5 seconds, all systems stop within 30 seconds, recovery completes within 5 minutes, drill log stored per run | NO-LIVE drill (shadow/testnet only), monthly frequency recommended, operator readiness evidence, audit trail: drill session logs + signed off by drill lead |
+| EV-20251230-LIVE-TRANSITION-RUNBOOK | 2025-12-30 | ops | [docs/runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md](../runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md) | Live Mode Transition Runbook v1.0 (One-Way-Gate): Phase 1 Bounded-Live procedure, 4 required approvals (Risk/Security/Operations/System Owner), pre-transition checklist (kill switch tested, risk limits configured, operators trained), 3-gate activation protocol (enable_live_trading/live_mode_state/live_dry_run_mode), rollback procedure (limited window), post-transition monitoring (first 24h critical) | Bounded-live config reference: `config/bounded_live.toml`, verification: `python scripts/ops/verify_live_readiness.py` (pre-transition health check), kill switch drill completion required, NO go-live without 4/4 sign-offs | Governance-critical: One-way-gate requires multi-stakeholder approval; Phase 1 limits: $50/order, $500 total exposure, $100 daily loss; Phase 1→2 progression criteria: 7 days zero breaches + formal review |
+| EV-20260103-CI-CONTRACT-GUARD | 2026-01-03 | ops | [scripts/ops/check_required_ci_contexts_present.sh](../../scripts/ops/check_required_ci_contexts_present.sh) + [.github/workflows/ci.yml#L40-L89](../../.github/workflows/ci.yml#L40-L89) | CI Required Contexts Contract Guard (PR #515, commit 5a93f19): Blocks CI-workflow drift, enforces deterministic job naming (`tests (${{ matrix.python-version }})`), guarantees Python 3.11 in matrix, prohibits job-level `if:` on required jobs (`tests`, `strategy-smoke`), ensures PR-isolated concurrency (no cross-PR cancels) | Guard script: `scripts/ops/check_required_ci_contexts_present.sh`, runs on every PR as `ci-required-contexts-contract` job, exit code 1 if drift detected, fail-open safe (conservative: if changes-job fails, tests run anyway), contract enforces: explicit names, matrix vars in names, Python 3.11 present, PR-isolated concurrency | CI/Workflow Governance: Part of 2026-01-03 CI Hardening Session (PRs #512/#514/#515), ensures required checks materialize on every PR (docs-only or code-changes), prevents GitHub Ruleset blocking due to missing contexts |
+| EV-20251228-PHASE8-STDLIB-REFACTOR | 2025-12-28 | ops | [PHASE8A_MERGE_LOG.md](../../PHASE8A_MERGE_LOG.md) + [PHASE8B_MERGE_LOG.md](../../PHASE8B_MERGE_LOG.md) + [PHASE8D_MERGE_LOG.md](../../PHASE8D_MERGE_LOG.md) | Phase 8 (A/B/D) VaR Backtest Stdlib-Only Refactoring: Kupiec POF (138/138 tests), Christoffersen IND/CC (112/112 tests, numpy/scipy removed, Chi²(1) via erfc, Chi²(2) via exp(-x/2)), Traffic Light (93/93 tests, binomial thresholds), single canonical engines established, zero breaking changes, comprehensive delegation tests, backward-compatible legacy APIs preserved | Test evidence: `pytest tests/risk_layer/var_backtest/ -q` (all pass), `pytest tests/risk/validation/ -q` (delegation + legacy), CLI demos: `scripts/risk/run_christoffersen_demo.py`, linting clean (`ruff check . --quiet`), refactor-only (no new features), risk: VERY LOW (100% test coverage, reversible) | Stdlib-only claim: no numpy/scipy dependencies in Phase 8B Christoffersen (pure math.erfc/exp), canonical engines: `src/risk_layer/var_backtest/{kupiec_pof,christoffersen_tests,traffic_light}.py`, legacy wrappers: `src/risk/validation/{kupiec_pof,traffic_light}.py` delegate to canonical |
 
 ---
 
@@ -78,11 +83,17 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20260107-PR605** — Audit dependency remediation + Makefile fix + docs-reference-targets-gate (PR #605)
 - **EV-20260107-DOCS-REF-GATE** — Docs Reference Targets Gate (link validation, baseline tracking, triage)
 - **EV-20260107-CI-MATRIX-CONTRACT** — CI Required Checks Matrix Naming Contract (deterministic test discovery)
+- **EV-20260103-CI-CONTRACT-GUARD** — CI Required Contexts Contract Guard (PR #515, deterministic job naming, Python 3.11 guarantee)
 
 ### Drill / Operator Evidence
 - **EV-20260107-P0-BASELINE** — Phase 0 Multi-Agent Roleplay baseline verification (5/5 gate criteria, 6079 tests, 73/73 config smoke tests)
 - **EV-20260107-WP5A-DRILL** — Phase 5 NO-LIVE Drill Pack (5-step procedure, 8 templates, operator readiness, PR #504)
 - **EV-20260103-CI-RULESETS-RUNBOOK** — GitHub Rulesets operator troubleshooting runbook (mergeable UNKNOWN quickflow)
+- **EV-20251230-KILL-SWITCH-DRILL** — Kill Switch Drill Procedure v1.0 (monthly operator drills, 3 scenarios, SLAs)
+
+### Governance / Runbook Evidence
+- **EV-20260107-EXEC-PIPELINE-RUNBOOK** — ExecutionPipeline Governance & Risk Runbook v1.1 (live-execution locked, NO-LIVE enforcement)
+- **EV-20251230-LIVE-TRANSITION-RUNBOOK** — Live Mode Transition Runbook v1.0 (One-Way-Gate, 4 sign-offs, Phase 1 Bounded-Live)
 
 ### Incident / RCA Evidence
 - **EV-20260107-EXEC-TELEM-RUNBOOK** — Execution telemetry incident runbook (Phase 16D, PR #370)
@@ -94,6 +105,7 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20251228-PHASE8A** — Phase 8A: Kupiec POF deduplication (138/138 tests, single canonical engine)
 - **EV-20251228-PHASE8B** — Phase 8B: Christoffersen stdlib-only refactoring (112/112 tests, CLI demo, numpy/scipy removed)
 - **EV-20251228-PHASE8D** — Phase 8D: Traffic Light deduplication (93/93 tests, binomial thresholds)
+- **EV-20251228-PHASE8-STDLIB-REFACTOR** — Phase 8 (A/B/D) VaR Backtest Stdlib-Only Refactoring (343 tests total, numpy/scipy removed)
 
 ---
 
@@ -107,11 +119,12 @@ Evidence items are operational artifacts that document system behavior, process 
 | 2026-01-07 | Added EV-20260107-BOUNDED-LIVE-CONFIG (Priority 2: Config Snapshot) | ops |
 | 2026-01-07 | Added EV-20260107-EXEC-TELEM-RUNBOOK (Priority 3: Incident/Runbook) | ops |
 | 2026-01-07 | v0.1 Expansion: Added 6 high-value entries (CI-RULESETS-RUNBOOK, PHASE8B, WP5A-DRILL, CI-MATRIX-CONTRACT, DOCS-REF-GATE, PR605), total: 16 entries | ops |
+| 2026-01-07 | v0.2 Tier-B Expansion: Added 5 high-value entries (Exec Pipeline Runbook, Kill Switch Drill, Live Transition Runbook, CI Contract Guard, Phase 8 Stdlib Refactor), total: 20 entries | ops |
 
 ---
 
-**Version:** v0.1  
+**Version:** v0.2  
 **Maintained by:** ops  
 **Last Updated:** 2026-01-07  
-**Total Entries:** 16 (1 seed + 15 operational)  
+**Total Entries:** 20 (1 seed + 19 operational)  
 **Next Review:** [TBD] (recommend quarterly or pre-phase-gate)
