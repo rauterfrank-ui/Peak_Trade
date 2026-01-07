@@ -36,6 +36,7 @@ Evidence items are operational artifacts that document system behavior, process 
 | Evidence ID | Date | Owner | Source Link | Claim / What It Demonstrates | Verification | Notes |
 |-------------|------|-------|-------------|------------------------------|--------------|-------|
 | EV-20260107-SEED | 2026-01-07 | ops | [PR #596 Merge Log](PR_596_MERGE_LOG.md) | Placeholder policy v0 merged with CI green | GitHub PR status: merged, checks passed | Seed entry (example); no live trading claim |
+| EV-20260107-P0-BASELINE | 2026-01-07 | ops | [Inline: main@8a41315d] | Phase 0 Multi-Agent Roleplay complete: 5/5 gate criteria passed, 6079 tests discovered, 73/73 config smoke tests green (3.04s) | pytest 8.4.2, Python 3.9.6, workspace CLEAN, no active sessions | Phase 0→Phase 1 transition cleared |
 
 ---
 
@@ -60,6 +61,7 @@ Evidence items are operational artifacts that document system behavior, process 
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-01-07 | v0 Initial — 1 seed entry (PR #596 example) | ops |
+| 2026-01-07 | Added EV-20260107-P0-BASELINE (Phase 0 Multi-Agent Roleplay complete) | ops |
 
 ---
 
