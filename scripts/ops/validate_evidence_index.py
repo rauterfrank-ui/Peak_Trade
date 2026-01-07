@@ -127,7 +127,9 @@ def validate_index_file(index_path: Path, repo_root: Path) -> tuple:
 
     # Validate each row
     for row_idx, row in enumerate(table_rows, start=1):
-        cells = [cell.strip() for cell in row.split("|")[1:-1]]  # Remove leading/trailing empty cells
+        cells = [
+            cell.strip() for cell in row.split("|")[1:-1]
+        ]  # Remove leading/trailing empty cells
 
         if len(cells) < 7:
             errors.append(f"Row {row_idx}: Incomplete row (expected 7 columns, got {len(cells)})")

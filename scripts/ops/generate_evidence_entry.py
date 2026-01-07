@@ -40,8 +40,7 @@ def normalize_category(category: str) -> str:
     normalized = category.lower().strip()
     if normalized not in VALID_CATEGORIES:
         raise ValueError(
-            f"Invalid category: {category}. "
-            f"Valid: {', '.join(sorted(VALID_CATEGORIES))}"
+            f"Invalid category: {category}. Valid: {', '.join(sorted(VALID_CATEGORIES))}"
         )
     # Return title case for display
     return category.strip().title()
