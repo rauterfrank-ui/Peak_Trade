@@ -1511,6 +1511,35 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 
 - Badge semantics: PASS (exit 0), WARN (exit 2), FAIL (any other non-zero)
 
+## Placeholder & TODO Standards
+
+**Policy:** [PLACEHOLDER_POLICY.md](PLACEHOLDER_POLICY.md) — Repository-wide standards for placeholder markers (TODO, TBD, FIXME, XXX, etc.)
+
+**Features:**
+- ✅ Clear marker definitions (TODO vs. FIXME vs. TBD vs. XXX)
+- ✅ Ownership & issue-linking conventions
+- ✅ Template-first approach for docs/audit
+- ✅ Local inventory reports (git-ignored)
+
+**Quick Start:**
+```bash
+# Generate local placeholder reports
+python scripts/ops/placeholders/generate_placeholder_reports.py
+
+# View reports (not committed)
+cat .ops_local/inventory/TODO_PLACEHOLDER_INVENTORY.md
+cat .ops_local/inventory/TODO_PLACEHOLDER_TARGET_MAP.md
+```
+
+**Reports include:**
+- Pattern summary (counts per marker type)
+- Top files by pattern
+- Path-prefix analysis (docs/, src/, config/, .github/, other/)
+
+**Note:** Reports are local artifacts (`.ops_local/inventory/`) and NOT committed to Git.
+
+---
+
 ## Branch Hygiene (origin/main)
 Um zu verhindern, dass versehentlich lokale (unpushed) Commits in einen PR rutschen, erstelle neue Branches **immer von `origin/main`**:
 
