@@ -84,7 +84,7 @@ Evidence entries must belong to ONE of these categories:
 
 **Example:**
 - Entry ID: `EV-20260107-PHASE1`
-- File: `docs/ops/evidence/EV-20260107-PHASE1.md`
+- File path pattern: `docs/ops/evidence/EV-<YYYYMMDD>-<TAG>.md`
 
 **Note:** Evidence files are **optional**. Inline evidence (commit SHA, PR URL) is sufficient for many cases.
 
