@@ -65,11 +65,11 @@
 
 | Target Location | Relative Path from Evidence Entry | Example |
 |-----------------|-----------------------------------|---------|
-| `config/` files | `../../../config/` | `[bounded_live.toml](../../../config/bounded_live.toml)` |
-| `.github/workflows/` files | `../../../.github/workflows/` | `[ci.yml](../../../.github/workflows/ci.yml)` |
-| `scripts/ops/` files | `../../../scripts/ops/` | `[run_audit.sh](../../../scripts/ops/run_audit.sh)` |
-| `docs/ops/` files (sibling) | `../` | `[EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md)` |
-| Other `docs/` files | `../../../docs/` | `[README.md](../../../README.md)` |
+| `config/` files | `../../../config/` | `[bounded_live.toml](../../../config/bounded_live.toml)` <!-- pt:ref-target-ignore --> |
+| `.github/workflows/` files | `../../../.github/workflows/` | `[ci.yml](../../../.github/workflows/ci.yml)` <!-- pt:ref-target-ignore --> |
+| `scripts/ops/` files | `../../../scripts/ops/` | `[run_audit.sh](../../../scripts/ops/run_audit.sh)` <!-- pt:ref-target-ignore --> |
+| `docs/ops/` files (sibling) | `../` | `[EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md)` <!-- pt:ref-target-ignore --> |
+| Other `docs/` files | `../../../docs/` | `[README.md](../../../README.md)` <!-- pt:ref-target-ignore --> |
 
 ### Examples (Correct ✅ vs Incorrect ❌)
 
