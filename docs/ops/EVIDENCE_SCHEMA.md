@@ -68,8 +68,13 @@ Evidence entries must belong to ONE of these categories:
 
 **Prefer relative paths** for repo-internal references:
 - ✅ `[PR_596_MERGE_LOG.md](PR_596_MERGE_LOG.md)` (relative to `docs/ops/`)
-- ✅ `[config/bounded_live.toml](../../config/bounded_live.toml)` (relative path)
+- ✅ `[config/bounded_live.toml](../../../config/bounded_live.toml)` (from `docs/ops/evidence/`)
 - ⚠️ GitHub URLs: Use for external references only (e.g., PR URLs, workflow run URLs)
+
+**Important:** Evidence entries in `docs/ops/evidence/` are **3 levels deep** from repo root.
+- To link to repo-root files (e.g., `config/`, `.github/workflows/`, `scripts/`), use `../../../` prefix
+- Example: `[ci.yml](../../../.github/workflows/ci.yml)`
+- See [EVIDENCE_ENTRY_TEMPLATE.md](EVIDENCE_ENTRY_TEMPLATE.md) for detailed linking guide
 
 **Markdown Link Format:**
 ```markdown
