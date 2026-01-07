@@ -35,7 +35,7 @@ clean-all: clean
 # Run full repository audit (idempotent, safe)
 audit:
 	@echo "Running repository audit..."
-	./scripts/run_audit.sh
+	./scripts/ops/run_audit.sh
 
 # Show install hints for audit tools
 audit-tools:
