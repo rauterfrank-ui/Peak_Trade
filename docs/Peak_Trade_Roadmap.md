@@ -151,7 +151,7 @@ Ein sicherer, reproduzierbarer Weg von Signal → Order → Paper-Execution mit 
        - ersten Backtest ausführen (`scripts/run_backtest.py`).
 
 2. **Architektur-Übersicht**
-   - Markdown-Seite, z. B. `docs/architecture.md`:
+   - Markdown-Seite, z. B. `ARCHITECTURE_OVERVIEW` (geplant; Dateiname TBD):
      - Data-Layer
      - Strategy-Layer
      - Backtest-Layer
