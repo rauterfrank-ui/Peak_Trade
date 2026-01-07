@@ -1,0 +1,1016 @@
+{
+  "generated_at_utc": "2026-01-07T03:58:19.660364+00:00",
+  "git_sha": "8fcd76b01fd91bdb28d528865453ad76922b015f",
+  "tool_version": "1.0.0",
+  "scan_stats": {
+    "total_markdown_files": 700,
+    "ignored_files": 9,
+    "scanned_files": 691,
+    "total_references": 8473
+  },
+  "missing_count": 167,
+  "missing_items": [
+    {
+      "source_file": "docs/ARCHITECTURE_OVERVIEW.md",
+      "line_number": 109,
+      "target": "docs/Peak_Trade_Data_Layer_Doku.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ARCHITECTURE_OVERVIEW.md",
+      "line_number": 109,
+      "target": "docs/Peak_Trade_Data_Layer_Doku.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ARCHITECTURE_OVERVIEW.md",
+      "line_number": 184,
+      "target": "docs/Peak_Trade_Registry_Engine_Overview.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ARCHITECTURE_OVERVIEW.md",
+      "line_number": 184,
+      "target": "docs/Peak_Trade_Registry_Engine_Overview.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
+      "line_number": 491,
+      "target": "docs/SCHEDULER.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
+      "line_number": 491,
+      "target": "docs/SCHEDULER.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
+      "line_number": 492,
+      "target": "docs/RESEARCH_PIPELINE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
+      "line_number": 492,
+      "target": "docs/RESEARCH_PIPELINE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/AUTO_PORTFOLIOS.md",
+      "line_number": 108,
+      "target": "config/portfolios/auto_portfolio_3comp_20250104_120000.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/AUTO_PORTFOLIOS.md",
+      "line_number": 108,
+      "target": "config/portfolios/auto_portfolio_3comp_20250104_120000.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/DEV_GUIDE_ADD_EXCHANGE.md",
+      "line_number": 23,
+      "target": "src/data/my_exchange.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/DEV_GUIDE_ADD_EXCHANGE.md",
+      "line_number": 23,
+      "target": "src/data/my_exchange.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/DEV_GUIDE_ADD_EXCHANGE.md",
+      "line_number": 301,
+      "target": "docs/EXCHANGE_MY_EXCHANGE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/DEV_GUIDE_ADD_EXCHANGE.md",
+      "line_number": 301,
+      "target": "docs/EXCHANGE_MY_EXCHANGE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/DEV_GUIDE_ADD_STRATEGY.md",
+      "line_number": 25,
+      "target": "src/strategies/my_new_strategy.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/DEV_GUIDE_ADD_STRATEGY.md",
+      "line_number": 25,
+      "target": "src/strategies/my_new_strategy.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/KNOWLEDGE_BASE_INDEX.md",
+      "line_number": 22,
+      "target": "../ADR_0001_Peak_Tool_Stack.md",
+      "link_text": "ADR 0001: Tool Stack"
+    },
+    {
+      "source_file": "docs/KNOWLEDGE_BASE_INDEX.md",
+      "line_number": 275,
+      "target": "../ADR_0001_Peak_Tool_Stack.md",
+      "link_text": "Peak Trade Tool Stack ADR"
+    },
+    {
+      "source_file": "docs/KNOWLEDGE_SOURCES_REGISTRY.md",
+      "line_number": 25,
+      "target": "scripts/ingest_backtest_reports.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/KNOWLEDGE_SOURCES_REGISTRY.md",
+      "line_number": 25,
+      "target": "scripts/ingest_backtest_reports.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/KNOWLEDGE_SOURCES_REGISTRY.md",
+      "line_number": 65,
+      "target": "scripts/ingest_strategy_docs.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/KNOWLEDGE_SOURCES_REGISTRY.md",
+      "line_number": 65,
+      "target": "scripts/ingest_strategy_docs.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/KNOWLEDGE_SOURCES_REGISTRY.md",
+      "line_number": 128,
+      "target": "scripts/ingest_research_paper.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/KNOWLEDGE_SOURCES_REGISTRY.md",
+      "line_number": 128,
+      "target": "scripts/ingest_research_paper.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/LEARNING_PROMOTION_LOOP_INDEX.md",
+      "line_number": 423,
+      "target": "scripts/demo_live_overrides.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/LEARNING_PROMOTION_LOOP_INDEX.md",
+      "line_number": 445,
+      "target": "scripts/demo_live_overrides.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/LIVE_STATUS_REPORTS.md",
+      "line_number": 181,
+      "target": "docs/live_status_notes.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/LIVE_STATUS_REPORTS.md",
+      "line_number": 181,
+      "target": "docs/live_status_notes.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_FIRST_7_DAYS.md",
+      "line_number": 409,
+      "target": "docs/ai/…",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW.md",
+      "line_number": 99,
+      "target": "config/my_backtest.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW.md",
+      "line_number": 99,
+      "target": "config/my_backtest.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
+      "line_number": 240,
+      "target": "scripts/testnet_ping_exchange.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
+      "line_number": 240,
+      "target": "scripts/testnet_ping_exchange.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
+      "line_number": 240,
+      "target": "scripts/testnet_place_smoke_order.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
+      "line_number": 240,
+      "target": "scripts/testnet_place_smoke_order.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
+      "line_number": 277,
+      "target": "src/monitoring/dashboard.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
+      "line_number": 277,
+      "target": "src/monitoring/dashboard.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
+      "line_number": 278,
+      "target": "scripts/run_monitoring_server.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
+      "line_number": 278,
+      "target": "scripts/run_monitoring_server.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_41B_STRATEGY_ROBUSTNESS_AND_TIERING.md",
+      "line_number": 202,
+      "target": "docs/strategy_profiles/{STRATEGY_ID}_PROFILE_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_41B_STRATEGY_ROBUSTNESS_AND_TIERING.md",
+      "line_number": 515,
+      "target": "docs/strategy_profiles/{STRATEGY_ID}_PROFILE_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md",
+      "line_number": 322,
+      "target": "docs/PORTFOLIO_DECISION_LOG.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md",
+      "line_number": 322,
+      "target": "docs/PORTFOLIO_DECISION_LOG.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PORTFOLIO_RECIPES_AND_PRESETS.md",
+      "line_number": 138,
+      "target": "config/custom_recipes.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PORTFOLIO_RECIPES_AND_PRESETS.md",
+      "line_number": 138,
+      "target": "config/custom_recipes.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PORTFOLIO_RECIPES_AND_PRESETS.md",
+      "line_number": 481,
+      "target": "docs/PHASE_53_STRATEGY_AND_PORTFOLIO_LIBRARY_PUSH.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PORTFOLIO_RECIPES_AND_PRESETS.md",
+      "line_number": 481,
+      "target": "docs/PHASE_53_STRATEGY_AND_PORTFOLIO_LIBRARY_PUSH.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PROMOTION_LOOP_SAFETY_FEATURES.md",
+      "line_number": 492,
+      "target": "../CYCLES_6_10_LAB_FAST_FORWARD_REPORT.md",
+      "link_text": "CYCLES_6_10_LAB_FAST_FORWARD_REPORT.md"
+    },
+    {
+      "source_file": "docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md",
+      "line_number": 116,
+      "target": "scripts/view_top_candidates.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/Peak_Trade_Roadmap.md",
+      "line_number": 55,
+      "target": "src/registry/utils.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/Peak_Trade_Roadmap.md",
+      "line_number": 55,
+      "target": "src/registry/utils.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/Peak_Trade_Roadmap.md",
+      "line_number": 214,
+      "target": "src/exchange/client.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/Peak_Trade_Roadmap.md",
+      "line_number": 214,
+      "target": "src/exchange/client.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/Peak_Trade_Roadmap.md",
+      "line_number": 219,
+      "target": "src/exchange/helpers.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/Peak_Trade_Roadmap.md",
+      "line_number": 219,
+      "target": "src/exchange/helpers.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md",
+      "line_number": 320,
+      "target": "docs/PORTFOLIO_DECISION_LOG.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md",
+      "line_number": 320,
+      "target": "docs/PORTFOLIO_DECISION_LOG.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/REGISTRY_BACKTEST_CLI.md",
+      "line_number": 308,
+      "target": "../RISK_MANAGEMENT.md",
+      "link_text": "RISK_MANAGEMENT.md"
+    },
+    {
+      "source_file": "docs/SMOKE_TESTS.md",
+      "line_number": 104,
+      "target": "./TESTING.md",
+      "link_text": "Testing Guide"
+    },
+    {
+      "source_file": "docs/STRATEGY_LAYER_VNEXT.md",
+      "line_number": 648,
+      "target": "src/data/backend.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/SWEEPS_MARKET_SCANS.md",
+      "line_number": 88,
+      "target": "config/sweeps/ma_crossover.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/SWEEPS_MARKET_SCANS.md",
+      "line_number": 88,
+      "target": "config/sweeps/ma_crossover.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 14,
+      "target": "src/backtest/engine.py:1318",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 19,
+      "target": "src/backtest/engine.py:1319",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 26,
+      "target": "src/backtest/walkforward.py:387",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 33,
+      "target": "src/strategies/macd.py:232",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 38,
+      "target": "src/strategies/bollinger.py:237",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 49,
+      "target": "scripts/live_ops.py:189",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 54,
+      "target": "scripts/preview_live_orders.py:157",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 59,
+      "target": "scripts/run_portfolio_backtest.py:119",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 64,
+      "target": "scripts/preview_live_portfolio.py:96",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 69,
+      "target": "scripts/run_shadow_execution.py:502",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 80,
+      "target": "src/experiments/stress_tests.py:389",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 85,
+      "target": "src/experiments/monte_carlo.py:303",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 90,
+      "target": "scripts/run_monte_carlo_robustness.py:139",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 97,
+      "target": "scripts/demo_order_pipeline_backtest.py:306",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/execution/EXECUTION_TELEMETRY_LIVE_TRACK_V1.md",
+      "line_number": 509,
+      "target": "../PHASE_82_LIVE_TRACK_PANEL.md",
+      "link_text": "Live-Track Integration"
+    },
+    {
+      "source_file": "docs/infostream/README.md",
+      "line_number": 210,
+      "target": "scripts/register_infostream_event.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/infostream/README.md",
+      "line_number": 210,
+      "target": "scripts/register_infostream_event.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/learning_promotion/BOUNDED_AUTO_SAFETY_PLAYBOOK.md",
+      "line_number": 317,
+      "target": "scripts/check_bounded_auto_readiness.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/learning_promotion/BOUNDED_AUTO_SAFETY_PLAYBOOK.md",
+      "line_number": 317,
+      "target": "scripts/check_bounded_auto_readiness.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/observability/OBS_STACK_RUNBOOK.md",
+      "line_number": 158,
+      "target": "scripts/runner/backtest.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/observability/OBS_STACK_RUNBOOK.md",
+      "line_number": 158,
+      "target": "scripts/runner/backtest.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/DRIFT_GUARD_QUICK_START.md",
+      "line_number": 209,
+      "target": "docs/ops/REQUIRED_CHECKS_DRIFT_GUARD.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/DRIFT_GUARD_QUICK_START.md",
+      "line_number": 209,
+      "target": "docs/ops/REQUIRED_CHECKS_DRIFT_GUARD.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PHASE_16L_DOCKER_OPS_RUNNER.md",
+      "line_number": 71,
+      "target": "./reports:/reports",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PHASE_16L_DOCKER_OPS_RUNNER.md",
+      "line_number": 96,
+      "target": "./reports:/reports",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_123_MERGE_LOG.md",
+      "line_number": 17,
+      "target": "docs/core-architecture-docs",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_180_MERGE_LOG.md",
+      "line_number": 68,
+      "target": "src/data/data_contracts.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_180_MERGE_LOG.md",
+      "line_number": 68,
+      "target": "src/data/data_contracts.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_180_MERGE_LOG.md",
+      "line_number": 73,
+      "target": "src/backtest/backtest_engine.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_180_MERGE_LOG.md",
+      "line_number": 73,
+      "target": "src/backtest/backtest_engine.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_180_MERGE_LOG.md",
+      "line_number": 79,
+      "target": "src/strategies/strategy_base.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_180_MERGE_LOG.md",
+      "line_number": 79,
+      "target": "src/strategies/strategy_base.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_180_MERGE_LOG.md",
+      "line_number": 84,
+      "target": "src/data/parquet_cache.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_180_MERGE_LOG.md",
+      "line_number": 84,
+      "target": "src/data/parquet_cache.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_195_MERGE_LOG.md",
+      "line_number": 277,
+      "target": "docs/ops/TEMPLATE_MERGE_LOG.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_195_MERGE_LOG.md",
+      "line_number": 277,
+      "target": "docs/ops/TEMPLATE_MERGE_LOG.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_197_MERGE_LOG.md",
+      "line_number": 522,
+      "target": "src/notifications/health.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_197_MERGE_LOG.md",
+      "line_number": 522,
+      "target": "src/notifications/health.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_199_MERGE_LOG.md",
+      "line_number": 211,
+      "target": "./scripts/obs/run_stage1_snapshot_docker.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_199_MERGE_LOG.md",
+      "line_number": 212,
+      "target": "./scripts/obs/run_stage1_trends_docker.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_213_MERGE_LOG.md",
+      "line_number": 39,
+      "target": "docs/PEAK_TRADE_STATUS_OVERVERVIEW.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_213_MERGE_LOG.md",
+      "line_number": 39,
+      "target": "docs/PEAK_TRADE_STATUS_OVERVERVIEW.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_218_MERGE_LOG.md",
+      "line_number": 6,
+      "target": "docs/ops-pr217-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_228_MERGE_LOG.md",
+      "line_number": 27,
+      "target": "scripts/git_push_and_pr.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_228_MERGE_LOG.md",
+      "line_number": 27,
+      "target": "scripts/git_push_and_pr.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_240_MERGE_LOG.md",
+      "line_number": 27,
+      "target": "./scripts/ops/check_run_helpers_adoption.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_240_MERGE_LOG.md",
+      "line_number": 34,
+      "target": "./scripts/ops/check_run_helpers_adoption.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_250_MERGE_LOG.md",
+      "line_number": 39,
+      "target": "./scripts/ops/test_ops_doctor_minimal.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_250_MERGE_LOG.md",
+      "line_number": 48,
+      "target": "./scripts/ops/ops_doctor.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_250_MERGE_LOG.md",
+      "line_number": 50,
+      "target": "./scripts/ops/test_ops_doctor_minimal.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_250_MERGE_LOG.md",
+      "line_number": 51,
+      "target": "./scripts/ops/demo_ops_doctor.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_593_MERGE_LOG.md",
+      "line_number": 13,
+      "target": "docs/pr-76-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_593_MERGE_LOG.md",
+      "line_number": 14,
+      "target": "docs/ops/pr-93-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_593_MERGE_LOG.md",
+      "line_number": 15,
+      "target": "docs/ops-pr-85-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_593_MERGE_LOG.md",
+      "line_number": 16,
+      "target": "docs/merge-log-pr-350-docs-reference-targets-golden-corpus",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_593_MERGE_LOG.md",
+      "line_number": 17,
+      "target": "docs/frontdoor-roadmap-runner",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_76_MERGE_LOG.md",
+      "line_number": 9,
+      "target": "docs/pr-74-delivery-note",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_78_MERGE_LOG.md",
+      "line_number": 9,
+      "target": "docs/pr-76-merge-log-index",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_93_MERGE_LOG.md",
+      "line_number": 125,
+      "target": "docs/ops/PR_92_MERGE_LOG.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_93_MERGE_LOG.md",
+      "line_number": 125,
+      "target": "docs/ops/PR_92_MERGE_LOG.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/STABILITY_RESILIENCE_PLAN_V1.md",
+      "line_number": 509,
+      "target": "scripts/run_smoke_tests.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/STABILITY_RESILIENCE_PLAN_V1.md",
+      "line_number": 509,
+      "target": "scripts/run_smoke_tests.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/STASH_TRIAGE_SESSION_20251223-051920.md",
+      "line_number": 43,
+      "target": "scripts/run_smoke_tests.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/TEST_HEALTH_AUTOMATION_V0.md",
+      "line_number": 279,
+      "target": "scripts/my_smoke_test.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/TEST_HEALTH_AUTOMATION_V0.md",
+      "line_number": 280,
+      "target": "scripts/check_db_connection.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/merge_logs/2025-12-25_pr-350_docs-reference-targets-golden-corpus.md",
+      "line_number": 44,
+      "target": "./scripts/ops/verify_docs_reference_targets.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/position_sizing/VOL_REGIME_OVERLAY_SIZER.md",
+      "line_number": 493,
+      "target": "../POSITION_SIZING.md",
+      "link_text": "Position Sizing Overview"
+    },
+    {
+      "source_file": "docs/position_sizing/VOL_REGIME_OVERLAY_SIZER.md",
+      "line_number": 494,
+      "target": "src/backtest/engine.py:424-440",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/position_sizing/VOL_REGIME_OVERLAY_SIZER.md",
+      "line_number": 495,
+      "target": "src/core/position_sizing.py:14-31",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/CLAUDE_NOTES.md",
+      "line_number": 40,
+      "target": "docs/…",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/CLAUDE_NOTES.md",
+      "line_number": 83,
+      "target": "config/risk_conservative.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/CLAUDE_NOTES.md",
+      "line_number": 83,
+      "target": "config/risk_conservative.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/A0_COMPLETION_SUMMARY.md",
+      "line_number": 23,
+      "target": "docs/risk/AGENT_HANDOFF.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/A0_COMPLETION_SUMMARY.md",
+      "line_number": 23,
+      "target": "docs/risk/AGENT_HANDOFF.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/A0_COMPLETION_SUMMARY.md",
+      "line_number": 371,
+      "target": "docs/risk/AGENT_HANDOFF.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/A0_COMPLETION_SUMMARY.md",
+      "line_number": 371,
+      "target": "docs/risk/AGENT_HANDOFF.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/COMPONENT_VAR_MVP.md",
+      "line_number": 353,
+      "target": "docs/risk/roadmaps/COMPONENT_VAR_ROADMAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/COMPONENT_VAR_MVP.md",
+      "line_number": 353,
+      "target": "docs/risk/roadmaps/COMPONENT_VAR_ROADMAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/COMPONENT_VAR_PHASE2A_REPORTING.md",
+      "line_number": 308,
+      "target": "../COMPONENT_VAR_ROADMAP_PATCHED.md",
+      "link_text": "../COMPONENT_VAR_ROADMAP_PATCHED.md"
+    },
+    {
+      "source_file": "docs/risk/FILES_READY_FOR_AGENTS.md",
+      "line_number": 114,
+      "target": "docs/risk/AGENT_HANDOFF.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/FILES_READY_FOR_AGENTS.md",
+      "line_number": 114,
+      "target": "docs/risk/AGENT_HANDOFF.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/FILES_READY_FOR_AGENTS.md",
+      "line_number": 329,
+      "target": "docs/risk/AGENT_HANDOFF.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/FILES_READY_FOR_AGENTS.md",
+      "line_number": 329,
+      "target": "docs/risk/AGENT_HANDOFF.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/risk/STRESS_GATE_RUNBOOK.md",
+      "line_number": 469,
+      "target": "../../RISK_LAYER_V1_PRODUCTION_READY_REPORT.md",
+      "link_text": "RISK_LAYER_V1_PRODUCTION_READY_REPORT.md"
+    },
+    {
+      "source_file": "docs/roadmap/P2_OBSERVABILITY_BACKLOG.md",
+      "line_number": 249,
+      "target": "src/data/lake/schema.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/roadmap/P2_OBSERVABILITY_BACKLOG.md",
+      "line_number": 249,
+      "target": "src/data/lake/schema.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/roadmap/P2_OBSERVABILITY_BACKLOG.md",
+      "line_number": 250,
+      "target": "src/data/lake/ingest.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/roadmap/P2_OBSERVABILITY_BACKLOG.md",
+      "line_number": 250,
+      "target": "src/data/lake/ingest.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/roadmap/P2_OBSERVABILITY_BACKLOG.md",
+      "line_number": 251,
+      "target": "src/data/lake/query.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/roadmap/P2_OBSERVABILITY_BACKLOG.md",
+      "line_number": 251,
+      "target": "src/data/lake/query.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md",
+      "line_number": 287,
+      "target": "scripts/smoke_test_paper.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/KNOWLEDGE_PRODUCTION_DEPLOYMENT_DRILL.md",
+      "line_number": 508,
+      "target": "../KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md",
+      "link_text": "Knowledge API Implementation Summary"
+    },
+    {
+      "source_file": "docs/runbooks/KNOWLEDGE_PRODUCTION_DEPLOYMENT_DRILL.md",
+      "line_number": 509,
+      "target": "../KNOWLEDGE_API_SMOKE_TESTS.md",
+      "link_text": "Knowledge API Smoke Tests"
+    },
+    {
+      "source_file": "docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md",
+      "line_number": 528,
+      "target": "src/offline/offline_realtime_report.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md",
+      "line_number": 528,
+      "target": "src/offline/offline_realtime_report.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md",
+      "line_number": 529,
+      "target": "src/offline/offline_realtime_meta_report.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md",
+      "line_number": 529,
+      "target": "src/offline/offline_realtime_meta_report.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
+      "line_number": 197,
+      "target": "config/strategies/armstrong_cycle_default.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
+      "line_number": 197,
+      "target": "config/strategies/armstrong_cycle_default.toml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/strategies/R_AND_D_STRATEGIES.md",
+      "line_number": 365,
+      "target": "src/execution/position_sizing.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/strategies/R_AND_D_STRATEGIES.md",
+      "line_number": 365,
+      "target": "src/execution/position_sizing.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/LIVE_STATUS_PANELS.md",
+      "line_number": 281,
+      "target": "../src/webui/services/live_panel_data.py",
+      "link_text": "Service Layer API"
+    },
+    {
+      "source_file": "docs/webui/LIVE_STATUS_PANELS.md",
+      "line_number": 282,
+      "target": "../src/live/status_providers.py",
+      "link_text": "Panel Providers"
+    },
+    {
+      "source_file": "docs/webui/LIVE_STATUS_PANELS.md",
+      "line_number": 283,
+      "target": "../src/reporting/live_status_snapshot_builder.py",
+      "link_text": "Snapshot Builder"
+    },
+    {
+      "source_file": "docs/webui/LIVE_STATUS_PANELS.md",
+      "line_number": 284,
+      "target": "../tests/test_live_status_snapshot_panels.py",
+      "link_text": "Tests"
+    }
+  ]
+}

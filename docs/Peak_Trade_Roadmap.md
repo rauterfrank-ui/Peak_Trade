@@ -52,7 +52,7 @@ Du hast **einen** klaren Befehl für einen vollständigen Backtest, inkl. Stats 
      - `strategy_name`, `config_hash`, `data_source`, `start_date`, `end_date`, `timeframe`, `notes`.
 
 2. **Registry-Helper-Funktionen bauen**
-   - Datei z. B. `src/registry/utils.py`:
+   - Datei(en) im Registry-Modul (z.B. unter `src/`):
      - `log_backtest_result(result, meta)`
      - `log_live_risk_check(result, meta)`
      - `log_paper_trade_run(result, meta)`
@@ -151,7 +151,7 @@ Ein sicherer, reproduzierbarer Weg von Signal → Order → Paper-Execution mit 
        - ersten Backtest ausführen (`scripts/run_backtest.py`).
 
 2. **Architektur-Übersicht**
-   - Markdown-Seite, z. B. `docs/architecture.md`:
+   - Markdown-Seite, z. B. `ARCHITECTURE_OVERVIEW` (geplant; Dateiname TBD):
      - Data-Layer
      - Strategy-Layer
      - Backtest-Layer
@@ -211,12 +211,12 @@ Stabile Infra, einfache Reproduzierbarkeit, Basis für spätere Automatisierung 
 ### Aufgaben (abgeschlossen)
 
 1. **Exchange-Client mit CCXT**
-   - `src/exchange/client.py` – `ExchangeClient` Klasse
+   - Exchange-Client-Modul (siehe `src/exchange/`) – `ExchangeClient` Klasse
    - Read-only: OHLCV, Ticker, Order-Book
    - Konfiguration über `config.toml`
 
 2. **Helper-Funktionen**
-   - `src/exchange/helpers.py` – Timeframe-Umrechnung, Symbol-Normalisierung
+   - Exchange-Helper-Modul – Timeframe-Umrechnung, Symbol-Normalisierung
 
 3. **Scripts**
    - `scripts/inspect_exchange.py` – Exchange-Daten inspizieren

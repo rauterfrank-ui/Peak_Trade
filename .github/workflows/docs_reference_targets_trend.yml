@@ -1,0 +1,126 @@
+name: Docs Reference Targets Trend
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'scripts/ops/collect_docs_reference_targets_fullscan.py'
+      - 'scripts/ops/verify_docs_reference_targets_trend.sh'
+      - 'docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'scripts/ops/collect_docs_reference_targets_fullscan.py'
+      - 'scripts/ops/verify_docs_reference_targets_trend.sh'
+      - 'docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json'
+
+jobs:
+  trend-check:
+    name: Check Docs Link Debt Trend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for git operations
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          # No special dependencies needed - uses stdlib only
+          python --version
+
+      - name: Check if baseline exists
+        id: check-baseline
+        run: |
+          if [[ -f "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json" ]]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip if baseline missing
+        if: steps.check-baseline.outputs.exists == 'false'
+        run: |
+          echo "⚠️  Baseline not found - skipping trend check"
+          echo ""
+          echo "To enable this check, create a baseline:"
+          echo "  python scripts/ops/collect_docs_reference_targets_fullscan.py"
+          echo "  git add docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json"
+          echo "  git commit -m 'docs: add reference targets baseline'"
+          echo ""
+          echo "See: docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md"
+
+      - name: Run trend check
+        if: steps.check-baseline.outputs.exists == 'true'
+        id: trend-check
+        run: |
+          set +e  # Don't exit on failure - we want to capture output
+
+          # Run trend check
+          output=$(scripts/ops/verify_docs_reference_targets_trend.sh --verbose 2>&1)
+          exit_code=$?
+
+          # Save output for annotation
+          echo "$output" | tee trend-check-output.txt
+
+          # Set outputs
+          echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
+
+          exit $exit_code
+
+      - name: Annotate on failure
+        if: failure() && steps.check-baseline.outputs.exists == 'true'
+        run: |
+          echo "::error file=docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json,title=New Missing Doc Targets Introduced::New broken documentation links were detected. Run 'scripts/ops/verify_docs_reference_targets_trend.sh --verbose' locally to see details. See docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md for guidance."
+
+          # Show summary in job summary
+          cat >> $GITHUB_STEP_SUMMARY <<'EOF'
+          ## ❌ Docs Reference Targets Trend Check Failed
+
+          New missing documentation targets were introduced in this PR.
+
+          ### What This Means
+
+          The **Docs Reference Targets Trend Gate** ensures we don't add new broken links in documentation. Your PR has introduced new references to files/paths that don't exist.
+
+          ### How to Fix
+
+          **Option 1: Fix the broken links (recommended)**
+          1. Run locally: `scripts/ops/verify_docs_reference_targets_trend.sh --verbose`
+          2. Fix the new missing targets shown in the output
+          3. Commit and push the fixes
+
+          **Option 2: Update baseline (if intentional)**
+          If these new missing targets are intentional (e.g., documentation for future features):
+          1. Run: `python scripts/ops/collect_docs_reference_targets_fullscan.py`
+          2. Commit the updated baseline: `git add docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json`
+          3. Include justification in your PR description
+
+          ### More Information
+
+          See: [docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md](../blob/main/docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md)
+          EOF
+
+      - name: Success summary
+        if: success() && steps.check-baseline.outputs.exists == 'true'
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY <<'EOF'
+          ## ✅ Docs Reference Targets Trend Check Passed
+
+          No new missing documentation targets were introduced. Good job! 🎉
+
+          If your PR fixed broken links, consider updating the baseline to reflect the improvement:
+          ```bash
+          python scripts/ops/collect_docs_reference_targets_fullscan.py
+          git add docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json
+          ```
+          EOF
