@@ -3,7 +3,7 @@
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.1 (Operational - 9 entries)
+**Status:** v0.1 (Operational - 10 entries)
 
 ---
 
@@ -58,6 +58,7 @@ Evidence items are operational artifacts that document system behavior, process 
 | EV-20260107-PR519 | 2026-01-07 | ops | [docs/ops/PR_519_CI_HEALTH_BUTTONS_V0_2.md](PR_519_CI_HEALTH_BUTTONS_V0_2.md) | PR #519: CI Health Panel v0.2 - Run-Now buttons + auto-refresh, 27/27 tests passed | In-memory lock prevents parallel runs (HTTP 409), fetch-based updates, XSS-safe | Ready for review, risk: LOW (local-only, no destructive ops) |
 | EV-20260107-BOUNDED-LIVE-CONFIG | 2026-01-07 | ops | [config/bounded_live.toml](../../config/bounded_live.toml) | Bounded-live Phase 1 config snapshot: $100 daily loss limit, $500 total exposure, strict enforcement (no overrides), kill switch required | Commit 6e568152 (PR #441), enforce_limits=true, allow_override=false, require_kill_switch_active=true, 7-day min phase duration | Governance-critical config, Phase 1→2 progression requires zero breaches + formal review |
 | EV-20260107-EXEC-TELEM-RUNBOOK | 2026-01-07 | ops | [docs/ops/EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md](EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md) | Execution telemetry incident runbook (Phase 16D Ops Pack): 7 diagnostic commands, symptom→action mapping, read-only diagnostics | Commit b194a622 (PR #370), covers missing fills, latency spikes, parse errors, session log analysis | Operator reference for execution telemetry incidents, no system changes |
+| EV-20260107-PR605 | 2026-01-07 | ops | [PR #605 Merge Log](PR_605_MERGE_LOG.md) | PR #605: Audit dependency remediation (urllib3, wheel CVEs) + Makefile fix + docs-reference-targets-gate unblocked, 19/19 CI checks passed | Commit 59fa5eb4 (squash merge), all gates green (Audit 1m11s, Policy Critic 1m17s, tests 3.9/3.10/3.11 all pass), docs stale path reference removed | Security remediation + build tooling fix, zero regressions |
 
 ---
 
