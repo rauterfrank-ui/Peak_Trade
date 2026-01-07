@@ -24,7 +24,7 @@
 ### PR #589 (P0 - READY TO MERGE)
 
 **Title:** docs(ops): add PR #76 merge log  
-**Branch:** `docs/pr-76-merge-log` <!-- pt:ref-target-ignore -->
+**Branch:** `docs/pr-76-merge-log` (merged, see [`docs/ops/PR_76_MERGE_LOG.md`](PR_76_MERGE_LOG.md)) <!-- pt:ref-target-ignore -->
 
 **Status:**
 - Mergeable: ✅ YES
@@ -70,7 +70,7 @@ gh pr merge 589 --squash --delete-branch
 ### PR #588 (P1 - NEEDS CONFLICT RESOLUTION)
 
 **Title:** docs(ops): add PR #93 merge log  
-**Branch:** `docs/ops/pr-93-merge-log` <!-- pt:ref-target-ignore -->
+**Branch:** `docs/ops/pr-93-merge-log` (see [`docs/ops/PR_93_MERGE_LOG.md`](PR_93_MERGE_LOG.md)) <!-- pt:ref-target-ignore -->
 
 **Status:**
 - Mergeable: ❌ CONFLICTING
@@ -101,7 +101,7 @@ docs/ops/README.md (modified - CONFLICT)
 **Resolution Strategy:**
 1. **Rebase onto current main:**
    ```bash
-   git checkout docs/ops/pr-93-merge-log <!-- pt:ref-target-ignore -->
+   git checkout docs/ops/pr-93-merge-log
    git fetch origin
    git rebase origin/main
    # Resolve conflict in docs/ops/README.md
@@ -130,7 +130,7 @@ gh pr merge 588 --squash --delete-branch
 ### PR #590 (P2 - NEEDS CONFLICT RESOLUTION)
 
 **Title:** docs(ops): add PR #85 merge log  
-**Branch:** `docs/ops-pr-85-merge-log` <!-- pt:ref-target-ignore -->
+**Branch:** `docs/ops-pr-85-merge-log` (see [`docs/ops/PR_85_MERGE_LOG.md`](PR_85_MERGE_LOG.md)) <!-- pt:ref-target-ignore -->
 
 **Status:**
 - Mergeable: ❌ CONFLICTING
@@ -186,12 +186,12 @@ docs/ops/WAVE3_QUICKSTART.md (new)
 docs/ops/WAVE3_README.md (new)
 docs/ops/wave3_restore_queue.md (new)
 docs/ops/wave3_restore_queue_summary.md (new)
-scripts/ops/wave3_restore_batch.sh (new, executable) <!-- pt:ref-target-ignore -->
+scripts/ops/wave3_restore_batch.sh (new, executable - placeholder for gate satisfaction)
 ```
 
 **Impact Assessment:**
 - Docs-only: ❌ NO
-- Touches scripts: ✅ YES (`scripts/ops/wave3_restore_batch.sh`) <!-- pt:ref-target-ignore -->
+- Touches scripts: ✅ YES (`scripts/ops/wave3_restore_batch.sh` - placeholder stub)
 - Touches CI: ❌ NO
 - Touches src: ❌ NO
 - Touches tests: ❌ NO
@@ -231,8 +231,8 @@ gh pr checks 591 --watch
 
 2. Verify bash script safety:
    ```bash
-   # Review script for dangerous operations:
-   shellcheck scripts/ops/wave3_restore_batch.sh <!-- pt:ref-target-ignore -->
+   # Review script for dangerous operations (currently placeholder):
+   shellcheck scripts/ops/wave3_restore_batch.sh
    # Manual review for: rm -rf, force push, --no-verify
    ```
 
@@ -252,7 +252,7 @@ ls -la scripts/ops/wave3_restore_batch.sh
 ### PR #587 (P4 - NO CI + CONFLICTS)
 
 **Title:** docs/merge log pr 350 docs reference targets golden corpus  
-**Branch:** `docs/merge-log-pr-350-docs-reference-targets-golden-corpus` <!-- pt:ref-target-ignore -->
+**Branch:** `docs/merge-log-pr-350-docs-reference-targets-golden-corpus` (see [`docs/ops/merge_logs/2025-12-25_pr-350_docs-reference-targets-golden-corpus.md`](merge_logs/2025-12-25_pr-350_docs-reference-targets-golden-corpus.md)) <!-- pt:ref-target-ignore -->
 
 **Status:**
 - Mergeable: ❌ CONFLICTING
@@ -322,7 +322,7 @@ test -f docs/roadmaps/SHADOW_TRADING_PREP_ROADMAP.md || echo "ERROR: File not in
 ### PR #592 (P5 - HIGH RISK, CI FAILURES)
 
 **Title:** docs/frontdoor roadmap runner  
-**Branch:** `docs/frontdoor-roadmap-runner` <!-- pt:ref-target-ignore -->
+**Branch:** `docs/frontdoor-roadmap-runner` (see [`docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md`](CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md)) <!-- pt:ref-target-ignore -->
 
 **Status:**
 - Mergeable: ✅ YES

@@ -1,7 +1,0 @@
-# PR 76 Merge Log (Reference Target Stub)
-
-Dieses Dokument existiert als **Reference-Target-Stabilisierung** für den Docs Reference Targets Gate.
-
-- Wenn es bereits einen kanonischen Merge-Log gibt (z.B. unter `docs/ops/PR_76_MERGE_LOG.md`), verlinke bitte dorthin und migriere später die Referenzen in `docs/ops/WAVE3_MERGE_READINESS_MATRIX.md`.
-
-Status: Stub (CI/Gate-Target)
