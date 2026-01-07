@@ -75,7 +75,7 @@ Remediated all pip-audit security vulnerabilities and fixed Makefile bug prevent
 ### Files Modified
 
 1. **Makefile** (1 line)
-   - Fixed audit target path: `./scripts/run_audit.sh` → `./scripts/ops/run_audit.sh`
+   - Corrected Makefile audit target to use `scripts/ops/run_audit.sh` (previously pointed to a non-existent path).
    - Enables local `make audit` execution
 
 2. **pyproject.toml** (2 lines)
@@ -169,4 +169,3 @@ uv export --format requirements.txt --all-extras --all-groups --locked --no-hash
 *Document created: 2026-01-07*  
 *Author: Cursor Agent (Peak_Trade Audit Remediation)*  
 *Next Review: 2026-02-07 (if mlflow finding persists)*
-
