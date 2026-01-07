@@ -3,7 +3,7 @@
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.1 (Operational - 7 entries)
+**Status:** v0.1 (Operational - 9 entries)
 
 ---
 
@@ -42,6 +42,8 @@ Evidence items are operational artifacts that document system behavior, process 
 | EV-20251228-PHASE8D | 2025-12-28 | ops | [PHASE8D_MERGE_LOG.md](../../PHASE8D_MERGE_LOG.md) | Phase 8D: Traffic Light deduplication complete, binomial-based thresholds, 93/93 tests passed | Canonical engine unchanged, 12 delegation tests, backward compatibility maintained | Ready for merge, risk: VERY LOW, follows Phase 8A pattern |
 | EV-20260107-PR518 | 2026-01-07 | ops | [docs/ops/PR_518_CI_HEALTH_PANEL_V0_2.md](PR_518_CI_HEALTH_PANEL_V0_2.md) | PR #518: CI Health Panel v0.2 - persistent snapshots (JSON + Markdown), 20/20 tests passed | Atomic writes via os.replace(), error handling tested, snapshot integrity verified | Ready for review, risk: LOW (read-only, local-only) |
 | EV-20260107-PR519 | 2026-01-07 | ops | [docs/ops/PR_519_CI_HEALTH_BUTTONS_V0_2.md](PR_519_CI_HEALTH_BUTTONS_V0_2.md) | PR #519: CI Health Panel v0.2 - Run-Now buttons + auto-refresh, 27/27 tests passed | In-memory lock prevents parallel runs (HTTP 409), fetch-based updates, XSS-safe | Ready for review, risk: LOW (local-only, no destructive ops) |
+| EV-20260107-BOUNDED-LIVE-CONFIG | 2026-01-07 | ops | [config/bounded_live.toml](../../config/bounded_live.toml) | Bounded-live Phase 1 config snapshot: $100 daily loss limit, $500 total exposure, strict enforcement (no overrides), kill switch required | Commit 6e568152 (PR #441), enforce_limits=true, allow_override=false, require_kill_switch_active=true, 7-day min phase duration | Governance-critical config, Phase 1→2 progression requires zero breaches + formal review |
+| EV-20260107-EXEC-TELEM-RUNBOOK | 2026-01-07 | ops | [docs/ops/EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md](EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md) | Execution telemetry incident runbook (Phase 16D Ops Pack): 7 diagnostic commands, symptom→action mapping, read-only diagnostics | Commit b194a622 (PR #370), covers missing fills, latency spikes, parse errors, session log analysis | Operator reference for execution telemetry incidents, no system changes |
 
 ---
 
@@ -57,10 +59,10 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20260107-P0-BASELINE** — Phase 0 Multi-Agent Roleplay baseline verification
 
 ### Incident / RCA Evidence
-- [TBD] — Incident postmortems hier verlinken
+- **EV-20260107-EXEC-TELEM-RUNBOOK** — Execution telemetry incident runbook (Phase 16D, PR #370)
 
 ### Config Snapshot Evidence
-- [TBD] — Required checks, branch protection snapshots
+- **EV-20260107-BOUNDED-LIVE-CONFIG** — Bounded-live Phase 1 config (PR #441, commit 6e568152)
 
 ### Test / Refactor Evidence
 - **EV-20251228-PHASE8A** — Phase 8A: Kupiec POF deduplication (138/138 tests)
@@ -75,11 +77,13 @@ Evidence items are operational artifacts that document system behavior, process 
 | 2026-01-07 | v0 Initial — 1 seed entry (PR #596 example) | ops |
 | 2026-01-07 | Added EV-20260107-P0-BASELINE (Phase 0 Multi-Agent Roleplay complete) | ops |
 | 2026-01-07 | Added 5 Priority 1 evidence entries (CI Hardening, Phase 8A/8D, PR 518/519) | ops |
+| 2026-01-07 | Added EV-20260107-BOUNDED-LIVE-CONFIG (Priority 2: Config Snapshot) | ops |
+| 2026-01-07 | Added EV-20260107-EXEC-TELEM-RUNBOOK (Priority 3: Incident/Runbook) | ops |
 
 ---
 
 **Version:** v0.1  
 **Maintained by:** ops  
 **Last Updated:** 2026-01-07  
-**Total Entries:** 7 (1 seed + 6 operational)  
+**Total Entries:** 9 (1 seed + 8 operational)  
 **Next Review:** [TBD] (recommend quarterly or pre-phase-gate)
