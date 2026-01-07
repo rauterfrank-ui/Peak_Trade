@@ -1,0 +1,7 @@
+# PR 350 Merge Log (Docs Reference Targets Golden Corpus) – Reference Target Stub
+
+Dieses Dokument existiert als **Reference-Target-Stabilisierung** für den Docs Reference Targets Gate.
+
+- Falls ein kanonischer Merge-Log existiert (z.B. `docs/ops/PR_350_MERGE_LOG.md`), verlinke bitte dorthin und migriere später die Referenzen.
+
+Status: Stub (CI/Gate-Target)
