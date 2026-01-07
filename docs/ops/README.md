@@ -1114,6 +1114,51 @@ BASE_URL=https://prod.example.com ./scripts/ops/knowledge_prod_smoke.sh
 
 ---
 
+## 📝 Ops Templates
+
+Standardized templates for operational documentation, merge logs, and audit artifacts. All templates follow the **[Placeholder Policy](PLACEHOLDER_POLICY.md)** with consistent `[TBD]` and `TBD(owner)` markers.
+
+### Available Templates
+
+#### Merge Log Templates
+- **[Compact Template](templates/MERGE_LOG_TEMPLATE_COMPACT.md)** — Lightweight merge log for straightforward PRs (Summary, Changes, Verification, Risk, How-To)
+- **[Detailed Template](templates/MERGE_LOG_TEMPLATE_DETAILED.md)** — Comprehensive merge log for complex PRs (includes Timeline, Test Matrix, Rollback Plan, Incident Notes)
+
+#### Audit Templates
+- **[Evidence Index Template](templates/AUDIT_EVIDENCE_INDEX_TEMPLATE.md)** — Track audit evidence items with metadata, hashes, and verification methods
+- **[Risk Register Template](templates/AUDIT_RISK_REGISTER_TEMPLATE.md)** — Risk assessment and tracking with likelihood/impact scoring and mitigation plans
+
+### Template Usage
+
+**Creating a merge log from template:**
+```bash
+# Copy template
+cp docs/ops/templates/MERGE_LOG_TEMPLATE_COMPACT.md docs/ops/PR_XXX_MERGE_LOG.md
+
+# Replace [TBD] placeholders with actual values
+# Follow the Placeholder Policy: use [TBD] for inline, TBD(owner) for decisions
+```
+
+**Template Features:**
+- ✅ Placeholder-policy compliant (`[TBD]`, `TBD(owner)` format)
+- ✅ Explicit template markers (no confusion with live docs)
+- ✅ Structured sections for consistency
+- ✅ Version tracking and maintenance info
+
+**See also:** [Placeholder Policy](PLACEHOLDER_POLICY.md)
+
+---
+
+## 📊 Audit Artefakte (v0)
+
+Operational artifacts for audit evidence tracking and risk management. These are **process artifacts** for operational traceability—NOT compliance claims.
+
+- **[Evidence Index](EVIDENCE_INDEX.md)** — Track audit evidence items (CI runs, PR merges, test outputs, drill sessions, incident postmortems)
+- **[Risk Register](RISK_REGISTER.md)** — Operational risk register for docs/ops governance (policy drift, placeholder consistency, documentation interpretation)
+
+**Scope:** v0 living documents for ops nachvollziehbarkeit (traceability), no external audit/compliance claims.
+
+---
 ## 📋 Merge Logs
 
 ### Workflow
