@@ -56,8 +56,7 @@ def test_baseline_json_deterministic_sorting():
     )
 
     actual_order = [
-        (item["source_file"], item["line_number"], item["target"])
-        for item in sorted_items
+        (item["source_file"], item["line_number"], item["target"]) for item in sorted_items
     ]
 
     assert actual_order == expected_order
@@ -154,9 +153,7 @@ def test_baseline_json_serialization():
     }
 
     # Serialize
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".json", delete=False
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         json.dump(baseline, f, indent=2, sort_keys=False, ensure_ascii=False)
         f.write("\n")
         temp_path = Path(f.name)
@@ -195,10 +192,9 @@ def test_missing_item_deduplication():
     ]
 
     # Convert to tuples for deduplication
-    unique_items = list({
-        (item["source_file"], item["line_number"], item["target"])
-        for item in items
-    })
+    unique_items = list(
+        {(item["source_file"], item["line_number"], item["target"]) for item in items}
+    )
 
     assert len(unique_items) == 1
 
@@ -206,11 +202,11 @@ def test_missing_item_deduplication():
 @pytest.mark.parametrize(
     "current,baseline,expected_pass",
     [
-        (100, 100, True),   # Stable
-        (95, 100, True),    # Improved
+        (100, 100, True),  # Stable
+        (95, 100, True),  # Improved
         (105, 100, False),  # Regressed
-        (0, 100, True),     # All fixed!
-        (100, 0, False),    # All broken!
+        (0, 100, True),  # All fixed!
+        (100, 0, False),  # All broken!
     ],
 )
 def test_trend_gate_scenarios(current, baseline, expected_pass):

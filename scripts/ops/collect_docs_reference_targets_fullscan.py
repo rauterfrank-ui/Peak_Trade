@@ -189,9 +189,7 @@ def resolve_target(target: str, doc_file: Path, repo_root: Path) -> Path | None:
         return None
 
 
-def extract_references(
-    file_path: Path, repo_root: Path
-) -> list[tuple[int, str, str]]:
+def extract_references(file_path: Path, repo_root: Path) -> list[tuple[int, str, str]]:
     """
     Extract references from markdown file.
 
@@ -275,11 +273,7 @@ def scan_docs(repo_root: Path) -> dict[str, Any]:
             check=True,
             timeout=10,
         )
-        md_files = [
-            repo_root / line
-            for line in result.stdout.splitlines()
-            if line.endswith(".md")
-        ]
+        md_files = [repo_root / line for line in result.stdout.splitlines() if line.endswith(".md")]
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
         # Fallback to find
         md_files = list(docs_root.rglob("*.md"))
@@ -313,12 +307,14 @@ def scan_docs(repo_root: Path) -> dict[str, Any]:
                 except ValueError:
                     rel_source = str(md_file)
 
-                missing_items.append({
-                    "source_file": rel_source,
-                    "line_number": line_no,
-                    "target": target,
-                    "link_text": link_text if link_text else None,
-                })
+                missing_items.append(
+                    {
+                        "source_file": rel_source,
+                        "line_number": line_no,
+                        "target": target,
+                        "link_text": link_text if link_text else None,
+                    }
+                )
 
     # Sort deterministically: source_file, line_number, target
     missing_items.sort(key=lambda x: (x["source_file"], x["line_number"], x["target"]))
