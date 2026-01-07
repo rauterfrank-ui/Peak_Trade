@@ -9,7 +9,7 @@
 ## Summary
 
 - **Remediated 2 pip-audit security vulnerabilities** (urllib3, wheel)
-- **Fixed Makefile audit target** pointing to non-existent `scripts/run_audit.sh` → correct `scripts/ops/run_audit.sh`
+- **Fixed Makefile audit target** pointing to non-existent path → correct `scripts/ops/run_audit.sh`
 - **Enhanced audit script** with summary output and pip-audit invocation
 - **Fixed docs reference** to avoid stale path in documentation (unblocked docs-reference-targets-gate)
 
@@ -46,7 +46,7 @@
    - Updated urllib3 and wheel lock entries
 
 4. **`Makefile`** (1 line)
-   - Fixed audit target: `./scripts/run_audit.sh` → `./scripts/ops/run_audit.sh`
+   - Corrected audit target to use `scripts/ops/run_audit.sh` (was pointing to wrong path)
 
 5. **`scripts/ops/run_audit.sh`** (26 lines modified)
    - Added summary output on success
