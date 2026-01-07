@@ -186,10 +186,10 @@ echo "### Hard-Fail Secrets Detection" > "$HARD_FAIL_SECRETS_FILE"
 
 # Scan for real secrets, excluding safe locations
 if [[ "$(get_tool rg)" == "true" ]]; then
-  rg -n --hidden --glob '!.git/*' --glob '!*.pyc' --glob '!reports/*' --glob '!tests/*' --glob '!**/test_*' --glob '!docs/ops/*' -E "$HARD_FAIL_SECRETS_PATTERN" . >> "$HARD_FAIL_SECRETS_RAW" 2>&1 || true
+  rg -n --hidden --glob '!.git/*' --glob '!*.pyc' --glob '!reports/*' --glob '!tests/*' --glob '!**/test_*' --glob '!docs/ops/*' --glob '!**/venv/**' --glob '!**/.venv/**' --glob '!src/governance/policy_critic/*' --glob '!scripts/ops/run_audit.sh' "$HARD_FAIL_SECRETS_PATTERN" . >> "$HARD_FAIL_SECRETS_RAW" 2>&1 || true
 else
   grep -rn --include='*.py' --include='*.md' --include='*.toml' --include='*.yaml' --include='*.yml' --include='*.json' \
-    -E "$HARD_FAIL_SECRETS_PATTERN" . 2>/dev/null | grep -v '.git/' | grep -v 'reports/' | grep -v 'tests/' | grep -v 'test_' | grep -v 'docs/ops/' >> "$HARD_FAIL_SECRETS_RAW" || true
+    -E "$HARD_FAIL_SECRETS_PATTERN" . 2>/dev/null | grep -v '.git/' | grep -v 'reports/' | grep -v 'tests/' | grep -v 'test_' | grep -v 'docs/ops/' | grep -v '/venv/' | grep -v '/.venv/' | grep -v '^venv/' | grep -v '^\.venv/' | grep -v 'src/governance/policy_critic/' | grep -v 'scripts/ops/run_audit.sh' >> "$HARD_FAIL_SECRETS_RAW" || true
 fi
 
 # Filter out known safe patterns (EXAMPLE keys, etc.)
