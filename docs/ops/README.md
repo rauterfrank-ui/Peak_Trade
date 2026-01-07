@@ -1159,6 +1159,7 @@ Operational artifacts for audit evidence tracking and risk management. These are
 **Scope:** v0 living documents for ops nachvollziehbarkeit (traceability), no external audit/compliance claims.
 
 ---
+
 ## 📋 Merge Logs
 
 ### Workflow
