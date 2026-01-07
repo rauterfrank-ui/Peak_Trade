@@ -288,6 +288,30 @@ fi
 PIP_AUDIT_EXIT="SKIPPED"
 BANDIT_EXIT="SKIPPED"
 
+# Ensure pip-audit is available and tooling is up-to-date
+if [[ "$(get_tool pip-audit)" != "true" ]]; then
+  log "pip-audit not found - attempting auto-install..."
+  if have_cmd python3; then
+    # Upgrade pip & wheel first (addresses pip-audit's own dependencies)
+    # Try --user first for restrictive environments, fallback to system install
+    python3 -m pip install --user --upgrade --quiet "pip>=23.3" "wheel>=0.38.1" 2>/dev/null || \
+      python3 -m pip install --upgrade --quiet "pip>=23.3" "wheel>=0.38.1" 2>/dev/null || true
+    
+    # Install pip-audit (try --user first, then system)
+    python3 -m pip install --user --quiet pip-audit 2>/dev/null || \
+      python3 -m pip install --quiet pip-audit 2>/dev/null || true
+    
+    # Re-check if installation succeeded
+    if have_cmd pip-audit; then
+      record_tool "pip-audit" "true"
+      log "  [OK] pip-audit (auto-installed)"
+    else
+      log "  [INFO] pip-audit auto-install failed (may require manual install)"
+      log "         Run: python3 -m pip install --user pip-audit"
+    fi
+  fi
+fi
+
 if [[ "$(get_tool pip-audit)" == "true" ]]; then
   run_check "15_pip_audit" pip-audit
   PIP_AUDIT_EXIT=$(grep "^15_pip_audit=" "$EXIT_CODE_FILE" 2>/dev/null | cut -d= -f2 || echo "0")
@@ -296,7 +320,7 @@ if [[ "$(get_tool pip-audit)" == "true" ]]; then
     log "FINDING: pip-audit found vulnerabilities (exit $PIP_AUDIT_EXIT)"
   fi
 else
-  skip_check "15_pip_audit" "pip-audit not installed (pip install pip-audit)"
+  skip_check "15_pip_audit" "pip-audit not available after auto-install attempt"
 fi
 
 if [[ "$(get_tool bandit)" == "true" ]]; then
