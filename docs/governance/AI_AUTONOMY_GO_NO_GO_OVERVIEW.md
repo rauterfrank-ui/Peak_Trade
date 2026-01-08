@@ -19,6 +19,25 @@ Dieses Dokument ist eine **Governance-Leitplanke**. Es ist **keine** Implementie
 
 ---
 
+## 0.5 Authoritative Layer Map (v1)
+
+**WICHTIG:** Die Layer→Autonomy→Model-Zuordnung ist definiert in:  
+→ **`docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`** ⚠️
+
+Diese Matrix ist **authoritative** für:
+- Layer-Definitionen (L0-L6)
+- Autonomiestufen (RO/REC/PROP/EXEC)
+- Model-Zuordnungen (Primary/Fallback/Critic)
+- **Separation of Duties (SoD) Rules** (Proposer ≠ Critic)
+
+**Alle Evidence Packs MÜSSEN:**
+1. Auf diese Matrix referenzieren (`layer_id`, `autonomy_level`, `primary_model_id`, `critic_model_id`)
+2. SoD Check durchführen (Proposer ≠ Critic)
+3. Capability Scope deklarieren (inputs/outputs/tooling allowed/forbidden)
+4. Logging Manifest bereitstellen (run_id, prompt_hash, artifact_hash, inputs/outputs manifest)
+
+---
+
 ## 1. Zweck
 
 Dieses Dokument definiert **auf Governance-Ebene**, wann Peak_Trade **Live-Handeln** zulassen darf (GO) und wann es **verboten** ist (NO-GO), insbesondere im Kontext von **AI-Unterstützung** und **Autonomie**.
