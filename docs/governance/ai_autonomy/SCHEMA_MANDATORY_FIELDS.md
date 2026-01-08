@@ -408,7 +408,7 @@ else:
 | Component | Integration | Schema Fields |
 |---|---|---|
 | **Layer Runners** (`src/ai_orchestration/`) | Initialize with `LayerRunMetadata` | `layer_id`, `primary_model_id`, `critic_model_id`, `capability_scope_id` |
-| **SoD Checker** (`src/ai_orchestration/sod_checker.py`) | Validate with `SoDCheckResult` | `proposer_model_id`, `critic_model_id`, `sod_result`, `critic_decision` |
+| **SoD Checker** ("src/ai_orchestration/sod_checker.py" (Phase 3+)) | Validate with `SoDCheckResult` | `proposer_model_id`, `critic_model_id`, `sod_result`, `critic_decision` |
 | **Evidence Packs** (`docs/governance/evidence/`) | Include all mandatory fields | All fields from this schema |
 | **CodeGate** (`src/governance/codegate/`) | Validate Evidence Packs against schema | All fields + Matrix compliance |
 | **Audit Log** (`logs/ai_model_calls.jsonl`) | Log all runs with `RunLogging` | `run_id`, `prompt_hash`, `artifact_hash`, `inputs_manifest`, `outputs_manifest` |

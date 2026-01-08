@@ -198,8 +198,8 @@ python3 -m pytest tests/ai_orchestration/test_models.py -v
    - Logging: RunLogging
 
 2. Model API Wrappers (OpenAI, DeepSeek)
-   - `src/ai_orchestration/model_wrappers/openai.py`
-   - `src/ai_orchestration/model_wrappers/deepseek.py`
+   - "src/ai_orchestration/model_wrappers/openai.py" (Phase 3+)
+   - "src/ai_orchestration/model_wrappers/deepseek.py" (Phase 3+)
 
 3. Tests:
    - `tests/ai_orchestration/test_proposer_critic_runner.py`

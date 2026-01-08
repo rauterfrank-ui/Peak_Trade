@@ -53,7 +53,7 @@
 
 Jeder Layer-Run muss ein **Capability Scope** deklarieren:
 
-- **Inputs Allowed:** exakt welche Artefakte/Quellen (z.B. `docs/…`, `config snapshots`, `market data summary vX`).  
+- **Inputs Allowed:** exakt welche Artefakte/Quellen (z.B. "docs/*", "config snapshots", "market data summary vX").  
 - **Outputs Allowed:** Artefakt-Typen (z.B. `ScenarioReport`, `ChecklistPatch`, `EvidenceSummary`).  
 - **Tooling Allowed:** `none | files | web | code-interpreter` (Default: minimal).  
 - **Forbidden:** Liste (z.B. „Order senden", „Risk Limits ändern", „Secrets anfassen", „Live toggle").  
