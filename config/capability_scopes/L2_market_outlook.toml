@@ -1,0 +1,113 @@
+# Capability Scope: L2 Market Outlook
+# Layer: L2 (Market Outlook)
+# Purpose: Makro/Regime/Szenarien, Risiko-Kontext
+# Autonomy: PROP (Propose)
+# Primary Model: GPT-5.2 pro
+# Fallback: GPT-5.2
+# Critic: DeepSeek-R1
+
+[scope]
+layer_id = "L2"
+description = "Market Outlook: Makro/Regime/Szenarien, Risiko-Kontext"
+autonomy_level = "PROP"  # Propose (concrete scenario reports, but not executable)
+version = "1.0"
+effective_date = "2026-01-08"
+
+[models]
+primary = "gpt-5.2-pro"
+fallback = "gpt-5.2"
+critic = "deepseek-r1"
+
+[inputs]
+allowed = [
+  "docs/market_outlook/**/*.yaml",
+  "docs/market_outlook/**/*.md",
+  "config/macro_regimes/**/*.toml",
+  "config/regimes.toml",
+  "config/scenarios/**/*.toml",
+  "data/market_snapshots/*.json",
+  "data/scenarios/*.json",
+  "src/market_sentinel/**/*.py",  # Read-only for context (no execution)
+]
+forbidden = [
+  "config/portfolios/**/*.toml",  # No direct portfolio config access
+  "config/live_*.toml",           # No live config
+  "src/execution/**/*",           # No execution code
+  ".env",                         # No secrets
+  "live_runs/**/*",               # No live run data
+]
+
+[outputs]
+allowed = [
+  "ScenarioReport",
+  "RegimeClassification",
+  "NoTradeTriggers",
+  "RiskContext",
+  "MacroOutlook",
+  "UncertaintyAssessment",
+]
+forbidden = [
+  "OrderParameters",
+  "ExecutionCommand",
+  "RiskLimitChange",
+  "LiveToggle",
+  "PortfolioRebalance",  # Advisory only, not executable
+]
+
+[tooling]
+allowed = ["files", "web"]  # Web access for macro news/data (optional)
+forbidden = ["code-interpreter", "shell", "execution"]
+
+[web_access]
+# Optional: Restrict web access to specific domains
+allowed_domains = [
+  "*.tradingeconomics.com",
+  "*.fred.stlouisfed.org",
+  "*.investing.com",
+  "*.bloomberg.com",
+  "*.reuters.com",
+]
+rate_limit_per_hour = 20
+
+[constraints]
+no_execution_trigger = true
+no_order_parameters = true
+no_risk_limit_change = true
+must_include_uncertainty = true       # Every report must include uncertainty assessment
+must_include_no_trade_triggers = true # Every report must list no-trade conditions
+
+[logging]
+required_fields = [
+  "run_id",
+  "model_id",
+  "prompt_hash",
+  "artifact_hash",
+  "inputs_manifest",
+  "outputs_manifest",
+  "timestamp_utc",
+  "scenario_ids",       # Which scenarios were considered
+  "regime_classification", # Current regime
+  "no_trade_triggers",  # Explicit list
+]
+
+[safety]
+# Hard constraints (enforced at runtime)
+safety_checks = [
+  "no_execution_trigger",
+  "no_order_parameters_in_output",
+  "no_risk_limit_change",
+  "no_live_toggle",
+  "no_secrets_in_output",
+  "uncertainty_present",
+  "no_trade_triggers_present",
+]
+
+# Alerts
+alert_on_violation = true
+alert_channel = "market-outlook-safety"
+
+[validation]
+# Output validation rules
+min_scenario_count = 2  # At least 2 scenarios (base + alternative)
+max_scenario_count = 5  # No more than 5 scenarios (keep it tractable)
+require_rationale = true  # Every scenario must have rationale

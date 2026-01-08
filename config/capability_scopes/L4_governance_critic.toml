@@ -1,0 +1,119 @@
+# Capability Scope: L4 Governance / Policy Critic
+# Layer: L4 (Governance / Policy Critic)
+# Purpose: Policy-Checks, Evidence Pack Review, Go/NoGo-Begründung
+# Autonomy: RO/REC (Read-Only / Recommend)
+# Primary Model: o3-pro (conservative)
+# Fallback: DeepSeek-R1
+# Critic: GPT-5.2 pro (2nd opinion)
+
+[scope]
+layer_id = "L4"
+description = "Governance / Policy Critic: Policy-Checks, Evidence Pack Review, Go/NoGo-Begründung"
+autonomy_level = "RO/REC"  # Read-Only analysis, Recommend actions (never unlock)
+version = "1.0"
+effective_date = "2026-01-08"
+
+[models]
+primary = "o3-pro"  # Conservative reasoning
+fallback = "deepseek-r1"
+critic = "gpt-5.2-pro"  # 2nd opinion for critical decisions
+
+[inputs]
+allowed = [
+  "docs/governance/**/*.md",
+  "docs/audit/**/*.md",
+  "docs/governance/evidence/**/*.md",
+  "policy_packs/**/*.yml",
+  "config/**/*.toml",  # Read-only for policy checking
+  "src/**/*.py",       # Read-only for diff analysis
+  "diffs/**/*.diff",
+  "patches/**/*.patch",
+]
+forbidden = [
+  ".env",
+  "live_runs/**/*",
+  "secrets/**/*",
+]
+
+[outputs]
+allowed = [
+  "PolicyReview",
+  "EvidencePackReview",
+  "GoNoGoRecommendation",
+  "ViolationReport",
+  "TestPlanRequirement",
+  "OperatorQuestions",
+  "RiskAssessment",
+]
+forbidden = [
+  "GoApproval",  # Cannot approve, only recommend
+  "UnlockCommand",
+  "LiveToggle",
+  "RiskLimitChange",
+  "ExecutionCommand",
+  "ConfigChange",
+  "AutoApplyApproval",  # Cannot override auto-apply gates
+]
+
+[tooling]
+allowed = ["files"]  # Files only, no web (governance is internal)
+forbidden = ["web", "code-interpreter", "shell", "execution"]
+
+[constraints]
+read_only = true
+no_unlock_without_evidence = true  # Cannot "freischalten" without Evidence IDs
+no_auto_apply_override = true      # Cannot override auto-apply gates
+must_reference_evidence = true     # Every decision must reference Evidence IDs
+fail_closed = true                 # If unclear, default to REVIEW_REQUIRED or DENY
+
+[logging]
+required_fields = [
+  "run_id",
+  "model_id",
+  "prompt_hash",
+  "artifact_hash",
+  "inputs_manifest",
+  "outputs_manifest",
+  "timestamp_utc",
+  "policy_pack_id",
+  "policy_pack_hash",
+  "violations_count",
+  "max_severity",
+  "recommended_action",
+  "evidence_ids_referenced",
+]
+
+[safety]
+safety_checks = [
+  "no_unlock_in_output",
+  "no_execution_trigger",
+  "no_risk_limit_change",
+  "no_auto_apply_override",
+  "evidence_ids_present",
+  "no_secrets_in_output",
+]
+
+alert_on_violation = true
+alert_channel = "governance-safety"
+
+[decision_constraints]
+# Valid decision outputs (enforced)
+allowed_decisions = [
+  "ALLOW",
+  "REVIEW_REQUIRED",
+  "AUTO_APPLY_DENY",
+  "REJECT",
+]
+
+# Decision must include
+require_rationale = true
+require_evidence_ids = true
+require_risk_classification = true
+
+[policy_scope]
+# What policy areas are checked (reference to LLM_POLICY_CRITIC_CHARTER.md)
+security_policies = true
+live_execution_policies = true
+risk_governance_policies = true
+ops_runbook_policies = true
+test_repro_policies = true

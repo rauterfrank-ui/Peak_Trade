@@ -1,0 +1,278 @@
+# AI Model Registry for Peak_Trade
+# Purpose: Authoritative registry of AI models used across all layers
+# Reference: docs/architecture/ai_autonomy_layer_map_v1.md
+
+[registry]
+version = "1.0"
+effective_date = "2026-01-08"
+owner = "ops"
+
+# ============================================================================
+# OpenAI Models
+# ============================================================================
+
+[models.gpt-5-2-pro]
+provider = "openai"
+model_id = "gpt-5.2-pro"
+family = "gpt-5"
+description = "GPT-5.2 Pro - Advanced reasoning, ideal for L2 Market Outlook, L3 Trade Plan Advisory"
+context_window = 200000
+max_output_tokens = 16000
+cost_per_1k_input = 0.015  # USD (example, adjust based on actual pricing)
+cost_per_1k_output = 0.060
+latency_p50_ms = 2000
+latency_p99_ms = 8000
+capabilities = ["reasoning", "analysis", "synthesis", "web-optional"]
+use_cases = ["L2_market_outlook", "L3_trade_plan_advisory"]
+rate_limit_rpm = 500  # Requests per minute
+status = "production"
+
+[models.gpt-5-2]
+provider = "openai"
+model_id = "gpt-5.2"
+family = "gpt-5"
+description = "GPT-5.2 - General-purpose, fallback for L2/L3"
+context_window = 200000
+max_output_tokens = 16000
+cost_per_1k_input = 0.010
+cost_per_1k_output = 0.040
+latency_p50_ms = 1500
+latency_p99_ms = 6000
+capabilities = ["reasoning", "analysis", "synthesis"]
+use_cases = ["L0_ops_docs", "L2_fallback", "L3_fallback"]
+rate_limit_rpm = 1000
+status = "production"
+
+[models.gpt-5-mini]
+provider = "openai"
+model_id = "gpt-5-mini"
+family = "gpt-5"
+description = "GPT-5 Mini - Lightweight, fast, fallback for L0"
+context_window = 128000
+max_output_tokens = 8000
+cost_per_1k_input = 0.002
+cost_per_1k_output = 0.008
+latency_p50_ms = 800
+latency_p99_ms = 3000
+capabilities = ["text-generation", "summarization"]
+use_cases = ["L0_fallback"]
+rate_limit_rpm = 2000
+status = "production"
+
+[models.o3-deep-research]
+provider = "openai"
+model_id = "o3-deep-research"
+family = "o3"
+description = "o3-deep-research - Multi-stage research and synthesis, web/connector sources"
+context_window = 200000
+max_output_tokens = 32000
+cost_per_1k_input = 0.025
+cost_per_1k_output = 0.100
+latency_p50_ms = 15000  # Deep research is slower (multi-stage)
+latency_p99_ms = 60000
+capabilities = ["deep-research", "multi-stage", "web-search", "synthesis", "citation"]
+use_cases = ["L1_deep_research"]
+rate_limit_rpm = 100  # Lower rate limit due to complexity
+status = "production"
+notes = "Use for literature review, methodology research, evidence synthesis. NOT for hot-path."
+
+[models.o3-pro]
+provider = "openai"
+model_id = "o3-pro"
+family = "o3"
+description = "o3-pro - Conservative reasoning, ideal for L4 Governance/Policy Critic"
+context_window = 200000
+max_output_tokens = 16000
+cost_per_1k_input = 0.020
+cost_per_1k_output = 0.080
+latency_p50_ms = 3000
+latency_p99_ms = 10000
+capabilities = ["conservative-reasoning", "policy-analysis", "evidence-evaluation"]
+use_cases = ["L4_governance_critic", "L1_critic"]
+rate_limit_rpm = 300
+status = "production"
+notes = "Conservative mode: prioritizes safety over speed. Use for governance decisions."
+
+[models.o3]
+provider = "openai"
+model_id = "o3"
+family = "o3"
+description = "o3 - Reasoning model, critic for L3 Trade Plan Advisory"
+context_window = 200000
+max_output_tokens = 16000
+cost_per_1k_input = 0.015
+cost_per_1k_output = 0.060
+latency_p50_ms = 2500
+latency_p99_ms = 9000
+capabilities = ["reasoning", "critic", "logic-checking"]
+use_cases = ["L3_critic"]
+rate_limit_rpm = 500
+status = "production"
+
+[models.o4-mini-deep-research]
+provider = "openai"
+model_id = "o4-mini-deep-research"
+family = "o4"
+description = "o4-mini-deep-research - Lightweight deep research, fallback for L1"
+context_window = 128000
+max_output_tokens = 16000
+cost_per_1k_input = 0.010
+cost_per_1k_output = 0.040
+latency_p50_ms = 8000
+latency_p99_ms = 30000
+capabilities = ["deep-research", "web-search", "synthesis"]
+use_cases = ["L1_fallback"]
+rate_limit_rpm = 200
+status = "production"
+
+# ============================================================================
+# DeepSeek Models (Heterogeneous Verification)
+# ============================================================================
+
+[models.deepseek-r1]
+provider = "deepseek"
+model_id = "deepseek-r1"
+family = "deepseek"
+description = "DeepSeek-R1 - Heterogeneous verifier/mirror for SoD, local fallback"
+context_window = 128000
+max_output_tokens = 8000
+cost_per_1k_input = 0.001  # Local deployment or cheaper API
+cost_per_1k_output = 0.002
+latency_p50_ms = 1000  # Local can be faster
+latency_p99_ms = 4000
+capabilities = ["reasoning", "verification", "heterogeneous-sod"]
+use_cases = [
+  "L0_critic",
+  "L1_fallback_critic",
+  "L2_critic",
+  "L4_fallback",
+]
+rate_limit_rpm = 1000  # Higher if local
+status = "production"
+deployment = "local-optional"  # Can be local or API
+notes = "Heterogeneous model for SoD. Different provider/family ensures independence from OpenAI."
+
+# ============================================================================
+# Layer-to-Model Mapping (Authoritative)
+# ============================================================================
+
+[layer_mapping.L0]
+layer_id = "L0"
+description = "Ops/Docs"
+primary = "gpt-5.2"
+fallback = "gpt-5-mini"
+critic = "deepseek-r1"
+autonomy = "REC"
+
+[layer_mapping.L1]
+layer_id = "L1"
+description = "DeepResearch"
+primary = "o3-deep-research"
+fallback = ["o4-mini-deep-research", "deepseek-r1"]  # Multiple fallbacks
+critic = "o3-pro"  # or gpt-5.2-pro
+autonomy = "PROP"
+
+[layer_mapping.L2]
+layer_id = "L2"
+description = "Market Outlook"
+primary = "gpt-5.2-pro"
+fallback = "gpt-5.2"
+critic = "deepseek-r1"
+autonomy = "PROP"
+
+[layer_mapping.L3]
+layer_id = "L3"
+description = "Trade Plan Advisory"
+primary = "gpt-5.2-pro"
+fallback = "gpt-5.2"
+critic = "o3"  # Reasoning model for trade plan critique
+autonomy = "REC/PROP"
+
+[layer_mapping.L4]
+layer_id = "L4"
+description = "Governance / Policy Critic"
+primary = "o3-pro"  # Conservative reasoning
+fallback = "deepseek-r1"
+critic = "gpt-5.2-pro"  # 2nd opinion
+autonomy = "RO/REC"
+
+[layer_mapping.L5]
+layer_id = "L5"
+description = "Risk Gate (Hard)"
+primary = "none"  # No LLM, deterministic code only
+fallback = "none"
+critic = "none"
+autonomy = "RO"
+notes = "Deterministic code only. LLM can only explain, not decide."
+
+[layer_mapping.L6]
+layer_id = "L6"
+description = "Execution"
+primary = "none"  # Forbidden
+fallback = "none"
+critic = "none"
+autonomy = "EXEC (forbidden)"
+notes = "Ausnahmslos verboten bis Freigabe + Evidence Packs + CodeGate."
+
+# ============================================================================
+# Fallback Rules
+# ============================================================================
+
+[fallback_policy]
+# If primary model fails, try fallback in order
+max_retries_per_model = 2
+retry_delay_seconds = 5
+fail_closed = true  # If all fallbacks fail, fail the run (don't skip checks)
+
+# Fallback order for critical layers
+[fallback_policy.L4]
+# L4 Governance: If o3-pro fails, try deepseek-r1, then fail (don't skip governance)
+fallback_order = ["o3-pro", "deepseek-r1"]
+fail_if_all_unavailable = true
+alert_on_fallback = true
+
+[fallback_policy.L2]
+# L2 Market Outlook: If gpt-5.2-pro fails, try gpt-5.2
+fallback_order = ["gpt-5.2-pro", "gpt-5.2"]
+fail_if_all_unavailable = true
+alert_on_fallback = true
+
+# ============================================================================
+# Cost & Budget Tracking
+# ============================================================================
+
+[budget]
+daily_cost_limit_usd = 50.00  # Example: $50/day limit
+monthly_cost_limit_usd = 1000.00
+alert_threshold_pct = 80  # Alert when 80% of budget consumed
+owner = "ops"
+tracking_enabled = true
+
+# ============================================================================
+# Compliance & Audit
+# ============================================================================
+
+[audit]
+log_all_model_calls = true
+log_destination = "logs/ai_model_calls.jsonl"
+required_log_fields = [
+  "timestamp_utc",
+  "run_id",
+  "layer_id",
+  "model_id",
+  "prompt_hash",
+  "input_tokens",
+  "output_tokens",
+  "cost_usd",
+  "latency_ms",
+  "success",
+  "error_message",
+]
+retention_days = 90
+
+[audit.sod_checks]
+# SoD compliance tracking
+enforce_different_models = true  # Proposer != Critic
+log_sod_violations = true
+alert_on_sod_violation = true
+alert_channel = "governance-safety"

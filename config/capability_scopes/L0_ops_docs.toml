@@ -1,0 +1,83 @@
+# Capability Scope: L0 Ops/Docs
+# Layer: L0 (Ops/Docs)
+# Purpose: Runbooks, Checklisten, Doc-Patches
+# Autonomy: REC (Recommend)
+# Primary Model: GPT-5.2 (Chat)
+# Fallback: GPT-5 mini
+# Critic: DeepSeek-R1
+
+[scope]
+layer_id = "L0"
+description = "Ops/Docs: Runbooks, Checklisten, Doc-Patches"
+autonomy_level = "REC"  # Recommend only
+version = "1.0"
+effective_date = "2026-01-08"
+
+[models]
+primary = "gpt-5.2"
+fallback = "gpt-5-mini"
+critic = "deepseek-r1"
+
+[inputs]
+allowed = [
+  "docs/**/*.md",
+  "docs/**/*.txt",
+  "README.md",
+  "RUNBOOK_*.md",
+  "config/**/*.toml",  # Read-only for context
+  "scripts/**/*.sh",   # Read-only for context
+]
+forbidden = [
+  "config/**/*.toml",  # Write access forbidden
+  "src/**/*.py",       # No code changes
+  ".env",              # No secrets
+  "live_runs/**/*",    # No live data
+]
+
+[outputs]
+allowed = [
+  "RunbookPatch",
+  "ChecklistUpdate",
+  "DocClarification",
+  "OperatorNote",
+]
+forbidden = [
+  "CodePatch",
+  "ConfigChange",
+  "LiveToggle",
+  "ExecutionCommand",
+]
+
+[tooling]
+allowed = ["files"]  # Repo text only
+forbidden = ["web", "code-interpreter", "shell", "execution"]
+
+[constraints]
+no_live_parameters = true
+no_secrets = true
+docs_only = true
+max_file_size_mb = 5  # Docs should be small
+
+[logging]
+required_fields = [
+  "run_id",
+  "model_id",
+  "prompt_hash",
+  "artifact_hash",
+  "inputs_manifest",
+  "outputs_manifest",
+  "timestamp_utc",
+]
+
+[safety]
+# Hard constraints (enforced at runtime)
+safety_checks = [
+  "no_live_toggle",
+  "no_risk_limit_change",
+  "no_execution_trigger",
+  "no_secrets_in_output",
+]
+
+# Alerts
+alert_on_violation = true
+alert_channel = "ops-safety"
