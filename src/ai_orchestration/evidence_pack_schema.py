@@ -150,9 +150,7 @@ def register_migration(from_version: str, to_version: str):
     return decorator
 
 
-def migrate(
-    pack: Dict[str, Any], from_version: str, to_version: str
-) -> Dict[str, Any]:
+def migrate(pack: Dict[str, Any], from_version: str, to_version: str) -> Dict[str, Any]:
     """
     Migrate pack from one schema version to another.
 
@@ -324,9 +322,7 @@ def validate_and_migrate(
     """
     # Legacy pack detection (minimal invasive backward compatibility)
     legacy = (
-        ("schema_id" not in pack)
-        and ("schema_version" not in pack)
-        and ("pack_id" not in pack)
+        ("schema_id" not in pack) and ("schema_version" not in pack) and ("pack_id" not in pack)
     )
 
     if legacy:
