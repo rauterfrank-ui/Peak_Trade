@@ -29,6 +29,8 @@
 
 ### A1: Merge Log Backlog (11 Branches)
 
+<!-- pt:ref-target-ignore -->
+
 | Branch | Last Update | Subject | Verify |
 |--------|-------------|---------|--------|
 | `docs/add-pr569-readme-link` | 2026-01-05 | PR #569 merge log to README index | Check README links |
@@ -52,6 +54,8 @@
 
 ### A2: Runbooks & Standards (6 Branches)
 
+<!-- pt:ref-target-ignore -->
+
 | Branch | Last Update | Subject | Impact |
 |--------|-------------|---------|--------|
 | `docs/github-rulesets-runbook` | 2026-01-03 | GitHub rulesets PR/review policy runbook | Policy docs |
@@ -69,6 +73,8 @@
 ---
 
 ### A3: Roadmaps & Housekeeping (5 Branches)
+
+<!-- pt:ref-target-ignore -->
 
 | Branch | Last Update | Subject | Category |
 |--------|-------------|---------|----------|
