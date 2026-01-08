@@ -9,7 +9,7 @@ Reduce CI roundtrips and standardize multi-agent execution with audit-stable out
 ## Changes
 
 ### Core Artifacts
-- **Runbook added:** `docs/ops/runbooks/RUNBOOK_4B_M2_CURSOR_MULTI_AGENT.md` (to be added)
+- **Runbook added:** `docs/runbooks/RUNBOOK_4B_M2_CURSOR_MULTI_AGENT.md`
 - **Worktree setup script:** `scripts/ops/setup_worktree_4b_m2.sh`
 - **Session artifacts scaffolding:**
   - `docs/ops/sessions/SESSION_4B_M2_20260109.md` (session log)
@@ -124,7 +124,7 @@ make audit  # (if audit target exists)
 - **PR template:** `docs/ops/sessions/APPENDIX_C_PR_TEMPLATE.md`
 
 ### Related Documentation
-- **Runbook:** `docs/ops/runbooks/RUNBOOK_4B_M2_CURSOR_MULTI_AGENT.md` (to be added)
+- **Runbook:** `docs/runbooks/RUNBOOK_4B_M2_CURSOR_MULTI_AGENT.md`
 - **Governance rules:**
   - `.cursor/rules/peak-trade-delivery-contract.mdc`
   - `.cursor/rules/peak-trade-governance.mdc`

@@ -65,8 +65,7 @@ Record trade-offs and rationale for key decisions during 4B Milestone 2 setup an
 - **Precedent:** Aligns with existing `docs/ops/` structure (runbooks, merge logs, etc.)
 
 **Follow-up:**
-- Add `docs/ops/sessions/README.md` to explain structure
-- Consider index/catalog of all sessions for discoverability
+- Consider adding session index/catalog for discoverability (future work)
 
 ---
 

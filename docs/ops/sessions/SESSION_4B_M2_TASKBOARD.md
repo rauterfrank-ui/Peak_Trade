@@ -3,7 +3,8 @@
 **Session:** 4B Milestone 2 Cursor Multi-Agent Chat Readiness  
 **Date:** 2026-01-09  
 **Branch:** `feat/4b-m2-cursor-multi-agent`  
-**Worktree:** `/Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2`
+**Worktree:** `/Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2`  
+**Session Log:** `SESSION_4B_M2_20260109.md`
 
 ---
 
@@ -19,9 +20,9 @@
   - **Evidence:** `docs/ops/sessions/APPENDIX_A_SYSTEM_PROMPT.md`
   - **Note:** Requires manual operator action to paste in Cursor Multi-Agent Chat
 
-- [x] Session log created: `docs/ops/sessions/SESSION_4B_M2_YYYYMMDD.md`
+- [x] Session log created: `docs/ops/sessions/SESSION_4B_M2_20260109.md`
   - **Status:** DONE
-  - **Evidence:** `docs/ops/sessions/SESSION_4B_M2_20260109.md`
+  - **Evidence:** Created on 2026-01-09, continuously updated
 
 - [x] Minimal local gates runnable:
   - [x] ruff format --check
@@ -90,7 +91,7 @@
 ## Next Actions (Priority Order)
 
 1. **DOCS_OPS:** Create PR body with real data → `PR_BODY_4B_M2.md`
-2. **DOCS_OPS:** Add runbook to repo → `docs/ops/runbooks/RUNBOOK_4B_M2_CURSOR_MULTI_AGENT.md`
+2. **DOCS_OPS:** Add runbook to repo → `docs/runbooks/RUNBOOK_4B_M2_CURSOR_MULTI_AGENT.md`
 3. **CI_GUARDIAN:** Run audit baseline → document findings
 4. **CI_GUARDIAN:** Verify docs reference targets
 5. **DOCS_OPS:** Complete decision log entry
