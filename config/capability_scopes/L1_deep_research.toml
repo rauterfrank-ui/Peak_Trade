@@ -1,0 +1,114 @@
+# Capability Scope: L1 DeepResearch
+# Layer: L1 (DeepResearch)
+# Purpose: Literatur/Methoden/Best Practices, Evidenzrecherche
+# Autonomy: PROP (Propose)
+# Primary Model: o3-deep-research
+# Fallback: o4-mini-deep-research / DeepSeek-R1
+# Critic: o3-pro (oder GPT-5.2 pro)
+
+[scope]
+layer_id = "L1"
+description = "DeepResearch: Literatur/Methoden/Best Practices, Evidenzrecherche"
+autonomy_level = "PROP"  # Propose (research outputs, not executable)
+version = "1.0"
+effective_date = "2026-01-08"
+
+[models]
+primary = "o3-deep-research"
+fallback = ["o4-mini-deep-research", "deepseek-r1"]
+critic = "o3-pro"  # Conservative reasoning for research validation
+
+[inputs]
+allowed = [
+  "docs/**/*.md",
+  "docs/**/*.pdf",
+  "docs/**/*.txt",
+  "config/research_*.toml",
+  "data/research/**/*.json",
+  "src/**/*.py",  # Read-only for understanding existing methods
+]
+forbidden = [
+  "config/live_*.toml",
+  "config/portfolios/**/*.toml",  # No direct portfolio config
+  "src/execution/**/*",           # No execution code
+  ".env",
+  "live_runs/**/*",
+]
+
+[outputs]
+allowed = [
+  "ResearchReport",
+  "LiteratureReview",
+  "MethodologyProposal",
+  "EvidenceSummary",
+  "BestPracticesGuide",
+  "CitationList",
+]
+forbidden = [
+  "ExecutionCommand",
+  "ConfigChange",
+  "LiveToggle",
+  "OrderParameters",
+  "RiskLimitChange",
+  "DoXLiveInstruction",  # No "Do X live" instructions
+]
+
+[tooling]
+allowed = ["web", "files"]  # Web + Files for research
+forbidden = ["code-interpreter", "shell", "execution"]
+
+[web_access]
+# Research-specific: allow academic, technical, financial research sources
+allowed_domains = [
+  "*.arxiv.org",
+  "*.ssrn.com",
+  "*.researchgate.net",
+  "*.scholar.google.com",
+  "*.jstor.org",
+  "*.bloomberg.com",
+  "*.reuters.com",
+  "*.github.com",
+  "*.stackexchange.com",
+  "*.wikipedia.org",
+]
+rate_limit_per_hour = 50  # Higher for research
+max_search_depth = 3      # Max depth for multi-stage research
+
+[constraints]
+no_execution_trigger = true
+no_live_instructions = true
+research_only = true
+must_include_citations = true  # Every claim must be cited
+must_include_uncertainty = true  # Research limitations must be stated
+
+[logging]
+required_fields = [
+  "run_id",
+  "model_id",
+  "prompt_hash",
+  "artifact_hash",
+  "inputs_manifest",
+  "outputs_manifest",
+  "timestamp_utc",
+  "research_query",
+  "sources_consulted",
+  "citations_count",
+  "search_depth",
+]
+
+[safety]
+safety_checks = [
+  "no_execution_trigger",
+  "no_live_instructions_in_output",
+  "citations_present",
+  "uncertainty_statement_present",
+  "no_secrets_in_output",
+]
+
+alert_on_violation = true
+alert_channel = "research-safety"
+
+[validation]
+min_citations = 3      # At least 3 citations for any research output
+require_sources = true # Sources must be listed
+require_limitations = true  # Research limitations must be stated

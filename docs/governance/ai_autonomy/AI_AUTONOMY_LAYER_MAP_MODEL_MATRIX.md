@@ -93,10 +93,10 @@ config/capability_scopes/<layer_id>_<layer_name>.toml
 - `logging` (required fields: `run_id`, `model_id`, `prompt_hash`, `artifact_hash`, etc.)
 
 **Existierende Capability Scopes:**
-- L0: (Phase 2 config)
-- L1: (Phase 2 config)
-- L2: (Phase 2 config)
-- L4: (Phase 2 config)
+- L0: `config/capability_scopes/L0_ops_docs.toml`
+- L1: `config/capability_scopes/L1_deep_research.toml`
+- L2: `config/capability_scopes/L2_market_outlook.toml`
+- L4: `config/capability_scopes/L4_governance_critic.toml`
 
 ---
 
@@ -138,7 +138,7 @@ Jedes Evidence Pack **MUSS** folgende Felder aus dieser Matrix referenzieren:
 | `capability_scope_id` | Capability Scope Datei | `L2_market_outlook_v1` |
 | `sod_check_status` | Runtime Check | `PASS` / `FAIL` |
 
-**Evidence Pack Template:** (Phase 2 template)
+**Evidence Pack Template:** `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md`
 
 ---
 
@@ -185,15 +185,15 @@ Jedes Evidence Pack **MUSS** folgende Felder aus dieser Matrix referenzieren:
 
 ### Verwandte Dokumente
 
-- **Detailed Spec:** (Phase 2 docs)
-- **Gap-Analyse:** (Phase 2 docs)
-- **Integration Summary:** (Phase 2 docs)
-- **Evidence Pack Template v2:** (Phase 2 template)
+- **Detailed Spec:** `docs/architecture/ai_autonomy_layer_map_v1.md`
+- **Gap-Analyse:** `docs/architecture/ai_autonomy_layer_map_gap_analysis.md`
+- **Integration Summary:** `docs/architecture/INTEGRATION_SUMMARY.md`
+- **Evidence Pack Template v2:** `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md`
 
 ### Configuration Files
 
-- **Model Registry:** (Phase 2 config) (detaillierte Model Specs, Budget, Audit)
-- **Capability Scopes:** capability scope configs (Layer-spezifische Enforcement Rules)
+- **Model Registry:** `config/model_registry.toml` (detaillierte Model Specs, Budget, Audit)
+- **Capability Scopes:** `config/capability_scopes/*.toml` (Layer-spezifische Enforcement Rules)
 
 ### Governance
 
@@ -216,7 +216,7 @@ Jedes Evidence Pack **MUSS** folgende Felder aus dieser Matrix referenzieren:
 **Critic Model:** deepseek-r1
 **SoD Check:** PASS
 **Matrix Version:** v1.0 (2026-01-08)
-**Capability Scope:** (Phase 2 config)
+**Capability Scope:** `config/capability_scopes/L2_market_outlook.toml`
 ``
 
 **Evidence Pack validiert:**
