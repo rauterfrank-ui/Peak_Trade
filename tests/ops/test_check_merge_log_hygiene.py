@@ -79,7 +79,12 @@ Path reference: {pattern}
         assert result.returncode == 1, f"Should detect {pattern}"
         assert expected_category.upper() in result.stdout
         # Check that the pattern or at least the detected forbidden prefix is mentioned
-        assert "/Users/" in result.stdout or "/home/" in result.stdout or "C:\\" in result.stdout or "~/" in result.stdout
+        assert (
+            "/Users/" in result.stdout
+            or "/home/" in result.stdout
+            or "C:\\" in result.stdout
+            or "~/" in result.stdout
+        )
 
 
 def test_detects_bidi_control_chars(tmp_path):
@@ -87,7 +92,7 @@ def test_detects_bidi_control_chars(tmp_path):
     # U+202E: RIGHT-TO-LEFT OVERRIDE
     test_file = tmp_path / "bidi.md"
     test_file.write_text(
-        "# Test\n\nThis has a bidi char: \u202E hidden text",
+        "# Test\n\nThis has a bidi char: \u202e hidden text",
         encoding="utf-8",
     )
 
@@ -108,7 +113,7 @@ def test_detects_zero_width_chars(tmp_path):
     # U+200B: ZERO WIDTH SPACE
     test_file = tmp_path / "zwsp.md"
     test_file.write_text(
-        "# Test\n\nThis has\u200Ba zero width space",
+        "# Test\n\nThis has\u200ba zero width space",
         encoding="utf-8",
     )
 

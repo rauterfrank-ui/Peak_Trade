@@ -192,8 +192,7 @@ def write_merge_log(
     """
     if output_path.exists() and not overwrite:
         print(
-            f"[error] File already exists: {output_path}\n"
-            "Use --overwrite to replace existing file",
+            f"[error] File already exists: {output_path}\nUse --overwrite to replace existing file",
             file=sys.stderr,
         )
         return False
@@ -409,9 +408,7 @@ def main() -> int:
         date_str = "YYYY-MM-DD"
         if pr_data and pr_data.get("mergedAt"):
             try:
-                dt = datetime.fromisoformat(
-                    pr_data["mergedAt"].replace("Z", "+00:00")
-                )
+                dt = datetime.fromisoformat(pr_data["mergedAt"].replace("Z", "+00:00"))
                 date_str = dt.strftime("%Y-%m-%d")
             except (ValueError, AttributeError):
                 pass
