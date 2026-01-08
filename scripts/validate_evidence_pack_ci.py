@@ -77,9 +77,7 @@ class ValidationReport:
             "valid_packs": self.valid_packs,
             "invalid_packs": self.invalid_packs,
             "success_rate": (
-                round(self.valid_packs / self.total_packs * 100, 2)
-                if self.total_packs > 0
-                else 0.0
+                round(self.valid_packs / self.total_packs * 100, 2) if self.total_packs > 0 else 0.0
             ),
             "pack_results": self.pack_results,
         }

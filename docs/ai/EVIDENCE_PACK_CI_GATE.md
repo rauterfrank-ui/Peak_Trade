@@ -557,7 +557,7 @@ Falls CI Gate Probleme verursacht:
 ### Option C: Disable Entire Workflow
 
 **Rename Workflow:**
-1. Rename `.github/workflows/evidence_pack_gate.yml` to `.github/workflows/evidence_pack_gate.yml.disabled`
+1. Rename `.github/workflows/evidence_pack_gate.yml` to `evidence_pack_gate.yml.disabled`
 2. Commit and push
 
 **Duration:** 2 minutes  
