@@ -48,9 +48,14 @@ def main():
 
         # Check model definitions
         expected_models = [
-            "gpt-5-2-pro", "gpt-5-2", "gpt-5-mini",
-            "o3-deep-research", "o3-pro", "o3", "o4-mini-deep-research",
-            "deepseek-r1"
+            "gpt-5-2-pro",
+            "gpt-5-2",
+            "gpt-5-mini",
+            "o3-deep-research",
+            "o3-pro",
+            "o3",
+            "o4-mini-deep-research",
+            "deepseek-r1",
         ]
         defined_models = list(registry.get("models", {}).keys())
         missing_models = [m for m in expected_models if m not in defined_models]

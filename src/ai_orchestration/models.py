@@ -15,8 +15,8 @@ from enum import Enum
 class AutonomyLevel(str, Enum):
     """Autonomy levels (from Layer Map Matrix)."""
 
-    RO = "RO"      # Read-Only
-    REC = "REC"    # Recommend
+    RO = "RO"  # Read-Only
+    REC = "REC"  # Recommend
     PROP = "PROP"  # Propose
     EXEC = "EXEC"  # Execute (FORBIDDEN)
 
@@ -213,16 +213,14 @@ class SoDCheckResult:
         if not self.critic_rationale or not self.critic_rationale.strip():
             self.sod_result = SoDResult.FAIL
             raise ValueError(
-                "SoD FAIL: Empty critic_rationale. "
-                "Critic MUST provide rationale for decision."
+                "SoD FAIL: Empty critic_rationale. Critic MUST provide rationale for decision."
             )
 
         # Rule 4: Evidence IDs not empty
         if not self.evidence_ids:
             self.sod_result = SoDResult.FAIL
             raise ValueError(
-                "SoD FAIL: No evidence_ids. "
-                "Critic MUST reference Evidence IDs or run_ids."
+                "SoD FAIL: No evidence_ids. Critic MUST reference Evidence IDs or run_ids."
             )
 
         # All checks passed
