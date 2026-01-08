@@ -82,7 +82,7 @@ Enables Phase 4 CI integration (Evidence Pack validation gate).
   - Orchestrator: 28 passed
   - Evidence Pack: 24 passed (NEW)
   - Integration: 5 passed (NEW)
-- [x] **CLI Tool:** `python3 scripts/validate_evidence_pack.py` (functional)
+- [x] **CLI Tool:** Evidence Pack validator script (functional)
 - [x] **Linter:** Ruff check + format (all passed)
 
 ### Manual Checks
@@ -238,7 +238,7 @@ print(f"✅ Evidence Pack validated: {pack.evidence_pack_id}")
 - **Phase 1:** PR #609 (Layer Map v1, Matrix, SoD Rules, merged)
 
 ### Documentation
-- Quickstart Guide: `docs/ops/PHASE3B_EVIDENCE_PACK_QUICKSTART.md`
+- Phase 3B Quickstart Guide (added in PR #614)
 - Layer Map Reference: `docs/architecture/ai_autonomy_layer_map_v1.md`
 - Mandatory Fields Schema: `docs/governance/ai_autonomy/SCHEMA_MANDATORY_FIELDS.md`
 - Model Registry: `config/model_registry.toml`
