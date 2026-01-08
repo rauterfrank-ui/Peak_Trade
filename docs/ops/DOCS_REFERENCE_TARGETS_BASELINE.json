@@ -1,14 +1,14 @@
 {
-  "generated_at_utc": "2026-01-07T03:58:19.660364+00:00",
-  "git_sha": "8fcd76b01fd91bdb28d528865453ad76922b015f",
+  "generated_at_utc": "2026-01-08T08:20:45.602068+00:00",
+  "git_sha": "100f6a545aa00ab23ef045b0a912cd654181d9a0",
   "tool_version": "1.0.0",
   "scan_stats": {
-    "total_markdown_files": 700,
+    "total_markdown_files": 721,
     "ignored_files": 9,
-    "scanned_files": 691,
-    "total_references": 8473
+    "scanned_files": 712,
+    "total_references": 8659
   },
-  "missing_count": 167,
+  "missing_count": 205,
   "missing_items": [
     {
       "source_file": "docs/ARCHITECTURE_OVERVIEW.md",
@@ -302,42 +302,6 @@
       "source_file": "docs/Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md",
       "line_number": 116,
       "target": "scripts/view_top_candidates.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/Peak_Trade_Roadmap.md",
-      "line_number": 55,
-      "target": "src/registry/utils.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/Peak_Trade_Roadmap.md",
-      "line_number": 55,
-      "target": "src/registry/utils.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/Peak_Trade_Roadmap.md",
-      "line_number": 214,
-      "target": "src/exchange/client.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/Peak_Trade_Roadmap.md",
-      "line_number": 214,
-      "target": "src/exchange/client.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/Peak_Trade_Roadmap.md",
-      "line_number": 219,
-      "target": "src/exchange/helpers.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/Peak_Trade_Roadmap.md",
-      "line_number": 219,
-      "target": "src/exchange/helpers.py",
       "link_text": null
     },
     {
@@ -773,9 +737,273 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/WAVE3_OPERATOR_BRIEFING.md",
+      "line_number": 388,
+      "target": "docs/ops/wave3_incidents.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_OPERATOR_BRIEFING.md",
+      "line_number": 388,
+      "target": "docs/ops/wave3_incidents.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_QUICKSTART.md",
+      "line_number": 667,
+      "target": "docs/ops/wave3_issues.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_QUICKSTART.md",
+      "line_number": 667,
+      "target": "docs/ops/wave3_issues.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 196,
+      "target": "docs/ops/wave3_incidents.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 196,
+      "target": "docs/ops/wave3_incidents.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 212,
+      "target": "docs/ops/wave3_tier_c_decisions.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 212,
+      "target": "docs/ops/wave3_tier_c_decisions.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 215,
+      "target": "docs/ops/wave3_incidents.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 215,
+      "target": "docs/ops/wave3_incidents.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 218,
+      "target": "docs/ops/wave3_closeout.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 218,
+      "target": "docs/ops/wave3_closeout.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 270,
+      "target": "./wave2_closeout.md",
+      "link_text": "Wave2 Closeout"
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 315,
+      "target": "docs/ops/wave3_questions.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 315,
+      "target": "docs/ops/wave3_questions.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 319,
+      "target": "docs/ops/wave3_incidents.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 319,
+      "target": "docs/ops/wave3_incidents.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 323,
+      "target": "docs/ops/wave3_closeout.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/WAVE3_README.md",
+      "line_number": 323,
+      "target": "docs/ops/wave3_closeout.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/merge_logs/2025-12-25_pr-350_docs-reference-targets-golden-corpus.md",
       "line_number": 44,
       "target": "./scripts/ops/verify_docs_reference_targets.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 34,
+      "target": "docs/add-pr569-readme-link",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 35,
+      "target": "docs/merge-log-pr488",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 36,
+      "target": "docs/cursor-multi-agent-phase4-runner",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 37,
+      "target": "docs/merge-log-pr-350-docs-reference-targets-golden-corpus",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 38,
+      "target": "docs/ops-pr206-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 39,
+      "target": "docs/ops-merge-both-prs-dryrun-workflow",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 40,
+      "target": "docs/ops/pr-87-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 41,
+      "target": "docs/ops/pr-92-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 42,
+      "target": "docs/ops/pr-93-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 43,
+      "target": "docs/pr-76-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 44,
+      "target": "docs/ops-pr-85-merge-log",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 57,
+      "target": "docs/github-rulesets-runbook",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 58,
+      "target": "docs/frontdoor-roadmap-runner",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 59,
+      "target": "docs/fix-moved-script-paths-phase1",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 60,
+      "target": "docs/ops-doctor-noise-free-standard",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 61,
+      "target": "docs/ops-worktree-policy",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 62,
+      "target": "docs/ops-audit-logs-convention",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 76,
+      "target": "docs/ops-docs-reference-targets-supported-formats",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 77,
+      "target": "docs/pr-74-delivery-note",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 78,
+      "target": "docs/pr-66-finalization",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue.md",
+      "line_number": 79,
+      "target": "docs/pr-63-finalization",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue_summary.md",
+      "line_number": 282,
+      "target": "docs/ops/wave3_issues.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue_summary.md",
+      "line_number": 282,
+      "target": "docs/ops/wave3_issues.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue_summary.md",
+      "line_number": 288,
+      "target": "docs/ops/wave3_closeout.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/wave3_restore_queue_summary.md",
+      "line_number": 288,
+      "target": "docs/ops/wave3_closeout.md",
       "link_text": null
     },
     {
