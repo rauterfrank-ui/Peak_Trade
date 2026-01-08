@@ -121,8 +121,8 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 - Logging von `model_id`, `prompt_hash`, `artifact_hash` per Run
 
 **Erforderlich:**
-- Modul: "src/ai_orchestration/multi_model_runner.py" (Phase 3+)
-- SoD Checker: "src/ai_orchestration/sod_checker.py" (Phase 3+)
+- Modul: "Multi-Model Runner" (Phase 3+)
+- SoD Checker: "SoD Checker" (Phase 3+)
 - Model Registry: `config/model_registry.toml`
 
 **Priorität:** 🔴 HIGH (P0) – Core für Layer Map v1
@@ -194,8 +194,8 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 4. Logging: `run_id`, `model_id`, `prompt_hash`, `artifact_hash`
 
 **Deliverables:**
-- "src/ai_orchestration/multi_model_runner.py" (Phase 3+)
-- "src/ai_orchestration/sod_checker.py" (Phase 3+)
+- "Multi-Model Runner" (Phase 3+)
+- "SoD Checker" (Phase 3+)
 - `src/ai_orchestration/models.py` (Dataclasses)
 
 **Tests:**
@@ -215,7 +215,7 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 
 **Deliverables:**
 - Updated `src/market_sentinel/v0_daily_outlook.py`
-- Erstes Evidence Pack: "docs/governance/evidence/EVP_20260115_L2_PILOT.md" (Phase 3+)
+- Erstes Evidence Pack: "L2 Pilot Evidence Pack" (Phase 3+)
 
 **Tests:**
 - `tests/market_sentinel/test_layer_compliance.py`
@@ -233,9 +233,9 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 3. Integriere L4 in CodeGate Pipeline
 
 **Deliverables:**
-- "src/research/deep_research_runner.py" (Phase 3+)
+- "DeepResearch Runner" (Phase 3+)
 - Updated `src/governance/policy_critic/critic.py`
-- "docs/governance/CODEGATE_LAYER_MAP_INTEGRATION.md" (Phase 3+)
+- "CodeGate Layer Map Integration" (Phase 3+)
 
 **Tests:**
 - `tests/research/test_deep_research_runner.py`
@@ -252,8 +252,8 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 2. L3 Trade Plan Advisory: Intraday Hypothesen-Generator (Files only, REC/PROP)
 
 **Deliverables:**
-- "src/ops/runbook_generator.py" (Phase 3+) (L0)
-- "src/trading/trade_plan_advisor.py" (Phase 3+) (L3)
+- "Runbook Generator" (Phase 3+) (L0)
+- "Trade Plan Advisor" (Phase 3+) (L3)
 
 **Tests:**
 - `tests/ops/test_runbook_generator_layer_compliance.py`
@@ -271,8 +271,8 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 3. Heterogene Verification: DeepSeek-R1 als Critic für OpenAI Proposer
 
 **Deliverables:**
-- "src/ai_orchestration/model_wrappers/deepseek_r1.py" (Phase 3+)
-- "src/ai_orchestration/model_wrappers/openai.py" (Phase 3+)
+- "DeepSeek-R1 Wrapper" (Phase 3+)
+- "OpenAI Wrapper" (Phase 3+)
 - Fallback Tests
 
 **Tests:**
@@ -292,7 +292,7 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 4. Go/NoGo Review für L3 (Trade Plan Advisory)
 
 **Deliverables:**
-- "docs/governance/evidence/EVP_20260210_30DAY_PILOT_REPORT.md" (Phase 3+)
+- "30-Day Pilot Report" (Phase 3+)
 - Go/NoGo Decision Document für L3
 
 **Tests:**

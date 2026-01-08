@@ -102,15 +102,15 @@
    - **Phase 2:** `ProposerCriticRunner`, `SoDChecker`, Logging
    - **Priority:** 🔴 HIGH (P0)
 
-2. **DeepResearch Runner** ("src/research/deep_research_runner.py" (Phase 3+))
+2. **DeepResearch Runner** ("DeepResearch Runner" (Phase 3+))
    - **Phase 4:** L1 DeepResearch mit `o3-deep-research` API
    - **Priority:** 🟡 MEDIUM (P1)
 
-3. **Trade Plan Advisor** ("src/trading/trade_plan_advisor.py" (Phase 3+))
+3. **Trade Plan Advisor** ("Trade Plan Advisor" (Phase 3+))
    - **Phase 5:** L3 Intraday Hypothesen (Files only, REC/PROP)
    - **Priority:** 🟡 MEDIUM (P1)
 
-4. **Runbook Generator** ("src/ops/runbook_generator.py" (Phase 3+))
+4. **Runbook Generator** ("Runbook Generator" (Phase 3+))
    - **Phase 5:** L0 Docs/Runbooks (Repo-Text only)
    - **Priority:** 🟢 LOW (P2)
 

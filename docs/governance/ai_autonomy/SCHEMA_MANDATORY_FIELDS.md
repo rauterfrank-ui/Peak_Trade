@@ -68,7 +68,7 @@ Dieses Dokument definiert die **verbindlichen Felder**, die bei jedem Layer-Run 
 | `run_id` | string (UUID) | `run_abc123` | Unique identifier per run |
 | `prompt_hash` | string (SHA256) | `a1b2c3d4...` | Hash of prompt inputs |
 | `artifact_hash` | string (SHA256) | `e5f6g7h8...` | Hash of output artifact |
-| `inputs_manifest` | list[string] | `["docs/market_outlook/latest.yaml"]` | List of actual inputs used |
+| `inputs_manifest` | list[string] | `[""Market Outlook (latest)" (Phase 3+)"]` | List of actual inputs used |
 | `outputs_manifest` | list[string] | `["scenario_report_2026-01-08.json"]` | List of outputs generated |
 | `timestamp_utc` | string (ISO8601) | `2026-01-08T14:30:00Z` | UTC timestamp |
 | `model_id` | string | `gpt-5.2-pro` | Actual model used (Primary or Fallback) |
@@ -100,7 +100,7 @@ Dieses Dokument definiert die **verbindlichen Felder**, die bei jedem Layer-Run 
         "run_id": "run_abc123",
         "prompt_hash": "a1b2c3d4...",
         "artifact_hash": "e5f6g7h8...",
-        "inputs_manifest": ["docs/market_outlook/latest.yaml"],
+        "inputs_manifest": [""Market Outlook (latest)" (Phase 3+)"],
         "outputs_manifest": ["scenario_report_2026-01-08.json"],
         "timestamp_utc": "2026-01-08T14:30:00Z",
         "model_id": "gpt-5.2-pro"
@@ -408,7 +408,7 @@ else:
 | Component | Integration | Schema Fields |
 |---|---|---|
 | **Layer Runners** (`src/ai_orchestration/`) | Initialize with `LayerRunMetadata` | `layer_id`, `primary_model_id`, `critic_model_id`, `capability_scope_id` |
-| **SoD Checker** ("src/ai_orchestration/sod_checker.py" (Phase 3+)) | Validate with `SoDCheckResult` | `proposer_model_id`, `critic_model_id`, `sod_result`, `critic_decision` |
+| **SoD Checker** ("SoD Checker" (Phase 3+)) | Validate with `SoDCheckResult` | `proposer_model_id`, `critic_model_id`, `sod_result`, `critic_decision` |
 | **Evidence Packs** (`docs/governance/evidence/`) | Include all mandatory fields | All fields from this schema |
 | **CodeGate** (`src/governance/codegate/`) | Validate Evidence Packs against schema | All fields + Matrix compliance |
 | **Audit Log** (`logs/ai_model_calls.jsonl`) | Log all runs with `RunLogging` | `run_id`, `prompt_hash`, `artifact_hash`, `inputs_manifest`, `outputs_manifest` |
