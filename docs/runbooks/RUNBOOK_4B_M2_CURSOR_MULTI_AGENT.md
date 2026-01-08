@@ -84,7 +84,7 @@ code /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
 
 ### 3.3 Struktur im Worktree (Session-Artefakte)
 Automatisch erstellt:
-- `docs/ops/sessions/SESSION_4B_M2_YYYYMMDD.md` (laufendes Log)
+- `docs/ops/sessions/SESSION_4B_M2_20260109.md` (laufendes Log, dated)
 - `docs/ops/sessions/SESSION_4B_M2_TASKBOARD.md` (Task-Board/Checklist)
 - `docs/ops/sessions/SESSION_4B_M2_DECISIONS.md` (Decision Log)
 
