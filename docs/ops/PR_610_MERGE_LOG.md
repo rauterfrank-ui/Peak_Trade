@@ -1,7 +1,7 @@
 # Merge Log: PR #610 - AI Autonomy Phase 2 (Capability Scopes + Model Registry)
 
 **PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/610  
-**Branch:** `docs/ai-autonomy-phase2-files` (branch) → `main`  
+**Branch:** docs/ai-autonomy-phase2-files → main  
 **Merge Commit:** `cf7a500b`  
 **Date:** 2026-01-08  
 **Reviewer:** N/A (CI-verified)  
