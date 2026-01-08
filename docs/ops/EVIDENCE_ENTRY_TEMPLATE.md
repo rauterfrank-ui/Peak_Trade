@@ -55,6 +55,50 @@
 
 ---
 
+## Linking Conventions for Evidence Entries
+
+**Important:** Evidence entries are stored in `docs/ops/evidence/`, which is **3 levels deep** from the repository root.
+
+**Rule:** To link to repo-root files, use `../../../` prefix.
+
+### Common Link Patterns
+
+| Target Location | Relative Path from Evidence Entry | Example |
+|-----------------|-----------------------------------|---------|
+| `config/` files | `../../../config/` | `[bounded_live.toml](../../../config/bounded_live.toml)` <!-- pt:ref-target-ignore --> |
+| `.github/workflows/` files | `../../../.github/workflows/` | `[ci.yml](../../../.github/workflows/ci.yml)` <!-- pt:ref-target-ignore --> |
+| `scripts/ops/` files | `../../../scripts/ops/` | `[run_audit.sh](../../../scripts/ops/run_audit.sh)` <!-- pt:ref-target-ignore --> |
+| `docs/ops/` files (sibling) | `../` | `[EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md)` <!-- pt:ref-target-ignore --> |
+| Other `docs/` files | `../../../docs/` | `[README.md](../../../README.md)` <!-- pt:ref-target-ignore --> |
+
+### Examples (Correct ✅ vs Incorrect ❌)
+
+**✅ Correct (3 levels up):**
+```markdown
+- [Config: bounded_live.toml](../../../config/bounded_live.toml)
+- [CI Workflow](../../../.github/workflows/ci.yml)
+- [Audit Script](../../../scripts/ops/run_audit.sh)
+```
+
+**❌ Incorrect (only 2 levels up):**
+```markdown
+- [Config: bounded_live.toml](../../config/bounded_live.toml)  ← BROKEN LINK
+- [CI Workflow](../../.github/workflows/ci.yml)               ← BROKEN LINK
+```
+
+**Why this matters:**
+- Evidence entries in `docs/ops/evidence/EV-*.md` are 3 directories deep from repo root
+- Path structure: `repo-root/docs/ops/evidence/EV-*.md`
+- Broken links cause `docs-reference-targets-gate` CI check to fail
+
+**Verification:**
+```bash
+# Always validate links after creating/editing evidence entries:
+./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
+```
+
+---
+
 ## Example (Filled Template)
 
 ```markdown
