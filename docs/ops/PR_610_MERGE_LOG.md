@@ -1,7 +1,7 @@
 # Merge Log: PR #610 - AI Autonomy Phase 2 (Capability Scopes + Model Registry)
 
 **PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/610  
-**Branch:** `docs/ai-autonomy-phase2-files` → `main`  
+**Branch:** docs/ai-autonomy-phase2-files → main  
 **Merge Commit:** `cf7a500b`  
 **Date:** 2026-01-08  
 **Reviewer:** N/A (CI-verified)  
@@ -106,8 +106,8 @@ Follows Phase 1 PR #609 (authoritative layer map + matrix).
 - [x] Pop stash (if needed): ✅ Stash was applied (not popped), all files now in main
 
 ### Follow-up (Phase 3)
-- [ ] Runtime orchestrator (src/ai_orchestration/orchestrator.py)
-- [ ] Evidence pack validator (src/ai_orchestration/evidence_pack.py)
+- [ ] Runtime orchestrator (planned in Phase 3 / PR #611)
+- [ ] Evidence pack vator (planned; file TBD)
 - [ ] SoD check enforcement (runtime)
 - [ ] CI integration (Policy Critic Gate + Docs Reference Targets Gate)
 - [ ] Live enablement (governance approval required)
