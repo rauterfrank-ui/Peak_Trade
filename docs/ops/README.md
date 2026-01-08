@@ -16,7 +16,8 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs
-- `docs/ops/PR_611_MERGE_LOG.md` — AI Autonomy Phase 3: Runtime Orchestrator v0 (fail-closed) (PR #611, 2026-01-08)
+- `docs/ops/PR_614_MERGE_LOG.md` — AI Autonomy Phase 3B: Evidence Pack Validator (fail-closed, SoD enforced) (PR #614, 2026-01-08)
+- `docs/ops/PR_611_MERGE_LOG.md` — AI Autonomy Phase 3A: Runtime Orchestrator v0 (fail-closed) (PR #611, 2026-01-08)
 - `docs/ops/PR_610_MERGE_LOG.md` — AI Autonomy Phase 2: Capability Scopes + Model Registry (PR #610, 2026-01-08)
 - `docs/ops/PR_569_MERGE_LOG.md` — MLflow CI Failures Fix: Run Lifecycle Hardening for mlflow≥3.0 (PR #569, 2026-01-05)
 - `docs/ops/PR_562_MERGE_LOG.md` — AI-Ops Toolchain v1.1: Evals Runner + CI + Scoreboard (PR #562, 2026-01-05)
