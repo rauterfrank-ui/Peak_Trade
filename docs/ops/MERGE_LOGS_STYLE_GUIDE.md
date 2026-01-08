@@ -164,6 +164,51 @@ Before committing a merge log:
 
 ---
 
+## How to Generate
+
+**Automated Generation (Recommended):**
+
+Use the `new_merge_log.py` generator with GitHub CLI integration:
+
+```bash
+# Auto-fetch PR metadata via gh CLI
+python scripts/ops/new_merge_log.py --pr 450
+
+# Custom output location
+python scripts/ops/new_merge_log.py --pr 450 --out docs/ops/custom_name.md
+
+# Fallback mode (template with placeholders)
+python scripts/ops/new_merge_log.py --pr 450 --fallback
+
+# Skip README update
+python scripts/ops/new_merge_log.py --pr 450 --no-update-readme
+```
+
+**Hygiene Check:**
+
+Before committing, run the hygiene checker to catch issues:
+
+```bash
+# Check a single file
+python scripts/ops/check_merge_log_hygiene.py docs/ops/PR_450_MERGE_LOG.md
+
+# Check multiple files (glob pattern)
+python scripts/ops/check_merge_log_hygiene.py docs/ops/PR_*_MERGE_LOG.md
+
+# Verbose mode
+python scripts/ops/check_merge_log_hygiene.py -v docs/ops/PR_450_MERGE_LOG.md
+```
+
+**What the hygiene checker finds:**
+- Forbidden local paths: `/Users/`, `/home/`, `C:\`, `~/`
+- Unicode issues: Bidi controls, Zero-Width chars, BOM, Surrogates
+
+**CI Integration:**
+
+The hygiene check runs automatically on PRs that modify merge logs (informational only, non-blocking).
+
+---
+
 ## See Also
 
 - [Merge Log Workflow](MERGE_LOG_WORKFLOW.md) — Process for creating merge logs
