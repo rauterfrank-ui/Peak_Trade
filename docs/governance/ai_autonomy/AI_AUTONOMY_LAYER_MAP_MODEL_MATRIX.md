@@ -81,9 +81,9 @@ Diese Matrix ist die **authoritative Quelle** für:
 
 Jeder Layer hat einen formalen **Capability Scope**, definiert in:
 
-```
+``
 config/capability_scopes/<layer_id>_<layer_name>.toml
-```
+``
 
 **Capability Scope definiert:**
 - `inputs_allowed` / `inputs_forbidden`
@@ -93,10 +93,10 @@ config/capability_scopes/<layer_id>_<layer_name>.toml
 - `logging` (required fields: `run_id`, `model_id`, `prompt_hash`, `artifact_hash`, etc.)
 
 **Existierende Capability Scopes:**
-- L0: `config/capability_scopes/L0_ops_docs.toml`
-- L1: `config/capability_scopes/L1_deep_research.toml`
-- L2: `config/capability_scopes/L2_market_outlook.toml`
-- L4: `config/capability_scopes/L4_governance_critic.toml`
+- L0: `config/capability_scopes/L0_ops_docs.toml` (Phase 2)
+- L1: `config/capability_scopes/L1_deep_research.toml` (Phase 2)
+- L2: `config/capability_scopes/L2_market_outlook.toml` (Phase 2)
+- L4: `config/capability_scopes/L4_governance_critic.toml` (Phase 2)
 
 ---
 
@@ -138,7 +138,7 @@ Jedes Evidence Pack **MUSS** folgende Felder aus dieser Matrix referenzieren:
 | `capability_scope_id` | Capability Scope Datei | `L2_market_outlook_v1` |
 | `sod_check_status` | Runtime Check | `PASS` / `FAIL` |
 
-**Evidence Pack Template:** `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md`
+**Evidence Pack Template:** `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md` (Phase 2)
 
 ---
 
@@ -185,14 +185,14 @@ Jedes Evidence Pack **MUSS** folgende Felder aus dieser Matrix referenzieren:
 
 ### Verwandte Dokumente
 
-- **Detailed Spec:** `docs/architecture/ai_autonomy_layer_map_v1.md`
-- **Gap-Analyse:** `docs/architecture/ai_autonomy_layer_map_gap_analysis.md`
-- **Integration Summary:** `docs/architecture/INTEGRATION_SUMMARY.md`
-- **Evidence Pack Template v2:** `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md`
+- **Detailed Spec:** `docs/architecture/ai_autonomy_layer_map_v1.md` (Phase 2)
+- **Gap-Analyse:** `docs/architecture/ai_autonomy_layer_map_gap_analysis.md` (Phase 2)
+- **Integration Summary:** `docs/architecture/INTEGRATION_SUMMARY.md` (Phase 2)
+- **Evidence Pack Template v2:** `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md` (Phase 2)
 
 ### Configuration Files
 
-- **Model Registry:** `config/model_registry.toml` (detaillierte Model Specs, Budget, Audit)
+- **Model Registry:** `config/model_registry.toml` (Phase 2) (detaillierte Model Specs, Budget, Audit)
 - **Capability Scopes:** `config/capability_scopes/*.toml` (Layer-spezifische Enforcement Rules)
 
 ### Governance
@@ -207,7 +207,7 @@ Jedes Evidence Pack **MUSS** folgende Felder aus dieser Matrix referenzieren:
 
 **Evidence Pack Header (Minimal):**
 
-```markdown
+``markdown
 **Evidence Pack ID:** EVP_20260108_L2_OUTLOOK_001
 **Layer ID:** L2
 **Layer Name:** Market Outlook
@@ -216,8 +216,8 @@ Jedes Evidence Pack **MUSS** folgende Felder aus dieser Matrix referenzieren:
 **Critic Model:** deepseek-r1
 **SoD Check:** PASS
 **Matrix Version:** v1.0 (2026-01-08)
-**Capability Scope:** config/capability_scopes/L2_market_outlook.toml
-```
+**Capability Scope:** `config/capability_scopes/L2_market_outlook.toml` (Phase 2)
+``
 
 **Evidence Pack validiert:**
 1. Layer ID existiert in Matrix: ✅ L2
