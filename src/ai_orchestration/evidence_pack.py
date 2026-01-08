@@ -104,9 +104,7 @@ class EvidencePackMetadata:
 
         # Creation timestamp must be valid ISO8601
         try:
-            datetime.fromisoformat(
-                self.creation_timestamp.replace("Z", "+00:00")
-            )
+            datetime.fromisoformat(self.creation_timestamp.replace("Z", "+00:00"))
         except (ValueError, AttributeError):
             raise ValueError(
                 f"Invalid creation_timestamp: {self.creation_timestamp}. Must be ISO8601."
@@ -199,9 +197,7 @@ class EvidencePackValidator:
         self._validate_test_results(pack)
 
         if self.errors and self.strict:
-            raise ValueError(
-                f"Evidence Pack validation failed: {'; '.join(self.errors)}"
-            )
+            raise ValueError(f"Evidence Pack validation failed: {'; '.join(self.errors)}")
 
         return len(self.errors) == 0
 
@@ -230,9 +226,7 @@ class EvidencePackValidator:
 
         # Check that all SoD checks passed
         failed_sod_checks = [
-            check
-            for check in pack.sod_checks
-            if check.sod_result == SoDResult.FAIL
+            check for check in pack.sod_checks if check.sod_result == SoDResult.FAIL
         ]
         if failed_sod_checks:
             self.errors.append(
@@ -242,14 +236,10 @@ class EvidencePackValidator:
     def _validate_test_results(self, pack: EvidencePackMetadata) -> None:
         """Validate test results in Evidence Pack."""
         if pack.tests_total > 0 and pack.tests_passed < pack.tests_total:
-            self.warnings.append(
-                f"Not all tests passed: {pack.tests_passed}/{pack.tests_total}"
-            )
+            self.warnings.append(f"Not all tests passed: {pack.tests_passed}/{pack.tests_total}")
 
         if pack.tests_total > 0 and pack.tests_passed == 0:
-            self.errors.append(
-                "No tests passed. Evidence Pack must have passing tests."
-            )
+            self.errors.append("No tests passed. Evidence Pack must have passing tests.")
 
     def validate_file(self, filepath: Path) -> bool:
         """
@@ -273,9 +263,7 @@ class EvidencePackValidator:
             with open(filepath, "rb") as f:
                 data = toml.load(f)
         else:
-            raise ValueError(
-                f"Unsupported file format: {suffix}. Use .json or .toml"
-            )
+            raise ValueError(f"Unsupported file format: {suffix}. Use .json or .toml")
 
         # Convert to EvidencePackMetadata
         pack = self._dict_to_pack(data)
@@ -338,9 +326,7 @@ class EvidencePackValidator:
                     critic_model_id=sod_data["critic_model_id"],
                     critic_artifact_hash=sod_data["critic_artifact_hash"],
                     sod_result=(
-                        SoDResult(sod_data["sod_result"])
-                        if sod_data.get("sod_result")
-                        else None
+                        SoDResult(sod_data["sod_result"]) if sod_data.get("sod_result") else None
                     ),
                     sod_check_timestamp=sod_data.get("sod_check_timestamp", ""),
                     critic_decision=(
@@ -350,9 +336,7 @@ class EvidencePackValidator:
                     ),
                     critic_rationale=sod_data.get("critic_rationale", ""),
                     evidence_ids=sod_data.get("evidence_ids", []),
-                    related_evidence_packs=sod_data.get(
-                        "related_evidence_packs", []
-                    ),
+                    related_evidence_packs=sod_data.get("related_evidence_packs", []),
                 )
                 sod_checks.append(sod_check)
 
@@ -438,6 +422,4 @@ def save_evidence_pack(pack: EvidencePackMetadata, filepath: Path) -> None:
         with open(filepath, "w") as f:
             json.dump(data, f, indent=2)
     else:
-        raise ValueError(
-            f"Unsupported file format: {suffix}. Use .json for saving."
-        )
+        raise ValueError(f"Unsupported file format: {suffix}. Use .json for saving.")

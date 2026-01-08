@@ -44,9 +44,7 @@ class TestOrchestratorEvidencePackIntegration:
     def test_orchestrator_selection_to_evidence_pack(self, orchestrator):
         """Test capturing orchestrator selection in Evidence Pack."""
         # Step 1: Use orchestrator to select models
-        selection = orchestrator.select_model(
-            layer_id="L0", autonomy_level=AutonomyLevel.REC
-        )
+        selection = orchestrator.select_model(layer_id="L0", autonomy_level=AutonomyLevel.REC)
 
         assert selection.primary_model_id
         assert selection.critic_model_id
@@ -72,9 +70,7 @@ class TestOrchestratorEvidencePackIntegration:
             capability_scope_id=selection.capability_scope_id,
             matrix_version=selection.registry_version,
             fallback_model_id=(
-                selection.fallback_model_ids[0]
-                if selection.fallback_model_ids
-                else None
+                selection.fallback_model_ids[0] if selection.fallback_model_ids else None
             ),
         )
 
@@ -89,9 +85,7 @@ class TestOrchestratorEvidencePackIntegration:
     def test_full_workflow_with_run_logs(self, orchestrator):
         """Test full workflow: Orchestrator → Run Logs → Evidence Pack."""
         # Step 1: Select models
-        selection = orchestrator.select_model(
-            layer_id="L2", autonomy_level=AutonomyLevel.PROP
-        )
+        selection = orchestrator.select_model(layer_id="L2", autonomy_level=AutonomyLevel.PROP)
 
         # Step 2: Create Evidence Pack
         pack = create_evidence_pack(
@@ -184,14 +178,14 @@ class TestOrchestratorEvidencePackIntegration:
         assert len(packs) == 3
         for pack in packs:
             assert pack.layer_run_metadata
-            assert pack.layer_run_metadata.primary_model_id != pack.layer_run_metadata.critic_model_id
+            assert (
+                pack.layer_run_metadata.primary_model_id != pack.layer_run_metadata.critic_model_id
+            )
 
     def test_orchestrator_evidence_pack_preserves_explainability(self, orchestrator):
         """Test that Evidence Pack preserves orchestrator explainability."""
         # Select models
-        selection = orchestrator.select_model(
-            layer_id="L0", autonomy_level=AutonomyLevel.RO
-        )
+        selection = orchestrator.select_model(layer_id="L0", autonomy_level=AutonomyLevel.RO)
 
         # Create Evidence Pack
         pack = create_evidence_pack(
@@ -213,9 +207,7 @@ class TestOrchestratorEvidencePackIntegration:
     def test_evidence_pack_catches_orchestrator_sod_violation(self, orchestrator):
         """Test that Evidence Pack catches SoD violations from orchestrator."""
         # Normal selection (should pass SoD)
-        selection = orchestrator.select_model(
-            layer_id="L0", autonomy_level=AutonomyLevel.REC
-        )
+        selection = orchestrator.select_model(layer_id="L0", autonomy_level=AutonomyLevel.REC)
 
         # Create Evidence Pack with INTENTIONALLY BROKEN LayerRunMetadata
         pack = create_evidence_pack(
