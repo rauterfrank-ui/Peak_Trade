@@ -1,0 +1,27 @@
+# Phase 4A: Evidence Pack CI Gate + Auto-Creation
+# Changed/New Files
+
+## NEW FILES (6)
+
+### Implementation
+src/ai_orchestration/evidence_pack_runtime.py
+
+### Scripts
+scripts/validate_evidence_pack_ci.py
+scripts/run_layer_smoke_with_evidence_pack.py
+
+### CI Workflow
+.github/workflows/evidence_pack_gate.yml
+
+### Tests
+tests/ai_orchestration/test_evidence_pack_ci_gate.py
+
+### Documentation
+docs/ai/EVIDENCE_PACK_CI_GATE.md
+
+## REPORT FILES (2)
+PHASE4A_IMPLEMENTATION_REPORT.md
+PHASE4A_CHANGED_FILES.txt
+
+## MODIFIED FILES (0)
+# No existing files modified (backward compatible)

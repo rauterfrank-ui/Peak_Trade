@@ -17,6 +17,7 @@ Reference:
 
 import hashlib
 import json
+import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,6 +37,13 @@ from .models import (
     SoDResult,
 )
 
+# Phase 4B: Schema Versioning & Migration
+from .evidence_pack_schema import (
+    SchemaValidationError,
+    validate_and_migrate,
+    validate_schema_header,
+)
+
 
 @dataclass
 class EvidencePackMetadata:
@@ -51,6 +59,9 @@ class EvidencePackMetadata:
     registry_version: str  # Model registry version used
     layer_id: str  # L0-L6
     autonomy_level: AutonomyLevel
+
+    # Phase 4B: Schema header field (pack_id)
+    pack_id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
     # Evidence content
     layer_run_metadata: Optional[LayerRunMetadata] = None
@@ -121,6 +132,11 @@ class EvidencePackMetadata:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
         result = {
+            # Phase 4B: Schema header fields (MUST be at top level)
+            "schema_id": "evidence_pack",
+            "schema_version": "1.0.0",
+            "pack_id": self.pack_id,
+            # Legacy fields (maintained for backward compatibility)
             "evidence_pack_id": self.evidence_pack_id,
             "phase_id": self.phase_id,
             "creation_timestamp": self.creation_timestamp,
@@ -265,8 +281,17 @@ class EvidencePackValidator:
         else:
             raise ValueError(f"Unsupported file format: {suffix}. Use .json or .toml")
 
+        # Phase 4B: Validate schema header and migrate if needed
+        try:
+            validated_data = validate_and_migrate(data)
+        except SchemaValidationError as e:
+            self.errors.append(str(e))
+            if self.strict:
+                raise ValueError(f"Schema validation failed: {e}") from e
+            return False
+
         # Convert to EvidencePackMetadata
-        pack = self._dict_to_pack(data)
+        pack = self._dict_to_pack(validated_data)
 
         # Validate
         return self.validate_pack(pack)
@@ -348,6 +373,7 @@ class EvidencePackValidator:
             registry_version=data["registry_version"],
             layer_id=data["layer_id"],
             autonomy_level=autonomy_level,
+            pack_id=data.get("pack_id", str(uuid.uuid4())),  # Phase 4B: read pack_id or generate
             layer_run_metadata=layer_run_metadata,
             run_logs=run_logs,
             sod_checks=sod_checks,
