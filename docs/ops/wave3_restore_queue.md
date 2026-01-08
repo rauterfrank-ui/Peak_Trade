@@ -29,21 +29,19 @@
 
 ### A1: Merge Log Backlog (11 Branches)
 
-<!-- pt:ref-target-ignore -->
-
 | Branch | Last Update | Subject | Verify |
 |--------|-------------|---------|--------|
-| `docs/add-pr569-readme-link` | 2026-01-05 | PR #569 merge log to README index | Check README links |
-| `docs/merge-log-pr488` | 2026-01-01 | Merge log for PR #488 | Check docs/ops/ |
-| `docs/cursor-multi-agent-phase4-runner` | 2026-01-01 | PR #480 merge log + index | Check index |
-| `docs/merge-log-pr-350-docs-reference-targets-golden-corpus` | 2025-12-25 | Merge log + path fixes | Check paths |
-| `docs/ops-pr206-merge-log` | 2025-12-21 | Legacy merge log backlog | Check legacy docs |
-| `docs/ops-merge-both-prs-dryrun-workflow` | 2025-12-23 | DRY_RUN workflow docs | Check workflow |
-| `docs/ops/pr-87-merge-log` | 2025-12-16 | PR #87 merge log | Check docs/ops |
-| `docs/ops/pr-92-merge-log` | 2025-12-16 | PR #92 merge log | Check docs/ops |
-| `docs/ops/pr-93-merge-log` | 2025-12-16 | PR #93 merge log | Check docs/ops |
-| `docs/pr-76-merge-log` | 2025-12-16 | PR #76 merge log | Check docs/ops |
-| `docs/ops-pr-85-merge-log` | 2025-12-16 | PR #85 merge log | Check docs/ops |
+| docs/add-pr569-readme-link | 2026-01-05 | PR #569 merge log to README index | Check README links |
+| docs/merge-log-pr488 | 2026-01-01 | Merge log for PR #488 | Check docs/ops/ |
+| docs/cursor-multi-agent-phase4-runner | 2026-01-01 | PR #480 merge log + index | Check index |
+| docs/merge-log-pr-350-docs-reference-targets-golden-corpus | 2025-12-25 | Merge log + path fixes | Check paths |
+| docs/ops-pr206-merge-log | 2025-12-21 | Legacy merge log backlog | Check legacy docs |
+| docs/ops-merge-both-prs-dryrun-workflow | 2025-12-23 | DRY_RUN workflow docs | Check workflow |
+| docs/ops/pr-87-merge-log | 2025-12-16 | PR #87 merge log | Check docs/ops |
+| docs/ops/pr-92-merge-log | 2025-12-16 | PR #92 merge log | Check docs/ops |
+| docs/ops/pr-93-merge-log | 2025-12-16 | PR #93 merge log | Check docs/ops |
+| docs/pr-76-merge-log | 2025-12-16 | PR #76 merge log | Check docs/ops |
+| docs/ops-pr-85-merge-log | 2025-12-16 | PR #85 merge log | Check docs/ops |
 
 **Operator Notes:**
 - Pure documentation, no code impact
@@ -54,16 +52,14 @@
 
 ### A2: Runbooks & Standards (6 Branches)
 
-<!-- pt:ref-target-ignore -->
-
 | Branch | Last Update | Subject | Impact |
 |--------|-------------|---------|--------|
-| `docs/github-rulesets-runbook` | 2026-01-03 | GitHub rulesets PR/review policy runbook | Policy docs |
-| `docs/frontdoor-roadmap-runner` | 2025-12-31 | Live execution roadmap runner appendix | Roadmap |
-| `docs/fix-moved-script-paths-phase1` | 2025-12-30 | Fix moved script paths in docs | Path refs |
-| `docs/ops-doctor-noise-free-standard` | 2025-12-27 | Noise-Free standard + uv export flags | Ops standard |
-| `docs/ops-worktree-policy` | 2025-12-16 | Worktree policy standard | Policy |
-| `docs/ops-audit-logs-convention` | 2025-12-15 | Audit log convention | Convention |
+| docs/github-rulesets-runbook | 2026-01-03 | GitHub rulesets PR/review policy runbook | Policy docs |
+| docs/frontdoor-roadmap-runner | 2025-12-31 | Live execution roadmap runner appendix | Roadmap |
+| docs/fix-moved-script-paths-phase1 | 2025-12-30 | Fix moved script paths in docs | Path refs |
+| docs/ops-doctor-noise-free-standard | 2025-12-27 | Noise-Free standard + uv export flags | Ops standard |
+| docs/ops-worktree-policy | 2025-12-16 | Worktree policy standard | Policy |
+| docs/ops-audit-logs-convention | 2025-12-15 | Audit log convention | Convention |
 
 **Operator Notes:**
 - Operational runbooks und Standards
@@ -74,15 +70,13 @@
 
 ### A3: Roadmaps & Housekeeping (5 Branches)
 
-<!-- pt:ref-target-ignore -->
-
 | Branch | Last Update | Subject | Category |
 |--------|-------------|---------|----------|
-| `reboot/from-pr-380` | 2026-01-03 | Reboot roadmap v2 + plan + migration notes | Roadmap |
-| `docs/ops-docs-reference-targets-supported-formats` | 2025-12-25 | Reference targets supported formats | Docs |
-| `docs/pr-74-delivery-note` | 2025-12-16 | PR #75 as delivery transport for PR #74 | Meta |
-| `docs/pr-66-finalization` | 2025-12-16 | Finalize PR #66 final report | Report |
-| `docs/pr-63-finalization` | 2025-12-16 | Finalize PR #63 final report | Report |
+| reboot/from-pr-380 | 2026-01-03 | Reboot roadmap v2 + plan + migration notes | Roadmap |
+| docs/ops-docs-reference-targets-supported-formats | 2025-12-25 | Reference targets supported formats | Docs |
+| docs/pr-74-delivery-note | 2025-12-16 | PR #75 as delivery transport for PR #74 | Meta |
+| docs/pr-66-finalization | 2025-12-16 | Finalize PR #66 final report | Report |
+| docs/pr-63-finalization | 2025-12-16 | Finalize PR #63 final report | Report |
 
 **Operator Notes:**
 - Roadmaps, Berichte, Meta-Dokumentation
