@@ -77,9 +77,7 @@ class TestModelSelection:
 
     def test_select_model_L0_REC(self, orchestrator):
         """Test L0 (Ops/Docs) REC selection."""
-        selection = orchestrator.select_model(
-            layer_id="L0", autonomy_level=AutonomyLevel.REC
-        )
+        selection = orchestrator.select_model(layer_id="L0", autonomy_level=AutonomyLevel.REC)
 
         assert selection.layer_id == "L0"
         assert selection.autonomy_level == AutonomyLevel.REC
@@ -92,9 +90,7 @@ class TestModelSelection:
 
     def test_select_model_L1_PROP(self, orchestrator):
         """Test L1 (DeepResearch) PROP selection."""
-        selection = orchestrator.select_model(
-            layer_id="L1", autonomy_level=AutonomyLevel.PROP
-        )
+        selection = orchestrator.select_model(layer_id="L1", autonomy_level=AutonomyLevel.PROP)
 
         assert selection.layer_id == "L1"
         assert selection.autonomy_level == AutonomyLevel.PROP
@@ -106,9 +102,7 @@ class TestModelSelection:
 
     def test_select_model_L2_PROP(self, orchestrator):
         """Test L2 (Market Outlook) PROP selection."""
-        selection = orchestrator.select_model(
-            layer_id="L2", autonomy_level=AutonomyLevel.PROP
-        )
+        selection = orchestrator.select_model(layer_id="L2", autonomy_level=AutonomyLevel.PROP)
 
         assert selection.layer_id == "L2"
         assert selection.autonomy_level == AutonomyLevel.PROP
@@ -119,9 +113,7 @@ class TestModelSelection:
 
     def test_select_model_L3_REC(self, orchestrator):
         """Test L3 (Trade Plan Advisory) REC selection."""
-        selection = orchestrator.select_model(
-            layer_id="L3", autonomy_level=AutonomyLevel.REC
-        )
+        selection = orchestrator.select_model(layer_id="L3", autonomy_level=AutonomyLevel.REC)
 
         assert selection.layer_id == "L3"
         assert selection.autonomy_level == AutonomyLevel.REC
@@ -131,9 +123,7 @@ class TestModelSelection:
 
     def test_select_model_L4_RO(self, orchestrator):
         """Test L4 (Governance) RO selection."""
-        selection = orchestrator.select_model(
-            layer_id="L4", autonomy_level=AutonomyLevel.RO
-        )
+        selection = orchestrator.select_model(layer_id="L4", autonomy_level=AutonomyLevel.RO)
 
         assert selection.layer_id == "L4"
         assert selection.autonomy_level == AutonomyLevel.RO
@@ -156,9 +146,7 @@ class TestModelSelection:
 
     def test_select_model_to_dict(self, orchestrator):
         """Test ModelSelection serialization."""
-        selection = orchestrator.select_model(
-            layer_id="L0", autonomy_level=AutonomyLevel.REC
-        )
+        selection = orchestrator.select_model(layer_id="L0", autonomy_level=AutonomyLevel.REC)
 
         data = selection.to_dict()
         assert data["layer_id"] == "L0"
@@ -215,9 +203,7 @@ class TestSoDValidation:
 
     def test_sod_pass_different_models(self, orchestrator):
         """Test SoD passes when primary != critic."""
-        selection = orchestrator.select_model(
-            layer_id="L0", autonomy_level=AutonomyLevel.REC
-        )
+        selection = orchestrator.select_model(layer_id="L0", autonomy_level=AutonomyLevel.REC)
 
         # L0: primary=gpt-5.2, critic=deepseek-r1
         assert selection.primary_model_id != selection.critic_model_id
@@ -269,9 +255,7 @@ class TestEdgeCases:
 
     def test_multiple_fallbacks_L1(self, orchestrator):
         """Test L1 has multiple fallbacks."""
-        selection = orchestrator.select_model(
-            layer_id="L1", autonomy_level=AutonomyLevel.PROP
-        )
+        selection = orchestrator.select_model(layer_id="L1", autonomy_level=AutonomyLevel.PROP)
 
         # L1 has multiple fallbacks
         assert len(selection.fallback_model_ids) >= 2
@@ -280,9 +264,7 @@ class TestEdgeCases:
 
     def test_selection_constraints_ignored_for_now(self, orchestrator):
         """Test selection constraints are accepted but not enforced yet."""
-        constraints = SelectionConstraints(
-            max_cost_per_1k_tokens=0.01, max_latency_ms=1000
-        )
+        constraints = SelectionConstraints(max_cost_per_1k_tokens=0.01, max_latency_ms=1000)
 
         # Should not raise (constraints not enforced in v0)
         selection = orchestrator.select_model(
@@ -293,9 +275,7 @@ class TestEdgeCases:
 
     def test_capability_scope_id_generation(self, orchestrator):
         """Test capability scope ID is generated correctly."""
-        selection = orchestrator.select_model(
-            layer_id="L0", autonomy_level=AutonomyLevel.REC
-        )
+        selection = orchestrator.select_model(layer_id="L0", autonomy_level=AutonomyLevel.REC)
 
         # L0 description: "Ops/Docs"
         assert "L0" in selection.capability_scope_id
@@ -303,9 +283,7 @@ class TestEdgeCases:
 
     def test_selection_timestamp_format(self, orchestrator):
         """Test selection timestamp is ISO8601."""
-        selection = orchestrator.select_model(
-            layer_id="L0", autonomy_level=AutonomyLevel.REC
-        )
+        selection = orchestrator.select_model(layer_id="L0", autonomy_level=AutonomyLevel.REC)
 
         # ISO8601 format
         assert "T" in selection.selection_timestamp

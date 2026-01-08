@@ -60,6 +60,7 @@ def main():
     # Enable orchestrator if requested
     if args.enable_orchestrator:
         import os
+
         os.environ["ORCHESTRATOR_ENABLED"] = "true"
 
     print("=" * 70)
@@ -114,6 +115,7 @@ def main():
             print()
             print("Full Selection (dict):")
             import json
+
             print(json.dumps(selection.to_dict(), indent=2))
 
         print()

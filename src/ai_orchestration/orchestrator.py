@@ -177,14 +177,10 @@ class Orchestrator:
         """
         valid_layers = ["L0", "L1", "L2", "L3", "L4", "L5", "L6"]
         if layer_id not in valid_layers:
-            raise InvalidLayerError(
-                f"Invalid layer_id: {layer_id}. Must be one of {valid_layers}"
-            )
+            raise InvalidLayerError(f"Invalid layer_id: {layer_id}. Must be one of {valid_layers}")
 
         if layer_id not in self.layer_mapping:
-            raise InvalidLayerError(
-                f"Layer {layer_id} not found in registry layer_mapping"
-            )
+            raise InvalidLayerError(f"Layer {layer_id} not found in registry layer_mapping")
 
     def _validate_autonomy(self, autonomy_level: AutonomyLevel, layer_id: str) -> None:
         """
@@ -302,9 +298,7 @@ class Orchestrator:
 
         # Handle "none" for L5/L6
         if primary_raw == "none":
-            raise InvalidModelError(
-                f"Layer {layer_id} has no LLM support (primary='none')"
-            )
+            raise InvalidModelError(f"Layer {layer_id} has no LLM support (primary='none')")
 
         # 4. Validate models exist in registry
         self._validate_model(primary_raw)
