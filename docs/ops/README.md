@@ -1882,6 +1882,7 @@ Security:
 
 Post-merge documentation logs for operational PRs.
 
+- [PR #628](PR_628_MERGE_LOG.md) — docs(ops): AI Autonomy 4B M2 drill session template + scorecard standard (merged 2026-01-09) <!-- PR-628-MERGE-LOG -->
 - [PR #551](PR_551_MERGE_LOG.md) — fix(pr-531): restore green CI (normalize research markers/IDs) (merged 2026-01-04) <!-- PR-551-MERGE-LOG -->
 - [PR #599](PR_599_MERGE_LOG.md) — docs(ops): add audit artifacts v0 (evidence index + risk register) (merged 2026-01-07) <!-- PR-599-MERGE-LOG -->
 - [PR #596](PR_596_MERGE_LOG.md) — docs(ops): add placeholder standards v0 (policy + deterministic generator) (merged 2026-01-07) <!-- PR-596-MERGE-LOG -->
