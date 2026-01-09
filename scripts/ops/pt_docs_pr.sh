@@ -35,6 +35,20 @@ git add -A -- "docs/ops/PR_*_MERGE_LOG.md" 2>/dev/null || true
 git add -A -- "docs/ops/PR_*_MERGE_LOG*.md" 2>/dev/null || true
 
 echo
+echo "== DOCS-ONLY GUARDRAIL =="
+# If anything outside docs/ is staged, abort to preserve "docs-only" intent.
+if git diff --cached --name-only | grep -qv '^docs/'; then
+  echo "ERROR: Non-docs changes are staged. This helper is docs-only."
+  echo "Staged files (first 200):"
+  git diff --cached --name-only | sed -n '1,200p'
+  echo
+  echo "Suggested fix:"
+  echo "  - Unstage non-docs files: git restore --staged <file>"
+  echo "  - Or commit them separately, then re-run this script."
+  exit 4
+fi
+
+echo
 echo "== STAGED DIFF (name-status) =="
 if git diff --cached --name-status | sed -n "1,200p" | grep -q .; then
   git diff --cached --name-status | sed -n "1,200p"
