@@ -65,6 +65,9 @@ CodeGate prüft Evidence Packs gegen die Matrix:
 - `docs/governance/LLM_POLICY_CRITIC_CHARTER.md` - Policy Critic Charter (L4)
 - `.cursor/rules/peak-trade-governance.mdc` - Governance Guardrails
 
+### Operations & Runbooks
+- [AI Autonomy Runbook (Phase 4B · M2)](../../ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) - Phase 4B Milestone 2: Cursor Multi-Agent Evidence-First Operator Loop (standardized workflow for Layer Runs with Evidence Pack creation and validation)
+
 ---
 
 ## Change Control
