@@ -87,6 +87,24 @@ Dieses Runbook beschreibt den standardisierten Ablauf, um AI-Autonomy Artefakte 
 - Policy Critic Output
 - Docs Reference Targets / Link Debt Trend Resultate
 
+### Operator Drill Pack
+
+Für systematisches Kompetenztraining steht ein strukturiertes Drill Pack zur Verfügung:
+
+**[Operator Drill Pack — AI Autonomy 4B M2](../drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md)**
+
+Das Pack enthält 8 wiederholbare Drills:
+- D01: Pre-Flight Discipline (Repo Hygiene, Branch Hygiene)
+- D02: Scope Lock Verification (Docs-only Contract Enforcement)
+- D03: Evidence Pack Completeness (Schema Validation, Naming)
+- D04: CI Gate Triage (Failing Checks, Remediation)
+- D05: Docs Reference Targets Gate (Missing Targets, False Positives)
+- D06: Auto-Merge Safety (Required Checks, Merge Readiness)
+- D07: Incident Micro-Drill (Timeout Handling, Flaky Checks)
+- D08: Closeout Drill (Final Summary, Risk Call, Linking)
+
+Empfohlene Kadenz: 1-2 Drills pro Woche, vollständiger Durchlauf vor Production-nahen Runs.
+
 ---
 
 ## 4) Standardablauf (Milestone 2)

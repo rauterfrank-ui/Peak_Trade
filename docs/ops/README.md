@@ -69,12 +69,14 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 
 **Phase 4B M2 — Multi-Agent Runbook:**
 - 📖 **Operator Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) — Standardized workflow for AI Autonomy Layer Runs with Evidence Pack creation, validation, and operator sign-off
+- 🎯 **Operator Drill Pack:** [drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md](drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md) — 8 structured drills for operator competency validation (Pre-Flight, Scope Lock, Evidence Pack, CI Gates, Auto-Merge, Incidents, Closeout)
 
 **Key Deliverables:**
 - Evidence-First: All runs documented in Evidence Packs
 - CI-Validated: Schema validation + Docs gates + Audit gates
 - Multi-Agent Roles: ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, CI_GUARDIAN, EVIDENCE_SCRIBE, RISK_OFFICER
 - Governance-Locked: No-live enforcement, SoD checks, deterministic outputs
+- Operator Training: Structured drill pack for systematic competency validation
 
 ### AI Autonomy Phase 4B Milestone 3 (Control Center Dashboard/Visual)
 
