@@ -92,8 +92,8 @@ M  docs/ops/control_center/CONTROL_CENTER_NAV.md
    - PR package: Complete diff summary, PR template, verification checklist
 
 ### Deleted (2)
-- `docs/ops/control_center/RUNBOOK_CONTROL_CENTER_OPERATIONS.md` (temporary location)
-- `docs/ops/control_center/OPERATOR_OUTPUT_RUNBOOK_INTEGRATION_20260109.md` (superseded)
+- `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md` (temporary location)
+- `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md` (superseded)
 
 ---
 

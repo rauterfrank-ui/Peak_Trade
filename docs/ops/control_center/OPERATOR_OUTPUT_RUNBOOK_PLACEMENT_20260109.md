@@ -27,8 +27,8 @@ Korrektur der Runbook-Platzierung: Verschiebung von temporärem Standort in `con
 - ✅ `docs/ops/README.md` → Relativer Link korrigiert
 
 ### 3. Temporäre Dateien entfernt
-- ✅ `docs/ops/control_center/RUNBOOK_CONTROL_CENTER_OPERATIONS.md` (gelöscht)
-- ✅ `docs/ops/control_center/OPERATOR_OUTPUT_RUNBOOK_INTEGRATION_20260109.md` (gelöscht)
+- ✅ `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md` (gelöscht)
+- ✅ `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md` (gelöscht)
 
 ---
 
