@@ -1,6 +1,6 @@
-# PR_615_MERGE_LOG
+# PR_619_MERGE_LOG
 
-- PR: #615
+- PR: #619
 - Title: AI Autonomy Phase 4B M2: Operator Runbook (Evidence-First Loop)
 - Author: frnkhrz
 - Date: 2026-01-09
@@ -100,13 +100,14 @@ python3 scripts/validate_evidence_pack.py data/evidence_packs/EVP-001.json --ver
 
 **Check CI Gates:**
 ```bash
-gh pr checks 615
+gh pr checks 619
 ```
 
 ## References
 
 ### This PR
 
+- **PR:** #619
 - **Runbook:** `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md`
 - **Ops Index:** `docs/ops/README.md` (lines ~66-77)
 - **Governance Index:** `docs/governance/ai_autonomy/README.md` (line ~69)
