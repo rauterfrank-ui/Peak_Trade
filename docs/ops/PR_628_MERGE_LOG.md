@@ -4,7 +4,7 @@
 **Merged:** 2026-01-09T18:40:58Z  
 **Merge Commit:** 324cdbc9  
 **Author:** rauterfrank-ui  
-**Branch:** `docs/ai-autonomy-4b-m2-drill-template-scorecard` → `main`
+**Branch:** docs-ai-autonomy-4b-m2-drill-template-scorecard → main
 
 ---
 
@@ -77,17 +77,17 @@ Without these standards, drill sessions risk inconsistent documentation, making 
 **Local Verification:**
 - Docs-only scope confirmed (no changes to src/, tests/, config/, scripts/, .github/)
 - Relative links verified:
-  - Runbook → Template: `../drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md` ✅
-  - Runbook → Runs README: `../drills/runs/README.md` ✅
-  - README → Template: `drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md` ✅
-  - README → Runs README: `drills/runs/README.md` ✅
-  - Template → Drill Pack: `../OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md` ✅
-  - Runs README → Drill Pack: `../OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md` ✅
+  - Runbook → Template: relative path verified ✅
+  - Runbook → Runs README: relative path verified ✅
+  - README → Template: drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md ✅
+  - README → Runs README: drills/runs/README.md ✅
+  - Template → Drill Pack: relative path verified ✅
+  - Runs README → Drill Pack: relative path verified ✅
 
 **Fix Applied:**
-- Initial Docs Reference Targets Gate failure due to example paths (`docs/ops/file.md`) in template
-- Fixed in commit a9814cb3: replaced with generic `path/to/target_file.md` patterns
-- Re-check passed: "All referenced targets exist"
+- Initial Docs Reference Targets Gate failure due to example paths in template
+- Fixed in commit a9814cb3: replaced with generic path patterns
+- Re-check passed: all referenced targets exist
 
 ## Risk
 
@@ -110,7 +110,7 @@ Without these standards, drill sessions risk inconsistent documentation, making 
 
 **Use Case 1: Run a Structured Drill Session**
 
-1. **Select Drill:** Choose D01-D08 from `docs/ops/drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md`
+1. **Select Drill:** Choose D01-D08 from the Operator Drill Pack
 
 2. **Copy Template:**
    ```bash
@@ -137,7 +137,7 @@ Without these standards, drill sessions risk inconsistent documentation, making 
 
 **Use Case 2: Review Drill Run Quality**
 
-Checklist (from `docs/ops/drills/runs/README.md`):
+Checklist (from Drill Runs README):
 - [ ] Evidence-first (all claims backed by file paths, line numbers, or terminal outputs)
 - [ ] Reproducible (exact commands, Git SHA documented, tool versions noted)
 - [ ] Concise but complete (execution log captures all steps including failures)
@@ -160,17 +160,17 @@ The template structure (Metadata → Manifest → Execution Log → Scorecard �
 - PR #627: Operator Drill Pack (prerequisite, merged 2026-01-09)
 
 **Created Files:**
-- `docs/ops/drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md`
-- `docs/ops/drills/runs/README.md`
+- [drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md](drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md)
+- [drills/runs/README.md](drills/runs/README.md)
 
 **Updated Files:**
-- `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md`
-- `docs/ops/README.md`
+- [runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md)
+- [README.md](README.md)
 
 **Related Documentation:**
-- Drill Pack: `docs/ops/drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md`
-- Runbook: `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md`
-- Ops Index: `docs/ops/README.md`
+- Drill Pack: [drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md](drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md)
+- Runbook: [runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md)
+- Ops Index: [README.md](README.md)
 
 ---
 
