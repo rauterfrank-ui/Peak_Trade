@@ -16,6 +16,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs
+- `docs/ops/PR_615_MERGE_LOG.md` — AI Autonomy Phase 4B M2: Operator Runbook (Evidence-First Loop) (PR #615, 2026-01-09)
 - `docs/ops/PR_614_MERGE_LOG.md` — AI Autonomy Phase 3B: Evidence Pack Validator (fail-closed, SoD enforced) (PR #614, 2026-01-08)
 - `docs/ops/PR_611_MERGE_LOG.md` — AI Autonomy Phase 3A: Runtime Orchestrator v0 (fail-closed) (PR #611, 2026-01-08)
 - `docs/ops/PR_610_MERGE_LOG.md` — AI Autonomy Phase 2: Capability Scopes + Model Registry (PR #610, 2026-01-08)
@@ -61,6 +62,19 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - Hard Prohibitions (keys, funding, real orders verboten)
 - Operator Competency Validation (drill-safe)
 - Governance-Safe Evidence Chain (GO ≠ Live Authorization)
+
+### AI Autonomy Phase 4B Milestone 2 (Evidence-First Operator Loop)
+
+🤖 **Cursor Multi-Agent Orchestration** — Evidence Pack + CI Gates + Operator Review
+
+**Phase 4B M2 — Multi-Agent Runbook:**
+- 📖 **Operator Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) — Standardized workflow for AI Autonomy Layer Runs with Evidence Pack creation, validation, and operator sign-off
+
+**Key Deliverables:**
+- Evidence-First: All runs documented in Evidence Packs
+- CI-Validated: Schema validation + Docs gates + Audit gates
+- Multi-Agent Roles: ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, CI_GUARDIAN, EVIDENCE_SCRIBE, RISK_OFFICER
+- Governance-Locked: No-live enforcement, SoD checks, deterministic outputs
 
 ### Terminal Hang Diagnostics (Pager / Hook / Watch Blocking)
 
