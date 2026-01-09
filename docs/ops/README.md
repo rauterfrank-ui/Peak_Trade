@@ -89,6 +89,11 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - Evidence-First: Same M2 guarantees (Evidence Pack, CI validation, operator sign-off)
 - Dashboard Modes: Static HTML (no runtime) / Markdown (docs-only) / Local dev server (optional)
 
+## AI Autonomy Control Center
+
+- Control Center (v0): [docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md](control_center/AI_AUTONOMY_CONTROL_CENTER.md)
+- Navigation: [docs/ops/control_center/CONTROL_CENTER_NAV.md](control_center/CONTROL_CENTER_NAV.md)
+
 ### Terminal Hang Diagnostics (Pager / Hook / Watch Blocking)
 
 **Quick Diagnosis Tool:**
