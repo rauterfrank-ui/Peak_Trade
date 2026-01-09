@@ -76,6 +76,19 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - Multi-Agent Roles: ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, CI_GUARDIAN, EVIDENCE_SCRIBE, RISK_OFFICER
 - Governance-Locked: No-live enforcement, SoD checks, deterministic outputs
 
+### AI Autonomy Phase 4B Milestone 3 (Control Center Dashboard/Visual)
+
+🎛️ **Control Center + Enhanced Orchestration** — Dashboard + Extended Gates + Policy Checks
+
+**Phase 4B M3 — Control Center Runbook:**
+- 📖 **Operator Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md) — Standardized workflow for Control Center Dashboard development and M3 orchestration enhancements (Status/Evidence/CI overview, deterministic rendering, docs-only defaults)
+
+**Key Deliverables:**
+- Control Center Dashboard: Status/Evidence/CI/Run overview (static HTML or Markdown)
+- Extended Orchestration: Enhanced gates, policy checks, capability scopes
+- Evidence-First: Same M2 guarantees (Evidence Pack, CI validation, operator sign-off)
+- Dashboard Modes: Static HTML (no runtime) / Markdown (docs-only) / Local dev server (optional)
+
 ### Terminal Hang Diagnostics (Pager / Hook / Watch Blocking)
 
 **Quick Diagnosis Tool:**
