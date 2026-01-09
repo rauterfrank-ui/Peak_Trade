@@ -51,7 +51,7 @@ A high-quality drill run log exhibits these characteristics:
 
 ### Evidence-First
 - ✅ Every claim backed by a specific file path, line number, terminal output, or CI check result
-- ✅ Evidence pointers are precise: `docs/ops/file.md:123` not "somewhere in the docs"
+- ✅ Evidence pointers are precise: `path/to/file.md:123` not "somewhere in the docs"
 - ❌ Avoid: "Probably correct", "Should be", "Looks like"
 
 ### Reproducible

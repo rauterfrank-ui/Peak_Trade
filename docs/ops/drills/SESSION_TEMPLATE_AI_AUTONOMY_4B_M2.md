@@ -101,7 +101,7 @@ Format: `[Timestamp] Step N: [Action] → [Observation] → [Evidence Pointer]`
 |----|------|----------|------|
 | E01 | Terminal Output | Step 1 command output | Repository root verification |
 | E02 | Git Status | Step 2 command output | Branch tracking status |
-| E03 | File Content | docs/ops/file.md:123-145 | Specific section reference |
+| E03 | File Content | path/to/target_file.md:123-145 | Specific section reference |
 | E04 | CI Check | GitHub Actions run #12345 | Lint gate result |
 | ... | ... | ... | ... |
 
