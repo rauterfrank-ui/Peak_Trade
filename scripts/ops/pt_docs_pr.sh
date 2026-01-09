@@ -27,13 +27,12 @@ echo "== STAGE (safe: git pathspec, no shell wildcard expansion) =="
 # IMPORTANT:
 # - We quote globs so the shell does NOT expand them.
 # - Git will match them as pathspecs internally.
-git add -A -- \
-  docs/ops/control_center \
-  docs/ops/README.md \
-  docs/ops/EVIDENCE_INDEX.md \
-  "docs/ops/PR_*_MERGE_LOG.md" \
-  "docs/ops/PR_TBD_MERGE_LOG.md" \
-  "docs/ops/PR_*_MERGE_LOG*.md" || true
+# - Split into separate add commands to avoid "pathspec not found" blocking other adds.
+git add -A -- docs/ops/control_center 2>/dev/null || true
+git add -A -- docs/ops/README.md 2>/dev/null || true
+git add -A -- docs/ops/EVIDENCE_INDEX.md 2>/dev/null || true
+git add -A -- "docs/ops/PR_*_MERGE_LOG.md" 2>/dev/null || true
+git add -A -- "docs/ops/PR_*_MERGE_LOG*.md" 2>/dev/null || true
 
 echo
 echo "== STAGED DIFF (name-status) =="
