@@ -7,7 +7,7 @@
 - **Drill ID:** D03A
 - **Drill Name:** CI Monitoring ohne "watch"-Timeouts (Deterministic Polling Drill)
 - **Operator:** ai_autonomy (Cursor AI Agent)
-- **Repo Branch:** main → docs/drill-d03a-ci-polling-20260109
+- **Repo Branch:** main → docs/drill-d03a-ci-polling-20260109 <!-- pt:ref-target-ignore -->
 - **Git SHA (Start):** 1db287c3 (main after D02 merge)
 - **Scope:** Drill execution + documentation (docs-only output)
 - **Guardrails:** Evidence-first, deterministic, SoD enforced, no src/ changes, no config/ changes
@@ -73,7 +73,7 @@ Standardize deterministic CI status polling method to eliminate watch-timeout pa
 - **Observation:**
   - PWD: `/Users/frnkhrz/Peak_Trade`
   - Base SHA: `1db287c3` (main after D02 PR #632 merge)
-  - Branch created: `docs/drill-d03a-ci-polling-20260109`
+  - Branch created: docs/drill-d03a-ci-polling-20260109 <!-- pt:ref-target-ignore -->
   - Working tree: Clean
 - **Evidence:** Terminal output (2026-01-09T21:30:00+0100)
 - **Pass/Fail:** ✅ PASS
@@ -388,7 +388,7 @@ LOW — Documentation only, no code/config changes."
 
 **Git Context:**
 - Session start SHA: 1db287c3 (main after D02 merge)
-- Branch: main → docs/drill-d03a-ci-polling-20260109 (proposed)
+- Branch: main → docs/drill-d03a-ci-polling-20260109 (proposed) <!-- pt:ref-target-ignore -->
 
 ---
 
