@@ -109,7 +109,7 @@ gh run view ${RUN_ID} --log-failed
 
 | Check Name | Root Cause | Evidence |
 |------------|------------|----------|
-| [Check 1] | [e.g., "Missing target: docs/some-file.md"] | [line number in log output] |
+| [Check 1] | [e.g., "Missing target: docs/some-file.md"] <!-- pt:ref-target-ignore --> | [line number in log output] |
 | [Check 2] | [e.g., "Lint error: line 123"] | [line number in log output] |
 | ... | ... | ... |
 

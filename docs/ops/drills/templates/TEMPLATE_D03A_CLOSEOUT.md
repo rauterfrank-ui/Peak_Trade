@@ -127,7 +127,7 @@ For each success criterion, provide:
 **Status:** [PASS / FAIL / PARTIAL]
 
 **Evidence:**
-- [Pointer 1: e.g., "File: docs/ops/drills/runs/DRILL_RUN_20260109_D03A.md:123"]
+- [Pointer 1: e.g., "File: docs/ops/drills/runs/DRILL_RUN_20260109_D03A_CI_POLLING.md:123"]
 - [Pointer 2: e.g., "Terminal output: Step 2, line 45"]
 - [Pointer 3: e.g., "CI check: docs-reference-targets-gate PASS"]
 
@@ -341,7 +341,7 @@ For each success criterion, provide:
 
 **Example:**
 ```
-| Run Log | docs/ops/drills/runs/DRILL_RUN_20260109_D03A.md | COMMITTED |
+| Run Log | docs/ops/drills/runs/DRILL_RUN_20260109_D03A_CI_POLLING.md | COMMITTED |
 | How-To | docs/ops/runbooks/RUNBOOK_CI_STATUS_POLLING_HOWTO.md | COMMITTED |
 | Evidence Pack | docs/ops/drills/evidence_pack_20260109.md | DRAFT |
 ```
