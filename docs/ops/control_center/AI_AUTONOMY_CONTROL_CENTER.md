@@ -1,63 +1,315 @@
-# AI Autonomy Control Center (v0)
+# AI Autonomy Control Center (v0.1)
 
-Status: Draft v0  
-Scope: Docs-only Control Center for AI Autonomy Operations  
-Guardrails: NO-LIVE, evidence-first, determinism, SoD
+**Status:** Active v0.1  
+**Scope:** Docs-only Control Center for AI Autonomy Operations  
+**Last Updated:** 2026-01-09  
+**Guardrails:** 🚨 NO-LIVE | 📋 Evidence-First | 🔒 Determinism | ⚖️ SoD
+
+---
 
 ## 1. Purpose
-This page is the single "Start Here" entry point for AI Autonomy operations:
+
+This page is the **single "Start Here" entry point** for AI Autonomy operations:
 - Current operational posture and guardrails
+- Layer status matrix and model assignments
 - Where to find runbooks, evidence, and CI gates
+- Operator quick actions and drills
 - What to do next (and what is explicitly out-of-scope)
 
-## 2. Current Status
-- Latest milestone: Phase 4B Milestone 3 (Control Center Dashboard/Visual) — runbook available
-- Operating mode: Governance-locked / No-live
+---
 
-## 3. Operator Quick Nav
-See: [CONTROL_CENTER_NAV.md](CONTROL_CENTER_NAV.md)
+## 2. At a Glance
 
-## 4. Runbooks (Authoritative)
-- Phase 4B M2 (Cursor Multi-Agent): [RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md)
-- Phase 4B M3 Control Center (Cursor Multi-Agent): [RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md)
+| Metric | Value | Notes |
+|--------|-------|-------|
+| **Operating Mode** | Governance-Locked / No-Live | No trading execution permitted |
+| **Layer Coverage** | 7/7 Layers Defined | L0-L6 (L6 EXEC forbidden) |
+| **Latest Milestone** | Phase 4B M3 (Control Center Dashboard) | Runbook available |
+| **Authoritative Matrix** | [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) | v1.0 (2026-01-08) |
+| **Evidence Infrastructure** | ✅ Active | Templates, Schema, Validator, Index |
+| **CI Health** | ✅ Required Checks Active | 7 primary gates enforced |
 
-## 5. Evidence (Authoritative)
-- Evidence index: [EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md)
-- Evidence schema: [EVIDENCE_SCHEMA.md](../EVIDENCE_SCHEMA.md)
-- Evidence entry template: [EVIDENCE_ENTRY_TEMPLATE.md](../EVIDENCE_ENTRY_TEMPLATE.md)
-- Evidence packs: Defined in M2 Runbook (Section 3: Artefakte & Outputs)
-  - Python implementation: `src/ai_orchestration/evidence_pack.py`
-  - Validator: `scripts/ops/validate_evidence_index.py`
+---
 
-## 6. CI Gates (Operator View)
-This control center does not redefine gates; it points to the authoritative references.
-- Branch Protection Required Checks: [BRANCH_PROTECTION_REQUIRED_CHECKS.md](../BRANCH_PROTECTION_REQUIRED_CHECKS.md)
-- CI Policy Enforcement: [CI_POLICY_ENFORCEMENT.md](../../ci/CI_POLICY_ENFORCEMENT.md)
-- P0 Guardrails Milestone: [P0_GUARDRAILS_MILESTONE.md](../../P0_GUARDRAILS_MILESTONE.md)
+## 3. Layer Status Matrix
 
-**Primary Gates (7 required checks):**
-- Lint Gate (`lint_gate.yml`)
-- Audit Gate (`audit.yml`)
-- Policy Critic Gate (`policy_critic_gate.yml`)
-- Docs Reference Targets Gate (`docs_reference_targets_gate.yml`)
-- Tests (3.11) (`ci.yml`)
-- Strategy Smoke (`ci.yml`)
-- CI Contract (`ci.yml`)
+**Source of Truth:** [AI Autonomy Layer Map & Model Assignment Matrix](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md)
 
-**Docs-only changes:** Lint/Audit/Policy/Tests/Strategy gates skip gracefully. Docs Reference Targets gate must pass.
+| Layer ID | Layer Name | Autonomy | Primary Model | Critic Model | Capability Scope | Status |
+|----------|------------|----------|---------------|--------------|------------------|--------|
+| **L0** | Ops/Docs | REC | gpt-5.2 | deepseek-r1 | `L0_ops_docs.toml` | ✅ Defined |
+| **L1** | DeepResearch | PROP | o3-deep-research | o3-pro | `L1_deep_research.toml` | ✅ Defined |
+| **L2** | Market Outlook | PROP | gpt-5.2-pro | deepseek-r1 | `L2_market_outlook.toml` | ✅ Defined |
+| **L3** | Trade Plan Advisory | REC/PROP | gpt-5.2-pro | o3 | (pending) | 🟡 Partial |
+| **L4** | Governance / Policy Critic | RO/REC | o3-pro | gpt-5.2-pro | `L4_governance_critic.toml` | ✅ Defined |
+| **L5** | Risk Gate (Hard) | RO | (no LLM) | — | Deterministic Code | ✅ Defined |
+| **L6** | Execution | EXEC | — | — | FORBIDDEN | 🚫 Blocked |
 
-## 7. Standard Workflow (Minimal)
-1) Choose the correct runbook (M2 for general ops, M3 for control center/dashboard work)
-2) Freeze scope + acceptance criteria
-3) Implement minimal docs changes
-4) Run local verification checklist
-5) PR → CI → merge
-6) Post-merge: merge log + evidence entry (if required by the workflow)
+**Legend:**
+- ✅ Defined: Capability scope exists, model assigned
+- 🟡 Partial: Layer defined, capability scope pending
+- 🚫 Blocked: Execution forbidden by governance
 
-## 8. Out of Scope (Hard)
+---
+
+## 4. AI Autonomy Layer Pipeline (Visual)
+
+```mermaid
+graph LR
+    L0[L0: Ops/Docs<br/>REC]
+    L1[L1: DeepResearch<br/>PROP]
+    L2[L2: Market Outlook<br/>PROP]
+    L3[L3: Trade Plan Advisory<br/>REC/PROP]
+    L4[L4: Governance/Policy Critic<br/>RO/REC]
+    L5[L5: Risk Gate<br/>RO - Deterministic]
+    L6[L6: Execution<br/>EXEC - FORBIDDEN]
+
+    L0 -.Docs/Runbooks.-> L1
+    L1 -.Research.-> L2
+    L2 -.Outlook.-> L3
+    L3 -.Trade Hypotheses.-> L4
+    L4 -.Evidence Pack.-> L5
+    L5 -.Hard Gate.-> L6
+    L6 -.BLOCKED.-> X[❌ No Execution]
+
+    style L6 fill:#f88,stroke:#f00,stroke-width:3px
+    style X fill:#f88,stroke:#f00,stroke-width:3px
+    style L5 fill:#ffc,stroke:#fa0,stroke-width:2px
+```
+
+**Key Principles:**
+1. **Separation of Duties (SoD):** Proposer ≠ Critic (different models)
+2. **Safety-First:** No model can execute trades or trigger execution pipeline
+3. **Evidence-First:** Every layer run produces Evidence Pack with audit trail
+4. **Fail-Closed:** Fallback policy cascades, final fallback = BLOCK
+
+---
+
+## 5. Operator Quick Actions
+
+### 5.1 Quick Commands
+
+**Evidence Validation:**
+```bash
+# Validate Evidence Index structure
+python scripts/ops/validate_evidence_index.py
+
+# Check Evidence Pack Schema
+python -m src.ai_orchestration.evidence_pack
+```
+
+**CI Health Checks:**
+```bash
+# Repository health check
+scripts/ops/ops_center.sh doctor
+
+# Docs reference targets validation
+scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
+
+# View CI health dashboard (if WebUI running)
+open http://127.0.0.1:8000/ops/ci-health
+```
+
+**Layer Drills (Manual-Only, No-Live):**
+```bash
+# See Phase 4B M2 Runbook for detailed drill procedures
+# No automated layer runs without explicit Evidence Pack workflow
+```
+
+### 5.2 Navigation
+
+**Quick Links:**
+- [Control Center Navigation](CONTROL_CENTER_NAV.md) — All key paths in one page
+- [Evidence Index](../EVIDENCE_INDEX.md) — Track all evidence items
+- [Evidence Schema](../EVIDENCE_SCHEMA.md) — Required fields for evidence packs
+- [Ops README](../README.md) — Ops tools, scripts, and runbooks overview
+
+---
+
+### 6.1 Primary Runbooks
+
+- **Phase 4B M2 (Cursor Multi-Agent — Evidence-First Operator Loop):**  
+  [RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md)  
+  *Multi-agent orchestration, evidence pack workflow, operator review*
+
+- **Phase 4B M3 (Control Center Dashboard/Visual):**  
+  [RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md)  
+  *This control center development, extended orchestration, dashboard modes*
+
+### 6.2 Related Governance Runbooks
+
+- **Phase 5 NO-LIVE Drill Pack:**  
+  [WP5A_PHASE5_NO_LIVE_DRILL_PACK.md](../WP5A_PHASE5_NO_LIVE_DRILL_PACK.md)  
+  *Governance-safe manual drills, no live trading, evidence chain*
+
+- **Cursor Multi-Agent Workflow (General):**  
+  [CURSOR_MULTI_AGENT_WORKFLOW.md](../CURSOR_MULTI_AGENT_WORKFLOW.md)  
+  *Canonical workflow, roles, protocol, recovery*
+
+---
+
+### 7.1 Evidence Infrastructure
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| **Evidence Index** | [EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md) | Master index of all evidence items |
+| **Evidence Schema** | [EVIDENCE_SCHEMA.md](../EVIDENCE_SCHEMA.md) | Required fields for evidence packs |
+| **Evidence Entry Template** | [EVIDENCE_ENTRY_TEMPLATE.md](../EVIDENCE_ENTRY_TEMPLATE.md) | Template for new evidence entries |
+| **Evidence Pack Template v2** | [AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md) | Layer-aware evidence pack template |
+| **Evidence Pack Validator** | `src/ai_orchestration/evidence_pack.py` | Python validator for schema compliance |
+| **Evidence Index Validator** | `scripts/ops/validate_evidence_index.py` | CLI validator for evidence index |
+
+### 7.2 Evidence Pack Workflow
+
+1. **Create Evidence Pack** (from template)
+2. **Layer Run** (with logging: run_id, model_id, prompt_hash, artifact_hash)
+3. **SoD Check** (Proposer ≠ Critic, different models)
+4. **Validate Evidence Pack** (schema validation)
+5. **Add to Evidence Index** (unique Evidence ID)
+6. **CI Validation** (gates check evidence references)
+
+**Reference:** Phase 4B M2 Runbook, Section 3 (Artefakte & Outputs)
+
+---
+
+### 8.1 Authoritative Gate References
+
+This control center does not redefine gates; it points to the authoritative sources:
+
+| Reference | Location | Purpose |
+|-----------|----------|---------|
+| **Branch Protection Required Checks** | [BRANCH_PROTECTION_REQUIRED_CHECKS.md](../BRANCH_PROTECTION_REQUIRED_CHECKS.md) | Snapshot of required CI checks |
+| **CI Policy Enforcement** | [CI_POLICY_ENFORCEMENT.md](../../ci/CI_POLICY_ENFORCEMENT.md) | Policy enforcement rules |
+| **P0 Guardrails Milestone** | [P0_GUARDRAILS_MILESTONE.md](../../P0_GUARDRAILS_MILESTONE.md) | P0 safety gates |
+
+### 8.2 Primary Gates (7 Required Checks)
+
+| Gate | Workflow File | Purpose | Docs-Only Behavior |
+|------|---------------|---------|-------------------|
+| **Lint Gate** | `lint_gate.yml` | Code formatting & linting | Skips gracefully |
+| **Audit Gate** | `audit.yml` | Dependency security scan | Skips gracefully |
+| **Policy Critic Gate** | `policy_critic_gate.yml` | Governance policy checks | Runs always |
+| **Docs Reference Targets** | `docs_reference_targets_gate.yml` | Validates docs references | **MUST PASS** |
+| **Tests (3.11)** | `ci.yml` | Test suite (Python 3.11) | Skips gracefully |
+| **Strategy Smoke** | `ci.yml` | Strategy smoke tests | Skips gracefully |
+| **CI Contract** | `ci.yml` | CI contract validation | Skips gracefully |
+
+**Key Rules:**
+- ✅ **Docs-only changes:** Most gates skip gracefully (no code → no lint/test/audit needed)
+- 🚨 **Docs Reference Targets gate:** MUST PASS always (prevents broken links)
+- 🛡️ **Policy Critic gate:** Runs on all PRs (governance enforcement)
+
+---
+
+## 9. Standard Operator Workflow (Minimal)
+
+**For routine AI Autonomy operations:**
+
+1. **Choose Runbook:** M2 (general layer runs) or M3 (control center/dashboard work)
+2. **Scope Freeze:** Define acceptance criteria, in/out-of-scope
+3. **Evidence Pack Setup:** Create from template, assign Evidence ID
+4. **Layer Run(s):** Execute with logging (run_id, model_id, prompt_hash, artifact_hash)
+5. **SoD Check:** Verify Proposer ≠ Critic (different models)
+6. **Validation:** Run local checks (docs gates, evidence schema, lint if code)
+7. **PR → CI:** Push to feature branch, create PR, wait for CI green
+8. **Merge:** Squash & merge (after all gates pass)
+9. **Post-Merge:** Update evidence index, create merge log (if required)
+
+**Reference:** [Phase 4B M2 Runbook](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) for detailed steps
+
+---
+
+## 10. Out of Scope (Hard Guardrails)
+
+**The following actions are EXPLICITLY FORBIDDEN without governance approval + evidence pack + CodeGate:**
+
+🚫 **NO-LIVE Enforcement:**
 - Any live trading enablement or strategy switching
-- Any runtime execution changes unless explicitly gated and planned
-- Any changes that introduce non-deterministic outputs in operational artifacts
+- Any order execution pipeline activation
+- Any real funds / exchange connectivity (use Shadow/Paper only)
 
-## 9. Change Log
-- v0: initial docs-only control center skeleton (2026-01-09)
+🚫 **NO Runtime Changes (without gates):**
+- Any changes to execution orchestration without explicit gates
+- Any changes to risk limits / kill-switch / bounded-auto rules
+- Any model API calls that bypass SoD or logging
+
+🚫 **NO Non-Deterministic Outputs:**
+- Any changes that introduce unstable IDs, random ordering, or time-dependent hashes
+- Any evidence artifacts that cannot be reproduced from inputs
+
+**Violation Response:** Evidence Pack rejected, PR blocked, governance review required
+
+---
+
+## 11. Capability Scopes (Layer-Specific Enforcement)
+
+**Each layer has a formal Capability Scope TOML file:**
+
+| Layer | Capability Scope File | Enforcement |
+|-------|----------------------|-------------|
+| L0 | `config/capability_scopes/L0_ops_docs.toml` | Inputs: docs, outputs: docs/runbooks, tools: files only |
+| L1 | `config/capability_scopes/L1_deep_research.toml` | Inputs: queries, outputs: research reports, tools: web + files |
+| L2 | `config/capability_scopes/L2_market_outlook.toml` | Inputs: market data, outputs: scenarios, tools: web (optional) + files |
+| L4 | `config/capability_scopes/L4_governance_critic.toml` | Inputs: evidence packs, outputs: decisions, tools: files only |
+
+**Enforcement:**
+- Runtime checks validate inputs/outputs against capability scope
+- Logging captures actual inputs/outputs manifest (audit trail)
+- Evidence Pack validator checks scope compliance
+
+**Reference:** [AI Autonomy Layer Map](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md), Section "CAPABILITY SCOPES"
+
+---
+
+## 12. Model Registry & Budget
+
+**Authoritative Source:** `config/model_registry.toml`
+
+**Model Families in Use:**
+- **OpenAI GPT-5:** gpt-5.2-pro, gpt-5.2, gpt-5-mini (L0, L2, L3)
+- **OpenAI O3/O4:** o3-deep-research, o3-pro, o3, o4-mini-deep-research (L1, L3 critic, L4)
+- **DeepSeek:** deepseek-r1 (L0 critic, L2 critic, L4 fallback)
+
+**Cost Monitoring:** Model registry includes cost per 1k tokens (input/output), latency p50, and status
+
+**Budget Enforcement:** (planned) Evidence Pack includes token counts + cost estimate
+
+---
+
+## 13. Troubleshooting & Support
+
+### Common Issues
+
+**Q: Evidence Pack validation fails with "missing layer_id"**
+- **A:** Update Evidence Pack to include mandatory Layer Map fields (see [Evidence Pack Template v2](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md))
+
+**Q: Docs Reference Targets gate fails**
+- **A:** Run local validation: `scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
+- Fix broken links or missing files, re-push
+
+**Q: SoD Check fails (Proposer == Critic)**
+- **A:** Verify `primary_model_id` ≠ `critic_model_id` in Evidence Pack
+- Check [Layer Map Matrix](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) for correct assignments
+
+**Q: CI stuck on "mergeable: UNKNOWN"**
+- **A:** See [GitHub Rulesets Runbook](../runbooks/github_rulesets_pr_reviews_policy.md), Section "Quickflow: mergeable UNKNOWN"
+
+### Escalation
+
+**For governance violations or unclear scope:**
+- Contact: Operator (Frank) / Risk Officer
+- Create Issue: Tag with `governance`, `ai-autonomy`
+- Reference: [AI Autonomy Go/No-Go Overview](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)
+
+---
+
+## 14. Change Log
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| v0.1 | 2026-01-09 | Enhanced control center: Layer Status Matrix, KPI Dashboard, Operator Quick Actions, Mermaid Diagram, CI Gates Table, Capability Scopes, Troubleshooting | Cursor Multi-Agent (M3 Workflow) |
+| v0 | 2026-01-09 | Initial docs-only control center skeleton (minimal links) | ops |
+
+---
+
+**END OF CONTROL CENTER v0.1**
