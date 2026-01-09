@@ -1,7 +1,7 @@
 # AI Autonomy 4B M3 — Control Center Dashboard v0.1 — Operator Output
 
 **Datum:** 2026-01-09  
-**Branch:** `docs/ai-autonomy-control-center-v0`  
+**Branch:** docs/ai-autonomy-control-center-v0  
 **Operator:** Frank (Cursor Multi-Agent Orchestration)  
 **Runbook:** RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md  
 **Status:** ✅ **COMPLETE — READY FOR PR**
@@ -381,6 +381,6 @@ gh pr merge --squash --delete-branch
 
 **Status:** ✅ **M3A COMPLETE — READY FOR PR**
 
-**Branch:** `docs/ai-autonomy-control-center-v0` (bereits existiert, ready to push)
+**Branch:** docs/ai-autonomy-control-center-v0 (bereits existiert, ready to push)
 
 **CI Expectation:** All gates GREEN (Docs Reference Targets explicitly PASS)

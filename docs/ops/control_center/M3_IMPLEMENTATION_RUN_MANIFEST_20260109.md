@@ -4,7 +4,7 @@
 **Date:** 2026-01-09  
 **Operator:** Cursor Multi-Agent (Orchestrator: Frank)  
 **Runbook:** [RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md)  
-**Branch:** `docs/ai-autonomy-control-center-v0`  
+**Branch:** docs/ai-autonomy-control-center-v0  
 **Status:** ✅ Complete
 
 ---
@@ -70,7 +70,7 @@ Deliver **M3A (Docs-only)** Control Center Dashboard with:
 
 ### Pre-Flight (A)
 ✅ **Status:** Repo root verified, branch clean, no terminal continuation
-- Branch: `docs/ai-autonomy-control-center-v0`
+- Branch: docs/ai-autonomy-control-center-v0
 - Working Tree: Clean (modified only control center files)
 
 ### Discovery (B — FACTS_COLLECTOR)
@@ -220,7 +220,7 @@ open docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md
 | **Control Center v0.1** | `docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md` | Primary deliverable (Layer Matrix, KPIs, Operator Actions, CI Gates) |
 | **Navigation v0.1** | `docs/ops/control_center/CONTROL_CENTER_NAV.md` | Structured navigation to all AI Autonomy docs |
 | **Run Manifest** | `docs/ops/control_center/M3_IMPLEMENTATION_RUN_MANIFEST_20260109.md` | This document (evidence record) |
-| **Git Diff** | Branch `docs/ai-autonomy-control-center-v0` vs `origin/main` | Full change diff |
+| **Git Diff** | Branch docs/ai-autonomy-control-center-v0 vs origin/main | Full change diff |
 
 ---
 
@@ -277,7 +277,7 @@ open docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md
 - [Branch Protection Required Checks](../BRANCH_PROTECTION_REQUIRED_CHECKS.md)
 
 ### Related PRs
-- (This PR will be created from branch `docs/ai-autonomy-control-center-v0`)
+- (This PR will be created from branch docs/ai-autonomy-control-center-v0)
 
 ---
 
