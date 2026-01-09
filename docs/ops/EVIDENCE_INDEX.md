@@ -1,9 +1,9 @@
-# Peak_Trade – Evidence Index (v0.2)
+# Peak_Trade – Evidence Index (v0.3)
 
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.2 (Operational - 20 entries)
+**Status:** v0.3 (Operational - 23 entries)
 
 ---
 
@@ -41,7 +41,7 @@ Evidence items are operational artifacts that document system behavior, process 
 - **Verification:** How to verify authenticity (hash, CI status, reproducible command)
 - **Notes:** Optional context or caveats
 
-**Format:** Prefer table format (below) for consistency. Fehlende Details als `[TBD]` markieren, NICHT als freies TODO.
+**Format:** Prefer table format (below) for consistency. Fehlende Details als `` markieren, NICHT als freies TODO.
 
 ---
 
@@ -70,6 +70,8 @@ Evidence items are operational artifacts that document system behavior, process 
 | EV-20260103-CI-CONTRACT-GUARD | 2026-01-03 | ops | [scripts/ops/check_required_ci_contexts_present.sh](../../scripts/ops/check_required_ci_contexts_present.sh) + [.github/workflows/ci.yml#L40-L89](../../.github/workflows/ci.yml#L40-L89) | CI Required Contexts Contract Guard (PR #515, commit 5a93f19): Blocks CI-workflow drift, enforces deterministic job naming (`tests (${{ matrix.python-version }})`), guarantees Python 3.11 in matrix, prohibits job-level `if:` on required jobs (`tests`, `strategy-smoke`), ensures PR-isolated concurrency (no cross-PR cancels) | Guard script: `scripts/ops/check_required_ci_contexts_present.sh`, runs on every PR as `ci-required-contexts-contract` job, exit code 1 if drift detected, fail-open safe (conservative: if changes-job fails, tests run anyway), contract enforces: explicit names, matrix vars in names, Python 3.11 present, PR-isolated concurrency | CI/Workflow Governance: Part of 2026-01-03 CI Hardening Session (PRs #512/#514/#515), ensures required checks materialize on every PR (docs-only or code-changes), prevents GitHub Ruleset blocking due to missing contexts |
 | EV-20251228-PHASE8-STDLIB-REFACTOR | 2025-12-28 | ops | [PHASE8A_MERGE_LOG.md](../../PHASE8A_MERGE_LOG.md) + [PHASE8B_MERGE_LOG.md](../../PHASE8B_MERGE_LOG.md) + [PHASE8D_MERGE_LOG.md](../../PHASE8D_MERGE_LOG.md) | Phase 8 (A/B/D) VaR Backtest Stdlib-Only Refactoring: Kupiec POF (138/138 tests), Christoffersen IND/CC (112/112 tests, numpy/scipy removed, Chi²(1) via erfc, Chi²(2) via exp(-x/2)), Traffic Light (93/93 tests, binomial thresholds), single canonical engines established, zero breaking changes, comprehensive delegation tests, backward-compatible legacy APIs preserved | Test evidence: `pytest tests/risk_layer/var_backtest/ -q` (all pass), `pytest tests/risk/validation/ -q` (delegation + legacy), CLI demos: `scripts/risk/run_christoffersen_demo.py`, linting clean (`ruff check . --quiet`), refactor-only (no new features), risk: VERY LOW (100% test coverage, reversible) | Stdlib-only claim: no numpy/scipy dependencies in Phase 8B Christoffersen (pure math.erfc/exp), canonical engines in src/risk_layer/var_backtest/, legacy wrappers in src/risk/validation/ delegate to canonical |
 || EV-20260109-AI-AUTONOMY-4B-M2 | 2026-01-09 | ops | [PR #619 Merge Log](PR_619_MERGE_LOG.md) + [Runbook](runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) | AI Autonomy Phase 4B Milestone 2: Operator runbook for evidence-first operator loop (Cursor Multi-Agent workflow), 9 sections (purpose, multi-agent roles, standardized workflow, CI gate matrix, troubleshooting), verified commands (Python API + CLI), artifact paths, exit codes. Follow-up PR #620 aligned merge log references (PR number consistency). | PRs #619 + #620 merged (commit 77c43ed9), 18/18 CI gates passed, docs-only scope (4 files: runbook 378 lines, merge log 154 lines, 2 index updates), linter clean, risk: minimal | Lesson learned: Non-existent file paths in docs trigger "reference targets" gate; reworded gap references to avoid bare file targets (e.g., CLI wrapper script marked as "gap; not yet implemented" instead of full path) |
+|| EV-20260109-CONTROL-CENTER-V0 | 2026-01-09 | ops | [PR #623 Merge Log](PR_623_MERGE_LOG.md) | AI Autonomy Control Center v0: Docs-only start page (9 sections: purpose, status, runbooks, evidence, CI gates) + navigation index (5 sections) + ops README link, minimal footprint, NO-LIVE scope | Docs-only PR: 3 files (2 new, 1 modified), docs-reference-targets gate expected PASS, all other gates SKIP, no runtime code touched, risk: minimal | Phase 4B M3 deliverable, ultra-minimal v0 (defer WebUI/Python scripts to v1), rollback: revert squash commit |
+|| EV-20260109-PT-DOCS-PR-HELPER | 2026-01-09 | ops | [scripts/ops/pt_docs_pr.sh](../../scripts/ops/pt_docs_pr.sh) | Deterministic docs-only PR workflow helper: safe git pathspec staging (no shell wildcard expansion), PR-based audit trail, idempotent gh pr create, abort-if-nothing-staged safety | Commit 365e3759, executable permissions, pre-commit hooks passed, test run: Exit 3 (nothing staged, correct abort behavior) | Audit-friendly workflow, prevents "silent add" failures, supports docs/ops/ paths only |
 
 ---
 
@@ -85,6 +87,7 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20260107-DOCS-REF-GATE** — Docs Reference Targets Gate (link validation, baseline tracking, triage)
 - **EV-20260107-CI-MATRIX-CONTRACT** — CI Required Checks Matrix Naming Contract (deterministic test discovery)
 - **EV-20260103-CI-CONTRACT-GUARD** — CI Required Contexts Contract Guard (PR #515, deterministic job naming, Python 3.11 guarantee)
+- **EV-20260109-PT-DOCS-PR-HELPER** — pt_docs_pr.sh docs-only PR workflow helper (deterministic staging, audit-friendly)
 
 ### Drill / Operator Evidence
 - **EV-20260107-P0-BASELINE** — Phase 0 Multi-Agent Roleplay baseline verification (5/5 gate criteria, 6079 tests, 73/73 config smoke tests)
@@ -121,11 +124,14 @@ Evidence items are operational artifacts that document system behavior, process 
 | 2026-01-07 | Added EV-20260107-EXEC-TELEM-RUNBOOK (Priority 3: Incident/Runbook) | ops |
 | 2026-01-07 | v0.1 Expansion: Added 6 high-value entries (CI-RULESETS-RUNBOOK, PHASE8B, WP5A-DRILL, CI-MATRIX-CONTRACT, DOCS-REF-GATE, PR605), total: 16 entries | ops |
 | 2026-01-07 | v0.2 Tier-B Expansion: Added 5 high-value entries (Exec Pipeline Runbook, Kill Switch Drill, Live Transition Runbook, CI Contract Guard, Phase 8 Stdlib Refactor), total: 20 entries | ops |
+| 2026-01-09 | Added EV-20260109-AI-AUTONOMY-4B-M2 (AI Autonomy Phase 4B Milestone 2 runbook, PRs #619/#620) | ops |
+| 2026-01-09 | Added EV-20260109-CONTROL-CENTER-V0 (AI Autonomy Control Center v0, PR #623) | ops |
+| 2026-01-09 | Added EV-20260109-PT-DOCS-PR-HELPER (pt_docs_pr.sh docs-only PR workflow helper) | ops |
 
 ---
 
-**Version:** v0.2  
+**Version:** v0.3  
 **Maintained by:** ops  
-**Last Updated:** 2026-01-07  
-**Total Entries:** 20 (1 seed + 19 operational)  
-**Next Review:** [TBD] (recommend quarterly or pre-phase-gate)
+**Last Updated:** 2026-01-09  
+**Total Entries:** 23 (1 seed + 22 operational)  
+**Next Review:**  (recommend quarterly or pre-phase-gate)
