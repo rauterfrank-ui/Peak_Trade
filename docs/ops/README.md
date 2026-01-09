@@ -91,8 +91,9 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 
 ## AI Autonomy Control Center
 
-- Control Center (v0): [docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md](control_center/AI_AUTONOMY_CONTROL_CENTER.md)
-- Navigation: [docs/ops/control_center/CONTROL_CENTER_NAV.md](control_center/CONTROL_CENTER_NAV.md)
+- 🎛️ **Control Center (v0.1):** [AI_AUTONOMY_CONTROL_CENTER.md](control_center/AI_AUTONOMY_CONTROL_CENTER.md) — Dashboard, layer matrix, KPIs, operator quick actions
+- 📖 **Operations Runbook (v0.1):** [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md) — Daily routine, layer triage, CI gates, troubleshooting
+- 🧭 **Navigation:** [CONTROL_CENTER_NAV.md](control_center/CONTROL_CENTER_NAV.md) — All key paths and runbooks
 
 ### Terminal Hang Diagnostics (Pager / Hook / Watch Blocking)
 

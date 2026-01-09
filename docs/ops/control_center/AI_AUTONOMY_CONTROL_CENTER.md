@@ -128,6 +128,10 @@ open http://127.0.0.1:8000/ops/ci-health
 
 ### 6.1 Primary Runbooks
 
+- **🎯 Control Center Operations (v0.1):**  
+  [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md)  
+  *Daily routine, layer triage, CI gates verification, evidence handling, troubleshooting guide*
+
 - **Phase 4B M2 (Cursor Multi-Agent — Evidence-First Operator Loop):**  
   [RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md)  
   *Multi-agent orchestration, evidence pack workflow, operator review*
