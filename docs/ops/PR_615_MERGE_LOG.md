@@ -133,7 +133,7 @@ gh pr checks 615
 
 **For Phase 4B M2 Implementation:**
 1. Create Evidence Pack directory: `data/evidence_packs/.gitkeep`
-2. Implement CLI wrapper: `scripts/run_layer_evidence_pack.py` (gap identified)
+2. Implement CLI wrapper script (gap; not yet implemented): `run_layer_evidence_pack.py`
 3. Run first test layer execution
 4. Validate with existing validator
 5. Document in Evidence Index

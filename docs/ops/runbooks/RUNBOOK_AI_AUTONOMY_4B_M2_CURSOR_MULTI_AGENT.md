@@ -188,7 +188,7 @@ save_evidence_pack(pack, output_path)
 - AI Model Logs: `logs/ai_model_calls.jsonl` (if enabled in config)
 - Run Manifest: Embedded in Evidence Pack JSON
 
-**Note:** CLI wrapper script (`scripts/run_layer_evidence_pack.py`) not yet implemented (Gap identified in Phase 4B M2 Discovery).
+**Note:** CLI wrapper script (gap; not yet implemented): `run_layer_evidence_pack.py` (Gap identified in Phase 4B M2 Discovery).
 
 ---
 
