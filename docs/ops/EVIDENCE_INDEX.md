@@ -72,6 +72,7 @@ Evidence items are operational artifacts that document system behavior, process 
 || EV-20260109-AI-AUTONOMY-4B-M2 | 2026-01-09 | ops | [PR #619 Merge Log](PR_619_MERGE_LOG.md) + [Runbook](runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) | AI Autonomy Phase 4B Milestone 2: Operator runbook for evidence-first operator loop (Cursor Multi-Agent workflow), 9 sections (purpose, multi-agent roles, standardized workflow, CI gate matrix, troubleshooting), verified commands (Python API + CLI), artifact paths, exit codes. Follow-up PR #620 aligned merge log references (PR number consistency). | PRs #619 + #620 merged (commit 77c43ed9), 18/18 CI gates passed, docs-only scope (4 files: runbook 378 lines, merge log 154 lines, 2 index updates), linter clean, risk: minimal | Lesson learned: Non-existent file paths in docs trigger "reference targets" gate; reworded gap references to avoid bare file targets (e.g., CLI wrapper script marked as "gap; not yet implemented" instead of full path) |
 || EV-20260109-CONTROL-CENTER-V0 | 2026-01-09 | ops | [PR #623 Merge Log](PR_623_MERGE_LOG.md) | AI Autonomy Control Center v0: Docs-only start page (9 sections: purpose, status, runbooks, evidence, CI gates) + navigation index (5 sections) + ops README link, minimal footprint, NO-LIVE scope | Docs-only PR: 3 files (2 new, 1 modified), docs-reference-targets gate expected PASS, all other gates SKIP, no runtime code touched, risk: minimal | Phase 4B M3 deliverable, ultra-minimal v0 (defer WebUI/Python scripts to v1), rollback: revert squash commit |
 || EV-20260109-PT-DOCS-PR-HELPER | 2026-01-09 | ops | [scripts/ops/pt_docs_pr.sh](../../scripts/ops/pt_docs_pr.sh) | Deterministic docs-only PR workflow helper: safe git pathspec staging (no shell wildcard expansion), PR-based audit trail, idempotent gh pr create, abort-if-nothing-staged safety | Commit 365e3759, executable permissions, pre-commit hooks passed, test run: Exit 3 (nothing staged, correct abort behavior) | Audit-friendly workflow, prevents "silent add" failures, supports docs/ops/ paths only |
+|| EV-20260109-D01-DRILL | 2026-01-09 | ops | [D01 Drill Run Log](drills/runs/DRILL_RUN_20260109_1930_ai_autonomy_D01.md) + [PR #631](https://github.com/rauterfrank-ui/Peak_Trade/pull/631) | D01 drill (Pre-Flight Discipline) completed with PASS: repository sanity verified, branch hygiene confirmed, dirty tree detection demonstrated. Finding #4 (aiops-promptfoo-evals workflow failure on docs-only merges) remediated via workflow hardening (changes job + noop job added to `.github/workflows/aiops-promptfoo-evals.yml`) | PR #631 merged (commit 2ba4f12b), 15/15 CI checks SUCCESS, scorecard PASS (with timebox extension 10min→29min justified per Finding #4 remediation), 25 docs reference targets valid, workflow YAML valid | Evidence-first format per SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md, 4 findings documented (3 positive verifications, 1 CI workflow issue remediated), operator actions clear |
 
 ---
 
@@ -94,6 +95,7 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20260107-WP5A-DRILL** — Phase 5 NO-LIVE Drill Pack (5-step procedure, 8 templates, operator readiness, PR #504)
 - **EV-20260103-CI-RULESETS-RUNBOOK** — GitHub Rulesets operator troubleshooting runbook (mergeable UNKNOWN quickflow)
 - **EV-20251230-KILL-SWITCH-DRILL** — Kill Switch Drill Procedure v1.0 (monthly operator drills, 3 scenarios, SLAs)
+- **EV-20260109-D01-DRILL** — D01 drill (Pre-Flight Discipline) PASS: repository sanity, branch hygiene, dirty tree detection verified; Finding #4 (aiops-promptfoo-evals workflow) remediated (PR #631)
 
 ### Governance / Runbook Evidence
 - **EV-20260107-EXEC-PIPELINE-RUNBOOK** — ExecutionPipeline Governance & Risk Runbook v1.1 (live-execution locked, NO-LIVE enforcement)
@@ -127,11 +129,12 @@ Evidence items are operational artifacts that document system behavior, process 
 | 2026-01-09 | Added EV-20260109-AI-AUTONOMY-4B-M2 (AI Autonomy Phase 4B Milestone 2 runbook, PRs #619/#620) | ops |
 | 2026-01-09 | Added EV-20260109-CONTROL-CENTER-V0 (AI Autonomy Control Center v0, PR #623) | ops |
 | 2026-01-09 | Added EV-20260109-PT-DOCS-PR-HELPER (pt_docs_pr.sh docs-only PR workflow helper) | ops |
+| 2026-01-09 | Ops Drill Run | `docs/ops/drills/runs/DRILL_RUN_20260109_1930_ai_autonomy_D01.md` · PR #631 · Merge `2ba4f12b1f2877fe9017a2e14889c85f614ce146` | D01 AI Autonomy drill closeout; workflow hardening (.github/workflows/aiops-promptfoo-evals.yml, Finding #4 remediation). PR #631 merged; CI all green (15 success, 5 skipped, 1 neutral). |
 
 ---
 
-**Version:** v0.3  
+**Version:** v0.4  
 **Maintained by:** ops  
 **Last Updated:** 2026-01-09  
-**Total Entries:** 23 (1 seed + 22 operational)  
+**Total Entries:** 24 (1 seed + 23 operational)  
 **Next Review:**  (recommend quarterly or pre-phase-gate)

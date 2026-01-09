@@ -740,6 +740,192 @@ Operatoren können optional einen Competency Tracker führen:
 
 ---
 
+## E) Meta-Drills
+
+Meta-Drills sind übergeordnete Prozesse, die nicht direkt operationale Skills trainieren, sondern **strategische Entscheidungen** treffen (z.B. welcher nächste Drill ausgeführt werden soll).
+
+---
+
+## M01 — Planning / Next Drill Selection (Cursor Multi-Agent)
+
+**Objective:**  
+Evidenzbasierte Auswahl des nächsten Drills (D03+) durch strukturierten Discovery-, Scoring- und Entscheidungsprozess mit Separation of Duties (SoD).
+
+**Zweck:**  
+- Discovery: Pain Points, CI-Signale, offene TODOs, letzte Drill-Runs sammeln
+- Candidate Backlog: 3–7 Drill-Optionen mit Problem Statement, Operator Value, Risk, Prereqs, Success Criteria definieren
+- Scoring Matrix: 6 gewichtete Kriterien anwenden (Operator Value ×3, Risk Reduction ×3, Frequency ×2, Time-to-Run ×2, Determinism ×2, Dependency Load ×1)
+- Decision: Next Drill (D03) mit SoD-Validation (6 Rollen) auswählen
+- Charter: Vollständiger Drill-Plan (Scope, Success Criteria, Artifacts, CI Plan, Operator Playbook, Start/Stop Conditions)
+
+**Guardrails (nicht verhandelbar):**
+- **Docs-only** (außer Next-Drill explizit code-safe und governance-freigegeben)
+- **No-Live / No-Secrets / No-Credentials**
+- **Evidence-First:** Jede Entscheidung muss auf Artefakten/Links/Checks basieren
+- **SoD:** Mindestens 3 Rollen müssen Entscheidung tragen (ORCHESTRATOR + RISK_OFFICER + CI_GUARDIAN)
+
+**Preconditions / Inputs:**
+
+**Discovery Checklist (5 Inputs erforderlich):**
+1. **Letzte Drill Runs:** `docs/ops/drills/runs/DRILL_RUN_*` (mind. 1 Run-Doc als Baseline)
+2. **Letzte PRs:** AI-Autonomy / Ops-Kontext (z.B. Control-Center, Runbooks, Gates)
+3. **Wiederkehrende Pain Points:** Operator-Friction der letzten 7–14 Tage (Runbook-Referenzen, CI-Monitoring, Gate-Fehler)
+4. **CI Signal:** Häufigste Failures / flaky Checks / Timeouts (konkrete Run-IDs)
+5. **Offene TODOs:** Aus Runbooks/Closeouts
+
+**Mindestanforderung:** Für jede Input-Kategorie mindestens 1 belastbare Referenz.
+
+**Procedure:**
+
+**Phase 1: Discovery & Evidence Collection (FACTS_COLLECTOR + SCOPE_KEEPER)**
+
+1. **Input Discovery:**
+   - Letzte Drill Runs lokalisieren: `ls -la docs/ops/drills/runs/`
+   - Pain Points sammeln: `grep -r "timeout\|friction\|pain" docs/ops/runbooks/`
+   - CI-Signale prüfen: `gh run list --branch main --limit 20` (letzte Failures)
+   - TODOs sammeln: `grep -r "TODO\|FIXME" docs/ops/runbooks/ docs/ops/drills/`
+
+2. **Evidence Summary erstellen:**
+   - Tabelle mit Input-Kategorie, Status (✅/❌), Key Evidence (File-Pfade + Zeilen)
+   - Mind. 5 Evidenz-Pointers mit konkreten Referenzen
+
+**Phase 2: Candidate Backlog (ORCHESTRATOR + FACTS_COLLECTOR)**
+
+3. **Kandidatenliste erstellen:**
+   - Mindestens 3, maximal 7 D03-Optionen
+   - Für jeden Kandidaten:
+     - **Kurzname** (D03A, D03B, ...)
+     - **Problem Statement** (2-3 Sätze)
+     - **Operator Value** (Zeit-Ersparnis, Friction-Reduktion)
+     - **Risk/Blast Radius** (LOW/MEDIUM/HIGH)
+     - **Prereqs** (Tools, Pfade, CI Jobs)
+     - **Messbare Success Criteria** (3–6 bullets)
+     - **Artefakte** (Docs/Reports/Checks, mind. 2)
+
+**Phase 3: Scoring & Decision (ORCHESTRATOR + RISK_OFFICER + CI_GUARDIAN)**
+
+4. **Scoring Matrix anwenden:**
+   - 6 Kriterien, gewichtet:
+     - Operator Value (×3): Spart es real Zeit/Nerven?
+     - Risk Reduction (×3): Senkt es Governance-/CI-Risiko?
+     - Frequency (×2): Wie oft tritt Problem auf?
+     - Time-to-Run (×2): <90 min durchführbar?
+     - Determinism (×2): Reproduzierbarer Output?
+     - Dependency Load (×1): Neue Tools/Refactors nötig?
+   - Scoring: 1-5 pro Kriterium (5 = am besten)
+   - Weighted Score berechnen
+
+5. **Decision mit SoD:**
+   - Gewinner-Kandidat identifizieren (höchster Score)
+   - SoD-Validation: ORCHESTRATOR + RISK_OFFICER + CI_GUARDIAN müssen zustimmen
+   - Risk/Blast Radius Final Check: Wenn nicht akzeptabel → nächster Kandidat
+
+**Phase 4: D03 Charter Definition (EVIDENCE_SCRIBE)**
+
+6. **Vollständigen Charter erstellen:**
+   - **D03 Titel + Code** (z.B. "D03A CI Sentinel")
+   - **Scope** (docs-only oder klar definierter safe-code scope)
+   - **Success Criteria** (3–6 bullets, messbar)
+   - **Primary Artifacts** (mind. 2)
+   - **CI Verification Plan** (welche Checks müssen grün sein)
+   - **Operator Playbook** (max. 12 Zeilen: "so führst du es aus")
+   - **Start Conditions** (Prereqs)
+   - **Stop Conditions** (Abbruch-Kriterien)
+
+**Phase 5: Deliverables (EVIDENCE_SCRIBE + alle Rollen)**
+
+7. **Repo-Updates erstellen:**
+   - `docs/ops/drills/backlog/DRILL_BACKLOG.md` — Kandidatenliste + Scoring + D03 Charter
+   - `docs/ops/drills/M01_NEXT_DRILL_SELECTION_<DATE>.md` — M01 Run Report (Discovery, Scoring, Decision, Charter)
+
+8. **PR-ready Summary schreiben:**
+   - Summary (ausgewählter D03 + Score)
+   - Why (Evidence: Pain Points, Frequency, Operator Value)
+   - Changes (neue Files)
+   - Verification (CI Plan)
+   - Risk (LOW/MEDIUM/HIGH + Rationale)
+   - Operator How-To (nächste Schritte für D03-Execution)
+
+**Cursor Multi-Agent Protokoll (Pflichtrollen):**
+
+- **ORCHESTRATOR:** Führt, konsolidiert, entscheidet final (mit SoD)
+- **FACTS_COLLECTOR:** Sammelt Links/Artefakte (PRs, Runs, CI), belegt Claims
+- **SCOPE_KEEPER:** Erzwingt Guardrails, verhindert Scope-Creep
+- **CI_GUARDIAN:** Definiert CI-Verifikation, prüft "docs-only safety"
+- **RISK_OFFICER:** Bewertet Risiko/Blast Radius, blockt unsichere Kandidaten
+- **EVIDENCE_SCRIBE:** Schreibt Outputs als repo-fertige Markdown-Artefakte
+
+**Pass/Fail Criteria:**
+
+- **PASS:** Alle 5 Inputs mit Evidenz belegt, Scoring-Matrix ausgefüllt, D03 ausgewählt mit vollständigem Charter, SoD-Validation (mind. 3 Rollen)
+- **FAIL:** Discovery unvollständig (<5 Inputs), Scoring ohne Rationale, D03 Charter fehlt Pflichtfelder, keine SoD-Validation
+
+**Common Failure Modes & Fixes:**
+
+- **Discovery zu oberflächlich:** Pain Points ohne konkrete File-Referenzen → Grep-Suche in Runbooks/Runs
+- **Scoring ohne Begründung:** Nummerische Scores ohne Rationale → Leitfragen aus Scoring-Matrix explizit beantworten
+- **D03 Charter unvollständig:** Success Criteria vage → SMART-Kriterien anwenden (Specific, Measurable, Achievable, Relevant, Time-bound)
+- **SoD nicht dokumentiert:** Entscheidung ohne explizites Sign-off → Tabelle mit Rollen + Zustimmung/Ablehnung erstellen
+
+**Produced Artifacts:**
+
+- `docs/ops/drills/backlog/DRILL_BACKLOG.md` — D03 Candidate Backlog (3–7 Optionen) + Scoring + Selected D03 Charter
+- `docs/ops/drills/M01_NEXT_DRILL_SELECTION_<YYYYMMDD>.md` — M01 Run Report (Discovery, Scoring, Decision, D03 Charter, PR-ready Text)
+- Optional: `docs/ops/drills/backlog/M01_SCORING_MATRIX_<YYYYMMDD>.md` — Separate Scoring-Details (falls Report zu groß)
+
+**Timebox:** 60–90 Minuten
+
+**Output Template (M01 Run Report Struktur):**
+
+```markdown
+# M01 Meta-Drill: Next Drill Selection — Run Report
+
+**Date:** <YYYY-MM-DD>
+**Operator:** <Name/Agent>
+**Status:** PASS/FAIL
+
+## 1. Discovery Summary (5 Inputs)
+[Tabelle mit Input-Kategorie, Status, Key Evidence]
+
+## 2. Candidate Backlog (3–7 Optionen)
+[Für jeden Kandidaten: Problem, Operator Value, Risk, Prereqs, Success Criteria, Artifacts]
+
+## 3. Scoring Matrix
+[Tabelle mit Kandidaten × Kriterien, Weighted Scores]
+
+## 4. Decision (mit SoD)
+[Gewinner-Kandidat, Rationale, SoD Sign-off]
+
+## 5. D03 Charter
+[Scope, Success Criteria (6), Artifacts (2+), CI Plan, Operator Playbook (12 Zeilen), Start/Stop Conditions]
+
+## 6. Risk Assessment
+[Risk Level, Rationale, Rollback-Plan]
+
+## 7. PR-Ready Text
+[Summary, Why, Changes, Verification, Risk, Operator How-To]
+
+## 8. References
+[File-Pfade zu Evidence, Runbooks, Drill-Runs]
+```
+
+**References:**
+
+- **Drill Pack:** `docs/ops/drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md` (this document, M01 section)
+- **Session Template:** `docs/ops/drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md` — Template für M01 Run Report
+- **Backlog:** `docs/ops/drills/backlog/DRILL_BACKLOG.md` — D03 Candidate Backlog (maintained after each M01 run)
+- **Example Run:** `docs/ops/drills/D02_NEXT_DRILL_SELECTION_20260109.md` — First M01 execution (2026-01-09), selected D03A (CI Polling)
+
+**Notes:**
+
+- M01 ist ein **Meta-Drill**: Es trainiert nicht operationale Skills, sondern strategische Planung
+- M01 sollte **vor jedem neuen Drill-Zyklus** ausgeführt werden (z.B. wöchentlich oder nach Incidents)
+- M01 Output (D03 Charter) ist **startfertig**: Operator kann D03 sofort ausführen ohne weitere Planung
+- M01 ist **evidence-first**: Alle Entscheidungen müssen auf konkreten Artefakten/Links basieren
+
+---
+
 ## F) Change Log
 
+- **2026-01-09 (v1.1):** Added Meta-Drill Section (M01 — Planning / Next Drill Selection) for strategic drill prioritization with evidence-based scoring
 - **2026-01-09 (v1.0):** Initial Release — 8 Drills für AI Autonomy 4B M2 (Evidence-First Operator Loop)
