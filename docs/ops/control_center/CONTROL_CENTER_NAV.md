@@ -22,6 +22,10 @@
 ---
 
 ## 📖 Runbooks
+- **Control Center Operations (v0.1):**  
+  `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md`  
+  *Operational runbook for Control Center: daily routine, layer triage, CI gates, evidence handling, troubleshooting*
+
 - **Phase 4B M2 (Cursor Multi-Agent — Evidence-First Loop):**  
   `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md`  
   *Multi-agent orchestration, evidence pack workflow, operator review*

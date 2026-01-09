@@ -80,19 +80,22 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 
 🎛️ **Control Center + Enhanced Orchestration** — Dashboard + Extended Gates + Policy Checks
 
-**Phase 4B M3 — Control Center Runbook:**
-- 📖 **Operator Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md) — Standardized workflow for Control Center Dashboard development and M3 orchestration enhancements (Status/Evidence/CI overview, deterministic rendering, docs-only defaults)
+**Phase 4B M3 — Control Center Runbooks:**
+- 📖 **Development Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md) — Standardized workflow for Control Center Dashboard development and M3 orchestration enhancements (Status/Evidence/CI overview, deterministic rendering, docs-only defaults)
+- 📖 **Dashboard Operations Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_DASHBOARD.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_DASHBOARD.md) — Local dashboard viewing, PR/CI monitoring without --watch (timeout-safe), evidence capture and closeout
 
 **Key Deliverables:**
 - Control Center Dashboard: Status/Evidence/CI/Run overview (static HTML or Markdown)
 - Extended Orchestration: Enhanced gates, policy checks, capability scopes
 - Evidence-First: Same M2 guarantees (Evidence Pack, CI validation, operator sign-off)
 - Dashboard Modes: Static HTML (no runtime) / Markdown (docs-only) / Local dev server (optional)
+- Timeout-Safe Monitoring: No-watch polling patterns for PR/CI checks
 
 ## AI Autonomy Control Center
 
-- Control Center (v0): [docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md](control_center/AI_AUTONOMY_CONTROL_CENTER.md)
-- Navigation: [docs/ops/control_center/CONTROL_CENTER_NAV.md](control_center/CONTROL_CENTER_NAV.md)
+- 🎛️ **Control Center (v0.1):** [AI_AUTONOMY_CONTROL_CENTER.md](control_center/AI_AUTONOMY_CONTROL_CENTER.md) — Dashboard, layer matrix, KPIs, operator quick actions
+- 📖 **Operations Runbook (v0.1):** [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md) — Daily routine, layer triage, CI gates, troubleshooting
+- 🧭 **Navigation:** [CONTROL_CENTER_NAV.md](control_center/CONTROL_CENTER_NAV.md) — All key paths and runbooks
 
 ### Terminal Hang Diagnostics (Pager / Hook / Watch Blocking)
 
