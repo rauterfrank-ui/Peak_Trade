@@ -83,6 +83,8 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 **Phase 4B M3 — Control Center Runbooks:**
 - 📖 **Development Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md) — Standardized workflow for Control Center Dashboard development and M3 orchestration enhancements (Status/Evidence/CI overview, deterministic rendering, docs-only defaults)
 - 📖 **Dashboard Operations Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_DASHBOARD.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_DASHBOARD.md) — Local dashboard viewing, PR/CI monitoring without --watch (timeout-safe), evidence capture and closeout
+- 📖 **Incident Triage Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_INCIDENT_TRIAGE.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_INCIDENT_TRIAGE.md) — Standardized incident detection, triage, evidence capture and escalation workflow for Control Center operations (severity levels, gate-specific shortcuts, timeout-safe monitoring)
+- 📖 **Operator Cheatsheet:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATOR_CHEATSHEET.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATOR_CHEATSHEET.md) — Quick reference for daily Control Center operations (5-10 minute routine, triage shortcuts, evidence minimum)
 
 **Key Deliverables:**
 - Control Center Dashboard: Status/Evidence/CI/Run overview (static HTML or Markdown)
