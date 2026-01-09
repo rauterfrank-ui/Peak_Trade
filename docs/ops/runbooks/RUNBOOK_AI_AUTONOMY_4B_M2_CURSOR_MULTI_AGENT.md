@@ -105,6 +105,28 @@ Das Pack enthält 8 wiederholbare Drills:
 
 Empfohlene Kadenz: 1-2 Drills pro Woche, vollständiger Durchlauf vor Production-nahen Runs.
 
+### Drill Session Logging
+
+Für strukturierte Drill-Session-Dokumentation stehen standardisierte Templates zur Verfügung:
+
+**[Session Template — AI Autonomy 4B M2](../drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md)**
+
+Das Template enthält:
+- Session Metadata (Date/Time, Drill ID, Operator, Roles)
+- Run Manifest (Objective, Preconditions, Pass/Fail Criteria)
+- Execution Log (Step-by-step with evidence pointers)
+- Scorecard (Criterion-based pass/fail with evidence)
+- Findings & Operator Actions (Reproducible findings, immediate actions)
+- Follow-Ups (Docs-only PR suggestions)
+
+**[Drill Runs README](../drills/runs/README.md)**
+
+Guidelines für Drill Run Logs:
+- Naming Convention: `DRILL_RUN_YYYYMMDD_HHMM_<operator>_<drill>.md`
+- Quality Bar: Evidence-first, reproducible, concise, SoD-enforced, deterministic
+- Storage: `docs/ops/drills/runs/`
+- Optional: Commit significant drill runs via docs-only PR
+
 ---
 
 ## 4) Standardablauf (Milestone 2)
