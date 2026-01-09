@@ -206,7 +206,7 @@ D02 ist ein **Meta-Drill**: Evidenzbasierte Auswahl des nächsten Drills (D03) m
 ### **Primary Artifacts** (min. 3)
 
 1. **Run Log:** `docs/ops/drills/runs/DRILL_RUN_<DATE>_D03A_CI_POLLING.md`
-2. **How-To Doc:** `docs/ops/runbooks/RUNBOOK_CI_STATUS_POLLING_HOWTO.md` (new) OR integriert in bestehende Runbooks
+2. **How-To Doc:** `docs/ops/runbooks/RUNBOOK_CI_STATUS_POLLING_HOWTO.md` (new) OR integriert in bestehende Runbooks <!-- pt:ref-target-ignore -->
 3. **Evidence Pack:** 3 Polling-Run Snapshots (Terminal-Output oder JSON)
 
 ---
