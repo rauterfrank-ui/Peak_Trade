@@ -59,9 +59,7 @@ class TranscriptStore:
             TranscriptStoreError: If file not found or invalid
         """
         if not self.transcript_path or not self.transcript_path.exists():
-            raise TranscriptStoreError(
-                f"Transcript not found: {self.transcript_path}"
-            )
+            raise TranscriptStoreError(f"Transcript not found: {self.transcript_path}")
 
         try:
             with open(self.transcript_path, "r") as f:
@@ -150,9 +148,7 @@ class TranscriptStore:
         """Get transcript dictionary."""
         return self.transcript
 
-    def initialize_transcript(
-        self, transcript_id: str, scenario: str
-    ) -> None:
+    def initialize_transcript(self, transcript_id: str, scenario: str) -> None:
         """
         Initialize new transcript.
 

@@ -28,7 +28,12 @@ from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root / "src"))
 
-from ai_orchestration.l2_runner import L2Runner, L2RunnerError, SoDViolation, CapabilityScopeViolation
+from ai_orchestration.l2_runner import (
+    L2Runner,
+    L2RunnerError,
+    SoDViolation,
+    CapabilityScopeViolation,
+)
 
 
 def print_banner(mode: str):

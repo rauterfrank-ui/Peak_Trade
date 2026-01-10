@@ -214,9 +214,7 @@ class OpenAIClient(ModelClient):
             self.openai = openai
             self.client = openai.OpenAI(api_key=self.api_key)
         except ImportError:
-            raise ModelClientError(
-                "OpenAI SDK not installed. Install with: pip install openai"
-            )
+            raise ModelClientError("OpenAI SDK not installed. Install with: pip install openai")
 
     def complete(self, request: ModelRequest) -> ModelResponse:
         """Get completion from OpenAI API."""

@@ -60,9 +60,7 @@ def test_l2_runner_replay_mode_success(fixed_clock, sample_transcript_path, tmp_
     assert (tmp_evidence_dir / "capability_scope_check.json").exists()
 
 
-def test_l2_runner_proposer_output_structure(
-    fixed_clock, sample_transcript_path, tmp_evidence_dir
-):
+def test_l2_runner_proposer_output_structure(fixed_clock, sample_transcript_path, tmp_evidence_dir):
     """Test proposer output structure."""
     runner = L2Runner(clock=fixed_clock)
 
@@ -130,9 +128,7 @@ def test_l2_runner_sod_check(fixed_clock, sample_transcript_path, tmp_evidence_d
     assert "Proposer (gpt-5.2-pro) != Critic (deepseek-r1)" in sod_check["reason"]
 
 
-def test_l2_runner_capability_scope_check(
-    fixed_clock, sample_transcript_path, tmp_evidence_dir
-):
+def test_l2_runner_capability_scope_check(fixed_clock, sample_transcript_path, tmp_evidence_dir):
     """Test capability scope check in evidence pack."""
     runner = L2Runner(clock=fixed_clock)
 
@@ -152,9 +148,7 @@ def test_l2_runner_capability_scope_check(
     assert isinstance(scope_check["checked_outputs"], list)
 
 
-def test_l2_runner_with_findings_and_actions(
-    fixed_clock, sample_transcript_path, tmp_evidence_dir
-):
+def test_l2_runner_with_findings_and_actions(fixed_clock, sample_transcript_path, tmp_evidence_dir):
     """Test L2 runner with findings and actions."""
     runner = L2Runner(clock=fixed_clock)
 
@@ -201,9 +195,7 @@ def test_l2_runner_deterministic_run_id(fixed_clock, sample_transcript_path, tmp
     assert result1.run_id == result2.run_id
 
 
-def test_l2_runner_evidence_pack_json_golden(
-    fixed_clock, sample_transcript_path, tmp_evidence_dir
-):
+def test_l2_runner_evidence_pack_json_golden(fixed_clock, sample_transcript_path, tmp_evidence_dir):
     """Test evidence_pack.json golden snapshot."""
     runner = L2Runner(clock=fixed_clock)
 
