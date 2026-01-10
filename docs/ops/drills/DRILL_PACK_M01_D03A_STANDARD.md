@@ -246,6 +246,27 @@ A "good" drill execution using this pack exhibits:
 - Evidence is verifiable (links work, files exist)
 - Risk assessment is explicit
 
+### M01 Bypass Documentation ✅
+
+**Requirement:** If M01 is not executed using the M01 template (bypass), the run artifact MUST include a one-line bypass rationale and scope limitation.
+
+**Minimum required content:**
+- Why the bypass occurred (intentional vs incidental)
+- Scope limitation (e.g., "scoped to M01 only")
+- Forward-looking rule (future runs must document bypass explicitly)
+
+**Evidence:** The bypass rationale must be recorded in the run artifact under "Meta-Validation" (or equivalent) and referenced in the Evidence Pack.
+
+**Enforcement:**
+- Any "M01 bypassed" status without documented rationale is a compliance gap
+- RISK_OFFICER must block sign-off if bypass is undocumented
+- CI_GUARDIAN should flag incomplete evidence packs
+
+**Reference Implementation:**
+```text
+docs/ops/drills/runs/DRILL_RUN_20260109_2203_drill_pack_templates_M01_D03A.md
+```
+
 ---
 
 ## Anti-Patterns (Avoid)
