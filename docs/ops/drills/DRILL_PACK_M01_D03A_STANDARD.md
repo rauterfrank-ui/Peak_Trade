@@ -358,4 +358,5 @@ git diff --name-only | grep -E '^(src/|config/|tests/)' && echo "ERROR: Non-docs
 
 ## Change Log
 
+- **2026-01-10 (v1.1):** M01 Bypass Documentation Standard — Formalized M01 (phase-level) bypass documentation requirement across D01, D03A templates and drill pack quality standards. Added mandatory checklist items for bypass rationale + scope limitation + evidence linkage. Defined enforcement roles (RISK_OFFICER blocks, CI_GUARDIAN flags). Closes last audit ambiguity for template bypass scenarios. PRs: #637 (artifact hardening), #638 (template formalization)
 - **2026-01-09 (v1.0):** Initial release (M01, D01, D02, D03A templates)
