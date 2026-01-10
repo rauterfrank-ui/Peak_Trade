@@ -338,6 +338,7 @@ uv run ruff check docs/ --exit-zero
 - [ ] Tool versions documented (gh, uv, ruff, git)
 - [ ] Environment documented (OS, shell, permissions)
 - [ ] Docs baseline captured (link check, lint check)
+- [ ] If M01 was bypassed: one-line bypass rationale + scope limitation recorded in run artifact and referenced in this Evidence Pack.
 
 ### Key Observations
 

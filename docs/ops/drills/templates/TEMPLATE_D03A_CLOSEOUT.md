@@ -314,6 +314,20 @@ For each success criterion, provide:
 
 ---
 
+## Final Validation Checklist
+
+**Before Sign-Off (ORCHESTRATOR + RISK_OFFICER):**
+
+- [ ] All success criteria met or deviations documented
+- [ ] Evidence Pack complete (all claims have evidence)
+- [ ] If M01 was bypassed: one-line bypass rationale + scope limitation recorded in run artifact and referenced in this Evidence Pack.
+- [ ] CI verification complete (required checks PASS)
+- [ ] Risk assessment signed off by RISK_OFFICER
+- [ ] All SoD roles approved
+- [ ] Closeout artifact is PR-ready (Summary/Why/Changes/Verification/Risk/How-To/References)
+
+---
+
 ## SoD Sign-Off (All Roles)
 
 | Role | Name/Agent | Timestamp | Status |
