@@ -33,7 +33,9 @@ Document evidence for **Drill Pack M01→D03A Standard** creation:
 **Status:** Bypassed (intentional, documented)
 
 **Rationale:**
-The operator provided the mission brief directly because the deliverable under validation was the template system itself. This bypass is intentional and limited to M01 for this run; future runs must document any bypass explicitly.
+The mission brief was provided directly by the operator because the drill's
+primary objective was validating the template system. This bypass is intentional
+and scoped to M01 only; future runs must record bypass rationale explicitly.
 
 **Compliance:**
 Template bypass is acceptable when the drill scope is explicitly provided by the operator and the deliverable is the template being bypassed (meta-drill constraint).
