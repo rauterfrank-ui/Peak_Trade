@@ -110,11 +110,23 @@ scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
 open http://127.0.0.1:8000/ops/ci-health
 ```
 
-**Layer Drills (Manual-Only, No-Live):**
+**Layer Runner Commands (Offline/Replay - CI-Safe):**
 ```bash
-# See Phase 4B M2 Runbook for detailed drill procedures
-# No automated layer runs without explicit Evidence Pack workflow
+# L1 DeepResearch (Phase 4A)
+python scripts/aiops/run_l1_deepresearch.py \
+    --question "Your research question here" \
+    --mode replay \
+    --fixture l1_deepresearch_sample \
+    --out evidence_packs/L1_research
+
+# L2 Market Outlook (Phase 3)
+python scripts/aiops/run_l2_market_outlook.py \
+    --mode replay \
+    --fixture l2_market_outlook_sample \
+    --out evidence_packs/L2_outlook
 ```
+
+**Reference:** [Phase 4A: L1/L4 Integration](../../governance/ai_autonomy/PHASE4_L1_L4_INTEGRATION.md)
 
 ### 5.2 Navigation
 

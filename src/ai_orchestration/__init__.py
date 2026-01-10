@@ -29,6 +29,11 @@ from .evidence_pack_generator import (
     EvidencePackGenerator,
     ProposerArtifact,
 )
+from .l1_runner import (
+    L1Runner,
+    L1RunnerError,
+    L1RunResult,
+)
 from .l2_runner import (
     L2Runner,
     L2RunnerError,
@@ -102,6 +107,10 @@ __all__ = [
     "CriticArtifact",
     "CapabilityScopeCheck",
     "EvidencePackError",
+    # L1 Runner (Phase 4A)
+    "L1Runner",
+    "L1RunResult",
+    "L1RunnerError",
     # L2 Runner (Phase 3)
     "L2Runner",
     "L2RunResult",
