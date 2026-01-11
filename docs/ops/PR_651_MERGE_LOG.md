@@ -38,7 +38,7 @@ Added merge log for PR #650 and indexed it in `docs/ops/README.md`. Follow-up fi
 
 ### Gate hardening
 - Replaced **1** problematic forward reference: branch name reference → generic description
-- Changed: `docs/pr649-merge-log` → "PR #649 merge log branch → `main` (deleted post-merge)"
+- Changed: deleted branch name → "PR #649 merge log branch → `main` (deleted post-merge)"
 - Reason: Prevent missing-target detection after branch deletion post-merge
 
 ### Two-Commit Journey (PR #651)
