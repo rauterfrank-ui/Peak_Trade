@@ -3,7 +3,7 @@
 **Merge Details:**
 - PR: #650
 - Title: docs(ops): add PR #649 merge log
-- Branch: `docs/pr649-merge-log` → `main`
+- Branch: PR #649 merge log branch → `main` (deleted post-merge)
 - Merge Commit: `e23ea71a`
 - Merged At (UTC): 2026-01-11T19:30:30Z
 - Merge Strategy: Squash & Merge
