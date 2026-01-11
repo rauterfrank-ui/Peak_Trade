@@ -182,7 +182,9 @@ class ValidatorReport(BaseModel):
 
     schema_version: str = Field(..., description="Schema version (semver)")
     tool: ToolInfo = Field(..., description="Tool information")
-    subject: str = Field(..., description="Subject being validated (e.g., 'l4_critic_determinism_contract')")
+    subject: str = Field(
+        ..., description="Subject being validated (e.g., 'l4_critic_determinism_contract')"
+    )
     result: ValidationResult = Field(..., description="Overall validation result")
     checks: List[ValidationCheck] = Field(default_factory=list, description="Individual checks")
     summary: SummaryMetrics = Field(..., description="Summary metrics")
@@ -268,10 +270,12 @@ class ValidatorReport(BaseModel):
         ]
 
         if self.checks:
-            lines.extend([
-                "## Checks",
-                "",
-            ])
+            lines.extend(
+                [
+                    "## Checks",
+                    "",
+                ]
+            )
             for check in sorted(self.checks, key=lambda c: c.id):
                 status_emoji = "✅" if check.status == CheckStatus.PASS else "❌"
                 lines.append(f"### {status_emoji} {check.id}")
@@ -286,10 +290,12 @@ class ValidatorReport(BaseModel):
                 lines.append("")
 
         if self.evidence:
-            lines.extend([
-                "## Evidence",
-                "",
-            ])
+            lines.extend(
+                [
+                    "## Evidence",
+                    "",
+                ]
+            )
             if self.evidence.baseline:
                 lines.append(f"- **Baseline:** `{self.evidence.baseline}`")
             if self.evidence.candidate:
@@ -299,10 +305,12 @@ class ValidatorReport(BaseModel):
             lines.append("")
 
         if self.runtime_context:
-            lines.extend([
-                "## Runtime Context",
-                "",
-            ])
+            lines.extend(
+                [
+                    "## Runtime Context",
+                    "",
+                ]
+            )
             if self.runtime_context.git_sha:
                 lines.append(f"- **Git SHA:** `{self.runtime_context.git_sha}`")
             if self.runtime_context.run_id:

@@ -212,7 +212,9 @@ def test_normalize_with_runtime_context(legacy_validator_report_pass, runtime_co
 # =============================================================================
 
 
-def test_to_canonical_dict_excludes_runtime_context(legacy_validator_report_pass, runtime_context_ci):
+def test_to_canonical_dict_excludes_runtime_context(
+    legacy_validator_report_pass, runtime_context_ci
+):
     """Test that canonical dict excludes runtime_context."""
     normalized = normalize_validator_report(
         legacy_validator_report_pass,

@@ -31,24 +31,26 @@ import pytest
 @pytest.fixture
 def legacy_report_json() -> str:
     """Legacy validator report as JSON string."""
-    return json.dumps({
-        "validator": {
-            "name": "l4_critic_determinism_contract_validator",
-            "version": "1.0.0",
-        },
-        "contract_version": "1.0.0",
-        "inputs": {
-            "baseline": "tests/fixtures/baseline.json",
-            "candidate": "tests/fixtures/candidate.json",
-        },
-        "result": {
-            "equal": True,
-            "baseline_hash": "abc123",
-            "candidate_hash": "abc123",
-            "diff_summary": "Reports are identical",
-            "first_mismatch_path": None,
-        },
-    })
+    return json.dumps(
+        {
+            "validator": {
+                "name": "l4_critic_determinism_contract_validator",
+                "version": "1.0.0",
+            },
+            "contract_version": "1.0.0",
+            "inputs": {
+                "baseline": "tests/fixtures/baseline.json",
+                "candidate": "tests/fixtures/candidate.json",
+            },
+            "result": {
+                "equal": True,
+                "baseline_hash": "abc123",
+                "candidate_hash": "abc123",
+                "diff_summary": "Reports are identical",
+                "first_mismatch_path": None,
+            },
+        }
+    )
 
 
 @pytest.fixture
@@ -91,8 +93,10 @@ def test_cli_from_file(tmp_path, cli_script, legacy_report_json):
         [
             sys.executable,
             str(cli_script),
-            "--input", str(input_file),
-            "--out-dir", str(out_dir),
+            "--input",
+            str(input_file),
+            "--out-dir",
+            str(out_dir),
         ],
         capture_output=True,
         text=True,
@@ -124,7 +128,8 @@ def test_cli_from_stdin(tmp_path, cli_script, legacy_report_json):
         [
             sys.executable,
             str(cli_script),
-            "--out-dir", str(out_dir),
+            "--out-dir",
+            str(out_dir),
         ],
         input=legacy_report_json,
         capture_output=True,
@@ -151,12 +156,18 @@ def test_cli_with_runtime_context(tmp_path, cli_script, legacy_report_json):
         [
             sys.executable,
             str(cli_script),
-            "--input", str(input_file),
-            "--out-dir", str(out_dir),
-            "--git-sha", "abc123def456",
-            "--run-id", "123456",
-            "--workflow", "Test Workflow",
-            "--job", "test_job",
+            "--input",
+            str(input_file),
+            "--out-dir",
+            str(out_dir),
+            "--git-sha",
+            "abc123def456",
+            "--run-id",
+            "123456",
+            "--workflow",
+            "Test Workflow",
+            "--job",
+            "test_job",
             "--timestamp",
         ],
         capture_output=True,
@@ -183,8 +194,10 @@ def test_cli_no_markdown_flag(tmp_path, cli_script, legacy_report_json):
         [
             sys.executable,
             str(cli_script),
-            "--input", str(input_file),
-            "--out-dir", str(out_dir),
+            "--input",
+            str(input_file),
+            "--out-dir",
+            str(out_dir),
             "--no-markdown",
         ],
         capture_output=True,
@@ -213,8 +226,10 @@ def test_cli_quiet_flag(tmp_path, cli_script, legacy_report_json):
         [
             sys.executable,
             str(cli_script),
-            "--input", str(input_file),
-            "--out-dir", str(out_dir),
+            "--input",
+            str(input_file),
+            "--out-dir",
+            str(out_dir),
             "--quiet",
         ],
         capture_output=True,
@@ -240,8 +255,10 @@ def test_cli_missing_input_file(tmp_path, cli_script):
         [
             sys.executable,
             str(cli_script),
-            "--input", str(tmp_path / "nonexistent.json"),
-            "--out-dir", str(out_dir),
+            "--input",
+            str(tmp_path / "nonexistent.json"),
+            "--out-dir",
+            str(out_dir),
         ],
         capture_output=True,
         text=True,
@@ -264,8 +281,10 @@ def test_cli_invalid_json(tmp_path, cli_script):
         [
             sys.executable,
             str(cli_script),
-            "--input", str(input_file),
-            "--out-dir", str(out_dir),
+            "--input",
+            str(input_file),
+            "--out-dir",
+            str(out_dir),
         ],
         capture_output=True,
         text=True,
@@ -296,8 +315,10 @@ def test_cli_determinism(tmp_path, cli_script, legacy_report_json):
             [
                 sys.executable,
                 str(cli_script),
-                "--input", str(input_file),
-                "--out-dir", str(out_dir),
+                "--input",
+                str(input_file),
+                "--out-dir",
+                str(out_dir),
             ],
             capture_output=True,
             text=True,
@@ -328,10 +349,14 @@ def test_cli_full_pipeline(tmp_path, cli_script, legacy_report_json):
         [
             sys.executable,
             str(cli_script),
-            "--input", str(input_file),
-            "--out-dir", str(out_dir),
-            "--git-sha", "test-sha",
-            "--run-id", "test-run-123",
+            "--input",
+            str(input_file),
+            "--out-dir",
+            str(out_dir),
+            "--git-sha",
+            "test-sha",
+            "--run-id",
+            "test-run-123",
         ],
         capture_output=True,
         text=True,
