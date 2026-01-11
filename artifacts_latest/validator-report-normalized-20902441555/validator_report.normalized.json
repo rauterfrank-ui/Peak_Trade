@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "id": "determinism_contract_validation",
+      "message": "Reports are identical (hash match)",
+      "metrics": {
+        "baseline_hash": "4de2937bd14a8556e7f3611d2270d31e359bc38b1e37b62c4b3ab75c7c48a59b",
+        "candidate_hash": "4de2937bd14a8556e7f3611d2270d31e359bc38b1e37b62c4b3ab75c7c48a59b",
+        "first_mismatch_path": null
+      },
+      "status": "PASS"
+    }
+  ],
+  "evidence": {
+    "baseline": "tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0/critic_report.json",
+    "candidate": ".tmp/l4_critic_out/critic_report.json",
+    "diff": null
+  },
+  "result": "PASS",
+  "schema_version": "1.0.0",
+  "subject": "l4_critic_determinism_contract_v1.0.0",
+  "summary": {
+    "failed": 0,
+    "passed": 1,
+    "total": 1
+  },
+  "tool": {
+    "name": "l4_critic_determinism_contract_validator",
+    "version": "1.0.0"
+  }
+}
