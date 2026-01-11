@@ -27,7 +27,7 @@ Dieser Triage-Prozess folgt dem etablierten Peak_Trade-Workflow:
 4. **Merge-ready**  
    Konkreter Code-Patch + Tests + Commit-Message-Vorschlag.
 
-**Referenz:** Konsistent mit `docs/ops/WORKFLOW_NOTES.md` (governance-first, evidence-first, no-live policy).
+**Referenz:** Konsistent mit Peak_Trade workflow documentation (governance-first, evidence-first, no-live policy).
 
 ---
 
@@ -123,7 +123,7 @@ Der Agent **muss** dieses Format liefern:
 - `UUID/session ID in output`
 
 **Typical Fix Location:**  
-`src/ai_orchestration/l4_critic_determinism_contract.py` → `canonicalize_report()`
+L4 critic determinism contract module (planned) → `canonicalize_report()`
 
 **Fix Pattern:**
 ```python
@@ -293,4 +293,4 @@ python -m pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -
 **Dateien:**
 - Quickstart (diese Datei): `docs/governance/ai_autonomy/PHASE4D_CURSOR_TRIAGE_PROMPT_QUICKSTART.md`
 - Vollständiger Prompt: `docs/governance/ai_autonomy/PHASE4D_CURSOR_TRIAGE_PROMPT.md`
-- Contract Doc: `docs/governance/ai_autonomy/PHASE4D_L4_CRITIC_DETERMINISM_CONTRACT.md`
+- Contract Doc: PHASE4D L4 Critic Determinism Contract (planned)

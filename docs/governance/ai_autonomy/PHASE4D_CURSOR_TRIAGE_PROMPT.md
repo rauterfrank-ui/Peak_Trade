@@ -155,7 +155,7 @@ Based on root cause, suggest fix location and code changes:
 
 #### For Volatile Field (Root Cause A)
 
-**File:** `src/ai_orchestration/l4_critic_determinism_contract.py`  
+**File:** L4 critic determinism contract module (planned)  
 **Function:** `canonicalize_report()`
 
 ```python
@@ -305,7 +305,7 @@ git commit -m "chore(aiops): update L4 critic determinism snapshot (schema v1.0.
 ```
 
 **Documentation update required:**
-- Update `docs/governance/ai_autonomy/PHASE4D_L4_CRITIC_DETERMINISM_CONTRACT.md`
+- Update Phase 4D L4 Critic Determinism Contract documentation (planned)
 - Document new field in canonicalization matrix
 - Update schema version if breaking change
 
@@ -332,10 +332,11 @@ git commit -m "chore(aiops): update L4 critic determinism snapshot (schema v1.0.
 
 **1. Contract validation:**
 ```bash
-python scripts/aiops/validate_l4_critic_determinism_contract.py \
+python <validator_cli_planned> \
   --report <REPORT_PATH> \
   --print-hash
 ```
+*(Planned: validator CLI script for contract compliance checking)*
 **Output:**
 ```
 <paste output>
@@ -343,7 +344,7 @@ python scripts/aiops/validate_l4_critic_determinism_contract.py \
 
 **2. Canonical emission:**
 ```bash
-python scripts/aiops/validate_l4_critic_determinism_contract.py \
+python <validator_cli_planned> \
   --report <REPORT_PATH> \
   --write-canonical .tmp/canonical.json
 ```
@@ -432,9 +433,9 @@ diff -u tests/fixtures/l4_critic_determinism/.../critic_report.json .tmp/canonic
 
 ## References
 
-- **Contract Doc:** `docs/governance/ai_autonomy/PHASE4D_L4_CRITIC_DETERMINISM_CONTRACT.md`
-- **Validator CLI:** `scripts/aiops/validate_l4_critic_determinism_contract.py`
-- **Contract Utilities:** `src/ai_orchestration/l4_critic_determinism_contract.py`
+- **Contract Doc:** Phase 4D L4 Critic Determinism Contract (planned)
+- **Validator CLI:** Determinism contract validator script (planned)
+- **Contract Utilities:** L4 critic determinism contract module (planned)
 - **CI Workflow:** `.github/workflows/l4_critic_replay_determinism_v2.yml`
 - **Merge Log:** `docs/ops/PR_<NUM>_MERGE_LOG.md` (Phase 4D)
 
