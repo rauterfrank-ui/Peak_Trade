@@ -261,9 +261,7 @@ class L1Runner:
             summary=summary,
         )
 
-    def _run_proposer(
-        self, client: ModelClient, model_id: str, question: str
-    ) -> ProposerArtifact:
+    def _run_proposer(self, client: ModelClient, model_id: str, question: str) -> ProposerArtifact:
         """Run proposer model (research)."""
         # System prompt for research
         system_prompt = (
@@ -419,7 +417,10 @@ class L1Runner:
             violations.append(f"Insufficient citations: {citation_count} found, minimum 3 required")
 
         # Check for limitations statement (required by scope)
-        if "limitation" not in proposer_output.lower() and "constraint" not in proposer_output.lower():
+        if (
+            "limitation" not in proposer_output.lower()
+            and "constraint" not in proposer_output.lower()
+        ):
             violations.append("Research limitations statement missing")
 
         # Determine result
