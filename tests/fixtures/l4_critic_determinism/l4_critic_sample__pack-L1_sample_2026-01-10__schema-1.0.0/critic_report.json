@@ -1,0 +1,69 @@
+{
+  "critic": {
+    "name": "L4_Governance_Critic",
+    "version": "1.0.0"
+  },
+  "findings": [
+    {
+      "evidence_refs": [
+        "EVD-L1-001",
+        "EVD-L1-002",
+        "EVD-SOD-001"
+      ],
+      "id": "F001",
+      "metrics": {},
+      "rationale": "Evidence pack demonstrates proper SoD enforcement with distinct proposer/critic models. Capability scope checks passed. Research is limited to approved outputs with no execution commands.",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "Governance Decision: ALLOW"
+    },
+    {
+      "evidence_refs": [],
+      "id": "F002",
+      "metrics": {},
+      "rationale": "No significant risks identified",
+      "severity": "INFO",
+      "status": "OPEN",
+      "title": "Risk Note: No significant risks identified..."
+    },
+    {
+      "evidence_refs": [],
+      "id": "F003",
+      "metrics": {},
+      "rationale": "offline replay mode enforced",
+      "severity": "INFO",
+      "status": "OPEN",
+      "title": "Risk Note: offline replay mode enforced..."
+    }
+  ],
+  "inputs": {
+    "evidence_pack_path": "tests/fixtures/evidence_packs/L1_sample_2026-01-10",
+    "fixture": "l4_critic_sample",
+    "schema_version_in": "1.0"
+  },
+  "meta": {
+    "canonicalization": {
+      "rules": [
+        "sorted_keys",
+        "sorted_lists",
+        "normalized_paths"
+      ]
+    },
+    "created_at": null,
+    "deterministic": true
+  },
+  "mode": "replay",
+  "pack_id": "L1_sample_2026-01-10",
+  "schema_version": "1.0.0",
+  "summary": {
+    "finding_counts": {
+      "high": 0,
+      "info": 2,
+      "low": 1,
+      "med": 0
+    },
+    "risk_level": "LOW",
+    "score": null,
+    "verdict": "PASS"
+  }
+}
