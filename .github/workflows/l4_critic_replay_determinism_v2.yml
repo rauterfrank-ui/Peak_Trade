@@ -119,11 +119,38 @@ jobs:
           echo "✅ Determinism contract validation passed"
           echo ""
 
-      - name: Upload validator report
+      - name: Normalize validator report (Phase 4E)
+        if: always()
+        run: |
+          echo "=== Normalizing Validator Report ==="
+          python scripts/aiops/normalize_validator_report.py \
+            --input ".tmp/validator_report.json" \
+            --out-dir ".tmp/validator_report_normalized" \
+            --git-sha "${{ github.sha }}" \
+            --run-id "${{ github.run_id }}" \
+            --workflow "${{ github.workflow }}" \
+            --job "${{ github.job }}" \
+            --timestamp
+
+          echo ""
+          echo "✅ Validator report normalized"
+          echo ""
+
+      - name: Upload normalized validator report (JSON + Markdown)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: validator-report-${{ github.run_id }}
+          name: validator-report-normalized-${{ github.run_id }}
+          path: |
+            .tmp/validator_report_normalized/validator_report.normalized.json
+            .tmp/validator_report_normalized/validator_report.normalized.md
+          retention-days: 14
+
+      - name: Upload legacy validator report (backward compatibility)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validator-report-legacy-${{ github.run_id }}
           path: .tmp/validator_report.json
           retention-days: 14
 

@@ -1,0 +1,27 @@
+# Phase 4E Changed Files
+
+## Source Code (3 files)
+src/ai_orchestration/validator_report_schema.py
+src/ai_orchestration/validator_report_normalized.py
+scripts/aiops/normalize_validator_report.py
+
+## Tests (2 files)
+tests/ai_orchestration/test_validator_report_normalized.py
+tests/ai_orchestration/test_normalize_validator_report_cli.py
+
+## Fixtures (2 files)
+tests/fixtures/validator_reports/legacy_report_pass.json
+tests/fixtures/validator_reports/normalized_report_pass.golden.json
+
+## CI Integration (1 file)
+.github/workflows/l4_critic_replay_determinism_v2.yml
+
+## Documentation (2 files)
+docs/governance/ai_autonomy/PHASE4E_VALIDATOR_REPORT_NORMALIZATION.md
+docs/governance/ai_autonomy/PHASE4E_QUICKSTART.md
+
+## Summary Reports (2 files)
+PHASE4E_IMPLEMENTATION_SUMMARY.md
+PHASE4E_CHANGED_FILES.txt
+
+## Total: 14 files
