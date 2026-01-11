@@ -1,0 +1,156 @@
+name: L4 Critic Replay Determinism
+
+on:
+  pull_request:
+    paths:
+      - "src/ai_orchestration/**"
+      - "scripts/aiops/**"
+      - "tests/**"
+      - ".github/workflows/l4_critic_replay_determinism.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "src/ai_orchestration/**"
+      - "scripts/aiops/**"
+      - "tests/**"
+      - ".github/workflows/l4_critic_replay_determinism.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: l4-critic-determinism-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  l4_critic_replay_determinism:
+    name: L4 Critic Replay Determinism
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: |
+          # Mirror repo's canonical install pattern
+          uv sync --all-extras --dev
+
+      - name: Run L4 Critic (deterministic replay, no legacy)
+        run: |
+          rm -rf .tmp/l4_critic_out
+          python scripts/aiops/run_l4_governance_critic.py \
+            --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
+            --mode replay \
+            --fixture l4_critic_sample \
+            --out .tmp/l4_critic_out \
+            --pack-id L1_sample_2026-01-10 \
+            --schema-version 1.0.0 \
+            --deterministic \
+            --no-legacy-output
+
+      - name: Verify output files exist
+        run: |
+          test -f .tmp/l4_critic_out/critic_report.json || { echo "❌ critic_report.json missing"; exit 1; }
+          test -f .tmp/l4_critic_out/critic_summary.md || { echo "❌ critic_summary.md missing"; exit 1; }
+          echo "✅ Both output files present"
+
+      - name: Compare outputs with snapshot (JSON)
+        run: |
+          SNAP_DIR="tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0"
+
+          echo "=== Comparing critic_report.json ==="
+          if ! diff -u "$SNAP_DIR/critic_report.json" ".tmp/l4_critic_out/critic_report.json"; then
+            echo ""
+            echo "❌ FAILURE: critic_report.json differs from snapshot"
+            echo ""
+            echo "Expected (snapshot):"
+            cat "$SNAP_DIR/critic_report.json"
+            echo ""
+            echo "Actual (output):"
+            cat ".tmp/l4_critic_out/critic_report.json"
+            echo ""
+            echo "This indicates non-deterministic behavior or intentional schema change."
+            echo "If intentional, update snapshot with procedure in PHASE4C_CRITIC_HARDENING.md"
+            exit 1
+          fi
+          echo "✅ critic_report.json matches snapshot"
+
+      - name: Compare outputs with snapshot (Markdown)
+        run: |
+          SNAP_DIR="tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0"
+
+          echo "=== Comparing critic_summary.md ==="
+          if ! diff -u "$SNAP_DIR/critic_summary.md" ".tmp/l4_critic_out/critic_summary.md"; then
+            echo ""
+            echo "❌ FAILURE: critic_summary.md differs from snapshot"
+            echo ""
+            echo "Expected (snapshot):"
+            cat "$SNAP_DIR/critic_summary.md"
+            echo ""
+            echo "Actual (output):"
+            cat ".tmp/l4_critic_out/critic_summary.md"
+            echo ""
+            echo "This indicates non-deterministic markdown generation."
+            exit 1
+          fi
+          echo "✅ critic_summary.md matches snapshot"
+
+      - name: Verify determinism (run twice, compare)
+        run: |
+          echo "=== Determinism Check: Run 1 ==="
+          rm -rf .tmp/l4_critic_run1
+          python scripts/aiops/run_l4_governance_critic.py \
+            --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
+            --mode replay \
+            --fixture l4_critic_sample \
+            --out .tmp/l4_critic_run1 \
+            --pack-id L1_sample_2026-01-10 \
+            --schema-version 1.0.0 \
+            --deterministic \
+            --no-legacy-output
+
+          echo "=== Determinism Check: Run 2 ==="
+          rm -rf .tmp/l4_critic_run2
+          python scripts/aiops/run_l4_governance_critic.py \
+            --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
+            --mode replay \
+            --fixture l4_critic_sample \
+            --out .tmp/l4_critic_run2 \
+            --pack-id L1_sample_2026-01-10 \
+            --schema-version 1.0.0 \
+            --deterministic \
+            --no-legacy-output
+
+          echo "=== Comparing Run 1 vs Run 2 ==="
+          if ! diff .tmp/l4_critic_run1/critic_report.json .tmp/l4_critic_run2/critic_report.json; then
+            echo "❌ FAILURE: Outputs differ between runs (non-deterministic)"
+            exit 1
+          fi
+
+          if ! diff .tmp/l4_critic_run1/critic_summary.md .tmp/l4_critic_run2/critic_summary.md; then
+            echo "❌ FAILURE: Markdown differs between runs (non-deterministic)"
+            exit 1
+          fi
+
+          echo "✅ Determinism verified (2 runs → identical outputs)"
+
+      - name: Upload outputs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: l4-critic-outputs-failed-${{ github.run_id }}
+          path: |
+            .tmp/l4_critic_out/
+            .tmp/l4_critic_run1/
+            .tmp/l4_critic_run2/
+          retention-days: 7

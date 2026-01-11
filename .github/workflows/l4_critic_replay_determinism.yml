@@ -1,0 +1,204 @@
+name: L4 Critic Replay Determinism
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+concurrency:
+  group: l4-critic-determinism-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ============================================================================
+  # Change Detection
+  # ============================================================================
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      critic_changed: ${{ steps.filter.outputs.critic }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect L4 Critic changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            critic:
+              - 'src/ai_orchestration/l4_critic.py'
+              - 'src/ai_orchestration/critic_report_schema.py'
+              - 'scripts/aiops/run_l4_governance_critic.py'
+              - 'tests/ai_orchestration/test_l4_critic*.py'
+              - 'tests/fixtures/l4_critic_determinism/**'
+              - 'tests/fixtures/transcripts/l4_critic_sample.json'
+              - 'tests/fixtures/evidence_packs/L1_sample_2026-01-10/**'
+              - '.github/workflows/l4_critic_replay_determinism.yml'
+
+  # ============================================================================
+  # L4 Critic Replay Determinism Gate
+  # ============================================================================
+  # Validates that L4 Critic produces byte-identical outputs in replay mode.
+  # This ensures CI stability and prevents non-deterministic test failures.
+  #
+  # Phase 4C Deliverable: CI Gate for deterministic replay validation
+  # Reference: docs/governance/ai_autonomy/PHASE4C_CRITIC_HARDENING.md
+  # ============================================================================
+  l4-critic-replay-determinism:
+    name: L4 Critic Replay Determinism
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: changes
+
+    steps:
+      - name: Skip if no critic changes
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.critic_changed != 'true' }}
+        run: echo "No L4 Critic changes detected - skipping determinism check"
+
+      - name: Checkout
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run L4 Critic in deterministic replay mode
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
+        run: |
+          # Run L4 Critic with deterministic flags
+          python scripts/aiops/run_l4_governance_critic.py \
+            --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
+            --mode replay \
+            --fixture l4_critic_sample \
+            --out .tmp/l4_critic_out \
+            --pack-id L1_sample_2026-01-10 \
+            --schema-version 1.0.0 \
+            --deterministic
+
+      - name: Compare outputs with snapshot
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
+        run: |
+          # Define paths
+          SNAPSHOT_DIR="tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0"
+          OUTPUT_DIR=".tmp/l4_critic_out"
+
+          # Check that outputs exist
+          if [ ! -f "$OUTPUT_DIR/critic_report.json" ]; then
+            echo "❌ ERROR: critic_report.json not generated"
+            exit 1
+          fi
+
+          if [ ! -f "$OUTPUT_DIR/critic_summary.md" ]; then
+            echo "❌ ERROR: critic_summary.md not generated"
+            exit 1
+          fi
+
+          # Compare JSON (byte-identical)
+          echo "Comparing critic_report.json..."
+          if ! diff -u "$SNAPSHOT_DIR/critic_report.json" "$OUTPUT_DIR/critic_report.json"; then
+            echo ""
+            echo "❌ FAILURE: critic_report.json differs from snapshot"
+            echo ""
+            echo "Expected snapshot:"
+            cat "$SNAPSHOT_DIR/critic_report.json"
+            echo ""
+            echo "Actual output:"
+            cat "$OUTPUT_DIR/critic_report.json"
+            echo ""
+            echo "This indicates non-deterministic behavior in L4 Critic."
+            echo "Please ensure:"
+            echo "  1. Fixed clock is used (--deterministic flag)"
+            echo "  2. Paths are normalized (repo-relative)"
+            echo "  3. Findings are sorted by severity"
+            echo "  4. JSON keys are sorted"
+            exit 1
+          fi
+
+          # Compare Markdown (text-identical)
+          echo "Comparing critic_summary.md..."
+          if ! diff -u "$SNAPSHOT_DIR/critic_summary.md" "$OUTPUT_DIR/critic_summary.md"; then
+            echo ""
+            echo "❌ FAILURE: critic_summary.md differs from snapshot"
+            echo ""
+            echo "Expected snapshot:"
+            cat "$SNAPSHOT_DIR/critic_summary.md"
+            echo ""
+            echo "Actual output:"
+            cat "$OUTPUT_DIR/critic_summary.md"
+            echo ""
+            echo "This indicates non-deterministic markdown generation."
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ SUCCESS: All outputs match snapshots (deterministic)"
+          echo ""
+
+      - name: Upload outputs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: l4-critic-outputs-failed
+          path: .tmp/l4_critic_out/
+          retention-days: 7
+
+  # ============================================================================
+  # Run L4 Critic Determinism Tests
+  # ============================================================================
+  # Runs pytest tests for L4 Critic determinism validation.
+  # ============================================================================
+  l4-critic-determinism-tests:
+    name: L4 Critic Determinism Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: changes
+
+    steps:
+      - name: Skip if no critic changes
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.critic_changed != 'true' }}
+        run: echo "No L4 Critic changes detected - skipping tests"
+
+      - name: Checkout
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run L4 Critic determinism tests
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.critic_changed == 'true' }}
+        run: |
+          pytest tests/ai_orchestration/test_l4_critic_determinism.py -v --tb=short
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: l4-critic-test-results-failed
+          path: |
+            .pytest_cache/
+            tests/ai_orchestration/test_l4_critic_determinism.py
+          retention-days: 7

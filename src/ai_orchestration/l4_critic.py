@@ -17,6 +17,20 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from .capability_scope_loader import CapabilityScopeLoader
+from .critic_report_schema import (
+    CanonicalRules,
+    CriticFinding,
+    CriticInfo,
+    CriticReport,
+    FindingStatus,
+    InputMetadata,
+    MetaInfo,
+    RiskLevel,
+    Severity,
+    SummaryMetrics,
+    Verdict,
+    normalize_path_for_determinism,
+)
 from .errors import OrchestrationError
 from .model_client import ModelClient, ModelRequest, create_model_client
 from .model_registry_loader import ModelRegistryLoader
@@ -86,6 +100,7 @@ class L4Critic:
         scope_loader: Optional[CapabilityScopeLoader] = None,
         sod_checker: Optional[SoDChecker] = None,
         clock: Optional[datetime] = None,
+        schema_version: str = "1.0.0",
     ):
         """
         Initialize L4 Critic.
@@ -95,11 +110,13 @@ class L4Critic:
             scope_loader: Capability scope loader (default: auto)
             sod_checker: SoD checker (default: auto)
             clock: Fixed clock for determinism (default: now)
+            schema_version: Critic report schema version (default: 1.0.0)
         """
         self.registry_loader = registry_loader or ModelRegistryLoader()
         self.scope_loader = scope_loader or CapabilityScopeLoader()
         self.sod_checker = sod_checker or SoDChecker()
         self.clock = clock
+        self.schema_version = schema_version
 
     def run(
         self,
@@ -108,6 +125,10 @@ class L4Critic:
         transcript_path: Optional[Path] = None,
         out_dir: Optional[Path] = None,
         operator_notes: str = "",
+        pack_id: Optional[str] = None,
+        deterministic: bool = False,
+        fixture: Optional[str] = None,
+        legacy_output: bool = True,
     ) -> L4CriticResult:
         """
         Run L4 Governance Critic on an Evidence Pack.
@@ -118,6 +139,10 @@ class L4Critic:
             transcript_path: Path to transcript (required for replay/dry)
             out_dir: Output directory for artifacts
             operator_notes: Optional operator notes
+            pack_id: Evidence pack ID override (default: from evidence_pack.json)
+            deterministic: Use deterministic output (no timestamps, stable paths)
+            fixture: Fixture ID if used (for determinism tracking)
+            legacy_output: Generate legacy artifacts (default: True for backward compatibility)
 
         Returns:
             L4CriticResult
@@ -142,7 +167,8 @@ class L4Critic:
         with open(evidence_pack_json) as f:
             evidence_pack_data = json.load(f)
 
-        evidence_pack_id = evidence_pack_data.get("evidence_pack_id", "UNKNOWN")
+        # Use provided pack_id or fall back to evidence pack metadata
+        evidence_pack_id = pack_id or evidence_pack_data.get("evidence_pack_id", "UNKNOWN")
         proposer_model_id = (
             evidence_pack_data.get("models", {}).get("proposer", {}).get("model_id", "UNKNOWN")
         )
@@ -205,10 +231,11 @@ class L4Critic:
             critic_hash=hashlib.sha256(critic_output.encode()).hexdigest()[:8],
         )
 
-        # Generate artifacts
+        # Generate artifacts (Phase 4C: standardized schema-based outputs)
         artifacts = self._generate_artifacts(
             run_id=run_id,
             evidence_pack_id=evidence_pack_id,
+            evidence_pack_path=evidence_pack_path,
             evidence_pack_data=evidence_pack_data,
             critic_model_id=critic_model_id,
             critic_output=critic_output,
@@ -218,6 +245,9 @@ class L4Critic:
             mode=mode,
             out_dir=out_dir,
             operator_notes=operator_notes,
+            deterministic=deterministic,
+            fixture=fixture,
+            legacy_output=legacy_output,
         )
 
         # Create summary
@@ -416,10 +446,135 @@ Ensure your decision:
 
         return "PASS"
 
+    def _build_critic_report(
+        self,
+        pack_id: str,
+        mode: str,
+        evidence_pack_path: Path,
+        evidence_pack_data: Dict,
+        decision: CriticDecision,
+        sod_check,
+        capability_check_result: str,
+        critic_model_id: str,
+        deterministic: bool,
+        fixture: Optional[str],
+    ) -> CriticReport:
+        """
+        Build standardized CriticReport (Phase 4C).
+
+        Converts legacy decision structure to new schema-based findings.
+        """
+        # Map decision to verdict
+        verdict_map = {
+            "ALLOW": Verdict.PASS,
+            "APPROVE": Verdict.PASS,
+            "REVIEW_REQUIRED": Verdict.WARN,
+            "AUTO_APPLY_DENY": Verdict.WARN,
+            "REJECT": Verdict.FAIL,
+        }
+        verdict = verdict_map.get(decision.decision, Verdict.WARN)
+
+        # Map severity to risk level
+        risk_map = {
+            "LOW": RiskLevel.LOW,
+            "MEDIUM": RiskLevel.MEDIUM,
+            "HIGH": RiskLevel.HIGH,
+            "CRITICAL": RiskLevel.HIGH,
+        }
+        risk_level = risk_map.get(decision.severity, RiskLevel.MEDIUM)
+
+        # Build findings from decision
+        findings = []
+        if decision.rationale:
+            # Main decision as finding
+            findings.append(
+                CriticFinding(
+                    id="F001",
+                    title=f"Governance Decision: {decision.decision}",
+                    severity=Severity[decision.severity]
+                    if decision.severity in Severity.__members__
+                    else Severity.MEDIUM,
+                    status=FindingStatus.OPEN,
+                    rationale=decision.rationale,
+                    evidence_refs=decision.evidence_ids,
+                    metrics={},
+                )
+            )
+
+        # Add risk notes as separate findings
+        for idx, risk_note in enumerate(decision.risk_notes, start=2):
+            findings.append(
+                CriticFinding(
+                    id=f"F{idx:03d}",
+                    title=f"Risk Note: {risk_note[:50]}...",
+                    severity=Severity.INFO,
+                    status=FindingStatus.OPEN,
+                    rationale=risk_note,
+                    evidence_refs=[],
+                    metrics={},
+                )
+            )
+
+        # Count findings by severity
+        finding_counts = {"high": 0, "med": 0, "low": 0, "info": 0}
+        for f in findings:
+            if f.severity == Severity.HIGH:
+                finding_counts["high"] += 1
+            elif f.severity == Severity.MEDIUM:
+                finding_counts["med"] += 1
+            elif f.severity == Severity.LOW:
+                finding_counts["low"] += 1
+            else:
+                finding_counts["info"] += 1
+
+        # Build input metadata
+        normalized_path = normalize_path_for_determinism(evidence_pack_path, deterministic)
+        input_schema = evidence_pack_data.get("schema_version", "1.0")
+
+        inputs = InputMetadata(
+            evidence_pack_path=normalized_path,
+            fixture=fixture,
+            schema_version_in=input_schema,
+        )
+
+        # Build summary
+        summary = SummaryMetrics(
+            verdict=verdict,
+            risk_level=risk_level,
+            score=None,
+            finding_counts=finding_counts,
+        )
+
+        # Build critic info
+        critic_info = CriticInfo(
+            name="L4_Governance_Critic",
+            version="1.0.0",  # Can be parameterized later
+        )
+
+        # Build meta
+        meta = MetaInfo(
+            deterministic=deterministic,
+            canonicalization=CanonicalRules(),
+            created_at=None if deterministic else self._get_timestamp_str(),
+        )
+
+        # Build report
+        return CriticReport(
+            schema_version=self.schema_version,
+            pack_id=pack_id,
+            mode=mode,
+            critic=critic_info,
+            inputs=inputs,
+            summary=summary,
+            findings=findings,
+            meta=meta,
+        )
+
     def _generate_artifacts(
         self,
         run_id: str,
         evidence_pack_id: str,
+        evidence_pack_path: Path,
         evidence_pack_data: Dict,
         critic_model_id: str,
         critic_output: str,
@@ -429,9 +584,48 @@ Ensure your decision:
         mode: str,
         out_dir: Path,
         operator_notes: str,
+        deterministic: bool,
+        fixture: Optional[str],
+        legacy_output: bool,
     ) -> Dict[str, Path]:
-        """Generate L4 critic artifacts."""
+        """
+        Generate L4 critic artifacts (Phase 4C: standardized schema).
+
+        Generates:
+        1. critic_report.json (schema-versioned, deterministic) [ALWAYS]
+        2. critic_summary.md (derived from JSON) [ALWAYS]
+        3. Legacy artifacts (for backward compatibility) [if legacy_output=True]
+        """
         artifacts = {}
+
+        # PHASE 4C: Generate standardized schema-based outputs
+        # (1) critic_report.json
+        critic_report = self._build_critic_report(
+            pack_id=evidence_pack_id,
+            mode=mode,
+            evidence_pack_path=evidence_pack_path,
+            evidence_pack_data=evidence_pack_data,
+            decision=decision,
+            sod_check=sod_check,
+            capability_check_result=capability_check_result,
+            critic_model_id=critic_model_id,
+            deterministic=deterministic,
+            fixture=fixture,
+        )
+
+        report_json_path = out_dir / "critic_report.json"
+        critic_report.write_json(report_json_path, deterministic=deterministic)
+        artifacts["critic_report_json"] = report_json_path
+
+        # (2) critic_summary.md (derived from JSON)
+        summary_md_path = out_dir / "critic_summary.md"
+        critic_report.write_summary_md(summary_md_path)
+        artifacts["critic_summary_md"] = summary_md_path
+
+        # LEGACY ARTIFACTS (backward compatibility with Phase 4B)
+        # Only generate if legacy_output=True (default for Phase 4C transition)
+        if not legacy_output:
+            return artifacts
 
         # 1. Critic Report (Markdown)
         report_path = out_dir / "critic_report.md"

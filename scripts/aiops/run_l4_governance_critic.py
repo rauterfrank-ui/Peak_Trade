@@ -134,6 +134,26 @@ def main():
         help="Use fixed clock for deterministic output (testing only)",
     )
 
+    # Phase 4C: Standardized output control
+    parser.add_argument(
+        "--pack-id",
+        type=str,
+        help="Evidence pack ID override (for determinism)",
+    )
+
+    parser.add_argument(
+        "--schema-version",
+        type=str,
+        default="1.0.0",
+        help="Critic report schema version (default: 1.0.0)",
+    )
+
+    parser.add_argument(
+        "--no-legacy-output",
+        action="store_true",
+        help="Suppress legacy artifacts (critic_report.md, critic_decision.json, etc.)",
+    )
+
     args = parser.parse_args()
 
     # Resolve mode
@@ -164,7 +184,10 @@ def main():
     if args.deterministic:
         clock = datetime(2026, 1, 10, 12, 0, 0, tzinfo=timezone.utc)
 
-    runner = L4Critic(clock=clock)
+    runner = L4Critic(
+        clock=clock,
+        schema_version=args.schema_version,
+    )
 
     # Execute
     try:
@@ -181,6 +204,10 @@ def main():
             transcript_path=transcript_path,
             out_dir=out_dir,
             operator_notes=args.notes,
+            pack_id=args.pack_id,
+            deterministic=args.deterministic,
+            fixture=args.fixture,
+            legacy_output=not args.no_legacy_output,
         )
 
         print("=" * 70)
