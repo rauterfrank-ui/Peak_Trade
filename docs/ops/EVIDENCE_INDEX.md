@@ -3,7 +3,7 @@
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.3 (Operational - 23 entries)
+**Status:** v0.5 (Operational - 25 entries)
 
 ---
 
@@ -73,6 +73,8 @@ Evidence items are operational artifacts that document system behavior, process 
 || EV-20260109-CONTROL-CENTER-V0 | 2026-01-09 | ops | [PR #623 Merge Log](PR_623_MERGE_LOG.md) | AI Autonomy Control Center v0: Docs-only start page (9 sections: purpose, status, runbooks, evidence, CI gates) + navigation index (5 sections) + ops README link, minimal footprint, NO-LIVE scope | Docs-only PR: 3 files (2 new, 1 modified), docs-reference-targets gate expected PASS, all other gates SKIP, no runtime code touched, risk: minimal | Phase 4B M3 deliverable, ultra-minimal v0 (defer WebUI/Python scripts to v1), rollback: revert squash commit |
 || EV-20260109-PT-DOCS-PR-HELPER | 2026-01-09 | ops | [scripts/ops/pt_docs_pr.sh](../../scripts/ops/pt_docs_pr.sh) | Deterministic docs-only PR workflow helper: safe git pathspec staging (no shell wildcard expansion), PR-based audit trail, idempotent gh pr create, abort-if-nothing-staged safety | Commit 365e3759, executable permissions, pre-commit hooks passed, test run: Exit 3 (nothing staged, correct abort behavior) | Audit-friendly workflow, prevents "silent add" failures, supports docs/ops/ paths only |
 || EV-20260109-D01-DRILL | 2026-01-09 | ops | [D01 Drill Run Log](drills/runs/DRILL_RUN_20260109_1930_ai_autonomy_D01.md) + [PR #631](https://github.com/rauterfrank-ui/Peak_Trade/pull/631) | D01 drill (Pre-Flight Discipline) completed with PASS: repository sanity verified, branch hygiene confirmed, dirty tree detection demonstrated. Finding #4 (aiops-promptfoo-evals workflow failure on docs-only merges) remediated via workflow hardening (changes job + noop job added to `.github/workflows/aiops-promptfoo-evals.yml`) | PR #631 merged (commit 2ba4f12b), 15/15 CI checks SUCCESS, scorecard PASS (with timebox extension 10min→29min justified per Finding #4 remediation), 25 docs reference targets valid, workflow YAML valid | Evidence-first format per SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md, 4 findings documented (3 positive verifications, 1 CI workflow issue remediated), operator actions clear |
+|| EV-20260111-PHASE4D-CONTRACT | 2026-01-11 | ops | [PR #653 Merge Log](PR_653_MERGE_LOG.md) + [Contract Spec](../governance/ai_autonomy/PHASE4D_L4_CRITIC_DETERMINISM_CONTRACT.md) | AI Autonomy Phase 4D: L4 Critic Determinism Contract + Validator CLI + CI enforcement. Explicit canonicalization rules (10 volatile field patterns: timestamp, created_at, duration, elapsed, run_id, pid, hostname, absolute_path, _temp, _tmp), stable SHA256 hashing, first-mismatch diagnostics, validator CLI (exit codes: 0=equal, 2=differ, 3=invalid), CI artifact upload (validator report, 14-day retention). Unit tests: 14/14 passing. Design decisions documented: simple substring matching, exact numeric match, preserve list order, heuristic path normalization. | PR #653 merged (commit b1902840, squash merge), 20/20 CI checks PASS (L4 Critic Replay Determinism 3 jobs, Lint Gate, CI/tests 3.9/3.10/3.11, Docs Reference Targets Gate, Audit, Policy Critic Gate), 5 files changed (1395 insertions): contract module 439 lines, validator CLI 250 lines, tests 364 lines, docs 320 lines, CI workflow +22 lines. Verification: `pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -q` (14 passed in 0.08s), validator self-test PASS (baseline vs itself), ruff format applied (commit 3c3a56bf follow-up) | Backwards compatible, no breaking changes, AI-Ops determinism tooling only, governance-critical: replay determinism now explicit + auditable + enforceable, CI gate prevents regressions. Contract v1.0.0. Future work: numeric tolerance, regex patterns, snapshot management CLI |
+|| EV-20260111-PHASE4D-DOCS | 2026-01-11 | ops | [PR #654 Merge Log](PR_654_MERGE_LOG.md) | Phase 4D documentation follow-up: PR #653 merge log + ops README index update, 2 files changed (294 insertions), docs-only scope, 19/20 CI checks PASS, auto-merge enabled and executed successfully | PR #654 merged (commit e2699d3b), merge log format consistent with existing logs, comprehensive documentation of Phase 4D implementation (two-commit journey, design decisions, operator how-to, triage workflow, CI artifact strategy, pattern recognition), risk: LOW (docs-only) | Meta-documentation for Phase 4D, maintains audit trail, searchable knowledge base for determinism contract patterns |
 
 ---
 
@@ -113,6 +115,12 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20251228-PHASE8D** — Phase 8D: Traffic Light deduplication (93/93 tests, binomial thresholds)
 - **EV-20251228-PHASE8-STDLIB-REFACTOR** — Phase 8 (A/B/D) VaR Backtest Stdlib-Only Refactoring (343 tests total, numpy/scipy removed)
 
+### AI Autonomy Evidence
+- **EV-20260109-AI-AUTONOMY-4B-M2** — AI Autonomy Phase 4B Milestone 2 operator runbook (PRs #619/#620)
+- **EV-20260109-CONTROL-CENTER-V0** — AI Autonomy Control Center v0 (PR #623, docs-only start page)
+- **EV-20260111-PHASE4D-CONTRACT** — AI Autonomy Phase 4D: L4 Critic Determinism Contract + Validator CLI + CI enforcement (PR #653, 5 files, 1395 lines, 14/14 tests passing, 20/20 CI checks, contract v1.0.0)
+- **EV-20260111-PHASE4D-DOCS** — Phase 4D documentation follow-up (PR #654, merge log + ops README index, auto-merge, 19/20 CI checks)
+
 ---
 
 ## Change Log
@@ -130,10 +138,13 @@ Evidence items are operational artifacts that document system behavior, process 
 | 2026-01-09 | Added EV-20260109-CONTROL-CENTER-V0 (AI Autonomy Control Center v0, PR #623) | ops |
 | 2026-01-09 | Added EV-20260109-PT-DOCS-PR-HELPER (pt_docs_pr.sh docs-only PR workflow helper) | ops |
 | 2026-01-09 | Ops Drill Run | `docs/ops/drills/runs/DRILL_RUN_20260109_1930_ai_autonomy_D01.md` · PR #631 · Merge `2ba4f12b1f2877fe9017a2e14889c85f614ce146` | D01 AI Autonomy drill closeout; workflow hardening (.github/workflows/aiops-promptfoo-evals.yml, Finding #4 remediation). PR #631 merged; CI all green (15 success, 5 skipped, 1 neutral). |
+| 2026-01-11 | Added EV-20260111-PHASE4D-CONTRACT (AI Autonomy Phase 4D: L4 Critic Determinism Contract, PR #653, 1395 lines, 14/14 tests, contract v1.0.0) | ops |
+| 2026-01-11 | Added EV-20260111-PHASE4D-DOCS (Phase 4D documentation follow-up, PR #654, merge log + ops README index) | ops |
+| 2026-01-11 | v0.5 Phase 4D Closeout: Added 2 entries (Phase 4D contract + docs), created AI Autonomy Evidence section, total: 25 entries | ops |
 
 ---
 
-**Version:** v0.4  
+**Version:** v0.5  
 **Maintained by:** ops  
 **Last Updated:** 2026-01-09  
 **Total Entries:** 24 (1 seed + 23 operational)  
