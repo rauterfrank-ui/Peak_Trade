@@ -1,0 +1,53 @@
+{
+  "recorded_at": "2026-01-10T12:30:00+00:00",
+  "runs": [
+    {
+      "metadata": {
+        "latency_ms": 3200,
+        "timestamp": "2026-01-10T12:30:01+00:00"
+      },
+      "model_id": "o3-pro",
+      "prompt_hash": "sha256:6a6fea109a817660b0d3781c4854b4da2d58ae9592f4160d4984a96abc8682ba",
+      "request": {
+        "max_tokens": 4000,
+        "messages": [
+          {
+            "content": "You are an L4 Governance Critic. Review evidence packs and provide policy-based recommendations.",
+            "role": "system"
+          },
+          {
+            "content": "# Governance Critic Review Request\n\n## Evidence Pack Summary\n- **Evidence Pack ID**: L1-DEEPRESEARCH-SAMPLE-2026-01-10\n- **Layer**: L1\n- **Proposer Model**: o3-deep-research\n- **Critic Model**: o3-pro\n- **SoD Check**: PASS\n- **Capability Scope Check**: PASS",
+            "role": "user"
+          }
+        ],
+        "model": "o3-pro",
+        "temperature": 0.0
+      },
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "content": "DECISION: ALLOW\nSEVERITY: LOW\nRATIONALE: Evidence pack demonstrates proper SoD enforcement with distinct proposer/critic models. Capability scope checks passed. Research is limited to approved outputs with no execution commands.\nPOLICY_REFS: POL-001-SOD, POL-002-CAPABILITY-SCOPE, POL-003-NO-LIVE\nEVIDENCE_IDS: EVD-L1-001, EVD-L1-002, EVD-SOD-001\nRISK_NOTES: No significant risks identified, offline replay mode enforced\n\n## Detailed Analysis\n\n### SoD Compliance\nThe evidence pack shows proper separation of duties:\n- Proposer: o3-deep-research (research specialist)\n- Critic: o3-pro (conservative reviewer)\n- No self-review detected\n\n### Capability Scope Compliance\nAll outputs are research-only:\n- No execution commands\n- No live trading instructions\n- Proper citation references\n- Compliant with L1 scope constraints\n\n### Risk Assessment\n- **Execution Risk**: NONE (read-only research)\n- **Financial Risk**: NONE (no trading)\n- **Compliance Risk**: LOW (proper governance)\n\n### Recommendation\nALLOW this evidence pack to proceed. All governance guardrails are properly enforced.",
+              "role": "assistant"
+            }
+          }
+        ],
+        "created": 1736509801,
+        "id": "chatcmpl-test-l4-critic-001",
+        "model": "o3-pro",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 285,
+          "prompt_tokens": 156,
+          "total_tokens": 441
+        }
+      },
+      "role": "critic",
+      "run_id": "l4-critic-run-001"
+    }
+  ],
+  "scenario": "l4-governance-critic-review",
+  "transcript_id": "l4-critic-sample-2026-01-10"
+}

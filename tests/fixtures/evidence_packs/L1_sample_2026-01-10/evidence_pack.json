@@ -1,0 +1,70 @@
+{
+  "artifacts": {
+    "capability_scope_check": "capability_scope_check.json",
+    "critic_output": "critic_output.json",
+    "operator_output": "operator_output.md",
+    "proposer_output": "proposer_output.json",
+    "run_manifest": "run_manifest.json",
+    "sod_check": "sod_check.json"
+  },
+  "capability_scope_check": {
+    "checked_outputs": [
+      "Research Report",
+      "Citation Analysis"
+    ],
+    "result": "PASS",
+    "timestamp": "2026-01-10T12:00:30+00:00",
+    "violations": []
+  },
+  "critic": {
+    "decision": "APPROVE",
+    "evidence_ids": [
+      "EVD-001",
+      "EVD-002"
+    ],
+    "model_id": "o3-pro",
+    "output_hash": "sha256:8f7a9b2c",
+    "prompt_hash": "sha256:9a248d5e",
+    "rationale": "Research meets quality standards with proper citations.",
+    "run_id": "critic-run-001"
+  },
+  "evidence_pack_id": "L1-DEEPRESEARCH-SAMPLE-2026-01-10",
+  "layer_id": "L1",
+  "layer_name": "Deep Research",
+  "models": {
+    "critic": {
+      "model_id": "o3-pro",
+      "role": "critic"
+    },
+    "proposer": {
+      "model_id": "o3-deep-research",
+      "role": "proposer"
+    }
+  },
+  "proposer": {
+    "model_id": "o3-deep-research",
+    "output_hash": "sha256:30a77f87",
+    "prompt_hash": "sha256:30a77f87",
+    "run_id": "proposer-run-001"
+  },
+  "run_manifest": {
+    "findings": [
+      "VaR backtesting best practices identified",
+      "Kupiec POF test recommended"
+    ],
+    "layer_id": "L1",
+    "mode": "replay",
+    "operator_notes": "Test run for L4 critic validation",
+    "run_id": "L1-06d0db14b19dbb8e",
+    "timestamp": "2026-01-10T12:00:00+00:00"
+  },
+  "schema_version": "1.0",
+  "sod_check": {
+    "critic_model_id": "o3-pro",
+    "proposer_model_id": "o3-deep-research",
+    "reason": "Distinct models: proposer=o3-deep-research, critic=o3-pro",
+    "result": "PASS",
+    "timestamp": "2026-01-10T12:00:10+00:00"
+  },
+  "timestamp": "2026-01-10T12:00:00+00:00"
+}

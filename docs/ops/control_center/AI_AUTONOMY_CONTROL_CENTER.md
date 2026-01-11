@@ -2,7 +2,7 @@
 
 **Status:** Active v0.1  
 **Scope:** Docs-only Control Center for AI Autonomy Operations  
-**Last Updated:** 2026-01-09  
+**Last Updated:** 2026-01-10  
 **Guardrails:** 🚨 NO-LIVE | 📋 Evidence-First | 🔒 Determinism | ⚖️ SoD
 
 ---
@@ -24,7 +24,7 @@ This page is the **single "Start Here" entry point** for AI Autonomy operations:
 |--------|-------|-------|
 | **Operating Mode** | Governance-Locked / No-Live | No trading execution permitted |
 | **Layer Coverage** | 7/7 Layers Defined | L0-L6 (L6 EXEC forbidden) |
-| **Latest Milestone** | Phase 4B M3 (Control Center Dashboard) | Runbook available |
+| **Latest Milestone** | Phase 4B (L1 + L4 Integration) | L1 Runner + L4 Critic implemented |
 | **Authoritative Matrix** | [AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md](../../governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md) | v1.0 (2026-01-08) |
 | **Evidence Infrastructure** | ✅ Active | Templates, Schema, Validator, Index |
 | **CI Health** | ✅ Required Checks Active | 7 primary gates enforced |
@@ -110,11 +110,30 @@ scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
 open http://127.0.0.1:8000/ops/ci-health
 ```
 
-**Layer Drills (Manual-Only, No-Live):**
+**Layer Runner Commands (Offline/Replay - CI-Safe):**
 ```bash
-# See Phase 4B M2 Runbook for detailed drill procedures
-# No automated layer runs without explicit Evidence Pack workflow
+# L1 DeepResearch (Phase 4A)
+python scripts/aiops/run_l1_deepresearch.py \
+    --question "Your research question here" \
+    --mode replay \
+    --fixture l1_deepresearch_sample \
+    --out evidence_packs/L1_research
+
+# L2 Market Outlook (Phase 3)
+python scripts/aiops/run_l2_market_outlook.py \
+    --mode replay \
+    --fixture l2_market_outlook_sample \
+    --out evidence_packs/L2_outlook
+
+# L4 Governance Critic (Phase 4B)
+python scripts/aiops/run_l4_governance_critic.py \
+    --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
+    --mode replay \
+    --fixture l4_critic_sample \
+    --out evidence_packs/L4_review
 ```
+
+**Reference:** [Phase 4A & 4B: L1/L4 Integration](../../governance/ai_autonomy/PHASE4_L1_L4_INTEGRATION.md)
 
 ### 5.2 Navigation
 
