@@ -145,9 +145,7 @@ class CriticFinding(BaseModel):
     severity: Severity = Field(..., description="Severity level")
     status: FindingStatus = Field(default=FindingStatus.OPEN, description="Finding status")
     rationale: str = Field(..., description="Rationale for this finding")
-    evidence_refs: List[str] = Field(
-        default_factory=list, description="Evidence IDs referenced"
-    )
+    evidence_refs: List[str] = Field(default_factory=list, description="Evidence IDs referenced")
     metrics: Dict[str, Any] = Field(
         default_factory=dict, description="Associated metrics (scalar values)"
     )

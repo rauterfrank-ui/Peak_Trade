@@ -37,7 +37,9 @@ class TestL4CriticDeterminism:
     @pytest.fixture
     def snapshot_dir(self) -> Path:
         """Path to snapshot directory."""
-        return Path("tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0")
+        return Path(
+            "tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0"
+        )
 
     @pytest.fixture
     def fixed_clock(self) -> datetime:
@@ -407,9 +409,10 @@ class TestLegacyOutputPolicy:
             assert (out_dir2 / "critic_summary.md").exists()
 
             # Compare standardized outputs (should be identical)
-            with open(out_dir1 / "critic_report.json") as f1, open(
-                out_dir2 / "critic_report.json"
-            ) as f2:
+            with (
+                open(out_dir1 / "critic_report.json") as f1,
+                open(out_dir2 / "critic_report.json") as f2,
+            ):
                 assert f1.read() == f2.read()
 
 

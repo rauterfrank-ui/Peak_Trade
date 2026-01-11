@@ -491,7 +491,9 @@ Ensure your decision:
                 CriticFinding(
                     id="F001",
                     title=f"Governance Decision: {decision.decision}",
-                    severity=Severity[decision.severity] if decision.severity in Severity.__members__ else Severity.MEDIUM,
+                    severity=Severity[decision.severity]
+                    if decision.severity in Severity.__members__
+                    else Severity.MEDIUM,
                     status=FindingStatus.OPEN,
                     rationale=decision.rationale,
                     evidence_refs=decision.evidence_ids,
