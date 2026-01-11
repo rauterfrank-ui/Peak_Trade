@@ -143,7 +143,9 @@ class L4Critic:
             evidence_pack_data = json.load(f)
 
         evidence_pack_id = evidence_pack_data.get("evidence_pack_id", "UNKNOWN")
-        proposer_model_id = evidence_pack_data.get("models", {}).get("proposer", {}).get("model_id", "UNKNOWN")
+        proposer_model_id = (
+            evidence_pack_data.get("models", {}).get("proposer", {}).get("model_id", "UNKNOWN")
+        )
 
         # Load layer mapping for L4
         layer_mapping = self.registry_loader.get_layer_mapping("L4")
@@ -194,9 +196,7 @@ class L4Critic:
         )
 
         if capability_check_result != "PASS":
-            raise CapabilityScopeViolation(
-                f"Capability scope violation: {capability_check_result}"
-            )
+            raise CapabilityScopeViolation(f"Capability scope violation: {capability_check_result}")
 
         # Generate run ID (deterministic)
         run_id = self._generate_run_id(
@@ -256,7 +256,9 @@ class L4Critic:
         # Extract evidence pack summary for prompt
         evidence_pack_id = evidence_pack_data.get("evidence_pack_id", "UNKNOWN")
         layer_id = evidence_pack_data.get("layer_id", "UNKNOWN")
-        proposer_model = evidence_pack_data.get("models", {}).get("proposer", {}).get("model_id", "UNKNOWN")
+        proposer_model = (
+            evidence_pack_data.get("models", {}).get("proposer", {}).get("model_id", "UNKNOWN")
+        )
 
         # Build critic prompt
         prompt = self._build_critic_prompt(evidence_pack_data)
@@ -294,10 +296,16 @@ class L4Critic:
         """Build prompt for L4 critic."""
         evidence_pack_id = evidence_pack_data.get("evidence_pack_id", "UNKNOWN")
         layer_id = evidence_pack_data.get("layer_id", "UNKNOWN")
-        proposer_model = evidence_pack_data.get("models", {}).get("proposer", {}).get("model_id", "UNKNOWN")
-        critic_model = evidence_pack_data.get("models", {}).get("critic", {}).get("model_id", "UNKNOWN")
+        proposer_model = (
+            evidence_pack_data.get("models", {}).get("proposer", {}).get("model_id", "UNKNOWN")
+        )
+        critic_model = (
+            evidence_pack_data.get("models", {}).get("critic", {}).get("model_id", "UNKNOWN")
+        )
         sod_result = evidence_pack_data.get("sod_check", {}).get("result", "UNKNOWN")
-        capability_result = evidence_pack_data.get("capability_scope_check", {}).get("result", "UNKNOWN")
+        capability_result = evidence_pack_data.get("capability_scope_check", {}).get(
+            "result", "UNKNOWN"
+        )
 
         prompt = f"""# Governance Critic Review Request
 
@@ -347,9 +355,17 @@ Ensure your decision:
         # Parse structured fields
         decision_match = re.search(r"DECISION:\s*(\w+)", critic_output)
         severity_match = re.search(r"SEVERITY:\s*(\w+)", critic_output)
-        rationale_match = re.search(r"RATIONALE:\s*(.+?)(?=\n(?:POLICY_REFS|EVIDENCE_IDS|RISK_NOTES|##))", critic_output, re.DOTALL)
-        policy_refs_match = re.search(r"POLICY_REFS:\s*(.+?)(?=\n(?:EVIDENCE_IDS|RISK_NOTES|##))", critic_output, re.DOTALL)
-        evidence_ids_match = re.search(r"EVIDENCE_IDS:\s*(.+?)(?=\n(?:RISK_NOTES|##))", critic_output, re.DOTALL)
+        rationale_match = re.search(
+            r"RATIONALE:\s*(.+?)(?=\n(?:POLICY_REFS|EVIDENCE_IDS|RISK_NOTES|##))",
+            critic_output,
+            re.DOTALL,
+        )
+        policy_refs_match = re.search(
+            r"POLICY_REFS:\s*(.+?)(?=\n(?:EVIDENCE_IDS|RISK_NOTES|##))", critic_output, re.DOTALL
+        )
+        evidence_ids_match = re.search(
+            r"EVIDENCE_IDS:\s*(.+?)(?=\n(?:RISK_NOTES|##))", critic_output, re.DOTALL
+        )
         risk_notes_match = re.search(r"RISK_NOTES:\s*(.+?)(?=\n##)", critic_output, re.DOTALL)
 
         decision = decision_match.group(1) if decision_match else "REVIEW_REQUIRED"
@@ -390,7 +406,9 @@ Ensure your decision:
 
         # Check required constraints from TOML (must_reference_evidence)
         # For L4, we expect evidence IDs to be present in output
-        if "EVIDENCE_IDS:" not in critic_output or not re.search(r"EVIDENCE_IDS:\s*\S+", critic_output):
+        if "EVIDENCE_IDS:" not in critic_output or not re.search(
+            r"EVIDENCE_IDS:\s*\S+", critic_output
+        ):
             violations.append("Must reference evidence IDs")
 
         if violations:
@@ -498,7 +516,7 @@ Ensure your decision:
         # 4. Operator Summary
         summary_path = out_dir / "operator_summary.txt"
         summary_content = f"""L4 GOVERNANCE CRITIC SUMMARY
-{'=' * 60}
+{"=" * 60}
 
 Run ID:           {run_id}
 Evidence Pack:    {evidence_pack_id}
@@ -522,7 +540,9 @@ Output Directory: {out_dir}
 
         return artifacts
 
-    def _generate_run_id(self, evidence_pack_id: str, critic_model_id: str, critic_hash: str) -> str:
+    def _generate_run_id(
+        self, evidence_pack_id: str, critic_model_id: str, critic_hash: str
+    ) -> str:
         """Generate deterministic run ID."""
         components = f"L4-{evidence_pack_id}-{critic_model_id}-{critic_hash}"
         run_hash = hashlib.sha256(components.encode()).hexdigest()[:16]

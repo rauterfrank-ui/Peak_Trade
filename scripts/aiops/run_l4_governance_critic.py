@@ -216,6 +216,7 @@ def main():
     except Exception as e:
         print(f"❌ UNEXPECTED ERROR: {e}", file=sys.stderr)
         import traceback
+
         traceback.print_exc()
         return 99
 

@@ -47,28 +47,22 @@ def sample_evidence_pack_path(tmp_path):
         "schema_version": "1.0",
         "timestamp": "2026-01-10T12:00:00+00:00",
         "models": {
-            "proposer": {
-                "model_id": "o3-deep-research",
-                "role": "proposer"
-            },
-            "critic": {
-                "model_id": "o3-pro",
-                "role": "critic"
-            }
+            "proposer": {"model_id": "o3-deep-research", "role": "proposer"},
+            "critic": {"model_id": "o3-pro", "role": "critic"},
         },
         "sod_check": {
             "result": "PASS",
             "proposer_model_id": "o3-deep-research",
             "critic_model_id": "o3-pro",
             "reason": "Distinct models",
-            "timestamp": "2026-01-10T12:00:10+00:00"
+            "timestamp": "2026-01-10T12:00:10+00:00",
         },
         "capability_scope_check": {
             "result": "PASS",
             "violations": [],
             "checked_outputs": ["Research Report"],
-            "timestamp": "2026-01-10T12:00:30+00:00"
-        }
+            "timestamp": "2026-01-10T12:00:30+00:00",
+        },
     }
 
     with open(evidence_pack_dir / "evidence_pack.json", "w") as f:
