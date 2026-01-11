@@ -16,6 +16,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs
+- `docs/ops/PR_650_MERGE_LOG.md` — Merge Log for PR #649 (Phase 4D Triage Docs) (PR #650, 2026-01-11)
 - `docs/ops/PR_649_MERGE_LOG.md` — AI Autonomy Phase 4D: L4 Critic Determinism Triage Documentation (PR #649, 2026-01-11)
 - `docs/ops/PR_645_MERGE_LOG.md` — AI Autonomy Phase 4C: L4 Critic Replay Determinism Hardening (PR #645, 2026-01-11)
 - `docs/ops/PR_643_MERGE_LOG.md` — AI Autonomy Phase 4B: L4 Governance Critic Runner (PR #643, 2026-01-11)
