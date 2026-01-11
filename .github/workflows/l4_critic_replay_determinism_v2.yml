@@ -105,6 +105,28 @@ jobs:
           fi
           echo "✅ critic_summary.md matches snapshot"
 
+      - name: Validate Determinism Contract (Phase 4D)
+        run: |
+          SNAP_DIR="tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0"
+
+          echo "=== Validating Determinism Contract ==="
+          python scripts/aiops/validate_l4_critic_determinism_contract.py \
+            --baseline "$SNAP_DIR/critic_report.json" \
+            --candidate ".tmp/l4_critic_out/critic_report.json" \
+            --out ".tmp/validator_report.json"
+
+          echo ""
+          echo "✅ Determinism contract validation passed"
+          echo ""
+
+      - name: Upload validator report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validator-report-${{ github.run_id }}
+          path: .tmp/validator_report.json
+          retention-days: 14
+
       - name: Verify determinism (run twice, compare)
         run: |
           echo "=== Determinism Check: Run 1 ==="
