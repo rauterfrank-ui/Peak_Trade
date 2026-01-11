@@ -144,7 +144,9 @@ def main() -> int:
         # Load normalized report
         print(f"Loading normalized report: {args.input}")
         normalized_report = load_normalized_report(args.input)
-        print(f"✅ Loaded normalized report (schema v{normalized_report.get('schema_version', 'N/A')})")
+        print(
+            f"✅ Loaded normalized report (schema v{normalized_report.get('schema_version', 'N/A')})"
+        )
         print()
 
         # Build metadata
@@ -215,6 +217,7 @@ def main() -> int:
         print(f"❌ UNEXPECTED ERROR: {e}")
         print("=" * 70)
         import traceback
+
         traceback.print_exc()
         return 1
 

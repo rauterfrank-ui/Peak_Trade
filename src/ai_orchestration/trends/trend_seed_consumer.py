@@ -145,9 +145,7 @@ def _extract_conclusion(report: Dict[str, Any]) -> str:
     elif normalized in ("error",):
         return "error"
     else:
-        raise ValidationError(
-            f"Invalid result value: {result}. Expected PASS, FAIL, or ERROR"
-        )
+        raise ValidationError(f"Invalid result value: {result}. Expected PASS, FAIL, or ERROR")
 
 
 def _extract_counts(report: Dict[str, Any]) -> Dict[str, int]:
