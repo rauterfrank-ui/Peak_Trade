@@ -1,0 +1,147 @@
+name: AIOps - Trend Seed from Normalized Report
+
+# Phase 5A: Generate deterministic Trend Seeds from Phase 4E normalized validator reports
+# Trigger: workflow_run on Phase 4E workflow completion (success only, main branch only)
+# Outputs: trend_seed.normalized_report.json, trend_seed.run_manifest.json, trend_seed.normalized_report.md
+
+on:
+  workflow_run:
+    workflows: ["L4 Critic Replay Determinism"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  generate-trend-seed:
+    name: Generate Trend Seed
+    runs-on: ubuntu-latest
+
+    # Only run if Phase 4E workflow succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Download Phase 4E normalized report artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: l4_critic_replay_determinism_v2.yml
+          run_id: ${{ github.event.workflow_run.id }}
+          name: validator-report-normalized-${{ github.event.workflow_run.id }}
+          path: .tmp/phase4e_artifacts
+
+      - name: Verify artifact contents
+        run: |
+          echo "=== Verifying Phase 4E artifact contents ==="
+          ls -lh .tmp/phase4e_artifacts/
+
+          if [ ! -f ".tmp/phase4e_artifacts/validator_report.normalized.json" ]; then
+            echo "❌ ERROR: validator_report.normalized.json not found in artifact"
+            exit 1
+          fi
+
+          echo "✅ Artifact verified"
+
+      - name: Generate Trend Seed
+        run: |
+          echo "=== Generating Trend Seed ==="
+
+          # Extract metadata from workflow_run event
+          REPO="${{ github.repository }}"
+          WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
+          RUN_ID="${{ github.event.workflow_run.id }}"
+          RUN_ATTEMPT="${{ github.event.workflow_run.run_attempt }}"
+          HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
+          REF="${{ github.event.workflow_run.head_branch }}"
+          CREATED_AT="${{ github.event.workflow_run.created_at }}"
+          CONSUMER_SHA="${{ github.sha }}"
+
+          # Run consumer
+          uv run python scripts/aiops/generate_trend_seed_from_normalized_report.py \
+            --input ".tmp/phase4e_artifacts/validator_report.normalized.json" \
+            --out-dir ".tmp/trend_seed" \
+            --repo "$REPO" \
+            --workflow-name "$WORKFLOW_NAME" \
+            --run-id "$RUN_ID" \
+            --run-attempt "$RUN_ATTEMPT" \
+            --head-sha "$HEAD_SHA" \
+            --ref "refs/heads/$REF" \
+            --run-created-at "$CREATED_AT" \
+            --consumer-version "0.1.0" \
+            --consumer-commit-sha "$CONSUMER_SHA"
+
+      - name: Verify Trend Seed outputs
+        run: |
+          echo "=== Verifying Trend Seed outputs ==="
+          ls -lh .tmp/trend_seed/
+
+          # Check required files exist
+          if [ ! -f ".tmp/trend_seed/trend_seed.normalized_report.json" ]; then
+            echo "❌ ERROR: trend_seed.normalized_report.json not found"
+            exit 1
+          fi
+
+          if [ ! -f ".tmp/trend_seed/trend_seed.run_manifest.json" ]; then
+            echo "❌ ERROR: trend_seed.run_manifest.json not found"
+            exit 1
+          fi
+
+          if [ ! -f ".tmp/trend_seed/trend_seed.normalized_report.md" ]; then
+            echo "❌ ERROR: trend_seed.normalized_report.md not found"
+            exit 1
+          fi
+
+          # Validate JSON structure
+          echo ""
+          echo "=== Trend Seed JSON preview ==="
+          jq '.schema_version, .source.run_id, .normalized_report.conclusion' \
+            .tmp/trend_seed/trend_seed.normalized_report.json
+
+          echo ""
+          echo "✅ Trend Seed outputs verified"
+
+      - name: Upload Trend Seed artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: trend-seed-${{ github.event.workflow_run.id }}
+          path: |
+            .tmp/trend_seed/trend_seed.normalized_report.json
+            .tmp/trend_seed/trend_seed.run_manifest.json
+            .tmp/trend_seed/trend_seed.normalized_report.md
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 📊 Trend Seed Generation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Workflow** | ${{ github.event.workflow_run.name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Run ID** | ${{ github.event.workflow_run.id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit SHA** | ${{ github.event.workflow_run.head_sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | ${{ github.event.workflow_run.head_branch }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Artifact** | trend-seed-${{ github.event.workflow_run.id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f ".tmp/trend_seed/trend_seed.normalized_report.json" ]; then
+            echo "### 📋 Trend Seed Preview" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+            jq '.' .tmp/trend_seed/trend_seed.normalized_report.json | head -30 >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi

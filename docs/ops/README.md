@@ -71,6 +71,22 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - Operator Competency Validation (drill-safe)
 - Governance-Safe Evidence Chain (GO ≠ Live Authorization)
 
+### Phase 5A: Normalized Report Consumer + Trend Seed
+
+🔄 **CI Artifact Consumption → Trend Seed Generation** — Tooling-only, deterministic, schema-versioned
+
+**Phase 5A Runbook:**
+- 📖 **Cursor Multi-Agent Runbook:** [RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md) — Standardized workflow for consuming Phase 4E normalized validator reports and generating deterministic Trend Seeds (6-role multi-agent orchestration: ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, CI_GUARDIAN, EVIDENCE_SCRIBE, RISK_OFFICER)
+
+**Key Deliverables:**
+- Trend Seed Schema v0.1.0 (minimal, append-only mindset)
+- Consumer with fail-closed behavior (schema mismatch → hard fail)
+- Deterministic output (stable JSON, sorted keys, no secrets)
+- CI integration (artifact download → consumer → upload Trend Seed)
+- Operator Notes template for PR/run documentation
+
+**Risk:** LOW (tooling + artifacts only, no trading code, no live execution)
+
 ### AI Autonomy Phase 4B Milestone 2 (Evidence-First Operator Loop)
 
 🤖 **Cursor Multi-Agent Orchestration** — Evidence Pack + CI Gates + Operator Review
