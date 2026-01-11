@@ -36,6 +36,12 @@ from .l2_runner import (
     SoDViolation,
     CapabilityScopeViolation,
 )
+from .l4_critic import (
+    L4Critic,
+    L4CriticError,
+    L4CriticResult,
+    CriticDecision as L4CriticDecision,
+)
 from .model_client import (
     ModelClient,
     ModelClientError,
@@ -108,6 +114,11 @@ __all__ = [
     "L2RunnerError",
     "SoDViolation",
     "CapabilityScopeViolation",
+    # L4 Critic (Phase 4B)
+    "L4Critic",
+    "L4CriticResult",
+    "L4CriticError",
+    "L4CriticDecision",
     # Errors
     "OrchestrationError",
     "ConfigurationError",

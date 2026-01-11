@@ -1,0 +1,21 @@
+{
+  "actions": [],
+  "capability_scope": {
+    "layer_id": "L1",
+    "scope_version": "1.0"
+  },
+  "findings": [
+    "VaR backtesting best practices identified",
+    "Kupiec POF test recommended"
+  ],
+  "layer_id": "L1",
+  "mode": "replay",
+  "models": {
+    "critic": "o3-pro",
+    "proposer": "o3-deep-research"
+  },
+  "operator_notes": "Test run for L4 critic validation",
+  "run_id": "L1-06d0db14b19dbb8e",
+  "sod_result": "PASS",
+  "timestamp": "2026-01-10T12:00:00+00:00"
+}
