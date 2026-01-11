@@ -6,14 +6,14 @@ on:
       - "src/ai_orchestration/**"
       - "scripts/aiops/**"
       - "tests/**"
-      - ".github/workflows/l4_critic_replay_determinism.yml"
+      - ".github/workflows/l4_critic_replay_determinism_v2.yml"
   push:
     branches: ["main"]
     paths:
       - "src/ai_orchestration/**"
       - "scripts/aiops/**"
       - "tests/**"
-      - ".github/workflows/l4_critic_replay_determinism.yml"
+      - ".github/workflows/l4_critic_replay_determinism_v2.yml"
 
 permissions:
   contents: read
@@ -48,7 +48,7 @@ jobs:
       - name: Run L4 Critic (deterministic replay, no legacy)
         run: |
           rm -rf .tmp/l4_critic_out
-          python scripts/aiops/run_l4_governance_critic.py \
+          uv run python scripts/aiops/run_l4_governance_critic.py \
             --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
             --mode replay \
             --fixture l4_critic_sample \
@@ -110,7 +110,7 @@ jobs:
           SNAP_DIR="tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0"
 
           echo "=== Validating Determinism Contract ==="
-          python scripts/aiops/validate_l4_critic_determinism_contract.py \
+          uv run python scripts/aiops/validate_l4_critic_determinism_contract.py \
             --baseline "$SNAP_DIR/critic_report.json" \
             --candidate ".tmp/l4_critic_out/critic_report.json" \
             --out ".tmp/validator_report.json"
@@ -119,11 +119,38 @@ jobs:
           echo "✅ Determinism contract validation passed"
           echo ""
 
-      - name: Upload validator report
+      - name: Normalize validator report (Phase 4E)
+        if: always()
+        run: |
+          echo "=== Normalizing Validator Report ==="
+          uv run python scripts/aiops/normalize_validator_report.py \
+            --input ".tmp/validator_report.json" \
+            --out-dir ".tmp/validator_report_normalized" \
+            --git-sha "${{ github.sha }}" \
+            --run-id "${{ github.run_id }}" \
+            --workflow "${{ github.workflow }}" \
+            --job "${{ github.job }}" \
+            --timestamp
+
+          echo ""
+          echo "✅ Validator report normalized"
+          echo ""
+
+      - name: Upload normalized validator report (JSON + Markdown)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: validator-report-${{ github.run_id }}
+          name: validator-report-normalized-${{ github.run_id }}
+          path: |
+            .tmp/validator_report_normalized/validator_report.normalized.json
+            .tmp/validator_report_normalized/validator_report.normalized.md
+          retention-days: 14
+
+      - name: Upload legacy validator report (backward compatibility)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validator-report-legacy-${{ github.run_id }}
           path: .tmp/validator_report.json
           retention-days: 14
 
@@ -131,7 +158,7 @@ jobs:
         run: |
           echo "=== Determinism Check: Run 1 ==="
           rm -rf .tmp/l4_critic_run1
-          python scripts/aiops/run_l4_governance_critic.py \
+          uv run python scripts/aiops/run_l4_governance_critic.py \
             --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
             --mode replay \
             --fixture l4_critic_sample \
@@ -143,7 +170,7 @@ jobs:
 
           echo "=== Determinism Check: Run 2 ==="
           rm -rf .tmp/l4_critic_run2
-          python scripts/aiops/run_l4_governance_critic.py \
+          uv run python scripts/aiops/run_l4_governance_critic.py \
             --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
             --mode replay \
             --fixture l4_critic_sample \
