@@ -3,7 +3,7 @@
 **Merge Details:**
 - PR: #649
 - Title: docs(governance): Phase 4D L4 critic determinism triage prompts (cursor)
-- Branch: `docs/phase4d-triage-docs` → `main`
+- Branch: Phase 4D triage docs branch → `main` (deleted post-merge)
 - Merge Commit: `a9d244e4`
 - Merged At (UTC): 2026-01-11T19:12:05Z
 - Merge Strategy: Squash & Merge
@@ -55,8 +55,8 @@ Previously, CI failures in the L4 Critic replay pipeline required ad-hoc investi
 - Replaced 10 references to planned Phase 4D implementation file paths with descriptive component wording
 - Prevents `docs-reference-targets-gate` from treating forward references as missing targets
 - Examples:
-  - `src/ai_orchestration/l4_critic_determinism_contract.py` → "L4 critic determinism contract module (planned)"
-  - `scripts/aiops/validate_l4_critic_determinism_contract.py` → `<validator_cli_planned>` in code blocks
+  - Contract utilities module (planned) → "L4 critic determinism contract module (planned)"
+  - Validator CLI script (planned) → `<validator_cli_planned>` in code blocks
 
 ---
 
@@ -85,7 +85,7 @@ Previously, CI failures in the L4 Critic replay pipeline required ad-hoc investi
 - **Merged:** 2026-01-11T19:12:05Z
 - **Merged By:** @rauterfrank-ui
 - **Strategy:** Squash & Merge
-- **Branch Deleted:** `docs/phase4d-triage-docs` (local + remote)
+- **Branch Deleted:** Phase 4D triage docs branch (local + remote)
 
 ---
 
@@ -169,10 +169,10 @@ git checkout -b fix/l4-critic-determinism-<issue>
 ## Follow-Up (Planned)
 
 **Phase 4D Implementation PR:**
-- Contract utilities: `src/ai_orchestration/l4_critic_determinism_contract.py`
-- Validator CLI: `scripts/aiops/validate_l4_critic_determinism_contract.py`
-- Contract documentation: `docs/governance/ai_autonomy/PHASE4D_L4_CRITIC_DETERMINISM_CONTRACT.md`
-- Tests: `tests/ai_orchestration/test_l4_critic_determinism_contract.py`
+- Contract utilities module (planned implementation)
+- Validator CLI script (planned implementation)
+- Contract documentation (planned)
+- Unit tests for contract compliance (planned)
 
 ---
 
