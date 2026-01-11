@@ -18,7 +18,6 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 ### PR Merge Logs
 - `docs/ops/PR_645_MERGE_LOG.md` — AI Autonomy Phase 4C: L4 Critic Replay Determinism Hardening (PR #645, 2026-01-11)
 - `docs/ops/PR_643_MERGE_LOG.md` — AI Autonomy Phase 4B: L4 Governance Critic Runner (PR #643, 2026-01-11)
-- `docs/ops/PR_642_MERGE_LOG.md` — (PR #642, 2026-01-11)
 - `docs/ops/PR_640_MERGE_LOG.md` — (PR #640, 2026-01-11)
 - `docs/ops/PR_619_MERGE_LOG.md` — AI Autonomy Phase 4B M2: Operator Runbook (Evidence-First Loop) (PR #619, 2026-01-09)
 - `docs/ops/PR_614_MERGE_LOG.md` — AI Autonomy Phase 3B: Evidence Pack Validator (fail-closed, SoD enforced) (PR #614, 2026-01-08)
