@@ -317,9 +317,7 @@ def _find_first_mismatch(
         # Recurse into dict values (sorted keys for determinism)
         for key in sorted(baseline_keys):
             child_path = f"{path}.{key}"
-            mismatch = _find_first_mismatch(
-                baseline[key], candidate[key], child_path, tolerance
-            )
+            mismatch = _find_first_mismatch(baseline[key], candidate[key], child_path, tolerance)
             if mismatch:
                 return mismatch
 

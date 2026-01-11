@@ -157,9 +157,7 @@ def test_canonicalization_normalizes_paths(contract_v1: DeterminismContract):
 # =============================================================================
 
 
-def test_hash_is_stable_across_key_order(
-    contract_v1: DeterminismContract, sample_report: dict
-):
+def test_hash_is_stable_across_key_order(contract_v1: DeterminismContract, sample_report: dict):
     """Test that hash is stable regardless of dict key order."""
     # Create two reports with same data but different key order
     report1 = sample_report.copy()
@@ -182,9 +180,7 @@ def test_hash_is_stable_across_key_order(
     assert len(hash1) == 64  # SHA256 hex length
 
 
-def test_hash_changes_on_data_change(
-    contract_v1: DeterminismContract, sample_report: dict
-):
+def test_hash_changes_on_data_change(contract_v1: DeterminismContract, sample_report: dict):
     """Test that hash changes when data changes."""
     report1 = sample_report.copy()
     report2 = sample_report.copy()
@@ -224,9 +220,7 @@ def test_hash_ignores_volatile_fields(contract_v1: DeterminismContract):
 # =============================================================================
 
 
-def test_compare_reports_equal(
-    contract_v1: DeterminismContract, sample_report: dict
-):
+def test_compare_reports_equal(contract_v1: DeterminismContract, sample_report: dict):
     """Test that identical reports are considered equal."""
     baseline = sample_report.copy()
     candidate = sample_report.copy()
@@ -255,9 +249,7 @@ def test_compare_reports_finds_first_mismatch_path(
     assert "pack_id" in result.diff_summary
 
 
-def test_compare_reports_nested_mismatch(
-    contract_v1: DeterminismContract, sample_report: dict
-):
+def test_compare_reports_nested_mismatch(contract_v1: DeterminismContract, sample_report: dict):
     """Test that nested mismatch path is identified."""
     import copy
 
