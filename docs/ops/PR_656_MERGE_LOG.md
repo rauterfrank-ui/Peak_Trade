@@ -1,38 +1,66 @@
 # PR #656 Merge Log: Phase 4E Validator Report Normalization
 
-**Merge Date:** 2026-01-11T21:50:35Z  
-**Merge Commit:** `8574c672507d54a127451f786b2cf12edd917ba3`  
-**Merged By:** rauterfrank-ui  
-**Branch:** `phase4e-report-normalization` → `main` (squashed, branch deleted)
-
----
-
 ## Summary
-
-PR #656 implements **Phase 4E: Validator Report Normalization** to standardize L4 Critic determinism validator artifacts. This change introduces a normalized JSON schema (v1.0.0) and markdown format alongside backward-compatible legacy JSON, enabling future AI orchestration tooling to reliably parse governance gates.
-
-**Key Achievement:** Post-merge CI run `20902441555` produced both normalized and legacy artifacts successfully, confirming the normalization layer works end-to-end in production CI.
+- **PR:** #656
+- **Title:** Phase 4E — Determinism Contract Report Normalization (Validator Report)
+- **Scope:** CI / Reporting Infrastructure (no trading logic)
+- **Risk:** 🟢 LOW
+- **Merge Strategy:** Squash
+- **Merged:** true
+- **Merged At (UTC):** 2026-01-11T21:50:35Z
+- **Merge Commit:** `8574c672507d54a127451f786b2cf12edd917ba3`
+- **Head → Base:** `phase4e-report-normalization` → `main`
+- **Merged By:** rauterfrank-ui
+- **Branch Status:** Deleted (local + remote)
 
 ---
 
-## Why This Change
+## Why
+
+Phase 4E standardisiert den Validator-Report als **kanonisches, schema-stabiles Artifact** (ValidatorReport v1.0.0), damit CI-Artefakte maschinenlesbar in nachgelagerte Health/Trend Checks (Phase 5+) integrierbar sind, ohne Parsing-Drift. Gleichzeitig bleibt **Backward Compatibility** über ein Legacy-Artifact erhalten.
 
 ### Problem
 - Legacy validator reports lacked schema versioning and consistent structure
 - AI tooling couldn't reliably parse determinism check results
 - No human-readable markdown format for operator review
 - Governance gates needed standardized artifact contracts
+- Risk of parsing drift in downstream AI orchestration (Phase 5+)
 
 ### Solution
-- Introduced `validator_report_schema.py` with schema v1.0.0
+- Introduced `validator_report_schema.py` with schema v1.0.0 (canonical)
 - Created `validator_report_normalized.py` for bidirectional conversion
 - Updated `normalize_validator_report.py` CLI to produce both formats
 - Modified L4 Critic workflow to upload both normalized + legacy artifacts
 - Maintained 100% backward compatibility with legacy format
 
+### Key Achievement
+Post-merge CI run `20902441555` produced both normalized and legacy artifacts successfully, confirming the normalization layer works end-to-end in production CI.
+
 ---
 
-## Changes (15 Files, +3841 Lines)
+## Changes
+
+### 1) CI Artifacts: Normalized + Legacy (Backward Compatibility)
+- **Normalized Artifact (canonical):**
+  - `validator_report.normalized.json` — schema: `ValidatorReport v1.0.0`
+  - `validator_report.normalized.md` — human-readable summary
+- **Legacy Artifact (compat):**
+  - `validator_report.json` — legacy format for existing consumers
+
+### 2) Root Cause Fix: Dependency Resolution in Workflow
+- **Initial failure:** `ModuleNotFoundError: No module named 'pydantic'`
+- **Root cause:** workflow invoked `python ...` instead of `uv run python ...` → environment/deps not available
+- **Fix (commit `ebb8f9ec`):** Replace python invocations with `uv run python` across all affected call sites
+
+### 3) Workflow Trigger / Path Correction (v2)
+- **Fix (commit `11b3e934`):** Adjusted workflow trigger/path to ensure the correct workflow is exercised:
+  - From: `.github/workflows/l4_critic_replay_determinism.yml`
+  - To: `.github/workflows/l4_critic_replay_determinism_v2.yml`
+- Removed non-existent `scripts/aiops/` from trigger paths
+
+---
+
+## Implementation Details (15 Files, +3841 Lines)
 
 ### Core Implementation
 - `src/ai_orchestration/validator_report_schema.py` (395 lines)
@@ -76,38 +104,42 @@ PR #656 implements **Phase 4E: Validator Report Normalization** to standardize L
 
 ---
 
-## Pre-Merge Verification
+## Verification
 
-### CI Checks (21 successful, 5 skipped)
-```bash
-gh pr checks 656
-# Result: All checks were successful
-```
-
-**Critical Checks Passed:**
-- ✅ **Tests:** Python 3.9, 3.10, 3.11 (up to 8m37s)
-- ✅ **Audit:** 1m30s
-- ✅ **Lint:** Gate + Standard
-- ✅ **Policy Critic:** Gate + Review
-- ✅ **L4 Critic Replay Determinism:** Multiple checks (2s-7s)
-- ✅ **Docs:** Diff Guard, Reference Targets, Link Debt Trend
-- ✅ **Strategy Smoke:** 1m32s
-
-### Mergeability Status
-```bash
-gh pr view 656 --json mergeable,state,statusCheckRollup
-# Result: "mergeable": "MERGEABLE", "state": "OPEN"
-```
-
-### Proof-of-Concept Artifact Run
-**Run ID:** `20902058406` (pre-merge proof)  
-**Artifacts:**
-- Normalized (ID: `5091683811`): Contains `validator_report.normalized.json` + `.md`
-- Legacy (ID: `5091683841`): Contains `validator_report.json`
+### Artifact Proof (CI)
+- **Run ID:** `20902058406` (pre-merge validation)
+- **Status:** ✅ SUCCESS
+- **Artifacts Produced:** 2
+  - **Normalized:** `validator-report-normalized-20902058406` (Artifact ID `5091683811`)
+    - Contains: `validator_report.normalized.json` + `validator_report.normalized.md`
+  - **Legacy:** `validator-report-legacy-20902058406` (Artifact ID `5091683841`)
+    - Contains: `validator_report.json`
 
 **Root Cause Commits:**
 - `ebb8f9ec`: Fixed Python invocation (`python` → `uv run python`)
 - `11b3e934`: Corrected workflow trigger path (removed non-existent `scripts/aiops/`)
+
+### Content Verification (as reported in Phase 4E closeout)
+- ✅ JSON schema-konform (`ValidatorReport v1.0.0`)
+- ✅ Markdown korrekt formatiert
+- ✅ Determinism check PASSED (hash match)
+- ✅ Alle erforderlichen Felder vorhanden
+
+### Final CI Status (Required Checks)
+**Pre-Merge (21 successful, 5 skipped):**
+- ✅ CI Health Gate (weekly_core)
+- ✅ Guard tracked files in reports directories
+- ✅ audit
+- ✅ tests (3.9, 3.10, 3.11)
+- ✅ Policy Critic Gate
+- ✅ Lint Gate
+- ✅ Docs Diff Guard Policy Gate
+- ✅ docs-reference-targets-gate
+- ✅ L4 Critic Replay Determinism (multiple checks)
+- ✅ Strategy Smoke
+- ⊘ (non-required, skipped) Test Health Automation checks
+
+**Mergeability Status:** `MERGEABLE`
 
 ---
 
@@ -268,9 +300,26 @@ git diff --name-only a692dda7..8574c672 | grep -E '^config/.*\.toml$'
 
 ---
 
-## Operator How-To: Verify Future Runs
+## Operator How-To
 
-### 1. Check Latest L4 Critic Run Status
+### Merge Evidence (Captured)
+```bash
+gh pr view 656 --json merged,mergedAt,mergeCommit \
+  --jq '{merged:.merged, mergedAt:.mergedAt, mergeCommit:.mergeCommit.oid}'
+```
+
+**Result:**
+```json
+{
+  "merged": true,
+  "mergedAt": "2026-01-11T21:50:35Z",
+  "mergeCommit": "8574c672507d54a127451f786b2cf12edd917ba3"
+}
+```
+
+### Verify Future Runs
+
+#### 1. Check Latest L4 Critic Run Status
 ```bash
 RUN_ID="$(gh api repos/rauterfrank-ui/Peak_Trade/actions/workflows/l4_critic_replay_determinism_v2.yml/runs \
   --jq '.workflow_runs[0].id')"
