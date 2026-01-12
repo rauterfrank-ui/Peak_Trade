@@ -1,0 +1,48 @@
+name: Required Checks Hygiene Gate
+
+# Phase 5D: Prevents path-filtered required status checks
+# Validates that all required checks are produced by always-on workflows
+# See: docs/ops/PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md (Addendum)
+
+on:
+  pull_request:
+    # NO paths filter - this is a required check, must always run
+  push:
+    branches: ["main"]
+
+jobs:
+  required-checks-hygiene-gate:
+    name: required-checks-hygiene-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Run Required Checks Hygiene Validator
+        run: |
+          python scripts/ci/validate_required_checks_hygiene.py \
+            --config config/ci/required_status_checks.json \
+            --workflows .github/workflows \
+            --strict
+
+      - name: Upload validation report (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: required-checks-hygiene-report
+          path: |
+            config/ci/required_status_checks.json
+            .github/workflows/*.yml
+          retention-days: 14

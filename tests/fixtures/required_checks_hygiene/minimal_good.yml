@@ -1,0 +1,17 @@
+name: Minimal Good Workflow
+
+on:
+  pull_request:
+    # NO paths filter - always runs on PR
+  push:
+    branches: [main]
+
+jobs:
+  test-check:
+    name: test-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run test
+        run: echo "Test passed"

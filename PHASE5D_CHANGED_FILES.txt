@@ -1,0 +1,22 @@
+Phase 5D: Required Checks Hygiene Gate - Changed Files
+
+NEW FILES:
+  config/ci/required_status_checks.json
+  scripts/ci/validate_required_checks_hygiene.py
+  .github/workflows/required-checks-hygiene-gate.yml
+  tests/ci/test_required_checks_hygiene.py
+  tests/fixtures/required_checks_hygiene/minimal_good.yml
+  tests/fixtures/required_checks_hygiene/bad_path_filtered_required.yml
+  tests/fixtures/required_checks_hygiene/missing_required.yml
+  tests/fixtures/required_checks_hygiene/good_with_internal_filter.yml
+  tests/fixtures/required_checks_hygiene/test_config_good.json
+  tests/fixtures/required_checks_hygiene/test_config_bad_path_filtered.json
+  tests/fixtures/required_checks_hygiene/test_config_missing.json
+  PHASE5D_IMPLEMENTATION_REPORT.md
+  PHASE5D_PATCH_SUMMARY.md
+  PHASE5D_CHANGED_FILES.txt
+
+MODIFIED FILES:
+  docs/ops/PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md
+
+TOTAL: 14 new files, 1 modified file
