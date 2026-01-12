@@ -28,7 +28,9 @@ INPUT_REF_BRACKET_RE = re.compile(r"github\.event\.inputs\[\s*[\"']([A-Za-z0-9_-
 # Common footgun: using "inputs.<name>" which is for workflow_call / reusable workflows, not workflow_dispatch.
 MISUSED_INPUTS_DOT_RE = re.compile(r"(?<!github\.event\.)\binputs\.([A-Za-z0-9_-]+)\b")
 
-INLINE_ON_DISPATCH_RE = re.compile(r"^\s*on:\s*(\[[^\]]*\bworkflow_dispatch\b[^\]]*\]|workflow_dispatch\b|{.*\bworkflow_dispatch\b.*})\s*$")
+INLINE_ON_DISPATCH_RE = re.compile(
+    r"^\s*on:\s*(\[[^\]]*\bworkflow_dispatch\b[^\]]*\]|workflow_dispatch\b|{.*\bworkflow_dispatch\b.*})\s*$"
+)
 ON_BLOCK_RE = re.compile(r"^\s*on:\s*$")
 WORKFLOW_DISPATCH_KEY_RE = re.compile(r"^\s*workflow_dispatch:\s*$")
 INPUTS_KEY_RE = re.compile(r"^\s*inputs:\s*$")
@@ -48,7 +50,9 @@ class Finding:
 class DispatchInfo:
     has_dispatch: bool
     inputs: Set[str]
-    inputs_known: bool  # false when we detect dispatch but can't reliably parse inputs (inline on: {...})
+    inputs_known: (
+        bool  # false when we detect dispatch but can't reliably parse inputs (inline on: {...})
+    )
 
 
 def _read_lines(path: Path) -> List[str]:
@@ -259,7 +263,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="Paths to scan (files or directories). Default: .github/workflows",
     )
     ap.add_argument("--fail-on-warn", action="store_true", help="Treat WARN as failure.")
-    ap.add_argument("--print-ok", action="store_true", help="Print OK lines for files without findings.")
+    ap.add_argument(
+        "--print-ok", action="store_true", help="Print OK lines for files without findings."
+    )
     args = ap.parse_args(argv)
 
     all_findings: List[Finding] = []
@@ -300,7 +306,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     if exit_code == 0:
         print(f"OK: scanned {len(scanned_files)} workflow file(s), no findings.")
     else:
-        print(f"FAILED: scanned {len(scanned_files)} workflow file(s), findings={len(all_findings)}.", file=sys.stderr)
+        print(
+            f"FAILED: scanned {len(scanned_files)} workflow file(s), findings={len(all_findings)}.",
+            file=sys.stderr,
+        )
 
     return exit_code
 
