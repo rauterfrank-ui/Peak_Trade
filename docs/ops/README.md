@@ -519,6 +519,32 @@ uv run pytest -q tests/ops/test_validate_workflow_dispatch_guards.py
 
 **Bypass Policy:** Admin-only, requires audit comment in PR (when active).
 
+### Required Checks Hygiene Gate Operations (Phase 5E)
+
+**Operator Runbook für standardisierte Wartung und Änderung von Required Status Checks (Branch Protection).**
+
+**Purpose:** Verhindert "absent check" Szenarien, hält Repo-Quelle der Wahrheit (`config/ci/required_status_checks.json`) synchron mit Branch Protection, standardisiert Evidence-first + Rollback-ready Workflows.
+
+**Runbook:** [RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md](runbooks/RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md)
+
+**Key Features:**
+- ✅ Pre-Flight Checks (Scope/Necessity/Admin-Requirements)
+- ✅ Discovery & Truth Capture (Evidence-first)
+- ✅ Change Planning (absent-check prevention)
+- ✅ PR-based Execution (Audit Trail)
+- ✅ Validation Checklist (CI + Policy)
+- ✅ Break-Glass / Rollback (Admin-only, time-limited)
+- ✅ Operator Templates (PR Description + Evidence Entry)
+- ✅ Failure Modes & Triage (merge blocked, mismatch)
+
+**Source of Truth:**
+- Expected contexts: `config/ci/required_status_checks.json`
+- Validator: `scripts/ci/validate_required_checks_hygiene.py`
+- Tests: `tests/ci/test_required_checks_hygiene.py`
+- Workflow: `.github/workflows/required-checks-hygiene-gate.yml`
+
+**Scope:** Ops / CI Governance / Branch Protection Hygiene (docs-only, operational impact HIGH if misused)
+
 ### Docs Navigation Health (Link Guard)
 
 **Zweck:** Verhindert kaputte interne Links und Anchors in der Ops-Dokumentation, Root README und Status Overview.
