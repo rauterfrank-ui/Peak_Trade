@@ -2,7 +2,7 @@
 
 **Date:** 2026-01-12  
 **PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/669  
-**Branch:** `docs/dispatch-guard-noop-proof-20260112` → `main`
+**Branch:** docs/dispatch-guard-noop-proof-20260112 → main
 
 ---
 
