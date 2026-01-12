@@ -494,3 +494,291 @@ After PR #667 merge, we discovered that `dispatch-guard` being a **required chec
 ---
 
 **Reliability Fix Status:** ✅ **IMPLEMENTED** (2026-01-12)
+
+---
+
+## Addendum: Required Check Reliability Rule (Phase 5D)
+
+**Date:** 2026-01-12  
+**Phase:** 5D  
+**Status:** ✅ IMPLEMENTED
+
+### Problem Statement
+
+The Phase 5C reliability fix (Addendum above) demonstrated a critical requirement:
+
+> **Required status checks MUST NOT use PR-level path filtering.**
+
+However, this rule was enforced manually through code review. There was no automated gate to **prevent** path-filtered required checks from being introduced.
+
+**Risk:**
+- Developer adds new workflow with `on.pull_request.paths` filter
+- Workflow/job name added to branch protection as required check
+- Docs-only PRs → workflow doesn't run → check absent → merge BLOCKED
+- Same issue as Phase 5C, but not detected until production
+
+### Phase 5D Solution: Required Checks Hygiene Gate
+
+**Goal:**  
+Implement a **static analysis gate** that validates required check hygiene on every PR.
+
+**Implementation:**
+
+1. **Config (Source of Truth):**  
+   `config/ci/required_status_checks.json`
+   - Lists all required contexts expected on main branch
+   - Must be kept in sync with GitHub branch protection settings
+   - Audit-stable, version-controlled
+
+2. **Validator Script:**  
+   `scripts/ci/validate_required_checks_hygiene.py`
+   - Scans all workflows in `.github/workflows/`
+   - Parses YAML and extracts check contexts
+   - For each required context:
+     - ✅ **PASS:** Produced by at least one always-on PR workflow (no paths filter)
+     - ❌ **FAIL:** Only produced by path-filtered workflows (unreliable)
+     - ❌ **FAIL:** Not produced by any PR workflow (missing)
+   - Exit code 2 on failure (blocks PR)
+
+3. **GitHub Actions Gate:**  
+   `.github/workflows/required-checks-hygiene-gate.yml`
+   - Job name: `required-checks-hygiene-gate`
+   - Triggers: `pull_request` (always), `push` (main)
+   - **NO path filter** (gate itself must be always-on)
+   - Runs validator script on every PR
+   - Blocks merge if hygiene violations found
+
+4. **Tests:**  
+   `tests/ci/test_required_checks_hygiene.py`
+   - Test fixtures demonstrating PASS/FAIL cases
+   - Validates path-filtered detection
+   - Validates missing context detection
+
+### Required Check Reliability Rule
+
+**Rule:**  
+> **Required status checks MUST be produced by always-on workflows.**
+>
+> - Workflow trigger: `on.pull_request` (no `paths` or `paths-ignore`)
+> - Internal change detection: Use `dorny/paths-filter` for relevance checks
+> - Fast no-op: If changes irrelevant, skip work but ALWAYS produce check-run
+> - Check context MUST appear on every PR (SUCCESS/FAILURE, never absent)
+
+**Rationale:**
+- GitHub branch protection requires check-runs to be **present** on every PR
+- PR-level `paths` filter → absent check-runs → merge BLOCKED (no override)
+- Always-on workflow + internal detection → fast pass on irrelevant PRs
+
+**Examples:**
+
+❌ **WRONG (Unreliable):**
+```yaml
+name: My Required Check
+on:
+  pull_request:
+    paths: [".github/workflows/**"]  # ← PR-level filter
+jobs:
+  my-check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+```
+
+✅ **CORRECT (Reliable):**
+```yaml
+name: My Required Check
+on:
+  pull_request:  # ← No paths filter
+jobs:
+  my-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3  # ← Internal detection
+        id: changes
+        with:
+          filters: |
+            workflows:
+              - '.github/workflows/**'
+
+      - name: Run validation
+        if: steps.changes.outputs.workflows == 'true'
+        run: ./scripts/validate.sh
+
+      - name: No-op pass
+        if: steps.changes.outputs.workflows != 'true'
+        run: echo "✅ No changes, fast pass"
+```
+
+### Verification (Local)
+
+**Run validator locally:**
+```bash
+python scripts/ci/validate_required_checks_hygiene.py \
+  --config config/ci/required_status_checks.json \
+  --workflows .github/workflows \
+  --strict
+```
+
+**Expected output (PASS):**
+```
+================================================================================
+Required Checks Hygiene Validation
+================================================================================
+
+Config:    config/ci/required_status_checks.json
+Workflows: .github/workflows
+Mode:      STRICT
+
+✅ SUCCESS: All 10 required checks are hygiene-compliant
+
+All required status checks are produced by always-on PR workflows.
+No path-filtering detected on required checks.
+```
+
+**Expected output (FAIL):**
+```
+================================================================================
+Required Checks Hygiene Validation
+================================================================================
+
+Config:    config/ci/required_status_checks.json
+Workflows: .github/workflows
+Mode:      STRICT
+
+❌ FAILURE: 1 hygiene violation(s) found
+
+Findings:
+--------------------------------------------------------------------------------
+Context                                  Status     Issue  
+--------------------------------------------------------------------------------
+my-check                                 FAIL       Required context only produced by path-filtered workflows
+--------------------------------------------------------------------------------
+
+Remediation:
+
+1. Context: my-check
+   Issue:  Required context only produced by path-filtered workflows
+   Fix:    Remove PR-level 'paths' filter from workflow 'my-workflow.yml' and use internal change detection (dorny/paths-filter) instead
+```
+
+### Verification (In PR)
+
+**Gate runs on every PR:**
+- Check name: `required-checks-hygiene-gate`
+- Runtime: ~5-10 seconds
+- Blocks merge if validation fails
+
+**Check status in PR:**
+```bash
+gh pr checks <PR_NUMBER> | grep required-checks-hygiene-gate
+```
+
+**View gate output:**
+```bash
+gh run view <RUN_ID> --log | grep -A 30 "Required Checks Hygiene"
+```
+
+### Maintenance
+
+**When adding new required check to branch protection:**
+
+1. Add check context to `config/ci/required_status_checks.json`
+2. Ensure the workflow producing the check:
+   - Has `on.pull_request` trigger WITHOUT `paths` filter
+   - Uses internal change detection if needed
+   - Always produces a check-run (no job-level `if` that skips entirely)
+3. Commit and push (gate will validate automatically)
+
+**When gate fails:**
+
+1. Review validator output (GitHub Actions logs or local run)
+2. Identify the problematic workflow
+3. Apply the fix:
+   - Remove PR-level `paths` filter
+   - Add internal `dorny/paths-filter` step
+   - Add conditional logic to steps (not job)
+   - Add no-op pass step for fast success
+4. Re-run validation
+
+### Regression Test (Phase 5C Scenario)
+
+**Scenario:**  
+Recreate the Phase 5C blocker scenario to verify the gate would catch it.
+
+**Setup:**
+1. Create workflow with PR-level paths filter
+2. Add workflow job name to required_status_checks.json
+3. Run validator
+
+**Expected:**  
+Gate FAILS with clear finding and remediation.
+
+**Test Case:**
+```bash
+# Create test workflow (path-filtered)
+cat > .github/workflows/test-path-filtered.yml <<EOF
+name: Test Path Filtered
+on:
+  pull_request:
+    paths: [".github/workflows/**"]
+jobs:
+  test-check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+EOF
+
+# Add to required checks
+jq '.required_contexts += ["test-check"]' \
+  config/ci/required_status_checks.json > /tmp/config.json
+mv /tmp/config.json config/ci/required_status_checks.json
+
+# Run validator (should FAIL)
+python scripts/ci/validate_required_checks_hygiene.py --strict
+```
+
+**Result:**  
+Validator detects path-filtered required check and exits with code 2.
+
+### Files Changed (Phase 5D)
+
+**New Files:**
+- `config/ci/required_status_checks.json` (10 required contexts)
+- `scripts/ci/validate_required_checks_hygiene.py` (validator, 318 lines)
+- `.github/workflows/required-checks-hygiene-gate.yml` (gate workflow)
+- `tests/ci/test_required_checks_hygiene.py` (pytest suite)
+- `tests/fixtures/required_checks_hygiene/*.yml` (test fixtures)
+- `tests/fixtures/required_checks_hygiene/*.json` (test configs)
+
+**Modified Files:**
+- `docs/ops/PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md` (this addendum)
+
+### References
+
+**Implementation:**
+- Validator: `scripts/ci/validate_required_checks_hygiene.py`
+- Config: `config/ci/required_status_checks.json`
+- Gate Workflow: `.github/workflows/required-checks-hygiene-gate.yml`
+- Tests: `tests/ci/test_required_checks_hygiene.py`
+
+**Runbook:**
+- Required Check Reliability Rule (this section)
+- Phase 5C Reliability Fix (Addendum above)
+- CI Required Contexts Contract: `docs/ops/ci/ci_required_checks_matrix_naming_contract.md` (if exists)
+
+### Next Steps
+
+**Post-Merge:**
+1. Add `required-checks-hygiene-gate` to branch protection required checks
+2. Verify gate runs on next PR
+3. Update operator runbook with gate triage procedures
+
+**Ongoing:**
+- Keep `config/ci/required_status_checks.json` in sync with branch protection
+- Review gate failures (should be rare, only on new required checks)
+- Monthly audit: Verify all required checks still match branch protection
+
+---
+
+**Phase 5D Status:** ✅ **IMPLEMENTED** (2026-01-12)
