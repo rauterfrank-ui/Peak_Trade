@@ -32,14 +32,13 @@ Phase 5E introduced the Required Checks Hygiene Gate operations runbook and corr
 **LOW** — Documentation-only update, single file changed, no code/config/workflow modifications.
 
 ## Operator How-To
-Review the Evidence Index entry and confirm it matches the Phase 5E runbook:
+Review the Evidence Index entry:
 ```bash
 # View Evidence Index
 cat docs/ops/EVIDENCE_INDEX.md | grep -A 3 "EV-20260112-PHASE5E-RUNBOOK"
-
-# View Phase 5E Runbook
-cat docs/ops/runbooks/RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md
 ```
+
+Note: The Phase 5E runbook itself is part of PR #671 (still open at time of this merge log creation).
 
 ## References
 - **This PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/672
