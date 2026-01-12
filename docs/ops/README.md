@@ -15,7 +15,8 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Session Closeout 2026-01-06](SESSION_CLOSEOUT_20260106_PEAK_TRADE_DOCS_OPS_INTEGRATION.md)** — Gap analysis & security fixes (PR #573, #574, #575, #576)
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
-### PR Merge Logs
+### PR Merge Logs & Closeouts
+- **[Phase 5C Workflow Dispatch Guard Enforcement Closeout](PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md)** — Phase 5C closeout: dispatch-guard enforcement activation, 10 required checks, verified (2026-01-12)
 - `docs/ops/PR_664_MERGE_LOG.md` — PR #664 (offline_suites workflow_dispatch input context fix) (PR #664, 2026-01-12)
 - `docs/ops/PR_663_MERGE_LOG.md` — PR #663 (Phase 5B workflow dispatch condition fix) (PR #663, 2026-01-12)
 - `docs/ops/PR_653_MERGE_LOG.md` — AI Autonomy Phase 4D: L4 Critic Determinism Contract + Validator + CI (PR #653, 2026-01-11)
