@@ -62,12 +62,20 @@
 
 ---
 
+### Installation & Setup (2026-ready)
+
+- [Vollständiger Installation-&-Roadmap-Snapshot (2026-01-12)](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md)
+- [Installation Quickstart](./INSTALLATION_QUICKSTART.md)
+
+---
+
 ## 🗺️ Related Documentation
 
 ### Operations & Runbooks
 - [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) – 12+ runbooks for live operations and incident handling
 - [Runbooks Landscape 2026-Ready](./runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md) – Comprehensive runbook catalog and quick-reference matrix
 - [Ops README](./ops/README.md) – Complete ops tools and documentation index
+- [Phase 7 Finish/Closeout Runbook](./ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md) – Workflow docs closeout + repo hygiene inventory (snapshot-based)
 
 ### Control Center
 - [AI Autonomy Control Center](./ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md) – Primary control center entry point (Layer L0-L6)
@@ -80,6 +88,9 @@
 ### Evidence & Audit
 - [Evidence Index](./ops/EVIDENCE_INDEX.md) – Central evidence registry
 - [Evidence Schema](./ops/EVIDENCE_SCHEMA.md) – Evidence artifact schema and validation rules
+
+### Archives & Cleanup
+- [Repo Cleanup Inventory (Snapshots)](./ops/_archive/repo_cleanup/2026-01-12/README.md) – Snapshot-based repo hygiene inventory (no actions without approval)
 
 ### Governance & Safety
 - [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) – Governance framework and roles
