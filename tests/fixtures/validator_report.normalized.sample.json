@@ -1,0 +1,38 @@
+{
+  "checks": [
+    {
+      "check_id": "json_determinism",
+      "description": "JSON output is byte-identical across runs",
+      "status": "pass"
+    },
+    {
+      "check_id": "markdown_determinism",
+      "description": "Markdown output is byte-identical across runs",
+      "status": "pass"
+    }
+  ],
+  "determinism_hash": "abc123def456789",
+  "evidence": {
+    "policy_findings": []
+  },
+  "report_id": "l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0",
+  "result": "PASS",
+  "runtime_context": {
+    "git_sha": "test123",
+    "job": "test-job",
+    "run_id": "99999",
+    "timestamp": "2026-01-10T12:00:00Z",
+    "workflow": "L4 Critic Replay Determinism"
+  },
+  "schema_version": "1.0.0",
+  "subject": "l4_critic_determinism_contract",
+  "summary": {
+    "failed": 0,
+    "passed": 2,
+    "total": 2
+  },
+  "tool": {
+    "name": "l4_critic_determinism_contract_validator",
+    "version": "1.0.0"
+  }
+}
