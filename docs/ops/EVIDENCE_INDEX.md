@@ -1,9 +1,9 @@
-# Peak_Trade – Evidence Index (v0.3)
+# Peak_Trade – Evidence Index (v0.6)
 
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.5 (Operational - 25 entries)
+**Status:** v0.6 (Operational - 26 entries)
 
 ---
 
@@ -75,6 +75,7 @@ Evidence items are operational artifacts that document system behavior, process 
 || EV-20260109-D01-DRILL | 2026-01-09 | ops | [D01 Drill Run Log](drills/runs/DRILL_RUN_20260109_1930_ai_autonomy_D01.md) + [PR #631](https://github.com/rauterfrank-ui/Peak_Trade/pull/631) | D01 drill (Pre-Flight Discipline) completed with PASS: repository sanity verified, branch hygiene confirmed, dirty tree detection demonstrated. Finding #4 (aiops-promptfoo-evals workflow failure on docs-only merges) remediated via workflow hardening (changes job + noop job added to `.github/workflows/aiops-promptfoo-evals.yml`) | PR #631 merged (commit 2ba4f12b), 15/15 CI checks SUCCESS, scorecard PASS (with timebox extension 10min→29min justified per Finding #4 remediation), 25 docs reference targets valid, workflow YAML valid | Evidence-first format per SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md, 4 findings documented (3 positive verifications, 1 CI workflow issue remediated), operator actions clear |
 || EV-20260111-PHASE4D-CONTRACT | 2026-01-11 | ops | [PR #653 Merge Log](PR_653_MERGE_LOG.md) + [Contract Spec](../governance/ai_autonomy/PHASE4D_L4_CRITIC_DETERMINISM_CONTRACT.md) | AI Autonomy Phase 4D: L4 Critic Determinism Contract + Validator CLI + CI enforcement. Explicit canonicalization rules (10 volatile field patterns: timestamp, created_at, duration, elapsed, run_id, pid, hostname, absolute_path, _temp, _tmp), stable SHA256 hashing, first-mismatch diagnostics, validator CLI (exit codes: 0=equal, 2=differ, 3=invalid), CI artifact upload (validator report, 14-day retention). Unit tests: 14/14 passing. Design decisions documented: simple substring matching, exact numeric match, preserve list order, heuristic path normalization. | PR #653 merged (commit b1902840, squash merge), 20/20 CI checks PASS (L4 Critic Replay Determinism 3 jobs, Lint Gate, CI/tests 3.9/3.10/3.11, Docs Reference Targets Gate, Audit, Policy Critic Gate), 5 files changed (1395 insertions): contract module 439 lines, validator CLI 250 lines, tests 364 lines, docs 320 lines, CI workflow +22 lines. Verification: `pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -q` (14 passed in 0.08s), validator self-test PASS (baseline vs itself), ruff format applied (commit 3c3a56bf follow-up) | Backwards compatible, no breaking changes, AI-Ops determinism tooling only, governance-critical: replay determinism now explicit + auditable + enforceable, CI gate prevents regressions. Contract v1.0.0. Future work: numeric tolerance, regex patterns, snapshot management CLI |
 || EV-20260111-PHASE4D-DOCS | 2026-01-11 | ops | [PR #654 Merge Log](PR_654_MERGE_LOG.md) | Phase 4D documentation follow-up: PR #653 merge log + ops README index update, 2 files changed (294 insertions), docs-only scope, 19/20 CI checks PASS, auto-merge enabled and executed successfully | PR #654 merged (commit e2699d3b), merge log format consistent with existing logs, comprehensive documentation of Phase 4D implementation (two-commit journey, design decisions, operator how-to, triage workflow, CI artifact strategy, pattern recognition), risk: LOW (docs-only) | Meta-documentation for Phase 4D, maintains audit trail, searchable knowledge base for determinism contract patterns |
+|| EV-20260112-PHASE5C-ENFORCEMENT | 2026-01-12 | ops | [Phase 5C Closeout](PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md) + [PR #666](https://github.com/rauterfrank-ui/Peak_Trade/pull/666) | Phase 5C Workflow Dispatch Guard Enforcement: dispatch-guard added to main branch required checks (9→10), enforcement active, guard proven effective (PR #664 first true positive, 0 false positives), 22/22 CI checks passed on deployment PR | PR #666 merged (commit 930d16e7), activation via GitHub API (gh api POST required_status_checks/contexts), verification commands documented, guard validator: 318 lines stdlib-only, 23 unit tests, ~5s runtime, path-filtered (.github/workflows/), risk: LOW (docs-only activation, guard already proven) | Governance-critical: Guards against workflow_dispatch input context errors (Phase 5B-class bugs), prevents PR merge when workflow validation fails, reversible (can remove from required checks instantly), operator triage runbook in docs/ops/ci/WORKFLOW_DISPATCH_GUARD.md |
 
 ---
 
@@ -91,6 +92,7 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20260107-CI-MATRIX-CONTRACT** — CI Required Checks Matrix Naming Contract (deterministic test discovery)
 - **EV-20260103-CI-CONTRACT-GUARD** — CI Required Contexts Contract Guard (PR #515, deterministic job naming, Python 3.11 guarantee)
 - **EV-20260109-PT-DOCS-PR-HELPER** — pt_docs_pr.sh docs-only PR workflow helper (deterministic staging, audit-friendly)
+- **EV-20260112-PHASE5C-ENFORCEMENT** — Phase 5C Workflow Dispatch Guard Enforcement (PR #666, dispatch-guard required check, 10 total required checks)
 
 ### Drill / Operator Evidence
 - **EV-20260107-P0-BASELINE** — Phase 0 Multi-Agent Roleplay baseline verification (5/5 gate criteria, 6079 tests, 73/73 config smoke tests)
@@ -141,11 +143,12 @@ Evidence items are operational artifacts that document system behavior, process 
 | 2026-01-11 | Added EV-20260111-PHASE4D-CONTRACT (AI Autonomy Phase 4D: L4 Critic Determinism Contract, PR #653, 1395 lines, 14/14 tests, contract v1.0.0) | ops |
 | 2026-01-11 | Added EV-20260111-PHASE4D-DOCS (Phase 4D documentation follow-up, PR #654, merge log + ops README index) | ops |
 | 2026-01-11 | v0.5 Phase 4D Closeout: Added 2 entries (Phase 4D contract + docs), created AI Autonomy Evidence section, total: 25 entries | ops |
+| 2026-01-12 | Added EV-20260112-PHASE5C-ENFORCEMENT (Phase 5C Workflow Dispatch Guard Enforcement, PR #666, dispatch-guard required check activation) | ops |
 
 ---
 
-**Version:** v0.5  
+**Version:** v0.6  
 **Maintained by:** ops  
-**Last Updated:** 2026-01-09  
-**Total Entries:** 24 (1 seed + 23 operational)  
+**Last Updated:** 2026-01-12  
+**Total Entries:** 26 (1 seed + 25 operational)  
 **Next Review:**  (recommend quarterly or pre-phase-gate)
