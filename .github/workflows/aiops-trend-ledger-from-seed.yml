@@ -1,0 +1,138 @@
+name: AIOps - Trend Ledger from Seed
+
+# Phase 5B: Generate canonical Trend Ledger from Phase 5A Trend Seed
+# Trigger: workflow_run on Phase 5A workflow completion (success only, main branch only)
+# Outputs: trend_ledger.json (canonical), trend_ledger.md (summary), manifest.json
+
+on:
+  workflow_run:
+    workflows: ["AIOps - Trend Seed from Normalized Report"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  generate-trend-ledger:
+    name: Generate Trend Ledger
+    runs-on: ubuntu-latest
+
+    # Only run if Phase 5A workflow succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Download Phase 5A trend seed artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: aiops-trend-seed-from-normalized-report.yml
+          run_id: ${{ github.event.workflow_run.id }}
+          name: trend-seed-${{ github.event.workflow_run.id }}
+          path: .tmp/phase5a_artifacts
+
+      - name: Verify artifact contents
+        run: |
+          echo "=== Verifying Phase 5A artifact contents ==="
+          ls -lh .tmp/phase5a_artifacts/
+
+          if [ ! -f ".tmp/phase5a_artifacts/trend_seed.normalized_report.json" ]; then
+            echo "❌ ERROR: trend_seed.normalized_report.json not found in artifact"
+            exit 1
+          fi
+
+          echo "✅ Artifact verified"
+
+      - name: Generate Trend Ledger
+        run: |
+          echo "=== Generating Trend Ledger ==="
+
+          # Run Phase 5B consumer
+          uv run python scripts/aiops/generate_trend_ledger_from_seed.py \
+            --input ".tmp/phase5a_artifacts/trend_seed.normalized_report.json" \
+            --output-json ".tmp/trend_ledger/trend_ledger.json" \
+            --output-markdown ".tmp/trend_ledger/trend_ledger.md" \
+            --run-manifest ".tmp/trend_ledger/manifest.json"
+
+      - name: Verify Trend Ledger outputs
+        run: |
+          echo "=== Verifying Trend Ledger outputs ==="
+          ls -lh .tmp/trend_ledger/
+
+          # Check required files exist
+          if [ ! -f ".tmp/trend_ledger/trend_ledger.json" ]; then
+            echo "❌ ERROR: trend_ledger.json not found"
+            exit 1
+          fi
+
+          if [ ! -f ".tmp/trend_ledger/trend_ledger.md" ]; then
+            echo "❌ ERROR: trend_ledger.md not found"
+            exit 1
+          fi
+
+          if [ ! -f ".tmp/trend_ledger/manifest.json" ]; then
+            echo "❌ ERROR: manifest.json not found"
+            exit 1
+          fi
+
+          # Validate JSON structure
+          echo ""
+          echo "=== Trend Ledger JSON preview ==="
+          jq '.schema_version, .source_run.run_id, .counters' \
+            .tmp/trend_ledger/trend_ledger.json
+
+          echo ""
+          echo "✅ Trend Ledger outputs verified"
+
+      - name: Upload Trend Ledger artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: trend-ledger-${{ github.event.workflow_run.id }}
+          path: |
+            .tmp/trend_ledger/trend_ledger.json
+            .tmp/trend_ledger/trend_ledger.md
+            .tmp/trend_ledger/manifest.json
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 📊 Trend Ledger Generation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Workflow** | ${{ github.event.workflow_run.name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Run ID** | ${{ github.event.workflow_run.id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit SHA** | ${{ github.event.workflow_run.head_sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | ${{ github.event.workflow_run.head_branch }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Artifact** | trend-ledger-${{ github.event.workflow_run.id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f ".tmp/trend_ledger/trend_ledger.json" ]; then
+            echo "### 📋 Trend Ledger Preview" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+            jq '.' .tmp/trend_ledger/trend_ledger.json | head -30 >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ -f ".tmp/trend_ledger/trend_ledger.md" ]; then
+            echo "### 📄 Markdown Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            cat .tmp/trend_ledger/trend_ledger.md >> $GITHUB_STEP_SUMMARY
+          fi
