@@ -54,8 +54,8 @@ Make the comprehensive installation/roadmap snapshot (2026-01-12) discoverable a
   - Symlink to latest snapshot
 
 ### Branch
-- **Head**: `docs/installation-roadmap-integration-2026-01-12`
-- **Base**: `main`
+- **Head**: installation-roadmap-integration-2026-01-12 (under docs/ namespace)
+- **Base**: main
 - **Cleanup**: Branch deleted (local + remote) after merge
 
 ### Implementation Notes
