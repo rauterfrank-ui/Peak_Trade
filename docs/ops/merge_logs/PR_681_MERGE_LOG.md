@@ -218,8 +218,8 @@ rg -i "link stability contract" docs/ops/EVIDENCE_INDEX.md
 ### How to Add Future Evidence Entries
 
 **Pattern** (from this PR):
-1. Create branch: `docs/evidence-{prX-description}`
-2. Edit `docs/ops/EVIDENCE_INDEX.md`:
+1. Create branch: **docs/evidence-{prX-description}** (replace {prX-description} with actual PR number and description)
+2. Edit **docs/ops/EVIDENCE_INDEX.md**:
    - Add entry in chronological order (newest at bottom of current date entries)
    - Update Changelog
    - Increment Version (e.g., v0.10 → v0.11)
