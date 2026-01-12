@@ -1,0 +1,90 @@
+name: Docs Integrity Snapshot
+
+# OPTIONAL workflow (NOT required for branch protection)
+# Provides informational reports on docs link graph and orphaned pages
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'scripts/ops/docs_graph_snapshot.py'
+      - 'scripts/ops/docs_orphan_detector.py'
+      - '.github/workflows/docs-integrity-snapshot.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  docs-integrity-snapshot:
+    name: Generate Docs Integrity Snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate docs graph snapshot
+        run: |
+          python scripts/ops/docs_graph_snapshot.py \
+            --output-json docs_graph.snapshot.json \
+            --output-md docs_graph.snapshot.md
+
+      - name: Generate orphan detection report
+        run: |
+          REPO_ROOT=$(pwd)
+          python scripts/ops/docs_orphan_detector.py \
+            --root-sources "$REPO_ROOT/docs/WORKFLOW_FRONTDOOR.md" \
+            --root-sources "$REPO_ROOT/docs/ops/README.md" \
+            --root-sources "$REPO_ROOT/WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md" \
+            --output docs_orphans.report.md
+
+      - name: Display snapshot summary
+        run: |
+          echo "## Docs Integrity Snapshot Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Graph Snapshot" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -30 docs_graph.snapshot.md >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Orphan Detection" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          head -30 docs_orphans.report.md >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload docs graph snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-graph-snapshot
+          path: |
+            docs_graph.snapshot.json
+            docs_graph.snapshot.md
+          retention-days: 30
+
+      - name: Upload orphan detection report
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-orphans-report
+          path: docs_orphans.report.md
+          retention-days: 30
+
+      - name: Check for critical issues
+        run: |
+          # Extract broken links count from JSON
+          BROKEN_LINKS=$(python -c "import json; data=json.load(open('docs_graph.snapshot.json')); print(data['summary']['broken_links'])")
+
+          echo "🔍 Broken links found: $BROKEN_LINKS"
+
+          # This is informational only - does NOT fail the workflow
+          if [ "$BROKEN_LINKS" -gt 0 ]; then
+            echo "⚠️ Warning: Found $BROKEN_LINKS broken link(s). Review the snapshot report."
+            echo "Note: This is informational only and does not block PR merge."
+          else
+            echo "✅ No broken links found."
+          fi
