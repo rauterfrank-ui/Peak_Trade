@@ -1,4 +1,4 @@
-# PR #TBD: Phase 6 Strategy-Switch Sanity Check (Governance Gate)
+# PR #677: Phase 6 Strategy-Switch Sanity Check (Governance Gate)
 
 ## Summary
 
@@ -66,7 +66,7 @@ assert acceptable_exit
 
 3. `docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md` (~600 lines)
 4. `docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md` (~500 lines)
-5. `docs/ops/merge_logs/PR_TBD_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md` (~400 lines)
+5. `docs/ops/merge_logs/PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md` (~400 lines)
 6. `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md` (~600 lines)
 7. `PHASE6_PATCH_DOCTOR_TEST_FIX.md` (~300 lines)
 
@@ -238,7 +238,7 @@ pytest tests/governance/test_strategy_switch_sanity_check.py -v
 
 - **Runbook**: `docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md`
 - **Operator Guide**: `docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md`
-- **Merge Log**: `docs/ops/merge_logs/PR_TBD_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md`
+- **Merge Log**: `docs/ops/merge_logs/PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md`
 - **Evidence Pack**: `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md`
 - **Patch Docs**: `PHASE6_PATCH_DOCTOR_TEST_FIX.md`
 
