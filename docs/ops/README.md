@@ -56,6 +56,22 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - 🗺️ **Legacy Roadmap:** [CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md](CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md) — Älterer Phasen-Runbook (P0–P10), siehe Frontdoor + PHASES_V2 für aktuelle Version
 - `docs/ops/LIVE_READINESS_PHASE_TRACKER.md` — Phase gates tracker (P0-P10: research → shadow → live)
 
+## Workflow Documentation
+
+**Quick Start:** Beginne mit der **[Workflow Frontdoor](../WORKFLOW_FRONTDOOR.md)** für zentrale Navigation zwischen autoritativer Operations-Referenz (2026) und historischem Chat-Workflow-Kontext (Dec 2025).
+
+**Navigation:**
+- 🚪 **Start hier:** [WORKFLOW_FRONTDOOR.md](../WORKFLOW_FRONTDOOR.md) — Central navigation hub for workflow and runbook documentation
+- 📘 **Authoritative (2026):** [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) — Comprehensive operational reference: 18+ CLI sections, 12+ runbooks, Wave3 Control Center, AI Autonomy cheatsheet, 5 checklists, status tables
+- 📙 **Legacy (Dec 2025):** [WORKFLOW_NOTES.md](../WORKFLOW_NOTES.md) — Historical snapshot: Technical layer status, Frank/ChatGPT/Claude workflow mechanics, prompt style conventions
+
+**When to Use:**
+- **Daily Operations:** WORKFLOW_RUNBOOK_OVERVIEW (authoritative, current)
+- **CLI Command Lookup:** WORKFLOW_RUNBOOK_OVERVIEW Section 9 + [CLI_CHEATSHEET.md](../CLI_CHEATSHEET.md)
+- **PR Management (Wave3):** WORKFLOW_RUNBOOK_OVERVIEW Section 2
+- **Historical Context:** WORKFLOW_NOTES (legacy, Dec 2025 technical snapshot)
+- **Chat-Based Development:** WORKFLOW_NOTES (continuation context for Frank/ChatGPT/Claude sessions)
+
 ### Phase 5 NO-LIVE Drill Pack (Governance-Safe, Manual-Only)
 
 🚨 **NO-LIVE / Drill-Only** — Kein Live Trading, keine realen Funds, keine Exchange Connectivity
