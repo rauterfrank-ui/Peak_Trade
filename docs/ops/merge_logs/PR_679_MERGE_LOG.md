@@ -2,7 +2,7 @@
 
 **PR:** #679  
 **Title:** docs(ops): Phase 6B relink Strategy Switch docs  
-**Branch:** `docs/phase6b-relink-strategy-switch`  
+**Branch:** docs/phase6b-relink-strategy-switch  
 **Merged:** 2026-01-12 12:11:05 UTC  
 **Merge Type:** Squash + Merge  
 **Operator:** ops  
@@ -237,7 +237,7 @@ See [Runbook](../runbooks/RUNBOOK_PHASE6_...md) for details.
 ### PR & Evidence
 - **PR**: #679 (https://github.com/rauterfrank-ui/Peak_Trade/pull/679)
 - **Commit**: `655c9e4d6104f341604d0425bd8e76a0f70fe0f0`
-- **Branch**: `docs/phase6b-relink-strategy-switch`
+- **Branch**: docs/phase6b-relink-strategy-switch
 - **Merge Date**: 2026-01-12 12:11:05 UTC
 
 ### Related PRs
