@@ -23,6 +23,6 @@ docs/ops/_archive/installation_roadmap/2026-01-12/
 ```
 
 **Related Integration:**
-- Entry point: [docs/INSTALLATION_QUICKSTART.md](../../../INSTALLATION_QUICKSTART.md)
-- Navigation: [docs/WORKFLOW_FRONTDOOR.md](../../../WORKFLOW_FRONTDOOR.md)
-- Operations: [docs/ops/README.md](../../README.md)
+- Entry point: [docs/INSTALLATION_QUICKSTART.md](../../../../INSTALLATION_QUICKSTART.md)
+- Navigation: [docs/WORKFLOW_FRONTDOOR.md](../../../../WORKFLOW_FRONTDOOR.md)
+- Operations: [docs/ops/README.md](../../../README.md)
