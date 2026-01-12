@@ -19,8 +19,8 @@ Establish repo-stable audit trail for PR #681, which added an Evidence Index Ent
   - Includes cross-references to PR #679 (docs relink), PR #680 (merge log for #679), and related Phase 6 artifacts
 
 ### Branch
-- **Head**: `docs/pr681-merge-log`
-- **Base**: `main`
+- **Head**: **docs/pr681-merge-log**
+- **Base**: **main**
 - **Cleanup**: Branch deleted (local + remote) after merge
 
 ## Verification
@@ -72,7 +72,7 @@ pre-commit run --all-files
 ## Operator How-To
 ### Where to Find Updated Docs
 - **New Merge Log**: [docs/ops/merge_logs/PR_681_MERGE_LOG.md](PR_681_MERGE_LOG.md)
-- **Related Evidence**: [docs/ops/EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md) (entry `EV-20260112-PR679-PHASE6B-DOCS-RELINK`)
+- **Related Evidence**: [docs/ops/EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md) (entry **EV-20260112-PR679-PHASE6B-DOCS-RELINK**)
 
 ### How to Validate Links Locally
 If docs reference targets validation is needed:
