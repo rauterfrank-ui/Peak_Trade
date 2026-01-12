@@ -33,7 +33,7 @@ jobs:
     # - Manueller Trigger mit suite_type='daily' oder 'both'
     if: |
       (github.event.schedule == '0 2 * * *') ||
-      (github.event_name == 'workflow_dispatch' && (inputs.suite_type == 'daily' || inputs.suite_type == 'both'))
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.suite_type == 'daily' || github.event.inputs.suite_type == 'both'))
 
     timeout-minutes: 30
 
@@ -96,7 +96,7 @@ jobs:
     # - Manueller Trigger mit suite_type='weekly' oder 'both'
     if: |
       (github.event.schedule == '0 3 * * 1') ||
-      (github.event_name == 'workflow_dispatch' && (inputs.suite_type == 'weekly' || inputs.suite_type == 'both'))
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.suite_type == 'weekly' || github.event.inputs.suite_type == 'both'))
 
     timeout-minutes: 90
 
