@@ -72,6 +72,11 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **Historical Context:** WORKFLOW_NOTES (legacy, Dec 2025 technical snapshot)
 - **Chat-Based Development:** WORKFLOW_NOTES (continuation context for Frank/ChatGPT/Claude sessions)
 
+## Installation & Setup
+
+- [Installation Quickstart](../INSTALLATION_QUICKSTART.md)
+- [Installation & Roadmap Snapshot (2026-01-12)](../../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md)
+
 ### Phase 5 NO-LIVE Drill Pack (Governance-Safe, Manual-Only)
 
 🚨 **NO-LIVE / Drill-Only** — Kein Live Trading, keine realen Funds, keine Exchange Connectivity

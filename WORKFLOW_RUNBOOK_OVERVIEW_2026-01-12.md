@@ -19,6 +19,17 @@ Peak_Trade verfügt über eine **umfassende, 2026-ready Workflow- und Runbook-In
 
 ---
 
+## 📘 Installation & Roadmap (Snapshot 2026-01-12)
+
+Für eine vollständige Installation (0→ready) und die Roadmap 2026 inkl. Governance-Gate für Phase 13:
+
+- [INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md](INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md)
+- [docs/INSTALLATION_QUICKSTART.md](docs/INSTALLATION_QUICKSTART.md)
+
+Hinweis: Phase 13 (Production Live-Trading) erfordert explizites Governance-Gate-Approval (Details im verlinkten Snapshot).
+
+---
+
 ## 🎯 Hauptdokumente (Quick Reference)
 
 ### 1. CLI Cheatsheet
@@ -675,6 +686,25 @@ python scripts/check_live_risk_limits.py
 | **Phase-80-Runner** | ✅ | — | v0 (Phase 80) |
 | **Live-Track Panel** | — | ✅ | v1 (Phase 82) |
 | **Session Explorer** | — | ✅ | v1 (Phase 85) |
+
+---
+
+## 🧹 Repo Hygiene / Cleanup Inventory (Snapshots)
+
+**Status:** Phase 7 Finish/Closeout completed (snapshot-based inventory established)  
+**Scope:** Documentation-only, NO actions without explicit operator approval
+
+### Runbook & Inventory
+- **Phase 7 Runbook:** [RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md](docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md)
+- **Cleanup Inventory (Snapshots):** [docs/ops/_archive/repo_cleanup/2026-01-12/](docs/ops/_archive/repo_cleanup/2026-01-12/README.md)
+
+### Key Features
+- **Snapshot-Only:** Branch/worktree/artifact inventory (read-only)
+- **Safety Protocol:** Two-stage approval process (Preview → Execute)
+- **Guardrails:** NO branch deletions, NO worktree operations without explicit approval
+- **Classifications:** [merged], [unmerged], [gone], [worktree-protected]
+
+**Phase 7 Status:** ✅ Snapshot inventory complete, links validated
 
 ---
 
