@@ -91,7 +91,8 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 
 📊 **Trend Seed → Canonical Ledger Snapshot** — Deterministic aggregation, artifact persistence
 
-**Phase 5B Runbook:**
+**Phase 5B Runbooks:**
+- 📖 **Cursor Multi-Agent Runbook:** [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md) — Standardized multi-agent workflow for Phase 5B implementation (ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, IMPLEMENTER, TEST_ENGINEER, DOCS_SCRIBE, RISK_OFFICER) with determinism-first design
 - 📖 **Operator Runbook:** [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md](runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md) — Standardized workflow for consuming Phase 5A Trend Seeds and generating canonical Trend Ledger snapshots with deterministic JSON, markdown summaries, and CI artifact integration
 
 **Key Deliverables:**
