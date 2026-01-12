@@ -16,6 +16,8 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs
+- `docs/ops/PR_664_MERGE_LOG.md` — PR #664 (offline_suites workflow_dispatch input context fix) (PR #664, 2026-01-12)
+- `docs/ops/PR_663_MERGE_LOG.md` — PR #663 (Phase 5B workflow dispatch condition fix) (PR #663, 2026-01-12)
 - `docs/ops/PR_653_MERGE_LOG.md` — AI Autonomy Phase 4D: L4 Critic Determinism Contract + Validator + CI (PR #653, 2026-01-11)
 - `docs/ops/PR_651_MERGE_LOG.md` — Merge Log for PR #650 (Merge Log for PR #649) (PR #651, 2026-01-11)
 - `docs/ops/PR_650_MERGE_LOG.md` — Merge Log for PR #649 (Phase 4D Triage Docs) (PR #650, 2026-01-11)
@@ -474,6 +476,46 @@ jq . reports/ops/ci_health_latest.json
 - Quick Commands:
   - `scripts/ops/verify_required_checks_drift.sh` (offline)
   - `scripts/ops/ops_center.sh doctor` → zeigt Drift-Guard/Health-Status (falls eingebunden)
+
+### Workflow Dispatch Guard (Required Check — Phase 5C)
+
+**Status:** ⚠️ **NOT ACTIVE** (Operator action required to add as required check for `main`)
+
+**Purpose:** Prevents `workflow_dispatch` input context regressions (like PR #663, #664).
+
+**Expected Check Context:** `CI / Workflow Dispatch Guard / dispatch-guard`
+
+**Current State:** Guard is functional and path-filtered, but the check is **not** present in `main` required checks (verified **2026-01-12**).
+
+**Evidence:** `docs/ops/ci/evidence/PHASE5C_DISPATCH_GUARD_ENFORCEMENT_VERIFICATION_2026-01-12.md`
+
+**Activation (Operator):**
+- GitHub → Settings → Branches → Branch protection rules → `main` → **Add required check**: `CI / Workflow Dispatch Guard / dispatch-guard`
+- (Alternative) GitHub → Settings → Rules → Rulesets → `main` ruleset → **Require status checks** → add the same check context
+
+**Quick Commands:**
+```bash
+# Local validation
+python3 scripts/ops/validate_workflow_dispatch_guards.py --paths .github/workflows --fail-on-warn
+
+# Run tests
+uv run pytest -q tests/ops/test_validate_workflow_dispatch_guards.py
+```
+
+**Documentation:**
+- **User Guide:** [docs/ops/ci/WORKFLOW_DISPATCH_GUARD.md](ci/WORKFLOW_DISPATCH_GUARD.md)
+- **Enforcement Policy:** [docs/ops/ci/WORKFLOW_DISPATCH_GUARD_ENFORCEMENT.md](ci/WORKFLOW_DISPATCH_GUARD_ENFORCEMENT.md)
+- **GitHub Settings Guide:** [docs/ops/ci/WORKFLOW_DISPATCH_GUARD_GITHUB_SETTINGS.md](ci/WORKFLOW_DISPATCH_GUARD_GITHUB_SETTINGS.md)
+- **Script:** `scripts/ops/validate_workflow_dispatch_guards.py`
+- **CI Workflow:** `.github/workflows/ci-workflow-dispatch-guard.yml`
+
+**Burn-in Results:**
+- Deployed: 2026-01-12
+- First Run: Found real bug (PR #664: `offline_suites.yml`)
+- False Positive Rate: 0% (0/1)
+- True Positive Rate: 100% (1/1)
+
+**Bypass Policy:** Admin-only, requires audit comment in PR (when active).
 
 ### Docs Navigation Health (Link Guard)
 
@@ -1923,6 +1965,8 @@ Security:
 
 Post-merge documentation logs for operational PRs.
 
+- [PR #664](PR_664_MERGE_LOG.md) — fix(ci): offline_suites workflow_dispatch input context (merged 2026-01-12) <!-- PR-664-MERGE-LOG -->
+- [PR #663](PR_663_MERGE_LOG.md) — fix(ci): Phase 5B workflow dispatch condition (merged 2026-01-12) <!-- PR-663-MERGE-LOG -->
 - [PR #628](PR_628_MERGE_LOG.md) — docs(ops): AI Autonomy 4B M2 drill session template + scorecard standard (merged 2026-01-09) <!-- PR-628-MERGE-LOG -->
 - [PR #551](PR_551_MERGE_LOG.md) — fix(pr-531): restore green CI (normalize research markers/IDs) (merged 2026-01-04) <!-- PR-551-MERGE-LOG -->
 - [PR #599](PR_599_MERGE_LOG.md) — docs(ops): add audit artifacts v0 (evidence index + risk register) (merged 2026-01-07) <!-- PR-599-MERGE-LOG -->
