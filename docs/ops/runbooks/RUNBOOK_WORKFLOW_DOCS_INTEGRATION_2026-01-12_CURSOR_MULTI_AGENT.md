@@ -35,7 +35,7 @@
 
 ### FACTS_COLLECTOR
 - **Responsibility:** Inventory locations, extract inline backticks with "/" and classify
-- **Deliverable:** [DOC_MAP.md](../../../DOC_MAP.md), [BACKTICK_AUDIT.md](../../../BACKTICK_AUDIT.md)
+- **Deliverable:** [DOC_MAP.md](../_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md), [BACKTICK_AUDIT.md](../_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md)
 - **Status:** ✅ Complete (48 backticks classified, all gate-safe)
 
 ### CI_GUARDIAN
@@ -55,7 +55,7 @@
 
 ### RISK_OFFICER
 - **Responsibility:** Pick lowest-risk fix strategy, propose rollback
-- **Deliverable:** [FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md](../../../FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md), rollback plan
+- **Deliverable:** [FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md](../_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md), rollback plan
 - **Status:** ✅ Complete (minimal risk, zero-touch approved)
 
 ### EVIDENCE_SCRIBE
@@ -69,7 +69,7 @@
 
 ### Phase 1: Document Map (FACTS_COLLECTOR)
 
-**Deliverable:** [DOC_MAP.md](../../../DOC_MAP.md)
+**Deliverable:** [DOC_MAP.md](../_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md)
 
 **Findings:**
 - **WORKFLOW_RUNBOOK_OVERVIEW:** Authoritative (2026), 824 lines, operational reference
@@ -89,7 +89,7 @@
 
 ### Phase 2: Backtick Audit (FACTS_COLLECTOR + CI_GUARDIAN)
 
-**Deliverable:** [BACKTICK_AUDIT.md](../../../BACKTICK_AUDIT.md)
+**Deliverable:** [BACKTICK_AUDIT.md](../_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md)
 
 **Findings:**
 - **Total backticks with "/":** 48 instances (39 in WORKFLOW_RUNBOOK_OVERVIEW, 10 in WORKFLOW_NOTES)
@@ -110,7 +110,7 @@
 
 ### Phase 3: Fix Matrix (RISK_OFFICER + SCOPE_KEEPER)
 
-**Deliverable:** [FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md](../../../FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md)
+**Deliverable:** [FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md](../_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md)
 
 **Strategy Selected:** Zero-Touch Content Approach
 
@@ -232,7 +232,7 @@ Audit Results:
 
 Risk: MINIMAL (additive-only, zero-touch content, full gate compliance)
 
-Refs: DOC_MAP.md, BACKTICK_AUDIT.md, FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md
+Refs: docs/ops/_archive/workflow_docs_integration/2026-01-12/ (audit artifacts)
 ```
 
 #### 2. Evidence Index Entry Suggestion
@@ -246,7 +246,7 @@ Refs: DOC_MAP.md, BACKTICK_AUDIT.md, FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md
 **Artifacts:**
 - Runbook: `docs/ops/runbooks/RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
 - Navigation: `docs/WORKFLOW_FRONTDOOR.md`
-- Audit: `DOC_MAP.md`, `BACKTICK_AUDIT.md`, `FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md` (temp, to be deleted)
+- Audit: `docs/ops/_archive/workflow_docs_integration/2026-01-12/` (archived after integration)
 
 **Summary:**
 Integrated WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md (authoritative, 2026) and
@@ -263,11 +263,11 @@ backticks with "/" verified gate-safe (no fixes required).
 
 #### 3. Cleanup Actions (Post-Commit)
 ```bash
-# Delete temporary audit artifacts (keep runbook + frontdoor)
-git rm DOC_MAP.md
-git rm BACKTICK_AUDIT.md
-git rm FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md
-git commit -m "chore: Remove temporary workflow docs integration artifacts"
+# Archive temporary audit artifacts (keep runbook + frontdoor)
+mkdir -p docs/ops/_archive/workflow_docs_integration/2026-01-12
+git mv BACKTICK_AUDIT.md DOC_MAP.md FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md \
+  docs/ops/_archive/workflow_docs_integration/2026-01-12/
+git commit -m "chore: Archive workflow docs integration temp artifacts"
 ```
 
 **Status:** ✅ Complete
@@ -279,9 +279,9 @@ git commit -m "chore: Remove temporary workflow docs integration artifacts"
 ### New Files Created
 1. ✅ `docs/WORKFLOW_FRONTDOOR.md` (172 lines, navigation hub)
 2. ✅ `docs/ops/runbooks/RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md` (this file)
-3. 🗑️ `DOC_MAP.md` (temp, delete after session)
-4. 🗑️ `BACKTICK_AUDIT.md` (temp, delete after session)
-5. 🗑️ `FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md` (temp, delete after session)
+3. 📦 `docs/ops/_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md` (archived after integration)
+4. 📦 `docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md` (archived after integration)
+5. 📦 `docs/ops/_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md` (archived after integration)
 
 ### Files Modified
 1. ✅ `docs/ops/README.md` (+15 lines: Workflow Documentation section)
@@ -337,9 +337,9 @@ git checkout docs/ops/README.md
 git commit -m "rollback: Remove workflow docs integration (integration artifacts only, no content modified)"
 ```
 
-### Step 4: Cleanup Temp Files
+### Step 4: Cleanup Archived Files (if needed)
 ```bash
-rm DOC_MAP.md BACKTICK_AUDIT.md FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md
+git rm -r docs/ops/_archive/workflow_docs_integration/2026-01-12/
 ```
 
 **Rollback Risk:** 🟢 MINIMAL
@@ -371,10 +371,10 @@ rm DOC_MAP.md BACKTICK_AUDIT.md FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md
 - [WORKFLOW_FRONTDOOR.md](../../WORKFLOW_FRONTDOOR.md) – Navigation hub (created this session)
 - [docs/ops/README.md](../README.md) – Ops tools index (modified this session)
 
-### Audit Artifacts (Temporary)
-- [DOC_MAP.md](../../../DOC_MAP.md) – Document positioning and overlap analysis
-- [BACKTICK_AUDIT.md](../../../BACKTICK_AUDIT.md) – Complete backtick classification (48 instances)
-- [FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md](../../../FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md) – Fix strategy and risk assessment
+### Audit Artifacts (Archived)
+- [DOC_MAP.md](../_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md) – Document positioning and overlap analysis
+- [BACKTICK_AUDIT.md](../_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md) – Complete backtick classification (48 instances)
+- [FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md](../_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md) – Fix strategy and risk assessment
 
 ### Style Guides & Gates
 - [DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md](../DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md) – Gate authoring rules
@@ -401,7 +401,7 @@ rm DOC_MAP.md BACKTICK_AUDIT.md FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md
 **Next Steps:**
 1. ✅ Run pre-commit gate check: `./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
 2. ✅ Commit changes with merge log skeleton message
-3. ✅ Delete temp artifacts (DOC_MAP, BACKTICK_AUDIT, FIX_MATRIX)
+3. ✅ Archive temp artifacts (DOC_MAP, BACKTICK_AUDIT, FIX_MATRIX) → `docs/ops/_archive/workflow_docs_integration/2026-01-12/`
 4. ✅ Optional: Add evidence index entry (EV-20260112-WORKFLOW-DOCS-INTEGRATION)
 
 ---
