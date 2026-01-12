@@ -3,7 +3,7 @@
 **PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/669  
 **Merged:** 2026-01-12  
 **Merge Commit:** `b10479c0f29e0166a12cea4ec52b239eeacbf800`  
-**Branch:** `docs/dispatch-guard-noop-proof-20260112` → `main`
+**Target:** main
 
 ---
 
