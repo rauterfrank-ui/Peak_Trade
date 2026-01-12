@@ -93,14 +93,16 @@ assert acceptable_exit
 
 ### Documentation (8 Files Created)
 
-3. `docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md` (~600 lines)
-4. `docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md` (~500 lines)
-5. `docs/ops/merge_logs/PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md` (this file)
-6. `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md` (~600 lines)
-7. `PHASE6_PATCH_DOCTOR_TEST_FIX.md` (~300 lines)
-8. `PHASE6_OPERATOR_ZUSAMMENFASSUNG.md` (~200 lines)
-9. `PHASE6_PR_BODY.md` (~350 lines)
-10. `PHASE6_EVIDENCE_INDEX_ENTRY.md` (~200 lines)
+Note: Documentation files were created in PR #677 branch and are available in that branch:
+
+3. Runbook: `RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md` (~600 lines)
+4. Operator Guide: `STRATEGY_SWITCH_SANITY_CHECK.md` (~500 lines)
+5. Merge Log: `PR_677_MERGE_LOG.md` (this file, ~400 lines)
+6. Evidence Pack: `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md` (~600 lines)
+7. Patch Docs: `PHASE6_PATCH_DOCTOR_TEST_FIX.md` (~300 lines)
+8. Operator Summary (DE): `PHASE6_OPERATOR_ZUSAMMENFASSUNG.md` (~200 lines)
+9. PR Body: `PHASE6_PR_BODY.md` (~350 lines)
+10. Evidence Index Entry: `PHASE6_EVIDENCE_INDEX_ENTRY.md` (~200 lines)
 
 ---
 
@@ -340,8 +342,9 @@ git push
 - **Related pattern**: Strategy-Coverage (existing, 100% pattern-parity)
 
 ### Documentation
-- **Runbook**: `docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md`
-- **Operator Guide**: `docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md`
+Documentation files are available in PR #677 branch:
+- **Runbook**: `RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md`
+- **Operator Guide**: `STRATEGY_SWITCH_SANITY_CHECK.md`
 - **Evidence Pack**: `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md`
 - **Patch Docs**: `PHASE6_PATCH_DOCTOR_TEST_FIX.md`
 - **Operator Summary (DE)**: `PHASE6_OPERATOR_ZUSAMMENFASSUNG.md`
