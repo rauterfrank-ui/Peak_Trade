@@ -1,0 +1,32 @@
+name: CI / Workflow Dispatch Guard
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**/*.yml"
+      - ".github/workflows/**/*.yaml"
+      - "scripts/ops/validate_workflow_dispatch_guards.py"
+      - "tests/ops/test_validate_workflow_dispatch_guards.py"
+      - "tests/fixtures/workflows_dispatch_guard/**"
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/**/*.yml"
+      - ".github/workflows/**/*.yaml"
+      - "scripts/ops/validate_workflow_dispatch_guards.py"
+
+jobs:
+  dispatch-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run guard (scan .github/workflows)
+        run: |
+          python scripts/ops/validate_workflow_dispatch_guards.py --paths .github/workflows --fail-on-warn
