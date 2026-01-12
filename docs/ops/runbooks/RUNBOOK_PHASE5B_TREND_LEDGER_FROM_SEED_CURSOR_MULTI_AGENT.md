@@ -1,8 +1,8 @@
-# RUNBOOK — Peak_Trade Phase 5B (Cursor Multi-Agent Chat)
+# RUNBOOK — Peak_Trade Phase 5B FULL (Cursor Multi-Agent Chat)
 
-**Title:** Trend Seed → Trend Ledger (Canonical JSON + Determinism Tests) — Minimal
+**Title:** Trend Seed → Trend Ledger (Canonical JSON + MD Summary + CI Artifact Workflow) — Full
 
-**Version:** 1.0.0  
+**Version:** 2.0.0  
 **Date:** 2026-01-12  
 **Phase:** 5B  
 **Scope:** AIOps / Trend Analysis  
@@ -12,18 +12,21 @@
 
 ## 0) PURPOSE
 
-Erzeuge ein deterministisches, kanonisches **Trend Ledger** (JSON) aus einem **Trend Seed** (Phase 5A output).
+Erzeuge ein deterministisches **Trend Ledger** aus **Trend Seed** und liefere es als **CI-Artefakt**:
+- `trend_ledger.json` (canonical, diff-friendly)
+- `trend_ledger.md` (operator summary)
+- `manifest.json` (CI metadata)
 
-**Minimal Scope:**
+**Full Scope:**
 - ✅ Library (consumer logic)
 - ✅ CLI (generator script)
 - ✅ Tests (unit + determinism)
 - ✅ Fixture (golden reference)
 - ✅ Documentation (runbook + index)
-- ❌ CI Workflow (deferred to Phase 5C or Full)
+- ✅ **CI Workflow** (artifact generation + upload)
 
 **Primary Outcome:**  
-Ein "Trend Ledger" wird lokal/manuell reproduzierbar erzeugt, maschinenlesbar, deterministisch, governance-freundlich.
+Ein "Trend Ledger" wird automatisch als CI-Artefakt erzeugt, maschinenlesbar, deterministisch, governance-freundlich, mit operator-freundlicher Markdown-Summary.
 
 ---
 
@@ -145,7 +148,7 @@ Produce **FACTS PACK** with:
 ### 5.2 SCOPE_KEEPER
 
 **Task:**  
-Lock scope to Phase 5B minimal only:
+Lock scope to Phase 5B FULL:
 
 **IN SCOPE:**
 - ✅ Ledger schema v1.0.0
@@ -153,13 +156,15 @@ Lock scope to Phase 5B minimal only:
 - ✅ CLI: `scripts/aiops/generate_trend_ledger_from_seed.py`
 - ✅ Tests + fixture
 - ✅ Docs updates
+- ✅ **CI Workflow:** `.github/workflows/aiops-trend-ledger-from-seed.yml`
+- ✅ **CI Artifacts:** `trend-ledger-<run_id>` (JSON + MD + manifest)
 
-**OUT OF SCOPE (deferred):**
-- ❌ CI workflow (Phase 5C or Full)
+**OUT OF SCOPE (deferred to Phase 5C+):**
 - ❌ Multi-seed aggregation (time-series)
 - ❌ Persistent storage backend
 - ❌ Dashboard/visualization
 - ❌ Cross-run trend analysis
+- ❌ Alert generation from trends
 
 **Deliverable:**  
 "SCOPE LOCK" statement + explicit out-of-scope list.
@@ -314,7 +319,58 @@ Complete test suite with golden fixture.
 
 ---
 
-### 5.5 DOCS_SCRIBE
+### 5.5 CI_GUARDIAN
+
+**Task:**  
+Implement CI workflow for automated ledger generation.
+
+#### Workflow Design Decision (Option A - Recommended)
+
+**Choice:** Option A (workflow_run trigger + artifact download)
+
+**Justification:**
+- ✅ Clean separation of concerns (Phase 5A → Phase 5B pipeline)
+- ✅ Robust artifact dependency (explicit download)
+- ✅ Supports manual trigger (workflow_dispatch) for testing
+- ✅ Minimal duplication (no re-running Phase 5A logic)
+
+#### `.github/workflows/aiops-trend-ledger-from-seed.yml`
+
+**Triggers:**
+- `workflow_run`: Triggered when Phase 5A workflow completes (success only, main branch only)
+- `workflow_dispatch`: Manual trigger for testing/debugging
+
+**Key Steps:**
+1. Checkout repository
+2. Setup Python 3.12 + uv
+3. **Download Phase 5A artifact:** `trend-seed-<run_id>`
+4. Verify artifact contents (fail-fast if missing)
+5. Run CLI: `generate_trend_ledger_from_seed.py`
+6. Verify outputs (JSON + MD + manifest)
+7. **Upload artifacts:** `trend-ledger-<run_id>`
+8. Generate GitHub step summary (preview + status)
+
+**Artifact Naming:**
+- **Input:** `trend-seed-<run_id>` (from Phase 5A)
+- **Output:** `trend-ledger-<run_id>` (contains: `trend_ledger.json`, `trend_ledger.md`, `manifest.json`)
+- **Retention:** 30 days
+
+**Permissions:**
+- `contents: read`
+- `actions: read`
+- (Minimal, read-only)
+
+**Error Handling:**
+- Fail-fast on missing artifacts
+- Structured output validation
+- Clear error messages in GitHub step summary
+
+**Deliverable:**  
+Complete, tested CI workflow YAML.
+
+---
+
+### 5.6 DOCS_SCRIBE
 
 **Task:**  
 Create documentation files:
@@ -325,25 +381,28 @@ Create documentation files:
 1. **Purpose:** What is the trend ledger?
 2. **Architecture:** Input → Processing → Output
 3. **Usage:** CLI examples, exit codes
-4. **Testing:** How to run unit tests + determinism tests
-5. **Schema:** Ledger schema v1.0.0 structure
-6. **Troubleshooting:** Common errors + fixes
-7. **Integration:** How it links to Phase 5A
-8. **References:** Code paths, related docs
+4. **CI Workflow:** Trigger mechanism, artifacts, access instructions
+5. **Testing:** How to run unit tests + determinism tests
+6. **Schema:** Ledger schema v1.0.0 structure
+7. **Troubleshooting:** Common errors + fixes (including CI artifact issues)
+8. **Monitoring:** Success/failure indicators for CI workflow
+9. **Integration:** How it links to Phase 5A
+10. **References:** Code paths, workflow YAML, related docs
 
 #### B) Update `docs/ops/README.md`
 
 Add Phase 5B section under "Phase 5A" with:
-- Link to runbook
-- Key deliverables
+- Link to both runbooks (Cursor Multi-Agent + Operator)
+- Key deliverables (including CI workflow)
 - Risk statement (LOW)
+- Artifact access instructions
 
 **Deliverable:**  
 Complete runbook + index update.
 
 ---
 
-### 5.6 RISK_OFFICER
+### 5.7 RISK_OFFICER
 
 **Task:**  
 Produce **RISK NOTE** covering:
@@ -351,17 +410,24 @@ Produce **RISK NOTE** covering:
 **Risk Assessment:** LOW
 
 **Potential Risks:**
-1. Artifact dependency drift (seed schema change)
-2. Nondeterminism via metadata
-3. Missing determinism contract enforcement
+1. **Artifact dependency drift:** Seed schema v0.1.0 → v0.2.0 break
+   - **Impact:** CI workflow fails to parse seed
+   - **Mitigation:** Fail-closed schema validation, explicit version checks in code
 
-**Mitigations:**
-1. Fail-closed schema validation + explicit version checks
-2. Timestamps excluded from hash, only in metadata
-3. Tests enforce determinism (compare hashes across runs)
+2. **Nondeterminism via metadata:** Timestamps in hash calculation
+   - **Impact:** False positive diffs in ledger comparison
+   - **Mitigation:** Timestamps excluded from canonical JSON hash, only in metadata section
+
+3. **CI artifact retrieval fragility:** workflow_run dependency on Phase 5A
+   - **Impact:** Artifact not found, workflow fails
+   - **Mitigation:** Well-defined artifact naming (`trend-seed-<run_id>`), fallback to manual trigger (workflow_dispatch)
+
+4. **Markdown summary nondeterminism:** Unstable "top N" selection
+   - **Impact:** Markdown diffs on identical ledgers
+   - **Mitigation:** Deterministic sorting for top N selection (canonical ordering)
 
 **Impact:**  
-Tooling/CI artifacts only, no trading core touched.
+Tooling/CI artifacts only, no trading core touched. Additive changes.
 
 **Deliverable:**  
 Risk note + PR risk section.
@@ -433,13 +499,15 @@ sha256(canonical_json.encode("utf-8")).hexdigest()
 
 **ORCHESTRATOR must drive the conversation in this strict order:**
 
-1. **FACTS_COLLECTOR** → Produce FACTS PACK (seed schema + patterns)
-2. **SCOPE_KEEPER** → Produce SCOPE LOCK (no CI workflow)
-3. **RISK_OFFICER** → Produce RISK NOTE (based on schema proposal)
-4. **IMPLEMENTER** → Write library + CLI (complete code)
-5. **TEST_ENGINEER** → Add fixtures + tests
-6. **DOCS_SCRIBE** → Add runbook + README update
-7. **ORCHESTRATOR** → Produce PR body + final checklist
+1. **FACTS_COLLECTOR** → Produce FACTS PACK (seed schema + Phase 5A artifact patterns)
+2. **SCOPE_KEEPER** → Produce SCOPE LOCK (includes CI workflow)
+3. **CI_GUARDIAN** → Choose workflow design (Option A vs B) + justify
+4. **RISK_OFFICER** → Produce RISK NOTE (based on schema + workflow proposal)
+5. **IMPLEMENTER** → Write library + CLI (complete code)
+6. **TEST_ENGINEER** → Add fixtures + tests (including determinism)
+7. **CI_GUARDIAN** → Implement workflow YAML (complete)
+8. **DOCS_SCRIBE** → Add runbook + README update (includes CI workflow docs)
+9. **ORCHESTRATOR** → Produce PR body + final checklist
 
 **No parallel execution.** Each agent waits for previous agent's output.
 
@@ -449,48 +517,74 @@ sha256(canonical_json.encode("utf-8")).hexdigest()
 
 **Title:**  
 ```
-feat(aiops): Phase 5B trend ledger consumer from seed
+feat(aiops): Phase 5B trend ledger consumer from seed + CI workflow
 ```
 
 **Body (compact format):**
 
 ```markdown
 ## Summary
-Implements Phase 5B consumer that converts Phase 5A Trend Seeds into canonical Trend Ledger snapshots with deterministic JSON and markdown summaries.
+Implements Phase 5B consumer that converts Phase 5A Trend Seeds into canonical Trend Ledger snapshots, produced as CI artifacts with deterministic JSON and markdown summaries.
 
 ## Why
-Establishes a stable, canonical ledger primitive from trend seeds, enabling future trend aggregation (Phase 5C+) with fail-closed validation and deterministic output.
+Establishes a stable, canonical ledger primitive from trend seeds, enabling future trend aggregation (Phase 5C+) with fail-closed validation, deterministic output, and automated CI artifact generation.
 
 ## Changes
 - Consumer library: `src/ai_orchestration/trends/trend_ledger.py`
+  - Fail-closed validation (missing keys / unsupported schema)
+  - Deterministic JSON serialization (sorted keys, stable ordering)
+  - Canonical hash computation for determinism verification
 - CLI: `scripts/aiops/generate_trend_ledger_from_seed.py`
+  - Inputs: trend seed JSON
+  - Outputs: ledger JSON (canonical), ledger.md (summary), manifest.json (metadata)
+- **CI workflow:** `.github/workflows/aiops-trend-ledger-from-seed.yml`
+  - Trigger: `workflow_run` for Phase 5A completion (success, main only)
+  - Downloads Phase 5A artifact, runs consumer, uploads Trend Ledger artifact
+  - Minimal permissions (contents: read, actions: read)
 - Tests: `tests/ai_orchestration/test_trend_ledger_from_seed.py` (21 tests)
 - Fixture: `tests/fixtures/trend_seed.sample.json`
-- Runbook: `docs/ops/runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md`
+- Runbooks:
+  - Operator: `docs/ops/runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md`
+  - Multi-agent: `docs/ops/runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md`
 - Index: `docs/ops/README.md` updated
 
 ## Verification
 - Pre-commit hooks: all passed
 - Test suite: 21/21 passed
 - Determinism: verified byte-identical output
-  - SHA-256: `<hash>`
+  - SHA-256: `8867a623725c5f97fa9ddadac06b9bad295380a89f5c8c87afe2d2ddb0fefb58`
   - Repeated runs: identical hashes
+- CI workflow: tested locally, ready for auto-trigger
 
 ## Risk
 LOW — tooling/CI artifacts only; no trading/live execution code touched.
 
+**Potential Issues:**
+- Artifact dependency drift (seed schema change) → Mitigated by fail-closed validation
+- CI artifact retrieval fragility → Mitigated by workflow_dispatch fallback
+
 ## Operator How-To
+
+### Local Usage
 ```bash
-# Generate ledger from seed
+# Generate ledger from seed (local)
 python scripts/aiops/generate_trend_ledger_from_seed.py \
   --input trend_seed.json \
   --output-json trend_ledger.json \
   --output-markdown trend_ledger.md
 ```
 
+### CI Workflow
+- Phase 5A workflow run completes on `main`
+- Trend ledger workflow triggers automatically via `workflow_run`
+- Produced artifact: `trend-ledger-<run_id>` (contains ledger JSON + markdown + manifest)
+- **Manual trigger:** Actions tab → "AIOps - Trend Ledger from Seed" → Run workflow
+
 ## References
-- Runbook: `docs/ops/runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md`
+- Operator runbook: `docs/ops/runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md`
+- Multi-agent runbook: `docs/ops/runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md`
 - Phase 5A: `docs/ops/runbooks/RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md`
+- CI workflow: `.github/workflows/aiops-trend-ledger-from-seed.yml`
 ```
 
 ---
@@ -501,12 +595,15 @@ python scripts/aiops/generate_trend_ledger_from_seed.py \
 
 - [ ] New files compiled/importable
 - [ ] Tests cover determinism (repeated runs → identical bytes)
+- [ ] **CI workflow produces artifacts with stable filenames** (`trend-ledger-<run_id>`)
+- [ ] **Workflow YAML triggers correctly** (workflow_run + workflow_dispatch)
 - [ ] Fixture is minimal but representative
-- [ ] Docs runbook added
-- [ ] README index updated
+- [ ] Docs runbook added (includes CI workflow section)
+- [ ] README index updated (includes CI workflow reference)
 - [ ] No trading-core files touched
 - [ ] Ruff/format compliance (pre-commit hooks passed)
 - [ ] PR body includes all sections (Summary/Why/Changes/Verification/Risk/How-To/References)
+- [ ] **Artifact naming convention documented** (in runbook + workflow)
 
 ---
 
@@ -518,44 +615,104 @@ The assistant must output:
 - ✅ `src/ai_orchestration/trends/trend_ledger.py` (complete)
 - ✅ `scripts/aiops/generate_trend_ledger_from_seed.py` (executable)
 
-### B) Fixture Contents (JSON)
+### B) CI Workflow
+- ✅ `.github/workflows/aiops-trend-ledger-from-seed.yml` (complete, tested)
+
+### C) Fixture Contents (JSON)
 - ✅ `tests/fixtures/trend_seed.sample.json` (explicit content)
 
-### C) Test Suite
+### D) Test Suite
 - ✅ `tests/ai_orchestration/test_trend_ledger_from_seed.py` (complete)
+- ✅ Includes determinism tests (repeated runs → identical hashes)
 
-### D) Documentation
-- ✅ `docs/ops/runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md`
-- ✅ `docs/ops/README.md` (update section)
+### E) Documentation
+- ✅ `docs/ops/runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md` (includes CI workflow)
+- ✅ `docs/ops/runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md` (this file)
+- ✅ `docs/ops/README.md` (update section with both runbooks)
 
-### E) PR Components
-- ✅ PR title
-- ✅ PR description (all sections)
+### F) PR Components
+- ✅ PR title (includes "+ CI workflow")
+- ✅ PR description (all sections including CI workflow)
 
-### F) Risk & Mitigation Note
-- ✅ Risk assessment
+### G) Risk & Mitigation Note
+- ✅ Risk assessment (including CI-specific risks)
 - ✅ Mitigation strategies
 
 ---
 
-## 11) EXECUTION PROTOCOL
+## 11) WORKFLOW DESIGN — CI_GUARDIAN DECISION
+
+### Option A: workflow_run Trigger + Artifact Download (RECOMMENDED)
+
+**Selected:** ✅ Option A
+
+**Justification:**
+1. **Clean separation:** Phase 5A and 5B remain independent
+2. **Explicit dependencies:** Artifact download makes data flow clear
+3. **Testability:** Manual trigger (workflow_dispatch) for debugging
+4. **Efficiency:** No duplication of Phase 5A logic
+5. **Robustness:** Fail-fast on missing artifacts
+
+**Implementation:**
+```yaml
+on:
+  workflow_run:
+    workflows: ["AIOps - Trend Seed from Normalized Report"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  generate-trend-ledger:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v4
+      - uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: aiops-trend-seed-from-normalized-report.yml
+          run_id: ${{ github.event.workflow_run.id }}
+          name: trend-seed-${{ github.event.workflow_run.id }}
+      - run: |
+          uv run python scripts/aiops/generate_trend_ledger_from_seed.py \
+            --input .tmp/phase5a_artifacts/trend_seed.normalized_report.json \
+            --output-json .tmp/trend_ledger/trend_ledger.json \
+            --output-markdown .tmp/trend_ledger/trend_ledger.md \
+            --run-manifest .tmp/trend_ledger/manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: trend-ledger-${{ github.event.workflow_run.id }}
+          path: .tmp/trend_ledger/
+```
+
+**Rejected:** ❌ Option B (regenerate seed)
+- **Reason:** Higher coupling, duplicates Phase 5A logic, less maintainable
+
+---
+
+## 12) EXECUTION PROTOCOL
 
 ### Start Sequence
 
 ```
-ORCHESTRATOR: "BEGIN PHASE 5B MINIMAL EXECUTION"
+ORCHESTRATOR: "BEGIN PHASE 5B FULL EXECUTION"
 ↓
-FACTS_COLLECTOR: "Produce FACTS PACK"
+FACTS_COLLECTOR: "Produce FACTS PACK (seed schema + Phase 5A artifacts)"
 ↓
-SCOPE_KEEPER: "Produce SCOPE LOCK"
+SCOPE_KEEPER: "Produce SCOPE LOCK (includes CI workflow)"
 ↓
-RISK_OFFICER: "Produce RISK NOTE"
+CI_GUARDIAN: "Choose workflow design (Option A vs B) + justify"
+↓
+RISK_OFFICER: "Produce RISK NOTE (schema + workflow risks)"
 ↓
 IMPLEMENTER: "Implement library + CLI"
 ↓
-TEST_ENGINEER: "Add fixtures + tests"
+TEST_ENGINEER: "Add fixtures + tests (determinism)"
 ↓
-DOCS_SCRIBE: "Add runbook + README"
+CI_GUARDIAN: "Implement workflow YAML (complete)"
+↓
+DOCS_SCRIBE: "Add runbook + README (includes CI docs)"
 ↓
 ORCHESTRATOR: "Produce PR body + checklist"
 ↓
@@ -575,20 +732,22 @@ ORCHESTRATOR: "✅ FACTS PACK approved. SCOPE_KEEPER, produce SCOPE LOCK now."
 
 ---
 
-## 12) SUCCESS CRITERIA
+## 13) SUCCESS CRITERIA
 
-**Phase 5B is COMPLETE when:**
+**Phase 5B FULL is COMPLETE when:**
 
-1. ✅ PR created with all deliverables
+1. ✅ PR created with all deliverables (code + CI workflow + docs)
 2. ✅ All CI gates green (Lint/Audit/Policy/Tests)
 3. ✅ Determinism verified (SHA-256 stable across runs)
-4. ✅ Documentation complete (runbook + index)
-5. ✅ Risk assessment LOW confirmed
-6. ✅ No trading-core files touched
+4. ✅ **CI workflow tested** (workflow_dispatch run successful)
+5. ✅ **Artifacts uploaded** with stable naming (`trend-ledger-<run_id>`)
+6. ✅ Documentation complete (both runbooks + index)
+7. ✅ Risk assessment LOW confirmed
+8. ✅ No trading-core files touched
 
 ---
 
-## 13) REFERENCES
+## 14) REFERENCES
 
 **Related Runbooks:**
 - Phase 5A: `RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md`
@@ -598,18 +757,25 @@ ORCHESTRATOR: "✅ FACTS PACK approved. SCOPE_KEEPER, produce SCOPE LOCK now."
 - Library: `src/ai_orchestration/trends/trend_ledger.py`
 - CLI: `scripts/aiops/generate_trend_ledger_from_seed.py`
 - Tests: `tests/ai_orchestration/test_trend_ledger_from_seed.py`
+- Fixture: `tests/fixtures/trend_seed.sample.json`
+
+**CI:**
+- Workflow: `.github/workflows/aiops-trend-ledger-from-seed.yml`
+- Phase 5A workflow: `.github/workflows/aiops-trend-seed-from-normalized-report.yml`
 
 **Docs:**
 - Operator runbook: `RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md`
+- Multi-agent runbook: `RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md` (this file)
 - Ops index: `docs/ops/README.md`
 
 ---
 
-## 14) CHANGE LOG
+## 15) CHANGE LOG
 
-| Version | Date       | Author       | Changes                              |
-|---------|------------|--------------|--------------------------------------|
-| 1.0.0   | 2026-01-12 | AI Ops Team  | Initial Phase 5B minimal runbook     |
+| Version | Date       | Author       | Changes                                      |
+|---------|------------|--------------|----------------------------------------------|
+| 1.0.0   | 2026-01-12 | AI Ops Team  | Initial Phase 5B minimal runbook             |
+| 2.0.0   | 2026-01-12 | AI Ops Team  | Upgrade to FULL (added CI workflow section)  |
 
 ---
 
