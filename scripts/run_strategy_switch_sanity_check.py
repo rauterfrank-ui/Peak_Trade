@@ -28,6 +28,10 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
+# Ensure src is in path (for imports to work)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
 
 def main() -> int:
     """
