@@ -65,11 +65,13 @@ class WorkflowAnalyzer:
                 with open(wf_file, "r", encoding="utf-8") as f:
                     content = yaml.safe_load(f)
                     if content:
-                        self.workflows.append({
-                            "file": wf_file.name,
-                            "path": wf_file,
-                            "content": content,
-                        })
+                        self.workflows.append(
+                            {
+                                "file": wf_file.name,
+                                "path": wf_file,
+                                "content": content,
+                            }
+                        )
             except Exception as e:
                 print(f"WARNING: Failed to parse {wf_file.name}: {e}", file=sys.stderr)
 
@@ -113,17 +115,21 @@ class WorkflowAnalyzer:
             for job_id, job_config in jobs.items():
                 if isinstance(job_config, dict):
                     job_display = job_config.get("name", job_id)
-                    job_list.append({
-                        "job_id": job_id,
-                        "job_display": job_display,
-                    })
+                    job_list.append(
+                        {
+                            "job_id": job_id,
+                            "job_display": job_display,
+                        }
+                    )
 
-            pr_workflows.append({
-                "file": wf["file"],
-                "workflow_name": workflow_name,
-                "has_pr_paths": has_pr_paths,
-                "jobs": job_list,
-            })
+            pr_workflows.append(
+                {
+                    "file": wf["file"],
+                    "workflow_name": workflow_name,
+                    "has_pr_paths": has_pr_paths,
+                    "jobs": job_list,
+                }
+            )
 
         return pr_workflows
 
@@ -195,21 +201,25 @@ class RequiredChecksValidator:
             for job in wf["jobs"]:
                 candidates = self.analyzer.generate_check_candidates(wf, job)
                 if context in candidates:
-                    matches.append({
-                        "workflow_file": wf["file"],
-                        "workflow_name": wf["workflow_name"],
-                        "job_display": job["job_display"],
-                        "has_pr_paths": wf["has_pr_paths"],
-                    })
+                    matches.append(
+                        {
+                            "workflow_file": wf["file"],
+                            "workflow_name": wf["workflow_name"],
+                            "job_display": job["job_display"],
+                            "has_pr_paths": wf["has_pr_paths"],
+                        }
+                    )
 
         if not matches:
             # FAIL: Required context not produced by any PR workflow
-            self.findings.append({
-                "context": context,
-                "status": "FAIL",
-                "reason": "Required context not produced by any PR workflow",
-                "remediation": f"Add a PR-triggered workflow/job that produces '{context}' check",
-            })
+            self.findings.append(
+                {
+                    "context": context,
+                    "status": "FAIL",
+                    "reason": "Required context not produced by any PR workflow",
+                    "remediation": f"Add a PR-triggered workflow/job that produces '{context}' check",
+                }
+            )
             return
 
         # Check if all matches are path-filtered
@@ -218,13 +228,15 @@ class RequiredChecksValidator:
         if not always_on_matches:
             # FAIL: Context only produced by path-filtered workflows
             example = matches[0]
-            self.findings.append({
-                "context": context,
-                "status": "FAIL",
-                "reason": "Required context only produced by path-filtered workflows",
-                "remediation": f"Remove PR-level 'paths' filter from workflow '{example['workflow_file']}' "
-                               f"and use internal change detection (dorny/paths-filter) instead",
-            })
+            self.findings.append(
+                {
+                    "context": context,
+                    "status": "FAIL",
+                    "reason": "Required context only produced by path-filtered workflows",
+                    "remediation": f"Remove PR-level 'paths' filter from workflow '{example['workflow_file']}' "
+                    f"and use internal change detection (dorny/paths-filter) instead",
+                }
+            )
             return
 
         # PASS: Context is produced by at least one always-on workflow
@@ -341,6 +353,7 @@ Examples:
     except Exception as e:
         print(f"ERROR: Validation failed: {e}", file=sys.stderr)
         import traceback
+
         traceback.print_exc()
         return 2
 

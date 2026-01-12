@@ -765,7 +765,6 @@ Validator detects path-filtered required check and exits with code 2.
 **Runbook:**
 - Required Check Reliability Rule (this section)
 - Phase 5C Reliability Fix (Addendum above)
-- CI Required Contexts Contract: `docs/ops/ci/ci_required_checks_matrix_naming_contract.md` (if exists)
 
 ### Next Steps
 

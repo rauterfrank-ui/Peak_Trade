@@ -23,6 +23,7 @@ import pytest
 
 # Import the validator (adjust import if needed)
 import sys
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 from validate_required_checks_hygiene import RequiredChecksValidator
 
@@ -169,12 +170,16 @@ def test_pass_when_workflow_has_internal_change_detection(fixtures_dir):
 
         # Create config expecting "always-on-check"
         config_path = Path(tmpdir) / "test_config.json"
-        config_path.write_text(json.dumps({
-            "schema_version": "1.0.0",
-            "required_contexts": ["always-on-check"],
-            "ignored_contexts": [],
-            "notes": "Test config"
-        }))
+        config_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": "1.0.0",
+                    "required_contexts": ["always-on-check"],
+                    "ignored_contexts": [],
+                    "notes": "Test config",
+                }
+            )
+        )
 
         # Run validator
         validator = RequiredChecksValidator(
@@ -235,12 +240,16 @@ jobs:
 
         # Create config expecting "my-check"
         config_path = Path(tmpdir) / "test_config.json"
-        config_path.write_text(json.dumps({
-            "schema_version": "1.0.0",
-            "required_contexts": ["my-check"],
-            "ignored_contexts": [],
-            "notes": "Test config"
-        }))
+        config_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": "1.0.0",
+                    "required_contexts": ["my-check"],
+                    "ignored_contexts": [],
+                    "notes": "Test config",
+                }
+            )
+        )
 
         # Run validator
         validator = RequiredChecksValidator(
