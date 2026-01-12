@@ -9,6 +9,7 @@ on:
     workflows: ["AIOps - Trend Seed from Normalized Report"]
     types: [completed]
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
