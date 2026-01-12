@@ -41,17 +41,17 @@ All inline backticks with "/" in both documents are either:
 ## Alternative Fix Strategies (Rejected)
 
 ### Option A: Escape All Placeholder Paths (REJECTED)
-**Pattern:** Convert `docs/FILE.md` → `"docs\/FILE.md" (future)`  
+**Pattern:** Convert <code>docs&#47;FILE.md</code> → `"docs\/FILE.md" (future)"`  
 **Reason for Rejection:** Paths exist, no need to mark as future  
 **Risk:** Would falsely imply paths don't exist (misleading)
 
 ### Option B: Convert Backticks to Markdown Links (REJECTED)
-**Pattern:** Convert `docs/FILE.md` → `[docs/FILE.md](docs/FILE.md)`  
+**Pattern:** Convert <code>docs&#47;FILE.md</code> → <code>[docs&#47;FILE.md](docs&#47;FILE.md)</code> (markdown link)  
 **Reason for Rejection:** Changes semantic meaning, not required  
 **Risk:** Over-engineering, violates minimal-change principle
 
 ### Option C: Add HTML Entity Slash Escaping (REJECTED)
-**Pattern:** Convert `docs/FILE.md` → `docs&#47;FILE.md`  
+**Pattern:** Convert <code>docs&#47;FILE.md</code> → `docs&#47;FILE.md` (HTML entity)  
 **Reason for Rejection:** Reduces readability, not required  
 **Risk:** Makes docs harder to read for humans
 
