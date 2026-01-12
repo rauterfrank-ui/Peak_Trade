@@ -93,16 +93,17 @@ assert acceptable_exit
 
 ### Documentation (8 Files Created)
 
-Note: Documentation files were created in PR #677 branch and are available in that branch:
+**Operator Documentation (in `docs/ops/`)**:
+1. [Runbook](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md) (~600 lines)
+2. [Operator Guide](../STRATEGY_SWITCH_SANITY_CHECK.md) (~500 lines)
+3. [Merge Log](PR_677_MERGE_LOG.md) (this file, ~400 lines)
 
-3. Runbook: `RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md` (~600 lines)
-4. Operator Guide: `STRATEGY_SWITCH_SANITY_CHECK.md` (~500 lines)
-5. Merge Log: `PR_677_MERGE_LOG.md` (this file, ~400 lines)
-6. Evidence Pack: `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md` (~600 lines)
-7. Patch Docs: `PHASE6_PATCH_DOCTOR_TEST_FIX.md` (~300 lines)
-8. Operator Summary (DE): `PHASE6_OPERATOR_ZUSAMMENFASSUNG.md` (~200 lines)
-9. PR Body: `PHASE6_PR_BODY.md` (~350 lines)
-10. Evidence Index Entry: `PHASE6_EVIDENCE_INDEX_ENTRY.md` (~200 lines)
+**Project Root Documentation**:
+4. [Evidence Pack](../../../PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md) (~600 lines)
+5. [Patch Docs](../../../PHASE6_PATCH_DOCTOR_TEST_FIX.md) (~300 lines)
+6. [Operator Summary (DE)](../../../PHASE6_OPERATOR_ZUSAMMENFASSUNG.md) (~200 lines)
+7. [PR Body](../../../PHASE6_PR_BODY.md) (~350 lines)
+8. Evidence Index Entry (merged via [PR #678](https://github.com/rauterfrank-ui/Peak_Trade/pull/678))
 
 ---
 
@@ -342,12 +343,11 @@ git push
 - **Related pattern**: Strategy-Coverage (existing, 100% pattern-parity)
 
 ### Documentation
-Documentation files are available in PR #677 branch:
-- **Runbook**: `RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md`
-- **Operator Guide**: `STRATEGY_SWITCH_SANITY_CHECK.md`
-- **Evidence Pack**: `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md`
-- **Patch Docs**: `PHASE6_PATCH_DOCTOR_TEST_FIX.md`
-- **Operator Summary (DE)**: `PHASE6_OPERATOR_ZUSAMMENFASSUNG.md`
+- **Runbook**: [RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)
+- **Operator Guide**: [STRATEGY_SWITCH_SANITY_CHECK.md](../STRATEGY_SWITCH_SANITY_CHECK.md)
+- **Evidence Pack**: [PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md](../../../PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md)
+- **Patch Docs**: [PHASE6_PATCH_DOCTOR_TEST_FIX.md](../../../PHASE6_PATCH_DOCTOR_TEST_FIX.md)
+- **Operator Summary (DE)**: [PHASE6_OPERATOR_ZUSAMMENFASSUNG.md](../../../PHASE6_OPERATOR_ZUSAMMENFASSUNG.md)
 
 ### Code
 - **Core Logic**: `src/governance/strategy_switch_sanity_check.py`
@@ -371,6 +371,33 @@ Documentation files are available in PR #677 branch:
 - ✅ **Documented**: Runbook, Evidence Pack, Operator Guide
 - ✅ **Minimal-Risk**: 3-line code change + test assertion
 - ✅ **Hermetic Tests**: No system-state dependencies
+
+---
+
+## Link Stability Contract
+
+This merge log follows the **Peak_Trade Docs Link Stability Contract** to ensure maintainability and CI compliance:
+
+### Principle 1: Main-Resident Links ✅
+- Use **repo-relative markdown links** `[text](path)` for files on `main`
+- Example: `[Runbook](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)`
+- Rationale: Enables docs reference targets validation, offline reading, IDE navigation
+
+### Principle 2: Cross-Branch/PR References 🔗
+- Use **GitHub permalinks** (commit SHA or PR link) for files not yet on `main`
+- Example: `[File](https://github.com/org/repo/blob/SHA/path/file.md)` or `[PR #123](https://github.com/org/repo/pull/123)`
+- Rationale: Prevents broken links when feature branch is deleted before merge
+
+### Principle 3: Post-Merge Cleanup 🔄
+- After PR merge: Open follow-up PR to convert permalinks → relative links (if applicable)
+- Rationale: Improve maintainability, reduce external dependencies
+- **Status**: Applied in this merge log (PR #677 merged → relative links added in [PR #678](https://github.com/rauterfrank-ui/Peak_Trade/pull/678))
+
+### Principle 4: External References 🌐
+- PR/Issue links stay as GitHub URLs: `[PR #677](https://github.com/.../pull/677)`
+- Rationale: PRs are metadata, not documentation targets; GitHub is source of truth
+
+**Compliance**: This merge log was updated post-merge (via PR #678) to convert backtick references → markdown links per Principle 3.
 
 ---
 

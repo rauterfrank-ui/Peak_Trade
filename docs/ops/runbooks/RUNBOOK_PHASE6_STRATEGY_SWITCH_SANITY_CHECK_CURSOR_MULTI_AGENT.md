@@ -438,10 +438,11 @@ git push
 ## References
 
 ### Documentation
-- **Operator Guide**: `docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md` (~500 lines)
-- **Evidence Pack**: `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md` (~600 lines)
-- **Operator Summary (DE)**: `PHASE6_OPERATOR_ZUSAMMENFASSUNG.md`
-- **Patch Documentation**: `PHASE6_PATCH_DOCTOR_TEST_FIX.md`
+- **Operator Guide**: [STRATEGY_SWITCH_SANITY_CHECK.md](../STRATEGY_SWITCH_SANITY_CHECK.md) (~500 lines)
+- **Evidence Pack**: [PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md](../../../PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md) (~600 lines)
+- **Operator Summary (DE)**: [PHASE6_OPERATOR_ZUSAMMENFASSUNG.md](../../../PHASE6_OPERATOR_ZUSAMMENFASSUNG.md)
+- **Patch Documentation**: [PHASE6_PATCH_DOCTOR_TEST_FIX.md](../../../PHASE6_PATCH_DOCTOR_TEST_FIX.md)
+- **Merge Log**: [PR_677_MERGE_LOG.md](../merge_logs/PR_677_MERGE_LOG.md)
 
 ### Code
 - **Core Logic**: `src/governance/strategy_switch_sanity_check.py`
@@ -488,6 +489,18 @@ pytest tests/governance/test_strategy_switch_sanity_check.py -v
 - **2026-01-12**: Phase 6 complete (PYTHONPATH fix, hermetic test fix, full docs)
 - **2026-01-12**: Core implementation already existed (Phase 5 or earlier)
 - **2026-01-12**: Evidence Pack + Runbook created
+
+---
+
+## Documentation Link Stability
+
+This runbook follows the **Peak_Trade Docs Link Stability Contract**:
+- ✅ **Repo-relative links** for files on `main` (e.g., `[Guide](../STRATEGY_SWITCH_SANITY_CHECK.md)`)
+- 🔗 **GitHub permalinks** for cross-branch references (e.g., commit SHA or PR URL)
+- 🔄 **Post-merge cleanup**: Convert permalinks → relative links after merge
+- 🌐 **External references**: PR/issue links stay as GitHub URLs
+
+See [PR #677 Merge Log](../merge_logs/PR_677_MERGE_LOG.md) for full contract details.
 
 ---
 
