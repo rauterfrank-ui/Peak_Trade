@@ -299,7 +299,7 @@ Quick command: `python scripts&#47;example.py`
 
 Or copy from block below:
 ```bash
-python scripts/example.py
+python scripts&#47;example.py
 ```
 
 ### Issue: Real path flagged as missing
