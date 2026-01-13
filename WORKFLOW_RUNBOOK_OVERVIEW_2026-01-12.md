@@ -59,7 +59,7 @@ Hinweis: Phase 13 (Production Live-Trading) erfordert explizites Governance-Gate
 | **7-9** | Auto-Portfolio-Builder | `build_auto_portfolios.py`, `analyze_experiments.py` |
 | **10-11** | Strategie-Registry & Exchange-Tools | `inspect_exchange.py`, `scan_markets.py` |
 | **11.1** | Live Portfolio Monitoring | `preview_live_portfolio.py` |
-| **12** | Live-Ops CLI | `live_ops.py orders/portfolio/health` |
+| **12** | Live-Ops CLI | `live_ops.py orders&#47;portfolio&#47;health` |
 | **13** | Live Status Reports | `generate_live_status_report.py` |
 | **14** | Scheduler & Job Runner | `run_scheduler.py` |
 | **15-18** | Testnet-Orchestrator, Live Monitor, Alerts, Web-Dashboard | `testnet_orchestrator_cli.py`, `live_monitor_cli.py`, `live_alerts_cli.py`, `live_web_server.py` |
@@ -405,13 +405,13 @@ python scripts/live_web_server.py \
 ### Verzeichnis-Übersicht: `docs/ops/`
 
 **Control Center:**
-- `control_center/AI_AUTONOMY_CONTROL_CENTER.md`
-- `control_center/CONTROL_CENTER_NAV.md`
+- `control_center&#47;AI_AUTONOMY_CONTROL_CENTER.md`
+- `control_center&#47;CONTROL_CENTER_NAV.md`
 
 **Evidence & Audit:**
 - `EVIDENCE_INDEX.md` - Zentrale Evidence-Verwaltung
 - `EVIDENCE_SCHEMA.md` - Evidence-Artefakt-Schema
-- `evidence/` - Evidence-Artefakte
+- `evidence&#47;` - Evidence-Artefakte
 - `EVIDENCE_ENTRY_TEMPLATE.md` - Template für neue Evidence
 
 **CI/CD & Branch Management:**
@@ -422,19 +422,19 @@ python scripts/live_web_server.py \
 - `ci_required_checks_matrix_naming_contract.md`
 
 **Merge Logs:**
-- `merge_logs/` - Über 100+ PR Merge Logs
+- `merge_logs&#47;` - Über 100+ PR Merge Logs
 - `MERGE_LOG_TEMPLATE_COMPACT.md`
 - `MERGE_LOG_TEMPLATE_DETAILED.md`
 - `MERGE_LOG_WORKFLOW.md`
 
 **Runbooks:**
-- `runbooks/` - Spezifische Runbooks
+- `runbooks&#47;` - Spezifische Runbooks
 - `KILL_SWITCH_RUNBOOK.md`
 - `EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md`
 - `POLICY_CRITIC_TRIAGE_RUNBOOK.md`
 
 **Guides:**
-- `guides/` - Operator-Guides
+- `guides&#47;` - Operator-Guides
 - `DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md`
 - `POLICY_SAFE_DOCUMENTATION_GUIDE.md`
 - `PR_MANAGEMENT_TOOLKIT.md`

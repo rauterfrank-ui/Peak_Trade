@@ -33,6 +33,6 @@ Navigate via:
 
 ## References
 - PR #706: https://github.com/rauterfrank-ui/Peak_Trade/pull/706
-- Branch: `docs/runbooks-frontdoor-reintegration`
+- Branch: docs&#47;runbooks-frontdoor-reintegration
 - Runbook: `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md` (Phase 25/56, unchanged)
 - Previous attempt: PR #705 (closed, reverted)
