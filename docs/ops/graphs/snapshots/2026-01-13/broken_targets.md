@@ -1,21 +1,29 @@
 # Broken Targets Report
 
-**Snapshot:** `docs&#47;ops&#47;graphs&#47;snapshots&#47;2026-01-13&#47;docs_graph_snapshot.json`  
-**Total Broken Targets:** 181
+**Snapshot:** `docs&#47;ops&#47;graphs&#47;snapshots&#47;2026-01-13&#47;docs_graph_snapshot_wave1_after.json`  
+**Total Broken Targets:** 183
 
 ## Summary by Reason
 
-- **file not found:** 169
-- **outside repo:** 12
+- **file not found:** 183
 
 ---
 
 ## Detailed Breakdown
 
-### File Not Found (169)
+### File Not Found (183)
+
+- **Source:** `.PR_PHASE0_SUMMARY.md`
+  - **Raw target:** `src&`
 
 - **Source:** `PHASE4E_EXECUTION_SUMMARY.md`
   - **Raw target:** `PHASE4E_CLOSEOUT_OPERATOR_GUIDE.md`
+
+- **Source:** `PHASE6B_RELINK_SUMMARY.md`
+  - **Raw target:** `..&`
+
+- **Source:** `PHASE6B_RELINK_SUMMARY.md`
+  - **Raw target:** `..&`
 
 - **Source:** `PHASE8_DOCS_INTEGRITY_HARDENING_IMPLEMENTATION_SUMMARY.md`
   - **Raw target:** `.cursor&#47;rules&#47;peak-trade-delivery-contract.mdc`
@@ -219,7 +227,19 @@
   - **Raw target:** `repo-relative-path`
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md`
-  - **Raw target:** `..&#47;EVIDENCE_INDEX.md`
+  - **Raw target:** `..&`
+
+- **Source:** `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md`
+  - **Raw target:** `..&`
+
+- **Source:** `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md`
+  - **Raw target:** `..&`
+
+- **Source:** `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md`
+  - **Raw target:** `..&`
+
+- **Source:** `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md`
+  - **Raw target:** `..&`
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_INDEX.md`
   - **Raw target:** `..&#47;..&#47;.github&#47;workflows&#47;ci.yml`
@@ -241,6 +261,12 @@
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_INDEX.md`
   - **Raw target:** `templates&#47;phase5_no_live&#47;`
+
+- **Source:** `docs&#47;ops&#47;EVIDENCE_SCHEMA.md`
+  - **Raw target:** `..&`
+
+- **Source:** `docs&#47;ops&#47;EVIDENCE_SCHEMA.md`
+  - **Raw target:** `..&`
 
 - **Source:** `docs&#47;ops&#47;OPS_DOCTOR_README.md`
   - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;KNOWLEDGE_SMOKE_README.md`
@@ -317,6 +343,12 @@
 - **Source:** `docs&#47;ops&#47;evidence&#47;EV-20260107-DOCS-REF-GATE.md`
   - **Raw target:** `..&#47;DOCS_REFERENCE_TARGETS_BASELINE.json`
 
+- **Source:** `docs&#47;ops&#47;graphs&#47;TRIAGE_2026-01-13.md`
+  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;docs_graph_snapshot.py`
+
+- **Source:** `docs&#47;ops&#47;graphs&#47;TRIAGE_2026-01-13.md`
+  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;docs_graph_triage.py`
+
 - **Source:** `docs&#47;ops&#47;merge_logs&#47;PR_677_MERGE_LOG.md`
   - **Raw target:** `path`
 
@@ -361,6 +393,15 @@
 
 - **Source:** `docs&#47;ops&#47;reports&#47;2026-01-11_PHASE4E_POST_MERGE_AUDIT.md`
   - **Raw target:** `docs&#47;ops&#47;PR_656_MERGE_LOG.md`
+
+- **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md`
+  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;docs_graph_snapshot.py`
+
+- **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md`
+  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;docs_graph_triage.py`
+
+- **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md`
+  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;pt_docs_graph_triage.sh`
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md`
   - **Raw target:** `path.md`
@@ -520,41 +561,3 @@
 
 - **Source:** `docs&#47;webui&#47;LIVE_STATUS_PANELS.md`
   - **Raw target:** `..&#47;tests&#47;test_live_status_snapshot_panels.py`
-
-### Outside Repo (12)
-
-- **Source:** `.PR_PHASE0_SUMMARY.md`
-  - **Raw target:** `..&#47;..&#47;src&#47;risk_layer&#47;types.py`
-
-- **Source:** `PHASE6B_RELINK_SUMMARY.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md`
-
-- **Source:** `PHASE6B_RELINK_SUMMARY.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md`
-
-- **Source:** `PHASE6B_RELINK_SUMMARY.md`
-  - **Raw target:** `..&#47;STRATEGY_SWITCH_SANITY_CHECK.md`
-
-- **Source:** `PHASE6B_RELINK_SUMMARY.md`
-  - **Raw target:** `..&#47;STRATEGY_SWITCH_SANITY_CHECK.md`
-
-- **Source:** `PHASE6B_RELINK_SUMMARY.md`
-  - **Raw target:** `..&#47;runbooks&#47;RUNBOOK_PHASE6_...md`
-
-- **Source:** `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml`
-
-- **Source:** `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;README.md`
-
-- **Source:** `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;config&#47;bounded_live.toml`
-
-- **Source:** `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;run_audit.sh`
-
-- **Source:** `docs&#47;ops&#47;EVIDENCE_SCHEMA.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml`
-
-- **Source:** `docs&#47;ops&#47;EVIDENCE_SCHEMA.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;config&#47;bounded_live.toml`

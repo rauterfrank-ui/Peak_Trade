@@ -19,7 +19,7 @@ Diese Dokumentation beschreibt das Risk-Management-System von Peak_Trade, einsch
 - **[Risk Layer v1 - Change Justification](RISK_LAYER_V1_CHANGE_JUSTIFICATION.md)**  
   Begründung für Design-Entscheidungen und Architektur-Choices
 
-- **[Integration Guide](INTEGRATION_GUIDE.md)** 🆕  
+- **Integration Guide** (planned) 🆕  
   How to use multiple Risk Layer components together - Workflows, Examples, Best Practices
 
 - **[VaR Validation Operator Guide](VAR_VALIDATION_OPERATOR_GUIDE.md)** 🆕  
@@ -162,9 +162,9 @@ print(result.to_markdown())  # Generate report
 ```
 
 **Documentation:**
-- [Phase 2 Implementation Report](AGENT_C_PHASE2_VALIDATION_REPORT.md)
-- [Phase 2 Test Hardening Report](AGENT_QA_PHASE2_HARDENING_REPORT.md)
-- [Integration Guide](INTEGRATION_GUIDE.md) - Workflows & Examples
+- Phase 2 Implementation Report (archived)
+- Phase 2 Test Hardening Report (archived)
+- Integration Guide (planned) - Workflows & Examples
 
 ---
 

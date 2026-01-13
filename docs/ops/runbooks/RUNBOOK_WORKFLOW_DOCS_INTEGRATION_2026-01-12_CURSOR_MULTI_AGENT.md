@@ -35,7 +35,7 @@
 
 ### FACTS_COLLECTOR
 - **Responsibility:** Inventory locations, extract inline backticks with "/" and classify
-- **Deliverable:** [DOC_MAP.md](../_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md), [BACKTICK_AUDIT.md](../_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md)
+- **Deliverable:** `DOC_MAP.md`, `BACKTICK_AUDIT.md` (archived after integration)
 - **Status:** ✅ Complete (48 backticks classified, all gate-safe)
 
 ### CI_GUARDIAN
@@ -55,7 +55,7 @@
 
 ### RISK_OFFICER
 - **Responsibility:** Pick lowest-risk fix strategy, propose rollback
-- **Deliverable:** [FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md](../_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md), rollback plan
+- **Deliverable:** `FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md` (archived after integration), rollback plan
 - **Status:** ✅ Complete (minimal risk, zero-touch approved)
 
 ### EVIDENCE_SCRIBE
@@ -69,7 +69,7 @@
 
 ### Phase 1: Document Map (FACTS_COLLECTOR)
 
-**Deliverable:** [DOC_MAP.md](../_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md)
+**Deliverable:** `DOC_MAP.md` (archived after integration)
 
 **Findings:**
 - **WORKFLOW_RUNBOOK_OVERVIEW:** Authoritative (2026), 824 lines, operational reference
@@ -89,7 +89,7 @@
 
 ### Phase 2: Backtick Audit (FACTS_COLLECTOR + CI_GUARDIAN)
 
-**Deliverable:** [BACKTICK_AUDIT.md](../_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md)
+**Deliverable:** `BACKTICK_AUDIT.md` (archived after integration)
 
 **Findings:**
 - **Total backticks with "/":** 48 instances (39 in WORKFLOW_RUNBOOK_OVERVIEW, 10 in WORKFLOW_NOTES)
@@ -110,7 +110,7 @@
 
 ### Phase 3: Fix Matrix (RISK_OFFICER + SCOPE_KEEPER)
 
-**Deliverable:** [FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md](../_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md)
+**Deliverable:** `FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md` (archived after integration)
 
 **Strategy Selected:** Zero-Touch Content Approach
 
@@ -372,9 +372,9 @@ git rm -r docs/ops/_archive/workflow_docs_integration/2026-01-12/
 - [docs/ops/README.md](../README.md) – Ops tools index (modified this session)
 
 ### Audit Artifacts (Archived)
-- [DOC_MAP.md](../_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md) – Document positioning and overlap analysis
-- [BACKTICK_AUDIT.md](../_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md) – Complete backtick classification (48 instances)
-- [FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md](../_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md) – Fix strategy and risk assessment
+- `DOC_MAP.md` – Document positioning and overlap analysis (archived post-integration)
+- `BACKTICK_AUDIT.md` – Complete backtick classification, 48 instances (archived post-integration)
+- `FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md` – Fix strategy and risk assessment (archived post-integration)
 
 ### Style Guides & Gates
 - [DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md](../DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md) – Gate authoring rules

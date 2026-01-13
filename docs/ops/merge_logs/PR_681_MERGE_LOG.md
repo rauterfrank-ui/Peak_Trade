@@ -192,7 +192,7 @@ git push
 
 **Related Documentation**:
 - [PR #679 Merge Log](PR_679_MERGE_LOG.md) — Phase 6B docs relink
-- [PR #680 Merge Log](PR_680_MERGE_LOG.md) — Merge log for #679
+- PR #680 Merge Log (not recorded) — Merge log for #679
 - [PR #677 Merge Log](PR_677_MERGE_LOG.md) — Phase 6 Strategy-Switch Sanity Check
 
 ---
@@ -252,7 +252,7 @@ rg -i "link stability contract" docs/ops/EVIDENCE_INDEX.md
 ### Documentation
 - [Evidence Index](../EVIDENCE_INDEX.md) (updated with new entry)
 - [PR #679 Merge Log](PR_679_MERGE_LOG.md) (referenced in evidence entry)
-- [PR #680 Merge Log](PR_680_MERGE_LOG.md) (referenced in evidence entry)
+- PR #680 Merge Log (not recorded)
 
 ---
 

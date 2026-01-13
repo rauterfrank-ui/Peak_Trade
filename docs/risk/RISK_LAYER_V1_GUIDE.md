@@ -318,7 +318,7 @@ min_observations = 250
 **Solution:** Set `risk_layer_v1.enabled = true` in `config.toml`
 
 #### 2. "Weights must sum to 1.0"
-**Solution:** Normalize weights: `weights = {k: v/sum(weights.values()) for k, v in weights.items()}`
+**Solution:** Normalize weights: `weights = {k: v&#47;sum(weights.values()) for k, v in weights.items()}`
 
 #### 3. "Need at least 2 observations"
 **Solution:** Ensure sufficient historical returns data
@@ -352,11 +352,11 @@ min_observations = 250
 
 See individual module documentation:
 
-- [VaR Calculation](VAR_CALCULATION.md)
-- [Component VaR](COMPONENT_VAR.md)
-- [VaR Backtesting](VAR_BACKTESTING.md)
-- [Monte Carlo VaR](MONTE_CARLO.md)
-- [Stress Testing](STRESS_TESTING.md)
+- VaR Calculation (planned)
+- Component VaR (planned)
+- VaR Backtesting (planned)
+- Monte Carlo VaR (planned)
+- Stress Testing (planned)
 
 ---
 

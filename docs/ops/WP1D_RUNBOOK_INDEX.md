@@ -57,8 +57,8 @@ python -c "from src.live.ops import SessionRegistry; r = SessionRegistry(); prin
 ## 📖 Additional Resources
 
 - [Phase 1 Roadmap](../execution/PEAK_TRADE_LIVE_EXECUTION_ROADMAP_MULTI_AGENT_v1_0.md)
-- [WP1C Drift Detection](drift_detection.md)
-- [WP1B Paper Execution](paper_execution.md)
+- WP1C Drift Detection (planned)
+- WP1B Paper Execution (planned)
 
 ---
 

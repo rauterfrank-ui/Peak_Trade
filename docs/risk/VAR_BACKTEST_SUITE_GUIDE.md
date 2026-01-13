@@ -61,7 +61,7 @@ Die **VaR Backtest Suite** erweitert das bestehende VaR-Validierungs-Framework (
 - **Was:** Single-Command CLI für schnelle Backtest-Snapshots mit optionalen Diagnostics
 - **Output:**
   - Console: Kompakte Zusammenfassung
-  - File: `reports/var_backtest/var_backtest_suite_snapshot_YYYYMMDD_HHMMSS.md`
+  - File: `reports&#47;var_backtest&#47;var_backtest_suite_snapshot_YYYYMMDD_HHMMSS.md`
 
 ---
 
@@ -281,7 +281,7 @@ Overall Verdict:
 ```
 
 **File Output:**  
-`reports/var_backtest/var_backtest_suite_snapshot_YYYYMMDD_HHMMSS.md`
+`reports&#47;var_backtest&#47;var_backtest_suite_snapshot_YYYYMMDD_HHMMSS.md`
 
 Inhalt:
 - Summary (Violations, Rate)
@@ -490,7 +490,7 @@ if enable_autocorr:
     autocorr_result = autocorr_diagnostic(violations, lag=1)
 ```
 
-5. **Tests:** `tests/risk_layer/var_backtest/test_autocorr_diagnostic.py`
+5. **Tests:** `tests&#47;risk_layer&#47;var_backtest&#47;test_autocorr_diagnostic.py`
 
 ---
 
@@ -498,7 +498,7 @@ if enable_autocorr:
 
 - **[VaR Validation Operator Guide](VAR_VALIDATION_OPERATOR_GUIDE.md)** – Core VaR Validation (Kupiec + Basel)
 - **[Risk Layer v1 Operator Guide](RISK_LAYER_V1_OPERATOR_GUIDE.md)** – Vollständige Risk-Layer-Doku
-- **[Integration Guide](INTEGRATION_GUIDE.md)** – Workflows mit mehreren Risk-Komponenten
+- **Integration Guide** (planned) – Workflows mit mehreren Risk-Komponenten
 - **[Kupiec POF Backtest Roadmap](roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md)** – Original Roadmap
 - **Implementation Reports:**
   - Phase 9A: `PHASE9A_IMPLEMENTATION_SUMMARY.md` (Duration Diagnostic)
@@ -548,9 +548,9 @@ Wann Snapshot Runner verwenden?
 3. Große Datensätze: Nutze Non-Overlapping Windows (`step_size = window_size`)
 
 **Fragen?**
-1. Check Tests: `tests/risk_layer/var_backtest/` – Konkrete Usage-Beispiele
-2. Check Core Docs: `docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md`
-3. Run Tests: `pytest tests/risk_layer/var_backtest/ -v`
+1. Check Tests: `tests&#47;risk_layer&#47;var_backtest&#47;` – Konkrete Usage-Beispiele
+2. Check Core Docs: `docs&#47;risk&#47;VAR_VALIDATION_OPERATOR_GUIDE.md`
+3. Run Tests: `pytest tests&#47;risk_layer&#47;var_backtest&#47; -v`
 
 ---
 

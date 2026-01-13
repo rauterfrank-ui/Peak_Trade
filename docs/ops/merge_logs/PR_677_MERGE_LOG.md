@@ -379,8 +379,8 @@ git push
 This merge log follows the **Peak_Trade Docs Link Stability Contract** to ensure maintainability and CI compliance:
 
 ### Principle 1: Main-Resident Links ✅
-- Use **repo-relative markdown links** `[text](path)` for files on `main`
-- Example: `[Runbook](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)`
+- Use **repo-relative markdown links** `[text](repo-path)` for files on `main`
+- Example: `[Runbook](..&#47;runbooks&#47;RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)`
 - Rationale: Enables docs reference targets validation, offline reading, IDE navigation
 
 ### Principle 2: Cross-Branch/PR References 🔗

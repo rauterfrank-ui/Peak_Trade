@@ -504,9 +504,9 @@ min_severity = "info"  # Skip debug events
 
 ## Weiterführende Dokumentation
 
-- [ExecutionPipeline Overview](EXECUTION_PIPELINE_PHASE_16A_V2.md) – Production Pipeline
+- ExecutionPipeline Overview (archived) – Production Pipeline
 - [PEAK_TRADE_OVERVIEW.md](../PEAK_TRADE_OVERVIEW.md) – Gesamtarchitektur
-- [Live-Track Integration](../PHASE_82_LIVE_TRACK_PANEL.md) – Session Timeline
+- Live-Track Integration (archived) – Session Timeline
 
 ---
 

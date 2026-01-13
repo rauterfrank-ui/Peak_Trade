@@ -247,7 +247,7 @@ Found missing target in docs
 | Illustrative path | `config&#47;example.toml` | Flags as missing | Encode with `&#47;` |
 | Relative path | `.&#47;local&#47;file.md` | Resolves relative to doc | Keep as-is |
 | URL | `https:&#47;&#47;github.com&#47;...` | Ignored | Keep as-is |
-| Markdown link | `[text](path.md)` | Validates target | Update if broken |
+| Markdown link | `[text](target.md)` | Validates target | Update if broken |
 | Inline code | `` `path&#47;to&#47;file` `` | Validates if path-like | Encode if illustrative |
 | Fenced code block | ` ```path/to/file``` ` | Ignored | Keep as-is |
 

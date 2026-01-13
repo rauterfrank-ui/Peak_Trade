@@ -488,8 +488,8 @@ if decision.should_execute:
 
 ## Weitere Ressourcen
 
-- **Scheduler-Doku:** [`docs/SCHEDULER.md`](SCHEDULER.md)
-- **Research-Pipeline:** [`docs/RESEARCH_PIPELINE.md`](RESEARCH_PIPELINE.md)
+- **Scheduler-Doku:** `SCHEDULER.md` (planned)
+- **Research-Pipeline:** `RESEARCH_PIPELINE.md` (planned)
 - **Live-Workflows:** [`docs/LIVE_WORKFLOWS.md`](LIVE_WORKFLOWS.md)
 - **Safety & Governance:** [`docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`](GOVERNANCE_AND_SAFETY_OVERVIEW.md)
 

@@ -19,7 +19,7 @@
 ### 🏗️ Architecture & Design
 - [Architecture Overview](ARCHITECTURE_OVERVIEW.md) - System architecture
 - [Architecture Details](ARCHITECTURE.md) - Detailed architecture documentation
-- [ADR 0001: Tool Stack](../ADR_0001_Peak_Tool_Stack.md) - Architecture decision record
+- ADR 0001: Tool Stack (archived) - Architecture decision record
 
 ### 📚 Core Concepts
 
@@ -272,7 +272,7 @@ python scripts/generate_live_status_report.py --format markdown
 ## Additional Resources
 
 ### External References
-- [Peak Trade Tool Stack ADR](../ADR_0001_Peak_Tool_Stack.md)
+- Peak Trade Tool Stack ADR (archived)
 - [Makefile Commands](../Makefile)
 - [Project Board Setup](PROJECT_BOARD_SETUP.md)
 

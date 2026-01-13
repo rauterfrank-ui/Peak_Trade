@@ -424,7 +424,7 @@ enabled = true
 ### Internal Documentation
 - [User Guide](RISK_LAYER_V1_GUIDE.md) - How to use Risk Layer v1.0
 - [Alignment Decisions](RISK_LAYER_ALIGNMENT.md) - Design decisions
-- [Agent Handoff](AGENT_HANDOFF.md) - Agent A1-A6 instructions
+- Agent Handoff (archived) - Agent A1-A6 instructions
 
 ### External References
 - Jorion, P. (2007). *Value at Risk* (3rd ed.). McGraw-Hill.

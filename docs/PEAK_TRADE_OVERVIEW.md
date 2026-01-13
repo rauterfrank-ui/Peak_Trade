@@ -239,7 +239,7 @@ python -m src.cli.live_ops health
 - 🏗️ **Architektur:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
 - 🔬 **Backtest Engine:** [`BACKTEST_ENGINE.md`](BACKTEST_ENGINE.md)
 - 🎯 **Strategy Development:** [`STRATEGY_DEV_GUIDE.md`](STRATEGY_DEV_GUIDE.md)
-- 🧪 **Research-Pipeline:** [`RESEARCH_PIPELINE_V2.md`](RESEARCH_PIPELINE_V2.md)
+- 🧪 **Research-Pipeline:** `RESEARCH_PIPELINE_V2.md` (planned)
 
 ### Developer Guides
 
@@ -249,7 +249,7 @@ python -m src.cli.live_ops health
 
 ### Operations & Safety
 
-- 🛡️ **Risk Management:** [`RISK_MANAGEMENT_V1.md`](RISK_MANAGEMENT_V1.md)
+- 🛡️ **Risk Management:** `RISK_MANAGEMENT_V1.md` (planned)
 - 🚨 **Incident Drills:** [`INCIDENT_SIMULATION_AND_DRILLS.md`](INCIDENT_SIMULATION_AND_DRILLS.md)
 - 📊 **Monitoring & Alerts:** [`OBSERVABILITY_AND_MONITORING_PLAN.md`](OBSERVABILITY_AND_MONITORING_PLAN.md)
 - 🔐 **Resilience Guide:** [`resilience_guide.md`](resilience_guide.md)
@@ -464,7 +464,7 @@ python scripts/list_experiments.py --run-type portfolio_backtest
 
 1. **Ersten Backtest laufen lassen:** Folge dem [Quickstart](#wie-starte-ich-schnell-einen-backtest) oben
 2. **Eigene Strategie entwickeln:** Siehe [STRATEGY_DEV_GUIDE.md](STRATEGY_DEV_GUIDE.md)
-3. **Research-Pipeline testen:** Siehe [RESEARCH_PIPELINE_V2.md](RESEARCH_PIPELINE_V2.md)
+3. **Research-Pipeline testen:** Siehe `RESEARCH_PIPELINE_V2.md` (planned)
 4. **Live-Track kennenlernen:** Siehe [PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
 
 ---

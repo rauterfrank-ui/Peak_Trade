@@ -836,7 +836,7 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 ### Dokumentation
 
 - **Vollständige Dokumentation**: [OPS_DOCTOR_README.md](OPS_DOCTOR_README.md)
-- **Beispiel-Output**: [ops_doctor_example_output.txt](ops_doctor_example_output.txt)
+- **Beispiel-Output**: `ops_doctor_example_output.txt` (example file not included)
 - **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](reports/OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
 
 ### Merge-Log Health Integration

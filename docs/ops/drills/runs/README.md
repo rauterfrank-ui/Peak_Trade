@@ -36,7 +36,7 @@ Drill run logs serve multiple purposes:
 
 **Examples:**
 - `DRILL_RUN_20260109_1930_ai_autonomy_D01.md` — AI agent ran D01 on Jan 9, 2026 at 19:30
-- `DRILL_RUN_20260110_0800_frank_D02.md` — Operator Frank ran D02 on Jan 10, 2026 at 08:00
+- `DRILL_RUN_20260110_0800_frank_D02.md` — Operator Frank ran D02 on Jan 10, 2026 at 08:00 (file not created)
 - `DRILL_RUN_20260115_1500_ops_team_D08.md` — Ops team ran D08 on Jan 15, 2026 at 15:00
 
 **Storage Location:**
@@ -125,7 +125,7 @@ If drill runs are committed to the repo, maintain a simple index here:
 - [DRILL_RUN_20260109_1930_ai_autonomy_D01.md](DRILL_RUN_20260109_1930_ai_autonomy_D01.md) — Pre-Flight Discipline (PASS)
 
 ### 2026-01-10
-- [DRILL_RUN_20260110_0800_frank_D02.md](DRILL_RUN_20260110_0800_frank_D02.md) — Scope Lock Verification (PASS)
+- `DRILL_RUN_20260110_0800_frank_D02.md` — Scope Lock Verification (PASS) (file not created)
 
 *(Add entries as drill runs are committed)*
 

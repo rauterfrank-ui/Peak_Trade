@@ -217,5 +217,5 @@ Top-N Kandidaten exportiert: reports/sweeps/rsi_reversion_basic_top_candidates.t
 ## Siehe auch
 
 - [Phase 41 – Strategy Sweeps](PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md)
-- [Phase 43 – Sweep Visualization](PHASE_43_SWEEP_VISUALIZATION.md)
+- Phase 43 – Sweep Visualization (archived)
 - [Strategy Library Overview](PHASE_40_STRATEGY_LIBRARY_OVERVIEW.md)
