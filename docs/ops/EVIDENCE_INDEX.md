@@ -1,5 +1,12 @@
 # Peak_Trade – Evidence Index (v0.7)
 
+- **EV-20260112-PR688-PHASE8** | Date: 2026-01-12 | Owner: ops | Scope: docs/ops tooling | Risk: LOW  
+  - Source: [PR #688 Merge Log](merge_logs/PR_688_MERGE_LOG.md) · [PR #688](https://github.com/rauterfrank-ui/Peak_Trade/pull/688) · Commit: `e9877c5d`  
+  - Claim: Phase 8 "Docs Integrity Hardening" — deterministischer Docs-Graph Snapshot (Nodes/Edges), Broken Target/Anchor Reporting, Orphan Detector; Operator Runbook; Unit Tests; CI Integration (no-network/offline).  
+  - Verification: PR merged; required CI checks grün; pytest vollständig grün; deterministische Outputs (Schema v1.0.0).  
+  - Notes: Kein Trading-Code; nur Docs/Ops Tooling; offline Validation (keine externen URL-Fetches).
+
+
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
