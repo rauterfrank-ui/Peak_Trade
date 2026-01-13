@@ -2,7 +2,7 @@
 # Workflow Notes Integration + docs-reference-targets-gate Policy
 
 ## Summary
-PR #691 wurde erfolgreich nach `main` gemerged (commit `55c961c4`, 2026-01-13 14:12 CET). Initial failure des `docs-reference-targets-gate` (7 fehlende Targets) wurde durch zwei Fix-Commits behoben (7→1→0 Failures). Alle 22 CI-Checks final grün. Branch `docs/ops-workflows-integration` automatisch gelöscht.
+PR #691 wurde erfolgreich nach `main` gemerged (commit `55c961c4`, 2026-01-13 14:12 CET). Initial failure des `docs-reference-targets-gate` (7 fehlende Targets) wurde durch zwei Fix-Commits behoben (7→1→0 Failures). Alle 22 CI-Checks final grün. Branch `docs&#47;ops-workflows-integration` automatisch gelöscht.
 
 - Docs-only PR: 10 Dateien geändert (+1792/-21 Zeilen)
 - Hauptziel: Workflow-Notizen archivieren + `&#47;` Encoding Policy formalisieren + Troubleshooting-Runbook bereitstellen
@@ -182,13 +182,13 @@ Example config: `config&#47;my_example.toml`
 
 ## Cleanup
 - ✅ PR #691 gemerged (squash merge, 5 commits → 1)
-- ✅ Remote Branch `docs/ops-workflows-integration`: gelöscht
-- ✅ Lokaler Branch `docs/ops-workflows-integration`: gelöscht
+- ✅ Remote Branch `docs&#47;ops-workflows-integration`: gelöscht
+- ✅ Lokaler Branch `docs&#47;ops-workflows-integration`: gelöscht
 - ✅ `main` aktualisiert: `d41c1f3f..55c961c4`
 
 ## References
 - **PR:** [#691](https://github.com/rauterfrank-ui/Peak_Trade/pull/691)
-- **Branch:** `docs/ops-workflows-integration`
+- **Branch:** `docs&#47;ops-workflows-integration`
 - **Merge Commit:** `55c961c40c36f31b10e8cb964f922d25091aabb8`
 - **Merged At:** 2026-01-13 14:12:22 CET
 - **Author:** rauterfrank-ui

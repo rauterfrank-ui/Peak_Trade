@@ -2,7 +2,7 @@
 # Docs Frontdoor + Crosslink Hardening
 
 ## Summary
-PR #690 wurde erfolgreich nach `main` gemerged (commit `d41c1f3f`, 2026-01-13 13:51 CET). Alle CI-Checks grün. Branch `docs/docs-frontdoor-crosslinks` wurde automatisch gelöscht (remote + lokal).
+PR #690 wurde erfolgreich nach `main` gemerged (commit `d41c1f3f`, 2026-01-13 13:51 CET). Alle CI-Checks grün. Branch `docs&#47;docs-frontdoor-crosslinks` wurde automatisch gelöscht (remote + lokal).
 
 - Docs-only PR: 5 Dateien geändert (+1085/-21 Zeilen)
 - Hauptziel: Docs-Frontdoor etablieren + Cross-Links härten + illustrative Pfade neutralisieren
@@ -12,7 +12,7 @@ PR #690 wurde erfolgreich nach `main` gemerged (commit `d41c1f3f`, 2026-01-13 13
 ## Why
 - **Docs Navigation Problem:** Neue User finden Einstieg schwer; Überlappungen (z.B. PEAK_TRADE_OVERVIEW vs ARCHITECTURE_OVERVIEW) nicht dokumentiert
 - **Fehlende Cross-Links:** Core-Docs (Overview, Engine, Strategy) haben keine "Weiterführende Literatur"
-- **docs-reference-targets-gate Failures:** Illustrative Beispiel-Pfade (z.B. `scripts/run_walkforward.py`, `config/my_backtest.toml`) werden als "fehlende Targets" gemeldet
+- **docs-reference-targets-gate Failures:** Illustrative Beispiel-Pfade (z.B. `scripts&#47;run_walkforward.py`, `config&#47;my_backtest.toml`) werden als "fehlende Targets" gemeldet
 
 ## Changes
 
@@ -45,9 +45,9 @@ PR #690 wurde erfolgreich nach `main` gemerged (commit `d41c1f3f`, 2026-01-13 13
 **Problem:** Initial failure des `docs-reference-targets-gate` (7 fehlende Targets)
 
 **Lösung:** Illustrative Pfade in Inline-Code-Spans neutralisiert via `&#47;` HTML-Entity:
-- `scripts/run_walkforward.py` → `` `scripts&#47;run_walkforward.py` ``
-- `config/my_backtest.toml` → `` `config&#47;my_backtest.toml` ``
-- `src/data/data_loader.py` → `` `src&#47;data&#47;data_loader.py` ``
+- `scripts&#47;run_walkforward.py` → `` `scripts&#47;run_walkforward.py` ``
+- `config&#47;my_backtest.toml` → `` `config&#47;my_backtest.toml` ``
+- `src&#47;data&#47;data_loader.py` → `` `src&#47;data&#47;data_loader.py` ``
 
 **Effekt:**
 - Gate parst `&#47;` nicht als Pfad-Trennzeichen → keine False Positives
@@ -142,13 +142,13 @@ rg "`[^`]*/[^`]*`" docs/ -S | grep -v "https://" | grep -v "&#47;"
 
 ## Cleanup
 - ✅ PR #690 gemerged (squash merge)
-- ✅ Remote Branch `docs/docs-frontdoor-crosslinks`: gelöscht
-- ✅ Lokaler Branch `docs/docs-frontdoor-crosslinks`: gelöscht
+- ✅ Remote Branch `docs&#47;docs-frontdoor-crosslinks`: gelöscht
+- ✅ Lokaler Branch `docs&#47;docs-frontdoor-crosslinks`: gelöscht
 - ✅ `main` aktualisiert: `6a5b8838..d41c1f3f`
 
 ## References
 - **PR:** [#690](https://github.com/rauterfrank-ui/Peak_Trade/pull/690)
-- **Branch:** `docs/docs-frontdoor-crosslinks`
+- **Branch:** `docs&#47;docs-frontdoor-crosslinks`
 - **Merge Commit:** `d41c1f3f9181efe6d5c7005691d5187f521f9fe5`
 - **Merged At:** 2026-01-13 13:51:12 CET
 - **Author:** rauterfrank-ui
