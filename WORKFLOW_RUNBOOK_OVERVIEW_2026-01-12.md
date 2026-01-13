@@ -59,7 +59,7 @@ Hinweis: Phase 13 (Production Live-Trading) erfordert explizites Governance-Gate
 | **7-9** | Auto-Portfolio-Builder | `build_auto_portfolios.py`, `analyze_experiments.py` |
 | **10-11** | Strategie-Registry & Exchange-Tools | `inspect_exchange.py`, `scan_markets.py` |
 | **11.1** | Live Portfolio Monitoring | `preview_live_portfolio.py` |
-| **12** | Live-Ops CLI | `live_ops.py orders/portfolio/health` |
+| **12** | Live-Ops CLI | `live_ops.py orders&#47;portfolio&#47;health` |
 | **13** | Live Status Reports | `generate_live_status_report.py` |
 | **14** | Scheduler & Job Runner | `run_scheduler.py` |
 | **15-18** | Testnet-Orchestrator, Live Monitor, Alerts, Web-Dashboard | `testnet_orchestrator_cli.py`, `live_monitor_cli.py`, `live_alerts_cli.py`, `live_web_server.py` |
@@ -290,6 +290,27 @@ python scripts/live_web_server.py \
 
 ---
 
+### RUNBOOKS_AND_INCIDENT_HANDLING.md
+**Pfad:** `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`  
+**Version:** Phase 25/56  
+**Zweck:** Grundlegende Runbooks für Shadow-Modus, System-Pause, und Incident-Handling-Prozesse
+
+#### Kern-Runbooks:
+- **Shadow-Run:** Durchführung von Shadow-/Dry-Runs mit vollständiger Checkliste (Konfiguration, Durchführung, Ergebnisse, Troubleshooting)
+- **System pausieren/stoppen:** Sichere Pausierung bei unerwartetem Verhalten, Scheduler-Management, Log-Sicherung
+- **Incident-Handling:** Schweregrade (Low/Medium/High), Reaktionsschema (Sofortmaßnahmen → Analyse → Behebung → Post-Mortem), Incident-Report-Vorlage
+- **Vorbereitung Testnet/Live:** Platzhalter für zukünftige Runbooks (Start/Stop Testnet/Live, Kill-Switch, Graceful Degradation, Position Liquidation)
+
+**Zielgruppe:** Operatoren, Entwickler (Shadow-Modus + erste Incident-Response-Prozesse)  
+**Status:** ✅ Aktiv (Shadow-Modus), ⚠️ Platzhalter für Live-Runbooks (Stufe 4)
+
+**Verwandte Dokumente:**
+- [INCIDENT_SIMULATION_AND_DRILLS.md](docs/INCIDENT_SIMULATION_AND_DRILLS.md) — Praktische Übungen und Drill-Szenarien
+- [LIVE_OPERATIONAL_RUNBOOKS.md](docs/LIVE_OPERATIONAL_RUNBOOKS.md) — Erweiterte Runbooks für Testnet/Live
+- [INCIDENT_DRILL_LOG.md](docs/INCIDENT_DRILL_LOG.md) — Dokumentation durchgeführter Übungen
+
+---
+
 ### RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md
 **Pfad:** `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md`  
 **Stand:** 2026-01-09  
@@ -384,13 +405,13 @@ python scripts/live_web_server.py \
 ### Verzeichnis-Übersicht: `docs/ops/`
 
 **Control Center:**
-- `control_center/AI_AUTONOMY_CONTROL_CENTER.md`
-- `control_center/CONTROL_CENTER_NAV.md`
+- `control_center&#47;AI_AUTONOMY_CONTROL_CENTER.md`
+- `control_center&#47;CONTROL_CENTER_NAV.md`
 
 **Evidence & Audit:**
 - `EVIDENCE_INDEX.md` - Zentrale Evidence-Verwaltung
 - `EVIDENCE_SCHEMA.md` - Evidence-Artefakt-Schema
-- `evidence/` - Evidence-Artefakte
+- `evidence&#47;` - Evidence-Artefakte
 - `EVIDENCE_ENTRY_TEMPLATE.md` - Template für neue Evidence
 
 **CI/CD & Branch Management:**
@@ -401,19 +422,19 @@ python scripts/live_web_server.py \
 - `ci_required_checks_matrix_naming_contract.md`
 
 **Merge Logs:**
-- `merge_logs/` - Über 100+ PR Merge Logs
+- `merge_logs&#47;` - Über 100+ PR Merge Logs
 - `MERGE_LOG_TEMPLATE_COMPACT.md`
 - `MERGE_LOG_TEMPLATE_DETAILED.md`
 - `MERGE_LOG_WORKFLOW.md`
 
 **Runbooks:**
-- `runbooks/` - Spezifische Runbooks
+- `runbooks&#47;` - Spezifische Runbooks
 - `KILL_SWITCH_RUNBOOK.md`
 - `EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md`
 - `POLICY_CRITIC_TRIAGE_RUNBOOK.md`
 
 **Guides:**
-- `guides/` - Operator-Guides
+- `guides&#47;` - Operator-Guides
 - `DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md`
 - `POLICY_SAFE_DOCUMENTATION_GUIDE.md`
 - `PR_MANAGEMENT_TOOLKIT.md`
