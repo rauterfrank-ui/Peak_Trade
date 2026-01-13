@@ -290,6 +290,27 @@ python scripts/live_web_server.py \
 
 ---
 
+### RUNBOOKS_AND_INCIDENT_HANDLING.md
+**Pfad:** `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`  
+**Version:** Phase 25/56  
+**Zweck:** Grundlegende Runbooks für Shadow-Modus, System-Pause, und Incident-Handling-Prozesse
+
+#### Kern-Runbooks:
+- **Shadow-Run:** Durchführung von Shadow-/Dry-Runs mit vollständiger Checkliste (Konfiguration, Durchführung, Ergebnisse, Troubleshooting)
+- **System pausieren/stoppen:** Sichere Pausierung bei unerwartetem Verhalten, Scheduler-Management, Log-Sicherung
+- **Incident-Handling:** Schweregrade (Low/Medium/High), Reaktionsschema (Sofortmaßnahmen → Analyse → Behebung → Post-Mortem), Incident-Report-Vorlage
+- **Vorbereitung Testnet/Live:** Platzhalter für zukünftige Runbooks (Start/Stop Testnet/Live, Kill-Switch, Graceful Degradation, Position Liquidation)
+
+**Zielgruppe:** Operatoren, Entwickler (Shadow-Modus + erste Incident-Response-Prozesse)  
+**Status:** ✅ Aktiv (Shadow-Modus), ⚠️ Platzhalter für Live-Runbooks (Stufe 4)
+
+**Verwandte Dokumente:**
+- [INCIDENT_SIMULATION_AND_DRILLS.md](docs/INCIDENT_SIMULATION_AND_DRILLS.md) — Praktische Übungen und Drill-Szenarien
+- [LIVE_OPERATIONAL_RUNBOOKS.md](docs/LIVE_OPERATIONAL_RUNBOOKS.md) — Erweiterte Runbooks für Testnet/Live
+- [INCIDENT_DRILL_LOG.md](docs/INCIDENT_DRILL_LOG.md) — Dokumentation durchgeführter Übungen
+
+---
+
 ### RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md
 **Pfad:** `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md`  
 **Stand:** 2026-01-09  
