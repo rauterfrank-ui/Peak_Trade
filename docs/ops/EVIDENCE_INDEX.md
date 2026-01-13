@@ -1,4 +1,16 @@
-# Peak_Trade – Evidence Index (v0.7)
+# Peak_Trade – Evidence Index (v0.8)
+
+- **EV-20260113-PR691-WORKFLOWS** | Date: 2026-01-13 | Owner: ops | Scope: docs/ops workflows + policy | Risk: LOW  
+  - Source: [PR #691 Merge Log](PR_691_MERGE_LOG.md) · [PR #691](https://github.com/rauterfrank-ui/Peak_Trade/pull/691) · Commit: `55c961c4`  
+  - Claim: Workflow notes archiviert (KEEP EVERYTHING); `&#47;` HTML entity encoding policy formalisiert (Frontdoor + Troubleshooting Runbook); docs-reference-targets-gate false positives behoben (7→0 failures via automated + manual encoding).  
+  - Verification: PR merged (squash merge, 5 commits); all 22 CI checks grün; 10 Dateien geändert (+1792/-21); illustrative paths neutralisiert; policy-docs selbst compliant ("dogfooding").  
+  - Notes: Docs-only; keine Code/Config-Änderungen; CI fix journey dokumentiert (automated 96% + manual 4%); establishes repo-wide encoding policy für future docs PRs.
+
+- **EV-20260113-PR690-DOCS-FRONTDOOR** | Date: 2026-01-13 | Owner: ops | Scope: docs navigation + crosslinks | Risk: LOW  
+  - Source: [PR #690 Merge Log](PR_690_MERGE_LOG.md) · [PR #690](https://github.com/rauterfrank-ui/Peak_Trade/pull/690) · Commit: `d41c1f3f`  
+  - Claim: Docs frontdoor etabliert (docs/README.md expanded: "Start Here", "By Audience", "Recent Updates"); cross-links hinzugefügt (PEAK_TRADE_OVERVIEW, BACKTEST_ENGINE, STRATEGY_DEV_GUIDE); illustrative paths neutralisiert (`&#47;` encoding); docs-reference-targets-gate compliance.  
+  - Verification: PR merged (squash merge); all 22 CI checks grün; 5 Dateien geändert (+1085/-21); DOCUMENTATION_UPDATE_SUMMARY.md verschoben (root→docs/); encoding-policy erstmals angewendet.  
+  - Notes: Docs-only; keine Code/Config-Änderungen; first application of `&#47;` encoding (precedent für PR #691); docs navigation signifikant verbessert.
 
 - **EV-20260112-PR688-PHASE8** | Date: 2026-01-12 | Owner: ops | Scope: docs/ops tooling | Risk: LOW  
   - Source: [PR #688 Merge Log](merge_logs/PR_688_MERGE_LOG.md) · [PR #688](https://github.com/rauterfrank-ui/Peak_Trade/pull/688) · Commit: `e9877c5d`  
@@ -10,7 +22,7 @@
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.7 (Operational - 28 entries)
+**Status:** v0.8 (Operational - 30 entries)
 
 ---
 
