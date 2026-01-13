@@ -67,13 +67,13 @@ Evidence entries must belong to ONE of these categories:
 ## Link Conventions
 
 **Prefer relative paths** for repo-internal references:
-- ✅ `[PR_596_MERGE_LOG.md](PR_596_MERGE_LOG.md)` (relative to `docs/ops/`)
-- ✅ Example from `docs/ops/evidence/`: `[config/bounded_live.toml](../../../config/bounded_live.toml)` <!-- pt:ref-target-ignore -->
+- ✅ `` `[PR_596_MERGE_LOG.md](PR_596_MERGE_LOG.md)` `` (relative to `docs&#47;ops&#47;`)
+- ✅ Example from `docs&#47;ops&#47;evidence&#47;`: `` `[config/bounded_live.toml](..&#47;..&#47;..&#47;config&#47;bounded_live.toml)` ``
 - ⚠️ GitHub URLs: Use for external references only (e.g., PR URLs, workflow run URLs)
 
-**Important:** Evidence entries in `docs/ops/evidence/` are **3 levels deep** from repo root.
-- To link to repo-root files (e.g., `config/`, `.github/workflows/`, `scripts/`), use `../../../` prefix
-- Example: `[ci.yml](../../../.github/workflows/ci.yml)` <!-- pt:ref-target-ignore -->
+**Important:** Evidence entries in `docs&#47;ops&#47;evidence&#47;` are **3 levels deep** from repo root.
+- To link to repo-root files (e.g., `config&#47;`, `.github&#47;workflows&#47;`, `scripts&#47;`), use `..&#47;..&#47;..&#47;` prefix
+- Example: `` `[ci.yml](..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml)` ``
 - See [EVIDENCE_ENTRY_TEMPLATE.md](EVIDENCE_ENTRY_TEMPLATE.md) for detailed linking guide
 
 **Markdown Link Format:**
