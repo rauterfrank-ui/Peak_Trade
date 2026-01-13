@@ -88,7 +88,7 @@ def rewrite_inline_code(md: str) -> Tuple[str, int]:
 
     def _fence_repl(m: re.Match) -> str:
         fenced_blocks.append(m.group(0))
-        return f"__FENCED_BLOCK_{len(fenced_blocks)-1}__"
+        return f"__FENCED_BLOCK_{len(fenced_blocks) - 1}__"
 
     protected = FENCED_BLOCK_RE.sub(_fence_repl, md)
 
