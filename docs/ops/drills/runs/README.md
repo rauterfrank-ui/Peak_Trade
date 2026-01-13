@@ -40,8 +40,8 @@ Drill run logs serve multiple purposes:
 - `DRILL_RUN_20260115_1500_ops_team_D08.md` — Ops team ran D08 on Jan 15, 2026 at 15:00
 
 **Storage Location:**
-- Primary: `docs/ops/drills/runs/` (this directory)
-- Optional: Operator-specific subdirectories if volume grows (e.g., `docs/ops/drills/runs/ai_autonomy/`)
+- Primary: `docs&#47;ops&#47;drills&#47;runs&#47;` (this directory)
+- Optional: Operator-specific subdirectories if volume grows (e.g., `docs&#47;ops&#47;drills&#47;runs&#47;ai_autonomy&#47;`)
 
 ---
 
@@ -51,7 +51,7 @@ A high-quality drill run log exhibits these characteristics:
 
 ### Evidence-First
 - ✅ Every claim backed by a specific file path, line number, terminal output, or CI check result
-- ✅ Evidence pointers are precise: `path/to/file.md:123` not "somewhere in the docs"
+- ✅ Evidence pointers are precise: `path&#47;to&#47;file.md:123` not "somewhere in the docs"
 - ❌ Avoid: "Probably correct", "Should be", "Looks like"
 
 ### Reproducible
@@ -108,12 +108,12 @@ A high-quality drill run log exhibits these characteristics:
    - Complete Scorecard (pass/fail per criterion)
    - Document Findings & Operator Actions
    - Get Risk Officer sign-off (even if same person, note the role switch)
-   - Save file to `docs/ops/drills/runs/`
+   - Save file to `docs&#47;ops&#47;drills&#47;runs&#47;`
 
 4. **Optional: Commit to Repo**
    - If drill run is significant or reveals important findings, commit via docs-only PR
    - Link from this README (see "Session Index" below)
-   - Label PR: `documentation`, `ops/drill-run`
+   - Label PR: `documentation`, `ops&#47;drill-run`
 
 ---
 

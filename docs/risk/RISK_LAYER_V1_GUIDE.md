@@ -324,7 +324,7 @@ min_observations = 250
 **Solution:** Ensure sufficient historical returns data
 
 #### 4. "Stress Tester initialization failed"
-**Solution:** Check that `data/scenarios/` directory exists with JSON files
+**Solution:** Check that `data&#47;scenarios&#47;` directory exists with JSON files
 
 #### 5. Import Errors
 **Solution:** Install dependencies: `pip install pandas numpy scipy`

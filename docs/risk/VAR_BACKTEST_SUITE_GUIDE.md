@@ -57,7 +57,7 @@ Die **VaR Backtest Suite** erweitert das bestehende VaR-Validierungs-Framework (
 
 ### Phase 10: Snapshot Runner (CLI)
 
-- **Script:** `scripts/risk/run_var_backtest_suite_snapshot.py`
+- **Script:** `scripts&#47;risk&#47;run_var_backtest_suite_snapshot.py`
 - **Was:** Single-Command CLI für schnelle Backtest-Snapshots mit optionalen Diagnostics
 - **Output:**
   - Console: Kompakte Zusammenfassung
@@ -448,7 +448,7 @@ class RollingSummary:
     mean_duration_avg: float = 0.0  # NEW
 ```
 
-5. **Tests updaten:** `tests/risk_layer/var_backtest/test_rolling_evaluation.py`
+5. **Tests updaten:** `tests&#47;risk_layer&#47;var_backtest&#47;test_rolling_evaluation.py`
 
 ### Neue Diagnostic hinzufügen
 
@@ -479,7 +479,7 @@ __all__ = [
 ]
 ```
 
-4. **Füge zu Snapshot Runner hinzu:** `scripts/risk/run_var_backtest_suite_snapshot.py`
+4. **Füge zu Snapshot Runner hinzu:** `scripts&#47;risk&#47;run_var_backtest_suite_snapshot.py`
 
 ```python
 # In parse_args()

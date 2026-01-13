@@ -123,7 +123,7 @@ daily_loss_limit = 0.05
 
 ## Strategy Registry Keys
 
-Alle verfügbaren Strategien sind in der **Strategy Registry** registriert (`src/strategies/registry.py`).
+Alle verfügbaren Strategien sind in der **Strategy Registry** registriert (`src&#47;strategies&#47;registry.py`).
 
 ### Production-Ready Strategien
 
@@ -206,8 +206,8 @@ Vor einem Live-Deployment durchläuft jede Strategie eine systematische Prüfung
 7. **Production** – Live-Deployment mit Risk-Limits
 
 **Dokumentation:**
-- 📖 **Playbook:** [`docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md)
-- 🎯 **Live-Track Demo:** [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+- 📖 **Playbook:** [`docs&#47;PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md)
+- 🎯 **Live-Track Demo:** [`docs&#47;PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
 
 ### Live-Ops Tools
 
@@ -244,7 +244,7 @@ python -m src.cli.live_ops health
 ### Developer Guides
 
 - ⚡ **Developer Workflow:** [`DEVELOPER_WORKFLOW_GUIDE.md`](DEVELOPER_WORKFLOW_GUIDE.md)
-- 🤖 **AI-Helper Guide:** [`ai/PEAK_TRADE_AI_HELPER_GUIDE.md`](ai/PEAK_TRADE_AI_HELPER_GUIDE.md)
+- 🤖 **AI-Helper Guide:** [`ai&#47;PEAK_TRADE_AI_HELPER_GUIDE.md`](ai/PEAK_TRADE_AI_HELPER_GUIDE.md)
 - 📚 **Knowledge Base Index:** [`KNOWLEDGE_BASE_INDEX.md`](KNOWLEDGE_BASE_INDEX.md)
 
 ### Operations & Safety
@@ -455,8 +455,8 @@ python scripts/list_experiments.py --run-type portfolio_backtest
 ```
 
 **Registry-Location:**
-- SQLite-DB: `data/experiments.db`
-- Equity-Curves: `data/equity_curves/<run_id>.parquet`
+- SQLite-DB: `data&#47;experiments.db`
+- Equity-Curves: `data&#47;equity_curves&#47;<run_id>.parquet`
 
 ---
 

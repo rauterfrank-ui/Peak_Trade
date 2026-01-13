@@ -226,11 +226,11 @@ Phase documentation follows format: `PHASE_XX_DESCRIPTION.md`
 - Phase 75-86: Advanced features
 
 #### By File Type
-- `docs/*.md` - General documentation
-- `docs/ai/*.md` - AI integration guides
-- `docs/runbooks/*.md` - Operational runbooks
-- `docs/stability/*.md` - Stability & performance
-- `docs/learning_promotion/*.md` - Learning & promotion loop
+- `docs&#47;*.md` - General documentation
+- `docs&#47;ai&#47;*.md` - AI integration guides
+- `docs&#47;runbooks&#47;*.md` - Operational runbooks
+- `docs&#47;stability&#47;*.md` - Stability & performance
+- `docs&#47;learning_promotion&#47;*.md` - Learning & promotion loop
 
 ---
 

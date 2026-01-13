@@ -104,7 +104,7 @@ result = engine.run_realistic(df, strategy_fn, params)
 **Key Components:**
 - `duration_independence_diagnostic()` - Measures time between violations (stdlib-only)
 - `rolling_evaluation()` - Runs UC/IND/CC tests over multiple windows
-- `scripts/risk/run_var_backtest_suite_snapshot.py` - CLI tool with markdown reports
+- `scripts&#47;risk&#47;run_var_backtest_suite_snapshot.py` - CLI tool with markdown reports
 
 **Documentation:**
 - [VaR Backtest Suite Guide](VAR_BACKTEST_SUITE_GUIDE.md) - Complete operator guide
@@ -221,8 +221,8 @@ python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stres
 
 **Questions?**
 1. Check Operator-Guide: `RISK_LAYER_V1_OPERATOR_GUIDE.md`
-2. Check Tests: `tests/risk/` (Usage-Examples)
-3. Run Tests: `pytest tests/risk/ -v`
+2. Check Tests: `tests&#47;risk&#47;` (Usage-Examples)
+3. Run Tests: `pytest tests&#47;risk&#47; -v`
 
 **Issues?**
 - Check Troubleshooting-Section in Operator-Guide
@@ -236,7 +236,7 @@ python scripts/run_risk_stress_report.py --symbol BTC/EUR --output reports/stres
 ### 2026-01-04: Phase 8C - VaR Backtest Suite Runner & Report Formatter 🆕
 - **Suite Runner:** Aggregates all VaR backtests (Kupiec POF, Basel, Christoffersen IND/CC) in one run
 - **Report Formatter:** Deterministic JSON + Markdown output (stable keys, 6-decimal precision)
-- **CLI Script:** `scripts/risk/run_var_backtest_suite.py` for operator convenience
+- **CLI Script:** `scripts&#47;risk&#47;run_var_backtest_suite.py` for operator convenience
 - **3 Test Modules:** Unit tests (suite_runner, report_formatter) + Golden/Snapshot tests
 - **Overall Result Logic:** PASS only if all tests green (else FAIL)
 - **Stdlib-only:** No external dependencies beyond pandas

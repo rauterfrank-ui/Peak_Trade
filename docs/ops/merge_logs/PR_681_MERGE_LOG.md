@@ -15,7 +15,7 @@
 Adds Evidence Index entry **EV-20260112-PR679-PHASE6B-DOCS-RELINK** to document Phase 6B Strategy-Switch Docs Relink (PR #679/#680).
 
 **Outcome:**
-- ✅ Evidence entry added to `docs/ops/EVIDENCE_INDEX.md`
+- ✅ Evidence entry added to `docs&#47;ops&#47;EVIDENCE_INDEX.md`
 - ✅ Version incremented: v0.9 → v0.10
 - ✅ Total entries: 29 → 30
 - ✅ CI: 20/20 required checks passed, 4 skipped (path-filtered)
@@ -41,7 +41,7 @@ Adds Evidence Index entry **EV-20260112-PR679-PHASE6B-DOCS-RELINK** to document 
 
 ### Modified File (1 file, docs-only)
 
-#### `docs/ops/EVIDENCE_INDEX.md` (+4 lines, -2 lines)
+#### `docs&#47;ops&#47;EVIDENCE_INDEX.md` (+4 lines, -2 lines)
 
 **Change 1**: Added Evidence Entry (Line 82)
 - **Evidence ID**: EV-20260112-PR679-PHASE6B-DOCS-RELINK
@@ -66,7 +66,7 @@ Adds Evidence Index entry **EV-20260112-PR679-PHASE6B-DOCS-RELINK** to document 
   - docs-reference-targets-gate: PASS
   - Docs Reference Targets Trend: PASS (baseline 205 → current 172)
   - Link Stability Contract added (+65 lines)
-  - Local verification: `bash scripts/ops/verify_docs_reference_targets.sh` (no broken links)
+  - Local verification: `bash scripts&#47;ops&#47;verify_docs_reference_targets.sh` (no broken links)
   - Risk: LOW (docs-only)
 - **Notes**:
   - Link Stability Contract principles:
@@ -81,7 +81,7 @@ Adds Evidence Index entry **EV-20260112-PR679-PHASE6B-DOCS-RELINK** to document 
 ---
 
 **Change 2**: Updated Changelog (Line ~157)
-- Added entry: `| 2026-01-12 | Added EV-20260112-PR679-PHASE6B-DOCS-RELINK (Phase 6B Strategy-Switch Docs Relink, PR #679/#680, 18 markdown links added, Link Stability Contract established, docs-reference-targets-gate PASS, docs debt improved 205→172) | ops |`
+- Added entry: `| 2026-01-12 | Added EV-20260112-PR679-PHASE6B-DOCS-RELINK (Phase 6B Strategy-Switch Docs Relink, PR #679&#47;#680, 18 markdown links added, Link Stability Contract established, docs-reference-targets-gate PASS, docs debt improved 205→172) | ops |`
 
 ---
 
@@ -224,7 +224,7 @@ rg -i "link stability contract" docs/ops/EVIDENCE_INDEX.md
    - Update Changelog
    - Increment Version (e.g., v0.10 → v0.11)
    - Increment Total Entries count
-3. Validate links: `bash scripts/ops/verify_docs_reference_targets.sh`
+3. Validate links: `bash scripts&#47;ops&#47;verify_docs_reference_targets.sh`
 4. Commit: `docs(ops): evidence entry for PR #XXX {description}`
 5. Create PR, verify CI, merge
 

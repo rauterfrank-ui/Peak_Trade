@@ -45,13 +45,13 @@ data/scenarios/                     # Historical scenarios
 
 ### Separation of Concerns
 
-**Calculation Layer (`src/risk/`):**
+**Calculation Layer (`src&#47;risk&#47;`):**
 - Pure risk calculations
 - No side effects
 - Deterministic
 - Type-safe
 
-**Enforcement Layer (`src/risk_layer/`):**
+**Enforcement Layer (`src&#47;risk_layer&#47;`):**
 - Risk limits enforcement
 - Backtesting validation
 - Real-time monitoring
@@ -149,8 +149,8 @@ CVaR = E[Loss | Loss >= VaR]
 ```
 
 **Files:**
-- `src/risk/var.py` (implementation)
-- `tests/risk/test_var.py` (51 tests)
+- `src&#47;risk&#47;var.py` (implementation)
+- `tests&#47;risk&#47;test_var.py` (51 tests)
 
 ---
 
@@ -169,10 +169,10 @@ Component VaR_i = w_i × Marginal VaR_i
 ```
 
 **Files:**
-- `src/risk/component_var.py` (implementation)
-- `src/risk/covariance.py` (covariance estimation)
-- `src/risk/parametric_var.py` (parametric VaR)
-- `tests/risk/test_component_var.py` (38 tests)
+- `src&#47;risk&#47;component_var.py` (implementation)
+- `src&#47;risk&#47;covariance.py` (covariance estimation)
+- `src&#47;risk&#47;parametric_var.py` (parametric VaR)
+- `tests&#47;risk&#47;test_component_var.py` (38 tests)
 
 ---
 
@@ -201,11 +201,11 @@ Component VaR_i = w_i × Marginal VaR_i
 - Capital multipliers: 3.0 (green), 3.0-4.0 (yellow), 4.0 (red)
 
 **Files:**
-- `src/risk_layer/var_backtest/kupiec_pof.py` (Kupiec test)
-- `src/risk_layer/var_backtest/christoffersen_tests.py` (Christoffersen tests)
-- `src/risk_layer/var_backtest/traffic_light.py` (Basel Traffic Light)
-- `tests/risk_layer/test_christoffersen.py` (19 tests)
-- `tests/risk_layer/test_traffic_light.py` (25 tests)
+- `src&#47;risk_layer&#47;var_backtest&#47;kupiec_pof.py` (Kupiec test)
+- `src&#47;risk_layer&#47;var_backtest&#47;christoffersen_tests.py` (Christoffersen tests)
+- `src&#47;risk_layer&#47;var_backtest&#47;traffic_light.py` (Basel Traffic Light)
+- `tests&#47;risk_layer&#47;test_christoffersen.py` (19 tests)
+- `tests&#47;risk_layer&#47;test_traffic_light.py` (25 tests)
 
 ---
 
@@ -231,8 +231,8 @@ Student-t: Generate t-shocks, correlate, scale by σ
 ```
 
 **Files:**
-- `src/risk/monte_carlo.py` (implementation)
-- `tests/risk/test_monte_carlo.py` (27 tests)
+- `src&#47;risk&#47;monte_carlo.py` (implementation)
+- `tests&#47;risk&#47;test_monte_carlo.py` (27 tests)
 
 ---
 
@@ -259,9 +259,9 @@ BTC Shock = target_loss / w_BTC
 ```
 
 **Files:**
-- `src/risk/stress_tester.py` (implementation)
-- `data/scenarios/*.json` (5 scenarios)
-- `tests/risk/test_stress_tester.py` (24 tests)
+- `src&#47;risk&#47;stress_tester.py` (implementation)
+- `data&#47;scenarios&#47;*.json` (5 scenarios)
+- `tests&#47;risk&#47;test_stress_tester.py` (24 tests)
 
 ---
 
@@ -279,10 +279,10 @@ BTC Shock = target_loss / w_BTC
 - Type-safe results
 
 **Files:**
-- `src/risk/risk_layer_manager.py` (implementation)
-- `tests/integration/test_risk_layer_e2e.py` (E2E tests)
-- `docs/risk/RISK_LAYER_V1_GUIDE.md` (user guide)
-- `docs/risk/RISK_LAYER_OVERVIEW.md` (this document)
+- `src&#47;risk&#47;risk_layer_manager.py` (implementation)
+- `tests&#47;integration&#47;test_risk_layer_e2e.py` (E2E tests)
+- `docs&#47;risk&#47;RISK_LAYER_V1_GUIDE.md` (user guide)
+- `docs&#47;risk&#47;RISK_LAYER_OVERVIEW.md` (this document)
 
 ---
 

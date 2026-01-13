@@ -683,7 +683,7 @@ scripts/ops/ops_center.sh doctor
   - **Status:** Non-blocking (informational only)
 
 **When Any Gate Fails:**
-1. Run snapshot helper: `./scripts/ops/pt_docs_gates_snapshot.sh --changed`
+1. Run snapshot helper: `.&#47;scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed`
 2. Follow "Next Actions" in output
 3. Consult relevant operator runbook
 4. Re-run to verify fix

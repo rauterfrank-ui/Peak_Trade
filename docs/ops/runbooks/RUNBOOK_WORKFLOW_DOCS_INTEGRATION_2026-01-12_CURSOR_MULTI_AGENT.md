@@ -13,7 +13,7 @@
 
 **Input Documents:**
 1. `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md` (repo root, 824 lines, v1.0, 2026-ready operational reference)
-2. `docs/WORKFLOW_NOTES.md` (178 lines, Dec 2025 legacy snapshot, chat workflow mechanics)
+2. `docs&#47;WORKFLOW_NOTES.md` (178 lines, Dec 2025 legacy snapshot, chat workflow mechanics)
 
 **Outcome:** ✅ **SUCCESS**
 - ✅ Both documents preserved in full (SCOPE_KEEPER constraint satisfied)
@@ -99,9 +99,9 @@
   - **F (Command/Directory - DO NOT VALIDATE):** 14 instances (gate ignores ✅)
 - **Gate Impact:** 100% gate-safe (no fixes required)
 - **Critical Verification:** Lines 155-157 in WORKFLOW_NOTES.md (3 paths mentioned as "future" in Dec 2025)
-  - `docs/PEAK_TRADE_OVERVIEW.md` ✅ (exists, 20,597 bytes)
-  - `docs/BACKTEST_ENGINE.md` ✅ (exists, 11,651 bytes)
-  - `docs/STRATEGY_DEV_GUIDE.md` ✅ (exists, 28,050 bytes)
+  - `docs&#47;PEAK_TRADE_OVERVIEW.md` ✅ (exists, 20,597 bytes)
+  - `docs&#47;BACKTEST_ENGINE.md` ✅ (exists, 11,651 bytes)
+  - `docs&#47;STRATEGY_DEV_GUIDE.md` ✅ (exists, 28,050 bytes)
   - **Outcome:** All exist, no escaping required
 
 **Status:** ✅ Complete
@@ -186,18 +186,18 @@
 **Expected Output:** "All referenced targets exist." (exit 0)
 
 **Files to Validate:**
-- `docs/WORKFLOW_FRONTDOOR.md` (NEW)
-- `docs/ops/README.md` (MODIFIED)
-- `docs/ops/runbooks/RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md` (NEW, this file)
+- `docs&#47;WORKFLOW_FRONTDOOR.md` (NEW)
+- `docs&#47;ops&#47;README.md` (MODIFIED)
+- `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md` (NEW, this file)
 
 **Pre-Commit Validation:**
 All paths in new/modified files verified manually:
-- ✅ `../../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md` (exists, relative path from docs/ops/runbooks/)
-- ✅ `docs/WORKFLOW_NOTES.md` (exists)
+- ✅ `..&#47;..&#47;..&#47;WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md` (exists, relative path from docs/ops/runbooks/)
+- ✅ `docs&#47;WORKFLOW_NOTES.md` (exists)
 - ✅ `LIVE_OPERATIONAL_RUNBOOKS.md` (exists)
-- ✅ `runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md` (exists)
-- ✅ `ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md` (exists)
-- ✅ `ops/EVIDENCE_INDEX.md` (exists)
+- ✅ `runbooks&#47;RUNBOOKS_LANDSCAPE_2026_READY.md` (exists)
+- ✅ `ops&#47;control_center&#47;AI_AUTONOMY_CONTROL_CENTER.md` (exists)
+- ✅ `ops&#47;EVIDENCE_INDEX.md` (exists)
 - ✅ `CLI_CHEATSHEET.md` (exists)
 - ✅ All other referenced paths verified to exist
 
@@ -244,9 +244,9 @@ Refs: docs/ops/_archive/workflow_docs_integration/2026-01-12/ (audit artifacts)
 **Risk Level:** MINIMAL (additive-only, zero-touch content)
 
 **Artifacts:**
-- Runbook: `docs/ops/runbooks/RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-- Navigation: `docs/WORKFLOW_FRONTDOOR.md`
-- Audit: `docs/ops/_archive/workflow_docs_integration/2026-01-12/` (archived after integration)
+- Runbook: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
+- Navigation: `docs&#47;WORKFLOW_FRONTDOOR.md`
+- Audit: `docs&#47;ops&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;` (archived after integration)
 
 **Summary:**
 Integrated WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md (authoritative, 2026) and
@@ -277,18 +277,18 @@ git commit -m "chore: Archive workflow docs integration temp artifacts"
 ## 🎯 Final Deliverables
 
 ### New Files Created
-1. ✅ `docs/WORKFLOW_FRONTDOOR.md` (172 lines, navigation hub)
-2. ✅ `docs/ops/runbooks/RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md` (this file)
-3. 📦 `docs/ops/_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md` (archived after integration)
-4. 📦 `docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md` (archived after integration)
-5. 📦 `docs/ops/_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md` (archived after integration)
+1. ✅ `docs&#47;WORKFLOW_FRONTDOOR.md` (172 lines, navigation hub)
+2. ✅ `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md` (this file)
+3. 📦 `docs&#47;ops&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;DOC_MAP.md` (archived after integration)
+4. 📦 `docs&#47;ops&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;BACKTICK_AUDIT.md` (archived after integration)
+5. 📦 `docs&#47;ops&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md` (archived after integration)
 
 ### Files Modified
-1. ✅ `docs/ops/README.md` (+15 lines: Workflow Documentation section)
+1. ✅ `docs&#47;ops&#47;README.md` (+15 lines: Workflow Documentation section)
 
 ### Files Preserved (Zero-Touch)
 1. ✅ `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md` (NO changes)
-2. ✅ `docs/WORKFLOW_NOTES.md` (NO changes)
+2. ✅ `docs&#47;WORKFLOW_NOTES.md` (NO changes)
 
 ---
 
@@ -302,8 +302,8 @@ git commit -m "chore: Archive workflow docs integration temp artifacts"
 - **14 Commands/Directories:** Gate ignores ✅
 
 **New files gate-safe:**
-- `docs/WORKFLOW_FRONTDOOR.md`: All paths verified to exist before creation
-- `docs/ops/README.md`: All paths verified to exist before modification
+- `docs&#47;WORKFLOW_FRONTDOOR.md`: All paths verified to exist before creation
+- `docs&#47;ops&#47;README.md`: All paths verified to exist before modification
 - This runbook: All paths verified to exist before creation
 
 **Pre-Commit Command:**
@@ -378,8 +378,8 @@ git rm -r docs/ops/_archive/workflow_docs_integration/2026-01-12/
 
 ### Style Guides & Gates
 - [DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md](../DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md) – Gate authoring rules
-- `scripts/ops/verify_docs_reference_targets.sh` – Gate validation script
-- `.github/workflows/docs_reference_targets_gate.yml` – CI gate workflow
+- `scripts&#47;ops&#47;verify_docs_reference_targets.sh` – Gate validation script
+- `.github&#47;workflows&#47;docs_reference_targets_gate.yml` – CI gate workflow
 
 ---
 
@@ -399,9 +399,9 @@ git rm -r docs/ops/_archive/workflow_docs_integration/2026-01-12/
 - ✅ Ready for commit + PR
 
 **Next Steps:**
-1. ✅ Run pre-commit gate check: `./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
+1. ✅ Run pre-commit gate check: `.&#47;scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main`
 2. ✅ Commit changes with merge log skeleton message
-3. ✅ Archive temp artifacts (DOC_MAP, BACKTICK_AUDIT, FIX_MATRIX) → `docs/ops/_archive/workflow_docs_integration/2026-01-12/`
+3. ✅ Archive temp artifacts (DOC_MAP, BACKTICK_AUDIT, FIX_MATRIX) → `docs&#47;ops&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;`
 4. ✅ Optional: Add evidence index entry (EV-20260112-WORKFLOW-DOCS-INTEGRATION)
 
 ---
