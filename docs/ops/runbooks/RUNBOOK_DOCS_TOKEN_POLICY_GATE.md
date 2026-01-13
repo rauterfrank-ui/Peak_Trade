@@ -96,12 +96,23 @@ Replace the forward slash with `&#47;` inside the inline-code span:
 
 **Option B: Automated Fix (Python Script)**
 
-```bash
-# Run validator to detect violations
-python scripts/ops/validate_docs_token_policy.py
+## Auto-Fix Scripts
 
-# Fix automatically (if you have a fix script)
-# Or use sed/rg to replace specific tokens
+This gate is intentionally strict. If it fails due to inline-code tokens that look like paths/commands/endpoints, use the auto-fixer to apply a conservative, targeted escape.
+
+### Recommended (v2, conservative)
+Use v2 first. It is selective and avoids rewriting URLs and fenced code blocks. Re-running is safe (idempotent).
+
+```bash
+# Preview changes (dry-run)
+python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py --dry-run <file1.md> <file2.md>
+
+# Apply fixes
+python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py --write <file1.md> <file2.md>
+
+# Verify gates pass
+uv run python scripts/ops/validate_docs_token_policy.py --changed
+bash scripts/ops/verify_docs_reference_targets.sh --changed
 ```
 
 **Option C: Add to Allowlist (If Appropriate)**
