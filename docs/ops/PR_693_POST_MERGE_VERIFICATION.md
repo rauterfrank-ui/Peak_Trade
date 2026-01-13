@@ -10,7 +10,7 @@
 ## Deliverables Summary
 
 ### A) Merge Log
-✅ **Created:** `docs/ops/PR_693_MERGE_LOG.md`
+✅ **Created:** ``docs&#47;ops&#47;PR_693_MERGE_LOG.md``
 - Compact standard template (Summary/Why/Changes/Verification/Risk/Operator How-To/References)
 - Exact file list with descriptions (6 files, +1279 lines)
 - Operator "how to react when gate fails" quick section
@@ -18,27 +18,27 @@
 - CI contexts consistency section (gate is non-required by design)
 
 ### B) Evidence Index Update
-✅ **Updated:** `docs/ops/EVIDENCE_INDEX.md`
+✅ **Updated:** ``docs&#47;ops&#47;EVIDENCE_INDEX.md``
 - New entry: `EV-20260113-PR693-TOKEN-POLICY-GATE`
 - References: PR #693, commit `e51e55aa`, merge log
 - Verification: 23 CI checks passed, 6 files added, 26 tests
 - Notes: Non-required gate, 30-day burn-in period, 7 token classifications
 
 ### C) Frontdoor Integration
-✅ **Updated:** `docs/ops/README.md`
+✅ **Updated:** ``docs&#47;ops&#47;README.md``
 - Added PR #693 to merge logs chronology (line 20)
 - New section: "Docs Token Policy Gate" (after "Docs Reference Targets Gate")
 - Links to:
-  - Runbook: `runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`
-  - Validator: `scripts/ops/validate_docs_token_policy.py`
-  - Allowlist: `scripts/ops/docs_token_policy_allowlist.txt`
-  - CI Workflow: `.github/workflows/docs-token-policy-gate.yml`
-  - Tests: `tests/ops/test_validate_docs_token_policy.py`
+  - Runbook: ``runbooks&#47;RUNBOOK_DOCS_TOKEN_POLICY_GATE.md``
+  - Validator: ``scripts&#47;ops&#47;validate_docs_token_policy.py``
+  - Allowlist: ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``
+  - CI Workflow: ``.github&#47;workflows&#47;docs-token-policy-gate.yml``
+  - Tests: ``tests&#47;ops&#47;test_validate_docs_token_policy.py``
 - Quick commands, token classifications, allowlist management guide
 - Cross-link to Reference Targets Gate (related gates)
 
 ### D) Allowlist Operations Hardening
-✅ **Updated:** `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`
+✅ **Updated:** ``docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_TOKEN_POLICY_GATE.md``
 - New section: "Allowlist Maintenance" (replaces minimal "Updating the Allowlist")
 - Decision rules table: When to allowlist vs. fix docs tokenization (6 scenarios)
 - PR hygiene: Rationale requirements (inline comments or block comments)
@@ -57,7 +57,7 @@
 
 ## File-by-File Changes
 
-### 1. `docs/ops/PR_693_MERGE_LOG.md` (NEW, 320 lines)
+### 1. ``docs&#47;ops&#47;PR_693_MERGE_LOG.md`` (NEW, 320 lines)
 **Purpose:** Comprehensive merge log for PR #693
 
 **Sections:**
@@ -78,7 +78,7 @@
 - Verification commands (local + CI)
 - Rollback procedures (2 options)
 
-### 2. `docs/ops/EVIDENCE_INDEX.md` (MODIFIED, +9 lines)
+### 2. ``docs&#47;ops&#47;EVIDENCE_INDEX.md`` (MODIFIED, +9 lines)
 **Change:** Added new evidence entry at top of index
 
 **Entry:** `EV-20260113-PR693-TOKEN-POLICY-GATE`
@@ -91,7 +91,7 @@
 - Verification: 23 CI checks, 6 files (+1279 lines), 7 token types, non-required
 - Notes: Docs-only, runs on PRs, exit codes, 31 allowlist entries, burn-in period
 
-### 3. `docs/ops/README.md` (MODIFIED, +54 lines)
+### 3. ``docs&#47;ops&#47;README.md`` (MODIFIED, +54 lines)
 **Changes:**
 1. **Line 20:** Added PR #693 to merge logs chronology
 2. **After "Docs Reference Targets Gate":** New section "Docs Token Policy Gate" (47 lines)
@@ -109,7 +109,7 @@
 **Cross-Link:**
 - Added "Related: Docs Token Policy Gate" to "Docs Reference Targets Gate" section
 
-### 4. `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` (MODIFIED, +61 lines)
+### 4. ``docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`` (MODIFIED, +61 lines)
 **Change:** Replaced "Updating the Allowlist" subsection with comprehensive "Allowlist Maintenance"
 
 **New Content:**
@@ -226,11 +226,11 @@
 ### Immediate (Post-Merge)
 
 1. **Review Merge Log:**
-   - Read `docs/ops/PR_693_MERGE_LOG.md`
+   - Read ``docs&#47;ops&#47;PR_693_MERGE_LOG.md``
    - Understand gate behavior, token classifications, allowlist rules
 
 2. **Bookmark Runbook:**
-   - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`
+   - ``docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_TOKEN_POLICY_GATE.md``
    - Use when gate fails on your PRs
 
 3. **Test Validator Locally:**
@@ -317,13 +317,13 @@ git revert <THIS_PR_MERGE_COMMIT> -m 1
 **Primary:**
 - PR #693: https://github.com/rauterfrank-ui/Peak_Trade/pull/693
 - Merge Commit: `e51e55aa880732c029824a10ac64e1c0f4e23cff`
-- Merge Log: `docs/ops/PR_693_MERGE_LOG.md`
+- Merge Log: ``docs&#47;ops&#47;PR_693_MERGE_LOG.md``
 
 **Related:**
 - PR #691: Workflow Notes Integration
 - PR #690: Docs Frontdoor
-- Compact Merge Log Template: `docs/ops/MERGE_LOG_TEMPLATE_COMPACT.md`
-- Evidence Entry Template: `docs/ops/EVIDENCE_ENTRY_TEMPLATE.md`
+- Compact Merge Log Template: ``docs&#47;ops&#47;MERGE_LOG_TEMPLATE_COMPACT.md``
+- Evidence Entry Template: ``docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md``
 
 ---
 
