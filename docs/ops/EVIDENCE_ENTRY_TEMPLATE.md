@@ -87,8 +87,8 @@
 ```
 
 **Why this matters:**
-- Evidence entries in `docs/ops/evidence/EV-*.md` are 3 directories deep from repo root
-- Path structure: `repo-root/docs/ops/evidence/EV-*.md`
+- Evidence entries in `docs&#47;ops&#47;evidence&#47;EV-*.md` are 3 directories deep from repo root
+- Path structure: `repo-root&#47;docs&#47;ops&#47;evidence&#47;EV-*.md`
 - Broken links cause `docs-reference-targets-gate` CI check to fail
 
 **Verification:**

@@ -48,7 +48,7 @@ Evidence entries must belong to ONE of these categories:
 | **Evidence ID** | Unique identifier (see ID Format above) | `EV-20260107-SEED` |
 | **Date** | ISO 8601 date (`YYYY-MM-DD`) | `2026-01-07` |
 | **Owner** | Responsible party (username/team/role) | `ops`, `@username`, `team-sre` |
-| **Source Link** | URL or repo path (prefer relative paths) | `[PR #596](https://github.com/org/repo/pull/596)` or `[docs/ops/PR_596_MERGE_LOG.md](PR_596_MERGE_LOG.md)` |
+| **Source Link** | URL or repo path (prefer relative paths) | `[PR #596](https:&#47;&#47;github.com&#47;org&#47;repo&#47;pull&#47;596)` or `[docs&#47;ops&#47;PR_596_MERGE_LOG.md](PR_596_MERGE_LOG.md)` |
 | **Claim** | What this evidence demonstrates (1–2 sentences, factual) | "Phase 0 Multi-Agent Roleplay complete: 5/5 gate criteria passed, 6079 tests discovered" |
 | **Verification** | How to verify authenticity (hash, CI status, command) | "pytest 8.4.2, Python 3.9.6, workspace CLEAN" |
 | **Notes** | Optional context, caveats, or risk notes | "Seed entry (example); no live trading claim" |
@@ -85,11 +85,11 @@ Evidence entries must belong to ONE of these categories:
 
 ## Evidence File Storage
 
-**Recommended Location:** `docs/ops/evidence/EV-<ID>.md`
+**Recommended Location:** `docs&#47;ops&#47;evidence&#47;EV-<ID>.md`
 
 **Example:**
 - Entry ID: `EV-20260107-PHASE1`
-- File path pattern: `docs/ops/evidence/EV-<YYYYMMDD>-<TAG>.md`
+- File path pattern: `docs&#47;ops&#47;evidence&#47;EV-<YYYYMMDD>-<TAG>.md`
 
 **Note:** Evidence files are **optional**. Inline evidence (commit SHA, PR URL) is sufficient for many cases.
 

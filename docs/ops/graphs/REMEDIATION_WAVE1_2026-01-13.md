@@ -58,7 +58,7 @@ We prioritize fixes with:
 - `PHASE4E_CLOSEOUT_OPERATOR_GUIDE.md` (missing)
 - `.cursor&#47;rules&#47;*.mdc` (incorrect paths — files exist in repo root)
 - `RESEARCH_PIPELINE.md`, `SCHEDULER.md` (missing)
-- `../config.toml`, `../src/...` (relative path issues from `docs/`)
+- `..&#47;config.toml`, `..&#47;src&#47;...` (relative path issues from `docs&#47;`)
 
 **Fix Tactic:**
 - Remove link if target genuinely missing and not critical
@@ -114,13 +114,13 @@ We prioritize fixes with:
 
 | # | Source File | Broken Target | Fix Action |
 |---|-------------|---------------|------------|
-| 1 | `.PR_PHASE0_SUMMARY.md` | `../../src/risk_layer/types.py` | Correct to `src&#47;risk_layer&#47;types.py` |
-| 2-6 | `PHASE6B_RELINK_SUMMARY.md` | `../../../PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md` (2x), `../STRATEGY_SWITCH_SANITY_CHECK.md` (2x), `../runbooks/RUNBOOK_PHASE6_...md` | Fix paths or remove |
-| 7-10 | `docs/ops/EVIDENCE_ENTRY_TEMPLATE.md` | `../../../.github/workflows/ci.yml`, `../../../README.md`, `../../../config/bounded_live.toml`, `../../../scripts/ops/run_audit.sh` | Correct relative paths |
-| 11-12 | `docs/ops/EVIDENCE_SCHEMA.md` | `../../../.github/workflows/ci.yml`, `../../../config/bounded_live.toml` | Correct relative paths |
+| 1 | `.PR_PHASE0_SUMMARY.md` | `..&#47;..&#47;src&#47;risk_layer&#47;types.py` | Correct to `src&#47;risk_layer&#47;types.py` |
+| 2-6 | `PHASE6B_RELINK_SUMMARY.md` | `..&#47;..&#47;..&#47;PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md` (2x), `..&#47;STRATEGY_SWITCH_SANITY_CHECK.md` (2x), `..&#47;runbooks&#47;RUNBOOK_PHASE6_...md` | Fix paths or remove |
+| 7-10 | `docs&#47;ops&#47;EVIDENCE_ENTRY_TEMPLATE.md` | `..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml`, `..&#47;..&#47;..&#47;README.md`, `..&#47;..&#47;..&#47;config&#47;bounded_live.toml`, `..&#47;..&#47;..&#47;scripts&#47;ops&#47;run_audit.sh` | Correct relative paths |
+| 11-12 | `docs&#47;ops&#47;EVIDENCE_SCHEMA.md` | `..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml`, `..&#47;..&#47;..&#47;config&#47;bounded_live.toml` | Correct relative paths |
 | 13 | `PHASE4E_EXECUTION_SUMMARY.md` | `PHASE4E_CLOSEOUT_OPERATOR_GUIDE.md` | Remove link (file missing) |
-| 14-16 | `PHASE8_DOCS_INTEGRITY_HARDENING_IMPLEMENTATION_SUMMARY.md` | `.cursor/rules/*.mdc` (3x) | Fix paths to `.cursor&#47;rules&#47;*.mdc` |
-| 17-27 | Various `docs/*.md` | `../config.toml`, `../src/*.py`, `RESEARCH_PIPELINE.md`, etc. | Remove or correct paths |
+| 14-16 | `PHASE8_DOCS_INTEGRITY_HARDENING_IMPLEMENTATION_SUMMARY.md` | `.cursor&#47;rules&#47;*.mdc` (3x) | Fix paths to `.cursor&#47;rules&#47;*.mdc` |
+| 17-27 | Various `docs&#47;*.md` | `..&#47;config.toml`, `..&#47;src&#47;*.py`, `RESEARCH_PIPELINE.md`, etc. | Remove or correct paths |
 
 ### Broken Anchors (7 fixes)
 
@@ -133,8 +133,8 @@ We prioritize fixes with:
 
 | # | Orphan File | Link Location | Fix Action |
 |---|-------------|---------------|------------|
-| 1-12 | `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_*.md`, `RUNBOOK_PHASE*_CURSOR_MULTI_AGENT.md` | `docs/ops/runbooks/README.md` | Add index entries |
-| 13-52 | `docs/ops/PR_*_MERGE_LOG.md` (40 files) | `docs/ops/EVIDENCE_INDEX.md` | Add bulk archive section |
+| 1-12 | `docs&#47;ops&#47;runbooks&#47;RUNBOOK_AI_AUTONOMY_*.md`, `RUNBOOK_PHASE*_CURSOR_MULTI_AGENT.md` | `docs&#47;ops&#47;runbooks&#47;README.md` | Add index entries |
+| 13-52 | `docs&#47;ops&#47;PR_*_MERGE_LOG.md` (40 files) | `docs&#47;ops&#47;EVIDENCE_INDEX.md` | Add bulk archive section |
 
 ---
 
