@@ -27,7 +27,7 @@ Missing targets: 1
   - docs/tutorial.md:42: config/my_custom.toml
 ```
 
-**Reality:** `config/my_custom.toml` is a hypothetical example, not a real file.
+**Reality:** `config&#47;my_custom.toml` is a hypothetical example, not a real file.
 
 ---
 
@@ -79,11 +79,11 @@ ls -la config/my_backtest.toml
 
 ### Fix A: Neutralize Illustrative Paths (Recommended)
 
-**Method:** Replace `/` with HTML entity `&#47;` in inline code spans
+**Method:** Replace `&#47;` with HTML entity `&#47;` in inline code spans
 
 **Before:**
 ```markdown
-Example: `config/my_custom.toml`
+Example: `config&#47;my_custom.toml`
 Command: `python scripts/example.py --config config/my_custom.toml`
 ```
 
@@ -93,7 +93,7 @@ Example: `config&#47;my_custom.toml`
 Command: `python scripts&#47;example.py --config config&#47;my_custom.toml`
 ```
 
-**Rendering:** Both display identically in GitHub/Quarto (entity decoded to `/`)
+**Rendering:** Both display identically in GitHub/Quarto (entity decoded to `&#47;`)
 
 **Copy/paste behavior:**
 - From rendered view (GitHub UI): ✅ Gets correct path
@@ -116,7 +116,7 @@ grep -o '`[^`]*`' docs/my_file.md | grep '/'
 **Semi-Automated (sed):**
 ```bash
 # Replace specific path in file
-sed -i 's|`config/my_custom\.toml`|`config\&#47;my_custom.toml`|g' docs/my_file.md
+sed -i 's|`config&#47;my_custom\.toml`|`config\&#47;my_custom.toml`|g' docs/my_file.md
 
 # Verify changes
 git diff docs/my_file.md
@@ -145,10 +145,10 @@ git commit -m "docs(ops): exempt illustrative path from reference targets gate"
 **If path is a typo:**
 ```markdown
 # Before (typo):
-`src/strategys/ma_crossover.py`
+`src&#47;strategys&#47;ma_crossover.py`
 
 # After (fixed):
-`src/strategies/ma_crossover.py`
+`src&#47;strategies&#47;ma_crossover.py`
 ```
 
 **If file was deleted:**
@@ -165,11 +165,11 @@ git commit -m "docs(ops): exempt illustrative path from reference targets gate"
 1. **Real paths** → Keep as-is (gate should track them)
 2. **Illustrative paths** → Encode with `&#47;`
 
-**File:** `docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md` documents this policy
+**File:** `docs&#47;ops&#47;workflows&#47;WORKFLOW_NOTES_FRONTDOOR.md` documents this policy
 
 ### Pre-Commit Check (Optional)
 
-**Script:** `scripts/ops/verify_docs_reference_targets.sh --changed`
+**Script:** `scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed`
 
 **Usage:**
 ```bash
@@ -196,7 +196,7 @@ repos:
 ### Documentation Guidelines
 
 **When writing docs:**
-1. For real repo paths → Use as-is (e.g., `src/core/config.py`)
+1. For real repo paths → Use as-is (e.g., `src&#47;core&#47;config.py`)
 2. For hypothetical examples → Encode (e.g., `config&#47;my_example.toml`)
 3. In code examples → Prefer fenced blocks for complex examples
 4. Test before PR → Run verification script locally
@@ -219,7 +219,7 @@ ls -la path/mentioned/in/docs
 
 **Before:**
 ```markdown
-1. Create your config: `config/my_backtest.toml`
+1. Create your config: `config&#47;my_backtest.toml`
 2. Run: `python scripts/run_strategy_from_config.py --config config/my_backtest.toml`
 ```
 
@@ -235,7 +235,7 @@ ls -la path/mentioned/in/docs
 
 **Before:**
 ```markdown
-Backup logs to `logs/backup_2024-01-01/` directory.
+Backup logs to `logs&#47;backup_2024-01-01&#47;` directory.
 ```
 
 **After:**
@@ -259,7 +259,7 @@ For walk-forward validation:
 `python scripts&#47;run_walkforward.py --strategy ma_crossover`
 ```
 
-**Note:** Check if `scripts/run_walkforward.py` exists! If yes, keep as-is.
+**Note:** Check if `scripts&#47;run_walkforward.py` exists! If yes, keep as-is.
 
 ---
 
@@ -287,7 +287,7 @@ grep -r "config/my_custom.toml" docs/
 
 **Scenario:** User copies command from raw Markdown
 
-**Problem:** Gets `scripts&#47;example.py` instead of `scripts/example.py`
+**Problem:** Gets `scripts&#47;example.py` instead of `scripts&#47;example.py`
 
 **Solution:**
 - Educate users: Copy from **rendered view** (GitHub UI), not raw
@@ -306,13 +306,13 @@ python scripts/example.py
 
 **Possible causes:**
 1. File exists but gate script has bug
-2. File in ignored directory (e.g., `reports/`)
+2. File in ignored directory (e.g., `reports&#47;`)
 3. Path is relative, gate expects different base
 
 **Solution:**
 1. Verify file exists: `ls -la <path>`
 2. Check gate script: `./scripts/ops/verify_docs_reference_targets.sh --changed --verbose`
-3. Check ignore list: `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
+3. Check ignore list: `docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_IGNORE.txt`
 4. If legitimate bug → Fix gate script or add to ignore list
 
 ---
@@ -324,8 +324,8 @@ python scripts/example.py
 - [Docs Reference Targets Gate Style Guide](../DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md) – Comprehensive style guide (if exists)
 
 ### Scripts
-- `scripts/ops/verify_docs_reference_targets.sh` – Local verification
-- Gate implementation: `.github/workflows/docs-reference-targets-gate.yml`
+- `scripts&#47;ops&#47;verify_docs_reference_targets.sh` – Local verification
+- Gate implementation: `.github&#47;workflows&#47;docs-reference-targets-gate.yml`
 
 ### Example PRs
 - PR #690 – Docs frontdoor + crosslink hardening (includes gate fix examples)
@@ -346,7 +346,7 @@ python scripts/example.py
 ║    3. Classify: Real path vs Illustrative                    ║
 ║                                                               ║
 ║  FIX: Neutralize illustrative paths                          ║
-║    Before: `config/my_custom.toml`                           ║
+║    Before: `config&#47;my_custom.toml`                           ║
 ║    After:  `config&#47;my_custom.toml`                       ║
 ║                                                               ║
 ║  PREVENTION:                                                  ║

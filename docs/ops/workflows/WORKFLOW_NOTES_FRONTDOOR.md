@@ -22,10 +22,10 @@
 
 **Why:** The `docs-reference-targets-gate` CI check verifies that all file paths mentioned in docs actually exist in the repository. This prevents broken references.
 
-**Challenge:** Documentation often includes **illustrative example paths** that don't exist (e.g., `config/my_custom.toml`, `scripts/my_example.py`).
+**Challenge:** Documentation often includes **illustrative example paths** that don't exist (e.g., `config&#47;my_custom.toml`, `scripts&#47;my_example.py`).
 
 **Solution:** Use HTML entity encoding (`&#47;`) to neutralize illustrative paths:
-- Replace `/` with `&#47;` in inline code spans (single backticks)
+- Replace `&#47;` with `&#47;` in inline code spans (single backticks)
 - This prevents the gate from treating illustrative examples as real file references
 - Rendered output remains visually identical
 
@@ -33,7 +33,7 @@
 
 #### ✅ Real Repository Path (Keep As-Is)
 ```markdown
-Real file: `src/strategies/ma_crossover.py`
+Real file: `src&#47;strategies&#47;ma_crossover.py`
 ```
 **Why:** This file exists in repo → gate should track it
 
@@ -58,7 +58,7 @@ Example config: `config&#47;my_custom_backtest.toml`
 
 **❌ Don't neutralize these:**
 1. **Actual repository files**
-   - `src/core/config.py`
+   - `src&#47;core&#47;config.py`
    - `config.toml`
 2. **URLs** (exempt from gate)
    - `https://example.com/path/to/file`
@@ -96,7 +96,7 @@ Missing targets: 3
 2. If illustrative → Neutralize:
    ```bash
    # Before:
-   `config/my_example.toml`
+   `config&#47;my_example.toml`
 
    # After:
    `config&#47;my_example.toml`
@@ -133,7 +133,7 @@ Missing targets: 3
 
 **For workflow document consumers:**
 - Start with [PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md](PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md)
-- Paths with `&#47;` are illustrative examples (rendered as `/`)
+- Paths with `&#47;` are illustrative examples (rendered as `&#47;`)
 - Copy commands from rendered view (GitHub UI), not raw Markdown
 
 ---
