@@ -169,14 +169,14 @@ Integrate L3 Trade Plan Advisory layer to generate intraday trade hypotheses, se
 
 ### Inputs (Prerequisites)
 - ✅ L2 Market Outlook operational (regime scenarios + NO-TRADE triggers)
-- ✅ L3 Capability Scope defined (`config/capability_scopes/L3_trade_plan_advisory.toml`)
+- ✅ L3 Capability Scope defined (`config&#47;capability_scopes&#47;L3_trade_plan_advisory.toml`)
 - 🔵 Intraday strategy templates documented
 - 🔵 Risk checklist templates created
 
 ### Tasks
 
 #### A1 (Implementer):
-1. Implement L3 Runner script (`scripts/aiops/run_l3_trade_plan_advisory.py`)
+1. Implement L3 Runner script (`scripts&#47;aiops&#47;run_l3_trade_plan_advisory.py`)
    - Input: L2 Market Outlook scenarios + historical patterns
    - Output: Trade hypotheses (setup, entry zones, risk parameters)
    - **NO execution parameters** (no "place order now" outputs)
@@ -238,7 +238,7 @@ Automate Evidence Pack generation, validation, and indexing to reduce operator o
 ### Tasks
 
 #### A1 (Implementer):
-1. Create Evidence Pack Generator CLI (`scripts/aiops/generate_evidence_pack.py`)
+1. Create Evidence Pack Generator CLI (`scripts&#47;aiops&#47;generate_evidence_pack.py`)
    - Auto-populate: run_id, model_id, timestamp, git_ref
    - Template selection: layer-specific templates
    - Validation on save (exit code 1 if invalid)
@@ -297,7 +297,7 @@ Validate full pipeline (L0-L5) under Shadow constraints: data pipelines, monitor
 1. Deploy Shadow pipeline orchestration
 2. Integrate L1-L3-L4-L5 layer chain (end-to-end)
 3. Add Shadow mode monitoring (logs, metrics, alerts)
-4. Create Shadow session runner (`scripts/aiops/run_shadow_session.py`)
+4. Create Shadow session runner (`scripts&#47;aiops&#47;run_shadow_session.py`)
 
 #### A2 (Reviewer):
 1. Verify guardrails: NO live execution pathways accessible
@@ -489,7 +489,7 @@ Execute on Testnet with real logic (fake money): validate execution pathways, ri
 ### Inputs (Prerequisites)
 - ✅ Kill-Switch drills passed (P9 complete)
 - 🔵 Testnet environment configured (API keys, accounts)
-- 🔵 Bounded-Live config created (`config/bounded_live_testnet.toml`)
+- 🔵 Bounded-Live config created (`config&#47;bounded_live_testnet.toml`)
 
 ### Tasks
 
