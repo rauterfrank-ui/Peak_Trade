@@ -19,9 +19,9 @@ PR #688 (squash-merge) liefert Phase 8 „Docs Integrity Hardening": determinist
 ## Verification
 Local (fast, deterministic):
 - Tests:
-  - pytest -q`
+  - `uv run pytest -q`
 - Example snapshot (no generated output committed):
-  - `uv run python scripts/ops/docs_graph_snapshot.py --roots docs/WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs/ops/README.md docs/INSTALLATION_QUICKSTART.md --out docs/_generated/docs_graph_snapshot.json`
+  - `uv run python scripts/ops/docs_graph_snapshot.py --roots docs/WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs/ops/README.md docs/INSTALLATION_QUICKSTART.md --out <snapshot.json>`
 
 CI:
 - All required checks: PASS (22/22), PR merged via squash.
@@ -34,7 +34,8 @@ LOW (docs/ops tooling only)
 
 ## Operator How-To
 1) Run snapshot (default excludes archives):
-   - `uv run python scripts/ops/docs_graph_snapshot.py --roots docs/WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs/ops/README.md docs/INSTALLATION_QUICKSTART.md --out docs/_generated/docs_graph_snapshot.json`
+   - `uv run python scripts/ops/docs_graph_snapshot.py --roots docs/WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs/ops/README.md docs/INSTALLATION_QUICKSTART.md --out <snapshot.json>`
+   - (Output path typically: `docs/_generated/*.json`, git-ignored)
 2) Optional: include archives:
    - Add `--include-archives`
 3) Triage:
