@@ -36,7 +36,9 @@ def safe_escape_path(path: str) -> str:
     return path.replace("/", "&#47;")
 
 
-def categorize_broken_targets(broken_targets: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+def categorize_broken_targets(
+    broken_targets: list[dict[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
     """
     Group broken targets by reason (root cause class).
 
@@ -84,10 +86,7 @@ def generate_broken_targets_md(
     categorized = categorize_broken_targets(broken_targets)
 
     # Sort categories by count (descending), then alphabetically
-    sorted_categories = sorted(
-        categorized.items(),
-        key=lambda x: (-len(x[1]), x[0])
-    )
+    sorted_categories = sorted(categorized.items(), key=lambda x: (-len(x[1]), x[0]))
 
     lines = [
         "# Broken Targets Report",
@@ -102,13 +101,15 @@ def generate_broken_targets_md(
     for reason, items in sorted_categories:
         lines.append(f"- **{reason}:** {len(items)}")
 
-    lines.extend([
-        "",
-        "---",
-        "",
-        "## Detailed Breakdown",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## Detailed Breakdown",
+            "",
+        ]
+    )
 
     for reason, items in sorted_categories:
         lines.append(f"### {reason.title()} ({len(items)})")
@@ -140,10 +141,7 @@ def generate_orphans_md(
     categorized = categorize_orphans(orphans)
 
     # Sort categories by count (descending), then alphabetically
-    sorted_categories = sorted(
-        categorized.items(),
-        key=lambda x: (-len(x[1]), x[0])
-    )
+    sorted_categories = sorted(categorized.items(), key=lambda x: (-len(x[1]), x[0]))
 
     lines = [
         "# Orphaned Pages Report",
@@ -158,13 +156,15 @@ def generate_orphans_md(
     for area, items in sorted_categories:
         lines.append(f"- **{area}:** {len(items)}")
 
-    lines.extend([
-        "",
-        "---",
-        "",
-        "## Detailed Breakdown",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## Detailed Breakdown",
+            "",
+        ]
+    )
 
     for area, items in sorted_categories:
         lines.append(f"### {area} ({len(items)})")

@@ -17,6 +17,7 @@ import pytest
 
 # Import the triage functions
 import sys
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ops"))
 
 from docs_graph_triage import (
@@ -64,21 +65,11 @@ MINIMAL_SNAPSHOT = {
         }
     ],
     "orphans": [
-        {
-            "path": "PHASE1_SUMMARY.md"
-        },
-        {
-            "path": "docs/ops/old_guide.md"
-        },
-        {
-            "path": "docs/ops/runbooks/unused_runbook.md"
-        },
-        {
-            "path": "docs/architecture.md"
-        },
-        {
-            "path": "PHASE2_SUMMARY.md"
-        },
+        {"path": "PHASE1_SUMMARY.md"},
+        {"path": "docs/ops/old_guide.md"},
+        {"path": "docs/ops/runbooks/unused_runbook.md"},
+        {"path": "docs/architecture.md"},
+        {"path": "PHASE2_SUMMARY.md"},
     ],
     "nodes": [
         {"path": "README.md", "is_root": True},
@@ -86,7 +77,13 @@ MINIMAL_SNAPSHOT = {
         {"path": "docs/ops/runbook.md", "is_root": False},
     ],
     "edges": [
-        {"src": "README.md", "dst": "docs/guide.md", "kind": "md", "anchor": None, "raw": "docs/guide.md"},
+        {
+            "src": "README.md",
+            "dst": "docs/guide.md",
+            "kind": "md",
+            "anchor": None,
+            "raw": "docs/guide.md",
+        },
     ],
 }
 
@@ -204,6 +201,7 @@ class TestGenerateBrokenTargetsMd:
             # Should NOT contain unescaped paths in inline code
             # Note: This is a heuristic check - we look for backticked paths with unescaped slashes
             import re
+
             # Find all backticked content
             backticked = re.findall(r"`([^`]+)`", content)
             for item in backticked:
