@@ -575,7 +575,7 @@ Validation:
 ### Internal
 - [AI Helper Guide](PEAK_TRADE_AI_HELPER_GUIDE.md) - Working agreements
 - [Claude Guide](CLAUDE_GUIDE.md) - Technical reference
-- [Knowledge Base Index](KNOWLEDGE_BASE_INDEX.md) - All documentation
+- [Knowledge Base Index](../KNOWLEDGE_BASE_INDEX.md) - All documentation
 
 ### Prompt Libraries
 - Strategy development prompts: Section "Pattern 1"
@@ -593,4 +593,4 @@ Validation:
 
 ---
 
-**Navigation:** [⬆️ Back to Top](#peak_trade-ai-enhanced-workflow-guide) | [📚 Knowledge Base](KNOWLEDGE_BASE_INDEX.md)
+**Navigation:** [⬆️ Back to Top](#peak_trade-ai-enhanced-workflow-guide) | [📚 Knowledge Base](../KNOWLEDGE_BASE_INDEX.md)

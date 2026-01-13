@@ -94,7 +94,7 @@ ls -la config/my_example.toml
 **Fix Option A: Encode with HTML entity (recommended)**
 ```bash
 # Replace forward slash with HTML entity in inline-code span
-# Before: `config/my_example.toml`
+# Before: `config&#47;my_example.toml`
 # After:  `config&#47;my_example.toml`
 ```
 
@@ -134,12 +134,12 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed
 **Fix Option B: Encode as illustrative (if file is hypothetical)**
 ```bash
 # Use HTML entity encoding
-# Change: `src/new_feature.py` → `src&#47;new_feature.py`
+# Change: `src&#47;new_feature.py` → `src&#47;new_feature.py`
 ```
 
 **Fix Option C: Use inline ignore marker**
 ```markdown
-This feature will be implemented in `src/new_feature.py`. <!-- pt:ref-target-ignore -->
+This feature will be implemented in `src&#47;new_feature.py`. <!-- pt:ref-target-ignore -->
 ```
 
 ### Pattern 4: Multiple Files Reference Same Missing Target
@@ -207,10 +207,10 @@ realpath ../../../config/settings.toml
 **Fix:**
 ```bash
 # Option A: Use repo-relative path instead
-# Change: `../../../config/settings.toml` → `config&#47;settings.toml`
+# Change: `..&#47;..&#47;..&#47;config&#47;settings.toml` → `config&#47;settings.toml`
 
 # Option B: Fix relative path if incorrect
-# Correct: `../../config/settings.toml` (if file is at repo root)
+# Correct: `..&#47;..&#47;config&#47;settings.toml` (if file is at repo root)
 ```
 
 ## Decision Tree: Illustrative vs Real Targets
@@ -247,7 +247,7 @@ Found missing target in docs
 | Illustrative path | `config&#47;example.toml` | Flags as missing | Encode with `&#47;` |
 | Relative path | `.&#47;local&#47;file.md` | Resolves relative to doc | Keep as-is |
 | URL | `https:&#47;&#47;github.com&#47;...` | Ignored | Keep as-is |
-| Markdown link | `[text](path.md)` | Validates target | Update if broken |
+| Markdown link | `[text](target.md)` | Validates target | Update if broken |
 | Inline code | `` `path&#47;to&#47;file` `` | Validates if path-like | Encode if illustrative |
 | Fenced code block | ` ```path/to/file``` ` | Ignored | Keep as-is |
 
@@ -275,7 +275,7 @@ Found missing target in docs
 **Example:**
 ```markdown
 ❌ Triggers Reference Targets Gate:
-`scripts/example.py` (missing file in all detection modes)
+`scripts&#47;example.py` (missing file in all detection modes)
 
 ✅ Safe for both gates:
 `scripts&#47;example.py` (encoded, not detected as path)
@@ -344,7 +344,7 @@ grep -r '`[^`]*/' docs/ | grep -v '&#47;' > /tmp/candidates.txt
 
 ### Ignore List Hygiene
 
-**File:** `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
+**File:** `docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_IGNORE.txt`
 
 **When to add entries:**
 - Generic placeholders used in tutorials (e.g., `some&#47;path`)

@@ -683,7 +683,7 @@ scripts/ops/ops_center.sh doctor
   - **Status:** Non-blocking (informational only)
 
 **When Any Gate Fails:**
-1. Run snapshot helper: `./scripts/ops/pt_docs_gates_snapshot.sh --changed`
+1. Run snapshot helper: `.&#47;scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed`
 2. Follow "Next Actions" in output
 3. Consult relevant operator runbook
 4. Re-run to verify fix
@@ -836,7 +836,7 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 ### Dokumentation
 
 - **Vollständige Dokumentation**: [OPS_DOCTOR_README.md](OPS_DOCTOR_README.md)
-- **Beispiel-Output**: [ops_doctor_example_output.txt](ops_doctor_example_output.txt)
+- **Beispiel-Output**: `ops_doctor_example_output.txt` (example file not included)
 - **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](reports/OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
 
 ### Merge-Log Health Integration

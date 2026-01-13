@@ -146,7 +146,7 @@ print(f"Symbols: {summary['symbols']}")
 
 ## JSONL Log Format
 
-**Location:** `logs/execution/<session_id>.jsonl`
+**Location:** `logs&#47;execution&#47;<session_id>.jsonl`
 
 **Format:** One JSON object per line (newline-separated)
 
@@ -331,7 +331,7 @@ pipeline = ExecutionPipeline(executor=executor, emitter=emitter)
 **Storage:** ~500 bytes/event → 5M events = ~2.5GB/day
 
 **Recommendation:**
-- Rotate logs daily: `logs/execution/YYYY-MM-DD/<session_id>.jsonl`
+- Rotate logs daily: `logs&#47;execution&#47;YYYY-MM-DD&#47;<session_id>.jsonl`
 - Archive old logs (compress with gzip: ~90% reduction)
 - Keep last 30 days online
 
@@ -345,8 +345,8 @@ pipeline = ExecutionPipeline(executor=executor, emitter=emitter)
 
 **Lösung:**
 - Prüfe ob Emitter konfiguriert: `pipeline._emitter is not None`
-- Prüfe Logs: `ls -la logs/execution/`
-- Tail live: `tail -f logs/execution/<session_id>.jsonl`
+- Prüfe Logs: `ls -la logs&#47;execution&#47;`
+- Tail live: `tail -f logs&#47;execution&#47;<session_id>.jsonl`
 
 ### "Events missing in timeline"
 
@@ -504,9 +504,9 @@ min_severity = "info"  # Skip debug events
 
 ## Weiterführende Dokumentation
 
-- [ExecutionPipeline Overview](EXECUTION_PIPELINE_PHASE_16A_V2.md) – Production Pipeline
+- ExecutionPipeline Overview (archived) – Production Pipeline
 - [PEAK_TRADE_OVERVIEW.md](../PEAK_TRADE_OVERVIEW.md) – Gesamtarchitektur
-- [Live-Track Integration](../PHASE_82_LIVE_TRACK_PANEL.md) – Session Timeline
+- Live-Track Integration (archived) – Session Timeline
 
 ---
 
