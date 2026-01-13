@@ -37,24 +37,24 @@ def fix_inline_code_tokens(content: str) -> tuple[str, int]:
         token = match.group(1)
 
         # Skip if already encoded
-        if '&#47;' in token:
+        if "&#47;" in token:
             return match.group(0)
 
         # Skip if it's a URL
-        if token.startswith('http://') or token.startswith('https://'):
+        if token.startswith("http://") or token.startswith("https://"):
             return match.group(0)
 
         # Replace / with &#47;
-        if '/' in token:
-            fixed_token = token.replace('/', '&#47;')
+        if "/" in token:
+            fixed_token = token.replace("/", "&#47;")
             replacements += 1
-            return f'`{fixed_token}`'
+            return f"`{fixed_token}`"
 
         return match.group(0)
 
     # Match inline code: `token` but not `` or ```
     # Negative lookbehind/lookahead to exclude fenced code blocks
-    pattern = r'(?<!`)(`[^`\n]+?`)(?!`)'
+    pattern = r"(?<!`)(`[^`\n]+?`)(?!`)"
 
     fixed_content = re.sub(pattern, replace_slash_in_token, content)
 
@@ -69,7 +69,7 @@ def process_file(file_path: Path, write: bool = False) -> tuple[int, bool]:
         (num_replacements, success)
     """
     try:
-        content = file_path.read_text(encoding='utf-8')
+        content = file_path.read_text(encoding="utf-8")
     except Exception as e:
         print(f"❌ Error reading {file_path}: {e}", file=sys.stderr)
         return 0, False
@@ -82,7 +82,7 @@ def process_file(file_path: Path, write: bool = False) -> tuple[int, bool]:
 
     if write:
         try:
-            file_path.write_text(fixed_content, encoding='utf-8')
+            file_path.write_text(fixed_content, encoding="utf-8")
             print(f"✅ {file_path}: Fixed {num_replacements} token(s)")
         except Exception as e:
             print(f"❌ Error writing {file_path}: {e}", file=sys.stderr)
@@ -97,9 +97,9 @@ def main():
     args = sys.argv[1:]
     write = False
 
-    if '--write' in args:
+    if "--write" in args:
         write = True
-        args.remove('--write')
+        args.remove("--write")
 
     if not args:
         print(__doc__)
@@ -112,7 +112,7 @@ def main():
         if not f.exists():
             print(f"❌ File not found: {f}", file=sys.stderr)
             sys.exit(1)
-        if not f.suffix == '.md':
+        if not f.suffix == ".md":
             print(f"⚠️  Warning: {f} is not a Markdown file", file=sys.stderr)
 
     print(f"{'🔧 WRITE MODE' if write else '🔍 DRY-RUN MODE'}")
@@ -127,7 +127,7 @@ def main():
         if success:
             success_count += 1
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Total replacements: {total_replacements}")
     print(f"Files processed: {success_count}/{len(files)}")
 
@@ -137,5 +137,5 @@ def main():
     sys.exit(0 if success_count == len(files) else 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
