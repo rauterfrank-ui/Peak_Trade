@@ -143,7 +143,7 @@ python scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/
 
 **2. Mit Custom-Config:**
 ```bash
-python scripts/run_strategy_from_config.py --config config/my_backtest.toml
+python scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
 ```
 
 **3. Portfolio-Backtest:**
@@ -153,7 +153,7 @@ python scripts/run_portfolio_backtest.py --allocation equal
 
 **4. Walk-Forward-Validation:**
 ```bash
-python scripts/run_walkforward.py --strategy ma_crossover
+python scripts&#47;run_walkforward.py --strategy ma_crossover
 ```
 
 **5. Monte-Carlo-Simulation:**
@@ -335,8 +335,8 @@ Die folgenden existierenden Dokumente behandeln verwandte Themen und wurden **ni
 
 4. **Erweiterte Features nutzen:**
    - Custom Position Sizer: [docs/BACKTEST_ENGINE.md#extension-hooks](docs/BACKTEST_ENGINE.md)
-   - Portfolio-Backtest: `python scripts/run_portfolio_backtest.py`
-   - Walk-Forward: `python scripts/run_walkforward.py --strategy ma_crossover`
+   - Portfolio-Backtest: `python scripts&#47;run_portfolio_backtest.py`
+   - Walk-Forward: `python scripts&#47;run_walkforward.py --strategy ma_crossover`
 
 ---
 

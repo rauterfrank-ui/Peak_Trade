@@ -55,7 +55,7 @@ Peak_Trade folgt einer klaren Pipeline-Architektur mit strikter Separation of Co
 python scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
 
 # Mit Custom-Config
-python scripts/run_strategy_from_config.py --config config/my_backtest.toml
+python scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
 ```
 
 ### 2. Programmatischer Backtest (Python)
@@ -96,7 +96,7 @@ print(f"Max Drawdown: {result.max_drawdown:.2%}")
 
 ### 3. Minimal Config-Beispiel
 
-**`config/my_backtest.toml`:**
+**`config&#47;my_backtest.toml`:**
 
 ```toml
 [data]
@@ -295,8 +295,8 @@ python3 -m ruff check src tests scripts
 python scripts/run_strategy_from_config.py --strategy ma_crossover
 
 # Research-Pipeline
-python scripts/run_walkforward.py --strategy ma_crossover
-python scripts/run_monte_carlo.py --strategy ma_crossover
+python scripts&#47;run_walkforward.py --strategy ma_crossover
+python scripts&#47;run_monte_carlo.py --strategy ma_crossover
 python scripts/run_stress_tests.py --portfolio moderate
 
 # Live-Status
@@ -376,9 +376,9 @@ cfg = load_config()
 ```
 
 **Beispiele:**
-- `scripts/run_strategy_from_config.py` – Einzel-Backtest
-- `scripts/run_portfolio_backtest.py` – Portfolio-Backtest
-- `scripts/run_walkforward.py` – Walk-Forward-Validation
+- `scripts&#47;run_strategy_from_config.py` – Einzel-Backtest
+- `scripts&#47;run_portfolio_backtest.py` – Portfolio-Backtest
+- `scripts&#47;run_walkforward.py` – Walk-Forward-Validation
 
 ### 5. Neue Datenquelle hinzufügen
 
@@ -389,7 +389,7 @@ def load_data_from_my_provider(symbol, start, end):
     return df  # Must return OHLCV DataFrame
 ```
 
-**Integration in `src/data/data_loader.py`:**
+**Integration in `src&#47;data&#47;data_loader.py`:**
 ```python
 def load_ohlcv_data(..., provider="my_provider"):
     if provider == "my_provider":
@@ -422,7 +422,7 @@ seed = 42  # Für reproduzierbare Random-Samples
 python scripts/run_strategy_from_config.py --strategy ma_crossover
 
 # Mit Custom-Config
-python scripts/run_strategy_from_config.py --config config/my_backtest.toml
+python scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
 ```
 
 **Variante B: Portfolio-Backtest**
@@ -433,10 +433,10 @@ python scripts/run_portfolio_backtest.py --allocation equal
 **Variante C: Research-Pipeline**
 ```bash
 # Walk-Forward
-python scripts/run_walkforward.py --strategy ma_crossover
+python scripts&#47;run_walkforward.py --strategy ma_crossover
 
 # Monte-Carlo
-python scripts/run_monte_carlo.py --strategy rsi_reversion --runs 1000
+python scripts&#47;run_monte_carlo.py --strategy rsi_reversion --runs 1000
 ```
 
 ### Logging & Registry
