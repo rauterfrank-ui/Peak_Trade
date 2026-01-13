@@ -64,6 +64,9 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - 🚪 **Start hier:** [WORKFLOW_FRONTDOOR.md](../WORKFLOW_FRONTDOOR.md) — Central navigation hub for workflow and runbook documentation
 - 📘 **Authoritative (2026):** [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) — Comprehensive operational reference: 18+ CLI sections, 12+ runbooks, Wave3 Control Center, AI Autonomy cheatsheet, 5 checklists, status tables
 - 📙 **Legacy (Dec 2025):** [WORKFLOW_NOTES.md](../WORKFLOW_NOTES.md) — Historical snapshot: Technical layer status, Frank/ChatGPT/Claude workflow mechanics, prompt style conventions
+- 📁 **Workflow Notes Archive:** [workflows/](workflows/) — Consolidated workflow notes with docs-reference-targets-gate compliance
+  - [WORKFLOW_NOTES_FRONTDOOR.md](workflows/WORKFLOW_NOTES_FRONTDOOR.md) — Policy guide for illustrative path encoding
+  - [PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md](workflows/PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md) — Historical workflow snapshot
 
 **When to Use:**
 - **Daily Operations:** WORKFLOW_RUNBOOK_OVERVIEW (authoritative, current)
@@ -71,6 +74,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **PR Management (Wave3):** WORKFLOW_RUNBOOK_OVERVIEW Section 2
 - **Historical Context:** WORKFLOW_NOTES (legacy, Dec 2025 technical snapshot)
 - **Chat-Based Development:** WORKFLOW_NOTES (continuation context for Frank/ChatGPT/Claude sessions)
+- **Docs Gate Policy:** workflows/WORKFLOW_NOTES_FRONTDOOR.md (illustrative path encoding guide)
 
 ## Installation & Setup
 

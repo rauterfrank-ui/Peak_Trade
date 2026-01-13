@@ -32,6 +32,17 @@ Hinweis: Phase 13 (Production Live-Trading) erfordert explizites Governance-Gate
 
 ## 🎯 Hauptdokumente (Quick Reference)
 
+### 0. Workflow Notes & Policy
+**Pfad:** `docs/ops/workflows/`  
+**Zielgruppe:** Docs maintainers, PR authors, Workflow developers
+
+**Key Documents:**
+- [WORKFLOW_NOTES_FRONTDOOR.md](docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md) — Policy for illustrative path encoding (`&#47;`)
+- [PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md](docs/ops/workflows/PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md) — Historical workflow snapshot
+- [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md) — Troubleshooting docs gate failures
+
+**Purpose:** Documents illustrative example path policy (prevents docs-reference-targets-gate false positives) and provides historical workflow context.
+
 ### 1. CLI Cheatsheet
 **Pfad:** `docs/CLI_CHEATSHEET.md`  
 **Umfang:** 18 Hauptsektionen, ~690 Zeilen  
