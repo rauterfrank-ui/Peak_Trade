@@ -1,5 +1,11 @@
 # Peak_Trade – Evidence Index (v0.8)
 
+- **EV-20260113-PR701-DOCS-GATES-PACK** | Date: 2026-01-13 | Owner: ops | Scope: docs/ops runbooks + helper script | Risk: LOW  
+  - Source: [PR #701 Merge Log](merge_logs/PR_701_MERGE_LOG.md) · [PR #701](https://github.com/rauterfrank-ui/Peak_Trade/pull/701) · Commit: `d56bb933`  
+  - Claim: Docs Gates Operator Pack: 3 operator runbooks für alle docs CI gates (Token Policy, Reference Targets, Diff Guard Policy) + snapshot helper script (no watch loops); konsistente operator-sicht (Symptom→Fix→Verify); frontdoor integration (README + Control Center); 1,102 Zeilen operator guidance.  
+  - Verification: PR merged (squash merge, 5 commits); all 24 CI checks grün (Docs Token/Reference/Diff Guard gates: 6-7s each; Audit: 1m11s; Tests 3.9/3.10/3.11: 5-9m); 5 Dateien geändert (+1232/-2); snapshot helper executable (`pt_docs_gates_snapshot.sh`); all cross-links resolvable; gate-safe text (illustrative paths encoded).  
+  - Notes: Docs-only + helper script; snapshot-only philosophy (no watch/polling, clear PASS/FAIL); runbooks: RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md (421 lines), RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md (424 lines), existing TOKEN_POLICY_GATE_OPERATOR.md (PR #700, 257 lines); frontdoors: ops README (+34 lines "Docs Gates" section), Control Center (+23 lines Quick Actions); operator value: single command reproduces all 3 gates locally.
+
 - **EV-20260113-PR693-TOKEN-POLICY-GATE** | Date: 2026-01-13 | Owner: ops | Scope: CI gates, docs quality | Risk: LOW  
   - Source: [PR #693 Merge Log](PR_693_MERGE_LOG.md) · [PR #693](https://github.com/rauterfrank-ui/Peak_Trade/pull/693) · Commit: `e51e55aa`  
   - Claim: Docs Token Policy Gate live: Enforces `&#47;` encoding policy für illustrative Pfade in Markdown inline-code tokens; verhindert docs-reference-targets-gate false positives; vollständige Test-Suite (26 Tests), Operator Runbook (297 Zeilen), Allowlist-Mechanismus, CI Workflow.  
