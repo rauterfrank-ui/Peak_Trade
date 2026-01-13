@@ -30,7 +30,7 @@ The gate scans changed Markdown files (`.md`) for inline-code tokens (single bac
 
 1. **ILLUSTRATIVE** paths (e.g., `scripts&#47;fake.py`, `config&#47;example.toml`) → **MUST** use `&#47;` encoding
 2. **REAL_REPO_TARGET** (existing files) → **NO** encoding required
-3. **BRANCH_NAME** patterns (e.g., `feature/my-feature`, `docs/update`) → **NO** encoding required
+3. **BRANCH_NAME** patterns (e.g., `feature/my-feature`, `docs&#47;update`) → **NO** encoding required
 4. **URL** (http/https) → **NO** encoding required
 5. **COMMAND** (prefixed with `python `, `git `, etc.) → **NO** encoding required
 6. **LOCAL_PATH** (starts with `./`, `../`, `~/`, or `/`) → **NO** encoding required
@@ -46,10 +46,10 @@ The gate scans changed Markdown files (`.md`) for inline-code tokens (single bac
 | (See fenced block below) | ILLUSTRATIVE | ❌ **VIOLATION** | Looks like path but doesn't exist |
 | `scripts&#47;real_script.py` | REAL_REPO_TARGET (if exists) | ✅ Compliant | File exists in repo |
 | `feature/my-feature` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
-| `docs/update` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
-| `python scripts/run.py` | COMMAND | ✅ Compliant | Command prefix detected |
+| `docs&#47;update` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
+| `python scripts&#47;run.py` | COMMAND | ✅ Compliant | Command prefix detected |
 | `https://example.com/path` | URL | ✅ Compliant | URL detected |
-| `./scripts/local.py` | LOCAL_PATH | ✅ Compliant | Local path prefix |
+| `.&#47;scripts&#47;local.py` | LOCAL_PATH | ✅ Compliant | Local path prefix |
 | `some/path` | ILLUSTRATIVE (if allowlisted) | ✅ Compliant | In allowlist |
 
 **Example of ILLUSTRATIVE violation (shown in fenced block to avoid triggering gate):**
@@ -273,10 +273,10 @@ If you need to adjust how tokens are classified:
 | Scenario | Action | Example |
 |----------|--------|---------|
 | Illustrative path | Encode with `&#47;` | `scripts&#47;example.py` |
-| Branch name | No encoding (allowed) | `feature/my-branch` |
+| Branch name | No encoding (allowed) | `feature&#47;my-branch` |
 | Real repo file | No encoding | `scripts&#47;ops&#47;validate_docs_token_policy.py` (if exists) |
 | URL | No encoding | `https://github.com/...` |
-| Command | No encoding | `python scripts/run.py` |
+| Command | No encoding | `python scripts&#47;run.py` |
 | Generic placeholder | Add to allowlist | `some/path` |
 | Fenced code block | No action needed | (automatically ignored) |
 
