@@ -57,7 +57,7 @@ gh workflow list | grep "merge state"  # Workflow active (ID: 223251142) ✅
 **CI (PR #703 - All 28 checks ✅):**
 
 **Docs Gates:**
-- ✅ Docs Token Policy Gate: PASS (8s) — Fixed `origin/main` encoding in commit 08941a97
+- ✅ Docs Token Policy Gate: PASS (8s) — Fixed `origin&#47;main` encoding in commit 08941a97
 - ✅ Docs Reference Targets Gate: PASS (7s)
 - ✅ Docs Diff Guard Policy Gate: PASS (6s)
 - ✅ Docs Integrity Snapshot: PASS (7s)
@@ -129,7 +129,7 @@ gh workflow list | grep "merge state"  # Workflow active (ID: 223251142) ✅
 - **Related:** PR #702 (Docs Gates Operator Pack v1.0, merged 2026-01-13T17:09:43Z, commit: d56bb933)
 - **Commits:**
   - c8552780: Initial commit (Quickstart + CI workflow + Frontdoor)
-  - 08941a97: Fix `origin/main` encoding (Token Policy compliance)
+  - 08941a97: Fix `origin&#47;main` encoding (Token Policy compliance)
   - 4d5e19d0: **Squash merge commit (final)**
 - **Documentation:**
   - Quickstart: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md`
