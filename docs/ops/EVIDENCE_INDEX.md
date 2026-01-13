@@ -1,7 +1,7 @@
 # Peak_Trade – Evidence Index (v0.8)
 
 - **EV-20260113-RUNBOOKS-INCIDENT-HANDLING** | Date: 2026-01-13 | Owner: ops | Scope: docs-only | Risk: LOW  
-  - Source: [Merge Log](PR_RUNBOOKS_INCIDENT_HANDLING_MERGE_LOG.md) · PR TBD (docs/runbooks-incident-handling)  
+  - Source: [Merge Log](PR_RUNBOOKS_INCIDENT_HANDLING_MERGE_LOG.md) · [PR #705](https://github.com/rauterfrank-ui/Peak_Trade/pull/705)  
   - Claim: Integration of RUNBOOKS_AND_INCIDENT_HANDLING.md (Phase 25/56, Shadow-Mode + Incident Handling) into docs navigation; minimal-invasive link entry in WORKFLOW_RUNBOOK_OVERVIEW; covers Shadow-Run runbook, System Pause procedures, Incident-Handling process (severity grades, response schema, report template); no content modifications to existing runbook.  
   - Verification: Docs-only PR; Token Policy PASS (no risky tokens); Reference Targets PASS (all cross-links exist: INCIDENT_SIMULATION_AND_DRILLS.md, LIVE_OPERATIONAL_RUNBOOKS.md, INCIDENT_DRILL_LOG.md, GOVERNANCE_AND_SAFETY_OVERVIEW.md, SAFETY_POLICY_TESTNET_AND_LIVE.md, LIVE_READINESS_CHECKLISTS.md, PHASE_24_SHADOW_EXECUTION.md); 4 files changed (+204 lines): WORKFLOW_RUNBOOK_OVERVIEW (+24), Merge Log (+172), Evidence Index (+8).  
   - Notes: Runbook file already present on main (352 lines); provides foundational operator guidance for Shadow-Mode operations, system pause, and first incident response; status: Shadow-Mode active, Testnet/Live platzhalter (future phases).

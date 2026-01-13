@@ -1,6 +1,6 @@
 # Peak_Trade – Merge Log: Runbooks & Incident Handling Integration
 
-**PR:** TBD (docs/runbooks-incident-handling branch)  
+**PR:** [#705](https://github.com/rauterfrank-ui/Peak_Trade/pull/705) (docs/runbooks-incident-handling branch)  
 **Date:** 2026-01-13  
 **Owner:** ops  
 **Scope:** docs-only  
