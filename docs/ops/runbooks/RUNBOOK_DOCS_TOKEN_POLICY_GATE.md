@@ -20,20 +20,20 @@ scripts/example.py
 
 appear in inline-code spans, the `docs-reference-targets-gate` interprets them as missing files and fails CI.
 
-**Solution:** Encode the forward slash (`/`) as `&#47;` in illustrative paths, while leaving real repo targets, URLs, commands, and branch names unchanged.
+**Solution:** Encode the forward slash (``&#47;``) as `&#47;` in illustrative paths, while leaving real repo targets, URLs, commands, and branch names unchanged.
 
 ---
 
 ## When This Gate Triggers
 
-The gate scans changed Markdown files (`.md`) for inline-code tokens (single backticks: `` `token` ``) containing `/` and enforces:
+The gate scans changed Markdown files (`.md`) for inline-code tokens (single backticks: `` `token` ``) containing ``&#47;`` and enforces:
 
 1. **ILLUSTRATIVE** paths (e.g., `scripts&#47;fake.py`, `config&#47;example.toml`) → **MUST** use `&#47;` encoding
 2. **REAL_REPO_TARGET** (existing files) → **NO** encoding required
-3. **BRANCH_NAME** patterns (e.g., `feature/my-feature`, `docs&#47;update`) → **NO** encoding required
+3. **BRANCH_NAME** patterns (e.g., ``feature&#47;my-feature``, `docs&#47;update`) → **NO** encoding required
 4. **URL** (http/https) → **NO** encoding required
 5. **COMMAND** (prefixed with `python `, `git `, etc.) → **NO** encoding required
-6. **LOCAL_PATH** (starts with `./`, `../`, `~/`, or `/`) → **NO** encoding required
+6. **LOCAL_PATH** (starts with ``.&#47;``, ``..&#47;``, ``~&#47;``, or ``&#47;``) → **NO** encoding required
 7. **ALLOWLISTED** tokens → **NO** encoding required
 
 ---
@@ -45,12 +45,12 @@ The gate scans changed Markdown files (`.md`) for inline-code tokens (single bac
 | `scripts&#47;example.py` | ENCODED | ✅ Already compliant | Forward slash already encoded |
 | (See fenced block below) | ILLUSTRATIVE | ❌ **VIOLATION** | Looks like path but doesn't exist |
 | `scripts&#47;real_script.py` | REAL_REPO_TARGET (if exists) | ✅ Compliant | File exists in repo |
-| `feature/my-feature` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
+| ``feature&#47;my-feature`` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
 | `docs&#47;update` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
 | `python scripts&#47;run.py` | COMMAND | ✅ Compliant | Command prefix detected |
-| `https://example.com/path` | URL | ✅ Compliant | URL detected |
+| ``https:&#47;&#47;example.com&#47;path`` | URL | ✅ Compliant | URL detected |
 | `.&#47;scripts&#47;local.py` | LOCAL_PATH | ✅ Compliant | Local path prefix |
-| `some/path` | ILLUSTRATIVE (if allowlisted) | ✅ Compliant | In allowlist |
+| ``some&#47;path`` | ILLUSTRATIVE (if allowlisted) | ✅ Compliant | In allowlist |
 
 **Example of ILLUSTRATIVE violation (shown in fenced block to avoid triggering gate):**
 
@@ -71,13 +71,13 @@ When the gate fails, you'll see output like:
 ❌ Found 2 violation(s) in 1 file(s):
 
 📄 docs/GUIDE.md
-  Line 15: `scripts/example.py` (ILLUSTRATIVE)
+  Line 15: ``scripts&#47;example.py`` (ILLUSTRATIVE)
     → Illustrative path token must use &#47; encoding
-    💡 Replace `scripts/example.py` with `scripts&#47;example.py`
+    💡 Replace ``scripts&#47;example.py`` with `scripts&#47;example.py`
 
-  Line 23: `feature/my-branch` (BRANCH_NAME)
+  Line 23: ``feature&#47;my-branch`` (BRANCH_NAME)
     → Illustrative path token must use &#47; encoding
-    💡 Replace `feature/my-branch` with `feature&#47;my-branch`
+    💡 Replace ``feature&#47;my-branch`` with `feature&#47;my-branch`
 ```
 
 ### Step 2: Apply the Fix
@@ -87,28 +87,39 @@ When the gate fails, you'll see output like:
 Replace the forward slash with `&#47;` inside the inline-code span:
 
 ```diff
-- Here's an example: `scripts/example.py`.
+- Here's an example: ``scripts&#47;example.py``.
 + Here's an example: `scripts&#47;example.py`.
 
-- Checkout branch: `feature/my-branch`.
+- Checkout branch: ``feature&#47;my-branch``.
 + Checkout branch: `feature&#47;my-branch`.
 ```
 
 **Option B: Automated Fix (Python Script)**
 
-```bash
-# Run validator to detect violations
-python scripts/ops/validate_docs_token_policy.py
+## Auto-Fix Scripts
 
-# Fix automatically (if you have a fix script)
-# Or use sed/rg to replace specific tokens
+This gate is intentionally strict. If it fails due to inline-code tokens that look like paths/commands/endpoints, use the auto-fixer to apply a conservative, targeted escape.
+
+### Recommended (v2, conservative)
+Use v2 first. It is selective and avoids rewriting URLs and fenced code blocks. Re-running is safe (idempotent).
+
+```bash
+# Preview changes (dry-run)
+python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py --dry-run <file1.md> <file2.md>
+
+# Apply fixes
+python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py --write <file1.md> <file2.md>
+
+# Verify gates pass
+uv run python scripts/ops/validate_docs_token_policy.py --changed
+bash scripts/ops/verify_docs_reference_targets.sh --changed
 ```
 
 **Option C: Add to Allowlist (If Appropriate)**
 
-If a token is a generic placeholder (e.g., `some/path`) used across many docs:
+If a token is a generic placeholder (e.g., ``some&#47;path``) used across many docs:
 
-1. Add it to `scripts/ops/docs_token_policy_allowlist.txt`:
+1. Add it to ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``:
 
 ```txt
 # Generic placeholders
@@ -126,25 +137,25 @@ path/to/file
 
 1. **Real repo file paths** that exist:
    ```markdown
-   ✅ `scripts/run_backtest.py` (if file exists)
+   ✅ ``scripts&#47;run_backtest.py`` (if file exists)
    ```
 
 2. **URLs**:
    ```markdown
-   ✅ `https://github.com/user/repo/blob/main/file.py`
+   ✅ ``https:&#47;&#47;github.com&#47;user&#47;repo&#47;blob&#47;main&#47;file.py``
    ```
 
 3. **Commands** with path arguments:
    ```markdown
-   ✅ `python scripts/run.py`
-   ✅ `git diff origin/main`
+   ✅ ``python scripts&#47;run.py``
+   ✅ ``git diff origin&#47;main``
    ```
 
 4. **Local path patterns**:
    ```markdown
-   ✅ `./scripts/local.py`
-   ✅ `../config/file.toml`
-   ✅ `~/Documents/file.txt`
+   ✅ ``.&#47;scripts&#47;local.py``
+   ✅ ``..&#47;config&#47;file.toml``
+   ✅ ``~&#47;Documents&#47;file.txt``
    ```
 
 5. **Fenced code blocks** (triple backticks):
@@ -197,7 +208,7 @@ gh pr checks <PR_NUMBER> | grep "Docs Token Policy Gate"
 
 ```markdown
 ❌ Before (triggers docs-reference-targets-gate):
-`scripts/example.py` (gate thinks this is a missing file)
+``scripts&#47;example.py`` (gate thinks this is a missing file)
 
 ✅ After (safe for both gates):
 `scripts&#47;example.py` (gate ignores this as it's not a valid path)
@@ -244,18 +255,82 @@ echo "my/generic/placeholder" >> scripts/ops/docs_token_policy_allowlist.txt
 
 ## Maintenance
 
-### Updating the Allowlist
+### Allowlist Maintenance
 
-The allowlist is at `scripts/ops/docs_token_policy_allowlist.txt`.
+The allowlist is at ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``.
+
+**Decision Rules: When to Allowlist vs. Fix Docs Tokenization**
+
+| Scenario | Action | Rationale |
+|----------|--------|-----------|
+| Generic placeholder used in 3+ docs | **Allowlist** | Avoids repetitive encoding across many files |
+| System path (e.g., ``&#47;usr&#47;local&#47;bin``) | **Allowlist** | Not a repo path, semantically correct |
+| Third-party path (e.g., external lib) | **Allowlist** | Outside repo scope |
+| Illustrative path in 1-2 docs | **Encode** (`&#47;`) | Keeps allowlist focused, explicit per-doc |
+| Typo or mistake | **Fix docs** | Correct the error, don't hide it |
+| Real repo path | **No action** | Validator auto-exempts (REAL_REPO_TARGET) |
+
+**PR Hygiene: Rationale Requirements**
+
+When adding entries to the allowlist, **MUST** include rationale:
+
+**Option 1: Inline comment (preferred)**
+```text
+# Generic placeholder for tutorial examples (used in 5+ docs)
+some/path
+
+# System path for macOS Homebrew installations
+/usr/local/bin
+```
+
+**Option 2: Block comment for related entries**
+```text
+# --- Tutorial Placeholders ---
+# Used across docs/tutorials/ for generic examples
+some/path
+your/config.toml
+example/strategy.py
+```
+
+**Enforcement:**
+- **PR Review:** Reviewer MUST verify rationale is present
+- **Quarterly Audit:** Remove stale entries, consolidate duplicates, verify rationale clarity
 
 **When to add entries:**
-- Generic placeholders used in tutorials (e.g., `some/path`)
-- Common system paths (e.g., `/usr/local/bin`)
-- Third-party paths (e.g., `/var/log`)
+- Generic placeholders used in tutorials (e.g., ``some&#47;path``)
+- Common system paths (e.g., ``&#47;usr&#47;local&#47;bin``)
+- Third-party paths (e.g., ``&#47;var&#47;log``)
+- Patterns used in 3+ docs
 
 **When NOT to add entries:**
 - Project-specific illustrative paths (use `&#47;` encoding instead)
 - One-off examples in a single doc
+- Typos or mistakes (fix the docs)
+- Real repo paths (auto-exempted by validator)
+
+**Verification: How to Run Validator**
+
+**Local (before commit):**
+```bash
+# Check changed files only (fast, PR-mode)
+uv run python scripts/ops/validate_docs_token_policy.py --changed
+
+# Check specific directory
+uv run python scripts/ops/validate_docs_token_policy.py docs/ops/
+
+# Full scan (slow, ~30s for entire repo)
+uv run python scripts/ops/validate_docs_token_policy.py --all
+```
+
+**CI (automatic):**
+- Runs on every PR touching ``docs&#47;**&#47;*.md`` or ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``
+- Workflow: ``.github&#47;workflows&#47;docs-token-policy-gate.yml``
+- Check status: `gh pr checks <PR_NUMBER> | grep "docs-token-policy-gate"`
+
+**Exit Codes:**
+- `0` = All checks passed
+- `1` = Violations found (see report)
+- `2` = Error (e.g., invalid arguments, file not found)
 
 ### Updating Classification Logic
 
@@ -275,19 +350,19 @@ If you need to adjust how tokens are classified:
 | Illustrative path | Encode with `&#47;` | `scripts&#47;example.py` |
 | Branch name | No encoding (allowed) | `feature&#47;my-branch` |
 | Real repo file | No encoding | `scripts&#47;ops&#47;validate_docs_token_policy.py` (if exists) |
-| URL | No encoding | `https://github.com/...` |
+| URL | No encoding | ``https:&#47;&#47;github.com&#47;...`` |
 | Command | No encoding | `python scripts&#47;run.py` |
-| Generic placeholder | Add to allowlist | `some/path` |
+| Generic placeholder | Add to allowlist | ``some&#47;path`` |
 | Fenced code block | No action needed | (automatically ignored) |
 
 ---
 
 ## References
 
-- Script: `scripts/ops/validate_docs_token_policy.py`
-- Tests: `tests/ops/test_validate_docs_token_policy.py`
-- Allowlist: `scripts/ops/docs_token_policy_allowlist.txt`
-- CI Workflow: `.github/workflows/docs-token-policy-gate.yml`
+- Script: ``scripts&#47;ops&#47;validate_docs_token_policy.py``
+- Tests: ``tests&#47;ops&#47;test_validate_docs_token_policy.py``
+- Allowlist: ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``
+- CI Workflow: ``.github&#47;workflows&#47;docs-token-policy-gate.yml``
 - Related: [Docs Reference Targets False Positives](RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md)
 
 ---
