@@ -6,7 +6,7 @@
 - **Risk:** 🟢 LOW
 - **Merge commit:** `d56bb9332554b3bab3f4758a454422edd537ada3`
 - **Merged at:** 2026-01-13T17:09:43Z
-- **Branch:** `docs/docs-gates-operator-pack` → main
+- **Branch:** `docs&#47;docs-gates-operator-pack` → main
 
 ## Why
 - Gates are live in CI; operators need quick reference for daily triage
