@@ -1,5 +1,6 @@
 # Peak_Trade – Evidence Index (v0.8)
 
+<a id="ev-20260113-runbooks-frontdoor"></a>
 - **EV-20260113-RUNBOOKS-FRONTDOOR** | Date: 2026-01-13 | Owner: ops | Scope: docs-only | Risk: LOW  
   - Source: [PR #706 Merge Log](PR_706_MERGE_LOG.md) · [PR #706](https://github.com/rauterfrank-ui/Peak_Trade/pull/706) · Commit: `2243cfac`  
   - Claim: Reintegrated Runbooks & Incident Handling into docs navigation (3 frontdoors: docs/README.md, docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md, WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md); minimal-invasive, gate-safe integration with token policy compliance fixes (7 pre-existing violations resolved).  
