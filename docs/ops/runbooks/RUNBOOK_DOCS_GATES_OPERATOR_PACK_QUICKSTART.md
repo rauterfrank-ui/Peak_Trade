@@ -249,7 +249,7 @@ done
 
 **After PR Created:**
 - CI will run same gates automatically
-- If CI fails but local passed: Fetch main and re-run against `origin/main`
+- If CI fails but local passed: Fetch main and re-run against `origin&#47;main`
 
 **If PR is BEHIND main:**
 - Merge/rebase main into your branch
