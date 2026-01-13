@@ -179,7 +179,7 @@ See Phase 4E Closeout Guide (historical, file archived) for details.
 
 **Fix Action:**
 - Verify anchor syntax in target files
-- Add explicit `<a id="..."></a>` tags if missing
+- Add explicit `<a id="..."><&#47;a>` tags if missing
 - Update linking files to match actual anchor IDs
 
 ---
