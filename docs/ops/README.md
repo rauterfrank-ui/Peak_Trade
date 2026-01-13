@@ -654,7 +654,7 @@ scripts/ops/ops_center.sh doctor
 2. **Docs Reference Targets Gate** — Path existence validation
 3. **Docs Diff Guard Policy Gate** — Policy marker enforcement
 
-**🚀 Quick Actions (One-Stop Snapshot):**
+**🚀 Quick Start (60 Seconds):**
 
 ```bash
 # Reproduce all 3 gates locally (PR workflow)
@@ -664,19 +664,34 @@ scripts/ops/ops_center.sh doctor
 ./scripts/ops/pt_docs_gates_snapshot.sh --all
 ```
 
-**📚 Operator Runbooks:**
-- [RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Token Policy Gate quick reference
-- [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Reference Targets Gate quick reference
+**📘 Quick Reference:**
+- **[RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md](runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md)** ⭐ — **START HERE:** Single-page quick reference for all 3 gates (60-second workflow, common fixes, decision tree)
+
+**📚 Detailed Operator Runbooks (400+ lines each):**
+- [RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Token Policy Gate comprehensive guide
+- [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Reference Targets Gate comprehensive guide
+- [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff Guard Policy Gate comprehensive guide
 - [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff Guard Policy Gate quick reference
 
 **🛠️ Helper Script:**
 - ``scripts&#47;ops&#47;pt_docs_gates_snapshot.sh`` — Snapshot-only reproduction helper (no watch loops)
+
+**🔔 Optional CI Signal:**
+- **PR Merge State Signal** (`.github&#47;workflows&#47;ci-pr-merge-state-signal.yml`) — Informational-only workflow that shows BEHIND status in PR checks (never required, always SUCCESS)
+  - **Purpose:** Early visibility when branch is behind main
+  - **Output:** Job Summary with sync instructions
+  - **Status:** Non-blocking (informational only)
 
 **When Any Gate Fails:**
 1. Run snapshot helper: `./scripts/ops/pt_docs_gates_snapshot.sh --changed`
 2. Follow "Next Actions" in output
 3. Consult relevant operator runbook
 4. Re-run to verify fix
+
+**When PR is BEHIND main:**
+1. Check "PR Merge State Signal" job summary for sync instructions
+2. Merge or rebase main into your branch
+3. Re-run snapshot helper to validate after sync
 
 ---
 
