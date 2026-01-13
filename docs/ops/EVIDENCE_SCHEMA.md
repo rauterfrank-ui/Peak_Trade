@@ -48,7 +48,7 @@ Evidence entries must belong to ONE of these categories:
 | **Evidence ID** | Unique identifier (see ID Format above) | `EV-20260107-SEED` |
 | **Date** | ISO 8601 date (`YYYY-MM-DD`) | `2026-01-07` |
 | **Owner** | Responsible party (username/team/role) | `ops`, `@username`, `team-sre` |
-| **Source Link** | URL or repo path (prefer relative paths) | `[PR #596](https://github.com/org/repo/pull/596)` or `[docs/ops/PR_596_MERGE_LOG.md](PR_596_MERGE_LOG.md)` |
+| **Source Link** | URL or repo path (prefer relative paths) | `[PR #596](https:&#47;&#47;github.com&#47;org&#47;repo&#47;pull&#47;596)` or `[docs&#47;ops&#47;PR_596_MERGE_LOG.md](PR_596_MERGE_LOG.md)` |
 | **Claim** | What this evidence demonstrates (1–2 sentences, factual) | "Phase 0 Multi-Agent Roleplay complete: 5/5 gate criteria passed, 6079 tests discovered" |
 | **Verification** | How to verify authenticity (hash, CI status, command) | "pytest 8.4.2, Python 3.9.6, workspace CLEAN" |
 | **Notes** | Optional context, caveats, or risk notes | "Seed entry (example); no live trading claim" |
@@ -67,13 +67,13 @@ Evidence entries must belong to ONE of these categories:
 ## Link Conventions
 
 **Prefer relative paths** for repo-internal references:
-- ✅ `[PR_596_MERGE_LOG.md](PR_596_MERGE_LOG.md)` (relative to `docs/ops/`)
-- ✅ Example from `docs/ops/evidence/`: `[config/bounded_live.toml](../../../config/bounded_live.toml)` <!-- pt:ref-target-ignore -->
+- ✅ `` `[PR_596_MERGE_LOG.md](PR_596_MERGE_LOG.md)` `` (relative to `docs&#47;ops&#47;`)
+- ✅ Example from `docs&#47;ops&#47;evidence&#47;`: `` `[config/bounded_live.toml](..&#47;..&#47;..&#47;config&#47;bounded_live.toml)` ``
 - ⚠️ GitHub URLs: Use for external references only (e.g., PR URLs, workflow run URLs)
 
-**Important:** Evidence entries in `docs/ops/evidence/` are **3 levels deep** from repo root.
-- To link to repo-root files (e.g., `config/`, `.github/workflows/`, `scripts/`), use `../../../` prefix
-- Example: `[ci.yml](../../../.github/workflows/ci.yml)` <!-- pt:ref-target-ignore -->
+**Important:** Evidence entries in `docs&#47;ops&#47;evidence&#47;` are **3 levels deep** from repo root.
+- To link to repo-root files (e.g., `config&#47;`, `.github&#47;workflows&#47;`, `scripts&#47;`), use `..&#47;..&#47;..&#47;` prefix
+- Example: `` `[ci.yml](..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml)` ``
 - See [EVIDENCE_ENTRY_TEMPLATE.md](EVIDENCE_ENTRY_TEMPLATE.md) for detailed linking guide
 
 **Markdown Link Format:**
@@ -85,11 +85,11 @@ Evidence entries must belong to ONE of these categories:
 
 ## Evidence File Storage
 
-**Recommended Location:** `docs/ops/evidence/EV-<ID>.md`
+**Recommended Location:** `docs&#47;ops&#47;evidence&#47;EV-<ID>.md`
 
 **Example:**
 - Entry ID: `EV-20260107-PHASE1`
-- File path pattern: `docs/ops/evidence/EV-<YYYYMMDD>-<TAG>.md`
+- File path pattern: `docs&#47;ops&#47;evidence&#47;EV-<YYYYMMDD>-<TAG>.md`
 
 **Note:** Evidence files are **optional**. Inline evidence (commit SHA, PR URL) is sufficient for many cases.
 

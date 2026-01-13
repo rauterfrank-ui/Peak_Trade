@@ -1,0 +1,101 @@
+# Peak_Trade Operator Runbooks
+
+**Owner:** ops  
+**Purpose:** Indexed collection of operational runbooks for Peak_Trade platform
+
+---
+
+## Runbook Categories
+
+### Docs Gates & Policies
+
+Runbooks for operating and troubleshooting documentation quality gates:
+
+- [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Operating the Docs Reference Targets Gate
+- [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md) — Handling false positives
+- [RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Operating the Docs Token Policy Gate
+- [RUNBOOK_DOCS_TOKEN_POLICY_GATE.md](RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) — Docs Token Policy Gate reference
+- [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Operating the Docs Diff Guard Policy Gate
+- [RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md](RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md) — Quick start for all docs gates
+- [RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md](RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md) — Docs graph triage and remediation
+
+### AI Autonomy & Control Center
+
+Runbooks for AI autonomy workflows and control center operations:
+
+- [RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) — Phase 4B M2 Cursor Multi-Agent
+- [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md](RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md) — Control Center operations
+- [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_DASHBOARD.md](RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_DASHBOARD.md) — Control Center dashboard
+- [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_INCIDENT_TRIAGE.md](RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_INCIDENT_TRIAGE.md) — Incident triage
+- [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATOR_CHEATSHEET.md](RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATOR_CHEATSHEET.md) — Operator cheatsheet
+- [RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md) — Cursor Control Center
+- [CURSOR_MULTI_AGENT_INTEGRATION_RUNBOOK_V1.md](CURSOR_MULTI_AGENT_INTEGRATION_RUNBOOK_V1.md) — Cursor Multi-Agent integration
+- [Wave3_Control_Center_Cheatsheet_v2.md](Wave3_Control_Center_Cheatsheet_v2.md) — Wave 3 Control Center cheatsheet
+
+### Phase-Specific Workflows
+
+Runbooks for specific phase implementations and workflows:
+
+- [RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md) — Phase 5A normalized report consumer
+- [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md) — Phase 5B trend ledger from seed (multi-agent)
+- [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md](RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md) — Phase 5B trend ledger from seed
+- [RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md](RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md) — Phase 5E required checks hygiene gate
+- [RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md) — Phase 6 strategy switch sanity check
+- [RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md) — Phase 7 workflow docs finish closeout
+- [RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md) — Phase 8 docs integrity hardening
+- [RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md](RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md) — Workflow docs integration
+
+### CI & Operations
+
+Runbooks for CI operations and general operational procedures:
+
+- [RUNBOOK_CI_STATUS_POLLING_HOWTO.md](RUNBOOK_CI_STATUS_POLLING_HOWTO.md) — CI status polling how-to
+- [PHASE4E_STABILITY_MONITORING_CHECKLIST.md](PHASE4E_STABILITY_MONITORING_CHECKLIST.md) — Phase 4E stability monitoring checklist
+- [rebase_cleanup_workflow.md](rebase_cleanup_workflow.md) — Rebase cleanup workflow
+- [github_rulesets_pr_reviews_policy.md](github_rulesets_pr_reviews_policy.md) — GitHub rulesets PR reviews policy
+- [policy_critic_execution_override.md](policy_critic_execution_override.md) — Policy critic execution override
+
+### Incident Response & Troubleshooting
+
+Runbooks for responding to incidents and troubleshooting:
+
+- [general.md](general.md) — General incident response procedures
+- [data_feed_down.md](data_feed_down.md) — Data feed down incident response
+- [drift_critical.md](drift_critical.md) — Critical drift incident response
+- [drift_high.md](drift_high.md) — High drift incident response
+- [execution_error.md](execution_error.md) — Execution error incident response
+- [risk_limit_breach.md](risk_limit_breach.md) — Risk limit breach incident response
+- [var_report_compare.md](var_report_compare.md) — VaR report comparison and analysis
+
+---
+
+## Runbook Conventions
+
+### File Naming
+- **Phase-specific:** `RUNBOOK_PHASE<N>_<DESCRIPTION>.md`
+- **General operator:** `RUNBOOK_<TOPIC>_OPERATOR.md`
+- **Incident response:** `<incident_type>.md` (lowercase, underscore-separated)
+- **Cursor Multi-Agent:** `*_CURSOR_MULTI_AGENT.md` suffix
+
+### Structure
+All runbooks should follow this structure:
+1. **Purpose:** What this runbook covers
+2. **Scope:** When to use this runbook
+3. **Pre-flight Checklist:** Required state before starting
+4. **Steps:** Numbered, actionable steps
+5. **Verification:** How to verify success
+6. **Troubleshooting:** Common issues and solutions
+7. **References:** Related docs, PRs, commits
+
+---
+
+## Related Documentation
+
+- [../README.md](../README.md) — Docs Ops overview
+- [../EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md) — Evidence index
+- [../control_center/CONTROL_CENTER_NAV.md](../control_center/CONTROL_CENTER_NAV.md) — Control Center navigation
+
+---
+
+**Last Updated:** 2026-01-13  
+**Maintainer:** ops
