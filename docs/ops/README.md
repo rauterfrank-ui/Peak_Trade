@@ -17,6 +17,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 
 ### PR Merge Logs & Closeouts
 - **[Phase 5C Workflow Dispatch Guard Enforcement Closeout](PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md)** — Phase 5C closeout: dispatch-guard enforcement activation, 10 required checks, verified (2026-01-12)
+- `docs/ops/PR_693_MERGE_LOG.md` — PR #693 (Docs Token Policy Gate: CI enforcement + tests + runbook + allowlist) ([PR #693](https://github.com/rauterfrank-ui/Peak_Trade/pull/693), 2026-01-13)
 - `docs/ops/PR_691_MERGE_LOG.md` — PR #691 (Workflow notes integration + docs-reference-targets-gate policy formalization) ([PR #691](https://github.com/rauterfrank-ui/Peak_Trade/pull/691), 2026-01-13)
 - `docs/ops/PR_690_MERGE_LOG.md` — PR #690 (Docs frontdoor + crosslink hardening + illustrative paths neutralization) ([PR #690](https://github.com/rauterfrank-ui/Peak_Trade/pull/690), 2026-01-13)
 - `docs/ops/PR_669_MERGE_LOG.md` — PR #669 (Phase 5D Required Checks Hygiene Gate + dispatch-guard always-run proof) ([PR #669](https://github.com/rauterfrank-ui/Peak_Trade/pull/669), 2026-01-12)
@@ -595,9 +596,11 @@ scripts/ops/ops_center.sh doctor
 
 **Tip:** Vor großen Docs-Refactorings einmal laufen lassen, um kaputte Links zu vermeiden.
 
-### Docs Reference Targets
+### Docs Reference Targets Gate
 
 **Zweck:** Validiert, dass alle referenzierten Repo-Pfade in Markdown-Docs (Config/Scripts/Docs) tatsächlich existieren.
+
+**Related:** [Docs Token Policy Gate](#docs-token-policy-gate) — Enforces `&#47;` encoding for illustrative paths (prevents false positives in this gate)
 
 **Quick Start (Empfohlene Nutzung):**
 ```bash
@@ -642,6 +645,60 @@ scripts/ops/ops_center.sh doctor
 **Use Case:** Verhindert kaputte Referenzen z.B. nach Datei-Umbenennungen oder -Verschiebungen.
 
 **Safe Markdown Guide:** [guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md](guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md) — Operator guide for avoiding false positives (branch names, planned files, CI triage checklist)
+
+### Docs Token Policy Gate
+
+**Zweck:** Enforces `&#47;` encoding policy für illustrative Pfade in Markdown inline-code tokens (prevents `docs-reference-targets-gate` false positives).
+
+**Status:** Active (non-required, informational gate with 30-day burn-in period)
+
+**Key Resources:**
+- **Operator Runbook:** [runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) — When gate triggers, classification rules, triage workflow, allowlist management
+- **Validator Script:** `scripts/ops/validate_docs_token_policy.py` — CLI tool (exit codes: 0=pass, 1=violations, 2=error)
+- **Allowlist:** `scripts/ops/docs_token_policy_allowlist.txt` — Generic placeholders, system paths (31 entries)
+- **CI Workflow:** `.github/workflows/docs-token-policy-gate.yml` — Runs on PRs touching `docs/**/*.md`
+- **Tests:** `tests/ops/test_validate_docs_token_policy.py` — 26 unit tests
+
+**Quick Commands:**
+```bash
+# Run validator on changed files (PR mode)
+uv run python scripts/ops/validate_docs_token_policy.py --changed
+
+# Run validator on specific directory
+uv run python scripts/ops/validate_docs_token_policy.py docs/ops/
+
+# Run full test suite
+uv run python -m pytest tests/ops/test_validate_docs_token_policy.py -v
+```
+
+**When Gate Fails:**
+1. Read CI log for violations (e.g., `Line 42: scripts/example.py (ILLUSTRATIVE)`)
+2. Fix: Encode `/` as `&#47;` for illustrative paths (e.g., `scripts&#47;example.py`)
+3. Re-run validator locally: `uv run python scripts/ops/validate_docs_token_policy.py --changed`
+4. Push fix
+
+**Token Classifications (7 types):**
+- **ILLUSTRATIVE** (needs encoding): `scripts&#47;example.py`
+- **REAL_REPO_TARGET** (exempt): `scripts/ops/ops_center.sh` (file exists)
+- **BRANCH_NAME** (exempt): `feature/my-branch`
+- **URL** (exempt): `https://github.com/...`
+- **COMMAND** (exempt): `python scripts/run.py`
+- **LOCAL_PATH** (exempt): `./scripts/local.py`, `~/config.toml`
+- **ALLOWLISTED** (exempt): `some/path` (in allowlist)
+
+**Allowlist Management:**
+- **When to allowlist:** Generic placeholders (`some/path`), system paths (`/usr/local/bin`), third-party paths
+- **When NOT to allowlist:** Illustrative paths specific to one doc (encode instead), real repo paths (auto-exempt), typos (fix docs)
+- **How to add:** Edit `scripts/ops/docs_token_policy_allowlist.txt`, add comment with rationale, commit with clear message
+
+**Troubleshooting:**
+- **Gate passes but reference-targets-gate fails:** Token Policy only checks inline-code; Reference Targets checks all patterns → See [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md)
+- **Copy/paste includes `&#47;`:** Browsers decode automatically; if not, manually replace with `/`
+
+**Related:**
+- PR #693: [Merge Log](PR_693_MERGE_LOG.md) — Implementation + tests + runbook
+- PR #691: [Merge Log](PR_691_MERGE_LOG.md) — Policy formalization
+- PR #690: [Merge Log](PR_690_MERGE_LOG.md) — First application of `&#47;` encoding
 
 ## Docs Reference Targets Guardrail — Supported Formats
 

@@ -244,18 +244,82 @@ echo "my/generic/placeholder" >> scripts/ops/docs_token_policy_allowlist.txt
 
 ## Maintenance
 
-### Updating the Allowlist
+### Allowlist Maintenance
 
 The allowlist is at `scripts/ops/docs_token_policy_allowlist.txt`.
+
+**Decision Rules: When to Allowlist vs. Fix Docs Tokenization**
+
+| Scenario | Action | Rationale |
+|----------|--------|-----------|
+| Generic placeholder used in 3+ docs | **Allowlist** | Avoids repetitive encoding across many files |
+| System path (e.g., `/usr/local/bin`) | **Allowlist** | Not a repo path, semantically correct |
+| Third-party path (e.g., external lib) | **Allowlist** | Outside repo scope |
+| Illustrative path in 1-2 docs | **Encode** (`&#47;`) | Keeps allowlist focused, explicit per-doc |
+| Typo or mistake | **Fix docs** | Correct the error, don't hide it |
+| Real repo path | **No action** | Validator auto-exempts (REAL_REPO_TARGET) |
+
+**PR Hygiene: Rationale Requirements**
+
+When adding entries to the allowlist, **MUST** include rationale:
+
+**Option 1: Inline comment (preferred)**
+```text
+# Generic placeholder for tutorial examples (used in 5+ docs)
+some/path
+
+# System path for macOS Homebrew installations
+/usr/local/bin
+```
+
+**Option 2: Block comment for related entries**
+```text
+# --- Tutorial Placeholders ---
+# Used across docs/tutorials/ for generic examples
+some/path
+your/config.toml
+example/strategy.py
+```
+
+**Enforcement:**
+- **PR Review:** Reviewer MUST verify rationale is present
+- **Quarterly Audit:** Remove stale entries, consolidate duplicates, verify rationale clarity
 
 **When to add entries:**
 - Generic placeholders used in tutorials (e.g., `some/path`)
 - Common system paths (e.g., `/usr/local/bin`)
 - Third-party paths (e.g., `/var/log`)
+- Patterns used in 3+ docs
 
 **When NOT to add entries:**
 - Project-specific illustrative paths (use `&#47;` encoding instead)
 - One-off examples in a single doc
+- Typos or mistakes (fix the docs)
+- Real repo paths (auto-exempted by validator)
+
+**Verification: How to Run Validator**
+
+**Local (before commit):**
+```bash
+# Check changed files only (fast, PR-mode)
+uv run python scripts/ops/validate_docs_token_policy.py --changed
+
+# Check specific directory
+uv run python scripts/ops/validate_docs_token_policy.py docs/ops/
+
+# Full scan (slow, ~30s for entire repo)
+uv run python scripts/ops/validate_docs_token_policy.py --all
+```
+
+**CI (automatic):**
+- Runs on every PR touching `docs/**/*.md` or `scripts/ops/docs_token_policy_allowlist.txt`
+- Workflow: `.github/workflows/docs-token-policy-gate.yml`
+- Check status: `gh pr checks <PR_NUMBER> | grep "docs-token-policy-gate"`
+
+**Exit Codes:**
+- `0` = All checks passed
+- `1` = Violations found (see report)
+- `2` = Error (e.g., invalid arguments, file not found)
 
 ### Updating Classification Logic
 

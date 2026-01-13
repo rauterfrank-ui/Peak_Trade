@@ -1,5 +1,11 @@
 # Peak_Trade – Evidence Index (v0.8)
 
+- **EV-20260113-PR693-TOKEN-POLICY-GATE** | Date: 2026-01-13 | Owner: ops | Scope: CI gates, docs quality | Risk: LOW  
+  - Source: [PR #693 Merge Log](PR_693_MERGE_LOG.md) · [PR #693](https://github.com/rauterfrank-ui/Peak_Trade/pull/693) · Commit: `e51e55aa`  
+  - Claim: Docs Token Policy Gate live: Enforces `&#47;` encoding policy für illustrative Pfade in Markdown inline-code tokens; verhindert docs-reference-targets-gate false positives; vollständige Test-Suite (26 Tests), Operator Runbook (297 Zeilen), Allowlist-Mechanismus, CI Workflow.  
+  - Verification: PR merged (squash merge); all 23 CI checks grün; 6 Dateien hinzugefügt (+1279 Zeilen); validator classifies 7 token types (ILLUSTRATIVE, REAL_REPO_TARGET, BRANCH_NAME, URL, COMMAND, LOCAL_PATH, ALLOWLISTED); gate is non-required (informational, 30-day burn-in period).  
+  - Notes: Docs-only scope; no code/config changes; gate runs on PRs touching `docs/**/*.md` or allowlist; exit codes: 0=pass, 1=violations, 2=error; allowlist: 31 entries (generic placeholders, system paths); future: promote to required after burn-in if false positive rate < 5%.
+
 - **EV-20260113-PR691-WORKFLOWS** | Date: 2026-01-13 | Owner: ops | Scope: docs/ops workflows + policy | Risk: LOW  
   - Source: [PR #691 Merge Log](PR_691_MERGE_LOG.md) · [PR #691](https://github.com/rauterfrank-ui/Peak_Trade/pull/691) · Commit: `55c961c4`  
   - Claim: Workflow notes archiviert (KEEP EVERYTHING); `&#47;` HTML entity encoding policy formalisiert (Frontdoor + Troubleshooting Runbook); docs-reference-targets-gate false positives behoben (7→0 failures via automated + manual encoding).  
