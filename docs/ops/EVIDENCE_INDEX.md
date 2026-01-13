@@ -1,5 +1,11 @@
 # Peak_Trade – Evidence Index (v0.8)
 
+- **EV-20260113-RUNBOOKS-FRONTDOOR** | Date: 2026-01-13 | Owner: ops | Scope: docs-only | Risk: LOW  
+  - Source: [PR #706 Merge Log](PR_706_MERGE_LOG.md) · [PR #706](https://github.com/rauterfrank-ui/Peak_Trade/pull/706) · Commit: `2243cfac`  
+  - Claim: Reintegrated Runbooks & Incident Handling into docs navigation (3 frontdoors: docs/README.md, docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md, WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md); minimal-invasive, gate-safe integration with token policy compliance fixes (7 pre-existing violations resolved).  
+  - Verification: PR merged (squash merge, 3 commits); all 28 CI checks grün (docs-reference-targets-gate: PASS, docs-token-policy-gate: PASS, docs-diff-guard-policy-gate: PASS); 4 files changed (+68/-7); navigation entries verified in all 3 frontdoors; runbook file itself unchanged.  
+  - Notes: docs-only scope; token policy fixes applied (illustrative paths escaped with &#47;); reference targets gate fix (branch name format in merge log); establishes discoverability from central navigation hubs for docs/RUNBOOKS_AND_INCIDENT_HANDLING.md (Phase 25/56, Shadow-Mode + Incident Handling).
+
 - **EV-20260113-PR703-DOCS-GATES-V1.1** | Date: 2026-01-13 | Owner: ops | Scope: docs/ops + optional CI workflow | Risk: LOW  
   - Source: [PR #703 Merge Log](merge_logs/PR_703_MERGE_LOG.md) · [PR #703](https://github.com/rauterfrank-ui/Peak_Trade/pull/703) · Commit: `4d5e19d0`  
   - Claim: Docs Gates Operator Pack v1.1: single-page Quickstart runbook (60-second workflow); optional informational CI workflow "PR Merge State Signal" (early BEHIND visibility, never required, always SUCCESS); enhanced frontdoor with START HERE navigation; builds on PR #702 v1.0 (3 runbooks + snapshot helper).  
