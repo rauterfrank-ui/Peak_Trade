@@ -12,9 +12,15 @@ status: active
 
 The **Docs Token Policy Gate** enforces an encoding policy for inline-code tokens in Markdown documentation to prevent `docs-reference-targets-gate` false positives.
 
-**Problem:** When illustrative (non-existent) file paths like `scripts/example.py` or branch names like `feature/my-branch` appear in inline-code spans, the `docs-reference-targets-gate` interprets them as missing files and fails CI.
+**Problem:** When illustrative (non-existent) file paths like:
 
-**Solution:** Encode the forward slash (`/`) as `&#47;` in illustrative paths and branch names, while leaving real repo targets, URLs, and commands unchanged.
+```text
+scripts/example.py
+```
+
+appear in inline-code spans, the `docs-reference-targets-gate` interprets them as missing files and fails CI.
+
+**Solution:** Encode the forward slash (`/`) as `&#47;` in illustrative paths, while leaving real repo targets, URLs, commands, and branch names unchanged.
 
 ---
 
@@ -22,9 +28,9 @@ The **Docs Token Policy Gate** enforces an encoding policy for inline-code token
 
 The gate scans changed Markdown files (`.md`) for inline-code tokens (single backticks: `` `token` ``) containing `/` and enforces:
 
-1. **ILLUSTRATIVE** paths (e.g., `scripts/fake.py`, `config/example.toml`) → **MUST** use `&#47;` encoding
-2. **BRANCH_NAME** patterns (e.g., `feature/my-feature`, `docs/update`) → **MUST** use `&#47;` encoding
-3. **REAL_REPO_TARGET** (existing files) → **NO** encoding required
+1. **ILLUSTRATIVE** paths (e.g., `scripts&#47;fake.py`, `config&#47;example.toml`) → **MUST** use `&#47;` encoding
+2. **REAL_REPO_TARGET** (existing files) → **NO** encoding required
+3. **BRANCH_NAME** patterns (e.g., `feature/my-feature`, `docs/update`) → **NO** encoding required
 4. **URL** (http/https) → **NO** encoding required
 5. **COMMAND** (prefixed with `python `, `git `, etc.) → **NO** encoding required
 6. **LOCAL_PATH** (starts with `./`, `../`, `~/`, or `/`) → **NO** encoding required
@@ -37,14 +43,21 @@ The gate scans changed Markdown files (`.md`) for inline-code tokens (single bac
 | Token | Classification | Encoding Required? | Reason |
 |-------|----------------|-------------------|--------|
 | `scripts&#47;example.py` | ENCODED | ✅ Already compliant | Forward slash already encoded |
-| `scripts/example.py` | ILLUSTRATIVE | ❌ **VIOLATION** | Looks like path but doesn't exist |
-| `scripts/real_script.py` | REAL_REPO_TARGET | ✅ Compliant | File exists in repo |
-| `feature/my-feature` | BRANCH_NAME | ❌ **VIOLATION** | Branch name pattern |
-| `feature&#47;my-feature` | ENCODED | ✅ Already compliant | Branch name encoded |
+| (See fenced block below) | ILLUSTRATIVE | ❌ **VIOLATION** | Looks like path but doesn't exist |
+| `scripts&#47;real_script.py` | REAL_REPO_TARGET (if exists) | ✅ Compliant | File exists in repo |
+| `feature/my-feature` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
+| `docs/update` | BRANCH_NAME | ✅ Compliant | Branch name pattern (known prefix) |
 | `python scripts/run.py` | COMMAND | ✅ Compliant | Command prefix detected |
 | `https://example.com/path` | URL | ✅ Compliant | URL detected |
 | `./scripts/local.py` | LOCAL_PATH | ✅ Compliant | Local path prefix |
 | `some/path` | ILLUSTRATIVE (if allowlisted) | ✅ Compliant | In allowlist |
+
+**Example of ILLUSTRATIVE violation (shown in fenced block to avoid triggering gate):**
+
+```text
+scripts/example.py
+config/example.toml
+```
 
 ---
 
@@ -248,10 +261,10 @@ The allowlist is at `scripts/ops/docs_token_policy_allowlist.txt`.
 
 If you need to adjust how tokens are classified:
 
-1. Edit `scripts/ops/validate_docs_token_policy.py`
+1. Edit `scripts&#47;ops&#47;validate_docs_token_policy.py`
 2. Update the patterns in `DocsTokenPolicyValidator._classify_token()`
-3. Add test cases in `tests/ops/test_validate_docs_token_policy.py`
-4. Verify all existing docs still pass: `python scripts/ops/validate_docs_token_policy.py --all`
+3. Add test cases in `tests&#47;ops&#47;test_validate_docs_token_policy.py`
+4. Verify all existing docs still pass: `python scripts&#47;ops&#47;validate_docs_token_policy.py --all`
 
 ---
 
@@ -260,8 +273,8 @@ If you need to adjust how tokens are classified:
 | Scenario | Action | Example |
 |----------|--------|---------|
 | Illustrative path | Encode with `&#47;` | `scripts&#47;example.py` |
-| Branch name | Encode with `&#47;` | `feature&#47;my-branch` |
-| Real repo file | No encoding | `scripts/real_script.py` |
+| Branch name | No encoding (allowed) | `feature/my-branch` |
+| Real repo file | No encoding | `scripts&#47;ops&#47;validate_docs_token_policy.py` (if exists) |
 | URL | No encoding | `https://github.com/...` |
 | Command | No encoding | `python scripts/run.py` |
 | Generic placeholder | Add to allowlist | `some/path` |

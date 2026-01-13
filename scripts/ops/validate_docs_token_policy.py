@@ -25,6 +25,7 @@ from enum import Enum
 
 class TokenType(Enum):
     """Classification of inline-code tokens containing '/'."""
+
     REAL_REPO_TARGET = "REAL_REPO_TARGET"  # Exists in repo
     ILLUSTRATIVE = "ILLUSTRATIVE"  # Looks like path but doesn't exist
     COMMAND = "COMMAND"  # Shell command
@@ -38,6 +39,7 @@ class TokenType(Enum):
 @dataclass
 class TokenViolation:
     """A violation of the docs token policy."""
+
     file: str
     line: int
     token: str
@@ -49,6 +51,7 @@ class TokenViolation:
 @dataclass
 class ScanResult:
     """Result of scanning a file."""
+
     file: str
     total_tokens: int
     violations: List[TokenViolation]
@@ -59,17 +62,76 @@ class DocsTokenPolicyValidator:
     """Validates inline-code tokens in Markdown files."""
 
     # Regex to find inline-code tokens (single backticks only)
-    INLINE_CODE_PATTERN = re.compile(r'`([^`\n]+?)`')
+    INLINE_CODE_PATTERN = re.compile(r"`([^`\n]+?)`")
 
     # Patterns for classification
-    URL_PATTERN = re.compile(r'^https?://')
-    ENCODED_PATTERN = re.compile(r'&#47;')
-    COMMAND_PREFIXES = ('python ', 'git ', 'gh ', 'uv ', 'make ', 'bash ', 'sh ', 'cd ', 'ls ', 'cat ', 'grep ', 'rg ', 'find ', 'sed ', 'awk ', './run_', 'docker ', 'npm ', 'yarn ', 'pip ')
-    LOCAL_PATH_PATTERN = re.compile(r'^(\.\./|\.\/|~/|/[A-Za-z_/])')
-    BRANCH_NAME_PATTERN = re.compile(r'^[a-z0-9_-]+/[a-z0-9_-]+(/[a-z0-9_-]+)?$')
+    URL_PATTERN = re.compile(r"^https?://")
+    ENCODED_PATTERN = re.compile(r"&#47;")
+    COMMAND_PREFIXES = (
+        "python ",
+        "git ",
+        "gh ",
+        "uv ",
+        "make ",
+        "bash ",
+        "sh ",
+        "cd ",
+        "ls ",
+        "cat ",
+        "grep ",
+        "rg ",
+        "find ",
+        "sed ",
+        "awk ",
+        "./run_",
+        "docker ",
+        "npm ",
+        "yarn ",
+        "pip ",
+    )
+    LOCAL_PATH_PATTERN = re.compile(r"^(\.\./|\.\/|~/|/[A-Za-z_/])")
+    BRANCH_NAME_PATTERN = re.compile(r"^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$")
+
+    # Known git branch prefixes
+    KNOWN_BRANCH_PREFIXES = {
+        "feature",
+        "feat",
+        "fix",
+        "bugfix",
+        "hotfix",
+        "release",
+        "docs",
+        "ci",
+        "chore",
+        "refactor",
+        "test",
+        "tests",
+        "build",
+        "perf",
+        "ops",
+    }
 
     # File extensions that suggest repo paths
-    REPO_PATH_EXTENSIONS = ('.py', '.toml', '.yml', '.yaml', '.md', '.txt', '.json', '.sh', '.sql', '.js', '.ts', '.tsx', '.jsx', '.css', '.html', '.xml', '.csv', '.log')
+    REPO_PATH_EXTENSIONS = (
+        ".py",
+        ".toml",
+        ".yml",
+        ".yaml",
+        ".md",
+        ".txt",
+        ".json",
+        ".sh",
+        ".sql",
+        ".js",
+        ".ts",
+        ".tsx",
+        ".jsx",
+        ".css",
+        ".html",
+        ".xml",
+        ".csv",
+        ".log",
+    )
 
     def __init__(self, repo_root: Path, allowlist_path: Optional[Path] = None):
         self.repo_root = repo_root
@@ -84,7 +146,7 @@ class DocsTokenPolicyValidator:
         with open(allowlist_path) as f:
             for line in f:
                 line = line.strip()
-                if line and not line.startswith('#'):
+                if line and not line.startswith("#"):
                     allowlist.add(line)
         return allowlist
 
@@ -124,15 +186,20 @@ class DocsTokenPolicyValidator:
             return TokenType.LOCAL_PATH
 
         # Branch name pattern?
-        if self.BRANCH_NAME_PATTERN.match(token) and not any(token.endswith(ext) for ext in self.REPO_PATH_EXTENSIONS):
-            return TokenType.BRANCH_NAME
+        if self.BRANCH_NAME_PATTERN.match(token) and not any(
+            token.endswith(ext) for ext in self.REPO_PATH_EXTENSIONS
+        ):
+            # Check if first segment is a known branch prefix
+            first_segment = token.split("/")[0].lower()
+            if first_segment in self.KNOWN_BRANCH_PREFIXES:
+                return TokenType.BRANCH_NAME
 
         # Check if it's a real repo target
         if self._is_real_repo_target(token):
             return TokenType.REAL_REPO_TARGET
 
         # Looks like a path with extension?
-        if any(token.endswith(ext) for ext in self.REPO_PATH_EXTENSIONS) or '/' in token:
+        if any(token.endswith(ext) for ext in self.REPO_PATH_EXTENSIONS) or "/" in token:
             return TokenType.ILLUSTRATIVE
 
         return TokenType.OTHER
@@ -143,12 +210,9 @@ class DocsTokenPolicyValidator:
         if token in self.allowlist:
             return False
 
-        # Only enforce on ILLUSTRATIVE and BRANCH_NAME types
+        # Only enforce on ILLUSTRATIVE type
+        # BRANCH_NAME is allowed (no encoding required)
         if token_type == TokenType.ILLUSTRATIVE:
-            return True
-
-        # Branch names containing '/' should also be encoded to avoid ambiguity
-        if token_type == TokenType.BRANCH_NAME:
             return True
 
         return False
@@ -158,29 +222,31 @@ class DocsTokenPolicyValidator:
         violations = []
 
         try:
-            content = file_path.read_text(encoding='utf-8')
+            content = file_path.read_text(encoding="utf-8")
         except Exception as e:
             return ScanResult(
                 file=str(file_path.relative_to(self.repo_root)),
                 total_tokens=0,
-                violations=[TokenViolation(
-                    file=str(file_path.relative_to(self.repo_root)),
-                    line=0,
-                    token="",
-                    token_type="ERROR",
-                    message=f"Failed to read file: {e}",
-                    fix_suggestion=""
-                )],
-                passed=False
+                violations=[
+                    TokenViolation(
+                        file=str(file_path.relative_to(self.repo_root)),
+                        line=0,
+                        token="",
+                        token_type="ERROR",
+                        message=f"Failed to read file: {e}",
+                        fix_suggestion="",
+                    )
+                ],
+                passed=False,
             )
 
-        lines = content.split('\n')
+        lines = content.split("\n")
         total_tokens = 0
         in_code_block = False
 
         for line_num, line in enumerate(lines, 1):
             # Track fenced code blocks (ignore content inside)
-            if line.strip().startswith('```'):
+            if line.strip().startswith("```"):
                 in_code_block = not in_code_block
                 continue
 
@@ -192,28 +258,30 @@ class DocsTokenPolicyValidator:
                 token = match.group(1)
 
                 # Only check tokens containing '/'
-                if '/' not in token:
+                if "/" not in token:
                     continue
 
                 total_tokens += 1
                 token_type = self._classify_token(token)
 
                 if self._should_require_encoding(token, token_type):
-                    encoded_token = token.replace('/', '&#47;')
-                    violations.append(TokenViolation(
-                        file=str(file_path.relative_to(self.repo_root)),
-                        line=line_num,
-                        token=token,
-                        token_type=token_type.value,
-                        message=f"Illustrative path token must use &#47; encoding",
-                        fix_suggestion=f"Replace `{token}` with `{encoded_token}`"
-                    ))
+                    encoded_token = token.replace("/", "&#47;")
+                    violations.append(
+                        TokenViolation(
+                            file=str(file_path.relative_to(self.repo_root)),
+                            line=line_num,
+                            token=token,
+                            token_type=token_type.value,
+                            message=f"Illustrative path token must use &#47; encoding",
+                            fix_suggestion=f"Replace `{token}` with `{encoded_token}`",
+                        )
+                    )
 
         return ScanResult(
             file=str(file_path.relative_to(self.repo_root)),
             total_tokens=total_tokens,
             violations=violations,
-            passed=len(violations) == 0
+            passed=len(violations) == 0,
         )
 
     def get_changed_markdown_files(self, base_ref: str = "origin/main") -> List[Path]:
@@ -221,23 +289,25 @@ class DocsTokenPolicyValidator:
         try:
             # Get merge base
             merge_base = subprocess.check_output(
-                ['git', 'merge-base', 'HEAD', base_ref],
-                cwd=self.repo_root,
-                text=True
+                ["git", "merge-base", "HEAD", base_ref], cwd=self.repo_root, text=True
             ).strip()
 
             # Get changed files
-            changed_files = subprocess.check_output(
-                ['git', 'diff', '--name-only', '--diff-filter=d', merge_base, 'HEAD'],
-                cwd=self.repo_root,
-                text=True
-            ).strip().split('\n')
+            changed_files = (
+                subprocess.check_output(
+                    ["git", "diff", "--name-only", "--diff-filter=d", merge_base, "HEAD"],
+                    cwd=self.repo_root,
+                    text=True,
+                )
+                .strip()
+                .split("\n")
+            )
 
             # Filter for .md files
             md_files = [
                 self.repo_root / f
                 for f in changed_files
-                if f and f.endswith('.md') and (self.repo_root / f).exists()
+                if f and f.endswith(".md") and (self.repo_root / f).exists()
             ]
 
             return md_files
@@ -247,12 +317,12 @@ class DocsTokenPolicyValidator:
 
     def get_all_markdown_files(self) -> List[Path]:
         """Get all Markdown files in the repository."""
-        return list(self.repo_root.rglob('*.md'))
+        return list(self.repo_root.rglob("*.md"))
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Validate docs token policy for inline-code tokens in Markdown files.',
+        description="Validate docs token policy for inline-code tokens in Markdown files.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -267,55 +337,44 @@ Examples:
 
   # Output JSON report
   %(prog)s --json report.json
-"""
+""",
     )
 
     parser.add_argument(
-        '--changed',
-        action='store_true',
+        "--changed",
+        action="store_true",
         default=False,
-        help='Check only changed .md files (default if no other mode specified)'
+        help="Check only changed .md files (default if no other mode specified)",
     )
 
-    parser.add_argument(
-        '--all',
-        action='store_true',
-        help='Check all .md files in repository'
-    )
+    parser.add_argument("--all", action="store_true", help="Check all .md files in repository")
 
     parser.add_argument(
-        '--base',
-        default='origin/main',
-        help='Base ref for change detection (default: origin/main)'
+        "--base", default="origin/main", help="Base ref for change detection (default: origin/main)"
     )
 
-    parser.add_argument(
-        '--json',
-        metavar='FILE',
-        help='Write JSON report to file'
-    )
+    parser.add_argument("--json", metavar="FILE", help="Write JSON report to file")
 
     parser.add_argument(
-        '--allowlist',
+        "--allowlist",
         type=Path,
-        help='Path to allowlist file (default: scripts/ops/docs_token_policy_allowlist.txt)'
+        help="Path to allowlist file (default: scripts/ops/docs_token_policy_allowlist.txt)",
     )
 
     args = parser.parse_args()
 
     # Find repo root
     try:
-        repo_root = Path(subprocess.check_output(
-            ['git', 'rev-parse', '--show-toplevel'],
-            text=True
-        ).strip())
+        repo_root = Path(
+            subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip()
+        )
     except subprocess.CalledProcessError:
         print("Error: Not in a git repository", file=sys.stderr)
         return 2
 
     # Default allowlist path
     if not args.allowlist:
-        args.allowlist = repo_root / 'scripts' / 'ops' / 'docs_token_policy_allowlist.txt'
+        args.allowlist = repo_root / "scripts" / "ops" / "docs_token_policy_allowlist.txt"
 
     # Initialize validator
     validator = DocsTokenPolicyValidator(repo_root, args.allowlist)
@@ -367,19 +426,19 @@ Examples:
     # Write JSON report if requested
     if args.json:
         report = {
-            'mode': mode,
-            'files_scanned': len(results),
-            'files_with_violations': len(files_with_violations),
-            'total_violations': total_violations,
-            'results': [
+            "mode": mode,
+            "files_scanned": len(results),
+            "files_with_violations": len(files_with_violations),
+            "total_violations": total_violations,
+            "results": [
                 {
-                    'file': r.file,
-                    'total_tokens': r.total_tokens,
-                    'passed': r.passed,
-                    'violations': [asdict(v) for v in r.violations]
+                    "file": r.file,
+                    "total_tokens": r.total_tokens,
+                    "passed": r.passed,
+                    "violations": [asdict(v) for v in r.violations],
                 }
                 for r in results
-            ]
+            ],
         }
 
         json_path = Path(args.json)
@@ -390,5 +449,5 @@ Examples:
     return 0 if total_violations == 0 else 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

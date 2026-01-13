@@ -86,38 +86,25 @@ class TestEncodingRequirement:
 
     def test_illustrative_requires_encoding(self, validator):
         """Illustrative paths should require encoding."""
-        assert validator._should_require_encoding(
-            "scripts/fake.py",
-            TokenType.ILLUSTRATIVE
-        )
+        assert validator._should_require_encoding("scripts/fake.py", TokenType.ILLUSTRATIVE)
 
-    def test_branch_name_requires_encoding(self, validator):
-        """Branch names should require encoding."""
-        assert validator._should_require_encoding(
-            "feature/my-feature",
-            TokenType.BRANCH_NAME
-        )
+    def test_branch_name_is_allowed(self, validator):
+        """Branch names should NOT require encoding."""
+        assert not validator._should_require_encoding("feature/my-feature", TokenType.BRANCH_NAME)
 
     def test_real_target_no_encoding(self, validator):
         """Real repo targets should NOT require encoding."""
         assert not validator._should_require_encoding(
-            "scripts/real_script.py",
-            TokenType.REAL_REPO_TARGET
+            "scripts/real_script.py", TokenType.REAL_REPO_TARGET
         )
 
     def test_url_no_encoding(self, validator):
         """URLs should NOT require encoding."""
-        assert not validator._should_require_encoding(
-            "https://example.com/path",
-            TokenType.URL
-        )
+        assert not validator._should_require_encoding("https://example.com/path", TokenType.URL)
 
     def test_command_no_encoding(self, validator):
         """Commands should NOT require encoding."""
-        assert not validator._should_require_encoding(
-            "python scripts/run.py",
-            TokenType.COMMAND
-        )
+        assert not validator._should_require_encoding("python scripts/run.py", TokenType.COMMAND)
 
     def test_allowlist_no_encoding(self, temp_repo):
         """Allowlisted tokens should NOT require encoding."""
@@ -127,10 +114,7 @@ class TestEncodingRequirement:
 
         validator = DocsTokenPolicyValidator(temp_repo, allowlist_path)
 
-        assert not validator._should_require_encoding(
-            "some/path",
-            TokenType.ILLUSTRATIVE
-        )
+        assert not validator._should_require_encoding("some/path", TokenType.ILLUSTRATIVE)
 
 
 class TestFileScan:
@@ -241,7 +225,7 @@ Or this: `git diff origin/main`.
         assert len(result.violations) == 0
 
     def test_scan_file_with_branch_names(self, temp_repo, validator):
-        """Branch names should require encoding."""
+        """Branch names should NOT require encoding."""
         md_file = temp_repo / "docs" / "test.md"
         md_file.write_text("""
 # Test Document
@@ -253,10 +237,8 @@ Or this one: `docs/update-readme`.
 
         result = validator.scan_file(md_file)
 
-        assert not result.passed
-        assert len(result.violations) == 2
-        assert "feature/my-feature" in result.violations[0].token
-        assert "docs/update-readme" in result.violations[1].token
+        assert result.passed
+        assert len(result.violations) == 0
 
     def test_scan_file_mixed_content(self, temp_repo, validator):
         """Test file with mixed content types."""
@@ -274,16 +256,15 @@ URL: `https://example.com/path` ✅
 
 Command: `python scripts/run.py` ✅
 
-Branch (not encoded): `feature/test` ❌
+Branch (allowed): `feature/test` ✅
 """)
 
         result = validator.scan_file(md_file)
 
         assert not result.passed
-        assert len(result.violations) == 2
+        assert len(result.violations) == 1
         violations_tokens = [v.token for v in result.violations]
         assert "config/missing.toml" in violations_tokens
-        assert "feature/test" in violations_tokens
 
 
 class TestAllowlist:
