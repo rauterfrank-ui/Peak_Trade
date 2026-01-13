@@ -653,6 +653,7 @@ scripts/ops/ops_center.sh doctor
 **Status:** Active (non-required, informational gate with 30-day burn-in period)
 
 **Key Resources:**
+- **Operator Quick Reference:** [runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Quick commands, common failure patterns, decision tree for `--changed` vs `--all`
 - **Operator Runbook:** [runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) — When gate triggers, classification rules, triage workflow, allowlist management
 - **Validator Script:** ``scripts&#47;ops&#47;validate_docs_token_policy.py`` — CLI tool (exit codes: 0=pass, 1=violations, 2=error)
 - **Allowlist:** ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt`` — Generic placeholders, system paths (31 entries)
