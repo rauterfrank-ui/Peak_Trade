@@ -1,5 +1,17 @@
 # Peak_Trade – Evidence Index (v0.8)
 
+- **EV-20260113-RUNBOOKS-INCIDENT-HANDLING** | Date: 2026-01-13 | Owner: ops | Scope: docs-only | Risk: LOW  
+  - Source: [Merge Log](PR_RUNBOOKS_INCIDENT_HANDLING_MERGE_LOG.md) · PR TBD (docs/runbooks-incident-handling)  
+  - Claim: Integration of RUNBOOKS_AND_INCIDENT_HANDLING.md (Phase 25/56, Shadow-Mode + Incident Handling) into docs navigation; minimal-invasive link entry in WORKFLOW_RUNBOOK_OVERVIEW; covers Shadow-Run runbook, System Pause procedures, Incident-Handling process (severity grades, response schema, report template); no content modifications to existing runbook.  
+  - Verification: Docs-only PR; Token Policy PASS (no risky tokens); Reference Targets PASS (all cross-links exist: INCIDENT_SIMULATION_AND_DRILLS.md, LIVE_OPERATIONAL_RUNBOOKS.md, INCIDENT_DRILL_LOG.md, GOVERNANCE_AND_SAFETY_OVERVIEW.md, SAFETY_POLICY_TESTNET_AND_LIVE.md, LIVE_READINESS_CHECKLISTS.md, PHASE_24_SHADOW_EXECUTION.md); 4 files changed (+204 lines): WORKFLOW_RUNBOOK_OVERVIEW (+24), Merge Log (+172), Evidence Index (+8).  
+  - Notes: Runbook file already present on main (352 lines); provides foundational operator guidance for Shadow-Mode operations, system pause, and first incident response; status: Shadow-Mode active, Testnet/Live platzhalter (future phases).
+
+- **EV-20260113-PR703-DOCS-GATES-V1.1** | Date: 2026-01-13 | Owner: ops | Scope: docs/ops + optional CI workflow | Risk: LOW  
+  - Source: [PR #703 Merge Log](merge_logs/PR_703_MERGE_LOG.md) · [PR #703](https://github.com/rauterfrank-ui/Peak_Trade/pull/703) · Commit: `4d5e19d0`  
+  - Claim: Docs Gates Operator Pack v1.1: single-page Quickstart runbook (60-second workflow); optional informational CI workflow "PR Merge State Signal" (early BEHIND visibility, never required, always SUCCESS); enhanced frontdoor with START HERE navigation; builds on PR #702 v1.0 (3 runbooks + snapshot helper).  
+  - Verification: PR merged (auto-merge squash, 2 commits); all 28 CI checks grün including new "PR Merge State Signal" workflow (6s, first run successful); 3 Dateien geändert (+599 lines); Quickstart runbook (485 lines, gate-safe); CI workflow (102 lines, YAML valid, active ID 223251142); post-merge: main clean, docs gates snapshot all pass; deliverables present (5.3K workflow, 9.4K quickstart).  
+  - Notes: v1.1 enhancements over v1.0 (PR #702): Quickstart runbook (troubleshooting, decision trees, operator checklist); optional CI workflow (informational-only, conditional BEHIND warning with copy-paste sync commands); frontdoor reorganization (Quickstart → Detailed guides); operator value: fast triage (60s instead of reading 400+ line guides), early PR sync visibility; Token Policy fix: encoded `origin&#47;main` in commit 08941a97.
+
 - **EV-20260113-PR701-DOCS-GATES-PACK** | Date: 2026-01-13 | Owner: ops | Scope: docs/ops runbooks + helper script | Risk: LOW  
   - Source: [PR #701 Merge Log](merge_logs/PR_701_MERGE_LOG.md) · [PR #701](https://github.com/rauterfrank-ui/Peak_Trade/pull/701) · Commit: `d56bb933`  
   - Claim: Docs Gates Operator Pack: 3 operator runbooks für alle docs CI gates (Token Policy, Reference Targets, Diff Guard Policy) + snapshot helper script (no watch loops); konsistente operator-sicht (Symptom→Fix→Verify); frontdoor integration (README + Control Center); 1,102 Zeilen operator guidance.  
