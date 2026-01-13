@@ -646,6 +646,40 @@ scripts/ops/ops_center.sh doctor
 
 **Safe Markdown Guide:** [guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md](guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md) — Operator guide for avoiding false positives (branch names, planned files, CI triage checklist)
 
+### Docs Gates — Operator Pack
+
+**Overview:** Three CI gates enforce docs quality and prevent common errors:
+
+1. **Docs Token Policy Gate** — Encoding policy for inline-code tokens
+2. **Docs Reference Targets Gate** — Path existence validation
+3. **Docs Diff Guard Policy Gate** — Policy marker enforcement
+
+**🚀 Quick Actions (One-Stop Snapshot):**
+
+```bash
+# Reproduce all 3 gates locally (PR workflow)
+./scripts/ops/pt_docs_gates_snapshot.sh --changed
+
+# Full repo audit
+./scripts/ops/pt_docs_gates_snapshot.sh --all
+```
+
+**📚 Operator Runbooks:**
+- [RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Token Policy Gate quick reference
+- [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Reference Targets Gate quick reference
+- [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff Guard Policy Gate quick reference
+
+**🛠️ Helper Script:**
+- ``scripts&#47;ops&#47;pt_docs_gates_snapshot.sh`` — Snapshot-only reproduction helper (no watch loops)
+
+**When Any Gate Fails:**
+1. Run snapshot helper: `./scripts/ops/pt_docs_gates_snapshot.sh --changed`
+2. Follow "Next Actions" in output
+3. Consult relevant operator runbook
+4. Re-run to verify fix
+
+---
+
 ### Docs Token Policy Gate
 
 **Zweck:** Enforces `&#47;` encoding policy für illustrative Pfade in Markdown inline-code tokens (prevents `docs-reference-targets-gate` false positives).
