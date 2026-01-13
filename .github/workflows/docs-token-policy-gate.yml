@@ -1,0 +1,71 @@
+name: Docs Token Policy Gate
+
+on:
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+jobs:
+  docs_token_policy_gate:
+    name: docs-token-policy-gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch origin
+        run: git fetch --prune origin
+
+      - name: Determine base ref
+        id: base
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${GITHUB_BASE_REF:-}" ]]; then
+            echo "base_ref=origin/${GITHUB_BASE_REF}" >> "$GITHUB_OUTPUT"
+          else
+            echo "base_ref=origin/main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check if markdown files changed
+        id: check_changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ steps.base.outputs.base_ref }}"
+          changed="$(git diff --name-only "${base}...HEAD" -- '*.md' || true)"
+          if [[ -z "${changed}" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "✅ Docs Token Policy Gate: not applicable (no markdown changes)."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Markdown files changed:"
+            echo "${changed}"
+          fi
+
+      - name: Set up Python
+        if: steps.check_changes.outputs.changed == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate docs token policy
+        if: steps.check_changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ steps.base.outputs.base_ref }}"
+          python scripts/ops/validate_docs_token_policy.py \
+            --base "${base}" \
+            --json docs-token-policy-report.json
+
+      - name: Upload report artifact
+        if: steps.check_changes.outputs.changed == 'true' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-token-policy-report
+          path: docs-token-policy-report.json
+          if-no-files-found: ignore
+          retention-days: 30

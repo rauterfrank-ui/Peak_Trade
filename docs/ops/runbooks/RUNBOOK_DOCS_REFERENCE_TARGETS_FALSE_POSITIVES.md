@@ -167,6 +167,8 @@ git commit -m "docs(ops): exempt illustrative path from reference targets gate"
 
 **File:** `docs&#47;ops&#47;workflows&#47;WORKFLOW_NOTES_FRONTDOOR.md` documents this policy
 
+**Automated Enforcement:** The [Docs Token Policy Gate](RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) automatically checks changed Markdown files and enforces this encoding policy, preventing false positives before they reach CI
+
 ### Pre-Commit Check (Optional)
 
 **Script:** `scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed`
@@ -321,6 +323,7 @@ python scripts&#47;example.py
 
 ### Documentation
 - [Workflow Notes Frontdoor](../workflows/WORKFLOW_NOTES_FRONTDOOR.md) – Policy explanation
+- [Docs Token Policy Gate](RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) – **Automated enforcement** of `&#47;` encoding policy
 - [Docs Reference Targets Gate Style Guide](../DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md) – Comprehensive style guide (if exists)
 
 ### Scripts

@@ -1,0 +1,31 @@
+# Docs Token Policy Allowlist
+#
+# This file contains inline-code tokens that are allowed to contain '/'
+# without requiring &#47; encoding, even if they don't exist in the repo.
+#
+# Use cases:
+#   - Generic placeholder patterns (e.g., "some/path")
+#   - Third-party paths (e.g., "/usr/local/bin")
+#   - Commonly used illustrative examples
+#
+# Format: One token per line (exact match). Lines starting with # are comments.
+#
+# Examples of tokens that might be allowlisted:
+# /path/to/file
+# some/generic/path
+# /usr/local/bin/python
+
+# Generic placeholders
+some/path
+path/to/file
+your/path/here
+
+# Common system paths
+/usr/bin
+/usr/local/bin
+/tmp
+/var/log
+
+# Git conventional paths (when used generically)
+.github/workflows
+.git/config
