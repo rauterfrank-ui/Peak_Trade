@@ -17,7 +17,7 @@ This runbook provides operator guidance for the **Docs Reference Targets Gate**,
 
 **Automatic (CI):**
 - Gate runs on all PRs touching Markdown files
-- Workflow: `.github/workflows/docs-reference-targets-gate.yml`
+- Workflow: `.github&#47;workflows&#47;docs-reference-targets-gate.yml`
 - Check status: `gh pr checks <PR_NUMBER> | grep "docs-reference-targets"`
 
 **Manual (Local):**
@@ -402,10 +402,10 @@ bash scripts/ops/verify_docs_reference_targets.sh
 - [Docs Reference Targets Safe Markdown Guide](../guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md) — Operator guide for avoiding false positives
 
 **Scripts & Tests:**
-- Validator: `scripts/ops/verify_docs_reference_targets.sh`
-- Trend Tracker: `scripts/ops/verify_docs_reference_targets_trend.sh`
-- Ignore List: `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
-- CI Workflow: `.github/workflows/docs-reference-targets-gate.yml`
+- Validator: `scripts&#47;ops&#47;verify_docs_reference_targets.sh`
+- Trend Tracker: `scripts&#47;ops&#47;verify_docs_reference_targets_trend.sh`
+- Ignore List: `docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_IGNORE.txt`
+- CI Workflow: `.github&#47;workflows&#47;docs-reference-targets-gate.yml`
 
 **Related Gates:**
 - [Docs Token Policy Gate](RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Encoding policy for inline-code tokens

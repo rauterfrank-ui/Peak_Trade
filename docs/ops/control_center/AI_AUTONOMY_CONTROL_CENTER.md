@@ -104,7 +104,7 @@ python -m src.ai_orchestration.evidence_pack
 scripts/ops/ops_center.sh doctor
 
 # Docs reference targets validation
-scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main
+scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main
 
 # View CI health dashboard (if WebUI running)
 open http://127.0.0.1:8000/ops/ci-health
@@ -326,7 +326,7 @@ This control center does not redefine gates; it points to the authoritative sour
 - **A:** Update Evidence Pack to include mandatory Layer Map fields (see [Evidence Pack Template v2](../../governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md))
 
 **Q: Docs Reference Targets gate fails**
-- **A:** Run local validation: `scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
+- **A:** Run local validation: `scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main`
 - Fix broken links or missing files, re-push
 
 **Q: SoD Check fails (Proposer == Critic)**
