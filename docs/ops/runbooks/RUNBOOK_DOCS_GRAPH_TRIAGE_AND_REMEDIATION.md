@@ -23,7 +23,7 @@ This runbook guides operators through the process of:
 
 Before running triage or remediation:
 
-- [ ] **Working directory:** Ensure you are in repo root (`Peak_Trade/`)
+- [ ] **Working directory:** Ensure you are in repo root (`Peak_Trade&#47;`)
 - [ ] **Clean working tree:** Run `git status` — no unexpected uncommitted changes
 - [ ] **Dependencies:** `uv` available (for Python tooling)
 - [ ] **Branch hygiene:** On `main` or a clean feature branch
@@ -283,7 +283,7 @@ uv run python scripts/ops/docs_graph_snapshot.py \
 
 ### 6.1 Branch Naming
 
-**Convention:** `docs/triage-YYYY-MM-DD-description`
+**Convention:** `docs&#47;triage-YYYY-MM-DD-description`
 
 **Example:**
 ```bash

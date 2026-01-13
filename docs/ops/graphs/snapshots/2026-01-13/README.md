@@ -51,7 +51,7 @@ See [`../../TRIAGE_2026-01-13.md`](../../TRIAGE_2026-01-13.md) for detailed anal
 ## Operator Runbook
 
 For step-by-step remediation guidance, see:
-- [`../../runbooks/RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md`](../../runbooks/RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md)
+- [RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md](../../runbooks/RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md)
 
 ## Notes
 - Exit code 1 from snapshot tool is expected due to broken links (fail-on-broken flag)
