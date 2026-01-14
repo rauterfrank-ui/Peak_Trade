@@ -29,7 +29,7 @@ This runbook operationalizes the standard workflow for a **docs-only** Pull Requ
 - Docs-only PR merge via `gh pr merge --squash`
 - Post-merge verification and sync hygiene on `main`
 - Local docs gates snapshot using `scripts/ops/pt_docs_gates_snapshot.sh`
-- Merge log creation following repo conventions (`docs/ops/merge_logs/PR_<NUM>_MERGE_LOG.md`)
+- Merge log creation following repo conventions (`docs&#47;ops&#47;merge_logs&#47;PR_<NUM>_MERGE_LOG.md`)
 - Evidence/index updates (minimal, only if required by repo conventions)
 
 **Out-of-Scope:**
@@ -55,10 +55,10 @@ This runbook operationalizes the standard workflow for a **docs-only** Pull Requ
 
 | Type | Example | Safe? | Fix |
 |------|---------|-------|-----|
-| Real repo path | `docs/ops/runbooks/RUNBOOK_X.md` | ✅ YES | (no escape needed) |
+| Real repo path | `docs&#47;ops&#47;runbooks&#47;RUNBOOK_X.md` | ✅ YES | (no escape needed) |
 | Command | `git checkout main` | ✅ YES | (auto-exempted) |
 | URL | `https://github.com/user/repo` | ✅ YES | (auto-exempted) |
-| Illustrative path | `docs/example/file.md` | ❌ NO | `docs&#47;example&#47;file.md` |
+| Illustrative path | `docs&#47;example&#47;file.md` | ❌ NO | `docs&#47;example&#47;file.md` |
 | Illustrative branch | `feature/my-branch` | ❌ NO | `feature&#47;my-branch` |
 
 ### Reference Targets Gate
