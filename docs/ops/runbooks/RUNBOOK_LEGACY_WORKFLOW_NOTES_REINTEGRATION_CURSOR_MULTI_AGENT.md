@@ -59,13 +59,17 @@ Priorität:
 1. `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md`
 2. `docs/WORKFLOW_FRONTDOOR.md`
 3. `docs/ops/README.md`
-4. `docs/README.md`
+4. `docs&#47;README.md`
 
 Snapshot:
-1. `test -f WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md && echo "FOUND: overview" || echo "NOTE: overview missing"`
-2. `test -f docs/WORKFLOW_FRONTDOOR.md && echo "FOUND: frontdoor" || echo "NOTE: frontdoor missing"`
-3. `test -f docs/ops/README.md && echo "FOUND: ops readme" || echo "NOTE: ops readme missing"`
-4. `test -f docs/README.md && echo "FOUND: docs readme" || echo "NOTE: docs readme missing"`
+1.
+
+```bash
+test -f WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md && echo "FOUND: overview" || echo "NOTE: overview missing"
+test -f docs/WORKFLOW_FRONTDOOR.md && echo "FOUND: frontdoor" || echo "NOTE: frontdoor missing"
+test -f docs/ops/README.md && echo "FOUND: ops readme" || echo "NOTE: ops readme missing"
+test -f docs/README.md && echo "FOUND: docs readme" || echo "NOTE: docs readme missing"
+```
 
 **Pass-Kriterium:** 1 canonical “Index/Frontdoor” Ziel ist identifiziert.
 
@@ -74,7 +78,11 @@ Snapshot:
 ## Phase 3 — Install (Canonical Archive Location, KEEP EVERYTHING)
 Ziel: Legacy Notes als stabiler Docs-Asset unter `docs/ops/archives/` ablegen (oder dort spiegeln), ohne Inhalt zu ändern.
 
-1. `mkdir -p docs/ops/archives`
+1.
+
+```bash
+mkdir -p docs/ops/archives
+```
 
 ### Entscheidung
 - Wenn `Peak_Trade_WORKFLOW_NOTES.md` im Repo-Root existiert: **beibehalten**, zusätzlich canonical Kopie erstellen:
@@ -102,7 +110,11 @@ In der canonical Datei `docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.m
 Ziel: Alle Inline-Code Tokens mit “/” finden, klassifizieren, minimal remediaten.
 
 ### A) Kandidaten extrahieren (Snapshot)
-1. `rg -n "\`[^`]*\\/[^`]*\`" docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md -S`
+1.
+
+```bash
+rg -n '`[^`]*\\/[^`]*`' docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md -S
+```
 
 ### B) Klassifikation (pro Token)
 - **REAL**: Repo-Pfad existiert → unescaped lassen  
@@ -125,11 +137,15 @@ Füge am Ende der canonical Datei eine neue Sektion hinzu:
 Update genau **EINE** der in Phase 2 gefundenen Index-Dateien.
 
 ### Link-Entry (Beispiel)
-- `- Legacy Workflow Notes (03.12.2025): docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md`
+- Legacy Workflow Notes (03.12.2025): [Peak_Trade_WORKFLOW_NOTES_2025-12-03](../archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md)
 
 **Wichtig:**
 - Als **Markdown-Link** nur dann, wenn Target existiert:
-  - `test -f docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md`
+  - siehe Snapshot:
+
+```bash
+test -f docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md
+```
 - Relative Pfade verwenden.
 - Keine neuen illustrative Inline-Code Tokens mit “/” einführen.
 
@@ -139,11 +155,19 @@ Update genau **EINE** der in Phase 2 gefundenen Index-Dateien.
 Snapshot:
 1. `git status -sb`
 2. `git diff --name-only`
-3. `test -f docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md && echo "OK: legacy archived" || echo "MISSING: legacy archived"`
-4. `test -f docs/ops/runbooks/RUNBOOK_LEGACY_WORKFLOW_NOTES_REINTEGRATION_CURSOR_MULTI_AGENT.md && echo "OK: runbook exists" || echo "MISSING: runbook"`
+3.
+
+```bash
+test -f docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md && echo "OK: legacy archived" || echo "MISSING: legacy archived"
+test -f docs/ops/runbooks/RUNBOOK_LEGACY_WORKFLOW_NOTES_REINTEGRATION_CURSOR_MULTI_AGENT.md && echo "OK: runbook exists" || echo "MISSING: runbook"
+```
 
 Optional (wenn vorhanden, Snapshot-only):
-- `test -f scripts/ops/pt_docs_gates_snapshot.sh && bash scripts/ops/pt_docs_gates_snapshot.sh --changed || echo "NOTE: snapshot script missing"`
+- Snapshot:
+
+```bash
+test -f scripts/ops/pt_docs_gates_snapshot.sh && bash scripts/ops/pt_docs_gates_snapshot.sh --changed || echo "NOTE: snapshot script missing"
+```
 
 **Pass-Kriterium:** Files existieren, Änderungen sind docs-only, keine offensichtlichen Broken Targets eingeführt.
 
