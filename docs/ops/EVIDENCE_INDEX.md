@@ -1,4 +1,11 @@
-# Peak_Trade – Evidence Index (v0.13)
+# Peak_Trade – Evidence Index (v0.14)
+
+<a id="ev-20260114-pr726-workflow-pr-template"></a>
+- **EV-20260114-PR726-WORKFLOW-PR-TEMPLATE** | Date: 2026-01-14 | Owner: ops | Scope: docs-only | Risk: LOW  
+  - Source: [PR #726 Merge Log](merge_logs/PR_726_MERGE_LOG.md) · [PR #726](https://github.com/rauterfrank-ui/Peak_Trade/pull/726) · Commit: `3a5f3c1d`  
+  - Claim: PR template system for high-risk workflow/CI changes: workflow_changes.md template (201 lines, 8 sections, 47 checklist items) + README.md operator guide (208 lines, 3 selection methods); enforces risk assessment, gate safety verification, rollback planning; docs-only, additive (+409 lines).  
+  - Verification: PR merged (squash merge); all 10 required checks PASS (Docs Token Policy Gate: PASS 7s, Docs Reference Targets Gate: PASS 9s, Docs Diff Guard Policy Gate: PASS 7s, Policy Critic Gate: PASS 5s, Audit: PASS 1m25s); 2 files changed; templates gate-compliant (no inline backticks with unescaped slashes, no broken links).  
+  - Notes: Establishes governance scaffolding for future workflow PRs; template usage: GitHub UI auto-select, URL query param (?template=workflow_changes.md), or gh CLI; rollback: delete .github/PULL_REQUEST_TEMPLATE/ or revert commit; runbook: [RUNBOOK_PR726_MERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_PR726_MERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md).
 
 <a id="ev-20260114-pr716-wave5-docs-remediation"></a>
 - **EV-20260114-PR716-WAVE5-DOCS-REMEDIATION** | Date: 2026-01-14 | Owner: ops | Scope: docs-only | Risk: LOW  
