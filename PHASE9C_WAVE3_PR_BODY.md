@@ -29,28 +29,28 @@ This PR implements **Wave 3** of the Docs Graph Remediation initiative, focusing
 
 ### 8 Categories Fixed
 
-1. **Historical scripts** (6 refs): `scripts/ops/setup_worktree_4b_m2.sh`
+1. **Historical scripts** (6 refs): `scripts&#47;ops&#47;setup_worktree_4b_m2.sh`
    - Action: Escaped slashes in inline-code + added "(historical)" marker
 
-2. **Historical docs** (4 refs): `docs/risk/AGENT_HANDOFF.md`
+2. **Historical docs** (4 refs): `docs&#47;risk&#47;AGENT_HANDOFF.md`
    - Action: Escaped slashes in inline-code + added "(historical)" marker
 
-3. **Historical scripts** (2 refs): `scripts/run_smoke_tests.sh`
+3. **Historical scripts** (2 refs): `scripts&#47;run_smoke_tests.sh`
    - Action: Commented out in code blocks + escaped in inline-code
 
-4. **Historical scripts** (2 refs): `scripts/demo_live_overrides.py`
+4. **Historical scripts** (2 refs): `scripts&#47;demo_live_overrides.py`
    - Action: Commented out in code blocks + escaped in inline-code
 
-5. **Illustrative paths** (2 refs): `docs/PORTFOLIO_DECISION_LOG.md`
+5. **Illustrative paths** (2 refs): `docs&#47;PORTFOLIO_DECISION_LOG.md`
    - Action: Escaped slashes in inline-code
 
-6. **Leading `./` paths** (4 refs): `./scripts/ops/...`
+6. **Leading `./` paths** (4 refs): `.&#47;scripts&#47;ops&#47;...`
    - Action: Removed leading `./` (files exist, just wrong path format)
 
-7. **Docker volume syntax** (2 refs): `./reports:/reports`
+7. **Docker volume syntax** (2 refs): `.&#47;reports:&#47;reports`
    - Action: Escaped slashes + colons in inline-code
 
-8. **Template paths** (2 refs): `docs/strategy_profiles/{STRATEGY_ID}_PROFILE_v1.md`
+8. **Template paths** (2 refs): `docs&#47;strategy_profiles&#47;{STRATEGY_ID}_PROFILE_v1.md`
    - Action: Escaped slashes in inline-code
 
 ---
@@ -99,7 +99,7 @@ This PR implements **Wave 3** of the Docs Graph Remediation initiative, focusing
 
 ## Token Policy Compliance
 
-**Tool:** `scripts/ops/validate_docs_token_policy.py --all`
+**Tool:** `scripts&#47;ops&#47;validate_docs_token_policy.py --all`
 
 **Result:** ✅ **All changed files are Token-Policy compliant**
 
@@ -194,7 +194,7 @@ Expected CI behavior:
 
 ## Related
 
-- **Runbook:** `PHASE 9C / WAVE 3 (Docs Graph Remediation)`
+- **Runbook:** `PHASE 9C &#47; WAVE 3 (Docs Graph Remediation)`
 - **Report:** `docs/ops/graphs/REMEDIATION_WAVE3_2026-01-14.md`
 - **Baseline:** Wave 1/2 reduced 142 → 114 (-28)
 - **Wave 3:** 114 → 89 (-25)
@@ -203,5 +203,5 @@ Expected CI behavior:
 ---
 
 **PR Date:** 2026-01-14  
-**Branch:** `docs/phase9c-broken-targets-wave3`  
+**Branch:** `docs&#47;phase9c-broken-targets-wave3`  
 **Agent:** Cursor Multi-Agent (ORCHESTRATOR, FACTS_COLLECTOR, LINK_FIXER, TOKEN_POLICY_GUARDIAN, CI_GUARDIAN, EVIDENCE_SCRIBE)

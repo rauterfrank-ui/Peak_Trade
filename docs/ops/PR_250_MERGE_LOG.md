@@ -45,7 +45,7 @@ Wir brauchen eine schnelle, deterministische Diagnose-Routine für Repo-Health (
 
 ## Operator How-To
 
-* Human readable: `./scripts/ops/ops_doctor.sh`
+* Human readable: `scripts/ops/ops_doctor.sh`
 * JSON: `scripts/ops/ops_doctor.sh --json`
 * Minimal smoke (CI): `scripts/ops/test_ops_doctor_minimal.sh`
 * Demo (interaktiv): `scripts/ops/demo_ops_doctor.sh`

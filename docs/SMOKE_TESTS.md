@@ -101,7 +101,7 @@ A test qualifies as a smoke test if it:
 
 - [Resilience Module Documentation](./RESILIENCE.md)
 - [Stability Plan](./ops/STABILITY_RESILIENCE_PLAN_V1.md)
-- [Testing Guide](./TESTING.md)
+- [Testing Guide](TESTING.md)
 
 ## Maintenance
 
