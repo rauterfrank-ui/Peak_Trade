@@ -126,6 +126,7 @@ Evidence items are operational artifacts that document system behavior, process 
 | EV-20260112-PR679-PHASE6B-DOCS-RELINK | 2026-01-12 | ops | [PR #679 Merge Log](merge_logs/PR_679_MERGE_LOG.md) + [PR #679](https://github.com/rauterfrank-ui/Peak_Trade/pull/679) + [PR #680](https://github.com/rauterfrank-ui/Peak_Trade/pull/680) | Phase 6B Strategy-Switch Docs Relink (Docs Reference Targets Compliance): Converted 18 backtick filename references → markdown links, established Link Stability Contract (4 principles: main-resident links, cross-branch permalinks, post-merge cleanup, external references), improved docs debt (205 → 172 missing targets), 2 docs files modified ([PR_677_MERGE_LOG.md](merge_logs/PR_677_MERGE_LOG.md) + [RUNBOOK_PHASE6](runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)), no code changes | PR #679 merged (commit 655c9e4d), PR #680 merged (commit 8afad2cd), CI: 21/21 checks PASS (PR #679), 18/18 checks PASS (PR #680), docs-reference-targets-gate PASS, Docs Reference Targets Trend PASS (baseline 205 → current 172), Link Stability Contract added (+65 lines), verification: ``bash scripts&#47;ops&#47;verify_docs_reference_targets.sh`` (no broken links), risk: LOW (docs-only) | Link Stability Contract principles: (1) repo-relative markdown links for main-resident files, (2) GitHub permalinks for cross-branch references, (3) post-merge cleanup converts permalinks → relative links, (4) PR/issue links stay as GitHub URLs. Post-merge cleanup PR #680 fixed backtick branch name interpretation issue (docs-reference-targets-gate initially failed, fixed in commit 303604d8). Related: PR #677 (Phase 6 Strategy-Switch Sanity Check), PR #678 (Evidence Index update). Rollback: revert 2 docs files (merge log + runbook). |
 || EV-20260112-PR686-INSTALLATION-ROADMAP-ARCHIVE | 2026-01-12 | ops | [PR #686 Merge Log](merge_logs/PR_686_MERGE_LOG.md) + [PR #686](https://github.com/rauterfrank-ui/Peak_Trade/pull/686) | Installation Roadmap Archive Integration (2026-01-12): Integrated archived installation/roadmap snapshot into workflow frontdoor navigation, preserving original content 1:1 (KEEP EVERYTHING principle). Created new entry point (docs/INSTALLATION_QUICKSTART.md, 252 lines), updated 3 navigation docs (WORKFLOW_RUNBOOK_OVERVIEW, WORKFLOW_FRONTDOOR, ops/README), archived original (docs/ops/_archive/installation_roadmap/2026-01-12/), created 3 compatibility stub targets for historical references. 11 files changed (+3536 lines, -0 lines), docs-only scope, additive changes only | PR #686 merged (commit 310247cf, squash merge), CI: 22/22 required checks PASS (docs-reference-targets-gate: 299 references validated, 0 missing targets; Lint Gate 7s, Policy Critic Gate 6s, Audit 1m19s, CI tests 3.9/3.10/3.11 all pass, L4 Critic Determinism 3 jobs pass, Quarto Smoke Test 28s, Cursor Bugbot 3m43s), verification: ./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main (3 iterations: 13→8→0 missing targets, all resolved), pre-commit hooks: all pass (fix end of files, trim trailing whitespace, mixed line ending, check for merge conflicts, check for added large files), risk: LOW (docs-only, no code/runtime changes) | Implementation: 3 commits squashed (initial integration → relative path fixes → compatibility targets). Iterative CI fixes: (1) archive README relative paths corrected (3 targets), (2) compatibility stubs created for INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md + RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md (13 targets), (3) repo_cleanup archive stub created (8 targets). Gate-safe formatting: no inline backticks with /, correct relative paths, fenced code blocks. Rollback: revert 310247cf or git reset --hard e Related: PR #685 (Archive workflow docs integration temp a
 | EV-20260114-PR712-WAVE3-DOCS-REMEDIATION | 2026-01-14 | ops | [PR #712 Merge Log](merge_logs/PR_712_MERGE_LOG.md) + [PR #712](https://github.com/rauterfrank-ui/Peak_Trade/pull/712) | Phase 9C Wave 3 Docs Graph Remediation: Reduced broken reference targets 114 → 89 (-25, -21.9%), fixed Top-10 broken targets, applied 48 token-policy escapes (28 for broken targets + 19 pre-existing + 1 CI-detected), 8 categories fixed (historical scripts, illustrative paths, leading ./ paths, Docker volume syntax, template paths), 25 files changed (+860, -80), docs-only, semantic preservation | PR #712 merged (commit 02c271ad, squash 8 commits), CI: 27/27 PASS (docs-token-policy-gate PASS, docs-reference-targets-gate PASS, Docs Diff Guard PASS), deliverables: REMEDIATION_WAVE3_2026-01-14.md (333 lines), snapshots before/after (116/91 lines), 20 core docs fixed, docs debt 142→89, exceeded goal ≤135 by 46 | docs-only, semantic-preserving, token-policy-safe, low-risbook-driven (Phase 9C/Wave 3), iterative gate validation (3 rounds). Rollback: revert 02c271ad. |
+|| EV-20260114-PR714-WAVE4-DOCS-REMEDIATION | 2026-01-14 | ops | [PR #714 Merge Log](merge_logs/PR_714_MERGE_LOG.md) + [PR #714](https://github.com/rauterfrank-ui/Peak_Trade/pull/714) | Phase 9C Wave 4 Docs Graph Remediation + CI-Parity Guide: Reduced broken reference targets 87 → 65 (-22, -25.3%), cluster-based remediation, established CI-Parity pre-PR scanning workflow, fixed 38 pre-existing token-policy violations, 14 files changed (+931, -64), docs-only, semantic preservation | PR #714 merged (commit 0162ce46, squash 4 commits), CI: 23/23 PASS, deliverables: REMEDIATION_WAVE4_2026-01-14.md, snapshots before/after, CI-Parity Guide (267 lines), 8 core docs modified, exceeded goal ≤68 by 3 | docs-only, semantic-preserving, token-policy-safe, cluster-based, iterative gate validation (4 commits), CI-Parity workflow institutionalized. Rollback: revert 0162ce46. |
 ---
 
 ## Evidence by Category
@@ -145,6 +146,7 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20260112-DISPATCH-GUARD-NOOP-PROOF** — Phase 5D Required Checks Hygiene Gate + dispatch-guard always-run proof (PR #669, 17 files, 10/10 required checks, hygiene gate workflow + validator)
 
 ### Docs / Navigation Evidence
+- **EV-20260114-PR714-WAVE4-DOCS-REMEDIATION** — Phase 9C Wave 4 Docs Graph Remediation + CI-Parity Guide (PR #714, reduced broken targets 87→65, cluster-based, CI-Parity workflow, 38 pre-existing violations fixed, 14 files, 23/23 CI checks PASS)
 - **EV-20260114-PR712-WAVE3-DOCS-REMEDIATION** — Phase 9C Wave 3 Docs Graph Remediation (PR #712, reduced broken targets 114→89, 48 token-policy escapes, 25 files, semantic-preserving, 27/27 CI checks PASS)
 - **EV-20260112-PR686-INSTALLATION-ROADMAP-ARCHIVE** — Installation Roadmap Archive Integration (PR #686, 11 files, +3536 lines, docs-only, KEEP EVERYTHING principle, 22/22 CI checks PASS)
 - **EV-20260112-PR679-PHASE6B-DOCS-RELINK** — Phase 6B Strategy-Switch Docs Relink (PR #679/#680, Link Stability Contract, docs debt 205→172)
@@ -207,6 +209,7 @@ Evidence items are operational artifacts that document system behavior, process 
 
 || 2026-01-12 | Added EV-20260112-PR686-INSTALLATION-ROADMAP-ARCHIVE (Installation Roadmap Archive Integration, PR #686, 11 files, +3536 lines, docs-only, KEEP EVERYTHING principle, 22/22 CI checks PASS, 299 references validated) | ops |
 | 2026-01-14 | v0.11 Phase 9C Wave 3: Added EV-20260114-PR712-WAVE3-DOCS-REMEDIATION (Docs Graph Remediation Wave 3, PR #712, reduced broken targets 114→89, 25 files, token-policy-safe, runbook-driven, 27/27 CI checks PASS) | ops |
+| 2026-01-14 | v0.12 Phase 9C Wave 4: Added EV-20260114-PR714-WAVE4-DOCS-REMEDIATION (Docs Graph Remediation Wave 4, PR #714, reduced broken targets 87→65, CI-Parity Guide, 14 files, 23/23 CI checks PASS, token-policy-safe) | ops |
 
 ---
 
@@ -216,7 +219,7 @@ Evidence items are operational artifacts that document system behavior, process 
 
 **Note:** These merge logs document historical PRs. For recent PRs, see Evidence Registry table above.
 
-**Total:** 122 merge log files
+**Total:** 123 merge log files
 
 **PRs 76-114:** [PR_76_MERGE_LOG.md](PR_76_MERGE_LOG.md) · [PR_78_MERGE_LOG.md](PR_78_MERGE_LOG.md) · [PR_80_MERGE_LOG.md](PR_80_MERGE_LOG.md) · [PR_85_MERGE_LOG.md](PR_85_MERGE_LOG.md) · [PR_87_MERGE_LOG.md](PR_87_MERGE_LOG.md) · [PR_90_MERGE_LOG.md](PR_90_MERGE_LOG.md) · [PR_93_MERGE_LOG.md](PR_93_MERGE_LOG.md) · [PR_110_MERGE_LOG.md](PR_110_MERGE_LOG.md) · [PR_112_MERGE_LOG.md](PR_112_MERGE_LOG.md) · [PR_114_MERGE_LOG.md](PR_114_MERGE_LOG.md)
 
@@ -242,12 +245,12 @@ Evidence items are operational artifacts that document system behavior, process 
 
 **PRs 650-695:** [PR_650_MERGE_LOG.md](PR_650_MERGE_LOG.md) · [PR_651_MERGE_LOG.md](PR_651_MERGE_LOG.md) · [PR_656_MERGE_LOG.md](PR_656_MERGE_LOG.md) · [PR_672_MERGE_LOG.md](PR_672_MERGE_LOG.md) · [PR_675_MERGE_LOG.md](PR_675_MERGE_LOG.md) · [PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md](merge_logs/PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md) · [PR_681_MERGE_LOG.md](merge_logs/PR_681_MERGE_LOG.md) · [PR_682_MERGE_LOG.md](merge_logs/PR_682_MERGE_LOG.md) · [PR_694_MERGE_LOG.md](PR_694_MERGE_LOG.md) · [PR_695_MERGE_LOG.md](PR_695_MERGE_LOG.md)
 
-**PRs 696-712:** [PR_696_MERGE_LOG.md](PR_696_MERGE_LOG.md) · [PR_697_MERGE_LOG.md](PR_697_MERGE_LOG.md) · [PR_712_MERGE_LOG.md](merge_logs/PR_712_MERGE_LOG.md)
+**PRs 696-714:** [PR_696_MERGE_LOG.md](PR_696_MERGE_LOG.md) · [PR_697_MERGE_LOG.md](PR_697_MERGE_LOG.md) · [PR_712_MERGE_LOG.md](merge_logs/PR_712_MERGE_LOG.md) · [PR_714_MERGE_LOG.md](merge_logs/PR_714_MERGE_LOG.md)
 
 ---
 
-**Version:** v0.11  
+**Version:** v0.12  
 **Maintained by:** ops  
 **Last Updated:** 2026-01-14  
-**Total Entries:** 31 (1 seed + 30 operational)  
+**Total Entries:** 32 (1 seed + 31 operational)  
 **Next Review:**  (recommend quarterly or pre-phase-gate)
