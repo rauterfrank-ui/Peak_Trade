@@ -71,7 +71,7 @@ Reduce broken reference targets from **114 → ≤ 135** (close the remaining ga
 - `docs/SMOKE_TESTS.md` (2 refs in code blocks)
 
 **Pattern:**
-- Code blocks: `bash scripts/run_smoke_tests.sh` → `# bash scripts&#47;run_smoke_tests.sh` (commented)
+- Code blocks: `bash scripts&#47;run_smoke_tests.sh` → `# bash scripts&#47;run_smoke_tests.sh` (commented)
 - Inline-code: `scripts&#47;run_smoke_tests.sh` → `scripts&#47;run_smoke_tests.sh` (escaped)
 
 ---
@@ -85,8 +85,8 @@ Reduce broken reference targets from **114 → ≤ 135** (close the remaining ga
 - `docs/QUICKSTART_LIVE_OVERRIDES.md` (2 refs in code block)
 
 **Pattern:**
-- Code blocks: `python scripts/demo_live_overrides.py` → `# python scripts&#47;demo_live_overrides.py` (commented)
-- Inline-code: `python scripts/demo_live_overrides.py` → `python scripts&#47;demo_live_overrides.py` (escaped)
+- Code blocks: `python scripts&#47;demo_live_overrides.py` → `# python scripts&#47;demo_live_overrides.py` (commented)
+- Inline-code: `python scripts&#47;demo_live_overrides.py` → `python scripts&#47;demo_live_overrides.py` (escaped)
 
 ---
 
