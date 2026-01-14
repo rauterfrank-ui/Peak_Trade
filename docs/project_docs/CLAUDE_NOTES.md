@@ -37,7 +37,7 @@ die direkt das Peak_Trade-Projekt betreffen.
 
 **Key Outcomes:**
 
-- Neue Zielstruktur für `Peak_Trade/` definiert (inkl. `archive/`, `docs/…`, `scripts/`).
+- Neue Zielstruktur für `Peak_Trade&#47;` definiert (inkl. `archive&#47;`, `docs&#47;…`, `scripts&#47;`).
 - Skript `scripts/reorganize_peak_trade.py` eingeführt:
   - verschiebt/benennt Dateien idempotent um,
   - unterstützt `--dry-run`.
