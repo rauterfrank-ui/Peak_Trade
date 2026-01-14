@@ -53,11 +53,14 @@ Runbooks for CI operations and general operational procedures:
 - [RUNBOOK_CI_STATUS_POLLING_HOWTO.md](RUNBOOK_CI_STATUS_POLLING_HOWTO.md) — CI status polling how-to
 - [PHASE4E_STABILITY_MONITORING_CHECKLIST.md](PHASE4E_STABILITY_MONITORING_CHECKLIST.md) — Phase 4E stability monitoring checklist
 - [rebase_cleanup_workflow.md](rebase_cleanup_workflow.md) — Rebase cleanup workflow
+- [Stale Branch Hygiene (Local "gone")](RUNBOOK_STALE_BRANCH_HYGIENE_LOCAL_GONE_CURSOR_MULTI_AGENT.md) — Safe cleanup of local branches with deleted upstream refs (DRY-RUN, recovery via reflog, protected branches)
 - [Commit Salvage Workflow](RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md) ⭐ — Salvaging commits from wrong branch (feature branch → PR → merge workflow)
 - [Pointer Pattern Operations](RUNBOOK_POINTER_PATTERN_OPERATIONS.md) — Operator runbook for root canonical runbooks integration (pointer pattern maintenance, gates compliance)
 - [Pointer Pattern Quarterly Review](RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md) — Quarterly drift control and orphan prevention for pointer pattern architecture
 - [github_rulesets_pr_reviews_policy.md](github_rulesets_pr_reviews_policy.md) — GitHub rulesets PR reviews policy
 - [policy_critic_execution_override.md](policy_critic_execution_override.md) — Policy critic execution override
+- [RUNBOOK_POST_MERGE_VERIFY_MAIN_AND_DOCS_GATES_SNAPSHOT_CURSOR_MULTI_AGENT.md](RUNBOOK_POST_MERGE_VERIFY_MAIN_AND_DOCS_GATES_SNAPSHOT_CURSOR_MULTI_AGENT.md) — Post-merge verify (main) + local docs gates snapshot (no-watch)
+- [RUNBOOK_DOCS_ONLY_PR_MERGE_AUTOMERGE_AND_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md](RUNBOOK_DOCS_ONLY_PR_MERGE_AUTOMERGE_AND_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md) — Docs-only PR merge (auto-merge/squash) + CI snapshot + merge-log chain (Cursor Multi-Agent)
 
 ### Incident Response & Troubleshooting
 
