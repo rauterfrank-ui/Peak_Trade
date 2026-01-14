@@ -328,7 +328,7 @@ git branch -d docs/pointer-pattern-quarterly-review-YYYYMMDD
 ```
 ❌ Docs Token Policy Gate: FAIL
 📄 docs/ops/runbooks/RUNBOOK_X_POINTER.md
-  Line 15: `scripts/example.py` (ILLUSTRATIVE)
+  Line 15: `scripts&#47;example.py` (ILLUSTRATIVE)
     → Illustrative path token must use &#47; encoding
 ```
 
@@ -337,7 +337,7 @@ git branch -d docs/pointer-pattern-quarterly-review-YYYYMMDD
 **Fix:**
 ```bash
 # Replace forward slashes in illustrative paths with &#47;
-# Example: `scripts/example.py` → `scripts&#47;example.py`
+# Example: `scripts&#47;example.py` → `scripts&#47;example.py`
 
 # Use autofix tool (if available)
 uv run python scripts/ops/autofix_docs_token_policy_inline_code_v2.py \
@@ -658,7 +658,7 @@ grep -c "POINTER.md" docs/ops/runbooks/README.md
 
 **Discovery Phase:**
 - [ ] Identified all pointer documents (count: ___)
-- [ ] Created snapshot list: `/tmp/pointer_review_YYYYMMDD.txt`
+- [ ] Created snapshot list: `&#47;tmp&#47;pointer_review_YYYYMMDD.txt`
 
 **Verification Phase:**
 - [ ] All root targets exist (no orphans)
@@ -668,7 +668,7 @@ grep -c "POINTER.md" docs/ops/runbooks/README.md
 - [ ] All docs gates: PASS
 
 **Fix Phase (if needed):**
-- [ ] Created feature branch: `docs/pointer-pattern-quarterly-review-YYYYMMDD`
+- [ ] Created feature branch: `docs&#47;pointer-pattern-quarterly-review-YYYYMMDD`
 - [ ] Applied fixes (list below)
 - [ ] Local verification: All gates PASS
 - [ ] PR created: #___
@@ -761,7 +761,7 @@ Quarterly review of Pointer Pattern architecture (root canonical runbooks + poin
 - [ ] **No broken index:** README.md contains all pointer documents
 - [ ] **No orphans:** All pointer documents have valid root targets
 - [ ] **No drift:** Pointer content matches minimal stub template
-- [ ] **Branch naming:** `docs/pointer-pattern-quarterly-review-YYYYMMDD`
+- [ ] **Branch naming:** `docs&#47;pointer-pattern-quarterly-review-YYYYMMDD`
 - [ ] **Commit message:** Follows conventional format `docs(ops): ...`
 - [ ] **Working tree clean:** No uncommitted changes before starting
 - [ ] **Gates GREEN:** All 3 docs gates PASS before and after fixes
