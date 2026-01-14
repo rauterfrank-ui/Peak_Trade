@@ -18,6 +18,7 @@ Runbooks for operating and troubleshooting documentation quality gates:
 - [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Operating the Docs Diff Guard Policy Gate
 - [RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md](RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md) — Quick start for all docs gates
 - [RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md](RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md) — Docs graph triage and remediation
+- [RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md](RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md) — Fix-forward CI triage for Token Policy and Reference Targets gate failures
 
 ### AI Autonomy & Control Center
 
