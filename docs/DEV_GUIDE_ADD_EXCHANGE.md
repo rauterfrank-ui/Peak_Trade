@@ -8,9 +8,9 @@ Neuen Exchange/Market-Adapter hinzufügen, der Data-Layer und ggf. Live-Layer nu
 
 ## Relevante Komponenten
 
-- **Data-Layer**: `src/data/*` – Market-Data-Adapter
-- **Exchange-/Order-Layer**: `src/orders/exchange.py` – Order-Execution
-- **Live-Environment**: `src/core/environment.py`, `src/live/safety.py` – Safety-Layer
+- **Data-Layer**: `src&#47;data&#47;*` – Market-Data-Adapter
+- **Exchange-/Order-Layer**: `src&#47;orders&#47;exchange.py` – Order-Execution
+- **Live-Environment**: `src&#47;core&#47;environment.py`, `src&#47;live&#47;safety.py` – Safety-Layer
 - **Config**: `config/config.toml` – Exchange-Settings
 
 ---
@@ -215,7 +215,7 @@ Stelle sicher, dass der Safety-Layer (`src/live/safety.py`) den neuen Exchange u
 
 **Unit-Tests für Data-Funktionen:**
 
-Erstelle `tests/test_data_my_exchange.py`:
+Erstelle `tests&#47;test_data_my_exchange.py` (illustrative):
 
 ```python
 """
@@ -248,7 +248,7 @@ def test_fetch_ohlcv_returns_dataframe(mock_client):
 
 **Unit-Tests für Exchange-Client:**
 
-Erstelle `tests/test_orders_my_exchange.py`:
+Erstelle `tests&#47;test_orders_my_exchange.py` (illustrative):
 
 ```python
 """
