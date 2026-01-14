@@ -52,6 +52,7 @@ Runbooks for CI operations and general operational procedures:
 - [RUNBOOK_CI_STATUS_POLLING_HOWTO.md](RUNBOOK_CI_STATUS_POLLING_HOWTO.md) — CI status polling how-to
 - [PHASE4E_STABILITY_MONITORING_CHECKLIST.md](PHASE4E_STABILITY_MONITORING_CHECKLIST.md) — Phase 4E stability monitoring checklist
 - [rebase_cleanup_workflow.md](rebase_cleanup_workflow.md) — Rebase cleanup workflow
+- [Commit Salvage Workflow](RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md) ⭐ — Salvaging commits from wrong branch (feature branch → PR → merge workflow)
 - [github_rulesets_pr_reviews_policy.md](github_rulesets_pr_reviews_policy.md) — GitHub rulesets PR reviews policy
 - [policy_critic_execution_override.md](policy_critic_execution_override.md) — Policy critic execution override
 
@@ -97,5 +98,18 @@ All runbooks should follow this structure:
 
 ---
 
-**Last Updated:** 2026-01-13  
+## Notes
+
+### Runbook Locations
+
+Most operational runbooks are located in `docs/ops/runbooks/`. Some runbooks remain in the repo root for provenance or to minimize risk of breaking references:
+
+- **Root-level runbooks** (marked with ⭐): Canonical artifact in repo root, pointer in this index
+- **Standard runbooks**: Directly located in `docs/ops/runbooks/`
+
+This hybrid approach balances discoverability (all findable from this index) with stability (no forced migrations of established references).
+
+---
+
+**Last Updated:** 2026-01-14  
 **Maintainer:** ops
