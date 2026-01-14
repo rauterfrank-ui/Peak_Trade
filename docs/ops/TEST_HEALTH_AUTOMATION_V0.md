@@ -21,9 +21,9 @@ Die **Test Health Automation** ist eine Meta-Schicht für automatisierte Qualit�
 
 1. **Config**: `config/test_health_profiles.toml` – Definition von Check-Profilen
 2. **Runner**: `src/ops/test_health_runner.py` – Core-Logik für Check-Ausführung und Report-Generierung
-3. **CLI**: `scripts/run_test_health_profile.py` – Command-Line-Interface
-4. **Smoke-Scripts**: z.B. `scripts/run_offline_synth_session_smoke.py` – Minimal-Tests für schnelle Checks
-5. **Reports**: `reports/test_health/<timestamp>_<profile>/` – JSON/MD/HTML
+3. **CLI**: `scripts&#47;run_test_health_profile.py` – Command-Line-Interface
+4. **Smoke-Scripts**: z.B. `scripts&#47;run_offline_synth_session_smoke.py` – Minimal-Tests für schnelle Checks
+5. **Reports**: `reports&#47;test_health&#47;<timestamp>_<profile>&#47;` – JSON/MD/HTML
 
 ---
 
@@ -156,7 +156,7 @@ Profil `weekly_core` hat 5 Checks:
 **Berechnung**:
 - `passed_weight = 3 + 2 + 2 + 1 = 8`
 - `total_weight = 3 + 2 + 2 + 2 + 1 = 10`
-- `health_score = (8 / 10) * 100.0 = 80.0` → 🟢 Grün
+- `health_score = (8 &#47; 10) * 100.0 = 80.0` → 🟢 Grün
 
 ---
 
@@ -292,7 +292,7 @@ Siehe `tests/ops/test_test_health_runner.py` für Beispiele.
 
 ### Warum gewichtete Health-Scores?
 
-Nicht alle Checks sind gleich wichtig. Core-Tests (z.B. `pytest tests/core`) haben höheres Gewicht als Smoke-Tests.
+Nicht alle Checks sind gleich wichtig. Core-Tests (z.B. `pytest tests&#47;core`) haben höheres Gewicht als Smoke-Tests.
 
 ### Wie lange dauert ein Profil-Lauf?
 

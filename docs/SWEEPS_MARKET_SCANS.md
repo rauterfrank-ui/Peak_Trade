@@ -39,9 +39,9 @@ Führt Parameter-Sweeps für eine Strategie durch.
 | Argument | Beschreibung | Default |
 |----------|--------------|---------|
 | `--strategy` | Strategie-Key (erforderlich) | - |
-| `--symbol` | Trading-Pair | `BTC/EUR` |
+| `--symbol` | Trading-Pair | `BTC&#47;EUR` |
 | `--timeframe` | Timeframe | `1h` |
-| `--grid` | Parameter-Grid (JSON/TOML-Datei oder JSON-String) | erforderlich |
+| `--grid` | Parameter-Grid (JSON&#47;TOML-Datei oder JSON-String) | erforderlich |
 | `--max-runs` | Maximale Anzahl Runs (0 = unbegrenzt) | `0` |
 | `--sweep-name` | Optionaler Name für den Sweep | auto |
 | `--tag` | Optionaler Tag für Registry | - |

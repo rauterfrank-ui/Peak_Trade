@@ -45,13 +45,13 @@ die direkt das Peak_Trade-Projekt betreffen.
 
 **Decisions:**
 
-- Dokumentation wird in `docs/project_docs/` zentralisiert.
-- Alte Stände (z.B. `PeakTradeRepo/`, `full_files_stand_02.12.2025`) wandern nach `archive/`.
+- Dokumentation wird in `docs&#47;project_docs&#47;` zentralisiert.
+- Alte Stände (z.B. `PeakTradeRepo&#47;`, `full_files_stand_02.12.2025`) wandern nach `archive&#47;`.
 - `CHANGELOG.md` wird als zentrale Quelle für Änderungen genutzt.
 
 **TODO / Open Questions:**
 
-- [ ] Inhalte aus `archive/full_files_stand_02.12.2025` in `CHANGELOG.md` übernehmen.
+- [ ] Inhalte aus `archive&#47;full_files_stand_02.12.2025` in `CHANGELOG.md` übernehmen.
 - [ ] Prüfen, ob weitere alte Dokus ins Archiv verschoben werden sollen.
 
 ---
@@ -114,8 +114,8 @@ die direkt das Peak_Trade-Projekt betreffen.
 
 **Links / Referenzen:**
 
-- `docs/project_docs/RISK_MANAGEMENT.md`
-- `scripts/demo_risk_limits.py`
+- `docs&#47;project_docs&#47;RISK_MANAGEMENT.md`
+- `scripts&#47;demo_risk_limits.py`
 - Git-Issue: `PT-123` (falls vorhanden)
 
 ---
