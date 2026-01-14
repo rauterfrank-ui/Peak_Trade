@@ -33,7 +33,7 @@ die direkt das Peak_Trade-Projekt betreffen.
 ### 3.1. 2025-12-02 – Projekt-Refactor & Ordnerstruktur
 
 **Tool:** Claude / ChatGPT
-**Kontext:** Aufräumen des Peak_Trade-Projektordners, Einführung von `archive/`, `docs/project_docs/`, etc.
+**Kontext:** Aufräumen des Peak_Trade-Projektordners, Einführung von `archive&#47;`, `docs&#47;project_docs&#47;`, etc.
 
 **Key Outcomes:**
 
