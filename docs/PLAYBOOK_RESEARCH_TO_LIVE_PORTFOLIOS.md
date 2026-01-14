@@ -153,7 +153,7 @@ python scripts/research_cli.py portfolio \
 
 **Outputs:**
 
-- Portfolio-Report in `results/reports/portfolio_*`
+- Portfolio-Report in `results&#47;reports&#47;portfolio_*`
 - Metriken: CAGR, Sharpe, Max Drawdown, Volatilität, etc.
 - Equity-Curve-Plots
 - Trade-Statistiken pro Strategie
@@ -319,7 +319,7 @@ Dieser Abschnitt definiert **empfohlene Richtwerte** für Go/No-Go-Entscheidunge
 
 **Empfohlenes Template:**
 
-Erstelle ein Dokument `docs/PORTFOLIO_DECISION_LOG.md` (oder ähnlich) mit folgender Struktur:
+Erstelle ein Dokument `docs&#47;PORTFOLIO_DECISION_LOG.md` (oder ähnlich) mit folgender Struktur:
 
 ```markdown
 # Portfolio Decision Log
