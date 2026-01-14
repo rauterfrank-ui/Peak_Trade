@@ -17,7 +17,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 **Beschreibung:** Eigene Backtest-Ergebnisse aus der Research-Pipeline  
 
 **Details:**
-- **Quelle:** `results/` Directory
+- **Quelle:** `results&#47;` Directory
 - **Format:** Text/JSON Reports
 - **Update-Frequenz:** Nach jedem Research-Run
 - **Integration:** Vector DB (ChromaDB)
@@ -79,7 +79,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 **Beschreibung:** Exchange-OHLCV-Daten von Kraken
 
 **Details:**
-- **Quelle:** Kraken API / Cache (`data/cache`)
+- **Quelle:** Kraken API / Cache (`data&#47;cache`)
 - **Format:** Parquet
 - **Update-Frequenz:** Stündlich
 - **Integration:** Time-Series DB (Parquet)

@@ -63,13 +63,13 @@ OpenTelemetry Collector
 ## Configuration Files
 
 ### Docker Compose
-- `ops/observability/docker-compose.yml` - Main stack definition
+- `ops&#47;observability&#47;docker-compose.yml` - Main stack definition
 
 ### Service Configs
-- `ops/observability/otel-collector-config.yaml` - Collector pipelines
-- `ops/observability/tempo.yaml` - Tempo backend
-- `ops/observability/prometheus.yml` - Prometheus scrape config
-- `ops/observability/grafana/provisioning/datasources/datasources.yaml` - Auto-provisioned datasources
+- `ops&#47;observability&#47;otel-collector-config.yaml` - Collector pipelines
+- `ops&#47;observability&#47;tempo.yaml` - Tempo backend
+- `ops&#47;observability&#47;prometheus.yml` - Prometheus scrape config
+- `ops&#47;observability&#47;grafana&#47;provisioning&#47;datasources&#47;datasources.yaml` - Auto-provisioned datasources
 
 ## Usage in Application Code
 
@@ -132,7 +132,7 @@ curl http://localhost:3200/api/search?tags=service.name=peak_trade_smoke_sender
 ### Port conflicts
 If ports 3000, 3100, 3200, 4317, 4318, 8889, or 9090 are already in use:
 1. Stop conflicting services
-2. Or modify port mappings in `ops/observability/docker-compose.yml`
+2. Or modify port mappings in `ops&#47;observability&#47;docker-compose.yml`
 
 ## Non-Goals (P2.3)
 

@@ -193,7 +193,7 @@ The following broken targets remain **out of scope** for Wave 4:
 
 ### Future Wave Candidates (65 remaining targets):
 - **Category: Missing Docs** (21 targets) — Historical or planned docs not yet created
-- **Category: Illustrative Code Examples** (24 targets) — Dev guide example files (`src/strategies/my_new_strategy.py`, etc.)
+- **Category: Illustrative Code Examples** (24 targets) — Dev guide example files (`src&#47;strategies&#47;my_new_strategy.py`, etc.)
 - **Category: Config Examples** (6 targets) — Illustrative config paths
 - **Category: Relative Paths** (11 targets) — `../` paths from subdocs
 - **Category: Other** (3 targets) — Miscellaneous
@@ -249,7 +249,7 @@ docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md
 
 ### Technical Insights:
 1. **Most remaining targets are illustrative** (not meant to be resolvable)
-2. **TECH_DEBT_BACKLOG.md pattern** ("Fundstelle: `script/path`") appears frequently and is easily escaped
+2. **TECH_DEBT_BACKLOG.md pattern** ("Fundstelle: `script&#47;path`") appears frequently and is easily escaped
 3. **Code block commenting** reduces false positives in Docs Reference Targets Gate
 
 ### Recommendations:

@@ -216,14 +216,14 @@ git rev-parse --show-toplevel
 
 ### Example 1: Wave 3 CI Surprise
 
-**Scenario:** Wave 3 PR created after local `--changed` scan showed PASS. CI detected 1 violation in `PHASE_16L_DOCKER_OPS_RUNNER.md` Line 35: `reports/`.
+**Scenario:** Wave 3 PR created after local `--changed` scan showed PASS. CI detected 1 violation in `PHASE_16L_DOCKER_OPS_RUNNER.md` Line 35: `reports&#47;`.
 
-**Root Cause:** File was modified in Wave 3, but the specific line (35) with `reports/` was not part of the initial changed hunks. CI's `--all` mode caught it.
+**Root Cause:** File was modified in Wave 3, but the specific line (35) with `reports&#47;` was not part of the initial changed hunks. CI's `--all` mode caught it.
 
 **Prevention:** Run Full Scan before PR:
 ```bash
 uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --all
-# Would have caught: Line 35: `reports/` (ILLUSTRATIVE)
+# Would have caught: Line 35: `reports&#47;` (ILLUSTRATIVE)
 ```
 
 **Lesson:** Always run Full Scan before PR creation, not just `--changed`.

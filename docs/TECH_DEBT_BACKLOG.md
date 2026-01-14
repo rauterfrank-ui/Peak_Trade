@@ -11,31 +11,31 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 ### Backtest-Engine: Portfolio-Allocation-Methoden
 
 - [ ] `risk_parity` Allocation-Methode implementieren
-  - Fundstelle: `src/backtest/engine.py:1318`
+  - Fundstelle: `src&#47;backtest&#47;engine.py:1318` (illustrative)
   - Kontext: Portfolio-Allocation-Methode für gleiches Risk-Level pro Strategie
   - Vorschlag: Implementierung basierend auf Volatility/Risk-Metriken
 
 - [ ] `sharpe_weighted` Allocation-Methode implementieren
-  - Fundstelle: `src/backtest/engine.py:1319`
+  - Fundstelle: `src&#47;backtest&#47;engine.py:1319` (illustrative)
   - Kontext: Portfolio-Allocation basierend auf historischer Sharpe-Ratio
   - Vorschlag: Benötigt historische Backtests als Input
 
 ### Walk-Forward: Parameter-Optimierung
 
 - [ ] Parameter-Optimierung auf Train-Daten implementieren
-  - Fundstelle: `src/backtest/walkforward.py:387`
+  - Fundstelle: `src&#47;backtest&#47;walkforward.py:387` (illustrative)
   - Kontext: Train-Backtest für spätere Optimierung vorbereitet, aber noch nicht aktiv
   - Vorschlag: Integration mit Sweep-System für automatische Parameter-Optimierung
 
 ### Legacy-API Cleanup
 
 - [ ] Legacy-Funktionen in `macd.py` entfernen
-  - Fundstelle: `src/strategies/macd.py:232`
+  - Fundstelle: `src&#47;strategies&#47;macd.py:232` (illustrative)
   - Kontext: Legacy-Funktion für Backwards Compatibility
   - Vorschlag: Prüfen, ob alle Pipelines auf MACDStrategy (OOP) umgestellt sind, dann entfernen
 
 - [ ] Legacy-Funktionen in `bollinger.py` entfernen
-  - Fundstelle: `src/strategies/bollinger.py:237`
+  - Fundstelle: `src&#47;strategies&#47;bollinger.py:237` (illustrative)
   - Kontext: Legacy-Funktion für Backwards Compatibility
   - Vorschlag: Prüfen, ob alle Pipelines auf BollingerBandsStrategy (OOP) umgestellt sind, dann entfernen
 
@@ -77,12 +77,12 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 ### Vollständige Implementierungen
 
 - [ ] Vollständige Stress-Test-Implementierung
-  - Fundstelle: `src/experiments/stress_tests.py:389`
+  - Fundstelle: `src&#47;experiments&#47;stress_tests.py:389` (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry für automatisches Laden
 
 - [ ] Vollständige Monte-Carlo-Implementierung
-  - Fundstelle: `src/experiments/monte_carlo.py:303`
+  - Fundstelle: `src&#47;experiments&#47;monte_carlo.py:303` (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
 
@@ -105,18 +105,18 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 ### Pandas FutureWarnings (Phase 59)
 
 - [ ] Pandas `.fillna` Downcasting Warnings beheben
-  - Fundstelle: Diverse `src/strategies/*.py`
+  - Fundstelle: Diverse `src&#47;strategies&#47;*.py`
   - Kontext: `.shift(1).fillna(False)` Pattern löst FutureWarning in pandas 2.x aus
-  - Aktueller Status: Warning in `tests/conftest.py` gefiltert (Phase 59)
+  - Aktueller Status: Warning in `tests&#47;conftest.py` gefiltert (Phase 59)
   - Vorschlag: Bei pandas 3.0 Migration auf `.astype(bool)` umstellen
   - Priorität: Niedrig (funktioniert, Warning gefiltert)
 
 ### test_live_web.py Collection Error
 
 - [ ] test_live_web.py reparieren oder entfernen
-  - Fundstelle: `tests/test_live_web.py`
+  - Fundstelle: `tests&#47;test_live_web.py`
   - Kontext: Fehler bei Test-Collection (vermutlich fehlende Dependency)
-  - Aktueller Status: In pytest-Runs mit `--ignore=tests/test_live_web.py` übersprungen
+  - Aktueller Status: In pytest-Runs mit `--ignore=tests&#47;test_live_web.py` übersprungen
   - Vorschlag: Prüfen, ob Test noch benötigt wird, sonst entfernen
   - Priorität: Niedrig
 
