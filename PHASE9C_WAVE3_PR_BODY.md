@@ -105,19 +105,18 @@ This PR implements **Wave 3** of the Docs Graph Remediation initiative, focusing
 
 ### Escapes Applied
 - **Wave 3 changes:** 29 instances (repo-relative paths, Docker syntax, template paths)
-- **Pre-existing violations cleanup:** 22 instances (in 12 Wave-3-touched files)
-- **Total escapes:** 51 instances
+- **Pre-existing violations cleanup:** 19 instances (in 8 Wave-3-touched files)
+- **Total escapes:** 48 instances
 
 **Pattern:** `/` → `&#47;` inside inline-code (backticks)
 
 ### Pre-Existing Violations Cleanup (Extended Scope)
 
-**Note:** Wave 3 scope was extended to include 22 pre-existing token-policy violations discovered in the 12 files being modified. These violations existed **before Wave 3** but were flagged by CI.
+Fixed **19 pre-existing** token-policy violations in **8 files** already touched by Wave 3.
 
-**Rationale:**
-- **CI-ready**: Ensures all gates pass without noise
-- **Low-risk**: Mechanical escapes only (no semantic changes)
-- **Efficient**: Already touching these files, minimal incremental cost
+- **Method:** Mechanical `&#47;` escapes only (no semantic changes)
+- **Rationale:** CI-ready, low-risk, efficient
+- **Traceability:** Separate commit documenting the pre-existing nature and limited scope extension
 
 **Separate commit:** `docs(ops): fix pre-existing token policy escapes in wave3-touched files`
 

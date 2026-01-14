@@ -144,32 +144,27 @@ Reduce broken reference targets from **114 → ≤ 135** (close the remaining ga
 
 **Escapes Applied:**
 - **Wave 3 changes:** 29 instances (repo-relative paths, Docker syntax, template paths)
-- **Pre-existing violations cleanup:** 22 instances (in 12 Wave-3-touched files)
-- **Total escapes:** 51 instances
+- **Pre-existing violations cleanup:** 19 instances (in 8 Wave-3-touched files)
+- **Total escapes:** 48 instances
 
 **Pattern Used:** `/` → `&#47;` inside inline-code (backticks)
 
 ### Pre-Existing Violations Cleanup (Extended Scope)
 
-**Context:** During Wave 3 implementation, 22 pre-existing token-policy violations were discovered in the 12 files being modified. These violations existed **before Wave 3** but were flagged by CI when the files were changed.
+Fixed **19 pre-existing** token-policy violations in **8 files** already touched by Wave 3.
 
-**Decision:** Fix them immediately (extended scope) rather than defer to a future wave.
-
-**Rationale:**
-1. **CI-ready**: Ensures all gates pass without noise
-2. **Low-risk**: Mechanical escapes only (no semantic changes)
-3. **Efficient**: Already touching these files, minimal incremental cost
+- **Method:** Mechanical `&#47;` escapes only (no semantic changes)
+- **Rationale:** CI-ready, low-risk, efficient
+- **Traceability:** Separate commit documenting the pre-existing nature and limited scope extension
 
 **Files Fixed (by violation count):**
 - `docs/ops/STABILITY_RESILIENCE_PLAN_V1.md` (6 violations)
 - `docs/LEARNING_PROMOTION_LOOP_INDEX.md` (5 violations)
 - `docs/PHASE_41B_STRATEGY_ROBUSTNESS_AND_TIERING.md` (4 violations)
 - `docs/REFERENCE_SCENARIO_MULTI_STYLE_MODERATE.md` (4 violations)
-- `docs/ops/PR_240_MERGE_LOG.md` (2 violations)
-- `docs/ops/PR_250_MERGE_LOG.md` (2 violations)
-- 6 other files (1 violation each)
+- 4 other files (various counts)
 
-**Commit:** Separate commit documenting pre-existing nature and scope extension
+**Note:** These violations existed **before Wave 3** but were flagged by CI when the files were changed.
 
 ---
 
