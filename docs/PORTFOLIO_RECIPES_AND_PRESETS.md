@@ -478,7 +478,7 @@ Phase 53 fügt neue Strategy-Konfigurationen in `config/config.toml` hinzu:
 
 Diese Konfigurationen folgen dem Naming-Schema: `<family>_<market>_<profile>`.
 
-Siehe auch: `docs/PHASE_53_STRATEGY_AND_PORTFOLIO_LIBRARY_PUSH.md` (falls vorhanden)
+Siehe auch: `docs&#47;PHASE_53_STRATEGY_AND_PORTFOLIO_LIBRARY_PUSH.md` (historical, falls vorhanden)
 
 ### End-to-End-Prozess zur Portfolio-Aktivierung
 

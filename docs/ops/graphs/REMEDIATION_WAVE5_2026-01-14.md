@@ -79,7 +79,7 @@ Missing targets: 58
 **Fix Strategy:** Escape slashes in inline-code tokens (`/` → `&#47;`), add "(illustrative)" marker.
 
 #### Cluster 2: Historical Branch References (~8 targets)
-**Pattern:** Old PR branch names referenced in merge logs (e.g., `docs/pr-76-merge-log`).
+**Pattern:** Old PR branch names referenced in merge logs (e.g., `docs&#47;pr-76-merge-log`).
 
 **Examples:**
 - `docs&#47;pr-76-merge-log`

@@ -298,7 +298,7 @@ Füge den neuen Exchange in der Data-/Exchange-Sektion hinzu.
 
 **Optional: Neues Doku-File:**
 
-Erstelle `docs/EXCHANGE_MY_EXCHANGE.md` (optional, nur wenn umfangreich):
+Erstelle `docs&#47;EXCHANGE_MY_EXCHANGE.md` (illustrative, optional, nur wenn umfangreich):
 
 ```markdown
 # My Exchange Integration
