@@ -389,12 +389,8 @@ Validating token policy for changed files...
 **Fix Pattern:**
 1. Öffne Datei, gehe zu Zeile 67
 2. Optionen:
-   - Ersetze Inline-Backtick mit plain text: docs/ops/file.md (ohne Backticks)
-   - Oder nutze fenced code block, falls es ein Command/Path-Snippet ist:
-
-```
-docs/ops/file.md
-```
+   - Ersetze Inline-Backtick mit plain text (ohne Backticks) oder nutze HTML entity: `path&#47;to&#47;file.md`
+   - Oder nutze fenced code block, falls es ein Command/Path-Snippet ist
 
 3. Re-run check
 
@@ -1219,7 +1215,7 @@ git branch -v
 | Command | Expected Output Snippet | Failure Indicator |
 |---------|------------------------|-------------------|
 | `pwd` | `/Users/frnkhrz/Peak_Trade` | Different path |
-| `git status -sb` (clean) | `## main...origin/main` | Untracked/modified files |
+| `git status -sb` (clean) | `## main...origin&#47;main` | Untracked/modified files |
 | `git pull --ff-only` | `Already up to date` or `Fast-forward` | `fatal: Not possible to fast-forward` |
 | `git switch -c <branch>` | `Switched to a new branch` | `fatal: A branch named ... already exists` |
 | `git push -u origin <branch>` | `* [new branch] ... -> ...` | `error: failed to push` |

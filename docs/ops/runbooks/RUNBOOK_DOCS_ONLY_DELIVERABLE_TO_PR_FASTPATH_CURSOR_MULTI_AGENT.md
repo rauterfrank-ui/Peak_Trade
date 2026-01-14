@@ -294,11 +294,11 @@ Checking changed files for broken reference targets...
   Inline backtick with slash detected: `docs/ops/file.md`
 ```
 
-**Cause:** Inline backtick with slash (e.g. `path/to/file.md`)
+**Cause:** Inline backtick with slash (e.g. `path&#47;to&#47;file.md`)
 
 **Fix Pattern:**
 1. Open file, go to line 67
-2. Replace inline backtick with plain text: docs/ops/file.md (no backticks)
+2. Replace inline backtick with plain text (no backticks) or use HTML entity for slash: `path&#47;to&#47;file.md`
 3. Or use fenced code block if it's a command/path snippet
 4. Re-run check
 
