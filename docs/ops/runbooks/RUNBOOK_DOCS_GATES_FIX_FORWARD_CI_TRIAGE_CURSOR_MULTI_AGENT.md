@@ -12,7 +12,7 @@
 
 **Problem Class:**  
 CI Gate Failures occur despite local PASS verdicts. Root causes include:
-- **Base-Ref Drift:** Local `main` vs `origin/main` not synchronized; changed-detection runs against stale references
+- **Base-Ref Drift:** Local `main` vs `origin&#47;main` not synchronized; changed-detection runs against stale references
 - **Coverage Gaps:** New or staged files slip through local gate execution (e.g., `--changed` flag misses uncommitted or newly added files)
 - **Meta-Compliance:** Runbook examples themselves must be gate-conformant (Token Policy: illustrative "/" paths, Reference Targets: no links to missing files)
 
@@ -31,7 +31,7 @@ Repeatable operator flow with evidence trail, minimizing iteration cycles and en
 | **Local Snapshot** | Executing docs gates locally against the current working tree / branch state |
 | **CI Snapshot** | GitHub Checks status captured at a specific commit SHA (one-time capture, no polling) |
 | **Fix-Forward** | Additional commit on the same PR branch (no rebase, no force-push) to remediate gate failures |
-| **Base Ref Drift** | Mismatch between local `main` and `origin/main` causing incorrect changed-file detection |
+| **Base Ref Drift** | Mismatch between local `main` and `origin&#47;main` causing incorrect changed-file detection |
 | **Changed Detection Gap** | Scenario where `--changed` or diff commands miss files due to wrong comparison base or unstaged/uncommitted state |
 | **Token Policy Violation** | Inline code (backticks) containing "/" in illustrative paths without proper encoding (`&#47;`) |
 | **Reference Targets Violation** | Markdown links pointing to non-existent files or anchors |
@@ -55,9 +55,9 @@ git log -1 --oneline
 
 ### Decision Tree
 
-**If `origin/main` is ahead of local `main`:**
+**If `origin&#47;main` is ahead of local `main`:**
 
-- **Option A (safe):** Reset local `main` to `origin/main`:
+- **Option A (safe):** Reset local `main` to `origin&#47;main`:
 
 ```bash
 git checkout main
@@ -66,14 +66,14 @@ git reset --hard origin/main
 
 - **Option B (investigate):** If local `main` has unpushed commits, investigate before proceeding.
 
-**If working branch is not up-to-date with `origin/main`:**
+**If working branch is not up-to-date with `origin&#47;main`:**
 
-- Consider rebasing or merging `origin/main` into feature branch (only if required; otherwise defer to CI merge preview).
+- Consider rebasing or merging `origin&#47;main` into feature branch (only if required; otherwise defer to CI merge preview).
 
 ### Expected Outputs
 
-- `git status -sb` shows feature branch ahead of `origin/main` by N commits (no untracked/unstaged surprises)
-- Local `main` exactly matches `origin/main` commit SHA
+- `git status -sb` shows feature branch ahead of `origin&#47;main` by N commits (no untracked/unstaged surprises)
+- Local `main` exactly matches `origin&#47;main` commit SHA
 
 ### Stop Condition
 
@@ -91,7 +91,7 @@ git reset --hard origin/main
 
 1. **New files not staged:** Gate runs against committed files only; new file exists but is untracked
 2. **Staged but not committed:** `--changed` flag may compare against wrong base
-3. **Wrong diff base:** Comparing against local `main` instead of `origin/main`
+3. **Wrong diff base:** Comparing against local `main` instead of `origin&#47;main`
 
 ### Execution Variants
 
@@ -318,11 +318,11 @@ Clone from `https:&#47;&#47;github.com&#47;user&#47;repo`.
 
 **Example:**
 
-```markdown
-See [Operator Guide](docs&#47;ops&#47;runbooks&#47;OPERATOR_GUIDE.md)
+```
+Link points to: docs&#47;ops&#47;runbooks&#47;OPERATOR_GUIDE.md
 ```
 
-(File `docs/ops/runbooks/OPERATOR_GUIDE.md` does not exist)
+(File `docs&#47;ops&#47;runbooks&#47;OPERATOR_GUIDE.md` does not exist as this is an illustrative example)
 
 **Decision:**
 
@@ -663,7 +663,7 @@ Use this template to document fix-forward iterations:
 **Local Snapshot:**  
 - Timestamp: YYYY-MM-DD HH:MM:SS UTC  
 - Verdict: PASS (all gates)  
-- Files Evaluated: `docs/ops/runbooks/RUNBOOK_X.md`
+- Files Evaluated: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_X.md`
 
 **CI Snapshot (Commit SHA: abc1234):**  
 - Timestamp: YYYY-MM-DD HH:MM:SS UTC  
@@ -674,8 +674,8 @@ Use this template to document fix-forward iterations:
 
 | Violation | File | Line | Fix Applied | Commit |
 |-----------|------|------|-------------|--------|
-| Illustrative "/" in `src/utils/...` | RUNBOOK_X.md | 42 | Encoded as `&#47;` | def5678 |
-| Branch name `feature/x` in backticks | RUNBOOK_X.md | 87 | Removed backticks | def5678 |
+| Illustrative "/" in `src&#47;utils&#47;...` | RUNBOOK_X.md | 42 | Encoded as `&#47;` | def5678 |
+| Branch name `feature&#47;x` in backticks | RUNBOOK_X.md | 87 | Removed backticks | def5678 |
 
 **Fix-Forward Commit:**  
 - SHA: def5678  
@@ -693,8 +693,8 @@ Use this template to document fix-forward iterations:
 
 **Post-Merge Verify:**  
 - Merged to `main` at commit SHA: 123abcd  
-- File verified present: `docs/ops/runbooks/RUNBOOK_X.md`  
-- Branch cleanup: `feature/add-ci-triage-runbook` deleted
+- File verified present: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_X.md`  
+- Branch cleanup: `feature&#47;add-ci-triage-runbook` deleted
 
 ---
 
