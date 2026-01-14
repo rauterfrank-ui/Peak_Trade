@@ -57,8 +57,8 @@ This hybrid approach (root artifact + pointer) balances:
 ## Related
 
 - **Evidence**: PR #718 (salvage operation execution + docs gates fixes)
-- **Merge Log**: [docs/ops/PR_718_MERGE_LOG.md](../PR_718_MERGE_LOG.md) (if created)
 - **Pattern**: Similar to `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md` (root-level operational reference)
+- **Usage**: Documents salvage workflow for commits accidentally created on wrong branch
 
 ---
 
