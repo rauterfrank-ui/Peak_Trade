@@ -207,7 +207,7 @@ python scripts/create_info_packet.py \
 - [ ] Python-Modul `src/meta/infostream/`
 - [ ] `IntelEvent` Dataclass
 - [ ] JSON-Speicherung statt Text
-- [ ] Script `scripts/register_infostream_event.py`
+- [ ] Script `scripts&#47;register_infostream_event.py` (illustrative)
 
 ### v2 (Zukunft)
 - [ ] HTML-Dashboard (Tailwind) in bestehender Web-UI
