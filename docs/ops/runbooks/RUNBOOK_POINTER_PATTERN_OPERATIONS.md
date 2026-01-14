@@ -397,10 +397,10 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed
 
 ```markdown
 <!-- BAD: This creates a broken link -->
-- See [example guide](docs/example_guide.md) for more details.
+- See [example guide](docs&#47;example_guide.md) for more details.
 ```
 
-**Problem:** If `docs/example_guide.md` does NOT exist, Reference Targets Gate fails.
+**Problem:** If `docs&#47;example_guide.md` does NOT exist (as in this illustrative example), Reference Targets Gate fails.
 
 **Fix:**
 
@@ -504,7 +504,7 @@ See canonical runbook for full procedures. This pointer provides navigation only
 **Update Checklist:**
 
 - [ ] Update pointer filename: `RUNBOOK_OLD_POINTER.md` → `RUNBOOK_NEW_POINTER.md`
-- [ ] Update pointer canonical link: `../../RUNBOOK_OLD.md` → `../../RUNBOOK_NEW.md`
+- [ ] Update pointer canonical link: `..&#47;..&#47;RUNBOOK_OLD.md` → `..&#47;..&#47;RUNBOOK_NEW.md`
 - [ ] Update README.md index entry
 - [ ] Search all docs for references to old filename: `grep -r "RUNBOOK_OLD" docs/`
 - [ ] Update any merge logs or evidence referencing old filename
@@ -541,7 +541,7 @@ grep -r "RUNBOOK_OLD" docs/ --exclude-dir=.git
 - [ ] Check for orphaned pointers (pointer exists but root runbook deleted)
 - [ ] Verify canonical links in pointers are correct
 - [ ] Verify README.md index has all pointers
-- [ ] Run full docs gates scan: `./scripts/ops/pt_docs_gates_snapshot.sh`
+- [ ] Run full docs gates scan: `scripts/ops/pt_docs_gates_snapshot.sh`
 
 ---
 
@@ -691,7 +691,7 @@ git commit -m "fix(docs): remove content duplication from pointer (defer to cano
 
 ### Template A: Pointer Document
 
-**Filename:** `docs/ops/runbooks/RUNBOOK_<IDENTIFIER>_POINTER.md`
+**Filename:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_<IDENTIFIER>_POINTER.md`
 
 ```markdown
 # [Runbook Title] — Pointer
@@ -897,7 +897,7 @@ cat docs/ops/runbooks/RUNBOOK_*_POINTER.md | grep "Canonical Location"
 - [ ] ❌ DON'T use illustrative paths without `&#47;` encoding
 - [ ] ❌ DON'T create pointer before root runbook is finalized
 - [ ] ❌ DON'T forget to update README.md index entry
-- [ ] ❌ DON'T use absolute paths in canonical links (use relative: `../../RUNBOOK_X.md`)
+- [ ] ❌ DON'T use absolute paths in canonical links (use relative: `..&#47;..&#47;RUNBOOK_X.md`)
 - [ ] ❌ DON'T rename root runbook without updating pointer and README
 - [ ] ❌ DON'T create multiple pointers for same root runbook
 - [ ] ❌ DON'T skip gate verification before committing
@@ -927,7 +927,7 @@ cat docs/ops/runbooks/RUNBOOK_*_POINTER.md | grep "Canonical Location"
 
 **Success Conditions (all must be met):**
 
-✅ Pointer document exists in `docs/ops/runbooks/RUNBOOK_<IDENTIFIER>_POINTER.md`  
+✅ Pointer document exists in `docs&#47;ops&#47;runbooks&#47;RUNBOOK_<IDENTIFIER>_POINTER.md`  
 ✅ Canonical link in pointer resolves to root runbook  
 ✅ README.md contains exactly one entry for pointer  
 ✅ Docs Token Policy Gate: PASS  
@@ -946,7 +946,7 @@ cat docs/ops/runbooks/RUNBOOK_*_POINTER.md | grep "Canonical Location"
 - [RUNBOOK_DOCS_TOKEN_POLICY_GATE.md](RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) — Token policy gate operator guide
 - [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Reference targets gate operator guide
 - [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff guard gate operator guide
-- [RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md) — Example of root canonical runbook using pointer pattern
+- [RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md) — Example of root canonical runbook using pointer pattern
 
 ### Scripts & Tools
 
