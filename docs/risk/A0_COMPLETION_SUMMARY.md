@@ -215,8 +215,8 @@ git commit
    - Zone-Klassifikation (GREEN, YELLOW, RED)
    - Binomial-Quantile für Thresholds
 4. Schreibe Tests:
-   - `tests/risk_layer/test_christoffersen.py`
-   - `tests/risk_layer/test_traffic_light.py`
+   - `tests&#47;risk_layer&#47;test_christoffersen.py`
+   - `tests&#47;risk_layer&#47;test_traffic_light.py`
 
 **Referenzen:**
 - Christoffersen, P. F. (1998). Evaluating Interval Forecasts.
@@ -255,7 +255,7 @@ git commit
 2. User Guide
    - `docs/risk/RISK_LAYER_V1_GUIDE.md`
 3. Example Notebooks
-   - `notebooks/risk_layer_demo.ipynb`
+   - `notebooks&#47;risk_layer_demo.ipynb`
 4. Production Readiness Review
 
 ---

@@ -162,7 +162,7 @@ uv run pip-audit
 - Pre-commit hooks müssen passen
 
 ### Branch-Hygiene
-- Worktree-Branch basiert auf `origin/main`
+- Worktree-Branch basiert auf `origin&#47;main`
 - Regelmäßig rebase (bei langer Session)
 - Clean commit history vor final push
 
