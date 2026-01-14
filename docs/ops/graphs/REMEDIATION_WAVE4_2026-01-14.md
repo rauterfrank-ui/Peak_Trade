@@ -92,7 +92,7 @@ Wave 4 continues the systematic Docs Graph Remediation initiative, targeting the
 ### Total Escapes Applied
 
 - **Primary targets:** 22 broken targets resolved
-- **Bonus escapes:** 9 additional `src/` and `reports/` paths escaped for consistency
+- **Bonus escapes:** 9 additional `src&#47;` and `reports&#47;` paths escaped for consistency
 - **Total inline-code escapes:** 31
 - **Code blocks commented:** 2
 
