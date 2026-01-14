@@ -6,7 +6,7 @@
 - **State:** MERGED
 - **Merged At (UTC):** 2025-12-16T04:33:27Z
 - **Merge Commit:** `1f9770bff67ce11b8d382e3bdf8fcfbcacc66b9a`
-- **Base → Head:** `main` ← `docs/pr-76-merge-log-index`
+- **Base → Head:** `main` ← `docs&#47;pr-76-merge-log-index` (historical branch)
 - **Author:** `rauterfrank-ui`
 - **Diffstat:** +8 / −0
 - **Log Generated (UTC):** 2025-12-16T04:39:50Z

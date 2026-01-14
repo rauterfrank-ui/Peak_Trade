@@ -9,13 +9,13 @@ PR #593 stellt die CI-Gates für Wave3 Ops-Dokumentation wieder her, indem fehle
 
 ## Changes
 ### Docs / Ops
-- Added lightweight **reference-target stubs** to satisfy the Docs Reference Targets Gate:
-  - `docs/pr-76-merge-log`
-  - `docs/ops/pr-93-merge-log`
-  - `docs/ops-pr-85-merge-log`
-  - `docs/merge-log-pr-350-docs-reference-targets-golden-corpus`
-  - `docs/frontdoor-roadmap-runner`
-  - `scripts/ops/wave3_restore_batch.sh`
+- Added lightweight **reference-target stubs** to satisfy the Docs Reference Targets Gate (historical):
+  - `docs&#47;pr-76-merge-log` (historical stub)
+  - `docs&#47;ops&#47;pr-93-merge-log` (historical stub)
+  - `docs&#47;ops-pr-85-merge-log` (historical stub)
+  - `docs&#47;merge-log-pr-350-docs-reference-targets-golden-corpus` (historical stub)
+  - `docs&#47;frontdoor-roadmap-runner` (historical stub)
+  - `scripts&#47;ops&#47;wave3_restore_batch.sh` (historical stub)
 - Updated `docs/ops/WAVE3_MERGE_READINESS_MATRIX.md` with `pt:ref-target-ignore` annotations
 
 ### CI

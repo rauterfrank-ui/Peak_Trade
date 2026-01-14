@@ -3,7 +3,7 @@
 **PR:** #218  
 **Status:** ✅ MERGED (Auto-Merge)  
 **Datum:** 2025-12-21  
-**Branch:** `docs/ops-pr217-merge-log` (deleted)  
+**Branch:** `docs&#47;ops-pr217-merge-log` (historical, deleted)  
 **Main Fast-forward:** `df9880a → 6a8c3bf`  
 
 ---

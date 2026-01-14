@@ -20,7 +20,7 @@ Neuen Exchange/Market-Adapter hinzufügen, der Data-Layer und ggf. Live-Layer nu
 ### 1. Market Data Adapter
 
 **Neue Datei erstellen**, z.B.:
-- `src/data/my_exchange.py`
+- `src&#47;data&#47;my_exchange.py` (illustrative)
 
 **Schnittstelle an vorhandene Adapter angleichen** (z.B. `src/data/kraken.py`):
 

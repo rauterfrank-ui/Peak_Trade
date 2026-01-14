@@ -275,10 +275,10 @@ python scripts/run_test_health_profile.py --profile my_custom_profile
 
 Checks können beliebige Shell-Commands sein:
 
-- **Pytest**: `pytest -q tests/my_module`
-- **Python-Script**: `python scripts/my_smoke_test.py`
-- **Shell-Script**: `bash scripts/check_db_connection.sh`
-- **Custom-Command**: `curl -f https://api.example.com/health`
+- **Pytest**: `pytest -q tests&#47;my_module`
+- **Python-Script**: `python scripts&#47;my_smoke_test.py` (illustrative)
+- **Shell-Script**: `bash scripts&#47;check_db_connection.sh` (illustrative)
+- **Custom-Command**: `curl -f https:&#47;&#47;api.example.com&#47;health`
 
 **Wichtig**: Command muss Exit-Code 0 bei Erfolg zurückgeben!
 

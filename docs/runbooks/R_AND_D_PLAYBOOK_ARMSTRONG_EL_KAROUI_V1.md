@@ -70,7 +70,7 @@ Beispiel-Backtest (an dein CLI anpassen):
 ```bash
 python -m scripts.run_backtest \
   --strategy armstrong_cycle \
-  --config config/strategies/armstrong_cycle_default.toml
+  --config config&#47;strategies&#47;armstrong_cycle_default.toml
 ```
 
 Typische Run-Typen:
@@ -194,8 +194,8 @@ Damit ist sichergestellt, dass R&D-Strategien niemals versehentlich Orders an Br
 
 **Was tun?**
 * Starte Runs immer aus dem Repo-Root (`/Users/frnkhrz/Peak_Trade`).
-* Verwende absolute Pfade oder prüfe den relativen Pfad: `config/strategies/armstrong_cycle_default.toml`.
-* Quick-Check: `ls config/strategies/` – existiert die Datei?
+* Verwende absolute Pfade oder prüfe den relativen Pfad: `config&#47;strategies&#47;armstrong_cycle_default.toml` (illustrative).
+* Quick-Check: `ls config&#47;strategies&#47;` – existiert die Datei?
 
 ### 3. Run-Typ wird als „live" oder „paper" interpretiert
 

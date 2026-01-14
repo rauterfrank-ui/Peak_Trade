@@ -21,8 +21,8 @@ Grundverständnis von:
 
 ### 1. Strategie-Datei anlegen
 
-Erstelle eine neue Datei in `src/strategies/`, z.B.:
-- `src/strategies/my_new_strategy.py`
+Erstelle eine neue Datei in `src&#47;strategies&#47;`, z.B.:
+- `src&#47;strategies&#47;my_new_strategy.py` (illustrative)
 
 **Minimal-Signatur:** Die Strategie sollte entweder:
 - Von `BaseStrategy` erben (empfohlen für OOP-Strategien)
