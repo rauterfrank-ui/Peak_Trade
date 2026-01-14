@@ -40,6 +40,7 @@ Hinweis: Phase 13 (Production Live-Trading) erfordert explizites Governance-Gate
 - [WORKFLOW_NOTES_FRONTDOOR.md](docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md) — Policy for illustrative path encoding (`&#47;`)
 - [PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md](docs/ops/workflows/PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md) — Historical workflow snapshot
 - [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md) — Troubleshooting docs gate failures
+- [RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md](docs/ops/runbooks/RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md) — PR #736: CI snapshot → auto-merge enable → post-merge verify (main) (snapshot-only)
 
 **Purpose:** Documents illustrative example path policy (prevents docs-reference-targets-gate false positives) and provides historical workflow context.
 
