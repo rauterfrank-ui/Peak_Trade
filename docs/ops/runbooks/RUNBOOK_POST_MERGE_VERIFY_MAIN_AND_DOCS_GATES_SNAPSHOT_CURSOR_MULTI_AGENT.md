@@ -5,7 +5,7 @@ Risk: LOW (verification-only; no destructive operations by default)
 
 ## 1) Executive Summary
 This runbook defines a safe, repeatable, snapshot-based procedure to:
-- verify that `main` is synced with `origin/main` after a merge, and
+- verify that `main` is synced with `origin&#47;main` after a merge, and
 - run a local "Docs Gates" snapshot (no watch loops) to detect token-policy or documentation integrity regressions.
 
 It is optimized for docs-heavy PRs and governance workflows where evidence capture matters.
@@ -36,7 +36,7 @@ STOP immediately if any is true:
 - Working tree is dirty and you did not explicitly intend to verify dirty state
 - You are in detached HEAD and do not know why
 - You see prompt continuations such as `>` or `dquote>` in your shell
-- `main` diverges from `origin/main` unexpectedly
+- `main` diverges from `origin&#47;main` unexpectedly
 - The merge commit cannot be verified against expected SHA (if you have one)
 
 ## 6) Phase 1 — Pre-Flight (Repo + Continuation Guard)
@@ -56,7 +56,7 @@ Evidence to capture:
 - the resolved repo root path
 
 ## 7) Phase 2 — Verify main vs origin/main
-Goal: Confirm local `main` matches remote `origin/main` with fast-forward-only posture.
+Goal: Confirm local `main` matches remote `origin&#47;main` with fast-forward-only posture.
 
 Snapshot commands:
 - `git fetch --prune`
@@ -65,7 +65,7 @@ Snapshot commands:
 - `git status -sb`
 
 Expected:
-- `main...origin/main` is aligned
+- `main...origin&#47;main` is aligned
 - working tree is clean (unless you explicitly intended otherwise)
 
 ## 8) Phase 3 — Confirm Merge Commit and File Presence
@@ -75,7 +75,7 @@ Snapshot commands:
 - `git log -1 --oneline`
 - `git show --name-only --oneline --no-patch HEAD`
 - Verify the expected file(s) exist (example):  
-  - `test -f docs/ops/merge_logs/PR_729_MERGE_LOG.md && echo "OK: merge log exists" || echo "MISSING"`
+  - `test -f docs&#47;ops&#47;merge_logs&#47;PR_729_MERGE_LOG.md && echo "OK: merge log exists" || echo "MISSING"`
 
 Notes:
 - Avoid adding illustrative inline-code paths with slashes; keep examples plain text unless you confirm they are real.

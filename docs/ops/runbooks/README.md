@@ -60,6 +60,7 @@ Runbooks for CI operations and general operational procedures:
 - [github_rulesets_pr_reviews_policy.md](github_rulesets_pr_reviews_policy.md) — GitHub rulesets PR reviews policy
 - [policy_critic_execution_override.md](policy_critic_execution_override.md) — Policy critic execution override
 - [RUNBOOK_POST_MERGE_VERIFY_MAIN_AND_DOCS_GATES_SNAPSHOT_CURSOR_MULTI_AGENT.md](RUNBOOK_POST_MERGE_VERIFY_MAIN_AND_DOCS_GATES_SNAPSHOT_CURSOR_MULTI_AGENT.md) — Post-merge verify (main) + local docs gates snapshot (no-watch)
+- [RUNBOOK_DOCS_ONLY_PR_MERGE_AUTOMERGE_AND_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md](RUNBOOK_DOCS_ONLY_PR_MERGE_AUTOMERGE_AND_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md) — Docs-only PR merge (auto-merge/squash) + CI snapshot + merge-log chain (Cursor Multi-Agent)
 
 ### Incident Response & Troubleshooting
 
