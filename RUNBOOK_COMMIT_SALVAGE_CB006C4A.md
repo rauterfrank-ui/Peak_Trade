@@ -9,7 +9,7 @@
 - ✅ Repo-conform workflow (feature branch → PR → CI → merge)
 
 **Known State:**
-- Local branch: `main` (tracking `origin/main`)
+- Local branch: `main` (tracking `origin&#47;main`)
 - Local commit: `cb006c4a` ("docs(ops): Phase 9C closeout graph + ops README update")
 - Files changed:
   - `docs/ops/README.md` (modified)
@@ -71,7 +71,7 @@ git status --short
 ### Acceptance Criteria
 
 - ✅ Current branch is `main`
-- ✅ Commit `cb006c4a` exists and is ahead of `origin/main`
+- ✅ Commit `cb006c4a` exists and is ahead of `origin&#47;main`
 - ✅ No uncommitted changes in working tree
 - ✅ Docs gates snapshot shows GREEN or provides actionable fixes
 - ✅ Commit details captured in `/tmp/salvage_commit_details.txt`
@@ -116,7 +116,7 @@ git branch -vv | grep phase9c-closeout-graph
 
 ### Acceptance Criteria
 
-- ✅ New branch `docs/phase9c-closeout-graph` created
+- ✅ New branch `docs&#47;phase9c-closeout-graph` created
 - ✅ Branch HEAD is `cb006c4a`
 - ✅ Branch does not track remote yet
 - ✅ Commit history intact (437 insertions, 2 files changed)
@@ -163,9 +163,9 @@ git log docs/phase9c-closeout-graph --oneline -1
 
 ### Acceptance Criteria
 
-- ✅ Local `main` reset to `origin/main`
-- ✅ No commits ahead of `origin/main` on main
-- ✅ Feature branch `docs/phase9c-closeout-graph` still points to `cb006c4a`
+- ✅ Local `main` reset to `origin&#47;main`
+- ✅ No commits ahead of `origin&#47;main` on main
+- ✅ Feature branch `docs&#47;phase9c-closeout-graph` still points to `cb006c4a`
 - ✅ Working tree clean
 
 ### Expected Output
@@ -215,7 +215,7 @@ gh api repos/rauterfrank-ui/Peak_Trade/branches/docs/phase9c-closeout-graph --jq
 
 ### Acceptance Criteria
 
-- ✅ Branch pushed to `origin/docs/phase9c-closeout-graph`
+- ✅ Branch pushed to `origin&#47;docs&#47;phase9c-closeout-graph`
 - ✅ Local branch tracks remote branch
 - ✅ Remote branch visible in GitHub UI
 - ✅ Commit `cb006c4a` is the HEAD of remote branch
@@ -335,7 +335,7 @@ gh pr view ${PR_NUMBER} --json number,title,state,baseRefName,headRefName
 - ✅ PR created successfully
 - ✅ PR title follows conventional commit format
 - ✅ PR body contains all required sections (Summary, Changes, Why, Verification, Risk, Related, How to Review)
-- ✅ PR base is `main`, head is `docs/phase9c-closeout-graph`
+- ✅ PR base is `main`, head is `docs&#47;phase9c-closeout-graph`
 - ✅ Label `documentation` applied
 - ✅ PR number captured for Phase 5
 
@@ -717,7 +717,7 @@ Deleted branch docs/phase9c-closeout-graph (was cb006c4a).
 **Scope:** All markdown links in changed files
 
 **Scan Results (Expected):**
-- `graphs/PHASE9C_CLOSEOUT_2026-01-14.md` — Exists (created in commit cb006c4a)
+- `graphs&#47;PHASE9C_CLOSEOUT_2026-01-14.md` — Exists (created in commit cb006c4a)
 - PR references (e.g., `PR_712_MERGE_LOG.md`) — Exist in `docs/ops/` (verified in Phase 0)
 - Relative links — Resolved from `docs/ops/` directory
 
@@ -953,7 +953,7 @@ git branch -d docs/phase9c-closeout-graph
 ### Token Policy Gate
 - **Purpose:** Enforce `&#47;` encoding for illustrative paths
 - **Trigger:** Any `*.md` file changes
-- **Fix:** Replace `/` with `&#47;` in inline-code tokens (e.g., `` `docs/ops/example.md` `` → `` `docs&#47;ops&#47;example.md` ``)
+- **Fix:** Replace `/` with `&#47;` in inline-code tokens (e.g., `docs&#47;ops&#47;example.md` shown as example)
 
 ### Reference Targets Gate
 - **Purpose:** Validate referenced repo paths exist
@@ -962,7 +962,7 @@ git branch -d docs/phase9c-closeout-graph
 
 ### Diff Guard Policy Gate
 - **Purpose:** Prevent mass deletions (>200 lines/file under `docs/`)
-- **Trigger:** Any `docs/**` file changes
+- **Trigger:** Any `docs&#47;**` file changes
 - **Fix:** Review deletions, split into smaller PRs if intentional, or revert accidental deletions
 
 ---
