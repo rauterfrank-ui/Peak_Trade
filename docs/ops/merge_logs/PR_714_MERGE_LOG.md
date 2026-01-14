@@ -31,7 +31,7 @@ Wave 4 continues systematic docs graph remediation using cluster-based approach 
 4. `docs&#47;infostream&#47;README.md` (1 script-ref)
 5. `docs&#47;learning_promotion&#47;BOUNDED_AUTO_SAFETY_PLAYBOOK.md` (1 script-ref + 1 code block)
 6. `docs&#47;observability&#47;OBS_STACK_RUNBOOK.md` (1 script-ref + 2 src-refs)
-7. `docs&#47;ops&#47;PR_199_MERGE_LOG.md` (4 targets: leading `./` paths + `./reports`)
+7. `docs&#47;ops&#47;PR_199_MERGE_LOG.md` (4 targets: leading `.&#47;` paths + `.&#47;reports`)
 8. `docs&#47;runbooks&#47;EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md` (1 script-ref + 1 code block)
 
 **5 Artifacts Created:**
