@@ -12,10 +12,14 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Wave2 Restore Closeout](WAVE2_RESTORE_CLOSEOUT_20260106_214505Z.md)** — Wave2 session outcomes (PRs #579, #580, #571, #581, #582)
 
 ### Session Closeouts
+- **[Phase 9C Closeout](graphs/PHASE9C_CLOSEOUT_2026-01-14.md)** — Docs Graph Remediation Waves 3–5 (114→39 broken targets, −65.8%, goal achieved)
 - **[Session Closeout 2026-01-06](SESSION_CLOSEOUT_20260106_PEAK_TRADE_DOCS_OPS_INTEGRATION.md)** — Gap analysis & security fixes (PR #573, #574, #575, #576)
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs & Closeouts
+- [merge_logs/PR_716_MERGE_LOG.md](merge_logs/PR_716_MERGE_LOG.md) — PR #716 (Phase 9C Wave 5: broken targets 58→39, goal achieved, 27 token policy violations fixed) ([PR #716](https://github.com/rauterfrank-ui/Peak_Trade/pull/716), 2026-01-14)
+- [merge_logs/PR_714_MERGE_LOG.md](merge_logs/PR_714_MERGE_LOG.md) — PR #714 (Phase 9C Wave 4: broken targets 87→65, CI-Parity Guide) ([PR #714](https://github.com/rauterfrank-ui/Peak_Trade/pull/714), 2026-01-14)
+- [merge_logs/PR_712_MERGE_LOG.md](merge_logs/PR_712_MERGE_LOG.md) — PR #712 (Phase 9C Wave 3: broken targets 114→89) ([PR #712](https://github.com/rauterfrank-ui/Peak_Trade/pull/712), 2026-01-14)
 - **[Phase 5C Workflow Dispatch Guard Enforcement Closeout](PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md)** — Phase 5C closeout: dispatch-guard enforcement activation, 10 required checks, verified (2026-01-12)
 - ``docs&#47;ops&#47;PR_693_MERGE_LOG.md`` — PR #693 (Docs Token Policy Gate: CI enforcement + tests + runbook + allowlist) ([PR #693](https://github.com/rauterfrank-ui/Peak_Trade/pull/693), 2026-01-13)
 - ``docs&#47;ops&#47;PR_691_MERGE_LOG.md`` — PR #691 (Workflow notes integration + docs-reference-targets-gate policy formalization) ([PR #691](https://github.com/rauterfrank-ui/Peak_Trade/pull/691), 2026-01-13)
