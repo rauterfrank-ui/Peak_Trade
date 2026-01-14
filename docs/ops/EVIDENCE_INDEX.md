@@ -1,5 +1,12 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260114-pr736-legacy-workflow-notes"></a>
+- **EV-20260114-PR736-LEGACY-WORKFLOW-NOTES** | Date: 2026-01-14 | Owner: ops | Scope: docs-only | Risk: LOW  
+  - Source: [PR #736 Merge Log](merge_logs/PR_736_MERGE_LOG.md) · [PR #736](https://github.com/rauterfrank-ui/Peak_Trade/pull/736) · Commit: `4e0f7be3`  
+  - Claim: Legacy workflow notes (03.12.2025) reintegrated as a stable, linkable docs asset (KEEP EVERYTHING) with frontdoor navigation; added operator runbook for reintegration and a PR #736 snapshot-only CI→automerge→post-merge verify runbook; token-policy and reference-targets compatible formatting applied (real targets preserved, illustrative tokens encoded where needed).  
+  - Verification: PR #736 merged (squash, mergedAt 2026-01-14T19:47:07Z, HEAD `4e0f7be3`); required checks PASS (10/10); local docs gates snapshot for merge range (base `86137af5`) PASS (Token Policy, Reference Targets, Diff Guard Policy) as documented in the merge log.  
+  - Notes: Risk LOW (docs-only, additive, KEEP EVERYTHING); frontdoor entry lives in `docs/WORKFLOW_FRONTDOOR.md`; canonical archive lives in `docs/ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md`.
+
 <a id="ev-20260114-runbook-merge-log-pr-merge"></a>
 - **EV-20260114-RUNBOOK-MERGE-LOG-PR-MERGE** | Date: 2026-01-14 | Owner: ops | Scope: docs-only | Risk: LOW  
   - Source: [Runbook](runbooks/RUNBOOK_MERGE_LOG_PR_MERGE_AND_OPTIONAL_META_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md) · [PR #733](https://github.com/rauterfrank-ui/Peak_Trade/pull/733) · [PR #732 Merge Log](merge_logs/PR_732_MERGE_LOG.md) · Commit: `25491a0f`  

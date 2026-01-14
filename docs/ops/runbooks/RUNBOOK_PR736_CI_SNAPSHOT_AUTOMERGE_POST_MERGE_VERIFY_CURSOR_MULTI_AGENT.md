@@ -95,7 +95,7 @@ git log -1 --oneline
 ```
 
 **Expected Snapshot:**
-- `## main...origin/main`
+- `## main...origin&#47;main`
 - Working tree clean
 - HEAD enthält den squash-merge Commit für PR #736 (Commit-Message endet typischerweise mit `(#736)`).
 
