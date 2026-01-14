@@ -72,7 +72,7 @@ git log -1 --oneline
 ```
 
 **Expected Snapshot:**
-- `main` ist aligned zu `origin/main` (kein ahead/behind).
+- `main` ist aligned zu `origin&#47;main` (kein ahead/behind).
 - HEAD entspricht dem aktuellen main-Stand; Merge-Commit kann über SHA verifiziert werden (siehe Abschnitt B).
 
 ### C4) Clean tree + sync (Status bestätigen)
@@ -93,7 +93,7 @@ test -f scripts/ops/pt_docs_gates_snapshot.sh && echo "OK: pt_docs_gates_snapsho
 
 # Wenn vorhanden: einmalig ausführen (keine watch/poll loops)
 if [ -f scripts/ops/pt_docs_gates_snapshot.sh ]; then
-  bash scripts/ops/pt_docs_gates_snapshot.sh --changed --base origin/main || bash scripts/ops/pt_docs_gates_snapshot.sh --changed
+  bash scripts/ops/pt_docs_gates_snapshot.sh --changed --base origin/main
 fi
 ```
 
