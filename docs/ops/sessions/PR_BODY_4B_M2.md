@@ -53,7 +53,7 @@ git status -sb  # Clean, all pre-commit hooks passed
 ### Worktree Details
 - **Path:** `/Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2`
 - **Branch:** `feat/4b-m2-cursor-multi-agent`
-- **Base:** `origin/main` (commit: 340dd29c)
+- **Base:** `origin&#47;main` (commit: 340dd29c)
 - **Environment:** uv + .venv (80 packages installed)
 - **Status:** Clean, ready for development
 

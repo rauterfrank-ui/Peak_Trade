@@ -172,7 +172,7 @@ tests/
 └── test_live_overrides_realistic_scenario.py   # 6 Tests ✅
 ```
 
-→ Alle Tests: `pytest tests/test_live_overrides*.py -v`
+→ Alle Tests: `pytest tests&#47;test_live_overrides*.py -v`
 
 ---
 
@@ -182,7 +182,7 @@ tests/
 
 - [ ] Learning Loop gelaufen (wenn implementiert)
 - [ ] Promotion Loop gestartet: `run_promotion_proposal_cycle.py`
-- [ ] Proposals in `reports/live_promotion/` geprüft
+- [ ] Proposals in `reports&#47;live_promotion&#47;` geprüft
 - [ ] `OPERATOR_CHECKLIST.md` durchgearbeitet
 - [ ] Sicherheits-Checks bestanden
 - [ ] Config-Diff geprüft (`demo_live_overrides.py`)
@@ -378,7 +378,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 ### 5. Monitoring & Alerts
 
-* [ ] Ort der bounded_auto-Logs definiert (z.B. `logs/learning_promotion/bounded_auto/`)
+* [ ] Ort der bounded_auto-Logs definiert (z.B. `logs&#47;learning_promotion&#47;bounded_auto&#47;`)
 * [ ] Reports enthalten klar ersichtliche Markierung:
   „Dieses Patch wurde **automatisch** promotet (bounded_auto)"
 * [ ] Optional: Notification-Channel (Slack / Mail / Dashboard-Widget) für auto-Promotions
@@ -427,13 +427,13 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 1. **Architektur verstehen:** [LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md](./LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md)
 2. **Code-Integration:** [LIVE_OVERRIDES_CONFIG_INTEGRATION.md](./LIVE_OVERRIDES_CONFIG_INTEGRATION.md)
-3. **Tests erweitern:** `tests/test_live_overrides*.py`
+3. **Tests erweitern:** `tests&#47;test_live_overrides*.py`
 
 ### Für Reviewer
 
 1. **Implementation Summary:** [IMPLEMENTATION_SUMMARY_LIVE_OVERRIDES.md](./IMPLEMENTATION_SUMMARY_LIVE_OVERRIDES.md)
 2. **Abnahme-Checkliste durchgehen**
-3. **Tests reviewen:** `pytest tests/test_live_overrides*.py -v`
+3. **Tests reviewen:** `pytest tests&#47;test_live_overrides*.py -v`
 
 ---
 

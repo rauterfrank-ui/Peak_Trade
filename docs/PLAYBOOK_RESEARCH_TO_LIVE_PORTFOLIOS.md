@@ -153,7 +153,7 @@ python scripts/research_cli.py portfolio \
 
 **Outputs:**
 
-- Portfolio-Report in `results/reports/portfolio_*`
+- Portfolio-Report in `results&#47;reports&#47;portfolio_*`
 - Metriken: CAGR, Sharpe, Max Drawdown, Volatilität, etc.
 - Equity-Curve-Plots
 - Trade-Statistiken pro Strategie

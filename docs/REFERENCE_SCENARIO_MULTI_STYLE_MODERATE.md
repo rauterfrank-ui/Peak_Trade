@@ -139,7 +139,7 @@ python scripts/research_cli.py portfolio \
 
 **Output-Location:**
 
-- Reports landen typischerweise in `results/reports/portfolio_*` oder `reports/portfolio_*`
+- Reports landen typischerweise in `results&#47;reports&#47;portfolio_*` oder `reports&#47;portfolio_*`
 - Suche nach Dateien mit Timestamp im Namen (z.B. `portfolio_multi_style_moderate_2025-12-07_0900.md`)
 
 ### 4.2 Zentrale Metriken im Report
@@ -599,8 +599,8 @@ Reports werden benannt als:
 - `live_status_YYYY-MM-DD_HHMM_tag.html`
 
 **Beispiele:**
-- `reports/live_status/live_status_2025-12-15_0900_multi_style_demo.md`
-- `reports/live_status/live_status_2025-12-15_0900_multi_style_demo.html`
+- `reports&#47;live_status&#47;live_status_2025-12-15_0900_multi_style_demo.md`
+- `reports&#47;live_status&#47;live_status_2025-12-15_0900_multi_style_demo.html`
 
 ### 9.3 Welche Sektionen prüfst du speziell für `multi_style_moderate`?
 

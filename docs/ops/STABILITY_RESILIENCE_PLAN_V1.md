@@ -193,7 +193,7 @@ Wave A components are designed to be gradually integrated:
 
 ## Wave C: Resilience under Failure + Fast Smoke Tests (P2) ✅
 
-**Branch:** `feat/stability-wave-c` / `copilot/complete-circuit-breaker-implementation`
+**Branch:** `feat/stability-wave-c` / `copilot&#47;complete-circuit-breaker-implementation`
 **Status:** Complete
 
 ### Implemented Components
@@ -217,7 +217,7 @@ def call_external_api():
     pass
 ```
 
-**Tests:** `tests/test_resilience.py::TestCircuitBreaker` (6 tests)
+**Tests:** `tests&#47;test_resilience.py::TestCircuitBreaker` (6 tests)
 
 #### C2: Retry with Backoff ✅
 **File:** `src/core/resilience.py`
@@ -237,7 +237,7 @@ def unstable_operation():
     pass
 ```
 
-**Tests:** `tests/test_resilience.py::TestRetryWithBackoff` (6 tests)
+**Tests:** `tests&#47;test_resilience.py::TestRetryWithBackoff` (6 tests)
 
 #### C3: Health Check System ✅
 **File:** `src/core/resilience.py`
@@ -258,7 +258,7 @@ health_check.register("database", check_database)
 results = health_check.run_all()
 ```
 
-**Tests:** `tests/test_resilience.py::TestHealthCheck` (10 tests)
+**Tests:** `tests&#47;test_resilience.py::TestHealthCheck` (10 tests)
 
 #### C4: Resilient Exchange Client ✅
 **File:** `src/data/exchange_client.py`
@@ -276,7 +276,7 @@ client = ResilientExchangeClient('kraken')
 ohlcv = client.fetch_ohlcv('BTC/USD', '1h', limit=100)
 ```
 
-**Tests:** Integration tests in `tests/test_resilience.py::TestIntegration`
+**Tests:** Integration tests in `tests&#47;test_resilience.py::TestIntegration`
 
 #### C5: Health Dashboard ✅
 **File:** `scripts/health_dashboard.py`
@@ -418,7 +418,7 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 |------|--------|--------|----|----|------|
 | A    | ✅ Complete | `feat/stability-wave-a` | Merged | 61 passed | This doc |
 | B    | ✅ Complete | `feat/stability-wave-b` | Merged | 50 passed | This doc |
-| C    | ✅ Complete | `copilot/complete-circuit-breaker-implementation` | This PR | 36 passed | This doc + `docs/RESILIENCE.md` + `docs/SMOKE_TESTS.md` |
+| C    | ✅ Complete | `copilot&#47;complete-circuit-breaker-implementation` | This PR | 36 passed | This doc + `docs/RESILIENCE.md` + `docs/SMOKE_TESTS.md` |
 
 **Total Tests Added:** 147 tests (all passing)
 **Documentation:**

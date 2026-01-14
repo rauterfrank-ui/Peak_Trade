@@ -32,8 +32,8 @@
 
 ## Operator How-To
 - Run strict check: `scripts/ops/check_run_helpers_adoption.sh`
-- Warn only: `scripts/ops/check_run_helpers_adoption.sh --warn-only`
-- Scan all ops scripts: `scripts/ops/check_run_helpers_adoption.sh --all-ops`
+- Warn only: `scripts&#47;ops&#47;check_run_helpers_adoption.sh --warn-only`
+- Scan all ops scripts: `scripts&#47;ops&#47;check_run_helpers_adoption.sh --all-ops`
 
 ## References
 - PR #240: https://github.com/rauterfrank-ui/Peak_Trade/pull/240

@@ -67,7 +67,7 @@ python scripts/obs/stage1_daily_snapshot.py --reports-root /custom
 **Image:**
 - Base: `python:3.11-slim`
 - Dependencies: Installed via `uv` from frozen `uv.lock`
-- Default ENV: `PEAK_REPORTS_DIR=/reports`
+- Default ENV: `PEAK_REPORTS_DIR=&#47;reports`
 - Volume: `.&#47;reports:&#47;reports`
 
 **Commands:**

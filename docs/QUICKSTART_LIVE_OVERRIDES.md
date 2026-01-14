@@ -181,7 +181,7 @@ print(f"Base: {base_val}, Live: {live_val}")
 
 - **[LIVE_OVERRIDES_CONFIG_INTEGRATION.md](./LIVE_OVERRIDES_CONFIG_INTEGRATION.md)** - Vollständige technische Dokumentation
 - **[PROMOTION_LOOP_V0.md](./PROMOTION_LOOP_V0.md)** - Promotion Loop Architektur
-- **Tests:** `tests/test_live_overrides_*.py` - Beispiel-Code
+- **Tests:** `tests&#47;test_live_overrides_*.py` - Beispiel-Code
 
 ## 🐛 Troubleshooting
 

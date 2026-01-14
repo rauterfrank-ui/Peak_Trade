@@ -58,7 +58,7 @@ pytest -q tests/[module]
 
 **Status:**
 - Branch: `feat/4b-m2-cursor-multi-agent`
-- Base: `origin/main` (commit: 340dd29c)
+- Base: `origin&#47;main` (commit: 340dd29c)
 - Worktree: clean, no uncommitted changes
 - Gates: [summary]
 
