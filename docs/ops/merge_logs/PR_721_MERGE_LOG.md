@@ -5,6 +5,8 @@
 **Branch:** docs/runbook-pointer-pattern-ops → main  
 **Commits:** 2 (4ee40738, 370e7ed8)
 
+> **Note:** This merge log references files from PR #721. Links marked with `<!-- pt:ref-target-ignore -->` will resolve after PR #721 is merged to main. This PR should be merged **after** PR #721.
+
 ---
 
 ## Zusammenfassung
@@ -24,7 +26,7 @@
 ## Änderungen
 
 **Neu**
-- `docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md` — Comprehensive operator guide (970 lines)
+- `docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md` — Comprehensive operator guide (970 lines) <!-- pt:ref-target-ignore -->
   - Purpose & decision criteria (when to use pointer pattern vs direct integration)
   - Canonical layout (root runbook, pointer doc, index entry responsibilities)
   - Implementation procedure (4-step operator workflow with pre-flight checks)
@@ -110,7 +112,7 @@ ls -lh docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md
 5. Quarterly review of pointer/canonical alignment
 
 **Quick start:**
-1. Open [`docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`](../runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md)
+1. Open [`docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`](../runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md) <!-- pt:ref-target-ignore -->
 2. Follow Section 4 (Implementation Procedure) for step-by-step workflow
 3. Use Section 8 (Templates) for copy-paste ready pointer doc, README entry, commit message
 4. Verify with Section 9 (Verification) commands before committing
@@ -168,7 +170,7 @@ cat docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md | \
 - **Commit 2 (Fixes):** 370e7ed8 — `fix(docs): fix token policy and reference targets violations`
 
 ### Documentation
-- **New Runbook:** [`docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`](../runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md)
+- **New Runbook:** [`docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`](../runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md) <!-- pt:ref-target-ignore -->
 - **Runbook Index:** [`docs/ops/runbooks/README.md`](../runbooks/README.md)
 - **Token Policy Gate:** [`docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`](../runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md)
 - **Reference Targets Gate:** [`docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md`](../runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md)
