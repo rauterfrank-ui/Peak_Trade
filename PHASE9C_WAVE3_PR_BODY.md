@@ -104,11 +104,22 @@ This PR implements **Wave 3** of the Docs Graph Remediation initiative, focusing
 **Result:** ✅ **All changed files are Token-Policy compliant**
 
 ### Escapes Applied
-- **Repo-relative paths in inline-code:** 25 instances (e.g., `scripts&#47;...`, `docs&#47;...`)
-- **Docker volume syntax:** 2 instances (e.g., `.&#47;reports:&#47;reports`)
-- **Template paths:** 2 instances (e.g., `docs&#47;strategy_profiles&#47;{STRATEGY_ID}...`)
+- **Wave 3 changes:** 29 instances (repo-relative paths, Docker syntax, template paths)
+- **Pre-existing violations cleanup:** 22 instances (in 12 Wave-3-touched files)
+- **Total escapes:** 51 instances
 
 **Pattern:** `/` → `&#47;` inside inline-code (backticks)
+
+### Pre-Existing Violations Cleanup (Extended Scope)
+
+**Note:** Wave 3 scope was extended to include 22 pre-existing token-policy violations discovered in the 12 files being modified. These violations existed **before Wave 3** but were flagged by CI.
+
+**Rationale:**
+- **CI-ready**: Ensures all gates pass without noise
+- **Low-risk**: Mechanical escapes only (no semantic changes)
+- **Efficient**: Already touching these files, minimal incremental cost
+
+**Separate commit:** `docs(ops): fix pre-existing token policy escapes in wave3-touched files`
 
 ---
 
