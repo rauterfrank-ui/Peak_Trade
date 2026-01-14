@@ -319,7 +319,7 @@ Dieser Abschnitt definiert **empfohlene Richtwerte** für Go/No-Go-Entscheidunge
 
 **Empfohlenes Template:**
 
-Erstelle ein Dokument `docs/PORTFOLIO_DECISION_LOG.md` (oder ähnlich) mit folgender Struktur:
+Erstelle ein Dokument `docs&#47;PORTFOLIO_DECISION_LOG.md` (oder ähnlich) mit folgender Struktur:
 
 ```markdown
 # Portfolio Decision Log

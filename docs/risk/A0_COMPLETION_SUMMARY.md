@@ -20,7 +20,7 @@ Agent A0 hat die Risk Layer v1.0 Roadmap erfolgreich in das Peak_Trade Repositor
 | Datei | Zeilen | Beschreibung |
 |-------|--------|--------------|
 | `docs/risk/RISK_LAYER_ALIGNMENT.md` | ~800 | Vollständiges Architecture Decision Memo |
-| `docs/risk/AGENT_HANDOFF.md` | ~500 | Detaillierte Handoff-Instructions für A1-A6 |
+| `docs&#47;risk&#47;AGENT_HANDOFF.md` | ~500 | Detaillierte Handoff-Instructions für A1-A6 (historical) |
 | `docs/risk/FILES_READY_FOR_AGENTS.md` | ~400 | File-Übersicht und Status |
 
 **Inhalt:**
@@ -368,7 +368,7 @@ src/risk_layer/var_backtest/
 
 **Dokumentation:**
 - `docs/risk/RISK_LAYER_ALIGNMENT.md` - Vollständiges Decision Memo
-- `docs/risk/AGENT_HANDOFF.md` - Detaillierte Handoff-Instructions
+- `docs&#47;risk&#47;AGENT_HANDOFF.md` - Detaillierte Handoff-Instructions (historical)
 - `docs/risk/FILES_READY_FOR_AGENTS.md` - File-Übersicht
 
 **Code:**

@@ -93,11 +93,11 @@ Werte außerhalb dieser Grenzen werden automatisch abgelehnt.
 ### Demo-Script
 
 ```bash
-# Paper-Environment (keine Overrides)
-python3 scripts/demo_live_overrides.py
+# Paper-Environment (keine Overrides) - historical script
+# python3 scripts/demo_live_overrides.py
 
-# Mit Force-Apply (auch in Paper)
-python3 scripts/demo_live_overrides.py --force
+# Mit Force-Apply (auch in Paper) - historical script
+# python3 scripts/demo_live_overrides.py --force
 ```
 
 ### Tests laufen lassen

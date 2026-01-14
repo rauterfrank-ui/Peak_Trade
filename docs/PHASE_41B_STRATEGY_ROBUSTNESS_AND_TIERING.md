@@ -199,7 +199,7 @@ python scripts/research_cli.py strategy-profile \
 **5. Ergebnisse finden**
 
 - **JSON:** `reports/strategy_profiles/{strategy_id}_profile_v1.json`
-- **Markdown:** `docs/strategy_profiles/{STRATEGY_ID}_PROFILE_v1.md`
+- **Markdown:** `docs&#47;strategy_profiles&#47;{STRATEGY_ID}_PROFILE_v1.md`
 
 ---
 
@@ -512,7 +512,7 @@ python scripts/research_cli.py strategy-profile \
 **Output-Pfade**
 
 * JSON: `reports/strategy_profiles/{strategy_id}_profile_v1.json`
-* Markdown: `docs/strategy_profiles/{STRATEGY_ID}_PROFILE_v1.md`
+* Markdown: `docs&#47;strategy_profiles&#47;{STRATEGY_ID}_PROFILE_v1.md`
 
 ### Tests & Qualität
 

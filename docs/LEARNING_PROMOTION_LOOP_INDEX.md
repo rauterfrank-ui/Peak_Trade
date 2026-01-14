@@ -80,7 +80,7 @@ python scripts/run_learning_apply_cycle.py --dry-run
 ### Monitoring & Debugging
 
 ```bash
-python scripts/demo_live_overrides.py
+# Historical: python scripts/demo_live_overrides.py
 ```
 
 → **[LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md](./LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md)** - Sektion 7: "Monitoring & Observability"
@@ -420,7 +420,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 ### Für Operator
 
 1. **Quickstart durcharbeiten:** [QUICKSTART_LIVE_OVERRIDES.md](./QUICKSTART_LIVE_OVERRIDES.md)
-2. **Demo-Script testen:** `python scripts/demo_live_overrides.py`
+2. **Demo-Script testen:** `python scripts&#47;demo_live_overrides.py` (historical)
 3. **Promotion Loop ausprobieren:** `python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only`
 
 ### Für Developer
@@ -442,7 +442,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 **Fragen? Probleme? Verbesserungsvorschläge?**
 
 1. Prüfe **[Troubleshooting-Sektion](./LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md#8-troubleshooting)**
-2. Führe **Demo-Script** aus: `python scripts/demo_live_overrides.py`
+2. Führe **Demo-Script** aus: `python scripts&#47;demo_live_overrides.py` (historical)
 3. Schaue in die **Tests** für Code-Beispiele
 
 ---

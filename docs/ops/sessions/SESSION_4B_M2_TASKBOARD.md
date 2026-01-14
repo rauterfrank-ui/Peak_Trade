@@ -75,7 +75,7 @@
 ## Completed Tasks
 
 - [x] Worktree setup script created
-  - **File:** `scripts/ops/setup_worktree_4b_m2.sh`
+  - **File:** `scripts&#47;ops&#47;setup_worktree_4b_m2.sh` (historical)
   - **Commit:** e0a87ee7
 
 - [x] Session artifacts scaffolding

@@ -317,7 +317,7 @@ Wir haben nun Backtest + Robustness für `multi_style_moderate`. Jetzt gehen wir
 
 **Dokumentation:**
 
-Erstelle einen Eintrag in `docs/PORTFOLIO_DECISION_LOG.md` (oder ähnlich):
+Erstelle einen Eintrag in `docs&#47;PORTFOLIO_DECISION_LOG.md` (oder ähnlich):
 
 ```markdown
 ## Portfolio: multi_style_moderate

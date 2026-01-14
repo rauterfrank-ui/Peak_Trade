@@ -172,10 +172,10 @@ git fetch origin
 git reset --hard origin/main
 git clean -fdx  # CAUTION: removes all untracked files
 
-# Or recreate worktree from scratch
+# Or recreate worktree from scratch (historical command, script no longer exists)
 cd /Users/frnkhrz/Peak_Trade
 git worktree remove --force /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
-bash scripts/ops/setup_worktree_4b_m2.sh /Users/frnkhrz/Peak_Trade
+# bash scripts/ops/setup_worktree_4b_m2.sh /Users/frnkhrz/Peak_Trade
 ```
 
 ---
@@ -202,8 +202,8 @@ Templates:
 Runbook:
   docs/runbooks/RUNBOOK_4B_M2_CURSOR_MULTI_AGENT.md
 
-Setup Script:
-  scripts/ops/setup_worktree_4b_m2.sh
+Setup Script (historical):
+  scripts&#47;ops&#47;setup_worktree_4b_m2.sh
 ```
 
 ---

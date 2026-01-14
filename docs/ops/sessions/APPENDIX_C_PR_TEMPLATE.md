@@ -18,7 +18,7 @@ Implement **4B Milestone 2: Cursor Multi-Agent Workflow Integration** for Peak_T
 
 ## Changed Files
 <!-- Auto-generated or manual list -->
-- `scripts/ops/setup_worktree_4b_m2.sh`
+- `scripts&#47;ops&#47;setup_worktree_4b_m2.sh`
 - `docs/ops/sessions/SESSION_4B_M2_20260109.md`
 - `docs/ops/sessions/SESSION_4B_M2_TASKBOARD.md`
 - `docs/ops/sessions/SESSION_4B_M2_DECISIONS.md`
@@ -91,7 +91,7 @@ pytest -q tests/[module]
 ## Reviewer Notes
 <!-- Guidance for reviewers -->
 - Focus: Workflow structure, session artifacts, gate enforcement
-- Key files: `setup_worktree_4b_m2.sh`, session docs
+- Key files: `setup_worktree_4b_m2.sh` (historical), session docs
 - Test coverage: [describe test strategy]
 - Governance: No high-risk paths touched (no live trading, no execution changes)
 

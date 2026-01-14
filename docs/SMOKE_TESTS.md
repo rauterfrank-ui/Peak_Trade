@@ -12,10 +12,10 @@ The Peak_Trade smoke test suite provides fast, comprehensive validation of criti
 ### Quick Run
 
 ```bash
-# Using convenience script (recommended)
-bash scripts/run_smoke_tests.sh
+# Using convenience script (historical, script no longer exists)
+# bash scripts/run_smoke_tests.sh
 
-# Using pytest directly
+# Using pytest directly (recommended)
 python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py -v
 ```
 
@@ -24,12 +24,12 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 ```yaml
 # GitHub Actions example
 - name: Run smoke tests
-  run: bash scripts/run_smoke_tests.sh
+  run: python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py -v
 
 # GitLab CI example
 smoke_tests:
   script:
-    - bash scripts/run_smoke_tests.sh
+    - python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py -v
   timeout: 1 minute
 ```
 

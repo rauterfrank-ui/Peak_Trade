@@ -302,8 +302,8 @@ python scripts/health_dashboard.py
 
 **Usage:**
 ```bash
-bash scripts/run_smoke_tests.sh
-# or
+# Historical: bash scripts/run_smoke_tests.sh
+# Current:
 python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 ```
 
@@ -351,7 +351,7 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 
 6. **Run fast smoke tests:**
    ```bash
-   bash scripts/run_smoke_tests.sh
+   python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
    ```
 
 ### For Developers
@@ -506,7 +506,7 @@ python -m pytest -m smoke tests/test_resilience.py tests/test_stability_smoke.py
 - `src/core/resilience.py` (circuit breaker, retry, health checks)
 - `src/data/exchange_client.py` (resilient exchange client)
 - `scripts/health_dashboard.py` (health monitoring dashboard)
-- `scripts/run_smoke_tests.sh` (smoke test runner)
+- `scripts&#47;run_smoke_tests.sh` (smoke test runner, historical)
 - `tests/test_resilience.py` (28 resilience tests)
 - `docs/RESILIENCE.md` (comprehensive documentation)
 - `docs/SMOKE_TESTS.md` (smoke test documentation)
