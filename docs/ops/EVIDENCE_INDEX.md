@@ -1,4 +1,11 @@
-# Peak_Trade – Evidence Index (v0.14)
+# Peak_Trade – Evidence Index (v0.15)
+
+<a id="ev-20260114-runbook-merge-log-pr-merge"></a>
+- **EV-20260114-RUNBOOK-MERGE-LOG-PR-MERGE** | Date: 2026-01-14 | Owner: ops | Scope: docs-only | Risk: LOW  
+  - Source: [Runbook](runbooks/RUNBOOK_MERGE_LOG_PR_MERGE_AND_OPTIONAL_META_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md) · [PR #733](https://github.com/rauterfrank-ui/Peak_Trade/pull/733) · [PR #732 Merge Log](merge_logs/PR_732_MERGE_LOG.md) · Commit: `25491a0f`  
+  - Claim: New operator runbook for Merge-Log PR merge workflow: CI snapshot (no-watch) → squash merge → post-merge verify → optional meta merge-log chain; 174 lines, 6 phases (0-5), multi-agent roles documented; token-policy safe (4 illustrative slash fixes applied); integrated into runbooks README navigation; includes failure modes, recovery procedures, operator quickstart.  
+  - Verification: Runbook created ([RUNBOOK_MERGE_LOG_PR_MERGE_AND_OPTIONAL_META_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_MERGE_LOG_PR_MERGE_AND_OPTIONAL_META_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md)); PR #733 merged successfully (squash merge, all 24 checks ✓, SHA: `25491a0f220c9dbfde6c5c84899226974ab99d0e`); gates PASS (Token Policy, Reference Targets, Docs Diff Guard, Lint); 2 files changed in runbook implementation (+175 lines runbook, +1 line README); Phase 4 Decision Matrix: Meta Merge-Log SKIPPED (routine, no new policy fixes, signal-to-noise prioritization).  
+  - Notes: Target use case: PR #733 merge (merge-log for PR #732 docs-only PR merge runbook); runbook now operator-ready for future merge-log PRs; establishes governance pattern for optional meta-chain (decision matrix documented); no watch loops (snapshot-only philosophy); cross-references 3 related runbooks (docs-only PR merge, post-merge verify, CI triage); working tree has untracked files (this runbook + others), not yet PR'd (operator decides next steps per delivery contract).
 
 <a id="ev-20260114-pr726-workflow-pr-template"></a>
 - **EV-20260114-PR726-WORKFLOW-PR-TEMPLATE** | Date: 2026-01-14 | Owner: ops | Scope: docs-only | Risk: LOW  
