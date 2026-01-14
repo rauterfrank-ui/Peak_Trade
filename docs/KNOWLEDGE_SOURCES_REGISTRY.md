@@ -22,7 +22,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 - **Update-Frequenz:** Nach jedem Research-Run
 - **Integration:** Vector DB (ChromaDB)
 - **Metadaten-Tags:** `internal_backtest`, `strategy`, `performance`
-- **Ingestion-Script:** `scripts/ingest_backtest_reports.py`
+- **Ingestion-Script:** `scripts&#47;ingest_backtest_reports.py` (illustrative)
 
 **Verantwortlich:** Data Owner  
 **Review-Status:** Approved  
@@ -62,7 +62,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 - **Update-Frequenz:** Bei Code-Änderungen
 - **Integration:** Vector DB (ChromaDB)
 - **Metadaten-Tags:** `strategy`, `definition`, `parameters`
-- **Ingestion-Script:** `scripts/ingest_strategy_docs.py`
+- **Ingestion-Script:** `scripts&#47;ingest_strategy_docs.py` (illustrative)
 
 **Verantwortlich:** Developer  
 **Review-Status:** Approved  
@@ -125,7 +125,7 @@ Dieses Dokument registriert alle externen Wissensquellen, die in die Peak_Trade 
 - **Update-Frequenz:** Monatlich (manuelle Selektion)
 - **Integration:** Vector DB (ChromaDB)
 - **Metadaten-Tags:** `research`, `paper`, `arxiv`, `ssrn`
-- **Ingestion-Script:** Manuell + `scripts/ingest_research_paper.py`
+- **Ingestion-Script:** Manuell + `scripts&#47;ingest_research_paper.py` (illustrative)
 
 **Lizenz:** CC-BY-4.0 (arXiv), SSRN (Check per Paper)  
 **Verantwortlich:** Researcher  

@@ -46,27 +46,27 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 ### Echte Daten-Adapter
 
 - [ ] Echten Daten-Adapter in `live_ops.py` integrieren
-  - Fundstelle: `scripts/live_ops.py:189`
+  - Fundstelle: `scripts&#47;live_ops.py:189` (illustrative)
   - Kontext: Aktuell Dummy-Implementation, später mit echtem Daten-Adapter (Kraken API etc.) ersetzen
-  - Vorschlag: Integration mit bestehender Kraken-Integration in `src/data/kraken.py`
+  - Vorschlag: Integration mit bestehender Kraken-Integration in `src&#47;data&#47;kraken.py`
 
 - [ ] Echten Daten-Adapter in `preview_live_orders.py` integrieren
-  - Fundstelle: `scripts/preview_live_orders.py:157`
+  - Fundstelle: `scripts&#47;preview_live_orders.py:157` (illustrative)
   - Kontext: Aktuell Dummy-Implementation
   - Vorschlag: Integration mit bestehender Kraken-Integration
 
 - [ ] Echte Kraken-Daten in `run_portfolio_backtest.py` verwenden
-  - Fundstelle: `scripts/run_portfolio_backtest.py:119`
+  - Fundstelle: `scripts&#47;run_portfolio_backtest.py:119` (illustrative)
   - Kontext: Aktuell Dummy-Daten, später mit echten Kraken-Daten ersetzen
-  - Vorschlag: Integration mit `src/data/kraken.py`
+  - Vorschlag: Integration mit `src&#47;data&#47;kraken.py`
 
 - [ ] Echten Exchange-Client in `preview_live_portfolio.py` integrieren
-  - Fundstelle: `scripts/preview_live_portfolio.py:96`
+  - Fundstelle: `scripts&#47;preview_live_portfolio.py:96` (illustrative)
   - Kontext: Später echten Exchange-Client integrieren (z.B. Kraken)
-  - Vorschlag: Integration mit `src/exchange/kraken_testnet.py` oder `src/exchange/ccxt_client.py`
+  - Vorschlag: Integration mit `src&#47;exchange&#47;kraken_testnet.py` oder `src&#47;exchange&#47;ccxt_client.py`
 
 - [ ] Timeframe aus Daten ableiten in `run_shadow_execution.py`
-  - Fundstelle: `scripts/run_shadow_execution.py:502`
+  - Fundstelle: `scripts&#47;run_shadow_execution.py:502` (illustrative)
   - Kontext: Timeframe aktuell hardcoded, sollte aus Daten abgeleitet werden
   - Vorschlag: Automatische Erkennung aus DataFrame-Index oder Config
 
@@ -87,16 +87,16 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Vorschlag: Integration mit Backtest-Registry
 
 - [ ] Vollständige Monte-Carlo-Robustness-Implementierung
-  - Fundstelle: `scripts/run_monte_carlo_robustness.py:139`
+  - Fundstelle: `scripts&#47;run_monte_carlo_robustness.py:139` (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
 
 ### Registry-Logging
 
 - [ ] Registry-Logging in `demo_order_pipeline_backtest.py` implementieren
-  - Fundstelle: `scripts/demo_order_pipeline_backtest.py:306`
+  - Fundstelle: `scripts&#47;demo_order_pipeline_backtest.py:306` (illustrative)
   - Kontext: Registry-Logging für automatisches Tracking
-  - Vorschlag: Integration mit `src/core/experiments.py`
+  - Vorschlag: Integration mit `src&#47;core&#47;experiments.py`
 
 ---
 

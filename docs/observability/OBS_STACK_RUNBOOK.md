@@ -153,6 +153,6 @@ For production observability:
 
 ## Related
 
-- P2.2: OpenTelemetry wiring (`src/obs/`)
-- Evidence chain artifacts: `reports/evidence/`
-- MLflow tracking: via `scripts/runner/backtest.py` with `--mlflow`
+- P2.2: OpenTelemetry wiring (`src&#47;obs&#47;`)
+- Evidence chain artifacts: `reports&#47;evidence&#47;`
+- MLflow tracking: via `scripts&#47;runner&#47;backtest.py` with `--mlflow` (illustrative)

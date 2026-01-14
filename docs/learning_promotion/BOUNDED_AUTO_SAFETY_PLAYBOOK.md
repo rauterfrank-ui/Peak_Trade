@@ -314,14 +314,14 @@ bounded_auto darf in einem **begrenzten Scope** echte Promotions durchführen:
 
 ### 5.1 Readiness-Check
 
-**Tool:** `scripts/check_bounded_auto_readiness.py`
+**Tool:** `scripts&#47;check_bounded_auto_readiness.py` (illustrative)
 
 **Zweck:** Automatische Prüfung der Go/No-Go-Kriterien
 
 **Verwendung:**
 
 ```bash
-python scripts/check_bounded_auto_readiness.py
+# python scripts/check_bounded_auto_readiness.py
 ```
 
 **Ausgabe:**

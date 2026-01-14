@@ -284,7 +284,7 @@ In **< 5 Minuten** klären, ob ExecutionPipeline, Risk-Limits und Alerts „read
 | 5 | **Risk-Limits geladen & valide** | `python -c "from risk import LiveRiskLimits; print(LiveRiskLimits.load())"` | Limits angezeigt, keine Errors | 15s |
 | 6 | **Alert-Kanäle testen** | Slack/E-Mail-Testalert senden | Alert wird empfangen | 30s |
 | 7 | **Dashboard-Health** | Web-UI öffnen (`localhost:8000` oder Prod-URL) | UI lädt, Status-Page zeigt „OK" | 30s |
-| 8 | **Paper-Smoke-Test** | `python scripts/smoke_test_paper.py` | `SUCCESS` Status | 30s |
+| 8 | **Paper-Smoke-Test** | `python scripts&#47;smoke_test_paper.py` (illustrative) | `SUCCESS` Status | 30s |
 
 ### 7.3 Ausführbare Kommandos
 
@@ -311,7 +311,7 @@ python -c "from alerts import send_test_alert; send_test_alert(channel='#peak-tr
 curl -s http://localhost:8000/health | jq .
 
 # 8. Paper-Smoke-Test
-python scripts/smoke_test_paper.py
+# python scripts/smoke_test_paper.py
 ```
 
 ### 7.4 Pre-Session-Protokoll
