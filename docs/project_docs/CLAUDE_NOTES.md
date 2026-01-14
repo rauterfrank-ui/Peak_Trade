@@ -33,11 +33,11 @@ die direkt das Peak_Trade-Projekt betreffen.
 ### 3.1. 2025-12-02 – Projekt-Refactor & Ordnerstruktur
 
 **Tool:** Claude / ChatGPT
-**Kontext:** Aufräumen des Peak_Trade-Projektordners, Einführung von `archive/`, `docs/project_docs/`, etc.
+**Kontext:** Aufräumen des Peak_Trade-Projektordners, Einführung von `archive&#47;`, `docs&#47;project_docs&#47;`, etc.
 
 **Key Outcomes:**
 
-- Neue Zielstruktur für `Peak_Trade/` definiert (inkl. `archive/`, `docs/…`, `scripts/`).
+- Neue Zielstruktur für `Peak_Trade&#47;` definiert (inkl. `archive&#47;`, `docs&#47;…`, `scripts&#47;`).
 - Skript `scripts/reorganize_peak_trade.py` eingeführt:
   - verschiebt/benennt Dateien idempotent um,
   - unterstützt `--dry-run`.
@@ -45,13 +45,13 @@ die direkt das Peak_Trade-Projekt betreffen.
 
 **Decisions:**
 
-- Dokumentation wird in `docs/project_docs/` zentralisiert.
-- Alte Stände (z.B. `PeakTradeRepo/`, `full_files_stand_02.12.2025`) wandern nach `archive/`.
+- Dokumentation wird in `docs&#47;project_docs&#47;` zentralisiert.
+- Alte Stände (z.B. `PeakTradeRepo&#47;`, `full_files_stand_02.12.2025`) wandern nach `archive&#47;`.
 - `CHANGELOG.md` wird als zentrale Quelle für Änderungen genutzt.
 
 **TODO / Open Questions:**
 
-- [ ] Inhalte aus `archive/full_files_stand_02.12.2025` in `CHANGELOG.md` übernehmen.
+- [ ] Inhalte aus `archive&#47;full_files_stand_02.12.2025` in `CHANGELOG.md` übernehmen.
 - [ ] Prüfen, ob weitere alte Dokus ins Archiv verschoben werden sollen.
 
 ---
@@ -79,8 +79,8 @@ die direkt das Peak_Trade-Projekt betreffen.
 
 **TODO / Open Questions:**
 
-- [ ] Phase 1 Inhalte aus `archive/full_files_stand_02.12.2025` in CHANGELOG.md eintragen
-- [ ] Risk-Profile in separaten Config-Dateien anlegen (z.B. `config/risk_conservative.toml`)
+- [ ] Phase 1 Inhalte aus `archive&#47;full_files_stand_02.12.2025` in CHANGELOG.md eintragen
+- [ ] Risk-Profile in separaten Config-Dateien anlegen (z.B. `config&#47;risk_conservative.toml`, illustrative)
 
 **Links / Referenzen:**
 
@@ -114,8 +114,8 @@ die direkt das Peak_Trade-Projekt betreffen.
 
 **Links / Referenzen:**
 
-- `docs/project_docs/RISK_MANAGEMENT.md`
-- `scripts/demo_risk_limits.py`
+- `docs&#47;project_docs&#47;RISK_MANAGEMENT.md`
+- `scripts&#47;demo_risk_limits.py`
 - Git-Issue: `PT-123` (falls vorhanden)
 
 ---
