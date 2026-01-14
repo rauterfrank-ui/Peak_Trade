@@ -728,6 +728,7 @@ python scripts/check_live_risk_limits.py
 
 ### Runbook & Inventory
 - **Phase 7 Runbook:** [RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md](docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md)
+- **Post-Merge Verify Snapshot (main) — PR #734:** [RUNBOOK_POST_MERGE_VERIFY_SNAPSHOT_MAIN_PR734_2026-01-14_CURSOR_MULTI_AGENT.md](docs/ops/runbooks/RUNBOOK_POST_MERGE_VERIFY_SNAPSHOT_MAIN_PR734_2026-01-14_CURSOR_MULTI_AGENT.md)
 - **Cleanup Inventory (Snapshots):** [docs/ops/_archive/repo_cleanup/2026-01-12/](docs/ops/_archive/repo_cleanup/2026-01-12/README.md)
 
 ### Key Features
