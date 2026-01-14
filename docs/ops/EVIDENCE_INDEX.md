@@ -1,4 +1,11 @@
-# Peak_Trade – Evidence Index (v0.8)
+# Peak_Trade – Evidence Index (v0.13)
+
+<a id="ev-20260114-pr716-wave5-docs-remediation"></a>
+- **EV-20260114-PR716-WAVE5-DOCS-REMEDIATION** | Date: 2026-01-14 | Owner: ops | Scope: docs-only | Risk: LOW  
+  - Source: [PR #716 Merge Log](merge_logs/PR_716_MERGE_LOG.md) · [PR #716](https://github.com/rauterfrank-ui/Peak_Trade/pull/716) · Commit: `1a76f413`  
+  - Claim: Phase 9C Wave 5 Docs Graph Remediation: Reduced broken reference targets 58 → 39 (−19, −32.8%, goal ≤40 achieved), cluster-based remediation (11 illustrative + 8 historical targets), fixed 27 token policy violations (26 pre-existing + 1 CI follow-up), 18 files changed (+823, -83), docs-only, semantic preservation, KEEP EVERYTHING compliant.  
+  - Verification: PR merged (squash merge, 7 commits), all 10 required checks PASS (docs-token-policy-gate PASS, docs-reference-targets-gate PASS, Docs Diff Guard PASS, Audit PASS), deliverables: [REMEDIATION_WAVE5_2026-01-14.md](graphs/REMEDIATION_WAVE5_2026-01-14.md) (408 lines), [snapshot before](graphs/docs_graph_snapshot_wave5_before.txt) (58 targets), [snapshot after](graphs/docs_graph_snapshot_wave5_after.txt) (39 targets), [changed files list](../../PHASE9C_WAVE5_CHANGED_FILES.txt), [PR body](../../PHASE9C_WAVE5_PR_BODY.md), 13 core docs modified.  
+  - Notes: Mechanical escapes only (`&#47;` for slash in inline-code), no semantic changes, iterative gate validation (7 commits including CI follow-up fix for `archive&#47;` in CLAUDE_NOTES.md), auto-merge enabled and executed successfully (merged 21s after enablement), baseline after merge: 39 broken targets (Gate PASS), rollback: revert `1a76f413`.
 
 <a id="ev-20260113-runbooks-frontdoor"></a>
 - **EV-20260113-RUNBOOKS-FRONTDOOR** | Date: 2026-01-13 | Owner: ops | Scope: docs-only | Risk: LOW  
@@ -47,7 +54,7 @@
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.8 (Operational - 30 entries)
+**Status:** v0.13 (Operational - 33 entries)
 
 ---
 
@@ -146,6 +153,7 @@ Evidence items are operational artifacts that document system behavior, process 
 - **EV-20260112-DISPATCH-GUARD-NOOP-PROOF** — Phase 5D Required Checks Hygiene Gate + dispatch-guard always-run proof (PR #669, 17 files, 10/10 required checks, hygiene gate workflow + validator)
 
 ### Docs / Navigation Evidence
+- **EV-20260114-PR716-WAVE5-DOCS-REMEDIATION** — Phase 9C Wave 5 Docs Graph Remediation (PR #716, reduced broken targets 58→39, −32.8%, goal ≤40 achieved, cluster-based, 27 token-policy violations fixed, 18 files, auto-merge, 10/10 required checks PASS)
 - **EV-20260114-PR714-WAVE4-DOCS-REMEDIATION** — Phase 9C Wave 4 Docs Graph Remediation + CI-Parity Guide (PR #714, reduced broken targets 87→65, cluster-based, CI-Parity workflow, 38 pre-existing violations fixed, 14 files, 23/23 CI checks PASS)
 - **EV-20260114-PR712-WAVE3-DOCS-REMEDIATION** — Phase 9C Wave 3 Docs Graph Remediation (PR #712, reduced broken targets 114→89, 48 token-policy escapes, 25 files, semantic-preserving, 27/27 CI checks PASS)
 - **EV-20260112-PR686-INSTALLATION-ROADMAP-ARCHIVE** — Installation Roadmap Archive Integration (PR #686, 11 files, +3536 lines, docs-only, KEEP EVERYTHING principle, 22/22 CI checks PASS)
@@ -210,6 +218,7 @@ Evidence items are operational artifacts that document system behavior, process 
 || 2026-01-12 | Added EV-20260112-PR686-INSTALLATION-ROADMAP-ARCHIVE (Installation Roadmap Archive Integration, PR #686, 11 files, +3536 lines, docs-only, KEEP EVERYTHING principle, 22/22 CI checks PASS, 299 references validated) | ops |
 | 2026-01-14 | v0.11 Phase 9C Wave 3: Added EV-20260114-PR712-WAVE3-DOCS-REMEDIATION (Docs Graph Remediation Wave 3, PR #712, reduced broken targets 114→89, 25 files, token-policy-safe, runbook-driven, 27/27 CI checks PASS) | ops |
 | 2026-01-14 | v0.12 Phase 9C Wave 4: Added EV-20260114-PR714-WAVE4-DOCS-REMEDIATION (Docs Graph Remediation Wave 4, PR #714, reduced broken targets 87→65, CI-Parity Guide, 14 files, 23/23 CI checks PASS, token-policy-safe) | ops |
+| 2026-01-14 | v0.13 Phase 9C Wave 5: Added EV-20260114-PR716-WAVE5-DOCS-REMEDIATION (Docs Graph Remediation Wave 5, PR #716, reduced broken targets 58→39, goal ≤40 achieved, cluster-based, 27 token-policy violations fixed, 18 files, auto-merge, 10/10 required checks PASS) | ops |
 
 ---
 
@@ -245,12 +254,12 @@ Evidence items are operational artifacts that document system behavior, process 
 
 **PRs 650-695:** [PR_650_MERGE_LOG.md](PR_650_MERGE_LOG.md) · [PR_651_MERGE_LOG.md](PR_651_MERGE_LOG.md) · [PR_656_MERGE_LOG.md](PR_656_MERGE_LOG.md) · [PR_672_MERGE_LOG.md](PR_672_MERGE_LOG.md) · [PR_675_MERGE_LOG.md](PR_675_MERGE_LOG.md) · [PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md](merge_logs/PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md) · [PR_681_MERGE_LOG.md](merge_logs/PR_681_MERGE_LOG.md) · [PR_682_MERGE_LOG.md](merge_logs/PR_682_MERGE_LOG.md) · [PR_694_MERGE_LOG.md](PR_694_MERGE_LOG.md) · [PR_695_MERGE_LOG.md](PR_695_MERGE_LOG.md)
 
-**PRs 696-714:** [PR_696_MERGE_LOG.md](PR_696_MERGE_LOG.md) · [PR_697_MERGE_LOG.md](PR_697_MERGE_LOG.md) · [PR_712_MERGE_LOG.md](merge_logs/PR_712_MERGE_LOG.md) · [PR_714_MERGE_LOG.md](merge_logs/PR_714_MERGE_LOG.md)
+**PRs 696-716:** [PR_696_MERGE_LOG.md](PR_696_MERGE_LOG.md) · [PR_697_MERGE_LOG.md](PR_697_MERGE_LOG.md) · [PR_712_MERGE_LOG.md](merge_logs/PR_712_MERGE_LOG.md) · [PR_714_MERGE_LOG.md](merge_logs/PR_714_MERGE_LOG.md) · [PR_716_MERGE_LOG.md](merge_logs/PR_716_MERGE_LOG.md)
 
 ---
 
-**Version:** v0.12  
+**Version:** v0.13  
 **Maintained by:** ops  
 **Last Updated:** 2026-01-14  
-**Total Entries:** 32 (1 seed + 31 operational)  
+**Total Entries:** 33 (1 seed + 32 operational)  
 **Next Review:**  (recommend quarterly or pre-phase-gate)
