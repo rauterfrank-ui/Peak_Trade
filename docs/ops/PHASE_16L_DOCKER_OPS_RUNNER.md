@@ -32,7 +32,7 @@ Für CI/CD, Reproducibility und Isolation benötigt: Docker-Runner mit sauberem 
 **Priority:**
 1. CLI flag `--reports-root` (highest)
 2. ENV `PEAK_REPORTS_DIR`
-3. Default `reports/` relative to repo root
+3. Default `reports&#47;` relative to repo root
 
 ### 2. Stage1 Scripts Enhanced
 
