@@ -26,7 +26,7 @@ CI (PR #738):
 - Docs Diff Guard Policy Gate: PASS
 - Audit + core CI suites: PASS (docs-only scope; health checks skipped where path-filtered)
 Local:
-- `scripts/ops/pt_docs_gates_snapshot.sh --changed` → PASS
+- `scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed` → PASS
 
 ## Risk
 LOW
