@@ -110,7 +110,7 @@ Es gibt **mehrere Shadow-Formen** im Repo:
 - **Strategy-to-Execution Session (Phase 80/81)**: `scripts/run_execution_session.py`
   - Mode `shadow` (Simulation ohne echte Orders)
   - Mode `testnet` (validate_only / Dry-Run)
-  - schreibt Session-Registry Einträge nach `reports/experiments/live_sessions/*.json`
+  - schreibt Session-Registry Einträge nach `reports&#47;experiments&#47;live_sessions&#47;*.json`
 
 ---
 
