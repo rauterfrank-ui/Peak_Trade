@@ -11,6 +11,7 @@
 
 Runbooks for operating and troubleshooting documentation quality gates:
 
+- [RUNBOOK_LOCAL_DOCS_GATES_SNAPSHOT_CHANGED_SCOPE_CURSOR_MULTI_AGENT.md](RUNBOOK_LOCAL_DOCS_GATES_SNAPSHOT_CHANGED_SCOPE_CURSOR_MULTI_AGENT.md) — Local docs gates snapshot (changed scope), operator evidence block (Cursor Multi-Agent)
 - [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Operating the Docs Reference Targets Gate
 - [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md) — Handling false positives
 - [RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Operating the Docs Token Policy Gate
@@ -51,6 +52,7 @@ Runbooks for specific phase implementations and workflows:
 Runbooks for CI operations and general operational procedures:
 
 - [RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md](RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md) — PR #736: CI snapshot → enable auto-merge → post-merge verify on main (snapshot-only)
+- [RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md](RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md) — Operator Dashboard (Watch-Only) start→finish (local, read-only monitoring + deterministic snapshot export)
 - [RUNBOOK_CI_STATUS_POLLING_HOWTO.md](RUNBOOK_CI_STATUS_POLLING_HOWTO.md) — CI status polling how-to
 - [PHASE4E_STABILITY_MONITORING_CHECKLIST.md](PHASE4E_STABILITY_MONITORING_CHECKLIST.md) — Phase 4E stability monitoring checklist
 - [rebase_cleanup_workflow.md](rebase_cleanup_workflow.md) — Rebase cleanup workflow
