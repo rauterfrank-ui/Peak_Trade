@@ -924,7 +924,13 @@ def create_app(
         if len(events_df) == 0:
             return []
 
-        ts_col = "ts_event" if "ts_event" in events_df.columns else "ts_bar" if "ts_bar" in events_df.columns else None
+        ts_col = (
+            "ts_event"
+            if "ts_event" in events_df.columns
+            else "ts_bar"
+            if "ts_bar" in events_df.columns
+            else None
+        )
         if ts_col is None:
             raise HTTPException(status_code=404, detail=f"equity_not_available: {run_id}")
 
@@ -939,7 +945,11 @@ def create_app(
             events_df = events_df.tail(limit)
 
         equity_col = "equity" if "equity" in events_df.columns else None
-        realized_col = "realized_pnl" if "realized_pnl" in events_df.columns else ("pnl" if "pnl" in events_df.columns else None)
+        realized_col = (
+            "realized_pnl"
+            if "realized_pnl" in events_df.columns
+            else ("pnl" if "pnl" in events_df.columns else None)
+        )
         unrealized_col = "unrealized_pnl" if "unrealized_pnl" in events_df.columns else None
         drawdown_col = "drawdown" if "drawdown" in events_df.columns else None
 
@@ -979,7 +989,11 @@ def create_app(
                     drawdown=(
                         _to_float(row.get(drawdown_col))
                         if drawdown_col
-                        else (_to_float(drawdown_series.loc[idx]) if drawdown_series is not None else None)
+                        else (
+                            _to_float(drawdown_series.loc[idx])
+                            if drawdown_series is not None
+                            else None
+                        )
                     ),
                 )
             )
