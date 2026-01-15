@@ -88,14 +88,14 @@ python scripts/run_web_dashboard.py
 - OpenAPI: `http://127.0.0.1:8000/docs`
 
 ### Option B (empfohlen für “Run Monitoring”): Live Web Dashboard v0 (Phase 67)
-**Wenn du** `live_runs/`-basierte Runs mit Auto-Refresh HTML + Run-Snapshot/Tail/Alerts willst.
+**Wenn du** `live_runs&#47;`-basierte Runs mit Auto-Refresh HTML + Run-Snapshot/Tail/Alerts willst.
 
 **Start:**
 ```bash
 python scripts/live_web_server.py --host 127.0.0.1 --port 8000
 ```
 
-**Mit Run-Verzeichnis Override (falls du nicht `live_runs/` nutzt):**
+**Mit Run-Verzeichnis Override (falls du nicht `live_runs&#47;` nutzt):**
 ```bash
 python scripts/live_web_server.py \
   --host 127.0.0.1 \
@@ -200,7 +200,7 @@ lsof -nP -iTCP:8000 -sTCP:LISTEN || true
 ## 8) Troubleshooting (Operator-FAQ)
 
 ### Problem: “No runs found” / leere Liste
-- Prüfe, ob `live_runs/` existiert und ob dort Run-Verzeichnisse liegen.
+- Prüfe, ob `live_runs&#47;` existiert und ob dort Run-Verzeichnisse liegen.
 - Prüfe, ob `--base-runs-dir` korrekt gesetzt ist.
 - Hinweis: Das Dashboard **erzeugt keine Runs**. Es zeigt nur existierende Artefakte an.
 
