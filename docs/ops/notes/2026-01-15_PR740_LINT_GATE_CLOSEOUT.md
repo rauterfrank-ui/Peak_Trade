@@ -8,7 +8,7 @@ PR #740 (“dashboard(web): watch-only API v0 (read-only) + contracts”) was me
 - Would reformat: `src/live/web/app.py`
 
 ## Fix (minimal, single-file)
-- Apply formatting: `python3 -m ruff format src/live/web/app.py`
+- Apply formatting: `python3 -m ruff format src&#47;live&#47;web&#47;app.py`
 - Verify locally (CI-equivalent snapshots):
   - `python3 -m ruff check .`
   - `python3 -m ruff format --check .`
