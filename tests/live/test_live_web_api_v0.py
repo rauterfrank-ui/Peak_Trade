@@ -36,10 +36,10 @@ def _write_run(tmp_path: Path, run_id: str = "20260115_shadow_demo_BTC-EUR_1m") 
     (run_dir / "events.csv").write_text(
         "\n".join(
             [
-                "step,ts_event,equity,realized_pnl,unrealized_pnl,orders_generated,orders_filled,orders_blocked,risk_allowed,risk_reasons,position_size",
-                "0,2026-01-15T18:00:00+00:00,1000.0,0.0,0.0,0,0,0,True,,0.0",
-                "1,2026-01-15T18:01:00+00:00,1005.0,1.0,0.0,1,1,0,True,,0.1",
-                "2,2026-01-15T18:02:00+00:00,1002.0,1.0,-3.0,1,0,1,False,limit,0.1",
+                "step,ts_event,equity,cash,realized_pnl,unrealized_pnl,signal,signal_changed,orders_generated,orders_filled,orders_rejected,orders_blocked,risk_allowed,risk_reasons,position_size",
+                "0,2026-01-15T18:00:00+00:00,1000.0,1000.0,0.0,0.0,0,False,0,0,0,0,True,,0.0",
+                "1,2026-01-15T18:01:00+00:00,1005.0,995.0,1.0,0.0,1,True,1,1,0,0,True,,0.1",
+                "2,2026-01-15T18:02:00+00:00,1002.0,995.0,1.0,-3.0,1,False,1,0,0,1,False,limit,0.1",
             ]
         )
         + "\n",
@@ -52,7 +52,10 @@ def _write_run(tmp_path: Path, run_id: str = "20260115_shadow_demo_BTC-EUR_1m") 
 def test_api_v0_health_ok(client: TestClient) -> None:
     r = client.get("/api/v0/health")
     assert r.status_code == 200
-    assert r.json()["status"] == "ok"
+    payload = r.json()
+    assert payload["status"] == "ok"
+    assert "contract_version" in payload
+    assert "server_time" in payload
 
 
 def test_api_v0_runs_empty(client: TestClient) -> None:
@@ -112,3 +115,37 @@ def test_api_v0_trades_not_available(tmp_path: Path) -> None:
 
     r = client.get(f"/api/v0/runs/{run_id}/trades")
     assert r.status_code == 404
+
+
+def test_api_v0_signals_positions_orders(tmp_path: Path) -> None:
+    run_id = "20260115_shadow_demo_BTC-EUR_1m"
+    _write_run(tmp_path, run_id=run_id)
+
+    app = create_app(base_runs_dir=str(tmp_path))
+    client = TestClient(app)
+
+    signals = client.get(f"/api/v0/runs/{run_id}/signals?limit=50")
+    assert signals.status_code == 200
+    sp = signals.json()
+    assert sp["run_id"] == run_id
+    assert "asof" in sp
+    assert sp["count"] == len(sp["items"])
+    assert len(sp["items"]) == 3
+    assert sp["items"][0]["ts"].startswith("2026-01-15T18:00:00")
+    assert sp["items"][1]["signal"] == 1
+
+    positions = client.get(f"/api/v0/runs/{run_id}/positions?limit=50")
+    assert positions.status_code == 200
+    pp = positions.json()
+    assert pp["run_id"] == run_id
+    assert pp["count"] == len(pp["items"])
+    assert len(pp["items"]) == 3
+    assert pp["items"][1]["position_size"] == 0.1
+
+    orders = client.get(f"/api/v0/runs/{run_id}/orders?limit=200&only_nonzero=true")
+    assert orders.status_code == 200
+    op = orders.json()
+    assert op["run_id"] == run_id
+    assert op["count"] == len(op["items"])
+    # only_nonzero=true filters out the first row (all zeros)
+    assert len(op["items"]) == 2

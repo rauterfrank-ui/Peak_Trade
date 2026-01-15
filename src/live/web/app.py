@@ -23,7 +23,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -42,6 +42,8 @@ from ..monitoring import (
 from ..run_logging import load_run_events, load_run_metadata
 
 logger = logging.getLogger(__name__)
+
+DASHBOARD_API_CONTRACT_VERSION = "v0.1B"
 
 
 # =============================================================================
@@ -177,6 +179,8 @@ class RunMetadataResponse(BaseModel):
     timeframe: str
     started_at: Optional[str] = None
     ended_at: Optional[str] = None
+    is_active: Optional[bool] = None
+    last_event_time: Optional[str] = None
 
 
 class RunSnapshotResponse(BaseModel):
@@ -194,6 +198,7 @@ class RunSnapshotResponse(BaseModel):
     realized_pnl: Optional[float] = None
     unrealized_pnl: Optional[float] = None
     drawdown: Optional[float] = None
+    last_event_time: Optional[str] = None
 
 
 class TailRowResponse(BaseModel):
@@ -223,6 +228,8 @@ class HealthResponse(BaseModel):
     """API Response für Health-Check."""
 
     status: str
+    contract_version: str
+    server_time: str
 
 
 # =============================================================================
@@ -271,6 +278,65 @@ class EquityPointV0(BaseModel):
     realized_pnl: Optional[float] = None
     unrealized_pnl: Optional[float] = None
     drawdown: Optional[float] = None
+
+
+class SignalPointV0B(BaseModel):
+    """v0.1B: signal point (best effort, read-only)."""
+
+    ts: str
+    step: Optional[int] = None
+    signal: Optional[int] = None
+    signal_changed: Optional[bool] = None
+
+
+class PositionPointV0B(BaseModel):
+    """v0.1B: position point (best effort, read-only)."""
+
+    ts: str
+    step: Optional[int] = None
+    position_size: Optional[float] = None
+    cash: Optional[float] = None
+    equity: Optional[float] = None
+
+
+class OrderPointV0B(BaseModel):
+    """v0.1B: order counters + risk summary per event (best effort, read-only)."""
+
+    ts: str
+    step: Optional[int] = None
+    orders_generated: Optional[int] = None
+    orders_filled: Optional[int] = None
+    orders_rejected: Optional[int] = None
+    orders_blocked: Optional[int] = None
+    risk_allowed: Optional[bool] = None
+    risk_reasons: Optional[str] = None
+
+
+class SignalsResponseV0B(BaseModel):
+    """v0.1B: signals response wrapper."""
+
+    run_id: str
+    asof: str
+    count: int
+    items: List[SignalPointV0B]
+
+
+class PositionsResponseV0B(BaseModel):
+    """v0.1B: positions response wrapper."""
+
+    run_id: str
+    asof: str
+    count: int
+    items: List[PositionPointV0B]
+
+
+class OrdersResponseV0B(BaseModel):
+    """v0.1B: orders response wrapper."""
+
+    run_id: str
+    asof: str
+    count: int
+    items: List[OrderPointV0B]
 
 
 # =============================================================================
@@ -707,7 +773,11 @@ def create_app(
     @app.get("/health", response_model=HealthResponse)
     async def health_check():
         """Health-Check-Endpoint."""
-        return HealthResponse(status="ok")
+        return HealthResponse(
+            status="ok",
+            contract_version=DASHBOARD_API_CONTRACT_VERSION,
+            server_time=datetime.now(timezone.utc).isoformat(),
+        )
 
     @app.get("/runs", response_model=List[RunMetadataResponse])
     async def get_runs():
@@ -729,6 +799,12 @@ def create_app(
                                 snapshot.started_at.isoformat() if snapshot.started_at else None
                             ),
                             ended_at=snapshot.ended_at.isoformat() if snapshot.ended_at else None,
+                            is_active=bool(snapshot.is_active),
+                            last_event_time=(
+                                snapshot.last_event_time.isoformat()
+                                if snapshot.last_event_time
+                                else None
+                            ),
                         )
                     )
                 except Exception as e:
@@ -763,6 +839,9 @@ def create_app(
                 realized_pnl=snapshot.pnl,
                 unrealized_pnl=snapshot.unrealized_pnl,
                 drawdown=snapshot.drawdown,
+                last_event_time=(
+                    snapshot.last_event_time.isoformat() if snapshot.last_event_time else None
+                ),
             )
         except RunNotFoundError:
             raise HTTPException(status_code=404, detail=f"Run not found: {run_id}")
@@ -853,6 +932,504 @@ def create_app(
     async def dashboard_alias():
         """Alias für Dashboard."""
         return await dashboard()
+
+    # =============================================================================
+    # Watch-only UI v0.1B (HTML + optional JS polling/backoff, read-only)
+    # =============================================================================
+
+    def _html_escape(text: str) -> str:
+        return (
+            text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#39;")
+        )
+
+    def _watch_only_banner() -> str:
+        return (
+            "<div class='watch-only-banner'>"
+            "<strong>WATCH-ONLY</strong> — Read-only Observability UI. No actions. No secrets."
+            "</div>"
+        )
+
+    def _base_css() -> str:
+        return """
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: #0b1220; color: #e5e7eb; margin: 0; }
+    a { color: #60a5fa; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 18px; }
+    .watch-only-banner { background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); padding: 10px 12px; border-radius: 10px; margin-bottom: 14px; position: sticky; top: 0; backdrop-filter: blur(6px); }
+    .header { display:flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+    .title { font-size: 20px; font-weight: 700; color: #93c5fd; }
+    .sub { font-size: 12px; color: #9ca3af; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .card { background: #0f172a; border: 1px solid rgba(148,163,184,0.18); border-radius: 12px; padding: 14px; }
+    .card h2 { margin: 0 0 10px 0; font-size: 14px; color: #e5e7eb; }
+    .row { display:flex; justify-content: space-between; gap: 10px; margin: 6px 0; }
+    .k { color: #9ca3af; font-size: 12px; }
+    .v { font-size: 12px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid rgba(148,163,184,0.25); }
+    .ok { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.35); }
+    .degraded { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.35); }
+    .muted { color: #9ca3af; }
+    .pill { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: #93c5fd; }
+    .loading { color: #93c5fd; }
+    .error { color: #fca5a5; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { padding: 8px 8px; border-bottom: 1px solid rgba(148,163,184,0.18); text-align: left; vertical-align: top; }
+    th { color: #9ca3af; font-weight: 600; }
+"""
+
+    def _polling_js(poll_ms: int, max_backoff_ms: int) -> str:
+        # Small helper used by both pages; no secrets, no mutations.
+        return f"""
+  <script>
+  (() => {{
+    const POLL_MS = {poll_ms};
+    const MAX_BACKOFF_MS = {max_backoff_ms};
+    let nextDelayMs = POLL_MS;
+
+    function nowIso() {{ return new Date().toISOString(); }}
+    function esc(s) {{
+      return String(s).replace(/[&<>\"']/g, c => ({{"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#39;"}}[c]));
+    }}
+
+    async function fetchJson(path, timeoutMs = 2500) {{
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
+      try {{
+        const t0 = performance.now();
+        const res = await fetch(path, {{ signal: controller.signal, headers: {{ "Accept": "application/json" }} }});
+        const latencyMs = Math.round(performance.now() - t0);
+        if (!res.ok) {{
+          const err = new Error(`HTTP ${{res.status}}`);
+          err.status = res.status;
+          err.latencyMs = latencyMs;
+          throw err;
+        }}
+        return {{ data: await res.json(), latencyMs }};
+      }} finally {{
+        clearTimeout(timeout);
+      }}
+    }}
+
+    function schedule(nextFn, hadError) {{
+      nextDelayMs = hadError ? Math.min(nextDelayMs * 2, MAX_BACKOFF_MS) : POLL_MS;
+      setTimeout(nextFn, nextDelayMs);
+    }}
+
+    window.__PT_WATCH_ONLY__ = {{ nowIso, esc, fetchJson, schedule }};
+  }})();
+  </script>
+"""
+
+    @app.get("/watch", response_class=HTMLResponse)
+    async def watch_only_overview():
+        # Server-rendered initial state (no JS required)
+        health = await api_v0_health()
+        runs = await api_v0_runs()
+
+        rows_html = ""
+        active_strategy = "unknown"
+        if runs:
+            active = next((r for r in runs if r.is_active is True), runs[0])
+            active_strategy = active.strategy_name or "unknown"
+
+            for r in runs:
+                href = f"/watch/runs/{_html_escape(r.run_id)}"
+                last = _html_escape(r.last_event_time) if r.last_event_time else "—"
+                status_badge = (
+                    "<span class='badge ok'>active</span>"
+                    if r.is_active is True
+                    else "<span class='badge muted'>inactive</span>"
+                )
+                rows_html += (
+                    "<tr>"
+                    f"<td><a class='pill' href='{href}'>{_html_escape(r.run_id)}</a></td>"
+                    f"<td>{status_badge}</td>"
+                    f"<td>{last}</td>"
+                    f"<td>{_html_escape(r.strategy_name or '—')}</td>"
+                    f"<td>{_html_escape(r.symbol or '—')}</td>"
+                    "</tr>"
+                )
+        else:
+            rows_html = "<tr><td colspan='5' class='muted'>No runs found</td></tr>"
+
+        health_badge = (
+            "<span class='badge ok'>ok</span>"
+            if health.status == "ok"
+            else "<span class='badge degraded'>degraded</span>"
+        )
+
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peak_Trade Dashboard v0.1B — Watch-Only</title>
+  <style>{_base_css()}</style>
+</head>
+<body>
+  <div class="wrap">
+    {_watch_only_banner()}
+    <div class="header">
+      <div>
+        <div class="title">Peak_Trade Dashboard v0.1B — Watch-Only</div>
+        <div class="sub">Overview · read-only · polling with backoff</div>
+      </div>
+      <div class="sub" id="last-updated">Last updated: {datetime.now(timezone.utc).isoformat()}</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2>System Health</h2>
+        <div class="row"><span class="k">Status</span><span class="v" id="health-status">{health_badge}</span></div>
+        <div class="row"><span class="k">Latency</span><span class="v" id="health-latency">—</span></div>
+        <div class="row"><span class="k">Contract</span><span class="v pill" id="health-contract">{_html_escape(health.contract_version)}</span></div>
+        <div class="row"><span class="k">Server time</span><span class="v" id="health-server-time">{_html_escape(health.server_time)}</span></div>
+        <div class="sub" id="health-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Live Sessions (Runs)</h2>
+        <table>
+          <thead>
+            <tr><th>Run</th><th>Status</th><th>Last update</th><th>Strategy</th><th>Symbol</th></tr>
+          </thead>
+          <tbody id="runs-tbody">{rows_html}</tbody>
+        </table>
+        <div class="sub" style="margin-top:10px;">
+          Active strategy: <span id="active-strategy" class="pill">{_html_escape(active_strategy)}</span>
+        </div>
+        <div class="sub error" id="runs-error" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+{_polling_js(poll_ms=3000, max_backoff_ms=30000)}
+  <script>
+  (() => {{
+    const helper = window.__PT_WATCH_ONLY__;
+    async function tick() {{
+      let hadError = false;
+      document.getElementById("last-updated").textContent = `Last updated: ${{helper.nowIso()}}`;
+
+      // Health
+      try {{
+        const r = await helper.fetchJson("/api/v0/health");
+        const h = r.data;
+        const badge = (h.status === "ok") ? "<span class='badge ok'>ok</span>" : "<span class='badge degraded'>degraded</span>";
+        document.getElementById("health-status").innerHTML = badge;
+        document.getElementById("health-latency").textContent = `${{r.latencyMs}} ms`;
+        document.getElementById("health-contract").textContent = h.contract_version;
+        document.getElementById("health-server-time").textContent = h.server_time;
+        document.getElementById("health-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("health-error");
+        el.textContent = `Health error: ${{e.message || "unknown"}}`;
+        el.className = "sub error";
+        el.style.display = "block";
+      }}
+
+      // Runs
+      try {{
+        const r = await helper.fetchJson("/api/v0/runs");
+        const runs = Array.isArray(r.data) ? r.data : [];
+        const tbody = document.getElementById("runs-tbody");
+        if (!runs.length) {{
+          tbody.innerHTML = "<tr><td colspan='5' class='muted'>No runs found</td></tr>";
+          document.getElementById("active-strategy").textContent = "unknown";
+        }} else {{
+          const active = runs.find(x => x.is_active === true) || runs[0];
+          document.getElementById("active-strategy").textContent = active.strategy_name || "unknown";
+          tbody.innerHTML = runs.map(run => {{
+            const last = run.last_event_time ? helper.esc(run.last_event_time) : "—";
+            const badge = (run.is_active === true) ? "<span class='badge ok'>active</span>" : "<span class='badge muted'>inactive</span>";
+            const href = `/watch/runs/${{encodeURIComponent(run.run_id)}}`;
+            return `<tr>
+              <td><a class='pill' href='${{href}}'>${{helper.esc(run.run_id)}}</a></td>
+              <td>${{badge}}</td>
+              <td>${{last}}</td>
+              <td>${{helper.esc(run.strategy_name || "—")}}</td>
+              <td>${{helper.esc(run.symbol || "—")}}</td>
+            </tr>`;
+          }}).join("");
+        }}
+        document.getElementById("runs-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("runs-error");
+        el.textContent = `Runs error: ${{e.message || "unknown"}}`;
+        el.style.display = "block";
+      }}
+
+      helper.schedule(tick, hadError);
+    }}
+
+    tick();
+  }})();
+  </script>
+</body>
+</html>"""
+
+        return HTMLResponse(content=html, headers={"Cache-Control": "no-store"})
+
+    @app.get("/watch/runs/{run_id}", response_class=HTMLResponse)
+    async def watch_only_run_detail(run_id: str):
+        # Validate existence early
+        _run_dir_for(run_id)
+
+        # Server-rendered initial state per panel (no JS required)
+        detail_error = None
+        signals_error = None
+        positions_error = None
+        orders_error = None
+
+        try:
+            detail = await api_v0_run_detail(run_id)
+        except Exception as e:
+            detail = None
+            detail_error = str(e)
+
+        try:
+            signals = await api_v0b_run_signals(run_id, limit=50)
+        except Exception as e:
+            signals = SignalsResponseV0B(
+                run_id=run_id, asof=datetime.now(timezone.utc).isoformat(), count=0, items=[]
+            )
+            signals_error = str(e)
+
+        try:
+            positions = await api_v0b_run_positions(run_id, limit=50)
+        except Exception as e:
+            positions = PositionsResponseV0B(
+                run_id=run_id, asof=datetime.now(timezone.utc).isoformat(), count=0, items=[]
+            )
+            positions_error = str(e)
+
+        try:
+            orders = await api_v0b_run_orders(run_id, limit=200, only_nonzero=True)
+        except Exception as e:
+            orders = OrdersResponseV0B(
+                run_id=run_id, asof=datetime.now(timezone.utc).isoformat(), count=0, items=[]
+            )
+            orders_error = str(e)
+
+        def _rows_signals() -> str:
+            if signals_error:
+                return f"<tr><td colspan='4' class='error'>Signals error: {_html_escape(signals_error)}</td></tr>"
+            if not signals.items:
+                return "<tr><td colspan='4' class='muted'>Empty</td></tr>"
+            return "".join(
+                "<tr>"
+                f"<td>{_html_escape(it.ts)}</td>"
+                f"<td>{it.step if it.step is not None else '—'}</td>"
+                f"<td>{it.signal if it.signal is not None else '—'}</td>"
+                f"<td>{it.signal_changed if it.signal_changed is not None else '—'}</td>"
+                "</tr>"
+                for it in signals.items
+            )
+
+        def _rows_positions() -> str:
+            if positions_error:
+                return f"<tr><td colspan='4' class='error'>Positions error: {_html_escape(positions_error)}</td></tr>"
+            if not positions.items:
+                return "<tr><td colspan='4' class='muted'>Empty</td></tr>"
+            return "".join(
+                "<tr>"
+                f"<td>{_html_escape(it.ts)}</td>"
+                f"<td>{it.step if it.step is not None else '—'}</td>"
+                f"<td>{it.position_size if it.position_size is not None else '—'}</td>"
+                f"<td>{it.equity if it.equity is not None else '—'}</td>"
+                "</tr>"
+                for it in positions.items
+            )
+
+        def _rows_orders() -> str:
+            if orders_error:
+                return f"<tr><td colspan='7' class='error'>Orders error: {_html_escape(orders_error)}</td></tr>"
+            if not orders.items:
+                return "<tr><td colspan='7' class='muted'>Empty</td></tr>"
+            tail = orders.items[-50:] if len(orders.items) > 50 else orders.items
+            return "".join(
+                "<tr>"
+                f"<td>{_html_escape(it.ts)}</td>"
+                f"<td>{it.step if it.step is not None else '—'}</td>"
+                f"<td>{it.orders_generated if it.orders_generated is not None else '—'}</td>"
+                f"<td>{it.orders_filled if it.orders_filled is not None else '—'}</td>"
+                f"<td>{it.orders_rejected if it.orders_rejected is not None else '—'}</td>"
+                f"<td>{it.orders_blocked if it.orders_blocked is not None else '—'}</td>"
+                f"<td>{'BLOCKED' if it.risk_allowed is False else ('OK' if it.risk_allowed is True else '—')}</td>"
+                "</tr>"
+                for it in tail
+            )
+
+        meta_html = "<div class='muted'>Meta unavailable</div>"
+        if detail_error:
+            meta_html = f"<div class='error'>Detail error: {_html_escape(detail_error)}</div>"
+        elif detail is not None:
+            meta = detail.meta
+            snap = detail.snapshot
+            meta_html = (
+                "<div class='row'><span class='k'>Strategy</span><span class='v pill'>"
+                f"{_html_escape(meta.strategy_name or '—')}</span></div>"
+                "<div class='row'><span class='k'>Symbol</span><span class='v pill'>"
+                f"{_html_escape(meta.symbol or '—')}</span></div>"
+                "<div class='row'><span class='k'>Mode</span><span class='v pill'>"
+                f"{_html_escape(meta.mode or '—')}</span></div>"
+                "<div class='row'><span class='k'>Started</span><span class='v'>"
+                f"{_html_escape(meta.started_at or '—')}</span></div>"
+                "<div class='row'><span class='k'>Last event</span><span class='v'>"
+                f"{_html_escape(snap.last_event_time or '—')}</span></div>"
+            )
+
+        safe_run = _html_escape(run_id)
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peak_Trade Watch-Only — {safe_run}</title>
+  <style>{_base_css()}</style>
+</head>
+<body>
+  <div class="wrap">
+    {_watch_only_banner()}
+    <div class="header">
+      <div>
+        <div class="title">Session Detail (Run): <span class="pill" id="run-id">{safe_run}</span></div>
+        <div class="sub"><a href="/watch">← Back to Overview</a> · read-only · panel-level states</div>
+      </div>
+      <div class="sub" id="last-updated">Last updated: {datetime.now(timezone.utc).isoformat()}</div>
+    </div>
+
+    <div class="grid-4">
+      <div class="card">
+        <h2>Signals</h2>
+        <table>
+          <thead><tr><th>ts</th><th>step</th><th>signal</th><th>changed</th></tr></thead>
+          <tbody id="signals-tbody">{_rows_signals()}</tbody>
+        </table>
+        <div class="sub error" id="signals-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Positions</h2>
+        <table>
+          <thead><tr><th>ts</th><th>step</th><th>position</th><th>equity</th></tr></thead>
+          <tbody id="positions-tbody">{_rows_positions()}</tbody>
+        </table>
+        <div class="sub error" id="positions-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Orders (read-only counters)</h2>
+        <table>
+          <thead><tr><th>ts</th><th>step</th><th>gen</th><th>fill</th><th>rej</th><th>blk</th><th>risk</th></tr></thead>
+          <tbody id="orders-tbody">{_rows_orders()}</tbody>
+        </table>
+        <div class="sub error" id="orders-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Session Meta (contracted)</h2>
+        <div id="meta-wrap">{meta_html}</div>
+      </div>
+    </div>
+  </div>
+
+{_polling_js(poll_ms=3000, max_backoff_ms=30000)}
+  <script>
+  (() => {{
+    const helper = window.__PT_WATCH_ONLY__;
+    const RUN_ID = document.getElementById("run-id").textContent;
+
+    async function tick() {{
+      let hadError = false;
+      document.getElementById("last-updated").textContent = `Last updated: ${{helper.nowIso()}}`;
+
+      // Signals
+      try {{
+        const r = await helper.fetchJson(`/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/signals?limit=50`);
+        const payload = r.data;
+        const items = payload.items || [];
+        const tb = document.getElementById("signals-tbody");
+        tb.innerHTML = items.length
+          ? items.map(it => `<tr><td>${{helper.esc(it.ts)}}</td><td>${{it.step ?? "—"}}</td><td>${{it.signal ?? "—"}}</td><td>${{it.signal_changed ?? "—"}}</td></tr>`).join("")
+          : "<tr><td colspan='4' class='muted'>Empty</td></tr>";
+        document.getElementById("signals-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("signals-error");
+        el.textContent = `Signals error: ${{e.message || "unknown"}}`;
+        el.style.display = "block";
+      }}
+
+      // Positions
+      try {{
+        const r = await helper.fetchJson(`/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/positions?limit=50`);
+        const payload = r.data;
+        const items = payload.items || [];
+        const tb = document.getElementById("positions-tbody");
+        tb.innerHTML = items.length
+          ? items.map(it => `<tr><td>${{helper.esc(it.ts)}}</td><td>${{it.step ?? "—"}}</td><td>${{it.position_size ?? "—"}}</td><td>${{it.equity ?? "—"}}</td></tr>`).join("")
+          : "<tr><td colspan='4' class='muted'>Empty</td></tr>";
+        document.getElementById("positions-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("positions-error");
+        el.textContent = `Positions error: ${{e.message || "unknown"}}`;
+        el.style.display = "block";
+      }}
+
+      // Orders
+      try {{
+        const r = await helper.fetchJson(`/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/orders?limit=200&only_nonzero=true`);
+        const payload = r.data;
+        const items = payload.items || [];
+        const tail = (items.length > 50) ? items.slice(items.length - 50) : items;
+        const tb = document.getElementById("orders-tbody");
+        tb.innerHTML = tail.length
+          ? tail.map(it => {{
+              const risk = (it.risk_allowed === false) ? "BLOCKED" : (it.risk_allowed === true ? "OK" : "—");
+              return `<tr>
+                <td>${{helper.esc(it.ts)}}</td>
+                <td>${{it.step ?? "—"}}</td>
+                <td>${{it.orders_generated ?? "—"}}</td>
+                <td>${{it.orders_filled ?? "—"}}</td>
+                <td>${{it.orders_rejected ?? "—"}}</td>
+                <td>${{it.orders_blocked ?? "—"}}</td>
+                <td>${{risk}}</td>
+              </tr>`;
+            }}).join("")
+          : "<tr><td colspan='7' class='muted'>Empty</td></tr>";
+        document.getElementById("orders-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("orders-error");
+        el.textContent = `Orders error: ${{e.message || "unknown"}}`;
+        el.style.display = "block";
+      }}
+
+      helper.schedule(tick, hadError);
+    }}
+
+    tick();
+  }})();
+  </script>
+</body>
+</html>"""
+
+        return HTMLResponse(content=html, headers={"Cache-Control": "no-store"})
+
+    # Alias to match operator mental model: /sessions/<id>
+    @app.get("/sessions/{run_id}", response_class=HTMLResponse)
+    async def watch_only_run_detail_alias(run_id: str):
+        return await watch_only_run_detail(run_id)
 
     # =============================================================================
     # API v0 (read-only, contract-stable)
@@ -1018,5 +1595,156 @@ def create_app(
                 raise HTTPException(status_code=500, detail=f"trades_parse_error: {e}")
 
         raise HTTPException(status_code=404, detail=f"trades_not_available: {run_id}")
+
+    def _asof_utc() -> str:
+        return datetime.now(timezone.utc).isoformat()
+
+    def _load_events_df_v0b(run_id: str) -> pd.DataFrame:
+        run_dir = _run_dir_for(run_id)
+        try:
+            return load_run_events(run_dir)
+        except FileNotFoundError:
+            raise HTTPException(status_code=404, detail=f"events_not_available: {run_id}")
+
+    def _events_tail_v0b(df: pd.DataFrame, limit: int) -> pd.DataFrame:
+        if len(df) == 0:
+            return df
+        if "step" in df.columns:
+            try:
+                df = df.sort_values("step")
+            except Exception:
+                pass
+        if limit and len(df) > limit:
+            df = df.tail(limit)
+        return df
+
+    def _row_ts_v0b(row: Any) -> Optional[str]:
+        try:
+            ts_val = row.get("ts_event") if hasattr(row, "get") else None
+        except Exception:
+            ts_val = None
+        if not ts_val:
+            try:
+                ts_val = row.get("ts_bar") if hasattr(row, "get") else None
+            except Exception:
+                ts_val = None
+        if ts_val is None:
+            return None
+        return str(ts_val)
+
+    def _int_or_none(val: Any) -> Optional[int]:
+        try:
+            if val is None or pd.isna(val):
+                return None
+            return int(val)
+        except Exception:
+            return None
+
+    @app.get("/api/v0/runs/{run_id}/signals", response_model=SignalsResponseV0B)
+    async def api_v0b_run_signals(
+        run_id: str,
+        limit: int = Query(default=200, ge=1, le=5000),
+    ):
+        df = _events_tail_v0b(_load_events_df_v0b(run_id), limit=limit)
+        items: List[SignalPointV0B] = []
+        for _, row in df.iterrows():
+            ts = _row_ts_v0b(row)
+            if ts is None:
+                continue
+            items.append(
+                SignalPointV0B(
+                    ts=ts,
+                    step=_int_or_none(row.get("step")),
+                    signal=_int_or_none(row.get("signal")),
+                    signal_changed=(
+                        bool(row.get("signal_changed"))
+                        if "signal_changed" in row and pd.notna(row.get("signal_changed"))
+                        else None
+                    ),
+                )
+            )
+        return SignalsResponseV0B(run_id=run_id, asof=_asof_utc(), count=len(items), items=items)
+
+    @app.get("/api/v0/runs/{run_id}/positions", response_model=PositionsResponseV0B)
+    async def api_v0b_run_positions(
+        run_id: str,
+        limit: int = Query(default=200, ge=1, le=5000),
+    ):
+        df = _events_tail_v0b(_load_events_df_v0b(run_id), limit=limit)
+        items: List[PositionPointV0B] = []
+        for _, row in df.iterrows():
+            ts = _row_ts_v0b(row)
+            if ts is None:
+                continue
+            items.append(
+                PositionPointV0B(
+                    ts=ts,
+                    step=_int_or_none(row.get("step")),
+                    position_size=(
+                        float(row.get("position_size"))
+                        if "position_size" in row and pd.notna(row.get("position_size"))
+                        else None
+                    ),
+                    cash=(
+                        float(row.get("cash"))
+                        if "cash" in row and pd.notna(row.get("cash"))
+                        else None
+                    ),
+                    equity=(
+                        float(row.get("equity"))
+                        if "equity" in row and pd.notna(row.get("equity"))
+                        else None
+                    ),
+                )
+            )
+        return PositionsResponseV0B(run_id=run_id, asof=_asof_utc(), count=len(items), items=items)
+
+    @app.get("/api/v0/runs/{run_id}/orders", response_model=OrdersResponseV0B)
+    async def api_v0b_run_orders(
+        run_id: str,
+        limit: int = Query(default=500, ge=1, le=5000),
+        only_nonzero: bool = Query(
+            default=True,
+            description="Wenn true: filtert Events ohne Order-Aktivität heraus (best effort).",
+        ),
+    ):
+        df = _events_tail_v0b(_load_events_df_v0b(run_id), limit=limit)
+        items: List[OrderPointV0B] = []
+        for _, row in df.iterrows():
+            ts = _row_ts_v0b(row)
+            if ts is None:
+                continue
+
+            og = _int_or_none(row.get("orders_generated"))
+            of = _int_or_none(row.get("orders_filled"))
+            orj = _int_or_none(row.get("orders_rejected"))
+            ob = _int_or_none(row.get("orders_blocked"))
+
+            if only_nonzero:
+                any_nonzero = any(v for v in [og, of, orj, ob] if v is not None and v != 0)
+                if not any_nonzero:
+                    continue
+
+            items.append(
+                OrderPointV0B(
+                    ts=ts,
+                    step=_int_or_none(row.get("step")),
+                    orders_generated=og,
+                    orders_filled=of,
+                    orders_rejected=orj,
+                    orders_blocked=ob,
+                    risk_allowed=(
+                        bool(row.get("risk_allowed"))
+                        if "risk_allowed" in row and pd.notna(row.get("risk_allowed"))
+                        else None
+                    ),
+                    risk_reasons=(
+                        str(row.get("risk_reasons"))
+                        if "risk_reasons" in row and pd.notna(row.get("risk_reasons"))
+                        else None
+                    ),
+                )
+            )
+        return OrdersResponseV0B(run_id=run_id, asof=_asof_utc(), count=len(items), items=items)
 
     return app

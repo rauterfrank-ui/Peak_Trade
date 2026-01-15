@@ -11,7 +11,7 @@ Diese Spezifikation dokumentiert die **read-only** API Endpunkte für das Watch-
 - GET `&#47;api&#47;v0&#47;health` (Alias)
 
 Antwort:
-- `{"status":"ok"}`
+- `{"status":"ok","contract_version":"v0.1B","server_time":"<ISO8601_UTC>"}`
 
 ## Runs (Index)
 - GET `&#47;runs`
@@ -54,6 +54,17 @@ Antwort: Liste von Punkten:
 - `equity`, `realized_pnl`, `unrealized_pnl`, `drawdown` (best effort)
 
 Wenn Events fehlen, liefert der Endpoint 404 mit `equity_not_available`.
+
+## v0.1B Signals / Positions / Orders (Read-only)
+- GET `&#47;api&#47;v0&#47;runs&#47;{run_id}&#47;signals?limit=200`
+- GET `&#47;api&#47;v0&#47;runs&#47;{run_id}&#47;positions?limit=200`
+- GET `&#47;api&#47;v0&#47;runs&#47;{run_id}&#47;orders?limit=500&only_nonzero=true`
+
+Antwort (Wrapper):
+- `run_id` (string)
+- `asof` (ISO8601 string, UTC; server-side snapshot time)
+- `count` (int)
+- `items` (list; best effort)
 
 ## v0 Trades (optional)
 - GET `&#47;api&#47;v0&#47;runs&#47;{run_id}&#47;trades`
