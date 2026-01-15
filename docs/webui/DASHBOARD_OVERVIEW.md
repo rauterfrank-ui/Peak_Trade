@@ -169,6 +169,13 @@ Du bekommst „live“ Sichtbarkeit, wenn während eines Runs laufend Artefakte 
 3. Runs prüfen:
    - `http://127.0.0.1:8000/runs`
 
+---
+
+## 6) Contracts (v0)
+
+- Data Contract (Artifacts): [DASHBOARD_DATA_CONTRACT_v0.md](DASHBOARD_DATA_CONTRACT_v0.md)
+- API Contract (Read-only): [DASHBOARD_API_CONTRACT_v0.md](DASHBOARD_API_CONTRACT_v0.md)
+
 ### 5.3 „HTML Snapshot“ ohne UI-Landingpage (minimal, XSS-safe)
 
 - `http://127.0.0.1:8000/api/live/status/snapshot.html`
