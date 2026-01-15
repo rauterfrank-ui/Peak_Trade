@@ -222,8 +222,10 @@ lsof -nP -iTCP:8000 -sTCP:LISTEN || true
 ## 9) Referenzen
 
 - `docs/webui/DASHBOARD_OVERVIEW.md` — Dashboard-Übersicht (URLs, Datenfluss, read-only)
+- `docs/webui/DASHBOARD_DATA_CONTRACT_v0.md` — Data Contract (Artifacts) für Dashboard v0
+- `docs/webui/DASHBOARD_API_CONTRACT_v0.md` — API Contract (Read-only) für Dashboard v0
 - `docs/CLI_CHEATSHEET.md` — “Live Web Dashboard (Phase 67)” Quick Commands
 - `docs/LIVE_OPERATIONAL_RUNBOOKS.md` — Abschnitt “10d Live Web Dashboard v0”
-- `scripts/run_web_dashboard.py` — WebUI dev runner (reload)
-- `scripts/live_web_server.py` — Live Dashboard server (Phase 67)
-- `scripts/export_live_audit_snapshot.py` — Read-only Audit Snapshot (Phase 74)
+- `scripts&#47;run_web_dashboard.py` — WebUI dev runner (reload)
+- `scripts&#47;live_web_server.py` — Live Dashboard server (Phase 67)
+- `scripts&#47;export_live_audit_snapshot.py` — Read-only Audit Snapshot (Phase 74)

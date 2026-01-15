@@ -27,9 +27,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import pandas as pd
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from ..monitoring import (
     list_runs as monitoring_list_runs,
@@ -38,7 +39,7 @@ from ..monitoring import (
     RunNotFoundError,
     RunSnapshot,
 )
-from ..run_logging import load_run_metadata
+from ..run_logging import load_run_events, load_run_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -192,6 +193,7 @@ class RunSnapshotResponse(BaseModel):
     equity: Optional[float] = None
     realized_pnl: Optional[float] = None
     unrealized_pnl: Optional[float] = None
+    drawdown: Optional[float] = None
 
 
 class TailRowResponse(BaseModel):
@@ -221,6 +223,54 @@ class HealthResponse(BaseModel):
     """API Response für Health-Check."""
 
     status: str
+
+
+# =============================================================================
+# API v0 Models (contracted, read-only)
+# =============================================================================
+
+
+class RunMetaV0(BaseModel):
+    """v0: meta.json contract (subset + config_snapshot)."""
+
+    run_id: str
+    mode: str
+    strategy_name: str
+    symbol: str
+    timeframe: str
+    started_at: Optional[str] = None
+    ended_at: Optional[str] = None
+    config_snapshot: Dict[str, Any] = Field(default_factory=dict)
+    notes: str = ""
+
+
+class RunDetailV0(BaseModel):
+    """v0: run detail = meta + snapshot."""
+
+    meta: RunMetaV0
+    snapshot: RunSnapshotResponse
+
+
+class RunMetricsV0(BaseModel):
+    """v0: metrics subset."""
+
+    equity: Optional[float] = None
+    realized_pnl: Optional[float] = None
+    unrealized_pnl: Optional[float] = None
+    drawdown: Optional[float] = None
+    total_steps: int = 0
+    total_orders: int = 0
+    total_blocked_orders: int = 0
+
+
+class EquityPointV0(BaseModel):
+    """v0: equity time series point (best effort)."""
+
+    ts: str
+    equity: Optional[float] = None
+    realized_pnl: Optional[float] = None
+    unrealized_pnl: Optional[float] = None
+    drawdown: Optional[float] = None
 
 
 # =============================================================================
@@ -712,6 +762,7 @@ def create_app(
                 equity=snapshot.equity,
                 realized_pnl=snapshot.pnl,
                 unrealized_pnl=snapshot.unrealized_pnl,
+                drawdown=snapshot.drawdown,
             )
         except RunNotFoundError:
             raise HTTPException(status_code=404, detail=f"Run not found: {run_id}")
@@ -802,5 +853,156 @@ def create_app(
     async def dashboard_alias():
         """Alias für Dashboard."""
         return await dashboard()
+
+    # =============================================================================
+    # API v0 (read-only, contract-stable)
+    # =============================================================================
+
+    def _run_dir_for(run_id: str) -> Path:
+        run_dir = runs_dir / run_id
+        if not run_dir.exists():
+            raise HTTPException(status_code=404, detail=f"run_not_found: {run_id}")
+        return run_dir
+
+    def _load_meta_v0(run_id: str) -> RunMetaV0:
+        run_dir = _run_dir_for(run_id)
+        try:
+            meta = load_run_metadata(run_dir)
+        except FileNotFoundError:
+            raise HTTPException(status_code=404, detail=f"meta_not_found: {run_id}")
+
+        return RunMetaV0(
+            run_id=meta.run_id,
+            mode=meta.mode,
+            strategy_name=meta.strategy_name,
+            symbol=meta.symbol,
+            timeframe=meta.timeframe,
+            started_at=meta.started_at.isoformat() if meta.started_at else None,
+            ended_at=meta.ended_at.isoformat() if meta.ended_at else None,
+            config_snapshot=meta.config_snapshot or {},
+            notes=meta.notes or "",
+        )
+
+    @app.get("/api/v0/health", response_model=HealthResponse)
+    async def api_v0_health():
+        return await health_check()
+
+    @app.get("/api/v0/runs", response_model=List[RunMetadataResponse])
+    async def api_v0_runs():
+        return await get_runs()
+
+    @app.get("/api/v0/runs/{run_id}", response_model=RunDetailV0)
+    async def api_v0_run_detail(run_id: str):
+        meta = _load_meta_v0(run_id)
+        snapshot = await get_run_snapshot_endpoint(run_id)
+        return RunDetailV0(meta=meta, snapshot=snapshot)
+
+    @app.get("/api/v0/runs/{run_id}/metrics", response_model=RunMetricsV0)
+    async def api_v0_run_metrics(run_id: str):
+        snapshot = await get_run_snapshot_endpoint(run_id)
+        return RunMetricsV0(
+            equity=snapshot.equity,
+            realized_pnl=snapshot.realized_pnl,
+            unrealized_pnl=snapshot.unrealized_pnl,
+            drawdown=snapshot.drawdown,
+            total_steps=snapshot.total_steps,
+            total_orders=snapshot.total_orders,
+            total_blocked_orders=snapshot.total_blocked_orders,
+        )
+
+    @app.get("/api/v0/runs/{run_id}/equity", response_model=List[EquityPointV0])
+    async def api_v0_run_equity(
+        run_id: str,
+        limit: int = Query(default=500, ge=1, le=5000),
+    ):
+        run_dir = _run_dir_for(run_id)
+        try:
+            events_df = load_run_events(run_dir)
+        except FileNotFoundError:
+            raise HTTPException(status_code=404, detail=f"equity_not_available: {run_id}")
+
+        if len(events_df) == 0:
+            return []
+
+        ts_col = "ts_event" if "ts_event" in events_df.columns else "ts_bar" if "ts_bar" in events_df.columns else None
+        if ts_col is None:
+            raise HTTPException(status_code=404, detail=f"equity_not_available: {run_id}")
+
+        # Ensure chronological order if step exists, otherwise keep file order.
+        if "step" in events_df.columns:
+            try:
+                events_df = events_df.sort_values("step")
+            except Exception:
+                pass
+
+        if limit and len(events_df) > limit:
+            events_df = events_df.tail(limit)
+
+        equity_col = "equity" if "equity" in events_df.columns else None
+        realized_col = "realized_pnl" if "realized_pnl" in events_df.columns else ("pnl" if "pnl" in events_df.columns else None)
+        unrealized_col = "unrealized_pnl" if "unrealized_pnl" in events_df.columns else None
+        drawdown_col = "drawdown" if "drawdown" in events_df.columns else None
+
+        # Best-effort drawdown compute if missing and equity available.
+        drawdown_series = None
+        if drawdown_col is None and equity_col is not None:
+            try:
+                eq = events_df[equity_col].astype(float)
+                running_max = eq.expanding().max()
+                dd = (eq - running_max) / running_max
+                drawdown_series = dd
+            except Exception:
+                drawdown_series = None
+
+        def _to_float(val: Any) -> Optional[float]:
+            try:
+                if val is None:
+                    return None
+                if pd.isna(val):
+                    return None
+                return float(val)
+            except Exception:
+                return None
+
+        points: List[EquityPointV0] = []
+        for idx, row in events_df.iterrows():
+            ts_val = row.get(ts_col)
+            if ts_val is None:
+                continue
+            ts_str = str(ts_val)
+            points.append(
+                EquityPointV0(
+                    ts=ts_str,
+                    equity=_to_float(row.get(equity_col)) if equity_col else None,
+                    realized_pnl=_to_float(row.get(realized_col)) if realized_col else None,
+                    unrealized_pnl=_to_float(row.get(unrealized_col)) if unrealized_col else None,
+                    drawdown=(
+                        _to_float(row.get(drawdown_col))
+                        if drawdown_col
+                        else (_to_float(drawdown_series.loc[idx]) if drawdown_series is not None else None)
+                    ),
+                )
+            )
+
+        return points
+
+    @app.get("/api/v0/runs/{run_id}/trades")
+    async def api_v0_run_trades(run_id: str):
+        # Optional v0: only if an explicit trades artifact exists.
+        run_dir = _run_dir_for(run_id)
+        trades_parquet = run_dir / "trades.parquet"
+        trades_csv = run_dir / "trades.csv"
+        if trades_parquet.exists() or trades_csv.exists():
+            # Intentionally minimal: return raw records (best effort).
+            try:
+                if trades_parquet.exists():
+                    df = pd.read_parquet(trades_parquet)
+                else:
+                    df = pd.read_csv(trades_csv)
+                return {"run_id": run_id, "available": True, "rows": df.to_dict(orient="records")}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"trades_parse_error: {e}")
+
+        raise HTTPException(status_code=404, detail=f"trades_not_available: {run_id}")
 
     return app
