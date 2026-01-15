@@ -134,15 +134,15 @@ Du bekommst „live“ Sichtbarkeit, wenn während eines Runs laufend Artefakte 
 
 ### 4.2 Welche Datenquellen werden gelesen?
 
-- **WebUI Live-Track Panel**: `reports/experiments/live_sessions/*.json`
+- **WebUI Live-Track Panel**: `reports&#47;experiments&#47;live_sessions&#47;*.json`
   - Quelle: `src/experiments/live_session_registry.py`
   - Hinweis: manche CLIs schreiben den Registry-Eintrag erst „am Ende“ (dann siehst du die Session in der Liste erst nach Abschluss).
 
-- **Live Dashboard v0.1**: `live_runs/<run_id>/...`
-  - Quelle: `src/live/monitoring` + `src/live/run_logging`
+- **Live Dashboard v0.1**: `live_runs&#47;<run_id>&#47;...`
+  - Quelle: `src/live/monitoring.py` + `src/live/run_logging.py`
   - Vorteile: kann während des Runs laufend aktualisiert werden (Snapshot + Tail).
 
-- **Execution/Telemetry (WebUI)**: `logs/execution/*.jsonl`
+- **Execution/Telemetry (WebUI)**: `logs&#47;execution&#47;*.jsonl`
   - Quelle: Execution-Telemetry Writer (wird während des Runs append-only geschrieben)
 
 ---

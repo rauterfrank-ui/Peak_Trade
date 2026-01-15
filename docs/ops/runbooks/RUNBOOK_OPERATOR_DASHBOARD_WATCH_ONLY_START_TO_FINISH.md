@@ -33,8 +33,8 @@ Ein lokales Operator-Dashboard starten, um **der AI beim Arbeiten zuzuschauen** 
 
 ### 1.2 Datenquellen (Watch-Only)
 Mindestens eine Quelle muss existieren:
-- **Live Sessions Registry Artefakte** (z.B. `reports/experiments/live_sessions/*.json`)
-- **Live Runs Artefakte** (z.B. `live_runs/<run_id>/...`)
+- **Live Sessions Registry Artefakte** (z.B. `reports&#47;experiments&#47;live_sessions&#47;*.json`)
+- **Live Runs Artefakte** (z.B. `live_runs&#47;<run_id>&#47;...`)
 - oder ein laufender Prozess, der diese Artefakte schreibt (separater Runner)
 
 > Das Dashboard ist **read-only** und liest nur Artefakte/Status aus Dateien.
