@@ -2094,6 +2094,8 @@ Security:
 ---
 
 ## Verified Merge Logs
+- **PR #745 (docs(ops): add PR #744 merge log)** → `PR_745_MERGE_LOG.md`
+
 - **PR #744 (dashboard(web): watch-only control center v0.2 (read-only))** → `PR_744_MERGE_LOG.md`
 
 - **PR #544 (Phase 8C: VaR Backtest Suite Runner & Report Formatter)** → ``docs&#47;ops&#47;merge_logs&#47;20260104_pr-544_var-backtest-suite-phase-8c.md``
