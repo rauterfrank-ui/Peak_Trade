@@ -16,7 +16,7 @@
 
 ## Verification
 - CI snapshot (post-merge): `gh pr checks 742` → 0 failing, 0 pending.
-- Local CI-equivalent (token policy): `python3 scripts/ops/validate_docs_token_policy.py --base origin/main --json docs-token-policy-report.json` → PASS.
+- Local CI-equivalent (token policy): `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --base origin&#47;main --json docs-token-policy-report.json` → PASS.
 - Local (operator snapshot):
   - `python3 -m ruff check .` → PASS
   - `python3 -m ruff format --check .` → PASS
