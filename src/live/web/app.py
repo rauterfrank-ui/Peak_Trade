@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -30,9 +31,10 @@ from typing import Any, Dict, Iterator, List, Optional
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse
+from starlette.responses import Response
 
 from .api_v0 import build_api_v0_router
-from .metrics_prom import instrument_app, maybe_register_metrics
+from .metrics_prom import instrument_app
 from .models_v0 import (
     AlertResponse,
     HealthResponse,
@@ -617,9 +619,40 @@ def create_app(
     # =============================================================================
     # Observability (optional): Prometheus instrumentation + /metrics (watch-only)
     # =============================================================================
-    # NOTE: fail-open when prometheus_client is not installed; only enabled via env flag.
+    # NOTE:
+    # - Default is fail-open when prometheus_client is not installed (keeps local runs working).
+    # - If REQUIRE_PROMETHEUS_CLIENT=1, /metrics becomes strict and returns 503 when
+    #   prometheus_client is unavailable (prevents "green fake metrics" in Grafana/Prometheus).
+    require_prom = os.getenv("REQUIRE_PROMETHEUS_CLIENT", "0") == "1"
     instrument_app(app)
-    maybe_register_metrics(app)
+
+    @app.get("/metrics", include_in_schema=False)
+    def metrics() -> Response:
+        """
+        Prometheus scrape endpoint (watch-only/read-only).
+        """
+        try:
+            from prometheus_client import CONTENT_TYPE_LATEST, generate_latest  # type: ignore
+
+            return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+        except Exception:
+            if require_prom:
+                # Strict: signal scrape failure when prometheus_client is missing/unavailable.
+                # 503 is conventional for "service unavailable" in scrape targets.
+                return Response(
+                    b"prometheus_client required but unavailable\n",
+                    status_code=503,
+                    media_type="text/plain; charset=utf-8",
+                )
+            # Fail-open: keep endpoint available even when prometheus_client is missing.
+            # This preserves watch-only observability (and avoids breaking local runs).
+            content_type_latest = "text/plain; version=0.0.4; charset=utf-8"
+            payload = (
+                "# HELP peak_trade_metrics_fallback 1 when prometheus_client is unavailable.\n"
+                "# TYPE peak_trade_metrics_fallback gauge\n"
+                "peak_trade_metrics_fallback 1\n"
+            ).encode("utf-8")
+            return Response(payload, media_type=content_type_latest)
 
     # =============================================================================
     # API Endpoints
