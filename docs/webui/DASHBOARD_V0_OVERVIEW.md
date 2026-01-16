@@ -35,7 +35,9 @@ Die v0.1B Operator-Doku nutzt für illustrative Inline-Code Tokens die Encoding-
 
 Peak_Trade Dashboard v0 bleibt **watch-only**. Prometheus-Metriken decken ausschließlich **Service Health / HTTP Layer** ab:
 
-- `&#47;metrics` existiert **nur**, wenn `PEAK_TRADE_PROMETHEUS_ENABLED=1` gesetzt ist **und** `prometheus_client` im Environment verfügbar ist.
+- `&#47;metrics` ist **immer** erreichbar, aber Peak_Trade-spezifische HTTP-Metriken (z.B. `peak_trade_http_requests_total`) werden nur instrumentiert, wenn `PEAK_TRADE_PROMETHEUS_ENABLED=1` gesetzt ist **und** `prometheus_client` im Environment verfügbar ist.
+- Fail-open (Default): Wenn `prometheus_client` fehlt, liefert `&#47;metrics` ein Fallback-Signal `peak_trade_metrics_fallback 1` (HTTP 200).
+- Strict Mode: Mit `REQUIRE_PROMETHEUS_CLIENT=1` liefert `&#47;metrics` bei fehlendem `prometheus_client` HTTP **503** (Scrape soll rot werden, statt “grün fake”).
 - Labels sind cardinality-safe: `method`, `route` (Route-Template wie `&#47;api&#47;v0&#47;runs&#47;{run_id}`), `status_code`.
 - Keine run-spezifischen IDs (z.B. `run_id`) in Prometheus-Labels.
 
