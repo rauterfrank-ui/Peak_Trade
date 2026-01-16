@@ -53,6 +53,7 @@ Runbooks for CI operations and general operational procedures:
 
 - [RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md](RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md) — PR #736: CI snapshot → enable auto-merge → post-merge verify on main (snapshot-only)
 - [RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md](RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md) — Operator Dashboard (Watch-Only) start→finish (local, read-only monitoring + deterministic snapshot export)
+- [RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md](RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md) — Dashboard Watch-Only UI v0.1B (observability) for `src/live/web/app.py` (read-only)
 - [RUNBOOK_CI_STATUS_POLLING_HOWTO.md](RUNBOOK_CI_STATUS_POLLING_HOWTO.md) — CI status polling how-to
 - [PHASE4E_STABILITY_MONITORING_CHECKLIST.md](PHASE4E_STABILITY_MONITORING_CHECKLIST.md) — Phase 4E stability monitoring checklist
 - [rebase_cleanup_workflow.md](rebase_cleanup_workflow.md) — Rebase cleanup workflow
