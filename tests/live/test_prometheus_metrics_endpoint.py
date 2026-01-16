@@ -13,7 +13,9 @@ pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
 
 
-def test_metrics_route_absent_when_disabled_or_missing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_metrics_route_absent_when_disabled_or_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """
     Default behavior: /metrics is not registered unless explicitly enabled AND prometheus_client exists.
     This test must be stable even when prometheus_client is not installed.

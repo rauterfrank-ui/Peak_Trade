@@ -300,7 +300,11 @@ def build_api_v0_router(
                         if "position_size" in row and pd.notna(row.get("position_size"))
                         else None
                     ),
-                    cash=(float(row.get("cash")) if "cash" in row and pd.notna(row.get("cash")) else None),
+                    cash=(
+                        float(row.get("cash"))
+                        if "cash" in row and pd.notna(row.get("cash"))
+                        else None
+                    ),
                     equity=(
                         float(row.get("equity"))
                         if "equity" in row and pd.notna(row.get("equity"))
@@ -362,7 +366,9 @@ def build_api_v0_router(
     # API v0.2 (Control Center, additive, read-only)
     # =============================================================================
 
-    def _run_status_v02(meta: RunMetaV0, is_active: Optional[bool], last_event_time: Optional[str]) -> str:
+    def _run_status_v02(
+        meta: RunMetaV0, is_active: Optional[bool], last_event_time: Optional[str]
+    ) -> str:
         if is_active:
             return "active"
         if meta.ended_at:
@@ -427,7 +433,9 @@ def build_api_v0_router(
         for r in runs[:limit]:
             try:
                 meta = _load_meta_v0(r.run_id)
-                status = _run_status_v02(meta, is_active=r.is_active, last_event_time=r.last_event_time)
+                status = _run_status_v02(
+                    meta, is_active=r.is_active, last_event_time=r.last_event_time
+                )
                 out.append(
                     RunSummaryV02(
                         run_id=r.run_id,
