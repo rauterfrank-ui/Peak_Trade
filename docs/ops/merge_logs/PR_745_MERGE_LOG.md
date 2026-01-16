@@ -1,60 +1,37 @@
-# PR #745 — docs(ops): add PR #744 merge log
+# PR #745 — MERGE LOG
 
 ## Summary
-[Brief description of what was changed]
+- PR: #745
+- Title: docs(ops): add PR #744 merge log
+- Scope: docs-only
+- Merge: Squash (auto-merge)
+- Result: ✅ merged, checks green, branch deleted
 
 ## Why
-[Motivation: why was this change needed?]
+- Maintain merge-log chain integrity: every merged PR gets a merge log entry for auditability and operator traceability.
 
 ## Changes
-- [List of changes]
-- [Bullet points preferred]
+- Added merge log documentation for PR #744.
+- Updated Ops docs index (README) to link the new merge log.
 
 ## Verification
-- [How was this verified?]
-- [CI checks, manual tests, etc.]
+- CI (PR #745): ✅ All checks successful (25 successful, 4 skipped, 0 pending)
+- Local docs gates snapshot: ✅ PASS (Token Policy / Reference Targets / Diff Guard)
 
 ## Risk
-[Risk assessment: Minimal/Low/Medium/High + rationale]
+- LOW — documentation only, additive changes, no runtime/code paths affected.
 
-## Operator How-To
-- [Guidance for operators]
-- [How to use/apply these changes]
+## Operator How-To (NO WATCH)
+### Confirm merged state
+- `gh pr view 745`
+- `gh pr checks 745`
+
+### Pull main after merge
+- `git switch main && git pull --ff-only`
 
 ## References
-- PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/745
-**Merge Commit:** `01ed391688fdf056948ef71c59da81f2b3f8f40c`
-
----
-
-## Extended
-
-**PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/745
-**Merged:** 2026-01-16
-**Merge Commit:** `01ed391688fdf056948ef71c59da81f2b3f8f40c`
-**Branch:** `docs&#47;pr744-merge-log` → deleted
-
-**Change Type:** [e.g., docs-only, feature, bugfix]
-
-### Detailed Context
-
-[Optional: Add detailed technical notes, full file lists, merge strategy details, etc.]
-
-### Files Changed
-
-```
-[List changed files if relevant]
-```
-
-### CI Checks
-- ✅ [Check name]: SUCCESS
-- [Add relevant checks]
-
-### Related Documentation
-
-- [Add links to related docs, PRs, issues]
-
----
-
-**Status:** ✅ Merged
-**Impact:** [Describe impact on operators/system]
+- PR #745: https://github.com/rauterfrank-ui/Peak_Trade/pull/745
+- Merge Commit: `01ed391688fdf056948ef71c59da81f2b3f8f40c`
+- Changed files:
+  - [docs/ops/merge_logs/PR_744_MERGE_LOG.md](PR_744_MERGE_LOG.md)
+  - [docs/ops/README.md](../README.md)
