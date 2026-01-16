@@ -213,7 +213,10 @@ Die Live Web Dashboard App kann optional Prometheus-Metriken exponieren (**watch
 **Aktivierung:**
 - Env-Flag: `PEAK_TRADE_PROMETHEUS_ENABLED=1`
 - Voraussetzung: `prometheus_client` ist im Python Environment verfügbar
-- Fail-open: Wenn die Library fehlt oder das Flag aus ist, läuft die App normal weiter; `&#47;metrics` wird **nicht** registriert.
+- `&#47;metrics` ist **immer** erreichbar, aber:
+  - Peak_Trade HTTP-Metriken (z.B. `peak_trade_http_requests_total`) werden nur instrumentiert, wenn `PEAK_TRADE_PROMETHEUS_ENABLED=1` gesetzt ist **und** `prometheus_client` verfügbar ist.
+  - Fail-open (Default): Wenn `prometheus_client` fehlt, liefert `&#47;metrics` nur `peak_trade_metrics_fallback 1` (HTTP 200).
+  - Strict Mode: Mit `REQUIRE_PROMETHEUS_CLIENT=1` liefert `&#47;metrics` bei fehlendem `prometheus_client` HTTP **503**.
 
 **Artefakte (Repo-Pfade):**
 - Prometheus Scrape Example: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`

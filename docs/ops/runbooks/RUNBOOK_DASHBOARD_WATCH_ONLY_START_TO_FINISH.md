@@ -77,7 +77,9 @@ Alternativ via Browser/HTTP Client:
 ## 6.1) Optional: Prometheus Observability (watch-only)
 
 **Ziel:** Service-Health/HTTP-Metriken via Prometheus (und optional Grafana) sichtbar machen.  
-**Wichtig:** `&#47;metrics` existiert nur, wenn `PEAK_TRADE_PROMETHEUS_ENABLED=1` gesetzt ist **und** `prometheus_client` im Environment verfügbar ist.
+**Wichtig (tatsächliches Verhalten):** `&#47;metrics` ist **immer** erreichbar, aber Peak_Trade HTTP-Metriken (z.B. `peak_trade_http_requests_total`) werden nur instrumentiert, wenn `PEAK_TRADE_PROMETHEUS_ENABLED=1` gesetzt ist **und** `prometheus_client` im Environment verfügbar ist.  
+Fail-open (Default): Fehlt `prometheus_client`, liefert `&#47;metrics` ein Fallback-Signal `peak_trade_metrics_fallback 1` (HTTP 200).  
+Strict Mode: Mit `REQUIRE_PROMETHEUS_CLIENT=1` liefert `&#47;metrics` bei fehlendem `prometheus_client` HTTP **503** (Scrape soll rot werden, statt “grün fake”).
 
 ### A) Server mit Env-Flag starten
 
@@ -93,10 +95,12 @@ Compose-Datei (repo target): `docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFA
 Scrape Config (repo target): `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`
 
 Hinweis: In `PROMETHEUS_SCRAPE_EXAMPLE.yml` ggf. `targets` an deinen Host/Port anpassen.
+Hinweis (Docker Desktop macOS/Windows): Scrape aus dem Container auf Host-Services via `host.docker.internal:8000` (nicht `localhost:8000`).
+Hinweis (Prometheus Reload): `POST &#47;-&#47;reload` liefert **403**, wenn Prometheus ohne `--web.enable-lifecycle` läuft → Container restart als Workaround.
 
 ### C) Quick Verify
 
-- Metrics Endpoint (nur wenn enabled): `&#47;metrics`
+- Metrics Endpoint: `&#47;metrics` (siehe Verhalten oben: Peak_Trade-Metriken nur wenn enabled, sonst Fallback/503 je nach Mode)
 - Prometheus UI: `http://127.0.0.1:9090/`
 - Grafana UI: `http://127.0.0.1:3000/`
   - Dashboard JSON Import: `docs/webui/observability/GRAFANA_DASHBOARD_PEAK_TRADE_WATCH_ONLY.json`

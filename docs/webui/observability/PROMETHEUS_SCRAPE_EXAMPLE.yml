@@ -6,4 +6,6 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-          - "localhost:8000"
+          # Docker Desktop (macOS/Windows): reach host services via host.docker.internal
+          # Linux: you may need extra_hosts: ["host.docker.internal:host-gateway"] or equivalent.
+          - "host.docker.internal:8000"
