@@ -6,7 +6,7 @@
 - Key operator doc: `docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md`
 
 ## Why
-- CI “Docs Token Policy Gate” classified `live_runs/` as an illustrative path token and requires `&#47;` encoding to avoid false positives / unsafe path parsing.
+- CI “Docs Token Policy Gate” classified `live_runs&#47;` as an illustrative path token and requires `&#47;` encoding to avoid false positives / unsafe path parsing.
 
 ## Changes
 - Added watch-only UI routes + server-rendered pages (read-only).
