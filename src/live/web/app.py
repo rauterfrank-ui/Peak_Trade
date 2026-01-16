@@ -22,14 +22,15 @@ from __future__ import annotations
 
 import json
 import logging
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 import pandas as pd
-from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, PlainTextResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from ..monitoring import (
@@ -337,6 +338,63 @@ class OrdersResponseV0B(BaseModel):
     asof: str
     count: int
     items: List[OrderPointV0B]
+
+
+# =============================================================================
+# API v0.2 Models (control center, additive, read-only)
+# =============================================================================
+
+
+class RunSummaryV02(BaseModel):
+    """v0.2: run/session summary (watch-only control center)."""
+
+    run_id: str
+    status: str
+    started_at: Optional[str] = None
+    last_heartbeat: Optional[str] = None
+    strategy_id: Optional[str] = None
+    tags: List[str] = Field(default_factory=list)
+    base_dir: Optional[str] = None
+
+
+class RunDetailV02(BaseModel):
+    """v0.2: run/session detail with pointers (watch-only)."""
+
+    summary: RunSummaryV02
+    pointers: Dict[str, str] = Field(default_factory=dict)
+    alerts_summary: Dict[str, Any] = Field(default_factory=dict)
+    config_snapshot: Dict[str, Any] = Field(default_factory=dict)
+
+
+class HealthV02(BaseModel):
+    """v0.2: health with component map (watch-only)."""
+
+    status: str
+    contract_version: str
+    server_time: str
+    last_update: str
+    components: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
+
+
+class EventItemV02(BaseModel):
+    """v0.2: event/log item for polling or SSE."""
+
+    seq: int
+    ts: str
+    level: str
+    component: str
+    msg: str
+    run_id: str
+
+
+class EventsPollResponseV02(BaseModel):
+    """v0.2: events poll wrapper."""
+
+    run_id: str
+    asof: str
+    next_seq: int
+    count: int
+    items: List[EventItemV02]
 
 
 # =============================================================================
@@ -765,6 +823,20 @@ def create_app(
         description="Web UI for monitoring Shadow/Paper Runs",
         version="0.1.0",
     )
+
+    # =============================================================================
+    # Safety: hard-reject mutating methods on API paths (watch-only/read-only)
+    # =============================================================================
+
+    @app.middleware("http")
+    async def _reject_mutating_api_methods(request: Request, call_next):
+        if request.url.path.startswith("/api/") and request.method not in {
+            "GET",
+            "HEAD",
+            "OPTIONS",
+        }:
+            return PlainTextResponse("method_not_allowed: read-only api", status_code=405)
+        return await call_next(request)
 
     # =============================================================================
     # API Endpoints
@@ -1339,6 +1411,16 @@ def create_app(
         <h2>Session Meta (contracted)</h2>
         <div id="meta-wrap">{meta_html}</div>
       </div>
+
+      <div class="card">
+        <h2>Logs / Events (v0.2)</h2>
+        <div class="sub" style="margin-bottom:8px;">
+          <button id="logs-toggle" class="pill" style="cursor:pointer;">Pause</button>
+          <span class="muted" style="margin-left:8px;">source: <span class="pill">/api/v0/runs/{safe_run}/events</span></span>
+        </div>
+        <pre id="logs-pre" style="max-height:260px; overflow:auto; background:#050a14; border:1px solid #1f2937; padding:10px; border-radius:8px; white-space:pre-wrap;">(connecting…)</pre>
+        <div class="sub error" id="logs-error" style="display:none;"></div>
+      </div>
     </div>
   </div>
 
@@ -1347,6 +1429,100 @@ def create_app(
   (() => {{
     const helper = window.__PT_WATCH_ONLY__;
     const RUN_ID = document.getElementById("run-id").textContent;
+    let logsPaused = false;
+    let logsSince = 0;
+    let logsEs = null;
+
+    function logsSetPaused(next) {{
+      logsPaused = !!next;
+      const btn = document.getElementById("logs-toggle");
+      btn.textContent = logsPaused ? "Resume" : "Pause";
+    }}
+
+    function logsAppend(line) {{
+      const pre = document.getElementById("logs-pre");
+      const txt = pre.textContent === "(connecting…)" ? "" : pre.textContent;
+      const next = (txt + line + "\n").split("\n");
+      const tail = next.slice(Math.max(0, next.length - 200));
+      pre.textContent = tail.join("\n");
+      pre.scrollTop = pre.scrollHeight;
+    }}
+
+    function logsShowError(msg) {{
+      const el = document.getElementById("logs-error");
+      el.textContent = msg;
+      el.style.display = "block";
+    }}
+
+    function logsClearError() {{
+      const el = document.getElementById("logs-error");
+      el.style.display = "none";
+    }}
+
+    function logsStopSse() {{
+      try {{
+        if (logsEs) logsEs.close();
+      }} catch (_) {{}}
+      logsEs = null;
+    }}
+
+    function logsStartSseOrPoll() {{
+      // Try SSE first (bounded by max_seconds). Fall back to polling on error.
+      logsStopSse();
+      logsClearError();
+      const url = `/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/events?sse=1&follow=1&since_seq=${{logsSince}}&max_seconds=30`;
+      try {{
+        logsEs = new EventSource(url);
+        logsEs.addEventListener("pt_event", (ev) => {{
+          if (logsPaused) return;
+          try {{
+            const item = JSON.parse(ev.data);
+            if (typeof item.seq === "number") logsSince = item.seq + 1;
+            logsAppend(`[${{item.ts}}] ${{item.level}} ${{item.component}}: ${{item.msg}}`);
+          }} catch (e) {{
+            logsShowError(`Logs parse error: ${{e.message || "unknown"}}`);
+          }}
+        }});
+        logsEs.onerror = () => {{
+          logsStopSse();
+          logsShowError("SSE unavailable; falling back to polling.");
+          logsPollTick();
+        }};
+      }} catch (e) {{
+        logsShowError("SSE unavailable; falling back to polling.");
+        logsPollTick();
+      }}
+    }}
+
+    async function logsPollTick() {{
+      if (logsPaused) {{
+        helper.schedule(logsPollTick, false);
+        return;
+      }}
+      let hadError = false;
+      try {{
+        const r = await helper.fetchJson(`/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/events?since_seq=${{logsSince}}&limit=200`);
+        const payload = r.data;
+        const items = payload.items || [];
+        if (items.length) {{
+          for (const it of items) {{
+            logsSince = (typeof it.seq === "number") ? (it.seq + 1) : logsSince;
+            logsAppend(`[${{it.ts}}] ${{it.level}} ${{it.component}}: ${{it.msg}}`);
+          }}
+        }}
+        logsClearError();
+      }} catch (e) {{
+        hadError = true;
+        logsShowError(`Logs poll error: ${{e.message || "unknown"}}`);
+      }}
+      helper.schedule(logsPollTick, hadError);
+    }}
+
+    document.getElementById("logs-toggle").addEventListener("click", () => {{
+      logsSetPaused(!logsPaused);
+    }});
+    logsSetPaused(false);
+    logsStartSseOrPoll();
 
     async function tick() {{
       let hadError = false;
@@ -1746,5 +1922,263 @@ def create_app(
                 )
             )
         return OrdersResponseV0B(run_id=run_id, asof=_asof_utc(), count=len(items), items=items)
+
+    # =============================================================================
+    # API v0.2 (Control Center, additive, read-only)
+    # =============================================================================
+
+    def _run_status_v02(
+        meta: RunMetaV0, is_active: Optional[bool], last_event_time: Optional[str]
+    ) -> str:
+        if is_active:
+            return "active"
+        if meta.ended_at:
+            return "completed"
+        if last_event_time:
+            return "inactive"
+        return "unknown"
+
+    def _extract_tags(config_snapshot: Dict[str, Any]) -> List[str]:
+        tags_val = config_snapshot.get("tags")
+        if isinstance(tags_val, list):
+            return [str(t) for t in tags_val if t is not None]
+        return []
+
+    def _build_run_summary_v02(run_id: str) -> RunSummaryV02:
+        meta = _load_meta_v0(run_id)
+        # Best-effort: derive "heartbeat" from last event time in monitoring snapshot (if available).
+        last_event_time = None
+        is_active = None
+        try:
+            snapshots = monitoring_list_runs(base_dir=runs_dir, include_inactive=True)
+            for s in snapshots:
+                if getattr(s, "run_id", None) == run_id:
+                    is_active = bool(getattr(s, "is_active", False))
+                    let = getattr(s, "last_event_time", None)
+                    last_event_time = let.isoformat() if let else None
+                    break
+        except Exception:
+            last_event_time = None
+
+        status = _run_status_v02(meta, is_active=is_active, last_event_time=last_event_time)
+        return RunSummaryV02(
+            run_id=run_id,
+            status=status,
+            started_at=meta.started_at,
+            last_heartbeat=last_event_time,
+            strategy_id=meta.strategy_name,
+            tags=_extract_tags(meta.config_snapshot),
+            base_dir=str(runs_dir),
+        )
+
+    @app.get("/api/v0/health_v02", response_model=HealthV02)
+    async def api_v0_health_v02():
+        now = datetime.now(timezone.utc).isoformat()
+        components: Dict[str, Dict[str, Any]] = {
+            "live_dashboard": {
+                "status": "ok",
+                "contract_version": DASHBOARD_API_CONTRACT_VERSION,
+            },
+            "runs_dir": {
+                "status": "ok" if runs_dir.exists() else "missing",
+                "path": str(runs_dir),
+            },
+        }
+        return HealthV02(
+            status="ok",
+            contract_version=DASHBOARD_API_CONTRACT_VERSION,
+            server_time=now,
+            last_update=now,
+            components=components,
+        )
+
+    @app.get("/api/v0/runs_v02", response_model=List[RunSummaryV02])
+    async def api_v0_runs_v02(limit: int = Query(default=50, ge=1, le=200)):
+        # Use existing runs listing and then enrich using meta.json.
+        runs = await get_runs()
+        out: List[RunSummaryV02] = []
+        for r in runs[:limit]:
+            try:
+                meta = _load_meta_v0(r.run_id)
+                status = _run_status_v02(
+                    meta, is_active=r.is_active, last_event_time=r.last_event_time
+                )
+                out.append(
+                    RunSummaryV02(
+                        run_id=r.run_id,
+                        status=status,
+                        started_at=meta.started_at,
+                        last_heartbeat=r.last_event_time,
+                        strategy_id=meta.strategy_name,
+                        tags=_extract_tags(meta.config_snapshot),
+                        base_dir=str(runs_dir),
+                    )
+                )
+            except HTTPException:
+                # If meta is missing, still return minimal info.
+                out.append(
+                    RunSummaryV02(
+                        run_id=r.run_id,
+                        status="unknown",
+                        started_at=r.started_at,
+                        last_heartbeat=r.last_event_time,
+                        strategy_id=r.strategy_name,
+                        tags=[],
+                        base_dir=str(runs_dir),
+                    )
+                )
+        return out
+
+    @app.get("/api/v0/runs/{run_id}/detail_v02", response_model=RunDetailV02)
+    async def api_v0_run_detail_v02(run_id: str):
+        summary = _build_run_summary_v02(run_id)
+        # Minimal pointers for client navigation.
+        pointers = {
+            "metrics": f"/api/v0/runs/{run_id}/metrics",
+            "equity": f"/api/v0/runs/{run_id}/equity",
+            "signals": f"/api/v0/runs/{run_id}/signals",
+            "positions": f"/api/v0/runs/{run_id}/positions",
+            "orders": f"/api/v0/runs/{run_id}/orders",
+            "alerts": f"/runs/{run_id}/alerts",
+            "events": f"/api/v0/runs/{run_id}/events",
+        }
+        alerts_summary: Dict[str, Any] = {"count": 0}
+        try:
+            run_dir = _run_dir_for(run_id)
+            alerts = load_alerts_from_file(run_dir, limit=50)
+            alerts_summary["count"] = len(alerts)
+            if alerts:
+                alerts_summary["last_severity"] = alerts[-1].get("severity")
+        except Exception:
+            pass
+        meta = _load_meta_v0(run_id)
+        return RunDetailV02(
+            summary=summary,
+            pointers=pointers,
+            alerts_summary=alerts_summary,
+            config_snapshot=meta.config_snapshot,
+        )
+
+    def _events_items_v02(
+        run_id: str,
+        since_seq: int,
+        limit: int,
+    ) -> EventsPollResponseV02:
+        df = _load_events_df_v0b(run_id)
+        if len(df) == 0:
+            return EventsPollResponseV02(
+                run_id=run_id,
+                asof=_asof_utc(),
+                next_seq=max(since_seq, 0),
+                count=0,
+                items=[],
+            )
+        # Stable ordering: prefer step if present, else keep file order.
+        if "step" in df.columns:
+            try:
+                df = df.sort_values("step")
+            except Exception:
+                pass
+
+        start = max(int(since_seq), 0)
+        end = start + int(limit)
+        if start >= len(df):
+            return EventsPollResponseV02(
+                run_id=run_id,
+                asof=_asof_utc(),
+                next_seq=start,
+                count=0,
+                items=[],
+            )
+
+        slice_df = df.iloc[start:end]
+        items: List[EventItemV02] = []
+        for i, (_, row) in enumerate(slice_df.iterrows(), start=start):
+            ts = _row_ts_v0b(row) or _asof_utc()
+            step = _int_or_none(row.get("step"))
+            signal = _int_or_none(row.get("signal"))
+            pos = row.get("position_size")
+            og = _int_or_none(row.get("orders_generated"))
+            of = _int_or_none(row.get("orders_filled"))
+            ob = _int_or_none(row.get("orders_blocked"))
+            risk_allowed = row.get("risk_allowed")
+
+            level = "info"
+            if (risk_allowed is False) or (ob is not None and ob > 0):
+                level = "warning"
+
+            msg = f"step={step} signal={signal} position_size={pos} orders_generated={og} orders_filled={of} orders_blocked={ob}"
+            items.append(
+                EventItemV02(
+                    seq=i,
+                    ts=ts,
+                    level=level,
+                    component="run",
+                    msg=msg,
+                    run_id=run_id,
+                )
+            )
+
+        next_seq = start + len(items)
+        return EventsPollResponseV02(
+            run_id=run_id,
+            asof=_asof_utc(),
+            next_seq=next_seq,
+            count=len(items),
+            items=items,
+        )
+
+    def _sse_format_event(item: EventItemV02) -> str:
+        data = item.model_dump()
+        return f"event: pt_event\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+    @app.get("/api/v0/runs/{run_id}/events")
+    async def api_v0_run_events(
+        request: Request,
+        run_id: str,
+        since_seq: int = Query(default=0, ge=0),
+        limit: int = Query(default=200, ge=1, le=2000),
+        follow: bool = Query(default=False, description="If true: keep stream open (bounded)."),
+        max_seconds: int = Query(default=30, ge=1, le=600),
+        sse: bool = Query(default=False, description="If true: force SSE (text/event-stream)."),
+    ):
+        wants_sse = sse or ("text/event-stream" in (request.headers.get("accept") or ""))
+        if not wants_sse:
+            # JSON polling mode (deterministic, bounded).
+            return _events_items_v02(run_id=run_id, since_seq=since_seq, limit=limit).model_dump()
+
+        def gen() -> Iterator[str]:
+            start_t = time.monotonic()
+            cur = int(since_seq)
+
+            # Initial batch (no sleeps).
+            batch = _events_items_v02(run_id=run_id, since_seq=cur, limit=limit)
+            for it in batch.items:
+                yield _sse_format_event(it)
+                cur = it.seq + 1
+
+            if not follow:
+                return
+
+            # Follow mode (bounded by time).
+            last_ping = time.monotonic()
+            while True:
+                now = time.monotonic()
+                if now - start_t >= float(max_seconds):
+                    return
+
+                if now - last_ping >= 5.0:
+                    yield ": ping\n\n"
+                    last_ping = now
+
+                batch = _events_items_v02(run_id=run_id, since_seq=cur, limit=limit)
+                if batch.items:
+                    for it in batch.items:
+                        yield _sse_format_event(it)
+                        cur = it.seq + 1
+
+                time.sleep(0.5)
+
+        return StreamingResponse(gen(), media_type="text/event-stream")
 
     return app

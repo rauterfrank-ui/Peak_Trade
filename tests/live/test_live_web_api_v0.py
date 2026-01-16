@@ -149,3 +149,61 @@ def test_api_v0_signals_positions_orders(tmp_path: Path) -> None:
     assert op["count"] == len(op["items"])
     # only_nonzero=true filters out the first row (all zeros)
     assert len(op["items"]) == 2
+
+
+def test_api_v0_runs_v02_and_detail_v02(tmp_path: Path) -> None:
+    run_id = "20260115_shadow_demo_BTC-EUR_1m"
+    _write_run(tmp_path, run_id=run_id)
+
+    app = create_app(base_runs_dir=str(tmp_path))
+    client = TestClient(app)
+
+    r = client.get("/api/v0/runs_v02?limit=10")
+    assert r.status_code == 200
+    rows = r.json()
+    assert isinstance(rows, list)
+    assert rows[0]["run_id"] == run_id
+    assert "status" in rows[0]
+    assert "last_heartbeat" in rows[0]
+
+    d = client.get(f"/api/v0/runs/{run_id}/detail_v02")
+    assert d.status_code == 200
+    payload = d.json()
+    assert payload["summary"]["run_id"] == run_id
+    assert "pointers" in payload
+    assert payload["pointers"]["events"].endswith(f"/api/v0/runs/{run_id}/events")
+
+
+def test_api_v0_events_poll_and_sse(tmp_path: Path) -> None:
+    run_id = "20260115_shadow_demo_BTC-EUR_1m"
+    _write_run(tmp_path, run_id=run_id)
+
+    app = create_app(base_runs_dir=str(tmp_path))
+    client = TestClient(app)
+
+    poll = client.get(f"/api/v0/runs/{run_id}/events?since_seq=0&limit=2")
+    assert poll.status_code == 200
+    p = poll.json()
+    assert p["run_id"] == run_id
+    assert p["count"] == len(p["items"])
+    assert p["next_seq"] >= 2
+    assert p["items"][0]["seq"] == 0
+
+    # SSE (bounded, initial batch only; no sleeps)
+    with client.stream(
+        "GET",
+        f"/api/v0/runs/{run_id}/events?sse=1&since_seq=0&limit=1",
+        headers={"accept": "text/event-stream"},
+    ) as resp:
+        assert resp.status_code == 200
+        text = "".join(list(resp.iter_text()))
+        assert "event: pt_event" in text
+        assert '"run_id"' in text
+
+
+def test_api_paths_reject_mutating_methods(tmp_path: Path) -> None:
+    app = create_app(base_runs_dir=str(tmp_path))
+    client = TestClient(app)
+
+    r = client.post("/api/v0/health")
+    assert r.status_code == 405
