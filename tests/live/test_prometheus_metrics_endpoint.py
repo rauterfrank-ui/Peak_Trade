@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import importlib
-import sys
-import types
 from pathlib import Path
 
 import pytest
@@ -13,101 +10,47 @@ pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
 
 
-def test_metrics_route_absent_when_disabled_or_missing(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """
-    Default behavior: /metrics is not registered unless explicitly enabled AND prometheus_client exists.
-    This test must be stable even when prometheus_client is not installed.
-    """
-    monkeypatch.setenv("PEAK_TRADE_PROMETHEUS_ENABLED", "0")
-
+def test_metrics_endpoint_is_prometheus_compatible(tmp_path: Path) -> None:
     from src.live.web.app import create_app
 
     app = create_app(base_runs_dir=str(tmp_path))
     client = TestClient(app)
 
     r = client.get("/metrics")
-    assert r.status_code == 404
+    assert r.status_code == 200
+    ct = (r.headers.get("content-type") or "").lower()
+    assert "text/plain" in ct
+    assert ("# help" in r.text.lower()) or ("# type" in r.text.lower())
 
 
-def test_metrics_route_present_when_enabled_and_prometheus_available(
+def test_metrics_endpoint_strict_mode_requires_prometheus_client(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """
-    Simulate prometheus_client availability via a small fake module, and verify:
-    - /metrics exists when PEAK_TRADE_PROMETHEUS_ENABLED=1
-    - middleware increments the request counter
+    When REQUIRE_PROMETHEUS_CLIENT=1, /metrics must return 503 if prometheus_client
+    is missing/unavailable (strict mode).
     """
-    store = {"requests_total": 0, "in_flight": 0}
+    from src.live.web.app import create_app
 
-    class _Counter:
-        def __init__(self, name: str, doc: str, labelnames=()):
-            self._name = name
-            self._labelnames = tuple(labelnames)
+    # Force strict mode
+    monkeypatch.setenv("REQUIRE_PROMETHEUS_CLIENT", "1")
 
-        def labels(self, **_labels):
-            class _L:
-                def inc(self_inner, amount: float = 1.0) -> None:
-                    store["requests_total"] += int(amount)
+    # Make "from prometheus_client import ..." fail regardless of whether the package
+    # is installed in the current environment.
+    import builtins
 
-            return _L()
+    real_import = builtins.__import__
 
-    class _Histogram:
-        def __init__(self, name: str, doc: str, labelnames=(), buckets=()):
-            self._name = name
+    def blocked_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "prometheus_client" or name.startswith("prometheus_client."):
+            raise ModuleNotFoundError("No module named 'prometheus_client'")
+        return real_import(name, globals, locals, fromlist, level)
 
-        def labels(self, **_labels):
-            class _L:
-                def observe(self_inner, _val: float) -> None:
-                    return None
+    monkeypatch.setattr(builtins, "__import__", blocked_import)
 
-            return _L()
-
-    class _Gauge:
-        def __init__(self, name: str, doc: str):
-            self._name = name
-
-        def inc(self) -> None:
-            store["in_flight"] += 1
-
-        def dec(self) -> None:
-            store["in_flight"] = max(0, store["in_flight"] - 1)
-
-    prom = types.ModuleType("prometheus_client")
-    prom.Counter = _Counter  # type: ignore[attr-defined]
-    prom.Histogram = _Histogram  # type: ignore[attr-defined]
-    prom.Gauge = _Gauge  # type: ignore[attr-defined]
-    prom.CONTENT_TYPE_LATEST = "text/plain; version=0.0.4; charset=utf-8"  # type: ignore[attr-defined]
-
-    expo = types.ModuleType("prometheus_client.exposition")
-
-    def _generate_latest() -> bytes:
-        return (
-            "# TYPE peak_trade_http_requests_total counter\n"
-            f"peak_trade_http_requests_total {store['requests_total']}\n"
-        ).encode("utf-8")
-
-    expo.generate_latest = _generate_latest  # type: ignore[attr-defined]
-
-    monkeypatch.setitem(sys.modules, "prometheus_client", prom)
-    monkeypatch.setitem(sys.modules, "prometheus_client.exposition", expo)
-    monkeypatch.setenv("PEAK_TRADE_PROMETHEUS_ENABLED", "1")
-
-    import src.live.web.metrics_prom as metrics_prom
-    import src.live.web.app as app_mod
-
-    importlib.reload(metrics_prom)
-    importlib.reload(app_mod)
-
-    app = app_mod.create_app(base_runs_dir=str(tmp_path))
+    app = create_app(base_runs_dir=str(tmp_path))
     client = TestClient(app)
 
-    # trigger at least one request
-    assert client.get("/health").status_code == 200
-
     r = client.get("/metrics")
-    assert r.status_code == 200
-    assert "text/plain" in r.headers.get("content-type", "")
-    assert "peak_trade_http_requests_total" in r.text
-    assert store["requests_total"] >= 1
+    assert r.status_code == 503
+    assert "prometheus_client required" in r.text.lower()
