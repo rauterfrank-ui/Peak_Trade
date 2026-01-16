@@ -10,6 +10,14 @@ Diese Übersicht beantwortet:
 
 ---
 
+## 0) Start here (Navigation)
+
+- [Dashboard v0 (Watch-Only) Overview](./DASHBOARD_V0_OVERVIEW.md)
+- [API Contract v0 (Read-only)](./DASHBOARD_API_CONTRACT_v0.md)
+- [Data Contract v0 (Artifacts)](./DASHBOARD_DATA_CONTRACT_v0.md)
+- [Operator Runbook: Watch-Only Start → Finish](../ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md)
+- [Observability (Prometheus/Grafana)](./observability/README.md)
+
 ## 1) Es gibt zwei „Dashboards“ (wichtig für die richtige Erwartung)
 
 ### A) WebUI Dashboard v1.x (`src/webui/app.py`)
@@ -189,9 +197,28 @@ Das ist praktisch für:
 
 ## 6) Weiterführende Doku (sehr relevant)
 
-- Watch-only Start→Finish Runbook: [`docs/ops/runbooks/RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`](../ops/runbooks/RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md)
+- Watch-only Start→Finish Runbook: [`docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`](../ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md)
 - Live-Track Panel: [`docs/PHASE_82_LIVE_TRACK_DASHBOARD.md`](../PHASE_82_LIVE_TRACK_DASHBOARD.md)
 - Session Explorer (Filter/Details): `docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`
 - Ops Runbooks: [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](../LIVE_OPERATIONAL_RUNBOOKS.md)
 - Live Status Panels: [`docs/webui/LIVE_STATUS_PANELS.md`](LIVE_STATUS_PANELS.md)
 - Positions/Portfolio/Risk Panels: [`docs/webui/LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md`](LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md)
+
+---
+
+## 7) Observability (Prometheus / Grafana) — optional, watch-only
+
+Die Live Web Dashboard App kann optional Prometheus-Metriken exponieren (**watch-only**, ohne Trading/Execution Side-Effects).
+
+**Aktivierung:**
+- Env-Flag: `PEAK_TRADE_PROMETHEUS_ENABLED=1`
+- Voraussetzung: `prometheus_client` ist im Python Environment verfügbar
+- Fail-open: Wenn die Library fehlt oder das Flag aus ist, läuft die App normal weiter; `&#47;metrics` wird **nicht** registriert.
+
+**Artefakte (Repo-Pfade):**
+- Prometheus Scrape Example: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`
+- Docker Compose (lokal): `docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml`
+- Grafana Dashboard JSON: `docs/webui/observability/GRAFANA_DASHBOARD_PEAK_TRADE_WATCH_ONLY.json`
+
+**Runbook (Operator Flow inkl. Prometheus):**
+- `docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`
