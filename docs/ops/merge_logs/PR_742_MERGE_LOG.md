@@ -2,7 +2,7 @@
 
 ## Summary
 - Scope: Watch-only dashboard UI v0.1B (observability) + read-only API v0 extensions + operator runbook.
-- Token-Policy fix: `live_runs/` → `live_runs&#47;` (illustrative inline-code token encoding).
+- Token-Policy fix: illustrative token `live_runs&#47;` (previously written as live_runs/).
 - Key operator doc: `docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md`
 
 ## Why
