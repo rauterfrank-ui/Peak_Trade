@@ -15,6 +15,7 @@ Diese Assets sind **optional** und betreffen ausschließlich **Service Health / 
 ## Quick Verify
 
 - `curl http:&#47;&#47;127.0.0.1:8000&#47;metrics | head`
+  - Erwartung (`prometheus_client` verfügbar, Flag **aus**): `python_*`, `process_*` (Default-Metriken), **keine** `peak_trade_http_*`
   - Erwartung (enabled + `prometheus_client`): `python_*`, `process_*`, plus `peak_trade_http_*`
   - Erwartung (kein `prometheus_client`, fail-open): `peak_trade_metrics_fallback 1`
   - Erwartung (strict): HTTP 503 + Text “prometheus_client required but unavailable”
