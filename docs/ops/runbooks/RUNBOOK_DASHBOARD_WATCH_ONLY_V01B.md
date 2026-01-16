@@ -24,7 +24,7 @@ Provide a **watch-only** observability UI for:
 ---
 
 ## 3) Preconditions (Data Source)
-This UI reads run artifacts from a **runs directory** (default: `live_runs/`).
+This UI reads run artifacts from a **runs directory** (default: `live_runs&#47;`).
 
 Required per run:
 - `meta.json`
