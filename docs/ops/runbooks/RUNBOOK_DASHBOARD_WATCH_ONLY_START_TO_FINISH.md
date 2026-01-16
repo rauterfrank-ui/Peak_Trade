@@ -96,7 +96,7 @@ Scrape Config (repo target): `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE
 
 Hinweis: In `PROMETHEUS_SCRAPE_EXAMPLE.yml` ggf. `targets` an deinen Host/Port anpassen.
 Hinweis (Docker Desktop macOS/Windows): Scrape aus dem Container auf Host-Services via `host.docker.internal:8000` (nicht `localhost:8000`).
-Hinweis (Prometheus Reload): `POST /-/reload` liefert **403**, wenn Prometheus ohne `--web.enable-lifecycle` läuft → Container restart als Workaround.
+Hinweis (Prometheus Reload): `POST &#47;-&#47;reload` liefert **403**, wenn Prometheus ohne `--web.enable-lifecycle` läuft → Container restart als Workaround.
 
 ### C) Quick Verify
 

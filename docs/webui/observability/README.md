@@ -14,7 +14,7 @@ Diese Assets sind **optional** und betreffen ausschließlich **Service Health / 
 
 ## Quick Verify
 
-- `curl http://127.0.0.1:8000/metrics | head`
+- `curl http:&#47;&#47;127.0.0.1:8000&#47;metrics | head`
   - Erwartung (enabled + `prometheus_client`): `python_*`, `process_*`, plus `peak_trade_http_*`
   - Erwartung (kein `prometheus_client`, fail-open): `peak_trade_metrics_fallback 1`
   - Erwartung (strict): HTTP 503 + Text “prometheus_client required but unavailable”
@@ -38,14 +38,14 @@ Diese Assets sind **optional** und betreffen ausschließlich **Service Health / 
 - Live-Web-App repo-lokal gestartet (Beispiel):
   - `PEAK_TRADE_PROMETHEUS_ENABLED=1`
   - `REQUIRE_PROMETHEUS_CLIENT=1`
-  - `.venv/bin/python scripts/live_web_server.py --host 127.0.0.1 --port 8000`
+  - `.venv&#47;bin&#47;python scripts&#47;live_web_server.py --host 127.0.0.1 --port 8000`
 
 **Docker/Prometheus Networking Fix (macOS Docker Desktop):**
 - Scrape Target im Container: `localhost:8000` → **falsch** (zeigt auf den Container)
 - Korrekt: `host.docker.internal:8000`
 
 **Prometheus Reload/Restart Outcome:**
-- `POST /-/reload`: **403 Forbidden** (wenn Prometheus ohne `--web.enable-lifecycle` läuft)
+- `POST &#47;-&#47;reload`: **403 Forbidden** (wenn Prometheus ohne `--web.enable-lifecycle` läuft)
 - Workaround: Prometheus Container neu starten, damit Config neu geladen wird
 
 ## Dateien
