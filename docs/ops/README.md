@@ -2094,6 +2094,8 @@ Security:
 ---
 
 ## Verified Merge Logs
+- **PR #744 (dashboard(web): watch-only control center v0.2 (read-only))** → `PR_744_MERGE_LOG.md`
+
 - **PR #544 (Phase 8C: VaR Backtest Suite Runner & Report Formatter)** → ``docs&#47;ops&#47;merge_logs&#47;20260104_pr-544_var-backtest-suite-phase-8c.md``
 - **PR #528 (restore: docs/fix-reference-targets-priority1 — Rebase & Branch Cleanup Demo)** → ``docs&#47;ops&#47;merge_logs&#47;2026-01-03_pr-528-rebase-cleanup-restore-demo.md``
 - **PR #512 (CI required checks hardening: fail-open changes + PR concurrency)** → ``docs&#47;ops&#47;PR_512_MERGE_LOG.md``
