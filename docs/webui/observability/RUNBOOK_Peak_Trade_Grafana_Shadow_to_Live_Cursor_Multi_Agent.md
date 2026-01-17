@@ -27,7 +27,7 @@
 - **Peak_Trade Ledger** als *Source of Truth* (Events/Orders/Fills/Fees, replaybar).
 - **Watch‑Only Web UI** als *Operator‑Konsole* (Run‑Snapshot, Blotter, Timeline) – optional, aber empfohlen.
 - **Saubere Governance‑Schalter**: Live Execution nur via explicit enable + sanity checks + gates.
-- **Deterministisch (Operator‑tauglich)**: Shadow‑MVS Stack via `scripts/obs/shadow_mvs_local_{down,up,verify}.sh` (Snapshot‑Checks, keine Watch‑Loops).
+- **Deterministisch (Operator‑tauglich)**: Shadow‑MVS Stack via `scripts&#47;obs&#47;shadow_mvs_local_{down,up,verify}.sh` (Snapshot‑Checks, keine Watch‑Loops).
 
 ### Operator Quickstart (lokal, <5 Minuten): Shadow MVS → Prometheus → Grafana → VERIFY PASS
 
