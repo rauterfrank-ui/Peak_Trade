@@ -54,6 +54,7 @@ Diese Assets sind **optional** und betreffen ausschließlich **Service Health / 
 - Prometheus Scrape Example: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`
 - Docker Compose (lokal): `docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml`
 - Grafana Dashboard JSON: `docs/webui/observability/GRAFANA_DASHBOARD_PEAK_TRADE_WATCH_ONLY.json`
+- Hinweis: Grafana `label_values(...)` (Variable Queries) vs PromQL ist in `DASHBOARD_WORKFLOW.md` im Abschnitt „Grafana Variable Queries vs PromQL“ erklärt.
 
 ## Ports & Networking (wichtig)
 
@@ -67,3 +68,18 @@ Diese Assets sind **optional** und betreffen ausschließlich **Service Health / 
 ## Operator Runbook
 
 - `docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`
+
+## Shadow → Live Observability Runbook (Grafana)
+
+Dieses Repo enthält zusätzlich ein Runbook für den **symbiotischen Kern** (Shadow → später Live) mit klarer Trennung:
+- Grafana = Aggregationen/Health
+- Ledger/Logs = konkrete Events (audit/replay)
+- WebUI/Watch-Only = Operator-Detailsicht (read-only)
+
+Startpunkt:
+- `docs/webui/observability/RUNBOOK_Peak_Trade_Grafana_Shadow_to_Live_Cursor_Multi_Agent.md`
+
+Begleitende Specs/Contracts:
+- `docs/webui/DASHBOARD_GOVERNANCE_NO_LIVE.md`
+- `docs/webui/DASHBOARD_DATA_CONTRACT_OBS_v1.md`
+- `docs/webui/GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md`

@@ -17,6 +17,9 @@ Diese Übersicht beantwortet:
 - [Data Contract v0 (Artifacts)](./DASHBOARD_DATA_CONTRACT_v0.md)
 - [Operator Runbook: Watch-Only Start → Finish](../ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md)
 - [Observability (Prometheus/Grafana)](./observability/README.md)
+- [Governance: NO‑LIVE Dashboard/Observability](./DASHBOARD_GOVERNANCE_NO_LIVE.md)
+- [Observability Data Contract v1 (Shadow→Live)](./DASHBOARD_DATA_CONTRACT_OBS_v1.md)
+- [Grafana Dashboard Spec v1 (Shadow→Live)](./GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md)
 
 ## 1) Es gibt zwei „Dashboards“ (wichtig für die richtige Erwartung)
 
