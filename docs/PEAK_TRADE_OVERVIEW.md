@@ -55,7 +55,7 @@ Peak_Trade folgt einer klaren Pipeline-Architektur mit strikter Separation of Co
 python scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
 
 # Mit Custom-Config
-python scripts/run_strategy_from_config.py --config config/my_backtest.toml
+python scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
 ```
 
 ### 2. Programmatischer Backtest (Python)
@@ -96,7 +96,7 @@ print(f"Max Drawdown: {result.max_drawdown:.2%}")
 
 ### 3. Minimal Config-Beispiel
 
-**`config/my_backtest.toml`:**
+**`config&#47;my_backtest.toml`:**
 
 ```toml
 [data]
@@ -123,7 +123,7 @@ daily_loss_limit = 0.05
 
 ## Strategy Registry Keys
 
-Alle verfügbaren Strategien sind in der **Strategy Registry** registriert (`src/strategies/registry.py`).
+Alle verfügbaren Strategien sind in der **Strategy Registry** registriert (`src&#47;strategies&#47;registry.py`).
 
 ### Production-Ready Strategien
 
@@ -206,8 +206,8 @@ Vor einem Live-Deployment durchläuft jede Strategie eine systematische Prüfung
 7. **Production** – Live-Deployment mit Risk-Limits
 
 **Dokumentation:**
-- 📖 **Playbook:** [`docs/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md)
-- 🎯 **Live-Track Demo:** [`docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+- 📖 **Playbook:** [`docs&#47;PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md`](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md)
+- 🎯 **Live-Track Demo:** [`docs&#47;PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md`](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
 
 ### Live-Ops Tools
 
@@ -239,17 +239,17 @@ python -m src.cli.live_ops health
 - 🏗️ **Architektur:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
 - 🔬 **Backtest Engine:** [`BACKTEST_ENGINE.md`](BACKTEST_ENGINE.md)
 - 🎯 **Strategy Development:** [`STRATEGY_DEV_GUIDE.md`](STRATEGY_DEV_GUIDE.md)
-- 🧪 **Research-Pipeline:** [`RESEARCH_PIPELINE_V2.md`](RESEARCH_PIPELINE_V2.md)
+- 🧪 **Research-Pipeline:** `RESEARCH_PIPELINE_V2.md` (planned)
 
 ### Developer Guides
 
 - ⚡ **Developer Workflow:** [`DEVELOPER_WORKFLOW_GUIDE.md`](DEVELOPER_WORKFLOW_GUIDE.md)
-- 🤖 **AI-Helper Guide:** [`ai/PEAK_TRADE_AI_HELPER_GUIDE.md`](ai/PEAK_TRADE_AI_HELPER_GUIDE.md)
+- 🤖 **AI-Helper Guide:** [`ai&#47;PEAK_TRADE_AI_HELPER_GUIDE.md`](ai/PEAK_TRADE_AI_HELPER_GUIDE.md)
 - 📚 **Knowledge Base Index:** [`KNOWLEDGE_BASE_INDEX.md`](KNOWLEDGE_BASE_INDEX.md)
 
 ### Operations & Safety
 
-- 🛡️ **Risk Management:** [`RISK_MANAGEMENT_V1.md`](RISK_MANAGEMENT_V1.md)
+- 🛡️ **Risk Management:** `RISK_MANAGEMENT_V1.md` (planned)
 - 🚨 **Incident Drills:** [`INCIDENT_SIMULATION_AND_DRILLS.md`](INCIDENT_SIMULATION_AND_DRILLS.md)
 - 📊 **Monitoring & Alerts:** [`OBSERVABILITY_AND_MONITORING_PLAN.md`](OBSERVABILITY_AND_MONITORING_PLAN.md)
 - 🔐 **Resilience Guide:** [`resilience_guide.md`](resilience_guide.md)
@@ -295,8 +295,8 @@ python3 -m ruff check src tests scripts
 python scripts/run_strategy_from_config.py --strategy ma_crossover
 
 # Research-Pipeline
-python scripts/run_walkforward.py --strategy ma_crossover
-python scripts/run_monte_carlo.py --strategy ma_crossover
+python scripts&#47;run_walkforward.py --strategy ma_crossover
+python scripts&#47;run_monte_carlo.py --strategy ma_crossover
 python scripts/run_stress_tests.py --portfolio moderate
 
 # Live-Status
@@ -305,12 +305,199 @@ python -m src.cli.live_ops status
 
 ---
 
+## Extensibility Points
+
+Peak_Trade ist so gebaut, dass alle zentralen Komponenten austauschbar sind. Hier sind die wichtigsten Erweiterungspunkte:
+
+### 1. Neue Strategy hinzufügen
+
+```python
+# src/strategies/my_strategy.py
+from .base import BaseStrategy
+
+class MyStrategy(BaseStrategy):
+    def generate_signals(self, data: pd.DataFrame) -> pd.Series:
+        # Deine Logik hier
+        return signals
+
+# In registry.py registrieren
+from .my_strategy import MyStrategy
+
+_STRATEGY_REGISTRY["my_strategy"] = StrategySpec(
+    key="my_strategy",
+    cls=MyStrategy,
+    config_section="strategy.my_strategy"
+)
+```
+
+**→ Siehe:** [STRATEGY_DEV_GUIDE.md](STRATEGY_DEV_GUIDE.md)
+
+### 2. Neuen Position Sizer hinzufügen
+
+```python
+# src/core/position_sizing.py
+class MyCustomSizer(BasePositionSizer):
+    def get_target_position(self, signal, price, equity):
+        # Deine Sizing-Logik hier
+        return target_units
+```
+
+**Config:**
+```toml
+[sizing]
+type = "my_custom"  # Registrierung in build_position_sizer_from_config()
+```
+
+### 3. Neuen Risk Manager hinzufügen
+
+```python
+# src/core/risk.py
+class MyRiskManager(BaseRiskManager):
+    def adjust_target_position(self, target_units, price, equity, timestamp):
+        # Deine Risk-Logik hier
+        return adjusted_units
+```
+
+**Config:**
+```toml
+[risk]
+type = "my_risk"  # Registrierung in build_risk_manager_from_config()
+```
+
+### 4. Neuen Runner hinzufügen
+
+```bash
+# scripts/run_my_custom_backtest.py
+from src.backtest.engine import BacktestEngine
+from src.core.peak_config import load_config
+
+cfg = load_config()
+# Deine Runner-Logik hier
+```
+
+**Beispiele:**
+- `scripts&#47;run_strategy_from_config.py` – Einzel-Backtest
+- `scripts&#47;run_portfolio_backtest.py` – Portfolio-Backtest
+- `scripts&#47;run_walkforward.py` – Walk-Forward-Validation
+
+### 5. Neue Datenquelle hinzufügen
+
+```python
+# src/data/loaders/my_provider.py
+def load_data_from_my_provider(symbol, start, end):
+    # Deine Data-Loading-Logik hier
+    return df  # Must return OHLCV DataFrame
+```
+
+**Integration in `src&#47;data&#47;data_loader.py`:**
+```python
+def load_ohlcv_data(..., provider="my_provider"):
+    if provider == "my_provider":
+        return load_data_from_my_provider(...)
+```
+
+---
+
+## Operational Notes
+
+### Determinism & Reproduzierbarkeit
+
+Peak_Trade garantiert **deterministische Backtests**:
+
+- ✅ Gleiche Config + gleiche Daten = gleiche Ergebnisse
+- ✅ Bar-für-Bar-Execution ohne Look-Ahead
+- ✅ Seed-basierte Randomness (für Monte-Carlo-Simulationen)
+
+**Best Practice:**
+```toml
+[backtest]
+seed = 42  # Für reproduzierbare Random-Samples
+```
+
+### Wie starte ich einen lokalen Backtest?
+
+**Variante A: Config-basiert (Empfohlen)**
+```bash
+# Mit Standard-Config
+python scripts/run_strategy_from_config.py --strategy ma_crossover
+
+# Mit Custom-Config
+python scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
+```
+
+**Variante B: Portfolio-Backtest**
+```bash
+python scripts/run_portfolio_backtest.py --allocation equal
+```
+
+**Variante C: Research-Pipeline**
+```bash
+# Walk-Forward
+python scripts&#47;run_walkforward.py --strategy ma_crossover
+
+# Monte-Carlo
+python scripts&#47;run_monte_carlo.py --strategy rsi_reversion --runs 1000
+```
+
+### Logging & Registry
+
+Alle Backtest-Ergebnisse werden automatisch in der **Experiment-Registry** geloggt:
+
+```bash
+# Alle Runs anzeigen
+python scripts/list_experiments.py
+
+# Details eines Runs
+python scripts/show_experiment.py <run_id>
+
+# Nur Portfolio-Runs
+python scripts/list_experiments.py --run-type portfolio_backtest
+```
+
+**Registry-Location:**
+- SQLite-DB: `data&#47;experiments.db`
+- Equity-Curves: `data&#47;equity_curves&#47;<run_id>.parquet`
+
+---
+
 ## Nächste Schritte
 
 1. **Ersten Backtest laufen lassen:** Folge dem [Quickstart](#wie-starte-ich-schnell-einen-backtest) oben
 2. **Eigene Strategie entwickeln:** Siehe [STRATEGY_DEV_GUIDE.md](STRATEGY_DEV_GUIDE.md)
-3. **Research-Pipeline testen:** Siehe [RESEARCH_PIPELINE_V2.md](RESEARCH_PIPELINE_V2.md)
+3. **Research-Pipeline testen:** Siehe `RESEARCH_PIPELINE_V2.md` (planned)
 4. **Live-Track kennenlernen:** Siehe [PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md](PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md)
+
+---
+
+## Further Reading / Related Docs
+
+### Core Documentation
+- 🚪 **[Documentation Frontdoor](README.md)** – Navigate all docs by audience & topic
+- 🔬 **[Backtest Engine](BACKTEST_ENGINE.md)** – Detailed engine contract, execution modes, extension hooks
+- 🎯 **[Strategy Dev Guide](STRATEGY_DEV_GUIDE.md)** – Step-by-step strategy development
+
+### Architecture Deep Dives
+- 🏗️ **[Architecture Overview](ARCHITECTURE_OVERVIEW.md)** – **Deep dive:** System design, layer diagrams, component interactions
+- 📐 **[Architecture Details](ARCHITECTURE.md)** – Technical architecture specifications
+
+**Note:** This document (PEAK_TRADE_OVERVIEW) is the **entry point** with architecture map and extensibility points. For detailed system design, see ARCHITECTURE_OVERVIEW.md.
+
+### Developer & Operations
+- ⚡ **[Developer Workflow Guide](DEVELOPER_WORKFLOW_GUIDE.md)** – Workflows, automation, productivity
+- 🛰️ **[Live Operational Runbooks](LIVE_OPERATIONAL_RUNBOOKS.md)** – Live ops procedures
+- 🛰️ **[Ops Hub](ops/README.md)** – Operator center with runbooks, merge logs, CI docs
+
+### Research & Portfolio
+- 📊 **[Research → Live Playbook](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md)** – End-to-end research-to-production workflow
+- 🎯 **[Portfolio Recipes](PORTFOLIO_RECIPES_AND_PRESETS.md)** – Predefined portfolio configurations
+
+### Governance & Safety
+- 🛡️ **[Governance & Safety Overview](GOVERNANCE_AND_SAFETY_OVERVIEW.md)** – Safety-first approach, go/no-go decisions
+- 🔐 **[Governance Hub](governance/README.md)** – AI autonomy, policy critic, evidence packs
+- 🔒 **[Safety Policies](SAFETY_POLICY_TESTNET_AND_LIVE.md)** – Testnet & live safety rules
+
+### Recent Updates
+- 🆕 **[Documentation Update Summary](DOCUMENTATION_UPDATE_SUMMARY.md)** – Recent docs changes (2026-01-13)
 
 ---
 

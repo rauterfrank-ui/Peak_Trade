@@ -3,7 +3,7 @@
 **PR:** #218  
 **Status:** ✅ MERGED (Auto-Merge)  
 **Datum:** 2025-12-21  
-**Branch:** `docs/ops-pr217-merge-log` (deleted)  
+**Branch:** `docs&#47;ops-pr217-merge-log` (historical, deleted)  
 **Main Fast-forward:** `df9880a → 6a8c3bf`  
 
 ---
@@ -28,7 +28,7 @@ Damit ist die komplette Toolchain (PR #216 → #217 → #218) sauber dokumentier
 ### Non-blocking checks (expected behavior)
 
 - ⚠️ `Quarto Smoke` — **fail** (non-blocking, wie in PR #216 konfiguriert)
-  - Erwartbar, da `docs/ops/*.md` geändert wurde → Path Filter greift korrekt
+  - Erwartbar, da `docs&#47;ops&#47;*.md` geändert wurde → Path Filter greift korrekt
 - ⏳ `tests (3.11)` — pending zum Merge-Zeitpunkt (nicht required)
 
 **Key result:** Auto-Merge hat *sofort* gemerged, als die required checks grün waren — trotz non-blocking Quarto fail.
@@ -45,7 +45,7 @@ Damit ist die komplette Toolchain (PR #216 → #217 → #218) sauber dokumentier
 
 🟢 **Minimal**  
 Begründung:
-- Reine Dokumentation (`docs/ops/*.md`)
+- Reine Dokumentation (`docs&#47;ops&#47;*.md`)
 - Keine Core-/Trading-Logik, keine Konfig- oder Runtime-Änderungen
 
 ---

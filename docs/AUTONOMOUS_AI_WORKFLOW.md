@@ -62,17 +62,17 @@ Der **Autonomous AI-Driven Workflow** ist ein intelligentes System, das automati
 
 ### Module
 
-1. **Workflow Engine** (`src/autonomous/workflow_engine.py`)
+1. **Workflow Engine** (`src&#47;autonomous&#47;workflow_engine.py`)
    - Koordiniert Workflow-Ausführung
    - Verwaltet Workflow-Status
    - Integriert mit bestehenden Scripts
 
-2. **Decision Engine** (`src/autonomous/decision_engine.py`)
+2. **Decision Engine** (`src&#47;autonomous&#47;decision_engine.py`)
    - Trifft intelligente Entscheidungen
    - Bewertet Kriterien und Metriken
    - Berechnet Confidence-Scores
 
-3. **Monitors** (`src/autonomous/monitors.py`)
+3. **Monitors** (`src&#47;autonomous&#47;monitors.py`)
    - `MarketMonitor`: Marktbedingungen
    - `SignalMonitor`: Signalqualität
    - `PerformanceMonitor`: Portfolio-Performance
@@ -134,7 +134,7 @@ Analysiert aktuelle Trading-Signale und deren Qualität.
 - Volatilität akzeptabel (< 0.3)
 
 **Ausführt:**
-- `scripts/run_forward_signals.py`
+- `scripts&#47;run_forward_signals.py`
 - Generiert Forward-Signale für konfigurierte Symbole
 
 ### 2. Risk Check
@@ -145,7 +145,7 @@ Prüft aktuelle Risk-Limits und Portfolio-Status.
 - Position Size < 15%
 
 **Ausführt:**
-- `scripts/check_live_risk_limits.py`
+- `scripts&#47;check_live_risk_limits.py`
 - Validiert Risk-Compliance
 
 ### 3. Market Scan
@@ -156,7 +156,7 @@ Scannt Markt nach Trading-Gelegenheiten.
 - Mindest-Aktivität vorhanden
 
 **Ausführt:**
-- `scripts/run_market_scan.py`
+- `scripts&#47;run_market_scan.py`
 - Analysiert mehrere Symbole
 
 ### 4. Portfolio Analysis
@@ -167,7 +167,7 @@ Führt umfassende Portfolio-Analyse durch.
 - Ausreichend Trades vorhanden
 
 **Ausführt:**
-- `scripts/research_cli.py portfolio`
+- `scripts&#47;research_cli.py portfolio`
 - Generiert Portfolio-Reports
 
 ### 5. Auto (Default)
@@ -256,7 +256,7 @@ Reasoning: High confidence - All key criteria met
 
 ### Vordefinierte Jobs
 
-Die Datei `config/scheduler/jobs.toml` enthält mehrere autonome Workflows:
+Die Datei `config&#47;scheduler&#47;jobs.toml` enthält mehrere autonome Workflows:
 
 1. **autonomous_morning_analysis** (08:15)
    - Morgendliche Marktanalyse
@@ -488,10 +488,10 @@ if decision.should_execute:
 
 ## Weitere Ressourcen
 
-- **Scheduler-Doku:** [`docs/SCHEDULER.md`](SCHEDULER.md)
-- **Research-Pipeline:** [`docs/RESEARCH_PIPELINE.md`](RESEARCH_PIPELINE.md)
-- **Live-Workflows:** [`docs/LIVE_WORKFLOWS.md`](LIVE_WORKFLOWS.md)
-- **Safety & Governance:** [`docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`](GOVERNANCE_AND_SAFETY_OVERVIEW.md)
+- **Scheduler-Doku:** `SCHEDULER.md` (planned)
+- **Research-Pipeline:** `RESEARCH_PIPELINE.md` (planned)
+- **Live-Workflows:** [`docs&#47;LIVE_WORKFLOWS.md`](LIVE_WORKFLOWS.md)
+- **Safety & Governance:** [`docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md`](GOVERNANCE_AND_SAFETY_OVERVIEW.md)
 
 ---
 

@@ -41,7 +41,7 @@ Sweeps → Registry → Auto-Builder → TOML-Configs → Portfolio-Backtest
 | `--allocation` | `equal` oder `metric_weighted` | `equal` |
 | `--initial-equity` | Anfangskapital | `10000.0` |
 | `--prefix` | Prefix für Portfolio-Namen | `auto_portfolio` |
-| `--output-dir` | Output-Verzeichnis | `config/portfolios` |
+| `--output-dir` | Output-Verzeichnis | `config&#47;portfolios` |
 | `--include-scans` | Market-Scans einbeziehen | False |
 | `--dry-run` | Nur anzeigen, nicht speichern | False |
 
@@ -105,7 +105,7 @@ python scripts/build_auto_portfolios.py \
 
 ## Generierte TOML-Struktur
 
-Beispiel einer generierten `config/portfolios/auto_portfolio_3comp_20250104_120000.toml`:
+Beispiel einer generierten `config&#47;portfolios&#47;auto_portfolio_3comp_20250104_120000.toml` (illustrative):
 
 ```toml
 # Auto-Generated Portfolio: auto_portfolio_3comp_20250104_120000

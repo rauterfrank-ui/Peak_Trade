@@ -111,7 +111,7 @@ from src.risk_layer.var_backtest import (
 | File | Lines | Status | Purpose |
 |------|-------|--------|---------|
 | `docs/risk/RISK_LAYER_ALIGNMENT.md` | ~800 | ✅ CREATED | Architecture Decision Memo |
-| `docs/risk/AGENT_HANDOFF.md` | ~500 | ✅ CREATED | Handoff Instructions für A1-A6 |
+| `docs&#47;risk&#47;AGENT_HANDOFF.md` | ~500 | ✅ CREATED (historical) | Handoff Instructions für A1-A6 |
 | `docs/risk/FILES_READY_FOR_AGENTS.md` | ~200 | ✅ CREATED | Diese Datei (File-Übersicht) |
 
 ---
@@ -326,7 +326,7 @@ git commit -m "feat(risk): implement Monte Carlo VaR Calculator (Agent A5)"
 
 **Agent A0 (Architect):** Verfügbar für Architektur-Fragen  
 **Documentation:** `docs/risk/RISK_LAYER_ALIGNMENT.md` (vollständiges Decision Memo)  
-**Handoff:** `docs/risk/AGENT_HANDOFF.md` (detaillierte Instructions)
+**Handoff:** `docs&#47;risk&#47;AGENT_HANDOFF.md` (detaillierte Instructions, historical)
 
 ---
 

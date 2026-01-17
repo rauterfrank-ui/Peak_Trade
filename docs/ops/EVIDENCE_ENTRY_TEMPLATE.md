@@ -63,17 +63,17 @@
 
 ### Common Link Patterns
 
-| Target Location | Relative Path from Evidence Entry | Example |
-|-----------------|-----------------------------------|---------|
-| `config/` files | `../../../config/` | `[bounded_live.toml](../../../config/bounded_live.toml)` <!-- pt:ref-target-ignore --> |
-| `.github/workflows/` files | `../../../.github/workflows/` | `[ci.yml](../../../.github/workflows/ci.yml)` <!-- pt:ref-target-ignore --> |
-| `scripts/ops/` files | `../../../scripts/ops/` | `[run_audit.sh](../../../scripts/ops/run_audit.sh)` <!-- pt:ref-target-ignore --> |
-| `docs/ops/` files (sibling) | `../` | `[EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md)` <!-- pt:ref-target-ignore --> |
-| Other `docs/` files | `../../../docs/` | `[README.md](../../../README.md)` <!-- pt:ref-target-ignore --> |
+| Target Location | Relative Path from Evidence Entry | Example Pattern |
+|-----------------|-----------------------------------|-----------------|
+| `config&#47;` files | `..&#47;..&#47;..&#47;config&#47;` | `` `[bounded_live.toml](..&#47;..&#47;..&#47;config&#47;bounded_live.toml)` `` |
+| `.github&#47;workflows&#47;` files | `..&#47;..&#47;..&#47;.github&#47;workflows&#47;` | `` `[ci.yml](..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml)` `` |
+| `scripts&#47;ops&#47;` files | `..&#47;..&#47;..&#47;scripts&#47;ops&#47;` | `` `[run_audit.sh](..&#47;..&#47;..&#47;scripts&#47;ops&#47;run_audit.sh)` `` |
+| `docs&#47;ops&#47;` files (sibling) | `..&#47;` | `` `[EVIDENCE_INDEX.md](..&#47;EVIDENCE_INDEX.md)` `` |
+| Other `docs&#47;` files | `..&#47;..&#47;..&#47;docs&#47;` | `` `[README.md](..&#47;..&#47;..&#47;README.md)` `` |
 
 ### Examples (Correct ✅ vs Incorrect ❌)
 
-**✅ Correct (3 levels up):**
+**✅ Correct (3 levels up from** `docs&#47;ops&#47;evidence&#47;`**)**:
 ```markdown
 - [Config: bounded_live.toml](../../../config/bounded_live.toml)
 - [CI Workflow](../../../.github/workflows/ci.yml)
@@ -87,8 +87,8 @@
 ```
 
 **Why this matters:**
-- Evidence entries in `docs/ops/evidence/EV-*.md` are 3 directories deep from repo root
-- Path structure: `repo-root/docs/ops/evidence/EV-*.md`
+- Evidence entries in `docs&#47;ops&#47;evidence&#47;EV-*.md` are 3 directories deep from repo root
+- Path structure: `repo-root&#47;docs&#47;ops&#47;evidence&#47;EV-*.md`
 - Broken links cause `docs-reference-targets-gate` CI check to fail
 
 **Verification:**

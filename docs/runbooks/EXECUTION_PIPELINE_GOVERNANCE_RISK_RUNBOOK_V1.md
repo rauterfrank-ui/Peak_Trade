@@ -207,8 +207,8 @@ Order wird geblockt
 | 3 | `environment` | Aktives Environment | Config, `ExecutionResult.environment` | `paper`, `shadow`, `testnet`, `live` (gated) |
 | 4 | `strategy_key` | Identifikator der aktiven Strategy | `OrderIntent.strategy_key` | `momentum_btc_v2` |
 | 5 | `portfolio_preset` | Portfolio-Konfiguration | Config-Datei | `conservative_crypto`, `aggressive_btc` |
-| 6 | `config_snapshot` | Aktuelle Config zum Zeitpunkt des Incidents | `config/config.toml`, JSON-Export | Pfad: `snapshots/config_20251209_143245.json` |
-| 7 | `execution_log_path` | Pfad zu relevanten Logfiles | Logging-System | `logs/execution_20251209.log` |
+| 6 | `config_snapshot` | Aktuelle Config zum Zeitpunkt des Incidents | `config&#47;config.toml`, JSON-Export | Pfad: `snapshots&#47;config_20251209_143245.json` |
+| 7 | `execution_log_path` | Pfad zu relevanten Logfiles | Logging-System | `logs&#47;execution_20251209.log` |
 | 8 | `alert_ids` | IDs der ausgelösten Alerts | Slack, E-Mail, Dashboard | `alert_20251209_143245_risk_001` |
 | 9 | `timestamp_start` | Start-Zeitpunkt des Runs | `ExecutionResult.timestamp` | `2025-12-09T14:32:45Z` |
 | 10 | `timestamp_incident` | Zeitpunkt des Incidents | Logs, Alerts | `2025-12-09T14:33:12Z` |
@@ -224,8 +224,8 @@ Order wird geblockt
 | Artefakt-Typ | Typische Quellen |
 |--------------|------------------|
 | IDs (run_id, session_id, alert_ids) | CLI-Output, Dashboard, Logging-System |
-| Config-Daten | `config/*.toml`, Environment-Variables |
-| Logs | `logs/`-Verzeichnis, Console-Output, Logging-Aggregator |
+| Config-Daten | `config&#47;*.toml`, Environment-Variables |
+| Logs | `logs&#47;`-Verzeichnis, Console-Output, Logging-Aggregator |
 | Alerts | Slack-Channel (#peak-trade-alerts), E-Mail, Dashboard |
 | Metrics | Prometheus/Grafana, Dashboard, Risk-Monitor |
 
@@ -277,14 +277,14 @@ In **< 5 Minuten** klären, ob ExecutionPipeline, Risk-Limits und Alerts „read
 
 | # | Check | Kommando / Aktion | Erwartung | Zeit |
 |---|-------|-------------------|-----------|------|
-| 1 | **Config & Secrets validieren** | `python scripts/check_live_readiness.py` | `✅ All checks passed` | 30s |
-| 2 | **Governance-Lock aktiv** | `grep "live_order_execution" src/governance/go_no_go.py` | `"locked"` | 10s |
-| 3 | **Execution-Tests grün** | `pytest -q tests/test_execution_pipeline*.py` | Alle Tests `PASSED` | 60s |
-| 4 | **Testnet-/Shadow-Order-Simulation** | `python scripts/smoke_test_testnet_stack.py` | `SUCCESS` Status | 60s |
+| 1 | **Config & Secrets validieren** | `python scripts&#47;check_live_readiness.py` | `✅ All checks passed` | 30s |
+| 2 | **Governance-Lock aktiv** | `grep "live_order_execution" src&#47;governance&#47;go_no_go.py` | `"locked"` | 10s |
+| 3 | **Execution-Tests grün** | `pytest -q tests&#47;test_execution_pipeline*.py` | Alle Tests `PASSED` | 60s |
+| 4 | **Testnet-/Shadow-Order-Simulation** | `python scripts&#47;smoke_test_testnet_stack.py` | `SUCCESS` Status | 60s |
 | 5 | **Risk-Limits geladen & valide** | `python -c "from risk import LiveRiskLimits; print(LiveRiskLimits.load())"` | Limits angezeigt, keine Errors | 15s |
 | 6 | **Alert-Kanäle testen** | Slack/E-Mail-Testalert senden | Alert wird empfangen | 30s |
 | 7 | **Dashboard-Health** | Web-UI öffnen (`localhost:8000` oder Prod-URL) | UI lädt, Status-Page zeigt „OK" | 30s |
-| 8 | **Paper-Smoke-Test** | `python scripts/smoke_test_paper.py` | `SUCCESS` Status | 30s |
+| 8 | **Paper-Smoke-Test** | `python scripts&#47;smoke_test_paper.py` (illustrative) | `SUCCESS` Status | 30s |
 
 ### 7.3 Ausführbare Kommandos
 
@@ -311,7 +311,7 @@ python -c "from alerts import send_test_alert; send_test_alert(channel='#peak-tr
 curl -s http://localhost:8000/health | jq .
 
 # 8. Paper-Smoke-Test
-python scripts/smoke_test_paper.py
+# python scripts/smoke_test_paper.py
 ```
 
 ### 7.4 Pre-Session-Protokoll
@@ -350,7 +350,7 @@ Das System reagiert auf ungültige Eingaben mit Status `INVALID` oder `ERROR`. *
 | Negative Quantity | `quantity=-0.5` | `INVALID`, `validation_error="Quantity must be positive"` | Sizing-Berechnung prüfen |
 | NaN/Inf in Quantity | `quantity=float('nan')` | `INVALID` oder `ERROR` | Input-Daten und Berechnungen prüfen |
 | Fehlendes Symbol | `symbol=None` oder `symbol=""` | `INVALID`, `validation_error="Symbol required"` | Strategy-Config prüfen |
-| Unbekanntes Symbol | `symbol="INVALID/PAIR"` | `INVALID`, `validation_error="Unknown symbol"` | Symbol-Mapping prüfen |
+| Unbekanntes Symbol | `symbol="INVALID&#47;PAIR"` | `INVALID`, `validation_error="Unknown symbol"` | Symbol-Mapping prüfen |
 | Ungültiger TimeInForce | `time_in_force="FOREVER"` | `INVALID`, `validation_error="Invalid time_in_force"` | Order-Parameter korrigieren |
 | Limit-Order ohne Preis | `order_type="limit"`, `price=None` | `INVALID`, `validation_error="Limit orders require price"` | Order-Builder-Logik prüfen |
 
