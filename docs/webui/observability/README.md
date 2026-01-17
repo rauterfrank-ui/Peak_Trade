@@ -54,6 +54,7 @@ Diese Assets sind **optional** und betreffen ausschließlich **Service Health / 
 - Prometheus Scrape Example: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`
 - Docker Compose (lokal): `docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml`
 - Grafana Dashboard JSON: `docs/webui/observability/GRAFANA_DASHBOARD_PEAK_TRADE_WATCH_ONLY.json`
+- Grafana Dashboard JSON (MVS, Shadow Pipeline Contract v1): `docs/webui/observability/grafana/dashboards/peaktrade-shadow-pipeline-mvs.json`
 - Hinweis: Grafana `label_values(...)` (Variable Queries) vs PromQL ist in `DASHBOARD_WORKFLOW.md` im Abschnitt „Grafana Variable Queries vs PromQL“ erklärt.
 
 ## Ports & Networking (wichtig)
