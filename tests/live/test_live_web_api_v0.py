@@ -15,6 +15,22 @@ def client(tmp_path: Path) -> TestClient:
     return TestClient(app)
 
 
+def _snapshot_tree(root: Path) -> dict[str, tuple[int, int]]:
+    """
+    Snapshot a directory tree for "no side effects" assertions.
+
+    We intentionally track only stable metadata (size + mtime_ns) to avoid
+    platform-dependent access time changes.
+    """
+    out: dict[str, tuple[int, int]] = {}
+    for p in sorted(root.rglob("*")):
+        if p.is_dir():
+            continue
+        st = p.stat()
+        out[str(p.relative_to(root))] = (int(st.st_size), int(st.st_mtime_ns))
+    return out
+
+
 def _write_run(tmp_path: Path, run_id: str = "20260115_shadow_demo_BTC-EUR_1m") -> Path:
     run_dir = tmp_path / run_id
     run_dir.mkdir(parents=True)
@@ -119,10 +135,12 @@ def test_api_v0_trades_not_available(tmp_path: Path) -> None:
 
 def test_api_v0_signals_positions_orders(tmp_path: Path) -> None:
     run_id = "20260115_shadow_demo_BTC-EUR_1m"
-    _write_run(tmp_path, run_id=run_id)
+    run_dir = _write_run(tmp_path, run_id=run_id)
 
     app = create_app(base_runs_dir=str(tmp_path))
     client = TestClient(app)
+
+    before = _snapshot_tree(run_dir)
 
     signals = client.get(f"/api/v0/runs/{run_id}/signals?limit=50")
     assert signals.status_code == 200
@@ -149,6 +167,9 @@ def test_api_v0_signals_positions_orders(tmp_path: Path) -> None:
     assert op["count"] == len(op["items"])
     # only_nonzero=true filters out the first row (all zeros)
     assert len(op["items"]) == 2
+
+    after = _snapshot_tree(run_dir)
+    assert after == before
 
 
 def test_api_v0_runs_v02_and_detail_v02(tmp_path: Path) -> None:
