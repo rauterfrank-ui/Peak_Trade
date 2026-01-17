@@ -40,7 +40,7 @@ Alle analysierten Stashes enthielten Features, die bereits durch PRs in `main` g
 - Base: 332b595 (7. Dez)
 - 4 Commits: Circuit-Breaker, Smoke Tests
 - Implementiert via PR #166, #168
-- Dateien: docs/SMOKE_TESTS.md, scripts/run_smoke_tests.sh, tests/test_resilience.py
+- Dateien: docs/SMOKE_TESTS.md, `scripts&#47;run_smoke_tests.sh` (historical), tests/test_resilience.py
 
 ### Stash@{0} - Knowledge-DB-Strategy-Vault
 - Branch: feat/knowledge-db-strategy-vault-v0

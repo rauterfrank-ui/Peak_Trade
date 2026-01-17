@@ -6,7 +6,7 @@
 - **State:** MERGED
 - **Merged At (UTC):** 2025-12-16T04:14:07Z
 - **Merge Commit:** `cfdb40560dffe6447a0f062752ebfdd5cb82f431`
-- **Base → Head:** `main` ← `docs/pr-74-delivery-note`
+- **Base → Head:** `main` ← `docs&#47;pr-74-delivery-note` (historical branch)
 - **Author:** `rauterfrank-ui`
 - **Diffstat:** +2 / −0
 - **Log Generated (UTC):** 2025-12-16T04:18:06Z

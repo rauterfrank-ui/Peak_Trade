@@ -75,8 +75,8 @@ Siehe `WORKFLOW_NOTES.md` für den etablierten "All-in-One Prompt"-Stil.
 
 ### 3.2 Setup-Prozess
 ```bash
-# Automatisiertes Setup via Skript
-bash /Users/frnkhrz/Peak_Trade/scripts/ops/setup_worktree_4b_m2.sh /Users/frnkhrz/Peak_Trade
+# Automatisiertes Setup via Skript (historical, script no longer exists)
+# bash /Users/frnkhrz/Peak_Trade/scripts/ops/setup_worktree_4b_m2.sh /Users/frnkhrz/Peak_Trade
 
 # Öffne Worktree in Cursor
 code /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
@@ -162,7 +162,7 @@ uv run pip-audit
 - Pre-commit hooks müssen passen
 
 ### Branch-Hygiene
-- Worktree-Branch basiert auf `origin/main`
+- Worktree-Branch basiert auf `origin&#47;main`
 - Regelmäßig rebase (bei langer Session)
 - Clean commit history vor final push
 
@@ -291,7 +291,7 @@ git log --oneline -5
 - **PR Template:** `docs/ops/sessions/APPENDIX_C_PR_TEMPLATE.md`
 
 ### Scripts
-- **Worktree Setup:** `scripts/ops/setup_worktree_4b_m2.sh`
+- **Worktree Setup:** `scripts&#47;ops&#47;setup_worktree_4b_m2.sh` (historical)
 
 ---
 

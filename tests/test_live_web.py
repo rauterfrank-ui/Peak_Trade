@@ -444,6 +444,11 @@ class TestDashboardEndpoint:
         assert "<script>" in response.text
         assert "fetchJSON" in response.text
 
+    def test_api_is_read_only(self, test_client: TestClient) -> None:
+        """API unter /api/* muss mutierende Methoden ablehnen (watch-only/read-only)."""
+        resp = test_client.post("/api/v0/health")
+        assert resp.status_code == 405
+
 
 # =============================================================================
 # Config Tests

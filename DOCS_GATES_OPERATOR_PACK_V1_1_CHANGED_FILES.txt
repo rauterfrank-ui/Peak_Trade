@@ -1,0 +1,27 @@
+# Docs Gates Operator Pack v1.1 — Changed Files
+
+## New Files (2)
+
+1. docs/ops/runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md
+   - Single-page quick reference for all 3 docs gates
+   - 485 lines
+   - Purpose: Fast operator onboarding (60-second workflow)
+
+2. .github/workflows/ci-pr-merge-state-signal.yml
+   - Optional informational CI workflow
+   - 102 lines
+   - Purpose: Early BEHIND visibility (never required, always SUCCESS)
+
+## Modified Files (1)
+
+1. docs/ops/README.md
+   - Section: "Docs Gates — Operator Pack"
+   - +12 lines (enhanced navigation, added Quickstart link, CI signal info)
+   - Purpose: Clear entry point for operators
+
+## Summary
+
+- Total: 3 files changed
+- Added: +599 lines
+- Modified: +12 lines
+- Risk: LOW (docs-only + optional informational CI)

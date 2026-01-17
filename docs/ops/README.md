@@ -12,10 +12,14 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Wave2 Restore Closeout](WAVE2_RESTORE_CLOSEOUT_20260106_214505Z.md)** — Wave2 session outcomes (PRs #579, #580, #571, #581, #582)
 
 ### Session Closeouts
+- **[Phase 9C Closeout](graphs/PHASE9C_CLOSEOUT_2026-01-14.md)** — Docs Graph Remediation Waves 3–5 (114→39 broken targets, −65.8%, goal achieved)
 - **[Session Closeout 2026-01-06](SESSION_CLOSEOUT_20260106_PEAK_TRADE_DOCS_OPS_INTEGRATION.md)** — Gap analysis & security fixes (PR #573, #574, #575, #576)
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs & Closeouts
+- [merge_logs/PR_716_MERGE_LOG.md](merge_logs/PR_716_MERGE_LOG.md) — PR #716 (Phase 9C Wave 5: broken targets 58→39, goal achieved, 27 token policy violations fixed) ([PR #716](https://github.com/rauterfrank-ui/Peak_Trade/pull/716), 2026-01-14)
+- [merge_logs/PR_714_MERGE_LOG.md](merge_logs/PR_714_MERGE_LOG.md) — PR #714 (Phase 9C Wave 4: broken targets 87→65, CI-Parity Guide) ([PR #714](https://github.com/rauterfrank-ui/Peak_Trade/pull/714), 2026-01-14)
+- [merge_logs/PR_712_MERGE_LOG.md](merge_logs/PR_712_MERGE_LOG.md) — PR #712 (Phase 9C Wave 3: broken targets 114→89) ([PR #712](https://github.com/rauterfrank-ui/Peak_Trade/pull/712), 2026-01-14)
 - **[Phase 5C Workflow Dispatch Guard Enforcement Closeout](PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md)** — Phase 5C closeout: dispatch-guard enforcement activation, 10 required checks, verified (2026-01-12)
 - ``docs&#47;ops&#47;PR_693_MERGE_LOG.md`` — PR #693 (Docs Token Policy Gate: CI enforcement + tests + runbook + allowlist) ([PR #693](https://github.com/rauterfrank-ui/Peak_Trade/pull/693), 2026-01-13)
 - ``docs&#47;ops&#47;PR_691_MERGE_LOG.md`` — PR #691 (Workflow notes integration + docs-reference-targets-gate policy formalization) ([PR #691](https://github.com/rauterfrank-ui/Peak_Trade/pull/691), 2026-01-13)
@@ -646,6 +650,55 @@ scripts/ops/ops_center.sh doctor
 
 **Safe Markdown Guide:** [guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md](guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md) — Operator guide for avoiding false positives (branch names, planned files, CI triage checklist)
 
+### Docs Gates — Operator Pack
+
+**Overview:** Three CI gates enforce docs quality and prevent common errors:
+
+1. **Docs Token Policy Gate** — Encoding policy for inline-code tokens
+2. **Docs Reference Targets Gate** — Path existence validation
+3. **Docs Diff Guard Policy Gate** — Policy marker enforcement
+
+**🚀 Quick Start (60 Seconds):**
+
+```bash
+# Reproduce all 3 gates locally (PR workflow)
+./scripts/ops/pt_docs_gates_snapshot.sh --changed
+
+# Full repo audit
+./scripts/ops/pt_docs_gates_snapshot.sh --all
+```
+
+**📘 Quick Reference:**
+- **[RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md](runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md)** ⭐ — **START HERE:** Single-page quick reference for all 3 gates (60-second workflow, common fixes, decision tree)
+
+**📚 Detailed Operator Runbooks (400+ lines each):**
+- [RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Token Policy Gate comprehensive guide
+- [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Reference Targets Gate comprehensive guide
+- [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff Guard Policy Gate comprehensive guide
+- [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff Guard Policy Gate quick reference
+
+**🛠️ Helper Script:**
+- ``scripts&#47;ops&#47;pt_docs_gates_snapshot.sh`` — Snapshot-only reproduction helper (no watch loops)
+
+**🔔 Optional CI Signal:**
+- **PR Merge State Signal** (`.github&#47;workflows&#47;ci-pr-merge-state-signal.yml`) — Informational-only workflow that shows BEHIND status in PR checks (never required, always SUCCESS)
+  - **Purpose:** Early visibility when branch is behind main
+  - **Output:** Job Summary with sync instructions
+  - **Status:** Non-blocking (informational only)
+
+**When Any Gate Fails:**
+1. Run snapshot helper: `.&#47;scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed`
+2. Follow "Next Actions" in output
+3. Consult relevant operator runbook
+4. Re-run to verify fix
+
+**When PR is BEHIND main:**
+1. Check "PR Merge State Signal" job summary for sync instructions
+2. Merge or rebase main into your branch
+3. Re-run snapshot helper to validate after sync
+
+---
+
 ### Docs Token Policy Gate
 
 **Zweck:** Enforces `&#47;` encoding policy für illustrative Pfade in Markdown inline-code tokens (prevents `docs-reference-targets-gate` false positives).
@@ -653,6 +706,7 @@ scripts/ops/ops_center.sh doctor
 **Status:** Active (non-required, informational gate with 30-day burn-in period)
 
 **Key Resources:**
+- **Operator Quick Reference:** [runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Quick commands, common failure patterns, decision tree for `--changed` vs `--all`
 - **Operator Runbook:** [runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) — When gate triggers, classification rules, triage workflow, allowlist management
 - **Validator Script:** ``scripts&#47;ops&#47;validate_docs_token_policy.py`` — CLI tool (exit codes: 0=pass, 1=violations, 2=error)
 - **Allowlist:** ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt`` — Generic placeholders, system paths (31 entries)
@@ -786,7 +840,7 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 ### Dokumentation
 
 - **Vollständige Dokumentation**: [OPS_DOCTOR_README.md](OPS_DOCTOR_README.md)
-- **Beispiel-Output**: [ops_doctor_example_output.txt](ops_doctor_example_output.txt)
+- **Beispiel-Output**: `ops_doctor_example_output.txt` (example file not included)
 - **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](reports/OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
 
 ### Merge-Log Health Integration
@@ -2040,6 +2094,10 @@ Security:
 ---
 
 ## Verified Merge Logs
+- **PR #745 (docs(ops): add PR #744 merge log)** → `PR_745_MERGE_LOG.md`
+
+- **PR #744 (dashboard(web): watch-only control center v0.2 (read-only))** → `PR_744_MERGE_LOG.md`
+
 - **PR #544 (Phase 8C: VaR Backtest Suite Runner & Report Formatter)** → ``docs&#47;ops&#47;merge_logs&#47;20260104_pr-544_var-backtest-suite-phase-8c.md``
 - **PR #528 (restore: docs/fix-reference-targets-priority1 — Rebase & Branch Cleanup Demo)** → ``docs&#47;ops&#47;merge_logs&#47;2026-01-03_pr-528-rebase-cleanup-restore-demo.md``
 - **PR #512 (CI required checks hardening: fail-open changes + PR concurrency)** → ``docs&#47;ops&#47;PR_512_MERGE_LOG.md``

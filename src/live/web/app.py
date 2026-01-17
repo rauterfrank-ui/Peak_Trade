@@ -22,14 +22,26 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
-from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
+import pandas as pd
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, PlainTextResponse
+from starlette.responses import Response
+
+from .api_v0 import build_api_v0_router
+from .metrics_prom import instrument_app
+from .models_v0 import (
+    AlertResponse,
+    HealthResponse,
+    RunMetadataResponse,
+    RunSnapshotResponse,
+    TailRowResponse,
+)
 
 from ..monitoring import (
     list_runs as monitoring_list_runs,
@@ -38,9 +50,11 @@ from ..monitoring import (
     RunNotFoundError,
     RunSnapshot,
 )
-from ..run_logging import load_run_metadata
+from ..run_logging import load_run_events, load_run_metadata
 
 logger = logging.getLogger(__name__)
+
+DASHBOARD_API_CONTRACT_VERSION = "v0.1B"
 
 
 # =============================================================================
@@ -159,68 +173,6 @@ def _calculate_orders_count(events: List[Dict[str, Any]]) -> Dict[str, int]:
         "total_orders": total_orders,
         "total_blocked_orders": total_blocked_orders,
     }
-
-
-# =============================================================================
-# Pydantic Models for API Responses
-# =============================================================================
-
-
-class RunMetadataResponse(BaseModel):
-    """API Response für Run-Metadaten."""
-
-    run_id: str
-    mode: str
-    strategy_name: str
-    symbol: str
-    timeframe: str
-    started_at: Optional[str] = None
-    ended_at: Optional[str] = None
-
-
-class RunSnapshotResponse(BaseModel):
-    """API Response für Run-Snapshot."""
-
-    run_id: str
-    mode: str
-    strategy_name: str
-    symbol: str
-    timeframe: str
-    total_steps: int = 0
-    total_orders: int = 0
-    total_blocked_orders: int = 0
-    equity: Optional[float] = None
-    realized_pnl: Optional[float] = None
-    unrealized_pnl: Optional[float] = None
-
-
-class TailRowResponse(BaseModel):
-    """API Response für Tail-Row."""
-
-    ts_bar: Optional[str] = None
-    equity: Optional[float] = None
-    realized_pnl: Optional[float] = None
-    unrealized_pnl: Optional[float] = None
-    position_size: Optional[float] = None
-    orders_count: int = 0
-    risk_allowed: bool = True
-    risk_reasons: str = ""
-
-
-class AlertResponse(BaseModel):
-    """API Response für Alert."""
-
-    rule_id: str
-    severity: str
-    message: str
-    run_id: str
-    timestamp: str
-
-
-class HealthResponse(BaseModel):
-    """API Response für Health-Check."""
-
-    status: str
 
 
 # =============================================================================
@@ -651,13 +603,69 @@ def create_app(
     )
 
     # =============================================================================
+    # Safety: hard-reject mutating methods on API paths (watch-only/read-only)
+    # =============================================================================
+
+    @app.middleware("http")
+    async def _reject_mutating_api_methods(request: Request, call_next):
+        if request.url.path.startswith("/api/") and request.method not in {
+            "GET",
+            "HEAD",
+            "OPTIONS",
+        }:
+            return PlainTextResponse("method_not_allowed: read-only api", status_code=405)
+        return await call_next(request)
+
+    # =============================================================================
+    # Observability (optional): Prometheus instrumentation + /metrics (watch-only)
+    # =============================================================================
+    # NOTE:
+    # - Default is fail-open when prometheus_client is not installed (keeps local runs working).
+    # - If REQUIRE_PROMETHEUS_CLIENT=1, /metrics becomes strict and returns 503 when
+    #   prometheus_client is unavailable (prevents "green fake metrics" in Grafana/Prometheus).
+    require_prom = os.getenv("REQUIRE_PROMETHEUS_CLIENT", "0") == "1"
+    instrument_app(app)
+
+    @app.get("/metrics", include_in_schema=False)
+    def metrics() -> Response:
+        """
+        Prometheus scrape endpoint (watch-only/read-only).
+        """
+        try:
+            from prometheus_client import CONTENT_TYPE_LATEST, generate_latest  # type: ignore
+
+            return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+        except Exception:
+            if require_prom:
+                # Strict: signal scrape failure when prometheus_client is missing/unavailable.
+                # 503 is conventional for "service unavailable" in scrape targets.
+                return Response(
+                    b"prometheus_client required but unavailable\n",
+                    status_code=503,
+                    media_type="text/plain; charset=utf-8",
+                )
+            # Fail-open: keep endpoint available even when prometheus_client is missing.
+            # This preserves watch-only observability (and avoids breaking local runs).
+            content_type_latest = "text/plain; version=0.0.4; charset=utf-8"
+            payload = (
+                "# HELP peak_trade_metrics_fallback 1 when prometheus_client is unavailable.\n"
+                "# TYPE peak_trade_metrics_fallback gauge\n"
+                "peak_trade_metrics_fallback 1\n"
+            ).encode("utf-8")
+            return Response(payload, media_type=content_type_latest)
+
+    # =============================================================================
     # API Endpoints
     # =============================================================================
 
     @app.get("/health", response_model=HealthResponse)
     async def health_check():
         """Health-Check-Endpoint."""
-        return HealthResponse(status="ok")
+        return HealthResponse(
+            status="ok",
+            contract_version=DASHBOARD_API_CONTRACT_VERSION,
+            server_time=datetime.now(timezone.utc).isoformat(),
+        )
 
     @app.get("/runs", response_model=List[RunMetadataResponse])
     async def get_runs():
@@ -679,6 +687,12 @@ def create_app(
                                 snapshot.started_at.isoformat() if snapshot.started_at else None
                             ),
                             ended_at=snapshot.ended_at.isoformat() if snapshot.ended_at else None,
+                            is_active=bool(snapshot.is_active),
+                            last_event_time=(
+                                snapshot.last_event_time.isoformat()
+                                if snapshot.last_event_time
+                                else None
+                            ),
                         )
                     )
                 except Exception as e:
@@ -712,6 +726,10 @@ def create_app(
                 equity=snapshot.equity,
                 realized_pnl=snapshot.pnl,
                 unrealized_pnl=snapshot.unrealized_pnl,
+                drawdown=snapshot.drawdown,
+                last_event_time=(
+                    snapshot.last_event_time.isoformat() if snapshot.last_event_time else None
+                ),
             )
         except RunNotFoundError:
             raise HTTPException(status_code=404, detail=f"Run not found: {run_id}")
@@ -802,5 +820,621 @@ def create_app(
     async def dashboard_alias():
         """Alias für Dashboard."""
         return await dashboard()
+
+    # =============================================================================
+    # Watch-only UI v0.1B (HTML + optional JS polling/backoff, read-only)
+    # =============================================================================
+
+    def _html_escape(text: str) -> str:
+        return (
+            text.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#39;")
+        )
+
+    def _watch_only_banner() -> str:
+        return (
+            "<div class='watch-only-banner'>"
+            "<strong>WATCH-ONLY</strong> — Read-only Observability UI. No actions. No secrets."
+            "</div>"
+        )
+
+    def _base_css() -> str:
+        return """
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background: #0b1220; color: #e5e7eb; margin: 0; }
+    a { color: #60a5fa; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 18px; }
+    .watch-only-banner { background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); padding: 10px 12px; border-radius: 10px; margin-bottom: 14px; position: sticky; top: 0; backdrop-filter: blur(6px); }
+    .header { display:flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+    .title { font-size: 20px; font-weight: 700; color: #93c5fd; }
+    .sub { font-size: 12px; color: #9ca3af; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .card { background: #0f172a; border: 1px solid rgba(148,163,184,0.18); border-radius: 12px; padding: 14px; }
+    .card h2 { margin: 0 0 10px 0; font-size: 14px; color: #e5e7eb; }
+    .row { display:flex; justify-content: space-between; gap: 10px; margin: 6px 0; }
+    .k { color: #9ca3af; font-size: 12px; }
+    .v { font-size: 12px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid rgba(148,163,184,0.25); }
+    .ok { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.35); }
+    .degraded { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.35); }
+    .muted { color: #9ca3af; }
+    .pill { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: #93c5fd; }
+    .loading { color: #93c5fd; }
+    .error { color: #fca5a5; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { padding: 8px 8px; border-bottom: 1px solid rgba(148,163,184,0.18); text-align: left; vertical-align: top; }
+    th { color: #9ca3af; font-weight: 600; }
+"""
+
+    def _polling_js(poll_ms: int, max_backoff_ms: int) -> str:
+        # Small helper used by both pages; no secrets, no mutations.
+        return f"""
+  <script>
+  (() => {{
+    const POLL_MS = {poll_ms};
+    const MAX_BACKOFF_MS = {max_backoff_ms};
+    let nextDelayMs = POLL_MS;
+
+    function nowIso() {{ return new Date().toISOString(); }}
+    function esc(s) {{
+      return String(s).replace(/[&<>\"']/g, c => ({{"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#39;"}}[c]));
+    }}
+
+    async function fetchJson(path, timeoutMs = 2500) {{
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
+      try {{
+        const t0 = performance.now();
+        const res = await fetch(path, {{ signal: controller.signal, headers: {{ "Accept": "application/json" }} }});
+        const latencyMs = Math.round(performance.now() - t0);
+        if (!res.ok) {{
+          const err = new Error(`HTTP ${{res.status}}`);
+          err.status = res.status;
+          err.latencyMs = latencyMs;
+          throw err;
+        }}
+        return {{ data: await res.json(), latencyMs }};
+      }} finally {{
+        clearTimeout(timeout);
+      }}
+    }}
+
+    function schedule(nextFn, hadError) {{
+      nextDelayMs = hadError ? Math.min(nextDelayMs * 2, MAX_BACKOFF_MS) : POLL_MS;
+      setTimeout(nextFn, nextDelayMs);
+    }}
+
+    window.__PT_WATCH_ONLY__ = {{ nowIso, esc, fetchJson, schedule }};
+  }})();
+  </script>
+"""
+
+    @app.get("/watch", response_class=HTMLResponse)
+    async def watch_only_overview():
+        # Server-rendered initial state (no JS required)
+        health = await api_v0_health()
+        runs = await api_v0_runs()
+
+        rows_html = ""
+        active_strategy = "unknown"
+        if runs:
+            active = next((r for r in runs if r.is_active is True), runs[0])
+            active_strategy = active.strategy_name or "unknown"
+
+            for r in runs:
+                href = f"/watch/runs/{_html_escape(r.run_id)}"
+                last = _html_escape(r.last_event_time) if r.last_event_time else "—"
+                status_badge = (
+                    "<span class='badge ok'>active</span>"
+                    if r.is_active is True
+                    else "<span class='badge muted'>inactive</span>"
+                )
+                rows_html += (
+                    "<tr>"
+                    f"<td><a class='pill' href='{href}'>{_html_escape(r.run_id)}</a></td>"
+                    f"<td>{status_badge}</td>"
+                    f"<td>{last}</td>"
+                    f"<td>{_html_escape(r.strategy_name or '—')}</td>"
+                    f"<td>{_html_escape(r.symbol or '—')}</td>"
+                    "</tr>"
+                )
+        else:
+            rows_html = "<tr><td colspan='5' class='muted'>No runs found</td></tr>"
+
+        health_badge = (
+            "<span class='badge ok'>ok</span>"
+            if health.status == "ok"
+            else "<span class='badge degraded'>degraded</span>"
+        )
+
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peak_Trade Dashboard v0.1B — Watch-Only</title>
+  <style>{_base_css()}</style>
+</head>
+<body>
+  <div class="wrap">
+    {_watch_only_banner()}
+    <div class="header">
+      <div>
+        <div class="title">Peak_Trade Dashboard v0.1B — Watch-Only</div>
+        <div class="sub">Overview · read-only · polling with backoff</div>
+      </div>
+      <div class="sub" id="last-updated">Last updated: {datetime.now(timezone.utc).isoformat()}</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2>System Health</h2>
+        <div class="row"><span class="k">Status</span><span class="v" id="health-status">{health_badge}</span></div>
+        <div class="row"><span class="k">Latency</span><span class="v" id="health-latency">—</span></div>
+        <div class="row"><span class="k">Contract</span><span class="v pill" id="health-contract">{_html_escape(health.contract_version)}</span></div>
+        <div class="row"><span class="k">Server time</span><span class="v" id="health-server-time">{_html_escape(health.server_time)}</span></div>
+        <div class="sub" id="health-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Live Sessions (Runs)</h2>
+        <table>
+          <thead>
+            <tr><th>Run</th><th>Status</th><th>Last update</th><th>Strategy</th><th>Symbol</th></tr>
+          </thead>
+          <tbody id="runs-tbody">{rows_html}</tbody>
+        </table>
+        <div class="sub" style="margin-top:10px;">
+          Active strategy: <span id="active-strategy" class="pill">{_html_escape(active_strategy)}</span>
+        </div>
+        <div class="sub error" id="runs-error" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+{_polling_js(poll_ms=3000, max_backoff_ms=30000)}
+  <script>
+  (() => {{
+    const helper = window.__PT_WATCH_ONLY__;
+    async function tick() {{
+      let hadError = false;
+      document.getElementById("last-updated").textContent = `Last updated: ${{helper.nowIso()}}`;
+
+      // Health
+      try {{
+        const r = await helper.fetchJson("/api/v0/health");
+        const h = r.data;
+        const badge = (h.status === "ok") ? "<span class='badge ok'>ok</span>" : "<span class='badge degraded'>degraded</span>";
+        document.getElementById("health-status").innerHTML = badge;
+        document.getElementById("health-latency").textContent = `${{r.latencyMs}} ms`;
+        document.getElementById("health-contract").textContent = h.contract_version;
+        document.getElementById("health-server-time").textContent = h.server_time;
+        document.getElementById("health-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("health-error");
+        el.textContent = `Health error: ${{e.message || "unknown"}}`;
+        el.className = "sub error";
+        el.style.display = "block";
+      }}
+
+      // Runs
+      try {{
+        const r = await helper.fetchJson("/api/v0/runs");
+        const runs = Array.isArray(r.data) ? r.data : [];
+        const tbody = document.getElementById("runs-tbody");
+        if (!runs.length) {{
+          tbody.innerHTML = "<tr><td colspan='5' class='muted'>No runs found</td></tr>";
+          document.getElementById("active-strategy").textContent = "unknown";
+        }} else {{
+          const active = runs.find(x => x.is_active === true) || runs[0];
+          document.getElementById("active-strategy").textContent = active.strategy_name || "unknown";
+          tbody.innerHTML = runs.map(run => {{
+            const last = run.last_event_time ? helper.esc(run.last_event_time) : "—";
+            const badge = (run.is_active === true) ? "<span class='badge ok'>active</span>" : "<span class='badge muted'>inactive</span>";
+            const href = `/watch/runs/${{encodeURIComponent(run.run_id)}}`;
+            return `<tr>
+              <td><a class='pill' href='${{href}}'>${{helper.esc(run.run_id)}}</a></td>
+              <td>${{badge}}</td>
+              <td>${{last}}</td>
+              <td>${{helper.esc(run.strategy_name || "—")}}</td>
+              <td>${{helper.esc(run.symbol || "—")}}</td>
+            </tr>`;
+          }}).join("");
+        }}
+        document.getElementById("runs-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("runs-error");
+        el.textContent = `Runs error: ${{e.message || "unknown"}}`;
+        el.style.display = "block";
+      }}
+
+      helper.schedule(tick, hadError);
+    }}
+
+    tick();
+  }})();
+  </script>
+</body>
+</html>"""
+
+        return HTMLResponse(content=html, headers={"Cache-Control": "no-store"})
+
+    @app.get("/watch/runs/{run_id}", response_class=HTMLResponse)
+    async def watch_only_run_detail(run_id: str):
+        # Validate existence early
+        _run_dir_for(run_id)
+
+        # Server-rendered initial state per panel (no JS required)
+        detail_error = None
+        signals_error = None
+        positions_error = None
+        orders_error = None
+
+        try:
+            detail = await api_v0_run_detail(run_id)
+        except Exception as e:
+            detail = None
+            detail_error = str(e)
+
+        try:
+            signals = await api_v0b_run_signals(run_id, limit=50)
+        except Exception as e:
+            signals = SignalsResponseV0B(
+                run_id=run_id, asof=datetime.now(timezone.utc).isoformat(), count=0, items=[]
+            )
+            signals_error = str(e)
+
+        try:
+            positions = await api_v0b_run_positions(run_id, limit=50)
+        except Exception as e:
+            positions = PositionsResponseV0B(
+                run_id=run_id, asof=datetime.now(timezone.utc).isoformat(), count=0, items=[]
+            )
+            positions_error = str(e)
+
+        try:
+            orders = await api_v0b_run_orders(run_id, limit=200, only_nonzero=True)
+        except Exception as e:
+            orders = OrdersResponseV0B(
+                run_id=run_id, asof=datetime.now(timezone.utc).isoformat(), count=0, items=[]
+            )
+            orders_error = str(e)
+
+        def _rows_signals() -> str:
+            if signals_error:
+                return f"<tr><td colspan='4' class='error'>Signals error: {_html_escape(signals_error)}</td></tr>"
+            if not signals.items:
+                return "<tr><td colspan='4' class='muted'>Empty</td></tr>"
+            return "".join(
+                "<tr>"
+                f"<td>{_html_escape(it.ts)}</td>"
+                f"<td>{it.step if it.step is not None else '—'}</td>"
+                f"<td>{it.signal if it.signal is not None else '—'}</td>"
+                f"<td>{it.signal_changed if it.signal_changed is not None else '—'}</td>"
+                "</tr>"
+                for it in signals.items
+            )
+
+        def _rows_positions() -> str:
+            if positions_error:
+                return f"<tr><td colspan='4' class='error'>Positions error: {_html_escape(positions_error)}</td></tr>"
+            if not positions.items:
+                return "<tr><td colspan='4' class='muted'>Empty</td></tr>"
+            return "".join(
+                "<tr>"
+                f"<td>{_html_escape(it.ts)}</td>"
+                f"<td>{it.step if it.step is not None else '—'}</td>"
+                f"<td>{it.position_size if it.position_size is not None else '—'}</td>"
+                f"<td>{it.equity if it.equity is not None else '—'}</td>"
+                "</tr>"
+                for it in positions.items
+            )
+
+        def _rows_orders() -> str:
+            if orders_error:
+                return f"<tr><td colspan='7' class='error'>Orders error: {_html_escape(orders_error)}</td></tr>"
+            if not orders.items:
+                return "<tr><td colspan='7' class='muted'>Empty</td></tr>"
+            tail = orders.items[-50:] if len(orders.items) > 50 else orders.items
+            return "".join(
+                "<tr>"
+                f"<td>{_html_escape(it.ts)}</td>"
+                f"<td>{it.step if it.step is not None else '—'}</td>"
+                f"<td>{it.orders_generated if it.orders_generated is not None else '—'}</td>"
+                f"<td>{it.orders_filled if it.orders_filled is not None else '—'}</td>"
+                f"<td>{it.orders_rejected if it.orders_rejected is not None else '—'}</td>"
+                f"<td>{it.orders_blocked if it.orders_blocked is not None else '—'}</td>"
+                f"<td>{'BLOCKED' if it.risk_allowed is False else ('OK' if it.risk_allowed is True else '—')}</td>"
+                "</tr>"
+                for it in tail
+            )
+
+        meta_html = "<div class='muted'>Meta unavailable</div>"
+        if detail_error:
+            meta_html = f"<div class='error'>Detail error: {_html_escape(detail_error)}</div>"
+        elif detail is not None:
+            meta = detail.meta
+            snap = detail.snapshot
+            meta_html = (
+                "<div class='row'><span class='k'>Strategy</span><span class='v pill'>"
+                f"{_html_escape(meta.strategy_name or '—')}</span></div>"
+                "<div class='row'><span class='k'>Symbol</span><span class='v pill'>"
+                f"{_html_escape(meta.symbol or '—')}</span></div>"
+                "<div class='row'><span class='k'>Mode</span><span class='v pill'>"
+                f"{_html_escape(meta.mode or '—')}</span></div>"
+                "<div class='row'><span class='k'>Started</span><span class='v'>"
+                f"{_html_escape(meta.started_at or '—')}</span></div>"
+                "<div class='row'><span class='k'>Last event</span><span class='v'>"
+                f"{_html_escape(snap.last_event_time or '—')}</span></div>"
+            )
+
+        safe_run = _html_escape(run_id)
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peak_Trade Watch-Only — {safe_run}</title>
+  <style>{_base_css()}</style>
+</head>
+<body>
+  <div class="wrap">
+    {_watch_only_banner()}
+    <div class="header">
+      <div>
+        <div class="title">Session Detail (Run): <span class="pill" id="run-id">{safe_run}</span></div>
+        <div class="sub"><a href="/watch">← Back to Overview</a> · read-only · panel-level states</div>
+      </div>
+      <div class="sub" id="last-updated">Last updated: {datetime.now(timezone.utc).isoformat()}</div>
+    </div>
+
+    <div class="grid-4">
+      <div class="card">
+        <h2>Signals</h2>
+        <table>
+          <thead><tr><th>ts</th><th>step</th><th>signal</th><th>changed</th></tr></thead>
+          <tbody id="signals-tbody">{_rows_signals()}</tbody>
+        </table>
+        <div class="sub error" id="signals-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Positions</h2>
+        <table>
+          <thead><tr><th>ts</th><th>step</th><th>position</th><th>equity</th></tr></thead>
+          <tbody id="positions-tbody">{_rows_positions()}</tbody>
+        </table>
+        <div class="sub error" id="positions-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Orders (read-only counters)</h2>
+        <table>
+          <thead><tr><th>ts</th><th>step</th><th>gen</th><th>fill</th><th>rej</th><th>blk</th><th>risk</th></tr></thead>
+          <tbody id="orders-tbody">{_rows_orders()}</tbody>
+        </table>
+        <div class="sub error" id="orders-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Session Meta (contracted)</h2>
+        <div id="meta-wrap">{meta_html}</div>
+      </div>
+
+      <div class="card">
+        <h2>Logs / Events (v0.2)</h2>
+        <div class="sub" style="margin-bottom:8px;">
+          <button id="logs-toggle" class="pill" style="cursor:pointer;">Pause</button>
+          <span class="muted" style="margin-left:8px;">source: <span class="pill">/api/v0/runs/{safe_run}/events</span></span>
+        </div>
+        <pre id="logs-pre" style="max-height:260px; overflow:auto; background:#050a14; border:1px solid #1f2937; padding:10px; border-radius:8px; white-space:pre-wrap;">(connecting…)</pre>
+        <div class="sub error" id="logs-error" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+{_polling_js(poll_ms=3000, max_backoff_ms=30000)}
+  <script>
+  (() => {{
+    const helper = window.__PT_WATCH_ONLY__;
+    const RUN_ID = document.getElementById("run-id").textContent;
+    let logsPaused = false;
+    let logsSince = 0;
+    let logsEs = null;
+
+    function logsSetPaused(next) {{
+      logsPaused = !!next;
+      const btn = document.getElementById("logs-toggle");
+      btn.textContent = logsPaused ? "Resume" : "Pause";
+    }}
+
+    function logsAppend(line) {{
+      const pre = document.getElementById("logs-pre");
+      const txt = pre.textContent === "(connecting…)" ? "" : pre.textContent;
+      const next = (txt + line + "\n").split("\n");
+      const tail = next.slice(Math.max(0, next.length - 200));
+      pre.textContent = tail.join("\n");
+      pre.scrollTop = pre.scrollHeight;
+    }}
+
+    function logsShowError(msg) {{
+      const el = document.getElementById("logs-error");
+      el.textContent = msg;
+      el.style.display = "block";
+    }}
+
+    function logsClearError() {{
+      const el = document.getElementById("logs-error");
+      el.style.display = "none";
+    }}
+
+    function logsStopSse() {{
+      try {{
+        if (logsEs) logsEs.close();
+      }} catch (_) {{}}
+      logsEs = null;
+    }}
+
+    function logsStartSseOrPoll() {{
+      // Try SSE first (bounded by max_seconds). Fall back to polling on error.
+      logsStopSse();
+      logsClearError();
+      const url = `/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/events?sse=1&follow=1&since_seq=${{logsSince}}&max_seconds=30`;
+      try {{
+        logsEs = new EventSource(url);
+        logsEs.addEventListener("pt_event", (ev) => {{
+          if (logsPaused) return;
+          try {{
+            const item = JSON.parse(ev.data);
+            if (typeof item.seq === "number") logsSince = item.seq + 1;
+            logsAppend(`[${{item.ts}}] ${{item.level}} ${{item.component}}: ${{item.msg}}`);
+          }} catch (e) {{
+            logsShowError(`Logs parse error: ${{e.message || "unknown"}}`);
+          }}
+        }});
+        logsEs.onerror = () => {{
+          logsStopSse();
+          logsShowError("SSE unavailable; falling back to polling.");
+          logsPollTick();
+        }};
+      }} catch (e) {{
+        logsShowError("SSE unavailable; falling back to polling.");
+        logsPollTick();
+      }}
+    }}
+
+    async function logsPollTick() {{
+      if (logsPaused) {{
+        helper.schedule(logsPollTick, false);
+        return;
+      }}
+      let hadError = false;
+      try {{
+        const r = await helper.fetchJson(`/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/events?since_seq=${{logsSince}}&limit=200`);
+        const payload = r.data;
+        const items = payload.items || [];
+        if (items.length) {{
+          for (const it of items) {{
+            logsSince = (typeof it.seq === "number") ? (it.seq + 1) : logsSince;
+            logsAppend(`[${{it.ts}}] ${{it.level}} ${{it.component}}: ${{it.msg}}`);
+          }}
+        }}
+        logsClearError();
+      }} catch (e) {{
+        hadError = true;
+        logsShowError(`Logs poll error: ${{e.message || "unknown"}}`);
+      }}
+      helper.schedule(logsPollTick, hadError);
+    }}
+
+    document.getElementById("logs-toggle").addEventListener("click", () => {{
+      logsSetPaused(!logsPaused);
+    }});
+    logsSetPaused(false);
+    logsStartSseOrPoll();
+
+    async function tick() {{
+      let hadError = false;
+      document.getElementById("last-updated").textContent = `Last updated: ${{helper.nowIso()}}`;
+
+      // Signals
+      try {{
+        const r = await helper.fetchJson(`/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/signals?limit=50`);
+        const payload = r.data;
+        const items = payload.items || [];
+        const tb = document.getElementById("signals-tbody");
+        tb.innerHTML = items.length
+          ? items.map(it => `<tr><td>${{helper.esc(it.ts)}}</td><td>${{it.step ?? "—"}}</td><td>${{it.signal ?? "—"}}</td><td>${{it.signal_changed ?? "—"}}</td></tr>`).join("")
+          : "<tr><td colspan='4' class='muted'>Empty</td></tr>";
+        document.getElementById("signals-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("signals-error");
+        el.textContent = `Signals error: ${{e.message || "unknown"}}`;
+        el.style.display = "block";
+      }}
+
+      // Positions
+      try {{
+        const r = await helper.fetchJson(`/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/positions?limit=50`);
+        const payload = r.data;
+        const items = payload.items || [];
+        const tb = document.getElementById("positions-tbody");
+        tb.innerHTML = items.length
+          ? items.map(it => `<tr><td>${{helper.esc(it.ts)}}</td><td>${{it.step ?? "—"}}</td><td>${{it.position_size ?? "—"}}</td><td>${{it.equity ?? "—"}}</td></tr>`).join("")
+          : "<tr><td colspan='4' class='muted'>Empty</td></tr>";
+        document.getElementById("positions-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("positions-error");
+        el.textContent = `Positions error: ${{e.message || "unknown"}}`;
+        el.style.display = "block";
+      }}
+
+      // Orders
+      try {{
+        const r = await helper.fetchJson(`/api/v0/runs/${{encodeURIComponent(RUN_ID)}}/orders?limit=200&only_nonzero=true`);
+        const payload = r.data;
+        const items = payload.items || [];
+        const tail = (items.length > 50) ? items.slice(items.length - 50) : items;
+        const tb = document.getElementById("orders-tbody");
+        tb.innerHTML = tail.length
+          ? tail.map(it => {{
+              const risk = (it.risk_allowed === false) ? "BLOCKED" : (it.risk_allowed === true ? "OK" : "—");
+              return `<tr>
+                <td>${{helper.esc(it.ts)}}</td>
+                <td>${{it.step ?? "—"}}</td>
+                <td>${{it.orders_generated ?? "—"}}</td>
+                <td>${{it.orders_filled ?? "—"}}</td>
+                <td>${{it.orders_rejected ?? "—"}}</td>
+                <td>${{it.orders_blocked ?? "—"}}</td>
+                <td>${{risk}}</td>
+              </tr>`;
+            }}).join("")
+          : "<tr><td colspan='7' class='muted'>Empty</td></tr>";
+        document.getElementById("orders-error").style.display = "none";
+      }} catch (e) {{
+        hadError = true;
+        const el = document.getElementById("orders-error");
+        el.textContent = `Orders error: ${{e.message || "unknown"}}`;
+        el.style.display = "block";
+      }}
+
+      helper.schedule(tick, hadError);
+    }}
+
+    tick();
+  }})();
+  </script>
+</body>
+</html>"""
+
+        return HTMLResponse(content=html, headers={"Cache-Control": "no-store"})
+
+    # Alias to match operator mental model: /sessions/<id>
+    @app.get("/sessions/{run_id}", response_class=HTMLResponse)
+    async def watch_only_run_detail_alias(run_id: str):
+        return await watch_only_run_detail(run_id)
+
+    # =============================================================================
+    # API v0 (read-only) router
+    # =============================================================================
+
+    app.include_router(
+        build_api_v0_router(
+            runs_dir=runs_dir,
+            contract_version=DASHBOARD_API_CONTRACT_VERSION,
+            health_check=health_check,
+            get_runs=get_runs,
+            get_run_snapshot_endpoint=get_run_snapshot_endpoint,
+        )
+    )
 
     return app

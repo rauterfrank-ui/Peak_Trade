@@ -2,7 +2,7 @@
 
 **PR:** #677  
 **Title:** feat(governance): add strategy-switch sanity check to test health (Phase 6)  
-**Branch:** `feat/phase6-strategy-switch-sanity-check`  
+**Branch:** `feat&#47;phase6-strategy-switch-sanity-check`  
 **Merged:** 2026-01-12  
 **Merge Type:** Squash + Merge  
 **Operator:** ops  
@@ -49,7 +49,7 @@ This provides a governance guardrail without introducing any automated switching
 
 ### Code Changes (2 Modified Files)
 
-#### 1. `scripts/run_strategy_switch_sanity_check.py` (3 Zeilen)
+#### 1. `scripts&#47;run_strategy_switch_sanity_check.py` (3 Zeilen)
 **Fix**: Added PYTHONPATH setup for standalone execution
 
 **Before**: `ModuleNotFoundError: No module named 'src'` ❌  
@@ -63,7 +63,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 ---
 
-#### 2. `tests/ops/test_ops_center_smoke.py` (Hermetic Test Fix)
+#### 2. `tests&#47;ops&#47;test_ops_center_smoke.py` (Hermetic Test Fix)
 **Fix**: Test now accepts any warning type for exit code 1 (was: expected specific message)
 
 **Before**: Failed on "Required Checks Drift" warning ❌  
@@ -80,8 +80,8 @@ assert acceptable_exit
 ### New Components (Pattern-Aligned)
 
 - **New `[switch_sanity]` TOML section**: Config-driven wiring consistent with `[strategy_coverage]`
-- **New CLI runner**: `scripts/run_strategy_switch_sanity_check.py`
-- **New importable check function**: `run_switch_sanity_check()` in `src/ops/test_health_runner.py`
+- **New CLI runner**: `scripts&#47;run_strategy_switch_sanity_check.py`
+- **New importable check function**: `run_switch_sanity_check()` in `src&#47;ops&#47;test_health_runner.py`
 - **TestHealthAutomation v1 integration**:
   - `skip_switch_sanity` gating (analog zu `skip_strategy_coverage`)
   - Report key: `summary.switch_sanity` (analog zu `summary.strategy_coverage`)
@@ -93,7 +93,7 @@ assert acceptable_exit
 
 ### Documentation (8 Files Created)
 
-**Operator Documentation (in `docs/ops/`)**:
+**Operator Documentation (in `docs&#47;ops&#47;`)**:
 1. [Runbook](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md) (~600 lines)
 2. [Operator Guide](../STRATEGY_SWITCH_SANITY_CHECK.md) (~500 lines)
 3. [Merge Log](PR_677_MERGE_LOG.md) (this file, ~400 lines)
@@ -109,9 +109,9 @@ assert acceptable_exit
 
 ### Tests
 
-- **Unit**: `tests/governance/test_strategy_switch_sanity_check.py` (16 tests)
-- **Integration**: `tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
-- **Smoke**: `tests/ops/test_ops_center_smoke.py` (hermetic test fix)
+- **Unit**: `tests&#47;governance&#47;test_strategy_switch_sanity_check.py` (16 tests)
+- **Integration**: `tests&#47;ops&#47;test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
+- **Smoke**: `tests&#47;ops&#47;test_ops_center_smoke.py` (hermetic test fix)
 
 ---
 
@@ -256,7 +256,7 @@ pytest tests/governance/test_strategy_switch_sanity_check.py -v
 
 Ensure `skip_switch_sanity=false` (default) in TestHealthAutomation profile or CLI args.
 
-**Config Location**: `config/test_health_profiles.toml` → `[switch_sanity]` section
+**Config Location**: `config&#47;test_health_profiles.toml` → `[switch_sanity]` section
 
 **Example**:
 ```toml
@@ -289,8 +289,8 @@ git push
 - ✅ Test (reverts to non-deterministic version)
 
 **Unaffected**:
-- ✅ Core-Logik (`src/governance/`, unchanged)
-- ✅ Integration (`src/ops/test_health_runner.py`, unchanged)
+- ✅ Core-Logik (`src&#47;governance&#47;`, unchanged)
+- ✅ Integration (`src&#47;ops&#47;test_health_runner.py`, unchanged)
 - ✅ Other profiles (no dependencies)
 
 ---
@@ -319,11 +319,11 @@ git push
 ### Full Rollback (Revert Entire Phase 6)
 
 Revert the Phase 6 check wiring and related files:
-- Switch-sanity check module/function (`src/governance/strategy_switch_sanity_check.py`)
-- CLI runner script (`scripts/run_strategy_switch_sanity_check.py`)
-- `[switch_sanity]` config section (`config/test_health_profiles.toml`)
-- TestHealth v1 integration (`skip_switch_sanity` + report summary key in `src/ops/test_health_runner.py`)
-- Tests (`tests/governance/test_strategy_switch_sanity_check.py`, `tests/ops/test_test_health_v1.py`)
+- Switch-sanity check module/function (`src&#47;governance&#47;strategy_switch_sanity_check.py`)
+- CLI runner script (`scripts&#47;run_strategy_switch_sanity_check.py`)
+- `[switch_sanity]` config section (`config&#47;test_health_profiles.toml`)
+- TestHealth v1 integration (`skip_switch_sanity` + report summary key in `src&#47;ops&#47;test_health_runner.py`)
+- Tests (`tests&#47;governance&#47;test_strategy_switch_sanity_check.py`, `tests&#47;ops&#47;test_test_health_v1.py`)
 - Docs (runbook, operator guide, evidence pack)
 
 **Command**:
@@ -350,15 +350,15 @@ git push
 - **Operator Summary (DE)**: [PHASE6_OPERATOR_ZUSAMMENFASSUNG.md](../../../PHASE6_OPERATOR_ZUSAMMENFASSUNG.md)
 
 ### Code
-- **Core Logic**: `src/governance/strategy_switch_sanity_check.py`
-- **CLI Script**: `scripts/run_strategy_switch_sanity_check.py`
-- **TestHealth Integration**: `src/ops/test_health_runner.py` (lines 1759-1765)
-- **Config**: `config/test_health_profiles.toml` ([switch_sanity] section)
+- **Core Logic**: `src&#47;governance&#47;strategy_switch_sanity_check.py`
+- **CLI Script**: `scripts&#47;run_strategy_switch_sanity_check.py`
+- **TestHealth Integration**: `src&#47;ops&#47;test_health_runner.py` (lines 1759-1765)
+- **Config**: `config&#47;test_health_profiles.toml` ([switch_sanity] section)
 
 ### Tests
-- **Unit**: `tests/governance/test_strategy_switch_sanity_check.py` (16 tests)
-- **Integration**: `tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
-- **Smoke**: `tests/ops/test_ops_center_smoke.py` (hermetic test fix)
+- **Unit**: `tests&#47;governance&#47;test_strategy_switch_sanity_check.py` (16 tests)
+- **Integration**: `tests&#47;ops&#47;test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
+- **Smoke**: `tests&#47;ops&#47;test_ops_center_smoke.py` (hermetic test fix)
 
 ---
 
@@ -379,13 +379,13 @@ git push
 This merge log follows the **Peak_Trade Docs Link Stability Contract** to ensure maintainability and CI compliance:
 
 ### Principle 1: Main-Resident Links ✅
-- Use **repo-relative markdown links** `[text](path)` for files on `main`
-- Example: `[Runbook](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)`
+- Use **repo-relative markdown links** `[text](repo-path)` for files on `main`
+- Example: `[Runbook](..&#47;runbooks&#47;RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)`
 - Rationale: Enables docs reference targets validation, offline reading, IDE navigation
 
 ### Principle 2: Cross-Branch/PR References 🔗
 - Use **GitHub permalinks** (commit SHA or PR link) for files not yet on `main`
-- Example: `[File](https://github.com/org/repo/blob/SHA/path/file.md)` or `[PR #123](https://github.com/org/repo/pull/123)`
+- Example: `[File](https:&#47;&#47;github.com&#47;org&#47;repo&#47;blob&#47;SHA&#47;path&#47;file.md)` or `[PR #123](https:&#47;&#47;github.com&#47;org&#47;repo&#47;pull&#47;123)`
 - Rationale: Prevents broken links when feature branch is deleted before merge
 
 ### Principle 3: Post-Merge Cleanup 🔄
@@ -394,7 +394,7 @@ This merge log follows the **Peak_Trade Docs Link Stability Contract** to ensure
 - **Status**: Applied in this merge log (PR #677 merged → relative links added in [PR #678](https://github.com/rauterfrank-ui/Peak_Trade/pull/678))
 
 ### Principle 4: External References 🌐
-- PR/Issue links stay as GitHub URLs: `[PR #677](https://github.com/.../pull/677)`
+- PR/Issue links stay as GitHub URLs: `[PR #677](https:&#47;&#47;github.com&#47;...&#47;pull&#47;677)`
 - Rationale: PRs are metadata, not documentation targets; GitHub is source of truth
 
 **Compliance**: This merge log was updated post-merge (via PR #678) to convert backtick references → markdown links per Principle 3.

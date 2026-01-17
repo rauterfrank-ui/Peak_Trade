@@ -113,7 +113,7 @@ Der Strategy-/Research-Track bietet jetzt einen vollständigen Workflow: Strateg
       Bootstrap-basierte Robustness-Analysen für Top-N-Konfigurationen. Implementiert: Simple & Block-Bootstrap, Konfidenzintervalle, Reports.
 - [x] **Stress-Tests & Crash-Szenarien implementieren** ✅ (Phase 46)  
       Deterministische Szenario-Transformationen für Top-N-Konfigurationen. Implementiert: 4 Szenario-Typen (single_crash_bar, vol_spike, drawdown_extension, gap_down_open), Baseline vs. Szenario-Vergleiche, Reports. Erweiterungen: Multi-Asset-Stress-Tests, Regime-bewusste Stress-Tests.
-- [ ] **Experiment-Registry-View** bauen, um Top-N-Konfigurationen schnell zu finden (`scripts/view_top_candidates.py --sweep-name X`)
+- [ ] **Experiment-Registry-View** bauen, um Top-N-Konfigurationen schnell zu finden (`scripts&#47;view_top_candidates.py --sweep-name X`, illustrative)
 - [ ] **Drawdown-Heatmap** als zus�tzlichen Plot-Typ in `sweep_visualization.py` hinzuf�gen
 - [ ] **Volatility-Strategien-Sweep** aufsetzen (ATR-basiert, Volatility-Breakout mit verschiedenen Lookback-Perioden)
 

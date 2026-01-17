@@ -9,11 +9,11 @@ Neue Single-Strategie hinzufügen, die Backtest, Research-CLI und ggf. Portfolio
 ## Voraussetzungen
 
 Grundverständnis von:
-- `src/strategies/*` – Bestehende Strategien als Referenz
-- `src/backtest/engine.py` – BacktestEngine für Tests
-- `src/experiments/*` – Für Sweeps und Portfolio-Integration
-- `config/config.toml` – Strategie-Block-Konfiguration
-- `src/strategies/base.py` – BaseStrategy-Klasse
+- `src&#47;strategies&#47;*` – Bestehende Strategien als Referenz
+- `src&#47;backtest&#47;engine.py` – BacktestEngine für Tests
+- `src&#47;experiments&#47;*` – Für Sweeps und Portfolio-Integration
+- `config&#47;config.toml` – Strategie-Block-Konfiguration
+- `src&#47;strategies&#47;base.py` – BaseStrategy-Klasse
 
 ---
 
@@ -21,8 +21,8 @@ Grundverständnis von:
 
 ### 1. Strategie-Datei anlegen
 
-Erstelle eine neue Datei in `src/strategies/`, z.B.:
-- `src/strategies/my_new_strategy.py`
+Erstelle eine neue Datei in `src&#47;strategies&#47;`, z.B.:
+- `src&#47;strategies&#47;my_new_strategy.py` (illustrative)
 
 **Minimal-Signatur:** Die Strategie sollte entweder:
 - Von `BaseStrategy` erben (empfohlen für OOP-Strategien)
@@ -243,7 +243,7 @@ Falls die Strategie in Sweeps verwendet werden soll, füge sie zu `src/experimen
 ### 5. Tests schreiben
 
 Erstelle eine neue Testdatei, z.B.:
-- `tests/test_strategies_my_new_strategy.py`
+- `tests&#47;test_strategies_my_new_strategy.py` (illustrative)
 
 **Minimal-Tests:**
 

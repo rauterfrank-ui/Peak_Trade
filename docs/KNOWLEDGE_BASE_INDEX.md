@@ -19,7 +19,7 @@
 ### 🏗️ Architecture & Design
 - [Architecture Overview](ARCHITECTURE_OVERVIEW.md) - System architecture
 - [Architecture Details](ARCHITECTURE.md) - Detailed architecture documentation
-- [ADR 0001: Tool Stack](../ADR_0001_Peak_Tool_Stack.md) - Architecture decision record
+- ADR 0001: Tool Stack (archived) - Architecture decision record
 
 ### 📚 Core Concepts
 
@@ -226,11 +226,11 @@ Phase documentation follows format: `PHASE_XX_DESCRIPTION.md`
 - Phase 75-86: Advanced features
 
 #### By File Type
-- `docs/*.md` - General documentation
-- `docs/ai/*.md` - AI integration guides
-- `docs/runbooks/*.md` - Operational runbooks
-- `docs/stability/*.md` - Stability & performance
-- `docs/learning_promotion/*.md` - Learning & promotion loop
+- `docs&#47;*.md` - General documentation
+- `docs&#47;ai&#47;*.md` - AI integration guides
+- `docs&#47;runbooks&#47;*.md` - Operational runbooks
+- `docs&#47;stability&#47;*.md` - Stability & performance
+- `docs&#47;learning_promotion&#47;*.md` - Learning & promotion loop
 
 ---
 
@@ -272,7 +272,7 @@ python scripts/generate_live_status_report.py --format markdown
 ## Additional Resources
 
 ### External References
-- [Peak Trade Tool Stack ADR](../ADR_0001_Peak_Tool_Stack.md)
+- Peak Trade Tool Stack ADR (archived)
 - [Makefile Commands](../Makefile)
 - [Project Board Setup](PROJECT_BOARD_SETUP.md)
 

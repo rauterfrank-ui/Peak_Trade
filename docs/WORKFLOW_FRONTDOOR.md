@@ -47,6 +47,11 @@
 **Size:** 178 lines  
 **Use Case:** Understanding historical technical state, Frank/ChatGPT/Claude workflow mechanics, continuation context for chat-based development sessions
 
+**[Peak_Trade_WORKFLOW_NOTES.md (Legacy Snapshot 2025-12-03, KEEP EVERYTHING)](./ops/archives/Peak_Trade_WORKFLOW_NOTES_2025-12-03.md)**
+
+**Status:** 🕰️ LEGACY SNAPSHOT (Dec 2025), ARCHIVED (KEEP EVERYTHING)  
+**Use Case:** Stable, linkable archival copy of the legacy workflow notes (token-policy-safe, docs-gates-compatible)
+
 **Key Content:**
 - **Technical Layer Status (Dec 2025):** Data Layer, Strategy Layer, Core Layer, Backtest Layer, Strategy Registry, Runner implementation details
 - **Frank/ChatGPT/Claude Code Workflow:** Role split, typical workflow cycle, block-by-block iteration mechanics

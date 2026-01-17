@@ -70,7 +70,7 @@ Beispiel-Backtest (an dein CLI anpassen):
 ```bash
 python -m scripts.run_backtest \
   --strategy armstrong_cycle \
-  --config config/strategies/armstrong_cycle_default.toml
+  --config config&#47;strategies&#47;armstrong_cycle_default.toml
 ```
 
 Typische Run-Typen:
@@ -194,8 +194,8 @@ Damit ist sichergestellt, dass R&D-Strategien niemals versehentlich Orders an Br
 
 **Was tun?**
 * Starte Runs immer aus dem Repo-Root (`/Users/frnkhrz/Peak_Trade`).
-* Verwende absolute Pfade oder prüfe den relativen Pfad: `config/strategies/armstrong_cycle_default.toml`.
-* Quick-Check: `ls config/strategies/` – existiert die Datei?
+* Verwende absolute Pfade oder prüfe den relativen Pfad: `config&#47;strategies&#47;armstrong_cycle_default.toml` (illustrative).
+* Quick-Check: `ls config&#47;strategies&#47;` – existiert die Datei?
 
 ### 3. Run-Typ wird als „live" oder „paper" interpretiert
 
@@ -229,9 +229,9 @@ Damit ist sichergestellt, dass R&D-Strategien niemals versehentlich Orders an Br
 **Ursache:** Der Output-Pfad wurde nicht angelegt oder du hast keine Schreibrechte.
 
 **Was tun?**
-* Standard-Output-Verzeichnisse werden automatisch angelegt (`reports/`, `reports/experiments/`, `reports/r_and_d_experiments/`).
+* Standard-Output-Verzeichnisse werden automatisch angelegt (`reports&#47;`, `reports&#47;experiments&#47;`, `reports&#47;r_and_d_experiments&#47;`).
 * Falls `--save-report` genutzt wird: Prüfe, ob der Parent-Ordner existiert.
-* Bei R&D-Experiments: `mkdir -p reports/r_and_d_experiments` falls nötig.
+* Bei R&D-Experiments: `mkdir -p reports&#47;r_and_d_experiments` falls nötig.
 * Prüfe Schreibrechte im Projekt-Ordner.
 
 ### 7. Sweep läuft ewig / Memory-Probleme
@@ -289,10 +289,10 @@ python scripts/run_backtest.py \
 
 | Was | Wo |
 |-----|-----|
-| Registry-Eintrag | `reports/experiments/experiments.csv` (neue Zeile mit `run_id`, `strategy_key`, Stats) |
-| HTML-Report (wenn `--save-report`) | z.B. `reports/r_and_d/armstrong_cycle_btc_2018_2020.html` |
-| Equity-Plot (wenn `--save-report`) | z.B. `reports/r_and_d/armstrong_cycle_btc_2018_2020_equity.png` |
-| Stats-JSON (wenn `--save-report`) | z.B. `reports/r_and_d/armstrong_cycle_btc_2018_2020_stats.json` |
+| Registry-Eintrag | `reports&#47;experiments&#47;experiments.csv` (neue Zeile mit `run_id`, `strategy_key`, Stats) |
+| HTML-Report (wenn `--save-report`) | z.B. `reports&#47;r_and_d&#47;armstrong_cycle_btc_2018_2020.html` |
+| Equity-Plot (wenn `--save-report`) | z.B. `reports&#47;r_and_d&#47;armstrong_cycle_btc_2018_2020_equity.png` |
+| Stats-JSON (wenn `--save-report`) | z.B. `reports&#47;r_and_d&#47;armstrong_cycle_btc_2018_2020_stats.json` |
 | R&D-Dashboard | Web-UI → Experiments Overview → Filter: `armstrong_cycle` |
 
 **Was schaue ich mir nach dem Run als erstes an?**
@@ -334,10 +334,10 @@ python scripts/run_backtest.py \
 
 | Was | Wo |
 |-----|-----|
-| Registry-Eintrag | `reports/experiments/experiments.csv` (neue Zeile mit `run_id`, `strategy_key`, Stats) |
-| HTML-Report (wenn `--save-report`) | z.B. `reports/r_and_d/el_karoui_vol_btc_regime_test.html` |
-| Equity-Plot (wenn `--save-report`) | z.B. `reports/r_and_d/el_karoui_vol_btc_regime_test_equity.png` |
-| Stats-JSON (wenn `--save-report`) | z.B. `reports/r_and_d/el_karoui_vol_btc_regime_test_stats.json` |
+| Registry-Eintrag | `reports&#47;experiments&#47;experiments.csv` (neue Zeile mit `run_id`, `strategy_key`, Stats) |
+| HTML-Report (wenn `--save-report`) | z.B. `reports&#47;r_and_d&#47;el_karoui_vol_btc_regime_test.html` |
+| Equity-Plot (wenn `--save-report`) | z.B. `reports&#47;r_and_d&#47;el_karoui_vol_btc_regime_test_equity.png` |
+| Stats-JSON (wenn `--save-report`) | z.B. `reports&#47;r_and_d&#47;el_karoui_vol_btc_regime_test_stats.json` |
 | R&D-Dashboard | Web-UI → Experiments Overview → Filter: `el_karoui_vol_model` |
 
 **Was schaue ich mir nach dem Run als erstes an?**
@@ -396,12 +396,12 @@ python scripts/run_backtest.py \
 
 **Was erwarte ich nach dem Run?**
 
-* ✅ Neuer Eintrag in `reports/experiments/experiments.csv` mit `strategy_key = armstrong_cycle`
+* ✅ Neuer Eintrag in `reports&#47;experiments&#47;experiments.csv` mit `strategy_key = armstrong_cycle`
 * ✅ Terminal-Output mit Kennzahlen (Total Return, Sharpe, Max Drawdown, Trade-Statistiken)
-* ✅ HTML-Report: `reports/r_and_d/armstrong_smoke_test.html`
-* ✅ Equity-Plot: `reports/r_and_d/armstrong_smoke_test_equity.png`
-* ✅ Stats-JSON: `reports/r_and_d/armstrong_smoke_test_stats.json`
-* ✅ Optional: JSON in `reports/r_and_d_experiments/` (abhängig von Pipeline-Integration)
+* ✅ HTML-Report: `reports&#47;r_and_d&#47;armstrong_smoke_test.html`
+* ✅ Equity-Plot: `reports&#47;r_and_d&#47;armstrong_smoke_test_equity.png`
+* ✅ Stats-JSON: `reports&#47;r_and_d&#47;armstrong_smoke_test_stats.json`
+* ✅ Optional: JSON in `reports&#47;r_and_d_experiments&#47;` (abhängig von Pipeline-Integration)
 
 ---
 
@@ -423,12 +423,12 @@ python scripts/run_backtest.py \
 
 **Was erwarte ich nach dem Run?**
 
-* ✅ Neuer Eintrag in `reports/experiments/experiments.csv` mit `strategy_key = el_karoui_vol_model`
+* ✅ Neuer Eintrag in `reports&#47;experiments&#47;experiments.csv` mit `strategy_key = el_karoui_vol_model`
 * ✅ Terminal-Output mit Kennzahlen (Total Return, Sharpe, Max Drawdown, Trade-Statistiken)
-* ✅ HTML-Report: `reports/r_and_d/elkaroui_smoke_test.html`
-* ✅ Equity-Plot: `reports/r_and_d/elkaroui_smoke_test_equity.png`
-* ✅ Stats-JSON: `reports/r_and_d/elkaroui_smoke_test_stats.json`
-* ✅ Optional: JSON in `reports/r_and_d_experiments/` (abhängig von Pipeline-Integration)
+* ✅ HTML-Report: `reports&#47;r_and_d&#47;elkaroui_smoke_test.html`
+* ✅ Equity-Plot: `reports&#47;r_and_d&#47;elkaroui_smoke_test_equity.png`
+* ✅ Stats-JSON: `reports&#47;r_and_d&#47;elkaroui_smoke_test_stats.json`
+* ✅ Optional: JSON in `reports&#47;r_and_d_experiments&#47;` (abhängig von Pipeline-Integration)
 
 ---
 
@@ -510,7 +510,7 @@ python scripts/run_backtest.py \
 Diese Variante verwendet echte OHLCV-Daten in einem volatilen Fenster und erzeugt einen „echten" R&D-Report.
 
 > **Voraussetzung:** Du benötigst eine eigene OHLCV-CSV-Datei (z.B. Daily-Daten).
-> Lege diese z.B. unter `data/ohlcv/` ab. Beispiel-Dateiname: `btcusdt_1d.csv`
+> Lege diese z.B. unter `data&#47;ohlcv&#47;` ab. Beispiel-Dateiname: `btcusdt_1d.csv`
 
 **Command:**
 
@@ -538,7 +538,7 @@ python scripts/run_backtest.py \
   * Echte OHLCV-Datei via `--data-file`
   * Kürzeres Zeitfenster (~6 Monate) mit realen Marktbewegungen
 * **Was erwarte ich?**
-  * HTML-Report unter `reports/r_and_d/…`
+  * HTML-Report unter `reports&#47;r_and_d&#47;…`
   * Registry-Eintrag mit Tag `rnd_armstrong_trend_spice`
   * Plots mit echten Trends/Drawdowns und einer Cycle-Phasen-Verteilung
 
@@ -557,7 +557,7 @@ python scripts/run_backtest.py \
 ### Würzige El-Karoui-Variante (reale Daten, engeres Zeitfenster)
 
 > **Voraussetzung:** Du benötigst eine eigene OHLCV-CSV-Datei (z.B. 1h oder 4h Frequenz).
-> Lege diese z.B. unter `data/ohlcv/` ab. Beispiel-Dateiname: `btcusdt_1h.csv`
+> Lege diese z.B. unter `data&#47;ohlcv&#47;` ab. Beispiel-Dateiname: `btcusdt_1h.csv`
 
 ```bash
 cd /Users/frnkhrz/Peak_Trade
@@ -645,7 +645,7 @@ Typische Parameter (vereinfacht):
 
 Ziel später:
 
-* Für gegebene Märkte (z.B. `BTC/EUR` auf Kraken) Zeiträume finden, in denen:
+* Für gegebene Märkte (z.B. `BTC&#47;EUR` auf Kraken) Zeiträume finden, in denen:
 
   * Häufung von starken Bewegungen um Cycle-Dates
   * bestimmte Volatilitäts-/Trend-Muster rund um diese Events auftreten

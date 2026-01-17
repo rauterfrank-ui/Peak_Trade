@@ -76,7 +76,7 @@
 ## Deliverables Summary
 
 ### Created Files (11 new files)
-1. `scripts/ops/setup_worktree_4b_m2.sh` (worktree automation)
+1. `scripts&#47;ops&#47;setup_worktree_4b_m2.sh` (worktree automation, historical)
 2. `docs/ops/sessions/SESSION_4B_M2_20260109.md` (session log)
 3. `docs/ops/sessions/SESSION_4B_M2_TASKBOARD.md` (task tracking)
 4. `docs/ops/sessions/SESSION_4B_M2_DECISIONS.md` (decision log)

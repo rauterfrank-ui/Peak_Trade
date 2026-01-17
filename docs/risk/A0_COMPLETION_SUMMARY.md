@@ -20,7 +20,7 @@ Agent A0 hat die Risk Layer v1.0 Roadmap erfolgreich in das Peak_Trade Repositor
 | Datei | Zeilen | Beschreibung |
 |-------|--------|--------------|
 | `docs/risk/RISK_LAYER_ALIGNMENT.md` | ~800 | Vollständiges Architecture Decision Memo |
-| `docs/risk/AGENT_HANDOFF.md` | ~500 | Detaillierte Handoff-Instructions für A1-A6 |
+| `docs&#47;risk&#47;AGENT_HANDOFF.md` | ~500 | Detaillierte Handoff-Instructions für A1-A6 (historical) |
 | `docs/risk/FILES_READY_FOR_AGENTS.md` | ~400 | File-Übersicht und Status |
 
 **Inhalt:**
@@ -215,8 +215,8 @@ git commit
    - Zone-Klassifikation (GREEN, YELLOW, RED)
    - Binomial-Quantile für Thresholds
 4. Schreibe Tests:
-   - `tests/risk_layer/test_christoffersen.py`
-   - `tests/risk_layer/test_traffic_light.py`
+   - `tests&#47;risk_layer&#47;test_christoffersen.py`
+   - `tests&#47;risk_layer&#47;test_traffic_light.py`
 
 **Referenzen:**
 - Christoffersen, P. F. (1998). Evaluating Interval Forecasts.
@@ -255,7 +255,7 @@ git commit
 2. User Guide
    - `docs/risk/RISK_LAYER_V1_GUIDE.md`
 3. Example Notebooks
-   - `notebooks/risk_layer_demo.ipynb`
+   - `notebooks&#47;risk_layer_demo.ipynb`
 4. Production Readiness Review
 
 ---
@@ -368,7 +368,7 @@ src/risk_layer/var_backtest/
 
 **Dokumentation:**
 - `docs/risk/RISK_LAYER_ALIGNMENT.md` - Vollständiges Decision Memo
-- `docs/risk/AGENT_HANDOFF.md` - Detaillierte Handoff-Instructions
+- `docs&#47;risk&#47;AGENT_HANDOFF.md` - Detaillierte Handoff-Instructions (historical)
 - `docs/risk/FILES_READY_FOR_AGENTS.md` - File-Übersicht
 
 **Code:**

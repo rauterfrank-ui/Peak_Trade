@@ -115,7 +115,7 @@ python scripts/research_cli.py strategy-profile \
 | `--mc-method` | `simple` oder `block_bootstrap` | `simple` |
 | `--stress-scenarios` | Stress-Szenarien | `single_crash_bar vol_spike` |
 | `--stress-severity` | Stress-Severity | 0.2 |
-| `--symbol` | Trading-Symbol | `BTC/EUR` |
+| `--symbol` | Trading-Symbol | `BTC&#47;EUR` |
 | `--timeframe` | Timeframe | `1h` |
 | `--use-dummy-data` | Dummy-Daten verwenden | false |
 | `--dummy-bars` | Anzahl Bars für Dummy | 500 |
@@ -198,8 +198,8 @@ python scripts/research_cli.py strategy-profile \
 
 **5. Ergebnisse finden**
 
-- **JSON:** `reports/strategy_profiles/{strategy_id}_profile_v1.json`
-- **Markdown:** `docs/strategy_profiles/{STRATEGY_ID}_PROFILE_v1.md`
+- **JSON:** `reports&#47;strategy_profiles&#47;{strategy_id}_profile_v1.json`
+- **Markdown:** `docs&#47;strategy_profiles&#47;{STRATEGY_ID}_PROFILE_v1.md`
 
 ---
 
@@ -387,7 +387,7 @@ pytest tests/test_strategy_profiles.py tests/test_strategy_profile_cli.py -v
 
 | Typ | Pfad |
 |-----|------|
-| JSON-Profile | `reports/strategy_profiles/` |
+| JSON-Profile | `reports&#47;strategy_profiles&#47;` |
 | Markdown-Profile | `docs/strategy_profiles/` |
 | Tiering-Config | `config/strategy_tiering.toml` |
 
@@ -511,8 +511,8 @@ python scripts/research_cli.py strategy-profile \
 
 **Output-Pfade**
 
-* JSON: `reports/strategy_profiles/{strategy_id}_profile_v1.json`
-* Markdown: `docs/strategy_profiles/{STRATEGY_ID}_PROFILE_v1.md`
+* JSON: `reports&#47;strategy_profiles&#47;{strategy_id}_profile_v1.json`
+* Markdown: `docs&#47;strategy_profiles&#47;{STRATEGY_ID}_PROFILE_v1.md`
 
 ### Tests & Qualität
 

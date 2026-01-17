@@ -90,6 +90,7 @@
 - [OBSERVABILITY_AND_MONITORING_PLAN.md](OBSERVABILITY_AND_MONITORING_PLAN.md) – Monitoring architecture
 - [LIVE_WORKFLOWS.md](LIVE_WORKFLOWS.md) – Live workflows
 - [INCIDENT_SIMULATION_AND_DRILLS.md](INCIDENT_SIMULATION_AND_DRILLS.md) – Incident drills
+- [RUNBOOKS_AND_INCIDENT_HANDLING.md](RUNBOOKS_AND_INCIDENT_HANDLING.md) – Shadow-mode & incident handling
 
 ### 🛡️ Governance / Safety
 
