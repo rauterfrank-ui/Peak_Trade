@@ -2,6 +2,41 @@
 
 Diese Assets sind **optional** und betreffen ausschließlich **Service Health / HTTP Layer** der Watch-Only Web-App.
 
+## Quickstart (lokal, <10 Min): Shadow Pipeline MVS Dashboard (provisioned + verified)
+
+Ziel: **Grafana-only UI** + **prometheus-local** (Host-Port `:9092`) + **automatisch provisioniertes** Dashboard
+`Peak_Trade — Shadow Pipeline (MVS, Contract v1)` **ohne manuelles Grafana-Import/Klick-Orgie**.
+
+> Hinweis: `bash scripts/obs/shadow_mvs_local_up.sh` startet zusätzlich einen kleinen **Mock-Exporter** (Host-Port `:9109`),
+> lokal deterministisch Daten sehen (auch wenn du die Peak_Trade Web-App noch nicht laufen hast).
+
+Start:
+
+```bash
+bash scripts/obs/shadow_mvs_local_up.sh
+```
+
+Verifikation (harte Checks: Targets UP, Datasource/Dashboard da, Kernqueries liefern Daten):
+
+```bash
+bash scripts/obs/shadow_mvs_local_verify.sh
+```
+
+Stop:
+
+```bash
+bash scripts/obs/shadow_mvs_local_down.sh
+```
+
+URLs:
+- Grafana: `http://127.0.0.1:3000` (admin/admin)
+- Prometheus-local: `http://127.0.0.1:9092`
+- Shadow-MVS Exporter: `http://127.0.0.1:9109/metrics`
+
+Relevante Compose-Files:
+- `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml`
+- `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml`
+
 ## Aktivierung (Peak_Trade Web-App)
 
 - Env-Flag: `PEAK_TRADE_PROMETHEUS_ENABLED=1`

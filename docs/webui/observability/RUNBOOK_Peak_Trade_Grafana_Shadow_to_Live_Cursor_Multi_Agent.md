@@ -22,6 +22,22 @@
 - **Watch‑Only Web UI** als *Operator‑Konsole* (Run‑Snapshot, Blotter, Timeline) – optional, aber empfohlen.
 - **Saubere Governance‑Schalter**: Live Execution nur via explicit enable + sanity checks + gates.
 
+### Quickstart (lokal): Shadow Pipeline MVS Dashboard (provisioned + verified)
+
+Wenn du nur „sofort Dashboard sehen“ willst (ohne Grafana-Import/Klicks), nutze:
+
+```bash
+bash scripts/obs/shadow_mvs_local_up.sh
+bash scripts/obs/shadow_mvs_local_verify.sh
+```
+
+Details: `docs/webui/observability/README.md` und `docs/webui/observability/DASHBOARD_WORKFLOW.md`.
+
+Einstieg B (alles committed, nur lokal testen):
+- Exporter (Host): `http://127.0.0.1:9109/metrics`
+- Prometheus-local: `http://127.0.0.1:9092`
+- Grafana: `http://127.0.0.1:3000` (admin/admin)
+
 > Wichtig: Grafana ersetzt **nicht** “Trading‑UI”.  
 > Grafana ist “Flugkontrolle/Telemetry”; Peak_Trade Ledger + Kraken sind “Buchhaltung/Wirklichkeit”.
 

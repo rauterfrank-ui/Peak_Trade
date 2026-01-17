@@ -1,0 +1,20 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  # Deterministic demo target so Grafana panels always have data locally.
+  # Exporter runs on host (started by scripts/obs/shadow_mvs_local_up.sh).
+  - job_name: "shadow_mvs"
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets: ["host.docker.internal:9109"]
+
+  # Optional: if you run Peak_Trade web locally on the host (default :8000),
+  # Prometheus-local will scrape it too (Docker Desktop uses host.docker.internal).
+  - job_name: "peak_trade_web"
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets: ["host.docker.internal:8000"]

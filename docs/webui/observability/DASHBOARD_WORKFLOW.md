@@ -17,6 +17,7 @@ Diese Doku beschreibt den **Workflow der Grafana-Dashboards** in Peak_Trade: von
    - optional: `prometheus-main`: `http://host.docker.internal:9090`
    - optional (mini-stack): `prometheus`: `http://prometheus:9090` (Docker-intern)
 4) **Grafana Dashboards** werden via **file provisioning** aus JSON-Dateien geladen und in einem Folder angezeigt.
+5) Optional (für Shadow-MVS Demo/Contract): ein lokaler **Mock-Exporter** liefert `peak_trade_pipeline_*` Serien auf dem Host (default `:9109`).
 
 ## Wo liegt was? (Repo-Struktur)
 
@@ -46,6 +47,10 @@ Diese Doku beschreibt den **Workflow der Grafana-Dashboards** in Peak_Trade: von
 
 **Compose**: `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml`
 
+- Wenn `pt-prometheus-local` noch nicht läuft:
+  - Start (Compose): `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` (Host-Port `:9092`)
+  - Oder One-shot (Compose + Verify): `bash scripts/obs/shadow_mvs_local_up.sh` + `bash scripts/obs/shadow_mvs_local_verify.sh`
+
 - Start:
 
 ```bash
@@ -61,6 +66,8 @@ docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml down
 **Wichtiges Konzept**:
 - Grafana läuft als UI „on-demand“.
 - Prometheus kommt **nicht** aus diesem Compose, sondern ist bereits auf dem Host vorhanden (typisch Container `pt-prometheus-local` auf **`:9092`**).
+ - Für das Shadow‑MVS Dashboard kann zusätzlich ein Host-Exporter laufen (via `bash scripts/obs/shadow_mvs_local_up.sh`), den Prometheus-local dann über `host.docker.internal:9109` scrapt.
+ - Für das Shadow‑MVS Dashboard kann zusätzlich ein Host-Exporter laufen (via `bash scripts/obs/shadow_mvs_local_up.sh`), den Prometheus-local dann über `host.docker.internal:9109` scrapt.
 
 ### Modus B: Mini-Stack (Grafana + Prometheus im selben Compose)
 
