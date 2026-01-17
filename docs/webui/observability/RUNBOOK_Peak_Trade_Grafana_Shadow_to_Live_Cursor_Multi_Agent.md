@@ -39,11 +39,11 @@ bash scripts/obs/shadow_mvs_local_down.sh
 ```
 
 **Expected Outcomes (VERIFY PASS):**
-- Exporter (Host): `http://127.0.0.1:9109/metrics` ist erreichbar und enthält:
+- Exporter (Host): `http:&#47;&#47;127.0.0.1:9109&#47;metrics` ist erreichbar und enthält:
   - `shadow_mvs_up`
   - `peak_trade_pipeline_events_total`
 - Prometheus-local (Host): `http://127.0.0.1:9092` zeigt unter `/targets` **`job="shadow_mvs"` = UP**
-- Grafana (Host): `http://127.0.0.1:3000` (Login `admin/admin`)
+- Grafana (Host): `http://127.0.0.1:3000` (Login `admin&#47;admin`)
   - Datasource default: **`prometheus-local`** (UID `peaktrade-prometheus-local`, URL `http://host.docker.internal:9092`)
   - Dashboard sichtbar: UID **`peaktrade-shadow-pipeline-mvs`**
 
@@ -103,7 +103,7 @@ bash scripts/obs/shadow_mvs_local_up.sh
 ```
 
 **Expected (Endpoints erreichbar):**
-- Exporter: `http://127.0.0.1:9109/metrics`
+- Exporter: `http:&#47;&#47;127.0.0.1:9109&#47;metrics`
 - Prometheus-local: `http://127.0.0.1:9092`
 - Grafana: `http://127.0.0.1:3000`
 
@@ -161,7 +161,7 @@ git status -sb
 bash scripts/obs/shadow_mvs_local_down.sh
 ```
 
-**Expected:** Exporter auf `http://127.0.0.1:9109/metrics` ist nicht mehr erreichbar (lokal gestoppt).
+**Expected:** Exporter auf `http:&#47;&#47;127.0.0.1:9109&#47;metrics` ist nicht mehr erreichbar (lokal gestoppt).
 
 ---
 
@@ -347,7 +347,7 @@ Du willst erst die Regeln, dann Code.
 3) Stop: `bash scripts/obs/shadow_mvs_local_down.sh`
 
 **Expected Outcomes (Known‑Good):**
-- Exporter: `http://127.0.0.1:9109/metrics`
+- Exporter: `http:&#47;&#47;127.0.0.1:9109&#47;metrics`
 - Prometheus-local: `http://127.0.0.1:9092` mit Target `job="shadow_mvs"` UP (Scrape: `docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml`)
 - Grafana: `http://127.0.0.1:3000` mit file‑provisioned Datasource + Dashboard (siehe Phase E)
 
@@ -375,16 +375,16 @@ Du willst erst die Regeln, dann Code.
 **Wiring Matrix (Compose → Mounts → Provisioning → Expectation):**
 | Compose File | Mounts (Container) | Provisioning Files (Repo) | Expected Datasource | Expected Dashboard UID |
 |---|---|---|---|---|
-| `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml` | `/etc/grafana/provisioning/datasources` (ro) | `grafana/provisioning/datasources/datasources.prometheus-local.yaml` | Name `prometheus-local` (UID `peaktrade-prometheus-local`, Default, URL `http://host.docker.internal:9092`) | `peaktrade-shadow-pipeline-mvs` |
-| `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml` | `/etc/grafana/provisioning/dashboards` (ro) | `grafana/provisioning/dashboards/dashboards.yaml` | (n/a) | Folder `"Peak_Trade"` lädt JSONs aus `/etc/grafana/dashboards` |
-| `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml` | `/etc/grafana/dashboards` (ro) | `grafana/dashboards/*.json` | (n/a) | JSON enthält UID `peaktrade-shadow-pipeline-mvs` |
+| `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml` | `/etc/grafana/provisioning/datasources` (ro) | `grafana&#47;provisioning&#47;datasources&#47;datasources.prometheus-local.yaml` | Name `prometheus-local` (UID `peaktrade-prometheus-local`, Default, URL `http://host.docker.internal:9092`) | `peaktrade-shadow-pipeline-mvs` |
+| `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml` | `/etc/grafana/provisioning/dashboards` (ro) | `grafana&#47;provisioning&#47;dashboards&#47;dashboards.yaml` | (n/a) | Folder `"Peak_Trade"` lädt JSONs aus `/etc/grafana/dashboards` |
+| `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml` | `/etc/grafana/dashboards` (ro) | `grafana&#47;dashboards&#47;*.json` | (n/a) | JSON enthält UID `peaktrade-shadow-pipeline-mvs` |
 
 > Wiring‑Details (Dashboard Lifecycle, Provider path, Recreate‑Hinweis): siehe `docs/webui/observability/DASHBOARD_WORKFLOW.md`.
 
 **Failure Hook:** Wenn Datasource/Dashboard fehlt → **Phase G‑3 / G‑4**.
 
 #### Appendix (kurz): Strategy B = 1‑Click Import (Fallback, wenn Provisioning nicht gemountet ist)
-1) Grafana öffnen: `http://127.0.0.1:3000` (admin/admin)  
+1) Grafana öffnen: `http://127.0.0.1:3000` (admin&#47;admin)  
 2) Dashboard importieren aus Datei: `docs/webui/observability/grafana/dashboards/peaktrade-shadow-pipeline-mvs.json`  
 3) Datasource wählen: `prometheus-local` (URL `http://host.docker.internal:9092`)  
 4) Speichern im Folder `"Peak_Trade"`  
@@ -406,11 +406,11 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 
 2) (Optional) Manuelle Snapshot‑Checks (nur wenn du Debug brauchst):
 - Exporter:
-  - `curl -fsS http://127.0.0.1:9109/metrics | head -n 50`
+  - `curl -fsS http:&#47;&#47;127.0.0.1:9109&#47;metrics | head -n 50`
 - Prometheus:
-  - `curl -fsS "http://127.0.0.1:9092/api/v1/query?query=up%7Bjob%3D%22shadow_mvs%22%7D"`
+  - `curl -fsS "http:&#47;&#47;127.0.0.1:9092&#47;api&#47;v1&#47;query?query=up%7Bjob%3D%22shadow_mvs%22%7D"`
 - Grafana:
-  - `curl -fsS -u admin:admin http://127.0.0.1:3000/api/health`
+  - `curl -fsS -u admin:admin http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health`
 
 **Smoke Checklist (was das Script prüft):**
 - Exporter erreichbar und enthält `shadow_mvs_up` + `peak_trade_pipeline_events_total`
@@ -445,14 +445,14 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 > Konvention: starte immer mit `bash scripts/obs/shadow_mvs_local_verify.sh` und mappe das erste rote Symptom auf einen Knoten.
 
 #### G‑1: Exporter down / `:9109` nicht erreichbar
-- **Symptom**: `curl http://127.0.0.1:9109/metrics` schlägt fehl oder `shadow_mvs_local_verify.sh` meldet Exporter timeout
+- **Symptom**: `curl http:&#47;&#47;127.0.0.1:9109&#47;metrics` schlägt fehl oder `shadow_mvs_local_verify.sh` meldet Exporter timeout
 - **Wahrscheinlichste Ursache**: Exporter Prozess läuft nicht / Port belegt
 - **Next Commands (snapshot)**:
   - `bash scripts/obs/shadow_mvs_local_up.sh`
   - `lsof -nP -iTCP:9109 -sTCP:LISTEN || true`
 
 #### G‑2: Prometheus-local nicht ready / `:9092` down
-- **Symptom**: `http://127.0.0.1:9092/-/ready` nicht OK
+- **Symptom**: `http:&#47;&#47;127.0.0.1:9092&#47;-&#47;ready` nicht OK
 - **Wahrscheinlichste Ursache**: Compose nicht up / Docker nicht gestartet
 - **Next Commands (snapshot)**:
   - `docker compose -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml ps`
@@ -462,12 +462,12 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - **Symptom**: Prometheus `/targets` zeigt `shadow_mvs` down
 - **Wahrscheinlichste Ursache**: Host‑Bridge/Target falsch, Exporter down, oder falsche Scrape Config
 - **Next Commands (snapshot)**:
-  - `curl -fsS http://127.0.0.1:9109/metrics | grep -n "^shadow_mvs_up" | head -n 5 || true`
+  - `curl -fsS http:&#47;&#47;127.0.0.1:9109&#47;metrics | grep -n "^shadow_mvs_up" | head -n 5 || true`
   - `sed -n '1,120p' docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml`
     - Erwartung: `targets: ["host.docker.internal:9109"]`
 
 #### G‑4: Grafana down / health nicht OK
-- **Symptom**: `curl -u admin:admin http://127.0.0.1:3000/api/health` fail
+- **Symptom**: `curl -u admin:admin http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health` fail
 - **Wahrscheinlichste Ursache**: Grafana container nicht läuft / Port `:3000` belegt
 - **Next Commands (snapshot)**:
   - `docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml ps`
@@ -477,22 +477,22 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - **Symptom**: Verify meldet fehlende Datasource UID oder URL nicht `host.docker.internal:9092`
 - **Wahrscheinlichste Ursache**: falsches Datasource‑YAML gemountet (oder altes Provisioning im Container)
 - **Next Commands (snapshot)**:
-  - `curl -fsS -u admin:admin http://127.0.0.1:3000/api/datasources | python3 -m json.tool | head -n 220`
+  - `curl -fsS -u admin:admin http:&#47;&#47;127.0.0.1:3000&#47;api&#47;datasources | python3 -m json.tool | head -n 220`
   - `docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d --force-recreate`
 
 #### G‑6: Dashboard fehlt (UID nicht sichtbar)
 - **Symptom**: Grafana `/api/search?type=dash-db` enthält `peaktrade-shadow-pipeline-mvs` nicht
 - **Wahrscheinlichste Ursache**: Dashboard provider path/mount mismatch oder JSON nicht gemountet
 - **Next Commands (snapshot)**:
-  - `curl -fsS -u admin:admin -G http://127.0.0.1:3000/api/search --data-urlencode type=dash-db | python3 -m json.tool | head -n 120`
+  - `curl -fsS -u admin:admin -G http:&#47;&#47;127.0.0.1:3000&#47;api&#47;search --data-urlencode type=dash-db | python3 -m json.tool | head -n 120`
   - `docker exec peaktrade-grafana-local sh -lc 'ls -la /etc/grafana/provisioning/dashboards || true; echo; ls -la /etc/grafana/dashboards || true'`
 
 #### G‑7: Daten „empty“ obwohl Targets UP
 - **Symptom**: `up{job="shadow_mvs"}` ist 1, aber Stage‑Query liefert leer
 - **Wahrscheinlichste Ursache**: Exporter liefert nicht die erwarteten Serien / Zeitfenster zu kurz / falscher Mode‑Filter
 - **Next Commands (snapshot)**:
-  - `curl -fsS http://127.0.0.1:9109/metrics | grep -n "^peak_trade_pipeline_events_total" | head -n 20`
-  - `curl -fsS -G http://127.0.0.1:9092/api/v1/query --data-urlencode 'query=count by (__name__) ({__name__=~"peak_trade_pipeline_.*"})' | python3 -m json.tool | head -n 120`
+  - `curl -fsS http:&#47;&#47;127.0.0.1:9109&#47;metrics | grep -n "^peak_trade_pipeline_events_total" | head -n 20`
+  - `curl -fsS -G http:&#47;&#47;127.0.0.1:9092&#47;api&#47;v1&#47;query --data-urlencode 'query=count by (__name__) ({__name__=~"peak_trade_pipeline_.*"})' | python3 -m json.tool | head -n 120`
 
 #### G‑8: „Mini‑Stack“ Verwechslung (Prometheus im Compose vs prom-local)
 - **Symptom**: Grafana Datasource zeigt auf `http://prometheus:9090`, aber du nutzt `prometheus-local` auf `:9092` (oder umgekehrt)
@@ -807,7 +807,7 @@ Output: docs/webui/GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md
 ### E‑Checklist (Persist & Provision)
 - [ ] `docs/webui/observability/grafana/provisioning/datasources/datasources.prometheus-local.yaml` ist gemountet (Grafana-only Compose)
 - [ ] Grafana Datasource default: `prometheus-local` (UID `peaktrade-prometheus-local`, URL `http://host.docker.internal:9092`)
-- [ ] Dashboard provider aktiv: `grafana/provisioning/dashboards/dashboards.yaml` (Path `/etc/grafana/dashboards`)
+- [ ] Dashboard provider aktiv: `grafana&#47;provisioning&#47;dashboards&#47;dashboards.yaml` (Path `/etc/grafana/dashboards`)
 - [ ] Dashboard UID `peaktrade-shadow-pipeline-mvs` ist sichtbar ohne UI‑Import
 
 ### F‑Checklist (Smoke / Snapshot)
