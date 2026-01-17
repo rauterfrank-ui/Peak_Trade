@@ -112,15 +112,15 @@ def _render_metrics(uptime_s: float, mode: str, exchange: str) -> str:
     for le, c in zip(buckets, bucket_counts):
         le_str = "+Inf" if math.isinf(le) else f"{le:g}"
         lines.append(
-            'peak_trade_pipeline_latency_seconds_bucket'
+            "peak_trade_pipeline_latency_seconds_bucket"
             f'{{mode="{mode}",edge="{edge}",exchange="{exchange}",le="{le_str}"}} {c}'
         )
     lines.append(
-        'peak_trade_pipeline_latency_seconds_sum'
+        "peak_trade_pipeline_latency_seconds_sum"
         f'{{mode="{mode}",edge="{edge}",exchange="{exchange}"}} {obs_sum}'
     )
     lines.append(
-        'peak_trade_pipeline_latency_seconds_count'
+        "peak_trade_pipeline_latency_seconds_count"
         f'{{mode="{mode}",edge="{edge}",exchange="{exchange}"}} {obs_count}'
     )
 
@@ -162,7 +162,9 @@ class _Handler(BaseHTTPRequestHandler):
 
         server: "_Server" = self.server  # type: ignore[assignment]
         uptime_s = _now_s() - server.start_time_s
-        body = _render_metrics(uptime_s=uptime_s, mode=server.mode, exchange=server.exchange).encode("utf-8")
+        body = _render_metrics(
+            uptime_s=uptime_s, mode=server.mode, exchange=server.exchange
+        ).encode("utf-8")
 
         self.send_response(HTTPStatus.OK)
         self.send_header("Content-Type", "text/plain; version=0.0.4; charset=utf-8")
