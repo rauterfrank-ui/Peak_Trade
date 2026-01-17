@@ -1,0 +1,241 @@
+name: Evidence Pack Validation Gate
+
+# ============================================================================
+# Evidence Pack CI Gate (Phase 4A → CI Integration)
+# ============================================================================
+# Validates Evidence Packs generated during test runs.
+# Required check for PR merges (fail-closed).
+#
+# Reference: docs/ai/EVIDENCE_PACK_CI_GATE.md
+# ============================================================================
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+  merge_group:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+concurrency:
+  group: evidence-pack-gate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ============================================================================
+  # Change Detection
+  # ============================================================================
+  # Detects whether Evidence Pack related code changed.
+  # Allows graceful skipping on unrelated PRs (while keeping check present).
+  # ============================================================================
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      evidence_pack_changed: ${{ steps.filter.outputs.evidence_pack }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect Evidence Pack changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            evidence_pack:
+              - 'src/ai_orchestration/**'
+              - 'scripts/validate_evidence_pack_ci.py'
+              - 'scripts/run_layer_smoke_with_evidence_pack.py'
+              - 'tests/ai_orchestration/test_evidence_pack*.py'
+              - '.github/workflows/evidence_pack_gate.yml'
+              - 'requirements.txt'
+
+  # ============================================================================
+  # Evidence Pack Smoke Run
+  # ============================================================================
+  # Creates minimal Evidence Pack via smoke test.
+  # This ensures Evidence Pack creation works end-to-end.
+  # IMPORTANT: Always runs (no job-level if) to satisfy required check contract.
+  # ============================================================================
+  evidence-pack-smoke-run:
+    name: evidence-pack-smoke-run
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: changes
+    # IMPORTANT: No job-level if condition - must always be created for required check
+
+    steps:
+      - name: Evidence Pack code unchanged — skip smoke run
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.evidence_pack_changed != 'true' }}
+        run: |
+          echo "✅ Evidence Pack code unchanged - skipping smoke run"
+          echo "This check passes gracefully (no validation needed)."
+
+      - name: Checkout
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip packages
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run smoke test (create Evidence Pack)
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        run: |
+          python scripts/run_layer_smoke_with_evidence_pack.py --layer L0 --autonomy REC --verbose
+
+      - name: Upload Evidence Pack artifacts
+        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-packs
+          path: .artifacts/evidence_packs/
+          retention-days: 30
+
+  # ============================================================================
+  # Evidence Pack Validation Gate (REQUIRED CHECK)
+  # ============================================================================
+  # Validates all Evidence Packs in .artifacts/evidence_packs/.
+  # This is the REQUIRED CI gate (fail-closed).
+  # IMPORTANT: Always runs (no job-level if) to satisfy required check contract.
+  # ============================================================================
+  evidence-pack-validation-gate:
+    name: evidence-pack-validation-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [changes, evidence-pack-smoke-run]
+    # IMPORTANT: No job-level if condition - must always be created for required check
+
+    steps:
+      - name: Evidence Pack code unchanged — skip validation
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.evidence_pack_changed != 'true' }}
+        run: |
+          echo "✅ Evidence Pack code unchanged - skipping validation"
+          echo "This check passes gracefully (no validation needed)."
+          echo ""
+          echo "## ✅ Evidence Pack Validation: SKIPPED" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Evidence Pack code unchanged - no validation needed." >> $GITHUB_STEP_SUMMARY
+
+      - name: Checkout
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip packages
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download Evidence Pack artifacts
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: evidence-packs
+          path: .artifacts/evidence_packs/
+
+      - name: Validate Evidence Packs (CI Gate)
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true' }}
+        id: validate
+        run: |
+          python scripts/validate_evidence_pack_ci.py \
+            --root .artifacts/evidence_packs \
+            --output .artifacts/validation_report.json \
+            --strict \
+            --verbose | tee .artifacts/validation_summary.txt
+
+      - name: Generate GitHub Actions Summary
+        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
+        run: |
+          echo "## 📦 Evidence Pack Validation Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f .artifacts/validation_report.json ]; then
+            total=$(jq -r '.total_packs' .artifacts/validation_report.json)
+            valid=$(jq -r '.valid_packs' .artifacts/validation_report.json)
+            invalid=$(jq -r '.invalid_packs' .artifacts/validation_report.json)
+            success_rate=$(jq -r '.success_rate' .artifacts/validation_report.json)
+
+            echo "**Summary:**" >> $GITHUB_STEP_SUMMARY
+            echo "- Total Packs: $total" >> $GITHUB_STEP_SUMMARY
+            echo "- Valid Packs: $valid ✅" >> $GITHUB_STEP_SUMMARY
+            echo "- Invalid Packs: $invalid ❌" >> $GITHUB_STEP_SUMMARY
+            echo "- Success Rate: $success_rate%" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            if [ "$invalid" -gt 0 ]; then
+              echo "### ❌ Validation Failed" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**Invalid Packs:**" >> $GITHUB_STEP_SUMMARY
+              jq -r '.pack_results[] | select(.valid == false) | "- \(.pack_path): \(.errors | join(", "))"' .artifacts/validation_report.json >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "📄 See **evidence-pack-validation-report** artifact for full details." >> $GITHUB_STEP_SUMMARY
+            else
+              echo "### ✅ All Packs Valid" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⚠️ Validation report not found." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload validation report (JSON)
+        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-pack-validation-report
+          path: .artifacts/validation_report.json
+          retention-days: 30
+
+      - name: Upload validation summary (text)
+        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-pack-validation-summary
+          path: .artifacts/validation_summary.txt
+          retention-days: 30
+
+      - name: Upload Evidence Packs
+        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-packs-validated
+          path: .artifacts/evidence_packs/
+          retention-days: 30
+
+      - name: Fail on invalid Evidence Packs
+        if: ${{ failure() && (github.event_name != 'pull_request' || needs.changes.outputs.evidence_pack_changed == 'true') }}
+        run: |
+          echo "❌ Evidence Pack validation failed!"
+          echo "See validation report artifact for details."
+          exit 1
