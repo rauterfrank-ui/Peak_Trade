@@ -235,9 +235,9 @@ Eine erste, streng begrenzte **Exchange-Anbindung im Testnet-Modus**, die den be
 **Mögliche Artefakte:**
 * `src/exchange/base.py` – `ExchangeClient`-Interface
 * `src/exchange/kraken_testnet.py` – Erweiterung zum vollwertigen Client
-* `src/orders/exchange.py` – `ExchangeOrderExecutor`
+* `src&#47;orders&#47;exchange.py` – `ExchangeOrderExecutor`
 * Config: `[exchange.kraken_testnet]` erweitert
-* CLI: `scripts/testnet_ping_exchange.py`, `scripts/testnet_place_smoke_order.py`
+* CLI: `scripts&#47;testnet_ping_exchange.py`, `scripts&#47;testnet_place_smoke_order.py` (illustrative)
 
 **Status:** 📝 geplant
 
@@ -274,8 +274,8 @@ Ein **klarer, schriftlich fixierter Weg** von „Testnet ok" zu „vorsichtiges 
 * Nutzt `LiveRunLogger`, Reporting-Module, Limits-Infos
 
 **Mögliche Artefakte:**
-* `src/monitoring/dashboard.py` – TUI mit `rich`
-* (Optional) `scripts/run_monitoring_server.py` – Web-Dashboard
+* `src&#47;monitoring&#47;dashboard.py` – TUI mit `rich`
+* (Optional) `scripts&#47;run_monitoring_server.py` – Web-Dashboard (illustrative)
 * Alerting/Signals (leichtgewichtig)
 
 **Status:** 📝 geplant

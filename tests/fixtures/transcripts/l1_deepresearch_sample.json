@@ -1,0 +1,91 @@
+{
+  "recorded_at": "2026-01-10T12:00:00+00:00",
+  "runs": [
+    {
+      "metadata": {
+        "latency_ms": 12500,
+        "timestamp": "2026-01-10T12:00:01+00:00"
+      },
+      "model_id": "o3-deep-research",
+      "prompt_hash": "sha256:30a77f87cb6ade8472d9d045f8907d8f93887d6fcc97b435f6ee4a05bacfcb02",
+      "request": {
+        "max_tokens": 8000,
+        "messages": [
+          {
+            "content": "You are an AI research assistant conducting deep research. Your task is to provide comprehensive, well-cited research outputs. Always include:\n1. Citations for all claims (use [Source: URL or Paper Name])\n2. Research methodology used\n3. Limitations and uncertainty statements\n4. No execution instructions or live trading advice.",
+            "role": "system"
+          },
+          {
+            "content": "What are the best practices for VaR backtesting in quantitative finance?",
+            "role": "user"
+          }
+        ],
+        "model": "o3-deep-research",
+        "temperature": 0.7
+      },
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "content": "# Research Report: VaR Backtesting Best Practices\n\n## Executive Summary\n\nThis research synthesizes best practices for Value-at-Risk (VaR) backtesting based on academic literature and industry standards.\n\n## Methodology\n\nSystematic review of:\n- Academic papers (2015-2025)\n- Industry white papers (Basel Committee, ISDA)\n- Regulatory guidance (EU, US)\n\n## Key Findings\n\n### 1. Unconditional Coverage Tests\n\n**Kupiec POF Test (1995)** [Source: Kupiec, P. (1995). Techniques for Verifying the Accuracy of Risk Measurement Models. Journal of Derivatives]\n- Tests if number of VaR exceptions matches expected frequency\n- Limitation: Low power for small samples (<250 days)\n- Best Practice: Use alongside conditional coverage tests\n\n### 2. Conditional Coverage Tests\n\n**Christoffersen Test (1998)** [Source: Christoffersen, P. (1998). Evaluating Interval Forecasts. International Economic Review]\n- Tests both correct coverage AND independence of exceptions\n- Recommended confidence level: 95% for daily VaR\n- Implementation: Likelihood ratio test with chi-square distribution\n\n### 3. Duration Tests\n\n**Christoffersen-Pelletier Test (2004)** [Source: Christoffersen, P., & Pelletier, D. (2004). Backtesting Value-at-Risk: A Duration-Based Approach. Journal of Financial Econometrics]\n- Tests clustering of VaR exceptions\n- Particularly relevant for turbulent markets\n- Best Practice: Use for detection of model misspecification\n\n### 4. Industry Standards\n\n**Basel Committee on Banking Supervision** [Source: BCBS (2019). Minimum capital requirements for market risk]\n- Minimum 250 observations (1 year daily data)\n- Traffic light approach (Green/Yellow/Red zones)\n- Backtesting horizon: rolling 12-month window\n\n## Recommendations\n\n1. **Multi-Test Framework**: Use combination of POF, Christoffersen, and duration tests\n2. **Sample Size**: Minimum 250 observations; prefer 500+ for reliable statistics\n3. **Confidence Levels**: Test at 95% and 99% simultaneously\n4. **Rolling Windows**: Update backtest quarterly with rolling 12-month data\n5. **Stress Periods**: Ensure sample includes at least one stress period\n\n## Limitations and Uncertainty\n\n**Statistical Limitations:**\n- All tests have limited power in finite samples\n- False rejection rates can be high with multiple testing\n- Extreme market events may not be well-captured\n\n**Implementation Challenges:**\n- Clean data required (survivorship bias, corporate actions)\n- Choice of risk-free rate affects results\n- P&L calculation methodology must be consistent\n\n**Research Gaps:**\n- Limited consensus on optimal test combination\n- Emerging risks (crypto, climate) not well-studied\n- Multi-horizon VaR backtesting under-researched\n\n## Citations\n\n1. Kupiec, P. (1995). Techniques for Verifying the Accuracy of Risk Measurement Models. Journal of Derivatives, 3(2), 73-84.\n2. Christoffersen, P. (1998). Evaluating Interval Forecasts. International Economic Review, 39(4), 841-862.\n3. Christoffersen, P., & Pelletier, D. (2004). Backtesting Value-at-Risk: A Duration-Based Approach. Journal of Financial Econometrics, 2(1), 84-108.\n4. Basel Committee on Banking Supervision (2019). Minimum capital requirements for market risk. Bank for International Settlements.\n5. Berkowitz, J., Christoffersen, P., & Pelletier, D. (2011). Evaluating Value-at-Risk Models with Desk-Level Data. Management Science, 57(12), 2213-2227.\n\n## Output Classification\n\nThis is a **ResearchReport** and **LiteratureReview** output.\nNo execution instructions or live trading advice provided.",
+              "role": "assistant"
+            }
+          }
+        ],
+        "id": "chatcmpl-l1-sample-001",
+        "usage": {
+          "completion_tokens": 845,
+          "prompt_tokens": 123,
+          "total_tokens": 968
+        }
+      },
+      "role": "proposer",
+      "run_id": "proposer-run-001"
+    },
+    {
+      "metadata": {
+        "latency_ms": 5600,
+        "timestamp": "2026-01-10T12:00:18+00:00"
+      },
+      "model_id": "o3-pro",
+      "prompt_hash": "sha256:9a248d5ee6882a3ec760f88a0f5650a947f26b0421683b54b34cee039b8c0b90",
+      "request": {
+        "max_tokens": 3000,
+        "messages": [
+          {
+            "content": "You are a critical reviewer evaluating research outputs. Check for:\n1. Sufficient citations (minimum 3 for any claim)\n2. Clear methodology\n3. Stated limitations and uncertainty\n4. No execution instructions or live trading advice\nProvide APPROVE, APPROVE_WITH_CHANGES, or REJECT decision.",
+            "role": "system"
+          },
+          {
+            "content": "Review the following research output:\n\n[Proposer output included here]",
+            "role": "user"
+          }
+        ],
+        "model": "o3-pro",
+        "temperature": 0.3
+      },
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "content": "# Critic Review: VaR Backtesting Research\n\n**Decision:** APPROVE_WITH_CHANGES\n\n**Overall Assessment:**\nThe research output demonstrates strong academic rigor with comprehensive coverage of VaR backtesting methods. The structure is clear, methodology is transparent, and limitations are explicitly stated.\n\n**Strengths:**\n\n1. **Citation Quality (PASS)**\n   - 5 high-quality academic and regulatory sources cited\n   - All major claims have supporting citations\n   - Mix of foundational papers (Kupiec, Christoffersen) and recent guidance (BCBS 2019)\n\n2. **Methodology (PASS)**\n   - Clear systematic review approach\n   - Explicit time bounds (2015-2025)\n   - Multiple source types (academic, industry, regulatory)\n\n3. **Limitations Section (PASS)**\n   - Statistical limitations clearly stated\n   - Implementation challenges identified\n   - Research gaps acknowledged\n   - Uncertainty about optimal test combination noted\n\n4. **Capability Scope Compliance (PASS)**\n   - Output classified as ResearchReport/LiteratureReview\n   - No execution instructions present\n   - No live trading advice provided\n   - No forbidden keywords detected\n\n**Suggested Changes:**\n\n1. **Quantitative Detail (Minor)**\n   - Add specific thresholds for Kupiec POF test (e.g., rejection regions)\n   - Include formulae for Christoffersen LR test statistic\n   - Rationale: Improves reproducibility for operators\n\n2. **Sample Period Context (Minor)**\n   - Specify which \"stress period\" the 250-500 observations should include\n   - Example: 2008 financial crisis, 2020 COVID crash, etc.\n   - Rationale: Practical guidance for sample selection\n\n3. **Peak_Trade Context (Minor)**\n   - Brief note on how these practices apply to Peak_Trade's specific asset classes\n   - Rationale: Increases operational relevance\n\n**Verification Checklist:**\n- ✅ Minimum 3 citations: YES (5 citations)\n- ✅ Methodology stated: YES (systematic review)\n- ✅ Limitations present: YES (comprehensive)\n- ✅ No execution triggers: YES (none detected)\n- ✅ No live instructions: YES (explicitly avoided)\n- ✅ Research-only output: YES (ResearchReport classification)\n\n**Rationale for APPROVE_WITH_CHANGES:**\nThe research meets all mandatory criteria (citations, methodology, limitations, scope compliance). Suggested changes are enhancements rather than corrections. The output can be safely used for planning and decision-support without risk of triggering execution pathways.\n\n**Evidence IDs Referenced:** [proposer-run-001, research-var-backtesting-2026-01]\n\n**Recommendation:** Approve for use in Phase 4A evidence pack with suggested enhancements for Phase 4B iteration.",
+              "role": "assistant"
+            }
+          }
+        ],
+        "id": "chatcmpl-l1-sample-002",
+        "usage": {
+          "completion_tokens": 567,
+          "prompt_tokens": 1123,
+          "total_tokens": 1690
+        }
+      },
+      "role": "critic",
+      "run_id": "critic-run-001"
+    }
+  ],
+  "scenario": "deepresearch-var-backtesting",
+  "transcript_id": "l1-deepresearch-sample-2026-01-10"
+}

@@ -24,6 +24,7 @@ Verwendung:
 from __future__ import annotations
 
 import os
+import sys
 import warnings
 from pathlib import Path
 
@@ -60,6 +61,14 @@ warnings.filterwarnings(
 
 # Projekt-Root ermitteln (relativ zu dieser Datei)
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+# Ensure src/ is importable as a top-level package root for tests.
+# Many tests import modules like `ai_orchestration.*` (package lives under src/).
+_SRC_DIR = _PROJECT_ROOT / "src"
+if _SRC_DIR.exists():
+    src_str = str(_SRC_DIR)
+    if src_str not in sys.path:
+        sys.path.insert(0, src_str)
 
 # Pfad zur Test-Config
 _TEST_CONFIG_PATH = _PROJECT_ROOT / "config" / "config.test.toml"

@@ -40,6 +40,7 @@ ENV/
 
 # Generated artifacts (local-only)
 /reports/
+/docs/_generated/
 
 # Secrets (KRITISCH!)
 .env
@@ -112,3 +113,7 @@ venv_pip_check/
 PHASE8E_8F_PR_DESCRIPTION.md
 PHASE8E_8F_PR_GITHUB.md
 .tmp_backtest_artifacts/
+out/
+
+# local scratch (never commit)
+docs/_scratch/

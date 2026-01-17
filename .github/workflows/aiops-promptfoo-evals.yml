@@ -7,20 +7,44 @@ on:
       - 'docs/ai/**'
       - 'evals/aiops/**'
       - 'scripts/aiops/**'
+      - '.github/workflows/aiops-promptfoo-evals.yml'
   push:
+    branches: [main]
     paths:
       - '.cursor/**'
       - 'docs/ai/**'
       - 'evals/aiops/**'
       - 'scripts/aiops/**'
+      - '.github/workflows/aiops-promptfoo-evals.yml'
   workflow_dispatch:
 
 jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      run_evals: ${{ steps.filter.outputs.run_evals }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for eval-relevant changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            run_evals:
+              - '.cursor/**'
+              - 'docs/ai/**'
+              - 'evals/aiops/**'
+              - 'scripts/aiops/**'
+              - '.github/workflows/aiops-promptfoo-evals.yml'
+
   promptfoo-eval:
     name: Run Promptfoo Evals
+    needs: changes
+    if: needs.changes.outputs.run_evals == 'true' && secrets.OPENAI_API_KEY != ''
     runs-on: ubuntu-latest
-    # Skip if OPENAI_API_KEY secret is not available
-    if: ${{ secrets.OPENAI_API_KEY != '' }}
 
     steps:
       - name: Checkout
@@ -44,3 +68,14 @@ jobs:
           name: promptfoo-eval-logs
           path: .artifacts/aiops/
           retention-days: 7
+
+  noop:
+    name: Skip Evals (No Relevant Changes)
+    needs: changes
+    if: needs.changes.outputs.run_evals != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log skip reason
+        run: |
+          echo "No eval-relevant changes detected. Skipping promptfoo evals."
+          echo "This job succeeds to avoid false negatives in CI status."

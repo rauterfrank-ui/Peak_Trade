@@ -1,0 +1,16 @@
+name: Missing Required Context
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  some-other-check:
+    name: some-other-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run check
+        run: echo "This is not the required check"

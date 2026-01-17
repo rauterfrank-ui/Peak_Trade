@@ -753,14 +753,345 @@ print(result.position_sizes)  # Liste der tatsächlichen Sizes
 
 ---
 
-## Weiterführende Dokumentation
+## Extension Hooks – Wie erweitere ich die Engine?
 
-- [Architektur-Übersicht](PEAK_TRADE_OVERVIEW.md)
-- [Strategy Developer Guide](STRATEGY_DEV_GUIDE.md)
-- [Position Sizing & Overlays](../src/core/position_sizing.py)
-- [Vol Regime Overlay Sizer Tests](../tests/test_vol_regime_overlay_sizer.py)
-- [Config Reference](../config.toml)
+Die BacktestEngine ist so gebaut, dass du Komponenten austauschen und erweitern kannst, ohne die Engine selbst ändern zu müssen.
+
+### 1. Custom Position Sizer hinzufügen
+
+**Schritt 1: Sizer implementieren**
+
+```python
+# src/core/position_sizing.py
+from typing import Optional
+
+class MyCustomSizer(BasePositionSizer):
+    """
+    Beispiel: Kelly-Criterion-basiertes Position Sizing
+    """
+
+    def __init__(self, win_rate: float = 0.55, avg_win_loss_ratio: float = 1.5):
+        self.win_rate = win_rate
+        self.ratio = avg_win_loss_ratio
+
+    def get_target_position(
+        self,
+        signal: int,
+        price: float,
+        equity: float,
+        context: Optional[dict] = None
+    ) -> float:
+        """Kelly-Criterion Sizing."""
+        if signal == 0:
+            return 0.0
+
+        # Kelly = (win_rate * ratio - (1 - win_rate)) / ratio
+        kelly_fraction = (
+            self.win_rate * self.ratio - (1 - self.win_rate)
+        ) / self.ratio
+
+        # Konservativ: Halber Kelly
+        fraction = kelly_fraction * 0.5
+
+        # Units berechnen
+        position_value = equity * fraction
+        target_units = position_value / price
+
+        return target_units
+```
+
+**Schritt 2: In Config-Builder registrieren**
+
+```python
+# src/core/position_sizing.py (in build_position_sizer_from_config)
+
+def build_position_sizer_from_config(cfg, section="sizing"):
+    sizer_type = cfg.get(f"{section}.type", "fixed_fraction")
+
+    if sizer_type == "my_custom":
+        win_rate = cfg.get(f"{section}.win_rate", 0.55)
+        ratio = cfg.get(f"{section}.avg_win_loss_ratio", 1.5)
+        return MyCustomSizer(win_rate=win_rate, ratio=ratio)
+
+    # ... rest of code
+```
+
+**Schritt 3: In Config nutzen**
+
+```toml
+[sizing]
+type = "my_custom"
+win_rate = 0.58
+avg_win_loss_ratio = 1.6
+```
+
+### 2. Custom Risk Manager hinzufügen
+
+**Schritt 1: Risk Manager implementieren**
+
+```python
+# src/core/risk.py
+
+class VolatilityRiskManager(BaseRiskManager):
+    """
+    Beispiel: Reduziert Position-Size bei hoher Volatilität
+    """
+
+    def __init__(self, window: int = 20, vol_threshold: float = 0.03):
+        self.window = window
+        self.vol_threshold = vol_threshold
+        self.price_history = []
+
+    def adjust_target_position(
+        self,
+        target_units: float,
+        price: float,
+        equity: float,
+        timestamp
+    ) -> float:
+        # Preis-Historie aktualisieren
+        self.price_history.append(price)
+        if len(self.price_history) > self.window:
+            self.price_history.pop(0)
+
+        # Volatilität berechnen
+        if len(self.price_history) < 2:
+            return target_units
+
+        import numpy as np
+        returns = np.diff(self.price_history) / self.price_history[:-1]
+        volatility = np.std(returns)
+
+        # Position reduzieren bei hoher Volatilität
+        if volatility > self.vol_threshold:
+            scaling = 0.5  # Halbe Position
+            return target_units * scaling
+
+        return target_units
+```
+
+**Schritt 2: In Config-Builder registrieren**
+
+```python
+# src/core/risk.py (in build_risk_manager_from_config)
+
+def build_risk_manager_from_config(cfg, section="risk"):
+    risk_type = cfg.get(f"{section}.type", "noop")
+
+    if risk_type == "volatility":
+        window = cfg.get(f"{section}.window", 20)
+        threshold = cfg.get(f"{section}.vol_threshold", 0.03)
+        return VolatilityRiskManager(window=window, vol_threshold=threshold)
+
+    # ... rest of code
+```
+
+**Schritt 3: In Config nutzen**
+
+```toml
+[risk]
+type = "volatility"
+window = 30
+vol_threshold = 0.025
+```
+
+### 3. Custom Backtest-Mode hinzufügen
+
+Wenn du einen komplett neuen Execution-Mode brauchst (z.B. Intrabar-Simulation):
+
+**Option A: Neue Methode in Engine**
+
+```python
+# src/backtest/engine.py
+
+class BacktestEngine:
+    # ... existing methods ...
+
+    def run_intrabar(
+        self,
+        df: pd.DataFrame,
+        tick_data: pd.DataFrame,  # Zusätzliche Tick-Daten
+        strategy_signal_fn,
+        strategy_params: dict
+    ):
+        """
+        Neuer Mode mit Intrabar-Tick-Simulation.
+        """
+        # Deine Custom-Logik hier
+        pass
+```
+
+**Option B: Engine-Wrapper**
+
+```python
+# scripts/run_intrabar_backtest.py
+
+from src.backtest.engine import BacktestEngine
+
+class IntrabarBacktestEngine:
+    """
+    Wrapper um BacktestEngine für Intrabar-Simulation.
+    """
+
+    def __init__(self, base_engine: BacktestEngine):
+        self.engine = base_engine
+
+    def run_with_ticks(self, df, tick_data, strategy_signal_fn, params):
+        # Deine Custom-Logik hier
+        # Nutzt self.engine.run_realistic() intern
+        pass
+```
+
+### 4. Custom Stats/Metriken hinzufügen
+
+```python
+# src/backtest/stats.py
+
+def compute_additional_metrics(result: BacktestResult) -> dict:
+    """
+    Berechnet zusätzliche Custom-Metriken.
+    """
+    trades = result.trades
+
+    # Beispiel: Longest Drawdown Duration
+    equity = result.equity_curve
+    rolling_max = equity.expanding().max()
+    drawdown = (equity - rolling_max) / rolling_max
+
+    in_drawdown = drawdown < 0
+    drawdown_periods = in_drawdown.astype(int).groupby(
+        (in_drawdown != in_drawdown.shift()).cumsum()
+    ).sum()
+
+    longest_dd_duration = drawdown_periods.max() if len(drawdown_periods) > 0 else 0
+
+    # Beispiel: Average Trade Duration
+    if trades:
+        durations = [
+            (t.exit_time - t.entry_time).total_seconds() / 3600  # Hours
+            for t in trades if t.exit_time
+        ]
+        avg_duration_hours = np.mean(durations) if durations else 0
+    else:
+        avg_duration_hours = 0
+
+    return {
+        "longest_drawdown_duration_bars": int(longest_dd_duration),
+        "avg_trade_duration_hours": avg_duration_hours,
+    }
+
+# Usage in runner:
+result = engine.run_realistic(...)
+custom_stats = compute_additional_metrics(result)
+result.stats.update(custom_stats)
+```
+
+### 5. Custom Trade-Exit-Logic
+
+Wenn du komplexere Exit-Logik brauchst (z.B. Trailing-Stop):
+
+```python
+# In deinem Runner-Script
+
+def run_with_trailing_stop(engine, df, strategy, params):
+    """
+    Wrapper für Trailing-Stop-Logik.
+    """
+
+    # Pre-Compute Trailing-Stops
+    signals = strategy.generate_signals(df)
+    df_with_stops = df.copy()
+
+    # Trailing-Stop berechnen (z.B. 10% vom Peak)
+    for i in range(len(df)):
+        if signals.iloc[i] == 1:
+            # Entry → Track Peak
+            peak = df["close"].iloc[i]
+            trailing_stop = peak * 0.9
+            df_with_stops.loc[df.index[i], "trailing_stop"] = trailing_stop
+
+    # Backtest mit modifizierten Stops
+    result = engine.run_realistic(
+        df=df_with_stops,
+        strategy_signal_fn=lambda d, p: signals,
+        strategy_params=params
+    )
+
+    return result
+```
+
+### 6. Integration mit externen Tools
+
+**MLflow-Integration:**
+
+```python
+# scripts/run_with_mlflow.py
+import mlflow
+
+cfg = load_config()
+strategy = create_strategy_from_config("ma_crossover", cfg)
+engine = BacktestEngine.from_config(cfg)
+
+with mlflow.start_run():
+    # Log Config
+    mlflow.log_params(cfg.to_dict())
+
+    # Run Backtest
+    result = engine.run_realistic(df, strategy.generate_signals, {})
+
+    # Log Metrics
+    mlflow.log_metrics(result.stats)
+
+    # Log Artifacts
+    mlflow.log_artifact("reports/backtest_report.html")
+```
+
+**Optuna-Integration (Hyperparameter-Tuning):**
+
+```python
+# scripts/run_optuna_sweep.py
+import optuna
+
+def objective(trial):
+    # Suggest Parameters
+    fast = trial.suggest_int("fast", 10, 50)
+    slow = trial.suggest_int("slow", 50, 200)
+
+    # Run Backtest
+    strategy = MACrossoverStrategy(fast_window=fast, slow_window=slow)
+    result = engine.run_realistic(df, strategy.generate_signals, {})
+
+    # Optimize Sharpe
+    return result.stats["sharpe"]
+
+study = optuna.create_study(direction="maximize")
+study.optimize(objective, n_trials=100)
+
+print(f"Best Params: {study.best_params}")
+```
 
 ---
 
-**Letzte Aktualisierung:** Dezember 2024
+## Further Reading
+
+### Core Documentation
+- 🚪 **[Documentation Frontdoor](README.md)** – Navigate all docs by audience & topic
+- 📖 **[Peak Trade Overview](PEAK_TRADE_OVERVIEW.md)** – Architecture map, modules, data flow, extensibility
+- 🎯 **[Strategy Developer Guide](STRATEGY_DEV_GUIDE.md)** – Develop custom strategies
+
+### Operations & Governance
+- 🛰️ **[Live Operational Runbooks](LIVE_OPERATIONAL_RUNBOOKS.md)** – Live ops procedures
+- 🛰️ **[Ops Hub](ops/README.md)** – Operator center
+- 🛡️ **[Governance & Safety Overview](GOVERNANCE_AND_SAFETY_OVERVIEW.md)** – Safety-first approach
+
+### Technical References
+- [Position Sizing & Overlays](../src/core/position_sizing.py) – Source code
+- [Vol Regime Overlay Sizer Tests](../tests/test_vol_regime_overlay_sizer.py) – Test examples
+- [Config Reference](../config.toml) – Configuration schema
+
+### Recent Updates
+- 🆕 **[Documentation Update Summary](DOCUMENTATION_UPDATE_SUMMARY.md)** – Extension hooks added (2026-01-13)
+
+---
+
+**Letzte Aktualisierung:** Januar 2026

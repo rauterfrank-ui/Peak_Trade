@@ -12,24 +12,44 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Wave2 Restore Closeout](WAVE2_RESTORE_CLOSEOUT_20260106_214505Z.md)** — Wave2 session outcomes (PRs #579, #580, #571, #581, #582)
 
 ### Session Closeouts
+- **[Phase 9C Closeout](graphs/PHASE9C_CLOSEOUT_2026-01-14.md)** — Docs Graph Remediation Waves 3–5 (114→39 broken targets, −65.8%, goal achieved)
 - **[Session Closeout 2026-01-06](SESSION_CLOSEOUT_20260106_PEAK_TRADE_DOCS_OPS_INTEGRATION.md)** — Gap analysis & security fixes (PR #573, #574, #575, #576)
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
-### PR Merge Logs
-- `docs/ops/PR_614_MERGE_LOG.md` — AI Autonomy Phase 3B: Evidence Pack Validator (fail-closed, SoD enforced) (PR #614, 2026-01-08)
-- `docs/ops/PR_611_MERGE_LOG.md` — AI Autonomy Phase 3A: Runtime Orchestrator v0 (fail-closed) (PR #611, 2026-01-08)
-- `docs/ops/PR_610_MERGE_LOG.md` — AI Autonomy Phase 2: Capability Scopes + Model Registry (PR #610, 2026-01-08)
-- `docs/ops/PR_569_MERGE_LOG.md` — MLflow CI Failures Fix: Run Lifecycle Hardening for mlflow≥3.0 (PR #569, 2026-01-05)
-- `docs/ops/PR_562_MERGE_LOG.md` — AI-Ops Toolchain v1.1: Evals Runner + CI + Scoreboard (PR #562, 2026-01-05)
-- `docs/ops/PR_560_MERGE_LOG.md` — Cursor Multi-Agent Integration V1 (PR #560, 2026-01-05)
-- `docs/ops/merge_logs/20260104_pr-544_var-backtest-suite-phase-8c.md` — Phase 8C: VaR Backtest Suite Runner & Report Formatter (PR #544, 2026-01-04)
-- `docs/ops/merge_logs/2026-01-04_feat-var-backtest-christoffersen-cc_merge_log.md` — Christoffersen VaR Backtests (PR #422, 2026-01-04)
-- `docs/ops/merge_logs/2025-12-27_mass_docs_pr_closeout.md` — Mass PR Wave Closeout (2025-12-27)
-- `docs/ops/CASCADING_MERGES_AND_RERERE_PLAYBOOK.md` — Cascading merges & git rerere Operator Playbook
+### PR Merge Logs & Closeouts
+- [merge_logs/PR_716_MERGE_LOG.md](merge_logs/PR_716_MERGE_LOG.md) — PR #716 (Phase 9C Wave 5: broken targets 58→39, goal achieved, 27 token policy violations fixed) ([PR #716](https://github.com/rauterfrank-ui/Peak_Trade/pull/716), 2026-01-14)
+- [merge_logs/PR_714_MERGE_LOG.md](merge_logs/PR_714_MERGE_LOG.md) — PR #714 (Phase 9C Wave 4: broken targets 87→65, CI-Parity Guide) ([PR #714](https://github.com/rauterfrank-ui/Peak_Trade/pull/714), 2026-01-14)
+- [merge_logs/PR_712_MERGE_LOG.md](merge_logs/PR_712_MERGE_LOG.md) — PR #712 (Phase 9C Wave 3: broken targets 114→89) ([PR #712](https://github.com/rauterfrank-ui/Peak_Trade/pull/712), 2026-01-14)
+- **[Phase 5C Workflow Dispatch Guard Enforcement Closeout](PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md)** — Phase 5C closeout: dispatch-guard enforcement activation, 10 required checks, verified (2026-01-12)
+- ``docs&#47;ops&#47;PR_693_MERGE_LOG.md`` — PR #693 (Docs Token Policy Gate: CI enforcement + tests + runbook + allowlist) ([PR #693](https://github.com/rauterfrank-ui/Peak_Trade/pull/693), 2026-01-13)
+- ``docs&#47;ops&#47;PR_691_MERGE_LOG.md`` — PR #691 (Workflow notes integration + docs-reference-targets-gate policy formalization) ([PR #691](https://github.com/rauterfrank-ui/Peak_Trade/pull/691), 2026-01-13)
+- ``docs&#47;ops&#47;PR_690_MERGE_LOG.md`` — PR #690 (Docs frontdoor + crosslink hardening + illustrative paths neutralization) ([PR #690](https://github.com/rauterfrank-ui/Peak_Trade/pull/690), 2026-01-13)
+- ``docs&#47;ops&#47;PR_669_MERGE_LOG.md`` — PR #669 (Phase 5D Required Checks Hygiene Gate + dispatch-guard always-run proof) ([PR #669](https://github.com/rauterfrank-ui/Peak_Trade/pull/669), 2026-01-12)
+- ``docs&#47;ops&#47;PR_664_MERGE_LOG.md`` — PR #664 (offline_suites workflow_dispatch input context fix) (PR #664, 2026-01-12)
+- ``docs&#47;ops&#47;PR_663_MERGE_LOG.md`` — PR #663 (Phase 5B workflow dispatch condition fix) (PR #663, 2026-01-12)
+- ``docs&#47;ops&#47;PR_653_MERGE_LOG.md`` — AI Autonomy Phase 4D: L4 Critic Determinism Contract + Validator + CI (PR #653, 2026-01-11)
+- ``docs&#47;ops&#47;PR_651_MERGE_LOG.md`` — Merge Log for PR #650 (Merge Log for PR #649) (PR #651, 2026-01-11)
+- ``docs&#47;ops&#47;PR_650_MERGE_LOG.md`` — Merge Log for PR #649 (Phase 4D Triage Docs) (PR #650, 2026-01-11)
+- ``docs&#47;ops&#47;PR_649_MERGE_LOG.md`` — AI Autonomy Phase 4D: L4 Critic Determinism Triage Documentation (PR #649, 2026-01-11)
+- ``docs&#47;ops&#47;PR_645_MERGE_LOG.md`` — AI Autonomy Phase 4C: L4 Critic Replay Determinism Hardening (PR #645, 2026-01-11)
+- ``docs&#47;ops&#47;PR_643_MERGE_LOG.md`` — AI Autonomy Phase 4B: L4 Governance Critic Runner (PR #643, 2026-01-11)
+- ``docs&#47;ops&#47;PR_640_MERGE_LOG.md`` — (PR #640, 2026-01-11)
+- ``docs&#47;ops&#47;PR_642_MERGE_LOG.md`` — AI Autonomy Phase 4A: L1 DeepResearch Runner + Evidence Pack + Record/Replay (PR #642, 2026-01-10)
+- ``docs&#47;ops&#47;PR_619_MERGE_LOG.md`` — AI Autonomy Phase 4B M2: Operator Runbook (Evidence-First Loop) (PR #619, 2026-01-09)
+- ``docs&#47;ops&#47;PR_614_MERGE_LOG.md`` — AI Autonomy Phase 3B: Evidence Pack Validator (fail-closed, SoD enforced) (PR #614, 2026-01-08)
+- ``docs&#47;ops&#47;PR_611_MERGE_LOG.md`` — AI Autonomy Phase 3A: Runtime Orchestrator v0 (fail-closed) (PR #611, 2026-01-08)
+- ``docs&#47;ops&#47;PR_610_MERGE_LOG.md`` — AI Autonomy Phase 2: Capability Scopes + Model Registry (PR #610, 2026-01-08)
+- ``docs&#47;ops&#47;PR_569_MERGE_LOG.md`` — MLflow CI Failures Fix: Run Lifecycle Hardening for mlflow≥3.0 (PR #569, 2026-01-05)
+- ``docs&#47;ops&#47;PR_562_MERGE_LOG.md`` — AI-Ops Toolchain v1.1: Evals Runner + CI + Scoreboard (PR #562, 2026-01-05)
+- ``docs&#47;ops&#47;PR_560_MERGE_LOG.md`` — Cursor Multi-Agent Integration V1 (PR #560, 2026-01-05)
+- ``docs&#47;ops&#47;merge_logs&#47;20260104_pr-544_var-backtest-suite-phase-8c.md`` — Phase 8C: VaR Backtest Suite Runner & Report Formatter (PR #544, 2026-01-04)
+- ``docs&#47;ops&#47;merge_logs&#47;2026-01-04_feat-var-backtest-christoffersen-cc_merge_log.md`` — Christoffersen VaR Backtests (PR #422, 2026-01-04)
+- ``docs&#47;ops&#47;merge_logs&#47;2025-12-27_mass_docs_pr_closeout.md`` — Mass PR Wave Closeout (2025-12-27)
+- ``docs&#47;ops&#47;CASCADING_MERGES_AND_RERERE_PLAYBOOK.md`` — Cascading merges & git rerere Operator Playbook
 
 ## Closeout Automation
-- `scripts/ops/run_closeout_2025_12_27.sh` — Runner (Safety Gates + Auto-Merge Workflow)
-- `scripts/ops/create_closeout_2025_12_27.sh` — Generator (Docs + PR scaffold)
+- ``scripts&#47;ops&#47;run_closeout_2025_12_27.sh`` — Runner (Safety Gates + Auto-Merge Workflow)
+- ``scripts&#47;ops&#47;create_closeout_2025_12_27.sh`` — Generator (Docs + PR scaffold)
 
 ## Cursor Multi-Agent Runbooks
 
@@ -41,7 +61,32 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - 📝 **Session Template:** [CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md](CURSOR_MULTI_AGENT_SESSION_RUNLOG_TEMPLATE.md) — Strukturiertes Log-Format für jede Multi-Agent Session
 - 🔄 **Workflow-Definition:** [CURSOR_MULTI_AGENT_WORKFLOW.md](CURSOR_MULTI_AGENT_WORKFLOW.md) — Canonical Workflow (Roles, Protocol, Recovery)
 - 🗺️ **Legacy Roadmap:** [CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md](CURSOR_MULTI_AGENT_PHASES_TO_LIVE.md) — Älterer Phasen-Runbook (P0–P10), siehe Frontdoor + PHASES_V2 für aktuelle Version
-- `docs/ops/LIVE_READINESS_PHASE_TRACKER.md` — Phase gates tracker (P0-P10: research → shadow → live)
+- ``docs&#47;ops&#47;LIVE_READINESS_PHASE_TRACKER.md`` — Phase gates tracker (P0-P10: research → shadow → live)
+
+## Workflow Documentation
+
+**Quick Start:** Beginne mit der **[Workflow Frontdoor](../WORKFLOW_FRONTDOOR.md)** für zentrale Navigation zwischen autoritativer Operations-Referenz (2026) und historischem Chat-Workflow-Kontext (Dec 2025).
+
+**Navigation:**
+- 🚪 **Start hier:** [WORKFLOW_FRONTDOOR.md](../WORKFLOW_FRONTDOOR.md) — Central navigation hub for workflow and runbook documentation
+- 📘 **Authoritative (2026):** [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) — Comprehensive operational reference: 18+ CLI sections, 12+ runbooks, Wave3 Control Center, AI Autonomy cheatsheet, 5 checklists, status tables
+- 📙 **Legacy (Dec 2025):** [WORKFLOW_NOTES.md](../WORKFLOW_NOTES.md) — Historical snapshot: Technical layer status, Frank/ChatGPT/Claude workflow mechanics, prompt style conventions
+- 📁 **Workflow Notes Archive:** [workflows/](workflows/) — Consolidated workflow notes with docs-reference-targets-gate compliance
+  - [WORKFLOW_NOTES_FRONTDOOR.md](workflows/WORKFLOW_NOTES_FRONTDOOR.md) — Policy guide for illustrative path encoding
+  - [PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md](workflows/PEAK_TRADE_WORKFLOW_NOTES_2025-12-03.md) — Historical workflow snapshot
+
+**When to Use:**
+- **Daily Operations:** WORKFLOW_RUNBOOK_OVERVIEW (authoritative, current)
+- **CLI Command Lookup:** WORKFLOW_RUNBOOK_OVERVIEW Section 9 + [CLI_CHEATSHEET.md](../CLI_CHEATSHEET.md)
+- **PR Management (Wave3):** WORKFLOW_RUNBOOK_OVERVIEW Section 2
+- **Historical Context:** WORKFLOW_NOTES (legacy, Dec 2025 technical snapshot)
+- **Chat-Based Development:** WORKFLOW_NOTES (continuation context for Frank/ChatGPT/Claude sessions)
+- **Docs Gate Policy:** workflows/WORKFLOW_NOTES_FRONTDOOR.md (illustrative path encoding guide)
+
+## Installation & Setup
+
+- [Installation Quickstart](../INSTALLATION_QUICKSTART.md)
+- [Installation & Roadmap Snapshot (2026-01-12)](../../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md)
 
 ### Phase 5 NO-LIVE Drill Pack (Governance-Safe, Manual-Only)
 
@@ -61,6 +106,79 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - Hard Prohibitions (keys, funding, real orders verboten)
 - Operator Competency Validation (drill-safe)
 - Governance-Safe Evidence Chain (GO ≠ Live Authorization)
+
+### Phase 5A: Normalized Report Consumer + Trend Seed
+
+🔄 **CI Artifact Consumption → Trend Seed Generation** — Tooling-only, deterministic, schema-versioned
+
+**Phase 5A Runbook:**
+- 📖 **Cursor Multi-Agent Runbook:** [RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md) — Standardized workflow for consuming Phase 4E normalized validator reports and generating deterministic Trend Seeds (6-role multi-agent orchestration: ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, CI_GUARDIAN, EVIDENCE_SCRIBE, RISK_OFFICER)
+
+**Key Deliverables:**
+- Trend Seed Schema v0.1.0 (minimal, append-only mindset)
+- Consumer with fail-closed behavior (schema mismatch → hard fail)
+- Deterministic output (stable JSON, sorted keys, no secrets)
+- CI integration (artifact download → consumer → upload Trend Seed)
+- Operator Notes template for PR/run documentation
+
+**Risk:** LOW (tooling + artifacts only, no trading code, no live execution)
+
+### Phase 5B: Trend Ledger from Seed
+
+📊 **Trend Seed → Canonical Ledger Snapshot** — Deterministic aggregation, artifact persistence
+
+**Phase 5B Runbooks:**
+- 📖 **Cursor Multi-Agent Runbook (FULL):** [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md) — Standardized multi-agent workflow for Phase 5B FULL implementation (ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, IMPLEMENTER, TEST_ENGINEER, CI_GUARDIAN, DOCS_SCRIBE, RISK_OFFICER) with determinism-first design + CI workflow
+- 📖 **Operator Runbook:** [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md](runbooks/RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md) — Standardized workflow for consuming Phase 5A Trend Seeds and generating canonical Trend Ledger snapshots with deterministic JSON, markdown summaries, and CI artifact integration
+
+**Key Deliverables:**
+- Trend Ledger Schema v0.1.0 (canonical ordering, stable items[], counters)
+- Consumer with fail-closed validation (missing fields → hard fail)
+- Deterministic serialization (sorted keys, byte-identical output)
+- CI workflow (downloads Phase 5A seed → generates ledger → uploads artifacts)
+- Markdown summary for operator visibility
+
+**Risk:** LOW (tooling/CI artifacts only, no trading code, no live execution)
+
+### AI Autonomy Phase 4B Milestone 2 (Evidence-First Operator Loop)
+
+🤖 **Cursor Multi-Agent Orchestration** — Evidence Pack + CI Gates + Operator Review
+
+**Phase 4B M2 — Multi-Agent Runbook:**
+- 📖 **Operator Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md) — Standardized workflow for AI Autonomy Layer Runs with Evidence Pack creation, validation, and operator sign-off
+- 🎯 **Operator Drill Pack:** [drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md](drills/OPERATOR_DRILL_PACK_AI_AUTONOMY_4B_M2.md) — 8 structured drills for operator competency validation (Pre-Flight, Scope Lock, Evidence Pack, CI Gates, Auto-Merge, Incidents, Closeout)
+- 📝 **Drill Session Template:** [drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md](drills/SESSION_TEMPLATE_AI_AUTONOMY_4B_M2.md) — Standardized template for drill session documentation (metadata, execution log, scorecard, findings)
+- 📂 **Drill Runs Guide:** [drills/runs/README.md](drills/runs/README.md) — Guidelines for drill run logs (naming convention, quality checklist, evidence-first documentation)
+
+**Key Deliverables:**
+- Evidence-First: All runs documented in Evidence Packs
+- CI-Validated: Schema validation + Docs gates + Audit gates
+- Multi-Agent Roles: ORCHESTRATOR, FACTS_COLLECTOR, SCOPE_KEEPER, CI_GUARDIAN, EVIDENCE_SCRIBE, RISK_OFFICER
+- Governance-Locked: No-live enforcement, SoD checks, deterministic outputs
+- Operator Training: Structured drill pack for systematic competency validation
+
+### AI Autonomy Phase 4B Milestone 3 (Control Center Dashboard/Visual)
+
+🎛️ **Control Center + Enhanced Orchestration** — Dashboard + Extended Gates + Policy Checks
+
+**Phase 4B M3 — Control Center Runbooks:**
+- 📖 **Development Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md) — Standardized workflow for Control Center Dashboard development and M3 orchestration enhancements (Status/Evidence/CI overview, deterministic rendering, docs-only defaults)
+- 📖 **Dashboard Operations Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_DASHBOARD.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_DASHBOARD.md) — Local dashboard viewing, PR/CI monitoring without --watch (timeout-safe), evidence capture and closeout
+- 📖 **Incident Triage Runbook:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_INCIDENT_TRIAGE.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_INCIDENT_TRIAGE.md) — Standardized incident detection, triage, evidence capture and escalation workflow for Control Center operations (severity levels, gate-specific shortcuts, timeout-safe monitoring)
+- 📖 **Operator Cheatsheet:** [runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATOR_CHEATSHEET.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATOR_CHEATSHEET.md) — Quick reference for daily Control Center operations (5-10 minute routine, triage shortcuts, evidence minimum)
+
+**Key Deliverables:**
+- Control Center Dashboard: Status/Evidence/CI/Run overview (static HTML or Markdown)
+- Extended Orchestration: Enhanced gates, policy checks, capability scopes
+- Evidence-First: Same M2 guarantees (Evidence Pack, CI validation, operator sign-off)
+- Dashboard Modes: Static HTML (no runtime) / Markdown (docs-only) / Local dev server (optional)
+- Timeout-Safe Monitoring: No-watch polling patterns for PR/CI checks
+
+## AI Autonomy Control Center
+
+- 🎛️ **Control Center (v0.1):** [AI_AUTONOMY_CONTROL_CENTER.md](control_center/AI_AUTONOMY_CONTROL_CENTER.md) — Dashboard, layer matrix, KPIs, operator quick actions
+- 📖 **Operations Runbook (v0.1):** [RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md](runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATIONS.md) — Daily routine, layer triage, CI gates, troubleshooting
+- 🧭 **Navigation:** [CONTROL_CENTER_NAV.md](control_center/CONTROL_CENTER_NAV.md) — All key paths and runbooks
 
 ### Terminal Hang Diagnostics (Pager / Hook / Watch Blocking)
 
@@ -100,10 +218,10 @@ export LESS='-FRX'
 
 ### Cursor Timeout / Hang Triage (Advanced)
 - Wenn dein Terminal-Prompt `>` oder `dquote>` zeigt: **Ctrl-C** drücken (Shell-Continuation beenden), dann erneut.
-- Runbook öffnen: `docs/ops/CURSOR_TIMEOUT_TRIAGE.md`
+- Runbook öffnen: ``docs&#47;ops&#47;CURSOR_TIMEOUT_TRIAGE.md``
 - Evidence Pack erzeugen (funktioniert auch ohne +x):
-  - `bash scripts/ops/collect_cursor_logs.sh`
-  - Output: `artifacts/cursor_logs_YYYYMMDD_HHMMSS.tgz`
+  - ``bash scripts&#47;ops&#47;collect_cursor_logs.sh``
+  - Output: ``artifacts&#47;cursor_logs_YYYYMMDD_HHMMSS.tgz``
 - Optional (bei harten Hangs): In der Runbook-Sektion "Advanced Diagnostics (macOS)" die Schritte `sample`, `spindump`, `fs_usage` nutzen (sudo + Privacy beachten).
 - Privacy: Logs/Snapshots vor externem Sharing auf sensitive Daten prüfen.
 
@@ -212,7 +330,7 @@ Die Knowledge Service API kann mit oder ohne ChromaDB (Vector DB) laufen:
 ### CI Integration
 
 **Automatisches Weekly Audit:**
-- Workflow: `.github/workflows/full_audit_weekly.yml`
+- Workflow: ``.github&#47;workflows&#47;full_audit_weekly.yml``
 - Schedule: Montags 06:00 UTC
 - Manueller Trigger: `workflow_dispatch`
 - Artifacts: 90 Tage (SBOM: 365 Tage)
@@ -223,11 +341,11 @@ Die Knowledge Service API kann mit oder ohne ChromaDB (Vector DB) laufen:
 - Hard Fail bei Test-Failures
 
 **Optional: ChromaDB Extras Workflow:**
-- Workflow: `.github/workflows/knowledge_extras_chromadb.yml`
+- Workflow: ``.github&#47;workflows&#47;knowledge_extras_chromadb.yml``
 - Trigger: Jeden Montag 06:30 UTC + manuell via `workflow_dispatch`
 - **Zweck:** Zusätzliches Signal für chromadb-backed Knowledge DB Tests
 - **Status:** NICHT required für Merge (optional extra validation)
-- Installiert chromadb und führt `tests/test_knowledge_readonly_gating.py` aus
+- Installiert chromadb und führt ``tests&#47;test_knowledge_readonly_gating.py`` aus
 
 ### Troubleshooting
 
@@ -266,7 +384,7 @@ scripts/ops/ops_center.sh risk component-var --use-fixtures
 scripts/ops/ops_center.sh risk component-var --returns data.csv --alpha 0.99
 ```
 
-**Output:** HTML + JSON + CSV Reports in `results/risk/component_var/<run_id>/`
+**Output:** HTML + JSON + CSV Reports in ``results&#47;risk&#47;component_var&#47;<run_id>&#47;``
 
 **Dokumentation:** [../risk/COMPONENT_VAR_PHASE2A_REPORTING.md](../risk/COMPONENT_VAR_PHASE2A_REPORTING.md) ⭐
 
@@ -303,7 +421,7 @@ pytest tests/data/shadow/ -q
 - **Quickstart:** [../shadow/SHADOW_PIPELINE_PHASE2_QUICKSTART.md](../shadow/SHADOW_PIPELINE_PHASE2_QUICKSTART.md) ⭐
 - **Operator Runbook:** [../shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md](../shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md)
 - **Technical Spec:** [../shadow/PHASE_2_TICK_TO_OHLCV_AND_QUALITY.md](../shadow/PHASE_2_TICK_TO_OHLCV_AND_QUALITY.md)
-- **Config Example:** `config/shadow_pipeline_example.toml`
+- **Config Example:** ``config&#47;shadow_pipeline_example.toml``
 
 **Safety:** Shadow pipeline is blocked when live mode is active. Safe for dev/testnet contexts only.
 
@@ -321,7 +439,7 @@ Umfassendes Diagnose-Tool für Repository-Health-Checks mit strukturiertem JSON-
 
 ### Features
 
-- ✅ **Persistent Snapshots:** JSON + Markdown snapshots bei jedem Status-Call (`reports/ops/ci_health_latest.{json,md}`)
+- ✅ **Persistent Snapshots:** JSON + Markdown snapshots bei jedem Status-Call (``reports&#47;ops&#47;ci_health_latest.{json,md}``)
 - ✅ **Interactive Controls:** "Run checks now" Button, "Refresh status" Button, Auto-refresh (15s toggle)
 - ✅ **Offline-fähig:** Snapshots bleiben verfügbar auch wenn WebUI offline ist
 - ✅ **Concurrency-safe:** In-memory lock verhindert parallele Runs (HTTP 409 bei Konflikt)
@@ -343,14 +461,14 @@ jq '.overall_status, .summary' reports/ops/ci_health_latest.json
 
 ### API Endpoints
 
-- `GET /ops/ci-health` — HTML Dashboard (interaktive UI)
-- `GET /ops/ci-health/status` — JSON Status + Snapshot-Persistenz
-- `POST /ops/ci-health/run` — Trigger manual check run (idempotent mit lock)
+- ``GET &#47;ops&#47;ci-health`` — HTML Dashboard (interaktive UI)
+- ``GET &#47;ops&#47;ci-health&#47;status`` — JSON Status + Snapshot-Persistenz
+- ``POST &#47;ops&#47;ci-health&#47;run`` — Trigger manual check run (idempotent mit lock)
 
 ### Operator How-To
 
 **Trigger Manual Check:**
-- Open: `http://127.0.0.1:8000/ops/ci-health`
+- Open: ``http:&#47;&#47;127.0.0.1:8000&#47;ops&#47;ci-health``
 - Click: "▶️ Run checks now"
 - Observe: "⏳ Running..." → UI updates ohne page reload
 
@@ -371,7 +489,7 @@ jq . reports/ops/ci_health_latest.json
 
 - **v0.2 Snapshots:** [PR_518_CI_HEALTH_PANEL_V0_2.md](PR_518_CI_HEALTH_PANEL_V0_2.md) — Persistent snapshot feature
 - **v0.2 Buttons:** [PR_519_CI_HEALTH_BUTTONS_V0_2.md](PR_519_CI_HEALTH_BUTTONS_V0_2.md) — Interactive controls + auto-refresh
-- **Smoke Test:** `scripts/ops/smoke_ci_health_panel_v0_2.sh` — Quick validation script
+- **Smoke Test:** ``scripts&#47;ops&#47;smoke_ci_health_panel_v0_2.sh`` — Quick validation script
 
 ### Checks Performed
 
@@ -388,10 +506,76 @@ jq . reports/ops/ci_health_latest.json
 
 ### Required Checks Drift Guard (v1)
 
-- Operator Notes: `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md`
+- Operator Notes: ``docs&#47;ops&#47;REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md``
 - Quick Commands:
-  - `scripts/ops/verify_required_checks_drift.sh` (offline)
-  - `scripts/ops/ops_center.sh doctor` → zeigt Drift-Guard/Health-Status (falls eingebunden)
+  - ``scripts&#47;ops&#47;verify_required_checks_drift.sh`` (offline)
+  - ``scripts&#47;ops&#47;ops_center.sh doctor`` → zeigt Drift-Guard/Health-Status (falls eingebunden)
+
+### Workflow Dispatch Guard (Required Check — Phase 5C)
+
+**Status:** ⚠️ **NOT ACTIVE** (Operator action required to add as required check for `main`)
+
+**Purpose:** Prevents `workflow_dispatch` input context regressions (like PR #663, #664).
+
+**Expected Check Context:** ``CI &#47; Workflow Dispatch Guard &#47; dispatch-guard``
+
+**Current State:** Guard is functional and path-filtered, but the check is **not** present in `main` required checks (verified **2026-01-12**).
+
+**Evidence:** ``docs&#47;ops&#47;ci&#47;evidence&#47;PHASE5C_DISPATCH_GUARD_ENFORCEMENT_VERIFICATION_2026-01-12.md``
+
+**Activation (Operator):**
+- GitHub → Settings → Branches → Branch protection rules → `main` → **Add required check**: ``CI &#47; Workflow Dispatch Guard &#47; dispatch-guard``
+- (Alternative) GitHub → Settings → Rules → Rulesets → `main` ruleset → **Require status checks** → add the same check context
+
+**Quick Commands:**
+```bash
+# Local validation
+python3 scripts/ops/validate_workflow_dispatch_guards.py --paths .github/workflows --fail-on-warn
+
+# Run tests
+uv run pytest -q tests/ops/test_validate_workflow_dispatch_guards.py
+```
+
+**Documentation:**
+- **User Guide:** [docs/ops/ci/WORKFLOW_DISPATCH_GUARD.md](ci/WORKFLOW_DISPATCH_GUARD.md)
+- **Enforcement Policy:** [docs/ops/ci/WORKFLOW_DISPATCH_GUARD_ENFORCEMENT.md](ci/WORKFLOW_DISPATCH_GUARD_ENFORCEMENT.md)
+- **GitHub Settings Guide:** [docs/ops/ci/WORKFLOW_DISPATCH_GUARD_GITHUB_SETTINGS.md](ci/WORKFLOW_DISPATCH_GUARD_GITHUB_SETTINGS.md)
+- **Script:** ``scripts&#47;ops&#47;validate_workflow_dispatch_guards.py``
+- **CI Workflow:** ``.github&#47;workflows&#47;ci-workflow-dispatch-guard.yml``
+
+**Burn-in Results:**
+- Deployed: 2026-01-12
+- First Run: Found real bug (PR #664: `offline_suites.yml`)
+- False Positive Rate: 0% (0/1)
+- True Positive Rate: 100% (1/1)
+
+**Bypass Policy:** Admin-only, requires audit comment in PR (when active).
+
+### Required Checks Hygiene Gate Operations (Phase 5E)
+
+**Operator Runbook für standardisierte Wartung und Änderung von Required Status Checks (Branch Protection).**
+
+**Purpose:** Verhindert "absent check" Szenarien, hält Repo-Quelle der Wahrheit (``config&#47;ci&#47;required_status_checks.json``) synchron mit Branch Protection, standardisiert Evidence-first + Rollback-ready Workflows.
+
+**Runbook:** [RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md](runbooks/RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md)
+
+**Key Features:**
+- ✅ Pre-Flight Checks (Scope/Necessity/Admin-Requirements)
+- ✅ Discovery & Truth Capture (Evidence-first)
+- ✅ Change Planning (absent-check prevention)
+- ✅ PR-based Execution (Audit Trail)
+- ✅ Validation Checklist (CI + Policy)
+- ✅ Break-Glass / Rollback (Admin-only, time-limited)
+- ✅ Operator Templates (PR Description + Evidence Entry)
+- ✅ Failure Modes & Triage (merge blocked, mismatch)
+
+**Source of Truth:**
+- Expected contexts: ``config&#47;ci&#47;required_status_checks.json``
+- Validator: ``scripts&#47;ci&#47;validate_required_checks_hygiene.py``
+- Tests: ``tests&#47;ci&#47;test_required_checks_hygiene.py``
+- Workflow: ``.github&#47;workflows&#47;required-checks-hygiene-gate.yml``
+
+**Scope:** Ops / CI Governance / Branch Protection Hygiene (docs-only, operational impact HIGH if misused)
 
 ### Docs Navigation Health (Link Guard)
 
@@ -412,13 +596,15 @@ scripts/ops/ops_center.sh doctor
 - Ignoriert externe Links (http://, https://, mailto:)
 - Schnell und offline (keine Netzwerk-Anfragen)
 
-**Scope:** `README.md`, `docs/ops/*`, `docs/PEAK_TRADE_STATUS_OVERVIEW.md`
+**Scope:** `README.md`, ``docs&#47;ops&#47;*``, ``docs&#47;PEAK_TRADE_STATUS_OVERVIEW.md``
 
 **Tip:** Vor großen Docs-Refactorings einmal laufen lassen, um kaputte Links zu vermeiden.
 
-### Docs Reference Targets
+### Docs Reference Targets Gate
 
 **Zweck:** Validiert, dass alle referenzierten Repo-Pfade in Markdown-Docs (Config/Scripts/Docs) tatsächlich existieren.
+
+**Related:** [Docs Token Policy Gate](#docs-token-policy-gate) — Enforces `&#47;` encoding for illustrative paths (prevents false positives in this gate)
 
 **Quick Start (Empfohlene Nutzung):**
 ```bash
@@ -434,13 +620,13 @@ scripts/ops/ops_center.sh doctor
 
 **Features:**
 - Findet referenzierte Pfade in Markdown-Links (`[text]\(path\)`), Inline-Code (`` `path` ``), und Bare-Pfaden
-- Validiert Existenz von: `config/*.toml`, `docs/*.md`, `scripts/*.sh`, `src/*.py`, `.github/*.yml`
+- Validiert Existenz von: ``config&#47;*.toml``, ``docs&#47;*.md``, ``scripts&#47;*.sh``, ``src&#47;*.py``, ``.github&#47;*.yml``
 - Ignoriert externe URLs (http/https) und Anchor-Only-Links
-- **Ignore-Patterns:** Full-Scan respektiert `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt` (Legacy/Archive-Bereiche)
+- **Ignore-Patterns:** Full-Scan respektiert ``docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_IGNORE.txt`` (Legacy/Archive-Bereiche)
 - Exit 0 = OK/nicht anwendbar, Exit 1 = FAIL (CI), Exit 2 = WARN (ops doctor)
 
 **Check Modes:**
-1. **CI Parity Mode (Primary):** `--changed --base origin/main`
+1. **CI Parity Mode (Primary):** ``--changed --base origin&#47;main``
    - Validiert nur geänderte Dateien (entspricht CI-Verhalten)
    - Keine Ignore-Patterns (strikte Validierung)
    - Exit 0 = PASS, Exit 1 = FAIL
@@ -448,12 +634,12 @@ scripts/ops/ops_center.sh doctor
 
 2. **Full-Scan Audit (Optional):** ohne `--changed` Flag
    - Validiert alle Docs (inkl. Legacy)
-   - Respektiert Ignore-Patterns aus `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
+   - Respektiert Ignore-Patterns aus ``docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_IGNORE.txt``
    - Exit 1 = "PASS-with-notes" (Legacy-Content erwartet Broken-Refs)
    - **Nutzung:** Periodische Audits, Docs-Cleanup-Sessions
 
 **CI Integration:**
-- Läuft automatisch bei PRs via `.github/workflows/docs_reference_targets_gate.yml`
+- Läuft automatisch bei PRs via ``.github&#47;workflows&#47;docs_reference_targets_gate.yml``
 - Exit 0 wenn keine Markdown-Dateien geändert wurden (not applicable)
 - Exit 1 bei fehlenden Targets (blockiert Merge)
 - CI nutzt immer `--changed` Mode (keine Ignore-Patterns)
@@ -462,15 +648,121 @@ scripts/ops/ops_center.sh doctor
 
 **Use Case:** Verhindert kaputte Referenzen z.B. nach Datei-Umbenennungen oder -Verschiebungen.
 
+**Safe Markdown Guide:** [guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md](guides/DOCS_REFERENCE_TARGETS_SAFE_MARKDOWN.md) — Operator guide for avoiding false positives (branch names, planned files, CI triage checklist)
+
+### Docs Gates — Operator Pack
+
+**Overview:** Three CI gates enforce docs quality and prevent common errors:
+
+1. **Docs Token Policy Gate** — Encoding policy for inline-code tokens
+2. **Docs Reference Targets Gate** — Path existence validation
+3. **Docs Diff Guard Policy Gate** — Policy marker enforcement
+
+**🚀 Quick Start (60 Seconds):**
+
+```bash
+# Reproduce all 3 gates locally (PR workflow)
+./scripts/ops/pt_docs_gates_snapshot.sh --changed
+
+# Full repo audit
+./scripts/ops/pt_docs_gates_snapshot.sh --all
+```
+
+**📘 Quick Reference:**
+- **[RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md](runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md)** ⭐ — **START HERE:** Single-page quick reference for all 3 gates (60-second workflow, common fixes, decision tree)
+
+**📚 Detailed Operator Runbooks (400+ lines each):**
+- [RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Token Policy Gate comprehensive guide
+- [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Reference Targets Gate comprehensive guide
+- [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff Guard Policy Gate comprehensive guide
+- [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff Guard Policy Gate quick reference
+
+**🛠️ Helper Script:**
+- ``scripts&#47;ops&#47;pt_docs_gates_snapshot.sh`` — Snapshot-only reproduction helper (no watch loops)
+
+**🔔 Optional CI Signal:**
+- **PR Merge State Signal** (`.github&#47;workflows&#47;ci-pr-merge-state-signal.yml`) — Informational-only workflow that shows BEHIND status in PR checks (never required, always SUCCESS)
+  - **Purpose:** Early visibility when branch is behind main
+  - **Output:** Job Summary with sync instructions
+  - **Status:** Non-blocking (informational only)
+
+**When Any Gate Fails:**
+1. Run snapshot helper: `.&#47;scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed`
+2. Follow "Next Actions" in output
+3. Consult relevant operator runbook
+4. Re-run to verify fix
+
+**When PR is BEHIND main:**
+1. Check "PR Merge State Signal" job summary for sync instructions
+2. Merge or rebase main into your branch
+3. Re-run snapshot helper to validate after sync
+
+---
+
+### Docs Token Policy Gate
+
+**Zweck:** Enforces `&#47;` encoding policy für illustrative Pfade in Markdown inline-code tokens (prevents `docs-reference-targets-gate` false positives).
+
+**Status:** Active (non-required, informational gate with 30-day burn-in period)
+
+**Key Resources:**
+- **Operator Quick Reference:** [runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md) — Quick commands, common failure patterns, decision tree for `--changed` vs `--all`
+- **Operator Runbook:** [runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md](runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) — When gate triggers, classification rules, triage workflow, allowlist management
+- **Validator Script:** ``scripts&#47;ops&#47;validate_docs_token_policy.py`` — CLI tool (exit codes: 0=pass, 1=violations, 2=error)
+- **Allowlist:** ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt`` — Generic placeholders, system paths (31 entries)
+- **CI Workflow:** ``.github&#47;workflows&#47;docs-token-policy-gate.yml`` — Runs on PRs touching ``docs&#47;**&#47;*.md``
+- **Tests:** ``tests&#47;ops&#47;test_validate_docs_token_policy.py`` — 26 unit tests
+
+**Quick Commands:**
+```bash
+# Run validator on changed files (PR mode)
+uv run python scripts/ops/validate_docs_token_policy.py --changed
+
+# Run validator on specific directory
+uv run python scripts/ops/validate_docs_token_policy.py docs/ops/
+
+# Run full test suite
+uv run python -m pytest tests/ops/test_validate_docs_token_policy.py -v
+```
+
+**When Gate Fails:**
+1. Read CI log for violations (e.g., ``Line 42: scripts&#47;example.py (ILLUSTRATIVE)``)
+2. Fix: Encode ``&#47;`` as `&#47;` for illustrative paths (e.g., `scripts&#47;example.py`)
+3. Re-run validator locally: ``uv run python scripts&#47;ops&#47;validate_docs_token_policy.py --changed``
+4. Push fix
+
+**Token Classifications (7 types):**
+- **ILLUSTRATIVE** (needs encoding): `scripts&#47;example.py`
+- **REAL_REPO_TARGET** (exempt): ``scripts&#47;ops&#47;ops_center.sh`` (file exists)
+- **BRANCH_NAME** (exempt): ``feature&#47;my-branch``
+- **URL** (exempt): ``https:&#47;&#47;github.com&#47;...``
+- **COMMAND** (exempt): ``python scripts&#47;run.py``
+- **LOCAL_PATH** (exempt): ``.&#47;scripts&#47;local.py``, ``~&#47;config.toml``
+- **ALLOWLISTED** (exempt): ``some&#47;path`` (in allowlist)
+
+**Allowlist Management:**
+- **When to allowlist:** Generic placeholders (``some&#47;path``), system paths (``&#47;usr&#47;local&#47;bin``), third-party paths
+- **When NOT to allowlist:** Illustrative paths specific to one doc (encode instead), real repo paths (auto-exempt), typos (fix docs)
+- **How to add:** Edit ``scripts&#47;ops&#47;docs_token_policy_allowlist.txt``, add comment with rationale, commit with clear message
+
+**Troubleshooting:**
+- **Gate passes but reference-targets-gate fails:** Token Policy only checks inline-code; Reference Targets checks all patterns → See [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md)
+- **Copy/paste includes `&#47;`:** Browsers decode automatically; if not, manually replace with ``&#47;``
+
+**Related:**
+- PR #693: [Merge Log](PR_693_MERGE_LOG.md) — Implementation + tests + runbook
+- PR #691: [Merge Log](PR_691_MERGE_LOG.md) — Policy formalization
+- PR #690: [Merge Log](PR_690_MERGE_LOG.md) — First application of `&#47;` encoding
+
 ## Docs Reference Targets Guardrail — Supported Formats
 
 Der Check `docs-reference-targets-gate` stellt sicher, dass in Docs referenzierte **Repo-Targets** (Dateien) existieren, ohne typische Markdown-/Shell-False-Positives zu triggern.
 
 ### Unterstützte Referenzen (werden geprüft)
-- **Plain paths** relativ zum Repo-Root, z.B. `docs/ops/README.md`, `scripts/ops/ops_center.sh`
-- **Markdown-Links**: `[Text]\(docs/ops/README.md\)`
+- **Plain paths** relativ zum Repo-Root, z.B. ``docs&#47;ops&#47;README.md``, ``scripts&#47;ops&#47;ops_center.sh``
+- **Markdown-Links**: ``[Text]\(docs&#47;ops&#47;README.md\)``
 - **Anchors** werden ignoriert (nur Datei wird geprüft): `RISK_LAYER_ROADMAP.md#overview`
-- **Query-Parameter** werden ignoriert: `docs/ops/README.md?plain=1`
+- **Query-Parameter** werden ignoriert: ``docs&#47;ops&#47;README.md?plain=1``
 - **Relative Pfade in Docs** werden korrekt resolved (relativ zur jeweiligen Markdown-Datei)
 
 **Beispiele (konzeptionell):**
@@ -480,10 +772,10 @@ Der Check `docs-reference-targets-gate` stellt sicher, dass in Docs referenziert
 ```
 
 ### Ignorierte Muster (werden NICHT als Repo-Targets gezählt)
-- **URLs**: `http://…`, `https://…`, z.B. `<https://example.com/docs/ops/README.md>`
-- **Globs/Wildcards**: `*`, `?`, `[]`, `< >` (z.B. `docs/*.md`, `docs/**/README.md`)
-- **Commands mit Spaces** (z.B. `./scripts/ops/ops_center.sh doctor`)
-- **Directories mit trailing slash** (z.B. `docs/ops/`)
+- **URLs**: ``http:&#47;&#47;…``, ``https:&#47;&#47;…``, z.B. ``<https:&#47;&#47;example.com&#47;docs&#47;ops&#47;README.md>``
+- **Globs/Wildcards**: `*`, `?`, `[]`, `< >` (z.B. ``docs&#47;*.md``, ``docs&#47;**&#47;README.md``)
+- **Commands mit Spaces** (z.B. ``.&#47;scripts&#47;ops&#47;ops_center.sh doctor``)
+- **Directories mit trailing slash** (z.B. ``docs&#47;ops&#47;``)
 - **Referenzen innerhalb von Bash-Codeblöcken**:
   ```bash
   # Alles innerhalb dieses Blocks wird NICHT als Target gecheckt
@@ -492,9 +784,9 @@ Der Check `docs-reference-targets-gate` stellt sicher, dass in Docs referenziert
 
 ### Golden Corpus Tests
 Das Verhalten ist durch ein "Golden Corpus" an Fixtures abgedeckt (Regressionssicherheit):
-- `tests/fixtures/docs_reference_targets/pass/` — Valide Referenzen + ignorierte Muster
-- `tests/fixtures/docs_reference_targets/fail/` — Fehlende Targets (muss detected werden)
-- `tests/fixtures/docs_reference_targets/relative_repo/` — Isolated Fixture-Repo für relative Pfade
+- ``tests&#47;fixtures&#47;docs_reference_targets&#47;pass&#47;`` — Valide Referenzen + ignorierte Muster
+- ``tests&#47;fixtures&#47;docs_reference_targets&#47;fail&#47;`` — Fehlende Targets (muss detected werden)
+- ``tests&#47;fixtures&#47;docs_reference_targets&#47;relative_repo&#47;`` — Isolated Fixture-Repo für relative Pfade
 
 **Pytest Tests:**
 ```bash
@@ -503,7 +795,7 @@ pytest -q tests/ops/test_verify_docs_reference_targets_script.py
 
 ---
 
-Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs/*` erkennt und **den Merge blockiert**.
+Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in ``docs&#47;*`` erkennt und **den Merge blockiert**.
 
 ### Override-Optionen
 ```bash
@@ -518,10 +810,10 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 ```
 
 **Siehe auch:**
-- Vollständige Dokumentation: `docs/ops/README.md` (Abschnitt "Docs Diff Guard")
-- PR Management Toolkit: `docs/ops/PR_MANAGEMENT_TOOLKIT.md`
-- Standalone Script: `scripts/ops/docs_diff_guard.sh`
-- Merge-Log: `docs/ops/PR_311_MERGE_LOG.md`
+- Vollständige Dokumentation: ``docs&#47;ops&#47;README.md`` (Abschnitt "Docs Diff Guard")
+- PR Management Toolkit: ``docs&#47;ops&#47;PR_MANAGEMENT_TOOLKIT.md``
+- Standalone Script: ``scripts&#47;ops&#47;docs_diff_guard.sh``
+- Merge-Log: ``docs&#47;ops&#47;PR_311_MERGE_LOG.md``
 
 ```bash
 # Alle Checks ausführen
@@ -548,7 +840,7 @@ scripts/ops/review_and_merge_pr.sh --pr 123 --merge --skip-docs-guard
 ### Dokumentation
 
 - **Vollständige Dokumentation**: [OPS_DOCTOR_README.md](OPS_DOCTOR_README.md)
-- **Beispiel-Output**: [ops_doctor_example_output.txt](ops_doctor_example_output.txt)
+- **Beispiel-Output**: `ops_doctor_example_output.txt` (example file not included)
 - **Implementation Summary**: [OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md](reports/OPS_DOCTOR_IMPLEMENTATION_SUMMARY.md)
 
 ### Merge-Log Health Integration
@@ -634,9 +926,9 @@ PR=259 ./scripts/ops/pr_review_merge_workflow_template.sh
 
 - **Quick Start**: [PR_MANAGEMENT_QUICKSTART.md](PR_MANAGEMENT_QUICKSTART.md) ⭐
 - **Vollständige Dokumentation**: [PR_MANAGEMENT_TOOLKIT.md](PR_MANAGEMENT_TOOLKIT.md)
-- **Basis-Tool**: `scripts/ops/review_and_merge_pr.sh`
-- **One-Shot Workflow**: `scripts/ops/pr_review_merge_workflow.sh`
-- **Template Workflow**: `scripts/ops/pr_review_merge_workflow_template.sh`
+- **Basis-Tool**: ``scripts&#47;ops&#47;review_and_merge_pr.sh``
+- **One-Shot Workflow**: ``scripts&#47;ops&#47;pr_review_merge_workflow.sh``
+- **Template Workflow**: ``scripts&#47;ops&#47;pr_review_merge_workflow_template.sh``
 
 ---
 
@@ -705,9 +997,9 @@ Der `PR_INVENTORY_REPORT.md` enthält:
 
 | Variable | Default | Beschreibung |
 |----------|---------|--------------|
-| `REPO` | `rauterfrank-ui/Peak_Trade` | GitHub Repository |
+| `REPO` | ``rauterfrank-ui&#47;Peak_Trade`` | GitHub Repository |
 | `LIMIT` | `1000` | Max. PRs pro Abfrage |
-| `OUT_ROOT` | `/tmp` | Output-Verzeichnis |
+| `OUT_ROOT` | ``&#47;tmp`` | Output-Verzeichnis |
 
 ### Beispiel-Output
 
@@ -750,7 +1042,7 @@ Der `PR_INVENTORY_REPORT.md` enthält:
   * **Root Cause:** Repo nutzt `ruff format`, Legacy/Drift führte zu Audit-Failures (detected by `ruff format --check`).
   * **Fix:** **#354** merged → `black` entfernt, **Single Source of Truth = RUFF**; Guardrail `check_no_black_enforcement.sh` ✅
   * **Campaign:** #283/#303 auto-merge pending; #269 closed (superseded); #259 merge via Web-UI (fehlender OAuth `workflow` scope).
-  * **RCA:** `incidents/2025-12-26_formatter_drift_audit_alignment.md`
+  * **RCA:** ``incidents&#47;2025-12-26_formatter_drift_audit_alignment.md``
 
 ---
 
@@ -789,8 +1081,8 @@ DRY_RUN=0 \
 
 | Variable | Default | Beschreibung |
 |----------|---------|--------------|
-| `REPO` | `rauterfrank-ui/Peak_Trade` | GitHub Repository |
-| `LABEL` | `ops/merge-log` | Label-Name |
+| `REPO` | ``rauterfrank-ui&#47;Peak_Trade`` | GitHub Repository |
+| `LABEL` | ``ops&#47;merge-log`` | Label-Name |
 | `LIMIT` | `1000` | Max. PRs pro Abfrage |
 | `DRY_RUN` | `1` | 1 = nur anzeigen, 0 = wirklich labeln |
 | `ENSURE_LABEL` | `0` | 1 = Label erstellen falls nicht vorhanden |
@@ -853,7 +1145,7 @@ To actually apply labels:
 ## 🧩 Ops Bash Run Helpers (strict/robust)
 
 Für konsistente "fail-fast" vs "warn-only" Semantik in neuen Ops-Skripten nutzen wir:
-- `scripts/ops/run_helpers.sh` (Quelle der Wahrheit, inkl. Quick Reference im Header)
+- ``scripts&#47;ops&#47;run_helpers.sh`` (Quelle der Wahrheit, inkl. Quick Reference im Header)
 
 **Default:** strict (fail fast)
 **Robust mode:** `PT_MODE=robust bash <script>.sh` (optional: `MODE=robust`)
@@ -906,7 +1198,7 @@ Beide Skripte verwenden nur Standard-Library-Module:
 
 ### Bash Helpers
 
-Die Ops-Skripte nutzen `scripts/ops/run_helpers.sh` für konsistentes Error-Handling:
+Die Ops-Skripte nutzen ``scripts&#47;ops&#47;run_helpers.sh`` für konsistentes Error-Handling:
 
 ```bash
 # Automatisch gesourced in pr_inventory_full.sh und label_merge_log_prs.sh
@@ -1048,7 +1340,7 @@ bash -x ./scripts/ops/pr_inventory_full.sh
 
 ## 🧪 Tests
 
-Beide Skripte haben entsprechende Tests im `tests/`-Verzeichnis.
+Beide Skripte haben entsprechende Tests im ``tests&#47;``-Verzeichnis.
 
 ### Relevante Test-Dateien
 
@@ -1188,7 +1480,7 @@ gh pr create --title "docs(ops): add merge log for PR #${PR}" --body "..."
 
 Für mehrere PRs gleichzeitig oder single-PR mit Auto-Update der docs.
 
-**Tool:** `scripts/ops/generate_merge_logs_batch.sh`
+**Tool:** ``scripts&#47;ops&#47;generate_merge_logs_batch.sh``
 
 **Verwendung:**
 
@@ -1211,8 +1503,8 @@ ops merge-log --keep-going 278 279 999
 - PRs müssen bereits gemerged sein
 
 **Output:**
-- Erstellt `docs/ops/PR_<NUM>_MERGE_LOG.md` für jedes PR
-- Updates automatisch `docs/ops/README.md` + `docs/ops/MERGE_LOG_WORKFLOW.md` (via Marker)
+- Erstellt ``docs&#47;ops&#47;PR_<NUM>_MERGE_LOG.md`` für jedes PR
+- Updates automatisch ``docs&#47;ops&#47;README.md`` + ``docs&#47;ops&#47;MERGE_LOG_WORKFLOW.md`` (via Marker)
 
 **Flags:**
 - `--dry-run` — Preview Mode: zeigt Änderungen, schreibt nichts
@@ -1229,8 +1521,8 @@ scripts/ops/validate_merge_logs_setup.sh
 #### Marker Format (MERGE_LOG_EXAMPLES)
 
 Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
-- `docs/ops/README.md`
-- `docs/ops/MERGE_LOG_WORKFLOW.md`
+- ``docs&#47;ops&#47;README.md``
+- ``docs&#47;ops&#47;MERGE_LOG_WORKFLOW.md``
 
 **Format:**
 ```html
@@ -1249,7 +1541,7 @@ Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
 
 Das Batch-Tool ersetzt den Inhalt zwischen den Markern idempotent.
 
-**Validator:** `scripts/ops/validate_merge_logs_setup.sh` prüft:
+**Validator:** ``scripts&#47;ops&#47;validate_merge_logs_setup.sh`` prüft:
 - Generator ist executable
 - Marker sind vorhanden in beiden Dateien
 - `ops_center.sh` hat die Integration
@@ -1355,7 +1647,7 @@ chmod +x scripts/ops/cleanup_old_inventories.sh
 Canary tests and validation evidence for governance mechanisms:
 
 - **PR #496 (Canary – Execution Override Validation)** → [CANARY_EXECUTION_OVERRIDE_VALIDATION_20260102.md](CANARY_EXECUTION_OVERRIDE_VALIDATION_20260102.md)
-  - Validates `ops/execution-reviewed` override mechanism
+  - Validates ``ops&#47;execution-reviewed`` override mechanism
   - Evidence requirement: Label + Evidence File + Auto-Merge disabled
   - Result: 18/18 checks passed, override accepted
 
@@ -1417,19 +1709,19 @@ Die im Runbook dokumentierte "Safety Fix" Mechanik ist jetzt als **CI-Guardrail*
 
 **Komponenten:**
 
-1. **Verifier Script:** `scripts/ops/verify_format_only_pr.sh`
+1. **Verifier Script:** ``scripts&#47;ops&#47;verify_format_only_pr.sh``
    - Deterministischer Format-Only Check via git worktree + tree hash comparison
    - Exit 0 = Format-only confirmed, Exit 1 = Not format-only
 
 2. **GitHub Actions Job:** `format-only-verifier` (required check)
    - Läuft auf allen PRs
-   - Prüft Label `ops/format-only`
+   - Prüft Label ``ops&#47;format-only``
    - Führt Verifier Script aus (wenn Label gesetzt)
    - **FAIL** wenn Label gesetzt aber Verifier FAIL → verhindert Merge
 
 3. **Policy Critic No-Op:** Conditional skip
    - Policy Critic läuft als no-op **nur wenn:**
-     - Label `ops/format-only` gesetzt **UND**
+     - Label ``ops&#47;format-only`` gesetzt **UND**
      - `format-only-verifier` PASS ✅
    - Sonst: Policy Critic läuft normal (blockierend)
 
@@ -1495,8 +1787,8 @@ Best Practices für sicheres Stash-Management:
 
 Automatisiertes Stash-Management mit Safe-by-Default-Design:
 
-- **Tool:** [`scripts/ops/stash_triage.sh`](../../scripts/ops/stash_triage.sh)
-- **Tests:** [`tests/ops/test_stash_triage_script.py`](../../tests/ops/test_stash_triage_script.py)
+- **Tool:** [``scripts&#47;ops&#47;stash_triage.sh``](../../scripts/ops/stash_triage.sh)
+- **Tests:** [``tests&#47;ops&#47;test_stash_triage_script.py``](../../tests/ops/test_stash_triage_script.py)
 
 **Quick Start:**
 
@@ -1519,7 +1811,7 @@ scripts/ops/stash_triage.sh --export-all --drop-after-export --confirm-drop
 - ✅ Session Report mit Triage-Übersicht
 - ✅ Exit 2 bei unsicherer Nutzung (Drop ohne Confirm)
 
-**Export-Ablage:** `docs/ops/stash_refs/`
+**Export-Ablage:** ``docs&#47;ops&#47;stash_refs&#47;``
 
 Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automation-Sektion.
 
@@ -1546,12 +1838,12 @@ Siehe [STASH_HYGIENE_POLICY.md](STASH_HYGIENE_POLICY.md) für Details zur Automa
 - Output: reports/ops/ops_doctor_dashboard.html
 
 ### Ops Doctor Dashboard (CI)
-- Workflow: `.github/workflows/ops_doctor_dashboard.yml` (manual + scheduled)
+- Workflow: ``.github&#47;workflows&#47;ops_doctor_dashboard.yml`` (manual + scheduled)
 - Output artifacts: `ops-doctor-dashboard` (HTML + JSON)
-- Local generation: `bash scripts/ops/generate_ops_doctor_dashboard.sh`
+- Local generation: ``bash scripts&#47;ops&#47;generate_ops_doctor_dashboard.sh``
 
 ### Ops Doctor Dashboard (CI + Pages)
-- Workflow: `.github/workflows/ops_doctor_pages.yml` (manual + scheduled)
+- Workflow: ``.github&#47;workflows&#47;ops_doctor_pages.yml`` (manual + scheduled)
 - Run artifacts: `ops-doctor-dashboard` (index.html + index.json)
 - Pages: Settings → Pages → Source = GitHub Actions (einmalig aktivieren)
 
@@ -1585,12 +1877,12 @@ cat .ops_local/inventory/TODO_PLACEHOLDER_TARGET_MAP.md
 - Top files by pattern
 - Path-prefix analysis (docs/, src/, config/, .github/, other/)
 
-**Note:** Reports are local artifacts (`.ops_local/inventory/`) and NOT committed to Git.
+**Note:** Reports are local artifacts (``.ops_local&#47;inventory&#47;``) and NOT committed to Git.
 
 ---
 
 ## Branch Hygiene (origin/main)
-Um zu verhindern, dass versehentlich lokale (unpushed) Commits in einen PR rutschen, erstelle neue Branches **immer von `origin/main`**:
+Um zu verhindern, dass versehentlich lokale (unpushed) Commits in einen PR rutschen, erstelle neue Branches **immer von ``origin&#47;main``**:
 
 ```bash
 git checkout main
@@ -1599,8 +1891,8 @@ scripts/ops/new_branch_from_origin_main.sh feat/my-change
 
 Das Script prüft:
 - ✅ Working tree ist clean
-- ✅ Lokaler `main` ist NICHT ahead von `origin/main` (verhindert unpushed commits)
-- ✅ Erstellt Branch explizit von `origin/main`
+- ✅ Lokaler `main` ist NICHT ahead von ``origin&#47;main`` (verhindert unpushed commits)
+- ✅ Erstellt Branch explizit von ``origin&#47;main``
 
 **Warum?** Siehe PR #305: Branch wurde vom lokalen `main` abgezweigt, der 2 unpushte Commits hatte → 4 Dateien statt 1 im PR.
 
@@ -1677,7 +1969,7 @@ scripts/ops/docs_diff_guard.sh --threshold 500
 
 ### Wie es funktioniert
 
-- Zählt Deletions pro File unter `docs/` (via GitHub PR Files API oder `git diff --numstat`)
+- Zählt Deletions pro File unter ``docs&#47;`` (via GitHub PR Files API oder `git diff --numstat`)
 - Fails bei >= 200 Deletions per File (default)
 - `--warn-only` zum Testen ohne Exit 1
 - `--threshold <n>` zum Anpassen
@@ -1688,10 +1980,10 @@ scripts/ops/docs_diff_guard.sh --threshold 500
 
 Schnellzugriff auf die pre-trade Risk Gates & Operator-Runbooks:
 
-- VaR Gate Runbook: `docs/risk/VAR_GATE_RUNBOOK.md`
-- Stress Gate Runbook: `docs/risk/STRESS_GATE_RUNBOOK.md`
-- Liquidity Gate Runbook: `docs/risk/LIQUIDITY_GATE_RUNBOOK.md`
-- Risk Layer Roadmap: `docs/risk/roadmaps/RISK_LAYER_ROADMAP.md`
+- VaR Gate Runbook: ``docs&#47;risk&#47;VAR_GATE_RUNBOOK.md``
+- Stress Gate Runbook: ``docs&#47;risk&#47;STRESS_GATE_RUNBOOK.md``
+- Liquidity Gate Runbook: ``docs&#47;risk&#47;LIQUIDITY_GATE_RUNBOOK.md``
+- Risk Layer Roadmap: ``docs&#47;risk&#47;roadmaps&#47;RISK_LAYER_ROADMAP.md``
 
 Hinweis: Gates sind standardmäßig konservativ/disabled-by-default ausrollbar; Aktivierung erfolgt über Config-Profile (Paper/Shadow → Monitoring → Live).
 
@@ -1720,10 +2012,10 @@ bash scripts/execution/recon_audit_gate.sh gate
 
 **CI Smoke:**
 - Path-filtered Check läuft bei Änderungen an wrapper/smoke/src/execution/pyproject/uv.lock
-- Lokale Ausführung: `bash scripts/ci/recon_audit_gate_smoke.sh`
+- Lokale Ausführung: ``bash scripts&#47;ci&#47;recon_audit_gate_smoke.sh``
 - Note: gate exit 2 = findings present (nicht als Fehler behandelt)
 
-**Referenz:** `docs/ops/PR_470_MERGE_LOG.md`
+**Referenz:** ``docs&#47;ops&#47;PR_470_MERGE_LOG.md``
 
 ---
 
@@ -1747,7 +2039,7 @@ bash scripts/execution/recon_audit_gate.sh gate
   → In dem Fall: **Follow-up PR + neues Merge-Log** oder „Incident/Correction Note" mit Verweis.
 
 ### Empfehlung (Ops-Workflow)
-- Große Korrekturen: **neues** kurzes Dokument `docs/ops/merge_logs/<date>_amendment_<ref>.md` mit Verweis auf das Original
+- Große Korrekturen: **neues** kurzes Dokument ``docs&#47;ops&#47;merge_logs&#47;<date>_amendment_<ref>.md`` mit Verweis auf das Original
 - Kleine Korrekturen: PR gegen das betroffene Merge-Log mit klarer PR-Body-Begründung (Docs-only)
 
 ---
@@ -1757,11 +2049,11 @@ bash scripts/execution/recon_audit_gate.sh gate
 Peak_Trade bevorzugt GitHub CLI (`gh`). Wenn ein Script einen Token braucht, nutze den zentralen Helper:
 
 - Safe Debug (zeigt nur Prefix + Länge, kein Leak):
-  - `scripts/utils/get_github_token.sh --debug`
+  - ``scripts&#47;utils&#47;get_github_token.sh --debug``
 - Validierung (Exit != 0 wenn kein gültiger Token gefunden wird):
-  - `scripts/utils/get_github_token.sh --check`
+  - ``scripts&#47;utils&#47;get_github_token.sh --check``
 - Verwendung in Scripts:
-  - `TOKEN="$(scripts/utils/get_github_token.sh)"`
+  - ``TOKEN="$(scripts&#47;utils&#47;get_github_token.sh)"``
 
 Unterstützte Token-Formate:
 - `gho_*`  (GitHub CLI OAuth Token)
@@ -1802,37 +2094,41 @@ Security:
 ---
 
 ## Verified Merge Logs
-- **PR #544 (Phase 8C: VaR Backtest Suite Runner & Report Formatter)** → `docs/ops/merge_logs/20260104_pr-544_var-backtest-suite-phase-8c.md`
-- **PR #528 (restore: docs/fix-reference-targets-priority1 — Rebase & Branch Cleanup Demo)** → `docs/ops/merge_logs/2026-01-03_pr-528-rebase-cleanup-restore-demo.md`
-- **PR #512 (CI required checks hardening: fail-open changes + PR concurrency)** → `docs/ops/PR_512_MERGE_LOG.md`
-- **PR #509 (Optuna/MLflow Tracking + Parameter Schema Restore from BK1)** → `docs/ops/PR_509_MERGE_LOG.md`
-- **PR #504 (WP5A Phase 5 NO-LIVE Drill Pack, governance-safe docs)** → `docs/ops/PR_504_MERGE_LOG.md`
-- **PR #501 (Cursor Timeout / Hang Triage Quick Start — Frontdoor)** → `docs/ops/PR_501_MERGE_LOG.md`
-- **PR #499 (Cursor timeout triage runbook; self-contained + log collector)** → `docs/ops/PR_499_MERGE_LOG.md`
-- **PR #497 (Canary Execution Override Validation Artifact, docs-only)** → `docs/ops/PR_497_MERGE_LOG.md`
-- **PR #491 (bg_job runner delivery + truth corrections)** → `docs/ops/PR_491_MERGE_LOG.md`
-- **PR #489 (docs(ops): standardize bg_job execution pattern in Cursor multi-agent workflows)** → `docs/ops/PR_489_MERGE_LOG.md`
-- **PR #488 (docs(ops): standardize bg_job execution pattern in cursor phases runbook)** → `docs/ops/PR_488_MERGE_LOG.md`
-- **PR #486 (chore(gitignore): ignore .logs from bg jobs)** → `docs/ops/PR_486_MERGE_LOG.md`
-- **PR #485 (docs(ops): docs reference targets parity + ignore list + priority fixes)** → `docs/ops/PR_485_MERGE_LOG.md`
-- **PR #483 (Merge Logs for PR #481 and #482, docs-only)** → `docs/ops/PR_483_MERGE_LOG.md` (meta: references #481, #482)
-- **PR #482 (WP4B Operator Drills + Evidence Pack, Manual-Only)** → `docs/ops/PR_482_MERGE_LOG.md`
-- **PR #481 (Policy-Safe Hardening for Live Gating Docs + WP4A Templates)** → `docs/ops/PR_481_MERGE_LOG.md`
+- **PR #745 (docs(ops): add PR #744 merge log)** → `PR_745_MERGE_LOG.md`
+
+- **PR #744 (dashboard(web): watch-only control center v0.2 (read-only))** → `PR_744_MERGE_LOG.md`
+
+- **PR #544 (Phase 8C: VaR Backtest Suite Runner & Report Formatter)** → ``docs&#47;ops&#47;merge_logs&#47;20260104_pr-544_var-backtest-suite-phase-8c.md``
+- **PR #528 (restore: docs/fix-reference-targets-priority1 — Rebase & Branch Cleanup Demo)** → ``docs&#47;ops&#47;merge_logs&#47;2026-01-03_pr-528-rebase-cleanup-restore-demo.md``
+- **PR #512 (CI required checks hardening: fail-open changes + PR concurrency)** → ``docs&#47;ops&#47;PR_512_MERGE_LOG.md``
+- **PR #509 (Optuna/MLflow Tracking + Parameter Schema Restore from BK1)** → ``docs&#47;ops&#47;PR_509_MERGE_LOG.md``
+- **PR #504 (WP5A Phase 5 NO-LIVE Drill Pack, governance-safe docs)** → ``docs&#47;ops&#47;PR_504_MERGE_LOG.md``
+- **PR #501 (Cursor Timeout / Hang Triage Quick Start — Frontdoor)** → ``docs&#47;ops&#47;PR_501_MERGE_LOG.md``
+- **PR #499 (Cursor timeout triage runbook; self-contained + log collector)** → ``docs&#47;ops&#47;PR_499_MERGE_LOG.md``
+- **PR #497 (Canary Execution Override Validation Artifact, docs-only)** → ``docs&#47;ops&#47;PR_497_MERGE_LOG.md``
+- **PR #491 (bg_job runner delivery + truth corrections)** → ``docs&#47;ops&#47;PR_491_MERGE_LOG.md``
+- **PR #489 (docs(ops): standardize bg_job execution pattern in Cursor multi-agent workflows)** → ``docs&#47;ops&#47;PR_489_MERGE_LOG.md``
+- **PR #488 (docs(ops): standardize bg_job execution pattern in cursor phases runbook)** → ``docs&#47;ops&#47;PR_488_MERGE_LOG.md``
+- **PR #486 (chore(gitignore): ignore .logs from bg jobs)** → ``docs&#47;ops&#47;PR_486_MERGE_LOG.md``
+- **PR #485 (docs(ops): docs reference targets parity + ignore list + priority fixes)** → ``docs&#47;ops&#47;PR_485_MERGE_LOG.md``
+- **PR #483 (Merge Logs for PR #481 and #482, docs-only)** → ``docs&#47;ops&#47;PR_483_MERGE_LOG.md`` (meta: references #481, #482)
+- **PR #482 (WP4B Operator Drills + Evidence Pack, Manual-Only)** → ``docs&#47;ops&#47;PR_482_MERGE_LOG.md``
+- **PR #481 (Policy-Safe Hardening for Live Gating Docs + WP4A Templates)** → ``docs&#47;ops&#47;PR_481_MERGE_LOG.md``
 - **PR #479 (Appendix A — Phase Runner Prompt Packs 0–3)** → docs/ops/PR_479_MERGE_LOG.md
-- **PR #470 (Recon Audit Gate Wrapper: pyenv-safe Python Runner)** → `docs/ops/PR_470_MERGE_LOG.md`
-- **PR #462 (WP0D LedgerEntry Mapping + Reconciliation Wiring, Phase-0 Integration Day)** → `docs/ops/PR_462_MERGE_LOG.md` | [Integration Report](integration_days/PHASE0_ID0_WP0D_INTEGRATION_DAY_REPORT.md)
-- **PR #458 (WP0E Contracts & Interfaces, Phase-0 Gate Report)** → `docs/ops/PR_458_MERGE_LOG.md`
-- **PR #456 (Phase-0 A0 Integration Sweep, finalize status)** → `docs/ops/PR_456_MERGE_LOG.md`
-- **PR #454 (Docs Reference Targets Gate style guide)** → `docs/ops/PR_454_MERGE_LOG.md`
-- **PR #448 (Docs Reference Gate – Escape path separators, Phase 3)** → `docs/ops/PR_448_MERGE_LOG.md`
-- **PR #447 (Docs Reference Gate – Deprecate inspect_offline_feed, Phase 2)** → `docs/ops/PR_447_MERGE_LOG.md`
-- **PR #446 (Docs Reference Gate – Fix moved script paths, Phase 1)** → `docs/ops/PR_446_MERGE_LOG.md`
-- **PR #442 (Audit remediation summary for PR #441, verified)** → `docs/ops/PR_442_MERGE_LOG.md`
-- **PR #426** → `docs/ops/PR_426_MERGE_LOG.md`
-- **PR #424** → `docs/ops/PR_424_MERGE_LOG.md`
-- **PR #418 (Kupiec POF Phase-7 convenience API, verified)** → `docs/ops/PR_418_MERGE_LOG.md`
-- **PR #413 (VaR Validation Phase 2 (Kupiec + Traffic Light), verified)** → `docs/ops/PR_413_MERGE_LOG.md`
-- **PR #409 (Kill Switch Legacy Adapter, verified)** → `docs/ops/PR_409_MERGE_LOG.md`
+- **PR #470 (Recon Audit Gate Wrapper: pyenv-safe Python Runner)** → ``docs&#47;ops&#47;PR_470_MERGE_LOG.md``
+- **PR #462 (WP0D LedgerEntry Mapping + Reconciliation Wiring, Phase-0 Integration Day)** → ``docs&#47;ops&#47;PR_462_MERGE_LOG.md`` | [Integration Report](integration_days/PHASE0_ID0_WP0D_INTEGRATION_DAY_REPORT.md)
+- **PR #458 (WP0E Contracts & Interfaces, Phase-0 Gate Report)** → ``docs&#47;ops&#47;PR_458_MERGE_LOG.md``
+- **PR #456 (Phase-0 A0 Integration Sweep, finalize status)** → ``docs&#47;ops&#47;PR_456_MERGE_LOG.md``
+- **PR #454 (Docs Reference Targets Gate style guide)** → ``docs&#47;ops&#47;PR_454_MERGE_LOG.md``
+- **PR #448 (Docs Reference Gate – Escape path separators, Phase 3)** → ``docs&#47;ops&#47;PR_448_MERGE_LOG.md``
+- **PR #447 (Docs Reference Gate – Deprecate inspect_offline_feed, Phase 2)** → ``docs&#47;ops&#47;PR_447_MERGE_LOG.md``
+- **PR #446 (Docs Reference Gate – Fix moved script paths, Phase 1)** → ``docs&#47;ops&#47;PR_446_MERGE_LOG.md``
+- **PR #442 (Audit remediation summary for PR #441, verified)** → ``docs&#47;ops&#47;PR_442_MERGE_LOG.md``
+- **PR #426** → ``docs&#47;ops&#47;PR_426_MERGE_LOG.md``
+- **PR #424** → ``docs&#47;ops&#47;PR_424_MERGE_LOG.md``
+- **PR #418 (Kupiec POF Phase-7 convenience API, verified)** → ``docs&#47;ops&#47;PR_418_MERGE_LOG.md``
+- **PR #413 (VaR Validation Phase 2 (Kupiec + Traffic Light), verified)** → ``docs&#47;ops&#47;PR_413_MERGE_LOG.md``
+- **PR #409 (Kill Switch Legacy Adapter, verified)** → ``docs&#47;ops&#47;PR_409_MERGE_LOG.md``
 
 **Style Guide:** [MERGE_LOGS_STYLE_GUIDE.md](MERGE_LOGS_STYLE_GUIDE.md) — Gate-safe formatting, de-pathify rules, Unicode hygiene
 
@@ -1841,6 +2137,9 @@ Security:
 
 Post-merge documentation logs for operational PRs.
 
+- [PR #664](PR_664_MERGE_LOG.md) — fix(ci): offline_suites workflow_dispatch input context (merged 2026-01-12) <!-- PR-664-MERGE-LOG -->
+- [PR #663](PR_663_MERGE_LOG.md) — fix(ci): Phase 5B workflow dispatch condition (merged 2026-01-12) <!-- PR-663-MERGE-LOG -->
+- [PR #628](PR_628_MERGE_LOG.md) — docs(ops): AI Autonomy 4B M2 drill session template + scorecard standard (merged 2026-01-09) <!-- PR-628-MERGE-LOG -->
 - [PR #551](PR_551_MERGE_LOG.md) — fix(pr-531): restore green CI (normalize research markers/IDs) (merged 2026-01-04) <!-- PR-551-MERGE-LOG -->
 - [PR #599](PR_599_MERGE_LOG.md) — docs(ops): add audit artifacts v0 (evidence index + risk register) (merged 2026-01-07) <!-- PR-599-MERGE-LOG -->
 - [PR #596](PR_596_MERGE_LOG.md) — docs(ops): add placeholder standards v0 (policy + deterministic generator) (merged 2026-01-07) <!-- PR-596-MERGE-LOG -->

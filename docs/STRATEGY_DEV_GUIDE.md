@@ -1036,8 +1036,25 @@ return signals
 
 ---
 
+## Related Docs
+
+### Core Documentation
+- 🚪 **[Documentation Frontdoor](README.md)** – Navigate all docs by audience & topic
+- 📖 **[Peak Trade Overview](PEAK_TRADE_OVERVIEW.md)** – Architecture, modules, data flow
+- 🔬 **[Backtest Engine](BACKTEST_ENGINE.md)** – Engine contract, execution modes, extension hooks
+
+### Research & Portfolio
+- 📊 **[Research → Live Playbook](PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md)** – Research-to-production workflow
+- 🎯 **[Portfolio Recipes](PORTFOLIO_RECIPES_AND_PRESETS.md)** – Portfolio configurations
+
+### Technical Guides
+- [Position Sizing & Overlays](../src/core/position_sizing.py) – Position sizing implementation
+- [Config System](project_docs/CONFIG_SYSTEM.md) – Configuration deep dive *(if exists)*
+
+---
+
 **Happy Trading! 🚀**
 
 **Erstellt:** Dezember 2024
-**Letztes Update:** {{ heute }}
+**Letztes Update:** Januar 2026
 **Status:** Produktionsreif für Backtesting

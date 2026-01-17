@@ -1,0 +1,91 @@
+{
+  "recorded_at": "2026-01-10T12:00:00+00:00",
+  "runs": [
+    {
+      "metadata": {
+        "latency_ms": 2345,
+        "timestamp": "2026-01-10T12:00:01+00:00"
+      },
+      "model_id": "gpt-5.2-pro",
+      "prompt_hash": "sha256:ce0db8666312bcd27baf92ceb2ead4d06aca001005376134c614e0776125a29a",
+      "request": {
+        "max_tokens": 4000,
+        "messages": [
+          {
+            "content": "You are a market analyst providing outlook reports.",
+            "role": "system"
+          },
+          {
+            "content": "Provide a market outlook for Q1 2026.",
+            "role": "user"
+          }
+        ],
+        "model": "gpt-5.2-pro",
+        "temperature": 0.7
+      },
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "content": "# Market Outlook Q1 2026\n\n## Scenario Analysis\n\n**Base Case:** Moderate growth with elevated uncertainty.\n\n**Key Drivers:**\n- Central bank policy normalization\n- Geopolitical tensions remain elevated\n- Tech sector consolidation\n\n**No-Trade Triggers:**\n- VIX > 30\n- Credit spreads > 200bps\n\n**Uncertainty Level:** HIGH (geopolitical risks)",
+              "role": "assistant"
+            }
+          }
+        ],
+        "id": "chatcmpl-sample-001",
+        "usage": {
+          "completion_tokens": 123,
+          "prompt_tokens": 45,
+          "total_tokens": 168
+        }
+      },
+      "role": "proposer",
+      "run_id": "proposer-run-001"
+    },
+    {
+      "metadata": {
+        "latency_ms": 1567,
+        "timestamp": "2026-01-10T12:00:05+00:00"
+      },
+      "model_id": "deepseek-r1",
+      "prompt_hash": "sha256:1f9ff470b674dbe7ffe38707966746740fa53dc62876b0b64b197454054b0c62",
+      "request": {
+        "max_tokens": 2000,
+        "messages": [
+          {
+            "content": "You are a critical reviewer evaluating market outlook reports.",
+            "role": "system"
+          },
+          {
+            "content": "Review the following market outlook:\n\n[Proposer output included here]",
+            "role": "user"
+          }
+        ],
+        "model": "deepseek-r1",
+        "temperature": 0.3
+      },
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "message": {
+              "content": "# Critic Review\n\n**Decision:** APPROVE_WITH_CHANGES\n\n**Rationale:**\n- Scenario analysis is comprehensive\n- No-trade triggers are appropriate\n- Uncertainty assessment is explicit\n\n**Suggested Changes:**\n- Add quantitative risk metrics\n- Clarify geopolitical risk scenarios\n\n**Evidence IDs:** [proposer-run-001, baseline-scenario-2026-01]",
+              "role": "assistant"
+            }
+          }
+        ],
+        "id": "chatcmpl-sample-002",
+        "usage": {
+          "completion_tokens": 89,
+          "prompt_tokens": 234,
+          "total_tokens": 323
+        }
+      },
+      "role": "critic",
+      "run_id": "critic-run-001"
+    }
+  ],
+  "scenario": "market-outlook-baseline",
+  "transcript_id": "l2-market-outlook-sample-2026-01-10"
+}

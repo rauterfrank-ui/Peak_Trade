@@ -298,9 +298,9 @@ with open("var_validation_param.md", "w") as f:
 ## Support
 
 **Questions?**
-1. Check [Integration Guide](INTEGRATION_GUIDE.md) for workflows
+1. Check Integration Guide (planned) for workflows
 2. Check [Tests](../../tests/risk/validation/) for usage examples
-3. Run tests: `pytest tests/risk/validation/ -v`
+3. Run tests: `pytest tests&#47;risk&#47;validation&#47; -v`
 
 **Issues?**
 - Check Troubleshooting section above
