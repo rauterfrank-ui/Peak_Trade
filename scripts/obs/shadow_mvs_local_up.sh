@@ -8,6 +8,7 @@ EXPORTER_PID_FILE="$RUNTIME_DIR/shadow_mvs_exporter.pid"
 EXPORTER_LOG_FILE="$RUNTIME_DIR/shadow_mvs_exporter.log"
 EXPORTER_HOST="${SHADOW_MVS_EXPORTER_HOST:-0.0.0.0}"
 EXPORTER_PORT="${SHADOW_MVS_EXPORTER_PORT:-9109}"
+COMPOSE_PROJECT="${SHADOW_MVS_COMPOSE_PROJECT:-peaktrade-shadow-mvs}"
 
 mkdir -p "$RUNTIME_DIR"
 
@@ -38,11 +39,11 @@ if [[ ! -f "$EXPORTER_PID_FILE" ]]; then
   fi
 fi
 
-echo "==> Starting prometheus-local (:9092)"
-docker compose -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml up -d --force-recreate
-
-echo "==> Starting grafana-only (:3000) with file provisioning"
-docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d --force-recreate
+echo "==> Starting prometheus-local (:9092) + grafana-only (:3000) (compose project=$COMPOSE_PROJECT)"
+docker compose -p "$COMPOSE_PROJECT" \
+  -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml \
+  -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml \
+  up -d --force-recreate --renew-anon-volumes --remove-orphans
 
 echo ""
 echo "Up."

@@ -27,16 +27,27 @@
 - **Peak_Trade Ledger** als *Source of Truth* (Events/Orders/Fills/Fees, replaybar).
 - **Watch‑Only Web UI** als *Operator‑Konsole* (Run‑Snapshot, Blotter, Timeline) – optional, aber empfohlen.
 - **Saubere Governance‑Schalter**: Live Execution nur via explicit enable + sanity checks + gates.
+- **Deterministisch (Operator‑tauglich)**: Shadow‑MVS Stack via `scripts/obs/shadow_mvs_local_{down,up,verify}.sh` (Snapshot‑Checks, keine Watch‑Loops).
 
 ### Operator Quickstart (lokal, <5 Minuten): Shadow MVS → Prometheus → Grafana → VERIFY PASS
 
 Ziel: **ohne UI‑Klicks** ein reproduzierbares Shadow‑MVS Dashboard mit Daten sehen (watch‑only).
 
 ```bash
+bash scripts/obs/shadow_mvs_local_down.sh
 bash scripts/obs/shadow_mvs_local_up.sh
 bash scripts/obs/shadow_mvs_local_verify.sh
-bash scripts/obs/shadow_mvs_local_down.sh
 ```
+
+> Projektname ist fix: `peaktrade-shadow-mvs` → verhindert Cross‑Orphans (Compose).
+
+#### Hardening Notes (Compose/Verify/Panels)
+- Compose‑Projekt fix: `-p peaktrade-shadow-mvs` (verhindert Orphans)
+- `up`: `... up -d --renew-anon-volumes --remove-orphans` (keine Grafana‑DB/Passwort‑Drift)
+- `down`: `... down -v --remove-orphans` (sauberer Reset)
+- Verify: Warmup‑Retries ohne Traceback‑Spam; Grafana‑Auth‑Fail → klare 401‑Meldung
+- Verify: Stage‑Query Window **`[5m]`** (weniger flappy)
+- Panels: Error‑Rate Nenner via `clamp_min(..., 1e-9)` (stabil bei low traffic)
 
 **Expected Outcomes (VERIFY PASS):**
 - Exporter (Host): `http:&#47;&#47;127.0.0.1:9109&#47;metrics` ist erreichbar und enthält:
@@ -131,7 +142,7 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - Prometheus Targets: `job="shadow_mvs"` = UP
 - PromQL Smoke (non‑empty):
   - `up{job="shadow_mvs"}`
-  - Stage‑Query: `sum by (mode, stage) (rate(peak_trade_pipeline_events_total{mode="shadow"}[1m]))`
+  - Stage‑Query: `sum by (mode, stage) (rate(peak_trade_pipeline_events_total{mode="shadow"}[5m]))`
 - Grafana:
   - Default Datasource: UID `peaktrade-prometheus-local`
   - URL enthält: `http://host.docker.internal:9092`
@@ -330,7 +341,7 @@ Du willst erst die Regeln, dann Code.
 - Grafana datasource Prometheus
 
 **DoD:**  
-- `sum(rate(peak_trade_pipeline_events_total{mode="shadow"}[1m])) > 0` im Explore
+- `sum(rate(peak_trade_pipeline_events_total{mode="shadow"}[5m])) > 0` im Explore
 
 ---
 
@@ -424,7 +435,7 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - Target up:
   - `up{job="shadow_mvs"}`
 - Stage‑Events (non‑empty):
-  - `sum by (mode, stage) (rate(peak_trade_pipeline_events_total{mode="shadow"}[1m]))`
+  - `sum by (mode, stage) (rate(peak_trade_pipeline_events_total{mode="shadow"}[5m]))`
 
 **Verify Codes (Runbook‑Konvention, für Triage):**
 - `F-OK`
@@ -455,8 +466,8 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - **Symptom**: `http:&#47;&#47;127.0.0.1:9092&#47;-&#47;ready` nicht OK
 - **Wahrscheinlichste Ursache**: Compose nicht up / Docker nicht gestartet
 - **Next Commands (snapshot)**:
-  - `docker compose -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml ps`
-  - `docker compose -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml up -d --force-recreate`
+  - `docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml ps`
+  - `docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml up -d --force-recreate --renew-anon-volumes --remove-orphans`
 
 #### G‑3: Prometheus Target `job="shadow_mvs"` DOWN
 - **Symptom**: Prometheus `/targets` zeigt `shadow_mvs` down
@@ -470,22 +481,24 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - **Symptom**: `curl -u admin:admin http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health` fail
 - **Wahrscheinlichste Ursache**: Grafana container nicht läuft / Port `:3000` belegt
 - **Next Commands (snapshot)**:
-  - `docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml ps`
+  - `docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml ps`
   - `lsof -nP -iTCP:3000 -sTCP:LISTEN || true`
 
 #### G‑5: Datasource falsch (nicht default / falsche URL)
 - **Symptom**: Verify meldet fehlende Datasource UID oder URL nicht `host.docker.internal:9092`
+- **Symptom (Auth)**: Verify meldet `Grafana auth failed ... (HTTP 401)` → Credentials/DB-Drift (alte Volumes) oder falsches Login
 - **Wahrscheinlichste Ursache**: falsches Datasource‑YAML gemountet (oder altes Provisioning im Container)
 - **Next Commands (snapshot)**:
   - `curl -fsS -u admin:admin http:&#47;&#47;127.0.0.1:3000&#47;api&#47;datasources | python3 -m json.tool | head -n 220`
-  - `docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d --force-recreate`
+  - `docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d --force-recreate --renew-anon-volumes --remove-orphans`
+  - (Reset, deterministisch) `bash scripts/obs/shadow_mvs_local_down.sh && bash scripts/obs/shadow_mvs_local_up.sh`
 
 #### G‑6: Dashboard fehlt (UID nicht sichtbar)
 - **Symptom**: Grafana `/api/search?type=dash-db` enthält `peaktrade-shadow-pipeline-mvs` nicht
 - **Wahrscheinlichste Ursache**: Dashboard provider path/mount mismatch oder JSON nicht gemountet
 - **Next Commands (snapshot)**:
   - `curl -fsS -u admin:admin -G http:&#47;&#47;127.0.0.1:3000&#47;api&#47;search --data-urlencode type=dash-db | python3 -m json.tool | head -n 120`
-  - `docker exec peaktrade-grafana-local sh -lc 'ls -la /etc/grafana/provisioning/dashboards || true; echo; ls -la /etc/grafana/dashboards || true'`
+  - `docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml exec grafana sh -lc 'ls -la /etc/grafana/provisioning/dashboards || true; echo; ls -la /etc/grafana/dashboards || true'`
 
 #### G‑7: Daten „empty“ obwohl Targets UP
 - **Symptom**: `up{job="shadow_mvs"}` ist 1, aber Stage‑Query liefert leer
@@ -499,8 +512,8 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - **Wahrscheinlichste Ursache**: falsche Compose‑Variante/Erwartung gemischt
 - **Next Commands (snapshot)**:
   - Prüfe welche Compose‑Files laufen:  
-    - `docker compose -f docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml ps`  
-    - `docker compose -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml ps`
+    - `docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml ps`  
+    - `docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml ps`
   - Nutze Known‑Good Pairing (Phase E) oder konsequent Mini‑Stack (siehe `docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml`)
 
 ---
@@ -813,7 +826,7 @@ Output: docs/webui/GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md
 ### F‑Checklist (Smoke / Snapshot)
 - [ ] `bash scripts/obs/shadow_mvs_local_verify.sh` exit 0
 - [ ] `up{job="shadow_mvs"}` liefert 1
-- [ ] `sum by (mode, stage) (rate(peak_trade_pipeline_events_total{mode="shadow"}[1m]))` liefert non‑empty
+- [ ] `sum by (mode, stage) (rate(peak_trade_pipeline_events_total{mode="shadow"}[5m]))` liefert non‑empty
 
 ### G‑Checklist (Triage Readiness)
 - [ ] Decision Tree Knoten G‑1…G‑8 existieren und enthalten nur snapshot commands

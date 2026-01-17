@@ -51,22 +51,29 @@ Diese Doku beschreibt den **Workflow der Grafana-Dashboards** in Peak_Trade: von
   - Start (Compose): `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` (Host-Port `:9092`)
   - Oder One-shot (Compose + Verify): `bash scripts/obs/shadow_mvs_local_up.sh` + `bash scripts/obs/shadow_mvs_local_verify.sh`
 
+- **Hardening Notes (Compose/Verify/Panels)**:
+  - Compose‑Projekt fix: `-p peaktrade-shadow-mvs` (verhindert Orphans)
+  - `up`: `... up -d --renew-anon-volumes --remove-orphans` (keine Grafana‑DB/Passwort‑Drift)
+  - `down`: `... down -v --remove-orphans` (sauberer Reset)
+  - Verify: Warmup‑Retries ohne Traceback‑Spam; Grafana‑Auth‑Fail → klare 401‑Meldung
+  - Verify: Stage‑Query Window **`[5m]`** (weniger flappy)
+  - Panels: Error‑Rate Nenner via `clamp_min(..., 1e-9)` (stabil bei low traffic)
+
 - Start:
 
 ```bash
-docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d --force-recreate
+docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d --force-recreate --renew-anon-volumes --remove-orphans
 ```
 
 - Stop:
 
 ```bash
-docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml down
+docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml down -v --remove-orphans
 ```
 
 **Wichtiges Konzept**:
 - Grafana läuft als UI „on-demand“.
 - Prometheus kommt **nicht** aus diesem Compose, sondern ist bereits auf dem Host vorhanden (typisch Container `pt-prometheus-local` auf **`:9092`**).
- - Für das Shadow‑MVS Dashboard kann zusätzlich ein Host-Exporter laufen (via `bash scripts/obs/shadow_mvs_local_up.sh`), den Prometheus-local dann über `host.docker.internal:9109` scrapt.
  - Für das Shadow‑MVS Dashboard kann zusätzlich ein Host-Exporter laufen (via `bash scripts/obs/shadow_mvs_local_up.sh`), den Prometheus-local dann über `host.docker.internal:9109` scrapt.
 
 ### Modus B: Mini-Stack (Grafana + Prometheus im selben Compose)
@@ -125,7 +132,7 @@ Für file-provisioned Dashboards ist der sichere Weg:
 - Grafana (Container) neu erstellen:
 
 ```bash
-docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d --force-recreate
+docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d --force-recreate --renew-anon-volumes --remove-orphans
 ```
 
 ## Verifikation (schnell & reproduzierbar)
@@ -209,7 +216,7 @@ count by (__name__) ({__name__=~".*shadow.*", job="peak_trade_web"})
 **Debug (Container)**
 
 ```bash
-docker exec peaktrade-grafana-local sh -lc '
+docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml exec grafana sh -lc '
   ls -la /etc/grafana/provisioning/dashboards || true
   echo
   ls -la /etc/grafana/dashboards || true
