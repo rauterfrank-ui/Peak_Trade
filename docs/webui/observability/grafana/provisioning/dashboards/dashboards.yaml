@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: "peaktrade-file"
+    orgId: 1
+    folder: "Peak_Trade"
+    type: file
+    disableDeletion: true
+    editable: false
+    options:
+      path: /etc/grafana/dashboards

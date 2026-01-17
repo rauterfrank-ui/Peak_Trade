@@ -1,0 +1,47 @@
+{
+  "uid": "peaktrade-overview",
+  "title": "Peak_Trade Overview (Mini vs Main)",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "tags": ["peak_trade", "observability"],
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "UP (mini) — job=peak_trade_web",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "peaktrade-prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "up{job=\"peak_trade_web\"}", "legendFormat": "{{instance}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "UP (main) — job=peak_trade_uvicorn",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "peaktrade-prometheus-main" },
+      "targets": [
+        { "refId": "A", "expr": "up{job=\"peak_trade_uvicorn\"}", "legendFormat": "{{instance}}" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP req/s (mini) — peak_trade_http_requests_total",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "peaktrade-prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "sum(rate(peak_trade_http_requests_total[1m]))", "legendFormat": "req/s" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP req/s (main) — peak_trade_http_requests_total",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "peaktrade-prometheus-main" },
+      "targets": [
+        { "refId": "A", "expr": "sum(rate(peak_trade_http_requests_total[1m]))", "legendFormat": "req/s" }
+      ]
+    }
+  ]
+}

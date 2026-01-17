@@ -55,6 +55,15 @@ Diese Assets sind **optional** und betreffen ausschließlich **Service Health / 
 - Docker Compose (lokal): `docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml`
 - Grafana Dashboard JSON: `docs/webui/observability/GRAFANA_DASHBOARD_PEAK_TRADE_WATCH_ONLY.json`
 
+## Ports & Networking (wichtig)
+
+- **Grafana UI (Host)**: `http://localhost:3000`
+- **Prometheus UI (Host)**: `http://localhost:9091`
+  - In `DOCKER_COMPOSE_PROM_GRAFANA.yml` ist Prometheus bewusst auf **Host-Port 9091** gemappt (`"9091:9090"`), um Konflikte mit anderen Prometheus-Instanzen auf `9090` zu vermeiden.
+- **Grafana → Prometheus (Docker-intern)**:
+  - Grafana muss Prometheus über **`http://prometheus:9090`** (Service-Name + Container-Port) erreichen.
+  - **Nicht** `http://prometheus:9091` (das ist nur der Host-Port und führt im Container zu `connection refused`).
+
 ## Operator Runbook
 
 - `docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`
