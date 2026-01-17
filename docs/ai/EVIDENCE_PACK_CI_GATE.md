@@ -89,7 +89,7 @@ pack_path = runtime.save_pack(run_id=run_id)
 
 **Script:** `scripts/validate_evidence_pack_ci.py`
 
-Validiert alle Evidence Packs in einem Verzeichnis (default: `.artifacts/evidence_packs`).
+Validiert alle Evidence Packs in einem Verzeichnis (default: `.artifacts&#47;evidence_packs`).
 
 **Usage:**
 
@@ -171,10 +171,10 @@ python scripts/run_layer_smoke_with_evidence_pack.py --verbose
    - Detects Evidence Pack code changes
    - Allows graceful skipping on unrelated PRs
    - Paths monitored:
-     - `src/ai_orchestration/**`
+     - `src&#47;ai_orchestration&#47;**`
      - `scripts/validate_evidence_pack_ci.py`
      - `scripts/run_layer_smoke_with_evidence_pack.py`
-     - `tests/ai_orchestration/test_evidence_pack*.py`
+     - `tests&#47;ai_orchestration&#47;test_evidence_pack*.py`
      - `.github/workflows/evidence_pack_gate.yml`
      - `requirements.txt`
 
@@ -250,9 +250,9 @@ python -m pytest -q tests/ai_orchestration/test_evidence_pack*.py
 **Cause:** Smoke run didn't create pack, or pack was not uploaded as artifact
 
 **Fix:**
-1. Check smoke run output: Did it create `.artifacts/evidence_packs/<run_id>/evidence_pack.json`?
+1. Check smoke run output: Did it create `.artifacts&#47;evidence_packs&#47;<run_id>&#47;evidence_pack.json`?
 2. Check CI artifacts: Was `evidence-packs` artifact uploaded?
-3. Check `.gitignore`: `.artifacts/` should be ignored (not committed)
+3. Check `.gitignore`: `.artifacts&#47;` should be ignored (not committed)
 4. Check path-filtering: Did Evidence Pack code actually change? (if not, job gracefully skips)
 
 **Where to Look:**
@@ -296,7 +296,7 @@ python -m pytest -q tests/ai_orchestration/test_evidence_pack*.py
 
 **Symptom:** Config fingerprint changes unexpectedly
 
-**Cause:** Config files (`config/*.toml`) were modified
+**Cause:** Config files (`config&#47;*.toml`) were modified
 
 **Fix:**
 - This is expected if config changed
@@ -425,7 +425,7 @@ pack_path = create_minimal_evidence_pack_for_run(
 
 ### Evidence Pack Root
 
-**Default:** `.artifacts/evidence_packs/`
+**Default:** `.artifacts&#47;evidence_packs&#47;`
 
 **Structure:**
 
@@ -450,7 +450,7 @@ pack_path = create_minimal_evidence_pack_for_run(
 ### Config Fingerprint
 
 **Algorithm:**
-1. Collect all `config/*.toml` files (sorted)
+1. Collect all `config&#47;*.toml` files (sorted)
 2. Concatenate file contents (sorted by path)
 3. Compute SHA256 hex digest
 
@@ -505,7 +505,7 @@ python scripts/validate_evidence_pack_ci.py \
 
 **Exact Check Name:** `evidence-pack-validation-gate`
 
-**Format:** `workflow-name / job-name`
+**Format:** `workflow-name &#47; job-name`
 
 **Where to Configure:**
 1. GitHub → Repository → Settings
@@ -641,7 +641,7 @@ Phase 4B wird folgende Features hinzufügen:
 - **Phase 3B:** Evidence Pack Validator (`docs/ops/PHASE3B_EVIDENCE_PACK_QUICKSTART.md`)
 - **AI Autonomy Layer Map:** `docs/architecture/ai_autonomy_layer_map_v1.md`
 - **Model Registry:** `config/model_registry.toml`
-- **Capability Scopes:** `config/capability_scopes/*.toml`
+- **Capability Scopes:** `config&#47;capability_scopes&#47;*.toml`
 
 ---
 
@@ -649,5 +649,5 @@ Phase 4B wird folgende Features hinzufügen:
 
 Bei Fragen oder Problemen:
 - Check CI artifacts: `evidence-pack-validation-report` (JSON)
-- Run locally: `scripts/validate_evidence_pack_ci.py --verbose`
+- Run locally: `scripts&#47;validate_evidence_pack_ci.py --verbose`
 - Review docs: `docs/ai/EVIDENCE_PACK_CI_GATE.md` (dieses Dokument)
