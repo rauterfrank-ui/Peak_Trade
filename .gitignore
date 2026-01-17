@@ -117,3 +117,6 @@ out/
 
 # local scratch (never commit)
 docs/_scratch/
+
+# Local Prometheus configs + TSDB (never commit)
+.local/prometheus/data/

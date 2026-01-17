@@ -23,6 +23,10 @@ logger = logging.getLogger(__name__)
 _HTTP_REQUESTS_TOTAL = None
 _HTTP_REQUEST_DURATION = None
 _HTTP_IN_FLIGHT = None
+_HTTP_REQUESTS_TOTAL_LABELED = None
+_HTTP_REQUEST_DURATION_LABELED = None
+_HTTP_IN_FLIGHT_LABELED = None
+_CONST_LABELS = None
 
 
 def is_prometheus_available() -> bool:
@@ -34,7 +38,13 @@ def _enabled() -> bool:
 
 
 def _init_metrics() -> None:
-    global _HTTP_REQUESTS_TOTAL, _HTTP_REQUEST_DURATION, _HTTP_IN_FLIGHT
+    global _HTTP_REQUESTS_TOTAL
+    global _HTTP_REQUEST_DURATION
+    global _HTTP_IN_FLIGHT
+    global _HTTP_REQUESTS_TOTAL_LABELED
+    global _HTTP_REQUEST_DURATION_LABELED
+    global _HTTP_IN_FLIGHT_LABELED
+    global _CONST_LABELS
 
     if _HTTP_REQUESTS_TOTAL is not None:
         return
@@ -56,6 +66,32 @@ def _init_metrics() -> None:
         "In-flight HTTP requests currently being handled.",
     )
 
+    # Labeled variants (best-practice stable labels for Grafana filtering / multi-stack views)
+    # NOTE: These labels are constant per process, but we include them as labels to allow
+    # cross-stack dashboards to filter/group safely (no unbounded cardinality).
+    _CONST_LABELS = {
+        "service": os.getenv("PEAK_TRADE_SERVICE", "peak_trade_web"),
+        "env": os.getenv("PEAK_TRADE_ENV", "local"),
+        "stack": os.getenv("PEAK_TRADE_STACK", "mini"),
+    }
+
+    _HTTP_REQUESTS_TOTAL_LABELED = Counter(
+        "peak_trade_http_requests_total_labeled",
+        "Total HTTP requests handled by Peak_Trade live web service (const labels: service/env/stack).",
+        labelnames=("service", "env", "stack", "method", "route", "status_code"),
+    )
+    _HTTP_REQUEST_DURATION_LABELED = Histogram(
+        "peak_trade_http_request_duration_seconds_labeled",
+        "HTTP request latency in seconds (Peak_Trade live web service) (const labels: service/env/stack).",
+        labelnames=("service", "env", "stack", "method", "route", "status_code"),
+        buckets=(0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10),
+    )
+    _HTTP_IN_FLIGHT_LABELED = Gauge(
+        "peak_trade_http_in_flight_requests_labeled",
+        "In-flight HTTP requests currently being handled (const labels: service/env/stack).",
+        labelnames=("service", "env", "stack"),
+    )
+
 
 def instrument_app(app: Any) -> None:
     """
@@ -73,6 +109,7 @@ def instrument_app(app: Any) -> None:
         # in-flight
         try:
             _HTTP_IN_FLIGHT.inc()  # type: ignore[union-attr]
+            _HTTP_IN_FLIGHT_LABELED.labels(**_CONST_LABELS).inc()  # type: ignore[union-attr,arg-type]
         except Exception:
             pass
 
@@ -102,11 +139,18 @@ def instrument_app(app: Any) -> None:
                 _HTTP_REQUEST_DURATION.labels(  # type: ignore[union-attr]
                     method=method, route=route_label, status_code=status_code
                 ).observe(dur)
+                _HTTP_REQUESTS_TOTAL_LABELED.labels(  # type: ignore[union-attr]
+                    **_CONST_LABELS, method=method, route=route_label, status_code=status_code
+                ).inc()
+                _HTTP_REQUEST_DURATION_LABELED.labels(  # type: ignore[union-attr]
+                    **_CONST_LABELS, method=method, route=route_label, status_code=status_code
+                ).observe(dur)
             except Exception:
                 pass
 
             try:
                 _HTTP_IN_FLIGHT.dec()  # type: ignore[union-attr]
+                _HTTP_IN_FLIGHT_LABELED.labels(**_CONST_LABELS).dec()  # type: ignore[union-attr,arg-type]
             except Exception:
                 pass
 
