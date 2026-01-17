@@ -34,7 +34,7 @@ Dieses Dokument beschreibt die Safety-Features, Go/No-Go-Kriterien und das Dry-R
 * ✅ **P1-Sicherheitsfeatures aktiv:**
 
   * **Promotion-Audit-Log:** Jede Entscheidung wird protokolliert (JSONL-Format)
-    * Pfad: `reports/promotion_audit/promotion_audit.jsonl`
+    * Pfad: `reports&#47;promotion_audit&#47;promotion_audit.jsonl`
     * Enthält: Timestamp, Mode, Patch-Details, Decision, Safety-Flags
   * **Globaler Promotion-Lock:** `global_promotion_lock` in Config
     * `true` → bounded_auto komplett deaktiviert
@@ -195,11 +195,11 @@ python scripts/run_promotion_proposal_cycle.py --dry-run
 ```
 
 2. **bounded_auto generiert im Dry-Run:**
-   * Liste von Kandidaten, die promoten würde
-   * Separaten "Plan-Output", z.B.:
-     * `reports/live_promotion/<proposal_id>/proposal_meta.json`
-     * `reports/live_promotion/<proposal_id>/config_patches.json`
-     * `reports/live_promotion/<proposal_id>/OPERATOR_CHECKLIST.md`
+  * Liste von Kandidaten, die promoten würde
+  * Separaten "Plan-Output", z.B.:
+    * `reports&#47;live_promotion&#47;<proposal_id>&#47;proposal_meta.json`
+    * `reports&#47;live_promotion&#47;<proposal_id>&#47;config_patches.json`
+    * `reports&#47;live_promotion&#47;<proposal_id>&#47;OPERATOR_CHECKLIST.md`
 
 **Operator-Aufgabe nach jedem Run:**
 
@@ -314,14 +314,14 @@ bounded_auto darf in einem **begrenzten Scope** echte Promotions durchführen:
 
 ### 5.1 Readiness-Check
 
-**Tool:** `scripts/check_bounded_auto_readiness.py`
+**Tool:** `scripts&#47;check_bounded_auto_readiness.py` (illustrative)
 
 **Zweck:** Automatische Prüfung der Go/No-Go-Kriterien
 
 **Verwendung:**
 
 ```bash
-python scripts/check_bounded_auto_readiness.py
+# python scripts/check_bounded_auto_readiness.py
 ```
 
 **Ausgabe:**

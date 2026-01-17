@@ -70,14 +70,14 @@ Phase 16L introduces **Docker-based reproducible execution** for Stage1 Monitori
 - Base: `python:3.11-slim`
 - Package Manager: `uv` (fast, reliable)
 - Dependencies: Frozen via `uv.lock`
-- Volume Mount: `./reports` mapped to `/workspace/reports`
+- Volume Mount: `.&#47;reports` mapped to `&#47;workspace&#47;reports`
 
 ### Report Path Resolution
 
 **Priority (highest to lowest):**
 1. `--reports-root <PATH>` CLI flag
 2. `PEAK_REPORTS_DIR` environment variable
-3. Default: `./reports`
+3. Default: `.&#47;reports`
 
 **Examples:**
 ```bash
@@ -208,8 +208,8 @@ python scripts/obs/stage1_daily_snapshot.py --reports-root /custom/path
 - `docker compose -f docker-compose.obs.yml build` → Success
 
 **Docker Execution:**
-- `./scripts/obs/run_stage1_snapshot_docker.sh` → Report generated
-- `./scripts/obs/run_stage1_trends_docker.sh` → Trend JSON created
+- `scripts&#47;obs&#47;run_stage1_snapshot_docker.sh` (historical) → Report generated
+- `scripts&#47;obs&#47;run_stage1_trends_docker.sh` (historical) → Trend JSON created
 
 **Host Execution (Regression):**
 - `python scripts/obs/stage1_daily_snapshot.py` → Works as before

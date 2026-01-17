@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: peak_trade_web
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          # Docker Desktop (macOS/Windows): reach host services via host.docker.internal
+          # Linux: you may need extra_hosts: ["host.docker.internal:host-gateway"] or equivalent.
+          - "host.docker.internal:8000"

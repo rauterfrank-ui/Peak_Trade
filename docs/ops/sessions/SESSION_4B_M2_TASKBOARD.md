@@ -12,7 +12,7 @@
 
 - [x] Worktree clean & branch: `feat/4b-m2-cursor-multi-agent`
   - **Status:** DONE
-  - **Evidence:** Commit 5f16a012, branch tracking `origin/main`
+  - **Evidence:** Commit 5f16a012, branch tracking `origin&#47;main`
   - **Verification:** `git status -sb` → clean
 
 - [x] Cursor Multi-Agent system prompt initialized + roles assigned
@@ -75,7 +75,7 @@
 ## Completed Tasks
 
 - [x] Worktree setup script created
-  - **File:** `scripts/ops/setup_worktree_4b_m2.sh`
+  - **File:** `scripts&#47;ops&#47;setup_worktree_4b_m2.sh` (historical)
   - **Commit:** e0a87ee7
 
 - [x] Session artifacts scaffolding

@@ -1,0 +1,8 @@
+docs/KNOWLEDGE_SOURCES_REGISTRY.md
+docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md
+docs/TECH_DEBT_BACKLOG.md
+docs/infostream/README.md
+docs/learning_promotion/BOUNDED_AUTO_SAFETY_PLAYBOOK.md
+docs/observability/OBS_STACK_RUNBOOK.md
+docs/ops/PR_199_MERGE_LOG.md
+docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md

@@ -36,8 +36,8 @@ Wir brauchen eine schnelle, deterministische Diagnose-Routine für Repo-Health (
   * `audit` ❌ (bekanntes pre-existing Black-Formatting-Thema; nicht blocker für diesen Merge)
 * Lokal (Post-Merge auf `main`):
 
-  * `./scripts/ops/test_ops_doctor_minimal.sh` ✅ (4/4)
-  * `python3 -m pytest tests/ops/test_doctor.py -q` ✅ (19/19)
+  * `scripts/ops/test_ops_doctor_minimal.sh` ✅ (4/4)
+  * `python3 -m pytest tests&#47;ops&#47;test_doctor.py -q` ✅ (19/19)
 
 ## Risk
 
@@ -45,10 +45,10 @@ Wir brauchen eine schnelle, deterministische Diagnose-Routine für Repo-Health (
 
 ## Operator How-To
 
-* Human readable: `./scripts/ops/ops_doctor.sh`
-* JSON: `./scripts/ops/ops_doctor.sh --json`
-* Minimal smoke (CI): `./scripts/ops/test_ops_doctor_minimal.sh`
-* Demo (interaktiv): `./scripts/ops/demo_ops_doctor.sh`
+* Human readable: `scripts/ops/ops_doctor.sh`
+* JSON: `scripts&#47;ops&#47;ops_doctor.sh --json`
+* Minimal smoke (CI): `scripts/ops/test_ops_doctor_minimal.sh`
+* Demo (interaktiv): `scripts/ops/demo_ops_doctor.sh`
 
 ## References
 

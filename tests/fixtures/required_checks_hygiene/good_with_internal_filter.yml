@@ -1,0 +1,32 @@
+name: Good With Internal Filter
+
+on:
+  pull_request:
+    # NO paths filter at workflow level
+  push:
+    branches: [main]
+
+jobs:
+  always-on-check:
+    name: always-on-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            code:
+              - 'src/**'
+              - 'tests/**'
+
+      - name: Run check
+        if: steps.changes.outputs.code == 'true'
+        run: echo "Code changed, running check"
+
+      - name: No-op pass
+        if: steps.changes.outputs.code != 'true'
+        run: echo "No code changes, no-op pass"

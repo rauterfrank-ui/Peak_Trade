@@ -10,7 +10,7 @@ Phase 42 implementiert eine automatische Pipeline zur Auswahl und Export der bes
 
 ### 1. Core-Modul
 
-**Datei:** `src/experiments/topn_promotion.py`
+**Datei:** `src&#47;experiments&#47;topn_promotion.py`
 
 | Komponente | Beschreibung |
 |------------|--------------|
@@ -22,7 +22,7 @@ Phase 42 implementiert eine automatische Pipeline zur Auswahl und Export der bes
 
 ### 2. CLI-Script
 
-**Datei:** `scripts/promote_sweep_topn.py`
+**Datei:** `scripts&#47;promote_sweep_topn.py`
 
 ```bash
 python scripts/promote_sweep_topn.py --sweep-name rsi_reversion_basic
@@ -91,7 +91,7 @@ print(f"Top-N exportiert: {output_path}")
 
 ## Output-Format (TOML)
 
-**Datei:** `reports/sweeps/{sweep_name}_top_candidates.toml`
+**Datei:** `reports&#47;sweeps&#47;{sweep_name}_top_candidates.toml`
 
 ```toml
 [meta]
@@ -128,8 +128,8 @@ rank = 2
 | `--metric` | `-m` | `metric_sharpe_ratio` | Primäre Sortier-Metrik |
 | `--fallback-metric` | `-f` | `metric_total_return` | Fallback wenn primary fehlt |
 | `--top-n` | `-n` | `5` | Anzahl Top-Kandidaten |
-| `--output` | `-o` | `reports/sweeps` | Output-Verzeichnis |
-| `--experiments-dir` | `-e` | `reports/experiments` | Ergebnis-Verzeichnis |
+| `--output` | `-o` | `reports&#47;sweeps` | Output-Verzeichnis |
+| `--experiments-dir` | `-e` | `reports&#47;experiments` | Ergebnis-Verzeichnis |
 | `--verbose` | `-v` | `False` | Debug-Output |
 
 ---
@@ -217,5 +217,5 @@ Top-N Kandidaten exportiert: reports/sweeps/rsi_reversion_basic_top_candidates.t
 ## Siehe auch
 
 - [Phase 41 – Strategy Sweeps](PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md)
-- [Phase 43 – Sweep Visualization](PHASE_43_SWEEP_VISUALIZATION.md)
+- Phase 43 – Sweep Visualization (archived)
 - [Strategy Library Overview](PHASE_40_STRATEGY_LIBRARY_OVERVIEW.md)

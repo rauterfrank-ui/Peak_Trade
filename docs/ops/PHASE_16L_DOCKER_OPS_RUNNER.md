@@ -32,7 +32,7 @@ Für CI/CD, Reproducibility und Isolation benötigt: Docker-Runner mit sauberem 
 **Priority:**
 1. CLI flag `--reports-root` (highest)
 2. ENV `PEAK_REPORTS_DIR`
-3. Default `reports/` relative to repo root
+3. Default `reports&#47;` relative to repo root
 
 ### 2. Stage1 Scripts Enhanced
 
@@ -67,8 +67,8 @@ python scripts/obs/stage1_daily_snapshot.py --reports-root /custom
 **Image:**
 - Base: `python:3.11-slim`
 - Dependencies: Installed via `uv` from frozen `uv.lock`
-- Default ENV: `PEAK_REPORTS_DIR=/reports`
-- Volume: `./reports:/reports`
+- Default ENV: `PEAK_REPORTS_DIR=&#47;reports`
+- Volume: `.&#47;reports:&#47;reports`
 
 **Commands:**
 ```bash
@@ -93,7 +93,7 @@ docker compose -f docker-compose.obs.yml run --rm peaktrade-ops --help
 
 **Behavior:**
 1. Build image (cached if no changes)
-2. Run container with `./reports:/reports` mount
+2. Run container with `.&#47;reports:&#47;reports` mount
 3. Print output location
 
 **Example:**
