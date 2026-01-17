@@ -8,14 +8,14 @@
 
 ## 1) Kurzüberblick (was aktuell “da” ist)
 
-- **Peak_Trade Web-App** stellt einen Prometheus-kompatiblen Endpoint bereit: **`GET /metrics`**
+- **Peak_Trade Web-App** stellt einen Prometheus-kompatiblen Endpoint bereit: **`GET &#47;metrics`**
   - **Default (fail-open)**: Auch ohne `prometheus_client` bleibt `/metrics` erreichbar und liefert ein Fallback-Signal.
   - **Strict Mode**: Mit `REQUIRE_PROMETHEUS_CLIENT=1` liefert `/metrics` bei fehlendem `prometheus_client` **HTTP 503** (Scrape soll “rot” werden).
 - **Optionales HTTP-Metrics-Instrumentation** via Middleware (Counters/Histogram/Gauge) ist vorhanden, aber **nur aktiv**, wenn:
   - `PEAK_TRADE_PROMETHEUS_ENABLED=1` gesetzt ist **und**
   - `prometheus_client` im Python-Environment verfügbar ist.
 - **Grafana Dashboard JSON** für Watch-Only Prometheus-Metriken ist im Repo vorhanden und für manuelles Importieren gedacht.
-- **Prometheus + Grafana Minimal-Compose** (lokal) ist im Repo vorhanden (`docs/webui/observability`).
+- **Prometheus + Grafana Minimal-Compose** (lokal) ist im Repo vorhanden (`docs&#47;webui&#47;observability&#47;README.md`).
 
 ---
 
@@ -24,16 +24,16 @@
 Aus deinem Pre-Flight-Run:
 - **Docker**: vorhanden
 - **Docker Compose v2**: vorhanden
-- **Mini-Stack Files**: `docs/webui/observability/*` vorhanden
+- **Mini-Stack Files**: `docs&#47;webui&#47;observability&#47;*` vorhanden
 - **System-`python3`**: 3.9.6 (`/Library/Developer/CommandLineTools/usr/bin/python3`)
 - **`prometheus_client` (System-`python3`)**: **nicht** installiert/verfügbar (find_spec=False)
 
 Repo-lokal (workspace-safe):
-- **`venv/` (Python 3.9.6)**: `prometheus-client` ist installiert und importierbar (zuletzt verifiziert: 0.24.1)
+- **`venv&#47;` (Python 3.9.6)**: `prometheus-client` ist installiert und importierbar (zuletzt verifiziert: 0.24.1)
 
 Konsequenz:
 - Wenn du die Web-App mit **System-`python3`** startest, liefert `/metrics` aktuell **Fallback** (`peak_trade_metrics_fallback 1`), bis `prometheus_client` installiert ist.
-- Wenn du die Web-App mit dem **repo-lokalen `venv/`** startest, kann `/metrics` echte Prometheus-Ausgabe liefern; Peak_Trade HTTP-Metriken erfordern zusätzlich `PEAK_TRADE_PROMETHEUS_ENABLED=1`.
+- Wenn du die Web-App mit dem **repo-lokalen `venv&#47;`** startest, kann `/metrics` echte Prometheus-Ausgabe liefern; Peak_Trade HTTP-Metriken erfordern zusätzlich `PEAK_TRADE_PROMETHEUS_ENABLED=1`.
 
 ---
 
@@ -43,7 +43,7 @@ Konsequenz:
 
 - **Factory**: `src/live/web/app.py` (`create_app`)
 - **Prometheus Instrumentation**: `src/live/web/metrics_prom.py`
-- **Watch-only Safety**: API mutierende Methods auf `"/api/"` werden serverseitig abgewiesen (405).
+- **Watch-only Safety**: API mutierende Methods auf `"&#47;api&#47;"` werden serverseitig abgewiesen (405).
 
 ### 3.2 Prometheus (lokal, optional)
 
@@ -54,7 +54,7 @@ Konsequenz:
 ### 3.3 Grafana (lokal, optional)
 
 - **Dashboard**: `docs/webui/observability/GRAFANA_DASHBOARD_PEAK_TRADE_WATCH_ONLY.json`
-- **Login (Default)**: `admin / admin` (lokal, dev-only)
+- **Login (Default)**: `admin &#47; admin` (lokal, dev-only)
 
 ---
 
@@ -80,7 +80,7 @@ Es existieren:
 - `docs/observability/OBS_STACK_RUNBOOK.md` (beschreibt OTel Collector + Tempo + Loki + Prometheus + Grafana)
 - `scripts/obs/up.sh` und `scripts/obs/down.sh` (versuchen `cd ops/observability` und dort `docker compose up|down` auszuführen)
 
-**Ist-Zustand in diesem Workspace:** Der Ordner **`ops/observability/` existiert nicht**, daher sind `scripts/obs/up.sh`/`down.sh` **so nicht ausführbar** (Gap zwischen Doku/Skript und Repo-Inhalt).
+**Ist-Zustand in diesem Workspace:** Der Ordner **`ops&#47;observability&#47;` existiert nicht**, daher sind `scripts/obs/up.sh`/`down.sh` **so nicht ausführbar** (Gap zwischen Doku/Skript und Repo-Inhalt).
 
 ---
 
@@ -103,7 +103,7 @@ Datei: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`
 
 ### 6.1 Endpoint-Verhalten (immer vorhanden)
 
-Die Route **`GET /metrics`** ist in `src/live/web/app.py` immer registriert und verhält sich so:
+Die Route **`GET &#47;metrics`** ist in `src/live/web/app.py` immer registriert und verhält sich so:
 
 - **Wenn `prometheus_client` importierbar ist**: `generate_latest()` wird ausgeliefert (inkl. Standard-Collector-Metriken).
 - **Wenn `prometheus_client` fehlt und `REQUIRE_PROMETHEUS_CLIENT!=1`** (Default): HTTP 200 + Fallback-Metrik:
@@ -165,7 +165,7 @@ UID: `peak-trade-watch-only-prom`
 - **RPS (pro Route)**:
   - `sum by (route) (rate(peak_trade_http_requests_total{route=~"$route", method=~"$method"}[$window]))`
 - **Error Rate (Status-Class Anteil)**:
-  - `sum(rate(peak_trade_http_requests_total{status_code=~"$status_class", route=~"$route", method=~"$method"}[$window])) / sum(rate(peak_trade_http_requests_total{route=~"$route", method=~"$method"}[$window]))`
+  - `sum(rate(peak_trade_http_requests_total{status_code=~"$status_class", route=~"$route", method=~"$method"}[$window])) &#47; sum(rate(peak_trade_http_requests_total{route=~"$route", method=~"$method"}[$window]))`
 - **In-Flight Requests**:
   - `max(peak_trade_http_in_flight_requests)`
 - **Latency Quantiles (per Route)**:
@@ -181,7 +181,7 @@ UID: `peak-trade-watch-only-prom`
 
 ### 9.1 Web-App Metrics Quick-Check
 
-- `GET http://127.0.0.1:8000/metrics`
+- `GET http:&#47;&#47;127.0.0.1:8000&#47;metrics`
   - **Erwartung (prom verfügbar, flag AUS)**: `python_*`/`process_*` (aber **keine** `peak_trade_http_*`)
   - **Erwartung (prom verfügbar, flag EIN)**: `python_*`/`process_*` **und** `peak_trade_http_*`
   - **Erwartung (prom fehlt, fail-open)**: `peak_trade_metrics_fallback 1` (HTTP 200)
@@ -195,18 +195,18 @@ UID: `peak-trade-watch-only-prom`
 ### 9.3 Grafana Dashboard
 
 - Grafana: `http://localhost:3000` (admin/admin)
-- Prometheus Datasources und Dashboards werden im Mini-Compose **automatisch provisioniert** (siehe `docs/webui/observability/grafana/provisioning/`).
+- Prometheus Datasources und Dashboards werden im Mini-Compose **automatisch provisioniert** (siehe `docs&#47;webui&#47;observability&#47;grafana&#47;provisioning&#47;`).
 
 ---
 
 ## 10) Bekannte Einschränkungen / Lücken (Ist-Stand)
 
-- **Kein `ops/observability/` im Workspace**: Der in `docs/observability/OBS_STACK_RUNBOOK.md` und `scripts/obs/up.sh` referenzierte “full stack” ist hier **nicht tatsächlich startbar**.
+- **Kein `ops&#47;observability&#47;` im Workspace**: Der in `docs/observability/OBS_STACK_RUNBOOK.md` und `scripts/obs/up.sh` referenzierte “full stack” ist hier **nicht tatsächlich startbar**.
 - **Provisioning im Mini-Compose**:
-  - Grafana provisioniert **Datasources** und ein **File-basiertes Dashboard** automatisch (siehe `docs/webui/observability/grafana/provisioning/`).
+  - Grafana provisioniert **Datasources** und ein **File-basiertes Dashboard** automatisch (siehe `docs&#47;webui&#47;observability&#47;grafana&#47;provisioning&#47;`).
   - Hinweis: Ohne persistente Volumes können Grafana-Einstellungen außerhalb des Provisionings nach Container-Neustart verloren gehen.
 - **Prometheus Reload**:
-  - Doku erwähnt: `POST /-/reload` kann **403** liefern, wenn Prometheus ohne `--web.enable-lifecycle` läuft → dann ist Restart der einfache Workaround.
+  - Doku erwähnt: `POST &#47;-&#47;reload` kann **403** liefern, wenn Prometheus ohne `--web.enable-lifecycle` läuft → dann ist Restart der einfache Workaround.
 - **Security**:
   - Grafana Default-Creds sind nur für lokale Dev-Setups akzeptabel.
   - `/metrics` ist (lokal) **unauthenticated**. In produktiven Umgebungen wäre Absicherung/Netzsegmentierung Pflicht.
@@ -242,13 +242,13 @@ UID: `peak-trade-watch-only-prom`
   - `/metrics`: 200 OK, liefert `python_*` + `peak_trade_http_*` (kein Fallback), wenn gestartet mit:
     - `PEAK_TRADE_PROMETHEUS_ENABLED=1`
     - `REQUIRE_PROMETHEUS_CLIENT=1`
-    - repo-`venv/bin/python`
+    - repo-`venv&#47;bin&#47;python`
 
 ### 12.2 Prometheus (Docker, lokal)
 
 - **Container**: `peaktrade-prometheus`
-- **Ports**: `0.0.0.0:9090->9090/tcp`
-- **Config Mount**: `docs/_scratch/prometheus_local.yml` → `/etc/prometheus/prometheus.yml` (ro)
+- **Ports**: `0.0.0.0:9090->9090&#47;tcp`
+- **Config Mount**: `.local&#47;prometheus&#47;prometheus.local.yml` → `&#47;etc&#47;prometheus&#47;prometheus.yml` (ro)
 - **Scrape**:
   - `job_name: peak_trade_uvicorn`
   - `scrape_interval: 2s`
@@ -259,10 +259,10 @@ UID: `peak-trade-watch-only-prom`
 ### 12.3 Grafana (Docker, lokal)
 
 - **Container**: `observability-grafana-1`
-- **Ports**: `0.0.0.0:3000->3000/tcp`
-- **Health API (ohne Auth)**: `GET http://127.0.0.1:3000/api/health` lieferte:
+- **Ports**: `0.0.0.0:3000->3000&#47;tcp`
+- **Health API (ohne Auth)**: `GET http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health` lieferte:
   - `database: ok`
   - `version: 12.3.1`
 - **Auth-Zustand (API)**:
   - Standardmäßig setzen wir im Mini-Compose `GF_SECURITY_ADMIN_USER=admin` und `GF_SECURITY_ADMIN_PASSWORD=admin`.
-  - Damit funktionieren Grafana API Calls mit Basic Auth `admin:admin` (z.B. `GET /api/datasources`).
+  - Damit funktionieren Grafana API Calls mit Basic Auth `admin:admin` (z.B. `GET &#47;api&#47;datasources`).
