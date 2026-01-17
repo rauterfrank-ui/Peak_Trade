@@ -44,7 +44,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(peak_trade_http_requests_total_labeled_total{service=\"peak_trade_web\",env=\"local\",stack=\"host\"}[1m]))",
+          "expr": "sum(rate(peak_trade_http_requests_total_labeled_total{service=\"peak_trade_web\",env=\"local\",stack=\"host\"}[5m]))",
           "legendFormat": "total"
         }
       ]
@@ -57,7 +57,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(peak_trade_http_request_duration_seconds_labeled_sum{service=\"peak_trade_web\",env=\"local\",stack=\"host\"}[1m])) / sum(rate(peak_trade_http_requests_total_labeled_total{service=\"peak_trade_web\",env=\"local\",stack=\"host\"}[1m]))",
+          "expr": "sum(rate(peak_trade_http_request_duration_seconds_labeled_sum{service=\"peak_trade_web\",env=\"local\",stack=\"host\"}[5m])) / sum(rate(peak_trade_http_requests_total_labeled_total{service=\"peak_trade_web\",env=\"local\",stack=\"host\"}[5m]))",
           "legendFormat": "avg"
         }
       ]
@@ -70,7 +70,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (route) (rate(peak_trade_http_requests_total_labeled_total{service=\"peak_trade_web\",env=\"local\",stack=\"host\",route=~\"$route\"}[1m]))",
+          "expr": "sum by (route) (rate(peak_trade_http_requests_total_labeled_total{service=\"peak_trade_web\",env=\"local\",stack=\"host\",route=~\"$route\"}[5m]))",
           "legendFormat": "{{route}}"
         }
       ]

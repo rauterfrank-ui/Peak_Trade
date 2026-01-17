@@ -31,7 +31,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
       "datasource": { "type": "prometheus", "uid": "peaktrade-prometheus" },
       "targets": [
-        { "refId": "A", "expr": "sum(rate(peak_trade_http_requests_total[1m]))", "legendFormat": "req/s" }
+        { "refId": "A", "expr": "sum(rate(peak_trade_http_requests_total[5m]))", "legendFormat": "req/s" }
       ]
     },
     {
@@ -40,7 +40,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
       "datasource": { "type": "prometheus", "uid": "peaktrade-prometheus-main" },
       "targets": [
-        { "refId": "A", "expr": "sum(rate(peak_trade_http_requests_total[1m]))", "legendFormat": "req/s" }
+        { "refId": "A", "expr": "sum(rate(peak_trade_http_requests_total[5m]))", "legendFormat": "req/s" }
       ]
     }
   ]

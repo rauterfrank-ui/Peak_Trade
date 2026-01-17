@@ -5,9 +5,12 @@ cd "$(git rev-parse --show-toplevel)"
 
 RUNTIME_DIR="scripts/obs/.runtime"
 EXPORTER_PID_FILE="$RUNTIME_DIR/shadow_mvs_exporter.pid"
+COMPOSE_PROJECT="${SHADOW_MVS_COMPOSE_PROJECT:-peaktrade-shadow-mvs}"
 
-docker compose -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml down || true
-docker compose -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml down || true
+docker compose -p "$COMPOSE_PROJECT" \
+  -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml \
+  -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml \
+  down -v --remove-orphans || true
 
 if [[ -f "$EXPORTER_PID_FILE" ]]; then
   pid="$(cat "$EXPORTER_PID_FILE" || true)"
