@@ -56,6 +56,115 @@ Details & Workflow: `docs/webui/observability/README.md` und `docs/webui/observa
 
 ---
 
+## Operator Entry (Shadow MVS Observability) — Standard-Startpunkt
+**Ziel:** Du startest **immer hier**, wenn du Shadow MVS → Prometheus → Grafana reproduzierbar (watch‑only) laufen lassen willst.
+
+> Hinweis zur Benennung: Die folgenden „Phasen E–H“ sind der **kanonische Operator‑Ablauf** (Snapshot → Up → Verify/Triage → Down).  
+> Die inhaltlichen Runbook‑Abschnitte zu Persist/Provision/Smoke/Triage/Live‑Shape sind weiter unten dokumentiert.
+
+### Phase E — Repo Snapshot (E‑1)
+**Pre‑Flight (snapshot‑only):**
+
+```bash
+# Pre-Flight (Snapshot-only)
+# Wenn du in einer Continuation festhängst (>, dquote>, heredoc>): Ctrl-C
+cd /Users/frnkhrz/Peak_Trade
+pwd
+git rev-parse --show-toplevel
+git status -sb
+```
+
+**Command:**
+
+```bash
+git status -sb
+```
+
+**Expected:** Branch ist clean oder bewusst staged; keine „Überraschungen“ außerhalb des erwarteten Diffs.
+
+---
+
+### Phase F — Bring-Up lokal (F‑1)
+**Pre‑Flight (snapshot‑only):**
+
+```bash
+# Pre-Flight (Snapshot-only)
+# Wenn du in einer Continuation festhängst (>, dquote>, heredoc>): Ctrl-C
+cd /Users/frnkhrz/Peak_Trade
+pwd
+git rev-parse --show-toplevel
+git status -sb
+```
+
+**Command:**
+
+```bash
+bash scripts/obs/shadow_mvs_local_up.sh
+```
+
+**Expected (Endpoints erreichbar):**
+- Exporter: `http://127.0.0.1:9109/metrics`
+- Prometheus-local: `http://127.0.0.1:9092`
+- Grafana: `http://127.0.0.1:3000`
+
+---
+
+### Phase G — Deterministic Verify + TRIAGE (G‑0…G‑8)
+**Pre‑Flight (snapshot‑only):**
+
+```bash
+# Pre-Flight (Snapshot-only)
+# Wenn du in einer Continuation festhängst (>, dquote>, heredoc>): Ctrl-C
+cd /Users/frnkhrz/Peak_Trade
+pwd
+git rev-parse --show-toplevel
+git status -sb
+```
+
+#### G‑0 Verify Command (kanonisch)
+
+```bash
+bash scripts/obs/shadow_mvs_local_verify.sh
+```
+
+**Expected (MUSS PASS):**
+- Prometheus Targets: `job="shadow_mvs"` = UP
+- PromQL Smoke (non‑empty):
+  - `up{job="shadow_mvs"}`
+  - Stage‑Query: `sum by (mode, stage) (rate(peak_trade_pipeline_events_total{mode="shadow"}[1m]))`
+- Grafana:
+  - Default Datasource: UID `peaktrade-prometheus-local`
+  - URL enthält: `http://host.docker.internal:9092`
+- Dashboard UID sichtbar: `peaktrade-shadow-pipeline-mvs`
+
+**IF FAIL → TRIAGE ENTRY**
+- Springe direkt zu **Phase G: Decision Tree (G‑1…G‑8)** (weiter unten im Runbook).
+- Pro Knoten gilt: Symptom → Ursache → 1–2 Next Commands (snapshot‑only) → zurück zu **G‑0**.
+
+---
+
+### Phase H — Stop/Cleanup lokal (H‑1)
+**Pre‑Flight (snapshot‑only):**
+
+```bash
+# Pre-Flight (Snapshot-only)
+# Wenn du in einer Continuation festhängst (>, dquote>, heredoc>): Ctrl-C
+cd /Users/frnkhrz/Peak_Trade
+pwd
+git rev-parse --show-toplevel
+git status -sb
+```
+
+**Command:**
+
+```bash
+bash scripts/obs/shadow_mvs_local_down.sh
+```
+
+**Expected:** Exporter auf `http://127.0.0.1:9109/metrics` ist nicht mehr erreichbar (lokal gestoppt).
+
+---
+
 ## 1) Einstiegspunkte (Choose your own adventure)
 
 ### EP‑A: „Ich will sofort Nutzen“ (MVS: Minimum Viable Shadow Dashboard)
