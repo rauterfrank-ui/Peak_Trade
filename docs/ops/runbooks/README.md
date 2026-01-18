@@ -63,6 +63,7 @@ Runbooks for CI operations and general operational procedures:
 - [Pointer Pattern Quarterly Review](RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md) — Quarterly drift control and orphan prevention for pointer pattern architecture
 - [github_rulesets_pr_reviews_policy.md](github_rulesets_pr_reviews_policy.md) — GitHub rulesets PR reviews policy
 - [policy_critic_execution_override.md](policy_critic_execution_override.md) — Policy critic execution override
+- [RUNBOOK_CURSOR_MULTI_AGENT_ORCHESTRATOR_NEXT_TASKS_2026-01-18.md](RUNBOOK_CURSOR_MULTI_AGENT_ORCHESTRATOR_NEXT_TASKS_2026-01-18.md) — Cursor Multi-Agent Orchestrator next tasks operating system (v2026-01-18) (snapshot-only, NO-LIVE)
 - [RUNBOOK_POST_MERGE_VERIFY_MAIN_AND_DOCS_GATES_SNAPSHOT_CURSOR_MULTI_AGENT.md](RUNBOOK_POST_MERGE_VERIFY_MAIN_AND_DOCS_GATES_SNAPSHOT_CURSOR_MULTI_AGENT.md) — Post-merge verify (main) + local docs gates snapshot (no-watch)
 - [RUNBOOK_DOCS_ONLY_PR_MERGE_AUTOMERGE_AND_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md](RUNBOOK_DOCS_ONLY_PR_MERGE_AUTOMERGE_AND_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md) — Docs-only PR merge (auto-merge/squash) + CI snapshot + merge-log chain (Cursor Multi-Agent)
 - [RUNBOOK_MERGE_LOG_PR_MERGE_AND_OPTIONAL_META_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md](RUNBOOK_MERGE_LOG_PR_MERGE_AND_OPTIONAL_META_MERGE_LOG_CHAIN_CURSOR_MULTI_AGENT.md) — Merge-log PR merge (squash) + CI snapshot + optional meta merge-log chain (Cursor Multi-Agent)
@@ -122,5 +123,5 @@ This hybrid approach balances discoverability (all findable from this index) wit
 
 ---
 
-**Last Updated:** 2026-01-14  
+**Last Updated:** 2026-01-18  
 **Maintainer:** ops
