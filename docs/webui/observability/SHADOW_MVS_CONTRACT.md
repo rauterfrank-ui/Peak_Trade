@@ -157,3 +157,37 @@ histogram_quantile(
   sum by (le) (rate(peak_trade_pipeline_latency_seconds_bucket{job="shadow_mvs",edge="submit_to_ack"}[5m]))
 )
 ```
+
+---
+
+## 6) Evidence Snapshot (PASS) — 2026-01-18T01:17:13Z
+
+**Mode:** snapshot-only (no-watch)  
+**Result:** PASS (`EXIT_CODE=0`)  
+**Purpose:** Deterministic proof that the Shadow MVS local observability stack is healthy and the contract endpoints/series are present.
+
+### Ready Endpoints (HTTP 200)
+- Prometheus Ready: `http:&#47;&#47;127.0.0.1:9092&#47;-&#47;ready` → `HTTP&#47;1.1 200 OK`
+- Grafana Health: `http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health` → `HTTP&#47;1.1 200 OK`
+
+### Prometheus Targets (active)
+- `job="shadow_mvs"` → `health="up"` (instance: `host.docker.internal:9109`)
+- `job="peak_trade_web"` → `health="up"` (instance: `host.docker.internal:8000`)
+
+### Golden Query (PromQL)
+Query:
+- `up{job="shadow_mvs"}`
+
+Evidence (vector contains value `1`):
+- `instance="host.docker.internal:9109" job="shadow_mvs" value=1`
+
+### Exporter Contract Series (excerpt)
+- `shadow_mvs_up{mode="shadow",exchange="sim"} 1`
+- `peak_trade_pipeline_events_total{mode="shadow",stage="signal",exchange="sim"} 308`
+- `peak_trade_pipeline_events_total{mode="shadow",stage="intent",exchange="sim"} 1027`
+- `peak_trade_pipeline_events_total{mode="shadow",stage="submit",exchange="sim"} 925`
+- `peak_trade_pipeline_events_total{mode="shadow",stage="ack",exchange="sim"} 925`
+- `peak_trade_pipeline_events_total{mode="shadow",stage="fill",exchange="sim"} 822`
+- `peak_trade_pipeline_events_total{mode="shadow",stage="cancel",exchange="sim"} 41`
+- `peak_trade_pipeline_events_total{mode="shadow",stage="risk_block",exchange="sim"} 71`
+- `peak_trade_pipeline_events_total{mode="shadow",stage="error",exchange="sim"} 20`
