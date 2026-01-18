@@ -38,6 +38,7 @@ Runbooks for AI autonomy workflows and control center operations:
 
 Runbooks for specific phase implementations and workflows:
 
+- [RUNBOOK_FINISH_A_MVP.md](RUNBOOK_FINISH_A_MVP.md) — Finish Level A (MVP): Backtest → Artifacts → Report → Watch‑Only Dashboard (Cursor Multi‑Agent, NO‑LIVE)
 - [RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE5A_NORMALIZED_REPORT_CONSUMER_TREND_SEED_CURSOR_MULTI_AGENT.md) — Phase 5A normalized report consumer
 - [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md) — Phase 5B trend ledger from seed (multi-agent)
 - [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md](RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md) — Phase 5B trend ledger from seed

@@ -81,6 +81,8 @@
 - [Runbooks Landscape 2026-Ready](./runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md) – Comprehensive runbook catalog and quick-reference matrix
 - [Ops README](./ops/README.md) – Complete ops tools and documentation index
 - [Phase 7 Finish/Closeout Runbook](./ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md) – Workflow docs closeout + repo hygiene inventory (snapshot-based)
+- [Finish Plan (MVP→v1.0)](./ops/roadmap/FINISH_PLAN.md)
+- [Finish Runbook A (MVP)](./ops/runbooks/RUNBOOK_FINISH_A_MVP.md) – Backtest → Artifacts → Report → Watch‑Only Dashboard (snapshot-only, NO‑LIVE)
 
 ### Control Center
 - [AI Autonomy Control Center](./ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md) – Primary control center entry point (Layer L0-L6)
