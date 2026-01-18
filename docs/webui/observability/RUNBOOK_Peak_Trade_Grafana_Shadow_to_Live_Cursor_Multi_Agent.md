@@ -49,6 +49,51 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 - Verify: Stage‑Query Window **`[5m]`** (weniger flappy)
 - Panels: Error‑Rate Nenner via `clamp_min(..., 1e-9)` (stabil bei low traffic)
 
+#### Contract (Single Source of Truth)
+- `docs/webui/observability/SHADOW_MVS_CONTRACT.md`
+  - Ports/Endpoints
+  - Prometheus Job `job="shadow_mvs"`
+  - Grafana Datasource/Dashboard Provisioning (UIDs)
+  - Golden Queries (Snapshot) + Failure Mapping → Phase F
+
+#### Verify Output (maschinenlesbar)
+`bash scripts/obs/shadow_mvs_local_verify.sh` gibt **PASS/FAIL pro Check** aus, plus **EVIDENCE**-Zeilen und `RESULT=PASS|FAIL` (copy/paste für Merge-Log/PR).
+
+#### Verify PASS Evidence (Deterministic, Snapshot-only)
+Wenn du einen **reproduzierbaren PASS-Snapshot** (inkl. bounded retries + warmup) als Log brauchst:
+
+```bash
+LOG="/tmp/pt_shadow_mvs_verify.log"
+rm -f "$LOG"
+bash scripts/obs/shadow_mvs_local_down.sh 2>&1 | tee -a "$LOG"
+bash scripts/obs/shadow_mvs_local_up.sh 2>&1 | tee -a "$LOG"
+bash scripts/obs/shadow_mvs_local_verify.sh 2>&1 | tee -a "$LOG"
+bash scripts/obs/shadow_mvs_local_down.sh 2>&1 | tee -a "$LOG"
+rg -n "^(INFO\\|targets_retry=|EVIDENCE\\||RESULT=|INFO\\|See Contract:)" "$LOG" || true
+echo "$LOG"
+```
+
+**PASS-Kriterien (Evidence Extract):**
+- `INFO|targets_retry=...`
+- `EVIDENCE|exporter=...`
+- `EVIDENCE|prometheus=...`
+- `EVIDENCE|grafana=...`
+- `EVIDENCE|dashboard_uid=...`
+- `RESULT=PASS`
+- `INFO|See Contract: docs/webui/observability/SHADOW_MVS_CONTRACT.md`
+
+**Warum Retries/Warmup ok sind (ohne “ewig grün”):**
+- Prometheus Targets können kurz leer sein direkt nach `up` → bounded `targets_retry`
+- Grafana health kann kurz nicht ready sein → bounded health retries
+- `rate(...[5m])`/`histogram_quantile(...)` kann in den ersten Scrapes leer/NaN sein → bounded warmup retries
+
+#### Phase F — Troubleshooting (Decision Tree, kurz)
+Wenn **irgendwas FAIL**: **sofort** auf den passenden Knoten springen (kein Scope-Creep).
+- **F-1 Grafana Login/DS**: 401/403, Datasource/Dashboard fehlt → `bash scripts/obs/shadow_mvs_local_down.sh && bash scripts/obs/shadow_mvs_local_up.sh`
+- **F-2 Prometheus Target DOWN**: `shadow_mvs` nicht UP → `http://127.0.0.1:9092/targets` + `docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml`
+- **F-3 /metrics leer/alt**: Contract-Serien fehlen → `scripts/obs/.runtime/shadow_mvs_exporter.log`
+- **F-4 Panels leer**: Targets UP, aber Queries leer → Time-Range (15m/1h), Filters (`mode`, `exchange`), Datasource
+
 **Expected Outcomes (VERIFY PASS):**
 - Exporter (Host): `http:&#47;&#47;127.0.0.1:9109&#47;metrics` ist erreichbar und enthält:
   - `shadow_mvs_up`
@@ -60,7 +105,7 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 
 Details & Workflow: `docs/webui/observability/README.md` und `docs/webui/observability/DASHBOARD_WORKFLOW.md`.
 
-> Wenn `shadow_mvs_local_verify.sh` fehlschlägt: springe zu **Phase G** (Decision Tree) und folge dem passenden Knoten.
+> Wenn `shadow_mvs_local_verify.sh` fehlschlägt: springe zu **Phase F** (Decision Tree) und folge dem passenden Knoten.
 
 > Wichtig: Grafana ersetzt **nicht** “Trading‑UI”.  
 > Grafana ist “Flugkontrolle/Telemetry”; Peak_Trade Ledger + Kraken sind “Buchhaltung/Wirklichkeit”.
