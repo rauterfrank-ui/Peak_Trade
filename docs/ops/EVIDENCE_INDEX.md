@@ -1,5 +1,19 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260118-p0-cursor-multi-agent-preflight"></a>
+- **EV-20260118-P0-CURSOR-MULTI-AGENT-PREFLIGHT** | Date: 2026-01-18 | Owner: ops | Scope: docs-only | Risk: LOW  
+  - Source: [PR #781 Merge Log](merge_logs/PR_781_MERGE_LOG.md) · [PR #781](https://github.com/rauterfrank-ui/Peak_Trade/pull/781) · Commit: `f9a60519`  
+  - Claim: P0 Cursor Multi-Agent session runlog + pre-flight evidence snapshot added to establish a reproducible repo-anchoring baseline (snapshot-only, NO-LIVE).  
+  - Verification: PR #781 merged (squash, mergedAt 2026-01-18T07:13:58Z, mergeCommit `f9a605199aa503cd29b1abdb5e06068629c92805`); required checks PASS; token-policy compliant illustrative tokens encoded where needed.  
+  - Notes: Artifacts: [Session](sessions/SESSION_CURSOR_MULTI_AGENT_P0_20260118.md) · [Evidence](evidence/EVIDENCE_P0_PREFLIGHT_CURSOR_MULTI_AGENT_20260118_065748Z.md).
+
+<a id="ev-20260118-shadow-mvs-verify-pass-072706z"></a>
+- **EV-20260118-SHADOW-MVS-VERIFY-PASS-072706Z** | Date: 2026-01-18 | Owner: ops | Scope: docs-only | Risk: LOW  
+  - Source: [PR #783 Merge Log](merge_logs/PR_783_MERGE_LOG.md) · [PR #783](https://github.com/rauterfrank-ui/Peak_Trade/pull/783) · Commit: `9180c3fd`  
+  - Claim: Shadow MVS local verify produced RESULT=PASS with contract checks (Prometheus ready, exporter series present, Grafana health, datasource+dashboard provisioned, targets up, golden PromQL non-empty) in snapshot-only mode.  
+  - Verification: PR #783 merged (squash, mergedAt 2026-01-18T07:33:50Z, mergeCommit `9180c3fd45db5f5fd4f26dc082128175832a79d4`); required checks PASS.  
+  - Notes: Evidence: [SHADOW_MVS_VERIFY_PASS_20260118T072706Z](evidence/SHADOW_MVS_VERIFY_PASS_20260118T072706Z.md) · Contract: [SHADOW_MVS_CONTRACT.md](../webui/observability/SHADOW_MVS_CONTRACT.md).
+
 <a id="ev-20260114-pr736-legacy-workflow-notes"></a>
 - **EV-20260114-PR736-LEGACY-WORKFLOW-NOTES** | Date: 2026-01-14 | Owner: ops | Scope: docs-only | Risk: LOW  
   - Source: [PR #736 Merge Log](merge_logs/PR_736_MERGE_LOG.md) · [PR #736](https://github.com/rauterfrank-ui/Peak_Trade/pull/736) · Commit: `4e0f7be3`  
