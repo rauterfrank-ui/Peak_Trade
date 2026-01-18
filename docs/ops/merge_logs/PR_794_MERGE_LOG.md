@@ -17,7 +17,7 @@
 
 ## Verification
 - CI (PR #794): all required checks PASS (incl. docs gates, tests matrix, audit, CI Health Gate (weekly_core), bugbot; health subchecks skipping as expected).
-- Hygiene: `python3 scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/PR_794_MERGE_LOG.md` PASS.
+- Hygiene: `python3 scripts&#47;ops&#47;check_merge_log_hygiene.py docs&#47;ops&#47;merge_logs&#47;PR_794_MERGE_LOG.md` PASS.
 
 ## Risk
 - Low. Docs-only merge log addition; no runtime paths changed.
