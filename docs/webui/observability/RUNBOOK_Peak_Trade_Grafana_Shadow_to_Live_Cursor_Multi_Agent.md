@@ -80,7 +80,7 @@ echo "$LOG"
 - `EVIDENCE|grafana=...`
 - `EVIDENCE|dashboard_uid=...`
 - `RESULT=PASS`
-- `INFO|See Contract: docs/webui/observability/SHADOW_MVS_CONTRACT.md`
+- `INFO|See Contract: docs&#47;webui&#47;observability&#47;SHADOW_MVS_CONTRACT.md`
 
 **Warum Retries/Warmup ok sind (ohne “ewig grün”):**
 - Prometheus Targets können kurz leer sein direkt nach `up` → bounded `targets_retry`
@@ -91,7 +91,7 @@ echo "$LOG"
 Wenn **irgendwas FAIL**: **sofort** auf den passenden Knoten springen (kein Scope-Creep).
 - **F-1 Grafana Login/DS**: 401/403, Datasource/Dashboard fehlt → `bash scripts/obs/shadow_mvs_local_down.sh && bash scripts/obs/shadow_mvs_local_up.sh`
 - **F-2 Prometheus Target DOWN**: `shadow_mvs` nicht UP → `http://127.0.0.1:9092/targets` + `docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml`
-- **F-3 /metrics leer/alt**: Contract-Serien fehlen → `scripts/obs/.runtime/shadow_mvs_exporter.log`
+- **F-3 /metrics leer/alt**: Contract-Serien fehlen → `bash scripts&#47;obs&#47;shadow_mvs_local_up.sh` (Exporter stdout) oder `bash scripts&#47;obs&#47;shadow_mvs_local_verify.sh`
 - **F-4 Panels leer**: Targets UP, aber Queries leer → Time-Range (15m/1h), Filters (`mode`, `exchange`), Datasource
 
 **Expected Outcomes (VERIFY PASS):**

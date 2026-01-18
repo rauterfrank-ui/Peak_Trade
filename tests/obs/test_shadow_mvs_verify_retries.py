@@ -125,9 +125,7 @@ class _Handler(BaseHTTPRequestHandler):
                     HTTPStatus.OK,
                     [
                         {
-                            "uid": os.environ.get(
-                                "DASH_UID", "peaktrade-shadow-pipeline-mvs"
-                            ),
+                            "uid": os.environ.get("DASH_UID", "peaktrade-shadow-pipeline-mvs"),
                             "type": "dash-db",
                         }
                     ],
@@ -257,7 +255,9 @@ def test_shadow_mvs_verify_retries_and_warmup_passes(tmp_path):
         assert int(m.group(1)) >= 2
 
         # Warmup-sensitive queries must have been called multiple times due to NaN.
-        warmup_queries = [q for q in state.prom_query_calls if "rate(" in q or "histogram_quantile" in q]
+        warmup_queries = [
+            q for q in state.prom_query_calls if "rate(" in q or "histogram_quantile" in q
+        ]
         assert warmup_queries, state.prom_query_calls
         assert any(state.prom_query_calls[q] >= 2 for q in warmup_queries)
     finally:
