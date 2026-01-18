@@ -4,7 +4,7 @@
 **Branch:** docs/a0-archive-salvage-20260118  
 **Commit:** 90172909  
 **Stash source:** stash@{0} (salvage dirty main WT 2026-01-18)  
-**PR:** pending
+**PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/807
 
 ## What changed (high level)
 
