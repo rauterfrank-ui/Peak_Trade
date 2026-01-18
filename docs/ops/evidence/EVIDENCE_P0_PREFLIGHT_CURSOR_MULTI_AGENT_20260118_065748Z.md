@@ -11,7 +11,7 @@ Mode: snapshot-only, NO-LIVE
 - out: `/Users/frnkhrz/Peak_Trade`
 
 - cmd: `git status -sb`
-- out: `## main...origin/main`
+- out: `## main...origin&#47;main`
 
 - cmd: `python - <<'PY' ... PY`
 - out: `pyenv: python: command not found (python3 available)`
@@ -30,7 +30,7 @@ OK docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md
 ```
 
 ## Notes
-- scope: `docs/ops/**` (write), plus existence-check reads on:
+- scope: `docs&#47;ops&#47;**` (write), plus existence-check reads on:
   - `docs/risk/VAR_BACKTEST_SUITE_GUIDE.md`
   - `scripts/risk/run_var_backtest_suite_snapshot.py`
   - `src/data/shadow/quality_report.py`
