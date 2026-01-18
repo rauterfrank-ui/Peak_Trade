@@ -1,0 +1,11 @@
+# Phase 9A: Duration-Based Independence Diagnostic
+
+# NEUE DATEIEN:
+src/risk_layer/var_backtest/duration_diagnostics.py
+tests/risk_layer/var_backtest/test_duration_diagnostics.py
+docs/risk/DURATION_DIAGNOSTIC_GUIDE.md
+PHASE9A_COMMANDS.md
+PHASE9A_CHANGED_FILES.txt
+
+# MODIFIZIERTE DATEIEN:
+src/risk_layer/var_backtest/__init__.py

@@ -1,0 +1,59 @@
+Phase 7: Kupiec POF Convenience API - Changed Files
+====================================================
+
+UPDATED FILES (2):
+------------------
+1. src/risk_layer/var_backtest/kupiec_pof.py
+   - Added: kupiec_lr_uc() function (+65 LOC)
+   - Added: kupiec_from_exceedances() function (+35 LOC)
+   - Added: KupiecLRResult dataclass (+35 LOC)
+   - Added: Phase 7 section header (+5 LOC)
+   - Total: +165 LOC
+
+2. src/risk_layer/var_backtest/__init__.py
+   - Added: KupiecLRResult export
+   - Added: kupiec_lr_uc export
+   - Added: kupiec_from_exceedances export
+   - Total: +6 LOC
+
+NEW FILES (3):
+--------------
+3. tests/risk_layer/var_backtest/test_kupiec_phase7.py
+   - 25 tests for Phase 7 API
+   - 235 LOC
+
+4. scripts/run_kupiec_pof.py
+   - Minimal CLI for n/x/alpha interface
+   - 127 LOC
+
+5. PHASE7_IMPLEMENTATION_SUMMARY.md
+   - Complete implementation documentation
+   - ~350 LOC
+
+DOCUMENTATION UPDATES (1):
+--------------------------
+6. IMPLEMENTATION_REPORT_KUPIEC_POF.md
+   - Phase 7 section added
+   - Test count updated (56 → 81)
+   - CLI section updated
+   - Total: +30 LOC
+
+SUMMARY:
+--------
+Total Files Changed: 6 (2 updated, 3 new, 1 doc update)
+Total LOC Added: ~913 LOC
+Tests: 81 (56 original + 25 new) - 100% PASS
+Linting: ✅ All checks passed
+Risk: VERY LOW (additive only, no breaking changes)
+
+VERIFICATION COMMANDS:
+----------------------
+# Linting
+python3 -m ruff check .
+
+# Tests
+python3 -m pytest tests/risk_layer/var_backtest/ -q
+
+# CLI Demo
+PYTHONPATH=/Users/frnkhrz/Peak_Trade python3 scripts/run_kupiec_pof.py \
+  --n 1000 --x 10 --alpha 0.01
