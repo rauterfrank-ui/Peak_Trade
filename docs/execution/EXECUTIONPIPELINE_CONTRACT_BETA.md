@@ -34,7 +34,7 @@
 
 ### JSONL Log Contract
 
-- **Pfad**: `logs/execution/execution_events.jsonl`
+- **Pfad**: `logs&#47;execution&#47;execution_events.jsonl`
 - **Format**: 1 JSON object pro Zeile, **append-only** (kein Rewrite/Sort).
 
 ### Reject Codes (MVP)

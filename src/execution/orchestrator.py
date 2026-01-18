@@ -463,7 +463,9 @@ class ExecutionOrchestrator:
 
         # Stage 1: Intent Intake (keep correlation_id as internal only)
         correlation_id = self._generate_correlation_id()
-        idempotency_key = self._generate_idempotency_key(intent, run_id=run_id, session_id=session_id, intent_id=intent_id)
+        idempotency_key = self._generate_idempotency_key(
+            intent, run_id=run_id, session_id=session_id, intent_id=intent_id
+        )
 
         logger.info(
             f"[STAGE 1: INTENT INTAKE] correlation_id={correlation_id}, "
@@ -485,7 +487,9 @@ class ExecutionOrchestrator:
                     "side": intent.side.value,
                     "quantity": str(intent.quantity),
                     "order_type": intent.order_type.value,
-                    "limit_price": str(intent.limit_price) if intent.limit_price is not None else None,
+                    "limit_price": str(intent.limit_price)
+                    if intent.limit_price is not None
+                    else None,
                 },
             )
 
@@ -1069,7 +1073,9 @@ class ExecutionOrchestrator:
                         symbol=order.symbol,
                         event_type="ACK",
                         client_order_id=order.client_order_id,
-                        payload={"exchange_order_id": execution_event.exchange_order_id or "unknown"},
+                        payload={
+                            "exchange_order_id": execution_event.exchange_order_id or "unknown"
+                        },
                     )
 
             return PipelineResult(
@@ -1101,7 +1107,9 @@ class ExecutionOrchestrator:
                         event_type="REJECT",
                         client_order_id=order.client_order_id,
                         reason_code="ADAPTER_REJECTED",
-                        reason_detail=(execution_event.reject_reason or "Rejected by adapter")[:256],
+                        reason_detail=(execution_event.reject_reason or "Rejected by adapter")[
+                            :256
+                        ],
                     )
 
             return PipelineResult(
@@ -1147,7 +1155,9 @@ class ExecutionOrchestrator:
                             symbol=order.symbol,
                             event_type="ACK",
                             client_order_id=order.client_order_id,
-                            payload={"exchange_order_id": execution_event.exchange_order_id or "unknown"},
+                            payload={
+                                "exchange_order_id": execution_event.exchange_order_id or "unknown"
+                            },
                         )
 
             # Now apply fill
@@ -1395,7 +1405,9 @@ class ExecutionOrchestrator:
             "limit_price": str(intent.limit_price) if intent.limit_price else None,
             "strategy_id": intent.strategy_id or None,
         }
-        canonical = json.dumps(key_fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        canonical = json.dumps(
+            key_fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        )
         digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
         return f"idem_{digest[:32]}"
 
