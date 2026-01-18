@@ -29,3 +29,14 @@ Result: PASS
 ## Risk
 
 LOW (docs-only; additive archive import; NO-LIVE)
+
+## A1-STOP Snapshot (20260118T204858Z)
+
+- PR: #807
+- URL: https://github.com/rauterfrank-ui/Peak_Trade/pull/807
+- headRefOid: 872624a05fbdb0ad03b93e942c0ffacc1cc17ae0
+- mergeable: MERGEABLE
+- mergeStateStatus: UNSTABLE
+- Required checks: PASS
+- Pending: Cursor Bugbot
+- Decision: STOP (no merge, no fix commit). Re-snapshot manually.
