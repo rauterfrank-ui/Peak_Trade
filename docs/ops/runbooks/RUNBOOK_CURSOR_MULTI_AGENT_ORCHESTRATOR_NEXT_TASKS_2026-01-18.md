@@ -31,7 +31,7 @@ Pre-Flight Snapshot:
 - `git status -sb`
 
 ### G2 — Scope Policy (Default)
-- **Docs-only**: writes nur unter `docs/**` (oft `docs&#47;ops&#47;**`).
+- **Docs-only**: writes nur unter `docs&#47;**` (oft `docs&#47;ops&#47;**`).
 - **Code-Slice**: nur explizit benannte Files/Dirs, minimal-invasive.
 - **NO-LIVE**: kein live executor dispatch, keine Exchange API Calls.
 - **Additive-first**: bei Docs moeglichst additiv; wenn edit, nur targeted.
@@ -55,7 +55,7 @@ Pre-Flight Snapshot:
 
 **Acceptance:**
 - Repo root korrekt
-- `## <branch>...origin/<branch>` sichtbar
+- `## <branch>...origin&#47;<branch>` sichtbar
 - Anchor-Pfade: alle `OK`
 
 **Evidence Template:**
@@ -73,7 +73,7 @@ Pre-Flight Snapshot:
 - `git count-objects -vH`
 
 **Decision Rules:**
-- Keine `fatal/error/corrupt/missing` → **FSCK_OK**
+- Keine `fatal&#47;error&#47;corrupt&#47;missing` → **FSCK_OK**
 - “unreachable” ohne fatal → erwartbar (dangling), dokumentieren.
 - Worktree “prunable” → kann per `git worktree prune` bereinigt werden.
 
