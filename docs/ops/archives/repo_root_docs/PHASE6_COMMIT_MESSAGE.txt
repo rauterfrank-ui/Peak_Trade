@@ -1,0 +1,25 @@
+docs(risk): Phase 6 - VaR Validation integration tests + operator guide
+
+Makes Phase 2 VaR Validation operator-ready by adding:
+
+Integration Tests (tests/risk/integration/test_var_validation_integration.py)
+- 12 deterministic integration tests (<1s runtime)
+- Full workflow coverage (VaR → Validation → Reporting)
+- Edge cases (empty, NaN, partial overlap)
+- Performance test (<100ms target achieved)
+
+Operator Guide (docs/risk/VAR_VALIDATION_OPERATOR_GUIDE.md)
+- Quick-start with copy-paste example
+- Result interpretation (Kupiec + Basel Traffic Light)
+- Common failure modes + fixes
+- Troubleshooting FAQ
+
+Documentation Updates
+- README.md: Link to operator guide
+- Minor backtest_runner.py enhancement (edge case handling)
+
+Tests: 93 passing (81 validation + 12 integration) in 0.84s
+Risk: LOW (additive only, no logic changes)
+
+Closes: Phase 6 Integration Testing & Documentation
+Related: PR #413 (Phase 2 VaR Validation)

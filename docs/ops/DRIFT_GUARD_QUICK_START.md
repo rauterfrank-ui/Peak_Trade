@@ -206,10 +206,9 @@ git status
 
 ## 📚 Related Documentation
 
-- `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD.md` — Main Guide
-- `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_PR_WORKFLOW.md` — Detailed PR Workflow
-- `docs/ops/REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` — Operator Notes
-- `docs/ops/OPS_OPERATOR_CENTER.md` — Ops Center Overview
+- [REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md](REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md) — Main Guide (Operator Notes)
+- [REQUIRED_CHECKS_DRIFT_GUARD_PR_WORKFLOW.md](REQUIRED_CHECKS_DRIFT_GUARD_PR_WORKFLOW.md) — Detailed PR Workflow
+- [OPS_OPERATOR_CENTER.md](OPS_OPERATOR_CENTER.md) — Ops Center Overview
 
 ---
 
