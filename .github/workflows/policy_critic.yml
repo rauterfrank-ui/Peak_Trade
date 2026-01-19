@@ -497,7 +497,9 @@ jobs:
 
           # Check 4: Auto-merge status
           AUTO_MERGE_ENABLED="false"
-          if gh pr view "${PR_NUMBER}" --json autoMergeRequest --jq '.autoMergeRequest' | grep -qv "null"; then
+          # NOTE: `gh ... --jq '.autoMergeRequest'` may render JSON null as an empty line.
+          # Use a boolean jq expression to avoid false positives.
+          if gh pr view "${PR_NUMBER}" --json autoMergeRequest --jq '.autoMergeRequest != null' | grep -qx "true"; then
             AUTO_MERGE_ENABLED="true"
             echo "⚠️ **Auto-merge is ENABLED** (must be disabled for override)" >> $GITHUB_STEP_SUMMARY
           else
