@@ -39,7 +39,11 @@ class FlakySink:
 @pytest.fixture(autouse=True)
 def _no_live_guards(monkeypatch: pytest.MonkeyPatch) -> None:
     # Guard against accidental real sleeps.
-    monkeypatch.setattr(time, "sleep", lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("sleep called")))
+    monkeypatch.setattr(
+        time,
+        "sleep",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("sleep called")),
+    )
 
     # Guard against accidental network usage.
     monkeypatch.setattr(
@@ -131,7 +135,14 @@ def test_orchestrator_dryrun_rejects_missing_strategy_id() -> None:
     states: list[str] = []
     metrics: list[str] = []
     audit: list[str] = []
-    res = orch.run_dryrun(cfg, clock=clock, event_sink=events, state_sink=states, metrics_sink=metrics, audit_sink=audit)
+    res = orch.run_dryrun(
+        cfg,
+        clock=clock,
+        event_sink=events,
+        state_sink=states,
+        metrics_sink=metrics,
+        audit_sink=audit,
+    )
 
     assert res.accepted is False
     assert res.status == SessionStatus.REJECTED

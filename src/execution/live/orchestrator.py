@@ -128,7 +128,9 @@ class LiveSessionOrchestrator:
                 context={"artifact": "state", "status": snapshot.status.value},
             )
 
-        def emit_event(event_type: str, payload: Optional[Mapping[str, Any]] = None) -> dict[str, Any]:
+        def emit_event(
+            event_type: str, payload: Optional[Mapping[str, Any]] = None
+        ) -> dict[str, Any]:
             ts_sim = event_clock.tick()
             payload_obj = dict(payload or {})
 
@@ -199,7 +201,13 @@ class LiveSessionOrchestrator:
                 sink_retries=self._count_sink_retries(audit),
             )
             try:
-                self._emit_metrics(metrics_sink, metrics, audit=audit, max_retries=config.max_sink_retries, sleep_fn=sleep_fn)
+                self._emit_metrics(
+                    metrics_sink,
+                    metrics,
+                    audit=audit,
+                    max_retries=config.max_sink_retries,
+                    sleep_fn=sleep_fn,
+                )
             except Exception:
                 pass
             return DryrunResult(
@@ -241,9 +249,9 @@ class LiveSessionOrchestrator:
                 },
             )
 
-        # ------------------------------------------------------------------
-        # Preflight (reject rails)
-        # ------------------------------------------------------------------
+            # ------------------------------------------------------------------
+            # Preflight (reject rails)
+            # ------------------------------------------------------------------
             reject_code, reject_reason = self._validate_config(config, allowlist=allowlist)
             if reject_code is not None:
                 audit.emit(
@@ -275,7 +283,13 @@ class LiveSessionOrchestrator:
                     audit=audit,
                     sink_retries=self._count_sink_retries(audit),
                 )
-                self._emit_metrics(metrics_sink, metrics, audit=audit, max_retries=config.max_sink_retries, sleep_fn=sleep_fn)
+                self._emit_metrics(
+                    metrics_sink,
+                    metrics,
+                    audit=audit,
+                    max_retries=config.max_sink_retries,
+                    sleep_fn=sleep_fn,
+                )
                 return DryrunResult(
                     accepted=False,
                     status=SessionStatus.REJECTED,
@@ -290,9 +304,9 @@ class LiveSessionOrchestrator:
                     reject_reason=reject_reason,
                 )
 
-        # ------------------------------------------------------------------
-        # Dryrun execution (bounded steps; no external deps)
-        # ------------------------------------------------------------------
+            # ------------------------------------------------------------------
+            # Dryrun execution (bounded steps; no external deps)
+            # ------------------------------------------------------------------
             emit_state(
                 SessionStateSnapshot(
                     run_id=config.run_id,
@@ -348,7 +362,13 @@ class LiveSessionOrchestrator:
                 audit=audit,
                 sink_retries=self._count_sink_retries(audit),
             )
-            self._emit_metrics(metrics_sink, metrics, audit=audit, max_retries=config.max_sink_retries, sleep_fn=sleep_fn)
+            self._emit_metrics(
+                metrics_sink,
+                metrics,
+                audit=audit,
+                max_retries=config.max_sink_retries,
+                sleep_fn=sleep_fn,
+            )
 
             return DryrunResult(
                 accepted=True,
