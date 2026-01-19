@@ -14,7 +14,7 @@
 - Added: `docs&#47;ops&#47;evidence&#47;EV_20260119_PR816_MERGE_LOG_CHAIN_MERGED.md`
 
 ## Verification
-- Hygiene: `python3 scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/PR_818_MERGE_LOG.md`
+- Hygiene: `python3 scripts&#47;ops&#47;check_merge_log_hygiene.py docs&#47;ops&#47;merge_logs&#47;PR_818_MERGE_LOG.md`
 - Docs gates (changed, base origin/main): PASS
 
 ## Risk
