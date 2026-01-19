@@ -79,18 +79,18 @@ Ein minimaler, testbarer Broker‑Abstraktionslayer, der spätere Live‑Ops **m
 ## 5) Proposed File Map (indicative)
 
 **Code (proposed paths):**
-- `src/execution/broker/base.py` (interfaces, dataclasses)
-- `src/execution/broker/mock_broker.py` (deterministic mock)
-- `src/execution/broker/idempotency.py`
-- `src/execution/broker/retry.py`
+- ``src&#47;execution&#47;broker&#47;base.py`` (interfaces, dataclasses)
+- ``src&#47;execution&#47;broker&#47;mock_broker.py`` (deterministic mock)
+- ``src&#47;execution&#47;broker&#47;idempotency.py``
+- ``src&#47;execution&#47;broker&#47;retry.py``
 
 **Tests (proposed paths):**
-- `tests/execution/broker/test_adapter_contract.py`
-- `tests/execution/broker/test_idempotency.py`
-- `tests/execution/broker/test_retry_policy.py`
+- ``tests&#47;execution&#47;broker&#47;test_adapter_contract.py``
+- ``tests&#47;execution&#47;broker&#47;test_idempotency.py``
+- ``tests&#47;execution&#47;broker&#47;test_retry_policy.py``
 
 **Evidence (operator-created, optional):**
-- `docs/ops/evidence/EV-YYYYMMDD-FINISH_C1-ADAPTER-PASS.md`
+- ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C1-ADAPTER-PASS.md``
 
 ---
 

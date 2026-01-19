@@ -79,15 +79,15 @@ python -m ruff format --check .
 ## 5) Proposed File Map
 
 **Code (proposed paths):**
-- `src/execution/live/orchestrator.py`
-- `src/execution/live/state.py`
-- `src/execution/live/audit.py`
+- ``src&#47;execution&#47;live&#47;orchestrator.py``
+- ``src&#47;execution&#47;live&#47;state.py``
+- ``src&#47;execution&#47;live&#47;audit.py``
 
 **Tests (proposed paths):**
-- `tests/execution/live/test_orchestrator_dryrun.py`
+- ``tests&#47;execution&#47;live&#47;test_orchestrator_dryrun.py``
 
 **Evidence (operator-created, optional):**
-- `docs/ops/evidence/EV-YYYYMMDD-FINISH_C2-ORCH-DRYRUN-PASS.md`
+- ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C2-ORCH-DRYRUN-PASS.md``
 
 ---
 

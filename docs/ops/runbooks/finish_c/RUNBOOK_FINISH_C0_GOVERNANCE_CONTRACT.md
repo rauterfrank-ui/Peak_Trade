@@ -89,13 +89,13 @@ Kontrollen (target):
 ## 5) Artefakte (C0)
 
 **Pflicht:**
-- `docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md`
-- `docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C0_GOVERNANCE_CONTRACT.md`
-- `docs/ops/runbooks/finish_c/TEMPLATES_FINISH_C_EVIDENCE.md`
-- `docs/ops/runbooks/finish_c/TEMPLATES_FINISH_C_INCIDENT_PACK.md`
+- ``docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_FINISH_C_MASTER.md``
+- ``docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_FINISH_C0_GOVERNANCE_CONTRACT.md``
+- ``docs&#47;ops&#47;runbooks&#47;finish_c&#47;TEMPLATES_FINISH_C_EVIDENCE.md``
+- ``docs&#47;ops&#47;runbooks&#47;finish_c&#47;TEMPLATES_FINISH_C_INCIDENT_PACK.md``
 
 **Optional (operator-created später):**
-- Evidence Entry unter `docs/ops/evidence/EV-YYYYMMDD-FINISH_C0-CONTRACT.md`
+- Evidence Entry unter ``docs&#47;ops&#47;evidence&#47;EV-YYYYMMDD-FINISH_C0-CONTRACT.md``
 
 ---
 

@@ -97,16 +97,16 @@ python -m ruff format --check .
 ## 6) Proposed File Map
 
 **Code (proposed paths):**
-- `src/observability/execution_metrics.py` (oder passender existing observability layer)
-- `src/execution/live/status_snapshot.py`
+- ``src&#47;observability&#47;execution_metrics.py`` (oder passender existing observability layer)
+- ``src&#47;execution&#47;live&#47;status_snapshot.py``
 
 **Tests (proposed paths):**
-- `tests/observability/test_execution_metrics.py`
+- ``tests&#47;observability&#47;test_execution_metrics.py``
 
 **Operator Snapshots (local artifacts, not committed by default):**
-- `out/finish_c/dryrun_health_snapshot.json`
-- `out/finish_c/dryrun_status_snapshot.json` (oder `.md`)
-- `out/finish_c/dryrun_metrics_snapshot.json`
+- ``out&#47;finish_c&#47;dryrun_health_snapshot.json``
+- ``out&#47;finish_c&#47;dryrun_status_snapshot.json`` (oder `.md`)
+- ``out&#47;finish_c&#47;dryrun_metrics_snapshot.json``
 
 ---
 

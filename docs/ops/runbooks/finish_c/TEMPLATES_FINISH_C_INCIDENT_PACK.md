@@ -125,11 +125,11 @@ git rev-parse HEAD
 ```
 
 Artefakte (lokal sammeln, keine Secrets):
-- `out/finish_c/incident/<INC_ID>/git_status.txt`
-- `out/finish_c/incident/<INC_ID>/diff_stat.txt`
-- `out/finish_c/incident/<INC_ID>/audit_events.json` (redacted)
-- `out/finish_c/incident/<INC_ID>/state_snapshot.json`
-- `out/finish_c/incident/<INC_ID>/metrics_snapshot.txt`
+- ``out&#47;finish_c&#47;incident&#47;<INC_ID>&#47;git_status.txt``
+- ``out&#47;finish_c&#47;incident&#47;<INC_ID>&#47;diff_stat.txt``
+- ``out&#47;finish_c&#47;incident&#47;<INC_ID>&#47;audit_events.json`` (redacted)
+- ``out&#47;finish_c&#47;incident&#47;<INC_ID>&#47;state_snapshot.json``
+- ``out&#47;finish_c&#47;incident&#47;<INC_ID>&#47;metrics_snapshot.txt``
 
 ---
 
@@ -168,6 +168,6 @@ Nicht erlaubt:
 
 ## 5) References (existing runbooks)
 
-- `../general.md` (baseline incident response)
-- `../execution_error.md` (execution error playbook)
+- ``..&#47;general.md`` (baseline incident response)
+- ``..&#47;execution_error.md`` (execution error playbook)
 - `RUNBOOK_FINISH_C_MASTER.md` (Finish C master)
