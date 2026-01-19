@@ -121,7 +121,7 @@ Wichtig: Artefakte sind **operator-created** und dürfen **nicht committed** wer
 
 ## 7) Operator Invocation (snapshot-only)
 
-Beispiel: einmaliger Dryrun, schreibt Artefakte nach `out/finish_c/...` (operator-created).
+Beispiel: einmaliger Dryrun, schreibt Artefakte nach `out&#47;finish_c&#47;...` (operator-created).
 
 ```bash
 cd /Users/frnkhrz/Peak_Trade || cd "$HOME/Peak_Trade"
