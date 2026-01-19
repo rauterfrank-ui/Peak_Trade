@@ -91,7 +91,77 @@ python -m ruff format --check .
 
 ---
 
-## 7) Next PR Slice
+## 6) Contract: C2 Dryrun Artifacts (snapshot-only)
+
+Der C2-Orchestrator produziert **strukturierte Artefakte** in deterministischer Reihenfolge.  
+Wichtig: Artefakte sind **operator-created** und dürfen **nicht committed** werden.
+
+### 6.1 Artefakt-Typen
+
+- **Events (JSONL)**: ``out&#47;finish_c&#47;c2&#47;<run_id>&#47;events.jsonl``
+  - Pro Zeile ein Event (Schema: `C2_DRYRUN_V1`)
+  - Felder: `event_id`, `run_id`, `strategy_id`, `event_type`, `ts_sim`, `ts_utc`, `payload`
+  - Determinismus: `ts_sim` ist monotonic (SimClock), `event_id` ist `stable_id(...)` über kanonische Felder
+
+- **State Snapshots (JSONL)**: ``out&#47;finish_c&#47;c2&#47;<run_id>&#47;state_snapshots.jsonl``
+  - Pro Zeile ein `SessionStateSnapshot` (Status-Transitions)
+  - Status: `INIT` → `RUNNING` → `COMPLETED` (oder `REJECTED` / `FAILED`)
+
+- **Metrics Snapshot (JSON)**: ``out&#47;finish_c&#47;c2&#47;<run_id>&#47;metrics.json``
+  - Ein Snapshot-Objekt (Schema: `C2_DRYRUN_METRICS_V1`)
+  - Felder u.a.: `events_emitted`, `audit_events`, `sink_retries`, `status`
+
+### 6.2 Audit Events (append-only)
+
+- **Audit (JSONL)**: ``out&#47;finish_c&#47;c2&#47;<run_id>&#47;audit.jsonl``
+  - Determinismus: `seq` strikt monoton, `ts` kommt ausschließlich aus injected clock
+  - Typische Codes: `C2_DRYRUN_START`, `C2_REJECT_*`, `C2_SINK_WRITE_RETRY`, `C2_SINK_WRITE_FAILED`, `C2_DRYRUN_STOP`
+
+---
+
+## 7) Operator Invocation (snapshot-only)
+
+Beispiel: einmaliger Dryrun, schreibt Artefakte nach `out&#47;finish_c&#47;...` (operator-created).
+
+```bash
+cd /Users/frnkhrz/Peak_Trade || cd "$HOME/Peak_Trade"
+
+python - <<'PY'
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+from src.execution.live.orchestrator import DryrunConfig, LiveSessionOrchestrator
+
+class FixedClock:
+    def __init__(self, dt):
+        self._dt = dt
+    def now(self):
+        return self._dt
+
+run_id = "run_demo_001"
+out_dir = Path("out/finish_c/c2") / run_id
+out_dir.mkdir(parents=True, exist_ok=True)
+
+events_path = out_dir / "events.jsonl"
+state_path = out_dir / "state_snapshots.jsonl"
+metrics_path = out_dir / "metrics.json"
+audit_path = out_dir / "audit.jsonl"
+
+cfg = DryrunConfig(strategy_id="strat_demo", run_id=run_id, seed=123, clock_mode="fixed", max_sink_retries=0)
+orch = LiveSessionOrchestrator()
+
+clock = FixedClock(datetime(2026, 1, 1, tzinfo=timezone.utc))
+with events_path.open("w") as ev_f, state_path.open("w") as st_f, metrics_path.open("w") as m_f, audit_path.open("w") as a_f:
+    res = orch.run_dryrun(cfg, clock=clock, event_sink=ev_f, state_sink=st_f, metrics_sink=m_f, audit_sink=a_f)
+
+print(json.dumps({"accepted": res.accepted, "status": res.status.value, "run_id": res.run_id}, sort_keys=True))
+PY
+```
+
+## 8) Next PR Slice
 
 **PR‑C3:** Reconciler + Safety Rails + Failure‑Matrix Tests (timeouts/dupes/partial fills).  
 Siehe `RUNBOOK_FINISH_C3_RECONCILER_SAFETY_RAILS.md`.
