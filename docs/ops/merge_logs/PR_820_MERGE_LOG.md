@@ -22,7 +22,7 @@ Provide a governance-safe, snapshot-only dryrun orchestration path for execution
 - PR mergeability snapshot: `mergeable=MERGEABLE`, `mergeStateStatus=CLEAN`, `autoMergeRequest=null`
 - Post-merge anchor on `main`:
   - 49198c87 feat(execution): deterministic live orchestrator dryrun (C2) (#820)
-- Worktree state (post-merge): `main...origin/main` (clean)
+- Worktree state (post-merge): `main...origin&#47;main` (clean)
 
 ## Risk
 LOW (docs-only merge log entry). No code or runtime behavior changes in this PR.
