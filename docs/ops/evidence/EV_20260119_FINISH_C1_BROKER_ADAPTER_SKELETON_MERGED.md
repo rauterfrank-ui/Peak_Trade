@@ -49,7 +49,7 @@ Finish C — Phase C1: Minimal broker adapter skeleton under execution-layer wit
 
 ### Artifact presence on main (snapshot)
 
-- `test -f docs/ops/merge_logs/PR_814_MERGE_LOG.md`
+- `test -f docs&#47;ops&#47;merge_logs&#47;PR_814_MERGE_LOG.md`
 
 ### Deterministic test snapshots (historical, captured during PR #814)
 
