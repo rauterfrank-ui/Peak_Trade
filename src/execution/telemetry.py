@@ -11,7 +11,7 @@ import json
 import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from .events import ExecutionEvent
 
@@ -64,18 +64,23 @@ class JsonlExecutionLogger(ExecutionEventEmitter):
         # Creates: logs/execution/<session_id>.jsonl
     """
 
-    def __init__(self, base_path: str = "logs/execution"):
+    def __init__(self, base_path: str = "logs/execution", *, fixed_filename: Optional[str] = None):
         """
         Initialize JSONL logger.
 
         Args:
             base_path: Base directory for execution logs
+            fixed_filename: If set, write all events to a single JSONL file
+                           (e.g. "execution_events.jsonl") instead of <session_id>.jsonl.
         """
         self.base_path = Path(base_path)
+        self.fixed_filename = fixed_filename
         self._handles: dict[str, Path] = {}
 
     def _get_log_path(self, session_id: str) -> Path:
         """Get log file path for session."""
+        if self.fixed_filename:
+            return self.base_path / self.fixed_filename
         return self.base_path / f"{session_id}.jsonl"
 
     def emit(self, event: ExecutionEvent) -> None:
@@ -97,6 +102,26 @@ class JsonlExecutionLogger(ExecutionEventEmitter):
 
         except Exception as e:
             logger.error(f"Failed to emit execution event: {e}")
+
+
+class FixedJsonlAppendOnlyWriter:
+    """
+    Minimal append-only JSONL writer for contract logs.
+
+    Used by RUNBOOK B / Slice 1 for writing:
+      logs/execution/execution_events.jsonl
+    """
+
+    def __init__(self, file_path: Path):
+        self.file_path = file_path
+
+    def append(self, obj: dict[str, Any]) -> None:
+        try:
+            self.file_path.parent.mkdir(parents=True, exist_ok=True)
+            with self.file_path.open("a") as f:
+                f.write(json.dumps(obj, sort_keys=True) + "\n")
+        except Exception as e:
+            logger.error(f"Failed to append JSONL event: {e}")
 
 
 class CompositeEmitter(ExecutionEventEmitter):
