@@ -53,8 +53,8 @@ Builds on Phase 1 (PR #609: Layer Map) + Phase 2 (PR #610: Model Registry, Capab
 - [x] **CI Required Contexts:** ✅ PASSED
 
 ### Local Tests
-- [x] **Validator:** `python3 scripts/validate_layer_map_config.py` (PASSED)
-- [x] **Unit Tests:** `python3 -m pytest tests/ai_orchestration/ -v` (37/37 passed)
+- [x] **Validator:** `python3 scripts&#47;validate_layer_map_config.py` (PASSED)
+- [x] **Unit Tests:** `python3 -m pytest tests&#47;ai_orchestration&#47; -v` (37/37 passed)
 - [x] **Dry-Run L0:** Primary=gpt-5-2, Critic=deepseek-r1, SoD=True ✅
 - [x] **Dry-Run L2:** Primary=gpt-5-2-pro, Critic=deepseek-r1, SoD=True ✅
 

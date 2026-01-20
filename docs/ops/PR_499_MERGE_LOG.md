@@ -30,7 +30,7 @@ PR #499 macht das Cursor-Timeout/Hang-Runbook operational und self-contained: to
 2) Quick Snapshot (No-Sudo) ausführen.
 3) Log-Bundle erzeugen:
    - bevorzugt: `scripts/ops/collect_cursor_logs.sh`
-   - fallback: `bash scripts/ops/collect_cursor_logs.sh`
+   - fallback: `bash scripts&#47;ops&#47;collect_cursor_logs.sh`
 4) Optional (bei harten Hangs): macOS Advanced Diagnostics ausführen (sudo), Artefakte zusammen mit dem `.tgz` ablegen.
 
 ## References
