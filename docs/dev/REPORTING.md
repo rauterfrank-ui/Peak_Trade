@@ -268,7 +268,7 @@ The report automatically:
 
 ### Customize Reports
 
-Edit `reports/quarto/backtest_report.qmd` to:
+Edit `reports&#47;quarto&#47;backtest_report.qmd` to:
 - Add custom visualizations
 - Filter metrics
 - Load specific runs
