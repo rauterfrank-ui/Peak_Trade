@@ -312,7 +312,7 @@ No run summaries found in results/
 
 **Solution:**
 1. Check that you're using `PeakTradeRun` context manager
-2. Verify `results/` directory exists
+2. Verify `results&#47;` directory exists
 3. Look for `run_summary_*.json` files:
    ```bash
    ls -lh results/run_summary_*.json
