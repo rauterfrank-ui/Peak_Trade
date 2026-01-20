@@ -387,11 +387,11 @@ Struktur der Scripts erklärt
 - `/data/`
 - `/results/`
 - `/reports/`
-- `logs/`
-- `live_runs/`
-- `test_runs/`
+- `logs&#47;`
+- `live_runs&#47;`
+- `test_runs&#47;`
 - `*.log`
-- `venv/`
+- `venv&#47;`
 - Guards: `&#47;*_REPORT.md`, `&#47;*_SUMMARY.md`
 
 **No Action Needed** - .gitignore ist bereits gut konfiguriert!

@@ -22,8 +22,8 @@
 **Verify:** `gh pr view <PR> --json mergeable -q .mergeable`
 
 ### 3. File Scope Review
-- [ ] No files in `reports/` committed
-- [ ] No files in `.artifacts/`, `.tmp_*&#47;` committed
+- [ ] No files in `reports&#47;` committed
+- [ ] No files in `.artifacts&#47;`, `.tmp_*&#47;` committed
 - [ ] No root-level docs (should be in `docs/`)
 - [ ] No committed secrets/credentials
 
