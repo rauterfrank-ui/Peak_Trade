@@ -24,7 +24,7 @@ Operationalize governance review and make SoD enforcement visible and testable b
 - Add deterministic tests (12) + replay fixtures:
   - File: `tests/ai_orchestration/test_l4_critic.py`
   - Fixture: `tests/fixtures/transcripts/l4_critic_sample.json`
-  - Fixtures: `tests/fixtures/evidence_packs/L1_sample_2026-01-10/*`
+  - Fixtures: `tests&#47;fixtures&#47;evidence_packs&#47;L1_sample_2026-01-10&#47;*`
 - Update governance/docs integration and operator quick commands:
   - File: `docs/governance/ai_autonomy/PHASE4_L1_L4_INTEGRATION.md`
   - File: `docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md`
