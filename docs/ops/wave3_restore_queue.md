@@ -81,7 +81,7 @@
 **Operator Notes:**
 - Roadmaps, Berichte, Meta-Dokumentation
 - Safe to merge
-- Check `docs/roadmaps/` und `docs/reports/`
+- Check `docs&#47;roadmaps&#47;` und `docs&#47;reports&#47;`
 
 ---
 
@@ -506,12 +506,12 @@ Operator: _______________  Date: ___________
 - > 4 weeks: 20 branches
 
 ### Branch Prefix Stats
-- `docs/*`: 24 branches
-- `feat/*`: 8 branches
-- `wip/*`: 6 branches
-- `chore/*`: 6 branches
-- `fix/*`: 3 branches
-- `test/*`: 2 branches
+- `docs&#47;*`: 24 branches
+- `feat&#47;*`: 8 branches
+- `wip&#47;*`: 6 branches
+- `chore&#47;*`: 6 branches
+- `fix&#47;*`: 3 branches
+- `test&#47;*`: 2 branches
 - Auto-generated names: 24 branches
 
 ---

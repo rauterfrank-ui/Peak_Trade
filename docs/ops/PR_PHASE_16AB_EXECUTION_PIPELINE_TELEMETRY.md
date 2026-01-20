@@ -168,8 +168,8 @@ All existing routes remain unchanged:
 - Test: `test_blocks_research_only_in_live` ✅
 
 **LotSizeGate:**
-- Floating-point fix: `0.6 / 0.1 → 6.0` (not 5.999...)
-- Uses epsilon: `floor(qty / lot_size + 1e-9)`
+- Floating-point fix: `0.6 &#47; 0.1 → 6.0` (not 5.999...)
+- Uses epsilon: `floor(qty &#47; lot_size + 1e-9)`
 - Test: `test_lot_size_rounds_down` ✅
 
 **MinNotionalGate:**
@@ -183,7 +183,7 @@ All existing routes remain unchanged:
 - No-op when telemetry disabled
 
 **Exception Handling:**
-- `try/except` around emit logic
+- `try&#47;except` around emit logic
 - Logs errors, doesn't crash pipeline
 
 **Privacy:**
@@ -197,7 +197,7 @@ All existing routes remain unchanged:
 ### No Breaking Changes
 
 **Phase 16A:**
-- New standalone module (`execution_simple/`) - no conflicts with existing code
+- New standalone module (`execution_simple&#47;`) - no conflicts with existing code
 - No changes to production `src/execution/` pipeline
 
 **Phase 16B:**
@@ -222,7 +222,7 @@ pipeline = ExecutionPipeline(executor=executor, emitter=emitter)
 ## No Big Refactors Statement
 
 **Phase 16A:**
-- ✅ Separate module (`execution_simple/`) - zero impact on existing code
+- ✅ Separate module (`execution_simple&#47;`) - zero impact on existing code
 - ✅ No changes to `src/execution/` (production pipeline)
 - ✅ No changes to BacktestEngine (except `use_execution_pipeline=False` default for old API)
 
@@ -344,7 +344,7 @@ ruff check src tests scripts
 - [ ] **Demo:** Try demo scripts (Phase 16A dry-run)
 - [ ] **Dashboard:** Start uvicorn and check `/live/execution/{session_id}`
 - [ ] **API:** Test API endpoint with `curl` or browser
-- [ ] **Logs:** Check `logs/execution/` directory creation
+- [ ] **Logs:** Check `logs&#47;execution&#47;` directory creation
 
 ---
 

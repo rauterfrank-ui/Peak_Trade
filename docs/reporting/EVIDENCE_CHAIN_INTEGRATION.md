@@ -12,7 +12,7 @@ The Evidence Chain module (`src/experiments/evidence_chain.py`) creates standard
 
 ### Artifact Structure
 
-Each run creates a timestamped directory under `results/<run_id>/` with standardized files:
+Each run creates a timestamped directory under `results&#47;<run_id>&#47;` with standardized files:
 
 ```
 results/<run_id>/
@@ -39,13 +39,13 @@ results/<run_id>/
 | File | Requires | Fallback Behavior |
 |------|----------|-------------------|
 | `trades.parquet` | `pyarrow` or `fastparquet` | Silently skipped if parquet engine unavailable |
-| `report/backtest.html` | `quarto` CLI tool | Warning logged, report skipped |
+| `report&#47;backtest.html` | `quarto` CLI tool | Warning logged, report skipped |
 
 ## Where Output Lives
 
 ### Results Directory (gitignored)
 
-All Evidence Chain output goes to `results/` (gitignored by default):
+All Evidence Chain output goes to `results&#47;` (gitignored by default):
 
 ```bash
 results/
@@ -55,7 +55,7 @@ results/
 ```
 
 **Key Points:**
-- `results/` is in `.gitignore` – never tracked in version control
+- `results&#47;` is in `.gitignore` – never tracked in version control
 - Each run is isolated in its own directory
 - Run IDs can be auto-generated (timestamp + short hash) or user-specified
 - Artifacts are immutable once written (no overwriting)
@@ -73,8 +73,8 @@ templates/quarto/
 **Key Points:**
 - Templates are tracked in git (policy-compliant)
 - Templates use `execute: enabled: false` (no code execution during rendering)
-- Templates load pre-computed data from `results/<run_id>/`
-- Rendered output goes to `results/<run_id>/report/` (gitignored)
+- Templates load pre-computed data from `results&#47;<run_id>&#47;`
+- Rendered output goes to `results&#47;<run_id>&#47;report&#47;` (gitignored)
 
 ## Integration with Existing Reporting Ecosystem
 
@@ -97,10 +97,10 @@ Quarto templates (`templates/quarto/`) render Evidence Chain artifacts into HTML
 
 **Flow:**
 1. Runner (e.g., `run_backtest.py`) calls Evidence Chain functions
-2. Evidence Chain writes artifacts to `results/<run_id>/`
+2. Evidence Chain writes artifacts to `results&#47;<run_id>&#47;`
 3. (Optional) Runner calls `scripts/utils/render_last_report.sh`
-4. Quarto loads artifacts from `results/<run_id>/` and renders HTML
-5. HTML output written to `results/<run_id>/report/backtest.html`
+4. Quarto loads artifacts from `results&#47;<run_id>&#47;` and renders HTML
+5. HTML output written to `results&#47;<run_id>&#47;report&#47;backtest.html`
 
 **Template Features:**
 - `execute: enabled: false` – No Python execution, only data loading
@@ -114,7 +114,7 @@ CI ensures Evidence Chain output never leaks into version control:
 
 | Guard | Location | Purpose |
 |-------|----------|---------|
-| `.gitignore` | Root | Ignores `results/`, `reports/`, `*.html` |
+| `.gitignore` | Root | Ignores `results&#47;`, `reports&#47;`, `*.html` |
 | Pre-commit hook | `scripts/ci/validate_git_state.sh` | Blocks commits with generated files |
 | GitHub Action | `.github/workflows/ci.yml` | Verifies no tracked reports in PR diffs |
 
