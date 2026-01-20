@@ -76,7 +76,7 @@ Enables Phase 4 CI integration (Evidence Pack validation gate).
 - [x] **CI Required Contexts:** ✅ PASSED
 
 ### Local Tests
-- [x] **Full Test Suite:** `python3 -m pytest tests/ai_orchestration/ -v` (66/66 passed in 0.18s)
+- [x] **Full Test Suite:** `python3 -m pytest tests&#47;ai_orchestration&#47; -v` (66/66 passed in 0.18s)
   - Models: 9 passed
   - Orchestrator: 28 passed
   - Evidence Pack: 24 passed (NEW)

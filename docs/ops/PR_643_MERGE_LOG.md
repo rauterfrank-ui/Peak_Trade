@@ -32,8 +32,8 @@ Operationalize governance review and make SoD enforcement visible and testable b
 ## Verification
 - CI: all required gates passed (lint/format, tests matrix, audit, policy critic, docs gates).
 - Local (example):
-  - `python -m pytest tests/ai_orchestration/test_l4_critic.py -q`
-  - `python scripts/aiops/run_l4_governance_critic.py --help`
+  - `python -m pytest tests&#47;ai_orchestration&#47;test_l4_critic.py -q`
+  - `python scripts&#47;aiops&#47;run_l4_governance_critic.py --help`
 
 ## Risk
 LOW.
