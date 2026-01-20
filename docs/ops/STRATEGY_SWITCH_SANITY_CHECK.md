@@ -206,7 +206,7 @@ R&D- oder nicht-live-ready-Strategien in allowed: armstrong_cycle
 **Operator-Action**:
 1. Öffne `config/config.toml`
 2. Entferne R&D-Strategie aus `[live_profile.strategy_switch].allowed`
-3. Re-run Check: `python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml`
+3. Re-run Check: `python3 scripts&#47;run_strategy_switch_sanity_check.py --config config&#47;config.toml`
 
 **Beispiel-Fix**:
 ```toml

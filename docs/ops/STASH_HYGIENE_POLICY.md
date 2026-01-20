@@ -13,7 +13,7 @@ Ziel: Stashes **kurzlebig** halten und "stille" Repo-Verschmutzung vermeiden.
    - Wenn ein Stash als Referenz nützlich ist: Patch exportieren, dokumentieren, dann Stash droppen.
    - Referenzablage: `docs/ops/stash_refs/`
 4. **Recovery-Branch nur wenn nötig**  
-   - Für konfliktträchtige Stashes: `git checkout -b wip/recover-... main` + `git stash apply`.
+   - Für konfliktträchtige Stashes: `git checkout -b wip&#47;recover-... main` + `git stash apply`.
    - Danach entweder PR oder Branch verwerfen.
 
 ## Minimal-Triage-Checkliste

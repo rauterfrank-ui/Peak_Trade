@@ -15,7 +15,7 @@ Result: Repository clean; no open PRs; main synchronized.
 
 ## Verification
 - `gh pr list --state open` returns none
-- `gh pr list --state open --search "head:restore/"` returns none
+- `gh pr list --state open --search "head:restore&#47;"` returns none
 - local `main` is synchronized with `origin/main`
 
 ## Notes

@@ -277,7 +277,7 @@ state._cleanup_expired()
 
 **Solution:**
 1. Check config: `telemetry.alerting.history.enabled = true`
-2. Run main alert runner: `python scripts/telemetry_alerts.py`
+2. Run main alert runner: `python scripts&#47;telemetry_alerts.py`
 3. Verify history file exists: `ls -la data/telemetry/alerts/alerts_history.jsonl`
 
 ### Problem 3: ACK Not Suppressing Alerts

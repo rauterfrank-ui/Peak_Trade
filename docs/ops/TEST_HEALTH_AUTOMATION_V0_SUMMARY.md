@@ -87,7 +87,7 @@
 
 | # | Kriterium | Status |
 |---|-----------|--------|
-| 1 | `python scripts/run_test_health_profile.py` erstellt Report-Verzeichnis | ✅ |
+| 1 | `python scripts&#47;run_test_health_profile.py` erstellt Report-Verzeichnis | ✅ |
 | 2 | `summary.json`, `summary.md`, `summary.html` werden erzeugt | ✅ |
 | 3 | Health-Score reagiert logisch auf PASS/FAIL | ✅ |
 | 4 | Smoke-Scripts laufen stabil | ✅ |
@@ -209,7 +209,7 @@ Die v0-Implementierung ist bewusst minimalistisch. Geplante Erweiterungen:
 
 **Entwickler**: Peak_Trade Ops Team  
 **Dokumentation**: `docs/ops/TEST_HEALTH_AUTOMATION_V0.md`  
-**Tests**: `pytest tests/ops/test_test_health_runner.py`
+**Tests**: `pytest tests&#47;ops&#47;test_test_health_runner.py`
 
 ---
 
