@@ -75,7 +75,7 @@ docs/ops/PHASE3_PR_DESCRIPTION.md
 
 **3. CLI Dry-Run (`orchestrator_dryrun.py`)**
 - Operator tool: Test selection without side effects
-- Usage: `python3 scripts/orchestrator_dryrun.py --layer L0 --autonomy REC --enable-orchestrator`
+- Usage: `python3 scripts&#47;orchestrator_dryrun.py --layer L0 --autonomy REC --enable-orchestrator`
 
 ---
 

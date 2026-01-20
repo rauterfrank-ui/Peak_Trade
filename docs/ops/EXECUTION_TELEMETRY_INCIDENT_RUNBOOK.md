@@ -471,8 +471,8 @@ gunzip logs/execution/session_123.jsonl.gz
 
 | Frequency | Task | Command |
 |-----------|------|---------|
-| **Daily** | Dry-run check | `python scripts/ops/telemetry_retention.py` |
-| **Weekly** | Apply retention | `python scripts/ops/telemetry_retention.py --apply` |
+| **Daily** | Dry-run check | `python scripts&#47;ops&#47;telemetry_retention.py` |
+| **Weekly** | Apply retention | `python scripts&#47;ops&#47;telemetry_retention.py --apply` |
 | **Monthly** | Verify size | `du -sh logs/execution` |
 
 **Or:** Set up a cron job (optional)

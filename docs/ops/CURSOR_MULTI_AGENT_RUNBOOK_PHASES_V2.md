@@ -796,7 +796,7 @@ STEP 4 — REVIEW
 - Check all referenced paths exist or are marked (future) as plain text.
 
 STEP 5 — VERIFICATION (list commands)
-- Smoke run (if documented): `python -m ...` or `bash scripts/...` (only if known)
+- Smoke run (if documented): `python -m ...` or `bash scripts&#47;...` (only if known)
 - `rg -n "paper|sandbox|simulated" docs/ src/`
 - `git diff --stat`
 
