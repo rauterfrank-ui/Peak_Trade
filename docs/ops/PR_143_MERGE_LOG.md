@@ -8,11 +8,11 @@
 
 ## Summary
 P1 Evidence Chain implemented and integrated (policy-safe templates + optional Quarto rendering):
-- Evidence Chain core helper: emits standard artifacts under `results/<run_id>/`
+- Evidence Chain core helper: emits standard artifacts under `results&#47;<run_id>&#47;`
 - Unit tests for Evidence Chain core (comprehensive)
 - `scripts/run_backtest.py` upgraded to write artifacts + optional report
-- Quarto template stored under `templates/quarto/` to satisfy repo policy (no tracked `reports/`)
-- Render script writes only into run-local output: `results/<run_id>/report/`
+- Quarto template stored under `templates/quarto/` to satisfy repo policy (no tracked `reports&#47;`)
+- Render script writes only into run-local output: `results&#47;<run_id>&#47;report&#47;`
 
 ## Changed Files (High level)
 - `src/experiments/evidence_chain.py`
@@ -23,9 +23,9 @@ P1 Evidence Chain implemented and integrated (policy-safe templates + optional Q
 - `docs&sol;reports&sol;REPORTING_QUICKSTART.md (planned)`
 
 ## Verification
-- `python -m pytest -q tests/test_evidence_chain.py`: **PASS**
-- `bash scripts/ci/validate_git_state.sh`: **PASS**
-- `bash scripts/automation/post_merge_verify.sh`: **PASS**
+- `python -m pytest -q tests&#47;test_evidence_chain.py`: **PASS**
+- `bash scripts&#47;ci&#47;validate_git_state.sh`: **PASS**
+- `bash scripts&#47;automation&#47;post_merge_verify.sh`: **PASS**
 
 ## Notes / Follow-ups
 - Next: extend Evidence Chain integration to `research_cli.py` and `live_ops.py` (P1.1).
