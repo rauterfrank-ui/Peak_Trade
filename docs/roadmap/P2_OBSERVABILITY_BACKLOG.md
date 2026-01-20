@@ -29,7 +29,7 @@ P2 addresses these gaps for teams that need:
 ### When to Start P2?
 
 Start P2 when you encounter:
-1. **Query pain:** Manually grepping through `results/` directories becomes tedious
+1. **Query pain:** Manually grepping through `results&#47;` directories becomes tedious
 2. **Scale issues:** Thousands of runs, need efficient filtering/aggregation
 3. **Production blind spots:** Logs insufficient, need real-time metrics/traces
 4. **Compliance needs:** Data retention policies, audit trails, governance

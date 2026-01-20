@@ -140,7 +140,7 @@ Phase 16K führt ein **read-only Web Dashboard** für Stage1 (DRY-RUN) Monitorin
   set_stage1_config(stage1_report_root, templates)
   app.include_router(stage1_router)
   ```
-- **Report Root:** `reports/obs/stage1/` (default, konfigurierbar)
+- **Report Root:** `reports&#47;obs&#47;stage1&#47;` (default, konfigurierbar)
 - **Template Sharing:** Nutzt bestehende `templates` (Jinja2) aus App Setup
 
 **`src/webui/__init__.py`** (Import hinzugefügt)
@@ -358,7 +358,7 @@ GET /ops/stage1/latest → 404 Not Found
 ```
 **Ursachen + Lösungen:**
 1. **Keine JSON Files:** Reports generieren (siehe oben)
-2. **Falscher Report Root:** `report_root` in App Config prüfen (default: `reports/obs/stage1/`)
+2. **Falscher Report Root:** `report_root` in App Config prüfen (default: `reports&#47;obs&#47;stage1&#47;`)
 3. **Server nicht gestartet:** `uvicorn src.webui.app:app --reload` ausführen
 
 ---
@@ -651,7 +651,7 @@ curl http://localhost:8000/ops/stage1/trend?days=14
 **Challenges:**
 - **Trend Computation Duplizierung:** Go/No-Go Logik existiert in `stage1_trend_report.py` (script) und `src/obs/stage1/trend.py` (library)
   - **Fix in 16L:** Konsolidieren (script nutzt library)
-- **Report Root Config:** Momentan in `app.py` hardcoded (`reports/obs/stage1`)
+- **Report Root Config:** Momentan in `app.py` hardcoded (`reports&#47;obs&#47;stage1`)
   - **Fix in 16L:** Config-File oder ENV Variable
 
 **Process Improvements:**
