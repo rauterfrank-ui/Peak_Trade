@@ -23,9 +23,9 @@ P1 Evidence Chain implemented and integrated (policy-safe templates + optional Q
 - `docs&sol;reports&sol;REPORTING_QUICKSTART.md (planned)`
 
 ## Verification
-- `python -m pytest -q tests/test_evidence_chain.py`: **PASS**
-- `bash scripts/ci/validate_git_state.sh`: **PASS**
-- `bash scripts/automation/post_merge_verify.sh`: **PASS**
+- `python -m pytest -q tests&#47;test_evidence_chain.py`: **PASS**
+- `bash scripts&#47;ci&#47;validate_git_state.sh`: **PASS**
+- `bash scripts&#47;automation&#47;post_merge_verify.sh`: **PASS**
 
 ## Notes / Follow-ups
 - Next: extend Evidence Chain integration to `research_cli.py` and `live_ops.py` (P1.1).

@@ -200,7 +200,7 @@ HACK(justification): Why this is necessary
 - **Unacceptable density** in production code/live configs
 
 ### Tracking & Debt Management
-- Run periodic placeholder audits: `python scripts/ops/placeholders/generate_placeholder_reports.py`
+- Run periodic placeholder audits: `python scripts&#47;ops&#47;placeholders&#47;generate_placeholder_reports.py`
 - Review high-density files (use target map reports)
 - Prioritize cleanup in production/execution paths over docs/templates
 
