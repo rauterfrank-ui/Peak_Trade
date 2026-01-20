@@ -11,7 +11,7 @@ P1 Evidence Chain implemented and integrated (policy-safe templates + optional Q
 - Evidence Chain core helper: emits standard artifacts under `results&#47;<run_id>&#47;`
 - Unit tests for Evidence Chain core (comprehensive)
 - `scripts/run_backtest.py` upgraded to write artifacts + optional report
-- Quarto template stored under `templates/quarto/` to satisfy repo policy (no tracked `reports/`)
+- Quarto template stored under `templates/quarto/` to satisfy repo policy (no tracked `reports&#47;`)
 - Render script writes only into run-local output: `results&#47;<run_id>&#47;report&#47;`
 
 ## Changed Files (High level)
