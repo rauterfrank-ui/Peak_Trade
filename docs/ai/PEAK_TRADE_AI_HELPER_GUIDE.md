@@ -109,7 +109,7 @@ Für technische Details zu Projekt-Struktur, Modulen und Commands siehe [`CLAUDE
 - **Neues Risk-Limit:** `src/live/risk_limits.py` + Tests + Developer-Guide
 - **Neues Portfolio-Rezept:** `config/portfolio_recipes.toml` + Tests
 - **Neue CLI-Funktion:** `scripts/` + Tests + CLI-Cheatsheet-Update
-- **Neue Phase-Doku:** `docs/PHASE_*.md`
+- **Neue Phase-Doku:** `docs&#47;PHASE_*.md`
 
 ---
 
@@ -186,7 +186,7 @@ Berücksichtige DEV_GUIDE_ADD_EXCHANGE.md und Safety-Anforderungen."
 ### Do
 
 - **Kleine, klar abgegrenzte Aufgaben definieren:** „Implementiere diese Funktion + Tests" statt „Mach das Modul besser"
-- **Relevante Dateien benennen:** „Ändere `src/strategies/rsi.py`, schreibe Tests in `tests/test_rsi.py`"
+- **Relevante Dateien benennen:** „Ändere `src/strategies/rsi.py`, schreibe Tests in `tests&#47;test_rsi.py`"
 - **Kontext mitgeben:** „Nutze DEV_GUIDE_ADD_STRATEGY.md als Referenz"
 - **Explizite Constraints setzen:** „Keine Breaking Changes an der API", „Tests müssen grün bleiben"
 - **Nach Erklärungen fragen:** „Erkläre mir, warum du diesen Ansatz gewählt hast"
