@@ -645,7 +645,7 @@ python scripts/run_backtest_with_tracking.py \
 - [x] Unit-Tests + Smoke-Tests
 
 ### Phase 3: Acceleration Scaffolding (✅ Completed - PR X3)
-- [x] Data Backend Interface (src/data/backend.py)
+- [x] Data Backend Interface ("src\/data\/backend.py" (historical path))
 - [x] PandasBackend (Default)
 - [x] PolarsBackend (Optional)
 - [x] DuckDBBackend (Optional)

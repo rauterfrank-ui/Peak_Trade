@@ -106,7 +106,7 @@ graph TD
 - Research-CLI nutzt Data-Loader für Sweeps und Experimente
 - Live-Layer kann Data-Loader für aktuelle Preise nutzen
 
-**Siehe auch:** `docs/Peak_Trade_Data_Layer_Doku.md`
+**Siehe auch:** "docs\/Peak_Trade_Data_Layer_Doku.md" (future)
 
 ---
 
@@ -181,7 +181,7 @@ graph TD
 - Ergebnisse werden in Registry gespeichert
 - Research-CLI ermöglicht interaktive Forschung
 
-**Siehe auch:** `docs/Peak_Trade_Registry_Engine_Overview.md`
+**Siehe auch:** "docs\/Peak_Trade_Registry_Engine_Overview.md" (future)
 
 ---
 

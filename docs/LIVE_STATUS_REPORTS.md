@@ -178,7 +178,7 @@ Keine Subprocess-Aufrufe, keine Abhängigkeiten zu `live_ops`-Internals.
 
 ### 6.2 Operator-Notizen
 
-Erstelle eine `docs/live_status_notes.md` für wiederkehrende Notizen:
+Erstelle eine "docs\/live_status_notes.md" (future, operator-created) für wiederkehrende Notizen:
 
 ```markdown
 # Live Status Notes

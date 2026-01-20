@@ -406,7 +406,7 @@ Nutze die bestehende Doku:
   * `docs/CLI_CHEATSHEET.md`
 
 * **AI-/Assistenten-Workflows (falls vorhanden)**
-  * `docs/ai/…` (z.B. CLAUDE-/GPT-Guides)
+  * "docs\/ai\/…" (optional, future; z.B. CLAUDE-/GPT-Guides)
 
 ---
 

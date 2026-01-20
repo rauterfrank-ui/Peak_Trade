@@ -505,6 +505,6 @@ BASE_URL=https://prod.example.com ./scripts/ops/knowledge_prod_smoke.sh
 ---
 
 **Related Documentation:**
-- [Knowledge API Implementation Summary](../KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md)
-- [Knowledge API Smoke Tests](../KNOWLEDGE_API_SMOKE_TESTS.md)
+- [Knowledge API Implementation Summary](../dev/knowledge/KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md)
+- [Knowledge API Smoke Tests](../dev/knowledge/KNOWLEDGE_API_SMOKE_TESTS.md)
 - [Knowledge Smoke README](../../scripts/ops/KNOWLEDGE_SMOKE_README.md)

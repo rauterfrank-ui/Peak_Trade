@@ -519,7 +519,7 @@ Phase 16K ist **read-only** und **DRY-RUN only**. Mögliche Follow-Ups:
 ### 1. Automation (16L-A)
 - **Scheduled Reports:** Cronjob/Launchd für tägliche Snapshot-Generierung
 - **CI Integration:** Stage1 Reports in GitHub Actions Artifacts
-- **Health Checks:** Integriere Stage1 Go/No-Go in `src/notifications/health.py`
+- **Health Checks:** Integriere Stage1 Go/No-Go in "src\/notifications\/health.py" (future)
 
 ### 2. Notifications (16L-B)
 - **Slack/Email Alerts:** Bei NO_GO oder HOLD Status

@@ -525,8 +525,8 @@ Bis dahin reicht diese Heuristik-Sektion als praktischer „Mental-Check", um Of
 - `scripts/run_offline_realtime_ma_crossover.py` – Das Haupt-Script
 - `src/execution/pipeline.py` – Execution-Pipeline
 - `src/orders/paper.py` – Paper-Order-Executor
-- `src/offline/offline_realtime_report.py` – Report-Modul
-- `src/offline/offline_realtime_meta_report.py` – Meta-Report-Modul (optional)
+- "src\/offline\/offline_realtime_report.py" (future) – Report-Modul
+- "src\/offline\/offline_realtime_meta_report.py" (future) – Meta-Report-Modul (optional)
 
 ---
 

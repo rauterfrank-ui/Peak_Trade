@@ -305,4 +305,4 @@ Unterschied:
 
 - [CONFIG_REGISTRY_USAGE.md](CONFIG_REGISTRY_USAGE.md) - Strategien-Registry
 - [REGISTRY_BACKTEST_API.md](REGISTRY_BACKTEST_API.md) - Engine-API
-- [RISK_MANAGEMENT.md](../RISK_MANAGEMENT.md) - Risk-Layer Dokumentation
+- [RISK_MANAGEMENT.md](project_docs/RISK_MANAGEMENT.md) - Risk-Layer Dokumentation

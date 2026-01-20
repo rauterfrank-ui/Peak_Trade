@@ -490,9 +490,9 @@ python -m pytest tests/test_vol_regime_overlay_sizer.py -v
 
 ## Referenzen
 
-- [Position Sizing Overview](../POSITION_SIZING.md) (falls vorhanden)
-- BacktestEngine: `src/backtest/engine.py:424-440` (wie Sizer aufgerufen wird)
-- BasePositionSizer: `src/core/position_sizing.py:14-31`
+- [Overlay Pipeline](OVERLAY_PIPELINE.md)
+- BacktestEngine: `src/backtest/engine.py` (wie Sizer aufgerufen wird; lines 424-440)
+- BasePositionSizer: `src/core/position_sizing.py` (lines 14-31)
 
 ---
 

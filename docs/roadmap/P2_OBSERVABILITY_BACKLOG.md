@@ -246,9 +246,9 @@ ops/observability/
 ### Phase 2.1: Data Lake Foundation (4-6 weeks)
 
 **Goals:**
-- Define schema (`src/data/lake/schema.py`)
-- Implement ingest pipeline (`src/data/lake/ingest.py`)
-- Basic query API (`src/data/lake/query.py`)
+- Define schema ("src\/data\/lake\/schema.py" (future))
+- Implement ingest pipeline ("src\/data\/lake\/ingest.py" (future))
+- Basic query API ("src\/data\/lake\/query.py" (future))
 - Unit tests for ingest/query
 
 **Deliverables:**

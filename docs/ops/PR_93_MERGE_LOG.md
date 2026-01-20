@@ -122,7 +122,7 @@ Warnings: none
 
 ## Related Documentation
 
-- `docs/ops/PR_92_MERGE_LOG.md` - Previous merge log (subject of this PR)
+- "docs\/ops\/PR_92_MERGE_LOG.md" (historical) - Previous merge log (subject of this PR)
 - `docs/ops/README.md` - Operations guide index
 - `docs/ops/PR_REPORT_AUTOMATION_RUNBOOK.md` - PR report automation
 

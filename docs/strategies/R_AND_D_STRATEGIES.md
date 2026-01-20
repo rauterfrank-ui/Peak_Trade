@@ -362,7 +362,7 @@ python -m pytest tests/test_r_and_d_strategy_gating.py -v
 Schritte:
 - Trennung von Signal-Generation und Risk-Management
 - `get_regime_state()` und `get_position_scalar()` implementieren
-- Integration mit `src/execution/position_sizing.py`
+- Integration mit `src/core/position_sizing.py`
 
 ### 2. Ehlers DSP Filter-Bibliothek
 **Ziel**: Robuste, lookahead-freie DSP-Filter für Intraday-Signale

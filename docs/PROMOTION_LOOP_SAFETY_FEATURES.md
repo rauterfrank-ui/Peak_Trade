@@ -489,7 +489,7 @@ python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 
 - **[LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md](./LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md)** - Gesamtarchitektur
 - **[PROMOTION_LOOP_V0.md](./PROMOTION_LOOP_V0.md)** - Technische Details
-- **[CYCLES_6_10_LAB_FAST_FORWARD_REPORT.md](../CYCLES_6_10_LAB_FAST_FORWARD_REPORT.md)** - Findings & Gap-Analysis
+- **"..\/CYCLES_6_10_LAB_FAST_FORWARD_REPORT.md" (historical, not in repo)** - Findings & Gap-Analysis
 - **[STABILIZATION_PHASE_COMPLETE.md](./learning_promotion/STABILIZATION_PHASE_COMPLETE.md)** - Stabilisierungsphase
 
 ---
