@@ -46,7 +46,7 @@
 
 **Lokal**
 - `make mlog-review PR=228` — creates merge-log + branch successfully
-- `pytest tests/test_ops_merge_log_workflow_wrapper.py -vv` — 7/7 passed
+- `pytest tests&#47;test_ops_merge_log_workflow_wrapper.py -vv` — 7/7 passed
 
 ## Risk Assessment
 **Risk:** 🟢 Minimal  

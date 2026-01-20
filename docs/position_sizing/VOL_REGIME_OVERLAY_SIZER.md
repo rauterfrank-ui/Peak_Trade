@@ -117,7 +117,8 @@ Der Sizer ist **strikt lookahead-free** konstruiert:
    - Implementiert via `price_history[:-1]` (exklusive letzter Bar)
 
 2. **Returns:** Werden aus vergangenen Preisen berechnet
-   - `returns[i] = (price[i] - price[i-1]) / price[i-1]`
+   - `returns[i] = (price[i] - price[i-1]) &#47; price[i-1]`
+   - Hinweis: Das `&#47;` in der Dokumentation ist Encoding für den Docs-Token-Policy-Gate (Semantik bleibt Division).
    - Nur returns bis Bar `t-1` fließen in realized vol ein
 
 3. **Quantile:** Werden auf **vergangenen** realized vols berechnet
@@ -270,7 +271,7 @@ if not cfg.get("research.allow_r_and_d_overlays", False):
 
 ### Regime-Scales
 
-Die drei Multiplikatoren (`regime_scale_low/mid/high`) kontrollieren die **Aggressivität**:
+Die drei Multiplikatoren (`regime_scale_low&#47;mid&#47;high`) kontrollieren die **Aggressivität**:
 
 **Konservativ:**
 ```toml

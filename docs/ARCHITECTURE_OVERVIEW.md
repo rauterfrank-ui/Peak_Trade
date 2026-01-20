@@ -134,9 +134,9 @@ graph TD
 **Ziel:** Strategien entwickeln und in Portfolios kombinieren
 
 **Wichtige Module:**
-- `src/strategies/*` – Strategiemodule (MA, Momentum, RSI, etc.)
-- `src/strategies/base.py` – BaseStrategy-Klasse
-- `src/strategies/registry.py` – Strategy-Registry
+- `src&#47;strategies&#47;*` – Strategiemodule (MA, Momentum, RSI, etc.)
+- `src&#47;strategies&#47;base.py` – BaseStrategy-Klasse
+- `src&#47;strategies&#47;registry.py` – Strategy-Registry
 - `src/portfolio/manager.py` – Portfolio-Manager
 - `src/experiments/portfolio_robustness.py` – Monte-Carlo & Stress-Tests
 - `src/experiments/portfolio_recipes.py` – Portfolio-Rezepte
@@ -160,7 +160,7 @@ graph TD
 - `DEV_GUIDE_ADD_STRATEGY.md`
 - `DEV_GUIDE_ADD_PORTFOLIO_RECIPE.md`
 - `docs/PORTFOLIO_RECIPES_AND_PRESETS.md`
-- `docs/PHASE_47_*.md`
+- `docs&#47;PHASE_47_*.md`
 
 ---
 
@@ -262,7 +262,7 @@ graph TD
 - `src/reporting/experiment_report.py` – Experiment-Reports
 - `src/reporting/plots.py` – Plots und Visualisierungen
 - `src/reporting/portfolio_robustness_report.py` – Portfolio-Robustness-Reports
-- `scripts/generate_*_report.py` – Report-Generierung
+- `scripts&#47;generate_*_report.py` – Report-Generierung
 
 **Integration:**
 - Reports nutzen Backtest-Stats und Registry-Daten

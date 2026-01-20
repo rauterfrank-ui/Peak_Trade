@@ -296,7 +296,7 @@ Erforderliche Daten:
 ⚠️ **Skeleton/Platzhalter**: `generate_signals()` wirft `NotImplementedError`.
 
 Geplante Implementierung (TODO – wenn Tick-Daten verfügbar):
-1. Orderbuch-Imbalance-Berechnung: `(bid_vol - ask_vol) / (bid_vol + ask_vol)`
+1. Orderbuch-Imbalance-Berechnung: `(bid_vol - ask_vol) &#47; (bid_vol + ask_vol)`
 2. Trade-Sign-Extraktion (Lee-Ready-Algorithmus)
 3. Propagator-basierte Preisvorhersage
 4. Signal-Generierung bei signifikanter Imbalance

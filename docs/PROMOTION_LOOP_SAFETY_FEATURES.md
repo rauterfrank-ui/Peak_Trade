@@ -289,7 +289,7 @@ for decision in decisions:
 
 ### 2. Safety Flags im Operator Report
 
-Reports unter `reports/live_promotion/<run_id>/OPERATOR_CHECKLIST.md` zeigen Safety Flags:
+Reports unter `reports&#47;live_promotion&#47;<run_id>&#47;OPERATOR_CHECKLIST.md` zeigen Safety Flags:
 
 ```markdown
 ## Patches

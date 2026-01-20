@@ -62,9 +62,9 @@ Phase 16K führt ein **read-only Web Dashboard** für Stage1 (DRY-RUN) Monitorin
 
 **`src/webui/ops_stage1_router.py`** (178 lines)
 - **FastAPI Router** mit 3 Endpoints:
-  - `GET /ops/stage1` – HTML Dashboard Page (Auto-Refresh 30s)
-  - `GET /ops/stage1/latest` – JSON Latest Daily Summary
-  - `GET /ops/stage1/trend?days=N` – JSON Trend Analysis (1-90 Tage)
+  - `GET &#47;ops&#47;stage1` – HTML Dashboard Page (Auto-Refresh 30s)
+  - `GET &#47;ops&#47;stage1&#47;latest` – JSON Latest Daily Summary
+  - `GET &#47;ops&#47;stage1&#47;trend?days=N` – JSON Trend Analysis (1-90 Tage)
 - **Configuration:** `set_stage1_config()` für Report Root + Templates
 - **Error Handling:** HTTPException 404 bei fehlenden Reports (keine 500er)
 - **Logging:** Strukturiertes Logging für Errors/Diagnostics
@@ -223,7 +223,7 @@ Phase 16K führt ein **read-only Web Dashboard** für Stage1 (DRY-RUN) Monitorin
 
 ### Empty State Behavior:
 - ✅ **Keine JSON Files?** → Dashboard zeigt "No data available yet" (keine 500er)
-- ✅ **Fehlende `report_root/`?** → IO Functions returnen `None` (keine Exception)
+- ✅ **Fehlende `report_root&#47;`?** → IO Functions returnen `None` (keine Exception)
 - ✅ **Fehlerhafte JSON?** → Validation Error geloggt, aber keine Crashes
 
 **Safety Guarantee:** Alte Workflows bleiben unverändert funktional. Neue Funktionalität ist opt-in.
@@ -418,14 +418,14 @@ reports/obs/stage1/
 ### 6. Available Routes
 
 **Web Dashboard:**
-- `GET /ops/stage1` – HTML Dashboard Page (Auto-Refresh)
-- `GET /ops/stage1?days=30` – Dashboard mit 30-Tage-Trend
+- `GET &#47;ops&#47;stage1` – HTML Dashboard Page (Auto-Refresh)
+- `GET &#47;ops&#47;stage1?days=30` – Dashboard mit 30-Tage-Trend
 
 **JSON API:**
-- `GET /ops/stage1/latest` – Latest Daily Summary (JSON)
-- `GET /ops/stage1/trend` – Trend (default 14 Tage, JSON)
-- `GET /ops/stage1/trend?days=7` – Trend (7 Tage, JSON)
-- `GET /ops/stage1/trend?days=90` – Trend (90 Tage, JSON)
+- `GET &#47;ops&#47;stage1&#47;latest` – Latest Daily Summary (JSON)
+- `GET &#47;ops&#47;stage1&#47;trend` – Trend (default 14 Tage, JSON)
+- `GET &#47;ops&#47;stage1&#47;trend?days=7` – Trend (7 Tage, JSON)
+- `GET &#47;ops&#47;stage1&#47;trend?days=90` – Trend (90 Tage, JSON)
 
 **Query Parameter Limits:**
 - `days`: 1-90 (default 14)

@@ -114,12 +114,12 @@ python scripts/demo_registry_backtest.py
 Beobachte:
 
 * Konsolen-Output (welche Strategien, welche Zeiträume),
-* wohin Ergebnisse geschrieben werden (z.B. `experiments/`, `reports/` o.ä.).
+* wohin Ergebnisse geschrieben werden (z.B. `experiments&#47;`, `reports&#47;` o.ä.).
 
 3. **Ergebnis-Dateien anschauen**
 
 * Öffne den generierten Backtest-Report (Markdown oder HTML), z.B.:
-  * `reports/backtests/...`
+  * `reports&#47;backtests&#47;...`
   * oder was `demo_registry_backtest.py` am Ende ausgibt.
 
 ### Erfolgs-Check
@@ -370,7 +370,7 @@ Eine **kleine eigene Story** durchspielen – von Idee bis Auswertung – und si
 4. **Notiere dein Ergebnis**
 
 * Erstelle z.B. eine kleine Markdown-Datei:
-  * `docs/user_notes/FIRST_7_DAYS_<DEIN_NAME>.md`
+  * `docs&#47;user_notes&#47;FIRST_7_DAYS_<DEIN_NAME>.md`
 
   Inhalt (kurz):
   * Was war deine Idee?

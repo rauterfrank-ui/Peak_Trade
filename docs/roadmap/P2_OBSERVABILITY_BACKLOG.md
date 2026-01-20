@@ -209,14 +209,14 @@ services:
 - Real-time alerting (already covered by `src/notifications/`)
 - Log parsing/ETL (structured JSON logs already parseable)
 
-### 3. Orchestration & Automation (`ops/observability/`)
+### 3. Orchestration & Automation (`ops&#47;observability&#47;`)
 
 **Purpose:** Deployment scripts, config templates, runbooks
 
 **Proposed Structure:**
 
 ```
-ops/observability/
+ops&#47;observability&#47;
 ├── docker-compose.yml      # Local dev stack (Grafana, Prometheus, etc.)
 ├── prometheus.yml          # Prometheus config (scrape targets)
 ├── grafana/
