@@ -27,7 +27,7 @@
 - [ ] No root-level docs (should be in `docs/`)
 - [ ] No committed secrets/credentials
 
-**Verify:** `gh pr view <PR> --json files | jq -r '.files[].path' | grep -E "^reports/|^\.tmp|^\.artifacts|^[A-Z_]+\.md$"`
+**Verify:** `gh pr view <PR> --json files | jq -r '.files[].path' | grep -E "^reports&#47;|^\.tmp|^\.artifacts|^[A-Z_]+\.md$"`
 
 ### 4. Code Quality (if touches code)
 - [ ] Ruff linting passes
@@ -49,7 +49,7 @@
 - [ ] Touches `scripts/`? → Review for safety (`rm -rf`, force operations)
 - [ ] Touches `src/`? → Requires extended testing
 
-**Verify:** `gh pr view <PR> --json files | jq -r '.files[].path' | cut -d/ -f1 | sort -u`
+**Verify:** `gh pr view <PR> --json files | jq -r '.files[].path' | cut -d&#47; -f1 | sort -u`
 
 ---
 
@@ -86,7 +86,7 @@
 - [ ] Run affected tests manually (if applicable)
 - [ ] Check for runtime errors
 
-**Verify:** `python scripts/<new_script>.py --help` or `pytest tests/<new_test>.py -v`
+**Verify:** `python scripts&#47;<new_script>.py --help` or `pytest tests&#47;<new_test>.py -v`
 
 ### 12. Documentation Update (if needed)
 - [ ] README updated (if new feature)

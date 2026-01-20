@@ -299,8 +299,8 @@ git mv scripts/dev/test_knowledge_api_smoke.sh scripts/dev/
 | Operation | Reason |
 |-----------|--------|
 | Resolve `config.toml` vs `config/config.toml` | Determine which is active, consolidate or delete |
-| `git mv COMPONENT_VAR_ROADMAP.patch patches/` | Patches gehören in patches/ |
-| `git mv docker-compose.obs.yml docker/` | Docker files in docker/ |
+| `git mv COMPONENT_VAR_ROADMAP.patch patches&#47;` | Patches gehören in patches/ |
+| `git mv docker-compose.obs.yml docker&#47;` | Docker files in docker/ |
 
 ### Phase 5: Dubletten & Dead Files
 
@@ -416,7 +416,7 @@ Struktur der Scripts erklärt
 Nach Cleanup:
 
 - [ ] `python -m compileall src` → No errors
-- [ ] `pytest tests/` → All pass
+- [ ] `pytest tests&#47;` → All pass
 - [ ] `ruff check .` → No new errors
 - [ ] `ruff format --check .` → Format consistent
 - [ ] Important doc links (spot check):

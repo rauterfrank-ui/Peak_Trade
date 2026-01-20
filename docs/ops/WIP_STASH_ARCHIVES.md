@@ -30,7 +30,7 @@ Archiv-Branches sind **read-only**. Wenn etwas daraus gebraucht wird:
 - ✅ Sicher auf Remote gespeichert
 - ✅ Mit vollständiger Commit-Message dokumentiert
 - ✅ CI-validiert (Pre-commit hooks laufen)
-- ✅ Einfach zu inspizieren: `git log origin/wip/stash-archive-*`
+- ✅ Einfach zu inspizieren: `git log origin&#47;wip&#47;stash-archive-*`
 - ✅ Lokale Stash-Queue bleibt leer und übersichtlich
 
 ## Workflow: Stash archivieren

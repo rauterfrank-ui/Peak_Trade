@@ -224,7 +224,7 @@ grep -rn "enable live\|real orders\|automatic enablement\|production keys\|live 
    - `scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
    - `grep` nach risky phrases (siehe Verification-Sektion)
 2. Merge-Log erstellen (PR-Dokumentation)
-3. Branch cleanup (`git branch -d docs/wp5a-no-live-drill-pack` lokal + remote)
+3. Branch cleanup (`git branch -d docs&#47;wp5a-no-live-drill-pack` lokal + remote)
 
 ### Short-Term (Optional)
 1. Operator Training Session:

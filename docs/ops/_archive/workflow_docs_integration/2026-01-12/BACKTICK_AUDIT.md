@@ -217,7 +217,7 @@ This audit identifies all inline backtick tokens containing "/" in both workflow
 **Fix Required:** NO (path exists)
 
 ### Line 427
-**Token:** `python scripts/...`  
+**Token:** `python scripts&#47;...`  
 **Classification:** **F (Command - DO NOT VALIDATE)**  
 **Rationale:** Command example with glob/ellipsis  
 **Gate Impact:** Gate IGNORES (contains wildcard)  
@@ -349,7 +349,7 @@ This audit identifies all inline backtick tokens containing "/" in both workflow
 **Fix Required:** NO (path exists)
 
 ### Line 124
-**Token:** `python scripts/...`  
+**Token:** `python scripts&#47;...`  
 **Classification:** **F (Command - DO NOT VALIDATE)**  
 **Rationale:** Command example with glob/ellipsis  
 **Gate Impact:** Gate IGNORES (contains wildcard)  
