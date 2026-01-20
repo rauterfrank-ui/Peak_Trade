@@ -68,7 +68,7 @@ Pre-Commit Hooks: ✅ bestanden
 - Lokale Sanity:
   - `uv run ruff check .`
   - `uv run pytest -q`
-  - optional gezielt: `uv run pytest -q tests/test_live_status_snapshot_panels.py`
+  - optional gezielt: `uv run pytest -q tests&#47;test_live_status_snapshot_panels.py`
 
 ## References
 - PR #242: https://github.com/rauterfrank-ui/Peak_Trade/pull/242

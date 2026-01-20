@@ -31,10 +31,10 @@ ALLOWED FAIL (1/7):
 - ⚠️ audit — fail 3m4s — bekanntes Issue, via allow-fail Policy
 
 ## Verification (post-merge)
-- `bash scripts/ops/ops_center.sh help` (exit 0)
-- `bash scripts/ops/ops_center.sh status` (exit 0)
-- `bash scripts/ops/ops_center.sh merge-log` (exit 0)
-- `pytest -q tests/ops/test_ops_center_smoke.py` (pass)
+- `bash scripts&#47;ops&#47;ops_center.sh help` (exit 0)
+- `bash scripts&#47;ops&#47;ops_center.sh status` (exit 0)
+- `bash scripts&#47;ops&#47;ops_center.sh merge-log` (exit 0)
+- `pytest -q tests&#47;ops&#47;test_ops_center_smoke.py` (pass)
 
 ## Risk
 Low — additive Änderung, safe-by-default, keine destruktiven Aktionen.
