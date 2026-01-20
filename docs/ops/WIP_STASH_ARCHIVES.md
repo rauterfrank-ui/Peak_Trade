@@ -5,10 +5,10 @@ Ziel: Nichts verlieren, aber lokale Stash-Queue leer halten.
 
 ## Archives (2025-12-27)
 
-- `origin/wip/stash-archive-20251227_010316_0` — Merge log workflow
-- `origin/wip/stash-archive-20251227_010341_1` — Old merge log WIP 1
-- `origin/wip/stash-archive-20251227_010344_2` — Whitespace fixes + DRIFT_GUARD
-- `origin/wip/stash-archive-20251227_010347_3` — Ops center changes
+- `origin&#47;wip&#47;stash-archive-20251227_010316_0` — Merge log workflow
+- `origin&#47;wip&#47;stash-archive-20251227_010341_1` — Old merge log WIP 1
+- `origin&#47;wip&#47;stash-archive-20251227_010344_2` — Whitespace fixes + DRIFT_GUARD
+- `origin&#47;wip&#47;stash-archive-20251227_010347_3` — Ops center changes
 
 ## Policy
 
@@ -30,7 +30,7 @@ Archiv-Branches sind **read-only**. Wenn etwas daraus gebraucht wird:
 - ✅ Sicher auf Remote gespeichert
 - ✅ Mit vollständiger Commit-Message dokumentiert
 - ✅ CI-validiert (Pre-commit hooks laufen)
-- ✅ Einfach zu inspizieren: `git log origin/wip/stash-archive-*`
+- ✅ Einfach zu inspizieren: `git log origin&#47;wip&#47;stash-archive-*`
 - ✅ Lokale Stash-Queue bleibt leer und übersichtlich
 
 ## Workflow: Stash archivieren
