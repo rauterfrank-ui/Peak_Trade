@@ -62,7 +62,7 @@
 ---
 
 ### D3: Snapshot Artifact (Terminal-Generated, Linked)
-**File:** `docs/ops/_archive/repo_cleanup/2026-01-12/REPO_CLEANUP_SNAPSHOT_<timestamp>.md`
+**File:** `docs&#47;ops&#47;_archive&#47;repo_cleanup&#47;2026-01-12&#47;REPO_CLEANUP_SNAPSHOT_<timestamp>.md`
 
 **Generation:** Via terminal commands (see D1 README "Operator Next Steps")
 
@@ -337,7 +337,7 @@ git branch "${BRANCH}" "backup/${BRANCH}"
 
 ### Audit Log Template
 
-**File:** `logs/repo_cleanup_audit.log` (create if not exists)
+**File:** `logs&#47;repo_cleanup_audit.log` (create if not exists)
 
 **Format:**
 ```

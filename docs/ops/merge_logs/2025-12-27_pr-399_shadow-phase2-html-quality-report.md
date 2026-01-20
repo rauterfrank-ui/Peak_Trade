@@ -18,7 +18,7 @@ Operators benefit from a visual, local artifact that summarizes run metadata and
   * Pure Python string/template approach
 
 * **Smoke Script**: `scripts/shadow_run_tick_to_ohlcv_smoke.py`
-  * Writes report to `reports/shadow/quality/quality_report_<timestamp>.html`
+  * Writes report to `reports&#47;shadow&#47;quality&#47;quality_report_<timestamp>.html`
   * Automatic directory creation
   * Report generation skipped when pipeline is blocked
 
@@ -63,10 +63,10 @@ LOW — Documentation and reporting only; no runtime logic changes to pipeline. 
 ## Operator How-To
 
 * Run smoke: `python scripts&#47;shadow_run_tick_to_ohlcv_smoke.py`
-* Open report: `reports/shadow/quality/quality_report_<timestamp>.html`
+* Open report: `reports&#47;shadow&#47;quality&#47;quality_report_<timestamp>.html`
 * Local viewing:
-  * macOS: `open reports/shadow/quality/quality_report_<timestamp>.html`
-  * Linux: `xdg-open reports/shadow/quality/quality_report_<timestamp>.html`
+  * macOS: `open reports&#47;shadow&#47;quality&#47;quality_report_<timestamp>.html`
+  * Linux: `xdg-open reports&#47;shadow&#47;quality&#47;quality_report_<timestamp>.html`
 
 ## References
 

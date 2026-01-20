@@ -167,7 +167,9 @@ with open('$REPORT_ROOT/index.json') as f:
 
 **Key Steps:**
 
-1. **Path Filters:** Nur bei Änderungen an `src/risk/validation/**`, `tests/risk/validation/**`, etc. triggern.
+1. **Path Filters:** Nur bei Änderungen an `src&#47;risk&#47;validation&#47;**`, `tests&#47;risk&#47;validation&#47;**`, etc. triggern.
+
+
 
 2. **Run Tests:**
    ```bash
@@ -433,7 +435,7 @@ python scripts/risk/var_suite_build_index.py \
 ## 🆘 Support
 
 **Questions?** Siehe:
-- **Tests:** `tests/risk/validation/test_report_*.py`
+- **Tests:** `tests&#47;risk&#47;validation&#47;test_report_*.py`
 - **Fixtures:** `tests/fixtures/var_suite_reports/`
 - **Module Docs:** Docstrings in `src/risk/validation/`
 
