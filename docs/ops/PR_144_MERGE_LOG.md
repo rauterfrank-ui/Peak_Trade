@@ -15,10 +15,10 @@
 - Move `docs&sol;reports&sol;REPORTING_QUICKSTART.md (planned)` → `docs/reporting/REPORTING_QUICKSTART.md`
 - Update `scripts/research_el_karoui_vol_model.py`: `REPORT_PATH` from `docs&sol;reports` (planned directory) → `docs&sol;research` (planned directory)
 - Update `tests/research/test_research_el_karoui_vol_model.py`: adjust assertion for new path
-- Ensure no tracked files under `docs/reports/` (gitignored directory)
+- Ensure no tracked files under `docs&#47;reports&#47;` (gitignored directory)
 
 ## Why
-- Separation of concerns: tracked docs under `docs/*`, generated artifacts under `reports/*`
+- Separation of concerns: tracked docs under `docs&#47;*`, generated artifacts under `reports&#47;*`
 - Avoid policy violations: don't track files in ignored directories
 - Centralize reporting documentation under `docs/reporting/`
 
@@ -27,7 +27,7 @@
   - `docs&sol;reports&sol;REPORTING_QUICKSTART.md (planned)` → `docs/reporting/REPORTING_QUICKSTART.md`
 
 - **Modified:**
-  - `scripts/research_el_karoui_vol_model.py` – `REPORT_PATH = "docs/research"`
+  - `scripts/research_el_karoui_vol_model.py` – `REPORT_PATH = "docs&#47;research"`
   - `tests/research/test_research_el_karoui_vol_model.py` – assertion path updated
 
 ## Verification

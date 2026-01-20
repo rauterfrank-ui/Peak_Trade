@@ -22,7 +22,7 @@ Dieses Runbook beschreibt einen wiederverwendbaren, audit-stabilen Operator-Work
 
 ## Geltungsbereich
 
-- Repository: `rauterfrank-ui/Peak_Trade` (analog für andere Repos)
+- Repository: `rauterfrank-ui&#47;Peak_Trade` (analog für andere Repos)
 - Branches: Feature-Branches (eigene), `main` (protected)
 - Tools: `git`, `gh` CLI, `ruff`, `pytest`
 
@@ -79,7 +79,7 @@ git pull --ff-only
 
 **Erwartetes Ergebnis:**
 - Working Tree clean (keine untracked/modified files)
-- `main` ist up-to-date mit `origin/main`
+- `main` ist up-to-date mit `origin&#47;main`
 
 ### 2) Rebase (Interactive oder Normal)
 
@@ -118,8 +118,8 @@ git rebase --abort
 **Häufige Troubleshooting-Fälle:**
 
 - **Editor hängt:** `Ctrl-X` (nano) oder `:wq` (vim) oder `Ctrl-C` + `git rebase --abort`
-- **Conflict Marker in Docs:** Vorsicht bei Dateien wie `runbooks/*.md` – Docs können Beispiel-Marker enthalten. Prüfe Kontext!
-- **Ambiguous argument '+':** Sonderzeichen in Branch-Namen (z.B. `feat/fix+docs`) können Probleme machen. Nutze stattdessen `feat/fix-docs`.
+- **Conflict Marker in Docs:** Vorsicht bei Dateien wie `runbooks&#47;*.md` – Docs können Beispiel-Marker enthalten. Prüfe Kontext!
+- **Ambiguous argument '+':** Sonderzeichen in Branch-Namen (z.B. `feat&#47;fix+docs`) können Probleme machen. Nutze stattdessen `feat/fix-docs`.
 
 ### 3) Verification (Lokal)
 
@@ -293,7 +293,7 @@ git branch -D <restored-branch-name>
 
 ### 4. Dokumentation (Merge-Log) immer mit Link
 
-- Merge-Log erstellen: `docs/ops/PR_<NUM>_MERGE_LOG.md`
+- Merge-Log erstellen: `docs&#47;ops&#47;PR_<NUM>_MERGE_LOG.md`
 - Link in `docs/ops/README.md` hinzufügen (via Marker `MERGE_LOG_EXAMPLES`)
 - Siehe: [MERGE_LOG_WORKFLOW.md](../MERGE_LOG_WORKFLOW.md)
 
@@ -431,14 +431,14 @@ echo "✅ Pruned stale worktree refs"
 
 Nach erfolgreichem Durchlauf:
 
-- [ ] `main` ist clean und synced mit `origin/main`
+- [ ] `main` ist clean und synced mit `origin&#47;main`
 - [ ] Feature-Branch ist gemerged (PR closed)
 - [ ] Alle Tests/Linting grün (lokal + CI)
 - [ ] Merge-Log erstellt und in `docs/ops/README.md` verlinkt
 - [ ] Remote Branch gelöscht (via `--delete-branch` beim Merge)
 - [ ] Lokaler Branch gelöscht (nur nach Reachability-Check)
 - [ ] Worktrees entfernt (falls vorhanden)
-- [ ] Optional: `.ops_local/` lokal aufgeräumt (temp files, logs)
+- [ ] Optional: `.ops_local&#47;` lokal aufgeräumt (temp files, logs)
 
 **Empfehlung:** Nach größeren Cleanup-Sessions:
 

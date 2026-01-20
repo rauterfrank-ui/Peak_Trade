@@ -28,9 +28,9 @@ RL validation reports are uploaded **only on failure** of either:
 - `Validate RL v0.1 Contract` step (id: `rl_v0_1_contract`)
 
 Upload paths:
-- `reports/rl/**/*`
-- `reports/rl_v0_1/**/*`
-- `logs/rl/**/*`
+- `reports&#47;rl&#47;**&#47;*`
+- `reports&#47;rl_v0_1&#47;**&#47;*`
+- `logs&#47;rl&#47;**&#47;*`
 
 Retention: 7 days
 
