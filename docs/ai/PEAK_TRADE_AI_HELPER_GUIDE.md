@@ -191,7 +191,7 @@ Berücksichtige DEV_GUIDE_ADD_EXCHANGE.md und Safety-Anforderungen."
 - **Explizite Constraints setzen:** „Keine Breaking Changes an der API", „Tests müssen grün bleiben"
 - **Nach Erklärungen fragen:** „Erkläre mir, warum du diesen Ansatz gewählt hast"
 - **Iterativ arbeiten:** Kleine Schritte, Review, nächster Schritt
-- **Tests zuerst prüfen lassen:** „Führe erst `pytest tests/test_X.py -v` aus, dann implementiere"
+- **Tests zuerst prüfen lassen:** „Führe erst `pytest tests&#47;test_X.py -v` aus, dann implementiere"
 
 ### Don't
 
@@ -304,7 +304,7 @@ Anforderungen:
 ## 9. Checkliste vor dem Commit (AI-generierter Code)
 
 - [ ] Code gelesen und verstanden?
-- [ ] Tests laufen grün (`pytest tests/ -v`)?
+- [ ] Tests laufen grün (`pytest tests&#47; -v`)?
 - [ ] Keine Secrets/Keys im Code?
 - [ ] Keine Safety-Bypasses?
 - [ ] Keine Breaking Changes ohne Absprache?
