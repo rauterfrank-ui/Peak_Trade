@@ -40,7 +40,7 @@ Ziel ist eine robuste, nachvollziehbare Live-Status-Panel-Pipeline:
 - **Added:** `docs/webui/LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md`
 
 ### CI-Fix
-- **Removed:** `tests/test_health_detailed_panel_mapping.py`
+- **Removed:** `tests&#47;test_health_detailed_panel_mapping.py`
   - Grund: ImportError durch Referenz auf nicht-existierenden Code in `health_endpoint.py`
 
 ## Verification
@@ -68,7 +68,7 @@ Pre-Commit Hooks: ✅ bestanden
 - Lokale Sanity:
   - `uv run ruff check .`
   - `uv run pytest -q`
-  - optional gezielt: `uv run pytest -q tests/test_live_status_snapshot_panels.py`
+  - optional gezielt: `uv run pytest -q tests&#47;test_live_status_snapshot_panels.py`
 
 ## References
 - PR #242: https://github.com/rauterfrank-ui/Peak_Trade/pull/242

@@ -13,16 +13,16 @@ Portfolio-Risikolimits als Grundlage für spätere (Safety-gated) Pre-Trade Chec
 - Added: Tests (deterministic) + docs: `docs/risk/PORTFOLIO_VAR_PHASE1.md`
 
 ## Verification
-- `pytest tests/risk/ -v` ✅ (39/39 new tests, 135 total risk tests)
-- `ruff check src/risk/` ✅
-- `ruff format src/risk/` ✅
+- `pytest tests&#47;risk&#47; -v` ✅ (39/39 new tests, 135 total risk tests)
+- `ruff check src&#47;risk&#47;` ✅
+- `ruff format src&#47;risk&#47;` ✅
 
 ## Risk
 Low. Phase-1 ist offline/core only; keine Live-Execution Pfade, keine auto-gating hooks.
 
 ## Operator How-To
 - Config Snippet + Usage: `docs/risk/PORTFOLIO_VAR_PHASE1.md`
-- Run tests: `pytest tests/risk/ -q`
+- Run tests: `pytest tests&#47;risk&#47; -q`
 
 ## References
 - Commit: 0da9039
