@@ -50,7 +50,7 @@
 
 - **CI/Test Infrastructure** (5):  
   - `feat/execution-pipeline-fill-idempotency` – CI hardening  
-  - `chore/github-guardrails-p0*` – GitHub guardrails (2 branches)  
+  - `chore&#47;github-guardrails-p0*` – GitHub guardrails (2 branches)  
   - `test/p0-guardrails-drill` – Test drill
 
 - **Tooling Modernization** (3):  
@@ -119,7 +119,7 @@
 
 ### DELETE after verification
 
-- **WIP Stash Archives** (6): `wip/stash-archive-*`, `wip/salvage-*`  
+- **WIP Stash Archives** (6): `wip&#47;stash-archive-*`, `wip&#47;salvage-*`  
   → Check if code needed, dann DELETE
 
 - **Obsolete/Duplicates** (20):  

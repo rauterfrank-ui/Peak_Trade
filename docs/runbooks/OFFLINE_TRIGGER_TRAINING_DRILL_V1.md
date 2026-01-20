@@ -4,10 +4,10 @@
 
 | Attribut | Wert |
 |----------|------|
-| **Mode** | `OFFLINE_ONLY / NO REAL ORDERS` |
+| **Mode** | `OFFLINE_ONLY &#47; NO REAL ORDERS` |
 | **Ziel** | Operator-Training, Reaktions-Analyse, Signal-Disziplin |
 | **Reports** | `offline_paper_trade_report.html` + `trigger_training_report.html` |
-| **Status** | `EXPERIMENTAL / v0` |
+| **Status** | `EXPERIMENTAL &#47; v0` |
 | **Owner** | Peak_Trade Operator Training Team |
 | **Created** | 2025-12-10 |
 
@@ -85,7 +85,7 @@ Du benötigst:
 ### 2.4 Preflight-Checklist
 
 - [ ] Alle Tests grün
-- [ ] Offline-Profil existiert (Config in `config/offline_profiles/...` oder ähnlich)
+- [ ] Offline-Profil existiert (Config in `config&#47;offline_profiles&#47;...` oder ähnlich)
 - [ ] Runner-Script vorhanden und ausführbar
 - [ ] Kraken-Cache oder Offline-Preisfeed verfügbar (für BTCEUR/1m)
 
@@ -333,7 +333,7 @@ Nach dem Drill prüfe:
    print(prices_df.index)    # DatetimeIndex ODER 'timestamp'-Spalte
    ```
 
-2. Falls `symbol`-Spalte vorhanden: prüfe, ob Symbol übereinstimmt (`BTCEUR` vs. `BTC/EUR`).
+2. Falls `symbol`-Spalte vorhanden: prüfe, ob Symbol übereinstimmt (`BTCEUR` vs. `BTC&#47;EUR`).
 3. Fallback: In `TriggerTrainingHookConfig` `lookahead_bars=0` setzen (deaktiviert PnL-Calc).
 
 ---

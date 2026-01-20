@@ -21,7 +21,7 @@ Vorbereitung und Durchführung von **4B Milestone 2: Cursor Multi-Agent Workflow
 
 ## Communication Protocol
 Jede Agent-Antwort:
-- Beginnt mit: `ROLE: [A/B/C/D]`
+- Beginnt mit: `ROLE: [A&#47;B&#47;C&#47;D]`
 - Endet mit:
   - `Next:` (konkreter nächster Schritt)
   - `Risk:` (Risiko/Unsicherheit)
@@ -68,7 +68,7 @@ Return:
 ## Current State
 - Worktree: `/Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2`
 - Branch: `feat/4b-m2-cursor-multi-agent`
-- Base: `origin/main` (commit: 340dd29c)
+- Base: `origin&#47;main` (commit: 340dd29c)
 - Session artifacts:
   - `docs/ops/sessions/SESSION_4B_M2_20260109.md`
   - `docs/ops/sessions/SESSION_4B_M2_TASKBOARD.md`

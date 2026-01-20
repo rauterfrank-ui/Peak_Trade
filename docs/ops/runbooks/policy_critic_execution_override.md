@@ -13,7 +13,7 @@ Definiert einen auditierten Override-Prozess für PRs mit Execution-/Live-kritis
 
 ## Evidence (Pflicht)
 Bevor das Label gesetzt wird, muss mindestens eins existieren:
-- Datei: `docs/ops/evidence/PR_<nr>_EXECUTION_REVIEW.md` (Template nutzen), oder
+- Datei: `docs&#47;ops&#47;evidence&#47;PR_<nr>_EXECUTION_REVIEW.md` (Template nutzen), oder
 - PR-Body enthält Abschnitt `## Test Plan`.
 
 ## Prozess (Operator)

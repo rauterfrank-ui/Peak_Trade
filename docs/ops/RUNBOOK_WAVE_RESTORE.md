@@ -12,9 +12,9 @@ This runbook standardizes "restore waves" (e.g., Wave2/Wave3) to be reproducible
 - No runtime behavior changes unless explicitly approved.
 
 ## Naming conventions
-- Restore branches: `restore/w<N>-<topic-slug>`
-- Closeout branch: `docs/ops-wave<N>-restore-closeout`
-- Closeout file: `docs/ops/WAVE<N>_RESTORE_CLOSEOUT_<UTCSTAMP>.md`
+- Restore branches: `restore&#47;w<N>-<topic-slug>`
+- Closeout branch: `docs&#47;ops-wave<N>-restore-closeout`
+- Closeout file: `docs&#47;ops&#47;WAVE<N>_RESTORE_CLOSEOUT_<UTCSTAMP>.md`
 
 ## Gates
 - Repo clean on start and end.
@@ -82,8 +82,8 @@ git branch -r | grep -E 'restore/' || echo "✅ No restore branches"
 Use `scripts/ops/wave_restore_status.sh` for quick status checks:
 - Repo status and branch
 - All open PRs
-- Filtered `restore/*` PRs with metadata
-- Remote `restore/*` branches
+- Filtered `restore&#47;*` PRs with metadata
+- Remote `restore&#47;*` branches
 
 ## Closeout Template
 ```markdown

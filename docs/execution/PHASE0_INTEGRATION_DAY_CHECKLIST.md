@@ -42,7 +42,7 @@ Standardisierte, reproduzierbare Integration von Phase-0 Work Packages (WP0A/WP0
 ### Checks
 - ✅ Git status geprüft (WP0D files untracked, orchestrator.py modified)
 - ✅ Branch ist `main` (aktuell)
-- ✅ `main` ist up-to-date mit `origin/main`
+- ✅ `main` ist up-to-date mit `origin&#47;main`
 
 ### Commands & Results
 ```bash

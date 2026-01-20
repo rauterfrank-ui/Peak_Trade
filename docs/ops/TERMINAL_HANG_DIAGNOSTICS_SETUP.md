@@ -27,7 +27,7 @@ export LESS='-FRX'
 ### Git Hooks Audit
 ✅ **Nur ein aktiver Hook:** `.git/hooks/pre-commit`
 - Wrapper für pre-commit framework (20 Zeilen)
-- Ruft: `.venv/bin/python3 -m pre_commit`
+- Ruft: `.venv&#47;bin&#47;python3 -m pre_commit`
 - Config: `.pre-commit-config.yaml`
 - Keine verdächtigen Loops oder "pre-hook" Strings
 
@@ -156,7 +156,7 @@ LESS=-FRX
 2. **For long-running commands:**
    - Use `screen` or `tmux` for persistence
    - Redirect output to files: `command > output.log 2>&1`
-   - Monitor in background: `command > /dev/null 2>&1 &`
+   - Monitor in background: `command > &#47;dev&#47;null 2>&1 &`
 
 3. **For CI/GitHub CLI:**
    - Avoid `--watch` flags in scripts

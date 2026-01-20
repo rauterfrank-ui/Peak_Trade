@@ -5,7 +5,7 @@
 **Repository:** `/Users/frnkhrz/Peak_Trade`  
 **Branch:** `main` (clean, synced mit origin/main)  
 **HEAD:** `d140111`  
-**Status:** `## main...origin/main` (keine uncommitted changes)
+**Status:** `## main...origin&#47;main` (keine uncommitted changes)
 
 **Letzter Merge:**
 - PR #507 (squash-merged und Branch [PR_506_MERGE_LOG](./PR_506_MERGE_LOG.md) gelöscht)
@@ -41,7 +41,7 @@ git log --oneline -3
 ```
 
 **Erwartete Ausgabe:**
-- `## main...origin/main`
+- `## main...origin&#47;main`
 - HEAD bei `d140111` oder neuer
 - Keine unstaged/uncommitted files
 

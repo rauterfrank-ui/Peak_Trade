@@ -121,7 +121,7 @@ git commit -m "docs: update reference targets baseline (debt reduced)"
 
 Your PR documents a planned feature that doesn't exist yet.
 
-**Example:** Adding docs for `src/trading/advanced_orders.py` <!-- pt:ref-target-ignore --> before implementing it.
+**Example:** Adding docs for `src&#47;trading&#47;advanced_orders.py` <!-- pt:ref-target-ignore --> before implementing it.
 
 **What happens:**
 1. ❌ Changed-Files Gate: FAIL (new broken link)

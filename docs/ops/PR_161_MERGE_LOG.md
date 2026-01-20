@@ -20,10 +20,10 @@
 * `tests/test_vol_regime_overlay_sizer.py` (+511 lines)
 * `tests/test_position_sizing_overlay_pipeline.py` (+693 lines)
 * `tests/test_r_and_d_strategy_gating.py` (+545 lines)
-* `docs/position_sizing/*.md` (+910 lines)
+* `docs&#47;position_sizing&#47;*.md` (+910 lines)
   - `OVERLAY_PIPELINE.md`
   - `VOL_REGIME_OVERLAY_SIZER.md`
-* Tooling: `scripts/obs/*.sh`, ADR, Runbooks
+* Tooling: `scripts&#47;obs&#47;*.sh`, ADR, Runbooks
   - `ADR_0001_Peak_Tool_Stack.md`
   - `Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md`
   - `docs/observability/OBS_STACK_RUNBOOK.md`

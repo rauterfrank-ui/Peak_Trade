@@ -27,15 +27,15 @@ Ops-Dokumentation ergänzt, damit Operatoren den neuen Token-Helper schnell find
 Die neue Sektion dokumentiert:
 
 * **Safe Debug Mode**:
-  * `scripts/utils/get_github_token.sh --debug`
+  * `scripts&#47;utils&#47;get_github_token.sh --debug`
   * Zeigt nur Prefix + Länge, kein Token-Leak
 
 * **Validierung**:
-  * `scripts/utils/get_github_token.sh --check`
+  * `scripts&#47;utils&#47;get_github_token.sh --check`
   * Exit Code 0 wenn gültiger Token gefunden
 
 * **Script-Integration**:
-  * `TOKEN="$(scripts/utils/get_github_token.sh)"`
+  * `TOKEN="$(scripts&#47;utils&#47;get_github_token.sh)"`
 
 * **Unterstützte Token-Formate**:
   * `gho_*` - GitHub CLI OAuth Token (bevorzugt)

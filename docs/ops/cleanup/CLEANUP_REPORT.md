@@ -218,7 +218,7 @@ scripts/
 
 | Datei | Grund | Reference Check | Nachweis |
 |-------|-------|-----------------|----------|
-| `run_regime_experiments.sh` | Dublette (existiert in `archive/legacy_scripts/`) | ✅ rg: 6 hits | Nur docs/archive refs |
+| `run_regime_experiments.sh` | Dublette (existiert in `archive&#47;legacy_scripts&#47;`) | ✅ rg: 6 hits | Nur docs/archive refs |
 | `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` | Dublette (docs/ops/ ist source of truth) | ✅ rg: 20 hits | Konsolidiert in docs/ops/ |
 | `gitignore` | Obsolet (`.gitignore` existiert und ist aktuell) | ✅ rg: 0 hits | Keine Code-Referenzen |
 | ~~`scripts&sol;cleanup_repo.sh`~~ | Obsolet/Test-Script | ✅ rg: 5 hits | Nur self-refs |
@@ -232,12 +232,12 @@ scripts/
 Keine Dateien archiviert (alle Moves waren in aktive Struktur).
 
 **Existing Archive:** `archive/` bereits gut strukturiert mit:
-- `full_files_stand_02.12.2025/`
-- `legacy_docs/`
-- `legacy_scripts/`
-- `PeakTradeRepo/`
+- `full_files_stand_02.12.2025&#47;`
+- `legacy_docs&#47;`
+- `legacy_scripts&#47;`
+- `PeakTradeRepo&#47;`
 
-**Neu:** `archive/README.md` erstellt als Index.
+**Neu:** `archive&#47;README.md` erstellt als Index.
 
 ---
 
@@ -335,7 +335,7 @@ Keine Dateien archiviert (alle Moves waren in aktive Struktur).
    - Konventionen: Wo gehört was hin?
    - Navigations-Guide für neue Dateien
 
-2. **`archive/README.md`**
+2. **`archive&#47;README.md`**
    - Index aller archivierten Inhalte
    - Erklärung: Was ist warum archiviert
    - Cleanup-Policy
@@ -558,7 +558,7 @@ Siehe `README_REGISTRY.md` für vollständige Liste.
    - Bookmarks aktualisieren lassen
 
 3. **Weitere Cleanups (falls gewünscht):**
-   - `archive/PeakTradeRepo/` evaluieren (komplett altes Repo - noch nützlich?)
+   - `archive&#47;PeakTradeRepo&#47;` evaluieren (komplett altes Repo - noch nützlich?)
    - Weitere root-level docs/ files in Subfolder sortieren (falls noch welche übrig)
 
 ---
@@ -661,7 +661,7 @@ find docs/ -name "*.md" | wc -l
 
 ### Open (optional)
 
-1. **`archive/PeakTradeRepo/`:** Komplett altes Repo — noch nützlich langfristig?
+1. **`archive&#47;PeakTradeRepo&#47;`:** Komplett altes Repo — noch nützlich langfristig?
    - **Empfehlung:** Behalten für jetzt, später evaluieren
 
 2. **docs/README.md:** Navigation-Hub erstellen?

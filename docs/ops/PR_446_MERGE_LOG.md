@@ -12,7 +12,7 @@ The docs-reference-targets gate requires documentation references to point to re
   - `scripts&#47;post_merge_workflow_pr203.sh` → `scripts/workflows/post_merge_workflow_pr203.sh`
   - Additional workflow/util/automation scripts updated to their current locations (mechanical path replacements).
 - Normalized directory references where documentation intent is "package/directory":
-  - Added trailing slash for directory references (e.g., `src/data/safety/` and related `src/data/*` directories where applicable).
+  - Added trailing slash for directory references (e.g., `src/data/safety/` and related `src&#47;data&#47;*` directories where applicable).
 
 ## Verification
 - On main:

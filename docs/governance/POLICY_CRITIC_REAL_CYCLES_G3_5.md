@@ -4,11 +4,11 @@
 
 | Cycle | Date | Scenario | Policy Pack | Max Severity | Action | Top Rules | False Positive? | Notes | Artifact/Report |
 | ----: | ---- | -------- | ----------- | ------------ | ------ | --------- | --------------- | ----- | --------------- |
-| 1 | 2025-12-12 | Baseline: docstring/comment change in utils | ci (default) | INFO | ALLOW | None | No | Clean pass as expected for low-risk utility change | `tmp/policy_critic_cycles/cycle_1_stdout.txt` |
-| 2 | 2025-12-12 | Critical path: comment added to `src/live/` | ci (default) | WARN | REVIEW_REQUIRED | EXECUTION_ENDPOINT_TOUCH | No | Correctly flagged live execution path touch; generated operator questions | `tmp/policy_critic_cycles/cycle_2_stdout.txt` |
-| 3 | 2025-12-12 | Docs-only: README update | ci (default) | INFO | ALLOW | None | No | Clean pass as expected for documentation | `tmp/policy_critic_cycles/cycle_3_stdout.txt` |
-| 4 | 2025-12-12 | Risk limit raise: max_leverage 2.0→4.0 without justification | ci (default) | BLOCK | AUTO_APPLY_DENY | RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION (×2) | No | Hard gate worked correctly; detected missing justification in context | `tmp/policy_critic_cycles/cycle_4_stdout.txt` |
-| 5 | 2025-12-12 | Fail-closed drill: malformed context JSON | ci (default) | WARN (when no context) | REVIEW_REQUIRED | EXECUTION_ENDPOINT_TOUCH | N/A | Malformed JSON → input error (fail-closed at boundary); without context, execution touch → REVIEW_REQUIRED | `tmp/policy_critic_cycles/cycle_5_stdout.txt` |
+| 1 | 2025-12-12 | Baseline: docstring/comment change in utils | ci (default) | INFO | ALLOW | None | No | Clean pass as expected for low-risk utility change | `tmp&#47;policy_critic_cycles&#47;cycle_1_stdout.txt` |
+| 2 | 2025-12-12 | Critical path: comment added to `src/live/` | ci (default) | WARN | REVIEW_REQUIRED | EXECUTION_ENDPOINT_TOUCH | No | Correctly flagged live execution path touch; generated operator questions | `tmp&#47;policy_critic_cycles&#47;cycle_2_stdout.txt` |
+| 3 | 2025-12-12 | Docs-only: README update | ci (default) | INFO | ALLOW | None | No | Clean pass as expected for documentation | `tmp&#47;policy_critic_cycles&#47;cycle_3_stdout.txt` |
+| 4 | 2025-12-12 | Risk limit raise: max_leverage 2.0→4.0 without justification | ci (default) | BLOCK | AUTO_APPLY_DENY | RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION (×2) | No | Hard gate worked correctly; detected missing justification in context | `tmp&#47;policy_critic_cycles&#47;cycle_4_stdout.txt` |
+| 5 | 2025-12-12 | Fail-closed drill: malformed context JSON | ci (default) | WARN (when no context) | REVIEW_REQUIRED | EXECUTION_ENDPOINT_TOUCH | N/A | Malformed JSON → input error (fail-closed at boundary); without context, execution touch → REVIEW_REQUIRED | `tmp&#47;policy_critic_cycles&#47;cycle_5_stdout.txt` |
 
 ## Observations
 
@@ -40,5 +40,5 @@ All 5 synthetic cycles performed as expected:
 **Next Steps (G3.6):**
 1. Monitor real-world PR reviews for false positives
 2. Consider severity escalation rules for large magnitude changes
-3. Potentially add `src/live/**` to auto-BLOCK list vs current WARN
+3. Potentially add `src&#47;live&#47;**` to auto-BLOCK list vs current WARN
 4. Document operator response patterns to common violations

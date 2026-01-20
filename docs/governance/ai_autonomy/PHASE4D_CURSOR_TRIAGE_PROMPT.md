@@ -112,7 +112,7 @@ Analyze diff output and classify root cause:
 
 **Examples:**
 - `"created_at": "2026-01-11T12:00:00Z"` (should be `null` in deterministic mode)
-- `"evidence_pack_path": "/Users/operator/Peak_Trade/tests/..."` (should be repo-relative)
+- `"evidence_pack_path": "&#47;Users&#47;operator&#47;Peak_Trade&#47;tests&#47;..."` (should be repo-relative)
 - `"run_id": "abc-123-def-456"` (should be excluded)
 - `"session_id": "..."` (should be excluded)
 
@@ -437,7 +437,7 @@ diff -u tests/fixtures/l4_critic_determinism/.../critic_report.json .tmp/canonic
 - **Validator CLI:** Determinism contract validator script (planned)
 - **Contract Utilities:** L4 critic determinism contract module (planned)
 - **CI Workflow:** `.github/workflows/l4_critic_replay_determinism_v2.yml`
-- **Merge Log:** `docs/ops/PR_<NUM>_MERGE_LOG.md` (Phase 4D)
+- **Merge Log:** `docs&#47;ops&#47;PR_<NUM>_MERGE_LOG.md` (Phase 4D)
 
 ---
 

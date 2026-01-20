@@ -109,7 +109,7 @@ If Agent needs definition from shared-file:
 
 ### Rule 3: Cross-WP References
 If WP-A needs to reference WP-B:
-- Use relative link: `[WP0B](./WP0B_TASK_PACKET.md)`
+- Use relative link: `[WP0B](.&#47;WP0B_TASK_PACKET.md)`
 - Ensure target file exists in PR
 - A0 verifies link-hygiene before PR submission
 
@@ -127,7 +127,7 @@ If WP-A needs to reference WP-B:
 - [x] Gate report pre-filled
 
 ### CI Expectations — ALL PASS ✅
-- [x] `ruff format --check docs/` passes
+- [x] `ruff format --check docs&#47;` passes
 - [x] `docs-reference-targets-gate` passes
 - [x] `policy-critic-gate` passes (no live-enablement violations)
 - [x] `docs-diff-guard-policy-gate` passes
@@ -168,7 +168,7 @@ If WP-A needs to reference WP-B:
 **Evidence Requirements (Implementation Run):**
 - Unit tests per WP (pytest)
 - Integration smoke tests
-- Evidence reports in `reports/execution/*` (gitignored)
+- Evidence reports in `reports&#47;execution&#47;*` (gitignored)
 - Completion reports (like existing WP0E/WP0A completion reports)
 
 ---

@@ -45,7 +45,7 @@ Format basierend auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/).
   - `AUTO_LIVE_OVERRIDES_PATH` Konstante
 
 - **Config Structure**
-  - `config/live_overrides/` Directory
+  - `config&#47;live_overrides&#47;` Directory
   - `config&sol;live_overrides&sol;auto.toml (planned)` Template
 
 #### Scripts
@@ -61,7 +61,7 @@ Format basierend auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/).
 
 #### Tests
 
-- **`tests/test_live_overrides_integration.py`** (13 Tests)
+- **`tests&#47;test_live_overrides_integration.py`** (13 Tests)
   - File loading (valid/invalid/missing)
   - Environment detection
   - Override application
@@ -69,7 +69,7 @@ Format basierend auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/).
   - Nested paths
   - Edge cases
 
-- **`tests/test_live_overrides_realistic_scenario.py`** (6 Tests)
+- **`tests&#47;test_live_overrides_realistic_scenario.py`** (6 Tests)
   - End-to-end workflows
   - Different environments
   - Incremental updates

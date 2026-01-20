@@ -45,9 +45,9 @@ Phase 4E standardisiert den Validator-Report als kanonisches, schema-stabiles Ar
 - **Workflow:** L4 Critic Replay Determinism v2
 - **Downloaded:** `./artifacts_main_latest/`
 - **Observed contents:**
-  - `validator-report-normalized-20902441555/validator_report.normalized.json`
-  - `validator-report-normalized-20902441555/validator_report.normalized.md`
-  - `validator-report-legacy-20902441555/validator_report.json`
+  - `validator-report-normalized-20902441555&#47;validator_report.normalized.json`
+  - `validator-report-normalized-20902441555&#47;validator_report.normalized.md`
+  - `validator-report-legacy-20902441555&#47;validator_report.json`
 
 ### Content Verification (reported)
 - ✅ JSON schema-konform (`ValidatorReport v1.0.0`)

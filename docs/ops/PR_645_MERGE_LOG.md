@@ -26,7 +26,7 @@ Operationalize reproducibility and regression detection for L4 Governance Critic
   - File: `.github/workflows/l4_critic_replay_determinism_v2.yml`
 - Add determinism tests (10) + snapshot fixtures:
   - File: `tests/ai_orchestration/test_l4_critic_determinism.py`
-  - Fixtures: `tests/fixtures/l4_critic_determinism/l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0/*`
+  - Fixtures: `tests&#47;fixtures&#47;l4_critic_determinism&#47;l4_critic_sample__pack-L1_sample_2026-01-10__schema-1.0.0&#47;*`
 - Add comprehensive documentation:
   - File: `docs/governance/ai_autonomy/PHASE4C_CRITIC_HARDENING.md`
   - File: `PHASE4C_MERGE_LOG.md`

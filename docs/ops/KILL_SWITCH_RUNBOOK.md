@@ -307,7 +307,7 @@ Issues:
 
 3. **Keine Permissions**
    - Prüfen: `ls -la scripts/ops/kill_switch_ctl.sh`
-   - Lösung: `chmod +x scripts/ops/kill_switch_ctl.sh`
+   - Lösung: `chmod +x scripts&#47;ops&#47;kill_switch_ctl.sh`
 
 ---
 

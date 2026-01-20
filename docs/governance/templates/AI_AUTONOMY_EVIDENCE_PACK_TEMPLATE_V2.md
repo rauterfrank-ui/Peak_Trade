@@ -217,7 +217,7 @@
 ## 12. Referenzen
 
 - **Layer Map v1:** `docs/architecture/ai_autonomy_layer_map_v1.md`
-- **Capability Scope:** `config/capability_scopes/<layer_id>_*.toml`
+- **Capability Scope:** `config&#47;capability_scopes&#47;<layer_id>_*.toml`
 - **Model Registry:** `config/model_registry.toml`
 - **Policy Critic Charter:** `docs/governance/LLM_POLICY_CRITIC_CHARTER.md`
 - **GoNoGo Overview:** `docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md`

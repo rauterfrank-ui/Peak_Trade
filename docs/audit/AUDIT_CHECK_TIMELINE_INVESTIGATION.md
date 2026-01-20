@@ -140,7 +140,7 @@ heute              │  mehr gemerged werden             │
 
 **Action Items:**
 - Diese PRs müssen die Audit-Failures beheben, bevor sie gemerged werden können
-- Link zu Failure-Details in: `reports/pr_audit_scan_230_353_*.tsv`
+- Link zu Failure-Details in: `reports&#47;pr_audit_scan_230_353_*.tsv`
 
 ---
 
@@ -162,15 +162,15 @@ Stichprobe:
 
 ## 📂 Generierte Daten-Artefakte
 
-1. **`reports/audit_runs_nonsuccess_*.tsv`**
+1. **`reports&#47;audit_runs_nonsuccess_*.tsv`**
    - Alle Workflow-Runs mit non-success Status
    - Zeitraum: Letzte 500 Runs des Audit-Workflows
 
-2. **`reports/pr_audit_scan_230_353_*.tsv`**
+2. **`reports&#47;pr_audit_scan_230_353_*.tsv`**
    - Status aller PRs #230-353
    - Spalten: pr, state, mergedAt, conclusion, check_name, check_url, pr_url, title
 
-3. **`reports/audit_merge_time_vs_latest_*.tsv`**
+3. **`reports&#47;audit_merge_time_vs_latest_*.tsv`**
    - Detailanalyse der 13 gemergten FAILURE-PRs
    - Vergleich: Status beim Merge vs. aktueller Status
    - Spalten: pr, mergedAt, headSha, merge_time_conclusion, latest_conclusion, run_count

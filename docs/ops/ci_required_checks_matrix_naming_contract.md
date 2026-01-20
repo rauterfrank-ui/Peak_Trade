@@ -281,7 +281,7 @@ gh pr checks <pr>
 
 **Lösung:**
 - Fehlender Check ist wahrscheinlich ein Matrix-Job oder hat job-level `if:`
-- Check-Name in `.github/workflows/*.yml` prüfen
+- Check-Name in `.github&#47;workflows&#47;*.yml` prüfen
 - `name:`-Feld mit Branch Protection vergleichen (case-sensitive!)
 - Job-level `if:` entfernen, zu step-level verschieben
 

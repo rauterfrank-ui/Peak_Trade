@@ -56,10 +56,10 @@ Peak_Trade (Safety/Governance-first, DAY TRADING):
 - ✅ Added `docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md` (241 lines)
 - ✅ Added `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md` (123 lines)
 - ✅ **Removed obsolete `archive/` directory** (42 files, ~2,450 lines deleted)
-  - Removed `archive/PeakTradeRepo/`
-  - Removed `archive/full_files_stand_02.12.2025/`
-  - Removed `archive/legacy_docs/`
-  - Removed `archive/legacy_scripts/`
+  - Removed `archive&#47;PeakTradeRepo&#47;`
+  - Removed `archive&#47;full_files_stand_02.12.2025&#47;`
+  - Removed `archive&#47;legacy_docs&#47;`
+  - Removed `archive&#47;legacy_scripts&#47;`
 - ✅ Fixed broken reference to `MODEL_PLACEMENT_AND_ROUTING.md` (not yet created)
 
 **CI Fixes**:
@@ -79,18 +79,18 @@ Peak_Trade (Safety/Governance-first, DAY TRADING):
 - ✅ Added `docs/ops/TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md` (488 lines)
 
 **Key Findings**:
-1. **95%+ Overlap**: Nearly all scripts from `tools_peak_trade/scripts/` already exist in Peak_Trade with identical or higher maturity
+1. **95%+ Overlap**: Nearly all scripts from `tools_peak_trade&#47;scripts&#47;` already exist in Peak_Trade with identical or higher maturity
 2. **Peak_Trade is CURRENT**: 305 scripts (186 Python, 111 Shell) vs. tools_peak_trade with 276 scripts
 3. **No Critical Gaps**: All top candidates already present (ops_doctor, live_readiness, offline_suites, etc.)
 4. **Obsolescence**: tools_peak_trade is a 5-day-old snapshot (2026-01-01) vs. Peak_Trade (up to 2026-01-06)
-5. **Missing Critical Modules**: tools_peak_trade lacks `paper/` and `risk_runtime/` modules
+5. **Missing Critical Modules**: tools_peak_trade lacks `paper&#47;` and `risk_runtime&#47;` modules
 
 **Recommendation**: **REJECT** integration of tools_peak_trade - treat as obsolete snapshot/backup
 
 **Analysis Coverage**:
-- ✅ `tools_peak_trade/scripts/` (276 files)
-- ✅ `tools_peak_trade/ops_runbooks/` (188 vs 267 in Peak_Trade)
-- ✅ `tools_peak_trade/` source code (497 vs 448 Python files)
+- ✅ `tools_peak_trade&#47;scripts&#47;` (276 files)
+- ✅ `tools_peak_trade&#47;ops_runbooks&#47;` (188 vs 267 in Peak_Trade)
+- ✅ `tools_peak_trade&#47;` source code (497 vs 448 Python files)
 - ✅ 9 module comparisons (ops, execution, meta, dashboard, etc.)
 
 ---

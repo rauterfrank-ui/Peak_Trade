@@ -51,8 +51,8 @@ Changes to these paths trigger stricter evaluation:
 - `src/live/`
 - `src/execution/`
 - `src/exchange/`
-- `config/production/`
-- `config/live/`
+- `config&#47;production&#47;`
+- `config&#47;live&#47;`
 
 ### Required Context
 

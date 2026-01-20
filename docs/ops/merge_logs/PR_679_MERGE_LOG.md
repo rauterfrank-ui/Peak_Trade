@@ -220,7 +220,7 @@ bash scripts/ops/verify_docs_reference_targets.sh 2>&1 | rg "PR_677|RUNBOOK_PHAS
 
 When adding new documentation:
 
-1. **Main-Resident Links** ✅: Use `[text](path/to/file.md)` for files on `main`
+1. **Main-Resident Links** ✅: Use `[text](path&#47;to&#47;file.md)` for files on `main`
 2. **Cross-Branch References** 🔗: Use GitHub permalinks for files not yet merged
 3. **Post-Merge Cleanup** 🔄: Convert permalinks → relative links after merge
 4. **External References** 🌐: Keep PR/issue links as GitHub URLs

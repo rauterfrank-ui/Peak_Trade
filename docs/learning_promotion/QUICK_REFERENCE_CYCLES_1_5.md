@@ -120,7 +120,7 @@ EMPFEHLUNG: Option A (Test-Environment)
 
 ### Nach jedem Cycle
 
-- [ ] Reports in `reports/live_promotion/` prüfen
+- [ ] Reports in `reports&#47;live_promotion&#47;` prüfen
 - [ ] OPERATOR_CHECKLIST.md durcharbeiten
 - [ ] Entscheidung in OPERATOR_DECISION_LOG.md dokumentieren
 - [ ] Bei Problemen: System auf `disabled` setzen

@@ -31,7 +31,7 @@ Persistentes Speichern und Laden von Trigger-Training-Sessions.
 
 **Storage-Format:**
 - JSON-Lines (`.jsonl`) – eine Session pro Zeile
-- Standard-Pfad: `live_runs/trigger_training_sessions.jsonl`
+- Standard-Pfad: `live_runs&#47;trigger_training_sessions.jsonl`
 
 ### 2. Meta Report Generator (`src/trigger_training/operator_meta_report.py`)
 

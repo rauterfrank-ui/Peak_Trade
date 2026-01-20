@@ -146,7 +146,7 @@ Files updated with new paths:
 ## Phase 7: New Documentation Created
 
 - [ ] `docs/architecture/REPO_STRUCTURE.md`
-- [ ] `archive/README.md`
+- [ ] `archive&#47;README.md`
 - [ ] `config/README.md`
 - [ ] Update `docs/README.md`
 - [ ] `docs/ops/cleanup/CLEANUP_REPORT.md`

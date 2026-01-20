@@ -211,10 +211,10 @@ No P0 blockers identified. The system has strong safety architecture and no crit
 ## Appendix
 
 ### A1: Commands Executed
-See: `docs/audit/evidence/commands/`
+See: `docs&#47;audit&#47;evidence&#47;commands&#47;`
 
 ### A2: CI Runs
-See: `docs/audit/evidence/ci/`
+See: `docs&#47;audit&#47;evidence&#47;ci&#47;`
 
 ### A3: Snapshots
 See: `docs/audit/evidence/snapshots/`

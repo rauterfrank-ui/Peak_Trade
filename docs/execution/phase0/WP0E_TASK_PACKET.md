@@ -450,7 +450,7 @@ WP0E defines these contract types (consumed by other WPs):
 
 ### Required Evidence Artifacts (Implementation Run)
 - [ ] **Contracts Smoke Report:** Deterministic snapshot of all contract types (JSON format, gitignored)
-  - Location pattern: `reports/execution/contracts_smoke.json`
+  - Location pattern: `reports&#47;execution&#47;contracts_smoke.json`
   - Content: Example instances of Order, Fill, LedgerEntry, ReconDiff, RiskResult
   - Purpose: Verify serialization stability, enable CI comparisons
 - [ ] **Test Results:** Unit test execution logs

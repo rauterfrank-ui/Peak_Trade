@@ -18,7 +18,7 @@ scripts/ops/review_and_merge_pr.sh --pr 259 --merge --update-main
 
 ## Docs Diff Guard (auto beim Merge)
 
-Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs/*` erkennt und **den Merge blockiert**.
+Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs&#47;*` erkennt und **den Merge blockiert**.
 
 ### Override-Optionen
 ```bash

@@ -350,7 +350,7 @@ python scripts/run_strategy_switch_sanity_check.py --help
 ---
 
 ### Issue: Config Not Found
-**Symptom**: `FileNotFoundError: config/config.toml not found`
+**Symptom**: `FileNotFoundError: config&#47;config.toml not found`
 
 **Fix**:
 ```bash
@@ -452,7 +452,7 @@ git push
 
 ### Tests
 - **Unit Tests**: `tests/governance/test_strategy_switch_sanity_check.py` (16 tests)
-- **Integration Tests**: `tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
+- **Integration Tests**: `tests&#47;ops&#47;test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
 - **Smoke Tests**: `tests/ops/test_ops_center_smoke.py` (hermetic test fix)
 
 ---
@@ -495,7 +495,7 @@ pytest tests/governance/test_strategy_switch_sanity_check.py -v
 ## Documentation Link Stability
 
 This runbook follows the **Peak_Trade Docs Link Stability Contract**:
-- ✅ **Repo-relative links** for files on `main` (e.g., `[Guide](../STRATEGY_SWITCH_SANITY_CHECK.md)`)
+- ✅ **Repo-relative links** for files on `main` (e.g., `[Guide](..&#47;STRATEGY_SWITCH_SANITY_CHECK.md)`)
 - 🔗 **GitHub permalinks** for cross-branch references (e.g., commit SHA or PR URL)
 - 🔄 **Post-merge cleanup**: Convert permalinks → relative links after merge
 - 🌐 **External references**: PR/issue links stay as GitHub URLs

@@ -41,7 +41,7 @@ All inline backticks with "/" in both documents are either:
 ## Alternative Fix Strategies (Rejected)
 
 ### Option A: Escape All Placeholder Paths (REJECTED)
-**Pattern:** Convert <code>docs&#47;FILE.md</code> → `"docs\/FILE.md" (future)"`  
+**Pattern:** Convert <code>docs&#47;FILE.md</code> → `"docs\&#47;FILE.md" (future)"`  
 **Reason for Rejection:** Paths exist, no need to mark as future  
 **Risk:** Would falsely imply paths don't exist (misleading)
 

@@ -40,7 +40,7 @@ Total: **6 files changed, 81 insertions(+)**
 
 3. **`docker/compose.yml`** (25 lines)
    - Docker Compose configuration for MLflow service
-   - Volume mounts for persistence (`mlruns/`, `mlartifacts/`)
+   - Volume mounts for persistence (`mlruns&#47;`, `mlartifacts&#47;`)
    - Health check configuration
 
 4. **`docker/mlflow/Dockerfile`** (12 lines)
@@ -149,7 +149,7 @@ The "MLFLOW_DEFAULT_ARTIFACT_ROOT" variable is not set. Defaulting to a blank st
 - **Port availability:** Default 5001 must be free (customizable via `docker/.env`)
 
 ### Data Persistence
-- **Volumes:** `mlruns/` and `mlartifacts/` persist between container restarts
+- **Volumes:** `mlruns&#47;` and `mlartifacts&#47;` persist between container restarts
 - **Destructive reset:** `make mlflow-reset` **deletes all experiment data** (use with caution)
 
 ### Future Enhancements
