@@ -3,7 +3,7 @@
 Ziel: Der `main`-Worktree bleibt sauber, PRs bleiben minimal, und lokale Prototypen (untracked) erzeugen keine "Noise".
 
 ## Grundsatz
-- **Kein globales `.gitignore`** für Pfade, die später echte Features werden könnten (z.B. `src/eval/`).
+- **Kein globales `.gitignore`** für Pfade, die später echte Features werden könnten (z.B. `src&#47;eval&#47;`).
 - **Lokale Ignorierung** stattdessen über:
   - `.git/info/exclude` (nur dieser Worktree)
   - oder globales Git-Ignore (`~/.config/git/ignore`)
