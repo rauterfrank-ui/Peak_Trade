@@ -56,9 +56,9 @@ gh pr diff <PR_NUMBER> | head -50
 
 ### ✅ Preflight-Checklist
 
-- [ ] Titel deutet auf Format-only hin (`chore(format):`, `style:`, `black/ruff`)
+- [ ] Titel deutet auf Format-only hin (`chore(format):`, `style:`, `black&#47;ruff`)
 - [ ] Keine `src/execution/`, `src/risk/`, `src/live/` Dateien geändert
-- [ ] Keine `config/*.toml`, `pyproject.toml`, `requirements.txt` Änderungen
+- [ ] Keine `config&#47;*.toml`, `pyproject.toml`, `requirements.txt` Änderungen
 - [ ] Keine `.github/workflows/`, `policy_packs/` Änderungen
 - [ ] Diff zeigt nur whitespace/import-order/quotes
 - [ ] Policy Critic Details geprüft (URL im PR Comment)
@@ -215,8 +215,8 @@ gh run list --branch main --limit 1
 - [ ] **Risk Management:** `src/risk/`, `src/governance/`
 - [ ] **Live Trading:** `src/live/`, `config/live_policies.toml`
 - [ ] **Dependencies:** `requirements.txt`, `uv.lock`, `pyproject.toml` (versions)
-- [ ] **Governance:** `policy_packs/`, `.github/workflows/policy_*.yml`
-- [ ] **Config Values:** `config/*.toml` (nicht whitespace, sondern Werte)
+- [ ] **Governance:** `policy_packs/`, `.github&#47;workflows&#47;policy_*.yml`
+- [ ] **Config Values:** `config&#47;*.toml` (nicht whitespace, sondern Werte)
 
 ### 🟡 High-Risk (Verify First)
 
@@ -232,7 +232,7 @@ gh run list --branch main --limit 1
 - [ ] **Import Sorting:** `import` Statement Order
 - [ ] **Docstrings:** Formatting (keine Inhaltsänderungen)
 - [ ] **Comments:** Whitespace, Trailing Spaces
-- [ ] **Markdown:** Docs-Formatting (`docs/*.md`, README.md)
+- [ ] **Markdown:** Docs-Formatting (`docs&#47;*.md`, README.md)
 
 ---
 
@@ -384,12 +384,12 @@ Wir erlauben ein gezieltes Skipping von Policy Critic **nur dann**, wenn ein **F
 
 ### A) "Format-only" Definition (strict default)
 **Strict (empfohlen als Start):**
-- Erlaubt: `**/*.py`, `**/*.md`
+- Erlaubt: `**&#47;*.py`, `**&#47;*.md`
 - In `.py` nur Black/Ruff-Formatierung, Import-Sortierung, whitespace, Kommentar-/Docstring-Whitespace
 - **Nicht erlaubt:** jede Änderung an:
-  - `**/*.yml|yaml|toml|json` (CI/Config)  
-  - `src/**` wenn der Diff nicht eindeutig Formatierung ist
-  - Governance/Risk/Execution Pfade (z.B. `src/governance/**`, `src/live/**`, `src/execution/**`)
+  - `**&#47;*.yml|yaml|toml|json` (CI/Config)  
+  - `src&#47;**` wenn der Diff nicht eindeutig Formatierung ist
+  - Governance/Risk/Execution Pfade (z.B. `src&#47;governance&#47;**`, `src&#47;live&#47;**`, `src&#47;execution&#47;**`)
   - Dependencies (`pyproject.toml`, `requirements*.txt`, `uv.lock`)
 
 **Warum strict?** Weniger False-Negatives → weniger Risiko. Lockern kann man später gezielt.
@@ -399,7 +399,7 @@ Wir erlauben ein gezieltes Skipping von Policy Critic **nur dann**, wenn ein **F
 ### B) Operator-Flow: Wann Label setzen?
 **Nur setzen, wenn alle Punkte erfüllt sind:**
 - ✅ `gh pr diff <PR> --stat` wirkt wie Format-Diff
-- ✅ `gh pr diff <PR> --name-only` zeigt nur erlaubte Pfade/Typen (strict: `.py/.md`)
+- ✅ `gh pr diff <PR> --name-only` zeigt nur erlaubte Pfade/Typen (strict: `.py&#47;.md`)
 - ✅ Spot-Check: `gh pr diff <PR> | sed -n '1,200p'` → keine Logik-/Config-Änderungen sichtbar
 - ✅ Audit-Trail Kommentar im PR (Rationale + Evidence + Accountability)
 

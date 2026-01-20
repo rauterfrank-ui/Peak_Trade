@@ -2,7 +2,7 @@
 
 Status: Active  
 Owner: Ops / Docs Governance  
-Scope: All Markdown under `docs\/` (and any CI-validated doc paths)
+Scope: All Markdown under `docs\&#47;` (and any CI-validated doc paths)
 
 ## Purpose
 
@@ -19,7 +19,7 @@ This guide defines **authoring rules** that avoid false positives while preservi
 
 - **Existing target**: a file/anchor that exists on the current branch and is intended to be navigable.
 - **Future target**: a planned file/anchor that does not exist yet.
-- **Path-like token**: any string that resembles a repo-relative path (e.g. starts with `docs\/` or `src\/` patterns).
+- **Path-like token**: any string that resembles a repo-relative path (e.g. starts with `docs\&#47;` or `src\&#47;` patterns).
 
 ## Rules
 
@@ -28,7 +28,7 @@ This guide defines **authoring rules** that avoid false positives while preservi
 Use Markdown links only when the target exists **now**.
 
 Safe example pattern:
-- `[WP0A completion report](docs\/execution\/WP0A_COMPLETION_REPORT.md)`
+- `[WP0A completion report](docs\&#47;execution\&#47;WP0A_COMPLETION_REPORT.md)`
 
 If the target does not exist, do **not** create a link.
 
@@ -37,7 +37,7 @@ If the target does not exist, do **not** create a link.
 If a path-like token is **future**, it must not appear as a raw path.
 
 Preferred future pattern:
-- `"docs\/execution\/WP0X_IMPLEMENTATION_REPORT.md" (future)`
+- `"docs\&#47;execution\&#47;WP0X_IMPLEMENTATION_REPORT.md" (future)`
 
 ### R3 — Avoid backticks for future targets
 
@@ -46,14 +46,14 @@ For future targets:
 
 - Do **not** use inline code formatting.
 - Use **quotes** + `(future)` instead:
-  - `"src\/orders\/router.py" (new, future)`
+  - `"src\&#47;orders\&#47;router.py" (new, future)`
 
 ### R4 — Escape slashes for future path-like tokens
 
 If you must mention a future path-like token, escape slashes:
 
-- `docs\/...` instead of `docs/...`
-- `src\/...` instead of `src/...`
+- `docs\&#47;...` instead of `docs/...`
+- `src\&#47;...` instead of `src&#47;...`
 
 Rationale: this prevents the gate's "bare target" parser from validating a non-existent file.
 
@@ -62,7 +62,7 @@ Rationale: this prevents the gate's "bare target" parser from validating a non-e
 Branch names frequently contain slashes and can be misread as targets.
 Write branch names in **quotes** and explicitly label them as branches:
 
-- Branch: `"docs\/phase0-foundation-prep"` (branch)
+- Branch: `"docs\&#47;phase0-foundation-prep"` (branch)
 
 If quoting is insufficient in a given context, also apply slash escaping as above.
 
@@ -74,8 +74,8 @@ Ownership matrices often list many files. Apply:
 - Future/new files: must be quoted + escaped + marked `(new)` and/or `(future)`.
 
 Example:
-- Existing: `src\/execution\/position_ledger.py` (existing)
-- Future: `"src\/execution\/position_bridge.py" (new, future)`
+- Existing: `src\&#47;execution\&#47;position_ledger.py` (existing)
+- Future: `"src\&#47;execution\&#47;position_bridge.py" (new, future)`
 
 ### R7 — Anchors and section references
 
@@ -131,12 +131,12 @@ rg -n '(^|[^\\])(docs|src)/' docs -S || true
 
 - If it should exist: create/fix the file or correct the link.
 - If it is future/illustrative: convert to the future pattern:
-  - quotes + `(future)` + escaped slashes (`\/`)
+  - quotes + `(future)` + escaped slashes (`\&#47;`)
 
 ## Standard Future Pattern (copy/paste)
 
-- `"docs\/<area>\/<name>.md" (future)`
-- `"src\/<area>\/<name>.py" (new, future)`
+- `"docs\&#47;<area>\&#47;<name>.md" (future)`
+- `"src\&#47;<area>\&#47;<name>.py" (new, future)`
 
 ## Notes
 
