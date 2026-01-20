@@ -52,6 +52,10 @@ Finish Level C liefert einen optionalen „live‑nahen“ Track (Broker Adapter
   - Zweck: standardisierte Run‑Artefakte + Repro‑Pack (Manifest/Snapshots)
   - Entry: Runner/Backtests existieren, Outputs sind inkonsistent/unversioniert
   - Output/DoD: `run_manifest.json`, `config_snapshot.json`, `metrics.json`, `equity.csv`, `trades.csv` + determinism PASS
+- [D4 — Ops/Governance Polish](RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md)
+  - Zweck: stabile Docs‑Gates, konsistente Templates, Merge‑Log/Evidence Hygiene
+  - Entry: Gate‑Incidents durch Links/Templates/Merge‑Log Drift
+  - Output/DoD: docs gates PASS + operator‑lesbarer Gate‑Snapshot + referenzierte Release‑Checklist
 - [Templates — Evidence](TEMPLATES_FINISH_C_EVIDENCE.md)
 - [Templates — Incident Pack](TEMPLATES_FINISH_C_INCIDENT_PACK.md)
 
