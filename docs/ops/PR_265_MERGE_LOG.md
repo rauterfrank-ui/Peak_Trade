@@ -40,9 +40,9 @@ ALLOWED FAIL (1/7):
 Low — additive Änderung, safe-by-default, keine destruktiven Aktionen.
 
 ## Operator How-To
-- Daily: `scripts/ops/ops_center.sh status`
-- PR review: `scripts/ops/ops_center.sh pr <NUM>`
-- Health: `scripts/ops/ops_center.sh doctor`
+- Daily: `scripts&#47;ops&#47;ops_center.sh status`
+- PR review: `scripts&#47;ops&#47;ops_center.sh pr <NUM>`
+- Health: `scripts&#47;ops&#47;ops_center.sh doctor`
 
 ## References
 - `docs/ops/OPS_OPERATOR_CENTER.md`

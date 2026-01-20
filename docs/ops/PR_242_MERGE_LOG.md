@@ -40,7 +40,7 @@ Ziel ist eine robuste, nachvollziehbare Live-Status-Panel-Pipeline:
 - **Added:** `docs/webui/LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md`
 
 ### CI-Fix
-- **Removed:** `tests/test_health_detailed_panel_mapping.py`
+- **Removed:** `tests&#47;test_health_detailed_panel_mapping.py`
   - Grund: ImportError durch Referenz auf nicht-existierenden Code in `health_endpoint.py`
 
 ## Verification

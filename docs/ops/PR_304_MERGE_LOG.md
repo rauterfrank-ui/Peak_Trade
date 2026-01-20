@@ -14,8 +14,8 @@ Portfolio-Risikolimits als Grundlage für spätere (Safety-gated) Pre-Trade Chec
 
 ## Verification
 - `pytest tests&#47;risk&#47; -v` ✅ (39/39 new tests, 135 total risk tests)
-- `ruff check src/risk/` ✅
-- `ruff format src/risk/` ✅
+- `ruff check src&#47;risk&#47;` ✅
+- `ruff format src&#47;risk&#47;` ✅
 
 ## Risk
 Low. Phase-1 ist offline/core only; keine Live-Execution Pfade, keine auto-gating hooks.
