@@ -36,8 +36,7 @@ AI-Ops Toolchain v1.1: standardized promptfoo eval execution via a robust runner
 - Registered in `evals/aiops/promptfooconfig.yaml`
 
 ### Hygiene
-- Updated `.gitignore` to ensure `.artifacts/` is untracked.
-  - Note: `.artifacts&#47;` must remain untracked
+- Updated `.gitignore` to ensure `.artifacts&#47;` is untracked.
 
 ## Verification
 ### Local
