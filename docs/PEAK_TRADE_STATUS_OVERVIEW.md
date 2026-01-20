@@ -152,7 +152,7 @@ Ziel:
   * Operator Runbook: `docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md`
   * Technical Spec: `docs/shadow/PHASE_2_TICK_TO_OHLCV_AND_QUALITY.md`
 * **Quick Start:** `scripts&#47;ops&#47;ops_center.sh shadow smoke`
-* **Tests:** 35+ tests (`pytest tests/data/shadow/ -v`)
+* **Tests:** 35+ tests (`pytest tests&#47;data&#47;shadow&#47; -v`)
 * **Safety:** Blocked in live mode, safe for dev/testnet contexts
 
 > **Reifegrad:** **ca. 95%** – der Data-Layer ist produktionsnah und kann als Referenz gelten. Shadow Pipeline Phase 2 erweitert die Data-Quality-Capabilities signifikant.
