@@ -15,13 +15,13 @@ Liquidity Gate v1 ergänzt den Risk Layer um pre-trade Microstructure-Guards (Sp
 Schützt Execution gegen adverse Marktbedingungen (zu weite Spreads, erhöhte Slippage, zu geringe Orderbook-Depth, oversized Order vs. ADV) bevor Orders validiert/platziert werden.
 
 ## Changes
-- NEW: `src\/risk_layer\/micro_metrics.py` — tolerante Extraktion von Microstructure-Daten (mehrere Layout-Varianten), audit-stabile Serialisierung
-- NEW: `src\/risk_layer\/liquidity_gate.py` — Guards: Spread/Slippage/Depth/ADV
+- NEW: `src\&#47;risk_layer\&#47;micro_metrics.py` — tolerante Extraktion von Microstructure-Daten (mehrere Layout-Varianten), audit-stabile Serialisierung
+- NEW: `src\&#47;risk_layer\&#47;liquidity_gate.py` — Guards: Spread/Slippage/Depth/ADV
   - Market Orders: 0.7× Thresholds (strenger)
   - Limit Orders: "wide spread" kann BLOCK→WARN downgraden (Exception)
 - NEW: `docs/risk/LIQUIDITY_GATE_RUNBOOK.md` — Operator Runbook (Troubleshooting + Manual Smoke)
 - NEW: `config/risk_liquidity_gate_example.toml` — Profile (equity/crypto/research)
-- UPDATE: `src\/risk_layer\/risk_gate.py` — Liquidity Gate Integration + Violation Codes
+- UPDATE: `src\&#47;risk_layer\&#47;risk_gate.py` — Liquidity Gate Integration + Violation Codes
 - UPDATE: `tests/risk_layer/test_risk_gate.py` — Integration Tests (Order + WARN/BLOCK + Eval-Order)
 
 ## Verification

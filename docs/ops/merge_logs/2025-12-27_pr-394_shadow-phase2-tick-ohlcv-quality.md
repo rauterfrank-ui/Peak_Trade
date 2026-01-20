@@ -43,7 +43,7 @@ Implements Shadow Pipeline Phase 2: tick normalization → OHLCV bar building �
 
 ## Verification
 
-* ✅ `tests (3.9/3.10/3.11)` PASS
+* ✅ `tests (3.9&#47;3.10&#47;3.11)` PASS
 * ✅ `Lint Gate` PASS
 * ✅ `audit` PASS
 * ✅ `docs-reference-targets-gate` PASS
