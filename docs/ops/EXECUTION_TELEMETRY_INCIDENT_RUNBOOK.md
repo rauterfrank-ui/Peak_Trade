@@ -6,7 +6,7 @@ Quick reference guide for diagnosing and responding to execution telemetry incid
 
 **Audience:** Operators, DevOps, SRE  
 **Scope:** Read-only diagnostics (no system changes)  
-**Prerequisites:** Access to `logs/execution/` directory and CLI tools
+**Prerequisites:** Access to `logs&#47;execution&#47;` directory and CLI tools
 
 ---
 
