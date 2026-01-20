@@ -36,7 +36,7 @@ Wir bauen **Work Packages (WPs)** so, dass:
 
 ### 1.3 Branching / Merge‑Taktik
 Empfohlen für Cursor Multi‑Agents:
-- 1 gemeinsamer Feature‑Branch pro Phase: `feat/live-exec-phaseX-*`
+- 1 gemeinsamer Feature‑Branch pro Phase: `feat&#47;live-exec-phaseX-*`
 - Pro Agent: kleine, saubere Commits (1–3).
 - Integrator: squash/rebase nach Bedarf + “Integration Day” vor Gate.
 
@@ -106,14 +106,14 @@ reports/risk/
 - Minimaler Serialisierungs-/Determinismus‑Test (repr/json).
 
 **Evidence:**
-- `reports/execution/contracts_smoke.json` (stabiler Snapshot)
-- `tests/execution/test_contracts_*.py` grün
+- `reports&#47;execution&#47;contracts_smoke.json` (stabiler Snapshot)
+- `tests&#47;execution&#47;test_contracts_*.py` grün
 
 ---
 
 ## WP0A — Execution Core v1 (Critical Path)
 **Agent:** Exec‑Agent  
-**Ownership:** `src/execution/order_state_machine.py`, `order_ledger.py`, `position_ledger.py`, `audit_log.py`, `retry_policy.py` + `tests/execution/*`.
+**Ownership:** `src/execution/order_state_machine.py`, `order_ledger.py`, `position_ledger.py`, `audit_log.py`, `retry_policy.py` + `tests&#47;execution&#47;*`.
 
 **DoD (MVP, testbar):**
 - OSM: `CREATED → SUBMITTED → ACK → FILLED → CLOSED`
@@ -128,14 +128,14 @@ reports/risk/
 - “crash‑restart” Simulation (in‑memory rebuild) als unit/integration‑test
 
 **Evidence:**
-- `reports/execution/state_machine_coverage.md`
-- `reports/execution/crash_restart_simulation.json`
+- `reports&#47;execution&#47;state_machine_coverage.md`
+- `reports&#47;execution&#47;crash_restart_simulation.json`
 
 ---
 
 ## WP0B — Risk Layer v1.0 (Blocker)
 **Agent:** Risk‑Agent  
-**Ownership:** `src/execution/risk_hook.py` (nur via Contract), `src/risk_layer/live/*` oder `src/risk_layer/runtime/*`, `reports/risk/*`, `tests/risk_layer/*`.
+**Ownership:** `src/execution/risk_hook.py` (nur via Contract), `src&#47;risk_layer&#47;live&#47;*` oder `src&#47;risk_layer&#47;runtime&#47;*`, `reports&#47;risk&#47;*`, `tests&#47;risk_layer&#47;*`.
 
 **DoD:**
 - Risk ist “first‑class citizen” im Execution Flow (RiskDecision: ALLOW/BLOCK/PAUSE).
@@ -149,31 +149,31 @@ reports/risk/
 - Report generator ist stabil (CI‑friendly)
 
 **Evidence:**
-- `reports/risk/var_cvar_kupiec_*.md`
-- `reports/risk/stress_suite_*.md`
+- `reports&#47;risk&#47;var_cvar_kupiec_*.md`
+- `reports&#47;risk&#47;stress_suite_*.md`
 
 ---
 
 ## WP0C — Governance & Config Hardening
 **Agent:** Gov‑Agent  
-**Ownership:** src/governance/live_mode_gate.py (planned), config‑validation module, `tests/governance/*`, ggf. minimal src/core/config.py (planned, nur wenn Integrator freigibt).
+**Ownership:** src/governance/live_mode_gate.py (planned), config‑validation module, `tests&#47;governance&#47;*`, ggf. minimal src/core/config.py (planned, nur wenn Integrator freigibt).
 
 **DoD:**
 - Startup fail‑fast bei invalid config (Schema validation).
-- Env separation: `dev/shadow/testnet/prod`
+- Env separation: `dev&#47;shadow&#47;testnet&#47;prod`
 - Secrets injection (env/secure store stub)
 - Config change audit trail
 - Live Mode gating: explizit enable + multi‑step confirmation (default **blocked**)
 
 **Evidence:**
-- `reports/governance/config_validation_report.md`
+- `reports&#47;governance&#47;config_validation_report.md`
 - “live mode is blocked by default” proof test
 
 ---
 
 ## WP0D — Observability Minimum
 **Agent:** Obs‑Agent  
-**Ownership:** `src/observability/*`, `tests/observability/*`, minimal dashboard glue (nur read‑only).
+**Ownership:** `src&#47;observability&#47;*`, `tests&#47;observability&#47;*`, minimal dashboard glue (nur read‑only).
 
 **DoD:**
 - Metrics: orders/min, error‑rate, reconnects, latency p95/p99
@@ -181,8 +181,8 @@ reports/risk/
 - Minimal Dashboard Snapshot (JSON export) oder Hook in bestehende Live‑Track UI (read‑only)
 
 **Evidence:**
-- `reports/observability/metrics_snapshot.json`
-- `reports/observability/logging_fields.md`
+- `reports&#47;observability&#47;metrics_snapshot.json`
+- `reports&#47;observability&#47;logging_fields.md`
 
 ---
 
@@ -193,7 +193,7 @@ reports/risk/
 - Execution v1: OSM + Ledger + Recon (mindestens stub) mit Tests
 
 **Required Evidence Pack:**
-- `reports/risk/` (VaR/CVaR/Kupiec + Stress)
+- `reports&#47;risk&#47;` (VaR/CVaR/Kupiec + Stress)
 - `reports/execution/` (OSM coverage + crash‑restart)
 - `docs/ops/` Runbook drafts
 - CI: ruff + tests (3.9/3.10/3.11) pass
@@ -205,19 +205,19 @@ reports/risk/
 **Ziel:** Live‑Datenstrom + Paper Execution, um Drift, Data Quality, Stabilität und Observability zu validieren — ohne Kapitalrisiko.
 
 ## WP1A — Live Data Feed v1
-**Ownership:** `src/data/live/*` oder `src/data/providers/*` (passend zur Repo‑Struktur), `tests/data/*`  
+**Ownership:** `src&#47;data&#47;live&#47;*` oder `src&#47;data&#47;providers&#47;*` (passend zur Repo‑Struktur), `tests&#47;data&#47;*`  
 **DoD:** WebSocket + Reconnect + Backfill; Normalisierung identisch zum Backtest; Quality checks; Latency monitoring p95/p99.
 
 ## WP1B — Shadow Execution (Paper)
-**Ownership:** `src/execution/paper/*`, `tests/execution/test_paper_*`  
+**Ownership:** `src&#47;execution&#47;paper&#47;*`, `tests&#47;execution&#47;test_paper_*`  
 **DoD:** Paper Orders → Fill Simulation (Slippage/Fee); Ledger in paper‑mode; Journal/Trade Log + tägliche Summary.
 
 ## WP1C — Signal Validation & Drift Detection
-**Ownership:** `src/monitoring/drift/*` oder `src/observability/drift/*`, `reports/drift/*`  
+**Ownership:** `src&#47;monitoring&#47;drift&#47;*` oder `src&#47;observability&#47;drift&#47;*`, `reports&#47;drift&#47;*`  
 **DoD:** Comparator: Shadow vs Backtest expectations; Drift metrics; Daily report generator (deterministisch); Auto‑Pause Regeln.
 
 ## WP1D — Operator UX
-**Ownership:** `src/live_track/*` oder `src/ops_center/*`, `docs/ops/*`  
+**Ownership:** `src&#47;live_track&#47;*` oder `src&#47;ops_center&#47;*`, `docs&#47;ops&#47;*`  
 **DoD:** Live session registry & status overview; Minimal Alerts (P1/P2) + Runbook links.
 
 ## Phase‑1 Gate (Go/No‑Go → Phase 2)
