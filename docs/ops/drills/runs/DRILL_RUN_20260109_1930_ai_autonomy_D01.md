@@ -60,7 +60,7 @@ Verify operator competency in executing repository pre-flight checks:
 - **Observation:**
   - PWD: `/Users/frnkhrz/Peak_Trade`
   - Git root: `/Users/frnkhrz/Peak_Trade`
-  - Branch: `main...origin/main` (in sync, no divergence)
+  - Branch: `main...origin&#47;main` (in sync, no divergence)
   - Working tree: Clean at start
 - **Evidence:** Terminal output (2026-01-09T19:01:48Z)
 - **Pass/Fail:** ✅ PASS
@@ -79,7 +79,7 @@ Verify operator competency in executing repository pre-flight checks:
 - **Command:** `git status -sb` (after .github/workflows/aiops-promptfoo-evals.yml modification)
 - **Observation:**
   - Modified file: `.github/workflows/aiops-promptfoo-evals.yml`
-  - Branch: `main...origin/main`
+  - Branch: `main...origin&#47;main`
   - Status: 1 uncommitted change (modified workflow file)
 - **Evidence:** `git status -sb` output (2026-01-09T19:20:00Z approx.)
 - **Pass/Fail:** ✅ PASS (dirty tree correctly detected and documented)
@@ -129,20 +129,20 @@ Verify operator competency in executing repository pre-flight checks:
 - **Impact:** LOW
 - **Observation:**
   - Repository root correctly identified: `/Users/frnkhrz/Peak_Trade`
-  - Branch state: `main...origin/main` (clean sync at start)
+  - Branch state: `main...origin&#47;main` (clean sync at start)
   - No unexpected dirty files at drill start
 - **Evidence:** E03 (Step 1 terminal output)
 - **Repro Steps:**
   1. `cd /Users/frnkhrz/Peak_Trade`
   2. `git status -sb`
-  3. Expect: `## main...origin/main` with no uncommitted changes
+  3. Expect: `## main...origin&#47;main` with no uncommitted changes
 - **Operator Action:** None required (baseline confirmed)
 
 ### Finding #2 — Branch Divergence Awareness (POSITIVE)
 - **Type:** Competency Verification
 - **Impact:** LOW
 - **Observation:**
-  - `git status -sb` correctly interprets `...origin/main` (no ahead/behind markers)
+  - `git status -sb` correctly interprets `...origin&#47;main` (no ahead/behind markers)
   - Operator (AI agent) correctly identified "in sync" state
 - **Evidence:** E03
 - **Repro Steps:** Same as Finding #1
@@ -158,7 +158,7 @@ Verify operator competency in executing repository pre-flight checks:
 - **Repro Steps:**
   1. Modify any file (e.g., `.github/workflows/aiops-promptfoo-evals.yml`)
   2. `git status -sb`
-  3. Expect: ` M .github/workflows/aiops-promptfoo-evals.yml`
+  3. Expect: ` M .github&#47;workflows&#47;aiops-promptfoo-evals.yml`
 - **Operator Action:** None required (detection successful)
 
 ### Finding #4 — Non-Required Workflow Failure on Docs-Only Merge (CI SIGNAL NOISE)
@@ -177,7 +177,7 @@ Verify operator competency in executing repository pre-flight checks:
 - **Risk:** LOW (workflow is not a required check for docs-only PRs)
 - **Remediation Applied:**
   - Patched `.github/workflows/aiops-promptfoo-evals.yml` using "Option B" pattern:
-    - Added `changes` job with `dorny/paths-filter@v3` for precise change detection
+    - Added `changes` job with `dorny&#47;paths-filter@v3` for precise change detection
     - Added `if:` condition to `promptfoo-eval` job (only run if eval-relevant changes detected)
     - Added `noop` job for graceful skip (success exit when no relevant changes)
   - Ensures docs-only merges do not create failing workflow runs
