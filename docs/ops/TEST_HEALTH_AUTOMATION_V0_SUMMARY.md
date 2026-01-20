@@ -28,7 +28,7 @@
   - `load_test_health_profile()` – TOML-Profil laden & validieren
   - `run_single_check()` – Einzelnen Check ausführen
   - `aggregate_health()` – Health-Score berechnen (0-100)
-  - `write_test_health_json/md/html()` – Reports schreiben
+  - `write_test_health_json&#47;md&#47;html()` – Reports schreiben
   - `run_test_health_profile()` – Kompletter Profil-Lauf
 - **Features**:
   - Gewichteter Health-Score (0-100)

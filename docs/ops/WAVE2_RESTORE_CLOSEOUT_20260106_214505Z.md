@@ -16,7 +16,7 @@ Result: Repository clean; no open PRs; main synchronized.
 ## Verification
 - `gh pr list --state open` returns none
 - `gh pr list --state open --search "head:restore&#47;"` returns none
-- local `main` is synchronized with `origin/main`
+- local `main` is synchronized with `origin&#47;main`
 
 ## Notes
 This file is an audit artifact. It captures the final state after completion of the Wave2 restore queue.

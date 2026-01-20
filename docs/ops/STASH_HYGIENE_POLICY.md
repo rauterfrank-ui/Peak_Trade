@@ -124,5 +124,5 @@ scripts/ops/stash_triage.sh --export-all --drop-after-export
 
 ## Referenzen
 - Session-Report: `docs/ops/STASH_TRIAGE_SESSION_20251223-051920.md`
-- Export-Beispiel: `docs/ops/stash_refs/knowledge_db_strategy_vault_ref_*.md`
+- Export-Beispiel: `docs&#47;ops&#47;stash_refs&#47;knowledge_db_strategy_vault_ref_*.md`
 - Automation Tool: `scripts/ops/stash_triage.sh`
