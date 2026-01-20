@@ -23,7 +23,7 @@ Sie ist für **Operatoren, On-Call-Engineers und Risk Owner** gedacht, die im In
 | **R&D-Playbook Armstrong & El Karoui**          | `docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md`              | v1.0            | Playbook mit Best Practices, Experiment-Design, Parameter-Sweeps und Auswertungs-Patterns für Armstrong/El-Karoui                      | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Methodik**                        | ⚠️ R&D only (kein Live) |
 | **Armstrong × El Karoui Cross-Run Findings**    | `docs/runbooks/ARMSTRONG_ELKAROUI_CROSS_RUN_FINDINGS_V1.md`             | v1.0            | Konsolidierte Findings aus Cross-Runs (State-Rankings, Vol-Regime, Limitierungen), dient als Meta-Referenz für weitere R&D-Iterationen | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Meta-Analyse**                    | ⚠️ R&D only (kein Live) |
 | **Offline-Realtime-Pipeline Runbook**           | `docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md`                 | v1.0            | Operator-Runbook für die Offline-Realtime-Pipeline mit synthetischen Ticks (`is_synthetic=True`) und MA-Crossover-Strategie im Paper-Modus | Phase 16A / Offline-Realtime Safety Sandbox                | **Offline Testing, Execution**           | ✅ Safety-Sandbox       |
-| **RUNBOOK D2 — Reporting + Compare Runs**       | `docs/runbooks/RUNBOOK_D2_REPORTING.md`                                 | v1.0 (Jan 2026) | Ad-hoc Report aus Run-Artefakten generieren; optional Compare-Report für mehrere Runs                                                  | Reporting / Evidence Chain                                 | **Reporting, Evidence**                  | ✅ 2026-ready            |
+| **Reporting Quickstart (Evidence Chain)**       | `docs/reporting/REPORTING_QUICKSTART.md`                                | v1.0            | Einstieg in Evidence-Chain Artefakte + Reporting Workflow (Quickstart)                                                                  | Reporting / Evidence Chain                                 | **Reporting, Evidence**                  | ✅ 2026-ready            |
 | **RUNBOOK D3 — Watch-Only Web/API + Grafana**   | `docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md`                | v1.0 (Jan 2026) | Read-only API/UI: Runs List/Detail + Health; Grafana Panels (Observability UX)                                                         | Web/API + Grafana / Observability                          | **Web-UI, API, Monitoring**              | ✅ 2026-ready            |
 | **Runbooks & Incident Handling**                | `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md`                                | Phase 25/56     | Grundlegende Runbooks für Shadow-Modus (Shadow-Run, System Pause) und Incident-Handling-Prozess (Schweregrade, Response-Schema, Report-Template)             | Phase 25 (Governance & Safety), Phase 56 (Drills)          | **Shadow-Mode, Incident-Management**     | ✅ Shadow-Mode aktiv    |
 
@@ -170,7 +170,7 @@ Sie ist für **Operatoren, On-Call-Engineers und Risk Owner** gedacht, die im In
 | **Cross-Run-Analyse / Meta-Auswertung**                     | Armstrong × El Karoui Cross-Run Findings, R&D-Playbook                      | Bestehende Findings als Referenz nutzen, neue Runs konsistent einsortieren                             |
 | **Execution-Pipeline offline testen (Safety-Sandbox)**       | Offline-Realtime-Pipeline Runbook                                            | Synthetische Ticks + Paper-Execution, komplett sicher, ideal für Strategie-Tests                        |
 | **MA-Crossover-Strategie Parameter-Tuning**                  | Offline-Realtime-Pipeline Runbook                                            | Seed-Sweeps, verschiedene MA-Fenster, Regime-Varianz testen                                             |
-| **HTML-Report / Compare-Report aus Run-Artefakten**          | RUNBOOK D2 — Reporting + Compare Runs                                        | Für ad-hoc Auswertung und Run-Vergleiche (Reporting/Evidence Chain)                                      |
+| **Reporting (Evidence Chain) – Einstieg / Quickstart**       | Reporting Quickstart (Evidence Chain)                                        | Evidence-Chain Artefakte verstehen, Reports rendern, Troubleshooting                                     |
 | **Read-only Runs UI/API + Grafana Panels verifizieren**      | RUNBOOK D3 — Watch-Only Web/API + Grafana                                    | Runs List/Detail, Health, Observability UX (Panels/Queries Snapshot)                                     |
 
 ---
@@ -238,7 +238,6 @@ Operatoren sollten Runbooks **immer im Kontext** dieser Module lesen – die Dok
 
 * **v1.2 – Januar 2026**
 
-  * Ergänzung: **RUNBOOK D2 — Reporting + Compare Runs (v1.0)**
   * Ergänzung: **RUNBOOK D3 — Watch-Only Web/API + Grafana (v1.0)**
 
 * **v1.1 – Dezember 2025**
