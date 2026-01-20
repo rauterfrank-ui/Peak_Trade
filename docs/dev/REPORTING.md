@@ -493,7 +493,7 @@ for key in baseline.metrics:
 ## Next Steps
 
 - See `src/experiments/tracking/` for implementation
-- Run tests: `pytest tests/test_run_summary_contract.py`
+- Run tests: `pytest tests&#47;test_run_summary_contract.py`
 - Explore example experiments in `src/experiments/`
 - Read Phase 16C spec for architectural details
 
