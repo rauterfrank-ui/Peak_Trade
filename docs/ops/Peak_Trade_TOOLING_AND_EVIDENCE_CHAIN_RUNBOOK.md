@@ -58,7 +58,7 @@ docker compose -f ops/observability/docker-compose.yml up
   - `docs/dev/` (uv, pre-commit, tooling)
 - Evidence/Reports:
   - `results&#47;<run_id>&#47;...` (Artefakte pro Run)
-  - `reports/quarto/` (Templates)
+  - `reports&#47;quarto&#47;` (Templates)
   - `docs&#47;reports&#47;` (How-to)
 - Data Lake:
   - `data&#47;lake&#47;` (Parquet)
@@ -364,7 +364,7 @@ python scripts/run_strategy_from_config.py --config config/my_strategy.toml
 ---
 
 ## Appendix A – Beispiel “Retention Policy” (später)
-- `results/`: behalte letzte N runs (z.B. 200) oder max age (z.B. 30 Tage)
+- `results&#47;`: behalte letzte N runs (z.B. 200) oder max age (z.B. 30 Tage)
 - `data&#47;lake&#47;`: nur gold dataset + curated partitions
 - optional: `scripts&sol;cleanup_artifacts.py` (noch nicht implementiert) + CI/cron (nur wenn ihr wollt)
 

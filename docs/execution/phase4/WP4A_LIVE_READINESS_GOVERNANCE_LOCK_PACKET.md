@@ -215,7 +215,7 @@ Jedes Gate hat:
 **Checklist:**
 - [ ] Live-Track Dashboard verfügbar (`templates/peak_trade_dashboard/`)
 - [ ] Alert-Pipeline aktiv (`src&#47;live&#47;alerts&#47;`)
-- [ ] Telemetry-Logs strukturiert und querybar (`logs/telemetry_health_snapshots.jsonl`)
+- [ ] Telemetry-Logs strukturiert und querybar (`logs&#47;telemetry_health_snapshots.jsonl`)
 - [ ] Incident-Alerts konfiguriert (Slack, Email, etc.)
 - [ ] Runbook für Alert-Handling existiert (`docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md`)
 - [ ] Health-Check Endpoints verfügbar (falls API vorhanden)
