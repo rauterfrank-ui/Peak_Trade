@@ -101,7 +101,7 @@ Für technische Details zu Projekt-Struktur, Modulen und Commands siehe [`CLAUDE
 | `docs/ai/` | AI-Guides und Prompts | Meta-Doku für AI-Nutzung |
 | `config/` | TOML-Configs, Sweeps, Test-Configs | Konfiguration anpassen |
 | `scripts/` | CLI-Skripte (Backtests, Reports, Live-Ops) | CLI-Funktionalität |
-| `reports/` | Generierte Reports (Artefakte) | Nicht committen |
+| `reports&#47;` | Generierte Reports (Artefakte) | Nicht committen |
 
 ### Wo gehören neue Dinge hin?
 
