@@ -44,7 +44,7 @@ Die Git-Rescue-Operation wurde erfolgreich durchgeführt. Es wurden sowohl **vol
 
 * Script: `scripts/ops/verify_git_rescue_artifacts.sh`
 * Zweck: Prüft Konsistenz/Existenz der zentralen Artefakte.
-* Usage: `bash scripts/ops/verify_git_rescue_artifacts.sh --backup-dir <path> --repo <path>`
+* Usage: `bash scripts&#47;ops&#47;verify_git_rescue_artifacts.sh --backup-dir <path> --repo <path>`
 
 ## Wiederhergestellte Branches
 
