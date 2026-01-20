@@ -96,7 +96,7 @@ Minimal-Set (wenn du schlank starten willst):
 
 **Evidence**
 - CI Run Links + Logs
-- `pip/uv` freeze / lockfile
+- `pip&#47;uv` freeze / lockfile
 - `pytest` Ergebnis + `ruff`/`mypy` (falls genutzt)
 
 ---

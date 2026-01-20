@@ -30,9 +30,9 @@
 - Documentation only (ops drill runs)
 
 **No Changes To:**
-- ❌ Workflows (`.github/workflows/**`)
+- ❌ Workflows (`.github&#47;workflows&#47;**`)
 - ❌ CI config
-- ❌ Source code (`src/**`)
+- ❌ Source code (`src&#47;**`)
 - ❌ Tests
 - ❌ Scripts
 

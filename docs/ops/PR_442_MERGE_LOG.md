@@ -4,7 +4,7 @@ Added `docs/audit/PR_441_AUDIT_REMEDIATION_SUMMARY.md`
 Updated `docs/audit/EVIDENCE_INDEX.md` with EV-9006 entry referencing PR #441 remediation summary
 - GitHub CI for PR #442: **9 checks passed**, no failing or pending checks (at merge time).
 - Local spot checks:
-  - `test -f docs/audit/PR_441_AUDIT_REMEDIATION_SUMMARY.md`
+  - `test -f docs&#47;audit&#47;PR_441_AUDIT_REMEDIATION_SUMMARY.md`
   - `rg -n "EV-9006" docs/audit/EVIDENCE_INDEX.md`
 LOW — documentation-only change. No production code paths affected.
 - To locate the remediation summary: open `docs/audit/PR_441_AUDIT_REMEDIATION_SUMMARY.md`

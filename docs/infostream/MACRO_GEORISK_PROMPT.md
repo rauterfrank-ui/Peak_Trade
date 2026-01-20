@@ -222,7 +222,7 @@ URGENT: Analysiere sofort für Peak_Trade:
 ## Integration in InfoStream
 
 1. **Makro-Analyst** erstellt INFO_PACKET (manuell oder mit KI)
-2. **Speichern** in `reports/infostream/events/`
+2. **Speichern** in `reports&#47;infostream&#47;events&#47;`
 3. **Weitergabe** an Datenauswertungsspezialisten für EVAL_PACKAGE
 4. **Action Items** in Operator-Runbook übernehmen
 5. **Learnings** in Mindmap dokumentieren

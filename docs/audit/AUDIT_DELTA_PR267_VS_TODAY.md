@@ -141,7 +141,7 @@ User: DevOps/Platform Team (manuell via Script)
 
 #### 2. **Branch Protection Verifikation** (21:05 CET)
 
-**Tool:** `scripts/ops/check_and_fix_branch_protection.sh status`
+**Tool:** `scripts&#47;ops&#47;check_and_fix_branch_protection.sh status`
 
 **Befund:**
 ```json

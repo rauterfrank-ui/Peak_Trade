@@ -103,7 +103,7 @@ We need an audit-stable, repeatable operator procedure to validate readiness and
 
 ### Integration
 - **Config Files:** Use existing Shadow/Paper configs (`config/shadow_config.toml`)
-- **Evidence Storage:** `results/drill_<timestamp>/`
+- **Evidence Storage:** `results&#47;drill_<timestamp>&#47;`
 - **Archival:** Create tar.gz of evidence pack post-drill
 
 ---

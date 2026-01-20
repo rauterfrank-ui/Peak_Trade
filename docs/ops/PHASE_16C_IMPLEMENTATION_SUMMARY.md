@@ -143,8 +143,8 @@ Metrics:
 ### ✅ D) Quarto Bridge
 
 **Files:**
-- `reports/quarto/backtest_report.qmd`
-- `reports/quarto/_quarto.yml`
+- `reports&#47;quarto&#47;backtest_report.qmd`
+- `reports&#47;quarto&#47;_quarto.yml`
 
 **Features:**
 - Loads from local `run_summary.json` (preferred)
@@ -513,7 +513,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 - Phase 16C Specification (user requirements)
 - `docs/dev/REPORTING.md` (user guide)
 - `src/experiments/tracking/` (implementation)
-- `tests/test_*_contract.py` (test specifications)
+- `tests&#47;test_*_contract.py` (test specifications)
 
 ---
 

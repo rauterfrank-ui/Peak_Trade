@@ -66,7 +66,7 @@ Phase 3 implementiert den **L2 Market Outlook Pilot** mit echten Model-API Calls
 
 ### 2.3 Transcript Store Format
 
-**Fixture:** `tests/fixtures/transcripts/l2_market_outlook_<scenario>.json`
+**Fixture:** `tests&#47;fixtures&#47;transcripts&#47;l2_market_outlook_<scenario>.json`
 
 ```json
 {
@@ -385,7 +385,7 @@ for output_type in proposer_outputs:
 
 ### ✅ NO-LIVE
 - L2 kann KEINE Execution Commands erzeugen (Capability Scope)
-- Keine Änderungen an `src/execution/**`
+- Keine Änderungen an `src&#47;execution&#47;**`
 - Keine Änderungen an Portfolio/Risk Configs
 
 ### ✅ Evidence-First

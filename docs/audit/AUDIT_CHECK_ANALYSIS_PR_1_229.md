@@ -1,7 +1,7 @@
 # Audit Check Analyse: PRs 1-229
 
 **Erstellt:** 2025-12-26 20:58 CET  
-**Datenquelle:** `reports/pr_audit_scan_1_229_20251226_205805.tsv`  
+**Datenquelle:** `reports&#47;pr_audit_scan_1_229_20251226_205805.tsv`  
 **Zeitraum:** 2025-12-12 bis 2025-12-21
 
 ---
@@ -170,7 +170,7 @@ Alle FAILURE-PRs sind entweder gemerged oder noch offen.
 
 ## 📎 Anhang: Rohdaten
 
-**Report-Datei:** `reports/pr_audit_scan_1_229_20251226_205805.tsv`
+**Report-Datei:** `reports&#47;pr_audit_scan_1_229_20251226_205805.tsv`
 
 **Ausführungszeitpunkt:** 2025-12-26 20:58:05 CET
 

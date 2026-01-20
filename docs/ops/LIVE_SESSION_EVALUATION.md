@@ -48,7 +48,7 @@ ts,symbol,side,qty,fill_price
 
 **Requirements:**
 - `ts`: ISO8601 timestamp (timezone-aware, `Z` suffix supported)
-- `symbol`: Asset pair (e.g., `BTC/USD`)
+- `symbol`: Asset pair (e.g., `BTC&#47;USD`)
 - `side`: `buy` or `sell` (case-insensitive)
 - `qty`: Positive float
 - `fill_price`: Positive float
@@ -334,6 +334,6 @@ python scripts/evaluate_live_session.py \
 
 ## Further Resources
 
-- **Test Suite:** `tests/test_live_eval_*.py`
+- **Test Suite:** `tests&#47;test_live_eval_*.py`
 - **Implementation:** `src/live_eval/`
 - **Related:** Session management, live execution monitoring

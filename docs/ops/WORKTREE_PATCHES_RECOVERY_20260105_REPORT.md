@@ -1,6 +1,6 @@
 # Worktree Patches Recovery Report — 2026-01-05
 
-**Branch**: `restore/worktree-patches-20260105`  
+**Branch**: `restore&#47;worktree-patches-20260105`  
 **Commit**: `e8afe1cc`  
 **Status**: ✅ Completed  
 **Operator**: Frank Rauter
@@ -25,13 +25,13 @@ Recovery-Aktion für Worktree-Patches aus `/Users/frnkhrz/Downloads/_peak_trade_
 **Status**: ✅ **BEREITS VORHANDEN**
 
 - Evidence Chain existiert bereits in `scripts/run_backtest.py` (Zeilen 503+)
-- Module vorhanden: `src/experiments/evidence_chain/`
+- Module vorhanden: `src&#47;experiments&#47;evidence_chain&#47;`
 - Imports vorhanden: `ensure_run_dir`, `write_config_snapshot`, `write_stats_json`, etc.
 
 **Untracked Files (nicht übernommen)**:
 - `EVIDENCE_CHAIN_PR.md` — Dokumentation (Artefakt)
 - `IMPLEMENTATION_COMPLETE.md` — Status-Report (Artefakt)
-- `mlruns/*` — MLflow run artifacts (nicht committen)
+- `mlruns&#47;*` — MLflow run artifacts (nicht committen)
 
 ---
 
@@ -207,9 +207,9 @@ pytest -m mlflow
 - `docs/ops/WORKTREE_RESCUE_SESSION_20260105_CLOSEOUT.md`
 
 **Related Features**:
-- Evidence Chain: `src/experiments/evidence_chain/`
+- Evidence Chain: `src&#47;experiments&#47;evidence_chain&#47;`
 - Tracking System: `src/experiments/tracking/`
-- CLI: `scripts/run_backtest.py --tracker mlflow`
+- CLI: `scripts&#47;run_backtest.py --tracker mlflow`
 
 ---
 
@@ -232,7 +232,7 @@ pytest -m mlflow
 |------|--------|
 | 2026-01-05 01:32 | Worktree-Snapshots erstellt |
 | 2026-01-05 ~14:00 | Patch-Analyse gestartet |
-| 2026-01-05 ~14:30 | Branch `restore/worktree-patches-20260105` erstellt |
+| 2026-01-05 ~14:30 | Branch `restore&#47;worktree-patches-20260105` erstellt |
 | 2026-01-05 ~14:35 | Commit `e8afe1cc` (tracking extra + mlflow marker) |
 | 2026-01-05 ~14:40 | Tests verified ✅ |
 | 2026-01-05 ~14:45 | Report finalized, ready for PR |

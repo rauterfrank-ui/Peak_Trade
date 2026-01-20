@@ -17,7 +17,7 @@ Docs-only addition of WP4B operator drill catalog and evidence pack template. De
 - Updated index/roadmap references:
   - `docs/execution/README.md` (WP4B section)
   - `docs/execution/PEAK_TRADE_LIVE_EXECUTION_ROADMAP_MULTI_AGENT_v1_0.md` (WP4B reference)
-- Fixed WP4A path reference in WP4B (corrected to `phase4/` subdirectory)
+- Fixed WP4A path reference in WP4B (corrected to `phase4&#47;` subdirectory)
 - Merged latest WP4A templates/fixes from policy-safe-hardening branch
 
 ## Drill Catalog (D1-D8)

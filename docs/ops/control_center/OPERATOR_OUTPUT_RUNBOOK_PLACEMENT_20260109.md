@@ -8,7 +8,7 @@ Context: Docs-only integration (AI Autonomy 4B M3)
 
 ## Zielsetzung
 
-Korrektur der Runbook-Platzierung: Verschiebung von temporärem Standort in `control_center/` zu kanonischem Standort in `docs/ops/runbooks/` mit vollständiger Namenskonvention.
+Korrektur der Runbook-Platzierung: Verschiebung von temporärem Standort in `control_center&#47;` zu kanonischem Standort in `docs/ops/runbooks/` mit vollständiger Namenskonvention.
 
 ---
 
@@ -59,7 +59,7 @@ Korrektur der Runbook-Platzierung: Verschiebung von temporärem Standort in `con
 ## Findings / Actions
 
 **Finding 1 (severity: low):**  
-Initiale Platzierung in `control_center/` statt `runbooks/` inkonsistent mit bestehenden AI Autonomy Runbooks.
+Initiale Platzierung in `control_center&#47;` statt `runbooks&#47;` inkonsistent mit bestehenden AI Autonomy Runbooks.
 
 **Action:** ✅ RESOLVED — Runbook verschoben zu kanonischem Standort, alle Links aktualisiert.
 

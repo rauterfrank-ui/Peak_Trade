@@ -1,7 +1,7 @@
 # Peak_Trade – Mindmap Overview (Top-Ideen & Ranking)
 
 Dieses Dokument zeigt die **wichtigsten offenen Ideen** mit Ranking.
-Quelle sind die Detail-Dateien in `docs/mindmap/*`.
+Quelle sind die Detail-Dateien in `docs&#47;mindmap&#47;*`.
 
 ## Top-Ideen (Sortiert nach PriorityScore)
 

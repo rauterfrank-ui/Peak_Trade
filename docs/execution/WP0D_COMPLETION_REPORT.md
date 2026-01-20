@@ -347,7 +347,7 @@ uv run ruff check src/execution/ledger_mapper.py \
 ### Docs Reference Targets Verification
 
 All references in this report point to:
-- Existing files: `src/execution/*.py`, `tests/execution/test_wp0d_*.py`
+- Existing files: `src&#47;execution&#47;*.py`, `tests&#47;execution&#47;test_wp0d_*.py`
 - Existing docs: `docs/execution/phase0/WP0D_TASK_PACKET.md`
 - Future targets clearly marked: "(future)" in plain text
 

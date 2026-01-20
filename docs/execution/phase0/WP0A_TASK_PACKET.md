@@ -504,11 +504,11 @@ CREATED/SUBMITTED/ACKNOWLEDGED → FAILED (terminal)
 
 ### Required Evidence Artifacts (Implementation Run)
 - [ ] **State Machine Coverage Report:** Document all state transitions tested
-  - Location pattern: `reports/execution/state_machine_coverage.md`
+  - Location pattern: `reports&#47;execution&#47;state_machine_coverage.md`
   - Content: Transition matrix (from_state → to_state), idempotency tests, invalid transition tests
   - Purpose: Verify OSM completeness, demonstrate gate-tauglich quality
 - [ ] **Crash-Restart Simulation:** Evidence of in-memory rebuild from audit log
-  - Location pattern: `reports/execution/crash_restart_simulation.json`
+  - Location pattern: `reports&#47;execution&#47;crash_restart_simulation.json`
   - Content: Scenario (orders submitted, crash, restart), state before/after, validation results
   - Purpose: Prove resilience, demonstrate audit log sufficiency
 - [ ] **Ledger Invariant Tests:** Evidence of position/cash invariants validated

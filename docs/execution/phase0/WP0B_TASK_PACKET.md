@@ -426,11 +426,11 @@ RECOVERING → ACTIVE (after cooldown, checks pass)
 
 ### Required Evidence Artifacts (Implementation Run)
 - [ ] **VaR/CVaR/Kupiec Report:** Portfolio risk metrics + validation
-  - Location pattern: `reports/risk/var_cvar_kupiec_*.md`
+  - Location pattern: `reports&#47;risk&#47;var_cvar_kupiec_*.md`
   - Content: Historical/Parametric/EWMA VaR, CVaR, Kupiec POF test results, traffic light status
   - Purpose: Demonstrate VaR validity, regulatory compliance
 - [ ] **Stress Suite Report:** Historical scenario impacts
-  - Location pattern: `reports/risk/stress_suite_*.md`
+  - Location pattern: `reports&#47;risk&#47;stress_suite_*.md`
   - Content: Scenario definitions, portfolio impact (% loss), resilience assessment
   - Purpose: Demonstrate stress preparedness, tail risk awareness
 - [ ] **Kill Switch Audit Log:** State transitions + triggers

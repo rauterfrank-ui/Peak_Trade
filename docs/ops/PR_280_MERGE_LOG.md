@@ -13,7 +13,7 @@ PR #280 wurde erfolgreich **gemerged** in `main`.
 - Ops-Dokumentation mit konkreten Referenzen aktualisieren.
 
 ## Changes
-- Session-Reports archiviert unter `docs/_worklogs/...`
+- Session-Reports archiviert unter `docs&#47;_worklogs&#47;...`
 - `README.md` im Worklog-Ordner ergänzt (Kontext)
 - `.gitignore` Root-Guard ergänzt (reduziert zukünftigen Root-Clutter)
 

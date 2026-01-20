@@ -12,7 +12,7 @@ Critical paths now require review from designated code owners:
 - `/src/execution/` → Order execution, exchange integration
 - `/scripts/ops/` → Production operations, deployment
 
-**Action Required:** Replace placeholder team handles (e.g., `@rauterfrank-ui/governance-reviewers`) with actual GitHub usernames or team names.
+**Action Required:** Replace placeholder team handles (e.g., `@rauterfrank-ui&#47;governance-reviewers`) with actual GitHub usernames or team names.
 
 ### ✅ 2. Merge Queue Support
 **Files Modified:**
@@ -223,7 +223,7 @@ Manual verification:
 
 ⚠️ **Private Repo Limitations:** Some security features (Secret scanning push protection, Code scanning) may require **GitHub Advanced Security** license for private repositories.
 
-⚠️ **Team Setup:** If using team handles in CODEOWNERS (e.g., `@org/team-name`), ensure those teams exist in your GitHub organization first.
+⚠️ **Team Setup:** If using team handles in CODEOWNERS (e.g., `@org&#47;team-name`), ensure those teams exist in your GitHub organization first.
 
 ⚠️ **Testing:** Always test guardrails with a non-critical PR before relying on them for production protection.
 

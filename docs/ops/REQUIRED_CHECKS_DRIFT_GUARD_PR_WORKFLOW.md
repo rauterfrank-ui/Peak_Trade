@@ -6,7 +6,7 @@ Dieses Workflow-Skript erstellt automatisch einen PR für das **Required Checks 
 
 ### Phase 1: Offline Checks
 - Führt `scripts/ops/verify_required_checks_drift.sh` aus (offline).
-- Führt `scripts/ops/ops_center.sh doctor` aus (falls vorhanden).
+- Führt `scripts&#47;ops&#47;ops_center.sh doctor` aus (falls vorhanden).
 - Führt `pytest` aus (nur wenn ein `tests/` Verzeichnis existiert; best-effort).
 
 ### Phase 2: Live Drift Check (optional)

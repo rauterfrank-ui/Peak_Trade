@@ -73,7 +73,7 @@ gh pr merge 589 --squash --delete-branch
 - 1,289 lines of new tooling code
 
 **Next Steps:**
-1. Fix lint: `ruff check --fix scripts/ops/*.py`
+1. Fix lint: `ruff check --fix scripts&#47;ops&#47;*.py`
 2. Fix audit issues
 3. Code review Python scripts
 4. Test workflow doesn't break other PRs

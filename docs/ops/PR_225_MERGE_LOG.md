@@ -28,7 +28,7 @@
 - tests (3.11) — ✅ PASS (4m10s)
 
 **Lokal**
-- `quarto render templates/quarto/backtest_report.qmd --to html`
+- `quarto render templates&#47;quarto&#47;backtest_report.qmd --to html`
 - ✅ Output erstellt: `backtest_report.html`
 - ⚠️ Hinweis: *Unknown meta key "date"* (nicht kritisch)
 
@@ -43,7 +43,7 @@
   - Nutze `python` (plain) statt `{python}`, damit keine ausführbaren Chunks "detektiert" werden.
   - Lass `execute.enabled: false` im YAML aktiv.
 - Sanity lokal:
-  - `quarto render templates/quarto/backtest_report.qmd --to html`
+  - `quarto render templates&#47;quarto&#47;backtest_report.qmd --to html`
 - Wenn die Warnung "Unknown meta key date" nervt:
   - Prüfe YAML-Metadaten oder entferne/normalisiere `date:` (optional, kein Muss).
 

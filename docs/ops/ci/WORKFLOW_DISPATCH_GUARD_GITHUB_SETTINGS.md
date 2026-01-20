@@ -4,7 +4,7 @@
 
 **Guard Functional:** ✅ Yes  
 **Required Check Active:** ❌ No (not present in `main` required checks list)  
-**Expected Context:** `CI / Workflow Dispatch Guard / dispatch-guard`  
+**Expected Context:** `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`  
 **Evidence:** `docs/ops/ci/evidence/PHASE5C_DISPATCH_GUARD_ENFORCEMENT_VERIFICATION_2026-01-12.md`
 
 **Once the settings are applied, update:**
@@ -16,7 +16,7 @@
 
 ## Required Check Context
 
-**Full Context String:** `CI / Workflow Dispatch Guard / dispatch-guard`
+**Full Context String:** `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 
 ## Configuration Steps
 
@@ -28,7 +28,7 @@
 4. Section: **Require status checks to pass before merging**
    - ✅ Enable: "Require status checks to pass before merging"
    - ✅ Enable: "Require branches to be up to date before merging" (recommended)
-5. Search for status check: `CI / Workflow Dispatch Guard / dispatch-guard`
+5. Search for status check: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 6. Click to add check to required list
 7. **Save changes**
 
@@ -38,7 +38,7 @@
 2. Find or Create: Ruleset for `main` branch
 3. Section: **Status checks**
    - ✅ Enable: "Require status checks to pass"
-4. Add status check: `CI / Workflow Dispatch Guard / dispatch-guard`
+4. Add status check: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 5. **Save ruleset**
 
 ## Verification
@@ -63,7 +63,7 @@ gh api repos/:owner/:repo/branches/main/protection
 ## Expected Behavior
 
 **When Check Runs:**
-- PR modifies files under `.github/workflows/*.yml` or `.github/workflows/*.yaml`
+- PR modifies files under `.github&#47;workflows&#47;*.yml` or `.github&#47;workflows&#47;*.yaml`
 - PR modifies guard script: `scripts/ops/validate_workflow_dispatch_guards.py`
 - PR modifies tests: `tests/ops/test_validate_workflow_dispatch_guards.py`
 
@@ -104,7 +104,7 @@ gh pr merge <PR_NUMBER> --admin --squash
 
 1. Navigate to: **GitHub → Settings → Branches** (or Rulesets)
 2. Edit protection rule for `main`
-3. Remove check: `CI / Workflow Dispatch Guard / dispatch-guard` from required list
+3. Remove check: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` from required list
 4. **Save changes**
 5. **Document reason** in: GitHub Issue or Ops runbook
 

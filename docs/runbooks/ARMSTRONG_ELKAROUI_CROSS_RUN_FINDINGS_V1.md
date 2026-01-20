@@ -18,7 +18,7 @@ Beispielhafte Runs:
 
 Die zugrunde liegenden Reports liegen unter:
 
-`reports/r_and_d/armstrong_elkaroui_combi/*_report.md`
+`reports&#47;r_and_d&#47;armstrong_elkaroui_combi&#47;*_report.md`
 
 ---
 

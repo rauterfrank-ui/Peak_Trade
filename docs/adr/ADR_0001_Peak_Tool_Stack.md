@@ -34,7 +34,7 @@ Implement observability and reproducibility infrastructure in three phases:
 
 **Components:**
 - `src/experiments/evidence_chain.py` (flat module architecture)
-- Standard artifact structure: `results/<run_id>/`
+- Standard artifact structure: `results&#47;<run_id>&#47;`
 - Optional MLflow integration (graceful degradation)
 - Optional Quarto reporting (graceful degradation)
 - Integration with existing `src/reporting/` ecosystem
@@ -51,7 +51,7 @@ P1 is implemented as a **flat module** (`src/experiments/evidence_chain.py`) rat
 3. **Integration pattern:** Works as a utility layer, not a framework
 
 #### Artifact Structure
-Each run creates standardized artifacts under `results/<run_id>/`:
+Each run creates standardized artifacts under `results&#47;<run_id>&#47;`:
 ```
 results/<run_id>/
 ├── config_snapshot.json    # Meta + Params
@@ -71,7 +71,7 @@ results/<run_id>/
 
 **2. Reporting Ecosystem:**
 - **Templates:** `templates/quarto/backtest_report.qmd` (policy-compliant, no tracked `reports/`)
-- **Rendering:** `scripts/utils/render_last_report.sh` (optional, writes to `results/<run_id>/report/`)
+- **Rendering:** `scripts/utils/render_last_report.sh` (optional, writes to `results&#47;<run_id>&#47;report&#47;`)
 - **Integration:** Binds to existing `src/reporting/` modules (plots, stats, visualizations)
 
 **3. Optional Dependencies:**
@@ -105,7 +105,7 @@ Evidence Chain core functions **always work**, regardless of optional dependenci
 **Planned Components:**
 - `src/data/lake/` – DuckDB + Parquet data lake
 - `src/obs/otel.py` – OpenTelemetry SDK wiring
-- `ops/observability/` – Grafana/Loki/Tempo/Prometheus stack (Docker Compose)
+- `ops&#47;observability&#47;` – Grafana/Loki/Tempo/Prometheus stack (Docker Compose)
 
 **Status:** Backlog. See `docs/roadmap/P2_OBSERVABILITY_BACKLOG.md` for detailed plan.
 

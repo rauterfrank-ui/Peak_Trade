@@ -14,7 +14,7 @@ Add additive-only Phase-7 convenience API for Kupiec POF:
 - `kupiec_from_exceedances(exceedances, alpha, **kwargs)` — boolean series helper
 - `KupiecLRResult` — lightweight frozen result dataclass with verdict ("PASS"/"FAIL")
 
-Includes minimal CLI `scripts/run_kupiec_pof.py` with `--n/--x/--alpha` and optional `--exceedances-csv`.
+Includes minimal CLI `scripts/run_kupiec_pof.py` with `--n&#47;--x&#47;--alpha` and optional `--exceedances-csv`.
 
 ## Why
 
@@ -45,7 +45,7 @@ Wrapper pattern reuses existing `_compute_lr_statistic()` and `chi2_df1_sf()` �
 ### CLI (1 file new, +127 LOC)
 
 **`scripts/run_kupiec_pof.py`**
-- Direct `--n/--x/--alpha` interface
+- Direct `--n&#47;--x&#47;--alpha` interface
 - Optional `--exceedances-csv` for file input
 - `--p-threshold` (default 0.05)
 - Compact, CI-friendly report output

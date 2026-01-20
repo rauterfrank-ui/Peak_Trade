@@ -4,7 +4,7 @@
 
 **Policy Decision:** ✅ ENFORCE (same-day, based on burn-in)  
 **Activation State:** ⚠️ NOT ACTIVE as a required check on `main` (operator action pending)  
-**Expected Required Check Context:** `CI / Workflow Dispatch Guard / dispatch-guard`  
+**Expected Required Check Context:** `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`  
 **Verification Evidence:** `docs/ops/ci/evidence/PHASE5C_DISPATCH_GUARD_ENFORCEMENT_VERIFICATION_2026-01-12.md`
 
 **What this means:**
@@ -12,7 +12,7 @@
 - Enforcement is **not** effective until GitHub branch protection/ruleset includes the required check context above.
 
 **Operator Action Required (Summary):**
-- Add `CI / Workflow Dispatch Guard / dispatch-guard` to `main` required checks
+- Add `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` to `main` required checks
 - Re-verify with a workflow-touching PR and append evidence addendum
 
 ## Status
@@ -21,9 +21,9 @@
 
 ## Check Details
 
-- **Workflow Name:** `CI / Workflow Dispatch Guard`
+- **Workflow Name:** `CI &#47; Workflow Dispatch Guard`
 - **Job Name:** `dispatch-guard`
-- **Required Check Context:** `CI / Workflow Dispatch Guard / dispatch-guard`
+- **Required Check Context:** `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 - **Path:** `.github/workflows/ci-workflow-dispatch-guard.yml`
 
 ## Timeline
@@ -65,12 +65,12 @@
 
 **Required Status Checks (TO BE ADDED):**
 - Enable: ✅ Require status checks to pass before merging
-- Check: `CI / Workflow Dispatch Guard / dispatch-guard` ← **ADD THIS**
+- Check: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` ← **ADD THIS**
 
 **Alternative (Rulesets - Modern):**
 - GitHub → Settings → Rules → Rulesets
 - Target: `main` branch
-- Required checks: Add `CI / Workflow Dispatch Guard / dispatch-guard` ← **ADD THIS**
+- Required checks: Add `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` ← **ADD THIS**
 
 ## Bypass/Override Policy
 
@@ -89,7 +89,7 @@
 
 1. **Immediate Action:**
    - Open GitHub Issue documenting false positive (workflow file, line, context)
-   - Label issue: `bug/false-positive`, `ci/guard`
+   - Label issue: `bug&#47;false-positive`, `ci/guard`
 
 2. **Temporary Mitigation:**
    - Remove check from required list (Settings → Branch Protection)

@@ -4,7 +4,7 @@
 
 | Attribut | Wert |
 |----------|------|
-| **Status** | `EXPERIMENTAL / v0` |
+| **Status** | `EXPERIMENTAL &#47; v0` |
 | **Scope** | Offline-Paper-Trade, Offline-Realtime-Drills |
 | **Owner** | Peak_Trade Reporting Team |
 | **Created** | 2025-12-10 |
@@ -23,8 +23,8 @@
 
 | Report-Typ | Pfad |
 |------------|------|
-| **Offline Paper Trade Report** | `reports/offline_paper_trade/<session_id>/offline_paper_trade_report.html` |
-| **Trigger Training Report** | `reports/offline_paper_trade/<session_id>/trigger_training_report.html` |
+| **Offline Paper Trade Report** | `reports&#47;offline_paper_trade&#47;<session_id>&#47;offline_paper_trade_report.html` |
+| **Trigger Training Report** | `reports&#47;offline_paper_trade&#47;<session_id>&#47;trigger_training_report.html` |
 
 ---
 

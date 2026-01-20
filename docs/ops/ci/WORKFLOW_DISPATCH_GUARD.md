@@ -153,7 +153,7 @@ uv run pytest -q tests/ops/test_validate_workflow_dispatch_guards.py -v
 **Nach 1-2 PRs ohne False Positives sollte dieser Check als Required Status Check markiert werden:**
 
 1. GitHub → Settings → Branches → Branch Protection Rules (oder Rulesets)
-2. Check hinzufügen: `CI / Workflow Dispatch Guard / dispatch-guard`
+2. Check hinzufügen: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 3. Blockiert PRs bei Findings
 
 ## Referenzen

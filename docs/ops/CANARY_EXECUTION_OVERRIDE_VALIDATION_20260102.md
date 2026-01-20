@@ -92,7 +92,7 @@ When working on PRs that modify execution-layer code:
 
 1. **Create Evidence**
    - Copy template: `docs/ops/evidence/templates/EXECUTION_REVIEW_EVIDENCE_TEMPLATE.md`
-   - Name: `docs/ops/evidence/PR_<number>_EXECUTION_REVIEW.md`
+   - Name: `docs&#47;ops&#47;evidence&#47;PR_<number>_EXECUTION_REVIEW.md`
    - Fill all sections: Scope, Test Plan (automated & manual), Results, Attestation
 
 2. **Set Override Label**

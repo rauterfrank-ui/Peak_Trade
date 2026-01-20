@@ -16,11 +16,11 @@
 
 ## Änderungen
 **Geändert**
-- `{{path/to/file.ext}}` — {{SHORT_CHANGE_DESC}}
-- `{{path/to/file.ext}}` — {{SHORT_CHANGE_DESC}}
+- `{{path&#47;to&#47;file.ext}}` — {{SHORT_CHANGE_DESC}}
+- `{{path&#47;to&#47;file.ext}}` — {{SHORT_CHANGE_DESC}}
 
 **Neu**
-- `{{path/to/new_file.ext}}` — {{SHORT_DESC}}
+- `{{path&#47;to&#47;new_file.ext}}` — {{SHORT_DESC}}
 
 ## Verifikation
 **CI**

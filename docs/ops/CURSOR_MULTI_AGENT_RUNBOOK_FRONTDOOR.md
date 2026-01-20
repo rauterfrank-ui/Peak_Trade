@@ -119,7 +119,7 @@ task_packet:
 ---
 
 ## 5. PR-Contract (DoD) — Muss in jeder PR-Beschreibung stehen
-**Einsatzort:** GitHub PR Description (oder `docs/ops/PR_<N>_MERGE_LOG.md` als Verified Log).
+**Einsatzort:** GitHub PR Description (oder `docs&#47;ops&#47;PR_<N>_MERGE_LOG.md` als Verified Log).
 
 Pflichtsektionen:
 - **Summary:** Was wurde geändert (max 6 bullets)
@@ -281,7 +281,7 @@ bash 'scripts'/'ops'/'bg_job.sh' --help || bash 'scripts'/'ops'/'bg_job.sh' help
 
 **Referenz:** `docs/ops/RUNBOOK_BACKGROUND_JOBS.md`
 
-**Gate-Safety Hinweis:** In Dokumentations-Referenzen muss der Pfad maskiert werden (`'scripts'/'ops'/'bg_job.sh'`), um docs-reference-targets-gate Konflikte zu vermeiden.
+**Gate-Safety Hinweis:** In Dokumentations-Referenzen muss der Pfad maskiert werden (`'scripts'&#47;'ops'&#47;'bg_job.sh'`), um docs-reference-targets-gate Konflikte zu vermeiden.
 
 ---
 
@@ -290,7 +290,7 @@ bash 'scripts'/'ops'/'bg_job.sh' --help || bash 'scripts'/'ops'/'bg_job.sh' help
 
 Minimum je operator-relevant PR:
 - Runbook-Abschnitt: **Purpose, Preconditions, How-To, Outputs, Failure modes, Rollback**
-- Output-Location (z.B. `reports/...`) und Hinweis: **Reports nicht tracken**
+- Output-Location (z.B. `reports&#47;...`) und Hinweis: **Reports nicht tracken**
 - 1–2 Operator Quick Commands (oder Integration in ein existierendes Ops-Script)
 - Evidence: Screenshot/Log Snippet/CI Links
 
@@ -392,7 +392,7 @@ Die Ausführung läuft immer als wiederholbarer 6-Step Zyklus:
 
 1. **Anchoring Pass** (Appendix E verwenden): „Current Reality" (bestehende Pfade, Packages, Gates) erfassen.
 2. **Phase wählen** (standard: Phase 0) und **WPs selektieren**.
-3. **Branch anlegen** nach Namensschema: `feat/live-exec-phase{X}-<slug>`
+3. **Branch anlegen** nach Namensschema: `feat&#47;live-exec-phase{X}-<slug>`
 4. **Task-Packets erzeugen** (pro WP) + Ownership-Locks setzen.
 5. Agents implementieren in Ownership, liefern DoD/Tests/Evidence.
 6. **Integration Day**: A0 integriert, fährt CI/Tests, erstellt Gate-Report + Evidence Pack.
@@ -634,4 +634,4 @@ rg -n '(^|[^\\])(docs|src)\/' docs -S || true
 
 Daumenregel:
 - Nur zu **existing** Targets verlinken.
-- **Future** Targets nur als Text erwähnen: in Anführungszeichen, mit `(future)` und Slashes escaped (z.B. `docs\/...`).
+- **Future** Targets nur als Text erwähnen: in Anführungszeichen, mit `(future)` und Slashes escaped (z.B. `docs\&#47;...`).

@@ -20,7 +20,7 @@
 * **Cycle-ID:** 1
 * **Run-ID:** `live_promotion_20251211T230825Z`
 * **Timestamp:** 2025-12-11 23:08 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T230825Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T230825Z&#47;`
 
 **Vorgeschlagene Patches (Kurzüberblick):**
 
@@ -58,7 +58,7 @@
 * **Cycle-ID:** 2
 * **Run-ID:** `live_promotion_20251211T231514Z`
 * **Timestamp:** 2025-12-11 23:15 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T231514Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T231514Z&#47;`
 
 **Vorgeschlagene Patches (Kurzüberblick):**
 
@@ -114,7 +114,7 @@
 * **Cycle-ID:** 3
 * **Run-ID:** `live_promotion_20251211T232156Z`
 * **Timestamp:** 2025-12-11 23:21 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T232156Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T232156Z&#47;`
 
 **Vorgeschlagene Patches (Kurzüberblick):**
 
@@ -149,7 +149,7 @@
 * **Cycle-ID:** 4
 * **Run-ID:** `live_promotion_20251211T232207Z`
 * **Timestamp:** 2025-12-11 23:22 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T232207Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T232207Z&#47;`
 
 **Vorgeschlagene Patches (Kurzüberblick):**
 
@@ -184,7 +184,7 @@
 * **Cycle-ID:** 5
 * **Run-ID:** `live_promotion_20251211T232211Z`
 * **Timestamp:** 2025-12-11 23:22 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T232211Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T232211Z&#47;`
 
 **Vorgeschlagene Patches (Kurzüberblick):**
 
@@ -464,7 +464,7 @@ Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nic
 * **Cycle-ID:** 6
 * **Run-ID:** `live_promotion_20251211T233810Z`
 * **Timestamp:** 2025-12-11 23:38 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T233810Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T233810Z&#47;`
 * **Fokus:** Threshold Boundary Testing
 
 **Vorgeschlagene Patches (Kurzüberblick):**
@@ -500,7 +500,7 @@ Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nic
 * **Cycle-ID:** 7
 * **Run-ID:** `live_promotion_20251211T233819Z`
 * **Timestamp:** 2025-12-11 23:38 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T233819Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T233819Z&#47;`
 * **Fokus:** Strategy Parameters
 
 **Vorgeschlagene Patches (Kurzüberblick):**
@@ -536,7 +536,7 @@ Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nic
 * **Cycle-ID:** 8
 * **Run-ID:** `live_promotion_20251211T233821Z`
 * **Timestamp:** 2025-12-11 23:38 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T233821Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T233821Z&#47;`
 * **Fokus:** Macro & Regime Parameters
 
 **Vorgeschlagene Patches (Kurzüberblick):**
@@ -574,7 +574,7 @@ Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nic
 * **Cycle-ID:** 9
 * **Run-ID:** `live_promotion_20251211T233823Z`
 * **Timestamp:** 2025-12-11 23:38 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T233823Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T233823Z&#47;`
 * **Fokus:** High Confidence & Bounds Testing
 
 **Vorgeschlagene Patches (Kurzüberblick):**
@@ -610,7 +610,7 @@ Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nic
 * **Cycle-ID:** 10
 * **Run-ID:** `live_promotion_20251211T233825Z`
 * **Timestamp:** 2025-12-11 23:38 UTC
-* **Reports:** `reports/live_promotion/live_promotion_20251211T233825Z/`
+* **Reports:** `reports&#47;live_promotion&#47;live_promotion_20251211T233825Z&#47;`
 * **Fokus:** Mixed + Blacklist Testing
 
 **Vorgeschlagene Patches (Kurzüberblick):**

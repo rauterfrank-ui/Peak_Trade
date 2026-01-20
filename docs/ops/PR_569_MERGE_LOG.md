@@ -1,7 +1,7 @@
 # PR #569 — Merge Log
 
 **Status:** ✅ Merged  
-**Branch:** `restore/worktree-patches-20260105` → `main`  
+**Branch:** `restore&#47;worktree-patches-20260105` → `main`  
 **Merged:** 2026-01-05  
 **Merge Type:** Squash  
 
@@ -359,7 +359,7 @@ uv sync
 ### Pull Request
 - **GitHub PR:** [#569](https://github.com/rauterfrank-ui/Peak_Trade/pull/569)
 - **Title:** `feat(tracking): recover missing MLflow declarations from worktree patches`
-- **Branch:** `restore/worktree-patches-20260105`
+- **Branch:** `restore&#47;worktree-patches-20260105`
 - **Merge Commit:** `410feb3a`
 
 ### Related Documentation
@@ -373,7 +373,7 @@ uv sync
 
 ### Test Files
 - `tests/test_tracking_mlflow_integration.py` (18 Tests)
-- `tests/test_tracking.py` (Noop-Tracker Tests)
+- `tests&#47;test_tracking.py` (Noop-Tracker Tests)
 
 ### Modified Files
 ```

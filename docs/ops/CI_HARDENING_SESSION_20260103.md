@@ -1,7 +1,7 @@
 # 2026-01-03 — CI Hardening Session (Required Checks + Mergeability Quickflow)
 
 ## Context
-Problem: Required Check `CI/tests (3.11)` hing/pending oder wurde teils cancelled, obwohl CI-Runs success waren → Merge blockiert (Ruleset). Hypothesen: nicht-deterministische Workflow-Job-Erzeugung (paths/if), Cross-PR concurrency cancels, Context-Name Drift.
+Problem: Required Check `CI&#47;tests (3.11)` hing/pending oder wurde teils cancelled, obwohl CI-Runs success waren → Merge blockiert (Ruleset). Hypothesen: nicht-deterministische Workflow-Job-Erzeugung (paths/if), Cross-PR concurrency cancels, Context-Name Drift.
 
 ## Goals
 - Required Contexts müssen **immer** materialisieren (auch docs-only) → „fast-success/stub" statt Job nicht zu erstellen.
@@ -13,7 +13,7 @@ Problem: Required Check `CI/tests (3.11)` hing/pending oder wurde teils cancelle
 ### CI Workflow Hardening (`.github/workflows/ci.yml`)
 - PR-isolierte Concurrency Group ohne Prefix.
 - `changes` Job fail-open:
-  - `dorny/paths-filter` `continue-on-error: true`
+  - `dorny&#47;paths-filter` `continue-on-error: true`
   - Safe output computation: bei Filter-Failure `code_changed=true` (konservativ: Tests laufen).
 - Required Jobs behalten deterministische Namen:
   - `tests (${{ matrix.python-version }})` → garantiert `tests (3.11)`

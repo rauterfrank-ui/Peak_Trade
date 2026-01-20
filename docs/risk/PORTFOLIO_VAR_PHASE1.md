@@ -226,7 +226,7 @@ For horizon_days > 1:
 
 ### Why?
 
-Data feeds provide symbols like `"BTC/EUR"`, but returns DataFrames often use base assets like `"BTC"`.
+Data feeds provide symbols like `"BTC&#47;EUR"`, but returns DataFrames often use base assets like `"BTC"`.
 
 ### Modes
 
@@ -237,7 +237,7 @@ Data feeds provide symbols like `"BTC/EUR"`, but returns DataFrames often use ba
 
 ### Supported Formats
 
-- **Slash**: `BTC/EUR` → `BTC`
+- **Slash**: `BTC&#47;EUR` → `BTC`
 - **Dash**: `ETH-USD` → `ETH`
 - **Underscore**: `SOL_USDT` → `SOL`
 - **Already normalized**: `BTC` → `BTC`

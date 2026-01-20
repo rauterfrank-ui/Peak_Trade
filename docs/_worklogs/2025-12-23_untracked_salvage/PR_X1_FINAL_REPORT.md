@@ -16,17 +16,17 @@
    - build_tracker_from_config() factory
    - Helper functions (_cfg_get, _import_mlflow_or_raise, _stringify_param, _to_jsonable)
 
-2. ✅ `tests/core/test_tracking.py` (67 lines)
+2. ✅ `tests&#47;core&#47;test_tracking.py` (67 lines)
    - test_noop_tracker_is_safe()
    - test_build_tracker_disabled_returns_none()
    - test_build_tracker_noop_enabled_returns_noop()
    - test_build_tracker_mlflow_missing_dep_raises_cleanly()
    - test_build_tracking_config_reads_mlflow_section()
 
-3. ✅ `tests/core/test_tracking_noop.py` (53 lines)
+3. ✅ `tests&#47;core&#47;test_tracking_noop.py` (53 lines)
    - Additional NoopTracker safety tests
 
-4. ✅ `docs/STRATEGY_VNEXT_CONSOLIDATED.md` (674 lines)
+4. ✅ `docs&#47;STRATEGY_VNEXT_CONSOLIDATED.md` (674 lines)
    - Complete vNext guide (PR X1, X2, X3)
    - Tracking section with config examples
    - Safe-by-default principles
@@ -282,7 +282,7 @@ open http://localhost:5000
 - Tests: parameter validation, Optuna smoke test
 
 ### PR X3: Acceleration Scaffolding (Follow-up)
-- Add `src/data/backend.py` (DataBackend)
+- Add `src&#47;data&#47;backend.py` (DataBackend)
 - Support Parquet loading via duckdb/polars
 - Ensure Strategy API unchanged (pandas.DataFrame)
 - Tests: backend fallbacks, import guards

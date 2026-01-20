@@ -53,7 +53,7 @@ PR #640 wurde erfolgreich nach `main` gemerged. Alle CI-Checks sind grün; initi
   - `strategy-smoke`: **PASS**
   - Python Test Matrix (3.9/3.10/3.11): **PASS**
   - Audit: **PASS**
-- Lokale Validierung (Operator-Reported): pytest-Subset für `tests/ai_orchestration/test_*.py` war grün.
+- Lokale Validierung (Operator-Reported): pytest-Subset für `tests&#47;ai_orchestration&#47;test_*.py` war grün.
 
 ## Risk
 **LOW bis MEDIUM** (Scope enthält neue `src/`-Module und Scripts; keine Hinweise auf Regressionen durch CI, aber funktionaler Umfang ist nicht docs-only).
@@ -81,7 +81,7 @@ PR #640 wurde erfolgreich nach `main` gemerged. Alle CI-Checks sind grün; initi
 - PR: [#640](https://github.com/rauterfrank-ui/Peak_Trade/pull/640)
 - Branch: `feat/ai-orchestration-l2-runner-p0`
 - Merge-Commit: `5744992f`
-- CI: `Lint Gate (Always Run)`, `strategy-smoke`, `CI/tests (3.9/3.10/3.11)`, `Audit/audit`
+- CI: `Lint Gate (Always Run)`, `strategy-smoke`, `CI&#47;tests (3.9&#47;3.10&#47;3.11)`, `Audit&#47;audit`
 - Datum: 2026-01-10
 
 ## Next Steps

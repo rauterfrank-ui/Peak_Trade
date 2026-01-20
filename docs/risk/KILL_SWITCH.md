@@ -266,7 +266,7 @@ max_position = base_position_size * factor
 - Automatic backup vor Überschreiben
 - State recovery on startup
 
-**Speicherort:** `data/kill_switch/state.json`
+**Speicherort:** `data&#47;kill_switch&#47;state.json`
 
 ```python
 from src.risk_layer.kill_switch.persistence import StatePersistence

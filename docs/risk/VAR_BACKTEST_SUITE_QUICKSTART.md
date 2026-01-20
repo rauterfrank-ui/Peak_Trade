@@ -35,8 +35,8 @@ python scripts/risk/run_var_backtest_suite.py \
 ```
 
 **Output:**
-- `results/var_suite/suite_report.json` — Maschinenlesbarer Report (JSON)
-- `results/var_suite/suite_report.md` — Menschenlesbarer Report (Markdown)
+- `results&#47;var_suite&#47;suite_report.json` — Maschinenlesbarer Report (JSON)
+- `results&#47;var_suite&#47;suite_report.md` — Menschenlesbarer Report (Markdown)
 
 **Exit Code:**
 - `0` = Suite PASSED (alle Tests grün)
@@ -284,9 +284,9 @@ python scripts/risk/var_suite_build_index.py \
 ```
 
 **Output:**
-- `results/var_suite/index.json` — Maschinenlesbarer Index
-- `results/var_suite/index.md` — Markdown-Tabelle aller Runs
-- `results/var_suite/index.html` — HTML-Dashboard (öffnen in Browser)
+- `results&#47;var_suite&#47;index.json` — Maschinenlesbarer Index
+- `results&#47;var_suite&#47;index.md` — Markdown-Tabelle aller Runs
+- `results&#47;var_suite&#47;index.html` — HTML-Dashboard (öffnen in Browser)
 
 **Use Case:**
 - Übersicht über alle historischen VaR-Runs
@@ -295,7 +295,7 @@ python scripts/risk/var_suite_build_index.py \
 
 **Beispiel HTML Output:**
 
-Open `results/var_suite/index.html` in Browser:
+Open `results&#47;var_suite&#47;index.html` in Browser:
 - Tabelle mit allen Runs (run_id, observations, breaches, overall result)
 - Clickable Links zu JSON/MD Reports
 - Color-coded (PASS=grün, FAIL=rot)
@@ -312,9 +312,9 @@ python scripts/risk/var_suite_compare_runs.py \
 ```
 
 **Output:**
-- `results/var_suite/compare/compare.json` — Strukturierter Diff
-- `results/var_suite/compare/compare.md` — Markdown-Report
-- `results/var_suite/compare/compare.html` — HTML-Dashboard
+- `results&#47;var_suite&#47;compare&#47;compare.json` — Strukturierter Diff
+- `results&#47;var_suite&#47;compare&#47;compare.md` — Markdown-Report
+- `results&#47;var_suite&#47;compare&#47;compare.html` — HTML-Dashboard
 
 **Exit Code:**
 - `0` = No regressions (candidate is equal or better)

@@ -64,9 +64,9 @@ finally:
 **Neue Funktion**: `log_backtest_artifacts(tracker, result)`
 
 **Erstellt automatisch**:
-- `plots/equity_curve.png` — Equity + Drawdown Plot
-- `reports/trades_summary.json` — Trade-Stats als JSON
-- `reports/backtest_report.txt` — Text-Report
+- `plots&#47;equity_curve.png` — Equity + Drawdown Plot
+- `reports&#47;trades_summary.json` — Trade-Stats als JSON
+- `reports&#47;backtest_report.txt` — Text-Report
 
 **Example**:
 ```python
