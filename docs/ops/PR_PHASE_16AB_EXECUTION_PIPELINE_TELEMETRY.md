@@ -141,11 +141,11 @@ uvicorn src.webui.app:app --reload --port 8000
 ### API Endpoints (Phase 16B)
 
 **Execution Timeline API:**
-- `GET /api/live/execution/{session_id}?limit=200&kind=fill`
+- `GET &#47;api&#47;live&#47;execution&#47;{session_id}?limit=200&kind=fill`
 - Returns: `{ timeline, summary, filters, count }`
 
 **Execution Timeline HTML:**
-- `GET /live/execution/{session_id}?kind=order&limit=100`
+- `GET &#47;live&#47;execution&#47;{session_id}?kind=order&limit=100`
 - Returns: Filterable table with event details
 
 ### Existing Endpoints (Unaffected)

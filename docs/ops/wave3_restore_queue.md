@@ -99,7 +99,7 @@
 - **WARNING:** 5 Branches mit identischem Subject/Datum
 - Vermutlich retries/duplicates aus CI/Cursor
 - **Action:** Diff gegen main, dann merge EINEN oder löschen alle
-- `git diff main..origin/beautiful-ritchie --stat`
+- `git diff main..origin&#47;beautiful-ritchie --stat`
 
 ---
 
@@ -401,7 +401,7 @@ gh pr create + review + merge
 **Target:** Review 8 Tier C branches  
 **Approach:** Full review + signoff
 
-1. Diff review: `git diff main..origin/$branch`
+1. Diff review: `git diff main..origin&#47;$branch`
 2. Risk assessment per branch
 3. Test plan execution
 4. Operator signoff required
@@ -425,7 +425,7 @@ git push origin --delete wip/stash-archive-20251227_010347_3
 ```
 
 **Verification:**
-- `git branch -r | grep "origin/" | wc -l` → expect ~20 (nur noch merged)
+- `git branch -r | grep "origin&#47;" | wc -l` → expect ~20 (nur noch merged)
 - Document deleted branches in Wave3 closeout
 
 ---

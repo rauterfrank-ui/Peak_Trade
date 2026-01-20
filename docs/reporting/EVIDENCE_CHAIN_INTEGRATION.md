@@ -222,8 +222,8 @@ done
 
 **Solutions:**
 1. Install Quarto: https://quarto.org/docs/get-started/
-2. Or skip report: `python scripts/run_backtest.py --no-report`
-3. Or render later: `bash scripts/utils/render_last_report.sh <run_id>`
+2. Or skip report: `python scripts&#47;run_backtest.py --no-report`
+3. Or render later: `bash scripts&#47;utils&#47;render_last_report.sh <run_id>`
 
 ### Problem: trades.parquet not created
 
@@ -244,7 +244,7 @@ done
 
 **Solutions:**
 1. Check MLflow setup: `mlflow ui` (should start server)
-2. Verify tracker mode: `python scripts/run_backtest.py --tracker auto`
+2. Verify tracker mode: `python scripts&#47;run_backtest.py --tracker auto`
 3. Or accept local artifacts only (no MLflow needed for reproducibility)
 
 ## Best Practices
