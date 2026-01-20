@@ -92,6 +92,6 @@ python scripts/ops/check_merge_log_hygiene.py
 ## Output‑Artefakte (D4, Minimum)
 
 - **Template Updates**: betroffene Template‑Dateien unter `docs/` / `templates/` (falls genutzt)
-- **Merge‑Log**: `docs/ops/PR_<NNN>_MERGE_LOG.md` (oder äquivalentes Muster im Repo)
+- **Merge‑Log**: `docs&#47;ops&#47;PR_<NNN>_MERGE_LOG.md` (oder äquivalentes Muster im Repo)
 - **Evidence Snapshot**: EV‑ID Eintrag im Evidence‑Index (falls im Repo vorhanden)
 - **Gate Snapshot**: ein „PASS/FAIL + kurze Notiz“ Block im Merge‑Log (keine Watch‑Outputs)
