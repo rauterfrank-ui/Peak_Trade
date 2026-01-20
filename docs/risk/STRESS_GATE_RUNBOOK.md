@@ -466,4 +466,4 @@ Stress Gate folgt dem **safe-by-default** Prinzip:
 
 - [VAR_GATE_RUNBOOK.md](./VAR_GATE_RUNBOOK.md) - VaR Gate documentation
 - [KILL_SWITCH_RUNBOOK.md](./KILL_SWITCH_RUNBOOK.md) - Kill Switch documentation
-- [RISK_LAYER_V1_PRODUCTION_READY_REPORT.md](../../RISK_LAYER_V1_PRODUCTION_READY_REPORT.md) - Risk Layer overview
+- [RISK_LAYER_V1_PRODUCTION_READY_REPORT.md](./RISK_LAYER_V1_PRODUCTION_READY_REPORT.md) - Risk Layer overview
