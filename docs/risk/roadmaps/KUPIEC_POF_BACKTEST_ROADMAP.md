@@ -737,7 +737,7 @@ tests/risk/var_backtest/
 - [ ] JSON Report maschinenlesbar
 - [ ] Traffic Light System (🟢 ACCEPT, 🟡 WARNING, 🔴 REJECT)
 - [ ] Charts: Violation Timeline, VaR vs Returns
-- [ ] Export nach `reports/var_backtest/`
+- [ ] Export nach `reports&#47;var_backtest&#47;`
 
 ---
 

@@ -61,7 +61,7 @@ print(f"Max DD: {result.stats['max_drawdown']:.2%}")
 - `0.02` = +2% Gewinn
 - `-0.03` = -3% Verlust
 
-**Berechnung**: `return = (price_t / price_{t-1}) - 1`
+**Berechnung**: `return = (price_t &#47; price_{t-1}) - 1`
 
 ### Alpha (Konfidenzniveau)
 
@@ -302,7 +302,7 @@ Bei HARD Breach:
 
 **Lösung**:
 - Optional: `pip install scipy` für exakte Normal-Quantile
-- Oder: Nutze `historical_var/cvar` (kein scipy nötig)
+- Oder: Nutze `historical_var&#47;cvar` (kein scipy nötig)
 - Fallback funktioniert für alpha=0.01, 0.05, 0.10
 
 ### "NaN in Returns"
