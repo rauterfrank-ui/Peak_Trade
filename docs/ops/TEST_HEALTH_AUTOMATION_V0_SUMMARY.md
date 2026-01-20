@@ -28,7 +28,7 @@
   - `load_test_health_profile()` – TOML-Profil laden & validieren
   - `run_single_check()` – Einzelnen Check ausführen
   - `aggregate_health()` – Health-Score berechnen (0-100)
-  - `write_test_health_json/md/html()` – Reports schreiben
+  - `write_test_health_json&#47;md&#47;html()` – Reports schreiben
   - `run_test_health_profile()` – Kompletter Profil-Lauf
 - **Features**:
   - Gewichteter Health-Score (0-100)
@@ -87,7 +87,7 @@
 
 | # | Kriterium | Status |
 |---|-----------|--------|
-| 1 | `python scripts/run_test_health_profile.py` erstellt Report-Verzeichnis | ✅ |
+| 1 | `python scripts&#47;run_test_health_profile.py` erstellt Report-Verzeichnis | ✅ |
 | 2 | `summary.json`, `summary.md`, `summary.html` werden erzeugt | ✅ |
 | 3 | Health-Score reagiert logisch auf PASS/FAIL | ✅ |
 | 4 | Smoke-Scripts laufen stabil | ✅ |
@@ -209,7 +209,7 @@ Die v0-Implementierung ist bewusst minimalistisch. Geplante Erweiterungen:
 
 **Entwickler**: Peak_Trade Ops Team  
 **Dokumentation**: `docs/ops/TEST_HEALTH_AUTOMATION_V0.md`  
-**Tests**: `pytest tests/ops/test_test_health_runner.py`
+**Tests**: `pytest tests&#47;ops&#47;test_test_health_runner.py`
 
 ---
 

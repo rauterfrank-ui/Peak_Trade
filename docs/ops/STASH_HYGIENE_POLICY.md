@@ -13,7 +13,7 @@ Ziel: Stashes **kurzlebig** halten und "stille" Repo-Verschmutzung vermeiden.
    - Wenn ein Stash als Referenz nützlich ist: Patch exportieren, dokumentieren, dann Stash droppen.
    - Referenzablage: `docs/ops/stash_refs/`
 4. **Recovery-Branch nur wenn nötig**  
-   - Für konfliktträchtige Stashes: `git checkout -b wip/recover-... main` + `git stash apply`.
+   - Für konfliktträchtige Stashes: `git checkout -b wip&#47;recover-... main` + `git stash apply`.
    - Danach entweder PR oder Branch verwerfen.
 
 ## Minimal-Triage-Checkliste
@@ -124,5 +124,5 @@ scripts/ops/stash_triage.sh --export-all --drop-after-export
 
 ## Referenzen
 - Session-Report: `docs/ops/STASH_TRIAGE_SESSION_20251223-051920.md`
-- Export-Beispiel: `docs/ops/stash_refs/knowledge_db_strategy_vault_ref_*.md`
+- Export-Beispiel: `docs&#47;ops&#47;stash_refs&#47;knowledge_db_strategy_vault_ref_*.md`
 - Automation Tool: `scripts/ops/stash_triage.sh`
