@@ -54,8 +54,8 @@ Implements Shadow Pipeline Phase 2: tick normalization â†’ OHLCV bar building â†
 
 Suggested local checks:
 
-* `pytest tests/data/shadow/ -q`
-* `python3 scripts/shadow_run_tick_to_ohlcv_smoke.py`
+* `pytest tests&#47;data&#47;shadow&#47; -q`
+* `python3 scripts&#47;shadow_run_tick_to_ohlcv_smoke.py`
 
 ## Risk
 

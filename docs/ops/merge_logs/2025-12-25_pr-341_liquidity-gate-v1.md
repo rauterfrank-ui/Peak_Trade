@@ -25,7 +25,7 @@ Schützt Execution gegen adverse Marktbedingungen (zu weite Spreads, erhöhte Sl
 - UPDATE: `tests/risk_layer/test_risk_gate.py` — Integration Tests (Order + WARN/BLOCK + Eval-Order)
 
 ## Verification
-- Tests: `uv run pytest -q tests/risk_layer/` → 194 passed (inkl. 43 neue Liquidity-Gate Tests)
+- Tests: `uv run pytest -q tests&#47;risk_layer&#47;` → 194 passed (inkl. 43 neue Liquidity-Gate Tests)
 - Lint/Format: `uv run ruff check ...` clean; `uv run ruff format ...` applied
 
 ## Risk
