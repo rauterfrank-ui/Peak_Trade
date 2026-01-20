@@ -81,7 +81,7 @@
 **Operator Notes:**
 - Roadmaps, Berichte, Meta-Dokumentation
 - Safe to merge
-- Check `docs/roadmaps/` und `docs/reports/`
+- Check `docs&#47;roadmaps&#47;` und `docs&#47;reports&#47;`
 
 ---
 
@@ -99,7 +99,7 @@
 - **WARNING:** 5 Branches mit identischem Subject/Datum
 - Vermutlich retries/duplicates aus CI/Cursor
 - **Action:** Diff gegen main, dann merge EINEN oder löschen alle
-- `git diff main..origin/beautiful-ritchie --stat`
+- `git diff main..origin&#47;beautiful-ritchie --stat`
 
 ---
 
@@ -401,7 +401,7 @@ gh pr create + review + merge
 **Target:** Review 8 Tier C branches  
 **Approach:** Full review + signoff
 
-1. Diff review: `git diff main..origin/$branch`
+1. Diff review: `git diff main..origin&#47;$branch`
 2. Risk assessment per branch
 3. Test plan execution
 4. Operator signoff required
@@ -425,7 +425,7 @@ git push origin --delete wip/stash-archive-20251227_010347_3
 ```
 
 **Verification:**
-- `git branch -r | grep "origin/" | wc -l` → expect ~20 (nur noch merged)
+- `git branch -r | grep "origin&#47;" | wc -l` → expect ~20 (nur noch merged)
 - Document deleted branches in Wave3 closeout
 
 ---
@@ -506,12 +506,12 @@ Operator: _______________  Date: ___________
 - > 4 weeks: 20 branches
 
 ### Branch Prefix Stats
-- `docs/*`: 24 branches
-- `feat/*`: 8 branches
-- `wip/*`: 6 branches
-- `chore/*`: 6 branches
-- `fix/*`: 3 branches
-- `test/*`: 2 branches
+- `docs&#47;*`: 24 branches
+- `feat&#47;*`: 8 branches
+- `wip&#47;*`: 6 branches
+- `chore&#47;*`: 6 branches
+- `fix&#47;*`: 3 branches
+- `test&#47;*`: 2 branches
 - Auto-generated names: 24 branches
 
 ---
