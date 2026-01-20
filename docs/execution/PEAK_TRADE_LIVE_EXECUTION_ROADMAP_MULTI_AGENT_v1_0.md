@@ -194,7 +194,7 @@ reports/risk/
 
 **Required Evidence Pack:**
 - `reports&#47;risk&#47;` (VaR/CVaR/Kupiec + Stress)
-- `reports/execution/` (OSM coverage + crash‑restart)
+- `reports&#47;execution&#47;` (OSM coverage + crash‑restart)
 - `docs/ops/` Runbook drafts
 - CI: ruff + tests (3.9/3.10/3.11) pass
 

@@ -74,7 +74,7 @@ Quantitative measurements of system health: orders/min, error rate, reconnects, 
 Log format with consistent fields (trace_id, session_id, strategy_id, timestamp, level, message, context). Enables querying and correlation.
 
 **Evidence Report:**  
-Auditable artifact (JSON/Markdown) documenting reconciliation results, position snapshots, metrics summary. Stored in `reports&#47;observability&#47;` or `reports/execution/`.
+Auditable artifact (JSON/Markdown) documenting reconciliation results, position snapshots, metrics summary. Stored in `reports&#47;observability&#47;` or `reports&#47;execution&#47;`.
 
 ---
 
