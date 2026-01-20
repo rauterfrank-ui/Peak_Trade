@@ -32,9 +32,9 @@
 
 ## Verification
 - CI: All PR checks green (3792 tests passed, audit, strategy-smoke, health-gate)
-- `git check-ignore -v docs/reports/` → correctly ignored via `.gitignore`
-- `git ls-files docs/reports/` → no tracked files
-- `pytest tests/integration/test_evidence_chain.py` → 14 passed
+- `git check-ignore -v docs&#47;reports&#47;` → correctly ignored via `.gitignore`
+- `git ls-files docs&#47;reports&#47;` → no tracked files
+- `pytest tests&#47;integration&#47;test_evidence_chain.py` → 14 passed
 - Quarto rendering + artifact chain integrity confirmed
 
 ## Notes / Follow-ups

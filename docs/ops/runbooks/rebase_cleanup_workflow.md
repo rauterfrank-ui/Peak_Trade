@@ -288,7 +288,7 @@ git branch -D <restored-branch-name>
 ### 3. Worktrees zuerst, dann Branches
 
 - Worktree-Pointer zuerst entfernen (`git worktree remove`)
-- Dann lokalen Branch löschen (`git branch -d/-D`)
+- Dann lokalen Branch löschen (`git branch -d&#47;-D`)
 - Dann remote Branch löschen (`git push origin --delete`, meist schon beim Merge)
 
 ### 4. Dokumentation (Merge-Log) immer mit Link
