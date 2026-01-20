@@ -3,7 +3,7 @@
 **Status**: DRAFT – Audit Review Required  
 **Generated**: 2025-01-06T[AUTO]  
 **Author**: Peak_Trade Repo Integration Analysis (Cursor Agent)  
-**Scope**: `tools_peak_trade/scripts/**` AND `tools_peak_trade/ops_runbooks/`  
+**Scope**: `tools_peak_trade&#47;scripts&#47;**` AND `tools_peak_trade&#47;ops_runbooks&#47;`  
 **Purpose**: Assess overlap, risks, and integration strategy for tools_peak_trade toolpack
 
 ---
@@ -12,7 +12,7 @@
 
 ### Key Findings
 
-1. **⚠️ HIGH OVERLAP (95%+)**: Nahezu alle Scripts aus `tools_peak_trade/scripts/` existieren bereits in Peak_Trade mit **identischem oder höherem Reifegrad**.
+1. **⚠️ HIGH OVERLAP (95%+)**: Nahezu alle Scripts aus `tools_peak_trade&#47;scripts&#47;` existieren bereits in Peak_Trade mit **identischem oder höherem Reifegrad**.
 
 2. **🔍 Peak_Trade ist AKTUELLER**: Das aktuelle Peak_Trade Repo enthält **305 Scripts** (186 Python, 111 Shell) vs. tools_peak_trade mit **276 Scripts** (171 Python, 105 Shell).
 
@@ -31,7 +31,7 @@
 
 6. **✅ POSITIVE FINDING**: Die Analyse war wertvoll, um zu bestätigen, dass Peak_Trade **vollständig ausgestattet** ist – sowohl Scripts (305 vs. 276) als auch Dokumentation (267 vs. 188 MD-Dateien).
 
-7. **📚 ops_runbooks/ AUCH ANALYSIERT**: Der Ordner `tools_peak_trade/ops_runbooks/` wurde ebenfalls untersucht. **Ergebnis**: Peak_Trade `docs/ops/` ist aktueller (267 vs. 188 Dokumente, +79 Dateien) und enthält neuere PR Merge Logs bis #566 (tools_peak_trade nur bis #491).
+7. **📚 ops_runbooks/ AUCH ANALYSIERT**: Der Ordner `tools_peak_trade&#47;ops_runbooks&#47;` wurde ebenfalls untersucht. **Ergebnis**: Peak_Trade `docs/ops/` ist aktueller (267 vs. 188 Dokumente, +79 Dateien) und enthält neuere PR Merge Logs bis #566 (tools_peak_trade nur bis #491).
 
 ### Top 10 Findings (Detailliert)
 
@@ -52,7 +52,7 @@
 
 ### ops_runbooks/ Directory Analysis (ADDENDUM)
 
-**Finding**: Der `tools_peak_trade/ops_runbooks/` Ordner wurde ebenfalls analysiert.
+**Finding**: Der `tools_peak_trade&#47;ops_runbooks&#47;` Ordner wurde ebenfalls analysiert.
 
 **Result**: **GLEICHER BEFUND** – Peak_Trade ist aktueller und vollständiger:
 
@@ -74,9 +74,9 @@
    - `TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md` (this document, **NEU**)
    - PR_497 bis PR_566 Merge Logs (**NEU**, fehlen in tools_peak_trade)
 
-**Verdict**: `tools_peak_trade/ops_runbooks/` ist ein **veralteter Snapshot** (vermutlich Stand ~Dezember 2025, vor PR #492). Peak_Trade `docs/ops/` ist die **aktuelle, lebende Dokumentation**.
+**Verdict**: `tools_peak_trade&#47;ops_runbooks&#47;` ist ein **veralteter Snapshot** (vermutlich Stand ~Dezember 2025, vor PR #492). Peak_Trade `docs/ops/` ist die **aktuelle, lebende Dokumentation**.
 
-**Recommendation**: **REJECT** Re-Integration von `ops_runbooks/`. **KEEP** Peak_Trade `docs/ops/`.
+**Recommendation**: **REJECT** Re-Integration von `ops_runbooks&#47;`. **KEEP** Peak_Trade `docs/ops/`.
 
 ---
 
@@ -88,19 +88,19 @@
 
 | Category | Python Scripts | Shell Scripts | Total | Purpose |
 |----------|---------------|---------------|-------|---------|
-| `ops/` | 12 | 65 | 77 | Operator tools, merge workflows, guardrails |
-| `automation/` | 4 | 7 | 11 | Daily/weekly suites, merge log automation |
-| `obs/` | 3 | 8 | 11 | Stage1 monitoring (daily snapshot, trends) |
-| `live/` | 5 | 0 | 5 | Live gates, shadow mode, bounded limits |
-| `risk/` | 3 | 0 | 3 | VaR backtest suite |
-| `audit/` | 3 | 0 | 3 | Audit snapshots, error taxonomy |
-| `ci/` | 1 | 5 | 6 | CI guards (docs, reports, quarto) |
-| `execution/` | 3 | 1 | 4 | Recon audit, contracts smoke |
-| `dev/` | 1 | 3 | 4 | Dev helpers (curate index, smoke tests) |
-| `workflows/` | 0 | 7 | 7 | PR merge workflows |
-| `utils/` | 0 | 7 | 7 | GitHub token, backups, Claude auth |
-| `run/` | 0 | 3 | 3 | Smoke tests, robustness |
-| `rescue/` | 0 | 1 | 1 | Pin unreferenced commits |
+| `ops&#47;` | 12 | 65 | 77 | Operator tools, merge workflows, guardrails |
+| `automation&#47;` | 4 | 7 | 11 | Daily/weekly suites, merge log automation |
+| `obs&#47;` | 3 | 8 | 11 | Stage1 monitoring (daily snapshot, trends) |
+| `live&#47;` | 5 | 0 | 5 | Live gates, shadow mode, bounded limits |
+| `risk&#47;` | 3 | 0 | 3 | VaR backtest suite |
+| `audit&#47;` | 3 | 0 | 3 | Audit snapshots, error taxonomy |
+| `ci&#47;` | 1 | 5 | 6 | CI guards (docs, reports, quarto) |
+| `execution&#47;` | 3 | 1 | 4 | Recon audit, contracts smoke |
+| `dev&#47;` | 1 | 3 | 4 | Dev helpers (curate index, smoke tests) |
+| `workflows&#47;` | 0 | 7 | 7 | PR merge workflows |
+| `utils&#47;` | 0 | 7 | 7 | GitHub token, backups, Claude auth |
+| `run&#47;` | 0 | 3 | 3 | Smoke tests, robustness |
+| `rescue&#47;` | 0 | 1 | 1 | Pin unreferenced commits |
 | **ROOT** (scripts/) | 136 | 0 | 136 | Demos, runners, reports, research |
 | **TOTAL** | **171** | **105** | **276** | |
 
@@ -134,15 +134,15 @@
 
 | Tool Script | Peak_Trade Equivalent | Match Type | Similarity | Notes |
 |-------------|----------------------|------------|------------|-------|
-| `ops/ops_doctor.sh` | `scripts/ops/ops_doctor.sh` | **EXACT** | 100% | Peak_Trade version calls `src.ops.doctor` module |
-| `ops/guardrails_status.sh` | `scripts/ops/guardrails_status.sh` | **EXACT** | 100% | Identical (checks GitHub branch protection) |
-| `ops/kill_switch_ctl.sh` | `scripts/ops/kill_switch_ctl.sh` | **EXACT** | 100% | Identical wrapper for kill switch CLI |
-| `ops/run_helpers.sh` | `scripts/ops/run_helpers.sh` | **EXACT** | 100% | Convenience functions |
-| `ops/check_requirements_synced_with_uv.sh` | `scripts/ops/check_requirements_synced_with_uv.sh` | **EXACT** | 100% | uv.lock sync check |
-| `ops/create_merge_log.py` | `scripts/ops/create_merge_log.py` | **EXACT** | 100% | Merge log generator |
-| `ops/verify_required_checks_drift.sh` | `scripts/ops/verify_required_checks_drift.sh` | **EXACT** | 100% | CI drift guard |
-| `ops/insert_docs_diff_guard_section.py` | `scripts/ops/insert_docs_diff_guard_section.py` | **EXACT** | 100% | Docs diff guard automation |
-| All other `ops/` scripts (65 total) | Equivalent in `scripts/ops/` | **EXACT** | ~100% | Full ops toolkit already in Peak_Trade |
+| `ops&#47;ops_doctor.sh` | `scripts/ops/ops_doctor.sh` | **EXACT** | 100% | Peak_Trade version calls `src.ops.doctor` module |
+| `ops&#47;guardrails_status.sh` | `scripts/ops/guardrails_status.sh` | **EXACT** | 100% | Identical (checks GitHub branch protection) |
+| `ops&#47;kill_switch_ctl.sh` | `scripts/ops/kill_switch_ctl.sh` | **EXACT** | 100% | Identical wrapper for kill switch CLI |
+| `ops&#47;run_helpers.sh` | `scripts/ops/run_helpers.sh` | **EXACT** | 100% | Convenience functions |
+| `ops&#47;check_requirements_synced_with_uv.sh` | `scripts/ops/check_requirements_synced_with_uv.sh` | **EXACT** | 100% | uv.lock sync check |
+| `ops&#47;create_merge_log.py` | `scripts/ops/create_merge_log.py` | **EXACT** | 100% | Merge log generator |
+| `ops&#47;verify_required_checks_drift.sh` | `scripts/ops/verify_required_checks_drift.sh` | **EXACT** | 100% | CI drift guard |
+| `ops&#47;insert_docs_diff_guard_section.py` | `scripts/ops/insert_docs_diff_guard_section.py` | **EXACT** | 100% | Docs diff guard automation |
+| All other `ops&#47;` scripts (65 total) | Equivalent in `scripts/ops/` | **EXACT** | ~100% | Full ops toolkit already in Peak_Trade |
 
 ### C.2 Live Trading & Safety
 
@@ -150,40 +150,40 @@
 |-------------|----------------------|------------|------------|-------|
 | `check_live_readiness.py` | `scripts/check_live_readiness.py` | **EXACT** | 100% | Phase 39, Shadow/Testnet/Live checks |
 | `live_ops.py` | `scripts/live_ops.py` | **EXACT** | 100% | Phase 51, Operator CLI (orders/portfolio/health) |
-| `live/verify_live_gates.py` | `scripts/live/verify_live_gates.py` | **LIKELY EXACT** | ~100% | Filename exact, not byte-compared yet |
-| `live/verify_shadow_mode.py` | `scripts/live/verify_shadow_mode.py` | **LIKELY EXACT** | ~100% | Filename exact |
-| `live/test_bounded_live_limits.py` | `scripts/live/test_bounded_live_limits.py` | **EXACT** | 100% | Confirmed via grep |
-| `live/show_positions.py` | Likely in `scripts/live/` or `live_ops.py` | **FUNCTIONAL** | N/A | Functionality covered by live_ops CLI |
-| `live/close_all_positions.py` | Likely in `scripts/live/` | **FUNCTIONAL** | N/A | Emergency ops tool |
+| `live&#47;verify_live_gates.py` | `scripts/live/verify_live_gates.py` | **LIKELY EXACT** | ~100% | Filename exact, not byte-compared yet |
+| `live&#47;verify_shadow_mode.py` | `scripts/live/verify_shadow_mode.py` | **LIKELY EXACT** | ~100% | Filename exact |
+| `live&#47;test_bounded_live_limits.py` | `scripts/live/test_bounded_live_limits.py` | **EXACT** | 100% | Confirmed via grep |
+| `live&#47;show_positions.py` | Likely in `scripts/live/` or `live_ops.py` | **FUNCTIONAL** | N/A | Functionality covered by live_ops CLI |
+| `live&#47;close_all_positions.py` | Likely in `scripts/live/` | **FUNCTIONAL** | N/A | Emergency ops tool |
 
 ### C.3 Observability & Monitoring
 
 | Tool Script | Peak_Trade Equivalent | Match Type | Similarity | Notes |
 |-------------|----------------------|------------|------------|-------|
-| `obs/stage1_daily_snapshot.py` | `scripts/obs/stage1_daily_snapshot.py` | **EXACT** | 100% | Phase 16I, Telemetry daily report |
-| `obs/stage1_trend_report.py` | `scripts/obs/stage1_trend_report.py` | **EXACT** | 100% | Phase 16J, Trend analysis |
-| `obs/run_stage1_monitoring.sh` | `scripts/obs/run_stage1_monitoring.sh` | **EXACT** | 100% | Convenience wrapper |
-| `obs/smoke_sender.py` | `scripts/obs/smoke_sender.py` | **LIKELY EXACT** | ~100% | Test alert sender |
-| `obs/*.sh` (Docker wrappers) | `scripts/obs/*.sh` | **EXACT** | 100% | stage1_run_daily/weekly, up/down Docker |
+| `obs&#47;stage1_daily_snapshot.py` | `scripts/obs/stage1_daily_snapshot.py` | **EXACT** | 100% | Phase 16I, Telemetry daily report |
+| `obs&#47;stage1_trend_report.py` | `scripts/obs/stage1_trend_report.py` | **EXACT** | 100% | Phase 16J, Trend analysis |
+| `obs&#47;run_stage1_monitoring.sh` | `scripts/obs/run_stage1_monitoring.sh` | **EXACT** | 100% | Convenience wrapper |
+| `obs&#47;smoke_sender.py` | `scripts/obs/smoke_sender.py` | **LIKELY EXACT** | ~100% | Test alert sender |
+| `obs&#47;*.sh` (Docker wrappers) | `scripts&#47;obs&#47;*.sh` | **EXACT** | 100% | stage1_run_daily/weekly, up/down Docker |
 
 ### C.4 Automation Suites
 
 | Tool Script | Peak_Trade Equivalent | Match Type | Similarity | Notes |
 |-------------|----------------------|------------|------------|-------|
-| `automation/run_offline_daily_suite.py` | `scripts/automation/run_offline_daily_suite.py` | **EXACT** | 100% | Confirmed via grep + README |
-| `automation/run_offline_weekly_suite.py` | `scripts/automation/run_offline_weekly_suite.py` | **EXACT** | 100% | Confirmed via grep + README |
-| `automation/generate_merge_log.sh` | `scripts/automation/generate_merge_log.sh` | **EXACT** | 100% | Part of merge log suite |
-| `automation/post_merge_verify.sh` | `scripts/automation/post_merge_verify.sh` | **EXACT** | 100% | Post-merge validation |
-| `automation/unicode_guard.py` | `scripts/automation/unicode_guard.py` | **LIKELY EXACT** | ~100% | Unicode problem prevention |
-| All other `automation/` scripts | Equivalent in `scripts/automation/` | **EXACT** | ~100% | 11 scripts total, all present |
+| `automation&#47;run_offline_daily_suite.py` | `scripts/automation/run_offline_daily_suite.py` | **EXACT** | 100% | Confirmed via grep + README |
+| `automation&#47;run_offline_weekly_suite.py` | `scripts/automation/run_offline_weekly_suite.py` | **EXACT** | 100% | Confirmed via grep + README |
+| `automation&#47;generate_merge_log.sh` | `scripts/automation/generate_merge_log.sh` | **EXACT** | 100% | Part of merge log suite |
+| `automation&#47;post_merge_verify.sh` | `scripts/automation/post_merge_verify.sh` | **EXACT** | 100% | Post-merge validation |
+| `automation&#47;unicode_guard.py` | `scripts/automation/unicode_guard.py` | **LIKELY EXACT** | ~100% | Unicode problem prevention |
+| All other `automation&#47;` scripts | Equivalent in `scripts/automation/` | **EXACT** | ~100% | 11 scripts total, all present |
 
 ### C.5 Risk Management & VaR
 
 | Tool Script | Peak_Trade Equivalent | Match Type | Similarity | Notes |
 |-------------|----------------------|------------|------------|-------|
-| `risk/demo_component_var.py` | `scripts/risk/demo_component_var.py` | **EXACT** | 100% | Confirmed via grep |
-| `risk/run_var_backtest.py` | `scripts/risk/run_var_backtest.py` | **EXACT** | 100% | Confirmed via grep |
-| `risk/run_var_backtest_suite_snapshot.py` | `scripts/risk/run_var_backtest_suite_snapshot.py` | **EXACT** | 100% | Confirmed via grep |
+| `risk&#47;demo_component_var.py` | `scripts/risk/demo_component_var.py` | **EXACT** | 100% | Confirmed via grep |
+| `risk&#47;run_var_backtest.py` | `scripts/risk/run_var_backtest.py` | **EXACT** | 100% | Confirmed via grep |
+| `risk&#47;run_var_backtest_suite_snapshot.py` | `scripts/risk/run_var_backtest_suite_snapshot.py` | **EXACT** | 100% | Confirmed via grep |
 | (missing in tools_peak_trade) | `scripts/risk/run_christoffersen_demo.py` | **PEAK_TRADE ONLY** | N/A | **Peak_Trade has MORE features** |
 | (missing in tools_peak_trade) | `scripts/run_kupiec_pof.py` | **PEAK_TRADE ONLY** | N/A | Kupiec POF test (newer) |
 
@@ -193,20 +193,20 @@
 
 | Tool Script | Peak_Trade Equivalent | Match Type | Similarity | Notes |
 |-------------|----------------------|------------|------------|-------|
-| `ci/check_docs_diff_guard_section.py` | `scripts/ci/check_docs_diff_guard_section.py` | **LIKELY EXACT** | ~100% | Filename match |
-| `ci/check_docs_no_live_enable_patterns.sh` | `scripts/ci/check_docs_no_live_enable_patterns.sh` | **LIKELY EXACT** | ~100% | Filename match |
-| `ci/guard_no_tracked_reports.sh` | `scripts/ci/guard_no_tracked_reports.sh` | **LIKELY EXACT** | ~100% | Filename match |
-| `ci/recon_audit_gate_smoke.sh` | `scripts/ci/recon_audit_gate_smoke.sh` | **LIKELY EXACT** | ~100% | Filename match |
-| `ci/validate_git_state.sh` | `scripts/ci/validate_git_state.sh` | **LIKELY EXACT** | ~100% | Filename match |
-| `ci/check_quarto_no_exec.sh` | `scripts/ci/check_quarto_no_exec.sh` | **LIKELY EXACT** | ~100% | Filename match |
+| `ci&#47;check_docs_diff_guard_section.py` | `scripts/ci/check_docs_diff_guard_section.py` | **LIKELY EXACT** | ~100% | Filename match |
+| `ci&#47;check_docs_no_live_enable_patterns.sh` | `scripts/ci/check_docs_no_live_enable_patterns.sh` | **LIKELY EXACT** | ~100% | Filename match |
+| `ci&#47;guard_no_tracked_reports.sh` | `scripts/ci/guard_no_tracked_reports.sh` | **LIKELY EXACT** | ~100% | Filename match |
+| `ci&#47;recon_audit_gate_smoke.sh` | `scripts/ci/recon_audit_gate_smoke.sh` | **LIKELY EXACT** | ~100% | Filename match |
+| `ci&#47;validate_git_state.sh` | `scripts/ci/validate_git_state.sh` | **LIKELY EXACT** | ~100% | Filename match |
+| `ci&#47;check_quarto_no_exec.sh` | `scripts/ci/check_quarto_no_exec.sh` | **LIKELY EXACT** | ~100% | Filename match |
 
 ### C.7 Audit Tools
 
 | Tool Script | Peak_Trade Equivalent | Match Type | Similarity | Notes |
 |-------------|----------------------|------------|------------|-------|
-| `audit/run_audit_snapshot.py` | `scripts/audit/run_audit_snapshot.py` | **LIKELY EXACT** | ~100% | Filename match |
-| `audit/check_ops_merge_logs.py` | `scripts/audit/check_ops_merge_logs.py` | **EXACT** | 100% | Confirmed via grep |
-| `audit/check_error_taxonomy_adoption.py` | `scripts/audit/check_error_taxonomy_adoption.py` | **LIKELY EXACT** | ~100% | Filename match |
+| `audit&#47;run_audit_snapshot.py` | `scripts/audit/run_audit_snapshot.py` | **LIKELY EXACT** | ~100% | Filename match |
+| `audit&#47;check_ops_merge_logs.py` | `scripts/audit/check_ops_merge_logs.py` | **EXACT** | 100% | Confirmed via grep |
+| `audit&#47;check_error_taxonomy_adoption.py` | `scripts/audit/check_error_taxonomy_adoption.py` | **LIKELY EXACT** | ~100% | Filename match |
 
 ### C.8 Demos, Runners, Reports (ROOT scripts/)
 
@@ -218,11 +218,11 @@ Peak_Trade has **150+ similar scripts** in root `scripts/`.
 | Tool Script | Peak_Trade Equivalent | Match Type | Notes |
 |-------------|----------------------|------------|-------|
 | `health_dashboard.py` | `scripts/health_dashboard.py` | **EXACT** | Confirmed |
-| `demo_*.py` (35+ files) | `scripts/demo_*.py` | **NEAR/EXACT** | Peak_Trade has similar or same demos |
-| `run_*.py` (60+ files) | `scripts/run_*.py` | **NEAR/EXACT** | Peak_Trade has extensive runners |
-| `generate_*.py` (15+ files) | `scripts/generate_*.py` | **NEAR/EXACT** | Report generators |
-| `research_*.py` | `scripts/research_*.py` | **NEAR/EXACT** | Research tools |
-| `telemetry_*.py` | `scripts/telemetry_*.py` | **EXACT** | Telemetry tools confirmed via grep |
+| `demo_*.py` (35+ files) | `scripts&#47;demo_*.py` | **NEAR/EXACT** | Peak_Trade has similar or same demos |
+| `run_*.py` (60+ files) | `scripts&#47;run_*.py` | **NEAR/EXACT** | Peak_Trade has extensive runners |
+| `generate_*.py` (15+ files) | `scripts&#47;generate_*.py` | **NEAR/EXACT** | Report generators |
+| `research_*.py` | `scripts&#47;research_*.py` | **NEAR/EXACT** | Research tools |
+| `telemetry_*.py` | `scripts&#47;telemetry_*.py` | **EXACT** | Telemetry tools confirmed via grep |
 
 **Verdict**: All major categories covered. Peak_Trade has **equal or better** coverage.
 
@@ -230,10 +230,10 @@ Peak_Trade has **150+ similar scripts** in root `scripts/`.
 
 | Tool Script | Peak_Trade Equivalent | Match Type | Notes |
 |-------------|----------------------|------------|-------|
-| `workflows/*.sh` (7 scripts) | `scripts/workflows/*.sh` | **EXACT/NEAR** | PR merge workflows, post-merge |
-| `utils/*.sh` (7 scripts) | `scripts/utils/*.sh` | **LIKELY SIMILAR** | GitHub token, backups, helpers |
-| `run/*.sh` (3 scripts) | `scripts/run/*.sh` | **EXACT/NEAR** | Smoke tests, robustness |
-| `rescue/pin_unreferenced_commits.sh` | Unknown in Peak_Trade | **UNIQUE?** | Niche rescue tool, low priority |
+| `workflows&#47;*.sh` (7 scripts) | `scripts&#47;workflows&#47;*.sh` | **EXACT/NEAR** | PR merge workflows, post-merge |
+| `utils&#47;*.sh` (7 scripts) | `scripts&#47;utils&#47;*.sh` | **LIKELY SIMILAR** | GitHub token, backups, helpers |
+| `run&#47;*.sh` (3 scripts) | `scripts&#47;run&#47;*.sh` | **EXACT/NEAR** | Smoke tests, robustness |
+| `rescue&#47;pin_unreferenced_commits.sh` | Unknown in Peak_Trade | **UNIQUE?** | Niche rescue tool, low priority |
 
 ---
 
@@ -288,16 +288,16 @@ Peak_Trade has **150+ similar scripts** in root `scripts/`.
 
 | Tool Category | Recommendation | Rationale |
 |---------------|----------------|-----------|
-| `ops/` tools (77 scripts) | **KEEP Peak_Trade versions** | Already present, P0 Guardrails enforced |
-| `live/` tools (5 scripts) | **KEEP Peak_Trade versions** | Phase 39/51, mature live safety |
-| `obs/` tools (11 scripts) | **KEEP Peak_Trade versions** | Phase 16I/J, production-ready |
-| `automation/` suites (11 scripts) | **KEEP Peak_Trade versions** | Already integrated with CI |
-| `risk/` VaR suite (3 scripts) | **KEEP Peak_Trade versions** | Peak_Trade has MORE tests (Christoffersen, Kupiec) |
-| `audit/` tools (3 scripts) | **KEEP Peak_Trade versions** | Already present |
-| `ci/` guards (6 scripts) | **KEEP Peak_Trade versions** | Already in CI workflows |
-| `demos/runners/reports` (136 scripts) | **KEEP Peak_Trade versions** | Peak_Trade has 150+, more complete |
-| `workflows/utils/` (14 scripts) | **KEEP Peak_Trade versions** | Except if specific tool missing (see E.3) |
-| `rescue/pin_unreferenced_commits.sh` | **OPTIONAL ADOPT** | Niche tool, low risk if useful |
+| `ops&#47;` tools (77 scripts) | **KEEP Peak_Trade versions** | Already present, P0 Guardrails enforced |
+| `live&#47;` tools (5 scripts) | **KEEP Peak_Trade versions** | Phase 39/51, mature live safety |
+| `obs&#47;` tools (11 scripts) | **KEEP Peak_Trade versions** | Phase 16I/J, production-ready |
+| `automation&#47;` suites (11 scripts) | **KEEP Peak_Trade versions** | Already integrated with CI |
+| `risk&#47;` VaR suite (3 scripts) | **KEEP Peak_Trade versions** | Peak_Trade has MORE tests (Christoffersen, Kupiec) |
+| `audit&#47;` tools (3 scripts) | **KEEP Peak_Trade versions** | Already present |
+| `ci&#47;` guards (6 scripts) | **KEEP Peak_Trade versions** | Already in CI workflows |
+| `demos&#47;runners&#47;reports` (136 scripts) | **KEEP Peak_Trade versions** | Peak_Trade has 150+, more complete |
+| `workflows&#47;utils&#47;` (14 scripts) | **KEEP Peak_Trade versions** | Except if specific tool missing (see E.3) |
+| `rescue&#47;pin_unreferenced_commits.sh` | **OPTIONAL ADOPT** | Niche tool, low risk if useful |
 
 ### E.3 Potential Exceptions (Low Priority)
 
@@ -305,11 +305,11 @@ Peak_Trade has **150+ similar scripts** in root `scripts/`.
 
 | Tool Script | Status | Action if Missing |
 |-------------|--------|-------------------|
-| `rescue/pin_unreferenced_commits.sh` | UNKNOWN | Inspect, add to `scripts/rescue/` if useful |
-| `utils/slice_from_backup.sh` | UNKNOWN | Inspect, add to `scripts/utils/` if useful |
-| `utils/install_desktop_shortcuts.sh` | UNKNOWN | Probably not needed (developer-specific) |
-| `utils/claude_code_auth_reset.sh` | UNKNOWN | Developer-specific, not production |
-| `utils/check_claude_code_ready.sh` | UNKNOWN | Developer-specific, not production |
+| `rescue&#47;pin_unreferenced_commits.sh` | UNKNOWN | Inspect, add to `scripts/rescue/` if useful |
+| `utils&#47;slice_from_backup.sh` | UNKNOWN | Inspect, add to `scripts/utils/` if useful |
+| `utils&#47;install_desktop_shortcuts.sh` | UNKNOWN | Probably not needed (developer-specific) |
+| `utils&#47;claude_code_auth_reset.sh` | UNKNOWN | Developer-specific, not production |
+| `utils&#47;check_claude_code_ready.sh` | UNKNOWN | Developer-specific, not production |
 
 **Action**: Manual grep for these 5 scripts in Peak_Trade. If missing and useful, adopt individually (1-2 hours work).
 
@@ -336,7 +336,7 @@ Peak_Trade/
 ```
 
 **Rationale**:
-- Isolate external tools in `tools/vendor/`
+- Isolate external tools in `tools&#47;vendor&#47;`
 - Peak_Trade scripts act as **governance adapters**
 - Enable side-by-side comparison before full integration
 
@@ -398,7 +398,7 @@ IF integration required:
 | tools_peak_trade inventory | `/Users/frnkhrz/tools_peak_trade/scripts/` | Source scripts (276 files) |
 | Peak_Trade inventory | `/Users/frnkhrz/Peak_Trade/scripts/` | Current scripts (305 files) |
 | Grep results | This report, Section C | Overlap confirmation |
-| README files | `tools_peak_trade/scripts/{ops,obs,automation}/README.md` | Feature documentation |
+| README files | `tools_peak_trade&#47;scripts&#47;{ops,obs,automation}&#47;README.md` | Feature documentation |
 
 ### G.3 Assumptions & Limitations
 
@@ -422,7 +422,7 @@ IF integration required:
 |----------|----------|---------|
 | Ops Doctor Runbook | `docs/ops/` (search for ops_doctor) | Health check documentation |
 | Live Readiness Runbook | `docs/ops/` (search for live readiness) | Shadow/Testnet/Live checks |
-| Telemetry Alerting Runbooks | `docs/ops/TELEMETRY_ALERTING_*` | Phase 16I/J observability |
+| Telemetry Alerting Runbooks | `docs&#47;ops&#47;TELEMETRY_ALERTING_*` | Phase 16I/J observability |
 | Merge Log Runbook | `docs/ops/` (search for merge log) | PR automation |
 | VaR Backtest Reports | `IMPLEMENTATION_REPORT_KUPIEC_POF.md` | Kupiec POF implementation |
 
@@ -433,13 +433,13 @@ IF integration required:
 ### I.1 Immediate Actions (Owner: Ops Team)
 
 1. ✅ **APPROVE or REJECT** this analysis (Ops review required)
-2. ✅ **ARCHIVE** gesamtes `tools_peak_trade/` (inkl. scripts/ UND ops_runbooks/) nach `archive/tools_peak_trade_backup_20250106/` (if approved)
+2. ✅ **ARCHIVE** gesamtes `tools_peak_trade&#47;` (inkl. scripts/ UND ops_runbooks/) nach `archive&#47;tools_peak_trade_backup_20250106&#47;` (if approved)
 3. ✅ **DOCUMENT** decision in `audit.log` or merge log
 4. ✅ **CONFIRM**: tools_peak_trade wurde als **veralteter Snapshot** identifiziert (Stand ~Dezember 2025, vor PR #492)
 
 ### I.2 Optional Follow-Up (Low Priority)
 
-1. 🔍 **Manual Grep** for 5 "unknown" scripts (`rescue/pin_unreferenced_commits.sh`, `utils/slice_from_backup.sh`, etc.)
+1. 🔍 **Manual Grep** for 5 "unknown" scripts (`rescue&#47;pin_unreferenced_commits.sh`, `utils&#47;slice_from_backup.sh`, etc.)
 2. 📝 **Add to scripts/README.md**: "tools_peak_trade was evaluated and rejected (see docs/ops/TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)"
 3. 🔒 **Secrets Scan** tools_peak_trade (if not deleting, run `gitleaks` or `detect-secrets`)
 
@@ -454,7 +454,7 @@ IF integration required:
 
 **tools_peak_trade** is a **legacy backup or snapshot** of an earlier Peak_Trade state (vermutlich **Stand ~Dezember 2025, vor PR #492**). The current Peak_Trade repository is **more complete, more mature, and fully operational** with:
 
-### Scripts (`scripts/` vs. `tools_peak_trade/scripts/`)
+### Scripts (`scripts/` vs. `tools_peak_trade&#47;scripts&#47;`)
 - ✅ All critical ops tools (ops_doctor, guardrails, kill switch)
 - ✅ Complete live safety suite (readiness checks, gates, bounded limits)
 - ✅ Production observability (Stage1 monitoring, daily snapshots, trends)
@@ -462,7 +462,7 @@ IF integration required:
 - ✅ Enhanced risk management (VaR suite with Christoffersen, Kupiec)
 - ✅ **305 scripts** vs. 276 in tools_peak_trade (**+29 scripts**)
 
-### Documentation (`docs/ops/` vs. `tools_peak_trade/ops_runbooks/`)
+### Documentation (`docs/ops/` vs. `tools_peak_trade&#47;ops_runbooks&#47;`)
 - ✅ All runbooks (Kill Switch, Telemetry, Live Readiness, Ops Doctor, etc.)
 - ✅ **267 MD files** vs. 188 in tools_peak_trade (**+79 documents**)
 - ✅ **100+ PR Merge Logs** vs. ~70 in tools_peak_trade (**+30 merge logs**)
@@ -471,8 +471,8 @@ IF integration required:
 **Re-integration would be a DOWNGRADE and is NOT RECOMMENDED.**
 
 **Final Recommendation**:
-1. **REJECT integration** of both `tools_peak_trade/scripts/` AND `tools_peak_trade/ops_runbooks/`
-2. **Archive tools_peak_trade** to `archive/tools_peak_trade_backup_20250106/`
+1. **REJECT integration** of both `tools_peak_trade&#47;scripts&#47;` AND `tools_peak_trade&#47;ops_runbooks&#47;`
+2. **Archive tools_peak_trade** to `archive&#47;tools_peak_trade_backup_20250106&#47;`
 3. **Continue with Peak_Trade native scripts and docs**
 
 ---
