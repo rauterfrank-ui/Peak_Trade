@@ -1,5 +1,11 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260120-finish-c-closeout"></a>
+- **EV-20260120-FINISH-C-CLOSEOUT** | Date: 2026-01-20 | Owner: ops | Scope: docs-only | Risk: LOW  
+  - Source: [Evidence](evidence/FINISH_C_D7_D8_CLOSEOUT_20260120T100504Z.md)  
+  - Claim: Finish C documentation closeout is anchored (D7 token-policy burn-down complete + D8 scope clarification + D9 reference targets fullscan PASS + D10 baseline snapshot + D11 frontdoor pointer).  
+  - Verification: Evidence slice is present on main; local docs gates snapshot for baseline state PASS (snapshot-only, no watch loops).  
+
 <a id="ev-20260118-p0-cursor-multi-agent-preflight"></a>
 - **EV-20260118-P0-CURSOR-MULTI-AGENT-PREFLIGHT** | Date: 2026-01-18 | Owner: ops | Scope: docs-only | Risk: LOW  
   - Source: [PR #781 Merge Log](merge_logs/PR_781_MERGE_LOG.md) · [PR #781](https://github.com/rauterfrank-ui/Peak_Trade/pull/781) · Commit: `f9a60519`  
