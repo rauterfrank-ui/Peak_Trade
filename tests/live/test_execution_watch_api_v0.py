@@ -40,9 +40,7 @@ def test_execution_watch_api_v0_health(client: TestClient, tmp_path: Path) -> No
         ],
     )
 
-    r = client.get(
-        f"/api/v0/execution/health?root={tmp_path.as_posix()}&filename={p.name}"
-    )
+    r = client.get(f"/api/v0/execution/health?root={tmp_path.as_posix()}&filename={p.name}")
     assert r.status_code == 200
     payload = r.json()
     assert payload["status"] == "ok"
@@ -91,9 +89,7 @@ def test_execution_watch_api_v0_runs_and_detail(client: TestClient, tmp_path: Pa
         ],
     )
 
-    runs = client.get(
-        f"/api/v0/execution/runs?root={tmp_path.as_posix()}&filename={p.name}"
-    )
+    runs = client.get(f"/api/v0/execution/runs?root={tmp_path.as_posix()}&filename={p.name}")
     assert runs.status_code == 200
     rp = runs.json()
     assert rp["count"] == 2
@@ -129,9 +125,7 @@ def test_execution_watch_html_page_renders(client: TestClient, tmp_path: Path) -
         ],
     )
 
-    r = client.get(
-        f"/watch/execution?root={tmp_path.as_posix()}&filename={p.name}"
-    )
+    r = client.get(f"/watch/execution?root={tmp_path.as_posix()}&filename={p.name}")
     assert r.status_code == 200
     assert "WATCH-ONLY" in r.text
     assert "run_html" in r.text

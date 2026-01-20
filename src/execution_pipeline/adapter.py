@@ -97,7 +97,9 @@ class InMemoryExecutionAdapter:
             return SubmitAck(order_id=oid, accepted=accepted, venue_order_id=f"mem:{oid}")
 
         if self.submit_calls <= self._fail_first_n_submits:
-            return SubmitAck(order_id=req.order_id, accepted=False, reason="transient_submit_failure")
+            return SubmitAck(
+                order_id=req.order_id, accepted=False, reason="transient_submit_failure"
+            )
 
         self._idem_to_order_id[req.idempotency_key] = req.order_id
         self._orders[req.order_id] = {
@@ -142,4 +144,6 @@ class InMemoryExecutionAdapter:
                 }
 
         cur = self._orders[order_id]
-        return OrderStatus(order_id=order_id, state=cur["state"], fill=cur["fill"], error=cur["error"])
+        return OrderStatus(
+            order_id=order_id, state=cur["state"], fill=cur["fill"], error=cur["error"]
+        )

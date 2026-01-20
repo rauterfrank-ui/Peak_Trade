@@ -173,7 +173,11 @@ class ExecutionPipeline:
             if not o.order_id:
                 return ExecutionError(error_code="invalid_order", message="order_id_missing")
             if not o.symbol:
-                return ExecutionError(error_code="invalid_order", message="symbol_missing", details={"order_id": o.order_id})
+                return ExecutionError(
+                    error_code="invalid_order",
+                    message="symbol_missing",
+                    details={"order_id": o.order_id},
+                )
             if o.side not in ("buy", "sell"):
                 return ExecutionError(
                     error_code="invalid_order",
@@ -188,7 +192,9 @@ class ExecutionPipeline:
                 )
         return None
 
-    def _execute_one(self, op: OrderPlan, *, plan: ExecutionPlan, ctx: ExecutionContext) -> Dict[str, Any]:
+    def _execute_one(
+        self, op: OrderPlan, *, plan: ExecutionPlan, ctx: ExecutionContext
+    ) -> Dict[str, Any]:
         for attempt in range(1, int(plan.retry.max_attempts) + 1):
             req = SubmitRequest(
                 run_id=ctx.run_id,
@@ -209,7 +215,12 @@ class ExecutionPipeline:
                     order_id=op.order_id,
                     idempotency_key=req.idempotency_key,
                     event_type="submitted",
-                    payload={"attempt": attempt, "symbol": op.symbol, "side": op.side, "quantity": op.quantity},
+                    payload={
+                        "attempt": attempt,
+                        "symbol": op.symbol,
+                        "side": op.side,
+                        "quantity": op.quantity,
+                    },
                 )
             )
 
@@ -254,7 +265,9 @@ class ExecutionPipeline:
                 )
             )
 
-            st = self._adapter.status(run_id=ctx.run_id, correlation_id=ctx.correlation_id, order_id=ack.order_id)
+            st = self._adapter.status(
+                run_id=ctx.run_id, correlation_id=ctx.correlation_id, order_id=ack.order_id
+            )
             if st.state == "filled":
                 self._emit(
                     ExecutionEventV0(
@@ -292,7 +305,11 @@ class ExecutionPipeline:
                         order_id=op.order_id,
                         idempotency_key=req.idempotency_key,
                         event_type="failed",
-                        payload={"final": attempt >= plan.retry.max_attempts, "attempt": attempt, "error": st.error or {}},
+                        payload={
+                            "final": attempt >= plan.retry.max_attempts,
+                            "attempt": attempt,
+                            "error": st.error or {},
+                        },
                     )
                 )
                 if attempt >= plan.retry.max_attempts:
@@ -316,7 +333,11 @@ class ExecutionPipeline:
                     order_id=op.order_id,
                     idempotency_key=req.idempotency_key,
                     event_type="failed",
-                    payload={"final": attempt >= plan.retry.max_attempts, "attempt": attempt, "reason": f"unexpected_state:{st.state}"},
+                    payload={
+                        "final": attempt >= plan.retry.max_attempts,
+                        "attempt": attempt,
+                        "reason": f"unexpected_state:{st.state}",
+                    },
                 )
             )
             if attempt >= plan.retry.max_attempts:

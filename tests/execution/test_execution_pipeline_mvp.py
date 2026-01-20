@@ -118,7 +118,9 @@ def test_execution_pipeline_mvp_timeout_fails_run(tmp_path: Path) -> None:
     assert res.error.error_code == "timeout"
 
 
-def test_execution_pipeline_mvp_idempotency_prevents_duplicate_order_creation(tmp_path: Path) -> None:
+def test_execution_pipeline_mvp_idempotency_prevents_duplicate_order_creation(
+    tmp_path: Path,
+) -> None:
     clock = StepClock(datetime(2026, 1, 1, 0, 0, 0))
     log = tmp_path / "execution_pipeline_events_v0.jsonl"
 

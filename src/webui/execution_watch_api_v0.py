@@ -119,7 +119,9 @@ async def execution_watch_page_v0(
     )
     lines.append("</head><body>")
     lines.append("<div class='note'>")
-    lines.append("<strong>WATCH-ONLY</strong> — Read-only Execution/Telemetry UI. No actions. NO-LIVE.")
+    lines.append(
+        "<strong>WATCH-ONLY</strong> — Read-only Execution/Telemetry UI. No actions. NO-LIVE."
+    )
     lines.append("<div class='muted'>Quelle: JSONL Events (schema=execution_event_v0)</div>")
     lines.append("</div>")
 
@@ -135,7 +137,9 @@ async def execution_watch_page_v0(
         href = f"{base}?run_id={esc(r.run_id)}{q_root}"
         counts = ", ".join([f"{k}={v}" for k, v in sorted(r.counts.items())]) if r.counts else ""
         lines.append("<tr>")
-        lines.append(f"<td><a href='{href}'>{esc(r.run_id)}</a><div class='muted'>{esc(r.correlation_id)}</div></td>")
+        lines.append(
+            f"<td><a href='{href}'>{esc(r.run_id)}</a><div class='muted'>{esc(r.correlation_id)}</div></td>"
+        )
         lines.append(f"<td><span class='pill {cls}'>{esc(status)}</span></td>")
         lines.append(f"<td>{esc(r.started_at)}</td>")
         lines.append(f"<td>{esc(r.last_event_at)}</td>")

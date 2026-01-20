@@ -7,7 +7,7 @@
 ### Endpoints (v0)
 
 #### Health
-- `GET /api/v0/execution/health`
+- `GET &#47;api&#47;v0&#47;execution&#47;health`
 - Query:
   - `root` (default: `logs&#47;execution`)
   - `filename` (default: `execution_pipeline_events_v0.jsonl`)
@@ -18,7 +18,7 @@
   - `exists`: bool
 
 #### Runs (List)
-- `GET /api/v0/execution/runs`
+- `GET &#47;api&#47;v0&#47;execution&#47;runs`
 - Query:
   - `limit` (1..2000)
   - `root`, `filename` (wie oben)
@@ -33,7 +33,7 @@
     - `counts` (map event_type -> count)
 
 #### Run Detail (Timeline)
-- `GET /api/v0/execution/runs/{run_id}`
+- `GET &#47;api&#47;v0&#47;execution&#47;runs&#47;{run_id}`
 - Query:
   - `limit` (1..50000)
   - `root`, `filename` (wie oben)
@@ -44,7 +44,7 @@
   - `events`: Array (raw v0 events)
 
 #### HTML Visual Surface
-- `GET /watch/execution`
+- `GET &#47;watch&#47;execution`
 - Query:
   - `run_id` (optional)
   - `root`, `filename`
