@@ -23,7 +23,7 @@
 
 ### 3. File Scope Review
 - [ ] No files in `reports/` committed
-- [ ] No files in `.artifacts/`, `.tmp_*/` committed
+- [ ] No files in `.artifacts/`, `.tmp_*&#47;` committed
 - [ ] No root-level docs (should be in `docs/`)
 - [ ] No committed secrets/credentials
 

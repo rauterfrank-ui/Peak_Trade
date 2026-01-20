@@ -306,7 +306,7 @@ git mv scripts/dev/test_knowledge_api_smoke.sh scripts/dev/
 
 | Datei | Aktion | Reference Check | Begründung |
 |-------|--------|-----------------|------------|
-| `run_regime_experiments.sh` (root) | **DELETE** | ✅ Nur in docs erwähnt | Existiert in `archive/legacy_scripts/` |
+| `run_regime_experiments.sh` (root) | **DELETE** | ✅ Nur in docs erwähnt | Existiert in `archive&#47;legacy_scripts&#47;` |
 | `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` (root) | **CONSOLIDATE** | ⚠️ 20 Refs! | Root vs docs/ops/ differ - consolidate newer → docs/ops/ |
 | `cleanup_repo.sh` (scripts/) | **DELETE?** | ❓ Check refs | Wahrscheinlich obsolet/test-script |
 | `validate_rl_v0_1.sh` (scripts/) | **MOVE** | - | → scripts/dev/ oder scripts/run/ |
@@ -392,7 +392,7 @@ Struktur der Scripts erklärt
 - `test_runs/`
 - `*.log`
 - `venv/`
-- Guards: `/*_REPORT.md`, `/*_SUMMARY.md`
+- Guards: `&#47;*_REPORT.md`, `&#47;*_SUMMARY.md`
 
 **No Action Needed** - .gitignore ist bereits gut konfiguriert!
 

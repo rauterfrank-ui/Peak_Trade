@@ -19,7 +19,7 @@ This audit identifies all inline backtick tokens containing "/" in both workflow
 - **C (Placeholder/Future - DO NOT VALIDATE):** Planned/example path that doesn't exist yet → gate should NOT validate
 - **D (URL - DO NOT VALIDATE):** HTTP/HTTPS URL → NOT a file path, gate correctly ignores
 - **E (Local/Absolute Path - DO NOT VALIDATE):** Non-repo path (e.g. `/usr/local/bin`) → gate should NOT validate
-- **F (Command - DO NOT VALIDATE):** Command with args (e.g. `script.py arg1/arg2`) → gate should NOT validate
+- **F (Command - DO NOT VALIDATE):** Command with args (e.g. `script.py arg1&#47;arg2`) → gate should NOT validate
 
 ---
 
@@ -35,7 +35,7 @@ This audit identifies all inline backtick tokens containing "/" in both workflow
 **Fix Required:** NO (path exists)
 
 ### Line 40
-**Token:** `live_ops.py orders/portfolio/health`  
+**Token:** `live_ops.py orders&#47;portfolio&#47;health`  
 **Classification:** **F (Command - DO NOT VALIDATE)**  
 **Rationale:** CLI command with subcommands, contains space  
 **Gate Impact:** Gate IGNORES (contains space, see line 230-232 in verify_docs_reference_targets.sh)  
@@ -196,14 +196,14 @@ This audit identifies all inline backtick tokens containing "/" in both workflow
 **Fix Required:** NO (already safe)
 
 ### Line 365
-**Token:** `control_center/AI_AUTONOMY_CONTROL_CENTER.md`  
+**Token:** `control_center&#47;AI_AUTONOMY_CONTROL_CENTER.md`  
 **Classification:** **A (Real Path - VALIDATE)**  
 **Rationale:** Existing file relative to docs/ops/  
 **Gate Impact:** WILL be validated RELATIVE to containing doc, MUST exist  
 **Fix Required:** VERIFY (relative path resolution)
 
 ### Line 366
-**Token:** `control_center/CONTROL_CENTER_NAV.md`  
+**Token:** `control_center&#47;CONTROL_CENTER_NAV.md`  
 **Classification:** **A (Real Path - VALIDATE)**  
 **Rationale:** Existing file relative to docs/ops/  
 **Gate Impact:** WILL be validated RELATIVE to containing doc, MUST exist  
@@ -428,7 +428,7 @@ This audit identifies all inline backtick tokens containing "/" in both workflow
 1. **Verify Existence:** Check if lines 155-157 paths exist in current repo
 2. **If Missing:** Apply Style Guide fix pattern:
    - Convert to quoted + escaped + `(future)` marker
-   - Example: `"docs\/PEAK_TRADE_OVERVIEW.md" (future, planned Dec 2025)`
+   - Example: `"docs\\&#47;PEAK_TRADE_OVERVIEW.md" (future, planned Dec 2025)`
 3. **If Existing:** No fix required (gate will validate successfully)
 
 ---
