@@ -32,7 +32,7 @@ Dieses Dokument definiert den **Governance-gestützten Prozess** für den Überg
 
 **Sicherheitsrichtlinie:**
 - Keine Beispiele mit `enable_*=true` Semantik für Live-Aktivierung
-- Nur `BLOCKED/SHADOW/PAPER` Beispiele (siehe `docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md`)
+- Nur `BLOCKED&#47;SHADOW&#47;PAPER` Beispiele (siehe `docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md`)
 - Fokus auf **Gating, Verantwortlichkeiten, Nachweise, Drills**
 
 ---
@@ -111,7 +111,7 @@ rg -n "sk_live|api_key.*=.*[a-zA-Z0-9]{20}" src/ || echo "Clean"
 ### 4.3 Recon Gate
 
 - [ ] Reconciliation-Pipeline ist implementiert (`src/execution/reconciliation.py`)
-- [ ] Ledger-Mapper Tests sind grün (`tests/execution/test_ledger_mapper.py`)
+- [ ] Ledger-Mapper Tests sind grün (`tests&#47;execution&#47;test_ledger_mapper.py`)
 - [ ] Recon-Diffs Runbook existiert (`docs/execution/RUNBOOK_RECON_DIFFS.md`)
 - [ ] Dry-Run Recon erfolgreich getestet (Shadow-Mode)
 
@@ -149,7 +149,7 @@ Jedes Gate hat:
 
 **Evidence:**
 - CI-Log (Link zu letztem CI-Run)
-- Test-Coverage Report (`reports/coverage_*.html`)
+- Test-Coverage Report (`reports&#47;coverage_*.html`)
 - Secrets-Scan Output (`make audit-secrets`)
 
 **Sign-off:**
@@ -167,14 +167,14 @@ Jedes Gate hat:
 - [ ] `config/risk/` vollständig konfiguriert
 - [ ] Position Size Limits definiert (`max_position_size`, `max_portfolio_value`)
 - [ ] Drawdown Limits definiert (`max_daily_drawdown`, `max_total_drawdown`)
-- [ ] Kill-Switch konfiguriert (`config/kill_switch/`)
+- [ ] Kill-Switch konfiguriert (`config&#47;kill_switch&#47;`)
 - [ ] Risk-Layer Tests grün (`tests/risk/`)
-- [ ] LiveRiskLimits implementiert (`"src\/risk\/live_risk_limits.py" (future; placeholder target — not in repo yet)`)
+- [ ] LiveRiskLimits implementiert (`"src\&#47;risk\&#47;live_risk_limits.py" (future; placeholder target — not in repo yet)`)
 - [ ] Pre-Trade & Runtime Checks aktiv
 
 **Evidence:**
-- Risk Config Files (`config/risk/*.toml`)
-- Kill-Switch Test Log (`pytest tests/risk_layer/kill_switch/ -v`)
+- Risk Config Files (`config&#47;risk&#47;*.toml`)
+- Kill-Switch Test Log (`pytest tests&#47;risk_layer&#47;kill_switch&#47; -v`)
 - Live Risk Limits Documentation (`docs/LIVE_RISK_LIMITS.md`)
 
 **Sign-off:**
@@ -196,9 +196,9 @@ Jedes Gate hat:
 - [ ] Keine Order-Rejections (außer durch Risk-Gates)
 
 **Evidence:**
-- Shadow Session Logs (`live_runs/*/session.log`)
+- Shadow Session Logs (`live_runs&#47;*&#47;session.log`)
 - Testnet Session Logs (falls vorhanden)
-- Reconciliation Reports (`reports/recon_*.json`)
+- Reconciliation Reports (`reports&#47;recon_*.json`)
 - Telemetry Dashboard Screenshot (oder Log-Auszug)
 
 **Sign-off:**
@@ -214,7 +214,7 @@ Jedes Gate hat:
 
 **Checklist:**
 - [ ] Live-Track Dashboard verfügbar (`templates/peak_trade_dashboard/`)
-- [ ] Alert-Pipeline aktiv (`src/live/alerts/`)
+- [ ] Alert-Pipeline aktiv (`src&#47;live&#47;alerts&#47;`)
 - [ ] Telemetry-Logs strukturiert und querybar (`logs/telemetry_health_snapshots.jsonl`)
 - [ ] Incident-Alerts konfiguriert (Slack, Email, etc.)
 - [ ] Runbook für Alert-Handling existiert (`docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md`)
@@ -222,7 +222,7 @@ Jedes Gate hat:
 
 **Evidence:**
 - Dashboard Access (URL oder Screenshot)
-- Alert Test Log (`"scripts\/live\/test_alert_dispatch.py" (future; placeholder target — not in repo yet)`)
+- Alert Test Log (`"scripts\&#47;live\&#47;test_alert_dispatch.py" (future; placeholder target — not in repo yet)`)
 - Telemetry Sample Log (letzte 24h)
 
 **Sign-off:**
@@ -268,8 +268,8 @@ Jedes Gate hat:
 - [ ] Data-QC Tests grün (`tests/data/`)
 
 **Evidence:**
-- Market-Data Quality Report (`"scripts\/data\/quality_check.py" (future; placeholder target — not in repo yet)`)
-- Reconciliation Test Log (`pytest tests/execution/test_reconciliation.py`)
+- Market-Data Quality Report (`"scripts\&#47;data\&#47;quality_check.py" (future; placeholder target — not in repo yet)`)
+- Reconciliation Test Log (`pytest tests&#47;execution&#47;test_reconciliation.py`)
 - Recon-Diffs Runbook Walkthrough (dokumentierter Test)
 
 **Sign-off:**
@@ -284,7 +284,7 @@ Jedes Gate hat:
 **Pass Criteria:** Policy-Compliance validiert, formales Sign-off
 
 **Checklist:**
-- [ ] Policy-Packs getestet (`policy_packs/*.yml`)
+- [ ] Policy-Packs getestet (`policy_packs&#47;*.yml`)
 - [ ] Keine Policy-Violations in kritischen Files
 - [ ] Live-Aktivierung ist manual-only (keine automatischen Trigger)
 - [ ] Execution-Mode Default ist SHADOW oder PAPER (nicht LIVE)
@@ -326,12 +326,12 @@ Alle Artefakte erhalten eine eindeutige **Evidence ID** nach dem Schema `EV-XXXX
 | Evidence ID | Beschreibung | Location | Gate |
 |-------------|--------------|----------|------|
 | EV-9100 | WP4A Pre-Flight Checklist (ausgefüllt) | `docs/execution/phase4/evidence/WP4A_PREFLIGHT_CHECKLIST.md` | G0-G6 |
-| EV-9101 | CI Green Snapshot (Main Branch) | `reports/ci_snapshot_[date].log` | G0 |
+| EV-9101 | CI Green Snapshot (Main Branch) | `reports&#47;ci_snapshot_[date].log` | G0 |
 | EV-9102 | Risk Limits Config Snapshot | `config/risk/` (commit hash) | G1 |
-| EV-9103 | Shadow Session Log (7 Tage) | `live_runs/shadow_[date]/` | G2 |
-| EV-9104 | Recon Test Results | `reports/recon_test_[date].json` | G5 |
+| EV-9103 | Shadow Session Log (7 Tage) | `live_runs&#47;shadow_[date]&#47;` | G2 |
+| EV-9104 | Recon Test Results | `reports&#47;recon_test_[date].json` | G5 |
 | EV-9105 | Kill-Switch Drill Log | `docs/INCIDENT_DRILL_LOG.md` | G4 |
-| EV-9106 | Policy Test Results | `reports/policy_test_[date].log` | G6 |
+| EV-9106 | Policy Test Results | `reports&#47;policy_test_[date].log` | G6 |
 | EV-9107 | Go/No-Go Decision (ausgefüllt) | `docs/audit/GO_NO_GO.md` | All |
 
 ### 6.3 Evidence Archivierung

@@ -31,7 +31,7 @@ Phase 0 (Live Execution Foundation) is **COMPLETE** and **READY FOR GATE**.
 |----|-------|-------|-----|--------|----------------|
 | **WP0E** | Integrator | 49/49 ✅ | ~2,067 | DONE | `feat/live-exec-phase0-foundation` |
 | **WP0A** | Exec-Agent | 12/12 ✅ | ~1,903 | DONE | `feat/live-exec-phase0-foundation` |
-| **WP0B** | Risk-Agent | 23/23 ✅ | ~1,913 | DONE | `wip/restore-stash-after-pr432` |
+| **WP0B** | Risk-Agent | 23/23 ✅ | ~1,913 | DONE | `wip&#47;restore-stash-after-pr432` |
 | **WP0C** | Gov-Agent | 55/55 ✅ | ~2,204 | DONE | `feat/live-exec-wp0c-governance` |
 | **WP0D** | Obs-Agent | 47/47 ✅ | ~1,299 | DONE | `feat/live-exec-wp0c-governance` (uncommitted) |
 
@@ -82,7 +82,7 @@ $ git diff --name-only | grep -E '^docs/risk/|^scripts/risk/run_var_backtest_sui
 - 49 comprehensive tests
 
 **Evidence:**
-- `reports/execution/contracts_smoke.json`
+- `reports&#47;execution&#47;contracts_smoke.json`
 - `docs/execution/WP0E_COMPLETION_REPORT.md`
 
 **Status:** ✅ COMPLETE
@@ -133,7 +133,7 @@ $ git diff --name-only | grep -E '^docs/risk/|^scripts/risk/run_var_backtest_sui
 - 55 comprehensive tests (25 original + 30 extensions)
 
 **Evidence:**
-- `reports/governance/wp0c_gate_evidence.md`
+- `reports&#47;governance&#47;wp0c_gate_evidence.md`
 - `docs/execution/WP0C_COMPLETION_REPORT.md`
 
 **Status:** ✅ COMPLETE
@@ -149,8 +149,8 @@ $ git diff --name-only | grep -E '^docs/risk/|^scripts/risk/run_var_backtest_sui
 - 47 comprehensive tests
 
 **Evidence:**
-- `reports/observability/logging_fields.md`
-- `reports/observability/metrics_snapshot.json`
+- `reports&#47;observability&#47;logging_fields.md`
+- `reports&#47;observability&#47;metrics_snapshot.json`
 - `docs/execution/WP0D_COMPLETION_REPORT.md`
 
 **Status:** ✅ COMPLETE
@@ -164,10 +164,10 @@ $ git diff --name-only | grep -E '^docs/risk/|^scripts/risk/run_var_backtest_sui
 | Agent | Owned Paths | Changes | Conflicts |
 |-------|-------------|---------|-----------|
 | **Integrator** | `src/execution/contracts.py`, `src/execution/risk_hook.py` | 2 files | ✅ None |
-| **Exec-Agent** | `src/execution/order_*.py`, `src/execution/position_*.py`, `src/execution/audit_log.py`, `src/execution/retry_policy.py` | 5 files | ✅ None |
-| **Risk-Agent** | `src/execution/risk_runtime/**`, `src/execution/risk_hook_impl.py` | 6 files | ✅ None |
-| **Gov-Agent** | `src/governance/**` | 3 files | ✅ None |
-| **Obs-Agent** | `src/observability/**` | 3 files | ✅ None |
+| **Exec-Agent** | `src&#47;execution&#47;order_*.py`, `src&#47;execution&#47;position_*.py`, `src/execution/audit_log.py`, `src/execution/retry_policy.py` | 5 files | ✅ None |
+| **Risk-Agent** | `src&#47;execution&#47;risk_runtime&#47;**`, `src/execution/risk_hook_impl.py` | 6 files | ✅ None |
+| **Gov-Agent** | `src&#47;governance&#47;**` | 3 files | ✅ None |
+| **Obs-Agent** | `src&#47;observability&#47;**` | 3 files | ✅ None |
 
 **Total Files:** 19 new files, 0 conflicts ✅
 
@@ -275,10 +275,10 @@ $ git diff --name-only | grep -E '^docs/risk/|^scripts/risk/run_var_backtest_sui
 - [WP0D Completion Report](WP0D_COMPLETION_REPORT.md)
 
 ### Evidence Artifacts
-- `reports/execution/contracts_smoke.json` (WP0E)
-- `reports/governance/wp0c_gate_evidence.md` (WP0C)
-- `reports/observability/logging_fields.md` (WP0D)
-- `reports/observability/metrics_snapshot.json` (WP0D)
+- `reports&#47;execution&#47;contracts_smoke.json` (WP0E)
+- `reports&#47;governance&#47;wp0c_gate_evidence.md` (WP0C)
+- `reports&#47;observability&#47;logging_fields.md` (WP0D)
+- `reports&#47;observability&#47;metrics_snapshot.json` (WP0D)
 
 ---
 
