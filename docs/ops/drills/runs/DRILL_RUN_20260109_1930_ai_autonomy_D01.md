@@ -85,7 +85,7 @@ Verify operator competency in executing repository pre-flight checks:
 - **Pass/Fail:** ✅ PASS (dirty tree correctly detected and documented)
 
 ### Step 4: Workflow YAML Validation
-- **Command:** `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/aiops-promptfoo-evals.yml'))" && echo "✅ YAML is valid"`
+- **Command:** `python3 -c "import yaml; yaml.safe_load(open('.github&#47;workflows&#47;aiops-promptfoo-evals.yml'))" && echo "✅ YAML is valid"`
 - **Observation:** YAML syntax valid (no parse errors)
 - **Evidence:** python3 exit code 0
 - **Pass/Fail:** ✅ PASS
