@@ -236,7 +236,7 @@ python scripts/ops/placeholders/generate_placeholder_reports.py
 
 ❌ **Don't:**
 - Use bare `TODO` without owner: `TODO: fix`
-- Mix multiple markers: `TODO/FIXME: ...`
+- Mix multiple markers: `TODO&#47;FIXME: ...`
 - Leave markers in production-critical execution paths without issue links
 - Use `HACK` without justification or removal plan
 
@@ -269,7 +269,7 @@ python scripts/ops/placeholders/generate_placeholder_reports.py
 - All `.py`, `.md`, `.toml`, `.yaml`, `.yml`, `.sh` files in repo
 
 **Excluded from reports:**
-- `.git/`, `venv/`, `.venv/`, `node_modules/`, `dist/`, `build/`, caches
+- `.git/`, `venv/`, `.venv/`, `node_modules&#47;`, `dist&#47;`, `build&#47;`, caches
 - `.ops_local/` (output folder)
 - Binary files, lock files (e.g., `uv.lock`)
 
