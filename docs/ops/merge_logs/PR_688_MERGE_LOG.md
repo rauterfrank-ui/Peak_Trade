@@ -21,7 +21,7 @@ Local (fast, deterministic):
 - Tests:
   - `uv run pytest -q`
 - Example snapshot (no generated output committed):
-  - `uv run python scripts/ops/docs_graph_snapshot.py --roots docs/WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs/ops/README.md docs/INSTALLATION_QUICKSTART.md --out <snapshot.json>`
+  - `uv run python scripts&#47;ops&#47;docs_graph_snapshot.py --roots docs&#47;WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs&#47;ops&#47;README.md docs&#47;INSTALLATION_QUICKSTART.md --out <snapshot.json>`
 
 CI:
 - All required checks: PASS (22/22), PR merged via squash.
@@ -34,7 +34,7 @@ LOW (docs/ops tooling only)
 
 ## Operator How-To
 1) Run snapshot (default excludes archives):
-   - `uv run python scripts/ops/docs_graph_snapshot.py --roots docs/WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs/ops/README.md docs/INSTALLATION_QUICKSTART.md --out <snapshot.json>`
+   - `uv run python scripts&#47;ops&#47;docs_graph_snapshot.py --roots docs&#47;WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md docs&#47;ops&#47;README.md docs&#47;INSTALLATION_QUICKSTART.md --out <snapshot.json>`
    - (Output path typically: `docs/_generated/*.json`, git-ignored)
 2) Optional: include archives:
    - Add `--include-archives`

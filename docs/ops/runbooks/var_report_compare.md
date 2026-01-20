@@ -289,11 +289,11 @@ print('Sorted:', sorted(run_ids))
 
 | Command | Exit Code | Bedeutung |
 |---------|-----------|-----------|
-| `pytest tests/risk/validation/test_report_compare.py` | 0 | Tests PASS |
+| `pytest tests&#47;risk&#47;validation&#47;test_report_compare.py` | 0 | Tests PASS |
 | | ≠0 | Tests FAIL |
-| `python scripts/risk/var_suite_compare_runs.py ...` | 0 | Compare erfolgreich |
+| `python scripts&#47;risk&#47;var_suite_compare_runs.py ...` | 0 | Compare erfolgreich |
 | | ≠0 | Compare fehlgeschlagen (Script-Error) |
-| `python scripts/risk/var_suite_build_index.py ...` | 0 | Index erfolgreich |
+| `python scripts&#47;risk&#47;var_suite_build_index.py ...` | 0 | Index erfolgreich |
 | | ≠0 | Index fehlgeschlagen (Script-Error) |
 
 ### Gate Logic

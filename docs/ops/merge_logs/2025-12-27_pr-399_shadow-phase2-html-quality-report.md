@@ -62,7 +62,7 @@ LOW — Documentation and reporting only; no runtime logic changes to pipeline. 
 
 ## Operator How-To
 
-* Run smoke: `python scripts/shadow_run_tick_to_ohlcv_smoke.py`
+* Run smoke: `python scripts&#47;shadow_run_tick_to_ohlcv_smoke.py`
 * Open report: `reports/shadow/quality/quality_report_<timestamp>.html`
 * Local viewing:
   * macOS: `open reports/shadow/quality/quality_report_<timestamp>.html`

@@ -303,7 +303,7 @@ WORKTREE-PROTECTED:
 1. ✅ Verify branch is merged: `git branch --merged main | grep <branch-name>`
 2. ✅ Verify no active worktree: `git worktree list | grep <branch-name>` (empty output required)
 3. ✅ Verify no uncommitted changes: `git status` (clean required)
-4. ✅ Create backup reference: `git branch backup/<branch-name> <branch-name>`
+4. ✅ Create backup reference: `git branch backup&#47;<branch-name> <branch-name>`
 5. ✅ Document action in audit log (see template below)
 
 **Execution Template (ONE branch at a time):**
