@@ -13,7 +13,7 @@ This PR introduces Risk Layer V1 (new modules under `src/risk/` + tests).
 - Operator guide documents required steps + constraints
 
 ## Test plan
-- `pytest -q tests/risk` (96 tests)
+- `pytest -q tests&#47;risk` (96 tests)
 - Full CI (tests, lint, strategy-smoke)
 - Review by governance/risk owners
 

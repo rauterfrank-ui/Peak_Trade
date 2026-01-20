@@ -358,7 +358,7 @@ kill_switch_recovery_duration_seconds
 - [ ] Approval Code in Env: `KILL_SWITCH_APPROVAL_CODE`
 - [ ] Data Directories erstellt: `data/kill_switch/{state,audit}`
 - [ ] Permissions: Operator kennt Approval Code
-- [ ] Tests grün: `pytest tests/risk_layer/kill_switch/`
+- [ ] Tests grün: `pytest tests&#47;risk_layer&#47;kill_switch&#47;`
 - [ ] Runbook bekannt: `docs/ops/KILL_SWITCH_RUNBOOK.md`
 
 ## 🔄 Dependencies
