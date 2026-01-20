@@ -181,7 +181,7 @@ def run_realistic(self, ...):
 **test_build_tracking_config_reads_mlflow_section**:
 - TrackingConfig reads nested [tracking.mlflow] section
 
-### 4. Documentation (docs/STRATEGY_VNEXT_CONSOLIDATED.md)
+### 4. Documentation (docs&#47;STRATEGY_VNEXT_CONSOLIDATED.md)
 
 **Sections**:
 - Overview of Strategy Layer vNext
