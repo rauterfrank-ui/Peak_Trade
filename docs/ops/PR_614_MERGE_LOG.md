@@ -76,7 +76,7 @@ Enables Phase 4 CI integration (Evidence Pack validation gate).
 - [x] **CI Required Contexts:** ✅ PASSED
 
 ### Local Tests
-- [x] **Full Test Suite:** `python3 -m pytest tests/ai_orchestration/ -v` (66/66 passed in 0.18s)
+- [x] **Full Test Suite:** `python3 -m pytest tests&#47;ai_orchestration&#47; -v` (66/66 passed in 0.18s)
   - Models: 9 passed
   - Orchestrator: 28 passed
   - Evidence Pack: 24 passed (NEW)
@@ -241,7 +241,7 @@ print(f"✅ Evidence Pack validated: {pack.evidence_pack_id}")
 - Layer Map Reference: `docs/architecture/ai_autonomy_layer_map_v1.md`
 - Mandatory Fields Schema: `docs/governance/ai_autonomy/SCHEMA_MANDATORY_FIELDS.md`
 - Model Registry: `config/model_registry.toml`
-- Capability Scopes: `config/capability_scopes/*.toml`
+- Capability Scopes: `config&#47;capability_scopes&#47;*.toml`
 
 ### Workflow
 - AI Autonomy Audit Workflow: `AI_AUTONOMY_AUDIT_WORKFLOW.md` (Phase 3B section)
