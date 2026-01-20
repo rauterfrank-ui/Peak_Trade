@@ -1,33 +1,34 @@
-# PR 828 — MERGE LOG
+# PR 828 — Merge Log
 
-- PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/828  
-- Title: docs(ops): add evidence snapshot for PR #827 merge-log chain merge  
-- State: MERGED  
-- mergedAt: 2026-01-20T00:05:59Z  
-- mergeCommit: ea92e66b17bf5c2f21803152eb395a90621d70d7  
+- **PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/828  
+- **Title:** docs(ops): add evidence snapshot for PR #827 merge-log chain merge  
+- **State:** MERGED  
+- **mergedAt:** 2026-01-20T00:05:59Z  
+- **mergeCommit:** ea92e66b17bf5c2f21803152eb395a90621d70d7  
 
 ## Summary
-Docs-only evidence snapshot merged for PR #827 merge-log chain.
+Docs-only evidence snapshot merged for the PR #827 merge-log chain.
 
 ## Why
-Maintain deterministic ops traceability by recording evidence merges as canonical, linkable merge-log assets.
+Maintain deterministic, auditable merge-log chain continuity for ops evidence.
 
 ## Changes
 - Added docs-only evidence file:
-  - docs/ops/evidence/EV_20260119_PR827_MERGE_LOG_CHAIN_MERGED.md
+  - docs&#47;ops&#47;evidence&#47;EV_20260119_PR827_MERGE_LOG_CHAIN_MERGED.md
 
 ## Verification
-- Required checks: PASS (snapshot-only; no watch).
-- Mergeability at time of merge: mergeStateStatus=CLEAN, mergeable=MERGEABLE, autoMergeRequest=null.
+- CI required checks: PASS at merge time (snapshot-only governance flow).
+- No runtime/code execution changes.
 
 ## Risk
-LOW — docs-only.
+LOW — docs-only, additive-only.
 
 ## Operator How-To
-- Confirm PR merge:
-  - Open: https://github.com/rauterfrank-ui/Peak_Trade/pull/828
-  - Verify merge commit locally: `git log -1 --oneline` contains `ea92e66b ... (#828)`
+- Locate merge log: docs&#47;ops&#47;merge_logs&#47;PR_828_MERGE_LOG.md  
+- Locate referenced evidence: docs&#47;ops&#47;evidence&#47;EV_20260119_PR827_MERGE_LOG_CHAIN_MERGED.md  
+- Confirm anchor on main:
+  - `git log -1 --oneline` should include the merged commit for PR #828.
 
 ## References
-- mergeCommit: ea92e66b17bf5c2f21803152eb395a90621d70d7
-- mergedAt: 2026-01-20T00:05:59Z
+- PR #828: https://github.com/rauterfrank-ui/Peak_Trade/pull/828  
+- mergeCommit: ea92e66b17bf5c2f21803152eb395a90621d70d7  
