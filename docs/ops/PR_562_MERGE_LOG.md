@@ -41,9 +41,9 @@ AI-Ops Toolchain v1.1: standardized promptfoo eval execution via a robust runner
 ## Verification
 ### Local
 - No API key (should skip successfully):
-  - `bash scripts/aiops/run_promptfoo_eval.sh`
+  - `bash scripts&#47;aiops&#47;run_promptfoo_eval.sh`
 - With API key:
-  - `export OPENAI_API_KEY="sk-..." && bash scripts/aiops/run_promptfoo_eval.sh`
+  - `export OPENAI_API_KEY="sk-..." && bash scripts&#47;aiops&#47;run_promptfoo_eval.sh`
 - Confirm repo stays clean (artifacts ignored):
   - `git status -sb`
 
@@ -57,7 +57,7 @@ LOW — Tooling/docs/evals only. No changes to `src/`, no execution logic change
 
 ## Operator How-To
 - Preferred local run:
-  - `bash scripts/aiops/run_promptfoo_eval.sh`
+  - `bash scripts&#47;aiops&#47;run_promptfoo_eval.sh`
 - Cursor shortcut:
   - Use `/pt-eval` (delegates to the runner workflow as documented).
 - Artifacts/logs:

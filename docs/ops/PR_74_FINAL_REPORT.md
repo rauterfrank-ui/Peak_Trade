@@ -92,9 +92,9 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
   - `python3 scripts&#47;inspect_offline_feed.py --help` **(⚠️ DEPRECATED: script removed)**
 
 - Tests:
-  - `pytest -q tests/test_inspect_offline_feed.py`
-  - `pytest -q tests/test_live_web.py`
-  - `pytest -q tests/test_offline_realtime_feed_v0.py`
+  - `pytest -q tests&#47;test_inspect_offline_feed.py`
+  - `pytest -q tests&#47;test_live_web.py`
+  - `pytest -q tests&#47;test_offline_realtime_feed_v0.py`
 
 - Dashboard:
   - Route: `/offline-feed` (wenn Web-Server läuft)
