@@ -152,6 +152,8 @@ from .ops_ci_health_router import (
     set_ci_health_config,
 )
 
+from .execution_watch_api_v0 import router as execution_watch_v0_router
+
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -396,6 +398,9 @@ def create_app() -> FastAPI:
 
     # Knowledge DB API (v1.0)
     app.include_router(knowledge_router)
+
+    # Phase 16A: Execution Watch (v0) — watch-only
+    app.include_router(execution_watch_v0_router)
 
     # JSON API Alias für /api/ops/workflows
     @app.get("/api/ops/workflows")
