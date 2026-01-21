@@ -13,6 +13,12 @@ def client() -> TestClient:
     return TestClient(create_app())
 
 
+@pytest.fixture(autouse=True)
+def _fixed_generated_at_utc(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Determinism hardening: pin wallclock-derived `generated_at_utc` in all tests.
+    monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-01-01T00:00:00Z")
+
+
 def _copy_fixture(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_bytes(src.read_bytes())
@@ -25,8 +31,8 @@ def test_execution_watch_api_v0_2_healthz(client: TestClient) -> None:
     assert payload["api_version"] == "v0.2"
     assert payload["status"] == "ok"
     assert payload["watch_only"] is True
-    assert "generated_at_utc" in payload
-    assert payload["meta"]["api_version"] == "v0.4"
+    assert payload["generated_at_utc"] == "2026-01-01T00:00:00Z"
+    assert payload["meta"]["api_version"] == "v0.5"
     assert payload["meta"]["read_errors"] == 0
 
 
@@ -50,17 +56,18 @@ def test_execution_watch_api_v0_2_runs_detail_events_pagination(
     assert runs.status_code == 200
     rp = runs.json()
     assert rp["api_version"] == "v0.2"
-    assert rp["meta"]["api_version"] == "v0.4"
+    assert rp["meta"]["api_version"] == "v0.5"
     assert rp["meta"]["source"] == "fixture"
     assert rp["count"] == 2
     assert [r["run_id"] for r in rp["runs"]] == ["run_new", "run_old"]
+    assert rp["meta"]["last_event_utc"] is not None
 
     # Detail
     detail = client.get(f"/api/execution/runs/run_new?root={root}&filename={p.name}")
     assert detail.status_code == 200
     dp = detail.json()
     assert dp["api_version"] == "v0.2"
-    assert dp["meta"]["api_version"] == "v0.4"
+    assert dp["meta"]["api_version"] == "v0.5"
     assert dp["meta"]["source"] == "fixture"
     assert dp["run"]["run_id"] == "run_new"
     assert dp["run"]["status"] == "success"
@@ -71,7 +78,7 @@ def test_execution_watch_api_v0_2_runs_detail_events_pagination(
     assert page1.status_code == 200
     p1 = page1.json()
     assert p1["api_version"] == "v0.2"
-    assert p1["meta"]["api_version"] == "v0.4"
+    assert p1["meta"]["api_version"] == "v0.5"
     assert p1["meta"]["source"] == "fixture"
     assert p1["run_id"] == "run_new"
     assert p1["count"] == 2
@@ -115,7 +122,7 @@ def test_execution_watch_api_v0_2_live_sessions_from_registry_fixture(
     assert r.status_code == 200
     payload = r.json()
     assert payload["api_version"] == "v0.2"
-    assert payload["meta"]["api_version"] == "v0.4"
+    assert payload["meta"]["api_version"] == "v0.5"
     assert payload["meta"]["source"] == "fixture"
     assert payload["count"] == 2
 
@@ -286,7 +293,8 @@ def test_execution_watch_api_v0_4_health_endpoint_includes_stats_and_last_event_
     assert r.status_code == 200
     payload = r.json()
     assert payload["api_version"] == "v0.2"
-    assert payload["meta"]["api_version"] == "v0.4"
+    assert payload["generated_at_utc"] == "2026-01-01T00:00:00Z"
+    assert payload["meta"]["api_version"] == "v0.5"
     assert payload["meta"]["source"] == "fixture"
     assert payload["meta"]["read_errors"] == 0
     assert payload["meta"]["last_event_utc"] == "2026-01-01T00:00:04Z"
@@ -297,8 +305,10 @@ def test_execution_watch_api_v0_4_health_endpoint_includes_stats_and_last_event_
     assert stats["sessions_count"] == 0
 
     inv = payload["invariants"]
-    assert inv["cursor_monotonic"] is True
-    assert inv["ordering_non_decreasing"] is True
+    assert inv["cursor_monotonicity_ok"] is True
+    assert inv["dataset_nonempty_ok"] is True
+    assert inv["events_sorted_by_time_ok"] is True
+    assert inv["runs_sessions_consistency_ok"] is True
 
 
 def test_execution_watch_api_v0_4_health_runtime_metrics_opt_in_does_not_crash(

@@ -28,13 +28,64 @@ from pydantic import BaseModel, Field
 
 # v0.2 contract remains (non-breaking). v0.3 semantics are exposed via `meta.api_version`.
 API_VERSION = "v0.2"
-META_API_VERSION = "v0.4"
+META_API_VERSION = "v0.5"
 
 router = APIRouter(tags=["execution-watch-v0.2"])
 
+_TIMESTAMP_PRECEDENCE_KEYS: Tuple[str, ...] = (
+    # Preferred explicit UTC fields (if present in future schemas)
+    "ts_utc",
+    "event_utc",
+    "created_at_utc",
+    "timestamp_utc",
+    # Current v0 events
+    "ts",
+    "created_at",
+)
+
 
 def _utc_now_iso() -> str:
+    fixed = os.getenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC")
+    if fixed:
+        # Used by tests to pin wallclock-derived values deterministically.
+        return fixed
     return datetime.now(timezone.utc).isoformat()
+
+
+def _parse_iso8601_utc_strict(s: str) -> datetime:
+    """
+    Strict ISO-8601 timestamp parser:
+    - Requires timezone info (Z or ±HH:MM)
+    - Normalizes to UTC
+    """
+    raw = (s or "").strip()
+    if not raw:
+        raise ValueError("empty_timestamp")
+    # Common fixture format uses trailing Z
+    if raw.endswith("Z"):
+        raw = raw[:-1] + "+00:00"
+    dt = datetime.fromisoformat(raw)
+    if dt.tzinfo is None:
+        raise ValueError("naive_timestamp_disallowed")
+    return dt.astimezone(timezone.utc)
+
+
+def _extract_event_timestamp_utc(ev: Dict[str, Any]) -> Optional[datetime]:
+    """
+    Derive an event timestamp (UTC) using precedence over known keys.
+    Returns None if no parseable timestamp is present.
+    """
+    for k in _TIMESTAMP_PRECEDENCE_KEYS:
+        v = ev.get(k)
+        if v is None:
+            continue
+        if not isinstance(v, str):
+            continue
+        try:
+            return _parse_iso8601_utc_strict(v)
+        except Exception:
+            continue
+    return None
 
 
 def _parse_int_cursor(cursor: Optional[str]) -> int:
@@ -217,11 +268,104 @@ def _dataset_stats_for_events(events: List[Dict[str, Any]]) -> DatasetStats:
     return DatasetStats(runs_count=len(grouped), events_count=len(events), sessions_count=None)
 
 
-def _last_event_utc_for_events(events: List[Dict[str, Any]]) -> Optional[str]:
+def _format_utc_z(dt: datetime) -> str:
+    # Normalize to second precision, stable Z suffix
+    dtu = dt.astimezone(timezone.utc).replace(microsecond=0)
+    return dtu.isoformat().replace("+00:00", "Z")
+
+
+def _last_event_utc_for_events(events: List[Dict[str, Any]]) -> Tuple[Optional[str], int]:
+    """
+    Compute last_event_utc deterministically as max(parsed timestamps) when possible.
+    Returns (last_event_utc, timestamp_read_errors).
+    Timestamp parse failures increment timestamp_read_errors (counted into meta.read_errors).
+    """
     if not events:
-        return None
+        return None, 0
+
+    timestamp_read_errors = 0
+    best: Optional[datetime] = None
+    for ev in events:
+        # Only count an error if at least one candidate key exists but none are parseable.
+        if any(k in ev for k in _TIMESTAMP_PRECEDENCE_KEYS):
+            dt = _extract_event_timestamp_utc(ev)
+            if dt is None:
+                timestamp_read_errors += 1
+                continue
+            if best is None or dt > best:
+                best = dt
+
+    if best is not None:
+        return _format_utc_z(best), timestamp_read_errors
+
+    # Fallback: preserve legacy behavior (use last by deterministic event sort key).
     evs_sorted = sorted(events, key=_event_sort_key)
-    return str(evs_sorted[-1].get("ts") or "") or None
+    legacy = str(evs_sorted[-1].get("ts") or "") or None
+    return legacy, timestamp_read_errors
+
+
+def _compute_v0_5_invariants(
+    *,
+    events: List[Dict[str, Any]],
+    stats: DatasetStats,
+    ordering_non_decreasing: bool,
+) -> Dict[str, Any]:
+    # dataset_nonempty_ok: deterministic signal with note
+    dataset_nonempty_ok = stats.events_count > 0
+    dataset_nonempty_note = "ok" if dataset_nonempty_ok else "empty_dataset"
+
+    # events_sorted_by_time_ok: only meaningful if at least one parseable timestamp exists
+    grouped = _group_events_by_run(events)
+    parsed_any = False
+    events_sorted_by_time_ok: Optional[bool] = True
+    events_sorted_by_time_note = "ok"
+    try:
+        for _, evs in grouped.items():
+            # Append-only file order (deterministic) as baseline
+            evs_by_file = sorted(evs, key=lambda e: int(e.get("_file_seq") or 0))
+            last_dt: Optional[datetime] = None
+            for ev in evs_by_file:
+                dt = _extract_event_timestamp_utc(ev)
+                if dt is None:
+                    continue
+                parsed_any = True
+                if last_dt is not None and dt < last_dt:
+                    events_sorted_by_time_ok = False
+                    events_sorted_by_time_note = "timestamp_regressed_in_file_order"
+                    raise StopIteration()
+                last_dt = dt
+    except StopIteration:
+        pass
+    except Exception:
+        events_sorted_by_time_ok = False
+        events_sorted_by_time_note = "timestamp_check_error"
+
+    if not parsed_any and events_sorted_by_time_ok is True:
+        events_sorted_by_time_ok = None
+        events_sorted_by_time_note = "no_parseable_timestamps"
+
+    # runs_sessions_consistency_ok: conservative; mapping is not defined in v0.4/v0.5
+    if stats.sessions_count is None:
+        runs_sessions_consistency_ok: Optional[bool] = None
+        runs_sessions_consistency_note = "sessions_count_unavailable"
+    else:
+        runs_sessions_consistency_ok = True
+        runs_sessions_consistency_note = "no_mapping_defined"
+
+    # Preserve legacy keys and add v0.5 keys. Keep insertion order stable.
+    return {
+        # existing
+        "cursor_monotonic": True,
+        "ordering_non_decreasing": ordering_non_decreasing,
+        # v0.5 expanded
+        "cursor_monotonicity_ok": True,
+        "dataset_nonempty_ok": dataset_nonempty_ok,
+        "dataset_nonempty_note": dataset_nonempty_note,
+        "events_sorted_by_time_ok": events_sorted_by_time_ok,
+        "events_sorted_by_time_note": events_sorted_by_time_note,
+        "runs_sessions_consistency_ok": runs_sessions_consistency_ok,
+        "runs_sessions_consistency_note": runs_sessions_consistency_note,
+    }
 
 
 def _count_sessions_in_dir(base_dir: Optional[str]) -> Optional[int]:
@@ -398,6 +542,8 @@ async def api_execution_runs_v0_2(
 ) -> RunsListResponse:
     t0 = time.perf_counter()
     events, read_errors = _read_jsonl_events_v0(Path(root), filename)
+    last_event_utc, ts_read_errors = _last_event_utc_for_events(events)
+    read_errors_total = int(read_errors) + int(ts_read_errors)
     grouped = _group_events_by_run(events)
 
     runs: List[RunSummary] = []
@@ -438,9 +584,9 @@ async def api_execution_runs_v0_2(
                 gen,
                 has_more=False,
                 next_cursor=None,
-                read_errors=read_errors,
+                read_errors=read_errors_total,
                 source=_source_for_events_root(root, filename),
-                last_event_utc=_last_event_utc_for_events(events),
+                last_event_utc=last_event_utc,
                 dataset_stats=_dataset_stats_for_events(events),
             ),
             count=len(runs),
@@ -451,7 +597,7 @@ async def api_execution_runs_v0_2(
             endpoint="/api/execution/runs",
             status="200",
             latency_s=time.perf_counter() - t0,
-            read_errors=read_errors,
+            read_errors=read_errors_total,
         )
 
 
@@ -465,13 +611,16 @@ async def api_execution_run_detail_v0_2(
 ) -> RunDetailResponse:
     t0 = time.perf_counter()
     events, read_errors = _read_jsonl_events_v0(Path(root), filename)
+    # Timestamp parse errors count into meta.read_errors per v0.5 contract.
+    _, ts_read_errors = _last_event_utc_for_events(events)
+    read_errors_total = int(read_errors) + int(ts_read_errors)
     evs = [e for e in events if str(e.get("run_id") or "") == run_id]
     if not evs:
         _record_exec_watch_metrics(
             endpoint="/api/execution/runs/{run_id}",
             status="404",
             latency_s=time.perf_counter() - t0,
-            read_errors=read_errors,
+            read_errors=read_errors_total,
         )
         raise HTTPException(status_code=404, detail="run_not_found")
 
@@ -500,7 +649,7 @@ async def api_execution_run_detail_v0_2(
                 gen,
                 has_more=False,
                 next_cursor=None,
-                read_errors=read_errors,
+                read_errors=read_errors_total,
                 source=_source_for_events_root(root, filename),
                 last_event_utc=str(evs_sorted[-1].get("ts") or "") or None,
                 dataset_stats=_dataset_stats_for_events(events),
@@ -512,7 +661,7 @@ async def api_execution_run_detail_v0_2(
             endpoint="/api/execution/runs/{run_id}",
             status="200",
             latency_s=time.perf_counter() - t0,
-            read_errors=read_errors,
+            read_errors=read_errors_total,
         )
 
 
@@ -543,13 +692,15 @@ async def api_execution_run_events_v0_2(
     )
 
     events, read_errors = _read_jsonl_events_v0(Path(root), filename)
+    _, ts_read_errors = _last_event_utc_for_events(events)
+    read_errors_total = int(read_errors) + int(ts_read_errors)
     evs = [e for e in events if str(e.get("run_id") or "") == run_id]
     if not evs:
         _record_exec_watch_metrics(
             endpoint="/api/execution/runs/{run_id}/events",
             status="404",
             latency_s=time.perf_counter() - t0,
-            read_errors=read_errors,
+            read_errors=read_errors_total,
         )
         raise HTTPException(status_code=404, detail="run_not_found")
 
@@ -570,7 +721,7 @@ async def api_execution_run_events_v0_2(
                     gen,
                     has_more=False,
                     next_cursor=next_cursor_out,
-                    read_errors=read_errors,
+                    read_errors=read_errors_total,
                     source=src,
                     last_event_utc=str(evs_sorted[-1].get("ts") or "") or None,
                     dataset_stats=_dataset_stats_for_events(events),
@@ -587,7 +738,7 @@ async def api_execution_run_events_v0_2(
                 endpoint="/api/execution/runs/{run_id}/events",
                 status="200",
                 latency_s=time.perf_counter() - t0,
-                read_errors=read_errors,
+                read_errors=read_errors_total,
             )
 
     page = evs_sorted[start : start + limit]
@@ -625,7 +776,7 @@ async def api_execution_run_events_v0_2(
                 gen,
                 has_more=has_more,
                 next_cursor=next_cursor_out,
-                read_errors=read_errors,
+                read_errors=read_errors_total,
                 source=src,
                 last_event_utc=str(evs_sorted[-1].get("ts") or "") or None,
                 dataset_stats=_dataset_stats_for_events(events),
@@ -642,7 +793,7 @@ async def api_execution_run_events_v0_2(
             endpoint="/api/execution/runs/{run_id}/events",
             status="200",
             latency_s=time.perf_counter() - t0,
-            read_errors=read_errors,
+            read_errors=read_errors_total,
         )
 
 
@@ -742,6 +893,8 @@ async def api_execution_health_v0_4(
     src = _source_for_events_root(root, filename)
     stats = _dataset_stats_for_events(events)
     stats.sessions_count = _count_sessions_in_dir(base_dir)
+    last_event_utc, ts_read_errors = _last_event_utc_for_events(events)
+    read_errors_total = int(read_errors) + int(ts_read_errors)
 
     runtime_metrics: Optional[Dict[str, Any]] = None
     if include_runtime_metrics and _enabled_exec_watch_metrics():
@@ -762,16 +915,19 @@ async def api_execution_health_v0_4(
                 gen,
                 has_more=False,
                 next_cursor=None,
-                read_errors=read_errors,
+                read_errors=read_errors_total,
                 source=src if src in {"fixture", "local"} else "unknown",
-                last_event_utc=_last_event_utc_for_events(events),
+                last_event_utc=last_event_utc,
                 dataset_stats=stats,
             ),
             invariants={
-                "cursor_monotonic": True,
-                "ordering_non_decreasing": ordering_non_decreasing,
                 "runtime_metrics_included": bool(runtime_metrics is not None),
                 "runtime_metrics": runtime_metrics,
+                **_compute_v0_5_invariants(
+                    events=events,
+                    stats=stats,
+                    ordering_non_decreasing=ordering_non_decreasing,
+                ),
             },
         )
     finally:
@@ -779,5 +935,5 @@ async def api_execution_health_v0_4(
             endpoint="/api/execution/health",
             status="200",
             latency_s=time.perf_counter() - t0,
-            read_errors=read_errors,
+            read_errors=read_errors_total,
         )
