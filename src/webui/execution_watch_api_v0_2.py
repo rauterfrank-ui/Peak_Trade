@@ -363,7 +363,9 @@ async def api_execution_run_events_v0_2(
 ) -> RunEventsResponse:
     if since_cursor is not None and cursor is not None:
         raise HTTPException(status_code=400, detail="invalid_cursor")
-    start = _parse_int_cursor(cursor) if since_cursor is None else (_parse_int_cursor(since_cursor) + 1)
+    start = (
+        _parse_int_cursor(cursor) if since_cursor is None else (_parse_int_cursor(since_cursor) + 1)
+    )
 
     events, read_errors = _read_jsonl_events_v0(Path(root), filename)
     evs = [e for e in events if str(e.get("run_id") or "") == run_id]

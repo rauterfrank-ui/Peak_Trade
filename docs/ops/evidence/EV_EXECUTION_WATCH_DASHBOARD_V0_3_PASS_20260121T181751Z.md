@@ -17,7 +17,7 @@ git status -sb
 
 Recorded:
 - `git rev-parse HEAD` → `595d53bcf97061c6751d0363093247448c100845`
-- `git status -sb` → `## main...origin/main` (working tree modified; see PR diff)
+- `git status -sb` → `## main...origin&#47;main` (working tree modified; see PR diff)
 
 ---
 

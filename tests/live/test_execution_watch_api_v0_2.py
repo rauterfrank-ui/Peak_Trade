@@ -206,7 +206,9 @@ def test_execution_watch_api_v0_3_malformed_jsonl_line_is_counted_and_skipped(
     assert rp["meta"]["read_errors"] == 1
 
     # Events should skip the bad line, keep deterministic ordering, and expose read_errors
-    ev = client.get(f"/api/execution/runs/run_badline/events?root={root}&filename={p.name}&limit=50")
+    ev = client.get(
+        f"/api/execution/runs/run_badline/events?root={root}&filename={p.name}&limit=50"
+    )
     assert ev.status_code == 200
     ep = ev.json()
     assert ep["meta"]["read_errors"] == 1
@@ -214,7 +216,9 @@ def test_execution_watch_api_v0_3_malformed_jsonl_line_is_counted_and_skipped(
     assert [it["order_id"] for it in ep["items"]] == ["o1", "o2"]
 
     # Determinism: same input -> same output (ordering/cursor)
-    ev2 = client.get(f"/api/execution/runs/run_badline/events?root={root}&filename={p.name}&limit=50")
+    ev2 = client.get(
+        f"/api/execution/runs/run_badline/events?root={root}&filename={p.name}&limit=50"
+    )
     assert ev2.status_code == 200
     ep2 = ev2.json()
     assert ep2["items"] == ep["items"]
