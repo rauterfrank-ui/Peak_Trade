@@ -12,7 +12,7 @@
 
 ## Verification
 - Local:
-  - PASS: `python3 scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/PR_892_MERGE_LOG.md`
+  - PASS: `python3 scripts&#47;ops&#47;check_merge_log_hygiene.py docs&#47;ops&#47;merge_logs&#47;PR_892_MERGE_LOG.md`
 - CI:
   - Required checks: PASS (PR checks snapshot at merge time)
 
