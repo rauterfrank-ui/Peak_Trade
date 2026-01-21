@@ -95,7 +95,7 @@
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.13 (Operational - 33 entries)
+**Status:** v0.15 (Operational - 34 entries)
 
 ---
 
@@ -141,6 +141,7 @@ Evidence items are operational artifacts that document system behavior, process 
 
 | Evidence ID | Date | Owner | Source Link | Claim / What It Demonstrates | Verification | Notes |
 |-------------|------|-------|-------------|------------------------------|--------------|-------|
+| EV-20260121-EXEWATCH-V04 | 2026-01-21 | ops | [Evidence](evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_4_PASS_20260121T192405Z.md) | Execution Watch Dashboard v0.4 PASS: health endpoint + UI health panel; polling default off; Ping Health single-shot; tail mode unchanged; watch-only/read-only. | Local snapshot: start `uv run uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000`; verify `GET &#47;execution_watch` and `GET &#47;api&#47;execution&#47;health` (meta.api_version=v0.4, meta.source, meta.read_errors, meta.dataset_stats, meta.last_event_utc). | Risk: LOW (NO-LIVE, read-only). |
 | EV-20260116-PR742-DOCS-TOKEN-POLICY-FIX | 2026-01-16 | ops | [PR #742 Merge Log](merge_logs/PR_742_MERGE_LOG.md) | PR #742 merged: watch-only UI v0.1B + read-only API v0 extensions + operator runbook. CI token-policy remediation captured: illustrative inline-code token `live_runs&#47;` encoded as `live_runs&#47;` in `docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md`. | CI Proof (snapshot): `gh pr checks 742` → 0 failing, 0 pending. Local Proof: `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --base origin&#47;main --json docs-token-policy-report.json` → PASS. | Risk: LOW. Artifacts: `docs/ops/merge_logs/PR_742_MERGE_LOG.md`. |
 | EV-20260115-PR740-LINT-GATE-REMEDIATION | 2026-01-15 | ops | [PR #740 Merge Log](merge_logs/PR_740_MERGE_LOG.md) | Context: PR #740 merge-blocked by “Lint Gate (Always Run)”. Change: formatting-only `ruff format` remediation in `src/live/web/app.py`. | CI Proof (snapshot): `gh pr checks 740` → 0 failing, 27 successful, 4 skipped, 0 pending. Local Proof: `python3 -m ruff check .` PASS; `python3 -m ruff format --check .` PASS (1079 files already formatted). | Risk: LOW. Artifacts: `docs/ops/merge_logs/PR_740_MERGE_LOG.md`. |
 | EV-20260107-SEED | 2026-01-07 | ops | [PR #596 Merge Log](PR_596_MERGE_LOG.md) | Placeholder policy v0 merged with CI green | GitHub PR status: merged, checks passed | Seed entry (example); no live trading claim |
@@ -301,8 +302,8 @@ Evidence items are operational artifacts that document system behavior, process 
 
 ---
 
-**Version:** v0.13  
+**Version:** v0.15  
 **Maintained by:** ops  
-**Last Updated:** 2026-01-14  
-**Total Entries:** 33 (1 seed + 32 operational)  
+**Last Updated:** 2026-01-21  
+**Total Entries:** 34 (1 seed + 33 operational)  
 **Next Review:**  (recommend quarterly or pre-phase-gate)
