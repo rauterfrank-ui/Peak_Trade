@@ -91,10 +91,7 @@ def test_execution_watch_api_v0_2_live_sessions_from_registry_fixture(
     client: TestClient, tmp_path: Path
 ) -> None:
     fx_dir = (
-        Path(__file__).resolve().parents[1]
-        / "fixtures"
-        / "execution_watch_v0_2"
-        / "live_sessions"
+        Path(__file__).resolve().parents[1] / "fixtures" / "execution_watch_v0_2" / "live_sessions"
     )
     base_dir = tmp_path / "live_sessions"
     base_dir.mkdir(parents=True, exist_ok=True)
@@ -132,7 +129,9 @@ def test_execution_watch_api_v0_2_empty_state_is_deterministic(
     detail = client.get(f"/api/execution/runs/run_missing?root={root}&filename={p.name}")
     assert detail.status_code == 404
 
-    events = client.get(f"/api/execution/runs/run_missing/events?root={root}&filename={p.name}&limit=10")
+    events = client.get(
+        f"/api/execution/runs/run_missing/events?root={root}&filename={p.name}&limit=10"
+    )
     assert events.status_code == 404
 
     # Empty registry dir -> sessions list empty
