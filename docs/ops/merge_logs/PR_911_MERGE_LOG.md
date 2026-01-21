@@ -31,11 +31,11 @@ LOW — documentation only; no GitHub label edits/renames/deletes performed.
 
 ## Operator How-To
 - Audit artifacts (local, deterministic):
-  - `tmp/labels.json`
-  - `tmp/labels_audit.tsv`
-  - `tmp/labels_candidates_used0.txt`
-  - `tmp/labels_refs_broad.txt` (includes docs; intentionally noisy)
-  - `tmp/labels_refs_operational.txt` (only `.github/` + `scripts`; label-carrying patterns)
+  - `tmp&#47;labels.json`
+  - `tmp&#47;labels_audit.tsv`
+  - `tmp&#47;labels_candidates_used0.txt`
+  - `tmp&#47;labels_refs_broad.txt` (includes docs; intentionally noisy)
+  - `tmp&#47;labels_refs_operational.txt` (only `.github/` + `scripts`; label-carrying patterns)
 - Decision rules and current decisions: see `docs/ops/labels/LABEL_DECISION.md`.
 - Any migration/relabel/rename/delete remains **Operator-only** per runbook.
 
