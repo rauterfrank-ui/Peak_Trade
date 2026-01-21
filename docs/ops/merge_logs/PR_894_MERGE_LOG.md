@@ -29,3 +29,5 @@
 ## Operator Notes
 - Approval: non-author review APPROVED (`HrzFrnk`).
 - Gate: `mergeStateStatus=CLEAN`, `mergeable=MERGEABLE`, required checks PASS.
+
+<!-- CI_TRIGGER: ensure required contexts run on docs-only merge-log PR -->
