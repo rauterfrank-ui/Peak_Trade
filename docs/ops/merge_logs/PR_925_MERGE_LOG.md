@@ -1,4 +1,4 @@
-# PR #<NUM> — Merge Log
+# PR #925 — Merge Log
 
 Summary
 - ExecutionPipeline Slice 2: deterministic ledger/accounting + PnL from Slice‑1 events.
@@ -32,7 +32,7 @@ Risk
 - LOW: consumer‑only ledger; no live unlocks; deterministic policy enforced.
 
 Operator How‑To
-- Run Slice‑2 runbook: [RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md)
+- Ops Runbooks Index: [docs/ops/runbooks/README.md](../runbooks/README.md)
 
 References
 - PR: <URL>
