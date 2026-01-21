@@ -14,13 +14,13 @@ CI schlug zuvor wegen Regressionen/Instabilität in Fixtures fehl; die Gates mus
 
 ### Fixtures (tests/fixtures/var_suite_reports/)
 - Einführung CI-Green-Path Runs:
-  - `run_baseline/`
-  - `run_candidate/`
+  - `run_baseline&#47;`
+  - `run_candidate&#47;`
 - Bewahrt für Negative-Tests (Regression Detection):
-  - `run_known_regressions_baseline/`
-  - `run_known_regressions_candidate/`
+  - `run_known_regressions_baseline&#47;`
+  - `run_known_regressions_candidate&#47;`
 - Unverändert:
-  - `run_pass_all/` (Golden dataset)
+  - `run_pass_all&#47;` (Golden dataset)
 - Dokumentation ergänzt: `README.md` zur Fixture-Struktur und Test-Intention
 
 ### Tests
@@ -29,10 +29,10 @@ CI schlug zuvor wegen Regressionen/Instabilität in Fixtures fehl; die Gates mus
 - Ruff-Format angewendet (Format/Style stabil)
 
 ## Fixture-Struktur (Semantik)
-- `run_baseline/` + `run_candidate/`: CI Green Path (3 breaches, all PASS)
-- `run_known_regressions_baseline/`: Clean baseline (5 breaches, all PASS)
-- `run_known_regressions_candidate/`: 4 bekannte Regressionen (8 breaches, FAIL)
-- `run_pass_all/`: Golden dataset (unverändert)
+- `run_baseline&#47;` + `run_candidate&#47;`: CI Green Path (3 breaches, all PASS)
+- `run_known_regressions_baseline&#47;`: Clean baseline (5 breaches, all PASS)
+- `run_known_regressions_candidate&#47;`: 4 bekannte Regressionen (8 breaches, FAIL)
+- `run_pass_all&#47;`: Golden dataset (unverändert)
 
 ## Verification
 - VaR Report Regression Gates: grün (mehrere Runner-Ausführungen)

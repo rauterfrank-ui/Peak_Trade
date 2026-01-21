@@ -6,7 +6,7 @@ Squash-Commit: 8346619 — "feat(ops): add branch hygiene script (origin/main en
 
 ## Why
 Verhindert PR-Drift durch lokale (unpushed) Commits auf `main` (Lessons Learned aus PR #305).
-Neue Branches werden explizit von `origin/main` erstellt und der Prozess bricht ab, wenn lokaler `main` ahead ist.
+Neue Branches werden explizit von `origin&#47;main` erstellt und der Prozess bricht ab, wenn lokaler `main` ahead ist.
 
 ## Changes
 - scripts/ops/new_branch_from_origin_main.sh (neu, executable)
@@ -15,8 +15,8 @@ Neue Branches werden explizit von `origin/main` erstellt und der Prozess bricht 
 ## Verification
 - CI: alle Required Checks PASS (Auto-Merge)
 - Lokal:
-  - `scripts/ops/new_branch_from_origin_main.sh <branch>` zeigt Usage & Checks
-  - `scripts/ops/ops_center.sh doctor` bleibt grün
+  - `scripts&#47;ops&#47;new_branch_from_origin_main.sh <branch>` zeigt Usage & Checks
+  - `scripts&#47;ops&#47;ops_center.sh doctor` bleibt grün
 
 ## Risk
 Low (Ops Script + Docs).

@@ -70,7 +70,7 @@ gh pr merge 589 --squash --delete-branch
 ### PR #588 (P1 - NEEDS CONFLICT RESOLUTION)
 
 **Title:** docs(ops): add PR #93 merge log  
-**Branch:** `docs/ops/pr-93-merge-log` (see [`docs/ops/PR_93_MERGE_LOG.md`](PR_93_MERGE_LOG.md)) <!-- pt:ref-target-ignore -->
+**Branch:** `docs&#47;ops&#47;pr-93-merge-log` (see [`docs/ops/PR_93_MERGE_LOG.md`](PR_93_MERGE_LOG.md)) <!-- pt:ref-target-ignore -->
 
 **Status:**
 - Mergeable: ❌ CONFLICTING
@@ -171,7 +171,7 @@ gh pr merge 590 --squash --delete-branch
 ### PR #591 (P3 - NEEDS CI FIX)
 
 **Title:** docs(ops): restore Wave3 documentation and tooling (batch runner + queue docs)  
-**Branch:** `restore/wave3-runbooks-core`
+**Branch:** `restore&#47;wave3-runbooks-core`
 
 **Status:**
 - Mergeable: ✅ YES
@@ -604,12 +604,12 @@ gh pr checks <PR> --watch
 |----------|------------------|----------|---------|
 | Merge log entry | `docs/ops/README.md` | **REGENERATE** | Index can be rebuilt |
 | Changelog entry | `CHANGELOG.md` | **REGENERATE** | Auto-generated |
-| Doc index | `docs/*/README.md` | **REGENERATE** | Structure may have changed |
-| Import statements | `src/**/*.py` | **RESOLVE** | Logic context needed |
-| Test fixtures | `tests/**/fixtures/` | **RESOLVE** | Test assumptions matter |
-| Config values | `config/*.toml` | **RESOLVE** | Semantic meaning critical |
+| Doc index | `docs&#47;*&#47;README.md` | **REGENERATE** | Structure may have changed |
+| Import statements | `src&#47;**&#47;*.py` | **RESOLVE** | Logic context needed |
+| Test fixtures | `tests&#47;**&#47;fixtures&#47;` | **RESOLVE** | Test assumptions matter |
+| Config values | `config&#47;*.toml` | **RESOLVE** | Semantic meaning critical |
 | Whitespace only | Any file | **RESOLVE** | Trivial fix |
-| Docstrings | `src/**/*.py` | **RESOLVE** | Context matters |
+| Docstrings | `src&#47;**&#47;*.py` | **RESOLVE** | Context matters |
 | Root-level docs | `*.md` (root) | **REGENERATE** + move | Should be in docs/ |
 
 ---
@@ -620,7 +620,7 @@ After resolving ANY conflict:
 
 - [ ] CI passes (all checks green)
 - [ ] No new tracked files in `reports/`
-- [ ] No new tracked files in `.artifacts/`, `.tmp_*/`
+- [ ] No new tracked files in `.artifacts/`, `.tmp_*&#47;`
 - [ ] All links in docs are valid (docs-reference-targets-gate passes)
 - [ ] Ruff linting passes
 - [ ] Pre-commit hooks pass

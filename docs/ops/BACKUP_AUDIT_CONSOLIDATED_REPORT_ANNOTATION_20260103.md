@@ -7,11 +7,11 @@ This document annotates the local audit artifact `BACKUP_AUDIT_CONSOLIDATED_REPO
 **Verified state (repo):**
 - All *critical* items previously flagged as missing (source code, tests, scripts) are present in the repository.
 - The remaining "missing" entries referenced in the local audit artifact are **workflow/temporary operator artifacts** only:
-  - `docs/ops/pr_bodies/*` (not used by current workflow)
+  - `docs&#47;ops&#47;pr_bodies&#47;*` (not used by current workflow)
   - Gsnapshot artifacts from 2025-12-23 (`git_diff_*`, `git_log_*`, `git_status_*`)
 
 **Workflow reality (authoritative for current repo):**
-The repository uses the established **MERGE_LOG** system rather than `docs/ops/pr_bodies/`:
+The repository uses the established **MERGE_LOG** system rather than `docs&#47;ops&#47;pr_bodies&#47;`:
 - `docs/ops/MERGE_LOGS_STYLE_GUIDE.md`
 - `docs/ops/MERGE_LOG_TEMPLATE_COMPACT.md`
 - `docs/ops/MERGE_LOG_TEMPLATE_DETAILED.md`

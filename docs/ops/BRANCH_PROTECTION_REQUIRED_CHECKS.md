@@ -1,6 +1,6 @@
 # Branch Protection: Required Status Checks
 
-**Repository:** `rauterfrank-ui/Peak_Trade`  
+**Repository:** `rauterfrank-ui&#47;Peak_Trade`  
 **Branch:** `main`  
 **Last Updated:** 2025-12-27
 

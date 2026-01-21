@@ -49,8 +49,8 @@ Implementierung eines runtime-fähigen, fail-closed Orchestrators, der Model Sel
 5. ✅ Rollback-Mechanismus (Feature Flag / Guard)
 
 ### Evidence Required
-- Validator output: `python3 scripts/validate_layer_map_config.py` (OK)
-- Test results: `python3 -m pytest tests/ai_orchestration/ -v` (OK)
+- Validator output: `python3 scripts&#47;validate_layer_map_config.py` (OK)
+- Test results: `python3 -m pytest tests&#47;ai_orchestration&#47; -v` (OK)
 - CI run IDs/links (nach PR)
 - Merge log + evidence index update plan
 

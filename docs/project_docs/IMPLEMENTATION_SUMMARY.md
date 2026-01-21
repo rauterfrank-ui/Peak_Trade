@@ -266,7 +266,7 @@ df = fetch_kraken_data("BTC/USD", "1h", limit=720)
 
 **Dokumentation:**
 - `docs/NEW_FEATURES.md` - Detaillierte Feature-Dokumentation
-- `scripts/demo_*.py` - Funktionierende Beispiele
+- `scripts&#47;demo_*.py` - Funktionierende Beispiele
 
 **Code-Referenz:**
 - `src/risk/position_sizer.py` - Position Sizing Implementation

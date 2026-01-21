@@ -129,7 +129,7 @@ Use this structure for all merge logs:
 
 Before committing a merge log:
 
-- [ ] Real paths written normally (e.g., `scripts/ci/...`)
+- [ ] Real paths written normally (e.g., `scripts&#47;ci&#47;...`)
 - [ ] Historical/removed paths de-pathified (e.g., `scripts&#47;old-script.sh`)
 - [ ] `rg` examples without path prefixes (e.g., `rg -n "pattern"`)
 - [ ] No bidi/zero-width characters (run verification script if unsure)

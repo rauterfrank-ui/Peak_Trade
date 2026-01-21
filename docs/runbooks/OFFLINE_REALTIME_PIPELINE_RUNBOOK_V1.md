@@ -21,7 +21,7 @@ Strategie-Logik, Execution-Pfade, Fees-Handling, Positionstracking etc. testen �
 
 ## 2. Voraussetzungen
 
-* Projekt gebaut & Tests grün (insbesondere `tests/offline/`)
+* Projekt gebaut & Tests grün (insbesondere `tests&#47;offline&#47;`)
 * Das Script existiert:
 
 ```bash
@@ -63,7 +63,7 @@ Was passiert:
 6. Report wird erzeugt unter:
 
 ```text
-reports/offline_realtime_pipeline/<run_id>/
+reports&#47;offline_realtime_pipeline&#47;<run_id>&#47;
   ├── summary.json
   ├── summary.md
   └── summary.html
@@ -84,7 +84,7 @@ Dein „Standard"-Beispiel:
 
 ```bash
 python scripts/run_offline_realtime_ma_crossover.py \
-  --symbol BTC/EUR \
+  --symbol BTC&#47;EUR \
   --n-steps 1000 \
   --n-regimes 5 \
   --fast-window 10 \
@@ -95,7 +95,7 @@ python scripts/run_offline_realtime_ma_crossover.py \
 
 | Parameter           | Default      | Beschreibung                                                      | Beispiele              |
 |---------------------|--------------|-------------------------------------------------------------------|------------------------|
-| `--symbol`          | `BTC/EUR`    | Handelssymbol (wird intern normalisiert zu `BTCEUR`)             | `BTC/EUR`, `ETH/USD`   |
+| `--symbol`          | `BTC&#47;EUR`    | Handelssymbol (wird intern normalisiert zu `BTCEUR`)             | `BTC&#47;EUR`, `ETH&#47;USD`   |
 | `--n-steps`         | `1000`       | Anzahl synthetischer Ticks/Zeitpunkte                             | `500`, `10000`, `20000`|
 | `--n-regimes`       | `3`          | Anzahl Volatilitäts-Regimes (1=konstant, 5=sehr variabel)        | `3`, `5`, `10`         |
 | `--fast-window`     | `20`         | Fenstergröße für schnelles Moving Average                         | `10`, `20`, `50`       |
@@ -121,7 +121,7 @@ Kurz, kleiner Run zum Checken, ob alles funktioniert:
 
 ```bash
 python scripts/run_offline_realtime_ma_crossover.py \
-  --symbol BTC/EUR \
+  --symbol BTC&#47;EUR \
   --n-steps 500 \
   --n-regimes 3 \
   --fast-window 10 \
@@ -143,7 +143,7 @@ Mehr Last auf Strategie + Pipeline:
 
 ```bash
 python scripts/run_offline_realtime_ma_crossover.py \
-  --symbol BTC/EUR \
+  --symbol BTC&#47;EUR \
   --n-steps 20000 \
   --n-regimes 3 \
   --fast-window 20 \
@@ -162,7 +162,7 @@ Zweck:
 
 ```bash
 python scripts/run_offline_realtime_ma_crossover.py \
-  --symbol BTC/EUR \
+  --symbol BTC&#47;EUR \
   --n-steps 10000 \
   --n-regimes 5 \
   --fast-window 15 \
@@ -183,7 +183,7 @@ Mehrere Runs mit verschiedenen Seeds:
 ```bash
 for s in 1 2 3 4 5; do
   python scripts/run_offline_realtime_ma_crossover.py \
-    --symbol BTC/EUR \
+    --symbol BTC&#47;EUR \
     --n-steps 5000 \
     --n-regimes 3 \
     --fast-window 20 \
@@ -206,7 +206,7 @@ Zweck:
 Pro Run:
 
 ```text
-reports/offline_realtime_pipeline/<run_id>/
+reports&#47;offline_realtime_pipeline&#47;<run_id>&#47;
   ├── summary.json
   ├── summary.md
   └── summary.html
@@ -247,8 +247,8 @@ python scripts/offline_realtime_meta_report.py \
 Standard-Ausgabe:
 
 ```text
-reports/offline_realtime_pipeline/OVERVIEW.md
-reports/offline_realtime_pipeline/OVERVIEW.html
+reports&#47;offline_realtime_pipeline&#47;OVERVIEW.md
+reports&#47;offline_realtime_pipeline&#47;OVERVIEW.html
 ```
 
 Typische Inhalte:
@@ -306,7 +306,7 @@ Ganz wichtige Punkte:
 
    ```bash
    python scripts/run_offline_realtime_ma_crossover.py \
-     --symbol BTC/EUR \
+     --symbol BTC&#47;EUR \
      --n-steps 500 \
      --n-regimes 3 \
      --fast-window 10 \
@@ -316,7 +316,7 @@ Ganz wichtige Punkte:
 2. **Report öffnen**
 
    * Im Terminal die Run-ID ablesen
-   * `reports/offline_realtime_pipeline/<run_id>/summary.html` im Browser öffnen
+   * `reports&#47;offline_realtime_pipeline&#47;<run_id>&#47;summary.html` im Browser öffnen
 
 3. **Mehrere Szenarien fahren**
 
@@ -346,7 +346,7 @@ Ganz wichtige Punkte:
 * **Keine Reports?**
 
   * Checke Fehlermeldungen im Terminal
-  * Prüfe, ob `reports/offline_realtime_pipeline/` existiert
+  * Prüfe, ob `reports&#47;offline_realtime_pipeline&#47;` existiert
   * Prüfe Schreibrechte
 
 * **RuntimeError bzgl. Environment & is_synthetic**
@@ -359,7 +359,7 @@ Ganz wichtige Punkte:
   * Keine `summary.json` gefunden:
 
     * Hast du schon Runs gefahren?
-    * Sind die Pfade korrekt (`reports/offline_realtime_pipeline/<run_id>/summary.json`)?
+    * Sind die Pfade korrekt (`reports&#47;offline_realtime_pipeline&#47;<run_id>&#47;summary.json`)?
 
 ---
 
@@ -525,8 +525,8 @@ Bis dahin reicht diese Heuristik-Sektion als praktischer „Mental-Check", um Of
 - `scripts/run_offline_realtime_ma_crossover.py` – Das Haupt-Script
 - `src/execution/pipeline.py` – Execution-Pipeline
 - `src/orders/paper.py` – Paper-Order-Executor
-- `src/offline/offline_realtime_report.py` – Report-Modul
-- `src/offline/offline_realtime_meta_report.py` – Meta-Report-Modul (optional)
+- "src\/offline\/offline_realtime_report.py" (future) – Report-Modul
+- "src\/offline\/offline_realtime_meta_report.py" (future) – Meta-Report-Modul (optional)
 
 ---
 

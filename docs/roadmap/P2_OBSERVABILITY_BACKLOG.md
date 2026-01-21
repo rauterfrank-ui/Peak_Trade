@@ -29,7 +29,7 @@ P2 addresses these gaps for teams that need:
 ### When to Start P2?
 
 Start P2 when you encounter:
-1. **Query pain:** Manually grepping through `results/` directories becomes tedious
+1. **Query pain:** Manually grepping through `results&#47;` directories becomes tedious
 2. **Scale issues:** Thousands of runs, need efficient filtering/aggregation
 3. **Production blind spots:** Logs insufficient, need real-time metrics/traces
 4. **Compliance needs:** Data retention policies, audit trails, governance
@@ -209,14 +209,14 @@ services:
 - Real-time alerting (already covered by `src/notifications/`)
 - Log parsing/ETL (structured JSON logs already parseable)
 
-### 3. Orchestration & Automation (`ops/observability/`)
+### 3. Orchestration & Automation (`ops&#47;observability&#47;`)
 
 **Purpose:** Deployment scripts, config templates, runbooks
 
 **Proposed Structure:**
 
 ```
-ops/observability/
+ops&#47;observability&#47;
 ├── docker-compose.yml      # Local dev stack (Grafana, Prometheus, etc.)
 ├── prometheus.yml          # Prometheus config (scrape targets)
 ├── grafana/
@@ -246,9 +246,9 @@ ops/observability/
 ### Phase 2.1: Data Lake Foundation (4-6 weeks)
 
 **Goals:**
-- Define schema (`src/data/lake/schema.py`)
-- Implement ingest pipeline (`src/data/lake/ingest.py`)
-- Basic query API (`src/data/lake/query.py`)
+- Define schema ("src\/data\/lake\/schema.py" (future))
+- Implement ingest pipeline ("src\/data\/lake\/ingest.py" (future))
+- Basic query API ("src\/data\/lake\/query.py" (future))
 - Unit tests for ingest/query
 
 **Deliverables:**

@@ -243,7 +243,7 @@ python -m pytest tests/test_live_eval_io.py tests/test_live_eval_metrics.py -v
 - **Runbook:** `docs/ops/LIVE_SESSION_EVALUATION.md`
 - **Ops Index:** `docs/ops/README.md` (Live Session Evaluation section)
 - **Implementation:** `src/live_eval/`
-- **Tests:** `tests/test_live_eval_*.py`
+- **Tests:** `tests&#47;test_live_eval_*.py`
 
 ---
 

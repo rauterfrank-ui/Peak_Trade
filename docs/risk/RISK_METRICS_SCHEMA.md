@@ -12,7 +12,7 @@ This document describes the canonical risk metrics schema used across the Peak_T
 
 ### RiskMetrics
 
-The `RiskMetrics` dataclass (previously in `src\/risk_layer\/metrics.py`, now refactored) represents the canonical schema:
+The `RiskMetrics` dataclass (previously in `src\&#47;risk_layer\&#47;metrics.py`, now refactored) represents the canonical schema:
 
 ```python
 @dataclass(frozen=True)
@@ -226,7 +226,7 @@ gate.evaluate(order, context3)  # ✅
 
 ## Testing
 
-Comprehensive tests in `tests/risk_layer/test_metrics.py`:
+Comprehensive tests in `tests&#47;risk_layer&#47;test_metrics.py`:
 
 - ✅ Nested vs direct extraction (35 tests)
 - ✅ Missing keys / None values

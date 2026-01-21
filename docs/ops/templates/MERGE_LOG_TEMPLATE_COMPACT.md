@@ -24,11 +24,11 @@ Motivation and context:
 ## Changes
 
 ### Files Modified
-- `[TBD(path/to/file)]` — [TBD(description)]
-- `[TBD(path/to/file)]` — [TBD(description)]
+- `[TBD(path&#47;to&#47;file)]` — [TBD(description)]
+- `[TBD(path&#47;to&#47;file)]` — [TBD(description)]
 
 ### Files Added
-- `[TBD(path/to/file)]` — [TBD(description)]
+- `[TBD(path&#47;to&#47;file)]` — [TBD(description)]
 
 ### Files Removed
 - [TBD(if applicable, or "None")]

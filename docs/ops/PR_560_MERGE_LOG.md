@@ -7,7 +7,7 @@ Cursor Multi-Agent v1 als AI-Ops Toolchain in Peak_Trade integriert (governance-
 Operator-Workflow in Cursor standardisieren (Rules + Slash-Commands) und Eval-Skeleton (promptfoo) für reproduzierbare, auditierbare Qualitätssicherung etablieren.
 
 ## Changes
-- Cursor Rules: Governance + Delivery Contract (`.cursor/rules/peak-trade-*`)
+- Cursor Rules: Governance + Delivery Contract (`.cursor&#47;rules&#47;peak-trade-*`)
 - Cursor Commands: `/pt-preflight`, `/pt-plan`, `/pt-split`, `/pt-verify`, `/pt-merge-log`, `/pt-eval`
 - Evals: `evals/aiops/` promptfoo Skeleton, `evals/aiops/testcases/` vereinheitlicht
 - Docs: Canonical Runbook unter `docs/ops/runbooks/`, Redirect Stub in `docs/ai/`

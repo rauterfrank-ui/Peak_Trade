@@ -9,14 +9,14 @@ Wir nutzen Git Worktrees, um parallel zu arbeiten — **ohne Branch-Kollisionen*
 * ✅ **Genau 1 Worktree auf `main`** (Primary, z.B. `elegant-austin`)
 * ✅ Alle weiteren Worktrees nutzen **eigene Branches**:
 
-  * `wt/<name>-main` für *main-tracking* (spiegelt `origin/main`)
-  * `feat/*`, `fix/*`, `docs/*`, `chore/*` für echte Arbeit
+  * `wt&#47;<name>-main` für *main-tracking* (spiegelt `origin&#47;main`)
+  * `feat&#47;*`, `fix&#47;*`, `docs&#47;*`, `chore&#47;*` für echte Arbeit
 * ❌ Kein dauerhaftes **detached HEAD** (nur temporär, dann sofort auf Branch wechseln)
 
 ## Warum das so sinnvoll ist
 
 * Git erlaubt **nicht**, dass derselbe Branch (`main`) gleichzeitig in mehreren Worktrees ausgecheckt ist.
-* Ein `wt/*`-Branch ist die einfache Lösung: **gleiches Commit-Level wie `main`**, aber **anderer Branch-Name** → keine Kollision.
+* Ein `wt&#47;*`-Branch ist die einfache Lösung: **gleiches Commit-Level wie `main`**, aber **anderer Branch-Name** → keine Kollision.
 * Detached HEAD ist fehleranfällig (Commits "hängen lose", Branch-Delete blockiert, etc.).
 
 ---
@@ -24,11 +24,11 @@ Wir nutzen Git Worktrees, um parallel zu arbeiten — **ohne Branch-Kollisionen*
 ## Naming Convention
 
 * Primary main worktree: `main`
-* Secondary main-tracking: `wt/<worktree>-main`
+* Secondary main-tracking: `wt&#47;<worktree>-main`
   Beispiele:
 
-  * `wt/wonderful-main`
-  * `wt/keen-main`
+  * `wt&#47;wonderful-main`
+  * `wt&#47;keen-main`
 
 ---
 
@@ -76,7 +76,7 @@ git pull --ff-only
 ### 1) "Branch is already checked out" / "multiple worktrees"
 
 **Symptom:** `git checkout main` schlägt in einem Worktree fehl.
-**Fix:** Lass `main` exklusiv im Primary-Worktree und nutze `wt/<name>-main` in allen anderen.
+**Fix:** Lass `main` exklusiv im Primary-Worktree und nutze `wt&#47;<name>-main` in allen anderen.
 
 ### 2) Worktree steckt in "detached HEAD"
 
@@ -92,7 +92,7 @@ git checkout -b wt/<name>-main origin/main
 ### 3) Lokalen Branch kann man nicht löschen ("checked out in worktree …")
 
 **Symptom:** `git branch -d <branch>` scheitert, weil irgendwo ausgecheckt.
-**Fix:** In *diesem* Worktree auf einen anderen Branch wechseln (z.B. `wt/<name>-main` oder `main`) und dann löschen.
+**Fix:** In *diesem* Worktree auf einen anderen Branch wechseln (z.B. `wt&#47;<name>-main` oder `main`) und dann löschen.
 
 ### 4) Worktree entfernen (wenn nicht mehr gebraucht)
 
@@ -114,5 +114,5 @@ git rev-parse --abbrev-ref --symbolic-full-name @{u}   # upstream 확인
 **Erwartung:**
 
 * Primary: `main`
-* Secondary: `wt/*...origin/main`
+* Secondary: `wt&#47;*...origin&#47;main`
 * Beide können auf demselben Commit stehen, ohne Konflikte.

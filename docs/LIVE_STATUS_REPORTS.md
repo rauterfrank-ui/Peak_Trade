@@ -43,7 +43,7 @@ python scripts/generate_live_status_report.py \
 ```bash
 python scripts/generate_live_status_report.py \
   --config config/config.toml \
-  --output-dir reports/live_status \
+  --output-dir reports&#47;live_status \
   --format markdown \
   --tag daily \
   --notes-file docs/live_status_notes.md
@@ -54,7 +54,7 @@ python scripts/generate_live_status_report.py \
 | Argument | Beschreibung | Default |
 |----------|--------------|---------|
 | `--config` | Pfad zur Config-Datei | `config/config.toml` |
-| `--output-dir` | Ausgabe-Verzeichnis | `reports/live_status` |
+| `--output-dir` | Ausgabe-Verzeichnis | `reports&#47;live_status` |
 | `--format` | Report-Format (`markdown`, `html`, `both`) | `markdown` |
 | `--tag` | Optionaler Tag (z.B. `daily`, `weekly`, `incident`) | `None` |
 | `--notes-file` | Pfad zu Operator-Notizen-Datei | `None` |
@@ -178,7 +178,7 @@ Keine Subprocess-Aufrufe, keine Abhängigkeiten zu `live_ops`-Internals.
 
 ### 6.2 Operator-Notizen
 
-Erstelle eine `docs/live_status_notes.md` für wiederkehrende Notizen:
+Erstelle eine "docs\/live_status_notes.md" (future, operator-created) für wiederkehrende Notizen:
 
 ```markdown
 # Live Status Notes
@@ -193,7 +193,7 @@ Erstelle eine `docs/live_status_notes.md` für wiederkehrende Notizen:
 
 ### 6.3 Archivierung
 
-- Reports in `reports/live_status/` archivieren
+- Reports in `reports&#47;live_status&#47;` archivieren
 - Regelmäßig aufräumen (z.B. älter als 3 Monate)
 - Wichtige Reports (z.B. vor Incident) separat markieren
 

@@ -297,7 +297,7 @@ bash scripts/ops/verify_required_checks_drift.sh
 ```
 **Fix**:
 - Wenn Workflow geändert wurde: Drift-PR zuerst mergen
-- Wenn fehlerhaft: `.github/workflows/*.yml` korrigieren
+- Wenn fehlerhaft: `.github&#47;workflows&#47;*.yml` korrigieren
 
 **Prevention**: Freeze workflows während Merge-Wave
 
@@ -357,7 +357,7 @@ git revert <bad-merge-commit>
 ### Internal
 - **Closeout Log**: `docs/ops/merge_logs/2025-12-27_mass_docs_pr_closeout.md`
 - **Merge Logs Archive**: `docs/ops/merge_logs/` (alle Closeouts)
-- **Ops Center Doctor**: `scripts/ops/ops_center.sh doctor`
+- **Ops Center Doctor**: `scripts&#47;ops&#47;ops_center.sh doctor`
 - **Drift Guard**: `scripts/ops/verify_required_checks_drift.sh`
 
 ### External

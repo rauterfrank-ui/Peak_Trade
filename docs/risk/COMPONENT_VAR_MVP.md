@@ -350,4 +350,4 @@ ValueError: Portfolio sigma is zero. Cannot compute Component VaR.
 - **Phase 4**: Pre-Trade Risk Checks (live/paper trading)
 - **Phase 5**: Advanced Distributions (Student-t, GARCH)
 
-Siehe: `docs/risk/roadmaps/COMPONENT_VAR_ROADMAP.md` (coming soon)
+Siehe: `docs/risk/roadmaps/COMPONENT_VAR_ROADMAP_PATCHED.md`

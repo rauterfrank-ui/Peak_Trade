@@ -3,7 +3,7 @@
 Ziel: Der `main`-Worktree bleibt sauber, PRs bleiben minimal, und lokale Prototypen (untracked) erzeugen keine "Noise".
 
 ## Grundsatz
-- **Kein globales `.gitignore`** für Pfade, die später echte Features werden könnten (z.B. `src/eval/`).
+- **Kein globales `.gitignore`** für Pfade, die später echte Features werden könnten (z.B. `src&#47;eval&#47;`).
 - **Lokale Ignorierung** stattdessen über:
   - `.git/info/exclude` (nur dieser Worktree)
   - oder globales Git-Ignore (`~/.config/git/ignore`)
@@ -12,7 +12,7 @@ Ziel: Der `main`-Worktree bleibt sauber, PRs bleiben minimal, und lokale Prototy
 
 ### 1) Prototyp wird "echt" → eigene Branch + commit
 Wenn aus lokalen Files ein Feature werden soll:
-1. `git switch -c feat/<topic>`
+1. `git switch -c feat&#47;<topic>`
 2. `git add ...`
 3. `git commit ...`
 4. PR erstellen

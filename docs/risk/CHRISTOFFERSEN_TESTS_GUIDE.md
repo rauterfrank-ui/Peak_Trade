@@ -608,6 +608,6 @@ pi_11 = max(EPS, min(1 - EPS, pi_11))
 **Documentation Complete! 📚**
 
 For questions or issues, see:
-- CLI usage: `python3 scripts/risk/run_var_backtest.py --help`
-- Demo: `python3 scripts/risk/run_christoffersen_demo.py --help`
+- CLI usage: `python3 scripts&#47;risk&#47;run_var_backtest.py --help`
+- Demo: `python3 scripts&#47;risk&#47;run_christoffersen_demo.py --help`
 - Tests: `tests/risk_layer/var_backtest/test_christoffersen.py`

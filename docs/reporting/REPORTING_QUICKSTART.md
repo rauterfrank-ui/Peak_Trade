@@ -35,7 +35,7 @@ python scripts/run_backtest.py --strategy ma_crossover --tracker null
 
 ### 2. View Artifacts
 
-All artifacts are in `results/<run_id>/`:
+All artifacts are in `results&#47;<run_id>&#47;`:
 
 ```bash
 # View config snapshot
@@ -63,7 +63,7 @@ bash scripts/render_last_report.sh
 bash scripts/utils/render_last_report.sh <run_id>
 ```
 
-Output: `results/<run_id>/report/backtest.html`
+Output: `results&#47;<run_id>&#47;report&#47;backtest.html`
 
 Open in browser:
 
@@ -117,7 +117,7 @@ The Quarto report template is in `templates/quarto/backtest_report.qmd`.
 **Key features:**
 
 - `execute: enabled: false` – No code execution during rendering
-- Loads pre-computed data from `_run/` directory
+- Loads pre-computed data from `_run&#47;` directory
 - Embedded resources (single HTML file)
 - Includes equity curve visualization
 

@@ -24,7 +24,7 @@ Operationalize governance review and make SoD enforcement visible and testable b
 - Add deterministic tests (12) + replay fixtures:
   - File: `tests/ai_orchestration/test_l4_critic.py`
   - Fixture: `tests/fixtures/transcripts/l4_critic_sample.json`
-  - Fixtures: `tests/fixtures/evidence_packs/L1_sample_2026-01-10/*`
+  - Fixtures: `tests&#47;fixtures&#47;evidence_packs&#47;L1_sample_2026-01-10&#47;*`
 - Update governance/docs integration and operator quick commands:
   - File: `docs/governance/ai_autonomy/PHASE4_L1_L4_INTEGRATION.md`
   - File: `docs/ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md`
@@ -32,8 +32,8 @@ Operationalize governance review and make SoD enforcement visible and testable b
 ## Verification
 - CI: all required gates passed (lint/format, tests matrix, audit, policy critic, docs gates).
 - Local (example):
-  - `python -m pytest tests/ai_orchestration/test_l4_critic.py -q`
-  - `python scripts/aiops/run_l4_governance_critic.py --help`
+  - `python -m pytest tests&#47;ai_orchestration&#47;test_l4_critic.py -q`
+  - `python scripts&#47;aiops&#47;run_l4_governance_critic.py --help`
 
 ## Risk
 LOW.

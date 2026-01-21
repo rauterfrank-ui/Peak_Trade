@@ -65,23 +65,23 @@ raise DataContractError(
 
 Four critical modules fully migrated to new taxonomy:
 
-#### A) Data Contracts (`src/data/data_contracts.py`)
+#### A) Data Contracts ("src\/data\/data_contracts.py" (historical path))
 - ✅ All validation errors → `DataContractError`
 - ✅ Rich context on OHLCV validation failures
 - ✅ Clear hints for timezone, missing columns, NaN handling
 
-#### B) Backtest Engine (`src/backtest/backtest_engine.py`)
+#### B) Backtest Engine ("src\/backtest\/backtest_engine.py" (historical path))
 - ✅ Invariant violations → `BacktestInvariantError`
 - ✅ Operational errors → `BacktestError`
 - ✅ Strategy initialization → `StrategyError`
 - ✅ Context includes state snapshots (cash, positions, prices)
 
-#### C) Strategy Base (`src/strategies/strategy_base.py`)
+#### C) Strategy Base ("src\/strategies\/strategy_base.py" (historical path))
 - ✅ Strategy errors → `StrategyError`
 - ✅ Signal validation → `DataContractError`
 - ✅ Context includes signal details, OHLCV snapshots
 
-#### D) Cache Layer (`src/data/parquet_cache.py`)
+#### D) Cache Layer ("src\/data\/parquet_cache.py" (historical path))
 - ✅ Cache operations → `CacheError`
 - ✅ Corruption detection → `CacheCorruptionError`
 - ✅ Context includes cache paths, lock states, checksums

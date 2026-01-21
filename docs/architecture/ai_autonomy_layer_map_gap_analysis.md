@@ -35,7 +35,7 @@ Die **AI Autonomy Layer Map v1** definiert 7 Layer (L0-L6) mit klarer Modellzuwe
 |---|---|---|---|
 | LLM Policy Critic Charter | `docs/governance/LLM_POLICY_CRITIC_CHARTER.md` | ✅ Vorhanden | 🟢 Entspricht **L4 Governance / Policy Critic** |
 | Policy Critic Implementation | `src/governance/policy_critic/` | ✅ Vorhanden | 🟢 Deterministischer Teil von L4 |
-| Policy Packs | `policy_packs/*.yml` | ✅ Vorhanden | 🟢 Kann für Layer-spezifische Rules erweitert werden |
+| Policy Packs | `policy_packs&#47;*.yml` | ✅ Vorhanden | 🟢 Kann für Layer-spezifische Rules erweitert werden |
 
 **Erkenntnisse:**
 - Der bestehende Policy Critic ist **read-only** und **evidence-based** → perfekt für L4
@@ -54,7 +54,7 @@ Die **AI Autonomy Layer Map v1** definiert 7 Layer (L0-L6) mit klarer Modellzuwe
 |---|---|---|---|
 | Execution Orchestrator | `src/execution/orchestrator.py` | ✅ Vorhanden | 🟢 Entspricht **L6 Execution** |
 | Risk Hook | `src/execution/risk_hook.py` | ✅ Vorhanden | 🟢 Entspricht **L5 Risk Gate** |
-| Kill Switch | `src/killswitch/` | ✅ Vorhanden | 🟢 Teil von L5 |
+| Kill Switch | `src&#47;killswitch&#47;` | ✅ Vorhanden | 🟢 Teil von L5 |
 
 **Erkenntnisse:**
 - L6 ist korrekt als **EXEC (forbidden)** markiert → `GovernanceViolationError` bei Live
@@ -94,7 +94,7 @@ Die **AI Autonomy Layer Map v1** definiert 7 Layer (L0-L6) mit klarer Modellzuwe
 **Gap:** Es gibt **keine** formale Definition von Capability Scopes als Config-Dateien.
 
 **Erforderlich:**
-- Schema: `config/capability_scopes/*.toml`
+- Schema: `config&#47;capability_scopes&#47;*.toml`
 - Enforcement: Runtime Check vor Layer-Runs
 
 **Beispiel (fehlt):**
@@ -173,7 +173,7 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 4. Erweitere Evidence Pack Template um Layer-Map Felder
 
 **Deliverables:**
-- `config/capability_scopes/*.toml` (7 Dateien)
+- `config&#47;capability_scopes&#47;*.toml` (7 Dateien)
 - `config/model_registry.toml`
 - `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md` (updated)
 
@@ -200,7 +200,7 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 
 **Tests:**
 - `tests/ai_orchestration/test_sod_checker.py`
-- `tests/ai_orchestration/test_multi_model_runner.py`
+- `tests&#47;ai_orchestration&#47;test_multi_model_runner.py`
 
 ---
 
@@ -218,7 +218,7 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 - Erstes Evidence Pack: "L2 Pilot Evidence Pack" (Phase 3+)
 
 **Tests:**
-- `tests/market_sentinel/test_layer_compliance.py`
+- `tests&#47;market_sentinel&#47;test_layer_compliance.py`
 - Manuelle Pilot-Runs (3-5 Tage)
 
 ---
@@ -238,8 +238,8 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 - "CodeGate Layer Map Integration" (Phase 3+)
 
 **Tests:**
-- `tests/research/test_deep_research_runner.py`
-- `tests/governance/test_policy_critic_layer_compliance.py`
+- `tests&#47;research&#47;test_deep_research_runner.py`
+- `tests&#47;governance&#47;test_policy_critic_layer_compliance.py`
 
 ---
 
@@ -256,8 +256,8 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 - "Trade Plan Advisor" (Phase 3+) (L3)
 
 **Tests:**
-- `tests/ops/test_runbook_generator_layer_compliance.py`
-- `tests/trading/test_trade_plan_advisor_layer_compliance.py`
+- `tests&#47;ops&#47;test_runbook_generator_layer_compliance.py`
+- `tests&#47;trading&#47;test_trade_plan_advisor_layer_compliance.py`
 
 ---
 
@@ -276,8 +276,8 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 - Fallback Tests
 
 **Tests:**
-- `tests/ai_orchestration/test_model_fallbacks.py`
-- `tests/ai_orchestration/test_heterogeneous_verification.py`
+- `tests&#47;ai_orchestration&#47;test_model_fallbacks.py`
+- `tests&#47;ai_orchestration&#47;test_heterogeneous_verification.py`
 
 ---
 

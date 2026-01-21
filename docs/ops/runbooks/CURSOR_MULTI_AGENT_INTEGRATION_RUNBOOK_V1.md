@@ -27,7 +27,7 @@ Wir nutzen Cursor Multi-Agents als **lokalen, auditierbaren Delivery-Booster**:
 ### 1.1 Prime Directive
 1) **Keine autonome Live-Execution.**  
 2) **Keine Umgehung von Governance-Locks / Risk-Gates / Safety-Gates.**  
-3) Änderungen an `src/execution/**`, `src/governance/**`, `src/risk/**`, Live-Track/Live-Runner nur mit **expliziter manueller Freigabe** und **erweiterter Testsuite**.
+3) Änderungen an `src&#47;execution&#47;**`, `src&#47;governance&#47;**`, `src&#47;risk&#47;**`, Live-Track/Live-Runner nur mit **expliziter manueller Freigabe** und **erweiterter Testsuite**.
 
 ### 1.2 Secrets & Prompt-Injection
 - Keine Tokens/Keys in Repo, Chat, Rules, Commands.
@@ -48,10 +48,10 @@ Cursor 2.0 auf macOS führt Agent-Shell-Commands standardmäßig in einer **Sand
 - Node.js für promptfoo-Runs (lokal/CI), siehe promptfoo prerequisites.
 
 ### 2.2 Repo-Artefakte (in diesem Runbook angelegt)
-- `.cursor/rules/*.mdc` (Project Rules)
-- `.cursor/commands/*.md` (Slash-Commands)
-- `evals/aiops/**` (promptfoo configs)
-- `docs/ai/**` (AI-RFC/Runbooks)
+- `.cursor&#47;rules&#47;*.mdc` (Project Rules)
+- `.cursor&#47;commands&#47;*.md` (Slash-Commands)
+- `evals&#47;aiops&#47;**` (promptfoo configs)
+- `docs&#47;ai&#47;**` (AI-RFC/Runbooks)
 
 ---
 
@@ -107,7 +107,7 @@ mkdir -p .cursor/rules .cursor/commands evals/aiops/tests/testcases docs/ai
 
 **Rules:**
 - `.cursor/rules/peak-trade-governance.mdc` — Prime Directive, High-Risk Paths
-- `.cursor/rules/delivery-contract.mdc` — Workflow, Completion Block
+- `.cursor&#47;rules&#47;delivery-contract.mdc` — Workflow, Completion Block
 
 **Commands:**
 - `.cursor/commands/pt-preflight.md` — Repo Pre-Flight Check
@@ -119,8 +119,8 @@ mkdir -p .cursor/rules .cursor/commands evals/aiops/tests/testcases docs/ai
 
 **Evals:**
 - `evals/aiops/promptfooconfig.yaml` — Main Config
-- `evals/aiops/tests/testcases/docs_link_fixer.yaml` — Path Restriction Test
-- `evals/aiops/tests/testcases/ci_failure_triage.yaml` — Secret Leakage Test
+- `evals&#47;aiops&#47;tests&#47;testcases&#47;docs_link_fixer.yaml` — Path Restriction Test
+- `evals&#47;aiops&#47;tests&#47;testcases&#47;ci_failure_triage.yaml` — Secret Leakage Test
 - `evals/aiops/README.md` — Promptfoo How-To
 
 ---

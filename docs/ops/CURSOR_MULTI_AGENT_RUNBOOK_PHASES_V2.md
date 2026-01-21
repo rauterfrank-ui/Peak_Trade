@@ -159,7 +159,7 @@ Jede Live-Session muss folgende Artefakte erzeugen und ablegen:
 - **Incident Log** (falls Incidents auftraten, auch Minor)
 - **Lessons Learned** (1-3 bullets, auch bei "grünen" Sessions)
 
-Ablage-Standard: `reports/live_sessions/YYYYMMDD_HHMMSS_<session_id>/` (nicht ins Repo committen)
+Ablage-Standard: `reports&#47;live_sessions&#47;YYYYMMDD_HHMMSS_<session_id>&#47;` (nicht ins Repo committen)
 
 #### Risk Notes
 - **Residual Risk Hoch:** Menschlicher Fehler bei manueller Freigabe (Mitigation: Two-Person Rule, Checklist-Disziplin)
@@ -373,7 +373,7 @@ Jeder bg_job Run im Multi-Agent Workflow muss mindestens dokumentieren:
 
 **Docs Reference Targets Gate:**
 - Schreibe Script-Pfad **niemals** als durchgehenden Pfad (roher Token)
-- Verwende **immer** die Maskierung: `'scripts'/'ops'/'bg_job.sh'`
+- Verwende **immer** die Maskierung: `'scripts'&#47;'ops'&#47;'bg_job.sh'`
 - Grund: verhindert docs-reference-targets-gate Konflikte
 
 ---
@@ -796,7 +796,7 @@ STEP 4 — REVIEW
 - Check all referenced paths exist or are marked (future) as plain text.
 
 STEP 5 — VERIFICATION (list commands)
-- Smoke run (if documented): `python -m ...` or `bash scripts/...` (only if known)
+- Smoke run (if documented): `python -m ...` or `bash scripts&#47;...` (only if known)
 - `rg -n "paper|sandbox|simulated" docs/ src/`
 - `git diff --stat`
 

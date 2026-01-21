@@ -151,8 +151,8 @@ Ziel:
   * Quickstart: `docs/shadow/SHADOW_PIPELINE_PHASE2_QUICKSTART.md`
   * Operator Runbook: `docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md`
   * Technical Spec: `docs/shadow/PHASE_2_TICK_TO_OHLCV_AND_QUALITY.md`
-* **Quick Start:** `scripts/ops/ops_center.sh shadow smoke`
-* **Tests:** 35+ tests (`pytest tests/data/shadow/ -v`)
+* **Quick Start:** `scripts&#47;ops&#47;ops_center.sh shadow smoke`
+* **Tests:** 35+ tests (`pytest tests&#47;data&#47;shadow&#47; -v`)
 * **Safety:** Blocked in live mode, safe for dev/testnet contexts
 
 > **Reifegrad:** **ca. 95%** – der Data-Layer ist produktionsnah und kann als Referenz gelten. Shadow Pipeline Phase 2 erweitert die Data-Quality-Capabilities signifikant.
@@ -214,7 +214,7 @@ Ziel:
 
 * Single-Strategie-Layer:
 
-  * `src/strategies/*.py` (z.B. MA-Crossover, Trend-Following, RSI-Reversion, Breakout, Vol-Regime-Filter)
+  * `src&#47;strategies&#47;*.py` (z.B. MA-Crossover, Trend-Following, RSI-Reversion, Breakout, Vol-Regime-Filter)
 * **Portfolio-Layer (Research/Backtest):**
 
   * Kombination mehrerer Strategien in Portfolios
@@ -272,7 +272,7 @@ Ziel:
 * **Sweep-Funktionen** (`src/experiments/regime_aware_portfolio_sweeps.py`):
   * Parametrisierbare Granularität (coarse/medium/fine)
   * Integration mit Research-CLI
-* **TOML-Configs** (`config/sweeps/regime_aware_portfolio_*.toml`)
+* **TOML-Configs** (`config&#47;sweeps&#47;regime_aware_portfolio_*.toml`)
 * **Dokumentation:** `docs/PHASE_REGIME_AWARE_SWEEPS_AND_PRESETS.md`
 
 **Offene Themen:**
@@ -454,7 +454,7 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 * Design-Spezifikation: [`PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md`](PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md)
 * Ziel: Read-Only Web-Dashboard für R&D-Experimente
 * Views: Experiments List, Detail, Preset/Strategy Aggregations, Charts
-* Basis: `reports/r_and_d_experiments/`, CLI `view_r_and_d_experiments.py`, Notebook-Template
+* Basis: `reports&#47;r_and_d_experiments&#47;`, CLI `view_r_and_d_experiments.py`, Notebook-Template
 * Status: ✅ Implementiert
 
 **Phase 77 – R&D Experiment Detail & Report Viewer v1:**
@@ -548,7 +548,7 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
   - Beispiel:
     `python scripts/research_cli.py strategy-profile --strategy-id rsi_reversion --use-dummy-data --with-montecarlo --with-stress --with-regime --output-format both`
 - Reports:
-  - JSON in `reports/strategy_profiles/`
+  - JSON in `reports&#47;strategy_profiles&#47;`
   - Markdown in `docs/strategy_profiles/`
 - Tests:
   - 34 neue Tests (StrategyProfiles + CLI) grün
@@ -598,7 +598,7 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
   * `src/live/alerts.py`
   * Alert-Level, AlertEvent, Logging-/Stderr-/Multi-Sinks
   * `LiveAlertsConfig` + Config-Integration (`[live_alerts]`)
-  * Alerts in `LiveRiskLimits.check_orders/evaluate_portfolio`
+  * Alerts in `LiveRiskLimits.check_orders&#47;evaluate_portfolio`
 * Governance & Status:
 
   * `docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md`
@@ -689,7 +689,7 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
 * `docs/LIVE_READINESS_CHECKLISTS.md`
 * `docs/LIVE_TESTNET_TRACK_STATUS.md`
 * `docs/ops/WORKFLOW_MERGE_AND_FORMAT_SWEEP.md` – Ops Runbook für Merge + Format-Sweep Workflow
-* Diverse Phasen-Dokumente (`docs/PHASE_XX_*.md`)
+* Diverse Phasen-Dokumente (`docs&#47;PHASE_XX_*.md`)
 
 **Kernkomponenten (Auszug):**
 
@@ -802,7 +802,7 @@ Diese Visualisierung zeigt, dass sowohl die JSON-API als auch die HTML-Views den
 **Relevante Phasen & Doku:**
 
 * **Phase 47 – Portfolio-Level Robustness**
-  → Portfolio-Robustness-Logik & Reports (Dokument in `docs/PHASE_47_*.md`, Code in `src/experiments/portfolio_robustness.py`)
+  → Portfolio-Robustness-Logik & Reports (Dokument in `docs&#47;PHASE_47_*.md`, Code in `src/experiments/portfolio_robustness.py`)
 * **Portfolio Recipes & Presets**
   → `docs/PORTFOLIO_RECIPES_AND_PRESETS.md`
 * **Phase 48 – Live Portfolio Monitoring & Risk Bridge**
@@ -963,7 +963,7 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
       * `LiveSessionRecord` (analog zu `SweepResultRow`) als zentrale Dataclass für einzelne Live-Session-Runs
       * Felder u.a.: `session_id`, `run_id`, `run_type`, `mode`, `env_name`, `symbol`, `status`, `started_at`, `finished_at`, `config`, `metrics`, `cli_args`, `error`, `created_at`
       * Persistierung als JSON unter:
-        * `reports/experiments/live_sessions/*.json`
+        * `reports&#47;experiments&#47;live_sessions&#47;*.json`
         * 1 Datei pro Session-Run (`<timestamp>_<run_type>_<session_id>.json`)
 
     * **Run-Types & Modi**
@@ -979,7 +979,7 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
       * `render_session_html()` / `render_sessions_html()` – HTML-Reports
 
     * **Integration in Execution-Flow**
-      * `scripts/run_execution_session.py`: Lifecycle mit `try/except/finally`
+      * `scripts/run_execution_session.py`: Lifecycle mit `try&#47;except&#47;finally`
       * Nach jeder Session (auch bei Fehler/Abbruch) wird ein `LiveSessionRecord` erzeugt und über `register_live_session_run()` registriert
       * **Safety-Design:** Fehler in der Registry werden geloggt, dürfen aber die eigentliche Session nicht abbrechen
 
@@ -1024,8 +1024,8 @@ Die Phasen **47–49** haben das System auf ein neues Level gehoben:
     **Was implementiert wurde:**
     * `LiveSessionSummary` Pydantic-Modell für API-Responses (`src/webui/live_track.py`)
     * `get_recent_live_sessions()` Service-Funktion
-    * API-Endpoint `GET /api/live_sessions` mit Limit-Parameter
-    * API-Endpoint `GET /api/health` für Health-Checks
+    * API-Endpoint `GET &#47;api&#47;live_sessions` mit Limit-Parameter
+    * API-Endpoint `GET &#47;api&#47;health` für Health-Checks
     * Dashboard-UI mit:
       * Snapshot-Kachel (letzte Session)
       * Sessions-Tabelle (letzte N Sessions)
@@ -1111,13 +1111,13 @@ Der Live Alerts & Incident Runbooks Cluster (Phasen 82–85) ist vollständig im
     **Code:**
     * `src/webui/live_track.py` – Live-Track Panel, Filter-Logik, Detail-View, Stats
     * `src/webui/app.py` – API-Endpoints für Filter, Detail und Statistiken
-    * Templates: `.../index.html`, `.../session_detail.html` – UI für Liste & Detail
+    * Templates: `...&#47;index.html`, `...&#47;session_detail.html` – UI für Liste & Detail
     * Tests: `tests/test_webui_live_track.py` (54 Tests)
 
     **Features:**
     * Filterbare Session-Liste über Query-Params (`mode`, `status`)
-      * `/?mode=shadow`
-      * `/?mode=testnet&status=failed`
+      * `&#47;?mode=shadow`
+      * `&#47;?mode=testnet&status=failed`
     * Klickbare Sessions → Detailseite `/session/{session_id}`
       * Config-Snapshot, Kennzahlen, Dauer, Run-Typ
       * CLI-Hinweise zum Reproduzieren / Debuggen
@@ -1286,9 +1286,9 @@ Phase 76 hebt die R&D-Experimente-Übersicht im Web-Dashboard auf **v1.1** und e
   * Erweiterte Status-Werte: `success`, `running`, `failed`, `no_trades`
   * Neue Endpoints:
 
-    * `GET /api/r_and_d/today` – heute fertiggestellte Experimente
-    * `GET /api/r_and_d/running` – aktuell laufende Experimente
-    * `GET /api/r_and_d/categories` – verfügbare Kategorien & Run-Types
+    * `GET &#47;api&#47;r_and_d&#47;today` – heute fertiggestellte Experimente
+    * `GET &#47;api&#47;r_and_d&#47;running` – aktuell laufende Experimente
+    * `GET &#47;api&#47;r_and_d&#47;categories` – verfügbare Kategorien & Run-Types
   * Kategorie-Mapping aus Strategy/Preset (z.B. cycles, ml, volatility)
 
 * **Dashboard-Template (`templates/peak_trade_dashboard/r_and_d_experiments.html`)**
@@ -1391,7 +1391,7 @@ is_feature_approved_for_year("live_order_execution", 2026)       # → False
 | 2025-12-09 | (aktuell) | **Jahreskorrektur & 2026-ready** – Cluster 82–85 Datums-Referenzen auf Q4 2025 korrigiert, "Road to 2026" Abschnitt hinzugefügt |
 | 2025-12-09 | (aktuell) | **ExecutionPipeline Runbook v1.1** – Referenz auf `EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md` (v1.1, 2026-ready) in Abschnitt 9 und Cluster 82–85 ergänzt |
 | 2025-12-20 | (aktuell) | **Phase 16A** – Simplified Execution Pipeline for Learning (`src/execution_simple/`) – Standalone learning module mit Gates (PriceSanity, ResearchOnly, LotSize, MinNotional), SimulatedBrokerAdapter, dry-run demo, 16 tests |
-| 2025-12-20 | (aktuell) | **Phase 16B** – Execution Telemetry & Live-Track Bridge – ExecutionEvent schema (intent/order/fill), JsonlExecutionLogger (`logs/execution/<session>.jsonl`), `execution_bridge.py` (timeline + summary), Dashboard widget (`/live/execution/{session_id}`), 17 tests |
+| 2025-12-20 | (aktuell) | **Phase 16B** – Execution Telemetry & Live-Track Bridge – ExecutionEvent schema (intent/order/fill), JsonlExecutionLogger (`logs&#47;execution&#47;<session>.jsonl`), `execution_bridge.py` (timeline + summary), Dashboard widget (`/live/execution/{session_id}`), 17 tests |
 | 2025-12-20 | (aktuell) | **Phase 16C** – Telemetry Viewer & Ops Pack – Read-only CLI (`scripts/view_execution_telemetry.py`), API endpoint (`/api/telemetry`), robust JSONL parsing mit Filter (session/type/symbol/time), Latency-Analyse, 14 tests, Merge Log PR #183 |
 | 2025-12-20 | (aktuell) | **Phase 16D** – Telemetry QA + Incident Playbook + Regression Gates – Golden fixtures (deterministisch), 18 regression gate tests (parse robustness, schema, latency sanity), Incident runbook (operator-first, copy/paste CLI), CSV export (`/api/telemetry?format=csv`), Merge Log PR #185 |
 | 2025-12-20 | (aktuell) | **Phase 16E** – Telemetry Retention & Compression – Automated log lifecycle management (age-based deletion, session-count protection, size limits), gzip compression (~80% reduction), safe-by-default CLI (`scripts/ops/telemetry_retention.py`, dry-run default), 22 tests, deterministic ordering, root-safety checks, Merge Log PR #186 |

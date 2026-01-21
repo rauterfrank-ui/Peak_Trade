@@ -361,7 +361,7 @@ LITE_MODE_MAX_FILES=1200   # Aktuell
 5. Update Dokumentation
 
 ### Sensible Pfade erweitern
-**Wann:** Neue kritische Module (z.B. `src/portfolio_management/`)
+**Wann:** Neue kritische Module (z.B. `src&#47;portfolio_management&#47;`)
 
 **Schritte:**
 1. Edit `.github/workflows/policy_critic.yml`:

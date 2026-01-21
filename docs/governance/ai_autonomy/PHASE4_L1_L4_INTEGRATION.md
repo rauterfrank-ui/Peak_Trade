@@ -514,7 +514,7 @@ python scripts/aiops/run_l1_deepresearch.py \
 - ✅ Evidence Pack generated
 - ✅ SoD + Capability Scope validated
 
-**Output Location:** `evidence_packs/L1_*/` (7 files)
+**Output Location:** `evidence_packs&#47;L1_*&#47;` (7 files)
 
 ---
 

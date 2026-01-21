@@ -32,7 +32,7 @@ Empfohlene Struktur:
 * `50_AI_WORKFLOW_IDEAS.md`
   → AI-Assistants, Automatisierung, Agenten, Prompt-Bibliothek
 
-* `template/IDEA_TEMPLATE.md`
+* `template&#47;IDEA_TEMPLATE.md`
   → Template für einzelne Ideen, wenn sie größer werden
 
 ---

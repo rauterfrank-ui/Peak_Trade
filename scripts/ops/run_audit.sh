@@ -296,11 +296,11 @@ if [[ "$(get_tool pip-audit)" != "true" ]]; then
     # Try --user first for restrictive environments, fallback to system install
     python3 -m pip install --user --upgrade --quiet "pip>=23.3" "wheel>=0.38.1" 2>/dev/null || \
       python3 -m pip install --upgrade --quiet "pip>=23.3" "wheel>=0.38.1" 2>/dev/null || true
-    
+
     # Install pip-audit (try --user first, then system)
     python3 -m pip install --user --quiet pip-audit 2>/dev/null || \
       python3 -m pip install --quiet pip-audit 2>/dev/null || true
-    
+
     # Re-check if installation succeeded
     if have_cmd pip-audit; then
       record_tool "pip-audit" "true"

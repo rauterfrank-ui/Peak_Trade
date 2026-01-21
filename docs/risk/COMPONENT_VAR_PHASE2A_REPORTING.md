@@ -305,7 +305,7 @@ scripts/run_component_var_report.py
 **Phase 3:** Risk Limits & Alerting  
 **Phase 4:** Regime-Aware Component VaR
 
-See: [../COMPONENT_VAR_ROADMAP_PATCHED.md](../COMPONENT_VAR_ROADMAP_PATCHED.md)
+See: [roadmaps/COMPONENT_VAR_ROADMAP_PATCHED.md](roadmaps/COMPONENT_VAR_ROADMAP_PATCHED.md)
 
 ---
 

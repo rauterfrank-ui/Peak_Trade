@@ -36,8 +36,8 @@ We need a durable, reviewable, and reproducible record that:
 ### Local (docs-only hygiene)
 - `git status -sb` (clean)
 - Link correctness / relative paths verified and corrected
-  - Initial issue: `../runbooks/` → fixed to `runbooks/`
-  - Initial issue: `../evidence/` → fixed to `evidence/`
+  - Initial issue: `../runbooks/` → fixed to `runbooks&#47;`
+  - Initial issue: `../evidence/` → fixed to `evidence&#47;`
 - Pre-commit hooks executed (EOF fixer applied)
 
 ### CI (GitHub)

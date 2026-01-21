@@ -98,7 +98,7 @@ scripts/ops/review_and_merge_pr.sh --pr 263 --merge --update-main
 Zeigt Quick-Links zu Merge-Log-Dokumentation & Templates:
 - Workflow: `docs/ops/MERGE_LOG_WORKFLOW.md`
 - Template: `templates/ops/merge_log_template.md`
-- Existierende Merge-Logs: `docs/ops/PR_*_MERGE_LOG.md`
+- Existierende Merge-Logs: `docs&#47;ops&#47;PR_*_MERGE_LOG.md`
 
 **Beispiel:**
 ```bash
@@ -194,7 +194,7 @@ gh auth login
 ---
 
 ### `review_and_merge_pr.sh` nicht gefunden
-**Symptom:** `⚠️ Script not found or not executable: scripts/ops/review_and_merge_pr.sh`
+**Symptom:** `⚠️ Script not found or not executable: scripts&#47;ops&#47;review_and_merge_pr.sh`
 
 **Lösung:**
 ```bash
@@ -210,7 +210,7 @@ Siehe: [PR_MANAGEMENT_TOOLKIT.md](PR_MANAGEMENT_TOOLKIT.md)
 ---
 
 ### `ops_doctor.sh` nicht gefunden
-**Symptom:** `⚠️ Script not found or not executable: scripts/ops/ops_doctor.sh`
+**Symptom:** `⚠️ Script not found or not executable: scripts&#47;ops&#47;ops_doctor.sh`
 
 **Lösung:**
 ```bash

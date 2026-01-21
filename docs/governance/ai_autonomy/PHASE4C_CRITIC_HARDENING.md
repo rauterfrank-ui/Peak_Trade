@@ -396,8 +396,8 @@ Validates that L4 Critic produces **byte-identical outputs** in replay mode.
 - `src/ai_orchestration/l4_critic.py`
 - `src/ai_orchestration/critic_report_schema.py`
 - `scripts/aiops/run_l4_governance_critic.py`
-- `tests/ai_orchestration/test_l4_critic*.py`
-- `tests/fixtures/l4_critic_determinism/**`
+- `tests&#47;ai_orchestration&#47;test_l4_critic*.py`
+- `tests&#47;fixtures&#47;l4_critic_determinism&#47;**`
 
 ### 6.3 Snapshot Validation
 

@@ -34,8 +34,8 @@ Das Trigger-Training-System ermöglicht es Operatoren, ihre Reaktionsfähigkeit 
 
 | Script | Beschreibung | Usage |
 |--------|--------------|-------|
-| `generate_operator_meta_report_demo.py` | Demo mit 3 künstlichen Sessions | `PYTHONPATH=. python3 scripts/generate_operator_meta_report_demo.py` |
-| `generate_operator_meta_report.py` | Production CLI für Meta-Reports | `PYTHONPATH=. python3 scripts/generate_operator_meta_report.py` |
+| `generate_operator_meta_report_demo.py` | Demo mit 3 künstlichen Sessions | `PYTHONPATH=. python3 scripts&#47;generate_operator_meta_report_demo.py` |
+| `generate_operator_meta_report.py` | Production CLI für Meta-Reports | `PYTHONPATH=. python3 scripts&#47;generate_operator_meta_report.py` |
 
 ### Tests
 

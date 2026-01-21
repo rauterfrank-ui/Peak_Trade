@@ -111,7 +111,7 @@ scripts/automation/format_merge_log_snippet.sh --pr 90 --remote upstream --branc
 
 **Review Checklist:**
 - ✅ File permissions verified (all scripts executable)
-- ✅ Shebangs correct (`#!/usr/bin/env bash`)
+- ✅ Shebangs correct (`#!&#47;usr&#47;bin&#47;env bash`)
 - ✅ Bash syntax checks passed (`bash -n`)
 - ✅ Help/usage flags work (`--help`)
 - ✅ Smoke tests passed in graceful mode

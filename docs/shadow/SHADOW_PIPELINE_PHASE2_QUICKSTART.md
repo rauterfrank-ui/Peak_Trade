@@ -116,7 +116,7 @@ echo $PEAK_TRADE_LIVE_MODE  # Should be empty
 ### Need Help?
 
 - **Runbook:** `docs/shadow/SHADOW_PIPELINE_PHASE2_OPERATOR_RUNBOOK.md` (Troubleshooting section)
-- **Tests:** `pytest tests/data/shadow/test_guards.py -v` (shows guard behavior)
+- **Tests:** `pytest tests&#47;data&#47;shadow&#47;test_guards.py -v` (shows guard behavior)
 
 ---
 

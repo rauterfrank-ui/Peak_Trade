@@ -22,7 +22,7 @@ This document catalogs all evidence artifacts collected during the audit. Each e
 | ID | Description | Location | Date | Related Findings |
 |----|-------------|----------|------|------------------|
 | EV-0001 | Audit baseline commit hash | This document header | 2025-12-30 | N/A |
-| EV-0002 | Repository structure snapshot | `evidence/snapshots/repo_tree_[date].txt` | TBD | |
+| EV-0002 | Repository structure snapshot | `evidence&#47;snapshots&#47;repo_tree_[date].txt` | TBD | |
 
 ---
 
@@ -30,8 +30,8 @@ This document catalogs all evidence artifacts collected during the audit. Each e
 
 | ID | Description | Location | Date | Related Findings |
 |----|-------------|----------|------|------------------|
-| EV-1001 | Source code directory tree | `evidence/snapshots/repo_subsystems_20251230.txt` | 2025-12-30 | FND-0002, FND-0003 |
-| EV-1002 | Architecture overview & critical paths | `evidence/snapshots/architecture_overview_20251230.md` | 2025-12-30 | FND-0001, FND-0002, FND-0003 |
+| EV-1001 | Source code directory tree | `evidence&#47;snapshots&#47;repo_subsystems_20251230.txt` | 2025-12-30 | FND-0002, FND-0003 |
+| EV-1002 | Architecture overview & critical paths | `evidence&#47;snapshots&#47;architecture_overview_20251230.md` | 2025-12-30 | FND-0001, FND-0002, FND-0003 |
 | EV-1003 | Live trading entry points | Code search: `src/live/shadow_session.py`, `src/live/testnet_orchestrator.py` | 2025-12-30 | FND-0001 |
 | EV-1004 | Kill switch architecture | Code search: `src/risk_layer/kill_switch/core.py`, `execution_gate.py` | 2025-12-30 | FND-0001 |
 | EV-1005 | Repository statistics | 42 subsystems, 396 Python files, 317 test files | 2025-12-30 | All |
@@ -42,7 +42,7 @@ This document catalogs all evidence artifacts collected during the audit. Each e
 
 | ID | Description | Location | Date | Related Findings |
 |----|-------------|----------|------|------------------|
-| EV-2001 | Build & reproducibility overview | `evidence/snapshots/build_repro_20251230.md` | 2025-12-30 | FND-0004 |
+| EV-2001 | Build & reproducibility overview | `evidence&#47;snapshots&#47;build_repro_20251230.md` | 2025-12-30 | FND-0004 |
 | EV-2002 | Dependencies lockfile | `uv.lock` (6,377 lines) | 2025-12-30 | All |
 | EV-2003 | Python version | Python 3.9.6, uv 0.9.18 | 2025-12-30 | All |
 | EV-2004 | Policy pack configuration | `policy_packs/ci.yml`, `live_adjacent.yml`, `research.yml` | 2025-12-30 | FND-0004 |
@@ -56,8 +56,8 @@ This document catalogs all evidence artifacts collected during the audit. Each e
 
 | ID | Description | Location | Date | Related Findings |
 |----|-------------|----------|------|------------------|
-| EV-3001 | Backtest engine source review | `src/backtesting/` | TBD | |
-| EV-3002 | Golden backtest snapshots | `results/backtest_*/` | TBD | |
+| EV-3001 | Backtest engine source review | `src&#47;backtesting&#47;` | TBD | |
+| EV-3002 | Golden backtest snapshots | `results&#47;backtest_*&#47;` | TBD | |
 | EV-3003 | Test coverage for backtest invariants | `tests/backtest/` | TBD | |
 | EV-3004 | Fee/slippage model documentation | TBD | | |
 | EV-3005 | Lookahead bias checks | TBD | | |
@@ -68,7 +68,7 @@ This document catalogs all evidence artifacts collected during the audit. Each e
 
 | ID | Description | Location | Date | Related Findings |
 |----|-------------|----------|------|------------------|
-| EV-4001 | Risk configuration files | `config/risk/`, `config/*risk*.toml` | 2025-12-30 | |
+| EV-4001 | Risk configuration files | `config/risk/`, `config&#47;*risk*.toml` | 2025-12-30 | |
 | EV-4002 | Pre-trade check implementation | `src/risk/` | TBD | |
 | EV-4003 | Runtime check implementation | `src/risk/` | TBD | |
 | EV-4004 | Kill switch implementation | Search results, config | TBD | |
@@ -93,10 +93,10 @@ This document catalogs all evidence artifacts collected during the audit. Each e
 
 | ID | Description | Location | Date | Related Findings |
 |----|-------------|----------|------|------------------|
-| EV-6001 | Secrets scan results (gitleaks/detect-secrets) | `evidence/commands/secrets_scan_[date].txt` | TBD | |
-| EV-6002 | Dependency vulnerability scan (pip-audit) | `evidence/commands/pip_audit_[date].txt` | TBD | |
+| EV-6001 | Secrets scan results (gitleaks/detect-secrets) | `evidence&#47;commands&#47;secrets_scan_[date].txt` | TBD | |
+| EV-6002 | Dependency vulnerability scan (pip-audit) | `evidence&#47;commands&#47;pip_audit_[date].txt` | TBD | |
 | EV-6003 | .gitignore review (secrets exclusion) | `.gitignore` | 2025-12-30 | |
-| EV-6004 | Logging policy review (no key leaks) | `src/*/logging` patterns | TBD | |
+| EV-6004 | Logging policy review (no key leaks) | `src&#47;*&#47;logging` patterns | TBD | |
 | EV-6005 | Secrets management approach | Documentation/code review | TBD | |
 
 ---
@@ -107,7 +107,7 @@ This document catalogs all evidence artifacts collected during the audit. Each e
 |----|-------------|----------|------|------------------|
 | EV-7001 | Runbook inventory | `docs/runbooks/`, `scripts/ops/` | TBD | |
 | EV-7002 | Monitoring/alerting configuration | `config/telemetry_alerting.toml` | 2025-12-30 | |
-| EV-7003 | Dry-run drill logs | `evidence/commands/drill_[date].txt` | TBD | |
+| EV-7003 | Dry-run drill logs | `evidence&#47;commands&#47;drill_[date].txt` | TBD | |
 | EV-7004 | Incident response procedures | Documentation review | TBD | |
 | EV-7005 | Rollback procedures | Documentation/scripts review | TBD | |
 
@@ -116,9 +116,9 @@ This document catalogs all evidence artifacts collected during the audit. Each e
 ## Evidence Artifacts Storage
 
 - **Snapshots:** `docs/audit/evidence/snapshots/`
-- **Command Outputs:** `docs/audit/evidence/commands/`
-- **CI Logs:** `docs/audit/evidence/ci/`
-- **Screenshots:** `docs/audit/evidence/screenshots/`
+- **Command Outputs:** `docs&#47;audit&#47;evidence&#47;commands&#47;`
+- **CI Logs:** `docs&#47;audit&#47;evidence&#47;ci&#47;`
+- **Screenshots:** `docs&#47;audit&#47;evidence&#47;screenshots&#47;`
 
 ---
 

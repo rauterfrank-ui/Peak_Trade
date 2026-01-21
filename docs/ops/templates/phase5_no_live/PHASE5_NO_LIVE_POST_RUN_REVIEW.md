@@ -179,8 +179,8 @@ Acknowledgment: [I have reviewed this report and agree with findings / I have co
 
 ## Appendix: Supporting Materials
 
-- Link to drill evidence pack: `results/drill_<timestamp>/EVIDENCE_INDEX.md`
-- Link to Go/No-Go record: `results/drill_<timestamp>/GO_NO_GO_RECORD.md`
+- Link to drill evidence pack: `results&#47;drill_<timestamp>&#47;EVIDENCE_INDEX.md`
+- Link to Go/No-Go record: `results&#47;drill_<timestamp>&#47;GO_NO_GO_RECORD.md`
 - Relevant chat logs, emails, or governance tickets: [List or note "None"]
 
 ---

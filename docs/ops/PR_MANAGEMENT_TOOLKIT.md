@@ -144,7 +144,7 @@ Environment Variables:
 
 ### Docs Diff Guard (auto beim Merge)
 
-Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs/*` erkennt und **den Merge blockiert**.
+Beim `--merge` läuft standardmäßig automatisch ein **Docs Diff Guard**, der große versehentliche Löschungen in `docs&#47;*` erkennt und **den Merge blockiert**.
 
 **Default-Verhalten (enabled):**
 ```bash

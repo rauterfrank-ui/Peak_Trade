@@ -19,7 +19,7 @@ Ich habe erfolgreich **Data Backend Scaffolding** implementiert:
 
 ## 🆕 Neue Dateien (2)
 
-### 1. `src/data/backend.py` (350+ Zeilen)
+### 1. `src&#47;data&#47;backend.py` (350+ Zeilen)
 
 **Interface**:
 ```python
@@ -394,7 +394,7 @@ strategy.generate_signals(df_pandas)
 
 ## 📚 Referenzen
 
-- **Data Backend**: `src/data/backend.py`
+- **Data Backend**: `src&#47;data&#47;backend.py`
 - **Tests**: `tests/data/test_backend.py`
 - **Docs**: `docs/STRATEGY_LAYER_VNEXT.md`
 - **Config**: `config.toml` (Sektion `[data]`)

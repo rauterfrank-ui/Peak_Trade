@@ -48,7 +48,7 @@ Das Dokument richtet sich an:
 
 **Tests**
 
-- `tests/test_risk.py` (falls vorhanden) – Unit- und/oder Integrationstests für Risk-Komponenten.
+- `tests&#47;test_risk.py` (falls vorhanden) – Unit- und/oder Integrationstests für Risk-Komponenten.
 
 ---
 
@@ -71,7 +71,7 @@ Das Risk Management folgt diesen Kernprinzipien:
 
 5. **Testbarkeit & Transparenz**
    - Demos (`scripts/demo_risk_limits.py`, `scripts/demo_complete_pipeline.py`) zeigen das Verhalten.
-   - Tests (`tests/test_risk.py`) sichern grundlegende Invarianten ab.
+   - Tests (`tests&#47;test_risk.py`) sichern grundlegende Invarianten ab.
 
 ---
 
@@ -138,7 +138,7 @@ Typische Konfigurationsparameter in `[risk]`:
 - `risk.base_risk_fraction`
   Basisanteil des Kapitals, der pro Trade riskiert werden darf (z.B. 1%).
 
-- `risk.use_kelly = true/false`
+- `risk.use_kelly = true&#47;false`
   Schaltet Kelly-Logik ein/aus.
 
 - `risk.kelly_fraction`

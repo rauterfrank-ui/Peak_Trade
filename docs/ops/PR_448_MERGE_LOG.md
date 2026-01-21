@@ -13,7 +13,7 @@ These can be misclassified as "missing targets" by strict path scanners.
 ## Changes
 - De-pathified non-target references by escaping path separators in docs where intent is not "real file target":
   - Branch names rendered as `docs&#47;...` to avoid slash-path detection
-  - Explanatory `src/...` mentions escaped where not meant as a validated target
+  - Explanatory `src&#47;...` mentions escaped where not meant as a validated target
   - Hypothetical/outdated doc references rewritten or escaped
 - (Stack hygiene) Ensured PR branch includes Phase 1–2 fixes by rebasing onto the comprehensive stack before final CI validation.
 

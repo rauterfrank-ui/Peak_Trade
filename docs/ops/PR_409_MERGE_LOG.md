@@ -12,7 +12,7 @@
 
 ## Summary
 
-This PR restores **Risk-Gate ↔ KillSwitch API compatibility** after the KillSwitch was upgraded to a **state-machine** implementation. A minimal, isolated **legacy adapter** brings back the historical evaluator surface (`evaluate/reset/_last_status`) expected by Risk-Gate, while keeping the KillSwitch core semantics intact.
+This PR restores **Risk-Gate ↔ KillSwitch API compatibility** after the KillSwitch was upgraded to a **state-machine** implementation. A minimal, isolated **legacy adapter** brings back the historical evaluator surface (`evaluate&#47;reset&#47;_last_status`) expected by Risk-Gate, while keeping the KillSwitch core semantics intact.
 
 ## Why
 
@@ -23,7 +23,7 @@ Risk-Gate still relied on the legacy KillSwitchLayer "evaluator" API:
 * `kill_switch.reset(reason)`
 * `kill_switch._last_status`
 
-The new KillSwitch is a **state machine** (`state/is_killed` + recovery workflow), causing systematic failures:
+The new KillSwitch is a **state machine** (`state&#47;is_killed` + recovery workflow), causing systematic failures:
 
 * **47 failing tests** in `test_risk_gate.py`
 * `AttributeError: 'KillSwitch' object has no attribute 'evaluate'`
@@ -34,7 +34,7 @@ The new KillSwitch is a **state machine** (`state/is_killed` + recovery workflow
 
   * `src/risk_layer/kill_switch/adapter.py`
 
-    * Legacy adapter implementing: `evaluate/reset/_last_status`, plus `enabled` passthrough
+    * Legacy adapter implementing: `evaluate&#47;reset&#47;_last_status`, plus `enabled` passthrough
     * Marked **TEMPORARY** with deprecation target **Q1 2026**
 * **Changed**
 
@@ -84,7 +84,7 @@ No operational action required. No config migration required.
 * Key paths:
 
   * `src/risk_layer/kill_switch/adapter.py`
-  * `src\/risk_layer\/risk_gate.py`
+  * `src\&#47;risk_layer\&#47;risk_gate.py`
   * `src/risk_layer/kill_switch/core.py`
 * Documentation:
 

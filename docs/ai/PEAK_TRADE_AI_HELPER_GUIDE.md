@@ -101,7 +101,7 @@ Für technische Details zu Projekt-Struktur, Modulen und Commands siehe [`CLAUDE
 | `docs/ai/` | AI-Guides und Prompts | Meta-Doku für AI-Nutzung |
 | `config/` | TOML-Configs, Sweeps, Test-Configs | Konfiguration anpassen |
 | `scripts/` | CLI-Skripte (Backtests, Reports, Live-Ops) | CLI-Funktionalität |
-| `reports/` | Generierte Reports (Artefakte) | Nicht committen |
+| `reports&#47;` | Generierte Reports (Artefakte) | Nicht committen |
 
 ### Wo gehören neue Dinge hin?
 
@@ -109,7 +109,7 @@ Für technische Details zu Projekt-Struktur, Modulen und Commands siehe [`CLAUDE
 - **Neues Risk-Limit:** `src/live/risk_limits.py` + Tests + Developer-Guide
 - **Neues Portfolio-Rezept:** `config/portfolio_recipes.toml` + Tests
 - **Neue CLI-Funktion:** `scripts/` + Tests + CLI-Cheatsheet-Update
-- **Neue Phase-Doku:** `docs/PHASE_*.md`
+- **Neue Phase-Doku:** `docs&#47;PHASE_*.md`
 
 ---
 
@@ -186,12 +186,12 @@ Berücksichtige DEV_GUIDE_ADD_EXCHANGE.md und Safety-Anforderungen."
 ### Do
 
 - **Kleine, klar abgegrenzte Aufgaben definieren:** „Implementiere diese Funktion + Tests" statt „Mach das Modul besser"
-- **Relevante Dateien benennen:** „Ändere `src/strategies/rsi.py`, schreibe Tests in `tests/test_rsi.py`"
+- **Relevante Dateien benennen:** „Ändere `src/strategies/rsi.py`, schreibe Tests in `tests&#47;test_rsi.py`"
 - **Kontext mitgeben:** „Nutze DEV_GUIDE_ADD_STRATEGY.md als Referenz"
 - **Explizite Constraints setzen:** „Keine Breaking Changes an der API", „Tests müssen grün bleiben"
 - **Nach Erklärungen fragen:** „Erkläre mir, warum du diesen Ansatz gewählt hast"
 - **Iterativ arbeiten:** Kleine Schritte, Review, nächster Schritt
-- **Tests zuerst prüfen lassen:** „Führe erst `pytest tests/test_X.py -v` aus, dann implementiere"
+- **Tests zuerst prüfen lassen:** „Führe erst `pytest tests&#47;test_X.py -v` aus, dann implementiere"
 
 ### Don't
 
@@ -304,7 +304,7 @@ Anforderungen:
 ## 9. Checkliste vor dem Commit (AI-generierter Code)
 
 - [ ] Code gelesen und verstanden?
-- [ ] Tests laufen grün (`pytest tests/ -v`)?
+- [ ] Tests laufen grün (`pytest tests&#47; -v`)?
 - [ ] Keine Secrets/Keys im Code?
 - [ ] Keine Safety-Bypasses?
 - [ ] Keine Breaking Changes ohne Absprache?

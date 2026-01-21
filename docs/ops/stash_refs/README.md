@@ -10,4 +10,4 @@ Jeder Export besteht aus:
 
 ## Verwendung
 
-Siehe `scripts/ops/stash_triage.sh --help` für Details.
+Siehe `scripts&#47;ops&#47;stash_triage.sh --help` für Details.

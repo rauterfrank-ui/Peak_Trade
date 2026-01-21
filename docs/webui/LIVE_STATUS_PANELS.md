@@ -278,7 +278,7 @@ watch -n 5 'curl -s http://localhost:8000/api/live_sessions/stats | jq'
 
 ## Siehe auch
 
-- [Service Layer API](../src/webui/services/live_panel_data.py)
-- [Panel Providers](../src/live/status_providers.py)
-- [Snapshot Builder](../src/reporting/live_status_snapshot_builder.py)
-- [Tests](../tests/test_live_status_snapshot_panels.py)
+- [Service Layer API](../../src/webui/services/live_panel_data.py)
+- [Panel Providers](../../src/live/status_providers.py)
+- [Snapshot Builder](../../src/reporting/live_status_snapshot_builder.py)
+- [Tests](../../tests/test_live_status_snapshot_panels.py)

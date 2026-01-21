@@ -382,5 +382,5 @@ print("✅ All manual smoke tests passed")
 For questions or issues:
 1. Check this runbook
 2. Review test cases in `tests/risk_layer/`
-3. Inspect audit logs: `logs/risk_audit.jsonl`
+3. Inspect audit logs: `logs&#47;risk_audit.jsonl`
 4. Review code documentation in source files

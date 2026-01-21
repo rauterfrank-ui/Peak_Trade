@@ -14,11 +14,11 @@ AI-Ops Toolchain v1.1: standardized promptfoo eval execution via a robust runner
 - Added `scripts/aiops/run_promptfoo_eval.sh`
   - Robust pre-flight (repo checks, clear logging)
   - Graceful skip when `OPENAI_API_KEY` is missing (exit 0)
-  - Writes logs/artifacts into `.artifacts/aiops/` (ignored)
+- Writes logs/artifacts into `.artifacts&#47;aiops&#47;` (ignored)
 
 ### CI Workflow (Advisory)
 - Added `.github/workflows/aiops-promptfoo-evals.yml`
-  - Path-filtered triggers for: `.cursor/**`, `docs/ai/**`, `evals/aiops/**`, `scripts/aiops/**`
+  - Path-filtered triggers for: `.cursor&#47;**`, `docs&#47;ai&#47;**`, `evals&#47;aiops&#47;**`, `scripts&#47;aiops&#47;**`
   - Non-blocking / advisory intent
   - Skips cleanly if `OPENAI_API_KEY` secret is not available
 
@@ -36,14 +36,14 @@ AI-Ops Toolchain v1.1: standardized promptfoo eval execution via a robust runner
 - Registered in `evals/aiops/promptfooconfig.yaml`
 
 ### Hygiene
-- Updated `.gitignore` to ensure `.artifacts/` is untracked.
+- Updated `.gitignore` to ensure `.artifacts&#47;` is untracked.
 
 ## Verification
 ### Local
 - No API key (should skip successfully):
-  - `bash scripts/aiops/run_promptfoo_eval.sh`
+  - `bash scripts&#47;aiops&#47;run_promptfoo_eval.sh`
 - With API key:
-  - `export OPENAI_API_KEY="sk-..." && bash scripts/aiops/run_promptfoo_eval.sh`
+  - `export OPENAI_API_KEY="sk-..." && bash scripts&#47;aiops&#47;run_promptfoo_eval.sh`
 - Confirm repo stays clean (artifacts ignored):
   - `git status -sb`
 
@@ -57,11 +57,11 @@ LOW — Tooling/docs/evals only. No changes to `src/`, no execution logic change
 
 ## Operator How-To
 - Preferred local run:
-  - `bash scripts/aiops/run_promptfoo_eval.sh`
+  - `bash scripts&#47;aiops&#47;run_promptfoo_eval.sh`
 - Cursor shortcut:
   - Use `/pt-eval` (delegates to the runner workflow as documented).
 - Artifacts/logs:
-  - Review `.artifacts/aiops/promptfoo_eval_*.log` for results and regressions.
+  - Review `.artifacts&#47;aiops&#47;promptfoo_eval_*.log` for results and regressions.
 - When adding new eval coverage:
   - Add a testcase under `evals/aiops/testcases/` and register it in `evals/aiops/promptfooconfig.yaml`.
 - Governance note:

@@ -62,9 +62,9 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 
 | Test Suite | Passed | Status |
 |---|---:|:---:|
-| `tests/test_inspect_offline_feed.py` | 16/16 | ✅ |
+| `tests&#47;test_inspect_offline_feed.py` | 16/16 | ✅ |
 | `tests/test_live_web.py` | 24/24 | ✅ |
-| `tests/test_offline_realtime_feed_v0.py` | 39/39 | ✅ |
+| `tests&#47;test_offline_realtime_feed_v0.py` | 39/39 | ✅ |
 | **TOTAL** | **79/79** | ✅✅✅ |
 
 ✅ `pytest -q` grün
@@ -94,9 +94,9 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
   - `python3 scripts&#47;inspect_offline_feed.py --help` **(⚠️ DEPRECATED: script removed)**
 
 - Tests:
-  - `pytest -q tests/test_inspect_offline_feed.py`
-  - `pytest -q tests/test_live_web.py`
-  - `pytest -q tests/test_offline_realtime_feed_v0.py`
+  - `pytest -q tests&#47;test_inspect_offline_feed.py`
+  - `pytest -q tests&#47;test_live_web.py`
+  - `pytest -q tests&#47;test_offline_realtime_feed_v0.py`
 
 - Dashboard:
   - Route: `/offline-feed` (wenn Web-Server läuft)
@@ -106,7 +106,7 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 - Runbook: `docs&#47;ops&#47;OFFLINE_REALTIME_FEED_RUNBOOK.md` (removed)
 - CLI: `scripts&#47;inspect_offline_feed.py` **(⚠️ DEPRECATED: script removed)**
 - Dashboard: `/offline-feed` Route (Web)
-- Tests: `tests/test_inspect_offline_feed.py`
+- Tests: `tests&#47;test_inspect_offline_feed.py`
 
 ## Final Statement
 

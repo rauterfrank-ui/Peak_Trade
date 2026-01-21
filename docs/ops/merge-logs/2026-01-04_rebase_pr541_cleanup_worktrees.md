@@ -9,7 +9,7 @@
 
 ## Summary
 
-- Rebased `recovered/feat-data-offline-garch-feed-v2` onto `main` with 3 conflict resolutions (EOF + import formatting).
+- Rebased `recovered&#47;feat-data-offline-garch-feed-v2` onto `main` with 3 conflict resolutions (EOF + import formatting).
 - Created PR #541, identified as **No-Op** (GitHub reported `files: []` — features already in main).
 - Closed PR #541 with audit comment explaining duplicate content.
 - Cleaned up 3 branches (1 remote + 3 local) and 2 Git worktrees (`angry-shockley`, `awesome-hopper`).
@@ -32,9 +32,9 @@
 
 ## Changes
 
-### 1. Rebase `recovered/feat-data-offline-garch-feed-v2`
+### 1. Rebase `recovered&#47;feat-data-offline-garch-feed-v2`
 
-**Branch**: `recovered/feat-data-offline-garch-feed-v2`  
+**Branch**: `recovered&#47;feat-data-offline-garch-feed-v2`  
 **Base**: `main` (commit `4cc6464`)
 
 **Conflicts Resolved**:
@@ -77,7 +77,7 @@
 **Branches Deleted**:
 | Branch | Type | Commit | Status |
 |--------|------|--------|--------|
-| `recovered/feat-data-offline-garch-feed-v2` | Local + Remote | `4271dd2` | Already in main |
+| `recovered&#47;feat-data-offline-garch-feed-v2` | Local + Remote | `4271dd2` | Already in main |
 | `angry-shockley` | Local + Worktree | `d74758d` | Already in main (verified) |
 | `awesome-hopper` | Local + Worktree | `374d1f6` | Already in main |
 
@@ -197,7 +197,7 @@ git worktree prune     # Actual cleanup
 - **PR #531**: (Original, previously closed) — Context for restore attempt
 
 ### Branches (Deleted)
-- `recovered/feat-data-offline-garch-feed-v2`
+- `recovered&#47;feat-data-offline-garch-feed-v2`
 - `angry-shockley`
 - `awesome-hopper`
 
