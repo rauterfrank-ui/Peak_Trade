@@ -200,7 +200,7 @@ HACK(justification): Why this is necessary
 - **Unacceptable density** in production code/live configs
 
 ### Tracking & Debt Management
-- Run periodic placeholder audits: `python scripts/ops/placeholders/generate_placeholder_reports.py`
+- Run periodic placeholder audits: `python scripts&#47;ops&#47;placeholders&#47;generate_placeholder_reports.py`
 - Review high-density files (use target map reports)
 - Prioritize cleanup in production/execution paths over docs/templates
 
@@ -208,7 +208,7 @@ HACK(justification): Why this is necessary
 
 ## 3. Reporting & Inventory
 
-### Local Reports (`.ops_local/inventory/`)
+### Local Reports (`.ops_local&#47;inventory&#47;`)
 Placeholder reports are generated locally and **NOT committed** to Git.
 
 **Files:**
@@ -220,7 +220,7 @@ Placeholder reports are generated locally and **NOT committed** to Git.
 python scripts/ops/placeholders/generate_placeholder_reports.py
 ```
 
-**Output location:** `.ops_local/inventory/` (git-ignored)
+**Output location:** `.ops_local&#47;inventory&#47;` (git-ignored)
 
 ### Audit Workflow
 1. **Generate reports** locally before major milestones (phase gates, releases)
@@ -236,7 +236,7 @@ python scripts/ops/placeholders/generate_placeholder_reports.py
 
 ❌ **Don't:**
 - Use bare `TODO` without owner: `TODO: fix`
-- Mix multiple markers: `TODO/FIXME: ...`
+- Mix multiple markers: `TODO&#47;FIXME: ...`
 - Leave markers in production-critical execution paths without issue links
 - Use `HACK` without justification or removal plan
 
@@ -269,11 +269,11 @@ python scripts/ops/placeholders/generate_placeholder_reports.py
 - All `.py`, `.md`, `.toml`, `.yaml`, `.yml`, `.sh` files in repo
 
 **Excluded from reports:**
-- `.git/`, `venv/`, `.venv/`, `node_modules/`, `dist/`, `build/`, caches
-- `.ops_local/` (output folder)
+- `.git/`, `venv&#47;`, `.venv&#47;`, `node_modules&#47;`, `dist&#47;`, `build&#47;`, caches
+- `.ops_local&#47;` (output folder)
 - Binary files, lock files (e.g., `uv.lock`)
 
-**Why exclude `.ops_local/`?**
+**Why exclude `.ops_local&#47;`?**
 - Output folder for local artifacts
 - Not committed (in `.gitignore`)
 - Scanning it would create false positives from generated reports
@@ -283,7 +283,7 @@ python scripts/ops/placeholders/generate_placeholder_reports.py
 ## 7. References
 
 - Generator script: `scripts/ops/placeholders/generate_placeholder_reports.py`
-- Gitignore entry: `.ops_local/` (line 111 in `.gitignore`)
+- Gitignore entry: `.ops_local&#47;` (line 111 in `.gitignore`)
 - Audit docs: `docs/audit/` (high TBD density expected in templates)
 
 ---

@@ -50,7 +50,7 @@ Ermöglicht zuverlässige, wiederholbare CI-Status-Beobachtung ohne Manual-Retry
 **Time-to-Run:** <60 min
 
 **Artifacts:**
-- `docs/ops/drills/runs/DRILL_RUN_<DATE>_D03A_CI_POLLING.md`
+- `docs&#47;ops&#47;drills&#47;runs&#47;DRILL_RUN_<DATE>_D03A_CI_POLLING.md`
 - `docs/ops/runbooks/RUNBOOK_CI_STATUS_POLLING_HOWTO.md` (new) OR integrated section <!-- pt:ref-target-ignore -->
 
 **References:**
@@ -89,8 +89,8 @@ Reduziert Triage-Zeit von "Gate failed, was nun?" auf <10 Minuten (Detection →
 **Time-to-Run:** <60 min
 
 **Artifacts:**
-- `docs/ops/drills/runs/DRILL_RUN_<DATE>_D03B_DOCS_REF_TRIAGE.md`
-- Optional: `docs/ops/DOCS_REFERENCE_TARGETS_QUICK_TRIAGE.md` (cheat-sheet) <!-- pt:ref-target-ignore -->
+- `docs&#47;ops&#47;drills&#47;runs&#47;DRILL_RUN_<DATE>_D03B_DOCS_REF_TRIAGE.md`
+- Optional: `docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_QUICK_TRIAGE.md` (cheat-sheet) <!-- pt:ref-target-ignore -->
 
 **References:**
 - D02 Scoring: Weighted Score 54/70 (2nd place)
@@ -126,8 +126,8 @@ Validiert Operator-Kompetenz in Timeout-Triage (Detection → Action → Evidenc
 **Time-to-Run:** 60–75 min
 
 **Artifacts:**
-- `docs/ops/drills/runs/DRILL_RUN_<DATE>_D03C_INCIDENT_TIMEOUT.md`
-- `docs/ops/incidents/incident_log_<DATE>_D03C.md`
+- `docs&#47;ops&#47;drills&#47;runs&#47;DRILL_RUN_<DATE>_D03C_INCIDENT_TIMEOUT.md`
+- `docs&#47;ops&#47;incidents&#47;incident_log_<DATE>_D03C.md`
 
 **References:**
 - D02 Scoring: Weighted Score 51/70
@@ -165,9 +165,9 @@ Schafft reproduzierbaren "Evidence Pack Quality Gate": Operator weiß vor PR-Clo
 **Time-to-Run:** >90 min (requires schema definition + iteration)
 
 **Artifacts:**
-- `docs/ops/drills/runs/DRILL_RUN_<DATE>_D03D_EVIDENCE_AUDIT.md`
-- `docs/ops/EVIDENCE_PACK_SCHEMA_V1.md` (new) <!-- pt:ref-target-ignore -->
-- `docs/ops/EVIDENCE_PACK_VALIDATOR_CHECKLIST.md` (new) <!-- pt:ref-target-ignore -->
+- `docs&#47;ops&#47;drills&#47;runs&#47;DRILL_RUN_<DATE>_D03D_EVIDENCE_AUDIT.md`
+- `docs&#47;ops&#47;EVIDENCE_PACK_SCHEMA_V1.md` (new) <!-- pt:ref-target-ignore -->
+- `docs&#47;ops&#47;EVIDENCE_PACK_VALIDATOR_CHECKLIST.md` (new) <!-- pt:ref-target-ignore -->
 
 **References:**
 - D02 Scoring: Weighted Score 37/70 (lowest, due to long time-to-run + scope-creep risk)

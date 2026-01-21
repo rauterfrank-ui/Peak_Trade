@@ -347,7 +347,7 @@ python scripts/aiops/run_layer_dry_run.py \
 
 - **Authoritative Matrix:** `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
 - **Model Registry:** `config/model_registry.toml`
-- **Capability Scopes:** `config/capability_scopes/*.toml`
+- **Capability Scopes:** `config&#47;capability_scopes&#47;*.toml`
 - **Phase 1 Summary:** `PHASE_AI_AUTONOMY_LAYER_MAP_V1_SUMMARY.md`
 - **Governance Rules:** `.cursor/rules/peak-trade-governance.mdc`
 

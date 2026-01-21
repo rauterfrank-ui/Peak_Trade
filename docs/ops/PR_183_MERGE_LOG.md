@@ -40,7 +40,7 @@ Implementiert **Phase 16A (Simplified Execution Pipeline for Learning)** und **P
 - `tests/live/test_execution_bridge.py` - 10 Tests
 
 **Features:**
-- ✅ JSONL Logging: `logs/execution/<session_id>.jsonl`
+- ✅ JSONL Logging: `logs&#47;execution&#47;<session_id>.jsonl`
 - ✅ UTC Timestamps: `datetime.now(timezone.utc)` (Production-ready)
 - ✅ Opt-in: `emitter=None` default
 - ✅ Fail-safe: Logging errors don't crash execution
@@ -124,7 +124,7 @@ $ pytest -q tests -k "execution or telemetry or bridge"
 | Policy Critic | 🛡️ BLOCK | 10s (EXPECTED) |
 
 **Policy Critic Block Reason:**  
-Execution code changes require manual review (expected behavior for `src/execution/*` modifications).
+Execution code changes require manual review (expected behavior for `src&#47;execution&#47;*` modifications).
 
 ---
 
@@ -238,11 +238,11 @@ pipeline = ExecutionPipeline(
 ✅ **Backward Compatible:**
 - `emitter=None` default → No telemetry unless explicitly enabled
 - All existing tests pass (4045 passed)
-- Production `src/execution/` untouched (Phase 16A uses separate `execution_simple/`)
+- Production `src/execution/` untouched (Phase 16A uses separate `execution_simple&#47;`)
 
 ✅ **Fail-Safe:**
 - Logging errors logged only, don't crash execution
-- `try/except` around emit logic
+- `try&#47;except` around emit logic
 - Null-safe checks (`if self._emitter is None: return`)
 
 ✅ **Privacy:**

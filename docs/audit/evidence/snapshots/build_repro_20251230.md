@@ -97,8 +97,8 @@ Three policy packs defined in `policy_packs/`:
   - `src/live/`
   - `src/execution/`
   - `src/exchange/`
-  - `config/production/`
-  - `config/live/`
+  - `config&#47;production&#47;`
+  - `config&#47;live&#47;`
 
 - **Required Context:**
   - justification (for risk limit changes)

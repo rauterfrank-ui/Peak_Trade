@@ -81,7 +81,7 @@
 1. Updated `docs/audit/AUDIT_REPORT.md` - All findings marked FIXED
 2. Updated `docs/audit/GO_NO_GO.md` - Status changed to **100% GO**
 3. Updated `docs/audit/EVIDENCE_INDEX.md` - Added EV-9001 through EV-9005
-4. Updated all `docs/audit/findings/FND-*.md` - Status changed to FIXED
+4. Updated all `docs&#47;audit&#47;findings&#47;FND-*.md` - Status changed to FIXED
 
 ---
 

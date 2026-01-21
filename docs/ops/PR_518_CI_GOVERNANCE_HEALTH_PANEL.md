@@ -34,7 +34,7 @@ Das Panel führt lokale CI-Checks aus und zeigt den Status als operator-freundli
 - Exit Codes: 0 = OK, 1 = FAIL
 
 **Docs Reference Validation:**
-- Script: `scripts/ops/verify_docs_reference_targets.sh --changed --warn-only`
+- Script: `scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --warn-only`
 - Prüft: Markdown-Links auf existierende Dateien (nur geänderte Dateien)
 - Exit Codes: 0 = OK, 1 = FAIL, 2 = WARN
 

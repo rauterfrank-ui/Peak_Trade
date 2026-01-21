@@ -58,7 +58,7 @@ CodeGate prüft Evidence Packs gegen die Matrix:
 
 ### Configuration
 - `config/model_registry.toml` - Detaillierte Model Specs, Budget, Audit
-- `config/capability_scopes/*.toml` - Layer-spezifische Enforcement Rules
+- `config&#47;capability_scopes&#47;*.toml` - Layer-spezifische Enforcement Rules
 
 ### Governance
 - `docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md` - GoNoGo Prozess

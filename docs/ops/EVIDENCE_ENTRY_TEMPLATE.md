@@ -119,7 +119,7 @@ Phase 8A refactoring: Kupiec POF (Proportion of Failures) test deduplication, si
 - Zero breaking changes (all delegation tests verify wrapper correctness)
 
 ### Evidence / Source Links
-- [PR #XXX Merge Log](../../PHASE8A_MERGE_LOG.md)
+- [PR #XXX Merge Log](archives/repo_root_docs/PHASE8A_MERGE_LOG.md)
 - Branch: `refactor/kupiec-pof-single-engine`
 
 ### Verification Steps

@@ -230,4 +230,4 @@ grep "strategy_id=ma_crossover" app.log
 ---
 
 **Report Generated:** 2025-12-29  
-**Evidence File:** `reports/observability/logging_fields.md`
+**Evidence File:** `reports&#47;observability&#47;logging_fields.md`

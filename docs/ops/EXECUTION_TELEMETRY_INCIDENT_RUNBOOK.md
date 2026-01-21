@@ -6,7 +6,7 @@ Quick reference guide for diagnosing and responding to execution telemetry incid
 
 **Audience:** Operators, DevOps, SRE  
 **Scope:** Read-only diagnostics (no system changes)  
-**Prerequisites:** Access to `logs/execution/` directory and CLI tools
+**Prerequisites:** Access to `logs&#47;execution&#47;` directory and CLI tools
 
 ---
 
@@ -471,9 +471,9 @@ gunzip logs/execution/session_123.jsonl.gz
 
 | Frequency | Task | Command |
 |-----------|------|---------|
-| **Daily** | Dry-run check | `python scripts/ops/telemetry_retention.py` |
-| **Weekly** | Apply retention | `python scripts/ops/telemetry_retention.py --apply` |
-| **Monthly** | Verify size | `du -sh logs/execution` |
+| **Daily** | Dry-run check | `python scripts&#47;ops&#47;telemetry_retention.py` |
+| **Weekly** | Apply retention | `python scripts&#47;ops&#47;telemetry_retention.py --apply` |
+| **Monthly** | Verify size | `du -sh logs&#47;execution` |
 
 **Or:** Set up a cron job (optional)
 ```bash

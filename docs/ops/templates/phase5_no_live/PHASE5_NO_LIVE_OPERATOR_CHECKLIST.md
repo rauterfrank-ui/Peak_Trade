@@ -69,19 +69,19 @@
 - [ ] Test strategy selected: [e.g., ma_crossover_drill]
 - [ ] Test symbol selected: [e.g., BTC-EUR]
 - [ ] Config file prepared (mode confirmed as shadow/paper)
-  - Path: `config/[filename].toml`
+  - Path: `config&#47;[filename].toml`
   - Key settings verified: [list 2-3 key params, e.g., window=50, mode=shadow]
 - [ ] Strategy execution command run:
   - EXAMPLE Command: Run strategy engine with drill config (configure as needed)
   - Start time: [HH:MM]
   - End time: [HH:MM]
 - [ ] Logs monitored in real-time (no crashes)
-  - Command: `tail -f logs/strategy_drill.log`
+  - Command: `tail -f logs&#47;strategy_drill.log`
   - Observed: [Normal operation / Errors noted below]
 - [ ] Outputs collected:
-  - [ ] `results/drill_<timestamp>/trades/simulated_trades.csv`
-  - [ ] `results/drill_<timestamp>/metrics/performance_summary.json`
-  - [ ] `results/drill_<timestamp>/logs/strategy_drill.log`
+  - [ ] `results&#47;drill_<timestamp>&#47;trades&#47;simulated_trades.csv`
+  - [ ] `results&#47;drill_<timestamp>&#47;metrics&#47;performance_summary.json`
+  - [ ] `results&#47;drill_<timestamp>&#47;logs&#47;strategy_drill.log`
 - [ ] Simulated trades confirmed (NO real fills)
 - [ ] Timestamp logged: [HH:MM]
 
@@ -92,7 +92,7 @@
 ## Step 4: Evidence Pack Assembly
 
 - [ ] EVIDENCE_INDEX.md template copied to results folder
-  - Path: `results/drill_<timestamp>/EVIDENCE_INDEX.md`
+  - Path: `results&#47;drill_<timestamp>&#47;EVIDENCE_INDEX.md`
 - [ ] All metadata fields filled in (date, operator, SHA, run ID, etc.)
 - [ ] Artifact paths documented in EVIDENCE_INDEX.md:
   - [ ] Config files
@@ -112,7 +112,7 @@
 ## Step 5: Go/No-Go Assessment
 
 - [ ] GO_NO_GO_RECORD.md template copied to results folder
-  - Path: `results/drill_<timestamp>/GO_NO_GO_RECORD.md`
+  - Path: `results&#47;drill_<timestamp>&#47;GO_NO_GO_RECORD.md`
 - [ ] All 5 success criteria evaluated (see GO_NO_GO_RECORD.md)
   - [ ] Criterion 1: Environment verified as NO-LIVE [PASS/FAIL]
   - [ ] Criterion 2: Strategy executed without critical errors [PASS/FAIL]
@@ -132,9 +132,9 @@
 ## Post-Drill (After Step 5)
 
 - [ ] All checklist items above completed (or NO-GO declared)
-- [ ] Evidence pack archived: `tar -czf drill_<timestamp>.tar.gz results/drill_<timestamp>/`
+- [ ] Evidence pack archived: `tar -czf drill_<timestamp>.tar.gz results&#47;drill_<timestamp>&#47;`
 - [ ] POST_RUN_REVIEW.md template filled out (see separate template)
-- [ ] This checklist saved to: `results/drill_<timestamp>/OPERATOR_CHECKLIST.md`
+- [ ] This checklist saved to: `results&#47;drill_<timestamp>&#47;OPERATOR_CHECKLIST.md`
 - [ ] Operator training record updated (if applicable)
 - [ ] Drill results communicated to governance approver
 

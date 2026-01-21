@@ -5,7 +5,7 @@
 - Aktive Worktrees: 48 → 34 (-14)
 - [gone] Branches: 168 → 0 (100% entfernt)
 - Merged Branches lokal gelöscht: 5 (18 → 13 verbleibend)
-- Remote-Branch gelöscht: `origin/backup/pre-reboot-2025-12-29_0907`
+- Remote-Branch gelöscht: `origin&#47;backup&#47;pre-reboot-2025-12-29_0907`
 
 ## Why
 - Entfernen verwaister Branch-Zeiger ([gone]) und Reduktion von Worktree-Overhead.
@@ -16,13 +16,13 @@
 - 168 lokale [gone] Branches gelöscht.
 - 14 Worktrees entfernt (bezogen auf [gone]-Branches).
 - 5 bereits gemergte lokale Branches gelöscht.
-- 1 Remote-Branch gelöscht: `origin/backup/pre-reboot-2025-12-29_0907`.
+- 1 Remote-Branch gelöscht: `origin&#47;backup&#47;pre-reboot-2025-12-29_0907`.
 
 ## Current State
 - 134 lokale Branches insgesamt.
-- 97 local-only Branches ohne `origin/*` Gegenstück (nie gepusht).
+- 97 local-only Branches ohne `origin&#47;*` Gegenstück (nie gepusht).
 - 34 aktive Worktrees (inkl. `main`).
-- 13 merged Branches verbleiben absichtlich, da sie in `.claude-worktrees/...` als Tool-/Session-Worktrees genutzt werden.
+- 13 merged Branches verbleiben absichtlich, da sie in `.claude-worktrees&#47;...` als Tool-/Session-Worktrees genutzt werden.
 
 ## Risk Assessment
 - Niedrig: Löschungen betrafen [gone]-Zeiger und bereits gemergte Inhalte.

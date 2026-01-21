@@ -928,13 +928,13 @@ cat docs/ops/runbooks/RUNBOOK_*_POINTER.md | grep "Canonical Location"
 **Success Conditions (all must be met):**
 
 ✅ Pointer document exists in `docs&#47;ops&#47;runbooks&#47;RUNBOOK_<IDENTIFIER>_POINTER.md`  
-✅ Canonical link in pointer resolves to root runbook  
+✅ Canonical link in pointer resolves to canonical runbook target  
 ✅ README.md contains exactly one entry for pointer  
 ✅ Docs Token Policy Gate: PASS  
 ✅ Docs Reference Targets Gate: PASS  
 ✅ Docs Diff Guard Policy Gate: PASS  
 ✅ No content duplication (pointer is navigation-only)  
-✅ No orphaned pointers (root runbook exists)  
+✅ No orphaned pointers (canonical runbook exists)  
 ✅ PR merged via standard workflow (feature branch → PR → CI → merge)
 
 ---
@@ -946,7 +946,7 @@ cat docs/ops/runbooks/RUNBOOK_*_POINTER.md | grep "Canonical Location"
 - [RUNBOOK_DOCS_TOKEN_POLICY_GATE.md](RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) — Token policy gate operator guide
 - [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Reference targets gate operator guide
 - [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff guard gate operator guide
-- [RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md) — Example of root canonical runbook using pointer pattern
+- [RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md) — Example of canonical runbook (archived from repo root)
 
 ### Scripts & Tools
 

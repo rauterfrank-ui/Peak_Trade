@@ -62,9 +62,9 @@ Phase 16K führt ein **read-only Web Dashboard** für Stage1 (DRY-RUN) Monitorin
 
 **`src/webui/ops_stage1_router.py`** (178 lines)
 - **FastAPI Router** mit 3 Endpoints:
-  - `GET /ops/stage1` – HTML Dashboard Page (Auto-Refresh 30s)
-  - `GET /ops/stage1/latest` – JSON Latest Daily Summary
-  - `GET /ops/stage1/trend?days=N` – JSON Trend Analysis (1-90 Tage)
+  - `GET &#47;ops&#47;stage1` – HTML Dashboard Page (Auto-Refresh 30s)
+  - `GET &#47;ops&#47;stage1&#47;latest` – JSON Latest Daily Summary
+  - `GET &#47;ops&#47;stage1&#47;trend?days=N` – JSON Trend Analysis (1-90 Tage)
 - **Configuration:** `set_stage1_config()` für Report Root + Templates
 - **Error Handling:** HTTPException 404 bei fehlenden Reports (keine 500er)
 - **Logging:** Strukturiertes Logging für Errors/Diagnostics
@@ -140,7 +140,7 @@ Phase 16K führt ein **read-only Web Dashboard** für Stage1 (DRY-RUN) Monitorin
   set_stage1_config(stage1_report_root, templates)
   app.include_router(stage1_router)
   ```
-- **Report Root:** `reports/obs/stage1/` (default, konfigurierbar)
+- **Report Root:** `reports&#47;obs&#47;stage1&#47;` (default, konfigurierbar)
 - **Template Sharing:** Nutzt bestehende `templates` (Jinja2) aus App Setup
 
 **`src/webui/__init__.py`** (Import hinzugefügt)
@@ -223,7 +223,7 @@ Phase 16K führt ein **read-only Web Dashboard** für Stage1 (DRY-RUN) Monitorin
 
 ### Empty State Behavior:
 - ✅ **Keine JSON Files?** → Dashboard zeigt "No data available yet" (keine 500er)
-- ✅ **Fehlende `report_root/`?** → IO Functions returnen `None` (keine Exception)
+- ✅ **Fehlende `report_root&#47;`?** → IO Functions returnen `None` (keine Exception)
 - ✅ **Fehlerhafte JSON?** → Validation Error geloggt, aber keine Crashes
 
 **Safety Guarantee:** Alte Workflows bleiben unverändert funktional. Neue Funktionalität ist opt-in.
@@ -358,7 +358,7 @@ GET /ops/stage1/latest → 404 Not Found
 ```
 **Ursachen + Lösungen:**
 1. **Keine JSON Files:** Reports generieren (siehe oben)
-2. **Falscher Report Root:** `report_root` in App Config prüfen (default: `reports/obs/stage1/`)
+2. **Falscher Report Root:** `report_root` in App Config prüfen (default: `reports&#47;obs&#47;stage1&#47;`)
 3. **Server nicht gestartet:** `uvicorn src.webui.app:app --reload` ausführen
 
 ---
@@ -418,14 +418,14 @@ reports/obs/stage1/
 ### 6. Available Routes
 
 **Web Dashboard:**
-- `GET /ops/stage1` – HTML Dashboard Page (Auto-Refresh)
-- `GET /ops/stage1?days=30` – Dashboard mit 30-Tage-Trend
+- `GET &#47;ops&#47;stage1` – HTML Dashboard Page (Auto-Refresh)
+- `GET &#47;ops&#47;stage1?days=30` – Dashboard mit 30-Tage-Trend
 
 **JSON API:**
-- `GET /ops/stage1/latest` – Latest Daily Summary (JSON)
-- `GET /ops/stage1/trend` – Trend (default 14 Tage, JSON)
-- `GET /ops/stage1/trend?days=7` – Trend (7 Tage, JSON)
-- `GET /ops/stage1/trend?days=90` – Trend (90 Tage, JSON)
+- `GET &#47;ops&#47;stage1&#47;latest` – Latest Daily Summary (JSON)
+- `GET &#47;ops&#47;stage1&#47;trend` – Trend (default 14 Tage, JSON)
+- `GET &#47;ops&#47;stage1&#47;trend?days=7` – Trend (7 Tage, JSON)
+- `GET &#47;ops&#47;stage1&#47;trend?days=90` – Trend (90 Tage, JSON)
 
 **Query Parameter Limits:**
 - `days`: 1-90 (default 14)
@@ -519,7 +519,7 @@ Phase 16K ist **read-only** und **DRY-RUN only**. Mögliche Follow-Ups:
 ### 1. Automation (16L-A)
 - **Scheduled Reports:** Cronjob/Launchd für tägliche Snapshot-Generierung
 - **CI Integration:** Stage1 Reports in GitHub Actions Artifacts
-- **Health Checks:** Integriere Stage1 Go/No-Go in `src/notifications/health.py`
+- **Health Checks:** Integriere Stage1 Go/No-Go in "src\/notifications\/health.py" (future)
 
 ### 2. Notifications (16L-B)
 - **Slack/Email Alerts:** Bei NO_GO oder HOLD Status
@@ -651,7 +651,7 @@ curl http://localhost:8000/ops/stage1/trend?days=14
 **Challenges:**
 - **Trend Computation Duplizierung:** Go/No-Go Logik existiert in `stage1_trend_report.py` (script) und `src/obs/stage1/trend.py` (library)
   - **Fix in 16L:** Konsolidieren (script nutzt library)
-- **Report Root Config:** Momentan in `app.py` hardcoded (`reports/obs/stage1`)
+- **Report Root Config:** Momentan in `app.py` hardcoded (`reports&#47;obs&#47;stage1`)
   - **Fix in 16L:** Config-File oder ENV Variable
 
 **Process Improvements:**

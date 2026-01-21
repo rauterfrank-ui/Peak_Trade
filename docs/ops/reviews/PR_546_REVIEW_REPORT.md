@@ -158,7 +158,7 @@ from src.risk.validation.report_compare import (
 ### 4.1 `report_index.py` (370 Zeilen)
 
 **Stärken:**
-- ✅ Robuste Fehlerbehandlung (`try/except` für JSON-Decode)
+- ✅ Robuste Fehlerbehandlung (`try&#47;except` für JSON-Decode)
 - ✅ Deterministische Sortierung (`runs.sort(key=lambda r: r.run_id)`)
 - ✅ Klare Dataclasses (`RunArtifact`)
 - ✅ HTML mit inline CSS (self-contained)

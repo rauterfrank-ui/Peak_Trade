@@ -253,7 +253,7 @@ cat large_file.log
 
 **Aktive Hooks:**
 - `.git/hooks/pre-commit` (pre-commit framework wrapper, ~20 Zeilen)
-  - Ruft: `.venv/bin/python3 -m pre_commit`
+  - Ruft: `.venv&#47;bin&#47;python3 -m pre_commit`
   - Config: `.pre-commit-config.yaml`
   - Hooks: end-of-file-fixer, trailing-whitespace, ruff-check, etc.
 

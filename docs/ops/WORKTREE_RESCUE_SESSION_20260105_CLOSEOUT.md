@@ -76,7 +76,7 @@ All rescue and analysis artifacts stored locally (NOT committed to repo):
 **Location:** `/Users/frnkhrz/Desktop/_peak_trade_local_artifacts/`
 
 ### Key Artifacts
-- `WORKTREE_RESCUE_20260105_013249/` — Rescue Pack (top 9 worktrees with diffs, status, patches)
+- `WORKTREE_RESCUE_20260105_013249&#47;` — Rescue Pack (top 9 worktrees with diffs, status, patches)
 - `WORKTREE_RESCUE_DECISION_WORKSHEET_20260105_013522.md` — Decision matrix with heuristics
 - `WORKTREE_GOVERNANCE_20260105_012709.csv` + `.md` — Full inventory of 34 worktrees
 - `WORKTREE_DIRTY_DETAILED_20260105_013053.md` — Dirty analysis with change counts
@@ -101,7 +101,7 @@ Recommended merge order (dependencies and risk):
 **Issue:** Several worktrees contain uncommitted artifacts (mlruns/, reports/, etc.)
 
 **Decision Required:**
-- Confirm `mlruns/` is properly gitignored (it should be)
+- Confirm `mlruns&#47;` is properly gitignored (it should be)
 - Review `.gitignore` changes in heuristic-mcclintock and reverent-hugle worktrees
 - Document policy: experiment artifacts stay local, only summaries/reports committed
 
@@ -270,7 +270,7 @@ SqliteError: FOREIGN KEY constraint failed
   code: 'SQLITE_CONSTRAINT_FOREIGNKEY'
 ```
 
-**Evidence:** `.artifacts/aiops/full_eval_stdout_20260105T082351Z.log` (pre-update failure)
+**Evidence:** `.artifacts&#47;aiops&#47;full_eval_stdout_20260105T082351Z.log` (pre-update failure)
 
 ### Solution Applied
 
@@ -298,7 +298,7 @@ SqliteError: FOREIGN KEY constraint failed
 - ✅ Results: 5/20 PASS (25%), 15 FAIL (governance violations, expected)
 - ✅ Duration: 36 seconds (concurrency: 4)
 - ✅ Tokens: 4,785 (1,154 prompt + 3,631 completion)
-- ✅ Artifacts: `.artifacts/aiops/test_latest_promptfoo_20260105T082709Z.log`
+- ✅ Artifacts: `.artifacts&#47;aiops&#47;test_latest_promptfoo_20260105T082709Z.log`
 
 ### Governance Compliance (Post-Update)
 
@@ -408,7 +408,7 @@ Worktree Rescue Session 2026-01-05 successfully rescued 4,276 net lines of high-
 
 **Date:** 2026-01-05 (Same Day)  
 **Status:** ✅ Merged to main  
-**Branch:** `restore/worktree-patches-20260105`
+**Branch:** `restore&#47;worktree-patches-20260105`
 
 #### Context
 After merging worktree-rescued code that added `mlflow>=3.0,<4` to `pyproject.toml`, CI began running previously-skipped MLflow integration tests. All 18 tests failed consistently across Python 3.9/3.10/3.11.
@@ -442,7 +442,7 @@ After merging worktree-rescued code that added `mlflow>=3.0,<4` to `pyproject.to
 
 #### Result
 - **Merged:** Squash merge to main (`410feb3a`)
-- **Branch Deleted:** `restore/worktree-patches-20260105`
+- **Branch Deleted:** `restore&#47;worktree-patches-20260105`
 - **Detailed Log:** `docs/ops/PR_569_MERGE_LOG.md`
 
 ---

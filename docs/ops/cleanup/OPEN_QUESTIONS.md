@@ -12,7 +12,7 @@
 
 | Datei | Grund | Evidenz | Status |
 |-------|-------|---------|--------|
-| `run_regime_experiments.sh` | Dublette (existiert in `archive/legacy_scripts/`) | rg: 6 hits (nur docs/archive refs) | ✅ Deleted |
+| `run_regime_experiments.sh` | Dublette (existiert in `archive&#47;legacy_scripts&#47;`) | rg: 6 hits (nur docs/archive refs) | ✅ Deleted |
 | `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` | Dublette (docs/ops/ ist source of truth) | rg: 20 hits → konsolidieren | ✅ Deleted |
 | `gitignore` | Obsolet (`.gitignore` existiert) | rg: 0 hits | ✅ Deleted |
 
@@ -65,7 +65,7 @@ scripts/
 **Fragen:**
 - [ ] Passt die neue Ordnerstruktur zur Peak_Trade-Philosophie?
 - [ ] Sind die Namen konsistent und selbsterklärend?
-- [ ] Sollten wir `docs/dev/` anders nennen (z.B. `docs/developer/`)?
+- [ ] Sollten wir `docs/dev/` anders nennen (z.B. `docs&#47;developer&#47;`)?
 - [ ] Ist `scripts/run/` vs `scripts/ops/` klar genug abgegrenzt?
 
 ---
@@ -112,7 +112,7 @@ scripts/
 
 **Fragen:**
 - [ ] Welche Inhalte unter `reports/` sind "tracked by design" vs "generated and ignored"?
-- [ ] Sollten wir ein `reports/README.md` erstellen (was ist committed, was nicht)?
+- [ ] Sollten wir ein `reports&#47;README.md` erstellen (was ist committed, was nicht)?
 - [ ] Ist `.gitignore` vollständig (keine Dateileichen)?
 - [ ] Sollten committed Reports in `docs/` statt `reports/` liegen?
 
@@ -122,13 +122,13 @@ scripts/
 
 ### Current Archive
 
-- `archive/full_files_stand_02.12.2025/`
-- `archive/legacy_docs/`
-- `archive/legacy_scripts/`
-- `archive/PeakTradeRepo/` (komplett altes Repo!)
+- `archive&#47;full_files_stand_02.12.2025&#47;`
+- `archive&#47;legacy_docs&#47;`
+- `archive&#47;legacy_scripts&#47;`
+- `archive&#47;PeakTradeRepo&#47;` (komplett altes Repo!)
 
 **Fragen:**
-- [ ] Ist `archive/PeakTradeRepo/` noch nützlich? (sehr groß)
+- [ ] Ist `archive&#47;PeakTradeRepo&#47;` noch nützlich? (sehr groß)
 - [ ] Sollten wir eine Retention-Policy definieren (z.B. "Archive older than 1 year → review")?
 - [ ] Gibt es Dateien, die wir löschen statt archivieren sollten?
 - [ ] Brauchen wir ein "Archive-Index" mit Begründungen?
@@ -189,7 +189,7 @@ scripts/
 ### Identified Follow-ups
 
 1. `docs/README.md` Navigation-Hub erstellen
-2. `archive/PeakTradeRepo/` evaluieren
+2. `archive&#47;PeakTradeRepo&#47;` evaluieren
 3. Weitere root-level docs in Subfolder sortieren (falls noch welche)
 4. Automated link checker einführen
 
@@ -236,7 +236,7 @@ scripts/
 ### New Docs Created
 
 - `REPO_STRUCTURE (wird in PR2 erzeugt)` (400+ Zeilen)
-- `archive/README.md`
+- `archive&#47;README.md`
 - `config/README.md`
 
 **Fragen:**
@@ -267,7 +267,7 @@ scripts/
 1. Delete-Evidenz verifizieren (besonders `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md`)
 2. Struktur-Naming absegnen
 3. CI/Workflow-Impact prüfen
-4. Archive-Policy (besonders `archive/PeakTradeRepo/`)
+4. Archive-Policy (besonders `archive&#47;PeakTradeRepo&#47;`)
 
 **Follow-up Fragen (nach PR2):**
 - Communication-Strategie

@@ -40,7 +40,7 @@ Wenn in GitHub Actions der Job **"L4 Critic Replay Determinism"** fehlschlägt, 
 - "Verify determinism (run twice, compare)"
 
 **Beispiel-Fehlerklassen:**
-- `❌ Contract violation: Absolute path detected: /Users/...`
+- `❌ Contract violation: Absolute path detected: &#47;Users&#47;...`
 - `❌ Timestamp found in deterministic mode: created_at`
 - `❌ Findings order differs between runs`
 - `❌ critic_report.json differs from snapshot`
@@ -118,9 +118,9 @@ Der Agent **muss** dieses Format liefern:
 
 ### A) Volatile Field Introduced
 **Symptoms:**
-- `Absolute path detected: /Users/...`
+- `Absolute path detected: &#47;Users&#47;...`
 - `Timestamp found: created_at`
-- `UUID/session ID in output`
+- `UUID&#47;session ID in output`
 
 **Typical Fix Location:**  
 L4 critic determinism contract module (planned) → `canonicalize_report()`

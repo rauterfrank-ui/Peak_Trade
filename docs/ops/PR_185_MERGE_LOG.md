@@ -301,7 +301,7 @@ A  tests/fixtures/execution_telemetry/golden_session_latency.jsonl        (12 ev
 
 ### Quick Start
 1. **Diagnose Issues:** Use [Incident Runbook](./EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md)
-2. **Run Regression Gates:** `pytest -q tests/execution/test_telemetry_regression_gates.py`
+2. **Run Regression Gates:** `pytest -q tests&#47;execution&#47;test_telemetry_regression_gates.py`
 3. **Export Data:** Add `?format=csv` to `/api/telemetry` requests
 
 ### Common Scenarios

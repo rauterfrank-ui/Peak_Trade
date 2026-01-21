@@ -76,7 +76,7 @@ source .venv/bin/activate
 Prüfen:
 
 * `pytest` läuft durch (oder mindestens die relevanten Strategy-/R&D-Tests).
-* Config-Dateien für die beiden Strategien existieren (z.B. in `config/strategies/` oder entsprechend deiner Struktur).
+* Config-Dateien für die beiden Strategien existieren (z.B. in `config&#47;strategies&#47;` oder entsprechend deiner Struktur).
 
 ### 3.2 R&D-Experiment-Registry
 

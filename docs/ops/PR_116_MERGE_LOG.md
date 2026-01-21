@@ -19,5 +19,5 @@
 
 ## Verification
 - CI: PR checks green
-- Local: `bash scripts/ci/check_quarto_no_exec.sh`
-- Post-merge: `scripts/automation/post_merge_verify.sh --expected-head <sha>` (if available)
+- Local: `bash scripts&#47;ci&#47;check_quarto_no_exec.sh`
+- Post-merge: `scripts&#47;automation&#47;post_merge_verify.sh --expected-head <sha>` (if available)

@@ -22,7 +22,7 @@ bash scripts/aiops/run_promptfoo_eval.sh
 ```
 
 **Output:**
-- Logs: `.artifacts/aiops/promptfoo_eval_<timestamp>.log`
+- Logs: `.artifacts&#47;aiops&#47;promptfoo_eval_<timestamp>.log`
 - Console: Pass/fail summary
 
 ---
@@ -35,7 +35,7 @@ bash scripts/aiops/run_promptfoo_eval.sh
 - Node version (`node -v`)
 - Promptfoo version (from `scripts/aiops/run_promptfoo_eval.sh`)
 - Model (e.g., `openai:gpt-4`)
-- Pass rate (e.g., `8/10 tests passed`)
+- Pass rate (e.g., `8&#47;10 tests passed`)
 - Failed test names (if any)
 
 **Example scoreboard entry:**
@@ -140,7 +140,7 @@ Failed: None
 
 ## CI Integration
 
-**Trigger:** PR to `main` changes `.cursor/**`, `docs/ai/**`, `evals/aiops/**`, `scripts/aiops/**`
+**Trigger:** PR to `main` changes `.cursor&#47;**`, `docs&#47;ai&#47;**`, `evals&#47;aiops&#47;**`, `scripts&#47;aiops&#47;**`
 
 **Behavior:**
 - Runs `scripts/aiops/run_promptfoo_eval.sh`

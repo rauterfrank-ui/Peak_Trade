@@ -70,7 +70,7 @@
    - Bereits **EXEC (forbidden)** mit `GovernanceViolationError`
    - Keine Änderung nötig
 
-2. **Risk Hook / Kill Switch** (`src/execution/risk_hook.py`, `src/killswitch/`) → L5 (Risk Gate)
+2. **Risk Hook / Kill Switch** (`src/execution/risk_hook.py`, `src&#47;killswitch&#47;`) → L5 (Risk Gate)
    - Deterministisch, kein LLM
    - Keine Änderung nötig
 
@@ -194,7 +194,7 @@ for s in scopes:
 
 - ✅ SoD Framework implementiert (3 Module: `multi_model_runner`, `sod_checker`, `models`)
 - ✅ Tests grün (100% Coverage für SoD)
-- ✅ Logging funktioniert (`logs/ai_model_calls.jsonl` vorhanden)
+- ✅ Logging funktioniert (`logs&#47;ai_model_calls.jsonl` vorhanden)
 - ✅ Ready für Phase 3 (L2 Pilot)
 
 ---
@@ -204,7 +204,7 @@ for s in scopes:
 - **Layer Map v1:** `docs/architecture/ai_autonomy_layer_map_v1.md`
 - **Gap-Analyse:** `docs/architecture/ai_autonomy_layer_map_gap_analysis.md`
 - **Model Registry:** `config/model_registry.toml`
-- **Capability Scopes:** `config/capability_scopes/*.toml`
+- **Capability Scopes:** `config&#47;capability_scopes&#47;*.toml`
 - **Evidence Pack Template v2:** `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md`
 
 ---

@@ -569,13 +569,13 @@ class MyStrategy(BaseStrategy):
 - NoopTracker macht nichts, wirft keine Exceptions
 - BacktestEngine mit NoopTracker: deterministische Outputs
 
-✅ `tests/test_parameter_schema.py`:
+✅ `tests&#47;test_parameter_schema.py`:
 - Param Dataclass funktioniert
 - BaseStrategy.parameter_schema ist optional
 
 ### Integration-Tests
 
-🔜 `tests/test_backtest_tracking_integration.py`:
+🔜 `tests&#47;test_backtest_tracking_integration.py`:
 - BacktestEngine mit NoopTracker: identische Results wie ohne Tracker
 - Config Snapshot wird korrekt serialisiert
 
@@ -645,7 +645,7 @@ python scripts/run_backtest_with_tracking.py \
 - [x] Unit-Tests + Smoke-Tests
 
 ### Phase 3: Acceleration Scaffolding (✅ Completed - PR X3)
-- [x] Data Backend Interface (src/data/backend.py)
+- [x] Data Backend Interface ("src\/data\/backend.py" (historical path))
 - [x] PandasBackend (Default)
 - [x] PolarsBackend (Optional)
 - [x] DuckDBBackend (Optional)

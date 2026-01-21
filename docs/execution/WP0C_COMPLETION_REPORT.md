@@ -62,8 +62,8 @@ ExecutionEvent (ACK/REJECT/FILL)
 
 #### 3. **Fill Models** (Deterministic)
 - **ImmediateFillModel**: Market price ± slippage (no randomness)
-  - Market BUY: `price = market * (1 + slippage_bps/10000)`
-  - Market SELL: `price = market * (1 - slippage_bps/10000)`
+  - Market BUY: `price = market * (1 + slippage_bps&#47;10000)`
+  - Market SELL: `price = market * (1 - slippage_bps&#47;10000)`
   - Limit orders: Best available price within limit
 - **FixedFeeModel**: Percentage-based fee (default 0.1%)
 - **FixedSlippageModel**: Fixed slippage in basis points (default 5bps)

@@ -29,9 +29,9 @@
 
 | Artifact | Path (relative to repo root) | Description |
 |----------|-------------------------------|-------------|
-| Main Config | EXAMPLE: `config/<drill_test>.toml` | Primary config used (CONFIRM mode = shadow/paper) |
-| Strategy Config | EXAMPLE: `config/strategies/<strategy_name>.toml` | Strategy-specific parameters |
-| Risk Config | EXAMPLE: `config/risk/<drill_risk>.toml` | Risk limits for drill (if applicable) |
+| Main Config | EXAMPLE: `config&#47;<drill_test>.toml` | Primary config used (CONFIRM mode = shadow/paper) |
+| Strategy Config | EXAMPLE: `config&#47;strategies&#47;<strategy_name>.toml` | Strategy-specific parameters |
+| Risk Config | EXAMPLE: `config&#47;risk&#47;<drill_risk>.toml` | Risk limits for drill (if applicable) |
 
 **Audit Note:** All configs verified to be NO-LIVE (no production API keys, no live mode enabled).
 
@@ -41,10 +41,10 @@
 
 | Artifact | Path | Size | Key Events |
 |----------|------|------|------------|
-| System Log | `logs/system.log` | [X KB] | Startup, shutdown, health checks |
-| Strategy Log | `logs/strategy_drill.log` | [X KB] | Signal generation, simulated trades |
-| Audit Log | `logs/audit.log` | [X KB] | Config loads, mode verification |
-| Error Log | `logs/errors.log` | [X KB] | Any exceptions (should be empty or non-critical) |
+| System Log | `logs&#47;system.log` | [X KB] | Startup, shutdown, health checks |
+| Strategy Log | `logs&#47;strategy_drill.log` | [X KB] | Signal generation, simulated trades |
+| Audit Log | `logs&#47;audit.log` | [X KB] | Config loads, mode verification |
+| Error Log | `logs&#47;errors.log` | [X KB] | Any exceptions (should be empty or non-critical) |
 
 **Search Tips:**  
 - Grep for "ERROR" or "CRITICAL": `grep -i error logs/*.log`
@@ -56,9 +56,9 @@
 
 | Artifact | Path | Description |
 |----------|------|-------------|
-| Trades CSV | `results/drill_<timestamp>/trades/simulated_trades.csv` | All simulated trades (NO real fills) |
-| Positions | `results/drill_<timestamp>/trades/positions.json` | Final positions (paper/shadow) |
-| Order Book Snapshots | `results/drill_<timestamp>/market_data/` | (if applicable) |
+| Trades CSV | `results&#47;drill_<timestamp>&#47;trades&#47;simulated_trades.csv` | All simulated trades (NO real fills) |
+| Positions | `results&#47;drill_<timestamp>&#47;trades&#47;positions.json` | Final positions (paper/shadow) |
+| Order Book Snapshots | `results&#47;drill_<timestamp>&#47;market_data&#47;` | (if applicable) |
 
 **Verification:**  
 - [ ] CSV header confirms "simulated" or "paper" mode
@@ -71,9 +71,9 @@
 
 | Artifact | Path | Description |
 |----------|------|-------------|
-| Summary JSON | `results/drill_<timestamp>/metrics/performance_summary.json` | Win rate, Sharpe, max drawdown, etc. |
-| Risk Report | `results/drill_<timestamp>/metrics/risk_report.json` | VaR, exposure, compliance checks |
-| Plots (optional) | `results/drill_<timestamp>/plots/*.png` | Equity curve, trade distribution, etc. |
+| Summary JSON | `results&#47;drill_<timestamp>&#47;metrics&#47;performance_summary.json` | Win rate, Sharpe, max drawdown, etc. |
+| Risk Report | `results&#47;drill_<timestamp>&#47;metrics&#47;risk_report.json` | VaR, exposure, compliance checks |
+| Plots (optional) | `results&#47;drill_<timestamp>&#47;plots&#47;*.png` | Equity curve, trade distribution, etc. |
 
 **Note:** Metrics are for drill assessment; not indicative of live performance.
 
@@ -83,9 +83,9 @@
 
 | Artifact | Path | Description |
 |----------|------|-------------|
-| Operator Checklist | `results/drill_<timestamp>/OPERATOR_CHECKLIST.md` | Completed step-by-step checklist |
-| Go/No-Go Record | `results/drill_<timestamp>/GO_NO_GO_RECORD.md` | Final drill decision |
-| Post-Run Review | `results/drill_<timestamp>/POST_RUN_REVIEW.md` | Debrief notes (if completed) |
+| Operator Checklist | `results&#47;drill_<timestamp>&#47;OPERATOR_CHECKLIST.md` | Completed step-by-step checklist |
+| Go/No-Go Record | `results&#47;drill_<timestamp>&#47;GO_NO_GO_RECORD.md` | Final drill decision |
+| Post-Run Review | `results&#47;drill_<timestamp>&#47;POST_RUN_REVIEW.md` | Debrief notes (if completed) |
 
 ---
 
@@ -93,8 +93,8 @@
 
 | Artifact | Path | Description |
 |----------|------|-------------|
-| [Example] | `results/drill_<timestamp>/screenshots/telemetry_dashboard.png` | Dashboard showing drill in progress |
-| [Example] | `results/drill_<timestamp>/screenshots/config_verification.png` | Terminal showing mode = shadow |
+| [Example] | `results&#47;drill_<timestamp>&#47;screenshots&#47;telemetry_dashboard.png` | Dashboard showing drill in progress |
+| [Example] | `results&#47;drill_<timestamp>&#47;screenshots&#47;config_verification.png` | Terminal showing mode = shadow |
 
 **Guidelines:**  
 - Only include if they add audit value
@@ -107,7 +107,7 @@
 
 | Drill Step | Evidence Artifact(s) |
 |------------|---------------------|
-| Step 1: Environment Setup | `logs/audit.log` (config verification), config files |
+| Step 1: Environment Setup | `logs&#47;audit.log` (config verification), config files |
 | Step 2: Pre-Flight Check | EXAMPLE: System logs, health check output |
 | Step 3: Strategy Dry-Run | EXAMPLE: Strategy logs, simulated trades CSV, metrics JSON |
 | Step 4: Evidence Assembly | This document (EVIDENCE_INDEX.md) |
@@ -136,7 +136,7 @@
 ## Retention & Archival
 
 - **Retention Period:** [e.g., 1 year minimum per PT-GOV-AI-001]
-- **Archive Location:** `results/drill_<timestamp>.tar.gz` or project governance folder
+- **Archive Location:** `results&#47;drill_<timestamp>.tar.gz` or project governance folder
 - **Access Control:** Operator + governance team only
 
 ---

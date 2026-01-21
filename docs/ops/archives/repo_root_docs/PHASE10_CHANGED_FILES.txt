@@ -1,0 +1,7 @@
+# Phase 10: Operator Command für VaR Backtest Suite Snapshot
+
+# NEUE DATEIEN:
+scripts/risk/run_var_backtest_suite_snapshot.py
+tests/scripts/test_run_var_backtest_suite_snapshot.py
+PHASE10_COMMANDS.md
+PHASE10_CHANGED_FILES.txt

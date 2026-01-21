@@ -13,13 +13,13 @@
 
 ## Summary
 - Make `--expected-head` optional in `scripts/automation/post_merge_verify.sh`
-- Default to `origin/main` after `git fetch origin` when omitted
+- Default to `origin&#47;main` after `git fetch origin` when omitted
 - Emit clear warning on stderr when default is used
 - Keep all verification semantics + exit codes unchanged (0/2/4)
 
 ## Why
 - Reduces friction in standard post-merge workflow
-- Eliminates need to manually pass `$(git rev-parse origin/main)`
+- Eliminates need to manually pass `$(git rev-parse origin&#47;main)`
 - Preserves strict validation for automated/CI use cases
 
 ## Verification

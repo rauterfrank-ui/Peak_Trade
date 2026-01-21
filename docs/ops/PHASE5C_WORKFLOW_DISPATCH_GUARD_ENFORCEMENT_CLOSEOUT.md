@@ -126,7 +126,7 @@ dispatch-guard  SUCCESS
 ```
 
 **Workflow Details:**
-- **Workflow name:** `CI / Workflow Dispatch Guard`
+- **Workflow name:** `CI &#47; Workflow Dispatch Guard`
 - **Job ID:** `dispatch-guard`
 - **Displayed name:** `dispatch-guard`
 
@@ -310,7 +310,7 @@ gh api repos/rauterfrank-ui/Peak_Trade/branches/main/protection \
 
 1. **Do NOT override without review**
 2. **Check the validator report** (GitHub Actions artifact or logs)
-3. **Review the workflow file** (`.github/workflows/<workflow>.yml`)
+3. **Review the workflow file** (`.github&#47;workflows&#47;<workflow>.yml`)
 4. **Apply the fix:**
    - Add `inputs.context` to conditions
    - Follow the pattern in `docs/ops/ci/WORKFLOW_DISPATCH_GUARD.md`
@@ -383,7 +383,7 @@ gh api --method DELETE \
 After PR #667 merge, we discovered that `dispatch-guard` being a **required check with path filtering** creates a critical UX issue:
 
 **Problem:**
-- `dispatch-guard` workflow had `paths: [".github/workflows/**"]` filter at PR level
+- `dispatch-guard` workflow had `paths: [".github&#47;workflows&#47;**"]` filter at PR level
 - Docs-only PRs → no workflow changes → **check never runs** → check is "absent"
 - GitHub Branch Protection: **required but absent check = BLOCKED**
 - Even `enforce_admins: true` + `--admin` flag cannot bypass this
@@ -456,12 +456,12 @@ After PR #667 merge, we discovered that `dispatch-guard` being a **required chec
 ### Verification
 
 **Test Case 1: Docs-only PR**
-- Create PR with only `docs/**` changes
+- Create PR with only `docs&#47;**` changes
 - Expected: `dispatch-guard` check appears and passes quickly (~5s)
 - Actual: ✅ Check present, fast pass
 
 **Test Case 2: Workflow PR**
-- Create PR with `.github/workflows/**` changes
+- Create PR with `.github&#47;workflows&#47;**` changes
 - Expected: `dispatch-guard` runs full validation
 - Actual: ✅ Full validation executes
 
@@ -560,7 +560,7 @@ Implement a **static analysis gate** that validates required check hygiene on ev
 > **Required status checks MUST be produced by always-on workflows.**
 >
 > - Workflow trigger: `on.pull_request` (no `paths` or `paths-ignore`)
-> - Internal change detection: Use `dorny/paths-filter` for relevance checks
+> - Internal change detection: Use `dorny&#47;paths-filter` for relevance checks
 > - Fast no-op: If changes irrelevant, skip work but ALWAYS produce check-run
 > - Check context MUST appear on every PR (SUCCESS/FAILURE, never absent)
 
@@ -696,7 +696,7 @@ gh run view <RUN_ID> --log | grep -A 30 "Required Checks Hygiene"
 2. Identify the problematic workflow
 3. Apply the fix:
    - Remove PR-level `paths` filter
-   - Add internal `dorny/paths-filter` step
+   - Add internal `dorny&#47;paths-filter` step
    - Add conditional logic to steps (not job)
    - Add no-op pass step for fast success
 4. Re-run validation
@@ -748,8 +748,8 @@ Validator detects path-filtered required check and exits with code 2.
 - `scripts/ci/validate_required_checks_hygiene.py` (validator, 318 lines)
 - `.github/workflows/required-checks-hygiene-gate.yml` (gate workflow)
 - `tests/ci/test_required_checks_hygiene.py` (pytest suite)
-- `tests/fixtures/required_checks_hygiene/*.yml` (test fixtures)
-- `tests/fixtures/required_checks_hygiene/*.json` (test configs)
+- `tests&#47;fixtures&#47;required_checks_hygiene&#47;*.yml` (test fixtures)
+- `tests&#47;fixtures&#47;required_checks_hygiene&#47;*.json` (test configs)
 
 **Modified Files:**
 - `docs/ops/PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md` (this addendum)

@@ -355,7 +355,7 @@ with MLflowTracker(...) as tracker:
 
 **Prevention:**
 - ✅ Verwende Context Manager (Pattern 1)
-- ✅ Immer `try/finally` für explizite `start_run()`/`end_run()`
+- ✅ Immer `try&#47;finally` für explizite `start_run()`/`end_run()`
 
 ---
 
@@ -642,7 +642,7 @@ http://localhost:5000
 ### Internal Docs
 - **Implementation:** `src/core/tracking.py`
 - **Tests:** `tests/test_tracking_mlflow_integration.py`
-- **Test Noop-Tracker:** `tests/test_tracking.py`
+- **Test Noop-Tracker:** `tests&#47;test_tracking.py`
 - **Merge Log:** `docs/ops/PR_569_MERGE_LOG.md` (PR #569 Fix)
 - **Worktree Rescue:** `docs/ops/WORKTREE_PATCHES_RECOVERY_20260105_REPORT.md`
 

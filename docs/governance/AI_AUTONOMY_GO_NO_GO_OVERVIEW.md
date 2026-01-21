@@ -186,7 +186,7 @@ Der Owner ist nicht:
 Jede GO-Freigabe (PAPER_GO, LIVE_MANUAL_ONLY, LIVE_BOUNDED_AUTO) **MUST** ein Evidence Pack haben, gespeichert im Repo (versioniert), mit eindeutigem Identifier.
 
 Empfohlenes Pfadschema:
-- `docs/governance/evidence/EVP_YYYYMMDD_<session>_<env>.md`
+- `docs&#47;governance&#47;evidence&#47;EVP_YYYYMMDD_<session>_<env>.md`
 
 ### 10.2 Mindest-Evidence (Checkliste)
 Ein Evidence Pack **MUST** mindestens enthalten:

@@ -41,9 +41,9 @@ for i in range(len(df)):
 **Assessment:** ✅ **FEES AND SLIPPAGE MODELED**
 
 **Evidence:**
-1. **Fee Calculation:** `fee = trade_value * fee_bps / 10000` (line 1711)
-2. **Slippage on Buy:** `cost = delta * prices[symbol] * (1 + slippage_bps / 10000) + fee` (line 1715)
-3. **Slippage on Sell:** `proceeds = abs(delta) * prices[symbol] * (1 - slippage_bps / 10000) - fee` (line 1726)
+1. **Fee Calculation:** `fee = trade_value * fee_bps &#47; 10000` (line 1711)
+2. **Slippage on Buy:** `cost = delta * prices[symbol] * (1 + slippage_bps &#47; 10000) + fee` (line 1715)
+3. **Slippage on Sell:** `proceeds = abs(delta) * prices[symbol] * (1 - slippage_bps &#47; 10000) - fee` (line 1726)
 4. **Equity Adjustment:** Fees deducted from equity (lines 915, 939, 946)
 
 **Realism:** Fees and slippage are applied to all trades, making backtests more realistic.

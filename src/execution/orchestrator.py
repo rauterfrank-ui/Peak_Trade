@@ -28,6 +28,9 @@ IMPORTANT: NO live execution. Default remains blocked/gated.
 from __future__ import annotations
 
 import logging
+import json
+from pathlib import Path
+from datetime import timezone
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -35,6 +38,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Protocol
 
 from decimal import Decimal
+import hashlib
 
 from src.execution.contracts import (
     Order,
@@ -56,6 +60,8 @@ from src.execution.audit_log import AuditLog
 from src.execution.retry_policy import RetryPolicy, RetryConfig
 from src.execution.ledger_mapper import EventToLedgerMapper
 from src.execution.reconciliation import ReconciliationEngine
+from src.execution.determinism import SimClock, seed_u64, stable_id
+from src.execution.telemetry import FixedJsonlAppendOnlyWriter
 
 logger = logging.getLogger(__name__)
 
@@ -151,6 +157,9 @@ class OrderIntent:
     time_in_force: TimeInForce = TimeInForce.GTC
     strategy_id: Optional[str] = None
     session_id: Optional[str] = None
+    # RUNBOOK B (Slice 1): Optional stable identifiers
+    run_id: Optional[str] = None
+    intent_id: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -289,6 +298,12 @@ class ExecutionOrchestrator:
         execution_mode: ExecutionMode = ExecutionMode.PAPER,
         retry_policy: Optional[RetryPolicy] = None,
         enable_audit: bool = True,
+        *,
+        # RUNBOOK B / Slice 1: Minimal risk rails (stubs, testable)
+        kill_switch_active: bool = False,
+        max_position_qty: Optional[Decimal] = None,
+        # RUNBOOK B / Slice 1: Contract log
+        execution_events_log_path: str = "logs/execution/execution_events.jsonl",
     ):
         """
         Initialize execution orchestrator.
@@ -312,6 +327,14 @@ class ExecutionOrchestrator:
         self.retry_policy = retry_policy or RetryPolicy(RetryConfig(max_retries=3))
         self.enable_audit = enable_audit
 
+        # RUNBOOK B / Slice 1
+        self.kill_switch_active = kill_switch_active
+        self.max_position_qty = max_position_qty
+        self._beta_log_writer = FixedJsonlAppendOnlyWriter(Path(execution_events_log_path))
+        self._beta_clocks: Dict[tuple[str, str], SimClock] = {}
+        self._beta_context: Optional[Dict[str, str]] = None
+        self._beta_events: Optional[List[Dict[str, Any]]] = None
+
         # State machines & ledgers
         self.state_machine = OrderStateMachine(
             risk_hook=self.risk_hook,
@@ -330,6 +353,73 @@ class ExecutionOrchestrator:
 
         # Counters
         self._order_counter = 0
+
+    # ============================================================================
+    # RUNBOOK B / Slice 1: Deterministic event logging (execution_events.jsonl)
+    # ============================================================================
+
+    def _get_clock(self, run_id: str, session_id: str) -> SimClock:
+        key = (run_id, session_id)
+        if key not in self._beta_clocks:
+            self._beta_clocks[key] = SimClock()
+        return self._beta_clocks[key]
+
+    def _emit_beta_event(
+        self,
+        *,
+        run_id: str,
+        session_id: str,
+        intent_id: str,
+        symbol: str,
+        event_type: str,
+        request_id: Optional[str] = None,
+        client_order_id: Optional[str] = None,
+        reason_code: Optional[str] = None,
+        reason_detail: Optional[str] = None,
+        payload: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        clock = self._get_clock(run_id, session_id)
+        ts_sim = clock.tick()
+
+        payload = payload or {}
+
+        canonical_fields = {
+            "run_id": run_id,
+            "session_id": session_id,
+            "intent_id": intent_id,
+            "symbol": symbol,
+            "event_type": event_type,
+            "ts_sim": ts_sim,
+            "request_id": request_id,
+            "client_order_id": client_order_id,
+            "reason_code": reason_code,
+            "payload": payload,
+        }
+        event_id = stable_id(kind="execution_event", fields=canonical_fields)
+
+        obj: Dict[str, Any] = {
+            "schema_version": "BETA_EXEC_V1",
+            "event_id": event_id,
+            "run_id": run_id,
+            "session_id": session_id,
+            "intent_id": intent_id,
+            "symbol": symbol,
+            "event_type": event_type,
+            "ts_sim": ts_sim,
+            "ts_utc": datetime.now(timezone.utc).isoformat(),
+            "request_id": request_id,
+            "client_order_id": client_order_id,
+            "reason_code": reason_code,
+            "reason_detail": reason_detail,
+            "payload": payload,
+        }
+
+        # Append-only write + in-memory capture for tests
+        self._beta_log_writer.append(obj)
+        if self._beta_events is not None:
+            self._beta_events.append(obj)
+
+        return obj
 
     def submit_intent(self, intent: OrderIntent) -> PipelineResult:
         """
@@ -351,70 +441,169 @@ class ExecutionOrchestrator:
         Returns:
             PipelineResult with success/failure and audit trail
         """
-        # Stage 1: Intent Intake
+        # RUNBOOK B / Slice 1: resolve stable identifiers (no randomness)
+        session_id = intent.session_id or "default"
+        run_id = intent.run_id or session_id
+        intent_id = intent.intent_id or stable_id(
+            kind="intent",
+            fields={
+                "run_id": run_id,
+                "session_id": session_id,
+                "symbol": intent.symbol,
+                "side": intent.side.value,
+                "quantity": str(intent.quantity),
+                "order_type": intent.order_type.value,
+                "limit_price": str(intent.limit_price) if intent.limit_price is not None else None,
+                "time_in_force": intent.time_in_force.value,
+                "strategy_id": intent.strategy_id or None,
+            },
+        )
+
+        beta_events: List[Dict[str, Any]] = []
+
+        # Stage 1: Intent Intake (keep correlation_id as internal only)
         correlation_id = self._generate_correlation_id()
-        idempotency_key = self._generate_idempotency_key(intent)
+        idempotency_key = self._generate_idempotency_key(
+            intent, run_id=run_id, session_id=session_id, intent_id=intent_id
+        )
 
         logger.info(
             f"[STAGE 1: INTENT INTAKE] correlation_id={correlation_id}, "
             f"symbol={intent.symbol}, side={intent.side.value}, qty={intent.quantity}"
         )
 
-        # Stage 2: Contract Validation
-        validation_result = self._stage_2_contract_validation(intent, correlation_id)
-        if not validation_result.success:
-            return validation_result
+        # RUNBOOK B / Slice 1: attach beta context for downstream stages
+        self._beta_context = {"run_id": run_id, "session_id": session_id, "intent_id": intent_id}
+        self._beta_events = beta_events
+        try:
+            # Emit INTENT event (always first)
+            self._emit_beta_event(
+                run_id=run_id,
+                session_id=session_id,
+                intent_id=intent_id,
+                symbol=intent.symbol,
+                event_type="INTENT",
+                payload={
+                    "side": intent.side.value,
+                    "quantity": str(intent.quantity),
+                    "order_type": intent.order_type.value,
+                    "limit_price": str(intent.limit_price)
+                    if intent.limit_price is not None
+                    else None,
+                },
+            )
 
-        order = validation_result.order
-        assert order is not None
+            if self.kill_switch_active:
+                self._emit_beta_event(
+                    run_id=run_id,
+                    session_id=session_id,
+                    intent_id=intent_id,
+                    symbol=intent.symbol,
+                    event_type="RISK_REJECT",
+                    reason_code="RISK_REJECT_KILL_SWITCH",
+                    reason_detail="kill switch active",
+                )
+                return PipelineResult(
+                    success=False,
+                    order=None,
+                    reason_code=ReasonCode.RISK_KILL_SWITCH_ACTIVE,
+                    reason_detail="Kill switch active",
+                    stage_reached="STAGE_1_INTENT_INTAKE",
+                    correlation_id=correlation_id,
+                    idempotency_key=idempotency_key,
+                    metadata={"beta_events": beta_events},
+                )
 
-        # Stage 3: Pre-Trade Risk Gate
-        risk_result = self._stage_3_risk_gate(order, correlation_id)
-        if not risk_result.success:
-            return risk_result
+            if self.max_position_qty is not None and abs(intent.quantity) > self.max_position_qty:
+                self._emit_beta_event(
+                    run_id=run_id,
+                    session_id=session_id,
+                    intent_id=intent_id,
+                    symbol=intent.symbol,
+                    event_type="RISK_REJECT",
+                    reason_code="RISK_REJECT_MAX_POSITION",
+                    reason_detail="max_position_qty exceeded",
+                    payload={
+                        "max_position_qty": str(self.max_position_qty),
+                        "quantity": str(intent.quantity),
+                    },
+                )
+                return PipelineResult(
+                    success=False,
+                    order=None,
+                    reason_code=ReasonCode.RISK_LIMIT_EXCEEDED,
+                    reason_detail="Max position exceeded",
+                    stage_reached="STAGE_1_INTENT_INTAKE",
+                    correlation_id=correlation_id,
+                    idempotency_key=idempotency_key,
+                    metadata={"beta_events": beta_events},
+                )
 
-        # Stage 4: Route Selection
-        route_result = self._stage_4_route_selection(order, correlation_id)
-        if not route_result.success:
-            return route_result
+            # Stage 2: Contract Validation
+            validation_result = self._stage_2_contract_validation(intent, correlation_id)
+            if not validation_result.success:
+                validation_result.metadata.setdefault("beta_events", beta_events)
+                return validation_result
 
-        # Stage 5: Adapter Dispatch
-        dispatch_result = self._stage_5_adapter_dispatch(order, idempotency_key, correlation_id)
-        if not dispatch_result.success:
-            return dispatch_result
+            order = validation_result.order
+            assert order is not None
 
-        execution_event = dispatch_result.metadata.get("execution_event")
-        assert execution_event is not None
+            # Stage 3: Pre-Trade Risk Gate
+            risk_result = self._stage_3_risk_gate(order, correlation_id)
+            if not risk_result.success:
+                risk_result.metadata.setdefault("beta_events", beta_events)
+                return risk_result
 
-        # Stage 6: Execution Event Handling
-        event_result = self._stage_6_event_handling(order, execution_event, correlation_id)
-        if not event_result.success:
-            return event_result
+            # Stage 4: Route Selection
+            route_result = self._stage_4_route_selection(order, correlation_id)
+            if not route_result.success:
+                route_result.metadata.setdefault("beta_events", beta_events)
+                return route_result
 
-        # Stage 7: Post-Trade Hooks (pass event_result metadata for fill info)
-        post_trade_result = self._stage_7_post_trade_hooks(
-            order, execution_event, correlation_id, event_result.metadata
-        )
-        if not post_trade_result.success:
-            return post_trade_result
+            # Stage 5: Adapter Dispatch
+            dispatch_result = self._stage_5_adapter_dispatch(order, idempotency_key, correlation_id)
+            if not dispatch_result.success:
+                dispatch_result.metadata.setdefault("beta_events", beta_events)
+                return dispatch_result
 
-        # Stage 8: Recon Hand-off
-        recon_result = self._stage_8_recon_handoff(order, correlation_id)
-        recon_result.idempotency_key = idempotency_key  # Add idempotency_key to final result
+            execution_event = dispatch_result.metadata.get("execution_event")
+            assert execution_event is not None
 
-        # Collect all ledger entries from all stages
-        all_ledger_entries = []
-        all_ledger_entries.extend(validation_result.ledger_entries)
-        all_ledger_entries.extend(dispatch_result.ledger_entries)
-        all_ledger_entries.extend(event_result.ledger_entries)
-        recon_result.ledger_entries = all_ledger_entries
+            # Stage 6: Execution Event Handling
+            event_result = self._stage_6_event_handling(order, execution_event, correlation_id)
+            if not event_result.success:
+                event_result.metadata.setdefault("beta_events", beta_events)
+                return event_result
 
-        logger.info(
-            f"[PIPELINE COMPLETE] correlation_id={correlation_id}, "
-            f"order_id={order.client_order_id}, state={order.state.value}"
-        )
+            # Stage 7: Post-Trade Hooks (pass event_result metadata for fill info)
+            post_trade_result = self._stage_7_post_trade_hooks(
+                order, execution_event, correlation_id, event_result.metadata
+            )
+            if not post_trade_result.success:
+                post_trade_result.metadata.setdefault("beta_events", beta_events)
+                return post_trade_result
 
-        return recon_result
+            # Stage 8: Recon Hand-off
+            recon_result = self._stage_8_recon_handoff(order, correlation_id)
+            recon_result.idempotency_key = idempotency_key  # Add idempotency_key to final result
+            recon_result.metadata.setdefault("beta_events", beta_events)
+
+            # Collect all ledger entries from all stages
+            all_ledger_entries = []
+            all_ledger_entries.extend(validation_result.ledger_entries)
+            all_ledger_entries.extend(dispatch_result.ledger_entries)
+            all_ledger_entries.extend(event_result.ledger_entries)
+            recon_result.ledger_entries = all_ledger_entries
+
+            logger.info(
+                f"[PIPELINE COMPLETE] correlation_id={correlation_id}, "
+                f"order_id={order.client_order_id}, state={order.state.value}"
+            )
+
+            return recon_result
+        finally:
+            self._beta_context = None
+            self._beta_events = None
 
     def _stage_2_contract_validation(
         self, intent: OrderIntent, correlation_id: str
@@ -437,9 +626,14 @@ class ExecutionOrchestrator:
         """
         logger.info(f"[STAGE 2: CONTRACT VALIDATION] correlation_id={correlation_id}")
 
-        # Generate client_order_id
-        self._order_counter += 1
-        client_order_id = f"order_{self._order_counter:06d}_{uuid.uuid4().hex[:8]}"
+        beta = self._beta_context or {}
+        run_id = beta.get("run_id", intent.run_id or intent.session_id or "default")
+        session_id = beta.get("session_id", intent.session_id or "default")
+        intent_id = beta.get("intent_id", intent.intent_id or "unknown")
+
+        # Generate deterministic client_order_id (no uuid)
+        self._order_counter += 1  # keep legacy counter semantics (not used for ID)
+        client_order_id = f"order_{stable_id(kind='order', fields={'run_id': run_id, 'session_id': session_id, 'intent_id': intent_id})[:16]}"
 
         # Create order from intent
         order = Order(
@@ -475,6 +669,21 @@ class ExecutionOrchestrator:
                 f"[STAGE 2: VALIDATION FAILED] correlation_id={correlation_id}, "
                 f"reason={reason_code.value}"
             )
+
+            # RUNBOOK B / Slice 1: Emit validation reject (MVP mapping)
+            beta = self._beta_context or {}
+            if beta and reason_code == ReasonCode.VALIDATION_INVALID_QUANTITY:
+                self._emit_beta_event(
+                    run_id=beta["run_id"],
+                    session_id=beta["session_id"],
+                    intent_id=beta["intent_id"],
+                    symbol=order.symbol or intent.symbol,
+                    event_type="VALIDATION_REJECT",
+                    client_order_id=order.client_order_id,
+                    reason_code="VALIDATION_REJECT_BAD_QTY",
+                    reason_detail="quantity must be > 0",
+                    payload={"quantity": str(order.quantity)},
+                )
 
             return PipelineResult(
                 success=False,
@@ -763,6 +972,19 @@ class ExecutionOrchestrator:
         self.order_ledger.add_order(order)
         self.audit_log.append_many(sm_result.ledger_entries)
 
+        # RUNBOOK B / Slice 1: Emit SUBMIT event
+        beta = self._beta_context or {}
+        if beta:
+            self._emit_beta_event(
+                run_id=beta["run_id"],
+                session_id=beta["session_id"],
+                intent_id=beta["intent_id"],
+                symbol=order.symbol,
+                event_type="SUBMIT",
+                client_order_id=order.client_order_id,
+                payload={"idempotency_key": idempotency_key},
+            )
+
         # Execute order via adapter (use selected adapter from Stage 4)
         adapter = getattr(self, "_selected_adapter", self.adapter)  # WP0C: use selected adapter
         try:
@@ -841,6 +1063,21 @@ class ExecutionOrchestrator:
                 self.order_ledger.update_order(order, event="ORDER_ACKNOWLEDGED")
                 self.audit_log.append_many(sm_result.ledger_entries)
 
+                # RUNBOOK B / Slice 1: Emit ACK event
+                beta = self._beta_context or {}
+                if beta:
+                    self._emit_beta_event(
+                        run_id=beta["run_id"],
+                        session_id=beta["session_id"],
+                        intent_id=beta["intent_id"],
+                        symbol=order.symbol,
+                        event_type="ACK",
+                        client_order_id=order.client_order_id,
+                        payload={
+                            "exchange_order_id": execution_event.exchange_order_id or "unknown"
+                        },
+                    )
+
             return PipelineResult(
                 success=sm_result.success,
                 order=order,
@@ -858,6 +1095,22 @@ class ExecutionOrchestrator:
             if sm_result.success:
                 self.order_ledger.update_order(order, event="ORDER_REJECTED")
                 self.audit_log.append_many(sm_result.ledger_entries)
+
+                # RUNBOOK B / Slice 1: Emit REJECT event
+                beta = self._beta_context or {}
+                if beta:
+                    self._emit_beta_event(
+                        run_id=beta["run_id"],
+                        session_id=beta["session_id"],
+                        intent_id=beta["intent_id"],
+                        symbol=order.symbol,
+                        event_type="REJECT",
+                        client_order_id=order.client_order_id,
+                        reason_code="ADAPTER_REJECTED",
+                        reason_detail=(execution_event.reject_reason or "Rejected by adapter")[
+                            :256
+                        ],
+                    )
 
             return PipelineResult(
                 success=False,
@@ -892,12 +1145,46 @@ class ExecutionOrchestrator:
                     self.order_ledger.update_order(order, event="ORDER_ACKNOWLEDGED")
                     self.audit_log.append_many(ack_result.ledger_entries)
 
+                    # RUNBOOK B / Slice 1: Emit ACK event (implicit)
+                    beta = self._beta_context or {}
+                    if beta:
+                        self._emit_beta_event(
+                            run_id=beta["run_id"],
+                            session_id=beta["session_id"],
+                            intent_id=beta["intent_id"],
+                            symbol=order.symbol,
+                            event_type="ACK",
+                            client_order_id=order.client_order_id,
+                            payload={
+                                "exchange_order_id": execution_event.exchange_order_id or "unknown"
+                            },
+                        )
+
             # Now apply fill
             sm_result = self.state_machine.apply_fill(order, fill)
 
             if sm_result.success:
                 self.order_ledger.update_order(order, event="ORDER_FILLED")
                 self.audit_log.append_many(sm_result.ledger_entries)
+
+            # RUNBOOK B / Slice 1: Emit FILL event
+            beta = self._beta_context or {}
+            if beta:
+                self._emit_beta_event(
+                    run_id=beta["run_id"],
+                    session_id=beta["session_id"],
+                    intent_id=beta["intent_id"],
+                    symbol=order.symbol,
+                    event_type="FILL",
+                    client_order_id=order.client_order_id,
+                    payload={
+                        "fill_id": fill.fill_id,
+                        "quantity": str(fill.quantity),
+                        "price": str(fill.price),
+                        "fee": str(fill.fee),
+                        "fee_currency": fill.fee_currency,
+                    },
+                )
 
             return PipelineResult(
                 success=sm_result.success,
@@ -1098,23 +1385,31 @@ class ExecutionOrchestrator:
         """Generate unique correlation ID"""
         return f"corr_{uuid.uuid4().hex[:16]}"
 
-    def _generate_idempotency_key(self, intent: OrderIntent) -> str:
+    def _generate_idempotency_key(
+        self, intent: OrderIntent, *, run_id: str, session_id: str, intent_id: str
+    ) -> str:
         """
         Generate idempotency key from intent.
 
         Same intent → same key (prevents duplicate processing)
         """
-        # Simple implementation: hash of intent fields
-        key_parts = [
-            intent.symbol,
-            intent.side.value,
-            str(intent.quantity),
-            intent.order_type.value,
-            str(intent.limit_price) if intent.limit_price else "None",
-            intent.strategy_id or "None",
-        ]
-        key_hash = hash(tuple(key_parts))
-        return f"idem_{abs(key_hash):016x}"
+        # Deterministic (no Python hash()).
+        key_fields = {
+            "run_id": run_id,
+            "session_id": session_id,
+            "intent_id": intent_id,
+            "symbol": intent.symbol,
+            "side": intent.side.value,
+            "quantity": str(intent.quantity),
+            "order_type": intent.order_type.value,
+            "limit_price": str(intent.limit_price) if intent.limit_price else None,
+            "strategy_id": intent.strategy_id or None,
+        }
+        canonical = json.dumps(
+            key_fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        )
+        digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+        return f"idem_{digest[:32]}"
 
     def get_order_ledger_snapshot(self) -> Dict[str, Any]:
         """Get order ledger snapshot for reconciliation"""

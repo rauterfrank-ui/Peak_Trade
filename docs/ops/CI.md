@@ -12,13 +12,13 @@ We execute the RL v0.1 Smoke-Test **twice** in the CI pipeline:
 
 1. **Fast Lane** (direct after dependency install, Linux-only)
    - Step: `Smoke: RL v0.1 Contract Test`
-   - Command: `pytest -q tests/test_rl_v0_1_smoke.py`
+   - Command: `pytest -q tests&#47;test_rl_v0_1_smoke.py`
    - Purpose: Quick fail-fast for RL contract violations
    - Runs before full test suite for early detection
 
 2. **Full Suite** (later in regular pytest run)
    - Step: `Run tests`
-   - Command: `pytest tests/ -v --tb=short`
+   - Command: `pytest tests&#47; -v --tb=short`
    - Purpose: Additional safeguard against integration/ordering effects
 
 ### Artifact Upload Strategy
@@ -28,9 +28,9 @@ RL validation reports are uploaded **only on failure** of either:
 - `Validate RL v0.1 Contract` step (id: `rl_v0_1_contract`)
 
 Upload paths:
-- `reports/rl/**/*`
-- `reports/rl_v0_1/**/*`
-- `logs/rl/**/*`
+- `reports&#47;rl&#47;**&#47;*`
+- `reports&#47;rl_v0_1&#47;**&#47;*`
+- `logs&#47;rl&#47;**&#47;*`
 
 Retention: 7 days
 

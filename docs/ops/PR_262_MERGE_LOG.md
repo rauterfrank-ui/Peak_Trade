@@ -42,14 +42,14 @@
 - ✅ `templates/ops/merge_log_template.md` exists
 - ✅ `docs/ops/README.md` updated (Workflow-Sektion + Links)
 - ✅ Working directory clean
-- ✅ `main` synchronized with `origin/main`
+- ✅ `main` synchronized with `origin&#47;main`
 
 ## Risk
 - **Low (Docs-only).**
 
 ## Operator How-To
 - **Fast path:** One-Block Quick Start in `docs/ops/MERGE_LOG_WORKFLOW.md`
-- **Template path:** `cp templates/ops/merge_log_template.md docs/ops/PR_<NUM>_MERGE_LOG.md`
+- **Template path:** `cp templates&#47;ops&#47;merge_log_template.md docs&#47;ops&#47;PR_<NUM>_MERGE_LOG.md`
 
 ## Follow-ups
 - Optional: Automation-Ideen aus `MERGE_LOG_WORKFLOW.md` später als Script operationalisieren.

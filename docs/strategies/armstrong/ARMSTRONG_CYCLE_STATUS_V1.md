@@ -166,8 +166,8 @@ allow_live = false
 
 | Name | Zweck | Command (Kurz) | Output-Pfad (Schema) |
 |------|-------|----------------|----------------------|
-| `armstrong_cycle_tier3_lasttest_v1` | Pipeline-/Last-Test mit synthetischen Daten (5000 Bars) | `run_backtest.py --strategy armstrong_cycle --bars 5000` | `reports/r_and_d/armstrong_cycle/lasttest_v1/` |
-| `armstrong_cycle_tier3_realdata_v1` | Cycle-Analyse mit echten OHLCV-Daten | `run_backtest.py --strategy armstrong_cycle --data-file ...` | `reports/r_and_d/armstrong_cycle/realdata_v1/` |
+| `armstrong_cycle_tier3_lasttest_v1` | Pipeline-/Last-Test mit synthetischen Daten (5000 Bars) | `run_backtest.py --strategy armstrong_cycle --bars 5000` | `reports&#47;r_and_d&#47;armstrong_cycle&#47;lasttest_v1&#47;` |
+| `armstrong_cycle_tier3_realdata_v1` | Cycle-Analyse mit echten OHLCV-Daten | `run_backtest.py --strategy armstrong_cycle --data-file ...` | `reports&#47;r_and_d&#47;armstrong_cycle&#47;realdata_v1&#47;` |
 
 ---
 
@@ -235,7 +235,7 @@ reports/r_and_d/armstrong_cycle/lasttest_v1/
 - Für Phasen-Performance-Analyse (EXPANSION vs. CONTRACTION etc.)
 
 **Voraussetzung:**
-- OHLCV-CSV-Datei mit Daily-Daten (z.B. `data/ohlcv/btcusdt_1d.csv`)
+- OHLCV-CSV-Datei mit Daily-Daten (z.B. `data&#47;ohlcv&#47;btcusdt_1d.csv`)
 - Wenn keine Datei vorhanden: Pfad als Platzhalter verwenden und eigene Daten bereitstellen
 
 **Parameter:**
@@ -243,7 +243,7 @@ reports/r_and_d/armstrong_cycle/lasttest_v1/
 | Parameter | Wert | Beschreibung |
 |-----------|------|--------------|
 | `strategy` | `armstrong_cycle` | Armstrong ECM-Zyklus-Strategie |
-| `data-file` | `data/ohlcv/btcusdt_1d.csv` | Pfad zur OHLCV-CSV (**⚠️ Platzhalter – eigene Daten bereitstellen**) |
+| `data-file` | `data&#47;ohlcv&#47;btcusdt_1d.csv` | Pfad zur OHLCV-CSV (**⚠️ Platzhalter – eigene Daten bereitstellen**) |
 | `start-date` | `2019-01-01` | Startdatum (volatiler Crypto-Winter-Zeitraum) |
 | `end-date` | `2019-12-31` | Enddatum (1 Jahr für Cycle-Analyse) |
 | `config` | `config/config.toml` | Standard-Config |
@@ -264,8 +264,8 @@ python scripts/run_backtest.py \
 ```
 
 **⚠️ Hinweis zu Daten:**
-Falls `data/ohlcv/btcusdt_1d.csv` nicht existiert:
-1. Erstelle das Verzeichnis: `mkdir -p data/ohlcv`
+Falls `data&#47;ohlcv&#47;btcusdt_1d.csv` nicht existiert:
+1. Erstelle das Verzeichnis: `mkdir -p data&#47;ohlcv`
 2. Lade Daily-OHLCV-Daten herunter (z.B. von Binance, Kraken, CoinGecko)
 3. Format: CSV mit Spalten `timestamp,open,high,low,close,volume`
 

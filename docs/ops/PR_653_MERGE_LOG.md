@@ -267,8 +267,8 @@ The contract removes these patterns during canonicalization:
 | `run_id` | `"run_id": "abc123"` | Unique per run |
 | `pid` | `"pid": 12345` | Process ID varies |
 | `hostname` | `"hostname": "ci-runner-01"` | Host varies |
-| `absolute_path` | `"path": "/Users/test/Peak_Trade"` | Absolute paths vary |
-| `_temp`, `_tmp` | `"_tmp_dir": "/tmp/xyz"` | Temp paths vary |
+| `absolute_path` | `"path": "&#47;Users&#47;test&#47;Peak_Trade"` | Absolute paths vary |
+| `_temp`, `_tmp` | `"_tmp_dir": "&#47;tmp&#47;xyz"` | Temp paths vary |
 
 ### CI Artifact Strategy
 **New artifact type:** Validator Report

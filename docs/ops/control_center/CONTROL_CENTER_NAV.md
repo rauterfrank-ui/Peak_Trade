@@ -77,7 +77,7 @@
   `scripts/ops/verify_docs_reference_targets.sh`
 
 - **Ops Doctor (Health Checks):**  
-  `scripts/ops/ops_center.sh doctor`
+  `scripts&#47;ops&#47;ops_center.sh doctor`
 
 ---
 

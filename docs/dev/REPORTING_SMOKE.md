@@ -88,7 +88,7 @@ The smoke report includes:
 File: `.github/workflows/quarto_smoke.yml`
 
 **Triggers:**
-- Push to `main`, `develop`, `feat/**`, `fix/**`
+- Push to `main`, `develop`, `feat&#47;**`, `fix&#47;**`
 - Pull requests to `main`, `develop`
 - Manual workflow dispatch
 

@@ -24,7 +24,7 @@ Historische Dokumente (Merge-Logs/Legacy-Dokus) verwiesen auf Pfade, die durch R
 Low. Docs-only.
 
 ## Operator How-To
-- Für historische/future Targets: Pfade als Text erwähnen, aber mit escaped slashes (z.B. `src\/...`), damit strict validation nicht triggert.
+- Für historische/future Targets: Pfade als Text erwähnen, aber mit escaped slashes (z.B. `src\&#47;...`), damit strict validation nicht triggert.
 - Für aktive Targets: nur auf existierende Pfade verlinken.
 
 ## References

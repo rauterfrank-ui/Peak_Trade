@@ -110,9 +110,9 @@ find "./artifacts_check_${TIMESTAMP}" -type f -name "validator_report*.json" -o 
 ```
 
 **Expected Files:**
-- `validator-report-normalized-${RUN_ID}/validator_report.normalized.json`
-- `validator-report-normalized-${RUN_ID}/validator_report.normalized.md`
-- `validator-report-legacy-${RUN_ID}/validator_report.json`
+- `validator-report-normalized-${RUN_ID}&#47;validator_report.normalized.json`
+- `validator-report-normalized-${RUN_ID}&#47;validator_report.normalized.md`
+- `validator-report-legacy-${RUN_ID}&#47;validator_report.json`
 
 ---
 
@@ -569,8 +569,8 @@ Phase 4E monitoring is considered **COMPLETE** if:
 ### Baseline Artifacts
 
 - **Local Path:** `./artifacts_main_latest/`
-- **Normalized:** `validator-report-normalized-20902441555/`
-- **Legacy:** `validator-report-legacy-20902441555/`
+- **Normalized:** `validator-report-normalized-20902441555&#47;`
+- **Legacy:** `validator-report-legacy-20902441555&#47;`
 
 ---
 

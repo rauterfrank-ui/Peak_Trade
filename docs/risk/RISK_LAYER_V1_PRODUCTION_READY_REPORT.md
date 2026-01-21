@@ -28,7 +28,7 @@ Der **Risk Layer v1** ist jetzt vollständig getestet, dokumentiert und producti
 
 ### Unit-Tests: VaR/CVaR (18 Tests)
 
-**test_var.py**: `18/18 passed` ✅
+**test_var.py**: `18&#47;18 passed` ✅
 
 | Modul | Tests | Coverage |
 |-------|-------|----------|
@@ -45,7 +45,7 @@ Der **Risk Layer v1** ist jetzt vollständig getestet, dokumentiert und producti
 
 ### Unit-Tests: Portfolio (19 Tests)
 
-**test_portfolio.py**: `19/19 passed` ✅
+**test_portfolio.py**: `19&#47;19 passed` ✅
 
 | Modul | Tests | Coverage |
 |-------|-------|----------|
@@ -63,7 +63,7 @@ Der **Risk Layer v1** ist jetzt vollständig getestet, dokumentiert und producti
 
 ### Unit-Tests: Stress (19 Tests)
 
-**test_stress.py**: `19/19 passed` ✅
+**test_stress.py**: `19&#47;19 passed` ✅
 
 | Modul | Tests | Coverage |
 |-------|-------|----------|
@@ -83,7 +83,7 @@ Der **Risk Layer v1** ist jetzt vollständig getestet, dokumentiert und producti
 
 ### Unit-Tests: Enforcement (36 Tests)
 
-**test_enforcement.py**: `36/36 passed` ✅
+**test_enforcement.py**: `36&#47;36 passed` ✅
 
 | Modul | Tests | Coverage |
 |-------|-------|----------|
@@ -103,7 +103,7 @@ Der **Risk Layer v1** ist jetzt vollständig getestet, dokumentiert und producti
 
 ### Integration-Tests: Backtest (4 Tests)
 
-**test_backtest_integration.py**: `4/4 passed` ✅
+**test_backtest_integration.py**: `4&#47;4 passed` ✅
 
 | Test | Coverage |
 |------|----------|
@@ -240,11 +240,11 @@ max_cvar = 0.12               # Max CVaR (Fraction of Equity)
 
 ### 1. Parametric VaR ohne scipy
 
-**Problem**: `parametric_var/cvar` nutzt Fallback-Quantile wenn scipy nicht verfügbar
+**Problem**: `parametric_var&#47;cvar` nutzt Fallback-Quantile wenn scipy nicht verfügbar
 
 **Lösung**:
 - Install `scipy` für exakte Normal-Quantile: `pip install scipy`
-- Oder: Nutze `historical_var/cvar` (kein scipy nötig)
+- Oder: Nutze `historical_var&#47;cvar` (kein scipy nötig)
 - Fallback funktioniert für alpha=0.01, 0.05, 0.10
 
 ### 2. Window Warmup

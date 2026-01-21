@@ -115,9 +115,9 @@ python scripts/run_registry_portfolio_backtest.py \
 ```
 
 Erstellt:
-- `results/btc_usd_1h/portfolio_stats_TIMESTAMP.json`
-- `results/btc_usd_1h/portfolio_equity_TIMESTAMP.csv`
-- `results/btc_usd_1h/trades_STRATEGY_TIMESTAMP.csv` (pro Strategie)
+- `results&#47;btc_usd_1h&#47;portfolio_stats_TIMESTAMP.json`
+- `results&#47;btc_usd_1h&#47;portfolio_equity_TIMESTAMP.csv`
+- `results&#47;btc_usd_1h&#47;trades_STRATEGY_TIMESTAMP.csv` (pro Strategie)
 
 ### Verbose Logging (für Debugging)
 
@@ -305,4 +305,4 @@ Unterschied:
 
 - [CONFIG_REGISTRY_USAGE.md](CONFIG_REGISTRY_USAGE.md) - Strategien-Registry
 - [REGISTRY_BACKTEST_API.md](REGISTRY_BACKTEST_API.md) - Engine-API
-- [RISK_MANAGEMENT.md](../RISK_MANAGEMENT.md) - Risk-Layer Dokumentation
+- [RISK_MANAGEMENT.md](project_docs/RISK_MANAGEMENT.md) - Risk-Layer Dokumentation

@@ -224,8 +224,8 @@ save_evidence_pack(pack, output_path)
 ```
 
 **Expected Artifact Paths:**
-- Evidence Pack: `data/evidence_packs/EVP-<run_id>-<YYYYMMDD>.json`
-- AI Model Logs: `logs/ai_model_calls.jsonl` (if enabled in config)
+- Evidence Pack: `data&#47;evidence_packs&#47;EVP-<run_id>-<YYYYMMDD>.json`
+- AI Model Logs: `logs&#47;ai_model_calls.jsonl` (if enabled in config)
 - Run Manifest: Embedded in Evidence Pack JSON
 
 **Note:** CLI wrapper script (gap; not yet implemented): `run_layer_evidence_pack.py` (Gap identified in Phase 4B M2 Discovery).

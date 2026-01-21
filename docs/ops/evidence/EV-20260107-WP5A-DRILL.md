@@ -34,7 +34,7 @@ Phase 5 NO-LIVE Drill Pack (WP5A): Manual operator-driven drill procedures for a
 ## Verification Steps
 1. Inspect drill pack: `cat docs/ops/WP5A_PHASE5_NO_LIVE_DRILL_PACK.md | grep -A 10 "Hard Prohibitions"`
 2. Verify templates exist: `ls docs/ops/templates/phase5_no_live/*.md`
-3. Check NO-LIVE banner: `head -20 docs/ops/WP5A_PHASE5_NO_LIVE_DRILL_PACK.md`
+3. Check NO-LIVE banner: `head -20 docs&#47;ops&#47;WP5A_PHASE5_NO_LIVE_DRILL_PACK.md`
 4. Expected: 4 templates present, hard prohibitions clearly stated, NO-LIVE banner at top
 
 ---

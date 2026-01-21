@@ -92,7 +92,7 @@ Before executing this drill, verify ALL conditions are met:
 **Objective:** Confirm drill-safe environment; no live trading risk.
 
 **Actions:**
-1. Activate Python environment: `source venv/bin/activate` (or equivalent)
+1. Activate Python environment: `source venv&#47;bin&#47;activate` (or equivalent)
 2. Verify current branch: `git status -sb`
 3. Check config environment:
    ```bash
@@ -173,7 +173,7 @@ Before executing this drill, verify ALL conditions are met:
 - [ ] Strategy executed without crashes
 - [ ] Simulated trades recorded (no real fills)
 - [ ] Performance metrics generated
-- [ ] Evidence artifacts saved to `results/drill_<timestamp>/`
+- [ ] Evidence artifacts saved to `results&#47;drill_<timestamp>&#47;`
 
 ---
 
@@ -182,7 +182,7 @@ Before executing this drill, verify ALL conditions are met:
 **Objective:** Compile audit-ready documentation.
 
 **Actions:**
-1. Copy template: `cp docs/ops/templates/phase5_no_live/PHASE5_NO_LIVE_EVIDENCE_INDEX.md results/drill_<timestamp>/EVIDENCE_INDEX.md`
+1. Copy template: `cp docs&#47;ops&#47;templates&#47;phase5_no_live&#47;PHASE5_NO_LIVE_EVIDENCE_INDEX.md results&#47;drill_<timestamp>&#47;EVIDENCE_INDEX.md`
 2. Fill in metadata (date, operator, repo SHA, run ID)
 3. Add artifact paths:
    - Config files used
@@ -205,7 +205,7 @@ Before executing this drill, verify ALL conditions are met:
 **Objective:** Determine drill outcome; document decision.
 
 **Actions:**
-1. Copy template: `cp docs/ops/templates/phase5_no_live/PHASE5_NO_LIVE_GO_NO_GO_RECORD.md results/drill_<timestamp>/GO_NO_GO_RECORD.md`
+1. Copy template: `cp docs&#47;ops&#47;templates&#47;phase5_no_live&#47;PHASE5_NO_LIVE_GO_NO_GO_RECORD.md results&#47;drill_<timestamp>&#47;GO_NO_GO_RECORD.md`
 2. Review success criteria:
    - Environment verified as NO-LIVE
    - Strategy executed without errors
@@ -314,7 +314,7 @@ Use `docs/ops/templates/phase5_no_live/PHASE5_NO_LIVE_POST_RUN_REVIEW.md` to con
 - **Governance Policy:** EXAMPLE: AI autonomy decision framework (governance policies)
 - **Ops Runbooks:** `docs/ops/README.md` (navigation hub)
 - **Config Examples:** `config/shadow_config.toml`, `config/shadow_pipeline_example.toml`
-- **Testing Guide:** `tests/README.md` (not drill-specific, but useful for troubleshooting)
+- **Testing Guide:** `tests&#47;README.md` (not drill-specific, but useful for troubleshooting)
 - **Timeout Triage:** `docs/ops/CURSOR_TIMEOUT_TRIAGE.md` (if system hangs during drill)
 
 **External References:** None required for NO-LIVE drill. Any live trading documentation is out of scope.

@@ -229,13 +229,13 @@ ELSE:
 **Adapter Boundary (Concept):**
 
 **Capabilities (Interface Contract):**
-1. **`submit_order(order: Order) -> ack/reject`**
+1. **`submit_order(order: Order) -> ack&#47;reject`**
    - Input: Order (WP0E contract)
    - Output: ExecutionEvent (ACK or REJECT, WP0E contract)
    - Idempotency: Repeated submit with same idempotency_key → no duplicate
    - Timeout: 30s default (configurable)
 
-2. **`cancel_order(order_id: str) -> cancel_ack/cancel_reject`**
+2. **`cancel_order(order_id: str) -> cancel_ack&#47;cancel_reject`**
    - Input: order_id (string)
    - Output: ExecutionEvent (CANCEL_ACK or CANCEL_REJECT)
    - Timeout: 10s default
@@ -464,27 +464,27 @@ Order execution aborts → OSM state inconsistent → potential system instabili
 
 ### Required Evidence Artifacts (Implementation Run)
 - [ ] **OrderRouter Smoke Test Report:** Verify routing logic for all ExecutionModes
-  - Location pattern: `reports/execution/order_router_smoke_test_*.md`
+  - Location pattern: `reports&#47;execution&#47;order_router_smoke_test_*.md`
   - Content: Test each mode (paper/shadow/testnet/live_blocked) → correct executor selected
   - Purpose: Validate routing logic deterministic
 - [ ] **Adapter Integration Test Results:** End-to-end WP0A → WP0C → Executor → WP0D
-  - Location pattern: `tests/execution/test_adapter_integration.py` (pytest output)
+  - Location pattern: `tests&#47;execution&#47;test_adapter_integration.py` (pytest output)
   - Coverage: OrderRouter, AdapterFactory, PaperOrderExecutor, Fill event propagation
   - Purpose: Verify cross-WP integration (A, C, D)
 - [ ] **Timeout/Retry Simulation Report:** Test resilience layer
-  - Location pattern: `reports/execution/timeout_retry_simulation_*.md`
+  - Location pattern: `reports&#47;execution&#47;timeout_retry_simulation_*.md`
   - Content: Simulate executor timeout → rejected; transient error → retry → success
   - Purpose: Validate ResilientOrderExecutor behavior
 - [ ] **Idempotency Test Report:** Duplicate client_id handling
-  - Location pattern: `tests/execution/test_idempotency.py` (pytest output)
+  - Location pattern: `tests&#47;execution&#47;test_idempotency.py` (pytest output)
   - Content: Submit order twice with same client_id → second rejected or cached
   - Purpose: Prevent duplicate orders
 - [ ] **Error Propagation Test Report:** Exception → OrderExecutionResult conversion
-  - Location pattern: `tests/execution/test_error_propagation.py` (pytest output)
+  - Location pattern: `tests&#47;execution&#47;test_error_propagation.py` (pytest output)
   - Content: Trigger executor exceptions → verify status="rejected", reason populated
   - Purpose: Ensure consistent error contract
 - [ ] **Performance Benchmark:** Routing and executor overhead
-  - Location pattern: `reports/execution/performance_benchmark_*.md`
+  - Location pattern: `reports&#47;execution&#47;performance_benchmark_*.md`
   - Content: Measure OrderRouter latency (<1ms), AdapterFactory lookup (<1ms)
   - Purpose: Verify low overhead
 - [ ] **Completion Report:** WP0C implementation documentation
@@ -587,32 +587,32 @@ Order execution aborts → OSM state inconsistent → potential system instabili
   - `AdapterFactory` class with `register(mode, builder)` and `get_executor(mode)` methods
   - Startup validation: fail-fast if required modes missing
   - Example registration: `factory.register("paper", lambda cfg: PaperOrderExecutor(...))`
-- Test: `tests/orders/test_factory.py` (registration, lookup, validation)
+- Test: `tests&#47;orders&#47;test_factory.py` (registration, lookup, validation)
 
 **Step 2: OrderRouter Core (Day 1-2)**
 - Implement "src\/orders\/router.py":
   - `OrderRouter` class with `route(order_request, execution_context) -> OrderExecutionResult`
   - Mode-based routing logic (paper → PaperOrderExecutor, shadow → ShadowOrderExecutor, etc.)
   - Fallback for unknown modes (status="rejected", reason="no_executor_for_mode")
-- Test: `tests/orders/test_router.py` (routing logic, fallback, mode coverage)
+- Test: `tests&#47;orders&#47;test_router.py` (routing logic, fallback, mode coverage)
 
 **Step 3: ResilientOrderExecutor Wrapper (Day 2-3)**
 - Implement "src\/orders\/resilient_executor.py":
   - Wrap OrderExecutor with timeout (default 30s)
   - Retry logic (max 3, exponential backoff, transient errors only)
   - Exception → OrderExecutionResult conversion (status="rejected", reason populated)
-- Test: `tests/orders/test_resilient_executor.py` (timeout, retry, exception handling)
+- Test: `tests&#47;orders&#47;test_resilient_executor.py` (timeout, retry, exception handling)
 
 **Step 4: Idempotency Guard (Day 3)**
 - Implement idempotency logic in `OrderRouter` or separate `IdempotencyGuard`:
   - Track client_ids (in-memory dict or persistent cache)
   - Duplicate detection → reject or return cached result
   - TTL expiry (default 1 hour)
-- Test: `tests/orders/test_idempotency.py` (duplicate detection, cache expiry)
+- Test: `tests&#47;orders&#47;test_idempotency.py` (duplicate detection, cache expiry)
 
 **Step 5: Integration with WP0A (Day 4)**
 - Coordinate with WP0A (A2) on ExecutionContext schema and client_id generation
-- Add integration test: `tests/execution/test_order_routing_integration.py`
+- Add integration test: `tests&#47;execution&#47;test_order_routing_integration.py`
   - WP0A OSM → OrderRouter → PaperOrderExecutor → OrderExecutionResult → WP0D Fill event
   - Test paper, shadow, testnet_dry_run modes
 - Verify error handling: timeout → rejected, invalid mode → rejected
@@ -622,10 +622,10 @@ Order execution aborts → OSM state inconsistent → potential system instabili
   - Catch all exceptions from executors
   - Convert to OrderExecutionResult with error categories
   - Log full exception details to WP0D (structured logging)
-- Test: `tests/orders/test_error_propagation.py` (exception → rejected, logging)
+- Test: `tests&#47;orders&#47;test_error_propagation.py` (exception → rejected, logging)
 
 **Step 7: Evidence Generation (Day 5)**
-- Run smoke tests for all ExecutionModes → `reports/execution/order_router_smoke_test_*.md`
+- Run smoke tests for all ExecutionModes → `reports&#47;execution&#47;order_router_smoke_test_*.md`
 - Run integration tests (WP0A + WP0C + WP0D) → pytest output
 - Generate timeout/retry simulation report
 - Performance benchmark: routing latency, factory lookup time

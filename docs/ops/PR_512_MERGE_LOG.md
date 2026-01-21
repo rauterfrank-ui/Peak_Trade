@@ -24,7 +24,7 @@ Branch-/Ruleset-Required Checks waren zeitweise „stuck" (pending/cancelled), o
   - Verlinkung an 3 Frontdoors: Runbook, Ops README, CI Workflow Kommentar.
 
 ## Verification
-- PR #512: Required Checks `tests (3.11)` und `strategy-smoke` sind `COMPLETED/SUCCESS`.
+- PR #512: Required Checks `tests (3.11)` und `strategy-smoke` sind `COMPLETED&#47;SUCCESS`.
 - `ci-required-contexts-contract` Job grün; Guardrail schlägt bei Drift deterministisch fehl.
 - Merge erfolgreich; Branch cleanup durchgeführt (local + remote).
 

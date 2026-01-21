@@ -8,7 +8,7 @@
 
 ## Summary
 
-Interactive Rebase und Squash-Merge von PR #528 (`recovered/docs/fix-reference-targets-priority1`) auf `main`. Der Branch beinhaltete 53 Commits mit Fixes für Docs-Reference-Targets, die erfolgreich auf den aktuellen `main` rebased wurden. Der Workflow demonstrierte auch Branch-Cleanup und Wiederherstellung von gemergten Branches.
+Interactive Rebase und Squash-Merge von PR #528 (`recovered&#47;docs&#47;fix-reference-targets-priority1`) auf `main`. Der Branch beinhaltete 53 Commits mit Fixes für Docs-Reference-Targets, die erfolgreich auf den aktuellen `main` rebased wurden. Der Workflow demonstrierte auch Branch-Cleanup und Wiederherstellung von gemergten Branches.
 
 ## Why
 
@@ -50,11 +50,11 @@ PR #528 beinhaltete wichtige Fixes für die Docs-Reference-Targets-Validierung u
 **Squash-Merge:**
 - Alle 53 Commits zu einem Squash-Commit zusammengeführt
 - Merge commit: `f7b7d18`
-- Branch `recovered/docs/fix-reference-targets-priority1` lokal und remote gelöscht
+- Branch `recovered&#47;docs&#47;fix-reference-targets-priority1` lokal und remote gelöscht
 
 **Repository-Hygiene:**
 - Identifiziert: 14 sichere Worktree-Löschkandidaten (gemergte Branches mit sauberen Worktrees)
-- Entfernt: 14 Claude-Worktrees aus `.claude-worktrees/Peak_Trade/`
+- Entfernt: 14 Claude-Worktrees aus `.claude-worktrees&#47;Peak_Trade&#47;`
 - Gelöscht: 14 gemergte lokale Branches
 - Demonstriert: Branch-Wiederherstellung und -Verifizierung
 - Endgültiges Cleanup: Alle 14 Branches final gelöscht
@@ -185,9 +185,9 @@ git merge-base --is-ancestor <commit-sha> main
 
 ### Remote Branches automatisch entfernt (3)
 Git hat beim Merge automatisch folgende Remote-Branches gelöscht:
-- `origin/recovered/docs/bg-job-runbook-integration`
-- `origin/recovered/docs/fix-reference-targets-priority1`
-- `origin/recovered/docs/merge-log-pr488`
+- `origin&#47;recovered&#47;docs&#47;bg-job-runbook-integration`
+- `origin&#47;recovered&#47;docs&#47;fix-reference-targets-priority1`
+- `origin&#47;recovered&#47;docs&#47;merge-log-pr488`
 
 ### Repository-Status nach Cleanup
 - Verbleibende lokale Branches: 320

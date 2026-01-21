@@ -11,7 +11,7 @@ Die Git-Rescue-Operation wurde erfolgreich durchgeführt. Es wurden sowohl **vol
 * ✅ **Git Bundle** mit allen Refs erzeugt: **9.73 MiB**, enthält **484 refs**
 * ✅ **159 Key-Branches** (feat/fix/docs/refactor/perf) analysiert
 * ✅ **Top 20** Branches nach „Ahead + Content-Diff" priorisiert
-* ✅ **Top 3** Branches als `recovered/*` wiederhergestellt und **auf Remote gesichert**
+* ✅ **Top 3** Branches als `recovered&#47;*` wiederhergestellt und **auf Remote gesichert**
 
 ## Artefakte (Source of Truth)
 
@@ -32,7 +32,7 @@ Die Git-Rescue-Operation wurde erfolgreich durchgeführt. Es wurden sowohl **vol
   * `backup_gone_prefix_counts.tsv` — Prefix-Statistik (docs: 94, feat: 44, chore: 17, fix: 17)
   * `backup_gone_key_branches.tsv` — 159 Key-Branches
   * `key_branches_status_*.tsv` — Merge-Status für alle Key-Branches
-  * `triage_top20_*.tsv` — Top-20 Priorisierung (Ahead + Diff vs. `origin/main`)
+  * `triage_top20_*.tsv` — Top-20 Priorisierung (Ahead + Diff vs. `origin&#47;main`)
 
 ### Worklog / Evidence
 
@@ -44,33 +44,33 @@ Die Git-Rescue-Operation wurde erfolgreich durchgeführt. Es wurden sowohl **vol
 
 * Script: `scripts/ops/verify_git_rescue_artifacts.sh`
 * Zweck: Prüft Konsistenz/Existenz der zentralen Artefakte.
-* Usage: `bash scripts/ops/verify_git_rescue_artifacts.sh --backup-dir <path> --repo <path>`
+* Usage: `bash scripts&#47;ops&#47;verify_git_rescue_artifacts.sh --backup-dir <path> --repo <path>`
 
 ## Wiederhergestellte Branches
 
 ### Neu erstellt (Top Priority) ✨
 
-1. **`recovered/feat-live-exec-phase1-shadow`**
+1. **`recovered&#47;feat-live-exec-phase1-shadow`**
    - 17 commits ahead, 62 Dateien geändert
    - +12,685 / -3 Lines
    - [Pull Request Link](https://github.com/rauterfrank-ui/Peak_Trade/pull/new/recovered/feat-live-exec-phase1-shadow)
 
-2. **`recovered/feat-live-exec-phase0-foundation`**
+2. **`recovered&#47;feat-live-exec-phase0-foundation`**
    - 10 commits ahead, 17 Dateien geändert
    - +4,583 / -2 Lines
    - [Pull Request Link](https://github.com/rauterfrank-ui/Peak_Trade/pull/new/recovered/feat-live-exec-phase0-foundation)
 
-3. **`recovered/docs-audit-remediation-bounded-live-100go`**
+3. **`recovered&#47;docs-audit-remediation-bounded-live-100go`**
    - 7 commits ahead, 53 Dateien geändert
    - +6,520 / -0 Lines
    - [Pull Request Link](https://github.com/rauterfrank-ui/Peak_Trade/pull/new/recovered/docs-audit-remediation-bounded-live-100go)
 
 ### Bereits vorhanden (aus früheren Operationen)
 
-* `recovered/docs/merge-log-pr488`
-* `recovered/docs/bg-job-runbook-integration`
-* `recovered/docs/fix-reference-targets-priority1`
-* `recovered/docs/ops-merge-logs-481-482`
+* `recovered&#47;docs&#47;merge-log-pr488`
+* `recovered&#47;docs&#47;bg-job-runbook-integration`
+* `recovered&#47;docs&#47;fix-reference-targets-priority1`
+* `recovered&#47;docs&#47;ops-merge-logs-481-482`
 
 **Gesamt auf Remote: 7 recovered/* Branches**
 
@@ -93,7 +93,7 @@ Die Git-Rescue-Operation wurde erfolgreich durchgeführt. Es wurden sowohl **vol
 
 - **159 Key-Branches** analysiert (feat/fix/docs/refactor/perf)
 - **159 NICHT in main gemerged** (100%)
-- Alle haben substanzielle Änderungen vs. `origin/main`
+- Alle haben substanzielle Änderungen vs. `origin&#47;main`
 
 ## Empfohlener Next Step (ohne Risiko)
 
@@ -103,7 +103,7 @@ Für jeden recovered/* Branch:
 * **File-Scope** — Liste der geänderten Dateien
 * **Top-Deltas** — Größte Änderungen identifizieren
 * **Noise filtern** — Generated/Vendor/Config ausschließen
-* **Kontrolliertes Porting** — Saubere `port/*` Branches von `origin/main` erstellen
+* **Kontrolliertes Porting** — Saubere `port&#47;*` Branches von `origin&#47;main` erstellen
 
 ### 2. Weitere Branches aus Top-20 reviewen
 

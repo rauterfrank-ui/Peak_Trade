@@ -4,7 +4,7 @@
 - **Date**: 2026-01-01  
 - **Branch**: docs/fix-reference-targets-priority1  
 - **Base Commit**: b9171fec85bfd635830a31cb6900d3e748e43685 (2026-01-01 06:33:42 +0000)  
-- **Command**: `.\/scripts\/ops\/verify_docs_reference_targets.sh` <!-- pt:ref-target-ignore -->
+- **Command**: `.\&#47;scripts\&#47;ops\&#47;verify_docs_reference_targets.sh` <!-- pt:ref-target-ignore -->
 
 ## Summary
 - **Total Markdown files scanned**: 600
@@ -91,7 +91,7 @@ Nach den Priority-1 Fixes erwarten wir:
 ### Ignore Patterns Support Added
 Added configurable ignore list to verify_docs_reference_targets.sh: <!-- pt:ref-target-ignore -->
 - **Ignore file**: `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt`
-- **Default patterns**: `docs/_worklogs/**`, `docs/archive/**`
+- **Default patterns**: `docs&#47;_worklogs&#47;**`, `docs&#47;archive&#47;**`
 - **Inline marker**: `<!-- pt:ref-target-ignore -->` (skips references on that line)
 
 ### Test Results

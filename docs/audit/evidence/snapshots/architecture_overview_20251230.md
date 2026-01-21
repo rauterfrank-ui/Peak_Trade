@@ -34,9 +34,9 @@
 #### 4. Risk Management (Critical)
 - `src/risk/` - Legacy/core risk module
 - `src/risk_layer/` - New risk layer
-  - `kill_switch/` - Emergency halt system (Layer 4)
-  - `alerting/` - Alert management
-  - `var_backtest/` - VaR backtesting (Kupiec POF, etc.)
+  - `kill_switch&#47;` - Emergency halt system (Layer 4)
+  - `alerting&#47;` - Alert management
+  - `var_backtest&#47;` - VaR backtesting (Kupiec POF, etc.)
 - `src/governance/` - Trading governance policies
 
 #### 5. Live Trading (Critical)
@@ -47,7 +47,7 @@
   - `risk_limits.py` - Live risk limit checks
   - `drills.py` - Dry-run drill framework
   - `workflows.py` - Live risk check workflows
-  - `web/` - Live monitoring web UI
+  - `web&#47;` - Live monitoring web UI
 
 #### 6. Execution & Exchange Integration
 - `src/execution/pipeline.py` - ExecutionPipeline (signals → orders)
@@ -204,8 +204,8 @@ Based on `src/live/safety.py`:
 ### Config Files (Key Locations)
 - `config/config.toml` - Main config
 - `config/live_policies.toml` - Live allowlist and policies
-- `config/risk/*.toml` - Risk layer configs
-- `config/portfolios/*.toml` - Portfolio configs
+- `config&#47;risk&#47;*.toml` - Risk layer configs
+- `config&#47;portfolios&#47;*.toml` - Portfolio configs
 - `config/regimes.toml` - Market regime definitions
 
 ### Environment Variables

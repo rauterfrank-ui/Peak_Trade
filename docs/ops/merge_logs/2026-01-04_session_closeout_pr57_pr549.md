@@ -1,9 +1,9 @@
 # Ops Merge Log — 2026-01-04 — Session Closeout (PR #57, PR #549)
 
 ## Summary
-- PR #57 squash-merged: `feat(data/offline): add GARCH-regime OfflineRealtimeFeedV0 + safety gate`
+- PR #57 squash-merged: `feat(data&#47;offline): add GARCH-regime OfflineRealtimeFeedV0 + safety gate`
 - PR #549 squash-merged: `docs(ops): add merge log PR#543 and review report PR#546`
-- Repository state after closeout: `main` clean, synced to `origin/main`, no untracked files.
+- Repository state after closeout: `main` clean, synced to `origin&#47;main`, no untracked files.
 
 ## Why
 - Unblocked CI by rebasing and resolving conflicts; removed depred Pydantic v1 patterns.

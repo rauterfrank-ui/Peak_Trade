@@ -8,12 +8,12 @@ This PR introduces Risk Layer V1 (new modules under `src/risk/` + tests).
 - Production deployment requires explicit operator configuration and governance approval.
 
 ## Why this change is safe
-- Comprehensive tests under `tests/risk/*` (96 tests, 100% pass)
+- Comprehensive tests under `tests&#47;risk&#47;*` (96 tests, 100% pass)
 - No live execution switching / no auto-deploy behavior introduced by this PR alone
 - Operator guide documents required steps + constraints
 
 ## Test plan
-- `pytest -q tests/risk` (96 tests)
+- `pytest -q tests&#47;risk` (96 tests)
 - Full CI (tests, lint, strategy-smoke)
 - Review by governance/risk owners
 

@@ -107,7 +107,7 @@ assert acceptable_exit
 ### Tests
 
 - **Unit**: `tests/governance/test_strategy_switch_sanity_check.py` (16 tests)
-- **Integration**: `tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
+- **Integration**: `tests&#47;ops&#47;test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
 - **Smoke**: `tests/ops/test_ops_center_smoke.py` (hermetic test fix)
 
 ---
@@ -354,7 +354,7 @@ git push
 
 ### Tests
 - **Unit**: `tests/governance/test_strategy_switch_sanity_check.py` (16 tests)
-- **Integration**: `tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
+- **Integration**: `tests&#47;ops&#47;test_test_health_v1.py::TestRunSwitchSanityCheck` (7 tests)
 - **Smoke**: `tests/ops/test_ops_center_smoke.py` (hermetic test fix)
 
 ---

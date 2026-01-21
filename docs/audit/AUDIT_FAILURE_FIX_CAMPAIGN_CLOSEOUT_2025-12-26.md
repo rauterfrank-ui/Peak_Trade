@@ -16,12 +16,12 @@
   - **Fix:** Ruff format + Policy Critic hardening (always-run logic)
   - **Status:** Alle Checks grün → Manual merge via Web-UI (OAuth workflow scope)
 
-* **#283 (MERGED via AUTO-MERGE)** — `(TBD: docs/ops/merge-logs-ops-center-integration)`
+* **#283 (MERGED via AUTO-MERGE)** — `(TBD: docs&#47;ops&#47;merge-logs-ops-center-integration)`
   - **Fix:** Merge-Konflikte gelöst (4 Dateien)
   - **Content:** Ops-Center Batch Support + Validator + Tests (156 Zeilen unique)
   - **Resolution:** Intelligenter 3-way merge (main's docs + PR's ops-center logic)
 
-* **#303 (MERGED via AUTO-MERGE)** — `(TBD: docs/portfolio-var-roadmap)`
+* **#303 (MERGED via AUTO-MERGE)** — `(TBD: docs&#47;portfolio-var-roadmap)`
   - **Fix:** Merge-Konflikte gelöst (2 Dateien)
   - **Content:** Portfolio VaR Roadmap Dokumentation (796 Zeilen unique)
   - **Resolution:** Accepted main's docs (Incidents-Abschnitt), kept PR's roadmap

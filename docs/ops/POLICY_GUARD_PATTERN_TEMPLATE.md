@@ -8,11 +8,11 @@ Prevent policy drift by enforcing:
 
 ## Files
 - Local guard script:
-  - `scripts/ops/check_<policy>.sh`
+  - `scripts&#47;ops&#47;check_<policy>.sh`
 - CI enforcement:
   - Always-run gate workflow runs the guard script (exit 1 blocks PR)
 - Guard-the-guardrail script:
-  - `scripts/ops/check_<policy>_ci_enforced.sh` verifies workflow still calls local guard
+  - `scripts&#47;ops&#47;check_<policy>_ci_enforced.sh` verifies workflow still calls local guard
 
 ## Checklist (Copy/Paste)
 ### A) Local guard

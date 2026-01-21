@@ -56,7 +56,7 @@ Dieses Dokument definiert die **verbindlichen Felder**, die bei jedem Layer-Run 
 
 | Field | Type | Source | Validation Rule |
 |---|---|---|---|
-| `inputs_allowed` | list[string] | Capability Scope Config | Glob patterns (e.g., `docs/**/*.md`) |
+| `inputs_allowed` | list[string] | Capability Scope Config | Glob patterns (e.g., `docs&#47;**&#47;*.md`) |
 | `outputs_allowed` | list[string] | Capability Scope Config | Artefakt-Typen (e.g., `ScenarioReport`) |
 | `tooling_allowed` | list[string] (enum) | Capability Scope Config | `none | files | web | code-interpreter` |
 | `forbidden` | list[string] | Capability Scope Config | Verbotene Aktionen (e.g., `execution`, `order placement`) |
@@ -410,8 +410,8 @@ else:
 | **Layer Runners** (`src/ai_orchestration/`) | Initialize with `LayerRunMetadata` | `layer_id`, `primary_model_id`, `critic_model_id`, `capability_scope_id` |
 | **SoD Checker** ("SoD Checker" (Phase 3+)) | Validate with `SoDCheckResult` | `proposer_model_id`, `critic_model_id`, `sod_result`, `critic_decision` |
 | **Evidence Packs** (`docs/governance/evidence/`) | Include all mandatory fields | All fields from this schema |
-| **CodeGate** (`src/governance/codegate/`) | Validate Evidence Packs against schema | All fields + Matrix compliance |
-| **Audit Log** (`logs/ai_model_calls.jsonl`) | Log all runs with `RunLogging` | `run_id`, `prompt_hash`, `artifact_hash`, `inputs_manifest`, `outputs_manifest` |
+| **CodeGate** (`src&#47;governance&#47;codegate&#47;`) | Validate Evidence Packs against schema | All fields + Matrix compliance |
+| **Audit Log** (`logs&#47;ai_model_calls.jsonl`) | Log all runs with `RunLogging` | `run_id`, `prompt_hash`, `artifact_hash`, `inputs_manifest`, `outputs_manifest` |
 
 ---
 
@@ -428,7 +428,7 @@ else:
 - **Authoritative Matrix:** `docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md`
 - **Evidence Pack Template v2:** `docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md`
 - **Model Registry:** `config/model_registry.toml`
-- **Capability Scopes:** `config/capability_scopes/*.toml`
+- **Capability Scopes:** `config&#47;capability_scopes&#47;*.toml`
 
 ---
 

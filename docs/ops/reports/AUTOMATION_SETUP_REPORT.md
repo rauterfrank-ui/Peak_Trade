@@ -29,9 +29,9 @@
 
 | Datei | Typ | Beschreibung |
 |-------|-----|--------------|
-| `reports/automation/daily/automation_daily_<TIMESTAMP>.json` | JSON | Daily Suite JSON-Log |
-| `reports/automation/weekly/automation_weekly_<TIMESTAMP>.json` | JSON | Weekly Suite JSON-Log |
-| `reports/automation/weekly/automation_weekly_<TIMESTAMP>.md` | Markdown | Weekly Suite Summary |
+| `reports&#47;automation&#47;daily&#47;automation_daily_<TIMESTAMP>.json` | JSON | Daily Suite JSON-Log |
+| `reports&#47;automation&#47;weekly&#47;automation_weekly_<TIMESTAMP>.json` | JSON | Weekly Suite JSON-Log |
+| `reports&#47;automation&#47;weekly&#47;automation_weekly_<TIMESTAMP>.md` | Markdown | Weekly Suite Summary |
 
 ---
 
@@ -73,7 +73,7 @@
 - **Features**:
   - Heatmap-Zellen mit 4 Heat-Levels (0-3)
   - 5 Psychologie-Dimensionen: FOMO, Verlustangst, Impulsivität, Zögern, Regelbruch
-  - HTML-Template-Integration über `src/webui/templates/`
+  - HTML-Template-Integration über `src&#47;webui&#47;templates&#47;`
 
 ---
 
@@ -103,8 +103,8 @@ python3 scripts/automation/run_offline_daily_suite.py --no-pytest
 **Erwartete Laufzeit**: ~5-10 Minuten
 
 **Output**:
-- JSON-Log: `reports/automation/daily/automation_daily_<YYYYMMDD_HHMMSS>.json`
-- Trigger-Reports: `reports/automation/daily/trigger_training/<SESSION_ID>/`
+- JSON-Log: `reports&#47;automation&#47;daily&#47;automation_daily_<YYYYMMDD_HHMMSS>.json`
+- Trigger-Reports: `reports&#47;automation&#47;daily&#47;trigger_training&#47;<SESSION_ID>&#47;`
 
 ---
 
@@ -129,9 +129,9 @@ python3 scripts/automation/run_offline_weekly_suite.py --quick-mode
 - Quick-Mode: ~10-15 Minuten
 
 **Output**:
-- JSON-Log: `reports/automation/weekly/automation_weekly_<YYYYMMDD_HHMMSS>.json`
-- Markdown-Summary: `reports/automation/weekly/automation_weekly_<YYYYMMDD_HHMMSS>.md`
-- Trigger-Reports: `reports/automation/weekly/trigger_training_<SCENARIO>/`
+- JSON-Log: `reports&#47;automation&#47;weekly&#47;automation_weekly_<YYYYMMDD_HHMMSS>.json`
+- Markdown-Summary: `reports&#47;automation&#47;weekly&#47;automation_weekly_<YYYYMMDD_HHMMSS>.md`
+- Trigger-Reports: `reports&#47;automation&#47;weekly&#47;trigger_training_<SCENARIO>&#47;`
 
 ---
 
@@ -158,7 +158,7 @@ python3 scripts/automation/run_offline_weekly_suite.py --quick-mode
 
 - Verwende **absolute Pfade** für Python-Binary und Script
 - Stelle sicher, dass das **Working Directory** korrekt ist (`cd /Users/frnkhrz/Peak_Trade`)
-- Leite **stdout und stderr** in Log-Dateien um (`>> /path/to/log 2>&1`)
+- Leite **stdout und stderr** in Log-Dateien um (`>> &#47;path&#47;to&#47;log 2>&1`)
 - Teste den Cron-Befehl vorher manuell im Terminal
 
 #### Log-Rotation (empfohlen)
@@ -252,7 +252,7 @@ done
 - [ ] **Meta-Report-Script**: Aggregiert die letzten 7/30 Tage
   - Trends für Ticks/s, Missed-Trigger-Rate, PnL
   - HTML-Dashboard mit Charts (Plotly/Matplotlib)
-  - Speicherort: `reports/automation/meta/meta_report_<PERIOD>.html`
+  - Speicherort: `reports&#47;automation&#47;meta&#47;meta_report_<PERIOD>.html`
 
 - [ ] **Alerting**: Bei Failed Jobs Notification senden
   - Integration mit Slack/Discord/Email
@@ -306,7 +306,7 @@ done
 - Generiert synthetische Marktdaten (OfflineSynthSession)
 - Simuliert Paper-Trading (keine echten Orders)
 - Führt Trigger-Training-Drills aus (Demo-Daten)
-- Schreibt Reports in `reports/automation/`
+- Schreibt Reports in `reports&#47;automation&#47;`
 - Loggt Performance-Metriken
 
 ### ❌ Was die Automation NICHT MACHT

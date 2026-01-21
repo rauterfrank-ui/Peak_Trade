@@ -53,13 +53,13 @@ Record trade-offs and rationale for key decisions during 4B Milestone 2 setup an
 **Decision:** Create dedicated session artifacts under `docs/ops/sessions/`  
 **Options Considered:**
 1. Put artifacts in `docs/ai/` (alongside AI orchestration docs)
-2. Create new `docs/sessions/` directory
+2. Create new `docs&#47;sessions&#47;` directory
 3. Use `docs/ops/sessions/` (chosen)
 4. Inline in PR description only (no persistent artifacts)
 
 **Rationale:**
 - **Ops Context:** Multi-agent workflow is an operational practice, fits under `docs/ops/`
-- **Discoverability:** `sessions/` subdirectory clearly separates from other ops docs
+- **Discoverability:** `sessions&#47;` subdirectory clearly separates from other ops docs
 - **Reusability:** Templates (Appendices) can be referenced by future sessions
 - **Audit Trail:** Persistent artifacts provide audit trail for decision-making
 - **Precedent:** Aligns with existing `docs/ops/` structure (runbooks, merge logs, etc.)

@@ -25,7 +25,7 @@ Docs-Targets sind "drift-prone": Markdown-Syntax, URLs, relative Links sowie `#a
   - `tests/fixtures/docs_reference_targets/pass/edge_cases_links.md`
   - `tests/fixtures/docs_reference_targets/pass/edge_cases_angle_brackets.md`
 - New: isolated fixture repo:
-  - `tests/fixtures/docs_reference_targets/relative_repo/…`
+  - `tests&#47;fixtures&#47;docs_reference_targets&#47;relative_repo&#47;…`
 - Updated: `tests/ops/test_verify_docs_reference_targets_script.py`
   - +1 Test für relative repo-root/docs-root (3/3 Tests)
 
@@ -43,8 +43,8 @@ LOW (Docs/Tests + robustere Target-Normalisierung). Keine Trading-/Risk-/Executi
 - Lokal:
   - `scripts/ops/verify_docs_reference_targets.sh`
 - Golden Corpus (Regression):
-  - `scripts/ops/verify_docs_reference_targets.sh --docs-root tests/fixtures/docs_reference_targets/pass`
-  - `scripts/ops/verify_docs_reference_targets.sh --repo-root tests/fixtures/docs_reference_targets/relative_repo --docs-root tests/fixtures/docs_reference_targets/relative_repo/docs`
+  - `scripts&#47;ops&#47;verify_docs_reference_targets.sh --docs-root tests&#47;fixtures&#47;docs_reference_targets&#47;pass`
+  - `scripts&#47;ops&#47;verify_docs_reference_targets.sh --repo-root tests&#47;fixtures&#47;docs_reference_targets&#47;relative_repo --docs-root tests&#47;fixtures&#47;docs_reference_targets&#47;relative_repo&#47;docs`
   - `tests/ops/test_verify_docs_reference_targets_script.py`
 
 ## References

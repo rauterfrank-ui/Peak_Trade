@@ -153,7 +153,7 @@ print(health)
 | Tests | `tests/ai_orchestration/test_orchestrator.py` |
 | CLI Dry-Run | `scripts/orchestrator_dryrun.py` |
 | Model Registry | `config/model_registry.toml` |
-| Capability Scopes | `config/capability_scopes/*.toml` |
+| Capability Scopes | `config&#47;capability_scopes&#47;*.toml` |
 | Validator | `scripts/validate_layer_map_config.py` |
 
 ---

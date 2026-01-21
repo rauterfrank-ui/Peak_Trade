@@ -36,7 +36,7 @@ Nur Dokumentation / Indexierung.
 ## Operator How-To
 - Merge-Logs: `docs/ops/`
 - Index: `docs/ops/README.md`
-- Projekt-Changelog: `docs/PEAK_TRADE_STATUS_OVERVERVIEW.md`
+- Projekt-Changelog: `docs/PEAK_TRADE_STATUS_OVERVIEW.md`
 
 ## Follow-Up Tasks
 - Nächster Schritt in der Kette: **Merge-Log für PR #213** (dieser PR) wird nach Merge als nächster Docs-PR geführt (z.B. #214).

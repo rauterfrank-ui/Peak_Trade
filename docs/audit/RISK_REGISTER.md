@@ -13,7 +13,7 @@ This Risk Register documents identified risks (distinct from findings) that may 
 - Detection mechanisms
 - Ownership and review dates
 
-**Note:** This register tracks **inherent risks** in the system design and operations, not individual code/config findings (those go in `findings/FND-XXXX.md`).
+**Note:** This register tracks **inherent risks** in the system design and operations, not individual code/config findings (those go in `findings&#47;FND-XXXX.md`).
 
 ---
 
