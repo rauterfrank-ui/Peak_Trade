@@ -59,7 +59,8 @@ Runbooks for CI operations and general operational procedures:
 
 - [RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md](RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md) — PR #736: CI snapshot → enable auto-merge → post-merge verify on main (snapshot-only)
 - [RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md](RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md) — Operator Dashboard (Watch-Only) start→finish (local, read-only monitoring + deterministic snapshot export)
-- [RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md](RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md) — Dashboard Watch-Only UI v0.1B (observability) for `src/live/web/app.py` (read-only)
+- [RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md](RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md) — Dashboard Watch-Only UI v0.1B (observability) for src/live/web/app.py (read-only)
+- [RUNBOOK_EXECUTION_WATCH_DASHBOARD.md](RUNBOOK_EXECUTION_WATCH_DASHBOARD.md) — Execution Watch Dashboard v0.2 (read-only execution runs/events + session registry)
 - [RUNBOOK_CI_STATUS_POLLING_HOWTO.md](RUNBOOK_CI_STATUS_POLLING_HOWTO.md) — CI status polling how-to
 - [PHASE4E_STABILITY_MONITORING_CHECKLIST.md](PHASE4E_STABILITY_MONITORING_CHECKLIST.md) — Phase 4E stability monitoring checklist
 - [rebase_cleanup_workflow.md](rebase_cleanup_workflow.md) — Rebase cleanup workflow
@@ -120,10 +121,10 @@ All runbooks should follow this structure:
 
 ### Runbook Locations
 
-Most operational runbooks are located in `docs/ops/runbooks/`. Some runbooks remain in the repo root for provenance or to minimize risk of breaking references:
+Most operational runbooks are located in docs/ops/runbooks/. Some runbooks remain in the repo root for provenance or to minimize risk of breaking references:
 
 - **Root-level runbooks** (marked with ⭐): Canonical artifact in repo root, pointer in this index
-- **Standard runbooks**: Directly located in `docs/ops/runbooks/`
+- **Standard runbooks**: Directly located in docs/ops/runbooks/
 
 This hybrid approach balances discoverability (all findable from this index) with stability (no forced migrations of established references).
 

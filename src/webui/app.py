@@ -153,6 +153,7 @@ from .ops_ci_health_router import (
 )
 
 from .execution_watch_api_v0 import router as execution_watch_v0_router
+from .execution_watch_api_v0_2 import router as execution_watch_v0_2_router
 
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
@@ -401,6 +402,8 @@ def create_app() -> FastAPI:
 
     # Phase 16A: Execution Watch (v0) — watch-only
     app.include_router(execution_watch_v0_router)
+    # Execution Watch Dashboard v0.2 — watch-only (read-only APIs)
+    app.include_router(execution_watch_v0_2_router)
 
     # JSON API Alias für /api/ops/workflows
     @app.get("/api/ops/workflows")
@@ -419,6 +422,24 @@ def create_app() -> FastAPI:
     # =========================================================================
     # HTML Dashboard Endpoints
     # =========================================================================
+
+    @app.get("/execution_watch", response_class=HTMLResponse)
+    async def execution_watch_dashboard_page(request: Request) -> Any:
+        """
+        Execution Watch Dashboard v0.2 (HTML).
+
+        Read-only UI that consumes the v0.2 watch-only APIs:
+        - execution runs + events pagination
+        - live session registry snapshot
+        """
+        proj_status = get_project_status()
+        return templates.TemplateResponse(
+            request,
+            "execution_watch.html",
+            {
+                "status": proj_status,
+            },
+        )
 
     @app.get("/", response_class=HTMLResponse)
     async def index(
