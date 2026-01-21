@@ -15,4 +15,4 @@ High-risk surface area (contains `src/execution/` paths) — merged only after C
 - Approval: HrzFrnk (non-author) approved (GraphQL reviews truth).
 
 ## Risk
-HIGH (scope includes `src/execution/**`), but merge was gated by clean state + green checks + explicit approval.
+HIGH (scope includes `src&#47;execution&#47;**`), but merge was gated by clean state + green checks + explicit approval.
