@@ -24,7 +24,9 @@ from typing import Any, Dict, List, Optional, Tuple
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
+# v0.2 contract remains (non-breaking). v0.3 semantics are exposed via `meta.api_version`.
 API_VERSION = "v0.2"
+META_API_VERSION = "v0.3"
 
 router = APIRouter(tags=["execution-watch-v0.2"])
 
@@ -45,7 +47,7 @@ def _parse_int_cursor(cursor: Optional[str]) -> int:
     return n
 
 
-def _read_jsonl_events_v0(root: Path, filename: str) -> List[Dict[str, Any]]:
+def _read_jsonl_events_v0(root: Path, filename: str) -> Tuple[List[Dict[str, Any]], int]:
     """
     Read JSONL file and return raw event dicts for schema=execution_event_v0.
 
@@ -54,8 +56,9 @@ def _read_jsonl_events_v0(root: Path, filename: str) -> List[Dict[str, Any]]:
     """
     p = root / filename
     if not p.exists():
-        return []
+        return [], 0
 
+    read_errors = 0
     out: List[Dict[str, Any]] = []
     try:
         with p.open("r", encoding="utf-8") as f:
@@ -66,6 +69,8 @@ def _read_jsonl_events_v0(root: Path, filename: str) -> List[Dict[str, Any]]:
                 try:
                     obj = json.loads(line)
                 except Exception:
+                    # Malformed JSONL line: skip but count deterministically.
+                    read_errors += 1
                     continue
                 if obj.get("schema") != "execution_event_v0":
                     continue
@@ -73,9 +78,9 @@ def _read_jsonl_events_v0(root: Path, filename: str) -> List[Dict[str, Any]]:
                 out.append(obj)
     except Exception:
         # Watch-only endpoint: fail soft (empty list) unless caller expects 404 for missing run.
-        return []
+        return [], 0
 
-    return out
+    return out, read_errors
 
 
 def _event_sort_key(ev: Dict[str, Any]) -> Tuple[str, int, str, str, str]:
@@ -114,9 +119,47 @@ def _status_from_counts(counts: Dict[str, int]) -> str:
     return "unknown"
 
 
+class ResponseMeta(BaseModel):
+    api_version: str = Field(default=META_API_VERSION)
+    generated_at_utc: str
+    has_more: bool = False
+    next_cursor: Optional[str] = None
+    read_errors: int = 0
+    source: str = Field(default="local", description="fixture|local")
+
+
 class ApiEnvelope(BaseModel):
     api_version: str = Field(default=API_VERSION)
     generated_at_utc: str = Field(..., description="UTC ISO timestamp when payload was generated")
+    meta: Optional[ResponseMeta] = None
+
+
+def _source_for_events_root(root: str, filename: str) -> str:
+    # Deterministic: treat non-default root/filename as fixture source.
+    if root != "logs/execution" or filename != "execution_pipeline_events_v0.jsonl":
+        return "fixture"
+    return "local"
+
+
+def _source_for_sessions(base_dir: Optional[str]) -> str:
+    return "fixture" if base_dir else "local"
+
+
+def _meta(
+    generated_at_utc: str,
+    *,
+    has_more: bool = False,
+    next_cursor: Optional[str] = None,
+    read_errors: int = 0,
+    source: str = "local",
+) -> ResponseMeta:
+    return ResponseMeta(
+        generated_at_utc=generated_at_utc,
+        has_more=has_more,
+        next_cursor=next_cursor,
+        read_errors=read_errors,
+        source=source,
+    )
 
 
 class HealthzResponse(ApiEnvelope):
@@ -172,6 +215,8 @@ class RunEventsResponse(ApiEnvelope):
     run_id: str
     count: int
     items: List[ExecutionEvent]
+    # v0.3 convenience alias (non-breaking): mirror of `items`
+    events: List[ExecutionEvent] = Field(default_factory=list)
     next_cursor: Optional[str] = None
     has_more: bool = False
 
@@ -196,7 +241,11 @@ class SessionsListResponse(ApiEnvelope):
 @router.get("/api/healthz", response_model=HealthzResponse)
 async def api_healthz_v0_2() -> HealthzResponse:
     # Dedicated v0.2 health endpoint (watch-only).
-    return HealthzResponse(generated_at_utc=_utc_now_iso())
+    gen = _utc_now_iso()
+    return HealthzResponse(
+        generated_at_utc=gen,
+        meta=_meta(gen, read_errors=0, source="local"),
+    )
 
 
 @router.get("/api/execution/runs", response_model=RunsListResponse)
@@ -207,7 +256,7 @@ async def api_execution_runs_v0_2(
         "execution_pipeline_events_v0.jsonl", description="JSONL filename (read-only)"
     ),
 ) -> RunsListResponse:
-    events = _read_jsonl_events_v0(Path(root), filename)
+    events, read_errors = _read_jsonl_events_v0(Path(root), filename)
     grouped = _group_events_by_run(events)
 
     runs: List[RunSummary] = []
@@ -240,8 +289,16 @@ async def api_execution_runs_v0_2(
     )
     runs = runs[:limit]
 
+    gen = _utc_now_iso()
     return RunsListResponse(
-        generated_at_utc=_utc_now_iso(),
+        generated_at_utc=gen,
+        meta=_meta(
+            gen,
+            has_more=False,
+            next_cursor=None,
+            read_errors=read_errors,
+            source=_source_for_events_root(root, filename),
+        ),
         count=len(runs),
         runs=runs,
     )
@@ -255,7 +312,7 @@ async def api_execution_run_detail_v0_2(
         "execution_pipeline_events_v0.jsonl", description="JSONL filename (read-only)"
     ),
 ) -> RunDetailResponse:
-    events = _read_jsonl_events_v0(Path(root), filename)
+    events, read_errors = _read_jsonl_events_v0(Path(root), filename)
     evs = [e for e in events if str(e.get("run_id") or "") == run_id]
     if not evs:
         raise HTTPException(status_code=404, detail="run_not_found")
@@ -277,7 +334,18 @@ async def api_execution_run_detail_v0_2(
         total_events=len(evs_sorted),
     )
 
-    return RunDetailResponse(generated_at_utc=_utc_now_iso(), run=detail)
+    gen = _utc_now_iso()
+    return RunDetailResponse(
+        generated_at_utc=gen,
+        meta=_meta(
+            gen,
+            has_more=False,
+            next_cursor=None,
+            read_errors=read_errors,
+            source=_source_for_events_root(root, filename),
+        ),
+        run=detail,
+    )
 
 
 @router.get("/api/execution/runs/{run_id}/events", response_model=RunEventsResponse)
@@ -285,14 +353,21 @@ async def api_execution_run_events_v0_2(
     run_id: str,
     limit: int = Query(200, ge=1, le=5000, description="Max events to return"),
     cursor: Optional[str] = Query(None, description="Pagination cursor (opaque string)"),
+    since_cursor: Optional[str] = Query(
+        None, description="Tail cursor: return events strictly after this cursor"
+    ),
     root: str = Query("logs/execution", description="JSONL root (read-only)"),
     filename: str = Query(
         "execution_pipeline_events_v0.jsonl", description="JSONL filename (read-only)"
     ),
 ) -> RunEventsResponse:
-    start = _parse_int_cursor(cursor)
+    if since_cursor is not None and cursor is not None:
+        raise HTTPException(status_code=400, detail="invalid_cursor")
+    start = (
+        _parse_int_cursor(cursor) if since_cursor is None else (_parse_int_cursor(since_cursor) + 1)
+    )
 
-    events = _read_jsonl_events_v0(Path(root), filename)
+    events, read_errors = _read_jsonl_events_v0(Path(root), filename)
     evs = [e for e in events if str(e.get("run_id") or "") == run_id]
     if not evs:
         raise HTTPException(status_code=404, detail="run_not_found")
@@ -300,14 +375,27 @@ async def api_execution_run_events_v0_2(
     evs_sorted = sorted(evs, key=_event_sort_key)
     total = len(evs_sorted)
 
-    if start > total:
-        # Cursor beyond end: return empty page deterministically
+    gen = _utc_now_iso()
+    src = _source_for_events_root(root, filename)
+
+    if start >= total:
+        # Cursor at/after end: return empty page deterministically.
+        # For tail mode, keep the provided cursor stable (monotonic).
+        next_cursor_out = since_cursor if since_cursor is not None else None
         return RunEventsResponse(
-            generated_at_utc=_utc_now_iso(),
+            generated_at_utc=gen,
+            meta=_meta(
+                gen,
+                has_more=False,
+                next_cursor=next_cursor_out,
+                read_errors=read_errors,
+                source=src,
+            ),
             run_id=run_id,
             count=0,
             items=[],
-            next_cursor=None,
+            events=[],
+            next_cursor=next_cursor_out,
             has_more=False,
         )
 
@@ -327,15 +415,31 @@ async def api_execution_run_events_v0_2(
             )
         )
 
-    next_start = start + len(items)
-    has_more = next_start < total
-    next_cursor_out = str(next_start) if has_more else None
+    if since_cursor is not None:
+        # Tail mode: next_cursor is the last seen seq (watermark) to pass back as since_cursor.
+        last_seen_seq = str(items[-1].seq) if items else since_cursor
+        next_start = start + len(items)
+        has_more = next_start < total
+        next_cursor_out = last_seen_seq
+    else:
+        # Pagination mode (v0.2 compatible): next_cursor is next_start index.
+        next_start = start + len(items)
+        has_more = next_start < total
+        next_cursor_out = str(next_start) if has_more else None
 
     return RunEventsResponse(
-        generated_at_utc=_utc_now_iso(),
+        generated_at_utc=gen,
+        meta=_meta(
+            gen,
+            has_more=has_more,
+            next_cursor=next_cursor_out,
+            read_errors=read_errors,
+            source=src,
+        ),
         run_id=run_id,
         count=len(items),
         items=items,
+        events=items,
         next_cursor=next_cursor_out,
         has_more=has_more,
     )
@@ -372,8 +476,16 @@ async def api_live_sessions_v0_2(
     sessions.sort(key=lambda x: (x.last_update_utc, x.session_id), reverse=True)
     sessions = sessions[:limit]
 
+    gen = _utc_now_iso()
     return SessionsListResponse(
-        generated_at_utc=_utc_now_iso(),
+        generated_at_utc=gen,
+        meta=_meta(
+            gen,
+            has_more=False,
+            next_cursor=None,
+            read_errors=0,
+            source=_source_for_sessions(base_dir),
+        ),
         count=len(sessions),
         sessions=sessions,
     )

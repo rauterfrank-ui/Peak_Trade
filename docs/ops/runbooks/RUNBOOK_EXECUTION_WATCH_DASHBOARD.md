@@ -1,7 +1,7 @@
-# RUNBOOK — Execution Watch Dashboard v0.2 (Watch-Only)
+# RUNBOOK — Execution Watch Dashboard v0.3 (Watch-Only)
 
 **Owner:** ops  
-**Purpose:** Start and verify the Execution Watch Dashboard v0.2 (read-only) for recent execution pipeline events and live-session registry state.  
+**Purpose:** Start and verify the Execution Watch Dashboard v0.3 (read-only) for recent execution pipeline events and live-session registry state.  
 **Policy:** NO-LIVE (read-only). No broker connectivity. No trading actions.
 
 ---
@@ -45,7 +45,7 @@ Open the dashboard page in your browser:
 
 ## Verify
 
-### Verify APIs (read-only)
+### Verify APIs (read-only, v0.3 semantics)
 
 Run these requests (examples shown as paths only; use your preferred client):
 
@@ -54,15 +54,35 @@ Run these requests (examples shown as paths only; use your preferred client):
 /api/execution/runs
 /api/execution/runs/<run_id>
 /api/execution/runs/<run_id>/events?limit=200
+/api/execution/runs/<run_id>/events?limit=200&since_cursor=<cursor>
 /api/live/sessions
 ```
 
 Expected:
 - HTTP 200 for existing data
 - Deterministic ordering (newest runs first, stable pagination cursor)
-- `api_version` is `v0.2` in responses
+- Backward compatible: top-level `api_version` remains `v0.2`, v0.3 semantics are indicated via `meta.api_version`
 - `generated_at_utc` present in responses
+- `meta` present (backward-compatible):
+  - `meta.api_version` = `v0.3`
+  - `meta.generated_at_utc` mirrors top-level `generated_at_utc`
+  - `meta.has_more`, `meta.next_cursor` (paging/tail)
+  - `meta.read_errors` (count of malformed JSONL lines skipped)
+  - `meta.source` = `fixture|local`
 - Events pagination returns `next_cursor` + `has_more` consistently
+- Tail semantics:
+  - `since_cursor` returns events strictly **after** the provided cursor
+  - `next_cursor` is a watermark cursor you can feed back into `since_cursor`
+
+Expected negative/edge behavior:
+- Unknown `run_id` → HTTP 404 with `{"detail":"run_not_found"}`
+- Empty dataset:
+  - `/api/execution/runs` → `runs=[]`
+  - `/api/live/sessions` → `sessions=[]`
+  - `has_more=false`, `next_cursor=null`, `read_errors=0`
+- Malformed JSONL line:
+  - Line is skipped deterministically
+  - `meta.read_errors` increments accordingly
 
 ### Verify UI
 
@@ -72,6 +92,10 @@ On the Execution Watch page:
 - Events table paginates deterministically (“Load more”)
 - Sessions table renders from the live-session registry (if present)
 - Polling toggle defaults to **off**
+- Tail mode (optional):
+  - Enable “Tail mode” to follow new events (append-only, no full refresh)
+  - Polling interval selector (2s/5s/10s) controls refresh cadence
+  - “Clear” resets the tail cursor watermark
 
 ---
 
@@ -97,6 +121,18 @@ ls -la logs/execution
 
 - If no JSONL exists, the dashboard will show empty state. This is expected in a clean environment.
 
+### read_errors > 0 (malformed JSONL)
+
+- The API skips malformed JSONL lines deterministically and exposes a counter:
+
+```text
+meta.read_errors
+```
+
+- If `read_errors` increases unexpectedly:
+  - Inspect the JSONL generator / upstream pipeline for partial writes
+  - Confirm the file is not being edited concurrently during inspection
+
 ### No sessions
 
 - Check whether registry files exist:
@@ -108,6 +144,13 @@ ls -la reports/experiments/live_sessions
 ### 404 for a run_id
 
 - The run id might not exist in the current JSONL file; refresh runs list and select a valid run.
+
+---
+
+## CI semantics note (snapshot-only)
+
+- In GitHub UI, `mergeStateStatus` / required check rollups may appear **UNSTABLE** until checks have registered.
+- The merge process is snapshot-only: treat CI signals as a point-in-time snapshot; do not assume real-time convergence.
 
 ---
 
@@ -123,11 +166,11 @@ ls -la reports/experiments/live_sessions
 Use the evidence template:
 
 ```text
-docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_2_PASS_TEMPLATE.md
+docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_3_PASS_TEMPLATE.md
 ```
 
 Create a stamped evidence file from the template (example):
 
 ```text
-docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_2_PASS_YYYYMMDDTHHMMSSZ.md
+docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_3_PASS_YYYYMMDDTHHMMSSZ.md
 ```
