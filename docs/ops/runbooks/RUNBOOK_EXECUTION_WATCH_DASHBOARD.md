@@ -1,7 +1,7 @@
-# RUNBOOK — Execution Watch Dashboard v0.3 (Watch-Only)
+# RUNBOOK — Execution Watch Dashboard v0.4 (Watch-Only)
 
 **Owner:** ops  
-**Purpose:** Start and verify the Execution Watch Dashboard v0.3 (read-only) for recent execution pipeline events and live-session registry state.  
+**Purpose:** Start and verify the Execution Watch Dashboard v0.4 (read-only) for recent execution pipeline events and live-session registry state.  
 **Policy:** NO-LIVE (read-only). No broker connectivity. No trading actions.
 
 ---
@@ -45,12 +45,13 @@ Open the dashboard page in your browser:
 
 ## Verify
 
-### Verify APIs (read-only, v0.3 semantics)
+### Verify APIs (read-only, v0.4 semantics)
 
 Run these requests (examples shown as paths only; use your preferred client):
 
 ```text
 /api/healthz
+/api/execution/health
 /api/execution/runs
 /api/execution/runs/<run_id>
 /api/execution/runs/<run_id>/events?limit=200
@@ -61,18 +62,22 @@ Run these requests (examples shown as paths only; use your preferred client):
 Expected:
 - HTTP 200 for existing data
 - Deterministic ordering (newest runs first, stable pagination cursor)
-- Backward compatible: top-level `api_version` remains `v0.2`, v0.3 semantics are indicated via `meta.api_version`
+- Backward compatible: top-level `api_version` remains `v0.2`, v0.4 semantics are indicated via `meta.api_version`
 - `generated_at_utc` present in responses
 - `meta` present (backward-compatible):
-  - `meta.api_version` = `v0.3`
+  - `meta.api_version` = `v0.4`
   - `meta.generated_at_utc` mirrors top-level `generated_at_utc`
   - `meta.has_more`, `meta.next_cursor` (paging/tail)
   - `meta.read_errors` (count of malformed JSONL lines skipped)
   - `meta.source` = `fixture|local`
+  - `meta.last_event_utc` (falls bestimmbar, sonst null)
+  - `meta.dataset_stats` (runs/events/sessions counts; sessions_count kann null sein)
 - Events pagination returns `next_cursor` + `has_more` consistently
 - Tail semantics:
   - `since_cursor` returns events strictly **after** the provided cursor
   - `next_cursor` is a watermark cursor you can feed back into `since_cursor`
+ - Health endpoint:
+   - `/api/execution/health` liefert Meta-Summary + deterministische Invariants
 
 Expected negative/edge behavior:
 - Unknown `run_id` → HTTP 404 with `{"detail":"run_not_found"}`
@@ -96,6 +101,9 @@ On the Execution Watch page:
   - Enable “Tail mode” to follow new events (append-only, no full refresh)
   - Polling interval selector (2s/5s/10s) controls refresh cadence
   - “Clear” resets the tail cursor watermark
+- Health panel (v0.4):
+  - Zeigt `meta.api_version`, `meta.source`, `meta.read_errors`, `meta.dataset_stats`, `meta.last_event_utc`
+  - “Ping Health” ruft `/api/execution/health` ab und zeigt den Snapshot (kein Auto-Polling)
 
 ---
 
@@ -133,6 +141,18 @@ meta.read_errors
   - Inspect the JSONL generator / upstream pipeline for partial writes
   - Confirm the file is not being edited concurrently during inspection
 
+### Optional metrics hook (v0.4)
+
+- Execution Watch kann optional Requests/Latency/Read-Errors mitzählen (best-effort).
+- Aktivierung:
+  - Prometheus (wenn verfügbar) folgt dem Flag `PEAK_TRADE_PROMETHEUS_ENABLED=1`
+  - In-memory Runtime-Metriken sind opt-in via `PEAK_TRADE_EXECUTION_WATCH_METRICS_ENABLED=1`
+- Hinweis: Runtime-Metriken sind **nicht deterministisch**. Der Health-Endpoint ist deterministisch **ohne** Runtime-Metriken; Runtime-Metriken nur via explizitem Opt-in:
+
+```text
+/api/execution/health?include_runtime_metrics=true
+```
+
 ### No sessions
 
 - Check whether registry files exist:
@@ -166,11 +186,11 @@ ls -la reports/experiments/live_sessions
 Use the evidence template:
 
 ```text
-docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_3_PASS_TEMPLATE.md
+docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_4_PASS_TEMPLATE.md
 ```
 
 Create a stamped evidence file from the template (example):
 
 ```text
-docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_3_PASS_YYYYMMDDTHHMMSSZ.md
+docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_4_PASS_YYYYMMDDTHHMMSSZ.md
 ```

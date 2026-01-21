@@ -6,7 +6,7 @@
 <section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4">
   <div class="flex items-start justify-between gap-4">
     <div>
-      <h1 class="text-base font-semibold text-slate-100">Execution Watch Dashboard v0.3</h1>
+      <h1 class="text-base font-semibold text-slate-100">Execution Watch Dashboard v0.4</h1>
       <p class="mt-1 text-xs text-slate-400">
         WATCH-ONLY · Read-only · NO-LIVE · deterministische Sortierung + stabile Cursor-Pagination · Tail (since_cursor)
       </p>
@@ -54,6 +54,59 @@
       </div>
     </div>
   </div>
+</section>
+
+<section class="mt-4 bg-slate-900/60 rounded-2xl border border-slate-800 p-4">
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <h2 class="text-sm font-semibold text-slate-200">Health</h2>
+      <p class="mt-1 text-xs text-slate-400">
+        Snapshot aus `meta` + optionaler Ping auf `\/api\/execution\/health` (kein Auto-Polling).
+      </p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button
+        id="health-ping"
+        class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700"
+        type="button"
+      >
+        Ping Health
+      </button>
+      <span class="text-xs text-slate-500 font-mono" id="health-ping-state">—</span>
+    </div>
+  </div>
+
+  <div class="mt-3 grid gap-3 md:grid-cols-3">
+    <div class="rounded-xl border border-slate-800 bg-slate-950/20 p-3">
+      <div class="text-xs text-slate-400">api_version</div>
+      <div class="mt-1 font-mono text-xs text-slate-200" id="health-api-version">—</div>
+    </div>
+    <div class="rounded-xl border border-slate-800 bg-slate-950/20 p-3">
+      <div class="text-xs text-slate-400">source</div>
+      <div class="mt-1 font-mono text-xs text-slate-200" id="health-source">—</div>
+    </div>
+    <div class="rounded-xl border border-slate-800 bg-slate-950/20 p-3">
+      <div class="text-xs text-slate-400">last_event_utc</div>
+      <div class="mt-1 font-mono text-xs text-slate-200" id="health-last-event">—</div>
+    </div>
+  </div>
+
+  <div class="mt-3 grid gap-3 md:grid-cols-3">
+    <div class="rounded-xl border border-slate-800 bg-slate-950/20 p-3">
+      <div class="text-xs text-slate-400">dataset_stats.runs_count</div>
+      <div class="mt-1 font-mono text-xs text-slate-200" id="health-runs-count">—</div>
+    </div>
+    <div class="rounded-xl border border-slate-800 bg-slate-950/20 p-3">
+      <div class="text-xs text-slate-400">dataset_stats.events_count</div>
+      <div class="mt-1 font-mono text-xs text-slate-200" id="health-events-count">—</div>
+    </div>
+    <div class="rounded-xl border border-slate-800 bg-slate-950/20 p-3">
+      <div class="text-xs text-slate-400">dataset_stats.sessions_count</div>
+      <div class="mt-1 font-mono text-xs text-slate-200" id="health-sessions-count">—</div>
+    </div>
+  </div>
+
+  <div class="mt-3 hidden text-xs text-rose-300" id="health-error"></div>
 </section>
 
 <section class="mt-6 grid gap-6 lg:grid-cols-12">
@@ -188,8 +241,26 @@
     $("generated-at").textContent = v || "—";
   }
 
+  function setHealthField(id, value) {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = value == null || value === "" ? "—" : String(value);
+  }
+
+  function updateHealthFromMeta(meta) {
+    if (!meta) return;
+    setHealthField("health-api-version", meta.api_version);
+    setHealthField("health-source", meta.source);
+    setHealthField("health-last-event", meta.last_event_utc);
+
+    const stats = meta.dataset_stats || null;
+    setHealthField("health-runs-count", stats?.runs_count);
+    setHealthField("health-events-count", stats?.events_count);
+    setHealthField("health-sessions-count", stats?.sessions_count);
+  }
+
   function applyMeta(payload) {
-    // v0.3 meta is optional for backward compatibility; treat missing as 0.
+    // meta is optional for backward compatibility; treat missing as 0/empty.
     const meta = payload && payload.meta ? payload.meta : null;
     setGeneratedAt(payload?.generated_at_utc);
     const re = Number(meta?.read_errors ?? 0);
@@ -198,6 +269,7 @@
       $("read-errors-count").textContent = String(state.readErrorsMax);
       $("read-errors-badge").classList.remove("hidden");
     }
+    updateHealthFromMeta(meta);
   }
 
   function setTailCursor(v) {
@@ -546,6 +618,22 @@
     } catch (e) {
       $("events-error").textContent = `Tail clear error: ${e.message || "unknown"}`;
       $("events-error").classList.remove("hidden");
+    }
+  });
+
+  $("health-ping").addEventListener("click", async () => {
+    $("health-error").classList.add("hidden");
+    $("health-ping-state").textContent = "loading…";
+    try {
+      const payload = await fetchJSON("/api/execution/health");
+      applyMeta(payload);
+      const inv = payload?.invariants || {};
+      const ok = inv.ordering_non_decreasing === true && inv.cursor_monotonic === true;
+      $("health-ping-state").textContent = ok ? "ok" : "warn";
+    } catch (e) {
+      $("health-ping-state").textContent = "error";
+      $("health-error").textContent = `Health error: ${e.message || "unknown"}`;
+      $("health-error").classList.remove("hidden");
     }
   });
 
