@@ -6,20 +6,51 @@
 <section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4">
   <div class="flex items-start justify-between gap-4">
     <div>
-      <h1 class="text-base font-semibold text-slate-100">Execution Watch Dashboard v0.2</h1>
+      <h1 class="text-base font-semibold text-slate-100">Execution Watch Dashboard v0.3</h1>
       <p class="mt-1 text-xs text-slate-400">
-        WATCH-ONLY · Read-only · NO-LIVE · deterministische Sortierung + stabile Cursor-Pagination
+        WATCH-ONLY · Read-only · NO-LIVE · deterministische Sortierung + stabile Cursor-Pagination · Tail (since_cursor)
       </p>
     </div>
     <div class="text-xs text-slate-500">
       <div>generated_at_utc: <span class="font-mono" id="generated-at">—</span></div>
+      <div class="mt-1 hidden" id="read-errors-badge">
+        <span class="inline-flex items-center gap-2 px-2 py-0.5 rounded-full border border-rose-500/30 bg-rose-500/10 text-rose-300">
+          <span class="font-semibold">read_errors</span>
+          <span class="font-mono" id="read-errors-count">0</span>
+        </span>
+      </div>
       <div class="mt-1 flex items-center gap-2">
         <label class="flex items-center gap-2 cursor-pointer select-none">
           <input id="poll-toggle" type="checkbox" class="accent-emerald-400" />
           <span>Polling</span>
         </label>
+        <select
+          id="poll-interval"
+          class="bg-slate-950/30 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200"
+          title="Poll interval"
+        >
+          <option value="2000">2s</option>
+          <option value="5000" selected>5s</option>
+          <option value="10000">10s</option>
+        </select>
         <span class="text-slate-600">·</span>
         <span class="font-mono" id="poll-state">off</span>
+      </div>
+      <div class="mt-2 flex items-center gap-2">
+        <label class="flex items-center gap-2 cursor-pointer select-none">
+          <input id="tail-toggle" type="checkbox" class="accent-emerald-400" />
+          <span>Tail mode</span>
+        </label>
+        <span class="text-slate-600">·</span>
+        <span class="text-slate-500">cursor:</span>
+        <span class="font-mono" id="tail-cursor">—</span>
+        <button
+          id="tail-clear"
+          class="text-xs px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700"
+          type="button"
+        >
+          Clear
+        </button>
       </div>
     </div>
   </div>
@@ -121,7 +152,10 @@
     selectedRunId: null,
     eventsNextCursor: null,
     pollTimer: null,
-    pollMs: 10000,
+    pollMs: 5000,
+    tailEnabled: false,
+    tailCursor: null,
+    readErrorsMax: 0,
   };
 
   function esc(s) {
@@ -154,10 +188,27 @@
     $("generated-at").textContent = v || "—";
   }
 
+  function applyMeta(payload) {
+    // v0.3 meta is optional for backward compatibility; treat missing as 0.
+    const meta = payload && payload.meta ? payload.meta : null;
+    setGeneratedAt(payload?.generated_at_utc);
+    const re = Number(meta?.read_errors ?? 0);
+    if (Number.isFinite(re)) state.readErrorsMax = Math.max(state.readErrorsMax, re);
+    if (state.readErrorsMax > 0) {
+      $("read-errors-count").textContent = String(state.readErrorsMax);
+      $("read-errors-badge").classList.remove("hidden");
+    }
+  }
+
+  function setTailCursor(v) {
+    state.tailCursor = v || null;
+    $("tail-cursor").textContent = state.tailCursor ?? "—";
+  }
+
   async function loadRuns() {
     $("runs-error").classList.add("hidden");
     const payload = await fetchJSON("/api/execution/runs?limit=200");
-    setGeneratedAt(payload.generated_at_utc);
+    applyMeta(payload);
     $("runs-count").textContent = `${payload.count} runs`;
 
     const runs = payload.runs || [];
@@ -242,8 +293,9 @@
   async function loadRunDetail(runId) {
     $("run-detail-error").classList.add("hidden");
     const payload = await fetchJSON(`/api/execution/runs/${encodeURIComponent(runId)}`);
-    setGeneratedAt(payload.generated_at_utc);
+    applyMeta(payload);
     renderRunDetail(payload.run);
+    return payload.run;
   }
 
   function clearEvents() {
@@ -254,10 +306,30 @@
     state.eventsNextCursor = null;
   }
 
+  function ensureEventsEmptyRow() {
+    const tb = $("events-tbody");
+    if (!tb.children.length) {
+      tb.innerHTML = "<tr><td colspan='6' class='px-3 py-2 text-slate-500'>Keine Events gefunden.</td></tr>";
+    }
+  }
+
+  function removeEventsEmptyRowIfNeeded() {
+    const tb = $("events-tbody");
+    if (tb.children.length === 1 && tb.querySelector("td[colspan='6']")) {
+      tb.innerHTML = "";
+    }
+  }
+
   function appendEvents(payload) {
-    $("events-count").textContent = `${payload.count} loaded · has_more=${payload.has_more ? "true" : "false"}`;
+    applyMeta(payload);
+    $("events-count").textContent = `${payload.count} events · has_more=${payload.has_more ? "true" : "false"} · next_cursor=${payload.next_cursor ?? "—"}`;
     const tb = $("events-tbody");
     const items = payload.items || [];
+    if (!items.length) {
+      ensureEventsEmptyRow();
+      return;
+    }
+    removeEventsEmptyRowIfNeeded();
     for (const it of items) {
       const payloadStr = (() => {
         try { return JSON.stringify(it.payload || {}, null, 0); } catch { return ""; }
@@ -274,21 +346,44 @@
       `);
     }
     state.eventsNextCursor = payload.next_cursor || null;
-    $("events-load-more").disabled = !payload.has_more;
+    $("events-load-more").disabled = state.tailEnabled || !payload.has_more;
   }
 
   async function loadEventsPage(runId, cursor) {
     $("events-error").classList.add("hidden");
     const q = cursor ? `&cursor=${encodeURIComponent(cursor)}` : "";
     const payload = await fetchJSON(`/api/execution/runs/${encodeURIComponent(runId)}/events?limit=200${q}`);
-    setGeneratedAt(payload.generated_at_utc);
     appendEvents(payload);
+    // If tail mode is enabled, keep a watermark cursor (last seen seq)
+    if (state.tailEnabled && payload.items && payload.items.length) {
+      setTailCursor(String(payload.items[payload.items.length - 1].seq));
+    }
+  }
+
+  async function loadEventsSince(runId, sinceCursor) {
+    $("events-error").classList.add("hidden");
+    const q = sinceCursor != null ? `&since_cursor=${encodeURIComponent(sinceCursor)}` : "";
+    const payload = await fetchJSON(`/api/execution/runs/${encodeURIComponent(runId)}/events?limit=200${q}`);
+    appendEvents(payload);
+    // Tail endpoint returns next_cursor as watermark (last seen seq); keep stable if empty.
+    if (payload.next_cursor != null) setTailCursor(String(payload.next_cursor));
+  }
+
+  async function bootstrapTail(runId, totalEvents) {
+    clearEvents();
+    setTailCursor(null);
+    if (!totalEvents || totalEvents <= 0) {
+      ensureEventsEmptyRow();
+      return;
+    }
+    const start = Math.max(totalEvents - 200, 0);
+    await loadEventsPage(runId, String(start));
   }
 
   async function loadSessions() {
     $("sessions-error").classList.add("hidden");
     const payload = await fetchJSON("/api/live/sessions?limit=50");
-    setGeneratedAt(payload.generated_at_utc);
+    applyMeta(payload);
     $("sessions-count").textContent = `${payload.count} sessions`;
     const tb = $("sessions-tbody");
     tb.innerHTML = "";
@@ -314,9 +409,14 @@
     state.selectedRunId = runId;
     $("selected-run").textContent = runId || "—";
     clearEvents();
+    setTailCursor(null);
     await loadRuns(); // re-render selection highlight deterministically
-    await loadRunDetail(runId);
-    await loadEventsPage(runId, null);
+    const run = await loadRunDetail(runId);
+    if (state.tailEnabled) {
+      await bootstrapTail(runId, run?.total_events ?? 0);
+    } else {
+      await loadEventsPage(runId, null);
+    }
   }
 
   async function refreshAll() {
@@ -344,9 +444,43 @@
     }
   }
 
+  async function pollTick() {
+    await refreshAll();
+    if (!state.selectedRunId) return;
+    if (state.tailEnabled) {
+      // Append-only: fetch strictly after tail cursor (or bootstrap if unset)
+      if (state.tailCursor == null) {
+        try {
+          const run = await loadRunDetail(state.selectedRunId);
+          await bootstrapTail(state.selectedRunId, run?.total_events ?? 0);
+        } catch (e) {
+          $("events-error").textContent = `Tail bootstrap error: ${e.message || "unknown"}`;
+          $("events-error").classList.remove("hidden");
+        }
+      } else {
+        try {
+          await loadEventsSince(state.selectedRunId, state.tailCursor);
+        } catch (e) {
+          $("events-error").textContent = `Tail error: ${e.message || "unknown"}`;
+          $("events-error").classList.remove("hidden");
+        }
+      }
+    } else {
+      // Full refresh events (non-tail): reset and load from start
+      try {
+        clearEvents();
+        await loadEventsPage(state.selectedRunId, null);
+      } catch (e) {
+        $("events-error").textContent = `Events refresh error: ${e.message || "unknown"}`;
+        $("events-error").classList.remove("hidden");
+      }
+    }
+  }
+
   $("events-load-more").addEventListener("click", async () => {
     if (!state.selectedRunId) return;
     try {
+      if (state.tailEnabled) return;
       await loadEventsPage(state.selectedRunId, state.eventsNextCursor);
     } catch (e) {
       $("events-error").textContent = `Events error: ${e.message || "unknown"}`;
@@ -360,7 +494,58 @@
     if (state.pollTimer) clearInterval(state.pollTimer);
     state.pollTimer = null;
     if (enabled) {
-      state.pollTimer = setInterval(refreshAll, state.pollMs);
+      state.pollTimer = setInterval(pollTick, state.pollMs);
+    }
+  });
+
+  $("poll-interval").addEventListener("change", () => {
+    const ms = Number($("poll-interval").value);
+    state.pollMs = Number.isFinite(ms) ? ms : 5000;
+    const enabled = $("poll-toggle").checked;
+    $("poll-state").textContent = enabled ? `on (${state.pollMs}ms)` : "off";
+    if (enabled) {
+      if (state.pollTimer) clearInterval(state.pollTimer);
+      state.pollTimer = setInterval(pollTick, state.pollMs);
+    }
+  });
+
+  $("tail-toggle").addEventListener("change", async () => {
+    state.tailEnabled = $("tail-toggle").checked;
+    // Reset read error badge aggregation on mode switches (operator clarity)
+    state.readErrorsMax = 0;
+    $("read-errors-badge").classList.add("hidden");
+    $("read-errors-count").textContent = "0";
+    setTailCursor(null);
+    clearEvents();
+    if (state.selectedRunId) {
+      try {
+        const run = await loadRunDetail(state.selectedRunId);
+        if (state.tailEnabled) {
+          await bootstrapTail(state.selectedRunId, run?.total_events ?? 0);
+        } else {
+          await loadEventsPage(state.selectedRunId, null);
+        }
+      } catch (e) {
+        $("events-error").textContent = `Tail toggle error: ${e.message || "unknown"}`;
+        $("events-error").classList.remove("hidden");
+      }
+    }
+  });
+
+  $("tail-clear").addEventListener("click", async () => {
+    setTailCursor(null);
+    clearEvents();
+    if (!state.selectedRunId) return;
+    try {
+      const run = await loadRunDetail(state.selectedRunId);
+      if (state.tailEnabled) {
+        await bootstrapTail(state.selectedRunId, run?.total_events ?? 0);
+      } else {
+        await loadEventsPage(state.selectedRunId, null);
+      }
+    } catch (e) {
+      $("events-error").textContent = `Tail clear error: ${e.message || "unknown"}`;
+      $("events-error").classList.remove("hidden");
     }
   });
 
