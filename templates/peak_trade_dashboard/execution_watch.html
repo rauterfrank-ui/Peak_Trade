@@ -1,0 +1,375 @@
+<!-- templates/peak_trade_dashboard/execution_watch.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4">
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <h1 class="text-base font-semibold text-slate-100">Execution Watch Dashboard v0.2</h1>
+      <p class="mt-1 text-xs text-slate-400">
+        WATCH-ONLY · Read-only · NO-LIVE · deterministische Sortierung + stabile Cursor-Pagination
+      </p>
+    </div>
+    <div class="text-xs text-slate-500">
+      <div>generated_at_utc: <span class="font-mono" id="generated-at">—</span></div>
+      <div class="mt-1 flex items-center gap-2">
+        <label class="flex items-center gap-2 cursor-pointer select-none">
+          <input id="poll-toggle" type="checkbox" class="accent-emerald-400" />
+          <span>Polling</span>
+        </label>
+        <span class="text-slate-600">·</span>
+        <span class="font-mono" id="poll-state">off</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mt-6 grid gap-6 lg:grid-cols-12">
+  <!-- Left: runs list -->
+  <div class="lg:col-span-3">
+    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-slate-200">Runs</h2>
+        <span class="text-xs text-slate-500" id="runs-count">—</span>
+      </div>
+      <div id="runs-empty" class="hidden text-xs text-slate-500">Keine Runs gefunden.</div>
+      <ul id="runs-list" class="space-y-2"></ul>
+      <div id="runs-error" class="hidden mt-3 text-xs text-rose-300"></div>
+    </div>
+  </div>
+
+  <!-- Center: run detail -->
+  <div class="lg:col-span-4">
+    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-slate-200">Run Detail</h2>
+        <span class="text-xs text-slate-500 font-mono" id="selected-run">—</span>
+      </div>
+      <div id="run-detail-empty" class="text-xs text-slate-500">Wähle links einen Run aus.</div>
+      <div id="run-detail" class="hidden space-y-3"></div>
+      <div id="run-detail-error" class="hidden mt-3 text-xs text-rose-300"></div>
+    </div>
+  </div>
+
+  <!-- Right: events + sessions -->
+  <div class="lg:col-span-5 space-y-6">
+    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-slate-200">Events</h2>
+        <div class="text-xs text-slate-500">
+          <span id="events-count">—</span>
+        </div>
+      </div>
+
+      <div class="overflow-auto border border-slate-800 rounded-xl">
+        <table class="min-w-full text-xs">
+          <thead class="bg-slate-950/60">
+            <tr class="text-slate-400">
+              <th class="px-3 py-2 text-left font-semibold">seq</th>
+              <th class="px-3 py-2 text-left font-semibold">ts</th>
+              <th class="px-3 py-2 text-left font-semibold">event_type</th>
+              <th class="px-3 py-2 text-left font-semibold">order_id</th>
+              <th class="px-3 py-2 text-left font-semibold">idempotency_key</th>
+              <th class="px-3 py-2 text-left font-semibold">payload</th>
+            </tr>
+          </thead>
+          <tbody id="events-tbody" class="bg-slate-950/20"></tbody>
+        </table>
+      </div>
+
+      <div class="mt-3 flex items-center justify-between">
+        <button
+          id="events-load-more"
+          class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled
+        >
+          Load more
+        </button>
+        <div id="events-error" class="hidden text-xs text-rose-300"></div>
+      </div>
+    </div>
+
+    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-slate-200">Live-Session Registry</h2>
+        <span class="text-xs text-slate-500" id="sessions-count">—</span>
+      </div>
+      <div class="overflow-auto border border-slate-800 rounded-xl">
+        <table class="min-w-full text-xs">
+          <thead class="bg-slate-950/60">
+            <tr class="text-slate-400">
+              <th class="px-3 py-2 text-left font-semibold">last_update_utc</th>
+              <th class="px-3 py-2 text-left font-semibold">status</th>
+              <th class="px-3 py-2 text-left font-semibold">mode</th>
+              <th class="px-3 py-2 text-left font-semibold">session_id</th>
+              <th class="px-3 py-2 text-left font-semibold">environment</th>
+            </tr>
+          </thead>
+          <tbody id="sessions-tbody" class="bg-slate-950/20"></tbody>
+        </table>
+      </div>
+      <div id="sessions-error" class="hidden mt-3 text-xs text-rose-300"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const state = {
+    selectedRunId: null,
+    eventsNextCursor: null,
+    pollTimer: null,
+    pollMs: 10000,
+  };
+
+  function esc(s) {
+    return String(s ?? "").replace(/[&<>\"']/g, (c) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#39;",
+    }[c]));
+  }
+
+  async function fetchJSON(path) {
+    const res = await fetch(path, { headers: { "Accept": "application/json" }});
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+
+  function badgeStatus(status) {
+    const s = String(status || "unknown");
+    const cls =
+      s === "success" ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30" :
+      s === "failed" ? "bg-rose-500/10 text-rose-300 border-rose-500/30" :
+      s === "canceled" ? "bg-amber-500/10 text-amber-300 border-amber-500/30" :
+      "bg-slate-700/30 text-slate-300 border-slate-600/50";
+    return `<span class="text-[11px] px-2 py-0.5 rounded-full border ${cls}">${esc(s)}</span>`;
+  }
+
+  function setGeneratedAt(v) {
+    $("generated-at").textContent = v || "—";
+  }
+
+  async function loadRuns() {
+    $("runs-error").classList.add("hidden");
+    const payload = await fetchJSON("/api/execution/runs?limit=200");
+    setGeneratedAt(payload.generated_at_utc);
+    $("runs-count").textContent = `${payload.count} runs`;
+
+    const runs = payload.runs || [];
+    const ul = $("runs-list");
+    ul.innerHTML = "";
+    if (!runs.length) {
+      $("runs-empty").classList.remove("hidden");
+      return { runs: [] };
+    }
+    $("runs-empty").classList.add("hidden");
+
+    for (const r of runs) {
+      const isActive = state.selectedRunId === r.run_id;
+      const btnCls = isActive
+        ? "border-emerald-500/30 bg-emerald-500/10"
+        : "border-slate-800 bg-slate-950/20 hover:bg-slate-950/40";
+      const last = r.last_event_at_utc || "—";
+      const started = r.started_at_utc || "—";
+      const counts = r.counts ? Object.entries(r.counts).map(([k,v]) => `${k}=${v}`).join(", ") : "";
+
+      ul.insertAdjacentHTML("beforeend", `
+        <li>
+          <button class="w-full text-left px-3 py-2 rounded-xl border ${btnCls}" data-run-id="${esc(r.run_id)}">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-mono text-xs text-slate-200">${esc(r.run_id)}</span>
+              ${badgeStatus(r.status)}
+            </div>
+            <div class="mt-1 text-[11px] text-slate-500">
+              <div>started: <span class="font-mono">${esc(started)}</span></div>
+              <div>last: <span class="font-mono">${esc(last)}</span></div>
+              <div class="truncate">counts: <span class="font-mono">${esc(counts)}</span></div>
+            </div>
+          </button>
+        </li>
+      `);
+    }
+
+    ul.querySelectorAll("button[data-run-id]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const rid = btn.getAttribute("data-run-id");
+        await selectRun(rid);
+      });
+    });
+
+    // Auto-select newest if none
+    if (!state.selectedRunId && runs.length) {
+      await selectRun(runs[0].run_id);
+    }
+    return { runs };
+  }
+
+  function renderRunDetail(run) {
+    $("selected-run").textContent = run?.run_id || "—";
+    const wrap = $("run-detail");
+    wrap.classList.remove("hidden");
+    $("run-detail-empty").classList.add("hidden");
+    $("run-detail-error").classList.add("hidden");
+
+    const counts = run.counts ? Object.entries(run.counts)
+      .map(([k,v]) => `<span class="text-[11px] px-2 py-0.5 rounded-full border border-slate-700/70 bg-slate-950/40 font-mono">${esc(k)}=${esc(v)}</span>`)
+      .join(" ") : "";
+
+    wrap.innerHTML = `
+      <div class="flex items-center justify-between gap-2">
+        <div class="text-xs text-slate-400">status</div>
+        ${badgeStatus(run.status)}
+      </div>
+      <div class="grid grid-cols-1 gap-2 text-xs">
+        <div class="flex justify-between gap-3"><span class="text-slate-400">run_id</span><span class="font-mono text-slate-200">${esc(run.run_id)}</span></div>
+        <div class="flex justify-between gap-3"><span class="text-slate-400">correlation_id</span><span class="font-mono text-slate-200">${esc(run.correlation_id || "—")}</span></div>
+        <div class="flex justify-between gap-3"><span class="text-slate-400">started_at_utc</span><span class="font-mono text-slate-200">${esc(run.started_at_utc || "—")}</span></div>
+        <div class="flex justify-between gap-3"><span class="text-slate-400">last_event_at_utc</span><span class="font-mono text-slate-200">${esc(run.last_event_at_utc || "—")}</span></div>
+        <div class="flex justify-between gap-3"><span class="text-slate-400">total_events</span><span class="font-mono text-slate-200">${esc(run.total_events)}</span></div>
+      </div>
+      <div>
+        <div class="text-xs text-slate-400 mb-2">counts</div>
+        <div class="flex flex-wrap gap-2">${counts || "<span class='text-xs text-slate-500'>—</span>"}</div>
+      </div>
+    `;
+  }
+
+  async function loadRunDetail(runId) {
+    $("run-detail-error").classList.add("hidden");
+    const payload = await fetchJSON(`/api/execution/runs/${encodeURIComponent(runId)}`);
+    setGeneratedAt(payload.generated_at_utc);
+    renderRunDetail(payload.run);
+  }
+
+  function clearEvents() {
+    $("events-tbody").innerHTML = "";
+    $("events-count").textContent = "—";
+    $("events-load-more").disabled = true;
+    $("events-error").classList.add("hidden");
+    state.eventsNextCursor = null;
+  }
+
+  function appendEvents(payload) {
+    $("events-count").textContent = `${payload.count} loaded · has_more=${payload.has_more ? "true" : "false"}`;
+    const tb = $("events-tbody");
+    const items = payload.items || [];
+    for (const it of items) {
+      const payloadStr = (() => {
+        try { return JSON.stringify(it.payload || {}, null, 0); } catch { return ""; }
+      })();
+      tb.insertAdjacentHTML("beforeend", `
+        <tr class="border-b border-slate-800/70">
+          <td class="px-3 py-2 font-mono text-slate-200">${esc(it.seq)}</td>
+          <td class="px-3 py-2 font-mono text-slate-200">${esc(it.ts)}</td>
+          <td class="px-3 py-2 text-slate-100">${esc(it.event_type)}</td>
+          <td class="px-3 py-2 font-mono text-slate-200">${esc(it.order_id || "—")}</td>
+          <td class="px-3 py-2 font-mono text-slate-200">${esc(it.idempotency_key || "—")}</td>
+          <td class="px-3 py-2 text-slate-300"><span class="font-mono">${esc(payloadStr)}</span></td>
+        </tr>
+      `);
+    }
+    state.eventsNextCursor = payload.next_cursor || null;
+    $("events-load-more").disabled = !payload.has_more;
+  }
+
+  async function loadEventsPage(runId, cursor) {
+    $("events-error").classList.add("hidden");
+    const q = cursor ? `&cursor=${encodeURIComponent(cursor)}` : "";
+    const payload = await fetchJSON(`/api/execution/runs/${encodeURIComponent(runId)}/events?limit=200${q}`);
+    setGeneratedAt(payload.generated_at_utc);
+    appendEvents(payload);
+  }
+
+  async function loadSessions() {
+    $("sessions-error").classList.add("hidden");
+    const payload = await fetchJSON("/api/live/sessions?limit=50");
+    setGeneratedAt(payload.generated_at_utc);
+    $("sessions-count").textContent = `${payload.count} sessions`;
+    const tb = $("sessions-tbody");
+    tb.innerHTML = "";
+    const items = payload.sessions || [];
+    if (!items.length) {
+      tb.innerHTML = "<tr><td colspan='5' class='px-3 py-2 text-slate-500'>Keine Sessions gefunden.</td></tr>";
+      return;
+    }
+    for (const s of items) {
+      tb.insertAdjacentHTML("beforeend", `
+        <tr class="border-b border-slate-800/70">
+          <td class="px-3 py-2 font-mono text-slate-200">${esc(s.last_update_utc)}</td>
+          <td class="px-3 py-2 text-slate-100">${esc(s.status)}</td>
+          <td class="px-3 py-2 text-slate-200">${esc(s.mode || "—")}</td>
+          <td class="px-3 py-2 font-mono text-slate-200">${esc(s.session_id)}</td>
+          <td class="px-3 py-2 text-slate-300">${esc(s.environment || "—")}</td>
+        </tr>
+      `);
+    }
+  }
+
+  async function selectRun(runId) {
+    state.selectedRunId = runId;
+    $("selected-run").textContent = runId || "—";
+    clearEvents();
+    await loadRuns(); // re-render selection highlight deterministically
+    await loadRunDetail(runId);
+    await loadEventsPage(runId, null);
+  }
+
+  async function refreshAll() {
+    try {
+      await loadRuns();
+    } catch (e) {
+      $("runs-error").textContent = `Runs error: ${e.message || "unknown"}`;
+      $("runs-error").classList.remove("hidden");
+    }
+
+    if (state.selectedRunId) {
+      try {
+        await loadRunDetail(state.selectedRunId);
+      } catch (e) {
+        $("run-detail-error").textContent = `Detail error: ${e.message || "unknown"}`;
+        $("run-detail-error").classList.remove("hidden");
+      }
+    }
+
+    try {
+      await loadSessions();
+    } catch (e) {
+      $("sessions-error").textContent = `Sessions error: ${e.message || "unknown"}`;
+      $("sessions-error").classList.remove("hidden");
+    }
+  }
+
+  $("events-load-more").addEventListener("click", async () => {
+    if (!state.selectedRunId) return;
+    try {
+      await loadEventsPage(state.selectedRunId, state.eventsNextCursor);
+    } catch (e) {
+      $("events-error").textContent = `Events error: ${e.message || "unknown"}`;
+      $("events-error").classList.remove("hidden");
+    }
+  });
+
+  $("poll-toggle").addEventListener("change", () => {
+    const enabled = $("poll-toggle").checked;
+    $("poll-state").textContent = enabled ? `on (${state.pollMs}ms)` : "off";
+    if (state.pollTimer) clearInterval(state.pollTimer);
+    state.pollTimer = null;
+    if (enabled) {
+      state.pollTimer = setInterval(refreshAll, state.pollMs);
+    }
+  });
+
+  // initial
+  refreshAll().then(async () => {
+    // ensure sessions are loaded even if runs are empty
+    try { await loadSessions(); } catch {}
+  });
+})();
+</script>
+
+{% endblock %}

@@ -1,0 +1,5 @@
+{"schema":"execution_event_v0","ts":"2026-01-01T00:00:00+00:00","run_id":"run_new","correlation_id":"corr_new","event_type":"created","order_id":null,"idempotency_key":"idem_new_0","payload":{"n_orders":2}}
+{"schema":"execution_event_v0","ts":"2026-01-01T00:00:01+00:00","run_id":"run_old","correlation_id":"corr_old","event_type":"created","order_id":null,"idempotency_key":"idem_old_0","payload":{"n_orders":1}}
+{"schema":"execution_event_v0","ts":"2026-01-01T00:00:02+00:00","run_id":"run_old","correlation_id":"corr_old","event_type":"filled","order_id":"ord_old_1","idempotency_key":"idem_old_1","payload":{"fill":{"qty":1}}}
+{"schema":"execution_event_v0","ts":"2026-01-01T00:00:03+00:00","run_id":"run_new","correlation_id":"corr_new","event_type":"filled","order_id":"ord_new_1","idempotency_key":"idem_new_1","payload":{"fill":{"qty":1}}}
+{"schema":"execution_event_v0","ts":"2026-01-01T00:00:03+00:00","run_id":"run_new","correlation_id":"corr_new","event_type":"filled","order_id":"ord_new_2","idempotency_key":"idem_new_2","payload":{"fill":{"qty":1}}}
