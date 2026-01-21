@@ -26,7 +26,7 @@ def test_execution_watch_api_v0_2_healthz(client: TestClient) -> None:
     assert payload["status"] == "ok"
     assert payload["watch_only"] is True
     assert "generated_at_utc" in payload
-    assert payload["meta"]["api_version"] == "v0.3"
+    assert payload["meta"]["api_version"] == "v0.4"
     assert payload["meta"]["read_errors"] == 0
 
 
@@ -50,7 +50,7 @@ def test_execution_watch_api_v0_2_runs_detail_events_pagination(
     assert runs.status_code == 200
     rp = runs.json()
     assert rp["api_version"] == "v0.2"
-    assert rp["meta"]["api_version"] == "v0.3"
+    assert rp["meta"]["api_version"] == "v0.4"
     assert rp["meta"]["source"] == "fixture"
     assert rp["count"] == 2
     assert [r["run_id"] for r in rp["runs"]] == ["run_new", "run_old"]
@@ -60,7 +60,7 @@ def test_execution_watch_api_v0_2_runs_detail_events_pagination(
     assert detail.status_code == 200
     dp = detail.json()
     assert dp["api_version"] == "v0.2"
-    assert dp["meta"]["api_version"] == "v0.3"
+    assert dp["meta"]["api_version"] == "v0.4"
     assert dp["meta"]["source"] == "fixture"
     assert dp["run"]["run_id"] == "run_new"
     assert dp["run"]["status"] == "success"
@@ -71,7 +71,7 @@ def test_execution_watch_api_v0_2_runs_detail_events_pagination(
     assert page1.status_code == 200
     p1 = page1.json()
     assert p1["api_version"] == "v0.2"
-    assert p1["meta"]["api_version"] == "v0.3"
+    assert p1["meta"]["api_version"] == "v0.4"
     assert p1["meta"]["source"] == "fixture"
     assert p1["run_id"] == "run_new"
     assert p1["count"] == 2
@@ -115,7 +115,7 @@ def test_execution_watch_api_v0_2_live_sessions_from_registry_fixture(
     assert r.status_code == 200
     payload = r.json()
     assert payload["api_version"] == "v0.2"
-    assert payload["meta"]["api_version"] == "v0.3"
+    assert payload["meta"]["api_version"] == "v0.4"
     assert payload["meta"]["source"] == "fixture"
     assert payload["count"] == 2
 
@@ -261,3 +261,73 @@ def test_execution_watch_api_v0_3_since_cursor_tail_returns_only_new_events(
     assert tp2["has_more"] is False
     assert tp2["next_cursor"] == "4"
     assert tp2["meta"]["next_cursor"] == "4"
+
+
+def test_execution_watch_api_v0_4_health_endpoint_includes_stats_and_last_event_utc(
+    client: TestClient, tmp_path: Path
+) -> None:
+    fx = (
+        Path(__file__).resolve().parents[1]
+        / "fixtures"
+        / "execution_watch_v0_3"
+        / "execution_pipeline_events_v0_tail.jsonl"
+    )
+    p = tmp_path / "execution_pipeline_events_v0_tail.jsonl"
+    _copy_fixture(fx, p)
+
+    # Sessions base dir (empty) -> sessions_count=0 deterministically
+    base_dir = tmp_path / "live_sessions"
+    base_dir.mkdir(parents=True, exist_ok=True)
+
+    root = tmp_path.as_posix()
+    r = client.get(
+        f"/api/execution/health?root={root}&filename={p.name}&base_dir={base_dir.as_posix()}"
+    )
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload["api_version"] == "v0.2"
+    assert payload["meta"]["api_version"] == "v0.4"
+    assert payload["meta"]["source"] == "fixture"
+    assert payload["meta"]["read_errors"] == 0
+    assert payload["meta"]["last_event_utc"] == "2026-01-01T00:00:04Z"
+
+    stats = payload["meta"]["dataset_stats"]
+    assert stats["runs_count"] == 1
+    assert stats["events_count"] == 5
+    assert stats["sessions_count"] == 0
+
+    inv = payload["invariants"]
+    assert inv["cursor_monotonic"] is True
+    assert inv["ordering_non_decreasing"] is True
+
+
+def test_execution_watch_api_v0_4_health_runtime_metrics_opt_in_does_not_crash(
+    client: TestClient, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fx = (
+        Path(__file__).resolve().parents[1]
+        / "fixtures"
+        / "execution_watch_v0_3"
+        / "execution_pipeline_events_v0_tail.jsonl"
+    )
+    p = tmp_path / "execution_pipeline_events_v0_tail.jsonl"
+    _copy_fixture(fx, p)
+
+    base_dir = tmp_path / "live_sessions"
+    base_dir.mkdir(parents=True, exist_ok=True)
+
+    # Enable in-memory counters; this makes runtime_metrics non-deterministic but should not crash.
+    monkeypatch.setenv("PEAK_TRADE_EXECUTION_WATCH_METRICS_ENABLED", "1")
+
+    root = tmp_path.as_posix()
+    r = client.get(
+        f"/api/execution/health?root={root}&filename={p.name}&base_dir={base_dir.as_posix()}&include_runtime_metrics=true"
+    )
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload["invariants"]["runtime_metrics_included"] is True
+    rm = payload["invariants"]["runtime_metrics"]
+    assert isinstance(rm, dict)
+    assert "requests_total" in rm
+    assert "latency_avg_seconds" in rm
+    assert "read_errors_total" in rm
