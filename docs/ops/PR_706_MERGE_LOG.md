@@ -36,4 +36,4 @@ Navigate via:
 - Branch: docs&#47;runbooks-frontdoor-reintegration
 - Runbook: `docs/RUNBOOKS_AND_INCIDENT_HANDLING.md` (Phase 25/56, unchanged)
 - Previous attempt: PR #705 (closed, reverted)
-- Evidence Index: [EV-20260113-RUNBOOKS-FRONTDOOR](EVIDENCE_INDEX.md#ev-20260113-runbooks-frontdoor)
+- Evidence Index: [EV-20260113-RUNBOOKS-FRONTDOOR](docs/ops/EVIDENCE_INDEX.md#ev-20260113-runbooks-frontdoor)
