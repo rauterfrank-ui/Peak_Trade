@@ -265,7 +265,7 @@ Follow RUNBOOK_D4 for templates/frontdoor consistency.
 ## 6) Phase D — D2 „Done“ (Reporting + Compare Runs) operational verifizieren
 
 ### Entry
-- Runbook `docs/runbooks/RUNBOOK_D2_REPORTING.md` existiert.
+- Runbook `docs&#47;runbooks&#47;RUNBOOK_D2_REPORTING.md` existiert.
 - Test subset PASS.
 
 ### Actions (DoD)
@@ -305,7 +305,7 @@ Output:
 ## 7) Phase E — D3 „Done“ (Watch‑Only Web/API + Grafana) operational verifizieren
 
 ### Entry
-- D3 Runbook existiert: `docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md`.
+- D3 Runbook existiert: `docs&#47;runbooks&#47;RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md`.
 
 ### Actions (DoD)
 - API Contract v0: Endpunkte & Pages überprüfbar.
