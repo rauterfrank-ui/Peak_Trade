@@ -1,0 +1,58 @@
+name: Merge Logs Sanity
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  merge_logs_sanity:
+    name: merge-logs-sanity
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compute changed files (base..head)
+        id: changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin "${GITHUB_BASE_REF}" --depth=1
+          CHANGED="$(git diff --name-only "origin/${GITHUB_BASE_REF}" "${GITHUB_SHA}" || true)"
+          echo "changed<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$CHANGED" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "Changed files:"
+          echo "$CHANGED"
+
+      - name: Merge-log hygiene (only when merge_logs changed)
+        if: contains(steps.changed.outputs.changed, 'docs/ops/merge_logs/')
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILES="$(echo "${{ steps.changed.outputs.changed }}" | rg -N '^docs/ops/merge_logs/.*\.md$' || true)"
+          if [ -z "$FILES" ]; then
+            echo "No merge-log markdown files changed; nothing to check."
+            exit 0
+          fi
+          echo "Running merge-log hygiene on:"
+          echo "$FILES"
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            python3 scripts/ops/check_merge_log_hygiene.py "$f"
+          done <<< "$FILES"
+
+      - name: Done
+        run: echo "merge-logs-sanity OK"
