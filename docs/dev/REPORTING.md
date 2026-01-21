@@ -268,7 +268,7 @@ The report automatically:
 
 ### Customize Reports
 
-Edit `reports/quarto/backtest_report.qmd` to:
+Edit `reports&#47;quarto&#47;backtest_report.qmd` to:
 - Add custom visualizations
 - Filter metrics
 - Load specific runs
@@ -312,7 +312,7 @@ No run summaries found in results/
 
 **Solution:**
 1. Check that you're using `PeakTradeRun` context manager
-2. Verify `results/` directory exists
+2. Verify `results&#47;` directory exists
 3. Look for `run_summary_*.json` files:
    ```bash
    ls -lh results/run_summary_*.json
@@ -493,7 +493,7 @@ for key in baseline.metrics:
 ## Next Steps
 
 - See `src/experiments/tracking/` for implementation
-- Run tests: `pytest tests/test_run_summary_contract.py`
+- Run tests: `pytest tests&#47;test_run_summary_contract.py`
 - Explore example experiments in `src/experiments/`
 - Read Phase 16C spec for architectural details
 

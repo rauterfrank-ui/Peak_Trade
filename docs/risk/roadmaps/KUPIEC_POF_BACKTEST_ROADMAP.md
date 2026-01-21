@@ -422,7 +422,7 @@ class TestKupiecPOFOutput:
 - [ ] Unit Tests: ≥95% Coverage für `kupiec_pof.py`
 - [ ] Type Hints vollständig
 - [ ] Docstrings (Deutsch) für alle public Functions
-- [ ] `pytest tests/risk/var_backtest/` grün
+- [ ] `pytest tests&#47;risk&#47;var_backtest&#47;` grün
 
 ---
 
@@ -737,7 +737,7 @@ tests/risk/var_backtest/
 - [ ] JSON Report maschinenlesbar
 - [ ] Traffic Light System (🟢 ACCEPT, 🟡 WARNING, 🔴 REJECT)
 - [ ] Charts: Violation Timeline, VaR vs Returns
-- [ ] Export nach `reports/var_backtest/`
+- [ ] Export nach `reports&#47;var_backtest&#47;`
 
 ---
 

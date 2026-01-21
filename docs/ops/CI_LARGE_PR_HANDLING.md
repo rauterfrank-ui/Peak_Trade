@@ -48,11 +48,11 @@ Dieses Dokument beschreibt, wie die CI-Pipeline angepasst wurde, um mechanische 
 - **Verhalten:** Analysiert priorisierte Teilmenge (max 80 Dateien)
 - **Priorität:**
   1. Sensible Pfade: `src/governance/`, `src/execution/`, `src/risk/`, `src/live/`, `scripts/live/`
-  2. Source Code: `src/**/*.py`
-  3. Scripts: `scripts/**/*.py`
-  4. Tests: `tests/**/*.py`
-  5. Config: `config/**/*.toml`
-- **Überspringt:** `docs/`, `templates/`, `**/*.md` (außer sensible Pfade)
+  2. Source Code: `src&#47;**&#47;*.py`
+  3. Scripts: `scripts&#47;**&#47;*.py`
+  4. Tests: `tests&#47;**&#47;*.py`
+  5. Config: `config&#47;**&#47;*.toml`
+- **Überspringt:** `docs/`, `templates/`, `**&#47;*.md` (außer sensible Pfade)
 - **Message:** Warnung mit Empfehlung, PR zu splitten
 
 ### LITE_MINIMAL Mode (>1200 Dateien + Label)

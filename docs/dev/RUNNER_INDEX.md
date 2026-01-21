@@ -18,8 +18,8 @@ Hilfsskripte, Experimente, Migrations, ad-hoc Tools.
 ## Quellen für die Tiering-Entscheidung
 
 Wir gewichten Signale in dieser Reihenfolge:
-1) **CI Workflows** (`.github/workflows/*`)  
-2) **Docs/README/Runbooks** (`README*`, `docs/**`)  
+1) **CI Workflows** (`.github&#47;workflows&#47;*`)  
+2) **Docs/README/Runbooks** (`README*`, `docs&#47;**`)  
 3) **Makefile / Task Runner**  
 4) **Recent changes** (nur schwaches Signal)
 
@@ -79,9 +79,9 @@ python scripts/dev/curate_runner_index.py
 ## Tier B (Ops/Automation) — Startliste (bitte kuratieren)
 
 Typische Kandidaten:
-- `scripts/automation/*`
-- `scripts/validate_*`
-- `scripts/post_merge_*`
+- `scripts&#47;automation&#47;*`
+- `scripts&#47;validate_*`
+- `scripts&#47;post_merge_*`
 - CI/Release Helper
 
 > Ergänze hier eure tatsächlichen Pfade nach Sichtung.
@@ -91,8 +91,8 @@ Typische Kandidaten:
 ## Tier C (Utility/Dev/One-off) — Startliste (bitte kuratieren)
 
 Typische Kandidaten:
-- `scripts/dev/*`
-- `scripts/scratch/*`
+- `scripts&#47;dev&#47;*`
+- `scripts&#47;scratch&#47;*`
 - einmalige Migrationen/Ad-hoc Tools
 
 ---
@@ -101,10 +101,10 @@ Typische Kandidaten:
 
 Für Tier A gilt langfristig als Minimum:
 - `run_id` erzeugen
-- `results/<run_id>/config_snapshot.*`
-- `results/<run_id>/stats.json`
-- `results/<run_id>/equity.csv`
-- optional: `results/<run_id>/trades.parquet`
+- `results&#47;<run_id>&#47;config_snapshot.*`
+- `results&#47;<run_id>&#47;stats.json`
+- `results&#47;<run_id>&#47;equity.csv`
+- optional: `results&#47;<run_id>&#47;trades.parquet`
 
 ✅ Wenn ein Runner das erfüllt: **READY**
 🟡 teilweise: **PARTIAL**
@@ -153,7 +153,7 @@ Diese 3 Runner haben höchste Priority für Evidence Chain Integration:
 ## Appendix: Signals (auto-extracted)
 
 - **CI referenced scripts:**
-  - `scripts/automation/run_offline_daily_suite.py scripts/automation/run_offline_weekly_suite.py scripts/automation/validate_all_pr_reports.sh scripts/ci/check_quarto_no_exec.sh scripts/generate_infostream_packet.py scripts/generate_market_outlook_daily.py scripts/ops/run_audit.sh scripts/run_policy_critic.py scripts/run_test_health_profile.py scripts/show_test_health_history.py scripts/strategy_smoke_check.py scripts/validate_pr_report_format.sh scripts/validate_rl_v0_1.sh `
+  - `scripts&#47;automation&#47;run_offline_daily_suite.py scripts&#47;automation&#47;run_offline_weekly_suite.py scripts&#47;automation&#47;validate_all_pr_reports.sh scripts&#47;ci&#47;check_quarto_no_exec.sh scripts&#47;generate_infostream_packet.py scripts&#47;generate_market_outlook_daily.py scripts&#47;ops&#47;run_audit.sh scripts&#47;run_policy_critic.py scripts&#47;run_test_health_profile.py scripts&#47;show_test_health_history.py scripts&#47;strategy_smoke_check.py scripts&#47;validate_pr_report_format.sh scripts&#47;validate_rl_v0_1.sh `
 
 - **Recently changed scripts (last 30 days, top 20):**
-  - `scripts/research_cli.py scripts/run_stress_tests.py scripts/run_offline_trigger_training_drill_example.py scripts/run_live_dry_run_drills.py scripts/profile_research_and_portfolio.py scripts/live_operator_status.py scripts/generate_strategy_sweep_report.py scripts/generate_live_status_report.py scripts/run/run_regime_btcusdt_experiments.sh scripts/ops/run_audit.sh scripts/run_portfolio_backtest.py scripts/preview_live_portfolio.py scripts/automation/post_merge_verify.sh scripts/automation/generate_pr_report.sh scripts/view_r_and_d_experiments.py scripts/testnet_orchestrator_cli.py scripts/strategy_smoke_check.py scripts/utils/slice_from_backup.sh `
+  - `scripts&#47;research_cli.py scripts&#47;run_stress_tests.py scripts&#47;run_offline_trigger_training_drill_example.py scripts&#47;run_live_dry_run_drills.py scripts&#47;profile_research_and_portfolio.py scripts&#47;live_operator_status.py scripts&#47;generate_strategy_sweep_report.py scripts&#47;generate_live_status_report.py scripts&#47;run&#47;run_regime_btcusdt_experiments.sh scripts&#47;ops&#47;run_audit.sh scripts&#47;run_portfolio_backtest.py scripts&#47;preview_live_portfolio.py scripts&#47;automation&#47;post_merge_verify.sh scripts&#47;automation&#47;generate_pr_report.sh scripts&#47;view_r_and_d_experiments.py scripts&#47;testnet_orchestrator_cli.py scripts&#47;strategy_smoke_check.py scripts&#47;utils&#47;slice_from_backup.sh `

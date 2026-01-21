@@ -100,7 +100,7 @@ PR_NUM=218 ./scripts/workflows/merge_and_format_sweep.sh
 
 Mit `RUN_LARGE_SIM=1`:
 - Erstellt zusätzlichen Test-PR mit >1200 Dummy-Dateien
-- Verzeichnis: `docs/_ci_large_pr_test/`
+- Verzeichnis: `docs&#47;_ci_large_pr_test&#47;`
 - **Wichtig:** Test-PR NICHT mergen, nur zur CI-Verifikation
 - Cleanup nach Test:
   ```bash

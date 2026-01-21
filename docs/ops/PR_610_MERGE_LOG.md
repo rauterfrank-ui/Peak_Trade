@@ -66,8 +66,8 @@ Follows Phase 1 PR #609 (authoritative layer map + matrix).
 - [x] **Tests Gate:** ✅ PASSED (Python 3.9, 3.10, 3.11)
 
 ### Local Tests
-- [x] **Unit Tests:** `pytest tests/ai_orchestration/` (9/9 passed)
-- [x] **Validation Script:** `python scripts/validate_layer_map_config.py` (PASSED)
+- [x] **Unit Tests:** `pytest tests&#47;ai_orchestration&#47;` (9/9 passed)
+- [x] **Validation Script:** `python scripts&#47;validate_layer_map_config.py` (PASSED)
 - [x] **Pre-commit Hooks:** All passed
 
 ### Manual Checks

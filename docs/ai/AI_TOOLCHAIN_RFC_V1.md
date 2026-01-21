@@ -131,12 +131,12 @@ Operator reviews → Approve/Reject
 ### 4.1 Prime Directive (Enforced)
 - NO autonomous live trading/execution
 - NO bypass of governance locks, risk gates
-- NO changes to `src/execution/**`, `src/risk/**`, `src/governance/**` without explicit approval
+- NO changes to `src&#47;execution&#47;**`, `src&#47;risk&#47;**`, `src&#47;governance&#47;**` without explicit approval
 
 ### 4.2 Prompt Injection Defense
 - All external inputs (issues, logs, web) treated as untrusted
 - Red-team tests validate resistance to injection attacks
-- Eval assertions: `not-contains: "src/execution"`, `not-contains: "printenv"`
+- Eval assertions: `not-contains: "src&#47;execution"`, `not-contains: "printenv"`
 
 ### 4.3 Secret Leakage Prevention
 - No API keys, tokens, credentials in repo

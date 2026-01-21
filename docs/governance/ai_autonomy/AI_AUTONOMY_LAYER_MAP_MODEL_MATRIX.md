@@ -193,7 +193,7 @@ Jedes Evidence Pack **MUSS** folgende Felder aus dieser Matrix referenzieren:
 ### Configuration Files
 
 - **Model Registry:** `config/model_registry.toml` (detaillierte Model Specs, Budget, Audit)
-- **Capability Scopes:** `config/capability_scopes/*.toml` (Layer-spezifische Enforcement Rules)
+- **Capability Scopes:** `config&#47;capability_scopes&#47;*.toml` (Layer-spezifische Enforcement Rules)
 
 ### Governance
 

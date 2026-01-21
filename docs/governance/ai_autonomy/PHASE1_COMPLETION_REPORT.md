@@ -202,8 +202,8 @@ python3 -m pytest tests/ai_orchestration/test_models.py -v
    - "DeepSeek Wrapper" (Phase 3+)
 
 3. Tests:
-   - `tests/ai_orchestration/test_proposer_critic_runner.py`
-   - `tests/ai_orchestration/test_model_wrappers.py`
+   - `tests&#47;ai_orchestration&#47;test_proposer_critic_runner.py`
+   - `tests&#47;ai_orchestration&#47;test_model_wrappers.py`
 
 **Erfolgskriterien:**
 - ✅ ProposerCriticRunner kann L2 Market Outlook ausführen

@@ -74,7 +74,7 @@ Quantitative measurements of system health: orders/min, error rate, reconnects, 
 Log format with consistent fields (trace_id, session_id, strategy_id, timestamp, level, message, context). Enables querying and correlation.
 
 **Evidence Report:**  
-Auditable artifact (JSON/Markdown) documenting reconciliation results, position snapshots, metrics summary. Stored in `reports/observability/` or `reports/execution/`.
+Auditable artifact (JSON/Markdown) documenting reconciliation results, position snapshots, metrics summary. Stored in `reports&#47;observability&#47;` or `reports&#47;execution&#47;`.
 
 ---
 
@@ -176,7 +176,7 @@ Track quantitative health metrics for execution system (orders/min, error rate, 
 
 **Metrics Export:**  
 - JSON format: `{"metric": "orders_submitted_total", "value": 123, "timestamp": "2025-12-31T12:00:00Z"}`
-- Periodic snapshot: Every 5 minutes → `reports/observability/metrics_snapshot_YYYYMMDD_HHMMSS.json`
+- Periodic snapshot: Every 5 minutes → `reports&#47;observability&#47;metrics_snapshot_YYYYMMDD_HHMMSS.json`
 
 ---
 
@@ -218,7 +218,7 @@ Provide read-only snapshot of execution state for monitoring (no real-time UI in
 
 **Responsibilities:**  
 - Aggregate current state: open orders, positions, metrics summary
-- Export to JSON: `reports/observability/dashboard_snapshot_YYYYMMDD_HHMMSS.json`
+- Export to JSON: `reports&#47;observability&#47;dashboard_snapshot_YYYYMMDD_HHMMSS.json`
 - Optional: Hook to existing Live-Track UI (read-only query endpoint)
 - Refresh interval: Every 5-10 minutes (no real-time streaming)
 
@@ -433,27 +433,27 @@ Provide read-only snapshot of execution state for monitoring (no real-time UI in
 ### Outputs
 **To Monitoring / Ops:**
 - **Metrics Snapshot:** JSON export of current metrics
-  - Location: `reports/observability/metrics_snapshot_{timestamp}.json`
+  - Location: `reports&#47;observability&#47;metrics_snapshot_{timestamp}.json`
   - Frequency: Every 5 minutes (configurable)
   - Content: orders_submitted_total, error_rate, latency_p95, position_drift_count, etc.
 - **Dashboard Snapshot:** JSON export of current execution state
-  - Location: `reports/observability/dashboard_snapshot_{timestamp}.json`
+  - Location: `reports&#47;observability&#47;dashboard_snapshot_{timestamp}.json`
   - Frequency: Every 5-10 minutes
   - Content: positions, open orders, recent errors, metrics summary
 
 **To Audit / Compliance:**
 - **Reconciliation Report:** ReconDiff summary with all discrepancies
-  - Location: `reports/execution/reconciliation_report_{timestamp}.md` or `.json`
+  - Location: `reports&#47;execution&#47;reconciliation_report_{timestamp}.md` or `.json`
   - Frequency: On-demand or periodic (hourly/daily)
   - Content: List of ReconDiff instances (missing fills, orphan orders, quantity mismatches), resolution status
 - **Position Snapshot:** Current positions + PnL + cash balance
-  - Location: `reports/execution/position_snapshot_{timestamp}.json`
+  - Location: `reports&#47;execution&#47;position_snapshot_{timestamp}.json`
   - Frequency: Periodic (every hour) or on-demand
   - Content: All positions (symbol, quantity, avg_entry_price, realized_pnl, unrealized_pnl), cash_balance, invariants check
 
 **To Structured Logging:**
 - **JSONL Log Stream:** All events logged with structured fields
-  - Location: `logs/execution/{session_id}.jsonl` (append-only)
+  - Location: `logs&#47;execution&#47;{session_id}.jsonl` (append-only)
   - Content: All order submissions, fills, errors, reconciliation results
   - Format: One JSON object per line (JSONL)
 
@@ -561,7 +561,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 
 **Mitigation:**  
 - **ReconDiff Metadata:** Include resolution_status (open/investigating/resolved/dismissed)
-- **Persistence:** Store ReconDiff history in `reports/execution/recon_history.json`
+- **Persistence:** Store ReconDiff history in `reports&#47;execution&#47;recon_history.json`
 - **Deduplication:** If same diff detected → update existing entry, do not create duplicate
 - **Manual Resolution:** Operators can mark diff as "resolved" or "dismissed" with notes
 
@@ -620,7 +620,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 - [ ] **Dashboard Snapshot:** JSON export of current execution state
 - [ ] **Snapshot Content:** positions, open orders, recent errors, metrics summary
 - [ ] **Refresh Interval:** Every 5-10 minutes (configurable)
-- [ ] **Storage Location:** `reports/observability/dashboard_snapshot_{timestamp}.json`
+- [ ] **Storage Location:** `reports&#47;observability&#47;dashboard_snapshot_{timestamp}.json`
 - [ ] **Optional UI Hook:** Read-only query endpoint for existing Live-Track UI (Phase 0 not required)
 
 ### Integration Testing Criteria
@@ -652,39 +652,39 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
 
 ### Required Evidence Artifacts (Implementation Run)
 - [ ] **Metrics Snapshot:** Periodic JSON export of execution metrics
-  - Location pattern: `reports/observability/metrics_snapshot_YYYYMMDD_HHMMSS.json`
+  - Location pattern: `reports&#47;observability&#47;metrics_snapshot_YYYYMMDD_HHMMSS.json`
   - Content: orders_submitted_total, orders_filled_total, error_rate, latency_p95/p99, position_drift_count
   - Purpose: Demonstrate metrics collection + aggregation working
   - Frequency: Every 5 minutes (at least 3 snapshots in test session)
 
 - [ ] **Structured Logging Sample:** JSONL log with trace_id/session_id/strategy_id
-  - Location pattern: `reports/observability/logging_fields.md` (spec) + `logs/execution/{session_id}.jsonl` (sample)
+  - Location pattern: `reports&#47;observability&#47;logging_fields.md` (spec) + `logs&#47;execution&#47;{session_id}.jsonl` (sample)
   - Content: Documentation of log schema + sample log entries (order submission, fill, error)
   - Purpose: Verify structured logging implemented correctly
 
 - [ ] **Reconciliation Report:** Smoke test with synthetic discrepancies
-  - Location pattern: `reports/execution/reconciliation_report_YYYYMMDD_HHMMSS.json`
+  - Location pattern: `reports&#47;execution&#47;reconciliation_report_YYYYMMDD_HHMMSS.json`
   - Content: ReconDiff instances (at least 3 types: missing fill, orphan order, quantity mismatch)
   - Purpose: Validate ReconciliationEngine detects discrepancies
   - Test Setup: Create internal order, no external match → detect orphan; external fill, no internal → detect missing fill
 
 - [ ] **Position Snapshot:** Current positions + PnL + cash balance
-  - Location pattern: `reports/execution/position_snapshot_YYYYMMDD_HHMMSS.json`
+  - Location pattern: `reports&#47;execution&#47;position_snapshot_YYYYMMDD_HHMMSS.json`
   - Content: All positions (symbol, quantity, avg_entry_price, realized_pnl, unrealized_pnl), cash_balance, invariants check result
   - Purpose: Demonstrate Position Ledger correctness
 
 - [ ] **Dashboard Snapshot:** Execution state summary
-  - Location pattern: `reports/observability/dashboard_snapshot_YYYYMMDD_HHMMSS.json`
+  - Location pattern: `reports&#47;observability&#47;dashboard_snapshot_YYYYMMDD_HHMMSS.json`
   - Content: positions, open orders, recent errors, metrics summary
   - Purpose: Verify dashboard export functionality
 
 - [ ] **Invariant Validation Report:** Position + Cash = Cumulative Fills
-  - Location pattern: `reports/execution/invariant_validation_YYYYMMDD_HHMMSS.md`
+  - Location pattern: `reports&#47;execution&#47;invariant_validation_YYYYMMDD_HHMMSS.md`
   - Content: Test results verifying invariants hold after fills (BUY/SELL/position flip scenarios)
   - Purpose: Prove Position Ledger math correct
 
 - [ ] **Integration Test Results:** WP0A → WP0D fill propagation
-  - Location pattern: `tests/execution/test_wp0d_integration.py` (pytest output)
+  - Location pattern: `tests&#47;execution&#47;test_wp0d_integration.py` (pytest output)
   - Content: Test fill event from OSM → Position Ledger update → metrics increment
   - Purpose: Verify cross-WP integration (A ↔ D)
 
@@ -814,7 +814,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
   - Invariant checks (Position + Cash = Cumulative Fills)
   - Idempotent fill application (duplicate detection)
 - Integration: Hook into WP0A OSM (OSM emits Fill event → PositionAccountingBridge.apply_fill())
-- Test: `tests/execution/test_position_bridge.py` (fill application, PnL, invariants, idempotency)
+- Test: `tests&#47;execution&#47;test_position_bridge.py` (fill application, PnL, invariants, idempotency)
 
 **Step 2: Metrics Collector (Day 2-3)**
 - Implement "src\/execution\/metrics.py":
@@ -824,7 +824,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
   - Ring buffer for bounded storage (max 10k events, FIFO eviction)
   - Periodic snapshot export (`export_metrics() -> Dict`)
 - Integration: Hook into WP0A OSM (track order events), WP0C (track routing errors/latency)
-- Test: `tests/execution/test_metrics.py` (counters, histograms, percentiles, bounded buffers)
+- Test: `tests&#47;execution&#47;test_metrics.py` (counters, histograms, percentiles, bounded buffers)
 
 **Step 3: Structured Logger (Day 3)**
 - Implement "src\/observability\/structured_logger.py":
@@ -835,7 +835,7 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
   - Log retention (last 7 days, configurable)
   - Disk space check on startup
 - Integration: Replace print/log statements in WP0A/WP0C/WP0D with structured logging
-- Test: `tests/observability/test_structured_logger.py` (schema, JSONL format, rotation, retention)
+- Test: `tests&#47;observability&#47;test_structured_logger.py` (schema, JSONL format, rotation, retention)
 
 **Step 4: ReconciliationEngine (Day 4-5)**
 - Implement "src\/execution\/reconciliation.py":
@@ -847,34 +847,34 @@ ReconDiff generated, operator investigates, but resolution not tracked → same 
   - ReconDiff generation (missing fill, orphan order, quantity mismatch, price drift)
   - Reconciliation report export (JSON/Markdown)
 - Integration: Run periodically (hourly/daily), or on-demand via CLI/API
-- Test: `tests/execution/test_reconciliation.py` (matching, tolerance, diff generation, report export)
+- Test: `tests&#47;execution&#47;test_reconciliation.py` (matching, tolerance, diff generation, report export)
 
 **Step 5: Minimal Dashboard (Day 5)**
 - Implement "src\/observability\/dashboard.py":
   - `DashboardExporter` class with `export_snapshot() -> Dict` method
   - Aggregate current state (positions, open orders, recent errors, metrics summary)
-  - Export to JSON (`reports/observability/dashboard_snapshot_{timestamp}.json`)
+  - Export to JSON (`reports&#47;observability&#47;dashboard_snapshot_{timestamp}.json`)
   - Periodic refresh (every 5-10 minutes, configurable)
   - Optional: HTTP endpoint for read-only query (defer to Phase 1 if not needed)
 - Integration: Run as background task (asyncio, threading, or periodic CLI call)
-- Test: `tests/observability/test_dashboard.py` (snapshot schema, export, refresh)
+- Test: `tests&#47;observability&#47;test_dashboard.py` (snapshot schema, export, refresh)
 
 **Step 6: Integration Testing (Day 6)**
 - Implement end-to-end tests:
-  - `tests/execution/test_wp0d_integration.py`: WP0A → WP0D fill propagation
+  - `tests&#47;execution&#47;test_wp0d_integration.py`: WP0A → WP0D fill propagation
     - Create order in OSM → submit → fill → verify Position Ledger updated
     - Verify metrics incremented (orders_submitted_total, orders_filled_total)
     - Verify structured log entries created (order_submitted, fill_applied)
-  - `tests/execution/test_position_invariants.py`: Verify Position + Cash = Cumulative Fills after BUY/SELL/flip scenarios
-  - `tests/execution/test_reconciliation_smoke.py`: Create synthetic discrepancies → verify ReconciliationEngine detects them
+  - `tests&#47;execution&#47;test_position_invariants.py`: Verify Position + Cash = Cumulative Fills after BUY/SELL/flip scenarios
+  - `tests&#47;execution&#47;test_reconciliation_smoke.py`: Create synthetic discrepancies → verify ReconciliationEngine detects them
 
 **Step 7: Evidence Generation (Day 7)**
-- Run periodic snapshots during test session → `reports/observability/metrics_snapshot_*.json` (at least 3)
-- Generate structured logging sample → `reports/observability/logging_fields.md` + sample JSONL
-- Run reconciliation smoke test → `reports/execution/reconciliation_report_*.json`
-- Export position snapshot → `reports/execution/position_snapshot_*.json`
-- Export dashboard snapshot → `reports/observability/dashboard_snapshot_*.json`
-- Run invariant validation tests → `reports/execution/invariant_validation_*.md`
+- Run periodic snapshots during test session → `reports&#47;observability&#47;metrics_snapshot_*.json` (at least 3)
+- Generate structured logging sample → `reports&#47;observability&#47;logging_fields.md` + sample JSONL
+- Run reconciliation smoke test → `reports&#47;execution&#47;reconciliation_report_*.json`
+- Export position snapshot → `reports&#47;execution&#47;position_snapshot_*.json`
+- Export dashboard snapshot → `reports&#47;observability&#47;dashboard_snapshot_*.json`
+- Run invariant validation tests → `reports&#47;execution&#47;invariant_validation_*.md`
 - Write WP0D completion report: "docs\/execution\/WP0D_IMPLEMENTATION_REPORT.md" (future)
 
 ---

@@ -31,25 +31,25 @@ Ein vollständiger Audit-Scan von 229 Pull Requests (PR #1-229) wurde durchgefü
 
 Dieser Audit-Scan hat folgende Dokumente erstellt:
 
-1. **`reports/pr_audit_scan_1_229_20251226_205805.tsv`**
+1. **`reports&#47;pr_audit_scan_1_229_20251226_205805.tsv`**
    - Rohdaten aller 191 analysierten PRs
    - Maschinenlesbar (TSV-Format)
    - Enthält: PR#, State, MergedAt, Conclusion, Check-Details
 
-2. **`reports/audit/AUDIT_CHECK_ANALYSIS_PR_1_229.md`**
+2. **`reports&#47;audit&#47;AUDIT_CHECK_ANALYSIS_PR_1_229.md`**
    - Statistische Analyse
    - Timeline-Analyse (4 Phasen identifiziert)
    - Handlungsempfehlungen
 
-3. **`reports/audit/audit_failure_prs_evidence_20251226_200510.tsv`**
+3. **`reports&#47;audit&#47;audit_failure_prs_evidence_20251226_200510.tsv`**
    - Forensische Daten der 10 FAILURE-PRs
    - Merge-SHAs, Merge-By, fehlgeschlagene Checks
 
-4. **`reports/audit/audit_failure_prs_evidence_20251226_200510.md`**
+4. **`reports&#47;audit&#47;audit_failure_prs_evidence_20251226_200510.md`**
    - Lesbare Evidence-Pack für FAILURE-PRs
    - Detaillierte Failure-Aufschlüsselung
 
-5. **`reports/audit/AUDIT_FAILURE_ROOT_CAUSE_ANALYSIS.md`**
+5. **`reports&#47;audit&#47;AUDIT_FAILURE_ROOT_CAUSE_ANALYSIS.md`**
    - Tiefgehende Root-Cause-Analyse
    - Sicherheitsrisiko-Bewertung
    - Maßnahmenkatalog
@@ -203,7 +203,7 @@ git checkout main
 - Hotfixes wo nötig
 
 #### 5. Offene FAILURE-PRs schließen
-- PR #57: `feat(data/offline): add GARCH-regime OfflineRealtimeFeedV0`
+- PR #57: `feat(data&#47;offline): add GARCH-regime OfflineRealtimeFeedV0`
 - PR #60: `ci(ops): validate PR final report formatting`
 - PR #117: `Add resilience system with health checks`
 
@@ -320,11 +320,11 @@ git checkout main
 ## 📚 Referenzen & Artefakte
 
 ### Generierte Reports
-1. `reports/pr_audit_scan_1_229_20251226_205805.tsv`
-2. `reports/audit/AUDIT_CHECK_ANALYSIS_PR_1_229.md`
-3. `reports/audit/audit_failure_prs_evidence_20251226_200510.{tsv,md}`
-4. `reports/audit/AUDIT_FAILURE_ROOT_CAUSE_ANALYSIS.md`
-5. `reports/audit/AUDIT_COMPLETE_SUMMARY_20251226.md` (dieses Dokument)
+1. `reports&#47;pr_audit_scan_1_229_20251226_205805.tsv`
+2. `reports&#47;audit&#47;AUDIT_CHECK_ANALYSIS_PR_1_229.md`
+3. `reports&#47;audit&#47;audit_failure_prs_evidence_20251226_200510.{tsv,md}`
+4. `reports&#47;audit&#47;AUDIT_FAILURE_ROOT_CAUSE_ANALYSIS.md`
+5. `reports&#47;audit&#47;AUDIT_COMPLETE_SUMMARY_20251226.md` (dieses Dokument)
 
 ### Tools & Scripts
 1. `scripts/ops/pr_audit_scan.sh` (bestehend)

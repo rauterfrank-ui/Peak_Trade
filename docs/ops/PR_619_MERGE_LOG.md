@@ -117,7 +117,7 @@ gh pr checks 619
 - **Schema:** `src/ai_orchestration/evidence_pack.py`
 - **Validator:** `scripts/validate_evidence_pack.py`
 - **Model Registry:** `config/model_registry.toml`
-- **Capability Scopes:** `config/capability_scopes/*.toml`
+- **Capability Scopes:** `config&#47;capability_scopes&#47;*.toml`
 - **Schema Docs:** `docs/governance/ai_autonomy/SCHEMA_MANDATORY_FIELDS.md`
 
 ### Related PRs
@@ -133,7 +133,7 @@ gh pr checks 619
 ## Next Steps (Optional)
 
 **For Phase 4B M2 Implementation:**
-1. Create Evidence Pack directory: `data/evidence_packs/.gitkeep`
+1. Create Evidence Pack directory: `data&#47;evidence_packs&#47;.gitkeep`
 2. Implement CLI wrapper script (gap; not yet implemented): `run_layer_evidence_pack.py`
 3. Run first test layer execution
 4. Validate with existing validator

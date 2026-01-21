@@ -72,8 +72,8 @@ These fields are **automatically removed** during canonicalization:
 | `run_id` | `"run_id": "abc123"` | Unique per run |
 | `pid` | `"pid": 12345` | Process ID varies |
 | `hostname` | `"hostname": "ci-runner-01"` | Host varies |
-| `absolute_path` | `"path": "/Users/test/Peak_Trade"` | Absolute paths vary |
-| `_temp`, `_tmp` | `"_tmp_dir": "/tmp/xyz"` | Temp paths vary |
+| `absolute_path` | `"path": "&#47;Users&#47;test&#47;Peak_Trade"` | Absolute paths vary |
+| `_temp`, `_tmp` | `"_tmp_dir": "&#47;tmp&#47;xyz"` | Temp paths vary |
 
 **Note:** The L4 Critic already sets `created_at=None` in deterministic mode, so this field is typically absent.
 
@@ -169,9 +169,9 @@ diff .tmp/l4_critic_run1/critic_report.json .tmp/l4_critic_run2/critic_report.js
 **File:** `.github/workflows/l4_critic_replay_determinism_v2.yml`
 
 **Trigger:** PRs/pushes touching:
-- `src/ai_orchestration/**`
-- `scripts/aiops/**`
-- `tests/**`
+- `src&#47;ai_orchestration&#47;**`
+- `scripts&#47;aiops&#47;**`
+- `tests&#47;**`
 
 **Jobs:**
 1. **`l4_critic_replay_determinism`** (existing)

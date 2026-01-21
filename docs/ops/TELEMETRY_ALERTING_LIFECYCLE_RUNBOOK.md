@@ -91,7 +91,7 @@ python scripts/telemetry_alerts_lifecycle.py stats
 
 ### Alert History
 
-**Storage:** JSONL append-only file (`data/telemetry/alerts/alerts_history.jsonl`)
+**Storage:** JSONL append-only file (`data&#47;telemetry&#47;alerts&#47;alerts_history.jsonl`)
 
 **Includes:**
 - All alert metadata (timestamp, severity, rule_id, dedupe_key, labels)
@@ -110,7 +110,7 @@ python scripts/telemetry_alerts_lifecycle.py stats
 - Suppresses future alerts with same `dedupe_key`
 - Optional TTL (e.g., `2h`, `30m`, permanent if omitted)
 - CRITICAL alerts bypass ACK by default (configurable)
-- Stored in: `data/telemetry/alerts/alerts_state.json`
+- Stored in: `data&#47;telemetry&#47;alerts&#47;alerts_state.json`
 
 **SNOOZE:**
 - Suppresses ALL alerts from a rule
@@ -277,7 +277,7 @@ state._cleanup_expired()
 
 **Solution:**
 1. Check config: `telemetry.alerting.history.enabled = true`
-2. Run main alert runner: `python scripts/telemetry_alerts.py`
+2. Run main alert runner: `python scripts&#47;telemetry_alerts.py`
 3. Verify history file exists: `ls -la data/telemetry/alerts/alerts_history.jsonl`
 
 ### Problem 3: ACK Not Suppressing Alerts

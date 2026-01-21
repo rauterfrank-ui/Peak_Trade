@@ -87,7 +87,7 @@ grep -A 20 "Linking Conventions" docs/ops/EVIDENCE_ENTRY_TEMPLATE.md
 **Level:** NONE
 
 **Analysis:**
-- ✅ Documentation-only changes under `docs/ops/**`
+- ✅ Documentation-only changes under `docs&#47;ops&#47;**`
 - ✅ No runtime code changes
 - ✅ No configuration changes
 - ✅ No dependency changes

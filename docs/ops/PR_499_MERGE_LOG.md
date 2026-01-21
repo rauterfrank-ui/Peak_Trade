@@ -13,7 +13,7 @@ PR #499 macht das Cursor-Timeout/Hang-Runbook operational und self-contained: to
 - Inline-Diagnoseblöcke (No-Sudo) ergänzt: Prozess-/System-Snapshots, best-effort Netzwerk-Hinweise.
 - Evidence-Pack Workflow als Checkliste präzisiert; Dokumentation konsistent auf `.tgz`.
 - Advanced Diagnostics (macOS) ergänzt: `sample`, `spindump`, `fs_usage` inkl. sudo/Privacy-Hinweisen.
-- `scripts/ops/collect_cursor_logs.sh` neu getrackt und executable (Mode 755); erzeugt `artifacts/cursor_logs_YYYYMMDD_HHMMSS.tgz`.
+- `scripts/ops/collect_cursor_logs.sh` neu getrackt und executable (Mode 755); erzeugt `artifacts&#47;cursor_logs_YYYYMMDD_HHMMSS.tgz`.
 
 ## Verification
 - CI grün (alle Checks erfolgreich).
@@ -30,7 +30,7 @@ PR #499 macht das Cursor-Timeout/Hang-Runbook operational und self-contained: to
 2) Quick Snapshot (No-Sudo) ausführen.
 3) Log-Bundle erzeugen:
    - bevorzugt: `scripts/ops/collect_cursor_logs.sh`
-   - fallback: `bash scripts/ops/collect_cursor_logs.sh`
+   - fallback: `bash scripts&#47;ops&#47;collect_cursor_logs.sh`
 4) Optional (bei harten Hangs): macOS Advanced Diagnostics ausführen (sudo), Artefakte zusammen mit dem `.tgz` ablegen.
 
 ## References

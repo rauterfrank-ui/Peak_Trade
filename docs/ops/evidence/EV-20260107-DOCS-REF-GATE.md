@@ -35,7 +35,7 @@ Docs Reference Targets Gate CI workflow and link debt tracking system. Covers au
 ## Verification Steps
 1. Check CI workflow exists: `cat .github/workflows/docs_reference_targets_gate.yml`
 2. Run validator locally: `./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
-3. Inspect baseline: `jq '.metadata' docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json`
+3. Inspect baseline: `jq '.metadata' docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_BASELINE.json`
 4. Expected: Gate runs on every PR, fails on new broken links, baseline tracks 4250+ references
 
 ---

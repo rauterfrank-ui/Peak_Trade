@@ -26,7 +26,7 @@ Diese PR implementiert ein **minimalistisches Tracking Layer** für Backtest-Run
 | Datei | Zeilen | Beschreibung |
 |-------|--------|--------------|
 | `src/core/tracking.py` | 350+ | Tracker Protocol + NoopTracker + MLflowTracker |
-| `tests/core/test_tracking_noop.py` | 50+ | Tests für NoopTracker |
+| `tests&#47;core&#47;test_tracking_noop.py` | 50+ | Tests für NoopTracker |
 | `tests/backtest/test_engine_tracking.py` | 200+ | Tests für "No Behavior Change" |
 | `PR_X1_TRACKING_LAYER_REPORT.md` | (dieses File) | Abschlussbericht |
 
@@ -447,7 +447,7 @@ python scripts/run_strategy_from_config.py
 - **Runner**: `scripts/run_strategy_from_config.py`
 
 ### Tests
-- **NoopTracker**: `tests/core/test_tracking_noop.py`
+- **NoopTracker**: `tests&#47;core&#47;test_tracking_noop.py`
 - **Backtest-Integration**: `tests/backtest/test_engine_tracking.py`
 
 ### Dokumentation

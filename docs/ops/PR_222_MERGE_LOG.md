@@ -15,8 +15,8 @@ Mit PR #222 wurde der neue **Merge + Format Sweep Workflow** in den Ops Workflow
 
 - **Workflow-Eintrag im Hub:** Neuer Workflow "Merge + Format Sweep" ist jetzt unter `/ops/workflows` sichtbar
 - **2 Commands verfügbar:**
-  - Standard: `PR_NUM=<nummer> ./scripts/workflows/merge_and_format_sweep.sh`
-  - Large-PR Simulation: `PR_NUM=<nummer> RUN_LARGE_SIM=1 LARGE_SIM_FILES=1250 ./scripts/workflows/merge_and_format_sweep.sh`
+  - Standard: `PR_NUM=<nummer> .&#47;scripts&#47;workflows&#47;merge_and_format_sweep.sh`
+  - Large-PR Simulation: `PR_NUM=<nummer> RUN_LARGE_SIM=1 LARGE_SIM_FILES=1250 .&#47;scripts&#47;workflows&#47;merge_and_format_sweep.sh`
 - **3 Docs-Refs verlinkt:**
   - `docs/ops/WORKFLOW_MERGE_AND_FORMAT_SWEEP.md` (Runbook)
   - `docs/ops/CI_LARGE_PR_HANDLING.md` (CI-Handling)

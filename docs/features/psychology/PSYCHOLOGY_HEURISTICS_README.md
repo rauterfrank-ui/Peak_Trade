@@ -303,8 +303,8 @@ Sollte 47/47 passing sein. Wenn nicht → Code-Review.
 
 ## 🎯 Next Steps
 
-1. ✅ **Tests laufen lassen:** `pytest tests/reporting/test_psychology_heuristics.py -v`
-2. ✅ **Demo anschauen:** `PYTHONPATH=. python3 scripts/example_psychology_heuristics.py`
+1. ✅ **Tests laufen lassen:** `pytest tests&#47;reporting&#47;test_psychology_heuristics.py -v`
+2. ✅ **Demo anschauen:** `PYTHONPATH=. python3 scripts&#47;example_psychology_heuristics.py`
 3. 📖 **Doku lesen:** `docs/psychology_heuristics.md`
 4. 🔧 **Integrieren:** Event-Konvertierung implementieren
 5. 🎨 **Visualisieren:** In Dashboard einbauen

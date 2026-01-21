@@ -299,14 +299,14 @@ git mv scripts/dev/test_knowledge_api_smoke.sh scripts/dev/
 | Operation | Reason |
 |-----------|--------|
 | Resolve `config.toml` vs `config/config.toml` | Determine which is active, consolidate or delete |
-| `git mv COMPONENT_VAR_ROADMAP.patch patches/` | Patches gehören in patches/ |
-| `git mv docker-compose.obs.yml docker/` | Docker files in docker/ |
+| `git mv COMPONENT_VAR_ROADMAP.patch patches&#47;` | Patches gehören in patches/ |
+| `git mv docker-compose.obs.yml docker&#47;` | Docker files in docker/ |
 
 ### Phase 5: Dubletten & Dead Files
 
 | Datei | Aktion | Reference Check | Begründung |
 |-------|--------|-----------------|------------|
-| `run_regime_experiments.sh` (root) | **DELETE** | ✅ Nur in docs erwähnt | Existiert in `archive/legacy_scripts/` |
+| `run_regime_experiments.sh` (root) | **DELETE** | ✅ Nur in docs erwähnt | Existiert in `archive&#47;legacy_scripts&#47;` |
 | `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` (root) | **CONSOLIDATE** | ⚠️ 20 Refs! | Root vs docs/ops/ differ - consolidate newer → docs/ops/ |
 | `cleanup_repo.sh` (scripts/) | **DELETE?** | ❓ Check refs | Wahrscheinlich obsolet/test-script |
 | `validate_rl_v0_1.sh` (scripts/) | **MOVE** | - | → scripts/dev/ oder scripts/run/ |
@@ -387,12 +387,12 @@ Struktur der Scripts erklärt
 - `/data/`
 - `/results/`
 - `/reports/`
-- `logs/`
-- `live_runs/`
-- `test_runs/`
+- `logs&#47;`
+- `live_runs&#47;`
+- `test_runs&#47;`
 - `*.log`
-- `venv/`
-- Guards: `/*_REPORT.md`, `/*_SUMMARY.md`
+- `venv&#47;`
+- Guards: `&#47;*_REPORT.md`, `&#47;*_SUMMARY.md`
 
 **No Action Needed** - .gitignore ist bereits gut konfiguriert!
 
@@ -416,7 +416,7 @@ Struktur der Scripts erklärt
 Nach Cleanup:
 
 - [ ] `python -m compileall src` → No errors
-- [ ] `pytest tests/` → All pass
+- [ ] `pytest tests&#47;` → All pass
 - [ ] `ruff check .` → No new errors
 - [ ] `ruff format --check .` → Format consistent
 - [ ] Important doc links (spot check):

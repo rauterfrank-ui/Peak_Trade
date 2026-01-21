@@ -270,9 +270,9 @@ jobs:
 ## 📚 Referenzen
 
 ### Audit-Dokumente
-1. `reports/audit/AUDIT_COMPLETE_SUMMARY_20251226.md` - Hauptbericht
-2. `reports/audit/AUDIT_FAILURE_ROOT_CAUSE_ANALYSIS.md` - Root Cause
-3. `reports/pr_audit_scan_1_229_20251226_205805.tsv` - Rohdaten
+1. `reports&#47;audit&#47;AUDIT_COMPLETE_SUMMARY_20251226.md` - Hauptbericht
+2. `reports&#47;audit&#47;AUDIT_FAILURE_ROOT_CAUSE_ANALYSIS.md` - Root Cause
+3. `reports&#47;pr_audit_scan_1_229_20251226_205805.tsv` - Rohdaten
 
 ### GitHub API Calls (verwendet)
 ```bash

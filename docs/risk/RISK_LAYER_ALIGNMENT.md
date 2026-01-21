@@ -356,7 +356,7 @@ if kill_switch.status == KillSwitchStatus.ACTIVE:
 ### 5.5 Logging & Observability
 - Alle Risk-Decisions werden geloggt (via `AuditLogWriter`)
 - Performance-Metrics für VaR-Berechnungen
-- Alert-Integration über bestehende `risk_layer/alerting/`
+- Alert-Integration über bestehende `risk_layer&#47;alerting&#47;`
 
 ---
 
@@ -500,7 +500,7 @@ __all__ = [
 
 ### 7.1 Unit Tests
 - Jeder Agent implementiert Tests für seine Module
-- Naming Convention: `tests/risk/test_<module>.py`
+- Naming Convention: `tests&#47;risk&#47;test_<module>.py`
 - Alle Tests müssen `pytest` konform sein
 
 ### 7.2 Integration Tests

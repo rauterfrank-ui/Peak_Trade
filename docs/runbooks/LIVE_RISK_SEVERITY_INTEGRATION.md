@@ -73,8 +73,8 @@ Damit wird aus der reinen Limit-Logik ein vollwertiges **Risk-Operations-Modul**
 | Datei | Änderungen |
 |-------|------------|
 | `src/webui/live_track.py` | `LiveSessionSummary` und `LiveSessionDetail` mit `risk_status`, `risk_severity`, `risk_limit_details` |
-| `templates/.../index.html` | Risk-Ampel in Sessions-Tabelle und "Letzte Session"-Kachel |
-| `templates/.../session_detail.html` | Risk-Status-Badge, Limit-Details-Tabelle, Operator-Empfehlungen |
+| `templates&#47;...&#47;index.html` | Risk-Ampel in Sessions-Tabelle und "Letzte Session"-Kachel |
+| `templates&#47;...&#47;session_detail.html` | Risk-Status-Badge, Limit-Details-Tabelle, Operator-Empfehlungen |
 
 ### Darstellung der Ampel
 

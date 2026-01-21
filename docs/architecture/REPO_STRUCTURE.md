@@ -110,7 +110,7 @@ docs/
 |-----|------|----------|
 | Architecture Decision | `docs/architecture/` | ADRs, Design-Docs |
 | Developer Guide | `docs/dev/` | Setup, API-Guides |
-| Feature-Dokumentation | `docs/features/<feature>/` | Feature-spezifisch |
+| Feature-Dokumentation | `docs&#47;features&#47;<feature>&#47;` | Feature-spezifisch |
 | Implementation Report | `docs/ops/reports/` | Abschluss-Reports |
 | Phase Completion | `docs/ops/reports/phases/` | Phase-Reports |
 | Operator Guide/Runbook | `docs/ops/` oder `docs/runbooks/` | Operational Guides |
@@ -280,7 +280,7 @@ docker/
 
 1. **Architecture Decision?** → `docs/architecture/`
 2. **Developer Guide?** → `docs/dev/`
-3. **Feature-spezifisch?** → `docs/features/<feature>/`
+3. **Feature-spezifisch?** → `docs&#47;features&#47;<feature>&#47;`
 4. **Implementation Report?** → `docs/ops/reports/`
 5. **Operator Guide?** → `docs/ops/` oder `docs/runbooks/`
 6. **Risk-bezogen?** → `docs/risk/`
@@ -295,8 +295,8 @@ docker/
 
 ### Code
 
-1. **Produktiv-Code?** → `src/<layer>/`
-2. **Test?** → `tests/<layer>/`
+1. **Produktiv-Code?** → `src&#47;<layer>&#47;`
+2. **Test?** → `tests&#47;<layer>&#47;`
 3. **Example?** → `examples/`
 
 ---
@@ -314,7 +314,7 @@ Diese Dinge sind in `.gitignore` und sollten NICHT committed werden:
 - `*.log` (Log-Files)
 - `venv/` (Virtual Environment)
 
-**Ausnahme:** Wenn Reports/Artefakte absichtlich committed werden sollen, muss das klar dokumentiert sein (z.B. `reports/README.md`).
+**Ausnahme:** Wenn Reports/Artefakte absichtlich committed werden sollen, muss das klar dokumentiert sein (z.B. `reports&#47;README.md`).
 
 ---
 
@@ -326,7 +326,7 @@ Diese Dinge sind in `.gitignore` und sollten NICHT committed werden:
 - **Ops-Hub:** `docs/ops/README.md`
 - **Risk-Hub:** `docs/risk/README.md`
 - **Config-Guide:** `config/README.md`
-- **Archive-Index:** `archive/README.md`
+- **Archive-Index:** `archive&#47;README.md`
 
 ---
 

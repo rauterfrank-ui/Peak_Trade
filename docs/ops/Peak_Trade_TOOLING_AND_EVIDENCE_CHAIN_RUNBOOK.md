@@ -57,19 +57,19 @@ docker compose -f ops/observability/docker-compose.yml up
 - Tooling/Doku:
   - `docs/dev/` (uv, pre-commit, tooling)
 - Evidence/Reports:
-  - `results/<run_id>/...` (Artefakte pro Run)
-  - `reports/quarto/` (Templates)
-  - `docs/reports/` (How-to)
+  - `results&#47;<run_id>&#47;...` (Artefakte pro Run)
+  - `reports&#47;quarto&#47;` (Templates)
+  - `docs&#47;reports&#47;` (How-to)
 - Data Lake:
-  - `data/lake/` (Parquet)
+  - `data&#47;lake&#47;` (Parquet)
   - `src/data/lake/` (writer + query)
 - Observability:
   - `src/obs/` (OTel init + helpers)
-  - `ops/observability/` (docker-compose + README)
+  - `ops&#47;observability&#47;` (docker-compose + README)
 
 ### 1.2 Naming & IDs
 - `run_id`: UUID4 (string)
-- `results/<run_id>/` ist **single source of truth** für Artefakte.
+- `results&#47;<run_id>&#47;` ist **single source of truth** für Artefakte.
 - `run_id` soll in Logs/Traces/Tracking überall als Tag auftauchen.
 
 ---
@@ -166,16 +166,16 @@ pre-commit install
 
 ### 3.1 Ziel / Exit Criteria (P1)
 ✅ Jeder Runner-Run erzeugt:
-- `results/<run_id>/config_snapshot.*`
-- `results/<run_id>/stats.json`
-- `results/<run_id>/equity.csv`
+- `results&#47;<run_id>&#47;config_snapshot.*`
+- `results&#47;<run_id>&#47;stats.json`
+- `results&#47;<run_id>&#47;equity.csv`
 - optional: `trades.parquet` / `trades.csv`
 
 ✅ Optional (wenn installiert):
 - MLflow UI zeigt Run mit params/metrics/artifacts
 
 ✅ Quarto:
-- Report rendert aus `results/<run_id>/...` zu HTML (1 Command)
+- Report rendert aus `results&#47;<run_id>&#47;...` zu HTML (1 Command)
 
 ### 3.2 Umsetzung (Operator Steps)
 
@@ -214,7 +214,7 @@ quarto render reports/quarto/backtest_report.qmd
 ```
 
 #### Step F: „Last run report“ Convenience
-> Empfohlen: Script, das den neuesten `results/<run_id>` findet und report rendert.
+> Empfohlen: Script, das den neuesten `results&#47;<run_id>` findet und report rendert.
 ```bash
 bash scripts/utils/render_last_report.sh
 ```
@@ -229,8 +229,8 @@ bash scripts/utils/render_last_report.sh
 
 **Optional**
 - `trades.parquet` / `trades.csv`
-- `debug/*.json`
-- `plots/*.png` (wenn gewünscht)
+- `debug&#47;*.json`
+- `plots&#47;*.png` (wenn gewünscht)
 
 ### 3.4 Troubleshooting (P1)
 
@@ -348,7 +348,7 @@ python scripts/run_strategy_from_config.py --config config/my_strategy.toml
   - `pytest -q`
 
 ### 5.3 Traceability (Optional / euer Ops-Standard)
-- Merge Log unter `docs/ops/PR_<N>_MERGE_LOG.md`
+- Merge Log unter `docs&#47;ops&#47;PR_<N>_MERGE_LOG.md`
 - Index `docs/ops/README.md` aktualisieren
 
 ---
@@ -364,8 +364,8 @@ python scripts/run_strategy_from_config.py --config config/my_strategy.toml
 ---
 
 ## Appendix A – Beispiel “Retention Policy” (später)
-- `results/`: behalte letzte N runs (z.B. 200) oder max age (z.B. 30 Tage)
-- `data/lake/`: nur gold dataset + curated partitions
+- `results&#47;`: behalte letzte N runs (z.B. 200) oder max age (z.B. 30 Tage)
+- `data&#47;lake&#47;`: nur gold dataset + curated partitions
 - optional: `scripts&sol;cleanup_artifacts.py` (noch nicht implementiert) + CI/cron (nur wenn ihr wollt)
 
 ---

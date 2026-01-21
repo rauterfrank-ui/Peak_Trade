@@ -311,9 +311,9 @@ python scripts/run_smoke_tests.py
 
 ## 🔗 Referenzen
 
-- **Evidence Pack:** `reports/audit/audit_failure_prs_evidence_20251226_200510.md`
-- **Scan Report:** `reports/pr_audit_scan_1_229_20251226_205805.tsv`
-- **Analysis:** `reports/audit/AUDIT_CHECK_ANALYSIS_PR_1_229.md`
+- **Evidence Pack:** `reports&#47;audit&#47;audit_failure_prs_evidence_20251226_200510.md`
+- **Scan Report:** `reports&#47;pr_audit_scan_1_229_20251226_205805.tsv`
+- **Analysis:** `reports&#47;audit&#47;AUDIT_CHECK_ANALYSIS_PR_1_229.md`
 - **GitHub Docs:** [Branch Protection Rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 
 ---

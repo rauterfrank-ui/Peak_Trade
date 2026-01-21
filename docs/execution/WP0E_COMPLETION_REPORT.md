@@ -95,7 +95,7 @@ Implemented stable contracts and interfaces for the execution system, establishi
 
 **Total:** 6 new files, ~2,067 lines
 
-**Note:** `reports/execution/contracts_smoke.json` is generated (gitignored, not tracked)
+**Note:** `reports&#47;execution&#47;contracts_smoke.json` is generated (gitignored, not tracked)
 
 ---
 
@@ -132,7 +132,7 @@ PYTHONPATH=/Users/frnkhrz/Peak_Trade uv run python scripts/execution/generate_co
 ## 📊 Evidence Files
 
 ### contracts_smoke.json (Generated artifact, gitignored)
-**Location:** `reports/execution/contracts_smoke.json` (NOT tracked in git)
+**Location:** `reports&#47;execution&#47;contracts_smoke.json` (NOT tracked in git)
 
 **Contains:**
 - Deterministic snapshots of all contract types

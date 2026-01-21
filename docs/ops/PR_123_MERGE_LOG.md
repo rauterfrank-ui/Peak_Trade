@@ -14,7 +14,7 @@ PR #123 wurde erfolgreich **gemerged** (UTC: 2025-12-23 21:31:20) in `main`.
 ## Changes
 - `README.md` aktualisiert (+11 Zeilen)
 - `docs/WORKFLOW_NOTES.md` nach `docs/` verschoben (von `src/docs/`)
-- Branch `docs/core-architecture-docs` nach Merge gelöscht
+- Branch "docs\/core-architecture-docs" (branch) nach Merge gelöscht
 
 ## Verification
 - `git show --no-patch abae660` (Commit vorhanden)

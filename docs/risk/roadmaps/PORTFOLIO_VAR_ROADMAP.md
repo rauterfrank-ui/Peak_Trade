@@ -211,12 +211,12 @@ def covariance_var(
 
 ### Testing Strategy
 
-1. **Unit-Tests** (`tests/risk/test_portfolio_multi_asset.py`)
+1. **Unit-Tests** (`tests&#47;risk&#47;test_portfolio_multi_asset.py`)
    - Portfolio-Returns mit 2-3 Assets
    - Correlation-Matrix mit bekannten Werten
    - Covariance-VaR vs Historical-VaR (sollte ähnlich sein)
 
-2. **Integration-Tests** (`tests/risk/test_backtest_multi_asset.py`)
+2. **Integration-Tests** (`tests&#47;risk&#47;test_backtest_multi_asset.py`)
    - Backtest mit Multi-Asset-Strategy
    - Max-Correlation-Limit verletzt → Trading HALT
    - Covariance-VaR-Limit verletzt → Trading HALT

@@ -47,9 +47,9 @@ Wir führen einen **inkrementellen Tool-Stack** ein, in 3 PR-Stufen:
 - pre-commit Hooks: ruff + ruff-format.
 
 ### P1 (riesiger Hebel): **MLflow Tracking + Quarto Report Template**
-- Standardisierte Run-Struktur: `results/<run_id>/...`
+- Standardisierte Run-Struktur: `results&#47;<run_id>&#47;...`
 - Optionales MLflow Tracking (extras) für params/metrics/artifacts.
-- Quarto Template für reproduzierbare HTML-Reports aus `results/<run_id>`.
+- Quarto Template für reproduzierbare HTML-Reports aus `results&#47;<run_id>`.
 
 ### P2 (Boss-Mode): **DuckDB+Parquet Lake + OpenTelemetry + Grafana/Loki**
 - Local Data Lake (Parquet partitioned) + DuckDB Query Layer + CLI.
@@ -89,9 +89,9 @@ Wir führen einen **inkrementellen Tool-Stack** ein, in 3 PR-Stufen:
   - `base.py` (Interface), `null.py` (No-op), `mlflow_tracker.py`
 - Runner Integration:
   - `run_id` generieren
-  - `results/<run_id>/config_snapshot.*`
-  - `results/<run_id>/stats.json`, `equity.csv` (optional trades.*)
-- `reports/quarto/backtest_report.qmd`
+  - `results&#47;<run_id>&#47;config_snapshot.*`
+  - `results&#47;<run_id>&#47;stats.json`, `equity.csv` (optional trades.*)
+- `reports&#47;quarto&#47;backtest_report.qmd`
 - `docs&sol;reports&sol;REPORTING_QUICKSTART.md (planned)`
 - Convenience Script: `scripts/utils/render_last_report.sh` (oder python)
 - Minimal Tests: NullTracker + results-writer smoke
@@ -102,7 +102,7 @@ Wir führen einen **inkrementellen Tool-Stack** ein, in 3 PR-Stufen:
 - `scripts&sol;query_lake.py (planned)`
 - `docs&sol;data&sol;LAKE_GUIDE.md (planned)`
 - `src/obs/otel.py` + edge instrumentation
-- `ops/observability/docker-compose.yml` + `README.md`
+- `ops&#47;observability&#47;docker-compose.yml` + `README.md`
 
 ---
 
@@ -146,7 +146,7 @@ Wir führen einen **inkrementellen Tool-Stack** ein, in 3 PR-Stufen:
 - pre-commit läuft lokal
 
 ### P1 Exit Criteria
-- Jeder Runner Run erzeugt `results/<run_id>/...` deterministisch
+- Jeder Runner Run erzeugt `results&#47;<run_id>&#47;...` deterministisch
 - MLflow optional: Run erscheint in MLflow UI, artifacts/metrics vorhanden
 - Quarto Report rendert aus einem run_id (1 command)
 
@@ -178,7 +178,7 @@ Wir führen einen **inkrementellen Tool-Stack** ein, in 3 PR-Stufen:
 
 1. PR #1: `chore(tooling): add uv + ruff lint gate`
 2. PR #2: `feat(experiments): add MLflow tracking + Quarto report template`
-3. PR #3: `feat(lake+obs): add duckdb/parquet lake and otel stack`
+3. PR #3: `feat(lake+obs): add duckdb&#47;parquet lake and otel stack`
 
 ---
 

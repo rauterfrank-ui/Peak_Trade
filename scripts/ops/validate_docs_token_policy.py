@@ -316,8 +316,37 @@ class DocsTokenPolicyValidator:
             return []
 
     def get_all_markdown_files(self) -> List[Path]:
-        """Get all Markdown files in the repository."""
+        """
+        Get all Markdown files in the repository.
+
+        Hardening note:
+        Prefer git-tracked files to avoid scanning virtualenvs, worktrees, and other
+        untracked/ignored directories that may exist in the workspace.
+        """
+        try:
+            out = subprocess.check_output(
+                ["git", "ls-files", "*.md"], cwd=self.repo_root, text=True
+            ).strip()
+        except subprocess.CalledProcessError:
+            out = ""
+
+        if out:
+            return [self.repo_root / p for p in out.splitlines() if p.strip()]
+
+        # Fallback (should be rare): filesystem walk
         return list(self.repo_root.rglob("*.md"))
+
+    def get_tracked_markdown_files(self, pathspec: str) -> List[Path]:
+        """Get git-tracked Markdown files matching a pathspec (e.g. 'docs/**/*.md')."""
+        try:
+            out = subprocess.check_output(
+                ["git", "ls-files", pathspec], cwd=self.repo_root, text=True
+            ).strip()
+        except subprocess.CalledProcessError:
+            out = ""
+        if not out:
+            return []
+        return [self.repo_root / p for p in out.splitlines() if p.strip()]
 
 
 def main():
@@ -348,6 +377,11 @@ Examples:
     )
 
     parser.add_argument("--all", action="store_true", help="Check all .md files in repository")
+    parser.add_argument(
+        "--tracked-docs",
+        action="store_true",
+        help="Check git-tracked Markdown files under docs/ only (docs/**.md)",
+    )
 
     parser.add_argument(
         "--base", default="origin/main", help="Base ref for change detection (default: origin/main)"
@@ -380,7 +414,10 @@ Examples:
     validator = DocsTokenPolicyValidator(repo_root, args.allowlist)
 
     # Determine which files to check
-    if args.all:
+    if args.tracked_docs:
+        files_to_check = validator.get_tracked_markdown_files("docs/**/*.md")
+        mode = "tracked docs files (docs/**/*.md)"
+    elif args.all:
         files_to_check = validator.get_all_markdown_files()
         mode = "all files"
     else:

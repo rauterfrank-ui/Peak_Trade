@@ -2,7 +2,7 @@
 
 > Hinweis: Datum und Versionen kannst du nach Bedarf anpassen.
 > Dieser Eintrag fasst die Änderungen aus `FILES_CHANGED.md` und
-> später `archive/full_files_stand_02.12.2025` zusammen.
+> später `archive&#47;full_files_stand_02.12.2025` zusammen.
 
 ---
 
@@ -127,4 +127,4 @@
 
 ## 2025-12-01 – Archivierter Stand (aus `full_files_stand_02.12.2025`)
 
-*(Platzhalter – hier die wichtigsten Änderungen aus `archive/full_files_stand_02.12.2025` eintragen, sobald der Inhalt konsolidiert ist. Vorschlag: nach Themenblöcken „Backtest", „Daten", „Strategien", „Projektorganisation" zusammenfassen.)*
+*(Platzhalter – hier die wichtigsten Änderungen aus `archive&#47;full_files_stand_02.12.2025` eintragen, sobald der Inhalt konsolidiert ist. Vorschlag: nach Themenblöcken „Backtest", „Daten", „Strategien", „Projektorganisation" zusammenfassen.)*

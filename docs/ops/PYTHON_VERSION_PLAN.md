@@ -76,7 +76,7 @@
    ```
 
 ### Phase 3: CI Update (Separate PR)
-1. Update `.github/workflows/*.yml`:
+1. Update `.github&#47;workflows&#47;*.yml`:
    ```yaml
    strategy:
      matrix:

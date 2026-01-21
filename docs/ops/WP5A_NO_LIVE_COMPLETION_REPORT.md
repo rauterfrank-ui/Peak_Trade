@@ -129,7 +129,7 @@ Alle Templates enthalten:
 ### Integration mit Bestehendem System
 - **Config Files:** Nutze bestehende Shadow/Paper Configs (`config/shadow_config.toml`, etc.)
 - **Scripts:** EXAMPLE: Create health check and data feed test scripts as needed
-- **Evidence Storage:** `results/drill_<timestamp>/` (Standard-Ablage)
+- **Evidence Storage:** `results&#47;drill_<timestamp>&#47;` (Standard-Ablage)
 - **Governance:** EXAMPLE: Reference governance policies as established
 
 ---
@@ -221,10 +221,10 @@ grep -rn "enable live\|real orders\|automatic enablement\|production keys\|live 
 
 ### Immediate (nach Merge)
 1. Verification durchführen:
-   - `scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main`
+   - `scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main`
    - `grep` nach risky phrases (siehe Verification-Sektion)
 2. Merge-Log erstellen (PR-Dokumentation)
-3. Branch cleanup (`git branch -d docs/wp5a-no-live-drill-pack` lokal + remote)
+3. Branch cleanup (`git branch -d docs&#47;wp5a-no-live-drill-pack` lokal + remote)
 
 ### Short-Term (Optional)
 1. Operator Training Session:

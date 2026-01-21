@@ -319,7 +319,7 @@ $ uv run pytest \
 - ✅ `tests/governance/test_live_mode_gate.py` (25 tests)
 
 ### Evidence
-- ✅ `reports/governance/wp0c_gate_evidence.md` (this file)
+- ✅ `reports&#47;governance&#47;wp0c_gate_evidence.md` (this file)
 
 ---
 

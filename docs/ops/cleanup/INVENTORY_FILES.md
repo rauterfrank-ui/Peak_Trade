@@ -82,10 +82,10 @@ Für jeden Top-Level Ordner:
 
 | Pfad | Status | Analyse | Aktion |
 |------|--------|---------|--------|
-| `archive/full_files_stand_02.12.2025/` | ✅ | Full snapshot, historisch | Keep (Archive) |
-| `archive/legacy_docs/` | ✅ | Legacy Docs | Keep (Archive) |
-| `archive/legacy_scripts/` | ✅ | Legacy Scripts | Keep (Archive) |
-| `archive/PeakTradeRepo/` | ✅ | Altes komplettes Repo | Keep (aber prüfen ob nützlich) |
+| `archive&#47;full_files_stand_02.12.2025&#47;` | ✅ | Full snapshot, historisch | Keep (Archive) |
+| `archive&#47;legacy_docs&#47;` | ✅ | Legacy Docs | Keep (Archive) |
+| `archive&#47;legacy_scripts&#47;` | ✅ | Legacy Scripts | Keep (Archive) |
+| `archive&#47;PeakTradeRepo&#47;` | ✅ | Altes komplettes Repo | Keep (aber prüfen ob nützlich) |
 
 **Assessment:** Archive ist gut strukturiert. Behalten, aber mit Index/README ausstatten.
 
@@ -98,7 +98,7 @@ Für jeden Top-Level Ordner:
 | `config/config.toml` | ✅ | Main config template | Keep |
 | `config/config.test.toml` | ✅ | Test config | Keep |
 | `config/default.toml` | ✅ | Defaults | Keep |
-| `config/*_example.toml` | ✅ | Examples (risk gates etc.) | Keep |
+| `config&#47;*_example.toml` | ✅ | Examples (risk gates etc.) | Keep |
 | Root `config.toml` | ❓ | **Prüfen ob Dublette** | Check & likely delete |
 
 **Assessment:** Config-Struktur ist gut. Root config.toml klären.
@@ -208,7 +208,7 @@ Für jeden Top-Level Ordner:
 
 | Pfad | Status | Analyse | Aktion |
 |------|--------|---------|--------|
-| `patches/*.patch` | ✅ | Git Patches | Keep |
+| `patches&#47;*.patch` | ✅ | Git Patches | Keep |
 | Root `COMPONENT_VAR_ROADMAP.patch` | 🔀 | Sollte hier sein | **Move** → `patches/` |
 
 ---
@@ -217,7 +217,7 @@ Für jeden Top-Level Ordner:
 
 | Pfad | Status | Analyse | Aktion |
 |------|--------|---------|--------|
-| `policy_packs/*.yml` | ✅ | Policy Configs | Keep |
+| `policy_packs&#47;*.yml` | ✅ | Policy Configs | Keep |
 
 ---
 
@@ -226,7 +226,7 @@ Für jeden Top-Level Ordner:
 | Pfad | Status | Analyse | Aktion |
 |------|--------|---------|--------|
 | `reports/audit/`, `reports/experiments/`, etc. | ❓ | Generated Reports | **Check .gitignore** - sollten ignored sein |
-| `reports/*.tsv` | ❓ | TSV Reports | **Check .gitignore** |
+| `reports&#47;*.tsv` | ❓ | TSV Reports | **Check .gitignore** |
 
 **Assessment:** reports/ sollte großteils in .gitignore sein. README erstellen was committed vs. generated ist.
 
@@ -315,7 +315,7 @@ Viele Scripts direkt in `scripts/`:
 2. `RISK_LAYER_V1_IMPLEMENTATION_REPORT.md` (root) → existiert in `docs/risk/`
 3. `RISK_LAYER_V1_PRODUCTION_READY_REPORT.md` (root) → existiert in `docs/risk/`
 4. `REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md` (root) → existiert in `docs/ops/`
-5. `run_regime_experiments.sh` (root) → existiert in `archive/legacy_scripts/`
+5. `run_regime_experiments.sh` (root) → existiert in `archive&#47;legacy_scripts&#47;`
 6. `config.toml` (root) → wahrscheinlich Dublette von `config/config.toml`
 
 ### 🟡 Move Operations
@@ -356,7 +356,7 @@ Check und ggf. hinzufügen:
 
 - `gitignore` file (falscher Name? sollte `.gitignore` sein)
 - `audit.log`, `tests.log` in root
-- `archive/PeakTradeRepo/` - komplett altes Repo, Nutzen?
+- `archive&#47;PeakTradeRepo&#47;` - komplett altes Repo, Nutzen?
 
 ---
 

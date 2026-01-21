@@ -9,7 +9,7 @@ Dieses Runbook definiert und dokumentiert die Policy-Optionen für GitHub-Branch
 Zusätzlich beschreibt es typische Symptome (z.B. `mergeable: UNKNOWN`) und eine robuste Verifikation.
 
 ## Geltungsbereich
-- Repository: `rauterfrank-ui/Peak_Trade`
+- Repository: `rauterfrank-ui&#47;Peak_Trade`
 - Branch: `main` (analog für weitere geschützte Branches)
 - Mechanismen:
   - **Rulesets** (modern)
@@ -44,7 +44,7 @@ Das ist **nicht** „paradox", sondern drückt aus: „PR-Flow erzwingen, aber k
 | Sensitiv (Execution/Risk/Live) | EIN | EIN | 1–2 | Safety-First, Fehlerkosten hoch |
 | Streng (Release/Prod) | EIN | EIN | 2+ | Höchste Governance-Anforderungen |
 
-## Symptom: `mergeable/mergeStateStatus = UNKNOWN`
+## Symptom: `mergeable&#47;mergeStateStatus = UNKNOWN`
 `UNKNOWN` kann auftreten, obwohl `statusCheckRollup` bereits `SUCCESS` ist. Das ist häufig ein GitHub-Compute-/Timing-Effekt und nicht automatisch ein Blocker.
 
 **Praktische Regel:**

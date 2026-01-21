@@ -143,7 +143,7 @@ python scripts/aiops/run_l1_deepresearch.py \
     --out evidence_packs/L1_momentum
 ```
 
-**Output Location:** `evidence_packs/L1_*/` (7 files)
+**Output Location:** `evidence_packs&#47;L1_*&#47;` (7 files)
 - evidence_pack.json
 - run_manifest.json
 - operator_output.md

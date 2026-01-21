@@ -274,7 +274,7 @@ python scripts/audit/check_error_taxonomy_adoption.py --verbose
 - None – straightforward docs/tooling addition
 
 **Process Improvements:**
-- Consider adding PR merge log template to `docs/ops/TEMPLATE_MERGE_LOG.md`
+- Consider adding PR merge log template to `docs/ops/MERGE_LOG_TEMPLATE_DETAILED.md`
 - Standardize audit tool output format for CI integration
 - Add "Audit Tooling" section to future PRs introducing new validation scripts
 

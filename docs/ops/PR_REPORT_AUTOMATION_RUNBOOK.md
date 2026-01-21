@@ -17,7 +17,7 @@ bash scripts/automation/generate_pr_report.sh <PR_NUMBER>
 bash scripts/automation/generate_pr_report.sh 59
 ```
 
-**Output**: `docs/ops/PR_<NUMBER>_FINAL_REPORT.md`
+**Output**: `docs&#47;ops&#47;PR_<NUMBER>_FINAL_REPORT.md`
 
 **Requirements**:
 - `gh` CLI installed and authenticated
@@ -32,7 +32,7 @@ bash scripts/automation/validate_all_pr_reports.sh
 ```
 
 **What it does**:
-- Finds all `docs/ops/PR_*_FINAL_REPORT.md` files
+- Finds all `docs&#47;ops&#47;PR_*_FINAL_REPORT.md` files
 - Validates each using `scripts/validate_pr_report_format.sh`
 - Returns exit code 0 if all pass, 1 if any fail
 
@@ -52,8 +52,8 @@ bash scripts/validate_pr_report_format.sh docs/ops/PR_59_FINAL_REPORT.md
 - `0`: Validation passed
 - `1`: Invalid arguments
 - `2`: Double backticks at list start (e.g., `- ``` instead of `- ` `)
-- `3`: Missing closing backtick in `src/*` paths
-- `4`: Missing closing backtick in `tests/*` paths
+- `3`: Missing closing backtick in `src&#47;*` paths
+- `4`: Missing closing backtick in `tests&#47;*` paths
 - `5`: Missing PR header (`# PR #<number>`)
 - `6`: Missing "Changed Files" section
 - `7`: Empty "Changed Files" section (no files listed)
@@ -185,7 +185,7 @@ chmod +x scripts/automation/generate_pr_report.sh
 - Check paths in workflow YAML match actual locations
 
 ### No reports found (local)
-- Reports must match pattern: `docs/ops/PR_*_FINAL_REPORT.md`
+- Reports must match pattern: `docs&#47;ops&#47;PR_*_FINAL_REPORT.md`
 - Check naming convention (underscore, not dash)
 
 ---

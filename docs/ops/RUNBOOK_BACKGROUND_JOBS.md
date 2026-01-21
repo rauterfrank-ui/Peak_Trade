@@ -6,14 +6,14 @@ Dieses Repo-Tool startet solche Befehle als Background-Job mit Logging, PID und 
 
 ## Tool
 Script: `scripts/ops/bg_job.sh`  
-Artefakte: `<repo>/.logs/`
+Artefakte: `<repo>&#47;.logs&#47;`
 
 Erzeugte Dateien pro Run (Label + Timestamp):
-- `.logs/<label>_<ts>.log` — stdout/stderr
-- `.logs/<label>_<ts>.pid` — PID
-- `.logs/<label>_<ts>.exit` — Exitcode (nach Ende)
-- `.logs/<label>_<ts>.meta` — Metadaten (cmd, git sha/branch, pgid)
-- `.logs/jobs/<label>_<ts>.sh` — Ausführbares Job-Script (wiederholbar)
+- `.logs&#47;<label>_<ts>.log` — stdout/stderr
+- `.logs&#47;<label>_<ts>.pid` — PID
+- `.logs&#47;<label>_<ts>.exit` — Exitcode (nach Ende)
+- `.logs&#47;<label>_<ts>.meta` — Metadaten (cmd, git sha/branch, pgid)
+- `.logs&#47;jobs&#47;<label>_<ts>.sh` — Ausführbares Job-Script (wiederholbar)
 
 ## Quick Commands
 

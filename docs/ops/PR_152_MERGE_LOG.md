@@ -57,7 +57,7 @@ Expanded from minimal quickstart to comprehensive documentation:
    - Instructions to change port if needed (edit `docker/.env`)
 
 3. **Persistence**
-   - What persists between restarts: `mlruns/`, `mlartifacts/` volumes, `.env`
+   - What persists between restarts: `mlruns&#47;`, `mlartifacts&#47;` volumes, `.env`
    - What gets deleted: `mlflow-down` vs `mlflow-reset` behavior comparison
    - Clear warning about data loss with `make mlflow-reset`
 
@@ -126,8 +126,8 @@ The README clarifies data persistence:
 | `make mlflow-reset` | Stops & removes | **Destroys** |
 
 **What persists:**
-- Experiments & runs (`mlruns/` volume)
-- Artifacts (`mlartifacts/` volume)
+- Experiments & runs (`mlruns&#47;` volume)
+- Artifacts (`mlartifacts&#47;` volume)
 - Configuration (`docker/.env` - gitignored)
 
 **Use `mlflow-reset` when:**

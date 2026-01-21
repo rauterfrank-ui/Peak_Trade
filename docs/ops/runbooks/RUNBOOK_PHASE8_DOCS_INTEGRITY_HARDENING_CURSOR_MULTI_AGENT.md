@@ -19,7 +19,7 @@
 - ✅ **KEEP EVERYTHING:** No deletions, no content edits
 - ✅ **Analysis-only:** Reports + suggestions, no auto-fixes
 - ✅ **CI optional:** GitHub Action is NOT required for branch protection
-- ✅ **Archive-safe:** Respects `docs/ops/_archive/**` exclusion (default)
+- ✅ **Archive-safe:** Respects `docs&#47;ops&#47;_archive&#47;**` exclusion (default)
 - ✅ **Deterministic:** Sorted output, stable JSON (sort keys)
 - ✅ **No network:** Repo-internal only, no external URL validation
 - ✅ **No watch loops:** Snapshot-only usage, not continuous monitoring
@@ -292,8 +292,8 @@ python3 scripts/ops/docs_graph_snapshot.py \
 
 ### Archive Include Toggle
 - **Default:** `--include-archives` is FALSE
-- Archives excluded: `docs/ops/_archive/**`
-- Always excluded: `docs/_generated/**`
+- Archives excluded: `docs&#47;ops&#47;_archive&#47;**`
+- Always excluded: `docs&#47;_generated&#47;**`
 - **When to include:** Full inventory, archive link validation
 
 ### No Watch Loops

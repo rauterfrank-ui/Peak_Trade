@@ -24,7 +24,7 @@
 - `scripts/ops/run_merge_log_workflow_robust.sh` — end-to-end merge-log workflow wrapper
 - `scripts/ops/create_and_open_merge_log_pr.sh` — merge-log generator + PR creator
 - `scripts/ops/run_ops_convenience_pack_pr.sh` — meta-script for PR creation
-- `scripts/git_push_and_pr.sh` — generic push+PR helper
+- `scripts/workflows/git_push_and_pr.sh` — generic push+PR helper
 - `tests/test_ops_merge_log_workflow_wrapper.py` — offline test suite (7 tests)
 - `docs/ops/README.md` — workflow automation documentation
 
@@ -46,7 +46,7 @@
 
 **Lokal**
 - `make mlog-review PR=228` — creates merge-log + branch successfully
-- `pytest tests/test_ops_merge_log_workflow_wrapper.py -vv` — 7/7 passed
+- `pytest tests&#47;test_ops_merge_log_workflow_wrapper.py -vv` — 7/7 passed
 
 ## Risk Assessment
 **Risk:** 🟢 Minimal  

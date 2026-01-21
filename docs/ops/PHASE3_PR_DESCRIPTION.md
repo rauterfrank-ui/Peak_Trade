@@ -75,7 +75,7 @@ docs/ops/PHASE3_PR_DESCRIPTION.md
 
 **3. CLI Dry-Run (`orchestrator_dryrun.py`)**
 - Operator tool: Test selection without side effects
-- Usage: `python3 scripts/orchestrator_dryrun.py --layer L0 --autonomy REC --enable-orchestrator`
+- Usage: `python3 scripts&#47;orchestrator_dryrun.py --layer L0 --autonomy REC --enable-orchestrator`
 
 ---
 
@@ -219,7 +219,7 @@ python3 -m pytest tests/ai_orchestration/test_orchestrator.py::TestFailClosed::t
 - `docs/architecture/ai_autonomy_layer_map_v1.md` (Layer Map Reference)
 - `docs/governance/ai_autonomy/SCHEMA_MANDATORY_FIELDS.md` (Data Models)
 - `config/model_registry.toml` (Single Source of Truth)
-- `config/capability_scopes/*.toml` (Scope Definitions)
+- `config&#47;capability_scopes&#47;*.toml` (Scope Definitions)
 
 ### Workflow Reference
 
@@ -282,7 +282,7 @@ python3 -m pytest tests/ai_orchestration/test_orchestrator.py::TestFailClosed::t
 
 ### Post-Merge Actions
 
-1. Create Merge Log: `docs/ops/PR_<NUM>_MERGE_LOG.md`
+1. Create Merge Log: `docs&#47;ops&#47;PR_<NUM>_MERGE_LOG.md`
 2. Update Evidence Index (central registry)
 3. Tag release: `v1.3.0-ai-autonomy-phase3`
 

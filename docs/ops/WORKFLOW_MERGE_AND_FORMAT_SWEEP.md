@@ -46,7 +46,7 @@ PR_NUM=<nummer> RUN_LARGE_SIM=1 LARGE_SIM_FILES=1250 \
 
 **Zusätzlich:**
 - Erstellt Test-PR mit >1200 Dummy-Dateien
-- Verzeichnis: `docs/_ci_large_pr_test/`
+- Verzeichnis: `docs&#47;_ci_large_pr_test&#47;`
 - **WICHTIG:** Test-PR NICHT mergen, nur zur CI-Verifikation
 
 ---
@@ -284,7 +284,7 @@ Das Script unterstützt folgende ENV-Variablen:
 
 | Variable | Default | Beschreibung |
 |----------|---------|--------------|
-| `REPO_DIR` | `$HOME/Peak_Trade` | Repo-Verzeichnis |
+| `REPO_DIR` | `$HOME&#47;Peak_Trade` | Repo-Verzeichnis |
 | `PR_NUM` | `216` | PR-Nummer zum Mergen |
 | `RUN_LARGE_SIM` | `0` | Large-PR Simulation (0/1) |
 | `LARGE_SIM_FILES` | `1250` | Anzahl Dummy-Dateien |
@@ -328,9 +328,9 @@ Das Workflow-Script interagiert mit folgenden CI-Features:
 ### Quarto Smoke
 
 - **Path Filter:** Triggert nur bei Änderungen in:
-  - `docs/**/*.md`
-  - `docs/**/*.qmd`
-  - `reports/quarto/**`
+  - `docs&#47;**&#47;*.md`
+  - `docs&#47;**&#47;*.qmd`
+  - `reports&#47;quarto&#47;**`
 - **Non-blocking:** Fail blockiert Merge nicht
 
 ### Expected Behavior

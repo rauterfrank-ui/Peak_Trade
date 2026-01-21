@@ -167,7 +167,7 @@ Repository-Hygiene, Branch-Hygiene und Dirty-Tree-Detection vor jedem Run verifi
    Fail wenn Commits vorhanden (unpushed local commits).
 
 5. **Dokumentation erstellen:**
-   Erstelle `docs/ops/drill_runs/YYYYMMDD_HHMMSS_D01_<operator>/operator_notes.md`:
+   Erstelle `docs&#47;ops&#47;drill_runs&#47;YYYYMMDD_HHMMSS_D01_<operator>&#47;operator_notes.md`:
    ```
    # Drill D01 — Pre-Flight Discipline
    - Datum: <ISO8601>
@@ -186,7 +186,7 @@ Repository-Hygiene, Branch-Hygiene und Dirty-Tree-Detection vor jedem Run verifi
 
 **Common Failure Modes & Fixes:**
 - **Dirty Tree durch IDE/Editor:** `.gitignore` prüfen, ungewollte Dateien stashen
-- **Unpushed Commits:** `git push` oder Branch neu erstellen von `origin/main`
+- **Unpushed Commits:** `git push` oder Branch neu erstellen von `origin&#47;main`
 - **Detached HEAD:** `git checkout main`
 
 **Produced Artifacts:**
@@ -204,7 +204,7 @@ Docs-only Contract Enforcement: Sicherstellen, dass nur Docs-Änderungen im Bran
 
 **Preconditions / Inputs:**
 - Branch mit Änderungen (kann auch mock/fixture sein)
-- Base Branch: `origin/main`
+- Base Branch: `origin&#47;main`
 
 **Procedure:**
 
@@ -736,7 +736,7 @@ Operatoren können optional einen Competency Tracker führen:
 | D08 | 2026-01-16 | PASS | 22 min | Full closeout |
 ```
 
-**Ablage:** `docs/ops/drill_runs/<operator>/competency_tracker.md` (lokal, nicht committed)
+**Ablage:** `docs&#47;ops&#47;drill_runs&#47;<operator>&#47;competency_tracker.md` (lokal, nicht committed)
 
 ---
 
@@ -767,7 +767,7 @@ Evidenzbasierte Auswahl des nächsten Drills (D03+) durch strukturierten Discove
 **Preconditions / Inputs:**
 
 **Discovery Checklist (5 Inputs erforderlich):**
-1. **Letzte Drill Runs:** `docs/ops/drills/runs/DRILL_RUN_*` (mind. 1 Run-Doc als Baseline)
+1. **Letzte Drill Runs:** `docs&#47;ops&#47;drills&#47;runs&#47;DRILL_RUN_*` (mind. 1 Run-Doc als Baseline)
 2. **Letzte PRs:** AI-Autonomy / Ops-Kontext (z.B. Control-Center, Runbooks, Gates)
 3. **Wiederkehrende Pain Points:** Operator-Friction der letzten 7–14 Tage (Runbook-Referenzen, CI-Monitoring, Gate-Fehler)
 4. **CI Signal:** Häufigste Failures / flaky Checks / Timeouts (konkrete Run-IDs)
@@ -836,7 +836,7 @@ Evidenzbasierte Auswahl des nächsten Drills (D03+) durch strukturierten Discove
 
 7. **Repo-Updates erstellen:**
    - `docs/ops/drills/backlog/DRILL_BACKLOG.md` — Kandidatenliste + Scoring + D03 Charter
-   - `docs/ops/drills/M01_NEXT_DRILL_SELECTION_<DATE>.md` — M01 Run Report (Discovery, Scoring, Decision, Charter)
+   - `docs&#47;ops&#47;drills&#47;M01_NEXT_DRILL_SELECTION_<DATE>.md` — M01 Run Report (Discovery, Scoring, Decision, Charter)
 
 8. **PR-ready Summary schreiben:**
    - Summary (ausgewählter D03 + Score)
@@ -870,8 +870,8 @@ Evidenzbasierte Auswahl des nächsten Drills (D03+) durch strukturierten Discove
 **Produced Artifacts:**
 
 - `docs/ops/drills/backlog/DRILL_BACKLOG.md` — D03 Candidate Backlog (3–7 Optionen) + Scoring + Selected D03 Charter
-- `docs/ops/drills/M01_NEXT_DRILL_SELECTION_<YYYYMMDD>.md` — M01 Run Report (Discovery, Scoring, Decision, D03 Charter, PR-ready Text)
-- Optional: `docs/ops/drills/backlog/M01_SCORING_MATRIX_<YYYYMMDD>.md` — Separate Scoring-Details (falls Report zu groß)
+- `docs&#47;ops&#47;drills&#47;M01_NEXT_DRILL_SELECTION_<YYYYMMDD>.md` — M01 Run Report (Discovery, Scoring, Decision, D03 Charter, PR-ready Text)
+- Optional: `docs&#47;ops&#47;drills&#47;backlog&#47;M01_SCORING_MATRIX_<YYYYMMDD>.md` — Separate Scoring-Details (falls Report zu groß)
 
 **Timebox:** 60–90 Minuten
 

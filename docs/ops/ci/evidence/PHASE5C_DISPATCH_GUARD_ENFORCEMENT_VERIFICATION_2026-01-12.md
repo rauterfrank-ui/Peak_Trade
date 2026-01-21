@@ -15,7 +15,7 @@ The Workflow Dispatch Guard is **functional** and triggers correctly on workflow
 
 **Key Findings:**
 - ✅ Guard workflow exists and triggers on workflow file changes
-- ✅ Check context appears correctly: `CI / Workflow Dispatch Guard / dispatch-guard`
+- ✅ Check context appears correctly: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 - ❌ **NOT in required checks list** (as of 2026-01-12 02:31 UTC)
 - ✅ Path filtering works (only runs when workflows modified)
 
@@ -31,7 +31,7 @@ CI / Workflow Dispatch Guard / dispatch-guard
 ```
 
 **Workflow:**
-- Name: `CI / Workflow Dispatch Guard`
+- Name: `CI &#47; Workflow Dispatch Guard`
 - Job: `dispatch-guard`
 - Path: `.github/workflows/ci-workflow-dispatch-guard.yml`
 
@@ -39,7 +39,7 @@ CI / Workflow Dispatch Guard / dispatch-guard
 
 ## Settings Verification (GitHub API)
 
-**Endpoint:** `GET /repos/rauterfrank-ui/Peak_Trade/branches/main/protection`
+**Endpoint:** `GET &#47;repos&#47;rauterfrank-ui&#47;Peak_Trade&#47;branches&#47;main&#47;protection`
 
 **Query:**
 ```bash
@@ -76,7 +76,7 @@ gh api repos/rauterfrank-ui/Peak_Trade/branches/main/protection \
 }
 ```
 
-**Finding:** ❌ **`CI / Workflow Dispatch Guard / dispatch-guard` is NOT in the list.**
+**Finding:** ❌ **`CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` is NOT in the list.**
 
 **Settings Mechanism Used:** Branch Protection Rules (legacy)
 
@@ -98,7 +98,7 @@ gh api repos/rauterfrank-ui/Peak_Trade/branches/main/protection \
 
 **Workflow Run:**
 - Run ID: `20905420818`
-- Workflow: `CI / Workflow Dispatch Guard`
+- Workflow: `CI &#47; Workflow Dispatch Guard`
 - Conclusion: `failure` (expected - script not in test branch)
 - Status: `completed`
 - Duration: ~5s
@@ -109,14 +109,14 @@ X  CI / Workflow Dispatch G...  5s  (failed)
 ```
 
 **Check Context Confirmed:** ✅  
-The check appeared in PR checks list with expected name (truncated in CLI view, but full context is `CI / Workflow Dispatch Guard / dispatch-guard`).
+The check appeared in PR checks list with expected name (truncated in CLI view, but full context is `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`).
 
 ### Expected Behavior vs Actual
 
 | Behavior | Expected | Actual | Status |
 |----------|----------|--------|--------|
 | Workflow triggers on workflow file change | ✅ Yes | ✅ Yes | ✅ PASS |
-| Check context matches | `CI / Workflow Dispatch Guard / dispatch-guard` | ✅ Matches | ✅ PASS |
+| Check context matches | `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` | ✅ Matches | ✅ PASS |
 | Check appears in PR | ✅ Yes | ✅ Yes | ✅ PASS |
 | Blocks merge when failing | ✅ Yes (if required) | ⚠️ Not tested (not required yet) | ⚠️ PENDING |
 | Path filter works | ✅ Only runs on workflow changes | ✅ Confirmed | ✅ PASS |
@@ -146,19 +146,19 @@ python: can't open file '/home/runner/work/Peak_Trade/Peak_Trade/scripts/ops/val
 **Action Required:**
 1. Navigate to: GitHub → Settings → Branches → Branch protection rules → `main` → Edit
 2. Section: "Require status checks to pass before merging"
-3. Add check: `CI / Workflow Dispatch Guard / dispatch-guard`
+3. Add check: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 4. Save changes
 
 **Alternative (Rulesets):**
 1. GitHub → Settings → Rules → Rulesets
 2. Target: `main` branch
-3. Add required status check: `CI / Workflow Dispatch Guard / dispatch-guard`
+3. Add required status check: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 
 ### 2. Path Filter Working ✅
 
 **Observation:** Guard only runs when workflow files are modified (as designed).
 
-**Evidence:** PR #665 modified `.github/workflows/*.yml` → Guard triggered.
+**Evidence:** PR #665 modified `.github&#47;workflows&#47;*.yml` → Guard triggered.
 
 **Expected:** PRs that don't touch workflows → Guard skips (via path filter).
 
@@ -177,7 +177,7 @@ python: can't open file '/home/runner/work/Peak_Trade/Peak_Trade/scripts/ops/val
 **Branch Protection (main):**
 - Mechanism: Branch Protection Rules (legacy)
 - Required status checks: 9 checks (see API output above)
-- **Missing:** `CI / Workflow Dispatch Guard / dispatch-guard`
+- **Missing:** `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 - Strict: `true` (branches must be up-to-date)
 
 **Current Required Checks:**
@@ -192,7 +192,7 @@ python: can't open file '/home/runner/work/Peak_Trade/Peak_Trade/scripts/ops/val
 9. docs-reference-targets-gate
 
 **Target State (after activation):**
-- Add: `CI / Workflow Dispatch Guard / dispatch-guard` (as check #10)
+- Add: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` (as check #10)
 
 ---
 
@@ -218,7 +218,7 @@ GitHub → rauterfrank-ui/Peak_Trade → Settings → Branches
 
 **Step 3: Add Required Check**
 - Section: "Require status checks to pass before merging"
-- Search box: Type `CI / Workflow Dispatch Guard / dispatch-guard`
+- Search box: Type `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 - Click to add to required list
 
 **Step 4: Save**
@@ -231,7 +231,7 @@ gh api repos/rauterfrank-ui/Peak_Trade/branches/main/protection \
   --jq '.required_status_checks.contexts | .[] | select(. | contains("Workflow Dispatch Guard"))'
 ```
 
-Expected output: `CI / Workflow Dispatch Guard / dispatch-guard`
+Expected output: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 
 ---
 
@@ -254,7 +254,7 @@ Expected output: `CI / Workflow Dispatch Guard / dispatch-guard`
 
 1. **Track False Positives**
    - Monitor next 5-10 PRs that touch workflows
-   - Document any false positives → Issue with label `bug/false-positive`
+   - Document any false positives → Issue with label `bug&#47;false-positive`
    - Target: <5% false positive rate
 
 2. **Performance Tracking**

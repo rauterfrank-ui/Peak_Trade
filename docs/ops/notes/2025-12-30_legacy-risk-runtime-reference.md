@@ -1,16 +1,16 @@
 # Ops Note – Legacy Risk Runtime Reference (Closed)
 
 ## Summary
-Closed investigation into a suspected legacy module `lib/risk/risk_runtime.py` / `risk_runtime.py`. No such directory or file exists in Peak_Trade, and no references/imports were found.
+Closed investigation into a suspected legacy module `lib&#47;risk&#47;risk_runtime.py` / `risk_runtime.py`. No such directory or file exists in Peak_Trade, and no references/imports were found.
 
 ## Why
-A recurring reference to `lib/risk/risk_runtime.py` created uncertainty about a potential legacy runtime-risk implementation and possible duplication with the canonical risk layer. The goal was to confirm existence and any execution-path usage.
+A recurring reference to `lib&#47;risk&#47;risk_runtime.py` created uncertainty about a potential legacy runtime-risk implementation and possible duplication with the canonical risk layer. The goal was to confirm existence and any execution-path usage.
 
 ## Findings
-- `lib/` directory: never existed in the repository (no commits, no files across all branches/history).
+- `lib&#47;` directory: never existed in the repository (no commits, no files across all branches/history).
 - `risk_runtime.py`: never existed anywhere in the repository (no history, no working-tree file, no archives/exports).
 - No code references/imports/usages for:
-  - `lib/risk/risk_runtime`
+  - `lib&#47;risk&#47;risk_runtime`
   - `RuntimeRiskManager`
   - `from .*risk_runtime import`
   - `import .*risk_runtime`
@@ -19,8 +19,8 @@ A recurring reference to `lib/risk/risk_runtime.py` created uncertainty about a 
 None. Repository already in the desired state.
 
 ## Verification
-- Repo-wide search (path + content): zero hits for `lib/` and `risk_runtime`-related identifiers.
-- CI/Workflows/Guards: no rules referencing `lib/` or `risk_runtime`.
+- Repo-wide search (path + content): zero hits for `lib&#47;` and `risk_runtime`-related identifiers.
+- CI/Workflows/Guards: no rules referencing `lib&#47;` or `risk_runtime`.
 - Risk test suite: `tests/risk/` → 172 passed.
 - Lint: `uv run ruff check .` → green (only harmless warnings in archived files).
 
