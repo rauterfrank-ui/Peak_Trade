@@ -116,7 +116,7 @@ uv run pytest -q tests/execution/test_beta_event_bridge_ordering.py
 
 #### Welche Dateien sind Golden?
 - `tests/golden/slice3_equity_curve_minimal.jsonl` (kanonisches JSONL, **LF-only**)
-- optional: `tests/golden/slice3_artifact_manifest_minimal.json` (Liste `{relpath, sha256}` für **alle** deterministischen Artefakte unter `out/<fingerprint>/...`)
+- optional: `tests/golden/slice3_artifact_manifest_minimal.json` (Liste `{relpath, sha256}` für **alle** deterministischen Artefakte unter `out&#47;<fingerprint>&#47;...`)
 
 #### Wie wird Golden aktualisiert? (explizite Operator-Aktion)
 Golden wird **niemals automatisch** in CI aktualisiert. Update ist ein bewusster Operator-Schritt:
@@ -126,7 +126,7 @@ uv run python scripts/testing/update_slice3_golden.py --fixture tests/fixtures/s
 ```
 
 #### Strikte Invarianten (Review-Checklist)
-- **No wall-clock / randomness**: kein `datetime/time/uuid/random` im Slice‑3 Bridge-Pfad.
+- **No wall-clock / randomness**: kein `datetime&#47;time&#47;uuid&#47;random` im Slice‑3 Bridge-Pfad.
 - **Canonical JSON**: `sort_keys=True`, `separators=(",", ":")`, UTF‑8, **`\n`** Zeilenende.
 - **Integer-only persistence**: keine Floats in Artefakten; State/Snapshots persistieren Integer (oder explizit Strings, niemals float).
 - **Stable ordering**: deterministische Sortierung (Events & Position-Keys).
