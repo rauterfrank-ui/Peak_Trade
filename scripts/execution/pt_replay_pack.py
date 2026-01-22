@@ -114,11 +114,7 @@ def _cmd_replay(args: argparse.Namespace) -> int:
 
 def _cmd_resolve_datarefs(args: argparse.Namespace) -> int:
     bundle_root = Path(args.bundle)
-    cache_root = (
-        args.cache_root
-        or os.environ.get("PEAK_TRADE_DATA_CACHE_ROOT")
-        or ""
-    )
+    cache_root = args.cache_root or os.environ.get("PEAK_TRADE_DATA_CACHE_ROOT") or ""
     if not cache_root:
         _eprint("ContractViolationError: missing --cache-root (or PEAK_TRADE_DATA_CACHE_ROOT)")
         return EXIT_CONTRACT

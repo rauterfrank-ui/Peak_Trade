@@ -348,9 +348,7 @@ def enforce_resolution_mode(
         raise DataRefHashMismatchError("hash mismatch for market_data_refs (sha256_hint)")
     required_ids = {r.ref_id for r in refs if r.required}
     missing_required = [
-        r.ref_id
-        for r in report.results
-        if r.ref_id in required_ids and r.status == "MISSING"
+        r.ref_id for r in report.results if r.ref_id in required_ids and r.status == "MISSING"
     ]
     if missing_required:
         raise MissingRequiredDataRefError(f"missing required market_data_refs: {missing_required}")

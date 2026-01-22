@@ -9,7 +9,11 @@ import pytest
 from src.execution.determinism import stable_id
 from src.execution.replay_pack.builder import build_replay_pack
 from src.execution.replay_pack.canonical import write_json_canonical
-from src.execution.replay_pack.hashing import collect_files_for_hashing, sha256_file, write_sha256sums
+from src.execution.replay_pack.hashing import (
+    collect_files_for_hashing,
+    sha256_file,
+    write_sha256sums,
+)
 
 
 def _repo_root() -> Path:
@@ -61,7 +65,11 @@ def _write_events_file(run_dir: Path, run_id: str) -> None:
     events_path = run_dir / "logs" / "execution" / "execution_events.jsonl"
     events_path.parent.mkdir(parents=True, exist_ok=True)
     with open(events_path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(json.dumps(_mk_event(run_id, 0), sort_keys=True, separators=(",", ":"), ensure_ascii=False))
+        f.write(
+            json.dumps(
+                _mk_event(run_id, 0), sort_keys=True, separators=(",", ":"), ensure_ascii=False
+            )
+        )
         f.write("\n")
 
 
@@ -103,9 +111,7 @@ def test_cli_resolve_datarefs_best_effort_missing_optional_ok(tmp_path: Path) ->
     cache_root = tmp_path / "cache"
     cache_root.mkdir(parents=True, exist_ok=True)
     # One resolved, one missing optional.
-    resolved_rel = (
-        "peaktrade_cache/bars_1m/us_equities/AAPL.bars.1m.2026-01-01T00:00:00Z_2026-01-01T06:00:00Z.parquet"
-    )
+    resolved_rel = "peaktrade_cache/bars_1m/us_equities/AAPL.bars.1m.2026-01-01T00:00:00Z_2026-01-01T06:00:00Z.parquet"
     target = cache_root / resolved_rel
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(b"hello")
@@ -191,7 +197,11 @@ def test_cli_resolve_datarefs_strict_missing_required_exit_6(tmp_path: Path) -> 
             "start_utc": "2026-01-01T00:00:00Z",
             "end_utc": "2026-01-01T06:00:00Z",
             "source": "local_cache",
-            "locator": {"namespace": "peaktrade_cache", "dataset": "bars_1m", "partition": "us_equities"},
+            "locator": {
+                "namespace": "peaktrade_cache",
+                "dataset": "bars_1m",
+                "partition": "us_equities",
+            },
             "required": True,
         }
     ]
@@ -230,9 +240,7 @@ def test_cli_resolve_datarefs_hash_hint_mismatch_exit_3(tmp_path: Path) -> None:
     cache_root = tmp_path / "cache"
     cache_root.mkdir(parents=True, exist_ok=True)
 
-    resolved_rel = (
-        "peaktrade_cache/bars_1m/us_equities/AAPL.bars.1m.2026-01-01T00:00:00Z_2026-01-01T06:00:00Z.parquet"
-    )
+    resolved_rel = "peaktrade_cache/bars_1m/us_equities/AAPL.bars.1m.2026-01-01T00:00:00Z_2026-01-01T06:00:00Z.parquet"
     target = cache_root / resolved_rel
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(b"hello")
