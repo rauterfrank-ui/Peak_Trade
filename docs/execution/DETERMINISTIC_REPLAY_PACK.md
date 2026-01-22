@@ -180,6 +180,31 @@ CI:
 replay-compare-report
 ```
 
+### Compare Report Consumer + Minified Summary — Slice 3.5
+Ein Consumer kann einen Compare Report in:
+- eine kompakte, deterministische stdout-Zeile (CI Logs)
+- eine minified JSON Summary (für Dashboards)
+umwandeln.
+
+Script:
+
+```text
+scripts/ops/pt_compare_consume.py
+```
+
+Default Output:
+
+```text
+compare_summary.min.json
+```
+
+Beispiel:
+
+```bash
+python3 scripts/ops/pt_compare_consume.py --report <OUT_DIR>/replay_pack/meta/compare_report.json --mode ci
+python3 scripts/ops/pt_compare_consume.py --report <OUT_DIR>/replay_pack/meta/compare_report.json --mode ops
+```
+
 ### Determinismus-Garantien (MUST)
 - Stabile Sortierung (manifest.contents und execution_events)
 - Kanonisches JSON/JSONL (sort_keys, separators, UTF-8, LF)
