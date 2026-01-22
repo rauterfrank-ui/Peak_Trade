@@ -27,7 +27,7 @@ Determinismus-kritische Regression: Equity Curve Output muss drift-fest sein (by
 - docs-token-policy-gate: PASS
 
 ## Risk
-HIGH — `src/execution/**` determinism + artifact contract changes; no live unlocks. Golden regression reduces drift risk.
+HIGH — `src&#47;execution&#47;**` determinism + artifact contract changes; no live unlocks. Golden regression reduces drift risk.
 
 ## Operator How-To
 - Golden update (explicit operator action only):
