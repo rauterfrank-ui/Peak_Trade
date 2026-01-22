@@ -7,7 +7,7 @@ Diese Assets sind **optional** und betreffen ausschließlich **Service Health / 
 Ziel: **Grafana-only UI** + **prometheus-local** (Host-Port `:9092`) + **automatisch provisioniertes** Dashboard
 `Peak_Trade — Shadow Pipeline (MVS, Contract v1)` **ohne manuelles Grafana-Import/Klick-Orgie**.
 
-> Hinweis: `bash scripts/obs/shadow_mvs_local_up.sh` startet zusätzlich einen kleinen **Mock-Exporter** (Host-Port `:9109`),
+> Hinweis: Der Shadow-MVS Quickstart startet zusätzlich einen kleinen **Mock-Exporter** (Host-Port `:9109`),
 > lokal deterministisch Daten sehen (auch wenn du die Peak_Trade Web-App noch nicht laufen hast).
 
 Start:
@@ -29,13 +29,38 @@ bash scripts/obs/shadow_mvs_local_down.sh
 ```
 
 URLs:
-- Grafana: `http://127.0.0.1:3000` (admin/admin)
-- Prometheus-local: `http://127.0.0.1:9092`
-- Shadow-MVS Exporter: `http://127.0.0.1:9109/metrics`
+- Grafana: http://127.0.0.1:3000 (admin/admin)
+- Prometheus-local: http://127.0.0.1:9092
+- Shadow-MVS Exporter: http://127.0.0.1:9109/metrics
 
 Relevante Compose-Files:
-- `docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml`
-- `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml`
+- docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml
+- docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml
+
+## Quickstart (lokal): Grafana-only Provisioning Smoke (ohne Mock-Exporter)
+
+Ziel: Nur Prometheus-local + Grafana-only starten und per Snapshot verifizieren, dass:
+- Grafana health OK
+- Datasources local/main/shadow provisioned
+- Dashboards aus den Subfoldern provisioned (execution/overview/shadow/http)
+
+Start:
+
+```bash
+bash scripts/obs/grafana_local_up.sh
+```
+
+Verify:
+
+```bash
+bash scripts/obs/grafana_local_verify.sh
+```
+
+Stop:
+
+```bash
+bash scripts/obs/grafana_local_down.sh
+```
 
 ## Aktivierung (Peak_Trade Web-App)
 
@@ -86,24 +111,28 @@ Relevante Compose-Files:
 
 ## Dateien
 
-- Prometheus Scrape Example: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`
-- Docker Compose (lokal): `docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml`
-- Grafana Dashboard JSON: `docs/webui/observability/GRAFANA_DASHBOARD_PEAK_TRADE_WATCH_ONLY.json`
-- Grafana Dashboard JSON (MVS, Shadow Pipeline Contract v1): `docs/webui/observability/grafana/dashboards/peaktrade-shadow-pipeline-mvs.json`
+- Prometheus Scrape Example: docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml
+- Docker Compose (lokal): docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml
+- Grafana Dashboard JSON: docs/webui/observability/GRAFANA_DASHBOARD_PEAK_TRADE_WATCH_ONLY.json
+- Grafana Dashboards (provisioned, foldered):
+  - docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-overview.json
+  - docs/webui/observability/grafana/dashboards/overview/peaktrade-overview.json
+  - docs/webui/observability/grafana/dashboards/shadow/peaktrade-shadow-pipeline-mvs.json
+  - docs/webui/observability/grafana/dashboards/http/peaktrade-labeled-local.json
 - Hinweis: Grafana `label_values(...)` (Variable Queries) vs PromQL ist in `DASHBOARD_WORKFLOW.md` im Abschnitt „Grafana Variable Queries vs PromQL“ erklärt.
 
 ## Ports & Networking (wichtig)
 
-- **Grafana UI (Host)**: `http://localhost:3000`
-- **Prometheus UI (Host)**: `http://localhost:9091`
+- **Grafana UI (Host)**: http://localhost:3000
+- **Prometheus UI (Host)**: http://localhost:9091
   - In `DOCKER_COMPOSE_PROM_GRAFANA.yml` ist Prometheus bewusst auf **Host-Port 9091** gemappt (`"9091:9090"`), um Konflikte mit anderen Prometheus-Instanzen auf `9090` zu vermeiden.
 - **Grafana → Prometheus (Docker-intern)**:
-  - Grafana muss Prometheus über **`http://prometheus:9090`** (Service-Name + Container-Port) erreichen.
-  - **Nicht** `http://prometheus:9091` (das ist nur der Host-Port und führt im Container zu `connection refused`).
+  - Grafana muss Prometheus über **http://prometheus:9090** (Service-Name + Container-Port) erreichen.
+  - Nicht http://prometheus:9091 (das ist nur der Host-Port und führt im Container zu connection refused).
 
 ## Operator Runbook
 
-- `docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`
+- docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md
 
 ## Shadow → Live Observability Runbook (Grafana)
 
@@ -113,9 +142,9 @@ Dieses Repo enthält zusätzlich ein Runbook für den **symbiotischen Kern** (Sh
 - WebUI/Watch-Only = Operator-Detailsicht (read-only)
 
 Startpunkt:
-- `docs/webui/observability/RUNBOOK_Peak_Trade_Grafana_Shadow_to_Live_Cursor_Multi_Agent.md`
+- docs/webui/observability/RUNBOOK_Peak_Trade_Grafana_Shadow_to_Live_Cursor_Multi_Agent.md
 
 Begleitende Specs/Contracts:
-- `docs/webui/DASHBOARD_GOVERNANCE_NO_LIVE.md`
-- `docs/webui/DASHBOARD_DATA_CONTRACT_OBS_v1.md`
-- `docs/webui/GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md`
+- docs/webui/DASHBOARD_GOVERNANCE_NO_LIVE.md
+- docs/webui/DASHBOARD_DATA_CONTRACT_OBS_v1.md
+- docs/webui/GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md

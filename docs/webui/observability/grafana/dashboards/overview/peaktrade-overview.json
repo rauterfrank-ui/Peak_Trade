@@ -9,6 +9,19 @@
     "peak_trade",
     "observability"
   ],
+  "templating": {
+    "list": [
+      {
+        "type": "datasource",
+        "name": "DS_PROM",
+        "label": "Datasource",
+        "query": "prometheus",
+        "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
+        "options": [],
+        "refresh": 1
+      }
+    ]
+  },
   "panels": [
     {
       "type": "timeseries",
@@ -21,7 +34,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${DS_PROM}"
       },
       "targets": [
         {
@@ -42,7 +55,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${DS_PROM}"
       },
       "targets": [
         {
@@ -63,7 +76,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${DS_PROM}"
       },
       "targets": [
         {
@@ -84,7 +97,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "peaktrade-prometheus-local"
+        "uid": "${DS_PROM}"
       },
       "targets": [
         {

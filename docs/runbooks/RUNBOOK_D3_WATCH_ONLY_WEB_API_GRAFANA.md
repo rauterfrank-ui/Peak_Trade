@@ -63,6 +63,19 @@ API v0 vollständig, UI pages, Grafana verify snapshot PASS, security tests PASS
 - D3-2 Tests + Gates (TEST_ENGINEER + CI_GUARDIAN) → CI green
 - D3-3 Grafana Panels (IMPLEMENTER + DOCS_SCRIBE) → verify PASS
 
+## D3-3 Snapshot Verify (Grafana-only Provisioning)
+
+Ziel: deterministischer Bring-up + Snapshot-Verifikation (ohne Watch-Loops) für:
+- Grafana health
+- Datasources local/main/shadow provisioned
+- Dashboards provisioned aus Subfoldern execution/overview/shadow/http
+
+```bash
+bash scripts/obs/grafana_local_up.sh
+bash scripts/obs/grafana_local_verify.sh
+bash scripts/obs/grafana_local_down.sh
+```
+
 ## Cursor Promptblock
 
 ```md

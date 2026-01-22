@@ -11,3 +11,4 @@ datasources:
     jsonData:
       httpMethod: GET
       prometheusType: Prometheus
+    version: 1
