@@ -23,6 +23,14 @@
       "targetBlank": false,
       "keepTime": true,
       "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "HTTP Labeled (Local)",
+      "url": "/d/peaktrade-labeled-local",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
     }
   ],
   "templating": {

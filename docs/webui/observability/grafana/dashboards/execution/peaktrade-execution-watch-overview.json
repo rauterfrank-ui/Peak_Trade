@@ -26,7 +26,7 @@
     },
     {
       "type": "link",
-      "title": "Overview (Mini vs Main)",
+      "title": "Overview (Local vs Main)",
       "url": "/d/peaktrade-overview",
       "targetBlank": false,
       "keepTime": true,

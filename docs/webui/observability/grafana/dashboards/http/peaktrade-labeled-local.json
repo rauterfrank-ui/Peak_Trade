@@ -7,12 +7,38 @@
   "version": 1,
   "refresh": "10s",
   "time": { "from": "now-15m", "to": "now" },
+  "links": [
+    {
+      "type": "link",
+      "title": "Overview (Local vs Main)",
+      "url": "/d/peaktrade-overview",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Shadow Pipeline (MVS)",
+      "url": "/d/peaktrade-shadow-pipeline-mvs",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Execution Watch Overview",
+      "url": "/d/peaktrade-execution-watch-overview",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    }
+  ],
   "templating": {
     "list": [
       {
         "type": "datasource",
         "name": "DS_LOCAL",
-        "label": "Datasource",
+        "label": "Prometheus (local)",
         "query": "prometheus",
         "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
         "options": [],
