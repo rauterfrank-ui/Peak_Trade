@@ -58,6 +58,7 @@ Runbooks for specific phase implementations and workflows:
 
 Runbooks for CI operations and general operational procedures:
 
+- [RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md](RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md) — Slice 3.6: Offline deterministic replay regression pack shortcut (bundle → compare → consume)
 - [RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md](RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md) — PR #736: CI snapshot → enable auto-merge → post-merge verify on main (snapshot-only)
 - [RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md](RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md) — Operator Dashboard (Watch-Only) start→finish (local, read-only monitoring + deterministic snapshot export)
 - [RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md](RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md) — Dashboard Watch-Only UI v0.1B (observability) for src/live/web/app.py (read-only)
