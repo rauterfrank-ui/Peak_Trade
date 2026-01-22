@@ -66,6 +66,14 @@
     </div>
     <div class="flex items-center gap-2">
       <button
+        id="health-details-toggle"
+        class="text-xs px-3 py-1.5 rounded-lg bg-slate-900/20 hover:bg-slate-900/40 border border-slate-800 text-slate-300"
+        type="button"
+        title="Invariants Details ein-/ausblenden"
+      >
+        Details
+      </button>
+      <button
         id="health-ping"
         class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700"
         type="button"
@@ -73,6 +81,30 @@
         Ping Health
       </button>
       <span class="text-xs text-slate-500 font-mono" id="health-ping-state">—</span>
+    </div>
+  </div>
+
+  <div class="mt-3 rounded-xl border border-slate-800 bg-slate-950/20 p-3">
+    <div class="flex items-center justify-between gap-3">
+      <div class="text-xs text-slate-400">Invariants (v0.5)</div>
+      <div class="text-xs font-mono" id="health-inv-summary">—</div>
+    </div>
+    <div class="mt-2 hidden" id="health-inv-details">
+      <div class="overflow-auto border border-slate-800 rounded-xl">
+        <table class="min-w-full text-xs">
+          <thead class="bg-slate-950/60">
+            <tr class="text-slate-400">
+              <th class="px-3 py-2 text-left font-semibold">key</th>
+              <th class="px-3 py-2 text-left font-semibold">value</th>
+              <th class="px-3 py-2 text-left font-semibold">note</th>
+            </tr>
+          </thead>
+          <tbody id="health-inv-tbody" class="bg-slate-950/20"></tbody>
+        </table>
+      </div>
+      <div class="mt-2 text-[11px] text-slate-500">
+        Hinweis: Default ist deterministisch (Runtime-Metriken nur via explizitem Opt-in).
+      </div>
     </div>
   </div>
 
@@ -93,15 +125,15 @@
 
   <div class="mt-3 grid gap-3 md:grid-cols-3">
     <div class="rounded-xl border border-slate-800 bg-slate-950/20 p-3">
-      <div class="text-xs text-slate-400">dataset_stats.runs_count</div>
+      <div class="text-xs text-slate-400">Runs</div>
       <div class="mt-1 font-mono text-xs text-slate-200" id="health-runs-count">—</div>
     </div>
     <div class="rounded-xl border border-slate-800 bg-slate-950/20 p-3">
-      <div class="text-xs text-slate-400">dataset_stats.events_count</div>
+      <div class="text-xs text-slate-400">Events</div>
       <div class="mt-1 font-mono text-xs text-slate-200" id="health-events-count">—</div>
     </div>
     <div class="rounded-xl border border-slate-800 bg-slate-950/20 p-3">
-      <div class="text-xs text-slate-400">dataset_stats.sessions_count</div>
+      <div class="text-xs text-slate-400">Sessions</div>
       <div class="mt-1 font-mono text-xs text-slate-200" id="health-sessions-count">—</div>
     </div>
   </div>
@@ -245,6 +277,53 @@
     const el = $(id);
     if (!el) return;
     el.textContent = value == null || value === "" ? "—" : String(value);
+  }
+
+  function invBadge(ok) {
+    if (ok === true) return "<span class='text-[11px] px-2 py-0.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300'>OK</span>";
+    if (ok === false) return "<span class='text-[11px] px-2 py-0.5 rounded-full border border-rose-500/30 bg-rose-500/10 text-rose-300'>FAIL</span>";
+    return "<span class='text-[11px] px-2 py-0.5 rounded-full border border-slate-700/70 bg-slate-950/40 text-slate-300'>N/A</span>";
+  }
+
+  function setInvSummary(payload) {
+    const inv = payload?.invariants || {};
+    // Prefer v0.5 keys; fall back to legacy if missing.
+    const c = inv.cursor_monotonicity_ok ?? inv.cursor_monotonic;
+    const o = inv.ordering_non_decreasing;
+    const d = inv.dataset_nonempty_ok;
+    const t = inv.events_sorted_by_time_ok;
+    const s = inv.runs_sessions_consistency_ok;
+
+    const flags = [c, o, d, t, s].filter((x) => x !== undefined && x !== null);
+    const ok = flags.length ? flags.every((x) => x === true) : null;
+    $("health-inv-summary").innerHTML = `${invBadge(ok)} <span class='ml-2 text-slate-500'>(${flags.length} checks)</span>`;
+  }
+
+  function setInvDetails(payload) {
+    const inv = payload?.invariants || {};
+    const rows = [
+      ["cursor_monotonicity_ok", inv.cursor_monotonicity_ok ?? inv.cursor_monotonic, ""],
+      ["ordering_non_decreasing", inv.ordering_non_decreasing, ""],
+      ["dataset_nonempty_ok", inv.dataset_nonempty_ok, inv.dataset_nonempty_note ?? ""],
+      ["events_sorted_by_time_ok", inv.events_sorted_by_time_ok, inv.events_sorted_by_time_note ?? ""],
+      ["runs_sessions_consistency_ok", inv.runs_sessions_consistency_ok, inv.runs_sessions_consistency_note ?? ""],
+      ["runtime_metrics_included", inv.runtime_metrics_included, ""],
+    ];
+
+    const tb = $("health-inv-tbody");
+    tb.innerHTML = "";
+    for (const [k, v, note] of rows) {
+      const ok = v === true ? true : v === false ? false : null;
+      const vStr = v == null ? "—" : String(v);
+      tb.insertAdjacentHTML("beforeend", `
+        <tr class="border-b border-slate-800/70">
+          <td class="px-3 py-2 font-mono text-slate-200">${esc(k)}</td>
+          <td class="px-3 py-2">${invBadge(ok)} <span class="ml-2 font-mono text-slate-200">${esc(vStr)}</span></td>
+          <td class="px-3 py-2 text-slate-400 font-mono">${esc(note || "—")}</td>
+        </tr>
+      `);
+    }
+    setInvSummary(payload);
   }
 
   function updateHealthFromMeta(meta) {
@@ -627,14 +706,21 @@
     try {
       const payload = await fetchJSON("/api/execution/health");
       applyMeta(payload);
+      setInvDetails(payload);
       const inv = payload?.invariants || {};
-      const ok = inv.ordering_non_decreasing === true && inv.cursor_monotonic === true;
+      const c = inv.cursor_monotonicity_ok ?? inv.cursor_monotonic;
+      const ok = inv.ordering_non_decreasing === true && c === true;
       $("health-ping-state").textContent = ok ? "ok" : "warn";
     } catch (e) {
       $("health-ping-state").textContent = "error";
       $("health-error").textContent = `Health error: ${e.message || "unknown"}`;
       $("health-error").classList.remove("hidden");
     }
+  });
+
+  $("health-details-toggle").addEventListener("click", () => {
+    const el = $("health-inv-details");
+    el.classList.toggle("hidden");
   });
 
   // initial
