@@ -53,7 +53,9 @@ def main(argv: list[str] | None = None) -> int:
 
     p_build = sub.add_parser("build", help="Build a replay bundle")
     p_build.add_argument("--run-id-or-dir", required=True, help="run_id or run directory")
-    p_build.add_argument("--out", required=True, help="output directory (bundle created under this)")
+    p_build.add_argument(
+        "--out", required=True, help="output directory (bundle created under this)"
+    )
     p_build.add_argument(
         "--created-at-utc",
         default=None,

@@ -57,7 +57,11 @@ def test_hash_validation_tamper_raises(tmp_path: Path) -> None:
     events_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(events_path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(json.dumps(_mk_event(run_id, 0), sort_keys=True, separators=(",", ":"), ensure_ascii=False))
+        f.write(
+            json.dumps(
+                _mk_event(run_id, 0), sort_keys=True, separators=(",", ":"), ensure_ascii=False
+            )
+        )
         f.write("\n")
 
     bundle_root = build_replay_pack(

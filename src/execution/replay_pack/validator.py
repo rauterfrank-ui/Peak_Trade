@@ -114,7 +114,9 @@ def validate_replay_pack(bundle_path: str | Path) -> ValidationReport:
             t = obj.get("event_time_utc")
             seq = obj.get("seq")
             if not isinstance(t, str) or not isinstance(seq, int):
-                raise ContractViolationError("events must include event_time_utc (str) and seq (int)")
+                raise ContractViolationError(
+                    "events must include event_time_utc (str) and seq (int)"
+                )
             key = (_parse_iso8601(t), int(seq))
             if last is not None and key <= last:
                 raise ContractViolationError("events not sorted by (event_time_utc, seq)")

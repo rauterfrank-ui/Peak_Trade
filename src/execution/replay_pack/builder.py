@@ -108,9 +108,9 @@ def _git_info(repo_root: Path) -> Dict[str, Any]:
             .decode("utf-8")
             .strip()
         )
-        status = subprocess.check_output(["git", "status", "--porcelain"], cwd=str(repo_root)).decode(
-            "utf-8"
-        )
+        status = subprocess.check_output(
+            ["git", "status", "--porcelain"], cwd=str(repo_root)
+        ).decode("utf-8")
         dirty = bool(status.strip())
     except Exception:
         sha = "UNKNOWN"

@@ -181,9 +181,7 @@ def validate_manifest_v1_dict(d: Mapping[str, Any]) -> None:
     if canon.get("json") != CANON_JSON_RULE:
         raise SchemaValidationError(f"manifest canonicalization.json must be {CANON_JSON_RULE!r}")
     if canon.get("jsonl") != CANON_JSONL_RULE:
-        raise SchemaValidationError(
-            f"manifest canonicalization.jsonl must be {CANON_JSONL_RULE!r}"
-        )
+        raise SchemaValidationError(f"manifest canonicalization.jsonl must be {CANON_JSONL_RULE!r}")
 
     inv = d.get("invariants")
     if not isinstance(inv, Mapping):
