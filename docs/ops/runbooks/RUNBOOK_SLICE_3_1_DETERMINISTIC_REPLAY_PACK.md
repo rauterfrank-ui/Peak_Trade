@@ -39,6 +39,37 @@ python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack
 echo $?
 ```
 
+### Phase 3.1 — DataRefs Resolver (Slice 3.2, optional)
+Voraussetzung:
+- Lokaler Cache ist verfügbar (kein Netzwerkzugriff).
+
+Best-effort (Replay läuft weiter, Report enthält MISSING):
+
+```bash
+python scripts/execution/pt_replay_pack.py resolve-datarefs --bundle <OUT_DIR>/replay_pack --cache-root <CACHE_ROOT> --mode best_effort
+```
+
+Strict (Exit 6 bei fehlenden required Refs, Exit 3 bei sha256_hint mismatch):
+
+```bash
+python scripts/execution/pt_replay_pack.py resolve-datarefs --bundle <OUT_DIR>/replay_pack --cache-root <CACHE_ROOT> --mode strict
+```
+
+Replay inkl. Resolver:
+
+```bash
+python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --resolve-datarefs best_effort --cache-root <CACHE_ROOT>
+python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --resolve-datarefs strict --cache-root <CACHE_ROOT>
+```
+
+Erwartete Outputs:
+- Report wird standardmäßig unter:
+
+```text
+meta/resolution_report.json
+```
+- Strict bricht deterministisch ab, wenn required Refs fehlen oder Hash-Hints nicht passen.
+
 Exit Codes:
 - 0: ok
 - 2: Contract- oder Validierungsfehler
@@ -49,6 +80,19 @@ Exit Codes:
 - hashes/sha256sums.txt deckt alle Dateien ab (außer sich selbst), LF-only
 - events/execution_events.jsonl ist sortiert nach (event_time_utc, seq)
 - Optional: --check-outputs ist grün (expected_fills und expected_positions passen)
+
+### Hardening Checks (v1.x)
+- Validator lehnt CRLF ab (LF-only + trailing LF).
+- Validator lehnt Floats überall in Events/Payload ab (hard error).
+- sha256sums.txt muss manifest.json enthalten, exakt alle Dateien außer sich selbst abdecken und nach Pfad sortiert sein.
+- events müssen strikt nach (event_time_utc, seq) sortiert sein; seq startet bei 0 und ist lückenlos.
+
+### Exit Codes (CLI, v1.x)
+- 0: OK
+- 2: Contract violation oder schema validation
+- 3: Hash mismatch
+- 4: Replay mismatch (check-outputs)
+- 5: Unexpected exception
 
 ### Exit Criteria (Definition of Done)
 - build erzeugt Bundle inkl. manifest + hashes + required layout
