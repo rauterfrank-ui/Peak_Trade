@@ -170,6 +170,14 @@ jobs:
 
           bash scripts/ops/pt_replay_compare_ci.sh "${ARGS[@]}"
 
+      - name: Consume compare report (informational)
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUNDLE_DIR="${{ steps.bundle.outputs.BUNDLE_DIR }}"
+          python3 scripts/ops/pt_compare_consume.py --report "${BUNDLE_DIR}/meta/compare_report.json" --mode ci
+
       - name: Upload compare report artifact
         if: always()
         uses: actions/upload-artifact@v4

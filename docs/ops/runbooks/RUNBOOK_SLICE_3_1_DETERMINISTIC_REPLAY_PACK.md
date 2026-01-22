@@ -211,6 +211,48 @@ Exit-Code Mapping:
 - 5: Unexpected error
 - 6: Missing required DataRef (strict)
 
+### Phase 3.4 — Consume Compare Report (Slice 3.5)
+Ziel:
+- Compare Report in einen kompakten CI Log Summary (stdout) und eine minified JSON Summary für Dashboards umwandeln.
+- Offline-only, deterministisch, ohne Wall-Clock.
+
+Consumer Script:
+
+```text
+scripts/ops/pt_compare_consume.py
+```
+
+Input:
+
+```text
+meta/compare_report.json
+```
+
+Output (default):
+
+```text
+compare_summary.min.json
+```
+
+CI Mode (single-line Summary):
+
+```bash
+python3 scripts/ops/pt_compare_consume.py --report <BUNDLE_DIR>/meta/compare_report.json --mode ci
+```
+
+Ops Mode (two-line Summary):
+
+```bash
+python3 scripts/ops/pt_compare_consume.py --report <BUNDLE_DIR>/meta/compare_report.json --mode ops
+```
+
+Strict Mode (Exit-Code aus Report übernehmen, wenn FAIL):
+
+```bash
+python3 scripts/ops/pt_compare_consume.py --report <BUNDLE_DIR>/meta/compare_report.json --strict
+echo $?
+```
+
 ### Phase 4 — Verification Checklist
 - Manifest ist kanonisch (sortierte Keys, kein Whitespace, LF)
 - hashes/sha256sums.txt deckt alle Dateien ab (außer sich selbst), LF-only
