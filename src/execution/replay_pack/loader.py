@@ -38,6 +38,24 @@ class ReplayBundle:
             return None
         return json.loads(p.read_text(encoding="utf-8"))
 
+    def market_data_refs(self) -> Optional[object]:
+        """
+        Optional market data references.
+
+        Preferred location:
+        - events/market_data_refs.json
+
+        Fallback:
+        - manifest.data_refs.market_data_refs
+        """
+        p = self.root / "events" / "market_data_refs.json"
+        if p.exists():
+            return json.loads(p.read_text(encoding="utf-8"))
+        data_refs = self.manifest.get("data_refs")
+        if isinstance(data_refs, dict) and "market_data_refs" in data_refs:
+            return data_refs.get("market_data_refs")
+        return None
+
 
 def load_replay_pack(bundle_path: str | Path) -> ReplayBundle:
     root = Path(bundle_path)

@@ -16,6 +16,12 @@ from .contract import (
     validate_manifest_v1_dict,
 )
 from .hashing import collect_files_for_hashing, parse_sha256sums_text, sha256_file
+from .schema import (
+    assert_lf_only_bytes,
+    assert_no_floats,
+    validate_execution_event_object_strict,
+    validate_market_data_refs_document_strict,
+)
 
 
 @dataclass(frozen=True)
@@ -27,10 +33,8 @@ class ValidationReport:
 
 
 def _read_text_strict_lf(path: Path) -> str:
-    # Read raw and reject CRLF (determinism / canonical artifacts).
     b = path.read_bytes()
-    if b"\r\n" in b:
-        raise ContractViolationError("CRLF forbidden in deterministic artifacts")
+    assert_lf_only_bytes(b, label=path.name)
     return b.decode("utf-8")
 
 
@@ -48,7 +52,7 @@ def validate_replay_pack(bundle_path: str | Path) -> ValidationReport:
     relpaths_present = [p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()]
     validate_bundle_required_files(relpaths_present)
 
-    # manifest schema + canonical bytes.
+    # manifest schema + canonical bytes (LF-only + trailing LF).
     manifest_path = root / "manifest.json"
     manifest_text = _read_text_strict_lf(manifest_path)
     manifest = json.loads(manifest_text)
@@ -91,6 +95,22 @@ def validate_replay_pack(bundle_path: str | Path) -> ValidationReport:
     sums_path = root / "hashes" / "sha256sums.txt"
     sums_text = _read_text_strict_lf(sums_path)
     sums = parse_sha256sums_text(sums_text)
+    # Additional hardening: enforce sorted order and uniqueness at the text level.
+    lines = [ln for ln in sums_text.splitlines() if ln.strip()]
+    rels_in_order = []
+    for ln in lines:
+        parts = ln.split("  ", 1)
+        if len(parts) != 2:
+            raise ContractViolationError("invalid sha256sums line (expected: '<sha256>  <path>')")
+        digest = parts[0].strip()
+        rel = parts[1].strip()
+        if len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest):
+            raise ContractViolationError("invalid sha256 digest in sha256sums.txt")
+        rels_in_order.append(rel)
+    if rels_in_order != sorted(rels_in_order):
+        raise ContractViolationError("sha256sums.txt must be sorted by path")
+    if len(set(rels_in_order)) != len(rels_in_order):
+        raise ContractViolationError("sha256sums.txt must not contain duplicate paths")
 
     expected_files = set(collect_files_for_hashing(root))
     if set(sums.keys()) != expected_files:
@@ -103,7 +123,9 @@ def validate_replay_pack(bundle_path: str | Path) -> ValidationReport:
 
     # Event ordering invariant check: (event_time_utc, seq) strictly increasing.
     ev_path = root / "events" / "execution_events.jsonl"
+    assert_lf_only_bytes(ev_path.read_bytes(), label="execution_events.jsonl")
     last: Tuple[datetime, int] | None = None
+    expected_seq = 0
     with open(ev_path, "r", encoding="utf-8") as f:
         for line_no, line in enumerate(f, start=1):
             if not line.strip():
@@ -111,16 +133,36 @@ def validate_replay_pack(bundle_path: str | Path) -> ValidationReport:
             obj = json.loads(line)
             if not isinstance(obj, Mapping):
                 raise ContractViolationError(f"execution_events line {line_no} must be object")
-            t = obj.get("event_time_utc")
-            seq = obj.get("seq")
-            if not isinstance(t, str) or not isinstance(seq, int):
-                raise ContractViolationError(
-                    "events must include event_time_utc (str) and seq (int)"
-                )
-            key = (_parse_iso8601(t), int(seq))
+            validate_execution_event_object_strict(obj, line_no=line_no)
+            t = str(obj["event_time_utc"])
+            seq = int(obj["seq"])
+            if seq != expected_seq:
+                raise ContractViolationError("events seq must be contiguous starting at 0")
+            expected_seq += 1
+
+            # Enforce float-forbidden for entire event object (including payload).
+            assert_no_floats(obj, path=f"$.events[{line_no}]")
+
+            key = (_parse_iso8601(t), seq)
             if last is not None and key <= last:
                 raise ContractViolationError("events not sorted by (event_time_utc, seq)")
             last = key
+
+    # Optional market data refs file: enforce LF-only + canonical JSON + strict schema.
+    md_path = root / "events" / "market_data_refs.json"
+    if md_path.exists():
+        md_text = _read_text_strict_lf(md_path)
+        md_doc = json.loads(md_text)
+        if not isinstance(md_doc, (Mapping, list)):
+            raise SchemaValidationError("market_data_refs must be a JSON object or list")
+        validate_market_data_refs_document_strict(md_doc)
+
+        # Enforce canonical JSON for deterministic diffs.
+        canonical_md = dumps_canonical(md_doc) + "\n"
+        if md_text != canonical_md:
+            raise SchemaValidationError(
+                "events/market_data_refs.json must be canonical JSON (sorted keys, no ws)"
+            )
 
     # File count includes manifest + sha256sums + all other files.
     file_count = len([p for p in root.rglob("*") if p.is_file()])

@@ -8,6 +8,7 @@ from .contract import (
     ContractViolationError,
     HashMismatchError,
     MissingRequiredFileError,
+    ReplayMismatchError,
     SchemaValidationError,
 )
 
@@ -20,5 +21,6 @@ __all__ = [
     "ContractViolationError",
     "HashMismatchError",
     "MissingRequiredFileError",
+    "ReplayMismatchError",
     "SchemaValidationError",
 ]

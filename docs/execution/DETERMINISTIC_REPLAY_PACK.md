@@ -74,11 +74,86 @@ python scripts/execution/pt_replay_pack.py validate --bundle <OUT_DIR>/replay_pa
 python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --check-outputs
 ```
 
+### Market Data References (market_data_refs) — Slice 3.2
+Bundles bleiben bewusst leichtgewichtig: Market Data wird **nicht** eingebettet, sondern nur referenziert.
+
+#### Datei
+Die Referenzen liegen optional in:
+
+```text
+events/market_data_refs.json
+```
+
+#### Supported Top-Level Shapes
+
+```json
+[
+  { "ref_id": "mdref-0001", "kind": "bars", "symbol": "AAPL", "start_utc": "2026-01-01T00:00:00Z", "end_utc": "2026-01-01T06:00:00Z", "source": "local_cache", "locator": { "namespace": "peaktrade_cache", "dataset": "bars_1m" } }
+]
+```
+
+```json
+{
+  "market_data_refs": [
+    { "ref_id": "mdref-0001", "kind": "bars", "symbol": "AAPL", "start_utc": "2026-01-01T00:00:00Z", "end_utc": "2026-01-01T06:00:00Z", "source": "local_cache", "locator": { "namespace": "peaktrade_cache", "dataset": "bars_1m" } }
+  ]
+}
+```
+
+```json
+{
+  "schema_version": "MARKET_DATA_REFS_V1",
+  "refs": [
+    { "ref_id": "mdref-0001", "kind": "bars", "symbol": "AAPL", "start_utc": "2026-01-01T00:00:00Z", "end_utc": "2026-01-01T06:00:00Z", "source": "local_cache", "locator": { "namespace": "peaktrade_cache", "dataset": "bars_1m" } }
+  ]
+}
+```
+
+#### Offline Resolver (deterministisch)
+Der Resolver nutzt ausschließlich lokale Filesystem-Quellen (kein HTTP/Netzwerk) und erzeugt einen deterministischen Report.
+
+```bash
+python scripts/execution/pt_replay_pack.py resolve-datarefs --bundle <OUT_DIR>/replay_pack --cache-root <CACHE_ROOT> --mode best_effort
+python scripts/execution/pt_replay_pack.py resolve-datarefs --bundle <OUT_DIR>/replay_pack --cache-root <CACHE_ROOT> --mode strict
+```
+
+Report (default):
+
+```text
+meta/resolution_report.json
+```
+
+Replay mit optionalem Resolve-Schritt:
+
+```bash
+python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --resolve-datarefs best_effort --cache-root <CACHE_ROOT>
+python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --resolve-datarefs strict --cache-root <CACHE_ROOT>
+```
+
 ### Determinismus-Garantien (MUST)
 - Stabile Sortierung (manifest.contents und execution_events)
 - Kanonisches JSON/JSONL (sort_keys, separators, UTF-8, LF)
 - Keine Floats in deterministischen Artefakten (hard error)
 - Keine Wall-Clock-Abhängigkeit für created_at_utc im Default-Pfad (deterministisch aus erstem Event)
+
+### Contract Hardening (v1.x)
+Zusätzliche, strikt validierte Regeln (ohne Contract-Version-Bump):
+
+- **Manifest Schema**: Pflichtfelder, Typen, Enums (canonicalization und invariants) werden strikt geprüft.
+- **Float-forbidden**: Jede Float-Zahl irgendwo in Events oder Payload führt zu einem Hard Error.
+- **LF-only**: manifest.json und hashes/sha256sums.txt müssen LF-only sein und mit LF enden (CRLF wird abgelehnt).
+- **Hashes**: sha256sums.txt muss alle Dateien außer sich selbst enthalten (inklusive manifest.json) und nach Pfad sortiert sein.
+- **Ordering Invariant**: events werden auf strikt monotones (event_time_utc, seq) geprüft; seq muss bei 0 starten und lückenlos sein.
+
+### CLI Exit Codes (v1.x)
+
+| Code | Meaning |
+|------|---------|
+| 0 | OK |
+| 2 | Contract violation oder schema validation |
+| 3 | Hash mismatch |
+| 4 | Replay mismatch (check-outputs) |
+| 5 | Unexpected exception |
 
 ### Einschränkungen
 - v1 ist auf Slice‑1 Events mit schema_version "BETA_EXEC_V1" fokussiert.

@@ -84,6 +84,10 @@ class HashMismatchError(ContractViolationError):
     """A file hash did not match the manifest / sha256sums entry."""
 
 
+class ReplayMismatchError(ReplayPackError):
+    """Replay output did not match expected outputs."""
+
+
 # -----------------------------------------------------------------------------
 # Manifest schema (v1)
 # -----------------------------------------------------------------------------
@@ -151,65 +155,14 @@ def required_manifest_keys_v1() -> Tuple[str, ...]:
 
 def validate_manifest_v1_dict(d: Mapping[str, Any]) -> None:
     """
-    Minimal, dependency-free schema validation for manifest v1.
+    Strict, dependency-free schema validation for manifest v1.x.
 
     Raises:
         SchemaValidationError: on any schema violation
     """
-    missing = [k for k in required_manifest_keys_v1() if k not in d]
-    if missing:
-        raise SchemaValidationError(f"manifest missing required keys: {missing}")
+    from .schema import validate_manifest_v1_strict
 
-    if str(d.get("contract_version")) != CONTRACT_VERSION:
-        raise SchemaValidationError("manifest contract_version must be '1'")
-
-    for k in ("bundle_id", "run_id", "created_at_utc", "peak_trade_git_sha"):
-        if not isinstance(d.get(k), str) or not str(d.get(k)).strip():
-            raise SchemaValidationError(f"manifest field must be non-empty string: {k}")
-
-    producer = d.get("producer")
-    if not isinstance(producer, Mapping):
-        raise SchemaValidationError("manifest producer must be an object")
-    if producer.get("tool") != "pt_replay_pack":
-        raise SchemaValidationError("manifest producer.tool must be 'pt_replay_pack'")
-    if not isinstance(producer.get("version"), str) or not str(producer.get("version")).strip():
-        raise SchemaValidationError("manifest producer.version must be non-empty string")
-
-    canon = d.get("canonicalization")
-    if not isinstance(canon, Mapping):
-        raise SchemaValidationError("manifest canonicalization must be an object")
-    if canon.get("json") != CANON_JSON_RULE:
-        raise SchemaValidationError(f"manifest canonicalization.json must be {CANON_JSON_RULE!r}")
-    if canon.get("jsonl") != CANON_JSONL_RULE:
-        raise SchemaValidationError(f"manifest canonicalization.jsonl must be {CANON_JSONL_RULE!r}")
-
-    inv = d.get("invariants")
-    if not isinstance(inv, Mapping):
-        raise SchemaValidationError("manifest invariants must be an object")
-    if inv.get("has_execution_events") is not True:
-        raise SchemaValidationError("manifest invariants.has_execution_events must be true")
-    if inv.get("ordering") != EVENT_ORDERING_INVARIANT:
-        raise SchemaValidationError(
-            f"manifest invariants.ordering must be {EVENT_ORDERING_INVARIANT!r}"
-        )
-
-    contents = d.get("contents")
-    if not isinstance(contents, list) or not contents:
-        raise SchemaValidationError("manifest contents must be a non-empty list")
-    for i, item in enumerate(contents):
-        if not isinstance(item, Mapping):
-            raise SchemaValidationError(f"manifest contents[{i}] must be an object")
-        for req in ("path", "sha256", "bytes", "media_type"):
-            if req not in item:
-                raise SchemaValidationError(f"manifest contents[{i}] missing key: {req}")
-        if not isinstance(item.get("path"), str) or not str(item["path"]).strip():
-            raise SchemaValidationError(f"manifest contents[{i}].path must be string")
-        if not isinstance(item.get("sha256"), str) or len(str(item["sha256"])) != 64:
-            raise SchemaValidationError(f"manifest contents[{i}].sha256 must be 64-hex")
-        if not isinstance(item.get("bytes"), int) or int(item["bytes"]) < 0:
-            raise SchemaValidationError(f"manifest contents[{i}].bytes must be int >= 0")
-        if not isinstance(item.get("media_type"), str) or not str(item["media_type"]).strip():
-            raise SchemaValidationError(f"manifest contents[{i}].media_type must be string")
+    validate_manifest_v1_strict(d)
 
 
 def validate_bundle_required_files(relpaths_present: Iterable[str]) -> None:
