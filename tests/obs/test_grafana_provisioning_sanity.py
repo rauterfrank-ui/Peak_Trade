@@ -30,9 +30,7 @@ def test_dashboards_provider_folders_from_files_structure_enabled() -> None:
 
 
 def test_dashboards_folder_layout_no_root_jsons() -> None:
-    dashboards_dir = (
-        PROJECT_ROOT / "docs" / "webui" / "observability" / "grafana" / "dashboards"
-    )
+    dashboards_dir = PROJECT_ROOT / "docs" / "webui" / "observability" / "grafana" / "dashboards"
     assert dashboards_dir.is_dir()
     root_jsons = sorted(dashboards_dir.glob("*.json"))
     assert root_jsons == []
@@ -42,9 +40,7 @@ def test_dashboards_folder_layout_no_root_jsons() -> None:
 
 
 def test_dashboard_uids_unique_and_required_vars_present() -> None:
-    dashboards_dir = (
-        PROJECT_ROOT / "docs" / "webui" / "observability" / "grafana" / "dashboards"
-    )
+    dashboards_dir = PROJECT_ROOT / "docs" / "webui" / "observability" / "grafana" / "dashboards"
     json_files = sorted(dashboards_dir.glob("*/*.json"))
     assert json_files, "expected at least one dashboard JSON"
 
@@ -73,30 +69,26 @@ def test_dashboard_uids_unique_and_required_vars_present() -> None:
         doc = _load_json(p)
         templ = (doc.get("templating") or {}).get("list") or []
         ds_vars = [
-            t.get("name")
-            for t in templ
-            if isinstance(t, dict) and t.get("type") == "datasource"
+            t.get("name") for t in templ if isinstance(t, dict) and t.get("type") == "datasource"
         ]
         ds_vars = {v for v in ds_vars if isinstance(v, str)}
         need = expected.get(pack)
         assert need is not None, f"unexpected pack folder: {pack}"
         if pack == "overview":
             assert need.issubset(ds_vars), f"{p} missing {sorted(need - ds_vars)}"
-            assert ds_vars.issubset(need | allow_overview_extra), f"{p} unexpected vars {sorted(ds_vars - (need | allow_overview_extra))}"
+            assert ds_vars.issubset(need | allow_overview_extra), (
+                f"{p} unexpected vars {sorted(ds_vars - (need | allow_overview_extra))}"
+            )
         else:
             assert ds_vars == need, f"{p} expected vars {sorted(need)} got {sorted(ds_vars)}"
 
 
 def test_drilldown_links_present_between_core_dashboards() -> None:
-    dashboards_dir = (
-        PROJECT_ROOT / "docs" / "webui" / "observability" / "grafana" / "dashboards"
-    )
+    dashboards_dir = PROJECT_ROOT / "docs" / "webui" / "observability" / "grafana" / "dashboards"
     # Core dashboards we expect to interlink (via uid-based /d/<uid> urls).
     overview = _load_json(dashboards_dir / "overview" / "peaktrade-overview.json")
     shadow = _load_json(dashboards_dir / "shadow" / "peaktrade-shadow-pipeline-mvs.json")
-    execution = _load_json(
-        dashboards_dir / "execution" / "peaktrade-execution-watch-overview.json"
-    )
+    execution = _load_json(dashboards_dir / "execution" / "peaktrade-execution-watch-overview.json")
 
     def _link_urls(d: dict) -> set[str]:
         links = d.get("links") or []
