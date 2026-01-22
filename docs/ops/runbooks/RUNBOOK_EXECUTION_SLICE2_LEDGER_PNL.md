@@ -20,7 +20,7 @@ Slice 2 macht Slice‑1 Execution Events buchhalterisch prüfbar:
 
 ## Implementation (Repo Paths)
 - Code:
-  - `src/execution/ledger/engine.py` – `LedgerEngine.apply(event)` + `snapshot()/export_snapshot_json()`
+  - `src/execution/ledger/engine.py` – `LedgerEngine.apply(event)` + `snapshot()&#47;export_snapshot_json()`
   - `src/execution/ledger/models.py` – `JournalEntry`, `Posting`, `Position`, `ValuationSnapshot`, `QuantizationPolicy`
   - `src/execution/ledger/quantization.py` – deterministisches Decimal Parsing + Quantize
   - `src/execution/ledger/pnl.py` – unrealized PnL (MTM)

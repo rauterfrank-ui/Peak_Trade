@@ -18,7 +18,7 @@ Package: `src/execution/bridge/`
 - **Bridge**: `BetaEventBridge`
   - Input: `beta_events: Iterable[dict]` (in‑memory)
   - Normalisierung: Schema `{event_type,t,seq,source,payload,event_id}` (ohne Floats)
-  - Output (via Sink) unter `out/<run_fingerprint>/...`:
+  - Output (via Sink) unter `out&#47;<run_fingerprint>&#47;...`:
     - `normalized_beta_events.jsonl`
     - `ledger_applied_events.jsonl`
     - `ledger_final_state.json`

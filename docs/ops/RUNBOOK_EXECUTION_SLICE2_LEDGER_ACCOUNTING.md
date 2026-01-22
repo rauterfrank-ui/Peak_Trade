@@ -16,7 +16,7 @@ Slice 2 erweitert die Slice‑1 Execution Events (insb. FILL) um einen **buchhal
 
 ## Implementierung (Code-Orte)
 - **Ledger Package**: `src/execution/ledger/`
-  - `engine.py`: `LedgerEngine.apply(event)` + `open_cash()` + `snapshot()/export_snapshot_json()`
+  - `engine.py`: `LedgerEngine.apply(event)` + `open_cash()` + `snapshot()&#47;export_snapshot_json()`
   - `models.py`: `JournalEntry`, `Posting`, `Position`, `ValuationSnapshot`, `QuantizationPolicy`
   - `quantization.py`: deterministisches `Decimal` Parsing + Quantize + Symbol Parser
   - `pnl.py`: unrealized PnL (Mark‑to‑Market)
