@@ -11,7 +11,7 @@
     "list": [
       {
         "type": "datasource",
-        "name": "DS_PROM_LOCAL",
+        "name": "DS_LOCAL",
         "label": "Datasource",
         "query": "prometheus",
         "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
@@ -22,7 +22,7 @@
         "type": "query",
         "name": "route",
         "label": "route",
-        "datasource": { "type": "prometheus", "uid": "${DS_PROM_LOCAL}" },
+        "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
         "query": {
           "query": "label_values(peak_trade_http_requests_total_labeled_total{service=\"peak_trade_web\",env=\"local\",stack=\"host\"}, route)",
           "refId": "routeVars"
@@ -39,7 +39,7 @@
     {
       "type": "timeseries",
       "title": "RPS (labeled, all routes)",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROM_LOCAL}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
       "targets": [
         {
@@ -52,7 +52,7 @@
     {
       "type": "timeseries",
       "title": "Avg latency (s) (labeled, all routes)",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROM_LOCAL}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
       "targets": [
         {
@@ -65,7 +65,7 @@
     {
       "type": "timeseries",
       "title": "RPS by route (labeled)",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROM_LOCAL}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 8 },
       "targets": [
         {
@@ -78,7 +78,7 @@
     {
       "type": "stat",
       "title": "In-flight requests (labeled)",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROM_LOCAL}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
       "gridPos": { "h": 6, "w": 8, "x": 0, "y": 18 },
       "targets": [
         {
@@ -92,7 +92,7 @@
     {
       "type": "stat",
       "title": "up{job=peak_trade_web} (local)",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROM_LOCAL}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
       "gridPos": { "h": 6, "w": 8, "x": 8, "y": 18 },
       "targets": [
         {

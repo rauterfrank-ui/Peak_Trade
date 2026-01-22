@@ -62,6 +62,25 @@ Stop:
 bash scripts/obs/grafana_local_down.sh
 ```
 
+## Troubleshooting (minimal, deterministisch)
+
+- Wenn `grafana_local_up.sh` mit einer Docker-Daemon Meldung scheitert, starte Docker lokal und führe den Smoke erneut aus.
+- Wenn `grafana_local_verify.sh` bei `prometheus.ready` scheitert, ist der Compose-Stack nicht gestartet oder Ports sind belegt.
+- Wenn `grafana_local_verify.sh` bei `grafana.dashboards` scheitert, stimmt meist ein Mount oder die Provisioning-Config nicht.
+
+Snapshot-Debug (keine Watch-Loops):
+
+```bash
+# Status
+docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml ps
+
+# Grafana health
+curl -fsS -u admin:admin http://127.0.0.1:3000/api/health
+
+# Provisioning mounts (im Container)
+docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml exec grafana sh -lc 'ls -la /etc/grafana/provisioning/dashboards /etc/grafana/provisioning/datasources /etc/grafana/dashboards'
+```
+
 ## Aktivierung (Peak_Trade Web-App)
 
 - Env-Flag: `PEAK_TRADE_PROMETHEUS_ENABLED=1`

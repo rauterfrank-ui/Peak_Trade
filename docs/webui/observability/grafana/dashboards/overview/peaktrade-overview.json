@@ -9,14 +9,41 @@
     "peak_trade",
     "observability"
   ],
+  "links": [
+    {
+      "type": "link",
+      "title": "Shadow Pipeline (MVS)",
+      "url": "/d/peaktrade-shadow-pipeline-mvs",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Execution Watch Overview",
+      "url": "/d/peaktrade-execution-watch-overview",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    }
+  ],
   "templating": {
     "list": [
       {
         "type": "datasource",
-        "name": "DS_PROM",
-        "label": "Datasource",
+        "name": "DS_LOCAL",
+        "label": "Prometheus (local)",
         "query": "prometheus",
         "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
+        "options": [],
+        "refresh": 1
+      },
+      {
+        "type": "datasource",
+        "name": "DS_MAIN",
+        "label": "Prometheus (main)",
+        "query": "prometheus",
+        "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
         "options": [],
         "refresh": 1
       }
@@ -25,7 +52,7 @@
   "panels": [
     {
       "type": "timeseries",
-      "title": "UP (mini) — job=peak_trade_web",
+      "title": "UP (local) — job=peak_trade_web",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -34,7 +61,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROM}"
+        "uid": "${DS_LOCAL}"
       },
       "targets": [
         {
@@ -46,7 +73,7 @@
     },
     {
       "type": "timeseries",
-      "title": "UP (main) — job=peak_trade_uvicorn (main prom missing)",
+      "title": "UP (main) — job=peak_trade_web",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -55,19 +82,19 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROM}"
+        "uid": "${DS_MAIN}"
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "absent(up{job=\"peak_trade_uvicorn\"})",
-          "legendFormat": "main_missing_absent"
+          "expr": "up{job=\"peak_trade_web\"}",
+          "legendFormat": "{{instance}}"
         }
       ]
     },
     {
       "type": "timeseries",
-      "title": "HTTP req/s (mini) — peak_trade_http_requests_total",
+      "title": "HTTP req/s (local) — peak_trade_http_requests_total",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -76,7 +103,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROM}"
+        "uid": "${DS_LOCAL}"
       },
       "targets": [
         {
@@ -88,7 +115,7 @@
     },
     {
       "type": "timeseries",
-      "title": "HTTP req/s (main) — peak_trade_http_requests_total (main prom missing)",
+      "title": "HTTP req/s (main) — peak_trade_http_requests_total",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -97,13 +124,13 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROM}"
+        "uid": "${DS_MAIN}"
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "vector(0)",
-          "legendFormat": "main_missing_0"
+          "expr": "sum(rate(peak_trade_http_requests_total[5m]))",
+          "legendFormat": "req/s"
         }
       ]
     }
