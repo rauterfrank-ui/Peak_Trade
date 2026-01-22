@@ -66,6 +66,7 @@ jobs:
           set -euo pipefail
           RUN_DIR="${RUNNER_TEMP}/pt_compare_run_dir"
           OUT_DIR="${RUNNER_TEMP}/pt_compare_out_dir"
+          export RUN_DIR OUT_DIR
           rm -rf "${RUN_DIR}" "${OUT_DIR}"
           mkdir -p "${RUN_DIR}"
 
