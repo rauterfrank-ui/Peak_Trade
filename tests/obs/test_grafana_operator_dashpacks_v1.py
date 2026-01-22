@@ -64,6 +64,7 @@ def test_dashboard_uids_unique_and_vars_present() -> None:
         "peaktrade-execution-watch-overview": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
         "peaktrade-labeled-local": {"DS_LOCAL"},
     }
+    allow_extra = {"DS_PROM"}  # unified selector is allowed as extra
     for uid, p in uids.items():
         if uid not in want_vars:
             continue
@@ -73,8 +74,10 @@ def test_dashboard_uids_unique_and_vars_present() -> None:
             t.get("name") for t in templ if isinstance(t, dict) and t.get("type") == "datasource"
         ]
         names = {n for n in names if isinstance(n, str)}
-        assert names == want_vars[uid], (
-            f"{uid} expected {sorted(want_vars[uid])} got {sorted(names)}"
+        need = want_vars[uid]
+        assert need.issubset(names), f"{uid} missing {sorted(need - names)}"
+        assert names.issubset(need | allow_extra), (
+            f"{uid} unexpected vars {sorted(names - (need | allow_extra))}"
         )
 
 
@@ -98,19 +101,25 @@ def test_cross_links_between_dashboards_present() -> None:
     ex = _urls(execution)
     ht = _urls(http)
 
+    def _has_uid(urls: set[str], uid: str) -> bool:
+        # Allow both Grafana link shapes:
+        # - /d/<uid>
+        # - d/<uid>/<slug>
+        return any(uid in u for u in urls)
+
     # Bidirectional operator nav: overview <-> shadow <-> execution <-> http (with extra edges OK)
-    assert "/d/peaktrade-shadow-pipeline-mvs" in ov
-    assert "/d/peaktrade-execution-watch-overview" in ov
-    assert "/d/peaktrade-labeled-local" in ov
+    assert _has_uid(ov, "peaktrade-shadow-pipeline-mvs")
+    assert _has_uid(ov, "peaktrade-execution-watch-overview")
+    assert _has_uid(ov, "peaktrade-labeled-local")
 
-    assert "/d/peaktrade-overview" in sh
-    assert "/d/peaktrade-execution-watch-overview" in sh
-    assert "/d/peaktrade-labeled-local" in sh
+    assert _has_uid(sh, "peaktrade-overview")
+    assert _has_uid(sh, "peaktrade-execution-watch-overview")
+    assert _has_uid(sh, "peaktrade-labeled-local")
 
-    assert "/d/peaktrade-overview" in ex
-    assert "/d/peaktrade-shadow-pipeline-mvs" in ex
-    assert "/d/peaktrade-labeled-local" in ex
+    assert _has_uid(ex, "peaktrade-overview")
+    assert _has_uid(ex, "peaktrade-shadow-pipeline-mvs")
+    assert _has_uid(ex, "peaktrade-labeled-local")
 
-    assert "/d/peaktrade-overview" in ht
-    assert "/d/peaktrade-shadow-pipeline-mvs" in ht
-    assert "/d/peaktrade-execution-watch-overview" in ht
+    assert _has_uid(ht, "peaktrade-overview")
+    assert _has_uid(ht, "peaktrade-shadow-pipeline-mvs")
+    assert _has_uid(ht, "peaktrade-execution-watch-overview")
