@@ -982,7 +982,13 @@ class ExecutionOrchestrator:
                 symbol=order.symbol,
                 event_type="SUBMIT",
                 client_order_id=order.client_order_id,
-                payload={"idempotency_key": idempotency_key},
+                payload={
+                    "idempotency_key": idempotency_key,
+                    # Slice 2 accounting needs side/qty deterministically associated with the order_id.
+                    "side": order.side.value,
+                    "quantity": str(order.quantity),
+                    "order_type": order.order_type.value,
+                },
             )
 
         # Execute order via adapter (use selected adapter from Stage 4)
@@ -1179,6 +1185,8 @@ class ExecutionOrchestrator:
                     client_order_id=order.client_order_id,
                     payload={
                         "fill_id": fill.fill_id,
+                        # Slice 2 accounting requires side to book cash/inventory correctly.
+                        "side": fill.side.value,
                         "quantity": str(fill.quantity),
                         "price": str(fill.price),
                         "fee": str(fill.fee),

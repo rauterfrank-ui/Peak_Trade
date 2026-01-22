@@ -1,5 +1,11 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260122-pr926-slice3-beta-bridge-determinism"></a>
+- **EV-20260122-PR926-SLICE3-BETA-BRIDGE-DETERMINISM** | Date: 2026-01-22 | Owner: execution | Scope: code+tests+docs | Risk: HIGH  
+  - Source: [PR #926 Merge Log](merge_logs/PR_926_MERGE_LOG.md) · [PR #926](https://github.com/rauterfrank-ui/Peak_Trade/pull/926) · Commit: `ec03fc95`  
+  - Claim: Deterministic beta_events → LedgerBridge with canonical JSON/JSONL artifacts (byte-identical), stable ordering (event_type_rank + seq derivation), float reject, and documented integer Ledger state contract.  
+  - Notes: MergeCommit (PR #926): `ec03fc95b9ec845894a53a0890de2888c08a0d3a`.  
+
 <a id="ev-20260120-finish-c-closeout"></a>
 - **EV-20260120-FINISH-C-CLOSEOUT** | Date: 2026-01-20 | Owner: ops | Scope: docs-only | Risk: LOW  
   - Source: [Evidence](evidence/FINISH_C_D7_D8_CLOSEOUT_20260120T100504Z.md)  
@@ -95,7 +101,7 @@
 **Scope:** Living operational artifact for tracking evidence items related to CI runs, drills, tests, incidents, and process artifacts.  
 **Purpose:** Centralized index for nachvollziehbarkeit (traceability) of operational evidence—NOT a compliance claim.  
 **Owner:** ops  
-**Status:** v0.15 (Operational - 34 entries)
+**Status:** v0.15 (Operational - 35 entries)
 
 ---
 
@@ -263,6 +269,7 @@ Evidence items are operational artifacts that document system behavior, process 
 | 2026-01-14 | v0.11 Phase 9C Wave 3: Added EV-20260114-PR712-WAVE3-DOCS-REMEDIATION (Docs Graph Remediation Wave 3, PR #712, reduced broken targets 114→89, 25 files, token-policy-safe, runbook-driven, 27/27 CI checks PASS) | ops |
 | 2026-01-14 | v0.12 Phase 9C Wave 4: Added EV-20260114-PR714-WAVE4-DOCS-REMEDIATION (Docs Graph Remediation Wave 4, PR #714, reduced broken targets 87→65, CI-Parity Guide, 14 files, 23/23 CI checks PASS, token-policy-safe) | ops |
 | 2026-01-14 | v0.13 Phase 9C Wave 5: Added EV-20260114-PR716-WAVE5-DOCS-REMEDIATION (Docs Graph Remediation Wave 5, PR #716, reduced broken targets 58→39, goal ≤40 achieved, cluster-based, 27 token-policy violations fixed, 18 files, auto-merge, 10/10 required checks PASS) | ops |
+| 2026-01-22 | Added EV-20260122-PR926-SLICE3-BETA-BRIDGE-DETERMINISM (Slice 3 determinism-critical bridge + regression artifacts, PR #926) | execution |
 
 ---
 
@@ -304,6 +311,6 @@ Evidence items are operational artifacts that document system behavior, process 
 
 **Version:** v0.15  
 **Maintained by:** ops  
-**Last Updated:** 2026-01-21  
-**Total Entries:** 34 (1 seed + 33 operational)  
+**Last Updated:** 2026-01-22  
+**Total Entries:** 35 (1 seed + 34 operational)  
 **Next Review:**  (recommend quarterly or pre-phase-gate)

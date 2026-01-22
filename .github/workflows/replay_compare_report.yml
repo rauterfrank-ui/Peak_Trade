@@ -1,0 +1,188 @@
+name: Replay Compare Report
+
+on:
+  workflow_dispatch:
+    inputs:
+      python_version:
+        description: Python version for compare job
+        required: true
+        default: "3.11"
+      check_outputs:
+        description: Enable output invariant checks (requires bundle built with expected outputs)
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      resolve_datarefs:
+        description: Optional offline market_data_refs resolution mode
+        required: true
+        default: "none"
+        type: choice
+        options:
+          - none
+          - best_effort
+          - strict
+
+  pull_request:
+    paths:
+      - ".github/workflows/replay_compare_report.yml"
+      - "scripts/ops/pt_replay_compare_ci.sh"
+      - "scripts/execution/pt_replay_pack.py"
+      - "src/execution/replay_pack/**"
+      - "tests/replay_pack/**"
+      - "docs/ops/runbooks/RUNBOOK_SLICE_3_1_DETERMINISTIC_REPLAY_PACK.md"
+      - "docs/execution/DETERMINISTIC_REPLAY_PACK.md"
+
+jobs:
+  replay-compare-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.python_version || '3.11' }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create minimal synthetic replay bundle
+        id: bundle
+        shell: bash
+        env:
+          CHECK_OUTPUTS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.check_outputs || 'false' }}
+          CREATED_AT_UTC: "2026-01-01T00:00:00+00:00"
+          RUN_ID: "ci_minimal_compare"
+        run: |
+          set -euo pipefail
+          RUN_DIR="${RUNNER_TEMP}/pt_compare_run_dir"
+          OUT_DIR="${RUNNER_TEMP}/pt_compare_out_dir"
+          export RUN_DIR OUT_DIR
+          rm -rf "${RUN_DIR}" "${OUT_DIR}"
+          mkdir -p "${RUN_DIR}"
+
+          BUNDLE_DIR="$(python3 - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          from pathlib import Path
+
+          from src.execution.determinism import stable_id
+          from src.execution.replay_pack.builder import build_replay_pack
+
+          run_id = os.environ["RUN_ID"]
+          run_dir = Path(os.environ["RUN_DIR"])
+          out_dir = Path(os.environ["OUT_DIR"])
+          created_at_utc = os.environ["CREATED_AT_UTC"]
+          include_outputs = os.environ.get("CHECK_OUTPUTS", "false") == "true"
+
+          events_path = run_dir / "logs" / "execution" / "execution_events.jsonl"
+          events_path.parent.mkdir(parents=True, exist_ok=True)
+
+          fields = {
+              "run_id": run_id,
+              "session_id": "s",
+              "intent_id": "i",
+              "symbol": "AAPL/USD",
+              "event_type": "FILL",
+              "ts_sim": 0,
+              "request_id": None,
+              "client_order_id": "order_001",
+              "reason_code": None,
+              "payload": {
+                  "fill_id": "fill_0",
+                  "side": "BUY",
+                  "quantity": "1",
+                  "price": "1",
+                  "fee": "0",
+                  "fee_currency": "USD",
+              },
+          }
+
+          event_id = stable_id(kind="execution_event", fields=fields)
+          event = {
+              "schema_version": "BETA_EXEC_V1",
+              "event_id": event_id,
+              "run_id": run_id,
+              "session_id": "s",
+              "intent_id": "i",
+              "symbol": "AAPL/USD",
+              "event_type": "FILL",
+              "ts_sim": 0,
+              "ts_utc": "2026-01-01T00:00:00+00:00",
+              "request_id": None,
+              "client_order_id": "order_001",
+              "reason_code": None,
+              "reason_detail": None,
+              "payload": fields["payload"],
+          }
+
+          with open(events_path, "w", encoding="utf-8", newline="\n") as f:
+              f.write(
+                  json.dumps(event, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+              )
+              f.write("\n")
+
+          bundle_root = build_replay_pack(
+              run_dir,
+              out_dir,
+              created_at_utc_override=created_at_utc,
+              include_outputs=include_outputs,
+          )
+
+          print(str(bundle_root))
+          PY
+          )"
+
+          echo "BUNDLE_DIR=${BUNDLE_DIR}" >> "${GITHUB_OUTPUT}"
+
+      - name: Run compare via ops wrapper
+        shell: bash
+        env:
+          CHECK_OUTPUTS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.check_outputs || 'false' }}
+          RESOLVE_DATAREFS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.resolve_datarefs || 'none' }}
+          GENERATED_AT_UTC: "2026-01-01T00:00:00Z"
+        run: |
+          set -euo pipefail
+          BUNDLE_DIR="${{ steps.bundle.outputs.BUNDLE_DIR }}"
+          CACHE_ROOT="${RUNNER_TEMP}/pt_compare_cache_root"
+          mkdir -p "${CACHE_ROOT}"
+
+          ARGS=(--bundle "${BUNDLE_DIR}" --generated-at-utc "${GENERATED_AT_UTC}")
+
+          if [[ "${CHECK_OUTPUTS}" == "true" ]]; then
+            ARGS+=(--check-outputs)
+          fi
+
+          if [[ "${RESOLVE_DATAREFS}" != "none" ]]; then
+            ARGS+=(--resolve-datarefs "${RESOLVE_DATAREFS}" --cache-root "${CACHE_ROOT}")
+          fi
+
+          bash scripts/ops/pt_replay_compare_ci.sh "${ARGS[@]}"
+
+      - name: Consume compare report (informational)
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUNDLE_DIR="${{ steps.bundle.outputs.BUNDLE_DIR }}"
+          python3 scripts/ops/pt_compare_consume.py --report "${BUNDLE_DIR}/meta/compare_report.json" --mode ci
+
+      - name: Upload compare report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: replay-compare-report
+          path: ${{ steps.bundle.outputs.BUNDLE_DIR }}/meta/compare_report.json
+          retention-days: 14
+          if-no-files-found: warn

@@ -41,6 +41,7 @@ Runbooks for specific phase implementations and workflows:
 - [RUNBOOK_TO_FINISH_MASTER.md](RUNBOOK_TO_FINISH_MASTER.md) — Master: docs-only Branch → PR → D2/D3/D4 DoD → SSoT „Finish“-Definition (NO‑LIVE)
 - [RUNBOOK_FINISH_A_MVP.md](RUNBOOK_FINISH_A_MVP.md) — Finish Level A (MVP): Backtest → Artifacts → Report → Watch‑Only Dashboard (Cursor Multi‑Agent, NO‑LIVE)
 - [RUNBOOK_FINISH_B_BETA_EXECUTIONPIPELINE.md](RUNBOOK_FINISH_B_BETA_EXECUTIONPIPELINE.md) — Finish Level B (Beta): ExecutionPipeline + Ledger + Paper‑Trading (Cursor Multi‑Agent, NO‑LIVE)
+- [RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md](RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) — ExecutionPipeline Slice 2: Ledger/Accounting + deterministic PnL (NO‑LIVE, snapshot-only)
 - [RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md](RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md) — Finish Level C (v1.0) overview/pointer: Broker Adapter + Live‑Ops (governance‑first, NO‑LIVE default)
 - [finish_c/RUNBOOK_FINISH_C_MASTER.md](finish_c/RUNBOOK_FINISH_C_MASTER.md) — Finish Level C (Live‑Broker‑Ops Track): governance‑safe, NO‑LIVE default, C0–C5 + D1 artifacts repro
 - [RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md](RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md) — Workstream D4: Ops/Governance polish (docs gates, evidence, merge logs, release checklist)
@@ -57,6 +58,7 @@ Runbooks for specific phase implementations and workflows:
 
 Runbooks for CI operations and general operational procedures:
 
+- [RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md](RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md) — Slice 3.6: Offline deterministic replay regression pack shortcut (bundle → compare → consume)
 - [RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md](RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md) — PR #736: CI snapshot → enable auto-merge → post-merge verify on main (snapshot-only)
 - [RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md](RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md) — Operator Dashboard (Watch-Only) start→finish (local, read-only monitoring + deterministic snapshot export)
 - [RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md](RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md) — Dashboard Watch-Only UI v0.1B (observability) for src/live/web/app.py (read-only)

@@ -111,6 +111,11 @@ Risk: LOW
 ### Definition
 **Beta = ExecutionPipeline (paper/sim) + Ledger sind konsistent, deterministisch und testbar** — aber weiterhin **NO-LIVE**.
 
+### NEXT_PHASE (ExecutionPipeline) — Slice 2: Ledger/Accounting + Deterministic PnL
+- **Ziel**: Fill/Fee Events → Double‑Entry Journal + Balances → deterministische Positionen (WAC) + realized/unrealized PnL + Equity (snapshot/export).
+- **Determinismus**: keine Floats, explizite Quantisierung, stabile Sortierung/JSON‑Exports, `ts_utc` ignorieren (Input-only).
+- **Runbook**: [RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md)
+
 ### DoD Checklist (Beta)
 
 #### ExecutionPipeline (paper/sim, deterministisch)
