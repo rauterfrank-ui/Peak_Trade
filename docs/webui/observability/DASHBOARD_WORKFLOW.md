@@ -45,7 +45,6 @@ docs/webui/observability/grafana/dashboards/http/
 ```text
 docs/webui/observability/grafana/provisioning/dashboards/dashboards.yaml
 ```
-
 - **Wichtig**: Der Provider zeigt auf /etc/grafana/dashboards (Container-Pfad).
 
 ### Datasource Provisioning (YAML)
@@ -65,7 +64,7 @@ docs/webui/observability/grafana/provisioning/datasources/
 
 Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional-main/shadow Datasources wählen.
 
-- Overview dashboards: DS_LOCAL, DS_MAIN
+- Overview dashboards: DS_LOCAL, DS_MAIN (optional DS_SHADOW für System-Health)
 - Shadow dashboards: DS_SHADOW
 - Execution dashboards: DS_LOCAL, DS_MAIN, DS_SHADOW
 - HTTP dashboards: DS_LOCAL

@@ -110,6 +110,7 @@ want = {
   "peaktrade-overview": "overview",
   "peaktrade-shadow-pipeline-mvs": "shadow",
   "peaktrade-labeled-local": "http",
+  "peaktrade-system-health": "overview",
 }
 by_uid = {it.get("uid"): it for it in items if isinstance(it, dict)}
 missing = [uid for uid in want.keys() if uid not in by_uid]
@@ -120,7 +121,9 @@ problems = []
 for uid, folder in want.items():
   it = by_uid[uid]
   folder_title = str(it.get("folderTitle") or "")
-  # Be tolerant: some Grafana setups include a root folder name in folderTitle.
+  # Grafana behavior can vary: some setups report just the leaf folder name, others
+  # include a root folder (e.g. "Peak_Trade / overview"). Be tolerant and require
+  # the expected folder to appear as a leaf.
   ok = (folder_title == folder) or folder_title.endswith("/" + folder) or folder_title.endswith(" " + folder)
   if not ok:
     problems.append(f"uid={uid} folderTitle={folder_title!r} expected_leaf={folder!r}")
@@ -137,7 +140,7 @@ pass "grafana.dashboards" "Dashboards loaded under execution/overview/shadow/htt
 echo "==> Check: Dashboard datasource vars (optional)"
 if [[ "${GRAFANA_VERIFY_DASH_VARS:-0}" == "1" ]]; then
   dash_vars_ok=1
-  for uid in peaktrade-execution-watch-overview peaktrade-overview peaktrade-shadow-pipeline-mvs peaktrade-labeled-local; do
+  for uid in peaktrade-execution-watch-overview peaktrade-overview peaktrade-shadow-pipeline-mvs peaktrade-labeled-local peaktrade-system-health; do
     djson="$(grafana_get_json_or_fail "/api/dashboards/uid/${uid}")"
     want_vars="$(
       python3 -c '
@@ -153,6 +156,7 @@ want = {
   "peaktrade-overview": {"DS_LOCAL","DS_MAIN"},
   "peaktrade-shadow-pipeline-mvs": {"DS_SHADOW"},
   "peaktrade-labeled-local": {"DS_LOCAL"},
+  "peaktrade-system-health": {"DS_LOCAL","DS_MAIN","DS_SHADOW"},
 }
 need = want.get(uid, set())
 have = set(names)
