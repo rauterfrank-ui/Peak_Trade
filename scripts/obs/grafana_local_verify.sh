@@ -18,6 +18,16 @@ fail() {
   exit 1
 }
 
+echo "==> Check: Dashpack v2 operator summary JSON present (file-based)"
+OP_SUMMARY_JSON="docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-summary.json"
+if [[ ! -f "$OP_SUMMARY_JSON" ]]; then
+  echo "FAIL|dashpack.v2.operator_summary|Missing dashboard JSON: $OP_SUMMARY_JSON" >&2
+  echo "NEXT|Create/commit operator summary dashboard JSON (ux pack v2)" >&2
+  echo "RESULT=FAIL" >&2
+  exit 12
+fi
+pass "dashpack.v2.operator_summary" "$OP_SUMMARY_JSON"
+
 curl_ok() {
   local url="$1"
   curl -fsS "$url" >/dev/null 2>&1
