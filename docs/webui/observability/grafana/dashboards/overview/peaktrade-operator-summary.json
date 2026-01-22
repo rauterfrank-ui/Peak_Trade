@@ -1,0 +1,132 @@
+{
+  "links": [
+    {
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "title": "Overview (Mini vs Main)",
+      "type": "link",
+      "url": "/d/peaktrade-overview"
+    },
+    {
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "title": "System Health (Operator)",
+      "type": "link",
+      "url": "/d/peaktrade-system-health"
+    },
+    {
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "title": "Execution Watch Overview",
+      "type": "link",
+      "url": "/d/peaktrade-execution-watch-overview"
+    },
+    {
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "title": "HTTP Labeled (Local)",
+      "type": "link",
+      "url": "/d/peaktrade-labeled-local"
+    },
+    {
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "title": "Shadow Pipeline (MVS)",
+      "type": "link",
+      "url": "/d/peaktrade-shadow-pipeline-mvs"
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": [],
+      "title": "Operator quicklinks (watch-only)",
+      "type": "row"
+    },
+    {
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "options": {
+        "content": "Use the dashboard header links for drilldowns.\n\n**Recommended flow (watch-only):** System Health \u2192 Execution Watch \u2192 HTTP Labeled.\nShadow Pipeline (MVS) is included for quick cross-checks.",
+        "mode": "markdown"
+      },
+      "title": "How to use",
+      "type": "text"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": [
+    "observability",
+    "operator",
+    "peak_trade",
+    "summary",
+    "watch-only"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "prometheus-local",
+          "value": "peaktrade-prometheus-local"
+        },
+        "hide": 2,
+        "label": "Prometheus (local)",
+        "name": "DS_LOCAL",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "prometheus-main",
+          "value": "peaktrade-prometheus-main"
+        },
+        "hide": 2,
+        "label": "Prometheus (main)",
+        "name": "DS_MAIN",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "prometheus-shadow",
+          "value": "peaktrade-prometheus-shadow"
+        },
+        "hide": 2,
+        "label": "Prometheus (shadow)",
+        "name": "DS_SHADOW",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "PeakTrade Operator Summary",
+  "uid": "peaktrade-operator-summary",
+  "version": 1
+}
