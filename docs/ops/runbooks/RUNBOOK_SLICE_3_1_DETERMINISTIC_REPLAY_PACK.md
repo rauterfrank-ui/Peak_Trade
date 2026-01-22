@@ -70,6 +70,36 @@ meta/resolution_report.json
 ```
 - Strict bricht deterministisch ab, wenn required Refs fehlen oder Hash-Hints nicht passen.
 
+### Phase 3.2 — Compare Report (Slice 3.3, optional)
+Ziel:
+- Deterministisches Compare-Artefakt für CI/Ops (Baseline vs Replay).
+
+Minimal:
+
+```bash
+python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --generated-at-utc <ISO8601>
+```
+
+Mit Output-Invariants (falls expected Outputs vorhanden):
+
+```bash
+python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --check-outputs --generated-at-utc <ISO8601>
+```
+
+Mit Offline-DataRefs-Resolve:
+
+```bash
+python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --resolve-datarefs best_effort --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
+python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --resolve-datarefs strict --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
+```
+
+Erwartete Outputs:
+- Compare Report unter:
+
+```text
+meta/compare_report.json
+```
+
 Exit Codes:
 - 0: ok
 - 2: Contract- oder Validierungsfehler

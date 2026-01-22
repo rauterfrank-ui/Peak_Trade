@@ -38,6 +38,7 @@ from src.execution.replay_pack.datarefs import (
     resolve_market_data_refs,
     write_resolution_report_json,
 )
+from src.execution.replay_pack.compare import generate_compare_report
 
 
 def _eprint(msg: str) -> None:
@@ -185,6 +186,22 @@ def _cmd_resolve_datarefs(args: argparse.Namespace) -> int:
         return EXIT_UNEXPECTED
 
 
+def _cmd_compare(args: argparse.Namespace) -> int:
+    try:
+        code, _report = generate_compare_report(
+            args.bundle,
+            check_outputs=args.check_outputs,
+            resolve_datarefs=args.resolve_datarefs,
+            cache_root=args.cache_root,
+            generated_at_utc=args.generated_at_utc,
+            out_path=args.out,
+        )
+        return int(code)
+    except Exception as e:
+        _eprint(f"UnexpectedError: {type(e).__name__}: {e}")
+        return EXIT_UNEXPECTED
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="pt_replay_pack", add_help=True)
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -253,6 +270,38 @@ def main(argv: list[str] | None = None) -> int:
         help="override generated_at_utc for deterministic tests",
     )
     p_res.set_defaults(func=_cmd_resolve_datarefs)
+
+    p_cmp = sub.add_parser(
+        "compare", help="Generate deterministic compare report (baseline vs replay)"
+    )
+    p_cmp.add_argument("--bundle", required=True, help="bundle root directory")
+    p_cmp.add_argument(
+        "--check-outputs", action="store_true", help="compare to expected outputs if present"
+    )
+    p_cmp.add_argument(
+        "--resolve-datarefs",
+        nargs="?",
+        const="best_effort",
+        default=None,
+        choices=["best_effort", "strict"],
+        help="optionally resolve market_data_refs offline before compare",
+    )
+    p_cmp.add_argument(
+        "--cache-root",
+        default=None,
+        help="local cache root (defaults to PEAK_TRADE_DATA_CACHE_ROOT if set)",
+    )
+    p_cmp.add_argument(
+        "--generated-at-utc",
+        default=None,
+        help="override generated_at_utc for deterministic tests",
+    )
+    p_cmp.add_argument(
+        "--out",
+        default=None,
+        help="write compare report to this path (default: meta/compare_report.json inside bundle)",
+    )
+    p_cmp.set_defaults(func=_cmd_compare)
 
     ns = parser.parse_args(argv)
     return int(ns.func(ns))

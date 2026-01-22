@@ -130,6 +130,27 @@ python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack
 python scripts/execution/pt_replay_pack.py replay --bundle <OUT_DIR>/replay_pack --resolve-datarefs strict --cache-root <CACHE_ROOT>
 ```
 
+### Compare Report (Baseline vs Replay) — Slice 3.3
+Ein Compare Report ist ein deterministisches JSON-Artefakt für CI und Ops, das DataRefs-Status und Replay-Invariants zusammenfasst.
+
+```bash
+python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --generated-at-utc <ISO8601>
+python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --check-outputs --generated-at-utc <ISO8601>
+```
+
+Optional (inkl. Offline-DataRefs-Resolve vor dem Compare):
+
+```bash
+python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --resolve-datarefs best_effort --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
+python scripts/execution/pt_replay_pack.py compare --bundle <OUT_DIR>/replay_pack --resolve-datarefs strict --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
+```
+
+Default Output:
+
+```text
+meta/compare_report.json
+```
+
 ### Determinismus-Garantien (MUST)
 - Stabile Sortierung (manifest.contents und execution_events)
 - Kanonisches JSON/JSONL (sort_keys, separators, UTF-8, LF)
