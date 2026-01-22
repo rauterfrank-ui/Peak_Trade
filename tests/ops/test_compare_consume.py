@@ -62,6 +62,7 @@ def test_consume_pass_exit_0_and_writes_minified_summary(tmp_path: Path) -> None
     cp = _run(["--report", str(report_path)], cwd=_repo_root())
     assert cp.returncode == 0, cp.stderr
     assert "STATUS=PASS" in cp.stdout
+    assert "EXIT=0" in cp.stdout
 
     out_path = report_path.parent / "compare_summary.min.json"
     assert out_path.exists()

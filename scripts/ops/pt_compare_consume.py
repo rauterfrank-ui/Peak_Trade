@@ -244,7 +244,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return EXIT_CONTRACT
 
     status = _as_str(summary_obj.get("status")) or "FAIL"
-    exit_code = int(summary_obj.get("exit_code") or 1)
+    exit_val = summary_obj.get("exit_code")
+    exit_code = int(exit_val) if exit_val is not None else 1
     dr = summary_obj.get("datarefs") if isinstance(summary_obj.get("datarefs"), Mapping) else {}
     one_line = (
         f"STATUS={status} "
