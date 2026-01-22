@@ -1,46 +1,98 @@
 {
   "uid": "peaktrade-labeled-local",
   "title": "Peak_Trade Labeled (Local / 9092)",
-  "tags": ["observability", "peak_trade", "labeled", "local"],
+  "tags": [
+    "observability",
+    "peak_trade",
+    "labeled",
+    "local"
+  ],
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 1,
   "refresh": "10s",
-  "time": { "from": "now-15m", "to": "now" },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
   "links": [
     {
-      "type": "link",
-      "title": "Overview (Local vs Main)",
-      "url": "/d/peaktrade-overview",
-      "targetBlank": false,
+      "title": "Overview",
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
       "keepTime": true,
-      "includeVars": true
+      "targetBlank": false,
+      "url": "d/peaktrade-overview/peaktrade-overview"
     },
     {
-      "type": "link",
+      "title": "System Health",
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "url": "d/peaktrade-system-health/peaktrade-system-health"
+    },
+    {
       "title": "Shadow Pipeline (MVS)",
-      "url": "/d/peaktrade-shadow-pipeline-mvs",
-      "targetBlank": false,
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
       "keepTime": true,
-      "includeVars": true
+      "targetBlank": false,
+      "url": "d/peaktrade-shadow-pipeline-mvs/peaktrade-shadow-pipeline-mvs"
     },
     {
-      "type": "link",
       "title": "Execution Watch Overview",
-      "url": "/d/peaktrade-execution-watch-overview",
-      "targetBlank": false,
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
       "keepTime": true,
-      "includeVars": true
+      "targetBlank": false,
+      "url": "d/peaktrade-execution-watch-overview/peaktrade-execution-watch-overview"
+    },
+    {
+      "title": "HTTP (Labeled Local)",
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "url": "d/peaktrade-labeled-local/peaktrade-labeled-local"
     }
   ],
   "templating": {
     "list": [
       {
+        "name": "DS_PROM",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "refresh": 1,
+        "hide": 0,
+        "multi": false,
+        "includeAll": false,
+        "current": {
+          "text": "prometheus-local",
+          "value": "prometheus-local"
+        },
+        "options": []
+      },
+      {
         "type": "datasource",
         "name": "DS_LOCAL",
         "label": "Prometheus (local)",
         "query": "prometheus",
-        "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
+        "current": {
+          "text": "prometheus-local",
+          "value": "peaktrade-prometheus-local"
+        },
         "options": [],
         "refresh": 1
       },
@@ -48,7 +100,10 @@
         "type": "query",
         "name": "route",
         "label": "route",
-        "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_LOCAL}"
+        },
         "query": {
           "query": "label_values(peak_trade_http_requests_total_labeled_total{service=\"peak_trade_web\",env=\"local\",stack=\"host\"}, route)",
           "refId": "routeVars"
@@ -57,7 +112,10 @@
         "multi": true,
         "refresh": 2,
         "sort": 1,
-        "current": { "text": "All", "value": "$__all" }
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
       }
     ]
   },
@@ -65,8 +123,13 @@
     {
       "type": "timeseries",
       "title": "RPS (labeled, all routes)",
-      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": "${DS_PROM}",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
       "targets": [
         {
           "refId": "A",
@@ -78,8 +141,13 @@
     {
       "type": "timeseries",
       "title": "Avg latency (s) (labeled, all routes)",
-      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": "${DS_PROM}",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
       "targets": [
         {
           "refId": "A",
@@ -91,8 +159,13 @@
     {
       "type": "timeseries",
       "title": "RPS by route (labeled)",
-      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 8 },
+      "datasource": "${DS_PROM}",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
       "targets": [
         {
           "refId": "A",
@@ -104,8 +177,13 @@
     {
       "type": "stat",
       "title": "In-flight requests (labeled)",
-      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 18 },
+      "datasource": "${DS_PROM}",
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 18
+      },
       "targets": [
         {
           "refId": "A",
@@ -113,13 +191,24 @@
           "legendFormat": "in_flight"
         }
       ],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      }
     },
     {
       "type": "stat",
       "title": "up{job=peak_trade_web} (local)",
-      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 18 },
+      "datasource": "${DS_PROM}",
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 18
+      },
       "targets": [
         {
           "refId": "A",
@@ -127,7 +216,13 @@
           "legendFormat": "{{instance}}"
         }
       ],
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      }
     }
   ]
 }

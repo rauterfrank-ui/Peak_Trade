@@ -11,38 +11,82 @@
   ],
   "links": [
     {
-      "type": "link",
+      "title": "Overview",
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "url": "d/peaktrade-overview/peaktrade-overview"
+    },
+    {
+      "title": "System Health",
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "url": "d/peaktrade-system-health/peaktrade-system-health"
+    },
+    {
       "title": "Shadow Pipeline (MVS)",
-      "url": "/d/peaktrade-shadow-pipeline-mvs",
-      "targetBlank": false,
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
       "keepTime": true,
-      "includeVars": true
+      "targetBlank": false,
+      "url": "d/peaktrade-shadow-pipeline-mvs/peaktrade-shadow-pipeline-mvs"
     },
     {
-      "type": "link",
       "title": "Execution Watch Overview",
-      "url": "/d/peaktrade-execution-watch-overview",
-      "targetBlank": false,
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
       "keepTime": true,
-      "includeVars": true
+      "targetBlank": false,
+      "url": "d/peaktrade-execution-watch-overview/peaktrade-execution-watch-overview"
     },
     {
-      "type": "link",
-      "title": "HTTP Labeled (Local)",
-      "url": "/d/peaktrade-labeled-local",
-      "targetBlank": false,
+      "title": "HTTP (Labeled Local)",
+      "type": "dashboards",
+      "tags": [],
+      "asDropdown": false,
+      "includeVars": true,
       "keepTime": true,
-      "includeVars": true
+      "targetBlank": false,
+      "url": "d/peaktrade-labeled-local/peaktrade-labeled-local"
     }
   ],
   "templating": {
     "list": [
       {
+        "name": "DS_PROM",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "refresh": 1,
+        "hide": 0,
+        "multi": false,
+        "includeAll": false,
+        "current": {
+          "text": "prometheus-local",
+          "value": "prometheus-local"
+        },
+        "options": []
+      },
+      {
         "type": "datasource",
         "name": "DS_LOCAL",
         "label": "Prometheus (local)",
         "query": "prometheus",
-        "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
+        "current": {
+          "text": "prometheus-local",
+          "value": "peaktrade-prometheus-local"
+        },
         "options": [],
         "refresh": 1
       },
@@ -51,7 +95,10 @@
         "name": "DS_MAIN",
         "label": "Prometheus (main)",
         "query": "prometheus",
-        "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
+        "current": {
+          "text": "prometheus-main",
+          "value": "peaktrade-prometheus-main"
+        },
         "options": [],
         "refresh": 1
       }
@@ -67,10 +114,7 @@
         "x": 0,
         "y": 0
       },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_LOCAL}"
-      },
+      "datasource": "${DS_PROM}",
       "targets": [
         {
           "refId": "A",
@@ -88,10 +132,7 @@
         "x": 12,
         "y": 0
       },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_MAIN}"
-      },
+      "datasource": "${DS_PROM}",
       "targets": [
         {
           "refId": "A",
@@ -109,10 +150,7 @@
         "x": 0,
         "y": 8
       },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_LOCAL}"
-      },
+      "datasource": "${DS_PROM}",
       "targets": [
         {
           "refId": "A",
@@ -130,10 +168,7 @@
         "x": 12,
         "y": 8
       },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_MAIN}"
-      },
+      "datasource": "${DS_PROM}",
       "targets": [
         {
           "refId": "A",
