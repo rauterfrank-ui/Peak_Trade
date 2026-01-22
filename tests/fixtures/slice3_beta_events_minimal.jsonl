@@ -1,0 +1,5 @@
+{"event_type":"Price","t":0,"payload":{"symbol":"ACME","price_int":123450000}}
+{"event_type":"OrderIntent","t":1,"payload":{"symbol":"ACME","side":"BUY","qty_int":10}}
+{"event_type":"Order","t":2,"payload":{"symbol":"ACME","order_id":"ord_001","side":"BUY","qty_int":10,"limit_price_int":123460000}}
+{"event_type":"Fill","t":3,"payload":{"symbol":"ACME","side":"BUY","qty_int":10,"price_int":123460000}}
+{"event_type":"Fee","t":4,"payload":{"fee_int":2500}}
