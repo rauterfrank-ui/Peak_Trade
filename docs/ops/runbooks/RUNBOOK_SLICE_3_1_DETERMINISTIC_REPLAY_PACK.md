@@ -29,7 +29,9 @@ echo $?
 
 Exit Codes:
 - 0: ok
-- 2: Contract- oder Hash-Verletzung
+- 2: Contract violation oder schema validation
+- 3: Hash mismatch
+- 5: Unexpected exception
 
 ### Phase 3 — Replay (Deterministisch ausführen)
 
@@ -103,7 +105,111 @@ meta/compare_report.json
 Exit Codes:
 - 0: ok
 - 2: Contract- oder Validierungsfehler
-- 3: Replay-Mismatch gegen erwartete Outputs
+- 3: Hash mismatch
+- 4: Replay mismatch (check-outputs)
+- 5: Unexpected exception
+- 6: Missing required DataRef (nur bei strict)
+
+### Phase 3.3 — CI/OPS Integration: Compare JSON (Slice 3.4)
+Ziel:
+- Compare deterministisch operationalisieren (Wrapper + CI Artefakt), ohne bestehendes Replay-Pack Verhalten zu ändern.
+- Kein Netzwerkzugriff: Compare arbeitet offline (optional mit lokalem Cache für DataRefs).
+
+#### Lokaler Ops Run (Wrapper)
+Wrapper Script:
+
+```text
+scripts/ops/pt_replay_compare_ci.sh
+```
+
+Minimal (deterministischer Timestamp erforderlich):
+
+```bash
+bash scripts/ops/pt_replay_compare_ci.sh --bundle <BUNDLE_DIR> --generated-at-utc <ISO8601>
+echo $?
+```
+
+Mit Output-Invariants:
+
+```bash
+bash scripts/ops/pt_replay_compare_ci.sh --bundle <BUNDLE_DIR> --check-outputs --generated-at-utc <ISO8601>
+echo $?
+```
+
+Mit Offline-DataRefs Resolve:
+
+```bash
+bash scripts/ops/pt_replay_compare_ci.sh --bundle <BUNDLE_DIR> --resolve-datarefs best_effort --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
+bash scripts/ops/pt_replay_compare_ci.sh --bundle <BUNDLE_DIR> --resolve-datarefs strict --cache-root <CACHE_ROOT> --generated-at-utc <ISO8601>
+echo $?
+```
+
+Output (default):
+
+```text
+meta/compare_report.json
+```
+
+Hinweis:
+- Der Wrapper setzt immer explizit einen Output-Pfad, damit Compare einen Report schreiben kann (auch wenn Validierung fehlschlägt).
+- Exit Codes werden 1:1 durchgereicht (0, 2, 3, 4, 5, 6).
+
+#### CI Workflow (Artefakt)
+Workflow Datei:
+
+```text
+.github/workflows/replay_compare_report.yml
+```
+
+Artefakt:
+- Name:
+
+```text
+replay-compare-report
+```
+
+- Datei im Artefakt:
+
+```text
+compare_report.json
+```
+
+Determinismus:
+- CI nutzt eine fixe:
+
+```text
+--generated-at-utc 2026-01-01T00:00:00Z
+```
+
+#### Report Interpretation (Operator Kurzreferenz)
+Wichtigste Felder:
+- Summary:
+
+```text
+summary.status
+summary.exit_code
+summary.reasons
+```
+
+- Replay:
+
+```text
+replay.validate_bundle
+replay.replay_exit_code
+replay.check_outputs
+replay.invariants.fills
+replay.invariants.positions
+replay.diffs.fills_diff
+replay.diffs.positions_diff
+```
+
+Exit-Code Mapping:
+- 0: PASS
+- 2: Contract / Schema / missing cache-root (wenn resolver angefordert)
+- 3: Hash mismatch (Bundle oder DataRefs sha256_hint)
+- 4: Expected Outputs mismatch (nur bei check-outputs)
+- 5: Unexpected error
+- 6: Missing required DataRef (strict)
 
 ### Phase 4 — Verification Checklist
 - Manifest ist kanonisch (sortierte Keys, kein Whitespace, LF)
@@ -123,6 +229,7 @@ Exit Codes:
 - 3: Hash mismatch
 - 4: Replay mismatch (check-outputs)
 - 5: Unexpected exception
+- 6: Missing required DataRef (strict)
 
 ### Exit Criteria (Definition of Done)
 - build erzeugt Bundle inkl. manifest + hashes + required layout

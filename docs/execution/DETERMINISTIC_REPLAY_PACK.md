@@ -151,6 +151,35 @@ Default Output:
 meta/compare_report.json
 ```
 
+### CI/OPS Wrapper + CI Artefakt — Slice 3.4
+Für Ops und CI gibt es einen Wrapper, der Compare deterministisch ausführt und einen Report in einen festen Pfad schreibt.
+
+Wrapper:
+
+```text
+scripts/ops/pt_replay_compare_ci.sh
+```
+
+Beispiel:
+
+```bash
+bash scripts/ops/pt_replay_compare_ci.sh --bundle <OUT_DIR>/replay_pack --generated-at-utc <ISO8601>
+echo $?
+```
+
+CI:
+- Workflow:
+
+```text
+.github/workflows/replay_compare_report.yml
+```
+
+- Artefakt Name:
+
+```text
+replay-compare-report
+```
+
 ### Determinismus-Garantien (MUST)
 - Stabile Sortierung (manifest.contents und execution_events)
 - Kanonisches JSON/JSONL (sort_keys, separators, UTF-8, LF)
@@ -175,6 +204,7 @@ Zusätzliche, strikt validierte Regeln (ohne Contract-Version-Bump):
 | 3 | Hash mismatch |
 | 4 | Replay mismatch (check-outputs) |
 | 5 | Unexpected exception |
+| 6 | Missing required DataRef (strict) |
 
 ### Einschränkungen
 - v1 ist auf Slice‑1 Events mit schema_version "BETA_EXEC_V1" fokussiert.
