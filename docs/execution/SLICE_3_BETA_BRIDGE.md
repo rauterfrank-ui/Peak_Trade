@@ -33,6 +33,7 @@ Package: `src/execution/bridge/`
 - **`ledger_applied_events.jsonl`**: pro Event eine Zeile mit `{event_id,t,seq,event_type,applied}`.
 - **`ledger_final_state.json`**: deterministischer Ledger‑State (Integer‑Contract, siehe unten).
 - **`equity_curve.jsonl`** (optional): Snapshots (Integer) nach jedem N‑ten Event.
+  - Snapshot-Schema (Golden Contract): `{t, seq, symbol, price_int, cash_int, equity_int, qty_int, avg_price_int, fees_paid_int, realized_pnl_int, unrealized_pnl_int, state_hash}`
 
 ### Default `event_type_rank`
 Fixe Mapping‑Defaults (Override nur via Config):
@@ -106,6 +107,34 @@ bridge.run(
 uv run pytest -q tests/execution/test_beta_event_bridge_determinism.py
 uv run pytest -q tests/execution/test_beta_event_bridge_ordering.py
 ```
+
+### Golden Regression (Equity Curve)
+
+#### Was ist “Golden”?
+- **Golden** ist ein **byte-identischer Referenz-Output** (`equity_curve.jsonl`) für einen **fixierten Minimal-Fixture-Input**.
+- Ziel: Jede unbeabsichtigte Änderung an Snapshot-Format, Ordering, Scales oder Persistenz (z.B. Float-Leaks) wird in CI als Regression sichtbar.
+
+#### Welche Dateien sind Golden?
+- `tests/golden/slice3_equity_curve_minimal.jsonl` (kanonisches JSONL, **LF-only**)
+- optional: `tests/golden/slice3_artifact_manifest_minimal.json` (Liste `{relpath, sha256}` für **alle** deterministischen Artefakte unter `out&#47;<fingerprint>&#47;...`)
+
+#### Wie wird Golden aktualisiert? (explizite Operator-Aktion)
+Golden wird **niemals automatisch** in CI aktualisiert. Update ist ein bewusster Operator-Schritt:
+
+```bash
+uv run python scripts/testing/update_slice3_golden.py --fixture tests/fixtures/slice3_beta_events_minimal.jsonl
+```
+
+#### Strikte Invarianten (Review-Checklist)
+- **No wall-clock / randomness**: kein `datetime&#47;time&#47;uuid&#47;random` im Slice‑3 Bridge-Pfad.
+- **Canonical JSON**: `sort_keys=True`, `separators=(",", ":")`, UTF‑8, **`\n`** Zeilenende.
+- **Integer-only persistence**: keine Floats in Artefakten; State/Snapshots persistieren Integer (oder explizit Strings, niemals float).
+- **Stable ordering**: deterministische Sortierung (Events & Position-Keys).
+- **Stable filenames**: Artefakt-Relpaths stabil; `run_fingerprint` hängt **nur** von normalisierten Event-Bytes + Manifest/Refs + Config ab.
+- **Golden Review**: bei Änderungen an Golden immer prüfen:
+  - Ist die Änderung fachlich beabsichtigt?
+  - Sind die Diffs rein format-/contract-relevant (nicht “zufällig”)?
+  - Läuft `scripts/testing/update_slice3_golden.py` zweimal hintereinander **identisch**?
 
 ### Annahmen
 - Bridge persisted ausschließlich Integer‑State (no floats).

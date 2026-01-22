@@ -124,6 +124,14 @@ def _jsonl_lines(events: Sequence[Mapping[str, Any]]) -> bytes:
     return b"".join(parts)
 
 
+def _state_hash_hex(state: Mapping[str, Any]) -> str:
+    """
+    Deterministic sha256 over canonical JSON of the full ledger state snapshot.
+    Used for golden regressions / drift detection.
+    """
+    return hashlib.sha256(dumps_canonical(dict(state))).hexdigest()
+
+
 class LedgerEngineLike(Protocol):
     def apply(self, event: Mapping[str, Any]) -> dict[str, Any]:  # pragma: no cover
         ...
@@ -249,15 +257,29 @@ class BetaEventBridge:
                 should_emit = every is None or every <= 0 or ((idx + 1) % every == 0)
                 if should_emit:
                     st = self.ledger_engine.get_state()
+                    # Stable "primary" symbol for flattened snapshot fields.
+                    # - Prefer positions (economic), else last_price_by_symbol, else empty.
+                    positions = dict(st.get("positions") or {})
+                    last_prices = dict(st.get("last_price_by_symbol") or {})
+                    sym_candidates = sorted({*positions.keys(), *last_prices.keys()})
+                    primary_symbol = sym_candidates[0] if sym_candidates else ""
+                    pos = dict(positions.get(primary_symbol) or {})
+                    state_hash = _state_hash_hex(st)
+
                     equity_rows.append(
                         {
                             "t": int(ev["t"]),
+                            "seq": int(ev["seq"]),
+                            "symbol": str(primary_symbol),
+                            "price_int": int(last_prices.get(primary_symbol, 0)),
                             "cash_int": int(st["cash_int"]),
                             "equity_int": int(st["equity_int"]),
+                            "qty_int": int(pos.get("qty_int", 0)),
+                            "avg_price_int": int(pos.get("avg_price_int", 0)),
                             "realized_pnl_int": int(st["realized_pnl_int"]),
                             "unrealized_pnl_int": int(st["unrealized_pnl_int"]),
                             "fees_paid_int": int(st["fees_paid_int"]),
-                            "positions": dict(st["positions"]),
+                            "state_hash": str(state_hash),
                         }
                     )
 
