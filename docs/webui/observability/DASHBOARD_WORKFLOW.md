@@ -76,6 +76,14 @@ Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional
 - **Execution Watch Details**: `peaktrade-execution-watch-details`
   - Drilldown aus „Execution Watch req/s (by endpoint, status)“ mit `endpoint&#47;status` Kontext
 
+## Verify Quick Path (operator-grade)
+
+```bash
+bash scripts/obs/grafana_local_up.sh
+bash scripts/obs/grafana_dashpack_local_verify_v2.sh
+open \"http://127.0.0.1:3000/d/peaktrade-operator-home\"
+```
+
 ## Betriebsmodi
 
 ### Modus A: Grafana-only (empfohlen, wenn `pt-prometheus-local` bereits läuft)
