@@ -10,6 +10,22 @@
   "links": [
     {
       "type": "link",
+      "title": "Operator Home",
+      "url": "/d/peaktrade-operator-home",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Contract Details",
+      "url": "/d/peaktrade-contract-details",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
       "title": "Overview (Local vs Main)",
       "url": "/d/peaktrade-overview",
       "targetBlank": false,
@@ -42,7 +58,8 @@
         "query": "prometheus",
         "current": { "text": "prometheus-shadow", "value": "peaktrade-prometheus-shadow" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
       },
       {
         "type": "datasource",
@@ -51,7 +68,8 @@
         "query": "prometheus",
         "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
       },
       {
         "type": "datasource",
@@ -60,7 +78,8 @@
         "query": "prometheus",
         "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
       }
     ]
   },

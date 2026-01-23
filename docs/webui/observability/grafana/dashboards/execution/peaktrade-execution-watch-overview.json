@@ -10,6 +10,22 @@
   "links": [
     {
       "type": "link",
+      "title": "Operator Home",
+      "url": "/d/peaktrade-operator-home",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Contract Details",
+      "url": "/d/peaktrade-contract-details",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
       "title": "Shadow Pipeline (MVS)",
       "url": "/d/peaktrade-shadow-pipeline-mvs",
       "targetBlank": false,
@@ -42,7 +58,8 @@
         "query": "prometheus",
         "current": { "text": "prometheus-shadow", "value": "peaktrade-prometheus-shadow" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
       },
       {
         "type": "datasource",
@@ -51,7 +68,8 @@
         "query": "prometheus",
         "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
       },
       {
         "type": "datasource",
@@ -60,7 +78,8 @@
         "query": "prometheus",
         "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
       }
     ]
   },
@@ -142,7 +161,14 @@
               { "color": "green", "value": 0 },
               { "color": "red", "value": 1 }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "Contract Details",
+              "url": "/d/peaktrade-contract-details?var-metric=peak_trade_pipeline_events_total",
+              "targetBlank": false
+            }
+          ]
         },
         "overrides": []
       }
@@ -150,7 +176,7 @@
     {
       "type": "stat",
       "title": "Contract: execution watch metrics present",
-      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
       "gridPos": { "h": 5, "w": 6, "x": 18, "y": 1 },
       "targets": [
         {
@@ -170,7 +196,14 @@
               { "color": "green", "value": 0 },
               { "color": "red", "value": 1 }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "Contract Details",
+              "url": "/d/peaktrade-contract-details?var-metric=peak_trade_execution_watch_requests_total",
+              "targetBlank": false
+            }
+          ]
         },
         "overrides": []
       }
@@ -248,6 +281,18 @@
       "title": "Execution Watch req/s (by endpoint, status)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
       "gridPos": { "h": 9, "w": 24, "x": 0, "y": 24 },
+      "fieldConfig": {
+        "defaults": {
+          "links": [
+            {
+              "title": "Drilldown: Execution Watch Details",
+              "url": "/d/peaktrade-execution-watch-details?var-endpoint=${__series.labels.endpoint}&var-status=${__series.labels.status}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": []
+      },
       "targets": [
         {
           "refId": "A",

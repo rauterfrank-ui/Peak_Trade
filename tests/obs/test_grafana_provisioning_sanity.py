@@ -54,33 +54,19 @@ def test_dashboard_uids_unique_and_required_vars_present() -> None:
         assert uid not in uids, f"duplicate uid={uid} in {uids[uid]} and {p}"
         uids[uid] = p
 
-    # Variable conventions by pack (directory)
-    expected = {
-        "execution": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
-        "overview": {"DS_LOCAL", "DS_MAIN"},
-        "shadow": {"DS_SHADOW"},
-        "http": {"DS_LOCAL"},
-    }
-    # Some overview dashboards include DS_SHADOW too; allow superset.
-    allow_overview_extra = {"DS_SHADOW"}
+    # Variable conventions: all dashboards carry the same DS_* set (even if some
+    # packs only actively use one of them), so navigation/drilldowns can always
+    # include vars and panels can scope correctly.
+    expected = {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"}
 
     for p in json_files:
-        pack = p.parent.name
         doc = _load_json(p)
         templ = (doc.get("templating") or {}).get("list") or []
         ds_vars = [
             t.get("name") for t in templ if isinstance(t, dict) and t.get("type") == "datasource"
         ]
         ds_vars = {v for v in ds_vars if isinstance(v, str)}
-        need = expected.get(pack)
-        assert need is not None, f"unexpected pack folder: {pack}"
-        if pack == "overview":
-            assert need.issubset(ds_vars), f"{p} missing {sorted(need - ds_vars)}"
-            assert ds_vars.issubset(need | allow_overview_extra), (
-                f"{p} unexpected vars {sorted(ds_vars - (need | allow_overview_extra))}"
-            )
-        else:
-            assert ds_vars == need, f"{p} expected vars {sorted(need)} got {sorted(ds_vars)}"
+        assert expected.issubset(ds_vars), f"{p} missing {sorted(expected - ds_vars)}"
 
 
 def test_drilldown_links_present_between_core_dashboards() -> None:

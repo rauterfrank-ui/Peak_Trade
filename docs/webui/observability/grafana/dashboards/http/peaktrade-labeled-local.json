@@ -6,7 +6,12 @@
   "schemaVersion": 39,
   "version": 1,
   "refresh": "10s",
-  "time": { "from": "now-15m", "to": "now" },
+  "time": { "from": "now-30m", "to": "now" },
+  "links": [
+    { "type": "link", "title": "Operator Home", "url": "/d/peaktrade-operator-home", "targetBlank": false, "keepTime": true, "includeVars": true },
+    { "type": "link", "title": "Execution Watch Overview", "url": "/d/peaktrade-execution-watch-overview", "targetBlank": false, "keepTime": true, "includeVars": true },
+    { "type": "link", "title": "System Health", "url": "/d/peaktrade-system-health", "targetBlank": false, "keepTime": true, "includeVars": true }
+  ],
   "templating": {
     "list": [
       {
@@ -16,7 +21,28 @@
         "query": "prometheus",
         "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_MAIN",
+        "label": "Prometheus (main)",
+        "query": "prometheus",
+        "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_SHADOW",
+        "label": "Prometheus (shadow)",
+        "query": "prometheus",
+        "current": { "text": "prometheus-shadow", "value": "peaktrade-prometheus-shadow" },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
       },
       {
         "type": "query",
