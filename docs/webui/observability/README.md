@@ -73,6 +73,9 @@ Hinweis:
 
 Script: `scripts/obs/grafana_verify_v2.sh`
 
+- **Alternative (dashpack-only, hermetisch first)**: `scripts/obs/grafana_dashpack_local_verify_v2.sh`
+  - Läuft **auch ohne** laufendes Grafana (JSON-only Integrity Checks), und macht API-Checks nur wenn Grafana erreichbar ist.
+
 - **Checks** (high level):
   - Grafana erreichbar (`api&#47;health`)
   - Login ok (`api&#47;user`)

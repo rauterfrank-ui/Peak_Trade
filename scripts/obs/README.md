@@ -9,7 +9,7 @@ scripts/obs/
 ├── stage1_trend_report.py         ← Trend-Analyse über N Tage
 └── run_stage1_monitoring.sh       ← Convenience Wrapper (täglich ausführen)
 
-reports/obs/stage1/
+reports&#47;obs&#47;stage1&#47;
 ├── 2025-12-20_snapshot.md         ← Daily Snapshots (automatisch erstellt)
 ├── 2025-12-21_snapshot.md
 └── ...
