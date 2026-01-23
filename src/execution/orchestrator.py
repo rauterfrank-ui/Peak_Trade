@@ -70,6 +70,7 @@ try:
     from src.obs.ai_telemetry import record_action as _ai_record_action
     from src.obs.ai_telemetry import record_decision as _ai_record_decision
 except Exception:  # pragma: no cover
+
     def _ai_record_action(*args: object, **kwargs: object) -> None:
         return
 

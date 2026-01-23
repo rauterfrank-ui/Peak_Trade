@@ -178,7 +178,9 @@ def _process_event(
             return
 
         ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
-        ev_component = _pick_label(ev, key="component", env_fallback=default_component) or default_component
+        ev_component = (
+            _pick_label(ev, key="component", env_fallback=default_component) or default_component
+        )
 
         decision = _canon_decision(str(ev.get("decision") or ""))
         reason = _canon_reason(str(ev.get("reason") or "none"))
@@ -208,7 +210,9 @@ def _process_event(
         et = str(ev.get("event_type") or "").strip().upper()
         ts_s = _parse_ts_utc_to_unix(str(ev.get("ts_utc") or "")) or time.time()
         reason_code = ev.get("reason_code")
-        reason = _map_beta_reason(reason_code if isinstance(reason_code, str) else None, fallback="other")
+        reason = _map_beta_reason(
+            reason_code if isinstance(reason_code, str) else None, fallback="other"
+        )
 
         # Actions (finite)
         if et == "INTENT":
@@ -289,7 +293,9 @@ def _process_event(
 
     # Legacy / fallback mapping (best-effort)
     ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
-    ev_component = _pick_label(ev, key="component", env_fallback=default_component) or default_component
+    ev_component = (
+        _pick_label(ev, key="component", env_fallback=default_component) or default_component
+    )
     latency_s = _coerce_latency_s(ev)
     decision = _coerce_decision(ev)
     if decision:
@@ -445,7 +451,12 @@ class AILiveExporter:
         empty_reads = 0
         warn = _RateLimitedWarn(min_interval_s=60.0)
 
-        logger.info("ai_live_exporter started port=%s component=%s run_id=%s", self.port, self.component, self.run_id)
+        logger.info(
+            "ai_live_exporter started port=%s component=%s run_id=%s",
+            self.port,
+            self.component,
+            self.run_id,
+        )
         logger.info("jsonl=%s", str(self.jsonl_path))
 
         while not self._shutdown:
@@ -454,7 +465,10 @@ class AILiveExporter:
 
             if not self.jsonl_path.exists():
                 if not warned_missing:
-                    logger.warning("events file missing; exporter running with heartbeat only: %s", str(self.jsonl_path))
+                    logger.warning(
+                        "events file missing; exporter running with heartbeat only: %s",
+                        str(self.jsonl_path),
+                    )
                     warned_missing = True
                 time.sleep(1.0)
                 continue
