@@ -114,9 +114,27 @@
       }
     },
     {
+      "type": "stat",
+      "title": "Compare (Main vs Shadow)",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 7 },
+      "targets": [{ "refId": "A", "expr": "vector(1)" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "1": { "text": "OPEN" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": 0 }] },
+          "links": [
+            { "title": "Open dashboard", "url": "/d/peaktrade-main-vs-shadow-overview", "targetBlank": false }
+          ]
+        },
+        "overrides": []
+      }
+    },
+    {
       "type": "text",
       "title": "Guardrails / Hinweise",
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 7 },
+      "gridPos": { "h": 6, "w": 18, "x": 6, "y": 7 },
       "options": {
         "mode": "markdown",
         "content": "**Watch-only Workflow:** Operator Summary → System Health → Execution Watch → (optional) Shadow Pipeline.\n\n**Wenn du unerwartete MISSING/DOWN Werte siehst:**\n- Prüfe, ob du im richtigen Grafana bist (Port :3000).\n- Prüfe Prometheus-local (:9092) und Shadow Target `up{job=\"shadow_mvs\"}`.\n- `Contract Details` liefert die Debug-Queries je Datasource."

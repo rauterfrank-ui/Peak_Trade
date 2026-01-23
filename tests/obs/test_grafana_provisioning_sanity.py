@@ -50,7 +50,7 @@ def test_dashboards_folder_layout_no_root_jsons() -> None:
     root_jsons = sorted(dashboards_dir.glob("*.json"))
     assert root_jsons == []
 
-    for folder in ("overview", "shadow", "execution", "http"):
+    for folder in ("overview", "shadow", "execution", "http", "compare"):
         assert (dashboards_dir / folder).is_dir()
 
 
