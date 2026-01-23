@@ -85,3 +85,11 @@ def test_dashpack_ds_vars_hidden_and_defaults_stable() -> None:
             cur = t.get("current") or {}
             assert isinstance(cur, dict)
             assert cur.get("value") == want_uid, f"{p} var {name} default mismatch"
+
+
+def test_operator_home_links_to_compare_overview() -> None:
+    dashboards_dir = PROJECT_ROOT / "docs" / "webui" / "observability" / "grafana" / "dashboards"
+    operator_home = _load_json(dashboards_dir / "overview" / "peaktrade-operator-home.json")
+
+    urls = set(_iter_url_strings(operator_home))
+    assert "/d/peaktrade-main-vs-shadow-overview" in urls
