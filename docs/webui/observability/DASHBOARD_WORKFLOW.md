@@ -269,8 +269,34 @@ bash scripts/obs/shadow_mvs_local_verify.sh
 
 ```bash
 curl -fsS http://127.0.0.1:9092/api/v1/targets | python3 -m json.tool | head -n 160
-curl -fsS 'http://127.0.0.1:9092/api/v1/query?query=up%7Bjob%3D%22shadow_mvs%22%7D'
 curl -fsS http://127.0.0.1:9109/metrics | head -n 60
+```
+
+### Golden Smoke Pattern: Prometheus Query via `--out` + Parse aus Datei
+
+Ziel: deterministisch (kein `curl | python json.load(...)`, keine Shell→Python JSON-Interpolation).
+
+```bash
+# Preflight
+PROM_BASE="http://127.0.0.1:9092"
+QUERY='up{job="shadow_mvs"}'
+OUT="/tmp/pt_prom_query.json"
+ERR="/tmp/pt_prom_query.stderr"
+rm -f "$OUT" "$ERR"
+
+# Robust Query: Evidence in stderr, JSON in OUT
+bash scripts/obs/_prom_query_json.sh --base "$PROM_BASE" --query "$QUERY" --out "$OUT" --retries 3 > /dev/null 2> "$ERR" || true
+tail -n 40 "$ERR" || true
+
+# Deterministic parse (no shell interpolation)
+python3 - <<'PY'
+import json
+from pathlib import Path
+doc=json.loads(Path("/tmp/pt_prom_query.json").read_text(encoding="utf-8"))
+print("status=", doc.get("status"))
+data=(doc.get("data") or {})
+print("resultType=", data.get("resultType"), "results=", len(data.get("result") or []))
+PY
 ```
 
 ### Problem: Dashboard-Suche liefert `[]`

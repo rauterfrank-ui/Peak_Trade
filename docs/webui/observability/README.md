@@ -88,6 +88,20 @@ curl -fsS http://127.0.0.1:9109/metrics | head -n 40
 curl -fsS -u admin:admin http://127.0.0.1:3000/api/health
 ```
 
+- Golden Smoke Pattern (Prometheus Query deterministisch: `--out` + Parse aus Datei):
+
+```bash
+PROM_BASE="http://127.0.0.1:9092"
+QUERY='up{job="shadow_mvs"}'
+OUT="/tmp/pt_prom_query.json"
+ERR="/tmp/pt_prom_query.stderr"
+rm -f "$OUT" "$ERR"
+
+bash scripts/obs/_prom_query_json.sh --base "$PROM_BASE" --query "$QUERY" --out "$OUT" --retries 3 > /dev/null 2> "$ERR" || true
+tail -n 40 "$ERR" || true
+python3 -c 'import json; print(json.load(open("/tmp/pt_prom_query.json")).get("status"))'
+```
+
 - Wenn `grafana_local_up.sh` mit einer Docker-Daemon Meldung scheitert, starte Docker lokal und führe den Smoke erneut aus.
 - Wenn `grafana_local_verify.sh` bei `prometheus.ready` scheitert, ist der Compose-Stack nicht gestartet oder Ports sind belegt.
 - Wenn `grafana_local_verify.sh` bei `grafana.dashboards` scheitert, stimmt meist ein Mount oder die Provisioning-Config nicht.
