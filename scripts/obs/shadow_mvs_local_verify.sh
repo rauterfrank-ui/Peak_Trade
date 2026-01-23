@@ -41,6 +41,20 @@ curl_ok_or_retry_once() {
   curl_ok "$url"
 }
 
+prom_query_json() {
+  # Robust Prometheus /api/v1/query fetch with gating + evidence on failure.
+  # Always uses the shared helper to avoid transient JSONDecodeError in pipelines.
+  local q="${1:-}"
+  if [[ -z "${q:-}" ]]; then
+    echo "prom_query_json: missing query" >&2
+    return 2
+  fi
+  bash scripts/obs/_prom_query_json.sh \
+    --base "$PROM_URL" \
+    --query "$q" \
+    --retries "${PROM_QUERY_MAX_ATTEMPTS:-3}"
+}
+
 grafana_get_json_or_fail() {
   local path="$1"
   local url="${GRAFANA_URL%/}${path}"
@@ -170,7 +184,7 @@ prom_query_non_empty_once() {
   local q="$1"
   # Fetch JSON robustly (retries + deterministic diagnostics), then apply "non-empty & non-NaN" semantics.
   local json
-  if ! json="$(bash scripts/obs/_prom_query_json.sh --base "$PROM_URL" --query "$q" --retries "${PROM_QUERY_MAX_ATTEMPTS:-3}")"; then
+  if ! json="$(prom_query_json "$q")"; then
     return 1
   fi
   printf '%s' "$json" | python3 -c '
