@@ -5,7 +5,7 @@ datasources:
     uid: peaktrade-prometheus-main
     type: prometheus
     access: proxy
-    url: http://host.docker.internal:9090
+    url: http://host.docker.internal:9092
     isDefault: false
     editable: false
     jsonData:
