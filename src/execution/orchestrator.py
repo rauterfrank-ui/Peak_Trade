@@ -32,6 +32,7 @@ import json
 from pathlib import Path
 from datetime import timezone
 import uuid
+import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -64,6 +65,16 @@ from src.execution.determinism import SimClock, seed_u64, stable_id
 from src.execution.telemetry import FixedJsonlAppendOnlyWriter
 
 logger = logging.getLogger(__name__)
+
+try:
+    from src.obs.ai_telemetry import record_action as _ai_record_action
+    from src.obs.ai_telemetry import record_decision as _ai_record_decision
+except Exception:  # pragma: no cover
+    def _ai_record_action(*args: object, **kwargs: object) -> None:
+        return
+
+    def _ai_record_decision(*args: object, **kwargs: object) -> None:
+        return
 
 
 # ============================================================================
@@ -441,6 +452,8 @@ class ExecutionOrchestrator:
         Returns:
             PipelineResult with success/failure and audit trail
         """
+        t0 = time.perf_counter()
+
         # RUNBOOK B / Slice 1: resolve stable identifiers (no randomness)
         session_id = intent.session_id or "default"
         run_id = intent.run_id or session_id
@@ -471,6 +484,8 @@ class ExecutionOrchestrator:
             f"[STAGE 1: INTENT INTAKE] correlation_id={correlation_id}, "
             f"symbol={intent.symbol}, side={intent.side.value}, qty={intent.quantity}"
         )
+
+        _ai_record_action(action="intent_intake", component="execution", run_id=run_id)
 
         # RUNBOOK B / Slice 1: attach beta context for downstream stages
         self._beta_context = {"run_id": run_id, "session_id": session_id, "intent_id": intent_id}
@@ -503,6 +518,13 @@ class ExecutionOrchestrator:
                     reason_code="RISK_REJECT_KILL_SWITCH",
                     reason_detail="kill switch active",
                 )
+                _ai_record_decision(
+                    decision="reject",
+                    reason="risk_kill_switch_active",
+                    component="execution",
+                    run_id=run_id,
+                    latency_s=time.perf_counter() - t0,
+                )
                 return PipelineResult(
                     success=False,
                     order=None,
@@ -528,6 +550,13 @@ class ExecutionOrchestrator:
                         "quantity": str(intent.quantity),
                     },
                 )
+                _ai_record_decision(
+                    decision="reject",
+                    reason="risk_max_position",
+                    component="execution",
+                    run_id=run_id,
+                    latency_s=time.perf_counter() - t0,
+                )
                 return PipelineResult(
                     success=False,
                     order=None,
@@ -543,6 +572,13 @@ class ExecutionOrchestrator:
             validation_result = self._stage_2_contract_validation(intent, correlation_id)
             if not validation_result.success:
                 validation_result.metadata.setdefault("beta_events", beta_events)
+                _ai_record_decision(
+                    decision="reject",
+                    reason="invalid_order",
+                    component="execution",
+                    run_id=run_id,
+                    latency_s=time.perf_counter() - t0,
+                )
                 return validation_result
 
             order = validation_result.order
@@ -552,12 +588,28 @@ class ExecutionOrchestrator:
             risk_result = self._stage_3_risk_gate(order, correlation_id)
             if not risk_result.success:
                 risk_result.metadata.setdefault("beta_events", beta_events)
+                _ai_record_decision(
+                    decision="reject",
+                    reason="risk_blocked",
+                    component="execution",
+                    run_id=run_id,
+                    latency_s=time.perf_counter() - t0,
+                )
                 return risk_result
 
             # Stage 4: Route Selection
             route_result = self._stage_4_route_selection(order, correlation_id)
             if not route_result.success:
                 route_result.metadata.setdefault("beta_events", beta_events)
+                _ai_record_decision(
+                    decision="reject",
+                    reason="governance_no_live"
+                    if route_result.reason_code == ReasonCode.POLICY_LIVE_NOT_ENABLED
+                    else "policy_blocked",
+                    component="execution",
+                    run_id=run_id,
+                    latency_s=time.perf_counter() - t0,
+                )
                 return route_result
 
             # Stage 5: Adapter Dispatch
@@ -600,6 +652,13 @@ class ExecutionOrchestrator:
                 f"order_id={order.client_order_id}, state={order.state.value}"
             )
 
+            _ai_record_decision(
+                decision="accept",
+                reason="allowed",
+                component="execution",
+                run_id=run_id,
+                latency_s=time.perf_counter() - t0,
+            )
             return recon_result
         finally:
             self._beta_context = None

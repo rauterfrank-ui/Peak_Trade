@@ -29,13 +29,70 @@ bash scripts/obs/shadow_mvs_local_down.sh
 ```
 
 URLs:
-- Grafana: http://127.0.0.1:3000 (admin/admin)
-- Prometheus-local: http://127.0.0.1:9092
-- Shadow-MVS Exporter: http://127.0.0.1:9109/metrics
+- Grafana: http:&#47;&#47;127.0.0.1:3000 (admin/admin)
+- Prometheus-local: http:&#47;&#47;127.0.0.1:9092
+- Shadow-MVS Exporter: http:&#47;&#47;127.0.0.1:9109&#47;metrics
 
 Relevante Compose-Files:
 - docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml
 - docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml
+
+## AI Live (Exporter + Dashboard Row)
+
+Ziel: Eine kleine, **watch-only** AI-Event-Telemetrie, die in Grafana im Dashboard
+„Execution Watch Overview“ als Row „AI Live“ sichtbar ist.
+
+### Start (Exporter lokal)
+
+1) Events-Datei wählen (JSONL, append-only). Beispiel:
+
+```bash
+mkdir -p logs/ai
+export PEAK_TRADE_AI_EVENTS_JSONL="logs/ai/ai_events.jsonl"
+export PEAK_TRADE_AI_RUN_ID="demo"
+export PEAK_TRADE_AI_COMPONENT="execution_watch"
+export PEAK_TRADE_AI_EXPORTER_PORT="9110"
+uv run python scripts/obs/ai_live_exporter.py
+```
+
+2) Beispiel-Events schreiben (separates Terminal):
+
+```bash
+python3 scripts/obs/emit_ai_live_sample_events.py --out "logs/ai/ai_events.jsonl" --n 50 --interval-ms 200
+```
+
+### Prometheus (Scrape)
+
+Wenn du den lokalen Observability-Stack nutzt, ist der Scrape-Target bereits in der
+Prometheus-local Config enthalten (Host Target `host.docker.internal:9110`, Job `ai_live`).
+
+### Unterstützte Event-Formate (Mapping → canonical metrics)
+
+```text
+v=1 JSONL (demo/emitter)  -> peaktrade_ai_* metrics
+logs/execution/execution_events.jsonl (schema_version=BETA_EXEC_V1) -> peaktrade_ai_* metrics
+logs/execution/execution_pipeline_events_v0.jsonl (schema=execution_event_v0) -> peaktrade_ai_* metrics
+```
+
+### Verify (Exporter + Prometheus)
+
+```bash
+chmod +x scripts/obs/ai_live_verify.sh
+bash scripts/obs/ai_live_verify.sh
+```
+
+### Smoke Test (Exporter + Emitter + Metrics Delta)
+
+```bash
+chmod +x scripts/obs/ai_live_smoke_test.sh
+bash scripts/obs/ai_live_smoke_test.sh
+```
+
+### Grafana Erwartung (Screenshot-Mental-Model)
+
+Im Dashboard „Peak_Trade — Execution Watch Overview“ erscheint ganz oben die Row „AI Live“:
+- **Stats**: Decisions/min, Accept (5m), Reject (5m), No-op (5m), Last decision age (s)
+- **Time series**: Accept vs Reject (rate), Reject reasons (topk by rate)
 
 ## Quickstart (lokal): Grafana-only Provisioning Smoke (ohne Mock-Exporter)
 
@@ -67,13 +124,13 @@ open "http://127.0.0.1:3000/d/peaktrade-operator-home"
 ```
 
 Hinweis:
-- Wenn `grafana_verify_v2.sh` bei **grafana.auth** scheitert, ist das typischerweise **Passwort-/Volume-Drift**. Fix (deterministisch): `bash scripts/obs/grafana_local_down.sh` und danach `bash scripts/obs/grafana_local_up.sh` (reset volumes).
+- Wenn `grafana_verify_v2.sh` bei **grafana.auth** scheitert, ist das typischerweise **Passwort-/Volume-Drift**. Fix (deterministisch): bash scripts&#47;obs&#47;grafana_local_down.sh und danach bash scripts&#47;obs&#47;grafana_local_up.sh (reset volumes).
 
 ## Grafana Verify v2 (operator-grade, evidenzfähig)
 
-Script: `scripts/obs/grafana_verify_v2.sh`
+Script: `scripts&#47;obs&#47;grafana_verify_v2.sh`
 
-- **Alternative (dashpack-only, hermetisch first)**: `scripts/obs/grafana_dashpack_local_verify_v2.sh`
+- **Alternative (dashpack-only, hermetisch first)**: `scripts&#47;obs&#47;grafana_dashpack_local_verify_v2.sh`
   - Läuft **auch ohne** laufendes Grafana (JSON-only Integrity Checks), und macht API-Checks nur wenn Grafana erreichbar ist.
 
 - **Checks** (high level):
@@ -86,16 +143,16 @@ Script: `scripts/obs/grafana_verify_v2.sh`
 - **Artifacts**: schreibt Evidence in `docs&#47;ops&#47;evidence&#47;assets&#47;EV_GRAFANA_VERIFY_V2_<timestamp>` (oder per `VERIFY_OUT_DIR`).
 
 Env Overrides:
-- `GRAFANA_URL` (default `http://127.0.0.1:3000`)
+- `GRAFANA_URL` (default `http:&#47;&#47;127.0.0.1:3000`)
 - `GRAFANA_AUTH` (default `admin:admin`)
-- `PROM_URL` (default `http://127.0.0.1:9092`)
+- `PROM_URL` (default `http:&#47;&#47;127.0.0.1:9092`)
 - `VERIFY_OUT_DIR` (optional)
 
 ## Triage (DOWN / No data / MISSING / Wrong DS Scope)
 
 - **DOWN / No data**:
   - Prüfe Port-Konflikt: du schaust wirklich auf `:3000` (nicht „anderes Grafana“).
-  - Prüfe Prometheus-local: `http://127.0.0.1:9092/-/ready`
+  - Prüfe Prometheus-local: `http:&#47;&#47;127.0.0.1:9092&#47;-&#47;ready`
 - **MISSING (Contract Panels)**:
   - Nutze `Peak_Trade — Contract Details (Debug)` (`&#47;d&#47;peaktrade-contract-details`) für Presence/Counts je DS_SHADOW/DS_LOCAL/DS_MAIN.
   - Guardrail: Execution Watch Contract Presence ist auf **DS_LOCAL** gescoped (vermeidet false MISSING auf DS_SHADOW).
@@ -111,8 +168,8 @@ bash scripts/obs/grafana_local_down.sh
 ## Troubleshooting (minimal, deterministisch)
 
 - Wenn Dashboards **DOWN / No data / MISSING** zeigen, liegt es lokal fast immer an einem der drei Punkte:
-  - **Prometheus-local läuft nicht** (Datasource `prometheus-local` zeigt auf `http://host.docker.internal:9092`).
-  - **Exporter läuft nicht** (für Shadow-MVS: `http://127.0.0.1:9109/metrics`).
+  - **Prometheus-local läuft nicht** (Datasource `prometheus-local` zeigt auf `http:&#47;&#47;host.docker.internal:9092`).
+  - **Exporter läuft nicht** (für Shadow-MVS: `http:&#47;&#47;127.0.0.1:9109&#47;metrics`).
   - **Falscher Stack/Port-Konflikt** (ein anderer Grafana-Container belegt `:3000`).
 
 - Schnellster „Beweis“-Pfad (liefert deterministische Evidence-Zeilen):
@@ -226,12 +283,12 @@ docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COM
 
 ## Ports & Networking (wichtig)
 
-- **Grafana UI (Host)**: http://localhost:3000
-- **Prometheus UI (Host)**: http://localhost:9091
+- **Grafana UI (Host)**: http:&#47;&#47;localhost:3000
+- **Prometheus UI (Host)**: http:&#47;&#47;localhost:9091
   - In `DOCKER_COMPOSE_PROM_GRAFANA.yml` ist Prometheus bewusst auf **Host-Port 9091** gemappt (`"9091:9090"`), um Konflikte mit anderen Prometheus-Instanzen auf `9090` zu vermeiden.
 - **Grafana → Prometheus (Docker-intern)**:
-  - Grafana muss Prometheus über **http://prometheus:9090** (Service-Name + Container-Port) erreichen.
-  - Nicht http://prometheus:9091 (das ist nur der Host-Port und führt im Container zu connection refused).
+  - Grafana muss Prometheus über **http:&#47;&#47;prometheus:9090** (Service-Name + Container-Port) erreichen.
+  - Nicht http:&#47;&#47;prometheus:9091 (das ist nur der Host-Port und führt im Container zu connection refused).
 
 ## Operator Runbook
 
