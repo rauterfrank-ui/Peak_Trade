@@ -82,7 +82,10 @@ def test_execution_watch_contract_panel_scoped_to_local_ds() -> None:
 
     # Find the contract panel by title and ensure datasource is DS_LOCAL (guardrail).
     for panel in doc.get("panels") or []:
-        if isinstance(panel, dict) and panel.get("title") == "Contract: execution watch metrics present":
+        if (
+            isinstance(panel, dict)
+            and panel.get("title") == "Contract: execution watch metrics present"
+        ):
             assert _datasource_uid(panel) == "${DS_LOCAL}"
             return
 

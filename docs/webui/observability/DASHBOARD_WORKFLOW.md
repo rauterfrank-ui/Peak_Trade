@@ -74,7 +74,7 @@ Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional
 - **Contract Details (Debug)**: `peaktrade-contract-details`
   - Drilldown-Ziel für „PRESENT/MISSING“ Contract-Panels (zeigt Presence/Counts je DS_SHADOW/DS_LOCAL/DS_MAIN)
 - **Execution Watch Details**: `peaktrade-execution-watch-details`
-  - Drilldown aus „Execution Watch req/s (by endpoint, status)“ mit `endpoint/status` Kontext
+  - Drilldown aus „Execution Watch req/s (by endpoint, status)“ mit `endpoint&#47;status` Kontext
 
 ## Betriebsmodi
 
