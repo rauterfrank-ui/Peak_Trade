@@ -64,6 +64,30 @@ bash scripts/obs/grafana_local_down.sh
 
 ## Troubleshooting (minimal, deterministisch)
 
+- Wenn Dashboards **DOWN / No data / MISSING** zeigen, liegt es lokal fast immer an einem der drei Punkte:
+  - **Prometheus-local läuft nicht** (Datasource `prometheus-local` zeigt auf `http://host.docker.internal:9092`).
+  - **Exporter läuft nicht** (für Shadow-MVS: `http://127.0.0.1:9109/metrics`).
+  - **Falscher Stack/Port-Konflikt** (ein anderer Grafana-Container belegt `:3000`).
+
+- Schnellster „Beweis“-Pfad (liefert deterministische Evidence-Zeilen):
+
+```bash
+# Startet Prometheus-local + Grafana + Mock-Exporter (shadow_mvs) und vermeidet Passwort-/Volume-Drift.
+bash scripts/obs/shadow_mvs_local_up.sh
+
+# Harte Checks: Targets UP, DS/Dashboard provisioned, Golden Queries liefern Daten
+bash scripts/obs/shadow_mvs_local_verify.sh
+```
+
+- Minimaler Snapshot (wenn du nur schauen willst, was genau DOWN ist):
+
+```bash
+curl -fsS http://127.0.0.1:9092/-/ready
+curl -fsS http://127.0.0.1:9092/api/v1/targets | python3 -m json.tool | head -n 120
+curl -fsS http://127.0.0.1:9109/metrics | head -n 40
+curl -fsS -u admin:admin http://127.0.0.1:3000/api/health
+```
+
 - Wenn `grafana_local_up.sh` mit einer Docker-Daemon Meldung scheitert, starte Docker lokal und führe den Smoke erneut aus.
 - Wenn `grafana_local_verify.sh` bei `prometheus.ready` scheitert, ist der Compose-Stack nicht gestartet oder Ports sind belegt.
 - Wenn `grafana_local_verify.sh` bei `grafana.dashboards` scheitert, stimmt meist ein Mount oder die Provisioning-Config nicht.
