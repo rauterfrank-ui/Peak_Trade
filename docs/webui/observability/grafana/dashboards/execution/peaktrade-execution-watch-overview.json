@@ -150,7 +150,7 @@
     {
       "type": "stat",
       "title": "Contract: execution watch metrics present",
-      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
       "gridPos": { "h": 5, "w": 6, "x": 18, "y": 1 },
       "targets": [
         {
