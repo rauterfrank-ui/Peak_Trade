@@ -4,6 +4,22 @@
       "includeVars": true,
       "keepTime": true,
       "targetBlank": false,
+      "title": "Operator Home",
+      "type": "link",
+      "url": "/d/peaktrade-operator-home"
+    },
+    {
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
+      "title": "Contract Details",
+      "type": "link",
+      "url": "/d/peaktrade-contract-details"
+    },
+    {
+      "includeVars": true,
+      "keepTime": true,
+      "targetBlank": false,
       "title": "Overview (Mini vs Main)",
       "type": "link",
       "url": "/d/peaktrade-overview"

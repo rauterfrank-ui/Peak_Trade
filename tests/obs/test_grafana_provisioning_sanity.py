@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 
@@ -11,6 +12,20 @@ def _read_text(p: Path) -> str:
 
 def _load_json(p: Path) -> dict:
     return json.loads(_read_text(p))
+
+
+def _iter_url_strings(doc: object):
+    stack = [doc]
+    while stack:
+        cur = stack.pop()
+        if isinstance(cur, dict):
+            for k, v in cur.items():
+                if k == "url" and isinstance(v, str):
+                    yield v
+                else:
+                    stack.append(v)
+        elif isinstance(cur, list):
+            stack.extend(cur)
 
 
 def test_dashboards_provider_folders_from_files_structure_enabled() -> None:
@@ -54,33 +69,57 @@ def test_dashboard_uids_unique_and_required_vars_present() -> None:
         assert uid not in uids, f"duplicate uid={uid} in {uids[uid]} and {p}"
         uids[uid] = p
 
-    # Variable conventions by pack (directory)
-    expected = {
-        "execution": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
-        "overview": {"DS_LOCAL", "DS_MAIN"},
-        "shadow": {"DS_SHADOW"},
-        "http": {"DS_LOCAL"},
+    # Variable conventions: all dashboards carry the same DS_* set so navigation
+    # can include vars and panels can scope correctly. DS vars are hidden by
+    # default (guardrail) and have stable datasource UID defaults.
+    expected = {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"}
+    expected_defaults = {
+        "DS_LOCAL": "peaktrade-prometheus-local",
+        "DS_MAIN": "peaktrade-prometheus-main",
+        "DS_SHADOW": "peaktrade-prometheus-shadow",
     }
-    # Some overview dashboards include DS_SHADOW too; allow superset.
-    allow_overview_extra = {"DS_SHADOW"}
 
     for p in json_files:
-        pack = p.parent.name
         doc = _load_json(p)
         templ = (doc.get("templating") or {}).get("list") or []
-        ds_vars = [
-            t.get("name") for t in templ if isinstance(t, dict) and t.get("type") == "datasource"
-        ]
-        ds_vars = {v for v in ds_vars if isinstance(v, str)}
-        need = expected.get(pack)
-        assert need is not None, f"unexpected pack folder: {pack}"
-        if pack == "overview":
-            assert need.issubset(ds_vars), f"{p} missing {sorted(need - ds_vars)}"
-            assert ds_vars.issubset(need | allow_overview_extra), (
-                f"{p} unexpected vars {sorted(ds_vars - (need | allow_overview_extra))}"
-            )
-        else:
-            assert ds_vars == need, f"{p} expected vars {sorted(need)} got {sorted(ds_vars)}"
+        ds_items = [t for t in templ if isinstance(t, dict) and t.get("type") == "datasource"]
+        by_name = {t.get("name"): t for t in ds_items if isinstance(t.get("name"), str)}
+        ds_vars = set(by_name.keys())
+        assert expected.issubset(ds_vars), f"{p} missing {sorted(expected - ds_vars)}"
+        for name, want_uid in expected_defaults.items():
+            t = by_name[name]
+            assert t.get("hide") == 2, f"{p} var {name} should be hidden (hide=2)"
+            cur = t.get("current") or {}
+            assert isinstance(cur, dict)
+            assert cur.get("value") == want_uid, f"{p} var {name} default mismatch"
+
+
+def test_all_internal_dashboard_links_resolve_to_known_uids() -> None:
+    dashboards_dir = PROJECT_ROOT / "docs" / "webui" / "observability" / "grafana" / "dashboards"
+    json_files = sorted(dashboards_dir.glob("*/*.json"))
+    assert json_files, "expected at least one dashboard JSON"
+
+    uids: set[str] = set()
+    docs: list[tuple[Path, dict]] = []
+    for p in json_files:
+        doc = _load_json(p)
+        uid = doc.get("uid")
+        assert isinstance(uid, str) and uid
+        uids.add(uid)
+        docs.append((p, doc))
+
+    uid_re = re.compile(r"^/d/([^/?]+)(?:/[^?]+)?(?:\\?.*)?$")
+    missing: list[str] = []
+    for p, doc in docs:
+        for url in _iter_url_strings(doc):
+            m = uid_re.match(url)
+            if not m:
+                continue
+            target_uid = m.group(1)
+            if target_uid not in uids:
+                missing.append(f"{p} links to missing uid={target_uid} via url={url!r}")
+
+    assert missing == [], "unresolved /d/<uid> links:\n" + "\n".join(missing)
 
 
 def test_drilldown_links_present_between_core_dashboards() -> None:

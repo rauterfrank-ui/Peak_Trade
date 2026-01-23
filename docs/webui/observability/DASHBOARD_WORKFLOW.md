@@ -64,10 +64,25 @@ docs/webui/observability/grafana/provisioning/datasources/
 
 Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional-main/shadow Datasources wählen.
 
-- Overview dashboards: DS_LOCAL, DS_MAIN (optional DS_SHADOW für System-Health)
-- Shadow dashboards: DS_SHADOW
-- Execution dashboards: DS_LOCAL, DS_MAIN, DS_SHADOW
-- HTTP dashboards: DS_LOCAL
+- Einheitlich (alle Dashboards): **DS_LOCAL**, **DS_MAIN**, **DS_SHADOW**
+  - Defaults: Shadow/Contract Panels nutzen DS_SHADOW; Execution Watch Panels nutzen DS_LOCAL; Main ist optional.
+  - In den JSONs sind die DS_* Controls typischerweise **hidden** (Guardrail gegen „false MISSING“ durch falsche Auswahl).
+
+## Operator UX Pack v5: Landing + Drilldowns
+
+- **Operator Home**: `peaktrade-operator-home` (Landing mit Quicklinks zu Summary/Health/Execution Watch/Shadow Pipeline)
+- **Contract Details (Debug)**: `peaktrade-contract-details`
+  - Drilldown-Ziel für „PRESENT/MISSING“ Contract-Panels (zeigt Presence/Counts je DS_SHADOW/DS_LOCAL/DS_MAIN)
+- **Execution Watch Details**: `peaktrade-execution-watch-details`
+  - Drilldown aus „Execution Watch req/s (by endpoint, status)“ mit `endpoint&#47;status` Kontext
+
+## Verify Quick Path (operator-grade)
+
+```bash
+bash scripts/obs/grafana_local_up.sh
+bash scripts/obs/grafana_dashpack_local_verify_v2.sh
+open \"http://127.0.0.1:3000/d/peaktrade-operator-home\"
+```
 
 ## Betriebsmodi
 

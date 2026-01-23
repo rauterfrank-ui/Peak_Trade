@@ -56,6 +56,52 @@ Verify:
 bash scripts/obs/grafana_local_verify.sh
 ```
 
+## Operator Quick Path (3 Kommandos)
+
+Ziel: Prometheus-local + Grafana starten, **operator-grade verify** laufen lassen, dann direkt in den Operator-Entry springen.
+
+```bash
+bash scripts/obs/grafana_local_up.sh
+bash scripts/obs/grafana_verify_v2.sh
+open "http://127.0.0.1:3000/d/peaktrade-operator-home"
+```
+
+Hinweis:
+- Wenn `grafana_verify_v2.sh` bei **grafana.auth** scheitert, ist das typischerweise **Passwort-/Volume-Drift**. Fix (deterministisch): `bash scripts/obs/grafana_local_down.sh` und danach `bash scripts/obs/grafana_local_up.sh` (reset volumes).
+
+## Grafana Verify v2 (operator-grade, evidenzfähig)
+
+Script: `scripts/obs/grafana_verify_v2.sh`
+
+- **Alternative (dashpack-only, hermetisch first)**: `scripts/obs/grafana_dashpack_local_verify_v2.sh`
+  - Läuft **auch ohne** laufendes Grafana (JSON-only Integrity Checks), und macht API-Checks nur wenn Grafana erreichbar ist.
+
+- **Checks** (high level):
+  - Grafana erreichbar (`api&#47;health`)
+  - Login ok (`api&#47;user`)
+  - Alle Dashboards im Dashpack per UID abrufbar (`api&#47;dashboards&#47;uid&#47;<uid>`) + JSON valid
+  - DS_* Invariants: **DS_LOCAL/DS_MAIN/DS_SHADOW** vorhanden, **hidden** (hide=2), Defaults stabil
+  - Alle internen Links `&#47;d&#47;<uid>` resolvable (UID existiert)
+  - Optional: Prometheus-local Smoke „execution_watch metric present“ (via `_prom_query_json.sh`)
+- **Artifacts**: schreibt Evidence in `docs&#47;ops&#47;evidence&#47;assets&#47;EV_GRAFANA_VERIFY_V2_<timestamp>` (oder per `VERIFY_OUT_DIR`).
+
+Env Overrides:
+- `GRAFANA_URL` (default `http://127.0.0.1:3000`)
+- `GRAFANA_AUTH` (default `admin:admin`)
+- `PROM_URL` (default `http://127.0.0.1:9092`)
+- `VERIFY_OUT_DIR` (optional)
+
+## Triage (DOWN / No data / MISSING / Wrong DS Scope)
+
+- **DOWN / No data**:
+  - Prüfe Port-Konflikt: du schaust wirklich auf `:3000` (nicht „anderes Grafana“).
+  - Prüfe Prometheus-local: `http://127.0.0.1:9092/-/ready`
+- **MISSING (Contract Panels)**:
+  - Nutze `Peak_Trade — Contract Details (Debug)` (`&#47;d&#47;peaktrade-contract-details`) für Presence/Counts je DS_SHADOW/DS_LOCAL/DS_MAIN.
+  - Guardrail: Execution Watch Contract Presence ist auf **DS_LOCAL** gescoped (vermeidet false MISSING auf DS_SHADOW).
+- **Wrong DS Scope**:
+  - DS_* Variablen sind standardmäßig **hidden**; Debug erfolgt über die Drilldown-Dashboards (Contract Details / Execution Watch Details).
+
 Stop:
 
 ```bash
