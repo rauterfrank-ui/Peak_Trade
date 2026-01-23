@@ -168,11 +168,35 @@ pass "prometheus.targets" "shadow_mvs=up"
 
 prom_query_non_empty_once() {
   local q="$1"
-  curl -fsS -G "$PROM_URL/api/v1/query" --data-urlencode "query=$q" 2>/dev/null | python3 -c '
+  local attempts="${PROM_QUERY_MAX_ATTEMPTS:-3}"
+  local sleep_s="${PROM_QUERY_SLEEP_S:-0.2}"
+  local i=0
+  local tmpdir hdr body meta http_code content_type body_bytes
+  tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/pt-promq.XXXXXX")"
+  hdr="$tmpdir/headers.txt"
+  body="$tmpdir/body.bin"
+  meta="$tmpdir/meta.txt"
+  # Always clean up. IMPORTANT: expand $tmpdir now (RETURN trap runs after locals unwind).
+  trap "rm -rf '$tmpdir' >/dev/null 2>&1 || true" RETURN
+
+  for _ in $(seq 1 "$attempts"); do
+    i=$((i + 1))
+    rm -f "$hdr" "$body" "$meta" || true
+
+    # Capture headers + body. Also capture http_code/content_type without relying on headers parsing.
+    # Keep best-effort output (no -f): we want diagnostics even on non-200.
+    curl -sS -L --compressed -D "$hdr" -o "$body" -w "http_code=%{http_code}\ncontent_type=%{content_type}\n" \
+      -G "$PROM_URL/api/v1/query" --data-urlencode "query=$q" >"$meta" 2>/dev/null || true
+
+    http_code="$(awk -F= '$1=="http_code"{print $2}' "$meta" 2>/dev/null | tail -n 1 || true)"
+    content_type="$(awk -F= '$1=="content_type"{print $2}' "$meta" 2>/dev/null | tail -n 1 || true)"
+    body_bytes="$(wc -c "$body" 2>/dev/null | awk '{print $1}' || echo 0)"
+
+    # Accept only JSON success payloads.
+    if [[ "${http_code:-}" == "200" ]] && [[ "${content_type:-}" == application/json* ]] && [[ "${body_bytes:-0}" -gt 0 ]]; then
+      if python3 scripts/obs/prom_json_safe_parse.py <"$body" 2>/dev/null | python3 -c '
 import json, sys
 doc = json.load(sys.stdin)
-if doc.get("status") != "success":
-    raise SystemExit(1)
 res = doc.get("data", {}).get("result", [])
 if not res:
     raise SystemExit(1)
@@ -185,7 +209,25 @@ for item in res:
     if s not in ("nan", "+nan", "-nan"):
         raise SystemExit(0)
 raise SystemExit(1)
-'
+' >/dev/null 2>&1; then
+        return 0
+      fi
+    fi
+
+    # Diagnostics (short + deterministic) then retry.
+    if [[ "$i" == "1" ]]; then
+      echo "INFO|prom.query.retry|attempts=${attempts}|sleep_s=${sleep_s}" >&2
+    fi
+    echo "WARN|prom.query.bad_response|attempt=${i}|http_code=${http_code:-<empty>}|content_type=${content_type:-<empty>}|body_bytes=${body_bytes:-0}" >&2
+    sed -n '1,12p' "$hdr" 2>/dev/null >&2 || true
+    python3 -c 'import sys; b=sys.stdin.buffer.read()[:200]; sys.stderr.write(b.decode("utf-8","replace")+"\n")' <"$body" 2>/dev/null || true
+
+    sleep "$sleep_s"
+    # backoff (bounded) to avoid hammering during warmup
+    sleep_s="$(python3 -c 'import sys; s=float(sys.argv[1]); print(min(2.0, s*1.6))' "$sleep_s" 2>/dev/null || echo "$sleep_s")"
+  done
+
+  return 1
 }
 
 prom_query_non_empty_with_retries() {

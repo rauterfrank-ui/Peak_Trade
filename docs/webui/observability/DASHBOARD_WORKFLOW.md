@@ -273,6 +273,14 @@ curl -fsS 'http://127.0.0.1:9092/api/v1/query?query=up%7Bjob%3D%22shadow_mvs%22%
 curl -fsS http://127.0.0.1:9109/metrics | head -n 60
 ```
 
+**Hinweis (robust gegen transiente Responses)**  
+Wenn `curl ... /api/v1/query` sporadisch **leer** oder **nicht-JSON** liefert (Warmup/Netzwerk), nutze die repo-interne Verifikation:
+
+```bash
+# Enthält retries + deterministische Diagnostik (Headers + Body-Preview) statt JSONDecodeError
+bash scripts/obs/shadow_mvs_local_verify.sh
+```
+
 ### Problem: Dashboard-Suche liefert `[]`
 
 **Symptom**
