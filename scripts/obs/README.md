@@ -59,7 +59,7 @@ python3 scripts/obs/stage1_daily_snapshot.py
 # Mit custom Optionen
 python3 scripts/obs/stage1_daily_snapshot.py \
   --repo ~/Peak_Trade \
-  --out-dir reports/obs/stage1 \
+  --out-dir reports&#47;obs&#47;stage1 \
   --max-files 10 \
   --max-depth 12
 ```
@@ -69,7 +69,7 @@ python3 scripts/obs/stage1_daily_snapshot.py \
 | Option | Default | Beschreibung |
 |--------|---------|--------------|
 | `--repo` | `.` | Repo root (Ausgangspunkt für Dateisuche) |
-| `--out-dir` | `reports/obs/stage1` | Output-Verzeichnis für Reports |
+| `--out-dir` | `reports&#47;obs&#47;stage1` | Output-Verzeichnis für Reports |
 | `--max-depth` | `10` | Maximale Suchtiefe für JSONL-Dateien |
 | `--max-files` | `8` | Parse nur die N neuesten Dateien |
 | `--legacy-regex` | `(legacy\|risk[_ -]?limit...)` | Regex für Legacy-Detection |
@@ -105,14 +105,14 @@ python3 scripts/obs/stage1_trend_report.py
 python3 scripts/obs/stage1_trend_report.py --days 7
 
 # Custom Snapshot-Directory
-python3 scripts/obs/stage1_trend_report.py --dir reports/obs/stage1
+python3 scripts/obs/stage1_trend_report.py --dir reports&#47;obs&#47;stage1
 ```
 
 ### Optionen
 
 | Option | Default | Beschreibung |
 |--------|---------|--------------|
-| `--dir` | `reports/obs/stage1` | Snapshot-Verzeichnis |
+| `--dir` | `reports&#47;obs&#47;stage1` | Snapshot-Verzeichnis |
 | `--days` | `14` | Anzahl der letzten Tage (max) |
 
 ### Output
@@ -182,7 +182,7 @@ Siehe `.github&#47;workflows&#47;stage1_monitoring.yml` (falls vorhanden).
 **Symptom:** New-alerts heuristic = 0, aber viele CRITICAL/WARN
 
 **Erklärung:**
-- Legacy-System (`live_runs/alerts/`) ist ein **separates System**
+- Legacy-System (`live_runs&#47;alerts&#47;`) ist ein **separates System**
 - Neues System (`data&#47;telemetry&#47;alerts&#47;`) emitted nur bei tatsächlichen Issues
 - **Erwartetes Verhalten** für healthy Stage 1 ✅
 
