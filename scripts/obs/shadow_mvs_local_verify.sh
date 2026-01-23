@@ -41,6 +41,19 @@ curl_ok_or_retry_once() {
   curl_ok "$url"
 }
 
+prom_query_json() {
+  # Robust Prometheus /api/v1/query fetch with gating + evidence on failure.
+  local q="${1:-}"
+  if [[ -z "${q:-}" ]]; then
+    echo "prom_query_json: missing query" >&2
+    return 2
+  fi
+  bash scripts/obs/_prom_query_json.sh \
+    --base "$PROM_URL" \
+    --query "$q" \
+    --retries "${PROM_QUERY_MAX_ATTEMPTS:-3}"
+}
+
 grafana_get_json_or_fail() {
   local path="$1"
   local url="${GRAFANA_URL%/}${path}"
@@ -168,7 +181,11 @@ pass "prometheus.targets" "shadow_mvs=up"
 
 prom_query_non_empty_once() {
   local q="$1"
-  curl -fsS -G "$PROM_URL/api/v1/query" --data-urlencode "query=$q" 2>/dev/null | python3 -c '
+  local json
+  if ! json="$(prom_query_json "$q")"; then
+    return 1
+  fi
+  printf '%s' "$json" | python3 -c '
 import json, sys
 doc = json.load(sys.stdin)
 if doc.get("status") != "success":
