@@ -76,6 +76,11 @@ Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional
 - **Execution Watch Details**: `peaktrade-execution-watch-details`
   - Drilldown aus „Execution Watch req/s (by endpoint, status)“ mit `endpoint&#47;status` Kontext
 
+## Compare Pack v0.1 (stacked auf PR #950)
+
+- **Compare Overview (Main vs Shadow)**: `peaktrade-main-vs-shadow-overview`
+- **Metrics Drift**: `peaktrade-metrics-drift`
+
 ## Verify Quick Path (operator-grade)
 
 ```bash
