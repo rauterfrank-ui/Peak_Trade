@@ -14,6 +14,19 @@ cd "$(git rev-parse --show-toplevel)"
 GRAFANA_URL="${GRAFANA_URL:-http://127.0.0.1:3000}"
 GRAFANA_AUTH="${GRAFANA_AUTH:-admin:admin}"
 
+HERMETIC="0"
+if [ "${1:-}" = "--hermetic" ] || [ "${1:-}" = "--no-api" ]; then
+  HERMETIC="1"
+  shift || true
+fi
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+  echo "usage: $0 [--hermetic|--no-api]" >&2
+  echo "" >&2
+  echo "  --hermetic: run JSON-only checks; skip Grafana API checks even if reachable" >&2
+  echo "  --no-api:   alias for --hermetic" >&2
+  exit 0
+fi
+
 VERIFY_OUT_DIR="${VERIFY_OUT_DIR:-}"
 RUN_TS_UTC="$(date -u +%Y%m%dT%H%M%SZ)"
 if [ -z "$VERIFY_OUT_DIR" ]; then
@@ -36,11 +49,12 @@ require_tool() {
 }
 
 require_tool python3
-require_tool curl
-
-GRAFANA_HELPER="./scripts/obs/_grafana_api_json.sh"
-if [ ! -f "$GRAFANA_HELPER" ]; then
-  fail "preflight.helper" "Missing helper: $GRAFANA_HELPER" "Ensure scripts are present"
+if [ "$HERMETIC" != "1" ]; then
+  require_tool curl
+  GRAFANA_HELPER="./scripts/obs/_grafana_api_json.sh"
+  if [ ! -f "$GRAFANA_HELPER" ]; then
+    fail "preflight.helper" "Missing helper: $GRAFANA_HELPER" "Ensure scripts are present"
+  fi
 fi
 
 echo "== Grafana Dashpack Verify v2 =="
@@ -135,6 +149,11 @@ PY
 pass "dashpack.integrity.hermetic" "$dashpack_report"
 
 echo "==> B) Optional Grafana API checks (only if reachable)"
+if [ "$HERMETIC" = "1" ]; then
+  pass "grafana.api" "SKIP (--hermetic)"
+  echo "RESULT=PASS"
+  exit 0
+fi
 health_out="$VERIFY_OUT_DIR/grafana_api_health.json"
 if bash "$GRAFANA_HELPER" --base "$GRAFANA_URL" --path "/api/health" --out "$health_out" --retries 1 --timeout 1 >/dev/null; then
   pass "grafana.health" "$health_out"
