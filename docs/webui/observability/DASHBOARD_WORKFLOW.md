@@ -281,6 +281,13 @@ Wenn `curl ... /api/v1/query` sporadisch **leer** oder **nicht-JSON** liefert (W
 bash scripts/obs/shadow_mvs_local_verify.sh
 ```
 
+Oder (nur Query, ohne Dashboard-Kontext):
+
+```bash
+# Liefert retries + deterministische Diagnostik und gibt das JSON (oder schreibt via --out)
+bash scripts/obs/_prom_query_json.sh --base http://127.0.0.1:9092 --query 'up'
+```
+
 ### Problem: Dashboard-Suche liefert `[]`
 
 **Symptom**
