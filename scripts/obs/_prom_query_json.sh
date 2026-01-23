@@ -5,6 +5,26 @@ BASE=""
 QUERY=""
 OUT=""
 RETRIES="5"
+TIMEOUT_S=""
+
+# CLI supports BOTH:
+# A) flags: --base URL --query PROMQL [--retries N] [--timeout S]
+# B) positional alias: _prom_query_json.sh "<base>" "<query>" [--retries N] [--timeout S]
+#
+# Rules:
+# - If first arg starts with --, parse flags-only.
+# - If first arg does NOT start with --, treat first two args as base/query and shift them out,
+#   then parse remaining flags.
+if [ $# -ge 1 ] && [ "${1#--}" = "$1" ]; then
+  if [ $# -lt 2 ]; then
+    echo "usage: $0 --base <http://127.0.0.1:9092> --query <promql> [--out <path>] [--retries N] [--timeout S]" >&2
+    echo "   or: $0 <base_url> <promql> [--out <path>] [--retries N] [--timeout S]" >&2
+    exit 2
+  fi
+  BASE="$1"
+  QUERY="$2"
+  shift 2
+fi
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -12,12 +32,18 @@ while [ $# -gt 0 ]; do
     --query) QUERY="${2:-}"; shift 2;;
     --out) OUT="${2:-}"; shift 2;;
     --retries) RETRIES="${2:-}"; shift 2;;
+    --timeout) TIMEOUT_S="${2:-}"; shift 2;;
+    --help|-h)
+      echo "usage: $0 --base <http://127.0.0.1:9092> --query <promql> [--out <path>] [--retries N] [--timeout S]" >&2
+      echo "   or: $0 <base_url> <promql> [--out <path>] [--retries N] [--timeout S]" >&2
+      exit 0;;
     *) echo "unknown arg: $1" >&2; exit 2;;
   esac
 done
 
 if [ -z "${BASE:-}" ] || [ -z "${QUERY:-}" ]; then
-  echo "usage: $0 --base <http://127.0.0.1:9092> --query <promql> [--out <path>] [--retries N]" >&2
+  echo "usage: $0 --base <http://127.0.0.1:9092> --query <promql> [--out <path>] [--retries N] [--timeout S]" >&2
+  echo "   or: $0 <base_url> <promql> [--out <path>] [--retries N] [--timeout S]" >&2
   exit 2
 fi
 
@@ -34,6 +60,8 @@ while [ "$i" -le "$RETRIES" ]; do
   : >"$tmp_hdr"; : >"$tmp_body"
   http_code="$(
     curl -sS -L --compressed -D "$tmp_hdr" -o "$tmp_body" -w "%{http_code}" \
+      ${TIMEOUT_S:+--connect-timeout "$TIMEOUT_S"} \
+      ${TIMEOUT_S:+--max-time "$TIMEOUT_S"} \
       -G "$base_query_url" --data-urlencode "query=$QUERY" || true
   )"
   ctype="$(grep -i "^content-type:" "$tmp_hdr" | tail -n 1 | tr -d "\r" | awk "{print \$2}" || true)"

@@ -99,3 +99,31 @@ def test_prom_query_json_helper_retries_and_succeeds(tmp_path) -> None:
     finally:
         srv.shutdown()
         srv.server_close()
+
+
+def test_prom_query_json_helper_supports_positional_alias(tmp_path) -> None:
+    srv, _, base = _start_server()
+    try:
+        out = tmp_path / "out.json"
+        proc = subprocess.run(
+            [
+                "bash",
+                "scripts/obs/_prom_query_json.sh",
+                base,
+                "up",
+                "--out",
+                str(out),
+                "--retries",
+                "5",
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert proc.returncode == 0, proc.stdout + "\n" + proc.stderr
+        assert "PROM_QUERY_OK bytes=" in proc.stderr
+        assert out.exists()
+        assert '"status":"success"' in out.read_text(encoding="utf-8")
+    finally:
+        srv.shutdown()
+        srv.server_close()
