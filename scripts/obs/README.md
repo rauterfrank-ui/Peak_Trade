@@ -44,6 +44,15 @@ bash scripts/obs/grafana_local_up.sh
 bash scripts/obs/grafana_verify_v2.sh
 ```
 
+### Dashpack Verify v2 (hermetic-first)
+
+Script: `scripts/obs/grafana_dashpack_local_verify_v2.sh`
+
+- Default: Hermetic JSON-only Checks laufen immer; Grafana API Checks nur wenn Grafana erreichbar ist.
+- Hermetic mode (no API): `--hermetic` (Alias: `--no-api`)
+  - JSON-only; keine Grafana API/Creds, kein curl erforderlich.
+- Artifacts: `docs&#47;ops&#47;evidence&#47;assets&#47;EV_GRAFANA_DASHPACK_VERIFY_V2_<timestamp>` (oder per `VERIFY_OUT_DIR`).
+
 ---
 
 ## 📊 Script 1: Daily Snapshot
