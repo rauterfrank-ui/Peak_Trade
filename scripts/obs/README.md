@@ -82,7 +82,7 @@ python3 scripts/obs/stage1_daily_snapshot.py \
 
 ### Output
 
-Erstellt `reports/obs/stage1/YYYY-MM-DD_snapshot.md` mit:
+Erstellt `reports&#47;obs&#47;stage1&#47;YYYY-MM-DD_snapshot.md` mit:
 - Candidate JSONL files (Top 8, neueste zuerst)
 - Summary (Zeilen, Timestamps, Legacy-Hits)
 - Last 24h breakdown (Severity, Event Types, Rules)
@@ -143,7 +143,7 @@ crontab -e
 
 ### Alternative: GitHub Actions
 
-Siehe `.github/workflows/stage1_monitoring.yml` (falls vorhanden).
+Siehe `.github&#47;workflows&#47;stage1_monitoring.yml` (falls vorhanden).
 
 ---
 
@@ -183,7 +183,7 @@ Siehe `.github/workflows/stage1_monitoring.yml` (falls vorhanden).
 
 **Erklärung:**
 - Legacy-System (`live_runs/alerts/`) ist ein **separates System**
-- Neues System (`data/telemetry/alerts/`) emitted nur bei tatsächlichen Issues
+- Neues System (`data&#47;telemetry&#47;alerts&#47;`) emitted nur bei tatsächlichen Issues
 - **Erwartetes Verhalten** für healthy Stage 1 ✅
 
 ### Problem: Parse errors

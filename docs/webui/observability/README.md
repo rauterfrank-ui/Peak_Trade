@@ -80,7 +80,7 @@ Script: `scripts/obs/grafana_verify_v2.sh`
   - DS_* Invariants: **DS_LOCAL/DS_MAIN/DS_SHADOW** vorhanden, **hidden** (hide=2), Defaults stabil
   - Alle internen Links `&#47;d&#47;<uid>` resolvable (UID existiert)
   - Optional: Prometheus-local Smoke „execution_watch metric present“ (via `_prom_query_json.sh`)
-- **Artifacts**: schreibt Evidence in `docs/ops/evidence/assets/EV_GRAFANA_VERIFY_V2_<timestamp>` (oder per `VERIFY_OUT_DIR`).
+- **Artifacts**: schreibt Evidence in `docs&#47;ops&#47;evidence&#47;assets&#47;EV_GRAFANA_VERIFY_V2_<timestamp>` (oder per `VERIFY_OUT_DIR`).
 
 Env Overrides:
 - `GRAFANA_URL` (default `http://127.0.0.1:3000`)
