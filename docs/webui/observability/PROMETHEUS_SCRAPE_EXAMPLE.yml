@@ -9,3 +9,10 @@ scrape_configs:
           # Docker Desktop (macOS/Windows): reach host services via host.docker.internal
           # Linux: you may need extra_hosts: ["host.docker.internal:host-gateway"] or equivalent.
           - "host.docker.internal:8000"
+
+  # AI Live Exporter (watch-only, runs on host)
+  - job_name: ai_live
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - "host.docker.internal:9110"

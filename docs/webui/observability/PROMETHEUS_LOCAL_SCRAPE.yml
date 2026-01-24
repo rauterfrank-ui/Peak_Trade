@@ -18,3 +18,10 @@ scrape_configs:
     scheme: http
     static_configs:
       - targets: ["host.docker.internal:8000"]
+
+  # AI Live Exporter (watch-only, runs on host)
+  - job_name: "ai_live"
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets: ["host.docker.internal:9110"]
