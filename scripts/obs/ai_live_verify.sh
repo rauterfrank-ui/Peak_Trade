@@ -4,7 +4,8 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 PROM_URL="${PROM_URL:-http://127.0.0.1:9092}"
-EXPORTER_URL="${EXPORTER_URL:-http://127.0.0.1:9110/metrics}"
+AI_LIVE_PORT="${AI_LIVE_PORT:-9110}"
+EXPORTER_URL="${EXPORTER_URL:-http://127.0.0.1:${AI_LIVE_PORT}/metrics}"
 JOB_NAME="${JOB_NAME:-ai_live}"
 
 pass() {
@@ -16,6 +17,21 @@ fail() {
   echo "NEXT|$3" >&2
   echo "RESULT=FAIL" >&2
   exit 1
+}
+
+port_contract_hint() {
+  cat >&2 <<EOF
+AI Live Port Contract v1:
+- Prometheus-local scrapes job=ai_live at host.docker.internal:9110 (fixed config).
+- This verifier assumes the AI Live exporter is serving /metrics on :9110.
+- Do NOT rely on fallback ports (would make Prometheus/Grafana queries look empty).
+
+How to resolve:
+- Stop the process currently listening on :9110 (recommended), then rerun:
+  bash scripts/obs/ai_live_smoke_test.sh
+- If you *must* run on another port, you must explicitly update Prometheus scrape config
+  to match (not recommended for local ops).
+EOF
 }
 
 curl_ok() {
@@ -56,7 +72,8 @@ fi
 
 echo "==> Check: Exporter /metrics reachable + contract series present"
 if ! curl_ok_or_retry_once "$EXPORTER_URL" 1; then
-  fail "exporter.http" "Exporter not reachable: $EXPORTER_URL" "Phase AI-2 (Exporter DOWN)"
+  port_contract_hint
+  fail "exporter.http" "Exporter not reachable: $EXPORTER_URL" "Phase AI-2 (Exporter DOWN / Port Contract v1)"
 fi
 exporter_metrics="$(curl -fsS "$EXPORTER_URL" 2>/dev/null || true)"
 if [[ -z "${exporter_metrics:-}" ]]; then
@@ -66,6 +83,14 @@ fi
 printf '%s' "$exporter_metrics" | grep -q '^peaktrade_ai_live_heartbeat' || fail "exporter.series" "Missing series: peaktrade_ai_live_heartbeat" "Phase AI-2 (Exporter metrics mismatch)"
 printf '%s' "$exporter_metrics" | grep -q '^peaktrade_ai_decisions_total' || fail "exporter.series" "Missing series: peaktrade_ai_decisions_total" "Phase AI-2 (Exporter metrics mismatch)"
 printf '%s' "$exporter_metrics" | grep -q '^peaktrade_ai_actions_total' || fail "exporter.series" "Missing series: peaktrade_ai_actions_total" "Phase AI-2 (Exporter metrics mismatch)"
+printf '%s' "$exporter_metrics" | grep -q '^# HELP peaktrade_ai_decision_latency_ms' || fail "exporter.series" "Missing metric family: peaktrade_ai_decision_latency_ms" "Phase AI-2 (Exporter v2 metrics missing)"
+printf '%s' "$exporter_metrics" | grep -q '^peaktrade_ai_last_event_timestamp_seconds' || fail "exporter.series" "Missing series: peaktrade_ai_last_event_timestamp_seconds" "Phase AI-2 (Exporter v2 metrics missing)"
+#
+# Note: *_total metrics are label-scoped (source/reason). The sample lines may be
+# absent until a labelset is touched. The metric family HELP/TYPE lines should
+# still exist once the exporter initializes telemetry.
+printf '%s' "$exporter_metrics" | grep -q '^# HELP peaktrade_ai_events_parse_errors_total' || fail "exporter.series" "Missing metric family: peaktrade_ai_events_parse_errors_total" "Phase AI-2 (Exporter v2 metrics missing)"
+printf '%s' "$exporter_metrics" | grep -q '^# HELP peaktrade_ai_events_dropped_total' || fail "exporter.series" "Missing metric family: peaktrade_ai_events_dropped_total" "Phase AI-2 (Exporter v2 metrics missing)"
 pass "exporter.metrics" "core series present (heartbeat/decisions/actions)"
 
 echo "==> Sample: exporter metrics (first matches)"
@@ -99,6 +124,7 @@ if (job,"up") not in jobs:
 done
 if [[ "$targets_ok" != "1" ]]; then
   echo "$targets_json" | head -c 2000 >&2 || true
+  port_contract_hint
   fail "prometheus.targets" "Prometheus target not UP: job=$JOB_NAME" "Phase AI-3 (Prometheus Target DOWN)"
 fi
 echo "INFO|targets_retry=attempts_used=${attempts_used}"
@@ -144,9 +170,21 @@ prom_query_non_empty_with_retries() {
 }
 
 if ! prom_query_non_empty_with_retries "up{job=\"$JOB_NAME\"}" "${UP_QUERY_MAX_ATTEMPTS:-3}" "${UP_QUERY_SLEEP_S:-1}"; then
+  port_contract_hint
   fail "prometheus.query" "Query returned no data: up{job=\"$JOB_NAME\"}" "Phase AI-3 (Prometheus Target DOWN)"
 fi
 pass "prometheus.query" "up{job=\"$JOB_NAME\"} non-empty"
+
+echo "==> Check: v2 series visible in Prometheus (non-empty)"
+if ! prom_query_non_empty_with_retries "peaktrade_ai_decision_latency_ms_count" "${V2_QUERY_MAX_ATTEMPTS:-6}" "${V2_QUERY_SLEEP_S:-2}"; then
+  port_contract_hint
+  fail "prometheus.query.v2" "Query returned no data: peaktrade_ai_decision_latency_ms_count" "Phase AI-3 (Prometheus AI Live v2 missing)"
+fi
+if ! prom_query_non_empty_with_retries "peaktrade_ai_last_event_timestamp_seconds" "${V2_QUERY_MAX_ATTEMPTS:-6}" "${V2_QUERY_SLEEP_S:-2}"; then
+  port_contract_hint
+  fail "prometheus.query.v2" "Query returned no data: peaktrade_ai_last_event_timestamp_seconds" "Phase AI-3 (Prometheus AI Live v2 missing)"
+fi
+pass "prometheus.query.v2" "v2 series non-empty"
 
 echo ""
 echo "EVIDENCE|exporter=$EXPORTER_URL|series=peaktrade_ai_live_heartbeat,peaktrade_ai_decisions_total,peaktrade_ai_actions_total"
