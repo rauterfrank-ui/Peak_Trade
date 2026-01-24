@@ -57,6 +57,25 @@ Ziel: Eine kleine, **watch-only** AI-Event-Telemetrie, die in Grafana im Dashboa
 - **Allowed chars**: `[A-Za-z0-9._-]` (alles andere wird zu `_`)
 - **Empfehlung**: kurze, stabile IDs (z.B. `demo`, `mvs_20260124`, `shadow_smoke`)
 
+### AI Live UX v2 — Reason/Action/SLO/Timeline
+
+Ziel: Operator sieht pro Lauf (`run_id`) nicht nur „Up/Down“, sondern **warum** (Reasons), **was passiert** (Actions) und **wie gut** (SLO/Tail) – ohne Logs/Loki.
+
+- **Reason breakdown**:
+  - `Reject reasons (5m)` (Top-K, Timeseries, stacked)
+  - `Noop reasons (5m)` (Top-K, Timeseries, stacked)
+- **Action breakdown**:
+  - `Actions (5m)` basiert auf `peaktrade_ai_actions_total{action,component,run_id}`
+- **SLO/Tail**:
+  - `Latency SLO > 500ms (5m) — breach %` nutzt das run-scoped Histogram `peaktrade_ai_decision_latency_seconds_*` (Threshold 0.5s)
+  - `Latency breach % (>500ms) (5m)` als Timeseries
+- **Timeline (lightweight)**:
+  - `AI Activity State (per decision type, last 30m)` zeigt 0/1 Aktivität je Decision-Type (accept/reject/noop)
+
+Hinweis (Label-Realität):
+- `peaktrade_ai_events_*` (parse/drops) sind **source-scoped** (kein `run_id`); die Panels bleiben global.
+- `peaktrade_ai_decision_latency_ms_*` ist **source+decision** (v2) und wird weiterhin als p95-Referenz genutzt; SLO ist run-scoped über `peaktrade_ai_decision_latency_seconds_*`.
+
 ### AI Live Port Contract v1 (lokal, deterministisch)
 
 - **Port**: Der AI Live Exporter läuft lokal **immer auf `:9110`**.
