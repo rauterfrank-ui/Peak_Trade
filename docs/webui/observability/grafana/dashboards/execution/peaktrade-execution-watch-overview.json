@@ -3,7 +3,7 @@
   "title": "Peak_Trade — Execution Watch Overview",
   "timezone": "browser",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "refresh": "10s",
   "tags": ["peak_trade", "observability", "execution_watch", "watch_only"],
   "time": { "from": "now-30m", "to": "now" },
@@ -80,6 +80,19 @@
         "options": [],
         "refresh": 1,
         "hide": 2
+      },
+      {
+        "type": "query",
+        "name": "run_id",
+        "label": "AI run_id",
+        "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+        "query": { "query": "label_values(peaktrade_ai_decisions_total, run_id)", "refId": "runIdVars" },
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": false,
+        "refresh": 2,
+        "sort": 1,
+        "current": { "text": "All", "value": "$__all" }
       }
     ]
   },
@@ -107,7 +120,7 @@
     {
       "type": "row",
       "title": "AI Live — Ops Summary",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
       "collapsed": false,
       "panels": []
     },
@@ -115,7 +128,7 @@
       "type": "stat",
       "title": "AI Live Up",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 34 },
       "targets": [
         {
           "refId": "A",
@@ -148,11 +161,11 @@
       "type": "stat",
       "title": "AI Live Fresh (worst age s)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 34 },
       "targets": [
         {
           "refId": "A",
-          "expr": "max(clamp_min(time() - max by (source)(peaktrade_ai_last_event_timestamp_seconds), 0)) or on() vector(0)"
+          "expr": "max(clamp_min(time() - max by (source)(peaktrade_ai_last_event_timestamp_seconds_by_run_id{run_id=~\"$run_id\"}), 0)) or on() vector(0)"
         }
       ],
       "fieldConfig": {
@@ -176,7 +189,7 @@
       "type": "stat",
       "title": "Parse errors / 5m",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 34 },
       "targets": [
         {
           "refId": "A",
@@ -202,7 +215,7 @@
       "type": "stat",
       "title": "Drops / 5m",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 34 },
       "targets": [
         {
           "refId": "A",
@@ -228,7 +241,7 @@
       "type": "stat",
       "title": "Latency p95 (5m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 34 },
       "targets": [
         {
           "refId": "A",
@@ -256,7 +269,7 @@
       "type": "stat",
       "title": "Active alerts (firing)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 34 },
       "targets": [
         {
           "refId": "A",
@@ -281,7 +294,7 @@
     {
       "type": "row",
       "title": "AI Live",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
       "collapsed": false,
       "panels": []
     },
@@ -289,11 +302,11 @@
       "type": "stat",
       "title": "AI Active (last 30s)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 6 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
       "targets": [
         {
           "refId": "A",
-          "expr": "clamp_max(((sum(increase(peaktrade_ai_decisions_total[30s])) > bool 0) or on() vector(0)), 1)"
+          "expr": "clamp_max(((sum(increase(peaktrade_ai_decisions_total{run_id=~\"$run_id\"}[30s])) > bool 0) or on() vector(0)), 1)"
         }
       ],
       "fieldConfig": {
@@ -322,11 +335,11 @@
       "type": "stat",
       "title": "Total decisions / min (1m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 6 },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
       "targets": [
         {
           "refId": "A",
-          "expr": "(sum(rate(peaktrade_ai_decisions_total[1m]) * 60) or on() vector(0))"
+          "expr": "(sum(rate(peaktrade_ai_decisions_total{run_id=~\"$run_id\"}[1m]) * 60) or on() vector(0))"
         }
       ],
       "fieldConfig": { "defaults": { "min": 0, "decimals": 1 }, "overrides": [] },
@@ -336,11 +349,11 @@
       "type": "stat",
       "title": "Reject share (5m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 6 },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
       "targets": [
         {
           "refId": "A",
-          "expr": "clamp_min(((sum(increase(peaktrade_ai_decisions_total{decision=\"reject\"}[5m])) or on() vector(0)) / clamp_min((sum(increase(peaktrade_ai_decisions_total[5m])) or on() vector(0)), 1e-9)), 0)"
+          "expr": "clamp_min(((sum(increase(peaktrade_ai_decisions_total{decision=\"reject\",run_id=~\"$run_id\"}[5m])) or on() vector(0)) / clamp_min((sum(increase(peaktrade_ai_decisions_total{run_id=~\"$run_id\"}[5m])) or on() vector(0)), 1e-9)), 0)"
         }
       ],
       "fieldConfig": {
@@ -367,11 +380,11 @@
       "type": "stat",
       "title": "Last decision age (s)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 6 },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
       "targets": [
         {
           "refId": "A",
-          "expr": "clamp_min(time() - (max(peaktrade_ai_last_decision_timestamp_seconds) or on() vector(0)), 0)",
+          "expr": "clamp_min(time() - (max(peaktrade_ai_last_decision_timestamp_seconds{run_id=~\"$run_id\"}) or on() vector(0)), 0)",
           "legendFormat": "age_s"
         }
       ],
@@ -379,24 +392,80 @@
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
     },
     {
-      "type": "timeseries",
-      "title": "Decisions / min (1m)",
+      "type": "stat",
+      "title": "Recent: last decision age (s)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 10 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 5 },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(peaktrade_ai_decisions_total{decision=\"accept\"}[1m]) * 60) or on() vector(0)",
+          "expr": "clamp_min(time() - (max(peaktrade_ai_last_decision_timestamp_seconds{run_id=~\"$run_id\"}) or on() vector(0)), 0)"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s", "min": 0 }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat",
+      "title": "Recent: last event age (s)",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 5 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max(clamp_min(time() - max by (source) (peaktrade_ai_last_event_timestamp_seconds_by_run_id{run_id=~\"$run_id\"}), 0)) or on() vector(0)"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s", "min": 0 }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat",
+      "title": "Recent: decisions (1m)",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 5 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(sum(increase(peaktrade_ai_decisions_total{run_id=~\"$run_id\"}[1m])) or on() vector(0))"
+        }
+      ],
+      "fieldConfig": { "defaults": { "min": 0 }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat",
+      "title": "Recent: decisions (5m)",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 5 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(sum(increase(peaktrade_ai_decisions_total{run_id=~\"$run_id\"}[5m])) or on() vector(0))"
+        }
+      ],
+      "fieldConfig": { "defaults": { "min": 0 }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Decisions / min (1m)",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 9 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(peaktrade_ai_decisions_total{decision=\"accept\",run_id=~\"$run_id\"}[1m]) * 60) or on() vector(0)",
           "legendFormat": "accept"
         },
         {
           "refId": "B",
-          "expr": "sum(rate(peaktrade_ai_decisions_total{decision=\"reject\"}[1m]) * 60) or on() vector(0)",
+          "expr": "sum(rate(peaktrade_ai_decisions_total{decision=\"reject\",run_id=~\"$run_id\"}[1m]) * 60) or on() vector(0)",
           "legendFormat": "reject"
         },
         {
           "refId": "C",
-          "expr": "sum(rate(peaktrade_ai_decisions_total{decision=\"noop\"}[1m]) * 60) or on() vector(0)",
+          "expr": "sum(rate(peaktrade_ai_decisions_total{decision=\"noop\",run_id=~\"$run_id\"}[1m]) * 60) or on() vector(0)",
           "legendFormat": "noop"
         }
       ],
@@ -412,11 +481,11 @@
       "type": "bargauge",
       "title": "Top reject reasons (10m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 18 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 17 },
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(8, sum by (reason) (increase(peaktrade_ai_decisions_total{decision=\"reject\"}[10m])))",
+          "expr": "topk(8, sum by (reason) (increase(peaktrade_ai_decisions_total{decision=\"reject\",run_id=~\"$run_id\"}[10m]))) OR on(reason) label_replace(vector(0), \"reason\", \"none\", \"\", \"\")",
           "legendFormat": "{{reason}}"
         }
       ],
@@ -427,7 +496,7 @@
       "type": "stat",
       "title": "Latency p95 (5m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 24 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 23 },
       "targets": [
         {
           "refId": "A",
@@ -441,7 +510,7 @@
       "type": "stat",
       "title": "Parse errors / min (5m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 24 },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 23 },
       "targets": [
         {
           "refId": "A",
@@ -455,7 +524,7 @@
       "type": "bargauge",
       "title": "Drops / min (5m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 24 },
+      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 23 },
       "targets": [
         {
           "refId": "A",
@@ -470,7 +539,7 @@
       "type": "timeseries",
       "title": "Source freshness (age s)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 28 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 27 },
       "targets": [
         {
           "refId": "A",
@@ -483,7 +552,7 @@
     {
       "type": "row",
       "title": "Health invariants (shadow)",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 34 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 38 },
       "collapsed": false,
       "panels": []
     },
@@ -491,7 +560,7 @@
       "type": "stat",
       "title": "UP (job=shadow_mvs)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 35 },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 39 },
       "targets": [
         { "refId": "A", "expr": "min(up{job=\"shadow_mvs\"})" }
       ],
@@ -516,7 +585,7 @@
       "type": "stat",
       "title": "Exporter (shadow_mvs_up)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 35 },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 39 },
       "targets": [
         { "refId": "A", "expr": "max(shadow_mvs_up)" }
       ],
@@ -541,7 +610,7 @@
       "type": "stat",
       "title": "Contract: pipeline events metric present",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 35 },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 39 },
       "targets": [
         { "refId": "A", "expr": "((absent(peak_trade_pipeline_events_total) OR on() vector(0)))" }
       ],
@@ -573,7 +642,7 @@
       "type": "stat",
       "title": "Contract: execution watch metrics present",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 35 },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 39 },
       "targets": [
         {
           "refId": "A",
@@ -607,7 +676,7 @@
     {
       "type": "row",
       "title": "Shadow pipeline signals (throughput, errors, latency, risk blocks)",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 40 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 44 },
       "collapsed": false,
       "panels": []
     },
@@ -615,7 +684,7 @@
       "type": "timeseries",
       "title": "Pipeline events rate (by stage)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 41 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 45 },
       "targets": [
         {
           "refId": "A",
@@ -628,7 +697,7 @@
       "type": "timeseries",
       "title": "Pipeline error rate",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 41 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 45 },
       "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 }, "overrides": [] },
       "targets": [
         {
@@ -642,7 +711,7 @@
       "type": "timeseries",
       "title": "Risk blocks rate (by reason)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 49 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 53 },
       "targets": [
         {
           "refId": "A",
@@ -655,7 +724,7 @@
       "type": "timeseries",
       "title": "Latency p95 (intent → ack)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 49 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 53 },
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "targets": [
         {
@@ -668,7 +737,7 @@
     {
       "type": "row",
       "title": "Replay/compare signals (Execution Watch API metrics, if enabled)",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 57 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 61 },
       "collapsed": false,
       "panels": []
     },
@@ -676,7 +745,7 @@
       "type": "timeseries",
       "title": "Execution Watch req/s (by endpoint, status)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 58 },
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 62 },
       "fieldConfig": {
         "defaults": {
           "links": [
@@ -701,7 +770,7 @@
       "type": "timeseries",
       "title": "Execution Watch latency p95 (by endpoint)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 67 },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 71 },
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "targets": [
         {
@@ -715,7 +784,7 @@
       "type": "timeseries",
       "title": "Execution Watch JSONL read errors (rate)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 67 },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 71 },
       "targets": [
         {
           "refId": "A",
@@ -727,7 +796,7 @@
     {
       "type": "row",
       "title": "Compare (shadow vs main) — best-effort",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 76 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 80 },
       "collapsed": false,
       "panels": []
     },
@@ -735,7 +804,7 @@
       "type": "timeseries",
       "title": "UP (shadow) — job=peak_trade_web",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 77 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 81 },
       "targets": [
         { "refId": "A", "expr": "up{job=\"peak_trade_web\"}", "legendFormat": "{{instance}}" }
       ]
@@ -744,7 +813,7 @@
       "type": "timeseries",
       "title": "UP (main) — job=peak_trade_web",
       "datasource": { "type": "prometheus", "uid": "${DS_MAIN}" },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 77 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 81 },
       "targets": [
         { "refId": "A", "expr": "up{job=\"peak_trade_web\"}", "legendFormat": "{{instance}}" }
       ]

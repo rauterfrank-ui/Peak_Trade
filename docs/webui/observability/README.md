@@ -42,6 +42,21 @@ Relevante Compose-Files:
 Ziel: Eine kleine, **watch-only** AI-Event-Telemetrie, die in Grafana im Dashboard
 „Execution Watch Overview“ als Row „AI Live“ sichtbar ist.
 
+### AI Live Drilldown v1 (run_id)
+
+Ziel: **Maximale Operator-Visibility** für einen konkreten AI-Lauf über `run_id`, ohne `src/**` anzufassen (watch-only).
+
+- **Dashboard Variable**: `run_id` (Grafana Query Variable via `label_values(peaktrade_ai_decisions_total, run_id)`, Datasource **DS_LOCAL**)
+- **Filter Contract**: Panels nutzen `run_id=~"$run_id"` (All → `.*`)
+- **Freshness Drilldown**: Exporter emittiert zusätzlich (bounded):
+  - `peaktrade_ai_last_event_timestamp_seconds_by_run_id{run_id,component,source}`
+
+#### run_id Constraints (Cardinality Guardrail)
+
+- **Max length**: 32 Zeichen (Exporter normalisiert/trunkiert)
+- **Allowed chars**: `[A-Za-z0-9._-]` (alles andere wird zu `_`)
+- **Empfehlung**: kurze, stabile IDs (z.B. `demo`, `mvs_20260124`, `shadow_smoke`)
+
 ### AI Live Port Contract v1 (lokal, deterministisch)
 
 - **Port**: Der AI Live Exporter läuft lokal **immer auf `:9110`**.
@@ -109,7 +124,7 @@ bash scripts/obs/ai_live_smoke_test.sh
 Ziel: AI Live operabel machen (watch-only): **Alerts**, **SLO-Style Checks** und eine kompakte **Ops Summary** oben im
 Dashboard `Peak_Trade — Execution Watch Overview`.
 
-#### Grafana: „AI Live — Ops Summary“ (Top-Row)
+#### Grafana: „AI Live — Ops Summary“
 
 - **AI Live Up**: `max(up{job="ai_live"})` (0/1)
 - **AI Live Fresh (worst age s)**: Worst-case Event-Alter über alle `source`
@@ -137,11 +152,11 @@ docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml
 ```text
 Compose: docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml
 Host rules dir: docs/webui/observability/prometheus/rules
-Container rules dir: /etc/prometheus/rules
+Container rules dir: &#47;etc&#47;prometheus&#47;rules
 Prom config: docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
 rule_files:
-  - /etc/prometheus/rules/*.yml
-  - /etc/prometheus/rules/*.yaml
+  - &#47;etc&#47;prometheus&#47;rules&#47;*.yml
+  - &#47;etc&#47;prometheus&#47;rules&#47;*.yaml
 ```
 
 Start (fresh):
@@ -199,8 +214,8 @@ bash scripts/obs/_prom_query_json.sh --base "$PROM_BASE" --query 'max(clamp_min(
 ### Grafana Erwartung (Screenshot-Mental-Model)
 
 Im Dashboard „Peak_Trade — Execution Watch Overview“ erscheint ganz oben:
-- Row **„AI Live — Ops Summary“** (Up/Freshness/Errors/Drops/Latency/Active Alerts)
-- darunter Row **„AI Live“** (Control Panel: Stats + Timeseries + Reject Reasons + Freshness)
+- Row **„AI Live“** (Control Panel + Drilldown v1 via `run_id`)
+- darunter Row **„AI Live — Ops Summary“** (Up/Freshness/Errors/Drops/Latency/Active Alerts)
 
 ## Quickstart (lokal): Grafana-only Provisioning Smoke (ohne Mock-Exporter)
 

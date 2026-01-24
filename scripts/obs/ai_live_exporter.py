@@ -18,6 +18,9 @@ Kanonische Metriken (definiert in src/obs/ai_telemetry.py):
 - peaktrade_ai_last_decision_timestamp_seconds{component,run_id}
 - peaktrade_ai_live_heartbeat{component,run_id}  (Gauge=1)
 
+Drilldown v1 (exporter-local, bounded):
+- peaktrade_ai_last_event_timestamp_seconds_by_run_id{run_id,component,source}
+
 Safety:
 - Watch-only: keine Trading-Aktion, nur /metrics
 - Wenn JSONL Datei fehlt: Exporter läuft weiter und setzt nur Heartbeat
@@ -28,6 +31,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import signal
 import sys
 import time
@@ -36,7 +40,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 try:
-    from prometheus_client import start_http_server
+    from prometheus_client import Gauge, start_http_server
 
     _PROM_AVAILABLE = True
 except Exception:
@@ -57,6 +61,16 @@ from src.obs.ai_telemetry import (  # noqa: E402
 )
 
 logger = logging.getLogger(__name__)
+
+# Drilldown-only (exporter-local) metric:
+# The canonical v2 freshness metric in src is only labeled by `source`.
+# For operator drilldown we additionally emit this bounded series keyed by run_id/component/source.
+if _PROM_AVAILABLE:
+    _LAST_EVENT_TS_BY_RUN_ID = Gauge(
+        "peaktrade_ai_last_event_timestamp_seconds_by_run_id",
+        "Last seen AI Live event timestamp (unix seconds) by run_id/component/source.",
+        ["run_id", "component", "source"],
+    )
 
 
 DEFAULT_COMPONENT = "execution_watch"
@@ -100,6 +114,27 @@ def _pick_label(ev: Dict[str, Any], *, key: str, env_fallback: Optional[str]) ->
     if isinstance(v, str) and v.strip():
         return v.strip()
     return env_fallback
+
+
+_RUN_ID_MAX_LEN = 32
+_RUN_ID_ALLOWED_RE = re.compile(r"[^a-zA-Z0-9._-]+")
+
+
+def _canon_run_id(v: str, *, fallback: str) -> str:
+    """
+    Guardrail: keep run_id low-cardinality and label-safe.
+
+    - trims whitespace
+    - replaces disallowed chars with "_"
+    - clamps length to _RUN_ID_MAX_LEN
+    - falls back to `fallback` if empty after normalization
+    """
+    s = (v or "").strip()
+    if not s:
+        return fallback
+    s = _RUN_ID_ALLOWED_RE.sub("_", s)
+    s = s[:_RUN_ID_MAX_LEN]
+    return s if s else fallback
 
 
 def _coerce_latency_s(ev: Dict[str, Any]) -> Optional[float]:
@@ -236,7 +271,8 @@ def _process_event(
             inc_events_dropped(source=ev_source, reason="unknown_schema")
             return
 
-        ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
+        raw_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
+        ev_run_id = _canon_run_id(raw_run_id, fallback=default_run_id)
         ev_component = (
             _pick_label(ev, key="component", env_fallback=default_component) or default_component
         )
@@ -256,6 +292,10 @@ def _process_event(
             return
         if ts_event_s is not None:
             set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+            if _PROM_AVAILABLE:
+                _LAST_EVENT_TS_BY_RUN_ID.labels(
+                    run_id=ev_run_id, component=ev_component, source=ev_source
+                ).set(ts_event_s)
 
         # Emit action (always finite enum)
         if action and action != "none":
@@ -278,7 +318,8 @@ def _process_event(
 
     # Real pipeline schema: BETA_EXEC_V1
     if str(ev.get("schema_version") or "") == "BETA_EXEC_V1":
-        ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
+        raw_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
+        ev_run_id = _canon_run_id(raw_run_id, fallback=default_run_id)
         ev_component = default_component  # pipeline is execution watch by default
         et = str(ev.get("event_type") or "").strip().upper()
         ts_event_s = _parse_ts_utc_to_unix(str(ev.get("ts_utc") or ""))
@@ -296,11 +337,19 @@ def _process_event(
         if et == "INTENT":
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_action(action="order_intent", component=ev_component, run_id=ev_run_id)
             return
         if et == "SUBMIT":
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_action(action="submit", component=ev_component, run_id=ev_run_id)
             record_decision(
                 decision="accept",
@@ -314,11 +363,19 @@ def _process_event(
         if et == "FILL":
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_action(action="fill", component=ev_component, run_id=ev_run_id)
             return
         if et == "REJECT":
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_action(action="order_request", component=ev_component, run_id=ev_run_id)
             record_decision(
                 decision="reject",
@@ -332,6 +389,10 @@ def _process_event(
         if et in {"VALIDATION_REJECT", "RISK_REJECT", "ERROR"}:
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_decision(
                 decision="reject",
                 reason=reason,
@@ -346,7 +407,8 @@ def _process_event(
 
     # ExecutionEventV0 schema (best-effort)
     if str(ev.get("schema") or "") == "execution_event_v0":
-        ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
+        raw_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
+        ev_run_id = _canon_run_id(raw_run_id, fallback=default_run_id)
         ev_component = default_component
         et = str(ev.get("event_type") or "").strip().lower()
         ts_event_s = _parse_ts_utc_to_unix(str(ev.get("ts") or ""))
@@ -359,11 +421,19 @@ def _process_event(
         if et == "created":
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_action(action="order_intent", component=ev_component, run_id=ev_run_id)
             return
         if et == "submitted":
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_action(action="submit", component=ev_component, run_id=ev_run_id)
             record_decision(
                 decision="accept",
@@ -376,16 +446,28 @@ def _process_event(
         if et == "filled":
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_action(action="fill", component=ev_component, run_id=ev_run_id)
             return
         if et == "canceled":
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_action(action="cancel", component=ev_component, run_id=ev_run_id)
             return
         if et == "failed":
             if ts_event_s is not None:
                 set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
+                if _PROM_AVAILABLE:
+                    _LAST_EVENT_TS_BY_RUN_ID.labels(
+                        run_id=ev_run_id, component=ev_component, source=ev_source
+                    ).set(ts_event_s)
             record_decision(
                 decision="reject",
                 reason="other",
@@ -399,7 +481,8 @@ def _process_event(
 
     # Legacy / fallback mapping (best-effort)
     inc_events_dropped(source=ev_source, reason="unknown_schema")
-    ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
+    raw_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
+    ev_run_id = _canon_run_id(raw_run_id, fallback=default_run_id)
     ev_component = (
         _pick_label(ev, key="component", env_fallback=default_component) or default_component
     )

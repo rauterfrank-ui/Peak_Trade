@@ -80,13 +80,18 @@ Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional
 
 Im Dashboard `peaktrade-execution-watch-overview` ist die Row **„AI Live“** als **Live-Control-Panel** gedacht:
 
-- Zusätzlich gibt es ganz oben die Row **„AI Live — Ops Summary“** (Ops Pack v1):
+- Zusätzlich gibt es darunter die Row **„AI Live — Ops Summary“** (Ops Pack v1):
   - Up/Freshness/ParseErrors/Drops/Latency (p95) + Active Alerts (firing)
+
+- **Drilldown v1 (run_id)**:
+  - Dashboard Variable: `run_id` (DS_LOCAL)
+  - Panels filtern via `run_id=~"$run_id"` (All → `.*`)
 
 - **AI Active (last 30s)**: Aktivitätsindikator (1 wenn in den letzten 30s eine AI-Decision passiert ist, sonst 0)
 - **Total decisions / min (1m)**: Gesamt-Durchsatz (pro Minute)
 - **Reject share (5m)**: Reject-Anteil als 0..1 (Grafana Unit `percentunit`)
 - **Last decision age (s)**: Alter der letzten Decision (sekundär)
+- **Recent activity (run_id)**: Last event age + decision counts (1m/5m) + last decision age (alle no-data gehärtet)
 - **Decisions / min (1m)**: Timeseries, gestapelt nach `decision` (accept/reject/noop)
 - **Top reject reasons (10m)**: Bar-Gauge der häufigsten Reject-Gründe
 - **Annotations**: Marker für Accept/Reject Events (letzte 1m), robust gegen „no data“ via `or on() vector(0)`
