@@ -44,7 +44,7 @@ Ziel: Eine kleine, **watch-only** AI-Event-Telemetrie, die in Grafana im Dashboa
 
 ### AI Live Drilldown v1 (run_id)
 
-Ziel: **Maximale Operator-Visibility** für einen konkreten AI-Lauf über `run_id`, ohne `src/**` anzufassen (watch-only).
+ Ziel: **Maximale Operator-Visibility** für einen konkreten AI-Lauf über `run_id`, ohne `src&#47;**` anzufassen (watch-only).
 
 - **Dashboard Variable**: `run_id` (Grafana Query Variable via `label_values(peaktrade_ai_decisions_total, run_id)`, Datasource **DS_LOCAL**)
 - **Filter Contract**: Panels nutzen `run_id=~"$run_id"` (All → `.*`)
