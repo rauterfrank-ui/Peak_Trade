@@ -14,13 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_prometheus_local_compose_mounts_rules_dir_deterministically() -> None:
-    p = (
-        PROJECT_ROOT
-        / "docs"
-        / "webui"
-        / "observability"
-        / "DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml"
-    )
+    p = PROJECT_ROOT / "docs" / "webui" / "observability" / "DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml"
     doc = yaml.safe_load(p.read_text(encoding="utf-8"))
     svc = (doc.get("services") or {}).get("prometheus-local") or {}
     vols = svc.get("volumes") or []
@@ -59,7 +53,9 @@ class _Handler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:  # noqa: N802
         if self.path == "/-/ready":
-            self._send(200, "Prometheus Server is Ready.\n", content_type="text/plain; charset=utf-8")
+            self._send(
+                200, "Prometheus Server is Ready.\n", content_type="text/plain; charset=utf-8"
+            )
             return
 
         if self.path.startswith("/api/v1/targets"):
@@ -71,7 +67,10 @@ class _Handler(BaseHTTPRequestHandler):
                         "data": {
                             "activeTargets": [
                                 {
-                                    "labels": {"job": "ai_live", "instance": "host.docker.internal:9110"},
+                                    "labels": {
+                                        "job": "ai_live",
+                                        "instance": "host.docker.internal:9110",
+                                    },
                                     "scrapeUrl": "http://host.docker.internal:9110/metrics",
                                     "health": "up",
                                     "lastError": "",
@@ -143,12 +142,18 @@ class _Handler(BaseHTTPRequestHandler):
                     "uid": "peaktrade-execution-watch-overview",
                     "title": "Peak_Trade — Execution Watch Overview",
                     "panels": [
-                        {"type": "row", "title": "AI Live — Ops Summary", "gridPos": {"x": 0, "y": 0, "w": 24, "h": 1}},
+                        {
+                            "type": "row",
+                            "title": "AI Live — Ops Summary",
+                            "gridPos": {"x": 0, "y": 0, "w": 24, "h": 1},
+                        },
                         {
                             "type": "stat",
                             "title": "Active alerts (firing)",
                             "gridPos": {"x": 20, "y": 1, "w": 4, "h": 4},
-                            "targets": [{"expr": "(count(ALERTS{alertstate=\"firing\"}) or on() vector(0))"}],
+                            "targets": [
+                                {"expr": '(count(ALERTS{alertstate="firing"}) or on() vector(0))'}
+                            ],
                         },
                     ],
                 }

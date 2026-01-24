@@ -120,15 +120,29 @@ Dashboard `Peak_Trade — Execution Watch Overview`.
 
 #### Prometheus Alerts (Regeln)
 
-- Rules file: `docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml`
+- Rules file:
+
+```text
+docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml
+```
+
 - Alert-Namen (stabil): `AI_LIVE_ExporterDown`, `AI_LIVE_StaleEvents`, `AI_LIVE_ParseErrorsSpike`, `AI_LIVE_DroppedEventsSpike`, `AI_LIVE_LatencyP95High` (+ optional `AI_LIVE_LatencyP99High`)
 
 ### AI Live Ops Determinism v1 (no manual copy)
 
 **Ziel:** Beim frischen Start des lokalen Observability-Stacks sind die AI Live Alert-Regeln **sofort geladen** (ohne manuelles Copy/Reload).
 
-**Wie:** `DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` mountet das Repo-Verzeichnis `docs/webui/observability/prometheus/rules/`
-nach `/etc/prometheus/rules` im Container. `PROMETHEUS_LOCAL_SCRAPE.yml` referenziert diese über `rule_files: /etc/prometheus/rules/*.yml`.
+**Wie:** Das lokale Prometheus-Compose mountet die Rules aus dem Repo in einen festen Container-Pfad; die Prometheus-Config referenziert diese über `rule_files`.
+
+```text
+Compose: docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml
+Host rules dir: docs/webui/observability/prometheus/rules
+Container rules dir: /etc/prometheus/rules
+Prom config: docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
+rule_files:
+  - /etc/prometheus/rules/*.yml
+  - /etc/prometheus/rules/*.yaml
+```
 
 Start (fresh):
 
