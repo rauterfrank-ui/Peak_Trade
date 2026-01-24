@@ -25,7 +25,7 @@ Zusätzlich dokumentiert es die Cleanup-Taxonomie:
 ### Pre-flight
 
 ```bash
-cd &#47;path&#47;to&#47;Peak_Trade
+cd <PATH_TO_PEAK_TRADE>
 pwd
 git rev-parse --show-toplevel
 git status -sb
@@ -38,7 +38,7 @@ git remote prune origin
 ### List cleanup tags
 
 ```bash
-git tag -l "cleanup&#47;*" | sort
+git tag -l "cleanup/*" | sort
 ```
 
 ### Find the cleanup logs
@@ -61,10 +61,10 @@ Beispiel-Pfade (lokal):
 
 ```bash
 # Create & switch to a restored branch from a tag
-git checkout -b <branch> cleanup&#47;gone_pending&#47;archive&#47;<branch__with__slashes>
+git checkout -b <branch> cleanup/gone_pending/archive/<branch__with__slashes>
 
 # Alternative: create branch without switching
-git branch <branch> cleanup&#47;gone_pending&#47;archive&#47;<branch__with__slashes>
+git branch <branch> cleanup/gone_pending/archive/<branch__with__slashes>
 ```
 
 ## Recovery: worktree branch from bundle
@@ -74,18 +74,18 @@ Wenn ein Worktree-Branch zusätzlich als `.bundle` gesichert wurde, kannst du ih
 ### Verify bundle
 
 ```bash
-git bundle verify .local_tmp&#47;worktree_pr__observability-compose-only_<STAMP>.bundle
+git bundle verify .local_tmp/worktree_pr__observability-compose-only_<STAMP>.bundle
 ```
 
 ### Restore the branch ref from bundle
 
 ```bash
 # Fetch the branch ref from bundle into a local branch
-git fetch .local_tmp&#47;worktree_pr__observability-compose-only_<STAMP>.bundle \
-  "refs&#47;heads&#47;pr&#47;observability-compose-only:refs&#47;heads&#47;pr&#47;observability-compose-only"
+git fetch .local_tmp/worktree_pr__observability-compose-only_<STAMP>.bundle \
+  "refs/heads/pr/observability-compose-only:refs/heads/pr/observability-compose-only"
 
 # Then recreate a worktree (optional)
-git worktree add &#47;path&#47;to&#47;Peak_Trade&#47;_worktrees&#47;compose_pr pr&#47;observability-compose-only
+git worktree add <PATH_TO_PEAK_TRADE>/_worktrees/compose_pr pr/observability-compose-only
 ```
 
 ## Noise reduction: remove `: gone` without deleting a branch
@@ -103,7 +103,7 @@ Hinweis: Tags sind standardmäßig **lokal**. Wenn du sie als Remote-Sicherungsa
 
 ```bash
 # Push a single cleanup tag
-git push origin "refs&#47;tags&#47;cleanup&#47;gone_pending&#47;keep&#47;<name>"
+git push origin "refs/tags/cleanup/gone_pending/keep/<name>"
 
 # Or push all cleanup tags (caution; review first)
 git push origin --tags
@@ -111,4 +111,4 @@ git push origin --tags
 
 ## Risk
 
-LOW — docs-only Runbook. Kein Einfluss auf `src&#47;**` Execution Paths.
+LOW — docs-only Runbook. Kein Einfluss auf produktive Execution Paths.
