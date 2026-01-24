@@ -67,6 +67,7 @@ Runbooks for CI operations and general operational procedures:
 - [PHASE4E_STABILITY_MONITORING_CHECKLIST.md](PHASE4E_STABILITY_MONITORING_CHECKLIST.md) — Phase 4E stability monitoring checklist
 - [rebase_cleanup_workflow.md](rebase_cleanup_workflow.md) — Rebase cleanup workflow
 - [Stale Branch Hygiene (Local "gone")](RUNBOOK_STALE_BRANCH_HYGIENE_LOCAL_GONE_CURSOR_MULTI_AGENT.md) — Safe cleanup of local branches with deleted upstream refs (DRY-RUN, recovery via reflog, protected branches)
+- [RUNBOOK_BRANCH_CLEANUP_RECOVERY.md](RUNBOOK_BRANCH_CLEANUP_RECOVERY.md) — Branch cleanup recovery (tags + bundles)
 - [Commit Salvage Workflow](RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md) ⭐ — Salvaging commits from wrong branch (feature branch → PR → merge workflow)
 - [Pointer Pattern Operations](RUNBOOK_POINTER_PATTERN_OPERATIONS.md) — Operator runbook for root canonical runbooks integration (pointer pattern maintenance, gates compliance)
 - [Pointer Pattern Quarterly Review](RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md) — Quarterly drift control and orphan prevention for pointer pattern architecture

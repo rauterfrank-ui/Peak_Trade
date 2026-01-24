@@ -80,6 +80,7 @@
 - [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) – 12+ runbooks for live operations and incident handling
 - [Runbooks Landscape 2026-Ready](./runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md) – Comprehensive runbook catalog and quick-reference matrix
 - [Ops README](./ops/README.md) – Complete ops tools and documentation index
+- [RUNBOOK_BRANCH_CLEANUP_RECOVERY.md](./ops/runbooks/RUNBOOK_BRANCH_CLEANUP_RECOVERY.md) – Branch cleanup recovery (tags + bundles)
 - [Execution Watch Dashboard v0.2 Runbook](./ops/runbooks/RUNBOOK_EXECUTION_WATCH_DASHBOARD.md) – Start/verify the read-only execution watch dashboard
 - [Phase 7 Finish/Closeout Runbook](./ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md) – Workflow docs closeout + repo hygiene inventory (snapshot-based)
 - [Finish Plan (MVP→v1.0)](./ops/roadmap/FINISH_PLAN.md)
