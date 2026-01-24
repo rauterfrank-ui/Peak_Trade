@@ -21,6 +21,13 @@ from .otel import (
     OTelNotAvailableError,
 )
 
+from .ai_telemetry import (
+    get_registry as get_ai_telemetry_registry,
+    record_action,
+    record_decision,
+    set_heartbeat,
+)
+
 __all__ = [
     "is_otel_available",
     "init_otel",
@@ -28,4 +35,8 @@ __all__ = [
     "instrument_lake",
     "OTelHandle",
     "OTelNotAvailableError",
+    "get_ai_telemetry_registry",
+    "record_action",
+    "record_decision",
+    "set_heartbeat",
 ]
