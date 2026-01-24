@@ -76,6 +76,22 @@ Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional
 - **Execution Watch Details**: `peaktrade-execution-watch-details`
   - Drilldown aus „Execution Watch req/s (by endpoint, status)“ mit `endpoint&#47;status` Kontext
 
+### Execution Watch Overview: „AI Live“ (Control Panel)
+
+Im Dashboard `peaktrade-execution-watch-overview` ist die Row **„AI Live“** als **Live-Control-Panel** gedacht:
+
+- **AI Active (last 30s)**: Aktivitätsindikator (1 wenn in den letzten 30s eine AI-Decision passiert ist, sonst 0)
+- **Total decisions / min (1m)**: Gesamt-Durchsatz (pro Minute)
+- **Reject share (5m)**: Reject-Anteil als 0..1 (Grafana Unit `percentunit`)
+- **Last decision age (s)**: Alter der letzten Decision (sekundär)
+- **Decisions / min (1m)**: Timeseries, gestapelt nach `decision` (accept/reject/noop)
+- **Top reject reasons (10m)**: Bar-Gauge der häufigsten Reject-Gründe
+- **Annotations**: Marker für Accept/Reject Events (letzte 1m), robust gegen „no data“ via `or on() vector(0)`
+
+**Validierung (schnell):**
+- In Grafana → Dashboard öffnen → Time range z.B. „Last 30m“
+- Prüfen, dass bei „idle/no traffic“ keine NaNs/Inf auftauchen (Nennersicherung via `clamp_min(..., 1e-9)`), und „AI Active“ sauber 0 zeigt.
+
 ## Compare Pack v0.1 (stacked auf PR #950)
 
 - **Compare Overview (Main vs Shadow)**: `peaktrade-main-vs-shadow-overview`
