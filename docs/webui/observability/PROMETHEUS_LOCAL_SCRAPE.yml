@@ -2,6 +2,14 @@ global:
   scrape_interval: 5s
   evaluation_interval: 5s
 
+# Alerting / Recording rules (Ops Pack v1)
+# Note: In the default local compose, only this prometheus.yml is mounted.
+# To activate rules, mount/copy the rules directory into the container path:
+#   /etc/prometheus/rules
+rule_files:
+  - /etc/prometheus/rules/*.yml
+  - /etc/prometheus/rules/*.yaml
+
 scrape_configs:
   # Deterministic demo target so Grafana panels always have data locally.
   # Exporter runs on host (started by scripts/obs/shadow_mvs_local_up.sh).
