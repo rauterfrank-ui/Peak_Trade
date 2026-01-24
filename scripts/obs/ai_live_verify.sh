@@ -8,6 +8,25 @@ AI_LIVE_PORT="${AI_LIVE_PORT:-9110}"
 EXPORTER_URL="${EXPORTER_URL:-http://127.0.0.1:${AI_LIVE_PORT}/metrics}"
 JOB_NAME="${JOB_NAME:-ai_live}"
 
+resolve_py_cmd() {
+  # Deterministic Python environment contract:
+  # - If $PY_CMD is set, use it.
+  # - Else prefer uv-managed env (common in repo ops scripts).
+  # - Else fall back to system python3.
+  if [[ -n "${PY_CMD:-}" ]]; then
+    return 0
+  fi
+  if command -v uv >/dev/null 2>&1; then
+    PY_CMD="uv run python"
+  else
+    PY_CMD="python3"
+  fi
+}
+
+resolve_py_cmd
+read -r -a PY_ARR <<<"${PY_CMD}"
+echo "PY_CMD=${PY_CMD}"
+
 pass() {
   echo "PASS|$1|$2"
 }
@@ -106,7 +125,7 @@ attempts_used=0
 for _ in $(seq 1 "$TARGETS_MAX_ATTEMPTS"); do
   attempts_used=$((attempts_used + 1))
   targets_json="$(curl -fsS "$PROM_URL/api/v1/targets" 2>/dev/null || true)"
-  if python3 -c '
+  if "${PY_ARR[@]}" -c '
 import json, os, sys
 job = os.environ.get("JOB_NAME","ai_live")
 doc = json.loads(sys.stdin.read() or "{}")
@@ -137,7 +156,7 @@ prom_query_non_empty_once() {
   if ! json="$(prom_query_json "$q")"; then
     return 1
   fi
-  printf '%s' "$json" | python3 -c '
+  printf '%s' "$json" | "${PY_ARR[@]}" -c '
 import json, sys
 doc = json.load(sys.stdin)
 if doc.get("status") != "success":
