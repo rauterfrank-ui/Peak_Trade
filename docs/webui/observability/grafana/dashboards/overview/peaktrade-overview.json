@@ -4,12 +4,44 @@
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 3,
-  "refresh": "5s",
+  "refresh": "10s",
   "tags": [
     "peak_trade",
     "observability"
   ],
   "links": [
+    {
+      "type": "link",
+      "title": "Operator Home",
+      "url": "/d/peaktrade-operator-home",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "System Health (Operator)",
+      "url": "/d/peaktrade-system-health",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Operator Summary",
+      "url": "/d/peaktrade-operator-summary",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Contract Details",
+      "url": "/d/peaktrade-contract-details",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
     {
       "type": "link",
       "title": "Shadow Pipeline (MVS)",
@@ -36,7 +68,8 @@
         "query": "prometheus",
         "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
       },
       {
         "type": "datasource",
@@ -45,7 +78,18 @@
         "query": "prometheus",
         "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_SHADOW",
+        "label": "Prometheus (shadow)",
+        "query": "prometheus",
+        "current": { "text": "prometheus-shadow", "value": "peaktrade-prometheus-shadow" },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
       }
     ]
   },

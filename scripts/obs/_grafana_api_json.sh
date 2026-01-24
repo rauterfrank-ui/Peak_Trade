@@ -1,43 +1,44 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Robust Prometheus /api/v1/query helper.
+# Robust Grafana API JSON helper.
 #
 # Supports BOTH:
-# A) flags: --base URL --query PROMQL [--out PATH] [--retries N] [--timeout S]
-# B) positional alias: _prom_query_json.sh "<base>" "<query>" [--out PATH] [--retries N] [--timeout S]
+# A) flags: --base URL --path /api/health [--auth user:pass] [--out PATH] [--retries N] [--timeout S]
+# B) positional alias: _grafana_api_json.sh "<base>" "<path>" [--auth user:pass] [--out PATH] [--retries N] [--timeout S]
 #
 # Output:
 # - stdout: JSON body (only) on success
 # - stderr: evidence lines (retries, header/body snippets), plus:
-#   PROM_QUERY_OK bytes=... content_type=application/json
-#
+#   GRAFANA_API_OK bytes=... content_type=application/json http_code=200
+
 BASE=""
-QUERY=""
+PATH_QS=""
+AUTH=""
 OUT=""
-RETRIES="5"
+RETRIES="8"
 TIMEOUT_S=""
 
 usage() {
-  echo "usage: $0 --base <http://127.0.0.1:9092> --query <promql> [--out <path>] [--retries N] [--timeout S]" >&2
-  echo "   or: $0 <base_url> <promql> [--out <path>] [--retries N] [--timeout S]" >&2
+  echo "usage: $0 --base <http://127.0.0.1:3000> --path </api/health> [--auth <admin:admin>] [--out <path>] [--retries N] [--timeout S]" >&2
+  echo "   or: $0 <base_url> <path> [--auth <admin:admin>] [--out <path>] [--retries N] [--timeout S]" >&2
 }
 
-# Positional alias mode: first two args are base/query, then optional flags.
 if [ $# -ge 1 ] && [ "${1#--}" = "$1" ]; then
   if [ $# -lt 2 ]; then
     usage
     exit 2
   fi
   BASE="$1"
-  QUERY="$2"
+  PATH_QS="$2"
   shift 2
 fi
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --base) BASE="${2:-}"; shift 2;;
-    --query) QUERY="${2:-}"; shift 2;;
+    --path) PATH_QS="${2:-}"; shift 2;;
+    --auth) AUTH="${2:-}"; shift 2;;
     --out) OUT="${2:-}"; shift 2;;
     --retries) RETRIES="${2:-}"; shift 2;;
     --timeout) TIMEOUT_S="${2:-}"; shift 2;;
@@ -46,17 +47,17 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-if [ -z "${BASE:-}" ] || [ -z "${QUERY:-}" ]; then
+if [ -z "${BASE:-}" ] || [ -z "${PATH_QS:-}" ]; then
   usage
   exit 2
 fi
 
-tmp_hdr="$(mktemp -t pt_prom_hdr.XXXXXX)"
-tmp_body="$(mktemp -t pt_prom_body.XXXXXX)"
+tmp_hdr="$(mktemp -t pt_grafana_hdr.XXXXXX)"
+tmp_body="$(mktemp -t pt_grafana_body.XXXXXX)"
 cleanup() { rm -f "$tmp_hdr" "$tmp_body"; }
 trap cleanup EXIT
 
-base_query_url="${BASE%/}/api/v1/query"
+base_url="${BASE%/}${PATH_QS}"
 
 ok="NO"
 i=1
@@ -66,9 +67,10 @@ while [ "$i" -le "$RETRIES" ]; do
   http_code="$(
     curl -sS -L --compressed \
       -D "$tmp_hdr" -o "$tmp_body" -w "%{http_code}" \
+      ${AUTH:+-u "$AUTH"} \
       ${TIMEOUT_S:+--connect-timeout "$TIMEOUT_S"} \
       ${TIMEOUT_S:+--max-time "$TIMEOUT_S"} \
-      -G "$base_query_url" --data-urlencode "query=$QUERY" || true
+      "$base_url" || true
   )"
 
   ctype="$(grep -i "^content-type:" "$tmp_hdr" | tail -n 1 | tr -d "\r" | awk "{print \$2}" || true)"
@@ -79,7 +81,7 @@ while [ "$i" -le "$RETRIES" ]; do
     break
   fi
 
-  echo "PROM_QUERY_RETRY attempt=$i http_code=$http_code content_type=${ctype:-NONE} body_bytes=${bytes:-0}" >&2
+  echo "GRAFANA_API_RETRY attempt=$i http_code=$http_code content_type=${ctype:-NONE} body_bytes=${bytes:-0} url=$base_url" >&2
   echo "--- hdr (first 20) ---" >&2; sed -n "1,20p" "$tmp_hdr" >&2 || true
   echo "--- body (first 200 bytes) ---" >&2
   python3 - << PY >&2
@@ -93,12 +95,11 @@ PY
 done
 
 if [ "$ok" != "YES" ]; then
-  # Avoid printing the full query (can be long); keep deterministic.
-  echo "PROM_QUERY_FAIL retries=$RETRIES url=$base_query_url" >&2
+  echo "GRAFANA_API_FAIL retries=$RETRIES url=$base_url" >&2
   exit 1
 fi
 
-echo "PROM_QUERY_OK bytes=$bytes content_type=${ctype:-NONE}" >&2
+echo "GRAFANA_API_OK bytes=$bytes content_type=${ctype:-NONE} http_code=$http_code" >&2
 
 if [ -n "${OUT:-}" ]; then
   mkdir -p "$(dirname "$OUT")" 2>/dev/null || true
