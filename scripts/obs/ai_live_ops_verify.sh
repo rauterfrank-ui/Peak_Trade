@@ -16,6 +16,25 @@ EXPORTER_URL="${EXPORTER_URL:-http://127.0.0.1:${AI_LIVE_PORT}/metrics}"
 
 DASH_UID="${DASH_UID:-peaktrade-execution-watch-overview}"
 
+# Deterministic Python environment contract:
+# - If $PY_CMD is set, use it.
+# - Else prefer uv-managed env (common in repo ops scripts).
+# - Else fall back to system python3.
+resolve_py_cmd() {
+  if [[ -n "${PY_CMD:-}" ]]; then
+    return 0
+  fi
+  if command -v uv >/dev/null 2>&1; then
+    PY_CMD="uv run python"
+  else
+    PY_CMD="python3"
+  fi
+}
+
+resolve_py_cmd
+read -r -a PY_ARR <<<"${PY_CMD}"
+echo "PY_CMD=${PY_CMD}"
+
 # Testing / CI helpers
 SKIP_PORT_CHECK="${SKIP_PORT_CHECK:-0}"
 
@@ -60,7 +79,7 @@ prom_query_json_to_file() {
 tcp_connect_ok() {
   local host="$1"
   local port="$2"
-  python3 - <<'PY' "$host" "$port" >/dev/null 2>&1
+  "${PY_ARR[@]}" - "$host" "$port" >/dev/null 2>&1 <<'PY'
 import socket, sys
 host = sys.argv[1]
 port = int(sys.argv[2])
@@ -127,7 +146,7 @@ attempts_used=0
 for _ in $(seq 1 "$TARGETS_MAX_ATTEMPTS"); do
   attempts_used=$((attempts_used + 1))
   targets_json="$(curl -fsS "$PROM_URL/api/v1/targets" 2>/dev/null || true)"
-  if python3 -c '
+  if "${PY_ARR[@]}" -c '
 import json, sys
 doc=json.loads(sys.stdin.read() or "{}")
 active=(doc.get("data") or {}).get("activeTargets") or []
@@ -155,7 +174,7 @@ echo "==> PromQL: up{job=\"ai_live\"} should be 1"
 OUT_UP="/tmp/pt_ai_live_ops_verify_up.json"
 rm -f "$OUT_UP"
 prom_query_json_to_file 'max(up{job="ai_live"})' "$OUT_UP"
-up_value="$(python3 -c '
+up_value="$("${PY_ARR[@]}" -c '
 import json
 from pathlib import Path
 doc=json.loads(Path("/tmp/pt_ai_live_ops_verify_up.json").read_text(encoding="utf-8"))
@@ -171,7 +190,7 @@ except Exception:
 print(x)
 ')" || true
 info "prometheus.up" "max=${up_value}"
-if python3 - "$up_value" >/dev/null 2>&1 <<'PY'
+if "${PY_ARR[@]}" - "$up_value" >/dev/null 2>&1 <<'PY'
 import math, sys
 x=float(sys.argv[1])
 raise SystemExit(0 if (not math.isnan(x) and x >= 1.0) else 1)
@@ -185,7 +204,7 @@ fi
 echo "==> Rules: AI Live Ops Pack v1 loaded + alert names present"
 rules_json="$(curl -fsS "$PROM_URL/api/v1/rules" 2>/dev/null || true)"
 rules_check_out="$(
-python3 -c '
+"${PY_ARR[@]}" -c '
 import json, sys
 doc=json.loads(sys.stdin.read() or "{}")
 groups=(doc.get("data") or {}).get("groups") or []
@@ -232,7 +251,7 @@ fi
 
 echo "==> Alerts: counts by state (top 10)"
 alerts_json="$(curl -fsS "$PROM_URL/api/v1/alerts" 2>/dev/null || true)"
-python3 -c '
+"${PY_ARR[@]}" -c '
 import json, sys
 doc=json.loads(sys.stdin.read() or "{}")
 alerts=(doc.get("data") or {}).get("alerts") or []

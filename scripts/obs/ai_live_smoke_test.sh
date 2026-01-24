@@ -15,11 +15,24 @@ EXPORTER_PORT="${PEAK_TRADE_AI_EXPORTER_PORT:-$AI_LIVE_PORT}"
 PROM_URL="${PROM_URL:-http://127.0.0.1:9092}"
 JOB_NAME="${JOB_NAME:-ai_live}"
 
-if command -v uv >/dev/null 2>&1; then
-  PYTHON_CMD=(uv run python)
-else
-  PYTHON_CMD=(python3)
-fi
+resolve_py_cmd() {
+  # Deterministic Python environment contract:
+  # - If $PY_CMD is set, use it.
+  # - Else prefer uv-managed env (ensures prometheus_client available for exporter).
+  # - Else fall back to system python3.
+  if [[ -n "${PY_CMD:-}" ]]; then
+    return 0
+  fi
+  if command -v uv >/dev/null 2>&1; then
+    PY_CMD="uv run python"
+  else
+    PY_CMD="python3"
+  fi
+}
+
+resolve_py_cmd
+read -r -a PY_ARR <<<"${PY_CMD}"
+echo "PY_CMD=${PY_CMD}"
 
 mkdir -p "$RUNTIME_DIR"
 rm -f "$JSONL_PATH"
@@ -42,7 +55,7 @@ port_is_in_use() {
     lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1
     return $?
   fi
-  python3 - <<'PY' "$port"
+  "${PY_ARR[@]}" - "$port" <<'PY'
 import socket, sys
 port = int(sys.argv[1])
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -76,7 +89,7 @@ start_exporter() {
   PEAK_TRADE_AI_RUN_ID="demo" \
   PEAK_TRADE_AI_COMPONENT="execution_watch" \
   PEAK_TRADE_AI_EXPORTER_PORT="$port" \
-  "${PYTHON_CMD[@]}" scripts/obs/ai_live_exporter.py >"$log_path" 2>&1 &
+  "${PY_ARR[@]}" scripts/obs/ai_live_exporter.py >"$log_path" 2>&1 &
   EXPORTER_PID="$!"
   sleep 0.2
   if kill -0 "$EXPORTER_PID" >/dev/null 2>&1; then
@@ -145,7 +158,7 @@ before="$(sum_decisions)"
 echo "==> decisions_total (before) = $before"
 
 echo "==> Emit sample events (<=10s visible)"
-"${PYTHON_CMD[@]}" scripts/obs/emit_ai_live_sample_events.py --out "$JSONL_PATH" --n 50 --interval-ms 200 >/dev/null
+"${PY_ARR[@]}" scripts/obs/emit_ai_live_sample_events.py --out "$JSONL_PATH" --n 50 --interval-ms 200 >/dev/null
 
 sleep 1
 after="$(sum_decisions)"

@@ -126,6 +126,13 @@ lsof -nP -iTCP:9110 -sTCP:LISTEN
 
 ### Start (Exporter lokal)
 
+**Python Env Contract (deterministisch):**
+- Der AI Live Exporter benötigt `prometheus_client`.
+- Die Ops-Skripte (`ai_live_smoke_test.sh`, `ai_live_verify.sh`, `ai_live_ops_verify.sh`) wählen standardmäßig:
+  - `uv run python` (wenn `uv` verfügbar ist)
+  - sonst `python3`
+- Override (optional): `PY_CMD="uv run python"` oder `PY_CMD="python3"` (die Skripte loggen `PY_CMD=<...>`).
+
 1) Events-Datei wählen (JSONL, append-only). Beispiel:
 
 ```bash
@@ -134,13 +141,13 @@ export PEAK_TRADE_AI_EVENTS_JSONL="logs/ai/ai_events.jsonl"
 export PEAK_TRADE_AI_RUN_ID="demo"
 export PEAK_TRADE_AI_COMPONENT="execution_watch"
 export PEAK_TRADE_AI_EXPORTER_PORT="9110"
-uv run python scripts/obs/ai_live_exporter.py
+uv run python scripts&#47;obs&#47;ai_live_exporter.py
 ```
 
 2) Beispiel-Events schreiben (separates Terminal):
 
 ```bash
-python3 scripts/obs/emit_ai_live_sample_events.py --out "logs/ai/ai_events.jsonl" --n 50 --interval-ms 200
+uv run python scripts&#47;obs&#47;emit_ai_live_sample_events.py --out "logs/ai/ai_events.jsonl" --n 50 --interval-ms 200
 ```
 
 ### Prometheus (Scrape)
