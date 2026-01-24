@@ -170,6 +170,19 @@ chmod +x scripts/obs/ai_live_verify.sh
 bash scripts/obs/ai_live_verify.sh
 ```
 
+### Canonical Verify (Ops Pack v1, "one command" proof)
+
+Der kanonische Snapshot-Only Proof ist:
+
+```bash
+chmod +x scripts/obs/ai_live_ops_verify.sh
+bash scripts/obs/ai_live_ops_verify.sh
+```
+
+- **Evidence (file-backed):** schreibt ein OUT-Directory unter `.local_tmp&#47;ai_live_ops_verify_<timestamp>` (oder `VERIFY_OUT_DIR`/`OUT_DIR` Override).
+- **Summary:** `AI_LIVE_OPS_SUMMARY.txt`
+- **Contract-TSV:** `PROM_REQUIRED_SERIES.tsv` (PromQL + result_count + scalar values)
+
 ### Smoke Test (Exporter + Emitter + Metrics Delta)
 
 ```bash
@@ -243,9 +256,20 @@ bash scripts/obs/grafana_local_up.sh
 Verify (single-shot, ops-pack ready):
 
 ```bash
-# Erwartung: targets ai_live UP, rules geladen, AI_LIVE_* alerts sichtbar, Dashboard ops row invariant ok
+# Erwartung: targets ai_live UP, Ops Pack metrics contract PASS (run_id ready), file-backed evidence written
 bash scripts/obs/ai_live_ops_verify.sh
 ```
+
+#### Run-ID Variable (Quelle / Determinismus)
+
+Grafana-Drilldowns nutzen `run_id` als Variable (typisch via `label_values(peaktrade_ai_decisions_total, run_id)`).
+
+**Quelle:** `run_id` ist ein **Prometheus Label** auf den AI Live canonical metrics (z.B. `peaktrade_ai_decisions_total{...,run_id}`).
+Der Exporter setzt `run_id` pro Event aus:
+- Event-Feld `run_id` (falls vorhanden), sonst
+- Default aus Env `PEAK_TRADE_AI_RUN_ID`
+
+**Determinismus / Guardrail:** `run_id` wird kanonisiert (label-safe, bounded) und ist explizit als **low-cardinality** Operator-Drilldown gedacht.
 
 #### Alert Meaning + Sofortmaßnahmen
 
