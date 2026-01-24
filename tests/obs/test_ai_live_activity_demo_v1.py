@@ -33,7 +33,9 @@ class _PromHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:  # noqa: N802
         if self.path == "/-/ready":
-            self._send(200, "Prometheus Server is Ready.\n", content_type="text/plain; charset=utf-8")
+            self._send(
+                200, "Prometheus Server is Ready.\n", content_type="text/plain; charset=utf-8"
+            )
             return
 
         if self.path.startswith("/api/v1/query"):
@@ -86,12 +88,15 @@ class _PromHandler(BaseHTTPRequestHandler):
             if q == "peaktrade_ai_actions_total":
                 payload = {
                     "status": "success",
-                    "data": {"resultType": "vector", "result": [{"metric": {"run_id": "demo"}, "value": [0, "1"]}]},
+                    "data": {
+                        "resultType": "vector",
+                        "result": [{"metric": {"run_id": "demo"}, "value": [0, "1"]}],
+                    },
                 }
                 self._send(200, json.dumps(payload))
                 return
 
-            if q == 'count(count by (run_id) (peaktrade_ai_decisions_total))':
+            if q == "count(count by (run_id) (peaktrade_ai_decisions_total))":
                 payload = {
                     "status": "success",
                     "data": {"resultType": "vector", "result": [{"metric": {}, "value": [0, "1"]}]},
@@ -102,7 +107,10 @@ class _PromHandler(BaseHTTPRequestHandler):
             if q == "peaktrade_ai_last_event_timestamp_seconds_by_run_id":
                 payload = {
                     "status": "success",
-                    "data": {"resultType": "vector", "result": [{"metric": {"run_id": "demo"}, "value": [0, "1"]}]},
+                    "data": {
+                        "resultType": "vector",
+                        "result": [{"metric": {"run_id": "demo"}, "value": [0, "1"]}],
+                    },
                 }
                 self._send(200, json.dumps(payload))
                 return
@@ -119,7 +127,9 @@ class _ExporterHandler(BaseHTTPRequestHandler):
     def log_message(self, fmt: str, *args: object) -> None:
         return
 
-    def _send(self, code: int, body: str, *, content_type: str = "text/plain; charset=utf-8") -> None:
+    def _send(
+        self, code: int, body: str, *, content_type: str = "text/plain; charset=utf-8"
+    ) -> None:
         b = body.encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", content_type)
@@ -169,7 +179,9 @@ def test_ai_live_activity_demo_produces_file_backed_proof(tmp_path: Path) -> Non
         demo_env["SKIP_EXPORTER_START"] = "1"
         demo_env["SKIP_PORT_CHECK"] = "1"
 
-        res = subprocess.run(["bash", str(demo)], env=demo_env, capture_output=True, text=True, timeout=30)
+        res = subprocess.run(
+            ["bash", str(demo)], env=demo_env, capture_output=True, text=True, timeout=30
+        )
         assert res.returncode == 0, f"stdout:\n{res.stdout}\n\nstderr:\n{res.stderr}"
 
         summary = (out_dir / "AI_ACTIVITY_DEMO_SUMMARY.txt").read_text(encoding="utf-8")
@@ -177,7 +189,7 @@ def test_ai_live_activity_demo_produces_file_backed_proof(tmp_path: Path) -> Non
 
         # File-backed proof: exporter snapshot contains accept+reject for run_id=demo.
         metrics = (out_dir / "exporter_metrics.txt").read_text(encoding="utf-8", errors="replace")
-        assert 'peaktrade_ai_decisions_total' in metrics
+        assert "peaktrade_ai_decisions_total" in metrics
         assert 'decision="accept"' in metrics and 'run_id="demo"' in metrics
         assert 'decision="reject"' in metrics and 'run_id="demo"' in metrics
 

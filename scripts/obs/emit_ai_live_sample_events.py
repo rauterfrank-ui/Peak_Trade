@@ -58,7 +58,9 @@ def main() -> int:
     p.add_argument("--n", type=int, default=50, help="Number of events to emit.")
     p.add_argument("--interval-ms", type=int, default=200, help="Interval between events in ms.")
     p.add_argument("--run-id", default="demo", help="Run ID label (default: demo).")
-    p.add_argument("--component", default="execution_watch", help="Component label (default: execution_watch).")
+    p.add_argument(
+        "--component", default="execution_watch", help="Component label (default: execution_watch)."
+    )
     args = p.parse_args()
 
     out = Path(args.out)
