@@ -14,10 +14,10 @@ Operator needs per-run visibility (“wie arbeitet die AI live?”) statt nur gl
 
 ## Verification
 - CI: required checks PASS (inkl. docs-token-policy-gate).
-- Local: `pytest -q tests/obs` PASS (per PR).
+- Local: `pytest -q tests&#47;obs` PASS (per PR).
 
 ## Risk
-LOW–MED — watch-only observability (docs/**, scripts/**, tests/**). No `src/**` changes. Cardinality risk mitigated via `run_id` guardrails + documented constraints.
+LOW–MED — watch-only observability (docs/**, scripts/**, tests/**). No `src&#47;**` changes. Cardinality risk mitigated via `run_id` guardrails + documented constraints.
 
 ## Operator How-To
 1. Start Prometheus/Grafana (local stack) und AI Live exporter auf Port 9110 (Port Contract v1).
