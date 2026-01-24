@@ -96,9 +96,9 @@ def test_ai_live_ux_v2_promql_contracts_run_scoped_and_hardened() -> None:
             assert 'run_id=~"$run_id"' in e, f"missing run_id scope in {title!r}: {e!r}"
 
             # hardening contract: must not go empty on no-data
-            assert (
-                "or on() vector(0)" in e or "label_replace(vector(0)" in e
-            ), f"missing no-data hardening in {title!r}: {e!r}"
+            assert "or on() vector(0)" in e or "label_replace(vector(0)" in e, (
+                f"missing no-data hardening in {title!r}: {e!r}"
+            )
 
             # safe divide heuristic
             if "/" in e:
