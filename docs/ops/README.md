@@ -1466,6 +1466,17 @@ Operational artifacts for audit evidence tracking and risk management. These are
 
 ---
 
+## 📊 Audit Artefakte (v0)
+
+Operational artifacts for audit evidence tracking and risk management. These are **process artifacts** for operational traceability—NOT compliance claims.
+
+- **[Evidence Index](EVIDENCE_INDEX.md)** — Track audit evidence items (CI runs, PR merges, test outputs, drill sessions, incident postmortems)
+- **[Risk Register](RISK_REGISTER.md)** — Operational risk register for docs/ops governance (policy drift, placeholder consistency, documentation interpretation)
+
+**Scope:** v0 living documents for ops nachvollziehbarkeit (traceability), no external audit/compliance claims.
+
+---
+
 ## 📋 Merge Logs
 
 ### Workflow
