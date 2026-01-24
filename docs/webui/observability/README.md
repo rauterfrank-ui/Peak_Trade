@@ -42,6 +42,22 @@ Relevante Compose-Files:
 Ziel: Eine kleine, **watch-only** AI-Event-Telemetrie, die in Grafana im Dashboard
 „Execution Watch Overview“ als Row „AI Live“ sichtbar ist.
 
+### AI Live Port Contract v1 (lokal, deterministisch)
+
+- **Port**: Der AI Live Exporter läuft lokal **immer auf `:9110`**.
+- **Warum**: `prometheus-local` scrapt den Job **`ai_live`** fest auf `host.docker.internal:9110`.
+- **Wichtig**: Die Smoke-/Verify-Skripte **fallen nicht** auf andere Ports zurück. Ein stiller Fallback würde zu
+  „leeren“ Prometheus/Grafana Panels führen, obwohl der Exporter läuft.
+
+Wenn `:9110` belegt ist:
+
+```bash
+lsof -nP -iTCP:9110 -sTCP:LISTEN
+```
+
+- Stoppe den Prozess, der `:9110` belegt (empfohlen) und starte dann den Exporter erneut.
+- Nicht empfohlen: Exporter auf anderem Port laufen lassen **und** Prometheus-Scrape-Config explizit anpassen.
+
 ### Start (Exporter lokal)
 
 1) Events-Datei wählen (JSONL, append-only). Beispiel:

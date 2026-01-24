@@ -554,6 +554,14 @@ class AILiveExporter:
             logger.error("failed to start /metrics server: %s", e)
             return 1
 
+        if self.port == 9110:
+            logger.info("serving /metrics on :%s (Prometheus-local expects job=ai_live at :9110)", self.port)
+        else:
+            logger.warning(
+                "serving /metrics on :%s (Prometheus-local expects :9110; update scrape target if you override)",
+                self.port,
+            )
+
         warned_missing = False
         empty_reads = 0
         warn = _RateLimitedWarn(min_interval_s=60.0)
