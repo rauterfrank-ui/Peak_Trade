@@ -46,7 +46,15 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from src.obs.ai_telemetry import record_action, record_decision, set_heartbeat  # noqa: E402
+from src.obs.ai_telemetry import (  # noqa: E402
+    inc_events_dropped,
+    inc_events_parse_error,
+    observe_decision_latency_ms,
+    record_action,
+    record_decision,
+    set_heartbeat,
+    set_last_event_timestamp_seconds,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -163,6 +171,54 @@ def _map_beta_reason(reason_code: Optional[str], *, fallback: str) -> str:
     return "other"
 
 
+def _determine_source(ev: Dict[str, Any]) -> str:
+    """
+    Finite source taxonomy:
+    {"sample_v1","beta_exec_v1","exec_event_v0","unknown"}
+    """
+    if "v" in ev:
+        return "sample_v1"
+    if str(ev.get("schema_version") or "") == "BETA_EXEC_V1":
+        return "beta_exec_v1"
+    if str(ev.get("schema") or "") == "execution_event_v0":
+        return "exec_event_v0"
+    return "unknown"
+
+
+def _process_line(
+    ln: str,
+    *,
+    default_component: str,
+    default_run_id: str,
+    warn: _RateLimitedWarn,
+) -> None:
+    try:
+        ev = json.loads(ln)
+    except Exception:
+        warn.warn("ai_live.bad_json", "ai_live_exporter: bad JSON line (skipped)")
+        # Source unknown when JSON can't be parsed.
+        inc_events_parse_error(source="unknown")
+        inc_events_dropped(source="unknown", reason="bad_json")
+        return
+
+    if not isinstance(ev, dict):
+        inc_events_dropped(source="unknown", reason="other")
+        return
+
+    try:
+        _process_event(
+            ev,
+            default_component=default_component,
+            default_run_id=default_run_id,
+            warn=warn,
+        )
+    except Exception:
+        # Exporter loop must never crash on a malformed event shape.
+        warn.warn("ai_live.process_error", "ai_live_exporter: error processing event (skipped)")
+        inc_events_dropped(source=_determine_source(ev), reason="other")
+        return
+
+
 def _process_event(
     ev: Dict[str, Any],
     *,
@@ -170,11 +226,14 @@ def _process_event(
     default_run_id: str,
     warn: _RateLimitedWarn,
 ) -> None:
+    ev_source = _determine_source(ev)
+
     # Canonical v=1 schema
     if "v" in ev:
         v = ev.get("v")
         if v != 1:
             warn.warn("ai_live.unknown_v", f"ai_live_exporter: ignoring unknown schema v={v!r}")
+            inc_events_dropped(source=ev_source, reason="unknown_schema")
             return
 
         ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
@@ -186,21 +245,35 @@ def _process_event(
         reason = _canon_reason(str(ev.get("reason") or "none"))
         action = _canon_action(ev.get("action") if isinstance(ev.get("action"), str) else None)
         latency_s = _coerce_latency_s(ev)
-        ts_s = _parse_ts_utc_to_unix(str(ev.get("ts_utc") or "")) or time.time()
+
+        ts_event_s = _parse_ts_utc_to_unix(str(ev.get("ts_utc") or ""))
+        ts_s = ts_event_s or time.time()
+
+        # v2 freshness: only update on valid events and only with event timestamp.
+        # Missing ts_utc → do not update (don't fabricate).
+        if decision is None:
+            inc_events_dropped(source=ev_source, reason="missing_fields")
+            return
+        if ts_event_s is not None:
+            set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
 
         # Emit action (always finite enum)
         if action and action != "none":
             record_action(action=action, component=ev_component, run_id=ev_run_id)
 
-        if decision:
-            record_decision(
-                decision=decision,
-                reason=reason,
-                component=ev_component,
-                run_id=ev_run_id,
-                latency_s=latency_s,
-                timestamp_s=ts_s,
-            )
+        record_decision(
+            decision=decision,
+            reason=reason,
+            component=ev_component,
+            run_id=ev_run_id,
+            latency_s=latency_s,
+            timestamp_s=ts_s,
+        )
+
+        # v2 latency histogram (ms): observe only if event provides latency_ms.
+        v_ms = ev.get("latency_ms")
+        if isinstance(v_ms, (int, float)):
+            observe_decision_latency_ms(source=ev_source, decision=decision, latency_ms=float(v_ms))
         return
 
     # Real pipeline schema: BETA_EXEC_V1
@@ -208,17 +281,26 @@ def _process_event(
         ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
         ev_component = default_component  # pipeline is execution watch by default
         et = str(ev.get("event_type") or "").strip().upper()
-        ts_s = _parse_ts_utc_to_unix(str(ev.get("ts_utc") or "")) or time.time()
+        ts_event_s = _parse_ts_utc_to_unix(str(ev.get("ts_utc") or ""))
+        ts_s = ts_event_s or time.time()
         reason_code = ev.get("reason_code")
         reason = _map_beta_reason(
             reason_code if isinstance(reason_code, str) else None, fallback="other"
         )
 
+        if not et:
+            inc_events_dropped(source=ev_source, reason="missing_fields")
+            return
+
         # Actions (finite)
         if et == "INTENT":
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_action(action="order_intent", component=ev_component, run_id=ev_run_id)
             return
         if et == "SUBMIT":
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_action(action="submit", component=ev_component, run_id=ev_run_id)
             record_decision(
                 decision="accept",
@@ -230,9 +312,13 @@ def _process_event(
             )
             return
         if et == "FILL":
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_action(action="fill", component=ev_component, run_id=ev_run_id)
             return
         if et == "REJECT":
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_action(action="order_request", component=ev_component, run_id=ev_run_id)
             record_decision(
                 decision="reject",
@@ -244,6 +330,8 @@ def _process_event(
             )
             return
         if et in {"VALIDATION_REJECT", "RISK_REJECT", "ERROR"}:
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_decision(
                 decision="reject",
                 reason=reason,
@@ -253,6 +341,7 @@ def _process_event(
                 timestamp_s=ts_s,
             )
             return
+        inc_events_dropped(source=ev_source, reason="unknown_schema")
         return
 
     # ExecutionEventV0 schema (best-effort)
@@ -260,11 +349,21 @@ def _process_event(
         ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
         ev_component = default_component
         et = str(ev.get("event_type") or "").strip().lower()
-        ts_s = _parse_ts_utc_to_unix(str(ev.get("ts") or "")) or time.time()
+        ts_event_s = _parse_ts_utc_to_unix(str(ev.get("ts") or ""))
+        ts_s = ts_event_s or time.time()
+
+        if not et:
+            inc_events_dropped(source=ev_source, reason="missing_fields")
+            return
+
         if et == "created":
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_action(action="order_intent", component=ev_component, run_id=ev_run_id)
             return
         if et == "submitted":
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_action(action="submit", component=ev_component, run_id=ev_run_id)
             record_decision(
                 decision="accept",
@@ -275,12 +374,18 @@ def _process_event(
             )
             return
         if et == "filled":
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_action(action="fill", component=ev_component, run_id=ev_run_id)
             return
         if et == "canceled":
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_action(action="cancel", component=ev_component, run_id=ev_run_id)
             return
         if et == "failed":
+            if ts_event_s is not None:
+                set_last_event_timestamp_seconds(source=ev_source, timestamp_s=ts_event_s)
             record_decision(
                 decision="reject",
                 reason="other",
@@ -289,9 +394,11 @@ def _process_event(
                 timestamp_s=ts_s,
             )
             return
+        inc_events_dropped(source=ev_source, reason="unknown_schema")
         return
 
     # Legacy / fallback mapping (best-effort)
+    inc_events_dropped(source=ev_source, reason="unknown_schema")
     ev_run_id = _pick_label(ev, key="run_id", env_fallback=default_run_id) or default_run_id
     ev_component = (
         _pick_label(ev, key="component", env_fallback=default_component) or default_component
@@ -482,16 +589,8 @@ class AILiveExporter:
             empty_reads = 0
 
             for ln in lines:
-                try:
-                    ev = json.loads(ln)
-                except Exception:
-                    warn.warn("ai_live.bad_json", "ai_live_exporter: bad JSON line (skipped)")
-                    continue
-
-                if not isinstance(ev, dict):
-                    continue
-                _process_event(
-                    ev,
+                _process_line(
+                    ln,
                     default_component=self.component,
                     default_run_id=self.run_id,
                     warn=warn,
