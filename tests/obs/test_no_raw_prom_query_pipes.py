@@ -10,12 +10,18 @@ ALLOW_MARKER = "ALLOW_RAW_PROM_QUERY_PIPE"
 
 def test_no_raw_curl_python_pipe_for_prom_query_in_obs_scripts() -> None:
     """
-    Regression lock:
-    Forbid the brittle pattern in scripts/obs:
+    Regression lock: prevent reintroducing the brittle pattern:
       curl .../api/v1/query ... | python ... json.load(sys.stdin)
 
-    Allowed only if the file contains:
-      ALLOW_RAW_PROM_QUERY_PIPE: <reason>
+    Rationale:
+    - Prometheus queries can transiently return empty/non-JSON bodies during warmup/network hiccups,
+      causing JSONDecodeError when piping directly into json.load(sys.stdin).
+    - We require using the shared helper scripts/obs/_prom_query_json.sh (gate + evidence + retries).
+
+    Allowlist:
+    - If you absolutely must keep a raw pipe, add a line containing:
+        ALLOW_RAW_PROM_QUERY_PIPE: <reason>
+      near the relevant code. (Expect code review scrutiny.)
     """
 
     scripts_dir = PROJECT_ROOT / "scripts" / "obs"

@@ -292,6 +292,14 @@ curl -fsS http://127.0.0.1:9092/api/v1/targets | python3 -m json.tool | head -n 
 curl -fsS http://127.0.0.1:9109/metrics | head -n 60
 ```
 
+**Hinweis (robust gegen transiente Responses)**  
+Wenn `curl ... &#47;api&#47;v1&#47;query` sporadisch **leer** oder **nicht-JSON** liefert (Warmup/Netzwerk), nutze die repo-interne Verifikation:
+
+```bash
+# Enthält retries + deterministische Diagnostik (Headers + Body-Preview) statt JSONDecodeError
+bash scripts/obs/shadow_mvs_local_verify.sh
+```
+
 ### Golden Smoke Pattern: Prometheus Query via `--out` + Parse aus Datei
 
 Ziel: deterministisch (kein `curl | python json.load(...)`, keine Shell→Python JSON-Interpolation).

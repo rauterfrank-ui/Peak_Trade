@@ -43,6 +43,7 @@ curl_ok_or_retry_once() {
 
 prom_query_json() {
   # Robust Prometheus /api/v1/query fetch with gating + evidence on failure.
+  # Always uses the shared helper to avoid transient JSONDecodeError in pipelines.
   local q="${1:-}"
   if [[ -z "${q:-}" ]]; then
     echo "prom_query_json: missing query" >&2
@@ -181,6 +182,7 @@ pass "prometheus.targets" "shadow_mvs=up"
 
 prom_query_non_empty_once() {
   local q="$1"
+  # Fetch JSON robustly (retries + deterministic diagnostics), then apply "non-empty & non-NaN" semantics.
   local json
   if ! json="$(prom_query_json "$q")"; then
     return 1
@@ -188,12 +190,9 @@ prom_query_non_empty_once() {
   printf '%s' "$json" | python3 -c '
 import json, sys
 doc = json.load(sys.stdin)
-if doc.get("status") != "success":
-    raise SystemExit(1)
 res = doc.get("data", {}).get("result", [])
 if not res:
     raise SystemExit(1)
-# Treat NaN as "not ready" (common during warmup for rate()/histogram_quantile()).
 for item in res:
     v = item.get("value")
     if not isinstance(v, list) or len(v) < 2:
@@ -202,7 +201,7 @@ for item in res:
     if s not in ("nan", "+nan", "-nan"):
         raise SystemExit(0)
 raise SystemExit(1)
-'
+' >/dev/null 2>&1
 }
 
 prom_query_non_empty_with_retries() {

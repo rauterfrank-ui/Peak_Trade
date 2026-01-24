@@ -12,7 +12,6 @@ set -euo pipefail
 # - stderr: evidence lines (retries, header/body snippets), plus:
 #   PROM_QUERY_OK bytes=... content_type=application/json
 #
-
 BASE=""
 QUERY=""
 OUT=""
@@ -94,6 +93,7 @@ PY
 done
 
 if [ "$ok" != "YES" ]; then
+  # Avoid printing the full query (can be long); keep deterministic.
   echo "PROM_QUERY_FAIL retries=$RETRIES url=$base_query_url" >&2
   exit 1
 fi
