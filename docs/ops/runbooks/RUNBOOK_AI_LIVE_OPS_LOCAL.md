@@ -96,6 +96,28 @@ Das Script muss in der Summary zeigen (und als Gate enforce):
 
 ---
 
+## 5.4 Generate activity (demo)
+
+Ziel: In einem deterministischen lokalen Demo-Run sicherstellen, dass `peaktrade_ai_decisions_total` und `run_id`‑scoped Serien **non-empty** sind (Prometheus snapshots + Exporter snapshot).
+
+Single command (snapshot-only, file-backed evidence; keine Pipes):
+
+```bash
+bash scripts/obs/ai_live_activity_demo.sh
+```
+
+Defaults:
+- `RUN_ID=demo`
+- Ports: Prometheus `:9092`, Exporter `:9110`
+- Evidence dir: `.local_tmp&#47;ai_live_activity_demo_<timestamp>`
+
+Override (optional):
+```bash
+RUN_ID="demo" COMPONENT="execution_watch" bash scripts/obs/ai_live_activity_demo.sh
+```
+
+---
+
 ## 6) Known-good PromQL (Operator Queries)
 
 ### 6.1 Liveness / Targets

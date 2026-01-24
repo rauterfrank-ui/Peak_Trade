@@ -9,7 +9,7 @@ Determinism:
 - No random/uuid: values computed deterministically from index
 - decision/reason/action: repeating pattern (accept/reject/noop)
 - latency_ms: deterministic per decision
-- run_id fixed "demo", component "execution_watch"
+- run_id default "demo", component default "execution_watch" (override via flags)
 """
 
 from __future__ import annotations
@@ -57,14 +57,18 @@ def main() -> int:
     p.add_argument("--out", required=True, help="Output JSONL path (will be overwritten).")
     p.add_argument("--n", type=int, default=50, help="Number of events to emit.")
     p.add_argument("--interval-ms", type=int, default=200, help="Interval between events in ms.")
+    p.add_argument("--run-id", default="demo", help="Run ID label (default: demo).")
+    p.add_argument(
+        "--component", default="execution_watch", help="Component label (default: execution_watch)."
+    )
     args = p.parse_args()
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
 
     base = time.time()
-    run_id = "demo"
-    component = "execution_watch"
+    run_id = str(args.run_id or "demo").strip() or "demo"
+    component = str(args.component or "execution_watch").strip() or "execution_watch"
 
     # Append-only to match tailing semantics (no truncation).
     with out.open("a", encoding="utf-8") as f:
