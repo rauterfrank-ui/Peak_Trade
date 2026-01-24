@@ -83,7 +83,7 @@ Das Script schreibt ein OUT-Verzeichnis (Default):
 und darin u.a.:
 - `AI_LIVE_OPS_SUMMARY.txt` (Hard-Checks + Verdict)
 - `PROM_REQUIRED_SERIES.tsv` (PromQL + result_count + scalar values)
-- `prom/*.json` (Prometheus Query Snapshots)
+- `prom&#47;*.json` (Prometheus Query Snapshots)
 - `exporter_metrics.txt` (Exporter `/metrics` snapshot)
 
 ### 5.3 Hard Checks (Finish-ready)
@@ -147,11 +147,13 @@ Stoppe den Listener und starte den Exporter neu (empfohlen).
 ### 7.2 Prometheus ready, aber `job="ai_live"` nicht UP
 - Prüfe, ob der Exporter wirklich auf `:9110` läuft und `/metrics` liefert:
 ```bash
-curl -fsS http://127.0.0.1:9110/metrics | head -n 30
+curl -fsS http://127.0.0.1:9110/metrics > /tmp/pt_ai_live_exporter_metrics.txt
+head -n 30 /tmp/pt_ai_live_exporter_metrics.txt
 ```
 - Prüfe Prometheus Targets:
 ```bash
-curl -fsS http://127.0.0.1:9092/api/v1/targets | head -c 2000
+curl -fsS http://127.0.0.1:9092/api/v1/targets > /tmp/pt_prom_targets.json
+head -c 2000 /tmp/pt_prom_targets.json
 ```
 
 ### 7.3 `run_id_count` ist 0

@@ -179,7 +179,7 @@ chmod +x scripts/obs/ai_live_ops_verify.sh
 bash scripts/obs/ai_live_ops_verify.sh
 ```
 
-- **Evidence (file-backed):** schreibt ein OUT-Directory unter `.local_tmp/ai_live_ops_verify_<timestamp>` (oder `VERIFY_OUT_DIR`/`OUT_DIR` Override).
+- **Evidence (file-backed):** schreibt ein OUT-Directory unter `.local_tmp&#47;ai_live_ops_verify_<timestamp>` (oder `VERIFY_OUT_DIR`/`OUT_DIR` Override).
 - **Summary:** `AI_LIVE_OPS_SUMMARY.txt`
 - **Contract-TSV:** `PROM_REQUIRED_SERIES.tsv` (PromQL + result_count + scalar values)
 
