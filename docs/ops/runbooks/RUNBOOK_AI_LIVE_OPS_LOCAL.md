@@ -109,7 +109,7 @@ bash scripts/obs/ai_live_activity_demo.sh
 Defaults:
 - `RUN_ID=demo`
 - Ports: Prometheus `:9092`, Exporter `:9110`
-- Evidence dir: `.local_tmp/ai_live_activity_demo_<timestamp>`
+- Evidence dir: `.local_tmp&#47;ai_live_activity_demo_<timestamp>`
 
 Override (optional):
 ```bash
