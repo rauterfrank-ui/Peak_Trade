@@ -15,7 +15,7 @@
 
 ## Verification
 - Local:
-  - pytest: `python3 -m pytest -q tests/obs/test_ai_live_activity_demo_v1.py`
+  - pytest: `python3 -m pytest -q tests&#47;obs&#47;test_ai_live_activity_demo_v1.py`
 - CI:
   - Required checks green (lint, docs gates, tests matrix).
 
