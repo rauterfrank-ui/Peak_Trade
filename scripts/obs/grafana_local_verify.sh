@@ -18,6 +18,16 @@ fail() {
   exit 1
 }
 
+echo "==> Check: Dashpack v2 operator summary JSON present (file-based)"
+OP_SUMMARY_JSON="docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-summary.json"
+if [[ ! -f "$OP_SUMMARY_JSON" ]]; then
+  echo "FAIL|dashpack.v2.operator_summary|Missing dashboard JSON: $OP_SUMMARY_JSON" >&2
+  echo "NEXT|Create/commit operator summary dashboard JSON (ux pack v2)" >&2
+  echo "RESULT=FAIL" >&2
+  exit 12
+fi
+pass "dashpack.v2.operator_summary" "$OP_SUMMARY_JSON"
+
 curl_ok() {
   local url="$1"
   curl -fsS "$url" >/dev/null 2>&1
@@ -110,6 +120,7 @@ want = {
   "peaktrade-overview": "overview",
   "peaktrade-shadow-pipeline-mvs": "shadow",
   "peaktrade-labeled-local": "http",
+  "peaktrade-system-health": "overview",
 }
 by_uid = {it.get("uid"): it for it in items if isinstance(it, dict)}
 missing = [uid for uid in want.keys() if uid not in by_uid]
@@ -120,8 +131,12 @@ problems = []
 for uid, folder in want.items():
   it = by_uid[uid]
   folder_title = str(it.get("folderTitle") or "")
-  if folder_title != folder:
-    problems.append(f"uid={uid} folderTitle={folder_title!r} expected={folder!r}")
+  # Grafana behavior can vary: some setups report just the leaf folder name, others
+  # include a root folder (e.g. "Peak_Trade / overview"). Be tolerant and require
+  # the expected folder to appear as a leaf.
+  ok = (folder_title == folder) or folder_title.endswith("/" + folder) or folder_title.endswith(" " + folder)
+  if not ok:
+    problems.append(f"uid={uid} folderTitle={folder_title!r} expected_leaf={folder!r}")
 if problems:
   raise SystemExit(" ; ".join(problems))
 print("ok")
@@ -131,6 +146,45 @@ if [[ "${dash_check:-}" != "ok" ]]; then
   fail "grafana.dashboards" "Dashboard provisioning/folder mapping mismatch: ${dash_check:-unknown}" "Check dashboards.yaml + dashboard paths"
 fi
 pass "grafana.dashboards" "Dashboards loaded under execution/overview/shadow/http"
+
+echo "==> Check: Dashboard templating vars (optional; requires Grafana API)"
+dash_vars_ok=1
+for uid in peaktrade-execution-watch-overview peaktrade-overview peaktrade-shadow-pipeline-mvs peaktrade-labeled-local peaktrade-system-health; do
+  djson="$(grafana_get_json_or_fail "/api/dashboards/uid/${uid}")"
+  want_vars="$(
+    python3 -c '
+import json, os, sys
+uid = os.environ.get("DASH_UID","")
+doc = json.loads(sys.stdin.read() or "{}")
+dash = doc.get("dashboard") or {}
+templ = (dash.get("templating") or {}).get("list") or []
+names = [t.get("name") for t in templ if isinstance(t, dict) and t.get("type")=="datasource"]
+names = [n for n in names if isinstance(n, str)]
+want = {
+  "peaktrade-execution-watch-overview": {"DS_LOCAL","DS_MAIN","DS_SHADOW"},
+  "peaktrade-overview": {"DS_LOCAL","DS_MAIN"},
+  "peaktrade-shadow-pipeline-mvs": {"DS_SHADOW"},
+  "peaktrade-labeled-local": {"DS_LOCAL"},
+  "peaktrade-system-health": {"DS_LOCAL","DS_MAIN","DS_SHADOW"},
+}
+need = want.get(uid, set())
+have = set(names)
+missing = sorted(need - have)
+if missing:
+  raise SystemExit("missing_vars=" + ",".join(missing))
+print("ok")
+' <<<"$djson" 2>/dev/null || true
+  )"
+  if [[ "${want_vars:-}" != "ok" ]]; then
+    dash_vars_ok=0
+    break
+  fi
+done
+if [[ "$dash_vars_ok" == "1" ]]; then
+  pass "grafana.dashboard.vars" "Datasource variables present (local/main/shadow conventions)"
+else
+  fail "grafana.dashboard.vars" "Dashboard templating vars mismatch for uid=$uid" "Check dashboard JSON templating.list datasource vars"
+fi
 
 echo "==> Check: Datasource health (Grafana -> Prometheus)"
 ds_health_ok=1

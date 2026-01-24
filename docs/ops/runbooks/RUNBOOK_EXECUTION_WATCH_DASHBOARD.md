@@ -1,7 +1,7 @@
-# RUNBOOK — Execution Watch Dashboard v0.4 (Watch-Only)
+# RUNBOOK — Execution Watch Dashboard v0.5 (Watch-Only)
 
 **Owner:** ops  
-**Purpose:** Start and verify the Execution Watch Dashboard v0.4 (read-only) for recent execution pipeline events and live-session registry state.  
+**Purpose:** Start and verify the Execution Watch Dashboard v0.5 (read-only) for recent execution pipeline events and live-session registry state.  
 **Policy:** NO-LIVE (read-only). No broker connectivity. No trading actions.
 
 ---
@@ -35,6 +35,11 @@ Start the WebUI server:
 uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 ```
 
+If `uvicorn` is not on your PATH, start via `uv` (same stack, no new services):
+```bash
+uv run uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
+```
+
 Open the dashboard page in your browser:
 
 ```text
@@ -45,7 +50,7 @@ Open the dashboard page in your browser:
 
 ## Verify
 
-### Verify APIs (read-only, v0.4 semantics)
+### Verify APIs (read-only, v0.5 semantics)
 
 Run these requests (examples shown as paths only; use your preferred client):
 
@@ -62,10 +67,10 @@ Run these requests (examples shown as paths only; use your preferred client):
 Expected:
 - HTTP 200 for existing data
 - Deterministic ordering (newest runs first, stable pagination cursor)
-- Backward compatible: top-level `api_version` remains `v0.2`, v0.4 semantics are indicated via `meta.api_version`
+- Backward compatible: top-level `api_version` remains `v0.2`, v0.5 semantics are indicated via `meta.api_version`
 - `generated_at_utc` present in responses
 - `meta` present (backward-compatible):
-  - `meta.api_version` = `v0.4`
+  - `meta.api_version` = `v0.5`
   - `meta.generated_at_utc` mirrors top-level `generated_at_utc`
   - `meta.has_more`, `meta.next_cursor` (paging/tail)
   - `meta.read_errors` (count of malformed JSONL lines skipped)
@@ -78,6 +83,15 @@ Expected:
   - `next_cursor` is a watermark cursor you can feed back into `since_cursor`
  - Health endpoint:
    - `/api/execution/health` liefert Meta-Summary + deterministische Invariants
+
+v0.5 notes:
+- `meta.last_event_utc` is derived via strict timestamp precedence when possible and normalized to UTC (Z suffix).
+- `invariants` includes a richer deterministic set (plus explanatory notes):
+  - `cursor_monotonicity_ok`
+  - `dataset_nonempty_ok` + `dataset_nonempty_note`
+  - `events_sorted_by_time_ok` + `events_sorted_by_time_note`
+  - `runs_sessions_consistency_ok` + `runs_sessions_consistency_note`
+- Runtime metrics are still opt-in and non-deterministic; default health is deterministic.
 
 Expected negative/edge behavior:
 - Unknown `run_id` → HTTP 404 with `{"detail":"run_not_found"}`
@@ -101,8 +115,9 @@ On the Execution Watch page:
   - Enable “Tail mode” to follow new events (append-only, no full refresh)
   - Polling interval selector (2s/5s/10s) controls refresh cadence
   - “Clear” resets the tail cursor watermark
-- Health panel (v0.4):
+- Health panel (v0.5):
   - Zeigt `meta.api_version`, `meta.source`, `meta.read_errors`, `meta.dataset_stats`, `meta.last_event_utc`
+  - Zeigt Invariants Summary + Details (expand/collapse) inkl. Notes
   - “Ping Health” ruft `/api/execution/health` ab und zeigt den Snapshot (kein Auto-Polling)
 
 ---
@@ -141,7 +156,7 @@ meta.read_errors
   - Inspect the JSONL generator / upstream pipeline for partial writes
   - Confirm the file is not being edited concurrently during inspection
 
-### Optional metrics hook (v0.4)
+### Optional metrics hook (v0.5)
 
 - Execution Watch kann optional Requests/Latency/Read-Errors mitzählen (best-effort).
 - Aktivierung:

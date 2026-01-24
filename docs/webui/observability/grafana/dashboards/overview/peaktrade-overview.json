@@ -4,28 +4,99 @@
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 3,
-  "refresh": "5s",
+  "refresh": "10s",
   "tags": [
     "peak_trade",
     "observability"
+  ],
+  "links": [
+    {
+      "type": "link",
+      "title": "Operator Home",
+      "url": "/d/peaktrade-operator-home",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "System Health (Operator)",
+      "url": "/d/peaktrade-system-health",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Operator Summary",
+      "url": "/d/peaktrade-operator-summary",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Contract Details",
+      "url": "/d/peaktrade-contract-details",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Shadow Pipeline (MVS)",
+      "url": "/d/peaktrade-shadow-pipeline-mvs",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    },
+    {
+      "type": "link",
+      "title": "Execution Watch Overview",
+      "url": "/d/peaktrade-execution-watch-overview",
+      "targetBlank": false,
+      "keepTime": true,
+      "includeVars": true
+    }
   ],
   "templating": {
     "list": [
       {
         "type": "datasource",
-        "name": "DS_PROM",
-        "label": "Datasource",
+        "name": "DS_LOCAL",
+        "label": "Prometheus (local)",
         "query": "prometheus",
         "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_MAIN",
+        "label": "Prometheus (main)",
+        "query": "prometheus",
+        "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_SHADOW",
+        "label": "Prometheus (shadow)",
+        "query": "prometheus",
+        "current": { "text": "prometheus-shadow", "value": "peaktrade-prometheus-shadow" },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
       }
     ]
   },
   "panels": [
     {
       "type": "timeseries",
-      "title": "UP (mini) — job=peak_trade_web",
+      "title": "UP (local) — job=peak_trade_web",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -34,7 +105,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROM}"
+        "uid": "${DS_LOCAL}"
       },
       "targets": [
         {
@@ -46,7 +117,7 @@
     },
     {
       "type": "timeseries",
-      "title": "UP (main) — job=peak_trade_uvicorn (main prom missing)",
+      "title": "UP (main) — job=peak_trade_web",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -55,19 +126,19 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROM}"
+        "uid": "${DS_MAIN}"
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "absent(up{job=\"peak_trade_uvicorn\"})",
-          "legendFormat": "main_missing_absent"
+          "expr": "up{job=\"peak_trade_web\"}",
+          "legendFormat": "{{instance}}"
         }
       ]
     },
     {
       "type": "timeseries",
-      "title": "HTTP req/s (mini) — peak_trade_http_requests_total",
+      "title": "HTTP req/s (local) — peak_trade_http_requests_total",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -76,7 +147,7 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROM}"
+        "uid": "${DS_LOCAL}"
       },
       "targets": [
         {
@@ -88,7 +159,7 @@
     },
     {
       "type": "timeseries",
-      "title": "HTTP req/s (main) — peak_trade_http_requests_total (main prom missing)",
+      "title": "HTTP req/s (main) — peak_trade_http_requests_total",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -97,13 +168,13 @@
       },
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROM}"
+        "uid": "${DS_MAIN}"
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "vector(0)",
-          "legendFormat": "main_missing_0"
+          "expr": "sum(rate(peak_trade_http_requests_total[5m]))",
+          "legendFormat": "req/s"
         }
       ]
     }
