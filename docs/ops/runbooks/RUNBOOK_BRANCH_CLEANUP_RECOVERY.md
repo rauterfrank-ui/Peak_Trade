@@ -109,6 +109,50 @@ git push origin "refs/tags/cleanup/gone_pending/keep/<name>"
 git push origin --tags
 ```
 
+## Post-Cleanup Verification (Snapshot)
+
+Ziel: Nach dem Cleanup einen punktuellen Snapshot erzeugen, der bestätigt, dass `main` sauber ist, kein `: gone`-Noise übrig ist und keine Worktree-Reste hängen.
+
+### Commands (copy-paste)
+
+```bash
+# 1) main clean + synced
+git switch main
+git fetch -p origin
+git status -sb
+
+# Optional: show ahead/behind counts explicitly (expect: 0 0)
+git rev-list --left-right --count origin/main...main
+
+# 2) count of ': gone' branches is 0 (expect: 0)
+git branch -vv | grep -F ": gone" | wc -l
+
+# 3) worktrees list includes only repo root (unless intentionally keeping a worktree)
+git worktree list
+
+# 4) cleanup tags exist (optional) + list them
+git tag -l "cleanup/*" | sort
+
+# 5) bundle verification example for worktree bundles (optional)
+ls -1 .local_tmp/*.bundle 2>/dev/null || true
+git bundle verify .local_tmp/<worktree_bundle_name>.bundle
+```
+
+### Expected invariants
+
+- `main` ist **clean** (keine Working-Tree-Änderungen) und **synced** mit `origin`.
+- `git rev-list --left-right --count origin&#47;main...main` zeigt **`0 0`** (falls genutzt).
+- `git branch -vv | grep -F ": gone" | wc -l` ist **0**.
+- `git worktree list` zeigt **nur** den Repo-Root (oder zusätzlich bewusst behaltene Worktrees).
+- Cleanup-Tags sind **optional**; wenn sie existieren, sind sie unter `cleanup&#47;...` auffindbar.
+- Worktree-Bundles sind **optional**; falls vorhanden, besteht `git bundle verify ...` ohne Fehler.
+
+### Failure Modes (quick triage)
+
+- `: gone`-Noise taucht wieder auf → Upstream-Refs wurden (wieder) gesetzt oder `fetch -p` bzw. `remote prune` wurde nicht ausgeführt.
+- `git worktree list` zeigt noch zusätzliche Einträge → Worktree wurde nicht entfernt oder ist bewusst noch aktiv.
+- Bundle fehlt/Verify schlägt fehl → `.bundle` wurde nie erzeugt oder Pfad/Datei ist falsch.
+
 ## Risk
 
 LOW — docs-only Runbook. Kein Einfluss auf produktive Execution Paths.
