@@ -39,4 +39,6 @@ def test_no_raw_curl_python_pipe_for_prom_query_in_obs_scripts() -> None:
         if pipe_re.search(txt):
             offenders.append(str(p.relative_to(PROJECT_ROOT)))
 
-    assert offenders == [], "raw prom query curl|python json.load pipeline found in: " + ", ".join(offenders)
+    assert offenders == [], "raw prom query curl|python json.load pipeline found in: " + ", ".join(
+        offenders
+    )
