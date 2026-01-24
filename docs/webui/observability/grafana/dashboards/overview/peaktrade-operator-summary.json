@@ -78,7 +78,7 @@
         "y": 1
       },
       "options": {
-        "content": "Use the dashboard header links for drilldowns.\n\n**Recommended flow (watch-only):** System Health \u2192 Execution Watch \u2192 HTTP Labeled.\nShadow Pipeline (MVS) is included for quick cross-checks.",
+        "content": "Use the dashboard header links for drilldowns.\n\n**Recommended flow (watch-only):** System Health → Execution Watch → HTTP Labeled.\nShadow Pipeline (MVS) is included for quick cross-checks.",
         "mode": "markdown"
       },
       "title": "How to use",
@@ -144,5 +144,8 @@
   "timezone": "browser",
   "title": "PeakTrade Operator Summary",
   "uid": "peaktrade-operator-summary",
-  "version": 1
+  "version": 1,
+  "timepicker": {
+    "hidden": false
+  }
 }

@@ -443,7 +443,7 @@
         "y": 79
       },
       "panels": [],
-      "title": "AI Live \u2014 Ops Summary",
+      "title": "AI Live — Ops Summary",
       "type": "row"
     },
     {
@@ -1134,7 +1134,7 @@
         "y": 32
       },
       "panels": [],
-      "title": "AI Live \u2014 UX v2 (reasons, actions, SLO, timeline)",
+      "title": "AI Live — UX v2 (reasons, actions, SLO, timeline)",
       "type": "row"
     },
     {
@@ -1336,7 +1336,7 @@
           "refId": "A"
         }
       ],
-      "title": "Latency SLO > 500ms (5m) \u2014 breach %",
+      "title": "Latency SLO > 500ms (5m) — breach %",
       "type": "stat"
     },
     {
@@ -1933,7 +1933,7 @@
           "refId": "A"
         }
       ],
-      "title": "Latency p95 (intent \u2192 ack)",
+      "title": "Latency p95 (intent → ack)",
       "type": "timeseries"
     },
     {
@@ -2038,7 +2038,7 @@
         "y": 126
       },
       "panels": [],
-      "title": "Compare (shadow vs main) \u2014 best-effort",
+      "title": "Compare (shadow vs main) — best-effort",
       "type": "row"
     },
     {
@@ -2059,7 +2059,7 @@
           "refId": "A"
         }
       ],
-      "title": "UP (shadow) \u2014 job=peak_trade_web",
+      "title": "UP (shadow) — job=peak_trade_web",
       "type": "timeseries"
     },
     {
@@ -2080,7 +2080,7 @@
           "refId": "A"
         }
       ],
-      "title": "UP (main) \u2014 job=peak_trade_web",
+      "title": "UP (main) — job=peak_trade_web",
       "type": "timeseries"
     }
   ],
@@ -2162,6 +2162,9 @@
     "to": "now"
   },
   "timezone": "browser",
-  "title": "Peak_Trade \u2014 Execution Watch Overview",
-  "uid": "peaktrade-execution-watch-overview"
+  "title": "Peak_Trade — Execution Watch Overview",
+  "uid": "peaktrade-execution-watch-overview",
+  "timepicker": {
+    "hidden": false
+  }
 }
