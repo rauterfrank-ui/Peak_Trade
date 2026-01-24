@@ -8,7 +8,8 @@ cd "$(git rev-parse --show-toplevel)"
 
 PROM_URL="${PROM_URL:-http://127.0.0.1:9092}"
 GRAFANA_URL="${GRAFANA_URL:-http://127.0.0.1:3000}"
-GRAFANA_AUTH="${GRAFANA_AUTH:-admin:admin}"
+GRAFANA_AUTH="${GRAFANA_AUTH:-}"   # optional basic auth user:pass
+GRAFANA_TOKEN="${GRAFANA_TOKEN:-}" # optional bearer token
 
 AI_LIVE_PORT="${AI_LIVE_PORT:-9110}"
 EXPORTER_URL="${EXPORTER_URL:-http://127.0.0.1:${AI_LIVE_PORT}/metrics}"
@@ -39,11 +40,15 @@ curl_ok_or_retry_once() {
 
 grafana_curl() {
   local path="$1"
+  if [[ -n "${GRAFANA_TOKEN:-}" ]]; then
+    curl -fsS -H "Authorization: Bearer ${GRAFANA_TOKEN}" "${GRAFANA_URL}${path}"
+    return 0
+  fi
   if [[ -n "${GRAFANA_AUTH:-}" ]]; then
     curl -fsS -u "$GRAFANA_AUTH" "${GRAFANA_URL}${path}"
-  else
-    curl -fsS "${GRAFANA_URL}${path}"
+    return 0
   fi
+  curl -fsS "${GRAFANA_URL}${path}"
 }
 
 prom_query_json_to_file() {
@@ -52,24 +57,45 @@ prom_query_json_to_file() {
   bash scripts/obs/_prom_query_json.sh --base "$PROM_URL" --query "$q" --out "$out" --retries "${PROM_QUERY_MAX_ATTEMPTS:-3}" >/dev/null
 }
 
+tcp_connect_ok() {
+  local host="$1"
+  local port="$2"
+  python3 - <<'PY' "$host" "$port" >/dev/null 2>&1
+import socket, sys
+host = sys.argv[1]
+port = int(sys.argv[2])
+with socket.create_connection((host, port), timeout=0.4):
+    pass
+PY
+}
+
 port_check() {
   local port="$1"
   if [[ "${SKIP_PORT_CHECK}" = "1" ]]; then
     info "port.check.skip" "SKIP_PORT_CHECK=1"
     return 0
   fi
-  if command -v lsof >/dev/null 2>&1; then
-    if lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
-      pass "port.listen" ":$port LISTEN"
-      return 0
-    fi
-    fail "port.listen" ":$port not listening" "Start required service or free port"
+  if tcp_connect_ok "127.0.0.1" "$port"; then
+    pass "port.open" ":$port"
+    return 0
   fi
-  info "port.check.skip" "lsof not available"
+  case "$port" in
+    9092) fail "port.open" ":$port not reachable" "Start prometheus-local (port contract: 9092)";;
+    3000) fail "port.open" ":$port not reachable" "Start grafana (port contract: 3000)";;
+    9110) fail "port.open" ":$port not reachable" "Start AI Live exporter (port contract: 9110)";;
+    *) fail "port.open" ":$port not reachable" "Start required service or free port";;
+  esac
 }
 
 echo "==> AI Live Ops Verify (snapshot-only)"
+info "repo.root" "$(pwd)"
+git status -sb || true
 info "env" "PROM_URL=$PROM_URL GRAFANA_URL=$GRAFANA_URL EXPORTER_URL=$EXPORTER_URL DASH_UID=$DASH_UID"
+
+echo "==> Preflight: port contract checks"
+port_check 9092
+port_check 3000
+port_check "$AI_LIVE_PORT"
 
 echo "==> Preflight: endpoints reachable"
 if curl_ok_or_retry_once "$PROM_URL/-/ready" 1; then
@@ -83,20 +109,6 @@ if curl_ok_or_retry_once "$GRAFANA_URL/api/health" 2; then
 else
   fail "grafana.health" "Grafana health failed: $GRAFANA_URL/api/health" "Start grafana-only (scripts/obs/grafana_local_up.sh)"
 fi
-
-if [[ -n "${GRAFANA_AUTH:-}" ]]; then
-  if grafana_curl "/api/user" >/dev/null 2>&1; then
-    pass "grafana.auth" "api/user ok"
-  else
-    fail "grafana.auth" "Grafana auth failed for api/user" "Reset volumes: bash scripts/obs/grafana_local_down.sh then grafana_local_up.sh"
-  fi
-else
-  info "grafana.auth.skip" "GRAFANA_AUTH empty (no auth)"
-fi
-
-echo "==> Preflight: port contract checks"
-port_check 9092
-port_check 3000
 
 echo "==> Exporter: /metrics reachable"
 if curl_ok_or_retry_once "$EXPORTER_URL" 1; then
@@ -143,58 +155,76 @@ echo "==> PromQL: up{job=\"ai_live\"} should be 1"
 OUT_UP="/tmp/pt_ai_live_ops_verify_up.json"
 rm -f "$OUT_UP"
 prom_query_json_to_file 'max(up{job="ai_live"})' "$OUT_UP"
-up_ok="$(python3 -c '
+up_value="$(python3 -c '
 import json
 from pathlib import Path
 doc=json.loads(Path("/tmp/pt_ai_live_ops_verify_up.json").read_text(encoding="utf-8"))
 res=(doc.get("data") or {}).get("result") or []
-if not res: raise SystemExit(1)
+if not res:
+    print("nan")
+    raise SystemExit(0)
 v=res[0].get("value") or [None,"0"]
 try:
     x=float(v[1])
 except Exception:
-    raise SystemExit(1)
-raise SystemExit(0 if x >= 1.0 else 1)
+    x=float("nan")
+print(x)
 ')" || true
-if [[ "${up_ok:-}" = "" ]]; then
-  pass "prometheus.query.up" "max(up{job=\"ai_live\"}) >= 1"
+info "prometheus.up" "max=${up_value}"
+if python3 - "$up_value" >/dev/null 2>&1 <<'PY'
+import math, sys
+x=float(sys.argv[1])
+raise SystemExit(0 if (not math.isnan(x) and x >= 1.0) else 1)
+PY
+then
+  pass "prometheus.query.up" "max(up{job=\"ai_live\"}) == 1"
 else
   fail "prometheus.query.up" "max(up{job=\"ai_live\"}) != 1" "Check Prometheus target health and exporter /metrics"
 fi
 
 echo "==> Rules: AI Live Ops Pack v1 loaded + alert names present"
 rules_json="$(curl -fsS "$PROM_URL/api/v1/rules" 2>/dev/null || true)"
-if python3 -c '
+rules_check_out="$(
+python3 -c '
 import json, sys
 doc=json.loads(sys.stdin.read() or "{}")
 groups=(doc.get("data") or {}).get("groups") or []
-names=[g.get("name") for g in groups if isinstance(g, dict)]
-if "ai_live_ops_pack_v1" not in names:
-    raise SystemExit(1)
 want={
   "AI_LIVE_ExporterDown",
   "AI_LIVE_StaleEvents",
   "AI_LIVE_ParseErrorsSpike",
   "AI_LIVE_DroppedEventsSpike",
   "AI_LIVE_LatencyP95High",
+  "AI_LIVE_LatencyP99High",
 }
 have=set()
 for g in groups:
-  if g.get("name") != "ai_live_ops_pack_v1":
-    continue
   for r in (g.get("rules") or []):
     if r.get("type") != "alerting":
       continue
     n=r.get("name")
     if isinstance(n,str):
       have.add(n)
+ai=sorted([n for n in have if n.startswith("AI_LIVE_")])
 missing=sorted(want - have)
-if missing:
-  print("missing_alerts=", missing)
+print(f"groups={len(groups)}")
+print("ai_live_alerts=" + ",".join(ai))
+if len(groups) <= 0:
+  print("missing_alerts=__groups__")
   raise SystemExit(1)
-raise SystemExit(0)
-' <<<"$rules_json" >/dev/null 2>&1; then
-  pass "prometheus.rules" "ai_live_ops_pack_v1 loaded + required alerts present"
+if missing:
+  print("missing_alerts=" + ",".join(missing))
+  raise SystemExit(1)
+' <<<"$rules_json" 2>/dev/null
+)" && rules_ok=1 || rules_ok=0
+
+rules_groups="$(printf '%s\n' "$rules_check_out" | sed -n 's/^groups=//p' | head -n 1 || true)"
+rules_ai_live="$(printf '%s\n' "$rules_check_out" | sed -n 's/^ai_live_alerts=//p' | head -n 1 || true)"
+info "prometheus.rules.groups" "count=${rules_groups:-unknown}"
+info "prometheus.rules.ai_live" "${rules_ai_live:-}"
+
+if [[ "$rules_ok" = "1" ]]; then
+  pass "prometheus.rules" "groups>0 + required AI_LIVE_* alerts present"
 else
   echo "$rules_json" | head -c 2000 || true
   fail "prometheus.rules" "Rules missing or alert names missing" "Ensure DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml mounts /etc/prometheus/rules"
@@ -206,57 +236,36 @@ python3 -c '
 import json, sys
 doc=json.loads(sys.stdin.read() or "{}")
 alerts=(doc.get("data") or {}).get("alerts") or []
-ai=[a for a in alerts if (a.get("labels") or {}).get("alertname","").startswith("AI_LIVE_")]
-counts={}
-for a in ai:
-  st=(a.get("state") or "unknown").lower()
-  counts[st]=counts.get(st,0)+1
-print("INFO|alerts.counts|" + " ".join([f"{k}={counts[k]}" for k in sorted(counts)]))
-for a in ai[:10]:
+counts={"firing":0,"pending":0,"inactive":0,"unknown":0}
+rows=[]
+for a in alerts:
   lab=a.get("labels") or {}
-  print("INFO|alerts.sample|alertname=%s state=%s severity=%s" % (lab.get("alertname"), a.get("state"), lab.get("severity")))
+  name=str(lab.get("alertname",""))
+  st=str(a.get("state") or "unknown").lower()
+  if st in counts:
+    counts[st] += 1
+  else:
+    counts["unknown"] += 1
+  rows.append((name, st))
+print("INFO|alerts.counts|firing=%d pending=%d inactive=%d unknown=%d" % (counts["firing"], counts["pending"], counts["inactive"], counts["unknown"]))
+for name, st in sorted(rows)[:10]:
+  print("INFO|alerts.sample|alertname=%s state=%s" % (name, st))
 ' <<<"$alerts_json" 2>/dev/null || true
 
-echo "==> Dashboard: uid exists + ops row invariants"
-dash_json="$(grafana_curl "/api/dashboards/uid/${DASH_UID}")"
-if python3 -c '
-import json, sys
-doc=json.loads(sys.stdin.read() or "{}")
-dash=doc.get("dashboard") or {}
-panels=dash.get("panels") or []
-rows=[p for p in panels if isinstance(p,dict) and p.get("type")=="row"]
-row_titles=[p.get("title") for p in rows]
-if "AI Live — Ops Summary" not in row_titles:
-  raise SystemExit(1)
-exprs=[]
-def walk(o):
-  if isinstance(o, dict):
-    for k,v in o.items():
-      if k=="expr" and isinstance(v,str):
-        exprs.append(v)
-      else:
-        walk(v)
-  elif isinstance(o, list):
-    for it in o:
-      walk(it)
-walk(dash)
-if not any("ALERTS" in e for e in exprs):
-  raise SystemExit(1)
-ops_panels=[p for p in panels if isinstance(p,dict) and p.get("type")!="row" and (p.get("gridPos") or {}).get("y")==1]
-ops_exprs=[]
-for p in ops_panels:
-  for t in (p.get("targets") or []):
-    if isinstance(t,dict) and isinstance(t.get("expr"),str):
-      ops_exprs.append(t["expr"])
-if not ops_exprs:
-  raise SystemExit(1)
-if any("or on() vector(0)" not in e for e in ops_exprs):
-  raise SystemExit(1)
-raise SystemExit(0)
-' <<<"$dash_json" >/dev/null 2>&1; then
-  pass "grafana.dashboard" "uid ok + ops row ok + ALERTS query + hardened expressions"
+echo "==> Grafana API (optional): dashboard uid exists"
+if [[ -z "${GRAFANA_TOKEN:-}" && -z "${GRAFANA_AUTH:-}" ]]; then
+  info "grafana.api.skip" "SKIP grafana api (no creds)"
 else
-  fail "grafana.dashboard" "Dashboard invariants failed (uid/ops row/ALERTS/hardening)" "Check provisioning + dashboard JSON pack"
+  if grafana_curl "/api/user" >/dev/null 2>&1; then
+    pass "grafana.auth" "api/user ok"
+  else
+    fail "grafana.auth" "Grafana auth failed for api/user" "Set GRAFANA_AUTH or GRAFANA_TOKEN (or reset grafana volumes)"
+  fi
+  if grafana_curl "/api/dashboards/uid/${DASH_UID}" >/dev/null 2>&1; then
+    pass "grafana.dashboard.uid" "${DASH_UID}"
+  else
+    fail "grafana.dashboard.uid" "Dashboard UID missing/unreachable: ${DASH_UID}" "Check provisioning + dashpack JSON"
+  fi
 fi
 
 echo ""

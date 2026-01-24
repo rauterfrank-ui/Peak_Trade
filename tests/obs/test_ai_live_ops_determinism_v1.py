@@ -29,6 +29,7 @@ def test_prometheus_local_scrape_config_has_rule_files_path() -> None:
     doc = yaml.safe_load(p.read_text(encoding="utf-8"))
     rf = doc.get("rule_files") or []
     assert "/etc/prometheus/rules/*.yml" in rf
+    assert "/etc/prometheus/rules/*.yaml" in rf
 
 
 def test_ai_live_ops_verify_script_exists_and_is_strict_shell() -> None:
@@ -36,6 +37,12 @@ def test_ai_live_ops_verify_script_exists_and_is_strict_shell() -> None:
     txt = p.read_text(encoding="utf-8")
     assert txt.startswith("#!/usr/bin/env bash")
     assert "set -euo pipefail" in txt
+    assert (p.stat().st_mode & 0o111) != 0, "script must be executable"
+    assert "git status -sb" in txt
+    assert "port_check 9092" in txt
+    assert "port_check 3000" in txt
+    assert 'port_check "$AI_LIVE_PORT"' in txt or "port_check 9110" in txt
+    assert "AI_LIVE_LatencyP99High" in txt
 
 
 class _Handler(BaseHTTPRequestHandler):
@@ -114,6 +121,7 @@ class _Handler(BaseHTTPRequestHandler):
                                         {"type": "alerting", "name": "AI_LIVE_ParseErrorsSpike"},
                                         {"type": "alerting", "name": "AI_LIVE_DroppedEventsSpike"},
                                         {"type": "alerting", "name": "AI_LIVE_LatencyP95High"},
+                                        {"type": "alerting", "name": "AI_LIVE_LatencyP99High"},
                                     ],
                                 }
                             ]

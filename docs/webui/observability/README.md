@@ -126,7 +126,7 @@ Dashboard `Peak_Trade — Execution Watch Overview`.
 docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml
 ```
 
-- Alert-Namen (stabil): `AI_LIVE_ExporterDown`, `AI_LIVE_StaleEvents`, `AI_LIVE_ParseErrorsSpike`, `AI_LIVE_DroppedEventsSpike`, `AI_LIVE_LatencyP95High` (+ optional `AI_LIVE_LatencyP99High`)
+- Alert-Namen (stabil): `AI_LIVE_ExporterDown`, `AI_LIVE_StaleEvents`, `AI_LIVE_ParseErrorsSpike`, `AI_LIVE_DroppedEventsSpike`, `AI_LIVE_LatencyP95High`, `AI_LIVE_LatencyP99High`
 
 ### AI Live Ops Determinism v1 (no manual copy)
 
