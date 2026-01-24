@@ -120,26 +120,42 @@ Dashboard `Peak_Trade — Execution Watch Overview`.
 
 #### Prometheus Alerts (Regeln)
 
-- Rules file: `docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml`
-- Alert-Namen (stabil): `AI_LIVE_ExporterDown`, `AI_LIVE_StaleEvents`, `AI_LIVE_ParseErrorsSpike`, `AI_LIVE_DroppedEventsSpike`, `AI_LIVE_LatencyP95High` (+ optional `AI_LIVE_LatencyP99High`)
+- Rules file:
 
-**Wichtig (lokal / docker compose)**  
-In `DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` wird standardmäßig nur `PROMETHEUS_LOCAL_SCRAPE.yml` nach `/etc/prometheus/prometheus.yml` gemountet.
-Damit die Alerts wirklich geladen werden, muss das Rules-File im Container unter `/etc/prometheus/rules/` verfügbar sein.
+```text
+docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml
+```
 
-Minimaler, deterministischer Pfad (copy + reload):
+- Alert-Namen (stabil): `AI_LIVE_ExporterDown`, `AI_LIVE_StaleEvents`, `AI_LIVE_ParseErrorsSpike`, `AI_LIVE_DroppedEventsSpike`, `AI_LIVE_LatencyP95High`, `AI_LIVE_LatencyP99High`
+
+### AI Live Ops Determinism v1 (no manual copy)
+
+**Ziel:** Beim frischen Start des lokalen Observability-Stacks sind die AI Live Alert-Regeln **sofort geladen** (ohne manuelles Copy/Reload).
+
+**Wie:** Das lokale Prometheus-Compose mountet die Rules aus dem Repo in einen festen Container-Pfad; die Prometheus-Config referenziert diese über `rule_files`.
+
+```text
+Compose: docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml
+Host rules dir: docs/webui/observability/prometheus/rules
+Container rules dir: /etc/prometheus/rules
+Prom config: docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
+rule_files:
+  - /etc/prometheus/rules/*.yml
+  - /etc/prometheus/rules/*.yaml
+```
+
+Start (fresh):
 
 ```bash
-# (1) rules dir im Container anlegen
-docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml exec prometheus-local sh -lc 'mkdir -p /etc/prometheus/rules'
+bash scripts/obs/grafana_local_down.sh
+bash scripts/obs/grafana_local_up.sh
+```
 
-# (2) Rules file kopieren
-docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml cp \
-  "docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml" \
-  prometheus-local:/etc/prometheus/rules/ai_live_alerts_v1.yml
+Verify (single-shot, ops-pack ready):
 
-# (3) Prometheus reload (web.enable-lifecycle ist aktiviert)
-curl -fsS -X POST http://127.0.0.1:9092/-/reload
+```bash
+# Erwartung: targets ai_live UP, rules geladen, AI_LIVE_* alerts sichtbar, Dashboard ops row invariant ok
+bash scripts/obs/ai_live_ops_verify.sh
 ```
 
 #### Alert Meaning + Sofortmaßnahmen

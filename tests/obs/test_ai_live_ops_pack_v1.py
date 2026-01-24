@@ -60,6 +60,7 @@ def test_ai_live_ops_pack_v1_rules_yaml_parses_and_contains_required_alerts() ->
         "AI_LIVE_ParseErrorsSpike",
         "AI_LIVE_DroppedEventsSpike",
         "AI_LIVE_LatencyP95High",
+        "AI_LIVE_LatencyP99High",
     }
     assert required.issubset(alerts), f"missing alerts: {sorted(required - alerts)}"
 
