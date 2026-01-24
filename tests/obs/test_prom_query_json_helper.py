@@ -92,7 +92,10 @@ def test_prom_query_json_helper_retries_and_succeeds(tmp_path) -> None:
         )
         assert proc.returncode == 0, proc.stdout + "\n" + proc.stderr
         # Deterministic diagnostics on stderr.
-        assert "PROM_QUERY_RETRY attempt=1 " in proc.stderr or "PROM_QUERY_RETRY attempt=1" in proc.stderr
+        assert (
+            "PROM_QUERY_RETRY attempt=1 " in proc.stderr
+            or "PROM_QUERY_RETRY attempt=1" in proc.stderr
+        )
         assert "PROM_QUERY_OK bytes=" in proc.stderr
         assert out.exists()
         assert '"status":"success"' in out.read_text(encoding="utf-8")

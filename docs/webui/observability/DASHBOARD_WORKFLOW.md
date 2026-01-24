@@ -274,7 +274,7 @@ curl -fsS http://127.0.0.1:9109/metrics | head -n 60
 ```
 
 **Hinweis (robust gegen transiente Responses)**  
-Wenn `curl ... /api/v1/query` sporadisch **leer** oder **nicht-JSON** liefert (Warmup/Netzwerk), nutze die repo-interne Verifikation:
+Wenn `curl ... &#47;api&#47;v1&#47;query` sporadisch **leer** oder **nicht-JSON** liefert (Warmup/Netzwerk), nutze die repo-interne Verifikation:
 
 ```bash
 # Enthält retries + deterministische Diagnostik (Headers + Body-Preview) statt JSONDecodeError
