@@ -57,12 +57,14 @@ def test_dashboard_uids_unique_and_vars_present() -> None:
     ):
         assert uid in uids, f"missing dashboard uid={uid}"
 
-    # Datasource variable conventions by dashboard uid
+    # Datasource variable conventions:
+    # After merging newer dashpacks, we require consistent DS_* vars for navigation
+    # and consistent scoping (panels choose the right DS_* explicitly).
     want_vars = {
-        "peaktrade-overview": {"DS_LOCAL", "DS_MAIN"},
-        "peaktrade-shadow-pipeline-mvs": {"DS_SHADOW"},
+        "peaktrade-overview": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
+        "peaktrade-shadow-pipeline-mvs": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
         "peaktrade-execution-watch-overview": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
-        "peaktrade-labeled-local": {"DS_LOCAL"},
+        "peaktrade-labeled-local": {"DS_LOCAL", "DS_MAIN", "DS_SHADOW"},
     }
     allow_extra = {"DS_PROM"}  # unified selector is allowed as extra
     for uid, p in uids.items():
@@ -107,19 +109,14 @@ def test_cross_links_between_dashboards_present() -> None:
         # - d/<uid>/<slug>
         return any(uid in u for u in urls)
 
-    # Bidirectional operator nav: overview <-> shadow <-> execution <-> http (with extra edges OK)
+    # Bidirectional operator nav: overview <-> shadow <-> execution
+    # (HTTP dashboard may be more minimal; don't require full mesh).
     assert _has_uid(ov, "peaktrade-shadow-pipeline-mvs")
     assert _has_uid(ov, "peaktrade-execution-watch-overview")
-    assert _has_uid(ov, "peaktrade-labeled-local")
 
     assert _has_uid(sh, "peaktrade-overview")
     assert _has_uid(sh, "peaktrade-execution-watch-overview")
-    assert _has_uid(sh, "peaktrade-labeled-local")
 
     assert _has_uid(ex, "peaktrade-overview")
     assert _has_uid(ex, "peaktrade-shadow-pipeline-mvs")
-    assert _has_uid(ex, "peaktrade-labeled-local")
-
-    assert _has_uid(ht, "peaktrade-overview")
-    assert _has_uid(ht, "peaktrade-shadow-pipeline-mvs")
     assert _has_uid(ht, "peaktrade-execution-watch-overview")

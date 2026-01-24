@@ -64,10 +64,30 @@ docs/webui/observability/grafana/provisioning/datasources/
 
 Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional-main/shadow Datasources wählen.
 
-- Overview dashboards: DS_LOCAL, DS_MAIN (optional DS_SHADOW für System-Health)
-- Shadow dashboards: DS_SHADOW
-- Execution dashboards: DS_LOCAL, DS_MAIN, DS_SHADOW
-- HTTP dashboards: DS_LOCAL
+- Einheitlich (alle Dashboards): **DS_LOCAL**, **DS_MAIN**, **DS_SHADOW**
+  - Defaults: Shadow/Contract Panels nutzen DS_SHADOW; Execution Watch Panels nutzen DS_LOCAL; Main ist optional.
+  - In den JSONs sind die DS_* Controls typischerweise **hidden** (Guardrail gegen „false MISSING“ durch falsche Auswahl).
+
+## Operator UX Pack v5: Landing + Drilldowns
+
+- **Operator Home**: `peaktrade-operator-home` (Landing mit Quicklinks zu Summary/Health/Execution Watch/Shadow Pipeline)
+- **Contract Details (Debug)**: `peaktrade-contract-details`
+  - Drilldown-Ziel für „PRESENT/MISSING“ Contract-Panels (zeigt Presence/Counts je DS_SHADOW/DS_LOCAL/DS_MAIN)
+- **Execution Watch Details**: `peaktrade-execution-watch-details`
+  - Drilldown aus „Execution Watch req/s (by endpoint, status)“ mit `endpoint&#47;status` Kontext
+
+## Compare Pack v0.1 (stacked auf PR #950)
+
+- **Compare Overview (Main vs Shadow)**: `peaktrade-main-vs-shadow-overview`
+- **Metrics Drift**: `peaktrade-metrics-drift`
+
+## Verify Quick Path (operator-grade)
+
+```bash
+bash scripts/obs/grafana_local_up.sh
+bash scripts/obs/grafana_dashpack_local_verify_v2.sh
+open \"http://127.0.0.1:3000/d/peaktrade-operator-home\"
+```
 
 ## Betriebsmodi
 
@@ -127,6 +147,7 @@ docker compose -f docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml down
 
 **Wichtiges Konzept**:
 - Host-Port `9091` wird auf Container-Port `9090` gemappt (Konfliktvermeidung).
+- Grafana muss Prometheus **docker-intern** über http://prometheus:9090 erreichen (nicht über `:9091`).
 - Grafana muss Prometheus **docker-intern** über http://prometheus:9090 erreichen (nicht über `:9091`).
 
 ## Dashboard-Workflow (Lifecycle)
@@ -243,6 +264,68 @@ count by (__name__) ({__name__=~".*shadow.*", job="peak_trade_web"})
 - Wenn die Queries leer sind: Shadow-Instrumentation ist noch nicht implementiert (oder es wird noch nicht gescrapt).
 
 ## Troubleshooting (häufige Fehlerbilder)
+
+### Problem: Panels zeigen **DOWN / No data / MISSING**
+
+**Symptom**
+- Dashboards laden, aber Panels zeigen „DOWN“, „No data“ oder „MISSING“.
+
+**Root Causes (lokal, typisch)**
+- Prometheus-local läuft nicht (oder falscher Port): Grafana Default-Datasource `prometheus-local` zeigt auf `http://host.docker.internal:9092`.
+- Shadow-MVS Exporter läuft nicht: Prometheus Target `job="shadow_mvs"` ist `down` (scrapeUrl `http://host.docker.internal:9109/metrics`).
+- Port-Konflikt: Ein anderer Grafana-Container belegt `:3000` → du schaust ins „falsche“ Grafana.
+
+**Fix (deterministisch, Snapshot-only)**
+
+```bash
+# Bringt lokalen Watch-Only Stack in einen bekannten Zustand (inkl. Mock-Exporter für Shadow-MVS)
+bash scripts/obs/shadow_mvs_local_up.sh
+
+# Liefert Evidence-Zeilen + klare NEXT-Hints bei Fehlern
+bash scripts/obs/shadow_mvs_local_verify.sh
+```
+
+**Low-level Evidence (wenn du es manuell sehen willst)**
+
+```bash
+curl -fsS http://127.0.0.1:9092/api/v1/targets | python3 -m json.tool | head -n 160
+curl -fsS http://127.0.0.1:9109/metrics | head -n 60
+```
+
+**Hinweis (robust gegen transiente Responses)**  
+Wenn `curl ... &#47;api&#47;v1&#47;query` sporadisch **leer** oder **nicht-JSON** liefert (Warmup/Netzwerk), nutze die repo-interne Verifikation:
+
+```bash
+# Enthält retries + deterministische Diagnostik (Headers + Body-Preview) statt JSONDecodeError
+bash scripts/obs/shadow_mvs_local_verify.sh
+```
+
+### Golden Smoke Pattern: Prometheus Query via `--out` + Parse aus Datei
+
+Ziel: deterministisch (kein `curl | python json.load(...)`, keine Shell→Python JSON-Interpolation).
+
+```bash
+# Preflight
+PROM_BASE="http://127.0.0.1:9092"
+QUERY='up{job="shadow_mvs"}'
+OUT="/tmp/pt_prom_query.json"
+ERR="/tmp/pt_prom_query.stderr"
+rm -f "$OUT" "$ERR"
+
+# Robust Query: Evidence in stderr, JSON in OUT
+bash scripts/obs/_prom_query_json.sh --base "$PROM_BASE" --query "$QUERY" --out "$OUT" --retries 3 > /dev/null 2> "$ERR" || true
+tail -n 40 "$ERR" || true
+
+# Deterministic parse (no shell interpolation)
+python3 - <<'PY'
+import json
+from pathlib import Path
+doc=json.loads(Path("/tmp/pt_prom_query.json").read_text(encoding="utf-8"))
+print("status=", doc.get("status"))
+data=(doc.get("data") or {})
+print("resultType=", data.get("resultType"), "results=", len(data.get("result") or []))
+PY
+```
 
 ### Problem: Dashboard-Suche liefert `[]`
 

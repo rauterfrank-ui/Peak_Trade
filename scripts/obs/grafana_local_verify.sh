@@ -18,6 +18,16 @@ fail() {
   exit 1
 }
 
+echo "==> Check: Dashpack v2 operator summary JSON present (file-based)"
+OP_SUMMARY_JSON="docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-summary.json"
+if [[ ! -f "$OP_SUMMARY_JSON" ]]; then
+  echo "FAIL|dashpack.v2.operator_summary|Missing dashboard JSON: $OP_SUMMARY_JSON" >&2
+  echo "NEXT|Create/commit operator summary dashboard JSON (ux pack v2)" >&2
+  echo "RESULT=FAIL" >&2
+  exit 12
+fi
+pass "dashpack.v2.operator_summary" "$OP_SUMMARY_JSON"
+
 curl_ok() {
   local url="$1"
   curl -fsS "$url" >/dev/null 2>&1
@@ -137,13 +147,12 @@ if [[ "${dash_check:-}" != "ok" ]]; then
 fi
 pass "grafana.dashboards" "Dashboards loaded under execution/overview/shadow/http"
 
-echo "==> Check: Dashboard datasource vars (optional)"
-if [[ "${GRAFANA_VERIFY_DASH_VARS:-0}" == "1" ]]; then
-  dash_vars_ok=1
-  for uid in peaktrade-execution-watch-overview peaktrade-overview peaktrade-shadow-pipeline-mvs peaktrade-labeled-local peaktrade-system-health; do
-    djson="$(grafana_get_json_or_fail "/api/dashboards/uid/${uid}")"
-    want_vars="$(
-      python3 -c '
+echo "==> Check: Dashboard templating vars (optional; requires Grafana API)"
+dash_vars_ok=1
+for uid in peaktrade-execution-watch-overview peaktrade-overview peaktrade-shadow-pipeline-mvs peaktrade-labeled-local peaktrade-system-health; do
+  djson="$(grafana_get_json_or_fail "/api/dashboards/uid/${uid}")"
+  want_vars="$(
+    python3 -c '
 import json, os, sys
 uid = os.environ.get("DASH_UID","")
 doc = json.loads(sys.stdin.read() or "{}")
@@ -165,19 +174,16 @@ if missing:
   raise SystemExit("missing_vars=" + ",".join(missing))
 print("ok")
 ' <<<"$djson" 2>/dev/null || true
-    )"
-    if [[ "${want_vars:-}" != "ok" ]]; then
-      dash_vars_ok=0
-      break
-    fi
-  done
-  if [[ "$dash_vars_ok" == "1" ]]; then
-    pass "grafana.dashboard.vars" "Datasource variables present (local/main/shadow conventions)"
-  else
-    fail "grafana.dashboard.vars" "Dashboard datasource vars mismatch for uid=$uid" "Update dashboard templating.list datasource vars"
+  )"
+  if [[ "${want_vars:-}" != "ok" ]]; then
+    dash_vars_ok=0
+    break
   fi
+done
+if [[ "$dash_vars_ok" == "1" ]]; then
+  pass "grafana.dashboard.vars" "Datasource variables present (local/main/shadow conventions)"
 else
-  pass "grafana.dashboard.vars" "Skipped (set GRAFANA_VERIFY_DASH_VARS=1 to enable)"
+  fail "grafana.dashboard.vars" "Dashboard templating vars mismatch for uid=$uid" "Check dashboard JSON templating.list datasource vars"
 fi
 
 echo "==> Check: Datasource health (Grafana -> Prometheus)"

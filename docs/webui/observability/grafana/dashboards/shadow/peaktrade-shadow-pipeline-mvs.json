@@ -5,98 +5,73 @@
   "schemaVersion": 39,
   "version": 1,
   "refresh": "10s",
-  "tags": [
-    "peak_trade",
-    "observability",
-    "shadow",
-    "pipeline",
-    "mvs",
-    "contract_v1"
-  ],
-  "time": {
-    "from": "now-30m",
-    "to": "now"
-  },
+  "tags": ["peak_trade", "observability", "shadow", "pipeline", "mvs", "contract_v1"],
+  "time": { "from": "now-30m", "to": "now" },
   "links": [
     {
-      "title": "Overview",
-      "type": "dashboards",
-      "tags": [],
-      "asDropdown": false,
-      "includeVars": true,
-      "keepTime": true,
+      "type": "link",
+      "title": "Operator Home",
+      "url": "/d/peaktrade-operator-home",
       "targetBlank": false,
-      "url": "d/peaktrade-overview/peaktrade-overview"
+      "keepTime": true,
+      "includeVars": true
     },
     {
-      "title": "System Health",
-      "type": "dashboards",
-      "tags": [],
-      "asDropdown": false,
-      "includeVars": true,
-      "keepTime": true,
+      "type": "link",
+      "title": "Contract Details",
+      "url": "/d/peaktrade-contract-details",
       "targetBlank": false,
-      "url": "d/peaktrade-system-health/peaktrade-system-health"
+      "keepTime": true,
+      "includeVars": true
     },
     {
-      "title": "Shadow Pipeline (MVS)",
-      "type": "dashboards",
-      "tags": [],
-      "asDropdown": false,
-      "includeVars": true,
-      "keepTime": true,
+      "type": "link",
+      "title": "Overview (Local vs Main)",
+      "url": "/d/peaktrade-overview",
       "targetBlank": false,
-      "url": "d/peaktrade-shadow-pipeline-mvs/peaktrade-shadow-pipeline-mvs"
+      "keepTime": true,
+      "includeVars": true
     },
     {
+      "type": "link",
       "title": "Execution Watch Overview",
-      "type": "dashboards",
-      "tags": [],
-      "asDropdown": false,
-      "includeVars": true,
-      "keepTime": true,
+      "url": "/d/peaktrade-execution-watch-overview",
       "targetBlank": false,
-      "url": "d/peaktrade-execution-watch-overview/peaktrade-execution-watch-overview"
-    },
-    {
-      "title": "HTTP (Labeled Local)",
-      "type": "dashboards",
-      "tags": [],
-      "asDropdown": false,
-      "includeVars": true,
       "keepTime": true,
-      "targetBlank": false,
-      "url": "d/peaktrade-labeled-local/peaktrade-labeled-local"
+      "includeVars": true
     }
   ],
   "templating": {
     "list": [
       {
-        "name": "DS_PROM",
-        "label": "Prometheus",
-        "type": "datasource",
-        "query": "prometheus",
-        "refresh": 1,
-        "hide": 0,
-        "multi": false,
-        "includeAll": false,
-        "current": {
-          "text": "prometheus-local",
-          "value": "prometheus-local"
-        },
-        "options": []
-      },
-      {
         "type": "datasource",
         "name": "DS_SHADOW",
         "label": "Prometheus (shadow)",
         "query": "prometheus",
-        "current": {
-          "text": "prometheus-shadow",
-          "value": "peaktrade-prometheus-shadow"
-        },
+        "current": { "text": "prometheus-shadow", "value": "peaktrade-prometheus-shadow" },
         "options": [],
-        "refresh": 1
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_LOCAL",
+        "label": "Prometheus (local)",
+        "query": "prometheus",
+        "current": { "text": "prometheus-local", "value": "peaktrade-prometheus-local" },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_MAIN",
+        "label": "Prometheus (main)",
+        "query": "prometheus",
+        "current": { "text": "prometheus-main", "value": "peaktrade-prometheus-main" },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
       },
       {
         "type": "custom",
@@ -106,10 +81,7 @@
         "includeAll": true,
         "allValue": ".*",
         "multi": true,
-        "current": {
-          "text": "shadow",
-          "value": "shadow"
-        }
+        "current": { "text": "shadow", "value": "shadow" }
       },
       {
         "type": "custom",
@@ -119,10 +91,7 @@
         "includeAll": true,
         "allValue": ".*",
         "multi": true,
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        }
+        "current": { "text": "All", "value": "$__all" }
       }
     ]
   },
@@ -130,54 +99,34 @@
     {
       "type": "stat",
       "title": "Contract metric present? peak_trade_pipeline_events_total",
-      "datasource": "${DS_PROM}",
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 0,
-        "y": 0
-      },
+      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 0 },
       "targets": [
         {
           "refId": "A",
           "expr": "((absent(peak_trade_pipeline_events_total) OR on() vector(0)))"
         }
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        }
-      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "PRESENT"
-                },
-                "1": {
-                  "text": "MISSING"
-                }
-              }
-            }
+            { "type": "value", "options": { "0": { "text": "PRESENT" }, "1": { "text": "MISSING" } } }
           ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
+              { "color": "green", "value": 0 },
+              { "color": "red", "value": 1 }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "Contract Details",
+              "url": "/d/peaktrade-contract-details?var-metric=peak_trade_pipeline_events_total",
+              "targetBlank": false
+            }
+          ]
         },
         "overrides": []
       }
@@ -185,54 +134,34 @@
     {
       "type": "stat",
       "title": "Contract metric present? peak_trade_pipeline_latency_seconds_bucket",
-      "datasource": "${DS_PROM}",
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 8,
-        "y": 0
-      },
+      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 0 },
       "targets": [
         {
           "refId": "A",
           "expr": "((absent(peak_trade_pipeline_latency_seconds_bucket) OR on() vector(0)))"
         }
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        }
-      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "PRESENT"
-                },
-                "1": {
-                  "text": "MISSING"
-                }
-              }
-            }
+            { "type": "value", "options": { "0": { "text": "PRESENT" }, "1": { "text": "MISSING" } } }
           ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
+              { "color": "green", "value": 0 },
+              { "color": "red", "value": 1 }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "Contract Details",
+              "url": "/d/peaktrade-contract-details?var-metric=peak_trade_pipeline_latency_seconds_bucket",
+              "targetBlank": false
+            }
+          ]
         },
         "overrides": []
       }
@@ -240,54 +169,34 @@
     {
       "type": "stat",
       "title": "Contract metric present? peak_trade_risk_blocks_total",
-      "datasource": "${DS_PROM}",
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 16,
-        "y": 0
-      },
+      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 0 },
       "targets": [
         {
           "refId": "A",
           "expr": "((absent(peak_trade_risk_blocks_total) OR on() vector(0)))"
         }
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
-        }
-      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "PRESENT"
-                },
-                "1": {
-                  "text": "MISSING"
-                }
-              }
-            }
+            { "type": "value", "options": { "0": { "text": "PRESENT" }, "1": { "text": "MISSING" } } }
           ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
+              { "color": "green", "value": 0 },
+              { "color": "red", "value": 1 }
             ]
-          }
+          },
+          "links": [
+            {
+              "title": "Contract Details",
+              "url": "/d/peaktrade-contract-details?var-metric=peak_trade_risk_blocks_total",
+              "targetBlank": false
+            }
+          ]
         },
         "overrides": []
       }
@@ -295,13 +204,8 @@
     {
       "type": "timeseries",
       "title": "Pipeline Event Throughput (by stage)",
-      "datasource": "${DS_PROM}",
-      "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 5
-      },
+      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 5 },
       "targets": [
         {
           "refId": "A",
@@ -314,21 +218,9 @@
       "type": "timeseries",
       "title": "Pipeline Error Rate",
       "description": "Uses clamp_min(..., 1e-9) on the denominator to avoid 0-denominator spikes during low traffic / warmup.",
-      "datasource": "${DS_PROM}",
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 14
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percentunit",
-          "min": 0,
-          "max": 1
-        },
-        "overrides": []
-      },
+      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 }, "overrides": [] },
       "targets": [
         {
           "refId": "A",
@@ -340,13 +232,8 @@
     {
       "type": "timeseries",
       "title": "Risk Blocks (by reason)",
-      "datasource": "${DS_PROM}",
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 14
-      },
+      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
       "targets": [
         {
           "refId": "A",
@@ -358,19 +245,9 @@
     {
       "type": "timeseries",
       "title": "Latency p95 (intent → ack)",
-      "datasource": "${DS_PROM}",
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 22
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s"
-        },
-        "overrides": []
-      },
+      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 22 },
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "targets": [
         {
           "refId": "A",
@@ -382,13 +259,8 @@
     {
       "type": "timeseries",
       "title": "Feed Gaps (optional)",
-      "datasource": "${DS_PROM}",
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 22
-      },
+      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 22 },
       "targets": [
         {
           "refId": "A",
@@ -400,13 +272,8 @@
     {
       "type": "timeseries",
       "title": "Run State (optional)",
-      "datasource": "${DS_PROM}",
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 31
-      },
+      "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
+      "gridPos": { "h": 7, "w": 24, "x": 0, "y": 31 },
       "targets": [
         {
           "refId": "A",
