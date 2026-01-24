@@ -37,12 +37,28 @@ Relevante Compose-Files:
 - docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml
 - docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml
 
-## AI Live (Exporter + Dashboard Row)
+## AI Live
+
+## AI Live UX v2 (Dashboard)
+This dashboard includes an expanded AI Live control + ops pack:
+- Latency: p95/p99 (5m) from `peaktrade_ai_decision_latency_ms_bucket`
+- Quality: parse errors and drops (5m) from `peaktrade_ai_events_parse_errors_total` and `peaktrade_ai_events_dropped_total`
+- Freshness: worst-case event age (seconds) from `peaktrade_ai_last_event_timestamp_seconds` (and per run_id if enabled)
+- Ops: active alert counts via Grafana `ALERTS` datasource query (no-data hardened)
+ (Exporter + Dashboard Row)
 
 Ziel: Eine kleine, **watch-only** AI-Event-Telemetrie, die in Grafana im Dashboard
 „Execution Watch Overview“ als Row „AI Live“ sichtbar ist.
 
-### AI Live Drilldown v1 (run_id)
+### AI Live
+
+## AI Live UX v2 (Dashboard)
+This dashboard includes an expanded AI Live control + ops pack:
+- Latency: p95/p99 (5m) from `peaktrade_ai_decision_latency_ms_bucket`
+- Quality: parse errors and drops (5m) from `peaktrade_ai_events_parse_errors_total` and `peaktrade_ai_events_dropped_total`
+- Freshness: worst-case event age (seconds) from `peaktrade_ai_last_event_timestamp_seconds` (and per run_id if enabled)
+- Ops: active alert counts via Grafana `ALERTS` datasource query (no-data hardened)
+ Drilldown v1 (run_id)
 
  Ziel: **Maximale Operator-Visibility** für einen konkreten AI-Lauf über `run_id`, ohne `src&#47;**` anzufassen (watch-only).
 
@@ -57,7 +73,15 @@ Ziel: Eine kleine, **watch-only** AI-Event-Telemetrie, die in Grafana im Dashboa
 - **Allowed chars**: `[A-Za-z0-9._-]` (alles andere wird zu `_`)
 - **Empfehlung**: kurze, stabile IDs (z.B. `demo`, `mvs_20260124`, `shadow_smoke`)
 
-### AI Live UX v2 — Reason/Action/SLO/Timeline
+### AI Live
+
+## AI Live UX v2 (Dashboard)
+This dashboard includes an expanded AI Live control + ops pack:
+- Latency: p95/p99 (5m) from `peaktrade_ai_decision_latency_ms_bucket`
+- Quality: parse errors and drops (5m) from `peaktrade_ai_events_parse_errors_total` and `peaktrade_ai_events_dropped_total`
+- Freshness: worst-case event age (seconds) from `peaktrade_ai_last_event_timestamp_seconds` (and per run_id if enabled)
+- Ops: active alert counts via Grafana `ALERTS` datasource query (no-data hardened)
+ UX v2 — Reason/Action/SLO/Timeline
 
 Ziel: Operator sieht pro Lauf (`run_id`) nicht nur „Up/Down“, sondern **warum** (Reasons), **was passiert** (Actions) und **wie gut** (SLO/Tail) – ohne Logs/Loki.
 
@@ -76,7 +100,15 @@ Hinweis (Label-Realität):
 - `peaktrade_ai_events_*` (parse/drops) sind **source-scoped** (kein `run_id`); die Panels bleiben global.
 - `peaktrade_ai_decision_latency_ms_*` ist **source+decision** (v2) und wird weiterhin als p95-Referenz genutzt; SLO ist run-scoped über `peaktrade_ai_decision_latency_seconds_*`.
 
-### AI Live Port Contract v1 (lokal, deterministisch)
+### AI Live
+
+## AI Live UX v2 (Dashboard)
+This dashboard includes an expanded AI Live control + ops pack:
+- Latency: p95/p99 (5m) from `peaktrade_ai_decision_latency_ms_bucket`
+- Quality: parse errors and drops (5m) from `peaktrade_ai_events_parse_errors_total` and `peaktrade_ai_events_dropped_total`
+- Freshness: worst-case event age (seconds) from `peaktrade_ai_last_event_timestamp_seconds` (and per run_id if enabled)
+- Ops: active alert counts via Grafana `ALERTS` datasource query (no-data hardened)
+ Port Contract v1 (lokal, deterministisch)
 
 - **Port**: Der AI Live Exporter läuft lokal **immer auf `:9110`**.
 - **Warum**: `prometheus-local` scrapt den Job **`ai_live`** fest auf `host.docker.internal:9110`.
@@ -138,7 +170,15 @@ chmod +x scripts/obs/ai_live_smoke_test.sh
 bash scripts/obs/ai_live_smoke_test.sh
 ```
 
-### AI Live Ops Pack v1 (Alerts + Ops Summary)
+### AI Live
+
+## AI Live UX v2 (Dashboard)
+This dashboard includes an expanded AI Live control + ops pack:
+- Latency: p95/p99 (5m) from `peaktrade_ai_decision_latency_ms_bucket`
+- Quality: parse errors and drops (5m) from `peaktrade_ai_events_parse_errors_total` and `peaktrade_ai_events_dropped_total`
+- Freshness: worst-case event age (seconds) from `peaktrade_ai_last_event_timestamp_seconds` (and per run_id if enabled)
+- Ops: active alert counts via Grafana `ALERTS` datasource query (no-data hardened)
+ Ops Pack v1 (Alerts + Ops Summary)
 
 Ziel: AI Live operabel machen (watch-only): **Alerts**, **SLO-Style Checks** und eine kompakte **Ops Summary** oben im
 Dashboard `Peak_Trade — Execution Watch Overview`.
@@ -162,7 +202,15 @@ docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml
 
 - Alert-Namen (stabil): `AI_LIVE_ExporterDown`, `AI_LIVE_StaleEvents`, `AI_LIVE_ParseErrorsSpike`, `AI_LIVE_DroppedEventsSpike`, `AI_LIVE_LatencyP95High`, `AI_LIVE_LatencyP99High`
 
-### AI Live Ops Determinism v1 (no manual copy)
+### AI Live
+
+## AI Live UX v2 (Dashboard)
+This dashboard includes an expanded AI Live control + ops pack:
+- Latency: p95/p99 (5m) from `peaktrade_ai_decision_latency_ms_bucket`
+- Quality: parse errors and drops (5m) from `peaktrade_ai_events_parse_errors_total` and `peaktrade_ai_events_dropped_total`
+- Freshness: worst-case event age (seconds) from `peaktrade_ai_last_event_timestamp_seconds` (and per run_id if enabled)
+- Ops: active alert counts via Grafana `ALERTS` datasource query (no-data hardened)
+ Ops Determinism v1 (no manual copy)
 
 **Ziel:** Beim frischen Start des lokalen Observability-Stacks sind die AI Live Alert-Regeln **sofort geladen** (ohne manuelles Copy/Reload).
 
