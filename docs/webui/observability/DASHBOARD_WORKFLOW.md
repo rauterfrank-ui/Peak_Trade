@@ -87,6 +87,15 @@ Im Dashboard `peaktrade-execution-watch-overview` ist die Row **„AI Live“** 
   - Dashboard Variable: `run_id` (DS_LOCAL)
   - Panels filtern via `run_id=~"$run_id"` (All → `.*`)
 
+- **AI Live UX v2 (Reason/Action/SLO/Timeline)**:
+  - **Decisions by decision (1m)**: Counts/min nach `decision` (accept/reject/noop), run-scoped
+  - **Reject reasons (5m)**: Top Reasons (Timeseries, stacked), run-scoped
+  - **Noop reasons (5m)**: Top Reasons (Timeseries, stacked), run-scoped
+  - **Actions (5m)**: Top Actions aus `peaktrade_ai_actions_total`, run-scoped
+  - **Latency SLO > 500ms (5m) — breach %**: SLO-Breach basierend auf Histogram `peaktrade_ai_decision_latency_seconds_*` (run-scoped)
+  - **Latency breach % (>500ms) (5m)**: Timeseries-Variante (run-scoped)
+  - **AI Activity State (per decision type, last 30m)**: 0/1 Aktivitäts-Spuren je Decision-Type (run-scoped)
+
 - **AI Active (last 30s)**: Aktivitätsindikator (1 wenn in den letzten 30s eine AI-Decision passiert ist, sonst 0)
 - **Total decisions / min (1m)**: Gesamt-Durchsatz (pro Minute)
 - **Reject share (5m)**: Reject-Anteil als 0..1 (Grafana Unit `percentunit`)
@@ -98,6 +107,7 @@ Im Dashboard `peaktrade-execution-watch-overview` ist die Row **„AI Live“** 
 
 **Validierung (schnell):**
 - In Grafana → Dashboard öffnen → Time range z.B. „Last 30m“
+- `run_id` setzen (All oder konkreter Lauf) und prüfen, dass die UX v2 Panels deterministisch 0/„none“ zeigen wenn keine Daten da sind (no-data hardening).
 - Prüfen, dass bei „idle/no traffic“ keine NaNs/Inf auftauchen (Nennersicherung via `clamp_min(..., 1e-9)`), und „AI Active“ sauber 0 zeigt.
 
 ## Compare Pack v0.1 (stacked auf PR #950)
