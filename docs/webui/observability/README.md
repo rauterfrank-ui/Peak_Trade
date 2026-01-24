@@ -104,11 +104,87 @@ chmod +x scripts/obs/ai_live_smoke_test.sh
 bash scripts/obs/ai_live_smoke_test.sh
 ```
 
+### AI Live Ops Pack v1 (Alerts + Ops Summary)
+
+Ziel: AI Live operabel machen (watch-only): **Alerts**, **SLO-Style Checks** und eine kompakte **Ops Summary** oben im
+Dashboard `Peak_Trade — Execution Watch Overview`.
+
+#### Grafana: „AI Live — Ops Summary“ (Top-Row)
+
+- **AI Live Up**: `max(up{job="ai_live"})` (0/1)
+- **AI Live Fresh (worst age s)**: Worst-case Event-Alter über alle `source`
+- **Parse errors / 5m**: `increase(peaktrade_ai_events_parse_errors_total[5m])`
+- **Drops / 5m**: `increase(peaktrade_ai_events_dropped_total[5m])`
+- **Latency p95 (5m)**: `histogram_quantile(0.95, ...)`
+- **Active alerts (firing)**: `count(ALERTS{alertstate="firing"})`
+
+#### Prometheus Alerts (Regeln)
+
+- Rules file: `docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml`
+- Alert-Namen (stabil): `AI_LIVE_ExporterDown`, `AI_LIVE_StaleEvents`, `AI_LIVE_ParseErrorsSpike`, `AI_LIVE_DroppedEventsSpike`, `AI_LIVE_LatencyP95High` (+ optional `AI_LIVE_LatencyP99High`)
+
+**Wichtig (lokal / docker compose)**  
+In `DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` wird standardmäßig nur `PROMETHEUS_LOCAL_SCRAPE.yml` nach `/etc/prometheus/prometheus.yml` gemountet.
+Damit die Alerts wirklich geladen werden, muss das Rules-File im Container unter `/etc/prometheus/rules/` verfügbar sein.
+
+Minimaler, deterministischer Pfad (copy + reload):
+
+```bash
+# (1) rules dir im Container anlegen
+docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml exec prometheus-local sh -lc 'mkdir -p /etc/prometheus/rules'
+
+# (2) Rules file kopieren
+docker compose -p peaktrade-shadow-mvs -f docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml cp \
+  "docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml" \
+  prometheus-local:/etc/prometheus/rules/ai_live_alerts_v1.yml
+
+# (3) Prometheus reload (web.enable-lifecycle ist aktiviert)
+curl -fsS -X POST http://127.0.0.1:9092/-/reload
+```
+
+#### Alert Meaning + Sofortmaßnahmen
+
+- **AI_LIVE_ExporterDown**
+  - Bedeutung: `up{job="ai_live"} == 0` → Exporter wird nicht gescrapt.
+  - Sofort: Port Contract v1 prüfen (`:9110`), Exporter-Metrics direkt öffnen (`http://127.0.0.1:9110/metrics`), Port-Konflikt prüfen:
+
+```bash
+lsof -nP -iTCP:9110 -sTCP:LISTEN
+```
+
+- **AI_LIVE_StaleEvents**
+  - Bedeutung: Event-Freshness pro `source` ist > 60s (über 2m).
+  - Sofort: Event-Writer/Emitter läuft? JSONL-Pfad korrekt (`PEAK_TRADE_AI_EVENTS_JSONL`)? Werden Events noch appended?
+
+- **AI_LIVE_ParseErrorsSpike**
+  - Bedeutung: Parse-Errors treten auf (typisch: invalid JSON / Schema-Drift).
+  - Sofort: Suche nach „bad lines“ im JSONL, reproduziere mit absichtlich kaputten Zeilen (z.B. Emitter/Hand-Append) und prüfe Drops/Reasons.
+
+- **AI_LIVE_DroppedEventsSpike**
+  - Bedeutung: Events werden verworfen; häufige Gründe: `bad_json`, `missing_fields`, `unknown_schema`.
+  - Sofort: Breakdown in Grafana (Drops by reason) ansehen; bei `unknown_schema` ist das meist **Schema Drift**.
+
+- **AI_LIVE_LatencyP95High** (optional **P99High**)
+  - Bedeutung: Decision-Latenz (Histogram) ist über Threshold (p95 > 250ms / p99 > 500ms, 5m).
+  - Sofort: Prüfe gleichzeitig Throughput (decisions/min) und Tail-Latency; bei low traffic kann p99 noisy sein → Thresholds nach Baseline tunen.
+
+#### Prometheus API Quick Queries (robust, token-policy safe)
+
+Nutze das repo-interne Helper-Script (Retries + Evidence), statt `curl | python json.load(sys.stdin)`:
+
+```bash
+PROM_BASE="http://127.0.0.1:9092"
+
+bash scripts/obs/_prom_query_json.sh --base "$PROM_BASE" --query 'up{job="ai_live"}' --out /tmp/pt_ai_live_up.json --retries 3
+bash scripts/obs/_prom_query_json.sh --base "$PROM_BASE" --query 'ALERTS{alertstate="firing"}' --out /tmp/pt_ai_live_alerts.json --retries 3
+bash scripts/obs/_prom_query_json.sh --base "$PROM_BASE" --query 'max(clamp_min(time() - max by (source) (peaktrade_ai_last_event_timestamp_seconds), 0))' --out /tmp/pt_ai_live_age.json --retries 3
+```
+
 ### Grafana Erwartung (Screenshot-Mental-Model)
 
-Im Dashboard „Peak_Trade — Execution Watch Overview“ erscheint ganz oben die Row „AI Live“:
-- **Stats**: Decisions/min, Accept (5m), Reject (5m), No-op (5m), Last decision age (s)
-- **Time series**: Accept vs Reject (rate), Reject reasons (topk by rate)
+Im Dashboard „Peak_Trade — Execution Watch Overview“ erscheint ganz oben:
+- Row **„AI Live — Ops Summary“** (Up/Freshness/Errors/Drops/Latency/Active Alerts)
+- darunter Row **„AI Live“** (Control Panel: Stats + Timeseries + Reject Reasons + Freshness)
 
 ## Quickstart (lokal): Grafana-only Provisioning Smoke (ohne Mock-Exporter)
 

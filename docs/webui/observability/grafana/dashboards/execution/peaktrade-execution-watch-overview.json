@@ -106,8 +106,182 @@
   "panels": [
     {
       "type": "row",
-      "title": "AI Live",
+      "title": "AI Live — Ops Summary",
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "stat",
+      "title": "AI Live Up",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(max(up{job=\"ai_live\"}) or on() vector(0))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": { "0": { "text": "DOWN" }, "1": { "text": "UP" } }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat",
+      "title": "AI Live Fresh (worst age s)",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max(clamp_min(time() - max by (source)(peaktrade_ai_last_event_timestamp_seconds), 0)) or on() vector(0)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 120 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat",
+      "title": "Parse errors / 5m",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(sum(increase(peaktrade_ai_events_parse_errors_total[5m])) or on() vector(0))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat",
+      "title": "Drops / 5m",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(sum(increase(peaktrade_ai_events_dropped_total[5m])) or on() vector(0))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat",
+      "title": "Latency p95 (5m)",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(histogram_quantile(0.95, sum(rate(peaktrade_ai_decision_latency_ms_bucket[5m])) by (le)) or on() vector(0))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 250 },
+              { "color": "red", "value": 500 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat",
+      "title": "Active alerts (firing)",
+      "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(count(ALERTS{alertstate=\"firing\"}) or on() vector(0))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "row",
+      "title": "AI Live",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
       "collapsed": false,
       "panels": []
     },
@@ -115,7 +289,7 @@
       "type": "stat",
       "title": "AI Active (last 30s)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 6 },
       "targets": [
         {
           "refId": "A",
@@ -148,7 +322,7 @@
       "type": "stat",
       "title": "Total decisions / min (1m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 6 },
       "targets": [
         {
           "refId": "A",
@@ -162,7 +336,7 @@
       "type": "stat",
       "title": "Reject share (5m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 6 },
       "targets": [
         {
           "refId": "A",
@@ -193,7 +367,7 @@
       "type": "stat",
       "title": "Last decision age (s)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 6 },
       "targets": [
         {
           "refId": "A",
@@ -208,7 +382,7 @@
       "type": "timeseries",
       "title": "Decisions / min (1m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 5 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 10 },
       "targets": [
         {
           "refId": "A",
@@ -238,7 +412,7 @@
       "type": "bargauge",
       "title": "Top reject reasons (10m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 13 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 18 },
       "targets": [
         {
           "refId": "A",
@@ -253,7 +427,7 @@
       "type": "stat",
       "title": "Latency p95 (5m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 19 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 24 },
       "targets": [
         {
           "refId": "A",
@@ -267,7 +441,7 @@
       "type": "stat",
       "title": "Parse errors / min (5m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 19 },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 24 },
       "targets": [
         {
           "refId": "A",
@@ -281,7 +455,7 @@
       "type": "bargauge",
       "title": "Drops / min (5m)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 19 },
+      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 24 },
       "targets": [
         {
           "refId": "A",
@@ -296,7 +470,7 @@
       "type": "timeseries",
       "title": "Source freshness (age s)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 23 },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 28 },
       "targets": [
         {
           "refId": "A",
@@ -309,7 +483,7 @@
     {
       "type": "row",
       "title": "Health invariants (shadow)",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 34 },
       "collapsed": false,
       "panels": []
     },
@@ -317,7 +491,7 @@
       "type": "stat",
       "title": "UP (job=shadow_mvs)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 30 },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 35 },
       "targets": [
         { "refId": "A", "expr": "min(up{job=\"shadow_mvs\"})" }
       ],
@@ -342,7 +516,7 @@
       "type": "stat",
       "title": "Exporter (shadow_mvs_up)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 30 },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 35 },
       "targets": [
         { "refId": "A", "expr": "max(shadow_mvs_up)" }
       ],
@@ -367,7 +541,7 @@
       "type": "stat",
       "title": "Contract: pipeline events metric present",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 30 },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 35 },
       "targets": [
         { "refId": "A", "expr": "((absent(peak_trade_pipeline_events_total) OR on() vector(0)))" }
       ],
@@ -399,7 +573,7 @@
       "type": "stat",
       "title": "Contract: execution watch metrics present",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 30 },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 35 },
       "targets": [
         {
           "refId": "A",
@@ -433,7 +607,7 @@
     {
       "type": "row",
       "title": "Shadow pipeline signals (throughput, errors, latency, risk blocks)",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 35 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 40 },
       "collapsed": false,
       "panels": []
     },
@@ -441,7 +615,7 @@
       "type": "timeseries",
       "title": "Pipeline events rate (by stage)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 36 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 41 },
       "targets": [
         {
           "refId": "A",
@@ -454,7 +628,7 @@
       "type": "timeseries",
       "title": "Pipeline error rate",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 36 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 41 },
       "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 }, "overrides": [] },
       "targets": [
         {
@@ -468,7 +642,7 @@
       "type": "timeseries",
       "title": "Risk blocks rate (by reason)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 44 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 49 },
       "targets": [
         {
           "refId": "A",
@@ -481,7 +655,7 @@
       "type": "timeseries",
       "title": "Latency p95 (intent → ack)",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 44 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 49 },
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "targets": [
         {
@@ -494,7 +668,7 @@
     {
       "type": "row",
       "title": "Replay/compare signals (Execution Watch API metrics, if enabled)",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 52 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 57 },
       "collapsed": false,
       "panels": []
     },
@@ -502,7 +676,7 @@
       "type": "timeseries",
       "title": "Execution Watch req/s (by endpoint, status)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 53 },
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 58 },
       "fieldConfig": {
         "defaults": {
           "links": [
@@ -527,7 +701,7 @@
       "type": "timeseries",
       "title": "Execution Watch latency p95 (by endpoint)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 62 },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 67 },
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "targets": [
         {
@@ -541,7 +715,7 @@
       "type": "timeseries",
       "title": "Execution Watch JSONL read errors (rate)",
       "datasource": { "type": "prometheus", "uid": "${DS_LOCAL}" },
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 62 },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 67 },
       "targets": [
         {
           "refId": "A",
@@ -553,7 +727,7 @@
     {
       "type": "row",
       "title": "Compare (shadow vs main) — best-effort",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 71 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 76 },
       "collapsed": false,
       "panels": []
     },
@@ -561,7 +735,7 @@
       "type": "timeseries",
       "title": "UP (shadow) — job=peak_trade_web",
       "datasource": { "type": "prometheus", "uid": "${DS_SHADOW}" },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 72 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 77 },
       "targets": [
         { "refId": "A", "expr": "up{job=\"peak_trade_web\"}", "legendFormat": "{{instance}}" }
       ]
@@ -570,7 +744,7 @@
       "type": "timeseries",
       "title": "UP (main) — job=peak_trade_web",
       "datasource": { "type": "prometheus", "uid": "${DS_MAIN}" },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 72 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 77 },
       "targets": [
         { "refId": "A", "expr": "up{job=\"peak_trade_web\"}", "legendFormat": "{{instance}}" }
       ]

@@ -80,6 +80,9 @@ Ziel: Operator kann in jedem Dashboard deterministisch zwischen lokalen/optional
 
 Im Dashboard `peaktrade-execution-watch-overview` ist die Row **„AI Live“** als **Live-Control-Panel** gedacht:
 
+- Zusätzlich gibt es ganz oben die Row **„AI Live — Ops Summary“** (Ops Pack v1):
+  - Up/Freshness/ParseErrors/Drops/Latency (p95) + Active Alerts (firing)
+
 - **AI Active (last 30s)**: Aktivitätsindikator (1 wenn in den letzten 30s eine AI-Decision passiert ist, sonst 0)
 - **Total decisions / min (1m)**: Gesamt-Durchsatz (pro Minute)
 - **Reject share (5m)**: Reject-Anteil als 0..1 (Grafana Unit `percentunit`)
