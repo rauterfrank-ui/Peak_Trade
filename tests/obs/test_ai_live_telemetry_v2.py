@@ -40,7 +40,9 @@ def _parse_labels(raw: str) -> dict[str, str]:
     return out
 
 
-def _series_value(text: str, *, name: str, labels: Optional[dict[str, str]] = None) -> Optional[float]:
+def _series_value(
+    text: str, *, name: str, labels: Optional[dict[str, str]] = None
+) -> Optional[float]:
     """
     Return the first matching sample value for a metric+labelset from Prometheus text exposition.
     """
@@ -121,7 +123,12 @@ def test_parse_errors_and_bad_json_drop_increment_on_malformed_json(exporter_mod
     warn = exporter_mod._RateLimitedWarn(min_interval_s=0.0)
 
     txt0 = _metrics_text()
-    p0 = _series_value(txt0, name="peaktrade_ai_events_parse_errors_total", labels={"source": "unknown"}) or 0.0
+    p0 = (
+        _series_value(
+            txt0, name="peaktrade_ai_events_parse_errors_total", labels={"source": "unknown"}
+        )
+        or 0.0
+    )
     d0 = (
         _series_value(
             txt0,
@@ -139,7 +146,12 @@ def test_parse_errors_and_bad_json_drop_increment_on_malformed_json(exporter_mod
     )
 
     txt1 = _metrics_text()
-    p1 = _series_value(txt1, name="peaktrade_ai_events_parse_errors_total", labels={"source": "unknown"}) or 0.0
+    p1 = (
+        _series_value(
+            txt1, name="peaktrade_ai_events_parse_errors_total", labels={"source": "unknown"}
+        )
+        or 0.0
+    )
     d1 = (
         _series_value(
             txt1,
