@@ -45,7 +45,7 @@
     {
       "type": "link",
       "title": "Explore (req/s, endpoint/status)",
-      "url": "/explore?left=%7B%22datasource%22%3A%22$%7Bds%7D%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22sum%20by%20%28endpoint%2C%20status%29%20%28rate%28peak_trade_execution_watch_requests_total%7Bendpoint%3D~%5C%22$endpoint%5C%22%2Cstatus%3D~%5C%22$status%5C%22%7D%5B5m%5D%29%29%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-30m%22%2C%22to%22%3A%22now%22%7D%7D",
+      "url": "/explore?left=%7B%22datasource%22%3A%22$%7BDS_LOCAL%7D%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22sum%20by%20%28endpoint%2C%20status%29%20%28rate%28peak_trade_execution_watch_requests_total%7Bendpoint%3D~%5C%22$endpoint%5C%22%2Cstatus%3D~%5C%22$status%5C%22%7D%5B5m%5D%29%29%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-30m%22%2C%22to%22%3A%22now%22%7D%7D",
       "targetBlank": false,
       "keepTime": false,
       "includeVars": true
@@ -54,23 +54,43 @@
   "templating": {
     "list": [
       {
-        "name": "ds",
-        "label": "Datasource",
         "type": "datasource",
+        "name": "DS_LOCAL",
+        "label": "Prometheus (local)",
         "query": "prometheus",
-        "regex": "^(prom_local_9092|prom_shadow_9093|prom_ai_live_9094|prom_observability_9095)$",
-        "refresh": 1,
-        "hide": 0,
-        "multi": false,
-        "includeAll": false,
-        "allValue": null,
-        "sort": 0,
-        "skipUrlSync": false,
         "current": {
-          "text": "prom_local_9092",
-          "value": "prom_local_9092"
+          "text": "prometheus-local",
+          "value": "peaktrade-prometheus-local"
         },
-        "options": []
+        "options": [],
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_MAIN",
+        "label": "Prometheus (main)",
+        "query": "prometheus",
+        "current": {
+          "text": "prometheus-main",
+          "value": "peaktrade-prometheus-main"
+        },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
+      },
+      {
+        "type": "datasource",
+        "name": "DS_SHADOW",
+        "label": "Prometheus (shadow)",
+        "query": "prometheus",
+        "current": {
+          "text": "prometheus-shadow",
+          "value": "peaktrade-prometheus-shadow"
+        },
+        "options": [],
+        "refresh": 1,
+        "hide": 2
       },
       {
         "type": "query",
@@ -78,7 +98,7 @@
         "label": "endpoint",
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds}"
+          "uid": "peaktrade-prometheus-local"
         },
         "query": {
           "query": "label_values(peak_trade_execution_watch_requests_total, endpoint)",
@@ -100,7 +120,7 @@
         "label": "status",
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds}"
+          "uid": "peaktrade-prometheus-local"
         },
         "query": {
           "query": "label_values(peak_trade_execution_watch_requests_total, status)",
@@ -120,177 +140,17 @@
   },
   "panels": [
     {
-      "id": 1,
-      "type": "row",
-      "title": "Stack Fingerprint",
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "panels": []
-    },
-    {
-      "id": 2,
-      "type": "stat",
-      "title": "Stack Fingerprint: Active Stacks",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 1
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "count by (job) (up)",
-          "instant": true,
-          "range": false,
-          "legendFormat": "{{stack}}"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "orientation": "horizontal",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "Stack Fingerprint: Target Count",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 1
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "count(up)",
-          "instant": true,
-          "range": false,
-          "legendFormat": "__auto"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "orientation": "horizontal",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 4,
-      "type": "table",
-      "title": "Stack Fingerprint: Targets UP",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${ds}"
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 7
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "up == 1",
-          "instant": true,
-          "range": false,
-          "legendFormat": "__auto"
-        }
-      ],
-      "options": {
-        "showHeader": true,
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": false
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
       "type": "text",
       "title": "Drilldown context",
       "gridPos": {
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 0
       },
       "options": {
         "mode": "markdown",
-        "content": "Diese View ist für Drilldowns aus **Execution Watch Overview**.\n\n- Filter: `endpoint=~\"$endpoint\"`, `status=~\"$status\"`\n- Datasource ist **ds** (Guardrail gegen false MISSING auf ds)."
+        "content": "Diese View ist für Drilldowns aus **Execution Watch Overview**.\n\n- Filter: `endpoint=~\"$endpoint\"`, `status=~\"$status\"`\n- Datasource ist **DS_LOCAL** (Guardrail gegen false MISSING auf DS_SHADOW)."
       }
     },
     {
@@ -298,13 +158,13 @@
       "title": "Execution Watch req/s (filtered)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 4
       },
       "targets": [
         {
@@ -319,13 +179,13 @@
       "title": "Execution Watch latency p95 (filtered)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 14
       },
       "fieldConfig": {
         "defaults": {
