@@ -78,7 +78,7 @@
       "title": "Operator Summary",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 6,
@@ -136,7 +136,7 @@
       "title": "System Health",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 6,
@@ -194,7 +194,7 @@
       "title": "Execution Watch Overview",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 6,
@@ -252,7 +252,7 @@
       "title": "Shadow Pipeline (MVS)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 6,
@@ -310,7 +310,7 @@
       "title": "Compare (Main vs Shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 6,

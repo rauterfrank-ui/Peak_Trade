@@ -121,7 +121,7 @@
       "title": "UP (peak_trade_web) — main (optional)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 5,
@@ -179,7 +179,7 @@
       "title": "UP (peak_trade_web) — shadow",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
@@ -249,7 +249,7 @@
       "title": "Contract: http requests metric present — main (optional)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 5,
@@ -314,7 +314,7 @@
       "title": "Contract: http requests metric present — shadow",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
@@ -392,7 +392,7 @@
       "description": "Main typically does not export shadow_mvs pipeline contract metrics. If you have main exporting them, replace this panel with a real main query.",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 9,
@@ -413,7 +413,7 @@
       "title": "Pipeline events rate (shadow_mvs) — shadow",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 9,
