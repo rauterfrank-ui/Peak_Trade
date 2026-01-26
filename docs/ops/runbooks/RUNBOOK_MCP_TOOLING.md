@@ -57,15 +57,15 @@ Die MCP-Server werden projekt-lokal über `.cursor/mcp.json` konfiguriert.
 
 ### Lokale Env-Datei (Template + lokale Kopie)
 
-Im Repo liegt ein Template: `.cursor/.env.example`.
+Im Repo liegt ein Template: `.cursor&#47;.env.example`.
 
 ```bash
 # Einmalig lokal:
-cp .cursor/.env.example .cursor/.env
-# Dann Token eintragen in .cursor/.env (lokal, gitignored via .gitignore-Regel für .env)
+cp .cursor&#47;.env.example .cursor&#47;.env
+# Dann Token eintragen in .cursor&#47;.env (lokal, gitignored via .gitignore-Regel für .env)
 ```
 
-> Hinweis: Dieses Repo ignoriert `.env`-Dateien per `.gitignore`. Die lokale Datei `.cursor/.env` wird daher nicht committed.
+> Hinweis: Dieses Repo ignoriert `.env`-Dateien per `.gitignore`. Die lokale Datei `.cursor&#47;.env` wird daher nicht committed.
 
 ### Cursor übernimmt Env Vars nur beim Start
 
@@ -75,7 +75,7 @@ Beispiel (Shell-Session):
 
 ```bash
 set -a
-source .cursor/.env
+source .cursor&#47;.env
 set +a
 
 # Danach Cursor aus dieser Shell starten (Variante A: Cursor CLI, falls installiert)
