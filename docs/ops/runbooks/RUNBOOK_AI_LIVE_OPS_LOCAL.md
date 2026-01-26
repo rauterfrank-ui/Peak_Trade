@@ -78,13 +78,13 @@ bash scripts/obs/ai_live_local_verify.sh
 ```
 
 **Outputs (wo du nachsehen sollst):**
-- Wrapper OUT: `.local_tmp/ai_live_local_verify_<timestamp>`
+- Wrapper OUT: `.local_tmp&#47;ai_live_local_verify_<timestamp>`
   - `OPERATOR_NOTE.txt`
   - `MANIFEST_SHA256.txt`
   - `KEY_MATERIAL_SCAN.txt` (head-only heuristic)
-  - `LATEST_DIRS.txt` (zeigt zuletzt erzeugte `.local_tmp/ai_live_ops_verify_*` und `.local_tmp/ai_live_activity_demo_*`)
-- Canonical verify evidence: `.local_tmp/ai_live_ops_verify_<timestamp>`
-- Activity demo evidence: `.local_tmp/ai_live_activity_demo_<timestamp>` (nur wenn Exporter auf `:9110` erreichbar ist)
+  - `LATEST_DIRS.txt` (zeigt zuletzt erzeugte `.local_tmp&#47;ai_live_ops_verify_*` und `.local_tmp&#47;ai_live_activity_demo_*`)
+- Canonical verify evidence: `.local_tmp&#47;ai_live_ops_verify_<timestamp>`
+- Activity demo evidence: `.local_tmp&#47;ai_live_activity_demo_<timestamp>` (nur wenn Exporter auf `:9110` erreichbar ist)
 
 ### 5.1 Canonical Proof Command
 ```bash
