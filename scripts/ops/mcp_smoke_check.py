@@ -44,6 +44,7 @@ from typing import Dict, List, Optional, Tuple
 
 class Colors:
     """ANSI color codes für Terminal-Ausgabe."""
+
     GREEN = "\033[32m"
     YELLOW = "\033[33m"
     RED = "\033[31m"
