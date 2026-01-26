@@ -104,6 +104,23 @@ python3 -u scripts/obs/emit_ai_live_sample_events.py --out "logs/ai/ai_events.js
 
 ## 5) Verify (canonical, one command proof)
 
+## 5.0 Quickstart (recommended): One Command Wrapper
+
+Empfohlen (Single Source of Truth, snapshot-only, file-backed evidence; keine Inline-Code-Duplizierung im Runbook):
+
+```bash
+bash scripts/obs/ai_live_local_verify.sh
+```
+
+**Outputs (wo du nachsehen sollst):**
+- Wrapper OUT: `.local_tmp/ai_live_local_verify_<timestamp>`
+  - `OPERATOR_NOTE.txt`
+  - `MANIFEST_SHA256.txt`
+  - `KEY_MATERIAL_SCAN.txt` (head-only heuristic)
+  - `LATEST_DIRS.txt` (zeigt zuletzt erzeugte `.local_tmp/ai_live_ops_verify_*` und `.local_tmp/ai_live_activity_demo_*`)
+- Canonical verify evidence: `.local_tmp/ai_live_ops_verify_<timestamp>`
+- Activity demo evidence: `.local_tmp/ai_live_activity_demo_<timestamp>` (nur wenn Exporter auf `:9110` erreichbar ist)
+
 ### 5.1 Canonical Proof Command
 ```bash
 chmod +x scripts/obs/ai_live_ops_verify.sh
