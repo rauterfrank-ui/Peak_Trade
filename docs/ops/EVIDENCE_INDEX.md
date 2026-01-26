@@ -1,5 +1,10 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260125-ai-live-ops-local-010948z"></a>
+- **EV-20260125-AI-LIVE-OPS-LOCAL-010948Z** | Date: 2026-01-25 | Owner: ops | Scope: docs-only evidence | Risk: LOW  
+  - Source: [Evidence](evidence/EV_AI_LIVE_OPS_LOCAL_20260125T010948Z.md)  
+  - Claim: AI Live Telemetry local verify PASS (snapshot-only, file-backed evidence; NO-LIVE, port contract v1 :9110).  
+
 <a id="ev-20260122-pr926-slice3-beta-bridge-determinism"></a>
 - **EV-20260122-PR926-SLICE3-BETA-BRIDGE-DETERMINISM** | Date: 2026-01-22 | Owner: execution | Scope: code+tests+docs | Risk: HIGH  
   - Source: [PR #926 Merge Log](merge_logs/PR_926_MERGE_LOG.md) · [PR #926](https://github.com/rauterfrank-ui/Peak_Trade/pull/926) · Commit: `ec03fc95`  
