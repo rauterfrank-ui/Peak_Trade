@@ -245,9 +245,9 @@ dynamic_allocation = true
 
 ### 5.5 Multi-Portfolio-Support
 
-**Status:** Nicht implementiert
+**Status:** Partial (Profile-Overrides implementiert)
 
-**Idee:**
+**Aktuell implementiert (Profile-Overrides):**
 ```toml
 [portfolio.conservative]
 allocation_method = "equal"

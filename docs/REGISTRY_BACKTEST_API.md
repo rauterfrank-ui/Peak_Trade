@@ -360,16 +360,21 @@ rebalance_freq = portfolio_cfg.get("rebalance_frequency", 24)
 # Implementierung: Rolling-Allocation basierend auf Performance
 ```
 
-### 5.4 Multi-Portfolio-Support (TODO)
+### 5.4 Multi-Portfolio-Support (Partial)
+
+**Status:** Basis-Implementierung vorhanden (Profile-Overrides via Subtables).
+
+Aktuell unterstützt Peak_Trade **Portfolio-Profile-Overrides** via TOML-Subtables:
 
 ```toml
-[portfolio.conservative]
+[portfolio]
+enabled = true
 allocation_method = "equal"
-strategy_filter = ["ma_crossover"]
+total_capital = 10000.0
 
 [portfolio.aggressive]
-allocation_method = "risk_parity"
-strategy_filter = ["momentum_1h", "rsi_strategy"]
+allocation_method = "manual"
+total_capital = 20000.0
 ```
 
 ```python

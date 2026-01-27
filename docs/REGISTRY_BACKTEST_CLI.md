@@ -33,8 +33,8 @@ python scripts/run_registry_portfolio_backtest.py --test-connection
 
 ```bash
 --symbol BTC/USD          # Trading-Pair (default: BTC/USD)
---timeframe 1h            # Timeframe: 1m, 5m, 15m, 1h, 4h, 1d (default: 1h)
---limit 720               # Anzahl Bars (max. 720) (default: 720)
+--timeframe 1h            # Timeframe (strict allowlist): 1m, 5m, 15m, 1h, 4h, 1d (default: 1h). Ungültig => argparse error.
+--limit 720               # Anzahl Bars (max. 720) (default: 720). >720 => argparse error.
 --no-cache                # Cache deaktivieren (immer frisch von Kraken)
 ```
 
@@ -44,6 +44,31 @@ python scripts/run_registry_portfolio_backtest.py --test-connection
 --portfolio default       # Portfolio-Name aus config.toml (default: default)
 --strategies ma_crossover momentum_1h  # Custom Strategien (überschreibt active)
 --regime trending         # Filtere nach Marktregime (trending/ranging/any)
+```
+
+**Wichtig (Semantik):**
+- **`--regime any`** bedeutet **kein Regime-Filter** → es werden **alle verfügbaren Strategien** berücksichtigt (nicht nur solche mit `best_market_regime == "any"`).
+- **`--portfolio <name>`** wird in `run_portfolio_from_config(...)` als `portfolio_name` aufgelöst. Optional können **Portfolio-Profile/Subtables** als Overrides definiert werden, z. B. `[portfolio.aggressive]` (und verschachtelt `[portfolio.aggressive.weights]`).
+
+Beispiel (Profile/Overrides):
+
+```toml
+[portfolio]
+enabled = true
+allocation_method = "equal"
+total_capital = 10000.0
+
+[portfolio.weights]
+ma_crossover = 0.5
+momentum_1h = 0.5
+
+[portfolio.aggressive]
+allocation_method = "manual"
+total_capital = 20000.0
+
+[portfolio.aggressive.weights]
+ma_crossover = 0.8
+momentum_1h = 0.2
 ```
 
 ### Output-Parameter
@@ -246,7 +271,9 @@ entry_time,entry_price,size,stop_price,exit_time,exit_price,pnl,pnl_pct,exit_rea
 ### "Config nicht gefunden"
 
 ```bash
-# Config liegt in config/config.toml (nicht im Root)
+# Default: config/config.toml (Fallback: config.toml).
+# Robust gegen abweichendes CWD (Script kann aus beliebigem Working Directory laufen).
+#
 # Prüfe Pfad:
 ls -l config/config.toml
 
