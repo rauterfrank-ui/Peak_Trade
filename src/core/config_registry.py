@@ -99,12 +99,14 @@ class ConfigRegistry:
         2) <repo>/config/config.toml
         3) <repo>/config.toml
         """
-        env_path = os.getenv("PEAK_TRADE_CONFIG")
+        # Prefer PEAK_TRADE_CONFIG (documented for registry/CLI),
+        # then fall back to PEAK_TRADE_CONFIG_PATH (used by test harness / other loaders).
+        env_path = os.getenv("PEAK_TRADE_CONFIG") or os.getenv("PEAK_TRADE_CONFIG_PATH")
         if env_path:
             p = Path(env_path)
             if not p.is_absolute():
                 p = _PROJECT_ROOT / p
-            logger.info("ConfigRegistry: using PEAK_TRADE_CONFIG override: %s", p)
+            logger.info("ConfigRegistry: using config override: %s", p)
             return p
 
         if DEFAULT_CONFIG_PATH.exists():

@@ -246,6 +246,7 @@ def test_config_path_default_and_fallback(tmp_path: Path, monkeypatch: pytest.Mo
     from src.core import config_registry as cr
 
     monkeypatch.delenv("PEAK_TRADE_CONFIG", raising=False)
+    monkeypatch.delenv("PEAK_TRADE_CONFIG_PATH", raising=False)
     monkeypatch.setattr(cr, "_PROJECT_ROOT", fake_root, raising=False)
     monkeypatch.setattr(
         cr, "DEFAULT_CONFIG_PATH", fake_root / "config" / "config.toml", raising=False
@@ -298,6 +299,7 @@ def test_config_resolution_logs_choice(
     from src.core import config_registry as cr
 
     monkeypatch.delenv("PEAK_TRADE_CONFIG", raising=False)
+    monkeypatch.delenv("PEAK_TRADE_CONFIG_PATH", raising=False)
     monkeypatch.setattr(cr, "_PROJECT_ROOT", fake_root, raising=False)
     monkeypatch.setattr(
         cr, "DEFAULT_CONFIG_PATH", fake_root / "config" / "config.toml", raising=False
