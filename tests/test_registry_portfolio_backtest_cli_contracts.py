@@ -321,6 +321,10 @@ def test_strategies_available_sanity_warnings(
     _write_toml(
         cfg_path,
         """
+[backtest]
+initial_cash = 10000.0
+results_dir = "results"
+
 [strategies]
 active = []
 available = ["known", "unknown"]

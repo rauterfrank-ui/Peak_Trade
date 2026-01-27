@@ -166,6 +166,26 @@ class ConfigRegistry:
         try:
             with open(self.config_path, "rb") as f:
                 cfg = tomllib.load(f)
+
+            # Defensive fallback:
+            # In CI and some test setups, PEAK_TRADE_CONFIG may be used for other config systems
+            # (e.g. a root-level config without [backtest]). BacktestEngine requires cfg["backtest"].
+            # If an override config lacks required anchors, fall back to the default registry config.
+            if "backtest" not in cfg:
+                if self.config_path != DEFAULT_CONFIG_PATH and DEFAULT_CONFIG_PATH.exists():
+                    logger.warning(
+                        "ConfigRegistry: config at %s lacks [backtest]; falling back to default: %s",
+                        self.config_path,
+                        DEFAULT_CONFIG_PATH,
+                    )
+                    with open(DEFAULT_CONFIG_PATH, "rb") as f:
+                        cfg = tomllib.load(f)
+                else:
+                    logger.warning(
+                        "ConfigRegistry: config at %s lacks [backtest]; callers may fail with KeyError",
+                        self.config_path,
+                    )
+
             # Sanity warnings (no hard errors)
             try:
                 self._warn_strategy_catalog_mismatches(cfg)
