@@ -1,4 +1,4 @@
-# PR_XXXX MERGE LOG
+# PR_1017 MERGE LOG
 
 ## Summary
 Contract-lock for registry backtest CLI + SSOT portfolio profile resolver + config resolution observability and sanity warnings; docs drift fixed.
@@ -30,4 +30,4 @@ LOW. No changes to execution/risk/governance subsystems. Refactor to SSOT + addi
 - Config priority: `PEAK_TRADE_CONFIG` > `config/config.toml` > `config.toml`
 
 ## References
-- PR: #XXXX
+- PR: #1017
