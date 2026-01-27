@@ -1,4 +1,26 @@
 services:
+  shadow_mvs_exporter:
+    image: python:3.12-slim
+    command:
+      [
+        "python",
+        "/app/scripts/obs/mock_shadow_mvs_exporter.py",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "9109",
+        "--mode",
+        "shadow",
+        "--exchange",
+        "sim",
+      ]
+    ports:
+      - "9109:9109"
+    volumes:
+      # Repo-relative from this compose file dir (docs/webui/observability)
+      - ../../../scripts/obs:/app/scripts/obs:ro
+    restart: unless-stopped
+
   prometheus:
     image: prom/prometheus:latest
     volumes:
@@ -13,6 +35,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
+      - shadow_mvs_exporter
       - prometheus
     environment:
       # Local dev defaults (watch-only). Ensures the login matches the docs.
