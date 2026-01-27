@@ -80,12 +80,16 @@ Erwartet:
 curl -sG 'http://localhost:9092/api/v1/query' --data-urlencode 'query=up{job="shadow_mvs"}' && echo
 curl -sG 'http://localhost:9092/api/v1/query' --data-urlencode 'query=up{job="ai_live"}' && echo
 curl -sG 'http://localhost:9092/api/v1/query' --data-urlencode 'query=peaktrade_ai_decisions_total' && echo
+curl -sG 'http://localhost:9092/api/v1/query' --data-urlencode 'query=peaktrade_signals_total' && echo
+curl -sG 'http://localhost:9092/api/v1/query' --data-urlencode 'query=peaktrade_orders_approved_total' && echo
+curl -sG 'http://localhost:9092/api/v1/query' --data-urlencode 'query=peaktrade_orders_blocked_total' && echo
 ```
 
 Interpretation:
 - `up{job="shadow_mvs"}` → `result != []` ⇒ Shadow-MVS Exporter wird gescraped
 - `up{job="ai_live"}` → `result != []` ⇒ ai_live Exporter wird gescraped
 - `peaktrade_ai_decisions_total` → **3 Serien** (accept/reject/noop; run_id=demo) ⇒ Events werden gelesen
+- `peaktrade_signals_total` / `peaktrade_orders_approved_total` / `peaktrade_orders_blocked_total` → `result != []` ⇒ Trade-Flow Counter sind im Demo-Stack vorhanden (Mock-Exporter liefert deterministische Werte)
 
 ---
 
