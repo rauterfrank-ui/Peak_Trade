@@ -17,6 +17,8 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs & Closeouts
+- [merge_logs/PR_1012_MERGE_LOG.md](merge_logs/PR_1012_MERGE_LOG.md) — PR #1012 (docs(ops): add PR 1011 merge log) ([PR #1012](https://github.com/rauterfrank-ui/Peak_Trade/pull/1012), 2026-01-27)
+- [merge_logs/PR_1011_MERGE_LOG.md](merge_logs/PR_1011_MERGE_LOG.md) — PR #1011 (feat(learning-promotion): promotion loop v1 (runner + live overrides + docs finalizer)) ([PR #1011](https://github.com/rauterfrank-ui/Peak_Trade/pull/1011), 2026-01-27)
 - [merge_logs/PR_994_MERGE_LOG.md](merge_logs/PR_994_MERGE_LOG.md) — PR #994 (ops(mcp): first-class Playwright/Grafana MCP tooling: preflight + runbook + CI signal) ([PR #994](https://github.com/rauterfrank-ui/Peak_Trade/pull/994), 2026-01-27)
 - [merge_logs/PR_964_MERGE_LOG.md](merge_logs/PR_964_MERGE_LOG.md) — PR #964 (AI Live Ops Pack v1: alerts + Grafana ops summary + runbook) ([PR #964](https://github.com/rauterfrank-ui/Peak_Trade/pull/964), 2026-01-24)
 - [merge_logs/PR_716_MERGE_LOG.md](merge_logs/PR_716_MERGE_LOG.md) — PR #716 (Phase 9C Wave 5: broken targets 58→39, goal achieved, 27 token policy violations fixed) ([PR #716](https://github.com/rauterfrank-ui/Peak_Trade/pull/716), 2026-01-14)
