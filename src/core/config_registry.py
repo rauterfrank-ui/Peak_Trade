@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from dataclasses import dataclass
+import logging
 
 # tomllib ist ab Python 3.11 in stdlib
 try:
@@ -28,9 +29,15 @@ except ImportError:
 
 from .errors import ConfigError
 
+logger = logging.getLogger(__name__)
 
-# Default Config-Pfad (relativ zum Projekt-Root)
-DEFAULT_CONFIG_PATH = Path("config.toml")
+
+# Projekt-Root (robust gegenüber unterschiedlichem CWD)
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+# Default Config-Pfade (Primär: config/config.toml, Fallback: ./config.toml)
+DEFAULT_CONFIG_PATH = _PROJECT_ROOT / "config" / "config.toml"
+FALLBACK_CONFIG_PATH = _PROJECT_ROOT / "config.toml"
 
 
 @dataclass
@@ -84,24 +91,82 @@ class ConfigRegistry:
         self._raw_config: Optional[Dict[str, Any]] = None
 
     def _resolve_config_path(self) -> Path:
-        """Bestimmt Config-Pfad (env var > default)."""
+        """
+        Bestimmt Config-Pfad (env var > default > fallback).
+
+        Priorität:
+        1) PEAK_TRADE_CONFIG (wie in docs/REGISTRY_BACKTEST_CLI.md dokumentiert)
+        2) <repo>/config/config.toml
+        3) <repo>/config.toml
+        """
         env_path = os.getenv("PEAK_TRADE_CONFIG")
         if env_path:
-            return Path(env_path)
+            p = Path(env_path)
+            if not p.is_absolute():
+                p = _PROJECT_ROOT / p
+            logger.info("ConfigRegistry: using PEAK_TRADE_CONFIG override: %s", p)
+            return p
+
+        if DEFAULT_CONFIG_PATH.exists():
+            logger.info("ConfigRegistry: using default config path: %s", DEFAULT_CONFIG_PATH)
+            return DEFAULT_CONFIG_PATH
+        if FALLBACK_CONFIG_PATH.exists():
+            logger.warning("ConfigRegistry: default missing, using fallback config path: %s", FALLBACK_CONFIG_PATH)
+            return FALLBACK_CONFIG_PATH
+
+        # Default zurückgeben, damit Fehlermeldung den erwarteten Pfad enthält.
+        logger.warning("ConfigRegistry: no config found; expected default path: %s", DEFAULT_CONFIG_PATH)
         return DEFAULT_CONFIG_PATH
+
+    def _warn_strategy_catalog_mismatches(self, cfg: Dict[str, Any]) -> None:
+        """
+        Sanity warnings for strategies.available vs. configured [strategy.*] blocks.
+
+        - Warn if `strategies.available` contains ids without a corresponding `[strategy.<id>]` block.
+        - Optionally warn if `[strategy.*]` exists but id is not listed in `strategies.available`.
+        """
+        strategies_section = cfg.get("strategies", {}) or {}
+        available = strategies_section.get("available", []) or []
+        defined = list((cfg.get("strategy", {}) or {}).keys())
+
+        if not isinstance(available, list):
+            return
+
+        defined_set = set(defined)
+        missing_blocks = [s for s in available if s not in defined_set]
+        if missing_blocks:
+            logger.warning(
+                "ConfigRegistry: strategies.available contains ids without [strategy.<id>] blocks: %s",
+                missing_blocks,
+            )
+
+        # Optional: defined but not marked available (can cause regime filtering surprises)
+        available_set = set(available)
+        not_listed = [s for s in defined if s not in available_set]
+        if not_listed and available:
+            logger.warning(
+                "ConfigRegistry: [strategy.*] blocks not listed in strategies.available: %s",
+                not_listed,
+            )
 
     def _load_config(self) -> Dict[str, Any]:
         """Lädt config.toml."""
         if not self.config_path.exists():
             raise ConfigError(
                 f"Configuration file not found: {self.config_path}",
-                hint="Create config.toml in project root or set PEAK_TRADE_CONFIG environment variable",
+                hint="Create config/config.toml (recommended) or set PEAK_TRADE_CONFIG environment variable",
                 context={"config_path": str(self.config_path)},
             )
 
         try:
             with open(self.config_path, "rb") as f:
-                return tomllib.load(f)
+                cfg = tomllib.load(f)
+            # Sanity warnings (no hard errors)
+            try:
+                self._warn_strategy_catalog_mismatches(cfg)
+            except Exception as e:
+                logger.debug("ConfigRegistry: strategy catalog sanity check failed: %s", e)
+            return cfg
         except Exception as e:
             raise ConfigError(
                 f"Failed to parse configuration file: {self.config_path}",
@@ -182,6 +247,10 @@ class ConfigRegistry:
         Returns:
             Liste von Strategie-Namen
         """
+        if regime == "any":
+            # "any" bedeutet: kein Regime-Filter → alle verfügbaren Strategien
+            return list(self.get_available_strategies())
+
         result = []
         metadata_dict = self.config.get("strategies", {}).get("metadata", {})
 

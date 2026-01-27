@@ -57,6 +57,7 @@ from src.core.config_registry import (
 )
 from src.data import fetch_kraken_data, test_kraken_connection
 from src.backtest.engine import run_portfolio_from_config, PortfolioResult
+from src.backtest.portfolio_resolver import resolve_portfolio_cfg
 from src.backtest.stats import validate_for_live_trading
 
 
@@ -67,6 +68,23 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 logger = logging.getLogger(__name__)
+
+ALLOWED_TIMEFRAMES = ("1m", "5m", "15m", "1h", "4h", "1d")
+MAX_KRAKEN_LIMIT_BARS = 720
+
+
+def _limit_bars_type(value: str) -> int:
+    """argparse type: int in (1..MAX_KRAKEN_LIMIT_BARS]."""
+    try:
+        n = int(value)
+    except ValueError as e:
+        raise argparse.ArgumentTypeError(f"--limit muss eine ganze Zahl sein (gegeben: {value!r})") from e
+
+    if n <= 0:
+        raise argparse.ArgumentTypeError("--limit muss > 0 sein")
+    if n > MAX_KRAKEN_LIMIT_BARS:
+        raise argparse.ArgumentTypeError(f"--limit darf max. {MAX_KRAKEN_LIMIT_BARS} sein")
+    return n
 
 
 def parse_args() -> argparse.Namespace:
@@ -104,12 +122,13 @@ Beispiele:
     data_group.add_argument(
         "--timeframe",
         type=str,
+        choices=list(ALLOWED_TIMEFRAMES),
         default="1h",
         help="Timeframe (1m, 5m, 15m, 1h, 4h, 1d) (default: 1h)",
     )
     data_group.add_argument(
         "--limit",
-        type=int,
+        type=_limit_bars_type,
         default=720,
         help="Anzahl Bars (max. 720) (default: 720)",
     )
@@ -148,7 +167,7 @@ Beispiele:
         "--output-dir",
         type=Path,
         default=None,
-        help="Output-Verzeichnis für Ergebnisse (default: results/)",
+        help="Output-Verzeichnis für Ergebnisse (wenn nicht gesetzt: Default bei Export aus config.backtest.results_dir)",
     )
     output_group.add_argument(
         "--export-trades",
@@ -211,7 +230,7 @@ def print_config_summary(args: argparse.Namespace, cfg: dict):
     print()
 
     # Portfolio-Info
-    portfolio_cfg = cfg.get("portfolio", {})
+    portfolio_cfg = resolve_portfolio_cfg(cfg, args.portfolio)
     print(f"  Portfolio:       {args.portfolio}")
     print(f"  Allocation:      {portfolio_cfg.get('allocation_method', 'N/A')}")
     print(f"  Total Capital:   ${portfolio_cfg.get('total_capital', 0):,.2f}")
