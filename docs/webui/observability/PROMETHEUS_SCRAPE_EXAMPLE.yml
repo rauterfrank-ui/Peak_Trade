@@ -8,6 +8,14 @@ rule_files:
   - /etc/prometheus/rules/*.yaml
 
 scrape_configs:
+  # Shadow MVS Exporter (mock). For the local docker compose stack, this runs as a container
+  # and is reachable via service DNS name.
+  - job_name: shadow_mvs
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - "shadow_mvs_exporter:9109"
+
   - job_name: peak_trade_web
     metrics_path: /metrics
     static_configs:
