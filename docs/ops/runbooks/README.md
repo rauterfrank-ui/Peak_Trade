@@ -59,6 +59,7 @@ Runbooks for specific phase implementations and workflows:
 
 Runbooks for CI operations and general operational procedures:
 
+- [RUNBOOK_MCP_TOOLING.md](RUNBOOK_MCP_TOOLING.md) — MCP Tooling (Cursor): Playwright + Grafana (read-only), Secret-Handling, Smoke/Preflight
 - [RUNBOOK_AI_LIVE_OPS_LOCAL.md](RUNBOOK_AI_LIVE_OPS_LOCAL.md) — AI Live Ops Pack (local start/verify/troubleshoot; snapshot-only)
 - [RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md](RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md) — Execution Watch Demo-Stack (shadow_mvs + ai_live, STRICT NO-LIVE)
 - [RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md](RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md) — Slice 3.6: Offline deterministic replay regression pack shortcut (bundle → compare → consume)
