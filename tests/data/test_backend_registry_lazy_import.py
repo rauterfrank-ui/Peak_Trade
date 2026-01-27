@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import builtins
 import importlib
 import sys
 import types
+from typing import Optional
 
 import pytest
 
@@ -34,14 +34,14 @@ def test_backend_registry_is_lazy_for_ccxt(monkeypatch):
     # Only when we actually fetch should ccxt be required.
     sys.modules.pop("ccxt", None)
 
-    real_import = builtins.__import__
+    real_import_module = importlib.import_module
 
-    def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # type: ignore[no-untyped-def]
+    def fake_import_module(name: str, package: Optional[str] = None) -> types.ModuleType:
         if name == "ccxt":
             raise ModuleNotFoundError("No module named 'ccxt'")
-        return real_import(name, globals, locals, fromlist, level)
+        return real_import_module(name, package)
 
-    monkeypatch.setattr(builtins, "__import__", fake_import)
+    monkeypatch.setattr(importlib, "import_module", fake_import_module)
 
     with pytest.raises(ModuleNotFoundError):
         backend.fetch_ohlcv("BTC/EUR", "1h")

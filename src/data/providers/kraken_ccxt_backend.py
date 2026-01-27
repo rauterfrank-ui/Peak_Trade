@@ -51,7 +51,9 @@ class KrakenCcxtBackend:
             return self._exchange_instance
 
         try:
-            import ccxt
+            import importlib
+
+            ccxt = importlib.import_module("ccxt")
         except ModuleNotFoundError as exc:  # pragma: no cover
             raise _optional_dep_error("KrakenCcxtBackend", exc)
 
