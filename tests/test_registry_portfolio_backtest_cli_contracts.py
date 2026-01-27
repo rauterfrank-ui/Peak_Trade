@@ -112,6 +112,12 @@ max_strategies_active = 10
 active = ["s1"]
 available = ["s1", "s2"]
 
+[strategy.s1]
+foo = 1
+
+[strategy.s2]
+foo = 2
+
 [strategies.metadata.s1]
 best_market_regime = "trending"
 
@@ -163,6 +169,16 @@ total_capital = 20000.0
 [portfolio.aggressive.weights]
 s1 = 0.8
 s2 = 0.2
+
+[strategies]
+active = ["s1", "s2"]
+available = ["s1", "s2"]
+
+[strategy.s1]
+foo = 1
+
+[strategy.s2]
+foo = 2
 """.lstrip(),
     )
 

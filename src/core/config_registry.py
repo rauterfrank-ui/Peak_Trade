@@ -169,12 +169,19 @@ class ConfigRegistry:
 
             # Defensive fallback:
             # In CI and some test setups, PEAK_TRADE_CONFIG may be used for other config systems
-            # (e.g. a root-level config without [backtest]). BacktestEngine requires cfg["backtest"].
+            # (e.g. a root-level config without registry anchors). BacktestEngine and registry-driven
+            # workflows require at least:
+            #   - cfg["backtest"] (initial_cash, results_dir, ...)
+            #   - cfg["strategies"] / cfg["strategy"] for registry-backed selection
+            #
             # If an override config lacks required anchors, fall back to the default registry config.
-            if "backtest" not in cfg:
+            missing_registry_anchors = (
+                ("backtest" not in cfg) or ("strategies" not in cfg) or ("strategy" not in cfg)
+            )
+            if missing_registry_anchors:
                 if self.config_path != DEFAULT_CONFIG_PATH and DEFAULT_CONFIG_PATH.exists():
                     logger.warning(
-                        "ConfigRegistry: config at %s lacks [backtest]; falling back to default: %s",
+                        "ConfigRegistry: config at %s lacks registry anchors; falling back to default: %s",
                         self.config_path,
                         DEFAULT_CONFIG_PATH,
                     )
@@ -182,7 +189,7 @@ class ConfigRegistry:
                         cfg = tomllib.load(f)
                 else:
                     logger.warning(
-                        "ConfigRegistry: config at %s lacks [backtest]; callers may fail with KeyError",
+                        "ConfigRegistry: config at %s lacks registry anchors; callers may fail",
                         self.config_path,
                     )
 
