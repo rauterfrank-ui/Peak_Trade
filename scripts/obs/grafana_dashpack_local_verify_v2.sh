@@ -187,7 +187,22 @@ grafana_api_json_authed() {
   local tmp_hdr tmp_body
   tmp_hdr="$(mktemp -t pt_grafana_hdr.XXXXXX)"
   tmp_body="$(mktemp -t pt_grafana_body.XXXXXX)"
-  trap 'rm -f "$tmp_hdr" "$tmp_body"' RETURN
+  # NOTE: traps are global in bash; ensure we restore any prior RETURN trap.
+  local __pt_prev_return_trap
+  __pt_prev_return_trap="$(trap -p RETURN || true)"
+  __pt_restore_return_trap() {
+    if [ -n "${__pt_prev_return_trap:-}" ]; then
+      eval "${__pt_prev_return_trap}"
+    else
+      trap - RETURN
+    fi
+  }
+  __pt_cleanup_return() {
+    rm -f "${tmp_hdr:-}" "${tmp_body:-}"
+    trap - RETURN
+    __pt_restore_return_trap
+  }
+  trap -- '__pt_cleanup_return' RETURN
 
   local i=1
   local http_code ctype bytes
