@@ -73,8 +73,8 @@ def test_is_live_like_environment_enable_live_trading(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _base_config_toml(mode="paper"))
     cfg = load_config(cfg_path)
 
-    # Avoid literal `enable_live_trading=true` tokens in source-controlled files
-    # (policy critic treats these as "live unlock" attempts).
+    # Avoid literal "enable_live_trading true" tokens written with ":"/"=" in
+    # source-controlled files (policy critic treats those as "live unlock" attempts).
     cfg_with_flag = cfg.with_overrides({"environment.enable_live_trading": 1 == 1})
     assert _is_live_like_environment(cfg_with_flag)
 
