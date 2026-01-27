@@ -3,14 +3,15 @@
 Dieses Verzeichnis enthält PR-Merge-Logs (kurze, auditierbare Zusammenfassungen inkl. Why/Changes/Verification/Risk).
 
 ## Latest
+- [PR_1015_MERGE_LOG.md](PR_1015_MERGE_LOG.md)
 
 - [PR_1014_MERGE_LOG.md](PR_1014_MERGE_LOG.md)
 
 ## Previous
+- [PR_1014_MERGE_LOG.md](PR_1014_MERGE_LOG.md)
 
 - [PR_1013_MERGE_LOG.md](PR_1013_MERGE_LOG.md)
 
-## Next (draft, PR not created yet)
 
 - [PR_1015_MERGE_LOG.md](PR_1015_MERGE_LOG.md)
 
