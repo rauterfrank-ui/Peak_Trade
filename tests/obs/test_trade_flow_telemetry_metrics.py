@@ -106,7 +106,9 @@ def test_orders_approved_total_increments() -> None:
         "venue": "shadow",
         "order_type": "market",
     }
-    before = _series_value(_metrics_text(), name="peaktrade_orders_approved_total", labels=labels) or 0.0
+    before = (
+        _series_value(_metrics_text(), name="peaktrade_orders_approved_total", labels=labels) or 0.0
+    )
 
     trade_flow_telemetry.inc_orders_approved(
         strategy_id="MA_Crossover",
@@ -116,7 +118,9 @@ def test_orders_approved_total_increments() -> None:
         n=2,
     )
 
-    after = _series_value(_metrics_text(), name="peaktrade_orders_approved_total", labels=labels) or 0.0
+    after = (
+        _series_value(_metrics_text(), name="peaktrade_orders_approved_total", labels=labels) or 0.0
+    )
     assert after == before + 2.0
 
 
@@ -133,7 +137,9 @@ def test_orders_blocked_total_increments_with_allowlist_mapping() -> None:
     assert reason == "limits"
 
     labels = {"strategy_id": "ma_crossover", "symbol": "btc/eur", "reason": "limits"}
-    before = _series_value(_metrics_text(), name="peaktrade_orders_blocked_total", labels=labels) or 0.0
+    before = (
+        _series_value(_metrics_text(), name="peaktrade_orders_blocked_total", labels=labels) or 0.0
+    )
 
     trade_flow_telemetry.inc_orders_blocked(
         strategy_id="MA_Crossover",
@@ -142,7 +148,9 @@ def test_orders_blocked_total_increments_with_allowlist_mapping() -> None:
         n=1,
     )
 
-    after = _series_value(_metrics_text(), name="peaktrade_orders_blocked_total", labels=labels) or 0.0
+    after = (
+        _series_value(_metrics_text(), name="peaktrade_orders_blocked_total", labels=labels) or 0.0
+    )
     assert after == before + 1.0
 
 
@@ -156,4 +164,6 @@ def test_trade_flow_telemetry_no_crash_without_prometheus_client() -> None:
     trade_flow_telemetry.inc_orders_approved(
         strategy_id="any", symbol="BTC/EUR", venue="shadow", order_type="market", n=1
     )
-    trade_flow_telemetry.inc_orders_blocked(strategy_id="any", symbol="BTC/EUR", reason="unknown", n=1)
+    trade_flow_telemetry.inc_orders_blocked(
+        strategy_id="any", symbol="BTC/EUR", reason="unknown", n=1
+    )

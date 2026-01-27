@@ -86,7 +86,9 @@ def _ensure_metrics() -> None:
         )
     except Exception:
         # If metrics registration fails (e.g. duplicate registry), degrade to no-op.
-        logger.warning("Trade flow telemetry metrics init failed; telemetry will be no-op.", exc_info=True)
+        logger.warning(
+            "Trade flow telemetry metrics init failed; telemetry will be no-op.", exc_info=True
+        )
         _SIGNALS_TOTAL = None
         _ORDERS_APPROVED_TOTAL = None
         _ORDERS_BLOCKED_TOTAL = None
@@ -166,9 +168,9 @@ def inc_orders_approved(
         v = _normalize_label(venue, max_length=32)
         ot = _normalize_label(order_type, max_length=32)
         if _ORDERS_APPROVED_TOTAL is not None:
-            _ORDERS_APPROVED_TOTAL.labels(
-                strategy_id=sid, symbol=sym, venue=v, order_type=ot
-            ).inc(int(n))
+            _ORDERS_APPROVED_TOTAL.labels(strategy_id=sid, symbol=sym, venue=v, order_type=ot).inc(
+                int(n)
+            )
     except Exception:
         logger.debug("inc_orders_approved failed (ignored).", exc_info=True)
 
