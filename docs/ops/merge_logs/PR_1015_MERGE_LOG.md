@@ -1,8 +1,8 @@
 # PR 1015 — Merge Log — Optional dependencies hardening (ccxt) + gates + docs
 
-> Status: **DRAFT** (GitHub PR not created yet)  
+> Status: **DRAFT** (GitHub PR created)  
 > Target repo: `rauterfrank-ui/Peak_Trade`  
-> PR URL: _TBD_
+> PR URL: `https://github.com/rauterfrank-ui/Peak_Trade/pull/1015`
 
 ## Summary
 Make `ccxt` a strictly optional dependency and enforce a dependency-free core import graph via lazy shims, leak scanning, importability gates, and dev-only typechecking.
