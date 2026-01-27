@@ -722,6 +722,19 @@ class LiveSessionRunner:
             f"@ price={current_price:.2f}"
         )
 
+        # Telemetry: count final signal event once per change (watch-only safe)
+        try:
+            from ..obs import trade_flow_telemetry
+
+            trade_flow_telemetry.inc_signal(
+                strategy_id=self._config.strategy_key,
+                symbol=self._config.symbol,
+                signal=("buy" if current_signal > 0 else "sell" if current_signal < 0 else "flat"),
+                n=1,
+            )
+        except Exception:
+            pass
+
         # SignalEvent erstellen
         sig_event = SignalEvent(
             timestamp=datetime.now(timezone.utc),

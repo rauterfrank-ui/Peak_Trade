@@ -61,6 +61,7 @@ Runbooks for CI operations and general operational procedures:
 
 - [RUNBOOK_MCP_TOOLING.md](RUNBOOK_MCP_TOOLING.md) — MCP Tooling (Cursor): Playwright + Grafana (read-only), Secret-Handling, Smoke/Preflight
 - [RUNBOOK_AI_LIVE_OPS_LOCAL.md](RUNBOOK_AI_LIVE_OPS_LOCAL.md) — AI Live Ops Pack (local start/verify/troubleshoot; snapshot-only)
+- [RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md](RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md) — Execution Watch Demo-Stack (shadow_mvs + ai_live, STRICT NO-LIVE)
 - [RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md](RUNBOOK_SLICE_3_6_REPLAY_REGRESSION_PACK_OPERATOR_SHORTCUT.md) — Slice 3.6: Offline deterministic replay regression pack shortcut (bundle → compare → consume)
 - [RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md](RUNBOOK_PR736_CI_SNAPSHOT_AUTOMERGE_POST_MERGE_VERIFY_CURSOR_MULTI_AGENT.md) — PR #736: CI snapshot → enable auto-merge → post-merge verify on main (snapshot-only)
 - [RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md](RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md) — Operator Dashboard (Watch-Only) start→finish (local, read-only monitoring + deterministic snapshot export)
