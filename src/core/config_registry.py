@@ -99,9 +99,12 @@ class ConfigRegistry:
         2) <repo>/config/config.toml
         3) <repo>/config.toml
         """
-        # Prefer PEAK_TRADE_CONFIG (documented for registry/CLI),
-        # then fall back to PEAK_TRADE_CONFIG_PATH (used by test harness / other loaders).
-        env_path = os.getenv("PEAK_TRADE_CONFIG") or os.getenv("PEAK_TRADE_CONFIG_PATH")
+        # Prefer PEAK_TRADE_CONFIG_PATH (used by test harness / other loaders),
+        # then fall back to PEAK_TRADE_CONFIG (documented for registry/CLI).
+        #
+        # Rationale: in CI/test contexts, PEAK_TRADE_CONFIG may be set for other subsystems.
+        # The test harness sets PEAK_TRADE_CONFIG_PATH early and expects it to win.
+        env_path = os.getenv("PEAK_TRADE_CONFIG_PATH") or os.getenv("PEAK_TRADE_CONFIG")
         if env_path:
             p = Path(env_path)
             if not p.is_absolute():

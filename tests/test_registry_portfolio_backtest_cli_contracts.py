@@ -59,7 +59,7 @@ available = []
 """.lstrip(),
     )
 
-    p = _run_cli(["--limit", "721", "--dry-run"], env={"PEAK_TRADE_CONFIG": str(cfg)})
+    p = _run_cli(["--limit", "721", "--dry-run"], env={"PEAK_TRADE_CONFIG_PATH": str(cfg)})
     assert p.returncode != 0
     combined = (p.stdout + "\n" + p.stderr).lower()
     assert "720" in combined
@@ -86,7 +86,7 @@ available = []
 """.lstrip(),
     )
 
-    p = _run_cli(["--timeframe", "2h", "--dry-run"], env={"PEAK_TRADE_CONFIG": str(cfg)})
+    p = _run_cli(["--timeframe", "2h", "--dry-run"], env={"PEAK_TRADE_CONFIG_PATH": str(cfg)})
     assert p.returncode != 0
     combined = (p.stdout + "\n" + p.stderr).lower()
     # argparse wording is stable enough for contract intent ("invalid choice")
@@ -126,7 +126,7 @@ best_market_regime = "ranging"
 """.lstrip(),
     )
 
-    env = {"PEAK_TRADE_CONFIG": str(cfg)}
+    env = {"PEAK_TRADE_CONFIG_PATH": str(cfg)}
 
     p_default = _run_cli(["--dry-run"], env=env)
     assert p_default.returncode == 0
@@ -182,7 +182,8 @@ foo = 2
 """.lstrip(),
     )
 
-    monkeypatch.setenv("PEAK_TRADE_CONFIG", str(cfg_path))
+    monkeypatch.delenv("PEAK_TRADE_CONFIG", raising=False)
+    monkeypatch.setenv("PEAK_TRADE_CONFIG_PATH", str(cfg_path))
     from src.core import config_registry as cr
 
     cr.reset_config()
