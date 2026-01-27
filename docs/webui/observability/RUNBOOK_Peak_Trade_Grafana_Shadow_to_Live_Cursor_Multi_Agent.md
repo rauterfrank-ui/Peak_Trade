@@ -422,7 +422,7 @@ Du willst erst die Regeln, dann Code.
 - Dashboard provider provisioning (YAML):  
   - `docs/webui/observability/grafana/provisioning/dashboards/dashboards.yaml` (Provider → `/etc/grafana/dashboards`)
 - Dashboard JSONs (file‑based):  
-  - `docs/webui/observability/grafana/dashboards/peaktrade-shadow-pipeline-mvs.json` (UID: `peaktrade-shadow-pipeline-mvs`)
+  - `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;shadow&#47;peaktrade-shadow-pipeline-mvs.json` (UID: `peaktrade-shadow-pipeline-mvs`)
 
 **Empfohlener lokaler Betrieb (Known‑Good Pairing):**
 1) Prometheus-local starten: `docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` (Host `:9092`)
@@ -441,7 +441,7 @@ Du willst erst die Regeln, dann Code.
 
 #### Appendix (kurz): Strategy B = 1‑Click Import (Fallback, wenn Provisioning nicht gemountet ist)
 1) Grafana öffnen: `http://127.0.0.1:3000` (admin&#47;admin)  
-2) Dashboard importieren aus Datei: `docs/webui/observability/grafana/dashboards/peaktrade-shadow-pipeline-mvs.json`  
+2) Dashboard importieren aus Datei: `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;shadow&#47;peaktrade-shadow-pipeline-mvs.json`  
 3) Datasource wählen: `prometheus-local` (URL `http://host.docker.internal:9092`)  
 4) Speichern im Folder `"Peak_Trade"`  
 
