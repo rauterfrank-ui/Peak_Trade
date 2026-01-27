@@ -318,6 +318,13 @@ def get_registry(force_reload: bool = False) -> ConfigRegistry:
         _GLOBAL_REGISTRY = ConfigRegistry()
     elif force_reload:
         _GLOBAL_REGISTRY.reload()
+    else:
+        # If environment-based config selection changed since the registry was created
+        # (common in pytest/CI where conftest sets env vars after some early imports),
+        # recreate the registry so callers always see the currently selected config.
+        desired_path = _GLOBAL_REGISTRY._resolve_config_path()
+        if desired_path != _GLOBAL_REGISTRY.config_path:
+            _GLOBAL_REGISTRY = ConfigRegistry(config_path=desired_path)
 
     return _GLOBAL_REGISTRY
 
