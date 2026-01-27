@@ -12,7 +12,12 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 GRAFANA_URL="${GRAFANA_URL:-http://127.0.0.1:3000}"
-GRAFANA_AUTH="${GRAFANA_AUTH:-admin:admin}"
+# Auth options (choose ONE):
+# - Preferred: Bearer token via GRAFANA_TOKEN
+# - Legacy:    Basic auth via GRAFANA_AUTH="user:pass"
+# If neither is set, auth-required API checks are skipped (hermetic checks still PASS).
+GRAFANA_TOKEN="${GRAFANA_TOKEN:-}"
+GRAFANA_AUTH="${GRAFANA_AUTH:-}"
 
 HERMETIC="0"
 if [ "${1:-}" = "--hermetic" ] || [ "${1:-}" = "--no-api" ]; then
@@ -24,6 +29,11 @@ if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   echo "" >&2
   echo "  --hermetic: run JSON-only checks; skip Grafana API checks even if reachable" >&2
   echo "  --no-api:   alias for --hermetic" >&2
+  echo "" >&2
+  echo "env:" >&2
+  echo "  GRAFANA_URL=http://127.0.0.1:3000" >&2
+  echo "  GRAFANA_TOKEN=<bearer_token>      (preferred; enables auth-required API checks)" >&2
+  echo "  GRAFANA_AUTH=user:pass            (legacy; enables auth-required API checks)" >&2
   exit 0
 fi
 
@@ -154,15 +164,139 @@ if [ "$HERMETIC" = "1" ]; then
   echo "RESULT=PASS"
   exit 0
 fi
+
+grafana_api_auth_mode() {
+  if [ -n "${GRAFANA_TOKEN:-}" ]; then
+    echo "bearer"
+  elif [ -n "${GRAFANA_AUTH:-}" ]; then
+    echo "basic"
+  else
+    echo "none"
+  fi
+}
+
+grafana_api_json_authed() {
+  # Minimal JSON fetcher for auth-required endpoints.
+  # Args: <path> <out> <retries> <timeout_s>
+  local path="$1"
+  local out="$2"
+  local retries="${3:-2}"
+  local timeout_s="${4:-2}"
+  local url="${GRAFANA_URL%/}${path}"
+
+  local tmp_hdr tmp_body
+  tmp_hdr="$(mktemp -t pt_grafana_hdr.XXXXXX)"
+  tmp_body="$(mktemp -t pt_grafana_body.XXXXXX)"
+  # NOTE: traps are global in bash; ensure we restore any prior RETURN trap.
+  local __pt_prev_return_trap
+  __pt_prev_return_trap="$(trap -p RETURN || true)"
+  __pt_restore_return_trap() {
+    if [ -n "${__pt_prev_return_trap:-}" ]; then
+      eval "${__pt_prev_return_trap}"
+    else
+      trap - RETURN
+    fi
+  }
+  __pt_cleanup_return() {
+    rm -f "${tmp_hdr:-}" "${tmp_body:-}"
+    trap - RETURN
+    __pt_restore_return_trap
+  }
+  trap -- '__pt_cleanup_return' RETURN
+
+  local i=1
+  local http_code ctype bytes
+  while [ "$i" -le "$retries" ]; do
+    : >"$tmp_hdr"; : >"$tmp_body"
+
+    http_code=""
+    case "$(grafana_api_auth_mode)" in
+      bearer)
+        http_code="$(
+          curl -sS -L --compressed \
+            -D "$tmp_hdr" -o "$tmp_body" -w "%{http_code}" \
+            -H "Authorization: Bearer ${GRAFANA_TOKEN}" \
+            --connect-timeout "$timeout_s" --max-time "$timeout_s" \
+            "$url" || true
+        )"
+        ;;
+      basic)
+        http_code="$(
+          curl -sS -L --compressed \
+            -D "$tmp_hdr" -o "$tmp_body" -w "%{http_code}" \
+            -u "$GRAFANA_AUTH" \
+            --connect-timeout "$timeout_s" --max-time "$timeout_s" \
+            "$url" || true
+        )"
+        ;;
+      *)
+        http_code="0"
+        ;;
+    esac
+
+    ctype="$(python3 - <<PY
+from pathlib import Path
+p=Path("$tmp_hdr")
+txt=p.read_text(errors="ignore") if p.exists() else ""
+ctype=""
+for line in txt.splitlines():
+  if line.lower().startswith("content-type:"):
+    parts=line.split(":",1)[1].strip().split()
+    ctype=parts[0] if parts else ""
+print(ctype)
+PY
+)"
+    bytes="$(python3 - <<PY
+from pathlib import Path
+p=Path("$tmp_body")
+print(p.stat().st_size if p.exists() else 0)
+PY
+)"
+
+    if [ "$http_code" = "200" ] && echo "${ctype:-}" | grep -qi "^application/json" && [ "${bytes:-0}" -gt 0 ]; then
+      mkdir -p "$(dirname "$out")" 2>/dev/null || true
+      cat "$tmp_body" | tee "$out" >/dev/null
+      echo "GRAFANA_API_OK bytes=$bytes content_type=${ctype:-NONE} http_code=$http_code" >&2
+      return 0
+    fi
+
+    echo "GRAFANA_API_RETRY attempt=$i http_code=$http_code content_type=${ctype:-NONE} body_bytes=${bytes:-0} url=$url" >&2
+    python3 - <<PY >&2
+from pathlib import Path
+h=Path("$tmp_hdr").read_text(errors="ignore").splitlines()
+b=Path("$tmp_body").read_bytes() if Path("$tmp_body").exists() else b""
+print("--- hdr (first 20) ---")
+print("\\n".join(h[:20]))
+print("--- body (first 200 bytes) ---")
+print(b[:200].decode("utf-8","replace"))
+PY
+    sleep "$i"
+    i=$((i+1))
+  done
+
+  echo "GRAFANA_API_FAIL retries=$retries url=$url" >&2
+  return 1
+}
+
 health_out="$VERIFY_OUT_DIR/grafana_api_health.json"
 if bash "$GRAFANA_HELPER" --base "$GRAFANA_URL" --path "/api/health" --out "$health_out" --retries 1 --timeout 1 >/dev/null; then
   pass "grafana.health" "$health_out"
 
-  user_out="$VERIFY_OUT_DIR/grafana_api_user.json"
-  if ! bash "$GRAFANA_HELPER" --base "$GRAFANA_URL" --path "/api/user" --auth "$GRAFANA_AUTH" --out "$user_out" --retries 2 --timeout 2 >/dev/null; then
-    fail "grafana.auth" "Grafana reachable but login failed (GRAFANA_AUTH=user:pass)" "Try: bash scripts/obs/grafana_local_down.sh && bash scripts/obs/grafana_local_up.sh (reset volumes) or export GRAFANA_AUTH=..."
-  fi
-  pass "grafana.auth" "$user_out"
+  case "$(grafana_api_auth_mode)" in
+    none)
+      pass "grafana.auth" "SKIP (set GRAFANA_TOKEN or GRAFANA_AUTH to enable auth-required API checks)"
+      pass "grafana.dashboards.uid_fetch" "SKIP (no auth provided)"
+      echo "RESULT=PASS"
+      exit 0
+      ;;
+    bearer|basic)
+      user_out="$VERIFY_OUT_DIR/grafana_api_user.json"
+      if ! grafana_api_json_authed "/api/user" "$user_out" 2 2 >/dev/null; then
+        fail "grafana.auth" "Grafana reachable but auth failed (set GRAFANA_TOKEN or GRAFANA_AUTH=user:pass)" "Set correct Grafana credentials: export GRAFANA_TOKEN=... (preferred) or export GRAFANA_AUTH=user:pass"
+      fi
+      pass "grafana.auth" "$user_out"
+      ;;
+  esac
 
   # Fetch each dashboard by UID and validate JSON
   uids_txt="$VERIFY_OUT_DIR/dashpack_uids.txt"
@@ -189,7 +323,7 @@ PY
   while IFS= read -r uid; do
     [ -n "$uid" ] || continue
     out="$api_dir/${uid}.json"
-    if ! bash "$GRAFANA_HELPER" --base "$GRAFANA_URL" --path "/api/dashboards/uid/${uid}" --auth "$GRAFANA_AUTH" --out "$out" --retries 3 --timeout 5 >/dev/null; then
+    if ! grafana_api_json_authed "/api/dashboards/uid/${uid}" "$out" 3 5 >/dev/null; then
       fail "grafana.dashboard.get" "Failed to fetch dashboard uid=${uid}" "Restart Grafana to reload provisioned dashboards (grafana_local_down/up) and re-run"
     fi
     if ! python3 - <<PY

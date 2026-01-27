@@ -7,7 +7,7 @@
 
 ## 1. Architektur in einem Satz
 
-> Daten aus Backtests / Automation → Learning Loop (System 1) → ConfigPatches → Promotion Loop (System 2) → `config&sol;live_overrides&sol;auto.toml (planned)` → Live-/Shadow-/Paper-Config.
+> Daten aus Backtests / Automation → Learning Loop (System 1) → ConfigPatches → Promotion Loop (System 2) → `config&#47;live_overrides&#47;auto.toml` → Live-/Shadow-/Paper-Config.
 
 ---
 
@@ -33,23 +33,23 @@
 2. **Speicherung als JSON:**
 
    * via `src&sol;meta&sol;learning_loop&sol;emitter.py` (planned) →
-   * `reports/learning_snippets/*.json`
+   * `reports&#47;learning_snippets&#47;*.json`
 
 3. **Learning Loop laufen lassen:**
 
    ```bash
    # Dry-Run (ohne Anwendung)
-   python scripts/run_learning_apply_cycle.py --dry-run
+   python3 scripts/run_learning_apply_cycle.py --dry-run
 
    # Tatsächliche Anwendung
-   python scripts/run_learning_apply_cycle.py
+   python3 scripts/run_learning_apply_cycle.py
    ```
 
 4. **Output:**
 
    * `ConfigPatch`-Objekte intern
    * TOML-Overrides unter:
-     * `config/auto/*.override.toml`
+     * `config&#47;auto&#47;*.override.toml`
 
 ### Scope
 
@@ -121,7 +121,7 @@ build_promotion_proposals(...)
 #### 3.4 Materialisierung
 
 ```text
-reports/live_promotion/<proposal_id>/
+reports&#47;live_promotion&#47;<proposal_id>&#47;
 ├── proposal_meta.json          # Metadaten
 ├── config_patches.json         # Alle Patches mit Decisions
 └── OPERATOR_CHECKLIST.md       # Operator-Review-Checkliste
@@ -179,13 +179,13 @@ apply_proposals_to_live_overrides(...)
 
 ```bash
 # Nur Proposals (sichere Default-Variante)
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 # Konservativer Autopilot (empfohlen, wenn ausreichend Evidenz vorhanden)
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 
 # Killswitch (Notfall)
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode disabled
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode disabled
 ```
 
 ---
@@ -252,34 +252,34 @@ cfg.get("macro.regime_weight")     # -> 0.35 (statt 0.0)
 
 ```bash
 # 1. Automation / Tests laufen lassen
-python scripts/run_test_health.py
-python scripts/run_trigger_training_drill.py
-python scripts/generate_infostream_packet.py
+python3 scripts/run_test_health.py
+python3 scripts/run_trigger_training_drill.py
+python3 scripts/generate_infostream_packet.py
 ```
 
-**Output:** Learning Signals in `reports/learning_snippets/`
+**Output:** Learning Signals in `reports&#47;learning_snippets&#47;`
 
 ### 5.2 Learning Cycle
 
 ```bash
 # 2. Learning Loop ausführen
-python scripts/run_learning_apply_cycle.py
+python3 scripts/run_learning_apply_cycle.py
 ```
 
 **Output:**
 * ConfigPatch-Objekte
-* TOML-Overrides in `config/auto/*.override.toml`
+* TOML-Overrides in `config&#47;auto&#47;*.override.toml`
 
 ### 5.3 Promotion Cycle
 
 ```bash
 # 3. Promotion Loop fahren (bounded_auto für Production)
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 ```
 
 **Output:**
-* Proposals in `reports/live_promotion/<proposal_id>/`
-* Live-Overrides in `config&sol;live_overrides&sol;auto.toml (planned)` (wenn bounded_auto)
+* Proposals in `reports&#47;live_promotion&#47;<proposal_id>&#47;`
+* Live-Overrides in `config&#47;live_overrides&#47;auto.toml` (wenn bounded_auto)
 
 ### 5.4 Review Phase
 
@@ -319,7 +319,7 @@ cfg = load_config_with_live_overrides()
 
 ```bash
 # Option 1: Modus wechseln
-python scripts/run_promotion_proposal_cycle.py --auto-apply-mode disabled
+python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode disabled
 
 # Option 2: auto.toml zurücksetzen
 cp config/live_overrides/auto.toml.backup config/live_overrides/auto.toml
@@ -394,7 +394,7 @@ cat reports/live_promotion/latest/proposal_meta.json | jq .
 cat config/live_overrides/auto.toml
 
 # Config-Diff
-python `scripts&sol;demo_live_overrides.py` (planned)
+python3 scripts/demo_live_overrides.py
 ```
 
 ### 7.4 Console Output
@@ -538,9 +538,9 @@ policy = AutoApplyPolicy(
 
 ### Scripts
 
-* **`scripts&sol;run_learning_apply_cycle.py` (planned)** - Learning Loop (TODO)
+* **`scripts&#47;run_learning_apply_cycle.py`** - Learning Loop ✅
 * **`scripts/run_promotion_proposal_cycle.py`** - Promotion Loop ✅
-* **`scripts&sol;demo_live_overrides.py (planned)`** - Demo & Testing ✅
+* **`scripts&#47;demo_live_overrides.py`** - Demo & Testing ✅
 
 ### Tests
 

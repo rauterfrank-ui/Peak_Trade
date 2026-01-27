@@ -19,6 +19,11 @@ Neuen Exchange/Market-Adapter hinzufügen, der Data-Layer und ggf. Live-Layer nu
 
 ### 1. Market Data Adapter
 
+**Optional Dependencies (z.B. ccxt):**
+- Exchange-Provider wie Kraken über `ccxt` sollten als **optionale Dependencies** eingebunden werden.
+- Der Core sollte ohne `ccxt` importierbar bleiben; Provider-Imports daher **lazy/optional** gestalten.
+- **Jede neue Exchange-SDK-Dependency** muss in `src&#47;data&#47;providers&#47;**` leben + via lazy Shim/Factory geladen werden.
+
 **Neue Datei erstellen**, z.B.:
 - `src&#47;data&#47;my_exchange.py` (illustrative)
 

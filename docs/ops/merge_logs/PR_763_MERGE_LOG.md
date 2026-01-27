@@ -55,4 +55,4 @@ Grafana Explore smoke queries:
 - Docs:
   - `docs/webui/observability/README.md`
   - `docs/webui/observability/DASHBOARD_WORKFLOW.md`
-  - `docs/webui/observability/grafana/dashboards/peaktrade-shadow-pipeline-mvs.json`
+  - `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;shadow&#47;peaktrade-shadow-pipeline-mvs.json`

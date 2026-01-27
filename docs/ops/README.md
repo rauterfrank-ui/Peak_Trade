@@ -17,6 +17,10 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs & Closeouts
+- [merge_logs/PR_1013_MERGE_LOG.md](merge_logs/PR_1013_MERGE_LOG.md) — PR #1013 (docs(ops): add PR #1012 merge log) ([PR #1013](https://github.com/rauterfrank-ui/Peak_Trade/pull/1013), 2026-01-27)
+- [merge_logs/PR_1012_MERGE_LOG.md](merge_logs/PR_1012_MERGE_LOG.md) — PR #1012 (docs(ops): add PR 1011 merge log) ([PR #1012](https://github.com/rauterfrank-ui/Peak_Trade/pull/1012), 2026-01-27)
+- [merge_logs/PR_1011_MERGE_LOG.md](merge_logs/PR_1011_MERGE_LOG.md) — PR #1011 (feat(learning-promotion): promotion loop v1 (runner + live overrides + docs finalizer)) ([PR #1011](https://github.com/rauterfrank-ui/Peak_Trade/pull/1011), 2026-01-27)
+- [merge_logs/PR_994_MERGE_LOG.md](merge_logs/PR_994_MERGE_LOG.md) — PR #994 (ops(mcp): first-class Playwright/Grafana MCP tooling: preflight + runbook + CI signal) ([PR #994](https://github.com/rauterfrank-ui/Peak_Trade/pull/994), 2026-01-27)
 - [merge_logs/PR_964_MERGE_LOG.md](merge_logs/PR_964_MERGE_LOG.md) — PR #964 (AI Live Ops Pack v1: alerts + Grafana ops summary + runbook) ([PR #964](https://github.com/rauterfrank-ui/Peak_Trade/pull/964), 2026-01-24)
 - [merge_logs/PR_716_MERGE_LOG.md](merge_logs/PR_716_MERGE_LOG.md) — PR #716 (Phase 9C Wave 5: broken targets 58→39, goal achieved, 27 token policy violations fixed) ([PR #716](https://github.com/rauterfrank-ui/Peak_Trade/pull/716), 2026-01-14)
 - [merge_logs/PR_714_MERGE_LOG.md](merge_logs/PR_714_MERGE_LOG.md) — PR #714 (Phase 9C Wave 4: broken targets 87→65, CI-Parity Guide) ([PR #714](https://github.com/rauterfrank-ui/Peak_Trade/pull/714), 2026-01-14)
@@ -1550,12 +1554,9 @@ Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
 **Format:**
 ```html
 <!-- MERGE_LOG_EXAMPLES:START -->
-- PR #290 — chore(ops): guard against black enforcement drift: docs/ops/PR_290_MERGE_LOG.md
-- PR #307 — docs(ops): document README_REGISTRY guardrail for ops doctor: docs/ops/PR_307_MERGE_LOG.md
-- PR #309 — feat(ops): add branch hygiene script (origin/main enforcement): docs/ops/PR_309_MERGE_LOG.md
-- PR #311 — feat(ops): add docs diff guard (mass-deletion protection): docs/ops/PR_311_MERGE_LOG.md
-- PR #409 — fix(kill-switch): stabilize tests + add legacy adapter for risk-gate: docs/ops/PR_409_MERGE_LOG.md
+- PR #999 — docs(grafana): fix DS_LOCAL uid templating in execution watch dashboard: docs/ops/PR_999_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
+
 
 
 
@@ -2173,3 +2174,6 @@ Post-merge documentation logs for operational PRs.
 Documentation for PRs closed without merge (superseded, redundant, or obsolete).
 
 - [PR #321](PR_321_CLOSEOUT_LOG.md) — feat/risk: parametric Component VaR MVP (CLOSED / SUPERSEDED BY PR #408, 2026-01-03)
+
+## Specs
+- Project Summary Outline V2: `docs/ops/specs/PEAK_TRADE_PROJECT_SUMMARY_OUTLINE_V2.md`

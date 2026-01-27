@@ -1,0 +1,20 @@
+{
+  "include": [
+    "src/exchange/protocols.py",
+    "src/exchange/ccxt_client.py",
+
+    "src/data/backend.py",
+    "src/data/providers",
+    "src/data/record_replay",
+
+    "tests/exchange/test_ccxt_shims_importability.py",
+    "tests/data/test_optional_deps_imports.py",
+    "tests/data/test_backend_registry_lazy_import.py",
+    "tests/data/test_kraken_ccxt_backend.py",
+    "tests/data/test_ohlcv_record_replay.py"
+  ],
+  "exclude": ["**/__pycache__", ".tmp_*", ".tmp_optional_deps_gate", ".tmp_pyright_venv"],
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "none",
+  "reportMissingTypeStubs": "none"
+}

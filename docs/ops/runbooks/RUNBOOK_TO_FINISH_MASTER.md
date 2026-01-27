@@ -124,8 +124,8 @@ git status -sb || true
 
 ### A3 — Untracked Files aufnehmen (Runbooks + Research)
 **Targets (untracked):**
-- `docs&#47;ops&#47;runbooks&#47;RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md`
-- `docs&#47;ops&#47;runbooks&#47;RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md`
+- `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md`
+- `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_FINISH_C_MASTER.md`
 - `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md`
 - `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md`
 
@@ -142,7 +142,7 @@ git rev-parse --show-toplevel 2>/dev/null || true
 git status -sb || true
 
 echo "=== ADD (docs-only) ==="
-git add docs/RUNBOOKS_AND_INCIDENT_HANDLING.md         docs/ops/runbooks/README.md         docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md         docs/ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md         docs/ops/runbooks/RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md         docs/research/option_b/OPTION_B_GAP_ASSESSMENT.md         docs/research/option_b/OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md || true
+git add docs/RUNBOOKS_AND_INCIDENT_HANDLING.md         docs/ops/runbooks/README.md         docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md         docs/ops/runbooks/finish_c/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md         docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md         docs/research/option_b/OPTION_B_GAP_ASSESSMENT.md         docs/research/option_b/OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md || true
 
 echo "=== STAGED DIFF (names) ==="
 git diff --cached --name-only || true
@@ -153,7 +153,7 @@ git diff --cached --name-only || true
 ## 4) Phase B — Docs Gates & Test-Snapshot (lokal)
 
 ### B1 — Minimal Test Plan (D2)
-**Pflicht:** `uv run pytest -q tests/reporting/test_report_generator.py`  
+**Pflicht:** `uv run pytest -q tests/reporting/test_offline_paper_trade_report.py`  
 **Exit:** PASS + in Verification Note erfasst.
 
 > **Cursor Terminal — Single Block**
@@ -167,7 +167,7 @@ git rev-parse --show-toplevel 2>/dev/null || true
 git status -sb || true
 
 echo "=== TEST (D2 subset) ==="
-uv run pytest -q tests/reporting/test_report_generator.py || true
+uv run pytest -q tests/reporting/test_offline_paper_trade_report.py || true
 ```
 
 ### B2 — Docs Gates (lokal best effort)
@@ -244,13 +244,13 @@ Make “Finish” workstreams discoverable and operational via canonical entry p
   - docs/ops/runbooks/README.md (D4 + finish-c pointers)
   - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md (D4 + finish-c pointers)
 - Added:
-  - docs/ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md
-  - docs/ops/runbooks/RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md
+  - docs/ops/runbooks/finish_c/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md
+  - docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md
   - docs/research/option_b/OPTION_B_GAP_ASSESSMENT.md
   - docs/research/option_b/OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md
 
 ## Verification
-- PASS: uv run pytest -q tests/reporting/test_report_generator.py
+- PASS: uv run pytest -q tests/reporting/test_offline_paper_trade_report.py
 - Docs gates: (list PASS snapshots or CI links)
 
 ## Risk
@@ -344,7 +344,7 @@ Output:
 ## 8) Phase F — D4 „Done“ (Ops/Governance Polish) operationalisieren
 
 ### Entry
-- `docs&#47;ops&#47;runbooks&#47;RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md` liegt vor.
+- `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md` liegt vor.
 
 ### Actions (DoD)
 - Templates konsolidiert:
