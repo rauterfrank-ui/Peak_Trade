@@ -2174,3 +2174,6 @@ Post-merge documentation logs for operational PRs.
 Documentation for PRs closed without merge (superseded, redundant, or obsolete).
 
 - [PR #321](PR_321_CLOSEOUT_LOG.md) — feat/risk: parametric Component VaR MVP (CLOSED / SUPERSEDED BY PR #408, 2026-01-03)
+
+## Specs
+- Project Summary Outline V2: `docs/ops/specs/PEAK_TRADE_PROJECT_SUMMARY_OUTLINE_V2.md`
