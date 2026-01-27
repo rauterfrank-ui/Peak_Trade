@@ -111,11 +111,16 @@ class ConfigRegistry:
             logger.info("ConfigRegistry: using default config path: %s", DEFAULT_CONFIG_PATH)
             return DEFAULT_CONFIG_PATH
         if FALLBACK_CONFIG_PATH.exists():
-            logger.warning("ConfigRegistry: default missing, using fallback config path: %s", FALLBACK_CONFIG_PATH)
+            logger.warning(
+                "ConfigRegistry: default missing, using fallback config path: %s",
+                FALLBACK_CONFIG_PATH,
+            )
             return FALLBACK_CONFIG_PATH
 
         # Default zurückgeben, damit Fehlermeldung den erwarteten Pfad enthält.
-        logger.warning("ConfigRegistry: no config found; expected default path: %s", DEFAULT_CONFIG_PATH)
+        logger.warning(
+            "ConfigRegistry: no config found; expected default path: %s", DEFAULT_CONFIG_PATH
+        )
         return DEFAULT_CONFIG_PATH
 
     def _warn_strategy_catalog_mismatches(self, cfg: Dict[str, Any]) -> None:

@@ -78,7 +78,9 @@ def _limit_bars_type(value: str) -> int:
     try:
         n = int(value)
     except ValueError as e:
-        raise argparse.ArgumentTypeError(f"--limit muss eine ganze Zahl sein (gegeben: {value!r})") from e
+        raise argparse.ArgumentTypeError(
+            f"--limit muss eine ganze Zahl sein (gegeben: {value!r})"
+        ) from e
 
     if n <= 0:
         raise argparse.ArgumentTypeError("--limit muss > 0 sein")

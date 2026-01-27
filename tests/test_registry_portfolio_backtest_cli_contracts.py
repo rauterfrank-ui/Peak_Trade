@@ -135,7 +135,9 @@ best_market_regime = "ranging"
     assert any_list == ["s1", "s2"]
 
 
-def test_portfolio_profile_overrides_applied(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_portfolio_profile_overrides_applied(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     cfg_path = tmp_path / "config.toml"
     _write_toml(
         cfg_path,
@@ -181,7 +183,9 @@ s2 = 0.2
         seen_initial_capital[strategy_name] = initial_capital
         return bt_engine._create_dummy_result(strategy_name, df, initial_capital=initial_capital)
 
-    monkeypatch.setattr(bt_engine, "run_single_strategy_from_registry", _dummy_run_single, raising=True)
+    monkeypatch.setattr(
+        bt_engine, "run_single_strategy_from_registry", _dummy_run_single, raising=True
+    )
 
     idx = pd.date_range("2025-01-01", periods=5, freq="h")
     df = pd.DataFrame(
@@ -227,7 +231,9 @@ def test_config_path_default_and_fallback(tmp_path: Path, monkeypatch: pytest.Mo
 
     monkeypatch.delenv("PEAK_TRADE_CONFIG", raising=False)
     monkeypatch.setattr(cr, "_PROJECT_ROOT", fake_root, raising=False)
-    monkeypatch.setattr(cr, "DEFAULT_CONFIG_PATH", fake_root / "config" / "config.toml", raising=False)
+    monkeypatch.setattr(
+        cr, "DEFAULT_CONFIG_PATH", fake_root / "config" / "config.toml", raising=False
+    )
     monkeypatch.setattr(cr, "FALLBACK_CONFIG_PATH", fake_root / "config.toml", raising=False)
 
     # Default path wins
@@ -264,7 +270,9 @@ available = []
     assert cfg2["sentinel"]["value"] == 2
 
 
-def test_config_resolution_logs_choice(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture) -> None:
+def test_config_resolution_logs_choice(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
     """
     Contract: config_registry logs which resolution path was used.
     """
@@ -275,7 +283,9 @@ def test_config_resolution_logs_choice(tmp_path: Path, monkeypatch: pytest.Monke
 
     monkeypatch.delenv("PEAK_TRADE_CONFIG", raising=False)
     monkeypatch.setattr(cr, "_PROJECT_ROOT", fake_root, raising=False)
-    monkeypatch.setattr(cr, "DEFAULT_CONFIG_PATH", fake_root / "config" / "config.toml", raising=False)
+    monkeypatch.setattr(
+        cr, "DEFAULT_CONFIG_PATH", fake_root / "config" / "config.toml", raising=False
+    )
     monkeypatch.setattr(cr, "FALLBACK_CONFIG_PATH", fake_root / "config.toml", raising=False)
 
     # Exercise fallback logging
@@ -295,10 +305,15 @@ available = []
     cr.reset_config()
     _ = cr.get_config()
 
-    assert any("ConfigRegistry: default missing, using fallback config path" in r.message for r in caplog.records)
+    assert any(
+        "ConfigRegistry: default missing, using fallback config path" in r.message
+        for r in caplog.records
+    )
 
 
-def test_strategies_available_sanity_warnings(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+def test_strategies_available_sanity_warnings(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
     """
     Contract: sanity warnings are emitted, but no hard errors.
     """
@@ -321,4 +336,7 @@ foo = 1
     reg = ConfigRegistry(config_path=cfg_path)
     _ = reg.config
 
-    assert any("strategies.available contains ids without [strategy.<id>] blocks" in r.message for r in caplog.records)
+    assert any(
+        "strategies.available contains ids without [strategy.<id>] blocks" in r.message
+        for r in caplog.records
+    )

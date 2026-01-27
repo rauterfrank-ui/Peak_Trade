@@ -19,8 +19,8 @@ Prevent future divergence between CLI and engine portfolio profile resolution an
   - `tests/test_registry_portfolio_backtest_cli_contracts.py`
 
 ## Verification
-- `python3 -m pytest -q tests/test_portfolio_backtest_smoke.py tests/test_backtest_smoke.py` → PASS (13 passed)
-- `python3 -m pytest -q tests/test_registry_portfolio_backtest_cli_contracts.py` → PASS (7 passed)
+- `python3 -m pytest -q tests&#47;test_portfolio_backtest_smoke.py tests&#47;test_backtest_smoke.py` → PASS (13 passed)
+- `python3 -m pytest -q tests&#47;test_registry_portfolio_backtest_cli_contracts.py` → PASS (7 passed)
 
 ## Risk
 LOW. No changes to execution/risk/governance subsystems. Refactor to SSOT + additive logs/warnings. Covered by smoke + contract tests.

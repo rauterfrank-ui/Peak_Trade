@@ -418,7 +418,7 @@ result = run_portfolio_from_config(
 
 - **Keine Secrets in `config.toml`!** → Nutze `.env` oder Umgebungsvariablen
 - **Versionierung:** `config.toml` sollte ins Repo (ohne Keys)
-- **Dev/Prod:** Nutze `PEAK_TRADE_CONFIG=/path/to/prod.toml`
+- **Dev/Prod:** Nutze `PEAK_TRADE_CONFIG=&#47;path&#47;to&#47;prod.toml`
 
 ---
 

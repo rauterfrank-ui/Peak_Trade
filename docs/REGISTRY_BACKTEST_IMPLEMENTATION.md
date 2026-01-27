@@ -232,8 +232,8 @@ dynamic_allocation = true
 **Priorität:** Hoch
 
 **Test-Dateien:**
-- `tests/backtest/test_registry_backtest.py`
-- `tests/backtest/test_portfolio_allocation.py`
+- `tests&#47;backtest&#47;test_registry_backtest.py`
+- `tests&#47;backtest&#47;test_portfolio_allocation.py`
 
 **Coverage:**
 - Single-Strategy-Backtest mit verschiedenen Configs
