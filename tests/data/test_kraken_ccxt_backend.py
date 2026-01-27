@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import builtins
 import importlib
 import sys
 import types
@@ -68,9 +69,17 @@ def test_fetch_ohlcv_canonical_mapping(monkeypatch):
 
 
 def test_missing_ccxt_raises_helpful_error(monkeypatch):
-    monkeypatch.setitem(sys.modules, "ccxt", None)
-    # Ensure import of ccxt fails
+    # Simulate "ccxt missing" even if installed in the environment.
     sys.modules.pop("ccxt", None)
+
+    real_import = builtins.__import__
+
+    def fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # type: ignore[no-untyped-def]
+        if name == "ccxt":
+            raise ModuleNotFoundError("No module named 'ccxt'")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
 
     from src.data.providers.kraken_ccxt_backend import KrakenCcxtBackend
 
