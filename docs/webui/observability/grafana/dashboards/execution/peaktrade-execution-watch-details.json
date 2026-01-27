@@ -98,7 +98,7 @@
         "label": "endpoint",
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_LOCAL}"
+          "uid": "peaktrade-prometheus-local"
         },
         "query": {
           "query": "label_values(peak_trade_execution_watch_requests_total, endpoint)",
@@ -120,7 +120,7 @@
         "label": "status",
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS_LOCAL}"
+          "uid": "peaktrade-prometheus-local"
         },
         "query": {
           "query": "label_values(peak_trade_execution_watch_requests_total, status)",
@@ -158,7 +158,7 @@
       "title": "Execution Watch req/s (filtered)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 10,
@@ -179,7 +179,7 @@
       "title": "Execution Watch latency p95 (filtered)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 10,

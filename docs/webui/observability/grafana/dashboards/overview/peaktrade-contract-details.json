@@ -145,7 +145,7 @@
       "title": "Metric present? (shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
@@ -203,7 +203,7 @@
       "title": "Series count (shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
@@ -230,7 +230,7 @@
       "title": "Series by job (shadow)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 8,
@@ -263,7 +263,7 @@
       "title": "Metric present? (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 5,
@@ -321,7 +321,7 @@
       "title": "Series count (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 5,
@@ -348,7 +348,7 @@
       "title": "Series by job (local)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 8,
@@ -381,7 +381,7 @@
       "title": "Metric present? (main)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 5,
@@ -439,7 +439,7 @@
       "title": "Series count (main)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 5,
@@ -466,7 +466,7 @@
       "title": "Series by job (main)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 8,

@@ -126,7 +126,7 @@
       "title": "Contract metric present? peak_trade_pipeline_events_total",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
@@ -191,7 +191,7 @@
       "title": "Contract metric present? peak_trade_pipeline_latency_seconds_bucket",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
@@ -256,7 +256,7 @@
       "title": "Contract metric present? peak_trade_risk_blocks_total",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
@@ -321,7 +321,7 @@
       "title": "Pipeline Event Throughput (by stage)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 9,
@@ -343,7 +343,7 @@
       "description": "Uses clamp_min(..., 1e-9) on the denominator to avoid 0-denominator spikes during low traffic / warmup.",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 8,
@@ -372,7 +372,7 @@
       "title": "Risk Blocks (by reason)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 8,
@@ -393,7 +393,7 @@
       "title": "Latency p95 (intent → ack)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 9,
@@ -420,7 +420,7 @@
       "title": "Feed Gaps (optional)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 9,
@@ -441,7 +441,7 @@
       "title": "Run State (optional)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 7,

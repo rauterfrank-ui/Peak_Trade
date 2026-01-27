@@ -120,7 +120,7 @@
       "title": "HTTP req/s — main (optional)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 9,
@@ -141,7 +141,7 @@
       "title": "HTTP req/s — shadow",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 9,
@@ -174,7 +174,7 @@
       "title": "HTTP increase(30m) — main",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 6,
@@ -201,7 +201,7 @@
       "title": "HTTP increase(30m) — shadow",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 6,

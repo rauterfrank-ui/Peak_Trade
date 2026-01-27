@@ -118,7 +118,7 @@
       "title": "UP (shadow_mvs)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_SHADOW}"
+        "uid": "peaktrade-prometheus-shadow"
       },
       "gridPos": {
         "h": 5,
@@ -176,7 +176,7 @@
       "title": "UP (peak_trade_web) — local",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 5,
@@ -234,7 +234,7 @@
       "title": "UP (peak_trade_web) — main (optional)",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_MAIN}"
+        "uid": "peaktrade-prometheus-main"
       },
       "gridPos": {
         "h": 5,
@@ -304,7 +304,7 @@
       "title": "Scrape samples scraped (rate) — local",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 9,
@@ -325,7 +325,7 @@
       "title": "Scrape duration (p95) — local",
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_LOCAL}"
+        "uid": "peaktrade-prometheus-local"
       },
       "gridPos": {
         "h": 9,

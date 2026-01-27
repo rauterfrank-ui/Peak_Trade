@@ -41,6 +41,41 @@ export PY_CMD="python3"
 
 ---
 
+## 3.1) Gates / IO Map (wo was liegt, rein kommt, raus geht)
+
+### A) Runtime Gate (Operator, Snapshot-only)
+**Gate:** AI Live Ops Pack v1 Verifikation  
+**Command:** `bash scripts/obs/ai_live_ops_verify.sh`
+
+- **Inputs (rein kommt)**:
+  - **Prometheus API**: `PROM_URL` (default `http://127.0.0.1:9092`)
+  - **Grafana Health**: `GRAFANA_URL` (default `http://127.0.0.1:3000`)  
+  - **Exporter Metrics**: `EXPORTER_URL` (default `http://127.0.0.1:9110/metrics`)
+  - **Prometheus Scrape + Rules (Repo → Container)**:
+    - Repo Scrape Config: `docs&#47;webui&#47;observability&#47;PROMETHEUS_LOCAL_SCRAPE.yml`
+    - Repo Rules Dir: `docs&#47;webui&#47;observability&#47;prometheus&#47;rules&#47;` (z.B. `ai_live_alerts_v1.yml`)
+    - Compose mount (lokal): `docs&#47;webui&#47;observability&#47;DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml` mountet das nach `&#47;etc&#47;prometheus&#47;rules`
+
+- **Outputs (raus geht)**:
+  - Evidence dir (Default): `.local_tmp&#47;ai_live_ops_verify_<timestamp>`
+  - `AI_LIVE_OPS_SUMMARY.txt` (Verdict + Hard-Checks)
+  - `PROM_REQUIRED_SERIES.tsv` (PromQL Snapshots: result_count + scalar values)
+  - `prom&#47;*.json` (Prometheus Query JSON snapshots)
+  - Zusätzlich: `prom_targets.json`, `prom_rules.json`, `prom_alerts.json`, `exporter_metrics.txt`, `META.txt`
+
+### B) Repo Gate (CI/Regression, hermetisch)
+**Gate:** “Ops Pack v1 Asset Contracts” (Rules + Dashboard)  
+**Where:** `tests&#47;obs&#47;test_ai_live_ops_pack_v1.py`
+
+- **Inputs (rein kommt)**:
+  - Rules file: `docs&#47;webui&#47;observability&#47;prometheus&#47;rules&#47;ai_live_alerts_v1.yml`
+  - Dashboard JSON: `docs&#47;webui&#47;observability&#47;grafana&#47;dashboards&#47;execution&#47;peaktrade-execution-watch-overview.json`
+
+- **Outputs (raus geht)**:
+  - Pytest PASS/FAIL (kein Runtime-Zugriff; keine Docker-Abhängigkeit)
+
+---
+
 ## 4) Start (lokal)
 
 ### 4.1 Prometheus-local (und optional Grafana)
@@ -95,7 +130,7 @@ bash scripts/obs/ai_live_ops_verify.sh
 ### 5.2 Evidence Artifacts (file-backed)
 Das Script schreibt ein OUT-Verzeichnis (Default):
 ```text
-.local_tmp/ai_live_ops_verify_<timestamp>
+.local_tmp&#47;ai_live_ops_verify_<timestamp>
 ```
 und darin u.a.:
 - `AI_LIVE_OPS_SUMMARY.txt` (Hard-Checks + Verdict)
