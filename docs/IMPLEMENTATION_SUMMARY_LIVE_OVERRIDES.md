@@ -7,14 +7,14 @@
 
 ## 📋 Aufgabenstellung
 
-Integration von `config&sol;live_overrides&sol;auto.toml (planned)` in die Laufzeit-Konfiguration von Peak_Trade, sodass der **Promotion Loop v0** Parameter automatisch in Live-Environments anpassen kann, ohne manuell `config.toml` zu editieren.
+Integration von `config&#47;live_overrides&#47;auto.toml` in die Laufzeit-Konfiguration von Peak_Trade, sodass der **Promotion Loop v0** Parameter automatisch in Live-Environments anpassen kann, ohne manuell `config.toml` zu editieren.
 
 ## ✅ Implementierte Komponenten
 
 ### 1. Core Config-Erweiterungen (`src/core/peak_config.py`)
 
 #### Neue Konstanten
-- `AUTO_LIVE_OVERRIDES_PATH`: Pfad zu `config&sol;live_overrides&sol;auto.toml (planned)`
+- `AUTO_LIVE_OVERRIDES_PATH`: Pfad zu `config&#47;live_overrides&#47;auto.toml`
 
 #### Neue Funktionen
 
@@ -47,7 +47,7 @@ Neue Exports hinzugefügt:
 
 **Erstellt:**
 - `config/live_overrides/` (Verzeichnis)
-- `config&sol;live_overrides&sol;auto.toml (planned)` (Template mit Beispielen)
+- `config&#47;live_overrides&#47;auto.toml` (Template mit Beispielen)
 
 ### 4. Tests (19 Tests, alle grün ✅)
 
@@ -85,7 +85,7 @@ Neue Exports hinzugefügt:
 
 ### 6. Demo & Tools
 
-**`scripts&sol;demo_live_overrides.py (planned)`**
+**`scripts&#47;demo_live_overrides.py`**
 - Interaktives Demo-Script
 - Zeigt Config-Loading in verschiedenen Modi
 - Visualisiert Override-Anwendung
@@ -291,7 +291,7 @@ cfg.get("strategy.trigger_delay")  # -> 8.0
 ## 🎉 Zusammenfassung
 
 **Was wurde implementiert:**
-- Vollständige Integration von `config&sol;live_overrides&sol;auto.toml (planned)` in Peak_Trade
+- Vollständige Integration von `config&#47;live_overrides&#47;auto.toml` in Peak_Trade
 - Environment-basiertes Gating (nur Live/Testnet)
 - Graceful degradation bei Fehlern
 - 19 Tests (alle grün)

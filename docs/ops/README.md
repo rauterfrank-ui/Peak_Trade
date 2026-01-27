@@ -1551,12 +1551,9 @@ Die folgenden Dateien **müssen** diese Marker enthalten für Auto-Updates:
 **Format:**
 ```html
 <!-- MERGE_LOG_EXAMPLES:START -->
-- PR #290 — chore(ops): guard against black enforcement drift: docs/ops/PR_290_MERGE_LOG.md
-- PR #307 — docs(ops): document README_REGISTRY guardrail for ops doctor: docs/ops/PR_307_MERGE_LOG.md
-- PR #309 — feat(ops): add branch hygiene script (origin/main enforcement): docs/ops/PR_309_MERGE_LOG.md
-- PR #311 — feat(ops): add docs diff guard (mass-deletion protection): docs/ops/PR_311_MERGE_LOG.md
-- PR #409 — fix(kill-switch): stabilize tests + add legacy adapter for risk-gate: docs/ops/PR_409_MERGE_LOG.md
+- PR #999 — docs(grafana): fix DS_LOCAL uid templating in execution watch dashboard: docs/ops/PR_999_MERGE_LOG.md
 <!-- MERGE_LOG_EXAMPLES:END -->
+
 
 
 

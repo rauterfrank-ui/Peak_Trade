@@ -72,7 +72,7 @@ Promotion Loop (Governance)
    - Optional: Nur in `bounded_auto` Modus
    - Schreibt akzeptierte numerische Patches in TOML
    - Respektiert AutoApplyBounds (min/max/step)
-   - Pfad: `config&sol;live_overrides&sol;auto.toml (planned)` (konfigurierbar)
+  - Pfad: `config&#47;live_overrides&#47;auto.toml` (konfigurierbar)
 
 ## Nutzung
 

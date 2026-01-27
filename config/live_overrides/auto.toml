@@ -1,0 +1,17 @@
+# Peak_Trade Live Overrides (Auto-applied)
+# =======================================
+# Diese Datei wird (optional) vom Promotion Loop im Modus "bounded_auto"
+# aktualisiert. Sie wird NUR in live-ähnlichen Umgebungen von
+# `load_config_with_live_overrides()` eingemischt (oder in Tests via --force).
+#
+# WICHTIG:
+# - Keine Secrets hier ablegen.
+# - Keys mit Punkten bitte in Anführungszeichen schreiben, damit TOML sie als
+#   String-Key und nicht als verschachtelte Tabellen interpretiert.
+#
+# Beispiel:
+# [auto_applied]
+# "portfolio.leverage" = 1.75
+# "strategy.trigger_delay" = 8.0
+
+[auto_applied]

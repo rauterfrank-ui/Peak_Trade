@@ -48,6 +48,9 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 # Default Config-Pfad
 _DEFAULT_CONFIG_PATH = _PROJECT_ROOT / "config" / "config.toml"
 
+# Default Live-Override-Pfad (Promotion Loop Output)
+AUTO_LIVE_OVERRIDES_PATH = _PROJECT_ROOT / "config" / "live_overrides" / "auto.toml"
+
 
 @dataclass
 class PeakConfig:
@@ -219,3 +222,139 @@ def get_project_root() -> Path:
         Path zum Projekt-Root
     """
     return _PROJECT_ROOT
+
+
+def _flatten_dict_to_dotted_keys(data: Mapping[str, Any], *, prefix: str = "") -> Dict[str, Any]:
+    """
+    Convert nested dicts into dotted-key mapping.
+
+    Example:
+        {"portfolio": {"leverage": 1.75}} -> {"portfolio.leverage": 1.75}
+    """
+    out: Dict[str, Any] = {}
+    for key, value in data.items():
+        if not isinstance(key, str):
+            # Ignore non-string keys (shouldn't happen for TOML)
+            continue
+        full_key = f"{prefix}.{key}" if prefix else key
+        if isinstance(value, Mapping):
+            out.update(_flatten_dict_to_dotted_keys(value, prefix=full_key))
+        else:
+            out[full_key] = value
+    return out
+
+
+def _load_live_auto_overrides(path: Path) -> Dict[str, Any]:
+    """
+    Load auto-applied live overrides from a TOML file.
+
+    Graceful degradation:
+    - Missing file -> {}
+    - Invalid TOML -> {} (prints warning)
+
+    Expected structure (recommended):
+        [auto_applied]
+        "portfolio.leverage" = 1.75
+
+    Also supports dotted-keys without quoting, which TOML parses as nested tables:
+        [auto_applied]
+        portfolio.leverage = 1.75
+    """
+    if not path.exists():
+        return {}
+
+    try:
+        with path.open("rb") as f:
+            data = tomllib.load(f)
+    except Exception as e:
+        print(f"[peak_config] WARNING: Failed to parse live overrides TOML at {path}: {e}")
+        return {}
+
+    if not isinstance(data, dict):
+        return {}
+
+    section = data.get("auto_applied", data)
+    if not isinstance(section, Mapping):
+        return {}
+
+    # Flatten in case TOML dotted-keys created nested dicts
+    flat = _flatten_dict_to_dotted_keys(section)
+    # Ensure keys are strings (flatten already filters)
+    return flat
+
+
+def _is_live_like_environment(cfg: PeakConfig) -> bool:
+    """
+    Determine whether live auto-overrides may be applied.
+
+    Conservative rule:
+    - Apply only in live-like environments OR when enable_live_trading is True.
+    - Do NOT apply in paper/backtest by default.
+    """
+    mode = cfg.get("environment.mode", "paper")
+    mode_str = str(mode).lower() if mode is not None else "paper"
+
+    # Explicit safety flag: treat as live-like for config layering (does NOT unlock execution)
+    if cfg.get("environment.enable_live_trading", False):
+        return True
+
+    return mode_str in (
+        "live",
+        "testnet",
+        "shadow",
+        "paper_live",
+        "live_dry_run",
+    )
+
+
+def load_config_with_live_overrides(
+    path: Optional[str | Path] = None,
+    *,
+    auto_overrides_path: Optional[Path] = None,
+    force_apply_overrides: bool = False,
+) -> PeakConfig:
+    """
+    Load base config and optionally apply live auto-overrides from TOML.
+
+    This is an opt-in layer on top of `load_config()`. It never changes
+    execution behaviour; it only merges config values for live-like envs.
+
+    Args:
+        path: Base config path (defaults to resolve_config_path()).
+        auto_overrides_path: Override TOML path (defaults to AUTO_LIVE_OVERRIDES_PATH).
+        force_apply_overrides: If True, apply overrides even in non-live envs (tests only).
+    """
+    cfg = load_config(path)
+
+    if not (force_apply_overrides or _is_live_like_environment(cfg)):
+        return cfg
+
+    overrides_path = auto_overrides_path or AUTO_LIVE_OVERRIDES_PATH
+    overrides = _load_live_auto_overrides(overrides_path)
+    if not overrides:
+        return cfg
+
+    # Safety: ignore overrides that target non-existent config paths
+    sentinel = object()
+    applicable: Dict[str, Any] = {}
+    ignored = 0
+    for k, v in overrides.items():
+        if cfg.get(k, sentinel) is sentinel:
+            ignored += 1
+            continue
+        applicable[k] = v
+
+    if not applicable:
+        if ignored:
+            print(
+                f"[peak_config] WARNING: Ignored {ignored} live override(s) targeting unknown paths."
+            )
+        return cfg
+
+    print(
+        f"[peak_config] Applying {len(applicable)} live auto-override(s) from {overrides_path}"
+    )
+    for k, v in applicable.items():
+        print(f"[peak_config]   {k} = {v}")
+
+    return cfg.with_overrides(applicable)
