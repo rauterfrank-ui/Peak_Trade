@@ -32,7 +32,7 @@
 | Risk ID | Description | Likelihood | Impact | Mitigation | Detection | Owner | Status | Evidence Link |
 |---------|-------------|------------|--------|------------|-----------|-------|--------|---------------|
 | R-001 | CI/Policy Drift: Neue Docs-Checks oder Gates werden nicht in Policy/Contracts dokumentiert → divergence zwischen Source-of-Truth und Implementation | Med | Med | Required Checks Drift Guard (active), periodic audit of `.github/workflows/` vs. docs | Drift Guard CI check, ops doctor | ops | Mitigating | [Required Checks Drift Guard v1](REQUIRED_CHECKS_DRIFT_GUARD_v1_OPERATOR_NOTES.md) |
-| R-002 | Placeholder-Standard Inkonsistenzen: Teams nutzen unterschiedliche Marker (TODO vs. FIXME vs. TBD) → Review-Friktion, unklare Ownership | Low | Low | Placeholder Policy v0 (docs-only), periodic reports via `generate_placeholder_reports.py` | Local inventory reports (`.ops_local/inventory/`) | ops | Mitigating | [Placeholder Policy](PLACEHOLDER_POLICY.md) |
+| R-002 | Placeholder-Standard Inkonsistenzen: Teams nutzen unterschiedliche Marker (TODO vs. FIXME vs. TBD) → Review-Friktion, unklare Ownership | Low | Low | Placeholder Policy v0 (docs-only), periodic reports via `generate_placeholder_reports.py` | Local inventory reports (`.ops_local&#47;inventory&#47;`) | ops | Mitigating | [Placeholder Policy](PLACEHOLDER_POLICY.md) |
 | R-003 | Ops-Dokumente werden fälschlich als "Compliance Claim" interpretiert: Docs beschreiben Prozess-Artefakte, aber externe Stakeholder könnten dies als Audit-Readiness-Claim missverstehen | Low | High | Explicit disclaimers in Ops docs ("NOT a compliance claim", "process artifact only"), vetting of doc wording pre-merge | PR review, ops QA gate | ops | Open | [TBD] |
 
 ---
