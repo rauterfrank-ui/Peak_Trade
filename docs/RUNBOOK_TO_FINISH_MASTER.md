@@ -30,12 +30,12 @@ Du willst verhindern, dass „Finish“ diffus bleibt. Nutze **genau eine** Defi
 2. **Roadmap-basiert:**  
    **Finish = Phasen 11–12 (Advanced Research + Realtime) abgeschlossen; Phase 13 (Live) nur nach Governance-Gate.**
 3. **Ops-basiert:**  
-   **Finish = Finish‑A/B/C Tracks vollständig; C endet in „Controlled Readiness“ (ohne Live‑Freischaltung).**
+   **Finish = Finish‑A/B/C Tracks vollständig; C endet in „Controlled Readiness“ (ohne Live-Freischaltung).**
 
 ### SSoT-Place (wähle 1 Datei)
-- `docs/PEAK_TRADE_OVERVIEW.md` (wenn du Roadmap-/Phasen-Snapshot dort führst)
-- `docs/PEAK_TRADE_STATUS_OVERVIEW.md` (wenn du Status als SSoT führst)
-- `docs/WORKFLOW_FRONTDOOR.md` (wenn du es als Frontdoor führst)
+- [INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md) (wenn bereits „Roadmap-Snapshot“ enthält)
+- oder [PEAK_TRADE_STATUS_OVERVIEW.md](PEAK_TRADE_STATUS_OVERVIEW.md) (falls vorhanden)
+- oder [WORKFLOW_FRONTDOOR.md](WORKFLOW_FRONTDOOR.md) (wenn du es als Frontdoor führst)
 
 **Acceptance:** In SSoT steht 1 Satz „Finish = …“ + Link auf dieses Runbook + Link auf D2/D3/D4 Runbooks.
 
@@ -124,10 +124,9 @@ git status -sb || true
 
 ### A3 — Untracked Files aufnehmen (Runbooks + Research)
 **Targets (untracked):**
-- `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md`
-- `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_FINISH_C_MASTER.md`
-- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md`
-- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md`
+- [RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md](ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md)
+- [RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md](ops/runbooks/RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md)
+- docs/research/option_b (2 Dateien)
 
 **Exit:** alle Dateien sind im Index (staged) oder bewusst **explizit** ausgeschlossen (und dokumentiert).
 
@@ -142,7 +141,7 @@ git rev-parse --show-toplevel 2>/dev/null || true
 git status -sb || true
 
 echo "=== ADD (docs-only) ==="
-git add docs/RUNBOOKS_AND_INCIDENT_HANDLING.md         docs/ops/runbooks/README.md         docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md         docs/ops/runbooks/finish_c/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md         docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md         docs/research/option_b/OPTION_B_GAP_ASSESSMENT.md         docs/research/option_b/OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md || true
+git add docs/RUNBOOKS_AND_INCIDENT_HANDLING.md         docs/ops/runbooks/README.md         docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md         docs/ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md         docs/ops/runbooks/RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md         docs/research/option_b || true
 
 echo "=== STAGED DIFF (names) ==="
 git diff --cached --name-only || true
@@ -153,7 +152,7 @@ git diff --cached --name-only || true
 ## 4) Phase B — Docs Gates & Test-Snapshot (lokal)
 
 ### B1 — Minimal Test Plan (D2)
-**Pflicht:** `uv run pytest -q tests/reporting/test_offline_paper_trade_report.py`  
+**Pflicht:** `uv run pytest -q tests/reporting/test_report_generator.py`  
 **Exit:** PASS + in Verification Note erfasst.
 
 > **Cursor Terminal — Single Block**
@@ -167,7 +166,7 @@ git rev-parse --show-toplevel 2>/dev/null || true
 git status -sb || true
 
 echo "=== TEST (D2 subset) ==="
-uv run pytest -q tests/reporting/test_offline_paper_trade_report.py || true
+uv run pytest -q tests/reporting/test_report_generator.py || true
 ```
 
 ### B2 — Docs Gates (lokal best effort)
@@ -244,13 +243,12 @@ Make “Finish” workstreams discoverable and operational via canonical entry p
   - docs/ops/runbooks/README.md (D4 + finish-c pointers)
   - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md (D4 + finish-c pointers)
 - Added:
-  - docs/ops/runbooks/finish_c/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md
-  - docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md
-  - docs/research/option_b/OPTION_B_GAP_ASSESSMENT.md
-  - docs/research/option_b/OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md
+  - docs/ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md
+  - docs/ops/runbooks/RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md
+  - docs/research/option_b/* (no-code roadmap/policy)
 
 ## Verification
-- PASS: uv run pytest -q tests/reporting/test_offline_paper_trade_report.py
+- PASS: uv run pytest -q tests/reporting/test_report_generator.py
 - Docs gates: (list PASS snapshots or CI links)
 
 ## Risk
@@ -265,7 +263,7 @@ Follow RUNBOOK_D4 for templates/frontdoor consistency.
 ## 6) Phase D — D2 „Done“ (Reporting + Compare Runs) operational verifizieren
 
 ### Entry
-- Runbook `docs&#47;runbooks&#47;RUNBOOK_D2_REPORTING.md` existiert.
+- Runbook `docs/runbooks/RUNBOOK_D2_REPORTING.md` existiert.
 - Test subset PASS.
 
 ### Actions (DoD)
@@ -305,7 +303,7 @@ Output:
 ## 7) Phase E — D3 „Done“ (Watch‑Only Web/API + Grafana) operational verifizieren
 
 ### Entry
-- D3 Runbook existiert: `docs&#47;runbooks&#47;RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md`.
+- D3 Runbook existiert: `docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md`.
 
 ### Actions (DoD)
 - API Contract v0: Endpunkte & Pages überprüfbar.
@@ -344,7 +342,7 @@ Output:
 ## 8) Phase F — D4 „Done“ (Ops/Governance Polish) operationalisieren
 
 ### Entry
-- `docs&#47;ops&#47;runbooks&#47;finish_c&#47;RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md` liegt vor.
+- [RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md](ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md) liegt vor.
 
 ### Actions (DoD)
 - Templates konsolidiert:
@@ -352,9 +350,9 @@ Output:
   - Evidence Template
   - Release Checklist
 - Frontdoor Links konsistent:
-  - `docs/ops/runbooks/README.md`
-  - `docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md`
-  - optional `docs/WORKFLOW_FRONTDOOR.md`
+  - [docs&#47;ops&#47;runbooks&#47;README.md](ops/runbooks/README.md)
+  - [docs&#47;runbooks&#47;RUNBOOKS_LANDSCAPE_2026_READY.md](runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md)
+  - optional [docs&#47;WORKFLOW_FRONTDOOR.md](WORKFLOW_FRONTDOOR.md)
 - Gate‑Incidents reduzieren:
   - Styleguide / False‑Positive Runbooks zentral referenziert.
 
@@ -406,8 +404,8 @@ Output:
 ## 11) Optional: Phase I — Option‑B (Research-only, No‑Code Policy Track)
 
 ### Deliverables
-- `docs&#47;research&#47;option_b&#47;OPTION_B_GAP_ASSESSMENT.md`
-- `docs&#47;research&#47;option_b&#47;OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md`
+- `DATA_POLICY_TECH_EQUITIES.md`
+- `DATA_POLICY_INDEX_FUTURES.md`
 - Phasen A–F (Design/Policy Deliverables):
   - Instrument Meta / Contract Chain
   - Roll Ledger / Continuous Builder + Attribution
