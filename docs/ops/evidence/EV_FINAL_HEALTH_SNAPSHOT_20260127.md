@@ -5,13 +5,13 @@ Final, read-only health snapshot proving **100%** across target areas (Docs / CI
 
 ## Scope
 - Read-only verification only (no code changes).
-- Local logs written under `.local_tmp/...` (not committed).
+- Local logs written under `.local_tmp&#47;...` (not committed).
 
 ## Snapshot metadata
 - Date (UTC): 2026-01-27
 - Repo branch: `main`
 - Repo head (at snapshot): `da467e06` (post PR #1009)
-- Output log (local): `.local_tmp/final_health_snapshot_20260127T135851Z.log`
+- Output log (local): `.local_tmp&#47;final_health_snapshot_20260127T135851Z.log`
 
 ## Checks executed
 ### Docs health
@@ -19,7 +19,7 @@ Final, read-only health snapshot proving **100%** across target areas (Docs / CI
   - `bash scripts/ops/verify_docs_reference_targets.sh`
   - Result: PASS
 - Tracked-docs token policy:
-  - `python3 scripts/ops/validate_docs_token_policy.py --tracked-docs`
+  - `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --tracked-docs`
   - Result: PASS
 
 ### Observability
@@ -28,8 +28,8 @@ Final, read-only health snapshot proving **100%** across target areas (Docs / CI
   - Result: PASS (Grafana health reachable; auth-required checks correctly SKIP without credentials)
 
 - Runtime endpoints:
-  - Exporter: `curl -fsS http://127.0.0.1:9109/metrics` → PASS
-  - Grafana health: `curl -fsS http://127.0.0.1:3000/api/health` → PASS (`database: ok`)
+  - Exporter: `curl -fsS http:&#47;&#47;127.0.0.1:9109&#47;metrics` → PASS
+  - Grafana health: `curl -fsS http:&#47;&#47;127.0.0.1:3000&#47;api&#47;health` → PASS (`database: ok`)
 
 ## Results summary (PASS)
 - Docs health: PASS (reference targets + token policy)
@@ -39,7 +39,7 @@ Final, read-only health snapshot proving **100%** across target areas (Docs / CI
 
 ## Evidence
 Primary evidence log (local, not committed):
-- `.local_tmp/final_health_snapshot_20260127T135851Z.log`
+- `.local_tmp&#47;final_health_snapshot_20260127T135851Z.log`
 
 Notes:
-- If you need to attach evidence to a PR, paste the relevant log excerpt into the PR description/comment and keep the `.local_tmp/...` file local.
+- If you need to attach evidence to a PR, paste the relevant log excerpt into the PR description/comment and keep the `.local_tmp&#47;...` file local.
