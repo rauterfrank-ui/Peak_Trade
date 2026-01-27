@@ -59,6 +59,33 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+try:
+    # Watch-only telemetry; must never fail execution logic.
+    from ..obs import trade_flow_telemetry as _trade_flow_telemetry
+except Exception:  # pragma: no cover
+    _trade_flow_telemetry = None  # type: ignore
+
+
+def _signal_label_from_int(sig: int) -> str:
+    # Contract: buy/sell/flat (mapped from -1/0/+1).
+    if sig > 0:
+        return "buy"
+    if sig < 0:
+        return "sell"
+    return "flat"
+
+
+def _strategy_id_from_order_metadata(order: "OrderRequest") -> str:
+    md = getattr(order, "metadata", None) or {}
+    # Prefer stable ids; allow common keys used across components.
+    return str(
+        md.get("strategy_id")
+        or md.get("strategy_key")
+        or md.get("strategy")
+        or md.get("strategy_name")
+        or "na"
+    )
+
 
 # =============================================================================
 # Phase 16A V2: Custom Exceptions
@@ -905,6 +932,18 @@ class ExecutionPipeline:
                 previous_signal = signal
                 continue
 
+            # Telemetry: count final signal event once per change (watch-only safe)
+            if _trade_flow_telemetry is not None:
+                try:
+                    _trade_flow_telemetry.inc_signal(  # type: ignore[union-attr]
+                        strategy_id="na",
+                        symbol=symbol,
+                        signal=_signal_label_from_int(signal),
+                        n=1,
+                    )
+                except Exception:
+                    pass
+
             # Ziel-Position berechnen (vereinfacht: Signal * base_position_size)
             # +1 = Long mit base_position_size Units
             # -1 = Short mit base_position_size Units (negative Position)
@@ -1259,12 +1298,28 @@ class ExecutionPipeline:
 
         orders_list = list(orders)
         env_str = self._get_current_environment()
+        venue_label = env_str
 
         # 1. Governance-Check (Phase 16A V2)
         governance_allowed, governance_status, governance_reason = self._check_governance(env_str)
 
         if not governance_allowed:
             logger.warning(f"[EXECUTION PIPELINE] Governance-Block: {governance_reason}")
+            if _trade_flow_telemetry is not None:
+                try:
+                    reason_label = _trade_flow_telemetry.map_block_reason(  # type: ignore[union-attr]
+                        status=ExecutionStatus.BLOCKED_BY_GOVERNANCE.value,
+                        raw_reason=governance_reason,
+                    )
+                    for o in orders_list:
+                        _trade_flow_telemetry.inc_orders_blocked(  # type: ignore[union-attr]
+                            strategy_id=_strategy_id_from_order_metadata(o),
+                            symbol=o.symbol,
+                            reason=reason_label,
+                            n=1,
+                        )
+                except Exception:
+                    pass
             return ExecutionResult(
                 rejected=True,
                 executed_orders=[],
@@ -1285,6 +1340,21 @@ class ExecutionPipeline:
                     f"[EXECUTION PIPELINE] LIVE-Mode blockiert in Phase 16A. "
                     f"Keine Orders werden ausgefuehrt."
                 )
+                if _trade_flow_telemetry is not None:
+                    try:
+                        reason_label = _trade_flow_telemetry.map_block_reason(  # type: ignore[union-attr]
+                            status=ExecutionStatus.BLOCKED_BY_ENVIRONMENT.value,
+                            raw_reason=reason,
+                        )
+                        for o in orders_list:
+                            _trade_flow_telemetry.inc_orders_blocked(  # type: ignore[union-attr]
+                                strategy_id=_strategy_id_from_order_metadata(o),
+                                symbol=o.symbol,
+                                reason=reason_label,
+                                n=1,
+                            )
+                    except Exception:
+                        pass
                 return ExecutionResult(
                     rejected=True,
                     executed_orders=[],
@@ -1305,6 +1375,21 @@ class ExecutionPipeline:
             except Exception as e:
                 reason = f"safety_guard_blocked: {str(e)}"
                 logger.warning(f"[EXECUTION PIPELINE] SafetyGuard blockiert Orders: {reason}")
+                if _trade_flow_telemetry is not None:
+                    try:
+                        reason_label = _trade_flow_telemetry.map_block_reason(  # type: ignore[union-attr]
+                            status=ExecutionStatus.BLOCKED_BY_SAFETY.value,
+                            raw_reason=reason,
+                        )
+                        for o in orders_list:
+                            _trade_flow_telemetry.inc_orders_blocked(  # type: ignore[union-attr]
+                                strategy_id=_strategy_id_from_order_metadata(o),
+                                symbol=o.symbol,
+                                reason=reason_label,
+                                n=1,
+                            )
+                    except Exception:
+                        pass
                 return ExecutionResult(
                     rejected=True,
                     executed_orders=[],
@@ -1328,6 +1413,21 @@ class ExecutionPipeline:
                 # Optional: Run-Logger Event mit abgelehnter Ausfuehrung
                 if self._run_logger is not None:
                     self._log_rejected_execution(orders_list, reason, risk_result)
+                if _trade_flow_telemetry is not None:
+                    try:
+                        reason_label = _trade_flow_telemetry.map_block_reason(  # type: ignore[union-attr]
+                            status=ExecutionStatus.BLOCKED_BY_RISK.value,
+                            raw_reason=reason,
+                        )
+                        for o in orders_list:
+                            _trade_flow_telemetry.inc_orders_blocked(  # type: ignore[union-attr]
+                                strategy_id=_strategy_id_from_order_metadata(o),
+                                symbol=o.symbol,
+                                reason=reason_label,
+                                n=1,
+                            )
+                    except Exception:
+                        pass
                 return ExecutionResult(
                     rejected=True,
                     executed_orders=[],
@@ -1346,6 +1446,20 @@ class ExecutionPipeline:
         # 6. Run-Logging (optional)
         if self._run_logger is not None:
             self._log_execution_results(execution_results, risk_result)
+
+        # Telemetry: approved after all gates (before executor results interpretation)
+        if _trade_flow_telemetry is not None:
+            try:
+                for o in orders_list:
+                    _trade_flow_telemetry.inc_orders_approved(  # type: ignore[union-attr]
+                        strategy_id=_strategy_id_from_order_metadata(o),
+                        symbol=o.symbol,
+                        venue=venue_label,
+                        order_type=str(getattr(o, "order_type", None) or "na"),
+                        n=1,
+                    )
+            except Exception:
+                pass
 
         # Erfolgreiche Ausfuehrung
         return ExecutionResult(
