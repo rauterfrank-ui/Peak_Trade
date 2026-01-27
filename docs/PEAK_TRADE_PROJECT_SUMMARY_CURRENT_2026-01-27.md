@@ -55,7 +55,7 @@ Zweck: **Repo-Einstieg**, **CI/Gates Index**, **Governance/Safety-Vertrag** und 
 - Ops Hub: [ops/README.md](ops/README.md)
 
 **Key run flows:**
-- Docs Gates Snapshot (vor PRs): `./scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed`
+- Docs Gates Snapshot (vor PRs): `./scripts/ops/pt_docs_gates_snapshot.sh --changed`
 - Evidence: Index [ops/EVIDENCE_INDEX.md](ops/EVIDENCE_INDEX.md) · Merge Logs `docs&#47;ops&#47;merge_logs&#47;`
 
 ---
@@ -286,7 +286,7 @@ Diese Changes gelten als „operator-/risk-relevant“ (mind. Review/Sign-off, j
 | **audit** | ✅ | PR/push/merge_group/schedule/dispatch → [`../.github/workflows/audit.yml`](../.github/workflows/audit.yml) | `pip-audit` ist **nicht-blocking** bei docs-only scope; blocking bei dependency-relevanten Änderungen | Blocking nur bei enforce=true (deps) | `bash scripts/automation/validate_all_pr_reports.sh` + `pip-audit` |
 | **tests (3.11)** | ✅ | Matrix in [`../.github/workflows/ci.yml`](../.github/workflows/ci.yml) | Docs-only PR: Job wird erstellt, Tests werden übersprungen | Hard fail bei Test-Failures | `python -m pytest tests/ -v` |
 | **strategy-smoke** | ✅ | in [`../.github/workflows/ci.yml`](../.github/workflows/ci.yml) | Docs-only PR: No-op/skip | Hard fail bei Smoke-Failures (wenn applicable) | `python scripts/strategy_smoke_check.py --output-json test_results/strategy_smoke/local.json --output-md test_results/strategy_smoke/local.md` |
-| **Policy Critic Gate** | ✅ | always-run PR/merge_group → [`../.github/workflows/policy_critic_gate.yml`](../.github/workflows/policy_critic_gate.yml) | No-op pass wenn keine policy-sensitiven Pfade geändert wurden | Fail wenn applicable und Critic Findings | Wenn `scripts&#47;ops&#47;policy_critic.py` existiert: `python scripts/ops/policy_critic.py --pr-mode` (sonst CI no-op) |
+| **Policy Critic Gate** | ✅ | always-run PR/merge_group → [`../.github/workflows/policy_critic_gate.yml`](../.github/workflows/policy_critic_gate.yml) | No-op pass wenn keine policy-sensitiven Pfade geändert wurden | Fail wenn applicable und Critic Findings | Local repro (optional): `git diff | python scripts/run_policy_critic.py --diff-stdin --changed-files \"$(git diff --name-only)\"` |
 | **Lint Gate** | ✅ | always-run PR/merge_group → [`../.github/workflows/lint_gate.yml`](../.github/workflows/lint_gate.yml) | No-op pass wenn keine `.py` Änderungen | Hard fail bei Ruff/Lint/Format Fehlern | `bash -lc "ruff check src/ tests/ scripts/ && ruff format --check src/ tests/ scripts/"` |
 | **Docs Diff Guard Policy Gate** | ✅ | PR/merge_group/dispatch → [`../.github/workflows/docs_diff_guard_policy_gate.yml`](../.github/workflows/docs_diff_guard_policy_gate.yml) | immer relevant | Hard fail bei fehlendem Marker/Policy-Verletzung | `python scripts/ci/check_docs_diff_guard_section.py` |
 | **docs-reference-targets-gate** | ✅ | PR/merge_group/dispatch → [`../.github/workflows/docs_reference_targets_gate.yml`](../.github/workflows/docs_reference_targets_gate.yml) | No-op pass wenn keine Markdown-Dateien geändert wurden | Hard fail bei fehlenden Targets | `bash scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main` |
@@ -322,7 +322,7 @@ Diese Changes gelten als „operator-/risk-relevant“ (mind. Review/Sign-off, j
 
 ### Developer (Edit → Test → Format → Docs Gates → PR)
 - **Tests/Lint lokal:** siehe [Start Here](#start-here-by-persona) (Developer)
-- **Docs Gates (wenn Docs geändert):** `./scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed`
+- **Docs Gates (wenn Docs geändert):** `./scripts/ops/pt_docs_gates_snapshot.sh --changed`
 
 ### Operator/Ops (Verify → Evidence → Index → Merge Log)
 - **Runbooks & Ops Hub:** [ops/README.md](ops/README.md)
