@@ -282,7 +282,7 @@ Diese Changes gelten als „operator-/risk-relevant“ (mind. Review/Sign-off, j
 | Gate (Check Context) | Required (main) | Trigger | Docs-only behavior | Fail-Semantik | Local repro (kurz) |
 |---|---:|---|---|---|---|
 | **CI Health Gate (weekly_core)** | ✅ | `pull_request` / `push` (Job), `merge_group` (Workflow) / schedule / dispatch → [`../.github/workflows/test_health.yml`](../.github/workflows/test_health.yml) | Läuft auch bei Docs-only PRs (kein Docs-Skip im Job) | Hard fail, wenn `weekly_core` Profil fehlschlägt | `python scripts/run_test_health_profile.py --profile weekly_core` |
-| **Guard tracked files in reports directories** | ✅ | always-run PR/push/merge_group → [`../.github/workflows/policy_tracked_reports_guard.yml`](../.github/workflows/policy_tracked_reports_guard.yml) | immer relevant | Hard fail, wenn unter `reports/` etwas tracked ist | `bash scripts/ci/guard_no_tracked_reports.sh` |
+| **Guard tracked files in reports directories** | ✅ | always-run PR/push/merge_group → [`../.github/workflows/policy_tracked_reports_guard.yml`](../.github/workflows/policy_tracked_reports_guard.yml) | immer relevant | Hard fail, wenn unter reports/ etwas tracked ist | `bash scripts/ci/guard_no_tracked_reports.sh` |
 | **audit** | ✅ | PR/push/merge_group/schedule/dispatch → [`../.github/workflows/audit.yml`](../.github/workflows/audit.yml) | `pip-audit` ist **nicht-blocking** bei docs-only scope; blocking bei dependency-relevanten Änderungen | Blocking nur bei enforce=true (deps) | `bash scripts/automation/validate_all_pr_reports.sh` + `pip-audit` |
 | **tests (3.11)** | ✅ | Matrix in [`../.github/workflows/ci.yml`](../.github/workflows/ci.yml) | Docs-only PR: Job wird erstellt, Tests werden übersprungen | Hard fail bei Test-Failures | `python -m pytest tests/ -v` |
 | **strategy-smoke** | ✅ | in [`../.github/workflows/ci.yml`](../.github/workflows/ci.yml) | Docs-only PR: No-op/skip | Hard fail bei Smoke-Failures (wenn applicable) | `python scripts/strategy_smoke_check.py --output-json test_results/strategy_smoke/local.json --output-md test_results/strategy_smoke/local.md` |
@@ -314,7 +314,7 @@ Diese Changes gelten als „operator-/risk-relevant“ (mind. Review/Sign-off, j
 | `src&#47;live&#47;**`, `src&#47;execution&#47;**`, `src&#47;exchange&#47;**` | `Policy Critic Gate` | CODEOWNERS: `@rauterfrank-ui` | execution/live-sensitiv |
 | `scripts&#47;ops&#47;**` | `Policy Critic Gate` | CODEOWNERS: `@rauterfrank-ui` + `@HrzFrnk` | ops-sensitiv |
 | `.github&#47;workflows&#47;**` | `dispatch-guard` (applicable) | (Ops/CI) | workflows müssen dispatch inputs konsistent definieren |
-| `reports&#47;**` (tracked) | `Guard tracked files in reports directories` | (Ops) | `reports/` muss gitignored bleiben |
+| `reports&#47;**` (tracked) | `Guard tracked files in reports directories` | (Ops) | reports/ muss gitignored bleiben |
 
 ---
 
@@ -362,17 +362,17 @@ Peak_Trade hat eine ausgeprägte Ops-/Runbook-/Evidence-Kultur (Einstiegspunkte)
 | Artefakt | Typischer Pfad | Git | Quelle / Beispiel |
 |---|---|---:|---|
 | Daten (lokal) | `data/` | ❌ | Root `data/` ist ignored (nicht `src/data/`) |
-| Backtest/Research Ergebnisse | `results/` | ❌ | viele Research-/Backtest-Skripte schreiben hierhin |
-| Reports (lokal) | `reports/` | ❌ | u.a. `reports&#47;audit&#47;**`, `reports&#47;live_status&#47;` |
+| Backtest/Research Ergebnisse | results/ | ❌ | viele Research-/Backtest-Skripte schreiben hierhin |
+| Reports (lokal) | reports/ | ❌ | u.a. `reports&#47;audit&#47;**`, `reports&#47;live_status&#47;` |
 | Test-Artefakte | `test_results&#47;`, `test_runs&#47;` | ❌ | CI/Local Smoke Outputs |
-| Live Runs / Sessions | `live_runs/` | ❌ | Run-Logging (z.B. `shadow_paper_logging.base_dir`) |
-| Logs | `logs/`, `*.log` | ❌ | lokale Logs/Runbooks |
+| Live Runs / Sessions | live_runs/ | ❌ | Run-Logging (z.B. `shadow_paper_logging.base_dir`) |
+| Logs | logs/, `*.log` | ❌ | lokale Logs/Runbooks |
 | MLflow Tracking | `mlruns&#47;` | ❌ | lokale MLflow Artefakte |
 | Evidence Index / Entries | `docs&#47;ops&#47;EVIDENCE_INDEX.md`, `docs&#47;ops&#47;evidence&#47;EV-*.md` | ✅ | Evidence Contract (Schema/Template) |
 | Merge Logs (Ops) | `docs/ops/merge_logs/` | ✅ | PR Closeouts / Merge Logs |
 
 **Mini-Flow (Run → Evidence → Merge Log):**
-1. **Run** erzeugt lokale Artefakte (`results/`, `reports/`, `test_results&#47;`, `live_runs/`)
+1. **Run** erzeugt lokale Artefakte (results/, reports/, `test_results&#47;`, live_runs/)
 2. **Evidence** (optional) wird als `docs&#47;ops&#47;evidence&#47;EV-*.md` und Eintrag in [ops/EVIDENCE_INDEX.md](ops/EVIDENCE_INDEX.md) dokumentiert
 3. **Merge Log** (Ops-PRs) dokumentiert Merge/Verifikation in `docs/ops/merge_logs/`
 
@@ -425,7 +425,7 @@ Peak_Trade hat eine ausgeprägte Ops-/Runbook-/Evidence-Kultur (Einstiegspunkte)
 ### Next steps (short, governance-safe)
 - **Drift prüfen (required checks):** `scripts/ops/verify_required_checks_drift.sh` (rein read-only)
 - **Docs Gates vor PRs:** `./scripts/ops/pt_docs_gates_snapshot.sh --changed`
-- **Artefakt-Hygiene:** sicherstellen, dass `reports/` & `results/` nicht versehentlich committed werden (Guards existieren)
+- **Artefakt-Hygiene:** sicherstellen, dass reports/ & results/ nicht versehentlich committed werden (Guards existieren)
 
 ---
 
