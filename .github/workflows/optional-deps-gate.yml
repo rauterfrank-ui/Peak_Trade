@@ -1,0 +1,26 @@
+name: optional-deps-gate
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  optional-deps-importability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Optional deps leak scan (ccxt)
+        run: bash scripts/ops/check_optional_deps_leaks.sh
+
+      - name: Optional deps importability gate
+        run: bash scripts/ops/check_optional_deps_importability.sh

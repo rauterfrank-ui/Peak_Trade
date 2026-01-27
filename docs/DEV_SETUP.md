@@ -40,12 +40,14 @@ source .venv/bin/activate      # Linux/macOS
 pip install -r requirements.txt
 ```
 
-**Core Dependencies:**
+**Core Dependencies (minimal, ohne Exchange-Provider):**
 - `numpy`, `pandas` – Datenverarbeitung
 - `pydantic`, `toml` – Config-Management
-- `ccxt` – Exchange-API (Kraken)
 - `pyarrow` – Parquet-Caching
 - `pytest`, `pytest-cov` – Testing
+
+**Optionale Dependencies:**
+- `ccxt` – Kraken Read-Only Datenprovider (optional; Core bleibt ohne `ccxt` importierbar)
 
 ---
 
@@ -89,6 +91,31 @@ python scripts/run_backtest.py --bars 100 -v
 
 # Tests ausführen
 pytest tests/ -v
+```
+
+---
+
+## Optional dependency gates
+
+Diese Gates stellen sicher, dass optionale Dependencies (z.B. `ccxt`) den Import-Graph nicht „leaken“.
+
+```bash
+# 1) Leak-Scan (ccxt darf nur in src/data/providers/** importiert werden)
+bash scripts/ops/check_optional_deps_leaks.sh
+
+# 2) Packaging Importability Gate (E2E, 2 venvs: core vs .[kraken])
+bash scripts/ops/check_optional_deps_importability.sh
+```
+
+---
+
+## Typechecking (dev-only)
+
+```bash
+pip install -e ".[dev]"
+
+# mypy (tolerant start)
+mypy --config-file mypy.ini src tests
 ```
 
 ---
@@ -212,8 +239,11 @@ python scripts/run_backtest.py --config config.toml
 ### "ccxt not found"
 
 ```bash
-# Dependencies nachinstallieren
-pip install -r requirements.txt
+# Optionalen Kraken-Provider installieren
+pip install ccxt
+
+# oder als Extra (wenn installiert im Editable-Mode):
+pip install -e ".[kraken]"
 ```
 
 ---

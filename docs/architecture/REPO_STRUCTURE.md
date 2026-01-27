@@ -46,6 +46,7 @@ docs/
 │
 ├── architecture/                # 🏗️ ADRs & Design-Docs
 │   ├── ADR_0001_Peak_Tool_Stack.md
+│   ├── OPTIONAL_DEPENDENCIES_POLICY.md
 │   └── REPO_STRUCTURE.md        # Diese Datei
 │
 ├── dev/                         # 👨‍💻 Developer Guides
