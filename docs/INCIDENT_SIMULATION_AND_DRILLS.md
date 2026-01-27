@@ -440,6 +440,7 @@ mv config/config.before_alert_drill.toml config/config.toml
 ### Dokumentation
 
 - **Alle Drills** werden in [`INCIDENT_DRILL_LOG.md`](INCIDENT_DRILL_LOG.md) protokolliert
+- **Single Source of Truth**: Als “durchgeführt” gilt ein Drill erst, wenn ein Eintrag (z.B. `Drill #001`) im Drill-Log existiert – Templates/Platzhalter zählen **nicht** als Durchführung.
 - **Erkenntnisse** werden in Runbooks & Governance-Doku eingearbeitet
 - **Follow-Ups** werden als TODOs oder Phase-Items dokumentiert
 

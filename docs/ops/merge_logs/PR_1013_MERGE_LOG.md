@@ -11,7 +11,7 @@ Ops-Hygiene: Merge-Log für PR #1012 (und Index-Update) als docs-only PR ins Rep
 - Update: `docs/ops/README.md` (zusätzliche Bullets/Links: PR #1012 Merge-Log + PR #1011 Merge-Log)
 
 ## Verification
-- `python3 scripts/ops/check_merge_log_hygiene.py docs/ops/merge_logs/PR_1012_MERGE_LOG.md` → PASS
+- `python3 scripts&#47;ops&#47;check_merge_log_hygiene.py docs&#47;ops&#47;merge_logs&#47;PR_1012_MERGE_LOG.md` → PASS
 - `bash scripts/ops/pt_docs_gates_snapshot.sh --changed --base origin/main` → PASS
 - CI: keine blockierenden Checks (einige Health-Checks SKIPPED, nicht required)
 
