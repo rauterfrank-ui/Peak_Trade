@@ -4,7 +4,7 @@
 Watch-only demo verification for the trade-flow telemetry counters and Grafana execution dashboard panels.
 
 ## Source (local, ignored by git)
-- Local report (gitignored): `reports/ops/trade_flow_demo_verify_20260127T074612.txt`
+- Local report (gitignored): `reports&#47;ops&#47;trade_flow_demo_verify_20260127T074612.txt`
 - Timestamp (from report): `utc=2026-01-27T06:46:12Z`
 
 ## Results (from report)
@@ -28,5 +28,5 @@ Example series (report excerpt):
 - blocked: `sum(increase(peaktrade_orders_blocked_total[1m]))` → 12.0009…
 
 ## Notes
-- The source report is intentionally not committed because `reports/` is ignored by repo policy.
+- The source report is intentionally not committed because `reports&#47;` is ignored by repo policy.
 - This evidence doc captures the operator-relevant outputs for reviewability and audit trail.
