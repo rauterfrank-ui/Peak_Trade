@@ -499,6 +499,43 @@
       },
       "targets": [
         {
+          "expr": "((sum(rate(peaktrade_signals_total[1m])) * 60) or on() vector(0))",
+          "format": "time_series",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Signals / min (1m)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_LOCAL}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 8
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "targets": [
+        {
           "expr": "(sum(increase(peaktrade_orders_approved_total[$__range])) or on() vector(0))",
           "format": "time_series",
           "instant": true,
