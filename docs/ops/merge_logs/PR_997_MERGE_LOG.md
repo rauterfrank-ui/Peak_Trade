@@ -1,4 +1,4 @@
-# PR <TBD> — Merge Log
+# PR 997 — Merge Log
 
 ## Summary
 Adds watch-only trade-flow Prometheus counters for signals + order approval/blocking, and surfaces them in the Execution Watch Overview dashboard.
@@ -46,7 +46,16 @@ HIGH (touches `src&#47;execution&#47;**`) but **telemetry-only / watch-only**:
 4. Grafana: open **Peak_Trade — Execution Watch Overview**, confirm new Stats change over time.
 
 ## References
-- PR: #<TBD>
+- PR: #997
 - Runbook: `docs/ops/runbooks/RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md`
 - Dashboard: `docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-overview.json`
 - Tests: `tests/obs/test_trade_flow_telemetry_metrics.py`, `tests/obs/test_grafana_dashpack_integrity_v1.py`
+
+---
+
+## Post-Merge Anchor
+- PR: #997
+- mergedAt: 2026-01-27T05:02:21Z
+- mergeCommit: 61ce3e9da99da0dfcff8e976efdb33219a21dc54
+- title: obs(telemetry): trade-flow counters + dashboard panels
+- url: https://github.com/rauterfrank-ui/Peak_Trade/pull/997
