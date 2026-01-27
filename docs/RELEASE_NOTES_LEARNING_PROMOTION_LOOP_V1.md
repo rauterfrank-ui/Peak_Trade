@@ -54,7 +54,7 @@ Der **Learning & Promotion Loop v1** schließt den Kreis zwischen autonomer Opti
 
 **Erzeugt:**
 
-* Promotion-Proposals unter `reports/live_promotion/<proposal_id>/`
+* Promotion-Proposals unter `reports&#47;live_promotion&#47;<proposal_id>&#47;`
 * Optional: Live-Overrides unter `config&#47;live_overrides&#47;auto.toml` (Modus: `bounded_auto`)
 
 ### 1.3 Config-Layer
@@ -118,7 +118,7 @@ python3 scripts/generate_infostream_packet.py
 # ... weitere Automation-Tools
 ```
 
-**Output:** Learning Signals in `reports/learning_snippets/`
+**Output:** Learning Signals in `reports&#47;learning_snippets&#47;`
 
 ### 3.2 Learning Loop ausführen
 
@@ -151,7 +151,7 @@ python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode disabled
 **Output:**
 
 ```
-reports/live_promotion/<proposal_id>/
+reports&#47;live_promotion&#47;<proposal_id>&#47;
 ├── proposal_meta.json          # Metadaten
 ├── config_patches.json         # Alle Patches mit Decisions
 └── OPERATOR_CHECKLIST.md       # Operator-Review-Checkliste
@@ -407,7 +407,7 @@ load_config_with_live_overrides(
 **19 Tests, alle grün ✅**
 
 ```bash
-pytest tests/test_live_overrides*.py -v
+pytest tests&#47;test_live_overrides*.py -v
 ===== 19 passed in 0.08s =====
 ```
 
@@ -629,7 +629,7 @@ cfg = load_config_with_live_overrides()
 
 1. Prüfe Troubleshooting-Sektion
 2. Führe Demo-Script aus: `python scripts&#47;demo_live_overrides.py`
-3. Schaue in Tests für Code-Beispiele: `tests/test_live_overrides*.py`
+3. Schaue in Tests für Code-Beispiele: `tests&#47;test_live_overrides*.py`
 
 ---
 

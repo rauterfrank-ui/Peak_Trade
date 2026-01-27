@@ -33,7 +33,7 @@
 2. **Speicherung als JSON:**
 
    * via `src&sol;meta&sol;learning_loop&sol;emitter.py` (planned) →
-   * `reports/learning_snippets/*.json`
+   * `reports&#47;learning_snippets&#47;*.json`
 
 3. **Learning Loop laufen lassen:**
 
@@ -121,7 +121,7 @@ build_promotion_proposals(...)
 #### 3.4 Materialisierung
 
 ```text
-reports/live_promotion/<proposal_id>/
+reports&#47;live_promotion&#47;<proposal_id>&#47;
 ├── proposal_meta.json          # Metadaten
 ├── config_patches.json         # Alle Patches mit Decisions
 └── OPERATOR_CHECKLIST.md       # Operator-Review-Checkliste
@@ -257,7 +257,7 @@ python3 scripts/run_trigger_training_drill.py
 python3 scripts/generate_infostream_packet.py
 ```
 
-**Output:** Learning Signals in `reports/learning_snippets/`
+**Output:** Learning Signals in `reports&#47;learning_snippets&#47;`
 
 ### 5.2 Learning Cycle
 
@@ -278,7 +278,7 @@ python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode bounded_auto
 ```
 
 **Output:**
-* Proposals in `reports/live_promotion/<proposal_id>/`
+* Proposals in `reports&#47;live_promotion&#47;<proposal_id>&#47;`
 * Live-Overrides in `config&#47;live_overrides&#47;auto.toml` (wenn bounded_auto)
 
 ### 5.4 Review Phase

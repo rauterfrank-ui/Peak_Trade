@@ -63,7 +63,7 @@ Promotion Loop (Governance)
    - v0: Genau eine Proposal pro Durchlauf
 
 4. **`materialize_promotion_proposals()`**
-   - Schreibt Artifacts nach `reports/live_promotion/<proposal_id>/`
+   - Schreibt Artifacts nach `reports&#47;live_promotion&#47;<proposal_id>&#47;`
    - `proposal_meta.json`: Metadaten
    - `config_patches.json`: Alle Patches mit Decisions
    - `OPERATOR_CHECKLIST.md`: Operator-Checkliste

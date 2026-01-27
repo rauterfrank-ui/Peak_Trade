@@ -421,7 +421,7 @@ python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
 
 1. **Quickstart durcharbeiten:** [QUICKSTART_LIVE_OVERRIDES.md](./QUICKSTART_LIVE_OVERRIDES.md)
 2. **Demo-Script testen:** `python scripts&#47;demo_live_overrides.py` (historical)
-3. **Promotion Loop ausprobieren:** `python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only`
+3. **Promotion Loop ausprobieren:** `python3 scripts&#47;run_promotion_proposal_cycle.py --auto-apply-mode manual_only`
 
 ### Für Developer
 

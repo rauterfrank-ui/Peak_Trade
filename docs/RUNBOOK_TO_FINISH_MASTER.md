@@ -33,9 +33,9 @@ Du willst verhindern, dass „Finish“ diffus bleibt. Nutze **genau eine** Defi
    **Finish = Finish‑A/B/C Tracks vollständig; C endet in „Controlled Readiness“ (ohne Live-Freischaltung).**
 
 ### SSoT-Place (wähle 1 Datei)
-- `docs/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md` (wenn bereits „Roadmap-Snapshot“ enthält)
-- oder `docs/PEAK_TRADE_STATUS_OVERVIEW.md` (falls vorhanden)
-- oder `docs/WORKFLOW_FRONTDOOR.md` (wenn du es als Frontdoor führst)
+- [INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md) (wenn bereits „Roadmap-Snapshot“ enthält)
+- oder [PEAK_TRADE_STATUS_OVERVIEW.md](PEAK_TRADE_STATUS_OVERVIEW.md) (falls vorhanden)
+- oder [WORKFLOW_FRONTDOOR.md](WORKFLOW_FRONTDOOR.md) (wenn du es als Frontdoor führst)
 
 **Acceptance:** In SSoT steht 1 Satz „Finish = …“ + Link auf dieses Runbook + Link auf D2/D3/D4 Runbooks.
 
@@ -124,9 +124,9 @@ git status -sb || true
 
 ### A3 — Untracked Files aufnehmen (Runbooks + Research)
 **Targets (untracked):**
-- `docs/ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md`
-- `docs/ops/runbooks/RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md`
-- `docs/research/option_b/*` (2 Dateien)
+- [RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md](ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md)
+- [RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md](ops/runbooks/RUNBOOK_FINISH_C_V1_LIVE_BROKER_OPS.md)
+- docs/research/option_b (2 Dateien)
 
 **Exit:** alle Dateien sind im Index (staged) oder bewusst **explizit** ausgeschlossen (und dokumentiert).
 
@@ -273,7 +273,7 @@ Follow RUNBOOK_D4 for templates/frontdoor consistency.
 
 ### Evidence
 - `Verification note` (PR) + optional Evidence Datei:
-  - `docs/ops/evidence/EV_D2_REPORTING_PASS_<UTC>.md`
+  - `docs&#47;ops&#47;evidence&#47;EV_D2_REPORTING_PASS_<UTC>.md`
 
 ### Exit
 - DoD erfüllt, Runbook zeigt **genau** die Commands, die PASS sind.
@@ -311,7 +311,7 @@ Output:
 - Grafana verify snapshot: **ohne Watch‑Loops**, reproduzierbar.
 
 ### Evidence
-- `docs/ops/evidence/EV_D3_WATCH_ONLY_PASS_<UTC>.md` (optional)
+- `docs&#47;ops&#47;evidence&#47;EV_D3_WATCH_ONLY_PASS_<UTC>.md` (optional)
 - oder PR Verification Note + CI Links.
 
 ### Exit
@@ -342,7 +342,7 @@ Output:
 ## 8) Phase F — D4 „Done“ (Ops/Governance Polish) operationalisieren
 
 ### Entry
-- `docs/ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md` liegt vor.
+- [RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md](ops/runbooks/RUNBOOK_D4_OPS_GOVERNANCE_POLISH.md) liegt vor.
 
 ### Actions (DoD)
 - Templates konsolidiert:
@@ -350,9 +350,9 @@ Output:
   - Evidence Template
   - Release Checklist
 - Frontdoor Links konsistent:
-  - `docs/ops/runbooks/README.md`
-  - `docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md`
-  - optional `docs/WORKFLOW_FRONTDOOR.md`
+  - [docs&#47;ops&#47;runbooks&#47;README.md](ops/runbooks/README.md)
+  - [docs&#47;runbooks&#47;RUNBOOKS_LANDSCAPE_2026_READY.md](runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md)
+  - optional [docs&#47;WORKFLOW_FRONTDOOR.md](WORKFLOW_FRONTDOOR.md)
 - Gate‑Incidents reduzieren:
   - Styleguide / False‑Positive Runbooks zentral referenziert.
 
