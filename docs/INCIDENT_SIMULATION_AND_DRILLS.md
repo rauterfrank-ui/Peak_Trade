@@ -514,7 +514,7 @@ python scripts/research_cli.py portfolio \
 
 ### Alerts & Logs
 
-- **Logs prüfen**: `logs/` Verzeichnis
+- **Logs prüfen**: `logs&#47;` Verzeichnis
 - **Alerts beobachten**: stderr, Logging, Webhook/Slack
 
 ---
