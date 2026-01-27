@@ -1,7 +1,7 @@
 # PR 1015 — Merge Log — Optional dependencies hardening (ccxt) + gates + docs
 
 > Status: **DRAFT** (GitHub PR created)  
-> Target repo: `rauterfrank-ui/Peak_Trade`  
+> Target repo: `rauterfrank-ui&#47;Peak_Trade`  
 > PR URL: `https://github.com/rauterfrank-ui/Peak_Trade/pull/1015`
 
 ## Summary
@@ -17,7 +17,7 @@ Minimal environments (CI/docs/tools) must remain importable without optional pro
 - Import graph hardening:
   - `src/data/__init__.py` no longer imports Kraken/ccxt at import time; lazy symbols via `__getattr__` (PEP 562) with helpful on-demand error.
   - Read-only Kraken OHLCV backend implemented with lazy `ccxt` import; offline deterministic tests.
-  - `ccxt` imports moved into `src/data/providers/**` only; core modules use lazy shims/factory loading.
+  - `ccxt` imports moved into `src&#47;data&#47;providers&#47;**` only; core modules use lazy shims/factory loading.
 - Enforcement (CI/local):
   - Leak scanner: `scripts/ops/check_optional_deps_leaks.sh` enforces `ccxt` import allowlist.
   - Importability gate: `scripts/ops/check_optional_deps_importability.sh` validates core install vs `.[kraken]`.
@@ -28,14 +28,14 @@ Minimal environments (CI/docs/tools) must remain importable without optional pro
 - Docs:
   - New: `docs/architecture/OPTIONAL_DEPENDENCIES_POLICY.md` + linked in architecture index.
   - `docs/DEV_SETUP.md` includes optional deps gates + dev-only typechecking instructions.
-  - Exchange guide updated: new SDK deps must live in `providers/**` + lazy shim/factory.
+  - Exchange guide updated: new SDK deps must live in `providers&#47;**` + lazy shim/factory.
 
 ## Verification
 - Leak scan: `bash scripts/ops/check_optional_deps_leaks.sh` → PASS
 - Importability gate: `bash scripts/ops/check_optional_deps_importability.sh` → PASS
 - Unit tests:
-  - `pytest -q tests/data/test_optional_deps_imports.py tests/data/test_backend_registry_lazy_import.py` → PASS
-  - `pytest -q tests/exchange/test_ccxt_shims_importability.py` → PASS
+  - `pytest -q tests&#47;data&#47;test_optional_deps_imports.py tests&#47;data&#47;test_backend_registry_lazy_import.py` → PASS
+  - `pytest -q tests&#47;exchange&#47;test_ccxt_shims_importability.py` → PASS
 - Dev-only typecheck:
   - `pip install -e ".[dev]" && mypy --config-file mypy.ini src tests` → PASS
   - `pip install -e ".[dev]" && bash scripts/ops/typecheck_pyright.sh` → PASS

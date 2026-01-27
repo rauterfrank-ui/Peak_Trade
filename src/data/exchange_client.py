@@ -23,7 +23,7 @@ def _load_impl():
             "This feature depends on 'ccxt'. Install it (or the project's optional extra) and retry.\n\n"
             "Examples:\n"
             "  pip install ccxt\n"
-            "  pip install -e \".[kraken]\"\n"
+            '  pip install -e ".[kraken]"\n'
         )
         raise ModuleNotFoundError(msg) from exc
 

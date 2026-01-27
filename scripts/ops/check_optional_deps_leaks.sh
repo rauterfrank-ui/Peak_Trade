@@ -12,7 +12,12 @@ echo
 # Optional deps allowlist policy:
 # - ccxt darf nur in Provider-Modulen importiert werden.
 # - Tests/Docs sind ausgenommen (dürfen Snippets/Mocks enthalten).
-PATTERN='^\s*(import\s+ccxt\b|from\s+ccxt\b)'
+#
+# NOTE: We use different regex flavors for rg vs grep:
+# - ripgrep supports \s
+# - POSIX grep -E does NOT (use [[:space:]] instead)
+PATTERN_RG='^\s*(import\s+ccxt\b|from\s+ccxt\b)'
+PATTERN_GREP='^[[:space:]]*(import[[:space:]]+ccxt\\b|from[[:space:]]+ccxt\\b)'
 
 ALLOW_GLOBS=(
   "src/data/providers/**"
@@ -27,7 +32,7 @@ EXCLUDE_GLOBS=(
 )
 
 echo "Scanning for ccxt imports outside allowlist..."
-echo "pattern: ${PATTERN}"
+echo "pattern: ${PATTERN_RG}"
 echo
 
 RESULTS=""
@@ -35,7 +40,7 @@ RESULTS=""
 if command -v rg >/dev/null 2>&1; then
   # Search everything, but exclude allowlisted + excluded paths via globs.
   # NOTE: We explicitly exclude providers from the scan, so any remaining hit is a leak.
-  RG_ARGS=(rg -n --hidden --no-messages "${PATTERN}" .)
+  RG_ARGS=(rg -n --hidden --no-messages "${PATTERN_RG}" .)
 
   for g in "${ALLOW_GLOBS[@]}"; do
     RG_ARGS+=(--glob "!${g}")
@@ -60,7 +65,8 @@ else
   )
 
   # grep -R: recursive, -n: line numbers, -I: ignore binary, -E: extended regex
-  RESULTS="$(grep -RInIE "${PATTERN}" . "${GREP_EXCLUDES[@]}" 2>/dev/null || true)"
+  # IMPORTANT: options must come BEFORE the path, otherwise grep treats them as filenames.
+  RESULTS="$(grep -RInIE "${PATTERN_GREP}" "${GREP_EXCLUDES[@]}" . 2>/dev/null || true)"
 fi
 
 if [[ -n "${RESULTS}" ]]; then

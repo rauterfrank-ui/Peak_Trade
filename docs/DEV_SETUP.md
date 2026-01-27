@@ -196,7 +196,7 @@ Empfohlene Extensions:
 - Pylance
 - Python Test Explorer
 
-`.vscode/settings.json`:
+`.vscode&#47;settings.json`:
 ```json
 {
   "python.defaultInterpreterPath": ".venv/bin/python",

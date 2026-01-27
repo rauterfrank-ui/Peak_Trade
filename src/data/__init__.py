@@ -61,11 +61,17 @@ _OPTIONAL_SYMBOLS: dict[str, tuple[str, str]] = {
     "LiveExchangeConfig": ("src.data.kraken_live", "LiveExchangeConfig"),
     "load_shadow_paper_config": ("src.data.kraken_live", "load_shadow_paper_config"),
     "load_live_exchange_config": ("src.data.kraken_live", "load_live_exchange_config"),
-    "create_kraken_source_from_config": ("src.data.kraken_live", "create_kraken_source_from_config"),
+    "create_kraken_source_from_config": (
+        "src.data.kraken_live",
+        "create_kraken_source_from_config",
+    ),
     "KrakenDataHealth": ("src.data.kraken_cache_loader", "KrakenDataHealth"),
     "load_kraken_cache_window": ("src.data.kraken_cache_loader", "load_kraken_cache_window"),
     "check_data_health_only": ("src.data.kraken_cache_loader", "check_data_health_only"),
-    "get_real_market_smokes_config": ("src.data.kraken_cache_loader", "get_real_market_smokes_config"),
+    "get_real_market_smokes_config": (
+        "src.data.kraken_cache_loader",
+        "get_real_market_smokes_config",
+    ),
     "list_available_cache_files": ("src.data.kraken_cache_loader", "list_available_cache_files"),
     # Core utilities (safe, but lazy for lightweight imports)
     "CsvLoader": ("src.data.loader", "CsvLoader"),
@@ -93,7 +99,7 @@ def _optional_dep_error(symbol: str, exc: ModuleNotFoundError) -> ModuleNotFound
         f"Examples:\n"
         f"  pip install ccxt\n"
         f"  # or (if your project defines an extra)\n"
-        f"  pip install -e \".[<extra-that-includes-ccxt>]\"\n"
+        f'  pip install -e ".[<extra-that-includes-ccxt>]"\n'
     )
     return ModuleNotFoundError(msg)
 

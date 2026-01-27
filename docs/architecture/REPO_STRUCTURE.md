@@ -307,13 +307,13 @@ docker/
 Diese Dinge sind in `.gitignore` und sollten NICHT committed werden:
 
 - `data/` (generierte Daten)
-- `results/` (Backtest-Ergebnisse)
-- `reports/` (generierte Reports)
-- `logs/` (Log-Files)
-- `live_runs/` (Live-Session-Daten)
-- `test_runs/` (Test-Artefakte)
+- `results&#47;` (Backtest-Ergebnisse)
+- `reports&#47;` (generierte Reports)
+- `logs&#47;` (Log-Files)
+- `live_runs&#47;` (Live-Session-Daten)
+- `test_runs&#47;` (Test-Artefakte)
 - `*.log` (Log-Files)
-- `venv/` (Virtual Environment)
+- `venv&#47;` (Virtual Environment)
 
 **Ausnahme:** Wenn Reports/Artefakte absichtlich committed werden sollen, muss das klar dokumentiert sein (z.B. `reports&#47;README.md`).
 

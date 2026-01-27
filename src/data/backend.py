@@ -156,7 +156,7 @@ def build_data_backend_from_config(cfg: Any) -> DataBackend:
         if isinstance(data_section, dict):
             backend = data_section.get("backend")
 
-    backend_norm = (str(backend).strip().lower() if backend is not None else "pandas")
+    backend_norm = str(backend).strip().lower() if backend is not None else "pandas"
 
     if backend_norm in ("pandas", "", "default"):
         return PandasBackend()

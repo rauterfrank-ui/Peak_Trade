@@ -12,7 +12,7 @@ def _optional_dep_error(symbol: str, exc: ModuleNotFoundError) -> ModuleNotFound
         f"Examples:\n"
         f"  pip install ccxt\n"
         f"  # or (if your project defines an extra)\n"
-        f"  pip install -e \".[<extra-that-includes-ccxt>]\"\n"
+        f'  pip install -e ".[<extra-that-includes-ccxt>]"\n'
     )
     # Cause wird beim raise ... from exc gesetzt.
     return ModuleNotFoundError(msg)
