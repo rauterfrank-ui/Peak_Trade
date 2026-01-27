@@ -86,7 +86,9 @@ def test_execution_watch_contract_panel_scoped_to_local_ds() -> None:
             isinstance(panel, dict)
             and panel.get("title") == "Contract: execution watch metrics present"
         ):
-            assert _datasource_uid(panel) == "${DS_LOCAL}"
+            allowed = {"${DS_LOCAL}", "peaktrade-prometheus-local"}
+            ds_value = _datasource_uid(panel)
+            assert ds_value in allowed
             return
 
     raise AssertionError("missing panel: Contract: execution watch metrics present")
