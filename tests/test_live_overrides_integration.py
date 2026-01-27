@@ -73,7 +73,9 @@ def test_is_live_like_environment_enable_live_trading(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _base_config_toml(mode="paper") + "\n")
     # Patch enable_live_trading=True
     cfg_path.write_text(
-        _base_config_toml(mode="paper").replace("enable_live_trading = false", "enable_live_trading = true"),
+        _base_config_toml(mode="paper").replace(
+            "enable_live_trading = false", "enable_live_trading = true"
+        ),
         encoding="utf-8",
     )
     cfg = load_config(cfg_path)

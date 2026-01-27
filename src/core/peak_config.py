@@ -351,9 +351,7 @@ def load_config_with_live_overrides(
             )
         return cfg
 
-    print(
-        f"[peak_config] Applying {len(applicable)} live auto-override(s) from {overrides_path}"
-    )
+    print(f"[peak_config] Applying {len(applicable)} live auto-override(s) from {overrides_path}")
     for k, v in applicable.items():
         print(f"[peak_config]   {k} = {v}")
 

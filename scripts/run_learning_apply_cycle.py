@@ -126,7 +126,9 @@ def _coerce_patch_obj(obj: Any) -> Optional[Dict[str, Any]]:
 def _extract_patches_from_json_payload(payload: Any) -> List[Dict[str, Any]]:
     if isinstance(payload, dict):
         if "patches" in payload and isinstance(payload["patches"], list):
-            return [p for p in ([_coerce_patch_obj(x) for x in payload["patches"]]) if p is not None]
+            return [
+                p for p in ([_coerce_patch_obj(x) for x in payload["patches"]]) if p is not None
+            ]
         patch = _coerce_patch_obj(payload)
         return [patch] if patch is not None else []
     if isinstance(payload, list):

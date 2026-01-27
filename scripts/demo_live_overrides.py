@@ -41,7 +41,7 @@ def _diff_keys(base: PeakConfig, eff: PeakConfig, keys: List[str]) -> List[str]:
         before = base.get(k, "<missing>")
         after = eff.get(k, "<missing>")
         marker = "CHANGED" if before != after else "same"
-        lines.append(f"- {k}: {marker}  { _format(before) } -> { _format(after) }")
+        lines.append(f"- {k}: {marker}  {_format(before)} -> {_format(after)}")
     return lines
 
 
