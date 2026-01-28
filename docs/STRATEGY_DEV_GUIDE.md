@@ -715,7 +715,7 @@ def test_my_new_strategy_basic():
     strategy = MyNewStrategy(param1=2, param2=0.01)
 
     # Act
-    signals = strategy.generate_signals(df)
+    signals = strategy.run(df)
 
     # Assert
     assert isinstance(signals, pd.Series)
@@ -746,7 +746,7 @@ def test_my_new_strategy_smoke():
         "close": [100, 101, 102],
     }, index=pd.date_range("2024-01-01", periods=3, freq="1h"))
 
-    signals = strategy.generate_signals(df)
+    signals = strategy.run(df)
 
     # Smoke test: No crashes, valid output
     assert isinstance(signals, pd.Series)
@@ -779,7 +779,7 @@ strategy = MyNewStrategy.from_config(cfg)
 df = create_dummy_data(n_bars=200)
 
 # Signale generieren
-signals = strategy.generate_signals(df)
+signals = strategy.run(df)
 
 # Visualisieren
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
@@ -827,7 +827,8 @@ engine = BacktestEngine(
 )
 
 def strategy_signal_fn(df, params):
-    return strategy.generate_signals(df)
+    # Empfohlen: run() nutzt prepare_once() und dann generate_signals()
+    return strategy.run(df)
 
 result = engine.run_realistic(
     df=df,
@@ -954,7 +955,10 @@ class MLStrategy(BaseStrategy):
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         if self.model is None:
-            raise RuntimeError("Model not loaded. Call prepare() first!")
+            raise RuntimeError(
+                "Model not loaded. Use strategy.run(data) (preferred) "
+                "or call prepare_once(data) before generate_signals(data)."
+            )
 
         # Features berechnen
         df = data.copy()
