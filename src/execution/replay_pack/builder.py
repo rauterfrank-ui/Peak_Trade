@@ -56,6 +56,11 @@ def _detect_build_inputs(run_dir_or_run_id: Union[str, os.PathLike[str]]) -> Bui
         run_id = _infer_run_id_from_events(events) or p.name
         return BuildInputs(run_id=run_id, events_jsonl_path=events, source_mode="run_dir")
 
+    if p.exists() and p.is_file():
+        # Allow operator/CLI to target an explicit events jsonl file.
+        run_id = _infer_run_id_from_events(p) or "UNKNOWN"
+        return BuildInputs(run_id=run_id, events_jsonl_path=p, source_mode="events_jsonl")
+
     run_id = s
     repo_root = _repo_root_from_this_file()
 
