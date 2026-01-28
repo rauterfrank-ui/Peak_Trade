@@ -44,6 +44,7 @@ from ..risk import (
     calc_position_size,
 )
 from .result import BacktestResult
+from .portfolio_resolver import resolve_portfolio_cfg
 from . import stats as stats_mod
 
 # Order-Layer Imports (Phase 16)
@@ -1231,7 +1232,7 @@ def run_portfolio_from_config(
     if cfg is None:
         cfg = get_config()
 
-    portfolio_cfg = cfg.get("portfolio", {})
+    portfolio_cfg = resolve_portfolio_cfg(cfg, portfolio_name=portfolio_name)
 
     if not portfolio_cfg.get("enabled", False):
         raise ValueError(
@@ -1467,9 +1468,12 @@ def _create_dummy_result(
         index=[df.index[0]] + list(df.index),
     )
 
+    drawdown_series = stats_mod.compute_drawdown(equity)
+
     return BacktestResult(
         equity_curve=equity,
-        trades=[],
+        drawdown=drawdown_series,
+        trades=None,
         stats={
             "total_return": 0.0,
             "sharpe": 0.0,
@@ -1477,10 +1481,13 @@ def _create_dummy_result(
             "total_trades": 0,
             "win_rate": 0.0,
             "profit_factor": 0.0,
+            "blocked_trades": 0,
         },
-        mode="error_dummy",
-        strategy_name=strategy_name,
-        blocked_trades=0,
+        metadata={
+            "mode": "error_dummy",
+            "strategy_name": strategy_name,
+            "blocked_trades": 0,
+        },
     )
 
 

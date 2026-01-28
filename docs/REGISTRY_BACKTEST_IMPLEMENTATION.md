@@ -232,8 +232,8 @@ dynamic_allocation = true
 **Priorität:** Hoch
 
 **Test-Dateien:**
-- `tests/backtest/test_registry_backtest.py`
-- `tests/backtest/test_portfolio_allocation.py`
+- `tests&#47;backtest&#47;test_registry_backtest.py`
+- `tests&#47;backtest&#47;test_portfolio_allocation.py`
 
 **Coverage:**
 - Single-Strategy-Backtest mit verschiedenen Configs
@@ -245,9 +245,9 @@ dynamic_allocation = true
 
 ### 5.5 Multi-Portfolio-Support
 
-**Status:** Nicht implementiert
+**Status:** Partial (Profile-Overrides implementiert)
 
-**Idee:**
+**Aktuell implementiert (Profile-Overrides):**
 ```toml
 [portfolio.conservative]
 allocation_method = "equal"
