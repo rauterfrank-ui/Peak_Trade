@@ -82,11 +82,17 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `src&#47;experiments&#47;stress_tests.py:389` (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry für automatisches Laden
+  - Status: implemented in PR #1023 (merge commit `d218e20158f84408dfbbe627084d3a61aff24970`)
+  - Fundstellen: `src&#47;experiments&#47;equity_loader.py`, `src&#47;experiments&#47;stress_tests.py` (`load_returns_for_top_config`), `tests&#47;experiments&#47;test_equity_loader.py`
+  - Notes: v1 artifacts: `events.parquet` → `*equity.csv`; `equity_curve.jsonl` deferred; no silent None/dummy default on standard path
 
 - [ ] Vollständige Monte-Carlo-Implementierung
   - Fundstelle: `src&#47;experiments&#47;monte_carlo.py:303` (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
+  - Status: implemented in PR #1023 (merge commit `d218e20158f84408dfbbe627084d3a61aff24970`)
+  - Fundstellen: `src&#47;experiments&#47;equity_loader.py`, `src&#47;experiments&#47;monte_carlo.py` (`load_returns_for_experiment_run`), `tests&#47;experiments&#47;test_equity_loader.py`
+  - Notes: v1 artifacts: `events.parquet` → `*equity.csv`; no silent None/dummy default on standard path
 
 - [ ] Vollständige Monte-Carlo-Robustness-Implementierung
   - Fundstelle: `scripts&#47;run_monte_carlo_robustness.py:139` (illustrative)
