@@ -125,9 +125,12 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 - [ ] Pandas `.fillna` Downcasting Warnings beheben
   - Fundstelle: Diverse `src&#47;strategies&#47;*.py`
   - Kontext: `.shift(1).fillna(False)` Pattern löst FutureWarning in pandas 2.x aus
-  - Aktueller Status: Warning in `tests&#47;conftest.py` gefiltert (Phase 59)
-  - Vorschlag: Bei pandas 3.0 Migration auf `.astype(bool)` umstellen
-  - Priorität: Niedrig (funktioniert, Warning gefiltert)
+  - Status: implemented in PR #1036 (merge `7394f78c`, mergedAt 2026-01-28T05:58:36Z)
+  - Aktueller Status: Warning behoben; keine pandas-Downcasting `FutureWarning` Filter mehr nötig
+  - Vorschlag: (historisch) Bei pandas 3.0 Migration auf `.astype(bool)` umstellen
+  - Priorität: Niedrig (erledigt; Regression-Test deckt Verhalten ab)
+  - Evidence: `docs/ops/evidence/EV_TECH_DEBT_D_20260128.md`
+  - Fundstellen: `src/strategies/trend_following.py`, `src/strategies/mean_reversion.py`, `src/strategies/my_strategy.py`, `src/strategies/vol_breakout.py`, `src/strategies/mean_reversion_channel.py`, `src/strategies/ecm.py`, `tests/test_fillna_downcasting_regression.py`
 
 ### test_live_web.py Collection Error
 
