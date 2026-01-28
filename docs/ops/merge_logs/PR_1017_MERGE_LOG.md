@@ -32,4 +32,4 @@ LOW. No changes to execution/risk/governance subsystems. Refactor to SSOT + addi
 ## References
 - PR: #1017
 - Merge commit: `fee8de9531c0dbd802edd95133ce589285805559`
-- Evidence: `.local_tmp/pr_1017_merge_exec_20260128T000923Z`
+- Evidence: `.local_tmp&#47;pr_1017_merge_exec_20260128T000923Z`
