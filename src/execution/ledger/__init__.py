@@ -14,23 +14,14 @@ Scope (Slice 2):
 """
 
 from .engine import LedgerEngine
-from .engine_legacy import LegacyLedgerEngine, LegacyLedgerState
 from .execution_to_ledger import iter_beta_exec_v1_events
 from .export import (
     dumps_canonical_json,
     export_events_jsonl,
     export_ledger_jsonl,
     export_snapshot,
-    export_valuation_snapshot_json,
 )
-from .valuation import snapshot_mark_to_market
 from .models import (
-    # Legacy models (kept for replay-pack + Slice-1 integration tests)
-    JournalEntry,
-    Posting,
-    Position,
-    QuantizationPolicy,
-    ValuationSnapshot,
     # EXEC_SLICE2 FIFO models
     DecimalPolicy,
     FillEvent,
@@ -45,22 +36,11 @@ from .models import (
 
 __all__ = [
     "LedgerEngine",
-    # Legacy (WAC + double-entry) engine
-    "LegacyLedgerEngine",
-    "LegacyLedgerState",
     "iter_beta_exec_v1_events",
-    "snapshot_mark_to_market",
     "export_snapshot",
-    "export_valuation_snapshot_json",
     "export_events_jsonl",
     "export_ledger_jsonl",
     "dumps_canonical_json",
-    # Legacy models
-    "JournalEntry",
-    "Posting",
-    "Position",
-    "QuantizationPolicy",
-    "ValuationSnapshot",
     # FIFO Slice2 models
     "DecimalPolicy",
     "FillEvent",
