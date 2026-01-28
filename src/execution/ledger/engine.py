@@ -52,7 +52,13 @@ class LedgerEngine:
     _account: AccountState = field(default_factory=AccountState, init=False)
     _last_key: Optional[Tuple[str, int]] = field(default=None, init=False)
 
-    def __init__(self, base_ccy: str = "USD", decimal_policy: Optional[DecimalPolicy] = None, *, quote_currency: Optional[str] = None):
+    def __init__(
+        self,
+        base_ccy: str = "USD",
+        decimal_policy: Optional[DecimalPolicy] = None,
+        *,
+        quote_currency: Optional[str] = None,
+    ):
         # Back-compat alias: quote_currency behaves like base_ccy.
         self.base_ccy = str(quote_currency or base_ccy)
         self.decimal_policy = decimal_policy or DecimalPolicy.default()
@@ -229,7 +235,9 @@ class LedgerEngine:
         # If still remaining, open a new lot at fill price.
         if incoming != 0:
             pos.lots.append(
-                PositionLot(qty_signed=pol.quantize_qty(incoming), price=price, ts_utc=ev.ts_utc, seq=ev.seq)
+                PositionLot(
+                    qty_signed=pol.quantize_qty(incoming), price=price, ts_utc=ev.ts_utc, seq=ev.seq
+                )
             )
 
         realized = pol.quantize_money(realized)

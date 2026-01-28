@@ -364,7 +364,9 @@ class LegacyLedgerEngine:
         ]
         if realized_posting != 0:
             postings.append(
-                Posting(account=_acct_realized_pnl(self.state.quote_currency), amount=realized_posting)
+                Posting(
+                    account=_acct_realized_pnl(self.state.quote_currency), amount=realized_posting
+                )
             )
 
         # Stable ordering of postings for deterministic exports
