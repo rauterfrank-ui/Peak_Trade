@@ -17,6 +17,15 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs & Closeouts
+
+**Recent lifecycle notes (Strategien):**
+- `prepare()` = Hook-only (nicht als externer Entry-Point gedacht)
+- bevorzugter Entry-Point: `signals = strategy.run(data)`
+- `run()` ruft `prepare_once(data)` auf und danach `generate_signals(data)`
+- `prepare_once()` ist idempotent pro DataFrame-Objekt (Cache-Key: `id(data)`)
+- Konsequenz: `df.copy()`/neues Objekt triggert `prepare()` erneut (gewollt)
+- Source of Truth: [docs/STRATEGY_DEV_GUIDE.md](../STRATEGY_DEV_GUIDE.md)
+
 - [merge_logs/PR_1037_MERGE_LOG.md](merge_logs/PR_1037_MERGE_LOG.md) — PR #1037 (docs(ops): finish tech-debt D evidence + backlog status) ([PR #1037](https://github.com/rauterfrank-ui/Peak_Trade/pull/1037), 2026-01-28)
 - [merge_logs/PR_1051_MERGE_LOG.md](merge_logs/PR_1051_MERGE_LOG.md) — PR #1051 (docs(strategies): clarify prepare_once id(data) semantics) ([PR #1051](https://github.com/rauterfrank-ui/Peak_Trade/pull/1051), 2026-01-28)
 - [merge_logs/PR_1048_MERGE_LOG.md](merge_logs/PR_1048_MERGE_LOG.md) — PR #1048 (test(strategies): assert prepare_once id(data) semantics via df.copy()) ([PR #1048](https://github.com/rauterfrank-ui/Peak_Trade/pull/1048), 2026-01-28)
