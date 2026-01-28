@@ -4,7 +4,7 @@ from decimal import Decimal
 from datetime import datetime
 
 from src.execution.contracts import Fill, OrderSide
-from src.execution.ledger import LegacyLedgerEngine as LedgerEngine
+from src.execution.ledger import LedgerEngine
 
 
 def test_snapshot_export_is_bit_identical_for_same_inputs():
