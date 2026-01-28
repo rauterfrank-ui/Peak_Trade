@@ -16,6 +16,7 @@ Scope (Slice 2):
 from .engine import LedgerEngine, LedgerState
 from .execution_to_ledger import iter_beta_exec_v1_events
 from .export import export_snapshot
+from .fifo_engine import FifoLedgerEngine
 from .valuation import snapshot_mark_to_market
 from .models import (
     JournalEntry,
@@ -23,11 +24,22 @@ from .models import (
     Position,
     QuantizationPolicy,
     ValuationSnapshot,
+    # FIFO Slice2 models
+    DecimalPolicy,
+    FillEvent,
+    MarkEvent,
+    LedgerEvent,
+    PositionLot,
+    PositionState,
+    AccountState,
+    LedgerEntry,
+    LedgerSnapshot,
 )
 
 __all__ = [
     "LedgerEngine",
     "LedgerState",
+    "FifoLedgerEngine",
     "iter_beta_exec_v1_events",
     "JournalEntry",
     "Posting",
@@ -36,4 +48,14 @@ __all__ = [
     "ValuationSnapshot",
     "snapshot_mark_to_market",
     "export_snapshot",
+    # FIFO Slice2 models
+    "DecimalPolicy",
+    "FillEvent",
+    "MarkEvent",
+    "LedgerEvent",
+    "PositionLot",
+    "PositionState",
+    "AccountState",
+    "LedgerEntry",
+    "LedgerSnapshot",
 ]
