@@ -102,9 +102,7 @@ def inspect_bundle(bundle_root: Path) -> dict:
     }
 
     # File inventory (deterministic ordering).
-    relpaths = sorted(
-        [p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()]
-    )
+    relpaths = sorted([p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()])
 
     inv = manifest.get("invariants")
     inv_obj = inv if isinstance(inv, dict) else {}
@@ -112,9 +110,7 @@ def inspect_bundle(bundle_root: Path) -> dict:
         "has_execution_events": inv_obj.get("has_execution_events")
         if isinstance(inv_obj.get("has_execution_events"), bool)
         else None,
-        "ordering": inv_obj.get("ordering")
-        if isinstance(inv_obj.get("ordering"), str)
-        else None,
+        "ordering": inv_obj.get("ordering") if isinstance(inv_obj.get("ordering"), str) else None,
         "has_fifo_ledger": inv_obj.get("has_fifo_ledger")
         if isinstance(inv_obj.get("has_fifo_ledger"), bool)
         else None,
@@ -142,9 +138,7 @@ def inspect_bundle(bundle_root: Path) -> dict:
 
     # Basic counts
     events_lines = _count_non_empty_lines(p_events) if p_events.exists() else None
-    fifo_entries_lines = (
-        _count_non_empty_lines(p_fifo_entries) if p_fifo_entries.exists() else None
-    )
+    fifo_entries_lines = _count_non_empty_lines(p_fifo_entries) if p_fifo_entries.exists() else None
 
     # FIFO snapshot summary
     fifo_snapshot = {"ts_utc_last": None, "seq_last": None}
@@ -298,6 +292,7 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
             print(f"contract_version: {out['contract_version']}")
 
             print("files:")
+
             def _present(k: str) -> str:
                 return "present" if bool(out["presence"].get(k)) else "absent"
 

@@ -138,13 +138,23 @@ def test_inspect_bundle_is_stable_for_v1_and_v2(tmp_path: Path) -> None:
     assert v2_a["presence"]["ledger/ledger_fifo_snapshot.json"] is True
     assert v2_a["presence"]["ledger/ledger_fifo_entries.jsonl"] is True
     assert isinstance(v2_a["counts"]["events_lines"], int) and v2_a["counts"]["events_lines"] >= 1
-    assert isinstance(v2_a["counts"]["fifo_entries_lines"], int) and v2_a["counts"]["fifo_entries_lines"] >= 1
+    assert (
+        isinstance(v2_a["counts"]["fifo_entries_lines"], int)
+        and v2_a["counts"]["fifo_entries_lines"] >= 1
+    )
     assert isinstance(v2_a["fifo_snapshot"]["ts_utc_last"], str)
     assert isinstance(v2_a["fifo_snapshot"]["seq_last"], int)
 
     # JSON schema expectations (compact contract)
     for doc in (j1_a, j2_a):
-        assert set(doc.keys()) == {"bundle", "contract_version", "files", "hashes", "events", "fifo"}
+        assert set(doc.keys()) == {
+            "bundle",
+            "contract_version",
+            "files",
+            "hashes",
+            "events",
+            "fifo",
+        }
         assert isinstance(doc["bundle"], str) and doc["bundle"]
         assert doc["contract_version"] in {"1", "2"}
         assert set(doc["files"].keys()) == {
