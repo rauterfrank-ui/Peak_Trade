@@ -106,8 +106,12 @@ def to_canonical_dict(snapshot: LedgerSnapshot) -> dict:
             k: str(snapshot.unrealized_pnl_by_ccy[k])
             for k in sorted(snapshot.unrealized_pnl_by_ccy.keys())
         },
-        "equity_by_ccy": {k: str(snapshot.equity_by_ccy[k]) for k in sorted(snapshot.equity_by_ccy.keys())},
-        "hash_inputs": _canonicalize_obj(snapshot.hash_inputs) if snapshot.hash_inputs is not None else None,
+        "equity_by_ccy": {
+            k: str(snapshot.equity_by_ccy[k]) for k in sorted(snapshot.equity_by_ccy.keys())
+        },
+        "hash_inputs": _canonicalize_obj(snapshot.hash_inputs)
+        if snapshot.hash_inputs is not None
+        else None,
     }
     return out
 

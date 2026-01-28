@@ -13,16 +13,18 @@ Scope (Slice 2):
 - No margin/borrow accounting; shorts are supported only as signed positions
 """
 
-from .engine import LedgerEngine
+from .engine import LedgerEngine, LedgerState
 from .execution_to_ledger import iter_beta_exec_v1_events
-from .export import (
-    dumps_canonical_json,
-    export_events_jsonl,
-    export_ledger_jsonl,
-    export_snapshot,
-)
+from .export import export_snapshot
+from .fifo_engine import FifoLedgerEngine
+from .valuation import snapshot_mark_to_market
 from .models import (
-    # EXEC_SLICE2 FIFO models
+    JournalEntry,
+    Posting,
+    Position,
+    QuantizationPolicy,
+    ValuationSnapshot,
+    # FIFO Slice2 models
     DecimalPolicy,
     FillEvent,
     MarkEvent,
@@ -36,11 +38,16 @@ from .models import (
 
 __all__ = [
     "LedgerEngine",
+    "LedgerState",
+    "FifoLedgerEngine",
     "iter_beta_exec_v1_events",
+    "JournalEntry",
+    "Posting",
+    "Position",
+    "QuantizationPolicy",
+    "ValuationSnapshot",
+    "snapshot_mark_to_market",
     "export_snapshot",
-    "export_events_jsonl",
-    "export_ledger_jsonl",
-    "dumps_canonical_json",
     # FIFO Slice2 models
     "DecimalPolicy",
     "FillEvent",

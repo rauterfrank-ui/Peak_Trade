@@ -256,9 +256,7 @@ class PositionState:
         if qty == 0:
             return None
         qty_abs = qty.copy_abs()
-        cost_abs = sum(
-            ((lot.qty_signed.copy_abs() * lot.price) for lot in self.lots), Decimal("0")
-        )
+        cost_abs = sum(((lot.qty_signed.copy_abs() * lot.price) for lot in self.lots), Decimal("0"))
         if qty_abs == 0:
             return None
         return cost_abs / qty_abs
