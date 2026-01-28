@@ -44,6 +44,9 @@ from typing import Any, Callable, Dict, List, Literal, Optional, TYPE_CHECKING
 
 import pandas as pd
 
+from src.obs.metrics_server import ensure_metrics_server
+from src.obs import strategy_risk_telemetry
+
 from ..orders.base import OrderRequest, OrderExecutionResult
 from .pipeline import ExecutionPipeline, ExecutionPipelineConfig, SignalEvent
 
@@ -870,6 +873,11 @@ class LiveSessionRunner:
         """
         if not self._is_warmup_done:
             raise SessionRuntimeError("Warmup muss vor run_forever() aufgerufen werden.")
+
+        # Observability (watch/paper/shadow safe): expose metrics from the SAME process
+        # that emits strategy/risk telemetry. Fail-open; must never block the loop.
+        ensure_metrics_server()
+        strategy_risk_telemetry.ensure_registered()
 
         self._is_running = True
         self._shutdown_requested = False

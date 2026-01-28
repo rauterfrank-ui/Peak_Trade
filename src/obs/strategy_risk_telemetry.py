@@ -201,6 +201,16 @@ def _ensure_metrics() -> None:
         _RISK_BLOCKS_TOTAL = None
 
 
+def ensure_registered() -> None:
+    """
+    Ensure Strategy/Risk metrics are registered in the default Prometheus registry.
+
+    This is safe to call even when prometheus_client is unavailable (no-op),
+    and allows /metrics to expose the metric *names* even before any activity occurs.
+    """
+    _ensure_metrics()
+
+
 def inc_strategy_signal(*, strategy_id: str, signal: str, n: int = 1) -> None:
     _ensure_metrics()
     if not _PROM_AVAILABLE or _STRATEGY_SIGNALS_TOTAL is None:
@@ -290,6 +300,7 @@ def inc_risk_block(*, reason: str, n: int = 1) -> None:
 
 
 __all__ = [
+    "ensure_registered",
     "inc_strategy_signal",
     "inc_strategy_decision",
     "set_strategy_position_gross_exposure",
