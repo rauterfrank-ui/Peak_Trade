@@ -26,6 +26,9 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `src&#47;backtest&#47;walkforward.py:387` (illustrative)
   - Kontext: Train-Backtest für spätere Optimierung vorbereitet, aber noch nicht aktiv
   - Vorschlag: Integration mit Sweep-System für automatische Parameter-Optimierung
+  - Status: implemented in PR #1028 (merge commit `f37535c65f2a4c7cc2f507aa3107604267accb24`)
+    - Fundstellen: `src&#47;backtest&#47;walkforward.py`, `tests&#47;backtest&#47;test_walkforward_optimization.py`
+  - Notes: no-leakage slicing via end-exclusive searchsorted; deterministic param_grid + tie-break; optimization artifact JSON (sort_keys)
 
 ### Legacy-API Cleanup
 
