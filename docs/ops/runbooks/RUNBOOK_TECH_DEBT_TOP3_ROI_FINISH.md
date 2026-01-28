@@ -145,7 +145,7 @@ Exit-Kriterium: Für C/B/E jeweils 5–10 Zeilen „Current → Target → Minim
 Ziel: Einmal sauber entscheiden, bevor Code geschrieben wird.
 
 #### Item C — Equity-Curve Loader Contract (empfohlen)
-- Einführung eines shared Loaders, z.B. `src/experiments/equity_loader.py`
+- Einführung eines shared Loaders, z.B. `src&#47;experiments&#47;equity_loader.py`
 - API (Beispiel):
   - `load_equity_curves_from_run_dir(run_dir, *, max_curves=None) -> list[pd.Series]`
   - optional: `load_equity_curves_from_results(results_obj, ...) -> list[pd.Series]`
@@ -202,7 +202,7 @@ Exit-Kriterium: PR Branch builds lokal, Tests (targeted) grün.
 Ziel: Jeder PR bringt belastbare Tests, die echte Regression verhindern.
 
 #### Item C Tests (Beispiele)
-- `tests/experiments/test_equity_loader.py`
+- `tests&#47;experiments&#47;test_equity_loader.py`
   - `tmp_path` Fixture mit minimalen Equity Artefakten
   - assert `len(curves) > 0`
 - Integration:
@@ -210,12 +210,12 @@ Ziel: Jeder PR bringt belastbare Tests, die echte Regression verhindern.
   - Stress-Tests laufen ohne Dummy-Fallback
 
 #### Item B Tests (Beispiele)
-- `tests/scripts/test_timeframe_infer.py`
+- `tests&#47;scripts&#47;test_timeframe_infer.py`
   - `DatetimeIndex` mit festen Frequenzen → erwarteter timeframe string
   - irregular case → Verhalten wie im Contract
 
 #### Item E Tests (Beispiele)
-- `tests/scripts/test_no_plots_flag.py`
+- `tests&#47;scripts&#47;test_no_plots_flag.py`
   - Runner mit `--no-plots` in `tmp_path` ausführen
   - assert: keine Plot-Dateien / keine plot assets erzeugt
 
