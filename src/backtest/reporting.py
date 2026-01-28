@@ -6,11 +6,19 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, TYPE_CHECKING
 
-import matplotlib
-
-matplotlib.use("Agg")  # Non-interactive backend für Server/CI
-import matplotlib.pyplot as plt
 import pandas as pd
+
+try:
+    import matplotlib
+
+    matplotlib.use("Agg")  # Non-interactive backend für Server/CI
+    import matplotlib.pyplot as plt
+
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    # Plotting is optional; report generation (CSV/JSON/HTML) must still work.
+    MATPLOTLIB_AVAILABLE = False
+    plt = None  # type: ignore
 
 if TYPE_CHECKING:
     from .result import BacktestResult
@@ -130,6 +138,9 @@ def save_plots(
         output_dir: Output-Verzeichnis
         run_name: Name des Runs
     """
+    if not MATPLOTLIB_AVAILABLE:
+        raise ImportError("Matplotlib is required for plotting (install optional viz dependencies)")
+
     out_dir = ensure_dir(output_dir)
 
     # Equity-Curve
@@ -161,6 +172,7 @@ def generate_html_report(
     result: "BacktestResult",
     output_dir: str | Path,
     run_name: str,
+    include_plots: bool = True,
 ) -> Path:
     """
     Erzeugt einen HTML-Report für einen Backtest-Run.
@@ -176,6 +188,7 @@ def generate_html_report(
         result: BacktestResult-Objekt
         output_dir: Output-Verzeichnis
         run_name: Name des Runs
+        include_plots: Ob Plot-Bilder (PNG) im HTML referenziert werden sollen
 
     Returns:
         Path zum erstellten HTML-Report
@@ -203,6 +216,36 @@ def generate_html_report(
     stats_json = f"{run_name}_stats.json"
     equity_png = f"{run_name}_equity.png"
     drawdown_png = f"{run_name}_drawdown.png"
+
+    if include_plots:
+        plots_section = f"""
+    <div class="section">
+        <h2>4. Equity & Drawdown</h2>
+        <div class="img-row">
+            <div>
+                <h3>4.1 Equity Curve</h3>
+                <img src="{equity_png}" alt="Equity Curve" />
+            </div>
+            <div>
+                <h3>4.2 Drawdown</h3>
+                <img src="{drawdown_png}" alt="Drawdown" />
+            </div>
+        </div>
+    </div>
+"""
+        plot_artifacts_li = f"""
+            <li>Equity-Plot (PNG): <code>{equity_png}</code></li>
+            <li>Drawdown-Plot (PNG): <code>{drawdown_png}</code></li>
+"""
+    else:
+        # Contract for --no-plots: HTML must remain usable and must not reference missing PNGs.
+        plots_section = """
+    <div class="section">
+        <h2>4. Equity & Drawdown</h2>
+        <p>Charts disabled (--no-plots).</p>
+    </div>
+"""
+        plot_artifacts_li = ""
 
     # Stats-HTML-Tabelle
     stats_rows = "".join(f"<tr><td>{key}</td><td>{value}</td></tr>" for key, value in stats.items())
@@ -372,19 +415,7 @@ def generate_html_report(
         </table>
     </div>
 
-    <div class="section">
-        <h2>4. Equity & Drawdown</h2>
-        <div class="img-row">
-            <div>
-                <h3>4.1 Equity Curve</h3>
-                <img src="{equity_png}" alt="Equity Curve" />
-            </div>
-            <div>
-                <h3>4.2 Drawdown</h3>
-                <img src="{drawdown_png}" alt="Drawdown" />
-            </div>
-        </div>
-    </div>
+{plots_section}
 
     <div class="section">
         <h2>5. Rohdaten & Artefakte</h2>
@@ -393,8 +424,7 @@ def generate_html_report(
             <li>Drawdown (CSV): <code>{drawdown_csv}</code></li>
             <li>Trades (CSV): <code>{trades_csv}</code> (falls vorhanden)</li>
             <li>Stats (JSON): <code>{stats_json}</code></li>
-            <li>Equity-Plot (PNG): <code>{equity_png}</code></li>
-            <li>Drawdown-Plot (PNG): <code>{drawdown_png}</code></li>
+{plot_artifacts_li}
         </ul>
         <p>
             Hinweis: Diese Dateinamen sind relativ zu diesem HTML-Report und liegen im selben Verzeichnis.
@@ -451,6 +481,6 @@ def save_full_report(
 
     if save_html_flag:
         try:
-            generate_html_report(result, output_dir, run_name)
+            generate_html_report(result, output_dir, run_name, include_plots=save_plots_flag)
         except Exception as e:
             print(f"Warning: Konnte HTML-Report nicht erstellen: {e}")
