@@ -14,17 +14,17 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `src&#47;backtest&#47;engine.py:1318` (illustrative)
   - Kontext: Portfolio-Allocation-Methode für gleiches Risk-Level pro Strategie
   - Vorschlag: Implementierung basierend auf Volatility/Risk-Metriken
-  - Status: implemented in PR #1030 (merge commit `af02a6d562e84c9405017016f734b96072b3b444`)
-    - Fundstellen: `src&#47;backtest&#47;engine.py`, `tests&#47;backtest&#47;test_engine_allocations.py`, `tests&#47;backtest&#47;test_engine_two_pass_allocation.py`
-  - Notes: two-pass preview weights + single weighting point combine; explicit ValueError (no silent equal fallback)
+  - Status: implemented (Code PR #1030, merge `af02a6d5`) + Docs/Evidence PR #1031 (merge `c6fc8036`)
+  - Evidence: `docs/ops/evidence/EV_TECH_DEBT_A_ALLOC_20260128.md`
+  - Fundstellen: `src/backtest/engine.py`, `tests/backtest/test_engine_allocations.py`, `tests/backtest/test_engine_two_pass_allocation.py`
 
 - [ ] `sharpe_weighted` Allocation-Methode implementieren
   - Fundstelle: `src&#47;backtest&#47;engine.py:1319` (illustrative)
   - Kontext: Portfolio-Allocation basierend auf historischer Sharpe-Ratio
   - Vorschlag: Benötigt historische Backtests als Input
-  - Status: implemented in PR #1030 (merge commit `af02a6d562e84c9405017016f734b96072b3b444`)
-    - Fundstellen: `src&#47;backtest&#47;engine.py`, `tests&#47;backtest&#47;test_engine_allocations.py`, `tests&#47;backtest&#47;test_engine_two_pass_allocation.py`
-  - Notes: two-pass preview weights + single weighting point combine; explicit ValueError (no silent equal fallback)
+  - Status: implemented (Code PR #1030, merge `af02a6d5`) + Docs/Evidence PR #1031 (merge `c6fc8036`)
+  - Evidence: `docs/ops/evidence/EV_TECH_DEBT_A_ALLOC_20260128.md`
+  - Fundstellen: `src/backtest/engine.py`, `tests/backtest/test_engine_allocations.py`, `tests/backtest/test_engine_two_pass_allocation.py`
 
 ### Walk-Forward: Parameter-Optimierung
 
@@ -32,9 +32,9 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `src&#47;backtest&#47;walkforward.py:387` (illustrative)
   - Kontext: Train-Backtest für spätere Optimierung vorbereitet, aber noch nicht aktiv
   - Vorschlag: Integration mit Sweep-System für automatische Parameter-Optimierung
-  - Status: implemented in PR #1028 (merge commit `f37535c65f2a4c7cc2f507aa3107604267accb24`)
-    - Fundstellen: `src&#47;backtest&#47;walkforward.py`, `tests&#47;backtest&#47;test_walkforward_optimization.py`
-  - Notes: no-leakage slicing via end-exclusive searchsorted; deterministic param_grid + tie-break; optimization artifact JSON (sort_keys)
+  - Status: implemented (Code PR #1028, merge `f37535c6`) + Docs/Evidence PR #1029 (merge `db4e71bf`)
+  - Evidence: `docs/ops/evidence/EV_TECH_DEBT_A_WF_20260128.md`
+  - Fundstellen: `src/backtest/walkforward.py`, `tests/backtest/test_walkforward_optimization.py`
 
 ### Legacy-API Cleanup
 
@@ -78,8 +78,9 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `scripts&#47;run_shadow_execution.py:502` (illustrative)
   - Kontext: Timeframe aktuell hardcoded, sollte aus Daten abgeleitet werden
   - Vorschlag: Automatische Erkennung aus DataFrame-Index oder Config
-  - Status: implemented in PR #1021 (merge commit `3d6aee01aee77373a190a509e93a38c7d5298ffc`)
-    - Fundstellen: `scripts/run_shadow_execution.py` (Function `infer_timeframe_from_index`, CLI `--timeframe`, wiring in Registry-Logging), `tests/test_timeframe_infer.py`
+  - Status: implemented (Code PR #1021, merge `3d6aee01`) + Docs/Evidence PR #1022 (merge `7b16a509`)
+  - Evidence: `docs/ops/evidence/EV_TECH_DEBT_B_20260128.md`
+  - Fundstellen: `scripts/run_shadow_execution.py`, `tests/test_timeframe_infer.py`
 
 ---
 
@@ -91,17 +92,17 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `src&#47;experiments&#47;stress_tests.py:389` (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry für automatisches Laden
-  - Status: implemented in PR #1023 (merge commit `d218e20158f84408dfbbe627084d3a61aff24970`)
-  - Fundstellen: `src&#47;experiments&#47;equity_loader.py`, `src&#47;experiments&#47;stress_tests.py` (`load_returns_for_top_config`), `tests&#47;experiments&#47;test_equity_loader.py`
-  - Notes: v1 artifacts: `events.parquet` → `*equity.csv`; `equity_curve.jsonl` deferred; no silent None/dummy default on standard path
+  - Status: implemented (Code PR #1023, merge `d218e201`) + Docs/Evidence PR #1024 (merge `acab43a1`)
+  - Evidence: `docs/ops/evidence/EV_TECH_DEBT_C_20260128.md`
+  - Fundstellen: `src/experiments/equity_loader.py`, `src/experiments/stress_tests.py`, `tests/experiments/test_equity_loader.py`
 
 - [ ] Vollständige Monte-Carlo-Implementierung
   - Fundstelle: `src&#47;experiments&#47;monte_carlo.py:303` (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
-  - Status: implemented in PR #1023 (merge commit `d218e20158f84408dfbbe627084d3a61aff24970`)
-  - Fundstellen: `src&#47;experiments&#47;equity_loader.py`, `src&#47;experiments&#47;monte_carlo.py` (`load_returns_for_experiment_run`), `tests&#47;experiments&#47;test_equity_loader.py`
-  - Notes: v1 artifacts: `events.parquet` → `*equity.csv`; no silent None/dummy default on standard path
+  - Status: implemented (Code PR #1023, merge `d218e201`) + Docs/Evidence PR #1024 (merge `acab43a1`)
+  - Evidence: `docs/ops/evidence/EV_TECH_DEBT_C_20260128.md`
+  - Fundstellen: `src/experiments/equity_loader.py`, `src/experiments/monte_carlo.py`, `tests/experiments/test_equity_loader.py`
 
 - [ ] Vollständige Monte-Carlo-Robustness-Implementierung
   - Fundstelle: `scripts&#47;run_monte_carlo_robustness.py:139` (illustrative)
@@ -154,9 +155,9 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: `--no-plots` Flag für reine Performance-Benchmarks
   - Vorschlag: Asynchrone Plot-Generierung (später)
-  - Status: implemented in PR #1025 (merge commit `1cf7c45c963066f57c26e693d9fafab815e15b78`)
-    - Fundstellen: `scripts&#47;run_strategy_from_config.py`, `scripts&#47;run_portfolio_backtest.py`, `src&#47;backtest&#47;reporting.py`
-  - Notes: HTML avoids broken plot refs via `include_plots=save_plots_flag`; PNG artifacts suppressed when `--no-plots`
+  - Status: implemented (Code PR #1025, merge `1cf7c45c`) + Docs/Evidence PR #1026 (merge `597b2703`)
+  - Evidence: `docs/ops/evidence/EV_TECH_DEBT_E_20260128.md`
+  - Fundstellen: `scripts/run_strategy_from_config.py`, `scripts/run_portfolio_backtest.py`, `src/backtest/reporting.py`
 
 ### Logging
 
