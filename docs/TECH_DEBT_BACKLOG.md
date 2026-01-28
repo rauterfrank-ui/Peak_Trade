@@ -128,6 +128,9 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Aktueller Status: Warning in `tests&#47;conftest.py` gefiltert (Phase 59)
   - Vorschlag: Bei pandas 3.0 Migration auf `.astype(bool)` umstellen
   - Priorität: Niedrig (funktioniert, Warning gefiltert)
+  - Status: implemented (Code PR #1036, merge `7394f78c`) + Docs/Evidence PR: this PR
+  - Evidence: `docs/ops/evidence/EV_TECH_DEBT_D_20260128.md`
+  - Fundstellen: `src/strategies/*` (Cluster-B `shift(1, fill_value=False)`); `tests/test_fillna_downcasting_regression.py`
 
 ### test_live_web.py Collection Error
 
