@@ -786,6 +786,21 @@ class LiveSessionRunner:
 
         self._last_signal = current_signal
 
+        # SLICE4 telemetry (watch/paper/shadow safe): gross exposure gauge (no symbol label).
+        try:
+            from src.obs import strategy_risk_telemetry as _srt
+
+            sym = str(self._config.symbol or "")
+            ccy = sym.split("/", 1)[1] if "/" in sym else "NA"
+            exposure = abs(float(self._metrics.current_position)) * float(current_price)
+            _srt.set_strategy_position_gross_exposure(
+                strategy_id=str(getattr(self._config, "strategy_key", None) or "na"),
+                ccy=ccy,
+                exposure=exposure,
+            )
+        except Exception:
+            pass
+
         return exec_result.executed_orders if not exec_result.rejected else []
 
     def run_n_steps(self, n: int, sleep_between: bool = False) -> List[OrderExecutionResult]:

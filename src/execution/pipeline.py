@@ -65,6 +65,12 @@ try:
 except Exception:  # pragma: no cover
     _trade_flow_telemetry = None  # type: ignore
 
+try:
+    # Watch-only telemetry; must never fail execution logic.
+    from ..obs import strategy_risk_telemetry as _strategy_risk_telemetry
+except Exception:  # pragma: no cover
+    _strategy_risk_telemetry = None  # type: ignore
+
 
 def _signal_label_from_int(sig: int) -> str:
     # Contract: buy/sell/flat (mapped from -1/0/+1).
@@ -72,6 +78,15 @@ def _signal_label_from_int(sig: int) -> str:
         return "buy"
     if sig < 0:
         return "sell"
+    return "flat"
+
+
+def _signal_class_from_int(sig: int) -> str:
+    # Contract: long/short/flat (mapped from -1/0/+1).
+    if sig > 0:
+        return "long"
+    if sig < 0:
+        return "short"
     return "flat"
 
 
@@ -739,6 +754,18 @@ class ExecutionPipeline:
         if not event.has_signal_change:
             return orders
 
+        # SLICE4 telemetry (watch/paper/shadow safe): count final signal class once per change.
+        if _strategy_risk_telemetry is not None:
+            try:
+                strategy_id = str((event.metadata or {}).get("strategy") or "na")
+                _strategy_risk_telemetry.inc_strategy_signal(  # type: ignore[union-attr]
+                    strategy_id=strategy_id,
+                    signal=_signal_class_from_int(int(event.signal)),
+                    n=1,
+                )
+            except Exception:
+                pass
+
         # Long Entry (0 oder -1 → +1)
         if event.is_entry_long:
             # Bei Flip von Short zu Long: Erst Short schliessen
@@ -846,6 +873,20 @@ class ExecutionPipeline:
                         metadata={**metadata, "order_reason": "exit_short"},
                     )
                 )
+
+        # SLICE4 telemetry: count decisions by order_reason (bounded allowlist in telemetry module).
+        if orders and _strategy_risk_telemetry is not None:
+            try:
+                strategy_id = str((event.metadata or {}).get("strategy") or "na")
+                for o in orders:
+                    reason = str((getattr(o, "metadata", None) or {}).get("order_reason") or "")
+                    _strategy_risk_telemetry.inc_strategy_decision(  # type: ignore[union-attr]
+                        strategy_id=strategy_id,
+                        decision=reason,
+                        n=1,
+                    )
+            except Exception:
+                pass
 
         return orders
 

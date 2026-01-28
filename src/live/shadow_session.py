@@ -493,6 +493,21 @@ class ShadowPaperSession:
         event_data["orders_rejected"] = rejected_count
         event_data["position_size"] = self._metrics.current_position
 
+        # SLICE4 telemetry (watch/paper/shadow safe): gross exposure gauge (no symbol label).
+        try:
+            from src.obs import strategy_risk_telemetry as _srt
+
+            sym = str(self._shadow_cfg.symbol or "")
+            ccy = sym.split("/", 1)[1] if "/" in sym else "NA"
+            exposure = abs(float(self._metrics.current_position)) * float(candle.close)
+            _srt.set_strategy_position_gross_exposure(
+                strategy_id=str(getattr(self._strategy, "key", None) or "na"),
+                ccy=ccy,
+                exposure=exposure,
+            )
+        except Exception:
+            pass
+
         self._last_signal = current_signal
 
         # 7. Event loggen
