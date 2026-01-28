@@ -16,7 +16,7 @@ Definiert in `src/execution/ledger/models.py`:
 - **`FillEvent`**
   - `ts_utc`: ISO8601 UTC mit `Z` (z.B. `2026-01-01T00:00:00Z`)
   - `seq`: `int` (deterministische Total-Order)
-  - `instrument`: `str` (z.B. `ABC&#47;USD`)
+  - `instrument`: `str` (z.B. `ABC/USD`)
   - `side`: `"BUY"` / `"SELL"`
   - `qty`, `price`, `fee`: `Decimal`
   - `fee_ccy`: `str` (Default `"USD"`)

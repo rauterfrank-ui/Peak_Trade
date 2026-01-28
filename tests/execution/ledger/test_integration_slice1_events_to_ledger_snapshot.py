@@ -5,7 +5,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from src.execution.contracts import OrderSide
-from src.execution.ledger import LedgerEngine
+from src.execution.ledger import LegacyLedgerEngine as LedgerEngine
 from src.execution.orchestrator import ExecutionMode, ExecutionOrchestrator, OrderIntent
 from src.execution.venue_adapters.simulated import SimulatedVenueAdapter
 
