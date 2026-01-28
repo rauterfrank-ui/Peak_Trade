@@ -13,9 +13,9 @@
   - Remove downcasting-specific warning ignore filters (pytest.ini + tests/conftest.py), including the broad `ignore::FutureWarning:pandas.*`.
 
 ## Tests executed
-- `python3 -m pytest -q tests/test_fillna_downcasting_regression.py tests/test_strategies_smoke.py::test_all_strategies_generate_signals`
-- `python3 -m pytest -q -W default tests/test_fillna_downcasting_regression.py tests/test_strategies_smoke.py::test_all_strategies_generate_signals`
-- `python3 -m ruff format --check src/ tests/ scripts/`
+- `python3 -m pytest -q tests&#47;test_fillna_downcasting_regression.py tests&#47;test_strategies_smoke.py::test_all_strategies_generate_signals`
+- `python3 -m pytest -q -W default tests&#47;test_fillna_downcasting_regression.py tests&#47;test_strategies_smoke.py::test_all_strategies_generate_signals`
+- `python3 -m ruff format --check src&#47; tests&#47; scripts&#47;`
 
 ## Verification result
 - PASS: Regression test enforces that strategy signal paths do not emit the downcasting FutureWarning.
