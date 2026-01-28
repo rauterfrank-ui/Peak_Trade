@@ -61,6 +61,7 @@ from src.strategies.registry import (
     create_strategy_from_config,
 )
 
+
 def infer_timeframe_from_index(index: pd.DatetimeIndex) -> str:
     """
     Infer a Peak_Trade timeframe string from a DatetimeIndex.
