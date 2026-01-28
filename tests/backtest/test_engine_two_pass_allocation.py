@@ -10,7 +10,9 @@ from src.backtest import stats as stats_mod
 from src.backtest.result import BacktestResult
 
 
-def _equity_from_returns(index: pd.DatetimeIndex, initial: float, returns: list[float]) -> pd.Series:
+def _equity_from_returns(
+    index: pd.DatetimeIndex, initial: float, returns: list[float]
+) -> pd.Series:
     if len(returns) != len(index) - 1:
         raise ValueError("returns length must be len(index)-1")
     equity = [float(initial)]
@@ -40,7 +42,9 @@ def _make_result(index: pd.DatetimeIndex, initial: float, returns: list[float]) 
     )
 
 
-def test_two_pass_risk_parity_inverse_vol_and_single_weighting(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_two_pass_risk_parity_inverse_vol_and_single_weighting(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     from src.backtest import engine as bt_engine
 
     # Deterministic OHLCV
@@ -94,7 +98,9 @@ def test_two_pass_risk_parity_inverse_vol_and_single_weighting(monkeypatch: pyte
         "strategies": {"active": [], "available": []},
     }
 
-    monkeypatch.setattr(bt_engine, "run_single_strategy_from_registry", _stub_run_single, raising=True)
+    monkeypatch.setattr(
+        bt_engine, "run_single_strategy_from_registry", _stub_run_single, raising=True
+    )
 
     result = bt_engine.run_portfolio_from_config(
         df=df,
@@ -153,7 +159,9 @@ def test_two_pass_sharpe_weighted_negative_scores_raise(monkeypatch: pytest.Monk
         "strategies": {"active": [], "available": []},
     }
 
-    monkeypatch.setattr(bt_engine, "run_single_strategy_from_registry", _stub_run_single, raising=True)
+    monkeypatch.setattr(
+        bt_engine, "run_single_strategy_from_registry", _stub_run_single, raising=True
+    )
 
     with pytest.raises(ValueError, match="Sharpe scores <= 0"):
         bt_engine.run_portfolio_from_config(
@@ -231,7 +239,9 @@ def test_two_pass_deterministic_weights(monkeypatch: pytest.MonkeyPatch) -> None
         "strategies": {"active": [], "available": []},
     }
 
-    monkeypatch.setattr(bt_engine, "run_single_strategy_from_registry", _stub_run_single, raising=True)
+    monkeypatch.setattr(
+        bt_engine, "run_single_strategy_from_registry", _stub_run_single, raising=True
+    )
 
     r1 = bt_engine.run_portfolio_from_config(
         df=df,
