@@ -165,6 +165,15 @@ def validate_manifest_v1_dict(d: Mapping[str, Any]) -> None:
     validate_manifest_v1_strict(d)
 
 
+def validate_manifest_v2_dict(d: Mapping[str, Any]) -> None:
+    """
+    Strict schema validation for manifest v2.
+    """
+    from .schema_v2 import validate_manifest_v2_strict
+
+    validate_manifest_v2_strict(d)
+
+
 def validate_bundle_required_files(relpaths_present: Iterable[str]) -> None:
     present = set(relpaths_present)
     missing = [p for p in REQUIRED_FILES if p not in present]
