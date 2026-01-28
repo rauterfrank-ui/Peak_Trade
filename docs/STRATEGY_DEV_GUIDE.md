@@ -44,6 +44,7 @@ Alle Strategien erben von `BaseStrategy` (`src/strategies/base.py`):
 ```python
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Any, Dict, Optional
 import pandas as pd
 
 @dataclass
@@ -73,6 +74,12 @@ class BaseStrategy(ABC):
             name=self.__class__.__name__
         )
 
+    @classmethod
+    @abstractmethod
+    def from_config(cls, cfg: Any, section: str) -> "BaseStrategy":
+        """Factory-Methode: Erstellt Strategie-Instanz aus Config."""
+        raise NotImplementedError
+
     @abstractmethod
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         """
@@ -88,10 +95,26 @@ class BaseStrategy(ABC):
 
     def prepare(self, data: pd.DataFrame) -> None:
         """
-        Optionaler Pre-Processing-Schritt.
+        Optionaler Pre-Processing-Schritt (Hook).
         Kann von Subklassen überschrieben werden.
         """
         return
+
+    def prepare_once(self, data: pd.DataFrame) -> None:
+        """
+        Idempotenz-Guard: ruft `prepare(data)` höchstens einmal pro DataFrame aus.
+
+        Hinweis: In Peak_Trade ist das "Once" **pro DataFrame-Objekt** (Objekt-Identität).
+        """
+        ...
+
+    def run(self, data: pd.DataFrame) -> pd.Series:
+        """
+        Empfohlener Entry-Point:
+        - `prepare_once(data)` (optional, aber standardisiert)
+        - danach `generate_signals(data)`
+        """
+        ...
 ```
 
 ### 2.2 Wichtige Methoden
@@ -109,7 +132,21 @@ class BaseStrategy(ABC):
 **Optional überschreiben**
 
 - Für teure Vorberechnungen (z.B. komplexe Indikatoren)
-- Wird einmal vor `generate_signals()` aufgerufen
+- **Hook-only**: Sollte nicht direkt als externer Entry-Point genutzt werden
+- Wird über `prepare_once()` bzw. `run()` kontrolliert (idempotent pro DataFrame)
+
+#### `prepare_once(data: pd.DataFrame) -> None`
+
+**Optional nutzen (empfohlen, wenn du `generate_signals` direkt aufrufst)**
+
+- Idempotenter Guard, der `prepare()` **max. einmal pro DataFrame** ausführt
+- In Peak_Trade ist das „gleiches DataFrame“ über **Objekt-Identität** definiert
+
+#### `run(data: pd.DataFrame) -> pd.Series`
+
+**Empfohlen als Entry-Point**
+
+- Ruft `prepare_once(data)` auf und danach `generate_signals(data)`
 
 #### `from_config(cls, cfg, section) -> BaseStrategy`
 
@@ -117,6 +154,23 @@ class BaseStrategy(ABC):
 
 - Factory-Methode zum Erstellen aus Config
 - Liest Parameter aus `config.toml`
+
+---
+
+### 2.3 Lifecycle / Empfohlener Aufruf
+
+- **1) `signals = strategy.run(data)`** ✅ empfohlen
+- **2) (Legacy/Advanced) `strategy.prepare_once(data)` dann `strategy.generate_signals(data)`** ✅ ok
+- **3) `strategy.prepare(data)` direkt** ❌ nicht empfohlen (Hook-only)
+
+```python
+# Empfohlen
+signals = strategy.run(df)
+
+# Wenn du generate_signals direkt nutzen musst:
+strategy.prepare_once(df)
+signals = strategy.generate_signals(df)
+```
 
 ---
 
@@ -618,6 +672,10 @@ df["returns"] = df["close"].pct_change()
 # Zwischenergebnisse cachen (in prepare())
 def prepare(self, data):
     self._cached_indicator = self._compute_expensive(data)
+
+# Best Practice: generate_signals bleibt möglichst "pure"/vektorisiert.
+# prepare() ist der Hook für teure Vorberechnungen; run()/prepare_once() sorgen dafür,
+# dass diese Vorberechnungen idempotent pro DataFrame ausgeführt werden.
 ```
 
 ❌ **Don'ts:**
@@ -635,7 +693,7 @@ def generate_signals(self, data):
 
 ### 6.1 Unit-Tests
 
-Erstelle Tests in `tests/test_strategies.py`:
+Erstelle Tests in `tests&#47;test_strategies.py`:
 
 ```python
 import pytest
@@ -657,7 +715,7 @@ def test_my_new_strategy_basic():
     strategy = MyNewStrategy(param1=2, param2=0.01)
 
     # Act
-    signals = strategy.generate_signals(df)
+    signals = strategy.run(df)
 
     # Assert
     assert isinstance(signals, pd.Series)
@@ -688,7 +746,7 @@ def test_my_new_strategy_smoke():
         "close": [100, 101, 102],
     }, index=pd.date_range("2024-01-01", periods=3, freq="1h"))
 
-    signals = strategy.generate_signals(df)
+    signals = strategy.run(df)
 
     # Smoke test: No crashes, valid output
     assert isinstance(signals, pd.Series)
@@ -721,7 +779,7 @@ strategy = MyNewStrategy.from_config(cfg)
 df = create_dummy_data(n_bars=200)
 
 # Signale generieren
-signals = strategy.generate_signals(df)
+signals = strategy.run(df)
 
 # Visualisieren
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
@@ -769,7 +827,8 @@ engine = BacktestEngine(
 )
 
 def strategy_signal_fn(df, params):
-    return strategy.generate_signals(df)
+    # Empfohlen: run() nutzt prepare_once() und dann generate_signals()
+    return strategy.run(df)
 
 result = engine.run_realistic(
     df=df,
@@ -896,7 +955,10 @@ class MLStrategy(BaseStrategy):
 
     def generate_signals(self, data: pd.DataFrame) -> pd.Series:
         if self.model is None:
-            raise RuntimeError("Model not loaded. Call prepare() first!")
+            raise RuntimeError(
+                "Model not loaded. Use strategy.run(data) (preferred) "
+                "or call prepare_once(data) before generate_signals(data)."
+            )
 
         # Features berechnen
         df = data.copy()

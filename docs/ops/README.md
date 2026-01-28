@@ -17,6 +17,16 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs & Closeouts
+- [merge_logs/PR_1051_MERGE_LOG.md](merge_logs/PR_1051_MERGE_LOG.md) — PR #1051 (docs(strategies): clarify prepare_once id(data) semantics) ([PR #1051](https://github.com/rauterfrank-ui/Peak_Trade/pull/1051), 2026-01-28)
+- [merge_logs/PR_1048_MERGE_LOG.md](merge_logs/PR_1048_MERGE_LOG.md) — PR #1048 (test(strategies): assert prepare_once id(data) semantics via df.copy()) ([PR #1048](https://github.com/rauterfrank-ui/Peak_Trade/pull/1048), 2026-01-28)
+- [merge_logs/PR_1046_MERGE_LOG.md](merge_logs/PR_1046_MERGE_LOG.md) — PR #1046 (docs(strategies): align guide examples with run() lifecycle) ([PR #1046](https://github.com/rauterfrank-ui/Peak_Trade/pull/1046), 2026-01-28)
+- [merge_logs/PR_1044_MERGE_LOG.md](merge_logs/PR_1044_MERGE_LOG.md) — PR #1044 (docs(strategies): document run/prepare_once lifecycle + test idempotency) ([PR #1044](https://github.com/rauterfrank-ui/Peak_Trade/pull/1044), 2026-01-28)
+- [merge_logs/PR_1043_MERGE_LOG.md](merge_logs/PR_1043_MERGE_LOG.md) — PR #1043 (docs(ops): add PR #1042 merge log) ([PR #1043](https://github.com/rauterfrank-ui/Peak_Trade/pull/1043), 2026-01-28)
+- [merge_logs/PR_1042_MERGE_LOG.md](merge_logs/PR_1042_MERGE_LOG.md) — PR #1042 (docs(ops): add PR #1041 merge log) ([PR #1042](https://github.com/rauterfrank-ui/Peak_Trade/pull/1042), 2026-01-28)
+- [merge_logs/PR_1041_MERGE_LOG.md](merge_logs/PR_1041_MERGE_LOG.md) — PR #1041 (docs(ops): add PR #1040 merge log) ([PR #1041](https://github.com/rauterfrank-ui/Peak_Trade/pull/1041), 2026-01-28)
+- [merge_logs/PR_1040_MERGE_LOG.md](merge_logs/PR_1040_MERGE_LOG.md) — PR #1040 (docs(ops): add PR #1039 merge log) ([PR #1040](https://github.com/rauterfrank-ui/Peak_Trade/pull/1040), 2026-01-28)
+- [merge_logs/PR_1039_MERGE_LOG.md](merge_logs/PR_1039_MERGE_LOG.md) — PR #1039 (docs(ops): add PR #1038 merge log) ([PR #1039](https://github.com/rauterfrank-ui/Peak_Trade/pull/1039), 2026-01-28)
+- [merge_logs/PR_1038_MERGE_LOG.md](merge_logs/PR_1038_MERGE_LOG.md) — PR #1038 (docs(ops): Item D evidence pack + backlog status) ([PR #1038](https://github.com/rauterfrank-ui/Peak_Trade/pull/1038), 2026-01-28)
 - [merge_logs/PR_1013_MERGE_LOG.md](merge_logs/PR_1013_MERGE_LOG.md) — PR #1013 (docs(ops): add PR #1012 merge log) ([PR #1013](https://github.com/rauterfrank-ui/Peak_Trade/pull/1013), 2026-01-27)
 - [merge_logs/PR_1012_MERGE_LOG.md](merge_logs/PR_1012_MERGE_LOG.md) — PR #1012 (docs(ops): add PR 1011 merge log) ([PR #1012](https://github.com/rauterfrank-ui/Peak_Trade/pull/1012), 2026-01-27)
 - [merge_logs/PR_1011_MERGE_LOG.md](merge_logs/PR_1011_MERGE_LOG.md) — PR #1011 (feat(learning-promotion): promotion loop v1 (runner + live overrides + docs finalizer)) ([PR #1011](https://github.com/rauterfrank-ui/Peak_Trade/pull/1011), 2026-01-27)
