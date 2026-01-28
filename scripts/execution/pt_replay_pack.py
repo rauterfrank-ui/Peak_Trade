@@ -11,6 +11,7 @@ Deterministic Replay Pack CLI:
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from pathlib import Path
@@ -22,6 +23,7 @@ from src.execution.replay_pack.builder import build_replay_pack
 from src.execution.replay_pack.loader import load_replay_pack
 from src.execution.replay_pack.runner import replay_bundle
 from src.execution.replay_pack.validator import validate_replay_pack
+from src.execution.replay_pack.hashing import parse_sha256sums_text, sha256_file
 from src.execution.replay_pack.contract import (
     ContractViolationError,
     HashMismatchError,
@@ -55,9 +57,14 @@ EXIT_MISSING_REQUIRED_DATAREF = 6
 
 def _cmd_build(args: argparse.Namespace) -> int:
     try:
+        version = str(args.version)
+        include_fifo = version == "2"
         build_replay_pack(
             args.run_id_or_dir,
             args.out,
+            bundle_version=version,  # type: ignore[arg-type]
+            include_fifo=include_fifo,
+            include_fifo_entries=bool(args.include_fifo_entries),
             created_at_utc_override=args.created_at_utc,
             include_outputs=args.include_outputs,
         )
@@ -82,6 +89,67 @@ def _cmd_validate(args: argparse.Namespace) -> int:
         return EXIT_HASH
     except ContractViolationError as e:
         _eprint(f"ContractViolationError: {e}")
+        return EXIT_CONTRACT
+    except Exception as e:
+        _eprint(f"UnexpectedError: {type(e).__name__}: {e}")
+        return EXIT_UNEXPECTED
+
+
+def _cmd_inspect(args: argparse.Namespace) -> int:
+    """
+    Print deterministic bundle summary (no wall-clock).
+    """
+    try:
+        root = Path(args.bundle)
+        bundle = load_replay_pack(root)
+        manifest = bundle.manifest
+        contract_version = str(manifest.get("contract_version") or "1")
+
+        relpaths = sorted([p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()])
+        has_sums = (root / "hashes" / "sha256sums.txt").exists()
+        sums_count = None
+        if has_sums:
+            sums_text = (root / "hashes" / "sha256sums.txt").read_text(encoding="utf-8")
+            sums = parse_sha256sums_text(sums_text)
+            sums_count = len(sums)
+
+        out = {
+            "bundle_root": str(root),
+            "contract_version": contract_version,
+            "bundle_id": str(manifest.get("bundle_id") or ""),
+            "run_id": str(manifest.get("run_id") or ""),
+            "created_at_utc": str(manifest.get("created_at_utc") or ""),
+            "has_fifo_ledger": bool(
+                isinstance(manifest.get("invariants"), dict)
+                and manifest.get("invariants", {}).get("has_fifo_ledger") is True
+            ),
+            "files": relpaths,
+            "file_count": len(relpaths),
+            "manifest_sha256": sha256_file(root / "manifest.json"),
+            "sha256sums_sha256": sha256_file(root / "hashes" / "sha256sums.txt")
+            if has_sums
+            else None,
+            "sha256sums_count": sums_count,
+        }
+
+        if args.json:
+            print(json.dumps(out, sort_keys=True, separators=(",", ":"), ensure_ascii=False))
+        else:
+            # Human-friendly, deterministic ordering.
+            print(f"contract_version={out['contract_version']}")
+            print(f"bundle_id={out['bundle_id']}")
+            print(f"run_id={out['run_id']}")
+            print(f"created_at_utc={out['created_at_utc']}")
+            print(f"has_fifo_ledger={str(out['has_fifo_ledger']).lower()}")
+            print(f"file_count={out['file_count']}")
+            print(f"manifest_sha256={out['manifest_sha256']}")
+            if out["sha256sums_sha256"] is not None:
+                print(f"sha256sums_sha256={out['sha256sums_sha256']}")
+            if out["sha256sums_count"] is not None:
+                print(f"sha256sums_count={out['sha256sums_count']}")
+        return EXIT_OK
+    except (SchemaValidationError, ContractViolationError, FileNotFoundError, ValueError) as e:
+        _eprint(f"ContractViolationError: {type(e).__name__}: {e}")
         return EXIT_CONTRACT
     except Exception as e:
         _eprint(f"UnexpectedError: {type(e).__name__}: {e}")
@@ -207,9 +275,22 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_build = sub.add_parser("build", help="Build a replay bundle")
-    p_build.add_argument("--run-id-or-dir", required=True, help="run_id or run directory")
+    src = p_build.add_mutually_exclusive_group(required=True)
+    src.add_argument("--run-id-or-dir", help="run_id or run directory")
+    src.add_argument("--events", help="path to execution_events.jsonl (BETA_EXEC_V1)")
     p_build.add_argument(
         "--out", required=True, help="output directory (bundle created under this)"
+    )
+    p_build.add_argument(
+        "--version",
+        default="1",
+        choices=["1", "2"],
+        help="bundle contract version (1=legacy, 2=additive FIFO ledger artifacts)",
+    )
+    p_build.add_argument(
+        "--include-fifo-entries",
+        action="store_true",
+        help="(v2 only) include ledger/ledger_fifo_entries.jsonl",
     )
     p_build.add_argument(
         "--created-at-utc",
@@ -222,6 +303,11 @@ def main(argv: list[str] | None = None) -> int:
     p_val = sub.add_parser("validate", help="Validate a replay bundle")
     p_val.add_argument("--bundle", required=True, help="bundle root directory")
     p_val.set_defaults(func=_cmd_validate)
+
+    p_ins = sub.add_parser("inspect", help="Inspect a replay bundle (metadata + file list)")
+    p_ins.add_argument("--bundle", required=True, help="bundle root directory")
+    p_ins.add_argument("--json", action="store_true", help="print machine-readable JSON")
+    p_ins.set_defaults(func=_cmd_inspect)
 
     p_rep = sub.add_parser("replay", help="Replay a bundle deterministically")
     p_rep.add_argument("--bundle", required=True, help="bundle root directory")
@@ -304,6 +390,10 @@ def main(argv: list[str] | None = None) -> int:
     p_cmp.set_defaults(func=_cmd_compare)
 
     ns = parser.parse_args(argv)
+    # Build uses either --run-id-or-dir or --events.
+    if getattr(ns, "cmd", None) == "build":
+        if getattr(ns, "events", None):
+            ns.run_id_or_dir = ns.events
     return int(ns.func(ns))
 
 
