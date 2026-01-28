@@ -145,6 +145,9 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: `--no-plots` Flag für reine Performance-Benchmarks
   - Vorschlag: Asynchrone Plot-Generierung (später)
+  - Status: implemented in PR #1025 (merge commit `1cf7c45c963066f57c26e693d9fafab815e15b78`)
+    - Fundstellen: `scripts&#47;run_strategy_from_config.py`, `scripts&#47;run_portfolio_backtest.py`, `src&#47;backtest&#47;reporting.py`
+  - Notes: HTML avoids broken plot refs via `include_plots=save_plots_flag`; PNG artifacts suppressed when `--no-plots`
 
 ### Logging
 
