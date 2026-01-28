@@ -55,6 +55,193 @@ EXIT_UNEXPECTED = 5
 EXIT_MISSING_REQUIRED_DATAREF = 6
 
 
+def _short_sha256(s: str | None) -> str | None:
+    if s is None:
+        return None
+    if not isinstance(s, str) or len(s) != 64:
+        return None
+    return f"{s[:8]}...{s[-8:]}"
+
+
+def _count_non_empty_lines(p: Path) -> int:
+    """
+    Deterministic line count for JSONL-like files.
+    Counts non-empty lines (after strip()).
+    """
+    n = 0
+    with open(p, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                n += 1
+    return n
+
+
+def inspect_bundle(bundle_root: Path) -> dict:
+    """
+    Pure(ish) deterministic bundle summary (no wall-clock).
+
+    Note: bundle_root is resolved to an absolute path for clarity.
+    """
+    root = Path(bundle_root).resolve()
+    bundle = load_replay_pack(root)
+    manifest = bundle.manifest
+    contract_version = str(manifest.get("contract_version") or "1")
+
+    # Presence matrix (file existence on disk).
+    p_manifest = root / "manifest.json"
+    p_events = root / "events" / "execution_events.jsonl"
+    p_sums = root / "hashes" / "sha256sums.txt"
+    p_fifo_snap = root / "ledger" / "ledger_fifo_snapshot.json"
+    p_fifo_entries = root / "ledger" / "ledger_fifo_entries.jsonl"
+    presence = {
+        "events": p_events.exists(),
+        "hashes": p_sums.exists(),
+        "manifest": p_manifest.exists(),
+        "fifo_snapshot": p_fifo_snap.exists(),
+        "fifo_entries": p_fifo_entries.exists(),
+    }
+
+    # File inventory (deterministic ordering).
+    relpaths = sorted(
+        [p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()]
+    )
+
+    inv = manifest.get("invariants")
+    inv_obj = inv if isinstance(inv, dict) else {}
+    invariants = {
+        "has_execution_events": inv_obj.get("has_execution_events")
+        if isinstance(inv_obj.get("has_execution_events"), bool)
+        else None,
+        "ordering": inv_obj.get("ordering")
+        if isinstance(inv_obj.get("ordering"), str)
+        else None,
+        "has_fifo_ledger": inv_obj.get("has_fifo_ledger")
+        if isinstance(inv_obj.get("has_fifo_ledger"), bool)
+        else None,
+        "fifo_engine": inv_obj.get("fifo_engine")
+        if isinstance(inv_obj.get("fifo_engine"), str)
+        else None,
+    }
+    # Derive has_fifo_ledger:
+    # - prefer explicit manifest invariants when present
+    # - else derive from presence (snapshot/entries on disk)
+    derived_has_fifo_ledger = (
+        invariants["has_fifo_ledger"]
+        if isinstance(invariants["has_fifo_ledger"], bool)
+        else bool(presence["fifo_snapshot"] or presence["fifo_entries"])
+    )
+
+    # sha256 summary
+    manifest_sha = sha256_file(p_manifest) if p_manifest.exists() else None
+    sums_sha = sha256_file(p_sums) if p_sums.exists() else None
+    sums_count = None
+    if p_sums.exists():
+        sums_text = p_sums.read_text(encoding="utf-8")
+        sums = parse_sha256sums_text(sums_text)
+        sums_count = len(sums)
+
+    # Basic counts
+    events_lines = _count_non_empty_lines(p_events) if p_events.exists() else None
+    fifo_entries_lines = (
+        _count_non_empty_lines(p_fifo_entries) if p_fifo_entries.exists() else None
+    )
+
+    # FIFO snapshot summary
+    fifo_snapshot = {"ts_utc_last": None, "seq_last": None}
+    if p_fifo_snap.exists():
+        try:
+            snap = json.loads(p_fifo_snap.read_text(encoding="utf-8"))
+            if isinstance(snap, dict):
+                ts_last = snap.get("ts_utc_last")
+                seq_last = snap.get("seq_last")
+                fifo_snapshot["ts_utc_last"] = ts_last if isinstance(ts_last, str) else None
+                fifo_snapshot["seq_last"] = int(seq_last) if isinstance(seq_last, int) else None
+        except Exception:
+            # Inspect should be best-effort; validate() is the strict gate.
+            fifo_snapshot = {"ts_utc_last": None, "seq_last": None}
+
+    out = {
+        # Back-compat keys (existing smoke tests rely on these).
+        "bundle_root": str(root),
+        "contract_version": contract_version,
+        "bundle_id": str(manifest.get("bundle_id") or ""),
+        "run_id": str(manifest.get("run_id") or ""),
+        "created_at_utc": str(manifest.get("created_at_utc") or ""),
+        "has_fifo_ledger": bool(derived_has_fifo_ledger),
+        "files": relpaths,
+        "file_count": len(relpaths),
+        "manifest_sha256": manifest_sha,
+        "sha256sums_sha256": sums_sha,
+        "sha256sums_count": sums_count,
+        # New structured fields.
+        "presence": {
+            "events/execution_events.jsonl": bool(presence["events"]),
+            "hashes/sha256sums.txt": bool(presence["hashes"]),
+            "manifest.json": bool(presence["manifest"]),
+            "ledger/ledger_fifo_snapshot.json": bool(presence["fifo_snapshot"]),
+            "ledger/ledger_fifo_entries.jsonl": bool(presence["fifo_entries"]),
+        },
+        "manifest": {
+            "bundle_id": str(manifest.get("bundle_id") or ""),
+            "run_id": str(manifest.get("run_id") or ""),
+            "created_at_utc": str(manifest.get("created_at_utc") or ""),
+            "invariants": invariants,
+        },
+        "sha256": {
+            "manifest": {"full": manifest_sha, "short": _short_sha256(manifest_sha)},
+            "sha256sums": {
+                "full": sums_sha,
+                "short": _short_sha256(sums_sha),
+                "count": sums_count,
+            },
+        },
+        "counts": {
+            "file_count": len(relpaths),
+            "events_lines": events_lines,
+            "fifo_entries_lines": fifo_entries_lines,
+        },
+        "fifo_snapshot": fifo_snapshot,
+    }
+    return out
+
+
+def inspect_bundle_json(bundle_root: Path) -> dict:
+    """
+    Machine output for `pt_replay_pack inspect --json`.
+
+    Contract: stable keys, stable types; no wall-clock.
+    """
+    out = inspect_bundle(bundle_root)
+    p = out["presence"]
+    inv = out["manifest"]["invariants"]
+
+    entries_present = bool(p.get("ledger/ledger_fifo_entries.jsonl"))
+    json_out = {
+        "bundle": str(out["bundle_root"]),
+        "contract_version": str(out["contract_version"]),
+        "files": {
+            "manifest_json": bool(p.get("manifest.json")),
+            "sha256sums_txt": bool(p.get("hashes/sha256sums.txt")),
+            "execution_events_jsonl": bool(p.get("events/execution_events.jsonl")),
+            "ledger_fifo_snapshot_json": bool(p.get("ledger/ledger_fifo_snapshot.json")),
+            "ledger_fifo_entries_jsonl": bool(p.get("ledger/ledger_fifo_entries.jsonl")),
+        },
+        "hashes": {
+            "sha256sums_count": out["sha256"]["sha256sums"]["count"],
+            "manifest_sha256": out["sha256"]["manifest"]["full"],
+        },
+        "events": {"lines": out["counts"]["events_lines"]},
+        "fifo": {
+            "has_fifo_ledger": bool(out["has_fifo_ledger"]),
+            "fifo_engine": inv.get("fifo_engine"),
+            "last_ts_utc": out["fifo_snapshot"]["ts_utc_last"],
+            "last_seq": out["fifo_snapshot"]["seq_last"],
+            "entries_lines": out["counts"]["fifo_entries_lines"] if entries_present else None,
+        },
+    }
+    return json_out
+
+
 def _cmd_build(args: argparse.Namespace) -> int:
     try:
         version = str(args.version)
@@ -100,53 +287,46 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     Print deterministic bundle summary (no wall-clock).
     """
     try:
-        root = Path(args.bundle)
-        bundle = load_replay_pack(root)
-        manifest = bundle.manifest
-        contract_version = str(manifest.get("contract_version") or "1")
-
-        relpaths = sorted([p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()])
-        has_sums = (root / "hashes" / "sha256sums.txt").exists()
-        sums_count = None
-        if has_sums:
-            sums_text = (root / "hashes" / "sha256sums.txt").read_text(encoding="utf-8")
-            sums = parse_sha256sums_text(sums_text)
-            sums_count = len(sums)
-
-        out = {
-            "bundle_root": str(root),
-            "contract_version": contract_version,
-            "bundle_id": str(manifest.get("bundle_id") or ""),
-            "run_id": str(manifest.get("run_id") or ""),
-            "created_at_utc": str(manifest.get("created_at_utc") or ""),
-            "has_fifo_ledger": bool(
-                isinstance(manifest.get("invariants"), dict)
-                and manifest.get("invariants", {}).get("has_fifo_ledger") is True
-            ),
-            "files": relpaths,
-            "file_count": len(relpaths),
-            "manifest_sha256": sha256_file(root / "manifest.json"),
-            "sha256sums_sha256": sha256_file(root / "hashes" / "sha256sums.txt")
-            if has_sums
-            else None,
-            "sha256sums_count": sums_count,
-        }
-
+        out = inspect_bundle(Path(args.bundle))
         if args.json:
-            print(json.dumps(out, sort_keys=True, separators=(",", ":"), ensure_ascii=False))
+            json_out = inspect_bundle_json(Path(args.bundle))
+            print(json.dumps(json_out, sort_keys=True, separators=(",", ":"), ensure_ascii=False))
         else:
             # Human-friendly, deterministic ordering.
-            print(f"contract_version={out['contract_version']}")
-            print(f"bundle_id={out['bundle_id']}")
-            print(f"run_id={out['run_id']}")
-            print(f"created_at_utc={out['created_at_utc']}")
-            print(f"has_fifo_ledger={str(out['has_fifo_ledger']).lower()}")
-            print(f"file_count={out['file_count']}")
-            print(f"manifest_sha256={out['manifest_sha256']}")
-            if out["sha256sums_sha256"] is not None:
-                print(f"sha256sums_sha256={out['sha256sums_sha256']}")
-            if out["sha256sums_count"] is not None:
-                print(f"sha256sums_count={out['sha256sums_count']}")
+            print("ReplayPack Inspect")
+            print(f"bundle: {out['bundle_root']}")
+            print(f"contract_version: {out['contract_version']}")
+
+            print("files:")
+            def _present(k: str) -> str:
+                return "present" if bool(out["presence"].get(k)) else "absent"
+
+            print(f"  manifest.json: {_present('manifest.json')}")
+            print(f"  hashes/sha256sums.txt: {_present('hashes/sha256sums.txt')}")
+            print(f"  events/execution_events.jsonl: {_present('events/execution_events.jsonl')}")
+            print(
+                f"  ledger/ledger_fifo_snapshot.json: {_present('ledger/ledger_fifo_snapshot.json')}"
+            )
+            print(
+                f"  ledger/ledger_fifo_entries.jsonl: {_present('ledger/ledger_fifo_entries.jsonl')}"
+            )
+
+            print("hashes:")
+            print(f"  sha256sums_count: {out['sha256']['sha256sums']['count']}")
+            print(f"  manifest_sha256: {out['sha256']['manifest']['full']}")
+
+            print("events:")
+            print(f"  lines: {out['counts']['events_lines']}")
+
+            inv = out["manifest"]["invariants"]
+            derived_has_fifo = out["has_fifo_ledger"]
+            print("fifo:")
+            print(f"  has_fifo_ledger: {str(derived_has_fifo).lower()}")
+            print(f"  fifo_engine: {inv['fifo_engine']}")
+            print(f"  last_ts_utc: {out['fifo_snapshot']['ts_utc_last']}")
+            print(f"  last_seq: {out['fifo_snapshot']['seq_last']}")
+            if out["presence"].get("ledger/ledger_fifo_entries.jsonl"):
+                print(f"  entries_lines: {out['counts']['fifo_entries_lines']}")
         return EXIT_OK
     except (SchemaValidationError, ContractViolationError, FileNotFoundError, ValueError) as e:
         _eprint(f"ContractViolationError: {type(e).__name__}: {e}")
