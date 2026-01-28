@@ -124,6 +124,6 @@ uv run python scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/
 - **Fix**: Bundle neu bauen; sicherstellen, dass keine CRLF-Newlines oder Editor-Autoformatierung die Files verändert.
 
 ### Missing FIFO snapshot (v2)
-- **Symptom**: `manifest.contents must include ledger/ledger_fifo_snapshot.json for v2` oder missing file.
+- **Symptom**: `manifest.contents must include ledger&#47;ledger_fifo_snapshot.json for v2` oder missing file.
 - **Cause**: v2 Build ohne FIFO oder Bundle unvollständig kopiert.
 - **Fix**: v2 Build mit `--version 2` ausführen (FIFO snapshot ist required in v2).
