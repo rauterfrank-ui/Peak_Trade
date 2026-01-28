@@ -78,6 +78,28 @@ class RuntimeRiskHook:
             position_ledger=self.position_ledger,
         )
 
+        # SLICE4 telemetry (watch/paper/shadow safe): bounded risk decision counters.
+        try:
+            from src.obs import strategy_risk_telemetry as _srt
+
+            # Runtime decision mapping:
+            # - ALLOW/MODIFY => allow
+            # - REJECT/HALT  => block
+            d = directive.decision
+            if d == RuntimeRiskDecision.ALLOW or d == RuntimeRiskDecision.MODIFY:
+                _srt.inc_risk_check(check="runtime_risk.evaluate_pre_order", result="allow", n=1)
+            elif d == RuntimeRiskDecision.REJECT:
+                _srt.inc_risk_check(check="runtime_risk.evaluate_pre_order", result="block", n=1)
+                _srt.inc_risk_block(reason="runtime:reject", n=1)
+            elif d == RuntimeRiskDecision.HALT:
+                _srt.inc_risk_check(check="runtime_risk.evaluate_pre_order", result="block", n=1)
+                _srt.inc_risk_block(reason="runtime:halt", n=1)
+            else:
+                _srt.inc_risk_check(check="runtime_risk.evaluate_pre_order", result="error", n=1)
+                _srt.inc_risk_block(reason="runtime:unknown", n=1)
+        except Exception:
+            pass
+
         # Convert RuntimeRiskDecision to ContractRiskDecision
         contract_decision = self._convert_decision(directive.decision)
 
