@@ -116,6 +116,59 @@ uv run python scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/
 uv run python scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/out_dir/replay_pack --json
 ```
 
+Human-readable output shape (stable, no wall-clock):
+
+```text
+ReplayPack Inspect
+bundle: <abs_or_rel_path>
+contract_version: <1|2>
+files:
+  manifest.json: present
+  hashes/sha256sums.txt: present
+  events/execution_events.jsonl: present
+  ledger/ledger_fifo_snapshot.json: present|absent
+  ledger/ledger_fifo_entries.jsonl: present|absent
+hashes:
+  sha256sums_count: <int>
+  manifest_sha256: <64hex>
+events:
+  lines: <int>
+fifo:
+  has_fifo_ledger: true|false
+  fifo_engine: <string|null>
+  last_ts_utc: <isoZ|null>
+  last_seq: <int|null>
+  entries_lines: <int|null>
+```
+
+Machine-readable JSON output shape (`--json`, stable keys):
+
+```json
+{
+  "bundle": "<path>",
+  "contract_version": "1|2",
+  "files": {
+    "manifest_json": true,
+    "sha256sums_txt": true,
+    "execution_events_jsonl": true,
+    "ledger_fifo_snapshot_json": false,
+    "ledger_fifo_entries_jsonl": false
+  },
+  "hashes": {
+    "sha256sums_count": 17,
+    "manifest_sha256": "<hex>"
+  },
+  "events": { "lines": 42 },
+  "fifo": {
+    "has_fifo_ledger": false,
+    "fifo_engine": null,
+    "last_ts_utc": null,
+    "last_seq": null,
+    "entries_lines": null
+  }
+}
+```
+
 ## Troubleshooting
 
 ### HashMismatchError

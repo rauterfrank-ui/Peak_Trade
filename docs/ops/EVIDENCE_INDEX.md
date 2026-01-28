@@ -1,5 +1,10 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260128-replay-pack-v2-cli-verify"></a>
+- **EV-20260128-REPLAY-PACK-V2-CLI-VERIFY** | Date: 2026-01-28 | Owner: execution | Scope: code+tests+docs | Risk: LOW  
+  - Source: [Evidence](evidence/EV_REPLAY_PACK_V2_CLI_VERIFY_20260128.md)  
+  - Claim: ReplayPack v2 CLI verify PASS (build v2 bundle with deterministic timestamp override, validate hashes/schema, inspect output includes presence matrix + counts + FIFO snapshot summary, and machine JSON with stable keys).
+
 <a id="ev-20260125-ai-live-ops-local-010948z"></a>
 - **EV-20260125-AI-LIVE-OPS-LOCAL-010948Z** | Date: 2026-01-25 | Owner: ops | Scope: docs-only evidence | Risk: LOW  
   - Source: [Evidence](evidence/EV_AI_LIVE_OPS_LOCAL_20260125T010948Z.md)  

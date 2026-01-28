@@ -110,6 +110,7 @@ def test_cli_build_validate_inspect_v1_and_v2(tmp_path: Path) -> None:
     assert r.returncode == 0, f"inspect v1 failed: {r.stdout}\n{r.stderr}"
     doc = json.loads(r.stdout.strip())
     assert doc["contract_version"] == "1"
+    assert doc["fifo"]["has_fifo_ledger"] is False
 
     # v2 build from explicit events path
     r = _run_cli(
@@ -137,4 +138,4 @@ def test_cli_build_validate_inspect_v1_and_v2(tmp_path: Path) -> None:
     assert r.returncode == 0, f"inspect v2 failed: {r.stdout}\n{r.stderr}"
     doc = json.loads(r.stdout.strip())
     assert doc["contract_version"] == "2"
-    assert doc["has_fifo_ledger"] is True
+    assert doc["fifo"]["has_fifo_ledger"] is True
