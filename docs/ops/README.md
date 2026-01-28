@@ -17,6 +17,7 @@ Bash-Skripte und Tools für Repository-Verwaltung, Health-Checks und PR-Analyse 
 - **[Tools Peak Trade Gap Analysis](TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md)** — Comprehensive gap analysis (REJECT recommendation)
 
 ### PR Merge Logs & Closeouts
+- [merge_logs/PR_1048_MERGE_LOG.md](merge_logs/PR_1048_MERGE_LOG.md) — PR #1048 (test(strategies): assert prepare_once id(data) semantics via df.copy()) ([PR #1048](https://github.com/rauterfrank-ui/Peak_Trade/pull/1048), 2026-01-28)
 - [merge_logs/PR_1046_MERGE_LOG.md](merge_logs/PR_1046_MERGE_LOG.md) — PR #1046 (docs(strategies): align guide examples with run() lifecycle) ([PR #1046](https://github.com/rauterfrank-ui/Peak_Trade/pull/1046), 2026-01-28)
 - [merge_logs/PR_1044_MERGE_LOG.md](merge_logs/PR_1044_MERGE_LOG.md) — PR #1044 (docs(strategies): document run/prepare_once lifecycle + test idempotency) ([PR #1044](https://github.com/rauterfrank-ui/Peak_Trade/pull/1044), 2026-01-28)
 - [merge_logs/PR_1043_MERGE_LOG.md](merge_logs/PR_1043_MERGE_LOG.md) — PR #1043 (docs(ops): add PR #1042 merge log) ([PR #1043](https://github.com/rauterfrank-ui/Peak_Trade/pull/1043), 2026-01-28)
