@@ -13,7 +13,7 @@ Item C: Equity-Curve Loader for Experiments (Monte-Carlo + Stress Tests)
   - candidates priority v1: `events.parquet` first, then `*equity.csv`
   - strict: no None/dummy default; helpful exceptions on missing/unloadable artifacts
 - Updated: `src&#47;experiments&#47;monte_carlo.py`
-  - `load_returns_for_experiment_run`: `experiments_dir / experiment_id` → load equity → returns
+  - `load_returns_for_experiment_run`: `experiments_dir &#47; experiment_id` → load equity → returns
 - Updated: `src&#47;experiments&#47;stress_tests.py`
   - `load_returns_for_top_config`: resolves Top-N config via `load_top_n_configs_for_sweep` and uses `config_id` as run_dir name under `experiments_dir`
   - dummy returns only when `use_dummy_data=True`
