@@ -249,12 +249,12 @@ class MyStrategy(BaseStrategy):
         exit_condition = data["close"] < lower_band
 
         # Entry: Vorherige Bar kein Entry, aktuelle Bar Entry
-        prev_entry = entry_condition.shift(1).fillna(False).astype(bool)
+        prev_entry = entry_condition.shift(1, fill_value=False).astype(bool)
         entry_trigger = entry_condition & ~prev_entry
         signals.loc[entry_trigger] = 1
 
         # Exit: Vorherige Bar kein Exit, aktuelle Bar Exit
-        prev_exit = exit_condition.shift(1).fillna(False).astype(bool)
+        prev_exit = exit_condition.shift(1, fill_value=False).astype(bool)
         exit_trigger = exit_condition & ~prev_exit
         signals.loc[exit_trigger] = -1
 
