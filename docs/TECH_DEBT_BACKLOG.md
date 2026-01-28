@@ -14,11 +14,17 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `src&#47;backtest&#47;engine.py:1318` (illustrative)
   - Kontext: Portfolio-Allocation-Methode für gleiches Risk-Level pro Strategie
   - Vorschlag: Implementierung basierend auf Volatility/Risk-Metriken
+  - Status: implemented in PR #1030 (merge commit `af02a6d562e84c9405017016f734b96072b3b444`)
+    - Fundstellen: `src&#47;backtest&#47;engine.py`, `tests&#47;backtest&#47;test_engine_allocations.py`, `tests&#47;backtest&#47;test_engine_two_pass_allocation.py`
+  - Notes: two-pass preview weights + single weighting point combine; explicit ValueError (no silent equal fallback)
 
 - [ ] `sharpe_weighted` Allocation-Methode implementieren
   - Fundstelle: `src&#47;backtest&#47;engine.py:1319` (illustrative)
   - Kontext: Portfolio-Allocation basierend auf historischer Sharpe-Ratio
   - Vorschlag: Benötigt historische Backtests als Input
+  - Status: implemented in PR #1030 (merge commit `af02a6d562e84c9405017016f734b96072b3b444`)
+    - Fundstellen: `src&#47;backtest&#47;engine.py`, `tests&#47;backtest&#47;test_engine_allocations.py`, `tests&#47;backtest&#47;test_engine_two_pass_allocation.py`
+  - Notes: two-pass preview weights + single weighting point combine; explicit ValueError (no silent equal fallback)
 
 ### Walk-Forward: Parameter-Optimierung
 
