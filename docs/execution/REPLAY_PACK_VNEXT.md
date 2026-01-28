@@ -69,3 +69,61 @@ Alles aus v1 **plus**:
   - `meta&#47;git.json`
   - `meta&#47;env.json`
 - [ ] Tests: v1 goldens bleiben unverändert; v2 determinism + schema checks neu.
+
+## CLI (Operator UX)
+Empfohlenes Tool ist das vorhandene deterministische CLI-Skript:
+
+```bash
+# Help
+uv run python scripts/execution/pt_replay_pack.py --help
+uv run python scripts/execution/pt_replay_pack.py build --help
+```
+
+### Build (v1)
+
+```bash
+uv run python scripts/execution/pt_replay_pack.py build \
+  --events /abs/path/to/execution_events.jsonl \
+  --out /abs/path/to/out_dir \
+  --version 1 \
+  --created-at-utc 2000-01-01T00:00:00+00:00
+```
+
+### Build (v2, additive FIFO)
+
+```bash
+uv run python scripts/execution/pt_replay_pack.py build \
+  --events /abs/path/to/execution_events.jsonl \
+  --out /abs/path/to/out_dir \
+  --version 2 \
+  --include-fifo-entries \
+  --created-at-utc 2000-01-01T00:00:00+00:00
+```
+
+### Validate
+
+```bash
+uv run python scripts/execution/pt_replay_pack.py validate --bundle /abs/path/to/out_dir/replay_pack
+```
+
+### Inspect (hash/metadata/files)
+
+```bash
+# Human-readable
+uv run python scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/out_dir/replay_pack
+
+# Machine-readable JSON (stable ordering)
+uv run python scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/out_dir/replay_pack --json
+```
+
+## Troubleshooting
+
+### HashMismatchError
+- **Symptom**: `HashMismatchError` beim `validate`.
+- **Cause**: Bundle wurde nachträglich verändert oder nicht deterministisch geschrieben.
+- **Fix**: Bundle neu bauen; sicherstellen, dass keine CRLF-Newlines oder Editor-Autoformatierung die Files verändert.
+
+### Missing FIFO snapshot (v2)
+- **Symptom**: `manifest.contents must include ledger/ledger_fifo_snapshot.json for v2` oder missing file.
+- **Cause**: v2 Build ohne FIFO oder Bundle unvollständig kopiert.
+- **Fix**: v2 Build mit `--version 2` ausführen (FIFO snapshot ist required in v2).
