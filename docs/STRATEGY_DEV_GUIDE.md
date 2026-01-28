@@ -693,7 +693,7 @@ def generate_signals(self, data):
 
 ### 6.1 Unit-Tests
 
-Erstelle Tests in `tests/test_strategies.py`:
+Erstelle Tests in `tests&#47;test_strategies.py`:
 
 ```python
 import pytest
