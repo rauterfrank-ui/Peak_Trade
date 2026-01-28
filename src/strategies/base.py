@@ -156,9 +156,8 @@ class BaseStrategy(ABC):
           In solchen Flows soll `prepare()` genau einmal laufen, nicht mehrfach.
 
         Hinweis:
-        - Das "Once" bezieht sich auf die *Objekt-Identität* des DataFrames (`id(data)`).
-          Wenn Call-Sites einen neuen DataFrame erstellen (copy/slice), läuft `prepare()`
-          erneut – das ist gewollt.
+        - Der Cache-Key basiert bewusst auf *Objektidentität* (`id(data)`), nicht auf Inhalt/Fingerprint.
+        - Konsequenz: `df.copy()`/ein neues Objekt triggert `prepare()` erneut (gewollt).
         """
         data_id = id(data)
         if self._prepared_data_id == data_id:
