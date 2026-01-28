@@ -4,8 +4,9 @@ import os
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union, Literal
 
 from src.execution.beta_bridge.schema import normalize_beta_exec_v1_event, sort_key_beta_exec_v1
 
@@ -135,6 +136,27 @@ def _event_time_utc_from_ts_sim(ts_sim: int) -> str:
     return dt.isoformat()
 
 
+def _iso_to_utc_z(s: str) -> str:
+    """
+    Normalize ISO8601 to an explicit UTC 'Z' suffix.
+    """
+    if s.endswith("Z"):
+        return s
+    dt = datetime.fromisoformat(s)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    dt = dt.astimezone(timezone.utc)
+    return dt.replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _require_decimal_str(x: Any, *, label: str) -> Decimal:
+    if isinstance(x, Decimal):
+        return x
+    if not isinstance(x, str) or not x.strip():
+        raise TypeError(f"{label} must be a non-empty decimal string")
+    return Decimal(x)
+
+
 def _normalize_and_filter_events(
     *,
     events_jsonl_path: Path,
@@ -189,6 +211,9 @@ def build_replay_pack(
     run_dir_or_run_id: Union[str, os.PathLike[str]],
     out_dir: Union[str, os.PathLike[str]],
     *,
+    bundle_version: Literal["1", "2"] = "1",
+    include_fifo: bool = False,
+    include_fifo_entries: bool = False,
     created_at_utc_override: Optional[str] = None,
     include_outputs: bool = False,
 ) -> Path:
@@ -204,6 +229,13 @@ def build_replay_pack(
     Returns:
         Path to the bundle root directory (named 'replay_pack')
     """
+    if bundle_version not in {"1", "2"}:
+        raise ValueError("bundle_version must be '1' or '2'")
+    if bundle_version == "1" and (include_fifo or include_fifo_entries):
+        raise ValueError("FIFO artifacts are only supported for bundle_version='2'")
+    if bundle_version == "2" and not include_fifo:
+        raise ValueError("bundle_version='2' requires include_fifo=True")
+
     inputs = _detect_build_inputs(run_dir_or_run_id)
     bundle_root = Path(out_dir) / BUNDLE_ROOT_DIRNAME
     bundle_root.mkdir(parents=True, exist_ok=True)
@@ -257,6 +289,81 @@ def build_replay_pack(
             }
         write_json_canonical(bundle_root / "outputs" / "expected_positions.json", positions)
 
+    # v2: FIFO Slice2 ledger artifacts (additive).
+    if bundle_version == "2":
+        from src.execution.ledger.export import to_canonical_dict as slice2_snapshot_to_dict
+        from src.execution.ledger.fifo_engine import FifoLedgerEngine
+        from src.execution.ledger.models import FillEvent as Slice2FillEvent
+        from src.execution.ledger.quantization import parse_symbol
+
+        first_symbol = str(events[0].get("symbol") or "")
+        _, quote = parse_symbol(first_symbol)
+
+        fifo_eng = FifoLedgerEngine(base_ccy=quote)
+        fifo_entries: List[Dict[str, Any]] = []
+
+        for e in events:
+            if str(e.get("event_type")) != "FILL":
+                continue
+
+            sym = str(e.get("symbol") or "")
+            _, q = parse_symbol(sym)
+            if q != quote:
+                raise ValueError("mixed quote currencies are not supported in a single FIFO bundle")
+
+            payload = e.get("payload") or {}
+            if not isinstance(payload, Mapping):
+                raise TypeError("FILL payload must be an object")
+
+            ts_utc_z = _iso_to_utc_z(str(e.get("event_time_utc") or ""))
+            seq = int(e.get("seq"))
+
+            side = str(payload.get("side") or "").upper()
+            qty = _require_decimal_str(payload.get("quantity"), label="payload.quantity")
+            price = _require_decimal_str(payload.get("price"), label="payload.price")
+            fee = _require_decimal_str(payload.get("fee", "0"), label="payload.fee")
+            fee_ccy = str(payload.get("fee_currency") or quote)
+
+            trade_id = payload.get("fill_id")
+            trade_id_s = str(trade_id) if trade_id is not None else None
+
+            slice2_ev = Slice2FillEvent(
+                ts_utc=ts_utc_z,
+                seq=seq,
+                instrument=sym,
+                side=side,  # type: ignore[arg-type]
+                qty=qty,
+                price=price,
+                fee=fee,
+                fee_ccy=fee_ccy,
+                trade_id=trade_id_s,
+            )
+
+            new_entries = fifo_eng.apply(slice2_ev)
+            if include_fifo_entries:
+                for ent in new_entries:
+                    fifo_entries.append(
+                        {
+                            "ts_utc": ent.ts_utc,
+                            "seq": int(ent.seq),
+                            "kind": ent.kind,
+                            "instrument": ent.instrument,
+                            "fields": ent.fields,
+                        }
+                    )
+
+        last_ts = _iso_to_utc_z(str(events[-1].get("event_time_utc") or ""))
+        last_seq = int(events[-1].get("seq"))
+        snap = fifo_eng.snapshot(last_ts, last_seq)
+        snap_dict = slice2_snapshot_to_dict(snap)
+        snap_dict["base_ccy"] = quote
+
+        write_json_canonical(bundle_root / "ledger" / "ledger_fifo_snapshot.json", snap_dict)
+        if include_fifo_entries:
+            write_jsonl_canonical(
+                bundle_root / "ledger" / "ledger_fifo_entries.jsonl", fifo_entries
+            )
+
     # Build manifest contents list (excludes manifest.json and hashes/sha256sums.txt).
     content_relpaths = []
     for p in bundle_root.rglob("*"):
@@ -288,7 +395,7 @@ def build_replay_pack(
 
     bundle_id_material = dumps_canonical(
         {
-            "contract_version": CONTRACT_VERSION,
+            "contract_version": bundle_version,
             "run_id": inputs.run_id,
             "contents": [{"path": c["path"], "sha256": c["sha256"]} for c in contents],
         }
@@ -298,13 +405,15 @@ def build_replay_pack(
     # Deterministic created_at_utc:
     created_at_utc = created_at_utc_override or str(events[0]["event_time_utc"])
 
+    producer_version = "1.0" if bundle_version == "1" else "2.0"
+
     manifest = {
-        "contract_version": CONTRACT_VERSION,
+        "contract_version": bundle_version,
         "bundle_id": bundle_id,
         "run_id": inputs.run_id,
         "created_at_utc": created_at_utc,
         "peak_trade_git_sha": str(git.get("commit_sha") or "UNKNOWN"),
-        "producer": {"tool": "pt_replay_pack", "version": "1.0"},
+        "producer": {"tool": "pt_replay_pack", "version": producer_version},
         "contents": contents,
         "canonicalization": {"json": CANON_JSON_RULE, "jsonl": CANON_JSONL_RULE},
         "invariants": {
@@ -312,6 +421,8 @@ def build_replay_pack(
             "ordering": EVENT_ORDERING_INVARIANT,
         },
     }
+    if bundle_version == "2":
+        manifest["invariants"]["has_fifo_ledger"] = True
     write_json_canonical(bundle_root / "manifest.json", manifest)
 
     # hashes/sha256sums.txt covers all files except itself (includes manifest.json).

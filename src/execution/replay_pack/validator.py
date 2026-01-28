@@ -22,6 +22,7 @@ from .schema import (
     validate_execution_event_object_strict,
     validate_market_data_refs_document_strict,
 )
+from .schema_v2 import validate_manifest_v2_strict
 
 
 @dataclass(frozen=True)
@@ -58,7 +59,14 @@ def validate_replay_pack(bundle_path: str | Path) -> ValidationReport:
     manifest = json.loads(manifest_text)
     if not isinstance(manifest, Mapping):
         raise SchemaValidationError("manifest.json must be a JSON object")
-    validate_manifest_v1_dict(manifest)
+    contract_version = str(manifest.get("contract_version") or "1")
+    if contract_version == "1":
+        # v1 behavior must remain exactly stable.
+        validate_manifest_v1_dict(manifest)
+    elif contract_version == "2":
+        validate_manifest_v2_strict(manifest)
+    else:
+        raise SchemaValidationError("manifest contract_version must be '1' or '2'")
 
     canonical_manifest = dumps_canonical(manifest) + "\n"
     if manifest_text != canonical_manifest:
@@ -74,6 +82,11 @@ def validate_replay_pack(bundle_path: str | Path) -> ValidationReport:
         raise SchemaValidationError("manifest.contents paths must be unique")
     if "events/execution_events.jsonl" not in set(paths):
         raise SchemaValidationError("manifest.contents must include events/execution_events.jsonl")
+    if contract_version == "2":
+        if "ledger/ledger_fifo_snapshot.json" not in set(paths):
+            raise SchemaValidationError(
+                "manifest.contents must include ledger/ledger_fifo_snapshot.json for v2"
+            )
 
     # Verify content files exist + sha/bytes match.
     total_bytes = 0
@@ -163,6 +176,38 @@ def validate_replay_pack(bundle_path: str | Path) -> ValidationReport:
             raise SchemaValidationError(
                 "events/market_data_refs.json must be canonical JSON (sorted keys, no ws)"
             )
+
+    # v2 FIFO artifacts: enforce LF-only + canonical encoding.
+    if contract_version == "2":
+        snap_path = root / "ledger" / "ledger_fifo_snapshot.json"
+        if not snap_path.exists():
+            raise MissingRequiredFileError("missing ledger/ledger_fifo_snapshot.json")
+        snap_text = _read_text_strict_lf(snap_path)
+        snap_doc = json.loads(snap_text)
+        if not isinstance(snap_doc, Mapping):
+            raise SchemaValidationError("ledger_fifo_snapshot.json must be a JSON object")
+        assert_no_floats(snap_doc, path="$.ledger_fifo_snapshot")
+        canonical_snap = dumps_canonical(snap_doc) + "\n"
+        if snap_text != canonical_snap:
+            raise SchemaValidationError("ledger_fifo_snapshot.json must be canonical JSON")
+
+        ent_path = root / "ledger" / "ledger_fifo_entries.jsonl"
+        if ent_path.exists():
+            assert_lf_only_bytes(ent_path.read_bytes(), label="ledger_fifo_entries.jsonl")
+            with open(ent_path, "r", encoding="utf-8") as f:
+                for line_no, line in enumerate(f, start=1):
+                    if not line.strip():
+                        continue
+                    obj = json.loads(line)
+                    if not isinstance(obj, Mapping):
+                        raise ContractViolationError(
+                            f"ledger_fifo_entries line {line_no} must be object"
+                        )
+                    assert_no_floats(obj, path=f"$.ledger_fifo_entries[{line_no}]")
+                    if dumps_canonical(obj) != line.rstrip("\n"):
+                        raise SchemaValidationError(
+                            "ledger_fifo_entries.jsonl must be canonical JSONL (sorted keys, no ws)"
+                        )
 
     # File count includes manifest + sha256sums + all other files.
     file_count = len([p for p in root.rglob("*") if p.is_file()])
