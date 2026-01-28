@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from src.execution.ledger import FillEvent, LedgerEngine
+from src.execution.ledger import FillEvent, FifoLedgerEngine
 
 
 def test_fifo_long_partial_close_realized_pnl_and_remaining_lot():
-    eng = LedgerEngine(base_ccy="USD")
+    eng = FifoLedgerEngine(base_ccy="USD")
     eng.open_cash(amount=Decimal("0"), ccy="USD")
 
     eng.apply(
@@ -57,7 +57,7 @@ def test_fifo_long_partial_close_realized_pnl_and_remaining_lot():
 
 
 def test_fifo_flip_to_short():
-    eng = LedgerEngine(base_ccy="USD")
+    eng = FifoLedgerEngine(base_ccy="USD")
     eng.open_cash(amount=Decimal("0"), ccy="USD")
 
     eng.apply(
@@ -95,7 +95,7 @@ def test_fifo_flip_to_short():
 
 
 def test_fifo_short_flip_to_long():
-    eng = LedgerEngine(base_ccy="USD")
+    eng = FifoLedgerEngine(base_ccy="USD")
     eng.open_cash(amount=Decimal("0"), ccy="USD")
 
     eng.apply(

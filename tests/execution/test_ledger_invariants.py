@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from src.execution.ledger import FillEvent, LedgerEngine
+from src.execution.ledger import FillEvent, FifoLedgerEngine
 
 
 def test_invariants_lots_sum_to_position_qty_realized_only_on_close_fees_and_cash_consistent():
-    eng = LedgerEngine(base_ccy="USD")
+    eng = FifoLedgerEngine(base_ccy="USD")
     eng.open_cash(amount=Decimal("1000"), ccy="USD")
 
     def cash() -> Decimal:

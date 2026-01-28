@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 from decimal import Decimal
 
-from src.execution.ledger import FillEvent, LedgerEngine, MarkEvent
+from src.execution.ledger import FillEvent, FifoLedgerEngine, MarkEvent
 from src.execution.ledger.export import dumps_canonical_json
 
 
@@ -62,7 +62,7 @@ def _events() -> list[object]:
 
 def test_determinism_same_event_stream_produces_identical_snapshots_and_hashes():
     def run_once() -> tuple[list[bytes], bytes]:
-        eng = LedgerEngine(base_ccy="USD")
+        eng = FifoLedgerEngine(base_ccy="USD")
         eng.open_cash(amount=Decimal("10000"), ccy="USD")
 
         snaps: list[bytes] = []
