@@ -1,5 +1,10 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260128-stratrisk-stream-visible"></a>
+- **EV-20260128-STRATRISK-STREAM-VISIBLE** | Date: 2026-01-28 | Owner: ops | Scope: docs-only evidence template | Risk: LOW  
+  - Source: [Evidence](evidence/EV_STRATEGY_RISK_TELEMETRY_STREAM_20260128.md)  
+  - Claim: Evidence template for verifying Strategy/Risk telemetry v1 stream visibility (Prometheus targets UP, metric presence, PromQL sanity, Grafana Operator Summary panels).
+
 <a id="ev-20260128-replay-pack-v2-cli-verify"></a>
 - **EV-20260128-REPLAY-PACK-V2-CLI-VERIFY** | Date: 2026-01-28 | Owner: execution | Scope: code+tests+docs | Risk: LOW  
   - Source: [Evidence](evidence/EV_REPLAY_PACK_V2_CLI_VERIFY_20260128.md)  
