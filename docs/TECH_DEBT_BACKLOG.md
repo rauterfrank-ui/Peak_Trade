@@ -69,6 +69,8 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `scripts&#47;run_shadow_execution.py:502` (illustrative)
   - Kontext: Timeframe aktuell hardcoded, sollte aus Daten abgeleitet werden
   - Vorschlag: Automatische Erkennung aus DataFrame-Index oder Config
+  - Status: implemented in PR #1021 (merge commit `3d6aee01aee77373a190a509e93a38c7d5298ffc`)
+    - Fundstellen: `scripts/run_shadow_execution.py` (Function `infer_timeframe_from_index`, CLI `--timeframe`, wiring in Registry-Logging), `tests/test_timeframe_infer.py`
 
 ---
 
