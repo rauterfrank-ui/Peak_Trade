@@ -1272,12 +1272,39 @@ def run_portfolio_from_config(
     total_capital = portfolio_cfg.get("total_capital", cfg["backtest"]["initial_cash"])
     allocation_method = portfolio_cfg.get("allocation_method", "equal")
 
-    allocation = _calculate_allocation(
-        strategies=strategies,
-        method=allocation_method,
-        manual_weights=portfolio_cfg.get("weights", {}),
-        total_capital=total_capital,
-    )
+    if allocation_method in ("risk_parity", "sharpe_weighted"):
+        # Two-pass allocation:
+        # 1) preview backtests on a fixed initial slice -> estimate returns
+        # 2) compute weights from preview returns
+        # 3) final run uses a single weighting point (combined equity = sum(w_i * equity_i))
+        estimation_bars = int(portfolio_cfg.get("allocation_estimation_bars", 200))
+        risk_free_rate = float(portfolio_cfg.get("risk_free_rate", 0.0))
+
+        preview_returns = _preview_strategy_returns_for_allocation(
+            df=df,
+            cfg=cfg,
+            strategies=strategies,
+            total_capital=float(total_capital),
+            estimation_bars=estimation_bars,
+            position_sizer=position_sizer,
+            risk_limits=risk_limits,
+            core_position_sizer=core_position_sizer,
+            risk_manager=risk_manager,
+        )
+
+        allocation = _calculate_allocation_from_preview_returns(
+            preview_returns=preview_returns,
+            method=allocation_method,
+            strategies=strategies,
+            risk_free_rate=risk_free_rate,
+        )
+    else:
+        allocation = _calculate_allocation(
+            strategies=strategies,
+            method=allocation_method,
+            manual_weights=portfolio_cfg.get("weights", {}),
+            total_capital=total_capital,
+        )
 
     logger.info(f"Capital Allocation ({allocation_method}): {allocation}")
 
@@ -1285,13 +1312,13 @@ def run_portfolio_from_config(
     strategy_results: Dict[str, BacktestResult] = {}
 
     for strategy_name in strategies:
-        # Capital für diese Strategie
-        strategy_capital = allocation[strategy_name] * total_capital
+        # Final run: do NOT pre-scale per-strategy initial_cash by weights.
+        # Single weighting point is applied in _combine_equity_curves().
+        initial_capital = float(total_capital)
 
-        # Backtest mit angepasstem Initial Capital
-        # WICHTIG: Wir müssen initial_cash temporär überschreiben
+        # Backtest mit angepasstem Initial Capital (temporär überschreiben)
         original_cash = cfg["backtest"]["initial_cash"]
-        cfg["backtest"]["initial_cash"] = strategy_capital
+        cfg["backtest"]["initial_cash"] = initial_capital
 
         try:
             result = run_single_strategy_from_registry(
@@ -1307,7 +1334,7 @@ def run_portfolio_from_config(
             logger.error(f"Fehler beim Backtest von '{strategy_name}': {e}")
             # Bei Fehler: Dummy-Result mit 0 Equity
             strategy_results[strategy_name] = _create_dummy_result(
-                strategy_name, df, strategy_capital
+                strategy_name, df, initial_capital
             )
         finally:
             # Initial Cash zurücksetzen
@@ -1352,6 +1379,180 @@ def run_portfolio_from_config(
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
+
+
+def _equity_to_preview_returns(equity: pd.Series, *, strategy_name: str) -> pd.Series:
+    """
+    Convert an equity curve into per-period returns for allocation estimation.
+
+    Deterministic, strict:
+    - requires at least 3 equity points (>= 2 returns)
+    - rejects NaN/inf
+    """
+    if equity is None or len(equity) < 3:
+        raise ValueError(
+            f"Allocation preview: equity curve too short for '{strategy_name}' "
+            f"(need >= 3 points, got {0 if equity is None else len(equity)})"
+        )
+
+    s = equity.astype(float)
+    if isinstance(s.index, pd.DatetimeIndex):
+        s = s.sort_index()
+        # guard against duplicated timestamps (can happen in some dummy paths)
+        s = s[~s.index.duplicated(keep="last")]
+
+    rets = s.pct_change().dropna()
+    if len(rets) < 2:
+        raise ValueError(
+            f"Allocation preview: returns too short for '{strategy_name}' (need >= 2 returns)"
+        )
+    if not np.isfinite(rets.to_numpy()).all():
+        raise ValueError(f"Allocation preview: non-finite returns for '{strategy_name}'")
+
+    return rets
+
+
+def _preview_strategy_returns_for_allocation(
+    *,
+    df: pd.DataFrame,
+    cfg: Dict[str, Any],
+    strategies: List[str],
+    total_capital: float,
+    estimation_bars: int,
+    position_sizer: Optional[PositionSizer],
+    risk_limits: Optional[RiskLimits],
+    core_position_sizer: Optional[BasePositionSizer],
+    risk_manager: Optional[BaseRiskManager],
+) -> pd.DataFrame:
+    """
+    Two-pass allocation preview:
+    run short preview backtests per strategy on the first N bars to estimate returns.
+
+    Failure modes are explicit (no silent fallbacks).
+    """
+    if estimation_bars < 3:
+        raise ValueError(
+            f"allocation_estimation_bars must be >= 3 (got {estimation_bars}). "
+            "Set portfolio.allocation_estimation_bars."
+        )
+    if df is None or df.empty:
+        raise ValueError("Allocation preview requires a non-empty DataFrame")
+    if len(df) < estimation_bars:
+        raise ValueError(
+            f"Insufficient data for allocation preview: need >= {estimation_bars} bars, got {len(df)}. "
+            "Reduce portfolio.allocation_estimation_bars or provide more data."
+        )
+
+    df_preview = df.iloc[:estimation_bars].copy()
+    if df_preview.empty:
+        raise ValueError("Allocation preview slice is empty")
+
+    returns_by_strategy: Dict[str, pd.Series] = {}
+
+    for strategy_name in strategies:
+        original_cash = cfg["backtest"]["initial_cash"]
+        cfg["backtest"]["initial_cash"] = float(total_capital)
+        try:
+            result = run_single_strategy_from_registry(
+                df=df_preview,
+                strategy_name=strategy_name,
+                position_sizer=position_sizer,
+                risk_limits=risk_limits,
+                core_position_sizer=core_position_sizer,
+                risk_manager=risk_manager,
+            )
+        except Exception as e:
+            raise ValueError(
+                f"Allocation preview backtest failed for '{strategy_name}': {e}"
+            ) from e
+        finally:
+            cfg["backtest"]["initial_cash"] = original_cash
+
+        returns_by_strategy[strategy_name] = _equity_to_preview_returns(
+            result.equity_curve, strategy_name=strategy_name
+        )
+
+    # Align to common index and drop any rows with missing returns.
+    df_rets = pd.concat([returns_by_strategy[s] for s in strategies], axis=1)
+    df_rets.columns = list(strategies)
+    df_rets = df_rets.dropna(how="any")
+
+    if df_rets.empty or len(df_rets) < 2:
+        raise ValueError(
+            "Allocation preview produced insufficient aligned returns. "
+            "Ensure strategies have enough history in the estimation window."
+        )
+
+    return df_rets
+
+
+def _calculate_allocation_from_preview_returns(
+    *,
+    preview_returns: pd.DataFrame,
+    method: str,
+    strategies: List[str],
+    risk_free_rate: float = 0.0,
+    eps: float = 1e-12,
+) -> Dict[str, float]:
+    """
+    Compute allocation weights from preview returns.
+
+    v1 algorithms (deterministic, long-only):
+    - risk_parity: inverse-vol weights (diag of cov / std floor)
+    - sharpe_weighted: positive Sharpe weights, clipped at 0 then renormalized
+    """
+    if preview_returns is None or preview_returns.empty:
+        raise ValueError("preview_returns must be provided for allocation estimation")
+
+    # enforce stable column order and presence
+    for s in strategies:
+        if s not in preview_returns.columns:
+            raise ValueError(f"preview_returns missing strategy column: {s}")
+    rets = preview_returns.loc[:, strategies]
+
+    vol = rets.std(axis=0, ddof=0)
+    vol = vol.replace(0.0, np.nan)
+    if vol.isna().any():
+        raise ValueError(
+            f"Allocation preview: zero/NaN volatility for strategies: {list(vol[vol.isna()].index)}"
+        )
+
+    if method == "risk_parity":
+        inv_vol = 1.0 / vol
+        inv_vol = inv_vol.replace([np.inf, -np.inf], np.nan)
+        if inv_vol.isna().any():
+            raise ValueError("Allocation preview: non-finite inverse-vol weights")
+
+        raw = inv_vol.clip(lower=0.0)
+        total = float(raw.sum())
+        if not np.isfinite(total) or total <= eps:
+            raise ValueError("Allocation preview: all-zero risk_parity weights (check returns)")
+
+        w = (raw / total).to_dict()
+        return {k: float(w[k]) for k in strategies}
+
+    if method == "sharpe_weighted":
+        mu = rets.mean(axis=0) - float(risk_free_rate)
+        sharpe = mu / vol
+        sharpe = sharpe.replace([np.inf, -np.inf], np.nan)
+        if sharpe.isna().any():
+            raise ValueError("Allocation preview: non-finite Sharpe values")
+
+        raw = sharpe.clip(lower=0.0)
+        total = float(raw.sum())
+        if total <= eps:
+            raise ValueError(
+                "Allocation preview: all Sharpe scores <= 0 after clipping. "
+                "Provide strategies with positive risk-adjusted returns or choose a different allocation_method."
+            )
+
+        w = (raw / total).to_dict()
+        return {k: float(w[k]) for k in strategies}
+
+    raise ValueError(
+        f"Unknown allocation estimation method: {method!r}. "
+        "Expected 'risk_parity' or 'sharpe_weighted'."
+    )
 
 
 def _calculate_allocation(
@@ -1402,14 +1603,16 @@ def _calculate_allocation(
         return allocation
 
     elif method == "risk_parity":
-        # TODO: Implementierung basierend auf Volatility/Sharpe
-        logger.warning("risk_parity noch nicht implementiert, nutze equal weight")
-        return {name: 1.0 / n for name in strategies}
+        raise ValueError(
+            "Allocation method 'risk_parity' requires a two-pass preview to estimate returns. "
+            "Use run_portfolio_from_config() with portfolio.allocation_estimation_bars configured."
+        )
 
     elif method == "sharpe_weighted":
-        # TODO: Benötigt historische Backtests
-        logger.warning("sharpe_weighted noch nicht implementiert, nutze equal weight")
-        return {name: 1.0 / n for name in strategies}
+        raise ValueError(
+            "Allocation method 'sharpe_weighted' requires a two-pass preview to estimate returns. "
+            "Use run_portfolio_from_config() with portfolio.allocation_estimation_bars configured."
+        )
 
     else:
         raise ValueError(

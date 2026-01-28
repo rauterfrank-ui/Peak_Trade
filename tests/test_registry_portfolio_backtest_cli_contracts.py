@@ -226,9 +226,9 @@ foo = 2
     assert result.portfolio_stats["allocation_method"] == "manual"
     assert result.allocation["s1"] == pytest.approx(0.8)
     assert result.allocation["s2"] == pytest.approx(0.2)
-    # total_capital override should drive per-strategy allocated initial cash
-    assert seen_initial_capital["s1"] == pytest.approx(16000.0)
-    assert seen_initial_capital["s2"] == pytest.approx(4000.0)
+    # Contract: portfolio.total_capital drives per-strategy initial cash (no pre-scaling by weights).
+    assert seen_initial_capital["s1"] == pytest.approx(20000.0)
+    assert seen_initial_capital["s2"] == pytest.approx(20000.0)
 
 
 def test_config_path_default_and_fallback(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
