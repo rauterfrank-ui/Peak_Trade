@@ -3,6 +3,8 @@
 Dieses Verzeichnis enthält PR-Merge-Logs (kurze, auditierbare Zusammenfassungen inkl. Why/Changes/Verification/Risk).
 
 ## Latest
+- [PR_1039_MERGE_LOG.md](PR_1039_MERGE_LOG.md)
+
 - [PR_1038_MERGE_LOG.md](PR_1038_MERGE_LOG.md)
 
 - [PR_1031_MERGE_LOG.md](PR_1031_MERGE_LOG.md)
