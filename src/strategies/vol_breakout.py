@@ -267,13 +267,13 @@ class VolBreakoutStrategy(BaseStrategy):
         # Entry-Signale basierend auf side
         if self.side in ("long", "both"):
             # Long Entry: Neuer Breakout (vorher nicht im Breakout)
-            prev_long = long_breakout.shift(1).fillna(False).astype(bool)
+            prev_long = long_breakout.shift(1, fill_value=False).astype(bool)
             long_entry = long_breakout & ~prev_long
             signals[long_entry] = 1
 
         if self.side in ("short", "both"):
             # Short Entry: Neuer Breakout (vorher nicht im Breakout)
-            prev_short = short_breakout.shift(1).fillna(False).astype(bool)
+            prev_short = short_breakout.shift(1, fill_value=False).astype(bool)
             short_entry = short_breakout & ~prev_short
             signals[short_entry] = -1
 
