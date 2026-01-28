@@ -54,6 +54,11 @@ def test_prepare_once_idempotent_per_dataframe_object_identity():
     assert len(out1) == len(df)
     assert len(out2) == len(df)
 
-    df2 = df.copy()
+    df2 = df.copy(deep=True)
     s.prepare_once(df2)
     assert s.prepare_calls == 2
+
+    # run() darf für dasselbe df2-Objekt nicht erneut prepare() ausführen
+    out3 = s.run(df2)
+    assert s.prepare_calls == 2
+    assert len(out3) == len(df2)
