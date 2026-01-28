@@ -5,6 +5,8 @@
 
 ---
 
+- [RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md](./RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md): Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent)
+
 ## Runbook Categories
 
 ### Docs Gates & Policies
