@@ -233,7 +233,7 @@ def build_replay_pack(
 
     # Optional expected outputs (for --check-outputs).
     if include_outputs:
-        from src.execution.ledger.engine import LedgerEngine
+        from src.execution.ledger.engine_legacy import LegacyLedgerEngine as LedgerEngine
         from src.execution.ledger.quantization import parse_symbol
 
         first_symbol = str(events[0].get("symbol") or "")

@@ -4,7 +4,7 @@ from decimal import Decimal
 from datetime import datetime
 
 from src.execution.contracts import Fill, OrderSide
-from src.execution.ledger import LedgerEngine
+from src.execution.ledger import LegacyLedgerEngine as LedgerEngine
 
 
 def test_double_entry_and_cash_inventory_fees_invariants_long_roundtrip():

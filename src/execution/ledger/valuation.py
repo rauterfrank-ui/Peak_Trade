@@ -3,12 +3,12 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import Dict, Optional
 
-from .engine import LedgerEngine
+from .engine_legacy import LegacyLedgerEngine
 from .models import QuantizationPolicy, ValuationSnapshot
 
 
 def snapshot_mark_to_market(
-    engine: LedgerEngine,
+    engine: LegacyLedgerEngine,
     *,
     ts_sim: int,
     prices: Dict[str, Decimal],
