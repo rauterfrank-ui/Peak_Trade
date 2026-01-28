@@ -1264,6 +1264,9 @@ def run_portfolio_from_config(
         )
         strategies = strategies[:max_strategies]
 
+    # Determinismus: stabile, sortierte Strategie-Reihenfolge für Preview + Final Run
+    strategies = sorted(strategies)
+
     logger.info(
         f"Starte Portfolio-Backtest mit {len(strategies)} Strategien: {', '.join(strategies)}"
     )
@@ -1277,7 +1280,8 @@ def run_portfolio_from_config(
         # 1) preview backtests on a fixed initial slice -> estimate returns
         # 2) compute weights from preview returns
         # 3) final run uses a single weighting point (combined equity = sum(w_i * equity_i))
-        estimation_bars = int(portfolio_cfg.get("allocation_estimation_bars", 200))
+        # Default bewusst konservativ (deterministisch): ausreichend Bars für stabile Schätzung
+        estimation_bars = int(portfolio_cfg.get("allocation_estimation_bars", 500))
         risk_free_rate = float(portfolio_cfg.get("risk_free_rate", 0.0))
 
         preview_returns = _preview_strategy_returns_for_allocation(
@@ -1412,6 +1416,148 @@ def _equity_to_preview_returns(equity: pd.Series, *, strategy_name: str) -> pd.S
     return rets
 
 
+def _equity_to_returns_preview(equity: pd.Series, estimation_bars: int) -> pd.Series:
+    """
+    v1 helper (local): compute preview returns from the first N equity bars.
+
+    Contract:
+    - returns = equity.pct_change().dropna().iloc[:estimation_bars]
+    - explicit failure modes (no silent fallbacks)
+    """
+    if estimation_bars < 3:
+        raise ValueError(f"estimation_bars must be >= 3 (got {estimation_bars})")
+    if equity is None:
+        raise ValueError("equity must not be None")
+
+    s = equity.astype(float)
+    if isinstance(s.index, pd.DatetimeIndex):
+        s = s.sort_index()
+        s = s[~s.index.duplicated(keep="last")]
+
+    if len(s) < estimation_bars:
+        raise ValueError(
+            f"insufficient equity bars for preview (need >= {estimation_bars}, got {len(s)})"
+        )
+
+    s = s.iloc[:estimation_bars]
+    rets = s.pct_change().dropna()
+    if len(rets) < 2:
+        raise ValueError("insufficient preview returns (need >= 2 returns)")
+    if not np.isfinite(rets.to_numpy()).all():
+        raise ValueError("non-finite preview returns")
+    return rets
+
+
+def _weights_inverse_vol(
+    returns_map: Dict[str, pd.Series],
+    *,
+    eps: float = 1e-12,
+) -> Dict[str, float]:
+    """v1 inverse-vol weights (risk_parity approximation), long-only, deterministic."""
+    if not returns_map:
+        raise ValueError("returns_map must not be empty")
+
+    keys = sorted(returns_map.keys())
+    vols: Dict[str, float] = {}
+    for k in keys:
+        r = returns_map[k]
+        if r is None or len(r) < 2:
+            raise ValueError(f"insufficient returns for '{k}' (need >= 2)")
+        arr = r.astype(float).to_numpy()
+        if not np.isfinite(arr).all():
+            raise ValueError(f"non-finite returns for '{k}'")
+        v = float(pd.Series(arr).std(ddof=0))
+        if not np.isfinite(v):
+            raise ValueError(f"non-finite volatility for '{k}'")
+        vols[k] = max(v, float(eps))
+
+    inv = {k: 1.0 / vols[k] for k in keys}
+    total = float(sum(inv.values()))
+    if not np.isfinite(total) or total <= float(eps):
+        raise ValueError("all-zero inverse-vol weights")
+
+    w = {k: float(inv[k] / total) for k in keys}
+    s = float(sum(w.values()))
+    if not np.isfinite(s) or s <= float(eps):
+        raise ValueError("invalid weight sum")
+    # defensiv renorm
+    return {k: float(w[k] / s) for k in keys}
+
+
+def _weights_sharpe_long_only(
+    returns_map: Dict[str, pd.Series],
+    *,
+    risk_free_rate: float = 0.0,
+    eps: float = 1e-12,
+) -> Dict[str, float]:
+    """v1 Sharpe-weighted, long-only: clip negative Sharpe to 0, renorm."""
+    if not returns_map:
+        raise ValueError("returns_map must not be empty")
+
+    keys = sorted(returns_map.keys())
+    raw: Dict[str, float] = {}
+    rf = float(risk_free_rate)
+    for k in keys:
+        r = returns_map[k]
+        if r is None or len(r) < 2:
+            raise ValueError(f"insufficient returns for '{k}' (need >= 2)")
+        arr = r.astype(float).to_numpy()
+        if not np.isfinite(arr).all():
+            raise ValueError(f"non-finite returns for '{k}'")
+        mu = float(np.mean(arr) - rf)
+        vol = float(np.std(arr, ddof=0))
+        if not np.isfinite(mu) or not np.isfinite(vol):
+            raise ValueError(f"non-finite moments for '{k}'")
+        vol = max(vol, float(eps))
+        sharpe = mu / vol
+        if not np.isfinite(sharpe):
+            raise ValueError(f"non-finite Sharpe for '{k}'")
+        raw[k] = max(0.0, float(sharpe))
+
+    total = float(sum(raw.values()))
+    if total <= float(eps):
+        raise ValueError("Sharpe scores <= 0 after clipping")
+
+    w = {k: float(raw[k] / total) for k in keys}
+    s = float(sum(w.values()))
+    if not np.isfinite(s) or s <= float(eps):
+        raise ValueError("invalid weight sum")
+    return {k: float(w[k] / s) for k in keys}
+
+
+def _combine_equities_weighted(
+    equities_map: Dict[str, pd.Series],
+    weights: Dict[str, float],
+) -> pd.Series:
+    """Combine equities with a single weighting point: Σ w_i * equity_i(t)."""
+    if not equities_map:
+        raise ValueError("equities_map must not be empty")
+    if not weights:
+        raise ValueError("weights must not be empty")
+
+    keys = sorted(weights.keys())
+    missing = [k for k in keys if k not in equities_map]
+    if missing:
+        raise ValueError(f"missing equities for: {missing}")
+
+    ref_idx = equities_map[keys[0]].index
+    for k in keys[1:]:
+        if not equities_map[k].index.equals(ref_idx):
+            raise ValueError("equity indices must match to combine deterministically")
+
+    combined = None
+    for k in keys:
+        w = float(weights[k])
+        if not np.isfinite(w) or w < 0.0:
+            raise ValueError(f"invalid weight for '{k}': {w}")
+        part = equities_map[k].astype(float) * w
+        combined = part if combined is None else (combined + part)
+
+    if combined is None:
+        raise ValueError("no equities combined")
+    return combined.astype(float)
+
+
 def _preview_strategy_returns_for_allocation(
     *,
     df: pd.DataFrame,
@@ -1510,12 +1656,16 @@ def _calculate_allocation_from_preview_returns(
             raise ValueError(f"preview_returns missing strategy column: {s}")
     rets = preview_returns.loc[:, strategies]
 
-    vol = rets.std(axis=0, ddof=0)
-    vol = vol.replace(0.0, np.nan)
-    if vol.isna().any():
+    vol = rets.std(axis=0, ddof=0).astype(float)
+    # Numerische Stabilität v1: std-floor epsilon (statt stilles Fallback / statt hard zero-div)
+    # - NaNs bleiben ein harter Fehler (fehlerhafte Preview-Daten)
+    if not np.isfinite(vol.to_numpy()).all():
+        bad = [str(k) for k in vol.index[~np.isfinite(vol.to_numpy())]]
         raise ValueError(
-            f"Allocation preview: zero/NaN volatility for strategies: {list(vol[vol.isna()].index)}"
+            "Allocation preview: non-finite volatility for strategies: "
+            f"{bad}. Check preview returns for NaNs/inf."
         )
+    vol = vol.clip(lower=float(eps))
 
     if method == "risk_parity":
         inv_vol = 1.0 / vol
@@ -1528,8 +1678,15 @@ def _calculate_allocation_from_preview_returns(
         if not np.isfinite(total) or total <= eps:
             raise ValueError("Allocation preview: all-zero risk_parity weights (check returns)")
 
-        w = (raw / total).to_dict()
-        return {k: float(w[k]) for k in strategies}
+        w_s = (raw / total).astype(float)
+        if not np.isfinite(w_s.to_numpy()).all():
+            raise ValueError("Allocation preview: non-finite normalized weights")
+        # Renorm defensiv gegen Rundungsdrift
+        s = float(w_s.sum())
+        if not np.isfinite(s) or s <= eps:
+            raise ValueError("Allocation preview: invalid weight sum after normalization")
+        w_s = w_s / s
+        return {k: float(w_s.loc[k]) for k in strategies}
 
     if method == "sharpe_weighted":
         mu = rets.mean(axis=0) - float(risk_free_rate)
@@ -1546,8 +1703,14 @@ def _calculate_allocation_from_preview_returns(
                 "Provide strategies with positive risk-adjusted returns or choose a different allocation_method."
             )
 
-        w = (raw / total).to_dict()
-        return {k: float(w[k]) for k in strategies}
+        w_s = (raw / total).astype(float)
+        if not np.isfinite(w_s.to_numpy()).all():
+            raise ValueError("Allocation preview: non-finite normalized weights")
+        s = float(w_s.sum())
+        if not np.isfinite(s) or s <= eps:
+            raise ValueError("Allocation preview: invalid weight sum after normalization")
+        w_s = w_s / s
+        return {k: float(w_s.loc[k]) for k in strategies}
 
     raise ValueError(
         f"Unknown allocation estimation method: {method!r}. "

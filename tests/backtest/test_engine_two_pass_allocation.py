@@ -257,3 +257,128 @@ def test_two_pass_deterministic_weights(monkeypatch: pytest.MonkeyPatch) -> None
     )
 
     assert r1.allocation == r2.allocation
+
+
+def test_two_pass_sharpe_weighted_clips_negative_and_renorms(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """
+    sharpe_weighted v1:
+    - sharpe_i = (mean(ret_i) - rf) / std(ret_i)
+    - weights = clip(sharpe_i, 0, +inf), renorm
+    """
+    from src.backtest import engine as bt_engine
+
+    idx = pd.date_range("2025-01-01", periods=20, freq="h")
+    df = pd.DataFrame(
+        {"open": 1, "high": 1, "low": 1, "close": 1, "volume": 1},
+        index=idx,
+    )
+
+    strategies = ["s2", "s1"]  # intentionally unsorted to assert determinism in engine
+    estimation_bars = 10
+
+    # s1: positive mean returns, non-zero std
+    s1_rets = [0.002, 0.001, 0.002, 0.001, 0.002, 0.001, 0.002, 0.001, 0.002]
+    # s2: negative mean returns, non-zero std -> negative Sharpe -> clipped to 0
+    s2_rets = [-0.002, -0.001, -0.002, -0.001, -0.002, -0.001, -0.002, -0.001, -0.002]
+
+    s1_rets_full = (s1_rets * 4)[: len(idx) - 1]
+    s2_rets_full = (s2_rets * 4)[: len(idx) - 1]
+
+    def _stub_run_single(*, df: pd.DataFrame, strategy_name: str, **_kwargs: Any) -> BacktestResult:
+        initial = float(cfg["backtest"]["initial_cash"])
+        if len(df) == estimation_bars:
+            return _make_result(df.index, initial, s1_rets if strategy_name == "s1" else s2_rets)
+        return _make_result(
+            df.index, initial, s1_rets_full if strategy_name == "s1" else s2_rets_full
+        )
+
+    cfg: dict[str, Any] = {
+        "backtest": {"initial_cash": 10000.0},
+        "portfolio": {
+            "enabled": True,
+            "allocation_method": "sharpe_weighted",
+            "total_capital": 10000.0,
+            "allocation_estimation_bars": estimation_bars,
+            "risk_free_rate": 0.0,
+            "max_strategies_active": 10,
+        },
+        "strategies": {"active": [], "available": []},
+    }
+
+    monkeypatch.setattr(
+        bt_engine, "run_single_strategy_from_registry", _stub_run_single, raising=True
+    )
+
+    result = bt_engine.run_portfolio_from_config(
+        df=df,
+        cfg=cfg,
+        portfolio_name="default",
+        strategy_filter=strategies,
+    )
+
+    # s2 negative Sharpe -> clipped to 0, all weight goes to s1
+    assert result.allocation["s2"] == pytest.approx(0.0)
+    assert result.allocation["s1"] == pytest.approx(1.0)
+    assert sum(result.allocation.values()) == pytest.approx(1.0)
+
+
+def test_two_pass_risk_parity_zero_vol_is_regularized(monkeypatch: pytest.MonkeyPatch) -> None:
+    """
+    risk_parity v1 uses inverse-vol with a std floor epsilon.
+    A zero-vol strategy should not raise; it should be regularized deterministically.
+    """
+    from src.backtest import engine as bt_engine
+
+    idx = pd.date_range("2025-01-01", periods=20, freq="h")
+    df = pd.DataFrame(
+        {"open": 1, "high": 1, "low": 1, "close": 1, "volume": 1},
+        index=idx,
+    )
+
+    strategies = ["s1", "s2"]
+    estimation_bars = 10
+
+    # s1: constant equity -> returns all 0 -> std = 0 (must be floored)
+    s1_rets = [0.0] * (estimation_bars - 1)
+    # s2: non-zero vol
+    s2_rets = [0.01, -0.005] * 4 + [0.01]
+
+    s1_rets_full = [0.0] * (len(idx) - 1)
+    s2_rets_full = (s2_rets * 4)[: len(idx) - 1]
+
+    def _stub_run_single(*, df: pd.DataFrame, strategy_name: str, **_kwargs: Any) -> BacktestResult:
+        initial = float(cfg["backtest"]["initial_cash"])
+        if len(df) == estimation_bars:
+            return _make_result(df.index, initial, s1_rets if strategy_name == "s1" else s2_rets)
+        return _make_result(
+            df.index, initial, s1_rets_full if strategy_name == "s1" else s2_rets_full
+        )
+
+    cfg: dict[str, Any] = {
+        "backtest": {"initial_cash": 10000.0},
+        "portfolio": {
+            "enabled": True,
+            "allocation_method": "risk_parity",
+            "total_capital": 10000.0,
+            "allocation_estimation_bars": estimation_bars,
+            "max_strategies_active": 10,
+        },
+        "strategies": {"active": [], "available": []},
+    }
+
+    monkeypatch.setattr(
+        bt_engine, "run_single_strategy_from_registry", _stub_run_single, raising=True
+    )
+
+    result = bt_engine.run_portfolio_from_config(
+        df=df,
+        cfg=cfg,
+        portfolio_name="default",
+        strategy_filter=strategies,
+    )
+
+    # s1 has ~0 vol => dominates inverse-vol weights after epsilon flooring
+    assert result.allocation["s1"] > 0.999
+    assert sum(result.allocation.values()) == pytest.approx(1.0)
