@@ -21,7 +21,7 @@ Item A3: Walk-Forward parameter optimization on TRAIN data (no leakage)
     - empty grid -> ValueError
     - invalid params -> deterministic skip+warning; if none valid -> ValueError
 - Artifacts (only when optimization active):
-  - `<output_dir>/<config_id>_walkforward_optimization.json` (deterministic, sort_keys)
+  - `<output_dir>&#47;<config_id>_walkforward_optimization.json` (deterministic, sort_keys)
 
 ## Tests executed
 - CI required checks: PASS (Lint Gate, docs-reference-targets-gate, tests (3.11), etc.)
