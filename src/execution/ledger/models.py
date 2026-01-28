@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
-from typing import Any, Dict, Iterable, List, Mapping, Optional
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Union, Literal
 
 
 @dataclass(frozen=True)
@@ -169,3 +169,125 @@ class ValuationSnapshot:
             "equity": str(self.equity),
             "meta": dict(self.meta),
         }
+
+
+# =============================================================================
+# EXEC_SLICE2: Deterministic Ledger/Accounting (FIFO lots)
+# =============================================================================
+
+# Public aliases (explicit at the type level).
+InstrumentId = str
+Currency = str
+
+
+@dataclass(frozen=True)
+class DecimalPolicy:
+    """
+    Centralized deterministic Decimal quantization policy for Slice2.
+
+    Contract:
+    - All qty/price/money values MUST be Decimals (floats forbidden at ingestion).
+    - All values MUST be quantized via this policy for deterministic results.
+    """
+
+    QTY_QUANT: Decimal = Decimal("0.00000001")
+    PRICE_QUANT: Decimal = Decimal("0.00000001")
+    MONEY_QUANT: Decimal = Decimal("0.00000001")
+    ROUNDING: str = ROUND_HALF_UP
+
+    @staticmethod
+    def default() -> "DecimalPolicy":
+        return DecimalPolicy()
+
+    def quantize_qty(self, v: Decimal) -> Decimal:
+        return v.quantize(self.QTY_QUANT, rounding=self.ROUNDING)
+
+    def quantize_price(self, v: Decimal) -> Decimal:
+        return v.quantize(self.PRICE_QUANT, rounding=self.ROUNDING)
+
+    def quantize_money(self, v: Decimal) -> Decimal:
+        return v.quantize(self.MONEY_QUANT, rounding=self.ROUNDING)
+
+
+@dataclass(frozen=True)
+class FillEvent:
+    ts_utc: str  # ISO8601 UTC with trailing "Z"
+    seq: int
+    instrument: InstrumentId
+    side: Literal["BUY", "SELL"]
+    qty: Decimal
+    price: Decimal
+    fee: Decimal = Decimal("0")
+    fee_ccy: Currency = "USD"
+    trade_id: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class MarkEvent:
+    ts_utc: str  # ISO8601 UTC with trailing "Z"
+    seq: int
+    instrument: InstrumentId
+    price: Decimal
+
+
+LedgerEvent = Union[FillEvent, MarkEvent]
+
+
+@dataclass
+class PositionLot:
+    qty_signed: Decimal
+    price: Decimal
+    ts_utc: str
+    seq: int
+
+
+@dataclass
+class PositionState:
+    lots: List[PositionLot] = field(default_factory=list)
+    last_mark_price: Optional[Decimal] = None
+
+    @property
+    def qty_signed(self) -> Decimal:
+        return sum((lot.qty_signed for lot in self.lots), Decimal("0"))
+
+    @property
+    def avg_price(self) -> Optional[Decimal]:
+        qty = self.qty_signed
+        if qty == 0:
+            return None
+        qty_abs = qty.copy_abs()
+        cost_abs = sum(
+            ((lot.qty_signed.copy_abs() * lot.price) for lot in self.lots), Decimal("0")
+        )
+        if qty_abs == 0:
+            return None
+        return cost_abs / qty_abs
+
+
+@dataclass
+class AccountState:
+    cash_by_ccy: Dict[Currency, Decimal] = field(default_factory=dict)
+    positions: Dict[InstrumentId, PositionState] = field(default_factory=dict)
+    realized_pnl_by_ccy: Dict[Currency, Decimal] = field(default_factory=dict)
+    fees_by_ccy: Dict[Currency, Decimal] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class LedgerEntry:
+    ts_utc: str
+    seq: int
+    kind: str
+    instrument: Optional[InstrumentId]
+    fields: Dict[str, Any]
+
+
+@dataclass(frozen=True)
+class LedgerSnapshot:
+    ts_utc_last: str
+    seq_last: int
+    account: AccountState
+    # Computed at snapshot-time (deterministic, derived from account state + marks).
+    unrealized_pnl_by_ccy: Dict[Currency, Decimal] = field(default_factory=dict)
+    equity_by_ccy: Dict[Currency, Decimal] = field(default_factory=dict)
+    # Optional: stable-material inputs used for hashing/forensics.
+    hash_inputs: Optional[Dict[str, Any]] = None
