@@ -9,7 +9,7 @@ Repo-Doku soll konsistent den neuen Strategy-Lifecycle kommunizieren: `prepare()
 ## Changes
 - docs&#47;STRATEGY_DEV_GUIDE.md
   - Beispiele auf Standard-Aufruf `strategy.run(df)` umgestellt (statt `generate_signals(df)` direkt)
-  - ML-Beispiel-Fehlermeldung angepasst: Verweis auf `run()` bzw. `prepare_once()` statt „call prepare first“
+  - ML-Beispiel-Fehlermeldung angepasst: Verweis auf `run()` bzw. `prepare_once()` statt „prepare-first“ Empfehlung
 
 ## Verification
 - PR Checks: alle relevanten Checks PASS
