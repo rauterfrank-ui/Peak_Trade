@@ -54,7 +54,11 @@ def _mk_event(run_id: str, ts_sim: int) -> dict:
 def _write_events(events_path: Path, run_id: str) -> None:
     events_path.parent.mkdir(parents=True, exist_ok=True)
     with open(events_path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(json.dumps(_mk_event(run_id, 0), sort_keys=True, separators=(",", ":"), ensure_ascii=False))
+        f.write(
+            json.dumps(
+                _mk_event(run_id, 0), sort_keys=True, separators=(",", ":"), ensure_ascii=False
+            )
+        )
         f.write("\n")
 
 

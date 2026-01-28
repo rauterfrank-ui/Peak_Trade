@@ -4,7 +4,12 @@ import re
 from datetime import datetime
 from typing import Any, Mapping
 
-from .contract import CANON_JSONL_RULE, CANON_JSON_RULE, ContractViolationError, SchemaValidationError
+from .contract import (
+    CANON_JSONL_RULE,
+    CANON_JSON_RULE,
+    ContractViolationError,
+    SchemaValidationError,
+)
 from .contract_v2 import (
     CONTRACT_VERSION,
     EVENT_ORDERING_INVARIANT_V2,
