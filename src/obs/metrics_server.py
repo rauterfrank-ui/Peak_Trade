@@ -13,6 +13,10 @@ def ensure_metrics_server(port: Optional[int] = None) -> bool:
     - Fail-open: if prometheus_client is unavailable, return False and do nothing.
     - Default port: 9111 (override via PEAKTRADE_METRICS_PORT).
     """
+    # Mode B uses a dedicated metricsd; sessions must not bind.
+    if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() == "B":
+        return False
+
     global _started
     if _started:
         return True

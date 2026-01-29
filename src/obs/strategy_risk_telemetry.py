@@ -21,17 +21,13 @@ Metrics (v1):
 from __future__ import annotations
 
 import logging
+import os
 from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-try:
-    from prometheus_client import Counter, Gauge  # type: ignore
-
-    _PROM_AVAILABLE = True
-except Exception:  # pragma: no cover
-    Counter = Gauge = None  # type: ignore
-    _PROM_AVAILABLE = False
+Counter = Gauge = None  # type: ignore
+_PROM_AVAILABLE = False
 
 
 _METRICS_INIT = False
@@ -43,6 +39,17 @@ _STRATEGY_GROSS_EXPOSURE: Optional["Gauge"] = None
 _RISK_CHECKS_TOTAL: Optional["Counter"] = None
 _RISK_LIMIT_UTILIZATION: Optional["Gauge"] = None
 _RISK_BLOCKS_TOTAL: Optional["Counter"] = None
+
+
+def _metrics_mode() -> str:
+    return (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() or "A"
+
+
+def _mode_b_multiproc_dir() -> str:
+    # Default matches metricsd default.
+    return (
+        os.getenv("PEAKTRADE_METRICS_MULTIPROC_DIR", "") or ""
+    ).strip() or ".ops_local/prom_multiproc"
 
 
 _ALLOWED_STRATEGY_DECISIONS = {
@@ -153,7 +160,21 @@ def _ensure_metrics() -> None:
         return
     _METRICS_INIT = True
 
-    if not _PROM_AVAILABLE:
+    global Counter, Gauge, _PROM_AVAILABLE
+
+    # Mode B: multiprocess workers must set PROMETHEUS_MULTIPROC_DIR before
+    # importing prometheus_client.
+    if _metrics_mode() == "B":
+        os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", _mode_b_multiproc_dir())
+
+    try:
+        from prometheus_client import Counter as _Counter, Gauge as _Gauge  # type: ignore
+
+        Counter, Gauge = _Counter, _Gauge  # type: ignore[misc]
+        _PROM_AVAILABLE = True
+    except Exception:  # pragma: no cover
+        Counter = Gauge = None  # type: ignore
+        _PROM_AVAILABLE = False
         return
 
     try:
@@ -167,22 +188,38 @@ def _ensure_metrics() -> None:
             "Total number of final strategy signal changes emitted (watch/paper/shadow).",
             labelnames=("strategy_id", "signal"),
         )
-        _STRATEGY_GROSS_EXPOSURE = Gauge(  # type: ignore[misc]
-            "peaktrade_strategy_position_gross_exposure",
-            "Gross exposure (abs notional) per strategy in ccy units.",
-            labelnames=("strategy_id", "ccy"),
-        )
+        if _metrics_mode() == "B":
+            _STRATEGY_GROSS_EXPOSURE = Gauge(  # type: ignore[misc]
+                "peaktrade_strategy_position_gross_exposure",
+                "Gross exposure (abs notional) per strategy in ccy units.",
+                labelnames=("strategy_id", "ccy"),
+                multiprocess_mode="livemax",
+            )
+        else:
+            _STRATEGY_GROSS_EXPOSURE = Gauge(  # type: ignore[misc]
+                "peaktrade_strategy_position_gross_exposure",
+                "Gross exposure (abs notional) per strategy in ccy units.",
+                labelnames=("strategy_id", "ccy"),
+            )
 
         _RISK_CHECKS_TOTAL = Counter(  # type: ignore[misc]
             "peaktrade_risk_checks_total",
             "Total number of risk check evaluations (watch/paper/shadow).",
             labelnames=("check", "result"),
         )
-        _RISK_LIMIT_UTILIZATION = Gauge(  # type: ignore[misc]
-            "peaktrade_risk_limit_utilization",
-            "Risk limit utilization ratio (clamped 0..1).",
-            labelnames=("limit_id",),
-        )
+        if _metrics_mode() == "B":
+            _RISK_LIMIT_UTILIZATION = Gauge(  # type: ignore[misc]
+                "peaktrade_risk_limit_utilization",
+                "Risk limit utilization ratio (clamped 0..1).",
+                labelnames=("limit_id",),
+                multiprocess_mode="livemax",
+            )
+        else:
+            _RISK_LIMIT_UTILIZATION = Gauge(  # type: ignore[misc]
+                "peaktrade_risk_limit_utilization",
+                "Risk limit utilization ratio (clamped 0..1).",
+                labelnames=("limit_id",),
+            )
         _RISK_BLOCKS_TOTAL = Counter(  # type: ignore[misc]
             "peaktrade_risk_blocks_total",
             "Total number of risk blocks by finite reason allowlist.",

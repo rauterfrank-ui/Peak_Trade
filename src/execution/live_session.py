@@ -34,6 +34,7 @@ Example:
 from __future__ import annotations
 
 import logging
+import os
 import signal
 import time
 import uuid
@@ -44,7 +45,6 @@ from typing import Any, Callable, Dict, List, Literal, Optional, TYPE_CHECKING
 
 import pandas as pd
 
-from src.obs.metrics_server import ensure_metrics_server
 from src.obs import strategy_risk_telemetry
 
 from ..orders.base import OrderRequest, OrderExecutionResult
@@ -820,10 +820,11 @@ class LiveSessionRunner:
         if not self._is_warmup_done:
             raise SessionRuntimeError("Warmup muss vor run_n_steps() aufgerufen werden.")
 
-        # Observability (watch/paper/shadow safe): expose metrics for bounded runs too.
-        # Fail-open; must never block execution.
-        ensure_metrics_server()
         strategy_risk_telemetry.ensure_registered()
+        if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() != "B":
+            from src.obs.metrics_server import ensure_metrics_server
+
+            ensure_metrics_server()
 
         all_results: List[OrderExecutionResult] = []
 
@@ -853,10 +854,11 @@ class LiveSessionRunner:
         if not self._is_warmup_done:
             raise SessionRuntimeError("Warmup muss vor run_for_duration() aufgerufen werden.")
 
-        # Observability (watch/paper/shadow safe): expose metrics for bounded runs too.
-        # Fail-open; must never block execution.
-        ensure_metrics_server()
         strategy_risk_telemetry.ensure_registered()
+        if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() != "B":
+            from src.obs.metrics_server import ensure_metrics_server
+
+            ensure_metrics_server()
 
         end_time = time.time() + (minutes * 60)
         all_results: List[OrderExecutionResult] = []
@@ -884,10 +886,11 @@ class LiveSessionRunner:
         if not self._is_warmup_done:
             raise SessionRuntimeError("Warmup muss vor run_forever() aufgerufen werden.")
 
-        # Observability (watch/paper/shadow safe): expose metrics from the SAME process
-        # that emits strategy/risk telemetry. Fail-open; must never block the loop.
-        ensure_metrics_server()
         strategy_risk_telemetry.ensure_registered()
+        if (os.getenv("PEAKTRADE_METRICS_MODE", "") or "").strip().upper() != "B":
+            from src.obs.metrics_server import ensure_metrics_server
+
+            ensure_metrics_server()
 
         self._is_running = True
         self._shutdown_requested = False
