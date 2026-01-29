@@ -35,7 +35,7 @@
   - **Mode B**: `PEAKTRADE_METRICS_MODE="B"`
 - Multiprocess Dir (shared zwischen metricsd und Session-Prozessen):
   - **Operator-Override**: `PEAKTRADE_METRICS_MULTIPROC_DIR`
-  - **Default**: `.ops_local/prom_multiproc`
+  - **Default**: `.ops_local&#47;prom_multiproc`
   - `PROMETHEUS_MULTIPROC_DIR` wird durch Code gesetzt (metricsd + worker), muss i. d. R. nicht manuell exportiert werden.
 
 ---
@@ -49,7 +49,7 @@
 - **Fail-Open**: Wenn `prometheus_client` fehlt → kein Crash; Telemetry wird still/no-op.
 
 ### Soft Gates (Best practice)
-- `PEAKTRADE_METRICS_MULTIPROC_DIR` liegt unter `.ops_local/` (nicht commiten).
+- `PEAKTRADE_METRICS_MULTIPROC_DIR` liegt unter `.ops_local&#47;` (nicht commiten).
 - metricsd wird **vor** Session-Start gestartet (damit Scrapes nie "down" sind).
 - Prometheus-local Scrape-Config enthält `peak_trade_metricsd`.
 
