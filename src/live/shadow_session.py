@@ -651,6 +651,11 @@ class ShadowPaperSession:
         if not self._is_warmup_done:
             raise RuntimeError("Warmup muss vor run_n_steps() aufgerufen werden.")
 
+        # Observability (watch/paper/shadow only): expose metrics for bounded runs too.
+        # Fail-open; must never block execution.
+        ensure_metrics_server()
+        strategy_risk_telemetry.ensure_registered()
+
         all_results: List[OrderExecutionResult] = []
 
         try:
@@ -678,6 +683,11 @@ class ShadowPaperSession:
         """
         if not self._is_warmup_done:
             raise RuntimeError("Warmup muss vor run_for_duration() aufgerufen werden.")
+
+        # Observability (watch/paper/shadow only): expose metrics for bounded runs too.
+        # Fail-open; must never block execution.
+        ensure_metrics_server()
+        strategy_risk_telemetry.ensure_registered()
 
         end_time = time.time() + (minutes * 60)
         all_results: List[OrderExecutionResult] = []
