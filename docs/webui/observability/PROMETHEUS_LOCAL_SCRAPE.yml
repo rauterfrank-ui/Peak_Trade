@@ -33,3 +33,11 @@ scrape_configs:
     scheme: http
     static_configs:
       - targets: ["host.docker.internal:9110"]
+
+  # Strategy/Risk telemetry emitted by session runners (watch/paper/shadow).
+  # This is a dedicated in-process metrics server started by the session loop.
+  - job_name: "peak_trade_session"
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets: ["host.docker.internal:9111"]

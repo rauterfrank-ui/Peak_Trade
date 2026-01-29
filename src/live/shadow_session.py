@@ -42,6 +42,9 @@ from typing import Any, Callable, Dict, List, Optional, Protocol, TYPE_CHECKING
 
 import pandas as pd
 
+from src.obs.metrics_server import ensure_metrics_server
+from src.obs import strategy_risk_telemetry
+
 from ..core.environment import (
     EnvironmentConfig,
     TradingEnvironment,
@@ -598,6 +601,11 @@ class ShadowPaperSession:
             raise RuntimeError(
                 "Warmup muss vor run_forever() aufgerufen werden. Verwende session.warmup() zuerst."
             )
+
+        # Observability (watch/paper/shadow only): expose metrics from the SAME process
+        # that emits strategy/risk telemetry. Fail-open; must never block the loop.
+        ensure_metrics_server()
+        strategy_risk_telemetry.ensure_registered()
 
         self._is_running = True
         self._shutdown_requested = False
