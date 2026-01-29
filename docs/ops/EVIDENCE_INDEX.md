@@ -1,5 +1,10 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260129-stratrisk-telem-vfy"></a>
+- **EV-20260129-STRATRISK-TELEM-VFY** | Date: 2026-01-29 | Owner: ops | Scope: docs-only evidence | Risk: LOW  
+  - Source: [Evidence](evidence/EV_STRATEGY_RISK_TELEMETRY_VERIFY_20260129.md)  
+  - Claim: Strategy/Risk telemetry v1 verify PASS — session in-process /metrics on :9111 exports peaktrade_strategy_* / peaktrade_risk_* and Prometheus-local (:9092) scrapes/stores series for job=peak_trade_session.
+
 <a id="ev-20260128-stratrisk-stream-visible"></a>
 - **EV-20260128-STRATRISK-STREAM-VISIBLE** | Date: 2026-01-28 | Owner: ops | Scope: docs-only evidence template | Risk: LOW  
   - Source: [Evidence](evidence/EV_STRATEGY_RISK_TELEMETRY_STREAM_20260128.md)  
