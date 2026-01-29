@@ -34,9 +34,11 @@ scrape_configs:
     static_configs:
       - targets: ["host.docker.internal:9110"]
 
-  # Strategy/Risk telemetry emitted by session runners (watch/paper/shadow).
-  # This is a dedicated in-process metrics server started by the session loop.
-  - job_name: "peak_trade_session"
+  # Strategy/Risk telemetry endpoint on :9111.
+  #
+  # Mode A (default): session runners may expose an in-process /metrics server (optional).
+  # Mode B: metricsd exposes /metrics continuously via prometheus_client multiprocess mode.
+  - job_name: "peak_trade_metricsd"
     metrics_path: /metrics
     scheme: http
     static_configs:
