@@ -14,8 +14,8 @@ Der Check `docs-token-policy-gate (pull_request)` ist fehlgeschlagen, weil zwei 
 
 ## Verification
 - Lokal:
-  - `PYENV_VERSION=3.11.14 python -m pytest -q tests/obs/test_metricsd_mode_b_smoke.py`
-  - `PYENV_VERSION=3.11.14 python scripts/ops/validate_docs_token_policy.py --changed --base origin/main`
+  - `PYENV_VERSION=3.11.14 python -m pytest -q tests&#47;obs&#47;test_metricsd_mode_b_smoke.py`
+  - `PYENV_VERSION=3.11.14 python scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base origin&#47;main`
 - CI (PR #1078):
   - `docs-token-policy-gate`: **PASS** nach Commit `0a4e4c5e`.
 
@@ -28,5 +28,5 @@ None. Diese Änderung betrifft nur Dokumentations-Formatierung/Policy-Compliance
 ## References
 - PR: [#1078](https://github.com/rauterfrank-ui/Peak_Trade/pull/1078)
 - Gate: `docs-token-policy-gate (pull_request)`
-- Affected doc: `docs/ops/runbooks/RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
+- Affected doc (PR #1078): `docs&#47;ops&#47;runbooks&#47;RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
 - Fix commit: `0a4e4c5e`
