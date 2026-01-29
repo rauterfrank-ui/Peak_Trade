@@ -1,5 +1,10 @@
 # Peak_Trade – Evidence Index (v0.15)
 
+<a id="ev-20260129-metricsd-mode-b-verify"></a>
+- **EV-20260129-METRICSD-MODE-B-VERIFY** | Date: 2026-01-29 | Owner: ops | Scope: local operator verify | Risk: LOW  
+  - Source: [Evidence](evidence/EV_METRICSD_MODE_B_VERIFY_20260129.md)  
+  - Claim: Mode B metricsd multiprocess wiring verify PASS (port 9111 metricsd-only, multiproc shard files present, exporter emits peaktrade_* series, Prometheus-local target `up{job="peak_trade_metricsd"} == 1`).
+
 <a id="ev-20260128-stratrisk-stream-visible"></a>
 - **EV-20260128-STRATRISK-STREAM-VISIBLE** | Date: 2026-01-28 | Owner: ops | Scope: docs-only evidence template | Risk: LOW  
   - Source: [Evidence](evidence/EV_STRATEGY_RISK_TELEMETRY_STREAM_20260128.md)  
