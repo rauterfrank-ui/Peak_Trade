@@ -46,13 +46,13 @@ Neues `--data-source` Argument:
 
 ```bash
 # Default: synthetische Daten
-python scripts/strategy_smoke_check.py
+python3 scripts/strategy_smoke_check.py
 
 # Explizit synthetisch
-python scripts/strategy_smoke_check.py --data-source synthetic
+python3 scripts/strategy_smoke_check.py --data-source synthetic
 
 # Real-Market-Smoke mit Kraken-Cache
-python scripts/strategy_smoke_check.py \
+python3 scripts/strategy_smoke_check.py \
   --data-source kraken_cache \
   --market BTC/EUR \
   --timeframe 1h \
@@ -108,7 +108,7 @@ def _load_ohlcv_for_smoke(
 
 ## Verfügbare Cache-Dateien
 
-Aktuell im `data/cache/` Verzeichnis:
+Aktuell im `data&#47;cache&#47;` Verzeichnis:
 
 | Datei | Symbol | Timeframe |
 |-------|--------|-----------|
@@ -121,12 +121,12 @@ Aktuell im `data/cache/` Verzeichnis:
 
 ```bash
 # Synthetisch (Default, CI-kompatibel)
-python scripts/strategy_smoke_check.py \
+python3 scripts/strategy_smoke_check.py \
   --strategies ma_crossover,rsi_reversion \
   --n-bars 200
 
 # Kraken-Cache mit BTC/EUR 1h
-python scripts/strategy_smoke_check.py \
+python3 scripts/strategy_smoke_check.py \
   --data-source kraken_cache \
   --market BTC/EUR \
   --timeframe 1h \
@@ -143,7 +143,7 @@ python scripts/strategy_smoke_check.py \
 - 10 neue Tests für Phase 78 (Kraken-Cache)
 
 ```bash
-pytest tests/test_strategy_smoke_cli.py -v
+python3 -m pytest tests/test_strategy_smoke_cli.py -v
 # 33 passed in 2.63s
 ```
 
@@ -158,7 +158,7 @@ pytest tests/test_strategy_smoke_cli.py -v
 - **Keine Netzwerk-Aufrufe**: Kraken-Cache-Modus liest nur lokale Parquet-Dateien
 - **Keine Live-/Testnet-Order-Flows**: Rein Research/Backtest
 - **Keine Secrets benötigt**: Offline-Only
-- **Keine Änderungen an Live-Komponenten**: `src/live/*` und `src/execution/*` unverändert
+- **Keine Änderungen an Live-Komponenten**: `src&#47;live&#47;*` und `src&#47;execution&#47;*` unverändert
 
 ## Geänderte/Neue Dateien
 
@@ -169,7 +169,7 @@ pytest tests/test_strategy_smoke_cli.py -v
 
 ### Neu
 - `docs/PHASE_78_REAL_MARKET_STRATEGY_SMOKES.md` - Diese Dokumentation
-- `tests/data/kraken_smoke/BTC_EUR_1h.parquet` - Test-Fixture
+- `tests&#47;data&#47;kraken_smoke&#47;BTC_EUR_1h.parquet` - Test-Fixture
 
 ## Nächste Schritte
 

@@ -231,13 +231,13 @@ def _maybe_escalate(self, alert: AlertMessage) -> None:
 
 ```bash
 # Escalation-Manager Tests
-pytest tests/test_escalation_manager.py -v
+python3 -m pytest tests/test_escalation_manager.py -v
 
 # Alert-Pipeline Integration Tests
-pytest tests/test_alert_pipeline.py::TestPhase85EscalationIntegration -v
+python3 -m pytest tests/test_alert_pipeline.py::TestPhase85EscalationIntegration -v
 
 # Alle Alert-bezogenen Tests
-pytest -k "alert or escalation" -v
+python3 -m pytest -k "alert or escalation" -v
 ```
 
 ---

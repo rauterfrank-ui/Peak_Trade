@@ -54,22 +54,22 @@ logs/execution/<session_id>.jsonl
 
 **1. View all events from a session:**
 ```bash
-python scripts/view_execution_telemetry.py --session session_123
+python3 scripts/view_execution_telemetry.py --session session_123
 ```
 
 **2. Filter by event type:**
 ```bash
-python scripts/view_execution_telemetry.py --type fill --limit 50
+python3 scripts/view_execution_telemetry.py --type fill --limit 50
 ```
 
 **3. Filter by symbol:**
 ```bash
-python scripts/view_execution_telemetry.py --symbol BTC-USD --limit 100
+python3 scripts/view_execution_telemetry.py --symbol BTC-USD --limit 100
 ```
 
 **4. Time range filter:**
 ```bash
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --session session_123 \
   --from 2025-01-01T12:00:00 \
   --to 2025-01-01T13:00:00
@@ -77,12 +77,12 @@ python scripts/view_execution_telemetry.py \
 
 **5. Export as JSON:**
 ```bash
-python scripts/view_execution_telemetry.py --session session_123 --json > events.json
+python3 scripts/view_execution_telemetry.py --session session_123 --json > events.json
 ```
 
 **6. Summary only (no timeline):**
 ```bash
-python scripts/view_execution_telemetry.py --session session_123 --timeline 0
+python3 scripts/view_execution_telemetry.py --session session_123 --timeline 0
 ```
 
 ### Command Line Options
@@ -271,7 +271,7 @@ if stats.error_rate > 0.05:
 **Fix:**
 ```bash
 # Check for invalid lines
-python scripts/view_execution_telemetry.py --session session_123 --summary
+python3 scripts/view_execution_telemetry.py --session session_123 --summary
 
 # Parse Stats:
 #   Total Lines: 1000
@@ -299,7 +299,7 @@ tail -n 100 logs/execution/session_123.jsonl | jq . || echo "Invalid JSON detect
 **Symptom:** `❌ Error: No telemetry logs found`
 
 **Causes:**
-- Wrong path (default: `logs/execution`)
+- Wrong path (default: `logs&#47;execution`)
 - Telemetry not enabled (emitter=None)
 - No sessions run yet
 
@@ -312,7 +312,7 @@ ls -la logs/execution/
 # See: docs/execution/EXECUTION_TELEMETRY_LIVE_TRACK_V1.md
 
 # Run a session with telemetry
-python scripts/run_execution_session.py --mode paper --session test_demo
+python3 scripts/run_execution_session.py --mode paper --session test_demo
 ```
 
 ### Schema Version Mismatch
@@ -345,10 +345,10 @@ python scripts/run_execution_session.py --mode paper --session test_demo
 
 ```bash
 # Instead of loading all 100k events:
-python scripts/view_execution_telemetry.py --session huge_session --limit 10000
+python3 scripts/view_execution_telemetry.py --session huge_session --limit 10000
 
 # Better: Filter by type or time range
-python scripts/view_execution_telemetry.py \
+python3 scripts/view_execution_telemetry.py \
   --session huge_session \
   --type fill \
   --from 2025-01-01T12:00:00 \
@@ -374,7 +374,7 @@ python scripts/view_execution_telemetry.py \
 
 for session in $(ls logs/execution/*.jsonl | xargs -n1 basename | sed 's/.jsonl//'); do
   echo "=== $session ==="
-  python scripts/view_execution_telemetry.py \
+  python3 scripts/view_execution_telemetry.py \
     --session $session \
     --summary \
     --timeline 5
@@ -387,7 +387,7 @@ done
 #!/bin/bash
 # Alert on high error rate
 
-output=$(python scripts/view_execution_telemetry.py --session $SESSION_ID --summary 2>&1)
+output=$(python3 scripts/view_execution_telemetry.py --session $SESSION_ID --summary 2>&1)
 error_rate=$(echo "$output" | grep "Error Rate" | awk '{print $3}' | tr -d '%')
 
 if (( $(echo "$error_rate > 5.0" | bc -l) )); then

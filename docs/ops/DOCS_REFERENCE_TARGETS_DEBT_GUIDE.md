@@ -108,7 +108,7 @@ Your PR fixes some of the 118 historical broken links.
 **Action (recommended):**
 ```bash
 # Update baseline to reflect improvement
-python scripts/ops/collect_docs_reference_targets_fullscan.py
+python3 scripts/ops/collect_docs_reference_targets_fullscan.py
 git add docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json
 git commit -m "docs: update reference targets baseline (debt reduced)"
 ```
@@ -139,7 +139,7 @@ This:
 **Option B: Update baseline (requires justification)**
 ```bash
 # Add to PR:
-python scripts/ops/collect_docs_reference_targets_fullscan.py
+python3 scripts/ops/collect_docs_reference_targets_fullscan.py
 git add docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json
 ```
 
@@ -170,11 +170,11 @@ You want to fix many historical broken links.
 # Fix batch 1
 git checkout -b docs/debt-paydown-batch-1
 # ... fix 20 broken links in docs/risk/
-python scripts/ops/verify_docs_reference_targets_trend.sh --verbose
+scripts/ops/verify_docs_reference_targets_trend.sh --verbose
 # Verify: should show improvement
 
 # Update baseline
-python scripts/ops/collect_docs_reference_targets_fullscan.py
+python3 scripts/ops/collect_docs_reference_targets_fullscan.py
 git add docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json
 git commit -m "docs(debt): fix 20 broken links in docs/risk/ (118→98)"
 
@@ -210,7 +210,7 @@ gh pr create --title "docs(debt): paydown batch 1 - fix 20 broken links in risk/
 git status
 
 # 2. Generate new baseline
-python scripts/ops/collect_docs_reference_targets_fullscan.py
+python3 scripts/ops/collect_docs_reference_targets_fullscan.py
 
 # 3. Review the change
 git diff docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json
@@ -322,7 +322,7 @@ scripts/ops/verify_docs_reference_targets_trend.sh --verbose
 # 1. Update baseline to current main
 git checkout main
 git pull
-python scripts/ops/collect_docs_reference_targets_fullscan.py
+python3 scripts/ops/collect_docs_reference_targets_fullscan.py
 git checkout -b docs/update-baseline-after-merge
 git add docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json
 git commit -m "docs: update baseline after PR #XXX merge"
@@ -380,10 +380,10 @@ scripts/ops/verify_docs_reference_targets_trend.sh --verbose
 
 ```bash
 # Create/update baseline
-python scripts/ops/collect_docs_reference_targets_fullscan.py
+python3 scripts/ops/collect_docs_reference_targets_fullscan.py
 
 # Custom output location
-python scripts/ops/collect_docs_reference_targets_fullscan.py \
+python3 scripts/ops/collect_docs_reference_targets_fullscan.py \
   --output /tmp/custom-baseline.json
 ```
 

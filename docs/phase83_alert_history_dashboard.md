@@ -53,11 +53,11 @@ class AlertPipelineManager:
 ### 3. Web-API Endpoints
 
 #### HTML-View
-- `GET /live/alerts` → Alert-Historie-Seite
+- `GET &#47;live&#47;alerts` → Alert-Historie-Seite
 
 #### JSON-API
-- `GET /api/live/alerts` → Alert-Liste mit Filtern
-- `GET /api/live/alerts/stats` → Statistiken für Status-Kacheln
+- `GET &#47;api&#47;live&#47;alerts` → Alert-Liste mit Filtern
+- `GET &#47;api&#47;live&#47;alerts&#47;stats` → Statistiken für Status-Kacheln
 
 **Query-Parameter:**
 - `limit` (1-500): Maximale Anzahl Alerts
@@ -112,7 +112,7 @@ class AlertPipelineManager:
 
 ```bash
 # Alert Storage Tests
-pytest tests/test_alert_storage.py -v
+python3 -m pytest tests/test_alert_storage.py -v
 
 # Ergebnis: 29 passed
 ```

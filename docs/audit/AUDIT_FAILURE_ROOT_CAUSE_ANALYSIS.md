@@ -254,10 +254,10 @@ git show 81315589617527b0b881a5452b8200caf0323e26  # PR #160
 ```bash
 # Für jeden gemergten FAILURE-PR:
 git checkout <SHA>
-pytest --verbose --tb=short
+python3 -m pytest --verbose --tb=short
 
 # Smoke Tests:
-python scripts/run_smoke_tests.py
+python3 scripts/run_smoke_tests.py
 ```
 
 #### 5. Regression-Analyse

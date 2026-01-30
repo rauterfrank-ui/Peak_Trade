@@ -10,13 +10,13 @@ Praktische Anleitung für den Strategy Research Playground (Phase 18).
 
 ```bash
 # Mit Default-Strategie und Dummy-Daten
-python scripts/research_run_strategy.py
+python3 scripts/research_run_strategy.py
 
 # Mit spezifischer Strategie
-python scripts/research_run_strategy.py --strategy trend_following
+python3 scripts/research_run_strategy.py --strategy trend_following
 
 # Mit echten Daten
-python scripts/research_run_strategy.py --strategy mean_reversion \
+python3 scripts/research_run_strategy.py --strategy mean_reversion \
     --data-file data/btc_eur_1h.csv
 ```
 
@@ -24,14 +24,14 @@ python scripts/research_run_strategy.py --strategy mean_reversion \
 
 ```bash
 # Alle Strategien vergleichen
-python scripts/research_compare_strategies.py --all
+python3 scripts/research_compare_strategies.py --all
 
 # Nur bestimmte Strategien
-python scripts/research_compare_strategies.py \
+python3 scripts/research_compare_strategies.py \
     --strategies ma_crossover,trend_following,mean_reversion
 
 # Mit Daten und CSV-Export
-python scripts/research_compare_strategies.py --all \
+python3 scripts/research_compare_strategies.py --all \
     --data-file data/btc_eur_1h.csv \
     --export results/comparison.csv
 ```
@@ -39,7 +39,7 @@ python scripts/research_compare_strategies.py --all \
 ### Verfügbare Strategien anzeigen
 
 ```bash
-python scripts/research_run_strategy.py --list-strategies
+python3 scripts/research_run_strategy.py --list-strategies
 ```
 
 ---
@@ -65,7 +65,7 @@ python scripts/research_run_strategy.py --list-strategies
 | `use_ma_filter` | true | Zusätzlicher MA-Filter |
 
 ```bash
-python scripts/research_run_strategy.py --strategy trend_following \
+python3 scripts/research_run_strategy.py --strategy trend_following \
     --param adx_threshold=30 --param ma_period=100
 ```
 
@@ -87,7 +87,7 @@ python scripts/research_run_strategy.py --strategy trend_following \
 | `use_vol_filter` | false | Volatilitätsfilter |
 
 ```bash
-python scripts/research_run_strategy.py --strategy mean_reversion \
+python3 scripts/research_run_strategy.py --strategy mean_reversion \
     --param entry_threshold=-2.5 --param use_vol_filter=true
 ```
 
@@ -217,10 +217,10 @@ stop_pct = 0.02
 
 ```bash
 # Strategie testen
-python scripts/research_run_strategy.py --strategy my_strategy
+python3 scripts/research_run_strategy.py --strategy my_strategy
 
 # Mit anderen vergleichen
-python scripts/research_compare_strategies.py \
+python3 scripts/research_compare_strategies.py \
     --strategies ma_crossover,my_strategy
 ```
 
@@ -236,11 +236,11 @@ python scripts/research_compare_strategies.py \
 
 ```bash
 # In-Sample (Training)
-python scripts/research_run_strategy.py --strategy trend_following \
+python3 scripts/research_run_strategy.py --strategy trend_following \
     --data-file data/btc_1h.csv --start 2022-01-01 --end 2023-06-30
 
 # Out-of-Sample (Test)
-python scripts/research_run_strategy.py --strategy trend_following \
+python3 scripts/research_run_strategy.py --strategy trend_following \
     --data-file data/btc_1h.csv --start 2023-07-01 --end 2024-01-01
 ```
 
@@ -250,11 +250,11 @@ Teste verschiedene Parameter-Varianten:
 
 ```bash
 # Konservativ
-python scripts/research_run_strategy.py --strategy trend_following \
+python3 scripts/research_run_strategy.py --strategy trend_following \
     --param adx_threshold=30 --tag conservative
 
 # Aggressiv
-python scripts/research_run_strategy.py --strategy trend_following \
+python3 scripts/research_run_strategy.py --strategy trend_following \
     --param adx_threshold=20 --tag aggressive
 ```
 
@@ -274,11 +274,11 @@ Nutze das `regime`-Feld in StrategyMetadata:
 
 ```bash
 # Mit Tag für spätere Filterung
-python scripts/research_run_strategy.py --strategy ma_crossover \
+python3 scripts/research_run_strategy.py --strategy ma_crossover \
     --tag experiment_v1
 
 # Runs ohne Registry-Logging
-python scripts/research_run_strategy.py --strategy ma_crossover \
+python3 scripts/research_run_strategy.py --strategy ma_crossover \
     --no-registry
 ```
 
@@ -286,13 +286,13 @@ python scripts/research_run_strategy.py --strategy ma_crossover \
 
 ```bash
 # Alle Experiments anzeigen
-python scripts/list_experiments.py
+python3 scripts/list_experiments.py
 
 # Nach Tag filtern
-python scripts/list_experiments.py --tag experiment_v1
+python3 scripts/list_experiments.py --tag experiment_v1
 
 # Details anzeigen
-python scripts/show_experiment.py --run-id <RUN_ID>
+python3 scripts/show_experiment.py --run-id <RUN_ID>
 ```
 
 ---

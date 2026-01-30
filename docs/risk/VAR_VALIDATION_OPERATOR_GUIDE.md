@@ -300,7 +300,7 @@ with open("var_validation_param.md", "w") as f:
 **Questions?**
 1. Check Integration Guide (planned) for workflows
 2. Check [Tests](../../tests/risk/validation/) for usage examples
-3. Run tests: `pytest tests&#47;risk&#47;validation&#47; -v`
+3. Run tests: `python3 -m pytest tests&#47;risk&#47;validation&#47; -v`
 
 **Issues?**
 - Check Troubleshooting section above

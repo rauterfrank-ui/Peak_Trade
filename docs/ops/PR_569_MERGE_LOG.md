@@ -203,11 +203,11 @@ tracking = [
 
 ```bash
 # MLflow-Integration-Tests
-pytest -q tests/test_tracking_mlflow_integration.py
+python3 -m pytest -q tests/test_tracking_mlflow_integration.py
 # Result: 18 passed in 1.13s ✅
 
 # Smoke-Tests (ohne MLflow)
-pytest -q tests/test_tracking.py
+python3 -m pytest -q tests/test_tracking.py
 # Result: All passed ✅
 ```
 
@@ -330,13 +330,13 @@ if mlflow.active_run():
 **Diagnose:**
 ```bash
 # Prüfen: MLflow installiert?
-python -c "import mlflow; print(mlflow.__version__)"
+python3 -c "import mlflow; print(mlflow.__version__)"
 
 # Tests laufen lassen (verbose)
-pytest tests/test_tracking_mlflow_integration.py -v --tb=short
+python3 -m pytest tests/test_tracking_mlflow_integration.py -v --tb=short
 
 # Cleanup: Aktive Runs beenden
-python -c "import mlflow; [mlflow.end_run() for _ in range(10)]"
+python3 -c "import mlflow; [mlflow.end_run() for _ in range(10)]"
 ```
 
 #### AttributeError: '_run_started'

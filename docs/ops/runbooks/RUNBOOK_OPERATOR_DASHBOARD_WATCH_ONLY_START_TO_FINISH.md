@@ -52,7 +52,7 @@ cd /Users/frnkhrz/Peak_Trade
 
 ### Step 2.2 — Virtuelle Umgebung aktivieren + Dependencies
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -80,7 +80,7 @@ uvicorn src.webui.app:app --host 127.0.0.1 --port 8000
 
 **Start (Dev, auto-reload):**
 ```bash
-python scripts/run_web_dashboard.py
+python3 scripts/run_web_dashboard.py
 ```
 
 **Aufrufen:**
@@ -92,12 +92,12 @@ python scripts/run_web_dashboard.py
 
 **Start:**
 ```bash
-python scripts/live_web_server.py --host 127.0.0.1 --port 8000
+python3 scripts/live_web_server.py --host 127.0.0.1 --port 8000
 ```
 
 **Mit Run-Verzeichnis Override (falls du nicht `live_runs&#47;` nutzt):**
 ```bash
-python scripts/live_web_server.py \
+python3 scripts/live_web_server.py \
   --host 127.0.0.1 \
   --port 8000 \
   --base-runs-dir live_runs \
@@ -177,7 +177,7 @@ Wenn du zusätzlich einen Governance-freundlichen Snapshot willst (“Live bleib
 ```bash
 mkdir -p out/operator_dashboard
 
-python scripts/export_live_audit_snapshot.py \
+python3 scripts/export_live_audit_snapshot.py \
   --output-json out/operator_dashboard/live_audit_snapshot.json \
   --output-markdown out/operator_dashboard/live_audit_snapshot.md
 ```

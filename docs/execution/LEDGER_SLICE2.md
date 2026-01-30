@@ -59,7 +59,7 @@ Wichtige Funktionen:
 ## Tests ausführen
 
 ```bash
-uv run pytest -q tests/execution/test_ledger_*.py
+python3 -m pytest -q tests/execution/test_ledger_*.py
 ```
 
 ## Mini-Beispiel (Snapshot, gekürzt)

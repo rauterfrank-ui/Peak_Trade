@@ -378,13 +378,13 @@ grep ERROR logs/app.log | grep execution_bridge
 
 ```bash
 # Telemetry Tests
-pytest tests/execution/test_execution_telemetry.py -v
+python3 -m pytest tests/execution/test_execution_telemetry.py -v
 
 # Bridge Tests
-pytest tests/live/test_execution_bridge.py -v
+python3 -m pytest tests/live/test_execution_bridge.py -v
 
 # All
-pytest tests/execution/test_execution_telemetry.py tests/live/test_execution_bridge.py -v
+python3 -m pytest tests/execution/test_execution_telemetry.py tests/live/test_execution_bridge.py -v
 ```
 
 **Coverage:**

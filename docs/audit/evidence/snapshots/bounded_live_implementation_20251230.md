@@ -80,7 +80,7 @@ disallow_manual_bypass = true
 
 **Usage:**
 ```bash
-python scripts/live/test_bounded_live_limits.py
+python3 scripts/live/test_bounded_live_limits.py
 ```
 
 **Expected Output:**
@@ -102,7 +102,7 @@ ls -lh config/bounded_live.toml
 ls -lh scripts/live/test_bounded_live_limits.py
 
 # 4. Run bounded-live limits test (requires config loaded)
-# python scripts/live/test_bounded_live_limits.py
+# python3 scripts/live/test_bounded_live_limits.py
 # Note: Will fail if config/bounded_live.toml not in active config path
 ```
 

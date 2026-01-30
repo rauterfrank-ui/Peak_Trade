@@ -134,17 +134,17 @@ Integrate L2 Market Outlook layer to produce regime scenarios, NO-TRADE triggers
 ### Verification Commands
 ```bash
 # Local L2 run (replay mode, CI-safe)
-python scripts/aiops/run_l2_market_outlook.py \
+python3 scripts/aiops/run_l2_market_outlook.py \
     --mode replay \
     --fixture l2_market_outlook_sample \
     --out evidence_packs/L2_outlook
 
 # Validate Evidence Pack
-python -m src.ai_orchestration.evidence_pack \
+python3 -m src.ai_orchestration.evidence_pack \
     --validate evidence_packs/L2_outlook/EVP_20260113_L2_OUTLOOK_001.json
 
 # Run L4 Critic on L2 Evidence Pack
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
     --evidence-pack evidence_packs/L2_outlook/EVP_20260113_L2_OUTLOOK_001.json \
     --mode replay \
     --out evidence_packs/L4_review_L2

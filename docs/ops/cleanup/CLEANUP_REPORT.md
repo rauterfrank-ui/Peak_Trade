@@ -231,7 +231,7 @@ scripts/
 
 Keine Dateien archiviert (alle Moves waren in aktive Struktur).
 
-**Existing Archive:** `archive/` bereits gut strukturiert mit:
+**Existing Archive:** `archive&#47;` bereits gut strukturiert mit:
 - `full_files_stand_02.12.2025&#47;`
 - `legacy_docs&#47;`
 - `legacy_scripts&#47;`
@@ -424,7 +424,7 @@ Alle Änderungen sind non-breaking:
 ### Python Syntax
 
 ```bash
-python -m compileall src
+python3 -m compileall src
 ```
 
 **Result:** ✅ **PASSED** — Alle Dateien kompilieren ohne Fehler
@@ -576,7 +576,7 @@ git log --oneline chore/repo-cleanup-structured-20251227 --not main
 
 # Python-Syntax validieren
 source .venv/bin/activate
-python -m compileall src
+python3 -m compileall src
 
 # Linter prüfen
 ruff check .

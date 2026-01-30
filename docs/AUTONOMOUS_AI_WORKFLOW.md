@@ -85,10 +85,10 @@ Der **Autonomous AI-Driven Workflow** ist ein intelligentes System, das automati
 
 ```bash
 # Auto-Entscheidung basierend auf aktuellen Bedingungen
-python scripts/run_autonomous_workflow.py --once
+python3 scripts/run_autonomous_workflow.py --once
 
 # Spezifischer Workflow-Typ
-python scripts/run_autonomous_workflow.py \
+python3 scripts/run_autonomous_workflow.py \
   --workflow-type signal_analysis \
   --symbol BTC/EUR \
   --once
@@ -98,7 +98,7 @@ python scripts/run_autonomous_workflow.py \
 
 ```bash
 # Läuft dauerhaft und prüft alle 5 Minuten
-python scripts/run_autonomous_workflow.py \
+python3 scripts/run_autonomous_workflow.py \
   --continuous \
   --poll-interval 300
 ```
@@ -107,7 +107,7 @@ python scripts/run_autonomous_workflow.py \
 
 ```bash
 # Simuliert Ausführung ohne echte Actions
-python scripts/run_autonomous_workflow.py \
+python3 scripts/run_autonomous_workflow.py \
   --once \
   --dry-run \
   --verbose
@@ -117,7 +117,7 @@ python scripts/run_autonomous_workflow.py \
 
 ```bash
 # Scheduler mit autonomen Workflows starten
-python scripts/run_scheduler.py \
+python3 scripts/run_scheduler.py \
   --config config/scheduler/jobs.toml \
   --include-tags autonomous
 ```
@@ -289,7 +289,7 @@ enabled = true  # false zum Deaktivieren
 ### run_autonomous_workflow.py
 
 ```bash
-python scripts/run_autonomous_workflow.py [OPTIONS]
+python3 scripts/run_autonomous_workflow.py [OPTIONS]
 
 Options:
   --config PATH              Pfad zur Config (default: config/config.toml)
@@ -310,19 +310,19 @@ Options:
 
 ```bash
 # Morning Analysis
-python scripts/run_autonomous_workflow.py --once
+python3 scripts/run_autonomous_workflow.py --once
 
 # Continuous mit 10-Minuten-Intervall
-python scripts/run_autonomous_workflow.py --continuous --poll-interval 600
+python3 scripts/run_autonomous_workflow.py --continuous --poll-interval 600
 
 # Risk Check mit Dry-Run
-python scripts/run_autonomous_workflow.py \
+python3 scripts/run_autonomous_workflow.py \
   --workflow-type risk_check \
   --dry-run \
   --verbose
 
 # Scheduler mit autonomen Workflows
-python scripts/run_scheduler.py \
+python3 scripts/run_scheduler.py \
   --config config/scheduler/jobs.toml \
   --include-tags autonomous,daily
 ```
@@ -353,7 +353,7 @@ python scripts/run_scheduler.py \
 tail -f logs/autonomous_alerts.log
 
 # Scheduler-Status prüfen
-python scripts/run_scheduler.py --config config/scheduler/jobs.toml --once --dry-run
+python3 scripts/run_scheduler.py --config config/scheduler/jobs.toml --once --dry-run
 ```
 
 ---

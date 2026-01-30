@@ -146,32 +146,32 @@ log_all_orders = true
 
 ```bash
 # Standard-Start mit MA-Crossover
-python -m scripts.run_shadow_paper_session
+python3 -m scripts.run_shadow_paper_session
 
 # Mit Config-Datei
-python -m scripts.run_shadow_paper_session --config config/config.toml
+python3 -m scripts.run_shadow_paper_session --config config/config.toml
 ```
 
 ### Parameter
 
 ```bash
 # Mit anderer Strategie
-python -m scripts.run_shadow_paper_session --strategy rsi_strategy
+python3 -m scripts.run_shadow_paper_session --strategy rsi_strategy
 
 # Mit anderem Symbol
-python -m scripts.run_shadow_paper_session --symbol ETH/EUR
+python3 -m scripts.run_shadow_paper_session --symbol ETH/EUR
 
 # Mit anderem Timeframe
-python -m scripts.run_shadow_paper_session --timeframe 5m
+python3 -m scripts.run_shadow_paper_session --timeframe 5m
 
 # Begrenzte Laufzeit (30 Minuten)
-python -m scripts.run_shadow_paper_session --duration 30
+python3 -m scripts.run_shadow_paper_session --duration 30
 
 # Nur Config validieren
-python -m scripts.run_shadow_paper_session --dry-run
+python3 -m scripts.run_shadow_paper_session --dry-run
 
 # Debug-Logging
-python -m scripts.run_shadow_paper_session --log-level DEBUG
+python3 -m scripts.run_shadow_paper_session --log-level DEBUG
 ```
 
 ### Verfügbare Strategien
@@ -291,8 +291,8 @@ if not risk_result.allowed:
 
 ### Kein echter API-Zugriff für Orders
 
-- `KrakenLiveCandleSource` nutzt **nur** `/0/public/OHLC`
-- **Keine** Order-Endpoints (`/0/private/*`)
+- `KrakenLiveCandleSource` nutzt **nur** `&#47;0&#47;public&#47;OHLC`
+- **Keine** Order-Endpoints (`&#47;0&#47;private&#47;*`)
 - **Keine** API-Keys erforderlich
 - `ShadowOrderExecutor` sendet **keine** Netzwerk-Requests
 
@@ -352,13 +352,13 @@ while running:
 
 ```bash
 # Alle Phase-31-Tests
-pytest tests/test_live_shadow_session.py -v
+python3 -m pytest tests/test_live_shadow_session.py -v
 
 # Einzelnen Test
-pytest tests/test_live_shadow_session.py::TestShadowPaperSession::test_session_accepts_paper_environment -v
+python3 -m pytest tests/test_live_shadow_session.py::TestShadowPaperSession::test_session_accepts_paper_environment -v
 
 # Mit Coverage
-pytest tests/test_live_shadow_session.py --cov=src/live --cov=src/data
+python3 -m pytest tests/test_live_shadow_session.py --cov=src/live --cov=src/data
 ```
 
 ### Test-Kategorien

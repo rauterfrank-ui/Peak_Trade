@@ -163,9 +163,9 @@ experiment_name = "strategy_optimization"
 **`scripts/run_study_optuna_placeholder.py`**:
 
 ```bash
-python scripts/run_study_optuna_placeholder.py \
+python3 scripts/run_study_optuna_placeholder.py \
     --strategy ma_crossover \
-    --config config.toml \
+    --config config/config.toml \
     --n-trials 100
 ```
 
@@ -284,7 +284,7 @@ mlflow ui --backend-store-uri ./mlruns
 pip install optuna
 
 # Phase 3: Study Runner nutzen
-python scripts/run_study_optuna_placeholder.py \
+python3 scripts/run_study_optuna_placeholder.py \
     --strategy ma_crossover \
     --n-trials 100
 ```
@@ -477,7 +477,7 @@ acceleration = ["polars>=0.20", "duckdb>=0.10"]
 
 2. **Placeholder Script testen**:
    ```bash
-   python scripts/run_study_optuna_placeholder.py --strategy ma_crossover
+   python3 scripts/run_study_optuna_placeholder.py --strategy ma_crossover
    ```
 
 3. **Doku lesen**:

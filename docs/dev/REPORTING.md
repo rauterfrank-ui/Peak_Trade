@@ -36,15 +36,15 @@ with PeakTradeRun(experiment_name="my_experiment") as run:
 
 ```bash
 # Compare latest 10 runs
-python scripts/dev/compare_runs.py --n 10
+python3 scripts/dev/compare_runs.py --n 10
 
 # Compare specific runs
-python scripts/dev/compare_runs.py \
+python3 scripts/dev/compare_runs.py \
     --baseline abc123 \
     --candidate def456
 
 # Output as JSON
-python scripts/dev/compare_runs.py --format json --n 5
+python3 scripts/dev/compare_runs.py --format json --n 5
 ```
 
 ### 3. Generate Report
@@ -166,13 +166,13 @@ Compare runs locally without MLflow.
 
 ```bash
 # Latest 10 runs
-python scripts/dev/compare_runs.py
+python3 scripts/dev/compare_runs.py
 
 # Latest 5 runs
-python scripts/dev/compare_runs.py --n 5
+python3 scripts/dev/compare_runs.py --n 5
 
 # Custom directory
-python scripts/dev/compare_runs.py --dir /path/to/results
+python3 scripts/dev/compare_runs.py --dir /path/to/results
 ```
 
 **Output:**
@@ -186,7 +186,7 @@ xyz67890 | 2025-01-15T09:30:00 | FINISHED | def45678 | clever-varahamihira | nul
 #### Compare Two Runs (Diff)
 
 ```bash
-python scripts/dev/compare_runs.py \
+python3 scripts/dev/compare_runs.py \
     --baseline abc123 \
     --candidate def456
 ```
@@ -210,14 +210,14 @@ Metrics:
 #### JSON Output
 
 ```bash
-python scripts/dev/compare_runs.py --format json --n 3 | jq .
+python3 scripts/dev/compare_runs.py --format json --n 3 | jq .
 ```
 
 ### Filtering Metrics
 
 ```bash
 # Show only specific metrics
-python scripts/dev/compare_runs.py \
+python3 scripts/dev/compare_runs.py \
     --metrics sharpe_ratio total_return
 ```
 
@@ -282,7 +282,7 @@ Edit `reports&#47;quarto&#47;backtest_report.qmd` to:
 # .github/workflows/experiments.yml
 - name: Compare with baseline
   run: |
-    python scripts/dev/compare_runs.py \
+    python3 scripts/dev/compare_runs.py \
       --baseline ${{ env.BASELINE_RUN_ID }} \
       --candidate ${{ env.CURRENT_RUN_ID }} \
       > comparison.txt
@@ -373,7 +373,7 @@ Diff output is empty even though runs differ.
 1. Check that runs have different parameters/metrics
 2. Verify both runs loaded successfully:
    ```bash
-   python scripts/dev/compare_runs.py --verbose
+   python3 scripts/dev/compare_runs.py --verbose
    ```
 
 ## Best Practices
@@ -425,7 +425,7 @@ with PeakTradeRun(experiment_name="experiment") as run:
 
 ```bash
 # Compare candidate run with current production baseline
-python scripts/dev/compare_runs.py \
+python3 scripts/dev/compare_runs.py \
     --baseline production-baseline \
     --candidate new-candidate \
     > comparison.txt
@@ -493,7 +493,7 @@ for key in baseline.metrics:
 ## Next Steps
 
 - See `src/experiments/tracking/` for implementation
-- Run tests: `pytest tests&#47;test_run_summary_contract.py`
+- Run tests: `python3 -m pytest tests&#47;test_run_summary_contract.py`
 - Explore example experiments in `src/experiments/`
 - Read Phase 16C spec for architectural details
 

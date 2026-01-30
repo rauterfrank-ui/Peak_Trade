@@ -8,7 +8,7 @@
 
 **New to Peak_Trade?**
 1. Read: [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) – Architecture, Strategy Registry, Config, Quick Start
-2. Run your first backtest: `python scripts/run_strategy_from_config.py --strategy ma_crossover`
+2. Run your first backtest: `python3 scripts&#47;run_strategy_from_config.py --strategy ma_crossover`
 3. Explore: [What changed recently?](DOCUMENTATION_UPDATE_SUMMARY.md)
 
 **Coming back?**

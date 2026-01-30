@@ -199,10 +199,10 @@ executor = ExchangeOrderExecutor(safety_guard=safety_guard, trading_client=clien
 
 ```bash
 # Alle Exchange-bezogenen Tests
-pytest tests/test_exchange_*.py -v
+python3 -m pytest tests/test_exchange_*.py -v
 
 # Nur Smoke-Tests
-pytest tests/test_exchange_smoke.py -v
+python3 -m pytest tests/test_exchange_smoke.py -v
 ```
 
 **Integration-Tests (Opt-in):**
@@ -210,10 +210,10 @@ pytest tests/test_exchange_smoke.py -v
 ```bash
 # Aktivierung via Environment-Variable
 export PEAK_TRADE_EXCHANGE_TESTS=1
-pytest tests/test_exchange_smoke.py -v
+python3 -m pytest tests/test_exchange_smoke.py -v
 
 # Oder in einer Zeile
-PEAK_TRADE_EXCHANGE_TESTS=1 pytest tests/test_exchange_smoke.py -v
+PEAK_TRADE_EXCHANGE_TESTS=1 python3 -m pytest tests/test_exchange_smoke.py -v
 ```
 
 ⚠️ **Warnung:** Integration-Tests machen echte HTTP-Requests zur Exchange-API!
@@ -261,7 +261,7 @@ PEAK_TRADE_EXCHANGE_TESTS=1 pytest tests/test_exchange_smoke.py -v
 - `src/exchange/base.py` – TradingExchangeClient Protocol
 - `src/exchange/dummy_client.py` – DummyExchangeClient
 - `src/orders/exchange.py` – ExchangeOrderExecutor
-- `tests/test_exchange_*.py` – Exchange-Tests
+- `tests&#47;test_exchange_*.py` – Exchange-Tests
 
 ---
 

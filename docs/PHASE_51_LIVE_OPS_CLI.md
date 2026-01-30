@@ -43,18 +43,18 @@ live_ops.py
 
 ```bash
 # Standard-Ansicht
-python scripts/live_ops.py orders \
+python3 scripts/live_ops.py orders \
   --signals reports/forward/forward_*_signals.csv \
   --config config/config.toml
 
 # JSON-Output
-python scripts/live_ops.py orders \
+python3 scripts/live_ops.py orders \
   --signals reports/forward/forward_*_signals.csv \
   --config config/config.toml \
   --json
 
 # Mit Live-Risk-Enforcement
-python scripts/live_ops.py orders \
+python3 scripts/live_ops.py orders \
   --signals reports/forward/forward_*_signals.csv \
   --config config/config.toml \
   --enforce-live-risk
@@ -85,13 +85,13 @@ python scripts/live_ops.py orders \
 
 ```bash
 # Standard-Ansicht
-python scripts/live_ops.py portfolio --config config/config.toml
+python3 scripts/live_ops.py portfolio --config config/config.toml
 
 # JSON-Output
-python scripts/live_ops.py portfolio --config config/config.toml --json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json
 
 # Ohne Risk-Check
-python scripts/live_ops.py portfolio --config config/config.toml --no-risk
+python3 scripts/live_ops.py portfolio --config config/config.toml --no-risk
 ```
 
 **Argumente:**
@@ -117,10 +117,10 @@ python scripts/live_ops.py portfolio --config config/config.toml --no-risk
 
 ```bash
 # Text-Output
-python scripts/live_ops.py health --config config/config.toml
+python3 scripts/live_ops.py health --config config/config.toml
 
 # JSON-Output
-python scripts/live_ops.py health --config config/config.toml --json
+python3 scripts/live_ops.py health --config config/config.toml --json
 ```
 
 **Argumente:**
@@ -175,7 +175,7 @@ Live-Ops CLI kann in Runbooks referenziert werden:
 1. **Vor Live-Session:**
    ```bash
    # Health-Check ausführen
-   python scripts/live_ops.py health --config config/config.toml
+   python3 scripts/live_ops.py health --config config/config.toml
 
    # Bei FAIL: Session nicht starten
    ```
@@ -183,16 +183,16 @@ Live-Ops CLI kann in Runbooks referenziert werden:
 2. **Bei Incident:**
    ```bash
    # Portfolio-Status als JSON für Analyse
-   python scripts/live_ops.py portfolio --config config/config.toml --json > portfolio_snapshot.json
+   python3 scripts/live_ops.py portfolio --config config/config.toml --json > portfolio_snapshot.json
    ```
 
 3. **Tägliche Checks:**
    ```bash
    # Portfolio-Status prüfen
-   python scripts/live_ops.py portfolio --config config/config.toml
+   python3 scripts/live_ops.py portfolio --config config/config.toml
 
    # Orders-Preview vor Ausführung
-   python scripts/live_ops.py orders --signals reports/forward/..._signals.csv
+   python3 scripts/live_ops.py orders --signals reports/forward/..._signals.csv
    ```
 
 ## Integration mit bestehenden Scripts
@@ -215,12 +215,12 @@ Live-Ops CLI kann in Runbooks referenziert werden:
 
 **1. Täglicher Portfolio-Check:**
 ```bash
-python scripts/live_ops.py portfolio --config config/config.toml
+python3 scripts/live_ops.py portfolio --config config/config.toml
 ```
 
 **2. Orders-Preview vor Ausführung:**
 ```bash
-python scripts/live_ops.py orders \
+python3 scripts/live_ops.py orders \
   --signals reports/forward/forward_20250115_signals.csv \
   --config config/config.toml \
   --enforce-live-risk
@@ -228,13 +228,13 @@ python scripts/live_ops.py orders \
 
 **3. Health-Check für Monitoring:**
 ```bash
-python scripts/live_ops.py health --config config/config.toml --json | jq .
+python3 scripts/live_ops.py health --config config/config.toml --json | jq .
 ```
 
 **4. Incident-Response:**
 ```bash
 # Portfolio-Status als JSON für Analyse
-python scripts/live_ops.py portfolio --config config/config.toml --json > incident_portfolio.json
+python3 scripts/live_ops.py portfolio --config config/config.toml --json > incident_portfolio.json
 ```
 
 ## Tests
@@ -243,7 +243,7 @@ Alle Subcommands sind vollständig getestet:
 - `tests/test_live_ops_cli.py`: CLI-Parsing, JSON-Output, Error-Handling
 
 ```bash
-pytest tests/test_live_ops_cli.py -v
+python3 -m pytest tests/test_live_ops_cli.py -v
 ```
 
 ## Limitierungen & Future Work

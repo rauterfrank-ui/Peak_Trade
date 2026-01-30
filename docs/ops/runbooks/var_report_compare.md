@@ -77,7 +77,7 @@ BASELINE="results/var_suite/run_20260101_120000"
 CANDIDATE="results/var_suite/run_20260104_150000"
 
 # 2. Führe den Compare aus
-python scripts/risk/var_suite_compare_runs.py \
+python3 scripts/risk/var_suite_compare_runs.py \
   --baseline "$BASELINE" \
   --candidate "$CANDIDATE" \
   --out results/var_suite/compare_20260104
@@ -127,7 +127,7 @@ with open('results/var_suite/compare_20260104/compare.json') as f:
 REPORT_ROOT="results/var_suite"
 
 # 2. Generiere Index
-python scripts/risk/var_suite_build_index.py \
+python3 scripts/risk/var_suite_build_index.py \
   --report-root "$REPORT_ROOT" \
   --formats json md html
 
@@ -173,13 +173,13 @@ with open('$REPORT_ROOT/index.json') as f:
 
 2. **Run Tests:**
    ```bash
-   pytest tests/risk/validation/test_report_compare.py -v --tb=short
-   pytest tests/risk/validation/test_report_index.py -v --tb=short
+   python3 -m pytest tests/risk/validation/test_report_compare.py -v --tb=short
+   python3 -m pytest tests/risk/validation/test_report_index.py -v --tb=short
    ```
 
 3. **Run Compare Gate:**
    ```bash
-   python scripts/risk/var_suite_compare_runs.py \
+   python3 scripts/risk/var_suite_compare_runs.py \
      --baseline tests/fixtures/var_suite_reports/run_baseline \
      --candidate tests/fixtures/var_suite_reports/run_candidate \
      --out reports/var_suite/ci_compare
@@ -192,7 +192,7 @@ with open('$REPORT_ROOT/index.json') as f:
 
 4. **Run Index Gate:**
    ```bash
-   python scripts/risk/var_suite_build_index.py \
+   python3 scripts/risk/var_suite_build_index.py \
      --report-root tests/fixtures/var_suite_reports
 
    # Verify outputs exist
@@ -257,7 +257,7 @@ ls -lh "$BASELINE/"
 **Lösung:**
 ```bash
 # Prüfe JSON manuell
-cat compare.json | python -m json.tool
+cat compare.json | python3 -m json.tool
 
 # Falls Bug: Erstelle Issue mit Reproducer
 ```
@@ -271,7 +271,7 @@ cat compare.json | python -m json.tool
 **Lösung:**
 ```bash
 # Prüfe, ob Bug reproduzierbar ist
-python scripts/risk/var_suite_build_index.py --report-root "$REPORT_ROOT"
+python3 scripts/risk/var_suite_build_index.py --report-root "$REPORT_ROOT"
 python3 -c "
 import json
 data = json.load(open('$REPORT_ROOT/index.json'))
@@ -291,11 +291,11 @@ print('Sorted:', sorted(run_ids))
 
 | Command | Exit Code | Bedeutung |
 |---------|-----------|-----------|
-| `pytest tests&#47;risk&#47;validation&#47;test_report_compare.py` | 0 | Tests PASS |
+| `bash python3 -m pytest tests/risk/validation/test_report_compare.py` | 0 | Tests PASS |
 | | ≠0 | Tests FAIL |
-| `python scripts&#47;risk&#47;var_suite_compare_runs.py ...` | 0 | Compare erfolgreich |
+| `python3 scripts&#47;risk&#47;var_suite_compare_runs.py ...` | 0 | Compare erfolgreich |
 | | ≠0 | Compare fehlgeschlagen (Script-Error) |
-| `python scripts&#47;risk&#47;var_suite_build_index.py ...` | 0 | Index erfolgreich |
+| `python3 scripts&#47;risk&#47;var_suite_build_index.py ...` | 0 | Index erfolgreich |
 | | ≠0 | Index fehlgeschlagen (Script-Error) |
 
 ### Gate Logic
@@ -339,35 +339,35 @@ def ci_gate():
 
 ```bash
 # All report_compare tests
-pytest tests/risk/validation/test_report_compare.py -v
+python3 -m pytest tests/risk/validation/test_report_compare.py -v
 
 # All report_index tests
-pytest tests/risk/validation/test_report_index.py -v
+python3 -m pytest tests/risk/validation/test_report_index.py -v
 
 # All validation tests
-pytest tests/risk/validation/ -v
+python3 -m pytest tests/risk/validation/ -v
 
 # With coverage
-pytest tests/risk/validation/ --cov=src/risk/validation --cov-report=term-missing
+python3 -m pytest tests/risk/validation/ --cov=src/risk/validation --cov-report=term-missing
 ```
 
 ### Smoke Test CLI Entry Points
 
 ```bash
 # Compare script help
-python scripts/risk/var_suite_compare_runs.py --help
+python3 scripts/risk/var_suite_compare_runs.py --help
 
 # Index script help
-python scripts/risk/var_suite_build_index.py --help
+python3 scripts/risk/var_suite_build_index.py --help
 
 # Compare with fixtures
-python scripts/risk/var_suite_compare_runs.py \
+python3 scripts/risk/var_suite_compare_runs.py \
   --baseline tests/fixtures/var_suite_reports/run_baseline \
   --candidate tests/fixtures/var_suite_reports/run_candidate \
   --out /tmp/var_compare_test
 
 # Index with fixtures
-python scripts/risk/var_suite_build_index.py \
+python3 scripts/risk/var_suite_build_index.py \
   --report-root tests/fixtures/var_suite_reports
 ```
 

@@ -173,12 +173,12 @@ Hygiene + Verification nach **jedem** Merge (nicht nur Docs-PRs).
 
 2. **Core-Verification:**
    - `ruff check` (Linting)
-   - `pytest -q` (Core-Tests ohne Web/Viz)
+   - `python3 -m pytest -q` (Core-Tests ohne Web/Viz)
 
 3. **Optional: Web-Stack:**
    - Auto-Detect Web-Extra aus `pyproject.toml`
    - Installiert Web-Extra falls vorhanden
-   - Re-run pytest mit Web-Tests
+   - Re-run `python3 -m pytest` mit Web-Tests
 
 4. **Optional: Stage1-Monitoring:**
    - Führt Stage1-Snapshot aus (falls vorhanden)
@@ -308,10 +308,10 @@ Peak_Trade enthält einen minimalen Pytest-Smoke-Test, der sicherstellt:
 
 ```bash
 # Targeted Test (nur Workflow-Scripts)
-uv run pytest -q tests/test_ops_workflow_scripts_syntax.py
+python3 -m pytest -q tests/test_ops_workflow_scripts_syntax.py
 
 # Oder im Full-Suite enthalten
-uv run pytest -q
+python3 -m pytest -q
 ```
 
 ### Geprüfte Scripts
@@ -444,23 +444,23 @@ Peak_Trade implementiert ein **Forward-only Policy** System für Ops Merge Logs:
 
 ```bash
 # Console output only (default behavior)
-uv run python scripts/audit/check_ops_merge_logs.py
+python3 scripts/audit/check_ops_merge_logs.py
 
 # Generate Markdown report
-uv run python scripts/audit/check_ops_merge_logs.py \
+python3 scripts/audit/check_ops_merge_logs.py \
   --report-md reports/ops/violations.md
 
 # Generate JSON report (machine-readable)
-uv run python scripts/audit/check_ops_merge_logs.py \
+python3 scripts/audit/check_ops_merge_logs.py \
   --report-json reports/ops/violations.json
 
 # Generate both reports
-uv run python scripts/audit/check_ops_merge_logs.py \
+python3 scripts/audit/check_ops_merge_logs.py \
   --report-md reports/ops/violations.md \
   --report-json reports/ops/violations.json
 
 # Reports without failing (non-blocking)
-uv run python scripts/audit/check_ops_merge_logs.py \
+python3 scripts/audit/check_ops_merge_logs.py \
   --report-md violations.md \
   --no-exit-nonzero-on-violations
 ```
@@ -474,14 +474,14 @@ uv run python scripts/audit/check_ops_merge_logs.py \
 
 ```bash
 # Generate/update backlog from internal audit
-uv run python scripts/ops/generate_legacy_merge_log_backlog.py
+python3 scripts/ops/generate_legacy_merge_log_backlog.py
 
 # Or from existing JSON report
-uv run python scripts/ops/generate_legacy_merge_log_backlog.py \
+python3 scripts/ops/generate_legacy_merge_log_backlog.py \
   --json-report reports/ops/violations.json
 
 # Custom output path
-uv run python scripts/ops/generate_legacy_merge_log_backlog.py \
+python3 scripts/ops/generate_legacy_merge_log_backlog.py \
   --output docs/ops/MY_BACKLOG.md
 ```
 
@@ -497,7 +497,7 @@ uv run python scripts/ops/generate_legacy_merge_log_backlog.py \
 ```yaml
 - name: Ops Merge Log Guard (non-blocking for legacy)
   run: |
-    python scripts/audit/check_ops_merge_logs.py \
+    python3 scripts/audit/check_ops_merge_logs.py \
       || echo "⚠️ Ops merge log violations found (legacy) — non-blocking"
 ```
 
@@ -517,7 +517,7 @@ To flip to blocking:
 ```yaml
 # In .github/workflows/audit.yml
 - name: Ops Merge Log Guard (blocking)
-  run: python scripts/audit/check_ops_merge_logs.py
+  run: python3 scripts/audit/check_ops_merge_logs.py
 ```
 
 ### Migration Workflow
@@ -539,19 +539,19 @@ For migrating legacy logs (optional):
 
 3. **Verify compliance**
    ```bash
-   uv run python scripts/audit/check_ops_merge_logs.py
+   python3 scripts/audit/check_ops_merge_logs.py
    ```
 
 4. **Regenerate backlog**
    ```bash
-   uv run python scripts/ops/generate_legacy_merge_log_backlog.py
+   python3 scripts/ops/generate_legacy_merge_log_backlog.py
    ```
 
 ### Testing
 
 ```bash
 # Run audit tool tests
-uv run pytest -q tests/test_ops_merge_log_audit.py
+python3 -m pytest -q tests/test_ops_merge_log_audit.py
 
 # Includes:
 # - Violation detection (headers, sections, length)

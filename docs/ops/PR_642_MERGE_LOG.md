@@ -73,7 +73,7 @@ PR #642 wurde erfolgreich nach `main` gemerged. Phase 4A implementiert einen L1 
 ### Local Verification
 **Offline / Replay (default):**
 ```bash
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "What are the best practices for VaR backtesting?" \
     --mode replay \
     --fixture l1_deepresearch_sample \
@@ -87,7 +87,7 @@ python scripts/aiops/run_l1_deepresearch.py \
 
 **Tests:**
 ```bash
-pytest tests/ai_orchestration/test_l1_runner.py -v
+python3 -m pytest tests/ai_orchestration/test_l1_runner.py -v
 ```
 
 **Result:** ✅ 13/13 passed in 0.11s
@@ -126,14 +126,14 @@ pytest tests/ai_orchestration/test_l1_runner.py -v
 
 ```bash
 # Basic replay with fixture
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "What are the best practices for VaR backtesting?" \
     --mode replay \
     --fixture l1_deepresearch_sample \
     --out evidence_packs/L1_var_research
 
 # With operator notes and findings
-python scripts/aiops/run_l1_deepresearch.py \
+python3 scripts/aiops/run_l1_deepresearch.py \
     --question "Research momentum factor literature" \
     --mode replay \
     --fixture l1_deepresearch_sample \
@@ -156,7 +156,7 @@ python scripts/aiops/run_l1_deepresearch.py \
 
 ```bash
 # Validate JSON structure
-python -m json.tool evidence_packs/L1_*/evidence_pack.json > /dev/null
+python3 -m json.tool evidence_packs/L1_*/evidence_pack.json > /dev/null
 
 # Check SoD
 jq '.sod_check.result' evidence_packs/L1_*/evidence_pack.json

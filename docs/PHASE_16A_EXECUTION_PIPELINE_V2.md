@@ -308,10 +308,10 @@ if result.is_blocked_by_governance:
 
 ```bash
 # Nur Governance-Tests
-pytest tests/test_execution_pipeline_governance.py -v
+python3 -m pytest tests/test_execution_pipeline_governance.py -v
 
 # Alle ExecutionPipeline-Tests
-pytest tests/test_execution_pipeline.py tests/test_execution_pipeline_governance.py -v
+python3 -m pytest tests/test_execution_pipeline.py tests/test_execution_pipeline_governance.py -v
 ```
 
 ## Zukünftige Erweiterungen

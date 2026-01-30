@@ -29,13 +29,10 @@ Nutze dieses Runbook, wenn:
 
 ### Python Env Contract (deterministisch)
 Die Ops-Skripte wählen standardmäßig:
-- `uv run python` (wenn `uv` verfügbar ist)
-- sonst `python3`
+- `python3`
 
 Override (optional):
 ```bash
-export PY_CMD="uv run python"
-# oder:
 export PY_CMD="python3"
 ```
 

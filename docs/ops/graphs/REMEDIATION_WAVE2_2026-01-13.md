@@ -198,7 +198,7 @@ See Phase 4E Closeout Guide (historical, file archived) for details.
 
 ### Post-Fix Verification
 ```bash
-uv run python scripts/ops/docs_graph_snapshot.py --out /tmp/wave2_after.json
+python3 scripts/ops/docs_graph_snapshot.py --out /tmp/wave2_after.json
 ./scripts/ops/pt_docs_graph_triage.sh /tmp/wave2_after.json
 ```
 
@@ -210,7 +210,7 @@ uv run python scripts/ops/docs_graph_snapshot.py --out /tmp/wave2_after.json
 ### Gate Validation
 ```bash
 # Token Policy Gate
-python scripts/ops/validate_docs_token_policy.py --base origin/main
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
 
 # Reference Targets Gate
 ./scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main

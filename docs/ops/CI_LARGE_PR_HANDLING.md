@@ -164,7 +164,7 @@ Typischer Workflow für `ruff format` oder ähnliche mechanische Änderungen:
 
 1. **Pre-Commit ausführen:**
    ```bash
-   uv run pre-commit run --all-files
+   pre-commit run --all-files
    ```
 
 2. **Lokale Checks:**
@@ -173,7 +173,7 @@ Typischer Workflow für `ruff format` oder ähnliche mechanische Änderungen:
    git diff --stat
 
    # Verifiziere, dass Tests laufen
-   uv run pytest tests/
+   python3 -m pytest tests/
    ```
 
 3. **PR erstellen:**
@@ -254,14 +254,14 @@ Jeder Policy Critic Run zeigt folgende Informationen:
 ### Pre-Commit Hooks
 ```bash
 # Installiere Hooks
-uv run pre-commit install
+pre-commit install
 
 # Teste alle Dateien
-uv run pre-commit run --all-files
+pre-commit run --all-files
 
 # Teste spezifische Hooks
-uv run pre-commit run ruff --all-files
-uv run pre-commit run ruff-format --all-files
+pre-commit run ruff --all-files
+pre-commit run ruff-format --all-files
 ```
 
 ### Policy Critic lokal
@@ -273,7 +273,7 @@ git diff origin/main...HEAD > pr.diff
 CHANGED_FILES=$(git diff --name-only origin/main...HEAD | tr '\n' ',' | sed 's/,$//')
 
 # Führe Policy Critic aus
-uv run python scripts/run_policy_critic.py \
+python3 scripts/run_policy_critic.py \
   --diff-file pr.diff \
   --changed-files "$CHANGED_FILES"
 ```
@@ -385,7 +385,7 @@ Wenn neue kritische Module hinzukommen:
 - **Dateien:** 500+ Files
 - **Mode:** LITE oder LITE_MINIMAL (mit Label)
 - **Action:**
-  1. Führe `uv run pre-commit run --all-files` aus
+  1. Führe `pre-commit run --all-files` aus
   2. Commit
   3. Füge Label `large-pr-approved` hinzu (falls >1200)
   4. Merge nach LITE Review

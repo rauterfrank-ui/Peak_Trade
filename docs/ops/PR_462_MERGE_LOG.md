@@ -116,13 +116,13 @@ All required checks passed:
 
 ```bash
 # Tests (18/18 passed)
-uv run pytest tests/execution/test_wp0d_*.py -q
+python3 -m pytest tests/execution/test_wp0d_*.py -q
 
 # Linting (clean)
-uv run ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
+ruff check src/execution/ledger_mapper.py src/execution/reconciliation.py
 
 # Import check (OK)
-python -c "from src.execution.ledger_mapper import EventToLedgerMapper; from src.execution.reconciliation import ReconciliationEngine; print('OK')"
+python3 -c "from src.execution.ledger_mapper import EventToLedgerMapper; from src.execution.reconciliation import ReconciliationEngine; print('OK')"
 ```
 
 ---

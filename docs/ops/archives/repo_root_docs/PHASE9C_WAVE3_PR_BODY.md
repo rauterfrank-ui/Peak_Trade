@@ -170,7 +170,7 @@ bash scripts/ops/verify_docs_reference_targets.sh > docs/ops/graphs/docs_graph_s
 # Result: 89 broken targets (-25)
 
 # Token Policy check
-uv run python scripts/ops/validate_docs_token_policy.py --all
+python3 scripts/ops/validate_docs_token_policy.py --all
 # Result: ✅ All changed files compliant
 ```
 

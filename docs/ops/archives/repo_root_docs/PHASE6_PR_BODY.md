@@ -76,7 +76,7 @@ assert acceptable_exit
 
 ### 1. CLI Standalone (Fixed ✅)
 ```bash
-$ python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+$ python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 ✅ Strategy-Switch Sanity Check: OK
 Config:             config/config.toml
 active_strategy_id: ma_crossover
@@ -88,7 +88,7 @@ allowed:            ['ma_crossover', 'rsi_reversion', 'breakout']
 
 ### 2. Unit Tests (16/16 ✅)
 ```bash
-$ pytest tests/governance/test_strategy_switch_sanity_check.py -v
+$ python3 -m pytest tests/governance/test_strategy_switch_sanity_check.py -v
 # 16 passed in 0.06s ✅
 ```
 
@@ -96,7 +96,7 @@ $ pytest tests/governance/test_strategy_switch_sanity_check.py -v
 
 ### 3. Integration Tests (7/7 ✅)
 ```bash
-$ pytest tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck -v
+$ python3 -m pytest tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck -v
 # 7 passed in 0.09s ✅
 ```
 
@@ -104,7 +104,7 @@ $ pytest tests/ops/test_test_health_v1.py::TestRunSwitchSanityCheck -v
 
 ### 4. Hermetic Test (Fixed ✅)
 ```bash
-$ pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
+$ python3 -m pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
 # PASSED ✅ (now accepts any warning type)
 ```
 
@@ -112,7 +112,7 @@ $ pytest tests/ops/test_ops_center_smoke.py::test_doctor_command_if_available -v
 
 ### 5. TestHealthAutomation Profile (Full Integration ✅)
 ```bash
-$ python scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
+$ python3 scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
 
 ======================================================================
 📊 Test Health Summary (v1)
@@ -196,13 +196,13 @@ git push
 ### If Config Violations Detected
 ```bash
 # Check config
-python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 
 # Fix violations
 vim config/config.toml  # Remove R&D strategies, fix active, etc.
 
 # Verify fix
-python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 # Should exit 0
 ```
 
@@ -212,13 +212,13 @@ python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 
 ```bash
 # 1. Quick Check (standalone)
-python scripts/run_strategy_switch_sanity_check.py --config config/config.toml
+python3 scripts/run_strategy_switch_sanity_check.py --config config/config.toml
 
 # 2. Full Profile (TestHealthAutomation)
-python scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
+python3 scripts/run_test_health_profile.py --profile governance_strategy_switch_sanity
 
 # 3. Verify Tests
-pytest tests/governance/test_strategy_switch_sanity_check.py -v
+python3 -m pytest tests/governance/test_strategy_switch_sanity_check.py -v
 ```
 
 ---

@@ -38,7 +38,7 @@ Diese Safety-Policy gilt für alle Aktivitäten, die **nicht** Backtest, Paper o
 
 ### 2.1 Übersicht der Limits
 
-Die Risk-Limits werden in `config.toml` unter `[live_risk]` definiert:
+Die Risk-Limits werden in `config/config.toml` unter `[live_risk]` definiert:
 
 ```toml
 [live_risk]
@@ -166,7 +166,7 @@ Bei Verletzung wird die Order **blockiert**, nicht durchgewunken.
 
 **Stufe 0 → Stufe 1 (Research → Shadow):**
 - Alle Unit-Tests grün
-- Shadow-Config in `config.toml` vorhanden
+- Shadow-Config in `config/config.toml` vorhanden
 - Strategien haben Backtest-Historie
 
 **Stufe 1 → Stufe 2 (Shadow → Testnet):**

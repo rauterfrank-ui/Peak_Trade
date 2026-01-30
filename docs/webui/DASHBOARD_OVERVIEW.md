@@ -30,17 +30,17 @@ Diese Übersicht beantwortet:
 - Viele HTML-Pages + JSON APIs (server-rendered, teilweise XSS-safe HTML Snapshots)
 
 **Start:**
-- Via Uvicorn (direkt): `uvicorn src.webui.app:app --host 127.0.0.1 --port 8000`
-- Oder Dev-Runner: `python scripts/run_web_dashboard.py` (reload)
+- Via Uvicorn (direkt): `python3 -m uvicorn src.webui.app:app --host 127.0.0.1 --port 8000`
+- Oder Dev-Runner: `python3 scripts&#47;run_web_dashboard.py` (reload)
 
 ### B) „Live Dashboard“ v0.1 (Phase 67) (`scripts/live_web_server.py` / `src/live/web/app.py`)
 
 **Stärken:**
-- Fokus: „Run Monitoring“ von **Shadow-/Paper-Runs** auf Basis von Dateien unter `live_runs&#47;`
+ - Fokus: „Run Monitoring“ von **Shadow-/Paper-Runs** auf Basis von Dateien unter `live_runs&#47;`
 - **Auto-Refresh HTML**, Run-Liste, Snapshot-Kacheln, Tail-Events, Alerts pro Run
 
 **Start:**
-- `python scripts/live_web_server.py --host 127.0.0.1 --port 8000`
+- `python3 scripts&#47;live_web_server.py --host 127.0.0.1 --port 8000`
 - Optionaler Override: `--base-runs-dir live_runs`
 
 ---
@@ -136,6 +136,8 @@ Du bekommst „live“ Sichtbarkeit, wenn während eines Runs laufend Artefakte 
 - **Live Dashboard v0.1 (Phase 67)** + ein Runner, der nach `live_runs&#47;` loggt  
   → HTML Seite pollt per JS (Auto-Refresh) und zeigt Run-Events + Snapshot-Metriken.
 
+  (Repo-Pfad: `live_runs&#47;`)
+
 **Zusätzlich / Deep Dive:**
 
 - **WebUI v1.x**:
@@ -163,7 +165,7 @@ Du bekommst „live“ Sichtbarkeit, wenn während eines Runs laufend Artefakte 
 ### 5.1 WebUI v1.x starten und Sessions filtern
 
 1. WebUI starten:
-   - `uvicorn src.webui.app:app --host 127.0.0.1 --port 8000`
+   - `python3 -m uvicorn src.webui.app:app --host 127.0.0.1 --port 8000`
 2. Dashboard öffnen:
    - `http://127.0.0.1:8000/`
 3. Shadow Sessions filtern (HTML Home nimmt Query-Filter):
@@ -174,7 +176,7 @@ Du bekommst „live“ Sichtbarkeit, wenn während eines Runs laufend Artefakte 
 ### 5.2 Live Dashboard v0.1 starten (Run Monitoring)
 
 1. Dashboard starten:
-   - `python scripts/live_web_server.py --host 127.0.0.1 --port 8000`
+   - `python3 scripts&#47;live_web_server.py --host 127.0.0.1 --port 8000`
 2. Öffnen:
    - `http://127.0.0.1:8000/`
 3. Runs prüfen:
@@ -187,7 +189,7 @@ Du bekommst „live“ Sichtbarkeit, wenn während eines Runs laufend Artefakte 
 - Data Contract (Artifacts): [DASHBOARD_DATA_CONTRACT_v0.md](DASHBOARD_DATA_CONTRACT_v0.md)
 - API Contract (Read-only): [DASHBOARD_API_CONTRACT_v0.md](DASHBOARD_API_CONTRACT_v0.md)
 
-### 5.3 „HTML Snapshot“ ohne UI-Landingpage (minimal, XSS-safe)
+### 6.1 „HTML Snapshot“ ohne UI-Landingpage (minimal, XSS-safe)
 
 - `http://127.0.0.1:8000/api/live/status/snapshot.html`
 
@@ -203,6 +205,7 @@ Das ist praktisch für:
 - Watch-only Start→Finish Runbook: [`docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md`](../ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md)
 - Live-Track Panel: [`docs/PHASE_82_LIVE_TRACK_DASHBOARD.md`](../PHASE_82_LIVE_TRACK_DASHBOARD.md)
 - Session Explorer (Filter/Details): `docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`
+  (siehe: `../PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md`)
 - Ops Runbooks: [`docs/LIVE_OPERATIONAL_RUNBOOKS.md`](../LIVE_OPERATIONAL_RUNBOOKS.md)
 - Live Status Panels: [`docs/webui/LIVE_STATUS_PANELS.md`](LIVE_STATUS_PANELS.md)
 - Positions/Portfolio/Risk Panels: [`docs/webui/LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md`](LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md)
@@ -216,10 +219,10 @@ Die Live Web Dashboard App kann optional Prometheus-Metriken exponieren (**watch
 **Aktivierung:**
 - Env-Flag: `PEAK_TRADE_PROMETHEUS_ENABLED=1`
 - Voraussetzung: `prometheus_client` ist im Python Environment verfügbar
-- `&#47;metrics` ist **immer** erreichbar, aber:
+- `/metrics` ist **immer** erreichbar, aber:
   - Peak_Trade HTTP-Metriken (z.B. `peak_trade_http_requests_total`) werden nur instrumentiert, wenn `PEAK_TRADE_PROMETHEUS_ENABLED=1` gesetzt ist **und** `prometheus_client` verfügbar ist.
-  - Fail-open (Default): Wenn `prometheus_client` fehlt, liefert `&#47;metrics` nur `peak_trade_metrics_fallback 1` (HTTP 200).
-  - Strict Mode: Mit `REQUIRE_PROMETHEUS_CLIENT=1` liefert `&#47;metrics` bei fehlendem `prometheus_client` HTTP **503**.
+  - Fail-open (Default): Wenn `prometheus_client` fehlt, liefert `/metrics` nur `peak_trade_metrics_fallback 1` (HTTP 200).
+  - Strict Mode: Mit `REQUIRE_PROMETHEUS_CLIENT=1` liefert `/metrics` bei fehlendem `prometheus_client` HTTP **503**.
 
 **Artefakte (Repo-Pfade):**
 - Prometheus Scrape Example: `docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml`

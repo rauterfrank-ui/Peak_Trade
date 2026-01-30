@@ -145,11 +145,11 @@ Peak_Trade/
 
 ```bash
 # Alle Smoke Tests
-uv run pytest tests/ops/test_ops_inspector_smoke.py -v
+python3 -m pytest tests/ops/test_ops_inspector_smoke.py -v
 
 # Nur neue Tests
-uv run pytest tests/ops/test_ops_inspector_smoke.py::TestOpsInspectorSmoke::test_exit_policy_standard -v
-uv run pytest tests/ops/test_ops_inspector_smoke.py::TestOpsInspectorSmoke::test_checks_sorted_by_id -v
+python3 -m pytest tests/ops/test_ops_inspector_smoke.py::TestOpsInspectorSmoke::test_exit_policy_standard -v
+python3 -m pytest tests/ops/test_ops_inspector_smoke.py::TestOpsInspectorSmoke::test_checks_sorted_by_id -v
 ```
 
 ---
@@ -188,7 +188,7 @@ uv run pytest tests/ops/test_ops_inspector_smoke.py::TestOpsInspectorSmoke::test
 cd ~/Peak_Trade
 
 # 1. Tests laufen lassen
-uv run pytest tests/ops/test_ops_inspector_smoke.py -v
+python3 -m pytest tests/ops/test_ops_inspector_smoke.py -v
 
 # 2. Sortierte Ausgabe prüfen
 ./scripts/ops/ops_doctor.sh --json | jq '.checks[].id'

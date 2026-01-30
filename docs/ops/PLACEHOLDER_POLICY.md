@@ -217,7 +217,7 @@ Placeholder reports are generated locally and **NOT committed** to Git.
 
 **Generation:**
 ```bash
-python scripts/ops/placeholders/generate_placeholder_reports.py
+python3 scripts/ops/placeholders/generate_placeholder_reports.py
 ```
 
 **Output location:** `.ops_local&#47;inventory&#47;` (git-ignored)

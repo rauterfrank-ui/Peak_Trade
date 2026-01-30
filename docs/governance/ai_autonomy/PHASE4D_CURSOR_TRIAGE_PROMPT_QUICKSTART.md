@@ -190,7 +190,7 @@ Snapshot update (operator-approved only)
 ```bash
 # 1. Verify change is intentional (review PR/commit)
 # 2. Regenerate snapshot
-python scripts/aiops/run_l4_governance_critic.py \
+python3 scripts/aiops/run_l4_governance_critic.py \
   --evidence-pack tests/fixtures/evidence_packs/L1_sample_2026-01-10 \
   --mode replay \
   --fixture l4_critic_sample \
@@ -201,7 +201,7 @@ python scripts/aiops/run_l4_governance_critic.py \
   --no-legacy-output
 
 # 3. Validate new snapshot
-python scripts/aiops/validate_l4_critic_determinism_contract.py \
+python3 scripts/aiops/validate_l4_critic_determinism_contract.py \
   --report tests/fixtures/l4_critic_determinism/.../critic_report.json \
   --print-hash
 
@@ -213,7 +213,7 @@ git commit -m "chore(aiops): update L4 critic determinism snapshot (schema chang
 
 ## Governance Guardrails (Nicht verhandelbar)
 
-- ✅ **Read-only:** Diagnostics lesen nur bestehende Files oder schreiben nach `.tmp/`
+- ✅ **Read-only:** Diagnostics lesen nur bestehende Files oder schreiben nach `.tmp&#47;`
 - ✅ **No live calls:** Fixtures only, keine Network Requests
 - ✅ **Evidence-first:** Commands + Outputs immer dokumentieren
 - ❌ **No automatic snapshot updates:** Nur nach Operator-Approval (Root Cause D)
@@ -234,10 +234,10 @@ cat <proposed_file>.py  # Review code changes
 **2. Test**
 ```bash
 # Tests lokal ausführen
-python -m pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -v
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -v
 
 # Validator ausführen
-python scripts/aiops/validate_l4_critic_determinism_contract.py \
+python3 scripts/aiops/validate_l4_critic_determinism_contract.py \
   --report tests/fixtures/l4_critic_determinism/.../critic_report.json \
   --print-hash
 ```
@@ -263,12 +263,12 @@ git push origin fix/l4-critic-determinism-<issue>
 
 ```bash
 # Validate contract compliance
-python scripts/aiops/validate_l4_critic_determinism_contract.py \
+python3 scripts/aiops/validate_l4_critic_determinism_contract.py \
   --report <path/to/report.json> \
   --print-hash
 
 # Emit canonical JSON + diff
-python scripts/aiops/validate_l4_critic_determinism_contract.py \
+python3 scripts/aiops/validate_l4_critic_determinism_contract.py \
   --report <path/to/report.json> \
   --write-canonical .tmp/canonical.json
 
@@ -276,7 +276,7 @@ diff -u tests/fixtures/l4_critic_determinism/.../critic_report.json \
   .tmp/canonical.json || true
 
 # Run determinism tests
-python -m pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -v
+python3 -m pytest tests/ai_orchestration/test_l4_critic_determinism_contract.py -v
 ```
 
 ---

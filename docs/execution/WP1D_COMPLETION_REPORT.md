@@ -115,21 +115,21 @@ counts = alerts.get_by_priority()
 ### Run Tests
 ```bash
 # All WP1D tests
-uv run pytest tests/ops/test_wp1d_operator_ux.py -v
+python3 -m pytest tests/ops/test_wp1d_operator_ux.py -v
 
 # Specific test class
-uv run pytest tests/ops/test_wp1d_operator_ux.py::TestSessionRegistry -v
+python3 -m pytest tests/ops/test_wp1d_operator_ux.py::TestSessionRegistry -v
 ```
 
 ### Linter
 ```bash
-uv run ruff check src/live/ops/
+ruff check src/live/ops/
 ```
 
 ### Generate Evidence
 ```bash
-PYTHONPATH=/Users/frnkhrz/Peak_Trade:$PYTHONPATH \
-  uv run python scripts/ops/generate_wp1d_evidence.py
+PYTHONPATH="$PWD:$PYTHONPATH" \
+  python3 scripts/ops/generate_wp1d_evidence.py
 ```
 
 ---
@@ -153,7 +153,7 @@ PYTHONPATH=/Users/frnkhrz/Peak_Trade:$PYTHONPATH \
 10. `docs/ops/runbooks/general.md` - P3 runbook
 
 ### Evidence (2 files)
-11. `reports/ops/wp1d_status_snapshot.json` - Status snapshot
+11. `reports&#47;ops&#47;wp1d_status_snapshot.json` - Status snapshot
 12. `scripts/ops/generate_wp1d_evidence.py` - Evidence generator
 
 **Total:** 12 new files, ~690 LOC
@@ -192,7 +192,7 @@ git diff --name-only | grep -E '^config/|^src/core/'
 - Resource links
 
 ### 2. Status Snapshot
-**File:** `reports/ops/wp1d_status_snapshot.json`
+**File:** `reports&#47;ops&#47;wp1d_status_snapshot.json`
 
 **Contents:**
 ```json

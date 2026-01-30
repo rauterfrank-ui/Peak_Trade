@@ -319,12 +319,12 @@ max_cvar = 0.08
 
 Unit-Tests für alle Module:
 ```bash
-pytest tests/test_risk_layer_v1.py -v
+python3 -m pytest tests/test_risk_layer_v1.py -v
 ```
 
 Integration-Tests mit BacktestEngine:
 ```bash
-pytest tests/test_backtest_risk_integration.py -v
+python3 -m pytest tests/test_backtest_risk_integration.py -v
 ```
 
 ## Roadmap / TODOs

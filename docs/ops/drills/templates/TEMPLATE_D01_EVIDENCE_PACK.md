@@ -208,7 +208,7 @@ uv --version
 ### Ruff (Linter)
 
 ```bash
-uv run ruff --version
+ruff --version
 ```
 
 **Output:**
@@ -314,7 +314,7 @@ ls -ld .
 
 ```bash
 # Check for existing lint issues
-uv run ruff check docs/ --exit-zero
+ruff check docs/ --exit-zero
 ```
 
 **Output:**

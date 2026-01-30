@@ -314,7 +314,7 @@ done
 - **KEINE** Verbindung zu Live-Exchanges (Kraken, etc.)
 - **KEINE** realen Order-Submissions
 - **KEINE** Zugriffe auf API-Keys oder Secrets
-- **KEINE** Schreibzugriffe außerhalb von `reports/`
+- **KEINE** Schreibzugriffe außerhalb von `reports&#47;`
 - **KEINE** Änderungen an der Codebase
 
 ### 🔒 Sicherheits-Features
@@ -407,10 +407,10 @@ python3 scripts/automation/run_offline_daily_suite.py --no-trigger
 **Lösung**:
 ```bash
 # Pytest manuell ausführen
-pytest -xvs
+python3 -m pytest -xvs
 
 # Nur schnelle Tests (falls Marker vorhanden)
-pytest -m "offline_fast" -xvs
+python3 -m pytest -m "offline_fast" -xvs
 
 # Falls Pytest-Fehler nicht kritisch sind, überspringe
 python3 scripts/automation/run_offline_daily_suite.py --no-pytest

@@ -140,7 +140,7 @@
 
 - [x] **Token Policy:** No violations in new docs
   ```bash
-  uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
   # Result: ✅ No Markdown files to check (expected: new files not yet committed)
   ```
 
@@ -235,7 +235,7 @@
 
 3. **Test Validator Locally:**
    ```bash
-   uv run python scripts/ops/validate_docs_token_policy.py --changed
+   python3 scripts/ops/validate_docs_token_policy.py --changed
    ```
 
 ### Ongoing (Next 30 Days — Burn-In Period)

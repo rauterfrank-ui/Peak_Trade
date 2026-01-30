@@ -85,7 +85,7 @@ Follow the **"Next Actions"** printed in the output. Each gate provides:
 
 ```bash
 # Token Policy Gate only
-uv run python scripts/ops/validate_docs_token_policy.py --changed
+python3 scripts/ops/validate_docs_token_policy.py --changed
 
 # Reference Targets Gate only
 bash scripts/ops/verify_docs_reference_targets.sh --changed
@@ -135,13 +135,13 @@ pip install uv
 
 **Symptom:**
 ```
-Line 42: `scripts/example.py` (ILLUSTRATIVE)
+Line 42: `scripts/example.py` (ILLUSTRATIVE) <!-- pt:ref-target-ignore -->
   → Illustrative path token must use encoding
 ```
 
 **Quick Fix:**
 ```markdown
-Replace: `scripts/example.py`
+Replace: `scripts/example.py` <!-- pt:ref-target-ignore -->
 With:    `scripts&#47;example.py`
 ```
 
@@ -154,16 +154,16 @@ With:    `scripts&#47;example.py`
 **Symptom:**
 ```
 Missing targets: 1
-  - docs/ops/GUIDE.md:42: scripts/old_name.py
+  - docs/ops/GUIDE.md:42: scripts&#47;old_name.py
 ```
 
 **Quick Fix:**
 ```bash
 # Option A: Update docs to new path
-sed -i 's|scripts/old_name.py|scripts/new_name.py|g' docs/ops/GUIDE.md
+sed -i 's|scripts&#47;old_name.py|scripts&#47;new_name.py|g' docs/ops/GUIDE.md
 
 # Option B: Encode as illustrative (if intentional example)
-# Change: `scripts/old_name.py` → `scripts&#47;old_name.py`
+# Change: `scripts/old_name.py` → `scripts&#47;old_name.py` <!-- pt:ref-target-ignore -->
 ```
 
 **Detailed Guide:** [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md)

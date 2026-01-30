@@ -38,7 +38,7 @@ After merging docs PRs or when you want to measure improvement from baseline.
 
 **Command:**
 ```bash
-uv run python scripts/ops/docs_graph_snapshot.py \
+python3 scripts/ops/docs_graph_snapshot.py \
     --out docs/ops/graphs/snapshots/$(date +%Y-%m-%d)/docs_graph_snapshot.json \
     --fail-on-broken
 ```
@@ -108,7 +108,7 @@ Reports generated:
 
 **Command:**
 ```bash
-uv run python scripts/ops/docs_graph_triage.py \
+python3 scripts/ops/docs_graph_triage.py \
     --snapshot docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot.json \
     --out-dir docs/ops/graphs/snapshots/2026-01-13
 ```
@@ -266,7 +266,7 @@ After making fixes, regenerate snapshot and triage to measure improvement:
 
 ```bash
 # Regenerate snapshot
-uv run python scripts/ops/docs_graph_snapshot.py \
+python3 scripts/ops/docs_graph_snapshot.py \
     --out docs/ops/graphs/snapshots/$(date +%Y-%m-%d)/docs_graph_snapshot.json
 
 # Run triage
@@ -399,7 +399,7 @@ git commit -m "docs: restore FILE.md from archive (still in use)"
 ls -la docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot.json
 
 # If missing, generate it
-uv run python scripts/ops/docs_graph_snapshot.py \
+python3 scripts/ops/docs_graph_snapshot.py \
     --out docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot.json
 ```
 
@@ -413,7 +413,7 @@ uv run python scripts/ops/docs_graph_snapshot.py \
 python3 -m json.tool docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot.json > /dev/null
 
 # If invalid, regenerate snapshot
-uv run python scripts/ops/docs_graph_snapshot.py \
+python3 scripts/ops/docs_graph_snapshot.py \
     --out docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot.json
 ```
 

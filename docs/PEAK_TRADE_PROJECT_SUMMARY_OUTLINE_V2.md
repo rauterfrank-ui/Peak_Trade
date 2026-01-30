@@ -72,7 +72,7 @@ B. **FAQ / Troubleshooting (Top 10)**
 - Setup: python3, env tool (uv/pip), optional docker
 - “Edit → test → format → docs gates snapshot → PR” (5‑Step)
 - Top commands (code fences):
-  - `uv run pytest -q`
+  - `python3 -m pytest -q`
   - `ruff format` / `ruff check`
   - docs gates snapshot script (falls vorhanden)
 

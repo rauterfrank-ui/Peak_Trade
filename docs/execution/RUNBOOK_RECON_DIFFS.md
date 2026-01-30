@@ -24,7 +24,7 @@ Schneller Einstieg mit dem CLI-Tool `show_recon_audit.py`:
 ### 1. Help anzeigen
 
 ```bash
-python scripts/execution/show_recon_audit.py
+python3 scripts/execution/show_recon_audit.py
 ```
 
 Zeigt Usage, verfügbare Modi und Optionen.
@@ -32,7 +32,7 @@ Zeigt Usage, verfügbare Modi und Optionen.
 ### 2. Empty State prüfen
 
 ```bash
-python scripts/execution/show_recon_audit.py summary
+python3 scripts/execution/show_recon_audit.py summary
 ```
 
 **Output (text):** `"No RECON_SUMMARY events found."`
@@ -42,7 +42,7 @@ python scripts/execution/show_recon_audit.py summary
 ### 3. JSON Output (maschinenlesbar)
 
 ```bash
-python scripts/execution/show_recon_audit.py summary --format json
+python3 scripts/execution/show_recon_audit.py summary --format json
 ```
 
 **Output:**
@@ -60,7 +60,7 @@ python scripts/execution/show_recon_audit.py summary --format json
 ### 4. Gate-Mode (Exit-Code basiert)
 
 ```bash
-python scripts/execution/show_recon_audit.py summary --format json --exit-on-findings
+python3 scripts/execution/show_recon_audit.py summary --format json --exit-on-findings
 echo "Exit code: $?"
 ```
 
@@ -73,7 +73,7 @@ echo "Exit code: $?"
 **Beispiel CI-Gate:**
 ```bash
 # Fail pipeline if recon findings present
-if ! python scripts/execution/show_recon_audit.py summary --exit-on-findings; then
+if ! python3 scripts/execution/show_recon_audit.py summary --exit-on-findings; then
   echo "❌ Recon findings detected, blocking deployment"
   exit 1
 fi
@@ -83,12 +83,12 @@ fi
 
 ```bash
 # Export audit log to JSON first
-python -c "from src.execution.audit_log import AuditLog; \
+python3 -c "from src.execution.audit_log import AuditLog; \
   log = AuditLog(); \
   log.export_to_file('audit_export.json')"
 
 # Query from file
-python scripts/execution/show_recon_audit.py summary --json audit_export.json
+python3 scripts/execution/show_recon_audit.py summary --json audit_export.json
 ```
 
 **Use Case:** Offline-Analysen, Archiv-Queries, Debugging vergangener Runs.
@@ -121,16 +121,17 @@ Vereinfachte Operator-Workflows, Shell-Scripting, CI/CD-Integration.
 #### Operator How-To (Wrapper: Python Runner / pyenv)
 
 Der Wrapper nutzt standardmäßig den **robustesten Python-Runner** in dieser Reihenfolge:
-1) `uv run python` (wenn `uv` verfügbar ist)  
-2) `python3`  
-3) `python`  
+1) `PT_RECON_PYTHON_RUNNER` (falls gesetzt)  
+2) `uv run python` (wenn `uv` verfügbar ist)  
+3) `python3`  
+4) `python` (Fallback; nicht empfohlen)  
 
 Falls deine Umgebung (z.B. `pyenv`) kein `python` bereitstellt oder du explizit steuern willst, setze:
 - `PT_RECON_PYTHON_RUNNER` (Override für den verwendeten Runner)
 
 **Beispiele**
 ```bash
-# Default (empfohlen): nutzt uv, falls vorhanden
+# Default (empfohlen): pyenv-sicher via python3
 bash scripts/execution/recon_audit_gate.sh summary-json | python3 -m json.tool
 
 # Explizit python3 erzwingen (pyenv-sicher)
@@ -378,7 +379,7 @@ Schneller Zugriff auf Recon-Events aus dem AuditLog ohne Python-Code zu schreibe
 #### Beispiel 1: Alle Recon-Summaries anzeigen
 
 ```bash
-python scripts/execution/show_recon_audit.py summary
+python3 scripts/execution/show_recon_audit.py summary
 ```
 
 **Output:**
@@ -393,7 +394,7 @@ python scripts/execution/show_recon_audit.py summary
 #### Beispiel 2: Diffs mit Severity-Filter
 
 ```bash
-python scripts/execution/show_recon_audit.py diffs --severity FAIL --limit 20
+python3 scripts/execution/show_recon_audit.py diffs --severity FAIL --limit 20
 ```
 
 **Output:**
@@ -408,7 +409,7 @@ python scripts/execution/show_recon_audit.py diffs --severity FAIL --limit 20
 #### Beispiel 3: Detaillierter Drill-Down für spezifischen Run
 
 ```bash
-python scripts/execution/show_recon_audit.py detailed --run-id <run_id>
+python3 scripts/execution/show_recon_audit.py detailed --run-id <run_id>
 ```
 
 **Output:**
@@ -424,16 +425,16 @@ python scripts/execution/show_recon_audit.py detailed --run-id <run_id>
 
 ```bash
 # Nach Session filtern
-python scripts/execution/show_recon_audit.py summary --session-id session_123
+python3 scripts/execution/show_recon_audit.py summary --session-id session_123
 
 # Nach Run filtern
-python scripts/execution/show_recon_audit.py diffs --run-id run_456
+python3 scripts/execution/show_recon_audit.py diffs --run-id run_456
 
 # Output limitieren
-python scripts/execution/show_recon_audit.py diffs --limit 10
+python3 scripts/execution/show_recon_audit.py diffs --limit 10
 
 # Von JSON-Export laden (für Archiv-Analysen)
-python scripts/execution/show_recon_audit.py summary --json path/to/audit_export.json
+python3 scripts/execution/show_recon_audit.py summary --json path/to/audit_export.json
 ```
 
 **Phase 0 Hinweis:** In Phase 0 arbeitet das Tool mit in-memory AuditLog oder JSON-Exporten. Keine Datenbank-Integration (kommt in Phase 1+).

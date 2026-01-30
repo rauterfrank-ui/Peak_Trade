@@ -94,8 +94,8 @@ Sessions im Mode `live` werden besonders markiert:
 |-------|--------------|
 | `src/webui/live_track.py` | Erweitert um `LiveSessionDetail`, Filter-/Detail-Funktionen |
 | `src/webui/app.py` | Neue Endpoints für Filter, Detail, Stats |
-| `templates/.../session_detail.html` | HTML-Template für Detail-Ansicht |
-| `templates/.../index.html` | Erweitert um Filter-UI und klickbare Zeilen |
+| `templates&#47;...&#47;session_detail.html` | HTML-Template für Detail-Ansicht |
+| `templates&#47;...&#47;index.html` | Erweitert um Filter-UI und klickbare Zeilen |
 | `tests/test_webui_live_track.py` | Erweitert um Phase 85 Tests (54 Tests) |
 
 ### 3.2 Datenfluss
@@ -263,7 +263,7 @@ class LiveSessionDetail(BaseModel):
 **Gesamt:** 54 Tests (alle grün)
 
 ```bash
-pytest tests/test_webui_live_track.py -v
+python3 -m pytest tests/test_webui_live_track.py -v
 ```
 
 ---

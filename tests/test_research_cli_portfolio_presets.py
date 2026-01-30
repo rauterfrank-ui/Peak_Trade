@@ -389,3 +389,42 @@ def test_phase53_all_new_recipes_exist():
             "moderate",
             "aggressive",
         ], f"Rezept {recipe_key}: ungültiges risk_profile"
+
+
+@patch("scripts.run_portfolio_robustness.load_top_n_configs_for_sweep")
+@patch("scripts.run_portfolio_robustness._build_strategy_returns_cache")
+@patch("scripts.run_portfolio_robustness.run_portfolio_robustness")
+@patch("scripts.run_portfolio_robustness.build_portfolio_robustness_report")
+def test_phase53_run_from_args_uses_strategies_mode(
+    mock_report,
+    mock_run_robustness,
+    mock_build_cache,
+    mock_load_topn,
+    mock_args_phase53_preset,
+    phase53_recipe_toml: Path,
+):
+    """
+    Phase 53: run_from_args soll bei Presets mit 'strategies' NICHT den Sweep/Top-N Pfad verwenden.
+    """
+    # Arrange: deterministische Returns im Cache
+    import pandas as pd
+
+    idx = pd.date_range("2024-01-01", periods=10, freq="1h")
+    mock_build_cache.return_value = {
+        "rsi_reversion_btc_conservative": pd.Series([0.0] * 10, index=idx),
+        "rsi_reversion_eth_conservative": pd.Series([0.0] * 10, index=idx),
+    }
+    mock_run_robustness.return_value = MagicMock()
+    mock_report.return_value = {"md": Path("test.md")}
+
+    # Act
+    exit_code = portfolio_script.run_from_args(mock_args_phase53_preset)
+
+    # Assert
+    assert exit_code == 0
+    assert mock_load_topn.called is False
+    assert mock_build_cache.called is True
+
+    cfg = mock_run_robustness.call_args[0][0]
+    assert cfg.portfolio.name == "RSI Reversion Conservative"
+    assert len(cfg.portfolio.components) == 2

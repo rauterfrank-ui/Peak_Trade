@@ -114,7 +114,7 @@ python3 scripts/run_learning_apply_cycle.py --dry-run
 
 3. Führe Tests aus:
    ```bash
-   pytest tests/test_live_overrides*.py -v
+   python3 -m pytest tests/test_live_overrides*.py -v
    ```
 
 ### 3. Production-Readiness (1 Tag)
@@ -391,7 +391,7 @@ python3 scripts/run_promotion_proposal_cycle.py --auto-apply-mode manual_only
   und der Operator die Freigabe explizit erteilt.
 
 → Siehe auch:
-- **[config/promotion_loop_config.toml](../config/promotion_loop_config.toml)** - Sektion "UMSCHALTEN AUF bounded_auto"
+- **Config (Repo):** `config/promotion_loop_config.toml` – Sektion "UMSCHALTEN AUF bounded_auto"
 - **[PROMOTION_LOOP_SAFETY_FEATURES.md](./PROMOTION_LOOP_SAFETY_FEATURES.md)** - P0/P1 Safety Details
 
 ---

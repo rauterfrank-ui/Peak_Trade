@@ -81,7 +81,7 @@ result = run_portfolio_from_config(
 ```bash
 cd ~/Peak_Trade
 source .venv/bin/activate
-python scripts/demo_registry_backtest.py
+python3 scripts/demo_registry_backtest.py
 ```
 
 ---
@@ -150,7 +150,7 @@ allocation_method = "equal"  # "equal", "manual", "risk_parity", "sharpe_weighte
 
 1. **Demo testen:**
    ```bash
-   python scripts/demo_registry_backtest.py
+   python3 scripts/demo_registry_backtest.py
    ```
 
 2. **API-Dokumentation lesen:**  

@@ -21,10 +21,10 @@ High (determinism-critical). Any wrong pinning can break golden bundles / hash e
 
 ## Operator How-To
 - Run determinism-critical tests (examples):
-  - `uv run pytest -q tests/execution/test_beta_event_bridge_determinism.py`
-  - `uv run pytest -q tests/execution/test_beta_event_bridge_ordering.py`
-  - `uv run pytest -q tests/replay_pack/test_golden_bundle_v1.py`
-  - `uv run pytest -q tests/replay_pack/test_hash_validation.py`
+  - `python3 -m pytest -q tests&#47;execution&#47;test_beta_event_bridge_determinism.py`
+  - `python3 -m pytest -q tests&#47;execution&#47;test_beta_event_bridge_ordering.py`
+  - `python3 -m pytest -q tests&#47;replay_pack&#47;test_golden_bundle_v1.py`
+  - `python3 -m pytest -q tests&#47;replay_pack&#47;test_hash_validation.py`
 
 ## References
 - PR: #1058

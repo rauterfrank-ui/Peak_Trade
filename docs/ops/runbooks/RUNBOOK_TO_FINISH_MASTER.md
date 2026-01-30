@@ -153,7 +153,7 @@ git diff --cached --name-only || true
 ## 4) Phase B — Docs Gates & Test-Snapshot (lokal)
 
 ### B1 — Minimal Test Plan (D2)
-**Pflicht:** `uv run pytest -q tests/reporting/test_offline_paper_trade_report.py`  
+**Pflicht:** `python3 -m pytest -q tests&#47;reporting&#47;test_offline_paper_trade_report.py`  
 **Exit:** PASS + in Verification Note erfasst.
 
 > **Cursor Terminal — Single Block**
@@ -167,7 +167,7 @@ git rev-parse --show-toplevel 2>/dev/null || true
 git status -sb || true
 
 echo "=== TEST (D2 subset) ==="
-uv run pytest -q tests/reporting/test_offline_paper_trade_report.py || true
+python3 -m pytest -q tests/reporting/test_offline_paper_trade_report.py || true
 ```
 
 ### B2 — Docs Gates (lokal best effort)
@@ -188,7 +188,7 @@ ls -la scripts/ops 2>/dev/null | sed -n '1,120p' || true
 
 echo "=== TRY: pre-commit (if present) ==="
 if command -v uv >/dev/null 2>&1; then
-  uv run pre-commit run -a || true
+  pre-commit run -a || true
 else
   pre-commit run -a || true
 fi
@@ -250,7 +250,7 @@ Make “Finish” workstreams discoverable and operational via canonical entry p
   - docs/research/option_b/OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md
 
 ## Verification
-- PASS: uv run pytest -q tests/reporting/test_offline_paper_trade_report.py
+- PASS: python3 -m pytest -q tests/reporting/test_offline_paper_trade_report.py
 - Docs gates: (list PASS snapshots or CI links)
 
 ## Risk

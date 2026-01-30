@@ -229,7 +229,7 @@ URGENT: Analysiere sofort für Peak_Trade:
 
 ```bash
 # Speichern eines Makro-Pakets
-python scripts/create_info_packet.py \
+python3 scripts/create_info_packet.py \
     --source macro_georisk_specialist \
     --category market_analysis \
     --severity warning \

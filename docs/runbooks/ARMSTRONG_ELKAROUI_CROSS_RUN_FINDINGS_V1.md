@@ -128,7 +128,7 @@ Die Ergebnisse sind **vielversprechend**, aber klar als **R&D-Signal** zu behand
 
 1. **Längerer Zeitraum testen** (2022–2024)
    ```bash
-   python scripts/research_cli.py armstrong-elkaroui-combi \
+   python3 scripts/research_cli.py armstrong-elkaroui-combi \
      --from 2022-01-01 --to 2024-12-01 --generate-report -v
    ```
 
@@ -138,7 +138,7 @@ Die Ergebnisse sind **vielversprechend**, aber klar als **R&D-Signal** zu behand
 
 3. **Cross-Asset-Check**
    ```bash
-   python scripts/research_cli.py armstrong-elkaroui-combi \
+   python3 scripts/research_cli.py armstrong-elkaroui-combi \
      --symbol ETH/EUR --from 2023-01-01 --to 2024-06-30 --generate-report
    ```
 
@@ -160,7 +160,7 @@ Die Ergebnisse sind **vielversprechend**, aber klar als **R&D-Signal** zu behand
 
 7. **Timeframe-Variation**
    ```bash
-   python scripts/research_cli.py armstrong-elkaroui-combi \
+   python3 scripts/research_cli.py armstrong-elkaroui-combi \
      --timeframe 4h --from 2023-01-01 --to 2024-06-30 --generate-report
    ```
 

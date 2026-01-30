@@ -32,7 +32,7 @@ Die **Test Health Automation** ist eine Meta-Schicht für automatisierte Qualit�
 ### Einfacher Aufruf (Default-Profil)
 
 ```bash
-python scripts/run_test_health_profile.py
+python3 scripts/run_test_health_profile.py
 ```
 
 Verwendet automatisch das `default_profile` aus der TOML-Config (z.B. `weekly_core`).
@@ -40,13 +40,13 @@ Verwendet automatisch das `default_profile` aus der TOML-Config (z.B. `weekly_co
 ### Spezifisches Profil ausführen
 
 ```bash
-python scripts/run_test_health_profile.py --profile daily_quick
+python3 scripts/run_test_health_profile.py --profile daily_quick
 ```
 
 ### Custom-Config und Report-Root
 
 ```bash
-python scripts/run_test_health_profile.py \
+python3 scripts/run_test_health_profile.py \
     --profile full_suite \
     --config config/test_health_profiles.toml \
     --report-root reports/test_health
@@ -91,21 +91,21 @@ time_window_days = 7
 [[profiles.weekly_core.checks]]
 id = "pytest_core_offline"
 name = "Pytest Core & Offline"
-cmd = "pytest -q tests/core tests/offline --maxfail=1 -x"
+cmd = "python3 -m pytest -q tests/core tests/offline --maxfail=1 -x"
 weight = 3
 category = "tests"
 
 [[profiles.weekly_core.checks]]
 id = "offline_synth_smoke"
 name = "OfflineSynthSession Smoke"
-cmd = "python scripts/run_offline_synth_session_smoke.py"
+cmd = "python3 scripts/run_offline_synth_session_smoke.py"
 weight = 2
 category = "offline_synth"
 
 [[profiles.weekly_core.checks]]
 id = "trigger_training_demo"
 name = "TriggerTraining Drill Demo"
-cmd = "python scripts/run_offline_trigger_training_drill_example.py --session-id TEST_HEALTH_SMOKE"
+cmd = "python3 scripts/run_offline_trigger_training_drill_example.py --session-id TEST_HEALTH_SMOKE"
 weight = 2
 category = "trigger_training"
 ```
@@ -260,7 +260,7 @@ time_window_days = 3
 [[profiles.my_custom_profile.checks]]
 id = "my_check_1"
 name = "My Check 1"
-cmd = "pytest -q tests/my_module"
+cmd = "python3 -m pytest -q tests/my_module"
 weight = 2
 category = "tests"
 ```
@@ -268,15 +268,15 @@ category = "tests"
 3. Ausführen:
 
 ```bash
-python scripts/run_test_health_profile.py --profile my_custom_profile
+python3 scripts/run_test_health_profile.py --profile my_custom_profile
 ```
 
 ### Neuen Check hinzufügen
 
 Checks können beliebige Shell-Commands sein:
 
-- **Pytest**: `pytest -q tests&#47;my_module`
-- **Python-Script**: `python scripts&#47;my_smoke_test.py` (illustrative)
+- **Pytest**: `python3 -m pytest -q tests&#47;my_module`
+- **Python-Script**: `python3 scripts&#47;my_smoke_test.py` (illustrative)
 - **Shell-Script**: `bash scripts&#47;check_db_connection.sh` (illustrative)
 - **Custom-Command**: `curl -f https:&#47;&#47;api.example.com&#47;health`
 
@@ -324,7 +324,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
-      - run: python scripts/run_test_health_profile.py --profile weekly_core
+      - run: python3 scripts/run_test_health_profile.py --profile weekly_core
 ```
 
 ---
@@ -352,7 +352,7 @@ time_window_days = 7
 [[profiles.weekly_core.checks]]
 id = "pytest_smoke_core"
 name = "Pytest Smoke & Core"
-cmd = "pytest tests/..."
+cmd = "python3 -m pytest tests/..."
 weight = 3
 category = "tests"
 ```
@@ -410,7 +410,7 @@ include_violations = true
      env:
        PEAK_TRADE_SLACK_WEBHOOK_TESTHEALTH: ${{ secrets.SLACK_WEBHOOK_TESTHEALTH }}
      run: |
-       python scripts/run_test_health_profile.py --profile weekly_core
+      python3 scripts/run_test_health_profile.py --profile weekly_core
    ```
 
 #### Beispiel-Notification

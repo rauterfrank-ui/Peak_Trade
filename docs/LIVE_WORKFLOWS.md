@@ -11,7 +11,7 @@ Diese Dokumentation beschreibt die Standard-Workflows für Live- und Paper-Tradi
 | `--enforce-live-risk` | Bei Verletzung mit Exit-Code 1 abbrechen | False |
 | `--skip-live-risk` | Risk-Check komplett überspringen | False |
 | `--starting-cash` | Startkapital für Daily-Loss-%-Limits | aus Config |
-| `--alert-log` | Pfad zur Alert-Logdatei | `logs/alerts.log` |
+| `--alert-log` | Pfad zur Alert-Logdatei | `logs&#47;alerts.log` |
 | `--no-alerts` | Alert-Benachrichtigungen deaktivieren | False |
 
 **Wichtig:** `--enforce-live-risk` und `--skip-live-risk` können nicht gleichzeitig verwendet werden.
@@ -24,10 +24,10 @@ Generiert Orders aus Forward-Signalen und prüft sie gegen Live-Risk-Limits.
 
 ```bash
 # 1. Forward-Signale generieren
-python scripts/generate_forward_signals.py --strategy ma_crossover
+python3 scripts/generate_forward_signals.py --strategy ma_crossover
 
 # 2. Order-Preview erstellen (mit Risk-Check)
-python scripts/preview_live_orders.py \
+python3 scripts/preview_live_orders.py \
     --signals reports/forward/forward_ma_crossover_..._signals.csv \
     --notional 500 \
     --tag daily-preview
@@ -44,7 +44,7 @@ python scripts/preview_live_orders.py \
 Prüft eine bestehende Orders-CSV ohne neue Orders zu generieren.
 
 ```bash
-python scripts/check_live_risk_limits.py \
+python3 scripts/check_live_risk_limits.py \
     --orders reports/live/preview_..._orders.csv \
     --starting-cash 10000 \
     --tag daily-check
@@ -52,7 +52,7 @@ python scripts/check_live_risk_limits.py \
 
 ### Mit Enforcement (Exit bei Verletzung)
 ```bash
-python scripts/check_live_risk_limits.py \
+python3 scripts/check_live_risk_limits.py \
     --orders reports/live/preview_..._orders.csv \
     --enforce-live-risk
 ```
@@ -69,20 +69,20 @@ Führt Paper-Trades aus einer Orders-CSV aus.
 
 ```bash
 # Standard Paper-Trade
-python scripts/paper_trade_from_orders.py \
+python3 scripts/paper_trade_from_orders.py \
     --orders reports/live/preview_..._orders.csv \
     --starting-cash 10000 \
     --tag paper-session
 
 # Mit Enforcement (kein Trade bei Violation)
-python scripts/paper_trade_from_orders.py \
+python3 scripts/paper_trade_from_orders.py \
     --orders reports/live/preview_..._orders.csv \
     --starting-cash 10000 \
     --enforce-live-risk \
     --tag paper-session
 
 # Ohne Risk-Check (z.B. für Tests)
-python scripts/paper_trade_from_orders.py \
+python3 scripts/paper_trade_from_orders.py \
     --orders reports/live/preview_..._orders.csv \
     --skip-live-risk \
     --tag paper-test
@@ -105,20 +105,20 @@ set -e  # Bei Fehler abbrechen
 
 # 1. Forward-Signale generieren
 echo "=== Generiere Forward-Signale ==="
-python scripts/generate_forward_signals.py \
+python3 scripts/generate_forward_signals.py \
     --strategy ma_crossover \
     --tag daily
 
 # 2. Order-Preview erstellen
 echo "=== Erstelle Order-Preview ==="
-python scripts/preview_live_orders.py \
+python3 scripts/preview_live_orders.py \
     --signals reports/forward/forward_ma_crossover_*_signals.csv \
     --notional 500 \
     --tag daily
 
 # 3. Standalone Risk-Check (optional, strenger)
 echo "=== Standalone Risk-Check ==="
-python scripts/check_live_risk_limits.py \
+python3 scripts/check_live_risk_limits.py \
     --orders reports/live/preview_*_orders.csv \
     --starting-cash 10000 \
     --enforce-live-risk \
@@ -126,7 +126,7 @@ python scripts/check_live_risk_limits.py \
 
 # 4. Paper-Trade ausführen
 echo "=== Paper-Trade ==="
-python scripts/paper_trade_from_orders.py \
+python3 scripts/paper_trade_from_orders.py \
     --orders reports/live/preview_*_orders.csv \
     --starting-cash 10000 \
     --tag daily-paper
@@ -175,7 +175,7 @@ aber keine echten Orders platzieren. Sie dienen als Brücke zwischen Backtest un
 
 ```bash
 # Forward-Signal für ein Symbol generieren
-python scripts/run_forward_signals.py \
+python3 scripts/run_forward_signals.py \
     --strategy ma_crossover \
     --symbol BTC/EUR \
     --timeframe 1h \
@@ -218,10 +218,10 @@ python scripts/run_forward_signals.py \
 
 ```bash
 # Alle Forward-Signal-Runs auflisten
-python scripts/list_experiments.py --run-type forward_signal
+python3 scripts/list_experiments.py --run-type forward_signal
 
 # Details zu einem Run anzeigen
-python scripts/show_experiment.py <run_id>
+python3 scripts/show_experiment.py <run_id>
 ```
 
 ### Unterschied zu generate_forward_signals.py
@@ -251,7 +251,7 @@ starting_cash_default = 10000.0
 
 ### "Daily-PnL immer 0"
 Prüfe:
-1. Gibt es `reports/experiments/experiments.csv`?
+1. Gibt es `reports&#47;experiments&#47;experiments.csv`?
 2. Sind Einträge mit `run_type = "paper_trade"` vom heutigen Tag vorhanden?
 3. Ist `use_experiments_for_daily_pnl = true` in config.toml?
 
@@ -279,13 +279,13 @@ Scripts wie `run_forward_signals.py` und `check_live_risk_limits.py` senden auto
 ### Alerts deaktivieren
 
 ```bash
-python scripts/run_forward_signals.py --strategy ma_crossover --symbol BTC/EUR --no-alerts
+python3 scripts/run_forward_signals.py --strategy ma_crossover --symbol BTC/EUR --no-alerts
 ```
 
 ### Eigene Alert-Logdatei
 
 ```bash
-python scripts/check_live_risk_limits.py --orders orders.csv --alert-log logs/risk_alerts.log
+python3 scripts/check_live_risk_limits.py --orders orders.csv --alert-log logs/risk_alerts.log
 ```
 
 ### Live-Monitoring

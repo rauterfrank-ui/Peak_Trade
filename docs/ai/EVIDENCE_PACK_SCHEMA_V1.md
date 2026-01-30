@@ -320,10 +320,10 @@ except SchemaValidationError as e:
 
 ```bash
 # Validate pack
-python scripts/validate_evidence_pack_ci.py --pack pack.json
+python3 scripts/validate_evidence_pack_ci.py --pack pack.json
 
 # Migrate pack
-python scripts/migrate_evidence_pack_schema.py --pack pack.json --target 1.1.0
+python3 scripts/migrate_evidence_pack_schema.py --pack pack.json --target 1.1.0
 ```
 
 ---

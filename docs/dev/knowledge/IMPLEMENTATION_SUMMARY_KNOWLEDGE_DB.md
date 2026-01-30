@@ -132,7 +132,7 @@ Comprehensive demo showcasing:
 
 **Run the demo:**
 ```bash
-python scripts/demo_knowledge_db.py
+python3 scripts/demo_knowledge_db.py
 ```
 
 **Output:** Interactive walkthrough of all features with sample data

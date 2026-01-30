@@ -16,7 +16,7 @@ uv pip install -e ".[dev]"
 ruff check src tests scripts
 ruff format --check src tests scripts
 pre-commit run --all-files
-uv run pytest -q
+python3 -m pytest -q
 # commit + PR
 ```
 
@@ -35,7 +35,17 @@ quarto render reports/quarto/backtest_report.qmd
 git checkout main && git pull --ff-only
 git checkout -b feat/lake-duckdb-otel
 uv pip install -e ".[lake,observability]"
-python scripts/query_lake.py --sql "SELECT COUNT(*) FROM ohlcv"
+# NOTE: Es gibt aktuell kein dediziertes `query_lake` CLI-Script im Repo.
+# Minimaler DuckDB/Lake-Client ist unter `src/data/lake/client.py` verfügbar.
+python3 - <<'PY'
+from src.data.lake.client import LakeClient
+
+lc = LakeClient()
+# Beispiel: Parquet aus data/lake/ als View "ohlcv" registrieren (falls vorhanden)
+lc.register_parquet_folder("data/lake", "ohlcv")
+print(lc.query("SELECT COUNT(*) AS n FROM ohlcv"))
+lc.close()
+PY
 docker compose -f ops/observability/docker-compose.yml up
 ```
 
@@ -115,7 +125,7 @@ ruff format --check src tests scripts
 #### Step D: Pre-commit & Tests
 ```bash
 pre-commit run --all-files
-uv run pytest -q
+python3 -m pytest -q
 ```
 
 #### Step E: Commit & PR
@@ -140,7 +150,7 @@ gh pr create \
 ## Test plan
 - \`ruff check src tests scripts\`
 - \`pre-commit run --all-files\`
-- \`uv run pytest -q\`"
+- \`python3 -m pytest -q\`"
 ```
 
 ### 2.3 Troubleshooting (P0)
@@ -196,7 +206,7 @@ uv pip install -e ".[experiments]"
 #### Step C: Run ausführen (Beispiel)
 > Passe den Runner-Command an eure tatsächlichen Scripts/Configs an.
 ```bash
-python scripts/run_strategy_from_config.py --config config/my_strategy.toml
+python3 scripts/run_strategy_from_config.py --config config/my_strategy.toml
 # Erwartung: Output in results/<run_id>/
 ```
 
@@ -238,7 +248,7 @@ bash scripts/utils/render_last_report.sh
 **Fix:**
 ```bash
 uv pip install -e ".[experiments]"
-python -c "import mlflow; print(mlflow.__version__)"
+python3 -c "import mlflow; print(mlflow.__version__)"
 ```
 
 **Problem:** Quarto nicht installiert  
@@ -284,15 +294,23 @@ uv pip install -e ".[lake]"
 #### Step C: Lake befüllen (Beispiel)
 > Je nach Integration: nach Normalizer/Cache oder nach Runner.
 ```bash
-python scripts/build_lake_from_results.py  # falls vorhanden
-# oder: Writer wird direkt beim Run aufgerufen
+# NOTE: Es gibt aktuell kein dediziertes „build_lake_from_results“ Script im Repo.
+# (Der DuckDB-Read-Client existiert bereits; ein Writer/ETL ist ein eigenes Follow-up.)
+# Wenn Parquet bereits unter `data/lake/` liegt, kannst du direkt mit Step D fortfahren.
 ```
 
 #### Step D: Queries
 ```bash
-python scripts/query_lake.py --sql "SELECT COUNT(*) AS n FROM ohlcv"
-python scripts/query_lake.py --sql "SELECT symbol, COUNT(*) FROM ohlcv GROUP BY 1 ORDER BY 2 DESC"
-python scripts/query_lake.py --sql "SELECT * FROM ohlcv WHERE symbol='BTCUSDT' LIMIT 5"
+python3 - <<'PY'
+from src.data.lake.client import LakeClient
+
+lc = LakeClient()
+lc.register_parquet_folder("data/lake", "ohlcv")
+print(lc.query("SELECT COUNT(*) AS n FROM ohlcv"))
+print(lc.query("SELECT symbol, COUNT(*) FROM ohlcv GROUP BY 1 ORDER BY 2 DESC LIMIT 10"))
+print(lc.query("SELECT * FROM ohlcv WHERE symbol='BTCUSDT' LIMIT 5"))
+lc.close()
+PY
 ```
 
 ### 4.3 Observability – Operator Steps
@@ -314,7 +332,7 @@ export PEAK_OTEL_ENABLED=1
 export PEAK_OTEL_SERVICE_NAME="peak-trade"
 export PEAK_OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4317"
 
-python scripts/run_strategy_from_config.py --config config/my_strategy.toml
+python3 scripts/run_strategy_from_config.py --config config/my_strategy.toml
 ```
 
 ### 4.4 Troubleshooting (P2)
@@ -384,7 +402,7 @@ uv pip install -e ".[dev]"
 ruff check src tests scripts
 ruff format --check src tests scripts
 pre-commit run --all-files
-uv run pytest -q
+python3 -m pytest -q
 ```
 
 ---

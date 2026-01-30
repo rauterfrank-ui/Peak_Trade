@@ -220,7 +220,7 @@ threshold = 1.5
 
 **Backtest-CLI:**
 ```bash
-python scripts/run_backtest.py \
+python3 scripts/run_backtest.py \
   --strategy my_new_strategy \
   --symbol BTC/EUR \
   --timeframe 1h \
@@ -229,7 +229,7 @@ python scripts/run_backtest.py \
 
 **Research-CLI:**
 ```bash
-python scripts/research_cli.py strategy \
+python3 scripts/research_cli.py strategy \
   --strategy my_new_strategy \
   --symbol BTC/EUR \
   --timeframe 1h

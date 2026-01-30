@@ -58,7 +58,7 @@ Diese Checklist ist für den Übergang von reinem Research-Modus zu Shadow-Execu
 - [ ] **Alle Unit-Tests grün**
       Status: _______________
       Datum: _______________
-      Befehl: `pytest tests/ -v`
+      Befehl: `bash python3 -m pytest tests/ -v`
       Ergebnis: _____ / _____ passed
 
 - [ ] **Keine bekannten kritischen Bugs im Execution-Layer**
@@ -81,11 +81,11 @@ Diese Checklist ist für den Übergang von reinem Research-Modus zu Shadow-Execu
 
 - [ ] **Strategie-Parameter dokumentiert**
       Status: _______________
-      Dokumentation in: `docs/` oder `config.toml`
+      Dokumentation in: `docs/` oder `config/config.toml`
 
 ### 2.3 Konfiguration
 
-- [ ] **`[shadow]`-Sektion in `config.toml` konfiguriert**
+- [ ] **`[shadow]`-Sektion in `config/config.toml` konfiguriert**
       Status: _______________
       ```toml
       [shadow]

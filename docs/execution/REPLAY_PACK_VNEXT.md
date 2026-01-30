@@ -75,14 +75,14 @@ Empfohlenes Tool ist das vorhandene deterministische CLI-Skript:
 
 ```bash
 # Help
-uv run python scripts/execution/pt_replay_pack.py --help
-uv run python scripts/execution/pt_replay_pack.py build --help
+python3 scripts/execution/pt_replay_pack.py --help
+python3 scripts/execution/pt_replay_pack.py build --help
 ```
 
 ### Build (v1)
 
 ```bash
-uv run python scripts/execution/pt_replay_pack.py build \
+python3 scripts/execution/pt_replay_pack.py build \
   --events /abs/path/to/execution_events.jsonl \
   --out /abs/path/to/out_dir \
   --version 1 \
@@ -92,7 +92,7 @@ uv run python scripts/execution/pt_replay_pack.py build \
 ### Build (v2, additive FIFO)
 
 ```bash
-uv run python scripts/execution/pt_replay_pack.py build \
+python3 scripts/execution/pt_replay_pack.py build \
   --events /abs/path/to/execution_events.jsonl \
   --out /abs/path/to/out_dir \
   --version 2 \
@@ -103,17 +103,17 @@ uv run python scripts/execution/pt_replay_pack.py build \
 ### Validate
 
 ```bash
-uv run python scripts/execution/pt_replay_pack.py validate --bundle /abs/path/to/out_dir/replay_pack
+python3 scripts/execution/pt_replay_pack.py validate --bundle /abs/path/to/out_dir/replay_pack
 ```
 
 ### Inspect (hash/metadata/files)
 
 ```bash
 # Human-readable
-uv run python scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/out_dir/replay_pack
+python3 scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/out_dir/replay_pack
 
 # Machine-readable JSON (stable ordering)
-uv run python scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/out_dir/replay_pack --json
+python3 scripts/execution/pt_replay_pack.py inspect --bundle /abs/path/to/out_dir/replay_pack --json
 ```
 
 Human-readable output shape (stable, no wall-clock):

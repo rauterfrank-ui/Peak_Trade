@@ -230,7 +230,7 @@ tests/reporting/test_psychology_heuristics.py
 
 ```bash
 cd /Users/frnkhrz/Peak_Trade
-pytest tests/reporting/test_psychology_heuristics.py -v
+python3 -m pytest tests/reporting/test_psychology_heuristics.py -v
 
 # Ergebnis:
 # ============================= test session starts ==============================
@@ -449,7 +449,7 @@ combined = 0.3 * avg_all + 0.7 * avg_top  # 70% Gewicht auf Top
 
 ## 🚀 Next Steps für dich
 
-1. **Testen:** `pytest tests&#47;reporting&#47;test_psychology_heuristics.py -v`
+1. **Testen:** `python3 -m pytest tests&#47;reporting&#47;test_psychology_heuristics.py -v`
 2. **Demo:** `PYTHONPATH=. python3 scripts&#47;example_psychology_heuristics.py`
 3. **Doku lesen:** `docs/psychology_heuristics.md`
 4. **Integrieren:**

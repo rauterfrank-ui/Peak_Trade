@@ -193,7 +193,7 @@ Jeder Panel-Provider **muss** ein Dict mit diesen Feldern zurückgeben:
 
 ## Testing
 
-Teste deine Panels mit pytest:
+Teste deine Panels mit `python3 -m pytest`:
 
 ```python
 def test_my_custom_panel_stable():
@@ -216,7 +216,7 @@ Siehe `tests/test_live_status_snapshot_panels.py` für weitere Beispiele.
 
 ```bash
 # Server starten (falls nicht läuft)
-uv run uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
+python3 -m uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 
 # Snapshot JSON abrufen
 curl http://localhost:8000/api/live/status/snapshot.json | jq '.panels'
@@ -241,7 +241,7 @@ curl http://localhost:8000/api/live_sessions/stats | jq
 
 ```bash
 # Terminal 1: Shadow Session starten
-uv run python scripts/live/run_shadow_paper_session.py
+python3 scripts/run_shadow_paper_session.py
 
 # Terminal 2: Stats beobachten
 watch -n 5 'curl -s http://localhost:8000/api/live_sessions/stats | jq'
@@ -263,7 +263,7 @@ watch -n 5 'curl -s http://localhost:8000/api/live_sessions/stats | jq'
 **Ursache**: Snapshot wird gecacht oder Datenspeicher nicht aktualisiert.
 
 **Lösung**:
-1. Service neu starten: `uv run uvicorn src.webui.app:app --reload`
+1. Service neu starten: `python3 -m uvicorn src.webui.app:app --reload`
 2. Prüfe Registry-Updates: `ls -lt live_runs/sessions/`
 3. Prüfe Alert-Storage: `ls -lt live_runs/alerts/`
 

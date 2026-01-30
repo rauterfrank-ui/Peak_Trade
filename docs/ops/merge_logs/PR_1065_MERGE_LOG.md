@@ -17,22 +17,22 @@ Provide operator-grade inspection output for ReplayPack v1/v2 bundles and a repr
 ## Verification
 - CI required checks: PASS (incl. tests (3.11), strategy-smoke, lint gate).
 - Local (reported earlier in PR):
-  - uv run pytest -q tests/replay_pack/test_golden_bundle_v1.py
-  - uv run pytest -q tests/replay_pack/test_hash_validation.py
-  - uv run pytest -q tests/replay_pack/test_golden_bundle_v2.py
-  - uv run pytest -q tests/replay_pack/test_replay_pack_cli_smoke.py
-  - uv run pytest -q tests/replay_pack/test_inspect_output_stability.py
+  - python3 -m pytest -q tests/replay_pack/test_golden_bundle_v1.py
+  - python3 -m pytest -q tests/replay_pack/test_hash_validation.py
+  - python3 -m pytest -q tests/replay_pack/test_golden_bundle_v2.py
+  - python3 -m pytest -q tests/replay_pack/test_replay_pack_cli_smoke.py
+  - python3 -m pytest -q tests/replay_pack/test_inspect_output_stability.py
 
 ## Risk
 LOW (offline-only CLI UX + tests + docs/evidence; deterministic outputs).
 
 ## Operator How-To
 - Run ReplayPack verification suite:
-  - uv run pytest -q tests/replay_pack/test_golden_bundle_v1.py
-  - uv run pytest -q tests/replay_pack/test_hash_validation.py
-  - uv run pytest -q tests/replay_pack/test_golden_bundle_v2.py
-  - uv run pytest -q tests/replay_pack/test_replay_pack_cli_smoke.py
-  - uv run pytest -q tests/replay_pack/test_inspect_output_stability.py
+  - python3 -m pytest -q tests/replay_pack/test_golden_bundle_v1.py
+  - python3 -m pytest -q tests/replay_pack/test_hash_validation.py
+  - python3 -m pytest -q tests/replay_pack/test_golden_bundle_v2.py
+  - python3 -m pytest -q tests/replay_pack/test_replay_pack_cli_smoke.py
+  - python3 -m pytest -q tests/replay_pack/test_inspect_output_stability.py
 - Evidence reference:
   - docs/ops/evidence/EV_REPLAY_PACK_V2_CLI_VERIFY_20260128.md
 

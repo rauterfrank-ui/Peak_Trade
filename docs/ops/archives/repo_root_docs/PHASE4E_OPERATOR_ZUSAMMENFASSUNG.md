@@ -57,7 +57,7 @@ Ein **normalisiertes, versioniertes Validator-Report-Format** (Schema v1.0.0) f�
 ### 1. Report normalisieren (lokal)
 
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized
 ```
@@ -71,7 +71,7 @@ python scripts/aiops/normalize_validator_report.py \
 ### 2. CI-Modus (mit Runtime-Context)
 
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized \
   --git-sha "${GITHUB_SHA}" \
@@ -89,9 +89,9 @@ python scripts/aiops/normalize_validator_report.py \
 
 ```bash
 # Zweimal ausführen
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input report.json --out-dir .tmp/run1 --quiet
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input report.json --out-dir .tmp/run2 --quiet
 
 # Vergleichen (sollte identisch sein)
@@ -200,7 +200,7 @@ cat validator_report.normalized.md
 
 ```bash
 # Alle Tests
-pytest tests/ai_orchestration/test_validator_report_normalized.py \
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py \
        tests/ai_orchestration/test_normalize_validator_report_cli.py -v
 
 # Erwartung: 31 passed in ~1.5s
@@ -334,7 +334,7 @@ for check_id, stats in check_stats.items():
 jq . input.json
 
 # Syntax-Fehler prüfen
-python -m json.tool input.json
+python3 -m json.tool input.json
 ```
 
 ### Fehler: "Input file not found"
@@ -347,7 +347,7 @@ python -m json.tool input.json
 ls -lh .tmp/validator_report.json
 
 # Absoluten Pfad verwenden
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input "$(pwd)/.tmp/validator_report.json" \
   --out-dir .tmp/normalized
 ```
@@ -375,7 +375,7 @@ jq 'has("runtime_context")' .tmp/normalized/validator_report.normalized.json
 - **Quickstart:** [PHASE4E_QUICKSTART.md](docs/governance/ai_autonomy/PHASE4E_QUICKSTART.md)
 - **Implementation Summary:** [PHASE4E_IMPLEMENTATION_SUMMARY.md](PHASE4E_IMPLEMENTATION_SUMMARY.md)
 - **Phase 4D:** [L4 Critic Determinism Contract](docs/governance/ai_autonomy/PHASE4D_L4_CRITIC_DETERMINISM_CONTRACT.md)
-- **CLI Help:** `python scripts/aiops/normalize_validator_report.py --help`
+- **CLI Help:** `python3 scripts/aiops/normalize_validator_report.py --help`
 
 ---
 
@@ -395,7 +395,7 @@ jq 'has("runtime_context")' .tmp/normalized/validator_report.normalized.json
 
 ### Report normalisieren
 ```bash
-python scripts/aiops/normalize_validator_report.py \
+python3 scripts/aiops/normalize_validator_report.py \
   --input .tmp/validator_report.json \
   --out-dir .tmp/normalized
 ```
@@ -403,7 +403,7 @@ python scripts/aiops/normalize_validator_report.py \
 ### Determinismus verifizieren
 ```bash
 for i in 1 2; do
-  python scripts/aiops/normalize_validator_report.py \
+  python3 scripts/aiops/normalize_validator_report.py \
     --input report.json --out-dir .tmp/run$i --quiet
 done
 diff .tmp/run1/validator_report.normalized.json \
@@ -412,7 +412,7 @@ diff .tmp/run1/validator_report.normalized.json \
 
 ### Tests ausführen
 ```bash
-pytest tests/ai_orchestration/test_validator_report_normalized.py \
+python3 -m pytest tests/ai_orchestration/test_validator_report_normalized.py \
        tests/ai_orchestration/test_normalize_validator_report_cli.py -v
 ```
 

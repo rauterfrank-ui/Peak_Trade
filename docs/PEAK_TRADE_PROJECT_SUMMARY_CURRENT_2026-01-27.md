@@ -83,7 +83,7 @@ ruff format --check src/ tests/ scripts/
 ```bash
 ./scripts/ops/pt_docs_gates_snapshot.sh --changed
 bash scripts/ops/verify_docs_reference_targets.sh
-python scripts/ops/validate_docs_token_policy.py --tracked-docs
+python3 scripts/ops/validate_docs_token_policy.py --tracked-docs
 bash scripts/ops/verify_required_checks_drift.sh
 ```
 
@@ -95,19 +95,19 @@ bash scripts/ops/verify_required_checks_drift.sh
 
 ```bash
 # 1) Einzel-Backtest (Beispiel aus CLI Cheatsheet)
-python scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR
+python3 scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR
 
 # 2) Parameter-Sweep (TOML-Grid, optional dry-run)
-python scripts/run_sweep.py --strategy ma_crossover --symbol BTC/EUR --grid config/sweeps/ma_crossover.toml --dry-run
+python3 scripts/run_sweep.py --config config/config.toml --strategy ma_crossover --symbol BTC/EUR --grid config/sweeps/ma_crossover.toml --dry-run
 
 # 3) Portfolio-Research (Playbook Phase 54)
-python scripts/research_cli.py portfolio --config config/config.toml --portfolio-preset rsi_reversion_conservative --format both
+python3 scripts/research_cli.py portfolio --config config/config.toml --portfolio-preset rsi_reversion_conservative --format both
 
 # 4) Research-Pipeline v2 (Playbook Phase 54; Parameter/Name anpassen)
-python scripts/research_cli.py pipeline --sweep-name rsi_reversion_basic --config config/config.toml --format both --top-n 5
+python3 scripts/research_cli.py pipeline --sweep-name rsi_reversion_basic --config config/config.toml --format both --top-n 5
 
 # 5) Reporting (Beispiel: Backtest-Report Generator)
-python scripts/generate_backtest_report.py --help
+python3 scripts/generate_backtest_report.py --help
 ```
 
 ### Audit/Reviewer
@@ -121,15 +121,15 @@ python scripts/generate_backtest_report.py --help
 # Docs Integrity (vor PRs)
 ./scripts/ops/pt_docs_gates_snapshot.sh --changed
 bash scripts/ops/verify_docs_reference_targets.sh
-python scripts/ops/validate_docs_token_policy.py --tracked-docs
+python3 scripts/ops/validate_docs_token_policy.py --tracked-docs
 
 # Branch protection drift / hygiene (SSoT vs Workflows)
 bash scripts/ops/verify_required_checks_drift.sh
-python scripts/ci/validate_required_checks_hygiene.py --config config/ci/required_status_checks.json --workflows .github/workflows --strict
+python3 scripts/ci/validate_required_checks_hygiene.py --config config/ci/required_status_checks.json --workflows .github/workflows --strict
 
 # Evidence Pack Gate (Smoke + Validator; schreibt nur in .artifacts/)
-python scripts/run_layer_smoke_with_evidence_pack.py --layer L0 --autonomy REC --verbose
-python scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs --strict --verbose
+python3 scripts/run_layer_smoke_with_evidence_pack.py --layer L0 --autonomy REC --verbose
+python3 scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs --strict --verbose
 ```
 
 ---
@@ -162,12 +162,12 @@ Kernidee: **Research → Evidenz → (Shadow/Paper/Testnet) → erst dann Live**
 
 ### Explizit verboten (Governance-locked; nur belegbare Prinzipien)
 - **Live-Execution „by default“ aktivieren oder Safety-Gates umgehen** (fail-closed, Defense-in-Depth) → [GOVERNANCE_AND_SAFETY_OVERVIEW.md](GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md](runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md)
-- **Secrets/Credentials ins Repo committen** → [../.gitignore](../.gitignore) · [LIVE_OPERATIONAL_RUNBOOKS.md](LIVE_OPERATIONAL_RUNBOOKS.md)
-- **Risk-relevante Defaults „aufweichen“ ohne Review/Freigabe** (z.B. Risk Layer Master Switch / Live Risk Limits) → [../config/config.toml](../config/config.toml) · [GOVERNANCE_AND_SAFETY_OVERVIEW.md](GOVERNANCE_AND_SAFETY_OVERVIEW.md)
-- **Branch-Protection / Required Checks „entschärfen“** (SSoT + Drift Guard) → [../config/ci/required_status_checks.json](../config/ci/required_status_checks.json) · [ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md)
+- **Secrets/Credentials ins Repo committen** → `.gitignore` · [LIVE_OPERATIONAL_RUNBOOKS.md](LIVE_OPERATIONAL_RUNBOOKS.md)
+- **Risk-relevante Defaults „aufweichen“ ohne Review/Freigabe** (z.B. Risk Layer Master Switch / Live Risk Limits) → `config/config.toml` · [GOVERNANCE_AND_SAFETY_OVERVIEW.md](GOVERNANCE_AND_SAFETY_OVERVIEW.md)
+- **Branch-Protection / Required Checks „entschärfen“** (SSoT + Drift Guard) → `config/ci/required_status_checks.json` · [ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md)
 
 **Branch Protection (SSoT + Drift Guard):**
-- **SSoT (Konfig):** [`../config/ci/required_status_checks.json`](../config/ci/required_status_checks.json)
+- **SSoT (Konfig):** `config/ci/required_status_checks.json`
 - **Snapshot (Doku):** [ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md)
 - **Drift Guard (live vs doc):** `scripts/ops/verify_required_checks_drift.sh`
 
@@ -241,9 +241,9 @@ Die Codebase ist breit aufgestellt (u.a. Execution, Live, Risk, Governance, Obse
 | Datei | Rolle / Scope | Wichtige Inhalte (Auszug) | Safety critical? | Approval required? | Hinweise / Quelle |
 |---|---|---|---:|---:|---|
 | [`../config.toml`](../config.toml) | Root-Konfig (vereinfachte Defaults) | `[environment]` (paper + `enable_live_trading=false` + `testnet_dry_run=true`), `[shadow]`, `[risk]`, `[data]` | Yes | Yes (TBD: je nach Änderung) | Governance-Prinzipien & Prozesse: [GOVERNANCE_AND_SAFETY_OVERVIEW.md](GOVERNANCE_AND_SAFETY_OVERVIEW.md) |
-| [`../config/config.toml`](../config/config.toml) | Ops/Live-Track Konfig (umfangreich) | `[environment]` (No-Live Defaults), `[live_risk]`, `[live_alerts]`, `[shadow_paper_logging]`, `[risk_layer]` (enabled=false), `[escalation]` | Yes | Yes | Two-Augen/Approval Prozess (Risk-Limits): [GOVERNANCE_AND_SAFETY_OVERVIEW.md](GOVERNANCE_AND_SAFETY_OVERVIEW.md) |
-| [`../config/risk/kill_switch.toml`](../config/risk/kill_switch.toml) | Kill Switch (Layer 4) | Trigger/Recovery/State/Audit (z.B. persistente state/audit unter `data&#47;kill_switch&#47;`) | Yes | Yes | Architektur/Runbook: [risk/KILL_SWITCH_ARCHITECTURE.md](risk/KILL_SWITCH_ARCHITECTURE.md) · [risk/KILL_SWITCH_RUNBOOK.md](risk/KILL_SWITCH_RUNBOOK.md) |
-| [`../config/ci/required_status_checks.json`](../config/ci/required_status_checks.json) | Branch-Protection Required Checks (SSoT) | Liste der required contexts | Yes (CI safety) | Yes | Snapshot/Drift Guard: [ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md) |
+| `config/config.toml` | Ops/Live-Track Konfig (umfangreich) | `[environment]` (No-Live Defaults), `[live_risk]`, `[live_alerts]`, `[shadow_paper_logging]`, `[risk_layer]` (enabled=false), `[escalation]` | Yes | Yes | Two-Augen/Approval Prozess (Risk-Limits): [GOVERNANCE_AND_SAFETY_OVERVIEW.md](GOVERNANCE_AND_SAFETY_OVERVIEW.md) |
+| `config/risk/kill_switch.toml` | Kill Switch (Layer 4) | Trigger/Recovery/State/Audit (z.B. persistente state/audit unter `data&#47;kill_switch&#47;`) | Yes | Yes | Architektur/Runbook: [risk/KILL_SWITCH_ARCHITECTURE.md](risk/KILL_SWITCH_ARCHITECTURE.md) · [risk/KILL_SWITCH_RUNBOOK.md](risk/KILL_SWITCH_RUNBOOK.md) |
+| `config/ci/required_status_checks.json` | Branch-Protection Required Checks (SSoT) | Liste der required contexts | Yes (CI safety) | Yes | Snapshot/Drift Guard: [ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md) |
 
 ---
 
@@ -252,7 +252,7 @@ Die Codebase ist breit aufgestellt (u.a. Execution, Live, Risk, Governance, Obse
 **Governance-Prinzipien (Doku):** [`GOVERNANCE_AND_SAFETY_OVERVIEW.md`](GOVERNANCE_AND_SAFETY_OVERVIEW.md)
 
 **Kill Switch (Layer 4):**
-- Config: [`../config/risk/kill_switch.toml`](../config/risk/kill_switch.toml)
+- Config: `config/risk/kill_switch.toml`
 - Architektur: [risk/KILL_SWITCH_ARCHITECTURE.md](risk/KILL_SWITCH_ARCHITECTURE.md)
 
 ---
@@ -260,45 +260,45 @@ Die Codebase ist breit aufgestellt (u.a. Execution, Live, Risk, Governance, Obse
 ## 8) Governance & Safety Vertrag (Non-Negotiables)
 
 ### Non-Negotiables (belegt)
-- **No-Live Defaults (fail-closed):** `enable_live_trading=false` in [`../config.toml`](../config.toml) und [`../config/config.toml`](../config/config.toml)
+- **No-Live Defaults (fail-closed):** `enable_live_trading=false` in `config.toml` und `config/config.toml`
 - **Risk gewinnt immer:** Risk kann blockieren; keine „Overrides“ als Default-Mechanik (siehe Prinzipien in [`GOVERNANCE_AND_SAFETY_OVERVIEW.md`](GOVERNANCE_AND_SAFETY_OVERVIEW.md))
 - **Live-Execution ist Governance-locked, bis explizit freigegeben:** Runbook beschreibt den Lock als Safety-Prinzip (siehe [runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md](runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md))
 - **Two-Man-Rule / Freigabeprozesse:** Live-Runbooks und Governance-Doku verankern explizite Freigaben (siehe [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md) und [`GOVERNANCE_AND_SAFETY_OVERVIEW.md`](GOVERNANCE_AND_SAFETY_OVERVIEW.md))
-- **Keine Secrets ins Repo:** `.env`/Keys sind gitignored (siehe [`../.gitignore`](../.gitignore))
+- **Keine Secrets ins Repo:** `.env`/Keys sind gitignored (siehe `.gitignore`)
 
 ### Operator Approval Required (belegt)
 Diese Changes gelten als „operator-/risk-relevant“ (mind. Review/Sign-off, je nach Policy/Runbook):
 - **Kritische Codepfade (CODEOWNERS):** `src/governance/`, `src/risk/`, `src/live/`, `src/execution/`, `scripts/ops/` → [`../.github/CODEOWNERS`](../.github/CODEOWNERS)
-- **Risk Layer Master Switch:** `risk_layer.enabled` ist **MUST remain false by default** (Kommentar im File) → [`../config/config.toml`](../config/config.toml)
-- **Kill Switch Recovery (Approval Code / Persistenz):** `require_approval_code`, `state_file`, `audit_dir` → [`../config/risk/kill_switch.toml`](../config/risk/kill_switch.toml)
+- **Risk Layer Master Switch:** `risk_layer.enabled` ist **MUST remain false by default** (Kommentar im File) → `config/config.toml`
+- **Kill Switch Recovery (Approval Code / Persistenz):** `require_approval_code`, `state_file`, `audit_dir` → `config/risk/kill_switch.toml`
 - **Live Operational Schritte:** „Live-Run (Small Size)“ ist im Runbook explizit als „echtes Geld“ gekennzeichnet → [`LIVE_OPERATIONAL_RUNBOOKS.md`](LIVE_OPERATIONAL_RUNBOOKS.md)
 
 ---
 
 ## 9) CI & Gates Matrix
 
-**Hinweis:** „Required“ bezieht sich auf die SSoT-Liste in [`../config/ci/required_status_checks.json`](../config/ci/required_status_checks.json). Zusätzlich existiert ein Branch-Protection Snapshot in [ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md).
+**Hinweis:** „Required“ bezieht sich auf die SSoT-Liste in `config/ci/required_status_checks.json`. Zusätzlich existiert ein Branch-Protection Snapshot in [ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md](ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md).
 
 | Gate (Check Context) | Required (main) | Trigger | Docs-only behavior | Fail-Semantik | Local repro (kurz) |
 |---|---:|---|---|---|---|
-| **CI Health Gate (weekly_core)** | ✅ | `pull_request` / `push` (Job), `merge_group` (Workflow) / schedule / dispatch → [`../.github/workflows/test_health.yml`](../.github/workflows/test_health.yml) | Läuft auch bei Docs-only PRs (kein Docs-Skip im Job) | Hard fail, wenn `weekly_core` Profil fehlschlägt | `python scripts/run_test_health_profile.py --profile weekly_core` |
+| **CI Health Gate (weekly_core)** | ✅ | `pull_request` / `push` (Job), `merge_group` (Workflow) / schedule / dispatch → [`../.github/workflows/test_health.yml`](../.github/workflows/test_health.yml) | Läuft auch bei Docs-only PRs (kein Docs-Skip im Job) | Hard fail, wenn `weekly_core` Profil fehlschlägt | `python3 scripts&#47;run_test_health_profile.py --profile weekly_core` |
 | **Guard tracked files in reports directories** | ✅ | always-run PR/push/merge_group → [`../.github/workflows/policy_tracked_reports_guard.yml`](../.github/workflows/policy_tracked_reports_guard.yml) | immer relevant | Hard fail, wenn unter reports/ etwas tracked ist | `bash scripts/ci/guard_no_tracked_reports.sh` |
 | **audit** | ✅ | PR/push/merge_group/schedule/dispatch → [`../.github/workflows/audit.yml`](../.github/workflows/audit.yml) | `pip-audit` ist **nicht-blocking** bei docs-only scope; blocking bei dependency-relevanten Änderungen | Blocking nur bei enforce=true (deps) | `bash scripts/automation/validate_all_pr_reports.sh` + `pip-audit` |
-| **tests (3.11)** | ✅ | Matrix in [`../.github/workflows/ci.yml`](../.github/workflows/ci.yml) | Docs-only PR: Job wird erstellt, Tests werden übersprungen | Hard fail bei Test-Failures | `python -m pytest tests/ -v` |
-| **strategy-smoke** | ✅ | in [`../.github/workflows/ci.yml`](../.github/workflows/ci.yml) | Docs-only PR: No-op/skip | Hard fail bei Smoke-Failures (wenn applicable) | `python scripts/strategy_smoke_check.py --output-json test_results/strategy_smoke/local.json --output-md test_results/strategy_smoke/local.md` |
-| **Policy Critic Gate** | ✅ | always-run PR/merge_group → [`../.github/workflows/policy_critic_gate.yml`](../.github/workflows/policy_critic_gate.yml) | No-op pass wenn keine policy-sensitiven Pfade geändert wurden | Fail wenn applicable und Critic Findings | Local repro (optional): `git diff | python scripts/run_policy_critic.py --diff-stdin --changed-files \"$(git diff --name-only)\"` |
+| **tests (3.11)** | ✅ | Matrix in [`../.github/workflows/ci.yml`](../.github/workflows/ci.yml) | Docs-only PR: Job wird erstellt, Tests werden übersprungen | Hard fail bei Test-Failures | `python3 -m pytest tests/ -v` |
+| **strategy-smoke** | ✅ | in [`../.github/workflows/ci.yml`](../.github/workflows/ci.yml) | Docs-only PR: No-op/skip | Hard fail bei Smoke-Failures (wenn applicable) | `python3 scripts/strategy_smoke_check.py --output-json test_results/strategy_smoke/local.json --output-md test_results/strategy_smoke/local.md` |
+| **Policy Critic Gate** | ✅ | always-run PR/merge_group → [`../.github/workflows/policy_critic_gate.yml`](../.github/workflows/policy_critic_gate.yml) | No-op pass wenn keine policy-sensitiven Pfade geändert wurden | Fail wenn applicable und Critic Findings | Local repro (optional): `git diff | python3 scripts/run_policy_critic.py --diff-stdin --changed-files \"$(git diff --name-only)\"` |
 | **Lint Gate** | ✅ | always-run PR/merge_group → [`../.github/workflows/lint_gate.yml`](../.github/workflows/lint_gate.yml) | No-op pass wenn keine `.py` Änderungen | Hard fail bei Ruff/Lint/Format Fehlern | `bash -lc "ruff check src/ tests/ scripts/ && ruff format --check src/ tests/ scripts/"` |
-| **Docs Diff Guard Policy Gate** | ✅ | PR/merge_group/dispatch → [`../.github/workflows/docs_diff_guard_policy_gate.yml`](../.github/workflows/docs_diff_guard_policy_gate.yml) | immer relevant | Hard fail bei fehlendem Marker/Policy-Verletzung | `python scripts/ci/check_docs_diff_guard_section.py` |
+| **Docs Diff Guard Policy Gate** | ✅ | PR/merge_group/dispatch → [`../.github/workflows/docs_diff_guard_policy_gate.yml`](../.github/workflows/docs_diff_guard_policy_gate.yml) | immer relevant | Hard fail bei fehlendem Marker/Policy-Verletzung | `python3 scripts&#47;ci&#47;check_docs_diff_guard_section.py` |
 | **docs-reference-targets-gate** | ✅ | PR/merge_group/dispatch → [`../.github/workflows/docs_reference_targets_gate.yml`](../.github/workflows/docs_reference_targets_gate.yml) | No-op pass wenn keine Markdown-Dateien geändert wurden | Hard fail bei fehlenden Targets | `bash scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main` |
-| **dispatch-guard** | ✅ | PR always-run; Push path-filtered → [`../.github/workflows/ci-workflow-dispatch-guard.yml`](../.github/workflows/ci-workflow-dispatch-guard.yml) | No-op pass wenn keine Workflow-Dateien geändert | Fail wenn workflow_dispatch Inputs inkonsistent | `python scripts/ops/validate_workflow_dispatch_guards.py --paths .github/workflows --fail-on-warn` |
-| **docs-token-policy-gate** | ❌ (Signal) | PR/merge_group/dispatch → [`../.github/workflows/docs-token-policy-gate.yml`](../.github/workflows/docs-token-policy-gate.yml) | Nur bei Markdown-Änderungen | Fail bei nicht-encoded illustrative inline-code tokens | `python scripts/ops/validate_docs_token_policy.py --base origin/main` |
+| **dispatch-guard** | ✅ | PR always-run; Push path-filtered → [`../.github/workflows/ci-workflow-dispatch-guard.yml`](../.github/workflows/ci-workflow-dispatch-guard.yml) | No-op pass wenn keine Workflow-Dateien geändert | Fail wenn workflow_dispatch Inputs inkonsistent | `python3 scripts&#47;ops&#47;validate_workflow_dispatch_guards.py --paths .github&#47;workflows --fail-on-warn` |
+| **docs-token-policy-gate** | ❌ (Signal) | PR/merge_group/dispatch → [`../.github/workflows/docs-token-policy-gate.yml`](../.github/workflows/docs-token-policy-gate.yml) | Nur bei Markdown-Änderungen | Fail bei nicht-encoded illustrative inline-code tokens | `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --base origin&#47;main` |
 
 ### Weitere wichtige Gates (nicht in der Required-Checks-SSoT-Liste)
 | Gate (Workflow) | Trigger | Verhalten | Local repro (kurz) |
 |---|---|---|---|
-| Evidence Pack Validation Gate → [`../.github/workflows/evidence_pack_gate.yml`](../.github/workflows/evidence_pack_gate.yml) | PR/push/merge_group/dispatch | Always-run Jobs, aber „skip gracefully“ wenn Evidence-Pack-Code unverändert; fail-closed wenn applicable (Validator) | `python scripts/run_layer_smoke_with_evidence_pack.py --layer L0 --autonomy REC --verbose` + `python scripts/validate_evidence_pack_ci.py --root .artifacts/evidence_packs --strict` |
-| Required Checks Hygiene Gate → [`../.github/workflows/required-checks-hygiene-gate.yml`](../.github/workflows/required-checks-hygiene-gate.yml) | PR/push | Verhindert path-filtered required checks (Validator gegen `config/ci/required_status_checks.json`) | `python scripts/ci/validate_required_checks_hygiene.py --config config/ci/required_status_checks.json --workflows .github/workflows --strict` |
-| Docs Integrity Snapshot → [`../.github/workflows/docs-integrity-snapshot.yml`](../.github/workflows/docs-integrity-snapshot.yml) | PR (path-filtered auf `docs&#47;**`) | Informational Snapshot (bricht PR nicht) | `python scripts/ops/docs_graph_snapshot.py --out docs_graph.snapshot.json` |
+| Evidence Pack Validation Gate → [`../.github/workflows/evidence_pack_gate.yml`](../.github/workflows/evidence_pack_gate.yml) | PR/push/merge_group/dispatch | Always-run Jobs, aber „skip gracefully“ wenn Evidence-Pack-Code unverändert; fail-closed wenn applicable (Validator) | `python3 scripts&#47;run_layer_smoke_with_evidence_pack.py --layer L0 --autonomy REC --verbose` + `python3 scripts&#47;validate_evidence_pack_ci.py --root .artifacts&#47;evidence_packs --strict` |
+| Required Checks Hygiene Gate → [`../.github/workflows/required-checks-hygiene-gate.yml`](../.github/workflows/required-checks-hygiene-gate.yml) | PR/push | Verhindert path-filtered required checks (Validator gegen `config/ci/required_status_checks.json`) | `python3 scripts&#47;ci&#47;validate_required_checks_hygiene.py --config config&#47;ci&#47;required_status_checks.json --workflows .github&#47;workflows --strict` |
+| Docs Integrity Snapshot → [`../.github/workflows/docs-integrity-snapshot.yml`](../.github/workflows/docs-integrity-snapshot.yml) | PR (path-filtered auf `docs&#47;**`) | Informational Snapshot (bricht PR nicht) | `python3 scripts&#47;ops&#47;docs_graph_snapshot.py --out docs_graph.snapshot.json` |
 
 ---
 
@@ -357,7 +357,7 @@ Peak_Trade hat eine ausgeprägte Ops-/Runbook-/Evidence-Kultur (Einstiegspunkte)
 
 ## Outputs & Artefacts (Landkarte)
 
-**Gitignored (soll nicht committed werden):** siehe [`../.gitignore`](../.gitignore)
+**Gitignored (soll nicht committed werden):** siehe `.gitignore`
 
 | Artefakt | Typischer Pfad | Git | Quelle / Beispiel |
 |---|---|---:|---|
@@ -416,9 +416,9 @@ Peak_Trade hat eine ausgeprägte Ops-/Runbook-/Evidence-Kultur (Einstiegspunkte)
 ## Known gaps (documented only) + Next steps
 
 ### Known gaps (nur belegt)
-- **Kill Switch Notifications/Monitoring default disabled:** [`../config/risk/kill_switch.toml`](../config/risk/kill_switch.toml)
-- **Escalation ist Phase-85 Stub, keine echten API-Calls:** `enable_real_calls=false` in [`../config/config.toml`](../config/config.toml)
-- **Risk Layer bleibt default disabled (Governance-gated):** Kommentar + `enabled=false` in [`../config/config.toml`](../config/config.toml)
+- **Kill Switch Notifications/Monitoring default disabled:** `config/risk/kill_switch.toml`
+- **Escalation ist Phase-85 Stub, keine echten API-Calls:** `enable_real_calls=false` in `config/config.toml`
+- **Risk Layer bleibt default disabled (Governance-gated):** Kommentar + `enabled=false` in `config/config.toml`
 - **Policy Critic Gate hat „placeholder/no-op“ Pfad, falls Script fehlt:** [`../.github/workflows/policy_critic_gate.yml`](../.github/workflows/policy_critic_gate.yml)
 - **Docs Token Policy Gate ist (derzeit) non-required Signal:** [`../.github/workflows/docs-token-policy-gate.yml`](../.github/workflows/docs-token-policy-gate.yml) + Ops Runbook
 
@@ -436,7 +436,7 @@ Peak_Trade hat eine ausgeprägte Ops-/Runbook-/Evidence-Kultur (Einstiegspunkte)
 → Operator-Guide: [ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md)
 
 2) **Docs Token Policy Gate fail (inline-code Pfade)**  
-→ Lokal: `python scripts/ops/validate_docs_token_policy.py --tracked-docs`  
+→ Lokal: `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --tracked-docs`  
 → Fix: illustrative Pfade in Inline-Code mit `&#47;` escapen  
 → Operator-Guide: [ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md](ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md)
 
@@ -445,10 +445,10 @@ Peak_Trade hat eine ausgeprägte Ops-/Runbook-/Evidence-Kultur (Einstiegspunkte)
 
 4) **Pytest env/marker issues**  
 → Marker: [../pytest.ini](../pytest.ini)  
-→ Lokal: `python -m pytest -q`
+→ Lokal: `python3 -m pytest -q`
 
 5) **dispatch-guard failure (workflow_dispatch inputs)**  
-→ Lokal: `python scripts/ops/validate_workflow_dispatch_guards.py --paths .github/workflows --fail-on-warn`
+→ Lokal: `python3 scripts&#47;ops&#47;validate_workflow_dispatch_guards.py --paths .github&#47;workflows --fail-on-warn`
 
 6) **Required checks drift / missing contexts**  
 → Drift Guard: `bash scripts/ops/verify_required_checks_drift.sh`  
@@ -464,7 +464,7 @@ Peak_Trade hat eine ausgeprägte Ops-/Runbook-/Evidence-Kultur (Einstiegspunkte)
 → Lokal: `bash scripts/ci/guard_no_tracked_reports.sh`
 
 10) **Docs Diff Guard Policy Gate**  
-→ Lokal: `python scripts/ci/check_docs_diff_guard_section.py`
+→ Lokal: `python3 scripts&#47;ci&#47;check_docs_diff_guard_section.py`
 
 ---
 
@@ -484,7 +484,7 @@ Peak_Trade hat eine ausgeprägte Ops-/Runbook-/Evidence-Kultur (Einstiegspunkte)
 - Policy-Konfigurationen für Policy Critic: `policy_packs/` (z.B. `ci.yml`, `live_adjacent.yml`, `research.yml`) – siehe Repo-Root.
 
 ### Required Check / Gate
-- **Required check**: Status-Check, der in Branch Protection als zwingend konfiguriert ist (SSoT: [`../config/ci/required_status_checks.json`](../config/ci/required_status_checks.json)).
+- **Required check**: Status-Check, der in Branch Protection als zwingend konfiguriert ist (SSoT: `config/ci/required_status_checks.json`).
 - **Gate**: Workflow/Check, der bei Failure (oder bei „applicable + failure“) Merge blockieren kann.
 
 ### „docs-only PR“

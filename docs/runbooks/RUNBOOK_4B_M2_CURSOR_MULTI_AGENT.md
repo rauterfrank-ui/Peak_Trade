@@ -127,14 +127,14 @@ Nach jedem "Task Chunk" (max. 200 LOC):
 cd /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
 
 # Lint Gate
-uv run ruff format --check src/
-uv run ruff check src/
+ruff format --check src/
+ruff check src/
 
 # Test Gate (targeted)
-uv run pytest -q tests/[module]
+python3 -m pytest -q tests/[module]
 
 # Audit Gate (wenn Deps geändert)
-uv run pip-audit
+pip-audit
 ```
 
 ### Wenn Audit-Gate existiert
@@ -174,7 +174,7 @@ uv run pip-audit
 ```bash
 # Problem: ruff format check fails
 # Fix:
-uv run ruff format src/
+ruff format src/
 git add -u
 git commit -m "style: apply ruff formatting"
 ```
@@ -196,7 +196,7 @@ git commit -m "style: apply ruff formatting"
 
 ### 7.4 Test Failures
 **Prozess:**
-1. Run targeted tests: `uv run pytest -xvs tests/[specific_test]`
+1. Run targeted tests: `python3 -m pytest -xvs tests&#47;[specific_test]`
 2. Fix minimal, avoid scope creep
 3. Re-run full test suite if broad changes
 
@@ -217,7 +217,7 @@ Am Ende muss existieren:
 - ✅ PR-Skeleton fertig (oder PR erstellt)
 - ✅ Verification-Snippet im Log:
   - ruff ok
-  - pytest subset ok
+  - python3 -m pytest subset ok
   - audit status dokumentiert (ok oder findings + plan)
 - ✅ Decision log populated (mind. 2 Entscheidungen)
 - ✅ All P0 tasks von Taskboard completed
@@ -240,21 +240,21 @@ git worktree prune
 
 ### Development Environment
 ```bash
-# Activate uv environment (auto-activated by uv run)
+# Activate uv environment (auto-activated by uv)
 cd /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
 
 # Check environment
-uv run python --version
-uv run pip list | grep -E "(ruff|pytest|pip-audit)"
+python3 --version
+python3 -m pip list | grep -E "(ruff|pytest|pip-audit)"
 ```
 
 ### Gate Verification
 ```bash
 # Quick gate check (all in one)
 cd /Users/frnkhrz/.cursor-worktrees/Peak_Trade/4b-m2
-uv run ruff format --check src/ && \
-uv run ruff check src/ && \
-uv run pytest -q tests/ && \
+ruff format --check src/ && \
+ruff check src/ && \
+python3 -m pytest -q tests/ && \
 echo "✅ All gates passed"
 ```
 

@@ -68,7 +68,7 @@ class LiveBetaDrillResult:
 ### Vollständiger Drill
 
 ```bash
-python scripts/run_live_beta_drill.py
+python3 scripts/run_live_beta_drill.py
 ```
 
 **Ausgabe:**
@@ -123,26 +123,26 @@ python scripts/run_live_beta_drill.py
 
 ```bash
 # Nur Pre-flight
-python scripts/run_live_beta_drill.py --scenario preflight
+python3 scripts/run_live_beta_drill.py --scenario preflight
 
 # Nur Eligibility
-python scripts/run_live_beta_drill.py --scenario eligibility
+python3 scripts/run_live_beta_drill.py --scenario eligibility
 
 # Nur Shadow-Gates
-python scripts/run_live_beta_drill.py --scenario shadow-gates
+python3 scripts/run_live_beta_drill.py --scenario shadow-gates
 
 # Nur Incident-Simulation
-python scripts/run_live_beta_drill.py --scenario incident-sim
+python3 scripts/run_live_beta_drill.py --scenario incident-sim
 ```
 
 ### JSON-Output
 
 ```bash
 # JSON für Automation
-python scripts/run_live_beta_drill.py --format json
+python3 scripts/run_live_beta_drill.py --format json
 
 # JSON in Datei speichern
-python scripts/run_live_beta_drill.py --format json > drill_result.json
+python3 scripts/run_live_beta_drill.py --format json > drill_result.json
 ```
 
 **JSON-Struktur:**
@@ -217,8 +217,8 @@ Führt die Standard-Live-Dry-Run-Drills aus Phase 73 aus:
 # .github/workflows/live_beta_drill.yml
 - name: Live-Beta Drill
   run: |
-    python scripts/run_live_beta_drill.py --format json > drill.json
-    if python -c "import json; d=json.load(open('drill.json')); exit(0 if d['summary']['all_passed'] else 1)"; then
+    python3 scripts/run_live_beta_drill.py --format json > drill.json
+    if python3 -c "import json; d=json.load(open('drill.json')); exit(0 if d['summary']['all_passed'] else 1)"; then
       echo "All checks passed"
     else
       echo "Drill failed!"
@@ -234,12 +234,12 @@ Vor einem Shadow-/Testnet-Run sollte der Drill bestanden sein:
 
 ```bash
 # 1. Drill ausführen
-python scripts/run_live_beta_drill.py
+python3 scripts/run_live_beta_drill.py
 
 # 2. Bei ALL PASSED → Shadow-Run starten
 if [ $? -eq 0 ]; then
     echo "Drill passed - starting shadow run"
-    python scripts/testnet_orchestrator_cli.py start-shadow \
+    python3 scripts/testnet_orchestrator_cli.py start-shadow \
       --strategy ma_crossover \
       --symbol BTC/EUR \
       --timeframe 1m
@@ -254,7 +254,7 @@ fi
 
 ```bash
 # Alle Live-Beta Drill Tests
-pytest tests/test_live_beta_drill.py -v
+python3 -m pytest tests/test_live_beta_drill.py -v
 ```
 
 ### Testabdeckung

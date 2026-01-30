@@ -210,7 +210,7 @@ ACCEPTANCE CRITERIA
 
 ✅ ruff check . (all checks passed)
 ✅ ruff format --check . (3 files reformatted)
-✅ pytest -q (112 tests passed)
+✅ python3 -m pytest -q (112 tests passed)
 ✅ CLI demo commands work (scattered, clustered patterns)
 ✅ Stdlib-only (no scipy, no numpy)
 ✅ Phase 7 style API (direct n/x, exceedances helper)

@@ -120,7 +120,7 @@ Neue Exports hinzugefügt:
 ## 📊 Test-Coverage
 
 ```bash
-$ pytest tests/test_live_overrides*.py -v
+$ python3 -m pytest tests/test_live_overrides*.py -v
 ================================= 19 passed in 0.08s ==================================
 
 ✅ test_load_live_auto_overrides_missing_file

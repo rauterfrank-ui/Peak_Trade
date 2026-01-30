@@ -126,13 +126,13 @@ for tick in ticks:
 ## 📊 **Evidence Files**
 
 ### Generated Artifacts:
-1. **`reports/data/wp1a_feed_evidence.md`**
+1. **`reports&#47;data&#47;wp1a_feed_evidence.md`**
    - Full deliverables documentation
    - Architecture overview
    - Test results
    - Risk assessment
 
-2. **`reports/data/wp1a_latency_snapshot.json`**
+2. **`reports&#47;data&#47;wp1a_latency_snapshot.json`**
    - Latency metrics snapshot
    - p95: 156.70 ms
    - p99: 156.70 ms
@@ -149,14 +149,14 @@ for tick in ticks:
 ### Full Test Suite:
 ```bash
 cd /Users/frnkhrz/Peak_Trade
-uv run pytest tests/data/test_wp1a_*.py -v
+python3 -m pytest tests/data/test_wp1a_*.py -v
 ```
 
 **Expected:** ✅ 34/34 passed
 
 ### Linter:
 ```bash
-uv run ruff check src/data/feeds/live_feed.py \
+ruff check src/data/feeds/live_feed.py \
                    src/data/shadow/bar_aggregator.py \
                    src/data/shadow/live_quality_checks.py
 ```
@@ -165,8 +165,8 @@ uv run ruff check src/data/feeds/live_feed.py \
 
 ### Evidence Generation:
 ```bash
-PYTHONPATH=/Users/frnkhrz/Peak_Trade:$PYTHONPATH \
-  uv run python scripts/data/generate_wp1a_latency_snapshot.py
+PYTHONPATH="$PWD:$PYTHONPATH" \
+  python3 scripts/data/generate_wp1a_latency_snapshot.py
 ```
 
 **Expected:** ✅ Latency snapshot generated

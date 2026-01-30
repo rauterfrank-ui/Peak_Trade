@@ -41,7 +41,7 @@ printf "\n# Eval prototype (local only)\nsrc/eval/\nscripts/evaluate_live_sessio
 
 # Arbeiten ohne Commit-Zwang
 vim src/eval/metrics.py
-python scripts/evaluate_live_session.py
+python3 scripts/evaluate_live_session.py
 
 # Später: Feature-Branch erstellen, wenn es ernst wird
 git switch -c feat/eval-framework

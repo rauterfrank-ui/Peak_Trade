@@ -36,7 +36,7 @@
 - Render Quarto — pass (47s)
 
 **Lokal**
-- `uv run python scripts/audit/check_ops_merge_logs.py` — 2/39 logs compliant (PR #206, #228)
+- `python3 scripts&#47;audit&#47;check_ops_merge_logs.py` — 2/39 logs compliant (PR #206, #228)
 - Manual review: all required sections present, < 200 lines ✅
 
 ## Risk Assessment

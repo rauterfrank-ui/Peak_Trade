@@ -131,19 +131,19 @@ df_4h = pipeline.fetch_and_resample("BTC/USD", "1h", "4h", limit=1000)
 
 ### 1. Vollständiges Demo
 ```bash
-python scripts/demo_complete_pipeline.py
+python3 scripts/demo_complete_pipeline.py
 ```
 Zeigt alle Features in einem Workflow.
 
 ### 2. Risk Limits Demo
 ```bash
-python scripts/demo_risk_limits.py
+python3 scripts/demo_risk_limits.py
 ```
 Demonstriert alle RiskLimits-Check-Methoden.
 
 ### 3. Kraken Pipeline Demo
 ```bash
-python scripts/demo_kraken_simple.py
+python3 scripts/demo_kraken_simple.py
 ```
 Fokus auf Daten-Beschaffung und Caching.
 

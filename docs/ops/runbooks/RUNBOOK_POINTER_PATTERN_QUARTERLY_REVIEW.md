@@ -340,7 +340,7 @@ git branch -d docs/pointer-pattern-quarterly-review-YYYYMMDD
 # Example: `scripts&#47;example.py` → `scripts&#47;example.py`
 
 # Use autofix tool (if available)
-uv run python scripts/ops/autofix_docs_token_policy_inline_code_v2.py \
+python3 scripts/ops/autofix_docs_token_policy_inline_code_v2.py \
   --files docs/ops/runbooks/RUNBOOK_X_POINTER.md
 
 # Or manual edit
