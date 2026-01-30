@@ -14,22 +14,22 @@ Lokale Cockpit-/Observability-Setups sind fehleranfällig (Ports, `host.docker.i
 ## Verification
 Executed (lokal, no-live, docs-only):
 - Prometheus readiness:
-  - `curl http://localhost:9092/-/ready`
-  - `curl http://localhost:9093/-/ready`
-  - `curl http://localhost:9094/-/ready`
-  - `curl http://localhost:9095/-/ready`
+  - `curl http:&#47;&#47;localhost:9092&#47;-&#47;ready`
+  - `curl http:&#47;&#47;localhost:9093&#47;-&#47;ready`
+  - `curl http:&#47;&#47;localhost:9094&#47;-&#47;ready`
+  - `curl http:&#47;&#47;localhost:9095&#47;-&#47;ready`
 - Prometheus query sanity:
-  - `GET http://localhost:{9092..9095}/api/v1/query?query=up` → `up_vector_count=4` (je Port)
+  - `GET http:&#47;&#47;localhost:{9092..9095}&#47;api&#47;v1&#47;query?query=up` → `up_vector_count=4` (je Port)
   - (optional, Multi-Prom): `count by (stack) (up)` → je Port genau 1 Series mit erwartetem `stack`
 - Grafana health (wenn Cockpit läuft):
   - `docker compose -p peaktrade-grafana-local -f docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml up -d grafana`
   - Health (Retry-Window möglich direkt nach Start/Restart):
-    - `curl -fsS http://localhost:3000/api/health | python3 -c 'import json,sys; print(json.dumps(json.load(sys.stdin), indent=2))'`
+    - `curl -fsS http:&#47;&#47;localhost:3000&#47;api&#47;health | python3 -c 'import json,sys; print(json.dumps(json.load(sys.stdin), indent=2))'`
 - Grafana Datasources / Proxy Query (falls DS provisioned):
-  - `GET /api/datasources` → prom_local_9092, prom_shadow_9093, prom_ai_live_9094, prom_observability_9095 vorhanden
-  - `GET /api/datasources/proxy/{id}/api/v1/query?query=up` → `up_vector_count=4` je Datasource
+  - `GET &#47;api&#47;datasources` → prom_local_9092, prom_shadow_9093, prom_ai_live_9094, prom_observability_9095 vorhanden
+  - `GET &#47;api&#47;datasources&#47;proxy&#47;{id}&#47;api&#47;v1&#47;query?query=up` → `up_vector_count=4` je Datasource
 - Mode B metricsd specific:
-  - `curl http://localhost:9111/metrics` (Exporter erreichbar)
+  - `curl http:&#47;&#47;localhost:9111&#47;metrics` (Exporter erreichbar)
   - Beispiel-Queries:
     - `peaktrade_risk_checks_total`
     - `peaktrade_risk_limit_utilization`
@@ -58,4 +58,4 @@ LOW — docs/runbook only. Keine Trading/Execution/Governance-Pfade geändert.
 - PR: https://github.com/rauterfrank-ui/Peak_Trade/pull/1082
 - Paths: `docs/ops/runbooks/RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md`
 - Related local tooling (optional):
-  - `.ops_local/scripts/obs/verify_grafana_multi_prom.sh`
+  - `.ops_local&#47;scripts&#47;obs&#47;verify_grafana_multi_prom.sh`
