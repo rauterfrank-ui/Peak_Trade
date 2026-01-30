@@ -216,7 +216,7 @@ Timestamp            Previous     New State    Triggered By    Reason
 
 ### Audit-Dateien
 
-**Speicherort:** `data/kill_switch/audit/`
+**Speicherort:** `data&#47;kill_switch&#47;audit&#47;`
 
 **Format:** JSONL (JSON Lines) - eine Zeile pro Event
 

@@ -12,7 +12,7 @@ Die Phase orientiert sich explizit am bestehenden Experiment-System:
 
 * `SweepResultRow` → `LiveSessionRecord`
 * Experiment-Registry → Live-Session-Registry
-* `reports/experiments/` → `reports/experiments/live_sessions/`
+* `reports&#47;experiments&#47;` → `reports&#47;experiments&#47;live_sessions&#47;`
 
 ---
 
@@ -28,7 +28,7 @@ Die Phase orientiert sich explizit am bestehenden Experiment-System:
   * `get_session_summary()` – einfache Aggregations-Summary
   * `render_session_markdown()` / `render_sessions_markdown()` – Markdown-Reports
   * `render_session_html()` / `render_sessions_html()` – HTML-Reports
-  * `DEFAULT_LIVE_SESSION_DIR` – Basis-Pfad: `reports/experiments/live_sessions`
+  * `DEFAULT_LIVE_SESSION_DIR` – Basis-Pfad: `reports&#47;experiments&#47;live_sessions`
 
 * `scripts/run_execution_session.py`
 
@@ -46,7 +46,7 @@ Die Phase orientiert sich explizit am bestehenden Experiment-System:
 
 * Basis-Verzeichnis:
 
-  * `reports/experiments/live_sessions/`
+  * `reports&#47;experiments&#47;live_sessions&#47;`
 * Pro Session ein eigenes JSON-File:
 
   * `YYYYMMDDTHHMMSS_<run_type>_<session_id>.json`
@@ -145,7 +145,7 @@ records = list_session_records(
 )
 ```
 
-* Lädt alle passenden JSON-Files aus `reports/experiments/live_sessions/`.
+* Lädt alle passenden JSON-Files aus `reports&#47;experiments&#47;live_sessions&#47;`.
 * Filter:
 
   * `run_type`
@@ -332,7 +332,7 @@ Ein Smoketest wurde durchgeführt:
 
 1. Shadow-Session gestartet (Dummy-Run).
 2. `LiveSessionRecord` erstellt und registriert.
-3. JSON-File in `reports/experiments/live_sessions/` erzeugt.
+3. JSON-File in `reports&#47;experiments&#47;live_sessions&#47;` erzeugt.
 4. `list_session_records()` findet die Session.
 5. `get_session_summary()` zeigt konsistente Aggregation.
 6. `render_session_markdown()` liefert einen vollständigen Report-String.

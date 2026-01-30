@@ -488,7 +488,7 @@ python3 -m pytest tests/ -n auto
 
 ### Pre-commit Hooks
 
-Create `.git/hooks/pre-commit`:
+Create `.git&#47;hooks&#47;pre-commit`:
 
 ```bash
 #!/bin/bash

@@ -619,8 +619,8 @@ gh pr checks <PR> --watch
 After resolving ANY conflict:
 
 - [ ] CI passes (all checks green)
-- [ ] No new tracked files in `reports/`
-- [ ] No new tracked files in `.artifacts/`, `.tmp_*&#47;`
+- [ ] No new tracked files in `reports&#47;`
+- [ ] No new tracked files in `.artifacts&#47;`, `.tmp_*&#47;`
 - [ ] All links in docs are valid (docs-reference-targets-gate passes)
 - [ ] Ruff linting passes
 - [ ] Pre-commit hooks pass

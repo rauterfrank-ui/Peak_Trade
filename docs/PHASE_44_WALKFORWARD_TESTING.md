@@ -26,7 +26,7 @@ Phase 44 baut auf drei vorherigen Phasen auf:
 
 1. **Phase 41 – Strategy-Sweeps & Research-Playground**
    - Sweep-Definition und -Ausführung
-   - Ergebnis-Speicherung unter `reports/experiments/`
+   - Ergebnis-Speicherung unter `reports&#47;experiments&#47;`
    - Siehe `docs/PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md` für Details
 
 2. **Phase 42 – Top-N Promotion**
@@ -125,7 +125,7 @@ python3 -m pytest tests/test_walkforward_backtest.py -v
 
 Der vollständige Workflow besteht aus vier Schritten:
 
-1. **Sweep ausführen** (Phase 41) → Ergebnisse unter `reports/experiments/`
+1. **Sweep ausführen** (Phase 41) → Ergebnisse unter `reports&#47;experiments&#47;`
 2. **Top-N auswählen** (Phase 42) → Top-Kandidaten unter `reports&#47;sweeps&#47;`
 3. **Walk-Forward ausführen** (Phase 44) → Walk-Forward-Ergebnisse unter `reports&#47;walkforward&#47;`
 4. **Reports analysieren** (Phase 44) → Markdown-Reports mit aggregierten Metriken

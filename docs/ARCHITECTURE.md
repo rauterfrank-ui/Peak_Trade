@@ -48,12 +48,12 @@ Fokus:
 
 ## 3. Repo Structure
 
-### Generated artifacts: `reports/`
+### Generated artifacts: `reports&#47;`
 
-The `reports/` directory contains generated artifacts (HTML/PNG/JSON logs, validation outputs, etc.) and is **not tracked** in git.
+The `reports&#47;` directory contains generated artifacts (HTML/PNG/JSON logs, validation outputs, etc.) and is **not tracked** in git.
 
 - Rule: `/reports/` is ignored via `.gitignore`
-- Policy: Never commit anything under `reports/` (CI/guard + local checks enforce this)
+- Policy: Never commit anything under `reports&#47;` (CI/guard + local checks enforce this)
 - If you accidentally tracked files: `git rm -r --cached reports`
 
 ---
@@ -159,7 +159,7 @@ adjusted = risk_mgr.adjust_target_position(target_units=0.2, price=50000.0, equi
 
 ### 6.4 Experiments (`experiments.py`)
 
-Zentrales Tracking aller Runs in `reports/experiments/experiments.csv`.
+Zentrales Tracking aller Runs in `reports&#47;experiments&#47;experiments.csv`.
 
 **Run-Types:**
 - `backtest` – Einzel-Strategie-Backtest

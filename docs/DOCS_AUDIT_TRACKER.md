@@ -189,7 +189,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `preview_live_portfolio.py` wird korrekt als Snapshot/Risk-Check per `--config`/`--no-risk` dokumentiert (kein `--portfolio-preset`/`--validate-only`).
   - Strategy-Profile: Umgestellt auf `research_cli.py strategy-profile` (statt `profile_research_and_portfolio.py`, das ein Benchmark-Tool ist).
   - Strategy Registry Snippet: auf `StrategySpec`/`_STRATEGY_REGISTRY` angepasst; Listing nutzt `get_available_strategy_keys()`.
-  - Erwartete Output-Pfade im Sweep/Report korrigiert (`reports/experiments/`, `reports&#47;sweeps&#47;{sweep}_report_<timestamp>.*`).
+  - Erwartete Output-Pfade im Sweep/Report korrigiert (`reports&#47;experiments&#47;`, `reports&#47;sweeps&#47;{sweep}_report_<timestamp>.*`).
 
 ### `docs/STRATEGY_RESEARCH_PLAYBOOK.md` — **done (quick audit)**
 - **Befund**:

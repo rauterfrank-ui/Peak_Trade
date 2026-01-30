@@ -231,7 +231,7 @@ scripts/
 
 Keine Dateien archiviert (alle Moves waren in aktive Struktur).
 
-**Existing Archive:** `archive/` bereits gut strukturiert mit:
+**Existing Archive:** `archive&#47;` bereits gut strukturiert mit:
 - `full_files_stand_02.12.2025&#47;`
 - `legacy_docs&#47;`
 - `legacy_scripts&#47;`

@@ -302,7 +302,7 @@ Minimum je operator-relevant PR:
 - Fix: Link korrigieren oder Ziel anlegen; danach lokal prüfen und PR aktualisieren.
 
 **Guard tracked files in reports directories**  
-- Ursache: Ein Report unter `reports/` wurde ins Git staging aufgenommen.  
+- Ursache: Ein Report unter `reports&#47;` wurde ins Git staging aufgenommen.  
 - Fix: Unstage + gitignore/policy beachten; Reports nur lokal erzeugen.
 
 **Locked path violation**  

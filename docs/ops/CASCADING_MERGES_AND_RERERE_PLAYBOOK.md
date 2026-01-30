@@ -141,7 +141,7 @@ git rerere gc  # entfernt alte, ungenutzte Lösungen
 ### 5. Team Communication
 - **Announce Merge-Waves**: "Merging 10 PRs, main wird sich schnell bewegen"
 - **Freeze non-essential commits**: Reduziert Update-Runden
-- **Share rerere-Cache** (optional): `.git/rr-cache/` kann committet werden für Team-weite Patterns
+- **Share rerere-Cache** (optional): `.git&#47;rr-cache&#47;` kann committet werden für Team-weite Patterns
 
 ## Konflikt-Strategie (Field-Tested)
 

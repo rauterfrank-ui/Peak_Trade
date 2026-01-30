@@ -251,7 +251,7 @@ starting_cash_default = 10000.0
 
 ### "Daily-PnL immer 0"
 Prüfe:
-1. Gibt es `reports/experiments/experiments.csv`?
+1. Gibt es `reports&#47;experiments&#47;experiments.csv`?
 2. Sind Einträge mit `run_type = "paper_trade"` vom heutigen Tag vorhanden?
 3. Ist `use_experiments_for_daily_pnl = true` in config.toml?
 

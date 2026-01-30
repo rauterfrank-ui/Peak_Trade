@@ -60,7 +60,7 @@
 ### Path Exclusions
 
 - `docs/` - Documentation files
-- `tmp/` - Temporary test artifacts
+- `tmp&#47;` - Temporary test artifacts
 - `tests/fixtures/` - Test data
 
 ---

@@ -36,7 +36,7 @@ Diese Übersicht beantwortet:
 ### B) „Live Dashboard“ v0.1 (Phase 67) (`scripts/live_web_server.py` / `src/live/web/app.py`)
 
 **Stärken:**
- - Fokus: „Run Monitoring“ von **Shadow-/Paper-Runs** auf Basis von Dateien unter `live_runs/`
+ - Fokus: „Run Monitoring“ von **Shadow-/Paper-Runs** auf Basis von Dateien unter `live_runs&#47;`
 - **Auto-Refresh HTML**, Run-Liste, Snapshot-Kacheln, Tail-Events, Alerts pro Run
 
 **Start:**
@@ -133,10 +133,10 @@ Du bekommst „live“ Sichtbarkeit, wenn während eines Runs laufend Artefakte 
 
 **Bestes Setup für Live-„Zuschauen“:**
 
-- **Live Dashboard v0.1 (Phase 67)** + ein Runner, der nach `live_runs/` loggt  
+- **Live Dashboard v0.1 (Phase 67)** + ein Runner, der nach `live_runs&#47;` loggt  
   → HTML Seite pollt per JS (Auto-Refresh) und zeigt Run-Events + Snapshot-Metriken.
 
-  (Repo-Pfad: `live_runs/`)
+  (Repo-Pfad: `live_runs&#47;`)
 
 **Zusätzlich / Deep Dive:**
 

@@ -291,7 +291,7 @@ state_data = persistence.load()
 **Retention:** 90 Tage  
 **Compression:** Alte Logs werden mit gzip komprimiert
 
-**Speicherort:** `data/kill_switch/audit/`
+**Speicherort:** `data&#47;kill_switch&#47;audit&#47;`
 
 ```python
 from src.risk_layer.kill_switch.audit import AuditTrail

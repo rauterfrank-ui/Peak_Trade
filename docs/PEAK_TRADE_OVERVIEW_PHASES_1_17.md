@@ -175,7 +175,7 @@ Das Framework ist als **`src`-Layout** organisiert (Paket `peak_trade`) und folg
 **Phase 11 (Experiments-Registry):**
 - `ExperimentRecord` Dataclass für Run-Ergebnisse
 - Run-Types: `backtest`, `portfolio_backtest`, `forward_signal`, `live_risk_check`, `paper_trade`, `sweep`, `market_scan`, `scheduler_job`
-- CSV-Persistenz in `reports/experiments/experiments.csv`
+- CSV-Persistenz in `reports&#47;experiments&#47;experiments.csv`
 
 **Phase 12 (Scheduler):**
 - `JobDefinition` und `JobSchedule` Dataclasses

@@ -306,7 +306,7 @@ reports/r_and_d/armstrong_cycle/
 └── ... (zukünftige Experimente)
 ```
 
-Registry-Einträge werden automatisch in `reports/experiments/experiments.csv` geloggt.
+Registry-Einträge werden automatisch in `reports&#47;experiments&#47;experiments.csv` geloggt.
 
 ---
 

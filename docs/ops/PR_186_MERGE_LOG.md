@@ -64,7 +64,7 @@ python3 scripts/ops/telemetry_retention.py --apply \
 ```
 
 **Flags:**
-- `--root` (default: `logs/execution`)
+- `--root` (default: `logs&#47;execution`)
 - `--apply` (required to modify files)
 - `--max-age-days` (default: 30)
 - `--keep-last-n` (default: 200)

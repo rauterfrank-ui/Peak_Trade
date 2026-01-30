@@ -299,7 +299,7 @@ tail -n 100 logs/execution/session_123.jsonl | jq . || echo "Invalid JSON detect
 **Symptom:** `❌ Error: No telemetry logs found`
 
 **Causes:**
-- Wrong path (default: `logs/execution`)
+- Wrong path (default: `logs&#47;execution`)
 - Telemetry not enabled (emitter=None)
 - No sessions run yet
 

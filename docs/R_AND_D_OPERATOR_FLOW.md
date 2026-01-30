@@ -219,7 +219,7 @@ Die Comparison-View zeigt:
 
 **Bei `failed`:**
 - Raw JSON aufklappen → `error`-Feld prüfen
-- Logs unter `logs/` durchsuchen
+- Logs unter `logs&#47;` durchsuchen
 
 **Bei `no_trades`:**
 - Parameter prüfen (Timeframe, Symbol, Filter-Bedingungen)

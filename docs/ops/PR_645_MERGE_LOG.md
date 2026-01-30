@@ -98,8 +98,8 @@ python3 scripts/aiops/run_l4_governance_critic.py \
 ```
 
 **Expected outputs** (2 files only):
-- `.tmp/l4_critic_out/critic_report.json` — Structured schema v1.0.0 report (repo-relative paths, sorted keys/findings)
-- `.tmp/l4_critic_out/critic_summary.md` — Human-readable derived summary
+- `.tmp&#47;l4_critic_out&#47;critic_report.json` — Structured schema v1.0.0 report (repo-relative paths, sorted keys/findings)
+- `.tmp&#47;l4_critic_out&#47;critic_summary.md` — Human-readable derived summary
 
 **Verify determinism:**
 ```bash

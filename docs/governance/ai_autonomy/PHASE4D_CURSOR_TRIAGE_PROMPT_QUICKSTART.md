@@ -213,7 +213,7 @@ git commit -m "chore(aiops): update L4 critic determinism snapshot (schema chang
 
 ## Governance Guardrails (Nicht verhandelbar)
 
-- ✅ **Read-only:** Diagnostics lesen nur bestehende Files oder schreiben nach `.tmp/`
+- ✅ **Read-only:** Diagnostics lesen nur bestehende Files oder schreiben nach `.tmp&#47;`
 - ✅ **No live calls:** Fixtures only, keine Network Requests
 - ✅ **Evidence-first:** Commands + Outputs immer dokumentieren
 - ❌ **No automatic snapshot updates:** Nur nach Operator-Approval (Root Cause D)

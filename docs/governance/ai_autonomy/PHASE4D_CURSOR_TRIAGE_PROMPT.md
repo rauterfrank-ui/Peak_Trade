@@ -24,7 +24,7 @@ Sie ist so gestaltet, dass ein Cursor Multi-Agent Chat:
 
 You are operating in Peak_Trade under strict governance constraints:
 - **No-live policy:** No trading execution, no live API calls, no external services
-- **Read-only safe:** Only read operations and writes to `.tmp/` directories
+- **Read-only safe:** Only read operations and writes to `.tmp&#47;` directories
 - **Evidence-first:** All diagnostics must be reproducible and documented
 
 **Task:** Triage a failing CI gate "Validate Determinism Contract" for L4 Critic replay determinism (Phase 4D).
@@ -445,14 +445,14 @@ diff -u tests/fixtures/l4_critic_determinism/.../critic_report.json .tmp/canonic
 
 ✅ **Allowed:**
 - Read operations on all files
-- Writes to `.tmp/` directory
+- Writes to `.tmp&#47;` directory
 - Command execution (read-only validators, tests)
 - Evidence capture and documentation
 
 ❌ **Forbidden:**
 - Live trading operations
 - External API calls (network requests)
-- Writes outside `.tmp/` (except with explicit operator approval for snapshot updates)
+- Writes outside `.tmp&#47;` (except with explicit operator approval for snapshot updates)
 - Automatic commits/pushes
 
 ---

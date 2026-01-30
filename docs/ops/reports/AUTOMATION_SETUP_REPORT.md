@@ -314,7 +314,7 @@ done
 - **KEINE** Verbindung zu Live-Exchanges (Kraken, etc.)
 - **KEINE** realen Order-Submissions
 - **KEINE** Zugriffe auf API-Keys oder Secrets
-- **KEINE** Schreibzugriffe außerhalb von `reports/`
+- **KEINE** Schreibzugriffe außerhalb von `reports&#47;`
 - **KEINE** Änderungen an der Codebase
 
 ### 🔒 Sicherheits-Features

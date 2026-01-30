@@ -31,7 +31,7 @@ Phase 43 baut auf zwei vorherigen Phasen auf:
 
 2. **Phase 41 – Strategy-Sweeps & Research-Playground**
    - Sweep-Definition und -Ausführung
-   - Ergebnis-Speicherung unter `reports/experiments/`
+   - Ergebnis-Speicherung unter `reports&#47;experiments&#47;`
    - Siehe `docs/PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md` für Details zur Sweep-Definition und -Ausführung
 
 Phase 43 nutzt die bestehenden Reporting- und Plot-Funktionen aus Phase 30 und erweitert sie um **sweep-spezifische Visualisierungen**.
@@ -103,7 +103,7 @@ python3 -m pytest tests/test_sweep_visualization.py -v
 
 Der Workflow besteht aus zwei Schritten:
 
-1. **Sweep ausführen** (Phase 41) → Ergebnisse unter `reports/experiments/`
+1. **Sweep ausführen** (Phase 41) → Ergebnisse unter `reports&#47;experiments&#47;`
 2. **Report mit Plots generieren** (Phase 43) → Reports + Plots unter `reports&#47;sweeps&#47;`
 
 ### Schritt-für-Schritt Anleitung
@@ -135,7 +135,7 @@ python3 scripts/run_strategy_sweep.py \
 **Erwartete Ausgabe:**
 - Sweep läuft durch ohne Exceptions
 - Erfolgreiche Runs werden angezeigt (z.B. "27 erfolgreich, 0 fehlgeschlagen")
-- Ergebnisse werden gespeichert unter `reports/experiments/`
+- Ergebnisse werden gespeichert unter `reports&#47;experiments&#47;`
 - Dateinamen enthalten den Sweep-Namen: `{sweep_name}_{experiment_id}_{timestamp}.csv`
 
 #### Schritt 3: Report mit Visualisierungen generieren
@@ -455,11 +455,11 @@ Fehler: Keine Ergebnisse gefunden für Sweep 'rsi_reversion_basic'
 ### Problem: Reports/Plots werden in Git angezeigt
 
 **Symptom:**
-- `git status` zeigt `reports&#47;sweeps&#47;` oder `reports/experiments/`
+- `git status` zeigt `reports&#47;sweeps&#47;` oder `reports&#47;experiments&#47;`
 
 **Lösung:**
 - Reports und Plots sind **Artefakte** und sollten nicht ins Repo
-- Prüfe `.gitignore`: Sollte `reports&#47;sweeps&#47;` und `reports/experiments/` enthalten
+- Prüfe `.gitignore`: Sollte `reports&#47;sweeps&#47;` und `reports&#47;experiments&#47;` enthalten
 - Falls nötig, füge hinzu:
   ```gitignore
   # Reports & Visualizations (generierte Artefakte)

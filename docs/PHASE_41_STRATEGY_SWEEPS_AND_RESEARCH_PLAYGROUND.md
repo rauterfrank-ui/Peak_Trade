@@ -6,7 +6,7 @@ Phase 41 ist **vollständig implementiert und getestet**:
 
 - ✅ Strategy-Sweeps sind implementiert und funktionsfähig
 - ✅ `rsi_reversion_basic` ist als Beispiel-Sweep lauffähig (27 Kombinationen)
-- ✅ Sweep-Ergebnisse werden unter `reports/experiments/` abgelegt (Dateinamen enthalten Sweep-Namen)
+- ✅ Sweep-Ergebnisse werden unter `reports&#47;experiments&#47;` abgelegt (Dateinamen enthalten Sweep-Namen)
 - ✅ Reports werden unter `reports&#47;sweeps&#47;` abgelegt (Markdown + HTML)
 - ✅ Alle Tests sind grün (~1495 passed, 4 skipped)
 
@@ -309,7 +309,7 @@ python3 scripts/run_strategy_sweep.py \
 **Erwartete Ausgabe:**
 - Sweep läuft durch ohne Exceptions
 - Erfolgreiche Runs werden angezeigt (z.B. "27 erfolgreich, 0 fehlgeschlagen")
-- Ergebnisse werden gespeichert unter `reports/experiments/`
+- Ergebnisse werden gespeichert unter `reports&#47;experiments&#47;`
 - Dateinamen enthalten den Sweep-Namen: `{sweep_name}_{experiment_id}_{timestamp}.csv`
 
 **3. Report generieren**
@@ -477,10 +477,10 @@ Phase 41 ist **rein Research/Backtest-fokussiert**:
 
 | Typ | Pfad |
 |-----|------|
-| Experiment-Ergebnisse | `reports/experiments/` |
+| Experiment-Ergebnisse | `reports&#47;experiments&#47;` |
 | Sweep-Reports | `reports&#47;sweeps&#47;` |
 | Report-Images | `reports&#47;sweeps&#47;images&#47;` |
-| Experiment-Registry | `reports/experiments/experiments.csv` |
+| Experiment-Registry | `reports&#47;experiments&#47;experiments.csv` |
 
 ---
 

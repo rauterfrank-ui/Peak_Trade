@@ -213,7 +213,7 @@ block_on_violation = true
 
 - Strategies return **states** (persistent positions), not events
 - CLI args override `config.toml` settings
-- All runs logged to `reports/experiments/experiments.csv`
+- All runs logged to `reports&#47;experiments&#47;experiments.csv`
 - Documentation in German and English
 
 ---

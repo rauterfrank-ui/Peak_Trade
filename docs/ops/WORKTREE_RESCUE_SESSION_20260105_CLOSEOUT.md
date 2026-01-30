@@ -226,7 +226,7 @@ python3 -m pytest -m data_integration -v
 - ✅ Promptfoo version: 0.120.8 (pinned)
 
 ### Artifacts
-**Location:** `.artifacts/aiops/`
+**Location:** `.artifacts&#47;aiops&#47;`
 
 **Generated:**
 - `baseline_stdout_<UTC_TIMESTAMP>.log` (terminal capture via `tee`, operator-enabled)

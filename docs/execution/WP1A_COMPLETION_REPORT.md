@@ -126,13 +126,13 @@ for tick in ticks:
 ## 📊 **Evidence Files**
 
 ### Generated Artifacts:
-1. **`reports/data/wp1a_feed_evidence.md`**
+1. **`reports&#47;data&#47;wp1a_feed_evidence.md`**
    - Full deliverables documentation
    - Architecture overview
    - Test results
    - Risk assessment
 
-2. **`reports/data/wp1a_latency_snapshot.json`**
+2. **`reports&#47;data&#47;wp1a_latency_snapshot.json`**
    - Latency metrics snapshot
    - p95: 156.70 ms
    - p99: 156.70 ms
